@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x00852980	0x00C41E80	?nglSceneDumpStart@@YAXXZ	void __cdecl nglSceneDumpStart(void)	ngl_scenedump.o
+0x008529F0	0x00C41EF0	?nglSceneDumpEnd@@YAXXZ	void __cdecl nglSceneDumpEnd(void)	ngl_scenedump.o
+0x00852A30	0x00C41F30	?nglSceneDumpCamera@@YAXABVMat43@math@@@Z	void __cdecl nglSceneDumpCamera(class math::Mat43 const &)	ngl_scenedump.o
+0x00852B30	0x00C42030	?nglSceneDumpMesh@@YAXPAUnglMesh@@ABVMat43@math@@PBVnglMeshParams@@@Z	void __cdecl nglSceneDumpMesh(struct nglMesh *,class math::Mat43 const &,class nglMeshParams const *)	ngl_scenedump.o
+0x00852D80	0x00C42280	?nglSceneDumpQuad@@YAXPAUnglQuad@@@Z	void __cdecl nglSceneDumpQuad(struct nglQuad *)	ngl_scenedump.o
+0x00852E80	0x00C42380	?nglSceneDumpDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z	void __cdecl nglSceneDumpDirLight(unsigned int,class math::Dir3 const &,class math::Vector4 const &)	ngl_scenedump.o
+0x00852F30	0x00C42430	?nglSceneDumpPointLight@@YAXW4nglLightType@@IABVPosition3@math@@MMABVVector4@3@@Z	void __cdecl nglSceneDumpPointLight(enum nglLightType,unsigned int,class math::Position3 const &,float,float,class math::Vector4 const &)	ngl_scenedump.o

@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x008541A0	0x00C436A0	?nglHostPrintf@@YAXPAXPBDZZ	void __cdecl nglHostPrintf(void *,char const *,...)	ngl_dx_scenedump.o
+0x00854210	0x00C43710	?nglHostOpen@@YAPAXPBD@Z	void * __cdecl nglHostOpen(char const *)	ngl_dx_scenedump.o
+0x008542B0	0x00C437B0	?nglHostClose@@YAXPAX@Z	void __cdecl nglHostClose(void *)	ngl_dx_scenedump.o

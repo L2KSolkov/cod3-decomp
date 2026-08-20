@@ -1,0 +1,23 @@
+index	status	map_line
+1	VERIFIED	0002:003d1720 ??0cdDecalShaderMat@@QAE@PAUnglTexture@@@Z 00BC0C20 f cdDecalShader.o
+2	VERIFIED	0002:003d17b0 ?InitCDDecalShader@@YAXXZ 00BC0CB0 f cdDecalShader.o
+3	VERIFIED	0002:003d1800 ?ToggleCDDecalShader@@YAXXZ 00BC0D00 f cdDecalShader.o
+4	VERIFIED	0002:003d1820 ?Register@cdDecalShader@@UAEXXZ 00BC0D20 f cdDecalShader.o
+5	VERIFIED	0002:003d1860 ?AddNode@cdDecalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC0D60 f cdDecalShader.o
+6	PORTED	0002:003d18e0 ?Render@cdDecalShaderNode@@UAEXXZ 00BC0DE0 f cdDecalShader.o
+7	VERIFIED	0002:003d1cc0 ??0cdDecalShader@@QAE@XZ 00BC11C0 f i cdDecalShader.o
+8	VERIFIED	0002:003d1cf0 ?GetName@cdDecalShader@@UAE?AVtlFixedString@@XZ 00BC11F0 f i cdDecalShader.o
+9	PORTED	0002:003d1d10 ?RegisterVShader@cdDecalRender@@YAXXZ 00BC1210 f i cdDecalShader.o
+10	PORTED	0002:003d1d30 ?GetVShader@cdDecalRender@@YAKXZ 00BC1230 f i cdDecalShader.o
+11	PORTED	0002:003d1d40 ?RegisterPShader@cdDecalPixel@@YAXXZ 00BC1240 f i cdDecalShader.o
+12	PORTED	0002:003d1d60 ?GetPShader@cdDecalPixel@@YAPAKXZ 00BC1260 f i cdDecalShader.o
+13	PORTED	0002:003d1d70 ?RegisterPShader@cdDecalFullbrightPixel@@YAXXZ 00BC1270 f i cdDecalShader.o
+14	PORTED	0002:003d1d90 ?GetPShader@cdDecalFullbrightPixel@@YAPAKXZ 00BC1290 f i cdDecalShader.o
+15	PORTED	0002:003d1da0 ??0DecalContext@@QAE@XZ 00BC12A0 f i cdDecalShader.o
+16	PORTED	0002:003d1db0 ??0cdDecalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDecalShaderMat@@@Z 00BC12B0 f i cdDecalShader.o
+17	PORTED	0002:003d1de0 ??_GcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o
+18	PORTED	0002:003d1de0 ??_EcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o
+19	PORTED	0002:003d1e10 ??1cdDecalShaderNode@@UAE@XZ 00BC1310 f i cdDecalShader.o
+20	VERIFIED	0002:003d1e20 ??_EcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o
+21	VERIFIED	0002:003d1e20 ??_GcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o
+22	VERIFIED	0002:003d1e50 ??1cdDecalShader@@UAE@XZ 00BC1350 f i cdDecalShader.o

@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x007CD440	0x00BBC940	?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z	void __cdecl ProcessCDDynamicDecalVertexDef(void *)	cdDynamicDecalVertexDef.o
+0x007CD460	0x00BBC960	?InitCDDynamicDecalVertexDefBuilder@@YAXXZ	void __cdecl InitCDDynamicDecalVertexDefBuilder(void)	cdDynamicDecalVertexDef.o

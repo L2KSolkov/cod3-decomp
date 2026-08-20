@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x00851120	?ngliGetDebugFlagPtr@@YAPAEPBD@Z	unsigned char * __cdecl ngliGetDebugFlagPtr(char const *)	
+0x00851130	?PrintHeader@ngliShaderProfile@@SAXXZ	public: static void __cdecl ngliShaderProfile::PrintHeader(void)	
+0x00851140	?Print@ngliShaderProfile@@QAEXXZ	public: void __thiscall ngliShaderProfile::Print(void)	
+0x00851170	?Record@ngliShaderProfile@@QAEXXZ	public: void __thiscall ngliShaderProfile::Record(void)	
+0x008511B0	?Compare@ngliShaderProfile@@QAEXPAU1@@Z	public: void __thiscall ngliShaderProfile::Compare(struct ngliShaderProfile *)	

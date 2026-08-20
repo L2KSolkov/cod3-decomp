@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:003d4dd0 ??0cdSimpleSpecularShaderMat@@QAE@PAUnglTexture@@0@Z 00BC42D0 f cdSimpleSpecularShader.o
+2	VERIFIED	0002:003d4e60 ?InitCDSimpleSpecularShader@@YAXXZ 00BC4360 f cdSimpleSpecularShader.o
+3	VERIFIED	0002:003d4eb0 ?ToggleCDSimpleSpecularShader@@YAXXZ 00BC43B0 f cdSimpleSpecularShader.o
+4	VERIFIED	0002:003d4ed0 ?Register@cdSimpleSpecularShader@@UAEXXZ 00BC43D0 f cdSimpleSpecularShader.o
+5	VERIFIED	0002:003d4f00 ?GetEyePos@@YAXPAVnglMeshNode@@AAVVector4@math@@@Z 00BC4400 f cdSimpleSpecularShader.o
+6	VERIFIED	0002:003d4ff0 ?AddNode@cdSimpleSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC44F0 f cdSimpleSpecularShader.o
+7	VERIFIED	0002:003d5060 ?Render@cdSimpleSpecularShaderNode@@UAEXXZ 00BC4560 f cdSimpleSpecularShader.o
+8	PORTED	0002:003d53d0 ??0Mat44@math@@QAE@ABVMat34@1@@Z 00BC48D0 f i cdSimpleSpecularShader.o
+9	VERIFIED	0002:003d5460 ??0cdSimpleSpecularShader@@QAE@XZ 00BC4960 f i cdSimpleSpecularShader.o
+10	VERIFIED	0002:003d5490 ?GetName@cdSimpleSpecularShader@@UAE?AVtlFixedString@@XZ 00BC4990 f i cdSimpleSpecularShader.o
+11	VERIFIED	0002:003d54b0 ?RegisterVShader@cdSimpleSpecularRender@@YAXXZ 00BC49B0 f i cdSimpleSpecularShader.o
+12	PORTED	0002:003d54e0 ?GetVShader@cdSimpleSpecularRender@@YAKI@Z 00BC49E0 f i cdSimpleSpecularShader.o
+13	PORTED	0002:003d54f0 ?RegisterPShader@cdSimpleSpecularPixel@@YAXXZ 00BC49F0 f i cdSimpleSpecularShader.o
+14	PORTED	0002:003d5510 ?GetPShader@cdSimpleSpecularPixel@@YAPAKXZ 00BC4A10 f i cdSimpleSpecularShader.o
+15	PORTED	0002:003d5520 ?RegisterPShader@cdSimpleSpecularFullbrightPixel@@YAXXZ 00BC4A20 f i cdSimpleSpecularShader.o
+16	PORTED	0002:003d5540 ?GetPShader@cdSimpleSpecularFullbrightPixel@@YAPAKXZ 00BC4A40 f i cdSimpleSpecularShader.o
+17	PORTED	0002:003d5550 ??0cdSimpleSpecularShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimpleSpecularShaderMat@@@Z 00BC4A50 f i cdSimpleSpecularShader.o
+18	PORTED	0002:003d5580 ??_EcdSimpleSpecularShaderNode@@UAEPAXI@Z 00BC4A80 f i cdSimpleSpecularShader.o
+19	PORTED	0002:003d5580 ??_GcdSimpleSpecularShaderNode@@UAEPAXI@Z 00BC4A80 f i cdSimpleSpecularShader.o
+20	PORTED	0002:003d55b0 ??1cdSimpleSpecularShaderNode@@UAE@XZ 00BC4AB0 f i cdSimpleSpecularShader.o
+21	VERIFIED	0002:003d55c0 ??_EcdSimpleSpecularShader@@UAEPAXI@Z 00BC4AC0 f i cdSimpleSpecularShader.o
+22	VERIFIED	0002:003d55c0 ??_GcdSimpleSpecularShader@@UAEPAXI@Z 00BC4AC0 f i cdSimpleSpecularShader.o
+23	VERIFIED	0002:003d55f0 ??1cdSimpleSpecularShader@@UAE@XZ 00BC4AF0 f i cdSimpleSpecularShader.o
+24	PORTED	0002:003d5600 ??0SimpleSpecularContext@@QAE@XZ 00BC4B00 f i cdSimpleSpecularShader.o

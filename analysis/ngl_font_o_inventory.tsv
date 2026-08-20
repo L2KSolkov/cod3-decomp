@@ -1,0 +1,20 @@
+ida_ea	va	name	signature	family
+0x00842400	0x00C31900	?nglGetFont@@YAPAVnglFont@@ABVtlFixedString@@@Z	class nglFont * __cdecl nglGetFont(class tlFixedString const &)	ngl_font.o
+0x00842420	0x00C31920	?nglFontParseToken@@YAXAAPAEPAI@Z	void __cdecl nglFontParseToken(unsigned char * &,unsigned int *)	ngl_font.o
+0x008424A0	0x00C319A0	?nglFontParseToken@@YAXAAPAEPAM@Z	void __cdecl nglFontParseToken(unsigned char * &,float *)	ngl_font.o
+0x00842520	0x00C31A20	?nglFontParseToken@@YAXAAPAEPAM1@Z	void __cdecl nglFontParseToken(unsigned char * &,float *,float *)	ngl_font.o
+0x008425E0	0x00C31AE0	?nglSetFontBlend@@YAXPAVnglFont@@I@Z	void __cdecl nglSetFontBlend(class nglFont *,unsigned int)	ngl_font.o
+0x008425F0	0x00C31AF0	?nglSetFontMapFlags@@YAXPAVnglFont@@I@Z	void __cdecl nglSetFontMapFlags(class nglFont *,unsigned int)	ngl_font.o
+0x00842600	0x00C31B00	?nglGetFontMapFlags@@YAIPAVnglFont@@@Z	unsigned int __cdecl nglGetFontMapFlags(class nglFont *)	ngl_font.o
+0x00842610	0x00C31B10	?nglBuildStringList@@YAPAUnglStringSection@@PAVnglFont@@MMMMIPAE@Z	struct nglStringSection * __cdecl nglBuildStringList(class nglFont *,float,float,float,float,unsigned int,unsigned char *)	ngl_font.o
+0x00842910	0x00C31E10	?nglGetStringDimensions@@YAXPAVnglFont@@PBDPAI2MM@Z	void __cdecl nglGetStringDimensions(class nglFont *,char const *,unsigned int *,unsigned int *,float,float)	ngl_font.o
+0x00842BF0	0x00C320F0	?nglListAddString@@YAXPAVnglFont@@PBDMMMIMM@Z	void __cdecl nglListAddString(class nglFont *,char const *,float,float,float,unsigned int,float,float)	ngl_font.o
+0x00842CF0	0x00C321F0	?nglGetStringDimensions@@YAXPAVnglFont@@PAI1PBDZZ	void __cdecl nglGetStringDimensions(class nglFont *,unsigned int *,unsigned int *,char const *,...)	ngl_font.o
+0x00842D30	0x00C32230	?nglGetStringDimensions@@YAXPAVnglFont@@PAI1MMPBDZZ	void __cdecl nglGetStringDimensions(class nglFont *,unsigned int *,unsigned int *,float,float,char const *,...)	ngl_font.o
+0x00842D70	0x00C32270	?nglAPKFontLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKFontLoadCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_font.o
+0x00842E40	0x00C32340	?nglAPKFontDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKFontDeleteCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_font.o
+0x00842E80	0x00C32380	?nglFontInit@@YAXXZ	void __cdecl nglFontInit(void)	ngl_font.o
+0x00842EE0	0x00C323E0	?nglListAddString@@YAXPAVnglFont@@MMMPBDZZ	void __cdecl nglListAddString(class nglFont *,float,float,float,char const *,...)	ngl_font.o
+0x00842F20	0x00C32420	?nglListAddString@@YAXPAVnglFont@@MMMIPBDZZ	void __cdecl nglListAddString(class nglFont *,float,float,float,unsigned int,char const *,...)	ngl_font.o
+0x00842F70	0x00C32470	?nglListAddString@@YAXPAVnglFont@@MMMMMPBDZZ	void __cdecl nglListAddString(class nglFont *,float,float,float,float,float,char const *,...)	ngl_font.o
+0x00842FB0	0x00C324B0	?nglListAddString@@YAXPAVnglFont@@MMMIMMPBDZZ	void __cdecl nglListAddString(class nglFont *,float,float,float,unsigned int,float,float,char const *,...)	ngl_font.o

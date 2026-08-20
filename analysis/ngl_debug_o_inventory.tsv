@@ -1,0 +1,37 @@
+ida_ea	va	name	signature	family
+0x00835910	0x00C24E10	?nglGetDebugFlagPtr@@YAPAEPBD@Z	unsigned char * __cdecl nglGetDebugFlagPtr(char const *)	ngl_debug.o
+0x00835A90	0x00C24F90	?nglSetDebugFlag@@YAXPBDH@Z	void __cdecl nglSetDebugFlag(char const *,int)	ngl_debug.o
+0x00835AF0	0x00C24FF0	?nglGetDebugFlag@@YAHPBD@Z	int __cdecl nglGetDebugFlag(char const *)	ngl_debug.o
+0x00835B10	0x00C25010	?nglDebugInit@@YAXXZ	void __cdecl nglDebugInit(void)	ngl_debug.o
+0x00835B90	0x00C25090	?nglAveragePerfInfo@@YAXI@Z	void __cdecl nglAveragePerfInfo(unsigned int)	ngl_debug.o
+0x00835D40	0x00C25240	?nglProfileShaders@@YAXXZ	void __cdecl nglProfileShaders(void)	ngl_debug.o
+0x00835D70	0x00C25270	?nglDestroyProfiler@@YAXXZ	void __cdecl nglDestroyProfiler(void)	ngl_debug.o
+0x00835D90	0x00C25290	?nglProfileEvalShader@@YA_NPAVnglShader@@@Z	bool __cdecl nglProfileEvalShader(class nglShader *)	ngl_debug.o
+0x00835DC0	0x00C252C0	?nglRenderPerfBar@@YAXXZ	void __cdecl nglRenderPerfBar(void)	ngl_debug.o
+0x00836150	0x00C25650	?GetDesc@nglDebugLineNode@@UAEXPAD@Z	public: virtual void __thiscall nglDebugLineNode::GetDesc(char *)	ngl_debug.o
+0x00836160	0x00C25660	?nglFlushLinesBatch@@YAXXZ	void __cdecl nglFlushLinesBatch(void)	ngl_debug.o
+0x00836170	0x00C25670	?nglInitShaderProfiling@@YAXXZ	void __cdecl nglInitShaderProfiling(void)	ngl_debug.o
+0x00836180	0x00C25680	??0nglDebugLineNode@@QAE@XZ	public: __thiscall nglDebugLineNode::nglDebugLineNode(void)	ngl_debug.o
+0x008361B0	0x00C256B0	?nglDebugAddLine@@YAXABVPosition3@math@@0I@Z	void __cdecl nglDebugAddLine(class math::Position3 const &,class math::Position3 const &,unsigned int)	ngl_debug.o
+0x00836310	0x00C25810	?nglDebugAddRay@@YAXABVPosition3@math@@0I@Z	void __cdecl nglDebugAddRay(class math::Position3 const &,class math::Position3 const &,unsigned int)	ngl_debug.o
+0x00836680	0x00C25B80	?nglDebugAddAxes@@YAXABVMat43@math@@MIII@Z	void __cdecl nglDebugAddAxes(class math::Mat43 const &,float,unsigned int,unsigned int,unsigned int)	ngl_debug.o
+0x00836720	0x00C25C20	?nglDebugAddBox@@YAXABVMat43@math@@ABVDiagMat33@2@I@Z	void __cdecl nglDebugAddBox(class math::Mat43 const &,class math::DiagMat33 const &,unsigned int)	ngl_debug.o
+0x00837190	0x00C26690	?nglDebugAddGrid@@YAXABVMat43@math@@HHMMI@Z	void __cdecl nglDebugAddGrid(class math::Mat43 const &,int,int,float,float,unsigned int)	ngl_debug.o
+0x008372F0	0x00C267F0	?nglDebugAddEllipse@@YAXABVMat43@math@@MMI@Z	void __cdecl nglDebugAddEllipse(class math::Mat43 const &,float,float,unsigned int)	ngl_debug.o
+0x00837620	0x00C26B20	?nglDebugAddCircle@@YAXABVMat43@math@@MI@Z	void __cdecl nglDebugAddCircle(class math::Mat43 const &,float,unsigned int)	ngl_debug.o
+0x00837640	0x00C26B40	?nglDebugAddCylinder@@YAXABVMat43@math@@MMI@Z	void __cdecl nglDebugAddCylinder(class math::Mat43 const &,float,float,unsigned int)	ngl_debug.o
+0x00837840	0x00C26D40	?nglDebugAddEllipsoid@@YAXABVMat43@math@@ABVDir3@2@I@Z	void __cdecl nglDebugAddEllipsoid(class math::Mat43 const &,class math::Dir3 const &,unsigned int)	ngl_debug.o
+0x00837A40	0x00C26F40	?nglDebugAddSphere@@YAXABVPosition3@math@@MI@Z	void __cdecl nglDebugAddSphere(class math::Position3 const &,float,unsigned int)	ngl_debug.o
+0x00837B60	0x00C27060	?nglDebugAddPyramid@@YAXABVMat43@math@@ABVDir3@2@I@Z	void __cdecl nglDebugAddPyramid(class math::Mat43 const &,class math::Dir3 const &,unsigned int)	ngl_debug.o
+0x00837CA0	0x00C271A0	?nglDebugAddLabel@@YAXABVPosition3@math@@IPBDZZ	void __cdecl nglDebugAddLabel(class math::Position3 const &,unsigned int,char const *,...)	ngl_debug.o
+0x00837FE0	0x00C274E0	?nglDebugAddTriData@@YAXIPBVPosition3@math@@PBEIIIII@Z	void __cdecl nglDebugAddTriData(unsigned int,class math::Position3 const *,unsigned char const *,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int)	ngl_debug.o
+0x00838380	0x00C27880	?nglDebugAddTriList@@YAXIPBVPosition3@math@@PBEI@Z	void __cdecl nglDebugAddTriList(unsigned int,class math::Position3 const *,unsigned char const *,unsigned int)	ngl_debug.o
+0x008383B0	0x00C278B0	?nglDebugAddQuadList@@YAXIPBVPosition3@math@@PBEI@Z	void __cdecl nglDebugAddQuadList(unsigned int,class math::Position3 const *,unsigned char const *,unsigned int)	ngl_debug.o
+0x008383F0	0x00C278F0	?nglDebugAddTriStrip@@YAXIPBVPosition3@math@@PBEI@Z	void __cdecl nglDebugAddTriStrip(unsigned int,class math::Position3 const *,unsigned char const *,unsigned int)	ngl_debug.o
+0x00838440	0x00C27940	?nglDebugAddTri@@YAXABVPosition3@math@@00I@Z	void __cdecl nglDebugAddTri(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,unsigned int)	ngl_debug.o
+0x008384D0	0x00C279D0	?nglDebugAddQuad@@YAXABVPosition3@math@@000I@Z	void __cdecl nglDebugAddQuad(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,unsigned int)	ngl_debug.o
+0x00838580	0x00C27A80	?nglDebugAddBoxSolid@@YAXABVMat43@math@@ABVDiagMat33@2@I@Z	void __cdecl nglDebugAddBoxSolid(class math::Mat43 const &,class math::DiagMat33 const &,unsigned int)	ngl_debug.o
+0x008388A0	0x00C27DA0	?nglDebugAddPyramidSolid@@YAXABVMat43@math@@ABVDir3@2@I@Z	void __cdecl nglDebugAddPyramidSolid(class math::Mat43 const &,class math::Dir3 const &,unsigned int)	ngl_debug.o
+0x00838980	0x00C27E80	?nglDebugAddEllipsoidSolid@@YAXABVMat43@math@@ABVDir3@2@I@Z	void __cdecl nglDebugAddEllipsoidSolid(class math::Mat43 const &,class math::Dir3 const &,unsigned int)	ngl_debug.o
+0x00838D00	0x00C28200	?nglDebugAddCylinderSolid@@YAXABVMat43@math@@MMI@Z	void __cdecl nglDebugAddCylinderSolid(class math::Mat43 const &,float,float,unsigned int)	ngl_debug.o
+0x00839020	0x00C28520	?nglDebugAddSphereSolid@@YAXABVPosition3@math@@MI@Z	void __cdecl nglDebugAddSphereSolid(class math::Position3 const &,float,unsigned int)	ngl_debug.o

@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x008730D0	?nalGetSkeleton@@YAPAVnalBaseSkeleton@@ABVtlFixedString@@@Z	class nalBaseSkeleton * __cdecl nalGetSkeleton(class tlFixedString const &)	
+0x008730F0	?nalConstructSkeleton@@YAPAVnalBaseSkeleton@@PAX@Z	class nalBaseSkeleton * __cdecl nalConstructSkeleton(void *)	
+0x00873170	?nalLoadSkeletonInPlace@@YAPAVnalBaseSkeleton@@PAX@Z	class nalBaseSkeleton * __cdecl nalLoadSkeletonInPlace(void *)	
+0x008731E0	?StandardLoad@?$tlResourceDirectory@VnalBaseSkeleton@@@@QAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z	public: class nalBaseSkeleton * __thiscall tlResourceDirectory<class nalBaseSkeleton>::StandardLoad(class tlFixedString const &)	
+0x008732D0	?nalLoadSkeleton@@YAPAVnalBaseSkeleton@@ABVtlFixedString@@@Z	class nalBaseSkeleton * __cdecl nalLoadSkeleton(class tlFixedString const &)	
+0x00873300	?StandardRelease@?$tlResourceDirectory@VnalBaseSkeleton@@@@QAEHPAVnalBaseSkeleton@@H_N@Z	public: int __thiscall tlResourceDirectory<class nalBaseSkeleton>::StandardRelease(class nalBaseSkeleton *,int,bool)	
+0x00873350	?nalReleaseSkeleton@@YAHPAVnalBaseSkeleton@@@Z	int __cdecl nalReleaseSkeleton(class nalBaseSkeleton *)	
+0x00873370	?nalReleaseSkeleton@@YAHABVtlFixedString@@@Z	int __cdecl nalReleaseSkeleton(class tlFixedString const &)	
+0x008733A0	?nalReleaseAllSkeletons@@YAXXZ	void __cdecl nalReleaseAllSkeletons(void)	

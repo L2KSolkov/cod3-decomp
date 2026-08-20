@@ -1,0 +1,16 @@
+index	status	map_line
+1	PORTED	0002:003bc250 _dlmalloc_usable_size 00BAB750 f dlmalloc.o
+2	PORTED	0002:003bc290 _dlmalloc_stats 00BAB790 f dlmalloc.o
+3	PORTED	0002:003bc400 _dlmalloc_trim 00BAB900 f dlmalloc.o
+4	PORTED	0002:003bc420 _dlmallinfo 00BAB920 f dlmalloc.o
+5	PORTED	0002:003bc530 _dlmallopt 00BABA30 f dlmalloc.o
+6	PORTED	0002:003bc630 _dlfree 00BABB30 f dlmalloc.o
+7	PORTED	0002:003bc710 _dlcfree 00BABC10 f dlmalloc.o
+8	PORTED	0002:003bc8c0 _dlmalloc 00BABDC0 f dlmalloc.o
+9	PORTED	0002:003bcd40 _dlrealloc 00BAC240 f dlmalloc.o
+10	PORTED	0002:003bcf50 _dlmemalign 00BAC450 f dlmalloc.o
+11	PORTED	0002:003bd0a0 _dlcalloc 00BAC5A0 f dlmalloc.o
+12	PORTED	0002:003bd2e0 _dlvalloc 00BAC7E0 f dlmalloc.o
+13	PORTED	0002:003bd310 _dlpvalloc 00BAC810 f dlmalloc.o
+14	PORTED	0002:003bd350 _dlindependent_calloc 00BAC850 f dlmalloc.o
+15	PORTED	0002:003bd370 _dlindependent_comalloc 00BAC870 f dlmalloc.o

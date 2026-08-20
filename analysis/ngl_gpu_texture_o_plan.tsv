@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x0084AB00	?nglCreateTexture@@YAPAUnglTexture@@IIHHHH@Z	struct nglTexture * __cdecl nglCreateTexture(unsigned int,unsigned int,int,int,int,int)	

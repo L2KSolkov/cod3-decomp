@@ -1,0 +1,22 @@
+index	status	map_line
+1	VERIFIED	0002:00406ed0 ?DirX@math@@YA?AVDir3@1@M@Z 00BF63D0 f i apsMath.o
+2	VERIFIED	0002:00406f00 ?DirY@math@@YA?AVDir3@1@M@Z 00BF6400 f i apsMath.o
+3	VERIFIED	0002:00406f30 ?DirZ@math@@YA?AVDir3@1@M@Z 00BF6430 f i apsMath.o
+4	VERIFIED	0002:00406f60 ??XDir3@math@@QAEABV01@ABVMat33@1@@Z 00BF6460 f i apsMath.o
+5	VERIFIED	0002:00406fc0 ?Sqrt@apsMath@@YAMM@Z 00BF64C0 f i apsMath.o
+6	VERIFIED	0002:00406fd0 ?Size@apsBounds@@QBE?AVDir3@math@@XZ 00BF64D0 f i apsMath.o
+7	VERIFIED	0002:00407000 ??0apsQuaternion@@QAE@MMMM@Z 00BF6500 f i apsMath.o
+8	VERIFIED	0002:00407030 ?Normalize@apsQuaternion@@QAEXXZ 00BF6530 f i apsMath.o
+9	VERIFIED	0002:00407080 ?Invert@apsQuaternion@@QAEXXZ 00BF6580 f i apsMath.o
+10	VERIFIED	0002:004070b0 ??DapsQuaternion@@QBE?AU0@ABU0@@Z 00BF65B0 f i apsMath.o
+11	VERIFIED	0002:004071a0 ??DapsQuaternion@@QBE?AU0@M@Z 00BF66A0 f i apsMath.o
+12	VERIFIED	0002:004071f0 ??0RandomNumberGenerator@apsMath@@QAE@I@Z 00BF66F0 f i apsMath.o
+13	VERIFIED	0002:00407200 ?CreateFromVectorsDirUp@apsMath@@YAXAAVMat43@math@@ABVDir3@3@1@Z 00BF6700 f apsMath.o
+14	VERIFIED	0002:00407370 ?RotatePoint@apsQuaternion@@QAEXAAVDir3@math@@@Z 00BF6870 f apsMath.o
+15	VERIFIED	0002:00407560 ?GetBoxPoints@apsMath@@YAXABUapsBounds@@PAVDir3@math@@@Z 00BF6A60 f apsMath.o
+16	VERIFIED	0002:00407740 ?InverseOrtho@apsMath@@YA?AVMat43@math@@ABV23@@Z 00BF6C40 f apsMath.o
+17	VERIFIED	0002:00407840 ?QuaternionFromMatrix@apsMath@@YA?AUapsQuaternion@@ABVMat43@math@@@Z 00BF6D40 f apsMath.o
+18	VERIFIED	0002:00407ac0 ?GetQuaternionMatrix@apsMath@@YAXAAVMat43@math@@ABUapsQuaternion@@ABVDir3@3@@Z 00BF6FC0 f apsMath.o
+19	VERIFIED	0002:00407c60 ??0apsQuaternion@@QAE@ABVDir3@math@@M@Z 00BF7160 f apsMath.o
+20	VERIFIED	0002:00407d70 ?QuaternionFromEuler@apsMath@@YA?AUapsQuaternion@@MMM@Z 00BF7270 f apsMath.o
+21	VERIFIED	0002:00407f90 ?SinCos@apsMath@@YAXMAAM0@Z 00BF7490 f i apsMath.o

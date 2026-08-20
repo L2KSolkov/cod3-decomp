@@ -1,0 +1,733 @@
+ida_ea	va	name	signature	family
+0x00448B50	0x00838050	?Init@StatusBar@@YAXXZ	void __cdecl StatusBar::Init(void)	g.o
+0x00448B70	0x00838070	?RenderResources@MemGraph@@YAXXZ	void __cdecl MemGraph::RenderResources(void)	g.o
+0x00448B80	0x00838080	?Init@DObjHandleDb@@QAEXXZ	public: void __thiscall DObjHandleDb::Init(void)	g.o
+0x00448BB0	0x008380B0	?Player_CheckFriendlyFireUse@@YA_NPAVPlayerState@@@Z	bool __cdecl Player_CheckFriendlyFireUse(class PlayerState *)	g.o
+0x00448BD0	0x008380D0	?G_SetClientSound@@YAXPAVEntity@@@Z	void __cdecl G_SetClientSound(class Entity *)	g.o
+0x00448BE0	0x008380E0	?GetEntityTouchTriggerType@@YAHPAVEntity@@@Z	int __cdecl GetEntityTouchTriggerType(class Entity *)	g.o
+0x00448E40	0x00838340	?G_RunClient@@YAXPAVEntity@@@Z	void __cdecl G_RunClient(class Entity *)	g.o
+0x00448E50	0x00838350	?G_SetClientContents@@YAXPAVEntity@@@Z	void __cdecl G_SetClientContents(class Entity *)	g.o
+0x00448F00	0x00838400	?ClientInactivityTimer@@YAHPAVEntity@@@Z	int __cdecl ClientInactivityTimer(class Entity *)	g.o
+0x00448F10	0x00838410	?ClientSpectatorInactivityTimer@@YAHPAVEntity@@@Z	int __cdecl ClientSpectatorInactivityTimer(class Entity *)	g.o
+0x00448F20	0x00838420	?ClientIntermissionThink@@YAXPAVEntity@@PAUusercmd_s@@@Z	void __cdecl ClientIntermissionThink(class Entity *,struct usercmd_s *)	g.o
+0x00448F50	0x00838450	?IntermissionClientEndFrame@@YAXPAVEntity@@@Z	void __cdecl IntermissionClientEndFrame(class Entity *)	g.o
+0x00448FB0	0x008384B0	?G_ClientCanSpectateTeam@@YAHPAVEntity@@W4team_t@@@Z	int __cdecl G_ClientCanSpectateTeam(class Entity *,enum team_t)	g.o
+0x00448FE0	0x008384E0	?GetFollowPlayerState@@YAHHPAVPlayerState@@@Z	int __cdecl GetFollowPlayerState(int,class PlayerState *)	g.o
+0x00449060	0x00838560	?G_GetActorProneInfo@@YAPAUactor_prone_info_t@@PAUactor_s@@@Z	struct actor_prone_info_t * __cdecl G_GetActorProneInfo(struct actor_s *)	g.o
+0x004490D0	0x008385D0	?G_InitActorProneInfo@@YAXPAUactor_s@@@Z	void __cdecl G_InitActorProneInfo(struct actor_s *)	g.o
+0x00449100	0x00838600	?G_ActorExitProne@@YAXPAUactor_s@@H@Z	void __cdecl G_ActorExitProne(struct actor_s *,int)	g.o
+0x004491D0	0x008386D0	?G_ReduceOriginError@@YAXQAM0M@Z	void __cdecl G_ReduceOriginError(float * const,float * const,float)	g.o
+0x004492B0	0x008387B0	?G_ReduceAnglesError@@YAXQAM0MM@Z	void __cdecl G_ReduceAnglesError(float * const,float * const,float,float)	g.o
+0x00449350	0x00838850	?GScr_GetStartOrigin@@YAXXZ	void __cdecl GScr_GetStartOrigin(void)	g.o
+0x00449360	0x00838860	?GScr_GetStartAngles@@YAXXZ	void __cdecl GScr_GetStartAngles(void)	g.o
+0x00449370	0x00838870	?GScr_GetCycleOriginOffset@@YAXXZ	void __cdecl GScr_GetCycleOriginOffset(void)	g.o
+0x00449380	0x00838880	?G_SetupSpawnPoint@@YAXPAVEntity@@@Z	void __cdecl G_SetupSpawnPoint(class Entity *)	g.o
+0x004493B0	0x008388B0	?SP_info_player_start@@YAXPAVEntity@@@Z	void __cdecl SP_info_player_start(class Entity *)	g.o
+0x00449410	0x00838910	?SP_intermission@@YAXPAVEntity@@@Z	void __cdecl SP_intermission(class Entity *)	g.o
+0x00449440	0x00838940	?SP_deathmatch@@YAXPAVEntity@@@Z	void __cdecl SP_deathmatch(class Entity *)	g.o
+0x00449490	0x00838990	?SP_teamdeathmatch@@YAXPAVEntity@@@Z	void __cdecl SP_teamdeathmatch(class Entity *)	g.o
+0x004494E0	0x008389E0	?SP_ctf_allies_primary@@YAXPAVEntity@@@Z	void __cdecl SP_ctf_allies_primary(class Entity *)	g.o
+0x00449530	0x00838A30	?SP_ctf_allies_secondary@@YAXPAVEntity@@@Z	void __cdecl SP_ctf_allies_secondary(class Entity *)	g.o
+0x00449580	0x00838A80	?SP_ctf_axis_primary@@YAXPAVEntity@@@Z	void __cdecl SP_ctf_axis_primary(class Entity *)	g.o
+0x004495D0	0x00838AD0	?SP_ctf_axis_secondary@@YAXPAVEntity@@@Z	void __cdecl SP_ctf_axis_secondary(class Entity *)	g.o
+0x00449620	0x00838B20	?SP_hq_allies_primary@@YAXPAVEntity@@@Z	void __cdecl SP_hq_allies_primary(class Entity *)	g.o
+0x00449670	0x00838B70	?SP_hq_allies_secondary@@YAXPAVEntity@@@Z	void __cdecl SP_hq_allies_secondary(class Entity *)	g.o
+0x004496C0	0x00838BC0	?SP_hq_axis_primary@@YAXPAVEntity@@@Z	void __cdecl SP_hq_axis_primary(class Entity *)	g.o
+0x00449710	0x00838C10	?SP_hq_axis_secondary@@YAXPAVEntity@@@Z	void __cdecl SP_hq_axis_secondary(class Entity *)	g.o
+0x00449760	0x00838C60	?HQ_Point@@YAXPAVEntity@@@Z	void __cdecl HQ_Point(class Entity *)	g.o
+0x004497B0	0x00838CB0	?SP_single_ctf_allies@@YAXPAVEntity@@@Z	void __cdecl SP_single_ctf_allies(class Entity *)	g.o
+0x00449800	0x00838D00	?SP_single_ctf_axis@@YAXPAVEntity@@@Z	void __cdecl SP_single_ctf_axis(class Entity *)	g.o
+0x00449850	0x00838D50	?SP_dom_allies@@YAXPAVEntity@@@Z	void __cdecl SP_dom_allies(class Entity *)	g.o
+0x004498A0	0x00838DA0	?SP_dom_axis@@YAXPAVEntity@@@Z	void __cdecl SP_dom_axis(class Entity *)	g.o
+0x004498F0	0x00838DF0	?SP_war_allies@@YAXPAVEntity@@@Z	void __cdecl SP_war_allies(class Entity *)	g.o
+0x00449940	0x00838E40	?SP_war_axis@@YAXPAVEntity@@@Z	void __cdecl SP_war_axis(class Entity *)	g.o
+0x00449990	0x00838E90	?SP_sd_allies@@YAXPAVEntity@@@Z	void __cdecl SP_sd_allies(class Entity *)	g.o
+0x004499E0	0x00838EE0	?SP_sd_axis@@YAXPAVEntity@@@Z	void __cdecl SP_sd_axis(class Entity *)	g.o
+0x00449A30	0x00838F30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	void __cdecl SetClientOrigin(class Entity *,float const * const)	g.o
+0x00449BC0	0x008390C0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	void __cdecl SetClientViewAngle(class Entity *,float const * const)	g.o
+0x00449F50	0x00839450	?respawn@@YAXPAVEntity@@@Z	void __cdecl respawn(class Entity *)	g.o
+0x00449F60	0x00839460	?ChangePlayersMaxHealth@@YAXH@Z	void __cdecl ChangePlayersMaxHealth(int)	g.o
+0x0044A000	0x00839500	?G_SetPlayerSize@@YAXXZ	void __cdecl G_SetPlayerSize(void)	g.o
+0x0044A050	0x00839550	?G_AddLean@@YAXPAVEntity@@QAM@Z	void __cdecl G_AddLean(class Entity *,float * const)	g.o
+0x0044A190	0x00839690	?G_FindInvalidatedNode@@YAHPAVEntity@@PBUPathNode@PathNodes@@@Z	int __cdecl G_FindInvalidatedNode(class Entity *,struct PathNodes::PathNode const *)	g.o
+0x0044A230	0x00839730	?G_UpdateInvalidatedNode@@YAXPAVEntity@@@Z	void __cdecl G_UpdateInvalidatedNode(class Entity *)	g.o
+0x0044A240	0x00839740	?CheatsOk@@YAHPAVEntity@@@Z	int __cdecl CheatsOk(class Entity *)	g.o
+0x0044A290	0x00839790	?ConcatArgs@@YAPADH@Z	char * __cdecl ConcatArgs(int)	g.o
+0x0044A340	0x00839840	?SanitizeString@@YAXPAD0@Z	void __cdecl SanitizeString(char *,char *)	g.o
+0x0044A390	0x00839890	?Cmd_Take_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Take_f(class Entity *)	g.o
+0x0044A780	0x00839C80	?Cmd_Invinc_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Invinc_f(class Entity *)	g.o
+0x0044A7A0	0x00839CA0	?Cmd_God_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_God_f(class Entity *)	g.o
+0x0044A850	0x00839D50	?Cmd_Notarget_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Notarget_f(class Entity *)	g.o
+0x0044A900	0x00839E00	?Cmd_Noclip_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Noclip_f(class Entity *)	g.o
+0x0044A9C0	0x00839EC0	?Cmd_UFO_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_UFO_f(class Entity *)	g.o
+0x0044AA60	0x00839F60	?G_canPickupMelee@@YAHPAVEntity@@@Z	int __cdecl G_canPickupMelee(class Entity *)	g.o
+0x0044AAB0	0x00839FB0	?Cmd_SetSpawnPoint_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_SetSpawnPoint_f(class Entity *)	g.o
+0x0044AAF0	0x00839FF0	?Cmd_NGLStats_f@@YAXXZ	void __cdecl Cmd_NGLStats_f(void)	g.o
+0x0044AB00	0x0083A000	?Cmd_NGLStatDisplay_f@@YAXXZ	void __cdecl Cmd_NGLStatDisplay_f(void)	g.o
+0x0044AB10	0x0083A010	?Cmd_ProfileShaders_f@@YAXXZ	void __cdecl Cmd_ProfileShaders_f(void)	g.o
+0x0044AB20	0x0083A020	?Cmd_ProfileNodes_f@@YAXXZ	void __cdecl Cmd_ProfileNodes_f(void)	g.o
+0x0044AB30	0x0083A030	?Cmd_NGLFPSDisplay_f@@YAXXZ	void __cdecl Cmd_NGLFPSDisplay_f(void)	g.o
+0x0044AB50	0x0083A050	?Cmd_Wireframe_f@@YAXXZ	void __cdecl Cmd_Wireframe_f(void)	g.o
+0x0044AB70	0x0083A070	?Cmd_Fullbright_f@@YAXXZ	void __cdecl Cmd_Fullbright_f(void)	g.o
+0x0044AB90	0x0083A090	?Cmd_SolidColor_f@@YAXXZ	void __cdecl Cmd_SolidColor_f(void)	g.o
+0x0044ABB0	0x0083A0B0	?Cmd_TextureSize_f@@YAXXZ	void __cdecl Cmd_TextureSize_f(void)	g.o
+0x0044ABD0	0x0083A0D0	?Cmd_TextureMip_f@@YAXXZ	void __cdecl Cmd_TextureMip_f(void)	g.o
+0x0044AC10	0x0083A110	?Cmd_TextureTiling_f@@YAXXZ	void __cdecl Cmd_TextureTiling_f(void)	g.o
+0x0044AC30	0x0083A130	?Cmd_ToggleShader_f@@YAXXZ	void __cdecl Cmd_ToggleShader_f(void)	g.o
+0x0044AC90	0x0083A190	?Cmd_TestFPS@@YAXXZ	void __cdecl Cmd_TestFPS(void)	g.o
+0x0044ACB0	0x0083A1B0	?Cmd_KillSound@@YAXXZ	void __cdecl Cmd_KillSound(void)	g.o
+0x0044ACC0	0x0083A1C0	?Cmd_MemPools_f@@YAXXZ	void __cdecl Cmd_MemPools_f(void)	g.o
+0x0044AD10	0x0083A210	?Cmd_ShotProf_f@@YAXXZ	void __cdecl Cmd_ShotProf_f(void)	g.o
+0x0044AD60	0x0083A260	?Cmd_BuilderTest_f@@YAXXZ	void __cdecl Cmd_BuilderTest_f(void)	g.o
+0x0044ADE0	0x0083A2E0	?Cmd_ClientCommandCompletion@@YAXP6AXPBD@Z@Z	void __cdecl Cmd_ClientCommandCompletion(void (__cdecl*)(char const *))	g.o
+0x0044AE30	0x0083A330	?Cmd_Thread_Debug_f@@YAXXZ	void __cdecl Cmd_Thread_Debug_f(void)	g.o
+0x0044AE40	0x0083A340	?Cmd_EntityStats_f@@YAXXZ	void __cdecl Cmd_EntityStats_f(void)	g.o
+0x0044AEA0	0x0083A3A0	?Cmd_PFXStats_f@@YAXXZ	void __cdecl Cmd_PFXStats_f(void)	g.o
+0x0044AF10	0x0083A410	?handleDeathInvulnerability@@YAXPAVEntity@@HH@Z	void __cdecl handleDeathInvulnerability(class Entity *,int,int)	g.o
+0x0044AF20	0x0083A420	?CheckArmor@@YAHPAVEntity@@HH@Z	int __cdecl CheckArmor(class Entity *,int,int)	g.o
+0x0044AF50	0x0083A450	?G_GetHitLocationString@@YAIW4hitLocation_t@@@Z	unsigned int __cdecl G_GetHitLocationString(enum hitLocation_t)	g.o
+0x0044B0F0	0x0083A5F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	struct game_hudelem_s * __cdecl HudElem_Alloc(void)	g.o
+0x0044B120	0x0083A620	?HudElem_UpdateClient@@YAXPAUClient@@H@Z	void __cdecl HudElem_UpdateClient(struct Client *,int)	g.o
+0x0044B130	0x0083A630	?Fill_Clip@@YAXPAVPlayerState@@H@Z	void __cdecl Fill_Clip(class PlayerState *,int)	g.o
+0x0044B1A0	0x0083A6A0	?Add_Ammo@@YAHPAVEntity@@HHH@Z	int __cdecl Add_Ammo(class Entity *,int,int,int)	g.o
+0x0044B560	0x0083AA60	?ClearRegisteredItems@@YAXXZ	void __cdecl ClearRegisteredItems(void)	g.o
+0x0044B580	0x0083AA80	?SaveRegisteredItems@@YAXXZ	void __cdecl SaveRegisteredItems(void)	g.o
+0x0044B630	0x0083AB30	?RegisterItem@@YAXHH@Z	void __cdecl RegisterItem(int,int)	g.o
+0x0044B6F0	0x0083ABF0	?IsItemRegistered@@YAHH@Z	int __cdecl IsItemRegistered(int)	g.o
+0x0044B750	0x0083AC50	?G_GetServerSnapTime@@YAHXZ	int __cdecl G_GetServerSnapTime(void)	g.o
+0x0044B760	0x0083AC60	?G_Printf@@YAXPBDZZ	void __cdecl G_Printf(char const *,...)	g.o
+0x0044B790	0x0083AC90	?G_DPrintf@@YAXPBDZZ	void __cdecl G_DPrintf(char const *,...)	g.o
+0x0044B7D0	0x0083ACD0	?G_Error@@YAXPBDZZ	void __cdecl G_Error(char const *,...)	g.o
+0x0044B840	0x0083AD40	?G_Error_Localized@@YAXPBDZZ	void __cdecl G_Error_Localized(char const *,...)	g.o
+0x0044B8B0	0x0083ADB0	?G_EndGame@@YAXXZ	void __cdecl G_EndGame(void)	g.o
+0x0044B8C0	0x0083ADC0	?G_RegisterCvars@@YAXXZ	void __cdecl G_RegisterCvars(void)	g.o
+0x0044B950	0x0083AE50	?InitCvars@@YAXH@Z	void __cdecl InitCvars(int)	g.o
+0x0044B9F0	0x0083AEF0	?G_CheckReloadStatus@@YAXXZ	void __cdecl G_CheckReloadStatus(void)	g.o
+0x0044BA00	0x0083AF00	?G_RunPreFrame@@YAXH@Z	void __cdecl G_RunPreFrame(int)	g.o
+0x0044BA30	0x0083AF30	?UpdateCVars@@YAXXZ	void __cdecl UpdateCVars(void)	g.o
+0x0044BA90	0x0083AF90	?G_SendClientMessages@@YAXXZ	void __cdecl G_SendClientMessages(void)	g.o
+0x0044BAB0	0x0083AFB0	?GetScratchPad@@YAPAXXZ	void * __cdecl GetScratchPad(void)	g.o
+0x0044BAC0	0x0083AFC0	?InvalidateTurretCaches@@YAXXZ	void __cdecl InvalidateTurretCaches(void)	g.o
+0x0044BAD0	0x0083AFD0	?SP_sound_blend@@YAXPAVEntity@@@Z	void __cdecl SP_sound_blend(class Entity *)	g.o
+0x0044BB10	0x0083B010	?G_InitTurrets@@YAXXZ	void __cdecl G_InitTurrets(void)	g.o
+0x0044BB30	0x0083B030	?turret_clientaim@@YAXPAVEntity@@0@Z	void __cdecl turret_clientaim(class Entity *,class Entity *)	g.o
+0x0044BE60	0x0083B360	?turret_IsFiringInternal@@YAHH@Z	int __cdecl turret_IsFiringInternal(int)	g.o
+0x0044BE70	0x0083B370	?turret_IsFiring@@YAHPAVEntity@@@Z	int __cdecl turret_IsFiring(class Entity *)	g.o
+0x0044BED0	0x0083B3D0	?turret_SetTargetEnt@@YAXPAVEntity@@0@Z	void __cdecl turret_SetTargetEnt(class Entity *,class Entity *)	g.o
+0x0044BF80	0x0083B480	?turret_behind@@YAHPAVEntity@@0@Z	int __cdecl turret_behind(class Entity *,class Entity *)	g.o
+0x0044C100	0x0083B600	?G_IsTurretUsable@@YAHPAVEntity@@0@Z	int __cdecl G_IsTurretUsable(class Entity *,class Entity *)	g.o
+0x0044C1B0	0x0083B6B0	?G_MissileLandAngles@@YAXPAVEntity@@PAUtrace_t@@AAVPosition3@math@@H@Z	void __cdecl G_MissileLandAngles(class Entity *,struct trace_t *,class math::Position3 &,int)	g.o
+0x0044C390	0x0083B890	?G_LaunchMissile@@YAXPAVEntity@@H@Z	void __cdecl G_LaunchMissile(class Entity *,int)	g.o
+0x0044C3F0	0x0083B8F0	?G_IncomingMissile@@YAXPAVEntity@@H@Z	void __cdecl G_IncomingMissile(class Entity *,int)	g.o
+0x0044C430	0x0083B930	?G_DelayMissile@@YAXPAVEntity@@H@Z	void __cdecl G_DelayMissile(class Entity *,int)	g.o
+0x0044C4B0	0x0083B9B0	?G_MissileDie@@YAXPAVEntity@@00HH@Z	void __cdecl G_MissileDie(class Entity *,class Entity *,class Entity *,int,int)	g.o
+0x0044C4E0	0x0083B9E0	?G_PredictBounceMissile@@YAXPBVEntity@@PAUtrajectory_t@@PAUtrace_t@@H@Z	void __cdecl G_PredictBounceMissile(class Entity const *,struct trajectory_t *,struct trace_t *,int)	g.o
+0x0044C6B0	0x0083BBB0	?Die_MineDamaged@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl Die_MineDamaged(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x0044C6E0	0x0083BBE0	?G_CreateRotationMatrix@@YAXQBMQAY02M@Z	void __cdecl G_CreateRotationMatrix(float const * const,float (* const)[3])	g.o
+0x0044C710	0x0083BC10	?G_TransposeMatrix@@YAXQAY02M0@Z	void __cdecl G_TransposeMatrix(float (* const)[3],float (* const)[3])	g.o
+0x0044C750	0x0083BC50	?G_RotatePoint@@YAXAAVPosition3@math@@QAY02M@Z	void __cdecl G_RotatePoint(class math::Position3 &,float (* const)[3])	g.o
+0x0044C7E0	0x0083BCE0	?UpdatePaths@@YAXPAVEntity@@@Z	void __cdecl UpdatePaths(class Entity *)	g.o
+0x0044C830	0x0083BD30	?finishSpawningKeyedMover@@YAXPAVEntity@@H@Z	void __cdecl finishSpawningKeyedMover(class Entity *,int)	g.o
+0x0044C8C0	0x0083BDC0	?Static_Pain@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z	void __cdecl Static_Pain(class Entity *,class Entity *,int,float const * const,int,float const * const,enum hitLocation_t)	g.o
+0x0044CA80	0x0083BF80	?use_trigger_use@@YAXPAVEntity@@00@Z	void __cdecl use_trigger_use(class Entity *,class Entity *,class Entity *)	g.o
+0x0044CAE0	0x0083BFE0	?Scr_FreeFields@@YAXPBUsaveField_t@@PAE@Z	void __cdecl Scr_FreeFields(struct saveField_t const *,unsigned char *)	g.o
+0x0044CB30	0x0083C030	?Scr_FreeSentientFields@@YAXPAUsentient_s@@@Z	void __cdecl Scr_FreeSentientFields(struct sentient_s *)	g.o
+0x0044CB50	0x0083C050	?Scr_FreeActorFields@@YAXPAUactor_s@@@Z	void __cdecl Scr_FreeActorFields(struct actor_s *)	g.o
+0x0044CB70	0x0083C070	?GScr_AllocHash@@YA?AVHashString@@PBD@Z	class HashString __cdecl GScr_AllocHash(char const *)	g.o
+0x0044CBA0	0x0083C0A0	?GScr_LoadConsts@@YAXXZ	void __cdecl GScr_LoadConsts(void)	g.o
+0x0044CC00	0x0083C100	?GScr_LoadScriptAndLabel@@YAHPBD0H@Z	int __cdecl GScr_LoadScriptAndLabel(char const *,char const *,int)	g.o
+0x0044CD20	0x0083C220	?GScr_LoadSingleAnimScript@@YAXPAUscr_animscript_t@@PBD@Z	void __cdecl GScr_LoadSingleAnimScript(struct scr_animscript_t *,char const *)	g.o
+0x0044CD70	0x0083C270	?GScr_FixupBroAnimScriptHooks@@YAXXZ	void __cdecl GScr_FixupBroAnimScriptHooks(void)	g.o
+0x0044CD90	0x0083C290	?GScr_AddFieldsForVehicleNode@@YAXXZ	void __cdecl GScr_AddFieldsForVehicleNode(void)	g.o
+0x0044CDD0	0x0083C2D0	?GScr_FreeScripts@@YAXXZ	void __cdecl GScr_FreeScripts(void)	g.o
+0x0044CDE0	0x0083C2E0	?Scr_ConstructMessageString@@YAXHPADHW4conMsgType_t@@@Z	void __cdecl Scr_ConstructMessageString(int,char *,int,enum conMsgType_t)	g.o
+0x0044CE30	0x0083C330	?Scr_LocalizationError@@YAXHPBD@Z	void __cdecl Scr_LocalizationError(int,char const *)	g.o
+0x0044CE40	0x0083C340	?G_GetHintStringIndex@@YAHPAHPBD@Z	int __cdecl G_GetHintStringIndex(int *,char const *)	g.o
+0x0044CF00	0x0083C400	?G_InitObjectives@@YAXXZ	void __cdecl G_InitObjectives(void)	g.o
+0x0044D2B0	0x0083C7B0	?SP_script_prop_collmap@@YAXPAVEntity@@@Z	void __cdecl SP_script_prop_collmap(class Entity *)	g.o
+0x0044D2D0	0x0083C7D0	?G_SetupProps@@YAXXZ	void __cdecl G_SetupProps(void)	g.o
+0x0044D2E0	0x0083C7E0	?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z	struct vehicle_info_t * __cdecl VEH_GetInfo(int)	g.o
+0x0044D2F0	0x0083C7F0	?Is4WheeledVehicle@@YA_NPAVEntity@@@Z	bool __cdecl Is4WheeledVehicle(class Entity *)	g.o
+0x0044D320	0x0083C820	?IsVehicleTank@@YA_NPAVEntity@@@Z	bool __cdecl IsVehicleTank(class Entity *)	g.o
+0x0044D370	0x0083C870	?VEH_ParseSpecificField@@YAHPAEPBDH@Z	int __cdecl VEH_ParseSpecificField(unsigned char *,char const *,int)	g.o
+0x0044D480	0x0083C980	?VEH_GetVehicleInfo@@YAFPBD@Z	short __cdecl VEH_GetVehicleInfo(char const *)	g.o
+0x0044D4E0	0x0083C9E0	?VEH_GetPlayerVehicleInfo@@YAFPBD@Z	short __cdecl VEH_GetPlayerVehicleInfo(char const *)	g.o
+0x0044D8C0	0x0083CDC0	?VEH_SetupCollmap@@YAXPAVEntity@@@Z	void __cdecl VEH_SetupCollmap(class Entity *)	g.o
+0x0044D8F0	0x0083CDF0	?VEH_JoltBody@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z	void __cdecl VEH_JoltBody(class Entity *,class math::Position3 const &,float,float,float)	g.o
+0x0044DBD0	0x0083D0D0	?VEH_StopWheelEffects@@YAXPAVEntity@@@Z	void __cdecl VEH_StopWheelEffects(class Entity *)	g.o
+0x0044DC50	0x0083D150	?VEH_StopAllEffects@@YAXPAVEntity@@@Z	void __cdecl VEH_StopAllEffects(class Entity *)	g.o
+0x0044DD00	0x0083D200	?VEH_Backup@@YAXPAVEntity@@@Z	void __cdecl VEH_Backup(class Entity *)	g.o
+0x0044E440	0x0083D940	?VEH_AcquirePlayerFollowSlot@@YA_NPAVEntity@@0@Z	bool __cdecl VEH_AcquirePlayerFollowSlot(class Entity *,class Entity *)	g.o
+0x0044E6A0	0x0083DBA0	?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z	float const (& __cdecl VEH_GetPlayerFollowGoalPosition(class Entity const *,class Entity const *))[3]	g.o
+0x0044EC90	0x0083E190	?ParseVehicleConfigString@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseVehicleConfigString(char const *,class ConfigString const *)	g.o
+0x0044EFD0	0x0083E4D0	?G_FreeScrVehicleInfo@@YAXXZ	void __cdecl G_FreeScrVehicleInfo(void)	g.o
+0x0044F010	0x0083E510	?G_GetVehicleInfoIndex@@YAFPBD@Z	short __cdecl G_GetVehicleInfoIndex(char const *)	g.o
+0x0044F100	0x0083E600	?G_GetVehicleInfoName@@YAPBDF@Z	char const * __cdecl G_GetVehicleInfoName(short)	g.o
+0x0044F1D0	0x0083E6D0	?G_GetVehicleInfo@@YAPAUvehicle_info_t@@PAUscr_vehicle_t@@@Z	struct vehicle_info_t * __cdecl G_GetVehicleInfo(struct scr_vehicle_t *)	g.o
+0x0044F1F0	0x0083E6F0	?G_IsVehicleImmune@@YAHPAVEntity@@H@Z	int __cdecl G_IsVehicleImmune(class Entity *,int)	g.o
+0x0044F290	0x0083E790	?G_GetNonPVSTankInfo@@YAHQAMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	int __cdecl G_GetNonPVSTankInfo(float * const,class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x0044F2A0	0x0083E7A0	?G_GetVehicleOccupantCount@@YAHPAVEntity@@@Z	int __cdecl G_GetVehicleOccupantCount(class Entity *)	g.o
+0x0044F330	0x0083E830	?IsVehFlipped@@YA_NPAVEntity@@@Z	bool __cdecl IsVehFlipped(class Entity *)	g.o
+0x0044F3A0	0x0083E8A0	?VEH_GetMaxSpeed@@YAMPAUscr_vehicle_t@@@Z	float __cdecl VEH_GetMaxSpeed(struct scr_vehicle_t *)	g.o
+0x0044F3D0	0x0083E8D0	?Scr_Vehicle_CalcSpeed@@YAMPBUscr_vehicle_t@@@Z	float __cdecl Scr_Vehicle_CalcSpeed(struct scr_vehicle_t const *)	g.o
+0x0044F470	0x0083E970	?G_FreeVehicleSeat@@YAXPAVEntity@@0H@Z	void __cdecl G_FreeVehicleSeat(class Entity *,class Entity *,int)	g.o
+0x0044F480	0x0083E980	?G_RequestVehicleSeat@@YAHPAVEntity@@0ABVHashString@@_N@Z	int __cdecl G_RequestVehicleSeat(class Entity *,class Entity *,class HashString const &,bool)	g.o
+0x0044F490	0x0083E990	?G_RequestVehicleBestSeat@@YAHPAVEntity@@0_N11@Z	int __cdecl G_RequestVehicleBestSeat(class Entity *,class Entity *,bool,bool,bool)	g.o
+0x0044F4A0	0x0083E9A0	?G_StealVehicleSeat@@YAHPAVEntity@@0H_N@Z	int __cdecl G_StealVehicleSeat(class Entity *,class Entity *,int,bool)	g.o
+0x0044F4B0	0x0083E9B0	?Scr_Vehicle_OccupantStartEntering@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	void __cdecl Scr_Vehicle_OccupantStartEntering(struct scr_vehicle_t *,class Entity const *,int)	g.o
+0x0044F4C0	0x0083E9C0	?Scr_Vehicle_OccupantIsSeat@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	void __cdecl Scr_Vehicle_OccupantIsSeat(struct scr_vehicle_t *,class Entity const *,int)	g.o
+0x0044F4D0	0x0083E9D0	?Scr_Vehicle_OccupantStartExiting@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	void __cdecl Scr_Vehicle_OccupantStartExiting(struct scr_vehicle_t *,class Entity const *,int)	g.o
+0x0044F4E0	0x0083E9E0	?Scr_Vehicle_OccupantIsOut@@YAXPAUscr_vehicle_t@@PAVEntity@@H@Z	void __cdecl Scr_Vehicle_OccupantIsOut(struct scr_vehicle_t *,class Entity *,int)	g.o
+0x0044F4F0	0x0083E9F0	?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z	public: struct vehicleAnimStage_t * __thiscall scr_vehicle_t::GetRouteStage(int,int)	g.o
+0x0044F520	0x0083EA20	?GetStageAnim@scr_vehicle_t@@QAEHPAUClient@@@Z	public: int __thiscall scr_vehicle_t::GetStageAnim(struct Client *)	g.o
+0x0044F560	0x0083EA60	?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z	public: float __thiscall scr_vehicle_t::GetAnimSpeedScale(struct Client *)	g.o
+0x0044F580	0x0083EA80	?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z	public: int __thiscall scr_vehicle_t::GetEntryRoute(int,int,bool)	g.o
+0x0044F620	0x0083EB20	?GetSwitchPosRoute@scr_vehicle_t@@QAEHHH_N@Z	public: int __thiscall scr_vehicle_t::GetSwitchPosRoute(int,int,bool)	g.o
+0x0044F680	0x0083EB80	?GetThrottle@scr_vehicle_t@@QAEMXZ	public: float __thiscall scr_vehicle_t::GetThrottle(void)	g.o
+0x0044F6A0	0x0083EBA0	?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z	public: void __thiscall scr_vehicle_t::Mantled(class Entity *)	g.o
+0x0044F720	0x0083EC20	?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ	public: int __thiscall scr_vehicle_t::GetMantleHintStringIndex(void)	g.o
+0x0044F790	0x0083EC90	?SP_script_vehicle_collmap@@YAXPAVEntity@@@Z	void __cdecl SP_script_vehicle_collmap(class Entity *)	g.o
+0x0044F7B0	0x0083ECB0	?vehicle_FreeDynamicBuffers@@YAXXZ	void __cdecl vehicle_FreeDynamicBuffers(void)	g.o
+0x0044F7E0	0x0083ECE0	?Scr_Vehicle_DamageScale@@YAMPAVEntity@@00QBMH@Z	float __cdecl Scr_Vehicle_DamageScale(class Entity *,class Entity *,class Entity *,float const * const,int)	g.o
+0x0044FB30	0x0083F030	?VEH_GetVehicleInfo@@YAPAUvehicle_info_t@@H@Z	struct vehicle_info_t * __cdecl VEH_GetVehicleInfo(int)	g.o
+0x0044FB90	0x0083F090	?VEH_VehicleTouchesMine@@YA_NPAVEntity@@PAVEntityState@@@Z	bool __cdecl VEH_VehicleTouchesMine(class Entity *,class EntityState *)	g.o
+0x0044FCE0	0x0083F1E0	?G_ResetEntryPointHintIndicies@@YAXXZ	void __cdecl G_ResetEntryPointHintIndicies(void)	g.o
+0x0044FD10	0x0083F210	?G_SpawnString@@YAHIPBDPAPBD@Z	int __cdecl G_SpawnString(unsigned int,char const *,char const * *)	g.o
+0x0044FD50	0x0083F250	?G_SpawnString@@YA_NIPAPBD@Z	bool __cdecl G_SpawnString(unsigned int,char const * *)	g.o
+0x0044FD90	0x0083F290	?G_SpawnFloat@@YAHIMPAM@Z	int __cdecl G_SpawnFloat(unsigned int,float,float *)	g.o
+0x0044FE00	0x0083F300	?G_SpawnInt@@YAHIHPAH@Z	int __cdecl G_SpawnInt(unsigned int,int,int *)	g.o
+0x0044FE60	0x0083F360	?G_SpawnVector@@YAHIPBMPAM@Z	int __cdecl G_SpawnVector(unsigned int,float const *,float *)	g.o
+0x0044FEE0	0x0083F3E0	?prepare_spawns@@YAXXZ	void __cdecl prepare_spawns(void)	g.o
+0x0044FF20	0x0083F420	?G_SetEntityScriptVariable@@YAXPBD0PAVEntity@@@Z	void __cdecl G_SetEntityScriptVariable(char const *,char const *,class Entity *)	g.o
+0x0044FF30	0x0083F430	?G_ParseEntityField@@YAXPBD0PAVEntity@@@Z	void __cdecl G_ParseEntityField(char const *,char const *,class Entity *)	g.o
+0x004500F0	0x0083F5F0	?G_DuplicateEntityFields@@YAXPAVEntity@@PBV1@@Z	void __cdecl G_DuplicateEntityFields(class Entity *,class Entity const *)	g.o
+0x00450200	0x0083F700	?G_CallSpawn@@YAXXZ	void __cdecl G_CallSpawn(void)	g.o
+0x00450240	0x0083F740	?G_NewString@@YAGPBD@Z	unsigned short __cdecl G_NewString(char const *)	g.o
+0x00450290	0x0083F790	?GScr_AddFieldsForEntity@@YAXXZ	void __cdecl GScr_AddFieldsForEntity(void)	g.o
+0x004502E0	0x0083F7E0	?GScr_AddFieldsForRadiant@@YAXXZ	void __cdecl GScr_AddFieldsForRadiant(void)	g.o
+0x00450330	0x0083F830	?Scr_SetGenericField@@YAXPAEW4fieldtype_t@@H@Z	void __cdecl Scr_SetGenericField(unsigned char *,enum fieldtype_t,int)	g.o
+0x00450380	0x0083F880	?Scr_SetObjectField@@YAXIHH@Z	void __cdecl Scr_SetObjectField(unsigned int,int,int)	g.o
+0x004503D0	0x0083F8D0	?Scr_GetEntityField@@YAXHH@Z	void __cdecl Scr_GetEntityField(int,int)	g.o
+0x00450420	0x0083F920	?Scr_GetObjectField@@YAXIHH@Z	void __cdecl Scr_GetObjectField(unsigned int,int,int)	g.o
+0x00450470	0x0083F970	?Scr_FreeEntity@@YAXPAVEntity@@@Z	void __cdecl Scr_FreeEntity(class Entity *)	g.o
+0x004504C0	0x0083F9C0	?Scr_FreeHudElem@@YAXPAUgame_hudelem_s@@@Z	void __cdecl Scr_FreeHudElem(struct game_hudelem_s *)	g.o
+0x004504D0	0x0083F9D0	?Scr_AddHudElem@@YAXPAUgame_hudelem_s@@@Z	void __cdecl Scr_AddHudElem(struct game_hudelem_s *)	g.o
+0x004504E0	0x0083F9E0	?G_SpawnGEntityFromSpawnVars@@YAXXZ	void __cdecl G_SpawnGEntityFromSpawnVars(void)	g.o
+0x00450530	0x0083FA30	?G_AddSpawnVarToken@@YAPADPBD@Z	char * __cdecl G_AddSpawnVarToken(char const *)	g.o
+0x004505A0	0x0083FAA0	?SP_worldspawn@@YAXXZ	void __cdecl SP_worldspawn(void)	g.o
+0x004507D0	0x0083FCD0	?ValidForGametype@@YA_NXZ	bool __cdecl ValidForGametype(void)	g.o
+0x004508B0	0x0083FDB0	?game_dllEntry@@YAXP6AHHZZ@Z	void __cdecl game_dllEntry(int (__cdecl*)(int,...))	g.o
+0x004508C0	0x0083FDC0	?PASSFLOAT@@YAHM@Z	int __cdecl PASSFLOAT(float)	g.o
+0x004508E0	0x0083FDE0	?g_Trace@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z	void __cdecl g_Trace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	g.o
+0x00450910	0x0083FE10	?g_TraceCapsule@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z	void __cdecl g_TraceCapsule(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	g.o
+0x00450940	0x0083FE40	?TraceDebugLine@@YAXABVPosition3@math@@0HV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl TraceDebugLine(class math::Position3 const &,class math::Position3 const &,int,class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x004509C0	0x0083FEC0	?g_SightTraceToEntity@@YAHABVPosition3@math@@000V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABUcollision_context_t@@@Z	int __cdecl g_SightTraceToEntity(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DbLinkedHandle<class EntityHandleDb,class Entity>,struct collision_context_t const &)	g.o
+0x004509F0	0x0083FEF0	?g_LocationalTrace@@YAXPAUtrace_t@@ABVPosition3@math@@1ABUcollision_context_t@@PAEM@Z	void __cdecl g_LocationalTrace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &,unsigned char *,float)	g.o
+0x00450A50	0x0083FF50	?g_LinkEntity@@YAXPAVEntity@@@Z	void __cdecl g_LinkEntity(class Entity *)	g.o
+0x00450AB0	0x0083FFB0	?g_UnlinkEntity@@YAXPAVEntity@@@Z	void __cdecl g_UnlinkEntity(class Entity *)	g.o
+0x00450AC0	0x0083FFC0	?g_EntityContact@@YAHABVPosition3@math@@0PBVEntity@@@Z	int __cdecl g_EntityContact(class math::Position3 const &,class math::Position3 const &,class Entity const *)	g.o
+0x00450AE0	0x0083FFE0	?g_EntityContactCapsule@@YAHABVPosition3@math@@0PBVEntity@@@Z	int __cdecl g_EntityContactCapsule(class math::Position3 const &,class math::Position3 const &,class Entity const *)	g.o
+0x00450CF0	0x008401F0	?g_AddDebugString@@YAXQBM0MPBD@Z	void __cdecl g_AddDebugString(float const * const,float const * const,float,char const *)	g.o
+0x00450D10	0x00840210	?g_AddDebugLine@@YAXQBM00HHH@Z	void __cdecl g_AddDebugLine(float const * const,float const * const,float const * const,int,int,int)	g.o
+0x00450D40	0x00840240	?g_XAnimGetRoot@@YA?AUscr_anim_s@@PAVXAnimTree@@@Z	struct scr_anim_s __cdecl g_XAnimGetRoot(class XAnimTree *)	g.o
+0x00450D70	0x00840270	?XAnimClearTreeGoalWeights@@YAXPAVXAnimTree@@Uscr_anim_s@@M@Z	void __cdecl XAnimClearTreeGoalWeights(class XAnimTree *,struct scr_anim_s,float)	g.o
+0x00450DF0	0x008402F0	?XAnimClearGoalWeight@@YAXPAVXAnimTree@@Uscr_anim_s@@M@Z	void __cdecl XAnimClearGoalWeight(class XAnimTree *,struct scr_anim_s,float)	g.o
+0x00450E70	0x00840370	?XAnimClearTreeGoalWeightsStrict@@YAXPAVXAnimTree@@Uscr_anim_s@@M@Z	void __cdecl XAnimClearTreeGoalWeightsStrict(class XAnimTree *,struct scr_anim_s,float)	g.o
+0x00450EF0	0x008403F0	?XAnimSetAnimRate@@YAXPAVXAnimTree@@Uscr_anim_s@@M@Z	void __cdecl XAnimSetAnimRate(class XAnimTree *,struct scr_anim_s,float)	g.o
+0x00450F70	0x00840470	?XAnimSetTime@@YAXPAVXAnimTree@@Uscr_anim_s@@M@Z	void __cdecl XAnimSetTime(class XAnimTree *,struct scr_anim_s,float)	g.o
+0x00450FF0	0x008404F0	?XAnimHasTime@@YAHUscr_anim_s@@@Z	int __cdecl XAnimHasTime(struct scr_anim_s)	g.o
+0x00451020	0x00840520	?XAnimIsPrimitive@@YAHUscr_anim_s@@@Z	int __cdecl XAnimIsPrimitive(struct scr_anim_s)	g.o
+0x00451050	0x00840550	?XAnimGetLength@@YAMUscr_anim_s@@@Z	float __cdecl XAnimGetLength(struct scr_anim_s)	g.o
+0x00451080	0x00840580	?XAnimCalcAbsDelta@@YAXPAVXAnimTree@@Uscr_anim_s@@QAM2@Z	void __cdecl XAnimCalcAbsDelta(class XAnimTree *,struct scr_anim_s,float * const,float * const)	g.o
+0x00451100	0x00840600	?XAnimGetRelDelta@@YAXUscr_anim_s@@QAM1MM@Z	void __cdecl XAnimGetRelDelta(struct scr_anim_s,float * const,float * const,float,float)	g.o
+0x00451140	0x00840640	?XAnimGetAbsDelta@@YAXUscr_anim_s@@QAM1M@Z	void __cdecl XAnimGetAbsDelta(struct scr_anim_s,float * const,float * const,float)	g.o
+0x00451170	0x00840670	?XAnimIsLooped@@YAHUscr_anim_s@@@Z	int __cdecl XAnimIsLooped(struct scr_anim_s)	g.o
+0x004511A0	0x008406A0	?XAnimNotetrackExists@@YA_NUscr_anim_s@@ABI@Z	bool __cdecl XAnimNotetrackExists(struct scr_anim_s,unsigned int const &)	g.o
+0x004511D0	0x008406D0	?XAnimGetTime@@YAMPAVXAnimTree@@Uscr_anim_s@@@Z	float __cdecl XAnimGetTime(class XAnimTree *,struct scr_anim_s)	g.o
+0x00451250	0x00840750	?XAnimGetWeight@@YAMPAVXAnimTree@@Uscr_anim_s@@@Z	float __cdecl XAnimGetWeight(class XAnimTree *,struct scr_anim_s)	g.o
+0x004512D0	0x008407D0	?XAnimHasFinished@@YAHPAVXAnimTree@@Uscr_anim_s@@@Z	int __cdecl XAnimHasFinished(class XAnimTree *,struct scr_anim_s)	g.o
+0x00451350	0x00840850	?XAnimGetNumChildren@@YAHUscr_anim_s@@@Z	int __cdecl XAnimGetNumChildren(struct scr_anim_s)	g.o
+0x00451380	0x00840880	?XAnimGetChildAt@@YA?AUscr_anim_s@@U1@H@Z	struct scr_anim_s __cdecl XAnimGetChildAt(struct scr_anim_s,int)	g.o
+0x004513B0	0x008408B0	?XAnimGetAnimName@@YAPBDUscr_anim_s@@@Z	char const * __cdecl XAnimGetAnimName(struct scr_anim_s)	g.o
+0x004513E0	0x008408E0	?Com_GetWeaponInfoMemory@@YAPAXHPAH@Z	void * __cdecl Com_GetWeaponInfoMemory(int,int *)	g.o
+0x00451400	0x00840900	?Com_FreeWeaponInfoMemory@@YAXH@Z	void __cdecl Com_FreeWeaponInfoMemory(int)	g.o
+0x00451420	0x00840920	?g_CompressZLIB@@YAHPAXPAH0H@Z	int __cdecl g_CompressZLIB(void *,int *,void *,int)	g.o
+0x00451440	0x00840940	?g_UnCompressZLIB@@YAHPAXPAH0H@Z	int __cdecl g_UnCompressZLIB(void *,int *,void *,int)	g.o
+0x00451450	0x00840950	?InitSentientTrigger@@YAXPAVEntity@@@Z	void __cdecl InitSentientTrigger(class Entity *)	g.o
+0x004514F0	0x008409F0	?multi_wait@@YAXPAVEntity@@H@Z	void __cdecl multi_wait(class Entity *,int)	g.o
+0x00451510	0x00840A10	?multi_trigger@@YAXPAVEntity@@0@Z	void __cdecl multi_trigger(class Entity *,class Entity *)	g.o
+0x004515C0	0x00840AC0	?Use_Multi@@YAXPAVEntity@@00@Z	void __cdecl Use_Multi(class Entity *,class Entity *,class Entity *)	g.o
+0x004515E0	0x00840AE0	?hurt_use@@YAXPAVEntity@@00@Z	void __cdecl hurt_use(class Entity *,class Entity *,class Entity *)	g.o
+0x00451650	0x00840B50	?Respond_trigger_damage@@YAHPAVEntity@@H@Z	int __cdecl Respond_trigger_damage(class Entity *,int)	g.o
+0x00451730	0x00840C30	?SP_trigger_lookat@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_lookat(class Entity *)	g.o
+0x00451770	0x00840C70	?SP_trigger_mount_no_brush@@YAXPAVEntity@@H@Z	void __cdecl SP_trigger_mount_no_brush(class Entity *,int)	g.o
+0x004517F0	0x00840CF0	?GetVehicleNode@@YAPAUvehicle_node_t@@H@Z	struct vehicle_node_t * __cdecl GetVehicleNode(int)	g.o
+0x00451800	0x00840D00	?VP_SetScriptVariable@@YAXPBD0PAUvehicle_node_t@@@Z	void __cdecl VP_SetScriptVariable(char const *,char const *,struct vehicle_node_t *)	g.o
+0x00451950	0x00840E50	?VP_GetNodeIndex@@YAFABVstring@Broc@@QAM@Z	short __cdecl VP_GetNodeIndex(class Broc::string const &,float * const)	g.o
+0x004523E0	0x008418E0	?G_InitVehiclePaths@@YAXXZ	void __cdecl G_InitVehiclePaths(void)	g.o
+0x004523F0	0x008418F0	?G_FreeVehiclePaths@@YAXXZ	void __cdecl G_FreeVehiclePaths(void)	g.o
+0x00452440	0x00841940	?G_SetupVehiclePaths@@YAXXZ	void __cdecl G_SetupVehiclePaths(void)	g.o
+0x004526D0	0x00841BD0	?G_VehInitPathPos@@YAXPAUvehicle_pathpos_t@@@Z	void __cdecl G_VehInitPathPos(struct vehicle_pathpos_t *)	g.o
+0x00452840	0x00841D40	?G_VehFreePathPos@@YAXPAUvehicle_pathpos_t@@@Z	void __cdecl G_VehFreePathPos(struct vehicle_pathpos_t *)	g.o
+0x00452870	0x00841D70	?G_VehSetUpPathPos@@YAXPAUvehicle_pathpos_t@@F@Z	void __cdecl G_VehSetUpPathPos(struct vehicle_pathpos_t *,short)	g.o
+0x00452A10	0x00841F10	?G_VehSetSwitchNode@@YAXPAUvehicle_pathpos_t@@FF@Z	void __cdecl G_VehSetSwitchNode(struct vehicle_pathpos_t *,short,short)	g.o
+0x00452BC0	0x008420C0	?Initialize@VehicleNodeAllocator@@QAEXXZ	public: void __thiscall VehicleNodeAllocator::Initialize(void)	g.o
+0x00452C10	0x00842110	?AllocNode@VehicleNodeAllocator@@QAEPAUvehicle_node_t@@XZ	public: struct vehicle_node_t * __thiscall VehicleNodeAllocator::AllocNode(void)	g.o
+0x00452D60	0x00842260	?SnapVectorTowards@@YAXQAM0@Z	void __cdecl SnapVectorTowards(float * const,float * const)	g.o
+0x00452D70	0x00842270	?Bullet_Endpos@@YAMMQAMPBUweaponParms@@@Z	float __cdecl Bullet_Endpos(float,float * const,struct weaponParms const *)	g.o
+0x00453310	0x00842810	?Damage_Falloff@@YAMMMMHH@Z	float __cdecl Damage_Falloff(float,float,float,int,int)	g.o
+0x004533B0	0x008428B0	?Bullet_ShouldGoThroughFriend@@YA_NPBVEntity@@0@Z	bool __cdecl Bullet_ShouldGoThroughFriend(class Entity const *,class Entity const *)	g.o
+0x004533C0	0x008428C0	?Weapon_ItemHealth_Fire@@YAXPAVEntity@@HPAUweaponParms@@@Z	void __cdecl Weapon_ItemHealth_Fire(class Entity *,int,struct weaponParms *)	g.o
+0x00453420	0x00842920	?LogAccuracyHit@@YAHPAVEntity@@0@Z	int __cdecl LogAccuracyHit(class Entity *,class Entity *)	g.o
+0x004534F0	0x008429F0	?CalcMuzzlePoint@@YAXPAVEntity@@AAVPosition3@math@@@Z	void __cdecl CalcMuzzlePoint(class Entity *,class math::Position3 &)	g.o
+0x00453620	0x00842B20	?CalcMuzzlePoints@@YAXPAVEntity@@PAUweaponParms@@@Z	void __cdecl CalcMuzzlePoints(class Entity *,struct weaponParms *)	g.o
+0x004536F0	0x00842BF0	?ADS_IS_ACTIVE@@YAHXZ	int __cdecl ADS_IS_ACTIVE(void)	g.o
+0x00453700	0x00842C00	?G_FindConfigstringIndex@@YAHPBDHHH0@Z	int __cdecl G_FindConfigstringIndex(char const *,int,int,int,char const *)	g.o
+0x004538F0	0x00842DF0	?G_LocalizedStringIndex@@YAHPBD@Z	int __cdecl G_LocalizedStringIndex(char const *)	g.o
+0x00453960	0x00842E60	?G_ShaderIndex@@YAHPBD@Z	int __cdecl G_ShaderIndex(char const *)	g.o
+0x00453A20	0x00842F20	?G_EffectIndex@@YAHPBD@Z	int __cdecl G_EffectIndex(char const *)	g.o
+0x00453A90	0x00842F90	?G_ShellShockIndex@@YAHPBD@Z	int __cdecl G_ShellShockIndex(char const *)	g.o
+0x00453B00	0x00843000	?G_SoundAliasIndex@@YAEPBD@Z	unsigned char __cdecl G_SoundAliasIndex(char const *)	g.o
+0x00453B70	0x00843070	?G_GetGameId@@YAIPAVEntity@@@Z	unsigned int __cdecl G_GetGameId(class Entity *)	g.o
+0x00453B80	0x00843080	?G_GetEntAnimTree@@YAPAVXAnimTree@@PAVEntity@@@Z	class XAnimTree * __cdecl G_GetEntAnimTree(class Entity *)	g.o
+0x00453BC0	0x008430C0	?G_SetModelIndex@@YAXPAVEntity@@H@Z	void __cdecl G_SetModelIndex(class Entity *,int)	g.o
+0x00453BE0	0x008430E0	?G_EntIsLinkedTo@@YAHPAVEntity@@0@Z	int __cdecl G_EntIsLinkedTo(class Entity *,class Entity *)	g.o
+0x00453C10	0x00843110	?Think_GeneralLink@@YAXPAVEntity@@H@Z	void __cdecl Think_GeneralLink(class Entity *,int)	g.o
+0x00453C30	0x00843130	?G_DObjUpdateServerTime@@YA_NPAVEntity@@H_N@Z	bool __cdecl G_DObjUpdateServerTime(class Entity *,int,bool)	g.o
+0x00453DC0	0x008432C0	?G_DObjCalcPose@@YAXPAVEntity@@@Z	void __cdecl G_DObjCalcPose(class Entity *)	g.o
+0x00453E80	0x00843380	?G_DObjCalcBone@@YAXPAVEntity@@H@Z	void __cdecl G_DObjCalcBone(class Entity *,int)	g.o
+0x00453F40	0x00843440	?G_DObjGetLocalBoneIndexMatrix@@YAPBUDObjSkelMat@@PAVEntity@@H@Z	struct DObjSkelMat const * __cdecl G_DObjGetLocalBoneIndexMatrix(class Entity *,int)	g.o
+0x00453F70	0x00843470	?G_DObjGetWorldBoneIndexMatrix@@YA_NPAVEntity@@HPAUDObjSkelMat@@@Z	bool __cdecl G_DObjGetWorldBoneIndexMatrix(class Entity *,int,struct DObjSkelMat *)	g.o
+0x00454000	0x00843500	?G_DObjGetLocalTagMatrix@@YAPBUDObjSkelMat@@PAVEntity@@I@Z	struct DObjSkelMat const * __cdecl G_DObjGetLocalTagMatrix(class Entity *,unsigned int)	g.o
+0x00454040	0x00843540	?G_DObjGetWorldTagMatrix@@YAHPAVEntity@@IPAUDObjSkelMat@@@Z	int __cdecl G_DObjGetWorldTagMatrix(class Entity *,unsigned int,struct DObjSkelMat *)	g.o
+0x00454080	0x00843580	?vtos@@YAPADQBM@Z	char * __cdecl vtos(float const * const)	g.o
+0x004540D0	0x008435D0	?vtos@@YAPADABVPosition3@math@@@Z	char * __cdecl vtos(class math::Position3 const &)	g.o
+0x00454120	0x00843620	?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z	class Entity * __cdecl G_Spawn(enum TPakId)	g.o
+0x004541A0	0x008436A0	??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: __thiscall EntityDeathTask::EntityDeathTask(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x004541D0	0x008436D0	?G_AddPredictableEvent@@YAXPAVEntity@@HH@Z	void __cdecl G_AddPredictableEvent(class Entity *,int,int)	g.o
+0x00454200	0x00843700	?G_AddEvent@@YAXPAVEntity@@HH@Z	void __cdecl G_AddEvent(class Entity *,int,int)	g.o
+0x004543B0	0x008438B0	?G_RegisterSoundWait@@YAXPAVEntity@@HGH@Z	void __cdecl G_RegisterSoundWait(class Entity *,int,unsigned short,int)	g.o
+0x004543C0	0x008438C0	?RegisterEffectWait@@YAXPAVEntity@@H@Z	void __cdecl RegisterEffectWait(class Entity *,int)	g.o
+0x00454440	0x00843940	?G_SetOrigin@@YAXPAVEntity@@QBM@Z	void __cdecl G_SetOrigin(class Entity *,float const * const)	g.o
+0x004545B0	0x00843AB0	?G_SetOrigin@@YAXPAVEntity@@ABVPosition3@math@@@Z	void __cdecl G_SetOrigin(class Entity *,class math::Position3 const &)	g.o
+0x00454720	0x00843C20	?G_SetAngle@@YAXPAVEntity@@QBM@Z	void __cdecl G_SetAngle(class Entity *,float const * const)	g.o
+0x00454890	0x00843D90	?G_SetAngle@@YAXPAVEntity@@ABVPosition3@math@@@Z	void __cdecl G_SetAngle(class Entity *,class math::Position3 const &)	g.o
+0x00454A00	0x00843F00	?G_SetConstString@@YAXPAGPBD@Z	void __cdecl G_SetConstString(unsigned short *,char const *)	g.o
+0x00454A50	0x00843F50	?G_GetEntityTypeName@@YAPBDPAVEntity@@@Z	char const * __cdecl G_GetEntityTypeName(class Entity *)	g.o
+0x00454A70	0x00843F70	?G_CleanupAnimTrees@@YAXXZ	void __cdecl G_CleanupAnimTrees(void)	g.o
+0x00454AF0	0x00843FF0	?UseLiveGrenade@@YAXPAVEntity@@00@Z	void __cdecl UseLiveGrenade(class Entity *,class Entity *,class Entity *)	g.o
+0x00454B00	0x00844000	?Compact@EntityHandleDb@@QAEXXZ	public: void __thiscall EntityHandleDb::Compact(void)	g.o
+0x00454BC0	0x008440C0	?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVstring@Broc@@V23@1@Z	public: class ae_sized_array<class Entity *,4096>::const_iterator __thiscall EntityHandleDb::Find(int,class Broc::string,class ae_sized_array<class Entity *,4096>::const_iterator,class ae_sized_array<class Entity *,4096>::const_iterator)const 	g.o
+0x00454C80	0x00844180	?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HGV23@0@Z	public: class ae_sized_array<class Entity *,4096>::const_iterator __thiscall EntityHandleDb::Find(int,unsigned short,class ae_sized_array<class Entity *,4096>::const_iterator,class ae_sized_array<class Entity *,4096>::const_iterator)const 	g.o
+0x00454CC0	0x008441C0	?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVHashString@@V23@1@Z	public: class ae_sized_array<class Entity *,4096>::const_iterator __thiscall EntityHandleDb::Find(int,class HashString,class ae_sized_array<class Entity *,4096>::const_iterator,class ae_sized_array<class Entity *,4096>::const_iterator)const 	g.o
+0x00454D00	0x00844200	?Player_UpdateFriendlyOverlay@@YAXPAVEntity@@@Z	void __cdecl Player_UpdateFriendlyOverlay(class Entity *)	g.o
+0x004551C0	0x008446C0	?P_DamageFeedback@@YAXPAVEntity@@@Z	void __cdecl P_DamageFeedback(class Entity *)	g.o
+0x00455380	0x00844880	?HealthRegen@@YAXPAVEntity@@M@Z	void __cdecl HealthRegen(class Entity *,float)	g.o
+0x004554E0	0x008449E0	?SpectatorThink@@YAXPAVEntity@@PAUusercmd_s@@@Z	void __cdecl SpectatorThink(class Entity *,struct usercmd_s *)	g.o
+0x00455600	0x00844B00	?G_ActorEnterProne@@YAXPAUactor_s@@H@Z	void __cdecl G_ActorEnterProne(struct actor_s *,int)	g.o
+0x00455780	0x00844C80	?G_FinishSetupSpawnPoint@@YAXPAVEntity@@H@Z	void __cdecl G_FinishSetupSpawnPoint(class Entity *,int)	g.o
+0x00455A40	0x00844F40	?BodySink@@YAXPAVEntity@@H@Z	void __cdecl BodySink(class Entity *,int)	g.o
+0x00455A90	0x00844F90	?G_UpdateHeadHitEnt@@YAXPAVEntity@@@Z	void __cdecl G_UpdateHeadHitEnt(class Entity *)	g.o
+0x00455BB0	0x008450B0	?G_RemoveHeadHitEnt@@YAXPAVEntity@@@Z	void __cdecl G_RemoveHeadHitEnt(class Entity *)	g.o
+0x00455C10	0x00845110	?G_AddInvalidatedNode@@YAXPAVEntity@@PAUPathNode@PathNodes@@@Z	void __cdecl G_AddInvalidatedNode(class Entity *,struct PathNodes::PathNode *)	g.o
+0x00455DF0	0x008452F0	?G_RmvInvalidatedNode@@YAXPAVEntity@@PBUPathNode@PathNodes@@@Z	void __cdecl G_RmvInvalidatedNode(class Entity *,struct PathNodes::PathNode const *)	g.o
+0x00455E80	0x00845380	?G_setfog@@YAXPBD@Z	void __cdecl G_setfog(char const *)	g.o
+0x00455F40	0x00845440	?Cmd_Fogswitch_f@@YAXXZ	void __cdecl Cmd_Fogswitch_f(void)	g.o
+0x00455F60	0x00845460	?Cmd_GiveAll_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_GiveAll_f(class Entity *)	g.o
+0x00456010	0x00845510	?Cmd_Where_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Where_f(class Entity *)	g.o
+0x00456080	0x00845580	?Cmd_LockPVS_f@@YAXXZ	void __cdecl Cmd_LockPVS_f(void)	g.o
+0x00456120	0x00845620	?Cmd_LockPVSFlash_f@@YAXXZ	void __cdecl Cmd_LockPVSFlash_f(void)	g.o
+0x00456160	0x00845660	?StopFollowing@@YAXPAVEntity@@@Z	void __cdecl StopFollowing(class Entity *)	g.o
+0x00456330	0x00845830	?ParseHitLocDmgTableEntry@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseHitLocDmgTableEntry(char const *,class ConfigString const *)	g.o
+0x004563E0	0x008458E0	?G_ParseHitLocDmgTable@@YAXXZ	void __cdecl G_ParseHitLocDmgTable(void)	g.o
+0x00456400	0x00845900	?LookAtKiller@@YAXPAVEntity@@00@Z	void __cdecl LookAtKiller(class Entity *,class Entity *,class Entity *)	g.o
+0x00456520	0x00845A20	?SentientApplyPhysicsDamage@@YAXPAVEntity@@0HHQBM1W4hitLocation_t@@H@Z	void __cdecl SentientApplyPhysicsDamage(class Entity *,class Entity *,int,int,float const * const,float const * const,enum hitLocation_t,int)	g.o
+0x00456B80	0x00846080	?Corpse_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl Corpse_Die(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x00456BB0	0x008460B0	?CanDamage@@YAHPAVEntity@@QBM0@Z	int __cdecl CanDamage(class Entity *,float const * const,class Entity *)	g.o
+0x00456FB0	0x008464B0	?G_DebugLine@@YAXQBM00HH@Z	void __cdecl G_DebugLine(float const * const,float const * const,float const * const,int,int)	g.o
+0x00456FE0	0x008464E0	?G_DebugAxis@@YAXABVMat43@math@@MH@Z	void __cdecl G_DebugAxis(class math::Mat43 const &,float,int)	g.o
+0x004570C0	0x008465C0	?G_DebugBox@@YAXQBM00HHH@Z	void __cdecl G_DebugBox(float const * const,float const * const,float const * const,int,int,int)	g.o
+0x00457170	0x00846670	?G_DebugCircleEx@@YAXQBMM00HH@Z	void __cdecl G_DebugCircleEx(float const * const,float,float const * const,float const * const,int,int)	g.o
+0x004572F0	0x008467F0	?G_DebugCircle2Ex@@YAXQBMM00HH@Z	void __cdecl G_DebugCircle2Ex(float const * const,float,float const * const,float const * const,int,int)	g.o
+0x004574B0	0x008469B0	?G_DebugArc@@YAXQBMMMM0HH@Z	void __cdecl G_DebugArc(float const * const,float,float,float,float const * const,int,int)	g.o
+0x00457610	0x00846B10	?HudElem_Free@@YAXPAUgame_hudelem_s@@@Z	void __cdecl HudElem_Free(struct game_hudelem_s *)	g.o
+0x00457720	0x00846C20	?HudElem_DestroyAll@@YAXXZ	void __cdecl HudElem_DestroyAll(void)	g.o
+0x00457760	0x00846C60	?RespawnItem@@YAXPAVEntity@@H@Z	void __cdecl RespawnItem(class Entity *,int)	g.o
+0x00457810	0x00846D10	?Drop_Kit@@YAXPAVEntity@@H@Z	void __cdecl Drop_Kit(class Entity *,int)	g.o
+0x00457A10	0x00846F10	?Use_Item@@YAXPAVEntity@@00@Z	void __cdecl Use_Item(class Entity *,class Entity *,class Entity *)	g.o
+0x00457A30	0x00846F30	?G_BounceItem@@YAXPAVEntity@@PAUtrace_t@@@Z	void __cdecl G_BounceItem(class Entity *,struct trace_t *)	g.o
+0x00457F30	0x00847430	?G_FreeEntities@@YAXXZ	void __cdecl G_FreeEntities(void)	g.o
+0x00457F60	0x00847460	?G_LoadAnimTreeInstances@@YAX_N@Z	void __cdecl G_LoadAnimTreeInstances(bool)	g.o
+0x00457F90	0x00847490	?G_FreeAnimTreeInstances@@YAXXZ	void __cdecl G_FreeAnimTreeInstances(void)	g.o
+0x00457FC0	0x008474C0	?G_ClearLowHunk@@YAXXZ	void __cdecl G_ClearLowHunk(void)	g.o
+0x00457FE0	0x008474E0	?G_ShutdownGame@@YAXH@Z	void __cdecl G_ShutdownGame(int)	g.o
+0x00458120	0x00847620	?G_CheckLoadGame@@YAXHH@Z	void __cdecl G_CheckLoadGame(int,int)	g.o
+0x004581C0	0x008476C0	?G_XAnimUpdateEnt@@YAXPAVEntity@@@Z	void __cdecl G_XAnimUpdateEnt(class Entity *)	g.o
+0x00458200	0x00847700	?G_SetEntityOceanHeight@@YAXPAVEntity@@@Z	void __cdecl G_SetEntityOceanHeight(class Entity *)	g.o
+0x00458270	0x00847770	?UpdatePlayer@@YAXXZ	void __cdecl UpdatePlayer(void)	g.o
+0x00458730	0x00847C30	?SP_info_notnull@@YAXPAVEntity@@@Z	void __cdecl SP_info_notnull(class Entity *)	g.o
+0x00458750	0x00847C50	?SP_info_notnull_big@@YAXPAVEntity@@@Z	void __cdecl SP_info_notnull_big(class Entity *)	g.o
+0x00458770	0x00847C70	?TeleportPlayer@@YAXPAVEntity@@QBM1@Z	void __cdecl TeleportPlayer(class Entity *,float const * const,float const * const)	g.o
+0x004587A0	0x00847CA0	?G_SpawnSoundBlend@@YAPAVEntity@@XZ	class Entity * __cdecl G_SpawnSoundBlend(void)	g.o
+0x00458820	0x00847D20	?G_SetSoundBlend@@YAXPAVEntity@@HHM@Z	void __cdecl G_SetSoundBlend(class Entity *,int,int,float)	g.o
+0x00458970	0x00847E70	?use_corona@@YAXPAVEntity@@00@Z	void __cdecl use_corona(class Entity *,class Entity *,class Entity *)	g.o
+0x004589A0	0x00847EA0	?Turret_FillWeaponParms@@YAHPAVEntity@@0PAUweaponParms@@H@Z	int __cdecl Turret_FillWeaponParms(class Entity *,class Entity *,struct weaponParms *,int)	g.o
+0x00458B30	0x00848030	?clamp_playerbehindgun@@YAXPAVEntity@@0@Z	void __cdecl clamp_playerbehindgun(class Entity *,class Entity *)	g.o
+0x00458CE0	0x008481E0	?turret_CanTargetPoint@@YAHPAVEntity@@ABVPosition3@math@@QAM2@Z	int __cdecl turret_CanTargetPoint(class Entity *,class math::Position3 const &,float * const,float * const)	g.o
+0x00458EF0	0x008483F0	?turret_CanTargetSentient@@YAHPAVEntity@@PAUsentient_s@@QAM22@Z	int __cdecl turret_CanTargetSentient(class Entity *,struct sentient_s *,float * const,float * const,float * const)	g.o
+0x00459330	0x00848830	?turret_think_init@@YAXPAVEntity@@H@Z	void __cdecl turret_think_init(class Entity *,int)	g.o
+0x00459680	0x00848B80	?SP_turret_XAnimPrecache@@YAXPBD@Z	void __cdecl SP_turret_XAnimPrecache(char const *)	g.o
+0x00459780	0x00848C80	?misc_spawner_use@@YAXPAVEntity@@00@Z	void __cdecl misc_spawner_use(class Entity *,class Entity *,class Entity *)	g.o
+0x004597B0	0x00848CB0	?SP_misc_spawner@@YAXPAVEntity@@@Z	void __cdecl SP_misc_spawner(class Entity *)	g.o
+0x00459800	0x00848D00	?G_MissileTrace@@YAXPAUtrace_t@@ABVPosition3@math@@1V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HPAE@Z	void __cdecl G_MissileTrace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,unsigned char *)	g.o
+0x004598D0	0x00848DD0	?G_PredictMissile@@YAHPBVEntity@@HQAMHPAH@Z	int __cdecl G_PredictMissile(class Entity const *,int,float * const,int,int *)	g.o
+0x00459BF0	0x008490F0	?SetMoverState@@YAXPAVEntity@@W4moverState_t@@H@Z	void __cdecl SetMoverState(class Entity *,enum moverState_t,int)	g.o
+0x0045A420	0x00849920	?MatchTeam@@YAXPAVEntity@@W4moverState_t@@H@Z	void __cdecl MatchTeam(class Entity *,enum moverState_t,int)	g.o
+0x0045A470	0x00849970	?MatchTeamReverseAngleOnSlaves@@YAXPAVEntity@@W4moverState_t@@H@Z	void __cdecl MatchTeamReverseAngleOnSlaves(class Entity *,enum moverState_t,int)	g.o
+0x0045A4E0	0x008499E0	?ReturnToPos1@@YAXPAVEntity@@H@Z	void __cdecl ReturnToPos1(class Entity *,int)	g.o
+0x0045A500	0x00849A00	?ReturnToPos2@@YAXPAVEntity@@H@Z	void __cdecl ReturnToPos2(class Entity *,int)	g.o
+0x0045A520	0x00849A20	?GotoPos3@@YAXPAVEntity@@H@Z	void __cdecl GotoPos3(class Entity *,int)	g.o
+0x0045A540	0x00849A40	?IsBinaryMoverBlocked@@YAHPAVEntity@@00@Z	int __cdecl IsBinaryMoverBlocked(class Entity *,class Entity *,class Entity *)	g.o
+0x0045A700	0x00849C00	?InitMover@@YAXPAVEntity@@@Z	void __cdecl InitMover(class Entity *)	g.o
+0x0045AAA0	0x00849FA0	?InitMoverRotate@@YAXPAVEntity@@@Z	void __cdecl InitMoverRotate(class Entity *)	g.o
+0x0045AE60	0x0084A360	?Think_SpawnNewDoorTrigger@@YAXPAVEntity@@H@Z	void __cdecl Think_SpawnNewDoorTrigger(class Entity *,int)	g.o
+0x0045B110	0x0084A610	?Think_SpawnNewAutoDoorTrigger@@YAXPAVEntity@@H@Z	void __cdecl Think_SpawnNewAutoDoorTrigger(class Entity *,int)	g.o
+0x0045B140	0x0084A640	?Think_MatchTeam@@YAXPAVEntity@@H@Z	void __cdecl Think_MatchTeam(class Entity *,int)	g.o
+0x0045B160	0x0084A660	?Use_Static@@YAXPAVEntity@@00@Z	void __cdecl Use_Static(class Entity *,class Entity *,class Entity *)	g.o
+0x0045B190	0x0084A690	?SP_func_static@@YAXPAVEntity@@@Z	void __cdecl SP_func_static(class Entity *)	g.o
+0x0045B2C0	0x0084A7C0	?Use_Func_Rotate@@YAXPAVEntity@@00@Z	void __cdecl Use_Func_Rotate(class Entity *,class Entity *,class Entity *)	g.o
+0x0045B300	0x0084A800	?SP_func_rotating@@YAXPAVEntity@@@Z	void __cdecl SP_func_rotating(class Entity *)	g.o
+0x0045B3D0	0x0084A8D0	?SP_func_bobbing@@YAXPAVEntity@@@Z	void __cdecl SP_func_bobbing(class Entity *)	g.o
+0x0045B5B0	0x0084AAB0	?SP_func_pendulum@@YAXPAVEntity@@@Z	void __cdecl SP_func_pendulum(class Entity *)	g.o
+0x0045B760	0x0084AC60	?SP_func_door_rotating@@YAXPAVEntity@@@Z	void __cdecl SP_func_door_rotating(class Entity *)	g.o
+0x0045BA30	0x0084AF30	?trigger_use@@YAXPAVEntity@@@Z	void __cdecl trigger_use(class Entity *)	g.o
+0x0045BD90	0x0084B290	?SP_skyportal@@YAXPAVEntity@@@Z	void __cdecl SP_skyportal(class Entity *)	g.o
+0x0045BF80	0x0084B480	?GScr_LoadScripts@@YAX_N@Z	void __cdecl GScr_LoadScripts(bool)	g.o
+0x0045BFF0	0x0084B4F0	?GScr_GetEntAnimTree@@YAPAVXAnimTree@@PAVEntity@@@Z	class XAnimTree * __cdecl GScr_GetEntAnimTree(class Entity *)	g.o
+0x0045C0C0	0x0084B5C0	?InitScriptMover@@YAXPAVEntity@@@Z	void __cdecl InitScriptMover(class Entity *)	g.o
+0x0045C290	0x0084B790	?SP_script_brushmodel@@YAXPAVEntity@@@Z	void __cdecl SP_script_brushmodel(class Entity *)	g.o
+0x0045C310	0x0084B810	?SP_script_origin@@YAXPAVEntity@@@Z	void __cdecl SP_script_origin(class Entity *)	g.o
+0x0045C3A0	0x0084B8A0	?VEH_DebugBox@@YAXABVPosition3@math@@MMMM@Z	void __cdecl VEH_DebugBox(class math::Position3 const &,float,float,float,float)	g.o
+0x0045C5F0	0x0084BAF0	?prepare_collision_objects@@YAXPAVEntity@@ABVPosition3@math@@1MHAAUproximity_data_t@@AAVTouchEntityData@@@Z	void __cdecl prepare_collision_objects(class Entity *,class math::Position3 const &,class math::Position3 const &,float,int,struct proximity_data_t &,class TouchEntityData &)	g.o
+0x0045C7F0	0x0084BCF0	?VEH_UpdateWheelParticleEffects@@YAXPAVEntity@@H@Z	void __cdecl VEH_UpdateWheelParticleEffects(class Entity *,int)	g.o
+0x0045CA30	0x0084BF30	?VEH_FillFollowHistoryBuffer@@YAXPAUscr_vehicle_t@@@Z	void __cdecl VEH_FillFollowHistoryBuffer(struct scr_vehicle_t *)	g.o
+0x0045CE60	0x0084C360	?VEH_FindValidDismountSpot@@YAHPAVEntity@@QAM110_N@Z	int __cdecl VEH_FindValidDismountSpot(class Entity *,float * const,float * const,float * const,class Entity *,bool)	g.o
+0x0045E1D0	0x0084D6D0	?G_InitScrVehicles@@YAXXZ	void __cdecl G_InitScrVehicles(void)	g.o
+0x0045E240	0x0084D740	?G_FreeScrVehicles@@YAXXZ	void __cdecl G_FreeScrVehicles(void)	g.o
+0x0045E290	0x0084D790	?G_UpdateVehicleTags@@YAXPAVEntity@@@Z	void __cdecl G_UpdateVehicleTags(class Entity *)	g.o
+0x0045E900	0x0084DE00	?G_GetVehicleInfo@@YAPAUvehicle_info_t@@PAVEntity@@@Z	struct vehicle_info_t * __cdecl G_GetVehicleInfo(class Entity *)	g.o
+0x0045E930	0x0084DE30	?G_GetVehicleSeatCount@@YAHPAVEntity@@@Z	int __cdecl G_GetVehicleSeatCount(class Entity *)	g.o
+0x0045E9B0	0x0084DEB0	?Scr_Vehicle_Pain@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z	void __cdecl Scr_Vehicle_Pain(class Entity *,class Entity *,int,float const * const,int,float const * const,enum hitLocation_t)	g.o
+0x0045EA80	0x0084DF80	?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z	public: void __thiscall scr_vehicle_t::ReleasePhysics(class Entity *)	g.o
+0x0045EAB0	0x0084DFB0	?G_ReplaceSpawnVars@@YAXABV?$InplaceVector@V?$InplaceTreeElement@IVInplaceString@@@@@@@Z	void __cdecl G_ReplaceSpawnVars(class InplaceVector<class InplaceTreeElement<unsigned int,class InplaceString> > const &)	g.o
+0x0045EBB0	0x0084E0B0	?g_SightTrace@@YAXPAHABVPosition3@math@@111ABUcollision_context_t@@@Z	void __cdecl g_SightTrace(int *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	g.o
+0x0045EBF0	0x0084E0F0	?g_SightTraceCapsule@@YAXPAHABVPosition3@math@@111ABUcollision_context_t@@@Z	void __cdecl g_SightTraceCapsule(int *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	g.o
+0x0045F030	0x0084E530	?G_VehUpdatePathPos@@YAHPAVEntity@@PAUvehicle_pathpos_t@@_NHH@Z	int __cdecl G_VehUpdatePathPos(class Entity *,struct vehicle_pathpos_t *,bool,int,int)	g.o
+0x0045F210	0x0084E710	?SP_create_info_vehicle_node@@YAPAUvehicle_node_t@@XZ	struct vehicle_node_t * __cdecl SP_create_info_vehicle_node(void)	g.o
+0x0045F2B0	0x0084E7B0	?FreeAll@VehicleNodeAllocator@@QAEXXZ	public: void __thiscall VehicleNodeAllocator::FreeAll(void)	g.o
+0x0045F350	0x0084E850	?shotgunrandom@@YAXPAM0MM@Z	void __cdecl shotgunrandom(float *,float *,float,float)	g.o
+0x0045F3B0	0x0084E8B0	?Bullet_Endpos@@YAMMQAMPBUweaponParms@@MM@Z	float __cdecl Bullet_Endpos(float,float * const,struct weaponParms const *,float,float)	g.o
+0x0045F980	0x0084EE80	?Weapon_Mine_Test@@YA_NPAVEntity@@PAUweaponParms@@PAVPosition3@math@@PAVDir3@4@@Z	bool __cdecl Weapon_Mine_Test(class Entity *,struct weaponParms *,class math::Position3 *,class math::Dir3 *)	g.o
+0x0045FB40	0x0084F040	?Weapon_ItemAmmo_Fire@@YAXPAVEntity@@HPAUweaponParms@@@Z	void __cdecl Weapon_ItemAmmo_Fire(class Entity *,int,struct weaponParms *)	g.o
+0x0045FE90	0x0084F390	?Weapon_ArtilleryStrike_Fire@@YAXPAVEntity@@MPAUweaponParms@@@Z	void __cdecl Weapon_ArtilleryStrike_Fire(class Entity *,float,struct weaponParms *)	g.o
+0x00460190	0x0084F690	?G_EntUnlink@@YAXPAVEntity@@@Z	void __cdecl G_EntUnlink(class Entity *)	g.o
+0x00460330	0x0084F830	?G_UpdateTagInfo@@YAXPAVEntity@@H@Z	void __cdecl G_UpdateTagInfo(class Entity *,int)	g.o
+0x004603D0	0x0084F8D0	?G_UpdateTagInfoOfChildren@@YAXPAVEntity@@H@Z	void __cdecl G_UpdateTagInfoOfChildren(class Entity *,int)	g.o
+0x00460410	0x0084F910	?G_SetMovedir@@YAXAAVPosition3@math@@0@Z	void __cdecl G_SetMovedir(class math::Position3 &,class math::Position3 &)	g.o
+0x00460540	0x0084FA40	?G_EntUnlinkFree@@YAXPAVEntity@@@Z	void __cdecl G_EntUnlinkFree(class Entity *)	g.o
+0x00460570	0x0084FA70	?G_FreeEntity@@YAXPAVEntity@@H@Z	void __cdecl G_FreeEntity(class Entity *,int)	g.o
+0x00460660	0x0084FB60	?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z	public: virtual void __thiscall EntityDeathTask::Update(class Entity *,float)	g.o
+0x00460690	0x0084FB90	?G_TempEntity@@YAPAVEntity@@QBMH@Z	class Entity * __cdecl G_TempEntity(float const * const,int)	g.o
+0x00460780	0x0084FC80	?G_DelayFreeAnimTree@@YAXPAVXAnimTree@@@Z	void __cdecl G_DelayFreeAnimTree(class XAnimTree *)	g.o
+0x004607F0	0x0084FCF0	?G_DelayClearAnimTree@@YAXPAVXAnimTree@@@Z	void __cdecl G_DelayClearAnimTree(class XAnimTree *)	g.o
+0x00460860	0x0084FD60	?Render@StatusBar@@YAXXZ	void __cdecl StatusBar::Render(void)	g.o
+0x00460C50	0x00850150	?DebugDumpEnts@@YAXHPAVEntity@@@Z	void __cdecl DebugDumpEnts(int,class Entity *)	g.o
+0x00460D70	0x00850270	?Init@EntityHandleDb@@QAEXXZ	public: void __thiscall EntityHandleDb::Init(void)	g.o
+0x00460D80	0x00850280	?Find@EntityHandleDb@@QBEPAVEntity@@HG@Z	public: class Entity * __thiscall EntityHandleDb::Find(int,unsigned short)const 	g.o
+0x00460DD0	0x008502D0	?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z	public: class Entity * __thiscall EntityHandleDb::Find(int,class HashString)const 	g.o
+0x00460E30	0x00850330	?Find@EntityHandleDb@@QBEPAVEntity@@HABVstring@Broc@@@Z	public: class Entity * __thiscall EntityHandleDb::Find(int,class Broc::string const &)const 	g.o
+0x00460E90	0x00850390	?Find@EntityHandleDb@@QBEXHABVstring@Broc@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z	public: void __thiscall EntityHandleDb::Find(int,class Broc::string const &,class ae_sized_array<class Entity *,4096> &)const 	g.o
+0x00460EC0	0x008503C0	?Find@EntityHandleDb@@QBEXHVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z	public: void __thiscall EntityHandleDb::Find(int,class HashString,class ae_sized_array<class Entity *,4096> &)const 	g.o
+0x00460EE0	0x008503E0	?Find@EntityHandleDb@@QBEXHGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z	public: void __thiscall EntityHandleDb::Find(int,unsigned short,class ae_sized_array<class Entity *,4096> &)const 	g.o
+0x00460F00	0x00850400	?SpectatorClientEndFrame@@YAXPAVEntity@@@Z	void __cdecl SpectatorClientEndFrame(class Entity *)	g.o
+0x004610F0	0x008505F0	?G_Animscripted@@YAXPAVEntity@@QBM1Uscr_anim_s@@2IW4animScrMode_t@@MM@Z	void __cdecl G_Animscripted(class Entity *,float const * const,float const * const,struct scr_anim_s,struct scr_anim_s,unsigned int,enum animScrMode_t,float,float)	g.o
+0x00461830	0x00850D30	?SelectNearestDeathmatchSpawnPoint@@YAPAVEntity@@QBM@Z	class Entity * __cdecl SelectNearestDeathmatchSpawnPoint(float const * const)	g.o
+0x00461930	0x00850E30	?Cmd_SetViewpos_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_SetViewpos_f(class Entity *)	g.o
+0x00461B10	0x00851010	?G_DebugBox@@YAXQAMMMMMHH@Z	void __cdecl G_DebugBox(float * const,float,float,float,float,int,int)	g.o
+0x00461BD0	0x008510D0	?G_DebugSphere@@YAXQBMM0HHH@Z	void __cdecl G_DebugSphere(float const * const,float,float const * const,int,int,int)	g.o
+0x00461CB0	0x008511B0	?G_DebugCircle@@YAXQBMM0HHH@Z	void __cdecl G_DebugCircle(float const * const,float,float const * const,int,int,int)	g.o
+0x00461D50	0x00851250	?FinishSpawningItem@@YAXPAVEntity@@H@Z	void __cdecl FinishSpawningItem(class Entity *,int)	g.o
+0x004620F0	0x008515F0	?misc_EntInfo@@YAXPAVEntity@@@Z	void __cdecl misc_EntInfo(class Entity *)	g.o
+0x00462350	0x00851850	?SP_info_null@@YAXPAVEntity@@@Z	void __cdecl SP_info_null(class Entity *)	g.o
+0x00462370	0x00851870	?SP_light@@YAXPAVEntity@@@Z	void __cdecl SP_light(class Entity *)	g.o
+0x00462390	0x00851890	?SP_misc_model@@YAXPAVEntity@@@Z	void __cdecl SP_misc_model(class Entity *)	g.o
+0x004623B0	0x008518B0	?SP_corona@@YAXPAVEntity@@@Z	void __cdecl SP_corona(class Entity *)	g.o
+0x004623D0	0x008518D0	?turret_canuse_auto@@YAHPAVEntity@@PAUactor_s@@@Z	int __cdecl turret_canuse_auto(class Entity *,struct actor_s *)	g.o
+0x00462810	0x00851D10	?turret_canuse_manual@@YAHPAVEntity@@PAUactor_s@@@Z	int __cdecl turret_canuse_manual(class Entity *,struct actor_s *)	g.o
+0x00462930	0x00851E30	?turret_canuse@@YAHPAUactor_s@@PAVEntity@@@Z	int __cdecl turret_canuse(struct actor_s *,class Entity *)	g.o
+0x00462A60	0x00851F60	?Concussive_think@@YAXPAVEntity@@H@Z	void __cdecl Concussive_think(class Entity *,int)	g.o
+0x00462B50	0x00852050	?ReturnToPos1Rotate@@YAXPAVEntity@@H@Z	void __cdecl ReturnToPos1Rotate(class Entity *,int)	g.o
+0x00462BA0	0x008520A0	?Reached_BinaryMover@@YAXPAVEntity@@@Z	void __cdecl Reached_BinaryMover(class Entity *)	g.o
+0x00462FE0	0x008524E0	?SP_func_door@@YAXPAVEntity@@@Z	void __cdecl SP_func_door(class Entity *)	g.o
+0x00463730	0x00852C30	?ParseVehiclePhysicsConfigString@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseVehiclePhysicsConfigString(char const *,class ConfigString const *)	g.o
+0x004639D0	0x00852ED0	?G_ParseScrVehicleInfo@@YAXXZ	void __cdecl G_ParseScrVehicleInfo(void)	g.o
+0x00463A20	0x00852F20	?push_entity@@YA_NPAVEntity@@0@Z	bool __cdecl push_entity(class Entity *,class Entity *)	g.o
+0x004640D0	0x008535D0	?Svcmd_EntityList_f@@YAXXZ	void __cdecl Svcmd_EntityList_f(void)	g.o
+0x004641A0	0x008536A0	?InitTrigger@@YAXPAVEntity@@@Z	void __cdecl InitTrigger(class Entity *)	g.o
+0x00464240	0x00853740	?SP_trigger_multiple@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_multiple(class Entity *)	g.o
+0x00464350	0x00853850	?SP_trigger_friendlychain@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_friendlychain(class Entity *)	g.o
+0x004643A0	0x008538A0	?hurt_think@@YAXPAVEntity@@H@Z	void __cdecl hurt_think(class Entity *,int)	g.o
+0x004643E0	0x008538E0	?SP_trigger_hurt@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_hurt(class Entity *)	g.o
+0x004644B0	0x008539B0	?SP_trigger_once@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_once(class Entity *)	g.o
+0x004644F0	0x008539F0	?SP_trigger_damage@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_damage(class Entity *)	g.o
+0x004646B0	0x00853BB0	?SP_trigger_mount@@YAXPAVEntity@@@Z	void __cdecl SP_trigger_mount(class Entity *)	g.o
+0x00464980	0x00853E80	?G_DrawVehiclePaths@@YAXXZ	void __cdecl G_DrawVehiclePaths(void)	g.o
+0x00464C40	0x00854140	?G_UpdateTags@@YAXPAVEntity@@H@Z	void __cdecl G_UpdateTags(class Entity *,int)	g.o
+0x00464C70	0x00854170	?G_GetModel@@YAPAXPBDW4TPakId@@@Z	void * __cdecl G_GetModel(char const *,enum TPakId)	g.o
+0x00464CF0	0x008541F0	?XModelChildrenToLocal@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@H@Z	void __cdecl XModelChildrenToLocal(class IVPointer<class XModel>,struct DObjSkelMat *,int)	g.o
+0x00465290	0x00854790	?XModelChildrenToModel@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@H@Z	void __cdecl XModelChildrenToModel(class IVPointer<class XModel>,struct DObjSkelMat *,int)	g.o
+0x004655C0	0x00854AC0	?G_PickTarget@@YAPAVEntity@@G@Z	class Entity * __cdecl G_PickTarget(unsigned short)	g.o
+0x00465650	0x00854B50	?Svcmd_ListEntities_f@@YAXXZ	void __cdecl Svcmd_ListEntities_f(void)	g.o
+0x00465710	0x00854C10	?Render@MemGraph@@YAXXZ	void __cdecl MemGraph::Render(void)	g.o
+0x00466350	0x00855850	?Validate@EntityHandleDb@@AAEXXZ	private: void __thiscall EntityHandleDb::Validate(void)	g.o
+0x00466460	0x00855960	?Release@EntityHandleDb@@QAEXAAVEntity@@@Z	public: void __thiscall EntityHandleDb::Release(class Entity &)	g.o
+0x004664A0	0x008559A0	?Player_UpdateLookAtEntity@@YAXPAVEntity@@@Z	void __cdecl Player_UpdateLookAtEntity(class Entity *)	g.o
+0x00466A90	0x00855F90	?G_GetActorProneInfoFromEntHandle@@YAPAUactor_prone_info_t@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	struct actor_prone_info_t * __cdecl G_GetActorProneInfoFromEntHandle(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00466B50	0x00856050	?G_GetClientActorProneInfoFromEntHandle@@YAPAUactor_prone_info_t@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	struct actor_prone_info_t * __cdecl G_GetClientActorProneInfoFromEntHandle(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00466BE0	0x008560E0	?G_Animscripted_Think@@YAXPAVEntity@@@Z	void __cdecl G_Animscripted_Think(class Entity *)	g.o
+0x00466E00	0x00856300	?SpotWouldTelefrag@@YA_NABVPosition3@math@@@Z	bool __cdecl SpotWouldTelefrag(class math::Position3 const &)	g.o
+0x00466F40	0x00856440	?SelectRandomDeathmatchSpawnPoint@@YAPAVEntity@@XZ	class Entity * __cdecl SelectRandomDeathmatchSpawnPoint(void)	g.o
+0x00467040	0x00856540	?SelectSpawnPoint@@YAPAVEntity@@QBMQAM1@Z	class Entity * __cdecl SelectSpawnPoint(float const * const,float * const,float * const)	g.o
+0x004670D0	0x008565D0	?SelectInitialSpawnPoint@@YAPAVEntity@@QAM0@Z	class Entity * __cdecl SelectInitialSpawnPoint(float * const,float * const)	g.o
+0x004671F0	0x008566F0	?Client_Touch@@YAXPAVEntity@@0H@Z	void __cdecl Client_Touch(class Entity *,class Entity *,int)	g.o
+0x004673B0	0x008568B0	?ClientConnect@@YAPADV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	char * __cdecl ClientConnect(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00467570	0x00856A70	?ClientBegin@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl ClientBegin(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00467610	0x00856B10	?ClientDisconnect@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl ClientDisconnect(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x004676E0	0x00856BE0	?Cmd_MenuResponse_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_MenuResponse_f(class Entity *)	g.o
+0x004677E0	0x00856CE0	?UpdateShotProf@@YAXM@Z	void __cdecl UpdateShotProf(float)	g.o
+0x004678C0	0x00856DC0	?ClientCommand@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl ClientCommand(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x004679F0	0x00856EF0	?Cmd_FollowCycle_f@@YAHPAVEntity@@H@Z	int __cdecl Cmd_FollowCycle_f(class Entity *,int)	g.o
+0x00467BD0	0x008570D0	?G_FindTeams@@YAXXZ	void __cdecl G_FindTeams(void)	g.o
+0x00467DD0	0x008572D0	?G_RunThink@@YAXPAVEntity@@H@Z	void __cdecl G_RunThink(class Entity *,int)	g.o
+0x00467ED0	0x008573D0	?ShowEntityInfo@@YAXXZ	void __cdecl ShowEntityInfo(void)	g.o
+0x00467FF0	0x008574F0	?G_DrawEntityBBoxes@@YAXXZ	void __cdecl G_DrawEntityBBoxes(void)	g.o
+0x00468C60	0x00858160	?DebugDumpAnims@@YAXXZ	void __cdecl DebugDumpAnims(void)	g.o
+0x00468D00	0x00858200	?G_LoadLevel@@YAXH@Z	void __cdecl G_LoadLevel(int)	g.o
+0x00468E30	0x00858330	?register_dobj@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl register_dobj(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00468EF0	0x008583F0	?unregister_dobj@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl unregister_dobj(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x00468FB0	0x008584B0	?init_dobj_trackers@@YAXXZ	void __cdecl init_dobj_trackers(void)	g.o
+0x00468FE0	0x008584E0	?DObjSetNotRenderedFlag@@YAXXZ	void __cdecl DObjSetNotRenderedFlag(void)	g.o
+0x004690B0	0x008585B0	?UpdateAnims@@YAXH@Z	void __cdecl UpdateAnims(int)	g.o
+0x00469360	0x00858860	?G_BounceMissile@@YAHPAVEntity@@PAUtrace_t@@@Z	int __cdecl G_BounceMissile(class Entity *,struct trace_t *)	g.o
+0x00469720	0x00858C20	?Touch_Mine@@YAXPAVEntity@@0H@Z	void __cdecl Touch_Mine(class Entity *,class Entity *,int)	g.o
+0x004697F0	0x00858CF0	?Touch_Mine_Not_Owner@@YAXPAVEntity@@0H@Z	void __cdecl Touch_Mine_Not_Owner(class Entity *,class Entity *,int)	g.o
+0x00469840	0x00858D40	?Think_EnableMine@@YAXPAVEntity@@H@Z	void __cdecl Think_EnableMine(class Entity *,int)	g.o
+0x004698C0	0x00858DC0	?G_TestEntityPosition@@YAPAVEntity@@PAV1@ABVPosition3@math@@@Z	class Entity * __cdecl G_TestEntityPosition(class Entity *,class math::Position3 const &)	g.o
+0x00469A80	0x00858F80	?G_TryPushingEntity@@YAHPAVEntity@@0ABVPosition3@math@@1@Z	int __cdecl G_TryPushingEntity(class Entity *,class Entity *,class math::Position3 const &,class math::Position3 const &)	g.o
+0x0046A1C0	0x008596C0	?Prop_SetupCollmap@@YA_NPAVEntity@@@Z	bool __cdecl Prop_SetupCollmap(class Entity *)	g.o
+0x0046A250	0x00859750	?render_sphere@@YAXABVPosition3@math@@MABVColor@@@Z	void __cdecl render_sphere(class math::Position3 const &,float,class Color const &)	g.o
+0x0046A290	0x00859790	?render_aabb@@YAXABVPosition3@math@@0ABVColor@@@Z	void __cdecl render_aabb(class math::Position3 const &,class math::Position3 const &,class Color const &)	g.o
+0x0046A370	0x00859870	?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@11@Z	void __cdecl VEH_SetPosition(class Entity *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	g.o
+0x0046AAC0	0x00859FC0	?VEH_SlideMove@@YAHPAVEntity@@HH@Z	int __cdecl VEH_SlideMove(class Entity *,int,int)	g.o
+0x0046B3C0	0x0085A8C0	?collide_sphere@@YA_NPAVEntity@@ABUproximity_data_t@@ABVTouchEntityData@@ABVPosition3@math@@MAAV45@@Z	bool __cdecl collide_sphere(class Entity *,struct proximity_data_t const &,class TouchEntityData const &,class math::Position3 const &,float,class math::Position3 &)	g.o
+0x0046C240	0x0085B740	?VEH_Slide@@YAHPAVEntity@@HHHH@Z	int __cdecl VEH_Slide(class Entity *,int,int,int,int)	g.o
+0x0046C9E0	0x0085BEE0	?VEH_InvalidateCaches@@YAXXZ	void __cdecl VEH_InvalidateCaches(void)	g.o
+0x0046CB00	0x0085C000	?Svcmd_VehicleList_f@@YAXXZ	void __cdecl Svcmd_VehicleList_f(void)	g.o
+0x0046CF00	0x0085C400	?VEH_ReleasePlayerFollowSlot@@YAXPAVEntity@@0@Z	void __cdecl VEH_ReleasePlayerFollowSlot(class Entity *,class Entity *)	g.o
+0x0046D2B0	0x0085C7B0	?VEH_NetAltWeaponStatus@@YAXPAVEntity@@H@Z	void __cdecl VEH_NetAltWeaponStatus(class Entity *,int)	g.o
+0x0046DBF0	0x0085D0F0	?G_SetupScrVehicles@@YAXXZ	void __cdecl G_SetupScrVehicles(void)	g.o
+0x0046DC50	0x0085D150	?G_FreeVehicle@@YAXPAVEntity@@@Z	void __cdecl G_FreeVehicle(class Entity *)	g.o
+0x0046DEA0	0x0085D3A0	?G_FreeVehicleRefs@@YAXPAVEntity@@@Z	void __cdecl G_FreeVehicleRefs(class Entity *)	g.o
+0x0046DF60	0x0085D460	?G_VehicleClientThink@@YAXH@Z	void __cdecl G_VehicleClientThink(int)	g.o
+0x0046E040	0x0085D540	?G_IsVehicleUnusable@@YAPAVEntity@@PAV1@@Z	class Entity * __cdecl G_IsVehicleUnusable(class Entity *)	g.o
+0x0046E0B0	0x0085D5B0	?G_IsPlayerInVehicle@@YA_NPAVEntity@@@Z	bool __cdecl G_IsPlayerInVehicle(class Entity *)	g.o
+0x0046E150	0x0085D650	?G_IsPlayerDrivingVehicle@@YA_NPAVEntity@@@Z	bool __cdecl G_IsPlayerDrivingVehicle(class Entity *)	g.o
+0x0046E200	0x0085D700	?G_IsPlayerVehicleGunner@@YA_NPAVEntity@@@Z	bool __cdecl G_IsPlayerVehicleGunner(class Entity *)	g.o
+0x0046E270	0x0085D770	?G_CanPlayerBeDamagedInVehicle@@YA_NPAVEntity@@@Z	bool __cdecl G_CanPlayerBeDamagedInVehicle(class Entity *)	g.o
+0x0046E310	0x0085D810	?G_GetTankIndex@@YA_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PAHPA_N@Z	bool __cdecl G_GetTankIndex(class DbLinkedHandle<class EntityHandleDb,class Entity>,int *,bool *)	g.o
+0x0046E540	0x0085DA40	?G_GetTankEntNum@@YA?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z	class DbLinkedHandle<class EntityHandleDb,class Entity> __cdecl G_GetTankEntNum(int)	g.o
+0x0046E640	0x0085DB40	?push_in_world@@YA_NAAVPosition3@math@@MABUproximity_data_t@@AAVTouchEntityData@@@Z	bool __cdecl push_in_world(class math::Position3 &,float,struct proximity_data_t const &,class TouchEntityData &)	g.o
+0x0046F2A0	0x0085E7A0	?IsPhysicsStable@scr_vehicle_t@@QAE_NXZ	public: bool __thiscall scr_vehicle_t::IsPhysicsStable(void)	g.o
+0x0046F300	0x0085E800	?IsPhysicsPaused@scr_vehicle_t@@QAE_NXZ	public: bool __thiscall scr_vehicle_t::IsPhysicsPaused(void)	g.o
+0x0046F350	0x0085E850	?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z	public: bool __thiscall scr_vehicle_t::IsOppositeTeamInVehicle(int)	g.o
+0x0046F3C0	0x0085E8C0	?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z	public: void __thiscall scr_vehicle_t::AssignPhysics(class Entity *)	g.o
+0x0046F460	0x0085E960	?LetHatchClose@scr_vehicle_t@@QAE_NXZ	public: bool __thiscall scr_vehicle_t::LetHatchClose(void)	g.o
+0x0046F4F0	0x0085E9F0	?GetAverageWheelSpeed@scr_vehicle_t@@QAEMXZ	public: float __thiscall scr_vehicle_t::GetAverageWheelSpeed(void)	g.o
+0x0046F680	0x0085EB80	?CanUseVehicle@scr_vehicle_t@@QAE_NPAVEntity@@AAMAAH@Z	public: bool __thiscall scr_vehicle_t::CanUseVehicle(class Entity *,float &,int &)	g.o
+0x0046F9F0	0x0085EEF0	?G_EntryPointSeatAssociation@@YAHPAVEntity@@H@Z	int __cdecl G_EntryPointSeatAssociation(class Entity *,int)	g.o
+0x0046FA60	0x0085EF60	?CanMantleVehicle@scr_vehicle_t@@QAE_NPAVEntity@@@Z	public: bool __thiscall scr_vehicle_t::CanMantleVehicle(class Entity *)	g.o
+0x0046FD50	0x0085F250	?GetEntryHintStringIndex@scr_vehicle_t@@QAEHPAVEntity@@H@Z	public: int __thiscall scr_vehicle_t::GetEntryHintStringIndex(class Entity *,int)	g.o
+0x0046FF60	0x0085F460	?vehicle_InitDynamicBuffers@@YAXH@Z	void __cdecl vehicle_InitDynamicBuffers(int)	g.o
+0x00470210	0x0085F710	?DebugRender@scr_vehicle_t@@QAEXXZ	public: void __thiscall scr_vehicle_t::DebugRender(void)	g.o
+0x00470490	0x0085F990	?VEH_GetPlayerVehicleInfo@@YAPAUvehicle_info_t@@XZ	struct vehicle_info_t * __cdecl VEH_GetPlayerVehicleInfo(void)	g.o
+0x00470500	0x0085FA00	?G_DuplicateScriptFields@@YAXPAVEntity@@PBV1@@Z	void __cdecl G_DuplicateScriptFields(class Entity *,class Entity const *)	g.o
+0x00470600	0x0085FB00	?Scr_NotifyFromEnt@@YAXPAVEntity@@VHashString@@0@Z	void __cdecl Scr_NotifyFromEnt(class Entity *,class HashString,class Entity *)	g.o
+0x004706B0	0x0085FBB0	?Scr_Notify@@YAXPAVEntity@@VHashString@@I@Z	void __cdecl Scr_Notify(class Entity *,class HashString,unsigned int)	g.o
+0x00470780	0x0085FC80	?ConsoleCommand@@YAHXZ	int __cdecl ConsoleCommand(void)	g.o
+0x00470840	0x0085FD40	?G_Trigger@@YAXPAVEntity@@0@Z	void __cdecl G_Trigger(class Entity *,class Entity *)	g.o
+0x00470970	0x0085FE70	?Touch_Multi@@YAXPAVEntity@@0H@Z	void __cdecl Touch_Multi(class Entity *,class Entity *,int)	g.o
+0x00470990	0x0085FE90	?Touch_FriendlyChain@@YAXPAVEntity@@0H@Z	void __cdecl Touch_FriendlyChain(class Entity *,class Entity *,int)	g.o
+0x00470A10	0x0085FF10	?Activate_trigger_damage@@YAXPAVEntity@@0HH@Z	void __cdecl Activate_trigger_damage(class Entity *,class Entity *,int,int)	g.o
+0x00470B30	0x00860030	?Use_trigger_damage@@YAXPAVEntity@@00@Z	void __cdecl Use_trigger_damage(class Entity *,class Entity *,class Entity *)	g.o
+0x00470B50	0x00860050	?Pain_trigger_damage@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z	void __cdecl Pain_trigger_damage(class Entity *,class Entity *,int,float const * const,int,float const * const,enum hitLocation_t)	g.o
+0x00470B90	0x00860090	?Die_trigger_damage@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl Die_trigger_damage(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x00470BD0	0x008600D0	?G_CheckHitTriggerDamage@@YAXPAVEntity@@ABVPosition3@math@@1HH@Z	void __cdecl G_CheckHitTriggerDamage(class Entity *,class math::Position3 const &,class math::Position3 const &,int,int)	g.o
+0x00470D70	0x00860270	?G_GrenadeTouchTriggerDamage@@YAXPAVEntity@@ABVPosition3@math@@1HH@Z	void __cdecl G_GrenadeTouchTriggerDamage(class Entity *,class math::Position3 const &,class math::Position3 const &,int,int)	g.o
+0x00470F20	0x00860420	?Touch_trigger_mount@@YAXPAVEntity@@0H@Z	void __cdecl Touch_trigger_mount(class Entity *,class Entity *,int)	g.o
+0x00470F40	0x00860440	?G_CheckPointInsideTriggerMount@@YAHPAVEntity@@QAMPAH@Z	int __cdecl G_CheckPointInsideTriggerMount(class Entity *,float * const,int *)	g.o
+0x00471100	0x00860600	?update_trigger_notifies@@YAXXZ	void __cdecl update_trigger_notifies(void)	g.o
+0x004712A0	0x008607A0	?Bullet_Fire_Fake_Extended@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PAVEntity@@QAMQBMHHPAUweaponParms@@0M@Z	void __cdecl Bullet_Fire_Fake_Extended(class DbLinkedHandle<class EntityHandleDb,class Entity>,class Entity *,float * const,float const * const,int,int,struct weaponParms *,class DbLinkedHandle<class EntityHandleDb,class Entity>,float)	g.o
+0x00471BA0	0x008610A0	?Weapon_Revive_Test@@YA_NPAVEntity@@PAUweaponParms@@PAPAV1@@Z	bool __cdecl Weapon_Revive_Test(class Entity *,struct weaponParms *,class Entity * *)	g.o
+0x004720E0	0x008615E0	?Weapon_Revive@@YAXPAVEntity@@HPAUweaponParms@@@Z	void __cdecl Weapon_Revive(class Entity *,int,struct weaponParms *)	g.o
+0x00472130	0x00861630	?Spotting@@YAXPAVEntity@@@Z	void __cdecl Spotting(class Entity *)	g.o
+0x00472370	0x00861870	?G_DObjUpdate@@YAXPAVEntity@@_N@Z	void __cdecl G_DObjUpdate(class Entity *,bool)	g.o
+0x004728B0	0x00861DB0	?G_SetModel@@YAXPAVEntity@@PBDW4TPakId@@H@Z	void __cdecl G_SetModel(class Entity *,char const *,enum TPakId,int)	g.o
+0x00472AE0	0x00861FE0	?G_EntDetach@@YAHPAVEntity@@PBD1@Z	int __cdecl G_EntDetach(class Entity *,char const *,char const *)	g.o
+0x00472C70	0x00862170	?G_EntDetachAll@@YAXPAVEntity@@@Z	void __cdecl G_EntDetachAll(class Entity *)	g.o
+0x004735E0	0x00862AE0	?G_DObjSetLocalBoneIndex@@YAHPAVEntity@@QAHHQBM2_N@Z	int __cdecl G_DObjSetLocalBoneIndex(class Entity *,int * const,int,float const * const,float const * const,bool)	g.o
+0x00473610	0x00862B10	?G_DObjSetLocalBoneIndex@@YAHPAVEntity@@QAHHABVPosition3@math@@ABVMat33@3@_N@Z	int __cdecl G_DObjSetLocalBoneIndex(class Entity *,int * const,int,class math::Position3 const &,class math::Mat33 const &,bool)	g.o
+0x00473640	0x00862B40	?G_DObjSetLocalTag@@YAHPAVEntity@@QAHIQBM2_N@Z	int __cdecl G_DObjSetLocalTag(class Entity *,int * const,unsigned int,float const * const,float const * const,bool)	g.o
+0x00473680	0x00862B80	?G_DObjSetControlTagAngles@@YAHPAVEntity@@QAHIQAM@Z	int __cdecl G_DObjSetControlTagAngles(class Entity *,int * const,unsigned int,float * const)	g.o
+0x004736C0	0x00862BC0	?G_FreeEntityRefs@@YAXPAVEntity@@@Z	void __cdecl G_FreeEntityRefs(class Entity *)	g.o
+0x004737E0	0x00862CE0	?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z	public: void __thiscall EntityHandleDb::AssignHandle(class Entity &)	g.o
+0x00473C40	0x00863140	?Player_UpdateActivate@@YAXPAVEntity@@@Z	void __cdecl Player_UpdateActivate(class Entity *)	g.o
+0x00473D90	0x00863290	?Player_GetActivateEnt@@YAHPAVEntity@@QAUuseList_t@@@Z	int __cdecl Player_GetActivateEnt(class Entity *,struct useList_t * const)	g.o
+0x00474710	0x00863C10	?G_TouchEnts@@YAXPAVEntity@@HQAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl G_TouchEnts(class Entity *,int,class DbLinkedHandle<class EntityHandleDb,class Entity> * const)	g.o
+0x004748A0	0x00863DA0	?G_TouchVehicles@@YAXPAVEntity@@ABVPosition3@math@@PAVTouchEntityData@@ABUcollision_context_t@@@Z	void __cdecl G_TouchVehicles(class Entity *,class math::Position3 const &,class TouchEntityData *,struct collision_context_t const &)	g.o
+0x00474C90	0x00864190	?G_DoTouchTriggers@@YAXPAVEntity@@ABVPosition3@math@@PAVTouchEntityData@@ABUcollision_context_t@@@Z	void __cdecl G_DoTouchTriggers(class Entity *,class math::Position3 const &,class TouchEntityData *,struct collision_context_t const &)	g.o
+0x00474FE0	0x008644E0	?player_die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl player_die(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x004750B0	0x008645B0	?SpawnHelmet@@YAPAVEntity@@PAV1@QBM1M@Z	class Entity * __cdecl SpawnHelmet(class Entity *,float const * const,float const * const,float)	g.o
+0x00475590	0x00864A90	?G_FinishDamage@@YAXPAVEntity@@00QBM1HHHW4hitLocation_t@@@Z	void __cdecl G_FinishDamage(class Entity *,class Entity *,class Entity *,float const * const,float const * const,int,int,int,enum hitLocation_t)	g.o
+0x00475910	0x00864E10	?Pickup_Health@@YAHPAVEntity@@0@Z	int __cdecl Pickup_Health(class Entity *,class Entity *)	g.o
+0x00475A70	0x00864F70	?LaunchItem@@YAPAVEntity@@W4TPakId@@PBUgitem_s@@QAM22PAV1@@Z	class Entity * __cdecl LaunchItem(enum TPakId,struct gitem_s const *,float * const,float * const,float * const,class Entity *)	g.o
+0x00475D20	0x00865220	?Drop_Item@@YAPAVEntity@@PAV1@PBUgitem_s@@MH@Z	class Entity * __cdecl Drop_Item(class Entity *,struct gitem_s const *,float,int)	g.o
+0x00475E40	0x00865340	?Drop_Weapon@@YAPAVEntity@@PAV1@HPBD@Z	class Entity * __cdecl Drop_Weapon(class Entity *,int,char const *)	g.o
+0x00476400	0x00865900	?G_SpawnItem@@YAXPAVEntity@@PBUgitem_s@@@Z	void __cdecl G_SpawnItem(class Entity *,struct gitem_s const *)	g.o
+0x00476720	0x00865C20	?G_RunItem@@YAXPAVEntity@@H@Z	void __cdecl G_RunItem(class Entity *,int)	g.o
+0x00476AE0	0x00865FE0	?G_InitGame@@YAHHHHH@Z	int __cdecl G_InitGame(int,int,int,int)	g.o
+0x00477450	0x00866950	?commit_dobjects@@YAXXZ	void __cdecl commit_dobjects(void)	g.o
+0x004776F0	0x00866BF0	?G_ClientStopUsingTurret@@YAXPAVEntity@@@Z	void __cdecl G_ClientStopUsingTurret(class Entity *)	g.o
+0x00477870	0x00866D70	?turret_UpdateTargetAngles@@YAHPAVEntity@@QAMH@Z	int __cdecl turret_UpdateTargetAngles(class Entity *,float * const,int)	g.o
+0x00477B10	0x00867010	?turret_SetState@@YAXPAVEntity@@H@Z	void __cdecl turret_SetState(class Entity *,int)	g.o
+0x00477BA0	0x008670A0	?turret_ClearTargetEnt@@YAXPAVEntity@@@Z	void __cdecl turret_ClearTargetEnt(class Entity *)	g.o
+0x00477C10	0x00867110	?turret_ReturnToDefaultPos@@YAHPAVEntity@@H@Z	int __cdecl turret_ReturnToDefaultPos(class Entity *,int)	g.o
+0x00477CA0	0x008671A0	?turret_random_aim@@YAHPAVEntity@@@Z	int __cdecl turret_random_aim(class Entity *)	g.o
+0x00477F60	0x00867460	?turret_aimat_Sentient_Internal@@YAHPAVEntity@@PAUsentient_s@@HHQAM@Z	int __cdecl turret_aimat_Sentient_Internal(class Entity *,struct sentient_s *,int,int,float * const)	g.o
+0x00478270	0x00867770	?turret_aimat_Sentient@@YAHPAVEntity@@PAUsentient_s@@HH@Z	int __cdecl turret_aimat_Sentient(class Entity *,struct sentient_s *,int,int)	g.o
+0x00478460	0x00867960	?turret_aimat_Ent@@YAHPAVEntity@@0H@Z	int __cdecl turret_aimat_Ent(class Entity *,class Entity *,int)	g.o
+0x004784C0	0x008679C0	?turret_isTargetVisable@@YAHPAVEntity@@0PAM@Z	int __cdecl turret_isTargetVisable(class Entity *,class Entity *,float *)	g.o
+0x00478710	0x00867C10	?turret_findBestTarget@@YAPAUsentient_s@@PAVEntity@@@Z	struct sentient_s * __cdecl turret_findBestTarget(class Entity *)	g.o
+0x004788C0	0x00867DC0	?turret_think_auto_nonai@@YAXPAVEntity@@@Z	void __cdecl turret_think_auto_nonai(class Entity *)	g.o
+0x00478A10	0x00867F10	?turret_think_auto@@YAHPAVEntity@@PAUactor_s@@@Z	int __cdecl turret_think_auto(class Entity *,struct actor_s *)	g.o
+0x004791F0	0x008686F0	?turret_think_manual@@YAHPAVEntity@@PAUactor_s@@@Z	int __cdecl turret_think_manual(class Entity *,struct actor_s *)	g.o
+0x00479460	0x00868960	?turret_think@@YAXPAVEntity@@H@Z	void __cdecl turret_think(class Entity *,int)	g.o
+0x00479790	0x00868C90	?turret_controller@@YAXPAVEntity@@QAH@Z	void __cdecl turret_controller(class Entity *,int * const)	g.o
+0x00479970	0x00868E70	?G_FreeTurret@@YAXPAVEntity@@@Z	void __cdecl G_FreeTurret(class Entity *)	g.o
+0x00479A40	0x00868F40	?turret_use@@YAXPAVEntity@@00@Z	void __cdecl turret_use(class Entity *,class Entity *,class Entity *)	g.o
+0x00479D90	0x00869290	?G_SpawnTurret@@YAXPAVEntity@@PBD@Z	void __cdecl G_SpawnTurret(class Entity *,char const *)	g.o
+0x0047A660	0x00869B60	?SP_turret@@YAXPAVEntity@@@Z	void __cdecl SP_turret(class Entity *)	g.o
+0x0047A700	0x00869C00	?misc_spawner_think@@YAXPAVEntity@@H@Z	void __cdecl misc_spawner_think(class Entity *,int)	g.o
+0x0047A760	0x00869C60	?fire_grenade@@YAPAVEntity@@PAV1@QAM1HH@Z	class Entity * __cdecl fire_grenade(class Entity *,float * const,float * const,int,int)	g.o
+0x0047ABC0	0x0086A0C0	?fire_rifle_grenade@@YAPAVEntity@@PAV1@QAMH_N@Z	class Entity * __cdecl fire_rifle_grenade(class Entity *,float * const,int,bool)	g.o
+0x0047B0E0	0x0086A5E0	?fire_mine@@YAPAVEntity@@PAV1@QAM1H@Z	class Entity * __cdecl fire_mine(class Entity *,float * const,float * const,int)	g.o
+0x0047B500	0x0086AA00	?fire_rocket@@YAPAVEntity@@PAV1@QAM1M@Z	class Entity * __cdecl fire_rocket(class Entity *,float * const,float * const,float)	g.o
+0x0047B8A0	0x0086ADA0	?fire_artillery@@YAPAVEntity@@PAV1@QAMH@Z	class Entity * __cdecl fire_artillery(class Entity *,float * const,int)	g.o
+0x0047BB40	0x0086B040	?G_SetAnimTree@@YAXPAVEntity@@PAVAnimTree@@@Z	void __cdecl G_SetAnimTree(class Entity *,class AnimTree *)	g.o
+0x0047BC20	0x0086B120	?Reached_ScriptMover@@YAXPAVEntity@@@Z	void __cdecl Reached_ScriptMover(class Entity *)	g.o
+0x0047BD80	0x0086B280	?SP_script_model@@YAXPAVEntity@@@Z	void __cdecl SP_script_model(class Entity *)	g.o
+0x0047C110	0x0086B610	?debug_render@@YAXXZ	void __cdecl debug_render(void)	g.o
+0x0047C4F0	0x0086B9F0	?VEH_GroundPlant@@YAXPAVEntity@@HH@Z	void __cdecl VEH_GroundPlant(class Entity *,int,int)	g.o
+0x0047E030	0x0086D530	?VEH_UpdateGunnerAim@@YAXPAVEntity@@@Z	void __cdecl VEH_UpdateGunnerAim(class Entity *)	g.o
+0x0047E990	0x0086DE90	?VEH_UpdateControllers@@YAXPAVEntity@@H@Z	void __cdecl VEH_UpdateControllers(class Entity *,int)	g.o
+0x0047F630	0x0086EB30	?VEH_UpdateOverHeat@@YAXPAVEntity@@H@Z	void __cdecl VEH_UpdateOverHeat(class Entity *,int)	g.o
+0x0047F8B0	0x0086EDB0	?VEH_UpdatePath@@YAXPAVEntity@@H@Z	void __cdecl VEH_UpdatePath(class Entity *,int)	g.o
+0x0047FFB0	0x0086F4B0	?VEH_UnlinkPlayer@@YAXPAVEntity@@_N@Z	void __cdecl VEH_UnlinkPlayer(class Entity *,bool)	g.o
+0x004807D0	0x0086FCD0	?VEH_UnlinkPlayerDropped@@YAXPAVEntity@@@Z	void __cdecl VEH_UnlinkPlayerDropped(class Entity *)	g.o
+0x00480860	0x0086FD60	?VEH_PlayerInteractionExit@@YAXXZ	void __cdecl VEH_PlayerInteractionExit(void)	g.o
+0x00480880	0x0086FD80	?G_IsVehicleUsable@@YAHPAVEntity@@0_N@Z	int __cdecl G_IsVehicleUsable(class Entity *,class Entity *,bool)	g.o
+0x00480970	0x0086FE70	?Scr_Vehicle_Controller@@YAXPAVEntity@@QAH@Z	void __cdecl Scr_Vehicle_Controller(class Entity *,int * const)	g.o
+0x00480AC0	0x0086FFC0	?Scr_Vehicle_Init@@YAXPAVEntity@@H@Z	void __cdecl Scr_Vehicle_Init(class Entity *,int)	g.o
+0x00480CF0	0x008701F0	?VEH_RotateWheels@@YAXPAVEntity@@PAUvehicle_info_t@@@Z	void __cdecl VEH_RotateWheels(class Entity *,struct vehicle_info_t *)	g.o
+0x00480DA0	0x008702A0	?Scr_Vehicle_Use@@YAXPAVEntity@@00@Z	void __cdecl Scr_Vehicle_Use(class Entity *,class Entity *,class Entity *)	g.o
+0x004811F0	0x008706F0	?Scr_Vehicle_GetOut@@YAXPAVEntity@@0H@Z	void __cdecl Scr_Vehicle_GetOut(class Entity *,class Entity *,int)	g.o
+0x00481280	0x00870780	?G_CallEntitySpawnFunction@@YAXPAVEntity@@@Z	void __cdecl G_CallEntitySpawnFunction(class Entity *)	g.o
+0x00481350	0x00870850	?G_CallSpawnEntity@@YAHPAVEntity@@@Z	int __cdecl G_CallSpawnEntity(class Entity *)	g.o
+0x004814A0	0x008709A0	?Bullet_Fire_Fake@@YAXPAVEntity@@MHPAUweaponParms@@0M@Z	void __cdecl Bullet_Fire_Fake(class Entity *,float,int,struct weaponParms *,class Entity *,float)	g.o
+0x00481500	0x00870A00	?Spread_Fire_Fake@@YAXPAVEntity@@MMQBMHMMH@Z	void __cdecl Spread_Fire_Fake(class Entity *,float,float,float const * const,int,float,float,int)	g.o
+0x004816E0	0x00870BE0	?weapon_grenadelauncher_fire@@YAPAVEntity@@PAV1@HPAUweaponParms@@@Z	class Entity * __cdecl weapon_grenadelauncher_fire(class Entity *,int,struct weaponParms *)	g.o
+0x004818A0	0x00870DA0	?weapon_mine_fire@@YAPAVEntity@@PAV1@HPAUweaponParms@@@Z	class Entity * __cdecl weapon_mine_fire(class Entity *,int,struct weaponParms *)	g.o
+0x00481930	0x00870E30	?Weapon_RocketLauncher_Fire@@YAXPAVEntity@@MPAUweaponParms@@M_N@Z	void __cdecl Weapon_RocketLauncher_Fire(class Entity *,float,struct weaponParms *,float,bool)	g.o
+0x00481B60	0x00871060	?Weapon_Artillery_Fire@@YAXPAVEntity@@MPAUweaponParms@@M@Z	void __cdecl Weapon_Artillery_Fire(class Entity *,float,struct weaponParms *,float)	g.o
+0x00481E00	0x00871300	?Weapon_ArtilleryStrike_Launch@@YAXPAVEntity@@PAUweaponParms@@QAMH@Z	void __cdecl Weapon_ArtilleryStrike_Launch(class Entity *,struct weaponParms *,float * const,int)	g.o
+0x00482020	0x00871520	?G_EntAttach@@YAHPAVEntity@@PBD1HW4TPakId@@@Z	int __cdecl G_EntAttach(class Entity *,char const *,char const *,int,enum TPakId)	g.o
+0x00482270	0x00871770	?G_CalcTagParentAxis@@YAXPAVEntity@@QAY02M@Z	void __cdecl G_CalcTagParentAxis(class Entity *,float (* const)[3])	g.o
+0x004823C0	0x008718C0	?G_CalcTagParentRelAxis@@YAXPAVEntity@@QAY02M@Z	void __cdecl G_CalcTagParentRelAxis(class Entity *,float (* const)[3])	g.o
+0x00482440	0x00871940	?G_CalcTagAxis@@YAXPAVEntity@@H@Z	void __cdecl G_CalcTagAxis(class Entity *,int)	g.o
+0x00482540	0x00871A40	?G_SetFixedLink@@YAXPAVEntity@@H@Z	void __cdecl G_SetFixedLink(class Entity *,int)	g.o
+0x00482780	0x00871C80	?G_SetPlayerFixedLink@@YAXPAVEntity@@@Z	void __cdecl G_SetPlayerFixedLink(class Entity *)	g.o
+0x00482B50	0x00872050	?G_GeneralLink@@YAXPAVEntity@@@Z	void __cdecl G_GeneralLink(class Entity *)	g.o
+0x00482C10	0x00872110	?Player_UpdateCursorHints@@YAXPAVEntity@@@Z	void __cdecl Player_UpdateCursorHints(class Entity *)	g.o
+0x00483480	0x00872980	?G_LinkClient@@YAXPAVEntity@@@Z	void __cdecl G_LinkClient(class Entity *)	g.o
+0x00483560	0x00872A60	?Cmd_Kill_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Kill_f(class Entity *)	g.o
+0x004835B0	0x00872AB0	?Cmd_DropWeapon_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_DropWeapon_f(class Entity *)	g.o
+0x004835F0	0x00872AF0	?TossClientItems@@YAXPAVEntity@@@Z	void __cdecl TossClientItems(class Entity *)	g.o
+0x00483760	0x00872C60	?PlayerDead@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl PlayerDead(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x00483E10	0x00873310	?G_Damage@@YAXPAVEntity@@00QBM1HHHW4hitLocation_t@@H@Z	void __cdecl G_Damage(class Entity *,class Entity *,class Entity *,float const * const,float const * const,int,int,int,enum hitLocation_t,int)	g.o
+0x00484AC0	0x00873FC0	?G_RadiusDamage@@YAHQBMPAVEntity@@1MMM1H@Z	int __cdecl G_RadiusDamage(float const * const,class Entity *,class Entity *,float,float,float,class Entity *,int)	g.o
+0x004859C0	0x00874EC0	?Touch_Item@@YAXPAVEntity@@0H@Z	void __cdecl Touch_Item(class Entity *,class Entity *,int)	g.o
+0x00485F20	0x00875420	?UpdateLinkedEntities@@YAXABV?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@@Z	void __cdecl UpdateLinkedEntities(class ae_sized_array<class DbLinkedHandle<class EntityHandleDb,class Entity>,1000> const &)	g.o
+0x00485FF0	0x008754F0	?G_ExplodeMissile@@YAXPAVEntity@@H@Z	void __cdecl G_ExplodeMissile(class Entity *,int)	g.o
+0x00486FB0	0x008764B0	?G_MoverTeam@@YAXPAVEntity@@@Z	void __cdecl G_MoverTeam(class Entity *)	g.o
+0x004875F0	0x00876AF0	?G_RunMover@@YAXPAVEntity@@H@Z	void __cdecl G_RunMover(class Entity *,int)	g.o
+0x004877A0	0x00876CA0	?Blocked_Door@@YAXPAVEntity@@0@Z	void __cdecl Blocked_Door(class Entity *,class Entity *)	g.o
+0x00487890	0x00876D90	?Blocked_DoorRotate@@YAXPAVEntity@@0@Z	void __cdecl Blocked_DoorRotate(class Entity *,class Entity *)	g.o
+0x00488280	0x00877780	?G_SpawnVehicle@@YAHPAVEntity@@PBDH@Z	int __cdecl G_SpawnVehicle(class Entity *,char const *,int)	g.o
+0x00488420	0x00877920	?ChiefMammalInChargeOfVehicleDamageAndPushOut@@YAXPAVEntity@@@Z	void __cdecl ChiefMammalInChargeOfVehicleDamageAndPushOut(class Entity *)	g.o
+0x004888D0	0x00877DD0	?Scr_Vehicle_Touch@@YAXPAVEntity@@0H@Z	void __cdecl Scr_Vehicle_Touch(class Entity *,class Entity *,int)	g.o
+0x00488BE0	0x008780E0	?Scr_Vehicle_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl Scr_Vehicle_Die(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x00488CE0	0x008781E0	?SP_script_vehicle@@YAXPAVEntity@@@Z	void __cdecl SP_script_vehicle(class Entity *)	g.o
+0x00488ED0	0x008783D0	?VEH_RespawnVehicle@@YAXPAVEntity@@@Z	void __cdecl VEH_RespawnVehicle(class Entity *)	g.o
+0x004890C0	0x008785C0	?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z	public: void __thiscall scr_vehicle_t::CollisionDamage(class Entity *,class math::Position3 const &,class math::Position3 const &,float)	g.o
+0x00489110	0x00878610	?hurt_touch@@YAXPAVEntity@@0H@Z	void __cdecl hurt_touch(class Entity *,class Entity *,int)	g.o
+0x004891C0	0x008786C0	?Weapon_Melee@@YAXPAVEntity@@PAUweaponParms@@@Z	void __cdecl Weapon_Melee(class Entity *,struct weaponParms *)	g.o
+0x00489A70	0x00878F70	?Bullet_Fire_Extended@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PAVEntity@@QAMQBMHHPBUweaponParms@@0M@Z	void __cdecl Bullet_Fire_Extended(class DbLinkedHandle<class EntityHandleDb,class Entity>,class Entity *,float * const,float const * const,int,int,struct weaponParms const *,class DbLinkedHandle<class EntityHandleDb,class Entity>,float)	g.o
+0x0048AA50	0x00879F50	?FireWeaponMelee@@YAXPAVEntity@@@Z	void __cdecl FireWeaponMelee(class Entity *)	g.o
+0x0048AFF0	0x0087A4F0	?G_EntLinkTo@@YAHPAVEntity@@0PBD@Z	int __cdecl G_EntLinkTo(class Entity *,class Entity *,char const *)	g.o
+0x0048B030	0x0087A530	?G_EntLinkTo@@YAHPAVEntity@@0I@Z	int __cdecl G_EntLinkTo(class Entity *,class Entity *,unsigned int)	g.o
+0x0048B070	0x0087A570	?G_EntLinkToWithOffsetHash@@YAHPAVEntity@@0IQBM1_N@Z	int __cdecl G_EntLinkToWithOffsetHash(class Entity *,class Entity *,unsigned int,float const * const,float const * const,bool)	g.o
+0x0048B160	0x0087A660	?G_EntLinkToWithOffset@@YAHPAVEntity@@0PBDQBM2_N@Z	int __cdecl G_EntLinkToWithOffset(class Entity *,class Entity *,char const *,float const * const,float const * const,bool)	g.o
+0x0048B250	0x0087A750	?HeadHitEnt_Pain@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z	void __cdecl HeadHitEnt_Pain(class Entity *,class Entity *,int,float const * const,int,float const * const,enum hitLocation_t)	g.o
+0x0048B2C0	0x0087A7C0	?HeadHitEnt_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl HeadHitEnt_Die(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	g.o
+0x0048B2F0	0x0087A7F0	?Cmd_Give_f@@YAXPAVEntity@@@Z	void __cdecl Cmd_Give_f(class Entity *)	g.o
+0x0048B4E0	0x0087A9E0	?Touch_Item_Auto@@YAXPAVEntity@@0H@Z	void __cdecl Touch_Item_Auto(class Entity *,class Entity *,int)	g.o
+0x0048B520	0x0087AA20	?G_MissileImpact@@YAXPAVEntity@@PAUtrace_t@@QAMQBM@Z	void __cdecl G_MissileImpact(class Entity *,struct trace_t *,float * const,float const * const)	g.o
+0x0048BDE0	0x0087B2E0	?G_RunMissile@@YAXPAVEntity@@H@Z	void __cdecl G_RunMissile(class Entity *,int)	g.o
+0x0048C770	0x0087BC70	?Use_BinaryMover@@YAXPAVEntity@@00@Z	void __cdecl Use_BinaryMover(class Entity *,class Entity *,class Entity *)	g.o
+0x0048C970	0x0087BE70	?Touch_DoorTrigger@@YAXPAVEntity@@0H@Z	void __cdecl Touch_DoorTrigger(class Entity *,class Entity *,int)	g.o
+0x0048CA50	0x0087BF50	?G_TryDoor@@YAXPAVEntity@@00@Z	void __cdecl G_TryDoor(class Entity *,class Entity *,class Entity *)	g.o
+0x0048CB90	0x0087C090	?G_Activate@@YAXPAVEntity@@0@Z	void __cdecl G_Activate(class Entity *,class Entity *)	g.o
+0x0048CC10	0x0087C110	?G_VehiclePopOut@@YAXPAVEntity@@@Z	void __cdecl G_VehiclePopOut(class Entity *)	g.o
+0x0048CE20	0x0087C320	?SetAnimRouteStage@scr_vehicle_t@@QAE_NPAVEntity@@0HH@Z	public: bool __thiscall scr_vehicle_t::SetAnimRouteStage(class Entity *,class Entity *,int,int)	g.o
+0x0048D200	0x0087C700	?UpdateAnimRoute@scr_vehicle_t@@QAEXPAVEntity@@0@Z	public: void __thiscall scr_vehicle_t::UpdateAnimRoute(class Entity *,class Entity *)	g.o
+0x0048D730	0x0087CC30	?G_BulletFireSpread@@YAXPBVEntity@@PAV1@PBUweaponParms@@HM1MH@Z	void __cdecl G_BulletFireSpread(class Entity const *,class Entity *,struct weaponParms const *,int,float,class Entity *,float,int)	g.o
+0x0048D980	0x0087CE80	?Bullet_Fire@@YAXPAVEntity@@MHPAUweaponParms@@0M@Z	void __cdecl Bullet_Fire(class Entity *,float,int,struct weaponParms *,class Entity *,float)	g.o
+0x0048DAE0	0x0087CFE0	?FireWeapon@@YAXPAVEntity@@@Z	void __cdecl FireWeapon(class Entity *)	g.o
+0x0048DE60	0x0087D360	?ClientEvents@@YAXPAVEntity@@H@Z	void __cdecl ClientEvents(class Entity *,int)	g.o
+0x0048E1E0	0x0087D6E0	?ClientThink_real@@YAXPAVEntity@@@Z	void __cdecl ClientThink_real(class Entity *)	g.o
+0x0048EB30	0x0087E030	?ClientThink@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl ClientThink(class DbLinkedHandle<class EntityHandleDb,class Entity>)	g.o
+0x0048EBF0	0x0087E0F0	?game_vmMain@@YAHHHHHHHHH@Z	int __cdecl game_vmMain(int,int,int,int,int,int,int,int)	g.o
+0x0048F270	0x0087E770	?UpdateEntities@@YAXAAV?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@H@Z	void __cdecl UpdateEntities(class ae_sized_array<class DbLinkedHandle<class EntityHandleDb,class Entity>,1000> &,int)	g.o
+0x0048F340	0x0087E840	?Fire_Lead@@YAXPAVEntity@@0HH@Z	void __cdecl Fire_Lead(class Entity *,class Entity *,int,int)	g.o
+0x0048F570	0x0087EA70	?turret_shoot_internal@@YAXPAVEntity@@0@Z	void __cdecl turret_shoot_internal(class Entity *,class Entity *)	g.o
+0x0048F630	0x0087EB30	?turret_track@@YAXPAVEntity@@0@Z	void __cdecl turret_track(class Entity *,class Entity *)	g.o
+0x0048F8D0	0x0087EDD0	?turret_think_client@@YAXPAVEntity@@@Z	void __cdecl turret_think_client(class Entity *)	g.o
+0x0048F9D0	0x0087EED0	?turret_shoot@@YAXPAVEntity@@0@Z	void __cdecl turret_shoot(class Entity *,class Entity *)	g.o
+0x00490080	0x0087F580	?VEH_FireGunnerWeapon@@YAXPAVEntity@@H@Z	void __cdecl VEH_FireGunnerWeapon(class Entity *,int)	g.o
+0x00490A60	0x0087FF60	?VEH_LinkPlayer@@YAXPAVEntity@@0HHH@Z	void __cdecl VEH_LinkPlayer(class Entity *,class Entity *,int,int,int)	g.o
+0x00490EA0	0x008803A0	?VEH_PlayerInteractionEntry@@YAXPAVEntity@@@Z	void __cdecl VEH_PlayerInteractionEntry(class Entity *)	g.o
+0x00490ED0	0x008803D0	?Scr_Vehicle_Think@@YAXPAVEntity@@H@Z	void __cdecl Scr_Vehicle_Think(class Entity *,int)	g.o
+0x004918E0	0x00880DE0	?Scr_Vehicle_GetIn@@YAXPAVEntity@@0HHH@Z	void __cdecl Scr_Vehicle_GetIn(class Entity *,class Entity *,int,int,int)	g.o
+0x00491980	0x00880E80	?Scr_Vehicle_SeatChange@@YAHPAVEntity@@H@Z	int __cdecl Scr_Vehicle_SeatChange(class Entity *,int)	g.o
+0x00491B60	0x00881060	?ClientEndFrame@@YAXPAVEntity@@H@Z	void __cdecl ClientEndFrame(class Entity *,int)	g.o
+0x00491F10	0x00881410	?ClientSpawn@@YAXPAVEntity@@QBM1_N2@Z	void __cdecl ClientSpawn(class Entity *,float const * const,float const * const,bool,bool)	g.o
+0x00492600	0x00881B00	?G_RunFrame@@YAXH@Z	void __cdecl G_RunFrame(int)	g.o

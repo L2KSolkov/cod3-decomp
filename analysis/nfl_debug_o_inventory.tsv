@@ -1,0 +1,13 @@
+ida_ea	va	name	signature	family
+0x0082D600	0x00C1CB00	?nfsMessage@@YAXPBDZZ	void __cdecl nfsMessage(char const *,...)	nfl_debug.o
+0x0082D620	0x00C1CB20	?nfsWarning@@YAXPBDZZ	void __cdecl nfsWarning(char const *,...)	nfl_debug.o
+0x0082D640	0x00C1CB40	?nfsError@@YAXPBDZZ	void __cdecl nfsError(char const *,...)	nfl_debug.o
+0x0082D660	0x00C1CB60	?nfsRequestStateText@@YAPBDW4nfsRequestState@@@Z	char const * __cdecl nfsRequestStateText(enum nfsRequestState)	nfl_debug.o
+0x0082D6E0	0x00C1CBE0	?nfsFileTypeText@@YAPBDW4nfsFileType@@@Z	char const * __cdecl nfsFileTypeText(enum nfsFileType)	nfl_debug.o
+0x0082D710	0x00C1CC10	?nfsRequestStateText@@YAPBDW4nflRequestState@@@Z	char const * __cdecl nfsRequestStateText(enum nflRequestState)	nfl_debug.o
+0x0082D770	0x00C1CC70	?nfsMediaIDText@@YAPBDW4nflMediaID@@@Z	char const * __cdecl nfsMediaIDText(enum nflMediaID)	nfl_debug.o
+0x0082D800	0x00C1CD00	?nfsBufferModeText@@YAPBDW4nflBufferMode@@@Z	char const * __cdecl nfsBufferModeText(enum nflBufferMode)	nfl_debug.o
+0x0082D850	0x00C1CD50	?nfdErrorText@@YAPBDW4nfdError@@@Z	char const * __cdecl nfdErrorText(enum nfdError)	nfl_debug.o
+0x0082D8C0	0x00C1CDC0	?nfdFileFlagsText@@YAPBDW4nfdFileFlags@@@Z	char const * __cdecl nfdFileFlagsText(enum nfdFileFlags)	nfl_debug.o
+0x0082D9C0	0x00C1CEC0	?nfdMediaStateText@@YAPBDW4nfdMediaState@@@Z	char const * __cdecl nfdMediaStateText(enum nfdMediaState)	nfl_debug.o
+0x0082DA10	0x00C1CF10	?nfdIoStateText@@YAPBDW4nfdIoState@@@Z	char const * __cdecl nfdIoStateText(enum nfdIoState)	nfl_debug.o

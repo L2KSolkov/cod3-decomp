@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:004285e0 ?nslVoicePtr@@YAPAUnslVoice@@H@Z 00C17AE0 f nslVoice.o
+2	VERIFIED	0002:00428610 ?nslVoiceCount@@YAIXZ 00C17B10 f nslVoice.o
+3	VERIFIED	0002:00428620 ?nslVoiceAlloc@@YAHW4nslWaveID@@W4nslSourceID@@H@Z 00C17B20 f nslVoice.o
+4	VERIFIED	0002:00428700 ?nslVoiceFree@@YAXH@Z 00C17C00 f nslVoice.o
+5	VERIFIED	0002:00428750 ?nslVoiceRender@@YAXPAUnslVoice@@@Z 00C17C50 f nslVoice.o

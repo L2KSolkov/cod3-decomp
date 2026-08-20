@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007DA260	?InitCDWorldBlendPointLitShader@@YAXXZ	void __cdecl InitCDWorldBlendPointLitShader(void)	
+0x007DA2B0	?ToggleCDWorldBlendPointLitShader@@YAXXZ	void __cdecl ToggleCDWorldBlendPointLitShader(void)	
+0x007DA2D0	?Register@cdWorldBlendPointLitShader@@UAEXXZ	public: virtual void __thiscall cdWorldBlendPointLitShader::Register(void)	
+0x007DA310	?AddNode@cdWorldBlendPointLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldBlendPointLitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007DA3A0	?Render@cdWorldBlendPointLitShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldBlendPointLitShaderNode::Render(void)	

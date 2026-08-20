@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x00804C90	0x00BF4190	??0apsColorUVARectangleRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsColorUVARectangleRenderer::apsColorUVARectangleRenderer(class apsColorUVARectangleRenderer::cArgs const &)	apsColorUVARectangleRenderer.o
+0x00804CD0	0x00BF41D0	?Init@apsColorUVARectangleRenderer@@SAXXZ	public: static void __cdecl apsColorUVARectangleRenderer::Init(void)	apsColorUVARectangleRenderer.o
+0x00804D00	0x00BF4200	?Render@apsColorUVARectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsColorUVARectangleRenderer::Render(struct apsRendererRenderInfo const &)	apsColorUVARectangleRenderer.o

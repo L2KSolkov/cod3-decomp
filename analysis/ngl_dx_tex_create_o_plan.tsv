@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x0084AD10	?nglSaveTexture@@YAXPAUnglTexture@@PBD@Z	void __cdecl nglSaveTexture(struct nglTexture *,char const *)	
+0x0084ADB0	?nglCreateTextureFromFile@@YAPAUnglTexture@@PAXH@Z	struct nglTexture * __cdecl nglCreateTextureFromFile(void *,int)	
+0x0084AE20	?nglDestroyTexture@@YAXPAUnglTexture@@@Z	void __cdecl nglDestroyTexture(struct nglTexture *)	
+0x0084AED0	?nglCreateFrontBufferTexture@@YAXPAUnglTexture@@PAVtlFixedString@@@Z	void __cdecl nglCreateFrontBufferTexture(struct nglTexture *,class tlFixedString *)	
+0x0084AF30	?nglCreateAuxBufferTexture@@YAXPAUnglTexture@@HH@Z	void __cdecl nglCreateAuxBufferTexture(struct nglTexture *,int,int)	
+0x0084AFA0	?nglCreatePrevBufferTexture@@YAXPAUnglTexture@@HH@Z	void __cdecl nglCreatePrevBufferTexture(struct nglTexture *,int,int)	
+0x0084B010	?nglCreateBackBufferTexture@@YAXPAUnglTexture@@0@Z	void __cdecl nglCreateBackBufferTexture(struct nglTexture *,struct nglTexture *)	
+0x0084B0B0	?nglInitFrameBufferTexture@@YAXXZ	void __cdecl nglInitFrameBufferTexture(void)	
+0x0084B100	?nglUpdateInternalTextures@@YAXXZ	void __cdecl nglUpdateInternalTextures(void)	
+0x0084B1A0	?nglDestroyNormalCubeMap@@YAXXZ	void __cdecl nglDestroyNormalCubeMap(void)	
+0x0084B1C0	?nglCreateNormalCubeMap@@YAXI@Z	void __cdecl nglCreateNormalCubeMap(unsigned int)	

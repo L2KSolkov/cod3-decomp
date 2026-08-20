@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x0084FC90	?Reset@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::Reset(void)	
+0x0084FCC0	?SetBlendMode@nglDxRenderState@@QAEXI@Z	public: void __thiscall nglDxRenderState::SetBlendMode(unsigned int)	
+0x0084FED0	?FSAAFixup@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::FSAAFixup(void)	
+0x0084FEE0	?Init@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::Init(void)	

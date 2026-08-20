@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x007E0EA0	?InitCDSkyShader@@YAXXZ	void __cdecl InitCDSkyShader(void)	
+0x007E0EF0	?ToggleCDSkyShader@@YAXXZ	void __cdecl ToggleCDSkyShader(void)	
+0x007E0F10	?Register@cdSkyShader@@UAEXXZ	public: virtual void __thiscall cdSkyShader::Register(void)	
+0x007E0F50	?Render@cdSkyShaderNode@@UAEXXZ	public: virtual void __thiscall cdSkyShaderNode::Render(void)	

@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x008081F0	0x00BF76F0	?SetParam@apsAction@@QAEXHM@Z	public: void __thiscall apsAction::SetParam(int,float)	apsAction.o
+0x00808260	0x00BF7760	?SetDomain@apsAction@@QAEXHPAVapsDomain@@@Z	public: void __thiscall apsAction::SetDomain(int,class apsDomain *)	apsAction.o
+0x008082F0	0x00BF77F0	?Fixup@apsAction@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsAction::Fixup(struct apsFixupParams const &)	apsAction.o
+0x00808430	0x00BF7930	??1apsAction@@UAE@XZ	public: virtual __thiscall apsAction::~apsAction(void)	apsAction.o
+0x00808500	0x00BF7A00	??0apsAction@@IAE@HHW4IterationStyle@0@I@Z	protected: __thiscall apsAction::apsAction(int,int,enum apsAction::IterationStyle,unsigned int)	apsAction.o

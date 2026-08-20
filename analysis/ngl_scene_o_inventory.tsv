@@ -1,0 +1,68 @@
+ida_ea	va	name	signature	family
+0x00839CA0	0x00C291A0	?nglGetSceneParams@@YAPAUnglSceneParamSet@@PAUnglScene@@@Z	struct nglSceneParamSet * __cdecl nglGetSceneParams(struct nglScene *)	ngl_scene.o
+0x00839CB0	0x00C291B0	?nglSetRenderTarget@@YAXPAUnglTexture@@@Z	void __cdecl nglSetRenderTarget(struct nglTexture *)	ngl_scene.o
+0x00839CC0	0x00C291C0	?nglSetZTarget@@YAXPAUnglTexture@@@Z	void __cdecl nglSetZTarget(struct nglTexture *)	ngl_scene.o
+0x00839CD0	0x00C291D0	?nglSetClearStencil@@YAXI@Z	void __cdecl nglSetClearStencil(unsigned int)	ngl_scene.o
+0x00839CE0	0x00C291E0	?nglSetClearFlags@@YAXI@Z	void __cdecl nglSetClearFlags(unsigned int)	ngl_scene.o
+0x00839D00	0x00C29200	?nglSetClearColor@@YAXMMMM@Z	void __cdecl nglSetClearColor(float,float,float,float)	ngl_scene.o
+0x00839D80	0x00C29280	?nglSetClearZ@@YAXM@Z	void __cdecl nglSetClearZ(float)	ngl_scene.o
+0x00839DA0	0x00C292A0	?nglSetFBWriteMask@@YAXI@Z	void __cdecl nglSetFBWriteMask(unsigned int)	ngl_scene.o
+0x00839DC0	0x00C292C0	?nglSetZWriteEnable@@YAX_N@Z	void __cdecl nglSetZWriteEnable(bool)	ngl_scene.o
+0x00839DE0	0x00C292E0	?nglSetZTestEnable@@YAX_N@Z	void __cdecl nglSetZTestEnable(bool)	ngl_scene.o
+0x00839E00	0x00C29300	?nglSetFBCopy@@YAX_N0@Z	void __cdecl nglSetFBCopy(bool,bool)	ngl_scene.o
+0x00839E30	0x00C29330	?nglSetZCopy@@YAX_N0@Z	void __cdecl nglSetZCopy(bool,bool)	ngl_scene.o
+0x00839E60	0x00C29360	?nglSetRenderTiling@@YAXH@Z	void __cdecl nglSetRenderTiling(int)	ngl_scene.o
+0x00839E80	0x00C29380	?nglEnableFog@@YAX_N@Z	void __cdecl nglEnableFog(bool)	ngl_scene.o
+0x00839EA0	0x00C293A0	?nglSetFogColor@@YAXMMM@Z	void __cdecl nglSetFogColor(float,float,float)	ngl_scene.o
+0x00839F20	0x00C29420	?nglSetFogRange@@YAXMMMM@Z	void __cdecl nglSetFogRange(float,float,float,float)	ngl_scene.o
+0x00839FE0	0x00C294E0	?nglEnableDepthOfField@@YAX_N@Z	void __cdecl nglEnableDepthOfField(bool)	ngl_scene.o
+0x0083A000	0x00C29500	?nglSetFocusDepth@@YAXM@Z	void __cdecl nglSetFocusDepth(float)	ngl_scene.o
+0x0083A020	0x00C29520	?nglSetAnimTime@@YAXM@Z	void __cdecl nglSetAnimTime(float)	ngl_scene.o
+0x0083A040	0x00C29540	?Perspective@@YA?AVMat44@math@@MMMM@Z	class math::Mat44 __cdecl Perspective(float,float,float,float)	ngl_scene.o
+0x0083A170	0x00C29670	?Ortho@@YA?AVMat44@math@@MMMM@Z	class math::Mat44 __cdecl Ortho(float,float,float,float)	ngl_scene.o
+0x0083A290	0x00C29790	?Viewport@@YA?AVMat44@math@@MMMM@Z	class math::Mat44 __cdecl Viewport(float,float,float,float)	ngl_scene.o
+0x0083A3F0	0x00C298F0	?InvScissor@@YA?AVMat44@math@@MMMM@Z	class math::Mat44 __cdecl InvScissor(float,float,float,float)	ngl_scene.o
+0x0083A540	0x00C29A40	?ViewportToWorld@@YA?AVMat44@math@@PAUnglScene@@@Z	class math::Mat44 __cdecl ViewportToWorld(struct nglScene *)	ngl_scene.o
+0x0083AC40	0x00C2A140	?UI@@YA?AVMat44@math@@PAUnglScene@@@Z	class math::Mat44 __cdecl UI(struct nglScene *)	ngl_scene.o
+0x0083ADB0	0x00C2A2B0	?nglSetView@@YAXMMMM@Z	void __cdecl nglSetView(float,float,float,float)	ngl_scene.o
+0x0083AE10	0x00C2A310	?nglSetAspectRatio@@YAXM@Z	void __cdecl nglSetAspectRatio(float)	ngl_scene.o
+0x0083AE40	0x00C2A340	?nglSetPerspectiveMatrix@@YAXMMM@Z	void __cdecl nglSetPerspectiveMatrix(float,float,float)	ngl_scene.o
+0x0083AED0	0x00C2A3D0	?nglSetOrthoMatrix@@YAXMM@Z	void __cdecl nglSetOrthoMatrix(float,float)	ngl_scene.o
+0x0083AF60	0x00C2A460	?nglSetWorldToViewMatrix@@YAXABVMat43@math@@@Z	void __cdecl nglSetWorldToViewMatrix(class math::Mat43 const &)	ngl_scene.o
+0x0083B0E0	0x00C2A5E0	?nglSetCameraMatrix@@YAXABVMat43@math@@@Z	void __cdecl nglSetCameraMatrix(class math::Mat43 const &)	ngl_scene.o
+0x0083B1F0	0x00C2A6F0	?nglSetSceneCallBack@@YAXW4nglSceneCallbackType@@P6AXPAX@Z1@Z	void __cdecl nglSetSceneCallBack(enum nglSceneCallbackType,void (__cdecl*)(void *),void *)	ngl_scene.o
+0x0083B3E0	0x00C2A8E0	?nglSetEndOfRenderCallback@@YAXP6AXPAX@Z0@Z	void __cdecl nglSetEndOfRenderCallback(void (__cdecl*)(void *),void *)	ngl_scene.o
+0x0083B400	0x00C2A900	?nglSetEndOfFrameCallback@@YAXP6AXPAX@Z0@Z	void __cdecl nglSetEndOfFrameCallback(void (__cdecl*)(void *),void *)	ngl_scene.o
+0x0083B420	0x00C2A920	?nglSetEndOfVBlankCallback@@YAXP6AXPAX@Z0@Z	void __cdecl nglSetEndOfVBlankCallback(void (__cdecl*)(void *),void *)	ngl_scene.o
+0x0083B440	0x00C2A940	?nglGetRemainingFrameTime@@YAMXZ	float __cdecl nglGetRemainingFrameTime(void)	ngl_scene.o
+0x0083B4B0	0x00C2A9B0	?nglListEndScene@@YAXXZ	void __cdecl nglListEndScene(void)	ngl_scene.o
+0x0083B4F0	0x00C2A9F0	?nglListSelectScene@@YAPAUnglScene@@PAU1@@Z	struct nglScene * __cdecl nglListSelectScene(struct nglScene *)	ngl_scene.o
+0x0083B510	0x00C2AA10	?nglHiresScreenShotInProgress@@YA_NXZ	bool __cdecl nglHiresScreenShotInProgress(void)	ngl_scene.o
+0x0083B520	0x00C2AA20	?nglHiresScreenShotNumColumns@@YAIXZ	unsigned int __cdecl nglHiresScreenShotNumColumns(void)	ngl_scene.o
+0x0083B530	0x00C2AA30	?nglHiresScreenShotNumRows@@YAIXZ	unsigned int __cdecl nglHiresScreenShotNumRows(void)	ngl_scene.o
+0x0083B540	0x00C2AA40	?nglBeginHiresScreenShot@@YAXHH@Z	void __cdecl nglBeginHiresScreenShot(int,int)	ngl_scene.o
+0x0083B710	0x00C2AC10	?nglSaveHiresScreenshot@@YA_NXZ	bool __cdecl nglSaveHiresScreenshot(void)	ngl_scene.o
+0x0083B7B0	0x00C2ACB0	?nglAdjustViewForHiresScreenshot@@YAXXZ	void __cdecl nglAdjustViewForHiresScreenshot(void)	ngl_scene.o
+0x0083B830	0x00C2AD30	?nglSyncFrameBuffers@@YAXXZ	void __cdecl nglSyncFrameBuffers(void)	ngl_scene.o
+0x0083B8C0	0x00C2ADC0	?nglLockTexture@@YAXPAUnglTexture@@@Z	void __cdecl nglLockTexture(struct nglTexture *)	ngl_scene.o
+0x0083B900	0x00C2AE00	?nglCalculateMatrices@@YAXPAUnglScene@@@Z	void __cdecl nglCalculateMatrices(struct nglScene *)	ngl_scene.o
+0x0083CAE0	0x00C2BFE0	?nglValidateMatrices@@YAXPAUnglScene@@@Z	void __cdecl nglValidateMatrices(struct nglScene *)	ngl_scene.o
+0x0083CB10	0x00C2C010	?nglSetScissorWH@@YAXMMMMMM@Z	void __cdecl nglSetScissorWH(float,float,float,float,float,float)	ngl_scene.o
+0x0083CC60	0x00C2C160	?nglSetScissor@@YAXMMMM@Z	void __cdecl nglSetScissor(float,float,float,float)	ngl_scene.o
+0x0083CE00	0x00C2C300	?nglSetViewport@@YAXMMMM@Z	void __cdecl nglSetViewport(float,float,float,float)	ngl_scene.o
+0x0083D120	0x00C2C620	?nglGetMatrix@@YA?AVMat44@math@@W4nglMatrixType@@PAUnglScene@@@Z	class math::Mat44 __cdecl nglGetMatrix(enum nglMatrixType,struct nglScene *)	ngl_scene.o
+0x0083D350	0x00C2C850	?nglGetMatrix_ViewToWorld@@YAABVMat43@math@@PAUnglScene@@@Z	class math::Mat43 const & __cdecl nglGetMatrix_ViewToWorld(struct nglScene *)	ngl_scene.o
+0x0083D380	0x00C2C880	?nglGetMatrix_WorldToView@@YAABVMat43@math@@PAUnglScene@@@Z	class math::Mat43 const & __cdecl nglGetMatrix_WorldToView(struct nglScene *)	ngl_scene.o
+0x0083D3B0	0x00C2C8B0	?nglGetMatrix_ViewToScreen@@YAABVMat44@math@@PAUnglScene@@@Z	class math::Mat44 const & __cdecl nglGetMatrix_ViewToScreen(struct nglScene *)	ngl_scene.o
+0x0083D3E0	0x00C2C8E0	?nglGetMatrix_WorldToScreen@@YAABVMat44@math@@PAUnglScene@@@Z	class math::Mat44 const & __cdecl nglGetMatrix_WorldToScreen(struct nglScene *)	ngl_scene.o
+0x0083D410	0x00C2C910	?nglProjectPoint@@YA?AVPosition3@math@@ABV12@PAUnglScene@@@Z	class math::Position3 __cdecl nglProjectPoint(class math::Position3 const &,struct nglScene *)	ngl_scene.o
+0x0083D600	0x00C2CB00	?nglUnprojectPoint@@YA?AVPosition3@math@@ABV12@PAUnglScene@@@Z	class math::Position3 __cdecl nglUnprojectPoint(class math::Position3 const &,struct nglScene *)	ngl_scene.o
+0x0083D8A0	0x00C2CDA0	?nglSetDefaultSceneParams@@YAXXZ	void __cdecl nglSetDefaultSceneParams(void)	ngl_scene.o
+0x0083DB10	0x00C2D010	?nglGetMatrix@@YAXAAVMat44@math@@W4nglMatrixType@@PAUnglScene@@@Z	void __cdecl nglGetMatrix(class math::Mat44 &,enum nglMatrixType,struct nglScene *)	ngl_scene.o
+0x0083DBC0	0x00C2D0C0	?nglProjectPoint@@YAXAAVPosition3@math@@ABV12@PAUnglScene@@@Z	void __cdecl nglProjectPoint(class math::Position3 &,class math::Position3 const &,struct nglScene *)	ngl_scene.o
+0x0083DC10	0x00C2D110	?nglSetupBeginScene@@YAXPAUnglScene@@W4nglSceneParamType@@@Z	void __cdecl nglSetupBeginScene(struct nglScene *,enum nglSceneParamType)	ngl_scene.o
+0x0083DD40	0x00C2D240	?nglListBeginScene@@YAPAUnglScene@@W4nglSceneParamType@@@Z	struct nglScene * __cdecl nglListBeginScene(enum nglSceneParamType)	ngl_scene.o
+0x0083DE00	0x00C2D300	?nglListAddCustomNode@@YAXP6AXPAX@Z0PBUnglSortInfo@@@Z	void __cdecl nglListAddCustomNode(void (__cdecl*)(void *),void *,struct nglSortInfo const *)	ngl_scene.o
+0x0083DE70	0x00C2D370	?nglListBeginSceneNode@@YAPAUnglScene@@W4nglSceneParamType@@PAUnglSortInfo@@@Z	struct nglScene * __cdecl nglListBeginSceneNode(enum nglSceneParamType,struct nglSortInfo *)	ngl_scene.o
+0x0083DF10	0x00C2D410	?nglSortScene@@YAXPAUnglScene@@@Z	void __cdecl nglSortScene(struct nglScene *)	ngl_scene.o
+0x0083DF80	0x00C2D480	?nglPresent@@YAXXZ	void __cdecl nglPresent(void)	ngl_scene.o

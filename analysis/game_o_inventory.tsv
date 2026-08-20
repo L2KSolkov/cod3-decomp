@@ -1,0 +1,664 @@
+ida_ea	va	name	signature	family
+0x00602350	0x009F1850	??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PBDI@Z	public: __thiscall AnimNotifyTask::AnimNotifyTask(class DbLinkedHandle<class EntityHandleDb,class Entity>,char const *,unsigned int)	game.o
+0x006023C0	0x009F18C0	??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@II@Z	public: __thiscall AnimNotifyTask::AnimNotifyTask(class DbLinkedHandle<class EntityHandleDb,class Entity>,unsigned int,unsigned int)	game.o
+0x006023F0	0x009F18F0	?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z	private: char const * __thiscall AudioBankMgr::LanguageStr(enum ELanguage)const 	game.o
+0x006024A0	0x009F19A0	?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z	private: enum nslBankID __thiscall SoundDevice::SyncLoadBank(char const *)	game.o
+0x006025A0	0x009F1AA0	?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z	public: float __thiscall SoundDevice::GetWaveDuration(enum nslWaveID)	game.o
+0x00602600	0x009F1B00	?GetPlaybackPosition@Sound@SoundDevice@@QBEMXZ	public: float __thiscall SoundDevice::Sound::GetPlaybackPosition(void)const 	game.o
+0x00602610	0x009F1B10	?SetReverb@Sound@SoundDevice@@QAEX_N@Z	public: void __thiscall SoundDevice::Sound::SetReverb(bool)	game.o
+0x00602690	0x009F1B90	?GetVolume@Sound@SoundDevice@@QBEMXZ	public: float __thiscall SoundDevice::Sound::GetVolume(void)const 	game.o
+0x006026B0	0x009F1BB0	?GetSourceName@Sound@SoundDevice@@QBEPBDXZ	public: char const * __thiscall SoundDevice::Sound::GetSourceName(void)const 	game.o
+0x006026D0	0x009F1BD0	?PlayQueued@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::PlayQueued(void)	game.o
+0x00602730	0x009F1C30	?Pause@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::Pause(void)	game.o
+0x006027A0	0x009F1CA0	?Unpause@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::Unpause(void)	game.o
+0x00602810	0x009F1D10	?DampenGuard@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::DampenGuard(void)	game.o
+0x00602820	0x009F1D20	?IsQueuing@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsQueuing(void)const 	game.o
+0x00602890	0x009F1D90	?IsQueued@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsQueued(void)const 	game.o
+0x00602900	0x009F1E00	?IsPlaying@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsPlaying(void)const 	game.o
+0x00602930	0x009F1E30	?IsPaused@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsPaused(void)const 	game.o
+0x00602940	0x009F1E40	?IsFinished@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsFinished(void)const 	game.o
+0x00602980	0x009F1E80	?IsLooped@Sound@SoundDevice@@QBE_NXZ	public: bool __thiscall SoundDevice::Sound::IsLooped(void)const 	game.o
+0x006029D0	0x009F1ED0	?GetLength@Sound@SoundDevice@@QBEMXZ	public: float __thiscall SoundDevice::Sound::GetLength(void)const 	game.o
+0x00602A10	0x009F1F10	?ScaleVolume@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::ScaleVolume(float)	game.o
+0x00602A80	0x009F1F80	?PauseAllSounds@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::PauseAllSounds(void)	game.o
+0x00602AB0	0x009F1FB0	?GetSoundFromSourceId@SoundDevice@@QAEPAVSound@1@W4nslSourceID@@@Z	public: class SoundDevice::Sound * __thiscall SoundDevice::GetSoundFromSourceId(enum nslSourceID)	game.o
+0x00602AE0	0x009F1FE0	?UnpauseAllSounds@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::UnpauseAllSounds(void)	game.o
+0x00602B10	0x009F2010	?GetNumberOfListeners@SoundDevice@@QAEHXZ	public: int __thiscall SoundDevice::GetNumberOfListeners(void)	game.o
+0x00602B20	0x009F2020	?SetNumberOfListeners@SoundDevice@@QAEXH@Z	public: void __thiscall SoundDevice::SetNumberOfListeners(int)	game.o
+0x00602B40	0x009F2040	?IsSoundReady@SoundDevice@@QAE_NXZ	public: bool __thiscall SoundDevice::IsSoundReady(void)	game.o
+0x00602B60	0x009F2060	?DampenAllSounds@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::DampenAllSounds(float)	game.o
+0x00602B80	0x009F2080	?UndampenAllSounds@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::UndampenAllSounds(void)	game.o
+0x00602B90	0x009F2090	?SetEnvironment@SoundDevice@@QAEXW4ESoundEnvironment@@@Z	public: void __thiscall SoundDevice::SetEnvironment(enum ESoundEnvironment)	game.o
+0x00602BA0	0x009F20A0	?SetReverb@SoundDevice@@QAEXPBD_N@Z	public: void __thiscall SoundDevice::SetReverb(char const *,bool)	game.o
+0x00603640	0x009F2B40	?UpdateReverb@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::UpdateReverb(float)	game.o
+0x00603820	0x009F2D20	?BusVolumeIsName@SoundDevice@@QAE_NPBD@Z	public: bool __thiscall SoundDevice::BusVolumeIsName(char const *)	game.o
+0x00603840	0x009F2D40	?BusPitchFade@SoundDevice@@QAEXPBDMM@Z	public: void __thiscall SoundDevice::BusPitchFade(char const *,float,float)	game.o
+0x006038C0	0x009F2DC0	?BusVolumeFade@SoundDevice@@QAEXPBDMM@Z	public: void __thiscall SoundDevice::BusVolumeFade(char const *,float,float)	game.o
+0x00603920	0x009F2E20	?BusPitchAddBus@SoundDevice@@QAEXPBD@Z	public: void __thiscall SoundDevice::BusPitchAddBus(char const *)	game.o
+0x00603940	0x009F2E40	?BusVolumeAddBus@SoundDevice@@QAEXPBD@Z	public: void __thiscall SoundDevice::BusVolumeAddBus(char const *)	game.o
+0x00603960	0x009F2E60	?BusPitchRemoveBus@SoundDevice@@QAEXPBD@Z	public: void __thiscall SoundDevice::BusPitchRemoveBus(char const *)	game.o
+0x00603980	0x009F2E80	?BusVolumeRemoveBus@SoundDevice@@QAEXPBD@Z	public: void __thiscall SoundDevice::BusVolumeRemoveBus(char const *)	game.o
+0x006039A0	0x009F2EA0	?UpdateBusPitchFade@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::UpdateBusPitchFade(float)	game.o
+0x00603A30	0x009F2F30	?UpdateBusVolumeFade@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::UpdateBusVolumeFade(float)	game.o
+0x00603AC0	0x009F2FC0	?UpdateListener@SoundDevice@@AAEXXZ	private: void __thiscall SoundDevice::UpdateListener(void)	game.o
+0x00603D90	0x009F3290	?GetGroupVolume@SoundDevice@@QBEMPBD@Z	public: float __thiscall SoundDevice::GetGroupVolume(char const *)const 	game.o
+0x00603DD0	0x009F32D0	?SetOutputMode@SoundDevice@@QAEXW4EOutputMode@1@@Z	public: void __thiscall SoundDevice::SetOutputMode(enum SoundDevice::EOutputMode)	game.o
+0x00603E30	0x009F3330	?GetOutputMode@SoundDevice@@QBE?AW4EOutputMode@1@XZ	public: enum SoundDevice::EOutputMode __thiscall SoundDevice::GetOutputMode(void)const 	game.o
+0x00603EA0	0x009F33A0	?SetSurfaceTypeSounds@@YAXQAW4nslWaveID@@W41@@Z	void __cdecl SetSurfaceTypeSounds(enum nslWaveID * const,enum nslWaveID)	game.o
+0x00603EF0	0x009F33F0	??0SoundMediaMgr@@QAE@XZ	public: __thiscall SoundMediaMgr::SoundMediaMgr(void)	game.o
+0x00603F00	0x009F3400	??1SoundMediaMgr@@QAE@XZ	public: __thiscall SoundMediaMgr::~SoundMediaMgr(void)	game.o
+0x00603F10	0x009F3410	?RegisterSounds@SoundMediaMgr@@QAEXXZ	public: void __thiscall SoundMediaMgr::RegisterSounds(void)	game.o
+0x00603F20	0x009F3420	?PlayLandingSound@SoundMediaMgr@@QBEXPAVEntity@@H_N@Z	public: void __thiscall SoundMediaMgr::PlayLandingSound(class Entity *,int,bool)const 	game.o
+0x00603FD0	0x009F34D0	?StopIndoor@MusicMgr@@QAEXM@Z	public: void __thiscall MusicMgr::StopIndoor(float)	game.o
+0x00603FF0	0x009F34F0	?BG_ActorIsProne@@YAHPAUactor_prone_info_t@@H@Z	int __cdecl BG_ActorIsProne(struct actor_prone_info_t *,int)	game.o
+0x00604040	0x009F3540	?BG_ActorGoalIsProne@@YAHPAUactor_prone_info_t@@@Z	int __cdecl BG_ActorGoalIsProne(struct actor_prone_info_t *)	game.o
+0x00604070	0x009F3570	?BG_GetActorProneFraction@@YAMPAUactor_prone_info_t@@H@Z	float __cdecl BG_GetActorProneFraction(struct actor_prone_info_t *,int)	game.o
+0x00604100	0x009F3600	?BG_EvaluateTrajectoryDelta@@YAXPBUtrajectory_t@@HQAM@Z	void __cdecl BG_EvaluateTrajectoryDelta(struct trajectory_t const *,int,float * const)	game.o
+0x00604380	0x009F3880	?BG_GetMarkDir@@YAXQBM0QAM@Z	void __cdecl BG_GetMarkDir(float const * const,float const * const,float * const)	game.o
+0x00604540	0x009F3A40	?BG_AddPredictableEventToPlayerstate@@YAXHHPAVPlayerState@@@Z	void __cdecl BG_AddPredictableEventToPlayerstate(int,int,class PlayerState *)	game.o
+0x00604680	0x009F3B80	?BG_PlayerStateToEntityState@@YAXPAVPlayerState@@PAVEntityState@@H@Z	void __cdecl BG_PlayerStateToEntityState(class PlayerState *,class EntityState *,int)	game.o
+0x00604860	0x009F3D60	?BG_PlayerStateToEntityStateExtrapolate@@YAXPAVPlayerState@@PAVEntityState@@HH@Z	void __cdecl BG_PlayerStateToEntityStateExtrapolate(class PlayerState *,class EntityState *,int,int)	game.o
+0x00604A60	0x009F3F60	?BG_AllowPlayerWeaponAtVehiclePos@@YA_NHH@Z	bool __cdecl BG_AllowPlayerWeaponAtVehiclePos(int,int)	game.o
+0x00604A90	0x009F3F90	?AngleClamp@@YAMM@Z	float __cdecl AngleClamp(float)	game.o
+0x00604AF0	0x009F3FF0	?PM_AddEvent@@YAXH@Z	void __cdecl PM_AddEvent(int)	game.o
+0x00604B60	0x009F4060	?PM_AddTouchEnt@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl PM_AddTouchEnt(class DbLinkedHandle<class EntityHandleDb,class Entity>)	game.o
+0x00604C00	0x009F4100	?PM_ClipVelocity@@YAXABVDir3@math@@0AAV12@M@Z	void __cdecl PM_ClipVelocity(class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 &,float)	game.o
+0x00604C90	0x009F4190	?PM_GetEffectiveStance@@YAHPAVPlayerState@@@Z	int __cdecl PM_GetEffectiveStance(class PlayerState *)	game.o
+0x00606140	0x009F5640	?PM_GetViewHeightLerpTime@@YAHPBVPlayerState@@HH@Z	int __cdecl PM_GetViewHeightLerpTime(class PlayerState const *,int,int)	game.o
+0x00606250	0x009F5750	?PM_ShouldMakeFootsteps@@YAHXZ	int __cdecl PM_ShouldMakeFootsteps(void)	game.o
+0x006063E0	0x009F58E0	?PM_PlayFatigueSound@@YAXXZ	void __cdecl PM_PlayFatigueSound(void)	game.o
+0x00606440	0x009F5940	?PM_UpdateFatigue@@YAXXZ	void __cdecl PM_UpdateFatigue(void)	game.o
+0x00606590	0x009F5A90	?PM_SetProneMovementOverride@@YAXXZ	void __cdecl PM_SetProneMovementOverride(void)	game.o
+0x006065B0	0x009F5AB0	?PM_UpdatePlayerWalkingFlag@@YAXXZ	void __cdecl PM_UpdatePlayerWalkingFlag(void)	game.o
+0x00606620	0x009F5B20	?BG_GetWeaponTypeName@@YAPBDW4weapType_t@@@Z	char const * __cdecl BG_GetWeaponTypeName(enum weapType_t)	game.o
+0x00606680	0x009F5B80	?BG_Bullet_Endpos@@YAXMQAMPAUweaponParms@@@Z	void __cdecl BG_Bullet_Endpos(float,float * const,struct weaponParms *)	game.o
+0x00606F90	0x009F6490	?BG_FreeWeaponInfo@@YAXXZ	void __cdecl BG_FreeWeaponInfo(void)	game.o
+0x00606FD0	0x009F64D0	?BG_GetInfoForWeapon@@YAPAUweaponFileInfo_t@@H@Z	struct weaponFileInfo_t * __cdecl BG_GetInfoForWeapon(int)	game.o
+0x00607050	0x009F6550	?BG_GetWeaponForInfo@@YAHPAUweaponFileInfo_t@@@Z	int __cdecl BG_GetWeaponForInfo(struct weaponFileInfo_t *)	game.o
+0x00607060	0x009F6560	?BG_GetNumWeapons@@YAHXZ	int __cdecl BG_GetNumWeapons(void)	game.o
+0x00607070	0x009F6570	?BG_GetNumAmmoTypes@@YAHXZ	int __cdecl BG_GetNumAmmoTypes(void)	game.o
+0x00607080	0x009F6580	?BG_GetAmmoTypeMax@@YAHH@Z	int __cdecl BG_GetAmmoTypeMax(int)	game.o
+0x006070E0	0x009F65E0	?BG_GetNumAmmoClips@@YAHXZ	int __cdecl BG_GetNumAmmoClips(void)	game.o
+0x006070F0	0x009F65F0	?BG_GetAmmoClipSize@@YAHH@Z	int __cdecl BG_GetAmmoClipSize(int)	game.o
+0x00607150	0x009F6650	?BG_GetSharedAmmoCapSize@@YAHH@Z	int __cdecl BG_GetSharedAmmoCapSize(int)	game.o
+0x006071B0	0x009F66B0	?BG_GetAmmoTypeName@@YAPBDH@Z	char const * __cdecl BG_GetAmmoTypeName(int)	game.o
+0x00607210	0x009F6710	?BG_GetAmmoClipName@@YAPBDH@Z	char const * __cdecl BG_GetAmmoClipName(int)	game.o
+0x00607270	0x009F6770	?BG_GetWeaponSlotForName@@YAHPBD@Z	int __cdecl BG_GetWeaponSlotForName(char const *)	game.o
+0x006072B0	0x009F67B0	?BG_GetWeaponSlotNameForIndex@@YAPBDH@Z	char const * __cdecl BG_GetWeaponSlotNameForIndex(int)	game.o
+0x00607310	0x009F6810	?BG_GetWeaponIndexForName@@YAEI@Z	unsigned char __cdecl BG_GetWeaponIndexForName(unsigned int)	game.o
+0x006073A0	0x009F68A0	?BG_GetWeaponIndexForName@@YAEPBD@Z	unsigned char __cdecl BG_GetWeaponIndexForName(char const *)	game.o
+0x00607420	0x009F6920	?BG_GetWeaponIndexForWorldModelName@@YAEPBD@Z	unsigned char __cdecl BG_GetWeaponIndexForWorldModelName(char const *)	game.o
+0x006074D0	0x009F69D0	?BG_IsAimDownSightWeapon@@YAHH@Z	int __cdecl BG_IsAimDownSightWeapon(int)	game.o
+0x006074F0	0x009F69F0	?BG_GetEmptySlotForWeapon@@YAHPBVPlayerState@@H@Z	int __cdecl BG_GetEmptySlotForWeapon(class PlayerState const *,int)	game.o
+0x00607570	0x009F6A70	?BG_GetStackSlotForWeapon@@YAHPBVPlayerState@@HW4weapSlot_t@@@Z	int __cdecl BG_GetStackSlotForWeapon(class PlayerState const *,int,enum weapSlot_t)	game.o
+0x00607690	0x009F6B90	?BG_IsPlayerWeaponAnAlt@@YAHHH@Z	int __cdecl BG_IsPlayerWeaponAnAlt(int,int)	game.o
+0x006076E0	0x009F6BE0	?BG_SelectWeaponIndex@@YAHHH@Z	int __cdecl BG_SelectWeaponIndex(int,int)	game.o
+0x006077B0	0x009F6CB0	?BG_GetConeAngleForWeapon@@YAMPBVPlayerState@@HHH@Z	float __cdecl BG_GetConeAngleForWeapon(class PlayerState const *,int,int,int)	game.o
+0x00607800	0x009F6D00	?BG_GetMinSpreadForWeapon@@YAMPBVPlayerState@@HHH@Z	float __cdecl BG_GetMinSpreadForWeapon(class PlayerState const *,int,int,int)	game.o
+0x00607A00	0x009F6F00	?PM_ClearAimDownSightFlag@@YAXXZ	void __cdecl PM_ClearAimDownSightFlag(void)	game.o
+0x00607A10	0x009F6F10	?BG_ClipForWeapon@@YAHH@Z	int __cdecl BG_ClipForWeapon(int)	game.o
+0x00607A30	0x009F6F30	?BG_AmmoForWeapon@@YAHH@Z	int __cdecl BG_AmmoForWeapon(int)	game.o
+0x00607A50	0x009F6F50	?BG_WeaponIsClipOnly@@YAHH@Z	int __cdecl BG_WeaponIsClipOnly(int)	game.o
+0x00607A70	0x009F6F70	?BG_WeaponAmmo@@YAHPBVPlayerState@@H@Z	int __cdecl BG_WeaponAmmo(class PlayerState const *,int)	game.o
+0x00607AB0	0x009F6FB0	?BG_GetRandomAmmoCounts@@YAXAAH0H@Z	void __cdecl BG_GetRandomAmmoCounts(int &,int &,int)	game.o
+0x00607E10	0x009F7310	?PM_WeaponUseAmmo@@YAXHH@Z	void __cdecl PM_WeaponUseAmmo(int,int)	game.o
+0x00607E50	0x009F7350	?PM_WeaponAmmoAvailable@@YAHH@Z	int __cdecl PM_WeaponAmmoAvailable(int)	game.o
+0x00607E80	0x009F7380	?PM_WeaponClipEmpty@@YAHH@Z	int __cdecl PM_WeaponClipEmpty(int)	game.o
+0x006080E0	0x009F75E0	?PM_KillQueuedReloadSound@@YAXAAVPlayerState@@@Z	void __cdecl PM_KillQueuedReloadSound(class PlayerState &)	game.o
+0x00608670	0x009F7B70	?PM_AdjustAimSpreadScale@@YAXXZ	void __cdecl PM_AdjustAimSpreadScale(void)	game.o
+0x00608AC0	0x009F7FC0	?PM_Weapon_CheckFriendlyFireUse@@YAHXZ	int __cdecl PM_Weapon_CheckFriendlyFireUse(void)	game.o
+0x00608ED0	0x009F83D0	??0BinFileManager@@AAE@XZ	private: __thiscall BinFileManager::BinFileManager(void)	game.o
+0x00608EE0	0x009F83E0	??1BinFileManager@@AAE@XZ	private: __thiscall BinFileManager::~BinFileManager(void)	game.o
+0x00608EF0	0x009F83F0	?Clear@BinFileManager@@QAEXXZ	public: void __thiscall BinFileManager::Clear(void)	game.o
+0x00608F00	0x009F8400	?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall BinFileManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	game.o
+0x00608F70	0x009F8470	?Find@BinFileManager@@QAEPAEPBD@Z	public: unsigned char * __thiscall BinFileManager::Find(char const *)	game.o
+0x00608FE0	0x009F84E0	?getBuildNumber@@YAPADXZ	char * __cdecl getBuildNumber(void)	game.o
+0x00609010	0x009F8510	?RestoreSceneEntity@CheckpointMgr@@QAEXPAVEntity@@@Z	public: void __thiscall CheckpointMgr::RestoreSceneEntity(class Entity *)	game.o
+0x00609240	0x009F8740	?RestorePlayerHealth@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::RestorePlayerHealth(void)	game.o
+0x00609330	0x009F8830	?Restart@CheckpointMgr@@QAE_NXZ	public: bool __thiscall CheckpointMgr::Restart(void)	game.o
+0x00609340	0x009F8840	?SetTosserValues@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::SetTosserValues(void)	game.o
+0x00609350	0x009F8850	?RestoreScriptExploders@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::RestoreScriptExploders(void)	game.o
+0x00609380	0x009F8880	?SetCheckpointCvar@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::SetCheckpointCvar(void)	game.o
+0x006093B0	0x009F88B0	?CM_FreeLump@@YAXXZ	void __cdecl CM_FreeLump(void)	game.o
+0x006093C0	0x009F88C0	?CM_NumClusters@@YAHXZ	int __cdecl CM_NumClusters(void)	game.o
+0x006093D0	0x009F88D0	?CM_ModelBounds@@YAXPAVDCGSet@@AAVPosition3@math@@1@Z	void __cdecl CM_ModelBounds(class DCGSet *,class math::Position3 &,class math::Position3 &)	game.o
+0x00609550	0x009F8A50	?pw@@YAXPAUwinding_t@@@Z	void __cdecl pw(struct winding_t *)	game.o
+0x006095A0	0x009F8AA0	?AllocWinding@@YAPAUwinding_t@@H@Z	struct winding_t * __cdecl AllocWinding(int)	game.o
+0x006095E0	0x009F8AE0	?FreeWinding@@YAXPAUwinding_t@@@Z	void __cdecl FreeWinding(struct winding_t *)	game.o
+0x00609620	0x009F8B20	?RemoveColinearPoints@@YAXPAUwinding_t@@@Z	void __cdecl RemoveColinearPoints(struct winding_t *)	game.o
+0x00609750	0x009F8C50	?WindingPlane@@YAXPAUwinding_t@@QAMPAM@Z	void __cdecl WindingPlane(struct winding_t *,float * const,float *)	game.o
+0x00609810	0x009F8D10	?WindingArea@@YAMPAUwinding_t@@@Z	float __cdecl WindingArea(struct winding_t *)	game.o
+0x006098F0	0x009F8DF0	?WindingBounds@@YAXPAUwinding_t@@QAM1@Z	void __cdecl WindingBounds(struct winding_t *,float * const,float * const)	game.o
+0x006099B0	0x009F8EB0	?WindingCenter@@YAXPAUwinding_t@@QAM@Z	void __cdecl WindingCenter(struct winding_t *,float * const)	game.o
+0x00609A60	0x009F8F60	?BaseWindingForPlane@@YAPAUwinding_t@@QAMM@Z	struct winding_t * __cdecl BaseWindingForPlane(float * const,float)	game.o
+0x00609DA0	0x009F92A0	?CopyWinding@@YAPAUwinding_t@@PAU1@@Z	struct winding_t * __cdecl CopyWinding(struct winding_t *)	game.o
+0x00609E00	0x009F9300	?ReverseWinding@@YAPAUwinding_t@@PAU1@@Z	struct winding_t * __cdecl ReverseWinding(struct winding_t *)	game.o
+0x00609E80	0x009F9380	?ClipWindingEpsilon@@YAXPAUwinding_t@@QAMMMPAPAU1@2@Z	void __cdecl ClipWindingEpsilon(struct winding_t *,float * const,float,float,struct winding_t * *,struct winding_t * *)	game.o
+0x0060A2A0	0x009F97A0	?ChopWindingInPlace@@YAXPAPAUwinding_t@@QAMMM@Z	void __cdecl ChopWindingInPlace(struct winding_t * *,float * const,float,float)	game.o
+0x0060A610	0x009F9B10	?ChopWinding@@YAPAUwinding_t@@PAU1@QAMM@Z	struct winding_t * __cdecl ChopWinding(struct winding_t *,float * const,float)	game.o
+0x0060A6B0	0x009F9BB0	?CheckWinding@@YAXPAUwinding_t@@@Z	void __cdecl CheckWinding(struct winding_t *)	game.o
+0x0060A980	0x009F9E80	?WindingOnPlaneSide@@YAHPAUwinding_t@@QAMM@Z	int __cdecl WindingOnPlaneSide(struct winding_t *,float * const,float)	game.o
+0x0060AA40	0x009F9F40	?AddWindingToConvexHull@@YAXPAUwinding_t@@PAPAU1@QAM@Z	void __cdecl AddWindingToConvexHull(struct winding_t *,struct winding_t * *,float * const)	game.o
+0x0060AF40	0x009FA440	?CM_CreateStaticModel@@YAXPBDW4TPakId@@QAM22@Z	void __cdecl CM_CreateStaticModel(char const *,enum TPakId,float * const,float * const,float * const)	game.o
+0x0060AF90	0x009FA490	?CM_UnlinkStaticModels@@YAHW4TPakId@@PAUWorldSector@@@Z	int __cdecl CM_UnlinkStaticModels(enum TPakId,struct WorldSector *)	game.o
+0x0060B020	0x009FA520	?CM_DestroyStaticModels@@YAXW4TPakId@@@Z	void __cdecl CM_DestroyStaticModels(enum TPakId)	game.o
+0x0060B040	0x009FA540	?CM_ClusterPVS@@YAPAEH@Z	unsigned char * __cdecl CM_ClusterPVS(int)	game.o
+0x0060B230	0x009FA730	?CM_UnlinkEntity@@YAXPAUEntityShared@@@Z	void __cdecl CM_UnlinkEntity(struct EntityShared *)	game.o
+0x0060B8E0	0x009FADE0	?CM_LinkEntity@@YAXPAUEntityShared@@QBM1@Z	void __cdecl CM_LinkEntity(struct EntityShared *,float const * const,float const * const)	game.o
+0x0060BB20	0x009FB020	?CM_LinkStaticModel@@YAXPAVStaticModel@@@Z	void __cdecl CM_LinkStaticModel(class StaticModel *)	game.o
+0x0060BCD0	0x009FB1D0	?CM_TraceBox@@YAHABVPosition3@math@@000M@Z	int __cdecl CM_TraceBox(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float)	game.o
+0x0060BF60	0x009FB460	?CM_ClipMoveToEntities@@YAXPAUmoveclip_t@@ABUcollision_context_t@@@Z	void __cdecl CM_ClipMoveToEntities(struct moveclip_t *,struct collision_context_t const &)	game.o
+0x0060BFE0	0x009FB4E0	??2proximity_data_t@@SAPAXIW4TPakId@@@Z	public: static void * __cdecl proximity_data_t::operator new(unsigned int,enum TPakId)	game.o
+0x0060C000	0x009FB500	??3proximity_data_t@@SAXPAXW4TPakId@@@Z	public: static void __cdecl proximity_data_t::operator delete(void *,enum TPakId)	game.o
+0x0060C020	0x009FB520	?is_plane_ok@@YA_NABVPosition3@math@@ABVDir3@2@M1MM@Z	bool __cdecl is_plane_ok(class math::Position3 const &,class math::Dir3 const &,float,class math::Dir3 const &,float,float)	game.o
+0x0060C250	0x009FB750	?RotatePoint@@YAXAAVPosition3@math@@QAV12@@Z	void __cdecl RotatePoint(class math::Position3 &,class math::Position3 * const)	game.o
+0x0060C330	0x009FB830	?TransposeMatrix@@YAXQAVPosition3@math@@0@Z	void __cdecl TransposeMatrix(class math::Position3 * const,class math::Position3 * const)	game.o
+0x0060C370	0x009FB870	?CreateRotationMatrix@@YAXABVPosition3@math@@QAV12@@Z	void __cdecl CreateRotationMatrix(class math::Position3 const &,class math::Position3 * const)	game.o
+0x0060C400	0x009FB900	?calc_normal@@YA?AVVector4@math@@ABVPosition3@2@00@Z	class math::Vector4 __cdecl calc_normal(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0060C510	0x009FBA10	?can_place_decal@@YA_NABVPosition3@math@@PBVDir3@2@PBEHM@Z	bool __cdecl can_place_decal(class math::Position3 const &,class math::Dir3 const *,unsigned char const *,int,float)	game.o
+0x0060C720	0x009FBC20	?collide_box_segment@@YA_NABVPosition3@math@@000AAMPAV12@@Z	bool __cdecl collide_box_segment(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float &,class math::Position3 *)	game.o
+0x0060C900	0x009FBE00	?collide_box_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z	bool __cdecl collide_box_segment(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0060CB80	0x009FC080	?collide_box_velocity_sphere@@YAXPAUtraceWork_t@@ABVPosition3@math@@1@Z	void __cdecl collide_box_velocity_sphere(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0060CD80	0x009FC280	?TestCapsuleInCapsule@@YAXPAUtraceWork_t@@@Z	void __cdecl TestCapsuleInCapsule(struct traceWork_t *)	game.o
+0x0060CFE0	0x009FC4E0	?SightTraceCylinderThroughCylinder@@YAHPAUtraceWork_t@@ABVPosition3@math@@MM@Z	int __cdecl SightTraceCylinderThroughCylinder(struct traceWork_t *,class math::Position3 const &,float,float)	game.o
+0x0060D180	0x009FC680	?SightTraceSphereThroughSphere@@YAHPAUtraceWork_t@@ABVPosition3@math@@11M@Z	int __cdecl SightTraceSphereThroughSphere(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float)	game.o
+0x0060D2B0	0x009FC7B0	?collide_ray_triangle@@YA_NABVPosition3@math@@ABVDir3@2@000MPAM@Z	bool __cdecl collide_ray_triangle(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float,float *)	game.o
+0x0060D4A0	0x009FC9A0	?xtest_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@@Z	bool __cdecl xtest_sphere_triangle(class math::Position3 const &,float,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Dir3 const &)	game.o
+0x0060D860	0x009FCD60	?new_push_out_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@@Z	bool __cdecl new_push_out_sphere_triangle(class math::Position3 const &,float,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Dir3 const &,class math::Position3 *)	game.o
+0x0060DD10	0x009FD210	?sight_trace_point_patch@@YA_NPBVPosition3@math@@PBEGABV12@2ABVDir3@2@@Z	bool __cdecl sight_trace_point_patch(class math::Position3 const *,unsigned char const *,unsigned short,class math::Position3 const &,class math::Position3 const &,class math::Dir3 const &)	game.o
+0x0060DE10	0x009FD310	?trace_point_through_sphere@@YAHABVPosition3@math@@ABVDir3@2@0MAAMAAV12@@Z	int __cdecl trace_point_through_sphere(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,float,float &,class math::Position3 &)	game.o
+0x0060DF10	0x009FD410	?trace_sphere_through_sphere@@YA_NABVPosition3@math@@M0MABVDir3@2@AAM@Z	bool __cdecl trace_sphere_through_sphere(class math::Position3 const &,float,class math::Position3 const &,float,class math::Dir3 const &,float &)	game.o
+0x0060DFE0	0x009FD4E0	?trace_point_through_cylinder@@YAHABVPosition3@math@@000MAAM@Z	int __cdecl trace_point_through_cylinder(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float,float &)	game.o
+0x0060E300	0x009FD800	?point_to_segment_dist2@@YAMABVPosition3@math@@00@Z	float __cdecl point_to_segment_dist2(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0060E420	0x009FD920	?DoesFunctionExist@BaseCmdFuncInfo@@SAHPAV1@@Z	public: static int __cdecl BaseCmdFuncInfo::DoesFunctionExist(class BaseCmdFuncInfo *)	game.o
+0x0060E450	0x009FD950	?Cbuf_Init@@YAXXZ	void __cdecl Cbuf_Init(void)	game.o
+0x0060E490	0x009FD990	?Cbuf_AddText@@YAXPBD@Z	void __cdecl Cbuf_AddText(char const *)	game.o
+0x0060E530	0x009FDA30	?Cbuf_InsertText@@YAXPBD@Z	void __cdecl Cbuf_InsertText(char const *)	game.o
+0x0060E6A0	0x009FDBA0	?Cmd_CallCmdFunction@@YAXPBVBaseCmdFuncInfo@@HH@Z	void __cdecl Cmd_CallCmdFunction(class BaseCmdFuncInfo const *,int,int)	game.o
+0x0060E6E0	0x009FDBE0	?Cmd_Argc@@YAHXZ	int __cdecl Cmd_Argc(void)	game.o
+0x0060E6F0	0x009FDBF0	?Cmd_Argv@@YAPADH@Z	char * __cdecl Cmd_Argv(int)	game.o
+0x0060E710	0x009FDC10	?Cmd_Args@@YAPADH@Z	char * __cdecl Cmd_Args(int)	game.o
+0x0060E7E0	0x009FDCE0	?Cmd_TokenizeString2@@YAXPBDH@Z	void __cdecl Cmd_TokenizeString2(char const *,int)	game.o
+0x0060E930	0x009FDE30	?Cmd_TokenizeString@@YAXPBD@Z	void __cdecl Cmd_TokenizeString(char const *)	game.o
+0x0060E950	0x009FDE50	?Cmd_AddCommand@@YAXPBDP6AXXZ@Z	void __cdecl Cmd_AddCommand(char const *,void (__cdecl*)(void))	game.o
+0x0060EA50	0x009FDF50	?Cmd_AddInputCommand@@YAXPBDP6AXHH@Z@Z	void __cdecl Cmd_AddInputCommand(char const *,void (__cdecl*)(int,int))	game.o
+0x0060EB50	0x009FE050	?Cmd_RemoveCommand@@YAXPBD@Z	void __cdecl Cmd_RemoveCommand(char const *)	game.o
+0x0060EBE0	0x009FE0E0	?Cmd_Shutdown@@YAXXZ	void __cdecl Cmd_Shutdown(void)	game.o
+0x0060ECF0	0x009FE1F0	?Cmd_CommandCompletion@@YAXP6AXPBD@Z@Z	void __cdecl Cmd_CommandCompletion(void (__cdecl*)(char const *))	game.o
+0x0060ED20	0x009FE220	?Cmd_List_f@@YAXXZ	void __cdecl Cmd_List_f(void)	game.o
+0x0060EDA0	0x009FE2A0	?Sys_Milliseconds@@YAHXZ	int __cdecl Sys_Milliseconds(void)	game.o
+0x0060EE40	0x009FE340	?Sys_Time@@YAMXZ	float __cdecl Sys_Time(void)	game.o
+0x0060EEE0	0x009FE3E0	?DebugCurveRender@@YAXXZ	void __cdecl DebugCurveRender(void)	game.o
+0x0060F1B0	0x009FE6B0	?Initialize@CurveManager@@UAEXXZ	public: virtual void __thiscall CurveManager::Initialize(void)	game.o
+0x0060F1E0	0x009FE6E0	?CleanUp@CurveManager@@UAEXXZ	public: virtual void __thiscall CurveManager::CleanUp(void)	game.o
+0x0060F1F0	0x009FE6F0	?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z	public: void __thiscall CurveManager::DetachCurve(class Curve *)	game.o
+0x0060F200	0x009FE700	?UInt32Lookup@CurveManager@@AAEIPAEII@Z	private: unsigned int __thiscall CurveManager::UInt32Lookup(unsigned char *,unsigned int,unsigned int)	game.o
+0x0060F230	0x009FE730	?Link_Init@@YAXXZ	void __cdecl Link_Init(void)	game.o
+0x0060F240	0x009FE740	?Link_Frame@@YAXXZ	void __cdecl Link_Frame(void)	game.o
+0x0060F250	0x009FE750	?Sys_Print@@YAXPBDH@Z	void __cdecl Sys_Print(char const *,int)	game.o
+0x0060F260	0x009FE760	?MSG_Init@@YAXPAUmsg_t@@PAEH@Z	void __cdecl MSG_Init(struct msg_t *,unsigned char *,int)	game.o
+0x0060F2A0	0x009FE7A0	?MSG_BeginReading@@YAXPAUmsg_t@@@Z	void __cdecl MSG_BeginReading(struct msg_t *)	game.o
+0x0060F2B0	0x009FE7B0	?MSG_WriteFlag@@YAXPAUmsg_t@@H@Z	void __cdecl MSG_WriteFlag(struct msg_t *,int)	game.o
+0x0060F2D0	0x009FE7D0	?MSG_ReadFlag@@YAHPAUmsg_t@@@Z	int __cdecl MSG_ReadFlag(struct msg_t *)	game.o
+0x0060F2F0	0x009FE7F0	?MSG_WriteChar@@YAXPAUmsg_t@@H@Z	void __cdecl MSG_WriteChar(struct msg_t *,int)	game.o
+0x0060F310	0x009FE810	?MSG_WriteByte@@YAXPAUmsg_t@@H@Z	void __cdecl MSG_WriteByte(struct msg_t *,int)	game.o
+0x0060F330	0x009FE830	?MSG_WriteData@@YAXPAUmsg_t@@PBXH@Z	void __cdecl MSG_WriteData(struct msg_t *,void const *,int)	game.o
+0x0060F370	0x009FE870	?MSG_WriteShort@@YAXPAUmsg_t@@H@Z	void __cdecl MSG_WriteShort(struct msg_t *,int)	game.o
+0x0060F3A0	0x009FE8A0	?MSG_WriteLong@@YAXPAUmsg_t@@H@Z	void __cdecl MSG_WriteLong(struct msg_t *,int)	game.o
+0x0060F3F0	0x009FE8F0	?MSG_WriteFloat@@YAXPAUmsg_t@@M@Z	void __cdecl MSG_WriteFloat(struct msg_t *,float)	game.o
+0x0060F450	0x009FE950	?MSG_ReadChar@@YADPAUmsg_t@@@Z	char __cdecl MSG_ReadChar(struct msg_t *)	game.o
+0x0060F470	0x009FE970	?MSG_ReadByte@@YAEPAUmsg_t@@@Z	unsigned char __cdecl MSG_ReadByte(struct msg_t *)	game.o
+0x0060F490	0x009FE990	?MSG_ReadShort@@YAFPAUmsg_t@@@Z	short __cdecl MSG_ReadShort(struct msg_t *)	game.o
+0x0060F4D0	0x009FE9D0	?MSG_ReadLong@@YAHPAUmsg_t@@@Z	int __cdecl MSG_ReadLong(struct msg_t *)	game.o
+0x0060F520	0x009FEA20	?MSG_ReadFloat@@YAMPAUmsg_t@@@Z	float __cdecl MSG_ReadFloat(struct msg_t *)	game.o
+0x0060F580	0x009FEA80	?MSG_ReadString@@YAPADPAUmsg_t@@@Z	char * __cdecl MSG_ReadString(struct msg_t *)	game.o
+0x0060F600	0x009FEB00	?MSG_ReadStringLine@@YAPADPAUmsg_t@@@Z	char * __cdecl MSG_ReadStringLine(struct msg_t *)	game.o
+0x0060F680	0x009FEB80	?Netchan_Init@@YAXXZ	void __cdecl Netchan_Init(void)	game.o
+0x0060F6D0	0x009FEBD0	?Netchan_Setup@@YAXW4netsrc_t@@PAUnetchan_t@@Unetadr_t@@H@Z	void __cdecl Netchan_Setup(enum netsrc_t,struct netchan_t *,struct netadr_t,int)	game.o
+0x0060F720	0x009FEC20	?NET_CompareBaseAdrSigned@@YAHPAUnetadr_t@@0@Z	int __cdecl NET_CompareBaseAdrSigned(struct netadr_t *,struct netadr_t *)	game.o
+0x0060F790	0x009FEC90	?NET_CompareAdrSigned@@YAHPAUnetadr_t@@0@Z	int __cdecl NET_CompareAdrSigned(struct netadr_t *,struct netadr_t *)	game.o
+0x0060F840	0x009FED40	?NET_CompareAdr@@YAHUnetadr_t@@0@Z	int __cdecl NET_CompareAdr(struct netadr_t,struct netadr_t)	game.o
+0x0060F860	0x009FED60	?NET_IsLocalAddress@@YAHUnetadr_t@@@Z	int __cdecl NET_IsLocalAddress(struct netadr_t)	game.o
+0x0060F870	0x009FED70	?NET_GetLoopPacket@@YAHW4netsrc_t@@PAUnetadr_t@@PAUmsg_t@@@Z	int __cdecl NET_GetLoopPacket(enum netsrc_t,struct netadr_t *,struct msg_t *)	game.o
+0x0060F910	0x009FEE10	?NET_SendLoopPacket@@YAXW4netsrc_t@@HPBXUnetadr_t@@@Z	void __cdecl NET_SendLoopPacket(enum netsrc_t,int,void const *,struct netadr_t)	game.o
+0x0060F950	0x009FEE50	?NET_SendPacket@@YAXW4netsrc_t@@HPBXUnetadr_t@@@Z	void __cdecl NET_SendPacket(enum netsrc_t,int,void const *,struct netadr_t)	game.o
+0x0060FA00	0x009FEF00	?NET_OutOfBandPrint@@YAXW4netsrc_t@@Unetadr_t@@PBDZZ	void __cdecl NET_OutOfBandPrint(enum netsrc_t,struct netadr_t,char const *,...)	game.o
+0x0060FAA0	0x009FEFA0	?NET_StringToAdr@@YAHPBDPAUnetadr_t@@@Z	int __cdecl NET_StringToAdr(char const *,struct netadr_t *)	game.o
+0x0060FB20	0x009FF020	?Com_EndParseSession@@YAXXZ	void __cdecl Com_EndParseSession(void)	game.o
+0x0060FB60	0x009FF060	?Com_ResetParseSessions@@YAXXZ	void __cdecl Com_ResetParseSessions(void)	game.o
+0x0060FB80	0x009FF080	?Com_SetSpaceDelimited@@YAXH@Z	void __cdecl Com_SetSpaceDelimited(int)	game.o
+0x0060FBA0	0x009FF0A0	?Com_SetCSV@@YAXH@Z	void __cdecl Com_SetCSV(int)	game.o
+0x0060FBC0	0x009FF0C0	?Com_SetParseNegativeNumbers@@YAXH@Z	void __cdecl Com_SetParseNegativeNumbers(int)	game.o
+0x0060FBE0	0x009FF0E0	?Com_GetCurrentParseLine@@YAHXZ	int __cdecl Com_GetCurrentParseLine(void)	game.o
+0x0060FBF0	0x009FF0F0	?Com_ScriptError@@YAXPBDZZ	void __cdecl Com_ScriptError(char const *,...)	game.o
+0x0060FC40	0x009FF140	?Com_ScriptWarning@@YAXPBDZZ	void __cdecl Com_ScriptWarning(char const *,...)	game.o
+0x0060FC90	0x009FF190	?Com_UngetToken@@YAXXZ	void __cdecl Com_UngetToken(void)	game.o
+0x0060FCE0	0x009FF1E0	?Com_ParseSetMark@@YAXPAPBDPAUcom_parse_mark_t@@@Z	void __cdecl Com_ParseSetMark(char const * *,struct com_parse_mark_t *)	game.o
+0x0060FDB0	0x009FF2B0	?Com_ParseReturnToMark@@YAXPAPBDPAUcom_parse_mark_t@@@Z	void __cdecl Com_ParseReturnToMark(char const * *,struct com_parse_mark_t *)	game.o
+0x0060FEC0	0x009FF3C0	?Com_GetLastTokenPos@@YAPBDXZ	char const * __cdecl Com_GetLastTokenPos(void)	game.o
+0x00610300	0x009FF800	?Com_Parse@@YAPBDPAPBD@Z	char const * __cdecl Com_Parse(char const * *)	game.o
+0x00610340	0x009FF840	?Com_ParseOnLine@@YAPBDPAPBD@Z	char const * __cdecl Com_ParseOnLine(char const * *)	game.o
+0x00610390	0x009FF890	?Com_SkipRestOfLine@@YAXPAPBD@Z	void __cdecl Com_SkipRestOfLine(char const * *)	game.o
+0x006103D0	0x009FF8D0	?Com_Compress@@YAHPAD@Z	int __cdecl Com_Compress(char *)	game.o
+0x00610470	0x009FF970	?ColorIndex@@YAEE@Z	unsigned char __cdecl ColorIndex(unsigned char)	game.o
+0x00610490	0x009FF990	?Com_Clamp@@YA?BMMMM@Z	float const __cdecl Com_Clamp(float,float,float)	game.o
+0x006104C0	0x009FF9C0	?Com_SkipPath@@YAPADPAD@Z	char * __cdecl Com_SkipPath(char *)	game.o
+0x006104F0	0x009FF9F0	?Com_StripExtension@@YAXPBDPAD@Z	void __cdecl Com_StripExtension(char const *,char *)	game.o
+0x00610520	0x009FFA20	?Com_BitCheck@@YAHQBHH@Z	int __cdecl Com_BitCheck(int const * const,int)	game.o
+0x00610550	0x009FFA50	?Com_BitSet@@YAXQAHH@Z	void __cdecl Com_BitSet(int * const,int)	game.o
+0x00610570	0x009FFA70	?Com_BitClear@@YAXQAHH@Z	void __cdecl Com_BitClear(int * const,int)	game.o
+0x006105A0	0x009FFAA0	?BigShort@@YAFF@Z	short __cdecl BigShort(short)	game.o
+0x006105B0	0x009FFAB0	?BigLong@@YAHH@Z	int __cdecl BigLong(int)	game.o
+0x006105C0	0x009FFAC0	?BigLong64@@YA?AUqint64@@U1@@Z	struct qint64 __cdecl BigLong64(struct qint64)	game.o
+0x006105E0	0x009FFAE0	?LittleLong64@@YA?AUqint64@@U1@@Z	struct qint64 __cdecl LittleLong64(struct qint64)	game.o
+0x00610600	0x009FFB00	?BigFloat@@YAMM@Z	float __cdecl BigFloat(float)	game.o
+0x00610610	0x009FFB10	?ShortSwap@@YAFF@Z	short __cdecl ShortSwap(short)	game.o
+0x00610630	0x009FFB30	?ShortNoSwap@@YAFF@Z	short __cdecl ShortNoSwap(short)	game.o
+0x00610640	0x009FFB40	?LongSwap@@YAHH@Z	int __cdecl LongSwap(int)	game.o
+0x00610670	0x009FFB70	?LongNoSwap@@YAHH@Z	int __cdecl LongNoSwap(int)	game.o
+0x00610680	0x009FFB80	?Long64Swap@@YA?AUqint64@@U1@@Z	struct qint64 __cdecl Long64Swap(struct qint64)	game.o
+0x006106D0	0x009FFBD0	?Long64NoSwap@@YA?AUqint64@@U1@@Z	struct qint64 __cdecl Long64NoSwap(struct qint64)	game.o
+0x006106E0	0x009FFBE0	?FloatSwap@@YAMM@Z	float __cdecl FloatSwap(float)	game.o
+0x00610710	0x009FFC10	?FloatNoSwap@@YAMM@Z	float __cdecl FloatNoSwap(float)	game.o
+0x00610720	0x009FFC20	?Swap_Init@@YAXXZ	void __cdecl Swap_Init(void)	game.o
+0x006107E0	0x009FFCE0	?Q_isprint@@YAHH@Z	int __cdecl Q_isprint(int)	game.o
+0x00610800	0x009FFD00	?Q_islower@@YAHH@Z	int __cdecl Q_islower(int)	game.o
+0x00610820	0x009FFD20	?Q_isupper@@YAHH@Z	int __cdecl Q_isupper(int)	game.o
+0x00610840	0x009FFD40	?Q_isalpha@@YAHH@Z	int __cdecl Q_isalpha(int)	game.o
+0x00610870	0x009FFD70	?Q_isnumeric@@YAHH@Z	int __cdecl Q_isnumeric(int)	game.o
+0x00610890	0x009FFD90	?Q_isalphanumeric@@YAHH@Z	int __cdecl Q_isalphanumeric(int)	game.o
+0x006108C0	0x009FFDC0	?Q_isforfilename@@YAHH@Z	int __cdecl Q_isforfilename(int)	game.o
+0x00610900	0x009FFE00	?Q_strrchr@@YAPADPBDH@Z	char * __cdecl Q_strrchr(char const *,int)	game.o
+0x00610930	0x009FFE30	?Q_strncpyz@@YAXPADPBDH@Z	void __cdecl Q_strncpyz(char *,char const *,int)	game.o
+0x00610A30	0x009FFF30	?Q_stricmpn@@YAHPBD0H@Z	int __cdecl Q_stricmpn(char const *,char const *,int)	game.o
+0x00610A40	0x009FFF40	?Q_strncmp@@YAHPBD0H@Z	int __cdecl Q_strncmp(char const *,char const *,int)	game.o
+0x00610A80	0x009FFF80	?Q_stricmp@@YAHPBD0@Z	int __cdecl Q_stricmp(char const *,char const *)	game.o
+0x00610AB0	0x009FFFB0	?Q_strlwr@@YAPADPAD@Z	char * __cdecl Q_strlwr(char *)	game.o
+0x00610AE0	0x009FFFE0	?Q_strupr@@YAPADPAD@Z	char * __cdecl Q_strupr(char *)	game.o
+0x00610B10	0x00A00010	?Q_strcat@@YAXPADHPBD@Z	void __cdecl Q_strcat(char *,int,char const *)	game.o
+0x00610B60	0x00A00060	?Q_DrawStrlen@@YAHPBD@Z	int __cdecl Q_DrawStrlen(char const *)	game.o
+0x00610BA0	0x00A000A0	?Q_CleanStr@@YAPADPAD@Z	char * __cdecl Q_CleanStr(char *)	game.o
+0x00610BF0	0x00A000F0	?Q_CleanCharacter@@YADD@Z	char __cdecl Q_CleanCharacter(char)	game.o
+0x00610C00	0x00A00100	?Com_sprintf@@YAXPADHPBDZZ	void __cdecl Com_sprintf(char *,int,char const *,...)	game.o
+0x00610C80	0x00A00180	?Q_strncasecmp@@YAHPBD0H@Z	int __cdecl Q_strncasecmp(char const *,char const *,int)	game.o
+0x00610CE0	0x00A001E0	?Q_strcasecmp@@YAHPBD0@Z	int __cdecl Q_strcasecmp(char const *,char const *)	game.o
+0x00610D00	0x00A00200	?va@@YAPADPBDZZ	char * __cdecl va(char const *,...)	game.o
+0x00610D90	0x00A00290	?tv@@YAPAMMMM@Z	float * __cdecl tv(float,float,float)	game.o
+0x00610DD0	0x00A002D0	?Info_ValueForKey@@YAPADPBD0@Z	char * __cdecl Info_ValueForKey(char const *,char const *)	game.o
+0x00610EC0	0x00A003C0	?Info_NextPair@@YAXPAPBDPAD1@Z	void __cdecl Info_NextPair(char const * *,char *,char *)	game.o
+0x00610F20	0x00A00420	?Info_RemoveKey@@YAXPADPBD@Z	void __cdecl Info_RemoveKey(char *,char const *)	game.o
+0x00611030	0x00A00530	?Info_RemoveKey_Big@@YAXPADPBD@Z	void __cdecl Info_RemoveKey_Big(char *,char const *)	game.o
+0x00611140	0x00A00640	?Info_Validate@@YAHPBD@Z	int __cdecl Info_Validate(char const *)	game.o
+0x00611170	0x00A00670	?Info_SetValueForKey@@YAXPADPBD1@Z	void __cdecl Info_SetValueForKey(char *,char const *,char const *)	game.o
+0x00611430	0x00A00930	?Info_SetValueForKey_Big@@YAXPADPBD1@Z	void __cdecl Info_SetValueForKey_Big(char *,char const *,char const *)	game.o
+0x00611690	0x00A00B90	?GetLeanFraction@@YAMM@Z	float __cdecl GetLeanFraction(float)	game.o
+0x006116C0	0x00A00BC0	?UnGetLeanFraction@@YAMM@Z	float __cdecl UnGetLeanFraction(float)	game.o
+0x00611780	0x00A00C80	?OrientationPosToWorldPos@@YAXPBUorientation_t@@QBMQAM@Z	void __cdecl OrientationPosToWorldPos(struct orientation_t const *,float const * const,float * const)	game.o
+0x00611820	0x00A00D20	?OrientationDirToWorldDir@@YAXPBUorientation_t@@QBMQAM@Z	void __cdecl OrientationDirToWorldDir(struct orientation_t const *,float const * const,float * const)	game.o
+0x006118B0	0x00A00DB0	?OrientationPosFromWorldPos@@YAXPBUorientation_t@@QBMQAM@Z	void __cdecl OrientationPosFromWorldPos(struct orientation_t const *,float const * const,float * const)	game.o
+0x00611960	0x00A00E60	?OrientationDirFromWorldDir@@YAXPBUorientation_t@@QBMQAM@Z	void __cdecl OrientationDirFromWorldDir(struct orientation_t const *,float const * const,float * const)	game.o
+0x006119F0	0x00A00EF0	?ToggleRenderGeom@@YAXXZ	void __cdecl ToggleRenderGeom(void)	game.o
+0x00611A10	0x00A00F10	?ToggleRenderPerf@@YAXXZ	void __cdecl ToggleRenderPerf(void)	game.o
+0x00611A30	0x00A00F30	?ToggleGraph@@YAXXZ	void __cdecl ToggleGraph(void)	game.o
+0x00611A50	0x00A00F50	?ZoomIn@@YAXXZ	void __cdecl ZoomIn(void)	game.o
+0x00611A70	0x00A00F70	?ZoomOut@@YAXXZ	void __cdecl ZoomOut(void)	game.o
+0x00611A90	0x00A00F90	?Teleport@@YAXXZ	void __cdecl Teleport(void)	game.o
+0x00611B60	0x00A01060	?DecodeStub@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeStub(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x00611B70	0x00A01070	??1CGBankManager@@UAE@XZ	public: virtual __thiscall CGBankManager::~CGBankManager(void)	game.o
+0x00611C00	0x00A01100	?UnloadAll@CGBankManager@@QAEXXZ	public: void __thiscall CGBankManager::UnloadAll(void)	game.o
+0x00611C10	0x00A01110	?render_brush@@YAXABUdebug_brush@@@Z	void __cdecl render_brush(struct debug_brush const &)	game.o
+0x00611C20	0x00A01120	?StatMon_Warning@@YAXHHPBD@Z	void __cdecl StatMon_Warning(int,int,char const *)	game.o
+0x00611CA0	0x00A011A0	?StatMon_GetStatsArray@@YAXPAPBUstatmonitor_s@@PAH@Z	void __cdecl StatMon_GetStatsArray(struct statmonitor_s const * *,int *)	game.o
+0x00611CC0	0x00A011C0	?StatMon_Reset@@YAXXZ	void __cdecl StatMon_Reset(void)	game.o
+0x00611CE0	0x00A011E0	?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z	public: void __thiscall Entity::CreateDObj(class DObjModel *,unsigned short,class XAnimTree *,unsigned short)	game.o
+0x00611DB0	0x00A012B0	?FreeDObj@Entity@@QAEX_N@Z	public: void __thiscall Entity::FreeDObj(bool)	game.o
+0x00611E30	0x00A01330	?IsEnemy@Entity@@QAE_NPAV1@@Z	public: bool __thiscall Entity::IsEnemy(class Entity *)	game.o
+0x00611F10	0x00A01410	?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z	public: void __thiscall Entity::ExecScriptHandler(class HashString,class ScriptEventParams *)	game.o
+0x00611F40	0x00A01440	?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ	public: class math::Mat43 const __thiscall Entity::CalcRotTranMat43(void)	game.o
+0x00611FE0	0x00A014E0	?CalcOriginAnglesFromMat@Entity@@QAEXXZ	public: void __thiscall Entity::CalcOriginAnglesFromMat(void)	game.o
+0x006121A0	0x00A016A0	?GetParentBoneIndex@Entity@@QAEHH@Z	public: int __thiscall Entity::GetParentBoneIndex(int)	game.o
+0x00612210	0x00A01710	?GetBaseRelMat@Entity@@QAEABUPacked@Mat43@math@@H@Z	public: struct math::Mat43::Packed const & __thiscall Entity::GetBaseRelMat(int)	game.o
+0x00612280	0x00A01780	?IsInSnapshot@Entity@@QBE_NXZ	public: bool __thiscall Entity::IsInSnapshot(void)const 	game.o
+0x006122A0	0x00A017A0	?IsVisible@Entity@@QBEHXZ	public: int __thiscall Entity::IsVisible(void)const 	game.o
+0x006122D0	0x00A017D0	?IsDoingPhysics@Entity@@QAE_NXZ	public: bool __thiscall Entity::IsDoingPhysics(void)	game.o
+0x00612300	0x00A01800	?IsInRagdoll@Entity@@QAE_NXZ	public: bool __thiscall Entity::IsInRagdoll(void)	game.o
+0x00612310	0x00A01810	?IsLocalPlayer@Entity@@QBE_NXZ	public: bool __thiscall Entity::IsLocalPlayer(void)const 	game.o
+0x00612340	0x00A01840	?GetPlayerIndex@Entity@@QBEHXZ	public: int __thiscall Entity::GetPlayerIndex(void)const 	game.o
+0x006123B0	0x00A018B0	?IsCameraTweening@Entity@@QBE_NXZ	public: bool __thiscall Entity::IsCameraTweening(void)const 	game.o
+0x00612420	0x00A01920	??0EntityManager@@QAE@XZ	public: __thiscall EntityManager::EntityManager(void)	game.o
+0x00612470	0x00A01970	??1EntityManager@@UAE@XZ	public: virtual __thiscall EntityManager::~EntityManager(void)	game.o
+0x00612480	0x00A01980	?CreatePlayers@EntityManager@@QAEXXZ	public: void __thiscall EntityManager::CreatePlayers(void)	game.o
+0x006124C0	0x00A019C0	?CreateWorld@EntityManager@@QAEXXZ	public: void __thiscall EntityManager::CreateWorld(void)	game.o
+0x00612530	0x00A01A30	?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z	public: int __thiscall EntityManager::GetPlayerIndex(class Entity *)	game.o
+0x00612560	0x00A01A60	?GetEntityController@EntityManager@@QAEHPAVEntity@@@Z	public: int __thiscall EntityManager::GetEntityController(class Entity *)	game.o
+0x006125C0	0x00A01AC0	?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z	public: bool __thiscall EntityManager::IsLocalPlayer(class Entity *)	game.o
+0x00612610	0x00A01B10	?GetFirstLocalPlayer@EntityManager@@QAEPAVEntity@@XZ	public: class Entity * __thiscall EntityManager::GetFirstLocalPlayer(void)	game.o
+0x00612630	0x00A01B30	?SwapPlayers@EntityManager@@QAEXHH@Z	public: void __thiscall EntityManager::SwapPlayers(int,int)	game.o
+0x00612680	0x00A01B80	??0GamePauseData@GamePause@@QAE@XZ	public: __thiscall GamePause::GamePauseData::GamePauseData(void)	game.o
+0x00612690	0x00A01B90	?SetAllPaused@GamePause@@SAX_N@Z	public: static void __cdecl GamePause::SetAllPaused(bool)	game.o
+0x00612790	0x00A01C90	?Find@AnimNotifyTask@@CAHI@Z	private: static int __cdecl AnimNotifyTask::Find(unsigned int)	game.o
+0x006127D0	0x00A01CD0	??1AudioBankMgr@@UAE@XZ	public: virtual __thiscall AudioBankMgr::~AudioBankMgr(void)	game.o
+0x006128E0	0x00A01DE0	?IsFinished@AudioBankMgr@@QBE_NXZ	public: bool __thiscall AudioBankMgr::IsFinished(void)const 	game.o
+0x00612980	0x00A01E80	?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z	public: enum nslWaveID __thiscall SoundDevice::FindWave(char const *)	game.o
+0x006129C0	0x00A01EC0	?Reset@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::Reset(void)	game.o
+0x00612A10	0x00A01F10	??0Sound@SoundDevice@@QAE@XZ	public: __thiscall SoundDevice::Sound::Sound(void)	game.o
+0x00612A70	0x00A01F70	?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z	public: void __thiscall SoundDevice::SetListenerVectors(int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &)	game.o
+0x00612DB0	0x00A022B0	?GetSurfaceTypeSounds@@YAXPBDQAW4nslWaveID@@@Z	void __cdecl GetSurfaceTypeSounds(char const *,enum nslWaveID * const)	game.o
+0x00612E30	0x00A02330	??0MusicMgr@@QAE@XZ	public: __thiscall MusicMgr::MusicMgr(void)	game.o
+0x00612E70	0x00A02370	?BG_FindItemForWeapon@@YAPBUgitem_s@@H@Z	struct gitem_s const * __cdecl BG_FindItemForWeapon(int)	game.o
+0x00612EA0	0x00A023A0	?BG_FindItem@@YAPBUgitem_s@@PBD@Z	struct gitem_s const * __cdecl BG_FindItem(char const *)	game.o
+0x00612F60	0x00A02460	?BG_PlayerTouchesMine@@YA_NPAVPlayerState@@PAVEntityState@@H@Z	bool __cdecl BG_PlayerTouchesMine(class PlayerState *,class EntityState *,int)	game.o
+0x00613020	0x00A02520	?BG_EvaluateTrajectory@@YAXPBUtrajectory_t@@HAAVPosition3@math@@@Z	void __cdecl BG_EvaluateTrajectory(struct trajectory_t const *,int,class math::Position3 &)	game.o
+0x006134F0	0x00A029F0	?BG_CheckProneValid@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@MMMPAM22HHABVDir3@3@P6AXPAUtrace_t@@1111ABUcollision_context_t@@@Z6P6AH15@ZW4proneCheckType_t@@M@Z	int __cdecl BG_CheckProneValid(class DbLinkedHandle<class EntityHandleDb,class Entity>,class math::Position3 const &,float,float,float,float *,float *,float *,int,int,class math::Dir3 const &,void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &),void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &),int (__cdecl*)(class math::Position3 const &,struct collision_context_t const &),enum proneCheckType_t,float)	game.o
+0x006146F0	0x00A03BF0	?BG_CheckProne@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@MMMPAM22HHABVDir3@3@P6AXPAUtrace_t@@1111ABUcollision_context_t@@@Z6P6AH15@ZW4proneCheckType_t@@M@Z	int __cdecl BG_CheckProne(class DbLinkedHandle<class EntityHandleDb,class Entity>,class math::Position3 const &,float,float,float,float *,float *,float *,int,int,class math::Dir3 const &,void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &),void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &),int (__cdecl*)(class math::Position3 const &,struct collision_context_t const &),enum proneCheckType_t,float)	game.o
+0x00614700	0x00A03C00	?PM_CanSimulateFiringWeapon@@YA_NH@Z	bool __cdecl PM_CanSimulateFiringWeapon(int)	game.o
+0x00615320	0x00A04820	?FindClosestVisibleBone@@YA_NPAVEntity@@ABVPosition3@math@@1AAV23@@Z	bool __cdecl FindClosestVisibleBone(class Entity *,class math::Position3 const &,class math::Position3 const &,class math::Position3 &)	game.o
+0x006156B0	0x00A04BB0	?PM_UpdatePronePitch@@YAXXZ	void __cdecl PM_UpdatePronePitch(void)	game.o
+0x00615AF0	0x00A04FF0	?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z	public: virtual bool __thiscall player_collision_context_t::filter(class Entity *)const 	game.o
+0x00615B20	0x00A05020	?filter@ai_collision_context_t@@UBE_NPAVEntity@@@Z	public: virtual bool __thiscall ai_collision_context_t::filter(class Entity *)const 	game.o
+0x00615B50	0x00A05050	?PM_VerifyPronePosition@@YAHABVPosition3@math@@0@Z	int __cdecl PM_VerifyPronePosition(class math::Position3 const &,class math::Position3 const &)	game.o
+0x00615C90	0x00A05190	?BG_GetSpreadForWeapon@@YAXPBVPlayerState@@HPAM1@Z	void __cdecl BG_GetSpreadForWeapon(class PlayerState const *,int,float *,float *)	game.o
+0x00616040	0x00A05540	?BG_FillInWeaponItems@@YAXXZ	void __cdecl BG_FillInWeaponItems(void)	game.o
+0x006161E0	0x00A056E0	?BG_SetupAmmoIndexes@@YAXXZ	void __cdecl BG_SetupAmmoIndexes(void)	game.o
+0x006163E0	0x00A058E0	?BG_SetupSharedAmmoIndexes@@YAXXZ	void __cdecl BG_SetupSharedAmmoIndexes(void)	game.o
+0x006164A0	0x00A059A0	?BG_SetupClipIndexes@@YAXXZ	void __cdecl BG_SetupClipIndexes(void)	game.o
+0x006166A0	0x00A05BA0	?compare_weaponfile_names@@YAHPBX0@Z	int __cdecl compare_weaponfile_names(void const *,void const *)	game.o
+0x006166D0	0x00A05BD0	?BG_IsLMGMounted@@YA_NPBVPlayerState@@@Z	bool __cdecl BG_IsLMGMounted(class PlayerState const *)	game.o
+0x00616750	0x00A05C50	?BG_IsCookingOffGrenade@@YA_NPBVPlayerState@@@Z	bool __cdecl BG_IsCookingOffGrenade(class PlayerState const *)	game.o
+0x006167E0	0x00A05CE0	?BG_GetAmmoTypeForName@@YAHPBD@Z	int __cdecl BG_GetAmmoTypeForName(char const *)	game.o
+0x00616840	0x00A05D40	?BG_GetAmmoClipForName@@YAHPBD@Z	int __cdecl BG_GetAmmoClipForName(char const *)	game.o
+0x006168A0	0x00A05DA0	?BG_GivePlayerWeapon@@YAHPAVPlayerState@@H@Z	int __cdecl BG_GivePlayerWeapon(class PlayerState *,int)	game.o
+0x00616A10	0x00A05F10	?BG_SetPlayerWeaponForSlot@@YAHPAVPlayerState@@HH@Z	int __cdecl BG_SetPlayerWeaponForSlot(class PlayerState *,int,int)	game.o
+0x00616AA0	0x00A05FA0	?BG_IsPlayerWeaponInSlot@@YA?AW4weapSlot_t@@PBVPlayerState@@HH@Z	enum weapSlot_t __cdecl BG_IsPlayerWeaponInSlot(class PlayerState const *,int,int)	game.o
+0x00616B70	0x00A06070	?BG_GetMaxPickupableAmmo@@YAHPBVPlayerState@@H@Z	int __cdecl BG_GetMaxPickupableAmmo(class PlayerState const *,int)	game.o
+0x00616D50	0x00A06250	?BG_GetTotalAmmoReserve@@YAHPBVPlayerState@@H@Z	int __cdecl BG_GetTotalAmmoReserve(class PlayerState const *,int)	game.o
+0x00616F10	0x00A06410	?BG_GetTotalAmmo@@YAHPBVPlayerState@@H@Z	int __cdecl BG_GetTotalAmmo(class PlayerState const *,int)	game.o
+0x00617120	0x00A06620	?PM_CanStartADSAnim@@YA_NXZ	bool __cdecl PM_CanStartADSAnim(void)	game.o
+0x006171B0	0x00A066B0	?PM_InteruptWeaponWithProneMove@@YAHXZ	int __cdecl PM_InteruptWeaponWithProneMove(void)	game.o
+0x00617250	0x00A06750	?PM_InteruptWeaponWithSprintMove@@YAHXZ	int __cdecl PM_InteruptWeaponWithSprintMove(void)	game.o
+0x006180D0	0x00A075D0	?DecodeBin@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeBin(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x006180F0	0x00A075F0	?SceneEntityWasDeletedBeforeCheckpoint@CheckpointMgr@@QAE_NPAVSceneEntity@@PAVSceneBank@@@Z	public: bool __thiscall CheckpointMgr::SceneEntityWasDeletedBeforeCheckpoint(class SceneEntity *,class SceneBank *)	game.o
+0x00618120	0x00A07620	?SetEvent@CheckpointMgr@@QAEXPBD@Z	public: void __thiscall CheckpointMgr::SetEvent(char const *)	game.o
+0x00618130	0x00A07630	?RestoreLastCheckpoint@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::RestoreLastCheckpoint(void)	game.o
+0x006182C0	0x00A077C0	?GetGameVar@CheckpointMgr@@QAE_NIPAII@Z	public: bool __thiscall CheckpointMgr::GetGameVar(unsigned int,unsigned int *,unsigned int)	game.o
+0x00618390	0x00A07890	?CM_LoadMap@@YAXPBDHPAH@Z	void __cdecl CM_LoadMap(char const *,int,int *)	game.o
+0x00618410	0x00A07910	?CM_LoadLump@@YAHHPAPAD@Z	int __cdecl CM_LoadLump(int,char * *)	game.o
+0x00618590	0x00A07A90	?CM_LeafCluster@@YAHH@Z	int __cdecl CM_LeafCluster(int)	game.o
+0x00618600	0x00A07B00	?CM_LeafArea@@YAHH@Z	int __cdecl CM_LeafArea(int)	game.o
+0x00618670	0x00A07B70	?TempBoxModel@@YAPAVDCGSet@@ABVPosition3@math@@0HH@Z	class DCGSet * __cdecl TempBoxModel(class math::Position3 const &,class math::Position3 const &,int,int)	game.o
+0x006188A0	0x00A07DA0	?TempBoxModelContents@@YAHXZ	int __cdecl TempBoxModelContents(void)	game.o
+0x00618980	0x00A07E80	?CM_TraceStaticModel@@YAXPAVStaticModel@@PAUtrace_t@@ABVPosition3@math@@2H@Z	void __cdecl CM_TraceStaticModel(class StaticModel *,struct trace_t *,class math::Position3 const &,class math::Position3 const &,int)	game.o
+0x00618BA0	0x00A080A0	?CM_PointLeafnum_r@@YAHABVPosition3@math@@H@Z	int __cdecl CM_PointLeafnum_r(class math::Position3 const &,int)	game.o
+0x00618C50	0x00A08150	?CM_PointLeafnum@@YAHABVPosition3@math@@@Z	int __cdecl CM_PointLeafnum(class math::Position3 const &)	game.o
+0x00618C70	0x00A08170	?CM_StoreLeafs@@YAXPAUleafList_s@@H@Z	void __cdecl CM_StoreLeafs(struct leafList_s *,int)	game.o
+0x00618CB0	0x00A081B0	?CM_BoxLeafnums_r@@YAXPAUleafList_s@@H@Z	void __cdecl CM_BoxLeafnums_r(struct leafList_s *,int)	game.o
+0x00619050	0x00A08550	?GetLeaves@@YAXPAUleafList_s@@HAAM@Z	void __cdecl GetLeaves(struct leafList_s *,int,float &)	game.o
+0x006194A0	0x00A089A0	?CM_BoxLeafnums@@YAHAAVVector4@math@@AAHABVPosition3@2@22PAHH3@Z	int __cdecl CM_BoxLeafnums(class math::Vector4 &,int &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,int *,int,int *)	game.o
+0x00619650	0x00A08B50	?CM_FloodArea_r@@YAXHH@Z	void __cdecl CM_FloodArea_r(int,int)	game.o
+0x00619750	0x00A08C50	?CM_FloodAreaConnections@@YAXXZ	void __cdecl CM_FloodAreaConnections(void)	game.o
+0x00619810	0x00A08D10	?CM_AdjustAreaPortalState@@YAXHHH@Z	void __cdecl CM_AdjustAreaPortalState(int,int,int)	game.o
+0x00619910	0x00A08E10	?CM_AreasConnected@@YAHHH@Z	int __cdecl CM_AreasConnected(int,int)	game.o
+0x006199C0	0x00A08EC0	?InitEntitiesBSP@@YAXXZ	void __cdecl InitEntitiesBSP(void)	game.o
+0x00619AF0	0x00A08FF0	?CM_CapsuleAreaEntities@@YAXAAVTouchEntityData@@PAUWorldSector@@MMABVPosition3@math@@2MABUcollision_context_t@@@Z	void __cdecl CM_CapsuleAreaEntities(class TouchEntityData &,struct WorldSector *,float,float,class math::Position3 const &,class math::Position3 const &,float,struct collision_context_t const &)	game.o
+0x0061A800	0x00A09D00	?CM_ClipSightTraceToEntities@@YAHPAUsightclip_t@@ABUcollision_context_t@@@Z	int __cdecl CM_ClipSightTraceToEntities(struct sightclip_t *,struct collision_context_t const &)	game.o
+0x0061A830	0x00A09D30	?CM_GetPlaneNum@@YAPAVBspPlane@@H@Z	class BspPlane * __cdecl CM_GetPlaneNum(int)	game.o
+0x0061A8A0	0x00A09DA0	?alloc_verts@@YAPAVPosition3@math@@XZ	class math::Position3 * __cdecl alloc_verts(void)	game.o
+0x0061A900	0x00A09E00	?can_place_decal@@YA_NABVPosition3@math@@ABVDir3@2@00PBUcdlPlane@@IM@Z	bool __cdecl can_place_decal(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int,float)	game.o
+0x0061AAF0	0x00A09FF0	?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z	public: virtual enum visit_result_t __thiscall rtree_visitor_t::visit(int)	game.o
+0x0061AB20	0x00A0A020	?filter_objects@rtree_visitor_t@@QAEXH@Z	public: void __thiscall rtree_visitor_t::filter_objects(int)	game.o
+0x0061ACC0	0x00A0A1C0	?collide_brush_segment@@YA_NABVPosition3@math@@000PBUcdlPlane@@IAAMPAV12@@Z	bool __cdecl collide_brush_segment(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int,float &,class math::Position3 *)	game.o
+0x0061B080	0x00A0A580	?collide_brush_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@I@Z	bool __cdecl collide_brush_segment(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int)	game.o
+0x0061B550	0x00A0AA50	?collide_brush_velocity_sphere@@YAXPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@I@Z	void __cdecl collide_brush_velocity_sphere(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int)	game.o
+0x0061B980	0x00A0AE80	?collide_sphere_poly@@YA_NABVPosition3@math@@M000ABVVector4@2@@Z	bool __cdecl collide_sphere_poly(class math::Position3 const &,float,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Vector4 const &)	game.o
+0x0061BBB0	0x00A0B0B0	?collide_velocity_sphere_poly@@YA_NABVPosition3@math@@AAV12@ABVDir3@2@M000ABVVector4@2@AA_N@Z	bool __cdecl collide_velocity_sphere_poly(class math::Position3 const &,class math::Position3 &,class math::Dir3 const &,float,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Vector4 const &,bool &)	game.o
+0x0061C1A0	0x00A0B6A0	?TraceSphereThroughSphere@@YAHPAUtraceWork_t@@ABVPosition3@math@@11M@Z	int __cdecl TraceSphereThroughSphere(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,float)	game.o
+0x0061C3D0	0x00A0B8D0	?TraceCylinderThroughCylinder@@YAHPAUtraceWork_t@@ABVPosition3@math@@MM@Z	int __cdecl TraceCylinderThroughCylinder(struct traceWork_t *,class math::Position3 const &,float,float)	game.o
+0x0061C690	0x00A0BB90	?TraceCapsuleThroughCapsule@@YAXPAUtraceWork_t@@@Z	void __cdecl TraceCapsuleThroughCapsule(struct traceWork_t *)	game.o
+0x0061C8D0	0x00A0BDD0	?TraceBoundingBoxThroughCapsule@@YAXPAUtraceWork_t@@@Z	void __cdecl TraceBoundingBoxThroughCapsule(struct traceWork_t *)	game.o
+0x0061CBD0	0x00A0C0D0	?TestPointInBox@@YA_NABVPosition3@math@@00@Z	bool __cdecl TestPointInBox(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0061CC30	0x00A0C130	?TestPointInBrush@@YA_NABVPosition3@math@@00PBUcdlPlane@@I@Z	bool __cdecl TestPointInBrush(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int)	game.o
+0x0061CD30	0x00A0C230	?TestBoxInBrush@@YAXPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@II@Z	void __cdecl TestBoxInBrush(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int,unsigned int)	game.o
+0x0061D5C0	0x00A0CAC0	?TestBoxInBox@@YAXPAUtraceWork_t@@ABVPosition3@math@@1I@Z	void __cdecl TestBoxInBox(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,unsigned int)	game.o
+0x0061D760	0x00A0CC60	?SightTraceCapsuleThroughCapsule@@YAHPAUtraceWork_t@@@Z	int __cdecl SightTraceCapsuleThroughCapsule(struct traceWork_t *)	game.o
+0x0061D9C0	0x00A0CEC0	?SightTraceBoundingBoxThroughCapsule@@YAHPAUtraceWork_t@@@Z	int __cdecl SightTraceBoundingBoxThroughCapsule(struct traceWork_t *)	game.o
+0x0061DC00	0x00A0D100	?filter_proximity_data@@YAXABVPosition3@math@@0HABUproximity_data_t@@AAU3@@Z	void __cdecl filter_proximity_data(class math::Position3 const &,class math::Position3 const &,int,struct proximity_data_t const &,struct proximity_data_t &)	game.o
+0x0061E210	0x00A0D710	?filter_proximity_brushes@@YAXABVPosition3@math@@0HABUproximity_data_t@@AAU3@@Z	void __cdecl filter_proximity_brushes(class math::Position3 const &,class math::Position3 const &,int,struct proximity_data_t const &,struct proximity_data_t &)	game.o
+0x0061E660	0x00A0DB60	?collide_sphere_brush@@YA_NABVPosition3@math@@MABUcdl_object_t@@PBUcdlPlane@@IPAV12@@Z	bool __cdecl collide_sphere_brush(class math::Position3 const &,float,struct cdl_object_t const &,struct cdlPlane const *,unsigned int,class math::Position3 *)	game.o
+0x0061E890	0x00A0DD90	?collide_sphere_box@@YA_NABVPosition3@math@@MABUcdl_object_t@@PAV12@@Z	bool __cdecl collide_sphere_box(class math::Position3 const &,float,struct cdl_object_t const &,class math::Position3 *)	game.o
+0x0061EA00	0x00A0DF00	?intersect_segment_aabb@@YA_NABVPosition3@math@@00000@Z	bool __cdecl intersect_segment_aabb(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	game.o
+0x0061EB80	0x00A0E080	?collide_segment@@YA_NABUcdl_object_t@@PBVDir3@math@@PBEGHABVPosition3@3@3AAMPAV43@PAH@Z	bool __cdecl collide_segment(struct cdl_object_t const &,class math::Dir3 const *,unsigned char const *,unsigned short,int,class math::Position3 const &,class math::Position3 const &,float &,class math::Position3 *,int *)	game.o
+0x0061F010	0x00A0E510	?collide_segment_poly@@YA_NABVPosition3@math@@0AAUcdl_poly_inl_t@@AAUcdl_cinfo1@@@Z	bool __cdecl collide_segment_poly(class math::Position3 const &,class math::Position3 const &,struct cdl_poly_inl_t &,struct cdl_cinfo1 &)	game.o
+0x0061F280	0x00A0E780	?Cmd_Wait_f@@YAXXZ	void __cdecl Cmd_Wait_f(void)	game.o
+0x0061F320	0x00A0E820	?Cmd_ExecuteServerString@@YAXPBD@Z	void __cdecl Cmd_ExecuteServerString(char const *)	game.o
+0x0061F3B0	0x00A0E8B0	?Cbuf_SV_Execute@@YAXXZ	void __cdecl Cbuf_SV_Execute(void)	game.o
+0x0061F4A0	0x00A0E9A0	?Cmd_AddServerCommand@@YAXPBDP6AXXZ@Z	void __cdecl Cmd_AddServerCommand(char const *,void (__cdecl*)(void))	game.o
+0x0061F550	0x00A0EA50	?Cmd_Vstr_f@@YAXXZ	void __cdecl Cmd_Vstr_f(void)	game.o
+0x0061F590	0x00A0EA90	?Cmd_Echo_f@@YAXXZ	void __cdecl Cmd_Echo_f(void)	game.o
+0x0061F5E0	0x00A0EAE0	?Cmd_ArgvBuffer@@YAXHPADH@Z	void __cdecl Cmd_ArgvBuffer(int,char *,int)	game.o
+0x0061F620	0x00A0EB20	?Cmd_ArgsBuffer@@YAXPADH@Z	void __cdecl Cmd_ArgsBuffer(char *,int)	game.o
+0x0061F640	0x00A0EB40	?Cmd_ExecuteString@@YAXPBD@Z	void __cdecl Cmd_ExecuteString(char const *)	game.o
+0x0061F730	0x00A0EC30	?GetCmd@@YAPBVBaseCmdFuncInfo@@PBD@Z	class BaseCmdFuncInfo const * __cdecl GetCmd(char const *)	game.o
+0x0061F780	0x00A0EC80	??1CurveManager@@AAE@XZ	private: __thiscall CurveManager::~CurveManager(void)	game.o
+0x0061F790	0x00A0EC90	??1GdbFileManager@@EAE@XZ	private: virtual __thiscall GdbFileManager::~GdbFileManager(void)	game.o
+0x0061F7A0	0x00A0ECA0	?MSG_WriteString@@YAXPAUmsg_t@@PBD@Z	void __cdecl MSG_WriteString(struct msg_t *,char const *)	game.o
+0x0061F860	0x00A0ED60	?Netchan_Transmit@@YAXPAUnetchan_t@@HPBE@Z	void __cdecl Netchan_Transmit(struct netchan_t *,int,unsigned char const *)	game.o
+0x0061F9A0	0x00A0EEA0	?NET_AdrToString@@YAPBDUnetadr_t@@@Z	char const * __cdecl NET_AdrToString(struct netadr_t)	game.o
+0x0061FA60	0x00A0EF60	?Com_BeginParseSession@@YAXPBD@Z	void __cdecl Com_BeginParseSession(char const *)	game.o
+0x0061FAE0	0x00A0EFE0	?Com_StripFilename@@YAXPBDPAD@Z	void __cdecl Com_StripFilename(char const *,char *)	game.o
+0x0061FB30	0x00A0F030	?Com_DefaultExtension@@YAXPADHPBD@Z	void __cdecl Com_DefaultExtension(char *,int,char const *)	game.o
+0x0061FBA0	0x00A0F0A0	?AddLeanToPosition@@YAXQAMMMMM@Z	void __cdecl AddLeanToPosition(float * const,float,float,float,float)	game.o
+0x0061FC60	0x00A0F160	?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z	private: void __thiscall DCGBankManager::AddBank(enum TPakId,class DCGBank *)	game.o
+0x0061FCD0	0x00A0F1D0	?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z	private: virtual void __thiscall DCGBankManager::UnloadBank(enum TPakId)	game.o
+0x0061FCF0	0x00A0F1F0	?GetDCGSet@DCGBankManager@@QAEPBVDCGSet@@W4TPakId@@H@Z	public: class DCGSet const * __thiscall DCGBankManager::GetDCGSet(enum TPakId,int)	game.o
+0x0061FE30	0x00A0F330	?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z	private: void __thiscall CGBankManager::AddBank(enum TPakId,class CGBank *)	game.o
+0x0061FE60	0x00A0F360	?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z	private: virtual void __thiscall CGBankManager::UnloadBank(enum TPakId)	game.o
+0x00620010	0x00A0F510	?init_winding@@YAXABUcdlPlane@@AAV?$ae_sized_array@VPosition3@math@@$0BAA@@@@Z	void __cdecl init_winding(struct cdlPlane const &,class ae_sized_array<class math::Position3,256> &)	game.o
+0x00620200	0x00A0F700	??2Entity@@SAPAXI@Z	public: static void * __cdecl Entity::operator new(unsigned int)	game.o
+0x00620210	0x00A0F710	??3Entity@@SAXPAX@Z	public: static void __cdecl Entity::operator delete(void *)	game.o
+0x00620240	0x00A0F740	??2trRefEntity@@SAPAXI@Z	public: static void * __cdecl trRefEntity::operator new(unsigned int)	game.o
+0x00620250	0x00A0F750	??3trRefEntity@@SAXPAX@Z	public: static void __cdecl trRefEntity::operator delete(void *)	game.o
+0x00620280	0x00A0F780	??0EntityShared@@QAE@XZ	public: __thiscall EntityShared::EntityShared(void)	game.o
+0x00620480	0x00A0F980	??0EntityState@@QAE@XZ	public: __thiscall EntityState::EntityState(void)	game.o
+0x006205F0	0x00A0FAF0	?GetViewModelDObj@Entity@@QBEPBVDObj@@XZ	public: class DObj const * __thiscall Entity::GetViewModelDObj(void)const 	game.o
+0x00620630	0x00A0FB30	?GetViewModelDObj@Entity@@QAEPAVDObj@@XZ	public: class DObj * __thiscall Entity::GetViewModelDObj(void)	game.o
+0x00620670	0x00A0FB70	?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z	public: class math::Mat43 __thiscall Entity::CalcAbsMat(int)	game.o
+0x006208E0	0x00A0FDE0	?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z	public: class math::Mat43 __thiscall Entity::GetRelMat(int)	game.o
+0x00620AE0	0x00A0FFE0	?SetAlwaysRender@Entity@@QAEX_N@Z	public: void __thiscall Entity::SetAlwaysRender(bool)	game.o
+0x00620BE0	0x00A100E0	?has_zone_collision@Entity@@QBE_NXZ	public: bool __thiscall Entity::has_zone_collision(void)const 	game.o
+0x00620C20	0x00A10120	?FootStep@Entity@@QAEXXZ	public: void __thiscall Entity::FootStep(void)	game.o
+0x00620DD0	0x00A102D0	?Clear@Context@PadAliasMgr@@QAEXXZ	public: void __thiscall PadAliasMgr::Context::Clear(void)	game.o
+0x00620EA0	0x00A103A0	?Clear@Context@PadAliasMgr@@QAEXH@Z	public: void __thiscall PadAliasMgr::Context::Clear(int)	game.o
+0x00620F70	0x00A10470	?BindButton@Context@PadAliasMgr@@QAEXHHW4EPadAliasButton@@@Z	public: void __thiscall PadAliasMgr::Context::BindButton(int,int,enum EPadAliasButton)	game.o
+0x00621050	0x00A10550	?BindStick@Context@PadAliasMgr@@QAEXHHW4EPadAliasStick@@@Z	public: void __thiscall PadAliasMgr::Context::BindStick(int,int,enum EPadAliasStick)	game.o
+0x00621160	0x00A10660	?GetButtonAlias@Context@PadAliasMgr@@QAE?AW4EPadAliasButton@@HW4ButtonIndex@controller@@@Z	public: enum EPadAliasButton __thiscall PadAliasMgr::Context::GetButtonAlias(int,enum controller::ButtonIndex)	game.o
+0x006211E0	0x00A106E0	?GetStickAlias@Context@PadAliasMgr@@QAE?AW4EPadAliasStick@@HW4StickIndex@controller@@@Z	public: enum EPadAliasStick __thiscall PadAliasMgr::Context::GetStickAlias(int,enum controller::StickIndex)	game.o
+0x00621260	0x00A10760	?GetButtonValue@Context@PadAliasMgr@@QAEHHW4EPadAliasButton@@@Z	public: int __thiscall PadAliasMgr::Context::GetButtonValue(int,enum EPadAliasButton)	game.o
+0x006212A0	0x00A107A0	?IsButtonReleased@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z	public: bool __thiscall PadAliasMgr::Context::IsButtonReleased(int,enum EPadAliasButton)	game.o
+0x006212F0	0x00A107F0	?IsButtonReleasedClear@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z	public: bool __thiscall PadAliasMgr::Context::IsButtonReleasedClear(int,enum EPadAliasButton)	game.o
+0x00621340	0x00A10840	?IsButtonPressed@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z	public: bool __thiscall PadAliasMgr::Context::IsButtonPressed(int,enum EPadAliasButton)	game.o
+0x00621390	0x00A10890	?IsButtonPressedClear@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z	public: bool __thiscall PadAliasMgr::Context::IsButtonPressedClear(int,enum EPadAliasButton)	game.o
+0x006213E0	0x00A108E0	?GetStickValue@Context@PadAliasMgr@@QAEXHW4EPadAliasStick@@AAH1@Z	public: void __thiscall PadAliasMgr::Context::GetStickValue(int,enum EPadAliasStick,int &,int &)	game.o
+0x00621440	0x00A10940	??0AudioBankMgr@@QAE@XZ	public: __thiscall AudioBankMgr::AudioBankMgr(void)	game.o
+0x00621470	0x00A10970	?RegisterWbk@AudioBankMgr@@QAEXABVtlFixedString@@PBDW4ELanguage@@W4TPakId@@@Z	public: void __thiscall AudioBankMgr::RegisterWbk(class tlFixedString const &,char const *,enum ELanguage,enum TPakId)	game.o
+0x00621670	0x00A10B70	?GetSoundForHandle@SoundDevice@@QAEPAVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z	public: class SoundDevice::Sound * __thiscall SoundDevice::GetSoundForHandle(class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound>)	game.o
+0x006216B0	0x00A10BB0	?GetSoundForHandle@SoundDevice@@QBEPBVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z	public: class SoundDevice::Sound const * __thiscall SoundDevice::GetSoundForHandle(class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound>)const 	game.o
+0x006216F0	0x00A10BF0	?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ	public: class ae_fixed_string<1024,unsigned short> __thiscall SoundDevice::Sound::GetDebugString(void)const 	game.o
+0x006217F0	0x00A10CF0	?IsMusicPlaying@MusicMgr@@QAE_NXZ	public: bool __thiscall MusicMgr::IsMusicPlaying(void)	game.o
+0x00621820	0x00A10D20	?BG_PlayerTouchesItem@@YA_NPAVPlayerState@@PAVEntityState@@H@Z	bool __cdecl BG_PlayerTouchesItem(class PlayerState *,class EntityState *,int)	game.o
+0x006218C0	0x00A10DC0	?BG_CanItemBeGrabbed@@YAHPBVEntityState@@PBVPlayerState@@H@Z	int __cdecl BG_CanItemBeGrabbed(class EntityState const *,class PlayerState const *,int)	game.o
+0x00621B60	0x00A11060	?PM_UpdateLean@@YAXPAVPlayerState@@PAUusercmd_s@@P6AXPAUtrace_t@@ABVPosition3@math@@333ABUcollision_context_t@@@Z@Z	void __cdecl PM_UpdateLean(class PlayerState *,struct usercmd_s *,void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &))	game.o
+0x00621F60	0x00A11460	?BG_TakePlayerWeapon@@YAHPAVPlayerState@@H@Z	int __cdecl BG_TakePlayerWeapon(class PlayerState *,int)	game.o
+0x006220C0	0x00A115C0	??0CheckpointMgr@@QAE@XZ	public: __thiscall CheckpointMgr::CheckpointMgr(void)	game.o
+0x006221F0	0x00A116F0	??1CheckpointMgr@@QAE@XZ	public: __thiscall CheckpointMgr::~CheckpointMgr(void)	game.o
+0x00622290	0x00A11790	?SetGameVar@CheckpointMgr@@QAEXIPAII@Z	public: void __thiscall CheckpointMgr::SetGameVar(unsigned int,unsigned int *,unsigned int)	game.o
+0x00622330	0x00A11830	?ExploderCheckpointExploded@CheckpointMgr@@QAE_NH@Z	public: bool __thiscall CheckpointMgr::ExploderCheckpointExploded(int)	game.o
+0x00622370	0x00A11870	?PrecludeExploderPiece@CheckpointMgr@@QAE_NPBDH@Z	public: bool __thiscall CheckpointMgr::PrecludeExploderPiece(char const *,int)	game.o
+0x006223E0	0x00A118E0	?CM_PointTraceStaticModels@@YAXPAUtrace_t@@ABVPosition3@math@@1ABUcollision_context_t@@@Z	void __cdecl CM_PointTraceStaticModels(struct trace_t *,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	game.o
+0x00622790	0x00A11C90	?CM_PointTraceToEntities@@YAXPAUpointtrace_t@@ABUcollision_context_t@@@Z	void __cdecl CM_PointTraceToEntities(struct pointtrace_t *,struct collision_context_t const &)	game.o
+0x00622AB0	0x00A11FB0	?CM_PointSightTraceToEntities@@YAHPAUsightpointtrace_t@@ABUcollision_context_t@@@Z	int __cdecl CM_PointSightTraceToEntities(struct sightpointtrace_t *,struct collision_context_t const &)	game.o
+0x00622AE0	0x00A11FE0	??0rtree_visitor_t@@QAE@PBVCGBank@@@Z	public: __thiscall rtree_visitor_t::rtree_visitor_t(class CGBank const *)	game.o
+0x00622B60	0x00A12060	?unpack@@YAXABVCGBank@@IPAVPosition3@math@@@Z	void __cdecl unpack(class CGBank const &,unsigned int,class math::Position3 *)	game.o
+0x00622C00	0x00A12100	?ClipHandleToDCGSet@@YAPAVDCGSet@@W4TPakId@@H@Z	class DCGSet * __cdecl ClipHandleToDCGSet(enum TPakId,int)	game.o
+0x00622C80	0x00A12180	?TraceSphereThroughLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z	void __cdecl TraceSphereThroughLeaf(struct traceWork_t *,class DCGSet const *)	game.o
+0x00622FD0	0x00A124D0	?TracePointThroughLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z	void __cdecl TracePointThroughLeaf(struct traceWork_t *,class DCGSet const *)	game.o
+0x00623320	0x00A12820	?TestBoundingBoxInCapsule@@YAXPAUtraceWork_t@@@Z	void __cdecl TestBoundingBoxInCapsule(struct traceWork_t *)	game.o
+0x00623530	0x00A12A30	?TestInLeaf@@YAXPAUtraceWork_t@@ABVCGBank@@ABUrtree_visitor_t@@@Z	void __cdecl TestInLeaf(struct traceWork_t *,class CGBank const &,struct rtree_visitor_t const &)	game.o
+0x00623D40	0x00A13240	?TestInLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z	void __cdecl TestInLeaf(struct traceWork_t *,class DCGSet const *)	game.o
+0x00624070	0x00A13570	?SightTraceThroughLeaf@@YAHPAUtraceWork_t@@PBVDCGSet@@@Z	int __cdecl SightTraceThroughLeaf(struct traceWork_t *,class DCGSet const *)	game.o
+0x006243F0	0x00A138F0	?collide_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1AAUcdl_cinfo1@@AAH3@Z	bool __cdecl collide_segment(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,struct cdl_cinfo1 &,int &,int &)	game.o
+0x006253B0	0x00A148B0	?sight_trace_point@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z	bool __cdecl sight_trace_point(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x00625EA0	0x00A153A0	?sight_trace_sphere@@YA_NPAUtraceWork_t@@@Z	bool __cdecl sight_trace_sphere(struct traceWork_t *)	game.o
+0x00627250	0x00A16750	?collide_velocity_sphere@@YA_NPAUtraceWork_t@@@Z	bool __cdecl collide_velocity_sphere(struct traceWork_t *)	game.o
+0x006286E0	0x00A17BE0	?TraceThroughTree@@YAXPAUtraceWork_t@@ABVPosition3@math@@1@Z	void __cdecl TraceThroughTree(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x006288C0	0x00A17DC0	?SightTrace@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z	bool __cdecl SightTrace(struct traceWork_t *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x00628980	0x00A17E80	?PATH_SightTrace@@YAHABVPosition3@math@@0@Z	int __cdecl PATH_SightTrace(class math::Position3 const &,class math::Position3 const &)	game.o
+0x00628AC0	0x00A17FC0	?collide_ray@@YA_NABVPosition3@math@@ABVDir3@2@PAV32@PAM@Z	bool __cdecl collide_ray(class math::Position3 const &,class math::Dir3 const &,class math::Dir3 *,float *)	game.o
+0x00628EB0	0x00A183B0	?collide_sphere@@YAXABVPosition3@math@@MQAV12@QAVDir3@2@PAH@Z	void __cdecl collide_sphere(class math::Position3 const &,float,class math::Position3 * const,class math::Dir3 * const,int *)	game.o
+0x006292E0	0x00A187E0	?unpack_poly@@YAXABVCGBank@@ABUcdl_vinfo_t@@PAEAAVPosition3@math@@33@Z	void __cdecl unpack_poly(class CGBank const &,struct cdl_vinfo_t const &,unsigned char *,class math::Position3 &,class math::Position3 &,class math::Position3 &)	game.o
+0x00629560	0x00A18A60	?Cbuf_Execute@@YAXXZ	void __cdecl Cbuf_Execute(void)	game.o
+0x00629660	0x00A18B60	?Cmd_Exec_f@@YAXXZ	void __cdecl Cmd_Exec_f(void)	game.o
+0x00629730	0x00A18C30	?Cmd_Init@@YAXXZ	void __cdecl Cmd_Init(void)	game.o
+0x00629780	0x00A18C80	?AttachCurve@CurveManager@@QAEXPAVCurve@@@Z	public: void __thiscall CurveManager::AttachCurve(class Curve *)	game.o
+0x006297C0	0x00A18CC0	?AddKeyFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z	public: void __thiscall CurveManager::AddKeyFunc(unsigned int,float (__cdecl*)(unsigned int,unsigned int,unsigned int,float,float,unsigned int))	game.o
+0x00629830	0x00A18D30	?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z	public: void __thiscall CurveManager::AddConditionFunc(unsigned int,float (__cdecl*)(unsigned int,unsigned int,unsigned int,float,float,unsigned int))	game.o
+0x006298A0	0x00A18DA0	??0Curve@@QAE@XZ	public: __thiscall Curve::Curve(void)	game.o
+0x00629920	0x00A18E20	??0GdbFileManager@@AAE@XZ	private: __thiscall GdbFileManager::GdbFileManager(void)	game.o
+0x00629940	0x00A18E40	?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z	public: void __thiscall GdbFileManager::DecodeBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x00629970	0x00A18E70	?Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z	int __cdecl Netchan_Process(struct netchan_t *,struct msg_t *)	game.o
+0x00629AD0	0x00A18FD0	?ParseConfigStringToStruct@@YAHPAEPBUcspField_t@@HPBVConfigString@@HP6AH0PBDH@ZP6AX03@Z@Z	int __cdecl ParseConfigStringToStruct(unsigned char *,struct cspField_t const *,int,class ConfigString const *,int,int (__cdecl*)(unsigned char *,char const *,int),void (__cdecl*)(unsigned char *,char const *))	game.o
+0x00629D90	0x00A19290	??1DCGBankManager@@UAE@XZ	public: virtual __thiscall DCGBankManager::~DCGBankManager(void)	game.o
+0x00629DF0	0x00A192F0	?DecodeDCGBank@DCGBankManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall DCGBankManager::DecodeDCGBank(char const *,unsigned char *,int,enum TPakId)	game.o
+0x00629F30	0x00A19430	?DecodeCGBank@CGBankManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall CGBankManager::DecodeCGBank(char const *,unsigned char *,int,enum TPakId)	game.o
+0x0062A040	0x00A19540	?clip_winding@@YAXAAV?$ae_sized_array@VPosition3@math@@$0BAA@@@ABUcdlPlane@@@Z	void __cdecl clip_winding(class ae_sized_array<class math::Position3,256> &,struct cdlPlane const &)	game.o
+0x0062A6B0	0x00A19BB0	?calc_winding@@YAXABV?$cdl_array@UcdlPlane@@@@HAAV?$ae_sized_array@VPosition3@math@@$0BAA@@@@Z	void __cdecl calc_winding(class cdl_array<struct cdlPlane> const &,int,class ae_sized_array<class math::Position3,256> &)	game.o
+0x0062A8A0	0x00A19DA0	?FreeAllDObjs@Entity@@SAX_N@Z	public: static void __cdecl Entity::FreeAllDObjs(bool)	game.o
+0x0062A8E0	0x00A19DE0	??0Entity@@QAE@W4TPakId@@@Z	public: __thiscall Entity::Entity(enum TPakId)	game.o
+0x0062AD70	0x00A1A270	?AddNotify@Entity@@QAEXPAVEntityNotify@@@Z	public: void __thiscall Entity::AddNotify(class EntityNotify *)	game.o
+0x0062AE00	0x00A1A300	?Notify@Entity@@QAEXVHashString@@@Z	public: void __thiscall Entity::Notify(class HashString)	game.o
+0x0062AF30	0x00A1A430	?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ	public: class trRefEntity & __thiscall Entity::GetRenderEntity(void)	game.o
+0x0062AFA0	0x00A1A4A0	?GetRefEntity@Entity@@QAEAAUrefEntity_t@@XZ	public: struct refEntity_t & __thiscall Entity::GetRefEntity(void)	game.o
+0x0062AFB0	0x00A1A4B0	?SetAnimDebug@Entity@@QAEXH@Z	public: void __thiscall Entity::SetAnimDebug(int)	game.o
+0x0062B0B0	0x00A1A5B0	?UnloadBank@EntityManager@@EAEXW4TPakId@@@Z	private: virtual void __thiscall EntityManager::UnloadBank(enum TPakId)	game.o
+0x0062B110	0x00A1A610	?DeleteAllEntities@EntityManager@@QAEXXZ	public: void __thiscall EntityManager::DeleteAllEntities(void)	game.o
+0x0062B1A0	0x00A1A6A0	?SetButtonAlias@@YAXXZ	void __cdecl SetButtonAlias(void)	game.o
+0x0062B320	0x00A1A820	?SetStickAlias@@YAXXZ	void __cdecl SetStickAlias(void)	game.o
+0x0062B4A0	0x00A1A9A0	?ClearAllPadAliases@@YAXXZ	void __cdecl ClearAllPadAliases(void)	game.o
+0x0062B4E0	0x00A1A9E0	?InitPadAliasCommands@@YAXXZ	void __cdecl InitPadAliasCommands(void)	game.o
+0x0062B520	0x00A1AA20	?WriteBindings@PadAliasMgr@@QAEXH@Z	public: void __thiscall PadAliasMgr::WriteBindings(int)	game.o
+0x0062B670	0x00A1AB70	?Update@AnimNotifyTask@@UAEXPAVEntity@@M@Z	public: virtual void __thiscall AnimNotifyTask::Update(class Entity *,float)	game.o
+0x0062B950	0x00A1AE50	?RegisterFunc@AnimNotifyTask@@SAXPBDP6AXVentity@Broc@@@Z@Z	public: static void __cdecl AnimNotifyTask::RegisterFunc(char const *,void (__cdecl*)(class Broc::entity))	game.o
+0x0062B9C0	0x00A1AEC0	?NotifyLoaded@AudioBankMgr@@AAEXXZ	private: void __thiscall AudioBankMgr::NotifyLoaded(void)	game.o
+0x0062B9F0	0x00A1AEF0	?NotifyUnloaded@AudioBankMgr@@AAEXXZ	private: void __thiscall AudioBankMgr::NotifyUnloaded(void)	game.o
+0x0062BA20	0x00A1AF20	?Update@AudioBankMgr@@QAEXXZ	public: void __thiscall AudioBankMgr::Update(void)	game.o
+0x0062BC40	0x00A1B140	?FinishLoading@AudioBankMgr@@QAEXXZ	public: void __thiscall AudioBankMgr::FinishLoading(void)	game.o
+0x0062BD50	0x00A1B250	?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z	private: void __thiscall AudioBankMgr::LoadWbkInternal(struct AudioBankMgr::WbkEntry &,char const *,enum ELanguage,bool)	game.o
+0x0062BE30	0x00A1B330	?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z	public: void __thiscall AudioBankMgr::FreeWbk(class tlFixedString const &,bool)	game.o
+0x0062C020	0x00A1B520	??1Sound@SoundDevice@@QAE@XZ	public: __thiscall SoundDevice::Sound::~Sound(void)	game.o
+0x0062C0D0	0x00A1B5D0	?Stop@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::Stop(void)	game.o
+0x0062C210	0x00A1B710	?SetVolume@Sound@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::Sound::SetVolume(float)	game.o
+0x0062C2D0	0x00A1B7D0	?SetPitch@Sound@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::Sound::SetPitch(float)	game.o
+0x0062C380	0x00A1B880	?SetRange@Sound@SoundDevice@@QAEXMM@Z	public: void __thiscall SoundDevice::Sound::SetRange(float,float)	game.o
+0x0062C470	0x00A1B970	?SetPosition@Sound@SoundDevice@@QAEXABVPosition3@math@@@Z	public: void __thiscall SoundDevice::Sound::SetPosition(class math::Position3 const &)	game.o
+0x0062C630	0x00A1BB30	?SetVelocity@Sound@SoundDevice@@QAEXABVDir3@math@@@Z	public: void __thiscall SoundDevice::Sound::SetVelocity(class math::Dir3 const &)	game.o
+0x0062C7A0	0x00A1BCA0	?Update@Sound@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::Sound::Update(void)	game.o
+0x0062C9B0	0x00A1BEB0	?ReleaseSound@SoundDevice@@QAEXPAVSound@1@@Z	public: void __thiscall SoundDevice::ReleaseSound(class SoundDevice::Sound *)	game.o
+0x0062C9C0	0x00A1BEC0	?ReleaseSound@SoundDevice@@QAEXV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z	public: void __thiscall SoundDevice::ReleaseSound(class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound>)	game.o
+0x0062CA10	0x00A1BF10	?StopAllSoundsNotPaused@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::StopAllSoundsNotPaused(void)	game.o
+0x0062CA40	0x00A1BF40	?UpdateCrossFade@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::UpdateCrossFade(float)	game.o
+0x0062CBE0	0x00A1C0E0	?CrossFade@SoundDevice@@QAEXIIM@Z	public: void __thiscall SoundDevice::CrossFade(unsigned int,unsigned int,float)	game.o
+0x0062CD90	0x00A1C290	?DebugRender@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::DebugRender(void)	game.o
+0x0062D6D0	0x00A1CBD0	?ScaleVolume@MusicMgr@@QAEXM@Z	public: void __thiscall MusicMgr::ScaleVolume(float)	game.o
+0x0062D830	0x00A1CD30	?Stop@MusicMgr@@QAEXM@Z	public: void __thiscall MusicMgr::Stop(float)	game.o
+0x0062D8A0	0x00A1CDA0	?Update@MusicMgr@@QAEXM@Z	public: void __thiscall MusicMgr::Update(float)	game.o
+0x0062DB90	0x00A1D090	?BG_GetMaxAmmoPakAmmo@@YAHPBVPlayerState@@H@Z	int __cdecl BG_GetMaxAmmoPakAmmo(class PlayerState const *,int)	game.o
+0x0062DCF0	0x00A1D1F0	?PM_MeleeAssistAccelerate@@YAXXZ	void __cdecl PM_MeleeAssistAccelerate(void)	game.o
+0x0062DE20	0x00A1D320	?PM_UpdateMeleeAssistAim@@YAXPAVPlayerState@@H@Z	void __cdecl PM_UpdateMeleeAssistAim(class PlayerState *,int)	game.o
+0x0062E070	0x00A1D570	?PM_UpdateStickyAim@@YAXPAVPlayerState@@PAUusercmd_s@@1@Z	void __cdecl PM_UpdateStickyAim(class PlayerState *,struct usercmd_s *,struct usercmd_s *)	game.o
+0x0062F070	0x00A1E570	?PM_UpdatePlayerSprintingFlag@@YAXXZ	void __cdecl PM_UpdatePlayerSprintingFlag(void)	game.o
+0x0062F1B0	0x00A1E6B0	?BG_GetPlayerWeaponInfo@@YAPAUweaponFileInfo_t@@XZ	struct weaponFileInfo_t * __cdecl BG_GetPlayerWeaponInfo(void)	game.o
+0x0062F2F0	0x00A1E7F0	?PM_UpdateAimDownSightFlag@@YAXXZ	void __cdecl PM_UpdateAimDownSightFlag(void)	game.o
+0x0062F670	0x00A1EB70	?PM_UpdateAimDownSightLerp@@YAXXZ	void __cdecl PM_UpdateAimDownSightLerp(void)	game.o
+0x00631490	0x00A20990	?ReInit@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::ReInit(void)	game.o
+0x00631560	0x00A20A60	?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z	public: void __thiscall CheckpointMgr::SaveCheckpoint(char const *,bool)	game.o
+0x00632110	0x00A21610	?ClearGameVars@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::ClearGameVars(void)	game.o
+0x00632120	0x00A21620	?LoadCheckpointFromStubData@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::LoadCheckpointFromStubData(void)	game.o
+0x00632400	0x00A21900	?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::RestoreExplodedExploders(void)	game.o
+0x00632500	0x00A21A00	?CM_PointContents@@YAHABVPosition3@math@@PAVDCGSet@@@Z	int __cdecl CM_PointContents(class math::Position3 const &,class DCGSet *)	game.o
+0x00632E00	0x00A22300	?CM_TransformedPointContents@@YAHABVPosition3@math@@PAVDCGSet@@00@Z	int __cdecl CM_TransformedPointContents(class math::Position3 const &,class DCGSet *,class math::Position3 const &,class math::Position3 const &)	game.o
+0x00633010	0x00A22510	?CM_ValidateAllWorldSectors@@YAXXZ	void __cdecl CM_ValidateAllWorldSectors(void)	game.o
+0x006331A0	0x00A226A0	?CM_AreaEntities@@YAHABVPosition3@math@@0PAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HH@Z	int __cdecl CM_AreaEntities(class math::Position3 const &,class math::Position3 const &,class DbLinkedHandle<class EntityHandleDb,class Entity> *,int,int)	game.o
+0x00633230	0x00A22730	?CM_PointTraceToEntities@@YAXPAUpointtrace_t@@ABVTouchEntityData@@@Z	void __cdecl CM_PointTraceToEntities(struct pointtrace_t *,class TouchEntityData const &)	game.o
+0x00633290	0x00A22790	?post_process@rtree_visitor_t@@QAEXHAAUproximity_data_t@@@Z	public: void __thiscall rtree_visitor_t::post_process(int,struct proximity_data_t &)	game.o
+0x00633770	0x00A22C70	?PositionTest@@YAXPAUtraceWork_t@@@Z	void __cdecl PositionTest(struct traceWork_t *)	game.o
+0x00633900	0x00A22E00	?PositionTest@@YAXPAUtraceWork_t@@ABUproximity_data_t@@@Z	void __cdecl PositionTest(struct traceWork_t *,struct proximity_data_t const &)	game.o
+0x006340A0	0x00A235A0	?SightTrace@@YAHHABVPosition3@math@@000PAVDCGSet@@0HHPAUsphere_t@@@Z	int __cdecl SightTrace(int,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DCGSet *,class math::Position3 const &,int,int,struct sphere_t *)	game.o
+0x00634620	0x00A23B20	?collide_segment@@YA_NABUproximity_data_t@@PAUtraceWork_t@@ABVPosition3@math@@2AAUcdl_cinfo1@@AAH4@Z	bool __cdecl collide_segment(struct proximity_data_t const &,struct traceWork_t *,class math::Position3 const &,class math::Position3 const &,struct cdl_cinfo1 &,int &,int &)	game.o
+0x006350B0	0x00A245B0	?collide_segment@@YAXABUproximity_data_t@@ABVPosition3@math@@1AAMAAH3PAUcdl_poly_inl_t@@@Z	void __cdecl collide_segment(struct proximity_data_t const &,class math::Position3 const &,class math::Position3 const &,float &,int &,int &,struct cdl_poly_inl_t *)	game.o
+0x00635B70	0x00A25070	?collide_velocity_sphere@@YA_NPAUtraceWork_t@@ABUproximity_data_t@@@Z	bool __cdecl collide_velocity_sphere(struct traceWork_t *,struct proximity_data_t const &)	game.o
+0x006366C0	0x00A25BC0	?query_proximity_data@@YAXABVPosition3@math@@0AAUproximity_data_t@@@Z	void __cdecl query_proximity_data(class math::Position3 const &,class math::Position3 const &,struct proximity_data_t &)	game.o
+0x00636890	0x00A25D90	?SightTraceXFormed@@YAHHABVPosition3@math@@000PAVDCGSet@@H00H@Z	int __cdecl SightTraceXFormed(int,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DCGSet *,int,class math::Position3 const &,class math::Position3 const &,int)	game.o
+0x00636AC0	0x00A25FC0	?push_sphere_in_world@@YA_NAAVPosition3@math@@MABUproximity_data_t@@PAVTouchEntityData@@@Z	bool __cdecl push_sphere_in_world(class math::Position3 &,float,struct proximity_data_t const &,class TouchEntityData *)	game.o
+0x00637710	0x00A26C10	?Cbuf_ExecuteText@@YAXHPBD@Z	void __cdecl Cbuf_ExecuteText(int,char const *)	game.o
+0x00638160	0x00A27660	??0CurveManager@@AAE@XZ	private: __thiscall CurveManager::CurveManager(void)	game.o
+0x006385E0	0x00A27AE0	?EvaluateKey@CurveManager@@IAEMIIIIM@Z	protected: float __thiscall CurveManager::EvaluateKey(unsigned int,unsigned int,unsigned int,unsigned int,float)	game.o
+0x00638650	0x00A27B50	?EvaluateCondition@CurveManager@@IAEMIIIMMIM@Z	protected: float __thiscall CurveManager::EvaluateCondition(unsigned int,unsigned int,unsigned int,float,float,unsigned int,float)	game.o
+0x006386C0	0x00A27BC0	?PostEvent@CurveManager@@QAEXIIM@Z	public: void __thiscall CurveManager::PostEvent(unsigned int,unsigned int,float)	game.o
+0x00638720	0x00A27C20	?DecodeGDB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeGDB(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x00638750	0x00A27C50	?GetGdbFile@GdbFileManager@@QAE?AVGdbFile@@W4TPakId@@PBD1@Z	public: class GdbFile __thiscall GdbFileManager::GetGdbFile(enum TPakId,char const *,char const *)	game.o
+0x006387E0	0x00A27CE0	?DecodeDCGBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeDCGBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x00638800	0x00A27D00	??0TempDCGSet@DCGBankManager@@QAE@XZ	public: __thiscall DCGBankManager::TempDCGSet::TempDCGSet(void)	game.o
+0x006388F0	0x00A27DF0	??0DCGBankManager@@QAE@XZ	public: __thiscall DCGBankManager::DCGBankManager(void)	game.o
+0x006389B0	0x00A27EB0	?DecodeCGBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeCGBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game.o
+0x006389D0	0x00A27ED0	?render_brush@@YAXABVcdlBrush@@ABVMat43@math@@ABVColor@@@Z	void __cdecl render_brush(class cdlBrush const &,class math::Mat43 const &,class Color const &)	game.o
+0x00638A10	0x00A27F10	?render_brush@@YAXABVPosition3@math@@0PBUcdlPlane@@IABVColor@@@Z	void __cdecl render_brush(class math::Position3 const &,class math::Position3 const &,struct cdlPlane const *,unsigned int,class Color const &)	game.o
+0x00639170	0x00A28670	?SetInSnapshot@Entity@@QAEXXZ	public: void __thiscall Entity::SetInSnapshot(void)	game.o
+0x00639180	0x00A28680	?DisableAI@@YAXI@Z	void __cdecl DisableAI(unsigned int)	game.o
+0x00639250	0x00A28750	?EnableAI@@YAXI@Z	void __cdecl EnableAI(unsigned int)	game.o
+0x006392D0	0x00A287D0	?RestartAtCheckpoint@CheckpointMenu@@YAXH@Z	void __cdecl CheckpointMenu::RestartAtCheckpoint(int)	game.o
+0x00639370	0x00A28870	?RenderCheckpointMenu@CheckpointMenu@@YAXXZ	void __cdecl CheckpointMenu::RenderCheckpointMenu(void)	game.o
+0x00639550	0x00A28A50	?UnloadBank@AudioBankMgr@@EAEXW4TPakId@@@Z	private: virtual void __thiscall AudioBankMgr::UnloadBank(enum TPakId)	game.o
+0x00639630	0x00A28B30	?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z	public: void __thiscall AudioBankMgr::LoadWbk(class tlFixedString const &,bool)	game.o
+0x006397F0	0x00A28CF0	??0SoundDevice@@QAE@XZ	public: __thiscall SoundDevice::SoundDevice(void)	game.o
+0x006399D0	0x00A28ED0	?Queue@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z	public: void __thiscall SoundDevice::Sound::Queue(enum nslWaveID,float,float,float,float,class math::Position3 const &,class math::Dir3 const &,bool,class DbLinkedHandle<class EntityHandleDb,class Entity>,bool)	game.o
+0x00639CE0	0x00A291E0	?Play@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z	public: void __thiscall SoundDevice::Sound::Play(enum nslWaveID,float,float,float,float,class math::Position3 const &,class math::Dir3 const &,bool,class DbLinkedHandle<class EntityHandleDb,class Entity>,bool)	game.o
+0x0063A040	0x00A29540	?SetPoPtr@Sound@SoundDevice@@QAEXPBVMat43@math@@@Z	public: void __thiscall SoundDevice::Sound::SetPoPtr(class math::Mat43 const *)	game.o
+0x0063A060	0x00A29560	?GetFreeSlot@SoundDevice@@AAEHXZ	private: int __thiscall SoundDevice::GetFreeSlot(void)	game.o
+0x0063A0D0	0x00A295D0	?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z	public: class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound> __thiscall SoundDevice::QueueSound(enum nslWaveID,class DbLinkedHandle<class EntityHandleDb,class Entity>,bool,bool,class math::Position3 const &,class math::Dir3 const &,float,float,float,float)	game.o
+0x0063A260	0x00A29760	?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z	public: class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound> __thiscall SoundDevice::PlaySound(enum nslWaveID,class DbLinkedHandle<class EntityHandleDb,class Entity>,bool,bool,class math::Position3 const &,class math::Dir3 const &,float,float,float,float)	game.o
+0x0063A420	0x00A29920	?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@5@MMMM@Z	public: class DbLinkedHandle<class SoundDevice::SoundHandleDb,class SoundDevice::Sound> __thiscall SoundDevice::PlaySound(char const *,class DbLinkedHandle<class EntityHandleDb,class Entity>,bool,bool,class math::Position3 const &,class math::Dir3 const &,float,float,float,float)	game.o
+0x0063A5A0	0x00A29AA0	?FrameAdvance@SoundDevice@@QAEXM@Z	public: void __thiscall SoundDevice::FrameAdvance(float)	game.o
+0x0063A7D0	0x00A29CD0	??1MusicMgr@@QAE@XZ	public: __thiscall MusicMgr::~MusicMgr(void)	game.o
+0x0063A890	0x00A29D90	?Play@MusicMgr@@QAEXPBD@Z	public: void __thiscall MusicMgr::Play(char const *)	game.o
+0x0063AA30	0x00A29F30	?PlayIndoor@MusicMgr@@QAEXPBDM@Z	public: void __thiscall MusicMgr::PlayIndoor(char const *,float)	game.o
+0x0063AC30	0x00A2A130	?push_in_world@@YA_NAAUpmove_t@@MABUcollision_context_t@@@Z	bool __cdecl push_in_world(struct pmove_t &,float,struct collision_context_t const &)	game.o
+0x0063BCA0	0x00A2B1A0	?PM_trace@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z	void __cdecl PM_trace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	game.o
+0x0063BF90	0x00A2B490	?resolve_character_collisions@@YA_NAAUpmove_t@@M@Z	bool __cdecl resolve_character_collisions(struct pmove_t &,float)	game.o
+0x0063C8E0	0x00A2BDE0	?PM_FootstepEvent@@YAXHHH@Z	void __cdecl PM_FootstepEvent(int,int,int)	game.o
+0x0063D2B0	0x00A2C7B0	?PM_UpdateViewAngles@@YAXPAVPlayerState@@PAUusercmd_s@@1HP6AXPAUtrace_t@@ABVPosition3@math@@333ABUcollision_context_t@@@Z@Z	void __cdecl PM_UpdateViewAngles(class PlayerState *,struct usercmd_s *,struct usercmd_s *,int,void (__cdecl*)(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &))	game.o
+0x0063E850	0x00A2DD50	?PM_SlideMove@@YAHH@Z	int __cdecl PM_SlideMove(int)	game.o
+0x0063F230	0x00A2E730	?PM_StepSlideMove@@YAXH@Z	void __cdecl PM_StepSlideMove(int)	game.o
+0x0063FD00	0x00A2F200	?ParseWeaponConfigString@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseWeaponConfigString(char const *,class ConfigString const *)	game.o
+0x00640020	0x00A2F520	?BG_SetupWeaponInfo@@YAXXZ	void __cdecl BG_SetupWeaponInfo(void)	game.o
+0x006408B0	0x00A2FDB0	?PM_Weapon@@YAXXZ	void __cdecl PM_Weapon(void)	game.o
+0x00640E60	0x00A30360	?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ	public: void __thiscall CheckpointMgr::ClearSavedCheckpointData(void)	game.o
+0x00640E90	0x00A30390	?Trace@@YAXPAUtrace_t@@ABVPosition3@math@@111PAVDCGSet@@HHPAUsphere_t@@@Z	void __cdecl Trace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DCGSet *,int,int,struct sphere_t *)	game.o
+0x00641470	0x00A30970	?TraceSphere@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@222H@Z	void __cdecl TraceSphere(struct proximity_data_t const &,struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,int)	game.o
+0x00641880	0x00A30D80	?TracePoint@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@2H@Z	void __cdecl TracePoint(struct proximity_data_t const &,struct trace_t *,class math::Position3 const &,class math::Position3 const &,int)	game.o
+0x00641D40	0x00A31240	?TraceXFormed@@YAXPAUtrace_t@@ABVPosition3@math@@111PAVDCGSet@@H11H@Z	void __cdecl TraceXFormed(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DCGSet *,int,class math::Position3 const &,class math::Position3 const &,int)	game.o
+0x00642010	0x00A31510	?AttachCurveVehicle@@YA_NIPADMM@Z	bool __cdecl AttachCurveVehicle(unsigned int,char *,float,float)	game.o
+0x00642120	0x00A31620	?AttachCurveEntity@@YA_NIPAD@Z	bool __cdecl AttachCurveEntity(unsigned int,char *)	game.o
+0x006421D0	0x00A316D0	?Update@CurveManager@@QAEXM@Z	public: void __thiscall CurveManager::Update(float)	game.o
+0x00642D50	0x00A32250	??1Entity@@QAE@XZ	public: __thiscall Entity::~Entity(void)	game.o
+0x006431F0	0x00A326F0	??0PadAliasMgr@@QAE@XZ	public: __thiscall PadAliasMgr::PadAliasMgr(void)	game.o
+0x006435D0	0x00A32AD0	?StopAllSounds@SoundDevice@@QAEXXZ	public: void __thiscall SoundDevice::StopAllSounds(void)	game.o
+0x00643690	0x00A32B90	?tunnel_test@@YA_NAAUpmove_t@@MABVPosition3@math@@1@Z	bool __cdecl tunnel_test(struct pmove_t &,float,class math::Position3 const &,class math::Position3 const &)	game.o
+0x00643850	0x00A32D50	?resolve_collisions@@YAXABUcollision_context_t@@ABVPosition3@math@@@Z	void __cdecl resolve_collisions(struct collision_context_t const &,class math::Position3 const &)	game.o
+0x00644B80	0x00A34080	?PM_CheckDuck@@YAXXZ	void __cdecl PM_CheckDuck(void)	game.o
+0x006458E0	0x00A34DE0	?PM_LadderMove@@YAXABUcollision_context_t@@@Z	void __cdecl PM_LadderMove(struct collision_context_t const &)	game.o
+0x00645CD0	0x00A351D0	?PmoveSingle@@YAXPAUpmove_t@@_N@Z	void __cdecl PmoveSingle(struct pmove_t *,bool)	game.o
+0x006464C0	0x00A359C0	?Pmove@@YAXPAUpmove_t@@_N@Z	void __cdecl Pmove(struct pmove_t *,bool)	game.o
+0x006465B0	0x00A35AB0	?DetachCurveEntity@@YA_NI@Z	bool __cdecl DetachCurveEntity(unsigned int)	game.o
+0x00646610	0x00A35B10	??1SoundDevice@@QAE@XZ	public: __thiscall SoundDevice::~SoundDevice(void)	game.o
+0x006466A0	0x00A35BA0	?ClearEntities@CurveManager@@QAEXXZ	public: void __thiscall CurveManager::ClearEntities(void)	game.o
+0x00646700	0x00A35C00	?DebugRender@CGBankManager@@QAEXXZ	public: void __thiscall CGBankManager::DebugRender(void)	game.o
+0x006492D0	0x00A387D0	??0CGBankManager@@QAE@XZ	public: __thiscall CGBankManager::CGBankManager(void)	game.o

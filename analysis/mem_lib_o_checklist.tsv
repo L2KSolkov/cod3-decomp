@@ -1,0 +1,48 @@
+index	status	map_line
+1	PORTED	0002:003badc0 ?chunksize@@YAHPAUmalloc_chunk@@@Z 00BAA2C0 f i mem_lib.o
+2	VERIFIED	0002:003badd0 ?InitQuickPool@@YAXXZ 00BAA2D0 f mem_lib.o
+3	PORTED	0002:003bae40 ?alloc_size@mem_sentinel@@YAHHH@Z 00BAA340 f mem_lib.o
+4	PORTED	0002:003bae70 ?init@mem_sentinel@@YAPAXPAXHH@Z 00BAA370 f mem_lib.o
+5	VERIFIED	0002:003baed0 ?mem_enable_no_mem_break@@YAX_N@Z 00BAA3D0 f mem_lib.o
+6	VERIFIED	0002:003baee0 ?mem_break@@YAXXZ 00BAA3E0 f mem_lib.o
+7	VERIFIED	0002:003baef0 ?mem_heap_create@@YAXPAUmem_heap@@PAX10@Z 00BAA3F0 f mem_lib.o
+8	VERIFIED	0002:003baf60 ?mem_heap_create@@YAHPAX0PAUmem_heap@@@Z 00BAA460 f mem_lib.o
+9	VERIFIED	0002:003bafc0 ?mem_heap_destroy@@YAHPAUmem_heap@@@Z 00BAA4C0 f mem_lib.o
+10	VERIFIED	0002:003bb000 ?mem_heap_destroy@@YAHH@Z 00BAA500 f mem_lib.o
+11	VERIFIED	0002:003bb050 ?mem_heap_get@@YAPAUmem_heap@@W4mem_heap_type@@@Z 00BAA550 f mem_lib.o
+12	VERIFIED	0002:003bb080 ?mem_heap_set_current@@YAPAUmem_heap@@PAU1@@Z 00BAA580 f mem_lib.o
+13	VERIFIED	0002:003bb0a0 ?mem_heap_set_current@@YAPAUmem_heap@@W4mem_heap_type@@@Z 00BAA5A0 f mem_lib.o
+14	VERIFIED	0002:003bb0c0 ?mem_heap_get_current@@YAPAUmem_heap@@XZ 00BAA5C0 f mem_lib.o
+15	VERIFIED	0002:003bb0d0 ?mem_init@@YAHXZ 00BAA5D0 f mem_lib.o
+16	VERIFIED	0002:003bb1d0 ?mem_alt_sbrk@@YAPAXJ@Z 00BAA6D0 f mem_lib.o
+17	VERIFIED	0002:003bb200 ?mem_get_current_av@@YAPAUmalloc_state@@XZ 00BAA700 f mem_lib.o
+18	VERIFIED	0002:003bb210 ?validate_chunk_list@@YAXPAUmalloc_chunk@@_N@Z 00BAA710 f mem_lib.o
+19	VERIFIED	0002:003bb280 ?mem_validate_heap@@YAXPAUmem_heap@@@Z 00BAA780 f mem_lib.o
+20	VERIFIED	0002:003bb310 ?mem_push_context@@YAXPBD@Z 00BAA810 f mem_lib.o
+21	VERIFIED	0002:003bb320 ?mem_pop_context@@YAXXZ 00BAA820 f mem_lib.o
+22	VERIFIED	0002:003bb330 ?mem_get_used_bytes@@YAHW4mem_heap_type@@@Z 00BAA830 f mem_lib.o
+23	VERIFIED	0002:003bb380 ?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z 00BAA880 f mem_lib.o
+24	VERIFIED	0002:003bb3d0 ?mem_get_free_bytes@@YAHW4mem_heap_type@@@Z 00BAA8D0 f mem_lib.o
+25	VERIFIED	0002:003bb470 ?mem_report_mem_usage@@YAXXZ 00BAA970 f mem_lib.o
+26	VERIFIED	0002:003bb480 ?mem_set_checkpoint@@YAHXZ 00BAA980 f mem_lib.o
+27	PORTED	0002:003bb490 ?mem_heap_free@mem_sentinel@@YAPAXPAX@Z 00BAA990 f mem_lib.o
+28	VERIFIED	0002:003bb510 ?mem_heap_realloc_private@@YAPAXPAXI@Z 00BAAA10 f mem_lib.o
+29	PORTED	0002:003bb5a0 ?mem_heap_malloc_private@@YAPAXHI@Z 00BAAAA0 f mem_lib.o
+30	VERIFIED	0002:003bb8b0 ?mem_heap_free_private@@YAXPAUmem_heap@@PAX@Z 00BAADB0 f mem_lib.o
+31	VERIFIED	0002:003bb910 ?mem_heap_malloc@@YAPAXI@Z 00BAAE10 f mem_lib.o
+32	VERIFIED	0002:003bb930 ?mem_heap_malloc@@YAPAXHI@Z 00BAAE30 f mem_lib.o
+33	VERIFIED	0002:003bb940 ?mem_heap_malloc@@YAPAXPAUmem_heap@@HI@Z 00BAAE40 f mem_lib.o
+34	PORTED	0002:003bb990 ?mem_heap_malloc_ctx@@YAPAXHIPBD0H@Z 00BAAE90 f mem_lib.o
+35	PORTED	0002:003bb9b0 ?mem_heap_calloc@@YAPAXHI@Z 00BAAEB0 f mem_lib.o
+36	PORTED	0002:003bb9f0 ?mem_heap_calloc@@YAPAXPAUmem_heap@@HI@Z 00BAAEF0 f mem_lib.o
+37	VERIFIED	0002:003bba50 ?mem_heap_realloc@@YAPAXPAXI@Z 00BAAF50 f mem_lib.o
+38	VERIFIED	0002:003bba60 ?mem_heap_realloc@@YAPAXPAUmem_heap@@PAXI@Z 00BAAF60 f mem_lib.o
+39	VERIFIED	0002:003bbab0 ?mem_heap_free@@YAXPAUmem_heap@@PAX@Z 00BAAFB0 f mem_lib.o
+40	VERIFIED	0002:003bbac0 ?debug_malloc@@YAPAXI@Z 00BAAFC0 f mem_lib.o
+41	VERIFIED	0002:003bbb00 ?mem_heap_free_check_reserve@@YA_NPAUmem_heap@@PAX@Z 00BAB000 f mem_lib.o
+42	VERIFIED	0002:003bbb50 ?mem_heap_free_private@@YAXPAX@Z 00BAB050 f mem_lib.o
+43	VERIFIED	0002:003bbda0 ?mem_heap_free@@YAXPAX@Z 00BAB2A0 f mem_lib.o
+44	VERIFIED	0002:003bbdb0 ?debug_free@@YAXPAX@Z 00BAB2B0 f mem_lib.o
+45	VERIFIED	0002:003bbde0 ??0?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAE@XZ 00BAB2E0 f i mem_lib.o
+46	PORTED	0002:003bbdf0 ??0mem_heap_context@@QAE@PAUmem_heap@@@Z 00BAB2F0 f i mem_lib.o
+47	PORTED	0002:003bbe10 ??1mem_heap_context@@QAE@XZ 00BAB310 f i mem_lib.o

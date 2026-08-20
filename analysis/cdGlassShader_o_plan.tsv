@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x007CFF90	?InitCDGlassShader@@YAXXZ	void __cdecl InitCDGlassShader(void)	
+0x007CFFE0	?ToggleCDGlassShader@@YAXXZ	void __cdecl ToggleCDGlassShader(void)	
+0x007D0000	?Register@cdGlassShader@@UAEXXZ	public: virtual void __thiscall cdGlassShader::Register(void)	
+0x007D0030	?Render@cdGlassShaderNode@@UAEXXZ	public: virtual void __thiscall cdGlassShaderNode::Render(void)	

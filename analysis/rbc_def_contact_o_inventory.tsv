@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x0088AA20	0x00C79F20	?get_cpi_allocater@contact_point_info@@SAPAVphys_memory_heap@@XZ	public: static class phys_memory_heap * __cdecl contact_point_info::get_cpi_allocater(void)	rbc_def_contact.o
+0x0088AA30	0x00C79F30	?verify_constraint@rigid_body_constraint_contact@@AAEXQAVrigid_body@@0@Z	private: void __thiscall rigid_body_constraint_contact::verify_constraint(class rigid_body * const,class rigid_body * const)	rbc_def_contact.o
+0x0088AA90	0x00C79F90	?setup_constraint@rigid_body_constraint_contact@@QAEXPAVpulse_sum_constraint_solver@@M@Z	public: void __thiscall rigid_body_constraint_contact::setup_constraint(class pulse_sum_constraint_solver *,float)	rbc_def_contact.o
+0x0088AAD0	0x00C79FD0	??1rigid_body_constraint_contact@@QAE@XZ	public: __thiscall rigid_body_constraint_contact::~rigid_body_constraint_contact(void)	rbc_def_contact.o

@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x00850520	0x00C3FA20	?nglGetUnusedWorkBuffer@@YAXPAPAXPAI@Z	void __cdecl nglGetUnusedWorkBuffer(void * *,unsigned int *)	ngl_dx_buf.o
+0x00850550	0x00C3FA50	?nglXbSetPushBufferSize@@YAXII@Z	void __cdecl nglXbSetPushBufferSize(unsigned int,unsigned int)	ngl_dx_buf.o
+0x00850570	0x00C3FA70	?nglSetBufferSize@@YAXW4nglBufferType@@I_N@Z	void __cdecl nglSetBufferSize(enum nglBufferType,unsigned int,bool)	ngl_dx_buf.o
+0x00850710	0x00C3FC10	?ngliInitWorkBuffers@@YAXXZ	void __cdecl ngliInitWorkBuffers(void)	ngl_dx_buf.o

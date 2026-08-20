@@ -1,0 +1,9 @@
+ida_ea	va	name	signature	family
+0x008421D0	0x00C316D0	?nglSetIFLSpeed@@YAXM@Z	void __cdecl nglSetIFLSpeed(float)	ngl_texture.o
+0x008421F0	0x00C316F0	?nglScreenShot@@YAXPBD@Z	void __cdecl nglScreenShot(char const *)	ngl_texture.o
+0x00842240	0x00C31740	?nglGetTexture@@YAPAUnglTexture@@ABVtlFixedString@@@Z	struct nglTexture * __cdecl nglGetTexture(class tlFixedString const &)	ngl_texture.o
+0x00842260	0x00C31760	?nglCanReleaseTexture@@YA_NPAUnglTexture@@@Z	bool __cdecl nglCanReleaseTexture(struct nglTexture *)	ngl_texture.o
+0x00842280	0x00C31780	?nglProcessTexture@@YAXPAUnglTexture@@@Z	void __cdecl nglProcessTexture(struct nglTexture *)	ngl_texture.o
+0x00842290	0x00C31790	?nglAPKTextureLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKTextureLoadCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_texture.o
+0x008422F0	0x00C317F0	?nglAPKTextureDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKTextureDeleteCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_texture.o
+0x00842370	0x00C31870	?nglTextureInit@@YAXXZ	void __cdecl nglTextureInit(void)	ngl_texture.o

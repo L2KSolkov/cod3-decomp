@@ -1,0 +1,524 @@
+ida_ea	va	name	signature	family
+0x0092E320	0x00D1D820	?RegisterHashStrings@mp_util_wad@@YAXXZ	void __cdecl mp_util_wad::RegisterHashStrings(void)	mp_util_wad.o
+0x0092EEC0	0x00D1E3C0	?ResolveAnim@mp_util_wad@@YAIIIPAII@Z	unsigned int __cdecl mp_util_wad::ResolveAnim(unsigned int,unsigned int,unsigned int *,unsigned int)	mp_util_wad.o
+0x0092EF10	0x00D1E410	?ResolveAnimName@mp_util_wad@@YAPBDI@Z	char const * __cdecl mp_util_wad::ResolveAnimName(unsigned int)	mp_util_wad.o
+0x0092EF50	0x00D1E450	?ValidateAnimationIndices@mp_util_wad@@YA_NXZ	bool __cdecl mp_util_wad::ValidateAnimationIndices(void)	mp_util_wad.o
+0x0092EFB0	0x00D1E4B0	?GetBroAnim@mp_util_wad@@YAIII@Z	unsigned int __cdecl mp_util_wad::GetBroAnim(unsigned int,unsigned int)	mp_util_wad.o
+0x0092F000	0x00D1E500	?GetEE_flagEnd@@YAAAUvector@Broc@@Ventity@2@@Z	struct Broc::vector & __cdecl GetEE_flagEnd(class Broc::entity)	mp_util_wad.o
+0x0092F050	0x00D1E550	?IsEEDefined_flagEnd@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_flagEnd(class Broc::entity)	mp_util_wad.o
+0x0092F1A0	0x00D1E6A0	?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_audio_indoor(class Broc::entity)	mp_util_wad.o
+0x0092F1F0	0x00D1E6F0	?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_indoor(class Broc::entity)	mp_util_wad.o
+0x0092F2A0	0x00D1E7A0	?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_audio_ambmax(class Broc::entity)	mp_util_wad.o
+0x0092F2F0	0x00D1E7F0	?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_ambmax(class Broc::entity)	mp_util_wad.o
+0x0092F3A0	0x00D1E8A0	?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_sound(class Broc::entity)	mp_util_wad.o
+0x0092F3F0	0x00D1E8F0	?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_sound(class Broc::entity)	mp_util_wad.o
+0x0092F4A0	0x00D1E9A0	?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z	struct bbool & __cdecl GetEE_specialWeaponChangeClassFlag(class Broc::entity)	mp_util_wad.o
+0x0092F4F0	0x00D1E9F0	?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_specialWeaponChangeClassFlag(class Broc::entity)	mp_util_wad.o
+0x0092F5A0	0x00D1EAA0	?GetEE_respawnmodel@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_respawnmodel(class Broc::entity)	mp_util_wad.o
+0x0092F5F0	0x00D1EAF0	?IsEEDefined_respawnmodel@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_respawnmodel(class Broc::entity)	mp_util_wad.o
+0x0092F710	0x00D1EC10	?GetEE_deathmodel@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_deathmodel(class Broc::entity)	mp_util_wad.o
+0x0092F760	0x00D1EC60	?IsEEDefined_deathmodel@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_deathmodel(class Broc::entity)	mp_util_wad.o
+0x0092F860	0x00D1ED60	?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_punishedTeamKills(class Broc::entity)	mp_util_wad.o
+0x0092F8B0	0x00D1EDB0	?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_punishedTeamKills(class Broc::entity)	mp_util_wad.o
+0x0092F960	0x00D1EE60	?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z	struct bbool & __cdecl GetEE_firstSpectate(class Broc::entity)	mp_util_wad.o
+0x0092F9B0	0x00D1EEB0	?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_firstSpectate(class Broc::entity)	mp_util_wad.o
+0x0092FA60	0x00D1EF60	?GetEE_home_position@@YAAAUvector@Broc@@Ventity@2@@Z	struct Broc::vector & __cdecl GetEE_home_position(class Broc::entity)	mp_util_wad.o
+0x0092FAB0	0x00D1EFB0	?IsEEDefined_home_position@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_home_position(class Broc::entity)	mp_util_wad.o
+0x0092FB60	0x00D1F060	?GetEE_deathfire@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_deathfire(class Broc::entity)	mp_util_wad.o
+0x0092FBB0	0x00D1F0B0	?IsEEDefined_deathfire@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_deathfire(class Broc::entity)	mp_util_wad.o
+0x0092FCB0	0x00D1F1B0	?GetEE_waiting@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_waiting(class Broc::entity)	mp_util_wad.o
+0x0092FD00	0x00D1F200	?IsEEDefined_waiting@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_waiting(class Broc::entity)	mp_util_wad.o
+0x0092FDB0	0x00D1F2B0	?GetEE_last_dropped_time@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_last_dropped_time(class Broc::entity)	mp_util_wad.o
+0x0092FE00	0x00D1F300	?IsEEDefined_last_dropped_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_last_dropped_time(class Broc::entity)	mp_util_wad.o
+0x0092FEB0	0x00D1F3B0	?GetEE_flag_in_minefield@@YAAAUbbool@@Ventity@Broc@@@Z	struct bbool & __cdecl GetEE_flag_in_minefield(class Broc::entity)	mp_util_wad.o
+0x0092FF00	0x00D1F400	?IsEEDefined_flag_in_minefield@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_flag_in_minefield(class Broc::entity)	mp_util_wad.o
+0x0092FFB0	0x00D1F4B0	?GetEE_index@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_index(class Broc::entity)	mp_util_wad.o
+0x00930000	0x00D1F500	?IsEEDefined_index@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_index(class Broc::entity)	mp_util_wad.o
+0x009300B0	0x00D1F5B0	?GetEE_lastPainSoundTime@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_lastPainSoundTime(class Broc::entity)	mp_util_wad.o
+0x00930100	0x00D1F600	?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_lastPainSoundTime(class Broc::entity)	mp_util_wad.o
+0x009301B0	0x00D1F6B0	?GetEE_audio_ambp@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_audio_ambp(class Broc::entity)	mp_util_wad.o
+0x00930200	0x00D1F700	?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_ambp(class Broc::entity)	mp_util_wad.o
+0x00930300	0x00D1F800	?GetEE_holder@@YAAAVentity@Broc@@V12@@Z	class Broc::entity & __cdecl GetEE_holder(class Broc::entity)	mp_util_wad.o
+0x00930350	0x00D1F850	?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_holder(class Broc::entity)	mp_util_wad.o
+0x00930400	0x00D1F900	?GetEE_flag@@YAAAVentity@Broc@@V12@@Z	class Broc::entity & __cdecl GetEE_flag(class Broc::entity)	mp_util_wad.o
+0x00930450	0x00D1F950	?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_flag(class Broc::entity)	mp_util_wad.o
+0x00930500	0x00D1FA00	?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_lastTouch(class Broc::entity)	mp_util_wad.o
+0x00930550	0x00D1FA50	?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_lastTouch(class Broc::entity)	mp_util_wad.o
+0x00930600	0x00D1FB00	?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_audio_track_p(class Broc::entity)	mp_util_wad.o
+0x00930650	0x00D1FB50	?IsEEDefined_audio_track_p@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_track_p(class Broc::entity)	mp_util_wad.o
+0x00930700	0x00D1FC00	?GetEE_specialWeaponTime@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_specialWeaponTime(class Broc::entity)	mp_util_wad.o
+0x00930750	0x00D1FC50	?IsEEDefined_specialWeaponTime@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_specialWeaponTime(class Broc::entity)	mp_util_wad.o
+0x00930800	0x00D1FD00	?GetEE_autobalance@@YAAAUbbool@@Ventity@Broc@@@Z	struct bbool & __cdecl GetEE_autobalance(class Broc::entity)	mp_util_wad.o
+0x00930850	0x00D1FD50	?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_autobalance(class Broc::entity)	mp_util_wad.o
+0x00930900	0x00D1FE00	?GetEE_goal@@YAAAVentity@Broc@@V12@@Z	class Broc::entity & __cdecl GetEE_goal(class Broc::entity)	mp_util_wad.o
+0x00930950	0x00D1FE50	?IsEEDefined_goal@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_goal(class Broc::entity)	mp_util_wad.o
+0x00930A00	0x00D1FF00	?GetEE_teamSound@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_teamSound(class Broc::entity)	mp_util_wad.o
+0x00930A50	0x00D1FF50	?IsEEDefined_teamSound@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_teamSound(class Broc::entity)	mp_util_wad.o
+0x00930B00	0x00D20000	?GetEE_trigger@@YAAAVentity@Broc@@V12@@Z	class Broc::entity & __cdecl GetEE_trigger(class Broc::entity)	mp_util_wad.o
+0x00930B50	0x00D20050	?IsEEDefined_trigger@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_trigger(class Broc::entity)	mp_util_wad.o
+0x00930C00	0x00D20100	?GetEE_message_when_returned@@YAAAUHashStr@@Ventity@Broc@@@Z	struct HashStr & __cdecl GetEE_message_when_returned(class Broc::entity)	mp_util_wad.o
+0x00930C50	0x00D20150	?IsEEDefined_message_when_returned@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_message_when_returned(class Broc::entity)	mp_util_wad.o
+0x00930D00	0x00D20200	?GetEE_damage_effect@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_damage_effect(class Broc::entity)	mp_util_wad.o
+0x00930D50	0x00D20250	?IsEEDefined_damage_effect@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_damage_effect(class Broc::entity)	mp_util_wad.o
+0x00930E00	0x00D20300	?GetEE_spawnTime@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_spawnTime(class Broc::entity)	mp_util_wad.o
+0x00930E50	0x00D20350	?IsEEDefined_spawnTime@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_spawnTime(class Broc::entity)	mp_util_wad.o
+0x00930F00	0x00D20400	?GetEE_pickupCaptureDelayTime@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_pickupCaptureDelayTime(class Broc::entity)	mp_util_wad.o
+0x00930F50	0x00D20450	?IsEEDefined_pickupCaptureDelayTime@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_pickupCaptureDelayTime(class Broc::entity)	mp_util_wad.o
+0x00931000	0x00D20500	?GetEE_flagStart@@YAAAUvector@Broc@@Ventity@2@@Z	struct Broc::vector & __cdecl GetEE_flagStart(class Broc::entity)	mp_util_wad.o
+0x00931050	0x00D20550	?IsEEDefined_flagStart@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_flagStart(class Broc::entity)	mp_util_wad.o
+0x00931100	0x00D20600	?GetEE_capAllowedTeam@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_capAllowedTeam(class Broc::entity)	mp_util_wad.o
+0x00931150	0x00D20650	?IsEEDefined_capAllowedTeam@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_capAllowedTeam(class Broc::entity)	mp_util_wad.o
+0x00931200	0x00D20700	?GetEE_last_touch_time@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_last_touch_time(class Broc::entity)	mp_util_wad.o
+0x00931250	0x00D20750	?IsEEDefined_last_touch_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_last_touch_time(class Broc::entity)	mp_util_wad.o
+0x00931300	0x00D20800	?GetEE_audio_track@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_audio_track(class Broc::entity)	mp_util_wad.o
+0x00931350	0x00D20850	?IsEEDefined_audio_track@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_track(class Broc::entity)	mp_util_wad.o
+0x00931450	0x00D20950	?GetEE_objective_status@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_objective_status(class Broc::entity)	mp_util_wad.o
+0x009314A0	0x00D209A0	?IsEEDefined_objective_status@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_objective_status(class Broc::entity)	mp_util_wad.o
+0x00931550	0x00D20A50	?GetEE_damagelight@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_damagelight(class Broc::entity)	mp_util_wad.o
+0x009315A0	0x00D20AA0	?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_damagelight(class Broc::entity)	mp_util_wad.o
+0x009316A0	0x00D20BA0	?GetEE_spawnCount@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_spawnCount(class Broc::entity)	mp_util_wad.o
+0x009316F0	0x00D20BF0	?IsEEDefined_spawnCount@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_spawnCount(class Broc::entity)	mp_util_wad.o
+0x009317A0	0x00D20CA0	?GetEE_capStatus@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_capStatus(class Broc::entity)	mp_util_wad.o
+0x009317F0	0x00D20CF0	?IsEEDefined_capStatus@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_capStatus(class Broc::entity)	mp_util_wad.o
+0x009318A0	0x00D20DA0	?GetEE_capTeam@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_capTeam(class Broc::entity)	mp_util_wad.o
+0x009318F0	0x00D20DF0	?IsEEDefined_capTeam@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_capTeam(class Broc::entity)	mp_util_wad.o
+0x009319A0	0x00D20EA0	?GetEE_numDeaths@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_numDeaths(class Broc::entity)	mp_util_wad.o
+0x009319F0	0x00D20EF0	?IsEEDefined_numDeaths@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_numDeaths(class Broc::entity)	mp_util_wad.o
+0x00931AA0	0x00D20FA0	?GetEE_reverb@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_reverb(class Broc::entity)	mp_util_wad.o
+0x00931AF0	0x00D20FF0	?IsEEDefined_reverb@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_reverb(class Broc::entity)	mp_util_wad.o
+0x00931BF0	0x00D210F0	?GetEE_killsSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_killsSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00931C40	0x00D21140	?IsEEDefined_killsSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_killsSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00931CF0	0x00D211F0	?GetEE_home_angles@@YAAAUvector@Broc@@Ventity@2@@Z	struct Broc::vector & __cdecl GetEE_home_angles(class Broc::entity)	mp_util_wad.o
+0x00931D40	0x00D21240	?IsEEDefined_home_angles@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_home_angles(class Broc::entity)	mp_util_wad.o
+0x00931DF0	0x00D212F0	?GetEE_inDeath@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_inDeath(class Broc::entity)	mp_util_wad.o
+0x00931E40	0x00D21340	?IsEEDefined_inDeath@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_inDeath(class Broc::entity)	mp_util_wad.o
+0x00931EF0	0x00D213F0	?GetEE_sound_handle@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_sound_handle(class Broc::entity)	mp_util_wad.o
+0x00931F40	0x00D21440	?IsEEDefined_sound_handle@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_sound_handle(class Broc::entity)	mp_util_wad.o
+0x00931FF0	0x00D214F0	?GetEE_capSpeed@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_capSpeed(class Broc::entity)	mp_util_wad.o
+0x00932040	0x00D21540	?IsEEDefined_capSpeed@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_capSpeed(class Broc::entity)	mp_util_wad.o
+0x009320F0	0x00D215F0	?GetEE_lastspawnpoint@@YAAAVentity@Broc@@V12@@Z	class Broc::entity & __cdecl GetEE_lastspawnpoint(class Broc::entity)	mp_util_wad.o
+0x00932140	0x00D21640	?IsEEDefined_lastspawnpoint@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_lastspawnpoint(class Broc::entity)	mp_util_wad.o
+0x009321F0	0x00D216F0	?GetEE_setting_up_hq@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_setting_up_hq(class Broc::entity)	mp_util_wad.o
+0x00932240	0x00D21740	?IsEEDefined_setting_up_hq@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_setting_up_hq(class Broc::entity)	mp_util_wad.o
+0x009322F0	0x00D217F0	?GetEE_weaponstr@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_weaponstr(class Broc::entity)	mp_util_wad.o
+0x00932340	0x00D21840	?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_weaponstr(class Broc::entity)	mp_util_wad.o
+0x00932440	0x00D21940	?GetEE_damagecritical@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_damagecritical(class Broc::entity)	mp_util_wad.o
+0x00932490	0x00D21990	?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_damagecritical(class Broc::entity)	mp_util_wad.o
+0x00932590	0x00D21A90	?GetEE_spawnscore@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_spawnscore(class Broc::entity)	mp_util_wad.o
+0x009325E0	0x00D21AE0	?IsEEDefined_spawnscore@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_spawnscore(class Broc::entity)	mp_util_wad.o
+0x00932690	0x00D21B90	?GetEE_deathfx@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_deathfx(class Broc::entity)	mp_util_wad.o
+0x009326E0	0x00D21BE0	?IsEEDefined_deathfx@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_deathfx(class Broc::entity)	mp_util_wad.o
+0x009327E0	0x00D21CE0	?GetEE_bTeamKilledWithArtillery@@YAAAUbbool@@Ventity@Broc@@@Z	struct bbool & __cdecl GetEE_bTeamKilledWithArtillery(class Broc::entity)	mp_util_wad.o
+0x00932830	0x00D21D30	?IsEEDefined_bTeamKilledWithArtillery@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_bTeamKilledWithArtillery(class Broc::entity)	mp_util_wad.o
+0x009328E0	0x00D21DE0	?GetEE_damageheavy@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_damageheavy(class Broc::entity)	mp_util_wad.o
+0x00932930	0x00D21E30	?IsEEDefined_damageheavy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_damageheavy(class Broc::entity)	mp_util_wad.o
+0x00932A30	0x00D21F30	?GetEE_cappedSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_cappedSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00932A80	0x00D21F80	?IsEEDefined_cappedSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_cappedSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00932B30	0x00D22030	?GetEE_isInsideFollowClient@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_isInsideFollowClient(class Broc::entity)	mp_util_wad.o
+0x00932B80	0x00D22080	?IsEEDefined_isInsideFollowClient@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_isInsideFollowClient(class Broc::entity)	mp_util_wad.o
+0x00932C30	0x00D22130	?GetEE_returnedSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_returnedSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00932C80	0x00D22180	?IsEEDefined_returnedSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_returnedSinceLastDeath(class Broc::entity)	mp_util_wad.o
+0x00932D30	0x00D22230	?GetEE_lastMedicCall@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_lastMedicCall(class Broc::entity)	mp_util_wad.o
+0x00932D80	0x00D22280	?IsEEDefined_lastMedicCall@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_lastMedicCall(class Broc::entity)	mp_util_wad.o
+0x00932E30	0x00D22330	?GetEE_bigsplashed@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_bigsplashed(class Broc::entity)	mp_util_wad.o
+0x00932E80	0x00D22380	?IsEEDefined_bigsplashed@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_bigsplashed(class Broc::entity)	mp_util_wad.o
+0x00932F30	0x00D22430	?GetEE_audio_ambmin@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_audio_ambmin(class Broc::entity)	mp_util_wad.o
+0x00932F80	0x00D22480	?IsEEDefined_audio_ambmin@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_audio_ambmin(class Broc::entity)	mp_util_wad.o
+0x00933030	0x00D22530	?plane_flyby_setup@_mp_airplanes@@YAXVstring@Broc@@00Ubint@@Ubfloat@@22@Z	void __cdecl _mp_airplanes::plane_flyby_setup(class Broc::string,class Broc::string,class Broc::string,struct bint,struct bfloat,struct bfloat,struct bfloat)	mp_util_wad.o
+0x00934E80	0x00D24380	?plane_flyby_thread@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@@Z	void __cdecl _mp_airplanes::plane_flyby_thread(class Broc::entity,struct _mp_airplanes::mp_plane)	mp_util_wad.o
+0x009351C0	0x00D246C0	?plane_flyby@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@Ubint@@@Z	void __cdecl _mp_airplanes::plane_flyby(class Broc::entity,struct _mp_airplanes::mp_plane,struct bint)	mp_util_wad.o
+0x00935680	0x00D24B80	?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z	void __cdecl _mp_airplanes::plane_roll(class Broc::entity)	mp_util_wad.o
+0x009358F0	0x00D24DF0	?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z	void __cdecl _mp_audio::AudioPrint(class Broc::string)	mp_util_wad.o
+0x009359A0	0x00D24EA0	?main@_mp_audio@@YAXXZ	void __cdecl _mp_audio::main(void)	mp_util_wad.o
+0x00936280	0x00D25780	?CallbackSetLevelAudio@_mp_audio@@YAXPBD00HH@Z	void __cdecl _mp_audio::CallbackSetLevelAudio(char const *,char const *,char const *,int,int)	mp_util_wad.o
+0x00936390	0x00D25890	?ambient_chatter_system@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::ambient_chatter_system(class Broc::entity)	mp_util_wad.o
+0x00936570	0x00D25A70	?interior_triggering_device@_mp_audio@@YAXVentity@Broc@@0@Z	void __cdecl _mp_audio::interior_triggering_device(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x00936770	0x00D25C70	?PlayerLocation@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::PlayerLocation(class Broc::entity)	mp_util_wad.o
+0x00937020	0x00D26520	?audio_crossfade_wait@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::audio_crossfade_wait(class Broc::entity)	mp_util_wad.o
+0x009370E0	0x00D265E0	?track_changer@_mp_audio@@YAXVstring@Broc@@@Z	void __cdecl _mp_audio::track_changer(class Broc::string)	mp_util_wad.o
+0x00937190	0x00D26690	?reverb_changer@_mp_audio@@YAXVstring@Broc@@@Z	void __cdecl _mp_audio::reverb_changer(class Broc::string)	mp_util_wad.o
+0x00937240	0x00D26740	?ambient_changer@_mp_audio@@YAXVstring@Broc@@@Z	void __cdecl _mp_audio::ambient_changer(class Broc::string)	mp_util_wad.o
+0x009372E0	0x00D267E0	?ambient_system@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_audio::ambient_system(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x00937760	0x00D26C60	?audio_spawner@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_audio::audio_spawner(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x00937B20	0x00D27020	?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z	struct bfloat __cdecl _mp_audio::closest_point_on_line_to_point(struct Broc::vector,struct Broc::vector,struct Broc::vector,struct Broc::vector &)	mp_util_wad.o
+0x00937EB0	0x00D273B0	?StopLineSound@_mp_audio@@YAXVstring@Broc@@@Z	void __cdecl _mp_audio::StopLineSound(class Broc::string)	mp_util_wad.o
+0x00938030	0x00D27530	?StopAllLineSounds@_mp_audio@@YAXXZ	void __cdecl _mp_audio::StopAllLineSounds(void)	mp_util_wad.o
+0x009380F0	0x00D275F0	?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@Vstring@3@0@Z	class Broc::entity __cdecl _mp_audio::SpawnLineSound(class Broc::string,class Broc::string)	mp_util_wad.o
+0x00938320	0x00D27820	?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@V23@Vstring@3@@Z	class Broc::entity __cdecl _mp_audio::SpawnLineSound(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x00938720	0x00D27C20	?MoveSoundAlongLine@_mp_audio@@YAXVentity@Broc@@Uvector@3@1@Z	void __cdecl _mp_audio::MoveSoundAlongLine(class Broc::entity,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00938A90	0x00D27F90	?PlaySound@_mp_audio@@YAXVentity@Broc@@Vstring@3@Ubfloat@@@Z	void __cdecl _mp_audio::PlaySound(class Broc::entity,class Broc::string,struct bfloat)	mp_util_wad.o
+0x00938B20	0x00D28020	?PlayLocalDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z	void __cdecl _mp_audio::PlayLocalDialog(class Broc::entity,class Broc::string,class Broc::string)	mp_util_wad.o
+0x00938BE0	0x00D280E0	?PlayTeamDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@1Ubfloat@@@Z	void __cdecl _mp_audio::PlayTeamDialog(class Broc::entity,class Broc::string,class Broc::string,struct bfloat)	mp_util_wad.o
+0x00938E90	0x00D28390	?PlayTeamDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@11Ubfloat@@@Z	void __cdecl _mp_audio::PlayTeamDialog(class Broc::entity,class Broc::string,class Broc::string,class Broc::string,struct bfloat)	mp_util_wad.o
+0x009391B0	0x00D286B0	?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z	void __cdecl _mp_audio::PlayTeamSoundStoppable(class Broc::entity,class Broc::string,class Broc::string)	mp_util_wad.o
+0x00939590	0x00D28A90	?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z	void __cdecl _mp_audio::PlayTeamSoundStoppable(class Broc::entity,class Broc::string,class Broc::string,class Broc::string)	mp_util_wad.o
+0x00939A50	0x00D28F50	?StopTeamSound@_mp_audio@@YAXXZ	void __cdecl _mp_audio::StopTeamSound(void)	mp_util_wad.o
+0x00939BE0	0x00D290E0	?PlayTeamSound@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z	void __cdecl _mp_audio::PlayTeamSound(class Broc::entity,class Broc::string,class Broc::string,class Broc::string)	mp_util_wad.o
+0x00939DC0	0x00D292C0	?PlaySoundAtLocation@_mp_audio@@YAXVentity@Broc@@Vstring@3@Uvector@3@@Z	void __cdecl _mp_audio::PlaySoundAtLocation(class Broc::entity,class Broc::string,struct Broc::vector)	mp_util_wad.o
+0x00939EE0	0x00D293E0	?ThreadLineSound@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::ThreadLineSound(class Broc::entity)	mp_util_wad.o
+0x0093A130	0x00D29630	?ThreadStaticSound@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::ThreadStaticSound(class Broc::entity)	mp_util_wad.o
+0x0093A330	0x00D29830	?ThreadStaticSoundPlay@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_audio::ThreadStaticSoundPlay(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x0093A3A0	0x00D298A0	?sound_repeat@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::sound_repeat(class Broc::entity)	mp_util_wad.o
+0x0093A5A0	0x00D29AA0	?ThreadStaticSoundRandomPlay@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_audio::ThreadStaticSoundRandomPlay(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x0093A640	0x00D29B40	?PlayPainSound@_mp_audio@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_audio::PlayPainSound(class Broc::entity,struct bint)	mp_util_wad.o
+0x0093AE80	0x00D2A380	?PlayDeathSound@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z	void __cdecl _mp_audio::PlayDeathSound(class Broc::entity,class Broc::entity,class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x0093B270	0x00D2A770	?PlayKillerWarning@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z	void __cdecl _mp_audio::PlayKillerWarning(class Broc::entity,class Broc::entity,class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x0093BEE0	0x00D2B3E0	?PlayKillerCredit@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::PlayKillerCredit(class Broc::entity)	mp_util_wad.o
+0x0093C240	0x00D2B740	?player_dying_sounds@_mp_audio@@YAXVentity@Broc@@@Z	void __cdecl _mp_audio::player_dying_sounds(class Broc::entity)	mp_util_wad.o
+0x0093C2C0	0x00D2B7C0	?LaunchGametype@_mp_common@@YAXXZ	void __cdecl _mp_common::LaunchGametype(void)	mp_util_wad.o
+0x0093D030	0x00D2C530	?SetupGameVariables@_mp_common@@YAXXZ	void __cdecl _mp_common::SetupGameVariables(void)	mp_util_wad.o
+0x0093D1A0	0x00D2C6A0	?SetupCallbacks@_mp_common@@YAXUbbool@@@Z	void __cdecl _mp_common::SetupCallbacks(struct bbool)	mp_util_wad.o
+0x0093D3B0	0x00D2C8B0	?CallbackHostOptionsChanged@_mp_common@@YAXH@Z	void __cdecl _mp_common::CallbackHostOptionsChanged(int)	mp_util_wad.o
+0x0093D9C0	0x00D2CEC0	?CallbackGameState@_mp_common@@YAXHHHHHHHHHHHHH@Z	void __cdecl _mp_common::CallbackGameState(int,int,int,int,int,int,int,int,int,int,int,int,int)	mp_util_wad.o
+0x0093DFA0	0x00D2D4A0	?CallbackGameScore@_mp_common@@YAXHH@Z	void __cdecl _mp_common::CallbackGameScore(int,int)	mp_util_wad.o
+0x0093E060	0x00D2D560	?CallbackPlayerJoin@_mp_common@@YAXVentity@Broc@@IH@Z	void __cdecl _mp_common::CallbackPlayerJoin(class Broc::entity,unsigned int,int)	mp_util_wad.o
+0x0093E5C0	0x00D2DAC0	?CallbackPlayerEnter@_mp_common@@YAXVentity@Broc@@H@Z	void __cdecl _mp_common::CallbackPlayerEnter(class Broc::entity,int)	mp_util_wad.o
+0x0093E970	0x00D2DE70	?CallbackPlayerLeave@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackPlayerLeave(class Broc::entity)	mp_util_wad.o
+0x0093EA80	0x00D2DF80	?CallbackPlayerRespawnRequest@_mp_common@@YAXVentity@Broc@@H@Z	void __cdecl _mp_common::CallbackPlayerRespawnRequest(class Broc::entity,int)	mp_util_wad.o
+0x0093EC10	0x00D2E110	?CallbackPlayerKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_common::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x0093F7F0	0x00D2ECF0	?CallbackPlayerAssist@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackPlayerAssist(class Broc::entity)	mp_util_wad.o
+0x0093F860	0x00D2ED60	?CallbackPainFlinch@_mp_common@@YAXVentity@Broc@@H@Z	void __cdecl _mp_common::CallbackPainFlinch(class Broc::entity,int)	mp_util_wad.o
+0x0093F970	0x00D2EE70	?CallbackPlayerDamage@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z	void __cdecl _mp_common::CallbackPlayerDamage(class Broc::entity,class Broc::entity,class Broc::entity,struct Broc::vector const &,struct Broc::vector const &,int,int,int,int)	mp_util_wad.o
+0x0093FA90	0x00D2EF90	?CallbackPlayerDamageTeam@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z	void __cdecl _mp_common::CallbackPlayerDamageTeam(class Broc::entity,class Broc::entity,class Broc::entity,struct Broc::vector const &,struct Broc::vector const &,int,int,int,int)	mp_util_wad.o
+0x0093FCF0	0x00D2F1F0	?CallbackPlayerSpawn@_mp_common@@YAXVentity@Broc@@H@Z	void __cdecl _mp_common::CallbackPlayerSpawn(class Broc::entity,int)	mp_util_wad.o
+0x00940400	0x00D2F900	?CallbackPlayerRevive@_mp_common@@YAXVentity@Broc@@0@Z	void __cdecl _mp_common::CallbackPlayerRevive(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x009408B0	0x00D2FDB0	?CallbackCanTeamChange@_mp_common@@YAHVentity@Broc@@H@Z	int __cdecl _mp_common::CallbackCanTeamChange(class Broc::entity,int)	mp_util_wad.o
+0x00940D40	0x00D30240	?TeamChangeKillPlayer@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::TeamChangeKillPlayer(class Broc::entity)	mp_util_wad.o
+0x00940EC0	0x00D303C0	?CallbackPlayerTeamChange@_mp_common@@YAXVentity@Broc@@HH@Z	void __cdecl _mp_common::CallbackPlayerTeamChange(class Broc::entity,int,int)	mp_util_wad.o
+0x00941270	0x00D30770	?CallbackPlayerClassChange@_mp_common@@YAXVentity@Broc@@I@Z	void __cdecl _mp_common::CallbackPlayerClassChange(class Broc::entity,unsigned int)	mp_util_wad.o
+0x00941350	0x00D30850	?CallbackStopFollowing@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackStopFollowing(void)	mp_util_wad.o
+0x00941480	0x00D30980	?CallbackRoundOver@_mp_common@@YAXHVstring@Broc@@@Z	void __cdecl _mp_common::CallbackRoundOver(int,class Broc::string)	mp_util_wad.o
+0x00942050	0x00D31550	?CallbackNextRound@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackNextRound(void)	mp_util_wad.o
+0x009420E0	0x00D315E0	?CallbackRestartMap@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackRestartMap(void)	mp_util_wad.o
+0x009421D0	0x00D316D0	?CallbackDebugRender@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackDebugRender(void)	mp_util_wad.o
+0x00942200	0x00D31700	?CallbackFireArtillery@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z	void __cdecl _mp_common::CallbackFireArtillery(class Broc::entity,struct Broc::vector)	mp_util_wad.o
+0x00943310	0x00D32810	?CallbackFireArtilleryShell@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackFireArtilleryShell(class Broc::entity)	mp_util_wad.o
+0x00943390	0x00D32890	?CallbackDenyArtillery@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackDenyArtillery(class Broc::entity)	mp_util_wad.o
+0x009435C0	0x00D32AC0	?CallbackVehicleKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_common::CallbackVehicleKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x009436E0	0x00D32BE0	?CallbackVehicleMantled@_mp_common@@YAXVentity@Broc@@0@Z	void __cdecl _mp_common::CallbackVehicleMantled(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x00943720	0x00D32C20	?CallbackHealthRegenRecovering@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackHealthRegenRecovering(class Broc::entity)	mp_util_wad.o
+0x009437F0	0x00D32CF0	?CallbackPickupItem@_mp_common@@YAXVentity@Broc@@0@Z	void __cdecl _mp_common::CallbackPickupItem(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x00943980	0x00D32E80	?CallbackMineFailed@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackMineFailed(class Broc::entity)	mp_util_wad.o
+0x00943A00	0x00D32F00	?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackReviveFailed(class Broc::entity)	mp_util_wad.o
+0x00943A20	0x00D32F20	?CallbackCallForMedic@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackCallForMedic(class Broc::entity)	mp_util_wad.o
+0x00943D60	0x00D33260	?CallbackPunishedForTeamKill@_mp_common@@YAXVentity@Broc@@H@Z	void __cdecl _mp_common::CallbackPunishedForTeamKill(class Broc::entity,int)	mp_util_wad.o
+0x00943E70	0x00D33370	?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	void __cdecl _mp_common::PunishedForTeamKill(class Broc::entity,struct bbool)	mp_util_wad.o
+0x00944440	0x00D33940	?CallbackSpawnButtonPressed@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CallbackSpawnButtonPressed(class Broc::entity)	mp_util_wad.o
+0x00944580	0x00D33A80	?CallbackQuitGame@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackQuitGame(void)	mp_util_wad.o
+0x009446A0	0x00D33BA0	?CallbackHostDisconnected@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackHostDisconnected(void)	mp_util_wad.o
+0x00944730	0x00D33C30	?CallbackLocalPlayerKicked@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackLocalPlayerKicked(void)	mp_util_wad.o
+0x009447C0	0x00D33CC0	?CallbackHostMigrated@_mp_common@@YAXXZ	void __cdecl _mp_common::CallbackHostMigrated(void)	mp_util_wad.o
+0x009448E0	0x00D33DE0	?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z	void __cdecl _mp_common::QuitGameWithMessage(class Broc::entity,struct HashStr)	mp_util_wad.o
+0x00944A00	0x00D33F00	?HostHasMigrated@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::HostHasMigrated(class Broc::entity)	mp_util_wad.o
+0x00944F40	0x00D34440	?NewHost@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::NewHost(class Broc::entity)	mp_util_wad.o
+0x00944F90	0x00D34490	?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z	void __cdecl _mp_common::FadeUpWhenLoaded(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x009450D0	0x00D345D0	?RespawnPlayer@_mp_common@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_common::RespawnPlayer(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x00945350	0x00D34850	?Spectate@_mp_common@@YAXVentity@Broc@@Ubint@@Ubbool@@@Z	void __cdecl _mp_common::Spectate(class Broc::entity,struct bint,struct bbool)	mp_util_wad.o
+0x00945420	0x00D34920	?DeathState@_mp_common@@YAXVentity@Broc@@0Ubint@@Ubbool@@2@Z	void __cdecl _mp_common::DeathState(class Broc::entity,class Broc::entity,struct bint,struct bbool,struct bbool)	mp_util_wad.o
+0x009459F0	0x00D34EF0	?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::FollowClient(class Broc::entity,struct bint)	mp_util_wad.o
+0x00945BC0	0x00D350C0	?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::LocalPlayerIntermission(class Broc::entity)	mp_util_wad.o
+0x00945D30	0x00D35230	?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::LocalPlayerRespawn(class Broc::entity)	mp_util_wad.o
+0x00946040	0x00D35540	?RunFrame@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::RunFrame(class Broc::entity)	mp_util_wad.o
+0x00946080	0x00D35580	?CreateClock@_mp_common@@YAXUbint@@@Z	void __cdecl _mp_common::CreateClock(struct bint)	mp_util_wad.o
+0x00946110	0x00D35610	?StartRound@_mp_common@@YAXUbbool@@@Z	void __cdecl _mp_common::StartRound(struct bbool)	mp_util_wad.o
+0x00946630	0x00D35B30	?finish_starting_round@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	void __cdecl _mp_common::finish_starting_round(class Broc::entity,struct bbool)	mp_util_wad.o
+0x00946C00	0x00D36100	?restart_round@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::restart_round(class Broc::entity,struct bint)	mp_util_wad.o
+0x009474B0	0x00D369B0	?CheckTimeLimit@_mp_common@@YAXXZ	void __cdecl _mp_common::CheckTimeLimit(void)	mp_util_wad.o
+0x009476D0	0x00D36BD0	?CheckScoreLimit@_mp_common@@YAXXZ	void __cdecl _mp_common::CheckScoreLimit(void)	mp_util_wad.o
+0x00947AA0	0x00D36FA0	?CheckLastManStanding@_mp_common@@YAXVstring@Broc@@@Z	void __cdecl _mp_common::CheckLastManStanding(class Broc::string)	mp_util_wad.o
+0x00947F40	0x00D37440	?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::CheckLastManStandingEnoughPlayers(class Broc::entity)	mp_util_wad.o
+0x009483A0	0x00D378A0	?waitframe@_mp_common@@YAXXZ	void __cdecl _mp_common::waitframe(void)	mp_util_wad.o
+0x009483D0	0x00D378D0	?DestroyHudElem@_mp_common@@YAXAAVhudelem@Broc@@@Z	void __cdecl _mp_common::DestroyHudElem(class Broc::hudelem &)	mp_util_wad.o
+0x00948480	0x00D37980	?AddToPlayerStats@_mp_common@@YAXVentity@Broc@@Ubint@@H@Z	void __cdecl _mp_common::AddToPlayerStats(class Broc::entity,struct bint,int)	mp_util_wad.o
+0x00948A30	0x00D37F30	?put_player_into_spectate_mode@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::put_player_into_spectate_mode(class Broc::entity)	mp_util_wad.o
+0x00948B70	0x00D38070	?SpawnLocalSpectator@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::SpawnLocalSpectator(class Broc::entity)	mp_util_wad.o
+0x00948FC0	0x00D384C0	?SpawnSpectator@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::SpawnSpectator(class Broc::entity)	mp_util_wad.o
+0x00949200	0x00D38700	?SpawnIntermission@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::SpawnIntermission(class Broc::entity)	mp_util_wad.o
+0x009495C0	0x00D38AC0	?QuitGameThread@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::QuitGameThread(class Broc::entity)	mp_util_wad.o
+0x00949620	0x00D38B20	?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z	struct bint __cdecl _mp_common::GetRespawnTime(class Broc::entity)	mp_util_wad.o
+0x00949B60	0x00D39060	?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z	struct bint __cdecl _mp_common::GetGoingToDieTime(class Broc::entity)	mp_util_wad.o
+0x00949BB0	0x00D390B0	?UpdateSpectateCritical@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::UpdateSpectateCritical(class Broc::entity)	mp_util_wad.o
+0x00949F80	0x00D39480	?UpdateSpectateCriticalGoingToDie@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::UpdateSpectateCriticalGoingToDie(class Broc::entity)	mp_util_wad.o
+0x0094A2D0	0x00D397D0	?UpdateSpectateDead@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	void __cdecl _mp_common::UpdateSpectateDead(class Broc::entity,struct bbool)	mp_util_wad.o
+0x0094A8D0	0x00D39DD0	?UpdateSpectateSpawn@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::UpdateSpectateSpawn(class Broc::entity)	mp_util_wad.o
+0x0094AA60	0x00D39F60	?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	void __cdecl _mp_common::StopFollowing(class Broc::entity,struct bbool)	mp_util_wad.o
+0x0094AA80	0x00D39F80	?ProgressBarCreate@_mp_common@@YAXUbint@@@Z	void __cdecl _mp_common::ProgressBarCreate(struct bint)	mp_util_wad.o
+0x0094AD50	0x00D3A250	?ProgressBarUpdate@_mp_common@@YAXUbfloat@@0@Z	void __cdecl _mp_common::ProgressBarUpdate(struct bfloat,struct bfloat)	mp_util_wad.o
+0x0094AE00	0x00D3A300	?ProgressBarDelete@_mp_common@@YAXXZ	void __cdecl _mp_common::ProgressBarDelete(void)	mp_util_wad.o
+0x0094AE30	0x00D3A330	?EndRound@_mp_common@@YAXW4EEndRoundCondition@@Vstring@Broc@@@Z	void __cdecl _mp_common::EndRound(enum EEndRoundCondition,class Broc::string)	mp_util_wad.o
+0x0094AEC0	0x00D3A3C0	?HasBothTeams@_mp_common@@YA?AUbbool@@XZ	struct bbool __cdecl _mp_common::HasBothTeams(void)	mp_util_wad.o
+0x0094B210	0x00D3A710	?WaitForTeams@_mp_common@@YAXXZ	void __cdecl _mp_common::WaitForTeams(void)	mp_util_wad.o
+0x0094B370	0x00D3A870	?GetSpawnPoint@_mp_common@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z	class Broc::entity __cdecl _mp_common::GetSpawnPoint(class Broc::entity &,class Broc::string const &)	mp_util_wad.o
+0x0094B4A0	0x00D3A9A0	?GetBestSpectateSpawn@_mp_common@@YA?AVentity@Broc@@AAV23@@Z	class Broc::entity __cdecl _mp_common::GetBestSpectateSpawn(class Broc::entity &)	mp_util_wad.o
+0x0094B650	0x00D3AB50	?AudioOnPlayerDeath@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::AudioOnPlayerDeath(class Broc::entity,struct bint)	mp_util_wad.o
+0x0094B6F0	0x00D3ABF0	?HealthRegenPlayerBreathing@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::HealthRegenPlayerBreathing(class Broc::entity,struct bint)	mp_util_wad.o
+0x0094B900	0x00D3AE00	?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z	void __cdecl _mp_common::AddArtilleryObjective(class Broc::entity,struct Broc::vector)	mp_util_wad.o
+0x0094BAE0	0x00D3AFE0	?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::HandleJoinAfterRoundOver(class Broc::entity,struct bint)	mp_util_wad.o
+0x0094BBD0	0x00D3B0D0	?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ	void __cdecl _mp_common::PutAllPlayersIntoIntermission(void)	mp_util_wad.o
+0x0094BE20	0x00D3B320	?HasValidWeaponInSlot@_mp_common@@YA?AUbbool@@Ventity@Broc@@Vstring@4@@Z	struct bbool __cdecl _mp_common::HasValidWeaponInSlot(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x0094BF80	0x00D3B480	?SelectFirstAvailableWeapon@_mp_common@@YAXVentity@Broc@@@Z	void __cdecl _mp_common::SelectFirstAvailableWeapon(class Broc::entity)	mp_util_wad.o
+0x0094C220	0x00D3B720	?reenable_medic_call@_mp_common@@YAXVentity@Broc@@Ubint@@@Z	void __cdecl _mp_common::reenable_medic_call(class Broc::entity,struct bint)	mp_util_wad.o
+0x0094C380	0x00D3B880	?GetTimeTillNextRound@_mp_common@@YA?AUbint@@XZ	struct bint __cdecl _mp_common::GetTimeTillNextRound(void)	mp_util_wad.o
+0x0094C4A0	0x00D3B9A0	?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ	class Broc::string __cdecl _mp_common::GetWinningTeam(void)	mp_util_wad.o
+0x0094CA20	0x00D3BF20	?DebugRenderSpawnPoints@_mp_common@@YAXXZ	void __cdecl _mp_common::DebugRenderSpawnPoints(void)	mp_util_wad.o
+0x0094CD90	0x00D3C290	?main@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::main(class Broc::entity)	mp_util_wad.o
+0x0094D460	0x00D3C960	?StartGame@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::StartGame(class Broc::entity)	mp_util_wad.o
+0x0094D5D0	0x00D3CAD0	?CallbackAreaCaptured@_mp_ctf@@YAXHH@Z	void __cdecl _mp_ctf::CallbackAreaCaptured(int,int)	mp_util_wad.o
+0x0094E1E0	0x00D3D6E0	?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z	void __cdecl _mp_ctf::CallbackPlayerSpawn(class Broc::entity,int)	mp_util_wad.o
+0x0094E2E0	0x00D3D7E0	?SetupRound@_mp_ctf@@YAXXZ	void __cdecl _mp_ctf::SetupRound(void)	mp_util_wad.o
+0x0094E8B0	0x00D3DDB0	?CallbackHostMigrated@_mp_ctf@@YAXXZ	void __cdecl _mp_ctf::CallbackHostMigrated(void)	mp_util_wad.o
+0x0094EB60	0x00D3E060	?CallbackNextRound@_mp_ctf@@YAXXZ	void __cdecl _mp_ctf::CallbackNextRound(void)	mp_util_wad.o
+0x0094EBF0	0x00D3E0F0	?CallbackHostOptionsChanged@_mp_ctf@@YAXH@Z	void __cdecl _mp_ctf::CallbackHostOptionsChanged(int)	mp_util_wad.o
+0x0094EC30	0x00D3E130	?CallbackGameState@_mp_ctf@@YAXHHHHHHHHHHHHH@Z	void __cdecl _mp_ctf::CallbackGameState(int,int,int,int,int,int,int,int,int,int,int,int,int)	mp_util_wad.o
+0x0094EC90	0x00D3E190	?CallbackShowFlagHint@_mp_ctf@@YAHXZ	int __cdecl _mp_ctf::CallbackShowFlagHint(void)	mp_util_wad.o
+0x0094ECC0	0x00D3E1C0	?SwitchToSecondarySpawns@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::SwitchToSecondarySpawns(class Broc::entity)	mp_util_wad.o
+0x0094ED20	0x00D3E220	?vLerp@_mp_ctf@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z	struct Broc::vector __cdecl _mp_ctf::vLerp(struct Broc::vector,struct Broc::vector,struct bfloat)	mp_util_wad.o
+0x0094EE90	0x00D3E390	?IsFlagAtBase@_mp_ctf@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl _mp_ctf::IsFlagAtBase(class Broc::entity)	mp_util_wad.o
+0x0094EF80	0x00D3E480	?TeamObjectiveUpdate@_mp_ctf@@YAXVentity@Broc@@H@Z	void __cdecl _mp_ctf::TeamObjectiveUpdate(class Broc::entity,int)	mp_util_wad.o
+0x0094FAD0	0x00D3EFD0	?ObjectiveUpdater@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::ObjectiveUpdater(class Broc::entity)	mp_util_wad.o
+0x0094FDF0	0x00D3F2F0	?CallbackPlayerKilled@_mp_ctf@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_ctf::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x0094FEE0	0x00D3F3E0	?CallbackDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::CallbackDropFlag(class Broc::entity)	mp_util_wad.o
+0x0094FF10	0x00D3F410	?CallbackPlayerLeave@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::CallbackPlayerLeave(class Broc::entity)	mp_util_wad.o
+0x0094FFA0	0x00D3F4A0	?CallbackGameStateCTF@_mp_ctf@@YAXUvector@Broc@@0Ventity@3@001@Z	void __cdecl _mp_ctf::CallbackGameStateCTF(struct Broc::vector,struct Broc::vector,class Broc::entity,struct Broc::vector,struct Broc::vector,class Broc::entity)	mp_util_wad.o
+0x009505F0	0x00D3FAF0	?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::HandleDropFlag(class Broc::entity)	mp_util_wad.o
+0x00950BB0	0x00D400B0	?UpdateFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@1@Z	void __cdecl _mp_ctf::UpdateFlagAndTrigger(class Broc::entity,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00950BF0	0x00D400F0	?LaunchFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@11@Z	void __cdecl _mp_ctf::LaunchFlagAndTrigger(class Broc::entity,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00950C70	0x00D40170	?EntityOff@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::EntityOff(class Broc::entity)	mp_util_wad.o
+0x00950CD0	0x00D401D0	?CompassUnderlay@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::CompassUnderlay(class Broc::entity)	mp_util_wad.o
+0x00950F30	0x00D40430	?HandlePickupFlag@_mp_ctf@@YAXHVentity@Broc@@Ubbool@@1@Z	void __cdecl _mp_ctf::HandlePickupFlag(int,class Broc::entity,struct bbool,struct bbool)	mp_util_wad.o
+0x00952A60	0x00D41F60	?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z	void __cdecl _mp_ctf::CallbackPickupScriptItem(int,class Broc::entity,int)	mp_util_wad.o
+0x00952F30	0x00D42430	?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z	void __cdecl _mp_ctf::CallbackDropItem(int,int,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00953440	0x00D42940	?WaitForFlagTimeOut@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::WaitForFlagTimeOut(class Broc::entity)	mp_util_wad.o
+0x009536D0	0x00D42BD0	?DestroyIcon@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::DestroyIcon(class Broc::entity)	mp_util_wad.o
+0x00953720	0x00D42C20	?WaitForNoTouchFlag@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::WaitForNoTouchFlag(class Broc::entity)	mp_util_wad.o
+0x00953870	0x00D42D70	?PickupFlag@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::PickupFlag(class Broc::entity)	mp_util_wad.o
+0x009541F0	0x00D436F0	?Goal@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::Goal(class Broc::entity)	mp_util_wad.o
+0x00954970	0x00D43E70	?FlagThreadLauncher@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::FlagThreadLauncher(class Broc::entity)	mp_util_wad.o
+0x00955170	0x00D44670	?CallbackPlayerJoin@_mp_ctf@@YAXVentity@Broc@@IH@Z	void __cdecl _mp_ctf::CallbackPlayerJoin(class Broc::entity,unsigned int,int)	mp_util_wad.o
+0x009552F0	0x00D447F0	?CallbackPlayerEnter@_mp_ctf@@YAXVentity@Broc@@H@Z	void __cdecl _mp_ctf::CallbackPlayerEnter(class Broc::entity,int)	mp_util_wad.o
+0x00955400	0x00D44900	?UnlinkFlag@_mp_ctf@@YAXVentity@Broc@@@Z	void __cdecl _mp_ctf::UnlinkFlag(class Broc::entity)	mp_util_wad.o
+0x00955620	0x00D44B20	?RenderFlagInfo@_mp_ctf@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_ctf::RenderFlagInfo(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x00955B20	0x00D45020	?CallbackDebugRender@_mp_ctf@@YAXXZ	void __cdecl _mp_ctf::CallbackDebugRender(void)	mp_util_wad.o
+0x00956360	0x00D45860	?GetSpawnPoint@_mp_ctf@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z	class Broc::entity __cdecl _mp_ctf::GetSpawnPoint(class Broc::entity &,class Broc::string const &)	mp_util_wad.o
+0x009565D0	0x00D45AD0	?main@_mp_dm@@YAXVentity@Broc@@@Z	void __cdecl _mp_dm::main(class Broc::entity)	mp_util_wad.o
+0x00956750	0x00D45C50	?StartGame@_mp_dm@@YAXVentity@Broc@@@Z	void __cdecl _mp_dm::StartGame(class Broc::entity)	mp_util_wad.o
+0x009567F0	0x00D45CF0	?GetSpawnPoint@_mp_dm@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z	class Broc::entity __cdecl _mp_dm::GetSpawnPoint(class Broc::entity &,class Broc::string const &)	mp_util_wad.o
+0x00956920	0x00D45E20	?main@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::main(class Broc::entity)	mp_util_wad.o
+0x00956D40	0x00D46240	?StartGame@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::StartGame(class Broc::entity)	mp_util_wad.o
+0x00956EB0	0x00D463B0	?Host_ResetStage1@_mp_hq@@YAXXZ	void __cdecl _mp_hq::Host_ResetStage1(void)	mp_util_wad.o
+0x00956FE0	0x00D464E0	?Host_FlowControl@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::Host_FlowControl(class Broc::entity)	mp_util_wad.o
+0x009573E0	0x00D468E0	?AddPoints@_mp_hq@@YAXUbint@@0@Z	void __cdecl _mp_hq::AddPoints(struct bint,struct bint)	mp_util_wad.o
+0x009574D0	0x00D469D0	?NoRespawnForDefenders@_mp_hq@@YAXUbbool@@@Z	void __cdecl _mp_hq::NoRespawnForDefenders(struct bbool)	mp_util_wad.o
+0x00957570	0x00D46A70	?HQ_Destroyed@_mp_hq@@YAXXZ	void __cdecl _mp_hq::HQ_Destroyed(void)	mp_util_wad.o
+0x00957D10	0x00D47210	?HQ_Defended@_mp_hq@@YAXXZ	void __cdecl _mp_hq::HQ_Defended(void)	mp_util_wad.o
+0x00958390	0x00D47890	?Host_PickInitialPoints@_mp_hq@@YAXXZ	void __cdecl _mp_hq::Host_PickInitialPoints(void)	mp_util_wad.o
+0x00958870	0x00D47D70	?SetupStage1@_mp_hq@@YAXXZ	void __cdecl _mp_hq::SetupStage1(void)	mp_util_wad.o
+0x009588A0	0x00D47DA0	?SetUpStage3@_mp_hq@@YAXXZ	void __cdecl _mp_hq::SetUpStage3(void)	mp_util_wad.o
+0x00958EE0	0x00D483E0	?ShowHQDestroyed@_mp_hq@@YAXXZ	void __cdecl _mp_hq::ShowHQDestroyed(void)	mp_util_wad.o
+0x00958F90	0x00D48490	?ShowHQDefended@_mp_hq@@YAXXZ	void __cdecl _mp_hq::ShowHQDefended(void)	mp_util_wad.o
+0x00959010	0x00D48510	?ShowHQSetUp@_mp_hq@@YAXXZ	void __cdecl _mp_hq::ShowHQSetUp(void)	mp_util_wad.o
+0x009590B0	0x00D485B0	?ShowSetupGraphic@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::ShowSetupGraphic(class Broc::entity)	mp_util_wad.o
+0x00959120	0x00D48620	?ShowDestructionGraphic@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::ShowDestructionGraphic(class Broc::entity)	mp_util_wad.o
+0x00959190	0x00D48690	?ShowLosingHQGraphic@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::ShowLosingHQGraphic(class Broc::entity)	mp_util_wad.o
+0x00959200	0x00D48700	?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z	void __cdecl _mp_hq::ShowProgressBar(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x009593E0	0x00D488E0	?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::TriggerRadio(class Broc::entity)	mp_util_wad.o
+0x0095AF10	0x00D4A410	?SwitchToRadioOnly@_mp_hq@@YAXXZ	void __cdecl _mp_hq::SwitchToRadioOnly(void)	mp_util_wad.o
+0x0095B0F0	0x00D4A5F0	?AddRadioModel@_mp_hq@@YAXXZ	void __cdecl _mp_hq::AddRadioModel(void)	mp_util_wad.o
+0x0095B1E0	0x00D4A6E0	?RemoveRadioModel@_mp_hq@@YAXXZ	void __cdecl _mp_hq::RemoveRadioModel(void)	mp_util_wad.o
+0x0095B2C0	0x00D4A7C0	?ClearGame@_mp_hq@@YAXXZ	void __cdecl _mp_hq::ClearGame(void)	mp_util_wad.o
+0x0095B540	0x00D4AA40	?ResetGame@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::ResetGame(class Broc::entity)	mp_util_wad.o
+0x0095B610	0x00D4AB10	?GetSpawnPoint@_mp_hq@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z	class Broc::entity __cdecl _mp_hq::GetSpawnPoint(class Broc::entity &,class Broc::string const &)	mp_util_wad.o
+0x0095B740	0x00D4AC40	?GetTriggerFromIndex@_mp_hq@@YAXXZ	void __cdecl _mp_hq::GetTriggerFromIndex(void)	mp_util_wad.o
+0x0095B920	0x00D4AE20	?BroadcastGameState@_mp_hq@@YAXXZ	void __cdecl _mp_hq::BroadcastGameState(void)	mp_util_wad.o
+0x0095BB30	0x00D4B030	?SyncScores@_mp_hq@@YAXXZ	void __cdecl _mp_hq::SyncScores(void)	mp_util_wad.o
+0x0095BE00	0x00D4B300	?Track_Ownership@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::Track_Ownership(class Broc::entity)	mp_util_wad.o
+0x0095BF20	0x00D4B420	?String_Timer@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::String_Timer(class Broc::entity)	mp_util_wad.o
+0x0095C010	0x00D4B510	?CallbackGameStateHQ@_mp_hq@@YAXIUvector@Broc@@0IHH@Z	void __cdecl _mp_hq::CallbackGameStateHQ(unsigned int,struct Broc::vector,struct Broc::vector,unsigned int,int,int)	mp_util_wad.o
+0x0095C460	0x00D4B960	?CallbackGameState@_mp_hq@@YAXHHHHHHHHHHHHH@Z	void __cdecl _mp_hq::CallbackGameState(int,int,int,int,int,int,int,int,int,int,int,int,int)	mp_util_wad.o
+0x0095C4D0	0x00D4B9D0	?CallbackNextRound@_mp_hq@@YAXXZ	void __cdecl _mp_hq::CallbackNextRound(void)	mp_util_wad.o
+0x0095C5F0	0x00D4BAF0	?CallbackRoundOver@_mp_hq@@YAXHVstring@Broc@@@Z	void __cdecl _mp_hq::CallbackRoundOver(int,class Broc::string)	mp_util_wad.o
+0x0095C6F0	0x00D4BBF0	?CallbackPlayerJoin@_mp_hq@@YAXVentity@Broc@@IH@Z	void __cdecl _mp_hq::CallbackPlayerJoin(class Broc::entity,unsigned int,int)	mp_util_wad.o
+0x0095C740	0x00D4BC40	?CallbackPlayerEnter@_mp_hq@@YAXVentity@Broc@@H@Z	void __cdecl _mp_hq::CallbackPlayerEnter(class Broc::entity,int)	mp_util_wad.o
+0x0095C820	0x00D4BD20	?CallbackPlayerKilled@_mp_hq@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_hq::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x0095CCE0	0x00D4C1E0	?CallbackPlayerLeave@_mp_hq@@YAXVentity@Broc@@@Z	void __cdecl _mp_hq::CallbackPlayerLeave(class Broc::entity)	mp_util_wad.o
+0x0095CD20	0x00D4C220	?CallbackHostMigrated@_mp_hq@@YAXXZ	void __cdecl _mp_hq::CallbackHostMigrated(void)	mp_util_wad.o
+0x0095CDD0	0x00D4C2D0	?CallbackHostOptionsChanged@_mp_hq@@YAXH@Z	void __cdecl _mp_hq::CallbackHostOptionsChanged(int)	mp_util_wad.o
+0x0095CE20	0x00D4C320	?CallbackGetTeamCapturingHQPercent@_mp_hq@@YAHVentity@Broc@@@Z	int __cdecl _mp_hq::CallbackGetTeamCapturingHQPercent(class Broc::entity)	mp_util_wad.o
+0x0095CF90	0x00D4C490	?CallbackGetTeamDestroyingHQPercent@_mp_hq@@YAHXZ	int __cdecl _mp_hq::CallbackGetTeamDestroyingHQPercent(void)	mp_util_wad.o
+0x0095D130	0x00D4C630	?CallbackGetHQCaptureStatus@_mp_hq@@YAHXZ	int __cdecl _mp_hq::CallbackGetHQCaptureStatus(void)	mp_util_wad.o
+0x0095D1A0	0x00D4C6A0	?CallbackDebugRender@_mp_hq@@YAXXZ	void __cdecl _mp_hq::CallbackDebugRender(void)	mp_util_wad.o
+0x0095D1C0	0x00D4C6C0	?compare@_mp_hq@@YA?AUbint@@ABUvector@Broc@@0@Z	struct bint __cdecl _mp_hq::compare(struct Broc::vector const &,struct Broc::vector const &)	mp_util_wad.o
+0x0095D350	0x00D4C850	?SortPoints@_mp_hq@@YAXXZ	void __cdecl _mp_hq::SortPoints(void)	mp_util_wad.o
+0x0095D5A0	0x00D4CAA0	?GetCapSpeed@_mp_hq@@YA?AUbfloat@@Ubint@@@Z	struct bfloat __cdecl _mp_hq::GetCapSpeed(struct bint)	mp_util_wad.o
+0x0095D6B0	0x00D4CBB0	?main@_mp_loadout@@YAXXZ	void __cdecl _mp_loadout::main(void)	mp_util_wad.o
+0x0095D7A0	0x00D4CCA0	?SetTeams@_mp_loadout@@YAXVstring@Broc@@0@Z	void __cdecl _mp_loadout::SetTeams(class Broc::string,class Broc::string)	mp_util_wad.o
+0x0095DD60	0x00D4D260	?SetAlliesModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z	void __cdecl _mp_loadout::SetAlliesModels(struct bint,class Broc::string)	mp_util_wad.o
+0x0095DDF0	0x00D4D2F0	?SetAxisModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z	void __cdecl _mp_loadout::SetAxisModels(struct bint,class Broc::string)	mp_util_wad.o
+0x0095DE90	0x00D4D390	?GiveLoadout@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::GiveLoadout(class Broc::entity)	mp_util_wad.o
+0x0095DF10	0x00D4D410	?UpdatePlayerModelForRank@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::UpdatePlayerModelForRank(class Broc::entity)	mp_util_wad.o
+0x0095E0C0	0x00D4D5C0	?SetPlayerModel@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::SetPlayerModel(class Broc::entity)	mp_util_wad.o
+0x0095E210	0x00D4D710	?DisplayYouWillSpawnWithMessage@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::DisplayYouWillSpawnWithMessage(class Broc::entity)	mp_util_wad.o
+0x0095E270	0x00D4D770	?GiveWeapons@_mp_loadout@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_loadout::GiveWeapons(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x0095E640	0x00D4DB40	?GiveAmmo@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z	void __cdecl _mp_loadout::GiveAmmo(class Broc::entity,struct bint,struct bint,struct bbool)	mp_util_wad.o
+0x0095E840	0x00D4DD40	?GiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z	void __cdecl _mp_loadout::GiveAmmoPack(class Broc::entity,struct bint,struct bint,struct bbool)	mp_util_wad.o
+0x0095EC60	0x00D4E160	?CallbackGetTeamWeapon@_mp_loadout@@YAHPBDI@Z	int __cdecl _mp_loadout::CallbackGetTeamWeapon(char const *,unsigned int)	mp_util_wad.o
+0x0095EE70	0x00D4E370	?GetAlliesWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z	char const * __cdecl _mp_loadout::GetAlliesWeapon(class Broc::string,struct bint)	mp_util_wad.o
+0x0095EF60	0x00D4E460	?GetAxisWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z	char const * __cdecl _mp_loadout::GetAxisWeapon(class Broc::string,struct bint)	mp_util_wad.o
+0x0095F050	0x00D4E550	?GetAmericanWeapon@_mp_loadout@@YAPBDUbint@@@Z	char const * __cdecl _mp_loadout::GetAmericanWeapon(struct bint)	mp_util_wad.o
+0x0095F0F0	0x00D4E5F0	?GetGermanWeapon@_mp_loadout@@YAPBDUbint@@@Z	char const * __cdecl _mp_loadout::GetGermanWeapon(struct bint)	mp_util_wad.o
+0x0095F190	0x00D4E690	?GetGrenadeWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z	char const * __cdecl _mp_loadout::GetGrenadeWeapon(class Broc::string,struct bint)	mp_util_wad.o
+0x0095F430	0x00D4E930	?GiveSpecialWeapon@_mp_loadout@@YAXVentity@Broc@@Ubint@@FUbbool@@@Z	void __cdecl _mp_loadout::GiveSpecialWeapon(class Broc::entity,struct bint,short,struct bbool)	mp_util_wad.o
+0x0095F6B0	0x00D4EBB0	?GiveDualPistols@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveDualPistols(class Broc::entity,short)	mp_util_wad.o
+0x0095FA20	0x00D4EF20	?GiveBazooka@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveBazooka(class Broc::entity,short)	mp_util_wad.o
+0x0095FC50	0x00D4F150	?GiveSatchel@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveSatchel(class Broc::entity,short)	mp_util_wad.o
+0x0095FDF0	0x00D4F2F0	?GiveMine@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveMine(class Broc::entity,short)	mp_util_wad.o
+0x0095FF90	0x00D4F490	?GiveRifleGrenades@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveRifleGrenades(class Broc::entity,short)	mp_util_wad.o
+0x009601D0	0x00D4F6D0	?GiveArtillery@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::GiveArtillery(class Broc::entity)	mp_util_wad.o
+0x00960460	0x00D4F960	?GiveSmokeGrenadeSpecial@_mp_loadout@@YAXVentity@Broc@@F@Z	void __cdecl _mp_loadout::GiveSmokeGrenadeSpecial(class Broc::entity,short)	mp_util_wad.o
+0x009605D0	0x00D4FAD0	?ArtilleryDispenser@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::ArtilleryDispenser(class Broc::entity)	mp_util_wad.o
+0x00960E10	0x00D50310	?local_player_joined@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::local_player_joined(class Broc::entity)	mp_util_wad.o
+0x00960E70	0x00D50370	?SpecialClassAudio@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::SpecialClassAudio(class Broc::entity)	mp_util_wad.o
+0x00961080	0x00D50580	?NotifyWhenTimerExpires@_mp_loadout@@YAXVentity@Broc@@Ubint@@UHashStr@@@Z	void __cdecl _mp_loadout::NotifyWhenTimerExpires(class Broc::entity,struct bint,struct HashStr)	mp_util_wad.o
+0x00961150	0x00D50650	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::PlayerKill(class Broc::entity)	mp_util_wad.o
+0x00961170	0x00D50670	?GiveHealth@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::GiveHealth(class Broc::entity)	mp_util_wad.o
+0x00961340	0x00D50840	?GiveAmmoWeapon@_mp_loadout@@YAXVentity@Broc@@@Z	void __cdecl _mp_loadout::GiveAmmoWeapon(class Broc::entity)	mp_util_wad.o
+0x009614C0	0x00D509C0	?HealthAmmoDispenser@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubbool@@Ubint@@33@Z	void __cdecl _mp_loadout::HealthAmmoDispenser(class Broc::entity,class Broc::string,struct bbool,struct bint,struct bint,struct bint)	mp_util_wad.o
+0x00961AB0	0x00D50FB0	?IsFullWeaponAmmo@_mp_loadout@@YA?AUbbool@@Ventity@Broc@@Vstring@4@Ubint@@F@Z	struct bbool __cdecl _mp_loadout::IsFullWeaponAmmo(class Broc::entity,class Broc::string,struct bint,short)	mp_util_wad.o
+0x00961BD0	0x00D510D0	?GetStartingWeaponAmmoScale@_mp_loadout@@YA?AUbfloat@@Ventity@Broc@@Vstring@4@Ubint@@F@Z	struct bfloat __cdecl _mp_loadout::GetStartingWeaponAmmoScale(class Broc::entity,class Broc::string,struct bint,short)	mp_util_wad.o
+0x00961DB0	0x00D512B0	?GiveWeaponAmmoPack@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FFUbbool@@@Z	void __cdecl _mp_loadout::GiveWeaponAmmoPack(class Broc::entity,class Broc::string,struct bint,short,short,struct bbool)	mp_util_wad.o
+0x00962060	0x00D51560	?GiveWeaponAmmo@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@3@Z	void __cdecl _mp_loadout::GiveWeaponAmmo(class Broc::entity,class Broc::string,struct bint,short,struct bbool,struct bbool)	mp_util_wad.o
+0x009623D0	0x00D518D0	?GiveWeaponAmmoScale@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@Ubfloat@@@Z	void __cdecl _mp_loadout::GiveWeaponAmmoScale(class Broc::entity,class Broc::string,struct bint,short,struct bbool,struct bfloat)	mp_util_wad.o
+0x009626B0	0x00D51BB0	?GetWeaponClipCount@_mp_loadout@@YA?AUbint@@Vstring@Broc@@U2@F0@Z	struct bint __cdecl _mp_loadout::GetWeaponClipCount(class Broc::string,struct bint,short,class Broc::string)	mp_util_wad.o
+0x00962920	0x00D51E20	?CallbackGetClipCount@_mp_loadout@@YAHIIH@Z	int __cdecl _mp_loadout::CallbackGetClipCount(unsigned int,unsigned int,int)	mp_util_wad.o
+0x009629E0	0x00D51EE0	?CallbackGetSlotClipCount@_mp_loadout@@YAHPBDIIH@Z	int __cdecl _mp_loadout::CallbackGetSlotClipCount(char const *,unsigned int,unsigned int,int)	mp_util_wad.o
+0x00962AE0	0x00D51FE0	?CallbackGiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@I@Z	void __cdecl _mp_loadout::CallbackGiveAmmoPack(class Broc::entity,unsigned int)	mp_util_wad.o
+0x00962B60	0x00D52060	?CallbackPickupKit@_mp_loadout@@YAXVentity@Broc@@I@Z	void __cdecl _mp_loadout::CallbackPickupKit(class Broc::entity,unsigned int)	mp_util_wad.o
+0x00963240	0x00D52740	?CallbackCanPickupAmmoPack@_mp_loadout@@YAHVentity@Broc@@@Z	int __cdecl _mp_loadout::CallbackCanPickupAmmoPack(class Broc::entity)	mp_util_wad.o
+0x009633D0	0x00D528D0	?GetPrimaryClipCount@_mp_loadout@@YA?AUbint@@U2@FVstring@Broc@@@Z	struct bint __cdecl _mp_loadout::GetPrimaryClipCount(struct bint,short,class Broc::string)	mp_util_wad.o
+0x009639B0	0x00D52EB0	?GetPistolClipCount@_mp_loadout@@YA?AUbint@@U2@F@Z	struct bint __cdecl _mp_loadout::GetPistolClipCount(struct bint,short)	mp_util_wad.o
+0x00963A90	0x00D52F90	?CallbackGetGrenadeCount@_mp_loadout@@YAHII@Z	int __cdecl _mp_loadout::CallbackGetGrenadeCount(unsigned int,unsigned int)	mp_util_wad.o
+0x00963AE0	0x00D52FE0	?GetGrenadeCount@_mp_loadout@@YA?AUbint@@U2@F@Z	struct bint __cdecl _mp_loadout::GetGrenadeCount(struct bint,short)	mp_util_wad.o
+0x00963E20	0x00D53320	?GetsDualPistols@_mp_loadout@@YA?AUbbool@@F@Z	struct bbool __cdecl _mp_loadout::GetsDualPistols(short)	mp_util_wad.o
+0x00963E70	0x00D53370	?GetRankCount@_mp_loadout@@YA?AUbint@@U2@000@Z	struct bint __cdecl _mp_loadout::GetRankCount(struct bint,struct bint,struct bint,struct bint)	mp_util_wad.o
+0x00963EE0	0x00D533E0	?main@_mp_minefield@@YAXVentity@Broc@@@Z	void __cdecl _mp_minefield::main(class Broc::entity)	mp_util_wad.o
+0x00964150	0x00D53650	?minefield_think@_mp_minefield@@YAXVentity@Broc@@@Z	void __cdecl _mp_minefield::minefield_think(class Broc::entity)	mp_util_wad.o
+0x00964330	0x00D53830	?minefield_kill@_mp_minefield@@YAXVentity@Broc@@0@Z	void __cdecl _mp_minefield::minefield_kill(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x009645F0	0x00D53AF0	?main@_mp_nano@@YAXXZ	void __cdecl _mp_nano::main(void)	mp_util_wad.o
+0x00964750	0x00D53C50	?WindBlowing@_mp_nano@@YAXVentity@Broc@@@Z	void __cdecl _mp_nano::WindBlowing(class Broc::entity)	mp_util_wad.o
+0x009648C0	0x00D53DC0	?CreateGlobalWind@_mp_nano@@YAIUvector@Broc@@Ubfloat@@@Z	unsigned int __cdecl _mp_nano::CreateGlobalWind(struct Broc::vector,struct bfloat)	mp_util_wad.o
+0x009649A0	0x00D53EA0	?main@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::main(class Broc::entity)	mp_util_wad.o
+0x00965AA0	0x00D54FA0	?StartGame@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::StartGame(class Broc::entity)	mp_util_wad.o
+0x00965B60	0x00D55060	?SetupRound@_mp_scf@@YAXXZ	void __cdecl _mp_scf::SetupRound(void)	mp_util_wad.o
+0x00965F50	0x00D55450	?IsFlagAlive@_mp_scf@@YAHVentity@Broc@@@Z	int __cdecl _mp_scf::IsFlagAlive(class Broc::entity)	mp_util_wad.o
+0x00965F90	0x00D55490	?ObjectiveUpdater@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::ObjectiveUpdater(class Broc::entity)	mp_util_wad.o
+0x009670F0	0x00D565F0	?CallbackAreaCaptured@_mp_scf@@YAXHH@Z	void __cdecl _mp_scf::CallbackAreaCaptured(int,int)	mp_util_wad.o
+0x00967A20	0x00D56F20	?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::SubRoundEnd(class Broc::entity)	mp_util_wad.o
+0x00967A80	0x00D56F80	?CallbackPlayerSpawn@_mp_scf@@YAXVentity@Broc@@H@Z	void __cdecl _mp_scf::CallbackPlayerSpawn(class Broc::entity,int)	mp_util_wad.o
+0x00967DC0	0x00D572C0	?CallbackHostMigrated@_mp_scf@@YAXXZ	void __cdecl _mp_scf::CallbackHostMigrated(void)	mp_util_wad.o
+0x00968070	0x00D57570	?CallbackNextRound@_mp_scf@@YAXXZ	void __cdecl _mp_scf::CallbackNextRound(void)	mp_util_wad.o
+0x00968110	0x00D57610	?CallbackHostOptionsChanged@_mp_scf@@YAXH@Z	void __cdecl _mp_scf::CallbackHostOptionsChanged(int)	mp_util_wad.o
+0x00968160	0x00D57660	?CallbackGameState@_mp_scf@@YAXHHHHHHHHHHHHH@Z	void __cdecl _mp_scf::CallbackGameState(int,int,int,int,int,int,int,int,int,int,int,int,int)	mp_util_wad.o
+0x009681D0	0x00D576D0	?CallbackPlayerKilled@_mp_scf@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_scf::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x00968290	0x00D57790	?CallbackPlayerLeave@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::CallbackPlayerLeave(class Broc::entity)	mp_util_wad.o
+0x00968320	0x00D57820	?CallbackGameStateSCF@_mp_scf@@YAXHUvector@Broc@@0Ventity@3@@Z	void __cdecl _mp_scf::CallbackGameStateSCF(int,struct Broc::vector,struct Broc::vector,class Broc::entity)	mp_util_wad.o
+0x009684B0	0x00D579B0	?CallbackShowFlagHint@_mp_scf@@YAHXZ	int __cdecl _mp_scf::CallbackShowFlagHint(void)	mp_util_wad.o
+0x009684E0	0x00D579E0	?UpdateFlagAndTrigger@_mp_scf@@YAXVentity@Broc@@Uvector@3@11@Z	void __cdecl _mp_scf::UpdateFlagAndTrigger(class Broc::entity,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00968530	0x00D57A30	?LaunchFlagAndTrigger@_mp_scf@@YAXVentity@Broc@@Uvector@3@11@Z	void __cdecl _mp_scf::LaunchFlagAndTrigger(class Broc::entity,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00968590	0x00D57A90	?EntityOff@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::EntityOff(class Broc::entity)	mp_util_wad.o
+0x00968610	0x00D57B10	?CompassUnderlay@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::CompassUnderlay(class Broc::entity)	mp_util_wad.o
+0x00968870	0x00D57D70	?IsFlagAtBase@_mp_scf@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl _mp_scf::IsFlagAtBase(class Broc::entity)	mp_util_wad.o
+0x00968920	0x00D57E20	?HandlePickupFlag@_mp_scf@@YAXVentity@Broc@@0HH@Z	void __cdecl _mp_scf::HandlePickupFlag(class Broc::entity,class Broc::entity,int,int)	mp_util_wad.o
+0x00969830	0x00D58D30	?CallbackPickupScriptItem@_mp_scf@@YAXHVentity@Broc@@H@Z	void __cdecl _mp_scf::CallbackPickupScriptItem(int,class Broc::entity,int)	mp_util_wad.o
+0x00969B30	0x00D59030	?CallbackDropItem@_mp_scf@@YAXHHUvector@Broc@@00@Z	void __cdecl _mp_scf::CallbackDropItem(int,int,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x00969EE0	0x00D593E0	?CallbackDropFlag@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::CallbackDropFlag(class Broc::entity)	mp_util_wad.o
+0x00969F10	0x00D59410	?HandleDropFlag@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::HandleDropFlag(class Broc::entity)	mp_util_wad.o
+0x0096A270	0x00D59770	?WaitForFlagTimeOut@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::WaitForFlagTimeOut(class Broc::entity)	mp_util_wad.o
+0x0096A390	0x00D59890	?PickupFlag@_mp_scf@@YAXVentity@Broc@@0@Z	void __cdecl _mp_scf::PickupFlag(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x0096A6E0	0x00D59BE0	?Goal@_mp_scf@@YAXVentity@Broc@@0@Z	void __cdecl _mp_scf::Goal(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x0096AC60	0x00D5A160	?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z	void __cdecl _mp_scf::WaitThenPickFlagToLaunch(class Broc::entity,struct bfloat,char const *)	mp_util_wad.o
+0x0096AD50	0x00D5A250	?PickFlagToLaunch@_mp_scf@@YAXXZ	void __cdecl _mp_scf::PickFlagToLaunch(void)	mp_util_wad.o
+0x0096AEB0	0x00D5A3B0	?LaunchFlag@_mp_scf@@YAXUbint@@Uvector@Broc@@11@Z	void __cdecl _mp_scf::LaunchFlag(struct bint,struct Broc::vector,struct Broc::vector,struct Broc::vector)	mp_util_wad.o
+0x0096B020	0x00D5A520	?InitializeFlags@_mp_scf@@YAXXZ	void __cdecl _mp_scf::InitializeFlags(void)	mp_util_wad.o
+0x0096B3C0	0x00D5A8C0	?ResetFlags@_mp_scf@@YAXXZ	void __cdecl _mp_scf::ResetFlags(void)	mp_util_wad.o
+0x0096B5A0	0x00D5AAA0	?CallbackPlayerJoin@_mp_scf@@YAXVentity@Broc@@IH@Z	void __cdecl _mp_scf::CallbackPlayerJoin(class Broc::entity,unsigned int,int)	mp_util_wad.o
+0x0096B720	0x00D5AC20	?CallbackPlayerEnter@_mp_scf@@YAXVentity@Broc@@H@Z	void __cdecl _mp_scf::CallbackPlayerEnter(class Broc::entity,int)	mp_util_wad.o
+0x0096B850	0x00D5AD50	?UnlinkFlag@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::UnlinkFlag(class Broc::entity)	mp_util_wad.o
+0x0096BB30	0x00D5B030	?DestroyIcon@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::DestroyIcon(class Broc::entity)	mp_util_wad.o
+0x0096BB80	0x00D5B080	?WaitForNoTouchFlag@_mp_scf@@YAXVentity@Broc@@@Z	void __cdecl _mp_scf::WaitForNoTouchFlag(class Broc::entity)	mp_util_wad.o
+0x0096BCD0	0x00D5B1D0	?RenderFlagInfo@_mp_scf@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_scf::RenderFlagInfo(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x0096C140	0x00D5B640	?CallbackDebugRender@_mp_scf@@YAXXZ	void __cdecl _mp_scf::CallbackDebugRender(void)	mp_util_wad.o
+0x0096C9A0	0x00D5BEA0	?main@_mp_shellshock@@YAXXZ	void __cdecl _mp_shellshock::main(void)	mp_util_wad.o
+0x0096C9C0	0x00D5BEC0	?ShellshockOnDamage@_mp_shellshock@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_shellshock::ShellshockOnDamage(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x0096CCA0	0x00D5C1A0	?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z	void __cdecl _mp_shellshock::blur_view(class Broc::entity,struct bfloat)	mp_util_wad.o
+0x0096CCC0	0x00D5C1C0	?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointRandom(class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096CD30	0x00D5C230	?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@Ubbool@@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointRandom(class Broc::dyn_array<class Broc::entity> &,struct bbool)	mp_util_wad.o
+0x0096CF80	0x00D5C480	?GetSpawnpointNearest@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@Uvector@3@Ubbool@@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointNearest(class Broc::dyn_array<class Broc::entity> &,struct Broc::vector,struct bbool)	mp_util_wad.o
+0x0096D180	0x00D5C680	?GetSpawnpointInOrder@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointInOrder(class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096D2C0	0x00D5C7C0	?GetSpawnpointDM@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointDM(class Broc::entity &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096DD50	0x00D5D250	?GetSpawnpointNearTeamAntiCamp@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointNearTeamAntiCamp(class Broc::entity &,class Broc::string const &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096DE80	0x00D5D380	?GetSpawnpointNearTeam@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointNearTeam(class Broc::entity &,class Broc::string const &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096E570	0x00D5DA70	?GetSpawnpointSemiRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::GetSpawnpointSemiRandom(class Broc::entity &,class Broc::string const &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096E9C0	0x00D5DEC0	?get_spawnpoint_near_team_away_from_radios@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::get_spawnpoint_near_team_away_from_radios(class Broc::entity &,class Broc::string const &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x0096F6C0	0x00D5EBC0	?get_spawnpoint_middle_third@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z	class Broc::entity __cdecl _mp_spawnlogic::get_spawnpoint_middle_third(class Broc::entity &,class Broc::string const &,class Broc::dyn_array<class Broc::entity> &)	mp_util_wad.o
+0x00970140	0x00D5F640	?main@_mp_tankdrive@@YAXXZ	void __cdecl _mp_tankdrive::main(void)	mp_util_wad.o
+0x00970160	0x00D5F660	?init_all_tanks@_mp_tankdrive@@YAXXZ	void __cdecl _mp_tankdrive::init_all_tanks(void)	mp_util_wad.o
+0x009702F0	0x00D5F7F0	?init_tank@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::init_tank(class Broc::entity)	mp_util_wad.o
+0x00970A90	0x00D5FF90	?fire@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::fire(class Broc::entity)	mp_util_wad.o
+0x00970B10	0x00D60010	?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::BlowUpIfUnderWorld(class Broc::entity)	mp_util_wad.o
+0x00970CC0	0x00D601C0	?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::BlowUpIfFlipped(class Broc::entity)	mp_util_wad.o
+0x00970EB0	0x00D603B0	?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z	struct bint __cdecl _mp_tankdrive::VehicleRespawnClear(class Broc::entity,struct Broc::vector)	mp_util_wad.o
+0x009712E0	0x00D607E0	?HostSafeVehicleRespawn@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::HostSafeVehicleRespawn(class Broc::entity)	mp_util_wad.o
+0x00971450	0x00D60950	?death@_mp_tankdrive@@YAXVentity@Broc@@0@Z	void __cdecl _mp_tankdrive::death(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x00971800	0x00D60D00	?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z	void __cdecl _mp_tankdrive::damage(class Broc::entity,struct bint,class Broc::entity,struct bint)	mp_util_wad.o
+0x00971890	0x00D60D90	?VehicleDamagedEffects@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::VehicleDamagedEffects(class Broc::entity)	mp_util_wad.o
+0x00972020	0x00D61520	?inactivity_blowup@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::inactivity_blowup(class Broc::entity)	mp_util_wad.o
+0x009720A0	0x00D615A0	?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_tankdrive::local_player_hit_effects(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x009726C0	0x00D61BC0	?bigsplash@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::bigsplash(class Broc::entity)	mp_util_wad.o
+0x00972780	0x00D61C80	?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z	void __cdecl _mp_tankdrive::fireydeath(class Broc::entity,class Broc::entity)	mp_util_wad.o
+0x00972B90	0x00D62090	?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::deleteonextinguish(class Broc::entity)	mp_util_wad.o
+0x00972C20	0x00D62120	?setup_effects@_mp_tankdrive@@YAXVentity@Broc@@@Z	void __cdecl _mp_tankdrive::setup_effects(class Broc::entity)	mp_util_wad.o
+0x00973280	0x00D62780	?main@_mp_tdm@@YAXVentity@Broc@@@Z	void __cdecl _mp_tdm::main(class Broc::entity)	mp_util_wad.o
+0x009733F0	0x00D628F0	?CallbackPlayerKilled@_mp_tdm@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_tdm::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x009735E0	0x00D62AE0	?StartGame@_mp_tdm@@YAXVentity@Broc@@@Z	void __cdecl _mp_tdm::StartGame(class Broc::entity)	mp_util_wad.o
+0x00973690	0x00D62B90	?main@_mp_teambalance@@YAXVentity@Broc@@@Z	void __cdecl _mp_teambalance::main(class Broc::entity)	mp_util_wad.o
+0x009736B0	0x00D62BB0	?PickTeam@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@@Z	class Broc::string __cdecl _mp_teambalance::PickTeam(class Broc::entity)	mp_util_wad.o
+0x00973BA0	0x00D630A0	?team_balance@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@V23@@Z	class Broc::string __cdecl _mp_teambalance::team_balance(class Broc::entity,class Broc::string)	mp_util_wad.o
+0x00973FA0	0x00D634A0	?team_balance@_mp_teambalance@@YAXUbbool@@@Z	void __cdecl _mp_teambalance::team_balance(struct bbool)	mp_util_wad.o
+0x009746C0	0x00D63BC0	?vLerp@_mp_war@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z	struct Broc::vector __cdecl _mp_war::vLerp(struct Broc::vector,struct Broc::vector,struct bfloat)	mp_util_wad.o
+0x00974830	0x00D63D30	?main@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::main(class Broc::entity)	mp_util_wad.o
+0x00974DF0	0x00D642F0	?StartGame@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::StartGame(class Broc::entity)	mp_util_wad.o
+0x00974FA0	0x00D644A0	?PlayCapturedSounds@_mp_war@@YAXVentity@Broc@@Ubint@@1@Z	void __cdecl _mp_war::PlayCapturedSounds(class Broc::entity,struct bint,struct bint)	mp_util_wad.o
+0x00975980	0x00D64E80	?WARScore@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::WARScore(class Broc::entity)	mp_util_wad.o
+0x00975DA0	0x00D652A0	?GiveTeamMembersPoints@_mp_war@@YAXUvector@Broc@@Ubfloat@@Vstring@3@@Z	void __cdecl _mp_war::GiveTeamMembersPoints(struct Broc::vector,struct bfloat,class Broc::string)	mp_util_wad.o
+0x00976050	0x00D65550	?CallbackHostMigrated@_mp_war@@YAXXZ	void __cdecl _mp_war::CallbackHostMigrated(void)	mp_util_wad.o
+0x00976150	0x00D65650	?CallbackAreaCaptured@_mp_war@@YAXHH@Z	void __cdecl _mp_war::CallbackAreaCaptured(int,int)	mp_util_wad.o
+0x00976BB0	0x00D660B0	?CallbackHostOptionsChanged@_mp_war@@YAXH@Z	void __cdecl _mp_war::CallbackHostOptionsChanged(int)	mp_util_wad.o
+0x00976BF0	0x00D660F0	?CallbackGameState@_mp_war@@YAXHHHHHHHHHHHHH@Z	void __cdecl _mp_war::CallbackGameState(int,int,int,int,int,int,int,int,int,int,int,int,int)	mp_util_wad.o
+0x00976C50	0x00D66150	?CallbackPlayerKilled@_mp_war@@YAXVentity@Broc@@00HHH@Z	void __cdecl _mp_war::CallbackPlayerKilled(class Broc::entity,class Broc::entity,class Broc::entity,int,int,int)	mp_util_wad.o
+0x00976CB0	0x00D661B0	?CallbackGameStateDOM@_mp_war@@YAXHHHHH@Z	void __cdecl _mp_war::CallbackGameStateDOM(int,int,int,int,int)	mp_util_wad.o
+0x00977520	0x00D66A20	?CallbackNextRound@_mp_war@@YAXXZ	void __cdecl _mp_war::CallbackNextRound(void)	mp_util_wad.o
+0x00977590	0x00D66A90	?SetupRound@_mp_war@@YAXXZ	void __cdecl _mp_war::SetupRound(void)	mp_util_wad.o
+0x00977F10	0x00D67410	?CallbackGetFlagCount@_mp_war@@YAHXZ	int __cdecl _mp_war::CallbackGetFlagCount(void)	mp_util_wad.o
+0x00977F90	0x00D67490	?CallbackGetFlagBreatherTime@_mp_war@@YAHXZ	int __cdecl _mp_war::CallbackGetFlagBreatherTime(void)	mp_util_wad.o
+0x00978020	0x00D67520	?CallbackGetTeamControllingFlag@_mp_war@@YAHI@Z	int __cdecl _mp_war::CallbackGetTeamControllingFlag(unsigned int)	mp_util_wad.o
+0x00978140	0x00D67640	?CallbackGetFlagBeingCaptured@_mp_war@@YAHXZ	int __cdecl _mp_war::CallbackGetFlagBeingCaptured(void)	mp_util_wad.o
+0x009781E0	0x00D676E0	?CallbackGetTeamCapturingFlag@_mp_war@@YAHXZ	int __cdecl _mp_war::CallbackGetTeamCapturingFlag(void)	mp_util_wad.o
+0x00978360	0x00D67860	?CallbackGetCapturingFlagPercent@_mp_war@@YAHXZ	int __cdecl _mp_war::CallbackGetCapturingFlagPercent(void)	mp_util_wad.o
+0x00978470	0x00D67970	?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z	int __cdecl _mp_war::CallbackGetFlagBeingContested(class Broc::entity)	mp_util_wad.o
+0x009785F0	0x00D67AF0	?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z	int __cdecl _mp_war::GetNumPlayersContestingFlag(class Broc::entity)	mp_util_wad.o
+0x00978620	0x00D67B20	?CallbackPlayerJoin@_mp_war@@YAXVentity@Broc@@IH@Z	void __cdecl _mp_war::CallbackPlayerJoin(class Broc::entity,unsigned int,int)	mp_util_wad.o
+0x00978660	0x00D67B60	?CallbackPlayerEnter@_mp_war@@YAXVentity@Broc@@H@Z	void __cdecl _mp_war::CallbackPlayerEnter(class Broc::entity,int)	mp_util_wad.o
+0x009787B0	0x00D67CB0	?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z	void __cdecl _mp_war::CallbackRoundOver(int,class Broc::string)	mp_util_wad.o
+0x00978960	0x00D67E60	?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::SendFlagStates(class Broc::entity)	mp_util_wad.o
+0x00978D10	0x00D68210	?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::WAR_Init(class Broc::entity)	mp_util_wad.o
+0x009790C0	0x00D685C0	?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::WAR_FlagUpdate(class Broc::entity)	mp_util_wad.o
+0x0097B000	0x00D6A500	?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::WAR_TouchFlag(class Broc::entity)	mp_util_wad.o
+0x0097B580	0x00D6AA80	?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z	struct bfloat __cdecl _mp_war::GetCapSpeed(struct bint)	mp_util_wad.o
+0x0097B640	0x00D6AB40	?UpdateAllowedCap@_mp_war@@YAXXZ	void __cdecl _mp_war::UpdateAllowedCap(void)	mp_util_wad.o
+0x0097B850	0x00D6AD50	?AllowCap@_mp_war@@YAXUbint@@H@Z	void __cdecl _mp_war::AllowCap(struct bint,int)	mp_util_wad.o
+0x0097BB60	0x00D6B060	?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z	void __cdecl _mp_war::WAR_InitFlag(class Broc::entity,int)	mp_util_wad.o
+0x0097C410	0x00D6B910	?SortMarkers@_mp_war@@YAXXZ	void __cdecl _mp_war::SortMarkers(void)	mp_util_wad.o
+0x0097C650	0x00D6BB50	?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z	class Broc::entity __cdecl _mp_war::GetSpawnPoint(class Broc::entity &,class Broc::string const &)	mp_util_wad.o
+0x0097D110	0x00D6C610	?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z	void __cdecl _mp_war::WarnPlayerAboutInactiveFlag(class Broc::entity)	mp_util_wad.o
+0x0097D620	0x00D6CB20	?CallbackDebugRender@_mp_war@@YAXXZ	void __cdecl _mp_war::CallbackDebugRender(void)	mp_util_wad.o
+0x0097E280	0x00D6D780	?DebugRenderSpawnPoints@_mp_war@@YAXXZ	void __cdecl _mp_war::DebugRenderSpawnPoints(void)	mp_util_wad.o

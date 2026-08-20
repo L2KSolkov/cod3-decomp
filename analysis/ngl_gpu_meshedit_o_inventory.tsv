@@ -1,0 +1,13 @@
+ida_ea	va	name	signature	family
+0x00843110	0x00C32610	?nglScratchIndexAlloc@@YAHH@Z	int __cdecl nglScratchIndexAlloc(int)	ngl_gpu_meshedit.o
+0x00843160	0x00C32660	?nglScratchVertexAlloc@@YAHHH@Z	int __cdecl nglScratchVertexAlloc(int,int)	ngl_gpu_meshedit.o
+0x008431D0	0x00C326D0	?nglCreateSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z	struct nglMeshSection * __cdecl nglCreateSection(int,int,int,struct gpuVertexFormat *)	ngl_gpu_meshedit.o
+0x008432B0	0x00C327B0	?nglDestroySection@@YAXPAUnglMeshSection@@@Z	void __cdecl nglDestroySection(struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x008432E0	0x00C327E0	?nglLockSectionIndices@@YAPAXPAUnglMeshSection@@@Z	void * __cdecl nglLockSectionIndices(struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x00843300	0x00C32800	?nglUnlockSectionIndices@@YAXPAUnglMeshSection@@@Z	void __cdecl nglUnlockSectionIndices(struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x00843310	0x00C32810	?nglLockSectionVertices@@YAPAXPAUnglMeshSection@@@Z	void * __cdecl nglLockSectionVertices(struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x00843330	0x00C32830	?nglUnlockSectionVertices@@YAXPAUnglMeshSection@@@Z	void __cdecl nglUnlockSectionVertices(struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x00843340	0x00C32840	?nglCreateScratchSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z	struct nglMeshSection * __cdecl nglCreateScratchSection(int,int,int,struct gpuVertexFormat *)	ngl_gpu_meshedit.o
+0x00843400	0x00C32900	?nglCopySection@@YAXPAUnglMeshSection@@0@Z	void __cdecl nglCopySection(struct nglMeshSection *,struct nglMeshSection *)	ngl_gpu_meshedit.o
+0x00843540	0x00C32A40	?nglCopySection@@YAXPAUnglMesh@@H0H@Z	void __cdecl nglCopySection(struct nglMesh *,int,struct nglMesh *,int)	ngl_gpu_meshedit.o
+0x00843570	0x00C32A70	?nglCreateSectionCopy@@YAPAUnglMeshSection@@PAU1@@Z	struct nglMeshSection * __cdecl nglCreateSectionCopy(struct nglMeshSection *)	ngl_gpu_meshedit.o

@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x007E2CA0	0x00BD21A0	?button_value@controller@@QAEHW4ButtonIndex@1@PAH@Z	public: int __thiscall controller::button_value(enum controller::ButtonIndex,int *)	controller.o
+0x007E2D20	0x00BD2220	?button_released@controller@@QAE_NW4ButtonIndex@1@PAH@Z	public: bool __thiscall controller::button_released(enum controller::ButtonIndex,int *)	controller.o
+0x007E2DA0	0x00BD22A0	?button_released_clear@controller@@QAE_NW4ButtonIndex@1@PAH@Z	public: bool __thiscall controller::button_released_clear(enum controller::ButtonIndex,int *)	controller.o
+0x007E2E20	0x00BD2320	?button_pressed@controller@@QAE_NW4ButtonIndex@1@PAH@Z	public: bool __thiscall controller::button_pressed(enum controller::ButtonIndex,int *)	controller.o
+0x007E2EA0	0x00BD23A0	?any_button_pressed@controller@@QAE_NPAH@Z	public: bool __thiscall controller::any_button_pressed(int *)	controller.o
+0x007E2EE0	0x00BD23E0	?button_pressed_clear@controller@@QAE_NW4ButtonIndex@1@PAH@Z	public: bool __thiscall controller::button_pressed_clear(enum controller::ButtonIndex,int *)	controller.o
+0x007E2F60	0x00BD2460	?stick_value@controller@@QAEXW4StickIndex@1@AAH1PAH@Z	public: void __thiscall controller::stick_value(enum controller::StickIndex,int &,int &,int *)	controller.o
+0x007E3030	0x00BD2530	?stick_value_x@controller@@QAEHW4StickIndex@1@PAH@Z	public: int __thiscall controller::stick_value_x(enum controller::StickIndex,int *)	controller.o
+0x007E30D0	0x00BD25D0	?stick_value_y@controller@@QAEHW4StickIndex@1@PAH@Z	public: int __thiscall controller::stick_value_y(enum controller::StickIndex,int *)	controller.o
+0x007E3170	0x00BD2670	?stick_value_x@controller@@QAEHHW4StickIndex@1@@Z	public: int __thiscall controller::stick_value_x(int,enum controller::StickIndex)	controller.o
+0x007E31A0	0x00BD26A0	?stick_value_y@controller@@QAEHHW4StickIndex@1@@Z	public: int __thiscall controller::stick_value_y(int,enum controller::StickIndex)	controller.o

@@ -1,0 +1,13 @@
+index	status	map_line
+1	VERIFIED	0002:0042d600 ?nfsMessage@@YAXPBDZZ 00C1CB00 f nfl_debug.o
+2	VERIFIED	0002:0042d620 ?nfsWarning@@YAXPBDZZ 00C1CB20 f nfl_debug.o
+3	VERIFIED	0002:0042d640 ?nfsError@@YAXPBDZZ 00C1CB40 f nfl_debug.o
+4	VERIFIED	0002:0042d660 ?nfsRequestStateText@@YAPBDW4nfsRequestState@@@Z 00C1CB60 f nfl_debug.o
+5	VERIFIED	0002:0042d6e0 ?nfsFileTypeText@@YAPBDW4nfsFileType@@@Z 00C1CBE0 f nfl_debug.o
+6	VERIFIED	0002:0042d710 ?nfsRequestStateText@@YAPBDW4nflRequestState@@@Z 00C1CC10 f nfl_debug.o
+7	VERIFIED	0002:0042d770 ?nfsMediaIDText@@YAPBDW4nflMediaID@@@Z 00C1CC70 f nfl_debug.o
+8	VERIFIED	0002:0042d800 ?nfsBufferModeText@@YAPBDW4nflBufferMode@@@Z 00C1CD00 f nfl_debug.o
+9	VERIFIED	0002:0042d850 ?nfdErrorText@@YAPBDW4nfdError@@@Z 00C1CD50 f nfl_debug.o
+10	VERIFIED	0002:0042d8c0 ?nfdFileFlagsText@@YAPBDW4nfdFileFlags@@@Z 00C1CDC0 f nfl_debug.o
+11	VERIFIED	0002:0042d9c0 ?nfdMediaStateText@@YAPBDW4nfdMediaState@@@Z 00C1CEC0 f nfl_debug.o
+12	VERIFIED	0002:0042da10 ?nfdIoStateText@@YAPBDW4nfdIoState@@@Z 00C1CF10 f nfl_debug.o

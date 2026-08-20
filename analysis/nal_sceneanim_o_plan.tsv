@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x00877FC0	??1nalSceneAnimInstance@@UAE@XZ	public: virtual __thiscall nalSceneAnimInstance::~nalSceneAnimInstance(void)	
+0x00878010	?AddClientAnim@nalSceneAnimInstance@@IAEXPAVnalClientSceneAnim@@PAV?$nalAnimClass@VnalAnyPose@@@@@Z	protected: void __thiscall nalSceneAnimInstance::AddClientAnim(class nalClientSceneAnim *,class nalAnimClass<class nalAnyPose> *)	
+0x00878060	?Render@nalSceneAnimInstance@@QBEXXZ	public: void __thiscall nalSceneAnimInstance::Render(void)const 	
+0x008780C0	?CreateInstance@nalSceneAnim@@QAEPAVnalSceneAnimInstance@@P6APAVnalClientSceneAnim@@PBV1@ABVtlFixedString@@PAX@Z2@Z	public: class nalSceneAnimInstance * __thiscall nalSceneAnim::CreateInstance(class nalClientSceneAnim * (__cdecl*)(class nalSceneAnim const *,class tlFixedString const &,void *),void *)	
+0x00878100	?Advance@nalStaticInstance@@UAEXM@Z	public: virtual void __thiscall nalStaticInstance::Advance(float)	

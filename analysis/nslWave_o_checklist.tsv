@@ -1,0 +1,16 @@
+index	status	map_line
+1	VERIFIED	0002:0042a020 ?nslWaveGetSourceDirectory@@YAPBDXZ 00C19520 f nslWave.o
+2	VERIFIED	0002:0042a030 ?nslWaveGetObjectDirectory@@YAPBDXZ 00C19530 f nslWave.o
+3	VERIFIED	0002:0042a040 ?nslWaveSetSourceDirectory@@YAXPBD@Z 00C19540 f nslWave.o
+4	VERIFIED	0002:0042a0d0 ?nslWaveSetObjectDirectory@@YAXPBD@Z 00C195D0 f nslWave.o
+5	VERIFIED	0002:0042a160 ?nslWaveGetSourceFilename@@YAPBDPBDPADH@Z 00C19660 f nslWave.o
+6	VERIFIED	0002:0042a1a0 ?nslWaveGetObjectFilename@@YAPBDPBD0PADH@Z 00C196A0 f nslWave.o
+7	VERIFIED	0002:0042a1e0 ?nslWaveInfoAlloc@@YAPAUnslWaveInfo@@XZ 00C196E0 f nslWave.o
+8	VERIFIED	0002:0042a1f0 ?nslWaveInfoSize@@YAIPBUnslWaveInfo@@@Z 00C196F0 f nslWave.o
+9	VERIFIED	0002:0042a220 ?nslWaveAlloc@@YAPAUnslWave@@XZ 00C19720 f nslWave.o
+10	VERIFIED	0002:0042a250 ?nslWaveInfoFree@@YAXPAUnslWaveInfo@@@Z 00C19750 f nslWave.o
+11	VERIFIED	0002:0042a280 ?nslWaveFree@@YAXPAUnslWave@@@Z 00C19780 f nslWave.o
+12	VERIFIED	0002:0042a300 ?nslWaveSetSoundInfo@@YAXPAUnslWave@@PBUnslWaveInfo@@@Z 00C19800 f nslWave.o
+13	VERIFIED	0002:0042a380 ?nslWaveGetInfo@@YAPBUnslWaveInfo@@PBUnslWave@@@Z 00C19880 f nslWave.o
+14	VERIFIED	0002:0042a3a0 ?nslWaveInfoCopy@@YAPAUnslWaveInfo@@PBU1@@Z 00C198A0 f nslWave.o
+15	VERIFIED	0002:0042a440 ?nslWaveCopy@@YAPAUnslWave@@PBU1@IHHQAPBD@Z 00C19940 f nslWave.o

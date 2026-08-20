@@ -1,0 +1,26 @@
+index	status	map_line
+1	VERIFIED	0002:004333a0 ?tlSetSystemCallbacks@@YAXPBUtlSystemCallbacks@@@Z 00C228A0 f tl_system.o
+2	VERIFIED	0002:004333c0 ?tlLinkFrame@@YAXXZ 00C228C0 f tl_system.o
+3	VERIFIED	0002:004333d0 ?tlLinkConnected@@YA_NXZ 00C228D0 f tl_system.o
+4	VERIFIED	0002:004333e0 ?tlSetFileServerRootPC@@YAXPBD@Z 00C228E0 f tl_system.o
+5	VERIFIED	0002:00433400 ?tlMemFree@@YAXPAX@Z 00C22900 f tl_system.o
+6	VERIFIED	0002:00433440 ?tlReleaseFile@@YAXPAUtlFileBuf@@@Z 00C22940 f tl_system.o
+7	VERIFIED	0002:004334b0 ?tlFinalPrint@@YAXPBD@Z 00C229B0 f tl_system.o
+8	VERIFIED	0002:004334c0 ?tlGetVersion@@YAHXZ 00C229C0 f tl_system.o
+9	VERIFIED	0002:004334d0 ?tlGetFreeMemory@@YAIXZ 00C229D0 f tl_system.o
+10	VERIFIED	0002:004334f0 ?tlSetCurrentThreadName@@YAXPBD@Z 00C229F0 f tl_system.o
+11	VERIFIED	0002:00433580 ?tlFatalHandler@@YA_NPBD@Z 00C22A80 f tl_system.o
+12	VERIFIED	0002:004335c0 ?tlFatal@@YAXPBDZZ 00C22AC0 f tl_system.o
+13	VERIFIED	0002:00433620 ?_tlAssert@@YA_NPBDH00@Z 00C22B20 f tl_system.o
+14	VERIFIED	0002:004336a0 ?tlMemAlloc@@YAPAXIII@Z 00C22BA0 f tl_system.o
+15	VERIFIED	0002:00433730 ?tlMemRealloc@@YAPAXPAXIII@Z 00C22C30 f tl_system.o
+16	VERIFIED	0002:004337b0 ?tlPrint@@YAXPBD@Z 00C22CB0 f tl_system.o
+17	VERIFIED	0002:004337c0 ?tlStackRangeInit@@YAXXZ 00C22CC0 f tl_system.o
+18	VERIFIED	0002:00433830 ?tlScratchPadInit@@YAPAXXZ 00C22D30 f tl_system.o
+19	VERIFIED	0002:004338b0 ?tlScratchPadReset@@YAXXZ 00C22DB0 f tl_system.o
+20	VERIFIED	0002:00433940 ?tlDebugPrint@@YAXPBD@Z 00C22E40 f tl_system.o
+21	VERIFIED	0002:00433960 ?tlPrintf@@YAXPBDZZ 00C22E60 f tl_system.o
+22	VERIFIED	0002:004339b0 ?tlReadFile@@YA_NPBDPAUtlFileBuf@@II@Z 00C22EB0 f tl_system.o
+23	VERIFIED	0002:00433af0 ?tlWarning@@YAXPBDZZ 00C22FF0 f tl_system.o
+24	PORTED	0002:00433b50 ??0tlMemAllocMutex@@QAE@XZ 00C23050 f i tl_system.o
+25	PORTED	0002:00433b60 ??1tlMemAllocMutex@@QAE@XZ 00C23060 f i tl_system.o

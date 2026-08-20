@@ -1,0 +1,1541 @@
+index	status	map_line
+1	VERIFIED	0002:001bbc20 ?MemPrint@@YAXPBDZZ 009AB120 f scr.o
+2	VERIFIED	0002:001bbc50 ?Init@MemCount@@YAXXZ 009AB150 f scr.o
+3	VERIFIED	0002:001bbc60 ?RenderTotals@MemCount@@YAXXZ 009AB160 f scr.o
+4	VERIFIED	0002:001bbc70 ?ReportTotals@MemCount@@YAXXZ 009AB170 f scr.o
+5	VERIFIED	0002:001bbc80 ?IsRealLeak@MemCount@@YA_NPBDHH@Z 009AB180 f scr.o
+6	VERIFIED	0002:001bbc90 ?CheckForMapChangeLeaks@MemCount@@YAXXZ 009AB190 f scr.o
+7	VERIFIED	0002:001bbca0 ?CheckForRoundtripLeaks@MemCount@@YAXXZ 009AB1A0 f scr.o
+8	VERIFIED	0002:001bbcb0 ?SetGamePhase@MemCount@@YAXW4eGamePhase@1@@Z 009AB1B0 f scr.o
+9	VERIFIED	0002:001bbcc0 ?SetSafeAlloc@MemCount@@YAX_N@Z 009AB1C0 f scr.o
+10	VERIFIED	0002:001bbcd0 ?ThreadPrintf@@YAXHPBDZZ 009AB1D0 f scr.o
+11	VERIFIED	0002:001bbd30 ?SetJmp@@YAXPAI@Z 009AB230 f scr.o
+12	VERIFIED	0002:001bbd80 ?LongJmp@@YAXPAI@Z 009AB280 f scr.o
+13	VERIFIED	0002:001bbdb0 ??0BackupStack@AeThread@@QAE@XZ 009AB2B0 f scr.o
+14	VERIFIED	0002:001bbdc0 ?Backup@BackupStack@AeThread@@QAEXII@Z 009AB2C0 f scr.o
+15	VERIFIED	0002:001bbf70 ?Restore@BackupStack@AeThread@@QBEXI@Z 009AB470 f scr.o
+16	VERIFIED	0002:001bc0b0 ??1BackupStack@AeThread@@QAE@XZ 009AB5B0 f scr.o
+17	VERIFIED	0002:001bc0f0 ?NewAction@AeThreadPakNotifyState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009AB5F0 f scr.o
+18	VERIFIED	0002:001bc150 ?NewAction@AeThreadWaitState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009AB650 f scr.o
+19	VERIFIED	0002:001bc180 ?NewAction@AeThreadWaitFramesState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009AB680 f scr.o
+20	VERIFIED	0002:001bc1a0 ?XboxGetEntryFunction@@YAP6AP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@ZPBD@Z 009AB6A0 f scr.o
+21	VERIFIED	0002:001bc1d0 ?SetDepthOfField@@YAX_NMMMM@Z 009AB6D0 f scr.o
+22	VERIFIED	0002:001bc1e0 ?CreateNanoGraph@@YAIPADQAM1@Z 009AB6E0 f scr.o
+23	VERIFIED	0002:001bc210 ?ConvertStringToHash@BrocSys@@YA?BIPBD@Z 009AB710 f scr.o
+24	VERIFIED	0002:001bc230 ?MemFree@BrocSys@@YAXPAX@Z 009AB730 f scr.o
+25	VERIFIED	0002:001bc280 ?PoolAlloc@BrocSys@@YAPAXI@Z 009AB780 f scr.o
+26	VERIFIED	0002:001bc2a0 ?PoolFree@BrocSys@@YAXPAX@Z 009AB7A0 f scr.o
+27	VERIFIED	0002:001bc2c0 ?RoundOver@BrocSys@@YAXHABVstring@Broc@@@Z 009AB7C0 f scr.o
+28	VERIFIED	0002:001bc350 ?DisplayScoreBoard@BrocSys@@YAX_NH@Z 009AB850 f scr.o
+29	VERIFIED	0002:001bc450 ?SettleMapVote@BrocSys@@YAXXZ 009AB950 f scr.o
+30	VERIFIED	0002:001bc470 ?SettleGameModeVote@BrocSys@@YAXXZ 009AB970 f scr.o
+31	VERIFIED	0002:001bc490 ?SetSpecialRecharge@BrocSys@@YAXHHHH@Z 009AB990 f scr.o
+32	VERIFIED	0002:001bc4c0 ?AdvanceSpecialRecharge@BrocSys@@YAXH@Z 009AB9C0 f scr.o
+33	VERIFIED	0002:001bc500 ?GetSpecialRechargePlayerClass@BrocSys@@YAHXZ 009ABA00 f scr.o
+34	VERIFIED	0002:001bc520 ?SpecialEditionSkin@BrocSys@@YA_NXZ 009ABA20 f scr.o
+35	VERIFIED	0002:001bc530 ?IsHost@BrocSys@@YA_NXZ 009ABA30 f scr.o
+36	VERIFIED	0002:001bc540 ?IsRankedGame@BrocSys@@YA_NXZ 009ABA40 f scr.o
+37	VERIFIED	0002:001bc550 ?IsLanGame@BrocSys@@YA_NXZ 009ABA50 f scr.o
+38	VERIFIED	0002:001bc560 ?IsOnlineGame@BrocSys@@YA_NXZ 009ABA60 f scr.o
+39	VERIFIED	0002:001bc570 ?IsLocalGame@BrocSys@@YA_NXZ 009ABA70 f scr.o
+40	VERIFIED	0002:001bc580 ?IsSplitScreen@BrocSys@@YA_NXZ 009ABA80 f scr.o
+41	VERIFIED	0002:001bc590 ?SetTeamGame@BrocSys@@YAX_N@Z 009ABA90 f scr.o
+42	VERIFIED	0002:001bc5a0 ?SetShowScore@BrocSys@@YAX_N@Z 009ABAA0 f scr.o
+43	VERIFIED	0002:001bc5b0 ?SetShowTime@BrocSys@@YAXM@Z 009ABAB0 f scr.o
+44	VERIFIED	0002:001bc5e0 ?GetTeamGame@BrocSys@@YA_NXZ 009ABAE0 f scr.o
+45	VERIFIED	0002:001bc5f0 ?ScreenFadeToBlack@BrocSys@@YAXIH@Z 009ABAF0 f scr.o
+46	VERIFIED	0002:001bc630 ?ScreenFadeUp@BrocSys@@YAXIH@Z 009ABB30 f scr.o
+47	VERIFIED	0002:001bc660 ?ActiveMenu@BrocSys@@YAHXZ 009ABB60 f scr.o
+48	VERIFIED	0002:001bc6a0 ?NextRound@BrocSys@@YAX_N@Z 009ABBA0 f scr.o
+49	VERIFIED	0002:001bc6c0 ?NextRoundMapChanges@BrocSys@@YA_NXZ 009ABBC0 f scr.o
+50	VERIFIED	0002:001bc6d0 ?QuitGame@BrocSys@@YAXXZ 009ABBD0 f scr.o
+51	VERIFIED	0002:001bc6e0 ?Localize@BrocSys@@YAPBDPBD@Z 009ABBE0 f scr.o
+52	VERIFIED	0002:001bc700 ?Print@BrocSys@@YAXPBD@Z 009ABC00 f scr.o
+53	VERIFIED	0002:001bc710 ?PrintLn@BrocSys@@YAXPBD@Z 009ABC10 f scr.o
+54	VERIFIED	0002:001bc730 ?GetAnimName@BrocSys@@YA_NIPADH@Z 009ABC30 f scr.o
+55	VERIFIED	0002:001bc790 ?PrintFloat3D@BrocSys@@YAXABUvector@Broc@@M0MM@Z 009ABC90 f scr.o
+56	VERIFIED	0002:001bc800 ?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z 009ABD00 f scr.o
+57	VERIFIED	0002:001bc810 ?SquareRootX@BrocSys@@YAMM@Z 009ABD10 f scr.o
+58	VERIFIED	0002:001bc820 ?ModXY@BrocSys@@YAHHH@Z 009ABD20 f scr.o
+59	VERIFIED	0002:001bc830 ?FModXY@BrocSys@@YAMMM@Z 009ABD30 f scr.o
+60	VERIFIED	0002:001bc840 ?atoff@BrocSys@@YAMPBD@Z 009ABD40 f scr.o
+61	VERIFIED	0002:001bc860 ?ThreadBackupStack@BrocSys@@YAXI@Z 009ABD60 f scr.o
+62	VERIFIED	0002:001bc880 ?ThreadIsThreadExecuting@BrocSys@@YA_NXZ 009ABD80 f scr.o
+63	VERIFIED	0002:001bc890 ?Assert@BrocSys@@YA_NPBDH0@Z 009ABD90 f scr.o
+64	VERIFIED	0002:001bc8e0 ?Warning@BrocSys@@YA_NPBDH0@Z 009ABDE0 f scr.o
+65	VERIFIED	0002:001bc930 ?Error@BrocSys@@YA_NPBDH0@Z 009ABE30 f scr.o
+66	VERIFIED	0002:001bc970 ?CVarGetString@BrocSys@@YAXAAVstring@Broc@@PBD@Z 009ABE70 f scr.o
+67	VERIFIED	0002:001bc9a0 ?CVarGetInt@BrocSys@@YAHPBD@Z 009ABEA0 f scr.o
+68	VERIFIED	0002:001bc9b0 ?CVarGetFloat@BrocSys@@YAMPBD@Z 009ABEB0 f scr.o
+69	VERIFIED	0002:001bc9d0 ?CVarSetString@BrocSys@@YAXPBD0@Z 009ABED0 f scr.o
+70	VERIFIED	0002:001bca50 ?CVarSetInt@BrocSys@@YAXPBDH@Z 009ABF50 f scr.o
+71	VERIFIED	0002:001bcae0 ?CVarSetFloat@BrocSys@@YAXPBDM@Z 009ABFE0 f scr.o
+72	VERIFIED	0002:001bcb70 ?MusicStop@BrocSys@@YAXM@Z 009AC070 f scr.o
+73	VERIFIED	0002:001bcb90 ?MusicIndoorStop@BrocSys@@YAXM@Z 009AC090 f scr.o
+74	VERIFIED	0002:001bcbb0 ?SoundFadeIn@BrocSys@@YAXIM@Z 009AC0B0 f scr.o
+75	VERIFIED	0002:001bcbd0 ?SoundFadeOut@BrocSys@@YAXIM@Z 009AC0D0 f scr.o
+76	VERIFIED	0002:001bcbf0 ?SoundCrossFade@BrocSys@@YAXIIM@Z 009AC0F0 f scr.o
+77	VERIFIED	0002:001bcc10 ?SetIndoor@BrocSys@@YAX_N@Z 009AC110 f scr.o
+78	VERIFIED	0002:001bcc20 ?GetLastParticleInfo@BrocSys@@YAXAAUvector@Broc@@AAI@Z 009AC120 f scr.o
+79	VERIFIED	0002:001bcc80 ?GetTime@BrocSys@@YAIXZ 009AC180 f scr.o
+80	VERIFIED	0002:001bcc90 ?GetDeltaTime@BrocSys@@YAMXZ 009AC190 f scr.o
+81	VERIFIED	0002:001bcca0 ?GetDifficulty@BrocSys@@YAXAAVstring@Broc@@@Z 009AC1A0 f scr.o
+82	VERIFIED	0002:001bcd10 ?GetNorthYaw@BrocSys@@YAMXZ 009AC210 f scr.o
+83	VERIFIED	0002:001bcd20 ?GameSave@BrocSys@@YAXABVstring@Broc@@@Z 009AC220 f scr.o
+84	VERIFIED	0002:001bcd30 ?GameLoad@BrocSys@@YAXABVstring@Broc@@@Z 009AC230 f scr.o
+85	VERIFIED	0002:001bcd40 ?SetCullDist@BrocSys@@YAXM@Z 009AC240 f scr.o
+86	VERIFIED	0002:001bcd70 ?RadiusDamage@BrocSys@@YAXABUvector@Broc@@MMMH@Z 009AC270 f scr.o
+87	VERIFIED	0002:001bcdc0 ?SetPlayerIgnoreRadiusDamage@BrocSys@@YAX_N@Z 009AC2C0 f scr.o
+88	VERIFIED	0002:001bcdd0 ?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z 009AC2D0 f scr.o
+89	VERIFIED	0002:001bcde0 ?Lightning@BrocSys@@YAXABUvector@Broc@@@Z 009AC2E0 f scr.o
+90	VERIFIED	0002:001bce60 ?SetRainDrops@BrocSys@@YAX_N@Z 009AC360 f scr.o
+91	VERIFIED	0002:001bce70 ?SetFootSplashEffect@BrocSys@@YAXABVstring@Broc@@@Z 009AC370 f scr.o
+92	VERIFIED	0002:001bce90 ?DrawCompassFriendlies@BrocSys@@YAX_N@Z 009AC390 f scr.o
+93	VERIFIED	0002:001bcea0 ?SetMissileActiveTime@BrocSys@@YAXM@Z 009AC3A0 f scr.o
+94	VERIFIED	0002:001bcec0 ?SetMaxVehicles@BrocSys@@YAXH@Z 009AC3C0 f scr.o
+95	VERIFIED	0002:001bced0 ?ProfBegin@BrocSys@@YAXXZ 009AC3D0 f scr.o
+96	VERIFIED	0002:001bcee0 ?ProfEnd@BrocSys@@YAXXZ 009AC3E0 f scr.o
+97	VERIFIED	0002:001bcef0 ?ProfTick@BrocSys@@YAHXZ 009AC3F0 f scr.o
+98	VERIFIED	0002:001bcf10 ?FlushCorpses@BrocSys@@YAXXZ 009AC410 f scr.o
+99	VERIFIED	0002:001bcf20 ?StartMemCheck@BrocSys@@YAXXZ 009AC420 f scr.o
+100	VERIFIED	0002:001bcf30 ?EndMemCheck@BrocSys@@YAXXZ 009AC430 f scr.o
+101	VERIFIED	0002:001bcf40 ?GetPakVector@BrocSys@@YA?AW4TPakInfo@@MMM@Z 009AC440 f scr.o
+102	VERIFIED	0002:001bd070 ?IsPakLoaded@BrocSys@@YA_NW4TPakInfo@@@Z 009AC570 f scr.o
+103	VERIFIED	0002:001bd0d0 ?SetPakDistance@BrocSys@@YAXW4TPakInfo@@M@Z 009AC5D0 f scr.o
+104	VERIFIED	0002:001bd130 ?ClearPakDistance@BrocSys@@YAXW4TPakInfo@@@Z 009AC630 f scr.o
+105	VERIFIED	0002:001bd190 ?SyncLoadPak@BrocSys@@YAXW4TPakInfo@@@Z 009AC690 f scr.o
+106	VERIFIED	0002:001bd2b0 ?ProfileDeclareID@BrocSys@@YAHPBD@Z 009AC7B0 f scr.o
+107	VERIFIED	0002:001bd2c0 ?ProfileStart@BrocSys@@YAXH@Z 009AC7C0 f scr.o
+108	VERIFIED	0002:001bd2d0 ?ProfileStop@BrocSys@@YAXH@Z 009AC7D0 f scr.o
+109	VERIFIED	0002:001bd2e0 ?ProfileSetVal@BrocSys@@YAXHH@Z 009AC7E0 f scr.o
+110	VERIFIED	0002:001bd2f0 ?HudClearTypeSettings@BrocSys@@YAXPAUgame_hudelem_s@@@Z 009AC7F0 f scr.o
+111	VERIFIED	0002:001bd320 ?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z 009AC820 f scr.o
+112	VERIFIED	0002:001bd440 ?HudIsPanelType@BrocSys@@YA_NPAUgame_hudelem_s@@@Z 009AC940 f scr.o
+113	VERIFIED	0002:001bd460 ?NRefsToString@BrocSys@@YAHH@Z 009AC960 f scr.o
+114	VERIFIED	0002:001bd4d0 ?HudFree@BrocSys@@YAXPAUgame_hudelem_s@@@Z 009AC9D0 f scr.o
+115	VERIFIED	0002:001bd600 ?HudSetIsVisible@BrocSys@@YAX_N@Z 009ACB00 f scr.o
+116	VERIFIED	0002:001bd620 ?FindConfigString@BrocSys@@YAHPBD@Z 009ACB20 f scr.o
+117	VERIFIED	0002:001bd670 ?SetValue@BrocSys@@YAXABVhudelem@Broc@@M@Z 009ACB70 f scr.o
+118	VERIFIED	0002:001bd730 ?Reset@BrocSys@@YAXABVhudelem@Broc@@@Z 009ACC30 f scr.o
+119	VERIFIED	0002:001bd7a0 ?Destroy@BrocSys@@YAXABVhudelem@Broc@@@Z 009ACCA0 f scr.o
+120	VERIFIED	0002:001bd810 ?ValidateApiSize@BrocSys@@YAXHH@Z 009ACD10 f scr.o
+121	VERIFIED	0002:001bd8b0 ?PlayScriptedAnim@BrocSys@@YAXIPBD@Z 009ACDB0 f scr.o
+122	VERIFIED	0002:001bd900 ?SetMissionToTrack@BrocSys@@YA_NPBD_N@Z 009ACE00 f scr.o
+123	VERIFIED	0002:001bd910 ?GetMissionStat@BrocSys@@YAHH_N@Z 009ACE10 f scr.o
+124	VERIFIED	0002:001bd920 ?GetMissionStatAll@BrocSys@@YAHH@Z 009ACE20 f scr.o
+125	VERIFIED	0002:001bd930 ?SetMissionStat@BrocSys@@YAXHH@Z 009ACE30 f scr.o
+126	VERIFIED	0002:001bd940 ?IncMissionStat@BrocSys@@YAXH@Z 009ACE40 f scr.o
+127	VERIFIED	0002:001bd950 ?DecMissionStat@BrocSys@@YAXH@Z 009ACE50 f scr.o
+128	VERIFIED	0002:001bd960 ?GetAvgMissionStat@BrocSys@@YAMH@Z 009ACE60 f scr.o
+129	VERIFIED	0002:001bd970 ?GetMissionCompletionTime@BrocSys@@YAHXZ 009ACE70 f scr.o
+130	VERIFIED	0002:001bd980 ?UpdateMissionCompletionTime@BrocSys@@YAXXZ 009ACE80 f scr.o
+131	VERIFIED	0002:001bd990 ?SetPlayerWeaponUsed@BrocSys@@YAXH@Z 009ACE90 f scr.o
+132	VERIFIED	0002:001bd9a0 ?WasPlayerWeaponUsed@BrocSys@@YA_NH@Z 009ACEA0 f scr.o
+133	VERIFIED	0002:001bd9b0 ?WasPlayerWeaponCategoryUsed@BrocSys@@YA_NH_N@Z 009ACEB0 f scr.o
+134	VERIFIED	0002:001bd9c0 ?SetDynamicLightPosition@BrocSys@@YAXIABUvector@Broc@@@Z 009ACEC0 f scr.o
+135	VERIFIED	0002:001bda30 ?RemoveDynamicLight@BrocSys@@YAXI@Z 009ACF30 f scr.o
+136	VERIFIED	0002:001bda40 ?CreateDynamicLight@BrocSys@@YAIABUvector@Broc@@0MMM_N@Z 009ACF40 f scr.o
+137	VERIFIED	0002:001bdac0 ?GetLocalizedString@BrocSys@@YA?AVstring@Broc@@H@Z 009ACFC0 f scr.o
+138	VERIFIED	0002:001bdaf0 ?EnableNanoForces@BrocSys@@YAX_N@Z 009ACFF0 f scr.o
+139	VERIFIED	0002:001bdb00 ?GlowSetIntensityAux@BrocSys@@YAXM@Z 009AD000 f scr.o
+140	VERIFIED	0002:001bdb20 ?GlowSetExpansionAux@BrocSys@@YAXM@Z 009AD020 f scr.o
+141	VERIFIED	0002:001bdb40 ?GlowSetBrightnessAux@BrocSys@@YAXM@Z 009AD040 f scr.o
+142	VERIFIED	0002:001bdb60 ?GlowSetGodRaysAux@BrocSys@@YAX_N@Z 009AD060 f scr.o
+143	VERIFIED	0002:001bdb70 ?GlowSetPassesAux@BrocSys@@YAXH@Z 009AD070 f scr.o
+144	VERIFIED	0002:001bdb80 ?CurGenMotionBlur@BrocSys@@YAXMMM@Z 009AD080 f scr.o
+145	VERIFIED	0002:001bdb90 ?StopCurGenMotionBlur@BrocSys@@YAXXZ 009AD090 f scr.o
+146	VERIFIED	0002:001bdba0 ?InitMPCallbacks@BrocSys@@YAXXZ 009AD0A0 f scr.o
+147	VERIFIED	0002:001bdea0 ?BrocDebugRender@BrocSys@@YAXXZ 009AD3A0 f scr.o
+148	VERIFIED	0002:001bdf00 ?CreateExtendedEntity@BrocSys@@YAPAXPAPBDH@Z 009AD400 f scr.o
+149	VERIFIED	0002:001bdf20 ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z 009AD420 f scr.o
+150	VERIFIED	0002:001bdfb0 ?RecompileScript@BrocSys@@YA_NXZ 009AD4B0 f scr.o
+151	VERIFIED	0002:001bdfc0 ?UnloadScript@BrocSys@@YAXXZ 009AD4C0 f scr.o
+152	VERIFIED	0002:001bdfd0 ?mem_free@@YAXPAX@Z 009AD4D0 f scr.o
+153	VERIFIED	0002:001be020 ?SetLoadedTrees@BrocHelper@@YAXH@Z 009AD520 f scr.o
+154	VERIFIED	0002:001be030 ?GetLoadedTrees@BrocHelper@@YAHXZ 009AD530 f scr.o
+155	VERIFIED	0002:001be040 ?AnimationToBroLookup@BrocHelper@@YAXPBDHIH@Z 009AD540 f scr.o
+156	VERIFIED	0002:001be0d0 ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z 009AD5D0 f scr.o
+157	VERIFIED	0002:001be100 ?AnimationValidator@BrocHelper@@YAXH@Z 009AD600 f scr.o
+158	VERIFIED	0002:001be180 ?Init@BrocHelper@@YAXXZ 009AD680 f scr.o
+159	VERIFIED	0002:001be1a0 ?RegisterBroFunc@BrocHelper@@YAXPADP6AIPAX@Z@Z 009AD6A0 f scr.o
+160	VERIFIED	0002:001be210 ?GetBroFuncByName@BrocHelper@@YAP6AIPAX@ZPBD_N@Z 009AD710 f scr.o
+161	VERIFIED	0002:001be2b0 ?UpdateEntityHash@@YAXPAVEntity@@@Z 009AD7B0 f scr.o
+162	VERIFIED	0002:001be390 ?BrocDestroyEntity@@YAXPAVEntity@@@Z 009AD890 f scr.o
+163	VERIFIED	0002:001be3d0 ?BrocAddEntityThread@@YAXPAVEntity@@IPAVScriptEventParams@@@Z 009AD8D0 f scr.o
+164	VERIFIED	0002:001be560 ?BrocAddEntityThread@@YAXPAVEntity@@PBD@Z 009ADA60 f scr.o
+165	VERIFIED	0002:001be6c0 ?GetPlayerArray@BrocSys@@YAHPAI@Z 009ADBC0 f scr.o
+166	VERIFIED	0002:001be750 ?GetLocalPlayerArray@BrocSys@@YAHPAI@Z 009ADC50 f scr.o
+167	VERIFIED	0002:001be7a0 ?GetLevel@BrocSys@@YAIXZ 009ADCA0 f scr.o
+168	VERIFIED	0002:001be7b0 ?GetPlayer@BrocSys@@YAIXZ 009ADCB0 f scr.o
+169	VERIFIED	0002:001be7d0 ?Scr_ReadOnlyField@BrocSys@@YAXPAVEntity@@HPAX@Z 009ADCD0 f scr.o
+170	VERIFIED	0002:001be810 ?Scr_SetAngles@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z 009ADD10 f scr.o
+171	VERIFIED	0002:001be870 ?Scr_GetAngles@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z 009ADD70 f scr.o
+172	VERIFIED	0002:001be8d0 ?Scr_SetGroupName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009ADDD0 f scr.o
+173	VERIFIED	0002:001be920 ?Scr_SetTargetName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009ADE20 f scr.o
+174	VERIFIED	0002:001be970 ?Scr_SetTarget@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009ADE70 f scr.o
+175	VERIFIED	0002:001be9c0 ?Scr_SetNoteWorthy@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009ADEC0 f scr.o
+176	VERIFIED	0002:001bea10 ?Scr_SetAnimName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009ADF10 f scr.o
+177	VERIFIED	0002:001bea60 ?Scr_SetByte@BrocSys@@YAXPAVEntity@@HPAH@Z 009ADF60 f scr.o
+178	VERIFIED	0002:001bea80 ?Scr_GetByte@BrocSys@@YAXPAVEntity@@HPAH@Z 009ADF80 f scr.o
+179	VERIFIED	0002:001beaa0 ?Scr_SetWord@BrocSys@@YAXPAVEntity@@HPAH@Z 009ADFA0 f scr.o
+180	VERIFIED	0002:001beac0 ?Scr_GetWord@BrocSys@@YAXPAVEntity@@HPAH@Z 009ADFC0 f scr.o
+181	VERIFIED	0002:001beae0 ?GetNodeInProximity@BrocSys@@YAHABUvector@Broc@@M_NI@Z 009ADFE0 f scr.o
+182	VERIFIED	0002:001beaf0 ?GetNode@BrocSys@@YAHABVstring@Broc@@0PAHH@Z 009ADFF0 f scr.o
+183	VERIFIED	0002:001beb90 ?GetVehicleNode@BrocSys@@YAHABVstring@Broc@@0PAHH@Z 009AE090 f scr.o
+184	VERIFIED	0002:001bec40 ?GetNumVehicles@BrocSys@@YAIXZ 009AE140 f scr.o
+185	VERIFIED	0002:001bec70 ?EffectEventPlayQueued@BrocSys@@YAXI@Z 009AE170 f scr.o
+186	VERIFIED	0002:001bec80 ?EffectEventIsStillPlaying@BrocSys@@YA_NI@Z 009AE180 f scr.o
+187	VERIFIED	0002:001bec90 ?EffectEventStop@BrocSys@@YAXI@Z 009AE190 f scr.o
+188	VERIFIED	0002:001beca0 ?EffectEventFastForward@BrocSys@@YAXIM@Z 009AE1A0 f scr.o
+189	VERIFIED	0002:001becb0 ?SceneEffectEnable@BrocSys@@YAXI@Z 009AE1B0 f scr.o
+190	VERIFIED	0002:001becd0 ?SceneEffectDisable@BrocSys@@YAXI@Z 009AE1D0 f scr.o
+191	VERIFIED	0002:001becf0 ?RegisterAnimNotifyFunc@BrocSys@@YAXPBDP6AXVentity@Broc@@@Z@Z 009AE1F0 f scr.o
+192	VERIFIED	0002:001bed00 ?BROC_AttachCurveEntity@BrocSys@@YA_NIAAVstring@Broc@@@Z 009AE200 f scr.o
+193	VERIFIED	0002:001bed40 ?BROC_AddCurveKeyEvaluator@BrocSys@@YA_NIP6AMIIIMMI@Z@Z 009AE240 f scr.o
+194	VERIFIED	0002:001bed60 ?BROC_AddCurveConditionEvaluator@BrocSys@@YA_NIP6AMIIIMMI@Z@Z 009AE260 f scr.o
+195	VERIFIED	0002:001bed80 ?DialogPlayAllowOverlapping@BrocSys@@YAX_N@Z 009AE280 f scr.o
+196	VERIFIED	0002:001bed90 ?CheckWave@BrocSys@@YAHABVstring@Broc@@@Z 009AE290 f scr.o
+197	VERIFIED	0002:001bedc0 ?IsPathNodeDefined@BrocSys@@YAHI@Z 009AE2C0 f scr.o
+198	VERIFIED	0002:001bede0 ?IsVehicleNodeDefined@BrocSys@@YAHI@Z 009AE2E0 f scr.o
+199	VERIFIED	0002:001bedf0 ?AnimScripted2@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I_NMM@Z 009AE2F0 f scr.o
+200	VERIFIED	0002:001bee00 ?AnimScripted1@BrocSys@@YAXIIABUvector@Broc@@0I@Z 009AE300 f scr.o
+201	VERIFIED	0002:001beea0 ?StartScriptedAnim@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I@Z 009AE3A0 f scr.o
+202	VERIFIED	0002:001beeb0 ?GetAnimFromScriptCVars@BrocSys@@YAHXZ 009AE3B0 f scr.o
+203	VERIFIED	0002:001bef90 ?AddFakeFriendly@BrocSys@@YAXI_N@Z 009AE490 f scr.o
+204	VERIFIED	0002:001befa0 ?RemoveFakeFriendly@BrocSys@@YAXI@Z 009AE4A0 f scr.o
+205	VERIFIED	0002:001befb0 ?IsModelLoaded@BrocSys@@YA_NABVstring@Broc@@W4TPakInfo@@@Z 009AE4B0 f scr.o
+206	VERIFIED	0002:001bf050 ?PlaySubtitle@BrocSys@@YAXABVstring@Broc@@@Z 009AE550 f scr.o
+207	VERIFIED	0002:001bf080 ?AnimHasNotetrack@BrocSys@@YA_NIIABI@Z 009AE580 f scr.o
+208	VERIFIED	0002:001bf0a0 ?IsLocalHost@BrocSys@@YA_NXZ 009AE5A0 f scr.o
+209	VERIFIED	0002:001bf0b0 ?ValidateLightVis@BrocSys@@YAXH@Z 009AE5B0 f scr.o
+210	VERIFIED	0002:001bf110 ?ActorScr_Clamp_0_1@BrocSys@@YAXPAUactor_s@@HPAM@Z 009AE610 f scr.o
+211	VERIFIED	0002:001bf1d0 ?ActorScr_ReadOnly@BrocSys@@YAXPAUactor_s@@HPAX@Z 009AE6D0 f scr.o
+212	VERIFIED	0002:001bf210 ?ActorScr_SetGoalRadius@BrocSys@@YAXPAUactor_s@@HPBM@Z 009AE710 f scr.o
+213	VERIFIED	0002:001bf230 ?ActorScr_SetTime@BrocSys@@YAXPAUactor_s@@HPBH@Z 009AE730 f scr.o
+214	VERIFIED	0002:001bf260 ?ActorScr_GetTime@BrocSys@@YAXPAUactor_s@@HPAH@Z 009AE760 f scr.o
+215	VERIFIED	0002:001bf290 ?ActorScr_SetWeapon@BrocSys@@YAXPAUactor_s@@HPBVstring@Broc@@@Z 009AE790 f scr.o
+216	VERIFIED	0002:001bf2c0 ?ActorScr_GetWeapon@BrocSys@@YAXPAUactor_s@@HPAVstring@Broc@@@Z 009AE7C0 f scr.o
+217	VERIFIED	0002:001bf2f0 ?ActorScr_GetGroundType@BrocSys@@YAXPAUactor_s@@HPAVstring@Broc@@@Z 009AE7F0 f scr.o
+218	VERIFIED	0002:001bf320 ?ActorScr_SetAnimPos@BrocSys@@YAXPAUactor_s@@HPBI@Z 009AE820 f scr.o
+219	VERIFIED	0002:001bf3b0 ?ActorScr_GetFavoriteEnemy@BrocSys@@YAXPAUactor_s@@HPAVentity@Broc@@@Z 009AE8B0 f scr.o
+220	VERIFIED	0002:001bf420 ?PathNode_SetAngles@BrocSys@@YAXPAUPathNode@PathNodes@@HPAUvector@Broc@@@Z 009AE920 f scr.o
+221	VERIFIED	0002:001bf440 ?PathNode_GetAngles@BrocSys@@YAXPAUPathNode@PathNodes@@HPAUvector@Broc@@@Z 009AE940 f scr.o
+222	VERIFIED	0002:001bf470 ?PathNode_SetType@BrocSys@@YAXPAUPathNode@PathNodes@@HPAVstring@Broc@@@Z 009AE970 f scr.o
+223	VERIFIED	0002:001bf4c0 ?PathNode_GetType@BrocSys@@YAXPAUPathNode@PathNodes@@HPAVstring@Broc@@@Z 009AE9C0 f scr.o
+224	VERIFIED	0002:001bf4e0 ?SentientScr_ReadOnly@BrocSys@@YAXPAUsentient_s@@HPAX@Z 009AE9E0 f scr.o
+225	VERIFIED	0002:001bf520 ?SentientScr_ConvertNode@BrocSys@@YAXPAUsentient_s@@HPAVpathnode@Broc@@@Z 009AEA20 f scr.o
+226	VERIFIED	0002:001bf560 ?SentientScr_ConvertSentient@BrocSys@@YAXPAUsentient_s@@HPAVentity@Broc@@@Z 009AEA60 f scr.o
+227	VERIFIED	0002:001bf580 ?SentientScr_ConvertSentientEnemy@BrocSys@@YAXPAUsentient_s@@HPAVentity@Broc@@@Z 009AEA80 f scr.o
+228	VERIFIED	0002:001bf5b0 ?SentientScr_GetTeam@BrocSys@@YAXPAUsentient_s@@HPAVstring@Broc@@@Z 009AEAB0 f scr.o
+229	VERIFIED	0002:001bf650 ?SentientScr_SetGoalRadius@BrocSys@@YAXPAUsentient_s@@HPAM@Z 009AEB50 f scr.o
+230	VERIFIED	0002:001bf680 ?SentientScr_SetGoalAngleTolerance@BrocSys@@YAXPAUsentient_s@@HPAM@Z 009AEB80 f scr.o
+231	VERIFIED	0002:001bf6a0 ?GetJoyPos@BrocSys@@YAXHAAM0@Z 009AEBA0 f scr.o
+232	VERIFIED	0002:001bf730 ?SaveCheckpoint@BrocSys@@YAXXZ 009AEC30 f scr.o
+233	VERIFIED	0002:001bf740 ?RestoreLastCheckpoint@BrocSys@@YAXXZ 009AEC40 f scr.o
+234	VERIFIED	0002:001bf750 ?GetSplineData@BrocSys@@YAXPBDAAPAUvector@Broc@@AAPAI2@Z 009AEC50 f scr.o
+235	VERIFIED	0002:001bf7f0 ?DronesStart@BrocSys@@YAXPBD0HHHMM_N1@Z 009AECF0 f scr.o
+236	VERIFIED	0002:001bf800 ?DronesStop@BrocSys@@YAXPBD@Z 009AED00 f scr.o
+237	VERIFIED	0002:001bf810 ?DronesDelete@BrocSys@@YAXPBD@Z 009AED10 f scr.o
+238	VERIFIED	0002:001bf820 ?ObjectiveHideStar@BrocSys@@YAXII@Z 009AED20 f scr.o
+239	VERIFIED	0002:001bf840 ?ObjectiveHideUpdatedText@BrocSys@@YAXII@Z 009AED40 f scr.o
+240	VERIFIED	0002:001bf860 ?SetWeaponCameraShakeScale@BrocSys@@YAXMH@Z 009AED60 f scr.o
+241	VERIFIED	0002:001bf890 ?SetHUDType@BrocSys@@YAXW4hud_type@@H@Z 009AED90 f scr.o
+242	VERIFIED	0002:001bf8b0 ?SetTutorialText@BrocSys@@YAXHH@Z 009AEDB0 f scr.o
+243	VERIFIED	0002:001bf920 ?SetTutorialTextAllPlayers@BrocSys@@YAXH@Z 009AEE20 f scr.o
+244	VERIFIED	0002:001bf940 ?SetActionHint@BrocSys@@YAXHH@Z 009AEE40 f scr.o
+245	VERIFIED	0002:001bf9b0 ?OverrideTriggerLookAtRadius@BrocSys@@YAXM@Z 009AEEB0 f scr.o
+246	VERIFIED	0002:001bf9d0 ?SaveCheckpoint@BrocSys@@YAXPBD@Z 009AEED0 f scr.o
+247	VERIFIED	0002:001bf9f0 ?SetGameUnsignedVar@BrocSys@@YAXII@Z 009AEEF0 f scr.o
+248	VERIFIED	0002:001bfa10 ?SetGameFloatVar@BrocSys@@YAXIM@Z 009AEF10 f scr.o
+249	VERIFIED	0002:001bfa30 ?SetGameVectorVar@BrocSys@@YAXIABUvector@Broc@@@Z 009AEF30 f scr.o
+250	VERIFIED	0002:001bfa70 ?GetGameUnsignedVar@BrocSys@@YAII@Z 009AEF70 f scr.o
+251	VERIFIED	0002:001bfaa0 ?GetGameFloatVar@BrocSys@@YAMI@Z 009AEFA0 f scr.o
+252	VERIFIED	0002:001bfad0 ?GetGameVectorVar@BrocSys@@YA?AUvector@Broc@@I@Z 009AEFD0 f scr.o
+253	VERIFIED	0002:001bfb20 ?SetDroneScriptControl@BrocSys@@YAXI_N@Z 009AF020 f scr.o
+254	VERIFIED	0002:001bfb30 ?GetDrones@BrocSys@@YAIABUvector@Broc@@MPAII@Z 009AF030 f scr.o
+255	VERIFIED	0002:001bfb40 ?SetShadowIntensity@BrocSys@@YAXM@Z 009AF040 f scr.o
+256	VERIFIED	0002:001bfb60 ?SetShadowRadius@BrocSys@@YAXM@Z 009AF060 f scr.o
+257	VERIFIED	0002:001bfb80 ?EnableAsserts@BrocSys@@YAXXZ 009AF080 f scr.o
+258	VERIFIED	0002:001bfb90 ?NoClip@BrocSys@@YAXH@Z 009AF090 f scr.o
+259	VERIFIED	0002:001bfbe0 ?SetZFog@BrocSys@@YAXMMM@Z 009AF0E0 f scr.o
+260	VERIFIED	0002:001bfbf0 ?Mover_SetupMove@BrocSys@@YAXPAUtrajectory_t@@ABVPosition3@math@@MMMAAV34@PAM33222@Z 009AF0F0 f scr.o
+261	VERIFIED	0002:001c02c0 ?Mover_SetupMoveSpeed@BrocSys@@YAXPAUtrajectory_t@@ABVPosition3@math@@MMMAAV34@PAM33222@Z 009AF7C0 f scr.o
+262	VERIFIED	0002:001c08b0 ?Mover_Move@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z 009AFDB0 f scr.o
+263	VERIFIED	0002:001c0910 ?Mover_GravityMove@BrocSys@@YAXPAVEntity@@QBMMM@Z 009AFE10 f scr.o
+264	VERIFIED	0002:001c0a30 ?Mover_Rotate@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z 009AFF30 f scr.o
+265	VERIFIED	0002:001c0a90 ?Mover_RotateSpeed@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z 009AFF90 f scr.o
+266	VERIFIED	0002:001c0af0 ?ToggleNano@BrocSys@@YAX_N@Z 009AFFF0 f scr.o
+267	VERIFIED	0002:001c0b00 ?IsValidClientType@BrocSys@@YA_NPAVEntity@@@Z 009B0000 f scr.o
+268	VERIFIED	0002:001c0b60 ?MPScript_RequestRespawn@BrocSys@@YAXI@Z 009B0060 f scr.o
+269	VERIFIED	0002:001c0b80 ?MPScript_ClearPlayerStats@BrocSys@@YAXXZ 009B0080 f scr.o
+270	VERIFIED	0002:001c0c30 ?MPScript_ClearTeamScores@BrocSys@@YAXXZ 009B0130 f scr.o
+271	VERIFIED	0002:001c0c40 ?MPScript_IncTeamScore@BrocSys@@YAXABVstring@Broc@@H@Z 009B0140 f scr.o
+272	VERIFIED	0002:001c0cd0 ?MPScript_GetTeamScore@BrocSys@@YAHABVstring@Broc@@@Z 009B01D0 f scr.o
+273	VERIFIED	0002:001c0d50 ?MPScript_SendGameScore@BrocSys@@YAXHH@Z 009B0250 f scr.o
+274	VERIFIED	0002:001c0d70 ?MPScript_HostDropItem1@BrocSys@@YAXHHABUvector@Broc@@0@Z 009B0270 f scr.o
+275	VERIFIED	0002:001c0e40 ?MPScript_HostDropItem2@BrocSys@@YAXHHABUvector@Broc@@00@Z 009B0340 f scr.o
+276	VERIFIED	0002:001c0f30 ?MPScript_DropItem1@BrocSys@@YAXHHABUvector@Broc@@0@Z 009B0430 f scr.o
+277	VERIFIED	0002:001c0fe0 ?MPScript_DropItem2@BrocSys@@YAXHHABUvector@Broc@@00@Z 009B04E0 f scr.o
+278	VERIFIED	0002:001c10c0 ?MPScript_AreaCaptured@BrocSys@@YAXHII@Z 009B05C0 f scr.o
+279	VERIFIED	0002:001c10e0 ?MPScript_EnterGame@BrocSys@@YAXXZ 009B05E0 f scr.o
+280	VERIFIED	0002:001c10f0 ?MPScript_ControllerErrorMessageUp@BrocSys@@YA_NXZ 009B05F0 f scr.o
+281	VERIFIED	0002:001c1110 ?MPScript_ForceControllerErrorMessageDown@BrocSys@@YAXXZ 009B0610 f scr.o
+282	VERIFIED	0002:001c1120 ?MPScript_GetWeaponName@BrocSys@@YAXIAAVstring@Broc@@@Z 009B0620 f scr.o
+283	VERIFIED	0002:001c1160 ?MPScript_PositionWouldTelefrag@BrocSys@@YA_NABUvector@Broc@@@Z 009B0660 f scr.o
+284	VERIFIED	0002:001c11c0 ?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z 009B06C0 f scr.o
+285	VERIFIED	0002:001c11d0 ?MPScript_SpawnButtonPressed@BrocSys@@YAHI@Z 009B06D0 f scr.o
+286	VERIFIED	0002:001c1220 ?MPScript_DebugRenderText@BrocSys@@YAXPBDHH@Z 009B0720 f scr.o
+287	VERIFIED	0002:001c1270 ?MPScript_DebugRenderBox@BrocSys@@YAXABUvector@Broc@@00M@Z 009B0770 f scr.o
+288	VERIFIED	0002:001c1330 ?MPScript_DebugRenderSphere@BrocSys@@YAXABUvector@Broc@@M0M@Z 009B0830 f scr.o
+289	VERIFIED	0002:001c13c0 ?TakeWeapon@BrocSys@@YAXPAVEntity@@PBD@Z 009B08C0 f scr.o
+290	VERIFIED	0002:001c1430 ?IsMenuOpen@BrocSys@@YAHABVstring@Broc@@H@Z 009B0930 f scr.o
+291	VERIFIED	0002:001c14c0 ?OpenMenu@BrocSys@@YAHABVstring@Broc@@H@Z 009B09C0 f scr.o
+292	VERIFIED	0002:001c15f0 ?OpenMenuNoMouse@BrocSys@@YAHIABVstring@Broc@@@Z 009B0AF0 f scr.o
+293	VERIFIED	0002:001c1640 ?CloseMenu2@BrocSys@@YAXABVstring@Broc@@H@Z 009B0B40 f scr.o
+294	VERIFIED	0002:001c1730 ?CloseAllMenus@BrocSys@@YAXH@Z 009B0C30 f scr.o
+295	VERIFIED	0002:001c1750 ?SetSpectateState@BrocSys@@YAXHH@Z 009B0C50 f scr.o
+296	VERIFIED	0002:001c1780 ?SetSpectateSeconds@BrocSys@@YAXHH@Z 009B0C80 f scr.o
+297	VERIFIED	0002:001c17b0 ?SetSpectateMedic@BrocSys@@YAXHH@Z 009B0CB0 f scr.o
+298	VERIFIED	0002:001c17e0 ?DebugOut@BrocSys@@YAXPBD@Z 009B0CE0 f scr.o
+299	VERIFIED	0002:001c17f0 ?FreezeMovement@BrocSys@@YAX_N@Z 009B0CF0 f scr.o
+300	VERIFIED	0002:001c1800 ?ToggleClip@BrocSys@@YAXXZ 009B0D00 f scr.o
+301	VERIFIED	0002:001c1880 ?ObjectiveUpdatedNotify@@YAXXZ 009B0D80 f scr.o
+302	VERIFIED	0002:001c18c0 ?ObjectiveCompletedNotify@@YAXXZ 009B0DC0 f scr.o
+303	VERIFIED	0002:001c1900 ?ObjectiveFailedNotify@@YAXXZ 009B0E00 f scr.o
+304	VERIFIED	0002:001c1940 ?PrintObjectiveUpdate@BrocSys@@YA_NAAVstring@Broc@@HPBD@Z 009B0E40 f scr.o
+305	VERIFIED	0002:001c1950 ?ObjectiveStateIndexFromString@BrocSys@@YA_NPAHAAVstring@Broc@@@Z 009B0E50 f scr.o
+306	VERIFIED	0002:001c1980 ?FindUnusedChildObjective@BrocSys@@YAHXZ 009B0E80 f scr.o
+307	VERIFIED	0002:001c19d0 ?DeleteAllChildrenOfObjective@BrocSys@@YAXH@Z 009B0ED0 f scr.o
+308	VERIFIED	0002:001c1a40 ?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z 009B0F40 f scr.o
+309	VERIFIED	0002:001c1a50 ?SetAnimCheck@@YAXH@Z 009B0F50 f scr.o
+310	VERIFIED	0002:001c1a60 ?Scr_EmitAnimation@@YAXPADGI@Z 009B0F60 f scr.o
+311	VERIFIED	0002:001c1ab0 ?Scr_IsSystemActive@@YAHE@Z 009B0FB0 f scr.o
+312	VERIFIED	0002:001c1ac0 ?Scr_Error@@YAXPBD@Z 009B0FC0 f scr.o
+313	VERIFIED	0002:001c1b10 ?Scr_ParamError@@YAXIPBD@Z 009B1010 f scr.o
+314	VERIFIED	0002:001c1b60 ?VM_Init@@YAXXZ 009B1060 f scr.o
+315	VERIFIED	0002:001c1b80 ?VM_DllSyscall@@YAHHZZ 009B1080 f scr.o
+316	VERIFIED	0002:001c1be0 ?VM_Create@@YAPAUvm_s@@PBDP6AHPAH@Z@Z 009B10E0 f scr.o
+317	VERIFIED	0002:001c1d30 ?VM_Free@@YAXPAUvm_s@@@Z 009B1230 f scr.o
+318	VERIFIED	0002:001c1db0 ?VM_Clear@@YAXXZ 009B12B0 f scr.o
+319	VERIFIED	0002:001c1de0 ?VM_Call@@YAHPAUvm_s@@HZZ 009B12E0 f scr.o
+320	VERIFIED	0002:001c1f00 ?SetKillFlag@AeThread@@QAEXXZ 009B1400 f scr.o
+321	VERIFIED	0002:001c1f10 ?Kill@AeThread@@QAEXXZ 009B1410 f scr.o
+322	VERIFIED	0002:001c1f30 ?UnloadScript@AeThreadManager@@QAEXPAX@Z 009B1430 f scr.o
+323	VERIFIED	0002:001c1f40 ??0AeThreadEntityNotifyTimeoutState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IMW4EAction@AeThreadState@@@Z 009B1440 f scr.o
+324	VERIFIED	0002:001c1f80 ??0AeThreadPakNotifyState@@QAE@PBUPakInfoNode@@W4ePakState@0@@Z 009B1480 f scr.o
+325	VERIFIED	0002:001c1fb0 ??0AeThreadWaitState@@QAE@M@Z 009B14B0 f scr.o
+326	VERIFIED	0002:001c1fe0 ?GetCondText@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B14E0 f scr.o
+327	VERIFIED	0002:001c2030 ??0AeThreadWaitFramesState@@QAE@H@Z 009B1530 f scr.o
+328	VERIFIED	0002:001c2060 ?GetCondText@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B1560 f scr.o
+329	VERIFIED	0002:001c20a0 ?GetWeaponIndex@BrocSys@@YAHABVstring@Broc@@@Z 009B15A0 f scr.o
+330	VERIFIED	0002:001c20d0 ?SetupLevelSpecificVariables@BrocSys@@YAXXZ 009B15D0 f scr.o
+331	VERIFIED	0002:001c2190 ?MakeGameMessage@BrocSys@@YAXPBD0@Z 009B1690 f scr.o
+332	VERIFIED	0002:001c21c0 ?IPrintLn@BrocSys@@YAXPBD@Z 009B16C0 f scr.o
+333	VERIFIED	0002:001c2210 ?IPrintLnBold@BrocSys@@YAXPBD@Z 009B1710 f scr.o
+334	VERIFIED	0002:001c2260 ?RegisterAnimation@BrocSys@@YAXPAVAnimBroRef@@@Z 009B1760 f scr.o
+335	VERIFIED	0002:001c2280 ?Print3D@BrocSys@@YAXABUvector@Broc@@ABVstring@3@0MM@Z 009B1780 f scr.o
+336	VERIFIED	0002:001c22e0 ?ThreadDebugNotice@BrocSys@@YAXPBD@Z 009B17E0 f scr.o
+337	VERIFIED	0002:001c2340 ?Spawn@BrocSys@@YAIABVstring@Broc@@ABUvector@3@W4TPakInfo@@@Z 009B1840 f scr.o
+338	VERIFIED	0002:001c2590 ?SpawnWithFlag@BrocSys@@YAIABVstring@Broc@@ABUvector@3@HW4TPakInfo@@@Z 009B1A90 f scr.o
+339	VERIFIED	0002:001c27f0 ?SpawnWithFlagAndSize@BrocSys@@YAIABVstring@Broc@@ABUvector@3@AAU43@2HW4TPakInfo@@@Z 009B1CF0 f scr.o
+340	VERIFIED	0002:001c2bf0 ?SpawnTriggerMount@BrocSys@@YAIAAUvector@Broc@@0_NW4TPakInfo@@@Z 009B20F0 f scr.o
+341	VERIFIED	0002:001c2e00 ?SpawnTurret@BrocSys@@YAIABVstring@Broc@@ABUvector@3@0W4TPakInfo@@@Z 009B2300 f scr.o
+342	VERIFIED	0002:001c3030 ?SpawnTurretWithAngles@BrocSys@@YAIABVstring@Broc@@ABUvector@3@01W4TPakInfo@@@Z 009B2530 f scr.o
+343	VERIFIED	0002:001c3340 ?MusicPlay@BrocSys@@YAXABVstring@Broc@@@Z 009B2840 f scr.o
+344	VERIFIED	0002:001c3370 ?MusicIndoorPlay@BrocSys@@YAXABVstring@Broc@@M@Z 009B2870 f scr.o
+345	VERIFIED	0002:001c33b0 ?SoundPlay@BrocSys@@YAIABVstring@Broc@@M@Z 009B28B0 f scr.o
+346	VERIFIED	0002:001c3460 ?SoundStop@BrocSys@@YAXI@Z 009B2960 f scr.o
+347	VERIFIED	0002:001c3480 ?SoundBusVolIsName@BrocSys@@YA_NABVstring@Broc@@@Z 009B2980 f scr.o
+348	VERIFIED	0002:001c34b0 ?SoundBusPitchAddBus@BrocSys@@YAXABVstring@Broc@@@Z 009B29B0 f scr.o
+349	VERIFIED	0002:001c34e0 ?SoundBusVolAddBus@BrocSys@@YAXABVstring@Broc@@@Z 009B29E0 f scr.o
+350	VERIFIED	0002:001c3510 ?SoundBusPitchRemoveBus@BrocSys@@YAXABVstring@Broc@@@Z 009B2A10 f scr.o
+351	VERIFIED	0002:001c3540 ?SoundBusVolRemoveBus@BrocSys@@YAXABVstring@Broc@@@Z 009B2A40 f scr.o
+352	VERIFIED	0002:001c3570 ?SoundBusVolFade@BrocSys@@YAXABVstring@Broc@@MM@Z 009B2A70 f scr.o
+353	VERIFIED	0002:001c35a0 ?SoundBusPitchFade@BrocSys@@YAXABVstring@Broc@@MM@Z 009B2AA0 f scr.o
+354	VERIFIED	0002:001c35d0 ?ReverbSetParams@BrocSys@@YAXABVstring@Broc@@_N@Z 009B2AD0 f scr.o
+355	VERIFIED	0002:001c3610 ?LoadWbk@BrocSys@@YAXABVstring@Broc@@@Z 009B2B10 f scr.o
+356	VERIFIED	0002:001c3650 ?FreeWbk@BrocSys@@YAXABVstring@Broc@@@Z 009B2B50 f scr.o
+357	VERIFIED	0002:001c3690 ?GetTeamFlags@BrocSys@@YAHABVstring@Broc@@0@Z 009B2B90 f scr.o
+358	VERIFIED	0002:001c3750 ?GetWeaponClassName@BrocSys@@YA?AVstring@Broc@@I@Z 009B2C50 f scr.o
+359	VERIFIED	0002:001c3810 ?GetWeaponClassNameStr@BrocSys@@YA?AVstring@Broc@@I@Z 009B2D10 f scr.o
+360	VERIFIED	0002:001c38d0 ?GetStartOrigin@BrocSys@@YAXAAUvector@Broc@@ABU23@1I@Z 009B2DD0 f scr.o
+361	VERIFIED	0002:001c3a40 ?GetStartAngles@BrocSys@@YAXAAUvector@Broc@@ABU23@1I@Z 009B2F40 f scr.o
+362	VERIFIED	0002:001c3b60 ?GetCycleOriginOffset@BrocSys@@YAXAAUvector@Broc@@ABU23@I@Z 009B3060 f scr.o
+363	VERIFIED	0002:001c3c70 ?GetMoveDelta@BrocSys@@YAXAAUvector@Broc@@IMM@Z 009B3170 f scr.o
+364	VERIFIED	0002:001c3dd0 ?GetAngleDelta@BrocSys@@YAMIMM@Z 009B32D0 f scr.o
+365	VERIFIED	0002:001c3eb0 ?MissionFailed@BrocSys@@YAXABVstring@Broc@@@Z 009B33B0 f scr.o
+366	VERIFIED	0002:001c3f40 ?Cinematic1@BrocSys@@YAXABVstring@Broc@@M@Z 009B3440 f scr.o
+367	VERIFIED	0002:001c3ff0 ?Cinematic2@BrocSys@@YAXABVstring@Broc@@@Z 009B34F0 f scr.o
+368	VERIFIED	0002:001c4040 ?Earthquake@BrocSys@@YAXMMABUvector@Broc@@MH@Z 009B3540 f scr.o
+369	VERIFIED	0002:001c40f0 ?BulletTracer@BrocSys@@YAXABUvector@Broc@@0@Z 009B35F0 f scr.o
+370	VERIFIED	0002:001c4230 ?MagicBullet@BrocSys@@YAXABVstring@Broc@@ABUvector@3@1@Z 009B3730 f scr.o
+371	VERIFIED	0002:001c44d0 ?WeaponFireTime@BrocSys@@YAMABVstring@Broc@@@Z 009B39D0 f scr.o
+372	VERIFIED	0002:001c4520 ?WeaponClipSize@BrocSys@@YAHABVstring@Broc@@@Z 009B3A20 f scr.o
+373	VERIFIED	0002:001c4560 ?WeaponIsSemiAuto@BrocSys@@YAHABVstring@Broc@@@Z 009B3A60 f scr.o
+374	VERIFIED	0002:001c45a0 ?WeaponIsBoltAction@BrocSys@@YAHABVstring@Broc@@@Z 009B3AA0 f scr.o
+375	VERIFIED	0002:001c45e0 ?WeaponType@BrocSys@@YAXAAVstring@Broc@@ABV23@@Z 009B3AE0 f scr.o
+376	VERIFIED	0002:001c4640 ?BadPlaceDelete@BrocSys@@YAXABVstring@Broc@@@Z 009B3B40 f scr.o
+377	VERIFIED	0002:001c46b0 ?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM0@Z 009B3BB0 f scr.o
+378	VERIFIED	0002:001c47a0 ?BadPlaceArcs@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM1MM0@Z 009B3CA0 f scr.o
+379	VERIFIED	0002:001c4970 ?GetHudElemAllocIndex@BrocSys@@YAHXZ 009B3E70 f scr.o
+380	VERIFIED	0002:001c49b0 ?NewHudElem@BrocSys@@YA?AVhudelem@Broc@@H@Z 009B3EB0 f scr.o
+381	VERIFIED	0002:001c4a80 ?GetPak@BrocSys@@YA?AW4TPakInfo@@ABVstring@Broc@@@Z 009B3F80 f scr.o
+382	VERIFIED	0002:001c4b10 ?HudSetTimerInternal@BrocSys@@YAXHW4he_type_t@@PBDM@Z 009B4010 f scr.o
+383	VERIFIED	0002:001c4c50 ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z 009B4150 f scr.o
+384	VERIFIED	0002:001c4ee0 ?SetText@BrocSys@@YAXABVhudelem@Broc@@ABVstring@3@@Z 009B43E0 f scr.o
+385	VERIFIED	0002:001c5060 ?SetShader@BrocSys@@YAXABVhudelem@Broc@@ABVstring@3@HH@Z 009B4560 f scr.o
+386	VERIFIED	0002:001c5180 ?SetTimer@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B4680 f scr.o
+387	VERIFIED	0002:001c51a0 ?SetTimerUp@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B46A0 f scr.o
+388	VERIFIED	0002:001c5260 ?SetTenthsTimer@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B4760 f scr.o
+389	VERIFIED	0002:001c5280 ?SetTenthsTimerUp@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B4780 f scr.o
+390	VERIFIED	0002:001c5360 ?SetClock@BrocSys@@YAXABVhudelem@Broc@@MMABVstring@3@HH@Z 009B4860 f scr.o
+391	VERIFIED	0002:001c53a0 ?SetClockUp@BrocSys@@YAXABVhudelem@Broc@@MMABVstring@3@HH@Z 009B48A0 f scr.o
+392	VERIFIED	0002:001c53e0 ?FadeOverTime@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B48E0 f scr.o
+393	VERIFIED	0002:001c5510 ?ScaleOverTime@BrocSys@@YAXABVhudelem@Broc@@MHH@Z 009B4A10 f scr.o
+394	VERIFIED	0002:001c5650 ?MoveOverTime@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B4B50 f scr.o
+395	VERIFIED	0002:001c5780 ?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z 009B4C80 f scr.o
+396	VERIFIED	0002:001c5790 ?BrocInitEntity@@YAXPAVEntity@@ABV?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@@Z 009B4C90 f scr.o
+397	VERIFIED	0002:001c57e0 ?Scr_SetOrigin@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z 009B4CE0 f scr.o
+398	VERIFIED	0002:001c5990 ?Scr_SetHealth@BrocSys@@YAXPAVEntity@@HPAH@Z 009B4E90 f scr.o
+399	VERIFIED	0002:001c5a70 ?CreateAnimNotifyTask@BrocSys@@YAXABVentity@Broc@@II@Z 009B4F70 f scr.o
+400	VERIFIED	0002:001c5ae0 ?GetNodeClaimer@BrocSys@@YAHABVpathnode@Broc@@@Z 009B4FE0 f scr.o
+401	VERIFIED	0002:001c5b60 ?SentientScr_SetTeam@BrocSys@@YAXPAUsentient_s@@HPAVstring@Broc@@@Z 009B5060 f scr.o
+402	VERIFIED	0002:001c5bb0 ?SetExploderState@BrocSys@@YAXHH@Z 009B50B0 f scr.o
+403	VERIFIED	0002:001c5be0 ?IsExploded@BrocSys@@YAHH@Z 009B50E0 f scr.o
+404	VERIFIED	0002:001c5c00 ?SetWalkRunLoopAnimNode@BrocSys@@YAXII@Z 009B5100 f scr.o
+405	VERIFIED	0002:001c5c20 ?IsValidMoverType@BrocSys@@YA_NPAVEntity@@@Z 009B5120 f scr.o
+406	VERIFIED	0002:001c5c60 ?GiveWeapon@BrocSys@@YAXPAVEntity@@PBD@Z 009B5160 f scr.o
+407	VERIFIED	0002:001c5cf0 ?CloseMenu1@BrocSys@@YAXI@Z 009B51F0 f scr.o
+408	VERIFIED	0002:001c5d10 ?SetReverb@BrocSys@@YAXIABVstring@Broc@@MM@Z 009B5210 f scr.o
+409	VERIFIED	0002:001c5d50 ?PlayLocalSound@BrocSys@@YAXIABVstring@Broc@@@Z 009B5250 f scr.o
+410	VERIFIED	0002:001c5e10 ?ObjectiveAdd3@BrocSys@@YAXHABVstring@Broc@@0PBDHHH@Z 009B5310 f scr.o
+411	VERIFIED	0002:001c5f50 ?FindChildObjective@BrocSys@@YA?BHHH_N@Z 009B5450 f scr.o
+412	VERIFIED	0002:001c60b0 ?ObjectiveChildDelete@BrocSys@@YAXHH@Z 009B55B0 f scr.o
+413	VERIFIED	0002:001c6150 ?ObjectiveDeleteChildren@BrocSys@@YAXH@Z 009B5650 f scr.o
+414	VERIFIED	0002:001c61d0 ?ObjectiveDelete@BrocSys@@YAXHH@Z 009B56D0 f scr.o
+415	VERIFIED	0002:001c62c0 ?ObjectiveChildState@BrocSys@@YAXHHABVstring@Broc@@PBD@Z 009B57C0 f scr.o
+416	VERIFIED	0002:001c6460 ?ObjectiveState@BrocSys@@YAXHABVstring@Broc@@PBDH@Z 009B5960 f scr.o
+417	VERIFIED	0002:001c6620 ?ObjectiveStringInternal@BrocSys@@YAXHABVstring@Broc@@H_N1PBD@Z 009B5B20 f scr.o
+418	VERIFIED	0002:001c6890 ?ObjectiveString@BrocSys@@YAXHABVstring@Broc@@HPBD@Z 009B5D90 f scr.o
+419	VERIFIED	0002:001c68c0 ?ObjectiveString2@BrocSys@@YAXHHHPBD@Z 009B5DC0 f scr.o
+420	VERIFIED	0002:001c6930 ?ObjectiveString_NoMessage@BrocSys@@YAXHABVstring@Broc@@HPBD@Z 009B5E30 f scr.o
+421	VERIFIED	0002:001c6960 ?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z 009B5E60 f scr.o
+422	VERIFIED	0002:001c6a80 ?ObjectiveWorldState@BrocSys@@YAXHABVstring@Broc@@H@Z 009B5F80 f scr.o
+423	VERIFIED	0002:001c6c90 ?ObjectiveChildCurrent@BrocSys@@YAXHHPBD@Z 009B6190 f scr.o
+424	VERIFIED	0002:001c6de0 ?ObjectiveCurrent@BrocSys@@YAXHPBD@Z 009B62E0 f scr.o
+425	VERIFIED	0002:001c6f90 ?ObjectiveRing@BrocSys@@YAXHH@Z 009B6490 f scr.o
+426	VERIFIED	0002:001c7060 ?ObjectiveChildString@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z 009B6560 f scr.o
+427	VERIFIED	0002:001c70e0 ?ObjectiveChildString2@BrocSys@@YAXHHHHPBD@Z 009B65E0 f scr.o
+428	VERIFIED	0002:001c73d0 ?ObjectiveChildString_NoMessage@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z 009B68D0 f scr.o
+429	VERIFIED	0002:001c7450 ?ObjectiveChildPosition@BrocSys@@YAXHHABUvector@Broc@@@Z 009B6950 f scr.o
+430	VERIFIED	0002:001c7520 ?ObjectiveChildRing@BrocSys@@YAXHH@Z 009B6A20 f scr.o
+431	VERIFIED	0002:001c7610 ?Scr_GetAnimsIndex@@YAHPAVAnimTree@@@Z 009B6B10 f scr.o
+432	VERIFIED	0002:001c76a0 ?Scr_GetAnims@@YAPAVAnimTree@@H@Z 009B6BA0 f scr.o
+433	VERIFIED	0002:001c76c0 ?Scr_GetAnimTreeByName@@YAPAVAnimTree@@PBD@Z 009B6BC0 f scr.o
+434	VERIFIED	0002:001c7730 ?Scr_LoadAnimTreeAtIndex@@YAXHP6APAXH@Z_N@Z 009B6C30 f scr.o
+435	VERIFIED	0002:001c7820 ?Scr_FreeAnimTreeAtIndex@@YAXH@Z 009B6D20 f scr.o
+436	VERIFIED	0002:001c78c0 ?Scr_PrecacheAnimTrees@@YAXP6APAXH@Z_N@Z 009B6DC0 f scr.o
+437	VERIFIED	0002:001c7910 ?Scr_FreePrecachedAnimTrees@@YAXXZ 009B6E10 f scr.o
+438	VERIFIED	0002:001c7940 ?VM_Restart@@YAPAUvm_s@@PAU1@@Z 009B6E40 f scr.o
+439	VERIFIED	0002:001c79d0 ??0AeThread@@QAE@PBDH0IPAVAeThreadFunctor@@_N@Z 009B6ED0 f scr.o
+440	VERIFIED	0002:001c7ac0 ?Sleep@AeThread@@QAEXPAVAeThreadState@@@Z 009B6FC0 f scr.o
+441	VERIFIED	0002:001c7b00 ?GetCondText@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7000 f scr.o
+442	VERIFIED	0002:001c7b50 ?GetDebugTxt@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7050 f scr.o
+443	VERIFIED	0002:001c7bb0 ?GetDebugTxt@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70B0 f scr.o
+444	VERIFIED	0002:001c7be0 ?GetDebugTxt@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70E0 f scr.o
+445	VERIFIED	0002:001c7c10 ??0AeThreadEntityNotifyMatchState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IIIIW4EAction@AeThreadState@@_N@Z 009B7110 f scr.o
+446	VERIFIED	0002:001c7d30 ?MemAlloc@BrocSys@@YAPAXII@Z 009B7230 f scr.o
+447	VERIFIED	0002:001c7d90 ?ThreadGetDebugInfo@BrocSys@@YAXAAVstring@Broc@@00@Z 009B7290 f scr.o
+448	VERIFIED	0002:001c7ec0 ?ThreadSleepFrames@BrocSys@@YAXH@Z 009B73C0 f scr.o
+449	VERIFIED	0002:001c7f50 ?ThreadSleepInternal@BrocSys@@YAXM@Z 009B7450 f scr.o
+450	VERIFIED	0002:001c8040 ?GetNumParts@BrocSys@@YAXABVstring@Broc@@@Z 009B7540 f scr.o
+451	VERIFIED	0002:001c8100 ?NotifyPakLoadOperation@BrocSys@@YAXPBD0@Z 009B7600 f scr.o
+452	VERIFIED	0002:001c8180 ?NotifyPakLoaded@BrocSys@@YAXPBD@Z 009B7680 f scr.o
+453	VERIFIED	0002:001c81a0 ?NotifyPakUnloaded@BrocSys@@YAXPBD@Z 009B76A0 f scr.o
+454	VERIFIED	0002:001c81c0 ?mem_alloc@@YAPAXII@Z 009B76C0 f scr.o
+455	VERIFIED	0002:001c81d0 ?GetAnimLength@BrocSys@@YAMII@Z 009B76D0 f scr.o
+456	VERIFIED	0002:001c8230 ?GetAnimFrameCount@BrocSys@@YAHII@Z 009B7730 f scr.o
+457	VERIFIED	0002:001c8290 ?RumbleNotes@BrocSys@@YAXABVstring@Broc@@M0MH@Z 009B7790 f scr.o
+458	VERIFIED	0002:001c84e0 ?Rumble@BrocSys@@YAXMMMMMMMH@Z 009B79E0 f scr.o
+459	VERIFIED	0002:001c8830 ?ObjectiveChildAdd1@BrocSys@@YAXHHABVstring@Broc@@@Z 009B7D30 f scr.o
+460	VERIFIED	0002:001c8950 ?ObjectiveAdd1@BrocSys@@YAXHABVstring@Broc@@PBDHH@Z 009B7E50 f scr.o
+461	VERIFIED	0002:001c89c0 ?ObjectiveChildAdd2@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z 009B7EC0 f scr.o
+462	VERIFIED	0002:001c8b70 ?ObjectiveAdd2@BrocSys@@YAXHABVstring@Broc@@HPBDHH@Z 009B8070 f scr.o
+463	VERIFIED	0002:001c8ca0 ?ObjectiveChildAdd6@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z 009B81A0 f scr.o
+464	VERIFIED	0002:001c8dc0 ?ObjectiveAdd6@BrocSys@@YAXHABVstring@Broc@@HPBDHH@Z 009B82C0 f scr.o
+465	VERIFIED	0002:001c8e30 ?ObjectiveChildAdd3@BrocSys@@YAXHHABVstring@Broc@@0PBD@Z 009B8330 f scr.o
+466	VERIFIED	0002:001c8ee0 ?ProcessState@AeThread@@QAEXXZ 009B83E0 f scr.o
+467	VERIFIED	0002:001c90a0 ?Execute@AeThread@@QAEXM@Z 009B85A0 f scr.o
+468	VERIFIED	0002:001c92b0 ?HasEndCond@AeThread@@QBE_NH@Z 009B87B0 f scr.o
+469	VERIFIED	0002:001c9340 ?SetupAllocator@Block@BackupStack@AeThread@@SAXXZ 009B8840 f scr.o
+470	VERIFIED	0002:001c9400 ?RegisterBrocInst@AeThread@@QAEXPAXPAVBrocDtorBase@@@Z 009B8900 f scr.o
+471	VERIFIED	0002:001c94c0 ?RegisterBrocDtor@AeThread@@QAEXPAX@Z 009B89C0 f scr.o
+472	VERIFIED	0002:001c95f0 ?AddThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009B8AF0 f scr.o
+473	VERIFIED	0002:001c96d0 ?ProcessScriptNotifys@AeThreadManager@@AAEXXZ 009B8BD0 f scr.o
+474	VERIFIED	0002:001c9770 ?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z 009B8C70 f scr.o
+475	VERIFIED	0002:001c97a0 ?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z 009B8CA0 f scr.o
+476	VERIFIED	0002:001c97c0 ?DebugThread@AeThreadManager@@QAEXI@Z 009B8CC0 f scr.o
+477	VERIFIED	0002:001c9850 ?GetThread@EndOnScriptNode@@QAEPAVAeThread@@XZ 009B8D50 f scr.o
+478	VERIFIED	0002:001c9880 ??1AeThreadEntityNotifyState@@UAE@XZ 009B8D80 f scr.o
+479	VERIFIED	0002:001c9920 ?NewAction@AeThreadEntityNotifyState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009B8E20 f scr.o
+480	VERIFIED	0002:001c99a0 ?NewAction@AeThreadEntityNotifyTimeoutState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009B8EA0 f scr.o
+481	VERIFIED	0002:001c9a40 ?NewAction@AeThreadEntityNotifyMatchState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z 009B8F40 f scr.o
+482	VERIFIED	0002:001c9b20 ?SetProjectileSpeed@BrocSys@@YAXIH@Z 009B9020 f scr.o
+483	VERIFIED	0002:001c9bc0 ?SetWeaponPlayerUpOffset@BrocSys@@YAXIM@Z 009B90C0 f scr.o
+484	VERIFIED	0002:001c9c60 ?FollowCycle@BrocSys@@YAHIH@Z 009B9160 f scr.o
+485	VERIFIED	0002:001c9ca0 ?EnableWeapon@BrocSys@@YAXI@Z 009B91A0 f scr.o
+486	VERIFIED	0002:001c9d30 ?DisableWeapon@BrocSys@@YAXI@Z 009B9230 f scr.o
+487	VERIFIED	0002:001c9dc0 ?AssignParameterForNotify@BrocSys@@YA_NIIPAVWaitTilOutput@@@Z 009B92C0 f scr.o
+488	VERIFIED	0002:001c9e20 ?ThreadDebug@BrocSys@@YAXI@Z 009B9320 f scr.o
+489	VERIFIED	0002:001c9e40 ?ThreadIsThreadAlive@BrocSys@@YA_NI@Z 009B9340 f scr.o
+490	VERIFIED	0002:001c9e80 ?ThreadKill@BrocSys@@YAXI@Z 009B9380 f scr.o
+491	VERIFIED	0002:001c9ed0 ?ThreadEntityNotify@BrocSys@@YAXIH@Z 009B93D0 f scr.o
+492	VERIFIED	0002:001c9f90 ?ThreadEntityNotify@BrocSys@@YAXIHI@Z 009B9490 f scr.o
+493	VERIFIED	0002:001ca040 ?ThreadEntityNotify@BrocSys@@YAXIHABVstring@Broc@@@Z 009B9540 f scr.o
+494	VERIFIED	0002:001ca0f0 ?ThreadEntityNotify@BrocSys@@YAXIHH@Z 009B95F0 f scr.o
+495	VERIFIED	0002:001ca1a0 ?ThreadEntityNotify@BrocSys@@YAXIHMI@Z 009B96A0 f scr.o
+496	VERIFIED	0002:001ca260 ?AddEventHandler@BrocSys@@YA_NIII@Z 009B9760 f scr.o
+497	VERIFIED	0002:001ca2b0 ?RemoveEventHandler@BrocSys@@YA_NIII@Z 009B97B0 f scr.o
+498	VERIFIED	0002:001ca300 ?BrocObjCtor@BrocSys@@YAXPAXPAVBrocDtorBase@@@Z 009B9800 f scr.o
+499	VERIFIED	0002:001ca320 ?BrocObjDtor@BrocSys@@YAXPAX@Z 009B9820 f scr.o
+500	VERIFIED	0002:001ca340 ?SpawnVehicle@BrocSys@@YAIABVstring@Broc@@00ABUvector@3@1W4TPakInfo@@@Z 009B9840 f scr.o
+501	VERIFIED	0002:001ca710 ?RadiusDamageFromEnt@BrocSys@@YAXIABUvector@Broc@@MMMH@Z 009B9C10 f scr.o
+502	VERIFIED	0002:001ca7c0 ?GetPakEntity@BrocSys@@YA?AW4TPakInfo@@I@Z 009B9CC0 f scr.o
+503	VERIFIED	0002:001ca8b0 ?Init@BrocSys@@YAXXZ 009B9DB0 f scr.o
+504	VERIFIED	0002:001ca9f0 ?GetEntType@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@AAVstring@Broc@@@Z 009B9EF0 f scr.o
+505	VERIFIED	0002:001caa50 ?GetPlayerIndex@BrocSys@@YAHI@Z 009B9F50 f scr.o
+506	VERIFIED	0002:001caa90 ?GetExtendedEntity@BrocSys@@YAPAXI@Z 009B9F90 f scr.o
+507	VERIFIED	0002:001cab00 ?Scr_SetModel@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z 009BA000 f scr.o
+508	VERIFIED	0002:001cab50 ?GetEntByNum@BrocSys@@YAIH@Z 009BA050 f scr.o
+509	VERIFIED	0002:001caba0 ?DrawTracer@BrocSys@@YAXI@Z 009BA0A0 f scr.o
+510	VERIFIED	0002:001cac20 ?EffectEventWeaponPlay@BrocSys@@YAHII@Z 009BA120 f scr.o
+511	PORTED	0002:001cad10 ?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z 009BA210 f scr.o
+512	VERIFIED	0002:001cae70 ?EffectEventPlayNonEnt@BrocSys@@YAHABVstring@Broc@@ABUvector@3@1_NIH@Z 009BA370 f scr.o
+513	VERIFIED	0002:001cb000 ?EffectEventPlayDir@BrocSys@@YAHIABVstring@Broc@@ABUvector@3@H_N@Z 009BA500 f scr.o
+514	PORTED	0002:001cb140 ?EffectEventQueue@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z 009BA640 f scr.o
+515	VERIFIED	0002:001cb280 ?EffectEventQueueDialog@BrocSys@@YAHIABVstring@Broc@@H_N@Z 009BA780 f scr.o
+516	VERIFIED	0002:001cb390 ?DialogPlay@BrocSys@@YAHIABVstring@Broc@@H_N@Z 009BA890 f scr.o
+517	VERIFIED	0002:001cb5c0 ?EntityExists@BrocSys@@YAHI@Z 009BAAC0 f scr.o
+518	VERIFIED	0002:001cb600 ?EntityIsAlive@BrocSys@@YAHI@Z 009BAB00 f scr.o
+519	VERIFIED	0002:001cb660 ?EntityIsWounded@BrocSys@@YAHI@Z 009BAB60 f scr.o
+520	VERIFIED	0002:001cb6b0 ?EntityIsPlayer@BrocSys@@YAHI@Z 009BABB0 f scr.o
+521	VERIFIED	0002:001cb700 ?EntityIsAI@BrocSys@@YAHI@Z 009BAC00 f scr.o
+522	VERIFIED	0002:001cb750 ?EntityIsSentient@BrocSys@@YAHI@Z 009BAC50 f scr.o
+523	VERIFIED	0002:001cb7a0 ?EntityIsVehicle@BrocSys@@YAHI@Z 009BACA0 f scr.o
+524	VERIFIED	0002:001cb7f0 ?EntityIsVehicleTank@BrocSys@@YAHI@Z 009BACF0 f scr.o
+525	VERIFIED	0002:001cb840 ?Trace@BrocSys@@YAXAAUcollResult@Broc@@ABUvector@3@1@Z 009BAD40 f scr.o
+526	VERIFIED	0002:001cba30 ?BulletTrace@BrocSys@@YAXAAUcollResult@Broc@@ABUvector@3@1_NI@Z 009BAF30 f scr.o
+527	VERIFIED	0002:001cc050 ?StopAnimScripted@BrocSys@@YAXI@Z 009BB550 f scr.o
+528	VERIFIED	0002:001cc1a0 ?StartBlankState@BrocSys@@YAXI@Z 009BB6A0 f scr.o
+529	VERIFIED	0002:001cc1f0 ?StopBlankState@BrocSys@@YAXI@Z 009BB6F0 f scr.o
+530	VERIFIED	0002:001cc290 ?ResetAnimVariationChunkState@BrocSys@@YAXII@Z 009BB790 f scr.o
+531	VERIFIED	0002:001cc3b0 ?GetInVehicle1@BrocSys@@YAXII_N00@Z 009BB8B0 f scr.o
+532	VERIFIED	0002:001cc4c0 ?GetInVehicle2@BrocSys@@YAXIII_N@Z 009BB9C0 f scr.o
+533	VERIFIED	0002:001cc5e0 ?GetOutVehicle@BrocSys@@YAXI@Z 009BBAE0 f scr.o
+534	VERIFIED	0002:001cc680 ?SceneGetOutVehicle@BrocSys@@YAXI@Z 009BBB80 f scr.o
+535	VERIFIED	0002:001cc730 ?StartInVehicle1@BrocSys@@YAXII_N00@Z 009BBC30 f scr.o
+536	VERIFIED	0002:001cc7e0 ?StartInVehicle2@BrocSys@@YAXIII_N@Z 009BBCE0 f scr.o
+537	VERIFIED	0002:001cc890 ?SetFlaggedAnimAligned@BrocSys@@YAXIIABUvector@Broc@@0I@Z 009BBD90 f scr.o
+538	VERIFIED	0002:001ccc50 ?StartFollowBehavior@BrocSys@@YAXII@Z 009BC150 f scr.o
+539	VERIFIED	0002:001ccdb0 ?StopFollowBehavior@BrocSys@@YAXI@Z 009BC2B0 f scr.o
+540	VERIFIED	0002:001cce50 ?SetFollowFormationData@BrocSys@@YAXIIMMM@Z 009BC350 f scr.o
+541	VERIFIED	0002:001ccfb0 ?ResetVehicleFollowPositionHistoryData@BrocSys@@YAXI@Z 009BC4B0 f scr.o
+542	VERIFIED	0002:001cd050 ?Attach1@BrocSys@@YAXIABVstring@Broc@@0_NW4TPakInfo@@@Z 009BC550 f scr.o
+543	VERIFIED	0002:001cd1d0 ?Attach2@BrocSys@@YAXIABVstring@Broc@@0W4TPakInfo@@@Z 009BC6D0 f scr.o
+544	VERIFIED	0002:001cd1f0 ?Attach3@BrocSys@@YAXIABVstring@Broc@@@Z 009BC6F0 f scr.o
+545	VERIFIED	0002:001cd260 ?Detach1@BrocSys@@YAXIABVstring@Broc@@0@Z 009BC760 f scr.o
+546	VERIFIED	0002:001cd3d0 ?Detach2@BrocSys@@YAXIABVstring@Broc@@@Z 009BC8D0 f scr.o
+547	VERIFIED	0002:001cd430 ?DetachAll@BrocSys@@YAXI@Z 009BC930 f scr.o
+548	VERIFIED	0002:001cd470 ?GetAttachSize@BrocSys@@YAHI@Z 009BC970 f scr.o
+549	VERIFIED	0002:001cd4e0 ?GetAttachModelName@BrocSys@@YAXIAAVstring@Broc@@H@Z 009BC9E0 f scr.o
+550	VERIFIED	0002:001cd5c0 ?GetAttachTagName@BrocSys@@YAXIAAVstring@Broc@@H@Z 009BCAC0 f scr.o
+551	VERIFIED	0002:001cd6e0 ?GetAttachIgnoreCollision@BrocSys@@YA_NIH@Z 009BCBE0 f scr.o
+552	VERIFIED	0002:001cd7a0 ?LinkTo1@BrocSys@@YAXIIABVstring@Broc@@ABUvector@3@1_N@Z 009BCCA0 f scr.o
+553	VERIFIED	0002:001cda90 ?LinkTo2@BrocSys@@YAXIIABVstring@Broc@@@Z 009BCF90 f scr.o
+554	VERIFIED	0002:001cdbb0 ?LinkTo3@BrocSys@@YAXII@Z 009BD0B0 f scr.o
+555	VERIFIED	0002:001cdcb0 ?PlayerLinkTo1@BrocSys@@YAXIIABVstring@Broc@@ABUvector@3@@Z 009BD1B0 f scr.o
+556	VERIFIED	0002:001cde20 ?PlayerLinkTo2@BrocSys@@YAXIIABVstring@Broc@@@Z 009BD320 f scr.o
+557	VERIFIED	0002:001cdf60 ?PlayerLinkTo3@BrocSys@@YAXII@Z 009BD460 f scr.o
+558	VERIFIED	0002:001ce090 ?UnLink@BrocSys@@YAXI@Z 009BD590 f scr.o
+559	VERIFIED	0002:001ce120 ?EnableLinkTo@BrocSys@@YAXI@Z 009BD620 f scr.o
+560	VERIFIED	0002:001ce2e0 ?DoSpawn1@BrocSys@@YAIIABVstring@Broc@@W4TPakInfo@@W4enumForceSpawn@@@Z 009BD7E0 f scr.o
+561	VERIFIED	0002:001ce460 ?DoSpawn2@BrocSys@@YAIIW4TPakInfo@@W4enumForceSpawn@@@Z 009BD960 f scr.o
+562	VERIFIED	0002:001ce4d0 ?StalinGradSpawn1@BrocSys@@YAIIABVstring@Broc@@W4TPakInfo@@@Z 009BD9D0 f scr.o
+563	VERIFIED	0002:001ce650 ?StalinGradSpawn2@BrocSys@@YAIIW4TPakInfo@@@Z 009BDB50 f scr.o
+564	VERIFIED	0002:001ce6c0 ?GetOrigin@BrocSys@@YAXIAAUvector@Broc@@@Z 009BDBC0 f scr.o
+565	VERIFIED	0002:001ce7a0 ?GetEye@BrocSys@@YAXIAAUvector@Broc@@@Z 009BDCA0 f scr.o
+566	VERIFIED	0002:001ce8b0 ?UseBy@BrocSys@@YAIII@Z 009BDDB0 f scr.o
+567	VERIFIED	0002:001ce9a0 ?IsTouching@BrocSys@@YA_NII@Z 009BDEA0 f scr.o
+568	VERIFIED	0002:001cee40 ?LockDoor@BrocSys@@YAXI@Z 009BE340 f scr.o
+569	VERIFIED	0002:001ceea0 ?UnLockDoor@BrocSys@@YAXI@Z 009BE3A0 f scr.o
+570	VERIFIED	0002:001cef00 ?IsDoorLocked@BrocSys@@YA_NI@Z 009BE400 f scr.o
+571	VERIFIED	0002:001cef60 ?Delete@BrocSys@@YAXI@Z 009BE460 f scr.o
+572	VERIFIED	0002:001cefd0 ?SetTransparent@BrocSys@@YAXI_N@Z 009BE4D0 f scr.o
+573	VERIFIED	0002:001cf060 ?SetModel@BrocSys@@YAXIABVstring@Broc@@W4TPakInfo@@@Z 009BE560 f scr.o
+574	VERIFIED	0002:001cf250 ?SetAiType@BrocSys@@YAXIABVstring@Broc@@W4TPakInfo@@@Z 009BE750 f scr.o
+575	VERIFIED	0002:001cf410 ?SetModelIndex@BrocSys@@YAXIH@Z 009BE910 f scr.o
+576	VERIFIED	0002:001cf4a0 ?GetNormalHealth@BrocSys@@YAMI@Z 009BE9A0 f scr.o
+577	VERIFIED	0002:001cf520 ?SetNormalHealth@BrocSys@@YAXIM@Z 009BEA20 f scr.o
+578	VERIFIED	0002:001cf6b0 ?DoDamage@BrocSys@@YAXIMABUvector@Broc@@W4hitLocation_t@@@Z 009BEBB0 f scr.o
+579	VERIFIED	0002:001cf840 ?SetTakeDamage@BrocSys@@YAXIH@Z 009BED40 f scr.o
+580	VERIFIED	0002:001cf880 ?InvulnerableForTime@BrocSys@@YAXIM@Z 009BED80 f scr.o
+581	VERIFIED	0002:001cf8d0 ?IsEntityInvulnerable@BrocSys@@YA_NI@Z 009BEDD0 f scr.o
+582	VERIFIED	0002:001cf920 ?SetAlwaysRender@BrocSys@@YAXIH@Z 009BEE20 f scr.o
+583	VERIFIED	0002:001cf960 ?Show@BrocSys@@YAXI@Z 009BEE60 f scr.o
+584	VERIFIED	0002:001cf9a0 ?Hide@BrocSys@@YAXI@Z 009BEEA0 f scr.o
+585	VERIFIED	0002:001cf9e0 ?SetContents@BrocSys@@YAHIH@Z 009BEEE0 f scr.o
+586	VERIFIED	0002:001cfa30 ?DisConnectPaths@BrocSys@@YAXI@Z 009BEF30 f scr.o
+587	VERIFIED	0002:001cfac0 ?ConnectPaths@BrocSys@@YAXI@Z 009BEFC0 f scr.o
+588	VERIFIED	0002:001cfb50 ?StartFiring@BrocSys@@YAXI@Z 009BF050 f scr.o
+589	VERIFIED	0002:001cfbc0 ?StopFiring@BrocSys@@YAXI@Z 009BF0C0 f scr.o
+590	VERIFIED	0002:001cfc30 ?ShootTurret@BrocSys@@YAXII@Z 009BF130 f scr.o
+591	VERIFIED	0002:001cfcd0 ?SetMode@BrocSys@@YAXIH@Z 009BF1D0 f scr.o
+592	VERIFIED	0002:001cfdb0 ?GetTurretOwner@BrocSys@@YAII@Z 009BF2B0 f scr.o
+593	VERIFIED	0002:001cfe30 ?GetOwner@BrocSys@@YAII@Z 009BF330 f scr.o
+594	VERIFIED	0002:001cfe70 ?SetOwner@BrocSys@@YAXII@Z 009BF370 f scr.o
+595	VERIFIED	0002:001cfef0 ?SetTargetEntity@BrocSys@@YAXII@Z 009BF3F0 f scr.o
+596	VERIFIED	0002:001cff90 ?HasTargetEntity@BrocSys@@YA_NI@Z 009BF490 f scr.o
+597	VERIFIED	0002:001d0000 ?ClearTargetEntity@BrocSys@@YAXI@Z 009BF500 f scr.o
+598	VERIFIED	0002:001d0070 ?SetTurretTeam@BrocSys@@YAXIABVstring@Broc@@@Z 009BF570 f scr.o
+599	VERIFIED	0002:001d0170 ?MakeTurretUsable@BrocSys@@YAXI@Z 009BF670 f scr.o
+600	VERIFIED	0002:001d01e0 ?MakeTurretUnusable@BrocSys@@YAXI@Z 009BF6E0 f scr.o
+601	VERIFIED	0002:001d0250 ?SetTurretAccuracy@BrocSys@@YAXIM@Z 009BF750 f scr.o
+602	VERIFIED	0002:001d02c0 ?SetTurretRange@BrocSys@@YAXIM@Z 009BF7C0 f scr.o
+603	VERIFIED	0002:001d0340 ?GetTurretRange@BrocSys@@YAMI@Z 009BF840 f scr.o
+604	VERIFIED	0002:001d03b0 ?GetTurretTarget@BrocSys@@YAII@Z 009BF8B0 f scr.o
+605	VERIFIED	0002:001d0430 ?SetCursorHint@BrocSys@@YAXIABVstring@Broc@@@Z 009BF930 f scr.o
+606	VERIFIED	0002:001d05a0 ?SetHintString1@BrocSys@@YAXIABVstring@Broc@@@Z 009BFAA0 f scr.o
+607	VERIFIED	0002:001d0680 ?SetHintString3@BrocSys@@YAXIH@Z 009BFB80 f scr.o
+608	VERIFIED	0002:001d0740 ?SetHintString2@BrocSys@@YAXI@Z 009BFC40 f scr.o
+609	VERIFIED	0002:001d0870 ?ClearAnim@BrocSys@@YAXIIM@Z 009BFD70 f scr.o
+610	VERIFIED	0002:001d0990 ?SetAnimKnob@BrocSys@@YAXIIMMM_N@Z 009BFE90 f scr.o
+611	VERIFIED	0002:001d0b90 ?SetAnimKnobAll@BrocSys@@YAXIIIMMM_N@Z 009C0090 f scr.o
+612	VERIFIED	0002:001d0da0 ?SetAnim@BrocSys@@YAXIIMMM_N@Z 009C02A0 f scr.o
+613	VERIFIED	0002:001d0f30 ?GetAnimTime@BrocSys@@YAMII@Z 009C0430 f scr.o
+614	VERIFIED	0002:001d1030 ?SetFlaggedAnimKnob@BrocSys@@YAXIIIMMM_N@Z 009C0530 f scr.o
+615	VERIFIED	0002:001d1190 ?SetFlaggedAnimKnobAll@BrocSys@@YAXIIIIMMM_N@Z 009C0690 f scr.o
+616	VERIFIED	0002:001d13d0 ?SetFlaggedAnim@BrocSys@@YAXIIIMMM_N@Z 009C08D0 f scr.o
+617	VERIFIED	0002:001d1530 ?UseAnimTree@BrocSys@@YAXIABVstring@Broc@@@Z 009C0A30 f scr.o
+618	VERIFIED	0002:001d16c0 ?StopUseAnimTree@BrocSys@@YAXI@Z 009C0BC0 f scr.o
+619	VERIFIED	0002:001d1740 ?DumpAnims@BrocSys@@YAXI@Z 009C0C40 f scr.o
+620	VERIFIED	0002:001d1780 ?GetStance@BrocSys@@YAXIAAVstring@Broc@@@Z 009C0C80 f scr.o
+621	VERIFIED	0002:001d1800 ?MagicGrenade1@BrocSys@@YAXIABUvector@Broc@@0M@Z 009C0D00 f scr.o
+622	VERIFIED	0002:001d1910 ?MagicGrenade2@BrocSys@@YAXIABUvector@Broc@@0@Z 009C0E10 f scr.o
+623	VERIFIED	0002:001d1930 ?MagicGrenadeManual1@BrocSys@@YAXIABUvector@Broc@@0M@Z 009C0E30 f scr.o
+624	VERIFIED	0002:001d19b0 ?MagicGrenadeManual2@BrocSys@@YAXIABUvector@Broc@@0@Z 009C0EB0 f scr.o
+625	VERIFIED	0002:001d19d0 ?RifleGrenadeManual1@BrocSys@@YAXIABUvector@Broc@@_N@Z 009C0ED0 f scr.o
+626	VERIFIED	0002:001d1a60 ?IsFiringTurret@BrocSys@@YA_NI@Z 009C0F60 f scr.o
+627	VERIFIED	0002:001d1ae0 ?SetFriendlyChain@BrocSys@@YAXIABVpathnode@Broc@@@Z 009C0FE0 f scr.o
+628	VERIFIED	0002:001d1b90 ?GetTagInternal@BrocSys@@YAPAUDObjSkelMat@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABI@Z 009C1090 f scr.o
+629	VERIFIED	0002:001d1ce0 ?GetTagOrigin1@BrocSys@@YAXIAAUvector@Broc@@ABI@Z 009C11E0 f scr.o
+630	VERIFIED	0002:001d1dd0 ?GetTagOrigin2@BrocSys@@YAXIAAUvector@Broc@@ABVstring@3@@Z 009C12D0 f scr.o
+631	VERIFIED	0002:001d1e10 ?GetTagAngles1@BrocSys@@YAXIAAUvector@Broc@@ABI@Z 009C1310 f scr.o
+632	VERIFIED	0002:001d1e70 ?GetTagAngles2@BrocSys@@YAXIAAUvector@Broc@@ABVstring@3@@Z 009C1370 f scr.o
+633	VERIFIED	0002:001d1ef0 ?ShellShock@BrocSys@@YAXIABVstring@Broc@@M@Z 009C13F0 f scr.o
+634	VERIFIED	0002:001d2100 ?StopShellShock@BrocSys@@YAXI@Z 009C1600 f scr.o
+635	VERIFIED	0002:001d2180 ?ViewKick@BrocSys@@YAXIHABUvector@Broc@@@Z 009C1680 f scr.o
+636	VERIFIED	0002:001d2260 ?LockLightVis@BrocSys@@YAXI@Z 009C1760 f scr.o
+637	VERIFIED	0002:001d22b0 ?UnLockLightVis@BrocSys@@YAXI@Z 009C17B0 f scr.o
+638	VERIFIED	0002:001d2300 ?Launch@BrocSys@@YAXIABUvector@Broc@@@Z 009C1800 f scr.o
+639	VERIFIED	0002:001d2400 ?LocalToWorldCoords@BrocSys@@YAXIABUvector@Broc@@AAU23@@Z 009C1900 f scr.o
+640	VERIFIED	0002:001d2490 ?GetEntityNumber@BrocSys@@YAHI@Z 009C1990 f scr.o
+641	VERIFIED	0002:001d24d0 ?EnableGrenadeTouchDamage@BrocSys@@YAXI@Z 009C19D0 f scr.o
+642	VERIFIED	0002:001d2530 ?DisableGrenadeTouchDamage@BrocSys@@YAXI@Z 009C1A30 f scr.o
+643	VERIFIED	0002:001d2590 ?EnableGrenadeBounce@BrocSys@@YAXI@Z 009C1A90 f scr.o
+644	VERIFIED	0002:001d25d0 ?DisableGrenadeBounce@BrocSys@@YAXI@Z 009C1AD0 f scr.o
+645	VERIFIED	0002:001d2610 ?MakeFakeAi@BrocSys@@YAXI@Z 009C1B10 f scr.o
+646	VERIFIED	0002:001d2790 ?SetSpawnerTeam@BrocSys@@YAXIABVstring@Broc@@@Z 009C1C90 f scr.o
+647	VERIFIED	0002:001d2890 ?SetRightArc@BrocSys@@YAXIM@Z 009C1D90 f scr.o
+648	VERIFIED	0002:001d2900 ?SetLeftArc@BrocSys@@YAXIM@Z 009C1E00 f scr.o
+649	VERIFIED	0002:001d2960 ?SetTopArc@BrocSys@@YAXIM@Z 009C1E60 f scr.o
+650	VERIFIED	0002:001d29c0 ?SetBottomArc@BrocSys@@YAXIM@Z 009C1EC0 f scr.o
+651	VERIFIED	0002:001d2a20 ?SetTurretPitch@BrocSys@@YAXIM@Z 009C1F20 f scr.o
+652	VERIFIED	0002:001d2a80 ?SetTurretYaw@BrocSys@@YAXIM@Z 009C1F80 f scr.o
+653	VERIFIED	0002:001d2b10 ?SetCharacter@BrocSys@@YAXIABVstring@Broc@@@Z 009C2010 f scr.o
+654	VERIFIED	0002:001d2b60 ?ActorScr_SetFavoriteEnemy@BrocSys@@YAXPAUactor_s@@HPAVentity@Broc@@@Z 009C2060 f scr.o
+655	VERIFIED	0002:001d2c00 ?ScriptExplode@BrocSys@@YAXIM@Z 009C2100 f scr.o
+656	VERIFIED	0002:001d2d70 ?SetEntityLODOverride@BrocSys@@YAXII@Z 009C2270 f scr.o
+657	VERIFIED	0002:001d2e40 ?SetEntityFlagDrone@BrocSys@@YAXI@Z 009C2340 f scr.o
+658	VERIFIED	0002:001d2e90 ?IsEntityVisible@BrocSys@@YAHI@Z 009C2390 f scr.o
+659	VERIFIED	0002:001d2ed0 ?EntityIgnoreDanger@BrocSys@@YAXI_N00@Z 009C23D0 f scr.o
+660	VERIFIED	0002:001d2f60 ?SetGetOceanHeight@BrocSys@@YAXIHH@Z 009C2460 f scr.o
+661	VERIFIED	0002:001d3030 ?ScaleEntity@BrocSys@@YAXIM@Z 009C2530 f scr.o
+662	VERIFIED	0002:001d3080 ?SwapColMaps@BrocSys@@YAXII@Z 009C2580 f scr.o
+663	VERIFIED	0002:001d3180 ?MoveAxis@BrocSys@@YAXIHMMMM@Z 009C2680 f scr.o
+664	VERIFIED	0002:001d3270 ?RotateAxis@BrocSys@@YAXIHMMMM@Z 009C2770 f scr.o
+665	VERIFIED	0002:001d3360 ?MoveTo@BrocSys@@YAXIABUvector@Broc@@MMM@Z 009C2860 f scr.o
+666	VERIFIED	0002:001d34d0 ?MoveX@BrocSys@@YAXIMMMM@Z 009C29D0 f scr.o
+667	VERIFIED	0002:001d3500 ?MoveY@BrocSys@@YAXIMMMM@Z 009C2A00 f scr.o
+668	VERIFIED	0002:001d3530 ?MoveZ@BrocSys@@YAXIMMMM@Z 009C2A30 f scr.o
+669	VERIFIED	0002:001d3560 ?MoveGravity@BrocSys@@YAXIABUvector@Broc@@MM@Z 009C2A60 f scr.o
+670	VERIFIED	0002:001d3670 ?RotateTo@BrocSys@@YAXIABUvector@Broc@@MMM@Z 009C2B70 f scr.o
+671	VERIFIED	0002:001d3980 ?RotatePitch@BrocSys@@YAXIMMMM@Z 009C2E80 f scr.o
+672	VERIFIED	0002:001d39b0 ?RotateYaw@BrocSys@@YAXIMMMM@Z 009C2EB0 f scr.o
+673	VERIFIED	0002:001d39e0 ?RotateRoll@BrocSys@@YAXIMMMM@Z 009C2EE0 f scr.o
+674	VERIFIED	0002:001d3a10 ?RotateVelocity@BrocSys@@YAXIABUvector@Broc@@MMM@Z 009C2F10 f scr.o
+675	VERIFIED	0002:001d3b50 ?Solid@BrocSys@@YAXI@Z 009C3050 f scr.o
+676	VERIFIED	0002:001d3bf0 ?NotSolid@BrocSys@@YAXI@Z 009C30F0 f scr.o
+677	VERIFIED	0002:001d3c90 ?InitEntityMove@BrocSys@@YAXXZ 009C3190 f scr.o
+678	VERIFIED	0002:001d3d50 ?MPScript_PlayerRespawn@BrocSys@@YAXIABUvector@Broc@@0ABVstring@3@@Z 009C3250 f scr.o
+679	VERIFIED	0002:001d3ed0 ?MPScript_PlayerSpawn@BrocSys@@YAXIABUvector@Broc@@0_N@Z 009C33D0 f scr.o
+680	VERIFIED	0002:001d3fd0 ?MPScript_SetPlayerAlive@BrocSys@@YAXIH@Z 009C34D0 f scr.o
+681	VERIFIED	0002:001d4050 ?SetRespawnMaxTime@BrocSys@@YAXIH@Z 009C3550 f scr.o
+682	VERIFIED	0002:001d40a0 ?MPScript_GetPlayerName@BrocSys@@YAPBDI@Z 009C35A0 f scr.o
+683	VERIFIED	0002:001d4130 ?MPScript_FinishDamage@BrocSys@@YAXIIIABUvector@Broc@@0HHHH@Z 009C3630 f scr.o
+684	VERIFIED	0002:001d41f0 ?MPScript_IsLocalPlayer@BrocSys@@YA_NI@Z 009C36F0 f scr.o
+685	VERIFIED	0002:001d4230 ?MPScript_IsInVehicle1@BrocSys@@YA_NI@Z 009C3730 f scr.o
+686	VERIFIED	0002:001d4290 ?MPScript_IsInVehicle2@BrocSys@@YA_NII@Z 009C3790 f scr.o
+687	VERIFIED	0002:001d4320 ?MPScript_GetPlayerInSeat@BrocSys@@YAIII@Z 009C3820 f scr.o
+688	VERIFIED	0002:001d4370 ?MPScript_GetOutOfVehicle@BrocSys@@YAXI@Z 009C3870 f scr.o
+689	VERIFIED	0002:001d4400 ?MPScript_SetPlayerTeam@BrocSys@@YA_NIABVstring@Broc@@@Z 009C3900 f scr.o
+690	VERIFIED	0002:001d4450 ?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z 009C3950 f scr.o
+691	VERIFIED	0002:001d4590 ?MPScript_IncPlayerStat@BrocSys@@YAXIIF@Z 009C3A90 f scr.o
+692	VERIFIED	0002:001d4750 ?MPScript_SetPlayerStat@BrocSys@@YAXIIF@Z 009C3C50 f scr.o
+693	VERIFIED	0002:001d4910 ?MPScript_GetPlayerStat@BrocSys@@YAFII@Z 009C3E10 f scr.o
+694	VERIFIED	0002:001d4a10 ?MPScript_GetPlayerTotalScore@BrocSys@@YAHI@Z 009C3F10 f scr.o
+695	VERIFIED	0002:001d4ae0 ?MPScript_ChangePlayerTeam@BrocSys@@YAXIABVstring@Broc@@_N@Z 009C3FE0 f scr.o
+696	VERIFIED	0002:001d4bc0 ?MPScript_SendInitialGameState@BrocSys@@YAXI@Z 009C40C0 f scr.o
+697	VERIFIED	0002:001d4c10 ?MPScript_SendVehicleStates@BrocSys@@YAXI@Z 009C4110 f scr.o
+698	VERIFIED	0002:001d4c60 ?MPScript_BroadcastVehicleRespawn@BrocSys@@YAXI@Z 009C4160 f scr.o
+699	VERIFIED	0002:001d4cb0 ?MPScript_SendGameState@BrocSys@@YAXIHHHH_N00HHH0HH@Z 009C41B0 f scr.o
+700	VERIFIED	0002:001d4d30 ?MPScript_SendGameStateHQ@BrocSys@@YAXIIUvector@Broc@@0I_N1@Z 009C4230 f scr.o
+701	VERIFIED	0002:001d4e20 ?MPScript_SendGameStateCTF@BrocSys@@YAXIUvector@Broc@@0I00I@Z 009C4320 f scr.o
+702	VERIFIED	0002:001d4fc0 ?MPScript_SendGameStateSCF@BrocSys@@YAXIHUvector@Broc@@0I@Z 009C44C0 f scr.o
+703	VERIFIED	0002:001d50d0 ?MPScript_SendGameStateDOM@BrocSys@@YAXIHHHHH@Z 009C45D0 f scr.o
+704	PORTED	0002:001d5140 ?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z 009C4640 f scr.o
+705	VERIFIED	0002:001d5270 ?MPScript_PickupItem@BrocSys@@YAXHI@Z 009C4770 f scr.o
+706	VERIFIED	0002:001d52d0 ?MPScript_GetSpotterEntity@BrocSys@@YAII@Z 009C47D0 f scr.o
+707	VERIFIED	0002:001d5350 ?MPScript_ClearSpottingFromOccupants@BrocSys@@YAXI@Z 009C4850 f scr.o
+708	VERIFIED	0002:001d54a0 ?MPScript_SendHostBombRequest@BrocSys@@YAXI_N@Z 009C49A0 f scr.o
+709	VERIFIED	0002:001d54e0 ?MPScript_SendBombExplosion@BrocSys@@YAXI@Z 009C49E0 f scr.o
+710	VERIFIED	0002:001d5520 ?MPScript_SendBombOperation@BrocSys@@YAXI_N@Z 009C4A20 f scr.o
+711	VERIFIED	0002:001d5560 ?MPScript_SendBombOperationEvent@BrocSys@@YAXI_N0@Z 009C4A60 f scr.o
+712	VERIFIED	0002:001d55b0 ?MPScript_NextButtonPressed@BrocSys@@YAHI@Z 009C4AB0 f scr.o
+713	VERIFIED	0002:001d5610 ?MPScript_PrevButtonPressed@BrocSys@@YAHI@Z 009C4B10 f scr.o
+714	VERIFIED	0002:001d5670 ?MPScript_DebugRenderEntityBBox@BrocSys@@YAXIABUvector@Broc@@M@Z 009C4B70 f scr.o
+715	VERIFIED	0002:001d5760 ?GiveWeapon@BrocSys@@YAXIABVstring@Broc@@@Z 009C4C60 f scr.o
+716	VERIFIED	0002:001d57d0 ?GiveWeaponAndAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z 009C4CD0 f scr.o
+717	VERIFIED	0002:001d5870 ?TakeWeapon@BrocSys@@YAXIABVstring@Broc@@@Z 009C4D70 f scr.o
+718	VERIFIED	0002:001d58e0 ?TakeAllWeapons@BrocSys@@YAXI@Z 009C4DE0 f scr.o
+719	VERIFIED	0002:001d59a0 ?GetCurrentWeapon@BrocSys@@YAXIAAVstring@Broc@@@Z 009C4EA0 f scr.o
+720	VERIFIED	0002:001d5a20 ?HasWeaponAndAmmo@BrocSys@@YA_NIABVstring@Broc@@AAH@Z 009C4F20 f scr.o
+721	VERIFIED	0002:001d5af0 ?HasWeapon@BrocSys@@YA_NIABVstring@Broc@@@Z 009C4FF0 f scr.o
+722	VERIFIED	0002:001d5b70 ?SwitchToWeapon@BrocSys@@YA_NIABVstring@Broc@@@Z 009C5070 f scr.o
+723	VERIFIED	0002:001d5c50 ?SwitchToLastWeapon@BrocSys@@YA_NI@Z 009C5150 f scr.o
+724	VERIFIED	0002:001d5cf0 ?GiveStartAmmo@BrocSys@@YAXIABVstring@Broc@@@Z 009C51F0 f scr.o
+725	VERIFIED	0002:001d5da0 ?GiveMaxAmmo@BrocSys@@YAXIABVstring@Broc@@@Z 009C52A0 f scr.o
+726	VERIFIED	0002:001d5e60 ?GetFractionStartAmmo@BrocSys@@YAMIABVstring@Broc@@@Z 009C5360 f scr.o
+727	VERIFIED	0002:001d5f40 ?GetFractionMaxAmmo@BrocSys@@YAMIABVstring@Broc@@@Z 009C5440 f scr.o
+728	VERIFIED	0002:001d60a0 ?SetOrigin@BrocSys@@YAXIABUvector@Broc@@@Z 009C55A0 f scr.o
+729	VERIFIED	0002:001d60f0 ?SetVelocity@BrocSys@@YAXIABUvector@Broc@@@Z 009C55F0 f scr.o
+730	VERIFIED	0002:001d6160 ?SetPlayerAngles@BrocSys@@YAXIABUvector@Broc@@@Z 009C5660 f scr.o
+731	VERIFIED	0002:001d6230 ?GetPlayerAngles@BrocSys@@YA?AUvector@Broc@@I@Z 009C5730 f scr.o
+732	VERIFIED	0002:001d62c0 ?UseButtonPressed@BrocSys@@YAHI@Z 009C57C0 f scr.o
+733	VERIFIED	0002:001d6320 ?AttackButtonPressed@BrocSys@@YAHI@Z 009C5820 f scr.o
+734	VERIFIED	0002:001d6380 ?MeleeButtonPressed@BrocSys@@YAHI@Z 009C5880 f scr.o
+735	VERIFIED	0002:001d63e0 ?IsAds@BrocSys@@YAHI@Z 009C58E0 f scr.o
+736	VERIFIED	0002:001d6440 ?IsOnGround@BrocSys@@YAHI@Z 009C5940 f scr.o
+737	VERIFIED	0002:001d64a0 ?SetViewModel@BrocSys@@YAXIABVstring@Broc@@@Z 009C59A0 f scr.o
+738	VERIFIED	0002:001d6530 ?AllowUse@BrocSys@@YAXI_N@Z 009C5A30 f scr.o
+739	VERIFIED	0002:001d65a0 ?AllowStand@BrocSys@@YAXI_N@Z 009C5AA0 f scr.o
+740	VERIFIED	0002:001d65e0 ?AllowCrouch@BrocSys@@YAXI_N@Z 009C5AE0 f scr.o
+741	VERIFIED	0002:001d6620 ?AllowProne@BrocSys@@YAXI_N@Z 009C5B20 f scr.o
+742	VERIFIED	0002:001d6660 ?AllowLeanLeft@BrocSys@@YAXI_N@Z 009C5B60 f scr.o
+743	VERIFIED	0002:001d66a0 ?AllowLeanRight@BrocSys@@YAXI_N@Z 009C5BA0 f scr.o
+744	VERIFIED	0002:001d66e0 ?SetSpectateTeamKill@BrocSys@@YAXHIH@Z 009C5BE0 f scr.o
+745	VERIFIED	0002:001d6740 ?FreezeControls@BrocSys@@YAXI_N@Z 009C5C40 f scr.o
+746	VERIFIED	0002:001d6790 ?IsLookingAt@BrocSys@@YA_NII@Z 009C5C90 f scr.o
+747	VERIFIED	0002:001d6810 ?SetAutoPickup@BrocSys@@YAXI_N@Z 009C5D10 f scr.o
+748	VERIFIED	0002:001d6880 ?GetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@AAV23@@Z 009C5D80 f scr.o
+749	VERIFIED	0002:001d6950 ?SetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@0@Z 009C5E50 f scr.o
+750	VERIFIED	0002:001d6b50 ?GetWeaponSlotAmmo@BrocSys@@YAHIABVstring@Broc@@@Z 009C6050 f scr.o
+751	VERIFIED	0002:001d6c40 ?SetWeaponSlotAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z 009C6140 f scr.o
+752	VERIFIED	0002:001d6da0 ?GetWeaponSlotClipAmmo@BrocSys@@YAHIABVstring@Broc@@@Z 009C62A0 f scr.o
+753	VERIFIED	0002:001d6e60 ?SetWeaponSlotClipAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z 009C6360 f scr.o
+754	VERIFIED	0002:001d6f40 ?GetFullClipAmmoCount@BrocSys@@YAHIABVstring@Broc@@@Z 009C6440 f scr.o
+755	VERIFIED	0002:001d6ff0 ?GetMaxAmmo@BrocSys@@YAHIABVstring@Broc@@@Z 009C64F0 f scr.o
+756	VERIFIED	0002:001d70a0 ?InitEntityClient@BrocSys@@YAXXZ 009C65A0 f scr.o
+757	VERIFIED	0002:001d7790 ?ObjectiveAdd5@BrocSys@@YAXHABVstring@Broc@@0ABUvector@3@IMPBDHHH@Z 009C6C90 f scr.o
+758	VERIFIED	0002:001d7930 ?AttachPath@BrocSys@@YAXIABVvehiclenode@Broc@@H@Z 009C6E30 f scr.o
+759	VERIFIED	0002:001d7c30 ?StartPath@BrocSys@@YAXI@Z 009C7130 f scr.o
+760	VERIFIED	0002:001d7d40 ?EndPath@BrocSys@@YAXI@Z 009C7240 f scr.o
+761	VERIFIED	0002:001d7e40 ?SetSwitchNode@BrocSys@@YAXIABVvehiclenode@Broc@@0@Z 009C7340 f scr.o
+762	VERIFIED	0002:001d8000 ?SetWaitNode@BrocSys@@YAXIABVvehiclenode@Broc@@@Z 009C7500 f scr.o
+763	VERIFIED	0002:001d8170 ?SetWaitSpeed@BrocSys@@YAXIM@Z 009C7670 f scr.o
+764	VERIFIED	0002:001d82a0 ?SetSpeed@BrocSys@@YAXIMM@Z 009C77A0 f scr.o
+765	VERIFIED	0002:001d8410 ?ResumeSpeed@BrocSys@@YAXIM@Z 009C7910 f scr.o
+766	VERIFIED	0002:001d8550 ?JoltBody@BrocSys@@YAXIABUvector@Broc@@MMM@Z 009C7A50 f scr.o
+767	VERIFIED	0002:001d8700 ?FreeVehicle@BrocSys@@YAXI@Z 009C7C00 f scr.o
+768	VERIFIED	0002:001d8840 ?GetWheelSurface@BrocSys@@YAXIIAAVstring@Broc@@@Z 009C7D40 f scr.o
+769	VERIFIED	0002:001d8a20 ?GetSpeedMph@BrocSys@@YAMI@Z 009C7F20 f scr.o
+770	VERIFIED	0002:001d8ab0 ?GetVehicleOwner@BrocSys@@YAII@Z 009C7FB0 f scr.o
+771	VERIFIED	0002:001d8b60 ?SetMaxSpeed@BrocSys@@YAXIM@Z 009C8060 f scr.o
+772	VERIFIED	0002:001d8d30 ?SetBrake@BrocSys@@YAXI_N@Z 009C8230 f scr.o
+773	VERIFIED	0002:001d8f00 ?SetStabilityEnabled@BrocSys@@YAXI_N@Z 009C8400 f scr.o
+774	VERIFIED	0002:001d90d0 ?IsVehicleFlipped@BrocSys@@YA_NI@Z 009C85D0 f scr.o
+775	VERIFIED	0002:001d9190 ?SetVehicleGoal@BrocSys@@YAXIABUvector@Broc@@MM@Z 009C8690 f scr.o
+776	VERIFIED	0002:001d9400 ?StartEngineSound@BrocSys@@YAXI@Z 009C8900 f scr.o
+777	VERIFIED	0002:001d94f0 ?StopEngineSound@BrocSys@@YAXI@Z 009C89F0 f scr.o
+778	VERIFIED	0002:001d95e0 ?SetVehicleMountPos@BrocSys@@YAXIH@Z 009C8AE0 f scr.o
+779	VERIFIED	0002:001d9730 ?MakeVehicleUsable@BrocSys@@YAXI@Z 009C8C30 f scr.o
+780	VERIFIED	0002:001d97d0 ?MakeVehicleUnusable@BrocSys@@YAXI@Z 009C8CD0 f scr.o
+781	VERIFIED	0002:001d9870 ?EjectDriver@BrocSys@@YAXI@Z 009C8D70 f scr.o
+782	VERIFIED	0002:001d9970 ?AddVehicleToCompass@BrocSys@@YAXI_N@Z 009C8E70 f scr.o
+783	VERIFIED	0002:001d9a70 ?RemoveVehicleFromCompass@BrocSys@@YAXI@Z 009C8F70 f scr.o
+784	VERIFIED	0002:001d9b60 ?RespawnVehicle@BrocSys@@YAXI@Z 009C9060 f scr.o
+785	VERIFIED	0002:001d9ba0 ?SetTurretRotRate@BrocSys@@YAXIM@Z 009C90A0 f scr.o
+786	VERIFIED	0002:001d9cf0 ?SetTurretTargetVec@BrocSys@@YAXIABUvector@Broc@@_N@Z 009C91F0 f scr.o
+787	VERIFIED	0002:001d9ea0 ?SetTurretTargetEnt@BrocSys@@YAXIIABUvector@Broc@@_N@Z 009C93A0 f scr.o
+788	VERIFIED	0002:001da0b0 ?ClearTurretTarget@BrocSys@@YAXI_N@Z 009C95B0 f scr.o
+789	VERIFIED	0002:001da230 ?FireTurret@BrocSys@@YAXI_N@Z 009C9730 f scr.o
+790	VERIFIED	0002:001da8c0 ?IsTurretReady@BrocSys@@YA_NI@Z 009C9DC0 f scr.o
+791	VERIFIED	0002:001da9d0 ?SetVehicleName@BrocSys@@YAXIABVstring@Broc@@@Z 009C9ED0 f scr.o
+792	VERIFIED	0002:001daac0 ?GetTurretRelAngles@BrocSys@@YAXIAAUvector@Broc@@_N@Z 009C9FC0 f scr.o
+793	VERIFIED	0002:001dabf0 ?InitVehicle@BrocSys@@YAXXZ 009CA0F0 f scr.o
+794	VERIFIED	0002:001dae30 ??1AeThread@@QAE@XZ 009CA330 f scr.o
+795	VERIFIED	0002:001daf90 ?DestroyBrocInsts@AeThread@@QAEXXZ 009CA490 f scr.o
+796	VERIFIED	0002:001db100 ??0AeThreadManager@@QAE@XZ 009CA600 f scr.o
+797	VERIFIED	0002:001db160 ?AssignHandle@AeThreadManager@@QAE?AVHandle@@PAVAeThread@@@Z 009CA660 f scr.o
+798	VERIFIED	0002:001db1a0 ?KillAllThreads@AeThreadManager@@QAEXXZ 009CA6A0 f scr.o
+799	VERIFIED	0002:001db230 ??0EndOnScriptNode@@QAE@PAVAeThread@@@Z 009CA730 f scr.o
+800	VERIFIED	0002:001db280 ??0AeThreadEntityNotifyState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IW4EAction@AeThreadState@@@Z 009CA780 f scr.o
+801	VERIFIED	0002:001db3c0 ?ThreadCreateInternal@BrocSys@@YAIPBDH0IPAVAeThreadFunctor@@_N@Z 009CA8C0 f scr.o
+802	VERIFIED	0002:001db470 ?ThreadExecInternal@BrocSys@@YAIPBDH0IPAVAeThreadFunctor@@_N@Z 009CA970 f scr.o
+803	VERIFIED	0002:001db540 ?ThreadNotifyInternal@BrocSys@@YAIPBDH0IIHPAVAeThreadFunctor@@@Z 009CAA40 f scr.o
+804	VERIFIED	0002:001db640 ?KillThreadExec@BrocSys@@YAXXZ 009CAB40 f scr.o
+805	VERIFIED	0002:001db660 ?ThreadSleepUntilNotify@BrocSys@@YAXIW4TPakInfo@@HHHH_NM@Z 009CAB60 f scr.o
+806	VERIFIED	0002:001db870 ?ThreadGetId@BrocSys@@YAIXZ 009CAD70 f scr.o
+807	VERIFIED	0002:001db8c0 ?GetKeyBinding@BrocSys@@YAHAAV?$dyn_array@Vstring@Broc@@@Broc@@ABVstring@3@@Z 009CADC0 f scr.o
+808	VERIFIED	0002:001db9d0 ?ObjectiveChildAdd4@BrocSys@@YAXHHABVstring@Broc@@HABUvector@3@PBD@Z 009CAED0 f scr.o
+809	VERIFIED	0002:001dbb80 ?ObjectiveAdd4@BrocSys@@YAXHABVstring@Broc@@HABUvector@3@PBDHH@Z 009CB080 f scr.o
+810	VERIFIED	0002:001dbcc0 ?ObjectiveChildAdd7@BrocSys@@YAXHHABVstring@Broc@@HABUvector@3@PBD@Z 009CB1C0 f scr.o
+811	VERIFIED	0002:001dbdf0 ?ObjectiveAdd7@BrocSys@@YAXHABVstring@Broc@@HABUvector@3@PBDHH@Z 009CB2F0 f scr.o
+812	VERIFIED	0002:001dbe60 ?ObjectiveChildAdd5@BrocSys@@YAXHHABVstring@Broc@@0ABUvector@3@PBD@Z 009CB360 f scr.o
+813	VERIFIED	0002:001dbf20 ?InitObjective@BrocSys@@YAXXZ 009CB420 f scr.o
+814	VERIFIED	0002:001dc120 ?KillThread@AeThreadManager@@AAEXPAVAeThread@@@Z 009CB620 f scr.o
+815	VERIFIED	0002:001dc170 ?Execute@AeThreadManager@@QAEXM@Z 009CB670 f scr.o
+816	VERIFIED	0002:001dc5b0 ?ConvertHashToString@BrocSys@@YAPBDH@Z 009CBAB0 f scr.o
+817	VERIFIED	0002:001dc5e0 ?RemoveHashString@BrocSys@@YA_NH@Z 009CBAE0 f scr.o
+818	VERIFIED	0002:001dc620 ?RemoveHashString@BrocSys@@YA_NPBD@Z 009CBB20 f scr.o
+819	VERIFIED	0002:001dc680 ?ThreadTerminateOnNotify@BrocSys@@YAXIH@Z 009CBB80 f scr.o
+820	VERIFIED	0002:001dc800 ?GetAiArray1@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABVstring@3@@Z 009CBD00 f scr.o
+821	VERIFIED	0002:001dc8f0 ?GetAiArray2@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z 009CBDF0 f scr.o
+822	VERIFIED	0002:001dc950 ?CopyEntArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABV?$ae_sized_array@Ventity@Broc@@$0CAA@@@@Z 009CBE50 f scr.o
+823	VERIFIED	0002:001dc9a0 ?GetSpawnerArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z 009CBEA0 f scr.o
+824	VERIFIED	0002:001dca40 ?GetSpawnerTeamArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABVstring@3@@Z 009CBF40 f scr.o
+825	VERIFIED	0002:001dcb90 ?GetWeaponModel@BrocSys@@YAII@Z 009CC090 f scr.o
+826	VERIFIED	0002:001dcbf0 ?GetWeaponModelName@BrocSys@@YA?AVstring@Broc@@I@Z 009CC0F0 f scr.o
+827	VERIFIED	0002:001dcca0 ?GetPartName@BrocSys@@YAXAAVstring@Broc@@ABV23@H@Z 009CC1A0 f scr.o
+828	VERIFIED	0002:001dce70 ?GetEntByFieldAndHash@BrocSys@@YAIHIPAIH@Z 009CC370 f scr.o
+829	VERIFIED	0002:001dcf80 ?GetEntTarget@BrocSys@@YAIIPAIH@Z 009CC480 f scr.o
+830	VERIFIED	0002:001dcfa0 ?GetEntTargetName@BrocSys@@YAIIPAIH@Z 009CC4A0 f scr.o
+831	VERIFIED	0002:001dcfc0 ?GetEntClassname@BrocSys@@YAIIPAIH@Z 009CC4C0 f scr.o
+832	VERIFIED	0002:001dcfe0 ?GetEntNoteWorthy@BrocSys@@YAIIPAIH@Z 009CC4E0 f scr.o
+833	VERIFIED	0002:001dd000 ?GetEntGroup@BrocSys@@YAIIPAIH@Z 009CC500 f scr.o
+834	VERIFIED	0002:001dd020 ?GetEnt@BrocSys@@YAIABVstring@Broc@@HPAIHH@Z 009CC520 f scr.o
+835	VERIFIED	0002:001dd690 ?InitEntity@BrocSys@@YAXXZ 009CCB90 f scr.o
+836	VERIFIED	0002:001df580 ?GetCondText@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEA80 f scr.o
+837	VERIFIED	0002:001df680 ?GetDebugTxt@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEB80 f scr.o
+838	VERIFIED	0002:001df780 ?GetCondText@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEC80 f scr.o
+839	VERIFIED	0002:001df8b0 ?GetDebugTxt@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEDB0 f scr.o
+840	VERIFIED	0002:001df9e0 ?GetCondText@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEEE0 f scr.o
+841	VERIFIED	0002:001dfb40 ?GetDebugTxt@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CF040 f scr.o
+842	VERIFIED	0002:001dfc50 ?RegisterHashString@BrocSys@@YAXHPBD@Z 009CF150 f scr.o
+843	PORTED	0002:001dfd30 ?RegisterHashString@BrocSys@@YAHPBD@Z 009CF230 f scr.o
+844	VERIFIED	0002:001dfd70 ?CalcStringHash@BrocSys@@YAIPBD@Z 009CF270 f scr.o
+845	VERIFIED	0002:001dfdb0 ?InitAPI@BrocSys@@YAXXZ 009CF2B0 f scr.o
+846	VERIFIED	0002:001e0160 ?LoadScript@BrocSys@@YAXXZ 009CF660 f scr.o
+847	PORTED	0002:001e9420 ?get_dlist_node@AeThreadState@@QAEPAXXZ 009D8920 f i scr.o
+848	PORTED	0002:001e9430 ??2AeThreadState@@SAPAXI_NPBDH@Z 009D8930 f i scr.o
+849	PORTED	0002:001e9450 ??3AeThreadState@@SAXPAX_NPBDH@Z 009D8950 f i scr.o
+850	PORTED	0002:001e9470 ?IsFinished@AeThreadState@@QBE_NXZ 009D8970 f i scr.o
+851	PORTED	0002:001e9480 ?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ 009D8980 f i scr.o
+852	VERIFIED	0002:001e9490 ??1AeThreadState@@UAE@XZ 009D8990 f i scr.o
+853	VERIFIED	0002:001e94a0 ??_GAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o
+854	VERIFIED	0002:001e94a0 ??_EAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o
+855	PORTED	0002:001e94d0 ?get_dlist_node@EndOnScriptNode@@QAEPAXXZ 009D89D0 f i scr.o
+856	PORTED	0002:001e94e0 ??2EndOnScriptNode@@SAPAXI_NPBDH@Z 009D89E0 f i scr.o
+857	PORTED	0002:001e9500 ??3EndOnScriptNode@@SAXPAX_NPBDH@Z 009D8A00 f i scr.o
+858	PORTED	0002:001e9520 ??3EndOnScriptNode@@SAXPAX@Z 009D8A20 f i scr.o
+859	PORTED	0002:001e9540 ?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ 009D8A40 f i scr.o
+860	PORTED	0002:001e9560 ?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 009D8A60 f i scr.o
+861	PORTED	0002:001e9580 ??2EntityNotifySet@@SAPAXI_NPBDH@Z 009D8A80 f i scr.o
+862	PORTED	0002:001e95a0 ??3EntityNotifySet@@SAXPAX_NPBDH@Z 009D8AA0 f i scr.o
+863	PORTED	0002:001e95c0 ?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z 009D8AC0 f i scr.o
+864	PORTED	0002:001e95e0 ??$IsDefined@I@@YA_NI@Z 009D8AE0 f i scr.o
+865	PORTED	0002:001e9600 ??0vector@Broc@@QAE@QAM@Z 009D8B00 f i scr.o
+866	PORTED	0002:001e9630 ??_0vector@Broc@@QAEAAU01@M@Z 009D8B30 f i scr.o
+867	PORTED	0002:001e9680 ??Avector@Broc@@QBEMH@Z 009D8B80 f i scr.o
+868	PORTED	0002:001e9690 ?length2@Broc@@YAMABUvector@1@@Z 009D8B90 f i scr.o
+869	PORTED	0002:001e96c0 ?dot@Broc@@YAMABUvector@1@0@Z 009D8BC0 f i scr.o
+870	PORTED	0002:001e96f0 ?VecDistance@Broc@@YAMABUvector@1@0@Z 009D8BF0 f i scr.o
+871	PORTED	0002:001e9710 ?VecDistanceSquared@Broc@@YAMABUvector@1@0@Z 009D8C10 f i scr.o
+872	PORTED	0002:001e9730 ?VecCloser@Broc@@YAHABUvector@1@00@Z 009D8C30 f i scr.o
+873	PORTED	0002:001e9780 ?VecToAngles@Broc@@YAXAAUvector@1@ABU21@@Z 009D8C80 f i scr.o
+874	PORTED	0002:001e97a0 ?VecAnglesToVectors@Broc@@YAXABUvector@1@AAU21@11@Z 009D8CA0 f i scr.o
+875	PORTED	0002:001e97b0 ??0hudelem@Broc@@QAE@XZ 009D8CB0 f i scr.o
+876	PORTED	0002:001e97c0 ??0hudelem@Broc@@QAE@H@Z 009D8CC0 f i scr.o
+877	PORTED	0002:001e97e0 ?GetIndex@hudelem@Broc@@QBEHXZ 009D8CE0 f i scr.o
+878	VERIFIED	0002:001e97f0 ??0pathnode@Broc@@QAE@XZ 009D8CF0 f i scr.o
+879	PORTED	0002:001e9800 ?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ 009D8D00 f i scr.o
+880	PORTED	0002:001e9810 ?IsDefined@pathnode@Broc@@QBE_NXZ 009D8D10 f i scr.o
+881	PORTED	0002:001e9830 ?GetHandle@vehiclenode@Broc@@QBEHXZ 009D8D30 f i scr.o
+882	PORTED	0002:001e9840 ?IsDefined@vehiclenode@Broc@@QBE_NXZ 009D8D40 f i scr.o
+883	VERIFIED	0002:001e9850 ??0entity@Broc@@QAE@XZ 009D8D50 f i scr.o
+884	PORTED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o
+885	PORTED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o
+886	PORTED	0002:001e9890 ??3AeThread@@SAXPAX_NPBDH@Z 009D8D90 f i scr.o
+887	PORTED	0002:001e98b0 ??3AeThread@@SAXPAX@Z 009D8DB0 f i scr.o
+888	PORTED	0002:001e98d0 ?SetHandle@AeThread@@QAEXVHandle@@@Z 009D8DD0 f i scr.o
+889	PORTED	0002:001e98e0 ?GetHandle@AeThread@@QBE?AVHandle@@XZ 009D8DE0 f i scr.o
+890	PORTED	0002:001e9900 ??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z 009D8E00 f i scr.o
+891	PORTED	0002:001e9920 ??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z 009D8E20 f i scr.o
+892	PORTED	0002:001e9940 ??3Block@BackupStack@AeThread@@SAXPAX@Z 009D8E40 f i scr.o
+893	PORTED	0002:001e9960 ??0Block@BackupStack@AeThread@@QAE@XZ 009D8E60 f i scr.o
+894	PORTED	0002:001e9970 ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ 009D8E70 f i scr.o
+895	PORTED	0002:001e9980 ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009D8E80 f i scr.o
+896	VERIFIED	0002:001e99a0 _asinf 009D8EA0 f i scr.o
+897	VERIFIED	0002:001e99b0 _atanf 009D8EB0 f i scr.o
+898	VERIFIED	0002:001e99c0 _logf 009D8EC0 f i scr.o
+899	PORTED	0002:001e99e0 ?fmod@@YAMMM@Z 009D8EE0 f i scr.o
+900	PORTED	0002:001e9a00 ?log@@YAMM@Z 009D8F00 f i scr.o
+901	VERIFIED	0002:001e9a20 ?button_released_clear_all@controller@@QAEXH@Z 009D8F20 f i scr.o
+902	PORTED	0002:001e9a50 ??BtlFixedString@@QAEPADXZ 009D8F50 f i scr.o
+903	PORTED	0002:001e9a60 ?GetHash@tlFixedString@@QBEIXZ 009D8F60 f i scr.o
+904	PORTED	0002:001e9a70 ?IsLoaded@BspCell@@QBE_NXZ 009D8F70 f i scr.o
+905	PORTED	0002:001e9a80 ?set_transparent@trRefEntity@@QAEXE@Z 009D8F80 f i scr.o
+906	PORTED	0002:001e9af0 ?AddScriptEvent@Entity@@QAE_NVHashString@@V2@@Z 009D8FF0 f i scr.o
+907	PORTED	0002:001e9b90 ?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z 009D9090 f i scr.o
+908	PORTED	0002:001e9bb0 ?val34@Position3@math@@QBE?AVVector4@2@XZ 009D90B0 f i scr.o
+909	PORTED	0002:001e9c00 ?TimeUserBegin@TimerRenderBars@@QAEXXZ 009D9100 f i scr.o
+910	PORTED	0002:001e9c40 ?TimeUserEnd@TimerRenderBars@@QAEXXZ 009D9140 f i scr.o
+911	VERIFIED	0002:001e9c80 ?GetStat@clientPersistent_t@@QAEHH@Z 009D9180 f i scr.o
+912	VERIFIED	0002:001e9d40 ?GetTotalScore@clientPersistent_t@@QAEHXZ 009D9240 f i scr.o
+913	PORTED	0002:001e9d70 ?memcpyFromStack@@YAXPAX0I@Z 009D9270 f i scr.o
+914	PORTED	0002:001e9da0 ?memcpyToStack@@YAXPAX0I@Z 009D92A0 f i scr.o
+915	VERIFIED	0002:001e9dd0 ?MathsRandomInt@Broc@@YAHH@Z 009D92D0 f i scr.o
+916	VERIFIED	0002:001e9e50 ?MathsRandomFloat@Broc@@YAMM@Z 009D9350 f i scr.o
+917	VERIFIED	0002:001e9e70 ?MathsRandomIntRange@Broc@@YAHHH@Z 009D9370 f i scr.o
+918	VERIFIED	0002:001e9ea0 ?MathsRandomFloatRange@Broc@@YAMMM@Z 009D93A0 f i scr.o
+919	VERIFIED	0002:001e9ee0 ?MathsLog@Broc@@YAMM@Z 009D93E0 f i scr.o
+920	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o
+921	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o
+922	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o
+923	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o
+924	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o
+925	PORTED	0002:001e9fd0 ?get_owner@rb_vehicle@@QAEPAVEntity@@XZ 009D94D0 f i scr.o
+926	PORTED	0002:001e9fe0 ?set_script_brake@rb_vehicle@@QAEXM@Z 009D94E0 f i scr.o
+927	PORTED	0002:001ea000 ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z 009D9500 f i scr.o
+928	PORTED	0002:001ea030 ??0dlist_node@?$reserved_dlist@VAeThreadState@@@@QAE@PAU01@0@Z 009D9530 f i scr.o
+929	PORTED	0002:001ea050 ??0dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAU01@0@Z 009D9550 f i scr.o
+930	PORTED	0002:001ea070 ?capacity@?$ae_array@VHashString@@$03@@QBEHXZ 009D9570 f i scr.o
+931	VERIFIED	0002:001ea080 ??A?$ae_array@VHashString@@$03@@QAEAAVHashString@@H@Z 009D9580 f i scr.o
+932	PORTED	0002:001ea100 ??0dlist_node@?$reserved_dlist@VAeThread@@@@QAE@PAU01@0@Z 009D9600 f i scr.o
+933	PORTED	0002:001ea120 ??A?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@H@Z 009D9620 f i scr.o
+934	PORTED	0002:001ea1a0 ?size@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D96A0 f i scr.o
+935	VERIFIED	0002:001ea1b0 ?push_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEXABV?$ae_pair@PAXI@@@Z 009D96B0 f i scr.o
+936	VERIFIED	0002:001ea240 ??0?$ae_pair@PAXI@@QAE@ABQAXABI@Z 009D9740 f i scr.o
+937	PORTED	0002:001ea260 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAE?AV01@H@Z 009D9760 f i scr.o
+938	PORTED	0002:001ea290 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9790 f i scr.o
+939	PORTED	0002:001ea2b0 ??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z 009D97B0 f i scr.o
+940	VERIFIED	0002:001ea340 ??0?$IVPointer@VDestructible@@@@QAE@XZ 009D9840 f i scr.o
+941	PORTED	0002:001ea360 ??Econst_iterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009D9860 f i scr.o
+942	PORTED	0002:001ea3e0 ??0const_iterator@?$reserved_dlist@VAeThread@@@@QAE@ABViterator@1@@Z 009D98E0 f i scr.o
+943	PORTED	0002:001ea400 ??Econst_iterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9900 f i scr.o
+944	PORTED	0002:001ea480 ??0?$ae_sized_array@PAVAeThread@@$0EA@@@QAE@XZ 009D9980 f i scr.o
+945	PORTED	0002:001ea490 ?empty@?$ae_sized_array@PAVAeThread@@$0EA@@@QBE_NXZ 009D9990 f i scr.o
+946	PORTED	0002:001ea4b0 ?push_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXABQAVAeThread@@@Z 009D99B0 f i scr.o
+947	PORTED	0002:001ea540 ?pop_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009D9A40 f i scr.o
+948	PORTED	0002:001ea570 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@H@Z 009D9A70 f i scr.o
+949	PORTED	0002:001ea590 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@VHandle@@@Z 009D9A90 f i scr.o
+950	PORTED	0002:001ea5b0 ??0?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AB0 f i scr.o
+951	PORTED	0002:001ea5d0 ??1?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AD0 f i scr.o
+952	PORTED	0002:001ea5e0 ?push_back@?$ae_array_dynamic@PAVAnimBroRef@@@@QAEXABQAVAnimBroRef@@@Z 009D9AE0 f i scr.o
+953	PORTED	0002:001ea680 ?size@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEHXZ 009D9B80 f i scr.o
+954	VERIFIED	0002:001ea690 ?push_back@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEXABVentity@Broc@@@Z 009D9B90 f i scr.o
+955	PORTED	0002:001ea730 ??Dconst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEABVentity@Broc@@XZ 009D9C30 f i scr.o
+956	PORTED	0002:001ea740 ??Econst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEAAV01@XZ 009D9C40 f i scr.o
+957	PORTED	0002:001ea750 ??9const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE_NV01@@Z 009D9C50 f i scr.o
+958	PORTED	0002:001ea770 ??0?$ae_pair@HPAX@@QAE@ABHABQAX@Z 009D9C70 f i scr.o
+959	PORTED	0002:001ea790 ?size@?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEIXZ 009D9C90 f i scr.o
+960	PORTED	0002:001ea7a0 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEABV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 009D9CA0 f i scr.o
+961	PORTED	0002:001ea820 ??A?$ae_sized_array@G$0BAA@@@QAEAAGH@Z 009D9D20 f i scr.o
+962	PORTED	0002:001ea8a0 ?size@?$ae_sized_array@F$07@@QBEHXZ 009D9DA0 f i scr.o
+963	PORTED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o
+964	PORTED	0002:001ea8c0 ?clear@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DC0 f i scr.o
+965	PORTED	0002:001ea8e0 ?pop@dlist_node@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DE0 f i scr.o
+966	PORTED	0002:001ea900 ?pop@dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 009D9E00 f i scr.o
+967	PORTED	0002:001ea920 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPBVAeThread@@PBUdlist_node@1@@Z 009D9E20 f i scr.o
+968	PORTED	0002:001ea930 ?clear@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E30 f i scr.o
+969	PORTED	0002:001ea950 ?pop@dlist_node@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E50 f i scr.o
+970	PORTED	0002:001ea970 ?capacity@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D9E70 f i scr.o
+971	PORTED	0002:001ea980 ?pop_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009D9E80 f i scr.o
+972	VERIFIED	0002:001ea9a0 ??0?$ae_pair@PAXI@@QAE@XZ 009D9EA0 f i scr.o
+973	VERIFIED	0002:001ea9b0 ??0?$SizedHandle@$07$0BI@@@QAE@HH@Z 009D9EB0 f i scr.o
+974	PORTED	0002:001eaab0 ??0?$SizedHandle@$07$0BI@@@QAE@VHandle@@@Z 009D9FB0 f i scr.o
+975	PORTED	0002:001eaad0 ?GetIndex@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FD0 f i scr.o
+976	PORTED	0002:001eaae0 ?GetKey@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FE0 f i scr.o
+977	VERIFIED	0002:001eaaf0 ??0DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ 009D9FF0 f i scr.o
+978	PORTED	0002:001eab10 ?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ 009DA010 f i scr.o
+979	PORTED	0002:001eab20 ?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z 009DA020 f i scr.o
+980	PORTED	0002:001eab30 ?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ 009DA030 f i scr.o
+981	PORTED	0002:001eab40 ?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DA040 f i scr.o
+982	PORTED	0002:001eab50 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z 009DA050 f i scr.o
+983	PORTED	0002:001eab70 ?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 009DA070 f i scr.o
+984	PORTED	0002:001eab90 ?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 009DA090 f i scr.o
+985	PORTED	0002:001eabb0 ?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ 009DA0B0 f i scr.o
+986	PORTED	0002:001eabc0 ?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z 009DA0C0 f i scr.o
+987	SKIPPED	0002:001eabe0 ?_Kfn@?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@SAABHABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@Z 009DA0E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+988	SKIPPED	0002:001eabf0 ??0?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QAE@XZ 009DA0F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+989	SKIPPED	0002:001eac00 ??0?$hash_compare@HU?$less@H@std@@@stdext@@QAE@XZ 009DA100 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+990	SKIPPED	0002:001eac10 ?size@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEIXZ 009DA110 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+991	SKIPPED	0002:001eac30 ??8const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z 009DA130 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+992	SKIPPED	0002:001eac50 ??0?$pair@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@_N@std@@QAE@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@AB_N@Z 009DA150 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+993	PORTED	0002:001eac70 ??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ 009DA170 f i scr.o
+994	PORTED	0002:001eac80 ??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z 009DA180 f i scr.o
+995	PORTED	0002:001eaca0 ?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ 009DA1A0 f i scr.o
+996	PORTED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o
+997	PORTED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o
+998	PORTED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o
+999	PORTED	0002:001ead00 ?GetWord@?$BitSet@$0BAA@@@QBEIH@Z 009DA200 f i scr.o
+1000	PORTED	0002:001ead10 ?GetNumWords@?$BitSet@$0BAA@@@SAHXZ 009DA210 f i scr.o
+1001	PORTED	0002:001ead20 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z 009DA220 f i scr.o
+1002	SKIPPED	0002:001ead40 ??0?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@QAE@ABV?$hash_compare@HU?$less@H@std@@@1@@Z 009DA240 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1003	SKIPPED	0002:001ead60 ??R?$less@H@std@@QBE_NABH0@Z 009DA260 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1004	SKIPPED	0002:001ead80 ?_Nextnode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@@Z 009DA280 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1005	SKIPPED	0002:001ead90 ?_Prevnode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@@Z 009DA290 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1006	SKIPPED	0002:001eada0 ?_Myval@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DA2A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1007	SKIPPED	0002:001eadb0 ?size@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEIXZ 009DA2B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1008	SKIPPED	0002:001eadc0 ?deallocate@?$allocator@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@I@Z 009DA2C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1009	SKIPPED	0002:001eade0 ??0const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@XZ 009DA2E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1010	SKIPPED	0002:001eadf0 ??Econst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DA2F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1011	SKIPPED	0002:001eae00 ??Fconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DA300 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1012	SKIPPED	0002:001eae10 ?_Mynode@const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@3@XZ 009DA310 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1013	PORTED	0002:001eae20 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAVEndOnScriptNode@@@Z 009DA320 f i scr.o
+1014	PORTED	0002:001eae40 ??Eiterator@?$BitSet@$0BAA@@@QAEXXZ 009DA340 f i scr.o
+1015	PORTED	0002:001eaee0 ??0?$BitSet@$0BAA@@@QAE@W4EInitializer@0@@Z 009DA3E0 f i scr.o
+1016	SKIPPED	0002:001eaef0 ??0?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QAE@ABV01@@Z 009DA3F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1017	SKIPPED	0002:001eaf00 ?capacity@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEIXZ 009DA400 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1018	SKIPPED	0002:001eaf20 ??0?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV01@@Z 009DA420 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1019	SKIPPED	0002:001eaf30 ?deallocate@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@I@Z 009DA430 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1020	SKIPPED	0002:001eaf50 ??0const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DA450 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1021	PORTED	0002:001eaf70 ??0iterator@?$BitSet@$0BAA@@@QAE@XZ 009DA470 f i scr.o
+1022	PORTED	0002:001eaf90 ?compare@iterator@?$BitSet@$0BAA@@@QAE_NABV12@@Z 009DA490 f i scr.o
+1023	SKIPPED	0002:001eafc0 ??Yiterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAEAAV012@H@Z 009DA4C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1024	SKIPPED	0002:001eafe0 ??Dconst_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@XZ 009DA4E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1025	SKIPPED	0002:001eaff0 ?max_size@?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QBEIXZ 009DA4F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1026	SKIPPED	0002:001eb000 ?max_size@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QBEIXZ 009DA500 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1027	SKIPPED	0002:001eb010 ??0const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DA510 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1028	SKIPPED	0002:001eb030 ??8const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE_NABV012@@Z 009DA530 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1029	PORTED	0002:001eb050 ??$?Y$0EA@E@?$ae_fixed_string@$0EA@E@@QAEAAV0@ABV0@@Z 009DA550 f i scr.o
+1030	PORTED	0002:001eb090 ??$hud_set_field@H$03@BrocSys@@YAXHH@Z 009DA590 f i scr.o
+1031	PORTED	0002:001eb110 ??$hud_get_field@H$03@BrocSys@@YAHH@Z 009DA610 f i scr.o
+1032	PORTED	0002:001eb190 ??$hud_set_field@H$07@BrocSys@@YAXHH@Z 009DA690 f i scr.o
+1033	PORTED	0002:001eb210 ??$hud_get_field@H$07@BrocSys@@YAHH@Z 009DA710 f i scr.o
+1034	PORTED	0002:001eb290 ??$hud_set_field@H$0BE@@BrocSys@@YAXHH@Z 009DA790 f i scr.o
+1035	PORTED	0002:001eb310 ??$hud_get_field@H$0BE@@BrocSys@@YAHH@Z 009DA810 f i scr.o
+1036	PORTED	0002:001eb390 ??$hud_set_field@H$0BI@@BrocSys@@YAXHH@Z 009DA890 f i scr.o
+1037	PORTED	0002:001eb410 ??$hud_get_field@H$0BI@@BrocSys@@YAHH@Z 009DA910 f i scr.o
+1038	PORTED	0002:001eb490 ??$hud_set_field@M$0GM@@BrocSys@@YAXHM@Z 009DA990 f i scr.o
+1039	PORTED	0002:001eb510 ??$hud_get_field@M$0GM@@BrocSys@@YAMH@Z 009DAA10 f i scr.o
+1040	PORTED	0002:001eb590 ??$hud_set_field@M$0M@@BrocSys@@YAXHM@Z 009DAA90 f i scr.o
+1041	PORTED	0002:001eb610 ??$hud_get_field@M$0M@@BrocSys@@YAMH@Z 009DAB10 f i scr.o
+1042	PORTED	0002:001eb690 ??$hud_set_field@E$0BP@@BrocSys@@YAXHE@Z 009DAB90 f i scr.o
+1043	PORTED	0002:001eb710 ??$hud_get_field@E$0BP@@BrocSys@@YAEH@Z 009DAC10 f i scr.o
+1044	PORTED	0002:001eb790 ??$hud_set_field@E$0BM@@BrocSys@@YAXHE@Z 009DAC90 f i scr.o
+1045	PORTED	0002:001eb810 ??$hud_get_field@E$0BM@@BrocSys@@YAEH@Z 009DAD10 f i scr.o
+1046	PORTED	0002:001eb890 ??$hud_set_field@E$0BN@@BrocSys@@YAXHE@Z 009DAD90 f i scr.o
+1047	PORTED	0002:001eb910 ??$hud_get_field@E$0BN@@BrocSys@@YAEH@Z 009DAE10 f i scr.o
+1048	PORTED	0002:001eb990 ??$hud_set_field@E$0BO@@BrocSys@@YAXHE@Z 009DAE90 f i scr.o
+1049	PORTED	0002:001eba10 ??$hud_get_field@E$0BO@@BrocSys@@YAEH@Z 009DAF10 f i scr.o
+1050	PORTED	0002:001eba90 ??$pnode_set_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DAF90 f i scr.o
+1051	PORTED	0002:001ebbd0 ??$pnode_get_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DB0D0 f i scr.o
+1052	PORTED	0002:001ebd30 ??$pnode_set_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DB230 f i scr.o
+1053	PORTED	0002:001ebe70 ??$pnode_get_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DB370 f i scr.o
+1054	PORTED	0002:001ebfd0 ??$pnode_set_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DB4D0 f i scr.o
+1055	PORTED	0002:001ec110 ??$pnode_get_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DB610 f i scr.o
+1056	PORTED	0002:001ec270 ??$pnode_set_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DB770 f i scr.o
+1057	PORTED	0002:001ec3b0 ??$pnode_get_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DB8B0 f i scr.o
+1058	PORTED	0002:001ec510 ??$pnode_set_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DBA10 f i scr.o
+1059	PORTED	0002:001ec650 ??$pnode_get_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DBB50 f i scr.o
+1060	PORTED	0002:001ec7b0 ??$pnode_set_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DBCB0 f i scr.o
+1061	PORTED	0002:001ec8f0 ??$pnode_get_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DBDF0 f i scr.o
+1062	PORTED	0002:001eca50 ??$pnode_set_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YAXHUvector@Broc@@@Z 009DBF50 f i scr.o
+1063	PORTED	0002:001ecb70 ??$pnode_get_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YA?AUvector@Broc@@H@Z 009DC070 f i scr.o
+1064	PORTED	0002:001eccb0 ??$pnode_set_field@Uvector@Broc@@$0FI@$0CC@@BrocSys@@YAXHUvector@Broc@@@Z 009DC1B0 f i scr.o
+1065	PORTED	0002:001ecdd0 ??$pnode_get_field@Uvector@Broc@@$0FI@$0CD@@BrocSys@@YA?AUvector@Broc@@H@Z 009DC2D0 f i scr.o
+1066	PORTED	0002:001ecf10 ??$pnode_set_field@M$0FM@$0A@@BrocSys@@YAXHM@Z 009DC410 f i scr.o
+1067	PORTED	0002:001ed020 ??$pnode_get_field@M$0FM@$0A@@BrocSys@@YAMH@Z 009DC520 f i scr.o
+1068	PORTED	0002:001ed0d0 ??$pnode_set_field@F$0CM@$0A@@BrocSys@@YAXHF@Z 009DC5D0 f i scr.o
+1069	PORTED	0002:001ed1e0 ??$pnode_get_field@F$0CM@$0A@@BrocSys@@YAFH@Z 009DC6E0 f i scr.o
+1070	PORTED	0002:001ed290 ??$pnode_set_field@Vstring@Broc@@$0CI@$0CE@@BrocSys@@YAXHVstring@Broc@@@Z 009DC790 f i scr.o
+1071	PORTED	0002:001ed3d0 ??$pnode_get_field@Vstring@Broc@@$0CI@$0CF@@BrocSys@@YA?AVstring@Broc@@H@Z 009DC8D0 f i scr.o
+1072	PORTED	0002:001ed530 ??$vnode_set_field@Vstring@Broc@@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DCA30 f i scr.o
+1073	PORTED	0002:001ed5f0 ??$vnode_get_field@Vstring@Broc@@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DCAF0 f i scr.o
+1074	PORTED	0002:001ed690 ??$vnode_set_field@Vstring@Broc@@$03@BrocSys@@YAXHVstring@Broc@@@Z 009DCB90 f i scr.o
+1075	PORTED	0002:001ed750 ??$vnode_get_field@Vstring@Broc@@$03@BrocSys@@YA?AVstring@Broc@@H@Z 009DCC50 f i scr.o
+1076	PORTED	0002:001ed7f0 ??$vnode_set_field@Uvector@Broc@@$0BE@@BrocSys@@YAXHUvector@Broc@@@Z 009DCCF0 f i scr.o
+1077	PORTED	0002:001ed880 ??$vnode_get_field@Uvector@Broc@@$0BE@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCD80 f i scr.o
+1078	PORTED	0002:001ed940 ??$vnode_set_field@Uvector@Broc@@$0CM@@BrocSys@@YAXHUvector@Broc@@@Z 009DCE40 f i scr.o
+1079	PORTED	0002:001ed9d0 ??$vnode_get_field@Uvector@Broc@@$0CM@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCED0 f i scr.o
+1080	PORTED	0002:001eda90 ??$vnode_set_field@M$07@BrocSys@@YAXHM@Z 009DCF90 f i scr.o
+1081	PORTED	0002:001edb10 ??$vnode_get_field@M$07@BrocSys@@YAMH@Z 009DD010 f i scr.o
+1082	PORTED	0002:001edb90 ??$vnode_set_field@M$0M@@BrocSys@@YAXHM@Z 009DD090 f i scr.o
+1083	PORTED	0002:001edc10 ??$vnode_get_field@M$0M@@BrocSys@@YAMH@Z 009DD110 f i scr.o
+1084	PORTED	0002:001edc90 ??$vnode_set_field@Vstring@Broc@@$0BA@@BrocSys@@YAXHVstring@Broc@@@Z 009DD190 f i scr.o
+1085	PORTED	0002:001edd50 ??$vnode_get_field@Vstring@Broc@@$0BA@@BrocSys@@YA?AVstring@Broc@@H@Z 009DD250 f i scr.o
+1086	SKIPPED	0002:001eddf0 ??$?0U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DD2F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1087	PORTED	0002:001ede00 ??$hash_value@H@stdext@@YAIABH@Z 009DD300 f i scr.o
+1088	SKIPPED	0002:001ede20 ??$?8U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@0@0@Z 009DD320 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1089	SKIPPED	0002:001ede30 ??$_Destroy@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD330 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1090	SKIPPED	0002:001ede40 ??$fill@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0ABV120@@Z 009DD340 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1091	SKIPPED	0002:001ede70 ??$_Destroy@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD370 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1092	SKIPPED	0002:001ede80 ??$_Allocate@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@IPAV120@@Z 009DD380 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1093	SKIPPED	0002:001edea0 ??$?0U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@?$allocator@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DD3A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1094	SKIPPED	0002:001edeb0 ??$_Allocate@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@IPAU120@@Z 009DD3B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1095	SKIPPED	0002:001eded0 ??$_Construct@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAU123@@std@@YAXPAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABQAU120@@Z 009DD3D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1096	SKIPPED	0002:001edef0 ??$?0U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@?$allocator@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DD3F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1097	PORTED	0002:001edf00 ?begin@?$dyn_array@Ventity@Broc@@@Broc@@QAEPAVentity@2@XZ 009DD400 f i scr.o
+1098	PORTED	0002:001edf10 ?end@?$dyn_array@Ventity@Broc@@@Broc@@QAEPAVentity@2@XZ 009DD410 f i scr.o
+1099	PORTED	0002:001edf20 ??R?$DelFunctor@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DD420 f i scr.o
+1100	PORTED	0002:001edf40 ?destroy_all@?$dyn_array@Ventity@Broc@@@Broc@@AAEXXZ 009DD440 f i scr.o
+1101	PORTED	0002:001edf90 ??$min_val@I@Broc@@YAIABI0@Z 009DD490 f i scr.o
+1102	SKIPPED	0002:001edfb0 ??$_Iter_cat@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YA?AUbidirectional_iterator_tag@0@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD4B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1103	SKIPPED	0002:001edfc0 ??$_Ptr_cat@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0@Z 009DD4C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1104	SKIPPED	0002:001edfd0 ??$_Copy_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD4D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1105	SKIPPED	0002:001ee000 ??$_Copy_backward_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD500 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1106	VERIFIED	0002:001ee030 ??_Gstring@Broc@@QAEPAXI@Z 009DD530 f i scr.o
+1107	PORTED	0002:001ee060 ?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 009DD560 f i scr.o
+1108	SKIPPED	0002:001ee070 ??$_Construct@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABV120@@Z 009DD570 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1109	SKIPPED	0002:001ee090 ??$_Destroy@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1110	PORTED	0002:001ee0a0 ??0AeThreadState@@QAE@W4EAction@0@@Z 009DD5A0 f i scr.o
+1111	VERIFIED	0002:001ee0d0 ?length@Broc@@YAMABUvector@1@@Z 009DD5D0 f i scr.o
+1112	PORTED	0002:001ee110 ?normalize@Broc@@YAXAAUvector@1@@Z 009DD610 f i scr.o
+1113	PORTED	0002:001ee1a0 ?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z 009DD6A0 f i scr.o
+1114	PORTED	0002:001ee1e0 ?ActivateDebug@AeThread@@QAEXXZ 009DD6E0 f i scr.o
+1115	PORTED	0002:001ee1f0 ?IsFinished@AeThread@@QBE_NXZ 009DD6F0 f i scr.o
+1116	PORTED	0002:001ee200 ?IsDebug@AeThread@@QBE_NXZ 009DD700 f i scr.o
+1117	PORTED	0002:001ee210 ?HasExecuted@AeThread@@QBE_NXZ 009DD710 f i scr.o
+1118	PORTED	0002:001ee220 ?SetExecuted@AeThread@@QAEXXZ 009DD720 f i scr.o
+1119	PORTED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o
+1120	VERIFIED	0002:001ee290 ?GetBoneNameHash@XModelParts@@QBEII@Z 009DD790 f i scr.o
+1121	PORTED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o
+1122	VERIFIED	0002:001ee340 ??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o
+1123	VERIFIED	0002:001ee340 ??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o
+1124	VERIFIED	0002:001ee370 ??1AeThreadEntityNotifyTimeoutState@@UAE@XZ 009DD870 f i scr.o
+1125	VERIFIED	0002:001ee380 ??_EAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o
+1126	VERIFIED	0002:001ee380 ??_GAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o
+1127	VERIFIED	0002:001ee3b0 ??1AeThreadPakNotifyState@@UAE@XZ 009DD8B0 f i scr.o
+1128	VERIFIED	0002:001ee3c0 ??_GAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o
+1129	VERIFIED	0002:001ee3c0 ??_EAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o
+1130	VERIFIED	0002:001ee3f0 ??1AeThreadWaitState@@UAE@XZ 009DD8F0 f i scr.o
+1131	VERIFIED	0002:001ee400 ??_GAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
+1132	VERIFIED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
+1133	VERIFIED	0002:001ee430 ??1AeThreadWaitFramesState@@UAE@XZ 009DD930 f i scr.o
+1134	VERIFIED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o
+1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o
+1136	PORTED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o
+1137	PORTED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o
+1138	VERIFIED	0002:001ee650 ?AnglesToRight@@YAXQBMQAM@Z 009DDB50 f i scr.o
+1139	PORTED	0002:001ee750 ??0weaponInfo_s@@QAE@XZ 009DDC50 f i scr.o
+1140	VERIFIED	0002:001ee790 ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z 009DDC90 f i scr.o
+1141	PORTED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o
+1142	VERIFIED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o
+1143	PORTED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o
+1144	PORTED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o
+1145	PORTED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o
+1146	PORTED	0002:001ee8a0 ?push_back@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DDDA0 f i scr.o
+1147	PORTED	0002:001ee8d0 ??0?$reserved_dlist@VAeThread@@@@QAE@XZ 009DDDD0 f i scr.o
+1148	PORTED	0002:001ee8f0 ?push_back@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DDDF0 f i scr.o
+1149	PORTED	0002:001ee920 ?pop_back@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 009DDE20 f i scr.o
+1150	PORTED	0002:001ee950 ?free_space@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009DDE50 f i scr.o
+1151	PORTED	0002:001ee960 ??Diterator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 009DDE60 f i scr.o
+1152	VERIFIED	0002:001ee970 ?BindObjectToHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXVHandle@@PAVAeThread@@@Z 009DDE70 f i scr.o
+1153	PORTED	0002:001eea10 ?DereferenceHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@VHandle@@@Z 009DDF10 f i scr.o
+1154	PORTED	0002:001eea50 ??Dconst_iterator@?$reserved_dlist@VAeThreadState@@@@QBEPBVAeThreadState@@XZ 009DDF50 f i scr.o
+1155	PORTED	0002:001eea60 ??9const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 009DDF60 f i scr.o
+1156	PORTED	0002:001eea90 ??Dconst_iterator@?$reserved_dlist@VAeThread@@@@QBEPBVAeThread@@XZ 009DDF90 f i scr.o
+1157	PORTED	0002:001eeaa0 ??9const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 009DDFA0 f i scr.o
+1158	PORTED	0002:001eead0 ?clear@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXXZ 009DDFD0 f i scr.o
+1159	PORTED	0002:001eeae0 ?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009DDFE0 f i scr.o
+1160	SKIPPED	0002:001eeb00 ??9const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z 009DE000 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1161	VERIFIED	0002:001eeb20 ??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ 009DE020 f i scr.o
+1162	PORTED	0002:001eeb40 ?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE040 f i scr.o
+1163	PORTED	0002:001eeb60 ?end@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE060 f i scr.o
+1164	VERIFIED	0002:001eeb80 ??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z 009DE080 f i scr.o
+1165	PORTED	0002:001eebd0 ??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ 009DE0D0 f i scr.o
+1166	PORTED	0002:001eebf0 ??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DE0F0 f i scr.o
+1167	PORTED	0002:001eec00 ?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z 009DE100 f i scr.o
+1168	PORTED	0002:001eec60 ?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z 009DE160 f i scr.o
+1169	PORTED	0002:001eecb0 ?find@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@PAVAeThread@@@Z 009DE1B0 f i scr.o
+1170	PORTED	0002:001eed00 ?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009DE200 f i scr.o
+1171	PORTED	0002:001eed20 ?Add@?$BitSet@$0BAA@@@QAEXH@Z 009DE220 f i scr.o
+1172	PORTED	0002:001eedb0 ?Rmv@?$BitSet@$0BAA@@@QAEXH@Z 009DE2B0 f i scr.o
+1173	PORTED	0002:001eee40 ??0?$ae_fixed_string@$0CA@E@@QAE@ABV0@@Z 009DE340 f i scr.o
+1174	PORTED	0002:001eee80 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z 009DE380 f i scr.o
+1175	SKIPPED	0002:001eeed0 ?size@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QBEIXZ 009DE3D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1176	SKIPPED	0002:001eeee0 ??R?$hash_compare@HU?$less@H@std@@@stdext@@QBEIABH@Z 009DE3E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1177	SKIPPED	0002:001eef00 ??R?$hash_compare@HU?$less@H@std@@@stdext@@QBE_NABH0@Z 009DE400 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1178	SKIPPED	0002:001eef20 ??Dconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DE420 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1179	SKIPPED	0002:001eef30 ??0iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@XZ 009DE430 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1180	SKIPPED	0002:001eef40 ??Diterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEAAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DE440 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1181	SKIPPED	0002:001eef50 ??Eiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DE450 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1182	SKIPPED	0002:001eef60 ??Fiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DE460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1183	PORTED	0002:001eef70 ??C?$IVPointer@VAIType@@@@QBEPBVAIType@@XZ 009DE470 f i scr.o
+1184	PORTED	0002:001eef90 ??0iterator@?$BitSet@$0BAA@@@QAE@ABV1@@Z 009DE490 f i scr.o
+1185	PORTED	0002:001eefd0 ?Clear@?$BitSet@$0BAA@@@QAEXXZ 009DE4D0 f i scr.o
+1186	PORTED	0002:001eeff0 ??S?$BitSet@$0BAA@@@QBE?AV0@XZ 009DE4F0 f i scr.o
+1187	PORTED	0002:001ef070 ?begin@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ 009DE570 f i scr.o
+1188	PORTED	0002:001ef0b0 ?end@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ 009DE5B0 f i scr.o
+1189	SKIPPED	0002:001ef0d0 ?destroy@?$allocator@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE5D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1190	SKIPPED	0002:001ef0e0 ??0iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE5E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1191	SKIPPED	0002:001ef100 ??Eiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AV012@H@Z 009DE600 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1192	PORTED	0002:001ef120 ??9iterator@?$BitSet@$0BAA@@@QAE_NABV01@@Z 009DE620 f i scr.o
+1193	SKIPPED	0002:001ef170 ??Diterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEAAV0?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@XZ 009DE670 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1194	SKIPPED	0002:001ef180 ??Hiterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE?AV012@H@Z 009DE680 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1195	SKIPPED	0002:001ef1a0 ?begin@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@XZ 009DE6A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1196	SKIPPED	0002:001ef1c0 ?max_size@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEIXZ 009DE6C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1197	SKIPPED	0002:001ef1d0 ?clear@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEXXZ 009DE6D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1198	SKIPPED	0002:001ef220 ?destroy@?$allocator@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE720 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1199	SKIPPED	0002:001ef230 ?max_size@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEIXZ 009DE730 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1200	SKIPPED	0002:001ef240 ??0?$_Vector_val@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAE@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@1@@Z 009DE740 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1201	SKIPPED	0002:001ef250 ?allocate@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@I@Z 009DE750 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1202	SKIPPED	0002:001ef270 ??0iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@PAV0?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE770 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1203	SKIPPED	0002:001ef290 ??9const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE_NABV012@@Z 009DE790 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1204	SKIPPED	0002:001ef2b0 ?allocate@?$allocator@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@I@Z 009DE7B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1205	SKIPPED	0002:001ef2d0 ?construct@?$allocator@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@ABQAU342@@Z 009DE7D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1206	SKIPPED	0002:001ef2f0 ??0?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@QAE@ABU01@@Z 009DE7F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1207	SKIPPED	0002:001ef340 ??0?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAE@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DE840 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1208	PORTED	0002:001ef350 ??$safe_for_each@Viterator@?$reserved_dlist@VAeThreadState@@@@V?$DelFunctor@VAeThreadState@@@@@@YAXViterator@?$reserved_dlist@VAeThreadState@@@@0V?$DelFunctor@VAeThreadState@@@@@Z 009DE850 f i scr.o
+1209	SKIPPED	0002:001ef3a0 ??$copy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00@Z 009DE8A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1210	SKIPPED	0002:001ef3d0 ??$copy_backward@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00@Z 009DE8D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1211	PORTED	0002:001ef400 ?destroy_all@?$dyn_array@Vstring@Broc@@@Broc@@AAEXXZ 009DE900 f i scr.o
+1212	SKIPPED	0002:001ef480 ?construct@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@ABV342@@Z 009DE980 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1213	SKIPPED	0002:001ef4a0 ?destroy@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE9A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1214	SKIPPED	0002:001ef4b0 ??$_Uninit_copy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 009DE9B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1215	PORTED	0002:001ef4e0 ?GetLargestBlockSize@PoolAllocator@@QBEHXZ 009DE9E0 f i scr.o
+1216	PORTED	0002:001ef500 ?AddEndOn@EntityNotifySet@@QAEXPAVEndOnScriptNode@@@Z 009DEA00 f i scr.o
+1217	PORTED	0002:001ef530 ?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA30 f i scr.o
+1218	PORTED	0002:001ef550 ?VecAnglesToRight@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA50 f i scr.o
+1219	PORTED	0002:001ef570 ?VecAnglesToForward@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA70 f i scr.o
+1220	PORTED	0002:001ef590 ?ApplyStateController@AeThread@@QAEXPAVAeThreadState@@@Z 009DEA90 f i scr.o
+1221	PORTED	0002:001ef5c0 ?ExecThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009DEAC0 f i scr.o
+1222	PORTED	0002:001ef600 ?DereferenceHandle@AeThreadManager@@QBEPAVAeThread@@VHandle@@@Z 009DEB00 f i scr.o
+1223	VERIFIED	0002:001ef640 ??_EAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o
+1224	VERIFIED	0002:001ef640 ??_GAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o
+1225	VERIFIED	0002:001ef670 ??1AeThreadEntityNotifyMatchState@@UAE@XZ 009DEB70 f i scr.o
+1226	PORTED	0002:001ef680 ?MathFastSinCos@Broc@@YAXMAAM0@Z 009DEB80 f i scr.o
+1227	VERIFIED	0002:001ef6c0 ??0vehicle_follow@@QAE@XZ 009DEBC0 f i scr.o
+1228	PORTED	0002:001ef770 ?erase@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DEC70 f i scr.o
+1229	PORTED	0002:001ef810 ?begin@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DED10 f i scr.o
+1230	PORTED	0002:001ef860 ?erase@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DED60 f i scr.o
+1231	PORTED	0002:001ef900 ?erase@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DEE00 f i scr.o
+1232	VERIFIED	0002:001ef9a0 ??0?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DEEA0 f i scr.o
+1233	PORTED	0002:001ef9b0 ?erase@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEXH@Z 009DEEB0 f i scr.o
+1234	VERIFIED	0002:001efa00 ?ReleaseHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXVHandle@@@Z 009DEF00 f i scr.o
+1235	PORTED	0002:001efb10 ??D?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QBEPAVAeThread@@XZ 009DF010 f i scr.o
+1236	SKIPPED	0002:001efb50 ??Cconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPBU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DF050 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1237	SKIPPED	0002:001efb60 ??Citerator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DF060 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1238	SKIPPED	0002:001efb70 ??0?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@QAE@ABHABV?$ae_fixed_string@$0CA@E@@@Z 009DF070 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1239	PORTED	0002:001efbc0 ??0?$WaitTilOutputInst1@H@@QAE@ABH@Z 009DF0C0 f i scr.o
+1240	PORTED	0002:001efbf0 ?AssignData@?$WaitTilOutputInst1@H@@UAEXPAVWaitTilOutput@@@Z 009DF0F0 f i scr.o
+1241	PORTED	0002:001efca0 ?GetSize@?$WaitTilOutputInst1@H@@UAEHXZ 009DF1A0 f i scr.o
+1242	PORTED	0002:001efcb0 ??_G?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o
+1243	PORTED	0002:001efcb0 ??_E?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o
+1244	PORTED	0002:001efce0 ??1?$WaitTilOutputInst1@H@@UAE@XZ 009DF1E0 f i scr.o
+1245	PORTED	0002:001efcf0 ??0?$WaitTilOutputInst2@MI@@QAE@ABMABI@Z 009DF1F0 f i scr.o
+1246	PORTED	0002:001efd20 ?AssignData@?$WaitTilOutputInst2@MI@@UAEXPAVWaitTilOutput@@@Z 009DF220 f i scr.o
+1247	PORTED	0002:001efde0 ?GetSize@?$WaitTilOutputInst2@MI@@UAEHXZ 009DF2E0 f i scr.o
+1248	PORTED	0002:001efdf0 ??_G?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
+1249	PORTED	0002:001efdf0 ??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
+1250	PORTED	0002:001efe20 ??1?$WaitTilOutputInst2@MI@@UAE@XZ 009DF320 f i scr.o
+1251	PORTED	0002:001efe30 ??B?$IVPointer@VAIType@@@@QBE_NXZ 009DF330 f i scr.o
+1252	PORTED	0002:001efe50 ?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DF350 f i scr.o
+1253	PORTED	0002:001eff30 ??0?$BitSet@$0BAA@@@QAE@XZ 009DF430 f i scr.o
+1254	SKIPPED	0002:001eff60 ?_Hashval@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@IBEIABH@Z 009DF460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1255	SKIPPED	0002:001effa0 ?end@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@XZ 009DF4A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1256	SKIPPED	0002:001effc0 ?erase@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@V312@@Z 009DF4C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1257	SKIPPED	0002:001f0010 ?erase@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@V312@0@Z 009DF510 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1258	SKIPPED	0002:001f0090 ?_Tidy@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAEXXZ 009DF590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1259	SKIPPED	0002:001f00c0 ?begin@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE?AViterator@12@XZ 009DF5C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1260	SKIPPED	0002:001f00e0 ?end@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE?AViterator@12@XZ 009DF5E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1261	SKIPPED	0002:001f0100 ?_Buynode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@XZ 009DF600 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1262	SKIPPED	0002:001f0120 ??0?$_List_ptr@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAE@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DF620 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1263	SKIPPED	0002:001f0130 ??0_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@PAU012@0ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@@Z 009DF630 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1264	PORTED	0002:001f0190 ??$entity_set_field@Vstring@Broc@@$0CHM@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DF690 f i scr.o
+1265	PORTED	0002:001f02b0 ??$entity_get_field@Vstring@Broc@@$0CHM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009DF7B0 f i scr.o
+1266	PORTED	0002:001f0420 ??$entity_set_field@Uvector@Broc@@$0BFA@$01@BrocSys@@YAXIUvector@Broc@@@Z 009DF920 f i scr.o
+1267	PORTED	0002:001f0500 ??$entity_get_field@Uvector@Broc@@$0BFA@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009DFA00 f i scr.o
+1268	PORTED	0002:001f0660 ??$entity_set_field@Vstring@Broc@@$0CHA@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DFB60 f i scr.o
+1269	PORTED	0002:001f0780 ??$entity_get_field@Vstring@Broc@@$0CHA@$05@BrocSys@@YA?AVstring@Broc@@I@Z 009DFC80 f i scr.o
+1270	PORTED	0002:001f08f0 ??$entity_set_field@H$0CMA@$00@BrocSys@@YAXIH@Z 009DFDF0 f i scr.o
+1271	PORTED	0002:001f09c0 ??$entity_get_field@H$0CMA@$0A@@BrocSys@@YAHI@Z 009DFEC0 f i scr.o
+1272	PORTED	0002:001f0a80 ??$entity_set_field@M$0DBM@$0A@@BrocSys@@YAXIM@Z 009DFF80 f i scr.o
+1273	PORTED	0002:001f0b50 ??$entity_get_field@M$0DBM@$0A@@BrocSys@@YAMI@Z 009E0050 f i scr.o
+1274	PORTED	0002:001f0c10 ??$entity_set_field@M$0DCA@$0A@@BrocSys@@YAXIM@Z 009E0110 f i scr.o
+1275	PORTED	0002:001f0ce0 ??$entity_get_field@M$0DCA@$0A@@BrocSys@@YAMI@Z 009E01E0 f i scr.o
+1276	PORTED	0002:001f0da0 ??$entity_set_field@Vstring@Broc@@$0CIM@$0L@@BrocSys@@YAXIVstring@Broc@@@Z 009E02A0 f i scr.o
+1277	PORTED	0002:001f0ec0 ??$entity_get_field@Vstring@Broc@@$0CIM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E03C0 f i scr.o
+1278	PORTED	0002:001f1030 ??$entity_set_field@Vstring@Broc@@$0CIE@$0M@@BrocSys@@YAXIVstring@Broc@@@Z 009E0530 f i scr.o
+1279	PORTED	0002:001f1150 ??$entity_get_field@Vstring@Broc@@$0CIE@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E0650 f i scr.o
+1280	PORTED	0002:001f12c0 ??$entity_set_field@Vstring@Broc@@$0DBI@$0A@@BrocSys@@YAXIVstring@Broc@@@Z 009E07C0 f i scr.o
+1281	PORTED	0002:001f13e0 ??$entity_get_field@Vstring@Broc@@$0DBI@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E08E0 f i scr.o
+1282	PORTED	0002:001f1550 ??$entity_set_field@M$0DIA@$0A@@BrocSys@@YAXIM@Z 009E0A50 f i scr.o
+1283	PORTED	0002:001f1620 ??$entity_get_field@M$0DIA@$0A@@BrocSys@@YAMI@Z 009E0B20 f i scr.o
+1284	PORTED	0002:001f16e0 ??$entity_set_field@M$0DIE@$0A@@BrocSys@@YAXIM@Z 009E0BE0 f i scr.o
+1285	PORTED	0002:001f17b0 ??$entity_get_field@M$0DIE@$0A@@BrocSys@@YAMI@Z 009E0CB0 f i scr.o
+1286	PORTED	0002:001f1870 ??$entity_set_field@H$0DGM@$0A@@BrocSys@@YAXIH@Z 009E0D70 f i scr.o
+1287	PORTED	0002:001f1940 ??$entity_get_field@H$0DGM@$0A@@BrocSys@@YAHI@Z 009E0E40 f i scr.o
+1288	PORTED	0002:001f1a00 ??$entity_set_field@H$0DFI@$02@BrocSys@@YAXIH@Z 009E0F00 f i scr.o
+1289	PORTED	0002:001f1ad0 ??$entity_get_field@H$0DFI@$0A@@BrocSys@@YAHI@Z 009E0FD0 f i scr.o
+1290	PORTED	0002:001f1b90 ??$entity_set_field@H$0DGA@$0A@@BrocSys@@YAXIH@Z 009E1090 f i scr.o
+1291	PORTED	0002:001f1c60 ??$entity_get_field@H$0DGA@$0A@@BrocSys@@YAHI@Z 009E1160 f i scr.o
+1292	PORTED	0002:001f1d20 ??$entity_set_field@Uvector@Broc@@$0BGA@$03@BrocSys@@YAXIUvector@Broc@@@Z 009E1220 f i scr.o
+1293	PORTED	0002:001f1e00 ??$entity_get_field@Uvector@Broc@@$0BGA@$04@BrocSys@@YA?AUvector@Broc@@I@Z 009E1300 f i scr.o
+1294	PORTED	0002:001f1f60 ??$entity_set_field@Uvector@Broc@@$0DJA@$0A@@BrocSys@@YAXIUvector@Broc@@@Z 009E1460 f i scr.o
+1295	PORTED	0002:001f2040 ??$entity_get_field@Uvector@Broc@@$0DJA@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009E1540 f i scr.o
+1296	PORTED	0002:001f21a0 ??$entity_set_field@M$0DBE@$0A@@BrocSys@@YAXIM@Z 009E16A0 f i scr.o
+1297	PORTED	0002:001f2270 ??$entity_get_field@M$0DBE@$0A@@BrocSys@@YAMI@Z 009E1770 f i scr.o
+1298	PORTED	0002:001f2330 ??$entity_set_field@M$0CHI@$0A@@BrocSys@@YAXIM@Z 009E1830 f i scr.o
+1299	PORTED	0002:001f2400 ??$entity_get_field@M$0CHI@$0A@@BrocSys@@YAMI@Z 009E1900 f i scr.o
+1300	PORTED	0002:001f24c0 ??$entity_set_field@H$0DLE@$0A@@BrocSys@@YAXIH@Z 009E19C0 f i scr.o
+1301	PORTED	0002:001f2590 ??$entity_get_field@H$0DLE@$0A@@BrocSys@@YAHI@Z 009E1A90 f i scr.o
+1302	PORTED	0002:001f2650 ??$entity_set_field@M$0DII@$0A@@BrocSys@@YAXIM@Z 009E1B50 f i scr.o
+1303	PORTED	0002:001f2720 ??$entity_get_field@M$0DII@$0A@@BrocSys@@YAMI@Z 009E1C20 f i scr.o
+1304	PORTED	0002:001f27e0 ??$entity_set_field@Vstring@Broc@@$0DLI@$0A@@BrocSys@@YAXIVstring@Broc@@@Z 009E1CE0 f i scr.o
+1305	PORTED	0002:001f2900 ??$entity_get_field@Vstring@Broc@@$0DLI@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E1E00 f i scr.o
+1306	PORTED	0002:001f2a70 ??$entity_set_field@Vstring@Broc@@$0CJE@$0N@@BrocSys@@YAXIVstring@Broc@@@Z 009E1F70 f i scr.o
+1307	PORTED	0002:001f2b90 ??$entity_get_field@Vstring@Broc@@$0CJE@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E2090 f i scr.o
+1308	PORTED	0002:001f2d00 ??$entity_set_field@Vstring@Broc@@$0CJM@$0O@@BrocSys@@YAXIVstring@Broc@@@Z 009E2200 f i scr.o
+1309	PORTED	0002:001f2e20 ??$entity_get_field@Vstring@Broc@@$0CJM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E2320 f i scr.o
+1310	PORTED	0002:001f2f90 ??$entity_set_field@H$0DFM@$0A@@BrocSys@@YAXIH@Z 009E2490 f i scr.o
+1311	PORTED	0002:001f3060 ??$entity_get_field@H$0DFM@$0A@@BrocSys@@YAHI@Z 009E2560 f i scr.o
+1312	PORTED	0002:001f3120 ??$entity_set_field@Vstring@Broc@@$0CKE@$0P@@BrocSys@@YAXIVstring@Broc@@@Z 009E2620 f i scr.o
+1313	PORTED	0002:001f3240 ??$entity_get_field@Vstring@Broc@@$0CKE@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E2740 f i scr.o
+1314	PORTED	0002:001f33b0 ??$entity_set_field@F$0DLO@$0A@@BrocSys@@YAXIF@Z 009E28B0 f i scr.o
+1315	PORTED	0002:001f3480 ??$entity_get_field@F$0DLO@$0A@@BrocSys@@YAFI@Z 009E2980 f i scr.o
+1316	PORTED	0002:001f3540 ??$entity_set_field@H$0CLI@$08@BrocSys@@YAXIH@Z 009E2A40 f i scr.o
+1317	PORTED	0002:001f3610 ??$entity_get_field@H$0CLI@$09@BrocSys@@YAHI@Z 009E2B10 f i scr.o
+1318	PORTED	0002:001f36d0 ??$entity_set_actor_field@M$0PA@$0A@@BrocSys@@YAXIM@Z 009E2BD0 f i scr.o
+1319	PORTED	0002:001f37f0 ??$entity_get_actor_field@M$0PA@$0A@@BrocSys@@YAMI@Z 009E2CF0 f i scr.o
+1320	PORTED	0002:001f3920 ??$entity_set_actor_field@M$0PE@$0A@@BrocSys@@YAXIM@Z 009E2E20 f i scr.o
+1321	PORTED	0002:001f3a40 ??$entity_get_actor_field@M$0PE@$0A@@BrocSys@@YAMI@Z 009E2F40 f i scr.o
+1322	PORTED	0002:001f3b70 ??$entity_set_actor_field@M$0PI@$0A@@BrocSys@@YAXIM@Z 009E3070 f i scr.o
+1323	PORTED	0002:001f3c90 ??$entity_get_actor_field@M$0PI@$0A@@BrocSys@@YAMI@Z 009E3190 f i scr.o
+1324	PORTED	0002:001f3dc0 ??$entity_set_actor_field@M$0PM@$0A@@BrocSys@@YAXIM@Z 009E32C0 f i scr.o
+1325	PORTED	0002:001f3ee0 ??$entity_get_actor_field@M$0PM@$0A@@BrocSys@@YAMI@Z 009E33E0 f i scr.o
+1326	PORTED	0002:001f4010 ??$entity_set_actor_field@M$0BAA@$0A@@BrocSys@@YAXIM@Z 009E3510 f i scr.o
+1327	PORTED	0002:001f4130 ??$entity_get_actor_field@M$0BAA@$0A@@BrocSys@@YAMI@Z 009E3630 f i scr.o
+1328	PORTED	0002:001f4260 ??$entity_set_actor_field@Uvector@Broc@@$0BEA@$0BA@@BrocSys@@YAXIUvector@Broc@@@Z 009E3760 f i scr.o
+1329	PORTED	0002:001f4390 ??$entity_get_actor_field@Uvector@Broc@@$0BEA@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009E3890 f i scr.o
+1330	PORTED	0002:001f4550 ??$entity_set_actor_field@Uvector@Broc@@$0BEM@$0BA@@BrocSys@@YAXIUvector@Broc@@@Z 009E3A50 f i scr.o
+1331	PORTED	0002:001f4680 ??$entity_get_actor_field@Uvector@Broc@@$0BEM@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009E3B80 f i scr.o
+1332	PORTED	0002:001f4840 ??$entity_set_actor_field@Uvector@Broc@@$0BFI@$0BA@@BrocSys@@YAXIUvector@Broc@@@Z 009E3D40 f i scr.o
+1333	PORTED	0002:001f4970 ??$entity_get_actor_field@Uvector@Broc@@$0BFI@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009E3E70 f i scr.o
+1334	PORTED	0002:001f4b30 ??$entity_set_actor_field@M$0IKM@$0BB@@BrocSys@@YAXIM@Z 009E4030 f i scr.o
+1335	PORTED	0002:001f4c50 ??$entity_get_actor_field@M$0IKM@$0A@@BrocSys@@YAMI@Z 009E4150 f i scr.o
+1336	PORTED	0002:001f4d80 ??$entity_set_actor_field@M$0ILA@$0A@@BrocSys@@YAXIM@Z 009E4280 f i scr.o
+1337	PORTED	0002:001f4ea0 ??$entity_get_actor_field@M$0ILA@$0A@@BrocSys@@YAMI@Z 009E43A0 f i scr.o
+1338	PORTED	0002:001f4fd0 ??$entity_set_actor_field@M$0IKI@$0BB@@BrocSys@@YAXIM@Z 009E44D0 f i scr.o
+1339	PORTED	0002:001f50f0 ??$entity_get_actor_field@M$0IKI@$0A@@BrocSys@@YAMI@Z 009E45F0 f i scr.o
+1340	PORTED	0002:001f5220 ??$entity_set_actor_field@H$0ILE@$0A@@BrocSys@@YAXIH@Z 009E4720 f i scr.o
+1341	PORTED	0002:001f5340 ??$entity_get_actor_field@H$0ILE@$0A@@BrocSys@@YAHI@Z 009E4840 f i scr.o
+1342	PORTED	0002:001f5460 ??$entity_set_actor_field@M$0JJE@$0A@@BrocSys@@YAXIM@Z 009E4960 f i scr.o
+1343	PORTED	0002:001f5580 ??$entity_get_actor_field@M$0JJE@$0A@@BrocSys@@YAMI@Z 009E4A80 f i scr.o
+1344	PORTED	0002:001f56b0 ??$entity_set_actor_field@H$0ICE@$0A@@BrocSys@@YAXIH@Z 009E4BB0 f i scr.o
+1345	PORTED	0002:001f57d0 ??$entity_get_actor_field@H$0ICE@$0A@@BrocSys@@YAHI@Z 009E4CD0 f i scr.o
+1346	PORTED	0002:001f58f0 ??$entity_set_actor_field@H$0ICI@$0A@@BrocSys@@YAXIH@Z 009E4DF0 f i scr.o
+1347	PORTED	0002:001f5a10 ??$entity_get_actor_field@H$0ICI@$0A@@BrocSys@@YAHI@Z 009E4F10 f i scr.o
+1348	PORTED	0002:001f5b30 ??$entity_set_actor_field@F$0IFA@$0A@@BrocSys@@YAXIF@Z 009E5030 f i scr.o
+1349	PORTED	0002:001f5c50 ??$entity_get_actor_field@F$0IFA@$0A@@BrocSys@@YAFI@Z 009E5150 f i scr.o
+1350	PORTED	0002:001f5d70 ??$entity_set_actor_field@M$0ICM@$0A@@BrocSys@@YAXIM@Z 009E5270 f i scr.o
+1351	PORTED	0002:001f5e90 ??$entity_get_actor_field@M$0ICM@$0A@@BrocSys@@YAMI@Z 009E5390 f i scr.o
+1352	PORTED	0002:001f5fc0 ??$entity_set_actor_field@M$0IDA@$0A@@BrocSys@@YAXIM@Z 009E54C0 f i scr.o
+1353	PORTED	0002:001f60e0 ??$entity_get_actor_field@M$0IDA@$0A@@BrocSys@@YAMI@Z 009E55E0 f i scr.o
+1354	PORTED	0002:001f6210 ??$entity_set_actor_field@H$0CGI@$0A@@BrocSys@@YAXIH@Z 009E5710 f i scr.o
+1355	PORTED	0002:001f6330 ??$entity_get_actor_field@H$0CGI@$0A@@BrocSys@@YAHI@Z 009E5830 f i scr.o
+1356	PORTED	0002:001f6450 ??$entity_set_actor_field@H$0CGM@$0BA@@BrocSys@@YAXIH@Z 009E5950 f i scr.o
+1357	PORTED	0002:001f6570 ??$entity_get_actor_field@H$0CGM@$0A@@BrocSys@@YAHI@Z 009E5A70 f i scr.o
+1358	PORTED	0002:001f6690 ??$entity_set_actor_field@Uvector@Broc@@$0CHE@$0BA@@BrocSys@@YAXIUvector@Broc@@@Z 009E5B90 f i scr.o
+1359	PORTED	0002:001f67c0 ??$entity_get_actor_field@Uvector@Broc@@$0CHE@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009E5CC0 f i scr.o
+1360	PORTED	0002:001f6980 ??$entity_set_actor_field@H$0CHA@$0BA@@BrocSys@@YAXIH@Z 009E5E80 f i scr.o
+1361	PORTED	0002:001f6aa0 ??$entity_get_actor_field@H$0CHA@$0A@@BrocSys@@YAHI@Z 009E5FA0 f i scr.o
+1362	PORTED	0002:001f6bc0 ??$entity_set_actor_field@I$0CIA@$0BA@@BrocSys@@YAXII@Z 009E60C0 f i scr.o
+1363	PORTED	0002:001f6ce0 ??$entity_get_actor_field@I$0CIA@$0A@@BrocSys@@YAII@Z 009E61E0 f i scr.o
+1364	PORTED	0002:001f6e00 ??$entity_set_actor_field@H$0BNI@$0BA@@BrocSys@@YAXIH@Z 009E6300 f i scr.o
+1365	PORTED	0002:001f6f20 ??$entity_get_actor_field@H$0BNI@$0A@@BrocSys@@YAHI@Z 009E6420 f i scr.o
+1366	PORTED	0002:001f7040 ??$entity_set_actor_field@M$0IBI@$0A@@BrocSys@@YAXIM@Z 009E6540 f i scr.o
+1367	PORTED	0002:001f7160 ??$entity_get_actor_field@M$0IBI@$0A@@BrocSys@@YAMI@Z 009E6660 f i scr.o
+1368	PORTED	0002:001f7290 ??$entity_set_actor_field@M$0BIM@$0BA@@BrocSys@@YAXIM@Z 009E6790 f i scr.o
+1369	PORTED	0002:001f73b0 ??$entity_get_actor_field@M$0BIM@$0A@@BrocSys@@YAMI@Z 009E68B0 f i scr.o
+1370	PORTED	0002:001f74e0 ??$entity_set_actor_field@M$0IGA@$0A@@BrocSys@@YAXIM@Z 009E69E0 f i scr.o
+1371	PORTED	0002:001f7600 ??$entity_get_actor_field@M$0IGA@$0A@@BrocSys@@YAMI@Z 009E6B00 f i scr.o
+1372	PORTED	0002:001f7730 ??$entity_set_actor_field@H$0IGE@$0A@@BrocSys@@YAXIH@Z 009E6C30 f i scr.o
+1373	PORTED	0002:001f7850 ??$entity_get_actor_field@H$0IGE@$0A@@BrocSys@@YAHI@Z 009E6D50 f i scr.o
+1374	PORTED	0002:001f7970 ??$entity_set_actor_field@H$0IGI@$0BC@@BrocSys@@YAXIH@Z 009E6E70 f i scr.o
+1375	PORTED	0002:001f7a90 ??$entity_get_actor_field@H$0IGI@$0BD@@BrocSys@@YAHI@Z 009E6F90 f i scr.o
+1376	PORTED	0002:001f7bb0 ??$entity_set_actor_field@H$0JPI@$0BC@@BrocSys@@YAXIH@Z 009E70B0 f i scr.o
+1377	PORTED	0002:001f7cd0 ??$entity_get_actor_field@H$0JPI@$0BD@@BrocSys@@YAHI@Z 009E71D0 f i scr.o
+1378	PORTED	0002:001f7df0 ??$entity_set_actor_field@Vstring@Broc@@$0BCA@$0A@@BrocSys@@YAXIVstring@Broc@@@Z 009E72F0 f i scr.o
+1379	PORTED	0002:001f7f60 ??$entity_get_actor_field@Vstring@Broc@@$0BCA@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E7460 f i scr.o
+1380	PORTED	0002:001f8150 ??$entity_set_actor_field@I$0BCE@$0A@@BrocSys@@YAXII@Z 009E7650 f i scr.o
+1381	PORTED	0002:001f8270 ??$entity_get_actor_field@I$0BCE@$0A@@BrocSys@@YAII@Z 009E7770 f i scr.o
+1382	PORTED	0002:001f8390 ??$entity_set_actor_field@I$0BCI@$0A@@BrocSys@@YAXII@Z 009E7890 f i scr.o
+1383	PORTED	0002:001f84b0 ??$entity_get_actor_field@I$0BCI@$0A@@BrocSys@@YAII@Z 009E79B0 f i scr.o
+1384	PORTED	0002:001f85d0 ??$entity_set_actor_field@Vstring@Broc@@$0BCM@$0A@@BrocSys@@YAXIVstring@Broc@@@Z 009E7AD0 f i scr.o
+1385	PORTED	0002:001f8740 ??$entity_get_actor_field@Vstring@Broc@@$0BCM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E7C40 f i scr.o
+1386	PORTED	0002:001f8930 ??$entity_set_actor_field@H$0IEM@$0A@@BrocSys@@YAXIH@Z 009E7E30 f i scr.o
+1387	PORTED	0002:001f8a50 ??$entity_get_actor_field@H$0IEM@$0A@@BrocSys@@YAHI@Z 009E7F50 f i scr.o
+1388	PORTED	0002:001f8b70 ??$entity_set_actor_field@M$0JPM@$0BB@@BrocSys@@YAXIM@Z 009E8070 f i scr.o
+1389	PORTED	0002:001f8c90 ??$entity_get_actor_field@M$0JPM@$0A@@BrocSys@@YAMI@Z 009E8190 f i scr.o
+1390	PORTED	0002:001f8dc0 ??$entity_set_actor_field@Ventity@Broc@@$0KAA@$0BA@@BrocSys@@YAXIVentity@Broc@@@Z 009E82C0 f i scr.o
+1391	PORTED	0002:001f8ee0 ??$entity_get_actor_field@Ventity@Broc@@$0KAA@$0A@@BrocSys@@YA?AVentity@Broc@@I@Z 009E83E0 f i scr.o
+1392	PORTED	0002:001f9030 ??$entity_set_actor_field@Vstring@Broc@@$0KDM@$0BE@@BrocSys@@YAXIVstring@Broc@@@Z 009E8530 f i scr.o
+1393	PORTED	0002:001f91a0 ??$entity_get_actor_field@Vstring@Broc@@$0KDM@$0BF@@BrocSys@@YA?AVstring@Broc@@I@Z 009E86A0 f i scr.o
+1394	PORTED	0002:001f9390 ??$entity_set_actor_field@H$0KEI@$0A@@BrocSys@@YAXIH@Z 009E8890 f i scr.o
+1395	PORTED	0002:001f94b0 ??$entity_get_actor_field@H$0KEI@$0A@@BrocSys@@YAHI@Z 009E89B0 f i scr.o
+1396	PORTED	0002:001f95d0 ??$entity_set_actor_field@Ventity@Broc@@$0JIM@$0BI@@BrocSys@@YAXIVentity@Broc@@@Z 009E8AD0 f i scr.o
+1397	PORTED	0002:001f96f0 ??$entity_get_actor_field@Ventity@Broc@@$0JIM@$0BJ@@BrocSys@@YA?AVentity@Broc@@I@Z 009E8BF0 f i scr.o
+1398	PORTED	0002:001f9840 ??$entity_set_actor_field@H$0OE@$0A@@BrocSys@@YAXIH@Z 009E8D40 f i scr.o
+1399	PORTED	0002:001f9960 ??$entity_get_actor_field@H$0OE@$0A@@BrocSys@@YAHI@Z 009E8E60 f i scr.o
+1400	PORTED	0002:001f9a80 ??$entity_set_actor_field@E$0KJI@$0A@@BrocSys@@YAXIE@Z 009E8F80 f i scr.o
+1401	PORTED	0002:001f9ba0 ??$entity_get_actor_field@E$0KJI@$0A@@BrocSys@@YAEI@Z 009E90A0 f i scr.o
+1402	PORTED	0002:001f9cc0 ??$entity_set_actor_field@E$0KJJ@$0A@@BrocSys@@YAXIE@Z 009E91C0 f i scr.o
+1403	PORTED	0002:001f9de0 ??$entity_get_actor_field@E$0KJJ@$0A@@BrocSys@@YAEI@Z 009E92E0 f i scr.o
+1404	PORTED	0002:001f9f00 ??$entity_set_actor_field@E$0IFC@$0A@@BrocSys@@YAXIE@Z 009E9400 f i scr.o
+1405	PORTED	0002:001fa020 ??$entity_get_actor_field@E$0IFC@$0A@@BrocSys@@YAEI@Z 009E9520 f i scr.o
+1406	PORTED	0002:001fa140 ??$entity_set_actor_field@H$0KJM@$0A@@BrocSys@@YAXIH@Z 009E9640 f i scr.o
+1407	PORTED	0002:001fa260 ??$entity_get_actor_field@H$0KJM@$0A@@BrocSys@@YAHI@Z 009E9760 f i scr.o
+1408	PORTED	0002:001fa380 ??$entity_set_actor_field@H$0KKA@$0A@@BrocSys@@YAXIH@Z 009E9880 f i scr.o
+1409	PORTED	0002:001fa4a0 ??$entity_get_actor_field@H$0KKA@$0A@@BrocSys@@YAHI@Z 009E99A0 f i scr.o
+1410	PORTED	0002:001fa5c0 ??$entity_set_actor_field@H$0LCA@$0A@@BrocSys@@YAXIH@Z 009E9AC0 f i scr.o
+1411	PORTED	0002:001fa6e0 ??$entity_get_actor_field@H$0LCA@$0A@@BrocSys@@YAHI@Z 009E9BE0 f i scr.o
+1412	PORTED	0002:001fa800 ??$entity_set_actor_field@Vstring@Broc@@$0KKI@$0BA@@BrocSys@@YAXIVstring@Broc@@@Z 009E9D00 f i scr.o
+1413	PORTED	0002:001fa970 ??$entity_get_actor_field@Vstring@Broc@@$0KKI@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E9E70 f i scr.o
+1414	PORTED	0002:001fab60 ??$entity_set_actor_field@Vstring@Broc@@$0KKM@$0BA@@BrocSys@@YAXIVstring@Broc@@@Z 009EA060 f i scr.o
+1415	PORTED	0002:001facd0 ??$entity_get_actor_field@Vstring@Broc@@$0KKM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009EA1D0 f i scr.o
+1416	PORTED	0002:001faec0 ??$entity_set_actor_field@Vstring@Broc@@$0KLA@$0BA@@BrocSys@@YAXIVstring@Broc@@@Z 009EA3C0 f i scr.o
+1417	PORTED	0002:001fb030 ??$entity_get_actor_field@Vstring@Broc@@$0KLA@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009EA530 f i scr.o
+1418	PORTED	0002:001fb220 ??$entity_set_actor_field@Vstring@Broc@@$0DAA@$0BA@@BrocSys@@YAXIVstring@Broc@@@Z 009EA720 f i scr.o
+1419	PORTED	0002:001fb390 ??$entity_get_actor_field@Vstring@Broc@@$0DAA@$0BG@@BrocSys@@YA?AVstring@Broc@@I@Z 009EA890 f i scr.o
+1420	PORTED	0002:001fb580 ??$entity_set_actor_field@I$0BME@$0BH@@BrocSys@@YAXII@Z 009EAA80 f i scr.o
+1421	PORTED	0002:001fb6a0 ??$entity_get_actor_field@I$0BME@$0A@@BrocSys@@YAII@Z 009EABA0 f i scr.o
+1422	PORTED	0002:001fb7c0 ??$entity_set_actor_field@I$0BMI@$0A@@BrocSys@@YAXII@Z 009EACC0 f i scr.o
+1423	PORTED	0002:001fb8e0 ??$entity_get_actor_field@I$0BMI@$0A@@BrocSys@@YAII@Z 009EADE0 f i scr.o
+1424	PORTED	0002:001fba00 ??$entity_set_actor_field@Ventity@Broc@@$0KAM@$0A@@BrocSys@@YAXIVentity@Broc@@@Z 009EAF00 f i scr.o
+1425	PORTED	0002:001fbb20 ??$entity_get_actor_field@Ventity@Broc@@$0KAM@$0A@@BrocSys@@YA?AVentity@Broc@@I@Z 009EB020 f i scr.o
+1426	PORTED	0002:001fbc70 ??$entity_set_actor_field@I$0KBA@$0A@@BrocSys@@YAXII@Z 009EB170 f i scr.o
+1427	PORTED	0002:001fbd90 ??$entity_get_actor_field@I$0KBA@$0A@@BrocSys@@YAII@Z 009EB290 f i scr.o
+1428	PORTED	0002:001fbeb0 ??$entity_set_actor_field@I$0KBE@$0A@@BrocSys@@YAXII@Z 009EB3B0 f i scr.o
+1429	PORTED	0002:001fbfd0 ??$entity_get_actor_field@I$0KBE@$0A@@BrocSys@@YAII@Z 009EB4D0 f i scr.o
+1430	PORTED	0002:001fc0f0 ??$entity_set_actor_field@I$0KBI@$0A@@BrocSys@@YAXII@Z 009EB5F0 f i scr.o
+1431	PORTED	0002:001fc210 ??$entity_get_actor_field@I$0KBI@$0A@@BrocSys@@YAII@Z 009EB710 f i scr.o
+1432	PORTED	0002:001fc330 ??$entity_set_sentient_field@Vstring@Broc@@$03$0BL@@BrocSys@@YAXIVstring@Broc@@@Z 009EB830 f i scr.o
+1433	PORTED	0002:001fc490 ??$entity_get_sentient_field@Vstring@Broc@@$03$0BM@@BrocSys@@YA?AVstring@Broc@@I@Z 009EB990 f i scr.o
+1434	PORTED	0002:001fc680 ??$entity_set_sentient_field@H$0DA@$0A@@BrocSys@@YAXIH@Z 009EBB80 f i scr.o
+1435	PORTED	0002:001fc790 ??$entity_get_sentient_field@H$0DA@$0A@@BrocSys@@YAHI@Z 009EBC90 f i scr.o
+1436	PORTED	0002:001fc8b0 ??$entity_set_sentient_field@M$0DE@$0A@@BrocSys@@YAXIM@Z 009EBDB0 f i scr.o
+1437	PORTED	0002:001fc9d0 ??$entity_get_sentient_field@M$0DE@$0A@@BrocSys@@YAMI@Z 009EBED0 f i scr.o
+1438	PORTED	0002:001fcaf0 ??$entity_set_sentient_field@Vpathnode@Broc@@$0HE@$0BK@@BrocSys@@YAXIVpathnode@Broc@@@Z 009EBFF0 f i scr.o
+1439	PORTED	0002:001fcc00 ??$entity_get_sentient_field@Vpathnode@Broc@@$0HE@$0BP@@BrocSys@@YA?AVpathnode@Broc@@I@Z 009EC100 f i scr.o
+1440	PORTED	0002:001fcd40 ??$entity_set_sentient_field@Vpathnode@Broc@@$0IE@$0BK@@BrocSys@@YAXIVpathnode@Broc@@@Z 009EC240 f i scr.o
+1441	PORTED	0002:001fce60 ??$entity_get_sentient_field@Vpathnode@Broc@@$0IE@$0A@@BrocSys@@YA?AVpathnode@Broc@@I@Z 009EC360 f i scr.o
+1442	PORTED	0002:001fcfb0 ??$entity_set_sentient_field@M$0BI@$0BN@@BrocSys@@YAXIM@Z 009EC4B0 f i scr.o
+1443	PORTED	0002:001fd0d0 ??$entity_get_sentient_field@M$0BI@$0A@@BrocSys@@YAMI@Z 009EC5D0 f i scr.o
+1444	PORTED	0002:001fd1f0 ??$entity_set_sentient_field@M$0CE@$0BO@@BrocSys@@YAXIM@Z 009EC6F0 f i scr.o
+1445	PORTED	0002:001fd310 ??$entity_get_sentient_field@M$0CE@$0A@@BrocSys@@YAMI@Z 009EC810 f i scr.o
+1446	PORTED	0002:001fd430 ??$entity_set_sentient_field@Ventity@Broc@@$0GI@$0BK@@BrocSys@@YAXIVentity@Broc@@@Z 009EC930 f i scr.o
+1447	PORTED	0002:001fd540 ??$entity_get_sentient_field@Ventity@Broc@@$0GI@$0CB@@BrocSys@@YA?AVentity@Broc@@I@Z 009ECA40 f i scr.o
+1448	PORTED	0002:001fd680 ??$entity_set_sentient_field@H$0DI@$0A@@BrocSys@@YAXIH@Z 009ECB80 f i scr.o
+1449	PORTED	0002:001fd790 ??$entity_get_sentient_field@H$0DI@$0A@@BrocSys@@YAHI@Z 009ECC90 f i scr.o
+1450	PORTED	0002:001fd8b0 ??$entity_set_sentient_field@H$0EA@$0A@@BrocSys@@YAXIH@Z 009ECDB0 f i scr.o
+1451	PORTED	0002:001fd9c0 ??$entity_get_sentient_field@H$0EA@$0A@@BrocSys@@YAHI@Z 009ECEC0 f i scr.o
+1452	PORTED	0002:001fdae0 ??$entity_set_sentient_field@M$0EM@$0A@@BrocSys@@YAXIM@Z 009ECFE0 f i scr.o
+1453	PORTED	0002:001fdc00 ??$entity_get_sentient_field@M$0EM@$0A@@BrocSys@@YAMI@Z 009ED100 f i scr.o
+1454	PORTED	0002:001fdd20 ??$entity_set_sentient_field@H$0FA@$0A@@BrocSys@@YAXIH@Z 009ED220 f i scr.o
+1455	PORTED	0002:001fde30 ??$entity_get_sentient_field@H$0FA@$0A@@BrocSys@@YAHI@Z 009ED330 f i scr.o
+1456	PORTED	0002:001fdf50 ??$entity_set_sentient_field@H$0FE@$0A@@BrocSys@@YAXIH@Z 009ED450 f i scr.o
+1457	PORTED	0002:001fe060 ??$entity_get_sentient_field@H$0FE@$0A@@BrocSys@@YAHI@Z 009ED560 f i scr.o
+1458	PORTED	0002:001fe180 ??$entity_set_sentient_field@H$0EE@$0A@@BrocSys@@YAXIH@Z 009ED680 f i scr.o
+1459	PORTED	0002:001fe290 ??$entity_get_sentient_field@H$0EE@$0A@@BrocSys@@YAHI@Z 009ED790 f i scr.o
+1460	PORTED	0002:001fe3b0 ??$entity_set_sentient_field@H$0IM@$0A@@BrocSys@@YAXIH@Z 009ED8B0 f i scr.o
+1461	PORTED	0002:001fe4d0 ??$entity_get_sentient_field@H$0IM@$0A@@BrocSys@@YAHI@Z 009ED9D0 f i scr.o
+1462	PORTED	0002:001fe5f0 ??$entity_set_sentient_field@H$0JA@$0A@@BrocSys@@YAXIH@Z 009EDAF0 f i scr.o
+1463	PORTED	0002:001fe710 ??$entity_get_sentient_field@H$0JA@$0A@@BrocSys@@YAHI@Z 009EDC10 f i scr.o
+1464	PORTED	0002:001fe830 ??$entity_set_sentient_field@M$0JE@$0A@@BrocSys@@YAXIM@Z 009EDD30 f i scr.o
+1465	PORTED	0002:001fe950 ??$entity_get_sentient_field@M$0JE@$0A@@BrocSys@@YAMI@Z 009EDE50 f i scr.o
+1466	PORTED	0002:001fea80 ??$entity_set_sentient_field@Uvector@Broc@@$0FI@$0A@@BrocSys@@YAXIUvector@Broc@@@Z 009EDF80 f i scr.o
+1467	PORTED	0002:001febb0 ??$entity_get_sentient_field@Uvector@Broc@@$0FI@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009EE0B0 f i scr.o
+1468	PORTED	0002:001fed60 ??$entity_set_sentient_field@M$0GE@$0A@@BrocSys@@YAXIM@Z 009EE260 f i scr.o
+1469	PORTED	0002:001fee80 ??$entity_get_sentient_field@M$0GE@$0A@@BrocSys@@YAMI@Z 009EE380 f i scr.o
+1470	PORTED	0002:001fefa0 ??$entity_set_player_field@H$0FFA@$0A@@BrocSys@@YAXIH@Z 009EE4A0 f i scr.o
+1471	PORTED	0002:001ff0c0 ??$entity_get_player_field@H$0FFA@$0A@@BrocSys@@YAHI@Z 009EE5C0 f i scr.o
+1472	PORTED	0002:001ff1e0 ??$entity_set_player_field@F$0FEM@$0A@@BrocSys@@YAXIF@Z 009EE6E0 f i scr.o
+1473	PORTED	0002:001ff300 ??$entity_get_player_field@F$0FEM@$0A@@BrocSys@@YAFI@Z 009EE800 f i scr.o
+1474	PORTED	0002:001ff420 ??$entity_set_player_field@Uvector@Broc@@$0NA@$0A@@BrocSys@@YAXIUvector@Broc@@@Z 009EE920 f i scr.o
+1475	PORTED	0002:001ff550 ??$entity_get_player_field@Uvector@Broc@@$0NA@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009EEA50 f i scr.o
+1476	PORTED	0002:001ff710 ??$entity_set_persistent_player_field@F$0BKI@$0A@@BrocSys@@YAXIF@Z 009EEC10 f i scr.o
+1477	PORTED	0002:001ff830 ??$entity_get_persistent_player_field@F$0BKI@$0A@@BrocSys@@YAFI@Z 009EED30 f i scr.o
+1478	PORTED	0002:001ff960 ??$entity_set_persistent_player_field@F$0BKA@$0A@@BrocSys@@YAXIF@Z 009EEE60 f i scr.o
+1479	PORTED	0002:001ffa80 ??$entity_get_persistent_player_field@F$0BKA@$0A@@BrocSys@@YAFI@Z 009EEF80 f i scr.o
+1480	PORTED	0002:001ffbb0 ??$entity_set_persistent_player_field@F$0BKC@$0A@@BrocSys@@YAXIF@Z 009EF0B0 f i scr.o
+1481	PORTED	0002:001ffcd0 ??$entity_get_persistent_player_field@F$0BKC@$0A@@BrocSys@@YAFI@Z 009EF1D0 f i scr.o
+1482	PORTED	0002:001ffe00 ??$entity_set_persistent_player_field@H$0BKE@$0A@@BrocSys@@YAXIH@Z 009EF300 f i scr.o
+1483	PORTED	0002:001fff20 ??$entity_get_persistent_player_field@H$0BKE@$0A@@BrocSys@@YAHI@Z 009EF420 f i scr.o
+1484	PORTED	0002:00200050 ?construct_array@?$dyn_array@Ventity@Broc@@@Broc@@AAEPAVentity@2@II@Z 009EF550 f i scr.o
+1485	PORTED	0002:002000a0 ?construct_array@?$dyn_array@Ventity@Broc@@@Broc@@AAEPAVentity@2@I@Z 009EF5A0 f i scr.o
+1486	PORTED	0002:002000f0 ?construct_array@?$dyn_array@Vstring@Broc@@@Broc@@AAEPAVstring@2@II@Z 009EF5F0 f i scr.o
+1487	SKIPPED	0002:00200190 ??$_Uninitialized_copy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@@Z 009EF690 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1488	SKIPPED	0002:002001c0 ??$_Destroy_range@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 009EF6C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1489	SKIPPED	0002:002001d0 ??$_Uninit_fill_n@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@IABV120@AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 009EF6D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1490	PORTED	0002:00200200 ?RmvEndOn@EntityNotifySet@@QAEXPAVEndOnScriptNode@@@Z 009EF700 f i scr.o
+1491	PORTED	0002:00200210 ??0BrocObjCreated@AeThread@@QAE@PAV01@@Z 009EF710 f i scr.o
+1492	PORTED	0002:00200230 ??2BrocObjCreated@AeThread@@SAPAXI@Z 009EF730 f i scr.o
+1493	VERIFIED	0002:002002a0 ?ApplyPhysics@@YAXIABUvector@Broc@@0M_N@Z 009EF7A0 f i scr.o
+1494	VERIFIED	0002:00200600 ?StopPhysics@@YAXI@Z 009EFB00 f i scr.o
+1495	PORTED	0002:002006a0 ?delete_all@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009EFBA0 f i scr.o
+1496	VERIFIED	0002:00200700 ??0?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ 009EFC00 f i scr.o
+1497	VERIFIED	0002:00200770 ?AllocateHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE?AV?$SizedHandle@$07$0BI@@@XZ 009EFC70 f i scr.o
+1498	SKIPPED	0002:00200850 ?end@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@XZ 009EFD50 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1499	SKIPPED	0002:00200870 ??1?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@XZ 009EFD70 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1500	SKIPPED	0002:002008a0 ??A?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAEAAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@I@Z 009EFDA0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1501	SKIPPED	0002:002008c0 ?_Buynode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@0ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@@Z 009EFDC0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1502	SKIPPED	0002:00200990 ??0?$_List_val@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAE@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009EFE90 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1503	VERIFIED	0002:002009a0 ?reserve@?$dyn_array@Ventity@Broc@@@Broc@@QAEXI@Z 009EFEA0 f i scr.o
+1504	VERIFIED	0002:00200a60 ?resize@?$dyn_array@Ventity@Broc@@@Broc@@QAEXII@Z 009EFF60 f i scr.o
+1505	VERIFIED	0002:00200b60 ?push_back@?$dyn_array@Ventity@Broc@@@Broc@@QAEXABVentity@2@@Z 009F0060 f i scr.o
+1506	VERIFIED	0002:00200c30 ?push_back@?$dyn_array@Vstring@Broc@@@Broc@@QAEXABVstring@2@@Z 009F0130 f i scr.o
+1507	SKIPPED	0002:00200cd0 ??$_Ucopy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@PAV231@00@Z 009F01D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1508	SKIPPED	0002:00200d00 ??$_Destroy_range@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@@Z 009F0200 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1509	SKIPPED	0002:00200d10 ??$_Uninitialized_fill_n@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@IABV120@AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@@Z 009F0210 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1510	VERIFIED	0002:00200d40 ??_GAeThread@@QAEPAXI@Z 009F0240 f i scr.o
+1511	VERIFIED	0002:00200d70 ??_EAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o
+1512	VERIFIED	0002:00200d70 ??_GAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o
+1513	SKIPPED	0002:00200da0 ?erase@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V345@@Z 009F02A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1514	SKIPPED	0002:00200e50 ?lower_bound@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@ABH@Z 009F0350 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1515	PORTED	0002:00200f10 ?resize@?$dyn_array@Ventity@Broc@@@Broc@@QAEXI@Z 009F0410 f i scr.o
+1516	SKIPPED	0002:00200f30 ??0?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009F0430 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1517	SKIPPED	0002:00200f50 ?_Destroy@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@0@Z 009F0450 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1518	SKIPPED	0002:00200f60 ?_Ufill@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAV342@IABV342@@Z 009F0460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1519	SKIPPED	0002:00200f90 ?find@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@ABH@Z 009F0490 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1520	PORTED	0002:00200fb0 ?clear@?$dyn_array@Ventity@Broc@@@Broc@@QAEXXZ 009F04B0 f i scr.o
+1521	SKIPPED	0002:00200fc0 ?erase@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE?AViterator@12@V312@0@Z 009F04C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1522	SKIPPED	0002:00201010 ?_Tidy@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEXXZ 009F0510 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1523	SKIPPED	0002:00201050 ??1?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@XZ 009F0550 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1524	SKIPPED	0002:00201090 ?_Incsize@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAEXI@Z 009F0590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1525	SKIPPED	0002:00201140 ?_Xlen@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IBEXXZ 009F0640 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1526	SKIPPED	0002:002011c0 ?_Buy@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAE_NI@Z 009F06C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1527	SKIPPED	0002:00201230 ??1?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE@XZ 009F0730 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1528	SKIPPED	0002:002012c0 ?_Insert@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEXViterator@12@ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@@Z 009F07C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1529	SKIPPED	0002:00201310 ?_Insert_n@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEXViterator@12@IABV3?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009F0810 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1530	SKIPPED	0002:002015f0 ?_Construct_n@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAEXIABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009F0AF0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1531	SKIPPED	0002:00201690 ??$_Insert@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEXViterator@01@00Uforward_iterator_tag@1@@Z 009F0B90 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1532	SKIPPED	0002:00201760 ??1?$hash_map@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@@std@@QAE@XZ 009F0C60 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1533	SKIPPED	0002:00201770 ?insert@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@V312@ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@@Z 009F0C70 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1534	SKIPPED	0002:002017c0 ?resize@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAEXIViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009F0CC0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1535	SKIPPED	0002:00201850 ??0?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@IABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@ABV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@1@@Z 009F0D50 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1536	SKIPPED	0002:00201880 ??$insert@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEXViterator@01@00@Z 009F0D80 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1537	SKIPPED	0002:002018b0 ??0?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE@ABV?$hash_compare@HU?$less@H@std@@@1@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@@Z 009F0DB0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1538	SKIPPED	0002:00201940 ?_Splice@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEXViterator@12@AAV12@00I@Z 009F0E40 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1539	SKIPPED	0002:002019a0 ??0?$hash_map@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@@std@@QAE@XZ 009F0EA0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1540	SKIPPED	0002:002019d0 ?insert@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AU?$pair@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@_N@std@@ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@4@@Z 009F0ED0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

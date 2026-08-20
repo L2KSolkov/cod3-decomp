@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x00802920	0x00BF1E20	?Init@apsSimpleMeshRenderer@@SAXXZ	public: static void __cdecl apsSimpleMeshRenderer::Init(void)	apsSimpleMeshRenderer.o
+0x00802950	0x00BF1E50	?InitShader@apsSimpleMeshRenderer@@SAXXZ	public: static void __cdecl apsSimpleMeshRenderer::InitShader(void)	apsSimpleMeshRenderer.o
+0x00802990	0x00BF1E90	??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsSimpleMeshRenderer::apsSimpleMeshRenderer(class apsSimpleMeshRenderer::cArgs const &)	apsSimpleMeshRenderer.o
+0x008029C0	0x00BF1EC0	?Render@apsSimpleMeshRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsSimpleMeshRenderer::Render(struct apsRendererRenderInfo const &)	apsSimpleMeshRenderer.o

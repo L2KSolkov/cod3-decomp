@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00833B70	0x00C23070	?tlInitListInit@@YAXXZ	void __cdecl tlInitListInit(void)	tl_initlist.o

@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:00450790 ?nglDebugDrawBegin@@YAXXZ 00C3FC90 f ngl_debugdraw.o
+2	VERIFIED	0002:00450890 ?nglDebugDrawEnd@@YAXXZ 00C3FD90 f ngl_debugdraw.o
+3	VERIFIED	0002:004508e0 ?nglDebugDrawGetWidth@@YAHXZ 00C3FDE0 f ngl_debugdraw.o
+4	VERIFIED	0002:00450920 ?nglDebugDrawGetHeight@@YAHXZ 00C3FE20 f ngl_debugdraw.o
+5	VERIFIED	0002:00450a70 ?nglDebugDrawPlot@@YAXHHII@Z 00C3FF70 f ngl_debugdraw.o
+6	VERIFIED	0002:00450b60 ?nglDebugDrawHLine@@YAXHHHI@Z 00C40060 f ngl_debugdraw.o
+7	VERIFIED	0002:00450bc0 ?nglDebugDrawVLine@@YAXHHHI@Z 00C400C0 f ngl_debugdraw.o
+8	VERIFIED	0002:00450c20 ?nglDebugDrawRectFill@@YAXHHHHI@Z 00C40120 f ngl_debugdraw.o
+9	VERIFIED	0002:00450c80 ?nglDebugDrawRect@@YAXHHHHI@Z 00C40180 f ngl_debugdraw.o
+10	VERIFIED	0002:00450d00 ?nglDebugDrawTextInternal@@YAXHHIPBDZZ 00C40200 f ngl_debugdraw.o
+11	VERIFIED	0002:00450fb0 ?nglDebugDrawText@@YAHHHIPBDZZ 00C404B0 f ngl_debugdraw.o

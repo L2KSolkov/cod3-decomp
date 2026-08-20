@@ -1,0 +1,771 @@
+ida_ea	va	name	signature	family
+0x0072C480	0x00B1B980	?Stop@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::Stop(void)	mp.o
+0x0072C4A0	0x00B1B9A0	?HandleDiscError@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::HandleDiscError(void)	mp.o
+0x0072C4B0	0x00B1B9B0	?setSendInterval@MultiplayerMgr@@QAEXH@Z	public: void __thiscall MultiplayerMgr::setSendInterval(int)	mp.o
+0x0072C4D0	0x00B1B9D0	?getSendInterval@MultiplayerMgr@@QBEMXZ	public: float __thiscall MultiplayerMgr::getSendInterval(void)const 	mp.o
+0x0072C4E0	0x00B1B9E0	?AddTestClient@MultiplayerMgr@@QAEHXZ	public: int __thiscall MultiplayerMgr::AddTestClient(void)	mp.o
+0x0072C4F0	0x00B1B9F0	?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z	public: enum EDroppedItemTypes __thiscall MultiplayerMgr::GetDroppedItemType(enum itemType_t)	mp.o
+0x0072C530	0x00B1BA30	?getLocalTime@MultiplayerMgr@@QAE?AVsTime@knet@kuju@@XZ	public: class kuju::knet::sTime __thiscall MultiplayerMgr::getLocalTime(void)	mp.o
+0x0072C610	0x00B1BB10	?publish@MPLogSubscriber@MultiplayerMgr@@EAEXQBD00I0@Z	private: virtual void __thiscall MultiplayerMgr::MPLogSubscriber::publish(char const * const,char const * const,char const * const,unsigned int,char const * const)	mp.o
+0x0072C6F0	0x00B1BBF0	?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ	public: bool __thiscall MultiplayerMgr::oneOffCheckLinkStatus(void)	mp.o
+0x0072C700	0x00B1BC00	?updateLinkStatus@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::updateLinkStatus(void)	mp.o
+0x0072C780	0x00B1BC80	?getLinkStatus@MultiplayerMgr@@QAE_NXZ	public: bool __thiscall MultiplayerMgr::getLinkStatus(void)	mp.o
+0x0072C790	0x00B1BC90	?getValidNetConnection@MultiplayerMgr@@QAE_NPBD@Z	public: bool __thiscall MultiplayerMgr::getValidNetConnection(char const *)	mp.o
+0x0072C7D0	0x00B1BCD0	?FromLobby@MultiplayerMgr@@QAE_NXZ	public: bool __thiscall MultiplayerMgr::FromLobby(void)	mp.o
+0x0072C7E0	0x00B1BCE0	?GetVoipGroup@@YA?AW4EVoipGroup@@H@Z	enum EVoipGroup __cdecl GetVoipGroup(int)	mp.o
+0x0072C820	0x00B1BD20	??2MPPeer@@SAPAXI@Z	public: static void * __cdecl MPPeer::operator new(unsigned int)	mp.o
+0x0072C840	0x00B1BD40	??3MPPeer@@SAXPAX@Z	public: static void __cdecl MPPeer::operator delete(void *)	mp.o
+0x0072C850	0x00B1BD50	?LeaveSession@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::LeaveSession(void)	mp.o
+0x0072C870	0x00B1BD70	?CancelJoin@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::CancelJoin(void)	mp.o
+0x0072C890	0x00B1BD90	?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ	public: enum bdSession::bdSessionStatus __thiscall MPPeer::GetSessionStatus(void)	mp.o
+0x0072C8A0	0x00B1BDA0	?GetPlayerManager@MPPeer@@QAEPAVMPPlayerManager@@XZ	public: class MPPlayerManager * __thiscall MPPeer::GetPlayerManager(void)	mp.o
+0x0072C8B0	0x00B1BDB0	?IsHost@MPPeer@@QAE_NXZ	public: bool __thiscall MPPeer::IsHost(void)	mp.o
+0x0072C8D0	0x00B1BDD0	?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z	public: bool __thiscall MPPeer::IsPlayerTalking(class MPPlayer *,int)	mp.o
+0x0072C940	0x00B1BE40	?onSessionConnectFail@MPPeer@@EAEXXZ	private: virtual void __thiscall MPPeer::onSessionConnectFail(void)	mp.o
+0x0072CA00	0x00B1BF00	?IsQosComplete@MPPeer@@QAE_NH@Z	public: bool __thiscall MPPeer::IsQosComplete(int)	mp.o
+0x0072CA20	0x00B1BF20	?IsQosSuccessful@MPPeer@@QAE_NH@Z	public: bool __thiscall MPPeer::IsQosSuccessful(int)	mp.o
+0x0072CA50	0x00B1BF50	?GetQosPing@MPPeer@@QAEHH@Z	public: int __thiscall MPPeer::GetQosPing(int)	mp.o
+0x0072CA90	0x00B1BF90	?DeleteQosProbes@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::DeleteQosProbes(void)	mp.o
+0x0072CAC0	0x00B1BFC0	?FindAvailableQosSlot@MPPeer@@QAEHXZ	public: int __thiscall MPPeer::FindAvailableQosSlot(void)	mp.o
+0x0072CAE0	0x00B1BFE0	?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::DebugPrintTTYSessionInfo(void)	mp.o
+0x0072CAF0	0x00B1BFF0	?Start@MPLanDiscovery@@QAEXXZ	public: void __thiscall MPLanDiscovery::Start(void)	mp.o
+0x0072CB60	0x00B1C060	?IsDone@MPLanDiscovery@@QAE_NXZ	public: bool __thiscall MPLanDiscovery::IsDone(void)	mp.o
+0x0072CB90	0x00B1C090	?GetNumResults@MPLanDiscovery@@QBEIXZ	public: unsigned int __thiscall MPLanDiscovery::GetNumResults(void)const 	mp.o
+0x0072CBA0	0x00B1C0A0	?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z	public: static struct MP_ANIM_INDEX * __cdecl MPPlayer::getAnimIndex(int,int,int,bool)	mp.o
+0x0072CC20	0x00B1C120	?Reset@MPPlayer@@QAEX_N@Z	public: void __thiscall MPPlayer::Reset(bool)	mp.o
+0x0072CE70	0x00B1C370	?IsValid@MPPlayer@@SA_NE@Z	public: static bool __cdecl MPPlayer::IsValid(unsigned char)	mp.o
+0x0072CE80	0x00B1C380	?GetNullId@MPPlayer@@SAEXZ	public: static unsigned char __cdecl MPPlayer::GetNullId(void)	mp.o
+0x0072CE90	0x00B1C390	?SetId@MPPlayer@@QAEXE@Z	public: void __thiscall MPPlayer::SetId(unsigned char)	mp.o
+0x0072CEA0	0x00B1C3A0	?GetId@MPPlayer@@QBEEXZ	public: unsigned char __thiscall MPPlayer::GetId(void)const 	mp.o
+0x0072CEB0	0x00B1C3B0	?GetPlayerAnimationPackFlags@MPPlayer@@IAEHPAVPlayerState@@H@Z	protected: int __thiscall MPPlayer::GetPlayerAnimationPackFlags(class PlayerState *,int)	mp.o
+0x0072D070	0x00B1C570	?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z	void __cdecl `anonymous namespace'::PlayPartialAnimationRate(class DObj *,struct MP_ANIM_INDEX *,unsigned int,float,float,bool)	mp.o
+0x0072D0E0	0x00B1C5E0	?StopPartialAnimation@?A0x26f4efd5@@YAXPAVDObj@@I@Z	void __cdecl `anonymous namespace'::StopPartialAnimation(class DObj *,unsigned int)	mp.o
+0x0072D100	0x00B1C600	?PlayAnimFlagAnim@MPPlayer@@IAEXPAVDObj@@IHHH_NMM11@Z	protected: void __thiscall MPPlayer::PlayAnimFlagAnim(class DObj *,unsigned int,int,int,int,bool,float,float,bool,bool)	mp.o
+0x0072D210	0x00B1C710	?SwingAngles@MPPlayer@@IAEXMMMMAAMAAHHM@Z	protected: void __thiscall MPPlayer::SwingAngles(float,float,float,float,float &,int &,int,float)	mp.o
+0x0072D390	0x00B1C890	?StepLegsYaw@MPPlayer@@IAEXVsTime@knet@kuju@@HMMM@Z	protected: void __thiscall MPPlayer::StepLegsYaw(class kuju::knet::sTime,int,float,float,float)	mp.o
+0x0072D9A0	0x00B1CEA0	?ChooseFootYawSide@MPPlayer@@IAEHM@Z	protected: int __thiscall MPPlayer::ChooseFootYawSide(float)	mp.o
+0x0072DAD0	0x00B1CFD0	?CalcLegsAnim@MPPlayer@@IAEHPAVEntity@@QAMM_N@Z	protected: int __thiscall MPPlayer::CalcLegsAnim(class Entity *,float * const,float,bool)	mp.o
+0x0072DD70	0x00B1D270	?GroundSurfaceType@MPPlayer@@IAEHH@Z	protected: int __thiscall MPPlayer::GroundSurfaceType(int)	mp.o
+0x0072DDE0	0x00B1D2E0	?FootstepEvent@MPPlayer@@IAEHH@Z	protected: int __thiscall MPPlayer::FootstepEvent(int)	mp.o
+0x0072DE40	0x00B1D340	?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z	public: void __thiscall MPPlayer::UpdateInGamePlayerInfo(bool,bool)	mp.o
+0x0072DF50	0x00B1D450	?SetPosition@MPPlayer@@QAEXQBM@Z	public: void __thiscall MPPlayer::SetPosition(float const * const)	mp.o
+0x0072DFA0	0x00B1D4A0	?GetPosition@MPPlayer@@QBEXAAY02M@Z	public: void __thiscall MPPlayer::GetPosition(float (&)[3])const 	mp.o
+0x0072DFD0	0x00B1D4D0	?GetAngles@MPPlayer@@QBEXAAY02M@Z	public: void __thiscall MPPlayer::GetAngles(float (&)[3])const 	mp.o
+0x0072DFF0	0x00B1D4F0	?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z	void __cdecl `anonymous namespace'::FreeEntity(class Entity *)	mp.o
+0x0072E020	0x00B1D520	?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z	private: class ae_vector<struct MPPlayerItems::sDroppedItem> & __thiscall MPPlayerItems::GetItemList(enum EDroppedItemTypes)	mp.o
+0x0072E050	0x00B1D550	?GetSeatState@@YAHPAUscr_vehicle_t@@H@Z	int __cdecl GetSeatState(struct scr_vehicle_t *,int)	mp.o
+0x0072E110	0x00B1D610	?SetSeatState@@YAXPAUscr_vehicle_t@@HH@Z	void __cdecl SetSeatState(struct scr_vehicle_t *,int,int)	mp.o
+0x0072E190	0x00B1D690	??1MPVehicle@@QAE@XZ	public: __thiscall MPVehicle::~MPVehicle(void)	mp.o
+0x0072E1A0	0x00B1D6A0	?ClearOccupants@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::ClearOccupants(void)	mp.o
+0x0072E1C0	0x00B1D6C0	?Reset@MPVehicle@@QAEX_N@Z	public: void __thiscall MPVehicle::Reset(bool)	mp.o
+0x0072E430	0x00B1D930	?IsValid@MPVehicle@@SA_NE@Z	public: static bool __cdecl MPVehicle::IsValid(unsigned char)	mp.o
+0x0072E440	0x00B1D940	?GetNullId@MPVehicle@@SAEXZ	public: static unsigned char __cdecl MPVehicle::GetNullId(void)	mp.o
+0x0072E450	0x00B1D950	?SetId@MPVehicle@@QAEXE@Z	public: void __thiscall MPVehicle::SetId(unsigned char)	mp.o
+0x0072E460	0x00B1D960	?GetId@MPVehicle@@QBEEXZ	public: unsigned char __thiscall MPVehicle::GetId(void)const 	mp.o
+0x0072E470	0x00B1D970	?IsOccupied@MPVehicle@@QBE_NXZ	public: bool __thiscall MPVehicle::IsOccupied(void)const 	mp.o
+0x0072E480	0x00B1D980	?IsFullyOccupied@MPVehicle@@QBE_NXZ	public: bool __thiscall MPVehicle::IsFullyOccupied(void)const 	mp.o
+0x0072E4A0	0x00B1D9A0	?IsSeatOccupied@MPVehicle@@QBE_NH_N@Z	public: bool __thiscall MPVehicle::IsSeatOccupied(int,bool)const 	mp.o
+0x0072E4D0	0x00B1D9D0	?SetGunnerState@MPVehicle@@QAEXH@Z	public: void __thiscall MPVehicle::SetGunnerState(int)	mp.o
+0x0072E510	0x00B1DA10	?OnModified@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::OnModified(void)	mp.o
+0x0072E5C0	0x00B1DAC0	?GetInVehicle@MPVehicle@@QAEXPAVMPPlayer@@HHH@Z	public: void __thiscall MPVehicle::GetInVehicle(class MPPlayer *,int,int,int)	mp.o
+0x0072E780	0x00B1DC80	?SeatChange@MPVehicle@@QAEXPAVMPPlayer@@H@Z	public: void __thiscall MPVehicle::SeatChange(class MPPlayer *,int)	mp.o
+0x0072E8A0	0x00B1DDA0	?IsACorpse@@YA_NPBVEntity@@@Z	bool __cdecl IsACorpse(class Entity const *)	mp.o
+0x0072E8D0	0x00B1DDD0	?AddingLocalPlayer@MPPlayerManager@@QBE_NXZ	public: bool __thiscall MPPlayerManager::AddingLocalPlayer(void)const 	mp.o
+0x0072E8E0	0x00B1DDE0	?GetPlayerEntity@MPPlayerManager@@QAEPAVEntity@@E@Z	public: class Entity * __thiscall MPPlayerManager::GetPlayerEntity(unsigned char)	mp.o
+0x0072E970	0x00B1DE70	?GetPlayerName@MPPlayerManager@@QAEPBDE@Z	public: char const * __thiscall MPPlayerManager::GetPlayerName(unsigned char)	mp.o
+0x0072E9E0	0x00B1DEE0	?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z	public: class MPPlayer * __thiscall MPPlayerManager::GetLocalPlayer(int)	mp.o
+0x0072EA10	0x00B1DF10	?AnyLocalPlayers@MPPlayerManager@@QAE_NXZ	public: bool __thiscall MPPlayerManager::AnyLocalPlayers(void)	mp.o
+0x0072EA30	0x00B1DF30	?IsLocalId@MPPlayerManager@@QAE_NH@Z	public: bool __thiscall MPPlayerManager::IsLocalId(int)	mp.o
+0x0072EA80	0x00B1DF80	?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z	public: bool __thiscall MPPlayerManager::IsLocalPlayer(class Entity const * const)	mp.o
+0x0072EB80	0x00B1E080	?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z	public: int __thiscall MPPlayerManager::GetLocalId(class MPPlayer const *)	mp.o
+0x0072EBB0	0x00B1E0B0	?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z	private: void __thiscall MPPlayerManager::AddAcceptCallback(int,void (__thiscall MPPlayerManager::*)(class bdReceivedMessage const &))	mp.o
+0x0072EC30	0x00B1E130	?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleKickPlayer(class bdReceivedMessage const &)	mp.o
+0x0072EC40	0x00B1E140	?VehicleEventAddToQueue@MPPlayerManager@@AAEXW4MPVehicleEventType@@EIEHHH@Z	private: void __thiscall MPPlayerManager::VehicleEventAddToQueue(enum MPVehicleEventType,unsigned char,unsigned int,unsigned char,int,int,int)	mp.o
+0x0072ED50	0x00B1E250	?DropHotJoiningPlayers@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::DropHotJoiningPlayers(void)	mp.o
+0x0072ED90	0x00B1E290	?getPlayerIndex@MPPlayerManager@@QAEEH@Z	public: unsigned char __thiscall MPPlayerManager::getPlayerIndex(int)	mp.o
+0x0072EDB0	0x00B1E2B0	?AddVehicle@MPPlayerManager@@QAEXPAVEntity@@@Z	public: void __thiscall MPPlayerManager::AddVehicle(class Entity *)	mp.o
+0x0072EEB0	0x00B1E3B0	?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@PBVEntity@@@Z	public: class MPVehicle * __thiscall MPPlayerManager::GetVehicle(class Entity const *)	mp.o
+0x0072EF50	0x00B1E450	?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@E@Z	public: class MPVehicle * __thiscall MPPlayerManager::GetVehicle(unsigned char)	mp.o
+0x0072EFE0	0x00B1E4E0	?GetVehicleFromOccupant@MPPlayerManager@@QAEPAVMPVehicle@@PBVMPPlayer@@@Z	public: class MPVehicle * __thiscall MPPlayerManager::GetVehicleFromOccupant(class MPPlayer const *)	mp.o
+0x0072F060	0x00B1E560	?ClearStateVariables@MPPlayerManager@@AAEXXZ	private: void __thiscall MPPlayerManager::ClearStateVariables(void)	mp.o
+0x0072F190	0x00B1E690	?IsGuest@MPPlayerManager@@QAE_NH@Z	public: bool __thiscall MPPlayerManager::IsGuest(int)	mp.o
+0x0072F1A0	0x00B1E6A0	?PickPlayerTeam@MPPlayerManager@@AAEHQAVMPPlayer@@@Z	private: int __thiscall MPPlayerManager::PickPlayerTeam(class MPPlayer * const)	mp.o
+0x0072F240	0x00B1E740	?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::SendConsistencyUpdates(void)	mp.o
+0x0072F250	0x00B1E750	?DecodeAnimMatrix@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeAnimMatrix(char const *,unsigned char *,int,enum TPakId,class PakFile *)	mp.o
+0x0072F380	0x00B1E880	?Reboot@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::Reboot(void)	mp.o
+0x0072F3B0	0x00B1E8B0	?SetMapRotation@sServerCreateParams@@QAEXE@Z	public: void __thiscall sServerCreateParams::SetMapRotation(unsigned char)	mp.o
+0x0072F470	0x00B1E970	?IsLANGame@MPUIInterface@@SA?B_NXZ	public: static bool const __cdecl MPUIInterface::IsLANGame(void)	mp.o
+0x0072F480	0x00B1E980	?IsOnlineGame@MPUIInterface@@SA?B_NXZ	public: static bool const __cdecl MPUIInterface::IsOnlineGame(void)	mp.o
+0x0072F490	0x00B1E990	?IsLocalGame@MPUIInterface@@SA?B_NXZ	public: static bool const __cdecl MPUIInterface::IsLocalGame(void)	mp.o
+0x0072F4A0	0x00B1E9A0	?CancelJoin@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::CancelJoin(void)	mp.o
+0x0072F520	0x00B1EA20	?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z	public: static void __cdecl MPUIInterface::SetQueryParams(struct sServerQueryParams &)	mp.o
+0x0072F540	0x00B1EA40	?GameListingStart@MPUIInterface@@SA_NXZ	public: static bool __cdecl MPUIInterface::GameListingStart(void)	mp.o
+0x0072F730	0x00B1EC30	?IsGameListingComplete@MPUIInterface@@SA?B_NXZ	public: static bool const __cdecl MPUIInterface::IsGameListingComplete(void)	mp.o
+0x0072F760	0x00B1EC60	?GameListingEnd@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::GameListingEnd(void)	mp.o
+0x0072F770	0x00B1EC70	?GetGameTypeString@MPUIInterface@@SAPBDK@Z	public: static char const * __cdecl MPUIInterface::GetGameTypeString(unsigned long)	mp.o
+0x0072F7D0	0x00B1ECD0	?GetGameTypeShortString@MPUIInterface@@SAPBDK@Z	public: static char const * __cdecl MPUIInterface::GetGameTypeShortString(unsigned long)	mp.o
+0x0072F830	0x00B1ED30	?GetMapString@MPUIInterface@@SAPBDK@Z	public: static char const * __cdecl MPUIInterface::GetMapString(unsigned long)	mp.o
+0x0072F8A0	0x00B1EDA0	?GetMapRotationString@MPUIInterface@@SAPBDK@Z	public: static char const * __cdecl MPUIInterface::GetMapRotationString(unsigned long)	mp.o
+0x0072F900	0x00B1EE00	?GetTimeLimitCount@MPUIInterface@@SA?BHXZ	public: static int const __cdecl MPUIInterface::GetTimeLimitCount(void)	mp.o
+0x0072F910	0x00B1EE10	?GetTimeLimit@MPUIInterface@@SA?BHK@Z	public: static int const __cdecl MPUIInterface::GetTimeLimit(unsigned long)	mp.o
+0x0072F970	0x00B1EE70	?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z	public: static int const __cdecl MPUIInterface::GetScoreLimitCount(enum eGameType)	mp.o
+0x0072FA00	0x00B1EF00	?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z	public: static int const __cdecl MPUIInterface::GetScoreLimit(unsigned long,enum eGameType)	mp.o
+0x0072FB10	0x00B1F010	?GetRoundLimitCount@MPUIInterface@@SA?BHXZ	public: static int const __cdecl MPUIInterface::GetRoundLimitCount(void)	mp.o
+0x0072FB20	0x00B1F020	?GetRoundLimit@MPUIInterface@@SA?BHK@Z	public: static int const __cdecl MPUIInterface::GetRoundLimit(unsigned long)	mp.o
+0x0072FB80	0x00B1F080	?GetMaxPlayersCount@MPUIInterface@@SA?BHXZ	public: static int const __cdecl MPUIInterface::GetMaxPlayersCount(void)	mp.o
+0x0072FB90	0x00B1F090	?GetMaxPlayers@MPUIInterface@@SA?BHK@Z	public: static int const __cdecl MPUIInterface::GetMaxPlayers(unsigned long)	mp.o
+0x0072FBF0	0x00B1F0F0	?GetRespawnTimeCount@MPUIInterface@@SA?BHXZ	public: static int const __cdecl MPUIInterface::GetRespawnTimeCount(void)	mp.o
+0x0072FC00	0x00B1F100	?GetRespawnTime@MPUIInterface@@SA?BHK@Z	public: static int const __cdecl MPUIInterface::GetRespawnTime(unsigned long)	mp.o
+0x0072FC60	0x00B1F160	?GetReturnMenu@MPUIInterface@@SA?BHXZ	public: static int const __cdecl MPUIInterface::GetReturnMenu(void)	mp.o
+0x0072FC70	0x00B1F170	?GetOptionFromValue@MPUIInterface@@SA?BHW4eSetting@1@HW4eGameType@@@Z	public: static int const __cdecl MPUIInterface::GetOptionFromValue(enum MPUIInterface::eSetting,int,enum eGameType)	mp.o
+0x0072FF40	0x00B1F440	?InSession@MPUIInterface@@SA?B_NXZ	public: static bool const __cdecl MPUIInterface::InSession(void)	mp.o
+0x0072FF60	0x00B1F460	?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z	public: static void __cdecl MPUIInterface::QueryFromID(struct XNKID *)	mp.o
+0x0072FFF0	0x00B1F4F0	?StartDevice@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::StartDevice(void)	mp.o
+0x00730000	0x00B1F500	?PlatformStart@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::PlatformStart(void)	mp.o
+0x00730080	0x00B1F580	?PlatformStop@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::PlatformStop(void)	mp.o
+0x00730090	0x00B1F590	?NextRoundMapChanges@MPUIInterface@@SA_NXZ	public: static bool __cdecl MPUIInterface::NextRoundMapChanges(void)	mp.o
+0x007300A0	0x00B1F5A0	?NextRoundMapRestart@MPUIInterface@@SA_NXZ	public: static bool __cdecl MPUIInterface::NextRoundMapRestart(void)	mp.o
+0x007300D0	0x00B1F5D0	?NextRoundServerParams@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::NextRoundServerParams(void)	mp.o
+0x00730220	0x00B1F720	?getLocalAddresses@MPUIInterface@@SAXAAV?$bdArray@VbdInetAddr@@@@@Z	public: static void __cdecl MPUIInterface::getLocalAddresses(class bdArray<class bdInetAddr> &)	mp.o
+0x00730230	0x00B1F730	?Logging@MPUIInterface@@SAX_N@Z	public: static void __cdecl MPUIInterface::Logging(bool)	mp.o
+0x00730240	0x00B1F740	?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z	public: static void __cdecl MPUIInterface::SetServerParams(struct sServerCreateParams const &)	mp.o
+0x00730260	0x00B1F760	??0MPPlayerSet@@QAE@W4eDefaultSets@0@@Z	public: __thiscall MPPlayerSet::MPPlayerSet(enum MPPlayerSet::eDefaultSets)	mp.o
+0x007302D0	0x00B1F7D0	?highestPlayerIndex@MPPlayerSet@@QBEKXZ	public: unsigned long __thiscall MPPlayerSet::highestPlayerIndex(void)const 	mp.o
+0x00730350	0x00B1F850	?lowestPlayerIndex@MPPlayerSet@@QBEKXZ	public: unsigned long __thiscall MPPlayerSet::lowestPlayerIndex(void)const 	mp.o
+0x007303F0	0x00B1F8F0	?debugString@MPPlayerSet@@QBEPBDXZ	public: char const * __thiscall MPPlayerSet::debugString(void)const 	mp.o
+0x00730490	0x00B1F990	?numberOfPlayers@MPPlayerSet@@QBEKXZ	public: unsigned long __thiscall MPPlayerSet::numberOfPlayers(void)const 	mp.o
+0x00730500	0x00B1FA00	??1MPGameInfo@@UAE@XZ	public: virtual __thiscall MPGameInfo::~MPGameInfo(void)	mp.o
+0x00730510	0x00B1FA10	?getSlots@MPGameInfo@@QBEXAAE000@Z	public: void __thiscall MPGameInfo::getSlots(unsigned char &,unsigned char &,unsigned char &,unsigned char &)const 	mp.o
+0x00730540	0x00B1FA40	?updateSlots@MPGameInfo@@QAEXDDDD@Z	public: void __thiscall MPGameInfo::updateSlots(char,char,char,char)	mp.o
+0x007305B0	0x00B1FAB0	?sleepSeconds@cThreadSleep@@SAXK@Z	public: static void __cdecl cThreadSleep::sleepSeconds(unsigned long)	mp.o
+0x007305C0	0x00B1FAC0	?sleepMilliseconds@cThreadSleep@@SAXK@Z	public: static void __cdecl cThreadSleep::sleepMilliseconds(unsigned long)	mp.o
+0x007305D0	0x00B1FAD0	?Me@MPOptionsScreenMenu@@SAPAV1@XZ	public: static class MPOptionsScreenMenu * __cdecl MPOptionsScreenMenu::Me(void)	mp.o
+0x007305E0	0x00B1FAE0	??0MPOptionsScreenMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPOptionsScreenMenu::MPOptionsScreenMenu(class FEMenuSystem *)	mp.o
+0x00730630	0x00B1FB30	??1MPOptionsScreenMenu@@UAE@XZ	public: virtual __thiscall MPOptionsScreenMenu::~MPOptionsScreenMenu(void)	mp.o
+0x00730690	0x00B1FB90	?SetPanelFile@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsScreenMenu::SetPanelFile(class PanelFile *)	mp.o
+0x007309B0	0x00B1FEB0	?PanelFileUnloaded@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsScreenMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x007309D0	0x00B1FED0	?OnActivate@MPOptionsScreenMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsScreenMenu::OnActivate(void)	mp.o
+0x00730AC0	0x00B1FFC0	?Draw@MPOptionsScreenMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsScreenMenu::Draw(void)	mp.o
+0x00730AF0	0x00B1FFF0	?Update@MPOptionsScreenMenu@@UAEXM@Z	public: virtual void __thiscall MPOptionsScreenMenu::Update(float)	mp.o
+0x00730B00	0x00B20000	?SaveOptions@MPOptionsScreenMenu@@AAE_NXZ	private: bool __thiscall MPOptionsScreenMenu::SaveOptions(void)	mp.o
+0x00730BC0	0x00B200C0	?OnUp@MPOptionsScreenMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsScreenMenu::OnUp(int)	mp.o
+0x00730C50	0x00B20150	?OnDown@MPOptionsScreenMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsScreenMenu::OnDown(int)	mp.o
+0x00730CE0	0x00B201E0	?OnTriangle@MPOptionsScreenMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsScreenMenu::OnTriangle(int)	mp.o
+0x00730D10	0x00B20210	?Select@MPOptionsScreenMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsScreenMenu::Select(int)	mp.o
+0x00730D20	0x00B20220	?OnCross@MPOptionsScreenMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsScreenMenu::OnCross(int)	mp.o
+0x00730D30	0x00B20230	?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z	public: virtual void __thiscall MPOptionsScreenMenu::UpdateWidescreen(bool)	mp.o
+0x00730D70	0x00B20270	?Me@MPOptionsSoundMenu@@SAPAV1@XZ	public: static class MPOptionsSoundMenu * __cdecl MPOptionsSoundMenu::Me(void)	mp.o
+0x00730D80	0x00B20280	??0MPOptionsSoundMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPOptionsSoundMenu::MPOptionsSoundMenu(class FEMenuSystem *)	mp.o
+0x00730DE0	0x00B202E0	??1MPOptionsSoundMenu@@UAE@XZ	public: virtual __thiscall MPOptionsSoundMenu::~MPOptionsSoundMenu(void)	mp.o
+0x00730E40	0x00B20340	?SetPanelFile@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsSoundMenu::SetPanelFile(class PanelFile *)	mp.o
+0x007311F0	0x00B206F0	?PanelFileUnloaded@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsSoundMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x00731210	0x00B20710	?Draw@MPOptionsSoundMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsSoundMenu::Draw(void)	mp.o
+0x00731240	0x00B20740	?Update@MPOptionsSoundMenu@@UAEXM@Z	public: virtual void __thiscall MPOptionsSoundMenu::Update(float)	mp.o
+0x00731250	0x00B20750	?SetOptions@MPOptionsSoundMenu@@AAEXXZ	private: void __thiscall MPOptionsSoundMenu::SetOptions(void)	mp.o
+0x00731320	0x00B20820	?OnUp@MPOptionsSoundMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsSoundMenu::OnUp(int)	mp.o
+0x007313B0	0x00B208B0	?OnDown@MPOptionsSoundMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsSoundMenu::OnDown(int)	mp.o
+0x00731440	0x00B20940	?ButtonHeldAction@MPOptionsSoundMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsSoundMenu::ButtonHeldAction(void)	mp.o
+0x007314B0	0x00B209B0	?SaveOptions@MPOptionsSoundMenu@@AAE_NXZ	private: bool __thiscall MPOptionsSoundMenu::SaveOptions(void)	mp.o
+0x00731560	0x00B20A60	?UpdateWidescreen@MPOptionsSoundMenu@@UAEX_N@Z	public: virtual void __thiscall MPOptionsSoundMenu::UpdateWidescreen(bool)	mp.o
+0x007315A0	0x00B20AA0	?Me@MPOptionsControlsMenu@@SAPAV1@XZ	public: static class MPOptionsControlsMenu * __cdecl MPOptionsControlsMenu::Me(void)	mp.o
+0x007315B0	0x00B20AB0	??0MPOptionsControlsMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPOptionsControlsMenu::MPOptionsControlsMenu(class FEMenuSystem *)	mp.o
+0x00731600	0x00B20B00	??1MPOptionsControlsMenu@@UAE@XZ	public: virtual __thiscall MPOptionsControlsMenu::~MPOptionsControlsMenu(void)	mp.o
+0x00731660	0x00B20B60	?SetPanelFile@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsControlsMenu::SetPanelFile(class PanelFile *)	mp.o
+0x00731B00	0x00B21000	?PanelFileUnloaded@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsControlsMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x00731B20	0x00B21020	?Draw@MPOptionsControlsMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsControlsMenu::Draw(void)	mp.o
+0x00731B50	0x00B21050	?Update@MPOptionsControlsMenu@@UAEXM@Z	public: virtual void __thiscall MPOptionsControlsMenu::Update(float)	mp.o
+0x00731B60	0x00B21060	?SetOptions@MPOptionsControlsMenu@@AAEXXZ	private: void __thiscall MPOptionsControlsMenu::SetOptions(void)	mp.o
+0x00731CA0	0x00B211A0	?OnUp@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::OnUp(int)	mp.o
+0x00731D90	0x00B21290	?OnDown@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::OnDown(int)	mp.o
+0x00731E80	0x00B21380	?ButtonHeldAction@MPOptionsControlsMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsControlsMenu::ButtonHeldAction(void)	mp.o
+0x00731EF0	0x00B213F0	?SaveOptions@MPOptionsControlsMenu@@AAE_NXZ	private: bool __thiscall MPOptionsControlsMenu::SaveOptions(void)	mp.o
+0x007320F0	0x00B215F0	?UpdateWidescreen@MPOptionsControlsMenu@@UAEX_N@Z	public: virtual void __thiscall MPOptionsControlsMenu::UpdateWidescreen(bool)	mp.o
+0x00732130	0x00B21630	?Me@MPOptionsGameplayMenu@@SAPAV1@XZ	public: static class MPOptionsGameplayMenu * __cdecl MPOptionsGameplayMenu::Me(void)	mp.o
+0x00732140	0x00B21640	??0MPOptionsGameplayMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPOptionsGameplayMenu::MPOptionsGameplayMenu(class FEMenuSystem *)	mp.o
+0x00732190	0x00B21690	??1MPOptionsGameplayMenu@@UAE@XZ	public: virtual __thiscall MPOptionsGameplayMenu::~MPOptionsGameplayMenu(void)	mp.o
+0x007321F0	0x00B216F0	?Draw@MPOptionsGameplayMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsGameplayMenu::Draw(void)	mp.o
+0x00732220	0x00B21720	?SetPanelFile@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsGameplayMenu::SetPanelFile(class PanelFile *)	mp.o
+0x00732540	0x00B21A40	?PanelFileUnloaded@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsGameplayMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x00732560	0x00B21A60	?OnUp@MPOptionsGameplayMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsGameplayMenu::OnUp(int)	mp.o
+0x007325F0	0x00B21AF0	?OnDown@MPOptionsGameplayMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsGameplayMenu::OnDown(int)	mp.o
+0x00732680	0x00B21B80	?SetOptions@MPOptionsGameplayMenu@@AAEXXZ	private: void __thiscall MPOptionsGameplayMenu::SetOptions(void)	mp.o
+0x00732720	0x00B21C20	?Update@MPOptionsGameplayMenu@@UAEXM@Z	public: virtual void __thiscall MPOptionsGameplayMenu::Update(float)	mp.o
+0x00732730	0x00B21C30	?SaveOptions@MPOptionsGameplayMenu@@AAE_NXZ	private: bool __thiscall MPOptionsGameplayMenu::SaveOptions(void)	mp.o
+0x00732890	0x00B21D90	?UpdateWidescreen@MPOptionsGameplayMenu@@UAEX_N@Z	public: virtual void __thiscall MPOptionsGameplayMenu::UpdateWidescreen(bool)	mp.o
+0x007328D0	0x00B21DD0	?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ	public: static class MPOptionsPreferencesMenu * __cdecl MPOptionsPreferencesMenu::Me(void)	mp.o
+0x007328E0	0x00B21DE0	??0MPOptionsPreferencesMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPOptionsPreferencesMenu::MPOptionsPreferencesMenu(class FEMenuSystem *)	mp.o
+0x00732940	0x00B21E40	??1MPOptionsPreferencesMenu@@UAE@XZ	public: virtual __thiscall MPOptionsPreferencesMenu::~MPOptionsPreferencesMenu(void)	mp.o
+0x007329A0	0x00B21EA0	?SetPanelFile@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::SetPanelFile(class PanelFile *)	mp.o
+0x00732F30	0x00B22430	?PanelFileUnloaded@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x00732F50	0x00B22450	?Draw@MPOptionsPreferencesMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsPreferencesMenu::Draw(void)	mp.o
+0x00732F80	0x00B22480	?Update@MPOptionsPreferencesMenu@@UAEXM@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::Update(float)	mp.o
+0x00732F90	0x00B22490	?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ	private: void __thiscall MPOptionsPreferencesMenu::SetOptions(void)	mp.o
+0x00733050	0x00B22550	?SaveOptions@MPOptionsPreferencesMenu@@AAE_NXZ	private: bool __thiscall MPOptionsPreferencesMenu::SaveOptions(void)	mp.o
+0x007331E0	0x00B226E0	?OnUp@MPOptionsPreferencesMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::OnUp(int)	mp.o
+0x00733280	0x00B22780	?OnDown@MPOptionsPreferencesMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::OnDown(int)	mp.o
+0x00733320	0x00B22820	?OnTriangle@MPOptionsPreferencesMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::OnTriangle(int)	mp.o
+0x00733350	0x00B22850	?UpdateWidescreen@MPOptionsPreferencesMenu@@UAEX_N@Z	public: virtual void __thiscall MPOptionsPreferencesMenu::UpdateWidescreen(bool)	mp.o
+0x00733390	0x00B22890	?Me@MPProfileEditMenu@@SAPAV1@XZ	public: static class MPProfileEditMenu * __cdecl MPProfileEditMenu::Me(void)	mp.o
+0x007333A0	0x00B228A0	?Draw@MPProfileEditMenu@@UAEXXZ	public: virtual void __thiscall MPProfileEditMenu::Draw(void)	mp.o
+0x007333D0	0x00B228D0	?Update@MPProfileEditMenu@@UAEXM@Z	public: virtual void __thiscall MPProfileEditMenu::Update(float)	mp.o
+0x00733400	0x00B22900	?SetPanelFile@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPProfileEditMenu::SetPanelFile(class PanelFile *)	mp.o
+0x00733640	0x00B22B40	?PanelFileUnloaded@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPProfileEditMenu::PanelFileUnloaded(class PanelFile *)	mp.o
+0x00733670	0x00B22B70	?OnUp@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::OnUp(int)	mp.o
+0x007336F0	0x00B22BF0	?OnDown@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::OnDown(int)	mp.o
+0x00733770	0x00B22C70	?OnTriangle@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::OnTriangle(int)	mp.o
+0x007337A0	0x00B22CA0	?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z	public: static bool __cdecl MPProfileEditMenu::DialogResponseOk(int)	mp.o
+0x007337B0	0x00B22CB0	?Select@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::Select(int)	mp.o
+0x00733820	0x00B22D20	?OnCross@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::OnCross(int)	mp.o
+0x00733890	0x00B22D90	?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ	public: virtual void __thiscall MPProfileEditMenu::ButtonHeldAction(void)	mp.o
+0x007338D0	0x00B22DD0	?UpdateWidescreen@MPProfileEditMenu@@UAEX_N@Z	public: virtual void __thiscall MPProfileEditMenu::UpdateWidescreen(bool)	mp.o
+0x00733910	0x00B22E10	?Me@MPProfileMainMenu@@SAPAV1@XZ	public: static class MPProfileMainMenu * __cdecl MPProfileMainMenu::Me(void)	mp.o
+0x00733920	0x00B22E20	??0MPProfileMainMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPProfileMainMenu::MPProfileMainMenu(class FEMenuSystem *)	mp.o
+0x007339D0	0x00B22ED0	??1MPProfileMainMenu@@UAE@XZ	public: virtual __thiscall MPProfileMainMenu::~MPProfileMainMenu(void)	mp.o
+0x00733A60	0x00B22F60	?Draw@MPProfileMainMenu@@UAEXXZ	public: virtual void __thiscall MPProfileMainMenu::Draw(void)	mp.o
+0x00733A90	0x00B22F90	?ClearEntries@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::ClearEntries(void)	mp.o
+0x00733AF0	0x00B22FF0	?LoadProfileData@MPProfileMainMenu@@SAXXZ	public: static void __cdecl MPProfileMainMenu::LoadProfileData(void)	mp.o
+0x00733B20	0x00B23020	?UpdateWidescreen@MPProfileMainMenu@@UAEX_N@Z	public: virtual void __thiscall MPProfileMainMenu::UpdateWidescreen(bool)	mp.o
+0x00733B60	0x00B23060	?SetPanelFile@MPProfileMainMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPProfileMainMenu::SetPanelFile(class PanelFile *)	mp.o
+0x00733D80	0x00B23280	?OnCross@MPProfileMainMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileMainMenu::OnCross(int)	mp.o
+0x00733D90	0x00B23290	?CreateProfile@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::CreateProfile(void)	mp.o
+0x00733DB0	0x00B232B0	?LoadProfilesDone@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::LoadProfilesDone(void)	mp.o
+0x00733EB0	0x00B233B0	?OnSelectionChange@MPProfileMainMenu@@AAEXXZ	private: void __thiscall MPProfileMainMenu::OnSelectionChange(void)	mp.o
+0x007341E0	0x00B236E0	?OnUp@MPProfileMainMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileMainMenu::OnUp(int)	mp.o
+0x00734220	0x00B23720	?ButtonHeldAction@MPProfileMainMenu@@UAEXXZ	public: virtual void __thiscall MPProfileMainMenu::ButtonHeldAction(void)	mp.o
+0x00734250	0x00B23750	?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseProfileLoadOk(int)	mp.o
+0x00734270	0x00B23770	?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseProfileEdit(int)	mp.o
+0x00734280	0x00B23780	?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseDeleteCancel(int)	mp.o
+0x00734290	0x00B23790	?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseSaveSuccess(int)	mp.o
+0x007342B0	0x00B237B0	?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseDeleteSuccess(int)	mp.o
+0x007342D0	0x00B237D0	?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseNoMemCard(int)	mp.o
+0x007342E0	0x00B237E0	??0cBezier@kuju@@QAE@XZ	public: __thiscall kuju::cBezier::cBezier(void)	mp.o
+0x007342F0	0x00B237F0	?reset@cBezier@kuju@@QAEXABVPosition3@math@@ABVDir3@4@01@Z	public: void __thiscall kuju::cBezier::reset(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x007343A0	0x00B238A0	?position@cBezier@kuju@@QBE?AVPosition3@math@@M@Z	public: class math::Position3 __thiscall kuju::cBezier::position(float)const 	mp.o
+0x00734480	0x00B23980	?speed@cBezier@kuju@@QBE?AVDir3@math@@M@Z	public: class math::Dir3 __thiscall kuju::cBezier::speed(float)const 	mp.o
+0x00734560	0x00B23A60	?speed@cBezierTrajectoryInterpolator@kuju@@QBE?AVDir3@math@@M@Z	public: class math::Dir3 __thiscall kuju::cBezierTrajectoryInterpolator::speed(float)const 	mp.o
+0x00734660	0x00B23B60	?ScoreForStat@PlayerStats@@YAHHH@Z	int __cdecl PlayerStats::ScoreForStat(int,int)	mp.o
+0x007346D0	0x00B23BD0	?TotalScoreForStats@PlayerStats@@YAHQAF@Z	int __cdecl PlayerStats::TotalScoreForStats(short * const)	mp.o
+0x007347C0	0x00B23CC0	?TotalScoreForSingleStat@PlayerStats@@YAHHH@Z	int __cdecl PlayerStats::TotalScoreForSingleStat(int,int)	mp.o
+0x007347E0	0x00B23CE0	?IsStatSpecificToAPlayerClass@PlayerStats@@YA_NH@Z	bool __cdecl PlayerStats::IsStatSpecificToAPlayerClass(int)	mp.o
+0x00734850	0x00B23D50	?GetStatSpecificToAPlayerClass@PlayerStats@@YA?AW4EPlayerClass@@H@Z	enum EPlayerClass __cdecl PlayerStats::GetStatSpecificToAPlayerClass(int)	mp.o
+0x007348B0	0x00B23DB0	??1cVoiceManager@kvoicemanager@kuju@@UAE@XZ	public: virtual __thiscall kuju::kvoicemanager::cVoiceManager::~cVoiceManager(void)	mp.o
+0x007348C0	0x00B23DC0	?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	public: void __thiscall kuju::kvoicemanager::cVoiceManager::loadIRXModules(void)	mp.o
+0x007348D0	0x00B23DD0	?setRemoteListeners@cVoiceManager@kvoicemanager@kuju@@QAEXAAVMPPlayerSet@@@Z	public: void __thiscall kuju::kvoicemanager::cVoiceManager::setRemoteListeners(class MPPlayerSet &)	mp.o
+0x007348F0	0x00B23DF0	?receiveVoiceData@cVoiceManager@kvoicemanager@kuju@@UAEXKPAEK@Z	public: virtual void __thiscall kuju::kvoicemanager::cVoiceManager::receiveVoiceData(unsigned long,unsigned char *,unsigned long)	mp.o
+0x00734910	0x00B23E10	?startSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::startSystem(void)	mp.o
+0x00734950	0x00B23E50	?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::stopSystem(void)	mp.o
+0x00734960	0x00B23E60	?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::startLoopback(void)	mp.o
+0x00734970	0x00B23E70	?stopLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::stopLoopback(void)	mp.o
+0x00734980	0x00B23E80	?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::updateLoopback(void)	mp.o
+0x00734990	0x00B23E90	?getDiagnostics@cVoiceManager@kvoicemanager@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z	public: void __thiscall kuju::kvoicemanager::cVoiceManager::getDiagnostics(struct kuju::kvoicemanager::cVoiceManager::sDiagnostics *,class kuju::knet::sTime const &)	mp.o
+0x007349F0	0x00B23EF0	?initialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::initialise(void)	mp.o
+0x00734C30	0x00B24130	?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::deinitialise(void)	mp.o
+0x00734C40	0x00B24140	?addPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePacket@123@K@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::addPacket(struct kuju::knetuser::cVoiceNetworkManager::sVoicePacket *,unsigned long)	mp.o
+0x00734D50	0x00B24250	?seqIDInList@cVoiceNetworkManager@knetuser@kuju@@AAEIKK@Z	private: unsigned int __thiscall kuju::knetuser::cVoiceNetworkManager::seqIDInList(unsigned long,unsigned long)	mp.o
+0x00734D90	0x00B24290	?flushFirstPacketInList@cVoiceNetworkManager@knetuser@kuju@@AAEXKI@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::flushFirstPacketInList(unsigned long,unsigned int)	mp.o
+0x00734EC0	0x00B243C0	?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::check_for_looped(void)	mp.o
+0x00734FA0	0x00B244A0	?addVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::addVoicePendingDispatchPacket(struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *)	mp.o
+0x00735080	0x00B24580	?discardVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::discardVoicePendingDispatchPacket(struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *)	mp.o
+0x00735250	0x00B24750	?checkForPendingPacketsAwaitingHandling@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::checkForPendingPacketsAwaitingHandling(class kuju::knet::sTime const &)	mp.o
+0x007352C0	0x00B247C0	?determineClosestDestination@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@AAEAAM@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::determineClosestDestination(struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *,unsigned char &,float &)	mp.o
+0x00735400	0x00B24900	?getRoutePlayerContiguous@cVoiceNetworkManager@knetuser@kuju@@AAEEEEE@Z	private: unsigned char __thiscall kuju::knetuser::cVoiceNetworkManager::getRoutePlayerContiguous(unsigned char,unsigned char,unsigned char)	mp.o
+0x007355E0	0x00B24AE0	?getDiagnostics@cVoiceNetworkManager@knetuser@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::getDiagnostics(struct kuju::knetuser::cVoiceNetworkManager::sDiagnostics *,class kuju::knet::sTime const &)	mp.o
+0x007357F0	0x00B24CF0	?GetLocalPlayerId@MultiplayerMgr@@QBEHH@Z	public: int __thiscall MultiplayerMgr::GetLocalPlayerId(int)const 	mp.o
+0x00735880	0x00B24D80	?IsHost@MultiplayerMgr@@QAE_NXZ	public: bool __thiscall MultiplayerMgr::IsHost(void)	mp.o
+0x007358A0	0x00B24DA0	?IsLocalClientHost@MultiplayerMgr@@QAE_NH@Z	public: bool __thiscall MultiplayerMgr::IsLocalClientHost(int)	mp.o
+0x007358E0	0x00B24DE0	?AddVehicle@MultiplayerMgr@@QAEXPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::AddVehicle(class Entity *)	mp.o
+0x00735990	0x00B24E90	?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ	public: bool __thiscall MultiplayerMgr::IsVoteOngoing(void)	mp.o
+0x007359C0	0x00B24EC0	?DropHotJoiningPlayers@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::DropHotJoiningPlayers(void)	mp.o
+0x00735A00	0x00B24F00	?ConnectToSession@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z	public: void __thiscall MPPeer::ConnectToSession(class bdReference<class bdCommonAddr>,struct XNKID const &,struct XNKEY const &)	mp.o
+0x00735A70	0x00B24F70	?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z	public: class bdReference<class bdConnection> __thiscall MPPeer::GetConnectionByIndex(unsigned int)	mp.o
+0x00735AA0	0x00B24FA0	?IsLocalPlayer@MPPeer@@QAE_NPAVEntity@@@Z	public: bool __thiscall MPPeer::IsLocalPlayer(class Entity *)	mp.o
+0x00735AB0	0x00B24FB0	?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z	private: virtual void __thiscall MPPeer::onSessionJoinRefused(class bdReference<class bdBitBuffer>)	mp.o
+0x00735B80	0x00B25080	?UpdateQosProbe@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@_NM@Z	public: void __thiscall MPPeer::UpdateQosProbe(class bdReference<class bdCommonAddr>,bool,float)	mp.o
+0x00735BF0	0x00B250F0	?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z	private: virtual void __thiscall MPPeer::onQoSProbeSuccess(class bdQoSProbeInfo const &)	mp.o
+0x00735C40	0x00B25140	?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z	private: virtual void __thiscall MPPeer::onQoSProbeFail(class bdReference<class bdCommonAddr>)	mp.o
+0x00735CC0	0x00B251C0	?FindActiveQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z	public: int __thiscall MPPeer::FindActiveQosProbe(class bdReference<class bdCommonAddr>,struct XNKID const &,struct XNKEY const &)	mp.o
+0x00735DE0	0x00B252E0	?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z	private: virtual void __thiscall MPPeer::onSessionDisconnect(class bdReference<class bdConnection>)	mp.o
+0x00735E50	0x00B25350	??0MPLanDiscovery@@QAE@XZ	public: __thiscall MPLanDiscovery::MPLanDiscovery(void)	mp.o
+0x00735EE0	0x00B253E0	??1MPLanDiscovery@@UAE@XZ	public: virtual __thiscall MPLanDiscovery::~MPLanDiscovery(void)	mp.o
+0x00735F60	0x00B25460	?onDiscovery@MPLanDiscovery@@MAEXV?$bdReference@VbdGameInfo@@@@@Z	protected: virtual void __thiscall MPLanDiscovery::onDiscovery(class bdReference<class bdGameInfo>)	mp.o
+0x00735FF0	0x00B254F0	?IsValid@MPPlayer@@QBE_NXZ	public: bool __thiscall MPPlayer::IsValid(void)const 	mp.o
+0x00736010	0x00B25510	?IsConnected@MPPlayer@@QBE_NXZ	public: bool __thiscall MPPlayer::IsConnected(void)const 	mp.o
+0x00736030	0x00B25530	?IsLocalPlayer@MPPlayer@@QBE_NXZ	public: bool __thiscall MPPlayer::IsLocalPlayer(void)const 	mp.o
+0x007360E0	0x00B255E0	?SetInvalid@MPPlayer@@QAEXXZ	public: void __thiscall MPPlayer::SetInvalid(void)	mp.o
+0x00736110	0x00B25610	?SetConnection@MPPlayer@@QAEXV?$bdReference@VbdConnection@@@@@Z	public: void __thiscall MPPlayer::SetConnection(class bdReference<class bdConnection>)	mp.o
+0x00736190	0x00B25690	?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ	public: class bdReference<class bdConnection> __thiscall MPPlayer::GetConnection(void)const 	mp.o
+0x007361B0	0x00B256B0	?AnimEvent@MPPlayer@@QAEXHHH@Z	public: void __thiscall MPPlayer::AnimEvent(int,int,int)	mp.o
+0x00736380	0x00B25880	?AnimEventSpecial@MPPlayer@@QAEXH@Z	public: void __thiscall MPPlayer::AnimEventSpecial(int)	mp.o
+0x00736470	0x00B25970	?HandleFootstepSounds@MPPlayer@@IAEXXZ	protected: void __thiscall MPPlayer::HandleFootstepSounds(void)	mp.o
+0x007365F0	0x00B25AF0	?SetAngles@MPPlayer@@QAEXQBM@Z	public: void __thiscall MPPlayer::SetAngles(float const * const)	mp.o
+0x00736670	0x00B25B70	?DebugRender@MPPlayer@@QAEXXZ	public: void __thiscall MPPlayer::DebugRender(void)	mp.o
+0x00736EC0	0x00B263C0	?SetInvalid@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::SetInvalid(void)	mp.o
+0x00736EE0	0x00B263E0	?IsPhysicsPaused@MPVehicle@@QBE_NXZ	public: bool __thiscall MPVehicle::IsPhysicsPaused(void)const 	mp.o
+0x00736F10	0x00B26410	?UpdateFromLocalVehicle@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::UpdateFromLocalVehicle(void)	mp.o
+0x00737030	0x00B26530	?GetOutOfVehicle@MPVehicle@@QAEXPAVMPPlayer@@H_N@Z	public: void __thiscall MPVehicle::GetOutOfVehicle(class MPPlayer *,int,bool)	mp.o
+0x00737210	0x00B26710	?RespawnVehicle@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::RespawnVehicle(void)	mp.o
+0x00737290	0x00B26790	?RelinkOccupant@MPVehicle@@QAEXPAVMPPlayer@@@Z	public: void __thiscall MPVehicle::RelinkOccupant(class MPPlayer *)	mp.o
+0x007373F0	0x00B268F0	?AddLocalPlayer@MPPlayerManager@@QAEXH@Z	public: void __thiscall MPPlayerManager::AddLocalPlayer(int)	mp.o
+0x007375E0	0x00B26AE0	?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z	public: class MPPlayer * __thiscall MPPlayerManager::GetPlayer(unsigned char)	mp.o
+0x007376B0	0x00B26BB0	?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z	public: class MPPlayer * __thiscall MPPlayerManager::GetPlayer(class Entity const * const)	mp.o
+0x00737770	0x00B26C70	?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z	public: class MPPlayer * __thiscall MPPlayerManager::GetPlayer(class bdReference<class bdConnection>)	mp.o
+0x00737830	0x00B26D30	?GetPlayerIndex@MPPlayerManager@@QAEHQBVEntity@@@Z	public: int __thiscall MPPlayerManager::GetPlayerIndex(class Entity const * const)	mp.o
+0x007378D0	0x00B26DD0	?GetPlayerInfo@MPPlayerManager@@QAEIPAD@Z	public: unsigned int __thiscall MPPlayerManager::GetPlayerInfo(char *)	mp.o
+0x00737930	0x00B26E30	?SendAll@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N1@Z	public: void __thiscall MPPlayerManager::SendAll(class bdReference<class bdMessage>,bool,bool)	mp.o
+0x007379F0	0x00B26EF0	?CountOtherEnemiesInRange@MPPlayerManager@@QAEHPBVMPPlayer@@H@Z	public: int __thiscall MPPlayerManager::CountOtherEnemiesInRange(class MPPlayer const *,int)	mp.o
+0x00737B90	0x00B27090	?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z	public: bool __thiscall MPPlayerManager::SendHost(class bdReference<class bdMessage>,bool)	mp.o
+0x00737C20	0x00B27120	?SendPlayer@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@_N@Z	public: void __thiscall MPPlayerManager::SendPlayer(class MPPlayer const *,class bdReference<class bdMessage>,bool)	mp.o
+0x00737DA0	0x00B272A0	?acceptSession@MPPlayerManager@@EAE_NABVbdReceivedMessage@@@Z	private: virtual bool __thiscall MPPlayerManager::acceptSession(class bdReceivedMessage const &)	mp.o
+0x007380C0	0x00B275C0	?DispatchBufferedMessages@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::DispatchBufferedMessages(void)	mp.o
+0x007381B0	0x00B276B0	?FlushBufferedMessages@MPPlayerManager@@QAEXV?$bdReference@VbdConnection@@@@@Z	public: void __thiscall MPPlayerManager::FlushBufferedMessages(class bdReference<class bdConnection>)	mp.o
+0x007383C0	0x00B278C0	?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z	private: virtual bool __thiscall MPPlayerManager::onSessionConnectRequest(class bdReference<class bdBitBuffer>,class bdBitBuffer * const)	mp.o
+0x007383F0	0x00B278F0	?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z	public: void __thiscall MPPlayerManager::RemovePlayerFromSession(class MPPlayer *)	mp.o
+0x00738440	0x00B27940	?SendCallVote@MPPlayerManager@@AAEXQAVMPPlayer@@@Z	private: void __thiscall MPPlayerManager::SendCallVote(class MPPlayer * const)	mp.o
+0x00738680	0x00B27B80	?HandleAARMapVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAARMapVoteRequest(class bdReceivedMessage const &)	mp.o
+0x00738860	0x00B27D60	?HandleAARGameModeVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAARGameModeVoteRequest(class bdReceivedMessage const &)	mp.o
+0x00738A40	0x00B27F40	?HandleVoteEnded@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoteEnded(class bdReceivedMessage const &)	mp.o
+0x00738B90	0x00B28090	?HandleSessionID@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSessionID(class bdReceivedMessage const &)	mp.o
+0x00738C60	0x00B28160	?HandleVoiceCommUpdate@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoiceCommUpdate(class bdReceivedMessage const &)	mp.o
+0x00738DD0	0x00B282D0	?HandleJoinableFlag@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleJoinableFlag(class bdReceivedMessage const &)	mp.o
+0x00738EC0	0x00B283C0	?HandleSDHostBombRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSDHostBombRequest(class bdReceivedMessage const &)	mp.o
+0x00739000	0x00B28500	?HandleSDBombOperationEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSDBombOperationEvent(class bdReceivedMessage const &)	mp.o
+0x00739160	0x00B28660	?HandleSDBombExplosion@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSDBombExplosion(class bdReceivedMessage const &)	mp.o
+0x00739260	0x00B28760	?HandleWeaponChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleWeaponChange(class bdReceivedMessage const &)	mp.o
+0x00739350	0x00B28850	?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAreaCaptured(class bdReceivedMessage const &)	mp.o
+0x007394A0	0x00B289A0	?ResetVehicleEventSequenceIds@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::ResetVehicleEventSequenceIds(void)	mp.o
+0x00739510	0x00B28A10	?VehicleEventProcessEvent@MPPlayerManager@@AAE_NPAUMPVehicleEvent@@@Z	private: bool __thiscall MPPlayerManager::VehicleEventProcessEvent(struct MPVehicleEvent *)	mp.o
+0x007397A0	0x00B28CA0	?VehicleEventProcessAllEvents@MPPlayerManager@@AAEXXZ	private: void __thiscall MPPlayerManager::VehicleEventProcessAllEvents(void)	mp.o
+0x007397E0	0x00B28CE0	?HandleGameState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameState(class bdReceivedMessage const &)	mp.o
+0x00739A90	0x00B28F90	?HandleGameScore@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameScore(class bdReceivedMessage const &)	mp.o
+0x00739BC0	0x00B290C0	?HandleGameStateDOM@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameStateDOM(class bdReceivedMessage const &)	mp.o
+0x00739D60	0x00B29260	?HandleVoiceData@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoiceData(class bdReceivedMessage const &)	mp.o
+0x00739E90	0x00B29390	?HandleMute@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleMute(class bdReceivedMessage const &)	mp.o
+0x00739FA0	0x00B294A0	?ClientConnect@MPPlayerManager@@AAEXQAVMPPlayer@@QBM1@Z	private: void __thiscall MPPlayerManager::ClientConnect(class MPPlayer * const,float const * const,float const * const)	mp.o
+0x0073A370	0x00B29870	?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z	private: void __thiscall MPPlayerManager::ClientDisconnect(class MPPlayer * const,bool)	mp.o
+0x0073A4B0	0x00B299B0	?allPlayers@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ	public: class MPPlayerSet __thiscall MPPlayerManager::allPlayers(void)	mp.o
+0x0073A590	0x00B29A90	?allPlayersButMe@MPPlayerManager@@QAE?AVMPPlayerSet@@H@Z	public: class MPPlayerSet __thiscall MPPlayerManager::allPlayersButMe(int)	mp.o
+0x0073A650	0x00B29B50	?allPlayersButLocal@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ	public: class MPPlayerSet __thiscall MPPlayerManager::allPlayersButLocal(void)	mp.o
+0x0073A700	0x00B29C00	?Send@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@VMPPlayerSet@@_N@Z	public: void __thiscall MPPlayerManager::Send(class bdReference<class bdMessage>,class MPPlayerSet,bool)	mp.o
+0x0073A880	0x00B29D80	?SerializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPPlayerManager::SerializeGameState(class bdReference<class bdBitBuffer>)	mp.o
+0x0073A8A0	0x00B29DA0	?DeserializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPPlayerManager::DeserializeGameState(class bdReference<class bdBitBuffer>)	mp.o
+0x0073A8C0	0x00B29DC0	?LocalPlayerExitGame@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::LocalPlayerExitGame(void)	mp.o
+0x0073A980	0x00B29E80	?GetCurrentPlayerCount@MPPlayerManager@@QAEHXZ	public: int __thiscall MPPlayerManager::GetCurrentPlayerCount(void)	mp.o
+0x0073A9F0	0x00B29EF0	?HandleRequestPlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleRequestPlayerState(class bdReceivedMessage const &)	mp.o
+0x0073AA30	0x00B29F30	?WritePosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WritePosition(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073AAE0	0x00B29FE0	?WritePositionDelta@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@MM@Z	void __cdecl MPUtility::WritePositionDelta(class bdReference<class bdBitBuffer>,float,float)	mp.o
+0x0073AB50	0x00B2A050	?ReadPositionDelta@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@MAAM@Z	bool __cdecl MPUtility::ReadPositionDelta(class bdReference<class bdBitBuffer>,float,float &)	mp.o
+0x0073ABF0	0x00B2A0F0	?WritePosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVPosition3@math@@@Z	void __cdecl MPUtility::WritePosition(class bdReference<class bdBitBuffer>,class math::Position3 const &)	mp.o
+0x0073ACA0	0x00B2A1A0	?ReadPosition@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadPosition(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073AD70	0x00B2A270	?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteSnappedPosition(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073AE10	0x00B2A310	?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVPosition3@math@@@Z	void __cdecl MPUtility::WriteSnappedPosition(class bdReference<class bdBitBuffer>,class math::Position3 const &)	mp.o
+0x0073AEB0	0x00B2A3B0	?ReadSnappedPosition@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadSnappedPosition(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073AFB0	0x00B2A4B0	?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteNormal(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073B020	0x00B2A520	?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z	void __cdecl MPUtility::WriteNormal(class bdReference<class bdBitBuffer>,class math::Dir3 const &)	mp.o
+0x0073B090	0x00B2A590	?ReadNormal@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadNormal(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073B120	0x00B2A620	?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteAngles(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073B1F0	0x00B2A6F0	?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z	void __cdecl MPUtility::WriteAngles(class bdReference<class bdBitBuffer>,class math::Dir3 const &)	mp.o
+0x0073B2C0	0x00B2A7C0	?ReadAngles@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadAngles(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073B400	0x00B2A900	?WriteVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteVector(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073B4D0	0x00B2A9D0	?ReadVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadVector(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073B600	0x00B2AB00	?WriteCompressedVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteCompressedVector(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073B770	0x00B2AC70	?ReadCompressedVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadCompressedVector(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073B930	0x00B2AE30	?WriteAnglesYawPitch@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z	void __cdecl MPUtility::WriteAnglesYawPitch(class bdReference<class bdBitBuffer>,float const * const)	mp.o
+0x0073B9E0	0x00B2AEE0	?WriteAnglesYawPitch@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z	void __cdecl MPUtility::WriteAnglesYawPitch(class bdReference<class bdBitBuffer>,class math::Dir3 const &)	mp.o
+0x0073BA90	0x00B2AF90	?ReadAnglesYawPitch@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z	bool __cdecl MPUtility::ReadAnglesYawPitch(class bdReference<class bdBitBuffer>,float * const)	mp.o
+0x0073BB90	0x00B2B090	?WriteAngle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@M@Z	void __cdecl MPUtility::WriteAngle(class bdReference<class bdBitBuffer>,float)	mp.o
+0x0073BC10	0x00B2B110	?ReadAngle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAM@Z	bool __cdecl MPUtility::ReadAngle(class bdReference<class bdBitBuffer>,float &)	mp.o
+0x0073BCB0	0x00B2B1B0	?WriteEntityHandle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@VMPEntityHandle@@@Z	void __cdecl MPUtility::WriteEntityHandle(class bdReference<class bdBitBuffer>,class MPEntityHandle)	mp.o
+0x0073BD20	0x00B2B220	?ReadEntityHandle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAVMPEntityHandle@@@Z	bool __cdecl MPUtility::ReadEntityHandle(class bdReference<class bdBitBuffer>,class MPEntityHandle &)	mp.o
+0x0073BDB0	0x00B2B2B0	?WritePlayerId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z	void __cdecl MPUtility::WritePlayerId(class bdReference<class bdBitBuffer>,unsigned char)	mp.o
+0x0073BE10	0x00B2B310	?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z	bool __cdecl MPUtility::ReadPlayerId(class bdReference<class bdBitBuffer>,unsigned char &)	mp.o
+0x0073BE90	0x00B2B390	?WriteVehicleId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z	void __cdecl MPUtility::WriteVehicleId(class bdReference<class bdBitBuffer>,unsigned char)	mp.o
+0x0073BEF0	0x00B2B3F0	?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z	bool __cdecl MPUtility::ReadSeatIndex(class bdReference<class bdBitBuffer>,int &)	mp.o
+0x0073BF70	0x00B2B470	?WriteSeatIndex@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z	void __cdecl MPUtility::WriteSeatIndex(class bdReference<class bdBitBuffer>,int)	mp.o
+0x0073BFD0	0x00B2B4D0	?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z	bool __cdecl MPUtility::ReadEntryPoint(class bdReference<class bdBitBuffer>,int &)	mp.o
+0x0073C050	0x00B2B550	?WriteEntryPoint@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z	void __cdecl MPUtility::WriteEntryPoint(class bdReference<class bdBitBuffer>,int)	mp.o
+0x0073C0B0	0x00B2B5B0	?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z	bool __cdecl MPUtility::ReadVehicleId(class bdReference<class bdBitBuffer>,unsigned char &)	mp.o
+0x0073C130	0x00B2B630	?WritePlayerClass@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z	void __cdecl MPUtility::WritePlayerClass(class bdReference<class bdBitBuffer>,int)	mp.o
+0x0073C190	0x00B2B690	?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z	bool __cdecl MPUtility::ReadPlayerClass(class bdReference<class bdBitBuffer>,int &)	mp.o
+0x0073C200	0x00B2B700	?WritePlayerTeam@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@W4team_t@@@Z	void __cdecl MPUtility::WritePlayerTeam(class bdReference<class bdBitBuffer>,enum team_t)	mp.o
+0x0073C280	0x00B2B780	?ReadPlayerTeam@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAW4team_t@@@Z	bool __cdecl MPUtility::ReadPlayerTeam(class bdReference<class bdBitBuffer>,enum team_t &)	mp.o
+0x0073C320	0x00B2B820	?WritePlayerData@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUPlayerData@1@@Z	void __cdecl MPUtility::WritePlayerData(class bdReference<class bdBitBuffer>,struct MPUtility::PlayerData const &)	mp.o
+0x0073C540	0x00B2BA40	?ReadPlayerData@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUPlayerData@1@@Z	bool __cdecl MPUtility::ReadPlayerData(class bdReference<class bdBitBuffer>,struct MPUtility::PlayerData &)	mp.o
+0x0073C7C0	0x00B2BCC0	?WriteUserCmd@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUusercmd_s@@@Z	void __cdecl MPUtility::WriteUserCmd(class bdReference<class bdBitBuffer>,struct usercmd_s const &)	mp.o
+0x0073C8F0	0x00B2BDF0	?ReadUserCmd@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUusercmd_s@@@Z	bool __cdecl MPUtility::ReadUserCmd(class bdReference<class bdBitBuffer>,struct usercmd_s &)	mp.o
+0x0073CB40	0x00B2C040	?Serialize@sServerCreateParams@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall sServerCreateParams::Serialize(class bdReference<class bdBitBuffer>)	mp.o
+0x0073CD60	0x00B2C260	?Deserialize@sServerCreateParams@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall sServerCreateParams::Deserialize(class bdReference<class bdBitBuffer>)	mp.o
+0x0073D000	0x00B2C500	?SetupCvars@MPUIInterface@@SAX_N@Z	public: static void __cdecl MPUIInterface::SetupCvars(bool)	mp.o
+0x0073D0F0	0x00B2C5F0	?GetDefaultOption@MPUIInterface@@SA?BHW4eSetting@1@W4eGameType@@@Z	public: static int const __cdecl MPUIInterface::GetDefaultOption(enum MPUIInterface::eSetting,enum eGameType)	mp.o
+0x0073D430	0x00B2C930	?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z	public: static int const __cdecl MPUIInterface::GetMaxPlayersOptionFromMap(char)	mp.o
+0x0073D4B0	0x00B2C9B0	?LoadMap@MPUIInterface@@SAXH_N0@Z	public: static void __cdecl MPUIInterface::LoadMap(int,bool,bool)	mp.o
+0x0073D6C0	0x00B2CBC0	?ResolveVote@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::ResolveVote(void)	mp.o
+0x0073D9A0	0x00B2CEA0	??0MPGameInfo@@QAE@XZ	public: __thiscall MPGameInfo::MPGameInfo(void)	mp.o
+0x0073DA50	0x00B2CF50	??0MPGameInfo@@QAE@IABUXNKID@@ABUXNKEY@@V?$bdReference@VbdCommonAddr@@@@@Z	public: __thiscall MPGameInfo::MPGameInfo(unsigned int,struct XNKID const &,struct XNKEY const &,class bdReference<class bdCommonAddr>)	mp.o
+0x0073DAD0	0x00B2CFD0	??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@EEEE@Z	public: __thiscall MPGameInfo::MPGameInfo(unsigned int,class bdReference<class bdCommonAddr>,unsigned char,unsigned char,unsigned char,unsigned char)	mp.o
+0x0073DB90	0x00B2D090	??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@UXNKID@@UXNKEY@@EEEE@Z	public: __thiscall MPGameInfo::MPGameInfo(unsigned int,class bdReference<class bdCommonAddr>,struct XNKID,struct XNKEY,unsigned char,unsigned char,unsigned char,unsigned char)	mp.o
+0x0073DC30	0x00B2D130	?serialize@MPGameInfo@@UBEXAAVbdBitBuffer@@@Z	public: virtual void __thiscall MPGameInfo::serialize(class bdBitBuffer &)const 	mp.o
+0x0073DDE0	0x00B2D2E0	?deserialize@MPGameInfo@@UAE_NV?$bdReference@VbdCommonAddr@@@@AAVbdBitBuffer@@@Z	public: virtual bool __thiscall MPGameInfo::deserialize(class bdReference<class bdCommonAddr>,class bdBitBuffer &)	mp.o
+0x0073DFF0	0x00B2D4F0	??8MPGameInfo@@QBE_NABV0@@Z	public: bool __thiscall MPGameInfo::operator==(class MPGameInfo const &)const 	mp.o
+0x0073E0D0	0x00B2D5D0	?OnActivate@MPOptionsSoundMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsSoundMenu::OnActivate(void)	mp.o
+0x0073E140	0x00B2D640	?AdjustOptions@MPOptionsSoundMenu@@AAEX_N@Z	private: void __thiscall MPOptionsSoundMenu::AdjustOptions(bool)	mp.o
+0x0073E200	0x00B2D700	?OnTriangle@MPOptionsSoundMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsSoundMenu::OnTriangle(int)	mp.o
+0x0073E230	0x00B2D730	?OnActivate@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::OnActivate(int)	mp.o
+0x0073E340	0x00B2D840	?OnTriangle@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::OnTriangle(int)	mp.o
+0x0073E370	0x00B2D870	?Select@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::Select(int)	mp.o
+0x0073E3C0	0x00B2D8C0	?OnCross@MPOptionsControlsMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsControlsMenu::OnCross(int)	mp.o
+0x0073E400	0x00B2D900	?OnActivate@MPOptionsGameplayMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsGameplayMenu::OnActivate(void)	mp.o
+0x0073E4B0	0x00B2D9B0	?OnTriangle@MPOptionsGameplayMenu@@UAEXH@Z	public: virtual void __thiscall MPOptionsGameplayMenu::OnTriangle(int)	mp.o
+0x0073E4E0	0x00B2D9E0	?OnActivate@MPOptionsPreferencesMenu@@UAEXXZ	public: virtual void __thiscall MPOptionsPreferencesMenu::OnActivate(void)	mp.o
+0x0073E650	0x00B2DB50	?OnActivate@MPProfileEditMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileEditMenu::OnActivate(int)	mp.o
+0x0073E7C0	0x00B2DCC0	?OnActivate@MPProfileMainMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileMainMenu::OnActivate(int)	mp.o
+0x0073E7F0	0x00B2DCF0	?DialogDisplayProfileLoadSuccess@MPProfileMainMenu@@SAXH@Z	public: static void __cdecl MPProfileMainMenu::DialogDisplayProfileLoadSuccess(int)	mp.o
+0x0073E8D0	0x00B2DDD0	?DialogDisplayLoading@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayLoading(void)	mp.o
+0x0073E960	0x00B2DE60	?DialogDisplaySaving@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplaySaving(void)	mp.o
+0x0073E9F0	0x00B2DEF0	?DialogDisplayDeleting@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayDeleting(void)	mp.o
+0x0073EA80	0x00B2DF80	?DialogDisplaySaveSuccess@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplaySaveSuccess(void)	mp.o
+0x0073EB60	0x00B2E060	?DialogDisplayDeleteSuccess@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayDeleteSuccess(void)	mp.o
+0x0073EC40	0x00B2E140	?DialogDisplayNoMemDevice@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayNoMemDevice(void)	mp.o
+0x0073ED20	0x00B2E220	?DialogDisplayDataCorrupt@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayDataCorrupt(void)	mp.o
+0x0073EE00	0x00B2E300	?DialogDisplayNoFreeSpace@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayNoFreeSpace(void)	mp.o
+0x0073EEE0	0x00B2E3E0	??0cBezier@kuju@@QAE@ABVPosition3@math@@ABVDir3@3@01@Z	public: __thiscall kuju::cBezier::cBezier(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x0073EF10	0x00B2E410	??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ	public: __thiscall kuju::cBezierTrajectoryInterpolator::cBezierTrajectoryInterpolator(void)	mp.o
+0x0073EF30	0x00B2E430	?reset@cBezierTrajectoryInterpolator@kuju@@QAEXABVPosition3@math@@ABVDir3@4@M01M_N@Z	public: void __thiscall kuju::cBezierTrajectoryInterpolator::reset(class math::Position3 const &,class math::Dir3 const &,float,class math::Position3 const &,class math::Dir3 const &,float,bool)	mp.o
+0x0073F180	0x00B2E680	?position@cBezierTrajectoryInterpolator@kuju@@QBE?AVPosition3@math@@M@Z	public: class math::Position3 __thiscall kuju::cBezierTrajectoryInterpolator::position(float)const 	mp.o
+0x0073F240	0x00B2E740	?initialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	public: void __thiscall kuju::kvoicemanager::cVoiceManager::initialise(void)	mp.o
+0x0073F290	0x00B2E790	?deinitialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	public: void __thiscall kuju::kvoicemanager::cVoiceManager::deinitialise(void)	mp.o
+0x0073F2A0	0x00B2E7A0	??0cVoiceNetworkManager@knetuser@kuju@@QAE@XZ	public: __thiscall kuju::knetuser::cVoiceNetworkManager::cVoiceNetworkManager(void)	mp.o
+0x0073F3F0	0x00B2E8F0	?resetPlayer@cVoiceNetworkManager@knetuser@kuju@@QAEXK@Z	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::resetPlayer(unsigned long)	mp.o
+0x0073F630	0x00B2EB30	?getFreePacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePacket@123@XZ	private: struct kuju::knetuser::cVoiceNetworkManager::sVoicePacket * __thiscall kuju::knetuser::cVoiceNetworkManager::getFreePacket(void)	mp.o
+0x0073F7C0	0x00B2ECC0	?getFreeVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePendingDispatchPacket@123@XZ	private: struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket * __thiscall kuju::knetuser::cVoiceNetworkManager::getFreeVoicePendingDispatchPacket(void)	mp.o
+0x0073F8C0	0x00B2EDC0	?getPlayerIndicesToSendTo@cVoiceNetworkManager@knetuser@kuju@@AAEXAAK0@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::getPlayerIndicesToSendTo(unsigned long &,unsigned long &)	mp.o
+0x0073FA30	0x00B2EF30	?updateVoiceBandwidthSimulation@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::updateVoiceBandwidthSimulation(class kuju::knet::sTime const &)	mp.o
+0x0073FC70	0x00B2F170	?getRoutePlayer@cVoiceNetworkManager@knetuser@kuju@@AAEEEE@Z	private: unsigned char __thiscall kuju::knetuser::cVoiceNetworkManager::getRoutePlayer(unsigned char,unsigned char)	mp.o
+0x0073FFB0	0x00B2F4B0	?GetCurrentPlayerCount@MultiplayerMgr@@QAEHXZ	public: int __thiscall MultiplayerMgr::GetCurrentPlayerCount(void)	mp.o
+0x00740060	0x00B2F560	?GetCurrentPlayerCountOnTeam@MultiplayerMgr@@QAEHH@Z	public: int __thiscall MultiplayerMgr::GetCurrentPlayerCountOnTeam(int)	mp.o
+0x007401E0	0x00B2F6E0	?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z	public: char const * __thiscall MultiplayerMgr::GetPlayerName(class Entity const *)const 	mp.o
+0x00740210	0x00B2F710	?GetPlayerName@MultiplayerMgr@@QBEPBDH@Z	public: char const * __thiscall MultiplayerMgr::GetPlayerName(int)const 	mp.o
+0x00740260	0x00B2F760	?GetPlayerId@MultiplayerMgr@@QBEHPBVEntity@@@Z	public: int __thiscall MultiplayerMgr::GetPlayerId(class Entity const *)const 	mp.o
+0x007402F0	0x00B2F7F0	?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z	public: bool __thiscall MultiplayerMgr::IsLocalPlayer(class Entity *)	mp.o
+0x00740310	0x00B2F810	?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@@Z	public: bool __thiscall MultiplayerMgr::IsInVehicle(class Entity *)	mp.o
+0x00740390	0x00B2F890	?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@0@Z	public: bool __thiscall MultiplayerMgr::IsInVehicle(class Entity *,class Entity *)	mp.o
+0x00740450	0x00B2F950	?getVoiceConnection@MultiplayerMgr@@QAEPBDPBVEntity@@@Z	public: char const * __thiscall MultiplayerMgr::getVoiceConnection(class Entity const *)	mp.o
+0x00740490	0x00B2F990	?LoadLevel@MPPeer@@QAEXH_N0@Z	public: void __thiscall MPPeer::LoadLevel(int,bool,bool)	mp.o
+0x00740610	0x00B2FB10	?DropSplitScreenPlayer@MPPeer@@QAEXPAVEntity@@@Z	public: void __thiscall MPPeer::DropSplitScreenPlayer(class Entity *)	mp.o
+0x00740730	0x00B2FC30	?IsPlayerTalking@MPPeer@@QAE_NPAVEntity@@H@Z	public: bool __thiscall MPPeer::IsPlayerTalking(class Entity *,int)	mp.o
+0x00740770	0x00B2FC70	?BulletHitPlayer@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z	public: void __thiscall MPPeer::BulletHitPlayer(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,unsigned char,unsigned char,short,unsigned char,unsigned char,int)	mp.o
+0x00740B40	0x00B30040	?AnimEvent@MPPeer@@QAEXH@Z	public: void __thiscall MPPeer::AnimEvent(int)	mp.o
+0x00740CF0	0x00B301F0	?SpotEntity@MPPeer@@QAEXPAVEntity@@@Z	public: void __thiscall MPPeer::SpotEntity(class Entity *)	mp.o
+0x007410A0	0x00B305A0	?FireArtillery@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z	public: void __thiscall MPPeer::FireArtillery(class Entity *,int,class math::Position3 const &,int,bool)	mp.o
+0x00741250	0x00B30750	?VehicleDeath@MPPeer@@QAEXPAVEntity@@0HH@Z	public: void __thiscall MPPeer::VehicleDeath(class Entity *,class Entity *,int,int)	mp.o
+0x00741580	0x00B30A80	?VehicleMantled@MPPeer@@QAEXPAVEntity@@0@Z	public: void __thiscall MPPeer::VehicleMantled(class Entity *,class Entity *)	mp.o
+0x00741840	0x00B30D40	?PlayerDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z	public: void __thiscall MPPeer::PlayerDamage(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,int,short,unsigned char,short,int)	mp.o
+0x00741B70	0x00B31070	?PlayerDead@MPPeer@@QAEXPAVEntity@@00HHHQBM1H@Z	public: void __thiscall MPPeer::PlayerDead(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,int)	mp.o
+0x007422F0	0x00B317F0	?PlayerRespawn@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z	public: void __thiscall MPPeer::PlayerRespawn(class Entity *,class math::Position3 const &,class math::Dir3 const &,int)	mp.o
+0x007424E0	0x00B319E0	?PlayerRevive@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@@Z	public: void __thiscall MPPeer::PlayerRevive(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x00742670	0x00B31B70	?PlayerReviveRequest@MPPeer@@QAEXPAVEntity@@0@Z	public: void __thiscall MPPeer::PlayerReviveRequest(class Entity *,class Entity *)	mp.o
+0x007427C0	0x00B31CC0	?RoundOver@MPPeer@@QAEXHH@Z	public: void __thiscall MPPeer::RoundOver(int,int)	mp.o
+0x00742910	0x00B31E10	?NextRound@MPPeer@@QAEX_N@Z	public: void __thiscall MPPeer::NextRound(bool)	mp.o
+0x00742BB0	0x00B320B0	?WeaponChange@MPPeer@@QAEXH@Z	public: void __thiscall MPPeer::WeaponChange(int)	mp.o
+0x00742CC0	0x00B321C0	?EnterGame@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::EnterGame(void)	mp.o
+0x00742D80	0x00B32280	?ExitLevel@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::ExitLevel(void)	mp.o
+0x00742DA0	0x00B322A0	?MapRestart@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::MapRestart(void)	mp.o
+0x00742EB0	0x00B323B0	?SendInitialGameState@MPPeer@@QAEXPAVEntity@@@Z	public: void __thiscall MPPeer::SendInitialGameState(class Entity *)	mp.o
+0x00743040	0x00B32540	?SendGameState@MPPeer@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z	public: void __thiscall MPPeer::SendGameState(class Entity *,int,int,int,int,bool,bool,bool,int,int,int,bool,int,int)	mp.o
+0x007432F0	0x00B327F0	?SendGameScore@MPPeer@@QAEXHH@Z	public: void __thiscall MPPeer::SendGameScore(int,int)	mp.o
+0x00743440	0x00B32940	?SendGameStateHQ@MPPeer@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z	public: void __thiscall MPPeer::SendGameStateHQ(class Entity *,unsigned int,class math::Position3 const &,class math::Position3 const &,unsigned int,bool,bool)	mp.o
+0x00743640	0x00B32B40	?SendGameStateCTF@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z	public: void __thiscall MPPeer::SendGameStateCTF(class Entity *,class math::Position3 const &,class math::Dir3 const &,class Entity *,class math::Position3 const &,class math::Dir3 const &,class Entity *)	mp.o
+0x007438C0	0x00B32DC0	?SendGameStateSCF@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z	public: void __thiscall MPPeer::SendGameStateSCF(class Entity *,int,class math::Position3 const &,class math::Dir3 const &,class Entity *)	mp.o
+0x00743AE0	0x00B32FE0	?SendGameStateDOM@MPPeer@@QAEXPAVEntity@@HHHHH@Z	public: void __thiscall MPPeer::SendGameStateDOM(class Entity *,int,int,int,int,int)	mp.o
+0x00743CF0	0x00B331F0	?SendGameStateSD@MPPeer@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z	public: void __thiscall MPPeer::SendGameStateSD(class Entity *,class Entity *,class Entity *,bool,class math::Position3 const &,class math::Dir3 const &,int)	mp.o
+0x00743F30	0x00B33430	?SendRespawnRequest@MPPeer@@QAEXI@Z	public: void __thiscall MPPeer::SendRespawnRequest(unsigned int)	mp.o
+0x007440F0	0x00B335F0	?PickupItem@MPPeer@@QAEXHHPAVEntity@@_N@Z	public: void __thiscall MPPeer::PickupItem(int,int,class Entity *,bool)	mp.o
+0x007442C0	0x00B337C0	?SwapKit@MPPeer@@QAEXHH@Z	public: void __thiscall MPPeer::SwapKit(int,int)	mp.o
+0x00744400	0x00B33900	?AreaCaptured@MPPeer@@QAEXHHH@Z	public: void __thiscall MPPeer::AreaCaptured(int,int,int)	mp.o
+0x00744550	0x00B33A50	?AttemptToGetInVehicle@MPPeer@@QAEXPAVEntity@@0HH@Z	public: void __thiscall MPPeer::AttemptToGetInVehicle(class Entity *,class Entity *,int,int)	mp.o
+0x007447C0	0x00B33CC0	?GetOutOfVehicle@MPPeer@@QAEXPAVEntity@@H@Z	public: void __thiscall MPPeer::GetOutOfVehicle(class Entity *,int)	mp.o
+0x00744A50	0x00B33F50	?AttemptVehicleSeatChange@MPPeer@@QAEXPAVEntity@@0H@Z	public: void __thiscall MPPeer::AttemptVehicleSeatChange(class Entity *,class Entity *,int)	mp.o
+0x00744D20	0x00B34220	?VehicleRequestOwnership@MPPeer@@QAEXPAVEntity@@0@Z	public: void __thiscall MPPeer::VehicleRequestOwnership(class Entity *,class Entity *)	mp.o
+0x00744F10	0x00B34410	?SendHostBombRequest@MPPeer@@QAEXPBVEntity@@_N@Z	public: void __thiscall MPPeer::SendHostBombRequest(class Entity const *,bool)	mp.o
+0x00745090	0x00B34590	?SendBombOperation@MPPeer@@QAEXPBVEntity@@_N@Z	public: void __thiscall MPPeer::SendBombOperation(class Entity const *,bool)	mp.o
+0x007451E0	0x00B346E0	?SendBombOperationEvent@MPPeer@@QAEXPBVEntity@@_N1@Z	public: void __thiscall MPPeer::SendBombOperationEvent(class Entity const *,bool,bool)	mp.o
+0x007453B0	0x00B348B0	?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z	public: void __thiscall MPPeer::SendBombExplosion(class Entity const *)	mp.o
+0x00745510	0x00B34A10	?SendCallForMedic@MPPeer@@QAEXPBVEntity@@@Z	public: void __thiscall MPPeer::SendCallForMedic(class Entity const *)	mp.o
+0x00745650	0x00B34B50	?SendPunishTeamKill@MPPeer@@QAEXPBVEntity@@0_N@Z	public: void __thiscall MPPeer::SendPunishTeamKill(class Entity const *,class Entity const *,bool)	mp.o
+0x007457A0	0x00B34CA0	?SetPlayerPos@MPPeer@@QAEXPBVEntity@@QAM@Z	public: void __thiscall MPPeer::SetPlayerPos(class Entity const *,float * const)	mp.o
+0x00745800	0x00B34D00	?updateVoiceSubsystem@MPPeer@@AAEXXZ	private: void __thiscall MPPeer::updateVoiceSubsystem(void)	mp.o
+0x00745E80	0x00B35380	?shutdownVoiceSubsystem@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::shutdownVoiceSubsystem(void)	mp.o
+0x00745EA0	0x00B353A0	?UpdateNumPlayers@MPPeer@@QAEXHHHH@Z	public: void __thiscall MPPeer::UpdateNumPlayers(int,int,int,int)	mp.o
+0x00746050	0x00B35550	?GetResult@MPLanDiscovery@@QBEXIAAV?$bdReference@VbdGameInfo@@@@@Z	public: void __thiscall MPLanDiscovery::GetResult(unsigned int,class bdReference<class bdGameInfo> &)const 	mp.o
+0x007460B0	0x00B355B0	?serialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@_N1@Z	public: bool __thiscall MPPlayer::serialize(class bdReference<class bdBitBuffer>,bool,bool)	mp.o
+0x007468D0	0x00B35DD0	?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z	public: bool __thiscall MPPlayer::deserialize(class bdReference<class bdBitBuffer>)	mp.o
+0x00747710	0x00B36C10	?UpdateInterpolation@MPPlayer@@QAEXABVsTime@knet@kuju@@@Z	public: void __thiscall MPPlayer::UpdateInterpolation(class kuju::knet::sTime const &)	mp.o
+0x00747E80	0x00B37380	?SerializeDropWeapon@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HHABVPosition3@math@@ABVDir3@4@2HH@Z	public: static void __cdecl MPPlayerItems::SerializeDropWeapon(class bdReference<class bdBitBuffer>,int,int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,int)	mp.o
+0x00747F90	0x00B37490	?SerializeDropItem@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HABVPosition3@math@@ABVDir3@4@2HH@Z	public: static void __cdecl MPPlayerItems::SerializeDropItem(class bdReference<class bdBitBuffer>,int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,int)	mp.o
+0x00748080	0x00B37580	?DeserializeDropItem@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@PAM11AAH22@Z	public: static bool __cdecl MPPlayerItems::DeserializeDropItem(class bdReference<class bdBitBuffer>,float *,float *,float *,int &,int &,int &)	mp.o
+0x007481D0	0x00B376D0	?SerializeFireMissile@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HABVPosition3@math@@ABVDir3@4@VMPEntityHandle@@@Z	public: static void __cdecl MPPlayerItems::SerializeFireMissile(class bdReference<class bdBitBuffer>,int,class math::Position3 const &,class math::Dir3 const &,class MPEntityHandle)	mp.o
+0x007482E0	0x00B377E0	??0MPVehicle@@QAE@XZ	public: __thiscall MPVehicle::MPVehicle(void)	mp.o
+0x00748320	0x00B37820	?serialize@MPVehicle@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPVehicle::serialize(class bdReference<class bdBitBuffer>)	mp.o
+0x00748A00	0x00B37F00	?AttemptHotJoin@MPPlayerManager@@QAEXH@Z	public: void __thiscall MPPlayerManager::AttemptHotJoin(int)	mp.o
+0x00748A20	0x00B37F20	?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@QBVMPPlayer@@_N@Z	public: void __thiscall MPPlayerManager::SendOthers(class bdReference<class bdMessage>,class MPPlayer const * const,bool)	mp.o
+0x00748B40	0x00B38040	?SendOtherEnemiesInRange@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@H_N@Z	public: void __thiscall MPPlayerManager::SendOtherEnemiesInRange(class MPPlayer const *,class bdReference<class bdMessage>,int,bool)	mp.o
+0x00748E20	0x00B38320	?HandleAddPlayerRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAddPlayerRequest(class bdReceivedMessage const &)	mp.o
+0x007494C0	0x00B389C0	?HandleAddPlayerReply@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAddPlayerReply(class bdReceivedMessage const &)	mp.o
+0x007499F0	0x00B38EF0	?WritePlayerData@MPPlayerManager@@AAEXV?$bdReference@VbdBitBuffer@@@@QAVMPPlayer@@@Z	private: void __thiscall MPPlayerManager::WritePlayerData(class bdReference<class bdBitBuffer>,class MPPlayer * const)	mp.o
+0x00749C60	0x00B39160	?HandleLoadLevel@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleLoadLevel(class bdReceivedMessage const &)	mp.o
+0x00749DF0	0x00B392F0	?HandleSpreadFire@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSpreadFire(class bdReceivedMessage const &)	mp.o
+0x0074A040	0x00B39540	?HandleBulletHit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleBulletHit(class bdReceivedMessage const &)	mp.o
+0x0074A270	0x00B39770	?HandleBulletHitPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleBulletHitPlayer(class bdReceivedMessage const &)	mp.o
+0x0074A6A0	0x00B39BA0	?HandlePainFlinch@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePainFlinch(class bdReceivedMessage const &)	mp.o
+0x0074A9C0	0x00B39EC0	?HandleMelee@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleMelee(class bdReceivedMessage const &)	mp.o
+0x0074ACC0	0x00B3A1C0	?HandleSpotEntity@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSpotEntity(class bdReceivedMessage const &)	mp.o
+0x0074AF20	0x00B3A420	?HandleDenyArtillery@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleDenyArtillery(class bdReceivedMessage const &)	mp.o
+0x0074B0E0	0x00B3A5E0	?HandleVehicleFireMissile@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleFireMissile(class bdReceivedMessage const &)	mp.o
+0x0074B390	0x00B3A890	?HandleVehicleDeath@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleDeath(class bdReceivedMessage const &)	mp.o
+0x0074B770	0x00B3AC70	?HandleVehicleMantled@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleMantled(class bdReceivedMessage const &)	mp.o
+0x0074B990	0x00B3AE90	?HandleVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoteRequest(class bdReceivedMessage const &)	mp.o
+0x0074BB70	0x00B3B070	?HandleVoteCalled@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoteCalled(class bdReceivedMessage const &)	mp.o
+0x0074BD60	0x00B3B260	?HandleVoteResponse@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVoteResponse(class bdReceivedMessage const &)	mp.o
+0x0074BFB0	0x00B3B4B0	?HandleSDBombOperation@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSDBombOperation(class bdReceivedMessage const &)	mp.o
+0x0074C1D0	0x00B3B6D0	?HandleCallForMedic@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleCallForMedic(class bdReceivedMessage const &)	mp.o
+0x0074C350	0x00B3B850	?HandlePunishTeamKill@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePunishTeamKill(class bdReceivedMessage const &)	mp.o
+0x0074C4E0	0x00B3B9E0	?HandleAnimEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleAnimEvent(class bdReceivedMessage const &)	mp.o
+0x0074C750	0x00B3BC50	?HandleServerParams@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleServerParams(class bdReceivedMessage const &)	mp.o
+0x0074C840	0x00B3BD40	?HandlePlayerDamage@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerDamage(class bdReceivedMessage const &)	mp.o
+0x0074CB90	0x00B3C090	?HandlePlayerRespawnRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerRespawnRequest(class bdReceivedMessage const &)	mp.o
+0x0074CDA0	0x00B3C2A0	?HandlePlayerReviveRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerReviveRequest(class bdReceivedMessage const &)	mp.o
+0x0074D0F0	0x00B3C5F0	?HandleVehicleRequestEntry@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleRequestEntry(class bdReceivedMessage const &)	mp.o
+0x0074D560	0x00B3CA60	?HandleVehicleSeatChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleSeatChange(class bdReceivedMessage const &)	mp.o
+0x0074D710	0x00B3CC10	?HandleVehicleRequestOwnership@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleRequestOwnership(class bdReceivedMessage const &)	mp.o
+0x0074D9B0	0x00B3CEB0	?HandleVehicleChangeOwnership@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleChangeOwnership(class bdReceivedMessage const &)	mp.o
+0x0074DB30	0x00B3D030	?HandleVehicleEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleEnter(class bdReceivedMessage const &)	mp.o
+0x0074DD10	0x00B3D210	?HandleVehicleExit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleExit(class bdReceivedMessage const &)	mp.o
+0x0074DEA0	0x00B3D3A0	?HandleInitialGameState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleInitialGameState(class bdReceivedMessage const &)	mp.o
+0x0074DFB0	0x00B3D4B0	?HandleVehicleRespawn@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleRespawn(class bdReceivedMessage const &)	mp.o
+0x0074E0E0	0x00B3D5E0	?HandleGameStateCTF@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameStateCTF(class bdReceivedMessage const &)	mp.o
+0x0074E450	0x00B3D950	?HandleGameStateHQ@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameStateHQ(class bdReceivedMessage const &)	mp.o
+0x0074E6D0	0x00B3DBD0	?HandleGameStateSCF@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameStateSCF(class bdReceivedMessage const &)	mp.o
+0x0074E930	0x00B3DE30	?HandleGameStateSD@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameStateSD(class bdReceivedMessage const &)	mp.o
+0x0074EBD0	0x00B3E0D0	?HandlePlayerStateHash@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerStateHash(class bdReceivedMessage const &)	mp.o
+0x0074ECD0	0x00B3E1D0	?MP_ResolveAnims@@YAXXZ	void __cdecl MP_ResolveAnims(void)	mp.o
+0x0074ED40	0x00B3E240	?ExitFrontend@MPUIInterface@@SAXH@Z	public: static void __cdecl MPUIInterface::ExitFrontend(int)	mp.o
+0x0074ED90	0x00B3E290	?Update@MPProfileMainMenu@@UAEXM@Z	public: virtual void __thiscall MPProfileMainMenu::Update(float)	mp.o
+0x0074EF00	0x00B3E400	?DialogDisplayProfileLoading@MPProfileMainMenu@@QAEXH@Z	public: void __thiscall MPProfileMainMenu::DialogDisplayProfileLoading(int)	mp.o
+0x0074EFD0	0x00B3E4D0	?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseDeleteConfirm(int)	mp.o
+0x0074EFF0	0x00B3E4F0	??0cVoiceManager@kvoicemanager@kuju@@QAE@XZ	public: __thiscall kuju::kvoicemanager::cVoiceManager::cVoiceManager(void)	mp.o
+0x0074F030	0x00B3E530	?evaluatePlayers@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::evaluatePlayers(void)	mp.o
+0x0074F120	0x00B3E620	?handlePacket@cVoiceNetworkManager@knetuser@kuju@@UAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: virtual void __thiscall kuju::knetuser::cVoiceNetworkManager::handlePacket(class bdReference<class bdBitBuffer>)	mp.o
+0x0074F500	0x00B3EA00	?sendVoiceData@cVoiceNetworkManager@knetuser@kuju@@QAEXVMPPlayerSet@@PAEK@Z	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::sendVoiceData(class MPPlayerSet,unsigned char *,unsigned long)	mp.o
+0x0074F6D0	0x00B3EBD0	?handleDirectDestinations@cVoiceNetworkManager@knetuser@kuju@@AAEXAAVMPPlayerSet@@0K@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::handleDirectDestinations(class MPPlayerSet &,class MPPlayerSet &,unsigned long)	mp.o
+0x0074F740	0x00B3EC40	?dispatchVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@K@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::dispatchVoicePendingDispatchPacket(struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *,unsigned long)	mp.o
+0x0074FB00	0x00B3F000	?dispatchPacketDirectToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@E@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::dispatchPacketDirectToPlayer(class kuju::knet::sTime const &,struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *,unsigned char)	mp.o
+0x0074FB90	0x00B3F090	?dispatchPacketOnOptimalRouteToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEIABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@EAAVMPPlayerSet@@@Z	private: unsigned int __thiscall kuju::knetuser::cVoiceNetworkManager::dispatchPacketOnOptimalRouteToPlayer(class kuju::knet::sTime const &,struct kuju::knetuser::cVoiceNetworkManager::sVoicePendingDispatchPacket *,unsigned char,class MPPlayerSet &)	mp.o
+0x0074FDA0	0x00B3F2A0	?selectVoicesAndDispatch@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@IAAVMPPlayerSet@@AAK@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::selectVoicesAndDispatch(class kuju::knet::sTime const &,unsigned int,class MPPlayerSet &,unsigned long &)	mp.o
+0x0074FF40	0x00B3F440	?dispatchPendingVoicePackets@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@AAVMPPlayerSet@@AAK@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::dispatchPendingVoicePackets(class kuju::knet::sTime const &,class MPPlayerSet &,unsigned long &)	mp.o
+0x00750000	0x00B3F500	?checkForPendingPacketsAwaitingDispatch@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::checkForPendingPacketsAwaitingDispatch(class kuju::knet::sTime const &)	mp.o
+0x007500C0	0x00B3F5C0	?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z	private: void __thiscall kuju::knetuser::cVoiceNetworkManager::updateVoiceNetwork(class kuju::knet::sTime const &)	mp.o
+0x007500E0	0x00B3F5E0	?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z	public: void __thiscall kuju::knetuser::cVoiceNetworkManager::update(class kuju::knet::sTime const &)	mp.o
+0x00750100	0x00B3F600	?LoadLevel@MultiplayerMgr@@QAEXH_N0@Z	public: void __thiscall MultiplayerMgr::LoadLevel(int,bool,bool)	mp.o
+0x00750170	0x00B3F670	?IsPlayerTalking@MultiplayerMgr@@QAE_NPAVEntity@@@Z	public: bool __thiscall MultiplayerMgr::IsPlayerTalking(class Entity *)	mp.o
+0x007501B0	0x00B3F6B0	?IsLocalPlayerPhysicsOwner@MultiplayerMgr@@QAE_NPAVEntity@@_N@Z	public: bool __thiscall MultiplayerMgr::IsLocalPlayerPhysicsOwner(class Entity *,bool)	mp.o
+0x007502A0	0x00B3F7A0	?BulletHitPlayer@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z	public: void __thiscall MultiplayerMgr::BulletHitPlayer(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,unsigned char,unsigned char,short,unsigned char,unsigned char,int)	mp.o
+0x00750330	0x00B3F830	?AnimEvent@MultiplayerMgr@@QAEXH@Z	public: void __thiscall MultiplayerMgr::AnimEvent(int)	mp.o
+0x00750350	0x00B3F850	?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::SpotEntity(class Entity *)	mp.o
+0x00750370	0x00B3F870	?FireArtillery@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z	public: void __thiscall MultiplayerMgr::FireArtillery(class Entity *,int,class math::Position3 const &,int,bool)	mp.o
+0x00750390	0x00B3F890	?VehicleDeath@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z	public: void __thiscall MultiplayerMgr::VehicleDeath(class Entity *,class Entity *,int,int)	mp.o
+0x007503B0	0x00B3F8B0	?VehicleMantled@MultiplayerMgr@@QAEXPAVEntity@@0@Z	public: void __thiscall MultiplayerMgr::VehicleMantled(class Entity *,class Entity *)	mp.o
+0x007503D0	0x00B3F8D0	?PlayerDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z	public: void __thiscall MultiplayerMgr::PlayerDamage(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,int,short,unsigned char,short,int)	mp.o
+0x007503F0	0x00B3F8F0	?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z	public: void __thiscall MultiplayerMgr::PlayerDead(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,int)	mp.o
+0x007504B0	0x00B3F9B0	?PlayerRespawn@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z	public: void __thiscall MultiplayerMgr::PlayerRespawn(class Entity *,class math::Position3 const &,class math::Dir3 const &,int)	mp.o
+0x00750520	0x00B3FA20	?PlayerRevive@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@@Z	public: void __thiscall MultiplayerMgr::PlayerRevive(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x00750590	0x00B3FA90	?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z	public: void __thiscall MultiplayerMgr::AttemptToRevivePlayer(class Entity *,class Entity *)	mp.o
+0x00750600	0x00B3FB00	?RoundOver@MultiplayerMgr@@QAEXHH@Z	public: void __thiscall MultiplayerMgr::RoundOver(int,int)	mp.o
+0x00750630	0x00B3FB30	?NextRound@MultiplayerMgr@@QAEX_N@Z	public: void __thiscall MultiplayerMgr::NextRound(bool)	mp.o
+0x00750690	0x00B3FB90	?WeaponChange@MultiplayerMgr@@QAEXH@Z	public: void __thiscall MultiplayerMgr::WeaponChange(int)	mp.o
+0x007506F0	0x00B3FBF0	?ExitLevel@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::ExitLevel(void)	mp.o
+0x00750720	0x00B3FC20	?SendInitialGameState@MultiplayerMgr@@QAEXPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::SendInitialGameState(class Entity *)	mp.o
+0x00750780	0x00B3FC80	?SendGameState@MultiplayerMgr@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z	public: void __thiscall MultiplayerMgr::SendGameState(class Entity *,int,int,int,int,bool,bool,bool,int,int,int,bool,int,int)	mp.o
+0x00750820	0x00B3FD20	?SendGameScore@MultiplayerMgr@@QAEXHH@Z	public: void __thiscall MultiplayerMgr::SendGameScore(int,int)	mp.o
+0x00750890	0x00B3FD90	?SendGameStateHQ@MultiplayerMgr@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z	public: void __thiscall MultiplayerMgr::SendGameStateHQ(class Entity *,unsigned int,class math::Position3 const &,class math::Position3 const &,unsigned int,bool,bool)	mp.o
+0x00750910	0x00B3FE10	?SendGameStateCTF@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z	public: void __thiscall MultiplayerMgr::SendGameStateCTF(class Entity *,class math::Position3 const &,class math::Dir3 const &,class Entity *,class math::Position3 const &,class math::Dir3 const &,class Entity *)	mp.o
+0x00750990	0x00B3FE90	?SendGameStateSCF@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z	public: void __thiscall MultiplayerMgr::SendGameStateSCF(class Entity *,int,class math::Position3 const &,class math::Dir3 const &,class Entity *)	mp.o
+0x00750A00	0x00B3FF00	?SendGameStateDOM@MultiplayerMgr@@QAEXPAVEntity@@HHHHH@Z	public: void __thiscall MultiplayerMgr::SendGameStateDOM(class Entity *,int,int,int,int,int)	mp.o
+0x00750A80	0x00B3FF80	?SendGameStateSD@MultiplayerMgr@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z	public: void __thiscall MultiplayerMgr::SendGameStateSD(class Entity *,class Entity *,class Entity *,bool,class math::Position3 const &,class math::Dir3 const &,int)	mp.o
+0x00750B00	0x00B40000	?SendRespawnRequest@MultiplayerMgr@@QAEXI@Z	public: void __thiscall MultiplayerMgr::SendRespawnRequest(unsigned int)	mp.o
+0x00750B50	0x00B40050	?PickupItem@MultiplayerMgr@@QAEXHHPAVEntity@@_N@Z	public: void __thiscall MultiplayerMgr::PickupItem(int,int,class Entity *,bool)	mp.o
+0x00750BC0	0x00B400C0	?SwapKit@MultiplayerMgr@@QAEXHH@Z	public: void __thiscall MultiplayerMgr::SwapKit(int,int)	mp.o
+0x00750C30	0x00B40130	?AreaCaptured@MultiplayerMgr@@QAEXHHH@Z	public: void __thiscall MultiplayerMgr::AreaCaptured(int,int,int)	mp.o
+0x00750CA0	0x00B401A0	?AttemptToGetInVehicle@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z	public: void __thiscall MultiplayerMgr::AttemptToGetInVehicle(class Entity *,class Entity *,int,int)	mp.o
+0x00750CC0	0x00B401C0	?GetOutOfVehicle@MultiplayerMgr@@QAEXPAVEntity@@H@Z	public: void __thiscall MultiplayerMgr::GetOutOfVehicle(class Entity *,int)	mp.o
+0x00750D30	0x00B40230	?AttemptVehicleSeatChange@MultiplayerMgr@@QAEXPAVEntity@@0H@Z	public: void __thiscall MultiplayerMgr::AttemptVehicleSeatChange(class Entity *,class Entity *,int)	mp.o
+0x00750DA0	0x00B402A0	?VehicleRequestOwnership@MultiplayerMgr@@QAEXPAVEntity@@0@Z	public: void __thiscall MultiplayerMgr::VehicleRequestOwnership(class Entity *,class Entity *)	mp.o
+0x00750EE0	0x00B403E0	?SendHostBombRequest@MultiplayerMgr@@QAEXPBVEntity@@_N@Z	public: void __thiscall MultiplayerMgr::SendHostBombRequest(class Entity const *,bool)	mp.o
+0x00750F50	0x00B40450	?SendBombOperation@MultiplayerMgr@@QAEXPBVEntity@@_N@Z	public: void __thiscall MultiplayerMgr::SendBombOperation(class Entity const *,bool)	mp.o
+0x00750FC0	0x00B404C0	?SendBombOperationEvent@MultiplayerMgr@@QAEXPBVEntity@@_N1@Z	public: void __thiscall MultiplayerMgr::SendBombOperationEvent(class Entity const *,bool,bool)	mp.o
+0x00751030	0x00B40530	?SendBombExplosion@MultiplayerMgr@@QAEXPBVEntity@@@Z	public: void __thiscall MultiplayerMgr::SendBombExplosion(class Entity const *)	mp.o
+0x00751090	0x00B40590	?SetPlayerPos@MultiplayerMgr@@QAEXPBVEntity@@QAM@Z	public: void __thiscall MultiplayerMgr::SetPlayerPos(class Entity const *,float * const)	mp.o
+0x00751100	0x00B40600	?MapRestart@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::MapRestart(void)	mp.o
+0x00751160	0x00B40660	?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z	public: void __thiscall MultiplayerMgr::AttemptHotJoin(int)	mp.o
+0x00751190	0x00B40690	?DropSplitScreenPlayer@MultiplayerMgr@@QAEXH@Z	public: void __thiscall MultiplayerMgr::DropSplitScreenPlayer(int)	mp.o
+0x007511E0	0x00B406E0	?shutdownVoiceSubsystem@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::shutdownVoiceSubsystem(void)	mp.o
+0x00751200	0x00B40700	?VehicleDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z	public: void __thiscall MPPeer::VehicleDamage(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,short,int,unsigned char,short)	mp.o
+0x007514F0	0x00B409F0	?DropItem@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z	public: void __thiscall MPPeer::DropItem(int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,bool,int)	mp.o
+0x00751650	0x00B40B50	?InitializeVehicles@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::InitializeVehicles(void)	mp.o
+0x00751720	0x00B40C20	?serializeVehicle@MPPlayer@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPPlayer::serializeVehicle(class bdReference<class bdBitBuffer>)	mp.o
+0x007519D0	0x00B40ED0	?deserializeVehicle@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@PAVMPVehicle@@@Z	public: bool __thiscall MPPlayer::deserializeVehicle(class bdReference<class bdBitBuffer>,class MPVehicle *)	mp.o
+0x00751D20	0x00B41220	?Step@MPPlayer@@QAEXXZ	public: void __thiscall MPPlayer::Step(void)	mp.o
+0x00754750	0x00B43C50	?OnModified@MPPlayer@@QAEXXZ	public: void __thiscall MPPlayer::OnModified(void)	mp.o
+0x00754BA0	0x00B440A0	?Destroy@sDroppedItem@MPPlayerItems@@QAEXXZ	public: void __thiscall MPPlayerItems::sDroppedItem::Destroy(void)	mp.o
+0x00754C00	0x00B44100	??0MPPlayerItems@@QAE@XZ	public: __thiscall MPPlayerItems::MPPlayerItems(void)	mp.o
+0x00754C90	0x00B44190	?RemoveAll@MPPlayerItems@@QAEXXZ	public: void __thiscall MPPlayerItems::RemoveAll(void)	mp.o
+0x00754F00	0x00B44400	?RemoveAll@MPPlayerItems@@QAEXW4EDroppedItemTypes@@@Z	public: void __thiscall MPPlayerItems::RemoveAll(enum EDroppedItemTypes)	mp.o
+0x00754FE0	0x00B444E0	?RemoveItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@F@Z	public: void __thiscall MPPlayerItems::RemoveItem(enum EDroppedItemTypes,short)	mp.o
+0x00755070	0x00B44570	?FindItemID@MPPlayerItems@@QAE_NW4EDroppedItemTypes@@PAVEntity@@AAF@Z	public: bool __thiscall MPPlayerItems::FindItemID(enum EDroppedItemTypes,class Entity *,short &)	mp.o
+0x00755140	0x00B44640	?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z	public: class Entity * __thiscall MPPlayerItems::FindItem(enum EDroppedItemTypes,short)	mp.o
+0x007551F0	0x00B446F0	?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z	public: void __thiscall MPPlayerItems::SetItem(enum EDroppedItemTypes,short,class Entity *)	mp.o
+0x00755300	0x00B44800	?FindOldestItem@MPPlayerItems@@AAEFABV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@@Z	private: short __thiscall MPPlayerItems::FindOldestItem(class ae_vector<struct MPPlayerItems::sDroppedItem> const &)	mp.o
+0x007553D0	0x00B448D0	?deserialize@MPVehicle@@QAE_NV?$bdReference@VbdBitBuffer@@@@_NH@Z	public: bool __thiscall MPVehicle::deserialize(class bdReference<class bdBitBuffer>,bool,int)	mp.o
+0x00755C20	0x00B45120	?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z	public: void __thiscall MPVehicle::SetPhysicsInfo(class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &)	mp.o
+0x00755D80	0x00B45280	?UpdateInterpolation@MPVehicle@@QAEXABVsTime@knet@kuju@@@Z	public: void __thiscall MPVehicle::UpdateInterpolation(class kuju::knet::sTime const &)	mp.o
+0x007565E0	0x00B45AE0	?DebugRender@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::DebugRender(void)	mp.o
+0x00757750	0x00B46C50	?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N@Z	public: void __thiscall MPPlayerManager::SendOthers(class bdReference<class bdMessage>,bool)	mp.o
+0x007577C0	0x00B46CC0	?SendPlayerEnter@MPPlayerManager@@QAEXPAVMPPlayer@@@Z	public: void __thiscall MPPlayerManager::SendPlayerEnter(class MPPlayer *)	mp.o
+0x007578D0	0x00B46DD0	?HandlePlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerState(class bdReceivedMessage const &)	mp.o
+0x00757A20	0x00B46F20	?HandlePlayerStatePassenger@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerStatePassenger(class bdReceivedMessage const &)	mp.o
+0x00757BD0	0x00B470D0	?HandlePlayerInfo@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerInfo(class bdReceivedMessage const &)	mp.o
+0x00757E70	0x00B47370	?HandlePlayerTeam@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerTeam(class bdReceivedMessage const &)	mp.o
+0x007580A0	0x00B475A0	?HandleFireArtillery@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleFireArtillery(class bdReceivedMessage const &)	mp.o
+0x007584F0	0x00B479F0	?HandleVehicleDamage@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleDamage(class bdReceivedMessage const &)	mp.o
+0x007587A0	0x00B47CA0	?HandlePlayerDead@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerDead(class bdReceivedMessage const &)	mp.o
+0x00758D00	0x00B48200	?HandleVehicleRequestSeatChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleRequestSeatChange(class bdReceivedMessage const &)	mp.o
+0x007590C0	0x00B485C0	?HandleVehicleState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleState(class bdReceivedMessage const &)	mp.o
+0x007592D0	0x00B487D0	?SendLocalPlayerInfo@MPPlayerManager@@QAEXPBVMPPlayer@@@Z	public: void __thiscall MPPlayerManager::SendLocalPlayerInfo(class MPPlayer const *)	mp.o
+0x00759800	0x00B48D00	?SendPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@_N1@Z	public: void __thiscall MPPlayerManager::SendPlayerTeam(class MPPlayer const *,bool,bool)	mp.o
+0x00759A20	0x00B48F20	?SendLocalPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@0@Z	public: void __thiscall MPPlayerManager::SendLocalPlayerTeam(class MPPlayer const *,class MPPlayer const *)	mp.o
+0x00759D60	0x00B49260	?SerializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPPlayerManager::SerializeVehicleStates(class bdReference<class bdBitBuffer>)	mp.o
+0x0075A0E0	0x00B495E0	?DeserializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z	public: void __thiscall MPPlayerManager::DeserializeVehicleStates(class bdReference<class bdBitBuffer>)	mp.o
+0x0075A4F0	0x00B499F0	?ApplyLocalPhysicsToVehicle@MPPlayerManager@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z	public: void __thiscall MPPlayerManager::ApplyLocalPhysicsToVehicle(class Entity *,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &)	mp.o
+0x0075A570	0x00B49A70	?LocalPlayerEnterGame@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::LocalPlayerEnterGame(void)	mp.o
+0x0075A890	0x00B49D90	?DebugRender@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::DebugRender(void)	mp.o
+0x0075A8E0	0x00B49DE0	?NextRound@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::NextRound(void)	mp.o
+0x0075A980	0x00B49E80	?LoadSelectedProfile@MPProfileMainMenu@@AAEX_N@Z	private: void __thiscall MPProfileMainMenu::LoadSelectedProfile(bool)	mp.o
+0x0075A9E0	0x00B49EE0	?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z	public: static bool __cdecl MPProfileMainMenu::DialogResponseDelete(int)	mp.o
+0x0075AAD0	0x00B49FD0	?dispatchVoiceData@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	private: void __thiscall kuju::kvoicemanager::cVoiceManager::dispatchVoiceData(void)	mp.o
+0x0075AC10	0x00B4A110	?LevelLoaded@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::LevelLoaded(void)	mp.o
+0x0075AC20	0x00B4A120	?VehicleDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z	public: void __thiscall MultiplayerMgr::VehicleDamage(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,short,int,unsigned char,short)	mp.o
+0x0075AC40	0x00B4A140	?ChangeTeam@MultiplayerMgr@@QAE_NPAVEntity@@H_N1@Z	public: bool __thiscall MultiplayerMgr::ChangeTeam(class Entity *,int,bool,bool)	mp.o
+0x0075AE30	0x00B4A330	?DropItem@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z	public: void __thiscall MultiplayerMgr::DropItem(int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,bool,int)	mp.o
+0x0075AEB0	0x00B4A3B0	?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVMat43@math@@ABVDir3@4@@Z	public: void __thiscall MultiplayerMgr::ApplyLocalPhysicsToVehicle(class Entity *,class math::Mat43 const &,class math::Dir3 const &)	mp.o
+0x0075AF40	0x00B4A440	?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z	public: void __thiscall MultiplayerMgr::ApplyLocalPhysicsToVehicle(class Entity *,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &)	mp.o
+0x0075AF60	0x00B4A460	?SendServerParams@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::SendServerParams(void)	mp.o
+0x0075B0C0	0x00B4A5C0	?SpreadFire@MPPeer@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z	public: void __thiscall MPPeer::SpreadFire(class Entity *,float,float,class math::Position3 const &,int,float,float,int)	mp.o
+0x0075B330	0x00B4A830	?BulletHit@MPPeer@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z	public: void __thiscall MPPeer::BulletHit(class math::Position3 const &,class math::Dir3 const &,unsigned char,unsigned char,class Entity *)	mp.o
+0x0075B540	0x00B4AA40	?MeleeHit@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z	public: void __thiscall MPPeer::MeleeHit(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,unsigned char,short,unsigned char,int)	mp.o
+0x0075B920	0x00B4AE20	?FireMissile@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z	public: void __thiscall MPPeer::FireMissile(int,class math::Position3 const &,class math::Dir3 const &,class MPEntityHandle)	mp.o
+0x0075BA50	0x00B4AF50	?VehicleFireMissile@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z	public: void __thiscall MPPeer::VehicleFireMissile(class Entity *,int,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x0075BC40	0x00B4B140	?ProjectileExplosion@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@EVMPEntityHandle@@@Z	public: void __thiscall MPPeer::ProjectileExplosion(int,class math::Position3 const &,class math::Dir3 const &,unsigned char,class MPEntityHandle)	mp.o
+0x0075BDE0	0x00B4B2E0	?EnterLevel@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::EnterLevel(void)	mp.o
+0x0075BE00	0x00B4B300	?SendVehicleStates@MPPeer@@QAEXPAVEntity@@@Z	public: void __thiscall MPPeer::SendVehicleStates(class Entity *)	mp.o
+0x0075BF90	0x00B4B490	?BroadcastVehicleRespawn@MPPeer@@QAEXPAVEntity@@@Z	public: void __thiscall MPPeer::BroadcastVehicleRespawn(class Entity *)	mp.o
+0x0075C160	0x00B4B660	?DropWeapon@MPPeer@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z	public: void __thiscall MPPeer::DropWeapon(int,int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,int)	mp.o
+0x0075C2A0	0x00B4B7A0	?SwapWeapon@MPPeer@@QAEXHHHH@Z	public: void __thiscall MPPeer::SwapWeapon(int,int,int,int)	mp.o
+0x0075C420	0x00B4B920	?DebugRender@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::DebugRender(void)	mp.o
+0x0075C960	0x00B4BE60	?PlayerSpawn@MPPlayer@@QAEXQAM0@Z	public: void __thiscall MPPlayer::PlayerSpawn(float * const,float * const)	mp.o
+0x0075CD10	0x00B4C210	?PlayerRevive@MPPlayer@@QAEXQAM0@Z	public: void __thiscall MPPlayer::PlayerRevive(float * const,float * const)	mp.o
+0x0075D250	0x00B4C750	??1MPPlayerItems@@QAE@XZ	public: __thiscall MPPlayerItems::~MPPlayerItems(void)	mp.o
+0x0075D300	0x00B4C800	?AddItem@MPPlayerItems@@QAEFW4EDroppedItemTypes@@PAVEntity@@@Z	public: short __thiscall MPPlayerItems::AddItem(enum EDroppedItemTypes,class Entity *)	mp.o
+0x0075D3C0	0x00B4C8C0	?FindFreeSlot@MPPlayerItems@@QAEFW4EDroppedItemTypes@@@Z	public: short __thiscall MPPlayerItems::FindFreeSlot(enum EDroppedItemTypes)	mp.o
+0x0075D410	0x00B4C910	?Step@MPVehicle@@QAEXXZ	public: void __thiscall MPVehicle::Step(void)	mp.o
+0x0075D440	0x00B4C940	?Reset@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::Reset(void)	mp.o
+0x0075D590	0x00B4CA90	?Step@MPPlayerManager@@QAEXM@Z	public: void __thiscall MPPlayerManager::Step(float)	mp.o
+0x0075E1E0	0x00B4D6E0	?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z	private: void __thiscall MPPlayerManager::DisconnectPlayer(class MPPlayer *)	mp.o
+0x0075E440	0x00B4D940	?HandlePlayerEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerEnter(class bdReceivedMessage const &)	mp.o
+0x0075E600	0x00B4DB00	?HandlePlayerSetup@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerSetup(class bdReceivedMessage const &)	mp.o
+0x0075ED70	0x00B4E270	?HandleMapRestart@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleMapRestart(class bdReceivedMessage const &)	mp.o
+0x0075EDF0	0x00B4E2F0	?HandlePlayerRespawn@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerRespawn(class bdReceivedMessage const &)	mp.o
+0x0075F1F0	0x00B4E6F0	?HandlePlayerRevive@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerRevive(class bdReceivedMessage const &)	mp.o
+0x0075F5B0	0x00B4EAB0	?HandleProjectileExplosion@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleProjectileExplosion(class bdReceivedMessage const &)	mp.o
+0x0075F870	0x00B4ED70	?HandleRoundOver@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleRoundOver(class bdReceivedMessage const &)	mp.o
+0x0075FA90	0x00B4EF90	?HandleNextRound@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleNextRound(class bdReceivedMessage const &)	mp.o
+0x0075FD50	0x00B4F250	?HandlePickupItem@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePickupItem(class bdReceivedMessage const &)	mp.o
+0x0075FFA0	0x00B4F4A0	?HandleVehicleStates@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleVehicleStates(class bdReceivedMessage const &)	mp.o
+0x007600A0	0x00B4F5A0	?SwapPlayers@MPPlayerManager@@AAEXHH@Z	private: void __thiscall MPPlayerManager::SwapPlayers(int,int)	mp.o
+0x00760230	0x00B4F730	?HandleDropSplitScreenPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleDropSplitScreenPlayer(class bdReceivedMessage const &)	mp.o
+0x00760450	0x00B4F950	?RemoveDroppedItems@MPPlayerManager@@QAEXXZ	public: void __thiscall MPPlayerManager::RemoveDroppedItems(void)	mp.o
+0x00760480	0x00B4F980	?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z	public: void __thiscall MPPlayerManager::RegisterDroppedItem(enum EDroppedItemTypes,class Entity *,class Entity *,short)	mp.o
+0x00760590	0x00B4FA90	?FindDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z	public: class MPEntityHandle __thiscall MPPlayerManager::FindDroppedItemID(enum EDroppedItemTypes,class Entity *,class Entity *)	mp.o
+0x00760690	0x00B4FB90	?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z	public: class Entity * __thiscall MPPlayerManager::FindDroppedItem(enum EDroppedItemTypes,short,int)	mp.o
+0x00760710	0x00B4FC10	?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z	private: void __thiscall MPPlayerManager::SendDroppedItems(class MPPlayer * const)	mp.o
+0x00760F90	0x00B50490	?OnTriangle@MPProfileMainMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileMainMenu::OnTriangle(int)	mp.o
+0x00760FE0	0x00B504E0	?DialogDisplayProfileSelected@MPProfileMainMenu@@QAEXXZ	public: void __thiscall MPProfileMainMenu::DialogDisplayProfileSelected(void)	mp.o
+0x007610D0	0x00B505D0	?updateSystem@cVoiceManager@kvoicemanager@kuju@@AAEXAAVsTime@knet@3@@Z	private: void __thiscall kuju::kvoicemanager::cVoiceManager::updateSystem(class kuju::knet::sTime &)	mp.o
+0x007610F0	0x00B505F0	??0MultiplayerMgr@@QAE@XZ	public: __thiscall MultiplayerMgr::MultiplayerMgr(void)	mp.o
+0x00761290	0x00B50790	?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z	public: void __thiscall MultiplayerMgr::SpreadFire(class Entity *,float,float,class math::Position3 const &,int,float,float,int)	mp.o
+0x007612B0	0x00B507B0	?BulletHit@MultiplayerMgr@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::BulletHit(class math::Position3 const &,class math::Dir3 const &,unsigned char,unsigned char,class Entity *)	mp.o
+0x007612D0	0x00B507D0	?MeleeHit@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z	public: void __thiscall MultiplayerMgr::MeleeHit(class Entity *,class Entity *,class math::Position3 const &,class math::Dir3 const &,unsigned char,short,unsigned char,int)	mp.o
+0x007612F0	0x00B507F0	?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z	public: void __thiscall MultiplayerMgr::FireMissile(int,class math::Position3 const &,class math::Dir3 const &,class MPEntityHandle)	mp.o
+0x00761320	0x00B50820	?VehicleFireMissile@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z	public: void __thiscall MultiplayerMgr::VehicleFireMissile(class Entity *,int,class math::Position3 const &,class math::Dir3 const &)	mp.o
+0x00761340	0x00B50840	?ProjectileExplosion@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@E0@Z	public: void __thiscall MultiplayerMgr::ProjectileExplosion(class Entity *,int,class math::Position3 const &,class math::Dir3 const &,unsigned char,class Entity *)	mp.o
+0x007613A0	0x00B508A0	?EnterGame@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::EnterGame(void)	mp.o
+0x007613D0	0x00B508D0	?EnterLevel@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::EnterLevel(void)	mp.o
+0x00761400	0x00B50900	?SendVehicleStates@MultiplayerMgr@@QAEXPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::SendVehicleStates(class Entity *)	mp.o
+0x00761460	0x00B50960	?BroadcastVehicleRespawn@MultiplayerMgr@@QAEXPAVEntity@@@Z	public: void __thiscall MultiplayerMgr::BroadcastVehicleRespawn(class Entity *)	mp.o
+0x007614C0	0x00B509C0	?RemoveDroppedItems@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::RemoveDroppedItems(void)	mp.o
+0x007614F0	0x00B509F0	?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z	public: void __thiscall MultiplayerMgr::RegisterDroppedItem(enum EDroppedItemTypes,class Entity *,class Entity *,int)	mp.o
+0x00761510	0x00B50A10	?FindDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z	public: class MPEntityHandle __thiscall MultiplayerMgr::FindDroppedItemID(enum EDroppedItemTypes,class Entity *,class Entity *)	mp.o
+0x00761550	0x00B50A50	?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HH@Z	public: class Entity * __thiscall MultiplayerMgr::FindDroppedItem(enum EDroppedItemTypes,int,int)	mp.o
+0x00761570	0x00B50A70	?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HPAV2@@Z	public: class Entity * __thiscall MultiplayerMgr::FindDroppedItem(enum EDroppedItemTypes,int,class Entity *)	mp.o
+0x007615C0	0x00B50AC0	?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z	public: void __thiscall MultiplayerMgr::DropWeapon(int,int,class math::Position3 const &,class math::Dir3 const &,class math::Dir3 const &,int,int)	mp.o
+0x007615E0	0x00B50AE0	?SwapWeapon@MultiplayerMgr@@QAEXHHHH@Z	public: void __thiscall MultiplayerMgr::SwapWeapon(int,int,int,int)	mp.o
+0x00761650	0x00B50B50	?SendServerParams@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::SendServerParams(void)	mp.o
+0x007616B0	0x00B50BB0	?MPDebugRenderer@@YAXXZ	void __cdecl MPDebugRenderer(void)	mp.o
+0x007616C0	0x00B50BC0	?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z	private: void __thiscall MPPeer::ConnectToPeersFinalize(class bdReference<class MPGameInfo> const &)	mp.o
+0x00761710	0x00B50C10	?Disconnect@MPPeer@@QAEXXZ	public: void __thiscall MPPeer::Disconnect(void)	mp.o
+0x00761770	0x00B50C70	?AddQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@_N@Z	public: int __thiscall MPPeer::AddQosProbe(class bdReference<class bdCommonAddr>,struct XNKID const &,struct XNKEY const &,bool)	mp.o
+0x00761910	0x00B50E10	?onSessionConnectSuccess@MPPeer@@EAEXXZ	private: virtual void __thiscall MPPeer::onSessionConnectSuccess(void)	mp.o
+0x007619D0	0x00B50ED0	?CreateLocalGameInfo@MPPeer@@AAE_NAAV?$bdReference@VMPGameInfo@@@@@Z	private: bool __thiscall MPPeer::CreateLocalGameInfo(class bdReference<class MPGameInfo> &)	mp.o
+0x00761CE0	0x00B511E0	??0MPPlayer@@QAE@XZ	public: __thiscall MPPlayer::MPPlayer(void)	mp.o
+0x00761E30	0x00B51330	??1MPPlayer@@QAE@XZ	public: __thiscall MPPlayer::~MPPlayer(void)	mp.o
+0x00761EA0	0x00B513A0	?DeserializeDropWeapon@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@@Z	public: static bool __cdecl MPPlayerItems::DeserializeDropWeapon(class bdReference<class bdBitBuffer>)	mp.o
+0x007621A0	0x00B516A0	?DeserializeFireMissile@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@_N@Z	public: static bool __cdecl MPPlayerItems::DeserializeFireMissile(class bdReference<class bdBitBuffer>,bool)	mp.o
+0x007624E0	0x00B519E0	??1MPPlayerManager@@UAE@XZ	public: virtual __thiscall MPPlayerManager::~MPPlayerManager(void)	mp.o
+0x007625E0	0x00B51AE0	?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z	private: virtual void __thiscall MPPlayerManager::onSessionDisconnect(class bdReference<class bdConnection>)	mp.o
+0x007626F0	0x00B51BF0	?HandlePlayerJoin@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandlePlayerJoin(class bdReceivedMessage const &)	mp.o
+0x007629D0	0x00B51ED0	?HandleFireMissile@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleFireMissile(class bdReceivedMessage const &)	mp.o
+0x00762AE0	0x00B51FE0	?HandleGameEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleGameEnter(class bdReceivedMessage const &)	mp.o
+0x00762B40	0x00B52040	?HandleDropItem@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleDropItem(class bdReceivedMessage const &)	mp.o
+0x00762F20	0x00B52420	?HandleDropWeapon@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleDropWeapon(class bdReceivedMessage const &)	mp.o
+0x00763040	0x00B52540	?HandleSwapWeapon@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSwapWeapon(class bdReceivedMessage const &)	mp.o
+0x00763420	0x00B52920	?HandleSwapKit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleSwapKit(class bdReceivedMessage const &)	mp.o
+0x00763830	0x00B52D30	?RegisterDroppedItem@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z	public: class MPEntityHandle __thiscall MPPlayerManager::RegisterDroppedItem(enum EDroppedItemTypes,class Entity *,class Entity *)	mp.o
+0x00763960	0x00B52E60	?GetNextDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z	public: class MPEntityHandle __thiscall MPPlayerManager::GetNextDroppedItemID(enum EDroppedItemTypes,class Entity *)	mp.o
+0x00763A10	0x00B52F10	?HandleDroppedItems@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z	private: void __thiscall MPPlayerManager::HandleDroppedItems(class bdReceivedMessage const &)	mp.o
+0x00763E40	0x00B53340	?FromXboxLive@sGameListing@@QAEXABVCDefaultResult@@@Z	public: void __thiscall sGameListing::FromXboxLive(class CDefaultResult const &)	mp.o
+0x00764090	0x00B53590	?HandleQuery@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::HandleQuery(void)	mp.o
+0x00764180	0x00B53680	?bdNetStart@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::bdNetStart(void)	mp.o
+0x00764210	0x00B53710	?Select@MPProfileMainMenu@@UAEXH@Z	public: virtual void __thiscall MPProfileMainMenu::Select(int)	mp.o
+0x007642B0	0x00B537B0	?update@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	public: void __thiscall kuju::kvoicemanager::cVoiceManager::update(void)	mp.o
+0x00764310	0x00B53810	?Disconnect@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::Disconnect(void)	mp.o
+0x00764370	0x00B53870	?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z	public: class MPEntityHandle __thiscall MultiplayerMgr::RegisterDroppedItem(enum EDroppedItemTypes,class Entity *,class Entity *)	mp.o
+0x007643B0	0x00B538B0	?GetNextDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z	public: class MPEntityHandle __thiscall MultiplayerMgr::GetNextDroppedItemID(enum EDroppedItemTypes,class Entity *)	mp.o
+0x007643F0	0x00B538F0	??1MPPeer@@UAE@XZ	public: virtual __thiscall MPPeer::~MPPeer(void)	mp.o
+0x00764520	0x00B53A20	?Step@MPPeer@@QAEXM_N@Z	public: void __thiscall MPPeer::Step(float,bool)	mp.o
+0x00764620	0x00B53B20	?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z	public: bool __thiscall MPPeer::ConnectToPeers(class bdReference<class MPGameInfo> const &,int,enum EGameConnectionType)	mp.o
+0x007646E0	0x00B53BE0	?onSessionStatusChange@MPPeer@@EAEXW4bdSessionStatus@bdSession@@0@Z	private: virtual void __thiscall MPPeer::onSessionStatusChange(enum bdSession::bdSessionStatus,enum bdSession::bdSessionStatus)	mp.o
+0x00764C50	0x00B54150	??0MPPlayerManager@@QAE@QAVbdSession@@@Z	public: __thiscall MPPlayerManager::MPPlayerManager(class bdSession * const)	mp.o
+0x00765360	0x00B54860	?ExitGame@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::ExitGame(void)	mp.o
+0x00765430	0x00B54930	??0MPPeer@@QAE@XZ	public: __thiscall MPPeer::MPPeer(void)	mp.o
+0x007655E0	0x00B54AE0	?CreateGame@MPPeer@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z	public: bool __thiscall MPPeer::CreateGame(class bdReference<class MPGameInfo> &,enum EGameConnectionType)	mp.o
+0x007656C0	0x00B54BC0	??0MPProfileEditMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPProfileEditMenu::MPProfileEditMenu(class FEMenuSystem *)	mp.o
+0x00765750	0x00B54C50	??1MPProfileEditMenu@@UAE@XZ	public: virtual __thiscall MPProfileEditMenu::~MPProfileEditMenu(void)	mp.o
+0x007657C0	0x00B54CC0	?Step@MultiplayerMgr@@QAEXH_N0@Z	public: void __thiscall MultiplayerMgr::Step(int,bool,bool)	mp.o
+0x00765D40	0x00B55240	?CreateGame@MultiplayerMgr@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z	public: bool __thiscall MultiplayerMgr::CreateGame(class bdReference<class MPGameInfo> &,enum EGameConnectionType)	mp.o
+0x00765DB0	0x00B552B0	?run@MPLevelLoader@@UAEIPAX@Z	public: virtual unsigned int __thiscall MPLevelLoader::run(void *)	mp.o
+0x00765E00	0x00B55300	?BlockUntilNetReady@MPUIInterface@@SA_NXZ	public: static bool __cdecl MPUIInterface::BlockUntilNetReady(void)	mp.o
+0x00765E50	0x00B55350	?Step@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::Step(void)	mp.o
+0x00765FC0	0x00B554C0	?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z	public: static struct sGameListing * __cdecl MPUIInterface::GameListingGet(unsigned long &)	mp.o
+0x00766000	0x00B55500	?bdNetStop@MPUIInterface@@SAXXZ	public: static void __cdecl MPUIInterface::bdNetStop(void)	mp.o
+0x00766060	0x00B55560	??1MultiplayerMgr@@QAE@XZ	public: __thiscall MultiplayerMgr::~MultiplayerMgr(void)	mp.o
+0x007660E0	0x00B555E0	?StartGame@MPUIInterface@@SA_N_N0@Z	public: static bool __cdecl MPUIInterface::StartGame(bool,bool)	mp.o
+0x00766260	0x00B55760	?StartServer@MPUIInterface@@SA?B_N_N0@Z	public: static bool const __cdecl MPUIInterface::StartServer(bool,bool)	mp.o
+0x007663E0	0x00B558E0	?StartClient@MPUIInterface@@SA?B_NAAUsGameListing@@_NH@Z	public: static bool const __cdecl MPUIInterface::StartClient(struct sGameListing &,bool,int)	mp.o
+0x00766510	0x00B55A10	?StartDevServer@MultiplayerMgr@@QAEXXZ	public: void __thiscall MultiplayerMgr::StartDevServer(void)	mp.o

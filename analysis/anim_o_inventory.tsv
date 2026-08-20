@@ -1,0 +1,409 @@
+ida_ea	va	name	signature	family
+0x0053AFB0	0x0092A4B0	??0InstanceHolder@InteractionController@@QAE@XZ	public: __thiscall InteractionController::InstanceHolder::InstanceHolder(void)	anim.o
+0x0053AFC0	0x0092A4C0	?GetNumButtonTypeNames@@YAHXZ	int __cdecl GetNumButtonTypeNames(void)	anim.o
+0x0053AFD0	0x0092A4D0	?GetButtonTypeName@@YAPBDH@Z	char const * __cdecl GetButtonTypeName(int)	anim.o
+0x0053B030	0x0092A530	?GetButtonTextName@@YAPBDH@Z	char const * __cdecl GetButtonTextName(int)	anim.o
+0x0053B0B0	0x0092A5B0	?InteractStateParseSpecificField@@YAHPAEPBDH@Z	int __cdecl InteractStateParseSpecificField(unsigned char *,char const *,int)	anim.o
+0x0053BCD0	0x0092B1D0	?ParseInteractionConfigString@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseInteractionConfigString(char const *,class ConfigString const *)	anim.o
+0x0053BE10	0x0092B310	?ParseInteractStateConfigString@@YAXPBDPBVConfigString@@@Z	void __cdecl ParseInteractStateConfigString(char const *,class ConfigString const *)	anim.o
+0x0053BF50	0x0092B450	?G_ParseInteractionInfo@@YAXW4TPakId@@@Z	void __cdecl G_ParseInteractionInfo(enum TPakId)	anim.o
+0x0053BF90	0x0092B490	?G_FreeInteractionInfo@@YAXXZ	void __cdecl G_FreeInteractionInfo(void)	anim.o
+0x0053BFD0	0x0092B4D0	?PostPhysicsUpdate@InteractionController@@QAEXM@Z	public: void __thiscall InteractionController::PostPhysicsUpdate(float)	anim.o
+0x0053BFF0	0x0092B4F0	?ClearQueue@InteractionController@@AAEXXZ	private: void __thiscall InteractionController::ClearQueue(void)	anim.o
+0x0053C040	0x0092B540	?GetCameraMode@InteractionController@@QBEHXZ	public: int __thiscall InteractionController::GetCameraMode(void)const 	anim.o
+0x0053C060	0x0092B560	?GetRotation@InteractionController@@QBEMXZ	public: float __thiscall InteractionController::GetRotation(void)const 	anim.o
+0x0053C080	0x0092B580	?Press@InteractionController@@QAEHH@Z	public: int __thiscall InteractionController::Press(int)	anim.o
+0x0053C0A0	0x0092B5A0	?Release@InteractionController@@QAEHH@Z	public: int __thiscall InteractionController::Release(int)	anim.o
+0x0053C0C0	0x0092B5C0	?RemoveInteractionWeapon@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::RemoveInteractionWeapon(void)	anim.o
+0x0053C190	0x0092B690	?ChangeWeaponToPending@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::ChangeWeaponToPending(void)	anim.o
+0x0053C1D0	0x0092B6D0	?GetInteractWeaponIndex@InteractionController@@QBEHXZ	public: int __thiscall InteractionController::GetInteractWeaponIndex(void)const 	anim.o
+0x0053C200	0x0092B700	?CanRunWeaponAnims@InteractionController@@QBEHXZ	public: int __thiscall InteractionController::CanRunWeaponAnims(void)const 	anim.o
+0x0053C220	0x0092B720	?GetNextPlayerCallback@InteractionController@@QAEPAVnalAnimCallback@AnimationPlayer@@XZ	public: class AnimationPlayer::nalAnimCallback * __thiscall InteractionController::GetNextPlayerCallback(void)	anim.o
+0x0053C250	0x0092B750	?GetNextOtherCallback@InteractionController@@QAEPAVnalAnimCallback@AnimationPlayer@@XZ	public: class AnimationPlayer::nalAnimCallback * __thiscall InteractionController::GetNextOtherCallback(void)	anim.o
+0x0053C280	0x0092B780	?GetNextPlayerPlayMethod@InteractionController@@QAEPAVnalPlayMethod@AnimationPlayer@@XZ	public: class AnimationPlayer::nalPlayMethod * __thiscall InteractionController::GetNextPlayerPlayMethod(void)	anim.o
+0x0053C2B0	0x0092B7B0	?GetNextOtherPlayMethod@InteractionController@@QAEPAVnalPlayMethod@AnimationPlayer@@XZ	public: class AnimationPlayer::nalPlayMethod * __thiscall InteractionController::GetNextOtherPlayMethod(void)	anim.o
+0x0053C2E0	0x0092B7E0	?SetRenderText@InteractionController@@QAEXPBDHM@Z	public: void __thiscall InteractionController::SetRenderText(char const *,int,float)	anim.o
+0x0053C380	0x0092B880	?SetRenderText@InteractionController@@QAEXPBDHHMMH@Z	public: void __thiscall InteractionController::SetRenderText(char const *,int,int,float,float,int)	anim.o
+0x0053C450	0x0092B950	?SetRenderTextScale@InteractionController@@QAEXMH@Z	public: void __thiscall InteractionController::SetRenderTextScale(float,int)	anim.o
+0x0053C4C0	0x0092B9C0	?SetRenderTextAlpha@InteractionController@@QAEXMH@Z	public: void __thiscall InteractionController::SetRenderTextAlpha(float,int)	anim.o
+0x0053C530	0x0092BA30	?InitInputRcvrArray@InteractInputRcvr@@SAXXZ	public: static void __cdecl InteractInputRcvr::InitInputRcvrArray(void)	anim.o
+0x0053C560	0x0092BA60	?CreateInputRcvr@InteractInputRcvr@@KAPAV1@W4EInputType@1@W4TPakId@@@Z	protected: static class InteractInputRcvr * __cdecl InteractInputRcvr::CreateInputRcvr(enum InteractInputRcvr::EInputType,enum TPakId)	anim.o
+0x0053C780	0x0092BC80	?Activate@InteractInputRcvr@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvr::Activate(struct InteractStateInfo const &)	anim.o
+0x0053C7E0	0x0092BCE0	?Update@InteractInputRcvr@@UAEMM@Z	public: virtual float __thiscall InteractInputRcvr::Update(float)	anim.o
+0x0053C820	0x0092BD20	?Press@InteractInputRcvr@@UAEHH@Z	public: virtual int __thiscall InteractInputRcvr::Press(int)	anim.o
+0x0053C840	0x0092BD40	?Release@InteractInputRcvr@@UAEHH@Z	public: virtual int __thiscall InteractInputRcvr::Release(int)	anim.o
+0x0053C860	0x0092BD60	?Activate@InteractInputRcvrButtonMash@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvrButtonMash::Activate(struct InteractStateInfo const &)	anim.o
+0x0053C940	0x0092BE40	?Press@InteractInputRcvrButtonMash@@UAEHH@Z	public: virtual int __thiscall InteractInputRcvrButtonMash::Press(int)	anim.o
+0x0053C9A0	0x0092BEA0	?Activate@InteractInputRcvrButtonPress@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvrButtonPress::Activate(struct InteractStateInfo const &)	anim.o
+0x0053CAB0	0x0092BFB0	?Press@InteractInputRcvrButtonPress@@UAEHH@Z	public: virtual int __thiscall InteractInputRcvrButtonPress::Press(int)	anim.o
+0x0053CAE0	0x0092BFE0	?Activate@InteractInputRcvrStickSwirl@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvrStickSwirl::Activate(struct InteractStateInfo const &)	anim.o
+0x0053CB50	0x0092C050	?MeasureInput@InteractInputRcvrStickSwirl@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvrStickSwirl::MeasureInput(float &,float &,float)	anim.o
+0x0053CCB0	0x0092C1B0	?Activate@InteractInputRcvrStickToggleVert@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvrStickToggleVert::Activate(struct InteractStateInfo const &)	anim.o
+0x0053CD10	0x0092C210	?Activate@InteractInputRcvrRowboat@@UAEXABUInteractStateInfo@@@Z	public: virtual void __thiscall InteractInputRcvrRowboat::Activate(struct InteractStateInfo const &)	anim.o
+0x0053CD70	0x0092C270	?Deactivate@InteractInputRcvrRowboat@@UAEXXZ	public: virtual void __thiscall InteractInputRcvrRowboat::Deactivate(void)	anim.o
+0x0053CD80	0x0092C280	?MeasureInput@InteractInputRcvrRowboat@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvrRowboat::MeasureInput(float &,float &,float)	anim.o
+0x0053D180	0x0092C680	?DelayCreate@InteractMetaAnimData@@UAEXPAPAV?$nalAnimClass@VnalAnyPose@@@@H@Z	public: virtual void __thiscall InteractMetaAnimData::DelayCreate(class nalAnimClass<class nalAnyPose> * *,int)	anim.o
+0x0053D240	0x0092C740	?StopRumble@InteractState@@SAXH@Z	public: static void __cdecl InteractState::StopRumble(int)	anim.o
+0x0053D280	0x0092C780	?SetPlayerTagUtilityIndex@InteractState@@IAEXH@Z	protected: void __thiscall InteractState::SetPlayerTagUtilityIndex(int)	anim.o
+0x0053D330	0x0092C830	?UpdateLerp@InteractState@@IAEMM@Z	protected: float __thiscall InteractState::UpdateLerp(float)	anim.o
+0x0053D420	0x0092C920	?CalcTargetPosAndAngles@InteractState@@IAEXAAULerpInfo@1@AAVDObj@@H@Z	protected: void __thiscall InteractState::CalcTargetPosAndAngles(struct InteractState::LerpInfo &,class DObj &,int)	anim.o
+0x0053D820	0x0092CD20	?GetCameraMode@InteractState@@UBEHXZ	public: virtual int __thiscall InteractState::GetCameraMode(void)const 	anim.o
+0x0053D860	0x0092CD60	?Press@InteractState@@UAEHH@Z	public: virtual int __thiscall InteractState::Press(int)	anim.o
+0x0053D8B0	0x0092CDB0	?Release@InteractState@@UAEHH@Z	public: virtual int __thiscall InteractState::Release(int)	anim.o
+0x0053D900	0x0092CE00	?GetRandomPlayerAnimIndex@InteractState@@IBEHXZ	protected: int __thiscall InteractState::GetRandomPlayerAnimIndex(void)const 	anim.o
+0x0053D9A0	0x0092CEA0	?CanLink@InteractStateVehicleLink@@ABEHXZ	private: int __thiscall InteractStateVehicleLink::CanLink(void)const 	anim.o
+0x0053DA00	0x0092CF00	?Press@InteractStateMortarLoad@@UAEHH@Z	public: virtual int __thiscall InteractStateMortarLoad::Press(int)	anim.o
+0x0053DA60	0x0092CF60	?Release@InteractStateMortarLoad@@UAEHH@Z	public: virtual int __thiscall InteractStateMortarLoad::Release(int)	anim.o
+0x0053DAC0	0x0092CFC0	?GetCameraMode@InteractStateMortarLoad@@UBEHXZ	public: virtual int __thiscall InteractStateMortarLoad::GetCameraMode(void)const 	anim.o
+0x0053DAD0	0x0092CFD0	?Set@Lerper@InteractState@@QAEXMMMMM@Z	public: void __thiscall InteractState::Lerper::Set(float,float,float,float,float)	anim.o
+0x0053DB10	0x0092D010	?GetInitialModifierIndex@InteractStateMelee@@ABEHM@Z	private: int __thiscall InteractStateMelee::GetInitialModifierIndex(float)const 	anim.o
+0x0053DBE0	0x0092D0E0	?GetFacialAnims@InteractStateMelee@@AAEXXZ	private: void __thiscall InteractStateMelee::GetFacialAnims(void)	anim.o
+0x0053DCB0	0x0092D1B0	?InitIdleAnims@RowboatMgr@@QAEXABUInteractStateInfo@@@Z	public: void __thiscall RowboatMgr::InitIdleAnims(struct InteractStateInfo const &)	anim.o
+0x0053DD10	0x0092D210	?InitFlinchAnims@RowboatMgr@@QAEXABUInteractStateInfo@@@Z	public: void __thiscall RowboatMgr::InitFlinchAnims(struct InteractStateInfo const &)	anim.o
+0x0053DDD0	0x0092D2D0	?InitActionAnims@RowboatMgr@@QAEXABUInteractStateInfo@@@Z	public: void __thiscall RowboatMgr::InitActionAnims(struct InteractStateInfo const &)	anim.o
+0x0053DE90	0x0092D390	?GiveOrder@InteractStateRowboat@@SAXHMMMM@Z	public: static void __cdecl InteractStateRowboat::GiveOrder(int,float,float,float,float)	anim.o
+0x0053DEE0	0x0092D3E0	?StartModeIdle@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::StartModeIdle(void)	anim.o
+0x0053DEF0	0x0092D3F0	?StartModeRow@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::StartModeRow(void)	anim.o
+0x0053DF00	0x0092D400	?StartModeSlip@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::StartModeSlip(void)	anim.o
+0x0053DF30	0x0092D430	?UpdateNotify@InteractStateRowboat@@AAEXM@Z	private: void __thiscall InteractStateRowboat::UpdateNotify(float)	anim.o
+0x0053DF40	0x0092D440	?NewStroke@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::NewStroke(void)	anim.o
+0x0053DF80	0x0092D480	?GetRotation@InteractStateVehicleBase@@UBEMXZ	public: virtual float __thiscall InteractStateVehicleBase::GetRotation(void)const 	anim.o
+0x0053DF90	0x0092D490	??0PlayerAnimMgr@@QAE@XZ	public: __thiscall PlayerAnimMgr::PlayerAnimMgr(void)	anim.o
+0x0053DFB0	0x0092D4B0	??1PlayerAnimMgr@@QAE@XZ	public: __thiscall PlayerAnimMgr::~PlayerAnimMgr(void)	anim.o
+0x0053DFC0	0x0092D4C0	?Update@PlayerAnimMgr@@QAEXM@Z	public: void __thiscall PlayerAnimMgr::Update(float)	anim.o
+0x0053E030	0x0092D530	?XAnimInit@@YAXXZ	void __cdecl XAnimInit(void)	anim.o
+0x0053E0B0	0x0092D5B0	?XAnimShutdown@@YAXXZ	void __cdecl XAnimShutdown(void)	anim.o
+0x0053E0D0	0x0092D5D0	?XAnimFreeMemory@@YAXPAUfileData_s@@@Z	void __cdecl XAnimFreeMemory(struct fileData_s *)	anim.o
+0x0053E0E0	0x0092D5E0	?XAnimEntryInvalidate@@YAXXZ	void __cdecl XAnimEntryInvalidate(void)	anim.o
+0x0053E0F0	0x0092D5F0	?XAnimCreate@@YAXPAVAnimTree@@GPBD@Z	void __cdecl XAnimCreate(class AnimTree *,unsigned short,char const *)	anim.o
+0x0053E150	0x0092D650	?XAnimFreeInfo@@YAXPAVXAnimTree@@G@Z	void __cdecl XAnimFreeInfo(class XAnimTree *,unsigned short)	anim.o
+0x0053E290	0x0092D790	?CheckAllAnims@@YAXXZ	void __cdecl CheckAllAnims(void)	anim.o
+0x0053E2F0	0x0092D7F0	?XAnimBlend@@YAXPAVAnimTree@@GPBDGGG@Z	void __cdecl XAnimBlend(class AnimTree *,unsigned short,char const *,unsigned short,unsigned short,unsigned short)	anim.o
+0x0053E340	0x0092D840	?XAnimCreateAnims@@YAPAVAnimTree@@PBDHP6APAXH@Z@Z	class AnimTree * __cdecl XAnimCreateAnims(char const *,int,void * (__cdecl*)(int))	anim.o
+0x0053E390	0x0092D890	?XAnimGetAnims@@YAPAVAnimTree@@PAVXAnimTree@@@Z	class AnimTree * __cdecl XAnimGetAnims(class XAnimTree *)	anim.o
+0x0053E690	0x0092DB90	?XAnimGetAnimTreeDebugName@@YAPBDPAVAnimTree@@@Z	char const * __cdecl XAnimGetAnimTreeDebugName(class AnimTree *)	anim.o
+0x0053E6A0	0x0092DBA0	?DObjAdvanceAnimationPlayer@@YAXPAVDObj@@M@Z	void __cdecl DObjAdvanceAnimationPlayer(class DObj *,float)	anim.o
+0x0053E6E0	0x0092DBE0	?DObjUpdateClientInfo@@YAXPAVDObj@@M@Z	void __cdecl DObjUpdateClientInfo(class DObj *,float)	anim.o
+0x0053E6F0	0x0092DBF0	?KillSceneAnim@@YAXPAVSceneAnimInfo@@@Z	void __cdecl KillSceneAnim(class SceneAnimInfo *)	anim.o
+0x0053E7C0	0x0092DCC0	?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z	void __cdecl `anonymous namespace'::DObjAllocateSubModelPose(class DObj *,int,class nalGeneric::nalGenericSkeleton *)	anim.o
+0x0053E7F0	0x0092DCF0	?DObjFreeAnim@@YAXPAVDObj@@@Z	void __cdecl DObjFreeAnim(class DObj *)	anim.o
+0x0053E9C0	0x0092DEC0	?XAnimSetUser@@YAXH@Z	void __cdecl XAnimSetUser(int)	anim.o
+0x0053E9E0	0x0092DEE0	?XAnimLoadAnimTree@@YAXPAVXAnimTree@@@Z	void __cdecl XAnimLoadAnimTree(class XAnimTree *)	anim.o
+0x0053EA30	0x0092DF30	?XAnimSaveAnimTree@@YAXPAVXAnimTree@@@Z	void __cdecl XAnimSaveAnimTree(class XAnimTree *)	anim.o
+0x0053EA80	0x0092DF80	??1AnimBankManager@@UAE@XZ	public: virtual __thiscall AnimBankManager::~AnimBankManager(void)	anim.o
+0x0053EA90	0x0092DF90	?UnloadBank@AnimBankManager@@EAEXW4TPakId@@@Z	private: virtual void __thiscall AnimBankManager::UnloadBank(enum TPakId)	anim.o
+0x0053EAA0	0x0092DFA0	?Activate@InteractStatePickLiveGrenade@@UAEXXZ	public: virtual void __thiscall InteractStatePickLiveGrenade::Activate(void)	anim.o
+0x0053EAB0	0x0092DFB0	?Deactivate@InteractStatePickLiveGrenade@@UAEXXZ	public: virtual void __thiscall InteractStatePickLiveGrenade::Deactivate(void)	anim.o
+0x0053EAC0	0x0092DFC0	?fireLiveGrenade@InteractStatePickLiveGrenade@@IAEXPAVEntity@@@Z	protected: void __thiscall InteractStatePickLiveGrenade::fireLiveGrenade(class Entity *)	anim.o
+0x0053EB00	0x0092E000	?RotateCamera@InteractStatePickLiveGrenade@@IAEXQAMM@Z	protected: void __thiscall InteractStatePickLiveGrenade::RotateCamera(float * const,float)	anim.o
+0x0053EBA0	0x0092E0A0	?Press@InteractStatePickLiveGrenade@@UAEHH@Z	public: virtual int __thiscall InteractStatePickLiveGrenade::Press(int)	anim.o
+0x0053EBC0	0x0092E0C0	?Release@InteractStatePickLiveGrenade@@UAEHH@Z	public: virtual int __thiscall InteractStatePickLiveGrenade::Release(int)	anim.o
+0x0053EBD0	0x0092E0D0	??0AnimQueue@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z	public: __thiscall AnimQueue::AnimQueue(class nalGeneric::nalGenericSkeleton *)	anim.o
+0x0053EC70	0x0092E170	?AddNewGBMOutput@AnimQueue@@SA_NHPAX@Z	public: static bool __cdecl AnimQueue::AddNewGBMOutput(int,void *)	anim.o
+0x0053ED00	0x0092E200	?ClearMatrixQueue@AnimQueue@@SAXXZ	public: static void __cdecl AnimQueue::ClearMatrixQueue(void)	anim.o
+0x0053ED10	0x0092E210	?GetDobjAbsolute@AnimQueue@@SA_NPAVDObj@@@Z	public: static bool __cdecl AnimQueue::GetDobjAbsolute(class DObj *)	anim.o
+0x0053ED50	0x0092E250	?ExecuteAndClearDecompression@AnimQueue@@SAXXZ	public: static void __cdecl AnimQueue::ExecuteAndClearDecompression(void)	anim.o
+0x0053EDA0	0x0092E2A0	?ExecGetPose@AnimQueue@@AAEXPAVnalGenericPose@nalGeneric@@0AAUGetPoseOp@1@@Z	private: void __thiscall AnimQueue::ExecGetPose(class nalGeneric::nalGenericPose *,class nalGeneric::nalGenericPose *,struct AnimQueue::GetPoseOp &)	anim.o
+0x0053EDD0	0x0092E2D0	?ExecuteBlendPose@AnimQueue@@AAEXPAVnalGenericPose@nalGeneric@@00AAUBlendOp@1@@Z	private: void __thiscall AnimQueue::ExecuteBlendPose(class nalGeneric::nalGenericPose *,class nalGeneric::nalGenericPose *,class nalGeneric::nalGenericPose *,struct AnimQueue::BlendOp &)	anim.o
+0x0053EE00	0x0092E300	?Reset@AnimQueue@@QAEXXZ	public: void __thiscall AnimQueue::Reset(void)	anim.o
+0x0053EE40	0x0092E340	?SetParamAsAccum@AnimQueue@@QAEXXZ	public: void __thiscall AnimQueue::SetParamAsAccum(void)	anim.o
+0x0053EE50	0x0092E350	?SetParamAsTemp@AnimQueue@@QAEXXZ	public: void __thiscall AnimQueue::SetParamAsTemp(void)	anim.o
+0x0053EE60	0x0092E360	?IncrementOptCount@AnimQueue@@AAEXXZ	private: void __thiscall AnimQueue::IncrementOptCount(void)	anim.o
+0x0053EEC0	0x0092E3C0	?AddTouch@AnimQueue@@AAEXMMPAVnalGenericInstance@nalGeneric@@I@Z	private: void __thiscall AnimQueue::AddTouch(float,float,class nalGeneric::nalGenericInstance *,unsigned int)	anim.o
+0x0053EF50	0x0092E450	?BlendPoses@AnimQueue@@QAEXM@Z	public: void __thiscall AnimQueue::BlendPoses(float)	anim.o
+0x0053EF90	0x0092E490	?GetBoneMatrices@AnimQueue@@QAEXXZ	public: void __thiscall AnimQueue::GetBoneMatrices(void)	anim.o
+0x0053EFB0	0x0092E4B0	??0TempPoseStackPusher@AnimQueue@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z	public: __thiscall AnimQueue::TempPoseStackPusher::TempPoseStackPusher(class nalGeneric::nalGenericSkeleton *)	anim.o
+0x0053F090	0x0092E590	??1TempPoseStackPusher@AnimQueue@@QAE@XZ	public: __thiscall AnimQueue::TempPoseStackPusher::~TempPoseStackPusher(void)	anim.o
+0x0053F0A0	0x0092E5A0	?G_InitialParseInteractionInfo@@YAXXZ	void __cdecl G_InitialParseInteractionInfo(void)	anim.o
+0x0053F0E0	0x0092E5E0	?ResetAnimationPlayer@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::ResetAnimationPlayer(void)	anim.o
+0x0053F130	0x0092E630	?RenderText@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::RenderText(void)	anim.o
+0x0053F1E0	0x0092E6E0	?ClearRenderText@InteractionController@@QAEXH@Z	public: void __thiscall InteractionController::ClearRenderText(int)	anim.o
+0x0053F280	0x0092E780	?ClearAllRenderText@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::ClearAllRenderText(void)	anim.o
+0x0053F2A0	0x0092E7A0	?GetInteractInputRcvr@InteractInputRcvr@@SAPAV1@W4EInputType@1@W4TPakId@@@Z	public: static class InteractInputRcvr * __cdecl InteractInputRcvr::GetInteractInputRcvr(enum InteractInputRcvr::EInputType,enum TPakId)	anim.o
+0x0053F310	0x0092E810	?FreeInputRcvrs@InteractInputRcvr@@SAXXZ	public: static void __cdecl InteractInputRcvr::FreeInputRcvrs(void)	anim.o
+0x0053F350	0x0092E850	?MeasureInput@InteractInputRcvr@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvr::MeasureInput(float &,float &,float)	anim.o
+0x0053F500	0x0092EA00	?Deactivate@InteractInputRcvrButtonMash@@UAEXXZ	public: virtual void __thiscall InteractInputRcvrButtonMash::Deactivate(void)	anim.o
+0x0053F530	0x0092EA30	?MeasureInput@InteractInputRcvrButtonMash@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvrButtonMash::MeasureInput(float &,float &,float)	anim.o
+0x0053F5D0	0x0092EAD0	?Deactivate@InteractInputRcvrButtonPress@@UAEXXZ	public: virtual void __thiscall InteractInputRcvrButtonPress::Deactivate(void)	anim.o
+0x0053F600	0x0092EB00	?MeasureInput@InteractInputRcvrButtonPress@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvrButtonPress::MeasureInput(float &,float &,float)	anim.o
+0x0053F6E0	0x0092EBE0	?Deactivate@InteractInputRcvrStickSwirl@@UAEXXZ	public: virtual void __thiscall InteractInputRcvrStickSwirl::Deactivate(void)	anim.o
+0x0053F710	0x0092EC10	?Deactivate@InteractInputRcvrStickToggleVert@@UAEXXZ	public: virtual void __thiscall InteractInputRcvrStickToggleVert::Deactivate(void)	anim.o
+0x0053F740	0x0092EC40	?MeasureInput@InteractInputRcvrStickToggleVert@@MAEXAAM0M@Z	protected: virtual void __thiscall InteractInputRcvrStickToggleVert::MeasureInput(float &,float &,float)	anim.o
+0x0053F840	0x0092ED40	?IsAnimLooping@InteractMetaAnimData@@UBEHXZ	public: virtual int __thiscall InteractMetaAnimData::IsAnimLooping(void)const 	anim.o
+0x0053F860	0x0092ED60	?IsAnimTrajRelative@InteractMetaAnimData@@UBEHXZ	public: virtual int __thiscall InteractMetaAnimData::IsAnimTrajRelative(void)const 	anim.o
+0x0053F880	0x0092ED80	?GetAnimDuration@InteractMetaAnimData@@UBEMXZ	public: virtual float __thiscall InteractMetaAnimData::GetAnimDuration(void)const 	anim.o
+0x0053F8A0	0x0092EDA0	?GetSkeleton@InteractMetaAnimData@@UBEPBVnalBaseSkeleton@@XZ	public: virtual class nalBaseSkeleton const * __thiscall InteractMetaAnimData::GetSkeleton(void)const 	anim.o
+0x0053F8B0	0x0092EDB0	?CreateAnimInst@InteractMetaAnimData@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@PAV3@@Z	public: virtual class nalAnimClass<class nalAnyPose>::nalInstanceClass * __thiscall InteractMetaAnimData::CreateAnimInst(class nalBaseSkeleton *,class nalAnimClass<class nalAnyPose> *)	anim.o
+0x0053F920	0x0092EE20	?Deactivate@InteractState@@UAEXXZ	public: virtual void __thiscall InteractState::Deactivate(void)	anim.o
+0x0053F9F0	0x0092EEF0	?CheckNotifySet@InteractState@@IAEXAAVEntity@@H@Z	protected: void __thiscall InteractState::CheckNotifySet(class Entity &,int)	anim.o
+0x0053FA70	0x0092EF70	?PlayPlayerAnim@InteractState@@IAEXPAV?$nalAnimClass@VnalAnyPose@@@@HMMM@Z	protected: void __thiscall InteractState::PlayPlayerAnim(class nalAnimClass<class nalAnyPose> *,int,float,float,float)	anim.o
+0x0053FBA0	0x0092F0A0	?Deactivate@InteractStatePlayAnims@@UAEXXZ	public: virtual void __thiscall InteractStatePlayAnims::Deactivate(void)	anim.o
+0x0053FBB0	0x0092F0B0	?Deactivate@InteractStatePlayPlayerAnim@@UAEXXZ	public: virtual void __thiscall InteractStatePlayPlayerAnim::Deactivate(void)	anim.o
+0x0053FBC0	0x0092F0C0	?Deactivate@InteractStatePush@@UAEXXZ	public: virtual void __thiscall InteractStatePush::Deactivate(void)	anim.o
+0x0053FBD0	0x0092F0D0	?Deactivate@InteractStateMortarLoad@@UAEXXZ	public: virtual void __thiscall InteractStateMortarLoad::Deactivate(void)	anim.o
+0x0053FBE0	0x0092F0E0	?Deactivate@InteractStateScaleAnimSpeed@@UAEXXZ	public: virtual void __thiscall InteractStateScaleAnimSpeed::Deactivate(void)	anim.o
+0x0053FC80	0x0092F180	?Update@Lerper@InteractState@@QAEXMAAM@Z	public: void __thiscall InteractState::Lerper::Update(float,float &)	anim.o
+0x0053FD50	0x0092F250	?Deactivate@InteractStateLeverPush@@UAEXXZ	public: virtual void __thiscall InteractStateLeverPush::Deactivate(void)	anim.o
+0x0053FE80	0x0092F380	?CalcScore@InteractStateLeverPush@@AAEXM@Z	private: void __thiscall InteractStateLeverPush::CalcScore(float)	anim.o
+0x005401D0	0x0092F6D0	?UpdateRumble@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::UpdateRumble(float)	anim.o
+0x00540300	0x0092F800	?UpdateFOV@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::UpdateFOV(float)	anim.o
+0x00540400	0x0092F900	?CalcScore@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::CalcScore(float)	anim.o
+0x005405E0	0x0092FAE0	?CalcAnimScore@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::CalcAnimScore(float)	anim.o
+0x00540670	0x0092FB70	?CalcModifierBlendTime@InteractStateMelee@@ABEMXZ	private: float __thiscall InteractStateMelee::CalcModifierBlendTime(void)const 	anim.o
+0x005406F0	0x0092FBF0	?Deactivate@InteractStateMeleeSuccessSetup@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeSuccessSetup::Deactivate(void)	anim.o
+0x00540700	0x0092FC00	?Deactivate@InteractStateMeleeSuccess@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeSuccess::Deactivate(void)	anim.o
+0x00540780	0x0092FC80	?Deactivate@InteractStateMeleeFailure@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeFailure::Deactivate(void)	anim.o
+0x005407F0	0x0092FCF0	?Deactivate@InteractStateMeleeStagedSuccess@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStagedSuccess::Deactivate(void)	anim.o
+0x00540870	0x0092FD70	?Deactivate@InteractStateMeleeDropWeapon@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeDropWeapon::Deactivate(void)	anim.o
+0x005408B0	0x0092FDB0	?AddBoatman@RowboatMgr@@AAEXPBD_N@Z	private: void __thiscall RowboatMgr::AddBoatman(char const *,bool)	anim.o
+0x00540950	0x0092FE50	?Deactivate@InteractStateRowboatInit@@UAEXXZ	public: virtual void __thiscall InteractStateRowboatInit::Deactivate(void)	anim.o
+0x00540960	0x0092FE60	?StartMode@InteractStateRowboat@@AAEXW4EMode@1@@Z	private: void __thiscall InteractStateRowboat::StartMode(enum InteractStateRowboat::EMode)	anim.o
+0x005409F0	0x0092FEF0	?UpdateModeIdle@InteractStateRowboat@@AAE?AW4EMode@1@M@Z	private: enum InteractStateRowboat::EMode __thiscall InteractStateRowboat::UpdateModeIdle(float)	anim.o
+0x00540B10	0x00930010	?PlayRowingMetaAnim@InteractStateRowboat@@AAEXH@Z	private: void __thiscall InteractStateRowboat::PlayRowingMetaAnim(int)	anim.o
+0x00540C40	0x00930140	?UpdateUI@InteractStateRowboat@@AAEXM@Z	private: void __thiscall InteractStateRowboat::UpdateUI(float)	anim.o
+0x00540E60	0x00930360	?Deactivate@InteractStateVehicleBase@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleBase::Deactivate(void)	anim.o
+0x00540EC0	0x009303C0	?Deactivate@InteractStateVehicleIdle@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleIdle::Deactivate(void)	anim.o
+0x00540ED0	0x009303D0	?Deactivate@InteractStateVehicleTurn@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleTurn::Deactivate(void)	anim.o
+0x00540F20	0x00930420	?Deactivate@InteractStateVehicleRelease@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleRelease::Deactivate(void)	anim.o
+0x00540F30	0x00930430	?Play@PlayerAnimMgr@@QAEXAAVnalGenericAnim@nalGeneric@@HMM@Z	public: void __thiscall PlayerAnimMgr::Play(class nalGeneric::nalGenericAnim &,int,float,float)	anim.o
+0x00540FB0	0x009304B0	?PlayModifier@PlayerAnimMgr@@QAEXAAVnalGenericAnim@nalGeneric@@HMMMM@Z	public: void __thiscall PlayerAnimMgr::PlayModifier(class nalGeneric::nalGenericAnim &,int,float,float,float,float)	anim.o
+0x00541050	0x00930550	?Release@XAnimEntry@@QAEXXZ	public: void __thiscall XAnimEntry::Release(void)	anim.o
+0x005433C0	0x009328C0	?XAnimGetTime@@YAMPAVXAnimTree@@I@Z	float __cdecl XAnimGetTime(class XAnimTree *,unsigned int)	anim.o
+0x00543520	0x00932A20	?XAnimGetWeight@@YAMPAVXAnimTree@@I@Z	float __cdecl XAnimGetWeight(class XAnimTree *,unsigned int)	anim.o
+0x00543680	0x00932B80	?XAnimHasFinished@@YAHPAVXAnimTree@@I@Z	int __cdecl XAnimHasFinished(class XAnimTree *,unsigned int)	anim.o
+0x005437D0	0x00932CD0	?XAnimGetNumChildren@@YAHPAVAnimTree@@I@Z	int __cdecl XAnimGetNumChildren(class AnimTree *,unsigned int)	anim.o
+0x005437F0	0x00932CF0	?XAnimGetChildAt@@YAIPAVAnimTree@@II@Z	unsigned int __cdecl XAnimGetChildAt(class AnimTree *,unsigned int,unsigned int)	anim.o
+0x00543870	0x00932D70	?XAnimGetAnimTreeSize@@YAIPAVAnimTree@@@Z	unsigned int __cdecl XAnimGetAnimTreeSize(class AnimTree *)	anim.o
+0x00543890	0x00932D90	?DObjInitServerTime@@YAXPAVDObj@@M@Z	void __cdecl DObjInitServerTime(class DObj *,float)	anim.o
+0x00543930	0x00932E30	?IsInSceneAnim@@YA_NXZ	bool __cdecl IsInSceneAnim(void)	anim.o
+0x00543C70	0x00933170	?XAnimClearGoalWeight@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimClearGoalWeight(class XAnimTree *,unsigned int,float)	anim.o
+0x005440A0	0x009335A0	?XAnimClearChildGoalWeights@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimClearChildGoalWeights(class XAnimTree *,unsigned int,float)	anim.o
+0x00544370	0x00933870	?XAnimClearTree@@YAXPAVXAnimTree@@@Z	void __cdecl XAnimClearTree(class XAnimTree *)	anim.o
+0x00544A10	0x00933F10	?XAnimSetupSyncNodes@@YAXPAVAnimTree@@@Z	void __cdecl XAnimSetupSyncNodes(class AnimTree *)	anim.o
+0x00544A30	0x00933F30	?XAnimHasTime@@YAHPAVAnimTree@@I@Z	int __cdecl XAnimHasTime(class AnimTree *,unsigned int)	anim.o
+0x00544A60	0x00933F60	?XAnimIsPrimitive@@YAHPAVAnimTree@@I@Z	int __cdecl XAnimIsPrimitive(class AnimTree *,unsigned int)	anim.o
+0x00544A80	0x00933F80	?XAnimSetTime@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimSetTime(class XAnimTree *,unsigned int,float)	anim.o
+0x005454C0	0x009349C0	?XAnimSetAnimRate@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimSetAnimRate(class XAnimTree *,unsigned int,float)	anim.o
+0x005454E0	0x009349E0	?XAnimNotetrackExists@@YA_NPAVAnimTree@@IABI@Z	bool __cdecl XAnimNotetrackExists(class AnimTree *,unsigned int,unsigned int const &)	anim.o
+0x00545520	0x00934A20	?XAnimIsVariationChunk@@YA_NPAVXAnimTree@@I@Z	bool __cdecl XAnimIsVariationChunk(class XAnimTree *,unsigned int)	anim.o
+0x00545540	0x00934A40	?XAnimIsVariationChunk@@YA_NPAVAnimTree@@I@Z	bool __cdecl XAnimIsVariationChunk(class AnimTree *,unsigned int)	anim.o
+0x00545560	0x00934A60	?XAnimResetAnimVariationChunkState@@YAXPAVXAnimTree@@I@Z	void __cdecl XAnimResetAnimVariationChunkState(class XAnimTree *,unsigned int)	anim.o
+0x00545650	0x00934B50	??0AnimBankManager@@QAE@XZ	public: __thiscall AnimBankManager::AnimBankManager(void)	anim.o
+0x005456F0	0x00934BF0	?AddBank@AnimBankManager@@AAEXW4TPakId@@PAVAnimBank@@@Z	private: void __thiscall AnimBankManager::AddBank(enum TPakId,class AnimBank *)	anim.o
+0x00545760	0x00934C60	?GetBank@AnimBankManager@@QAEPAVAnimBank@@W4TPakId@@@Z	public: class AnimBank * __thiscall AnimBankManager::GetBank(enum TPakId)	anim.o
+0x005457D0	0x00934CD0	?UnloadAll@AnimBankManager@@QAEXXZ	public: void __thiscall AnimBankManager::UnloadAll(void)	anim.o
+0x00545840	0x00934D40	?AddGetBoneMatrices@AnimQueue@@SAHPAVDObj@@PBVnalGenericPose@nalGeneric@@PAX_N@Z	public: static int __cdecl AnimQueue::AddGetBoneMatrices(class DObj *,class nalGeneric::nalGenericPose const *,void *,bool)	anim.o
+0x005459C0	0x00934EC0	?ExecuteMatrixQueue@AnimQueue@@SAXXZ	public: static void __cdecl AnimQueue::ExecuteMatrixQueue(void)	anim.o
+0x00545A90	0x00934F90	?ExecuteAnimCommands@AnimQueue@@AAEXPAPAVnalGenericPose@nalGeneric@@PAV23@@Z	private: void __thiscall AnimQueue::ExecuteAnimCommands(class nalGeneric::nalGenericPose * *,class nalGeneric::nalGenericPose *)	anim.o
+0x00545C70	0x00935170	?GetPose@AnimQueue@@QAEXMMPAVnalGenericInstance@nalGeneric@@I@Z	public: void __thiscall AnimQueue::GetPose(float,float,class nalGeneric::nalGenericInstance *,unsigned int)	anim.o
+0x00545D80	0x00935280	??0InteractionController@@QAE@H@Z	public: __thiscall InteractionController::InteractionController(int)	anim.o
+0x00546050	0x00935550	?SelectInteractionWeapon@InteractionController@@QAEXH@Z	public: void __thiscall InteractionController::SelectInteractionWeapon(int)	anim.o
+0x005460D0	0x009355D0	?ForceInteractionWeapon@InteractionController@@QAEXH@Z	public: void __thiscall InteractionController::ForceInteractionWeapon(int)	anim.o
+0x005461C0	0x009356C0	?StartRumble@InteractState@@SA?AVRumbleEffectInstanceHandle@@MMMMMMMM@Z	public: static class RumbleEffectInstanceHandle __cdecl InteractState::StartRumble(float,float,float,float,float,float,float,float)	anim.o
+0x00546600	0x00935B00	??0InteractState@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractState::InteractState(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546700	0x00935C00	?Update@InteractState@@UAEPAV1@M@Z	public: virtual class InteractState * __thiscall InteractState::Update(float)	anim.o
+0x00546A00	0x00935F00	?DoWeaponChange@InteractState@@IAEXXZ	protected: void __thiscall InteractState::DoWeaponChange(void)	anim.o
+0x00546AF0	0x00935FF0	??0InteractStatePlayAnims@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStatePlayAnims::InteractStatePlayAnims(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546B20	0x00936020	?Update@InteractStatePlayAnims@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStatePlayAnims::Update(float)	anim.o
+0x00546C50	0x00936150	??0InteractStatePlayPlayerAnim@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStatePlayPlayerAnim::InteractStatePlayPlayerAnim(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546C80	0x00936180	?Update@InteractStatePlayPlayerAnim@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStatePlayPlayerAnim::Update(float)	anim.o
+0x00546DF0	0x009362F0	??0InteractStatePush@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStatePush::InteractStatePush(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546E20	0x00936320	??0InteractStatePlaceItem@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStatePlaceItem::InteractStatePlaceItem(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546E50	0x00936350	?Update@InteractStatePlaceItem@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStatePlaceItem::Update(float)	anim.o
+0x00546E60	0x00936360	??0InteractStateVehicleLink@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateVehicleLink::InteractStateVehicleLink(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546E90	0x00936390	??0InteractStateMortarLoad@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMortarLoad::InteractStateMortarLoad(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546EC0	0x009363C0	?Update@InteractStateMortarLoad@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMortarLoad::Update(float)	anim.o
+0x00546F50	0x00936450	??0InteractStateScaleAnimSpeed@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateScaleAnimSpeed::InteractStateScaleAnimSpeed(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546F80	0x00936480	??0InteractStateStrengthTest@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateStrengthTest::InteractStateStrengthTest(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00546FB0	0x009364B0	??0InteractStateLeverPush@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateLeverPush::InteractStateLeverPush(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547000	0x00936500	?Update@InteractStateLeverPush@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateLeverPush::Update(float)	anim.o
+0x00547160	0x00936660	??0InteractStateMelee@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMelee::InteractStateMelee(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005471B0	0x009366B0	??0InteractStateMeleeInitiate@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeInitiate::InteractStateMeleeInitiate(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005471E0	0x009366E0	?Update@InteractStateMeleeInitiate@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeInitiate::Update(float)	anim.o
+0x00547270	0x00936770	??0InteractStateMeleeStart@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeStart::InteractStateMeleeStart(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005472A0	0x009367A0	?Update@InteractStateMeleeStart@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeStart::Update(float)	anim.o
+0x00547330	0x00936830	??0InteractStateMeleeSuccessSetup@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeSuccessSetup::InteractStateMeleeSuccessSetup(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547360	0x00936860	?Update@InteractStateMeleeSuccessSetup@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeSuccessSetup::Update(float)	anim.o
+0x00547490	0x00936990	??0InteractStateMeleeSuccess@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeSuccess::InteractStateMeleeSuccess(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005474C0	0x009369C0	??0InteractStateMeleeFailure@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeFailure::InteractStateMeleeFailure(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005474F0	0x009369F0	?Update@InteractStateMeleeFailure@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeFailure::Update(float)	anim.o
+0x00547500	0x00936A00	??0InteractStateMeleeStagedInitiate@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeStagedInitiate::InteractStateMeleeStagedInitiate(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547530	0x00936A30	?Update@InteractStateMeleeStagedInitiate@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeStagedInitiate::Update(float)	anim.o
+0x005475D0	0x00936AD0	??0InteractStateMeleeStagedSuccess@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeStagedSuccess::InteractStateMeleeStagedSuccess(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547600	0x00936B00	??0InteractStateMeleeDropWeapon@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateMeleeDropWeapon::InteractStateMeleeDropWeapon(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547630	0x00936B30	??0InteractStateRowboatInit@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateRowboatInit::InteractStateRowboatInit(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547660	0x00936B60	??0InteractStateRowboat@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateRowboat::InteractStateRowboat(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x005476B0	0x00936BB0	?UpdateModeRow@InteractStateRowboat@@AAE?AW4EMode@1@M@Z	private: enum InteractStateRowboat::EMode __thiscall InteractStateRowboat::UpdateModeRow(float)	anim.o
+0x00547AA0	0x00936FA0	?UpdateModeSlip@InteractStateRowboat@@AAE?AW4EMode@1@M@Z	private: enum InteractStateRowboat::EMode __thiscall InteractStateRowboat::UpdateModeSlip(float)	anim.o
+0x00547BE0	0x009370E0	??0InteractStateVehicleBase@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateVehicleBase::InteractStateVehicleBase(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547C10	0x00937110	?Update@InteractStateVehicleBase@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateVehicleBase::Update(float)	anim.o
+0x00547C50	0x00937150	??0InteractStateVehicleIdle@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateVehicleIdle::InteractStateVehicleIdle(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547C80	0x00937180	??0InteractStateVehicleTurn@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateVehicleTurn::InteractStateVehicleTurn(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547CC0	0x009371C0	??0InteractStateVehicleRelease@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStateVehicleRelease::InteractStateVehicleRelease(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x00547CF0	0x009371F0	?Update@InteractStateVehicleRelease@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateVehicleRelease::Update(float)	anim.o
+0x00547D80	0x00937280	?Play@PlayerAnimMgr@@QAEXPBDHMM@Z	public: void __thiscall PlayerAnimMgr::Play(char const *,int,float,float)	anim.o
+0x00547DC0	0x009372C0	?PlayModifier@PlayerAnimMgr@@QAEXPBDHMMMM@Z	public: void __thiscall PlayerAnimMgr::PlayModifier(char const *,int,float,float,float,float)	anim.o
+0x00547E10	0x00937310	?VectorCopyUnalignedInc@@YAXAAPADAAY02M@Z	void __cdecl VectorCopyUnalignedInc(char * &,float (&)[3])	anim.o
+0x00547E60	0x00937360	?ParseNoteTracks@@YAXPAUXAnimEntry@@@Z	void __cdecl ParseNoteTracks(struct XAnimEntry *)	anim.o
+0x00548160	0x00937660	?Create@XAnimEntry@@QAEXXZ	public: void __thiscall XAnimEntry::Create(void)	anim.o
+0x005481E0	0x009376E0	?XAnimCreateTree@@YAPAVXAnimTree@@PAVEntity@@PAVAnimTree@@@Z	class XAnimTree * __cdecl XAnimCreateTree(class Entity *,class AnimTree *)	anim.o
+0x005483C0	0x009378C0	?XAnimCalcRelDeltaParts@@YAXPAUXAnimEntry@@AAVnalPositionOrientation@@MM@Z	void __cdecl XAnimCalcRelDeltaParts(struct XAnimEntry *,class nalPositionOrientation &,float,float)	anim.o
+0x00548570	0x00937A70	?XAnimCalcAbsDeltaParts@@YAXPAUXAnimEntry@@AAVnalPositionOrientation@@M@Z	void __cdecl XAnimCalcAbsDeltaParts(struct XAnimEntry *,class nalPositionOrientation &,float)	anim.o
+0x00549950	0x00938E50	?XAnimGetLength@@YAMPAVAnimTree@@I@Z	float __cdecl XAnimGetLength(class AnimTree *,unsigned int)	anim.o
+0x00549A50	0x00938F50	?XAnimGetFrameCount@@YAHPAVAnimTree@@I@Z	int __cdecl XAnimGetFrameCount(class AnimTree *,unsigned int)	anim.o
+0x00549B30	0x00939030	?XAnimGetAnimName@@YAPBDPAVAnimTree@@I@Z	char const * __cdecl XAnimGetAnimName(class AnimTree *,unsigned int)	anim.o
+0x00549BD0	0x009390D0	?SceneAnimCallback@@YAPAVnalClientSceneAnim@@PBVnalSceneAnim@@ABVtlFixedString@@PAX@Z	class nalClientSceneAnim * __cdecl SceneAnimCallback(class nalSceneAnim const *,class tlFixedString const &,void *)	anim.o
+0x00549C50	0x00939150	?StopAllSceneAnims@@YAXXZ	void __cdecl StopAllSceneAnims(void)	anim.o
+0x00549CA0	0x009391A0	?ApplyPoseToSubModel@?A0x7516322e@@YAXPAVDObj@@HPBVnalGenericPose@nalGeneric@@@Z	void __cdecl `anonymous namespace'::ApplyPoseToSubModel(class DObj *,int,class nalGeneric::nalGenericPose const *)	anim.o
+0x00549DA0	0x009392A0	?ApplyPoseToSubModel@?A0x7516322e@@YAXPAVDObj@@HPBVnalGenericPose@nalGeneric@@_N@Z	void __cdecl `anonymous namespace'::ApplyPoseToSubModel(class DObj *,int,class nalGeneric::nalGenericPose const *,bool)	anim.o
+0x00549E60	0x00939360	?PostApplyPoseToSubModel@?A0x7516322e@@YAXPAVDObj@@HPBVnalGenericPose@nalGeneric@@@Z	void __cdecl `anonymous namespace'::PostApplyPoseToSubModel(class DObj *,int,class nalGeneric::nalGenericPose const *)	anim.o
+0x00549F40	0x00939440	?DObjGetValidSubModelSkeleton@?A0x7516322e@@YAPAVnalGenericSkeleton@nalGeneric@@PAVDObj@@H@Z	class nalGeneric::nalGenericSkeleton * __cdecl `anonymous namespace'::DObjGetValidSubModelSkeleton(class DObj *,int)	anim.o
+0x0054A080	0x00939580	?DObjDisplayAnim@@YAXPAVDObj@@@Z	void __cdecl DObjDisplayAnim(class DObj *)	anim.o
+0x0054A0E0	0x009395E0	?DObjDisplayAnim3D@@YAXHPAVDObj@@QAMH@Z	void __cdecl DObjDisplayAnim3D(int,class DObj *,float * const,int)	anim.o
+0x0054A140	0x00939640	?DObjGetTrajectory@@YAXPAVDObj@@QAM1@Z	void __cdecl DObjGetTrajectory(class DObj *,float * const,float * const)	anim.o
+0x0054A3B0	0x009398B0	?DObjGetTrajectory@@YAXAAVnalPositionOrientation@@PAVDObj@@@Z	void __cdecl DObjGetTrajectory(class nalPositionOrientation &,class DObj *)	anim.o
+0x0054A5A0	0x00939AA0	?XAnimCalcAbsDelta@@YAXPAVXAnimTree@@IQAM1@Z	void __cdecl XAnimCalcAbsDelta(class XAnimTree *,unsigned int,float * const,float * const)	anim.o
+0x0054A7C0	0x00939CC0	?XAnimGetRelDelta@@YAXPAVAnimTree@@IQAM1MM@Z	void __cdecl XAnimGetRelDelta(class AnimTree *,unsigned int,float * const,float * const,float,float)	anim.o
+0x0054A910	0x00939E10	?XAnimGetAbsDelta@@YAXPAVAnimTree@@IQAM1M@Z	void __cdecl XAnimGetAbsDelta(class AnimTree *,unsigned int,float * const,float * const,float)	anim.o
+0x0054ACE0	0x0093A1E0	?XAnimClearTreeGoalWeights_r@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimClearTreeGoalWeights_r(class XAnimTree *,unsigned int,float)	anim.o
+0x0054ADF0	0x0093A2F0	?XAnimClearTreeGoalWeights@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimClearTreeGoalWeights(class XAnimTree *,unsigned int,float)	anim.o
+0x0054AE10	0x0093A310	?XAnimClearTreeGoalWeightsStrict@@YAXPAVXAnimTree@@IM@Z	void __cdecl XAnimClearTreeGoalWeightsStrict(class XAnimTree *,unsigned int,float)	anim.o
+0x0054B440	0x0093A940	?XAnimSetGoalWeight@@YAHPAVXAnimTree@@IMMMIGH@Z	int __cdecl XAnimSetGoalWeight(class XAnimTree *,unsigned int,float,float,float,unsigned int,unsigned short,int)	anim.o
+0x0054B4C0	0x0093A9C0	?XAnimIsLooped@@YAHPAVAnimTree@@I@Z	int __cdecl XAnimIsLooped(class AnimTree *,unsigned int)	anim.o
+0x0054B560	0x0093AA60	?XAnimSetCompleteGoalWeight@@YAXPAVXAnimTree@@IMMMIGH@Z	void __cdecl XAnimSetCompleteGoalWeight(class XAnimTree *,unsigned int,float,float,float,unsigned int,unsigned short,int)	anim.o
+0x0054B720	0x0093AC20	?XAninCloneAnimTree@@YAXPAVXAnimTree@@0@Z	void __cdecl XAninCloneAnimTree(class XAnimTree *,class XAnimTree *)	anim.o
+0x0054B980	0x0093AE80	?DecodeAnimBank@AnimBankManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall AnimBankManager::DecodeAnimBank(char const *,unsigned char *,int,enum TPakId)	anim.o
+0x0054BAA0	0x0093AFA0	?CalcAnim1@XAnimUpdateTask@@QAEXPAVEntity@@M@Z	public: void __thiscall XAnimUpdateTask::CalcAnim1(class Entity *,float)	anim.o
+0x0054BC90	0x0093B190	?DroneSetAutoTrajectoryPO@@YAXPAVEntity@@PAVDObj@@@Z	void __cdecl DroneSetAutoTrajectoryPO(class Entity *,class DObj *)	anim.o
+0x0054BD80	0x0093B280	?Update@AnimationUpdateTask@@UAEXPAVEntity@@M@Z	public: virtual void __thiscall AnimationUpdateTask::Update(class Entity *,float)	anim.o
+0x0054BEA0	0x0093B3A0	??0InteractStatePickLiveGrenade@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z	public: __thiscall InteractStatePickLiveGrenade::InteractStatePickLiveGrenade(enum TPakId,struct InteractStateInfo const *,class InteractionController *)	anim.o
+0x0054BEF0	0x0093B3F0	?Update@InteractStatePickLiveGrenade@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStatePickLiveGrenade::Update(float)	anim.o
+0x0054BF00	0x0093B400	?ExecuteAndClearAnimation@AnimQueue@@QAEXXZ	public: void __thiscall AnimQueue::ExecuteAndClearAnimation(void)	anim.o
+0x0054C1A0	0x0093B6A0	?CreateState@InteractionController@@QAEPAVInteractState@@PBDW4TPakId@@@Z	public: class InteractState * __thiscall InteractionController::CreateState(char const *,enum TPakId)	anim.o
+0x0054C890	0x0093BD90	?FreeAllStates@InteractionController@@AAEXXZ	private: void __thiscall InteractionController::FreeAllStates(void)	anim.o
+0x0054C8E0	0x0093BDE0	?CreateInteraction@InteractionController@@QAEXPBDW4TPakId@@@Z	public: void __thiscall InteractionController::CreateInteraction(char const *,enum TPakId)	anim.o
+0x0054C990	0x0093BE90	?SendResultNotify@InteractionController@@AAEXXZ	private: void __thiscall InteractionController::SendResultNotify(void)	anim.o
+0x0054CA00	0x0093BF00	?CreateInteractableAnimPlayer@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::CreateInteractableAnimPlayer(void)	anim.o
+0x0054CAE0	0x0093BFE0	?FreeInteractableAnimPlayer@InteractionController@@QAEXXZ	public: void __thiscall InteractionController::FreeInteractableAnimPlayer(void)	anim.o
+0x0054CB40	0x0093C040	?PopActorInteractionState@InteractionController@@AAEXXZ	private: void __thiscall InteractionController::PopActorInteractionState(void)	anim.o
+0x0054CBA0	0x0093C0A0	?CreateTransitionStates@InteractState@@QAEXXZ	public: void __thiscall InteractState::CreateTransitionStates(void)	anim.o
+0x0054CC10	0x0093C110	?Activate@InteractState@@UAEXXZ	public: virtual void __thiscall InteractState::Activate(void)	anim.o
+0x0054D0E0	0x0093C5E0	?SetOtherTagUtilityIndex@InteractState@@IAEXXZ	protected: void __thiscall InteractState::SetOtherTagUtilityIndex(void)	anim.o
+0x0054D1A0	0x0093C6A0	?SetInitialLerpValues@InteractState@@IAEXXZ	protected: void __thiscall InteractState::SetInitialLerpValues(void)	anim.o
+0x0054D2C0	0x0093C7C0	?UpdateHandsPosAndAngles@InteractState@@IAEXXZ	protected: void __thiscall InteractState::UpdateHandsPosAndAngles(void)	anim.o
+0x0054D500	0x0093CA00	?UpdateOtherPosAndAngles@InteractState@@IAEXXZ	protected: void __thiscall InteractState::UpdateOtherPosAndAngles(void)	anim.o
+0x0054D6A0	0x0093CBA0	?SetOtherPosAndAngles@InteractState@@IAEXAAY02M0@Z	protected: void __thiscall InteractState::SetOtherPosAndAngles(float (&)[3],float (&)[3])	anim.o
+0x0054D720	0x0093CC20	?GetInteractableMat@InteractState@@MBEXAAVMat43@math@@@Z	protected: virtual void __thiscall InteractState::GetInteractableMat(class math::Mat43 &)const 	anim.o
+0x0054D9E0	0x0093CEE0	?CheckForEffectEvents@InteractState@@IAEXMH@Z	protected: void __thiscall InteractState::CheckForEffectEvents(float,int)	anim.o
+0x0054DB20	0x0093D020	?PostEffectEvent@InteractState@@MAEXPBDH@Z	protected: virtual void __thiscall InteractState::PostEffectEvent(char const *,int)	anim.o
+0x0054DC40	0x0093D140	?PlayAnims@InteractState@@MAEXHM@Z	protected: virtual void __thiscall InteractState::PlayAnims(int,float)	anim.o
+0x0054DEB0	0x0093D3B0	?FadeOutModifiers@InteractState@@IAEXMI@Z	protected: void __thiscall InteractState::FadeOutModifiers(float,unsigned int)	anim.o
+0x0054DF50	0x0093D450	?Activate@InteractStatePlayAnims@@UAEXXZ	public: virtual void __thiscall InteractStatePlayAnims::Activate(void)	anim.o
+0x0054DFC0	0x0093D4C0	?Activate@InteractStatePlayPlayerAnim@@UAEXXZ	public: virtual void __thiscall InteractStatePlayPlayerAnim::Activate(void)	anim.o
+0x0054E030	0x0093D530	?Activate@InteractStatePush@@UAEXXZ	public: virtual void __thiscall InteractStatePush::Activate(void)	anim.o
+0x0054E110	0x0093D610	?Update@InteractStatePush@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStatePush::Update(float)	anim.o
+0x0054E3C0	0x0093D8C0	?Activate@InteractStatePlaceItem@@UAEXXZ	public: virtual void __thiscall InteractStatePlaceItem::Activate(void)	anim.o
+0x0054E3D0	0x0093D8D0	?Link@InteractStateVehicleLink@@AAEXXZ	private: void __thiscall InteractStateVehicleLink::Link(void)	anim.o
+0x0054E440	0x0093D940	?Activate@InteractStateMortarLoad@@UAEXXZ	public: virtual void __thiscall InteractStateMortarLoad::Activate(void)	anim.o
+0x0054E460	0x0093D960	?Activate@InteractStateScaleAnimSpeed@@UAEXXZ	public: virtual void __thiscall InteractStateScaleAnimSpeed::Activate(void)	anim.o
+0x0054E4A0	0x0093D9A0	?Update@InteractStateScaleAnimSpeed@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateScaleAnimSpeed::Update(float)	anim.o
+0x0054E780	0x0093DC80	?Activate@InteractStateStrengthTest@@UAEXXZ	public: virtual void __thiscall InteractStateStrengthTest::Activate(void)	anim.o
+0x0054E7C0	0x0093DCC0	?Deactivate@InteractStateStrengthTest@@UAEXXZ	public: virtual void __thiscall InteractStateStrengthTest::Deactivate(void)	anim.o
+0x0054E7E0	0x0093DCE0	?Update@InteractStateStrengthTest@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateStrengthTest::Update(float)	anim.o
+0x0054E880	0x0093DD80	?PlayMetaAnims@InteractStateLeverPush@@AAEXXZ	private: void __thiscall InteractStateLeverPush::PlayMetaAnims(void)	anim.o
+0x0054EC60	0x0093E160	?Activate@InteractStateMelee@@UAEXXZ	public: virtual void __thiscall InteractStateMelee::Activate(void)	anim.o
+0x0054EEF0	0x0093E3F0	?Deactivate@InteractStateMelee@@UAEXXZ	public: virtual void __thiscall InteractStateMelee::Deactivate(void)	anim.o
+0x0054EFF0	0x0093E4F0	?UpdateModifiers@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::UpdateModifiers(float)	anim.o
+0x0054F390	0x0093E890	?UpdateFacialAnim@InteractStateMelee@@AAEXM@Z	private: void __thiscall InteractStateMelee::UpdateFacialAnim(float)	anim.o
+0x0054F5E0	0x0093EAE0	?Activate@InteractStateMeleeInitiate@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeInitiate::Activate(void)	anim.o
+0x0054F730	0x0093EC30	?Deactivate@InteractStateMeleeInitiate@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeInitiate::Deactivate(void)	anim.o
+0x0054F790	0x0093EC90	?Activate@InteractStateMeleeStart@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStart::Activate(void)	anim.o
+0x0054F9A0	0x0093EEA0	?Deactivate@InteractStateMeleeStart@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStart::Deactivate(void)	anim.o
+0x0054F9F0	0x0093EEF0	?Activate@InteractStateMeleeSuccessSetup@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeSuccessSetup::Activate(void)	anim.o
+0x0054FA50	0x0093EF50	?Activate@InteractStateMeleeSuccess@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeSuccess::Activate(void)	anim.o
+0x0054FAA0	0x0093EFA0	?Update@InteractStateMeleeSuccess@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeSuccess::Update(float)	anim.o
+0x0054FC10	0x0093F110	?PlayAnims@InteractStateMeleeSuccess@@MAEXHM@Z	protected: virtual void __thiscall InteractStateMeleeSuccess::PlayAnims(int,float)	anim.o
+0x0054FC20	0x0093F120	?Activate@InteractStateMeleeFailure@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeFailure::Activate(void)	anim.o
+0x0054FC50	0x0093F150	?PlayAnims@InteractStateMeleeFailure@@MAEXHM@Z	protected: virtual void __thiscall InteractStateMeleeFailure::PlayAnims(int,float)	anim.o
+0x0054FC60	0x0093F160	?Activate@InteractStateMeleeStagedInitiate@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStagedInitiate::Activate(void)	anim.o
+0x0054FD10	0x0093F210	?Deactivate@InteractStateMeleeStagedInitiate@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStagedInitiate::Deactivate(void)	anim.o
+0x0054FD80	0x0093F280	?PostEffectEvent@InteractStateMeleeStagedInitiate@@MAEXPBDH@Z	protected: virtual void __thiscall InteractStateMeleeStagedInitiate::PostEffectEvent(char const *,int)	anim.o
+0x0054FDC0	0x0093F2C0	?Activate@InteractStateMeleeStagedSuccess@@UAEXXZ	public: virtual void __thiscall InteractStateMeleeStagedSuccess::Activate(void)	anim.o
+0x0054FE50	0x0093F350	?Update@InteractStateMeleeStagedSuccess@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMeleeStagedSuccess::Update(float)	anim.o
+0x0054FFF0	0x0093F4F0	?EndInteraction@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::EndInteraction(void)	anim.o
+0x00550080	0x0093F580	?AlignBoatmen@RowboatMgr@@AAEXXZ	private: void __thiscall RowboatMgr::AlignBoatmen(void)	anim.o
+0x00550140	0x0093F640	?PlayStrokes@RowboatMgr@@QAEXM@Z	public: void __thiscall RowboatMgr::PlayStrokes(float)	anim.o
+0x00550270	0x0093F770	?PlayPushOff@RowboatMgr@@QAEXABUInteractStateInfo@@@Z	public: void __thiscall RowboatMgr::PlayPushOff(struct InteractStateInfo const &)	anim.o
+0x00550300	0x0093F800	?PlayLeaderAnim@RowboatMgr@@AAEXH@Z	private: void __thiscall RowboatMgr::PlayLeaderAnim(int)	anim.o
+0x005503B0	0x0093F8B0	?PlayIdle@RowboatMgr@@AAEXH@Z	private: void __thiscall RowboatMgr::PlayIdle(int)	anim.o
+0x00550430	0x0093F930	?PlayFlinch@RowboatMgr@@AAEXH@Z	private: void __thiscall RowboatMgr::PlayFlinch(int)	anim.o
+0x005504B0	0x0093F9B0	?Activate@InteractStateRowboat@@UAEXXZ	public: virtual void __thiscall InteractStateRowboat::Activate(void)	anim.o
+0x005507C0	0x0093FCC0	?Deactivate@InteractStateRowboat@@UAEXXZ	public: virtual void __thiscall InteractStateRowboat::Deactivate(void)	anim.o
+0x005508E0	0x0093FDE0	?Activate@InteractStateVehicleBase@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleBase::Activate(void)	anim.o
+0x00550910	0x0093FE10	?CalcSteeringWheelAngle@InteractStateVehicleBase@@MAEXM@Z	protected: virtual void __thiscall InteractStateVehicleBase::CalcSteeringWheelAngle(float)	anim.o
+0x00550B70	0x00940070	?Activate@InteractStateVehicleIdle@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleIdle::Activate(void)	anim.o
+0x00550D40	0x00940240	?Update@InteractStateVehicleIdle@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateVehicleIdle::Update(float)	anim.o
+0x00550DF0	0x009402F0	?PlayMetaAnim@InteractStateVehicleTurn@@AAEXM@Z	private: void __thiscall InteractStateVehicleTurn::PlayMetaAnim(float)	anim.o
+0x00551090	0x00940590	?CalcScore@InteractStateVehicleTurn@@AAEMM@Z	private: float __thiscall InteractStateVehicleTurn::CalcScore(float)	anim.o
+0x005511B0	0x009406B0	?Activate@InteractStateVehicleRelease@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleRelease::Activate(void)	anim.o
+0x00551320	0x00940820	?CalcSteeringWheelAngle@InteractStateVehicleRelease@@MAEXM@Z	protected: virtual void __thiscall InteractStateVehicleRelease::CalcSteeringWheelAngle(float)	anim.o
+0x005513E0	0x009408E0	?XAnimRelease@@YAXPAV?$nalAnimClass@VnalAnyPose@@@@@Z	void __cdecl XAnimRelease(class nalAnimClass<class nalAnyPose> *)	anim.o
+0x00551600	0x00940B00	?ReleaseAllAnims@@YAXXZ	void __cdecl ReleaseAllAnims(void)	anim.o
+0x00551900	0x00940E00	?XAnimFreeTree@@YAXPAVXAnimTree@@@Z	void __cdecl XAnimFreeTree(class XAnimTree *)	anim.o
+0x005523C0	0x009418C0	?XAnimUpdateServerInfoInternal@@YAXPAVXAnimTree@@IM_N@Z	void __cdecl XAnimUpdateServerInfoInternal(class XAnimTree *,unsigned int,float,bool)	anim.o
+0x00552C20	0x00942120	?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z	bool __cdecl DObjUpdateServerInfo(class DObj *,float,bool,int)	anim.o
+0x00552D50	0x00942250	?SceneAnimNumPlaying@@YAHXZ	int __cdecl SceneAnimNumPlaying(void)	anim.o
+0x00552D90	0x00942290	?QueueSceneAnim@@YAIPBDIMM_NI@Z	unsigned int __cdecl QueueSceneAnim(char const *,unsigned int,float,float,bool,unsigned int)	anim.o
+0x00553090	0x00942590	?AdvanceSceneAnims@@YAXM@Z	void __cdecl AdvanceSceneAnims(float)	anim.o
+0x005532B0	0x009427B0	?PlaySceneAnim@@YAXIII@Z	void __cdecl PlaySceneAnim(unsigned int,unsigned int,unsigned int)	anim.o
+0x00553440	0x00942940	?StopSceneAnim@@YAXI@Z	void __cdecl StopSceneAnim(unsigned int)	anim.o
+0x005534D0	0x009429D0	?StopAllSceneAnims@@YAXW4TPakId@@@Z	void __cdecl StopAllSceneAnims(enum TPakId)	anim.o
+0x00553550	0x00942A50	?SetAutoTrajectoryEntityPO@?A0x7516322e@@YAXPAVEntity@@_NPAVDObj@@@Z	void __cdecl `anonymous namespace'::SetAutoTrajectoryEntityPO(class Entity *,bool,class DObj *)	anim.o
+0x00554400	0x00943900	?DObjApplyPoseWrapper@?A0x7516322e@@YAXPAVDObj@@HHPAVnalGenericPose@nalGeneric@@_N@Z	void __cdecl `anonymous namespace'::DObjApplyPoseWrapper(class DObj *,int,int,class nalGeneric::nalGenericPose *,bool)	anim.o
+0x00554480	0x00943980	?DObjCalcSubModelAnim_Drone@?A0x7516322e@@YAXPAVDObj@@PAUDSkel@@HH@Z	void __cdecl `anonymous namespace'::DObjCalcSubModelAnim_Drone(class DObj *,struct DSkel *,int,int)	anim.o
+0x00554570	0x00943A70	?DObjCalcSubModelAnim_XAnim@?A0x7516322e@@YAXPAVDObj@@HH@Z	void __cdecl `anonymous namespace'::DObjCalcSubModelAnim_XAnim(class DObj *,int,int)	anim.o
+0x00554760	0x00943C60	?DObjCalcSubModelAnim_AnimationPlayer@?A0x7516322e@@YAXPAVDObj@@HH@Z	void __cdecl `anonymous namespace'::DObjCalcSubModelAnim_AnimationPlayer(class DObj *,int,int)	anim.o
+0x00554870	0x00943D70	?DObjCalcAnim@@YAXPAVDObj@@H@Z	void __cdecl DObjCalcAnim(class DObj *,int)	anim.o
+0x00554940	0x00943E40	?XAnimSetCompleteGoalWeightKnob@@YAXPAVXAnimTree@@IMMMIGH@Z	void __cdecl XAnimSetCompleteGoalWeightKnob(class XAnimTree *,unsigned int,float,float,float,unsigned int,unsigned short,int)	anim.o
+0x005549A0	0x00943EA0	?XAnimSetCompleteGoalWeightKnobAll@@YAHPAVXAnimTree@@IIMMMIGH@Z	int __cdecl XAnimSetCompleteGoalWeightKnobAll(class XAnimTree *,unsigned int,unsigned int,float,float,float,unsigned int,unsigned short,int)	anim.o
+0x00554B70	0x00944070	?XAnimSetGoalWeightKnob@@YAXPAVXAnimTree@@IMMMIGH@Z	void __cdecl XAnimSetGoalWeightKnob(class XAnimTree *,unsigned int,float,float,float,unsigned int,unsigned short,int)	anim.o
+0x00554BD0	0x009440D0	?DecodeAnimBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeAnimBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	anim.o
+0x00554BF0	0x009440F0	?XAnimUpdateServerTime@@YAXPAVEntity@@M@Z	void __cdecl XAnimUpdateServerTime(class Entity *,float)	anim.o
+0x00554C70	0x00944170	??0XAnimUpdateTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: __thiscall XAnimUpdateTask::XAnimUpdateTask(class DbLinkedHandle<class EntityHandleDb,class Entity>)	anim.o
+0x00554CF0	0x009441F0	?UpdateServerTime@XAnimUpdateTask@@QAEXPAVEntity@@M@Z	public: void __thiscall XAnimUpdateTask::UpdateServerTime(class Entity *,float)	anim.o
+0x00554D20	0x00944220	?CalcAnim2@XAnimUpdateTask@@QAEXPAVEntity@@M@Z	public: void __thiscall XAnimUpdateTask::CalcAnim2(class Entity *,float)	anim.o
+0x00554EB0	0x009443B0	?GetDroneMaster@@YAPAVEntity@@PAV1@@Z	class Entity * __cdecl GetDroneMaster(class Entity *)	anim.o
+0x00554F40	0x00944440	?DroneAnimUpdate1@@YAXPAVEntity@@@Z	void __cdecl DroneAnimUpdate1(class Entity *)	anim.o
+0x00555090	0x00944590	?DroneAnimUpdate2@@YAXPAVEntity@@@Z	void __cdecl DroneAnimUpdate2(class Entity *)	anim.o
+0x00555260	0x00944760	??0AnimationUpdateTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: __thiscall AnimationUpdateTask::AnimationUpdateTask(class DbLinkedHandle<class EntityHandleDb,class Entity>)	anim.o
+0x005552E0	0x009447E0	?ApplyPose@AnimationUpdateTask@@QAEXPAVEntity@@M@Z	public: void __thiscall AnimationUpdateTask::ApplyPose(class Entity *,float)	anim.o
+0x00555390	0x00944890	?ComputeDeltaAngles@InteractStatePickLiveGrenade@@IAEXXZ	protected: void __thiscall InteractStatePickLiveGrenade::ComputeDeltaAngles(void)	anim.o
+0x005554A0	0x009449A0	?SetInteractableH@InteractionController@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: void __thiscall InteractionController::SetInteractableH(class DbLinkedHandle<class EntityHandleDb,class Entity> const &)	anim.o
+0x005554F0	0x009449F0	?UpdateAlignment@InteractState@@IAEXM@Z	protected: void __thiscall InteractState::UpdateAlignment(float)	anim.o
+0x00555630	0x00944B30	?Deactivate@InteractStatePlaceItem@@UAEXXZ	public: virtual void __thiscall InteractStatePlaceItem::Deactivate(void)	anim.o
+0x00555A00	0x00944F00	?Activate@InteractStateVehicleLink@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleLink::Activate(void)	anim.o
+0x00555A20	0x00944F20	?Update@InteractStateVehicleLink@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateVehicleLink::Update(float)	anim.o
+0x00555A50	0x00944F50	?Activate@InteractStateLeverPush@@UAEXXZ	public: virtual void __thiscall InteractStateLeverPush::Activate(void)	anim.o
+0x00555B00	0x00945000	?Update@InteractStateMelee@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateMelee::Update(float)	anim.o
+0x005560E0	0x009455E0	?StartInteraction@RowboatMgr@@QAEXPBD0000@Z	public: void __thiscall RowboatMgr::StartInteraction(char const *,char const *,char const *,char const *,char const *)	anim.o
+0x00556220	0x00945720	?PlayIdles@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::PlayIdles(void)	anim.o
+0x00556250	0x00945750	?PlayFlinches@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::PlayFlinches(void)	anim.o
+0x00556290	0x00945790	?PlayFaster@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::PlayFaster(void)	anim.o
+0x005562A0	0x009457A0	?PlaySlower@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::PlaySlower(void)	anim.o
+0x005562B0	0x009457B0	?PlayRow@RowboatMgr@@QAEXXZ	public: void __thiscall RowboatMgr::PlayRow(void)	anim.o
+0x005562C0	0x009457C0	?Update@RowboatMgr@@QAEXM@Z	public: void __thiscall RowboatMgr::Update(float)	anim.o
+0x005563D0	0x009458D0	?Activate@InteractStateRowboatInit@@UAEXXZ	public: virtual void __thiscall InteractStateRowboatInit::Activate(void)	anim.o
+0x00556450	0x00945950	?Update@InteractStateRowboatInit@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateRowboatInit::Update(float)	anim.o
+0x00556480	0x00945980	?HandleMortarFlinch@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::HandleMortarFlinch(void)	anim.o
+0x00556550	0x00945A50	?ProcessOrder@InteractStateRowboat@@AAEXXZ	private: void __thiscall InteractStateRowboat::ProcessOrder(void)	anim.o
+0x00556670	0x00945B70	?Activate@InteractStateVehicleTurn@@UAEXXZ	public: virtual void __thiscall InteractStateVehicleTurn::Activate(void)	anim.o
+0x00556780	0x00945C80	?Update@InteractStateVehicleTurn@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateVehicleTurn::Update(float)	anim.o
+0x00556920	0x00945E20	?StartInteraction@InteractionController@@QAEHPAVEntity@@PBDW4TPakId@@@Z	public: int __thiscall InteractionController::StartInteraction(class Entity *,char const *,enum TPakId)	anim.o
+0x00556A80	0x00945F80	?QueueInteraction@InteractionController@@QAEXPAVEntity@@PBDW4TPakId@@@Z	public: void __thiscall InteractionController::QueueInteraction(class Entity *,char const *,enum TPakId)	anim.o
+0x00556BA0	0x009460A0	?EndInteraction@InteractionController@@QAEXH@Z	public: void __thiscall InteractionController::EndInteraction(int)	anim.o
+0x00556D00	0x00946200	?StartNextQueuedInteraction@InteractionController@@AAEPAVInteractState@@XZ	private: class InteractState * __thiscall InteractionController::StartNextQueuedInteraction(void)	anim.o
+0x00556E50	0x00946350	?CheckActorInteraction@@YAHAAVEntity@@PBD@Z	int __cdecl CheckActorInteraction(class Entity &,char const *)	anim.o
+0x00556EB0	0x009463B0	?PostPhysicsUpdate@InteractState@@UAEXM@Z	public: virtual void __thiscall InteractState::PostPhysicsUpdate(float)	anim.o
+0x00556FD0	0x009464D0	?Update@InteractStateRowboat@@UAEPAVInteractState@@M@Z	public: virtual class InteractState * __thiscall InteractStateRowboat::Update(float)	anim.o
+0x005570B0	0x009465B0	??1InteractionController@@QAE@XZ	public: __thiscall InteractionController::~InteractionController(void)	anim.o
+0x00557170	0x00946670	?Update@InteractionController@@QAEXM@Z	public: void __thiscall InteractionController::Update(float)	anim.o

@@ -1,0 +1,19 @@
+index	status	map_line
+1	PORTED	0002:003e3400 _unzStringFileNameCompare 00BD2900 f unzip.o
+2	PORTED	0002:003e3590 _unzReOpen 00BD2A90 f unzip.o
+3	PORTED	0002:003e35e0 _unzGetGlobalInfo 00BD2AE0 f unzip.o
+4	PORTED	0002:003e39c0 _unzGetCurrentFileInfo 00BD2EC0 f unzip.o
+5	PORTED	0002:003e39f0 _unzGoToFirstFile 00BD2EF0 f unzip.o
+6	PORTED	0002:003e3a40 _unzGoToNextFile 00BD2F40 f unzip.o
+7	PORTED	0002:003e3ac0 _unzGetCurrentFileInfoPosition 00BD2FC0 f unzip.o
+8	PORTED	0002:003e3ae0 _unzSetCurrentFileInfoPosition 00BD2FE0 f unzip.o
+9	PORTED	0002:003e3b30 _unzLocateFile 00BD3030 f unzip.o
+10	PORTED	0002:003e3de0 _unzReadCurrentFile 00BD32E0 f unzip.o
+11	PORTED	0002:003e3fd0 _unztell 00BD34D0 f unzip.o
+12	PORTED	0002:003e3ff0 _unzeof 00BD34F0 f unzip.o
+13	PORTED	0002:003e4020 _unzGetLocalExtrafield 00BD3520 f unzip.o
+14	PORTED	0002:003e40b0 _unzCloseCurrentFile 00BD35B0 f unzip.o
+15	PORTED	0002:003e4130 _unzGetGlobalComment 00BD3630 f unzip.o
+16	PORTED	0002:003e41b0 _unzOpen 00BD36B0 f unzip.o
+17	PORTED	0002:003e4330 _unzClose 00BD3830 f unzip.o
+18	PORTED	0002:003e4370 _unzOpenCurrentFile 00BD3870 f unzip.o

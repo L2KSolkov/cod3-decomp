@@ -1,0 +1,23 @@
+index	status	map_line
+1	VERIFIED	0002:003e0ea0 ?InitCDSkyShader@@YAXXZ 00BD03A0 f cdSkyShader.o
+2	VERIFIED	0002:003e0ef0 ?ToggleCDSkyShader@@YAXXZ 00BD03F0 f cdSkyShader.o
+3	VERIFIED	0002:003e0f10 ?Register@cdSkyShader@@UAEXXZ 00BD0410 f cdSkyShader.o
+4	PORTED	0002:003e0f50 ?Render@cdSkyShaderNode@@UAEXXZ 00BD0450 f cdSkyShader.o
+5	PORTED	0002:003e15c0 ?SetZ@nglDxRenderState@@QAEXI@Z 00BD0AC0 f i cdSkyShader.o
+6	PORTED	0002:003e15f0 ?GetZ@nglDxRenderState@@QAEIXZ 00BD0AF0 f i cdSkyShader.o
+7	PORTED	0002:003e1600 ?RegisterShader@cdSkyShaderRender@@YAXXZ 00BD0B00 f i cdSkyShader.o
+8	PORTED	0002:003e1620 ?RegisterVShader@cdSkyShaderRender@@YAXXZ 00BD0B20 f i cdSkyShader.o
+9	PORTED	0002:003e1640 ?GetVShader@cdSkyShaderRender@@YAKXZ 00BD0B40 f i cdSkyShader.o
+10	PORTED	0002:003e1650 ?RegisterShader@cdSkyShaderPixel@@YAXXZ 00BD0B50 f i cdSkyShader.o
+11	PORTED	0002:003e1670 ?RegisterPShader@cdSkyShaderPixel@@YAXXZ 00BD0B70 f i cdSkyShader.o
+12	PORTED	0002:003e1690 ?GetPShader@cdSkyShaderPixel@@YAPAKXZ 00BD0B90 f i cdSkyShader.o
+13	VERIFIED	0002:003e16a0 ??0cdSkyShader@@QAE@XZ 00BD0BA0 f i cdSkyShader.o
+14	VERIFIED	0002:003e16d0 ?GetName@cdSkyShader@@UAE?AVtlFixedString@@XZ 00BD0BD0 f i cdSkyShader.o
+15	VERIFIED	0002:003e16f0 ??_EcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o
+16	VERIFIED	0002:003e16f0 ??_GcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o
+17	VERIFIED	0002:003e1720 ??1cdSkyShader@@UAE@XZ 00BD0C20 f i cdSkyShader.o
+18	PORTED	0002:003e1730 ??0SkyContext@@QAE@XZ 00BD0C30 f i cdSkyShader.o
+19	VERIFIED	0002:003e1740 ?AddNode@cdSkyShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BD0C40 f i cdSkyShader.o
+20	PORTED	0002:003e17c0 ??_EcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o
+21	PORTED	0002:003e17c0 ??_GcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o
+22	PORTED	0002:003e17f0 ??1cdSkyShaderNode@@UAE@XZ 00BD0CF0 f i cdSkyShader.o

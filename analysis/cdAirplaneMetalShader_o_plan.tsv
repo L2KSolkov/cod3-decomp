@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007D4130	?InitCDAirplaneMetalShader@@YAXXZ	void __cdecl InitCDAirplaneMetalShader(void)	
+0x007D4180	?ToggleCDAirplaneMetalShader@@YAXXZ	void __cdecl ToggleCDAirplaneMetalShader(void)	
+0x007D41A0	?Register@cdAirplaneMetalShader@@UAEXXZ	public: virtual void __thiscall cdAirplaneMetalShader::Register(void)	
+0x007D41E0	?AddNode@cdAirplaneMetalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdAirplaneMetalShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007D4250	?Render@cdAirplaneMetalShaderNode@@UAEXXZ	public: virtual void __thiscall cdAirplaneMetalShaderNode::Render(void)	

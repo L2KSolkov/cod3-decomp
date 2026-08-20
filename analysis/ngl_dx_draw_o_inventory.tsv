@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00851090	0x00C40590	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	void __cdecl nglDxSetRenderTarget(struct nglTexture const *,struct nglTexture const *,unsigned int,int)	ngl_dx_draw.o

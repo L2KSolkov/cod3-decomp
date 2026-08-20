@@ -1,0 +1,23 @@
+ida_ea	va	name	signature	family
+0x00845930	0x00C34E30	?nglSetLightContext@@YAXPAUnglLightContext@@PAUnglScene@@@Z	void __cdecl nglSetLightContext(struct nglLightContext *,struct nglScene *)	ngl_lighting.o
+0x00845950	0x00C34E50	?nglSelectBuildLightContext@@YAPAUnglLightContext@@PAU1@@Z	struct nglLightContext * __cdecl nglSelectBuildLightContext(struct nglLightContext *)	ngl_lighting.o
+0x00845970	0x00C34E70	?nglSetAmbientLight@@YAXMMM@Z	void __cdecl nglSetAmbientLight(float,float,float)	ngl_lighting.o
+0x00845A10	0x00C34F10	?nglDetermineGunLights@@YAXABVPosition3@math@@@Z	void __cdecl nglDetermineGunLights(class math::Position3 const &)	ngl_lighting.o
+0x00845B10	0x00C35010	?nglGetFakePointLight@@YA_NPAUnglDirLightInfo@@PAUnglPointLightInfo@@ABVPosition3@math@@@Z	bool __cdecl nglGetFakePointLight(struct nglDirLightInfo *,struct nglPointLightInfo *,class math::Position3 const &)	ngl_lighting.o
+0x00845C40	0x00C35140	?nglGetLightAsPointLight@@YAPAUnglPointLightInfo@@PAU1@PAUnglLightNode@@ABVPosition3@math@@@Z	struct nglPointLightInfo * __cdecl nglGetLightAsPointLight(struct nglPointLightInfo *,struct nglLightNode *,class math::Position3 const &)	ngl_lighting.o
+0x00845D20	0x00C35220	?nglGetLightAsDirLight@@YAPAUnglDirLightInfo@@PAU1@PAUnglLightNode@@ABVPosition3@math@@@Z	struct nglDirLightInfo * __cdecl nglGetLightAsDirLight(struct nglDirLightInfo *,struct nglLightNode *,class math::Position3 const &)	ngl_lighting.o
+0x00845DA0	0x00C352A0	?nglGetSinglePointLight@@YAPAUnglPointLightInfo@@PAU1@ABVPosition3@math@@@Z	struct nglPointLightInfo * __cdecl nglGetSinglePointLight(struct nglPointLightInfo *,class math::Position3 const &)	ngl_lighting.o
+0x00845E20	0x00C35320	?nglGetSingleDirLight@@YAPAUnglDirLightInfo@@PAU1@ABVPosition3@math@@@Z	struct nglDirLightInfo * __cdecl nglGetSingleDirLight(struct nglDirLightInfo *,class math::Position3 const &)	ngl_lighting.o
+0x00845ED0	0x00C353D0	?nglGetDirLightMatrix@@YAXPAVnglMeshNode@@PAVMat44@math@@1@Z	void __cdecl nglGetDirLightMatrix(class nglMeshNode *,class math::Mat44 *,class math::Mat44 *)	ngl_lighting.o
+0x008460C0	0x00C355C0	?nglCreateLightContext@@YAPAUnglLightContext@@XZ	struct nglLightContext * __cdecl nglCreateLightContext(void)	ngl_lighting.o
+0x00846160	0x00C35660	?nglListAddLight@@YAXW4nglLightType@@PAXI@Z	void __cdecl nglListAddLight(enum nglLightType,void *,unsigned int)	ngl_lighting.o
+0x00846270	0x00C35770	?nglListAddDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z	void __cdecl nglListAddDirLight(unsigned int,class math::Dir3 const &,class math::Vector4 const &)	ngl_lighting.o
+0x00846310	0x00C35810	?nglListAddPointLight@@YAXIABVPosition3@math@@MMABVVector4@2@_N@Z	void __cdecl nglListAddPointLight(unsigned int,class math::Position3 const &,float,float,class math::Vector4 const &,bool)	ngl_lighting.o
+0x008463F0	0x00C358F0	?nglListAddPointLightGun@@YAXIABVPosition3@math@@MMABVVector4@2@_N@Z	void __cdecl nglListAddPointLightGun(unsigned int,class math::Position3 const &,float,float,class math::Vector4 const &,bool)	ngl_lighting.o
+0x008464D0	0x00C359D0	?nglDetermineProjLights@@YAXPAVnglMeshNode@@@Z	void __cdecl nglDetermineProjLights(class nglMeshNode *)	ngl_lighting.o
+0x008467A0	0x00C35CA0	?nglCheckAvailableLights@@YAIPAVnglMeshNode@@@Z	unsigned int __cdecl nglCheckAvailableLights(class nglMeshNode *)	ngl_lighting.o
+0x00846830	0x00C35D30	?nglDetermineLights@@YAXPAVnglMeshNode@@@Z	void __cdecl nglDetermineLights(class nglMeshNode *)	ngl_lighting.o
+0x00846A10	0x00C35F10	?nglListAddProjLightNode@@YAXW4nglLightType@@PAXI@Z	void __cdecl nglListAddProjLightNode(enum nglLightType,void *,unsigned int)	ngl_lighting.o
+0x00846B20	0x00C36020	?nglListAddProjectorLight@@YAXPAXI@Z	void __cdecl nglListAddProjectorLight(void *,unsigned int)	ngl_lighting.o
+0x00846B40	0x00C36040	?nglListAddDirProjectorLight@@YAXIABVMat43@math@@ABVPosition3@2@IPAUnglTexture@@@Z	void __cdecl nglListAddDirProjectorLight(unsigned int,class math::Mat43 const &,class math::Position3 const &,unsigned int,struct nglTexture *)	ngl_lighting.o
+0x008470E0	0x00C365E0	?nglListAddDicLight@@YAXIPAUnglDicLightInfo@@@Z	void __cdecl nglListAddDicLight(unsigned int,struct nglDicLightInfo *)	ngl_lighting.o

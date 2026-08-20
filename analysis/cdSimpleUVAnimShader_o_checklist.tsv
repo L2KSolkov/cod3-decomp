@@ -1,0 +1,41 @@
+index	status	map_line
+1	VERIFIED	0002:003c6d70 ??0cdSimpleUVAnimShaderMat@@QAE@PAUnglTexture@@@Z 00BB6270 f cdSimpleUVAnimShader.o
+2	VERIFIED	0002:003c6e00 ?InitCDSimpleUVAnimShader@@YAXXZ 00BB6300 f cdSimpleUVAnimShader.o
+3	VERIFIED	0002:003c6e50 ?ToggleCDSimpleUVAnimShader@@YAXXZ 00BB6350 f cdSimpleUVAnimShader.o
+4	VERIFIED	0002:003c6e70 ?Register@cdSimpleUVAnimShader@@UAEXXZ 00BB6370 f cdSimpleUVAnimShader.o
+5	VERIFIED	0002:003c6ed0 ?AddNode@cdSimpleUVAnimShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB63D0 f cdSimpleUVAnimShader.o
+6	PORTED	0002:003c6f40 ?SetTextureMatrix@cdSimpleUVAnimShaderNode@@IAEXAAVMat44@math@@@Z 00BB6440 f cdSimpleUVAnimShader.o
+7	VERIFIED	0002:003c70e0 ?Render@cdSimpleUVAnimShaderNode@@UAEXXZ 00BB65E0 f cdSimpleUVAnimShader.o
+8	PORTED	0002:003c74d0 ??4Mat44@math@@QAEABV01@ABVDiagMat33@1@@Z 00BB69D0 f i cdSimpleUVAnimShader.o
+9	PORTED	0002:003c7580 ?Transpose@math@@YA?AVMat44@1@ABV21@@Z 00BB6A80 f i cdSimpleUVAnimShader.o
+10	PORTED	0002:003c7660 ??Smath@@YA?AVMat44@0@ABV10@@Z 00BB6B60 f i cdSimpleUVAnimShader.o
+11	PORTED	0002:003c7740 ?AddParam@nglShaderParamSet@@SAIXZ 00BB6C40 f i cdSimpleUVAnimShader.o
+12	PORTED	0002:003c7750 ?SetAlphaTest@nglDxRenderState@@QAEX_N@Z 00BB6C50 f i cdSimpleUVAnimShader.o
+13	PORTED	0002:003c7780 ?SetAlphaFunc@nglDxRenderState@@QAEXI@Z 00BB6C80 f i cdSimpleUVAnimShader.o
+14	PORTED	0002:003c77b0 ?SetAlphaRef@nglDxRenderState@@QAEXI@Z 00BB6CB0 f i cdSimpleUVAnimShader.o
+15	PORTED	0002:003c77e0 ?SetAlphaBlend@nglDxRenderState@@QAEX_N@Z 00BB6CE0 f i cdSimpleUVAnimShader.o
+16	PORTED	0002:003c7810 ?FlushBlendMode@nglDxRenderState@@QAEXXZ 00BB6D10 f i cdSimpleUVAnimShader.o
+17	VERIFIED	0002:003c7820 ??0cdSimpleUVAnimShader@@QAE@XZ 00BB6D20 f i cdSimpleUVAnimShader.o
+18	VERIFIED	0002:003c7850 ?GetName@cdSimpleUVAnimShader@@UAE?AVtlFixedString@@XZ 00BB6D50 f i cdSimpleUVAnimShader.o
+19	PORTED	0002:003c7870 ??RTextureMatrixParamType@@QAEAAU0@XZ 00BB6D70 f i cdSimpleUVAnimShader.o
+20	PORTED	0002:003c7880 ??RisRotatingTextureParamType@@QAEAAU0@XZ 00BB6D80 f i cdSimpleUVAnimShader.o
+21	PORTED	0002:003c7890 ?RegisterShader@cdSimpleUVAnimRender@@YAXXZ 00BB6D90 f i cdSimpleUVAnimShader.o
+22	PORTED	0002:003c78b0 ?RegisterVShader@cdSimpleUVAnimRender@@YAXXZ 00BB6DB0 f i cdSimpleUVAnimShader.o
+23	PORTED	0002:003c78d0 ?GetVShader@cdSimpleUVAnimRender@@YAKXZ 00BB6DD0 f i cdSimpleUVAnimShader.o
+24	PORTED	0002:003c78e0 ?RegisterShader@cdSimpleUVAnimPixel@@YAXXZ 00BB6DE0 f i cdSimpleUVAnimShader.o
+25	PORTED	0002:003c7900 ?RegisterPShader@cdSimpleUVAnimPixel@@YAXXZ 00BB6E00 f i cdSimpleUVAnimShader.o
+26	PORTED	0002:003c7920 ?GetPShader@cdSimpleUVAnimPixel@@YAPAKXZ 00BB6E20 f i cdSimpleUVAnimShader.o
+27	PORTED	0002:003c7930 ?RegisterShader@cdSimpleUVAnimFullbrightPixel@@YAXXZ 00BB6E30 f i cdSimpleUVAnimShader.o
+28	PORTED	0002:003c7950 ?RegisterPShader@cdSimpleUVAnimFullbrightPixel@@YAXXZ 00BB6E50 f i cdSimpleUVAnimShader.o
+29	PORTED	0002:003c7970 ?GetPShader@cdSimpleUVAnimFullbrightPixel@@YAPAKXZ 00BB6E70 f i cdSimpleUVAnimShader.o
+30	PORTED	0002:003c7980 ??$IsSet@UTextureMatrixParamType@@@nglParamSet@@QAE_NABUTextureMatrixParamType@@@Z 00BB6E80 f i cdSimpleUVAnimShader.o
+31	PORTED	0002:003c79b0 ??$Get@UTextureMatrixParamType@@@nglParamSet@@QAEPAVMat44@math@@ABUTextureMatrixParamType@@@Z 00BB6EB0 f i cdSimpleUVAnimShader.o
+32	PORTED	0002:003c7a10 ??$Get@UisRotatingTextureParamType@@@nglParamSet@@QAEHABUisRotatingTextureParamType@@@Z 00BB6F10 f i cdSimpleUVAnimShader.o
+33	PORTED	0002:003c7a70 ??0cdSimpleUVAnimShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimpleUVAnimShaderMat@@@Z 00BB6F70 f i cdSimpleUVAnimShader.o
+34	PORTED	0002:003c7aa0 ??_GcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o
+35	PORTED	0002:003c7aa0 ??_EcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o
+36	PORTED	0002:003c7ad0 ??1cdSimpleUVAnimShaderNode@@UAE@XZ 00BB6FD0 f i cdSimpleUVAnimShader.o
+37	VERIFIED	0002:003c7ae0 ??_GcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o
+38	VERIFIED	0002:003c7ae0 ??_EcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o
+39	VERIFIED	0002:003c7b10 ??1cdSimpleUVAnimShader@@UAE@XZ 00BB7010 f i cdSimpleUVAnimShader.o
+40	PORTED	0002:003c7b20 ??0SimpleUVAnimContext@@QAE@XZ 00BB7020 f i cdSimpleUVAnimShader.o

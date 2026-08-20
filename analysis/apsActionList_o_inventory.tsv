@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x008087F0	0x00BF7CF0	?GetVisibleParticleUpdateDelay@?A0xf0029792@@YAMMPAI@Z	float __cdecl `anonymous namespace'::GetVisibleParticleUpdateDelay(float,unsigned int *)	apsActionList.o
+0x00808830	0x00BF7D30	?Apply@apsActionList@@QAEXPAVapsGroup@@AAVapsEffect@@MMII@Z	public: void __thiscall apsActionList::Apply(class apsGroup *,class apsEffect &,float,float,unsigned int,unsigned int)	apsActionList.o
+0x00808BA0	0x00BF80A0	?EnhancePFD@apsActionList@@QAEXAAVapsPFD@@@Z	public: void __thiscall apsActionList::EnhancePFD(class apsPFD &)	apsActionList.o
+0x00808BE0	0x00BF80E0	?Fixup@apsActionList@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsActionList::Fixup(struct apsFixupParams const &)	apsActionList.o
+0x00808C90	0x00BF8190	??0apsActionList@@QAE@XZ	public: __thiscall apsActionList::apsActionList(void)	apsActionList.o
+0x00808CA0	0x00BF81A0	??1apsActionList@@QAE@XZ	public: __thiscall apsActionList::~apsActionList(void)	apsActionList.o
+0x00808D30	0x00BF8230	?Add@apsActionList@@QAEXPAVapsAction@@@Z	public: void __thiscall apsActionList::Add(class apsAction *)	apsActionList.o

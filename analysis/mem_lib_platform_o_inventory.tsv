@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x007BC0D0	0x00BAB5D0	?mem_get_arena_hi@@YAPAXXZ	void * __cdecl mem_get_arena_hi(void)	mem_lib_platform.o
+0x007BC0F0	0x00BAB5F0	?mem_get_arena_lo@@YAPAXXZ	void * __cdecl mem_get_arena_lo(void)	mem_lib_platform.o
+0x007BC110	0x00BAB610	?mem_get_debug_arena_hi@@YAPAXXZ	void * __cdecl mem_get_debug_arena_hi(void)	mem_lib_platform.o
+0x007BC130	0x00BAB630	?mem_get_debug_arena_lo@@YAPAXXZ	void * __cdecl mem_get_debug_arena_lo(void)	mem_lib_platform.o
+0x007BC150	0x00BAB650	?mem_get_combine_arena_hi@@YAPAXXZ	void * __cdecl mem_get_combine_arena_hi(void)	mem_lib_platform.o
+0x007BC170	0x00BAB670	?mem_get_combine_arena_lo@@YAPAXXZ	void * __cdecl mem_get_combine_arena_lo(void)	mem_lib_platform.o
+0x007BC190	0x00BAB690	?mem_get_stack@@YAXPAIH@Z	void __cdecl mem_get_stack(unsigned int *,int)	mem_lib_platform.o
+0x007BC1A0	0x00BAB6A0	?mem_host_fopen@@YAIPBD0@Z	unsigned int __cdecl mem_host_fopen(char const *,char const *)	mem_lib_platform.o
+0x007BC1B0	0x00BAB6B0	?mem_host_fclose@@YAHI@Z	int __cdecl mem_host_fclose(unsigned int)	mem_lib_platform.o
+0x007BC1D0	0x00BAB6D0	?mem_host_fwrite@@YAHPBXHI@Z	int __cdecl mem_host_fwrite(void const *,int,unsigned int)	mem_lib_platform.o
+0x007BC1F0	0x00BAB6F0	?mem_host_fprintf@@YAHIPBDZZ	int __cdecl mem_host_fprintf(unsigned int,char const *,...)	mem_lib_platform.o

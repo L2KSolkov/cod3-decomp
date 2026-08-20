@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x00854490	0x00C43990	?nalSetAnimPath@@YAXPBD@Z	void __cdecl nalSetAnimPath(char const *)	nal_init.o
+0x008544C0	0x00C439C0	?nalGetAnimPath@@YAPBDXZ	char const * __cdecl nalGetAnimPath(void)	nal_init.o
+0x008544D0	0x00C439D0	?nalSetSkeletonPath@@YAXPBD@Z	void __cdecl nalSetSkeletonPath(char const *)	nal_init.o
+0x00854500	0x00C43A00	?nalGetSkeletonPath@@YAPBDXZ	char const * __cdecl nalGetSkeletonPath(void)	nal_init.o
+0x00854510	0x00C43A10	?nalGetVersion@@YAIXZ	unsigned int __cdecl nalGetVersion(void)	nal_init.o
+0x00854520	0x00C43A20	?nalEnableScratchPadUse@@YAXXZ	void __cdecl nalEnableScratchPadUse(void)	nal_init.o
+0x00854530	0x00C43A30	?nalDisableScratchPadUse@@YAXXZ	void __cdecl nalDisableScratchPadUse(void)	nal_init.o
+0x00854540	0x00C43A40	?nalEnablePerformanceWarnings@@YAXXZ	void __cdecl nalEnablePerformanceWarnings(void)	nal_init.o
+0x00854550	0x00C43A50	?nalDisablePerformanceWarnings@@YAXXZ	void __cdecl nalDisablePerformanceWarnings(void)	nal_init.o
+0x00854560	0x00C43A60	?nalExit@@YAXXZ	void __cdecl nalExit(void)	nal_init.o
+0x008545E0	0x00C43AE0	?nalInit@@YAXPAVnalHeap@@@Z	void __cdecl nalInit(class nalHeap *)	nal_init.o

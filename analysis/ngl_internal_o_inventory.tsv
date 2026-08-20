@@ -1,0 +1,19 @@
+ida_ea	va	name	signature	family
+0x00840F20	0x00C30420	?nglShaderNextID@@YAHXZ	int __cdecl nglShaderNextID(void)	ngl_internal.o
+0x00840F30	0x00C30430	?nglGetDisplayMode@@YAIXZ	unsigned int __cdecl nglGetDisplayMode(void)	ngl_internal.o
+0x00840F40	0x00C30440	?nglIsDisplayPAL@@YA_NXZ	bool __cdecl nglIsDisplayPAL(void)	ngl_internal.o
+0x00840F50	0x00C30450	?nglIsDisplayWidescreen@@YA_NXZ	bool __cdecl nglIsDisplayWidescreen(void)	ngl_internal.o
+0x00840F60	0x00C30460	?nglGetVersion@@YAIXZ	unsigned int __cdecl nglGetVersion(void)	ngl_internal.o
+0x00840F70	0x00C30470	?nglGetVBlankCount@@YAIXZ	unsigned int __cdecl nglGetVBlankCount(void)	ngl_internal.o
+0x00840F80	0x00C30480	?nglGetVBlankMS@@YAMXZ	float __cdecl nglGetVBlankMS(void)	ngl_internal.o
+0x00840FA0	0x00C304A0	?nglGetFPS@@YAMXZ	float __cdecl nglGetFPS(void)	ngl_internal.o
+0x00840FB0	0x00C304B0	?nglGetFrameCount@@YAHXZ	int __cdecl nglGetFrameCount(void)	ngl_internal.o
+0x00840FC0	0x00C304C0	?nglGetScreenWidth@@YAHXZ	int __cdecl nglGetScreenWidth(void)	ngl_internal.o
+0x00840FD0	0x00C304D0	?nglGetScreenHeight@@YAHXZ	int __cdecl nglGetScreenHeight(void)	ngl_internal.o
+0x00840FE0	0x00C304E0	?nglSetResourceCallback@@YAXP6APAXABVtlFixedString@@I@Z@Z	void __cdecl nglSetResourceCallback(void * (__cdecl*)(class tlFixedString const &,unsigned int))	ngl_internal.o
+0x00840FF0	0x00C304F0	?nglCanReleaseFile@@YA_NPAVapkFile@apk@@@Z	bool __cdecl nglCanReleaseFile(class apk::apkFile *)	ngl_internal.o
+0x00841010	0x00C30510	?nglIsInitialized@@YA_NXZ	bool __cdecl nglIsInitialized(void)	ngl_internal.o
+0x00841020	0x00C30520	?nglGetResource@@YAPAXABVtlFixedString@@I@Z	void * __cdecl nglGetResource(class tlFixedString const &,unsigned int)	ngl_internal.o
+0x008410D0	0x00C305D0	?nglInitDefaultResources@@YAXXZ	void __cdecl nglInitDefaultResources(void)	ngl_internal.o
+0x00841100	0x00C30600	?nglInit@@YAXXZ	void __cdecl nglInit(void)	ngl_internal.o
+0x008411F0	0x00C306F0	?nglExit@@YAXXZ	void __cdecl nglExit(void)	ngl_internal.o

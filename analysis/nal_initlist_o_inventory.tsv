@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00870E40	0x00C60340	?nalInitListInit@@YAXXZ	void __cdecl nalInitListInit(void)	nal_initlist.o

@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x008051F0	0x00BF46F0	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsRectangleRenderer::apsRectangleRenderer(class apsRectangleRenderer::cArgs const &)	apsRectangleRenderer.o
+0x00805230	0x00BF4730	?Init@apsRectangleRenderer@@SAXXZ	public: static void __cdecl apsRectangleRenderer::Init(void)	apsRectangleRenderer.o
+0x00805260	0x00BF4760	?Render@apsRectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsRectangleRenderer::Render(struct apsRendererRenderInfo const &)	apsRectangleRenderer.o

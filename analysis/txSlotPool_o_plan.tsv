@@ -1,0 +1,16 @@
+ida_ea	name	signature	source_cpp
+0x0082C990	_txSlotEntryInit	_txSlotEntryInit	
+0x0082C9B0	_txSlotEntryLinkHead	_txSlotEntryLinkHead	
+0x0082C9D0	_txSlotEntryLinkTail	_txSlotEntryLinkTail	
+0x0082C9F0	_txSlotEntryUnlink	_txSlotEntryUnlink	
+0x0082CA10	_txSlotEntryPtr	_txSlotEntryPtr	
+0x0082CA50	_txSlotIndex	_txSlotIndex	
+0x0082CA90	_txSlotPoolInit	_txSlotPoolInit	
+0x0082CB40	_txSlotExists	_txSlotExists	
+0x0082CB90	_txSlotEntryInc	_txSlotEntryInc	
+0x0082CBD0	_txSlotNew	_txSlotNew	
+0x0082CC40	_txSlotFree	_txSlotFree	
+0x0082CCB0	_txSlotFirst	_txSlotFirst	
+0x0082CCC0	_txSlotLast	_txSlotLast	
+0x0082CCD0	_txSlotNext	_txSlotNext	
+0x0082CD20	_txSlotPrev	_txSlotPrev	

@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00812D90	0x00C02290	?Render@apsShrimpNode@@UAEXXZ	public: virtual void __thiscall apsShrimpNode::Render(void)	apsShrimpNode.o

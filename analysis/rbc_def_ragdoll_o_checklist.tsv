@@ -1,0 +1,39 @@
+index	status	map_line
+1	VERIFIED	0002:00488cd0 ?set_joint_limit_active@rigid_body_constraint_ragdoll@@QAEXI_N@Z 00C781D0 f i rbc_def_ragdoll.o
+2	PORTED	0002:00488d40 ?calc_damp_params@pulse_sum_normal@@SAXMMPAM@Z 00C78240 f i rbc_def_ragdoll.o
+3	PORTED	0002:00488d70 ?set_pulse_sum_limits_unbounded@pulse_sum_angular@@QAEXXZ 00C78270 f i rbc_def_ragdoll.o
+4	PORTED	0002:00488d90 ?set_pulse_sum_limits_cone@pulse_sum_angular@@QAEXM@Z 00C78290 f i rbc_def_ragdoll.o
+5	PORTED	0002:00488db0 ?set_pulse_sum_limits_negative@pulse_sum_angular@@QAEXXZ 00C782B0 f i rbc_def_ragdoll.o
+6	PORTED	0002:00488dd0 ?setup_vel_simple@pulse_sum_angular@@QAEXXZ 00C782D0 f i rbc_def_ragdoll.o
+7	PORTED	0002:00488df0 ?setup_vel_custom_right_side@pulse_sum_angular@@QAEXMM@Z 00C782F0 f i rbc_def_ragdoll.o
+8	PORTED	0002:00488e30 ?get_std_active_limit_angle_eps@pulse_sum_angular@@SA?BMXZ 00C78330 f i rbc_def_ragdoll.o
+9	PORTED	0002:00488e40 ?get_std_active_limit_sin_angle_eps@pulse_sum_angular@@SA?BMXZ 00C78340 f i rbc_def_ragdoll.o
+10	PORTED	0002:00488e50 ?get_std_max_penalty_restitution_vel@pulse_sum_angular@@SA?BMXZ 00C78350 f i rbc_def_ragdoll.o
+11	PORTED	0002:00488e60 ??0pulse_sum_point@@QAE@XZ 00C78360 f i rbc_def_ragdoll.o
+12	PORTED	0002:00488e70 ??0pulse_sum_angular@@QAE@XZ 00C78370 f i rbc_def_ragdoll.o
+13	VERIFIED	0002:00488e80 ?set@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@0@Z 00C78380 f rbc_def_ragdoll.o
+14	VERIFIED	0002:00488ed0 ?set_damp_k@rigid_body_constraint_ragdoll@@QAEXM@Z 00C783D0 f rbc_def_ragdoll.o
+15	VERIFIED	0002:00488f00 ?set@ragdoll_joint_limit_info@@QAEXABVDir3@math@@M@Z 00C78400 f rbc_def_ragdoll.o
+16	VERIFIED	0002:00488fd0 ?set_b1_ud_loc@ragdoll_joint_limit_info@@QAEXABVDir3@math@@@Z 00C784D0 f rbc_def_ragdoll.o
+17	VERIFIED	0002:00489040 ?set_theta_limit@ragdoll_joint_limit_info@@QAEXM@Z 00C78540 f rbc_def_ragdoll.o
+18	VERIFIED	0002:004890b0 ?set_snider_style@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@0@Z 00C785B0 f rbc_def_ragdoll.o
+19	VERIFIED	0002:00489230 ?set_theta_min_max@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@MM@Z 00C78730 f rbc_def_ragdoll.o
+20	VERIFIED	0002:004893a0 ?set_hinge@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@000MM@Z 00C788A0 f rbc_def_ragdoll.o
+21	VERIFIED	0002:004896a0 ?set_swivel@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@000MM@Z 00C78BA0 f rbc_def_ragdoll.o
+22	VERIFIED	0002:00489930 ?add_joint_limit@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@M@Z 00C78E30 f rbc_def_ragdoll.o
+23	PORTED	0002:00489990 ?pull_together@rigid_body_constraint_ragdoll@@QAE?BMXZ 00C78E90 f rbc_def_ragdoll.o
+24	VERIFIED	0002:00489a60 ?do_collision@rigid_body_constraint_ragdoll@@QAEXM@Z 00C78F60 f rbc_def_ragdoll.o
+25	VERIFIED	0002:00489d10 ?setup_hinge@rigid_body_constraint_ragdoll@@QAEXPAVpulse_sum_constraint_solver@@ABVDir3@math@@1M@Z 00C79210 f rbc_def_ragdoll.o
+26	VERIFIED	0002:00489e10 ?setup_constraint@rigid_body_constraint_ragdoll@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C79310 f rbc_def_ragdoll.o
+27	PORTED	0002:0048a2b0 ?set_next_link@?$phys_link_list_base@Vpulse_sum_point@@@@QAEXQAVpulse_sum_point@@@Z 00C797B0 f i rbc_def_ragdoll.o
+28	PORTED	0002:0048a2c0 ?set_next_link@?$phys_link_list_base@Vpulse_sum_angular@@@@QAEXQAVpulse_sum_angular@@@Z 00C797C0 f i rbc_def_ragdoll.o
+29	PORTED	0002:0048a2d0 ?construct_orth_ud@@YA?BVDir3@math@@ABV12@@Z 00C797D0 f i rbc_def_ragdoll.o
+30	VERIFIED	0002:0048a4b0 ?make_rotate@@YAXPAVMat43@math@@ABVDir3@2@1@Z 00C799B0 f i rbc_def_ragdoll.o
+31	VERIFIED	0002:0048a5e0 ?setup_vel_bi_standard@pulse_sum_point@@QAEXM@Z 00C79AE0 f i rbc_def_ragdoll.o
+32	PORTED	0002:0048a690 ?setup_vel_bi_standard@pulse_sum_angular@@QAEXM@Z 00C79B90 f i rbc_def_ragdoll.o
+33	VERIFIED	0002:0048a6e0 ?setup_vel_uni_standard@pulse_sum_angular@@QAEXMM@Z 00C79BE0 f i rbc_def_ragdoll.o
+34	PORTED	0002:0048a780 ?add@?$phys_link_list@Vpulse_sum_point@@@@QAEXPAVpulse_sum_point@@@Z 00C79C80 f i rbc_def_ragdoll.o
+35	PORTED	0002:0048a7b0 ?add@?$phys_link_list@Vpulse_sum_angular@@@@QAEXPAVpulse_sum_angular@@@Z 00C79CB0 f i rbc_def_ragdoll.o
+36	PORTED	0002:0048a7e0 ?create_point@pulse_sum_constraint_solver@@QAEXQAVrigid_body@@ABVDir3@math@@01QAVpulse_sum_cache@@M@Z 00C79CE0 f i rbc_def_ragdoll.o
+37	PORTED	0002:0048a880 ?create_pulse_sum_angular@pulse_sum_constraint_solver@@QAEPAVpulse_sum_angular@@QAVrigid_body@@ABVDir3@math@@011QAVpulse_sum_cache@@@Z 00C79D80 f i rbc_def_ragdoll.o
+38	PORTED	0002:0048a910 ?create_hinge@pulse_sum_constraint_solver@@QAEXQAVrigid_body@@ABVDir3@math@@0111QAVpulse_sum_cache@@M@Z 00C79E10 f i rbc_def_ragdoll.o

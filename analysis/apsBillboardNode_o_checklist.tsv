@@ -1,0 +1,34 @@
+index	status	map_line
+1	PORTED	0002:004139f0 ??XDir3@math@@QAEABV01@ABVMat43@1@@Z 00C02EF0 f i apsBillboardNode.o
+2	VERIFIED	0002:00413c90 ?Render@apsBillboardNode@@UAEXXZ 00C03190 f apsBillboardNode.o
+3	PORTED	0002:00413cb0 ?Init@SortedParticleIterator@apsRenderSort@@QAEXPAPAEI@Z 00C031B0 f i apsBillboardNode.o
+4	PORTED	0002:00413cd0 ?Init@UnsortedParticleIterator@apsRenderSort@@QAEXPAEII@Z 00C031D0 f i apsBillboardNode.o
+5	PORTED	0002:00413d00 ?TestFlags@apsRenderNode@@QBEII@Z 00C03200 f i apsBillboardNode.o
+6	PORTED	0002:00413d10 ?Particles@apsRenderNode@@QBEPAEXZ 00C03210 f i apsBillboardNode.o
+7	PORTED	0002:00413d20 ?NumParticles@apsRenderNode@@QAEHXZ 00C03220 f i apsBillboardNode.o
+8	PORTED	0002:00413d30 ?Stride@apsRenderNode@@QAEHXZ 00C03230 f i apsBillboardNode.o
+9	PORTED	0002:00413d40 ?Texture@apsBillboardRenderer@@QBEPAUnglTexture@@XZ 00C03240 f i apsBillboardNode.o
+10	PORTED	0002:00413d50 ?Normal@apsBillboardRenderer@@QBEABVDir3@math@@XZ 00C03250 f i apsBillboardNode.o
+11	PORTED	0002:00413d60 ?WidthFrames@apsBillboardRenderer@@QBEMXZ 00C03260 f i apsBillboardNode.o
+12	PORTED	0002:00413d70 ?MaxFrame@apsBillboardRenderer@@QBEMXZ 00C03270 f i apsBillboardNode.o
+13	PORTED	0002:00413d80 ?InvWidthFrames@apsBillboardRenderer@@QBEMXZ 00C03280 f i apsBillboardNode.o
+14	PORTED	0002:00413d90 ?InvHeightFrames@apsBillboardRenderer@@QBEMXZ 00C03290 f i apsBillboardNode.o
+15	PORTED	0002:00413da0 ?AlphaFadeStart@apsBillboardRenderer@@QBEMXZ 00C032A0 f i apsBillboardNode.o
+16	PORTED	0002:00413db0 ?AlphaFadeEnd@apsBillboardRenderer@@QBEMXZ 00C032B0 f i apsBillboardNode.o
+17	PORTED	0002:00413dc0 ?GetRenderSortBuffer@apsBillboardNode@@QAEPAUBuffer@apsRenderSort@@XZ 00C032C0 f i apsBillboardNode.o
+18	PORTED	0002:00413dd0 ?ClampToColor32@apsInternal@@YAIABVVector4@math@@@Z 00C032D0 f i apsBillboardNode.o
+19	PORTED	0002:00413eb0 ?GetVShader@apsBillboardRender@@YAKXZ 00C033B0 f i apsBillboardNode.o
+20	PORTED	0002:00413ec0 ?GetPShader@apsBillboardRenderPixel@@YAPAKXZ 00C033C0 f i apsBillboardNode.o
+21	PORTED	0002:00413ed0 ?GetPos@BillboardParticle@@QAEAAUPacked@Dir3@math@@XZ 00C033D0 f i apsBillboardNode.o
+22	PORTED	0002:00413ee0 ?GetColor@BillboardParticle@@QAE?AVVector4@math@@XZ 00C033E0 f i apsBillboardNode.o
+23	PORTED	0002:00413f30 ?GetWidth@BillboardParticle@@QAEMXZ 00C03430 f i apsBillboardNode.o
+24	PORTED	0002:00413f40 ?GetHeight@BillboardParticle@@QAEMXZ 00C03440 f i apsBillboardNode.o
+25	PORTED	0002:00413f50 ?GetAngle@BillboardParticle@@QAEMXZ 00C03450 f i apsBillboardNode.o
+26	PORTED	0002:00413f60 ?GetFrame@BillboardParticle@@QAEMXZ 00C03460 f i apsBillboardNode.o
+27	PORTED	0002:00413f70 ?GetVelocity@BillboardParticle@@QAEAAVVector4@math@@XZ 00C03470 f i apsBillboardNode.o
+28	PORTED	0002:00413f80 ??0?$cNodeRenderer@UBillboardParticle@@VapsBillboardNode@@@@QAE@AAVapsBillboardNode@@@Z 00C03480 f i apsBillboardNode.o
+29	PORTED	0002:00413f90 ?SetupDefaultShaders@?$cNodeRenderer@UBillboardParticle@@VapsBillboardNode@@@@QAEXABVMat43@math@@@Z 00C03490 f i apsBillboardNode.o
+30	PORTED	0002:00414240 ??$fncompare@UBillboardParticle@@@apsRenderSort@@YAHPBX0@Z 00C03740 f i apsBillboardNode.o
+31	PORTED	0002:00414280 ?SetupShaders@?$cNodeRenderer@UBillboardParticle@@VapsBillboardNode@@@@QAEXXZ 00C03780 f i apsBillboardNode.o
+32	PORTED	0002:00414290 ??$SortPointers@UBillboardParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C03790 f i apsBillboardNode.o
+33	VERIFIED	0002:004142d0 ?Render@?$cNodeRenderer@UBillboardParticle@@VapsBillboardNode@@@@QAEXXZ 00C037D0 f i apsBillboardNode.o

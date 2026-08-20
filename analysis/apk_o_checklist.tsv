@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:00434050 ?apkRegisterFileType@apk@@YAXIIP6AXPAVapkFile@1@PAVapkFileEntry@1@PAX@Z32@Z 00C23550 f apk.o
+2	VERIFIED	0002:00434090 ?apkUnregisterFileType@apk@@YAXII@Z 00C23590 f apk.o
+3	VERIFIED	0002:00434100 ?apkRegisterSectionType@apk@@YAXABVtlFixedString@@P6AXPAVapkFile@1@PAUapkFileSection@1@PAX@Z43@Z 00C23600 f apk.o
+4	VERIFIED	0002:00434170 ?apkUnregisterSectionType@apk@@YAXABVtlFixedString@@@Z 00C23670 f apk.o
+5	VERIFIED	0002:00434200 ?apkSetResourceCallback@apk@@YAXP6APAXABVtlFixedString@@I@Z@Z 00C23700 f apk.o
+6	VERIFIED	0002:00434210 ?GetData@apkFileEntry@apk@@QAEPAXPAVapkFile@2@H_N@Z 00C23710 f apk.o
+7	VERIFIED	0002:004342b0 ?GetDataSize@apkFileEntry@apk@@QAEIPAVapkFile@2@H_NPAPAX@Z 00C237B0 f apk.o
+8	VERIFIED	0002:004343c0 ?GetFileTypeEntry@apkFile@apk@@QAEPAUapkFileTypeEntry@2@I@Z 00C238C0 f apk.o
+9	VERIFIED	0002:004343f0 ?GetFirstFile@apkFile@apk@@QAEPAVapkFileEntry@2@I@Z 00C238F0 f apk.o
+10	VERIFIED	0002:00434420 ?GetNextFile@apkFile@apk@@QAEPAVapkFileEntry@2@IPAV32@@Z 00C23920 f apk.o
+11	VERIFIED	0002:00434470 ?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@I@Z 00C23970 f apk.o
+12	VERIFIED	0002:004344d0 ?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@ABVtlFixedString@@I@Z 00C239D0 f apk.o
+13	VERIFIED	0002:00434570 ?GetSectionIndex@apkFile@apk@@QAEHABVtlFixedString@@@Z 00C23A70 f apk.o
+14	PORTED	0002:004345c0 ?ApplyFixups@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z 00C23AC0 f apk.o
+15	PORTED	0002:00434630 ?ApplyReferences@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z 00C23B30 f apk.o
+16	VERIFIED	0002:004346b0 ?InvokeLoadCallbacks@apkFile@apk@@QAEX_N@Z 00C23BB0 f apk.o
+17	VERIFIED	0002:004347d0 ?InvokeFileLoadCallback@apkFile@apk@@QAE_NPAUapkFileTypeEntry@2@PAVapkFileEntry@2@@Z 00C23CD0 f apk.o
+18	VERIFIED	0002:00434820 ?InvokeDeleteCallbacks@apkFile@apk@@QAEXXZ 00C23D20 f apk.o
+19	VERIFIED	0002:00434930 ?apkSetRootDirectory@apk@@YAXPBD@Z 00C23E30 f apk.o
+20	VERIFIED	0002:00434960 ?apkDeleteFile@apk@@YAXPAVapkFile@1@@Z 00C23E60 f apk.o
+21	VERIFIED	0002:00434990 ?ApplyReferencesForEntry@apkFile@apk@@QAEXPAVapkFileEntry@2@@Z 00C23E90 f apk.o
+22	VERIFIED	0002:00434b40 ?apkLoadFileInPlace@apk@@YAPAVapkFile@1@PAX_N@Z 00C24040 f apk.o
+23	VERIFIED	0002:00434d70 ?apkLoadFile@apk@@YAPAVapkFile@1@PBD@Z 00C24270 f apk.o
+24	PORTED	0002:00434e20 ??$tl_align@PAE@@YAPAEPAEI@Z 00C24320 f i apk.o

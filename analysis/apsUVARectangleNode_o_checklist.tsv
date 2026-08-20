@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:004189c0 ?Render@apsUVARectangleNode@@UAEXXZ 00C07EC0 f apsUVARectangleNode.o
+2	PORTED	0002:004189e0 ?GetVShader@apsUVARectangleRender@@YAKXZ 00C07EE0 f i apsUVARectangleNode.o
+3	PORTED	0002:004189f0 ?GetPShader@apsUVARectangleRenderPixel@@YAPAKXZ 00C07EF0 f i apsUVARectangleNode.o
+4	PORTED	0002:00418a00 ?GetPos@UVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ 00C07F00 f i apsUVARectangleNode.o
+5	PORTED	0002:00418a10 ?GetColor@UVARectangleParticle@@QAE?AVVector4@math@@XZ 00C07F10 f i apsUVARectangleNode.o
+6	PORTED	0002:00418a60 ?GetWidth@UVARectangleParticle@@QAEMXZ 00C07F60 f i apsUVARectangleNode.o
+7	PORTED	0002:00418a70 ?GetHeight@UVARectangleParticle@@QAEMXZ 00C07F70 f i apsUVARectangleNode.o
+8	PORTED	0002:00418a80 ?GetAngle@UVARectangleParticle@@QAEMXZ 00C07F80 f i apsUVARectangleNode.o
+9	PORTED	0002:00418a90 ?GetFrame@UVARectangleParticle@@QAEMXZ 00C07F90 f i apsUVARectangleNode.o
+10	PORTED	0002:00418aa0 ?GetVelocity@UVARectangleParticle@@QAEAAVVector4@math@@XZ 00C07FA0 f i apsUVARectangleNode.o
+11	PORTED	0002:00418ab0 ??0?$cNodeRenderer@UUVARectangleParticle@@VapsUVARectangleNode@@@@QAE@AAVapsUVARectangleNode@@@Z 00C07FB0 f i apsUVARectangleNode.o
+12	PORTED	0002:00418ac0 ?SetupDefaultShaders@?$cNodeRenderer@UUVARectangleParticle@@VapsUVARectangleNode@@@@QAEXABVMat43@math@@@Z 00C07FC0 f i apsUVARectangleNode.o
+13	PORTED	0002:00418d70 ??$fncompare@UUVARectangleParticle@@@apsRenderSort@@YAHPBX0@Z 00C08270 f i apsUVARectangleNode.o
+14	PORTED	0002:00418db0 ?SetupShaders@?$cNodeRenderer@UUVARectangleParticle@@VapsUVARectangleNode@@@@QAEXXZ 00C082B0 f i apsUVARectangleNode.o
+15	PORTED	0002:00418dc0 ??$SortPointers@UUVARectangleParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C082C0 f i apsUVARectangleNode.o
+16	VERIFIED	0002:00418e00 ?Render@?$cNodeRenderer@UUVARectangleParticle@@VapsUVARectangleNode@@@@QAEXXZ 00C08300 f i apsUVARectangleNode.o

@@ -1,0 +1,41 @@
+ida_ea	va	name	signature	family
+0x007C2C80	0x00BB2180	?nglMeshAllocFnStub@@YAPAXHHH@Z	void * __cdecl nglMeshAllocFnStub(int,int,int)	ngl_aux.o
+0x007C2CD0	0x00BB21D0	?auxGetSphereCenter@@YA?AVPosition3@math@@PAUnglMesh@@@Z	class math::Position3 __cdecl auxGetSphereCenter(struct nglMesh *)	ngl_aux.o
+0x007C2CF0	0x00BB21F0	?auxGetSphereRadius@@YAMPAUnglMesh@@@Z	float __cdecl auxGetSphereRadius(struct nglMesh *)	ngl_aux.o
+0x007C2D30	0x00BB2230	?auxGetSphereCenter@@YA?AVPosition3@math@@PAUnglMeshSection@@@Z	class math::Position3 __cdecl auxGetSphereCenter(struct nglMeshSection *)	ngl_aux.o
+0x007C2D50	0x00BB2250	?auxGetSphereRadius@@YAMPAUnglMeshSection@@@Z	float __cdecl auxGetSphereRadius(struct nglMeshSection *)	ngl_aux.o
+0x007C2D90	0x00BB2290	?auxGetSphere@@YA?AVVector4@math@@PAUnglMesh@@@Z	class math::Vector4 __cdecl auxGetSphere(struct nglMesh *)	ngl_aux.o
+0x007C2DC0	0x00BB22C0	?auxGetSphere@@YA?AVVector4@math@@PAUnglMeshSection@@@Z	class math::Vector4 __cdecl auxGetSphere(struct nglMeshSection *)	ngl_aux.o
+0x007C2DF0	0x00BB22F0	?cdGetClipResult@@YAHPBUnglMeshSection@@PBVnglMeshNode@@PAUnglScene@@@Z	int __cdecl cdGetClipResult(struct nglMeshSection const *,class nglMeshNode const *,struct nglScene *)	ngl_aux.o
+0x007C2E90	0x00BB2390	?auxGetHash@@YAIPBUnglTexture@@@Z	unsigned int __cdecl auxGetHash(struct nglTexture const *)	ngl_aux.o
+0x007C2EA0	0x00BB23A0	?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z	void __cdecl auxSetScale(class nglMeshParams *,float,float,float)	ngl_aux.o
+0x007C2F00	0x00BB2400	?auxGetNBones@@YAHPAUnglMesh@@@Z	int __cdecl auxGetNBones(struct nglMesh *)	ngl_aux.o
+0x007C2F20	0x00BB2420	?auxCreateScratchMesh@@YAPAUnglMesh@@HH@Z	struct nglMesh * __cdecl auxCreateScratchMesh(int,int)	ngl_aux.o
+0x007C2F30	0x00BB2430	?auxCloseScratchMesh@@YAPAUnglMesh@@PAU1@@Z	struct nglMesh * __cdecl auxCloseScratchMesh(struct nglMesh *)	ngl_aux.o
+0x007C2F40	0x00BB2440	?auxIsTextureAnimated@@YA_NPAUnglTexture@@@Z	bool __cdecl auxIsTextureAnimated(struct nglTexture *)	ngl_aux.o
+0x007C2F60	0x00BB2460	??DauxMeshIterator@@QAEPAUnglMesh@@XZ	public: struct nglMesh * __thiscall auxMeshIterator::operator*(void)	ngl_aux.o
+0x007C2FA0	0x00BB24A0	??EauxMeshIterator@@QAE?AV0@H@Z	public: class auxMeshIterator __thiscall auxMeshIterator::operator++(int)	ngl_aux.o
+0x007C2FD0	0x00BB24D0	?StandardRelease@?$tlResourceDirectory@VnglFont@@@@QAEHPAVnglFont@@H_N@Z	public: int __thiscall tlResourceDirectory<class nglFont>::StandardRelease(class nglFont *,int,bool)	ngl_aux.o
+0x007C2FE0	0x00BB24E0	?StandardRelease@?$tlResourceDirectory@UnglMaterial@@@@QAEHPAUnglMaterial@@H_N@Z	public: int __thiscall tlResourceDirectory<struct nglMaterial>::StandardRelease(struct nglMaterial *,int,bool)	ngl_aux.o
+0x007C2FF0	0x00BB24F0	?StandardRelease@?$tlResourceDirectory@UnglMesh@@@@QAEHPAUnglMesh@@H_N@Z	public: int __thiscall tlResourceDirectory<struct nglMesh>::StandardRelease(struct nglMesh *,int,bool)	ngl_aux.o
+0x007C3000	0x00BB2500	?StandardRelease@?$tlResourceDirectory@UnglTexture@@@@QAEHPAUnglTexture@@H_N@Z	public: int __thiscall tlResourceDirectory<struct nglTexture>::StandardRelease(struct nglTexture *,int,bool)	ngl_aux.o
+0x007C3010	0x00BB2510	?StandardLoad@?$tlResourceDirectory@VnglFont@@@@QAEPAVnglFont@@ABVtlFixedString@@@Z	public: class nglFont * __thiscall tlResourceDirectory<class nglFont>::StandardLoad(class tlFixedString const &)	ngl_aux.o
+0x007C3020	0x00BB2520	?StandardLoad@?$tlResourceDirectory@UnglMaterial@@@@QAEPAUnglMaterial@@ABVtlFixedString@@@Z	public: struct nglMaterial * __thiscall tlResourceDirectory<struct nglMaterial>::StandardLoad(class tlFixedString const &)	ngl_aux.o
+0x007C3030	0x00BB2530	?StandardLoad@?$tlResourceDirectory@UnglMesh@@@@QAEPAUnglMesh@@ABVtlFixedString@@@Z	public: struct nglMesh * __thiscall tlResourceDirectory<struct nglMesh>::StandardLoad(class tlFixedString const &)	ngl_aux.o
+0x007C3040	0x00BB2540	?StandardLoad@?$tlResourceDirectory@UnglTexture@@@@QAEPAUnglTexture@@ABVtlFixedString@@@Z	public: struct nglTexture * __thiscall tlResourceDirectory<struct nglTexture>::StandardLoad(class tlFixedString const &)	ngl_aux.o
+0x007C3050	0x00BB2550	?auxSetFontDirectory@@YAXPAV?$tlResourceDirectory@VnglFont@@@@@Z	void __cdecl auxSetFontDirectory(class tlResourceDirectory<class nglFont> *)	ngl_aux.o
+0x007C3060	0x00BB2560	?auxGetFontDirectory@@YAPAV?$tlResourceDirectory@VnglFont@@@@XZ	class tlResourceDirectory<class nglFont> * __cdecl auxGetFontDirectory(void)	ngl_aux.o
+0x007C3070	0x00BB2570	?auxSetMaterialDirectory@@YAXPAV?$tlResourceDirectory@UnglMaterial@@@@@Z	void __cdecl auxSetMaterialDirectory(class tlResourceDirectory<struct nglMaterial> *)	ngl_aux.o
+0x007C3080	0x00BB2580	?auxGetMaterialDirectory@@YAPAV?$tlResourceDirectory@UnglMaterial@@@@XZ	class tlResourceDirectory<struct nglMaterial> * __cdecl auxGetMaterialDirectory(void)	ngl_aux.o
+0x007C3090	0x00BB2590	?auxSetMeshDirectory@@YAXPAV?$tlResourceDirectory@UnglMesh@@@@@Z	void __cdecl auxSetMeshDirectory(class tlResourceDirectory<struct nglMesh> *)	ngl_aux.o
+0x007C30A0	0x00BB25A0	?auxGetMeshDirectory@@YAPAV?$tlResourceDirectory@UnglMesh@@@@XZ	class tlResourceDirectory<struct nglMesh> * __cdecl auxGetMeshDirectory(void)	ngl_aux.o
+0x007C30B0	0x00BB25B0	?auxSetTextureDirectory@@YAXPAV?$tlResourceDirectory@UnglTexture@@@@@Z	void __cdecl auxSetTextureDirectory(class tlResourceDirectory<struct nglTexture> *)	ngl_aux.o
+0x007C30C0	0x00BB25C0	?auxGetTextureDirectory@@YAPAV?$tlResourceDirectory@UnglTexture@@@@XZ	class tlResourceDirectory<struct nglTexture> * __cdecl auxGetTextureDirectory(void)	ngl_aux.o
+0x007C30D0	0x00BB25D0	?auxTextureDirectoryAdd@@YAXPAUnglTexture@@@Z	void __cdecl auxTextureDirectoryAdd(struct nglTexture *)	ngl_aux.o
+0x007C3100	0x00BB2600	?auxFontDirectoryAdd@@YAXPAVnglFont@@@Z	void __cdecl auxFontDirectoryAdd(class nglFont *)	ngl_aux.o
+0x007C3130	0x00BB2630	?auxMaterialDirectoryAdd@@YAXPAUnglMaterial@@@Z	void __cdecl auxMaterialDirectoryAdd(struct nglMaterial *)	ngl_aux.o
+0x007C3160	0x00BB2660	?auxMeshDirectoryAdd@@YAXPAUnglMesh@@@Z	void __cdecl auxMeshDirectoryAdd(struct nglMesh *)	ngl_aux.o
+0x007C3190	0x00BB2690	?auxFontDirectoryDelete@@YAXPAVnglFont@@@Z	void __cdecl auxFontDirectoryDelete(class nglFont *)	ngl_aux.o
+0x007C31B0	0x00BB26B0	?auxMaterialDirectoryDelete@@YAXPAUnglMaterial@@@Z	void __cdecl auxMaterialDirectoryDelete(struct nglMaterial *)	ngl_aux.o
+0x007C31D0	0x00BB26D0	?auxMeshDirectoryDelete@@YAXPAUnglMesh@@@Z	void __cdecl auxMeshDirectoryDelete(struct nglMesh *)	ngl_aux.o
+0x007C31F0	0x00BB26F0	?auxTextureDirectoryDelete@@YAXPAUnglTexture@@@Z	void __cdecl auxTextureDirectoryDelete(struct nglTexture *)	ngl_aux.o

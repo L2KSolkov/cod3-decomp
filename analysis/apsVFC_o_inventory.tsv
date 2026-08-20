@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x00802030	0x00BF1530	?GetFrustumInfo@VFC@@YAXAAUFrustumInfo@1@PBUnglScene@@@Z	void __cdecl VFC::GetFrustumInfo(struct VFC::FrustumInfo &,struct nglScene const *)	apsVFC.o
+0x00802490	0x00BF1990	?AABBvsFrustum@VFC@@YA?AW4eStatus@1@ABUAABB@1@ABUFrustumInfo@1@@Z	enum VFC::eStatus __cdecl VFC::AABBvsFrustum(struct VFC::AABB const &,struct VFC::FrustumInfo const &)	apsVFC.o
+0x00802560	0x00BF1A60	?AABBOutsideFrustum@VFC@@YA_NABUAABB@1@ABUFrustumInfo@1@@Z	bool __cdecl VFC::AABBOutsideFrustum(struct VFC::AABB const &,struct VFC::FrustumInfo const &)	apsVFC.o

@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x00828D50	0x00C18250	?nslVoiceGetAttenuation@@YAMPAUnslVoice@@@Z	float __cdecl nslVoiceGetAttenuation(struct nslVoice *)	nslPriority.o
+0x00828DD0	0x00C182D0	?nslSourceGetAttenuation@@YAMPAUnslSource@@@Z	float __cdecl nslSourceGetAttenuation(struct nslSource *)	nslPriority.o
+0x00828E70	0x00C18370	?nslSourceIs3D@@YAHPAUnslSource@@@Z	int __cdecl nslSourceIs3D(struct nslSource *)	nslPriority.o
+0x00828EF0	0x00C183F0	?nslPriorityCanPlay@@YAHH@Z	int __cdecl nslPriorityCanPlay(int)	nslPriority.o
+0x00828F30	0x00C18430	?nslSourceGetPriority@@YAHPAUnslSource@@@Z	int __cdecl nslSourceGetPriority(struct nslSource *)	nslPriority.o
+0x00828FC0	0x00C184C0	?nslVoiceGetPriority@@YAHAAUnslVoice@@@Z	int __cdecl nslVoiceGetPriority(struct nslVoice &)	nslPriority.o
+0x00828FE0	0x00C184E0	?nslPriorityUpdate@@YAXXZ	void __cdecl nslPriorityUpdate(void)	nslPriority.o

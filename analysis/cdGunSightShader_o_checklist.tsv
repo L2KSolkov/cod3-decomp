@@ -1,0 +1,23 @@
+index	status	map_line
+1	VERIFIED	0002:003ce100 ??0cdGunSightShaderMat@@QAE@PAUnglTexture@@@Z 00BBD600 f cdGunSightShader.o
+2	VERIFIED	0002:003ce190 ?InitCDGunSightShader@@YAXXZ 00BBD690 f cdGunSightShader.o
+3	VERIFIED	0002:003ce1e0 ?ToggleCDGunSightShader@@YAXXZ 00BBD6E0 f cdGunSightShader.o
+4	VERIFIED	0002:003ce200 ?Register@cdGunSightShader@@UAEXXZ 00BBD700 f cdGunSightShader.o
+5	VERIFIED	0002:003ce240 ?AddNode@cdGunSightShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBD740 f cdGunSightShader.o
+6	VERIFIED	0002:003ce2b0 ?Render@cdGunSightShaderNode@@UAEXXZ 00BBD7B0 f cdGunSightShader.o
+7	VERIFIED	0002:003ce600 ??0cdGunSightShader@@QAE@XZ 00BBDB00 f i cdGunSightShader.o
+8	VERIFIED	0002:003ce630 ?GetName@cdGunSightShader@@UAE?AVtlFixedString@@XZ 00BBDB30 f i cdGunSightShader.o
+9	PORTED	0002:003ce650 ?RegisterVShader@cdGunSightRender@@YAXXZ 00BBDB50 f i cdGunSightShader.o
+10	PORTED	0002:003ce670 ?GetVShader@cdGunSightRender@@YAKXZ 00BBDB70 f i cdGunSightShader.o
+11	PORTED	0002:003ce680 ?RegisterPShader@cdGunSightPixel@@YAXXZ 00BBDB80 f i cdGunSightShader.o
+12	PORTED	0002:003ce6a0 ?GetPShader@cdGunSightPixel@@YAPAKXZ 00BBDBA0 f i cdGunSightShader.o
+13	PORTED	0002:003ce6b0 ?RegisterPShader@cdGunSightFullbrightPixel@@YAXXZ 00BBDBB0 f i cdGunSightShader.o
+14	PORTED	0002:003ce6d0 ?GetPShader@cdGunSightFullbrightPixel@@YAPAKXZ 00BBDBD0 f i cdGunSightShader.o
+15	PORTED	0002:003ce6e0 ??0cdGunSightShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdGunSightShaderMat@@@Z 00BBDBE0 f i cdGunSightShader.o
+16	PORTED	0002:003ce710 ??_EcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o
+17	PORTED	0002:003ce710 ??_GcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o
+18	PORTED	0002:003ce740 ??1cdGunSightShaderNode@@UAE@XZ 00BBDC40 f i cdGunSightShader.o
+19	VERIFIED	0002:003ce750 ??_GcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o
+20	VERIFIED	0002:003ce750 ??_EcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o
+21	VERIFIED	0002:003ce780 ??1cdGunSightShader@@UAE@XZ 00BBDC80 f i cdGunSightShader.o
+22	VERIFIED	0002:003ce790 ??0SimpleContext@@QAE@XZ 00BBDC90 f i cdGunSightShader.o

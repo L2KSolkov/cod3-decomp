@@ -1,0 +1,10 @@
+index	status	map_line
+1	VERIFIED	0002:00444780 ?nglSetMeshSphere@@YAXPAUnglMesh@@ABVPosition3@math@@M@Z 00C33C80 f ngl_meshedit.o
+2	VERIFIED	0002:00444820 ?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z 00C33D20 f ngl_meshedit.o
+3	VERIFIED	0002:00444890 ?nglDestroyMesh@@YAXPAUnglMesh@@@Z 00C33D90 f ngl_meshedit.o
+4	VERIFIED	0002:00444910 ?nglCreateMeshClone@@YAPAUnglMesh@@PAU1@@Z 00C33E10 f ngl_meshedit.o
+5	VERIFIED	0002:00444a10 ?nglCopyMesh@@YAXPAUnglMesh@@0@Z 00C33F10 f ngl_meshedit.o
+6	VERIFIED	0002:00444a80 ?nglMakeSectionUnique@@YAXPAUnglMesh@@H@Z 00C33F80 f ngl_meshedit.o
+7	VERIFIED	0002:00444ac0 ?nglCreateScratchMesh@@YAPAUnglMesh@@II@Z 00C33FC0 f ngl_meshedit.o
+8	VERIFIED	0002:00444b90 ?nglCreateMesh@@YAPAUnglMesh@@II@Z 00C34090 f ngl_meshedit.o
+9	VERIFIED	0002:00444c80 ?nglCreateMeshCopy@@YAPAUnglMesh@@PAU1@@Z 00C34180 f ngl_meshedit.o

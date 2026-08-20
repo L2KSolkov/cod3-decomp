@@ -1,0 +1,26 @@
+index	status	map_line
+1	VERIFIED	0002:003cff90 ?InitCDGlassShader@@YAXXZ 00BBF490 f cdGlassShader.o
+2	VERIFIED	0002:003cffe0 ?ToggleCDGlassShader@@YAXXZ 00BBF4E0 f cdGlassShader.o
+3	VERIFIED	0002:003d0000 ?Register@cdGlassShader@@UAEXXZ 00BBF500 f cdGlassShader.o
+4	PORTED	0002:003d0030 ?Render@cdGlassShaderNode@@UAEXXZ 00BBF530 f cdGlassShader.o
+5	PORTED	0002:003d0600 ??4Mat44@math@@QAEABV01@ABVMat43@1@@Z 00BBFB00 f i cdGlassShader.o
+6	PORTED	0002:003d0680 ?gpuSetPixelConstant@@YAXHPAVVector4@math@@I@Z 00BBFB80 f i cdGlassShader.o
+7	PORTED	0002:003d06a0 ?GetLToV@nglMeshNode@@QBE?AVMat43@math@@ABV23@@Z 00BBFBA0 f i cdGlassShader.o
+8	PORTED	0002:003d0810 ?RegisterVShader@cdGlassRender@@YAXXZ 00BBFD10 f i cdGlassShader.o
+9	PORTED	0002:003d0840 ?GetVShader@cdGlassRender@@YAKII@Z 00BBFD40 f i cdGlassShader.o
+10	PORTED	0002:003d0860 ?RegisterPShader@cdGlassPixel@@YAXXZ 00BBFD60 f i cdGlassShader.o
+11	PORTED	0002:003d0890 ?GetPShader@cdGlassPixel@@YAPAKI@Z 00BBFD90 f i cdGlassShader.o
+12	PORTED	0002:003d08a0 ?RegisterPShader@cdGlassSolidColorPixel@@YAXXZ 00BBFDA0 f i cdGlassShader.o
+13	VERIFIED	0002:003d08c0 ??0cdGlassShader@@QAE@XZ 00BBFDC0 f i cdGlassShader.o
+14	VERIFIED	0002:003d08f0 ?GetName@cdGlassShader@@UAE?AVtlFixedString@@XZ 00BBFDF0 f i cdGlassShader.o
+15	PORTED	0002:003d0910 ?BindMaterial@cdGlassShader@@UAEXPAUnglMaterial@@@Z 00BBFE10 f i cdGlassShader.o
+16	PORTED	0002:003d0930 ??0Params@cdGlassRender@@QAE@XZ 00BBFE30 f i cdGlassShader.o
+17	VERIFIED	0002:003d0940 ??0nglDirLightInfo@@QAE@XZ 00BBFE40 f i cdGlassShader.o
+18	PORTED	0002:003d0950 ??$SetConstants@UParams@cdGlassRender@@@cdGlassRender@@YAXABUParams@0@@Z 00BBFE50 f i cdGlassShader.o
+19	VERIFIED	0002:003d0970 ?AddNode@cdGlassShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBFE70 f i cdGlassShader.o
+20	PORTED	0002:003d0a00 ??_EcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o
+21	PORTED	0002:003d0a00 ??_GcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o
+22	PORTED	0002:003d0a30 ??1cdGlassShaderNode@@UAE@XZ 00BBFF30 f i cdGlassShader.o
+23	VERIFIED	0002:003d0a40 ??_GcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o
+24	VERIFIED	0002:003d0a40 ??_EcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o
+25	VERIFIED	0002:003d0a70 ??1cdGlassShader@@UAE@XZ 00BBFF70 f i cdGlassShader.o

@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x007D5F10	?InitCDSimpleColorShader@@YAXXZ	void __cdecl InitCDSimpleColorShader(void)	
+0x007D5F60	?ToggleCDSimpleColorShader@@YAXXZ	void __cdecl ToggleCDSimpleColorShader(void)	
+0x007D5F80	?Register@cdSimpleColorShader@@UAEXXZ	public: virtual void __thiscall cdSimpleColorShader::Register(void)	
+0x007D5F90	?AddNode@cdSimpleColorShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdSimpleColorShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	

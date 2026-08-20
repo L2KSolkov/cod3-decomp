@@ -1,0 +1,19 @@
+ida_ea	name	signature	source_cpp
+0x007E3400	_unzStringFileNameCompare	_unzStringFileNameCompare	
+0x007E3590	_unzReOpen	_unzReOpen	
+0x007E35E0	_unzGetGlobalInfo	_unzGetGlobalInfo	
+0x007E39C0	_unzGetCurrentFileInfo	_unzGetCurrentFileInfo	
+0x007E39F0	_unzGoToFirstFile	_unzGoToFirstFile	
+0x007E3A40	_unzGoToNextFile	_unzGoToNextFile	
+0x007E3AC0	_unzGetCurrentFileInfoPosition	_unzGetCurrentFileInfoPosition	
+0x007E3AE0	_unzSetCurrentFileInfoPosition	_unzSetCurrentFileInfoPosition	
+0x007E3B30	_unzLocateFile	_unzLocateFile	
+0x007E3DE0	_unzReadCurrentFile	_unzReadCurrentFile	
+0x007E3FD0	_unztell	_unztell	
+0x007E3FF0	_unzeof	_unzeof	
+0x007E4020	_unzGetLocalExtrafield	_unzGetLocalExtrafield	
+0x007E40B0	_unzCloseCurrentFile	_unzCloseCurrentFile	
+0x007E4130	_unzGetGlobalComment	_unzGetGlobalComment	
+0x007E41B0	_unzOpen	_unzOpen	
+0x007E4330	_unzClose	_unzClose	
+0x007E4370	_unzOpenCurrentFile	_unzOpenCurrentFile	

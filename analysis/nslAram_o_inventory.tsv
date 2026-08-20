@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x00822DC0	0x00C122C0	?nslAramGetBase@@YAPAXXZ	void * __cdecl nslAramGetBase(void)	nslAram.o
+0x00822DD0	0x00C122D0	?nslAramGetSize@@YAIXZ	unsigned int __cdecl nslAramGetSize(void)	nslAram.o
+0x00822DE0	0x00C122E0	?nslAramGetFree@@YAIXZ	unsigned int __cdecl nslAramGetFree(void)	nslAram.o
+0x00822DF0	0x00C122F0	?nslAramSetAlignment@@YAXI@Z	void __cdecl nslAramSetAlignment(unsigned int)	nslAram.o
+0x00822E00	0x00C12300	?nslAramGetAlignment@@YAIXZ	unsigned int __cdecl nslAramGetAlignment(void)	nslAram.o
+0x00822E10	0x00C12310	?nslAramInit@@YAXPAXI@Z	void __cdecl nslAramInit(void *,unsigned int)	nslAram.o
+0x00822EA0	0x00C123A0	?nslAramGetFreeBlock@@YAIPAI0@Z	unsigned int __cdecl nslAramGetFreeBlock(unsigned int *,unsigned int *)	nslAram.o
+0x00822F90	0x00C12490	?nslAramAlloc@@YAPAXII@Z	void * __cdecl nslAramAlloc(unsigned int,unsigned int)	nslAram.o
+0x008230A0	0x00C125A0	?nslAramFree@@YAXPAX@Z	void __cdecl nslAramFree(void *)	nslAram.o

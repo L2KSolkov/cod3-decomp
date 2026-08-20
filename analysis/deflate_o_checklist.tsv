@@ -1,0 +1,13 @@
+index	status	map_line
+1	VERIFIED	0002:003e4490 _deflateSetDictionary 00BD3990 f deflate.o
+2	VERIFIED	0002:003e45b0 _deflateSetHeader 00BD3AB0 f deflate.o
+3	VERIFIED	0002:003e45e0 _deflatePrime 00BD3AE0 f deflate.o
+4	VERIFIED	0002:003e4620 _deflateTune 00BD3B20 f deflate.o
+5	VERIFIED	0002:003e4660 _deflateBound 00BD3B60 f deflate.o
+6	VERIFIED	0002:003e4740 _deflate 00BD3C40 f deflate.o
+7	VERIFIED	0002:003e4fe0 _deflateEnd 00BD44E0 f deflate.o
+8	VERIFIED	0002:003e50b0 _deflateCopy 00BD45B0 f deflate.o
+9	VERIFIED	0002:003e60b0 _deflateReset 00BD55B0 f deflate.o
+10	VERIFIED	0002:003e6150 _deflateParams 00BD5650 f deflate.o
+11	VERIFIED	0002:003e6250 _deflateInit2_ 00BD5750 f deflate.o
+12	VERIFIED	0002:003e64a0 _deflateInit_ 00BD59A0 f deflate.o

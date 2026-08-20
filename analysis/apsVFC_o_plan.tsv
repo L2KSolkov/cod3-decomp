@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x00802030	?GetFrustumInfo@VFC@@YAXAAUFrustumInfo@1@PBUnglScene@@@Z	void __cdecl VFC::GetFrustumInfo(struct VFC::FrustumInfo &,struct nglScene const *)	
+0x00802490	?AABBvsFrustum@VFC@@YA?AW4eStatus@1@ABUAABB@1@ABUFrustumInfo@1@@Z	enum VFC::eStatus __cdecl VFC::AABBvsFrustum(struct VFC::AABB const &,struct VFC::FrustumInfo const &)	
+0x00802560	?AABBOutsideFrustum@VFC@@YA_NABUAABB@1@ABUFrustumInfo@1@@Z	bool __cdecl VFC::AABBOutsideFrustum(struct VFC::AABB const &,struct VFC::FrustumInfo const &)	

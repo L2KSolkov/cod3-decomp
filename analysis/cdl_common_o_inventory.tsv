@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x0081D4E0	0x00C0C9E0	?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z	float __cdecl intersect(class math::Position3 const &,class math::Dir3 const &,class math::Position3 const &,class math::Dir3 const &)	cdl_common.o
+0x0081D5E0	0x00C0CAE0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVPosition3@3@@Z	bool __cdecl intersect(class cdlAABB const &,class math::Mat43 const &,class math::Position3 const &)	cdl_common.o
+0x0081D6F0	0x00C0CBF0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVcdlSphere@@@Z	bool __cdecl intersect(class cdlAABB const &,class math::Mat43 const &,class cdlSphere const &)	cdl_common.o
+0x0081D8C0	0x00C0CDC0	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@@Z	float __cdecl dist2(class math::Position3 const &,class cdlAABB const &)	cdl_common.o
+0x0081D930	0x00C0CE30	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@ABVMat43@2@@Z	float __cdecl dist2(class math::Position3 const &,class cdlAABB const &,class math::Mat43 const &)	cdl_common.o
+0x0081DA20	0x00C0CF20	?is_inside@@YA_NABVDir3@math@@000@Z	bool __cdecl is_inside(class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &)	cdl_common.o
+0x0081DB50	0x00C0D050	?calc_closest@@YA?AVPosition3@math@@ABV12@000@Z	class math::Position3 __cdecl calc_closest(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	cdl_common.o
+0x0081DF30	0x00C0D430	?dist2@@YAMABVPosition3@math@@000@Z	float __cdecl dist2(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &)	cdl_common.o
+0x0081E130	0x00C0D630	?intersect@@YA_NABVcdlConvex@@ABVMat43@math@@01M@Z	bool __cdecl intersect(class cdlConvex const &,class math::Mat43 const &,class cdlConvex const &,class math::Mat43 const &,float)	cdl_common.o

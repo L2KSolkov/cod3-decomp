@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00844D00	0x00C34200	?ngliProcessTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z	void __cdecl ngliProcessTexture(class apk::apkFile *,class apk::apkFileEntry *)	ngl_xb_tex_load.o

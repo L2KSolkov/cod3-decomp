@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:003e31d0 _compress2 00BD26D0 f compress.o
+2	VERIFIED	0002:003e3270 _compress 00BD2770 f compress.o
+3	VERIFIED	0002:003e3290 _compressBound 00BD2790 f compress.o

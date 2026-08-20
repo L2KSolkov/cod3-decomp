@@ -1,0 +1,89 @@
+ida_ea	va	name	signature	family
+0x00809AB0	0x00BF8FB0	?ModifyEmitCountByChance@?A0x7195c61f@@YAMMM@Z	float __cdecl `anonymous namespace'::ModifyEmitCountByChance(float,float)	apsSuppliedActions.o
+0x00809B40	0x00BF9040	??0apsSourceAction@@QAE@XZ	public: __thiscall apsSourceAction::apsSourceAction(void)	apsSuppliedActions.o
+0x00809B60	0x00BF9060	??0apsSourceAction@@IAE@HHI@Z	protected: __thiscall apsSourceAction::apsSourceAction(int,int,unsigned int)	apsSuppliedActions.o
+0x00809B90	0x00BF9090	??0apsBurstAction@@QAE@XZ	public: __thiscall apsBurstAction::apsBurstAction(void)	apsSuppliedActions.o
+0x00809BB0	0x00BF90B0	??0apsRandomSpawnAction@@QAE@XZ	public: __thiscall apsRandomSpawnAction::apsRandomSpawnAction(void)	apsSuppliedActions.o
+0x00809BD0	0x00BF90D0	??0apsLifetimeAction@@QAE@XZ	public: __thiscall apsLifetimeAction::apsLifetimeAction(void)	apsSuppliedActions.o
+0x00809BF0	0x00BF90F0	?Act@apsLifetimeAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsLifetimeAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x00809CA0	0x00BF91A0	?FadeOutParticle@?A0x7195c61f@@YAXABVapsGroup@@PAEPAMMM@Z	void __cdecl `anonymous namespace'::FadeOutParticle(class apsGroup const &,unsigned char *,float *,float,float)	apsSuppliedActions.o
+0x00809CE0	0x00BF91E0	??0apsAlphaFadeAction@@QAE@XZ	public: __thiscall apsAlphaFadeAction::apsAlphaFadeAction(void)	apsSuppliedActions.o
+0x00809D00	0x00BF9200	??0apsAlphaFadeInOutAction@@QAE@XZ	public: __thiscall apsAlphaFadeInOutAction::apsAlphaFadeInOutAction(void)	apsSuppliedActions.o
+0x00809D20	0x00BF9220	??0apsRandomAlphaFadeInOutAction@@QAE@XZ	public: __thiscall apsRandomAlphaFadeInOutAction::apsRandomAlphaFadeInOutAction(void)	apsSuppliedActions.o
+0x00809D40	0x00BF9240	??0apsLinearScaleAction@@QAE@XZ	public: __thiscall apsLinearScaleAction::apsLinearScaleAction(void)	apsSuppliedActions.o
+0x00809D60	0x00BF9260	??0apsLinearScaleAction@@IAE@HHI@Z	protected: __thiscall apsLinearScaleAction::apsLinearScaleAction(int,int,unsigned int)	apsSuppliedActions.o
+0x00809D90	0x00BF9290	?Act@apsLinearScaleAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsLinearScaleAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x00809E10	0x00BF9310	??0apsLinearScaleSyncAction@@QAE@XZ	public: __thiscall apsLinearScaleSyncAction::apsLinearScaleSyncAction(void)	apsSuppliedActions.o
+0x00809E30	0x00BF9330	??0apsExponentialScaleAction@@QAE@XZ	public: __thiscall apsExponentialScaleAction::apsExponentialScaleAction(void)	apsSuppliedActions.o
+0x00809E50	0x00BF9350	??0apsLinearScaleWidthAction@@QAE@XZ	public: __thiscall apsLinearScaleWidthAction::apsLinearScaleWidthAction(void)	apsSuppliedActions.o
+0x00809E70	0x00BF9370	??0apsExponentialScaleWidthAction@@QAE@XZ	public: __thiscall apsExponentialScaleWidthAction::apsExponentialScaleWidthAction(void)	apsSuppliedActions.o
+0x00809E90	0x00BF9390	??0apsLinearScaleHeightAction@@QAE@XZ	public: __thiscall apsLinearScaleHeightAction::apsLinearScaleHeightAction(void)	apsSuppliedActions.o
+0x00809EB0	0x00BF93B0	??0apsExponentialScaleHeightAction@@QAE@XZ	public: __thiscall apsExponentialScaleHeightAction::apsExponentialScaleHeightAction(void)	apsSuppliedActions.o
+0x00809ED0	0x00BF93D0	??0apsMoveAction@@QAE@XZ	public: __thiscall apsMoveAction::apsMoveAction(void)	apsSuppliedActions.o
+0x00809EF0	0x00BF93F0	?Act@apsMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsMoveAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080A0C0	0x00BF95C0	??0apsObjectMoveAction@@QAE@XZ	public: __thiscall apsObjectMoveAction::apsObjectMoveAction(void)	apsSuppliedActions.o
+0x0080A0E0	0x00BF95E0	?Act@apsObjectMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsObjectMoveAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080A400	0x00BF9900	??0apsPositionMoveAction@@QAE@XZ	public: __thiscall apsPositionMoveAction::apsPositionMoveAction(void)	apsSuppliedActions.o
+0x0080A420	0x00BF9920	?Act@apsPositionMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsPositionMoveAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080A550	0x00BF9A50	??0apsMoveAtFixedVelocityAction@@QAE@XZ	public: __thiscall apsMoveAtFixedVelocityAction::apsMoveAtFixedVelocityAction(void)	apsSuppliedActions.o
+0x0080A570	0x00BF9A70	??0apsForceAction@@QAE@XZ	public: __thiscall apsForceAction::apsForceAction(void)	apsSuppliedActions.o
+0x0080A590	0x00BF9A90	??0apsColorShiftAction@@QAE@XZ	public: __thiscall apsColorShiftAction::apsColorShiftAction(void)	apsSuppliedActions.o
+0x0080A5B0	0x00BF9AB0	??0apsVelocityDragAction@@QAE@XZ	public: __thiscall apsVelocityDragAction::apsVelocityDragAction(void)	apsSuppliedActions.o
+0x0080A5D0	0x00BF9AD0	??0apsAngularVelocityDragAction@@QAE@XZ	public: __thiscall apsAngularVelocityDragAction::apsAngularVelocityDragAction(void)	apsSuppliedActions.o
+0x0080A5F0	0x00BF9AF0	??0apsVectorAngularVelocityDragAction@@QAE@XZ	public: __thiscall apsVectorAngularVelocityDragAction::apsVectorAngularVelocityDragAction(void)	apsSuppliedActions.o
+0x0080A610	0x00BF9B10	??0apsWorldPlaneReflectionAction@@QAE@XZ	public: __thiscall apsWorldPlaneReflectionAction::apsWorldPlaneReflectionAction(void)	apsSuppliedActions.o
+0x0080A630	0x00BF9B30	??0apsUVAFrameAnimAction@@QAE@XZ	public: __thiscall apsUVAFrameAnimAction::apsUVAFrameAnimAction(void)	apsSuppliedActions.o
+0x0080A650	0x00BF9B50	??0apsAngleTrackVelocityAction@@QAE@XZ	public: __thiscall apsAngleTrackVelocityAction::apsAngleTrackVelocityAction(void)	apsSuppliedActions.o
+0x0080A670	0x00BF9B70	?apsAngleTrackMeshOrientation@@YAXPAE0AAVapsGroup@@AAVapsEffect@@M@Z	void __cdecl apsAngleTrackMeshOrientation(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float)	apsSuppliedActions.o
+0x0080A830	0x00BF9D30	?Act@apsAngleTrackVelocityAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAngleTrackVelocityAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080AB00	0x00BFA000	??0apsAngleTrackElementXAction@@QAE@XZ	public: __thiscall apsAngleTrackElementXAction::apsAngleTrackElementXAction(void)	apsSuppliedActions.o
+0x0080AB20	0x00BFA020	??0apsAngleTrackElementYAction@@QAE@XZ	public: __thiscall apsAngleTrackElementYAction::apsAngleTrackElementYAction(void)	apsSuppliedActions.o
+0x0080AB40	0x00BFA040	??0apsAngleTrackElementZAction@@QAE@XZ	public: __thiscall apsAngleTrackElementZAction::apsAngleTrackElementZAction(void)	apsSuppliedActions.o
+0x0080AB60	0x00BFA060	??0apsPointAttractorAction@@QAE@XZ	public: __thiscall apsPointAttractorAction::apsPointAttractorAction(void)	apsSuppliedActions.o
+0x0080AB80	0x00BFA080	??0apsLineAttractorAction@@QAE@XZ	public: __thiscall apsLineAttractorAction::apsLineAttractorAction(void)	apsSuppliedActions.o
+0x0080ABA0	0x00BFA0A0	??0apsDecayLineAttractorAction@@QAE@XZ	public: __thiscall apsDecayLineAttractorAction::apsDecayLineAttractorAction(void)	apsSuppliedActions.o
+0x0080ABC0	0x00BFA0C0	??0apsKappaTauAction@@QAE@XZ	public: __thiscall apsKappaTauAction::apsKappaTauAction(void)	apsSuppliedActions.o
+0x0080ABE0	0x00BFA0E0	??0apsSpawnAction@@QAE@XZ	public: __thiscall apsSpawnAction::apsSpawnAction(void)	apsSuppliedActions.o
+0x0080AC00	0x00BFA100	?CalculateOrientation@?A0x7195c61f@@YAXAAVMat43@math@@ABVDir3@3@@Z	void __cdecl `anonymous namespace'::CalculateOrientation(class math::Mat43 &,class math::Dir3 const &)	apsSuppliedActions.o
+0x0080ADA0	0x00BFA2A0	?OrientIdentity@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z	void __cdecl `anonymous namespace'::OrientIdentity(class math::Mat43 &,struct math::Dir3::Packed const *,struct math::Dir3::Packed const *)	apsSuppliedActions.o
+0x0080ADC0	0x00BFA2C0	?OrientParentVelocity@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z	void __cdecl `anonymous namespace'::OrientParentVelocity(class math::Mat43 &,struct math::Dir3::Packed const *,struct math::Dir3::Packed const *)	apsSuppliedActions.o
+0x0080AE80	0x00BFA380	?OrientCollisionReflect@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z	void __cdecl `anonymous namespace'::OrientCollisionReflect(class math::Mat43 &,struct math::Dir3::Packed const *,struct math::Dir3::Packed const *)	apsSuppliedActions.o
+0x0080AFD0	0x00BFA4D0	?OrientRandom@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z	void __cdecl `anonymous namespace'::OrientRandom(class math::Mat43 &,struct math::Dir3::Packed const *,struct math::Dir3::Packed const *)	apsSuppliedActions.o
+0x0080B100	0x00BFA600	??0apsSpawnOnDeathAction@@QAE@XZ	public: __thiscall apsSpawnOnDeathAction::apsSpawnOnDeathAction(void)	apsSuppliedActions.o
+0x0080B120	0x00BFA620	??0apsTrajectoryAction@@QAE@XZ	public: __thiscall apsTrajectoryAction::apsTrajectoryAction(void)	apsSuppliedActions.o
+0x0080B140	0x00BFA640	?CheckSplineData@@YAXPAM@Z	void __cdecl CheckSplineData(float *)	apsSuppliedActions.o
+0x0080B1C0	0x00BFA6C0	?GetSplineInfo@apsTrajectoryAction@@AAEIAAPAMAAM1AAVDir3@math@@2@Z	private: unsigned int __thiscall apsTrajectoryAction::GetSplineInfo(float * &,float &,float &,class math::Dir3 &,class math::Dir3 &)	apsSuppliedActions.o
+0x0080B320	0x00BFA820	??0apsEnvCollideAction@@QAE@XZ	public: __thiscall apsEnvCollideAction::apsEnvCollideAction(void)	apsSuppliedActions.o
+0x0080B340	0x00BFA840	?Act@apsEnvCollideAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsEnvCollideAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080B710	0x00BFAC10	?Act@apsSourceAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsSourceAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080C5C0	0x00BFBAC0	?GetEmissionCount@apsSourceAction@@UAEHAAVapsGroup@@M@Z	public: virtual int __thiscall apsSourceAction::GetEmissionCount(class apsGroup &,float)	apsSuppliedActions.o
+0x0080C640	0x00BFBB40	?GetEmissionCount@apsBurstAction@@UAEHAAVapsGroup@@M@Z	public: virtual int __thiscall apsBurstAction::GetEmissionCount(class apsGroup &,float)	apsSuppliedActions.o
+0x0080C6C0	0x00BFBBC0	?GetEmissionCount@apsRandomSpawnAction@@UAEHAAVapsGroup@@M@Z	public: virtual int __thiscall apsRandomSpawnAction::GetEmissionCount(class apsGroup &,float)	apsSuppliedActions.o
+0x0080C760	0x00BFBC60	?Act@apsAlphaFadeAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAlphaFadeAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080C9B0	0x00BFBEB0	?Act@apsAlphaFadeInOutAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAlphaFadeInOutAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080CC60	0x00BFC160	?Act@apsRandomAlphaFadeInOutAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsRandomAlphaFadeInOutAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080CEE0	0x00BFC3E0	?GetScaleAmountForFrame@apsLinearScaleAction@@EBEMAAVapsEffect@@M@Z	private: virtual float __thiscall apsLinearScaleAction::GetScaleAmountForFrame(class apsEffect &,float)const 	apsSuppliedActions.o
+0x0080CF20	0x00BFC420	?GetScaleAmountForFrame@apsLinearScaleSyncAction@@EBEMAAVapsEffect@@M@Z	private: virtual float __thiscall apsLinearScaleSyncAction::GetScaleAmountForFrame(class apsEffect &,float)const 	apsSuppliedActions.o
+0x0080CFF0	0x00BFC4F0	?Act@apsExponentialScaleAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsExponentialScaleAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D0B0	0x00BFC5B0	?Act@apsLinearScaleWidthAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsLinearScaleWidthAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D150	0x00BFC650	?Act@apsExponentialScaleWidthAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsExponentialScaleWidthAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D210	0x00BFC710	?Act@apsLinearScaleHeightAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsLinearScaleHeightAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D2C0	0x00BFC7C0	?Act@apsExponentialScaleHeightAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsExponentialScaleHeightAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D380	0x00BFC880	?Act@apsMoveAtFixedVelocityAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsMoveAtFixedVelocityAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D5B0	0x00BFCAB0	?Act@apsForceAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsForceAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080D820	0x00BFCD20	?Act@apsColorShiftAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsColorShiftAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080DBE0	0x00BFD0E0	?Act@apsVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsVelocityDragAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080DCE0	0x00BFD1E0	?Act@apsAngularVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAngularVelocityDragAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080DDC0	0x00BFD2C0	?Act@apsVectorAngularVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsVectorAngularVelocityDragAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080DEC0	0x00BFD3C0	?Act@apsWorldPlaneReflectionAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsWorldPlaneReflectionAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080E2B0	0x00BFD7B0	?Act@apsUVAFrameAnimAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsUVAFrameAnimAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080E520	0x00BFDA20	?Act@apsAngleTrackElementXAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAngleTrackElementXAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080E660	0x00BFDB60	?Act@apsAngleTrackElementYAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAngleTrackElementYAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080E7A0	0x00BFDCA0	?Act@apsAngleTrackElementZAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsAngleTrackElementZAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080E8E0	0x00BFDDE0	?Act@apsPointAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsPointAttractorAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080EBD0	0x00BFE0D0	?Act@apsLineAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsLineAttractorAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080F050	0x00BFE550	?Act@apsDecayLineAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsDecayLineAttractorAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080F500	0x00BFEA00	?Act@apsKappaTauAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsKappaTauAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080FC50	0x00BFF150	?Act@apsSpawnAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsSpawnAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x0080FEB0	0x00BFF3B0	?Act@apsSpawnOnDeathAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsSpawnOnDeathAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o
+0x008100E0	0x00BFF5E0	?Act@apsTrajectoryAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z	public: virtual void __thiscall apsTrajectoryAction::Act(unsigned char *,unsigned char *,class apsGroup &,class apsEffect &,float,float)	apsSuppliedActions.o

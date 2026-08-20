@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007BADB0	0x00BAA2B0	?CallFunctor@@YAXPAVAeThreadFunctor@@@Z	void __cdecl CallFunctor(class AeThreadFunctor *)	CallFunctor.o

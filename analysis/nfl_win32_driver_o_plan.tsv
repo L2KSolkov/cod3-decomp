@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x0082DE70	?nfd_win32_GetFileHandle@@YAPAXPAX@Z	void * __cdecl nfd_win32_GetFileHandle(void *)	
+0x0082DE80	?nfd_win32_FileOpen@@YA?AW4nfdError@@PAXPBDW4nfdFileFlags@@I@Z	enum nfdError __cdecl nfd_win32_FileOpen(void *,char const *,enum nfdFileFlags,unsigned int)	
+0x0082DF10	?nfd_win32_FileClose@@YA?AW4nfdError@@PAX@Z	enum nfdError __cdecl nfd_win32_FileClose(void *)	
+0x0082DF30	?nfd_win32_FileStatus@@YA?AW4nfdError@@PAXPAUnfdFileInfo@@@Z	enum nfdError __cdecl nfd_win32_FileStatus(void *,struct nfdFileInfo *)	
+0x0082DF60	?nfd_win32_FileHandle@@YA?AW4nfdError@@PAXPAPAXPAI@Z	enum nfdError __cdecl nfd_win32_FileHandle(void *,void * *,unsigned int *)	
+0x0082DF80	?nfd_win32_IoCompletionRoutine@@YGXKKPAU_OVERLAPPED@@@Z	void __stdcall nfd_win32_IoCompletionRoutine(unsigned long,unsigned long,struct _OVERLAPPED *)	
+0x0082DFD0	?nfd_win32_IoExecute@@YA?AW4nfdError@@PAUnfdDriver@@PAXW4nflRequestType@@I1I@Z	enum nfdError __cdecl nfd_win32_IoExecute(struct nfdDriver *,void *,enum nflRequestType,unsigned int,void *,unsigned int)	
+0x0082E070	?nfd_win32_IoCancel@@YA?AW4nfdError@@PAX@Z	enum nfdError __cdecl nfd_win32_IoCancel(void *)	
+0x0082E090	?nfd_win32_IoUpdate@@YA?AW4nfdError@@XZ	enum nfdError __cdecl nfd_win32_IoUpdate(void)	

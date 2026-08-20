@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007D58E0	??0cdSimplePrelitShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdSimplePrelitShaderMat::cdSimplePrelitShaderMat(struct nglTexture *)	
+0x007D5970	?InitCDSimplePrelitShader@@YAXXZ	void __cdecl InitCDSimplePrelitShader(void)	
+0x007D59C0	?ToggleCDSimplePrelitShader@@YAXXZ	void __cdecl ToggleCDSimplePrelitShader(void)	
+0x007D59E0	?Register@cdSimplePrelitShader@@UAEXXZ	public: virtual void __thiscall cdSimplePrelitShader::Register(void)	
+0x007D5A10	?AddNode@cdSimplePrelitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdSimplePrelitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007D5A80	?Render@cdSimplePrelitShaderNode@@UAEXXZ	public: virtual void __thiscall cdSimplePrelitShaderNode::Render(void)	

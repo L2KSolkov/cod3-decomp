@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x00811FE0	0x00C014E0	?GetFieldByteSize@apsPFD@@SAEW4apsEPFDField@@@Z	public: static unsigned char __cdecl apsPFD::GetFieldByteSize(enum apsEPFDField)	apsPFD.o
+0x00812020	0x00C01520	?RecomputeOffsets@apsPFD@@AAEXXZ	private: void __thiscall apsPFD::RecomputeOffsets(void)	apsPFD.o
+0x008120A0	0x00C015A0	??0apsPFD@@QAE@XZ	public: __thiscall apsPFD::apsPFD(void)	apsPFD.o
+0x008120C0	0x00C015C0	?AddFields@apsPFD@@QAEXI@Z	public: void __thiscall apsPFD::AddFields(unsigned int)	apsPFD.o

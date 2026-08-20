@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:004541a0 ?nglHostPrintf@@YAXPAXPBDZZ 00C436A0 f ngl_dx_scenedump.o
+2	VERIFIED	0002:00454210 ?nglHostOpen@@YAPAXPBD@Z 00C43710 f ngl_dx_scenedump.o
+3	VERIFIED	0002:004542b0 ?nglHostClose@@YAXPAX@Z 00C437B0 f ngl_dx_scenedump.o

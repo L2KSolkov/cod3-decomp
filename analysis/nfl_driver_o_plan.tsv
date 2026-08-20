@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x0082DA70	?nfdBufferAlign@@YAHPBUnfdDriver@@PBUnfdIoCommand@@IPAI2@Z	int __cdecl nfdBufferAlign(struct nfdDriver const *,struct nfdIoCommand const *,unsigned int,unsigned int *,unsigned int *)	
+0x0082DC30	?nfdIoExecute@@YA?AW4nfdError@@PAUnfdDriver@@PBUnfdIoCommand@@@Z	enum nfdError __cdecl nfdIoExecute(struct nfdDriver *,struct nfdIoCommand const *)	
+0x0082DD20	?nflInjectError@@YAXXZ	void __cdecl nflInjectError(void)	
+0x0082DD40	?nfdIoComplete@@YAXPAUnfdDriver@@IH@Z	void __cdecl nfdIoComplete(struct nfdDriver *,unsigned int,int)	

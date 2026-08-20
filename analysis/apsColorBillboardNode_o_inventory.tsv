@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x0081C2A0	0x00C0B7A0	?Render@apsColorBillboardNode@@UAEXXZ	public: virtual void __thiscall apsColorBillboardNode::Render(void)	apsColorBillboardNode.o

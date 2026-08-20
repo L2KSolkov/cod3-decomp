@@ -1,0 +1,28 @@
+index	status	map_line
+1	VERIFIED	0002:00442400 ?nglGetFont@@YAPAVnglFont@@ABVtlFixedString@@@Z 00C31900 f ngl_font.o
+2	VERIFIED	0002:00442420 ?nglFontParseToken@@YAXAAPAEPAI@Z 00C31920 f ngl_font.o
+3	VERIFIED	0002:004424a0 ?nglFontParseToken@@YAXAAPAEPAM@Z 00C319A0 f ngl_font.o
+4	VERIFIED	0002:00442520 ?nglFontParseToken@@YAXAAPAEPAM1@Z 00C31A20 f ngl_font.o
+5	VERIFIED	0002:004425e0 ?nglSetFontBlend@@YAXPAVnglFont@@I@Z 00C31AE0 f ngl_font.o
+6	VERIFIED	0002:004425f0 ?nglSetFontMapFlags@@YAXPAVnglFont@@I@Z 00C31AF0 f ngl_font.o
+7	VERIFIED	0002:00442600 ?nglGetFontMapFlags@@YAIPAVnglFont@@@Z 00C31B00 f ngl_font.o
+8	VERIFIED	0002:00442610 ?nglBuildStringList@@YAPAUnglStringSection@@PAVnglFont@@MMMMIPAE@Z 00C31B10 f ngl_font.o
+9	VERIFIED	0002:00442910 ?nglGetStringDimensions@@YAXPAVnglFont@@PBDPAI2MM@Z 00C31E10 f ngl_font.o
+10	VERIFIED	0002:00442bf0 ?nglListAddString@@YAXPAVnglFont@@PBDMMMIMM@Z 00C320F0 f ngl_font.o
+11	VERIFIED	0002:00442cf0 ?nglGetStringDimensions@@YAXPAVnglFont@@PAI1PBDZZ 00C321F0 f ngl_font.o
+12	VERIFIED	0002:00442d30 ?nglGetStringDimensions@@YAXPAVnglFont@@PAI1MMPBDZZ 00C32230 f ngl_font.o
+13	VERIFIED	0002:00442d70 ?nglAPKFontLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C32270 f ngl_font.o
+14	VERIFIED	0002:00442e40 ?nglAPKFontDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C32340 f ngl_font.o
+15	VERIFIED	0002:00442e80 ?nglFontInit@@YAXXZ 00C32380 f ngl_font.o
+16	VERIFIED	0002:00442ee0 ?nglListAddString@@YAXPAVnglFont@@MMMPBDZZ 00C323E0 f ngl_font.o
+17	VERIFIED	0002:00442f20 ?nglListAddString@@YAXPAVnglFont@@MMMIPBDZZ 00C32420 f ngl_font.o
+18	VERIFIED	0002:00442f70 ?nglListAddString@@YAXPAVnglFont@@MMMMMPBDZZ 00C32470 f ngl_font.o
+19	VERIFIED	0002:00442fb0 ?nglListAddString@@YAXPAVnglFont@@MMMIMMPBDZZ 00C324B0 f ngl_font.o
+20	VERIFIED	0002:00442ff0 ??0?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C324F0 f i ngl_font.o
+21	PORTED	0002:00443010 ?NewNodeOfLevel@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C32510 f i ngl_font.o
+22	VERIFIED	0002:00443040 ?GetCellWidth@nglFont@@QAEIE@Z 00C32540 f i ngl_font.o
+23	VERIFIED	0002:00443080 ??0nglStringNode@@QAE@XZ 00C32580 f i ngl_font.o
+24	VERIFIED	0002:00443090 ?GetDesc@nglStringNode@@UAEXPAD@Z 00C32590 f i ngl_font.o
+25	VERIFIED	0002:004430a0 ??_GnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o
+26	VERIFIED	0002:004430a0 ??_EnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o
+27	PORTED	0002:004430d0 ??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C325D0 f i ngl_font.o

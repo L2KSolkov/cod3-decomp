@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:0042cd70 _txTime 00C1C270 f tx.o
+2	VERIFIED	0002:0042cda0 _txMatch 00C1C2A0 f tx.o
+3	VERIFIED	0002:0042ce40 _txInit 00C1C340 f tx.o
+4	VERIFIED	0002:0042ce50 _txGetPrimeLessThanPow2 00C1C350 f tx.o
+5	VERIFIED	0002:0042cea0 _txPrintf 00C1C3A0 f tx.o

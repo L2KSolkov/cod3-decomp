@@ -1,0 +1,23 @@
+ida_ea	va	name	signature	family
+0x007EB370	0x00BDA870	?MemAlign@apsAllocator@@UBEPAXII@Z	public: virtual void * __thiscall apsAllocator::MemAlign(unsigned int,unsigned int)const 	apsCommon.o
+0x007EB3A0	0x00BDA8A0	?MemFree@apsAllocator@@UBEXPAX@Z	public: virtual void __thiscall apsAllocator::MemFree(void *)const 	apsCommon.o
+0x007EB3C0	0x00BDA8C0	?MemResize@apsAllocator@@UBEPAXPAXII@Z	public: virtual void * __thiscall apsAllocator::MemResize(void *,unsigned int,unsigned int)const 	apsCommon.o
+0x007EB3D0	0x00BDA8D0	?InitShaders@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::InitShaders(void)	apsCommon.o
+0x007EB3E0	0x00BDA8E0	?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z	public: static void __cdecl apsCommon::SetupFrame(class math::Mat43 const &,float)	apsCommon.o
+0x007EB750	0x00BDAC50	?Report@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::Report(void)	apsCommon.o
+0x007EB780	0x00BDAC80	?SetClient@apsCommon@@SAXPAVapsClient@@@Z	public: static void __cdecl apsCommon::SetClient(class apsClient *)	apsCommon.o
+0x007EB790	0x00BDAC90	?GetAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetAllocator(void)	apsCommon.o
+0x007EB7A0	0x00BDACA0	?GetCurrentPakId@apsCommon@@SAHXZ	public: static int __cdecl apsCommon::GetCurrentPakId(void)	apsCommon.o
+0x007EB7B0	0x00BDACB0	?SetCurrentPakId@apsCommon@@SAHH@Z	public: static int __cdecl apsCommon::SetCurrentPakId(int)	apsCommon.o
+0x007EB7D0	0x00BDACD0	?PakAllocs@apsCommon@@SAHXZ	public: static int __cdecl apsCommon::PakAllocs(void)	apsCommon.o
+0x007EB7E0	0x00BDACE0	?SetPakAllocs@apsCommon@@SAHH@Z	public: static int __cdecl apsCommon::SetPakAllocs(int)	apsCommon.o
+0x007EB800	0x00BDAD00	?GetDefaultAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetDefaultAllocator(void)	apsCommon.o
+0x007EB810	0x00BDAD10	?SetAllocator@apsCommon@@SAPAVapsAllocator@@PAV2@@Z	public: static class apsAllocator * __cdecl apsCommon::SetAllocator(class apsAllocator *)	apsCommon.o
+0x007EB840	0x00BDAD40	?GetBlockAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetBlockAllocator(void)	apsCommon.o
+0x007EB850	0x00BDAD50	?SetBlockAllocator@apsCommon@@SAXPAVapsAllocator@@@Z	public: static void __cdecl apsCommon::SetBlockAllocator(class apsAllocator *)	apsCommon.o
+0x007EB860	0x00BDAD60	?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::SubmitSpawnedEffectQueue(void)	apsCommon.o
+0x007EB870	0x00BDAD70	?RemoveFromSpawnedEffectQueueByPakId@apsCommon@@SAXH@Z	public: static void __cdecl apsCommon::RemoveFromSpawnedEffectQueueByPakId(int)	apsCommon.o
+0x007EB880	0x00BDAD80	?ClearSpawnedEffectQueue@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::ClearSpawnedEffectQueue(void)	apsCommon.o
+0x007EB890	0x00BDAD90	?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z	public: static struct apsCommon::PlayerViewPort * __cdecl apsCommon::GetPlayerViewPort(unsigned int)	apsCommon.o
+0x007EB8D0	0x00BDADD0	?Init@apsCommon@@SAXIHI@Z	public: static void __cdecl apsCommon::Init(unsigned int,int,unsigned int)	apsCommon.o
+0x007EBA40	0x00BDAF40	?Term@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::Term(void)	apsCommon.o

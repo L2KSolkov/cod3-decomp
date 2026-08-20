@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x007BADB0	?CallFunctor@@YAXPAVAeThreadFunctor@@@Z	void __cdecl CallFunctor(class AeThreadFunctor *)	

@@ -1,0 +1,3 @@
+index	status	map_line
+1	PORTED	0002:00444cf0 ?Register@D3DResource@@QAGXPAX@Z 00C341F0 f i ngl_xb_tex_load.o
+2	VERIFIED	0002:00444d00 ?ngliProcessTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z 00C34200 f ngl_xb_tex_load.o

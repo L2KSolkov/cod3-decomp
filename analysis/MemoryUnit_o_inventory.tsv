@@ -1,0 +1,36 @@
+ida_ea	va	name	signature	family
+0x00899070	0x00C88570	??0MemoryUnitManager@@AAE@XZ	private: __thiscall MemoryUnitManager::MemoryUnitManager(void)	MemoryUnit.o
+0x00899080	0x00C88580	??1MemoryUnitManager@@AAE@XZ	private: __thiscall MemoryUnitManager::~MemoryUnitManager(void)	MemoryUnit.o
+0x00899090	0x00C88590	?GetLastError@MemoryUnitManager@@SA?AW4eStatus@1@XZ	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::GetLastError(void)	MemoryUnit.o
+0x008990A0	0x00C885A0	?SetLastError@MemoryUnitManager@@SAXW4eStatus@1@@Z	public: static void __cdecl MemoryUnitManager::SetLastError(enum MemoryUnitManager::eStatus)	MemoryUnit.o
+0x008990B0	0x00C885B0	?SetTitlePrefix@MemoryUnitManager@@SAXPBD@Z	public: static void __cdecl MemoryUnitManager::SetTitlePrefix(char const *)	MemoryUnit.o
+0x008990D0	0x00C885D0	?GetTitlePrefix@MemoryUnitManager@@SAPBDXZ	public: static char const * __cdecl MemoryUnitManager::GetTitlePrefix(void)	MemoryUnit.o
+0x008990E0	0x00C885E0	?SetActiveMemoryUnit@MemoryUnitManager@@SAXH@Z	public: static void __cdecl MemoryUnitManager::SetActiveMemoryUnit(int)	MemoryUnit.o
+0x008990F0	0x00C885F0	?GetActiveMemoryUnit@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::GetActiveMemoryUnit(void)	MemoryUnit.o
+0x00899100	0x00C88600	?RegisterObserver@MemoryUnitManager@@SAXPAVObserver@1@@Z	public: static void __cdecl MemoryUnitManager::RegisterObserver(class MemoryUnitManager::Observer *)	MemoryUnit.o
+0x00899110	0x00C88610	?RegisterInsertRemoveObserver@MemoryUnitManager@@SAXPAVInsertRemoveObserver@1@@Z	public: static void __cdecl MemoryUnitManager::RegisterInsertRemoveObserver(class MemoryUnitManager::InsertRemoveObserver *)	MemoryUnit.o
+0x00899120	0x00C88620	?GetObserver@MemoryUnitManager@@SAPAVObserver@1@XZ	public: static class MemoryUnitManager::Observer * __cdecl MemoryUnitManager::GetObserver(void)	MemoryUnit.o
+0x00899130	0x00C88630	?GetInsertRemoveObserver@MemoryUnitManager@@SAPAVInsertRemoveObserver@1@XZ	public: static class MemoryUnitManager::InsertRemoveObserver * __cdecl MemoryUnitManager::GetInsertRemoveObserver(void)	MemoryUnit.o
+0x00899140	0x00C88640	?GetBuffer@MemoryUnitManager@@SAPAEXZ	public: static unsigned char * __cdecl MemoryUnitManager::GetBuffer(void)	MemoryUnit.o
+0x00899150	0x00C88650	?GetNumBytes@MemoryUnitManager@@SAIXZ	public: static unsigned int __cdecl MemoryUnitManager::GetNumBytes(void)	MemoryUnit.o
+0x00899160	0x00C88660	?Reset@Container@MemoryUnitManager@@QAEXQBD@Z	public: void __thiscall MemoryUnitManager::Container::Reset(char const * const)	MemoryUnit.o
+0x008991A0	0x00C886A0	?AddFile@Container@MemoryUnitManager@@QAE_NQBDPAEI@Z	public: bool __thiscall MemoryUnitManager::Container::AddFile(char const * const,unsigned char *,unsigned int)	MemoryUnit.o
+0x00899200	0x00C88700	?GetTotalBytes@Container@MemoryUnitManager@@QAEHXZ	public: int __thiscall MemoryUnitManager::Container::GetTotalBytes(void)	MemoryUnit.o
+0x00899220	0x00C88720	?GetNumFiles@Container@MemoryUnitManager@@QBEHXZ	public: int __thiscall MemoryUnitManager::Container::GetNumFiles(void)const 	MemoryUnit.o
+0x00899230	0x00C88730	?GetFile@Container@MemoryUnitManager@@QAEPAEH@Z	public: unsigned char * __thiscall MemoryUnitManager::Container::GetFile(int)	MemoryUnit.o
+0x00899250	0x00C88750	?GetNextFile@Container@MemoryUnitManager@@AAE_NQADPAPAEPAI@Z	private: bool __thiscall MemoryUnitManager::Container::GetNextFile(char * const,unsigned char * *,unsigned int *)	MemoryUnit.o
+0x008992B0	0x00C887B0	?GetGameName@Container@MemoryUnitManager@@ABEPBDXZ	private: char const * __thiscall MemoryUnitManager::Container::GetGameName(void)const 	MemoryUnit.o
+0x008992C0	0x00C887C0	?GetCurrentOperation@MemoryUnitManager@@SA?AW4eOperation@1@XZ	public: static enum MemoryUnitManager::eOperation __cdecl MemoryUnitManager::GetCurrentOperation(void)	MemoryUnit.o
+0x008992D0	0x00C887D0	?SetCurrentOperation@MemoryUnitManager@@SAXW4eOperation@1@@Z	public: static void __cdecl MemoryUnitManager::SetCurrentOperation(enum MemoryUnitManager::eOperation)	MemoryUnit.o
+0x008992E0	0x00C887E0	?SetDisplayStrings@MemoryUnitManager@@SAXQAY0EA@$$CBD@Z	public: static void __cdecl MemoryUnitManager::SetDisplayStrings(char const (* const)[64])	MemoryUnit.o
+0x00899330	0x00C88830	?GetDisplayString@MemoryUnitManager@@SAPBDXZ	public: static char const * __cdecl MemoryUnitManager::GetDisplayString(void)	MemoryUnit.o
+0x00899360	0x00C88860	?FindFirstMemoryUnit@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::FindFirstMemoryUnit(void)	MemoryUnit.o
+0x00899390	0x00C88890	?FindNextMemoryUnit@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::FindNextMemoryUnit(void)	MemoryUnit.o
+0x008993E0	0x00C888E0	?FindPrevMemoryUnit@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::FindPrevMemoryUnit(void)	MemoryUnit.o
+0x00899430	0x00C88930	?SaveGameSync@MemoryUnitManager@@SA?AW4eStatus@1@ABVContainer@1@@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::SaveGameSync(class MemoryUnitManager::Container const &)	MemoryUnit.o
+0x00899460	0x00C88960	?LoadGameSync@MemoryUnitManager@@SA?AW4eStatus@1@ABVContainer@1@@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::LoadGameSync(class MemoryUnitManager::Container const &)	MemoryUnit.o
+0x00899490	0x00C88990	?DeleteGameSync@MemoryUnitManager@@SA?AW4eStatus@1@QBD@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::DeleteGameSync(char const * const)	MemoryUnit.o
+0x008994C0	0x00C889C0	?FormatSync@MemoryUnitManager@@SA?AW4eStatus@1@XZ	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::FormatSync(void)	MemoryUnit.o
+0x008994E0	0x00C889E0	?StatusToString@MemoryUnitManager@@SAPBDW4eStatus@1@@Z	public: static char const * __cdecl MemoryUnitManager::StatusToString(enum MemoryUnitManager::eStatus)	MemoryUnit.o
+0x00899680	0x00C88B80	?peripheralsGetVersion@@YAIXZ	unsigned int __cdecl peripheralsGetVersion(void)	MemoryUnit.o
+0x00899690	0x00C88B90	??0Container@MemoryUnitManager@@QAE@QBD@Z	public: __thiscall MemoryUnitManager::Container::Container(char const * const)	MemoryUnit.o

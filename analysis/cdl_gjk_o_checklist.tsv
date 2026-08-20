@@ -1,0 +1,11 @@
+index	status	map_line
+1	PORTED	0002:0041e600 ?compute_det@@YAXXZ 00C0DB00 f cdl_gjk.o
+2	PORTED	0002:0041ea70 ?gjk@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@M_NIIII@Z 00C0DF70 f cdl_gjk.o
+3	PORTED	0002:0041f2f0 ?collide_partial@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z 00C0E7F0 f cdl_gjk.o
+4	PORTED	0002:0041f3d0 ?collide_full@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z 00C0E8D0 f cdl_gjk.o
+5	PORTED	0002:0041f6b0 ?collide@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@IIII@Z 00C0EBB0 f cdl_gjk.o
+6	PORTED	0002:0041fbf0 ?valid@@YA_NH@Z 00C0F0F0 f i cdl_gjk.o
+7	PORTED	0002:0041fc50 ?compute_vector@@YAXHAAVDir3@math@@@Z 00C0F150 f i cdl_gjk.o
+8	PORTED	0002:0041fd80 ?compute_points@@YAXHAAVPosition3@math@@0@Z 00C0F280 f i cdl_gjk.o
+9	PORTED	0002:0041ff40 ?closest@@YA_NAAVDir3@math@@@Z 00C0F440 f i cdl_gjk.o
+10	PORTED	0002:00420170 ?degenerate@@YA_NABVPosition3@math@@@Z 00C0F670 f i cdl_gjk.o

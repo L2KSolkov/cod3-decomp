@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00812530	?Render@apsSimpleMeshNode@@UAEXXZ	public: virtual void __thiscall apsSimpleMeshNode::Render(void)	

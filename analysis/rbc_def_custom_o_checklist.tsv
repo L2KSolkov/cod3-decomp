@@ -1,0 +1,5 @@
+index	status	map_line
+1	PORTED	0002:004988a0 ?set_pulse_sum_limits@pulse_sum_angular@@QAEXMM@Z 00C87DA0 f i rbc_def_custom.o
+2	PORTED	0002:004988c0 ?setup_vel_bi_standard@pulse_sum_normal@@QAEXM@Z 00C87DC0 f i rbc_def_custom.o
+3	VERIFIED	0002:00498910 ?setup_constraint@rigid_body_constraint_custom_orientation@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C87E10 f rbc_def_custom.o
+4	VERIFIED	0002:00498cf0 ?setup_constraint@rigid_body_constraint_custom_path@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C881F0 f rbc_def_custom.o

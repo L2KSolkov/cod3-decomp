@@ -1,0 +1,5 @@
+index	status	map_line
+1	VERIFIED	0002:0042da70 ?nfdBufferAlign@@YAHPBUnfdDriver@@PBUnfdIoCommand@@IPAI2@Z 00C1CF70 f nfl_driver.o
+2	VERIFIED	0002:0042dc30 ?nfdIoExecute@@YA?AW4nfdError@@PAUnfdDriver@@PBUnfdIoCommand@@@Z 00C1D130 f nfl_driver.o
+3	VERIFIED	0002:0042dd20 ?nflInjectError@@YAXXZ 00C1D220 f nfl_driver.o
+4	VERIFIED	0002:0042dd40 ?nfdIoComplete@@YAXPAUnfdDriver@@IH@Z 00C1D240 f nfl_driver.o

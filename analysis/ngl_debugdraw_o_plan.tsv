@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x00850790	?nglDebugDrawBegin@@YAXXZ	void __cdecl nglDebugDrawBegin(void)	
+0x00850890	?nglDebugDrawEnd@@YAXXZ	void __cdecl nglDebugDrawEnd(void)	
+0x008508E0	?nglDebugDrawGetWidth@@YAHXZ	int __cdecl nglDebugDrawGetWidth(void)	
+0x00850920	?nglDebugDrawGetHeight@@YAHXZ	int __cdecl nglDebugDrawGetHeight(void)	
+0x00850A70	?nglDebugDrawPlot@@YAXHHII@Z	void __cdecl nglDebugDrawPlot(int,int,unsigned int,unsigned int)	
+0x00850B60	?nglDebugDrawHLine@@YAXHHHI@Z	void __cdecl nglDebugDrawHLine(int,int,int,unsigned int)	
+0x00850BC0	?nglDebugDrawVLine@@YAXHHHI@Z	void __cdecl nglDebugDrawVLine(int,int,int,unsigned int)	
+0x00850C20	?nglDebugDrawRectFill@@YAXHHHHI@Z	void __cdecl nglDebugDrawRectFill(int,int,int,int,unsigned int)	
+0x00850C80	?nglDebugDrawRect@@YAXHHHHI@Z	void __cdecl nglDebugDrawRect(int,int,int,int,unsigned int)	
+0x00850D00	?nglDebugDrawTextInternal@@YAXHHIPBDZZ	void __cdecl nglDebugDrawTextInternal(int,int,unsigned int,char const *,...)	
+0x00850FB0	?nglDebugDrawText@@YAHHHIPBDZZ	int __cdecl nglDebugDrawText(int,int,unsigned int,char const *,...)	

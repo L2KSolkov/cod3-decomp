@@ -1,0 +1,151 @@
+index	status	map_line
+1	PORTED	0002:00439420 ??0DiagMat44@math@@QAE@XZ 00C28920 f i ngl_scene.o
+2	PORTED	0002:00439430 ??0DiagMat44@math@@QAE@MMMM@Z 00C28930 f i ngl_scene.o
+3	PORTED	0002:00439490 ?GetW@Mat44@math@@QBEABVVector4@2@XZ 00C28990 f i ngl_scene.o
+4	PORTED	0002:004394a0 ??0DiagMat44@math@@QAE@ABV01@@Z 00C289A0 f i ngl_scene.o
+5	PORTED	0002:004394c0 ??0Mat44@math@@QAE@ABVDiagMat33@1@@Z 00C289C0 f i ngl_scene.o
+6	PORTED	0002:00439550 ?Mul@math@@YA?AVVector4@1@ABV21@ABVDiagMat44@1@@Z 00C28A50 f i ngl_scene.o
+7	PORTED	0002:00439580 ??Dmath@@YA?AVVector4@0@ABV10@ABVDiagMat44@0@@Z 00C28A80 f i ngl_scene.o
+8	PORTED	0002:004395b0 ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat43@1@@Z 00C28AB0 f i ngl_scene.o
+9	PORTED	0002:004397b0 ??Dmath@@YA?AVMat44@0@ABV10@ABVMat43@0@@Z 00C28CB0 f i ngl_scene.o
+10	PORTED	0002:004399b0 ?Inv@math@@YA?AVDiagMat44@1@ABV21@@Z 00C28EB0 f i ngl_scene.o
+11	PORTED	0002:004399f0 ??Kmath@@YA?AVVector4@0@ABV10@ABVDiagMat44@0@@Z 00C28EF0 f i ngl_scene.o
+12	PORTED	0002:00439a40 ?CosATan@math@@YAMM@Z 00C28F40 f i ngl_scene.o
+13	PORTED	0002:00439a60 ?GetSize@nglSceneParamSet@@SAIXZ 00C28F60 f i ngl_scene.o
+14	PORTED	0002:00439a70 ?Copy@nglSceneParamSet@@QAEXABU1@@Z 00C28F70 f i ngl_scene.o
+15	PORTED	0002:00439aa0 ??0nglListAllocMarker@@QAE@XZ 00C28FA0 f i ngl_scene.o
+16	PORTED	0002:00439ab0 ??1nglListAllocMarker@@QAE@XZ 00C28FB0 f i ngl_scene.o
+17	PORTED	0002:00439ac0 ?ngliSceneChanged@@YAXXZ 00C28FC0 f i ngl_scene.o
+18	PORTED	0002:00439ad0 ?nglInvalidateMatrices@@YAXXZ 00C28FD0 f i ngl_scene.o
+19	SKIPPED	0002:00439ae0 ??RnglOpaqueCompare@@QAE_NABU?$pair@PAVnglRenderNode@@I@std@@0@Z 00C28FE0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+20	SKIPPED	0002:00439b00 ??RnglTransCompare@@QAE_NABU?$pair@PAVnglRenderNode@@I@std@@0@Z 00C29000 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+21	SKIPPED	0002:00439b40 ?nglOpenRenderList@@YAXPAU?$pair@PAVnglRenderNode@@I@std@@PAVnglRenderNode@@@Z 00C29040 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+22	SKIPPED	0002:00439b70 ?nglCloseRenderList@@YAXPAU?$pair@PAVnglRenderNode@@I@std@@AAPAVnglRenderNode@@H@Z 00C29070 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+23	PORTED	0002:00439bb0 ?nglApplyMatrixPlane@@YAXAAVVector4@math@@ABVMat44@2@ABV12@@Z 00C290B0 f i ngl_scene.o
+24	PORTED	0002:00439c80 ?nglGetBaseTexture@@YAPAUnglTexture@@PAU1@@Z 00C29180 f i ngl_scene.o
+25	VERIFIED	0002:00439c90 ??1nglDummyRenderNode@@UAE@XZ 00C29190 f i ngl_scene.o
+26	VERIFIED	0002:00439ca0 ?nglGetSceneParams@@YAPAUnglSceneParamSet@@PAUnglScene@@@Z 00C291A0 f ngl_scene.o
+27	VERIFIED	0002:00439cb0 ?nglSetRenderTarget@@YAXPAUnglTexture@@@Z 00C291B0 f ngl_scene.o
+28	VERIFIED	0002:00439cc0 ?nglSetZTarget@@YAXPAUnglTexture@@@Z 00C291C0 f ngl_scene.o
+29	VERIFIED	0002:00439cd0 ?nglSetClearStencil@@YAXI@Z 00C291D0 f ngl_scene.o
+30	VERIFIED	0002:00439ce0 ?nglSetClearFlags@@YAXI@Z 00C291E0 f ngl_scene.o
+31	VERIFIED	0002:00439d00 ?nglSetClearColor@@YAXMMMM@Z 00C29200 f ngl_scene.o
+32	VERIFIED	0002:00439d80 ?nglSetClearZ@@YAXM@Z 00C29280 f ngl_scene.o
+33	VERIFIED	0002:00439da0 ?nglSetFBWriteMask@@YAXI@Z 00C292A0 f ngl_scene.o
+34	VERIFIED	0002:00439dc0 ?nglSetZWriteEnable@@YAX_N@Z 00C292C0 f ngl_scene.o
+35	VERIFIED	0002:00439de0 ?nglSetZTestEnable@@YAX_N@Z 00C292E0 f ngl_scene.o
+36	VERIFIED	0002:00439e00 ?nglSetFBCopy@@YAX_N0@Z 00C29300 f ngl_scene.o
+37	VERIFIED	0002:00439e30 ?nglSetZCopy@@YAX_N0@Z 00C29330 f ngl_scene.o
+38	VERIFIED	0002:00439e60 ?nglSetRenderTiling@@YAXH@Z 00C29360 f ngl_scene.o
+39	VERIFIED	0002:00439e80 ?nglEnableFog@@YAX_N@Z 00C29380 f ngl_scene.o
+40	VERIFIED	0002:00439ea0 ?nglSetFogColor@@YAXMMM@Z 00C293A0 f ngl_scene.o
+41	VERIFIED	0002:00439f20 ?nglSetFogRange@@YAXMMMM@Z 00C29420 f ngl_scene.o
+42	VERIFIED	0002:00439fe0 ?nglEnableDepthOfField@@YAX_N@Z 00C294E0 f ngl_scene.o
+43	VERIFIED	0002:0043a000 ?nglSetFocusDepth@@YAXM@Z 00C29500 f ngl_scene.o
+44	VERIFIED	0002:0043a020 ?nglSetAnimTime@@YAXM@Z 00C29520 f ngl_scene.o
+45	VERIFIED	0002:0043a040 ?Perspective@@YA?AVMat44@math@@MMMM@Z 00C29540 f ngl_scene.o
+46	VERIFIED	0002:0043a170 ?Ortho@@YA?AVMat44@math@@MMMM@Z 00C29670 f ngl_scene.o
+47	VERIFIED	0002:0043a290 ?Viewport@@YA?AVMat44@math@@MMMM@Z 00C29790 f ngl_scene.o
+48	VERIFIED	0002:0043a3f0 ?InvScissor@@YA?AVMat44@math@@MMMM@Z 00C298F0 f ngl_scene.o
+49	VERIFIED	0002:0043a540 ?ViewportToWorld@@YA?AVMat44@math@@PAUnglScene@@@Z 00C29A40 f ngl_scene.o
+50	VERIFIED	0002:0043ac40 ?UI@@YA?AVMat44@math@@PAUnglScene@@@Z 00C2A140 f ngl_scene.o
+51	VERIFIED	0002:0043adb0 ?nglSetView@@YAXMMMM@Z 00C2A2B0 f ngl_scene.o
+52	VERIFIED	0002:0043ae10 ?nglSetAspectRatio@@YAXM@Z 00C2A310 f ngl_scene.o
+53	VERIFIED	0002:0043ae40 ?nglSetPerspectiveMatrix@@YAXMMM@Z 00C2A340 f ngl_scene.o
+54	VERIFIED	0002:0043aed0 ?nglSetOrthoMatrix@@YAXMM@Z 00C2A3D0 f ngl_scene.o
+55	VERIFIED	0002:0043af60 ?nglSetWorldToViewMatrix@@YAXABVMat43@math@@@Z 00C2A460 f ngl_scene.o
+56	VERIFIED	0002:0043b0e0 ?nglSetCameraMatrix@@YAXABVMat43@math@@@Z 00C2A5E0 f ngl_scene.o
+57	VERIFIED	0002:0043b1f0 ?nglSetSceneCallBack@@YAXW4nglSceneCallbackType@@P6AXPAX@Z1@Z 00C2A6F0 f ngl_scene.o
+58	VERIFIED	0002:0043b3e0 ?nglSetEndOfRenderCallback@@YAXP6AXPAX@Z0@Z 00C2A8E0 f ngl_scene.o
+59	VERIFIED	0002:0043b400 ?nglSetEndOfFrameCallback@@YAXP6AXPAX@Z0@Z 00C2A900 f ngl_scene.o
+60	VERIFIED	0002:0043b420 ?nglSetEndOfVBlankCallback@@YAXP6AXPAX@Z0@Z 00C2A920 f ngl_scene.o
+61	VERIFIED	0002:0043b440 ?nglGetRemainingFrameTime@@YAMXZ 00C2A940 f ngl_scene.o
+62	VERIFIED	0002:0043b4b0 ?nglListEndScene@@YAXXZ 00C2A9B0 f ngl_scene.o
+63	VERIFIED	0002:0043b4f0 ?nglListSelectScene@@YAPAUnglScene@@PAU1@@Z 00C2A9F0 f ngl_scene.o
+64	VERIFIED	0002:0043b510 ?nglHiresScreenShotInProgress@@YA_NXZ 00C2AA10 f ngl_scene.o
+65	VERIFIED	0002:0043b520 ?nglHiresScreenShotNumColumns@@YAIXZ 00C2AA20 f ngl_scene.o
+66	VERIFIED	0002:0043b530 ?nglHiresScreenShotNumRows@@YAIXZ 00C2AA30 f ngl_scene.o
+67	VERIFIED	0002:0043b540 ?nglBeginHiresScreenShot@@YAXHH@Z 00C2AA40 f ngl_scene.o
+68	VERIFIED	0002:0043b710 ?nglSaveHiresScreenshot@@YA_NXZ 00C2AC10 f ngl_scene.o
+69	VERIFIED	0002:0043b7b0 ?nglAdjustViewForHiresScreenshot@@YAXXZ 00C2ACB0 f ngl_scene.o
+70	VERIFIED	0002:0043b830 ?nglSyncFrameBuffers@@YAXXZ 00C2AD30 f ngl_scene.o
+71	VERIFIED	0002:0043b8c0 ?nglLockTexture@@YAXPAUnglTexture@@@Z 00C2ADC0 f ngl_scene.o
+72	VERIFIED	0002:0043b900 ?nglCalculateMatrices@@YAXPAUnglScene@@@Z 00C2AE00 f ngl_scene.o
+73	VERIFIED	0002:0043cae0 ?nglValidateMatrices@@YAXPAUnglScene@@@Z 00C2BFE0 f ngl_scene.o
+74	VERIFIED	0002:0043cb10 ?nglSetScissorWH@@YAXMMMMMM@Z 00C2C010 f ngl_scene.o
+75	VERIFIED	0002:0043cc60 ?nglSetScissor@@YAXMMMM@Z 00C2C160 f ngl_scene.o
+76	VERIFIED	0002:0043ce00 ?nglSetViewport@@YAXMMMM@Z 00C2C300 f ngl_scene.o
+77	VERIFIED	0002:0043d120 ?nglGetMatrix@@YA?AVMat44@math@@W4nglMatrixType@@PAUnglScene@@@Z 00C2C620 f ngl_scene.o
+78	VERIFIED	0002:0043d350 ?nglGetMatrix_ViewToWorld@@YAABVMat43@math@@PAUnglScene@@@Z 00C2C850 f ngl_scene.o
+79	VERIFIED	0002:0043d380 ?nglGetMatrix_WorldToView@@YAABVMat43@math@@PAUnglScene@@@Z 00C2C880 f ngl_scene.o
+80	VERIFIED	0002:0043d3b0 ?nglGetMatrix_ViewToScreen@@YAABVMat44@math@@PAUnglScene@@@Z 00C2C8B0 f ngl_scene.o
+81	VERIFIED	0002:0043d3e0 ?nglGetMatrix_WorldToScreen@@YAABVMat44@math@@PAUnglScene@@@Z 00C2C8E0 f ngl_scene.o
+82	VERIFIED	0002:0043d410 ?nglProjectPoint@@YA?AVPosition3@math@@ABV12@PAUnglScene@@@Z 00C2C910 f ngl_scene.o
+83	VERIFIED	0002:0043d600 ?nglUnprojectPoint@@YA?AVPosition3@math@@ABV12@PAUnglScene@@@Z 00C2CB00 f ngl_scene.o
+84	VERIFIED	0002:0043d8a0 ?nglSetDefaultSceneParams@@YAXXZ 00C2CDA0 f ngl_scene.o
+85	VERIFIED	0002:0043db10 ?nglGetMatrix@@YAXAAVMat44@math@@W4nglMatrixType@@PAUnglScene@@@Z 00C2D010 f ngl_scene.o
+86	VERIFIED	0002:0043dbc0 ?nglProjectPoint@@YAXAAVPosition3@math@@ABV12@PAUnglScene@@@Z 00C2D0C0 f ngl_scene.o
+87	VERIFIED	0002:0043dc10 ?nglSetupBeginScene@@YAXPAUnglScene@@W4nglSceneParamType@@@Z 00C2D110 f ngl_scene.o
+88	VERIFIED	0002:0043dd40 ?nglListBeginScene@@YAPAUnglScene@@W4nglSceneParamType@@@Z 00C2D240 f ngl_scene.o
+89	VERIFIED	0002:0043de00 ?nglListAddCustomNode@@YAXP6AXPAX@Z0PBUnglSortInfo@@@Z 00C2D300 f ngl_scene.o
+90	VERIFIED	0002:0043de70 ?nglListBeginSceneNode@@YAPAUnglScene@@W4nglSceneParamType@@PAUnglSortInfo@@@Z 00C2D370 f ngl_scene.o
+91	VERIFIED	0002:0043df10 ?nglSortScene@@YAXPAUnglScene@@@Z 00C2D410 f ngl_scene.o
+92	VERIFIED	0002:0043df80 ?nglPresent@@YAXXZ 00C2D480 f ngl_scene.o
+93	PORTED	0002:0043dfc0 ??4nglSceneParamSet@@QAEAAU0@ABU0@@Z 00C2D4C0 f i ngl_scene.o
+94	SKIPPED	0002:0043dfd0 ??0?$pair@PAU?$pair@PAVnglRenderNode@@I@std@@PAU12@@std@@QAE@ABQAU?$pair@PAVnglRenderNode@@I@1@0@Z 00C2D4D0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+95	SKIPPED	0002:0043dff0 ??$_Dist_type@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAPAHPAU?$pair@PAVnglRenderNode@@I@0@@Z 00C2D4F0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+96	SKIPPED	0002:0043e000 ??$_Val_type@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAPAU?$pair@PAVnglRenderNode@@I@0@PAU10@@Z 00C2D500 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+97	SKIPPED	0002:0043e010 ??$_Iter_cat@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAU?$pair@PAVnglRenderNode@@I@0@@Z 00C2D510 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+98	SKIPPED	0002:0043e020 ??$_Push_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglOpaqueCompare@@@Z 00C2D520 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+99	SKIPPED	0002:0043e070 ??$_Rotate@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00PAH0@Z 00C2D570 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+100	SKIPPED	0002:0043e120 ??$_Push_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglTransCompare@@@Z 00C2D620 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+101	SKIPPED	0002:0043e190 ??$swap@PAVnglRenderNode@@@std@@YAXAAPAVnglRenderNode@@0@Z 00C2D690 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+102	SKIPPED	0002:0043e1b0 ??$swap@I@std@@YAXAAI0@Z 00C2D6B0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+103	PORTED	0002:0043e1d0 ?Tan@math@@YAMM@Z 00C2D6D0 f i ngl_scene.o
+104	VERIFIED	0002:0043e250 ??0nglDummyRenderNode@@QAE@XZ 00C2D750 f i ngl_scene.o
+105	VERIFIED	0002:0043e260 ?Render@nglDummyRenderNode@@UAEXXZ 00C2D760 f i ngl_scene.o
+106	PORTED	0002:0043e270 ?GetDesc@nglDummyRenderNode@@UAEXPAD@Z 00C2D770 f i ngl_scene.o
+107	VERIFIED	0002:0043e290 ??_GnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o
+108	VERIFIED	0002:0043e290 ??_EnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o
+109	SKIPPED	0002:0043e2c0 ??$_Adjust_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglOpaqueCompare@@@Z 00C2D7C0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+110	SKIPPED	0002:0043e340 ??$_Rotate@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00Urandom_access_iterator_tag@0@@Z 00C2D840 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+111	SKIPPED	0002:0043e360 ??$_Adjust_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglTransCompare@@@Z 00C2D860 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+112	SKIPPED	0002:0043e400 ?swap@?$pair@PAVnglRenderNode@@I@std@@QAEXAAU12@@Z 00C2D900 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+113	SKIPPED	0002:0043e420 ??$_Pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00U10@VnglOpaqueCompare@@PAH@Z 00C2D920 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+114	SKIPPED	0002:0043e460 ??$_Pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00U10@VnglTransCompare@@PAH@Z 00C2D960 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+115	PORTED	0002:0043e4a0 ??0nglSceneParamSet@@QAE@XZ 00C2D9A0 f i ngl_scene.o
+116	PORTED	0002:0043e4d0 ??0nglRenderCallbackNode@@QAE@XZ 00C2D9D0 f i ngl_scene.o
+117	PORTED	0002:0043e4e0 ?Render@nglRenderCallbackNode@@UAEXXZ 00C2D9E0 f i ngl_scene.o
+118	PORTED	0002:0043e520 ?GetDesc@nglRenderCallbackNode@@UAEXPAD@Z 00C2DA20 f i ngl_scene.o
+119	PORTED	0002:0043e540 ?GetSortInfo@nglRenderCallbackNode@@UAEXAAUnglSortInfo@@@Z 00C2DA40 f i ngl_scene.o
+120	PORTED	0002:0043e560 ??_EnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o
+121	PORTED	0002:0043e560 ??_GnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o
+122	PORTED	0002:0043e590 ??0nglScene@@QAE@XZ 00C2DA90 f i ngl_scene.o
+123	SKIPPED	0002:0043e5d0 ??$_Make_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@PAH0@Z 00C2DAD0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+124	SKIPPED	0002:0043e620 ??$rotate@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00@Z 00C2DB20 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+125	SKIPPED	0002:0043e650 ??$_Make_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@PAH0@Z 00C2DB50 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+126	SKIPPED	0002:0043e6a0 ??$swap@PAVnglRenderNode@@I@std@@YAXAAU?$pair@PAVnglRenderNode@@I@0@0@Z 00C2DBA0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+127	SKIPPED	0002:0043e6d0 ??$_Pop_heap_0@PAU?$pair@PAVnglRenderNode@@I@std@@U12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@0@Z 00C2DBD0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+128	SKIPPED	0002:0043e710 ??$_Pop_heap_0@PAU?$pair@PAVnglRenderNode@@I@std@@U12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@0@Z 00C2DC10 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+129	PORTED	0002:0043e750 ?nglListAddNode@@YAXW4nglNodeType@@P6AXPAX@Z1PBUnglSortInfo@@@Z 00C2DC50 f i ngl_scene.o
+130	SKIPPED	0002:0043e7a0 ??$make_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2DCA0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+131	SKIPPED	0002:0043e7d0 ??$_Insertion_sort@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2DCD0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+132	SKIPPED	0002:0043e850 ??$make_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2DD50 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+133	SKIPPED	0002:0043e880 ??$_Insertion_sort@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2DD80 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+134	SKIPPED	0002:0043e940 ??$iter_swap@PAU?$pair@PAVnglRenderNode@@I@std@@PAU12@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0@Z 00C2DE40 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+135	SKIPPED	0002:0043e970 ??$pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2DE70 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+136	SKIPPED	0002:0043e9c0 ??$pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2DEC0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+137	SKIPPED	0002:0043ea10 ??$_Med3@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00VnglOpaqueCompare@@@Z 00C2DF10 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+138	SKIPPED	0002:0043ea80 ??$_Med3@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00VnglTransCompare@@@Z 00C2DF80 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+139	SKIPPED	0002:0043eb40 ??$sort_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2E040 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+140	SKIPPED	0002:0043eba0 ??$sort_heap@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2E0A0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+141	SKIPPED	0002:0043ec00 ??$_Median@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00VnglOpaqueCompare@@@Z 00C2E100 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+142	SKIPPED	0002:0043eca0 ??$_Median@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00VnglTransCompare@@@Z 00C2E1A0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+143	SKIPPED	0002:0043ed40 ??$_Unguarded_partition@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YA?AU?$pair@PAU?$pair@PAVnglRenderNode@@I@std@@PAU12@@0@PAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2E240 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+144	SKIPPED	0002:0043ef10 ??$_Unguarded_partition@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YA?AU?$pair@PAU?$pair@PAVnglRenderNode@@I@std@@PAU12@@0@PAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2E410 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+145	SKIPPED	0002:0043f340 ??$_Sort@PAU?$pair@PAVnglRenderNode@@I@std@@HVnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0HVnglOpaqueCompare@@@Z 00C2E840 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+146	SKIPPED	0002:0043f430 ??$_Sort@PAU?$pair@PAVnglRenderNode@@I@std@@HVnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0HVnglTransCompare@@@Z 00C2E930 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+147	SKIPPED	0002:0043f520 ??$sort@PAU?$pair@PAVnglRenderNode@@I@std@@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@@Z 00C2EA20 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+148	SKIPPED	0002:0043f550 ??$sort@PAU?$pair@PAVnglRenderNode@@I@std@@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglTransCompare@@@Z 00C2EA50 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+149	PORTED	0002:0043f580 ??$nglSortList@VnglOpaqueCompare@@@@YAXAAPAVnglRenderNode@@HVnglOpaqueCompare@@@Z 00C2EA80 f i ngl_scene.o
+150	PORTED	0002:0043f630 ??$nglSortList@VnglTransCompare@@@@YAXAAPAVnglRenderNode@@HVnglTransCompare@@@Z 00C2EB30 f i ngl_scene.o

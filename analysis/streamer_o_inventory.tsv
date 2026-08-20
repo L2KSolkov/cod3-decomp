@@ -1,0 +1,269 @@
+ida_ea	va	name	signature	family
+0x00664000	0x00A53500	?GetFileExt@@YAPBDPBD@Z	char const * __cdecl GetFileExt(char const *)	streamer.o
+0x00664030	0x00A53530	?GetWorkAmount@@YAIPBD@Z	unsigned int __cdecl GetWorkAmount(char const *)	streamer.o
+0x00664B90	0x00A54090	?GetLoadTime@PakFile@@ABEMXZ	private: float __thiscall PakFile::GetLoadTime(void)const 	streamer.o
+0x00664BC0	0x00A540C0	?GetProgress@PakFile@@QBEMXZ	public: float __thiscall PakFile::GetProgress(void)const 	streamer.o
+0x00664C30	0x00A54130	?IsCancelOk@PakFile@@QBE_NXZ	public: bool __thiscall PakFile::IsCancelOk(void)const 	streamer.o
+0x00664C40	0x00A54140	?CopyHeader@PakFile@@AAEXXZ	private: void __thiscall PakFile::CopyHeader(void)	streamer.o
+0x00664CD0	0x00A541D0	?DetermineNextFile@PakFile@@AAEXXZ	private: void __thiscall PakFile::DetermineNextFile(void)	streamer.o
+0x00664E50	0x00A54350	?GetInfo@PakFile@@QBEPBUPakInfoNode@@XZ	public: struct PakInfoNode const * __thiscall PakFile::GetInfo(void)const 	streamer.o
+0x00664E80	0x00A54380	?ValidateRange@PakFile@@ABEXPAX@Z	private: void __thiscall PakFile::ValidateRange(void *)const 	streamer.o
+0x00664EC0	0x00A543C0	?IsRequestValid@PakFile@@ABE_NAATTRequestId@@@Z	private: bool __thiscall PakFile::IsRequestValid(union TRequestId &)const 	streamer.o
+0x00664EE0	0x00A543E0	?SetRequestInvalid@PakFile@@ABEXAATTRequestId@@@Z	private: void __thiscall PakFile::SetRequestInvalid(union TRequestId &)const 	streamer.o
+0x00664EF0	0x00A543F0	?IsRequestDone@PakFile@@ABE_NAATTRequestId@@@Z	private: bool __thiscall PakFile::IsRequestDone(union TRequestId &)const 	streamer.o
+0x00665080	0x00A54580	?stream_alloc@@YAPAEH_N@Z	unsigned char * __cdecl stream_alloc(int,bool)	streamer.o
+0x006651A0	0x00A546A0	?stream_free@@YAXPAE_N@Z	void __cdecl stream_free(unsigned char *,bool)	streamer.o
+0x00665210	0x00A54710	?DecodeDB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeDB(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665230	0x00A54730	?DecodeXModelBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeXModelBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665250	0x00A54750	?DecodeXModelPartsBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeXModelPartsBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665270	0x00A54770	?DecodeAITypeBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeAITypeBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665290	0x00A54790	?DecodeLightGrid@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeLightGrid(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x006652B0	0x00A547B0	?DecodeGrassInfo@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeGrassInfo(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x006652C0	0x00A547C0	?DecodeLevelPath@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeLevelPath(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x006652E0	0x00A547E0	?DecodeZonePath@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeZonePath(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665300	0x00A54800	?DecodeSTB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeSTB(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665320	0x00A54820	?DecodeSPT@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeSPT(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665330	0x00A54830	?DecodeWIND@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeWIND(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665340	0x00A54840	?DecodeSEED@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeSEED(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00665350	0x00A54850	?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::ReleaseInstanceBank(enum TPakId)	streamer.o
+0x00665370	0x00A54870	?TogglePakRender@@YAXXZ	void __cdecl TogglePakRender(void)	streamer.o
+0x00665390	0x00A54890	?PakGetThreadId@@YAIXZ	unsigned int __cdecl PakGetThreadId(void)	streamer.o
+0x006653A0	0x00A548A0	?ValidatePakId@@YAXW4TPakId@@@Z	void __cdecl ValidatePakId(enum TPakId)	streamer.o
+0x00665400	0x00A54900	?CurPakId@@YA?AW4TPakId@@XZ	enum TPakId __cdecl CurPakId(void)	streamer.o
+0x00665410	0x00A54910	?ClearFileLocationInfo@PakManager@@QAEXXZ	public: void __thiscall PakManager::ClearFileLocationInfo(void)	streamer.o
+0x00665420	0x00A54920	?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z	public: void __thiscall PakManager::SetUserDistance(struct PakInfoNode const *,float)	streamer.o
+0x00665450	0x00A54950	?ClearUserDistance@PakManager@@QAEXPBUPakInfoNode@@@Z	public: void __thiscall PakManager::ClearUserDistance(struct PakInfoNode const *)	streamer.o
+0x00665470	0x00A54970	?MyRenderText@@YAXPBDHHABVColor@@MM@Z	void __cdecl MyRenderText(char const *,int,int,class Color const &,float,float)	streamer.o
+0x00665570	0x00A54A70	?GetDistance@PakManager@@ABEMPBUPakInfoNode@@@Z	private: float __thiscall PakManager::GetDistance(struct PakInfoNode const *)const 	streamer.o
+0x006656B0	0x00A54BB0	?GetNumBanks@PakManager@@QBE?AVNumBanks@@PBUPakInfoNode@@@Z	public: class NumBanks __thiscall PakManager::GetNumBanks(struct PakInfoNode const *)const 	streamer.o
+0x00665710	0x00A54C10	?SetSoundProgress@PakManager@@QAEXM@Z	public: void __thiscall PakManager::SetSoundProgress(float)	streamer.o
+0x00665760	0x00A54C60	?SetBrocProgress@PakManager@@QAEXM@Z	public: void __thiscall PakManager::SetBrocProgress(float)	streamer.o
+0x006657A0	0x00A54CA0	?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z	public: bool __thiscall PakManager::IsLoaded(enum TPakId)const 	streamer.o
+0x006657D0	0x00A54CD0	?IsUnloaded@PakManager@@QBE_NW4TPakId@@@Z	public: bool __thiscall PakManager::IsUnloaded(enum TPakId)const 	streamer.o
+0x00665800	0x00A54D00	?IsLoading@PakManager@@QBE_NW4TPakId@@@Z	public: bool __thiscall PakManager::IsLoading(enum TPakId)const 	streamer.o
+0x00665830	0x00A54D30	?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z	public: bool __thiscall PakManager::IsUnloading(enum TPakId)const 	streamer.o
+0x00665850	0x00A54D50	?LoadWbk@PakManager@@QAEXVtlFixedString@@_N@Z	public: void __thiscall PakManager::LoadWbk(class tlFixedString,bool)	streamer.o
+0x00665870	0x00A54D70	?NflMessage@@YAXPBD@Z	void __cdecl NflMessage(char const *)	streamer.o
+0x00665880	0x00A54D80	?NflError@@YAXPBD@Z	void __cdecl NflError(char const *)	streamer.o
+0x006658A0	0x00A54DA0	?NflWarning@@YAXPBD@Z	void __cdecl NflWarning(char const *)	streamer.o
+0x006658C0	0x00A54DC0	?ShutdownNfl@@YAXXZ	void __cdecl ShutdownNfl(void)	streamer.o
+0x006658D0	0x00A54DD0	?codNflUpdate@@YAXXZ	void __cdecl codNflUpdate(void)	streamer.o
+0x006658F0	0x00A54DF0	?codNflReadFile@@YAIW4nflFileID@@IPAXI@Z	unsigned int __cdecl codNflReadFile(enum nflFileID,unsigned int,void *,unsigned int)	streamer.o
+0x00665930	0x00A54E30	?codNflCallback@@YAXW4nflRequestState@@W4nflRequestID@@PAX@Z	void __cdecl codNflCallback(enum nflRequestState,enum nflRequestID,void *)	streamer.o
+0x00665960	0x00A54E60	?ToggleZoneGraph@@YAXXZ	void __cdecl ToggleZoneGraph(void)	streamer.o
+0x006659C0	0x00A54EC0	?SetInitialCell@StreamZoneManager@@QAEXH@Z	public: void __thiscall StreamZoneManager::SetInitialCell(int)	streamer.o
+0x006659D0	0x00A54ED0	?SetInitialPosition@StreamZoneManager@@QAEXABVPosition3@math@@@Z	public: void __thiscall StreamZoneManager::SetInitialPosition(class math::Position3 const &)	streamer.o
+0x00665A00	0x00A54F00	?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z	public: void __thiscall StreamZoneManager::OnUnloaded(enum TPakId)	streamer.o
+0x00665A10	0x00A54F10	?ToggleSceneFX@SceneManager@@QAEXM@Z	public: void __thiscall SceneManager::ToggleSceneFX(float)	streamer.o
+0x00665A70	0x00A54F70	?ToggleRenderEnts@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::ToggleRenderEnts(void)	streamer.o
+0x00665A90	0x00A54F90	?ToggleRenderLights@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::ToggleRenderLights(void)	streamer.o
+0x00665AB0	0x00A54FB0	?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z	private: void __thiscall SceneManager::ProcessWorldSpawn(class WorldSpawn const &)	streamer.o
+0x00665B60	0x00A55060	?cdDestroyApk@@YAXPAVapkFile@apk@@@Z	void __cdecl cdDestroyApk(class apk::apkFile *)	streamer.o
+0x00665B70	0x00A55070	?cdLoadTexureInplace@@YAPAUnglTexture@@PAX@Z	struct nglTexture * __cdecl cdLoadTexureInplace(void *)	streamer.o
+0x00665C10	0x00A55110	?cdDestroyTexture@@YAXPAUnglTexture@@@Z	void __cdecl cdDestroyTexture(struct nglTexture *)	streamer.o
+0x00665D70	0x00A55270	?cdLoadCharSkelInplace@@YAXPAX@Z	void __cdecl cdLoadCharSkelInplace(void *)	streamer.o
+0x00665EC0	0x00A553C0	?GetHeapUsage@PakFile@@QBEXAAH0@Z	public: void __thiscall PakFile::GetHeapUsage(int &,int &)const 	streamer.o
+0x00665F60	0x00A55460	?CreateHeap@PakFile@@AAEPAUmem_heap@@PAEI@Z	private: struct mem_heap * __thiscall PakFile::CreateHeap(unsigned char *,unsigned int)	streamer.o
+0x00665FE0	0x00A554E0	?MemAlloc@PakFile@@QAEPAXII_N@Z	public: void * __thiscall PakFile::MemAlloc(unsigned int,unsigned int,bool)	streamer.o
+0x00666110	0x00A55610	?MemFree@PakFile@@QAE_NPAX_N@Z	public: bool __thiscall PakFile::MemFree(void *,bool)	streamer.o
+0x006661D0	0x00A556D0	?IsInPakHeap@PakFile@@QAE_NPAX@Z	public: bool __thiscall PakFile::IsInPakHeap(void *)	streamer.o
+0x00666270	0x00A55770	?GetSection@PakFile@@QBEPBUSection@PakHeader@@PBD@Z	public: struct PakHeader::Section const * __thiscall PakFile::GetSection(char const *)const 	streamer.o
+0x00666320	0x00A55820	?PakReadDataAsync@PakFile@@ABE?ATTRequestId@@PAEIII_N@Z	private: union TRequestId __thiscall PakFile::PakReadDataAsync(unsigned char *,unsigned int,unsigned int,unsigned int,bool)const 	streamer.o
+0x006663A0	0x00A558A0	??0AssetBankSet@@QAE@XZ	public: __thiscall AssetBankSet::AssetBankSet(void)	streamer.o
+0x006663D0	0x00A558D0	?DecodeCharSkel@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeCharSkel(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x006663F0	0x00A558F0	?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::DecodeInstbank(char const *,unsigned char *,int,enum TPakId)	streamer.o
+0x00666530	0x00A55A30	?DecodeMipsettings@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::DecodeMipsettings(char const *,unsigned char *,int,enum TPakId)	streamer.o
+0x006665A0	0x00A55AA0	?ReleaseSkeletons@InstanceBankMgr@@QAEXW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::ReleaseSkeletons(enum TPakId)	streamer.o
+0x00666610	0x00A55B10	?Enumerate@InstanceBankMgr@@QAEXW4TPakId@@P6AXPBDW4eInstanceBankType@@PAX3@Z3@Z	public: void __thiscall InstanceBankMgr::Enumerate(enum TPakId,void (__cdecl*)(char const *,enum eInstanceBankType,void *,void *),void *)	streamer.o
+0x006666B0	0x00A55BB0	?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z	public: struct PakInfoNode const * __thiscall PakManager::GetPakInfo(enum TPakId)const 	streamer.o
+0x006667D0	0x00A55CD0	?ResetPriorities@PakManager@@QAEX_N@Z	public: void __thiscall PakManager::ResetPriorities(bool)	streamer.o
+0x00666950	0x00A55E50	?SetDistance@PakManager@@QAEXPBUPakInfoNode@@M_N@Z	public: void __thiscall PakManager::SetDistance(struct PakInfoNode const *,float,bool)	streamer.o
+0x006669E0	0x00A55EE0	?GetUnloadedPrereq@PakManager@@ABEPAUPakInfoNode@@PBU2@@Z	private: struct PakInfoNode * __thiscall PakManager::GetUnloadedPrereq(struct PakInfoNode const *)const 	streamer.o
+0x00666A40	0x00A55F40	?RegisterPakLoaded@PakManager@@AAEXPAUPakInfoNode@@@Z	private: void __thiscall PakManager::RegisterPakLoaded(struct PakInfoNode *)	streamer.o
+0x00666B90	0x00A56090	?RegisterPakUnloaded@PakManager@@AAEXPAUPakInfoNode@@@Z	private: void __thiscall PakManager::RegisterPakUnloaded(struct PakInfoNode *)	streamer.o
+0x00666C50	0x00A56150	?GetContextStack@PakManager@@ABEAAV?$ae_sized_array@W4TPakId@@$0IA@@@XZ	private: class ae_sized_array<enum TPakId,128> & __thiscall PakManager::GetContextStack(void)const 	streamer.o
+0x00666D00	0x00A56200	?PushContext@PakManager@@QAEXW4TPakId@@@Z	public: void __thiscall PakManager::PushContext(enum TPakId)	streamer.o
+0x00666D20	0x00A56220	?PushContext@PakManager@@AAEXPBUPakInfoNode@@@Z	private: void __thiscall PakManager::PushContext(struct PakInfoNode const *)	streamer.o
+0x00666D40	0x00A56240	?MemAlloc@PakManager@@QAEPAXW4TPakId@@I_N@Z	public: void * __thiscall PakManager::MemAlloc(enum TPakId,unsigned int,bool)	streamer.o
+0x00666DF0	0x00A562F0	?MemAlign@PakManager@@QAEPAXW4TPakId@@II@Z	public: void * __thiscall PakManager::MemAlign(enum TPakId,unsigned int,unsigned int)	streamer.o
+0x00666E90	0x00A56390	?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z	public: void __thiscall PakManager::MemFree(enum TPakId,void *,bool)	streamer.o
+0x00666F50	0x00A56450	?StartupNfl@@YAXPBD@Z	void __cdecl StartupNfl(char const *)	streamer.o
+0x00666FE0	0x00A564E0	?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z	private: void __thiscall StreamZoneManager::SetTopOverrideBrushSet(class ZoneBoundaryBank *,class ZoneOverrideBrushSet *)	streamer.o
+0x006672B0	0x00A567B0	?CheckpointRestart@StreamZoneManager@@QAEXXZ	public: void __thiscall StreamZoneManager::CheckpointRestart(void)	streamer.o
+0x00667380	0x00A56880	?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z	public: struct PakInfoNode const * __thiscall StreamZoneManager::GetCellPakInfo(int)	streamer.o
+0x00667450	0x00A56950	?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@H@Z	public: class StreamZone const * __thiscall StreamZoneManager::GetCellZone(int)	streamer.o
+0x006674D0	0x00A569D0	?OnLoaded@StreamZoneManager@@QAEXW4TPakId@@@Z	public: void __thiscall StreamZoneManager::OnLoaded(enum TPakId)	streamer.o
+0x006676E0	0x00A56BE0	?OnUnload@StreamZoneManager@@QAEXW4TPakId@@@Z	public: void __thiscall StreamZoneManager::OnUnload(enum TPakId)	streamer.o
+0x006678F0	0x00A56DF0	?RenderZoneGraph@StreamZoneManager@@QBEXPBVZoneBoundaryBank@@@Z	public: void __thiscall StreamZoneManager::RenderZoneGraph(class ZoneBoundaryBank const *)const 	streamer.o
+0x006688C0	0x00A57DC0	?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z	public: class StreamZone const * __thiscall StreamZoneManager::FindZone(enum TPakId)const 	streamer.o
+0x00668A30	0x00A57F30	?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@H@Z	public: class StreamZone const * __thiscall StreamZoneManager::GetZoneByIndex(int)const 	streamer.o
+0x00668AE0	0x00A57FE0	?GetNumZones@StreamZoneManager@@QBEHXZ	public: int __thiscall StreamZoneManager::GetNumZones(void)const 	streamer.o
+0x00668B30	0x00A58030	?Console_ToggleSceneFX@@YAXXZ	void __cdecl Console_ToggleSceneFX(void)	streamer.o
+0x00668BF0	0x00A580F0	?Console_ToggleRenderEnts@@YAXXZ	void __cdecl Console_ToggleRenderEnts(void)	streamer.o
+0x00668C10	0x00A58110	?Console_ToggleRenderLights@@YAXXZ	void __cdecl Console_ToggleRenderLights(void)	streamer.o
+0x00668C30	0x00A58130	?RestartPersistentArray@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::RestartPersistentArray(void)	streamer.o
+0x00668CB0	0x00A581B0	?ResetAllStaticModels@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::ResetAllStaticModels(void)	streamer.o
+0x00668D80	0x00A58280	?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z	private: void __thiscall SceneManager::ProcessEffects(enum TPakId,class SceneBank *)	streamer.o
+0x00668ED0	0x00A583D0	?EnableEffect@SceneManager@@QAEXI@Z	public: void __thiscall SceneManager::EnableEffect(unsigned int)	streamer.o
+0x00668FC0	0x00A584C0	?DisableEffect@SceneManager@@QAEXI@Z	public: void __thiscall SceneManager::DisableEffect(unsigned int)	streamer.o
+0x006690B0	0x00A585B0	?UpdateEffects@SceneManager@@QAEXM@Z	public: void __thiscall SceneManager::UpdateEffects(float)	streamer.o
+0x00669530	0x00A58A30	?DebugRenderFX@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::DebugRenderFX(void)	streamer.o
+0x00669A20	0x00A58F20	?DebugRenderLights@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::DebugRenderLights(void)	streamer.o
+0x00669AF0	0x00A58FF0	?RenderInstanceGroups@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::RenderInstanceGroups(void)	streamer.o
+0x0066A0B0	0x00A595B0	?GetBank@SceneManager@@AAEPAVSceneBank@@W4TPakId@@@Z	private: class SceneBank * __thiscall SceneManager::GetBank(enum TPakId)	streamer.o
+0x0066A120	0x00A59620	?InitiateHeaderRead@PakFile@@AAEXXZ	private: void __thiscall PakFile::InitiateHeaderRead(void)	streamer.o
+0x0066A380	0x00A59880	?UpdateReads@PakFile@@AAEXXZ	private: void __thiscall PakFile::UpdateReads(void)	streamer.o
+0x0066A790	0x00A59C90	?IsNextFileReady@PakFile@@AAE_NXZ	private: bool __thiscall PakFile::IsNextFileReady(void)	streamer.o
+0x0066A900	0x00A59E00	?RenderDebug@PakFile@@ABEXXZ	private: void __thiscall PakFile::RenderDebug(void)const 	streamer.o
+0x0066AFF0	0x00A5A4F0	?AddHeap@PakFile@@QAEXPAEI@Z	public: void __thiscall PakFile::AddHeap(unsigned char *,unsigned int)	streamer.o
+0x0066B040	0x00A5A540	??0PakHeapContext@@QAE@W4TPakId@@_N@Z	public: __thiscall PakHeapContext::PakHeapContext(enum TPakId,bool)	streamer.o
+0x0066B0E0	0x00A5A5E0	?UnloadBanks@AssetBankSet@@SAXW4TPakId@@@Z	public: static void __cdecl AssetBankSet::UnloadBanks(enum TPakId)	streamer.o
+0x0066B120	0x00A5A620	?IsEmpty@TBankAlloc@@QBE_NXZ	public: bool __thiscall TBankAlloc::IsEmpty(void)const 	streamer.o
+0x0066B150	0x00A5A650	?Clear@TBankAlloc@@QAEXXZ	public: void __thiscall TBankAlloc::Clear(void)	streamer.o
+0x0066B160	0x00A5A660	?ToFloat@TBankAlloc@@QBEMXZ	public: float __thiscall TBankAlloc::ToFloat(void)const 	streamer.o
+0x0066B1D0	0x00A5A6D0	??1BankManager@@AAE@XZ	private: __thiscall BankManager::~BankManager(void)	streamer.o
+0x0066B540	0x00A5AA40	?GetAllocs@BankManager@@QBEXUTBankAlloc@@ABVNumBanks@@AAV?$ae_sized_array@Vmem_info@@$0CA@@@@Z	public: void __thiscall BankManager::GetAllocs(struct TBankAlloc,class NumBanks const &,class ae_sized_array<class mem_info,32> &)const 	streamer.o
+0x0066B850	0x00A5AD50	?release@BankManager@@QAEXAAUTBankAlloc@@@Z	public: void __thiscall BankManager::release(struct TBankAlloc &)	streamer.o
+0x0066B910	0x00A5AE10	?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z	public: int __thiscall BankManager::get_alloc_count(struct TBankAlloc const &)const 	streamer.o
+0x0066B9A0	0x00A5AEA0	?get_alloc@BankManager@@QBE?AVmem_info@@ABUTBankAlloc@@H_N@Z	public: class mem_info __thiscall BankManager::get_alloc(struct TBankAlloc const &,int,bool)const 	streamer.o
+0x0066BC50	0x00A5B150	?get_free_count@BankManager@@QBE?AVNumBanks@@XZ	public: class NumBanks __thiscall BankManager::get_free_count(void)const 	streamer.o
+0x0066BD40	0x00A5B240	?DecodeMipSettings@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeMipSettings(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0066BD60	0x00A5B260	?DecodeInstanceBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeInstanceBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0066BD80	0x00A5B280	?DecodeHeap@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeHeap(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0066BDE0	0x00A5B2E0	??0InstanceBankMgr@@QAE@XZ	public: __thiscall InstanceBankMgr::InstanceBankMgr(void)	streamer.o
+0x0066BE80	0x00A5B380	??1InstanceBankMgr@@QAE@XZ	public: __thiscall InstanceBankMgr::~InstanceBankMgr(void)	streamer.o
+0x0066BEF0	0x00A5B3F0	?Add@InstanceBankMgr@@QAEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@I@Z	public: unsigned int __thiscall InstanceBankMgr::Add(enum eInstanceBankType,enum TPakId,class tlFixedString const &,unsigned int)	streamer.o
+0x0066C010	0x00A5B510	?ReleaseAnims@InstanceBankMgr@@QAEXW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::ReleaseAnims(enum TPakId)	streamer.o
+0x0066C500	0x00A5BA00	?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z	public: bool __thiscall InstanceBankMgr::GetAnimOffset(char const *,enum TPakId,unsigned int *,unsigned int *)	streamer.o
+0x0066C5F0	0x00A5BAF0	?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z	public: bool __thiscall InstanceBankMgr::GetMipScale(char const *,float &)	streamer.o
+0x0066C620	0x00A5BB20	?Reset@PakManager@@AAEXXZ	private: void __thiscall PakManager::Reset(void)	streamer.o
+0x0066C660	0x00A5BB60	?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@PBD@Z	public: struct PakInfoNode const * __thiscall PakManager::GetPakInfo(char const *)const 	streamer.o
+0x0066C770	0x00A5BC70	?PrintBankUsage@@YAMPADMABUTBankAlloc@@_N@Z	float __cdecl PrintBankUsage(char *,float,struct TBankAlloc const &,bool)	streamer.o
+0x0066C8B0	0x00A5BDB0	?GetBestUnloadedPak@PakManager@@ABEPAUPakInfoNode@@XZ	private: struct PakInfoNode * __thiscall PakManager::GetBestUnloadedPak(void)const 	streamer.o
+0x0066CB60	0x00A5C060	?GetTopContext@PakManager@@QBE?AW4TPakId@@XZ	public: enum TPakId __thiscall PakManager::GetTopContext(void)const 	streamer.o
+0x0066CB90	0x00A5C090	?PopContext@PakManager@@QAE?AW4TPakId@@XZ	public: enum TPakId __thiscall PakManager::PopContext(void)	streamer.o
+0x0066CBC0	0x00A5C0C0	?UnloadBank@StreamZoneManager@@UAEXW4TPakId@@@Z	public: virtual void __thiscall StreamZoneManager::UnloadBank(enum TPakId)	streamer.o
+0x0066CCD0	0x00A5C1D0	?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@V?$BitSet@$0EA@@@ABV?$InplaceVector@M@@_N@Z	private: void __thiscall StreamZoneManager::SetDistances(class ZoneBoundaryBank *,class BitSet<64>,class InplaceVector<float> const &,bool)	streamer.o
+0x0066CD60	0x00A5C260	?DebugRender@StreamZoneManager@@QAEXXZ	public: void __thiscall StreamZoneManager::DebugRender(void)	streamer.o
+0x0066CEF0	0x00A5C3F0	?FindZone@StreamZoneManager@@QBEPBVStreamZone@@PBD@Z	public: class StreamZone const * __thiscall StreamZoneManager::FindZone(char const *)const 	streamer.o
+0x0066CFA0	0x00A5C4A0	?RenderGlowBeam@@YAXAAVPosition3@math@@0MI@Z	void __cdecl RenderGlowBeam(class math::Position3 &,class math::Position3 &,float,unsigned int)	streamer.o
+0x0066D320	0x00A5C820	?RenderGlowSprite@@YAXAAVPosition3@math@@MI@Z	void __cdecl RenderGlowSprite(class math::Position3 &,float,unsigned int)	streamer.o
+0x0066D670	0x00A5CB70	?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z	private: void __thiscall SceneManager::ProcessStaticModel(enum TPakId,class StaticModel &)	streamer.o
+0x0066DCA0	0x00A5D1A0	?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z	private: void __thiscall SceneManager::ProcessVehicleNode(enum TPakId,int)	streamer.o
+0x0066DFE0	0x00A5D4E0	?AddBank@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z	private: void __thiscall SceneManager::AddBank(enum TPakId,class SceneBank *)	streamer.o
+0x0066E400	0x00A5D900	?SetupAllocator@PakFile@@SAXXZ	public: static void __cdecl PakFile::SetupAllocator(void)	streamer.o
+0x0066E540	0x00A5DA40	?CancelLoading@PakFile@@AAEXXZ	private: void __thiscall PakFile::CancelLoading(void)	streamer.o
+0x0066E7C0	0x00A5DCC0	?BeginAsyncUnload@PakFile@@AAEXXZ	private: void __thiscall PakFile::BeginAsyncUnload(void)	streamer.o
+0x0066E860	0x00A5DD60	?UnloadSerialized@PakFile@@AAEXXZ	private: void __thiscall PakFile::UnloadSerialized(void)	streamer.o
+0x0066E930	0x00A5DE30	?CreateHeaps@PakFile@@AAEXXZ	private: void __thiscall PakFile::CreateHeaps(void)	streamer.o
+0x0066EE30	0x00A5E330	?DestroyHeaps@PakFile@@AAEXXZ	private: void __thiscall PakFile::DestroyHeaps(void)	streamer.o
+0x0066F060	0x00A5E560	??1PakHeapContext@@QAE@XZ	public: __thiscall PakHeapContext::~PakHeapContext(void)	streamer.o
+0x0066F0A0	0x00A5E5A0	??0BankManager@@AAE@XZ	private: __thiscall BankManager::BankManager(void)	streamer.o
+0x0066F230	0x00A5E730	?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z	public: struct TBankAlloc __thiscall BankManager::Allocate(class NumBanks)	streamer.o
+0x0066F390	0x00A5E890	?can_alloc@BankManager@@QBE_NVNumBanks@@@Z	public: bool __thiscall BankManager::can_alloc(class NumBanks)const 	streamer.o
+0x0066F3C0	0x00A5E8C0	?GetName@@YA?AVtlFixedString@@PBD@Z	class tlFixedString __cdecl GetName(char const *)	streamer.o
+0x0066F480	0x00A5E980	?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z	void __cdecl RegisterMesh(char const *,struct MultiApk *,enum TPakId)	streamer.o
+0x0066F4C0	0x00A5E9C0	?DecodeSkeleton@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeSkeleton(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0066F590	0x00A5EA90	?DecodeAnim@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeAnim(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0066F670	0x00A5EB70	?GetMultiApkFcn@@YAP6AXPBDPAUMultiApk@@W4TPakId@@@Z0@Z	void (__cdecl*__cdecl GetMultiApkFcn(char const *))(char const *,struct MultiApk *,enum TPakId)	streamer.o
+0x0066F6F0	0x00A5EBF0	?Add@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z	public: virtual class nalAnimClass<class nalAnyPose> * __thiscall cdResourceDirectory<class nalAnimClass<class nalAnyPose> >::Add(class nalAnimClass<class nalAnyPose> *)	streamer.o
+0x0066F760	0x00A5EC60	?Add@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@PAV2@@Z	public: virtual class nalSceneAnim * __thiscall cdResourceDirectory<class nalSceneAnim>::Add(class nalSceneAnim *)	streamer.o
+0x0066F7D0	0x00A5ECD0	?Add@?$cdResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z	public: virtual class nalAnimFile * __thiscall cdResourceDirectory<class nalAnimFile>::Add(class nalAnimFile *)	streamer.o
+0x0066F840	0x00A5ED40	?Add@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@PAV2@@Z	public: virtual class nalBaseSkeleton * __thiscall cdResourceDirectory<class nalBaseSkeleton>::Add(class nalBaseSkeleton *)	streamer.o
+0x0066F8B0	0x00A5EDB0	?RegisterAnimOffset@InstanceBankMgr@@QAEXPBDIIW4TPakId@@@Z	public: void __thiscall InstanceBankMgr::RegisterAnimOffset(char const *,unsigned int,unsigned int,enum TPakId)	streamer.o
+0x0066FA30	0x00A5EF30	?ConsoleSetPakDistance@@YAXXZ	void __cdecl ConsoleSetPakDistance(void)	streamer.o
+0x0066FAB0	0x00A5EFB0	?ConsoleClearPakDistance@@YAXXZ	void __cdecl ConsoleClearPakDistance(void)	streamer.o
+0x0066FB10	0x00A5F010	?GetAllPaks@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z	void __cdecl GetAllPaks(class ae_sized_array<enum TPakId,32> &)	streamer.o
+0x0066FB80	0x00A5F080	??1PakManager@@QAE@XZ	public: __thiscall PakManager::~PakManager(void)	streamer.o
+0x0066FC30	0x00A5F130	?GetPakPrerequisites@PakManager@@QBEXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@AAV?$BitSet@$0GD@@@@Z	public: void __thiscall PakManager::GetPakPrerequisites(enum TPakId,class ae_sized_array<enum TPakId,32> &,class BitSet<99> &)const 	streamer.o
+0x0066FE10	0x00A5F310	?UpdateInfo@PakManager@@AAEXXZ	private: void __thiscall PakManager::UpdateInfo(void)	streamer.o
+0x00670370	0x00A5F870	?AsyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z	public: void __thiscall PakManager::AsyncUnloadPak(enum TPakId)	streamer.o
+0x00670480	0x00A5F980	?DebugRender@PakManager@@QAEXXZ	public: void __thiscall PakManager::DebugRender(void)	streamer.o
+0x00671360	0x00A60860	?GetBestUnloadablePak@PakManager@@ABEPAUPakInfoNode@@XZ	private: struct PakInfoNode * __thiscall PakManager::GetBestUnloadablePak(void)const 	streamer.o
+0x00671480	0x00A60980	?UpdateLoading@PakManager@@AAEXXZ	private: void __thiscall PakManager::UpdateLoading(void)	streamer.o
+0x00671600	0x00A60B00	?ProgressUpdate@PakManager@@AAEXXZ	private: void __thiscall PakManager::ProgressUpdate(void)	streamer.o
+0x00671900	0x00A60E00	?GetPakName@PakManager@@QBEPBDW4TPakId@@@Z	public: char const * __thiscall PakManager::GetPakName(enum TPakId)const 	streamer.o
+0x006719E0	0x00A60EE0	?IsLoaded@PakManager@@QBE_NPBD@Z	public: bool __thiscall PakManager::IsLoaded(char const *)const 	streamer.o
+0x00671A70	0x00A60F70	?CopyContextStack@PakManager@@QBEXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z	public: void __thiscall PakManager::CopyContextStack(class ae_sized_array<enum TPakId,32> &)const 	streamer.o
+0x00671C60	0x00A61160	?FindPakId@PakManager@@QBE?AW4TPakId@@W4EPakType@@@Z	public: enum TPakId __thiscall PakManager::FindPakId(enum EPakType)const 	streamer.o
+0x00671CC0	0x00A611C0	?FindPakId@PakManager@@QBE?AW4TPakId@@PBD@Z	public: enum TPakId __thiscall PakManager::FindPakId(char const *)const 	streamer.o
+0x00671D60	0x00A61260	?GetActivePakIds@PakManager@@QBEXAAV?$ae_vector@W4TPakId@@@@@Z	public: void __thiscall PakManager::GetActivePakIds(class ae_vector<enum TPakId> &)const 	streamer.o
+0x00671DF0	0x00A612F0	?GetUnloadableBankCount@PakManager@@QBEH_N@Z	public: int __thiscall PakManager::GetUnloadableBankCount(bool)const 	streamer.o
+0x00671ED0	0x00A613D0	?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z	public: void * __thiscall PakManager::CrazyTempMemBorrow(unsigned int,unsigned int)	streamer.o
+0x00671F30	0x00A61430	?CrazyTempMemGiveBack@PakManager@@QAEXPAX@Z	public: void __thiscall PakManager::CrazyTempMemGiveBack(void *)	streamer.o
+0x00671FC0	0x00A614C0	?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z	private: void __thiscall StreamZoneManager::SetDistances(class ZoneBoundaryBank *,class ZoneOverrideBrushSet *)	streamer.o
+0x006720B0	0x00A615B0	?AddGlowSprite@@YAXQAMMI@Z	void __cdecl AddGlowSprite(float * const,float,unsigned int)	streamer.o
+0x00672100	0x00A61600	?AddGlowBeam@@YAXQAM0MI@Z	void __cdecl AddGlowBeam(float * const,float * const,float,unsigned int)	streamer.o
+0x00672170	0x00A61670	?DebugRenderEnts@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::DebugRenderEnts(void)	streamer.o
+0x00673190	0x00A62690	?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z	private: void __thiscall SceneManager::ProcessInstanceGroup(enum TPakId,class InstanceGroup &)	streamer.o
+0x00673D60	0x00A63260	?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z	private: void __thiscall SceneManager::ConvertEntity(class SceneEntity *,class Entity *)	streamer.o
+0x006744B0	0x00A639B0	?cdInvokeMultiApkCallbacks@@YAXPBD0W4TPakId@@PAVapkFile@apk@@PAVapkFileEntry@3@@Z	void __cdecl cdInvokeMultiApkCallbacks(char const *,char const *,enum TPakId,class apk::apkFile *,class apk::apkFileEntry *)	streamer.o
+0x006746C0	0x00A63BC0	?AsyncLoad@PakFile@@QAEXVNumBanks@@@Z	public: void __thiscall PakFile::AsyncLoad(class NumBanks)	streamer.o
+0x006747D0	0x00A63CD0	?AsyncUnload@PakFile@@QAEXXZ	public: void __thiscall PakFile::AsyncUnload(void)	streamer.o
+0x00674810	0x00A63D10	?InitiateDataLoad@PakFile@@AAEXXZ	private: void __thiscall PakFile::InitiateDataLoad(void)	streamer.o
+0x00675410	0x00A64910	?AddApk@PakFile@@QAEXPAVapkFile@apk@@@Z	public: void __thiscall PakFile::AddApk(class apk::apkFile *)	streamer.o
+0x006754A0	0x00A649A0	?ReleaseApks@PakFile@@QAEXXZ	public: void __thiscall PakFile::ReleaseApks(void)	streamer.o
+0x00675580	0x00A64A80	?UnloadInplace@PakFile@@AAEXXZ	private: void __thiscall PakFile::UnloadInplace(void)	streamer.o
+0x00675630	0x00A64B30	?FinishUnload@PakFile@@AAEXXZ	private: void __thiscall PakFile::FinishUnload(void)	streamer.o
+0x00675850	0x00A64D50	??1AssetBankSet@@UAE@XZ	public: virtual __thiscall AssetBankSet::~AssetBankSet(void)	streamer.o
+0x006758C0	0x00A64DC0	?GetPakPrerequisites@@YAXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z	void __cdecl GetPakPrerequisites(enum TPakId,class ae_sized_array<enum TPakId,32> &)	streamer.o
+0x00675960	0x00A64E60	?get_context_stack@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z	void __cdecl get_context_stack(class ae_sized_array<enum TPakId,32> &)	streamer.o
+0x00675980	0x00A64E80	?DecodeFLI@PakManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall PakManager::DecodeFLI(char const *,unsigned char *,int,enum TPakId)	streamer.o
+0x00675B20	0x00A65020	?DecodeFLI@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeFLI(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00675B40	0x00A65040	?SetPriorities@StreamZoneManager@@QAEXXZ	public: void __thiscall StreamZoneManager::SetPriorities(void)	streamer.o
+0x00675E10	0x00A65310	??1SceneManager@@UAE@XZ	public: virtual __thiscall SceneManager::~SceneManager(void)	streamer.o
+0x00675E20	0x00A65320	?DebugRender@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::DebugRender(void)	streamer.o
+0x00675EA0	0x00A653A0	?RenderLightGlows@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::RenderLightGlows(void)	streamer.o
+0x00676B20	0x00A66020	?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z	private: void __thiscall SceneManager::UnloadInstanceGroups(enum TPakId)	streamer.o
+0x00676C50	0x00A66150	?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z	private: void __thiscall SceneManager::ProcessEntity(enum TPakId,int)	streamer.o
+0x006773B0	0x00A668B0	?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z	private: virtual void __thiscall SceneManager::UnloadBank(enum TPakId)	streamer.o
+0x00677500	0x00A66A00	?cdLoadApkInplace@@YAPAVapkFile@apk@@PBDPAEHW4TPakId@@PAVPakFile@@@Z	class apk::apkFile * __cdecl cdLoadApkInplace(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x006775A0	0x00A66AA0	??0PakFile@@QAE@W4EPakType@@PBDW4TPakId@@VNumBanks@@@Z	public: __thiscall PakFile::PakFile(enum EPakType,char const *,enum TPakId,class NumBanks)	streamer.o
+0x00677750	0x00A66C50	?UpdateUnloading@PakFile@@AAEXXZ	private: void __thiscall PakFile::UpdateUnloading(void)	streamer.o
+0x00677810	0x00A66D10	?SyncUnload@PakFile@@AAEXXZ	private: void __thiscall PakFile::SyncUnload(void)	streamer.o
+0x00677830	0x00A66D30	?DecodeTexture@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeTexture(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00677840	0x00A66D40	?DecodeFont@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeFont(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00677850	0x00A66D50	?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@@Z	public: unsigned int __thiscall InstanceBankMgr::Get(enum eInstanceBankType,enum TPakId,class tlFixedString const &)const 	streamer.o
+0x00677960	0x00A66E60	?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@I@Z	public: unsigned int __thiscall InstanceBankMgr::Get(enum eInstanceBankType,enum TPakId,unsigned int)const 	streamer.o
+0x00677A60	0x00A66F60	?cdGetTexture@@YAPAUnglTexture@@W4TPakId@@ABVtlFixedString@@@Z	struct nglTexture * __cdecl cdGetTexture(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677A90	0x00A66F90	?cdGetMesh@@YAPAUnglMesh@@W4TPakId@@ABVtlFixedString@@@Z	struct nglMesh * __cdecl cdGetMesh(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677AC0	0x00A66FC0	?cdGetEffectTemplate@@YAPAVapsEffectTemplate@@W4TPakId@@ABVtlFixedString@@@Z	class apsEffectTemplate * __cdecl cdGetEffectTemplate(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677B40	0x00A67040	?cdGetFont@@YAPAVnglFont@@W4TPakId@@ABVtlFixedString@@@Z	class nglFont * __cdecl cdGetFont(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677BC0	0x00A670C0	?cdGetMeshFile@@YAPAUMultiApk@@W4TPakId@@ABVtlFixedString@@@Z	struct MultiApk * __cdecl cdGetMeshFile(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677BE0	0x00A670E0	?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@W4TPakId@@ABVtlFixedString@@@Z	class nalAnimClass<class nalAnyPose> * __cdecl cdGetAnim(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677C00	0x00A67100	?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@I@Z	class nalAnimClass<class nalAnyPose> * __cdecl cdGetAnim(unsigned int)	streamer.o
+0x00677C20	0x00A67120	?cdGetSkeleton@@YAPAVnalBaseSkeleton@@W4TPakId@@ABVtlFixedString@@@Z	class nalBaseSkeleton * __cdecl cdGetSkeleton(enum TPakId,class tlFixedString const &)	streamer.o
+0x00677C90	0x00A67190	?AsyncLoadPak@PakManager@@QAE?AW4TPakId@@W4EPakType@@PBDVNumBanks@@@Z	public: enum TPakId __thiscall PakManager::AsyncLoadPak(enum EPakType,char const *,class NumBanks)	streamer.o
+0x00677F40	0x00A67440	?AsyncLoadPakHeader@PakManager@@QAEPAVPakFile@@W4EPakType@@PBDVNumBanks@@@Z	public: class PakFile * __thiscall PakManager::AsyncLoadPakHeader(enum EPakType,char const *,class NumBanks)	streamer.o
+0x00678040	0x00A67540	?UpdateNormal@PakManager@@AAEXXZ	private: void __thiscall PakManager::UpdateNormal(void)	streamer.o
+0x00678250	0x00A67750	??0StreamZoneManager@@QAE@XZ	public: __thiscall StreamZoneManager::StreamZoneManager(void)	streamer.o
+0x006782F0	0x00A677F0	??1StreamZoneManager@@UAE@XZ	public: virtual __thiscall StreamZoneManager::~StreamZoneManager(void)	streamer.o
+0x00678350	0x00A67850	?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z	public: void __thiscall StreamZoneManager::Update(int,class math::Position3 const &,bool)	streamer.o
+0x006786A0	0x00A67BA0	??0SceneManager@@QAE@XZ	public: __thiscall SceneManager::SceneManager(void)	streamer.o
+0x006787E0	0x00A67CE0	?PostProcess@SceneManager@@AAEXW4TPakId@@@Z	private: void __thiscall SceneManager::PostProcess(enum TPakId)	streamer.o
+0x006788F0	0x00A67DF0	?InstanceEntities@SceneManager@@QAEXXZ	public: void __thiscall SceneManager::InstanceEntities(void)	streamer.o
+0x00678D40	0x00A68240	?cdGetResource@@YAPAXABVtlFixedString@@I_N@Z	void * __cdecl cdGetResource(class tlFixedString const &,unsigned int,bool)	streamer.o
+0x00678ED0	0x00A683D0	?apkGetResource@@YAPAXABVtlFixedString@@I@Z	void * __cdecl apkGetResource(class tlFixedString const &,unsigned int)	streamer.o
+0x00678EF0	0x00A683F0	?cdInitApk@@YAXXZ	void __cdecl cdInitApk(void)	streamer.o
+0x00678FA0	0x00A684A0	??1PakFile@@QAE@XZ	public: __thiscall PakFile::~PakFile(void)	streamer.o
+0x00679130	0x00A68630	?Find@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z	public: virtual class nalAnimClass<class nalAnyPose> * __thiscall cdResourceDirectory<class nalAnimClass<class nalAnyPose> >::Find(class tlFixedString const &)	streamer.o
+0x00679160	0x00A68660	?Find@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@ABVtlFixedString@@@Z	public: virtual class nalSceneAnim * __thiscall cdResourceDirectory<class nalSceneAnim>::Find(class tlFixedString const &)	streamer.o
+0x00679190	0x00A68690	?Find@?$cdResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z	public: virtual class nalAnimFile * __thiscall cdResourceDirectory<class nalAnimFile>::Find(class tlFixedString const &)	streamer.o
+0x006791C0	0x00A686C0	?Find@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z	public: virtual class nalBaseSkeleton * __thiscall cdResourceDirectory<class nalBaseSkeleton>::Find(class tlFixedString const &)	streamer.o
+0x006791F0	0x00A686F0	??0PakManager@@QAE@XZ	public: __thiscall PakManager::PakManager(void)	streamer.o
+0x00679390	0x00A68890	?UpdateUnloading@PakManager@@AAEXXZ	private: void __thiscall PakManager::UpdateUnloading(void)	streamer.o
+0x006795C0	0x00A68AC0	?DecodeBank@StreamZoneManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall StreamZoneManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	streamer.o
+0x00679D20	0x00A69220	?DecodeScene@SceneManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall SceneManager::DecodeScene(char const *,unsigned char *,int,enum TPakId)	streamer.o
+0x00679DD0	0x00A692D0	?DecodeZoneBoundaryBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeZoneBoundaryBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00679DF0	0x00A692F0	?DecodeScene@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeScene(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x00679E10	0x00A69310	?GetDecoder@@YAP6AXPBDPAEHW4TPakId@@PAVPakFile@@@Z0@Z	void (__cdecl*__cdecl GetDecoder(char const *))(char const *,unsigned char *,int,enum TPakId,class PakFile *)	streamer.o
+0x0067A150	0x00A69650	?Decode@PakFile@@AAEXPBDHW4TPakId@@@Z	private: void __thiscall PakFile::Decode(char const *,int,enum TPakId)	streamer.o
+0x0067A380	0x00A69880	?UpdateLoading@PakFile@@AAEXXZ	private: void __thiscall PakFile::UpdateLoading(void)	streamer.o
+0x0067AD70	0x00A6A270	?Update@PakFile@@QAEXXZ	public: void __thiscall PakFile::Update(void)	streamer.o
+0x0067AD90	0x00A6A290	?SyncLoadFLI@PakManager@@QAEPBUPakInfoNode@@W4EPakType@@PBD@Z	public: struct PakInfoNode const * __thiscall PakManager::SyncLoadFLI(enum EPakType,char const *)	streamer.o
+0x0067B060	0x00A6A560	?Update@PakManager@@QAEX_N@Z	public: void __thiscall PakManager::Update(bool)	streamer.o
+0x0067B140	0x00A6A640	?UnloadAll@PakManager@@QAEXXZ	public: void __thiscall PakManager::UnloadAll(void)	streamer.o
+0x0067B170	0x00A6A670	?FillBanks@PakManager@@QAEXXZ	public: void __thiscall PakManager::FillBanks(void)	streamer.o
+0x0067B1C0	0x00A6A6C0	?SyncLoadPak@PakManager@@QAE?AW4TPakId@@PBUPakInfoNode@@@Z	public: enum TPakId __thiscall PakManager::SyncLoadPak(struct PakInfoNode const *)	streamer.o
+0x0067B290	0x00A6A790	?SyncLoadPak@PakManager@@QAE?AW4TPakId@@W4EPakType@@PBDVNumBanks@@@Z	public: enum TPakId __thiscall PakManager::SyncLoadPak(enum EPakType,char const *,class NumBanks)	streamer.o
+0x0067B340	0x00A6A840	?SyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z	public: void __thiscall PakManager::SyncUnloadPak(enum TPakId)	streamer.o

@@ -1,0 +1,30 @@
+index	status	map_line
+1	PORTED	0002:00440f00 ??0nglDisplayModeType@@QAE@XZ 00C30400 f i ngl_internal.o
+2	PORTED	0002:00440f10 ?GetKeyPtr@@YAPBVtlFixedString@@PBUnglMorphSet@@@Z 00C30410 f i ngl_internal.o
+3	VERIFIED	0002:00440f20 ?nglShaderNextID@@YAHXZ 00C30420 f ngl_internal.o
+4	VERIFIED	0002:00440f30 ?nglGetDisplayMode@@YAIXZ 00C30430 f ngl_internal.o
+5	VERIFIED	0002:00440f40 ?nglIsDisplayPAL@@YA_NXZ 00C30440 f ngl_internal.o
+6	VERIFIED	0002:00440f50 ?nglIsDisplayWidescreen@@YA_NXZ 00C30450 f ngl_internal.o
+7	VERIFIED	0002:00440f60 ?nglGetVersion@@YAIXZ 00C30460 f ngl_internal.o
+8	VERIFIED	0002:00440f70 ?nglGetVBlankCount@@YAIXZ 00C30470 f ngl_internal.o
+9	VERIFIED	0002:00440f80 ?nglGetVBlankMS@@YAMXZ 00C30480 f ngl_internal.o
+10	VERIFIED	0002:00440fa0 ?nglGetFPS@@YAMXZ 00C304A0 f ngl_internal.o
+11	VERIFIED	0002:00440fb0 ?nglGetFrameCount@@YAHXZ 00C304B0 f ngl_internal.o
+12	VERIFIED	0002:00440fc0 ?nglGetScreenWidth@@YAHXZ 00C304C0 f ngl_internal.o
+13	VERIFIED	0002:00440fd0 ?nglGetScreenHeight@@YAHXZ 00C304D0 f ngl_internal.o
+14	VERIFIED	0002:00440fe0 ?nglSetResourceCallback@@YAXP6APAXABVtlFixedString@@I@Z@Z 00C304E0 f ngl_internal.o
+15	VERIFIED	0002:00440ff0 ?nglCanReleaseFile@@YA_NPAVapkFile@apk@@@Z 00C304F0 f ngl_internal.o
+16	VERIFIED	0002:00441010 ?nglIsInitialized@@YA_NXZ 00C30510 f ngl_internal.o
+17	VERIFIED	0002:00441020 ?nglGetResource@@YAPAXABVtlFixedString@@I@Z 00C30520 f ngl_internal.o
+18	VERIFIED	0002:004410d0 ?nglInitDefaultResources@@YAXXZ 00C305D0 f ngl_internal.o
+19	VERIFIED	0002:00441100 ?nglInit@@YAXXZ 00C30600 f ngl_internal.o
+20	VERIFIED	0002:004411f0 ?nglExit@@YAXXZ 00C306F0 f ngl_internal.o
+21	PORTED	0002:00441260 ?Key@Instance@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C30760 f i ngl_internal.o
+22	PORTED	0002:00441270 ?Key@Instance@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C30770 f i ngl_internal.o
+23	PORTED	0002:00441280 ?Find@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@ABVtlFixedString@@@Z 00C30780 f i ngl_internal.o
+24	VERIFIED	0002:00441330 ?Del@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE_NPBUnglMorphSet@@@Z 00C30830 f i ngl_internal.o
+25	VERIFIED	0002:00441460 ?Destroy@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEXXZ 00C30960 f i ngl_internal.o
+26	VERIFIED	0002:004414a0 ?Destroy@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEXXZ 00C309A0 f i ngl_internal.o
+27	VERIFIED	0002:004414e0 ?Destroy@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ 00C309E0 f i ngl_internal.o
+28	VERIFIED	0002:00441520 ?Destroy@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEXXZ 00C30A20 f i ngl_internal.o
+29	VERIFIED	0002:00441560 ?Destroy@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEXXZ 00C30A60 f i ngl_internal.o

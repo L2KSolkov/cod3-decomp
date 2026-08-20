@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x008267B0	0x00C15CB0	?nslGetSpeakerMode@@YA?AW4nslSpeakerMode@@XZ	enum nslSpeakerMode __cdecl nslGetSpeakerMode(void)	nslInit.o
+0x008267C0	0x00C15CC0	?nslSetSpeakerMode@@YAXW4nslSpeakerMode@@@Z	void __cdecl nslSetSpeakerMode(enum nslSpeakerMode)	nslInit.o
+0x008267E0	0x00C15CE0	?nslGetInitParams@@YAXPAUnslInitParams@@@Z	void __cdecl nslGetInitParams(struct nslInitParams *)	nslInit.o
+0x00826850	0x00C15D50	?nslInit@@YAHPBUnslInitParams@@@Z	int __cdecl nslInit(struct nslInitParams const *)	nslInit.o
+0x00826A00	0x00C15F00	?nslStart@@YAXPAX@Z	void __cdecl nslStart(void *)	nslInit.o
+0x00826C20	0x00C16120	?nslExit@@YAXXZ	void __cdecl nslExit(void)	nslInit.o
+0x00826C50	0x00C16150	?nslGetVersion@@YAIXZ	unsigned int __cdecl nslGetVersion(void)	nslInit.o

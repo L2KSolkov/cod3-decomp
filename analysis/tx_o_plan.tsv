@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x0082CD70	_txTime	_txTime	
+0x0082CDA0	_txMatch	_txMatch	
+0x0082CE40	_txInit	_txInit	
+0x0082CE50	_txGetPrimeLessThanPow2	_txGetPrimeLessThanPow2	
+0x0082CEA0	_txPrintf	_txPrintf	

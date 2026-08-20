@@ -1,0 +1,1159 @@
+index	status	map_line
+1	PORTED	0002:00201cc0 ?get_normal@cdlPlane@@QBEABVDir3@math@@XZ 009F11C0 f i game.o
+2	PORTED	0002:00201cd0 ?get_sphere_radius@cdl_object_t@@QBEMXZ 009F11D0 f i game.o
+3	PORTED	0002:00201ce0 ?get_sflags@cdl_object_t@@QBEHXZ 009F11E0 f i game.o
+4	VERIFIED	0002:00201cf0 ??0subdivision_visitor@@QAE@XZ 009F11F0 f i game.o
+5	PORTED	0002:00201d00 ??0Color32@@QAE@EEEE@Z 009F1200 f i game.o
+6	PORTED	0002:00201d30 ?to_color@Color32@@QAE?AVColor@@XZ 009F1230 f i game.o
+7	PORTED	0002:00201da0 ?Inst@DCGBankManager@@SAPAV1@XZ 009F12A0 f i game.o
+8	PORTED	0002:00201db0 ?Count@CGBankManager@@QBEHXZ 009F12B0 f i game.o
+9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o
+10	VERIFIED	0002:00201de0 ?set_buffer@phys_memory_heap@@QAEXQAXHH@Z 009F12E0 f i game.o
+11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o
+12	PORTED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o
+13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o
+14	PORTED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o
+15	PORTED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o
+16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o
+17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o
+18	PORTED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o
+19	PORTED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o
+20	PORTED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o
+21	PORTED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o
+22	PORTED	0002:00202210 ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ 009F1710 f i game.o
+23	VERIFIED	0002:00202220 ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z 009F1720 f i game.o
+24	PORTED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o
+25	PORTED	0002:00202330 ??4Position3@math@@QAEABV01@ABVDir3@1@@Z 009F1830 f i game.o
+26	VERIFIED	0002:00202350 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PBDI@Z 009F1850 f game.o
+27	VERIFIED	0002:002023c0 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@II@Z 009F18C0 f game.o
+28	VERIFIED	0002:002023f0 ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z 009F18F0 f game.o
+29	VERIFIED	0002:002024a0 ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z 009F19A0 f game.o
+30	VERIFIED	0002:002025a0 ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z 009F1AA0 f game.o
+31	VERIFIED	0002:00202600 ?GetPlaybackPosition@Sound@SoundDevice@@QBEMXZ 009F1B00 f game.o
+32	VERIFIED	0002:00202610 ?SetReverb@Sound@SoundDevice@@QAEX_N@Z 009F1B10 f game.o
+33	VERIFIED	0002:00202690 ?GetVolume@Sound@SoundDevice@@QBEMXZ 009F1B90 f game.o
+34	VERIFIED	0002:002026b0 ?GetSourceName@Sound@SoundDevice@@QBEPBDXZ 009F1BB0 f game.o
+35	VERIFIED	0002:002026d0 ?PlayQueued@Sound@SoundDevice@@QAEXXZ 009F1BD0 f game.o
+36	VERIFIED	0002:00202730 ?Pause@Sound@SoundDevice@@QAEXXZ 009F1C30 f game.o
+37	VERIFIED	0002:002027a0 ?Unpause@Sound@SoundDevice@@QAEXXZ 009F1CA0 f game.o
+38	VERIFIED	0002:00202810 ?DampenGuard@Sound@SoundDevice@@QAEXXZ 009F1D10 f game.o
+39	VERIFIED	0002:00202820 ?IsQueuing@Sound@SoundDevice@@QBE_NXZ 009F1D20 f game.o
+40	VERIFIED	0002:00202890 ?IsQueued@Sound@SoundDevice@@QBE_NXZ 009F1D90 f game.o
+41	VERIFIED	0002:00202900 ?IsPlaying@Sound@SoundDevice@@QBE_NXZ 009F1E00 f game.o
+42	VERIFIED	0002:00202930 ?IsPaused@Sound@SoundDevice@@QBE_NXZ 009F1E30 f game.o
+43	VERIFIED	0002:00202940 ?IsFinished@Sound@SoundDevice@@QBE_NXZ 009F1E40 f game.o
+44	VERIFIED	0002:00202980 ?IsLooped@Sound@SoundDevice@@QBE_NXZ 009F1E80 f game.o
+45	VERIFIED	0002:002029d0 ?GetLength@Sound@SoundDevice@@QBEMXZ 009F1ED0 f game.o
+46	VERIFIED	0002:00202a10 ?ScaleVolume@SoundDevice@@QAEXM@Z 009F1F10 f game.o
+47	VERIFIED	0002:00202a80 ?PauseAllSounds@SoundDevice@@QAEXXZ 009F1F80 f game.o
+48	VERIFIED	0002:00202ab0 ?GetSoundFromSourceId@SoundDevice@@QAEPAVSound@1@W4nslSourceID@@@Z 009F1FB0 f game.o
+49	VERIFIED	0002:00202ae0 ?UnpauseAllSounds@SoundDevice@@QAEXXZ 009F1FE0 f game.o
+50	VERIFIED	0002:00202b10 ?GetNumberOfListeners@SoundDevice@@QAEHXZ 009F2010 f game.o
+51	VERIFIED	0002:00202b20 ?SetNumberOfListeners@SoundDevice@@QAEXH@Z 009F2020 f game.o
+52	VERIFIED	0002:00202b40 ?IsSoundReady@SoundDevice@@QAE_NXZ 009F2040 f game.o
+53	VERIFIED	0002:00202b60 ?DampenAllSounds@SoundDevice@@QAEXM@Z 009F2060 f game.o
+54	VERIFIED	0002:00202b80 ?UndampenAllSounds@SoundDevice@@QAEXXZ 009F2080 f game.o
+55	VERIFIED	0002:00202b90 ?SetEnvironment@SoundDevice@@QAEXW4ESoundEnvironment@@@Z 009F2090 f game.o
+56	VERIFIED	0002:00202ba0 ?SetReverb@SoundDevice@@QAEXPBD_N@Z 009F20A0 f game.o
+57	VERIFIED	0002:00203640 ?UpdateReverb@SoundDevice@@QAEXM@Z 009F2B40 f game.o
+58	VERIFIED	0002:00203820 ?BusVolumeIsName@SoundDevice@@QAE_NPBD@Z 009F2D20 f game.o
+59	VERIFIED	0002:00203840 ?BusPitchFade@SoundDevice@@QAEXPBDMM@Z 009F2D40 f game.o
+60	VERIFIED	0002:002038c0 ?BusVolumeFade@SoundDevice@@QAEXPBDMM@Z 009F2DC0 f game.o
+61	VERIFIED	0002:00203920 ?BusPitchAddBus@SoundDevice@@QAEXPBD@Z 009F2E20 f game.o
+62	VERIFIED	0002:00203940 ?BusVolumeAddBus@SoundDevice@@QAEXPBD@Z 009F2E40 f game.o
+63	VERIFIED	0002:00203960 ?BusPitchRemoveBus@SoundDevice@@QAEXPBD@Z 009F2E60 f game.o
+64	VERIFIED	0002:00203980 ?BusVolumeRemoveBus@SoundDevice@@QAEXPBD@Z 009F2E80 f game.o
+65	VERIFIED	0002:002039a0 ?UpdateBusPitchFade@SoundDevice@@QAEXM@Z 009F2EA0 f game.o
+66	VERIFIED	0002:00203a30 ?UpdateBusVolumeFade@SoundDevice@@QAEXM@Z 009F2F30 f game.o
+67	VERIFIED	0002:00203ac0 ?UpdateListener@SoundDevice@@AAEXXZ 009F2FC0 f game.o
+68	VERIFIED	0002:00203d90 ?GetGroupVolume@SoundDevice@@QBEMPBD@Z 009F3290 f game.o
+69	VERIFIED	0002:00203dd0 ?SetOutputMode@SoundDevice@@QAEXW4EOutputMode@1@@Z 009F32D0 f game.o
+70	VERIFIED	0002:00203e30 ?GetOutputMode@SoundDevice@@QBE?AW4EOutputMode@1@XZ 009F3330 f game.o
+71	VERIFIED	0002:00203ea0 ?SetSurfaceTypeSounds@@YAXQAW4nslWaveID@@W41@@Z 009F33A0 f game.o
+72	VERIFIED	0002:00203ef0 ??0SoundMediaMgr@@QAE@XZ 009F33F0 f game.o
+73	VERIFIED	0002:00203f00 ??1SoundMediaMgr@@QAE@XZ 009F3400 f game.o
+74	VERIFIED	0002:00203f10 ?RegisterSounds@SoundMediaMgr@@QAEXXZ 009F3410 f game.o
+75	VERIFIED	0002:00203f20 ?PlayLandingSound@SoundMediaMgr@@QBEXPAVEntity@@H_N@Z 009F3420 f game.o
+76	VERIFIED	0002:00203fd0 ?StopIndoor@MusicMgr@@QAEXM@Z 009F34D0 f game.o
+77	VERIFIED	0002:00203ff0 ?BG_ActorIsProne@@YAHPAUactor_prone_info_t@@H@Z 009F34F0 f game.o
+78	VERIFIED	0002:00204040 ?BG_ActorGoalIsProne@@YAHPAUactor_prone_info_t@@@Z 009F3540 f game.o
+79	VERIFIED	0002:00204070 ?BG_GetActorProneFraction@@YAMPAUactor_prone_info_t@@H@Z 009F3570 f game.o
+80	VERIFIED	0002:00204100 ?BG_EvaluateTrajectoryDelta@@YAXPBUtrajectory_t@@HQAM@Z 009F3600 f game.o
+81	VERIFIED	0002:00204380 ?BG_GetMarkDir@@YAXQBM0QAM@Z 009F3880 f game.o
+82	VERIFIED	0002:00204540 ?BG_AddPredictableEventToPlayerstate@@YAXHHPAVPlayerState@@@Z 009F3A40 f game.o
+83	VERIFIED	0002:00204680 ?BG_PlayerStateToEntityState@@YAXPAVPlayerState@@PAVEntityState@@H@Z 009F3B80 f game.o
+84	VERIFIED	0002:00204860 ?BG_PlayerStateToEntityStateExtrapolate@@YAXPAVPlayerState@@PAVEntityState@@HH@Z 009F3D60 f game.o
+85	VERIFIED	0002:00204a60 ?BG_AllowPlayerWeaponAtVehiclePos@@YA_NHH@Z 009F3F60 f game.o
+86	VERIFIED	0002:00204a90 ?AngleClamp@@YAMM@Z 009F3F90 f game.o
+87	VERIFIED	0002:00204af0 ?PM_AddEvent@@YAXH@Z 009F3FF0 f game.o
+88	VERIFIED	0002:00204b60 ?PM_AddTouchEnt@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 009F4060 f game.o
+89	VERIFIED	0002:00204c00 ?PM_ClipVelocity@@YAXABVDir3@math@@0AAV12@M@Z 009F4100 f game.o
+90	VERIFIED	0002:00204c90 ?PM_GetEffectiveStance@@YAHPAVPlayerState@@@Z 009F4190 f game.o
+91	VERIFIED	0002:00206140 ?PM_GetViewHeightLerpTime@@YAHPBVPlayerState@@HH@Z 009F5640 f game.o
+92	VERIFIED	0002:00206250 ?PM_ShouldMakeFootsteps@@YAHXZ 009F5750 f game.o
+93	VERIFIED	0002:002063e0 ?PM_PlayFatigueSound@@YAXXZ 009F58E0 f game.o
+94	VERIFIED	0002:00206440 ?PM_UpdateFatigue@@YAXXZ 009F5940 f game.o
+95	VERIFIED	0002:00206590 ?PM_SetProneMovementOverride@@YAXXZ 009F5A90 f game.o
+96	VERIFIED	0002:002065b0 ?PM_UpdatePlayerWalkingFlag@@YAXXZ 009F5AB0 f game.o
+97	VERIFIED	0002:00206620 ?BG_GetWeaponTypeName@@YAPBDW4weapType_t@@@Z 009F5B20 f game.o
+98	VERIFIED	0002:00206680 ?BG_Bullet_Endpos@@YAXMQAMPAUweaponParms@@@Z 009F5B80 f game.o
+99	VERIFIED	0002:00206f90 ?BG_FreeWeaponInfo@@YAXXZ 009F6490 f game.o
+100	VERIFIED	0002:00206fd0 ?BG_GetInfoForWeapon@@YAPAUweaponFileInfo_t@@H@Z 009F64D0 f game.o
+101	VERIFIED	0002:00207050 ?BG_GetWeaponForInfo@@YAHPAUweaponFileInfo_t@@@Z 009F6550 f game.o
+102	VERIFIED	0002:00207060 ?BG_GetNumWeapons@@YAHXZ 009F6560 f game.o
+103	VERIFIED	0002:00207070 ?BG_GetNumAmmoTypes@@YAHXZ 009F6570 f game.o
+104	VERIFIED	0002:00207080 ?BG_GetAmmoTypeMax@@YAHH@Z 009F6580 f game.o
+105	VERIFIED	0002:002070e0 ?BG_GetNumAmmoClips@@YAHXZ 009F65E0 f game.o
+106	VERIFIED	0002:002070f0 ?BG_GetAmmoClipSize@@YAHH@Z 009F65F0 f game.o
+107	VERIFIED	0002:00207150 ?BG_GetSharedAmmoCapSize@@YAHH@Z 009F6650 f game.o
+108	VERIFIED	0002:002071b0 ?BG_GetAmmoTypeName@@YAPBDH@Z 009F66B0 f game.o
+109	VERIFIED	0002:00207210 ?BG_GetAmmoClipName@@YAPBDH@Z 009F6710 f game.o
+110	VERIFIED	0002:00207270 ?BG_GetWeaponSlotForName@@YAHPBD@Z 009F6770 f game.o
+111	VERIFIED	0002:002072b0 ?BG_GetWeaponSlotNameForIndex@@YAPBDH@Z 009F67B0 f game.o
+112	VERIFIED	0002:00207310 ?BG_GetWeaponIndexForName@@YAEI@Z 009F6810 f game.o
+113	VERIFIED	0002:002073a0 ?BG_GetWeaponIndexForName@@YAEPBD@Z 009F68A0 f game.o
+114	VERIFIED	0002:00207420 ?BG_GetWeaponIndexForWorldModelName@@YAEPBD@Z 009F6920 f game.o
+115	VERIFIED	0002:002074d0 ?BG_IsAimDownSightWeapon@@YAHH@Z 009F69D0 f game.o
+116	VERIFIED	0002:002074f0 ?BG_GetEmptySlotForWeapon@@YAHPBVPlayerState@@H@Z 009F69F0 f game.o
+117	VERIFIED	0002:00207570 ?BG_GetStackSlotForWeapon@@YAHPBVPlayerState@@HW4weapSlot_t@@@Z 009F6A70 f game.o
+118	VERIFIED	0002:00207690 ?BG_IsPlayerWeaponAnAlt@@YAHHH@Z 009F6B90 f game.o
+119	VERIFIED	0002:002076e0 ?BG_SelectWeaponIndex@@YAHHH@Z 009F6BE0 f game.o
+120	VERIFIED	0002:002077b0 ?BG_GetConeAngleForWeapon@@YAMPBVPlayerState@@HHH@Z 009F6CB0 f game.o
+121	VERIFIED	0002:00207800 ?BG_GetMinSpreadForWeapon@@YAMPBVPlayerState@@HHH@Z 009F6D00 f game.o
+122	VERIFIED	0002:00207a00 ?PM_ClearAimDownSightFlag@@YAXXZ 009F6F00 f game.o
+123	VERIFIED	0002:00207a10 ?BG_ClipForWeapon@@YAHH@Z 009F6F10 f game.o
+124	VERIFIED	0002:00207a30 ?BG_AmmoForWeapon@@YAHH@Z 009F6F30 f game.o
+125	VERIFIED	0002:00207a50 ?BG_WeaponIsClipOnly@@YAHH@Z 009F6F50 f game.o
+126	VERIFIED	0002:00207a70 ?BG_WeaponAmmo@@YAHPBVPlayerState@@H@Z 009F6F70 f game.o
+127	VERIFIED	0002:00207ab0 ?BG_GetRandomAmmoCounts@@YAXAAH0H@Z 009F6FB0 f game.o
+128	VERIFIED	0002:00207e10 ?PM_WeaponUseAmmo@@YAXHH@Z 009F7310 f game.o
+129	VERIFIED	0002:00207e50 ?PM_WeaponAmmoAvailable@@YAHH@Z 009F7350 f game.o
+130	VERIFIED	0002:00207e80 ?PM_WeaponClipEmpty@@YAHH@Z 009F7380 f game.o
+131	VERIFIED	0002:002080e0 ?PM_KillQueuedReloadSound@@YAXAAVPlayerState@@@Z 009F75E0 f game.o
+132	VERIFIED	0002:00208670 ?PM_AdjustAimSpreadScale@@YAXXZ 009F7B70 f game.o
+133	VERIFIED	0002:00208ac0 ?PM_Weapon_CheckFriendlyFireUse@@YAHXZ 009F7FC0 f game.o
+134	VERIFIED	0002:00208ed0 ??0BinFileManager@@AAE@XZ 009F83D0 f game.o
+135	VERIFIED	0002:00208ee0 ??1BinFileManager@@AAE@XZ 009F83E0 f game.o
+136	VERIFIED	0002:00208ef0 ?Clear@BinFileManager@@QAEXXZ 009F83F0 f game.o
+137	VERIFIED	0002:00208f00 ?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z 009F8400 f game.o
+138	VERIFIED	0002:00208f70 ?Find@BinFileManager@@QAEPAEPBD@Z 009F8470 f game.o
+139	VERIFIED	0002:00208fe0 ?getBuildNumber@@YAPADXZ 009F84E0 f game.o
+140	VERIFIED	0002:00209010 ?RestoreSceneEntity@CheckpointMgr@@QAEXPAVEntity@@@Z 009F8510 f game.o
+141	VERIFIED	0002:00209240 ?RestorePlayerHealth@CheckpointMgr@@QAEXXZ 009F8740 f game.o
+142	VERIFIED	0002:00209330 ?Restart@CheckpointMgr@@QAE_NXZ 009F8830 f game.o
+143	VERIFIED	0002:00209340 ?SetTosserValues@CheckpointMgr@@QAEXXZ 009F8840 f game.o
+144	VERIFIED	0002:00209350 ?RestoreScriptExploders@CheckpointMgr@@QAEXXZ 009F8850 f game.o
+145	VERIFIED	0002:00209380 ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ 009F8880 f game.o
+146	VERIFIED	0002:002093b0 ?CM_FreeLump@@YAXXZ 009F88B0 f game.o
+147	VERIFIED	0002:002093c0 ?CM_NumClusters@@YAHXZ 009F88C0 f game.o
+148	VERIFIED	0002:002093d0 ?CM_ModelBounds@@YAXPAVDCGSet@@AAVPosition3@math@@1@Z 009F88D0 f game.o
+149	VERIFIED	0002:00209550 ?pw@@YAXPAUwinding_t@@@Z 009F8A50 f game.o
+150	VERIFIED	0002:002095a0 ?AllocWinding@@YAPAUwinding_t@@H@Z 009F8AA0 f game.o
+151	VERIFIED	0002:002095e0 ?FreeWinding@@YAXPAUwinding_t@@@Z 009F8AE0 f game.o
+152	VERIFIED	0002:00209620 ?RemoveColinearPoints@@YAXPAUwinding_t@@@Z 009F8B20 f game.o
+153	VERIFIED	0002:00209750 ?WindingPlane@@YAXPAUwinding_t@@QAMPAM@Z 009F8C50 f game.o
+154	VERIFIED	0002:00209810 ?WindingArea@@YAMPAUwinding_t@@@Z 009F8D10 f game.o
+155	VERIFIED	0002:002098f0 ?WindingBounds@@YAXPAUwinding_t@@QAM1@Z 009F8DF0 f game.o
+156	VERIFIED	0002:002099b0 ?WindingCenter@@YAXPAUwinding_t@@QAM@Z 009F8EB0 f game.o
+157	VERIFIED	0002:00209a60 ?BaseWindingForPlane@@YAPAUwinding_t@@QAMM@Z 009F8F60 f game.o
+158	VERIFIED	0002:00209da0 ?CopyWinding@@YAPAUwinding_t@@PAU1@@Z 009F92A0 f game.o
+159	VERIFIED	0002:00209e00 ?ReverseWinding@@YAPAUwinding_t@@PAU1@@Z 009F9300 f game.o
+160	VERIFIED	0002:00209e80 ?ClipWindingEpsilon@@YAXPAUwinding_t@@QAMMMPAPAU1@2@Z 009F9380 f game.o
+161	VERIFIED	0002:0020a2a0 ?ChopWindingInPlace@@YAXPAPAUwinding_t@@QAMMM@Z 009F97A0 f game.o
+162	VERIFIED	0002:0020a610 ?ChopWinding@@YAPAUwinding_t@@PAU1@QAMM@Z 009F9B10 f game.o
+163	VERIFIED	0002:0020a6b0 ?CheckWinding@@YAXPAUwinding_t@@@Z 009F9BB0 f game.o
+164	VERIFIED	0002:0020a980 ?WindingOnPlaneSide@@YAHPAUwinding_t@@QAMM@Z 009F9E80 f game.o
+165	VERIFIED	0002:0020aa40 ?AddWindingToConvexHull@@YAXPAUwinding_t@@PAPAU1@QAM@Z 009F9F40 f game.o
+166	VERIFIED	0002:0020af40 ?CM_CreateStaticModel@@YAXPBDW4TPakId@@QAM22@Z 009FA440 f game.o
+167	VERIFIED	0002:0020af90 ?CM_UnlinkStaticModels@@YAHW4TPakId@@PAUWorldSector@@@Z 009FA490 f game.o
+168	VERIFIED	0002:0020b020 ?CM_DestroyStaticModels@@YAXW4TPakId@@@Z 009FA520 f game.o
+169	VERIFIED	0002:0020b040 ?CM_ClusterPVS@@YAPAEH@Z 009FA540 f game.o
+170	VERIFIED	0002:0020b230 ?CM_UnlinkEntity@@YAXPAUEntityShared@@@Z 009FA730 f game.o
+171	VERIFIED	0002:0020b8e0 ?CM_LinkEntity@@YAXPAUEntityShared@@QBM1@Z 009FADE0 f game.o
+172	VERIFIED	0002:0020bb20 ?CM_LinkStaticModel@@YAXPAVStaticModel@@@Z 009FB020 f game.o
+173	VERIFIED	0002:0020bcd0 ?CM_TraceBox@@YAHABVPosition3@math@@000M@Z 009FB1D0 f game.o
+174	VERIFIED	0002:0020bf60 ?CM_ClipMoveToEntities@@YAXPAUmoveclip_t@@ABUcollision_context_t@@@Z 009FB460 f game.o
+175	VERIFIED	0002:0020bfe0 ??2proximity_data_t@@SAPAXIW4TPakId@@@Z 009FB4E0 f game.o
+176	VERIFIED	0002:0020c000 ??3proximity_data_t@@SAXPAXW4TPakId@@@Z 009FB500 f game.o
+177	VERIFIED	0002:0020c020 ?is_plane_ok@@YA_NABVPosition3@math@@ABVDir3@2@M1MM@Z 009FB520 f game.o
+178	VERIFIED	0002:0020c250 ?RotatePoint@@YAXAAVPosition3@math@@QAV12@@Z 009FB750 f game.o
+179	VERIFIED	0002:0020c330 ?TransposeMatrix@@YAXQAVPosition3@math@@0@Z 009FB830 f game.o
+180	VERIFIED	0002:0020c370 ?CreateRotationMatrix@@YAXABVPosition3@math@@QAV12@@Z 009FB870 f game.o
+181	VERIFIED	0002:0020c400 ?calc_normal@@YA?AVVector4@math@@ABVPosition3@2@00@Z 009FB900 f game.o
+182	VERIFIED	0002:0020c510 ?can_place_decal@@YA_NABVPosition3@math@@PBVDir3@2@PBEHM@Z 009FBA10 f game.o
+183	VERIFIED	0002:0020c720 ?collide_box_segment@@YA_NABVPosition3@math@@000AAMPAV12@@Z 009FBC20 f game.o
+184	VERIFIED	0002:0020c900 ?collide_box_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z 009FBE00 f game.o
+185	VERIFIED	0002:0020cb80 ?collide_box_velocity_sphere@@YAXPAUtraceWork_t@@ABVPosition3@math@@1@Z 009FC080 f game.o
+186	VERIFIED	0002:0020cd80 ?TestCapsuleInCapsule@@YAXPAUtraceWork_t@@@Z 009FC280 f game.o
+187	VERIFIED	0002:0020cfe0 ?SightTraceCylinderThroughCylinder@@YAHPAUtraceWork_t@@ABVPosition3@math@@MM@Z 009FC4E0 f game.o
+188	VERIFIED	0002:0020d180 ?SightTraceSphereThroughSphere@@YAHPAUtraceWork_t@@ABVPosition3@math@@11M@Z 009FC680 f game.o
+189	VERIFIED	0002:0020d2b0 ?collide_ray_triangle@@YA_NABVPosition3@math@@ABVDir3@2@000MPAM@Z 009FC7B0 f game.o
+190	VERIFIED	0002:0020d4a0 ?xtest_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@@Z 009FC9A0 f game.o
+191	VERIFIED	0002:0020d860 ?new_push_out_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@@Z 009FCD60 f game.o
+192	VERIFIED	0002:0020dd10 ?sight_trace_point_patch@@YA_NPBVPosition3@math@@PBEGABV12@2ABVDir3@2@@Z 009FD210 f game.o
+193	VERIFIED	0002:0020de10 ?trace_point_through_sphere@@YAHABVPosition3@math@@ABVDir3@2@0MAAMAAV12@@Z 009FD310 f game.o
+194	VERIFIED	0002:0020df10 ?trace_sphere_through_sphere@@YA_NABVPosition3@math@@M0MABVDir3@2@AAM@Z 009FD410 f game.o
+195	VERIFIED	0002:0020dfe0 ?trace_point_through_cylinder@@YAHABVPosition3@math@@000MAAM@Z 009FD4E0 f game.o
+196	VERIFIED	0002:0020e300 ?point_to_segment_dist2@@YAMABVPosition3@math@@00@Z 009FD800 f game.o
+197	VERIFIED	0002:0020e420 ?DoesFunctionExist@BaseCmdFuncInfo@@SAHPAV1@@Z 009FD920 f game.o
+198	VERIFIED	0002:0020e450 ?Cbuf_Init@@YAXXZ 009FD950 f game.o
+199	VERIFIED	0002:0020e490 ?Cbuf_AddText@@YAXPBD@Z 009FD990 f game.o
+200	VERIFIED	0002:0020e530 ?Cbuf_InsertText@@YAXPBD@Z 009FDA30 f game.o
+201	VERIFIED	0002:0020e6a0 ?Cmd_CallCmdFunction@@YAXPBVBaseCmdFuncInfo@@HH@Z 009FDBA0 f game.o
+202	VERIFIED	0002:0020e6e0 ?Cmd_Argc@@YAHXZ 009FDBE0 f game.o
+203	VERIFIED	0002:0020e6f0 ?Cmd_Argv@@YAPADH@Z 009FDBF0 f game.o
+204	VERIFIED	0002:0020e710 ?Cmd_Args@@YAPADH@Z 009FDC10 f game.o
+205	VERIFIED	0002:0020e7e0 ?Cmd_TokenizeString2@@YAXPBDH@Z 009FDCE0 f game.o
+206	VERIFIED	0002:0020e930 ?Cmd_TokenizeString@@YAXPBD@Z 009FDE30 f game.o
+207	VERIFIED	0002:0020e950 ?Cmd_AddCommand@@YAXPBDP6AXXZ@Z 009FDE50 f game.o
+208	VERIFIED	0002:0020ea50 ?Cmd_AddInputCommand@@YAXPBDP6AXHH@Z@Z 009FDF50 f game.o
+209	VERIFIED	0002:0020eb50 ?Cmd_RemoveCommand@@YAXPBD@Z 009FE050 f game.o
+210	VERIFIED	0002:0020ebe0 ?Cmd_Shutdown@@YAXXZ 009FE0E0 f game.o
+211	VERIFIED	0002:0020ecf0 ?Cmd_CommandCompletion@@YAXP6AXPBD@Z@Z 009FE1F0 f game.o
+212	VERIFIED	0002:0020ed20 ?Cmd_List_f@@YAXXZ 009FE220 f game.o
+213	VERIFIED	0002:0020eda0 ?Sys_Milliseconds@@YAHXZ 009FE2A0 f game.o
+214	VERIFIED	0002:0020ee40 ?Sys_Time@@YAMXZ 009FE340 f game.o
+215	VERIFIED	0002:0020eee0 ?DebugCurveRender@@YAXXZ 009FE3E0 f game.o
+216	VERIFIED	0002:0020f1b0 ?Initialize@CurveManager@@UAEXXZ 009FE6B0 f game.o
+217	VERIFIED	0002:0020f1e0 ?CleanUp@CurveManager@@UAEXXZ 009FE6E0 f game.o
+218	VERIFIED	0002:0020f1f0 ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z 009FE6F0 f game.o
+219	VERIFIED	0002:0020f200 ?UInt32Lookup@CurveManager@@AAEIPAEII@Z 009FE700 f game.o
+220	VERIFIED	0002:0020f230 ?Link_Init@@YAXXZ 009FE730 f game.o
+221	VERIFIED	0002:0020f240 ?Link_Frame@@YAXXZ 009FE740 f game.o
+222	VERIFIED	0002:0020f250 ?Sys_Print@@YAXPBDH@Z 009FE750 f game.o
+223	VERIFIED	0002:0020f260 ?MSG_Init@@YAXPAUmsg_t@@PAEH@Z 009FE760 f game.o
+224	VERIFIED	0002:0020f2a0 ?MSG_BeginReading@@YAXPAUmsg_t@@@Z 009FE7A0 f game.o
+225	VERIFIED	0002:0020f2b0 ?MSG_WriteFlag@@YAXPAUmsg_t@@H@Z 009FE7B0 f game.o
+226	VERIFIED	0002:0020f2d0 ?MSG_ReadFlag@@YAHPAUmsg_t@@@Z 009FE7D0 f game.o
+227	VERIFIED	0002:0020f2f0 ?MSG_WriteChar@@YAXPAUmsg_t@@H@Z 009FE7F0 f game.o
+228	VERIFIED	0002:0020f310 ?MSG_WriteByte@@YAXPAUmsg_t@@H@Z 009FE810 f game.o
+229	VERIFIED	0002:0020f330 ?MSG_WriteData@@YAXPAUmsg_t@@PBXH@Z 009FE830 f game.o
+230	VERIFIED	0002:0020f370 ?MSG_WriteShort@@YAXPAUmsg_t@@H@Z 009FE870 f game.o
+231	VERIFIED	0002:0020f3a0 ?MSG_WriteLong@@YAXPAUmsg_t@@H@Z 009FE8A0 f game.o
+232	VERIFIED	0002:0020f3f0 ?MSG_WriteFloat@@YAXPAUmsg_t@@M@Z 009FE8F0 f game.o
+233	VERIFIED	0002:0020f450 ?MSG_ReadChar@@YADPAUmsg_t@@@Z 009FE950 f game.o
+234	VERIFIED	0002:0020f470 ?MSG_ReadByte@@YAEPAUmsg_t@@@Z 009FE970 f game.o
+235	VERIFIED	0002:0020f490 ?MSG_ReadShort@@YAFPAUmsg_t@@@Z 009FE990 f game.o
+236	VERIFIED	0002:0020f4d0 ?MSG_ReadLong@@YAHPAUmsg_t@@@Z 009FE9D0 f game.o
+237	VERIFIED	0002:0020f520 ?MSG_ReadFloat@@YAMPAUmsg_t@@@Z 009FEA20 f game.o
+238	VERIFIED	0002:0020f580 ?MSG_ReadString@@YAPADPAUmsg_t@@@Z 009FEA80 f game.o
+239	VERIFIED	0002:0020f600 ?MSG_ReadStringLine@@YAPADPAUmsg_t@@@Z 009FEB00 f game.o
+240	VERIFIED	0002:0020f680 ?Netchan_Init@@YAXXZ 009FEB80 f game.o
+241	VERIFIED	0002:0020f6d0 ?Netchan_Setup@@YAXW4netsrc_t@@PAUnetchan_t@@Unetadr_t@@H@Z 009FEBD0 f game.o
+242	VERIFIED	0002:0020f720 ?NET_CompareBaseAdrSigned@@YAHPAUnetadr_t@@0@Z 009FEC20 f game.o
+243	VERIFIED	0002:0020f790 ?NET_CompareAdrSigned@@YAHPAUnetadr_t@@0@Z 009FEC90 f game.o
+244	VERIFIED	0002:0020f840 ?NET_CompareAdr@@YAHUnetadr_t@@0@Z 009FED40 f game.o
+245	VERIFIED	0002:0020f860 ?NET_IsLocalAddress@@YAHUnetadr_t@@@Z 009FED60 f game.o
+246	VERIFIED	0002:0020f870 ?NET_GetLoopPacket@@YAHW4netsrc_t@@PAUnetadr_t@@PAUmsg_t@@@Z 009FED70 f game.o
+247	VERIFIED	0002:0020f910 ?NET_SendLoopPacket@@YAXW4netsrc_t@@HPBXUnetadr_t@@@Z 009FEE10 f game.o
+248	VERIFIED	0002:0020f950 ?NET_SendPacket@@YAXW4netsrc_t@@HPBXUnetadr_t@@@Z 009FEE50 f game.o
+249	VERIFIED	0002:0020fa00 ?NET_OutOfBandPrint@@YAXW4netsrc_t@@Unetadr_t@@PBDZZ 009FEF00 f game.o
+250	VERIFIED	0002:0020faa0 ?NET_StringToAdr@@YAHPBDPAUnetadr_t@@@Z 009FEFA0 f game.o
+251	VERIFIED	0002:0020fb20 ?Com_EndParseSession@@YAXXZ 009FF020 f game.o
+252	VERIFIED	0002:0020fb60 ?Com_ResetParseSessions@@YAXXZ 009FF060 f game.o
+253	VERIFIED	0002:0020fb80 ?Com_SetSpaceDelimited@@YAXH@Z 009FF080 f game.o
+254	VERIFIED	0002:0020fba0 ?Com_SetCSV@@YAXH@Z 009FF0A0 f game.o
+255	VERIFIED	0002:0020fbc0 ?Com_SetParseNegativeNumbers@@YAXH@Z 009FF0C0 f game.o
+256	VERIFIED	0002:0020fbe0 ?Com_GetCurrentParseLine@@YAHXZ 009FF0E0 f game.o
+257	VERIFIED	0002:0020fbf0 ?Com_ScriptError@@YAXPBDZZ 009FF0F0 f game.o
+258	VERIFIED	0002:0020fc40 ?Com_ScriptWarning@@YAXPBDZZ 009FF140 f game.o
+259	VERIFIED	0002:0020fc90 ?Com_UngetToken@@YAXXZ 009FF190 f game.o
+260	VERIFIED	0002:0020fce0 ?Com_ParseSetMark@@YAXPAPBDPAUcom_parse_mark_t@@@Z 009FF1E0 f game.o
+261	VERIFIED	0002:0020fdb0 ?Com_ParseReturnToMark@@YAXPAPBDPAUcom_parse_mark_t@@@Z 009FF2B0 f game.o
+262	VERIFIED	0002:0020fec0 ?Com_GetLastTokenPos@@YAPBDXZ 009FF3C0 f game.o
+263	VERIFIED	0002:00210300 ?Com_Parse@@YAPBDPAPBD@Z 009FF800 f game.o
+264	VERIFIED	0002:00210340 ?Com_ParseOnLine@@YAPBDPAPBD@Z 009FF840 f game.o
+265	VERIFIED	0002:00210390 ?Com_SkipRestOfLine@@YAXPAPBD@Z 009FF890 f game.o
+266	VERIFIED	0002:002103d0 ?Com_Compress@@YAHPAD@Z 009FF8D0 f game.o
+267	VERIFIED	0002:00210470 ?ColorIndex@@YAEE@Z 009FF970 f game.o
+268	VERIFIED	0002:00210490 ?Com_Clamp@@YA?BMMMM@Z 009FF990 f game.o
+269	VERIFIED	0002:002104c0 ?Com_SkipPath@@YAPADPAD@Z 009FF9C0 f game.o
+270	VERIFIED	0002:002104f0 ?Com_StripExtension@@YAXPBDPAD@Z 009FF9F0 f game.o
+271	VERIFIED	0002:00210520 ?Com_BitCheck@@YAHQBHH@Z 009FFA20 f game.o
+272	VERIFIED	0002:00210550 ?Com_BitSet@@YAXQAHH@Z 009FFA50 f game.o
+273	VERIFIED	0002:00210570 ?Com_BitClear@@YAXQAHH@Z 009FFA70 f game.o
+274	VERIFIED	0002:002105a0 ?BigShort@@YAFF@Z 009FFAA0 f game.o
+275	VERIFIED	0002:002105b0 ?BigLong@@YAHH@Z 009FFAB0 f game.o
+276	VERIFIED	0002:002105c0 ?BigLong64@@YA?AUqint64@@U1@@Z 009FFAC0 f game.o
+277	VERIFIED	0002:002105e0 ?LittleLong64@@YA?AUqint64@@U1@@Z 009FFAE0 f game.o
+278	VERIFIED	0002:00210600 ?BigFloat@@YAMM@Z 009FFB00 f game.o
+279	VERIFIED	0002:00210610 ?ShortSwap@@YAFF@Z 009FFB10 f game.o
+280	VERIFIED	0002:00210630 ?ShortNoSwap@@YAFF@Z 009FFB30 f game.o
+281	VERIFIED	0002:00210640 ?LongSwap@@YAHH@Z 009FFB40 f game.o
+282	VERIFIED	0002:00210670 ?LongNoSwap@@YAHH@Z 009FFB70 f game.o
+283	VERIFIED	0002:00210680 ?Long64Swap@@YA?AUqint64@@U1@@Z 009FFB80 f game.o
+284	VERIFIED	0002:002106d0 ?Long64NoSwap@@YA?AUqint64@@U1@@Z 009FFBD0 f game.o
+285	VERIFIED	0002:002106e0 ?FloatSwap@@YAMM@Z 009FFBE0 f game.o
+286	VERIFIED	0002:00210710 ?FloatNoSwap@@YAMM@Z 009FFC10 f game.o
+287	VERIFIED	0002:00210720 ?Swap_Init@@YAXXZ 009FFC20 f game.o
+288	VERIFIED	0002:002107e0 ?Q_isprint@@YAHH@Z 009FFCE0 f game.o
+289	VERIFIED	0002:00210800 ?Q_islower@@YAHH@Z 009FFD00 f game.o
+290	VERIFIED	0002:00210820 ?Q_isupper@@YAHH@Z 009FFD20 f game.o
+291	VERIFIED	0002:00210840 ?Q_isalpha@@YAHH@Z 009FFD40 f game.o
+292	VERIFIED	0002:00210870 ?Q_isnumeric@@YAHH@Z 009FFD70 f game.o
+293	VERIFIED	0002:00210890 ?Q_isalphanumeric@@YAHH@Z 009FFD90 f game.o
+294	VERIFIED	0002:002108c0 ?Q_isforfilename@@YAHH@Z 009FFDC0 f game.o
+295	VERIFIED	0002:00210900 ?Q_strrchr@@YAPADPBDH@Z 009FFE00 f game.o
+296	VERIFIED	0002:00210930 ?Q_strncpyz@@YAXPADPBDH@Z 009FFE30 f game.o
+297	VERIFIED	0002:00210a30 ?Q_stricmpn@@YAHPBD0H@Z 009FFF30 f game.o
+298	VERIFIED	0002:00210a40 ?Q_strncmp@@YAHPBD0H@Z 009FFF40 f game.o
+299	VERIFIED	0002:00210a80 ?Q_stricmp@@YAHPBD0@Z 009FFF80 f game.o
+300	VERIFIED	0002:00210ab0 ?Q_strlwr@@YAPADPAD@Z 009FFFB0 f game.o
+301	VERIFIED	0002:00210ae0 ?Q_strupr@@YAPADPAD@Z 009FFFE0 f game.o
+302	VERIFIED	0002:00210b10 ?Q_strcat@@YAXPADHPBD@Z 00A00010 f game.o
+303	VERIFIED	0002:00210b60 ?Q_DrawStrlen@@YAHPBD@Z 00A00060 f game.o
+304	VERIFIED	0002:00210ba0 ?Q_CleanStr@@YAPADPAD@Z 00A000A0 f game.o
+305	VERIFIED	0002:00210bf0 ?Q_CleanCharacter@@YADD@Z 00A000F0 f game.o
+306	VERIFIED	0002:00210c00 ?Com_sprintf@@YAXPADHPBDZZ 00A00100 f game.o
+307	VERIFIED	0002:00210c80 ?Q_strncasecmp@@YAHPBD0H@Z 00A00180 f game.o
+308	VERIFIED	0002:00210ce0 ?Q_strcasecmp@@YAHPBD0@Z 00A001E0 f game.o
+309	VERIFIED	0002:00210d00 ?va@@YAPADPBDZZ 00A00200 f game.o
+310	VERIFIED	0002:00210d90 ?tv@@YAPAMMMM@Z 00A00290 f game.o
+311	VERIFIED	0002:00210dd0 ?Info_ValueForKey@@YAPADPBD0@Z 00A002D0 f game.o
+312	VERIFIED	0002:00210ec0 ?Info_NextPair@@YAXPAPBDPAD1@Z 00A003C0 f game.o
+313	VERIFIED	0002:00210f20 ?Info_RemoveKey@@YAXPADPBD@Z 00A00420 f game.o
+314	VERIFIED	0002:00211030 ?Info_RemoveKey_Big@@YAXPADPBD@Z 00A00530 f game.o
+315	VERIFIED	0002:00211140 ?Info_Validate@@YAHPBD@Z 00A00640 f game.o
+316	VERIFIED	0002:00211170 ?Info_SetValueForKey@@YAXPADPBD1@Z 00A00670 f game.o
+317	VERIFIED	0002:00211430 ?Info_SetValueForKey_Big@@YAXPADPBD1@Z 00A00930 f game.o
+318	VERIFIED	0002:00211690 ?GetLeanFraction@@YAMM@Z 00A00B90 f game.o
+319	VERIFIED	0002:002116c0 ?UnGetLeanFraction@@YAMM@Z 00A00BC0 f game.o
+320	VERIFIED	0002:00211780 ?OrientationPosToWorldPos@@YAXPBUorientation_t@@QBMQAM@Z 00A00C80 f game.o
+321	VERIFIED	0002:00211820 ?OrientationDirToWorldDir@@YAXPBUorientation_t@@QBMQAM@Z 00A00D20 f game.o
+322	VERIFIED	0002:002118b0 ?OrientationPosFromWorldPos@@YAXPBUorientation_t@@QBMQAM@Z 00A00DB0 f game.o
+323	VERIFIED	0002:00211960 ?OrientationDirFromWorldDir@@YAXPBUorientation_t@@QBMQAM@Z 00A00E60 f game.o
+324	VERIFIED	0002:002119f0 ?ToggleRenderGeom@@YAXXZ 00A00EF0 f game.o
+325	VERIFIED	0002:00211a10 ?ToggleRenderPerf@@YAXXZ 00A00F10 f game.o
+326	VERIFIED	0002:00211a30 ?ToggleGraph@@YAXXZ 00A00F30 f game.o
+327	VERIFIED	0002:00211a50 ?ZoomIn@@YAXXZ 00A00F50 f game.o
+328	VERIFIED	0002:00211a70 ?ZoomOut@@YAXXZ 00A00F70 f game.o
+329	VERIFIED	0002:00211a90 ?Teleport@@YAXXZ 00A00F90 f game.o
+330	VERIFIED	0002:00211b60 ?DecodeStub@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A01060 f game.o
+331	VERIFIED	0002:00211b70 ??1CGBankManager@@UAE@XZ 00A01070 f game.o
+332	VERIFIED	0002:00211c00 ?UnloadAll@CGBankManager@@QAEXXZ 00A01100 f game.o
+333	VERIFIED	0002:00211c10 ?render_brush@@YAXABUdebug_brush@@@Z 00A01110 f game.o
+334	VERIFIED	0002:00211c20 ?StatMon_Warning@@YAXHHPBD@Z 00A01120 f game.o
+335	VERIFIED	0002:00211ca0 ?StatMon_GetStatsArray@@YAXPAPBUstatmonitor_s@@PAH@Z 00A011A0 f game.o
+336	VERIFIED	0002:00211cc0 ?StatMon_Reset@@YAXXZ 00A011C0 f game.o
+337	VERIFIED	0002:00211ce0 ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z 00A011E0 f game.o
+338	VERIFIED	0002:00211db0 ?FreeDObj@Entity@@QAEX_N@Z 00A012B0 f game.o
+339	VERIFIED	0002:00211e30 ?IsEnemy@Entity@@QAE_NPAV1@@Z 00A01330 f game.o
+340	VERIFIED	0002:00211f10 ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z 00A01410 f game.o
+341	VERIFIED	0002:00211f40 ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ 00A01440 f game.o
+342	VERIFIED	0002:00211fe0 ?CalcOriginAnglesFromMat@Entity@@QAEXXZ 00A014E0 f game.o
+343	VERIFIED	0002:002121a0 ?GetParentBoneIndex@Entity@@QAEHH@Z 00A016A0 f game.o
+344	VERIFIED	0002:00212210 ?GetBaseRelMat@Entity@@QAEABUPacked@Mat43@math@@H@Z 00A01710 f game.o
+345	VERIFIED	0002:00212280 ?IsInSnapshot@Entity@@QBE_NXZ 00A01780 f game.o
+346	VERIFIED	0002:002122a0 ?IsVisible@Entity@@QBEHXZ 00A017A0 f game.o
+347	VERIFIED	0002:002122d0 ?IsDoingPhysics@Entity@@QAE_NXZ 00A017D0 f game.o
+348	VERIFIED	0002:00212300 ?IsInRagdoll@Entity@@QAE_NXZ 00A01800 f game.o
+349	VERIFIED	0002:00212310 ?IsLocalPlayer@Entity@@QBE_NXZ 00A01810 f game.o
+350	VERIFIED	0002:00212340 ?GetPlayerIndex@Entity@@QBEHXZ 00A01840 f game.o
+351	VERIFIED	0002:002123b0 ?IsCameraTweening@Entity@@QBE_NXZ 00A018B0 f game.o
+352	VERIFIED	0002:00212420 ??0EntityManager@@QAE@XZ 00A01920 f game.o
+353	VERIFIED	0002:00212470 ??1EntityManager@@UAE@XZ 00A01970 f game.o
+354	VERIFIED	0002:00212480 ?CreatePlayers@EntityManager@@QAEXXZ 00A01980 f game.o
+355	VERIFIED	0002:002124c0 ?CreateWorld@EntityManager@@QAEXXZ 00A019C0 f game.o
+356	VERIFIED	0002:00212530 ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z 00A01A30 f game.o
+357	VERIFIED	0002:00212560 ?GetEntityController@EntityManager@@QAEHPAVEntity@@@Z 00A01A60 f game.o
+358	VERIFIED	0002:002125c0 ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z 00A01AC0 f game.o
+359	VERIFIED	0002:00212610 ?GetFirstLocalPlayer@EntityManager@@QAEPAVEntity@@XZ 00A01B10 f game.o
+360	VERIFIED	0002:00212630 ?SwapPlayers@EntityManager@@QAEXHH@Z 00A01B30 f game.o
+361	VERIFIED	0002:00212680 ??0GamePauseData@GamePause@@QAE@XZ 00A01B80 f game.o
+362	VERIFIED	0002:00212690 ?SetAllPaused@GamePause@@SAX_N@Z 00A01B90 f game.o
+363	VERIFIED	0002:00212790 ?Find@AnimNotifyTask@@CAHI@Z 00A01C90 f game.o
+364	VERIFIED	0002:002127d0 ??1AudioBankMgr@@UAE@XZ 00A01CD0 f game.o
+365	VERIFIED	0002:002128e0 ?IsFinished@AudioBankMgr@@QBE_NXZ 00A01DE0 f game.o
+366	VERIFIED	0002:00212980 ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z 00A01E80 f game.o
+367	VERIFIED	0002:002129c0 ?Reset@Sound@SoundDevice@@QAEXXZ 00A01EC0 f game.o
+368	VERIFIED	0002:00212a10 ??0Sound@SoundDevice@@QAE@XZ 00A01F10 f game.o
+369	VERIFIED	0002:00212a70 ?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z 00A01F70 f game.o
+370	VERIFIED	0002:00212db0 ?GetSurfaceTypeSounds@@YAXPBDQAW4nslWaveID@@@Z 00A022B0 f game.o
+371	VERIFIED	0002:00212e30 ??0MusicMgr@@QAE@XZ 00A02330 f game.o
+372	VERIFIED	0002:00212e70 ?BG_FindItemForWeapon@@YAPBUgitem_s@@H@Z 00A02370 f game.o
+373	VERIFIED	0002:00212ea0 ?BG_FindItem@@YAPBUgitem_s@@PBD@Z 00A023A0 f game.o
+374	VERIFIED	0002:00212f60 ?BG_PlayerTouchesMine@@YA_NPAVPlayerState@@PAVEntityState@@H@Z 00A02460 f game.o
+375	VERIFIED	0002:00213020 ?BG_EvaluateTrajectory@@YAXPBUtrajectory_t@@HAAVPosition3@math@@@Z 00A02520 f game.o
+376	VERIFIED	0002:002134f0 ?BG_CheckProneValid@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@MMMPAM22HHABVDir3@3@P6AXPAUtrace_t@@1111ABUcollision_context_t@@@Z6P6AH15@ZW4proneCheckType_t@@M@Z 00A029F0 f game.o
+377	VERIFIED	0002:002146f0 ?BG_CheckProne@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@MMMPAM22HHABVDir3@3@P6AXPAUtrace_t@@1111ABUcollision_context_t@@@Z6P6AH15@ZW4proneCheckType_t@@M@Z 00A03BF0 f game.o
+378	VERIFIED	0002:00214700 ?PM_CanSimulateFiringWeapon@@YA_NH@Z 00A03C00 f game.o
+379	VERIFIED	0002:00215320 ?FindClosestVisibleBone@@YA_NPAVEntity@@ABVPosition3@math@@1AAV23@@Z 00A04820 f game.o
+380	VERIFIED	0002:002156b0 ?PM_UpdatePronePitch@@YAXXZ 00A04BB0 f game.o
+381	VERIFIED	0002:00215af0 ?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z 00A04FF0 f game.o
+382	VERIFIED	0002:00215b20 ?filter@ai_collision_context_t@@UBE_NPAVEntity@@@Z 00A05020 f game.o
+383	VERIFIED	0002:00215b50 ?PM_VerifyPronePosition@@YAHABVPosition3@math@@0@Z 00A05050 f game.o
+384	VERIFIED	0002:00215c90 ?BG_GetSpreadForWeapon@@YAXPBVPlayerState@@HPAM1@Z 00A05190 f game.o
+385	VERIFIED	0002:00216040 ?BG_FillInWeaponItems@@YAXXZ 00A05540 f game.o
+386	VERIFIED	0002:002161e0 ?BG_SetupAmmoIndexes@@YAXXZ 00A056E0 f game.o
+387	VERIFIED	0002:002163e0 ?BG_SetupSharedAmmoIndexes@@YAXXZ 00A058E0 f game.o
+388	VERIFIED	0002:002164a0 ?BG_SetupClipIndexes@@YAXXZ 00A059A0 f game.o
+389	VERIFIED	0002:002166a0 ?compare_weaponfile_names@@YAHPBX0@Z 00A05BA0 f game.o
+390	VERIFIED	0002:002166d0 ?BG_IsLMGMounted@@YA_NPBVPlayerState@@@Z 00A05BD0 f game.o
+391	VERIFIED	0002:00216750 ?BG_IsCookingOffGrenade@@YA_NPBVPlayerState@@@Z 00A05C50 f game.o
+392	VERIFIED	0002:002167e0 ?BG_GetAmmoTypeForName@@YAHPBD@Z 00A05CE0 f game.o
+393	VERIFIED	0002:00216840 ?BG_GetAmmoClipForName@@YAHPBD@Z 00A05D40 f game.o
+394	VERIFIED	0002:002168a0 ?BG_GivePlayerWeapon@@YAHPAVPlayerState@@H@Z 00A05DA0 f game.o
+395	VERIFIED	0002:00216a10 ?BG_SetPlayerWeaponForSlot@@YAHPAVPlayerState@@HH@Z 00A05F10 f game.o
+396	VERIFIED	0002:00216aa0 ?BG_IsPlayerWeaponInSlot@@YA?AW4weapSlot_t@@PBVPlayerState@@HH@Z 00A05FA0 f game.o
+397	VERIFIED	0002:00216b70 ?BG_GetMaxPickupableAmmo@@YAHPBVPlayerState@@H@Z 00A06070 f game.o
+398	VERIFIED	0002:00216d50 ?BG_GetTotalAmmoReserve@@YAHPBVPlayerState@@H@Z 00A06250 f game.o
+399	VERIFIED	0002:00216f10 ?BG_GetTotalAmmo@@YAHPBVPlayerState@@H@Z 00A06410 f game.o
+400	VERIFIED	0002:00217120 ?PM_CanStartADSAnim@@YA_NXZ 00A06620 f game.o
+401	VERIFIED	0002:002171b0 ?PM_InteruptWeaponWithProneMove@@YAHXZ 00A066B0 f game.o
+402	VERIFIED	0002:00217250 ?PM_InteruptWeaponWithSprintMove@@YAHXZ 00A06750 f game.o
+403	VERIFIED	0002:002180d0 ?DecodeBin@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A075D0 f game.o
+404	VERIFIED	0002:002180f0 ?SceneEntityWasDeletedBeforeCheckpoint@CheckpointMgr@@QAE_NPAVSceneEntity@@PAVSceneBank@@@Z 00A075F0 f game.o
+405	VERIFIED	0002:00218120 ?SetEvent@CheckpointMgr@@QAEXPBD@Z 00A07620 f game.o
+406	VERIFIED	0002:00218130 ?RestoreLastCheckpoint@CheckpointMgr@@QAEXXZ 00A07630 f game.o
+407	VERIFIED	0002:002182c0 ?GetGameVar@CheckpointMgr@@QAE_NIPAII@Z 00A077C0 f game.o
+408	VERIFIED	0002:00218390 ?CM_LoadMap@@YAXPBDHPAH@Z 00A07890 f game.o
+409	VERIFIED	0002:00218410 ?CM_LoadLump@@YAHHPAPAD@Z 00A07910 f game.o
+410	VERIFIED	0002:00218590 ?CM_LeafCluster@@YAHH@Z 00A07A90 f game.o
+411	VERIFIED	0002:00218600 ?CM_LeafArea@@YAHH@Z 00A07B00 f game.o
+412	VERIFIED	0002:00218670 ?TempBoxModel@@YAPAVDCGSet@@ABVPosition3@math@@0HH@Z 00A07B70 f game.o
+413	VERIFIED	0002:002188a0 ?TempBoxModelContents@@YAHXZ 00A07DA0 f game.o
+414	VERIFIED	0002:00218980 ?CM_TraceStaticModel@@YAXPAVStaticModel@@PAUtrace_t@@ABVPosition3@math@@2H@Z 00A07E80 f game.o
+415	VERIFIED	0002:00218ba0 ?CM_PointLeafnum_r@@YAHABVPosition3@math@@H@Z 00A080A0 f game.o
+416	VERIFIED	0002:00218c50 ?CM_PointLeafnum@@YAHABVPosition3@math@@@Z 00A08150 f game.o
+417	VERIFIED	0002:00218c70 ?CM_StoreLeafs@@YAXPAUleafList_s@@H@Z 00A08170 f game.o
+418	VERIFIED	0002:00218cb0 ?CM_BoxLeafnums_r@@YAXPAUleafList_s@@H@Z 00A081B0 f game.o
+419	VERIFIED	0002:00219050 ?GetLeaves@@YAXPAUleafList_s@@HAAM@Z 00A08550 f game.o
+420	VERIFIED	0002:002194a0 ?CM_BoxLeafnums@@YAHAAVVector4@math@@AAHABVPosition3@2@22PAHH3@Z 00A089A0 f game.o
+421	VERIFIED	0002:00219650 ?CM_FloodArea_r@@YAXHH@Z 00A08B50 f game.o
+422	VERIFIED	0002:00219750 ?CM_FloodAreaConnections@@YAXXZ 00A08C50 f game.o
+423	VERIFIED	0002:00219810 ?CM_AdjustAreaPortalState@@YAXHHH@Z 00A08D10 f game.o
+424	VERIFIED	0002:00219910 ?CM_AreasConnected@@YAHHH@Z 00A08E10 f game.o
+425	VERIFIED	0002:002199c0 ?InitEntitiesBSP@@YAXXZ 00A08EC0 f game.o
+426	VERIFIED	0002:00219af0 ?CM_CapsuleAreaEntities@@YAXAAVTouchEntityData@@PAUWorldSector@@MMABVPosition3@math@@2MABUcollision_context_t@@@Z 00A08FF0 f game.o
+427	VERIFIED	0002:0021a800 ?CM_ClipSightTraceToEntities@@YAHPAUsightclip_t@@ABUcollision_context_t@@@Z 00A09D00 f game.o
+428	VERIFIED	0002:0021a830 ?CM_GetPlaneNum@@YAPAVBspPlane@@H@Z 00A09D30 f game.o
+429	VERIFIED	0002:0021a8a0 ?alloc_verts@@YAPAVPosition3@math@@XZ 00A09DA0 f game.o
+430	VERIFIED	0002:0021a900 ?can_place_decal@@YA_NABVPosition3@math@@ABVDir3@2@00PBUcdlPlane@@IM@Z 00A09E00 f game.o
+431	VERIFIED	0002:0021aaf0 ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z 00A09FF0 f game.o
+432	VERIFIED	0002:0021ab20 ?filter_objects@rtree_visitor_t@@QAEXH@Z 00A0A020 f game.o
+433	VERIFIED	0002:0021acc0 ?collide_brush_segment@@YA_NABVPosition3@math@@000PBUcdlPlane@@IAAMPAV12@@Z 00A0A1C0 f game.o
+434	VERIFIED	0002:0021b080 ?collide_brush_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@I@Z 00A0A580 f game.o
+435	VERIFIED	0002:0021b550 ?collide_brush_velocity_sphere@@YAXPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@I@Z 00A0AA50 f game.o
+436	VERIFIED	0002:0021b980 ?collide_sphere_poly@@YA_NABVPosition3@math@@M000ABVVector4@2@@Z 00A0AE80 f game.o
+437	VERIFIED	0002:0021bbb0 ?collide_velocity_sphere_poly@@YA_NABVPosition3@math@@AAV12@ABVDir3@2@M000ABVVector4@2@AA_N@Z 00A0B0B0 f game.o
+438	VERIFIED	0002:0021c1a0 ?TraceSphereThroughSphere@@YAHPAUtraceWork_t@@ABVPosition3@math@@11M@Z 00A0B6A0 f game.o
+439	VERIFIED	0002:0021c3d0 ?TraceCylinderThroughCylinder@@YAHPAUtraceWork_t@@ABVPosition3@math@@MM@Z 00A0B8D0 f game.o
+440	VERIFIED	0002:0021c690 ?TraceCapsuleThroughCapsule@@YAXPAUtraceWork_t@@@Z 00A0BB90 f game.o
+441	VERIFIED	0002:0021c8d0 ?TraceBoundingBoxThroughCapsule@@YAXPAUtraceWork_t@@@Z 00A0BDD0 f game.o
+442	VERIFIED	0002:0021cbd0 ?TestPointInBox@@YA_NABVPosition3@math@@00@Z 00A0C0D0 f game.o
+443	VERIFIED	0002:0021cc30 ?TestPointInBrush@@YA_NABVPosition3@math@@00PBUcdlPlane@@I@Z 00A0C130 f game.o
+444	VERIFIED	0002:0021cd30 ?TestBoxInBrush@@YAXPAUtraceWork_t@@ABVPosition3@math@@1PBUcdlPlane@@II@Z 00A0C230 f game.o
+445	VERIFIED	0002:0021d5c0 ?TestBoxInBox@@YAXPAUtraceWork_t@@ABVPosition3@math@@1I@Z 00A0CAC0 f game.o
+446	VERIFIED	0002:0021d760 ?SightTraceCapsuleThroughCapsule@@YAHPAUtraceWork_t@@@Z 00A0CC60 f game.o
+447	VERIFIED	0002:0021d9c0 ?SightTraceBoundingBoxThroughCapsule@@YAHPAUtraceWork_t@@@Z 00A0CEC0 f game.o
+448	VERIFIED	0002:0021dc00 ?filter_proximity_data@@YAXABVPosition3@math@@0HABUproximity_data_t@@AAU3@@Z 00A0D100 f game.o
+449	VERIFIED	0002:0021e210 ?filter_proximity_brushes@@YAXABVPosition3@math@@0HABUproximity_data_t@@AAU3@@Z 00A0D710 f game.o
+450	VERIFIED	0002:0021e660 ?collide_sphere_brush@@YA_NABVPosition3@math@@MABUcdl_object_t@@PBUcdlPlane@@IPAV12@@Z 00A0DB60 f game.o
+451	VERIFIED	0002:0021e890 ?collide_sphere_box@@YA_NABVPosition3@math@@MABUcdl_object_t@@PAV12@@Z 00A0DD90 f game.o
+452	VERIFIED	0002:0021ea00 ?intersect_segment_aabb@@YA_NABVPosition3@math@@00000@Z 00A0DF00 f game.o
+453	VERIFIED	0002:0021eb80 ?collide_segment@@YA_NABUcdl_object_t@@PBVDir3@math@@PBEGHABVPosition3@3@3AAMPAV43@PAH@Z 00A0E080 f game.o
+454	VERIFIED	0002:0021f010 ?collide_segment_poly@@YA_NABVPosition3@math@@0AAUcdl_poly_inl_t@@AAUcdl_cinfo1@@@Z 00A0E510 f game.o
+455	VERIFIED	0002:0021f280 ?Cmd_Wait_f@@YAXXZ 00A0E780 f game.o
+456	VERIFIED	0002:0021f320 ?Cmd_ExecuteServerString@@YAXPBD@Z 00A0E820 f game.o
+457	VERIFIED	0002:0021f3b0 ?Cbuf_SV_Execute@@YAXXZ 00A0E8B0 f game.o
+458	VERIFIED	0002:0021f4a0 ?Cmd_AddServerCommand@@YAXPBDP6AXXZ@Z 00A0E9A0 f game.o
+459	VERIFIED	0002:0021f550 ?Cmd_Vstr_f@@YAXXZ 00A0EA50 f game.o
+460	VERIFIED	0002:0021f590 ?Cmd_Echo_f@@YAXXZ 00A0EA90 f game.o
+461	VERIFIED	0002:0021f5e0 ?Cmd_ArgvBuffer@@YAXHPADH@Z 00A0EAE0 f game.o
+462	VERIFIED	0002:0021f620 ?Cmd_ArgsBuffer@@YAXPADH@Z 00A0EB20 f game.o
+463	VERIFIED	0002:0021f640 ?Cmd_ExecuteString@@YAXPBD@Z 00A0EB40 f game.o
+464	VERIFIED	0002:0021f730 ?GetCmd@@YAPBVBaseCmdFuncInfo@@PBD@Z 00A0EC30 f game.o
+465	VERIFIED	0002:0021f780 ??1CurveManager@@AAE@XZ 00A0EC80 f game.o
+466	VERIFIED	0002:0021f790 ??1GdbFileManager@@EAE@XZ 00A0EC90 f game.o
+467	VERIFIED	0002:0021f7a0 ?MSG_WriteString@@YAXPAUmsg_t@@PBD@Z 00A0ECA0 f game.o
+468	VERIFIED	0002:0021f860 ?Netchan_Transmit@@YAXPAUnetchan_t@@HPBE@Z 00A0ED60 f game.o
+469	VERIFIED	0002:0021f9a0 ?NET_AdrToString@@YAPBDUnetadr_t@@@Z 00A0EEA0 f game.o
+470	VERIFIED	0002:0021fa60 ?Com_BeginParseSession@@YAXPBD@Z 00A0EF60 f game.o
+471	VERIFIED	0002:0021fae0 ?Com_StripFilename@@YAXPBDPAD@Z 00A0EFE0 f game.o
+472	VERIFIED	0002:0021fb30 ?Com_DefaultExtension@@YAXPADHPBD@Z 00A0F030 f game.o
+473	VERIFIED	0002:0021fba0 ?AddLeanToPosition@@YAXQAMMMMM@Z 00A0F0A0 f game.o
+474	VERIFIED	0002:0021fc60 ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z 00A0F160 f game.o
+475	VERIFIED	0002:0021fcd0 ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z 00A0F1D0 f game.o
+476	VERIFIED	0002:0021fcf0 ?GetDCGSet@DCGBankManager@@QAEPBVDCGSet@@W4TPakId@@H@Z 00A0F1F0 f game.o
+477	VERIFIED	0002:0021fe30 ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z 00A0F330 f game.o
+478	VERIFIED	0002:0021fe60 ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z 00A0F360 f game.o
+479	VERIFIED	0002:00220010 ?init_winding@@YAXABUcdlPlane@@AAV?$ae_sized_array@VPosition3@math@@$0BAA@@@@Z 00A0F510 f game.o
+480	VERIFIED	0002:00220200 ??2Entity@@SAPAXI@Z 00A0F700 f game.o
+481	VERIFIED	0002:00220210 ??3Entity@@SAXPAX@Z 00A0F710 f game.o
+482	VERIFIED	0002:00220240 ??2trRefEntity@@SAPAXI@Z 00A0F740 f game.o
+483	VERIFIED	0002:00220250 ??3trRefEntity@@SAXPAX@Z 00A0F750 f game.o
+484	VERIFIED	0002:00220280 ??0EntityShared@@QAE@XZ 00A0F780 f game.o
+485	VERIFIED	0002:00220480 ??0EntityState@@QAE@XZ 00A0F980 f game.o
+486	VERIFIED	0002:002205f0 ?GetViewModelDObj@Entity@@QBEPBVDObj@@XZ 00A0FAF0 f game.o
+487	VERIFIED	0002:00220630 ?GetViewModelDObj@Entity@@QAEPAVDObj@@XZ 00A0FB30 f game.o
+488	VERIFIED	0002:00220670 ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z 00A0FB70 f game.o
+489	VERIFIED	0002:002208e0 ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z 00A0FDE0 f game.o
+490	VERIFIED	0002:00220ae0 ?SetAlwaysRender@Entity@@QAEX_N@Z 00A0FFE0 f game.o
+491	VERIFIED	0002:00220be0 ?has_zone_collision@Entity@@QBE_NXZ 00A100E0 f game.o
+492	VERIFIED	0002:00220c20 ?FootStep@Entity@@QAEXXZ 00A10120 f game.o
+493	VERIFIED	0002:00220dd0 ?Clear@Context@PadAliasMgr@@QAEXXZ 00A102D0 f game.o
+494	VERIFIED	0002:00220ea0 ?Clear@Context@PadAliasMgr@@QAEXH@Z 00A103A0 f game.o
+495	VERIFIED	0002:00220f70 ?BindButton@Context@PadAliasMgr@@QAEXHHW4EPadAliasButton@@@Z 00A10470 f game.o
+496	VERIFIED	0002:00221050 ?BindStick@Context@PadAliasMgr@@QAEXHHW4EPadAliasStick@@@Z 00A10550 f game.o
+497	VERIFIED	0002:00221160 ?GetButtonAlias@Context@PadAliasMgr@@QAE?AW4EPadAliasButton@@HW4ButtonIndex@controller@@@Z 00A10660 f game.o
+498	VERIFIED	0002:002211e0 ?GetStickAlias@Context@PadAliasMgr@@QAE?AW4EPadAliasStick@@HW4StickIndex@controller@@@Z 00A106E0 f game.o
+499	VERIFIED	0002:00221260 ?GetButtonValue@Context@PadAliasMgr@@QAEHHW4EPadAliasButton@@@Z 00A10760 f game.o
+500	VERIFIED	0002:002212a0 ?IsButtonReleased@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z 00A107A0 f game.o
+501	VERIFIED	0002:002212f0 ?IsButtonReleasedClear@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z 00A107F0 f game.o
+502	VERIFIED	0002:00221340 ?IsButtonPressed@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z 00A10840 f game.o
+503	VERIFIED	0002:00221390 ?IsButtonPressedClear@Context@PadAliasMgr@@QAE_NHW4EPadAliasButton@@@Z 00A10890 f game.o
+504	VERIFIED	0002:002213e0 ?GetStickValue@Context@PadAliasMgr@@QAEXHW4EPadAliasStick@@AAH1@Z 00A108E0 f game.o
+505	VERIFIED	0002:00221440 ??0AudioBankMgr@@QAE@XZ 00A10940 f game.o
+506	VERIFIED	0002:00221470 ?RegisterWbk@AudioBankMgr@@QAEXABVtlFixedString@@PBDW4ELanguage@@W4TPakId@@@Z 00A10970 f game.o
+507	VERIFIED	0002:00221670 ?GetSoundForHandle@SoundDevice@@QAEPAVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z 00A10B70 f game.o
+508	VERIFIED	0002:002216b0 ?GetSoundForHandle@SoundDevice@@QBEPBVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z 00A10BB0 f game.o
+509	VERIFIED	0002:002216f0 ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ 00A10BF0 f game.o
+510	VERIFIED	0002:002217f0 ?IsMusicPlaying@MusicMgr@@QAE_NXZ 00A10CF0 f game.o
+511	VERIFIED	0002:00221820 ?BG_PlayerTouchesItem@@YA_NPAVPlayerState@@PAVEntityState@@H@Z 00A10D20 f game.o
+512	VERIFIED	0002:002218c0 ?BG_CanItemBeGrabbed@@YAHPBVEntityState@@PBVPlayerState@@H@Z 00A10DC0 f game.o
+513	VERIFIED	0002:00221b60 ?PM_UpdateLean@@YAXPAVPlayerState@@PAUusercmd_s@@P6AXPAUtrace_t@@ABVPosition3@math@@333ABUcollision_context_t@@@Z@Z 00A11060 f game.o
+514	VERIFIED	0002:00221f60 ?BG_TakePlayerWeapon@@YAHPAVPlayerState@@H@Z 00A11460 f game.o
+515	VERIFIED	0002:002220c0 ??0CheckpointMgr@@QAE@XZ 00A115C0 f game.o
+516	VERIFIED	0002:002221f0 ??1CheckpointMgr@@QAE@XZ 00A116F0 f game.o
+517	VERIFIED	0002:00222290 ?SetGameVar@CheckpointMgr@@QAEXIPAII@Z 00A11790 f game.o
+518	VERIFIED	0002:00222330 ?ExploderCheckpointExploded@CheckpointMgr@@QAE_NH@Z 00A11830 f game.o
+519	VERIFIED	0002:00222370 ?PrecludeExploderPiece@CheckpointMgr@@QAE_NPBDH@Z 00A11870 f game.o
+520	VERIFIED	0002:002223e0 ?CM_PointTraceStaticModels@@YAXPAUtrace_t@@ABVPosition3@math@@1ABUcollision_context_t@@@Z 00A118E0 f game.o
+521	VERIFIED	0002:00222790 ?CM_PointTraceToEntities@@YAXPAUpointtrace_t@@ABUcollision_context_t@@@Z 00A11C90 f game.o
+522	VERIFIED	0002:00222ab0 ?CM_PointSightTraceToEntities@@YAHPAUsightpointtrace_t@@ABUcollision_context_t@@@Z 00A11FB0 f game.o
+523	VERIFIED	0002:00222ae0 ??0rtree_visitor_t@@QAE@PBVCGBank@@@Z 00A11FE0 f game.o
+524	VERIFIED	0002:00222b60 ?unpack@@YAXABVCGBank@@IPAVPosition3@math@@@Z 00A12060 f game.o
+525	VERIFIED	0002:00222c00 ?ClipHandleToDCGSet@@YAPAVDCGSet@@W4TPakId@@H@Z 00A12100 f game.o
+526	VERIFIED	0002:00222c80 ?TraceSphereThroughLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z 00A12180 f game.o
+527	VERIFIED	0002:00222fd0 ?TracePointThroughLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z 00A124D0 f game.o
+528	VERIFIED	0002:00223320 ?TestBoundingBoxInCapsule@@YAXPAUtraceWork_t@@@Z 00A12820 f game.o
+529	VERIFIED	0002:00223530 ?TestInLeaf@@YAXPAUtraceWork_t@@ABVCGBank@@ABUrtree_visitor_t@@@Z 00A12A30 f game.o
+530	VERIFIED	0002:00223d40 ?TestInLeaf@@YAXPAUtraceWork_t@@PBVDCGSet@@@Z 00A13240 f game.o
+531	VERIFIED	0002:00224070 ?SightTraceThroughLeaf@@YAHPAUtraceWork_t@@PBVDCGSet@@@Z 00A13570 f game.o
+532	VERIFIED	0002:002243f0 ?collide_segment@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1AAUcdl_cinfo1@@AAH3@Z 00A138F0 f game.o
+533	VERIFIED	0002:002253b0 ?sight_trace_point@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z 00A148B0 f game.o
+534	VERIFIED	0002:00225ea0 ?sight_trace_sphere@@YA_NPAUtraceWork_t@@@Z 00A153A0 f game.o
+535	VERIFIED	0002:00227250 ?collide_velocity_sphere@@YA_NPAUtraceWork_t@@@Z 00A16750 f game.o
+536	VERIFIED	0002:002286e0 ?TraceThroughTree@@YAXPAUtraceWork_t@@ABVPosition3@math@@1@Z 00A17BE0 f game.o
+537	VERIFIED	0002:002288c0 ?SightTrace@@YA_NPAUtraceWork_t@@ABVPosition3@math@@1@Z 00A17DC0 f game.o
+538	VERIFIED	0002:00228980 ?PATH_SightTrace@@YAHABVPosition3@math@@0@Z 00A17E80 f game.o
+539	VERIFIED	0002:00228ac0 ?collide_ray@@YA_NABVPosition3@math@@ABVDir3@2@PAV32@PAM@Z 00A17FC0 f game.o
+540	VERIFIED	0002:00228eb0 ?collide_sphere@@YAXABVPosition3@math@@MQAV12@QAVDir3@2@PAH@Z 00A183B0 f game.o
+541	VERIFIED	0002:002292e0 ?unpack_poly@@YAXABVCGBank@@ABUcdl_vinfo_t@@PAEAAVPosition3@math@@33@Z 00A187E0 f game.o
+542	VERIFIED	0002:00229560 ?Cbuf_Execute@@YAXXZ 00A18A60 f game.o
+543	VERIFIED	0002:00229660 ?Cmd_Exec_f@@YAXXZ 00A18B60 f game.o
+544	VERIFIED	0002:00229730 ?Cmd_Init@@YAXXZ 00A18C30 f game.o
+545	VERIFIED	0002:00229780 ?AttachCurve@CurveManager@@QAEXPAVCurve@@@Z 00A18C80 f game.o
+546	VERIFIED	0002:002297c0 ?AddKeyFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z 00A18CC0 f game.o
+547	VERIFIED	0002:00229830 ?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z 00A18D30 f game.o
+548	VERIFIED	0002:002298a0 ??0Curve@@QAE@XZ 00A18DA0 f game.o
+549	VERIFIED	0002:00229920 ??0GdbFileManager@@AAE@XZ 00A18E20 f game.o
+550	VERIFIED	0002:00229940 ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A18E40 f game.o
+551	VERIFIED	0002:00229970 ?Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z 00A18E70 f game.o
+552	VERIFIED	0002:00229ad0 ?ParseConfigStringToStruct@@YAHPAEPBUcspField_t@@HPBVConfigString@@HP6AH0PBDH@ZP6AX03@Z@Z 00A18FD0 f game.o
+553	VERIFIED	0002:00229d90 ??1DCGBankManager@@UAE@XZ 00A19290 f game.o
+554	VERIFIED	0002:00229df0 ?DecodeDCGBank@DCGBankManager@@QAEXPBDPAEHW4TPakId@@@Z 00A192F0 f game.o
+555	VERIFIED	0002:00229f30 ?DecodeCGBank@CGBankManager@@QAEXPBDPAEHW4TPakId@@@Z 00A19430 f game.o
+556	VERIFIED	0002:0022a040 ?clip_winding@@YAXAAV?$ae_sized_array@VPosition3@math@@$0BAA@@@ABUcdlPlane@@@Z 00A19540 f game.o
+557	VERIFIED	0002:0022a6b0 ?calc_winding@@YAXABV?$cdl_array@UcdlPlane@@@@HAAV?$ae_sized_array@VPosition3@math@@$0BAA@@@@Z 00A19BB0 f game.o
+558	VERIFIED	0002:0022a8a0 ?FreeAllDObjs@Entity@@SAX_N@Z 00A19DA0 f game.o
+559	VERIFIED	0002:0022a8e0 ??0Entity@@QAE@W4TPakId@@@Z 00A19DE0 f game.o
+560	VERIFIED	0002:0022ad70 ?AddNotify@Entity@@QAEXPAVEntityNotify@@@Z 00A1A270 f game.o
+561	VERIFIED	0002:0022ae00 ?Notify@Entity@@QAEXVHashString@@@Z 00A1A300 f game.o
+562	VERIFIED	0002:0022af30 ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ 00A1A430 f game.o
+563	VERIFIED	0002:0022afa0 ?GetRefEntity@Entity@@QAEAAUrefEntity_t@@XZ 00A1A4A0 f game.o
+564	VERIFIED	0002:0022afb0 ?SetAnimDebug@Entity@@QAEXH@Z 00A1A4B0 f game.o
+565	VERIFIED	0002:0022b0b0 ?UnloadBank@EntityManager@@EAEXW4TPakId@@@Z 00A1A5B0 f game.o
+566	VERIFIED	0002:0022b110 ?DeleteAllEntities@EntityManager@@QAEXXZ 00A1A610 f game.o
+567	VERIFIED	0002:0022b1a0 ?SetButtonAlias@@YAXXZ 00A1A6A0 f game.o
+568	VERIFIED	0002:0022b320 ?SetStickAlias@@YAXXZ 00A1A820 f game.o
+569	VERIFIED	0002:0022b4a0 ?ClearAllPadAliases@@YAXXZ 00A1A9A0 f game.o
+570	VERIFIED	0002:0022b4e0 ?InitPadAliasCommands@@YAXXZ 00A1A9E0 f game.o
+571	VERIFIED	0002:0022b520 ?WriteBindings@PadAliasMgr@@QAEXH@Z 00A1AA20 f game.o
+572	VERIFIED	0002:0022b670 ?Update@AnimNotifyTask@@UAEXPAVEntity@@M@Z 00A1AB70 f game.o
+573	VERIFIED	0002:0022b950 ?RegisterFunc@AnimNotifyTask@@SAXPBDP6AXVentity@Broc@@@Z@Z 00A1AE50 f game.o
+574	VERIFIED	0002:0022b9c0 ?NotifyLoaded@AudioBankMgr@@AAEXXZ 00A1AEC0 f game.o
+575	VERIFIED	0002:0022b9f0 ?NotifyUnloaded@AudioBankMgr@@AAEXXZ 00A1AEF0 f game.o
+576	VERIFIED	0002:0022ba20 ?Update@AudioBankMgr@@QAEXXZ 00A1AF20 f game.o
+577	VERIFIED	0002:0022bc40 ?FinishLoading@AudioBankMgr@@QAEXXZ 00A1B140 f game.o
+578	VERIFIED	0002:0022bd50 ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z 00A1B250 f game.o
+579	VERIFIED	0002:0022be30 ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z 00A1B330 f game.o
+580	VERIFIED	0002:0022c020 ??1Sound@SoundDevice@@QAE@XZ 00A1B520 f game.o
+581	VERIFIED	0002:0022c0d0 ?Stop@Sound@SoundDevice@@QAEXXZ 00A1B5D0 f game.o
+582	VERIFIED	0002:0022c210 ?SetVolume@Sound@SoundDevice@@QAEXM@Z 00A1B710 f game.o
+583	VERIFIED	0002:0022c2d0 ?SetPitch@Sound@SoundDevice@@QAEXM@Z 00A1B7D0 f game.o
+584	VERIFIED	0002:0022c380 ?SetRange@Sound@SoundDevice@@QAEXMM@Z 00A1B880 f game.o
+585	VERIFIED	0002:0022c470 ?SetPosition@Sound@SoundDevice@@QAEXABVPosition3@math@@@Z 00A1B970 f game.o
+586	VERIFIED	0002:0022c630 ?SetVelocity@Sound@SoundDevice@@QAEXABVDir3@math@@@Z 00A1BB30 f game.o
+587	VERIFIED	0002:0022c7a0 ?Update@Sound@SoundDevice@@QAEXXZ 00A1BCA0 f game.o
+588	VERIFIED	0002:0022c9b0 ?ReleaseSound@SoundDevice@@QAEXPAVSound@1@@Z 00A1BEB0 f game.o
+589	VERIFIED	0002:0022c9c0 ?ReleaseSound@SoundDevice@@QAEXV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z 00A1BEC0 f game.o
+590	VERIFIED	0002:0022ca10 ?StopAllSoundsNotPaused@SoundDevice@@QAEXXZ 00A1BF10 f game.o
+591	VERIFIED	0002:0022ca40 ?UpdateCrossFade@SoundDevice@@QAEXM@Z 00A1BF40 f game.o
+592	VERIFIED	0002:0022cbe0 ?CrossFade@SoundDevice@@QAEXIIM@Z 00A1C0E0 f game.o
+593	VERIFIED	0002:0022cd90 ?DebugRender@SoundDevice@@QAEXXZ 00A1C290 f game.o
+594	VERIFIED	0002:0022d6d0 ?ScaleVolume@MusicMgr@@QAEXM@Z 00A1CBD0 f game.o
+595	VERIFIED	0002:0022d830 ?Stop@MusicMgr@@QAEXM@Z 00A1CD30 f game.o
+596	VERIFIED	0002:0022d8a0 ?Update@MusicMgr@@QAEXM@Z 00A1CDA0 f game.o
+597	VERIFIED	0002:0022db90 ?BG_GetMaxAmmoPakAmmo@@YAHPBVPlayerState@@H@Z 00A1D090 f game.o
+598	VERIFIED	0002:0022dcf0 ?PM_MeleeAssistAccelerate@@YAXXZ 00A1D1F0 f game.o
+599	VERIFIED	0002:0022de20 ?PM_UpdateMeleeAssistAim@@YAXPAVPlayerState@@H@Z 00A1D320 f game.o
+600	VERIFIED	0002:0022e070 ?PM_UpdateStickyAim@@YAXPAVPlayerState@@PAUusercmd_s@@1@Z 00A1D570 f game.o
+601	VERIFIED	0002:0022f070 ?PM_UpdatePlayerSprintingFlag@@YAXXZ 00A1E570 f game.o
+602	VERIFIED	0002:0022f1b0 ?BG_GetPlayerWeaponInfo@@YAPAUweaponFileInfo_t@@XZ 00A1E6B0 f game.o
+603	VERIFIED	0002:0022f2f0 ?PM_UpdateAimDownSightFlag@@YAXXZ 00A1E7F0 f game.o
+604	VERIFIED	0002:0022f670 ?PM_UpdateAimDownSightLerp@@YAXXZ 00A1EB70 f game.o
+605	VERIFIED	0002:00231490 ?ReInit@CheckpointMgr@@QAEXXZ 00A20990 f game.o
+606	VERIFIED	0002:00231560 ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z 00A20A60 f game.o
+607	VERIFIED	0002:00232110 ?ClearGameVars@CheckpointMgr@@QAEXXZ 00A21610 f game.o
+608	VERIFIED	0002:00232120 ?LoadCheckpointFromStubData@CheckpointMgr@@QAEXXZ 00A21620 f game.o
+609	VERIFIED	0002:00232400 ?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ 00A21900 f game.o
+610	VERIFIED	0002:00232500 ?CM_PointContents@@YAHABVPosition3@math@@PAVDCGSet@@@Z 00A21A00 f game.o
+611	VERIFIED	0002:00232e00 ?CM_TransformedPointContents@@YAHABVPosition3@math@@PAVDCGSet@@00@Z 00A22300 f game.o
+612	VERIFIED	0002:00233010 ?CM_ValidateAllWorldSectors@@YAXXZ 00A22510 f game.o
+613	VERIFIED	0002:002331a0 ?CM_AreaEntities@@YAHABVPosition3@math@@0PAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HH@Z 00A226A0 f game.o
+614	VERIFIED	0002:00233230 ?CM_PointTraceToEntities@@YAXPAUpointtrace_t@@ABVTouchEntityData@@@Z 00A22730 f game.o
+615	VERIFIED	0002:00233290 ?post_process@rtree_visitor_t@@QAEXHAAUproximity_data_t@@@Z 00A22790 f game.o
+616	VERIFIED	0002:00233770 ?PositionTest@@YAXPAUtraceWork_t@@@Z 00A22C70 f game.o
+617	VERIFIED	0002:00233900 ?PositionTest@@YAXPAUtraceWork_t@@ABUproximity_data_t@@@Z 00A22E00 f game.o
+618	VERIFIED	0002:002340a0 ?SightTrace@@YAHHABVPosition3@math@@000PAVDCGSet@@0HHPAUsphere_t@@@Z 00A235A0 f game.o
+619	VERIFIED	0002:00234620 ?collide_segment@@YA_NABUproximity_data_t@@PAUtraceWork_t@@ABVPosition3@math@@2AAUcdl_cinfo1@@AAH4@Z 00A23B20 f game.o
+620	VERIFIED	0002:002350b0 ?collide_segment@@YAXABUproximity_data_t@@ABVPosition3@math@@1AAMAAH3PAUcdl_poly_inl_t@@@Z 00A245B0 f game.o
+621	VERIFIED	0002:00235b70 ?collide_velocity_sphere@@YA_NPAUtraceWork_t@@ABUproximity_data_t@@@Z 00A25070 f game.o
+622	VERIFIED	0002:002366c0 ?query_proximity_data@@YAXABVPosition3@math@@0AAUproximity_data_t@@@Z 00A25BC0 f game.o
+623	VERIFIED	0002:00236890 ?SightTraceXFormed@@YAHHABVPosition3@math@@000PAVDCGSet@@H00H@Z 00A25D90 f game.o
+624	VERIFIED	0002:00236ac0 ?push_sphere_in_world@@YA_NAAVPosition3@math@@MABUproximity_data_t@@PAVTouchEntityData@@@Z 00A25FC0 f game.o
+625	VERIFIED	0002:00237710 ?Cbuf_ExecuteText@@YAXHPBD@Z 00A26C10 f game.o
+626	VERIFIED	0002:00238160 ??0CurveManager@@AAE@XZ 00A27660 f game.o
+627	VERIFIED	0002:002385e0 ?EvaluateKey@CurveManager@@IAEMIIIIM@Z 00A27AE0 f game.o
+628	VERIFIED	0002:00238650 ?EvaluateCondition@CurveManager@@IAEMIIIMMIM@Z 00A27B50 f game.o
+629	VERIFIED	0002:002386c0 ?PostEvent@CurveManager@@QAEXIIM@Z 00A27BC0 f game.o
+630	VERIFIED	0002:00238720 ?DecodeGDB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A27C20 f game.o
+631	VERIFIED	0002:00238750 ?GetGdbFile@GdbFileManager@@QAE?AVGdbFile@@W4TPakId@@PBD1@Z 00A27C50 f game.o
+632	VERIFIED	0002:002387e0 ?DecodeDCGBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A27CE0 f game.o
+633	VERIFIED	0002:00238800 ??0TempDCGSet@DCGBankManager@@QAE@XZ 00A27D00 f game.o
+634	VERIFIED	0002:002388f0 ??0DCGBankManager@@QAE@XZ 00A27DF0 f game.o
+635	VERIFIED	0002:002389b0 ?DecodeCGBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A27EB0 f game.o
+636	VERIFIED	0002:002389d0 ?render_brush@@YAXABVcdlBrush@@ABVMat43@math@@ABVColor@@@Z 00A27ED0 f game.o
+637	VERIFIED	0002:00238a10 ?render_brush@@YAXABVPosition3@math@@0PBUcdlPlane@@IABVColor@@@Z 00A27F10 f game.o
+638	VERIFIED	0002:00239170 ?SetInSnapshot@Entity@@QAEXXZ 00A28670 f game.o
+639	VERIFIED	0002:00239180 ?DisableAI@@YAXI@Z 00A28680 f game.o
+640	VERIFIED	0002:00239250 ?EnableAI@@YAXI@Z 00A28750 f game.o
+641	VERIFIED	0002:002392d0 ?RestartAtCheckpoint@CheckpointMenu@@YAXH@Z 00A287D0 f game.o
+642	VERIFIED	0002:00239370 ?RenderCheckpointMenu@CheckpointMenu@@YAXXZ 00A28870 f game.o
+643	VERIFIED	0002:00239550 ?UnloadBank@AudioBankMgr@@EAEXW4TPakId@@@Z 00A28A50 f game.o
+644	VERIFIED	0002:00239630 ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z 00A28B30 f game.o
+645	VERIFIED	0002:002397f0 ??0SoundDevice@@QAE@XZ 00A28CF0 f game.o
+646	VERIFIED	0002:002399d0 ?Queue@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z 00A28ED0 f game.o
+647	VERIFIED	0002:00239ce0 ?Play@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z 00A291E0 f game.o
+648	VERIFIED	0002:0023a040 ?SetPoPtr@Sound@SoundDevice@@QAEXPBVMat43@math@@@Z 00A29540 f game.o
+649	VERIFIED	0002:0023a060 ?GetFreeSlot@SoundDevice@@AAEHXZ 00A29560 f game.o
+650	VERIFIED	0002:0023a0d0 ?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z 00A295D0 f game.o
+651	VERIFIED	0002:0023a260 ?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z 00A29760 f game.o
+652	VERIFIED	0002:0023a420 ?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@5@MMMM@Z 00A29920 f game.o
+653	VERIFIED	0002:0023a5a0 ?FrameAdvance@SoundDevice@@QAEXM@Z 00A29AA0 f game.o
+654	VERIFIED	0002:0023a7d0 ??1MusicMgr@@QAE@XZ 00A29CD0 f game.o
+655	VERIFIED	0002:0023a890 ?Play@MusicMgr@@QAEXPBD@Z 00A29D90 f game.o
+656	VERIFIED	0002:0023aa30 ?PlayIndoor@MusicMgr@@QAEXPBDM@Z 00A29F30 f game.o
+657	VERIFIED	0002:0023ac30 ?push_in_world@@YA_NAAUpmove_t@@MABUcollision_context_t@@@Z 00A2A130 f game.o
+658	VERIFIED	0002:0023bca0 ?PM_trace@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z 00A2B1A0 f game.o
+659	VERIFIED	0002:0023bf90 ?resolve_character_collisions@@YA_NAAUpmove_t@@M@Z 00A2B490 f game.o
+660	VERIFIED	0002:0023c8e0 ?PM_FootstepEvent@@YAXHHH@Z 00A2BDE0 f game.o
+661	VERIFIED	0002:0023d2b0 ?PM_UpdateViewAngles@@YAXPAVPlayerState@@PAUusercmd_s@@1HP6AXPAUtrace_t@@ABVPosition3@math@@333ABUcollision_context_t@@@Z@Z 00A2C7B0 f game.o
+662	VERIFIED	0002:0023e850 ?PM_SlideMove@@YAHH@Z 00A2DD50 f game.o
+663	VERIFIED	0002:0023f230 ?PM_StepSlideMove@@YAXH@Z 00A2E730 f game.o
+664	VERIFIED	0002:0023fd00 ?ParseWeaponConfigString@@YAXPBDPBVConfigString@@@Z 00A2F200 f game.o
+665	VERIFIED	0002:00240020 ?BG_SetupWeaponInfo@@YAXXZ 00A2F520 f game.o
+666	VERIFIED	0002:002408b0 ?PM_Weapon@@YAXXZ 00A2FDB0 f game.o
+667	VERIFIED	0002:00240e60 ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ 00A30360 f game.o
+668	VERIFIED	0002:00240e90 ?Trace@@YAXPAUtrace_t@@ABVPosition3@math@@111PAVDCGSet@@HHPAUsphere_t@@@Z 00A30390 f game.o
+669	VERIFIED	0002:00241470 ?TraceSphere@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@222H@Z 00A30970 f game.o
+670	VERIFIED	0002:00241880 ?TracePoint@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@2H@Z 00A30D80 f game.o
+671	VERIFIED	0002:00241d40 ?TraceXFormed@@YAXPAUtrace_t@@ABVPosition3@math@@111PAVDCGSet@@H11H@Z 00A31240 f game.o
+672	VERIFIED	0002:00242010 ?AttachCurveVehicle@@YA_NIPADMM@Z 00A31510 f game.o
+673	VERIFIED	0002:00242120 ?AttachCurveEntity@@YA_NIPAD@Z 00A31620 f game.o
+674	VERIFIED	0002:002421d0 ?Update@CurveManager@@QAEXM@Z 00A316D0 f game.o
+675	VERIFIED	0002:00242d50 ??1Entity@@QAE@XZ 00A32250 f game.o
+676	VERIFIED	0002:002431f0 ??0PadAliasMgr@@QAE@XZ 00A326F0 f game.o
+677	VERIFIED	0002:002435d0 ?StopAllSounds@SoundDevice@@QAEXXZ 00A32AD0 f game.o
+678	VERIFIED	0002:00243690 ?tunnel_test@@YA_NAAUpmove_t@@MABVPosition3@math@@1@Z 00A32B90 f game.o
+679	VERIFIED	0002:00243850 ?resolve_collisions@@YAXABUcollision_context_t@@ABVPosition3@math@@@Z 00A32D50 f game.o
+680	VERIFIED	0002:00244b80 ?PM_CheckDuck@@YAXXZ 00A34080 f game.o
+681	VERIFIED	0002:002458e0 ?PM_LadderMove@@YAXABUcollision_context_t@@@Z 00A34DE0 f game.o
+682	VERIFIED	0002:00245cd0 ?PmoveSingle@@YAXPAUpmove_t@@_N@Z 00A351D0 f game.o
+683	VERIFIED	0002:002464c0 ?Pmove@@YAXPAUpmove_t@@_N@Z 00A359C0 f game.o
+684	VERIFIED	0002:002465b0 ?DetachCurveEntity@@YA_NI@Z 00A35AB0 f game.o
+685	VERIFIED	0002:00246610 ??1SoundDevice@@QAE@XZ 00A35B10 f game.o
+686	VERIFIED	0002:002466a0 ?ClearEntities@CurveManager@@QAEXXZ 00A35BA0 f game.o
+687	VERIFIED	0002:00246700 ?DebugRender@CGBankManager@@QAEXXZ 00A35C00 f game.o
+688	VERIFIED	0002:002492d0 ??0CGBankManager@@QAE@XZ 00A387D0 f game.o
+689	PORTED	0002:0025b030 ?AbsValue@math@@YA?AVDir3@1@ABV21@@Z 00A4A530 f i game.o
+690	VERIFIED	0002:0025b070 ??0WbkEntry@AudioBankMgr@@QAE@XZ 00A4A570 f i game.o
+691	PORTED	0002:0025b0e0 ??8math@@YA_NABVDir3@0@0@Z 00A4A5E0 f i game.o
+692	PORTED	0002:0025b1c0 ??Hmath@@YA?AVDir3@0@ABV10@M@Z 00A4A6C0 f i game.o
+693	PORTED	0002:0025b200 ??Hmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A700 f i game.o
+694	PORTED	0002:0025b250 ??Gmath@@YA?AVVector4@0@ABV10@0@Z 00A4A750 f i game.o
+695	PORTED	0002:0025b2b0 ??Gmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A7B0 f i game.o
+696	PORTED	0002:0025b330 ??Kmath@@YA?AVPosition3@0@ABV10@M@Z 00A4A830 f i game.o
+697	PORTED	0002:0025b370 ?IsStreamed@Sound@SoundDevice@@QBE_NXZ 00A4A870 f i game.o
+698	PORTED	0002:0025b390 ?GetWaveId@Sound@SoundDevice@@QAE?AW4nslWaveID@@XZ 00A4A890 f i game.o
+699	PORTED	0002:0025b3a0 ??Dmath@@YAMABVPosition3@0@0@Z 00A4A8A0 f i game.o
+700	PORTED	0002:0025b400 ??ZDir3@math@@QAEABV01@ABV01@@Z 00A4A900 f i game.o
+701	PORTED	0002:0025b440 ??ZPosition3@math@@QAEABV01@ABVDir3@1@@Z 00A4A940 f i game.o
+702	PORTED	0002:0025b480 ?UnitNegDirX@math@@YA?AVDir3@1@XZ 00A4A980 f i game.o
+703	PORTED	0002:0025b4c0 ?UnitNegDirY@math@@YA?AVDir3@1@XZ 00A4A9C0 f i game.o
+704	PORTED	0002:0025b500 ?UnitNegDirZ@math@@YA?AVDir3@1@XZ 00A4AA00 f i game.o
+705	PORTED	0002:0025b540 ?Compare_all_ge@math@@YA_NABVVector4@1@0@Z 00A4AA40 f i game.o
+706	PORTED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o
+707	PORTED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o
+708	PORTED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o
+709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o
+710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o
+711	PORTED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o
+712	PORTED	0002:0025b6b0 ?nglGetStripIndices@@YAHHH@Z 00A4ABB0 f i game.o
+713	PORTED	0002:0025b6d0 ??0SCheckpointGameVar@@QAE@III@Z 00A4ABD0 f i game.o
+714	PORTED	0002:0025b6f0 ?inc@cdl_profcounter@@QAEXXZ 00A4ABF0 f i game.o
+715	PORTED	0002:0025b700 ?Select_lt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AC00 f i game.o
+716	PORTED	0002:0025b860 ?Select_gt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AD60 f i game.o
+717	PORTED	0002:0025b9c0 ?FloatIsNegative@@YAHM@Z 00A4AEC0 f i game.o
+718	PORTED	0002:0025b9e0 ?FloatSign@@YAHM@Z 00A4AEE0 f i game.o
+719	PORTED	0002:0025ba10 ?BoxOnPlaneSide@@YAHABVPosition3@math@@0ABVVector4@2@@Z 00A4AF10 f i game.o
+720	PORTED	0002:0025bce0 ?Inst@BinFileManager@@SAPAV1@XZ 00A4B1E0 f i game.o
+721	VERIFIED	0002:0025bcf0 ??0leafList_s@@QAE@XZ 00A4B1F0 f i game.o
+722	VERIFIED	0002:0025bd00 ??0areaParms_t@@QAE@XZ 00A4B200 f i game.o
+723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o
+724	VERIFIED	0002:0025bd20 ??0sphere_t@@QAE@XZ 00A4B220 f i game.o
+725	VERIFIED	0002:0025bd30 ?collide_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@PAV32@@Z 00A4B230 f i game.o
+726	PORTED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o
+727	PORTED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o
+728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o
+729	PORTED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o
+730	PORTED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o
+731	PORTED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o
+732	PORTED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o
+733	PORTED	0002:0025c3e0 ?get_dlist_node@Curve@@QAEPAXXZ 00A4B8E0 f i game.o
+734	PORTED	0002:0025c3f0 ?get_dlist_node_offset@Curve@@SAHXZ 00A4B8F0 f i game.o
+735	PORTED	0002:0025c400 ??2Curve@@SAPAXI_NPBDH@Z 00A4B900 f i game.o
+736	PORTED	0002:0025c420 ??3Curve@@SAXPAX_NPBDH@Z 00A4B920 f i game.o
+737	PORTED	0002:0025c440 ??3Curve@@SAXPAX@Z 00A4B940 f i game.o
+738	PORTED	0002:0025c460 ?get_dlist_node@CurveEvalFunc@@QAEPAXXZ 00A4B960 f i game.o
+739	PORTED	0002:0025c470 ?get_dlist_node_offset@CurveEvalFunc@@SAHXZ 00A4B970 f i game.o
+740	PORTED	0002:0025c480 ??2CurveEvalFunc@@SAPAXI_NPBDH@Z 00A4B980 f i game.o
+741	PORTED	0002:0025c4a0 ??3CurveEvalFunc@@SAXPAX_NPBDH@Z 00A4B9A0 f i game.o
+742	PORTED	0002:0025c4c0 ?get_displaced_center_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00A4B9C0 f i game.o
+743	PORTED	0002:0025c4d0 ??0debug_brush@@QAE@XZ 00A4B9D0 f i game.o
+744	VERIFIED	0002:0025c4e0 ??0debug_brush@@QAE@ABVcdlBrush@@ABVMat43@math@@ABVColor@@@Z 00A4B9E0 f i game.o
+745	PORTED	0002:0025c5b0 ?SetEntity@DObj@@QAEXPAVEntity@@@Z 00A4BAB0 f i game.o
+746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o
+747	PORTED	0002:0025c5e0 ??0__unnamed@Entity@@QAE@XZ 00A4BAE0 f i game.o
+748	VERIFIED	0002:0025c600 ??1AttachModelInfo@@QAE@XZ 00A4BB00 f i game.o
+749	VERIFIED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o
+750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o
+751	PORTED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o
+752	PORTED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o
+753	PORTED	0002:0025c6f0 ?load_inplace@?$cdl_array@UcdlPlane@@@@QAEXPADAAH@Z 00A4BBF0 f i game.o
+754	PORTED	0002:0025c730 ??A?$cdl_array@Ucdl_object_t@@@@QAEAAUcdl_object_t@@I@Z 00A4BC30 f i game.o
+755	PORTED	0002:0025c780 ?load_inplace@?$cdl_array@Ucdl_object_t@@@@QAEXPADAAH@Z 00A4BC80 f i game.o
+756	PORTED	0002:0025c7d0 ??0?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4BCD0 f i game.o
+757	PORTED	0002:0025c7f0 ?load_inplace@?$cdl_array@Ucdl_brush_t@@@@QAEXPADAAH@Z 00A4BCF0 f i game.o
+758	PORTED	0002:0025c830 ??0?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4BD30 f i game.o
+759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o
+760	PORTED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o
+761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o
+762	PORTED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o
+763	PORTED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o
+764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o
+765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o
+766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o
+767	PORTED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o
+768	PORTED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o
+769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o
+770	PORTED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o
+771	PORTED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o
+772	PORTED	0002:0025cbf0 ?get_available_slots@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ 00A4C0F0 f i game.o
+773	PORTED	0002:0025cc10 ?add_fast@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEPAUbounded_proxy_obj_t@@XZ 00A4C110 f i game.o
+774	PORTED	0002:0025cc70 ?remove_all_ndc@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEXXZ 00A4C170 f i game.o
+775	PORTED	0002:0025cc80 ??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEAAUbounded_proxy_obj_t@@H@Z 00A4C180 f i game.o
+776	PORTED	0002:0025cce0 ?get_available_slots@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ 00A4C1E0 f i game.o
+777	PORTED	0002:0025cd00 ??0?$phys_static_array@H$0BAA@@@QAE@XZ 00A4C200 f i game.o
+778	PORTED	0002:0025cd20 ?add_fast@?$phys_static_array@H$0BAA@@@QAEPAHXZ 00A4C220 f i game.o
+779	PORTED	0002:0025cd80 ?remove_all_ndc@?$phys_static_array@H$0BAA@@@QAEXXZ 00A4C280 f i game.o
+780	PORTED	0002:0025cd90 ??A?$phys_static_array@H$0BAA@@@QAEAAHH@Z 00A4C290 f i game.o
+781	PORTED	0002:0025cdf0 ?get_available_slots@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C2F0 f i game.o
+782	PORTED	0002:0025ce10 ?get_count@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C310 f i game.o
+783	PORTED	0002:0025ce20 ??0?$phys_static_array@H$0IA@@@QAE@XZ 00A4C320 f i game.o
+784	PORTED	0002:0025ce40 ?add_fast@?$phys_static_array@H$0IA@@@QAEPAHXZ 00A4C340 f i game.o
+785	PORTED	0002:0025cea0 ?remove_all_ndc@?$phys_static_array@H$0IA@@@QAEXXZ 00A4C3A0 f i game.o
+786	PORTED	0002:0025ceb0 ??A?$phys_static_array@H$0IA@@@QAEAAHH@Z 00A4C3B0 f i game.o
+787	PORTED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o
+788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o
+789	PORTED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o
+790	PORTED	0002:0025cfa0 ?size@?$InplaceVector@E@@QBEIXZ 00A4C4A0 f i game.o
+791	VERIFIED	0002:0025cfb0 ??0?$IVPointer@VXModel@@@@QAE@W4TPakId@@PAVXModel@@@Z 00A4C4B0 f i game.o
+792	PORTED	0002:0025cfd0 ?size@?$InplaceVector@VBspNode@@@@QBEIXZ 00A4C4D0 f i game.o
+793	PORTED	0002:0025cfe0 ??A?$InplaceVector@VBspNode@@@@QAEAAVBspNode@@I@Z 00A4C4E0 f i game.o
+794	PORTED	0002:0025d060 ?size@?$InplaceVector@VBspPlane@@@@QBEIXZ 00A4C560 f i game.o
+795	PORTED	0002:0025d070 ??A?$InplaceVector@VBspPlane@@@@QAEAAVBspPlane@@I@Z 00A4C570 f i game.o
+796	PORTED	0002:0025d0f0 ?size@?$InplaceVector@VBspArea@@@@QBEIXZ 00A4C5F0 f i game.o
+797	PORTED	0002:0025d100 ??A?$InplaceVector@VBspArea@@@@QAEAAVBspArea@@I@Z 00A4C600 f i game.o
+798	PORTED	0002:0025d180 ??A?$InplaceVector@H@@QAEAAHI@Z 00A4C680 f i game.o
+799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o
+800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o
+801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o
+802	PORTED	0002:0025d240 ?end@?$ae_vector@I@@QAEPAIXZ 00A4C740 f i game.o
+803	VERIFIED	0002:0025d250 ??0?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A4C750 f i game.o
+804	PORTED	0002:0025d260 ??A?$ae_vector@P6AXVentity@Broc@@@Z@@QAEAAP6AXVentity@Broc@@@ZH@Z 00A4C760 f i game.o
+805	PORTED	0002:0025d2e0 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEABUWbkEntry@AudioBankMgr@@H@Z 00A4C7E0 f i game.o
+806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o
+807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o
+808	VERIFIED	0002:0025d3f0 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@VHandle@@@Z 00A4C8F0 f i game.o
+809	VERIFIED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o
+810	VERIFIED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o
+811	VERIFIED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o
+812	PORTED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o
+813	PORTED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o
+814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o
+815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o
+816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o
+817	PORTED	0002:0025d620 ?size@?$ae_vector@USCheckpointGameVar@@@@QBEHXZ 00A4CB20 f i game.o
+818	PORTED	0002:0025d630 ??A?$ae_vector@USCheckpointGameVar@@@@QAEAAUSCheckpointGameVar@@H@Z 00A4CB30 f i game.o
+819	PORTED	0002:0025d6b0 ?begin@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBB0 f i game.o
+820	PORTED	0002:0025d6c0 ?end@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBC0 f i game.o
+821	PORTED	0002:0025d6d0 ?erase@?$ae_vector@USCheckpointGameVar@@@@QAEXPAUSCheckpointGameVar@@0@Z 00A4CBD0 f i game.o
+822	PORTED	0002:0025d7d0 ??Diterator@?$ae_sized_array@G$0BAA@@@QBEAAGXZ 00A4CCD0 f i game.o
+823	PORTED	0002:0025d7e0 ??Eiterator@?$ae_sized_array@G$0BAA@@@QAEAAV01@XZ 00A4CCE0 f i game.o
+824	PORTED	0002:0025d7f0 ??9iterator@?$ae_sized_array@G$0BAA@@@QBE_NV01@@Z 00A4CCF0 f i game.o
+825	PORTED	0002:0025d810 ??0dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAU01@0@Z 00A4CD10 f i game.o
+826	PORTED	0002:0025d830 ??0dlist_node@?$reserved_dlist@VCurve@@@@QAE@PAU01@0@Z 00A4CD30 f i game.o
+827	PORTED	0002:0025d850 ??0dlist_node@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAU01@0@Z 00A4CD50 f i game.o
+828	PORTED	0002:0025d870 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAEAAV01@XZ 00A4CD70 f i game.o
+829	PORTED	0002:0025d890 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AV01@H@Z 00A4CD90 f i game.o
+830	PORTED	0002:0025d8c0 ??Eiterator@?$reserved_dlist@VCurve@@@@QAEAAV01@XZ 00A4CDC0 f i game.o
+831	PORTED	0002:0025d8e0 ??Eiterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AV01@H@Z 00A4CDE0 f i game.o
+832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o
+833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o
+834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o
+835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o
+836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o
+837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o
+838	PORTED	0002:0025daf0 ??0?$nglMeshIterator@Ucddebug_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A4CFF0 f i game.o
+839	PORTED	0002:0025db30 ?BeginStrip@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXH@Z 00A4D030 f i game.o
+840	PORTED	0002:0025db70 ?WritePosition@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXMMM@Z 00A4D070 f i game.o
+841	PORTED	0002:0025dbb0 ??E?$nglMeshIterator@Ucddebug_vertex@@G@@QAEABV0@XZ 00A4D0B0 f i game.o
+842	PORTED	0002:0025dbe0 ?WriteFlush@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXXZ 00A4D0E0 f i game.o
+843	SKIPPED	0002:0025dc00 ??0?$pair@HH@std@@QAE@ABH0@Z 00A4D100 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+844	SKIPPED	0002:0025dc20 ?size@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEIXZ 00A4D120 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+845	PORTED	0002:0025dc40 ??0?$cdl_array@M@@QAE@XZ 00A4D140 f i game.o
+846	PORTED	0002:0025dc60 ??0?$cdl_array@H@@QAE@XZ 00A4D160 f i game.o
+847	PORTED	0002:0025dc80 ??A?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00A4D180 f i game.o
+848	PORTED	0002:0025dd00 ?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QBEHXZ 00A4D200 f i game.o
+849	VERIFIED	0002:0025dd10 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00A4D210 f i game.o
+850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o
+851	PORTED	0002:0025ddd0 ??0?$cFreeList@VEntity@@@@QAE@XZ 00A4D2D0 f i game.o
+852	PORTED	0002:0025dde0 ??1?$cFreeList@VEntity@@@@QAE@XZ 00A4D2E0 f i game.o
+853	VERIFIED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o
+854	PORTED	0002:0025df20 ??0?$cFreeList@VDObj@@@@QAE@XZ 00A4D420 f i game.o
+855	PORTED	0002:0025df30 ??1?$cFreeList@VDObj@@@@QAE@XZ 00A4D430 f i game.o
+856	PORTED	0002:0025df90 ??0?$cFreeList@UDSkel@@@@QAE@XZ 00A4D490 f i game.o
+857	PORTED	0002:0025dfa0 ??1?$cFreeList@UDSkel@@@@QAE@XZ 00A4D4A0 f i game.o
+858	PORTED	0002:0025e000 ??0?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D500 f i game.o
+859	PORTED	0002:0025e010 ??1?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D510 f i game.o
+860	PORTED	0002:0025e070 ??0?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D570 f i game.o
+861	PORTED	0002:0025e080 ??1?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D580 f i game.o
+862	PORTED	0002:0025e0e0 ??0?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5E0 f i game.o
+863	PORTED	0002:0025e0f0 ??1?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5F0 f i game.o
+864	VERIFIED	0002:0025e150 ?Alloc@?$cFreeList@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00A4D650 f i game.o
+865	VERIFIED	0002:0025e230 ?Free@?$cFreeList@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z 00A4D730 f i game.o
+866	VERIFIED	0002:0025e250 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasButton@@$0BA@@@H@Z 00A4D750 f i game.o
+867	VERIFIED	0002:0025e2d0 ??A?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAEAAW4EPadAliasButton@@H@Z 00A4D7D0 f i game.o
+868	VERIFIED	0002:0025e350 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasStick@@$01@@H@Z 00A4D850 f i game.o
+869	VERIFIED	0002:0025e3d0 ??A?$ae_sized_array@W4EPadAliasStick@@$01@@QAEAAW4EPadAliasStick@@H@Z 00A4D8D0 f i game.o
+870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o
+871	VERIFIED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o
+872	PORTED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o
+873	PORTED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o
+874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
+875	PORTED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
+876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o
+877	PORTED	0002:0025e6f0 ?done@?$cdl_array@Ucdl_object_t@@@@QAEXXZ 00A4DBF0 f i game.o
+878	PORTED	0002:0025e720 ?done@?$cdl_array@Ucdl_brush_t@@@@QAEXXZ 00A4DC20 f i game.o
+879	PORTED	0002:0025e750 ?done@?$cdl_array@Ucdl_vinfo_t@@@@QAEXXZ 00A4DC50 f i game.o
+880	PORTED	0002:0025e780 ?done@?$cdl_array@Uvi4@@@@QAEXXZ 00A4DC80 f i game.o
+881	PORTED	0002:0025e7b0 ?call_destructors@?$phys_static_array@H$0BAA@@@AAEXXZ 00A4DCB0 f i game.o
+882	PORTED	0002:0025e7c0 ?call_destructors@?$phys_static_array@H$0IA@@@AAEXXZ 00A4DCC0 f i game.o
+883	PORTED	0002:0025e7d0 ?construct_array@?$ae_vector@I@@AAEPAIHH@Z 00A4DCD0 f i game.o
+884	VERIFIED	0002:0025e800 ?destroy_all@?$ae_vector@I@@AAEXXZ 00A4DD00 f i game.o
+885	PORTED	0002:0025e830 ?construct_array@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEPAP6AXVentity@Broc@@@ZHH@Z 00A4DD30 f i game.o
+886	PORTED	0002:0025e860 ?pop_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A4DD60 f i game.o
+887	PORTED	0002:0025e890 ??0DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A4DD90 f i game.o
+888	PORTED	0002:0025e8b0 ?SetObject@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXPAVSound@SoundDevice@@@Z 00A4DDB0 f i game.o
+889	PORTED	0002:0025e8c0 ?Release@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A4DDC0 f i game.o
+890	PORTED	0002:0025e8d0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QAEAAPAVGdbFileBank@@H@Z 00A4DDD0 f i game.o
+891	PORTED	0002:0025e950 ?set_size@?$ae_sized_array@G$0BAA@@@QAEXH@Z 00A4DE50 f i game.o
+892	PORTED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o
+893	PORTED	0002:0025e9d0 ?destroy_all@?$ae_vector@USCheckpointGameVar@@@@AAEXXZ 00A4DED0 f i game.o
+894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o
+895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o
+896	PORTED	0002:0025ea30 ?clear@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF30 f i game.o
+897	PORTED	0002:0025ea50 ?validate@?$reserved_dlist@VCurveEffectListElem@@@@QBEXXZ 00A4DF50 f i game.o
+898	PORTED	0002:0025ea60 ?pop@dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF60 f i game.o
+899	PORTED	0002:0025ea80 ?node_to_object@?$reserved_dlist@VCurve@@@@SAPAVCurve@@PAUdlist_node@1@@Z 00A4DF80 f i game.o
+900	PORTED	0002:0025ea90 ?clear@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DF90 f i game.o
+901	PORTED	0002:0025eab0 ?validate@?$reserved_dlist@VCurve@@@@QBEXXZ 00A4DFB0 f i game.o
+902	PORTED	0002:0025eac0 ?pop@dlist_node@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DFC0 f i game.o
+903	PORTED	0002:0025eae0 ?node_to_object@?$reserved_dlist@VCurveEvalFunc@@@@SAPAVCurveEvalFunc@@PAUdlist_node@1@@Z 00A4DFE0 f i game.o
+904	PORTED	0002:0025eaf0 ?clear@?$reserved_dlist@VCurveEvalFunc@@@@QAEXXZ 00A4DFF0 f i game.o
+905	PORTED	0002:0025eb10 ?validate@?$reserved_dlist@VCurveEvalFunc@@@@QBEXXZ 00A4E010 f i game.o
+906	PORTED	0002:0025eb20 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAUdlist_node@1@0@Z 00A4E020 f i game.o
+907	PORTED	0002:0025eb40 ?compare@iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV12@@Z 00A4E040 f i game.o
+908	PORTED	0002:0025eb60 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAUdlist_node@1@0@Z 00A4E060 f i game.o
+909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o
+910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o
+911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o
+912	PORTED	0002:0025ebe0 ?Deref@?$IVPointer@VGdbFileSet@@@@ABEPAVGdbFileSet@@XZ 00A4E0E0 f i game.o
+913	PORTED	0002:0025ec00 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@HH@Z 00A4E100 f i game.o
+914	PORTED	0002:0025ec30 ?set_size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXH@Z 00A4E130 f i game.o
+915	SKIPPED	0002:0025ec50 ??0?$pair@HH@std@@QAE@XZ 00A4E150 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+916	SKIPPED	0002:0025ec70 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@XZ 00A4E170 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+917	PORTED	0002:0025ec80 ?done@?$cdl_array@M@@QAEXXZ 00A4E180 f i game.o
+918	PORTED	0002:0025ecb0 ?size@?$cdl_array@M@@QBEIXZ 00A4E1B0 f i game.o
+919	PORTED	0002:0025ecc0 ?done@?$cdl_array@H@@QAEXXZ 00A4E1C0 f i game.o
+920	PORTED	0002:0025ecf0 ?size@?$cdl_array@H@@QBEIXZ 00A4E1F0 f i game.o
+921	PORTED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o
+922	VERIFIED	0002:0025ed10 ??0?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAE@XZ 00A4E210 f i game.o
+923	VERIFIED	0002:0025ed20 ??0?$ae_sized_array@W4EPadAliasStick@@$01@@QAE@XZ 00A4E220 f i game.o
+924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o
+925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o
+926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o
+927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o
+928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o
+929	PORTED	0002:0025edd0 ?empty@?$reserved_dlist@VCurve@@@@QBE_NXZ 00A4E2D0 f i game.o
+930	PORTED	0002:0025edf0 ?get_head@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAUdlist_node@1@XZ 00A4E2F0 f i game.o
+931	PORTED	0002:0025ee00 ?empty@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NXZ 00A4E300 f i game.o
+932	PORTED	0002:0025ee20 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAVCurve@@@Z 00A4E320 f i game.o
+933	PORTED	0002:0025ee40 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAVCurveEffectListElem@@@Z 00A4E340 f i game.o
+934	PORTED	0002:0025ee60 ?begin@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E360 f i game.o
+935	PORTED	0002:0025ee70 ?end@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E370 f i game.o
+936	PORTED	0002:0025ee90 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@H@Z 00A4E390 f i game.o
+937	SKIPPED	0002:0025eec0 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@ABV01@@Z 00A4E3C0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+938	SKIPPED	0002:0025eed0 ?deallocate@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@I@Z 00A4E3D0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+939	SKIPPED	0002:0025eef0 ??Yiterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAV012@H@Z 00A4E3F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+940	SKIPPED	0002:0025ef10 ??Dconst_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEABU?$pair@HH@2@XZ 00A4E410 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+941	SKIPPED	0002:0025ef20 ?capacity@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEIXZ 00A4E420 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+942	SKIPPED	0002:0025ef40 ?max_size@?$allocator@U?$pair@HH@std@@@std@@QBEIXZ 00A4E440 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+943	SKIPPED	0002:0025ef50 ??0const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A4E450 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+944	SKIPPED	0002:0025ef70 ??8const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A4E470 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+945	PORTED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o
+946	PORTED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o
+947	PORTED	0002:0025efd0 ??$tl_max@IH@@YAIABIABH@Z 00A4E4D0 f i game.o
+948	SKIPPED	0002:0025eff0 ??$fill@PAU?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@0ABU10@@Z 00A4E4F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+949	SKIPPED	0002:0025f020 ??$_Allocate@U?$pair@HH@std@@@std@@YAPAU?$pair@HH@0@IPAU10@@Z 00A4E520 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+950	VERIFIED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o
+951	PORTED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o
+952	PORTED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o
+953	PORTED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o
+954	PORTED	0002:0025f1a0 ??0?$IVPointer@VGdbFileSet@@@@QAE@W4TPakId@@PAVGdbFileSet@@@Z 00A4E6A0 f i game.o
+955	PORTED	0002:0025f1c0 ??0?$IVPointer@VGdbFileSet@@@@QAE@XZ 00A4E6C0 f i game.o
+956	PORTED	0002:0025f1e0 ??R?$DelFunctor@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A4E6E0 f i game.o
+957	PORTED	0002:0025f200 ?size@?$InplaceVector@PBVGdbFileSet@@@@QBEIXZ 00A4E700 f i game.o
+958	PORTED	0002:0025f210 ??A?$InplaceVector@PBVGdbFileSet@@@@QAEAAPBVGdbFileSet@@I@Z 00A4E710 f i game.o
+959	SKIPPED	0002:0025f290 ??$_Ptr_cat@PAU?$pair@HH@std@@PAU12@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAU?$pair@HH@0@0@Z 00A4E790 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+960	SKIPPED	0002:0025f2a0 ??$_Copy_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+961	SKIPPED	0002:0025f2e0 ??$_Copy_backward_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+962	SKIPPED	0002:0025f320 ??$_Construct@U?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@ABU10@@Z 00A4E820 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+963	SKIPPED	0002:0025f340 ??$_Destroy@U?$pair@HH@std@@@std@@YAXPAU?$pair@HH@0@@Z 00A4E840 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+964	PORTED	0002:0025f350 ?intersect_aabb_centered_aabb@@YA_NABVPosition3@math@@000@Z 00A4E850 f i game.o
+965	PORTED	0002:0025f3b0 ?inside_point_aabb@@YA_NABVPosition3@math@@00@Z 00A4E8B0 f i game.o
+966	PORTED	0002:0025f420 ?point_in_triangle@@YA_NABVPosition3@math@@000ABVDir3@2@@Z 00A4E920 f i game.o
+967	PORTED	0002:0025f5f0 ??0cdlPlane@@QAE@XZ 00A4EAF0 f i game.o
+968	PORTED	0002:0025f600 ??0cdlPlane@@QAE@ABVDir3@math@@M@Z 00A4EB00 f i game.o
+969	PORTED	0002:0025f630 ?get_offset@cdlPlane@@QBEMXZ 00A4EB30 f i game.o
+970	PORTED	0002:0025f680 ??0cdl_object_t@@QAE@XZ 00A4EB80 f i game.o
+971	PORTED	0002:0025f690 ?get_min@cdl_object_t@@QBE?AVPosition3@math@@XZ 00A4EB90 f i game.o
+972	PORTED	0002:0025f730 ?load_inplace@DCGSet@@QAEXPADAAH@Z 00A4EC30 f i game.o
+973	PORTED	0002:0025f820 ?load_inplace@DCGBank@@QAEXPADAAH@Z 00A4ED20 f i game.o
+974	PORTED	0002:0025f8e0 ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z 00A4EDE0 f i game.o
+975	PORTED	0002:0025f990 ?load_inplace@CGBank@@QAEXPADAAH@Z 00A4EE90 f i game.o
+976	VERIFIED	0002:0025fb40 ?get_type@CGBank@@QBEHI@Z 00A4F040 f i game.o
+977	PORTED	0002:0025fbe0 ?PHYS_ALIGN@@YA?BIPADH@Z 00A4F0E0 f i game.o
+978	PORTED	0002:0025fc00 ??0phys_memory_heap@@QAE@XZ 00A4F100 f i game.o
+979	PORTED	0002:0025fc20 ?allocate_no_error@phys_memory_heap@@QAEPAXHH@Z 00A4F120 f i game.o
+980	PORTED	0002:0025fc90 ?allocate@phys_memory_heap@@QAEPAXHHPBD@Z 00A4F190 f i game.o
+981	PORTED	0002:0025fcf0 ??0bounded_proxy_obj_t@@QAE@ABVPosition3@math@@0HEGE@Z 00A4F1F0 f i game.o
+982	PORTED	0002:0025fe00 ?clear@proximity_data_t@@QAEXXZ 00A4F300 f i game.o
+983	VERIFIED	0002:0025fe20 ??0cmgr_mem_ctx_t@@QAE@XZ 00A4F320 f i game.o
+984	VERIFIED	0002:0025fef0 ??1cmgr_mem_ctx_t@@QAE@XZ 00A4F3F0 f i game.o
+985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o
+986	PORTED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o
+987	PORTED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o
+988	VERIFIED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o
+989	VERIFIED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o
+990	VERIFIED	0002:002600e0 ??1AnimNotifyTask@@UAE@XZ 00A4F5E0 f i game.o
+991	PORTED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o
+992	VERIFIED	0002:00260100 ??0CrossFadeInfo@SoundDevice@@QAE@XZ 00A4F600 f i game.o
+993	PORTED	0002:00260120 ?Clear@nglParamSet@@QAEXXZ 00A4F620 f i game.o
+994	VERIFIED	0002:00260140 ?nglListAlloc@@YAPAXII@Z 00A4F640 f i game.o
+995	VERIFIED	0002:002601d0 ??0pml_t@@QAE@XZ 00A4F6D0 f i game.o
+996	VERIFIED	0002:002601e0 ??0locTraceWork_t@@QAE@XZ 00A4F6E0 f i game.o
+997	VERIFIED	0002:002601f0 ??0traceWork_t@@QAE@XZ 00A4F6F0 f i game.o
+998	PORTED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o
+999	PORTED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o
+1000	VERIFIED	0002:00260250 ??_ECGBankManager@@UAEPAXI@Z 00A4F750 f i game.o
+1001	VERIFIED	0002:00260250 ??_GCGBankManager@@UAEPAXI@Z 00A4F750 f i game.o
+1002	VERIFIED	0002:00260280 ??0AttachModelInfo@@QAE@XZ 00A4F780 f i game.o
+1003	VERIFIED	0002:002602b0 ??_GEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o
+1004	VERIFIED	0002:002602b0 ??_EEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o
+1005	PORTED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o
+1006	PORTED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o
+1007	VERIFIED	0002:00260360 ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z 00A4F860 f i game.o
+1008	PORTED	0002:002603f0 ??1?$cdl_array@Ucdl_object_t@@@@QAE@XZ 00A4F8F0 f i game.o
+1009	PORTED	0002:00260420 ??1?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4F920 f i game.o
+1010	PORTED	0002:00260450 ??A?$cdl_array@Ucdl_brush_t@@@@QAEAAUcdl_brush_t@@I@Z 00A4F950 f i game.o
+1011	PORTED	0002:002604a0 ??1?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4F9A0 f i game.o
+1012	PORTED	0002:002604d0 ??1?$cdl_array@Uvi4@@@@QAE@XZ 00A4F9D0 f i game.o
+1013	PORTED	0002:00260500 ??A?$cdl_array@Ucdl_patch_t@@@@QAEAAUcdl_patch_t@@I@Z 00A4FA00 f i game.o
+1014	PORTED	0002:00260550 ??1?$phys_static_array@H$0BAA@@@QAE@XZ 00A4FA50 f i game.o
+1015	PORTED	0002:00260560 ??1?$phys_static_array@H$0IA@@@QAE@XZ 00A4FA60 f i game.o
+1016	VERIFIED	0002:00260570 ??1?$ae_vector@I@@QAE@XZ 00A4FA70 f i game.o
+1017	PORTED	0002:002605a0 ?push_back@?$ae_vector@I@@QAEXABI@Z 00A4FAA0 f i game.o
+1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o
+1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o
+1020	PORTED	0002:00260710 ?BindObjectToHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVSound@SoundDevice@@@Z 00A4FC10 f i game.o
+1021	VERIFIED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o
+1022	PORTED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o
+1023	PORTED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o
+1024	PORTED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o
+1025	PORTED	0002:002609d0 ?UnloadBank@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXW4TPakId@@@Z 00A4FED0 f i game.o
+1026	PORTED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o
+1027	PORTED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o
+1028	PORTED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o
+1029	PORTED	0002:00260a70 ??1?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4FF70 f i game.o
+1030	PORTED	0002:00260aa0 ?push_back@?$ae_vector@USCheckpointGameVar@@@@QAEXABUSCheckpointGameVar@@@Z 00A4FFA0 f i game.o
+1031	PORTED	0002:00260ba0 ??0?$reserved_dlist@VCurveEffectListElem@@@@QAE@XZ 00A500A0 f i game.o
+1032	PORTED	0002:00260bc0 ?push_front@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A500C0 f i game.o
+1033	PORTED	0002:00260bf0 ?end@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A500F0 f i game.o
+1034	PORTED	0002:00260c10 ??0?$reserved_dlist@VCurve@@@@QAE@XZ 00A50110 f i game.o
+1035	PORTED	0002:00260c30 ?push_front@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A50130 f i game.o
+1036	PORTED	0002:00260c60 ?end@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A50160 f i game.o
+1037	PORTED	0002:00260c80 ??0?$reserved_dlist@VCurveEvalFunc@@@@QAE@XZ 00A50180 f i game.o
+1038	PORTED	0002:00260ca0 ?push_front@?$reserved_dlist@VCurveEvalFunc@@@@QAEXPAVCurveEvalFunc@@@Z 00A501A0 f i game.o
+1039	PORTED	0002:00260cd0 ?end@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A501D0 f i game.o
+1040	PORTED	0002:00260cf0 ??Citerator@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAVCurveEvalFunc@@XZ 00A501F0 f i game.o
+1041	PORTED	0002:00260d00 ??9iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV01@@Z 00A50200 f i game.o
+1042	PORTED	0002:00260d30 ??Diterator@?$reserved_dlist@VCurve@@@@QAEPAVCurve@@XZ 00A50230 f i game.o
+1043	PORTED	0002:00260d40 ??9iterator@?$reserved_dlist@VCurve@@@@QBE_NABV01@@Z 00A50240 f i game.o
+1044	PORTED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o
+1045	PORTED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o
+1046	PORTED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o
+1047	PORTED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o
+1048	VERIFIED	0002:00260de0 ??0?$ae_sized_array@VPosition3@math@@$0BAA@@@QAE@XZ 00A502E0 f i game.o
+1049	PORTED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o
+1050	PORTED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o
+1051	PORTED	0002:00260e30 ?resize@?$cdl_array@M@@QAEXI@Z 00A50330 f i game.o
+1052	PORTED	0002:00260ec0 ??A?$cdl_array@M@@QAEAAMI@Z 00A503C0 f i game.o
+1053	PORTED	0002:00260f10 ??1?$cdl_array@H@@QAE@XZ 00A50410 f i game.o
+1054	PORTED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o
+1055	PORTED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o
+1056	VERIFIED	0002:00261020 ??0?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A50520 f i game.o
+1057	PORTED	0002:00261040 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A50540 f i game.o
+1058	PORTED	0002:00261070 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A50570 f i game.o
+1059	PORTED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
+1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o
+1061	VERIFIED	0002:00261140 ?destroy_all@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEXXZ 00A50640 f i game.o
+1062	PORTED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o
+1063	PORTED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o
+1064	PORTED	0002:00261290 ?find@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@PAVCurveEffectListElem@@@Z 00A50790 f i game.o
+1065	PORTED	0002:002612e0 ?find@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@PAVCurve@@@Z 00A507E0 f i game.o
+1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o
+1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o
+1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o
+1069	PORTED	0002:00261420 ??C?$IVPointer@VGdbFileSet@@@@QBEPBVGdbFileSet@@XZ 00A50920 f i game.o
+1070	VERIFIED	0002:00261440 ?destroy_all@?$ae_vector@Udebug_brush@@@@AAEXXZ 00A50940 f i game.o
+1071	SKIPPED	0002:00261470 ??0?$_Vector_val@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE@V?$allocator@U?$pair@HH@std@@@1@@Z 00A50970 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1072	SKIPPED	0002:00261480 ??Diterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEAAU?$pair@HH@2@XZ 00A50980 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1073	SKIPPED	0002:00261490 ??Hiterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE?AV012@H@Z 00A50990 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1074	SKIPPED	0002:002614b0 ?max_size@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEIXZ 00A509B0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1075	SKIPPED	0002:002614c0 ?allocate@?$allocator@U?$pair@HH@std@@@std@@QAEPAU?$pair@HH@2@I@Z 00A509C0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1076	SKIPPED	0002:002614e0 ??0iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A509E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1077	SKIPPED	0002:00261500 ??9const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A50A00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1078	PORTED	0002:00261520 ??$?0$0EAA@G@?$ae_fixed_string@$0IA@E@@QAE@ABV?$ae_fixed_string@$0EAA@G@@@Z 00A50A20 f i game.o
+1079	PORTED	0002:00261560 ??$Find@PBD@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@QBEPAPBV?$InplaceVector@TValue@GdbFileSet@@@@ABQBD@Z 00A50A60 f i game.o
+1080	PORTED	0002:00261670 ??$safe_for_each@Viterator@?$reserved_dlist@VCurveEffectListElem@@@@V?$DelFunctor@VCurveEffectListElem@@@@@@YAXViterator@?$reserved_dlist@VCurveEffectListElem@@@@0V?$DelFunctor@VCurveEffectListElem@@@@@Z 00A50B70 f i game.o
+1081	SKIPPED	0002:002616c0 ??$copy@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00@Z 00A50BC0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1082	SKIPPED	0002:00261700 ??$copy_backward@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00@Z 00A50C00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1083	PORTED	0002:00261740 ??A?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVGdbFileSet@@I@Z 00A50C40 f i game.o
+1084	PORTED	0002:002617c0 ??$FindIndex@PBD@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00A50CC0 f i game.o
+1085	SKIPPED	0002:002617f0 ?construct@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@ABU32@@Z 00A50CF0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1086	SKIPPED	0002:00261820 ?destroy@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@@Z 00A50D20 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1087	SKIPPED	0002:00261830 ??$_Uninit_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A50D30 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1088	VERIFIED	0002:00261870 ??1rtree_visitor_t@@QAE@XZ 00A50D70 f i game.o
+1089	PORTED	0002:00261880 ??0CachedLightGrid@@QAE@XZ 00A50D80 f i game.o
+1090	VERIFIED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o
+1091	PORTED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o
+1092	PORTED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o
+1093	VERIFIED	0002:00261a10 ??_GAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o
+1094	VERIFIED	0002:00261a10 ??_EAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o
+1095	PORTED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o
+1096	VERIFIED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o
+1097	VERIFIED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o
+1098	VERIFIED	0002:00261ab0 ??1TempDCGSet@DCGBankManager@@QAE@XZ 00A50FB0 f i game.o
+1099	PORTED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o
+1100	PORTED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o
+1101	PORTED	0002:00261c10 ??0?$cdl_array@Ucdl_object_t@@@@QAE@I@Z 00A51110 f i game.o
+1102	VERIFIED	0002:00261c40 ??1?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A51140 f i game.o
+1103	PORTED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o
+1104	PORTED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o
+1105	PORTED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o
+1106	VERIFIED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o
+1107	PORTED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o
+1108	PORTED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o
+1109	PORTED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o
+1110	PORTED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o
+1111	PORTED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o
+1112	PORTED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o
+1113	PORTED	0002:00262100 ??B?$IVPointer@VGdbFileSet@@@@QBE_NXZ 00A51600 f i game.o
+1114	VERIFIED	0002:00262120 ??1?$ae_vector@Udebug_brush@@@@QAE@XZ 00A51620 f i game.o
+1115	PORTED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o
+1116	VERIFIED	0002:00262230 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A51730 f i game.o
+1117	VERIFIED	0002:00262260 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A51760 f i game.o
+1118	PORTED	0002:00262280 ?Dump@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A51780 f i game.o
+1119	PORTED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o
+1120	SKIPPED	0002:00262420 ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51920 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1121	SKIPPED	0002:00262440 ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51940 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1122	PORTED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o
+1123	PORTED	0002:00262610 ??_Gproximity_data_t@@QAEPAXI@Z 00A51B10 f i game.o
+1124	SKIPPED	0002:00262640 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A51B40 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1125	SKIPPED	0002:00262650 ??$_Uninitialized_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51B50 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1126	SKIPPED	0002:00262680 ??$_Uninit_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A51B80 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1127	VERIFIED	0002:002626c0 ??_GDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o
+1128	VERIFIED	0002:002626c0 ??_EDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o
+1129	VERIFIED	0002:002626f0 ??0Context@PadAliasMgr@@QAE@XZ 00A51BF0 f i game.o
+1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o
+1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o
+1132	PORTED	0002:00262890 ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A51D90 f i game.o
+1133	PORTED	0002:002628f0 ?clear@?$ae_vector@Udebug_brush@@@@QAEXXZ 00A51DF0 f i game.o
+1134	SKIPPED	0002:00262900 ??A?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAU?$pair@HH@1@I@Z 00A51E00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1135	PORTED	0002:00262920 ??$PakDelete@Uproximity_data_t@@@@YAXW4TPakId@@PAUproximity_data_t@@_N@Z 00A51E20 f i game.o
+1136	SKIPPED	0002:00262960 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51E60 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1137	SKIPPED	0002:00262970 ??$_Ucopy@PAU?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@1@PAU21@00@Z 00A51E70 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1138	SKIPPED	0002:002629a0 ??$_Uninitialized_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51EA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1139	VERIFIED	0002:002629d0 ?SingletonDebugRender@SoundDevice@@SAXXZ 00A51ED0 f i game.o
+1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o
+1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o
+1142	VERIFIED	0002:00262a00 ??1Curve@@QAE@XZ 00A51F00 f i game.o
+1143	VERIFIED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o
+1144	SKIPPED	0002:00262a90 ?_Destroy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXPAU?$pair@HH@2@0@Z 00A51F90 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1145	SKIPPED	0002:00262aa0 ?_Ufill@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@2@PAU32@IABU32@@Z 00A51FA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1146	PORTED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o
+1147	SKIPPED	0002:00262b00 ?_Tidy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXXZ 00A52000 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1148	SKIPPED	0002:00262b40 ?erase@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@V312@0@Z 00A52040 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1149	PORTED	0002:00262ba0 ??$safe_for_each@Viterator@?$reserved_dlist@VCurve@@@@V?$DelFunctor@VCurve@@@@@@YAXViterator@?$reserved_dlist@VCurve@@@@0V?$DelFunctor@VCurve@@@@@Z 00A520A0 f i game.o
+1150	PORTED	0002:00262c80 ?delete_all@?$reserved_dlist@VCurve@@@@QAEXXZ 00A52180 f i game.o
+1151	SKIPPED	0002:00262ce0 ??1?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A521E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1152	SKIPPED	0002:00262d20 ?_Xlen@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IBEXXZ 00A52220 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1153	SKIPPED	0002:00262da0 ?_Buy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE_NI@Z 00A522A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1154	SKIPPED	0002:00262e10 ?_Insert_n@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXViterator@12@IABU?$pair@HH@2@@Z 00A52310 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1155	SKIPPED	0002:002630f0 ??0?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A525F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1156	SKIPPED	0002:00263110 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXIU?$pair@HH@2@@Z 00A52610 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1157	SKIPPED	0002:002631a0 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXI@Z 00A526A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1158	PORTED	0002:002631c0 ?SingletonDebugRender@CGBankManager@@SAXXZ 00A526C0 f i game.o

@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x0082A510	0x00C19A10	?nflFileExists@@YAIW4nflMediaID@@PBD@Z	unsigned int __cdecl nflFileExists(enum nflMediaID,char const *)	nfl_common.o
+0x0082A540	0x00C19A40	?nflGetFileSize@@YAIW4nflMediaID@@PBD@Z	unsigned int __cdecl nflGetFileSize(enum nflMediaID,char const *)	nfl_common.o
+0x0082A570	0x00C19A70	?nflReadFileAsyncWithCallBack@@YA?AW4nflRequestID@@W4nflFileID@@IPAXIP6AXW4nflRequestState@@W41@1@Z@Z	enum nflRequestID __cdecl nflReadFileAsyncWithCallBack(enum nflFileID,unsigned int,void *,unsigned int,void (__cdecl*)(enum nflRequestState,enum nflRequestID,void *))	nfl_common.o
+0x0082A5C0	0x00C19AC0	?nflReadFileAsync@@YA?AW4nflRequestID@@W4nflFileID@@IPAXI@Z	enum nflRequestID __cdecl nflReadFileAsync(enum nflFileID,unsigned int,void *,unsigned int)	nfl_common.o
+0x0082A610	0x00C19B10	?nflWriteFileAsync@@YA?AW4nflRequestID@@W4nflFileID@@IPAXI@Z	enum nflRequestID __cdecl nflWriteFileAsync(enum nflFileID,unsigned int,void *,unsigned int)	nfl_common.o
+0x0082A660	0x00C19B60	?nfsReadWriteFile@@YAIW4nflFileID@@IPAXIH@Z	unsigned int __cdecl nfsReadWriteFile(enum nflFileID,unsigned int,void *,unsigned int,int)	nfl_common.o
+0x0082A720	0x00C19C20	?nflReadFile@@YAIW4nflFileID@@IPAXI@Z	unsigned int __cdecl nflReadFile(enum nflFileID,unsigned int,void *,unsigned int)	nfl_common.o
+0x0082A740	0x00C19C40	?nflWriteFile@@YAIW4nflFileID@@IPAXI@Z	unsigned int __cdecl nflWriteFile(enum nflFileID,unsigned int,void *,unsigned int)	nfl_common.o
+0x0082A760	0x00C19C60	?nflGetVersion@@YAIXZ	unsigned int __cdecl nflGetVersion(void)	nfl_common.o

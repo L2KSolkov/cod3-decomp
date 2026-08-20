@@ -1,0 +1,119 @@
+ida_ea	va	name	signature	family
+0x0051E220	0x0090D720	?SV_DifficultyEasy@@YAXXZ	void __cdecl SV_DifficultyEasy(void)	sv.o
+0x0051E280	0x0090D780	?SV_DifficultyMedium@@YAXXZ	void __cdecl SV_DifficultyMedium(void)	sv.o
+0x0051E2E0	0x0090D7E0	?SV_DifficultyHard@@YAXXZ	void __cdecl SV_DifficultyHard(void)	sv.o
+0x0051E340	0x0090D840	?SV_DifficultyGimp@@YAXXZ	void __cdecl SV_DifficultyGimp(void)	sv.o
+0x0051E3A0	0x0090D8A0	?SV_DifficultyFu@@YAXXZ	void __cdecl SV_DifficultyFu(void)	sv.o
+0x0051E400	0x0090D900	?SV_ClearLoadGame@@YAXXZ	void __cdecl SV_ClearLoadGame(void)	sv.o
+0x0051E480	0x0090D980	?SplitTime@@YAXHAAH000@Z	void __cdecl SplitTime(int,int &,int &,int &,int &)	sv.o
+0x0051E510	0x0090DA10	?UpdatePlayTime@@YAXXZ	void __cdecl UpdatePlayTime(void)	sv.o
+0x0051E790	0x0090DC90	?SV_GetRestartSaveGame@@YAXPAD@Z	void __cdecl SV_GetRestartSaveGame(char *)	sv.o
+0x0051E850	0x0090DD50	?SV_LoadGameContinue_f@@YAXXZ	void __cdecl SV_LoadGameContinue_f(void)	sv.o
+0x0051E870	0x0090DD70	?SV_Frontend_f@@YAXXZ	void __cdecl SV_Frontend_f(void)	sv.o
+0x0051E890	0x0090DD90	?SV_QuickStart_f@@YAXXZ	void __cdecl SV_QuickStart_f(void)	sv.o
+0x0051E8A0	0x0090DDA0	?SV_InvertAim_f@@YAXXZ	void __cdecl SV_InvertAim_f(void)	sv.o
+0x0051E8E0	0x0090DDE0	?SV_ExitGame_f@@YAXXZ	void __cdecl SV_ExitGame_f(void)	sv.o
+0x0051E900	0x0090DE00	?SV_RemoveOperatorCommands@@YAXXZ	void __cdecl SV_RemoveOperatorCommands(void)	sv.o
+0x0051E910	0x0090DE10	?SV_SendClientGameState@@YAXPAUclient_s@@@Z	void __cdecl SV_SendClientGameState(struct client_s *)	sv.o
+0x0051E930	0x0090DE30	?SV_ExecuteClientCommand@@YAXPAUclient_s@@PBD@Z	void __cdecl SV_ExecuteClientCommand(struct client_s *,char const *)	sv.o
+0x0051EA50	0x0090DF50	?SV_inPVS@@YAHABVPosition3@math@@0@Z	int __cdecl SV_inPVS(class math::Position3 const &,class math::Position3 const &)	sv.o
+0x0051EAA0	0x0090DFA0	?SV_inPVSIgnorePortals@@YAHQBM0@Z	int __cdecl SV_inPVSIgnorePortals(float const * const,float const * const)	sv.o
+0x0051EAF0	0x0090DFF0	?SV_AdjustAreaPortalState@@YAXPAVEntity@@H@Z	void __cdecl SV_AdjustAreaPortalState(class Entity *,int)	sv.o
+0x0051EB20	0x0090E020	?SV_GetServerinfo@@YAXPADH@Z	void __cdecl SV_GetServerinfo(char *,int)	sv.o
+0x0051EB60	0x0090E060	?SV_LocateGameData@@YAXPAVEntity@@HHPAVPlayerState@@H@Z	void __cdecl SV_LocateGameData(class Entity *,int,int,class PlayerState *,int)	sv.o
+0x0051EB70	0x0090E070	?SV_GetUsercmd@@YAXHPAUusercmd_s@@@Z	void __cdecl SV_GetUsercmd(int,struct usercmd_s *)	sv.o
+0x0051EBB0	0x0090E0B0	?SV_SetUsercmdButtonsWeapons@@YAXHH@Z	void __cdecl SV_SetUsercmdButtonsWeapons(int,int)	sv.o
+0x0051EBC0	0x0090E0C0	?SV_SaveWrite@@YAPAXPBXH@Z	void * __cdecl SV_SaveWrite(void const *,int)	sv.o
+0x0051EC00	0x0090E100	?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z	class IVPointer<class XModel> __cdecl SV_XModelGet(char const *)	sv.o
+0x0051EC30	0x0090E130	?SV_DObjDumpInfo@@YAXPAVEntity@@@Z	void __cdecl SV_DObjDumpInfo(class Entity *)	sv.o
+0x0051EC70	0x0090E170	?SV_DObjCreateSkelForBone@@YA_NPAVEntity@@H@Z	bool __cdecl SV_DObjCreateSkelForBone(class Entity *,int)	sv.o
+0x0051ED10	0x0090E210	?SV_DObjCreateSkelForBones@@YA_NPAVEntity@@@Z	bool __cdecl SV_DObjCreateSkelForBones(class Entity *)	sv.o
+0x0051EDC0	0x0090E2C0	?SV_DObjUpdateServerTime@@YA_NPAVEntity@@M_N@Z	bool __cdecl SV_DObjUpdateServerTime(class Entity *,float,bool)	sv.o
+0x0051EDF0	0x0090E2F0	?SV_DObjInitServerTime@@YAXPAVEntity@@M@Z	void __cdecl SV_DObjInitServerTime(class Entity *,float)	sv.o
+0x0051EE10	0x0090E310	?SV_DObjGetHierarchyBits@@YAXPAVEntity@@HQAH@Z	void __cdecl SV_DObjGetHierarchyBits(class Entity *,int,int * const)	sv.o
+0x0051EE80	0x0090E380	?SV_DObjCalcAnim@@YAXPAVEntity@@H@Z	void __cdecl SV_DObjCalcAnim(class Entity *,int)	sv.o
+0x0051EEA0	0x0090E3A0	?SV_DObjCalcSkel@@YAXPAVEntity@@QAH@Z	void __cdecl SV_DObjCalcSkel(class Entity *,int * const)	sv.o
+0x0051EF70	0x0090E470	?SV_DObjNumBones@@YAHPAVEntity@@@Z	int __cdecl SV_DObjNumBones(class Entity *)	sv.o
+0x0051EFE0	0x0090E4E0	?SV_DObjGetBoneIndex@@YAHPAVEntity@@I@Z	int __cdecl SV_DObjGetBoneIndex(class Entity *,unsigned int)	sv.o
+0x0051F010	0x0090E510	?SV_DObjGetMatrixArray@@YAPAUDObjSkelMat@@PAVEntity@@@Z	struct DObjSkelMat * __cdecl SV_DObjGetMatrixArray(class Entity *)	sv.o
+0x0051F080	0x0090E580	?SV_DObjDisplayAnim@@YAXPAVEntity@@@Z	void __cdecl SV_DObjDisplayAnim(class Entity *)	sv.o
+0x0051F0A0	0x0090E5A0	?SV_DObjDisplayAnim3D@@YAXPAVEntity@@QAMH@Z	void __cdecl SV_DObjDisplayAnim3D(class Entity *,float * const,int)	sv.o
+0x0051F0D0	0x0090E5D0	?SV_DObjGetTree@@YAPAVXAnimTree@@PAVEntity@@@Z	class XAnimTree * __cdecl SV_DObjGetTree(class Entity *)	sv.o
+0x0051F140	0x0090E640	?SV_GetDataForFile@@YAPAXPBD00@Z	void * __cdecl SV_GetDataForFile(char const *,char const *,char const *)	sv.o
+0x0051F170	0x0090E670	?SV_FX_Save@@YAHXZ	int __cdecl SV_FX_Save(void)	sv.o
+0x0051F180	0x0090E680	?SV_SaveGameMessages@@YAHXZ	int __cdecl SV_SaveGameMessages(void)	sv.o
+0x0051F190	0x0090E690	?SV_GameSystemCalls@@YAHPAH@Z	int __cdecl SV_GameSystemCalls(int *)	sv.o
+0x0051F1B0	0x0090E6B0	?SV_ShutdownGameProgs@@YAXXZ	void __cdecl SV_ShutdownGameProgs(void)	sv.o
+0x0051F1E0	0x0090E6E0	?SV_GameCommand@@YAHXZ	int __cdecl SV_GameCommand(void)	sv.o
+0x0051F200	0x0090E700	?SV_CheckLoadLevel@@YAXH@Z	void __cdecl SV_CheckLoadLevel(int)	sv.o
+0x0051F300	0x0090E800	?SV_SetCheckSum@@YAXH@Z	void __cdecl SV_SetCheckSum(int)	sv.o
+0x0051F310	0x0090E810	?SV_GetConfigstring@@YAXHAAVstring@Broc@@@Z	void __cdecl SV_GetConfigstring(int,class Broc::string &)	sv.o
+0x0051F350	0x0090E850	?SV_InitReliableCommandsForClient@@YAXPAUclient_s@@H@Z	void __cdecl SV_InitReliableCommandsForClient(struct client_s *,int)	sv.o
+0x0051F3E0	0x0090E8E0	?SV_FreeReliableCommandsForClient@@YAXPAUclient_s@@@Z	void __cdecl SV_FreeReliableCommandsForClient(struct client_s *)	sv.o
+0x0051F420	0x0090E920	?SV_GetReliableCommand@@YAPADPAUclient_s@@H@Z	char * __cdecl SV_GetReliableCommand(struct client_s *,int)	sv.o
+0x0051F450	0x0090E950	?SV_FreeAcknowledgedReliableCommands@@YAXPAUclient_s@@@Z	void __cdecl SV_FreeAcknowledgedReliableCommands(struct client_s *)	sv.o
+0x0051F4D0	0x0090E9D0	?SV_Startup@@YAXXZ	void __cdecl SV_Startup(void)	sv.o
+0x0051F550	0x0090EA50	?SV_SetExpectedHunkUsage@@YAXPAD@Z	void __cdecl SV_SetExpectedHunkUsage(char *)	sv.o
+0x0051F640	0x0090EB40	?LoadingMenuCallback@@YAXM@Z	void __cdecl LoadingMenuCallback(float)	sv.o
+0x0051F710	0x0090EC10	?GetShortName@@YAPBDPBD@Z	char const * __cdecl GetShortName(char const *)	sv.o
+0x0051F720	0x0090EC20	?SV_ExpandNewlines@@YAPADPAD@Z	char * __cdecl SV_ExpandNewlines(char *)	sv.o
+0x0051F780	0x0090EC80	?SV_DumpServerCommands@@YAXPAUclient_s@@@Z	void __cdecl SV_DumpServerCommands(struct client_s *)	sv.o
+0x0051F7D0	0x0090ECD0	?SendClientThinkMsg@@YAXXZ	void __cdecl SendClientThinkMsg(void)	sv.o
+0x0051F800	0x0090ED00	?SV_Vid_Restart@@YAXXZ	void __cdecl SV_Vid_Restart(void)	sv.o
+0x0051F810	0x0090ED10	?SV_Snd_Restart@@YAXXZ	void __cdecl SV_Snd_Restart(void)	sv.o
+0x0051F820	0x0090ED20	?SV_RunFrame@@YAXH@Z	void __cdecl SV_RunFrame(int)	sv.o
+0x0051F8F0	0x0090EDF0	?SV_SmoothFrame@@YAXXZ	void __cdecl SV_SmoothFrame(void)	sv.o
+0x0051F940	0x0090EE40	?SV_Netchan_Transmit@@YAXPAUclient_s@@PAUmsg_t@@@Z	void __cdecl SV_Netchan_Transmit(struct client_s *,struct msg_t *)	sv.o
+0x0051F970	0x0090EE70	?SV_Netchan_Process@@YAHPAUclient_s@@PAUmsg_t@@@Z	int __cdecl SV_Netchan_Process(struct client_s *,struct msg_t *)	sv.o
+0x0051FA10	0x0090EF10	?SV_UpdateServerCommandsToClient@@YAXPAUclient_s@@PAUmsg_t@@@Z	void __cdecl SV_UpdateServerCommandsToClient(struct client_s *,struct msg_t *)	sv.o
+0x0051FAA0	0x0090EFA0	?SV_SendMessageToClient@@YAXPAUmsg_t@@PAUclient_s@@@Z	void __cdecl SV_SendMessageToClient(struct msg_t *,struct client_s *)	sv.o
+0x0051FAE0	0x0090EFE0	?SV_GetFollowPlayerState@@YAHHPAVPlayerState@@@Z	int __cdecl SV_GetFollowPlayerState(int,class PlayerState *)	sv.o
+0x0051FB00	0x0090F000	?SV_GetCurrentClientInfo@@YAHHPAVPlayerState@@@Z	int __cdecl SV_GetCurrentClientInfo(int,class PlayerState *)	sv.o
+0x0051FB40	0x0090F040	?MatrixTransposeTransformVector43@@YAXABVPosition3@math@@QAY02$$CBMAAV12@@Z	void __cdecl MatrixTransposeTransformVector43(class math::Position3 const &,float const (* const)[3],class math::Position3 &)	sv.o
+0x0051FC00	0x0090F100	?SV_ClipHandleForEntity@@YAPAVDCGSet@@PBVEntity@@@Z	class DCGSet * __cdecl SV_ClipHandleForEntity(class Entity const *)	sv.o
+0x0051FC60	0x0090F160	?SV_UnlinkEntity@@YAXPAVEntity@@@Z	void __cdecl SV_UnlinkEntity(class Entity *)	sv.o
+0x0051FC80	0x0090F180	?SV_DirectConnect@@YAXUnetadr_t@@@Z	void __cdecl SV_DirectConnect(struct netadr_t)	sv.o
+0x0051FDC0	0x0090F2C0	?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z	void __cdecl SV_ClientEnterWorld(struct client_s *)	sv.o
+0x0051FE50	0x0090F350	?SV_ExecuteClientMessage@@YAXPAUclient_s@@PAUmsg_t@@@Z	void __cdecl SV_ExecuteClientMessage(struct client_s *,struct msg_t *)	sv.o
+0x00520080	0x0090F580	?SV_EntityContact@@YAHABVPosition3@math@@0PBVEntity@@H@Z	int __cdecl SV_EntityContact(class math::Position3 const &,class math::Position3 const &,class Entity const *,int)	sv.o
+0x00520170	0x0090F670	?SV_RestartGameProgs@@YAHH@Z	int __cdecl SV_RestartGameProgs(int)	sv.o
+0x005201E0	0x0090F6E0	?SV_InitGameProgs@@YAXH@Z	void __cdecl SV_InitGameProgs(int)	sv.o
+0x00520220	0x0090F720	?SV_GetConfigstring@@YAXHPADH@Z	void __cdecl SV_GetConfigstring(int,char *,int)	sv.o
+0x005202D0	0x0090F7D0	?SV_GetConfigstringConst@@YAPBDH@Z	char const * __cdecl SV_GetConfigstringConst(int)	sv.o
+0x00520340	0x0090F840	?SV_AddReliableCommand@@YAXPAUclient_s@@HPBD@Z	void __cdecl SV_AddReliableCommand(struct client_s *,int,char const *)	sv.o
+0x005204E0	0x0090F9E0	?SV_ClearServer@@YAXXZ	void __cdecl SV_ClearServer(void)	sv.o
+0x00520580	0x0090FA80	?SV_Shutdown@@YAXXZ	void __cdecl SV_Shutdown(void)	sv.o
+0x00520630	0x0090FB30	?SV_AddServerCommand@@YAXPAUclient_s@@PBD@Z	void __cdecl SV_AddServerCommand(struct client_s *,char const *)	sv.o
+0x00520720	0x0090FC20	?SV_SendServerCommand@@YAXPAUclient_s@@PBDZZ	void __cdecl SV_SendServerCommand(struct client_s *,char const *,...)	sv.o
+0x00520790	0x0090FC90	?SV_PacketEvent@@YAXUnetadr_t@@PAUmsg_t@@@Z	void __cdecl SV_PacketEvent(struct netadr_t,struct msg_t *)	sv.o
+0x005208F0	0x0090FDF0	?SV_ReallyExitGame_f@@YAXXZ	void __cdecl SV_ReallyExitGame_f(void)	sv.o
+0x005209E0	0x0090FEE0	?SV_SetConfigstring@@YAXHPBD@Z	void __cdecl SV_SetConfigstring(int,char const *)	sv.o
+0x00520BA0	0x009100A0	?SV_PreFrame@@YAXH@Z	void __cdecl SV_PreFrame(int)	sv.o
+0x00520DE0	0x009102E0	?SV_ClientEnterWorld@@YAXPAUclient_s@@HH@Z	void __cdecl SV_ClientEnterWorld(struct client_s *,int,int)	sv.o
+0x00520F90	0x00910490	?SV_GameSendServerCommand@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PBD@Z	void __cdecl SV_GameSendServerCommand(class DbLinkedHandle<class EntityHandleDb,class Entity>,char const *)	sv.o
+0x00521000	0x00910500	?SV_inSnapshot@@YAHQBMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	int __cdecl SV_inSnapshot(float const * const,class DbLinkedHandle<class EntityHandleDb,class Entity>)	sv.o
+0x00521190	0x00910690	?SV_SwapClients@@YAXHH@Z	void __cdecl SV_SwapClients(int,int)	sv.o
+0x005213E0	0x009108E0	?SV_SendClientSnapshot@@YAXPAUclient_s@@@Z	void __cdecl SV_SendClientSnapshot(struct client_s *)	sv.o
+0x00521480	0x00910980	?SV_SendClientMessages@@YAXXZ	void __cdecl SV_SendClientMessages(void)	sv.o
+0x00521550	0x00910A50	?SV_LinkEntity@@YAXPAVEntity@@@Z	void __cdecl SV_LinkEntity(class Entity *)	sv.o
+0x00521C40	0x00911140	?SV_ClipMoveToEntity@@YAXPAUmoveclip_t@@PAUEntityShared@@@Z	void __cdecl SV_ClipMoveToEntity(struct moveclip_t *,struct EntityShared *)	sv.o
+0x00521E10	0x00911310	?SV_PointTraceToEntity@@YAXPAUpointtrace_t@@PAUEntityShared@@@Z	void __cdecl SV_PointTraceToEntity(struct pointtrace_t *,struct EntityShared *)	sv.o
+0x00522450	0x00911950	?SV_ClipSightToEntity@@YAHPAUsightclip_t@@PAUEntityShared@@@Z	int __cdecl SV_ClipSightToEntity(struct sightclip_t *,struct EntityShared *)	sv.o
+0x005225B0	0x00911AB0	?SV_PointSightTraceToEntity@@YAHPAUsightpointtrace_t@@PAUEntityShared@@@Z	int __cdecl SV_PointSightTraceToEntity(struct sightpointtrace_t *,struct EntityShared *)	sv.o
+0x00522720	0x00911C20	?SV_Trace@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@HHPAEHM@Z	void __cdecl SV_Trace(struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &,int,int,unsigned char *,int,float)	sv.o
+0x00523020	0x00912520	?SV_SightTrace@@YAXPAHABVPosition3@math@@111ABUcollision_context_t@@H@Z	void __cdecl SV_SightTrace(int *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &,int)	sv.o
+0x005234F0	0x009129F0	?SV_SightTraceToEntity@@YAHABVPosition3@math@@000V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABUcollision_context_t@@H@Z	int __cdecl SV_SightTraceToEntity(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class DbLinkedHandle<class EntityHandleDb,class Entity>,struct collision_context_t const &,int)	sv.o
+0x00523850	0x00912D50	?SV_PointContents@@YAHABVPosition3@math@@ABUcollision_context_t@@@Z	int __cdecl SV_PointContents(class math::Position3 const &,struct collision_context_t const &)	sv.o
+0x00523960	0x00912E60	?TraceSphereFull@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@222ABUcollision_context_t@@@Z	void __cdecl TraceSphereFull(struct proximity_data_t const &,struct trace_t *,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	sv.o
+0x005240E0	0x009135E0	?TracePointFull@@YAXABUproximity_data_t@@PAUtrace_t@@ABVPosition3@math@@2ABUcollision_context_t@@@Z	void __cdecl TracePointFull(struct proximity_data_t const &,struct trace_t *,class math::Position3 const &,class math::Position3 const &,struct collision_context_t const &)	sv.o
+0x00524920	0x00913E20	?SV_CheckLoadGame@@YAHXZ	int __cdecl SV_CheckLoadGame(void)	sv.o
+0x00524BB0	0x009140B0	?SV_MapRestart@@YAXXZ	void __cdecl SV_MapRestart(void)	sv.o
+0x00524BF0	0x009140F0	?SV_LoadGame_f@@YAXXZ	void __cdecl SV_LoadGame_f(void)	sv.o
+0x00524D50	0x00914250	?SV_LoadGameRestart_f@@YAXXZ	void __cdecl SV_LoadGameRestart_f(void)	sv.o
+0x00524DA0	0x009142A0	?SV_SetBrushModel@@YAXPAVEntity@@@Z	void __cdecl SV_SetBrushModel(class Entity *)	sv.o
+0x00525000	0x00914500	?SV_SpawnServer@@YAXPBDH@Z	void __cdecl SV_SpawnServer(char const *,int)	sv.o
+0x005257E0	0x00914CE0	?SV_PostConnect@@YAXXZ	void __cdecl SV_PostConnect(void)	sv.o
+0x005259C0	0x00914EC0	?SV_Frame@@YAXH@Z	void __cdecl SV_Frame(int)	sv.o
+0x00525DC0	0x009152C0	?SV_Map@@YAXXZ	void __cdecl SV_Map(void)	sv.o
+0x00525DE0	0x009152E0	?SV_AddOperatorCommands@@YAXXZ	void __cdecl SV_AddOperatorCommands(void)	sv.o
+0x00525F60	0x00915460	?SV_Init@@YAXXZ	void __cdecl SV_Init(void)	sv.o

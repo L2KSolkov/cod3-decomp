@@ -1,0 +1,88 @@
+ida_ea	va	name	signature	family
+0x0087EB10	0x00C6E010	??0phys_mem_info@@QAE@XZ	public: __thiscall phys_mem_info::phys_mem_info(void)	physics_system.o
+0x0087EB40	0x00C6E040	?get_environment_rigid_body@phys_sys@@SAPAVenvironment_rigid_body@@XZ	public: static class environment_rigid_body * __cdecl phys_sys::get_environment_rigid_body(void)	physics_system.o
+0x0087EB50	0x00C6E050	?set_max_delta_t@phys_sys@@SAXM@Z	public: static void __cdecl phys_sys::set_max_delta_t(float)	physics_system.o
+0x0087EB70	0x00C6E070	?get_max_delta_t@phys_sys@@SAMXZ	public: static float __cdecl phys_sys::get_max_delta_t(void)	physics_system.o
+0x0087EB80	0x00C6E080	?set_v_tol@phys_sys@@SAXHH@Z	public: static void __cdecl phys_sys::set_v_tol(int,int)	physics_system.o
+0x0087EBA0	0x00C6E0A0	?get_v_tol@phys_sys@@SAXPAH0@Z	public: static void __cdecl phys_sys::get_v_tol(int *,int *)	physics_system.o
+0x0087EBC0	0x00C6E0C0	?set_vp_tol@phys_sys@@SAXHH@Z	public: static void __cdecl phys_sys::set_vp_tol(int,int)	physics_system.o
+0x0087EBE0	0x00C6E0E0	?get_vp_tol@phys_sys@@SAXPAH0@Z	public: static void __cdecl phys_sys::get_vp_tol(int *,int *)	physics_system.o
+0x0087EC00	0x00C6E100	?set_collision_callback@phys_sys@@SAXP6AXXZ@Z	public: static void __cdecl phys_sys::set_collision_callback(void (__cdecl*)(void))	physics_system.o
+0x0087EC20	0x00C6E120	?phys_frame_advance@phys_sys@@SAXM@Z	public: static void __cdecl phys_sys::phys_frame_advance(float)	physics_system.o
+0x0087EC40	0x00C6E140	?phys_init@phys_sys@@SAXAAVphys_mem_info@@@Z	public: static void __cdecl phys_sys::phys_init(class phys_mem_info &)	physics_system.o
+0x0087EC50	0x00C6E150	?phys_shutdown@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::phys_shutdown(void)	physics_system.o
+0x0087EC60	0x00C6E160	?solver_memory_buffer_set@phys_sys@@SAXPAXH@Z	public: static void __cdecl phys_sys::solver_memory_buffer_set(void *,int)	physics_system.o
+0x0087EC80	0x00C6E180	?solver_memory_buffer_nullify@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::solver_memory_buffer_nullify(void)	physics_system.o
+0x0087ECA0	0x00C6E1A0	?set_phys_proftimer_callbacks@phys_sys@@SAXABVphys_proftimer_callbacks@@@Z	public: static void __cdecl phys_sys::set_phys_proftimer_callbacks(class phys_proftimer_callbacks const &)	physics_system.o
+0x0087ECC0	0x00C6E1C0	?get_rbc_contact@phys_sys@@SAPAVrigid_body_constraint_contact@@QAVrigid_body@@0@Z	public: static class rigid_body_constraint_contact * __cdecl phys_sys::get_rbc_contact(class rigid_body * const,class rigid_body * const)	physics_system.o
+0x0087ED50	0x00C6E250	?max_slots_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rigid_body(void)	physics_system.o
+0x0087ED60	0x00C6E260	?max_slots_user_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_user_rigid_body(void)	physics_system.o
+0x0087ED70	0x00C6E270	?max_slots_rbc_point@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_point(void)	physics_system.o
+0x0087ED80	0x00C6E280	?max_slots_rbc_hinge@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_hinge(void)	physics_system.o
+0x0087ED90	0x00C6E290	?max_slots_rbc_dist@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_dist(void)	physics_system.o
+0x0087EDA0	0x00C6E2A0	?max_slots_rbc_ragdoll@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_ragdoll(void)	physics_system.o
+0x0087EDB0	0x00C6E2B0	?max_slots_rbc_wheel@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_wheel(void)	physics_system.o
+0x0087EDC0	0x00C6E2C0	?max_slots_rbc_angular_actuator@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_angular_actuator(void)	physics_system.o
+0x0087EDD0	0x00C6E2D0	?max_slots_rbc_custom_orientation@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_custom_orientation(void)	physics_system.o
+0x0087EDE0	0x00C6E2E0	?max_slots_rbc_custom_path@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_custom_path(void)	physics_system.o
+0x0087EDF0	0x00C6E2F0	?max_slots_rbc_contact@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::max_slots_rbc_contact(void)	physics_system.o
+0x0087EE00	0x00C6E300	?available_slots_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rigid_body(void)	physics_system.o
+0x0087EE20	0x00C6E320	?available_slots_user_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_user_rigid_body(void)	physics_system.o
+0x0087EE40	0x00C6E340	?available_slots_rbc_point@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_point(void)	physics_system.o
+0x0087EE60	0x00C6E360	?available_slots_rbc_hinge@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_hinge(void)	physics_system.o
+0x0087EE80	0x00C6E380	?available_slots_rbc_dist@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_dist(void)	physics_system.o
+0x0087EEA0	0x00C6E3A0	?available_slots_rbc_ragdoll@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_ragdoll(void)	physics_system.o
+0x0087EEC0	0x00C6E3C0	?available_slots_rbc_wheel@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_wheel(void)	physics_system.o
+0x0087EEE0	0x00C6E3E0	?available_slots_rbc_angular_actuator@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_angular_actuator(void)	physics_system.o
+0x0087EF00	0x00C6E400	?available_slots_rbc_custom_orientation@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_custom_orientation(void)	physics_system.o
+0x0087EF20	0x00C6E420	?available_slots_rbc_custom_path@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_custom_path(void)	physics_system.o
+0x0087EF40	0x00C6E440	?available_slots_rbc_contact@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::available_slots_rbc_contact(void)	physics_system.o
+0x0087EF60	0x00C6E460	?used_slots_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rigid_body(void)	physics_system.o
+0x0087EF70	0x00C6E470	?used_slots_user_rigid_body@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_user_rigid_body(void)	physics_system.o
+0x0087EF80	0x00C6E480	?used_slots_rbc_point@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_point(void)	physics_system.o
+0x0087EF90	0x00C6E490	?used_slots_rbc_hinge@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_hinge(void)	physics_system.o
+0x0087EFA0	0x00C6E4A0	?used_slots_rbc_dist@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_dist(void)	physics_system.o
+0x0087EFB0	0x00C6E4B0	?used_slots_rbc_ragdoll@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_ragdoll(void)	physics_system.o
+0x0087EFC0	0x00C6E4C0	?used_slots_rbc_wheel@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_wheel(void)	physics_system.o
+0x0087EFD0	0x00C6E4D0	?used_slots_rbc_angular_actuator@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_angular_actuator(void)	physics_system.o
+0x0087EFE0	0x00C6E4E0	?used_slots_rbc_custom_orientation@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_custom_orientation(void)	physics_system.o
+0x0087EFF0	0x00C6E4F0	?used_slots_rbc_custom_path@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_custom_path(void)	physics_system.o
+0x0087F000	0x00C6E500	?used_slots_rbc_contact@phys_sys@@SAHXZ	public: static int __cdecl phys_sys::used_slots_rbc_contact(void)	physics_system.o
+0x0087F010	0x00C6E510	?create_rigid_body@phys_sys@@SAPAVrigid_body@@_N@Z	public: static class rigid_body * __cdecl phys_sys::create_rigid_body(bool)	physics_system.o
+0x0087F060	0x00C6E560	?create_rbc_point@phys_sys@@SAPAVrigid_body_constraint_point@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_point * __cdecl phys_sys::create_rbc_point(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F090	0x00C6E590	?create_rbc_custom_orientation@phys_sys@@SAPAVrigid_body_constraint_custom_orientation@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_custom_orientation * __cdecl phys_sys::create_rbc_custom_orientation(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F0C0	0x00C6E5C0	?get_user_rigid_body@phys_sys@@SAPAVuser_rigid_body@@QBVMat43@math@@@Z	public: static class user_rigid_body * __cdecl phys_sys::get_user_rigid_body(class math::Mat43 const * const)	physics_system.o
+0x0087F130	0x00C6E630	?update_constraint_infos@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::update_constraint_infos(void)	physics_system.o
+0x0087F440	0x00C6E940	?create_user_rigid_body@phys_sys@@SAPAVuser_rigid_body@@_N@Z	public: static class user_rigid_body * __cdecl phys_sys::create_user_rigid_body(bool)	physics_system.o
+0x0087F490	0x00C6E990	?create_rbc_hinge@phys_sys@@SAPAVrigid_body_constraint_hinge@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_hinge * __cdecl phys_sys::create_rbc_hinge(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F4C0	0x00C6E9C0	?create_rbc_dist@phys_sys@@SAPAVrigid_body_constraint_distance@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_distance * __cdecl phys_sys::create_rbc_dist(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F4F0	0x00C6E9F0	?create_rbc_ragdoll@phys_sys@@SAPAVrigid_body_constraint_ragdoll@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_ragdoll * __cdecl phys_sys::create_rbc_ragdoll(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F520	0x00C6EA20	?create_rbc_wheel@phys_sys@@SAPAVrigid_body_constraint_wheel@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_wheel * __cdecl phys_sys::create_rbc_wheel(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F550	0x00C6EA50	?create_rbc_angular_actuator@phys_sys@@SAPAVrigid_body_constraint_angular_actuator@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_angular_actuator * __cdecl phys_sys::create_rbc_angular_actuator(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F580	0x00C6EA80	?create_rbc_custom_path@phys_sys@@SAPAVrigid_body_constraint_custom_path@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_custom_path * __cdecl phys_sys::create_rbc_custom_path(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F5B0	0x00C6EAB0	?create_rbc_contact@phys_sys@@SAPAVrigid_body_constraint_contact@@QAVrigid_body@@0_N@Z	public: static class rigid_body_constraint_contact * __cdecl phys_sys::create_rbc_contact(class rigid_body * const,class rigid_body * const,bool)	physics_system.o
+0x0087F5E0	0x00C6EAE0	?destroy@phys_sys@@SAXQAVrigid_body_constraint_point@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_point * const)	physics_system.o
+0x0087F600	0x00C6EB00	?destroy@phys_sys@@SAXQAVrigid_body_constraint_hinge@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_hinge * const)	physics_system.o
+0x0087F620	0x00C6EB20	?destroy@phys_sys@@SAXQAVrigid_body_constraint_distance@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_distance * const)	physics_system.o
+0x0087F640	0x00C6EB40	?destroy@phys_sys@@SAXQAVrigid_body_constraint_ragdoll@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_ragdoll * const)	physics_system.o
+0x0087F660	0x00C6EB60	?destroy@phys_sys@@SAXQAVrigid_body_constraint_wheel@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_wheel * const)	physics_system.o
+0x0087F680	0x00C6EB80	?destroy@phys_sys@@SAXQAVrigid_body_constraint_angular_actuator@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_angular_actuator * const)	physics_system.o
+0x0087F6A0	0x00C6EBA0	?destroy@phys_sys@@SAXQAVrigid_body_constraint_custom_orientation@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_custom_orientation * const)	physics_system.o
+0x0087F6C0	0x00C6EBC0	?destroy@phys_sys@@SAXQAVrigid_body_constraint_custom_path@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_custom_path * const)	physics_system.o
+0x0087F6E0	0x00C6EBE0	?destroy@phys_sys@@SAXQAVrigid_body_constraint_contact@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body_constraint_contact * const)	physics_system.o
+0x0087F700	0x00C6EC00	?destroy_all_rigid_body@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rigid_body(void)	physics_system.o
+0x0087F7B0	0x00C6ECB0	?destroy_all_user_rigid_body@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_user_rigid_body(void)	physics_system.o
+0x0087FB80	0x00C6F080	?destroy_all_rbc_point@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_point(void)	physics_system.o
+0x0087FBA0	0x00C6F0A0	?destroy_all_rbc_hinge@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_hinge(void)	physics_system.o
+0x0087FBC0	0x00C6F0C0	?destroy_all_rbc_dist@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_dist(void)	physics_system.o
+0x0087FBE0	0x00C6F0E0	?destroy_all_rbc_ragdoll@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_ragdoll(void)	physics_system.o
+0x0087FC00	0x00C6F100	?destroy_all_rbc_wheel@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_wheel(void)	physics_system.o
+0x0087FC20	0x00C6F120	?destroy_all_rbc_angular_actuator@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_angular_actuator(void)	physics_system.o
+0x0087FC40	0x00C6F140	?destroy_all_rbc_custom_orientation@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_custom_orientation(void)	physics_system.o
+0x0087FC60	0x00C6F160	?destroy_all_rbc_custom_path@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_custom_path(void)	physics_system.o
+0x0087FC80	0x00C6F180	?destroy_all_rbc_contact@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_rbc_contact(void)	physics_system.o
+0x0087FCA0	0x00C6F1A0	?destroy_all_constraint@phys_sys@@SAXQAVrigid_body@@@Z	public: static void __cdecl phys_sys::destroy_all_constraint(class rigid_body * const)	physics_system.o
+0x00880020	0x00C6F520	?destroy_all_constraint_with_user_rigid_body@phys_sys@@SAXQAVrigid_body@@@Z	public: static void __cdecl phys_sys::destroy_all_constraint_with_user_rigid_body(class rigid_body * const)	physics_system.o
+0x008804B0	0x00C6F9B0	?destroy_all_unused_user_rigid_body@phys_sys@@SAXXZ	public: static void __cdecl phys_sys::destroy_all_unused_user_rigid_body(void)	physics_system.o
+0x00880510	0x00C6FA10	?destroy@phys_sys@@SAXQAVrigid_body@@@Z	public: static void __cdecl phys_sys::destroy(class rigid_body * const)	physics_system.o
+0x00880540	0x00C6FA40	?destroy@phys_sys@@SAXQAVuser_rigid_body@@@Z	public: static void __cdecl phys_sys::destroy(class user_rigid_body * const)	physics_system.o

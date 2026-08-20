@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x007E64D0	_inflateReset	_inflateReset	
+0x007E6540	_inflatePrime	_inflatePrime	
+0x007E65A0	_inflateInit2_	_inflateInit2_	
+0x007E6670	_inflateInit_	_inflateInit_	
+0x007E67E0	_inflate	_inflate	
+0x007E7D50	_inflateEnd	_inflateEnd	
+0x007E7DA0	_inflateSetDictionary	_inflateSetDictionary	
+0x007E7E90	_inflateGetHeader	_inflateGetHeader	
+0x007E7F20	_inflateSync	_inflateSync	
+0x007E8020	_inflateSyncPoint	_inflateSyncPoint	
+0x007E8050	_inflateCopy	_inflateCopy	

@@ -1,0 +1,10 @@
+index	status	map_line
+1	VERIFIED	0002:00422dc0 ?nslAramGetBase@@YAPAXXZ 00C122C0 f nslAram.o
+2	VERIFIED	0002:00422dd0 ?nslAramGetSize@@YAIXZ 00C122D0 f nslAram.o
+3	VERIFIED	0002:00422de0 ?nslAramGetFree@@YAIXZ 00C122E0 f nslAram.o
+4	VERIFIED	0002:00422df0 ?nslAramSetAlignment@@YAXI@Z 00C122F0 f nslAram.o
+5	VERIFIED	0002:00422e00 ?nslAramGetAlignment@@YAIXZ 00C12300 f nslAram.o
+6	VERIFIED	0002:00422e10 ?nslAramInit@@YAXPAXI@Z 00C12310 f nslAram.o
+7	VERIFIED	0002:00422ea0 ?nslAramGetFreeBlock@@YAIPAI0@Z 00C123A0 f nslAram.o
+8	VERIFIED	0002:00422f90 ?nslAramAlloc@@YAPAXII@Z 00C12490 f nslAram.o
+9	VERIFIED	0002:004230a0 ?nslAramFree@@YAXPAX@Z 00C125A0 f nslAram.o

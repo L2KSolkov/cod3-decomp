@@ -1,0 +1,3 @@
+index	status	map_line
+1	PORTED	0002:003bf240 ?InitController@@YAXH@Z 00BAE740 f ae_controller.o
+2	PORTED	0002:003bf250 ?PollController@@YAHHPAH@Z 00BAE750 f ae_controller.o

@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00816350	0x00C05850	?Render@apsUVANode@@UAEXXZ	public: virtual void __thiscall apsUVANode::Render(void)	apsUVANode.o

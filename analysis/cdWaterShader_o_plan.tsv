@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007D95E0	??0cdWaterShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdWaterShaderMat::cdWaterShaderMat(struct nglTexture *)	
+0x007D9670	?InitCDWaterShader@@YAXXZ	void __cdecl InitCDWaterShader(void)	
+0x007D96C0	?ToggleCDWaterShader@@YAXXZ	void __cdecl ToggleCDWaterShader(void)	
+0x007D96E0	?Register@cdWaterShader@@UAEXXZ	public: virtual void __thiscall cdWaterShader::Register(void)	
+0x007D9720	?AddNode@cdWaterShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWaterShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007D9790	?Render@cdWaterShaderNode@@UAEXXZ	public: virtual void __thiscall cdWaterShaderNode::Render(void)	

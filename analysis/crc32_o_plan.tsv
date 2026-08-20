@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x007E81A0	_get_crc_table	_get_crc_table	
+0x007E87B0	_crc32_combine	_crc32_combine	
+0x007E8890	_crc32	_crc32	

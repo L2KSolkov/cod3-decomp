@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007CD770	??0cdGunSightSpecularShaderMat@@QAE@PAUnglTexture@@0@Z	public: __thiscall cdGunSightSpecularShaderMat::cdGunSightSpecularShaderMat(struct nglTexture *,struct nglTexture *)	
+0x007CD800	?InitCDGunSightSpecularShader@@YAXXZ	void __cdecl InitCDGunSightSpecularShader(void)	
+0x007CD850	?ToggleCDGunSightSpecularShader@@YAXXZ	void __cdecl ToggleCDGunSightSpecularShader(void)	
+0x007CD870	?Register@cdGunSightSpecularShader@@UAEXXZ	public: virtual void __thiscall cdGunSightSpecularShader::Register(void)	
+0x007CD8A0	?AddNode@cdGunSightSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdGunSightSpecularShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007CD910	?Render@cdGunSightSpecularShaderNode@@UAEXXZ	public: virtual void __thiscall cdGunSightSpecularShaderNode::Render(void)	

@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007D2B70	0x00BC2070	?InitCDCharShader@@YAXXZ	void __cdecl InitCDCharShader(void)	cdCharShader.o
+0x007D2BC0	0x00BC20C0	?ToggleCDCharShader@@YAXXZ	void __cdecl ToggleCDCharShader(void)	cdCharShader.o
+0x007D2BE0	0x00BC20E0	?Register@cdCharShader@@UAEXXZ	public: virtual void __thiscall cdCharShader::Register(void)	cdCharShader.o
+0x007D2C40	0x00BC2140	?AddNode@cdCharShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdCharShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdCharShader.o
+0x007D2CB0	0x00BC21B0	?Render@cdCharShaderNode@@UAEXXZ	public: virtual void __thiscall cdCharShaderNode::Render(void)	cdCharShader.o

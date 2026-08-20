@@ -1,0 +1,847 @@
+ida_ea	va	name	signature	family
+0x005BBC20	0x009AB120	?MemPrint@@YAXPBDZZ	void __cdecl MemPrint(char const *,...)	scr.o
+0x005BBC50	0x009AB150	?Init@MemCount@@YAXXZ	void __cdecl MemCount::Init(void)	scr.o
+0x005BBC60	0x009AB160	?RenderTotals@MemCount@@YAXXZ	void __cdecl MemCount::RenderTotals(void)	scr.o
+0x005BBC70	0x009AB170	?ReportTotals@MemCount@@YAXXZ	void __cdecl MemCount::ReportTotals(void)	scr.o
+0x005BBC80	0x009AB180	?IsRealLeak@MemCount@@YA_NPBDHH@Z	bool __cdecl MemCount::IsRealLeak(char const *,int,int)	scr.o
+0x005BBC90	0x009AB190	?CheckForMapChangeLeaks@MemCount@@YAXXZ	void __cdecl MemCount::CheckForMapChangeLeaks(void)	scr.o
+0x005BBCA0	0x009AB1A0	?CheckForRoundtripLeaks@MemCount@@YAXXZ	void __cdecl MemCount::CheckForRoundtripLeaks(void)	scr.o
+0x005BBCB0	0x009AB1B0	?SetGamePhase@MemCount@@YAXW4eGamePhase@1@@Z	void __cdecl MemCount::SetGamePhase(enum MemCount::eGamePhase)	scr.o
+0x005BBCC0	0x009AB1C0	?SetSafeAlloc@MemCount@@YAX_N@Z	void __cdecl MemCount::SetSafeAlloc(bool)	scr.o
+0x005BBCD0	0x009AB1D0	?ThreadPrintf@@YAXHPBDZZ	void __cdecl ThreadPrintf(int,char const *,...)	scr.o
+0x005BBD30	0x009AB230	?SetJmp@@YAXPAI@Z	void __cdecl SetJmp(unsigned int *)	scr.o
+0x005BBD80	0x009AB280	?LongJmp@@YAXPAI@Z	void __cdecl LongJmp(unsigned int *)	scr.o
+0x005BBDB0	0x009AB2B0	??0BackupStack@AeThread@@QAE@XZ	public: __thiscall AeThread::BackupStack::BackupStack(void)	scr.o
+0x005BBDC0	0x009AB2C0	?Backup@BackupStack@AeThread@@QAEXII@Z	public: void __thiscall AeThread::BackupStack::Backup(unsigned int,unsigned int)	scr.o
+0x005BBF70	0x009AB470	?Restore@BackupStack@AeThread@@QBEXI@Z	public: void __thiscall AeThread::BackupStack::Restore(unsigned int)const 	scr.o
+0x005BC0B0	0x009AB5B0	??1BackupStack@AeThread@@QAE@XZ	public: __thiscall AeThread::BackupStack::~BackupStack(void)	scr.o
+0x005BC0F0	0x009AB5F0	?NewAction@AeThreadPakNotifyState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadPakNotifyState::NewAction(class AeThread &)	scr.o
+0x005BC150	0x009AB650	?NewAction@AeThreadWaitState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadWaitState::NewAction(class AeThread &)	scr.o
+0x005BC180	0x009AB680	?NewAction@AeThreadWaitFramesState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadWaitFramesState::NewAction(class AeThread &)	scr.o
+0x005BC1A0	0x009AB6A0	?XboxGetEntryFunction@@YAP6AP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@ZPBD@Z	void (__cdecl*(__cdecl*__cdecl XboxGetEntryFunction(char const *))(struct BrocAPI * *,struct BrocExports &))(void)	scr.o
+0x005BC1D0	0x009AB6D0	?SetDepthOfField@@YAX_NMMMM@Z	void __cdecl SetDepthOfField(bool,float,float,float,float)	scr.o
+0x005BC1E0	0x009AB6E0	?CreateNanoGraph@@YAIPADQAM1@Z	unsigned int __cdecl CreateNanoGraph(char *,float * const,float * const)	scr.o
+0x005BC210	0x009AB710	?ConvertStringToHash@BrocSys@@YA?BIPBD@Z	unsigned int const __cdecl BrocSys::ConvertStringToHash(char const *)	scr.o
+0x005BC230	0x009AB730	?MemFree@BrocSys@@YAXPAX@Z	void __cdecl BrocSys::MemFree(void *)	scr.o
+0x005BC280	0x009AB780	?PoolAlloc@BrocSys@@YAPAXI@Z	void * __cdecl BrocSys::PoolAlloc(unsigned int)	scr.o
+0x005BC2A0	0x009AB7A0	?PoolFree@BrocSys@@YAXPAX@Z	void __cdecl BrocSys::PoolFree(void *)	scr.o
+0x005BC2C0	0x009AB7C0	?RoundOver@BrocSys@@YAXHABVstring@Broc@@@Z	void __cdecl BrocSys::RoundOver(int,class Broc::string const &)	scr.o
+0x005BC350	0x009AB850	?DisplayScoreBoard@BrocSys@@YAX_NH@Z	void __cdecl BrocSys::DisplayScoreBoard(bool,int)	scr.o
+0x005BC450	0x009AB950	?SettleMapVote@BrocSys@@YAXXZ	void __cdecl BrocSys::SettleMapVote(void)	scr.o
+0x005BC470	0x009AB970	?SettleGameModeVote@BrocSys@@YAXXZ	void __cdecl BrocSys::SettleGameModeVote(void)	scr.o
+0x005BC490	0x009AB990	?SetSpecialRecharge@BrocSys@@YAXHHHH@Z	void __cdecl BrocSys::SetSpecialRecharge(int,int,int,int)	scr.o
+0x005BC4C0	0x009AB9C0	?AdvanceSpecialRecharge@BrocSys@@YAXH@Z	void __cdecl BrocSys::AdvanceSpecialRecharge(int)	scr.o
+0x005BC500	0x009ABA00	?GetSpecialRechargePlayerClass@BrocSys@@YAHXZ	int __cdecl BrocSys::GetSpecialRechargePlayerClass(void)	scr.o
+0x005BC520	0x009ABA20	?SpecialEditionSkin@BrocSys@@YA_NXZ	bool __cdecl BrocSys::SpecialEditionSkin(void)	scr.o
+0x005BC530	0x009ABA30	?IsHost@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsHost(void)	scr.o
+0x005BC540	0x009ABA40	?IsRankedGame@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsRankedGame(void)	scr.o
+0x005BC550	0x009ABA50	?IsLanGame@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsLanGame(void)	scr.o
+0x005BC560	0x009ABA60	?IsOnlineGame@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsOnlineGame(void)	scr.o
+0x005BC570	0x009ABA70	?IsLocalGame@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsLocalGame(void)	scr.o
+0x005BC580	0x009ABA80	?IsSplitScreen@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsSplitScreen(void)	scr.o
+0x005BC590	0x009ABA90	?SetTeamGame@BrocSys@@YAX_N@Z	void __cdecl BrocSys::SetTeamGame(bool)	scr.o
+0x005BC5A0	0x009ABAA0	?SetShowScore@BrocSys@@YAX_N@Z	void __cdecl BrocSys::SetShowScore(bool)	scr.o
+0x005BC5B0	0x009ABAB0	?SetShowTime@BrocSys@@YAXM@Z	void __cdecl BrocSys::SetShowTime(float)	scr.o
+0x005BC5E0	0x009ABAE0	?GetTeamGame@BrocSys@@YA_NXZ	bool __cdecl BrocSys::GetTeamGame(void)	scr.o
+0x005BC5F0	0x009ABAF0	?ScreenFadeToBlack@BrocSys@@YAXIH@Z	void __cdecl BrocSys::ScreenFadeToBlack(unsigned int,int)	scr.o
+0x005BC630	0x009ABB30	?ScreenFadeUp@BrocSys@@YAXIH@Z	void __cdecl BrocSys::ScreenFadeUp(unsigned int,int)	scr.o
+0x005BC660	0x009ABB60	?ActiveMenu@BrocSys@@YAHXZ	int __cdecl BrocSys::ActiveMenu(void)	scr.o
+0x005BC6A0	0x009ABBA0	?NextRound@BrocSys@@YAX_N@Z	void __cdecl BrocSys::NextRound(bool)	scr.o
+0x005BC6C0	0x009ABBC0	?NextRoundMapChanges@BrocSys@@YA_NXZ	bool __cdecl BrocSys::NextRoundMapChanges(void)	scr.o
+0x005BC6D0	0x009ABBD0	?QuitGame@BrocSys@@YAXXZ	void __cdecl BrocSys::QuitGame(void)	scr.o
+0x005BC6E0	0x009ABBE0	?Localize@BrocSys@@YAPBDPBD@Z	char const * __cdecl BrocSys::Localize(char const *)	scr.o
+0x005BC700	0x009ABC00	?Print@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::Print(char const *)	scr.o
+0x005BC710	0x009ABC10	?PrintLn@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::PrintLn(char const *)	scr.o
+0x005BC730	0x009ABC30	?GetAnimName@BrocSys@@YA_NIPADH@Z	bool __cdecl BrocSys::GetAnimName(unsigned int,char *,int)	scr.o
+0x005BC790	0x009ABC90	?PrintFloat3D@BrocSys@@YAXABUvector@Broc@@M0MM@Z	void __cdecl BrocSys::PrintFloat3D(struct Broc::vector const &,float,struct Broc::vector const &,float,float)	scr.o
+0x005BC800	0x009ABD00	?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z	void __cdecl BrocSys::Line(struct Broc::vector const &,struct Broc::vector const &,struct Broc::vector const &,float,int)	scr.o
+0x005BC810	0x009ABD10	?SquareRootX@BrocSys@@YAMM@Z	float __cdecl BrocSys::SquareRootX(float)	scr.o
+0x005BC820	0x009ABD20	?ModXY@BrocSys@@YAHHH@Z	int __cdecl BrocSys::ModXY(int,int)	scr.o
+0x005BC830	0x009ABD30	?FModXY@BrocSys@@YAMMM@Z	float __cdecl BrocSys::FModXY(float,float)	scr.o
+0x005BC840	0x009ABD40	?atoff@BrocSys@@YAMPBD@Z	float __cdecl BrocSys::atoff(char const *)	scr.o
+0x005BC860	0x009ABD60	?ThreadBackupStack@BrocSys@@YAXI@Z	void __cdecl BrocSys::ThreadBackupStack(unsigned int)	scr.o
+0x005BC880	0x009ABD80	?ThreadIsThreadExecuting@BrocSys@@YA_NXZ	bool __cdecl BrocSys::ThreadIsThreadExecuting(void)	scr.o
+0x005BC890	0x009ABD90	?Assert@BrocSys@@YA_NPBDH0@Z	bool __cdecl BrocSys::Assert(char const *,int,char const *)	scr.o
+0x005BC8E0	0x009ABDE0	?Warning@BrocSys@@YA_NPBDH0@Z	bool __cdecl BrocSys::Warning(char const *,int,char const *)	scr.o
+0x005BC930	0x009ABE30	?Error@BrocSys@@YA_NPBDH0@Z	bool __cdecl BrocSys::Error(char const *,int,char const *)	scr.o
+0x005BC970	0x009ABE70	?CVarGetString@BrocSys@@YAXAAVstring@Broc@@PBD@Z	void __cdecl BrocSys::CVarGetString(class Broc::string &,char const *)	scr.o
+0x005BC9A0	0x009ABEA0	?CVarGetInt@BrocSys@@YAHPBD@Z	int __cdecl BrocSys::CVarGetInt(char const *)	scr.o
+0x005BC9B0	0x009ABEB0	?CVarGetFloat@BrocSys@@YAMPBD@Z	float __cdecl BrocSys::CVarGetFloat(char const *)	scr.o
+0x005BC9D0	0x009ABED0	?CVarSetString@BrocSys@@YAXPBD0@Z	void __cdecl BrocSys::CVarSetString(char const *,char const *)	scr.o
+0x005BCA50	0x009ABF50	?CVarSetInt@BrocSys@@YAXPBDH@Z	void __cdecl BrocSys::CVarSetInt(char const *,int)	scr.o
+0x005BCAE0	0x009ABFE0	?CVarSetFloat@BrocSys@@YAXPBDM@Z	void __cdecl BrocSys::CVarSetFloat(char const *,float)	scr.o
+0x005BCB70	0x009AC070	?MusicStop@BrocSys@@YAXM@Z	void __cdecl BrocSys::MusicStop(float)	scr.o
+0x005BCB90	0x009AC090	?MusicIndoorStop@BrocSys@@YAXM@Z	void __cdecl BrocSys::MusicIndoorStop(float)	scr.o
+0x005BCBB0	0x009AC0B0	?SoundFadeIn@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SoundFadeIn(unsigned int,float)	scr.o
+0x005BCBD0	0x009AC0D0	?SoundFadeOut@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SoundFadeOut(unsigned int,float)	scr.o
+0x005BCBF0	0x009AC0F0	?SoundCrossFade@BrocSys@@YAXIIM@Z	void __cdecl BrocSys::SoundCrossFade(unsigned int,unsigned int,float)	scr.o
+0x005BCC10	0x009AC110	?SetIndoor@BrocSys@@YAX_N@Z	void __cdecl BrocSys::SetIndoor(bool)	scr.o
+0x005BCC20	0x009AC120	?GetLastParticleInfo@BrocSys@@YAXAAUvector@Broc@@AAI@Z	void __cdecl BrocSys::GetLastParticleInfo(struct Broc::vector &,unsigned int &)	scr.o
+0x005BCC80	0x009AC180	?GetTime@BrocSys@@YAIXZ	unsigned int __cdecl BrocSys::GetTime(void)	scr.o
+0x005BCC90	0x009AC190	?GetDeltaTime@BrocSys@@YAMXZ	float __cdecl BrocSys::GetDeltaTime(void)	scr.o
+0x005BCCA0	0x009AC1A0	?GetDifficulty@BrocSys@@YAXAAVstring@Broc@@@Z	void __cdecl BrocSys::GetDifficulty(class Broc::string &)	scr.o
+0x005BCD10	0x009AC210	?GetNorthYaw@BrocSys@@YAMXZ	float __cdecl BrocSys::GetNorthYaw(void)	scr.o
+0x005BCD20	0x009AC220	?GameSave@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::GameSave(class Broc::string const &)	scr.o
+0x005BCD30	0x009AC230	?GameLoad@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::GameLoad(class Broc::string const &)	scr.o
+0x005BCD40	0x009AC240	?SetCullDist@BrocSys@@YAXM@Z	void __cdecl BrocSys::SetCullDist(float)	scr.o
+0x005BCD70	0x009AC270	?RadiusDamage@BrocSys@@YAXABUvector@Broc@@MMMH@Z	void __cdecl BrocSys::RadiusDamage(struct Broc::vector const &,float,float,float,int)	scr.o
+0x005BCDC0	0x009AC2C0	?SetPlayerIgnoreRadiusDamage@BrocSys@@YAX_N@Z	void __cdecl BrocSys::SetPlayerIgnoreRadiusDamage(bool)	scr.o
+0x005BCDD0	0x009AC2D0	?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::MissionSuccess(class Broc::string const &)	scr.o
+0x005BCDE0	0x009AC2E0	?Lightning@BrocSys@@YAXABUvector@Broc@@@Z	void __cdecl BrocSys::Lightning(struct Broc::vector const &)	scr.o
+0x005BCE60	0x009AC360	?SetRainDrops@BrocSys@@YAX_N@Z	void __cdecl BrocSys::SetRainDrops(bool)	scr.o
+0x005BCE70	0x009AC370	?SetFootSplashEffect@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::SetFootSplashEffect(class Broc::string const &)	scr.o
+0x005BCE90	0x009AC390	?DrawCompassFriendlies@BrocSys@@YAX_N@Z	void __cdecl BrocSys::DrawCompassFriendlies(bool)	scr.o
+0x005BCEA0	0x009AC3A0	?SetMissileActiveTime@BrocSys@@YAXM@Z	void __cdecl BrocSys::SetMissileActiveTime(float)	scr.o
+0x005BCEC0	0x009AC3C0	?SetMaxVehicles@BrocSys@@YAXH@Z	void __cdecl BrocSys::SetMaxVehicles(int)	scr.o
+0x005BCED0	0x009AC3D0	?ProfBegin@BrocSys@@YAXXZ	void __cdecl BrocSys::ProfBegin(void)	scr.o
+0x005BCEE0	0x009AC3E0	?ProfEnd@BrocSys@@YAXXZ	void __cdecl BrocSys::ProfEnd(void)	scr.o
+0x005BCEF0	0x009AC3F0	?ProfTick@BrocSys@@YAHXZ	int __cdecl BrocSys::ProfTick(void)	scr.o
+0x005BCF10	0x009AC410	?FlushCorpses@BrocSys@@YAXXZ	void __cdecl BrocSys::FlushCorpses(void)	scr.o
+0x005BCF20	0x009AC420	?StartMemCheck@BrocSys@@YAXXZ	void __cdecl BrocSys::StartMemCheck(void)	scr.o
+0x005BCF30	0x009AC430	?EndMemCheck@BrocSys@@YAXXZ	void __cdecl BrocSys::EndMemCheck(void)	scr.o
+0x005BCF40	0x009AC440	?GetPakVector@BrocSys@@YA?AW4TPakInfo@@MMM@Z	enum TPakInfo __cdecl BrocSys::GetPakVector(float,float,float)	scr.o
+0x005BD070	0x009AC570	?IsPakLoaded@BrocSys@@YA_NW4TPakInfo@@@Z	bool __cdecl BrocSys::IsPakLoaded(enum TPakInfo)	scr.o
+0x005BD0D0	0x009AC5D0	?SetPakDistance@BrocSys@@YAXW4TPakInfo@@M@Z	void __cdecl BrocSys::SetPakDistance(enum TPakInfo,float)	scr.o
+0x005BD130	0x009AC630	?ClearPakDistance@BrocSys@@YAXW4TPakInfo@@@Z	void __cdecl BrocSys::ClearPakDistance(enum TPakInfo)	scr.o
+0x005BD190	0x009AC690	?SyncLoadPak@BrocSys@@YAXW4TPakInfo@@@Z	void __cdecl BrocSys::SyncLoadPak(enum TPakInfo)	scr.o
+0x005BD2B0	0x009AC7B0	?ProfileDeclareID@BrocSys@@YAHPBD@Z	int __cdecl BrocSys::ProfileDeclareID(char const *)	scr.o
+0x005BD2C0	0x009AC7C0	?ProfileStart@BrocSys@@YAXH@Z	void __cdecl BrocSys::ProfileStart(int)	scr.o
+0x005BD2D0	0x009AC7D0	?ProfileStop@BrocSys@@YAXH@Z	void __cdecl BrocSys::ProfileStop(int)	scr.o
+0x005BD2E0	0x009AC7E0	?ProfileSetVal@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ProfileSetVal(int,int)	scr.o
+0x005BD2F0	0x009AC7F0	?HudClearTypeSettings@BrocSys@@YAXPAUgame_hudelem_s@@@Z	void __cdecl BrocSys::HudClearTypeSettings(struct game_hudelem_s *)	scr.o
+0x005BD320	0x009AC820	?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z	void __cdecl BrocSys::HudSetDefaults(struct game_hudelem_s *)	scr.o
+0x005BD440	0x009AC940	?HudIsPanelType@BrocSys@@YA_NPAUgame_hudelem_s@@@Z	bool __cdecl BrocSys::HudIsPanelType(struct game_hudelem_s *)	scr.o
+0x005BD460	0x009AC960	?NRefsToString@BrocSys@@YAHH@Z	int __cdecl BrocSys::NRefsToString(int)	scr.o
+0x005BD4D0	0x009AC9D0	?HudFree@BrocSys@@YAXPAUgame_hudelem_s@@@Z	void __cdecl BrocSys::HudFree(struct game_hudelem_s *)	scr.o
+0x005BD600	0x009ACB00	?HudSetIsVisible@BrocSys@@YAX_N@Z	void __cdecl BrocSys::HudSetIsVisible(bool)	scr.o
+0x005BD620	0x009ACB20	?FindConfigString@BrocSys@@YAHPBD@Z	int __cdecl BrocSys::FindConfigString(char const *)	scr.o
+0x005BD670	0x009ACB70	?SetValue@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::SetValue(class Broc::hudelem const &,float)	scr.o
+0x005BD730	0x009ACC30	?Reset@BrocSys@@YAXABVhudelem@Broc@@@Z	void __cdecl BrocSys::Reset(class Broc::hudelem const &)	scr.o
+0x005BD7A0	0x009ACCA0	?Destroy@BrocSys@@YAXABVhudelem@Broc@@@Z	void __cdecl BrocSys::Destroy(class Broc::hudelem const &)	scr.o
+0x005BD810	0x009ACD10	?ValidateApiSize@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ValidateApiSize(int,int)	scr.o
+0x005BD8B0	0x009ACDB0	?PlayScriptedAnim@BrocSys@@YAXIPBD@Z	void __cdecl BrocSys::PlayScriptedAnim(unsigned int,char const *)	scr.o
+0x005BD900	0x009ACE00	?SetMissionToTrack@BrocSys@@YA_NPBD_N@Z	bool __cdecl BrocSys::SetMissionToTrack(char const *,bool)	scr.o
+0x005BD910	0x009ACE10	?GetMissionStat@BrocSys@@YAHH_N@Z	int __cdecl BrocSys::GetMissionStat(int,bool)	scr.o
+0x005BD920	0x009ACE20	?GetMissionStatAll@BrocSys@@YAHH@Z	int __cdecl BrocSys::GetMissionStatAll(int)	scr.o
+0x005BD930	0x009ACE30	?SetMissionStat@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetMissionStat(int,int)	scr.o
+0x005BD940	0x009ACE40	?IncMissionStat@BrocSys@@YAXH@Z	void __cdecl BrocSys::IncMissionStat(int)	scr.o
+0x005BD950	0x009ACE50	?DecMissionStat@BrocSys@@YAXH@Z	void __cdecl BrocSys::DecMissionStat(int)	scr.o
+0x005BD960	0x009ACE60	?GetAvgMissionStat@BrocSys@@YAMH@Z	float __cdecl BrocSys::GetAvgMissionStat(int)	scr.o
+0x005BD970	0x009ACE70	?GetMissionCompletionTime@BrocSys@@YAHXZ	int __cdecl BrocSys::GetMissionCompletionTime(void)	scr.o
+0x005BD980	0x009ACE80	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	void __cdecl BrocSys::UpdateMissionCompletionTime(void)	scr.o
+0x005BD990	0x009ACE90	?SetPlayerWeaponUsed@BrocSys@@YAXH@Z	void __cdecl BrocSys::SetPlayerWeaponUsed(int)	scr.o
+0x005BD9A0	0x009ACEA0	?WasPlayerWeaponUsed@BrocSys@@YA_NH@Z	bool __cdecl BrocSys::WasPlayerWeaponUsed(int)	scr.o
+0x005BD9B0	0x009ACEB0	?WasPlayerWeaponCategoryUsed@BrocSys@@YA_NH_N@Z	bool __cdecl BrocSys::WasPlayerWeaponCategoryUsed(int,bool)	scr.o
+0x005BD9C0	0x009ACEC0	?SetDynamicLightPosition@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::SetDynamicLightPosition(unsigned int,struct Broc::vector const &)	scr.o
+0x005BDA30	0x009ACF30	?RemoveDynamicLight@BrocSys@@YAXI@Z	void __cdecl BrocSys::RemoveDynamicLight(unsigned int)	scr.o
+0x005BDA40	0x009ACF40	?CreateDynamicLight@BrocSys@@YAIABUvector@Broc@@0MMM_N@Z	unsigned int __cdecl BrocSys::CreateDynamicLight(struct Broc::vector const &,struct Broc::vector const &,float,float,float,bool)	scr.o
+0x005BDAC0	0x009ACFC0	?GetLocalizedString@BrocSys@@YA?AVstring@Broc@@H@Z	class Broc::string __cdecl BrocSys::GetLocalizedString(int)	scr.o
+0x005BDAF0	0x009ACFF0	?EnableNanoForces@BrocSys@@YAX_N@Z	void __cdecl BrocSys::EnableNanoForces(bool)	scr.o
+0x005BDB00	0x009AD000	?GlowSetIntensityAux@BrocSys@@YAXM@Z	void __cdecl BrocSys::GlowSetIntensityAux(float)	scr.o
+0x005BDB20	0x009AD020	?GlowSetExpansionAux@BrocSys@@YAXM@Z	void __cdecl BrocSys::GlowSetExpansionAux(float)	scr.o
+0x005BDB40	0x009AD040	?GlowSetBrightnessAux@BrocSys@@YAXM@Z	void __cdecl BrocSys::GlowSetBrightnessAux(float)	scr.o
+0x005BDB60	0x009AD060	?GlowSetGodRaysAux@BrocSys@@YAX_N@Z	void __cdecl BrocSys::GlowSetGodRaysAux(bool)	scr.o
+0x005BDB70	0x009AD070	?GlowSetPassesAux@BrocSys@@YAXH@Z	void __cdecl BrocSys::GlowSetPassesAux(int)	scr.o
+0x005BDB80	0x009AD080	?CurGenMotionBlur@BrocSys@@YAXMMM@Z	void __cdecl BrocSys::CurGenMotionBlur(float,float,float)	scr.o
+0x005BDB90	0x009AD090	?StopCurGenMotionBlur@BrocSys@@YAXXZ	void __cdecl BrocSys::StopCurGenMotionBlur(void)	scr.o
+0x005BDBA0	0x009AD0A0	?InitMPCallbacks@BrocSys@@YAXXZ	void __cdecl BrocSys::InitMPCallbacks(void)	scr.o
+0x005BDEA0	0x009AD3A0	?BrocDebugRender@BrocSys@@YAXXZ	void __cdecl BrocSys::BrocDebugRender(void)	scr.o
+0x005BDF00	0x009AD400	?CreateExtendedEntity@BrocSys@@YAPAXPAPBDH@Z	void * __cdecl BrocSys::CreateExtendedEntity(char const * *,int)	scr.o
+0x005BDF20	0x009AD420	?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z	void __cdecl BrocSys::CopyExtendedEntity(class Entity const *,class Entity *)	scr.o
+0x005BDFB0	0x009AD4B0	?RecompileScript@BrocSys@@YA_NXZ	bool __cdecl BrocSys::RecompileScript(void)	scr.o
+0x005BDFC0	0x009AD4C0	?UnloadScript@BrocSys@@YAXXZ	void __cdecl BrocSys::UnloadScript(void)	scr.o
+0x005BDFD0	0x009AD4D0	?mem_free@@YAXPAX@Z	void __cdecl mem_free(void *)	scr.o
+0x005BE020	0x009AD520	?SetLoadedTrees@BrocHelper@@YAXH@Z	void __cdecl BrocHelper::SetLoadedTrees(int)	scr.o
+0x005BE030	0x009AD530	?GetLoadedTrees@BrocHelper@@YAHXZ	int __cdecl BrocHelper::GetLoadedTrees(void)	scr.o
+0x005BE040	0x009AD540	?AnimationToBroLookup@BrocHelper@@YAXPBDHIH@Z	void __cdecl BrocHelper::AnimationToBroLookup(char const *,int,unsigned int,int)	scr.o
+0x005BE0D0	0x009AD5D0	?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z	void __cdecl BrocHelper::AnimationToBroLookup(class tlFixedString const &,int,class tlFixedString const &,int)	scr.o
+0x005BE100	0x009AD600	?AnimationValidator@BrocHelper@@YAXH@Z	void __cdecl BrocHelper::AnimationValidator(int)	scr.o
+0x005BE180	0x009AD680	?Init@BrocHelper@@YAXXZ	void __cdecl BrocHelper::Init(void)	scr.o
+0x005BE1A0	0x009AD6A0	?RegisterBroFunc@BrocHelper@@YAXPADP6AIPAX@Z@Z	void __cdecl BrocHelper::RegisterBroFunc(char *,unsigned int (__cdecl*)(void *))	scr.o
+0x005BE210	0x009AD710	?GetBroFuncByName@BrocHelper@@YAP6AIPAX@ZPBD_N@Z	unsigned int (__cdecl*__cdecl BrocHelper::GetBroFuncByName(char const *,bool))(void *)	scr.o
+0x005BE2B0	0x009AD7B0	?UpdateEntityHash@@YAXPAVEntity@@@Z	void __cdecl UpdateEntityHash(class Entity *)	scr.o
+0x005BE390	0x009AD890	?BrocDestroyEntity@@YAXPAVEntity@@@Z	void __cdecl BrocDestroyEntity(class Entity *)	scr.o
+0x005BE3D0	0x009AD8D0	?BrocAddEntityThread@@YAXPAVEntity@@IPAVScriptEventParams@@@Z	void __cdecl BrocAddEntityThread(class Entity *,unsigned int,class ScriptEventParams *)	scr.o
+0x005BE560	0x009ADA60	?BrocAddEntityThread@@YAXPAVEntity@@PBD@Z	void __cdecl BrocAddEntityThread(class Entity *,char const *)	scr.o
+0x005BE6C0	0x009ADBC0	?GetPlayerArray@BrocSys@@YAHPAI@Z	int __cdecl BrocSys::GetPlayerArray(unsigned int *)	scr.o
+0x005BE750	0x009ADC50	?GetLocalPlayerArray@BrocSys@@YAHPAI@Z	int __cdecl BrocSys::GetLocalPlayerArray(unsigned int *)	scr.o
+0x005BE7A0	0x009ADCA0	?GetLevel@BrocSys@@YAIXZ	unsigned int __cdecl BrocSys::GetLevel(void)	scr.o
+0x005BE7B0	0x009ADCB0	?GetPlayer@BrocSys@@YAIXZ	unsigned int __cdecl BrocSys::GetPlayer(void)	scr.o
+0x005BE7D0	0x009ADCD0	?Scr_ReadOnlyField@BrocSys@@YAXPAVEntity@@HPAX@Z	void __cdecl BrocSys::Scr_ReadOnlyField(class Entity *,int,void *)	scr.o
+0x005BE810	0x009ADD10	?Scr_SetAngles@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z	void __cdecl BrocSys::Scr_SetAngles(class Entity *,int,struct Broc::vector *)	scr.o
+0x005BE870	0x009ADD70	?Scr_GetAngles@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z	void __cdecl BrocSys::Scr_GetAngles(class Entity *,int,struct Broc::vector *)	scr.o
+0x005BE8D0	0x009ADDD0	?Scr_SetGroupName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetGroupName(class Entity *,int,class Broc::string *)	scr.o
+0x005BE920	0x009ADE20	?Scr_SetTargetName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetTargetName(class Entity *,int,class Broc::string *)	scr.o
+0x005BE970	0x009ADE70	?Scr_SetTarget@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetTarget(class Entity *,int,class Broc::string *)	scr.o
+0x005BE9C0	0x009ADEC0	?Scr_SetNoteWorthy@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetNoteWorthy(class Entity *,int,class Broc::string *)	scr.o
+0x005BEA10	0x009ADF10	?Scr_SetAnimName@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetAnimName(class Entity *,int,class Broc::string *)	scr.o
+0x005BEA60	0x009ADF60	?Scr_SetByte@BrocSys@@YAXPAVEntity@@HPAH@Z	void __cdecl BrocSys::Scr_SetByte(class Entity *,int,int *)	scr.o
+0x005BEA80	0x009ADF80	?Scr_GetByte@BrocSys@@YAXPAVEntity@@HPAH@Z	void __cdecl BrocSys::Scr_GetByte(class Entity *,int,int *)	scr.o
+0x005BEAA0	0x009ADFA0	?Scr_SetWord@BrocSys@@YAXPAVEntity@@HPAH@Z	void __cdecl BrocSys::Scr_SetWord(class Entity *,int,int *)	scr.o
+0x005BEAC0	0x009ADFC0	?Scr_GetWord@BrocSys@@YAXPAVEntity@@HPAH@Z	void __cdecl BrocSys::Scr_GetWord(class Entity *,int,int *)	scr.o
+0x005BEAE0	0x009ADFE0	?GetNodeInProximity@BrocSys@@YAHABUvector@Broc@@M_NI@Z	int __cdecl BrocSys::GetNodeInProximity(struct Broc::vector const &,float,bool,unsigned int)	scr.o
+0x005BEAF0	0x009ADFF0	?GetNode@BrocSys@@YAHABVstring@Broc@@0PAHH@Z	int __cdecl BrocSys::GetNode(class Broc::string const &,class Broc::string const &,int *,int)	scr.o
+0x005BEB90	0x009AE090	?GetVehicleNode@BrocSys@@YAHABVstring@Broc@@0PAHH@Z	int __cdecl BrocSys::GetVehicleNode(class Broc::string const &,class Broc::string const &,int *,int)	scr.o
+0x005BEC40	0x009AE140	?GetNumVehicles@BrocSys@@YAIXZ	unsigned int __cdecl BrocSys::GetNumVehicles(void)	scr.o
+0x005BEC70	0x009AE170	?EffectEventPlayQueued@BrocSys@@YAXI@Z	void __cdecl BrocSys::EffectEventPlayQueued(unsigned int)	scr.o
+0x005BEC80	0x009AE180	?EffectEventIsStillPlaying@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::EffectEventIsStillPlaying(unsigned int)	scr.o
+0x005BEC90	0x009AE190	?EffectEventStop@BrocSys@@YAXI@Z	void __cdecl BrocSys::EffectEventStop(unsigned int)	scr.o
+0x005BECA0	0x009AE1A0	?EffectEventFastForward@BrocSys@@YAXIM@Z	void __cdecl BrocSys::EffectEventFastForward(unsigned int,float)	scr.o
+0x005BECB0	0x009AE1B0	?SceneEffectEnable@BrocSys@@YAXI@Z	void __cdecl BrocSys::SceneEffectEnable(unsigned int)	scr.o
+0x005BECD0	0x009AE1D0	?SceneEffectDisable@BrocSys@@YAXI@Z	void __cdecl BrocSys::SceneEffectDisable(unsigned int)	scr.o
+0x005BECF0	0x009AE1F0	?RegisterAnimNotifyFunc@BrocSys@@YAXPBDP6AXVentity@Broc@@@Z@Z	void __cdecl BrocSys::RegisterAnimNotifyFunc(char const *,void (__cdecl*)(class Broc::entity))	scr.o
+0x005BED00	0x009AE200	?BROC_AttachCurveEntity@BrocSys@@YA_NIAAVstring@Broc@@@Z	bool __cdecl BrocSys::BROC_AttachCurveEntity(unsigned int,class Broc::string &)	scr.o
+0x005BED40	0x009AE240	?BROC_AddCurveKeyEvaluator@BrocSys@@YA_NIP6AMIIIMMI@Z@Z	bool __cdecl BrocSys::BROC_AddCurveKeyEvaluator(unsigned int,float (__cdecl*)(unsigned int,unsigned int,unsigned int,float,float,unsigned int))	scr.o
+0x005BED60	0x009AE260	?BROC_AddCurveConditionEvaluator@BrocSys@@YA_NIP6AMIIIMMI@Z@Z	bool __cdecl BrocSys::BROC_AddCurveConditionEvaluator(unsigned int,float (__cdecl*)(unsigned int,unsigned int,unsigned int,float,float,unsigned int))	scr.o
+0x005BED80	0x009AE280	?DialogPlayAllowOverlapping@BrocSys@@YAX_N@Z	void __cdecl BrocSys::DialogPlayAllowOverlapping(bool)	scr.o
+0x005BED90	0x009AE290	?CheckWave@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::CheckWave(class Broc::string const &)	scr.o
+0x005BEDC0	0x009AE2C0	?IsPathNodeDefined@BrocSys@@YAHI@Z	int __cdecl BrocSys::IsPathNodeDefined(unsigned int)	scr.o
+0x005BEDE0	0x009AE2E0	?IsVehicleNodeDefined@BrocSys@@YAHI@Z	int __cdecl BrocSys::IsVehicleNodeDefined(unsigned int)	scr.o
+0x005BEDF0	0x009AE2F0	?AnimScripted2@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I_NMM@Z	void __cdecl BrocSys::AnimScripted2(unsigned int,unsigned int,struct Broc::vector const &,struct Broc::vector const &,unsigned int,class Broc::string const &,unsigned int,bool,float,float)	scr.o
+0x005BEE00	0x009AE300	?AnimScripted1@BrocSys@@YAXIIABUvector@Broc@@0I@Z	void __cdecl BrocSys::AnimScripted1(unsigned int,unsigned int,struct Broc::vector const &,struct Broc::vector const &,unsigned int)	scr.o
+0x005BEEA0	0x009AE3A0	?StartScriptedAnim@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I@Z	void __cdecl BrocSys::StartScriptedAnim(unsigned int,unsigned int,struct Broc::vector const &,struct Broc::vector const &,unsigned int,class Broc::string const &,unsigned int)	scr.o
+0x005BEEB0	0x009AE3B0	?GetAnimFromScriptCVars@BrocSys@@YAHXZ	int __cdecl BrocSys::GetAnimFromScriptCVars(void)	scr.o
+0x005BEF90	0x009AE490	?AddFakeFriendly@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AddFakeFriendly(unsigned int,bool)	scr.o
+0x005BEFA0	0x009AE4A0	?RemoveFakeFriendly@BrocSys@@YAXI@Z	void __cdecl BrocSys::RemoveFakeFriendly(unsigned int)	scr.o
+0x005BEFB0	0x009AE4B0	?IsModelLoaded@BrocSys@@YA_NABVstring@Broc@@W4TPakInfo@@@Z	bool __cdecl BrocSys::IsModelLoaded(class Broc::string const &,enum TPakInfo)	scr.o
+0x005BF050	0x009AE550	?PlaySubtitle@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::PlaySubtitle(class Broc::string const &)	scr.o
+0x005BF080	0x009AE580	?AnimHasNotetrack@BrocSys@@YA_NIIABI@Z	bool __cdecl BrocSys::AnimHasNotetrack(unsigned int,unsigned int,unsigned int const &)	scr.o
+0x005BF0A0	0x009AE5A0	?IsLocalHost@BrocSys@@YA_NXZ	bool __cdecl BrocSys::IsLocalHost(void)	scr.o
+0x005BF0B0	0x009AE5B0	?ValidateLightVis@BrocSys@@YAXH@Z	void __cdecl BrocSys::ValidateLightVis(int)	scr.o
+0x005BF110	0x009AE610	?ActorScr_Clamp_0_1@BrocSys@@YAXPAUactor_s@@HPAM@Z	void __cdecl BrocSys::ActorScr_Clamp_0_1(struct actor_s *,int,float *)	scr.o
+0x005BF1D0	0x009AE6D0	?ActorScr_ReadOnly@BrocSys@@YAXPAUactor_s@@HPAX@Z	void __cdecl BrocSys::ActorScr_ReadOnly(struct actor_s *,int,void *)	scr.o
+0x005BF210	0x009AE710	?ActorScr_SetGoalRadius@BrocSys@@YAXPAUactor_s@@HPBM@Z	void __cdecl BrocSys::ActorScr_SetGoalRadius(struct actor_s *,int,float const *)	scr.o
+0x005BF230	0x009AE730	?ActorScr_SetTime@BrocSys@@YAXPAUactor_s@@HPBH@Z	void __cdecl BrocSys::ActorScr_SetTime(struct actor_s *,int,int const *)	scr.o
+0x005BF260	0x009AE760	?ActorScr_GetTime@BrocSys@@YAXPAUactor_s@@HPAH@Z	void __cdecl BrocSys::ActorScr_GetTime(struct actor_s *,int,int *)	scr.o
+0x005BF290	0x009AE790	?ActorScr_SetWeapon@BrocSys@@YAXPAUactor_s@@HPBVstring@Broc@@@Z	void __cdecl BrocSys::ActorScr_SetWeapon(struct actor_s *,int,class Broc::string const *)	scr.o
+0x005BF2C0	0x009AE7C0	?ActorScr_GetWeapon@BrocSys@@YAXPAUactor_s@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::ActorScr_GetWeapon(struct actor_s *,int,class Broc::string *)	scr.o
+0x005BF2F0	0x009AE7F0	?ActorScr_GetGroundType@BrocSys@@YAXPAUactor_s@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::ActorScr_GetGroundType(struct actor_s *,int,class Broc::string *)	scr.o
+0x005BF320	0x009AE820	?ActorScr_SetAnimPos@BrocSys@@YAXPAUactor_s@@HPBI@Z	void __cdecl BrocSys::ActorScr_SetAnimPos(struct actor_s *,int,unsigned int const *)	scr.o
+0x005BF3B0	0x009AE8B0	?ActorScr_GetFavoriteEnemy@BrocSys@@YAXPAUactor_s@@HPAVentity@Broc@@@Z	void __cdecl BrocSys::ActorScr_GetFavoriteEnemy(struct actor_s *,int,class Broc::entity *)	scr.o
+0x005BF420	0x009AE920	?PathNode_SetAngles@BrocSys@@YAXPAUPathNode@PathNodes@@HPAUvector@Broc@@@Z	void __cdecl BrocSys::PathNode_SetAngles(struct PathNodes::PathNode *,int,struct Broc::vector *)	scr.o
+0x005BF440	0x009AE940	?PathNode_GetAngles@BrocSys@@YAXPAUPathNode@PathNodes@@HPAUvector@Broc@@@Z	void __cdecl BrocSys::PathNode_GetAngles(struct PathNodes::PathNode *,int,struct Broc::vector *)	scr.o
+0x005BF470	0x009AE970	?PathNode_SetType@BrocSys@@YAXPAUPathNode@PathNodes@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::PathNode_SetType(struct PathNodes::PathNode *,int,class Broc::string *)	scr.o
+0x005BF4C0	0x009AE9C0	?PathNode_GetType@BrocSys@@YAXPAUPathNode@PathNodes@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::PathNode_GetType(struct PathNodes::PathNode *,int,class Broc::string *)	scr.o
+0x005BF4E0	0x009AE9E0	?SentientScr_ReadOnly@BrocSys@@YAXPAUsentient_s@@HPAX@Z	void __cdecl BrocSys::SentientScr_ReadOnly(struct sentient_s *,int,void *)	scr.o
+0x005BF520	0x009AEA20	?SentientScr_ConvertNode@BrocSys@@YAXPAUsentient_s@@HPAVpathnode@Broc@@@Z	void __cdecl BrocSys::SentientScr_ConvertNode(struct sentient_s *,int,class Broc::pathnode *)	scr.o
+0x005BF560	0x009AEA60	?SentientScr_ConvertSentient@BrocSys@@YAXPAUsentient_s@@HPAVentity@Broc@@@Z	void __cdecl BrocSys::SentientScr_ConvertSentient(struct sentient_s *,int,class Broc::entity *)	scr.o
+0x005BF580	0x009AEA80	?SentientScr_ConvertSentientEnemy@BrocSys@@YAXPAUsentient_s@@HPAVentity@Broc@@@Z	void __cdecl BrocSys::SentientScr_ConvertSentientEnemy(struct sentient_s *,int,class Broc::entity *)	scr.o
+0x005BF5B0	0x009AEAB0	?SentientScr_GetTeam@BrocSys@@YAXPAUsentient_s@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::SentientScr_GetTeam(struct sentient_s *,int,class Broc::string *)	scr.o
+0x005BF650	0x009AEB50	?SentientScr_SetGoalRadius@BrocSys@@YAXPAUsentient_s@@HPAM@Z	void __cdecl BrocSys::SentientScr_SetGoalRadius(struct sentient_s *,int,float *)	scr.o
+0x005BF680	0x009AEB80	?SentientScr_SetGoalAngleTolerance@BrocSys@@YAXPAUsentient_s@@HPAM@Z	void __cdecl BrocSys::SentientScr_SetGoalAngleTolerance(struct sentient_s *,int,float *)	scr.o
+0x005BF6A0	0x009AEBA0	?GetJoyPos@BrocSys@@YAXHAAM0@Z	void __cdecl BrocSys::GetJoyPos(int,float &,float &)	scr.o
+0x005BF730	0x009AEC30	?SaveCheckpoint@BrocSys@@YAXXZ	void __cdecl BrocSys::SaveCheckpoint(void)	scr.o
+0x005BF740	0x009AEC40	?RestoreLastCheckpoint@BrocSys@@YAXXZ	void __cdecl BrocSys::RestoreLastCheckpoint(void)	scr.o
+0x005BF750	0x009AEC50	?GetSplineData@BrocSys@@YAXPBDAAPAUvector@Broc@@AAPAI2@Z	void __cdecl BrocSys::GetSplineData(char const *,struct Broc::vector * &,unsigned int * &,unsigned int * &)	scr.o
+0x005BF7F0	0x009AECF0	?DronesStart@BrocSys@@YAXPBD0HHHMM_N1@Z	void __cdecl BrocSys::DronesStart(char const *,char const *,int,int,int,float,float,bool,bool)	scr.o
+0x005BF800	0x009AED00	?DronesStop@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::DronesStop(char const *)	scr.o
+0x005BF810	0x009AED10	?DronesDelete@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::DronesDelete(char const *)	scr.o
+0x005BF820	0x009AED20	?ObjectiveHideStar@BrocSys@@YAXII@Z	void __cdecl BrocSys::ObjectiveHideStar(unsigned int,unsigned int)	scr.o
+0x005BF840	0x009AED40	?ObjectiveHideUpdatedText@BrocSys@@YAXII@Z	void __cdecl BrocSys::ObjectiveHideUpdatedText(unsigned int,unsigned int)	scr.o
+0x005BF860	0x009AED60	?SetWeaponCameraShakeScale@BrocSys@@YAXMH@Z	void __cdecl BrocSys::SetWeaponCameraShakeScale(float,int)	scr.o
+0x005BF890	0x009AED90	?SetHUDType@BrocSys@@YAXW4hud_type@@H@Z	void __cdecl BrocSys::SetHUDType(enum hud_type,int)	scr.o
+0x005BF8B0	0x009AEDB0	?SetTutorialText@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetTutorialText(int,int)	scr.o
+0x005BF920	0x009AEE20	?SetTutorialTextAllPlayers@BrocSys@@YAXH@Z	void __cdecl BrocSys::SetTutorialTextAllPlayers(int)	scr.o
+0x005BF940	0x009AEE40	?SetActionHint@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetActionHint(int,int)	scr.o
+0x005BF9B0	0x009AEEB0	?OverrideTriggerLookAtRadius@BrocSys@@YAXM@Z	void __cdecl BrocSys::OverrideTriggerLookAtRadius(float)	scr.o
+0x005BF9D0	0x009AEED0	?SaveCheckpoint@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::SaveCheckpoint(char const *)	scr.o
+0x005BF9F0	0x009AEEF0	?SetGameUnsignedVar@BrocSys@@YAXII@Z	void __cdecl BrocSys::SetGameUnsignedVar(unsigned int,unsigned int)	scr.o
+0x005BFA10	0x009AEF10	?SetGameFloatVar@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetGameFloatVar(unsigned int,float)	scr.o
+0x005BFA30	0x009AEF30	?SetGameVectorVar@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::SetGameVectorVar(unsigned int,struct Broc::vector const &)	scr.o
+0x005BFA70	0x009AEF70	?GetGameUnsignedVar@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetGameUnsignedVar(unsigned int)	scr.o
+0x005BFAA0	0x009AEFA0	?GetGameFloatVar@BrocSys@@YAMI@Z	float __cdecl BrocSys::GetGameFloatVar(unsigned int)	scr.o
+0x005BFAD0	0x009AEFD0	?GetGameVectorVar@BrocSys@@YA?AUvector@Broc@@I@Z	struct Broc::vector __cdecl BrocSys::GetGameVectorVar(unsigned int)	scr.o
+0x005BFB20	0x009AF020	?SetDroneScriptControl@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::SetDroneScriptControl(unsigned int,bool)	scr.o
+0x005BFB30	0x009AF030	?GetDrones@BrocSys@@YAIABUvector@Broc@@MPAII@Z	unsigned int __cdecl BrocSys::GetDrones(struct Broc::vector const &,float,unsigned int *,unsigned int)	scr.o
+0x005BFB40	0x009AF040	?SetShadowIntensity@BrocSys@@YAXM@Z	void __cdecl BrocSys::SetShadowIntensity(float)	scr.o
+0x005BFB60	0x009AF060	?SetShadowRadius@BrocSys@@YAXM@Z	void __cdecl BrocSys::SetShadowRadius(float)	scr.o
+0x005BFB80	0x009AF080	?EnableAsserts@BrocSys@@YAXXZ	void __cdecl BrocSys::EnableAsserts(void)	scr.o
+0x005BFB90	0x009AF090	?NoClip@BrocSys@@YAXH@Z	void __cdecl BrocSys::NoClip(int)	scr.o
+0x005BFBE0	0x009AF0E0	?SetZFog@BrocSys@@YAXMMM@Z	void __cdecl BrocSys::SetZFog(float,float,float)	scr.o
+0x005BFBF0	0x009AF0F0	?Mover_SetupMove@BrocSys@@YAXPAUtrajectory_t@@ABVPosition3@math@@MMMAAV34@PAM33222@Z	void __cdecl BrocSys::Mover_SetupMove(struct trajectory_t *,class math::Position3 const &,float,float,float,class math::Position3 &,float *,float *,float *,class math::Position3 &,class math::Position3 &,class math::Position3 &)	scr.o
+0x005C02C0	0x009AF7C0	?Mover_SetupMoveSpeed@BrocSys@@YAXPAUtrajectory_t@@ABVPosition3@math@@MMMAAV34@PAM33222@Z	void __cdecl BrocSys::Mover_SetupMoveSpeed(struct trajectory_t *,class math::Position3 const &,float,float,float,class math::Position3 &,float *,float *,float *,class math::Position3 &,class math::Position3 &,class math::Position3 &)	scr.o
+0x005C08B0	0x009AFDB0	?Mover_Move@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z	void __cdecl BrocSys::Mover_Move(class Entity *,class math::Position3 const &,float,float,float)	scr.o
+0x005C0910	0x009AFE10	?Mover_GravityMove@BrocSys@@YAXPAVEntity@@QBMMM@Z	void __cdecl BrocSys::Mover_GravityMove(class Entity *,float const * const,float,float)	scr.o
+0x005C0A30	0x009AFF30	?Mover_Rotate@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z	void __cdecl BrocSys::Mover_Rotate(class Entity *,class math::Position3 const &,float,float,float)	scr.o
+0x005C0A90	0x009AFF90	?Mover_RotateSpeed@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z	void __cdecl BrocSys::Mover_RotateSpeed(class Entity *,class math::Position3 const &,float,float,float)	scr.o
+0x005C0AF0	0x009AFFF0	?ToggleNano@BrocSys@@YAX_N@Z	void __cdecl BrocSys::ToggleNano(bool)	scr.o
+0x005C0B00	0x009B0000	?IsValidClientType@BrocSys@@YA_NPAVEntity@@@Z	bool __cdecl BrocSys::IsValidClientType(class Entity *)	scr.o
+0x005C0B60	0x009B0060	?MPScript_RequestRespawn@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_RequestRespawn(unsigned int)	scr.o
+0x005C0B80	0x009B0080	?MPScript_ClearPlayerStats@BrocSys@@YAXXZ	void __cdecl BrocSys::MPScript_ClearPlayerStats(void)	scr.o
+0x005C0C30	0x009B0130	?MPScript_ClearTeamScores@BrocSys@@YAXXZ	void __cdecl BrocSys::MPScript_ClearTeamScores(void)	scr.o
+0x005C0C40	0x009B0140	?MPScript_IncTeamScore@BrocSys@@YAXABVstring@Broc@@H@Z	void __cdecl BrocSys::MPScript_IncTeamScore(class Broc::string const &,int)	scr.o
+0x005C0CD0	0x009B01D0	?MPScript_GetTeamScore@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::MPScript_GetTeamScore(class Broc::string const &)	scr.o
+0x005C0D50	0x009B0250	?MPScript_SendGameScore@BrocSys@@YAXHH@Z	void __cdecl BrocSys::MPScript_SendGameScore(int,int)	scr.o
+0x005C0D70	0x009B0270	?MPScript_HostDropItem1@BrocSys@@YAXHHABUvector@Broc@@0@Z	void __cdecl BrocSys::MPScript_HostDropItem1(int,int,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C0E40	0x009B0340	?MPScript_HostDropItem2@BrocSys@@YAXHHABUvector@Broc@@00@Z	void __cdecl BrocSys::MPScript_HostDropItem2(int,int,struct Broc::vector const &,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C0F30	0x009B0430	?MPScript_DropItem1@BrocSys@@YAXHHABUvector@Broc@@0@Z	void __cdecl BrocSys::MPScript_DropItem1(int,int,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C0FE0	0x009B04E0	?MPScript_DropItem2@BrocSys@@YAXHHABUvector@Broc@@00@Z	void __cdecl BrocSys::MPScript_DropItem2(int,int,struct Broc::vector const &,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C10C0	0x009B05C0	?MPScript_AreaCaptured@BrocSys@@YAXHII@Z	void __cdecl BrocSys::MPScript_AreaCaptured(int,unsigned int,unsigned int)	scr.o
+0x005C10E0	0x009B05E0	?MPScript_EnterGame@BrocSys@@YAXXZ	void __cdecl BrocSys::MPScript_EnterGame(void)	scr.o
+0x005C10F0	0x009B05F0	?MPScript_ControllerErrorMessageUp@BrocSys@@YA_NXZ	bool __cdecl BrocSys::MPScript_ControllerErrorMessageUp(void)	scr.o
+0x005C1110	0x009B0610	?MPScript_ForceControllerErrorMessageDown@BrocSys@@YAXXZ	void __cdecl BrocSys::MPScript_ForceControllerErrorMessageDown(void)	scr.o
+0x005C1120	0x009B0620	?MPScript_GetWeaponName@BrocSys@@YAXIAAVstring@Broc@@@Z	void __cdecl BrocSys::MPScript_GetWeaponName(unsigned int,class Broc::string &)	scr.o
+0x005C1160	0x009B0660	?MPScript_PositionWouldTelefrag@BrocSys@@YA_NABUvector@Broc@@@Z	bool __cdecl BrocSys::MPScript_PositionWouldTelefrag(struct Broc::vector const &)	scr.o
+0x005C11C0	0x009B06C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::MPScript_SetCompassVisibilty(unsigned int,bool)	scr.o
+0x005C11D0	0x009B06D0	?MPScript_SpawnButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::MPScript_SpawnButtonPressed(unsigned int)	scr.o
+0x005C1220	0x009B0720	?MPScript_DebugRenderText@BrocSys@@YAXPBDHH@Z	void __cdecl BrocSys::MPScript_DebugRenderText(char const *,int,int)	scr.o
+0x005C1270	0x009B0770	?MPScript_DebugRenderBox@BrocSys@@YAXABUvector@Broc@@00M@Z	void __cdecl BrocSys::MPScript_DebugRenderBox(struct Broc::vector const &,struct Broc::vector const &,struct Broc::vector const &,float)	scr.o
+0x005C1330	0x009B0830	?MPScript_DebugRenderSphere@BrocSys@@YAXABUvector@Broc@@M0M@Z	void __cdecl BrocSys::MPScript_DebugRenderSphere(struct Broc::vector const &,float,struct Broc::vector const &,float)	scr.o
+0x005C13C0	0x009B08C0	?TakeWeapon@BrocSys@@YAXPAVEntity@@PBD@Z	void __cdecl BrocSys::TakeWeapon(class Entity *,char const *)	scr.o
+0x005C1430	0x009B0930	?IsMenuOpen@BrocSys@@YAHABVstring@Broc@@H@Z	int __cdecl BrocSys::IsMenuOpen(class Broc::string const &,int)	scr.o
+0x005C14C0	0x009B09C0	?OpenMenu@BrocSys@@YAHABVstring@Broc@@H@Z	int __cdecl BrocSys::OpenMenu(class Broc::string const &,int)	scr.o
+0x005C15F0	0x009B0AF0	?OpenMenuNoMouse@BrocSys@@YAHIABVstring@Broc@@@Z	int __cdecl BrocSys::OpenMenuNoMouse(unsigned int,class Broc::string const &)	scr.o
+0x005C1640	0x009B0B40	?CloseMenu2@BrocSys@@YAXABVstring@Broc@@H@Z	void __cdecl BrocSys::CloseMenu2(class Broc::string const &,int)	scr.o
+0x005C1730	0x009B0C30	?CloseAllMenus@BrocSys@@YAXH@Z	void __cdecl BrocSys::CloseAllMenus(int)	scr.o
+0x005C1750	0x009B0C50	?SetSpectateState@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetSpectateState(int,int)	scr.o
+0x005C1780	0x009B0C80	?SetSpectateSeconds@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetSpectateSeconds(int,int)	scr.o
+0x005C17B0	0x009B0CB0	?SetSpectateMedic@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetSpectateMedic(int,int)	scr.o
+0x005C17E0	0x009B0CE0	?DebugOut@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::DebugOut(char const *)	scr.o
+0x005C17F0	0x009B0CF0	?FreezeMovement@BrocSys@@YAX_N@Z	void __cdecl BrocSys::FreezeMovement(bool)	scr.o
+0x005C1800	0x009B0D00	?ToggleClip@BrocSys@@YAXXZ	void __cdecl BrocSys::ToggleClip(void)	scr.o
+0x005C1880	0x009B0D80	?ObjectiveUpdatedNotify@@YAXXZ	void __cdecl ObjectiveUpdatedNotify(void)	scr.o
+0x005C18C0	0x009B0DC0	?ObjectiveCompletedNotify@@YAXXZ	void __cdecl ObjectiveCompletedNotify(void)	scr.o
+0x005C1900	0x009B0E00	?ObjectiveFailedNotify@@YAXXZ	void __cdecl ObjectiveFailedNotify(void)	scr.o
+0x005C1940	0x009B0E40	?PrintObjectiveUpdate@BrocSys@@YA_NAAVstring@Broc@@HPBD@Z	bool __cdecl BrocSys::PrintObjectiveUpdate(class Broc::string &,int,char const *)	scr.o
+0x005C1950	0x009B0E50	?ObjectiveStateIndexFromString@BrocSys@@YA_NPAHAAVstring@Broc@@@Z	bool __cdecl BrocSys::ObjectiveStateIndexFromString(int *,class Broc::string &)	scr.o
+0x005C1980	0x009B0E80	?FindUnusedChildObjective@BrocSys@@YAHXZ	int __cdecl BrocSys::FindUnusedChildObjective(void)	scr.o
+0x005C19D0	0x009B0ED0	?DeleteAllChildrenOfObjective@BrocSys@@YAXH@Z	void __cdecl BrocSys::DeleteAllChildrenOfObjective(int)	scr.o
+0x005C1A40	0x009B0F40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	void __cdecl BrocSys::UpdateNPCtoVehicleMovement(unsigned int,unsigned int)	scr.o
+0x005C1A50	0x009B0F50	?SetAnimCheck@@YAXH@Z	void __cdecl SetAnimCheck(int)	scr.o
+0x005C1A60	0x009B0F60	?Scr_EmitAnimation@@YAXPADGI@Z	void __cdecl Scr_EmitAnimation(char *,unsigned short,unsigned int)	scr.o
+0x005C1AB0	0x009B0FB0	?Scr_IsSystemActive@@YAHE@Z	int __cdecl Scr_IsSystemActive(unsigned char)	scr.o
+0x005C1AC0	0x009B0FC0	?Scr_Error@@YAXPBD@Z	void __cdecl Scr_Error(char const *)	scr.o
+0x005C1B10	0x009B1010	?Scr_ParamError@@YAXIPBD@Z	void __cdecl Scr_ParamError(unsigned int,char const *)	scr.o
+0x005C1B60	0x009B1060	?VM_Init@@YAXXZ	void __cdecl VM_Init(void)	scr.o
+0x005C1B80	0x009B1080	?VM_DllSyscall@@YAHHZZ	int __cdecl VM_DllSyscall(int,...)	scr.o
+0x005C1BE0	0x009B10E0	?VM_Create@@YAPAUvm_s@@PBDP6AHPAH@Z@Z	struct vm_s * __cdecl VM_Create(char const *,int (__cdecl*)(int *))	scr.o
+0x005C1D30	0x009B1230	?VM_Free@@YAXPAUvm_s@@@Z	void __cdecl VM_Free(struct vm_s *)	scr.o
+0x005C1DB0	0x009B12B0	?VM_Clear@@YAXXZ	void __cdecl VM_Clear(void)	scr.o
+0x005C1DE0	0x009B12E0	?VM_Call@@YAHPAUvm_s@@HZZ	int __cdecl VM_Call(struct vm_s *,int,...)	scr.o
+0x005C1F00	0x009B1400	?SetKillFlag@AeThread@@QAEXXZ	public: void __thiscall AeThread::SetKillFlag(void)	scr.o
+0x005C1F10	0x009B1410	?Kill@AeThread@@QAEXXZ	public: void __thiscall AeThread::Kill(void)	scr.o
+0x005C1F30	0x009B1430	?UnloadScript@AeThreadManager@@QAEXPAX@Z	public: void __thiscall AeThreadManager::UnloadScript(void *)	scr.o
+0x005C1F40	0x009B1440	??0AeThreadEntityNotifyTimeoutState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IMW4EAction@AeThreadState@@@Z	public: __thiscall AeThreadEntityNotifyTimeoutState::AeThreadEntityNotifyTimeoutState(class DbLinkedHandle<class EntityHandleDb,class Entity>,unsigned int,float,enum AeThreadState::EAction)	scr.o
+0x005C1F80	0x009B1480	??0AeThreadPakNotifyState@@QAE@PBUPakInfoNode@@W4ePakState@0@@Z	public: __thiscall AeThreadPakNotifyState::AeThreadPakNotifyState(struct PakInfoNode const *,enum AeThreadPakNotifyState::ePakState)	scr.o
+0x005C1FB0	0x009B14B0	??0AeThreadWaitState@@QAE@M@Z	public: __thiscall AeThreadWaitState::AeThreadWaitState(float)	scr.o
+0x005C1FE0	0x009B14E0	?GetCondText@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadWaitState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C2030	0x009B1530	??0AeThreadWaitFramesState@@QAE@H@Z	public: __thiscall AeThreadWaitFramesState::AeThreadWaitFramesState(int)	scr.o
+0x005C2060	0x009B1560	?GetCondText@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadWaitFramesState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C20A0	0x009B15A0	?GetWeaponIndex@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::GetWeaponIndex(class Broc::string const &)	scr.o
+0x005C20D0	0x009B15D0	?SetupLevelSpecificVariables@BrocSys@@YAXXZ	void __cdecl BrocSys::SetupLevelSpecificVariables(void)	scr.o
+0x005C2190	0x009B1690	?MakeGameMessage@BrocSys@@YAXPBD0@Z	void __cdecl BrocSys::MakeGameMessage(char const *,char const *)	scr.o
+0x005C21C0	0x009B16C0	?IPrintLn@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::IPrintLn(char const *)	scr.o
+0x005C2210	0x009B1710	?IPrintLnBold@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::IPrintLnBold(char const *)	scr.o
+0x005C2260	0x009B1760	?RegisterAnimation@BrocSys@@YAXPAVAnimBroRef@@@Z	void __cdecl BrocSys::RegisterAnimation(class AnimBroRef *)	scr.o
+0x005C2280	0x009B1780	?Print3D@BrocSys@@YAXABUvector@Broc@@ABVstring@3@0MM@Z	void __cdecl BrocSys::Print3D(struct Broc::vector const &,class Broc::string const &,struct Broc::vector const &,float,float)	scr.o
+0x005C22E0	0x009B17E0	?ThreadDebugNotice@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::ThreadDebugNotice(char const *)	scr.o
+0x005C2340	0x009B1840	?Spawn@BrocSys@@YAIABVstring@Broc@@ABUvector@3@W4TPakInfo@@@Z	unsigned int __cdecl BrocSys::Spawn(class Broc::string const &,struct Broc::vector const &,enum TPakInfo)	scr.o
+0x005C2590	0x009B1A90	?SpawnWithFlag@BrocSys@@YAIABVstring@Broc@@ABUvector@3@HW4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnWithFlag(class Broc::string const &,struct Broc::vector const &,int,enum TPakInfo)	scr.o
+0x005C27F0	0x009B1CF0	?SpawnWithFlagAndSize@BrocSys@@YAIABVstring@Broc@@ABUvector@3@AAU43@2HW4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnWithFlagAndSize(class Broc::string const &,struct Broc::vector const &,struct Broc::vector &,struct Broc::vector &,int,enum TPakInfo)	scr.o
+0x005C2BF0	0x009B20F0	?SpawnTriggerMount@BrocSys@@YAIAAUvector@Broc@@0_NW4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnTriggerMount(struct Broc::vector &,struct Broc::vector &,bool,enum TPakInfo)	scr.o
+0x005C2E00	0x009B2300	?SpawnTurret@BrocSys@@YAIABVstring@Broc@@ABUvector@3@0W4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnTurret(class Broc::string const &,struct Broc::vector const &,class Broc::string const &,enum TPakInfo)	scr.o
+0x005C3030	0x009B2530	?SpawnTurretWithAngles@BrocSys@@YAIABVstring@Broc@@ABUvector@3@01W4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnTurretWithAngles(class Broc::string const &,struct Broc::vector const &,class Broc::string const &,struct Broc::vector const &,enum TPakInfo)	scr.o
+0x005C3340	0x009B2840	?MusicPlay@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::MusicPlay(class Broc::string const &)	scr.o
+0x005C3370	0x009B2870	?MusicIndoorPlay@BrocSys@@YAXABVstring@Broc@@M@Z	void __cdecl BrocSys::MusicIndoorPlay(class Broc::string const &,float)	scr.o
+0x005C33B0	0x009B28B0	?SoundPlay@BrocSys@@YAIABVstring@Broc@@M@Z	unsigned int __cdecl BrocSys::SoundPlay(class Broc::string const &,float)	scr.o
+0x005C3460	0x009B2960	?SoundStop@BrocSys@@YAXI@Z	void __cdecl BrocSys::SoundStop(unsigned int)	scr.o
+0x005C3480	0x009B2980	?SoundBusVolIsName@BrocSys@@YA_NABVstring@Broc@@@Z	bool __cdecl BrocSys::SoundBusVolIsName(class Broc::string const &)	scr.o
+0x005C34B0	0x009B29B0	?SoundBusPitchAddBus@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::SoundBusPitchAddBus(class Broc::string const &)	scr.o
+0x005C34E0	0x009B29E0	?SoundBusVolAddBus@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::SoundBusVolAddBus(class Broc::string const &)	scr.o
+0x005C3510	0x009B2A10	?SoundBusPitchRemoveBus@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::SoundBusPitchRemoveBus(class Broc::string const &)	scr.o
+0x005C3540	0x009B2A40	?SoundBusVolRemoveBus@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::SoundBusVolRemoveBus(class Broc::string const &)	scr.o
+0x005C3570	0x009B2A70	?SoundBusVolFade@BrocSys@@YAXABVstring@Broc@@MM@Z	void __cdecl BrocSys::SoundBusVolFade(class Broc::string const &,float,float)	scr.o
+0x005C35A0	0x009B2AA0	?SoundBusPitchFade@BrocSys@@YAXABVstring@Broc@@MM@Z	void __cdecl BrocSys::SoundBusPitchFade(class Broc::string const &,float,float)	scr.o
+0x005C35D0	0x009B2AD0	?ReverbSetParams@BrocSys@@YAXABVstring@Broc@@_N@Z	void __cdecl BrocSys::ReverbSetParams(class Broc::string const &,bool)	scr.o
+0x005C3610	0x009B2B10	?LoadWbk@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::LoadWbk(class Broc::string const &)	scr.o
+0x005C3650	0x009B2B50	?FreeWbk@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::FreeWbk(class Broc::string const &)	scr.o
+0x005C3690	0x009B2B90	?GetTeamFlags@BrocSys@@YAHABVstring@Broc@@0@Z	int __cdecl BrocSys::GetTeamFlags(class Broc::string const &,class Broc::string const &)	scr.o
+0x005C3750	0x009B2C50	?GetWeaponClassName@BrocSys@@YA?AVstring@Broc@@I@Z	class Broc::string __cdecl BrocSys::GetWeaponClassName(unsigned int)	scr.o
+0x005C3810	0x009B2D10	?GetWeaponClassNameStr@BrocSys@@YA?AVstring@Broc@@I@Z	class Broc::string __cdecl BrocSys::GetWeaponClassNameStr(unsigned int)	scr.o
+0x005C38D0	0x009B2DD0	?GetStartOrigin@BrocSys@@YAXAAUvector@Broc@@ABU23@1I@Z	void __cdecl BrocSys::GetStartOrigin(struct Broc::vector &,struct Broc::vector const &,struct Broc::vector const &,unsigned int)	scr.o
+0x005C3A40	0x009B2F40	?GetStartAngles@BrocSys@@YAXAAUvector@Broc@@ABU23@1I@Z	void __cdecl BrocSys::GetStartAngles(struct Broc::vector &,struct Broc::vector const &,struct Broc::vector const &,unsigned int)	scr.o
+0x005C3B60	0x009B3060	?GetCycleOriginOffset@BrocSys@@YAXAAUvector@Broc@@ABU23@I@Z	void __cdecl BrocSys::GetCycleOriginOffset(struct Broc::vector &,struct Broc::vector const &,unsigned int)	scr.o
+0x005C3C70	0x009B3170	?GetMoveDelta@BrocSys@@YAXAAUvector@Broc@@IMM@Z	void __cdecl BrocSys::GetMoveDelta(struct Broc::vector &,unsigned int,float,float)	scr.o
+0x005C3DD0	0x009B32D0	?GetAngleDelta@BrocSys@@YAMIMM@Z	float __cdecl BrocSys::GetAngleDelta(unsigned int,float,float)	scr.o
+0x005C3EB0	0x009B33B0	?MissionFailed@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::MissionFailed(class Broc::string const &)	scr.o
+0x005C3F40	0x009B3440	?Cinematic1@BrocSys@@YAXABVstring@Broc@@M@Z	void __cdecl BrocSys::Cinematic1(class Broc::string const &,float)	scr.o
+0x005C3FF0	0x009B34F0	?Cinematic2@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::Cinematic2(class Broc::string const &)	scr.o
+0x005C4040	0x009B3540	?Earthquake@BrocSys@@YAXMMABUvector@Broc@@MH@Z	void __cdecl BrocSys::Earthquake(float,float,struct Broc::vector const &,float,int)	scr.o
+0x005C40F0	0x009B35F0	?BulletTracer@BrocSys@@YAXABUvector@Broc@@0@Z	void __cdecl BrocSys::BulletTracer(struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C4230	0x009B3730	?MagicBullet@BrocSys@@YAXABVstring@Broc@@ABUvector@3@1@Z	void __cdecl BrocSys::MagicBullet(class Broc::string const &,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C44D0	0x009B39D0	?WeaponFireTime@BrocSys@@YAMABVstring@Broc@@@Z	float __cdecl BrocSys::WeaponFireTime(class Broc::string const &)	scr.o
+0x005C4520	0x009B3A20	?WeaponClipSize@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::WeaponClipSize(class Broc::string const &)	scr.o
+0x005C4560	0x009B3A60	?WeaponIsSemiAuto@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::WeaponIsSemiAuto(class Broc::string const &)	scr.o
+0x005C45A0	0x009B3AA0	?WeaponIsBoltAction@BrocSys@@YAHABVstring@Broc@@@Z	int __cdecl BrocSys::WeaponIsBoltAction(class Broc::string const &)	scr.o
+0x005C45E0	0x009B3AE0	?WeaponType@BrocSys@@YAXAAVstring@Broc@@ABV23@@Z	void __cdecl BrocSys::WeaponType(class Broc::string &,class Broc::string const &)	scr.o
+0x005C4640	0x009B3B40	?BadPlaceDelete@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::BadPlaceDelete(class Broc::string const &)	scr.o
+0x005C46B0	0x009B3BB0	?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM0@Z	void __cdecl BrocSys::BadPlaceCylinder(class Broc::string const &,float,struct Broc::vector const &,float,float,class Broc::string const &)	scr.o
+0x005C47A0	0x009B3CA0	?BadPlaceArcs@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM1MM0@Z	void __cdecl BrocSys::BadPlaceArcs(class Broc::string const &,float,struct Broc::vector const &,float,float,struct Broc::vector const &,float,float,class Broc::string const &)	scr.o
+0x005C4970	0x009B3E70	?GetHudElemAllocIndex@BrocSys@@YAHXZ	int __cdecl BrocSys::GetHudElemAllocIndex(void)	scr.o
+0x005C49B0	0x009B3EB0	?NewHudElem@BrocSys@@YA?AVhudelem@Broc@@H@Z	class Broc::hudelem __cdecl BrocSys::NewHudElem(int)	scr.o
+0x005C4A80	0x009B3F80	?GetPak@BrocSys@@YA?AW4TPakInfo@@ABVstring@Broc@@@Z	enum TPakInfo __cdecl BrocSys::GetPak(class Broc::string const &)	scr.o
+0x005C4B10	0x009B4010	?HudSetTimerInternal@BrocSys@@YAXHW4he_type_t@@PBDM@Z	void __cdecl BrocSys::HudSetTimerInternal(int,enum he_type_t,char const *,float)	scr.o
+0x005C4C50	0x009B4150	?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z	void __cdecl BrocSys::HudSetClockInternal(int,enum he_type_t,char const *,char const *,float,float,int,int)	scr.o
+0x005C4EE0	0x009B43E0	?SetText@BrocSys@@YAXABVhudelem@Broc@@ABVstring@3@@Z	void __cdecl BrocSys::SetText(class Broc::hudelem const &,class Broc::string const &)	scr.o
+0x005C5060	0x009B4560	?SetShader@BrocSys@@YAXABVhudelem@Broc@@ABVstring@3@HH@Z	void __cdecl BrocSys::SetShader(class Broc::hudelem const &,class Broc::string const &,int,int)	scr.o
+0x005C5180	0x009B4680	?SetTimer@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::SetTimer(class Broc::hudelem const &,float)	scr.o
+0x005C51A0	0x009B46A0	?SetTimerUp@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::SetTimerUp(class Broc::hudelem const &,float)	scr.o
+0x005C5260	0x009B4760	?SetTenthsTimer@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::SetTenthsTimer(class Broc::hudelem const &,float)	scr.o
+0x005C5280	0x009B4780	?SetTenthsTimerUp@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::SetTenthsTimerUp(class Broc::hudelem const &,float)	scr.o
+0x005C5360	0x009B4860	?SetClock@BrocSys@@YAXABVhudelem@Broc@@MMABVstring@3@HH@Z	void __cdecl BrocSys::SetClock(class Broc::hudelem const &,float,float,class Broc::string const &,int,int)	scr.o
+0x005C53A0	0x009B48A0	?SetClockUp@BrocSys@@YAXABVhudelem@Broc@@MMABVstring@3@HH@Z	void __cdecl BrocSys::SetClockUp(class Broc::hudelem const &,float,float,class Broc::string const &,int,int)	scr.o
+0x005C53E0	0x009B48E0	?FadeOverTime@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::FadeOverTime(class Broc::hudelem const &,float)	scr.o
+0x005C5510	0x009B4A10	?ScaleOverTime@BrocSys@@YAXABVhudelem@Broc@@MHH@Z	void __cdecl BrocSys::ScaleOverTime(class Broc::hudelem const &,float,int,int)	scr.o
+0x005C5650	0x009B4B50	?MoveOverTime@BrocSys@@YAXABVhudelem@Broc@@M@Z	void __cdecl BrocSys::MoveOverTime(class Broc::hudelem const &,float)	scr.o
+0x005C5780	0x009B4C80	?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z	unsigned int __cdecl BrocSys::CreateNanoForce(class Broc::string const &,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005C5790	0x009B4C90	?BrocInitEntity@@YAXPAVEntity@@ABV?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@@Z	void __cdecl BrocInitEntity(class Entity *,class InplaceVector<class InplaceTreeElement<class InplaceString,class InplaceString> > const &)	scr.o
+0x005C57E0	0x009B4CE0	?Scr_SetOrigin@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z	void __cdecl BrocSys::Scr_SetOrigin(class Entity *,int,struct Broc::vector *)	scr.o
+0x005C5990	0x009B4E90	?Scr_SetHealth@BrocSys@@YAXPAVEntity@@HPAH@Z	void __cdecl BrocSys::Scr_SetHealth(class Entity *,int,int *)	scr.o
+0x005C5A70	0x009B4F70	?CreateAnimNotifyTask@BrocSys@@YAXABVentity@Broc@@II@Z	void __cdecl BrocSys::CreateAnimNotifyTask(class Broc::entity const &,unsigned int,unsigned int)	scr.o
+0x005C5AE0	0x009B4FE0	?GetNodeClaimer@BrocSys@@YAHABVpathnode@Broc@@@Z	int __cdecl BrocSys::GetNodeClaimer(class Broc::pathnode const &)	scr.o
+0x005C5B60	0x009B5060	?SentientScr_SetTeam@BrocSys@@YAXPAUsentient_s@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::SentientScr_SetTeam(struct sentient_s *,int,class Broc::string *)	scr.o
+0x005C5BB0	0x009B50B0	?SetExploderState@BrocSys@@YAXHH@Z	void __cdecl BrocSys::SetExploderState(int,int)	scr.o
+0x005C5BE0	0x009B50E0	?IsExploded@BrocSys@@YAHH@Z	int __cdecl BrocSys::IsExploded(int)	scr.o
+0x005C5C00	0x009B5100	?SetWalkRunLoopAnimNode@BrocSys@@YAXII@Z	void __cdecl BrocSys::SetWalkRunLoopAnimNode(unsigned int,unsigned int)	scr.o
+0x005C5C20	0x009B5120	?IsValidMoverType@BrocSys@@YA_NPAVEntity@@@Z	bool __cdecl BrocSys::IsValidMoverType(class Entity *)	scr.o
+0x005C5C60	0x009B5160	?GiveWeapon@BrocSys@@YAXPAVEntity@@PBD@Z	void __cdecl BrocSys::GiveWeapon(class Entity *,char const *)	scr.o
+0x005C5CF0	0x009B51F0	?CloseMenu1@BrocSys@@YAXI@Z	void __cdecl BrocSys::CloseMenu1(unsigned int)	scr.o
+0x005C5D10	0x009B5210	?SetReverb@BrocSys@@YAXIABVstring@Broc@@MM@Z	void __cdecl BrocSys::SetReverb(unsigned int,class Broc::string const &,float,float)	scr.o
+0x005C5D50	0x009B5250	?PlayLocalSound@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::PlayLocalSound(unsigned int,class Broc::string const &)	scr.o
+0x005C5E10	0x009B5310	?ObjectiveAdd3@BrocSys@@YAXHABVstring@Broc@@0PBDHHH@Z	void __cdecl BrocSys::ObjectiveAdd3(int,class Broc::string const &,class Broc::string const &,char const *,int,int,int)	scr.o
+0x005C5F50	0x009B5450	?FindChildObjective@BrocSys@@YA?BHHH_N@Z	int const __cdecl BrocSys::FindChildObjective(int,int,bool)	scr.o
+0x005C60B0	0x009B55B0	?ObjectiveChildDelete@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ObjectiveChildDelete(int,int)	scr.o
+0x005C6150	0x009B5650	?ObjectiveDeleteChildren@BrocSys@@YAXH@Z	void __cdecl BrocSys::ObjectiveDeleteChildren(int)	scr.o
+0x005C61D0	0x009B56D0	?ObjectiveDelete@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ObjectiveDelete(int,int)	scr.o
+0x005C62C0	0x009B57C0	?ObjectiveChildState@BrocSys@@YAXHHABVstring@Broc@@PBD@Z	void __cdecl BrocSys::ObjectiveChildState(int,int,class Broc::string const &,char const *)	scr.o
+0x005C6460	0x009B5960	?ObjectiveState@BrocSys@@YAXHABVstring@Broc@@PBDH@Z	void __cdecl BrocSys::ObjectiveState(int,class Broc::string const &,char const *,int)	scr.o
+0x005C6620	0x009B5B20	?ObjectiveStringInternal@BrocSys@@YAXHABVstring@Broc@@H_N1PBD@Z	void __cdecl BrocSys::ObjectiveStringInternal(int,class Broc::string const &,int,bool,bool,char const *)	scr.o
+0x005C6890	0x009B5D90	?ObjectiveString@BrocSys@@YAXHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveString(int,class Broc::string const &,int,char const *)	scr.o
+0x005C68C0	0x009B5DC0	?ObjectiveString2@BrocSys@@YAXHHHPBD@Z	void __cdecl BrocSys::ObjectiveString2(int,int,int,char const *)	scr.o
+0x005C6930	0x009B5E30	?ObjectiveString_NoMessage@BrocSys@@YAXHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveString_NoMessage(int,class Broc::string const &,int,char const *)	scr.o
+0x005C6960	0x009B5E60	?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z	void __cdecl BrocSys::ObjectivePosition(int,struct Broc::vector const &,int)	scr.o
+0x005C6A80	0x009B5F80	?ObjectiveWorldState@BrocSys@@YAXHABVstring@Broc@@H@Z	void __cdecl BrocSys::ObjectiveWorldState(int,class Broc::string const &,int)	scr.o
+0x005C6C90	0x009B6190	?ObjectiveChildCurrent@BrocSys@@YAXHHPBD@Z	void __cdecl BrocSys::ObjectiveChildCurrent(int,int,char const *)	scr.o
+0x005C6DE0	0x009B62E0	?ObjectiveCurrent@BrocSys@@YAXHPBD@Z	void __cdecl BrocSys::ObjectiveCurrent(int,char const *)	scr.o
+0x005C6F90	0x009B6490	?ObjectiveRing@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ObjectiveRing(int,int)	scr.o
+0x005C7060	0x009B6560	?ObjectiveChildString@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveChildString(int,int,class Broc::string const &,int,char const *)	scr.o
+0x005C70E0	0x009B65E0	?ObjectiveChildString2@BrocSys@@YAXHHHHPBD@Z	void __cdecl BrocSys::ObjectiveChildString2(int,int,int,int,char const *)	scr.o
+0x005C73D0	0x009B68D0	?ObjectiveChildString_NoMessage@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveChildString_NoMessage(int,int,class Broc::string const &,int,char const *)	scr.o
+0x005C7450	0x009B6950	?ObjectiveChildPosition@BrocSys@@YAXHHABUvector@Broc@@@Z	void __cdecl BrocSys::ObjectiveChildPosition(int,int,struct Broc::vector const &)	scr.o
+0x005C7520	0x009B6A20	?ObjectiveChildRing@BrocSys@@YAXHH@Z	void __cdecl BrocSys::ObjectiveChildRing(int,int)	scr.o
+0x005C7610	0x009B6B10	?Scr_GetAnimsIndex@@YAHPAVAnimTree@@@Z	int __cdecl Scr_GetAnimsIndex(class AnimTree *)	scr.o
+0x005C76A0	0x009B6BA0	?Scr_GetAnims@@YAPAVAnimTree@@H@Z	class AnimTree * __cdecl Scr_GetAnims(int)	scr.o
+0x005C76C0	0x009B6BC0	?Scr_GetAnimTreeByName@@YAPAVAnimTree@@PBD@Z	class AnimTree * __cdecl Scr_GetAnimTreeByName(char const *)	scr.o
+0x005C7730	0x009B6C30	?Scr_LoadAnimTreeAtIndex@@YAXHP6APAXH@Z_N@Z	void __cdecl Scr_LoadAnimTreeAtIndex(int,void * (__cdecl*)(int),bool)	scr.o
+0x005C7820	0x009B6D20	?Scr_FreeAnimTreeAtIndex@@YAXH@Z	void __cdecl Scr_FreeAnimTreeAtIndex(int)	scr.o
+0x005C78C0	0x009B6DC0	?Scr_PrecacheAnimTrees@@YAXP6APAXH@Z_N@Z	void __cdecl Scr_PrecacheAnimTrees(void * (__cdecl*)(int),bool)	scr.o
+0x005C7910	0x009B6E10	?Scr_FreePrecachedAnimTrees@@YAXXZ	void __cdecl Scr_FreePrecachedAnimTrees(void)	scr.o
+0x005C7940	0x009B6E40	?VM_Restart@@YAPAUvm_s@@PAU1@@Z	struct vm_s * __cdecl VM_Restart(struct vm_s *)	scr.o
+0x005C79D0	0x009B6ED0	??0AeThread@@QAE@PBDH0IPAVAeThreadFunctor@@_N@Z	public: __thiscall AeThread::AeThread(char const *,int,char const *,unsigned int,class AeThreadFunctor *,bool)	scr.o
+0x005C7AC0	0x009B6FC0	?Sleep@AeThread@@QAEXPAVAeThreadState@@@Z	public: void __thiscall AeThread::Sleep(class AeThreadState *)	scr.o
+0x005C7B00	0x009B7000	?GetCondText@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadPakNotifyState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C7B50	0x009B7050	?GetDebugTxt@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadPakNotifyState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C7BB0	0x009B70B0	?GetDebugTxt@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadWaitState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C7BE0	0x009B70E0	?GetDebugTxt@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadWaitFramesState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005C7C10	0x009B7110	??0AeThreadEntityNotifyMatchState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IIIIW4EAction@AeThreadState@@_N@Z	public: __thiscall AeThreadEntityNotifyMatchState::AeThreadEntityNotifyMatchState(class DbLinkedHandle<class EntityHandleDb,class Entity>,unsigned int,unsigned int,unsigned int,unsigned int,enum AeThreadState::EAction,bool)	scr.o
+0x005C7D30	0x009B7230	?MemAlloc@BrocSys@@YAPAXII@Z	void * __cdecl BrocSys::MemAlloc(unsigned int,unsigned int)	scr.o
+0x005C7D90	0x009B7290	?ThreadGetDebugInfo@BrocSys@@YAXAAVstring@Broc@@00@Z	void __cdecl BrocSys::ThreadGetDebugInfo(class Broc::string &,class Broc::string &,class Broc::string &)	scr.o
+0x005C7EC0	0x009B73C0	?ThreadSleepFrames@BrocSys@@YAXH@Z	void __cdecl BrocSys::ThreadSleepFrames(int)	scr.o
+0x005C7F50	0x009B7450	?ThreadSleepInternal@BrocSys@@YAXM@Z	void __cdecl BrocSys::ThreadSleepInternal(float)	scr.o
+0x005C8040	0x009B7540	?GetNumParts@BrocSys@@YAXABVstring@Broc@@@Z	void __cdecl BrocSys::GetNumParts(class Broc::string const &)	scr.o
+0x005C8100	0x009B7600	?NotifyPakLoadOperation@BrocSys@@YAXPBD0@Z	void __cdecl BrocSys::NotifyPakLoadOperation(char const *,char const *)	scr.o
+0x005C8180	0x009B7680	?NotifyPakLoaded@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::NotifyPakLoaded(char const *)	scr.o
+0x005C81A0	0x009B76A0	?NotifyPakUnloaded@BrocSys@@YAXPBD@Z	void __cdecl BrocSys::NotifyPakUnloaded(char const *)	scr.o
+0x005C81C0	0x009B76C0	?mem_alloc@@YAPAXII@Z	void * __cdecl mem_alloc(unsigned int,unsigned int)	scr.o
+0x005C81D0	0x009B76D0	?GetAnimLength@BrocSys@@YAMII@Z	float __cdecl BrocSys::GetAnimLength(unsigned int,unsigned int)	scr.o
+0x005C8230	0x009B7730	?GetAnimFrameCount@BrocSys@@YAHII@Z	int __cdecl BrocSys::GetAnimFrameCount(unsigned int,unsigned int)	scr.o
+0x005C8290	0x009B7790	?RumbleNotes@BrocSys@@YAXABVstring@Broc@@M0MH@Z	void __cdecl BrocSys::RumbleNotes(class Broc::string const &,float,class Broc::string const &,float,int)	scr.o
+0x005C84E0	0x009B79E0	?Rumble@BrocSys@@YAXMMMMMMMH@Z	void __cdecl BrocSys::Rumble(float,float,float,float,float,float,float,int)	scr.o
+0x005C8830	0x009B7D30	?ObjectiveChildAdd1@BrocSys@@YAXHHABVstring@Broc@@@Z	void __cdecl BrocSys::ObjectiveChildAdd1(int,int,class Broc::string const &)	scr.o
+0x005C8950	0x009B7E50	?ObjectiveAdd1@BrocSys@@YAXHABVstring@Broc@@PBDHH@Z	void __cdecl BrocSys::ObjectiveAdd1(int,class Broc::string const &,char const *,int,int)	scr.o
+0x005C89C0	0x009B7EC0	?ObjectiveChildAdd2@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveChildAdd2(int,int,class Broc::string const &,int,char const *)	scr.o
+0x005C8B70	0x009B8070	?ObjectiveAdd2@BrocSys@@YAXHABVstring@Broc@@HPBDHH@Z	void __cdecl BrocSys::ObjectiveAdd2(int,class Broc::string const &,int,char const *,int,int)	scr.o
+0x005C8CA0	0x009B81A0	?ObjectiveChildAdd6@BrocSys@@YAXHHABVstring@Broc@@HPBD@Z	void __cdecl BrocSys::ObjectiveChildAdd6(int,int,class Broc::string const &,int,char const *)	scr.o
+0x005C8DC0	0x009B82C0	?ObjectiveAdd6@BrocSys@@YAXHABVstring@Broc@@HPBDHH@Z	void __cdecl BrocSys::ObjectiveAdd6(int,class Broc::string const &,int,char const *,int,int)	scr.o
+0x005C8E30	0x009B8330	?ObjectiveChildAdd3@BrocSys@@YAXHHABVstring@Broc@@0PBD@Z	void __cdecl BrocSys::ObjectiveChildAdd3(int,int,class Broc::string const &,class Broc::string const &,char const *)	scr.o
+0x005C8EE0	0x009B83E0	?ProcessState@AeThread@@QAEXXZ	public: void __thiscall AeThread::ProcessState(void)	scr.o
+0x005C90A0	0x009B85A0	?Execute@AeThread@@QAEXM@Z	public: void __thiscall AeThread::Execute(float)	scr.o
+0x005C92B0	0x009B87B0	?HasEndCond@AeThread@@QBE_NH@Z	public: bool __thiscall AeThread::HasEndCond(int)const 	scr.o
+0x005C9340	0x009B8840	?SetupAllocator@Block@BackupStack@AeThread@@SAXXZ	public: static void __cdecl AeThread::BackupStack::Block::SetupAllocator(void)	scr.o
+0x005C9400	0x009B8900	?RegisterBrocInst@AeThread@@QAEXPAXPAVBrocDtorBase@@@Z	public: void __thiscall AeThread::RegisterBrocInst(void *,class BrocDtorBase *)	scr.o
+0x005C94C0	0x009B89C0	?RegisterBrocDtor@AeThread@@QAEXPAX@Z	public: void __thiscall AeThread::RegisterBrocDtor(void *)	scr.o
+0x005C95F0	0x009B8AF0	?AddThread@AeThreadManager@@QAEXPAVAeThread@@@Z	public: void __thiscall AeThreadManager::AddThread(class AeThread *)	scr.o
+0x005C96D0	0x009B8BD0	?ProcessScriptNotifys@AeThreadManager@@AAEXXZ	private: void __thiscall AeThreadManager::ProcessScriptNotifys(void)	scr.o
+0x005C9770	0x009B8C70	?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z	public: void __thiscall AeThreadManager::ReleaseHandle(class AeThread *)	scr.o
+0x005C97A0	0x009B8CA0	?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z	public: void __thiscall AeThreadManager::ReleaseHandle(class Handle)	scr.o
+0x005C97C0	0x009B8CC0	?DebugThread@AeThreadManager@@QAEXI@Z	public: void __thiscall AeThreadManager::DebugThread(unsigned int)	scr.o
+0x005C9850	0x009B8D50	?GetThread@EndOnScriptNode@@QAEPAVAeThread@@XZ	public: class AeThread * __thiscall EndOnScriptNode::GetThread(void)	scr.o
+0x005C9880	0x009B8D80	??1AeThreadEntityNotifyState@@UAE@XZ	public: virtual __thiscall AeThreadEntityNotifyState::~AeThreadEntityNotifyState(void)	scr.o
+0x005C9920	0x009B8E20	?NewAction@AeThreadEntityNotifyState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadEntityNotifyState::NewAction(class AeThread &)	scr.o
+0x005C99A0	0x009B8EA0	?NewAction@AeThreadEntityNotifyTimeoutState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadEntityNotifyTimeoutState::NewAction(class AeThread &)	scr.o
+0x005C9A40	0x009B8F40	?NewAction@AeThreadEntityNotifyMatchState@@UAE?AW4EAction@AeThreadState@@AAVAeThread@@@Z	public: virtual enum AeThreadState::EAction __thiscall AeThreadEntityNotifyMatchState::NewAction(class AeThread &)	scr.o
+0x005C9B20	0x009B9020	?SetProjectileSpeed@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetProjectileSpeed(unsigned int,int)	scr.o
+0x005C9BC0	0x009B90C0	?SetWeaponPlayerUpOffset@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetWeaponPlayerUpOffset(unsigned int,float)	scr.o
+0x005C9C60	0x009B9160	?FollowCycle@BrocSys@@YAHIH@Z	int __cdecl BrocSys::FollowCycle(unsigned int,int)	scr.o
+0x005C9CA0	0x009B91A0	?EnableWeapon@BrocSys@@YAXI@Z	void __cdecl BrocSys::EnableWeapon(unsigned int)	scr.o
+0x005C9D30	0x009B9230	?DisableWeapon@BrocSys@@YAXI@Z	void __cdecl BrocSys::DisableWeapon(unsigned int)	scr.o
+0x005C9DC0	0x009B92C0	?AssignParameterForNotify@BrocSys@@YA_NIIPAVWaitTilOutput@@@Z	bool __cdecl BrocSys::AssignParameterForNotify(unsigned int,unsigned int,class WaitTilOutput *)	scr.o
+0x005C9E20	0x009B9320	?ThreadDebug@BrocSys@@YAXI@Z	void __cdecl BrocSys::ThreadDebug(unsigned int)	scr.o
+0x005C9E40	0x009B9340	?ThreadIsThreadAlive@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::ThreadIsThreadAlive(unsigned int)	scr.o
+0x005C9E80	0x009B9380	?ThreadKill@BrocSys@@YAXI@Z	void __cdecl BrocSys::ThreadKill(unsigned int)	scr.o
+0x005C9ED0	0x009B93D0	?ThreadEntityNotify@BrocSys@@YAXIH@Z	void __cdecl BrocSys::ThreadEntityNotify(unsigned int,int)	scr.o
+0x005C9F90	0x009B9490	?ThreadEntityNotify@BrocSys@@YAXIHI@Z	void __cdecl BrocSys::ThreadEntityNotify(unsigned int,int,unsigned int)	scr.o
+0x005CA040	0x009B9540	?ThreadEntityNotify@BrocSys@@YAXIHABVstring@Broc@@@Z	void __cdecl BrocSys::ThreadEntityNotify(unsigned int,int,class Broc::string const &)	scr.o
+0x005CA0F0	0x009B95F0	?ThreadEntityNotify@BrocSys@@YAXIHH@Z	void __cdecl BrocSys::ThreadEntityNotify(unsigned int,int,int)	scr.o
+0x005CA1A0	0x009B96A0	?ThreadEntityNotify@BrocSys@@YAXIHMI@Z	void __cdecl BrocSys::ThreadEntityNotify(unsigned int,int,float,unsigned int)	scr.o
+0x005CA260	0x009B9760	?AddEventHandler@BrocSys@@YA_NIII@Z	bool __cdecl BrocSys::AddEventHandler(unsigned int,unsigned int,unsigned int)	scr.o
+0x005CA2B0	0x009B97B0	?RemoveEventHandler@BrocSys@@YA_NIII@Z	bool __cdecl BrocSys::RemoveEventHandler(unsigned int,unsigned int,unsigned int)	scr.o
+0x005CA300	0x009B9800	?BrocObjCtor@BrocSys@@YAXPAXPAVBrocDtorBase@@@Z	void __cdecl BrocSys::BrocObjCtor(void *,class BrocDtorBase *)	scr.o
+0x005CA320	0x009B9820	?BrocObjDtor@BrocSys@@YAXPAX@Z	void __cdecl BrocSys::BrocObjDtor(void *)	scr.o
+0x005CA340	0x009B9840	?SpawnVehicle@BrocSys@@YAIABVstring@Broc@@00ABUvector@3@1W4TPakInfo@@@Z	unsigned int __cdecl BrocSys::SpawnVehicle(class Broc::string const &,class Broc::string const &,class Broc::string const &,struct Broc::vector const &,struct Broc::vector const &,enum TPakInfo)	scr.o
+0x005CA710	0x009B9C10	?RadiusDamageFromEnt@BrocSys@@YAXIABUvector@Broc@@MMMH@Z	void __cdecl BrocSys::RadiusDamageFromEnt(unsigned int,struct Broc::vector const &,float,float,float,int)	scr.o
+0x005CA7C0	0x009B9CC0	?GetPakEntity@BrocSys@@YA?AW4TPakInfo@@I@Z	enum TPakInfo __cdecl BrocSys::GetPakEntity(unsigned int)	scr.o
+0x005CA8B0	0x009B9DB0	?Init@BrocSys@@YAXXZ	void __cdecl BrocSys::Init(void)	scr.o
+0x005CA9F0	0x009B9EF0	?GetEntType@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@AAVstring@Broc@@@Z	void __cdecl GetEntType(class DbLinkedHandle<class EntityHandleDb,class Entity>,class Broc::string &)	scr.o
+0x005CAA50	0x009B9F50	?GetPlayerIndex@BrocSys@@YAHI@Z	int __cdecl BrocSys::GetPlayerIndex(unsigned int)	scr.o
+0x005CAA90	0x009B9F90	?GetExtendedEntity@BrocSys@@YAPAXI@Z	void * __cdecl BrocSys::GetExtendedEntity(unsigned int)	scr.o
+0x005CAB00	0x009BA000	?Scr_SetModel@BrocSys@@YAXPAVEntity@@HPAVstring@Broc@@@Z	void __cdecl BrocSys::Scr_SetModel(class Entity *,int,class Broc::string *)	scr.o
+0x005CAB50	0x009BA050	?GetEntByNum@BrocSys@@YAIH@Z	unsigned int __cdecl BrocSys::GetEntByNum(int)	scr.o
+0x005CABA0	0x009BA0A0	?DrawTracer@BrocSys@@YAXI@Z	void __cdecl BrocSys::DrawTracer(unsigned int)	scr.o
+0x005CAC20	0x009BA120	?EffectEventWeaponPlay@BrocSys@@YAHII@Z	int __cdecl BrocSys::EffectEventWeaponPlay(unsigned int,unsigned int)	scr.o
+0x005CAD10	0x009BA210	?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z	int __cdecl BrocSys::EffectEventPlay(unsigned int,class Broc::string const &,int,bool,bool)	scr.o
+0x005CAE70	0x009BA370	?EffectEventPlayNonEnt@BrocSys@@YAHABVstring@Broc@@ABUvector@3@1_NIH@Z	int __cdecl BrocSys::EffectEventPlayNonEnt(class Broc::string const &,struct Broc::vector const &,struct Broc::vector const &,bool,unsigned int,int)	scr.o
+0x005CB000	0x009BA500	?EffectEventPlayDir@BrocSys@@YAHIABVstring@Broc@@ABUvector@3@H_N@Z	int __cdecl BrocSys::EffectEventPlayDir(unsigned int,class Broc::string const &,struct Broc::vector const &,int,bool)	scr.o
+0x005CB140	0x009BA640	?EffectEventQueue@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z	int __cdecl BrocSys::EffectEventQueue(unsigned int,class Broc::string const &,int,bool,bool)	scr.o
+0x005CB280	0x009BA780	?EffectEventQueueDialog@BrocSys@@YAHIABVstring@Broc@@H_N@Z	int __cdecl BrocSys::EffectEventQueueDialog(unsigned int,class Broc::string const &,int,bool)	scr.o
+0x005CB390	0x009BA890	?DialogPlay@BrocSys@@YAHIABVstring@Broc@@H_N@Z	int __cdecl BrocSys::DialogPlay(unsigned int,class Broc::string const &,int,bool)	scr.o
+0x005CB5C0	0x009BAAC0	?EntityExists@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityExists(unsigned int)	scr.o
+0x005CB600	0x009BAB00	?EntityIsAlive@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsAlive(unsigned int)	scr.o
+0x005CB660	0x009BAB60	?EntityIsWounded@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsWounded(unsigned int)	scr.o
+0x005CB6B0	0x009BABB0	?EntityIsPlayer@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsPlayer(unsigned int)	scr.o
+0x005CB700	0x009BAC00	?EntityIsAI@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsAI(unsigned int)	scr.o
+0x005CB750	0x009BAC50	?EntityIsSentient@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsSentient(unsigned int)	scr.o
+0x005CB7A0	0x009BACA0	?EntityIsVehicle@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsVehicle(unsigned int)	scr.o
+0x005CB7F0	0x009BACF0	?EntityIsVehicleTank@BrocSys@@YAHI@Z	int __cdecl BrocSys::EntityIsVehicleTank(unsigned int)	scr.o
+0x005CB840	0x009BAD40	?Trace@BrocSys@@YAXAAUcollResult@Broc@@ABUvector@3@1@Z	void __cdecl BrocSys::Trace(struct Broc::collResult &,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005CBA30	0x009BAF30	?BulletTrace@BrocSys@@YAXAAUcollResult@Broc@@ABUvector@3@1_NI@Z	void __cdecl BrocSys::BulletTrace(struct Broc::collResult &,struct Broc::vector const &,struct Broc::vector const &,bool,unsigned int)	scr.o
+0x005CC050	0x009BB550	?StopAnimScripted@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopAnimScripted(unsigned int)	scr.o
+0x005CC1A0	0x009BB6A0	?StartBlankState@BrocSys@@YAXI@Z	void __cdecl BrocSys::StartBlankState(unsigned int)	scr.o
+0x005CC1F0	0x009BB6F0	?StopBlankState@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopBlankState(unsigned int)	scr.o
+0x005CC290	0x009BB790	?ResetAnimVariationChunkState@BrocSys@@YAXII@Z	void __cdecl BrocSys::ResetAnimVariationChunkState(unsigned int,unsigned int)	scr.o
+0x005CC3B0	0x009BB8B0	?GetInVehicle1@BrocSys@@YAXII_N00@Z	void __cdecl BrocSys::GetInVehicle1(unsigned int,unsigned int,bool,bool,bool)	scr.o
+0x005CC4C0	0x009BB9C0	?GetInVehicle2@BrocSys@@YAXIII_N@Z	void __cdecl BrocSys::GetInVehicle2(unsigned int,unsigned int,unsigned int,bool)	scr.o
+0x005CC5E0	0x009BBAE0	?GetOutVehicle@BrocSys@@YAXI@Z	void __cdecl BrocSys::GetOutVehicle(unsigned int)	scr.o
+0x005CC680	0x009BBB80	?SceneGetOutVehicle@BrocSys@@YAXI@Z	void __cdecl BrocSys::SceneGetOutVehicle(unsigned int)	scr.o
+0x005CC730	0x009BBC30	?StartInVehicle1@BrocSys@@YAXII_N00@Z	void __cdecl BrocSys::StartInVehicle1(unsigned int,unsigned int,bool,bool,bool)	scr.o
+0x005CC7E0	0x009BBCE0	?StartInVehicle2@BrocSys@@YAXIII_N@Z	void __cdecl BrocSys::StartInVehicle2(unsigned int,unsigned int,unsigned int,bool)	scr.o
+0x005CC890	0x009BBD90	?SetFlaggedAnimAligned@BrocSys@@YAXIIABUvector@Broc@@0I@Z	void __cdecl BrocSys::SetFlaggedAnimAligned(unsigned int,unsigned int,struct Broc::vector const &,struct Broc::vector const &,unsigned int)	scr.o
+0x005CCC50	0x009BC150	?StartFollowBehavior@BrocSys@@YAXII@Z	void __cdecl BrocSys::StartFollowBehavior(unsigned int,unsigned int)	scr.o
+0x005CCDB0	0x009BC2B0	?StopFollowBehavior@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopFollowBehavior(unsigned int)	scr.o
+0x005CCE50	0x009BC350	?SetFollowFormationData@BrocSys@@YAXIIMMM@Z	void __cdecl BrocSys::SetFollowFormationData(unsigned int,unsigned int,float,float,float)	scr.o
+0x005CCFB0	0x009BC4B0	?ResetVehicleFollowPositionHistoryData@BrocSys@@YAXI@Z	void __cdecl BrocSys::ResetVehicleFollowPositionHistoryData(unsigned int)	scr.o
+0x005CD050	0x009BC550	?Attach1@BrocSys@@YAXIABVstring@Broc@@0_NW4TPakInfo@@@Z	void __cdecl BrocSys::Attach1(unsigned int,class Broc::string const &,class Broc::string const &,bool,enum TPakInfo)	scr.o
+0x005CD1D0	0x009BC6D0	?Attach2@BrocSys@@YAXIABVstring@Broc@@0W4TPakInfo@@@Z	void __cdecl BrocSys::Attach2(unsigned int,class Broc::string const &,class Broc::string const &,enum TPakInfo)	scr.o
+0x005CD1F0	0x009BC6F0	?Attach3@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::Attach3(unsigned int,class Broc::string const &)	scr.o
+0x005CD260	0x009BC760	?Detach1@BrocSys@@YAXIABVstring@Broc@@0@Z	void __cdecl BrocSys::Detach1(unsigned int,class Broc::string const &,class Broc::string const &)	scr.o
+0x005CD3D0	0x009BC8D0	?Detach2@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::Detach2(unsigned int,class Broc::string const &)	scr.o
+0x005CD430	0x009BC930	?DetachAll@BrocSys@@YAXI@Z	void __cdecl BrocSys::DetachAll(unsigned int)	scr.o
+0x005CD470	0x009BC970	?GetAttachSize@BrocSys@@YAHI@Z	int __cdecl BrocSys::GetAttachSize(unsigned int)	scr.o
+0x005CD4E0	0x009BC9E0	?GetAttachModelName@BrocSys@@YAXIAAVstring@Broc@@H@Z	void __cdecl BrocSys::GetAttachModelName(unsigned int,class Broc::string &,int)	scr.o
+0x005CD5C0	0x009BCAC0	?GetAttachTagName@BrocSys@@YAXIAAVstring@Broc@@H@Z	void __cdecl BrocSys::GetAttachTagName(unsigned int,class Broc::string &,int)	scr.o
+0x005CD6E0	0x009BCBE0	?GetAttachIgnoreCollision@BrocSys@@YA_NIH@Z	bool __cdecl BrocSys::GetAttachIgnoreCollision(unsigned int,int)	scr.o
+0x005CD7A0	0x009BCCA0	?LinkTo1@BrocSys@@YAXIIABVstring@Broc@@ABUvector@3@1_N@Z	void __cdecl BrocSys::LinkTo1(unsigned int,unsigned int,class Broc::string const &,struct Broc::vector const &,struct Broc::vector const &,bool)	scr.o
+0x005CDA90	0x009BCF90	?LinkTo2@BrocSys@@YAXIIABVstring@Broc@@@Z	void __cdecl BrocSys::LinkTo2(unsigned int,unsigned int,class Broc::string const &)	scr.o
+0x005CDBB0	0x009BD0B0	?LinkTo3@BrocSys@@YAXII@Z	void __cdecl BrocSys::LinkTo3(unsigned int,unsigned int)	scr.o
+0x005CDCB0	0x009BD1B0	?PlayerLinkTo1@BrocSys@@YAXIIABVstring@Broc@@ABUvector@3@@Z	void __cdecl BrocSys::PlayerLinkTo1(unsigned int,unsigned int,class Broc::string const &,struct Broc::vector const &)	scr.o
+0x005CDE20	0x009BD320	?PlayerLinkTo2@BrocSys@@YAXIIABVstring@Broc@@@Z	void __cdecl BrocSys::PlayerLinkTo2(unsigned int,unsigned int,class Broc::string const &)	scr.o
+0x005CDF60	0x009BD460	?PlayerLinkTo3@BrocSys@@YAXII@Z	void __cdecl BrocSys::PlayerLinkTo3(unsigned int,unsigned int)	scr.o
+0x005CE090	0x009BD590	?UnLink@BrocSys@@YAXI@Z	void __cdecl BrocSys::UnLink(unsigned int)	scr.o
+0x005CE120	0x009BD620	?EnableLinkTo@BrocSys@@YAXI@Z	void __cdecl BrocSys::EnableLinkTo(unsigned int)	scr.o
+0x005CE2E0	0x009BD7E0	?DoSpawn1@BrocSys@@YAIIABVstring@Broc@@W4TPakInfo@@W4enumForceSpawn@@@Z	unsigned int __cdecl BrocSys::DoSpawn1(unsigned int,class Broc::string const &,enum TPakInfo,enum enumForceSpawn)	scr.o
+0x005CE460	0x009BD960	?DoSpawn2@BrocSys@@YAIIW4TPakInfo@@W4enumForceSpawn@@@Z	unsigned int __cdecl BrocSys::DoSpawn2(unsigned int,enum TPakInfo,enum enumForceSpawn)	scr.o
+0x005CE4D0	0x009BD9D0	?StalinGradSpawn1@BrocSys@@YAIIABVstring@Broc@@W4TPakInfo@@@Z	unsigned int __cdecl BrocSys::StalinGradSpawn1(unsigned int,class Broc::string const &,enum TPakInfo)	scr.o
+0x005CE650	0x009BDB50	?StalinGradSpawn2@BrocSys@@YAIIW4TPakInfo@@@Z	unsigned int __cdecl BrocSys::StalinGradSpawn2(unsigned int,enum TPakInfo)	scr.o
+0x005CE6C0	0x009BDBC0	?GetOrigin@BrocSys@@YAXIAAUvector@Broc@@@Z	void __cdecl BrocSys::GetOrigin(unsigned int,struct Broc::vector &)	scr.o
+0x005CE7A0	0x009BDCA0	?GetEye@BrocSys@@YAXIAAUvector@Broc@@@Z	void __cdecl BrocSys::GetEye(unsigned int,struct Broc::vector &)	scr.o
+0x005CE8B0	0x009BDDB0	?UseBy@BrocSys@@YAIII@Z	unsigned int __cdecl BrocSys::UseBy(unsigned int,unsigned int)	scr.o
+0x005CE9A0	0x009BDEA0	?IsTouching@BrocSys@@YA_NII@Z	bool __cdecl BrocSys::IsTouching(unsigned int,unsigned int)	scr.o
+0x005CEE40	0x009BE340	?LockDoor@BrocSys@@YAXI@Z	void __cdecl BrocSys::LockDoor(unsigned int)	scr.o
+0x005CEEA0	0x009BE3A0	?UnLockDoor@BrocSys@@YAXI@Z	void __cdecl BrocSys::UnLockDoor(unsigned int)	scr.o
+0x005CEF00	0x009BE400	?IsDoorLocked@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::IsDoorLocked(unsigned int)	scr.o
+0x005CEF60	0x009BE460	?Delete@BrocSys@@YAXI@Z	void __cdecl BrocSys::Delete(unsigned int)	scr.o
+0x005CEFD0	0x009BE4D0	?SetTransparent@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::SetTransparent(unsigned int,bool)	scr.o
+0x005CF060	0x009BE560	?SetModel@BrocSys@@YAXIABVstring@Broc@@W4TPakInfo@@@Z	void __cdecl BrocSys::SetModel(unsigned int,class Broc::string const &,enum TPakInfo)	scr.o
+0x005CF250	0x009BE750	?SetAiType@BrocSys@@YAXIABVstring@Broc@@W4TPakInfo@@@Z	void __cdecl BrocSys::SetAiType(unsigned int,class Broc::string const &,enum TPakInfo)	scr.o
+0x005CF410	0x009BE910	?SetModelIndex@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetModelIndex(unsigned int,int)	scr.o
+0x005CF4A0	0x009BE9A0	?GetNormalHealth@BrocSys@@YAMI@Z	float __cdecl BrocSys::GetNormalHealth(unsigned int)	scr.o
+0x005CF520	0x009BEA20	?SetNormalHealth@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetNormalHealth(unsigned int,float)	scr.o
+0x005CF6B0	0x009BEBB0	?DoDamage@BrocSys@@YAXIMABUvector@Broc@@W4hitLocation_t@@@Z	void __cdecl BrocSys::DoDamage(unsigned int,float,struct Broc::vector const &,enum hitLocation_t)	scr.o
+0x005CF840	0x009BED40	?SetTakeDamage@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetTakeDamage(unsigned int,int)	scr.o
+0x005CF880	0x009BED80	?InvulnerableForTime@BrocSys@@YAXIM@Z	void __cdecl BrocSys::InvulnerableForTime(unsigned int,float)	scr.o
+0x005CF8D0	0x009BEDD0	?IsEntityInvulnerable@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::IsEntityInvulnerable(unsigned int)	scr.o
+0x005CF920	0x009BEE20	?SetAlwaysRender@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetAlwaysRender(unsigned int,int)	scr.o
+0x005CF960	0x009BEE60	?Show@BrocSys@@YAXI@Z	void __cdecl BrocSys::Show(unsigned int)	scr.o
+0x005CF9A0	0x009BEEA0	?Hide@BrocSys@@YAXI@Z	void __cdecl BrocSys::Hide(unsigned int)	scr.o
+0x005CF9E0	0x009BEEE0	?SetContents@BrocSys@@YAHIH@Z	int __cdecl BrocSys::SetContents(unsigned int,int)	scr.o
+0x005CFA30	0x009BEF30	?DisConnectPaths@BrocSys@@YAXI@Z	void __cdecl BrocSys::DisConnectPaths(unsigned int)	scr.o
+0x005CFAC0	0x009BEFC0	?ConnectPaths@BrocSys@@YAXI@Z	void __cdecl BrocSys::ConnectPaths(unsigned int)	scr.o
+0x005CFB50	0x009BF050	?StartFiring@BrocSys@@YAXI@Z	void __cdecl BrocSys::StartFiring(unsigned int)	scr.o
+0x005CFBC0	0x009BF0C0	?StopFiring@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopFiring(unsigned int)	scr.o
+0x005CFC30	0x009BF130	?ShootTurret@BrocSys@@YAXII@Z	void __cdecl BrocSys::ShootTurret(unsigned int,unsigned int)	scr.o
+0x005CFCD0	0x009BF1D0	?SetMode@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetMode(unsigned int,int)	scr.o
+0x005CFDB0	0x009BF2B0	?GetTurretOwner@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetTurretOwner(unsigned int)	scr.o
+0x005CFE30	0x009BF330	?GetOwner@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetOwner(unsigned int)	scr.o
+0x005CFE70	0x009BF370	?SetOwner@BrocSys@@YAXII@Z	void __cdecl BrocSys::SetOwner(unsigned int,unsigned int)	scr.o
+0x005CFEF0	0x009BF3F0	?SetTargetEntity@BrocSys@@YAXII@Z	void __cdecl BrocSys::SetTargetEntity(unsigned int,unsigned int)	scr.o
+0x005CFF90	0x009BF490	?HasTargetEntity@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::HasTargetEntity(unsigned int)	scr.o
+0x005D0000	0x009BF500	?ClearTargetEntity@BrocSys@@YAXI@Z	void __cdecl BrocSys::ClearTargetEntity(unsigned int)	scr.o
+0x005D0070	0x009BF570	?SetTurretTeam@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetTurretTeam(unsigned int,class Broc::string const &)	scr.o
+0x005D0170	0x009BF670	?MakeTurretUsable@BrocSys@@YAXI@Z	void __cdecl BrocSys::MakeTurretUsable(unsigned int)	scr.o
+0x005D01E0	0x009BF6E0	?MakeTurretUnusable@BrocSys@@YAXI@Z	void __cdecl BrocSys::MakeTurretUnusable(unsigned int)	scr.o
+0x005D0250	0x009BF750	?SetTurretAccuracy@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTurretAccuracy(unsigned int,float)	scr.o
+0x005D02C0	0x009BF7C0	?SetTurretRange@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTurretRange(unsigned int,float)	scr.o
+0x005D0340	0x009BF840	?GetTurretRange@BrocSys@@YAMI@Z	float __cdecl BrocSys::GetTurretRange(unsigned int)	scr.o
+0x005D03B0	0x009BF8B0	?GetTurretTarget@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetTurretTarget(unsigned int)	scr.o
+0x005D0430	0x009BF930	?SetCursorHint@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetCursorHint(unsigned int,class Broc::string const &)	scr.o
+0x005D05A0	0x009BFAA0	?SetHintString1@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetHintString1(unsigned int,class Broc::string const &)	scr.o
+0x005D0680	0x009BFB80	?SetHintString3@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetHintString3(unsigned int,int)	scr.o
+0x005D0740	0x009BFC40	?SetHintString2@BrocSys@@YAXI@Z	void __cdecl BrocSys::SetHintString2(unsigned int)	scr.o
+0x005D0870	0x009BFD70	?ClearAnim@BrocSys@@YAXIIM@Z	void __cdecl BrocSys::ClearAnim(unsigned int,unsigned int,float)	scr.o
+0x005D0990	0x009BFE90	?SetAnimKnob@BrocSys@@YAXIIMMM_N@Z	void __cdecl BrocSys::SetAnimKnob(unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D0B90	0x009C0090	?SetAnimKnobAll@BrocSys@@YAXIIIMMM_N@Z	void __cdecl BrocSys::SetAnimKnobAll(unsigned int,unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D0DA0	0x009C02A0	?SetAnim@BrocSys@@YAXIIMMM_N@Z	void __cdecl BrocSys::SetAnim(unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D0F30	0x009C0430	?GetAnimTime@BrocSys@@YAMII@Z	float __cdecl BrocSys::GetAnimTime(unsigned int,unsigned int)	scr.o
+0x005D1030	0x009C0530	?SetFlaggedAnimKnob@BrocSys@@YAXIIIMMM_N@Z	void __cdecl BrocSys::SetFlaggedAnimKnob(unsigned int,unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D1190	0x009C0690	?SetFlaggedAnimKnobAll@BrocSys@@YAXIIIIMMM_N@Z	void __cdecl BrocSys::SetFlaggedAnimKnobAll(unsigned int,unsigned int,unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D13D0	0x009C08D0	?SetFlaggedAnim@BrocSys@@YAXIIIMMM_N@Z	void __cdecl BrocSys::SetFlaggedAnim(unsigned int,unsigned int,unsigned int,float,float,float,bool)	scr.o
+0x005D1530	0x009C0A30	?UseAnimTree@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::UseAnimTree(unsigned int,class Broc::string const &)	scr.o
+0x005D16C0	0x009C0BC0	?StopUseAnimTree@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopUseAnimTree(unsigned int)	scr.o
+0x005D1740	0x009C0C40	?DumpAnims@BrocSys@@YAXI@Z	void __cdecl BrocSys::DumpAnims(unsigned int)	scr.o
+0x005D1780	0x009C0C80	?GetStance@BrocSys@@YAXIAAVstring@Broc@@@Z	void __cdecl BrocSys::GetStance(unsigned int,class Broc::string &)	scr.o
+0x005D1800	0x009C0D00	?MagicGrenade1@BrocSys@@YAXIABUvector@Broc@@0M@Z	void __cdecl BrocSys::MagicGrenade1(unsigned int,struct Broc::vector const &,struct Broc::vector const &,float)	scr.o
+0x005D1910	0x009C0E10	?MagicGrenade2@BrocSys@@YAXIABUvector@Broc@@0@Z	void __cdecl BrocSys::MagicGrenade2(unsigned int,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005D1930	0x009C0E30	?MagicGrenadeManual1@BrocSys@@YAXIABUvector@Broc@@0M@Z	void __cdecl BrocSys::MagicGrenadeManual1(unsigned int,struct Broc::vector const &,struct Broc::vector const &,float)	scr.o
+0x005D19B0	0x009C0EB0	?MagicGrenadeManual2@BrocSys@@YAXIABUvector@Broc@@0@Z	void __cdecl BrocSys::MagicGrenadeManual2(unsigned int,struct Broc::vector const &,struct Broc::vector const &)	scr.o
+0x005D19D0	0x009C0ED0	?RifleGrenadeManual1@BrocSys@@YAXIABUvector@Broc@@_N@Z	void __cdecl BrocSys::RifleGrenadeManual1(unsigned int,struct Broc::vector const &,bool)	scr.o
+0x005D1A60	0x009C0F60	?IsFiringTurret@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::IsFiringTurret(unsigned int)	scr.o
+0x005D1AE0	0x009C0FE0	?SetFriendlyChain@BrocSys@@YAXIABVpathnode@Broc@@@Z	void __cdecl BrocSys::SetFriendlyChain(unsigned int,class Broc::pathnode const &)	scr.o
+0x005D1B90	0x009C1090	?GetTagInternal@BrocSys@@YAPAUDObjSkelMat@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABI@Z	struct DObjSkelMat * __cdecl BrocSys::GetTagInternal(class DbLinkedHandle<class EntityHandleDb,class Entity>,unsigned int const &)	scr.o
+0x005D1CE0	0x009C11E0	?GetTagOrigin1@BrocSys@@YAXIAAUvector@Broc@@ABI@Z	void __cdecl BrocSys::GetTagOrigin1(unsigned int,struct Broc::vector &,unsigned int const &)	scr.o
+0x005D1DD0	0x009C12D0	?GetTagOrigin2@BrocSys@@YAXIAAUvector@Broc@@ABVstring@3@@Z	void __cdecl BrocSys::GetTagOrigin2(unsigned int,struct Broc::vector &,class Broc::string const &)	scr.o
+0x005D1E10	0x009C1310	?GetTagAngles1@BrocSys@@YAXIAAUvector@Broc@@ABI@Z	void __cdecl BrocSys::GetTagAngles1(unsigned int,struct Broc::vector &,unsigned int const &)	scr.o
+0x005D1E70	0x009C1370	?GetTagAngles2@BrocSys@@YAXIAAUvector@Broc@@ABVstring@3@@Z	void __cdecl BrocSys::GetTagAngles2(unsigned int,struct Broc::vector &,class Broc::string const &)	scr.o
+0x005D1EF0	0x009C13F0	?ShellShock@BrocSys@@YAXIABVstring@Broc@@M@Z	void __cdecl BrocSys::ShellShock(unsigned int,class Broc::string const &,float)	scr.o
+0x005D2100	0x009C1600	?StopShellShock@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopShellShock(unsigned int)	scr.o
+0x005D2180	0x009C1680	?ViewKick@BrocSys@@YAXIHABUvector@Broc@@@Z	void __cdecl BrocSys::ViewKick(unsigned int,int,struct Broc::vector const &)	scr.o
+0x005D2260	0x009C1760	?LockLightVis@BrocSys@@YAXI@Z	void __cdecl BrocSys::LockLightVis(unsigned int)	scr.o
+0x005D22B0	0x009C17B0	?UnLockLightVis@BrocSys@@YAXI@Z	void __cdecl BrocSys::UnLockLightVis(unsigned int)	scr.o
+0x005D2300	0x009C1800	?Launch@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::Launch(unsigned int,struct Broc::vector const &)	scr.o
+0x005D2400	0x009C1900	?LocalToWorldCoords@BrocSys@@YAXIABUvector@Broc@@AAU23@@Z	void __cdecl BrocSys::LocalToWorldCoords(unsigned int,struct Broc::vector const &,struct Broc::vector &)	scr.o
+0x005D2490	0x009C1990	?GetEntityNumber@BrocSys@@YAHI@Z	int __cdecl BrocSys::GetEntityNumber(unsigned int)	scr.o
+0x005D24D0	0x009C19D0	?EnableGrenadeTouchDamage@BrocSys@@YAXI@Z	void __cdecl BrocSys::EnableGrenadeTouchDamage(unsigned int)	scr.o
+0x005D2530	0x009C1A30	?DisableGrenadeTouchDamage@BrocSys@@YAXI@Z	void __cdecl BrocSys::DisableGrenadeTouchDamage(unsigned int)	scr.o
+0x005D2590	0x009C1A90	?EnableGrenadeBounce@BrocSys@@YAXI@Z	void __cdecl BrocSys::EnableGrenadeBounce(unsigned int)	scr.o
+0x005D25D0	0x009C1AD0	?DisableGrenadeBounce@BrocSys@@YAXI@Z	void __cdecl BrocSys::DisableGrenadeBounce(unsigned int)	scr.o
+0x005D2610	0x009C1B10	?MakeFakeAi@BrocSys@@YAXI@Z	void __cdecl BrocSys::MakeFakeAi(unsigned int)	scr.o
+0x005D2790	0x009C1C90	?SetSpawnerTeam@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetSpawnerTeam(unsigned int,class Broc::string const &)	scr.o
+0x005D2890	0x009C1D90	?SetRightArc@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetRightArc(unsigned int,float)	scr.o
+0x005D2900	0x009C1E00	?SetLeftArc@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetLeftArc(unsigned int,float)	scr.o
+0x005D2960	0x009C1E60	?SetTopArc@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTopArc(unsigned int,float)	scr.o
+0x005D29C0	0x009C1EC0	?SetBottomArc@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetBottomArc(unsigned int,float)	scr.o
+0x005D2A20	0x009C1F20	?SetTurretPitch@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTurretPitch(unsigned int,float)	scr.o
+0x005D2A80	0x009C1F80	?SetTurretYaw@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTurretYaw(unsigned int,float)	scr.o
+0x005D2B10	0x009C2010	?SetCharacter@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetCharacter(unsigned int,class Broc::string const &)	scr.o
+0x005D2B60	0x009C2060	?ActorScr_SetFavoriteEnemy@BrocSys@@YAXPAUactor_s@@HPAVentity@Broc@@@Z	void __cdecl BrocSys::ActorScr_SetFavoriteEnemy(struct actor_s *,int,class Broc::entity *)	scr.o
+0x005D2C00	0x009C2100	?ScriptExplode@BrocSys@@YAXIM@Z	void __cdecl BrocSys::ScriptExplode(unsigned int,float)	scr.o
+0x005D2D70	0x009C2270	?SetEntityLODOverride@BrocSys@@YAXII@Z	void __cdecl BrocSys::SetEntityLODOverride(unsigned int,unsigned int)	scr.o
+0x005D2E40	0x009C2340	?SetEntityFlagDrone@BrocSys@@YAXI@Z	void __cdecl BrocSys::SetEntityFlagDrone(unsigned int)	scr.o
+0x005D2E90	0x009C2390	?IsEntityVisible@BrocSys@@YAHI@Z	int __cdecl BrocSys::IsEntityVisible(unsigned int)	scr.o
+0x005D2ED0	0x009C23D0	?EntityIgnoreDanger@BrocSys@@YAXI_N00@Z	void __cdecl BrocSys::EntityIgnoreDanger(unsigned int,bool,bool,bool)	scr.o
+0x005D2F60	0x009C2460	?SetGetOceanHeight@BrocSys@@YAXIHH@Z	void __cdecl BrocSys::SetGetOceanHeight(unsigned int,int,int)	scr.o
+0x005D3030	0x009C2530	?ScaleEntity@BrocSys@@YAXIM@Z	void __cdecl BrocSys::ScaleEntity(unsigned int,float)	scr.o
+0x005D3080	0x009C2580	?SwapColMaps@BrocSys@@YAXII@Z	void __cdecl BrocSys::SwapColMaps(unsigned int,unsigned int)	scr.o
+0x005D3180	0x009C2680	?MoveAxis@BrocSys@@YAXIHMMMM@Z	void __cdecl BrocSys::MoveAxis(unsigned int,int,float,float,float,float)	scr.o
+0x005D3270	0x009C2770	?RotateAxis@BrocSys@@YAXIHMMMM@Z	void __cdecl BrocSys::RotateAxis(unsigned int,int,float,float,float,float)	scr.o
+0x005D3360	0x009C2860	?MoveTo@BrocSys@@YAXIABUvector@Broc@@MMM@Z	void __cdecl BrocSys::MoveTo(unsigned int,struct Broc::vector const &,float,float,float)	scr.o
+0x005D34D0	0x009C29D0	?MoveX@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::MoveX(unsigned int,float,float,float,float)	scr.o
+0x005D3500	0x009C2A00	?MoveY@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::MoveY(unsigned int,float,float,float,float)	scr.o
+0x005D3530	0x009C2A30	?MoveZ@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::MoveZ(unsigned int,float,float,float,float)	scr.o
+0x005D3560	0x009C2A60	?MoveGravity@BrocSys@@YAXIABUvector@Broc@@MM@Z	void __cdecl BrocSys::MoveGravity(unsigned int,struct Broc::vector const &,float,float)	scr.o
+0x005D3670	0x009C2B70	?RotateTo@BrocSys@@YAXIABUvector@Broc@@MMM@Z	void __cdecl BrocSys::RotateTo(unsigned int,struct Broc::vector const &,float,float,float)	scr.o
+0x005D3980	0x009C2E80	?RotatePitch@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::RotatePitch(unsigned int,float,float,float,float)	scr.o
+0x005D39B0	0x009C2EB0	?RotateYaw@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::RotateYaw(unsigned int,float,float,float,float)	scr.o
+0x005D39E0	0x009C2EE0	?RotateRoll@BrocSys@@YAXIMMMM@Z	void __cdecl BrocSys::RotateRoll(unsigned int,float,float,float,float)	scr.o
+0x005D3A10	0x009C2F10	?RotateVelocity@BrocSys@@YAXIABUvector@Broc@@MMM@Z	void __cdecl BrocSys::RotateVelocity(unsigned int,struct Broc::vector const &,float,float,float)	scr.o
+0x005D3B50	0x009C3050	?Solid@BrocSys@@YAXI@Z	void __cdecl BrocSys::Solid(unsigned int)	scr.o
+0x005D3BF0	0x009C30F0	?NotSolid@BrocSys@@YAXI@Z	void __cdecl BrocSys::NotSolid(unsigned int)	scr.o
+0x005D3C90	0x009C3190	?InitEntityMove@BrocSys@@YAXXZ	void __cdecl BrocSys::InitEntityMove(void)	scr.o
+0x005D3D50	0x009C3250	?MPScript_PlayerRespawn@BrocSys@@YAXIABUvector@Broc@@0ABVstring@3@@Z	void __cdecl BrocSys::MPScript_PlayerRespawn(unsigned int,struct Broc::vector const &,struct Broc::vector const &,class Broc::string const &)	scr.o
+0x005D3ED0	0x009C33D0	?MPScript_PlayerSpawn@BrocSys@@YAXIABUvector@Broc@@0_N@Z	void __cdecl BrocSys::MPScript_PlayerSpawn(unsigned int,struct Broc::vector const &,struct Broc::vector const &,bool)	scr.o
+0x005D3FD0	0x009C34D0	?MPScript_SetPlayerAlive@BrocSys@@YAXIH@Z	void __cdecl BrocSys::MPScript_SetPlayerAlive(unsigned int,int)	scr.o
+0x005D4050	0x009C3550	?SetRespawnMaxTime@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetRespawnMaxTime(unsigned int,int)	scr.o
+0x005D40A0	0x009C35A0	?MPScript_GetPlayerName@BrocSys@@YAPBDI@Z	char const * __cdecl BrocSys::MPScript_GetPlayerName(unsigned int)	scr.o
+0x005D4130	0x009C3630	?MPScript_FinishDamage@BrocSys@@YAXIIIABUvector@Broc@@0HHHH@Z	void __cdecl BrocSys::MPScript_FinishDamage(unsigned int,unsigned int,unsigned int,struct Broc::vector const &,struct Broc::vector const &,int,int,int,int)	scr.o
+0x005D41F0	0x009C36F0	?MPScript_IsLocalPlayer@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::MPScript_IsLocalPlayer(unsigned int)	scr.o
+0x005D4230	0x009C3730	?MPScript_IsInVehicle1@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::MPScript_IsInVehicle1(unsigned int)	scr.o
+0x005D4290	0x009C3790	?MPScript_IsInVehicle2@BrocSys@@YA_NII@Z	bool __cdecl BrocSys::MPScript_IsInVehicle2(unsigned int,unsigned int)	scr.o
+0x005D4320	0x009C3820	?MPScript_GetPlayerInSeat@BrocSys@@YAIII@Z	unsigned int __cdecl BrocSys::MPScript_GetPlayerInSeat(unsigned int,unsigned int)	scr.o
+0x005D4370	0x009C3870	?MPScript_GetOutOfVehicle@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_GetOutOfVehicle(unsigned int)	scr.o
+0x005D4400	0x009C3900	?MPScript_SetPlayerTeam@BrocSys@@YA_NIABVstring@Broc@@@Z	bool __cdecl BrocSys::MPScript_SetPlayerTeam(unsigned int,class Broc::string const &)	scr.o
+0x005D4450	0x009C3950	?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z	void __cdecl BrocSys::MPScript_Obituary(unsigned int,unsigned int,class Broc::string const &,int,bool)	scr.o
+0x005D4590	0x009C3A90	?MPScript_IncPlayerStat@BrocSys@@YAXIIF@Z	void __cdecl BrocSys::MPScript_IncPlayerStat(unsigned int,unsigned int,short)	scr.o
+0x005D4750	0x009C3C50	?MPScript_SetPlayerStat@BrocSys@@YAXIIF@Z	void __cdecl BrocSys::MPScript_SetPlayerStat(unsigned int,unsigned int,short)	scr.o
+0x005D4910	0x009C3E10	?MPScript_GetPlayerStat@BrocSys@@YAFII@Z	short __cdecl BrocSys::MPScript_GetPlayerStat(unsigned int,unsigned int)	scr.o
+0x005D4A10	0x009C3F10	?MPScript_GetPlayerTotalScore@BrocSys@@YAHI@Z	int __cdecl BrocSys::MPScript_GetPlayerTotalScore(unsigned int)	scr.o
+0x005D4AE0	0x009C3FE0	?MPScript_ChangePlayerTeam@BrocSys@@YAXIABVstring@Broc@@_N@Z	void __cdecl BrocSys::MPScript_ChangePlayerTeam(unsigned int,class Broc::string const &,bool)	scr.o
+0x005D4BC0	0x009C40C0	?MPScript_SendInitialGameState@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_SendInitialGameState(unsigned int)	scr.o
+0x005D4C10	0x009C4110	?MPScript_SendVehicleStates@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_SendVehicleStates(unsigned int)	scr.o
+0x005D4C60	0x009C4160	?MPScript_BroadcastVehicleRespawn@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_BroadcastVehicleRespawn(unsigned int)	scr.o
+0x005D4CB0	0x009C41B0	?MPScript_SendGameState@BrocSys@@YAXIHHHH_N00HHH0HH@Z	void __cdecl BrocSys::MPScript_SendGameState(unsigned int,int,int,int,int,bool,bool,bool,int,int,int,bool,int,int)	scr.o
+0x005D4D30	0x009C4230	?MPScript_SendGameStateHQ@BrocSys@@YAXIIUvector@Broc@@0I_N1@Z	void __cdecl BrocSys::MPScript_SendGameStateHQ(unsigned int,unsigned int,struct Broc::vector,struct Broc::vector,unsigned int,bool,bool)	scr.o
+0x005D4E20	0x009C4320	?MPScript_SendGameStateCTF@BrocSys@@YAXIUvector@Broc@@0I00I@Z	void __cdecl BrocSys::MPScript_SendGameStateCTF(unsigned int,struct Broc::vector,struct Broc::vector,unsigned int,struct Broc::vector,struct Broc::vector,unsigned int)	scr.o
+0x005D4FC0	0x009C44C0	?MPScript_SendGameStateSCF@BrocSys@@YAXIHUvector@Broc@@0I@Z	void __cdecl BrocSys::MPScript_SendGameStateSCF(unsigned int,int,struct Broc::vector,struct Broc::vector,unsigned int)	scr.o
+0x005D50D0	0x009C45D0	?MPScript_SendGameStateDOM@BrocSys@@YAXIHHHHH@Z	void __cdecl BrocSys::MPScript_SendGameStateDOM(unsigned int,int,int,int,int,int)	scr.o
+0x005D5140	0x009C4640	?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z	void __cdecl BrocSys::MPScript_SendGameStateSD(unsigned int,unsigned int,unsigned int,bool,struct Broc::vector,struct Broc::vector,int)	scr.o
+0x005D5270	0x009C4770	?MPScript_PickupItem@BrocSys@@YAXHI@Z	void __cdecl BrocSys::MPScript_PickupItem(int,unsigned int)	scr.o
+0x005D52D0	0x009C47D0	?MPScript_GetSpotterEntity@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::MPScript_GetSpotterEntity(unsigned int)	scr.o
+0x005D5350	0x009C4850	?MPScript_ClearSpottingFromOccupants@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_ClearSpottingFromOccupants(unsigned int)	scr.o
+0x005D54A0	0x009C49A0	?MPScript_SendHostBombRequest@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::MPScript_SendHostBombRequest(unsigned int,bool)	scr.o
+0x005D54E0	0x009C49E0	?MPScript_SendBombExplosion@BrocSys@@YAXI@Z	void __cdecl BrocSys::MPScript_SendBombExplosion(unsigned int)	scr.o
+0x005D5520	0x009C4A20	?MPScript_SendBombOperation@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::MPScript_SendBombOperation(unsigned int,bool)	scr.o
+0x005D5560	0x009C4A60	?MPScript_SendBombOperationEvent@BrocSys@@YAXI_N0@Z	void __cdecl BrocSys::MPScript_SendBombOperationEvent(unsigned int,bool,bool)	scr.o
+0x005D55B0	0x009C4AB0	?MPScript_NextButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::MPScript_NextButtonPressed(unsigned int)	scr.o
+0x005D5610	0x009C4B10	?MPScript_PrevButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::MPScript_PrevButtonPressed(unsigned int)	scr.o
+0x005D5670	0x009C4B70	?MPScript_DebugRenderEntityBBox@BrocSys@@YAXIABUvector@Broc@@M@Z	void __cdecl BrocSys::MPScript_DebugRenderEntityBBox(unsigned int,struct Broc::vector const &,float)	scr.o
+0x005D5760	0x009C4C60	?GiveWeapon@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::GiveWeapon(unsigned int,class Broc::string const &)	scr.o
+0x005D57D0	0x009C4CD0	?GiveWeaponAndAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z	void __cdecl BrocSys::GiveWeaponAndAmmo(unsigned int,class Broc::string const &,int)	scr.o
+0x005D5870	0x009C4D70	?TakeWeapon@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::TakeWeapon(unsigned int,class Broc::string const &)	scr.o
+0x005D58E0	0x009C4DE0	?TakeAllWeapons@BrocSys@@YAXI@Z	void __cdecl BrocSys::TakeAllWeapons(unsigned int)	scr.o
+0x005D59A0	0x009C4EA0	?GetCurrentWeapon@BrocSys@@YAXIAAVstring@Broc@@@Z	void __cdecl BrocSys::GetCurrentWeapon(unsigned int,class Broc::string &)	scr.o
+0x005D5A20	0x009C4F20	?HasWeaponAndAmmo@BrocSys@@YA_NIABVstring@Broc@@AAH@Z	bool __cdecl BrocSys::HasWeaponAndAmmo(unsigned int,class Broc::string const &,int &)	scr.o
+0x005D5AF0	0x009C4FF0	?HasWeapon@BrocSys@@YA_NIABVstring@Broc@@@Z	bool __cdecl BrocSys::HasWeapon(unsigned int,class Broc::string const &)	scr.o
+0x005D5B70	0x009C5070	?SwitchToWeapon@BrocSys@@YA_NIABVstring@Broc@@@Z	bool __cdecl BrocSys::SwitchToWeapon(unsigned int,class Broc::string const &)	scr.o
+0x005D5C50	0x009C5150	?SwitchToLastWeapon@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::SwitchToLastWeapon(unsigned int)	scr.o
+0x005D5CF0	0x009C51F0	?GiveStartAmmo@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::GiveStartAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D5DA0	0x009C52A0	?GiveMaxAmmo@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::GiveMaxAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D5E60	0x009C5360	?GetFractionStartAmmo@BrocSys@@YAMIABVstring@Broc@@@Z	float __cdecl BrocSys::GetFractionStartAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D5F40	0x009C5440	?GetFractionMaxAmmo@BrocSys@@YAMIABVstring@Broc@@@Z	float __cdecl BrocSys::GetFractionMaxAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D60A0	0x009C55A0	?SetOrigin@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::SetOrigin(unsigned int,struct Broc::vector const &)	scr.o
+0x005D60F0	0x009C55F0	?SetVelocity@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::SetVelocity(unsigned int,struct Broc::vector const &)	scr.o
+0x005D6160	0x009C5660	?SetPlayerAngles@BrocSys@@YAXIABUvector@Broc@@@Z	void __cdecl BrocSys::SetPlayerAngles(unsigned int,struct Broc::vector const &)	scr.o
+0x005D6230	0x009C5730	?GetPlayerAngles@BrocSys@@YA?AUvector@Broc@@I@Z	struct Broc::vector __cdecl BrocSys::GetPlayerAngles(unsigned int)	scr.o
+0x005D62C0	0x009C57C0	?UseButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::UseButtonPressed(unsigned int)	scr.o
+0x005D6320	0x009C5820	?AttackButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::AttackButtonPressed(unsigned int)	scr.o
+0x005D6380	0x009C5880	?MeleeButtonPressed@BrocSys@@YAHI@Z	int __cdecl BrocSys::MeleeButtonPressed(unsigned int)	scr.o
+0x005D63E0	0x009C58E0	?IsAds@BrocSys@@YAHI@Z	int __cdecl BrocSys::IsAds(unsigned int)	scr.o
+0x005D6440	0x009C5940	?IsOnGround@BrocSys@@YAHI@Z	int __cdecl BrocSys::IsOnGround(unsigned int)	scr.o
+0x005D64A0	0x009C59A0	?SetViewModel@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetViewModel(unsigned int,class Broc::string const &)	scr.o
+0x005D6530	0x009C5A30	?AllowUse@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowUse(unsigned int,bool)	scr.o
+0x005D65A0	0x009C5AA0	?AllowStand@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowStand(unsigned int,bool)	scr.o
+0x005D65E0	0x009C5AE0	?AllowCrouch@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowCrouch(unsigned int,bool)	scr.o
+0x005D6620	0x009C5B20	?AllowProne@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowProne(unsigned int,bool)	scr.o
+0x005D6660	0x009C5B60	?AllowLeanLeft@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowLeanLeft(unsigned int,bool)	scr.o
+0x005D66A0	0x009C5BA0	?AllowLeanRight@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AllowLeanRight(unsigned int,bool)	scr.o
+0x005D66E0	0x009C5BE0	?SetSpectateTeamKill@BrocSys@@YAXHIH@Z	void __cdecl BrocSys::SetSpectateTeamKill(int,unsigned int,int)	scr.o
+0x005D6740	0x009C5C40	?FreezeControls@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::FreezeControls(unsigned int,bool)	scr.o
+0x005D6790	0x009C5C90	?IsLookingAt@BrocSys@@YA_NII@Z	bool __cdecl BrocSys::IsLookingAt(unsigned int,unsigned int)	scr.o
+0x005D6810	0x009C5D10	?SetAutoPickup@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::SetAutoPickup(unsigned int,bool)	scr.o
+0x005D6880	0x009C5D80	?GetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@AAV23@@Z	void __cdecl BrocSys::GetWeaponSlotWeapon(unsigned int,class Broc::string const &,class Broc::string &)	scr.o
+0x005D6950	0x009C5E50	?SetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@0@Z	void __cdecl BrocSys::SetWeaponSlotWeapon(unsigned int,class Broc::string const &,class Broc::string const &)	scr.o
+0x005D6B50	0x009C6050	?GetWeaponSlotAmmo@BrocSys@@YAHIABVstring@Broc@@@Z	int __cdecl BrocSys::GetWeaponSlotAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D6C40	0x009C6140	?SetWeaponSlotAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z	void __cdecl BrocSys::SetWeaponSlotAmmo(unsigned int,class Broc::string const &,int)	scr.o
+0x005D6DA0	0x009C62A0	?GetWeaponSlotClipAmmo@BrocSys@@YAHIABVstring@Broc@@@Z	int __cdecl BrocSys::GetWeaponSlotClipAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D6E60	0x009C6360	?SetWeaponSlotClipAmmo@BrocSys@@YAXIABVstring@Broc@@H@Z	void __cdecl BrocSys::SetWeaponSlotClipAmmo(unsigned int,class Broc::string const &,int)	scr.o
+0x005D6F40	0x009C6440	?GetFullClipAmmoCount@BrocSys@@YAHIABVstring@Broc@@@Z	int __cdecl BrocSys::GetFullClipAmmoCount(unsigned int,class Broc::string const &)	scr.o
+0x005D6FF0	0x009C64F0	?GetMaxAmmo@BrocSys@@YAHIABVstring@Broc@@@Z	int __cdecl BrocSys::GetMaxAmmo(unsigned int,class Broc::string const &)	scr.o
+0x005D70A0	0x009C65A0	?InitEntityClient@BrocSys@@YAXXZ	void __cdecl BrocSys::InitEntityClient(void)	scr.o
+0x005D7790	0x009C6C90	?ObjectiveAdd5@BrocSys@@YAXHABVstring@Broc@@0ABUvector@3@IMPBDHHH@Z	void __cdecl BrocSys::ObjectiveAdd5(int,class Broc::string const &,class Broc::string const &,struct Broc::vector const &,unsigned int,float,char const *,int,int,int)	scr.o
+0x005D7930	0x009C6E30	?AttachPath@BrocSys@@YAXIABVvehiclenode@Broc@@H@Z	void __cdecl BrocSys::AttachPath(unsigned int,class Broc::vehiclenode const &,int)	scr.o
+0x005D7C30	0x009C7130	?StartPath@BrocSys@@YAXI@Z	void __cdecl BrocSys::StartPath(unsigned int)	scr.o
+0x005D7D40	0x009C7240	?EndPath@BrocSys@@YAXI@Z	void __cdecl BrocSys::EndPath(unsigned int)	scr.o
+0x005D7E40	0x009C7340	?SetSwitchNode@BrocSys@@YAXIABVvehiclenode@Broc@@0@Z	void __cdecl BrocSys::SetSwitchNode(unsigned int,class Broc::vehiclenode const &,class Broc::vehiclenode const &)	scr.o
+0x005D8000	0x009C7500	?SetWaitNode@BrocSys@@YAXIABVvehiclenode@Broc@@@Z	void __cdecl BrocSys::SetWaitNode(unsigned int,class Broc::vehiclenode const &)	scr.o
+0x005D8170	0x009C7670	?SetWaitSpeed@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetWaitSpeed(unsigned int,float)	scr.o
+0x005D82A0	0x009C77A0	?SetSpeed@BrocSys@@YAXIMM@Z	void __cdecl BrocSys::SetSpeed(unsigned int,float,float)	scr.o
+0x005D8410	0x009C7910	?ResumeSpeed@BrocSys@@YAXIM@Z	void __cdecl BrocSys::ResumeSpeed(unsigned int,float)	scr.o
+0x005D8550	0x009C7A50	?JoltBody@BrocSys@@YAXIABUvector@Broc@@MMM@Z	void __cdecl BrocSys::JoltBody(unsigned int,struct Broc::vector const &,float,float,float)	scr.o
+0x005D8700	0x009C7C00	?FreeVehicle@BrocSys@@YAXI@Z	void __cdecl BrocSys::FreeVehicle(unsigned int)	scr.o
+0x005D8840	0x009C7D40	?GetWheelSurface@BrocSys@@YAXIIAAVstring@Broc@@@Z	void __cdecl BrocSys::GetWheelSurface(unsigned int,unsigned int,class Broc::string &)	scr.o
+0x005D8A20	0x009C7F20	?GetSpeedMph@BrocSys@@YAMI@Z	float __cdecl BrocSys::GetSpeedMph(unsigned int)	scr.o
+0x005D8AB0	0x009C7FB0	?GetVehicleOwner@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetVehicleOwner(unsigned int)	scr.o
+0x005D8B60	0x009C8060	?SetMaxSpeed@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetMaxSpeed(unsigned int,float)	scr.o
+0x005D8D30	0x009C8230	?SetBrake@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::SetBrake(unsigned int,bool)	scr.o
+0x005D8F00	0x009C8400	?SetStabilityEnabled@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::SetStabilityEnabled(unsigned int,bool)	scr.o
+0x005D90D0	0x009C85D0	?IsVehicleFlipped@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::IsVehicleFlipped(unsigned int)	scr.o
+0x005D9190	0x009C8690	?SetVehicleGoal@BrocSys@@YAXIABUvector@Broc@@MM@Z	void __cdecl BrocSys::SetVehicleGoal(unsigned int,struct Broc::vector const &,float,float)	scr.o
+0x005D9400	0x009C8900	?StartEngineSound@BrocSys@@YAXI@Z	void __cdecl BrocSys::StartEngineSound(unsigned int)	scr.o
+0x005D94F0	0x009C89F0	?StopEngineSound@BrocSys@@YAXI@Z	void __cdecl BrocSys::StopEngineSound(unsigned int)	scr.o
+0x005D95E0	0x009C8AE0	?SetVehicleMountPos@BrocSys@@YAXIH@Z	void __cdecl BrocSys::SetVehicleMountPos(unsigned int,int)	scr.o
+0x005D9730	0x009C8C30	?MakeVehicleUsable@BrocSys@@YAXI@Z	void __cdecl BrocSys::MakeVehicleUsable(unsigned int)	scr.o
+0x005D97D0	0x009C8CD0	?MakeVehicleUnusable@BrocSys@@YAXI@Z	void __cdecl BrocSys::MakeVehicleUnusable(unsigned int)	scr.o
+0x005D9870	0x009C8D70	?EjectDriver@BrocSys@@YAXI@Z	void __cdecl BrocSys::EjectDriver(unsigned int)	scr.o
+0x005D9970	0x009C8E70	?AddVehicleToCompass@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::AddVehicleToCompass(unsigned int,bool)	scr.o
+0x005D9A70	0x009C8F70	?RemoveVehicleFromCompass@BrocSys@@YAXI@Z	void __cdecl BrocSys::RemoveVehicleFromCompass(unsigned int)	scr.o
+0x005D9B60	0x009C9060	?RespawnVehicle@BrocSys@@YAXI@Z	void __cdecl BrocSys::RespawnVehicle(unsigned int)	scr.o
+0x005D9BA0	0x009C90A0	?SetTurretRotRate@BrocSys@@YAXIM@Z	void __cdecl BrocSys::SetTurretRotRate(unsigned int,float)	scr.o
+0x005D9CF0	0x009C91F0	?SetTurretTargetVec@BrocSys@@YAXIABUvector@Broc@@_N@Z	void __cdecl BrocSys::SetTurretTargetVec(unsigned int,struct Broc::vector const &,bool)	scr.o
+0x005D9EA0	0x009C93A0	?SetTurretTargetEnt@BrocSys@@YAXIIABUvector@Broc@@_N@Z	void __cdecl BrocSys::SetTurretTargetEnt(unsigned int,unsigned int,struct Broc::vector const &,bool)	scr.o
+0x005DA0B0	0x009C95B0	?ClearTurretTarget@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::ClearTurretTarget(unsigned int,bool)	scr.o
+0x005DA230	0x009C9730	?FireTurret@BrocSys@@YAXI_N@Z	void __cdecl BrocSys::FireTurret(unsigned int,bool)	scr.o
+0x005DA8C0	0x009C9DC0	?IsTurretReady@BrocSys@@YA_NI@Z	bool __cdecl BrocSys::IsTurretReady(unsigned int)	scr.o
+0x005DA9D0	0x009C9ED0	?SetVehicleName@BrocSys@@YAXIABVstring@Broc@@@Z	void __cdecl BrocSys::SetVehicleName(unsigned int,class Broc::string const &)	scr.o
+0x005DAAC0	0x009C9FC0	?GetTurretRelAngles@BrocSys@@YAXIAAUvector@Broc@@_N@Z	void __cdecl BrocSys::GetTurretRelAngles(unsigned int,struct Broc::vector &,bool)	scr.o
+0x005DABF0	0x009CA0F0	?InitVehicle@BrocSys@@YAXXZ	void __cdecl BrocSys::InitVehicle(void)	scr.o
+0x005DAE30	0x009CA330	??1AeThread@@QAE@XZ	public: __thiscall AeThread::~AeThread(void)	scr.o
+0x005DAF90	0x009CA490	?DestroyBrocInsts@AeThread@@QAEXXZ	public: void __thiscall AeThread::DestroyBrocInsts(void)	scr.o
+0x005DB100	0x009CA600	??0AeThreadManager@@QAE@XZ	public: __thiscall AeThreadManager::AeThreadManager(void)	scr.o
+0x005DB160	0x009CA660	?AssignHandle@AeThreadManager@@QAE?AVHandle@@PAVAeThread@@@Z	public: class Handle __thiscall AeThreadManager::AssignHandle(class AeThread *)	scr.o
+0x005DB1A0	0x009CA6A0	?KillAllThreads@AeThreadManager@@QAEXXZ	public: void __thiscall AeThreadManager::KillAllThreads(void)	scr.o
+0x005DB230	0x009CA730	??0EndOnScriptNode@@QAE@PAVAeThread@@@Z	public: __thiscall EndOnScriptNode::EndOnScriptNode(class AeThread *)	scr.o
+0x005DB280	0x009CA780	??0AeThreadEntityNotifyState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IW4EAction@AeThreadState@@@Z	public: __thiscall AeThreadEntityNotifyState::AeThreadEntityNotifyState(class DbLinkedHandle<class EntityHandleDb,class Entity>,unsigned int,enum AeThreadState::EAction)	scr.o
+0x005DB3C0	0x009CA8C0	?ThreadCreateInternal@BrocSys@@YAIPBDH0IPAVAeThreadFunctor@@_N@Z	unsigned int __cdecl BrocSys::ThreadCreateInternal(char const *,int,char const *,unsigned int,class AeThreadFunctor *,bool)	scr.o
+0x005DB470	0x009CA970	?ThreadExecInternal@BrocSys@@YAIPBDH0IPAVAeThreadFunctor@@_N@Z	unsigned int __cdecl BrocSys::ThreadExecInternal(char const *,int,char const *,unsigned int,class AeThreadFunctor *,bool)	scr.o
+0x005DB540	0x009CAA40	?ThreadNotifyInternal@BrocSys@@YAIPBDH0IIHPAVAeThreadFunctor@@@Z	unsigned int __cdecl BrocSys::ThreadNotifyInternal(char const *,int,char const *,unsigned int,unsigned int,int,class AeThreadFunctor *)	scr.o
+0x005DB640	0x009CAB40	?KillThreadExec@BrocSys@@YAXXZ	void __cdecl BrocSys::KillThreadExec(void)	scr.o
+0x005DB660	0x009CAB60	?ThreadSleepUntilNotify@BrocSys@@YAXIW4TPakInfo@@HHHH_NM@Z	void __cdecl BrocSys::ThreadSleepUntilNotify(unsigned int,enum TPakInfo,int,int,int,int,bool,float)	scr.o
+0x005DB870	0x009CAD70	?ThreadGetId@BrocSys@@YAIXZ	unsigned int __cdecl BrocSys::ThreadGetId(void)	scr.o
+0x005DB8C0	0x009CADC0	?GetKeyBinding@BrocSys@@YAHAAV?$dyn_array@Vstring@Broc@@@Broc@@ABVstring@3@@Z	int __cdecl BrocSys::GetKeyBinding(class Broc::dyn_array<class Broc::string> &,class Broc::string const &)	scr.o
+0x005DB9D0	0x009CAED0	?ObjectiveChildAdd4@BrocSys@@YAXHHABVstring@Broc@@HABUvector@3@PBD@Z	void __cdecl BrocSys::ObjectiveChildAdd4(int,int,class Broc::string const &,int,struct Broc::vector const &,char const *)	scr.o
+0x005DBB80	0x009CB080	?ObjectiveAdd4@BrocSys@@YAXHABVstring@Broc@@HABUvector@3@PBDHH@Z	void __cdecl BrocSys::ObjectiveAdd4(int,class Broc::string const &,int,struct Broc::vector const &,char const *,int,int)	scr.o
+0x005DBCC0	0x009CB1C0	?ObjectiveChildAdd7@BrocSys@@YAXHHABVstring@Broc@@HABUvector@3@PBD@Z	void __cdecl BrocSys::ObjectiveChildAdd7(int,int,class Broc::string const &,int,struct Broc::vector const &,char const *)	scr.o
+0x005DBDF0	0x009CB2F0	?ObjectiveAdd7@BrocSys@@YAXHABVstring@Broc@@HABUvector@3@PBDHH@Z	void __cdecl BrocSys::ObjectiveAdd7(int,class Broc::string const &,int,struct Broc::vector const &,char const *,int,int)	scr.o
+0x005DBE60	0x009CB360	?ObjectiveChildAdd5@BrocSys@@YAXHHABVstring@Broc@@0ABUvector@3@PBD@Z	void __cdecl BrocSys::ObjectiveChildAdd5(int,int,class Broc::string const &,class Broc::string const &,struct Broc::vector const &,char const *)	scr.o
+0x005DBF20	0x009CB420	?InitObjective@BrocSys@@YAXXZ	void __cdecl BrocSys::InitObjective(void)	scr.o
+0x005DC120	0x009CB620	?KillThread@AeThreadManager@@AAEXPAVAeThread@@@Z	private: void __thiscall AeThreadManager::KillThread(class AeThread *)	scr.o
+0x005DC170	0x009CB670	?Execute@AeThreadManager@@QAEXM@Z	public: void __thiscall AeThreadManager::Execute(float)	scr.o
+0x005DC5B0	0x009CBAB0	?ConvertHashToString@BrocSys@@YAPBDH@Z	char const * __cdecl BrocSys::ConvertHashToString(int)	scr.o
+0x005DC5E0	0x009CBAE0	?RemoveHashString@BrocSys@@YA_NH@Z	bool __cdecl BrocSys::RemoveHashString(int)	scr.o
+0x005DC620	0x009CBB20	?RemoveHashString@BrocSys@@YA_NPBD@Z	bool __cdecl BrocSys::RemoveHashString(char const *)	scr.o
+0x005DC680	0x009CBB80	?ThreadTerminateOnNotify@BrocSys@@YAXIH@Z	void __cdecl BrocSys::ThreadTerminateOnNotify(unsigned int,int)	scr.o
+0x005DC800	0x009CBD00	?GetAiArray1@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABVstring@3@@Z	void __cdecl BrocSys::GetAiArray1(class Broc::dyn_array<class Broc::entity> &,class Broc::string const &)	scr.o
+0x005DC8F0	0x009CBDF0	?GetAiArray2@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z	void __cdecl BrocSys::GetAiArray2(class Broc::dyn_array<class Broc::entity> &)	scr.o
+0x005DC950	0x009CBE50	?CopyEntArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABV?$ae_sized_array@Ventity@Broc@@$0CAA@@@@Z	void __cdecl BrocSys::CopyEntArray(class Broc::dyn_array<class Broc::entity> &,class ae_sized_array<class Broc::entity,512> const &)	scr.o
+0x005DC9A0	0x009CBEA0	?GetSpawnerArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z	void __cdecl BrocSys::GetSpawnerArray(class Broc::dyn_array<class Broc::entity> &)	scr.o
+0x005DCA40	0x009CBF40	?GetSpawnerTeamArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABVstring@3@@Z	void __cdecl BrocSys::GetSpawnerTeamArray(class Broc::dyn_array<class Broc::entity> &,class Broc::string const &)	scr.o
+0x005DCB90	0x009CC090	?GetWeaponModel@BrocSys@@YAII@Z	unsigned int __cdecl BrocSys::GetWeaponModel(unsigned int)	scr.o
+0x005DCBF0	0x009CC0F0	?GetWeaponModelName@BrocSys@@YA?AVstring@Broc@@I@Z	class Broc::string __cdecl BrocSys::GetWeaponModelName(unsigned int)	scr.o
+0x005DCCA0	0x009CC1A0	?GetPartName@BrocSys@@YAXAAVstring@Broc@@ABV23@H@Z	void __cdecl BrocSys::GetPartName(class Broc::string &,class Broc::string const &,int)	scr.o
+0x005DCE70	0x009CC370	?GetEntByFieldAndHash@BrocSys@@YAIHIPAIH@Z	unsigned int __cdecl BrocSys::GetEntByFieldAndHash(int,unsigned int,unsigned int *,int)	scr.o
+0x005DCF80	0x009CC480	?GetEntTarget@BrocSys@@YAIIPAIH@Z	unsigned int __cdecl BrocSys::GetEntTarget(unsigned int,unsigned int *,int)	scr.o
+0x005DCFA0	0x009CC4A0	?GetEntTargetName@BrocSys@@YAIIPAIH@Z	unsigned int __cdecl BrocSys::GetEntTargetName(unsigned int,unsigned int *,int)	scr.o
+0x005DCFC0	0x009CC4C0	?GetEntClassname@BrocSys@@YAIIPAIH@Z	unsigned int __cdecl BrocSys::GetEntClassname(unsigned int,unsigned int *,int)	scr.o
+0x005DCFE0	0x009CC4E0	?GetEntNoteWorthy@BrocSys@@YAIIPAIH@Z	unsigned int __cdecl BrocSys::GetEntNoteWorthy(unsigned int,unsigned int *,int)	scr.o
+0x005DD000	0x009CC500	?GetEntGroup@BrocSys@@YAIIPAIH@Z	unsigned int __cdecl BrocSys::GetEntGroup(unsigned int,unsigned int *,int)	scr.o
+0x005DD020	0x009CC520	?GetEnt@BrocSys@@YAIABVstring@Broc@@HPAIHH@Z	unsigned int __cdecl BrocSys::GetEnt(class Broc::string const &,int,unsigned int *,int,int)	scr.o
+0x005DD690	0x009CCB90	?InitEntity@BrocSys@@YAXXZ	void __cdecl BrocSys::InitEntity(void)	scr.o
+0x005DF580	0x009CEA80	?GetCondText@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DF680	0x009CEB80	?GetDebugTxt@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DF780	0x009CEC80	?GetCondText@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyTimeoutState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DF8B0	0x009CEDB0	?GetDebugTxt@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyTimeoutState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DF9E0	0x009CEEE0	?GetCondText@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyMatchState::GetCondText(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DFB40	0x009CF040	?GetDebugTxt@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z	public: virtual void __thiscall AeThreadEntityNotifyMatchState::GetDebugTxt(class ae_fixed_string<64,unsigned char> &)	scr.o
+0x005DFC50	0x009CF150	?RegisterHashString@BrocSys@@YAXHPBD@Z	void __cdecl BrocSys::RegisterHashString(int,char const *)	scr.o
+0x005DFD30	0x009CF230	?RegisterHashString@BrocSys@@YAHPBD@Z	int __cdecl BrocSys::RegisterHashString(char const *)	scr.o
+0x005DFD70	0x009CF270	?CalcStringHash@BrocSys@@YAIPBD@Z	unsigned int __cdecl BrocSys::CalcStringHash(char const *)	scr.o
+0x005DFDB0	0x009CF2B0	?InitAPI@BrocSys@@YAXXZ	void __cdecl BrocSys::InitAPI(void)	scr.o
+0x005E0160	0x009CF660	?LoadScript@BrocSys@@YAXXZ	void __cdecl BrocSys::LoadScript(void)	scr.o

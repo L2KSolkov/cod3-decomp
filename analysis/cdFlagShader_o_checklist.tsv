@@ -1,0 +1,43 @@
+index	status	map_line
+1	VERIFIED	0002:003c9ff0 ??0cdFlagShaderMat@@QAE@PAUnglTexture@@@Z 00BB94F0 f cdFlagShader.o
+2	VERIFIED	0002:003ca080 ?InitCDFlagShader@@YAXXZ 00BB9580 f cdFlagShader.o
+3	VERIFIED	0002:003ca160 ?ToggleCDFlagShader@@YAXXZ 00BB9660 f cdFlagShader.o
+4	PORTED	0002:003ca180 ?CalculateFlagMatrix@@YAXAAVMat43@math@@PAUnglMeshSection@@M@Z 00BB9680 f cdFlagShader.o
+5	VERIFIED	0002:003ca3c0 ?Register@cdFlagShader@@UAEXXZ 00BB98C0 f cdFlagShader.o
+6	VERIFIED	0002:003ca400 ?AddNode@cdFlagShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB9900 f cdFlagShader.o
+7	PORTED	0002:003ca470 ?Render@cdFlagShaderNode@@UAEXXZ 00BB9970 f cdFlagShader.o
+8	PORTED	0002:003cad00 ?sin@@YAMM@Z 00BBA200 f i cdFlagShader.o
+9	PORTED	0002:003cad10 ?Inv@math@@YAMM@Z 00BBA210 f i cdFlagShader.o
+10	PORTED	0002:003cad20 ?GetW@Dir3@math@@QBEMXZ 00BBA220 f i cdFlagShader.o
+11	PORTED	0002:003cad30 ??Gmath@@YA?AVVector4@0@ABVDir3@0@ABV10@@Z 00BBA230 f i cdFlagShader.o
+12	PORTED	0002:003cad90 ?Mul@math@@YA?AVDir3@1@ABV21@ABVVector4@1@@Z 00BBA290 f i cdFlagShader.o
+13	PORTED	0002:003cadd0 ?Mul@math@@YA?AVVector4@1@ABV21@ABVDir3@1@@Z 00BBA2D0 f i cdFlagShader.o
+14	PORTED	0002:003cae10 ??0Mat34@math@@QAE@XZ 00BBA310 f i cdFlagShader.o
+15	PORTED	0002:003cae20 ??0Mat34@math@@QAE@ABV01@@Z 00BBA320 f i cdFlagShader.o
+16	PORTED	0002:003cae90 ??0Mat44@math@@QAE@ABVMat43@1@@Z 00BBA390 f i cdFlagShader.o
+17	PORTED	0002:003caf10 ??4Mat44@math@@QAEABV01@ABVMat34@1@@Z 00BBA410 f i cdFlagShader.o
+18	PORTED	0002:003cafc0 ?Mul@math@@YA?AVMat44@1@ABVMat43@1@ABV21@@Z 00BBA4C0 f i cdFlagShader.o
+19	PORTED	0002:003cb1a0 ??Dmath@@YA?AVMat44@0@ABVMat43@0@ABV10@@Z 00BBA6A0 f i cdFlagShader.o
+20	PORTED	0002:003cb380 ?Transpose@math@@YA?AVMat34@1@ABVMat43@1@@Z 00BBA880 f i cdFlagShader.o
+21	PORTED	0002:003cb440 ??Smath@@YA?AVMat34@0@ABVMat43@0@@Z 00BBA940 f i cdFlagShader.o
+22	PORTED	0002:003cb500 ?Full_Inv@math@@YA?AVMat43@1@ABV21@@Z 00BBAA00 f i cdFlagShader.o
+23	PORTED	0002:003cb810 ?gpuDisableAlpha@@YAXXZ 00BBAD10 f i cdFlagShader.o
+24	VERIFIED	0002:003cb840 ??0cdFlagShader@@QAE@XZ 00BBAD40 f i cdFlagShader.o
+25	VERIFIED	0002:003cb870 ?GetName@cdFlagShader@@UAE?AVtlFixedString@@XZ 00BBAD70 f i cdFlagShader.o
+26	PORTED	0002:003cb890 ?RegisterShader@cdFlagVertex@@YAXXZ 00BBAD90 f i cdFlagShader.o
+27	PORTED	0002:003cb8b0 ?RegisterVShader@cdFlagVertex@@YAXXZ 00BBADB0 f i cdFlagShader.o
+28	PORTED	0002:003cb8d0 ?GetVShader@cdFlagVertex@@YAKXZ 00BBADD0 f i cdFlagShader.o
+29	PORTED	0002:003cb8e0 ?RegisterShader@cdFlagPixel@@YAXXZ 00BBADE0 f i cdFlagShader.o
+30	PORTED	0002:003cb900 ?RegisterPShader@cdFlagPixel@@YAXXZ 00BBAE00 f i cdFlagShader.o
+31	PORTED	0002:003cb920 ?GetPShader@cdFlagPixel@@YAPAKXZ 00BBAE20 f i cdFlagShader.o
+32	PORTED	0002:003cb930 ??0Params@cdFlagVertex@@QAE@XZ 00BBAE30 f i cdFlagShader.o
+33	PORTED	0002:003cb940 ??$IsSet@UcdFlagRandomSeedType@@@nglParamSet@@QAE_NABUcdFlagRandomSeedType@@@Z 00BBAE40 f i cdFlagShader.o
+34	PORTED	0002:003cb970 ??$Get@UcdFlagRandomSeedType@@@nglParamSet@@QAEIABUcdFlagRandomSeedType@@@Z 00BBAE70 f i cdFlagShader.o
+35	PORTED	0002:003cb9d0 ??$SetConstants@UParams@cdFlagVertex@@@cdFlagVertex@@YAXABUParams@0@@Z 00BBAED0 f i cdFlagShader.o
+36	PORTED	0002:003cb9f0 ??0cdFlagShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdFlagShaderMat@@@Z 00BBAEF0 f i cdFlagShader.o
+37	PORTED	0002:003cba20 ??_EcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o
+38	PORTED	0002:003cba20 ??_GcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o
+39	PORTED	0002:003cba50 ??1cdFlagShaderNode@@UAE@XZ 00BBAF50 f i cdFlagShader.o
+40	VERIFIED	0002:003cba60 ??_GcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o
+41	VERIFIED	0002:003cba60 ??_EcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o
+42	VERIFIED	0002:003cba90 ??1cdFlagShader@@UAE@XZ 00BBAF90 f i cdFlagShader.o

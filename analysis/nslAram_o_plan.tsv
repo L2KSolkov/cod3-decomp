@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x00822DC0	?nslAramGetBase@@YAPAXXZ	void * __cdecl nslAramGetBase(void)	
+0x00822DD0	?nslAramGetSize@@YAIXZ	unsigned int __cdecl nslAramGetSize(void)	
+0x00822DE0	?nslAramGetFree@@YAIXZ	unsigned int __cdecl nslAramGetFree(void)	
+0x00822DF0	?nslAramSetAlignment@@YAXI@Z	void __cdecl nslAramSetAlignment(unsigned int)	
+0x00822E00	?nslAramGetAlignment@@YAIXZ	unsigned int __cdecl nslAramGetAlignment(void)	
+0x00822E10	?nslAramInit@@YAXPAXI@Z	void __cdecl nslAramInit(void *,unsigned int)	
+0x00822EA0	?nslAramGetFreeBlock@@YAIPAI0@Z	unsigned int __cdecl nslAramGetFreeBlock(unsigned int *,unsigned int *)	
+0x00822F90	?nslAramAlloc@@YAPAXII@Z	void * __cdecl nslAramAlloc(unsigned int,unsigned int)	
+0x008230A0	?nslAramFree@@YAXPAX@Z	void __cdecl nslAramFree(void *)	

@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x0084AB00	0x00C3A000	?nglCreateTexture@@YAPAUnglTexture@@IIHHHH@Z	struct nglTexture * __cdecl nglCreateTexture(unsigned int,unsigned int,int,int,int,int)	ngl_gpu_texture.o

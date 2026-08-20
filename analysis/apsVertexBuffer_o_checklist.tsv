@@ -1,0 +1,14 @@
+index	status	map_line
+1	PORTED	0002:00402c50 ?CreateIndexBuffer@D3DDevice@@SGJIKW4_D3DFORMAT@@KPAPAUD3DIndexBuffer@@@Z 00BF2150 f i apsVertexBuffer.o
+2	PORTED	0002:00402c80 ?DrawIndexedVertices@D3DDevice@@SGJW4_D3DPRIMITIVETYPE@@IPBG@Z 00BF2180 f i apsVertexBuffer.o
+3	VERIFIED	0002:00402cd0 ?Init@apsVertexBuffer@@YAXI@Z 00BF21D0 f apsVertexBuffer.o
+4	VERIFIED	0002:00402d90 ?GetBufferPtr@apsVertexBuffer@@YAPAUSpriteVertex@1@I@Z 00BF2290 f apsVertexBuffer.o
+5	PORTED	0002:00402dd0 ?ReleaseAndDraw@apsVertexBuffer@@YAXXZ 00BF22D0 f apsVertexBuffer.o
+6	PORTED	0002:00402e50 ?Swap@apsVertexBuffer@@YAXXZ 00BF2350 f apsVertexBuffer.o
+7	PORTED	0002:00402e90 ?Lock@D3DIndexBuffer@@QAGJIIPAPAEK@Z 00BF2390 f i apsVertexBuffer.o
+8	PORTED	0002:00402eb0 ?Unlock@D3DIndexBuffer@@QAGJXZ 00BF23B0 f i apsVertexBuffer.o
+9	PORTED	0002:00402ec0 ?CreateIndexBuffer@gpuD3DDevice@@QAEJIKW4_D3DFORMAT@@KPAPAUD3DIndexBuffer@@PAPAX@Z 00BF23C0 f i apsVertexBuffer.o
+10	PORTED	0002:00402ef0 ?gpuCreateIndexBuffer@@YAPAUD3DIndexBuffer@@IW4gpuIndexType@@W4gpuBufferUsage@@@Z 00BF23F0 f i apsVertexBuffer.o
+11	PORTED	0002:00402f10 ?gpuMapIndexBuffer@@YAPAXPAUD3DIndexBuffer@@II@Z 00BF2410 f i apsVertexBuffer.o
+12	PORTED	0002:00402f20 ?gpuUnmapIndexBuffer@@YAXPAUD3DIndexBuffer@@@Z 00BF2420 f i apsVertexBuffer.o
+13	PORTED	0002:00402f30 ?gpuDrawIndexedPrimitive@@YAXW4gpuPrimType@@IIPAUD3DIndexBuffer@@W4gpuIndexType@@IIPAUD3DVertexBuffer@@PAUgpuVertexFormat@@@Z 00BF2430 f i apsVertexBuffer.o

@@ -1,0 +1,38 @@
+index	status	map_line
+1	PORTED	0002:003d69f0 ??1cdOceanShaderNode@@UAE@XZ 00BC5EF0 f i cdRiverShader.o
+2	VERIFIED	0002:003d6a00 ??0cdOceanShader@@QAE@XZ 00BC5F00 f i cdRiverShader.o
+3	VERIFIED	0002:003d6a30 ?GetName@cdOceanShader@@UAE?AVtlFixedString@@XZ 00BC5F30 f i cdRiverShader.o
+4	VERIFIED	0002:003d6a50 ??1cdOceanShader@@UAE@XZ 00BC5F50 f i cdRiverShader.o
+5	VERIFIED	0002:003d6a60 ??0cdRiverShader@@QAE@XZ 00BC5F60 f i cdRiverShader.o
+6	VERIFIED	0002:003d6aa0 ?GetName@cdRiverShader@@UAE?AVtlFixedString@@XZ 00BC5FA0 f i cdRiverShader.o
+7	PORTED	0002:003d6ac0 ?RegisterShader@cdRiverRender@@YAXXZ 00BC5FC0 f i cdRiverShader.o
+8	PORTED	0002:003d6ae0 ?RegisterVShader@cdRiverRender@@YAXXZ 00BC5FE0 f i cdRiverShader.o
+9	PORTED	0002:003d6b00 ?GetVShader@cdRiverRender@@YAKXZ 00BC6000 f i cdRiverShader.o
+10	PORTED	0002:003d6b10 ?RegisterShader@cdRiverPixel@@YAXXZ 00BC6010 f i cdRiverShader.o
+11	PORTED	0002:003d6b40 ?RegisterPShader@cdRiverPixel@@YAXXZ 00BC6040 f i cdRiverShader.o
+12	PORTED	0002:003d6b50 ?GetPShader@cdRiverPixel@@YAPAKIII@Z 00BC6050 f i cdRiverShader.o
+13	PORTED	0002:003d6b70 ?RegisterShader@cdRiverPixel_Fullbright@@YAXXZ 00BC6070 f i cdRiverShader.o
+14	PORTED	0002:003d6b90 ?RegisterPShader@cdRiverPixel_Fullbright@@YAXXZ 00BC6090 f i cdRiverShader.o
+15	PORTED	0002:003d6bb0 ?GetPShader@cdRiverPixel_Fullbright@@YAPAKXZ 00BC60B0 f i cdRiverShader.o
+16	VERIFIED	0002:003d6bc0 ??0cdRiverShaderMat@@QAE@PAUnglTexture@@@Z 00BC60C0 f cdRiverShader.o
+17	VERIFIED	0002:003d6be0 ?InitCDRiverShader@@YAXXZ 00BC60E0 f cdRiverShader.o
+18	VERIFIED	0002:003d6c30 ?ToggleCDRiverShader@@YAXXZ 00BC6130 f cdRiverShader.o
+19	VERIFIED	0002:003d6c50 ?Register@cdRiverShader@@UAEXXZ 00BC6150 f cdRiverShader.o
+20	PORTED	0002:003d6ca0 ?GetVShader@cdRiverShaderNode@@UAEKXZ 00BC61A0 f cdRiverShader.o
+21	VERIFIED	0002:003d6cb0 ?GetFullbrightPShader@cdRiverShaderNode@@UAEPAKXZ 00BC61B0 f cdRiverShader.o
+22	VERIFIED	0002:003d6cc0 ?GetPShader@cdRiverShaderNode@@UAEPAKHHH@Z 00BC61C0 f cdRiverShader.o
+23	VERIFIED	0002:003d6ce0 ?GetVShaderParamsStartAddress@cdRiverShaderNode@@UAEHXZ 00BC61E0 f cdRiverShader.o
+24	VERIFIED	0002:003d6cf0 ?GetVShaderFogConstantOffset@cdRiverShaderNode@@UAEHXZ 00BC61F0 f cdRiverShader.o
+25	VERIFIED	0002:003d6d00 ?AddNode@cdRiverShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC6200 f cdRiverShader.o
+26	PORTED	0002:003d6d70 ??0cdOceanShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdOceanShaderMat@@@Z 00BC6270 f i cdRiverShader.o
+27	PORTED	0002:003d6da0 ??_EcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o
+28	PORTED	0002:003d6da0 ??_GcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o
+29	VERIFIED	0002:003d6dd0 ??_GcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o
+30	VERIFIED	0002:003d6dd0 ??_EcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o
+31	PORTED	0002:003d6e00 ??0cdRiverShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdRiverShaderMat@@@Z 00BC6300 f i cdRiverShader.o
+32	PORTED	0002:003d6e30 ??_GcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o
+33	PORTED	0002:003d6e30 ??_EcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o
+34	PORTED	0002:003d6e60 ??1cdRiverShaderNode@@UAE@XZ 00BC6360 f i cdRiverShader.o
+35	VERIFIED	0002:003d6e70 ??_GcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o
+36	VERIFIED	0002:003d6e70 ??_EcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o
+37	VERIFIED	0002:003d6ea0 ??1cdRiverShader@@UAE@XZ 00BC63A0 f i cdRiverShader.o

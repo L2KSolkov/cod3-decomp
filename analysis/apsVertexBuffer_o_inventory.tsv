@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x00802CD0	0x00BF21D0	?Init@apsVertexBuffer@@YAXI@Z	void __cdecl apsVertexBuffer::Init(unsigned int)	apsVertexBuffer.o
+0x00802D90	0x00BF2290	?GetBufferPtr@apsVertexBuffer@@YAPAUSpriteVertex@1@I@Z	struct apsVertexBuffer::SpriteVertex * __cdecl apsVertexBuffer::GetBufferPtr(unsigned int)	apsVertexBuffer.o
+0x00802DD0	0x00BF22D0	?ReleaseAndDraw@apsVertexBuffer@@YAXXZ	void __cdecl apsVertexBuffer::ReleaseAndDraw(void)	apsVertexBuffer.o
+0x00802E50	0x00BF2350	?Swap@apsVertexBuffer@@YAXXZ	void __cdecl apsVertexBuffer::Swap(void)	apsVertexBuffer.o

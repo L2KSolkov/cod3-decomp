@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x00833B90	??0tlInstanceBank@@QAE@XZ	public: __thiscall tlInstanceBank::tlInstanceBank(void)	
+0x00833BA0	?NewNodeOfLevel@tlInstanceBank@@AAEPAUInstance@1@H@Z	private: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::NewNodeOfLevel(int)	
+0x00833BC0	?RandomLevel@tlInstanceBank@@AAEHXZ	private: int __thiscall tlInstanceBank::RandomLevel(void)	
+0x00833C00	?Insert@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@PAX@Z	public: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::Insert(class tlFixedString const &,void *)	
+0x00833D50	?Delete@tlInstanceBank@@QAEHABVtlFixedString@@@Z	public: int __thiscall tlInstanceBank::Delete(class tlFixedString const &)	
+0x00833EA0	?Search@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@@Z	public: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::Search(class tlFixedString const &)	
+0x00833F50	?Destroy@tlInstanceBank@@QAEXXZ	public: void __thiscall tlInstanceBank::Destroy(void)	
+0x00833FB0	??1tlInstanceBank@@QAE@XZ	public: __thiscall tlInstanceBank::~tlInstanceBank(void)	
+0x00833FC0	?Init@tlInstanceBank@@QAEXXZ	public: void __thiscall tlInstanceBank::Init(void)	

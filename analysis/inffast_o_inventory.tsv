@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007EA7C0	0x00BD9CC0	_inflate_fast	_inflate_fast	inffast.o

@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00853A70	?Render@nglStringNode@@UAEXXZ	public: virtual void __thiscall nglStringNode::Render(void)	

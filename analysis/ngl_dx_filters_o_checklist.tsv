@@ -1,0 +1,29 @@
+index	status	map_line
+1	VERIFIED	0002:00447ef0 ?CopyImage@nglDxFilters@@YAXPAUnglTexture@@0@Z 00C373F0 f ngl_dx_filters.o
+2	VERIFIED	0002:004481d0 ?FilterCopy@nglDxFilters@@YAXPAUnglTexture@@0KQAUFilterSample@1@KK@Z 00C376D0 f ngl_dx_filters.o
+3	VERIFIED	0002:00448a10 ?RenderGlow@nglDxFilters@@YAXM@Z 00C37F10 f ngl_dx_filters.o
+4	VERIFIED	0002:004490a0 ?FillDepthPalette@nglDxFilters@@YAXXZ 00C385A0 f ngl_dx_filters.o
+5	VERIFIED	0002:00449140 ?FillFogPalette@nglDxFilters@@YAXXZ 00C38640 f ngl_dx_filters.o
+6	VERIFIED	0002:00449280 ?AllocFiltersTex@nglDxFilters@@YAXXZ 00C38780 f ngl_dx_filters.o
+7	VERIFIED	0002:00449290 ?FreeFiltersTex@nglDxFilters@@YAXXZ 00C38790 f ngl_dx_filters.o
+8	VERIFIED	0002:004492a0 ?nglSetFiltersTexSizes@@YAXII@Z 00C387A0 f ngl_dx_filters.o
+9	VERIFIED	0002:004492b0 ?nglUpdateFilterTextures@@YAXXZ 00C387B0 f ngl_dx_filters.o
+10	VERIFIED	0002:004492f0 ?nglCreateFilterTextures@@YAXII@Z 00C387F0 f ngl_dx_filters.o
+11	VERIFIED	0002:004493d0 ?nglDestroyFilterTextures@@YAXXZ 00C388D0 f ngl_dx_filters.o
+12	VERIFIED	0002:00449400 ?nglEdgeDetectionCallBack@@YAXPAX@Z 00C38900 f ngl_dx_filters.o
+13	VERIFIED	0002:00449530 ?nglFogCallBack@@YAXPAX@Z 00C38A30 f ngl_dx_filters.o
+14	VERIFIED	0002:00449540 ?nglGlowCallBack@@YAXPAX@Z 00C38A40 f ngl_dx_filters.o
+15	VERIFIED	0002:00449600 ?nglPostProcessFiltersTex@@YAXXZ 00C38B00 f ngl_dx_filters.o
+16	VERIFIED	0002:00449610 ?RenderBlur@nglDxFilters@@YAXPAUnglTexture@@0@Z 00C38B10 f ngl_dx_filters.o
+17	VERIFIED	0002:00449f80 ?nglBlurCallBack@@YAXPAX@Z 00C39480 f ngl_dx_filters.o
+18	VERIFIED	0002:00449fa0 ?nglDepthOfFieldCallBack@@YAXPAX@Z 00C394A0 f ngl_dx_filters.o
+19	PORTED	0002:0044a4e0 ?GetLevelDesc@D3DTexture@@QAGJIPAU_D3DSURFACE_DESC@@@Z 00C399E0 f i ngl_dx_filters.o
+20	PORTED	0002:0044a500 ??0D3DXCOLOR@@QAE@MMMM@Z 00C39A00 f i ngl_dx_filters.o
+21	PORTED	0002:0044a530 ??BD3DXCOLOR@@QBEKXZ 00C39A30 f i ngl_dx_filters.o
+22	PORTED	0002:0044a640 ?SetStencil@nglDxRenderState@@QAEX_N@Z 00C39B40 f i ngl_dx_filters.o
+23	PORTED	0002:0044a670 ?SetMaxMipLevel@nglDxRenderState@@QAEHHH@Z 00C39B70 f i ngl_dx_filters.o
+24	PORTED	0002:0044a6b0 ?SetColorKeyOp@nglDxRenderState@@QAEHHW4_D3DTEXTURECOLORKEYOP@@@Z 00C39BB0 f i ngl_dx_filters.o
+25	PORTED	0002:0044a6f0 ?SetColorSign@nglDxRenderState@@QAEHHH@Z 00C39BF0 f i ngl_dx_filters.o
+26	PORTED	0002:0044a730 ?SetAlphaKill@nglDxRenderState@@QAEHHW4_D3DTEXTUREALPHAKILL@@@Z 00C39C30 f i ngl_dx_filters.o
+27	PORTED	0002:0044a770 ?nglGetFSAAScaleX@@YAMXZ 00C39C70 f i ngl_dx_filters.o
+28	PORTED	0002:0044a780 ?nglGetFSAAScaleY@@YAMXZ 00C39C80 f i ngl_dx_filters.o

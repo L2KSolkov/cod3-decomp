@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007DBB00	0x00BCB000	?InitCDWorldPointLitShader@@YAXXZ	void __cdecl InitCDWorldPointLitShader(void)	cdWorldPointLitShader.o
+0x007DBB50	0x00BCB050	?ToggleCDWorldPointLitShader@@YAXXZ	void __cdecl ToggleCDWorldPointLitShader(void)	cdWorldPointLitShader.o
+0x007DBB70	0x00BCB070	?Register@cdWorldPointLitShader@@UAEXXZ	public: virtual void __thiscall cdWorldPointLitShader::Register(void)	cdWorldPointLitShader.o
+0x007DBBB0	0x00BCB0B0	?AddNode@cdWorldPointLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldPointLitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdWorldPointLitShader.o
+0x007DBC60	0x00BCB160	?Render@cdWorldPointLitShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldPointLitShaderNode::Render(void)	cdWorldPointLitShader.o

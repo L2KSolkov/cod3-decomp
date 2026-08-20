@@ -1,0 +1,15 @@
+index	status	map_line
+1	VERIFIED	0002:00443110 ?nglScratchIndexAlloc@@YAHH@Z 00C32610 f ngl_gpu_meshedit.o
+2	VERIFIED	0002:00443160 ?nglScratchVertexAlloc@@YAHHH@Z 00C32660 f ngl_gpu_meshedit.o
+3	VERIFIED	0002:004431d0 ?nglCreateSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z 00C326D0 f ngl_gpu_meshedit.o
+4	VERIFIED	0002:004432b0 ?nglDestroySection@@YAXPAUnglMeshSection@@@Z 00C327B0 f ngl_gpu_meshedit.o
+5	VERIFIED	0002:004432e0 ?nglLockSectionIndices@@YAPAXPAUnglMeshSection@@@Z 00C327E0 f ngl_gpu_meshedit.o
+6	VERIFIED	0002:00443300 ?nglUnlockSectionIndices@@YAXPAUnglMeshSection@@@Z 00C32800 f ngl_gpu_meshedit.o
+7	VERIFIED	0002:00443310 ?nglLockSectionVertices@@YAPAXPAUnglMeshSection@@@Z 00C32810 f ngl_gpu_meshedit.o
+8	VERIFIED	0002:00443330 ?nglUnlockSectionVertices@@YAXPAUnglMeshSection@@@Z 00C32830 f ngl_gpu_meshedit.o
+9	VERIFIED	0002:00443340 ?nglCreateScratchSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z 00C32840 f ngl_gpu_meshedit.o
+10	VERIFIED	0002:00443400 ?nglCopySection@@YAXPAUnglMeshSection@@0@Z 00C32900 f ngl_gpu_meshedit.o
+11	VERIFIED	0002:00443540 ?nglCopySection@@YAXPAUnglMesh@@H0H@Z 00C32A40 f ngl_gpu_meshedit.o
+12	VERIFIED	0002:00443570 ?nglCreateSectionCopy@@YAPAUnglMeshSection@@PAU1@@Z 00C32A70 f ngl_gpu_meshedit.o
+13	PORTED	0002:004435b0 ?gpuDestroyVertexBuffer@@YAXPAUD3DVertexBuffer@@@Z 00C32AB0 f i ngl_gpu_meshedit.o
+14	PORTED	0002:004435c0 ?gpuDestroyIndexBuffer@@YAXPAUD3DIndexBuffer@@@Z 00C32AC0 f i ngl_gpu_meshedit.o

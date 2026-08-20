@@ -1,0 +1,78 @@
+index	status	map_line
+1	PORTED	0002:00378570 ?SetRankedGame@MultiplayerMgr@@QAEX_N@Z 00B67A70 f i mp_xbox.o
+2	VERIFIED	0002:00378580 ??0JoinGameMenu@@QAE@PAVFEMenuSystem@@@Z 00B67A80 f mp_xbox.o
+3	VERIFIED	0002:003785c0 ?OnActivate@JoinGameMenu@@UAEXXZ 00B67AC0 f mp_xbox.o
+4	VERIFIED	0002:003786c0 ?Draw@JoinGameMenu@@UAEXXZ 00B67BC0 f mp_xbox.o
+5	VERIFIED	0002:003786e0 ?Update@JoinGameMenu@@UAEXM@Z 00B67BE0 f mp_xbox.o
+6	VERIFIED	0002:00378910 ?Select@JoinGameMenu@@UAEXH@Z 00B67E10 f mp_xbox.o
+7	VERIFIED	0002:00378920 ?OnTriangle@JoinGameMenu@@UAEXH@Z 00B67E20 f mp_xbox.o
+8	VERIFIED	0002:00378930 ?SetPanelFile@JoinGameMenu@@UAEXPAVPanelFile@@@Z 00B67E30 f mp_xbox.o
+9	VERIFIED	0002:003789d0 ?Me@JoinGameMenu@@SAPAV1@XZ 00B67ED0 f mp_xbox.o
+10	VERIFIED	0002:003789e0 ?Draw@MPMainMenuXBox@@UAEXXZ 00B67EE0 f mp_xbox.o
+11	PORTED	0002:00378a10 ?OnXBoxLive@MPMainMenuXBox@@IAEXH@Z 00B67F10 f mp_xbox.o
+12	PORTED	0002:00378ae0 ?OnSplitScreen@MPMainMenuXBox@@IAEXXZ 00B67FE0 f mp_xbox.o
+13	PORTED	0002:00378af0 ?OnSystemLinkXBox@MPMainMenuXBox@@IAEXXZ 00B67FF0 f mp_xbox.o
+14	PORTED	0002:00378b10 ?OnXboxLiveOptions@MPMainMenuXBox@@IAEXXZ 00B68010 f mp_xbox.o
+15	VERIFIED	0002:00378b20 ?OnOption@MPMainMenuXBox@@QAEXH@Z 00B68020 f mp_xbox.o
+16	VERIFIED	0002:00378b40 ?OnTriangle@MPMainMenuXBox@@UAEXH@Z 00B68040 f mp_xbox.o
+17	VERIFIED	0002:00378b60 ?Me@MPMainMenuXBox@@SAPAV1@XZ 00B68060 f mp_xbox.o
+18	VERIFIED	0002:00378b70 ?OnDown@MPMainMenuXBox@@UAEXH@Z 00B68070 f mp_xbox.o
+19	VERIFIED	0002:00378bc0 ?OnUp@MPMainMenuXBox@@UAEXH@Z 00B680C0 f mp_xbox.o
+20	PORTED	0002:00378c10 ?UpdateWidescreen@MPMainMenuXBox@@MAEX_N@Z 00B68110 f mp_xbox.o
+21	VERIFIED	0002:00378c50 ?Init@XBoxLiveIngameOptionsCOD3@@UAEXXZ 00B68150 f mp_xbox.o
+22	VERIFIED	0002:00378c60 ?Draw@XBoxLiveIngameOptionsCOD3@@UAEXXZ 00B68160 f mp_xbox.o
+23	VERIFIED	0002:00378c80 ?OnDeactivate@XBoxLiveIngameOptionsCOD3@@UAEXPAVFEMenu@@@Z 00B68180 f mp_xbox.o
+24	VERIFIED	0002:00378c90 ?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z 00B68190 f mp_xbox.o
+25	VERIFIED	0002:00378cb0 ?OnUp@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B681B0 f mp_xbox.o
+26	VERIFIED	0002:00378d10 ?OnDown@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68210 f mp_xbox.o
+27	VERIFIED	0002:00378d70 ?OnLeft@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68270 f mp_xbox.o
+28	VERIFIED	0002:00378d80 ?OnRight@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68280 f mp_xbox.o
+29	VERIFIED	0002:00378d90 ?OnL1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68290 f mp_xbox.o
+30	VERIFIED	0002:00378da0 ?OnR1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B682A0 f mp_xbox.o
+31	VERIFIED	0002:00378db0 ?OnCross@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B682B0 f mp_xbox.o
+32	VERIFIED	0002:00378ee0 ?OnTriangle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B683E0 f mp_xbox.o
+33	VERIFIED	0002:00378ef0 ?OnCircle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B683F0 f mp_xbox.o
+34	VERIFIED	0002:00378f00 ?OnSquare@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68400 f mp_xbox.o
+35	VERIFIED	0002:00378f10 ?OnStart@XBoxLiveIngameOptionsCOD3@@UAEXH@Z 00B68410 f mp_xbox.o
+36	PORTED	0002:00378f20 ?ButtonHeldAction@XBoxLiveIngameOptionsCOD3@@MAEXXZ 00B68420 f mp_xbox.o
+37	VERIFIED	0002:00378f30 ?UpdateSplitScreen@XBoxLiveIngameOptionsCOD3@@UAEXXZ 00B68430 f mp_xbox.o
+38	PORTED	0002:00378f60 ?WireForSignedOut@XBoxLiveIngameOptionsCOD3@@IAEXXZ 00B68460 f mp_xbox.o
+39	VERIFIED	0002:00378fb0 ?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ 00B684B0 f mp_xbox.o
+40	VERIFIED	0002:00378fc0 ?OnCross@AARXBoxLiveIngameOptions@@UAEXH@Z 00B684C0 f mp_xbox.o
+41	VERIFIED	0002:003790c0 ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ 00B685C0 f mp_xbox.o
+42	PORTED	0002:00379170 ?OnLive@MPMainMenuXBox@@IAEXH@Z 00B68670 f mp_xbox.o
+43	PORTED	0002:00379180 ?OnSystemLink@MPMainMenuXBox@@IAEXXZ 00B68680 f mp_xbox.o
+44	VERIFIED	0002:003791a0 ?OnCross@MPMainMenuXBox@@UAEXH@Z 00B686A0 f mp_xbox.o
+45	VERIFIED	0002:00379230 ?SetPanelFile@MPMainMenuXBox@@UAEXPAVPanelFile@@@Z 00B68730 f mp_xbox.o
+46	PORTED	0002:00379bb0 ?SetOptionText@MPMainMenuXBox@@IAEXXZ 00B690B0 f mp_xbox.o
+47	PORTED	0002:00379c60 ?SetImage@MPMainMenuXBox@@IAEXXZ 00B69160 f mp_xbox.o
+48	VERIFIED	0002:00379d30 ?SetPanelFile@XBoxLiveIngameOptionsCOD3@@UAEXPAVPanelFile@@@Z 00B69230 f mp_xbox.o
+49	VERIFIED	0002:0037a600 ?OnActivate@XBoxLiveIngameOptionsCOD3@@UAEXXZ 00B69B00 f mp_xbox.o
+50	PORTED	0002:0037a6b0 ?WireForSignedIn@XBoxLiveIngameOptionsCOD3@@IAEXXZ 00B69BB0 f mp_xbox.o
+51	VERIFIED	0002:0037a7c0 ?OnActivate@AARXBoxLiveIngameOptions@@UAEXXZ 00B69CC0 f mp_xbox.o
+52	VERIFIED	0002:0037a860 ?OnActivate@MPMainMenuXBox@@UAEXXZ 00B69D60 f mp_xbox.o
+53	VERIFIED	0002:0037a8f0 ?Update@MPMainMenuXBox@@UAEXM@Z 00B69DF0 f mp_xbox.o
+54	VERIFIED	0002:0037a950 ?Update@XBoxLiveIngameOptionsCOD3@@UAEXM@Z 00B69E50 f mp_xbox.o
+55	VERIFIED	0002:0037ab20 ?Update@AARXBoxLiveIngameOptions@@UAEXM@Z 00B6A020 f mp_xbox.o
+56	VERIFIED	0002:0037ab40 ?PanelFileUnloaded@XBoxLiveIngameOptionsCOD3@@UAEXPAVPanelFile@@@Z 00B6A040 f mp_xbox.o
+57	VERIFIED	0002:0037ab80 ??0MPMainMenuXBox@@QAE@PAVFEMenuSystem@@@Z 00B6A080 f mp_xbox.o
+58	VERIFIED	0002:0037ac50 ??1MPMainMenuXBox@@UAE@XZ 00B6A150 f mp_xbox.o
+59	VERIFIED	0002:0037ad10 ??0XBoxLiveIngameOptionsCOD3@@QAE@PAVFEMenuSystem@@@Z 00B6A210 f mp_xbox.o
+60	VERIFIED	0002:0037ae60 ??1XBoxLiveIngameOptionsCOD3@@UAE@XZ 00B6A360 f mp_xbox.o
+61	VERIFIED	0002:0037af10 ??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z 00B6A410 f mp_xbox.o
+62	VERIFIED	0002:0037af70 ??1AARXBoxLiveIngameOptions@@UAE@XZ 00B6A470 f mp_xbox.o
+63	PORTED	0002:0037ba00 ?Init@JoinGameMenu@@UAEXXZ 00B6AF00 f i mp_xbox.o
+64	VERIFIED	0002:0037ba10 ??A?$ae_array@PAVPanelQuad@@$0M@@@QAEAAPAVPanelQuad@@H@Z 00B6AF10 f i mp_xbox.o
+65	VERIFIED	0002:0037ba90 ??A?$ae_array@PAVFEText@@$02@@QAEAAPAVFEText@@H@Z 00B6AF90 f i mp_xbox.o
+66	VERIFIED	0002:0037bb10 ??A?$ae_array@PAVFEText@@$03@@QAEAAPAVFEText@@H@Z 00B6B010 f i mp_xbox.o
+67	VERIFIED	0002:0037bb90 ??A?$ae_array@PAVPanelQuad@@$05@@QAEAAPAVPanelQuad@@H@Z 00B6B090 f i mp_xbox.o
+68	VERIFIED	0002:0037bc10 ??_GJoinGameMenu@@UAEPAXI@Z 00B6B110 f i mp_xbox.o
+69	VERIFIED	0002:0037bc10 ??_EJoinGameMenu@@UAEPAXI@Z 00B6B110 f i mp_xbox.o
+70	VERIFIED	0002:0037bc40 ??1JoinGameMenu@@UAE@XZ 00B6B140 f i mp_xbox.o
+71	PORTED	0002:0037bc50 ?Init@MPMainMenuXBox@@UAEXXZ 00B6B150 f i mp_xbox.o
+72	VERIFIED	0002:0037bc60 ??_GMPMainMenuXBox@@UAEPAXI@Z 00B6B160 f i mp_xbox.o
+73	VERIFIED	0002:0037bc60 ??_EMPMainMenuXBox@@UAEPAXI@Z 00B6B160 f i mp_xbox.o
+74	VERIFIED	0002:0037bc90 ??_EXBoxLiveIngameOptionsCOD3@@UAEPAXI@Z 00B6B190 f i mp_xbox.o
+75	VERIFIED	0002:0037bc90 ??_GXBoxLiveIngameOptionsCOD3@@UAEPAXI@Z 00B6B190 f i mp_xbox.o
+76	VERIFIED	0002:0037bcc0 ??_GAARXBoxLiveIngameOptions@@UAEPAXI@Z 00B6B1C0 f i mp_xbox.o
+77	VERIFIED	0002:0037bcc0 ??_EAARXBoxLiveIngameOptions@@UAEPAXI@Z 00B6B1C0 f i mp_xbox.o

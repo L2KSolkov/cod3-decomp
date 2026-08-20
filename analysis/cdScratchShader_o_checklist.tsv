@@ -1,0 +1,47 @@
+index	status	map_line
+1	VERIFIED	0002:003c5660 ??0cdScratchMaterial@@QAE@PAUnglTexture@@IH_N@Z 00BB4B60 f cdScratchShader.o
+2	VERIFIED	0002:003c5690 ?ToggleCDScratchShader@@YAXXZ 00BB4B90 f cdScratchShader.o
+3	VERIFIED	0002:003c56b0 ?Register@cdScratchShader@@UAEXXZ 00BB4BB0 f cdScratchShader.o
+4	VERIFIED	0002:003c56e0 ?InitCDScratchShader@@YAXXZ 00BB4BE0 f cdScratchShader.o
+5	VERIFIED	0002:003c5720 ?AddNode@cdScratchShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB4C20 f cdScratchShader.o
+6	VERIFIED	0002:003c57f0 ?Render@cdScratchShaderNode@@UAEXXZ 00BB4CF0 f cdScratchShader.o
+7	PORTED	0002:003c5a60 ?IsSet@nglParamSet@@QAE_NI@Z 00BB4F60 f i cdScratchShader.o
+8	PORTED	0002:003c5a90 ??RnglTextureFrameParamType@@QAEAAU0@XZ 00BB4F90 f i cdScratchShader.o
+9	PORTED	0002:003c5aa0 ?GetID@nglZBiasParamType@@SAIXZ 00BB4FA0 f i cdScratchShader.o
+10	PORTED	0002:003c5ab0 ?gpuSetVertexConstant@@YAXHABVMat44@math@@@Z 00BB4FB0 f i cdScratchShader.o
+11	PORTED	0002:003c5ad0 ?nglVectorToColor@@YAIABVVector4@math@@@Z 00BB4FD0 f i cdScratchShader.o
+12	VERIFIED	0002:003c5b40 ?nglListAddNode_Opaque@@YAXPAVnglRenderNode@@@Z 00BB5040 f i cdScratchShader.o
+13	VERIFIED	0002:003c5b70 ?nglListAddNode_Translucent@@YAXPAVnglRenderNode@@@Z 00BB5070 f i cdScratchShader.o
+14	VERIFIED	0002:003c5ba0 ?nglListAddNode_Opaque@@YAXPAVnglRenderNode@@I@Z 00BB50A0 f i cdScratchShader.o
+15	VERIFIED	0002:003c5be0 ?nglListAddNode_Translucent@@YAXPAVnglRenderNode@@M@Z 00BB50E0 f i cdScratchShader.o
+16	PORTED	0002:003c5c20 ?SetZBias@nglDxRenderState@@QAEXI@Z 00BB5120 f i cdScratchShader.o
+17	PORTED	0002:003c5c50 ?SetFog@nglDxRenderState@@QAEX_N@Z 00BB5150 f i cdScratchShader.o
+18	PORTED	0002:003c5c80 ?SetFogColor@nglDxRenderState@@QAEXI@Z 00BB5180 f i cdScratchShader.o
+19	PORTED	0002:003c5cb0 ?GetLToW@nglMeshNode@@QBEABVMat43@math@@XZ 00BB51B0 f i cdScratchShader.o
+20	PORTED	0002:003c5cc0 ?GetLToS@nglMeshNode@@QBEABVMat44@math@@XZ 00BB51C0 f i cdScratchShader.o
+21	PORTED	0002:003c5cd0 ?GetID@nglShader@@QAEHXZ 00BB51D0 f i cdScratchShader.o
+22	VERIFIED	0002:003c5ce0 ?GetDist@nglShaderNode@@QAEMABVMat43@math@@@Z 00BB51E0 f i cdScratchShader.o
+23	PORTED	0002:003c5da0 ??1nglShaderNode@@UAE@XZ 00BB52A0 f i cdScratchShader.o
+24	PORTED	0002:003c5db0 ?RegisterVShader@cdScratchShaderVertex@@YAXXZ 00BB52B0 f i cdScratchShader.o
+25	PORTED	0002:003c5dd0 ?GetVShader@cdScratchShaderVertex@@YAKXZ 00BB52D0 f i cdScratchShader.o
+26	PORTED	0002:003c5de0 ?RegisterPShader@cdScratchShaderPixel@@YAXXZ 00BB52E0 f i cdScratchShader.o
+27	PORTED	0002:003c5e00 ?GetPShader@cdScratchShaderPixel@@YAPAKXZ 00BB5300 f i cdScratchShader.o
+28	VERIFIED	0002:003c5e10 ??0cdScratchShader@@QAE@XZ 00BB5310 f i cdScratchShader.o
+29	VERIFIED	0002:003c5e40 ?GetName@cdScratchShader@@UAE?AVtlFixedString@@XZ 00BB5340 f i cdScratchShader.o
+30	VERIFIED	0002:003c5e60 ??_GcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o
+31	VERIFIED	0002:003c5e60 ??_EcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o
+32	VERIFIED	0002:003c5e90 ??1cdScratchShader@@UAE@XZ 00BB5390 f i cdScratchShader.o
+33	PORTED	0002:003c5ea0 ??$IsSet@UnglTextureFrameParamType@@@nglParamSet@@QAE_NABUnglTextureFrameParamType@@@Z 00BB53A0 f i cdScratchShader.o
+34	PORTED	0002:003c5ed0 ??$Get@UnglTextureFrameParamType@@@nglParamSet@@QAEHABUnglTextureFrameParamType@@@Z 00BB53D0 f i cdScratchShader.o
+35	PORTED	0002:003c5f30 ??$IsSet@UnglZBiasParamType@@@nglParamSet@@QAE_NABUnglZBiasParamType@@@Z 00BB5430 f i cdScratchShader.o
+36	PORTED	0002:003c5f60 ??$Get@UnglZBiasParamType@@@nglParamSet@@QAEMABUnglZBiasParamType@@@Z 00BB5460 f i cdScratchShader.o
+37	PORTED	0002:003c5fc0 ??0nglShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@@Z 00BB54C0 f i cdScratchShader.o
+38	PORTED	0002:003c5fe0 ?GetDesc@nglShaderNode@@UAEXPAD@Z 00BB54E0 f i cdScratchShader.o
+39	PORTED	0002:003c5ff0 ?SetIFLFrame@nglShaderNode@@QAEXXZ 00BB54F0 f i cdScratchShader.o
+40	PORTED	0002:003c6040 ?RenderSetup@nglShaderNode@@QAEXXZ 00BB5540 f i cdScratchShader.o
+41	PORTED	0002:003c6090 ??_EnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o
+42	PORTED	0002:003c6090 ??_GnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o
+43	PORTED	0002:003c60c0 ??0cdScratchShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdScratchMaterial@@@Z 00BB55C0 f i cdScratchShader.o
+44	PORTED	0002:003c60f0 ??_GcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o
+45	PORTED	0002:003c60f0 ??_EcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o
+46	PORTED	0002:003c6120 ??1cdScratchShaderNode@@UAE@XZ 00BB5620 f i cdScratchShader.o

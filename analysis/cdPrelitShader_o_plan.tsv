@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007D3590	?InitCDPrelitShader@@YAXXZ	void __cdecl InitCDPrelitShader(void)	
+0x007D35E0	?ToggleCDPrelitShader@@YAXXZ	void __cdecl ToggleCDPrelitShader(void)	
+0x007D3600	?Register@cdPrelitShader@@UAEXXZ	public: virtual void __thiscall cdPrelitShader::Register(void)	
+0x007D3650	?Render@cdPrelitShaderNode@@UAEXXZ	public: virtual void __thiscall cdPrelitShaderNode::Render(void)	
+0x007D3B70	?AddNode@cdPrelitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdPrelitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	

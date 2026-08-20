@@ -1,0 +1,43 @@
+index	status	map_line
+1	VERIFIED	0002:003fe7a0 ?Length@math@@YAMABVPosition3@1@@Z 00BEDCA0 f i apsGroup.o
+2	PORTED	0002:003fe7f0 ??Gmath@@YA?AVDir3@0@ABV10@M@Z 00BEDCF0 f i apsGroup.o
+3	VERIFIED	0002:003fe830 ?apsVector3_Zero@@YA?AVDir3@math@@XZ 00BEDD30 f i apsGroup.o
+4	VERIFIED	0002:003fe860 ??0apsBounds@@QAE@ABVDir3@math@@0@Z 00BEDD60 f i apsGroup.o
+5	VERIFIED	0002:003fe940 ?Accumulate@apsBounds@@QAEXABVDir3@math@@@Z 00BEDE40 f i apsGroup.o
+6	VERIFIED	0002:003fe980 ?XForm3d_1@apsMath@@YA?AVDir3@math@@ABVMat43@3@ABV23@@Z 00BEDE80 f i apsGroup.o
+7	PORTED	0002:003fe9e0 ?GetBuildScene@apsCommon@@SAPAUnglScene@@XZ 00BEDEE0 f i apsGroup.o
+8	PORTED	0002:003fe9f0 ?HasField@apsPFD@@QBEIW4apsEPFDField@@@Z 00BEDEF0 f i apsGroup.o
+9	VERIFIED	0002:003fea10 ?GetOffset@apsPFD@@QBEHW4apsEPFDField@@@Z 00BEDF10 f i apsGroup.o
+10	VERIFIED	0002:003fea60 ??0apsRendererRenderInfo@@QAE@XZ 00BEDF60 f i apsGroup.o
+11	PORTED	0002:003fea80 ?IsLocalSpace@apsGroup@@QBEIXZ 00BEDF80 f i apsGroup.o
+12	PORTED	0002:003fea90 ?GetGroupLocalToWorldTransform@apsGroup@@QBEABVMat43@math@@XZ 00BEDF90 f i apsGroup.o
+13	PORTED	0002:003feaa0 ?RenderingEnabled@apsGroup@@QBEIXZ 00BEDFA0 f i apsGroup.o
+14	PORTED	0002:003feab0 ?SetLocalSpace@apsGroup@@IAEXI@Z 00BEDFB0 f i apsGroup.o
+15	VERIFIED	0002:003feae0 ?GetParticles@apsGroup@@QBEPAEXZ 00BEDFE0 f i apsGroup.o
+16	PORTED	0002:003feaf0 ??0AABB@VFC@@QAE@XZ 00BEDFF0 f i apsGroup.o
+17	VERIFIED	0002:003feb00 ?HackTurnOffAepsMemory@@YAXXZ 00BEE000 f apsGroup.o
+18	VERIFIED	0002:003feb60 ?HackTurnOnAepsMemory@@YAXXZ 00BEE060 f apsGroup.o
+19	VERIFIED	0002:003feb90 ?Render@apsGroup@@QAE?AW4eRenderResult@apsRenderer@@ABULightInfo@apsLight@@ABUFrustumInfo@VFC@@PAUnglLightContext@@@Z 00BEE090 f apsGroup.o
+20	VERIFIED	0002:003fecf0 ?transform_bounds@apsGroup@@AAEXXZ 00BEE1F0 f apsGroup.o
+21	VERIFIED	0002:003fedb0 ?SetGroupLocalToWorldTransform@apsGroup@@QAEXABVMat43@math@@@Z 00BEE2B0 f apsGroup.o
+22	VERIFIED	0002:003feef0 ?SetGroupPosition@apsGroup@@QAEXABVDir3@math@@@Z 00BEE3F0 f apsGroup.o
+23	VERIFIED	0002:003fefe0 ?SavePositionsIfNecessary@apsGroup@@QAEXPAE0@Z 00BEE4E0 f apsGroup.o
+24	VERIFIED	0002:003ff180 ?ParticleIsMarkedForRemoval@apsGroup@@QBE_NPAE@Z 00BEE680 f apsGroup.o
+25	VERIFIED	0002:003ff1b0 ?AddToGlobalRemovalList@apsGroup@@ABEXPAE@Z 00BEE6B0 f apsGroup.o
+26	VERIFIED	0002:003ff210 ?FlushGlobalRemovalList@apsGroup@@AAEXXZ 00BEE710 f apsGroup.o
+27	VERIFIED	0002:003ff2b0 ??0apsGroup@@QAE@XZ 00BEE7B0 f apsGroup.o
+28	VERIFIED	0002:003ff2d0 ??1apsGroup@@QAE@XZ 00BEE7D0 f apsGroup.o
+29	VERIFIED	0002:003ff2e0 ?Term@apsGroup@@QAEXI@Z 00BEE7E0 f apsGroup.o
+30	VERIFIED	0002:003ff310 ?StartBatches@apsGroup@@QAEIAAPAE0M@Z 00BEE810 f apsGroup.o
+31	VERIFIED	0002:003ff3c0 ?NextBatch@apsGroup@@QAEXAAPAE0@Z 00BEE8C0 f apsGroup.o
+32	VERIFIED	0002:003ff7d0 ?EndBatches@apsGroup@@QAEXXZ 00BEECD0 f apsGroup.o
+33	VERIFIED	0002:003ff870 ?Add@apsGroup@@QAEXPAE@Z 00BEED70 f apsGroup.o
+34	VERIFIED	0002:003ff9d0 ?Remove@apsGroup@@ABEXPAE@Z 00BEEED0 f apsGroup.o
+35	VERIFIED	0002:003ff9f0 ?TestVisibility@apsGroup@@QAEXXZ 00BEEEF0 f apsGroup.o
+36	VERIFIED	0002:003ffc30 ?MarkParticleForRemoval@apsGroup@@QBEXPAE@Z 00BEF130 f apsGroup.o
+37	VERIFIED	0002:003ffc80 ?Init@apsGroup@@QAEIHPAVapsRenderer@@ABVapsPFD@@I@Z 00BEF180 f apsGroup.o
+38	VERIFIED	0002:003ffe00 ?ApplyChanceToRemove@apsGroup@@QAEXMPAE0AAH1@Z 00BEF300 f apsGroup.o
+39	PORTED	0002:003fffc0 ?InitGlobalRemovalList@apsGroup@@AAEXXZ 00BEF4C0 f i apsGroup.o
+40	PORTED	0002:003fffd0 ??$Max@M@apsMath@@YAMABM0@Z 00BEF4D0 f i apsGroup.o
+41	PORTED	0002:003ffff0 ??$Min@M@apsMath@@YAMABM0@Z 00BEF4F0 f i apsGroup.o
+42	PORTED	0002:00400010 ??$Limit@MM@apsMath@@YAMABM00@Z 00BEF510 f i apsGroup.o

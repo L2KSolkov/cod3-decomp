@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x00829770	?nslWaveBankSortSwap@@YAXPATnslWaveName@@PAUnslWave@@II@Z	void __cdecl nslWaveBankSortSwap(union nslWaveName *,struct nslWave *,unsigned int,unsigned int)	
+0x008297E0	?nslWaveBankSortRecursive@@YAXPAUnslWaveBank@@HHP6AHPBTnslWaveName@@1@Z@Z	void __cdecl nslWaveBankSortRecursive(struct nslWaveBank *,int,int,int (__cdecl*)(union nslWaveName const *,union nslWaveName const *))	
+0x00829C90	?nslWaveBankSort@@YAXPAUnslWaveBank@@@Z	void __cdecl nslWaveBankSort(struct nslWaveBank *)	

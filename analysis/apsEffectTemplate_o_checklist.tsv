@@ -1,0 +1,70 @@
+index	status	map_line
+1	PORTED	0002:00400100 ?apsGetFields@@YAIW4apsEPFDField@@0@Z 00BEF600 f i apsEffectTemplate.o
+2	VERIFIED	0002:00400120 ??0Element@apsEffectTemplate@@QAE@XZ 00BEF620 f i apsEffectTemplate.o
+3	PORTED	0002:00400170 ?RenderingEnabled@Element@apsEffectTemplate@@QBEIXZ 00BEF670 f i apsEffectTemplate.o
+4	VERIFIED	0002:00400180 ?SetRenderingEnable@Element@apsEffectTemplate@@QAEXI@Z 00BEF680 f i apsEffectTemplate.o
+5	VERIFIED	0002:004001a0 ?SetLocalSpace@Element@apsEffectTemplate@@QAEXI@Z 00BEF6A0 f i apsEffectTemplate.o
+6	VERIFIED	0002:004001c0 ?SetNanoWeight@Element@apsEffectTemplate@@QAEXM@Z 00BEF6C0 f i apsEffectTemplate.o
+7	PORTED	0002:004001e0 ?GetMemoryNeeded@Element@apsEffectTemplate@@QAEHXZ 00BEF6E0 f i apsEffectTemplate.o
+8	VERIFIED	0002:004001f0 ??0Modifier@apsEffectTemplate@@QAE@XZ 00BEF6F0 f i apsEffectTemplate.o
+9	VERIFIED	0002:00400220 ?SetName@apsEffectTemplate@@QAEXPBD@Z 00BEF720 f i apsEffectTemplate.o
+10	PORTED	0002:00400270 ?Reset@Stats@apsEffectTemplate@@QAEXXZ 00BEF770 f i apsEffectTemplate.o
+11	VERIFIED	0002:00400290 ?GetRequiredParticleFields@apsRenderer@@QBEIXZ 00BEF790 f i apsEffectTemplate.o
+12	VERIFIED	0002:004002a0 ?RebuildPFD@Element@apsEffectTemplate@@QAEXXZ 00BEF7A0 f apsEffectTemplate.o
+13	VERIFIED	0002:004002e0 ?SetLocalToWorldTransform@apsEffectTemplate@@QAEXABVMat43@math@@@Z 00BEF7E0 f apsEffectTemplate.o
+14	VERIFIED	0002:00400360 ?SetNanoGraphName@Element@apsEffectTemplate@@QAEXPBD@Z 00BEF860 f apsEffectTemplate.o
+15	VERIFIED	0002:00400430 ?BeginReport@apsEffectTemplate@@QAEXXZ 00BEF930 f apsEffectTemplate.o
+16	VERIFIED	0002:00400460 ?Report@apsEffectTemplate@@QAEXXZ 00BEF960 f apsEffectTemplate.o
+17	VERIFIED	0002:004004b0 ?SetBeginTime@apsEffectTemplate@@QAEXHM@Z 00BEF9B0 f apsEffectTemplate.o
+18	VERIFIED	0002:00400530 ?SetEndTime@apsEffectTemplate@@QAEXHM@Z 00BEFA30 f apsEffectTemplate.o
+19	VERIFIED	0002:004005b0 ?SetLocalSpace@apsEffectTemplate@@QAEXHI@Z 00BEFAB0 f apsEffectTemplate.o
+20	VERIFIED	0002:00400640 ?SetNanoGraphName@apsEffectTemplate@@QAEXHPBD@Z 00BEFB40 f apsEffectTemplate.o
+21	VERIFIED	0002:004006c0 ?SetNanoWeight@apsEffectTemplate@@QAEXHM@Z 00BEFBC0 f apsEffectTemplate.o
+22	VERIFIED	0002:00400740 ?GetModifierNumber@apsEffectTemplate@@QBEHABVtlFixedString@@@Z 00BEFC40 f apsEffectTemplate.o
+23	VERIFIED	0002:004007d0 ?SetModifier@apsEffectTemplate@@QAEXHABVtlFixedString@@HHH@Z 00BEFCD0 f apsEffectTemplate.o
+24	VERIFIED	0002:00400940 ?SetEnableRendering@apsEffectTemplate@@QAEXHI@Z 00BEFE40 f apsEffectTemplate.o
+25	VERIFIED	0002:004009d0 ?GetEnableRendering@apsEffectTemplate@@QBEIH@Z 00BEFED0 f apsEffectTemplate.o
+26	VERIFIED	0002:00400a50 ?Fixup@apsEffectTemplate@@QAEXABUapsFixupParams@@@Z 00BEFF50 f apsEffectTemplate.o
+27	VERIFIED	0002:00400b10 ?CalcMemoryNeeded@apsEffectTemplate@@QAEXXZ 00BF0010 f apsEffectTemplate.o
+28	VERIFIED	0002:00400b90 ?TestAlloc@apsEffectTemplate@@QAEIXZ 00BF0090 f apsEffectTemplate.o
+29	VERIFIED	0002:00400bd0 ?MemoryMatch@apsEffectTemplate@@QAEIPAV1@@Z 00BF00D0 f apsEffectTemplate.o
+30	VERIFIED	0002:00400cd0 ?Free@Element@apsEffectTemplate@@QAEXXZ 00BF01D0 f apsEffectTemplate.o
+31	VERIFIED	0002:00400d30 ??0apsEffectTemplate@@QAE@PBD@Z 00BF0230 f apsEffectTemplate.o
+32	VERIFIED	0002:00400de0 ??1apsEffectTemplate@@QAE@XZ 00BF02E0 f apsEffectTemplate.o
+33	VERIFIED	0002:00400f40 ?SetNumElements@apsEffectTemplate@@QAEXH@Z 00BF0440 f apsEffectTemplate.o
+34	VERIFIED	0002:00401040 ?AddElement@apsEffectTemplate@@QAEHXZ 00BF0540 f apsEffectTemplate.o
+35	VERIFIED	0002:00401070 ?RemoveElement@apsEffectTemplate@@QAEXH@Z 00BF0570 f apsEffectTemplate.o
+36	VERIFIED	0002:00401100 ?SetMaxNumParticles@apsEffectTemplate@@QAEXHH@Z 00BF0600 f apsEffectTemplate.o
+37	VERIFIED	0002:00401180 ?SetRenderer@apsEffectTemplate@@QAEXHPAVapsRenderer@@@Z 00BF0680 f apsEffectTemplate.o
+38	VERIFIED	0002:004012c0 ?SetActionList@apsEffectTemplate@@QAEXHPAVapsActionList@@@Z 00BF07C0 f apsEffectTemplate.o
+39	VERIFIED	0002:00401400 ?SetElementData@apsEffectTemplate@@QAEXHHMMPAVapsRenderer@@PAVapsActionList@@I@Z 00BF0900 f apsEffectTemplate.o
+40	VERIFIED	0002:00401720 ?SetNumModifiers@apsEffectTemplate@@QAEXH@Z 00BF0C20 f apsEffectTemplate.o
+41	VERIFIED	0002:00401750 ?AddModifier@apsEffectTemplate@@QAEHXZ 00BF0C50 f apsEffectTemplate.o
+42	VERIFIED	0002:00401780 ?RemoveModifier@apsEffectTemplate@@QAEXH@Z 00BF0C80 f apsEffectTemplate.o
+43	VERIFIED	0002:004017d0 ??0?$apsArray@UElement@apsEffectTemplate@@@@QAE@XZ 00BF0CD0 f i apsEffectTemplate.o
+44	VERIFIED	0002:004017e0 ??A?$apsArray@UElement@apsEffectTemplate@@@@QAEAAUElement@apsEffectTemplate@@H@Z 00BF0CE0 f i apsEffectTemplate.o
+45	PORTED	0002:00401830 ?begin@?$apsArray@UElement@apsEffectTemplate@@@@QAEPAUElement@apsEffectTemplate@@XZ 00BF0D30 f i apsEffectTemplate.o
+46	PORTED	0002:00401840 ?end@?$apsArray@UElement@apsEffectTemplate@@@@QAEPAUElement@apsEffectTemplate@@XZ 00BF0D40 f i apsEffectTemplate.o
+47	VERIFIED	0002:00401850 ?erase@?$apsArray@UElement@apsEffectTemplate@@@@QAEXPAUElement@apsEffectTemplate@@@Z 00BF0D50 f i apsEffectTemplate.o
+48	VERIFIED	0002:004018c0 ??0?$apsArray@UModifier@apsEffectTemplate@@@@QAE@XZ 00BF0DC0 f i apsEffectTemplate.o
+49	VERIFIED	0002:004018d0 ??A?$apsArray@UModifier@apsEffectTemplate@@@@QAEAAUModifier@apsEffectTemplate@@H@Z 00BF0DD0 f i apsEffectTemplate.o
+50	PORTED	0002:00401920 ?begin@?$apsArray@UModifier@apsEffectTemplate@@@@QAEPAUModifier@apsEffectTemplate@@XZ 00BF0E20 f i apsEffectTemplate.o
+51	VERIFIED	0002:00401930 ??4Modifier@apsEffectTemplate@@QAEAAU01@ABU01@@Z 00BF0E30 f i apsEffectTemplate.o
+52	PORTED	0002:00401980 ?construct_array@?$apsArray@UElement@apsEffectTemplate@@@@AAEPAUElement@apsEffectTemplate@@H@Z 00BF0E80 f i apsEffectTemplate.o
+53	PORTED	0002:00401a30 ?destroy_all@?$apsArray@UElement@apsEffectTemplate@@@@QAEXXZ 00BF0F30 f i apsEffectTemplate.o
+54	PORTED	0002:00401a80 ?end@?$apsArray@UModifier@apsEffectTemplate@@@@QAEPAUModifier@apsEffectTemplate@@XZ 00BF0F80 f i apsEffectTemplate.o
+55	PORTED	0002:00401a90 ?construct_array@?$apsArray@UModifier@apsEffectTemplate@@@@AAEPAUModifier@apsEffectTemplate@@H@Z 00BF0F90 f i apsEffectTemplate.o
+56	PORTED	0002:00401b20 ?destroy_all@?$apsArray@UModifier@apsEffectTemplate@@@@QAEXXZ 00BF1020 f i apsEffectTemplate.o
+57	PORTED	0002:00401b70 ??$apsDestroy@VapsRenderer@@@@YAXPAVapsRenderer@@@Z 00BF1070 f i apsEffectTemplate.o
+58	PORTED	0002:00401b80 ??$apsFixUp@UElement@apsEffectTemplate@@@@YAXAAPAUElement@apsEffectTemplate@@PAX@Z 00BF1080 f i apsEffectTemplate.o
+59	PORTED	0002:00401ba0 ??$apsFixUp@D@@YAXAAPADPAX@Z 00BF10A0 f i apsEffectTemplate.o
+60	PORTED	0002:00401bc0 ??$apsFixUp@VapsRenderer@@@@YAXAAPAVapsRenderer@@PAX@Z 00BF10C0 f i apsEffectTemplate.o
+61	PORTED	0002:00401be0 ??$apsFixUp@VapsActionList@@@@YAXAAPAVapsActionList@@PAX@Z 00BF10E0 f i apsEffectTemplate.o
+62	PORTED	0002:00401c00 ??$apsFixUp@UModifier@apsEffectTemplate@@@@YAXAAPAUModifier@apsEffectTemplate@@PAX@Z 00BF1100 f i apsEffectTemplate.o
+63	VERIFIED	0002:00401c20 ??_GapsActionList@@QAEPAXI@Z 00BF1120 f i apsEffectTemplate.o
+64	VERIFIED	0002:00401c50 ??1?$apsArray@UElement@apsEffectTemplate@@@@QAE@XZ 00BF1150 f i apsEffectTemplate.o
+65	PORTED	0002:00401ca0 ?resize@?$apsArray@UElement@apsEffectTemplate@@@@QAEIH@Z 00BF11A0 f i apsEffectTemplate.o
+66	VERIFIED	0002:00401dd0 ??1?$apsArray@UModifier@apsEffectTemplate@@@@QAE@XZ 00BF12D0 f i apsEffectTemplate.o
+67	PORTED	0002:00401e20 ?resize@?$apsArray@UModifier@apsEffectTemplate@@@@QAEIH@Z 00BF1320 f i apsEffectTemplate.o
+68	VERIFIED	0002:00401f70 ?erase@?$apsArray@UModifier@apsEffectTemplate@@@@QAEXPAUModifier@apsEffectTemplate@@@Z 00BF1470 f i apsEffectTemplate.o
+69	PORTED	0002:00402020 ??$apsDestroy@VapsActionList@@@@YAXPAVapsActionList@@@Z 00BF1520 f i apsEffectTemplate.o

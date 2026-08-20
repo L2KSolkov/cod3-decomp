@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x0084AD10	0x00C3A210	?nglSaveTexture@@YAXPAUnglTexture@@PBD@Z	void __cdecl nglSaveTexture(struct nglTexture *,char const *)	ngl_dx_tex_create.o
+0x0084ADB0	0x00C3A2B0	?nglCreateTextureFromFile@@YAPAUnglTexture@@PAXH@Z	struct nglTexture * __cdecl nglCreateTextureFromFile(void *,int)	ngl_dx_tex_create.o
+0x0084AE20	0x00C3A320	?nglDestroyTexture@@YAXPAUnglTexture@@@Z	void __cdecl nglDestroyTexture(struct nglTexture *)	ngl_dx_tex_create.o
+0x0084AED0	0x00C3A3D0	?nglCreateFrontBufferTexture@@YAXPAUnglTexture@@PAVtlFixedString@@@Z	void __cdecl nglCreateFrontBufferTexture(struct nglTexture *,class tlFixedString *)	ngl_dx_tex_create.o
+0x0084AF30	0x00C3A430	?nglCreateAuxBufferTexture@@YAXPAUnglTexture@@HH@Z	void __cdecl nglCreateAuxBufferTexture(struct nglTexture *,int,int)	ngl_dx_tex_create.o
+0x0084AFA0	0x00C3A4A0	?nglCreatePrevBufferTexture@@YAXPAUnglTexture@@HH@Z	void __cdecl nglCreatePrevBufferTexture(struct nglTexture *,int,int)	ngl_dx_tex_create.o
+0x0084B010	0x00C3A510	?nglCreateBackBufferTexture@@YAXPAUnglTexture@@0@Z	void __cdecl nglCreateBackBufferTexture(struct nglTexture *,struct nglTexture *)	ngl_dx_tex_create.o
+0x0084B0B0	0x00C3A5B0	?nglInitFrameBufferTexture@@YAXXZ	void __cdecl nglInitFrameBufferTexture(void)	ngl_dx_tex_create.o
+0x0084B100	0x00C3A600	?nglUpdateInternalTextures@@YAXXZ	void __cdecl nglUpdateInternalTextures(void)	ngl_dx_tex_create.o
+0x0084B1A0	0x00C3A6A0	?nglDestroyNormalCubeMap@@YAXXZ	void __cdecl nglDestroyNormalCubeMap(void)	ngl_dx_tex_create.o
+0x0084B1C0	0x00C3A6C0	?nglCreateNormalCubeMap@@YAXI@Z	void __cdecl nglCreateNormalCubeMap(unsigned int)	ngl_dx_tex_create.o

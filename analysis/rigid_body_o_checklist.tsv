@@ -1,0 +1,14 @@
+index	status	map_line
+1	PORTED	0002:00486130 ??0outer_time@@QAE@M@Z 00C75630 f i rigid_body.o
+2	PORTED	0002:00486150 ?time_dot@@YA?BMABVouter_time@@0@Z 00C75650 f i rigid_body.o
+3	PORTED	0002:00486160 ?get_physics_system_flag@@YA?BII@Z 00C75660 f i rigid_body.o
+4	PORTED	0002:00486170 ?get_physics_system_outside_sub_delta_t@@YA?BMXZ 00C75670 f i rigid_body.o
+5	VERIFIED	0002:00486180 ?set_mass@rigid_body@@QAEXM@Z 00C75680 f rigid_body.o
+6	VERIFIED	0002:00486200 ?set@user_rigid_body@@QAEXQBVMat43@math@@@Z 00C75700 f rigid_body.o
+7	VERIFIED	0002:004863b0 ?set_inertia@rigid_body@@QAEXABVDir3@math@@@Z 00C758B0 f rigid_body.o
+8	VERIFIED	0002:00486550 ?set@rigid_body@@QAEXMABVDir3@math@@ABVMat43@3@00MH@Z 00C75A50 f rigid_body.o
+9	VERIFIED	0002:004869b0 ?update_col_mat@rigid_body@@QAEXXZ 00C75EB0 f rigid_body.o
+10	VERIFIED	0002:00486a00 ?add_force@rigid_body@@QAEXABVDir3@math@@0M@Z 00C75F00 f rigid_body.o
+11	VERIFIED	0002:00486c00 ?set@environment_rigid_body@@QAEXXZ 00C76100 f rigid_body.o
+12	PORTED	0002:00486d40 ?PHYS_ASSERT_ORTHONORMAL@@YAXABVMat43@math@@@Z 00C76240 f i rigid_body.o
+13	PORTED	0002:00486f80 ?calc_col_mat@rbint@@SAXQAVrigid_body@@ABVouter_time@@@Z 00C76480 f i rigid_body.o

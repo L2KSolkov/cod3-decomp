@@ -1,0 +1,9 @@
+ida_ea	va	name	signature	family
+0x0082CEC0	0x00C1C3C0	_txPrintv	_txPrintv	tx_tl.o
+0x0082CF90	0x00C1C490	_txBreak	_txBreak	tx_tl.o
+0x0082CFA0	0x00C1C4A0	_txMemAllocEx	_txMemAllocEx	tx_tl.o
+0x0082CFD0	0x00C1C4D0	_txMemAlloc	_txMemAlloc	tx_tl.o
+0x0082CFF0	0x00C1C4F0	_txMemFree	_txMemFree	tx_tl.o
+0x0082D000	0x00C1C500	_txMemRealloc	_txMemRealloc	tx_tl.o
+0x0082D010	0x00C1C510	_txMemReallocAdHoc	_txMemReallocAdHoc	tx_tl.o
+0x0082D060	0x00C1C560	_txAssertFailed	_txAssertFailed	tx_tl.o

@@ -1,0 +1,4 @@
+index	status	map_line
+1	PORTED	0002:00400050 ?Enabled@apsDebug@@SAIXZ 00BEF550 f i apsDebug.o
+2	VERIFIED	0002:00400060 ?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ 00BEF560 f apsDebug.o
+3	VERIFIED	0002:004000c0 ?Print@apsDebug@@SAXPBDZZ 00BEF5C0 f apsDebug.o

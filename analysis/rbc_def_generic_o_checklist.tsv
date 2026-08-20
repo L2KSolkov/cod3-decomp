@@ -1,0 +1,27 @@
+index	status	map_line
+1	PORTED	0002:004901e0 ?get_flag@rigid_body_constraint_hinge@@QBE?BIH@Z 00C7F6E0 f i rbc_def_generic.o
+2	PORTED	0002:004901f0 ?set_flag@rigid_body_constraint_distance@@AAEXIH@Z 00C7F6F0 f i rbc_def_generic.o
+3	PORTED	0002:00490220 ?get_flag@rigid_body_constraint_distance@@ABE?BHI@Z 00C7F720 f i rbc_def_generic.o
+4	PORTED	0002:00490230 ?add_right_side@pulse_sum_normal@@QAEXM@Z 00C7F730 f i rbc_def_generic.o
+5	PORTED	0002:00490250 ?setup_vel_custom@pulse_sum_angular@@QAEXMMM@Z 00C7F750 f i rbc_def_generic.o
+6	PORTED	0002:00490290 ?add_right_side@pulse_sum_angular@@QAEXM@Z 00C7F790 f i rbc_def_generic.o
+7	PORTED	0002:004902b0 ?scale_pulse_sum_hack@pulse_sum_constraint_solver@@SAXQAVpulse_sum_cache@@M@Z 00C7F7B0 f i rbc_def_generic.o
+8	PORTED	0002:004902d0 ?get_time_scale@rbcint@@SAABVouter_time@@PAVrigid_body_constraint@@@Z 00C7F7D0 f i rbc_def_generic.o
+9	VERIFIED	0002:00490320 ?set@rigid_body_constraint_point@@QAEXABVDir3@math@@0@Z 00C7F820 f rbc_def_generic.o
+10	VERIFIED	0002:00490370 ?epilog_vel_constraint@rigid_body_constraint_point@@QAEXM@Z 00C7F870 f rbc_def_generic.o
+11	VERIFIED	0002:004903b0 ?set@rigid_body_constraint_distance@@QAEXABVDir3@math@@0MM@Z 00C7F8B0 f rbc_def_generic.o
+12	PORTED	0002:00490420 ?outer_prolog_update@rigid_body_constraint_distance@@QAEXABVouter_time@@@Z 00C7F920 f rbc_def_generic.o
+13	VERIFIED	0002:00490460 ?inner_update@rigid_body_constraint_distance@@QAEXM@Z 00C7F960 f rbc_def_generic.o
+14	PORTED	0002:00490480 ?outer_epilog_update@rigid_body_constraint_distance@@QAEXABVouter_time@@@Z 00C7F980 f rbc_def_generic.o
+15	PORTED	0002:00490490 ?outer_epilog_update@rigid_body_constraint_angular_actuator@@QAEXABVouter_time@@@Z 00C7F990 f rbc_def_generic.o
+16	VERIFIED	0002:00490510 ?set@rigid_body_constraint_hinge@@QAEXABVDir3@math@@00000MMM@Z 00C7FA10 f rbc_def_generic.o
+17	VERIFIED	0002:004908b0 ?do_collision@rigid_body_constraint_hinge@@QAEXM@Z 00C7FDB0 f rbc_def_generic.o
+18	VERIFIED	0002:00490ab0 ?set@rigid_body_constraint_angular_actuator@@QAEXMABVMat43@math@@@Z 00C7FFB0 f rbc_def_generic.o
+19	PORTED	0002:00490c40 ?outer_prolog_update@rigid_body_constraint_angular_actuator@@QAEXABVouter_time@@@Z 00C80140 f rbc_def_generic.o
+20	VERIFIED	0002:00490d20 ?inner_update@rigid_body_constraint_angular_actuator@@QAEXM@Z 00C80220 f rbc_def_generic.o
+21	VERIFIED	0002:00490e60 ?setup_constraint@rigid_body_constraint_point@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C80360 f rbc_def_generic.o
+22	VERIFIED	0002:00490ed0 ?setup_constraint@rigid_body_constraint_hinge@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C803D0 f rbc_def_generic.o
+23	VERIFIED	0002:00491120 ?setup_constraint@rigid_body_constraint_distance@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C80620 f rbc_def_generic.o
+24	VERIFIED	0002:004915f0 ?setup_constraint@rigid_body_constraint_angular_actuator@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C80AF0 f rbc_def_generic.o
+25	VERIFIED	0002:00491a00 ?setup_vel_uni_standard_pos_adjust@pulse_sum_normal@@QAEXMMM@Z 00C80F00 f i rbc_def_generic.o
+26	PORTED	0002:00491aa0 ?sub_pos@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C80FA0 f i rbc_def_generic.o

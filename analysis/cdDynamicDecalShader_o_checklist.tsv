@@ -1,0 +1,38 @@
+index	status	map_line
+1	VERIFIED	0002:003cbd80 ??0cdDynamicDecalShaderMat@@QAE@XZ 00BBB280 f cdDynamicDecalShader.o
+2	VERIFIED	0002:003cbe10 ?InitCDDynamicDecalShader@@YAXXZ 00BBB310 f cdDynamicDecalShader.o
+3	VERIFIED	0002:003cbe60 ?ToggleCDDynamicDecalShader@@YAXXZ 00BBB360 f cdDynamicDecalShader.o
+4	VERIFIED	0002:003cbe80 ?Register@cdDynamicDecalShader@@UAEXXZ 00BBB380 f cdDynamicDecalShader.o
+5	VERIFIED	0002:003cbe90 ?AddNode@cdDynamicDecalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBB390 f cdDynamicDecalShader.o
+6	PORTED	0002:003cbf10 ?Render@cdDynamicDecalShaderNode@@UAEXXZ 00BBB410 f cdDynamicDecalShader.o
+7	PORTED	0002:003ccab0 ??Gmath@@YA?AVVector4@0@ABV10@ABVPosition3@0@@Z 00BBBFB0 f i cdDynamicDecalShader.o
+8	PORTED	0002:003ccaf0 ?Mul@math@@YA?AVDiagMat33@1@ABV21@0@Z 00BBBFF0 f i cdDynamicDecalShader.o
+9	PORTED	0002:003ccb20 ?Mul@math@@YA?AVMat43@1@ABV21@ABVDiagMat33@1@@Z 00BBC020 f i cdDynamicDecalShader.o
+10	PORTED	0002:003ccbe0 ??Dmath@@YA?AVMat43@0@ABV10@ABVDiagMat33@0@@Z 00BBC0E0 f i cdDynamicDecalShader.o
+11	PORTED	0002:003ccca0 ??XDiagMat33@math@@QAEABV01@ABV01@@Z 00BBC1A0 f i cdDynamicDecalShader.o
+12	PORTED	0002:003cccd0 ?Inv@math@@YA?AVDiagMat33@1@ABV21@@Z 00BBC1D0 f i cdDynamicDecalShader.o
+13	PORTED	0002:003ccd10 ?SetBorderColor@nglDxRenderState@@QAEHHK@Z 00BBC210 f i cdDynamicDecalShader.o
+14	PORTED	0002:003ccd40 ?IsScaled@nglMeshNode@@QBE_NXZ 00BBC240 f i cdDynamicDecalShader.o
+15	PORTED	0002:003ccd60 ?GetInvScale@nglMeshNode@@QBE?AVDiagMat33@math@@XZ 00BBC260 f i cdDynamicDecalShader.o
+16	PORTED	0002:003ccdb0 ?GetLToWNoScale@nglMeshNode@@QBE?AVMat43@math@@XZ 00BBC2B0 f i cdDynamicDecalShader.o
+17	PORTED	0002:003ccf30 ?GetWToLNoScale@nglMeshNode@@QAE?AVMat43@math@@XZ 00BBC430 f i cdDynamicDecalShader.o
+18	PORTED	0002:003cd040 ?GetWToL@nglMeshNode@@QAE?AVMat43@math@@XZ 00BBC540 f i cdDynamicDecalShader.o
+19	PORTED	0002:003cd1f0 ?nglDxSetupVShaderFog@@YA?AVVector4@math@@MMMM@Z 00BBC6F0 f i cdDynamicDecalShader.o
+20	VERIFIED	0002:003cd260 ??0cdDynamicDecalShader@@QAE@XZ 00BBC760 f i cdDynamicDecalShader.o
+21	VERIFIED	0002:003cd290 ?GetName@cdDynamicDecalShader@@UAE?AVtlFixedString@@XZ 00BBC790 f i cdDynamicDecalShader.o
+22	PORTED	0002:003cd2b0 ?RegisterShader@cdDynamicDecalRender@@YAXXZ 00BBC7B0 f i cdDynamicDecalShader.o
+23	PORTED	0002:003cd2e0 ?RegisterVShader@cdDynamicDecalRender@@YAXXZ 00BBC7E0 f i cdDynamicDecalShader.o
+24	PORTED	0002:003cd2f0 ?GetVShader@cdDynamicDecalRender@@YAKI@Z 00BBC7F0 f i cdDynamicDecalShader.o
+25	PORTED	0002:003cd300 ?RegisterShader@cdDynamicDecalPixel@@YAXXZ 00BBC800 f i cdDynamicDecalShader.o
+26	PORTED	0002:003cd330 ?RegisterPShader@cdDynamicDecalPixel@@YAXXZ 00BBC830 f i cdDynamicDecalShader.o
+27	PORTED	0002:003cd340 ?GetPShader@cdDynamicDecalPixel@@YAPAKI@Z 00BBC840 f i cdDynamicDecalShader.o
+28	PORTED	0002:003cd350 ??0cdDynamicDecalParams@cdDynamicDecalRender@@QAE@XZ 00BBC850 f i cdDynamicDecalShader.o
+29	PORTED	0002:003cd360 ??0nglPointLightInfo@@QAE@XZ 00BBC860 f i cdDynamicDecalShader.o
+30	PORTED	0002:003cd370 ??$SetConstants@UcdDynamicDecalParams@cdDynamicDecalRender@@@cdDynamicDecalRender@@YAXABUcdDynamicDecalParams@0@@Z 00BBC870 f i cdDynamicDecalShader.o
+31	PORTED	0002:003cd390 ??0cdDynamicDecalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDynamicDecalShaderMat@@@Z 00BBC890 f i cdDynamicDecalShader.o
+32	PORTED	0002:003cd3c0 ??_GcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o
+33	PORTED	0002:003cd3c0 ??_EcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o
+34	PORTED	0002:003cd3f0 ??1cdDynamicDecalShaderNode@@UAE@XZ 00BBC8F0 f i cdDynamicDecalShader.o
+35	VERIFIED	0002:003cd400 ??_EcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o
+36	VERIFIED	0002:003cd400 ??_GcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o
+37	VERIFIED	0002:003cd430 ??1cdDynamicDecalShader@@UAE@XZ 00BBC930 f i cdDynamicDecalShader.o

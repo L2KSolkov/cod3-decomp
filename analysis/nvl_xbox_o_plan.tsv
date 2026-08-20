@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x0082E100	?ProcessAudioChunk@nvlMovie@@EAEXXZ	private: virtual void __thiscall nvlMovie::ProcessAudioChunk(void)	
+0x0082E1E0	?StartAudioPlayback@nvlMovie@@EAEXXZ	private: virtual void __thiscall nvlMovie::StartAudioPlayback(void)	
+0x0082E230	?StopAudioPlayback@nvlMovie@@EAEXXZ	private: virtual void __thiscall nvlMovie::StopAudioPlayback(void)	
+0x0082E270	?nvlInit@@YA_NXZ	bool __cdecl nvlInit(void)	
+0x0082E390	?nvlShutdown@@YAXXZ	void __cdecl nvlShutdown(void)	
+0x0082E3A0	??1nvlMovie@@UAE@XZ	public: virtual __thiscall nvlMovie::~nvlMovie(void)	

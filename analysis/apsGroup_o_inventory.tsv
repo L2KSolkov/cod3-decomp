@@ -1,0 +1,23 @@
+ida_ea	va	name	signature	family
+0x007FEB00	0x00BEE000	?HackTurnOffAepsMemory@@YAXXZ	void __cdecl HackTurnOffAepsMemory(void)	apsGroup.o
+0x007FEB60	0x00BEE060	?HackTurnOnAepsMemory@@YAXXZ	void __cdecl HackTurnOnAepsMemory(void)	apsGroup.o
+0x007FEB90	0x00BEE090	?Render@apsGroup@@QAE?AW4eRenderResult@apsRenderer@@ABULightInfo@apsLight@@ABUFrustumInfo@VFC@@PAUnglLightContext@@@Z	public: enum apsRenderer::eRenderResult __thiscall apsGroup::Render(struct apsLight::LightInfo const &,struct VFC::FrustumInfo const &,struct nglLightContext *)	apsGroup.o
+0x007FECF0	0x00BEE1F0	?transform_bounds@apsGroup@@AAEXXZ	private: void __thiscall apsGroup::transform_bounds(void)	apsGroup.o
+0x007FEDB0	0x00BEE2B0	?SetGroupLocalToWorldTransform@apsGroup@@QAEXABVMat43@math@@@Z	public: void __thiscall apsGroup::SetGroupLocalToWorldTransform(class math::Mat43 const &)	apsGroup.o
+0x007FEEF0	0x00BEE3F0	?SetGroupPosition@apsGroup@@QAEXABVDir3@math@@@Z	public: void __thiscall apsGroup::SetGroupPosition(class math::Dir3 const &)	apsGroup.o
+0x007FEFE0	0x00BEE4E0	?SavePositionsIfNecessary@apsGroup@@QAEXPAE0@Z	public: void __thiscall apsGroup::SavePositionsIfNecessary(unsigned char *,unsigned char *)	apsGroup.o
+0x007FF180	0x00BEE680	?ParticleIsMarkedForRemoval@apsGroup@@QBE_NPAE@Z	public: bool __thiscall apsGroup::ParticleIsMarkedForRemoval(unsigned char *)const 	apsGroup.o
+0x007FF1B0	0x00BEE6B0	?AddToGlobalRemovalList@apsGroup@@ABEXPAE@Z	private: void __thiscall apsGroup::AddToGlobalRemovalList(unsigned char *)const 	apsGroup.o
+0x007FF210	0x00BEE710	?FlushGlobalRemovalList@apsGroup@@AAEXXZ	private: void __thiscall apsGroup::FlushGlobalRemovalList(void)	apsGroup.o
+0x007FF2B0	0x00BEE7B0	??0apsGroup@@QAE@XZ	public: __thiscall apsGroup::apsGroup(void)	apsGroup.o
+0x007FF2D0	0x00BEE7D0	??1apsGroup@@QAE@XZ	public: __thiscall apsGroup::~apsGroup(void)	apsGroup.o
+0x007FF2E0	0x00BEE7E0	?Term@apsGroup@@QAEXI@Z	public: void __thiscall apsGroup::Term(unsigned int)	apsGroup.o
+0x007FF310	0x00BEE810	?StartBatches@apsGroup@@QAEIAAPAE0M@Z	public: unsigned int __thiscall apsGroup::StartBatches(unsigned char * &,unsigned char * &,float)	apsGroup.o
+0x007FF3C0	0x00BEE8C0	?NextBatch@apsGroup@@QAEXAAPAE0@Z	public: void __thiscall apsGroup::NextBatch(unsigned char * &,unsigned char * &)	apsGroup.o
+0x007FF7D0	0x00BEECD0	?EndBatches@apsGroup@@QAEXXZ	public: void __thiscall apsGroup::EndBatches(void)	apsGroup.o
+0x007FF870	0x00BEED70	?Add@apsGroup@@QAEXPAE@Z	public: void __thiscall apsGroup::Add(unsigned char *)	apsGroup.o
+0x007FF9D0	0x00BEEED0	?Remove@apsGroup@@ABEXPAE@Z	private: void __thiscall apsGroup::Remove(unsigned char *)const 	apsGroup.o
+0x007FF9F0	0x00BEEEF0	?TestVisibility@apsGroup@@QAEXXZ	public: void __thiscall apsGroup::TestVisibility(void)	apsGroup.o
+0x007FFC30	0x00BEF130	?MarkParticleForRemoval@apsGroup@@QBEXPAE@Z	public: void __thiscall apsGroup::MarkParticleForRemoval(unsigned char *)const 	apsGroup.o
+0x007FFC80	0x00BEF180	?Init@apsGroup@@QAEIHPAVapsRenderer@@ABVapsPFD@@I@Z	public: unsigned int __thiscall apsGroup::Init(int,class apsRenderer *,class apsPFD const &,unsigned int)	apsGroup.o
+0x007FFE00	0x00BEF300	?ApplyChanceToRemove@apsGroup@@QAEXMPAE0AAH1@Z	public: void __thiscall apsGroup::ApplyChanceToRemove(float,unsigned char *,unsigned char *,int &,int &)	apsGroup.o

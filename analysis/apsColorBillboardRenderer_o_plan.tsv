@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x008056E0	??0apsColorBillboardRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsColorBillboardRenderer::apsColorBillboardRenderer(class apsColorBillboardRenderer::cArgs const &)	
+0x00805720	?Init@apsColorBillboardRenderer@@SAXXZ	public: static void __cdecl apsColorBillboardRenderer::Init(void)	
+0x00805750	?Render@apsColorBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsColorBillboardRenderer::Render(struct apsRendererRenderInfo const &)	

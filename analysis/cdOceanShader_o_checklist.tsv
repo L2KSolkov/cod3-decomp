@@ -1,0 +1,24 @@
+index	status	map_line
+1	VERIFIED	0002:003d7180 ??0cdOceanShaderMat@@QAE@PAUnglTexture@@@Z 00BC6680 f cdOceanShader.o
+2	VERIFIED	0002:003d7200 ?InitCDOceanShader@@YAXXZ 00BC6700 f cdOceanShader.o
+3	VERIFIED	0002:003d7250 ?ToggleCDOceanShader@@YAXXZ 00BC6750 f cdOceanShader.o
+4	PORTED	0002:003d7e50 ?GetVShader@cdOceanShaderNode@@UAEKXZ 00BC7350 f cdOceanShader.o
+5	VERIFIED	0002:003d7e60 ?GetFullbrightPShader@cdOceanShaderNode@@UAEPAKXZ 00BC7360 f cdOceanShader.o
+6	VERIFIED	0002:003d7e70 ?GetPShader@cdOceanShaderNode@@UAEPAKHHH@Z 00BC7370 f cdOceanShader.o
+7	VERIFIED	0002:003d7e90 ?GetVShaderFogConstantOffset@cdOceanShaderNode@@UAEHXZ 00BC7390 f cdOceanShader.o
+8	VERIFIED	0002:003d7ea0 ?GetVShaderParamsStartAddress@cdOceanShaderNode@@UAEHXZ 00BC73A0 f cdOceanShader.o
+9	VERIFIED	0002:003d7eb0 ?Register@cdOceanShader@@UAEXXZ 00BC73B0 f cdOceanShader.o
+10	VERIFIED	0002:003d7f00 ?AddNode@cdOceanShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC7400 f cdOceanShader.o
+11	PORTED	0002:003d7f70 ?SetContext@cdOceanShaderNode@@QAEXXZ 00BC7470 f cdOceanShader.o
+12	PORTED	0002:003d8d30 ?Render@cdOceanShaderNode@@UAEXXZ 00BC8230 f cdOceanShader.o
+13	PORTED	0002:003d9190 ?RegisterShader@cdOceanRender@@YAXXZ 00BC8690 f i cdOceanShader.o
+14	PORTED	0002:003d91b0 ?RegisterVShader@cdOceanRender@@YAXXZ 00BC86B0 f i cdOceanShader.o
+15	PORTED	0002:003d91d0 ?GetVShader@cdOceanRender@@YAKXZ 00BC86D0 f i cdOceanShader.o
+16	PORTED	0002:003d91e0 ?RegisterShader@cdOceanPixel@@YAXXZ 00BC86E0 f i cdOceanShader.o
+17	PORTED	0002:003d9210 ?RegisterPShader@cdOceanPixel@@YAXXZ 00BC8710 f i cdOceanShader.o
+18	PORTED	0002:003d9220 ?GetPShader@cdOceanPixel@@YAPAKIII@Z 00BC8720 f i cdOceanShader.o
+19	PORTED	0002:003d9240 ?RegisterShader@cdOceanPixel_Fullbright@@YAXXZ 00BC8740 f i cdOceanShader.o
+20	PORTED	0002:003d9260 ?RegisterPShader@cdOceanPixel_Fullbright@@YAXXZ 00BC8760 f i cdOceanShader.o
+21	PORTED	0002:003d9280 ?GetPShader@cdOceanPixel_Fullbright@@YAPAKXZ 00BC8780 f i cdOceanShader.o
+22	PORTED	0002:003d9290 ?GetBank@cdOceanGlobals@@YAAAUWaveBank@1@H@Z 00BC8790 f i cdOceanShader.o
+23	PORTED	0002:003d9300 ??0Params@cdOceanRender@@QAE@XZ 00BC8800 f i cdOceanShader.o

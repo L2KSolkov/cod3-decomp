@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00819D30	?Render@apsRectangleNode@@UAEXXZ	public: virtual void __thiscall apsRectangleNode::Render(void)	

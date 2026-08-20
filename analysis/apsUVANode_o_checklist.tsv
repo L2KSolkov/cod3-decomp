@@ -1,0 +1,22 @@
+index	status	map_line
+1	VERIFIED	0002:00416350 ?Render@apsUVANode@@UAEXXZ 00C05850 f apsUVANode.o
+2	PORTED	0002:00416370 ?GetRenderSortBuffer@apsUVANode@@QAEPAUBuffer@apsRenderSort@@XZ 00C05870 f i apsUVANode.o
+3	PORTED	0002:00416380 ?WidthFrames@apsUVARenderer@@QBEMXZ 00C05880 f i apsUVANode.o
+4	PORTED	0002:00416390 ?MaxFrame@apsUVARenderer@@QBEMXZ 00C05890 f i apsUVANode.o
+5	PORTED	0002:004163a0 ?InvWidthFrames@apsUVARenderer@@QBEMXZ 00C058A0 f i apsUVANode.o
+6	PORTED	0002:004163b0 ?InvHeightFrames@apsUVARenderer@@QBEMXZ 00C058B0 f i apsUVANode.o
+7	PORTED	0002:004163c0 ?GetVShader@apsUVARender@@YAKXZ 00C058C0 f i apsUVANode.o
+8	PORTED	0002:004163d0 ?GetPShader@apsUVARenderPixel@@YAPAKXZ 00C058D0 f i apsUVANode.o
+9	PORTED	0002:004163e0 ?GetPos@UVAParticle@@QAEAAUPacked@Dir3@math@@XZ 00C058E0 f i apsUVANode.o
+10	PORTED	0002:004163f0 ?GetColor@UVAParticle@@QAE?AVVector4@math@@XZ 00C058F0 f i apsUVANode.o
+11	PORTED	0002:00416440 ?GetWidth@UVAParticle@@QAEMXZ 00C05940 f i apsUVANode.o
+12	PORTED	0002:00416450 ?GetHeight@UVAParticle@@QAEMXZ 00C05950 f i apsUVANode.o
+13	PORTED	0002:00416460 ?GetAngle@UVAParticle@@QAEMXZ 00C05960 f i apsUVANode.o
+14	PORTED	0002:00416470 ?GetFrame@UVAParticle@@QAEMXZ 00C05970 f i apsUVANode.o
+15	PORTED	0002:00416480 ?GetVelocity@UVAParticle@@QAEAAVVector4@math@@XZ 00C05980 f i apsUVANode.o
+16	PORTED	0002:00416490 ??0?$cNodeRenderer@UUVAParticle@@VapsUVANode@@@@QAE@AAVapsUVANode@@@Z 00C05990 f i apsUVANode.o
+17	PORTED	0002:004164a0 ?SetupDefaultShaders@?$cNodeRenderer@UUVAParticle@@VapsUVANode@@@@QAEXABVMat43@math@@@Z 00C059A0 f i apsUVANode.o
+18	PORTED	0002:00416750 ??$fncompare@UUVAParticle@@@apsRenderSort@@YAHPBX0@Z 00C05C50 f i apsUVANode.o
+19	PORTED	0002:00416790 ?SetupShaders@?$cNodeRenderer@UUVAParticle@@VapsUVANode@@@@QAEXXZ 00C05C90 f i apsUVANode.o
+20	PORTED	0002:004167a0 ??$SortPointers@UUVAParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C05CA0 f i apsUVANode.o
+21	VERIFIED	0002:004167e0 ?Render@?$cNodeRenderer@UUVAParticle@@VapsUVANode@@@@QAEXXZ 00C05CE0 f i apsUVANode.o

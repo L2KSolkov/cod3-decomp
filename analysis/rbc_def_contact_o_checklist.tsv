@@ -1,0 +1,15 @@
+index	status	map_line
+1	PORTED	0002:0048aa10 ?get_flag@contact_point_info@@QBE?BII@Z 00C79F10 f i rbc_def_contact.o
+2	PORTED	0002:0048aa20 ?get_cpi_allocater@contact_point_info@@SAPAVphys_memory_heap@@XZ 00C79F20 f rbc_def_contact.o
+3	PORTED	0002:0048aa30 ?verify_constraint@rigid_body_constraint_contact@@AAEXQAVrigid_body@@0@Z 00C79F30 f rbc_def_contact.o
+4	VERIFIED	0002:0048aa90 ?setup_constraint@rigid_body_constraint_contact@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C79F90 f rbc_def_contact.o
+5	VERIFIED	0002:0048aad0 ??1rigid_body_constraint_contact@@QAE@XZ 00C79FD0 f rbc_def_contact.o
+6	PORTED	0002:0048aaf0 ??0pulse_sum_contact@@QAE@XZ 00C79FF0 f i rbc_def_contact.o
+7	PORTED	0002:0048ab00 ?remove_all@?$phys_simple_link_list@Vcontact_point_info@@@@QAEXXZ 00C7A000 f i rbc_def_contact.o
+8	PORTED	0002:0048ab10 ?set_next_link@?$phys_link_list_base@Vpulse_sum_contact@@@@QAEXQAVpulse_sum_contact@@@Z 00C7A010 f i rbc_def_contact.o
+9	PORTED	0002:0048ab20 ?PHYS_ALIGN@@YA?BIIH@Z 00C7A020 f i rbc_def_contact.o
+10	PORTED	0002:0048ab40 ?is_member@physics_system@@QBE?BIPBVrigid_body_constraint_contact@@@Z 00C7A040 f i rbc_def_contact.o
+11	PORTED	0002:0048ab60 ?verify_is_in_physics_system@@YAXPAVrigid_body_constraint_contact@@PAVrigid_body@@1@Z 00C7A060 f i rbc_def_contact.o
+12	PORTED	0002:0048ac10 ?add@?$phys_link_list@Vpulse_sum_contact@@@@QAEXPAVpulse_sum_contact@@@Z 00C7A110 f i rbc_def_contact.o
+13	PORTED	0002:0048ac40 ?create_pulse_sum_contact@pulse_sum_constraint_solver@@QAEPAVpulse_sum_contact@@PAVrigid_body@@0PAVcontact_point_info@@M@Z 00C7A140 f i rbc_def_contact.o
+14	PORTED	0002:0048acc0 ?remove@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAEXABVrigid_body_pair_key@@@Z 00C7A1C0 f i rbc_def_contact.o

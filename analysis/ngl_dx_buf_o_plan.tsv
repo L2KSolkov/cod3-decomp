@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x00850520	?nglGetUnusedWorkBuffer@@YAXPAPAXPAI@Z	void __cdecl nglGetUnusedWorkBuffer(void * *,unsigned int *)	
+0x00850550	?nglXbSetPushBufferSize@@YAXII@Z	void __cdecl nglXbSetPushBufferSize(unsigned int,unsigned int)	
+0x00850570	?nglSetBufferSize@@YAXW4nglBufferType@@I_N@Z	void __cdecl nglSetBufferSize(enum nglBufferType,unsigned int,bool)	
+0x00850710	?ngliInitWorkBuffers@@YAXXZ	void __cdecl ngliInitWorkBuffers(void)	

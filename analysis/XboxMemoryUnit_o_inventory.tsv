@@ -1,0 +1,47 @@
+ida_ea	va	name	signature	family
+0x00899700	0x00C88C00	?PortSlotToDeviceID@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@PAHKK@Z	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::PortSlotToDeviceID(int *,unsigned long,unsigned long)	XboxMemoryUnit.o
+0x00899730	0x00C88C30	?GetFileHandle@XBoxStorage@@SAPAXXZ	public: static void * __cdecl XBoxStorage::GetFileHandle(void)	XboxMemoryUnit.o
+0x00899740	0x00C88C40	?GetGameNamePath@XBoxStorage@@SAPBDXZ	public: static char const * __cdecl XBoxStorage::GetGameNamePath(void)	XboxMemoryUnit.o
+0x00899750	0x00C88C50	?ResetOverlapped@XBoxStorage@@CAXXZ	private: static void __cdecl XBoxStorage::ResetOverlapped(void)	XboxMemoryUnit.o
+0x00899770	0x00C88C70	?GetAsyncService@XBoxStorage@@SAP6A?AW4eStatus@MemoryUnitManager@@XZXZ	public: static enum MemoryUnitManager::eStatus (__cdecl*__cdecl XBoxStorage::GetAsyncService(void))(void)	XboxMemoryUnit.o
+0x00899780	0x00C88C80	?GetDrive@XBoxStorage@@SADXZ	public: static char __cdecl XBoxStorage::GetDrive(void)	XboxMemoryUnit.o
+0x00899790	0x00C88C90	?GetRoot@XBoxStorage@@SAPBDXZ	public: static char const * __cdecl XBoxStorage::GetRoot(void)	XboxMemoryUnit.o
+0x008997A0	0x00C88CA0	?CloseHandles@XBoxStorage@@CAXXZ	private: static void __cdecl XBoxStorage::CloseHandles(void)	XboxMemoryUnit.o
+0x00899820	0x00C88D20	?Reset@XBoxStorage@@SAXXZ	public: static void __cdecl XBoxStorage::Reset(void)	XboxMemoryUnit.o
+0x00899860	0x00C88D60	?ConvertError@XBoxStorage@@CA?AW4eStatus@MemoryUnitManager@@H@Z	private: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::ConvertError(int)	XboxMemoryUnit.o
+0x008998A0	0x00C88DA0	??0XBoxStorage@@AAE@XZ	private: __thiscall XBoxStorage::XBoxStorage(void)	XboxMemoryUnit.o
+0x008998B0	0x00C88DB0	??1XBoxStorage@@AAE@XZ	private: __thiscall XBoxStorage::~XBoxStorage(void)	XboxMemoryUnit.o
+0x008998C0	0x00C88DC0	?GetFirstDeviceID@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::GetFirstDeviceID(void)	XboxMemoryUnit.o
+0x008998D0	0x00C88DD0	?GetLastDeviceID@MemoryUnitManager@@SAHXZ	public: static int __cdecl MemoryUnitManager::GetLastDeviceID(void)	XboxMemoryUnit.o
+0x008998E0	0x00C88DE0	?Delete@MemoryUnitManager@@CA?AW4eStatus@1@QBD@Z	private: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::Delete(char const * const)	XboxMemoryUnit.o
+0x008998F0	0x00C88DF0	?Format@MemoryUnitManager@@SA?AW4eStatus@1@XZ	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::Format(void)	XboxMemoryUnit.o
+0x00899910	0x00C88E10	?Initialize@MemoryUnitManager@@SA?AW4eStatus@1@I@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::Initialize(unsigned int)	XboxMemoryUnit.o
+0x00899950	0x00C88E50	?GetAvailableMemoryUnits@MemoryUnitManager@@SAHQAH@Z	public: static int __cdecl MemoryUnitManager::GetAvailableMemoryUnits(int * const)	XboxMemoryUnit.o
+0x00899A20	0x00C88F20	?GetCRC@MemoryUnitManager@@SAXPAEI0PAI@Z	public: static void __cdecl MemoryUnitManager::GetCRC(unsigned char *,unsigned int,unsigned char *,unsigned int *)	XboxMemoryUnit.o
+0x00899AE0	0x00C88FE0	?GetProgress@MemoryUnitManager@@SAMXZ	public: static float __cdecl MemoryUnitManager::GetProgress(void)	XboxMemoryUnit.o
+0x00899B80	0x00C89080	?BytesToBlocks@MemoryUnitManager@@SAI_K@Z	public: static unsigned int __cdecl MemoryUnitManager::BytesToBlocks(unsigned __int64)	XboxMemoryUnit.o
+0x00899BA0	0x00C890A0	?DeviceIDToPortSlot@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@HPAK0@Z	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::DeviceIDToPortSlot(int,unsigned long *,unsigned long *)	XboxMemoryUnit.o
+0x00899C10	0x00C89110	?MountActiveMU@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@XZ	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::MountActiveMU(void)	XboxMemoryUnit.o
+0x00899CA0	0x00C891A0	?UnmountActiveMU@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@XZ	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::UnmountActiveMU(void)	XboxMemoryUnit.o
+0x00899D00	0x00C89200	?CreateSaveGame@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@QBD@Z	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::CreateSaveGame(char const * const)	XboxMemoryUnit.o
+0x00899DB0	0x00C892B0	?DeleteSaveGame@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@QBD@Z	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::DeleteSaveGame(char const * const)	XboxMemoryUnit.o
+0x00899E50	0x00C89350	?OpenFile@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@QBDH@Z	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::OpenFile(char const * const,int)	XboxMemoryUnit.o
+0x00899F00	0x00C89400	?AsyncWriteService@XBoxStorage@@CA?AW4eStatus@MemoryUnitManager@@XZ	private: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::AsyncWriteService(void)	XboxMemoryUnit.o
+0x00899F60	0x00C89460	?AsyncReadService@XBoxStorage@@CA?AW4eStatus@MemoryUnitManager@@XZ	private: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::AsyncReadService(void)	XboxMemoryUnit.o
+0x00899FC0	0x00C894C0	?GetSectorSize@XBoxStorage@@SAHXZ	public: static int __cdecl XBoxStorage::GetSectorSize(void)	XboxMemoryUnit.o
+0x00899FE0	0x00C894E0	?GetClusterSize@XBoxStorage@@SAHXZ	public: static int __cdecl XBoxStorage::GetClusterSize(void)	XboxMemoryUnit.o
+0x0089A000	0x00C89500	?GetAsyncChunk@XBoxStorage@@SAHXZ	public: static int __cdecl XBoxStorage::GetAsyncChunk(void)	XboxMemoryUnit.o
+0x0089A020	0x00C89520	?BeginAsyncWrite@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@XZ	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::BeginAsyncWrite(void)	XboxMemoryUnit.o
+0x0089A160	0x00C89660	?BeginAsyncRead@XBoxStorage@@SA?AW4eStatus@MemoryUnitManager@@XZ	public: static enum MemoryUnitManager::eStatus __cdecl XBoxStorage::BeginAsyncRead(void)	XboxMemoryUnit.o
+0x0089A1E0	0x00C896E0	?GetSavedGames@MemoryUnitManager@@SAHQAUSavedGame@1@@Z	public: static int __cdecl MemoryUnitManager::GetSavedGames(struct MemoryUnitManager::SavedGame * const)	XboxMemoryUnit.o
+0x0089A370	0x00C89870	?GetMemoryUnitInfo@MemoryUnitManager@@SA?AW4eStatus@1@PAUMemoryUnitInfo@1@@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::GetMemoryUnitInfo(struct MemoryUnitManager::MemoryUnitInfo *)	XboxMemoryUnit.o
+0x0089A470	0x00C89970	?Save@MemoryUnitManager@@CA?AW4eStatus@1@QBDPAEH@Z	private: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::Save(char const * const,unsigned char *,int)	XboxMemoryUnit.o
+0x0089A5B0	0x00C89AB0	?Load@MemoryUnitManager@@CA?AW4eStatus@1@QBDPAEH@Z	private: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::Load(char const * const,unsigned char *,int)	XboxMemoryUnit.o
+0x0089A730	0x00C89C30	?DeleteGame@MemoryUnitManager@@SA?AW4eStatus@1@QBD@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::DeleteGame(char const * const)	XboxMemoryUnit.o
+0x0089A8A0	0x00C89DA0	?StartOperation@MemoryUnitManager@@CA_NXZ	private: static bool __cdecl MemoryUnitManager::StartOperation(void)	XboxMemoryUnit.o
+0x0089A9A0	0x00C89EA0	?GetGameSaveSize@MemoryUnitManager@@SAII@Z	public: static unsigned int __cdecl MemoryUnitManager::GetGameSaveSize(unsigned int)	XboxMemoryUnit.o
+0x0089AA30	0x00C89F30	?BlocksToBytes@MemoryUnitManager@@SA_KI@Z	public: static unsigned __int64 __cdecl MemoryUnitManager::BlocksToBytes(unsigned int)	XboxMemoryUnit.o
+0x0089AA50	0x00C89F50	?GetClusterSize@MemoryUnitManager@@SAIXZ	public: static unsigned int __cdecl MemoryUnitManager::GetClusterSize(void)	XboxMemoryUnit.o
+0x0089AA80	0x00C89F80	?Service@MemoryUnitManager@@SA_NXZ	public: static bool __cdecl MemoryUnitManager::Service(void)	XboxMemoryUnit.o
+0x0089AC00	0x00C8A100	?SaveGame@MemoryUnitManager@@SA?AW4eStatus@1@ABVContainer@1@@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::SaveGame(class MemoryUnitManager::Container const &)	XboxMemoryUnit.o
+0x0089ACF0	0x00C8A1F0	?LoadGame@MemoryUnitManager@@SA?AW4eStatus@1@ABVContainer@1@@Z	public: static enum MemoryUnitManager::eStatus __cdecl MemoryUnitManager::LoadGame(class MemoryUnitManager::Container const &)	XboxMemoryUnit.o

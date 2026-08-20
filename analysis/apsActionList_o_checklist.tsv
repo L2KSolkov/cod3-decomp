@@ -1,0 +1,27 @@
+index	status	map_line
+1	VERIFIED	0002:00408730 ?GetDelayForDistance@apsLOD@@QBEMM@Z 00BF7C30 f i apsActionList.o
+2	VERIFIED	0002:00408780 ?LOD@apsCommon@@SAAAVapsLOD@@XZ 00BF7C80 f i apsActionList.o
+3	VERIFIED	0002:00408790 ?GetChanceToRemove@apsCommon@@SAMXZ 00BF7C90 f i apsActionList.o
+4	VERIFIED	0002:004087a0 ?GetIterationStyle@apsAction@@QBE?AW4IterationStyle@1@XZ 00BF7CA0 f i apsActionList.o
+5	VERIFIED	0002:004087b0 ?GetRequiredParticleFields@apsAction@@QBEIXZ 00BF7CB0 f i apsActionList.o
+6	PORTED	0002:004087c0 ?SetUpdateDelay@apsGroup@@QAEXM@Z 00BF7CC0 f i apsActionList.o
+7	VERIFIED	0002:004087e0 ?GetUsesUpdateLod@apsEffectTemplate@@QBEHXZ 00BF7CE0 f i apsActionList.o
+8	PORTED	0002:004087f0 ?GetVisibleParticleUpdateDelay@?A0xf0029792@@YAMMPAI@Z 00BF7CF0 f apsActionList.o
+9	VERIFIED	0002:00408830 ?Apply@apsActionList@@QAEXPAVapsGroup@@AAVapsEffect@@MMII@Z 00BF7D30 f apsActionList.o
+10	VERIFIED	0002:00408ba0 ?EnhancePFD@apsActionList@@QAEXAAVapsPFD@@@Z 00BF80A0 f apsActionList.o
+11	VERIFIED	0002:00408be0 ?Fixup@apsActionList@@QAEXABUapsFixupParams@@@Z 00BF80E0 f apsActionList.o
+12	VERIFIED	0002:00408c90 ??0apsActionList@@QAE@XZ 00BF8190 f apsActionList.o
+13	VERIFIED	0002:00408ca0 ??1apsActionList@@QAE@XZ 00BF81A0 f apsActionList.o
+14	VERIFIED	0002:00408d30 ?Add@apsActionList@@QAEXPAVapsAction@@@Z 00BF8230 f apsActionList.o
+15	VERIFIED	0002:00408d60 ??0?$apsArray@PAVapsAction@@@@QAE@XZ 00BF8260 f i apsActionList.o
+16	PORTED	0002:00408d70 ?begin@?$apsArray@PAVapsAction@@@@QAEPAPAVapsAction@@XZ 00BF8270 f i apsActionList.o
+17	PORTED	0002:00408d80 ?end@?$apsArray@PAVapsAction@@@@QAEPAPAVapsAction@@XZ 00BF8280 f i apsActionList.o
+18	PORTED	0002:00408d90 ?construct_array@?$apsArray@PAVapsAction@@@@AAEPAPAVapsAction@@H@Z 00BF8290 f i apsActionList.o
+19	PORTED	0002:00408dd0 ?construct_array@?$apsArray@PAVapsAction@@@@AAEPAPAVapsAction@@HH@Z 00BF82D0 f i apsActionList.o
+20	PORTED	0002:00408e10 ?destroy_all@?$apsArray@PAVapsAction@@@@QAEXXZ 00BF8310 f i apsActionList.o
+21	VERIFIED	0002:00408e60 ??$apsDestroy@VapsAction@@@@YAXPAVapsAction@@@Z 00BF8360 f i apsActionList.o
+22	PORTED	0002:00408e70 ??$apsFixUp@PAVapsAction@@@@YAXAAPAPAVapsAction@@PAX@Z 00BF8370 f i apsActionList.o
+23	PORTED	0002:00408e90 ??$apsFixUp@VapsAction@@@@YAXAAPAVapsAction@@PAX@Z 00BF8390 f i apsActionList.o
+24	VERIFIED	0002:00408eb0 ??1?$apsArray@PAVapsAction@@@@QAE@XZ 00BF83B0 f i apsActionList.o
+25	PORTED	0002:00408f00 ?push_back@?$apsArray@PAVapsAction@@@@QAEIABQAVapsAction@@@Z 00BF8400 f i apsActionList.o
+26	PORTED	0002:00409000 ?push_front@?$apsArray@PAVapsAction@@@@QAEIABQAVapsAction@@@Z 00BF8500 f i apsActionList.o

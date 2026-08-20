@@ -1,0 +1,8 @@
+index	status	map_line
+1	PORTED	0002:00405960 ??0apsUVARenderer@@QAE@ABVcArgs@0@@Z 00BF4E60 f apsUVARenderer.o
+2	VERIFIED	0002:00405a50 ?Init@apsUVARenderer@@SAXXZ 00BF4F50 f apsUVARenderer.o
+3	VERIFIED	0002:00405a80 ?Render@apsUVARenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4F80 f apsUVARenderer.o
+4	PORTED	0002:00405ac0 ?RegisterVShader@apsUVARender@@YAXXZ 00BF4FC0 f i apsUVARenderer.o
+5	PORTED	0002:00405ae0 ?RegisterPShader@apsUVARenderPixel@@YAXXZ 00BF4FE0 f i apsUVARenderer.o
+6	PORTED	0002:00405b00 ?InitPShader@apsUVARenderPixel@@YAXXZ 00BF5000 f i apsUVARenderer.o
+7	PORTED	0002:00405b20 ??$DefaultRender@VapsUVARenderer@@VapsUVANode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsUVARenderer@@ABUapsRendererRenderInfo@@@Z 00BF5020 f i apsUVARenderer.o

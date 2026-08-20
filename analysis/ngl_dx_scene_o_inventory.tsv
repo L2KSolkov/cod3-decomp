@@ -1,0 +1,18 @@
+ida_ea	va	name	signature	family
+0x00851A30	0x00C40F30	?ngliSetRenderTarget@@YAXPAUnglTexture@@@Z	void __cdecl ngliSetRenderTarget(struct nglTexture *)	ngl_dx_scene.o
+0x00851AE0	0x00C40FE0	?nglSetCubeMapRenderTarget@@YAXPAUnglTexture@@H@Z	void __cdecl nglSetCubeMapRenderTarget(struct nglTexture *,int)	ngl_dx_scene.o
+0x00851B70	0x00C41070	?ngliSetZTarget@@YAXPAUnglTexture@@@Z	void __cdecl ngliSetZTarget(struct nglTexture *)	ngl_dx_scene.o
+0x00851BD0	0x00C410D0	?nglGetFSAAParams@@YA?AVVector4@math@@PAUnglTexture@@@Z	class math::Vector4 __cdecl nglGetFSAAParams(struct nglTexture *)	ngl_dx_scene.o
+0x00851CA0	0x00C411A0	?DeviceXBox@@YA?AVMat44@math@@PAUnglTexture@@ABVVector4@2@@Z	class math::Mat44 __cdecl DeviceXBox(struct nglTexture *,class math::Vector4 const &)	ngl_dx_scene.o
+0x00851E10	0x00C41310	?ngliGetDeviceMatrix@@YA?AVMat44@math@@PAUnglTexture@@@Z	class math::Mat44 __cdecl ngliGetDeviceMatrix(struct nglTexture *)	ngl_dx_scene.o
+0x00851E50	0x00C41350	?ngliCalculateMatrices@@YAXXZ	void __cdecl ngliCalculateMatrices(void)	ngl_dx_scene.o
+0x00851E60	0x00C41360	?ngliSetClearStencil@@YAXI@Z	void __cdecl ngliSetClearStencil(unsigned int)	ngl_dx_scene.o
+0x00851E70	0x00C41370	?nglDxSetGarbageStates@@YAXXZ	void __cdecl nglDxSetGarbageStates(void)	ngl_dx_scene.o
+0x00851F80	0x00C41480	?nglDxSetupScene@@YAXPAUnglScene@@@Z	void __cdecl nglDxSetupScene(struct nglScene *)	ngl_dx_scene.o
+0x008523F0	0x00C418F0	?nglRenderScene@@YAXXZ	void __cdecl nglRenderScene(void)	ngl_dx_scene.o
+0x00852640	0x00C41B40	?ngliRenderSceneNode@@YAXPAX@Z	void __cdecl ngliRenderSceneNode(void *)	ngl_dx_scene.o
+0x00852690	0x00C41B90	?ngliSetDefaultSceneParams@@YAXXZ	void __cdecl ngliSetDefaultSceneParams(void)	ngl_dx_scene.o
+0x008526A0	0x00C41BA0	?ngliSetupBeginSceneDefaults@@YAXPAUnglScene@@@Z	void __cdecl ngliSetupBeginSceneDefaults(struct nglScene *)	ngl_dx_scene.o
+0x008526C0	0x00C41BC0	?ngliSetupBeginScene@@YAXPAUnglScene@@@Z	void __cdecl ngliSetupBeginScene(struct nglScene *)	ngl_dx_scene.o
+0x008526F0	0x00C41BF0	?ngliEnableFog@@YAX_N@Z	void __cdecl ngliEnableFog(bool)	ngl_dx_scene.o
+0x00852720	0x00C41C20	?ngliEnableDepthOfField@@YAX_N@Z	void __cdecl ngliEnableDepthOfField(bool)	ngl_dx_scene.o

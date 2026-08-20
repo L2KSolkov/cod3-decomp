@@ -1,0 +1,26 @@
+index	status	map_line
+1	VERIFIED	0002:003d3590 ?InitCDPrelitShader@@YAXXZ 00BC2A90 f cdPrelitShader.o
+2	VERIFIED	0002:003d35e0 ?ToggleCDPrelitShader@@YAXXZ 00BC2AE0 f cdPrelitShader.o
+3	VERIFIED	0002:003d3600 ?Register@cdPrelitShader@@UAEXXZ 00BC2B00 f cdPrelitShader.o
+4	PORTED	0002:003d3650 ?Render@cdPrelitShaderNode@@UAEXXZ 00BC2B50 f cdPrelitShader.o
+5	VERIFIED	0002:003d3b70 ?AddNode@cdPrelitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC3070 f cdPrelitShader.o
+6	PORTED	0002:003d3be0 ?AbsValue@math@@YA?AVPosition3@1@ABV21@@Z 00BC30E0 f i cdPrelitShader.o
+7	PORTED	0002:003d3c20 ?Floor@math@@YA?AVPosition3@1@ABV21@@Z 00BC3120 f i cdPrelitShader.o
+8	PORTED	0002:003d3c60 ?Fract@math@@YA?AVPosition3@1@ABV21@@Z 00BC3160 f i cdPrelitShader.o
+9	PORTED	0002:003d3ca0 ?RegisterVShader@cdPrelitRender@@YAXXZ 00BC31A0 f i cdPrelitShader.o
+10	PORTED	0002:003d3cc0 ?GetVShader@cdPrelitRender@@YAKXZ 00BC31C0 f i cdPrelitShader.o
+11	PORTED	0002:003d3cd0 ?RegisterPShader@cdPrelitPixel@@YAXXZ 00BC31D0 f i cdPrelitShader.o
+12	PORTED	0002:003d3cf0 ?GetPShader@cdPrelitPixel@@YAPAKXZ 00BC31F0 f i cdPrelitShader.o
+13	PORTED	0002:003d3d00 ?RegisterPShader@cdPrelitFullbrightPixel@@YAXXZ 00BC3200 f i cdPrelitShader.o
+14	PORTED	0002:003d3d20 ?GetPShader@cdPrelitFullbrightPixel@@YAPAKXZ 00BC3220 f i cdPrelitShader.o
+15	PORTED	0002:003d3d30 ?RegisterPShader@cdPrelitSolidColorPixel@@YAXXZ 00BC3230 f i cdPrelitShader.o
+16	PORTED	0002:003d3d50 ?GetPShader@cdPrelitSolidColorPixel@@YAPAKXZ 00BC3250 f i cdPrelitShader.o
+17	VERIFIED	0002:003d3d60 ??0cdPrelitShader@@QAE@XZ 00BC3260 f i cdPrelitShader.o
+18	VERIFIED	0002:003d3d90 ?GetName@cdPrelitShader@@UAE?AVtlFixedString@@XZ 00BC3290 f i cdPrelitShader.o
+19	PORTED	0002:003d3db0 ??0cdPrelitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdPrelitShaderMat@@@Z 00BC32B0 f i cdPrelitShader.o
+20	PORTED	0002:003d3de0 ??_EcdPrelitShaderNode@@UAEPAXI@Z 00BC32E0 f i cdPrelitShader.o
+21	PORTED	0002:003d3de0 ??_GcdPrelitShaderNode@@UAEPAXI@Z 00BC32E0 f i cdPrelitShader.o
+22	PORTED	0002:003d3e10 ??1cdPrelitShaderNode@@UAE@XZ 00BC3310 f i cdPrelitShader.o
+23	VERIFIED	0002:003d3e20 ??_EcdPrelitShader@@UAEPAXI@Z 00BC3320 f i cdPrelitShader.o
+24	VERIFIED	0002:003d3e20 ??_GcdPrelitShader@@UAEPAXI@Z 00BC3320 f i cdPrelitShader.o
+25	VERIFIED	0002:003d3e50 ??1cdPrelitShader@@UAE@XZ 00BC3350 f i cdPrelitShader.o

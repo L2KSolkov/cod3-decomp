@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x008533E0	?nglGetMorph@@YAPAUnglMorphSet@@ABVtlFixedString@@_N@Z	struct nglMorphSet * __cdecl nglGetMorph(class tlFixedString const &,bool)	
+0x00853420	?Apply@nglMorphFrame@@MBEXPAUnglMeshSection@@HMI@Z	protected: virtual void __thiscall nglMorphFrame::Apply(struct nglMeshSection *,int,float,unsigned int)const 	
+0x00853430	?Apply@nglMeshMorph@@MBEXPAUnglMeshSection@@HMI@Z	protected: virtual void __thiscall nglMeshMorph::Apply(struct nglMeshSection *,int,float,unsigned int)const 	
+0x00853440	?nglMakeMorphSectionsUnique@@YAXPAUnglMesh@@PAUnglMorphSet@@@Z	void __cdecl nglMakeMorphSectionsUnique(struct nglMesh *,struct nglMorphSet *)	
+0x008534B0	?nglBlendMorphs@@YAXPAUnglMesh@@IPAUnglMorphEntry@@@Z	void __cdecl nglBlendMorphs(struct nglMesh *,unsigned int,struct nglMorphEntry *)	
+0x00853570	?nglMorphInit@@YAXXZ	void __cdecl nglMorphInit(void)	
+0x008535B0	?nglProcessMorph@@YAXPAUnglMorphSet@@@Z	void __cdecl nglProcessMorph(struct nglMorphSet *)	

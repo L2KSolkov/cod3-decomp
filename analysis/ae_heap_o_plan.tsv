@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007BBE20	??1ae_heap_base@@UAE@XZ	public: virtual __thiscall ae_heap_base::~ae_heap_base(void)	
+0x007BBE30	??0ae_heap@@QAE@I@Z	public: __thiscall ae_heap::ae_heap(unsigned int)	
+0x007BBE90	??1ae_heap@@UAE@XZ	public: virtual __thiscall ae_heap::~ae_heap(void)	
+0x007BBEE0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	protected: void * __thiscall ae_heap_base::MemAlloc(unsigned int,unsigned int,struct mem_heap *)	
+0x007BBF20	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	protected: void __thiscall ae_heap_base::MemFree(void *,struct mem_heap *)	
+0x007BBF40	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	protected: bool __thiscall ae_heap_base::MemCheckFree(void *,struct mem_heap *)	

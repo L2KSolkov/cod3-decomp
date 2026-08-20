@@ -1,0 +1,12 @@
+index	status	map_line
+1	PORTED	0002:004421b0 ??0_tlSkipListBase@@IAE@XZ 00C316B0 f i ngl_texture.o
+2	VERIFIED	0002:004421d0 ?nglSetIFLSpeed@@YAXM@Z 00C316D0 f ngl_texture.o
+3	VERIFIED	0002:004421f0 ?nglScreenShot@@YAXPBD@Z 00C316F0 f ngl_texture.o
+4	VERIFIED	0002:00442240 ?nglGetTexture@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00C31740 f ngl_texture.o
+5	VERIFIED	0002:00442260 ?nglCanReleaseTexture@@YA_NPAUnglTexture@@@Z 00C31760 f ngl_texture.o
+6	VERIFIED	0002:00442280 ?nglProcessTexture@@YAXPAUnglTexture@@@Z 00C31780 f ngl_texture.o
+7	VERIFIED	0002:00442290 ?nglAPKTextureLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C31790 f ngl_texture.o
+8	VERIFIED	0002:004422f0 ?nglAPKTextureDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C317F0 f ngl_texture.o
+9	VERIFIED	0002:00442370 ?nglTextureInit@@YAXXZ 00C31870 f ngl_texture.o
+10	VERIFIED	0002:004423d0 ??0?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318D0 f i ngl_texture.o
+11	PORTED	0002:004423f0 ??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318F0 f i ngl_texture.o

@@ -1,0 +1,11 @@
+index	status	map_line
+1	VERIFIED	0002:004730c0 ?GetVersion@nalBaseSkeleton@@QBEIXZ 00C625C0 f i nal_skeleton.o
+2	PORTED	0002:004730d0 ?nalGetSkeleton@@YAPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C625D0 f nal_skeleton.o
+3	PORTED	0002:004730f0 ?nalConstructSkeleton@@YAPAVnalBaseSkeleton@@PAX@Z 00C625F0 f nal_skeleton.o
+4	PORTED	0002:00473170 ?nalLoadSkeletonInPlace@@YAPAVnalBaseSkeleton@@PAX@Z 00C62670 f nal_skeleton.o
+5	PORTED	0002:004731e0 ?StandardLoad@?$tlResourceDirectory@VnalBaseSkeleton@@@@QAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C626E0 f nal_skeleton.o
+6	PORTED	0002:004732d0 ?nalLoadSkeleton@@YAPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C627D0 f nal_skeleton.o
+7	PORTED	0002:00473300 ?StandardRelease@?$tlResourceDirectory@VnalBaseSkeleton@@@@QAEHPAVnalBaseSkeleton@@H_N@Z 00C62800 f nal_skeleton.o
+8	VERIFIED	0002:00473350 ?nalReleaseSkeleton@@YAHPAVnalBaseSkeleton@@@Z 00C62850 f nal_skeleton.o
+9	PORTED	0002:00473370 ?nalReleaseSkeleton@@YAHABVtlFixedString@@@Z 00C62870 f nal_skeleton.o
+10	PORTED	0002:004733a0 ?nalReleaseAllSkeletons@@YAXXZ 00C628A0 f nal_skeleton.o

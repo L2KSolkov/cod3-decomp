@@ -1,0 +1,9 @@
+index	status	map_line
+1	VERIFIED	0002:00404170 ??0ErrorMessage@apsError@@QAE@XZ 00BF3670 f i apsError.o
+2	VERIFIED	0002:00404180 ?AddError@apsError@@QAAXW4eErrorType@1@PBDZZ 00BF3680 f apsError.o
+3	VERIFIED	0002:004041c0 ??0apsError@@QAE@XZ 00BF36C0 f apsError.o
+4	VERIFIED	0002:00404290 ??1apsError@@QAE@XZ 00BF3790 f apsError.o
+5	PORTED	0002:004042f0 ??0?$apsSingleton@VapsError@@@@QAE@XZ 00BF37F0 f i apsError.o
+6	PORTED	0002:00404330 ??1?$apsSingleton@VapsError@@@@QAE@XZ 00BF3830 f i apsError.o
+7	VERIFIED	0002:00404370 ??$AEPS_VECTOR_NEW@UErrorMessage@apsError@@@@YAPAUErrorMessage@apsError@@HH@Z 00BF3870 f i apsError.o
+8	VERIFIED	0002:004043b0 ??$AEPS_VECTOR_DELETE@UErrorMessage@apsError@@@@YAXHPAUErrorMessage@apsError@@@Z 00BF38B0 f i apsError.o

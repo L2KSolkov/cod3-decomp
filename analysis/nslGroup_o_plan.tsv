@@ -1,0 +1,9 @@
+ida_ea	name	signature	source_cpp
+0x00823950	?nslGroupGet@@YAPAUnslGroup@@I@Z	struct nslGroup * __cdecl nslGroupGet(unsigned int)	
+0x00823980	?nslGroupGet@@YAPAUnslGroup@@PBD@Z	struct nslGroup * __cdecl nslGroupGet(char const *)	
+0x00823A70	?nslGroupSetParam@@YAXPBDHM@Z	void __cdecl nslGroupSetParam(char const *,int,float)	
+0x00823AC0	?nslGroupGetParam@@YAMPBDHM@Z	float __cdecl nslGroupGetParam(char const *,int,float)	
+0x00823B00	?nslGroupSetVolume@@YAXPBDM@Z	void __cdecl nslGroupSetVolume(char const *,float)	
+0x00823B20	?nslGroupGetVolume@@YAMPBDM@Z	float __cdecl nslGroupGetVolume(char const *,float)	
+0x00823B60	?nslSetMasterVolume@@YAXM@Z	void __cdecl nslSetMasterVolume(float)	
+0x00823BA0	?nslGetMasterVolume@@YAMXZ	float __cdecl nslGetMasterVolume(void)	

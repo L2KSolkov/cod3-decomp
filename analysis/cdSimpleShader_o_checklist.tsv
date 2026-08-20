@@ -1,0 +1,18 @@
+index	status	map_line
+1	VERIFIED	0002:003d6390 ??0cdSimpleShaderMat@@QAE@PAUnglTexture@@@Z 00BC5890 f cdSimpleShader.o
+2	VERIFIED	0002:003d6420 ?InitCDSimpleShader@@YAXXZ 00BC5920 f cdSimpleShader.o
+3	VERIFIED	0002:003d6470 ?ToggleCDSimpleShader@@YAXXZ 00BC5970 f cdSimpleShader.o
+4	VERIFIED	0002:003d6490 ?Register@cdSimpleShader@@UAEXXZ 00BC5990 f cdSimpleShader.o
+5	VERIFIED	0002:003d64c0 ?AddNode@cdSimpleShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC59C0 f cdSimpleShader.o
+6	VERIFIED	0002:003d6540 ?Render@cdSimpleShaderNode@@UAEXXZ 00BC5A40 f cdSimpleShader.o
+7	VERIFIED	0002:003d68c0 ??0cdSimpleShader@@QAE@XZ 00BC5DC0 f i cdSimpleShader.o
+8	VERIFIED	0002:003d68f0 ?GetName@cdSimpleShader@@UAE?AVtlFixedString@@XZ 00BC5DF0 f i cdSimpleShader.o
+9	VERIFIED	0002:003d6910 ?RegisterVShader@cdSimpleRender@@YAXXZ 00BC5E10 f i cdSimpleShader.o
+10	PORTED	0002:003d6940 ?GetVShader@cdSimpleRender@@YAKI@Z 00BC5E40 f i cdSimpleShader.o
+11	VERIFIED	0002:003d6950 ?RegisterPShader@cdSimplePixel@@YAXXZ 00BC5E50 f i cdSimpleShader.o
+12	PORTED	0002:003d6970 ?GetPShader@cdSimplePixel@@YAPAKXZ 00BC5E70 f i cdSimpleShader.o
+13	VERIFIED	0002:003d6980 ?RegisterPShader@cdSimpleFullbrightPixel@@YAXXZ 00BC5E80 f i cdSimpleShader.o
+14	PORTED	0002:003d69a0 ?GetPShader@cdSimpleFullbrightPixel@@YAPAKXZ 00BC5EA0 f i cdSimpleShader.o
+15	VERIFIED	0002:003d69b0 ??_EcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o
+16	VERIFIED	0002:003d69b0 ??_GcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o
+17	VERIFIED	0002:003d69e0 ??1cdSimpleShader@@UAE@XZ 00BC5EE0 f i cdSimpleShader.o

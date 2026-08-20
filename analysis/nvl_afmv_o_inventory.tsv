@@ -1,0 +1,16 @@
+ida_ea	va	name	signature	family
+0x0082ECE0	0x00C1E1E0	??0nvlAFMVMovie@@QAE@XZ	public: __thiscall nvlAFMVMovie::nvlAFMVMovie(void)	nvl_afmv.o
+0x0082ED60	0x00C1E260	??1nvlAFMVMovie@@UAE@XZ	public: virtual __thiscall nvlAFMVMovie::~nvlAFMVMovie(void)	nvl_afmv.o
+0x0082ED80	0x00C1E280	?InitMovie@nvlAFMVMovie@@UAE?AW4nvlResult@@XZ	public: virtual enum nvlResult __thiscall nvlAFMVMovie::InitMovie(void)	nvl_afmv.o
+0x0082EDF0	0x00C1E2F0	?ParseHeader@nvlAFMVMovie@@QAE?AW4nvlResult@@W4nflFileID@@_NHH@Z	public: enum nvlResult __thiscall nvlAFMVMovie::ParseHeader(enum nflFileID,bool,int,int)	nvl_afmv.o
+0x0082EFA0	0x00C1E4A0	?ProcessUserDataChunk@nvlAFMVMovie@@IAEX_N@Z	protected: void __thiscall nvlAFMVMovie::ProcessUserDataChunk(bool)	nvl_afmv.o
+0x0082F010	0x00C1E510	?GetIntraCoefB14@nvlAFMVMovie@@IAEXQBG@Z	protected: void __thiscall nvlAFMVMovie::GetIntraCoefB14(unsigned short const * const)	nvl_afmv.o
+0x0082F2C0	0x00C1E7C0	?GetIntraCoefB15@nvlAFMVMovie@@IAEXQBG@Z	protected: void __thiscall nvlAFMVMovie::GetIntraCoefB15(unsigned short const * const)	nvl_afmv.o
+0x0082F540	0x00C1EA40	?GetNonIntraCoef@nvlAFMVMovie@@IAEHQBG@Z	protected: int __thiscall nvlAFMVMovie::GetNonIntraCoef(unsigned short const * const)	nvl_afmv.o
+0x0082F810	0x00C1ED10	?DoMotionFrame@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z	protected: void __thiscall nvlAFMVMovie::DoMotionFrame(struct afmv_motion_t * const,void (__cdecl*const * const)(unsigned char *,unsigned char const *,int,int))	nvl_afmv.o
+0x0082FA20	0x00C1EF20	?DoMotionField@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z	protected: void __thiscall nvlAFMVMovie::DoMotionField(struct afmv_motion_t * const,void (__cdecl*const * const)(unsigned char *,unsigned char const *,int,int))	nvl_afmv.o
+0x0082FE70	0x00C1F370	?DoMotionDualP@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z	protected: void __thiscall nvlAFMVMovie::DoMotionDualP(struct afmv_motion_t * const,void (__cdecl*const * const)(unsigned char *,unsigned char const *,int,int))	nvl_afmv.o
+0x00830440	0x00C1F940	?DoMotionSame@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z	protected: void __thiscall nvlAFMVMovie::DoMotionSame(struct afmv_motion_t * const,void (__cdecl*const * const)(unsigned char *,unsigned char const *,int,int))	nvl_afmv.o
+0x00830580	0x00C1FA80	?DoMotionCopy@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z	protected: void __thiscall nvlAFMVMovie::DoMotionCopy(struct afmv_motion_t * const,void (__cdecl*const * const)(unsigned char *,unsigned char const *,int,int))	nvl_afmv.o
+0x00830630	0x00C1FB30	?DecodeSlice@nvlAFMVMovie@@IAEHXZ	protected: int __thiscall nvlAFMVMovie::DecodeSlice(void)	nvl_afmv.o
+0x00830FF0	0x00C204F0	?DecodeFrame@nvlAFMVMovie@@UAE?AW4nvlFrameState@@XZ	public: virtual enum nvlFrameState __thiscall nvlAFMVMovie::DecodeFrame(void)	nvl_afmv.o

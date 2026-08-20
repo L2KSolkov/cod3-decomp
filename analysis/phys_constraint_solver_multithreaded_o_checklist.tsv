@@ -1,0 +1,185 @@
+index	status	map_line
+1	PENDING	0002:00491b10 ?rel_cmp_ge@@YA?B_NMMM@Z 00C81010 f i phys_constraint_solver_multithreaded.o
+2	PENDING	0002:00491b40 ?Mul@math@@YA?AVMat33@1@ABV21@ABVDiagMat33@1@@Z 00C81040 f i phys_constraint_solver_multithreaded.o
+3	PENDING	0002:00491be0 ??Dmath@@YA?AVMat33@0@ABV10@ABVDiagMat33@0@@Z 00C810E0 f i phys_constraint_solver_multithreaded.o
+4	PENDING	0002:00491c80 ?is_no_auto_remove@rigid_body@@QBE?BIXZ 00C81180 f i phys_constraint_solver_multithreaded.o
+5	PENDING	0002:00491c90 ?object_vel_@pulse_sum_normal@@ABEABVDir3@math@@XZ 00C81190 f i phys_constraint_solver_multithreaded.o
+6	PENDING	0002:00491ca0 ?object_col_pt_@pulse_sum_normal@@ABEABVDir3@math@@XZ 00C811A0 f i phys_constraint_solver_multithreaded.o
+7	PENDING	0002:00491cb0 ?set_object_vel@pulse_sum_normal@@QAEXABVDir3@math@@@Z 00C811B0 f i phys_constraint_solver_multithreaded.o
+8	PENDING	0002:00491d00 ?set_object_col_pt@pulse_sum_normal@@QAEXABVDir3@math@@@Z 00C81200 f i phys_constraint_solver_multithreaded.o
+9	PENDING	0002:00491d50 ?get_pulse_sum@pulse_sum_normal@@QBE?BMXZ 00C81250 f i phys_constraint_solver_multithreaded.o
+10	PENDING	0002:00491d60 ?object_vel_@pulse_sum_point@@ABEABVDir3@math@@XZ 00C81260 f i phys_constraint_solver_multithreaded.o
+11	PENDING	0002:00491d70 ?object_col_pt_@pulse_sum_point@@ABEABVDir3@math@@XZ 00C81270 f i phys_constraint_solver_multithreaded.o
+12	PENDING	0002:00491d80 ?set_object_vel@pulse_sum_point@@AAEXABVDir3@math@@@Z 00C81280 f i phys_constraint_solver_multithreaded.o
+13	PENDING	0002:00491dd0 ?set_object_col_pt@pulse_sum_point@@AAEXABVDir3@math@@@Z 00C812D0 f i phys_constraint_solver_multithreaded.o
+14	PENDING	0002:00491e20 ?phys_diag_multiply_and_square@pulse_sum_point@@AAE?BVDir3@math@@ABV23@0@Z 00C81320 f i phys_constraint_solver_multithreaded.o
+15	PENDING	0002:00491ef0 ?object_vel_@pulse_sum_angular@@ABEABVDir3@math@@XZ 00C813F0 f i phys_constraint_solver_multithreaded.o
+16	PENDING	0002:00491f00 ?object_col_pt_@pulse_sum_angular@@ABEABVDir3@math@@XZ 00C81400 f i phys_constraint_solver_multithreaded.o
+17	PENDING	0002:00491f10 ?set_object_vel@pulse_sum_angular@@AAEXABVDir3@math@@@Z 00C81410 f i phys_constraint_solver_multithreaded.o
+18	PENDING	0002:00491f60 ?set_object_col_pt@pulse_sum_angular@@AAEXABVDir3@math@@@Z 00C81460 f i phys_constraint_solver_multithreaded.o
+19	VERIFIED	0002:00491fb0 ??0vec2@pulse_sum_contact@@QAE@XZ 00C814B0 f i phys_constraint_solver_multithreaded.o
+20	PENDING	0002:00491fc0 ??0vec2@pulse_sum_contact@@QAE@MM@Z 00C814C0 f i phys_constraint_solver_multithreaded.o
+21	PENDING	0002:00491fe0 ??G@YA?BUvec2@pulse_sum_contact@@ABU01@0@Z 00C814E0 f i phys_constraint_solver_multithreaded.o
+22	PENDING	0002:00492010 ??Zvec2@pulse_sum_contact@@QAEXABU01@@Z 00C81510 f i phys_constraint_solver_multithreaded.o
+23	PENDING	0002:00492040 ?object_vel_@psc_cpi@pulse_sum_contact@@QBEABVDir3@math@@XZ 00C81540 f i phys_constraint_solver_multithreaded.o
+24	PENDING	0002:00492050 ?object_col_pt_@psc_cpi@pulse_sum_contact@@QBEABVDir3@math@@XZ 00C81550 f i phys_constraint_solver_multithreaded.o
+25	PENDING	0002:00492060 ?set_object_vel@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z 00C81560 f i phys_constraint_solver_multithreaded.o
+26	PENDING	0002:004920b0 ?set_object_col_pt@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z 00C815B0 f i phys_constraint_solver_multithreaded.o
+27	PENDING	0002:00492100 ?get_std_max_penalty_restitution_vel@pulse_sum_contact@@SA?BMXZ 00C81600 f i phys_constraint_solver_multithreaded.o
+28	PENDING	0002:00492110 ?set@user_rigid_body_restore_info@pulse_sum_constraint_solver@@QAEXPAV12@PAPAVuser_rigid_body@@PAVtemp_user_rigid_body@2@@Z 00C81610 f i phys_constraint_solver_multithreaded.o
+29	VERIFIED	0002:00492130 ?restore@user_rigid_body_restore_info@pulse_sum_constraint_solver@@QAEXXZ 00C81630 f i phys_constraint_solver_multithreaded.o
+30	PENDING	0002:00492140 ?psc_is_persistant@pulse_sum_constraint_solver@@SA?BHQAVpulse_sum_cache@@H@Z 00C81640 f i phys_constraint_solver_multithreaded.o
+31	VERIFIED	0002:00492160 ??4rigid_body@@QAEAAV0@ABV0@@Z 00C81660 f i phys_constraint_solver_multithreaded.o
+32	VERIFIED	0002:00492480 ??0pulse_sum_node@@QAE@XZ 00C81980 f i phys_constraint_solver_multithreaded.o
+33	PENDING	0002:00492490 ?get_world_inv_inertia@rbint@@SAABVMat33@math@@PAVrigid_body@@@Z 00C81990 f i phys_constraint_solver_multithreaded.o
+34	PENDING	0002:004924a0 ?get_pulse_sum_node@rbint@@SAPAVpulse_sum_node@@PBVrigid_body@@@Z 00C819A0 f i phys_constraint_solver_multithreaded.o
+35	PENDING	0002:004924b0 ?add_vel@rbint@@SAXPAVrigid_body@@ABVDir3@math@@1@Z 00C819B0 f i phys_constraint_solver_multithreaded.o
+36	VERIFIED	0002:00492500 ?update_stability@rbint@@SAXQAVrigid_body@@M@Z 00C81A00 f i phys_constraint_solver_multithreaded.o
+37	PENDING	0002:004925f0 ?verify_pulse_sum_node@rbint@@SAHQAVrigid_body@@@Z 00C81AF0 f i phys_constraint_solver_multithreaded.o
+38	PENDING	0002:00492620 ?get_last_t_vel@rbint@@SAABVDir3@math@@PAVrigid_body@@@Z 00C81B20 f i phys_constraint_solver_multithreaded.o
+39	PENDING	0002:00492630 ?get_last_a_vel@rbint@@SAABVDir3@math@@PAVrigid_body@@@Z 00C81B30 f i phys_constraint_solver_multithreaded.o
+40	PENDING	0002:00492640 ?do_collision@rigid_body_constraint@@QAEXM@Z 00C81B40 f i phys_constraint_solver_multithreaded.o
+41	PENDING	0002:00492650 ?epilog_vel_constraint@rigid_body_constraint@@QAEXM@Z 00C81B50 f i phys_constraint_solver_multithreaded.o
+42	PENDING	0002:00492660 ?inner_update@rigid_body_constraint@@QAEXM@Z 00C81B60 f i phys_constraint_solver_multithreaded.o
+43	PENDING	0002:00492670 ?get_urb@rbcint@@SAPAPAVuser_rigid_body@@PAVrigid_body_constraint@@@Z 00C81B70 f i phys_constraint_solver_multithreaded.o
+44	PENDING	0002:004926a0 ?set_pulse_sum@pulse_sum_constraint_solver@@SAXQAVpulse_sum_cache@@HM@Z 00C81BA0 f i phys_constraint_solver_multithreaded.o
+45	PENDING	0002:004926c0 ?get_pulse_sum@pulse_sum_constraint_solver@@SA?BMQAVpulse_sum_cache@@H@Z 00C81BC0 f i phys_constraint_solver_multithreaded.o
+46	PENDING	0002:004926e0 ?apply@pulse_sum_normal@@AAEXABM@Z 00C81BE0 f i phys_constraint_solver_multithreaded.o
+47	PENDING	0002:004927a0 ?clamp_pulse_sum@pulse_sum_normal@@AAE?BMM@Z 00C81CA0 f i phys_constraint_solver_multithreaded.o
+48	PENDING	0002:00492890 ?project@pulse_sum_normal@@AAEXXZ 00C81D90 f i phys_constraint_solver_multithreaded.o
+49	PENDING	0002:004928b0 ?SOLVER_solver_intermediate@pulse_sum_normal@@AAEXHM@Z 00C81DB0 f i phys_constraint_solver_multithreaded.o
+50	PENDING	0002:004928e0 ?apply@pulse_sum_point@@AAEXABVDir3@math@@@Z 00C81DE0 f i phys_constraint_solver_multithreaded.o
+51	PENDING	0002:00492a30 ?project@pulse_sum_point@@AAEXXZ 00C81F30 f i phys_constraint_solver_multithreaded.o
+52	PENDING	0002:00492a40 ?SOLVER_solver_intermediate@pulse_sum_point@@AAEXHM@Z 00C81F40 f i phys_constraint_solver_multithreaded.o
+53	PENDING	0002:00492b10 ?apply@pulse_sum_angular@@AAEXABM@Z 00C82010 f i phys_constraint_solver_multithreaded.o
+54	PENDING	0002:00492b80 ?clamp_pulse_sum@pulse_sum_angular@@AAE?BMM@Z 00C82080 f i phys_constraint_solver_multithreaded.o
+55	PENDING	0002:00492be0 ?project@pulse_sum_angular@@AAEXXZ 00C820E0 f i phys_constraint_solver_multithreaded.o
+56	PENDING	0002:00492c60 ?SOLVER_solver_intermediate@pulse_sum_angular@@AAEXHM@Z 00C82160 f i phys_constraint_solver_multithreaded.o
+57	PENDING	0002:00492c90 ?pulse_chain_within_limits@pulse_sum_wheel@@AAE?B_NXZ 00C82190 f i phys_constraint_solver_multithreaded.o
+58	PENDING	0002:00492d10 ?clamp_pulse_sum_pulse_chain@pulse_sum_wheel@@AAE?B_NPAM0@Z 00C82210 f i phys_constraint_solver_multithreaded.o
+59	PENDING	0002:00492e00 ?addp_pulse_chain@pulse_sum_wheel@@AAEXXZ 00C82300 f i phys_constraint_solver_multithreaded.o
+60	PENDING	0002:00492f10 ?SOLVER_solver_intermediate@pulse_sum_wheel@@AAEXHM@Z 00C82410 f i phys_constraint_solver_multithreaded.o
+61	PENDING	0002:00492fb0 ?apply@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABUvec2@2@@Z 00C824B0 f i phys_constraint_solver_multithreaded.o
+62	PENDING	0002:004930a0 ?clamp_n@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825A0 f i phys_constraint_solver_multithreaded.o
+63	PENDING	0002:004930c0 ?clamp_f@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825C0 f i phys_constraint_solver_multithreaded.o
+64	PENDING	0002:00493100 ?project@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C82600 f i phys_constraint_solver_multithreaded.o
+65	PENDING	0002:00493160 ?SOLVER_solver_intermediate@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z 00C82660 f i phys_constraint_solver_multithreaded.o
+66	PENDING	0002:004931c0 ?set_pulse_sum_cache@psc_cpi@pulse_sum_contact@@QAEXPAV2@PAVpulse_sum_cache@@@Z 00C826C0 f i phys_constraint_solver_multithreaded.o
+67	PENDING	0002:004931d0 ?SOLVER_solver_intermediate@pulse_sum_contact@@AAEXHM@Z 00C826D0 f i phys_constraint_solver_multithreaded.o
+68	PENDING	0002:00493250 ??0psc_cpi@pulse_sum_contact@@QAE@XZ 00C82750 f i phys_constraint_solver_multithreaded.o
+69	PENDING	0002:00493260 ?list_urbri_restore@pulse_sum_constraint_solver@@QAEXPAVuser_rigid_body_restore_info@1@@Z 00C82760 f i phys_constraint_solver_multithreaded.o
+70	VERIFIED	0002:00493290 ?set_solver_params@pulse_sum_constraint_solver@@QAEXHHHH@Z 00C82790 f i phys_constraint_solver_multithreaded.o
+71	VERIFIED	0002:004932b0 ?init@phys_constraint_solver_multithreaded@@YAXXZ 00C827B0 f phys_constraint_solver_multithreaded.o
+72	VERIFIED	0002:004932c0 ?shutdown@phys_constraint_solver_multithreaded@@YAXXZ 00C827C0 f phys_constraint_solver_multithreaded.o
+73	PENDING	0002:004932d0 ?get_vel@pulse_sum_normal@@AAE?BMXZ 00C827D0 f phys_constraint_solver_multithreaded.o
+74	PENDING	0002:004933c0 ?get_last_vel@pulse_sum_normal@@AAE?BMXZ 00C828C0 f phys_constraint_solver_multithreaded.o
+75	PENDING	0002:004934b0 ?get_pos@pulse_sum_normal@@AAE?BMXZ 00C829B0 f phys_constraint_solver_multithreaded.o
+76	PENDING	0002:004935a0 ?set@pulse_sum_normal@@QAEXQAVrigid_body@@ABVDir3@math@@011QAVpulse_sum_cache@@1@Z 00C82AA0 f phys_constraint_solver_multithreaded.o
+77	PENDING	0002:00493890 ?get_relative_velocity_change_dir@pulse_sum_normal@@QAE?BVDir3@math@@XZ 00C82D90 f phys_constraint_solver_multithreaded.o
+78	PENDING	0002:00493970 ?get_relative_velocity@pulse_sum_normal@@QAE?BVDir3@math@@XZ 00C82E70 f phys_constraint_solver_multithreaded.o
+79	PENDING	0002:00493a40 ?get_unclamped_pulse_sum@pulse_sum_normal@@QAE?BMXZ 00C82F40 f phys_constraint_solver_multithreaded.o
+80	PENDING	0002:00493a70 ?get_vel@pulse_sum_point@@AAE?BVDir3@math@@XZ 00C82F70 f phys_constraint_solver_multithreaded.o
+81	PENDING	0002:00493b40 ?get_pos@pulse_sum_point@@AAE?BVDir3@math@@XZ 00C83040 f phys_constraint_solver_multithreaded.o
+82	PENDING	0002:00493c10 ?set@pulse_sum_point@@QAEXQAVrigid_body@@ABVDir3@math@@01QAVpulse_sum_cache@@@Z 00C83110 f phys_constraint_solver_multithreaded.o
+83	PENDING	0002:00493e50 ?get_vel@pulse_sum_angular@@AAE?BMXZ 00C83350 f phys_constraint_solver_multithreaded.o
+84	PENDING	0002:00493ed0 ?get_pos@pulse_sum_angular@@AAE?BMXZ 00C833D0 f phys_constraint_solver_multithreaded.o
+85	PENDING	0002:00493f50 ?set@pulse_sum_angular@@QAEXQAVrigid_body@@ABVDir3@math@@011QAVpulse_sum_cache@@@Z 00C83450 f phys_constraint_solver_multithreaded.o
+86	PENDING	0002:004941f0 ?set@pulse_sum_contact@@QAEXQAVrigid_body@@0PAVcontact_point_info@@M@Z 00C836F0 f phys_constraint_solver_multithreaded.o
+87	VERIFIED	0002:004945b0 ?solve_iterative@pulse_sum_constraint_solver@@QAEXHM@Z 00C83AB0 f phys_constraint_solver_multithreaded.o
+88	PENDING	0002:00494a50 ?process@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPBVphysics_system@@H@Z 00C83F50 f phys_constraint_solver_multithreaded.o
+89	PENDING	0002:00494aa0 ?remove_all@?$phys_link_list@Vpulse_sum_node@@@@QAEXXZ 00C83FA0 f i phys_constraint_solver_multithreaded.o
+90	PENDING	0002:00494ab0 ?remove_all@?$phys_link_list@Vpulse_sum_normal@@@@QAEXXZ 00C83FB0 f i phys_constraint_solver_multithreaded.o
+91	PENDING	0002:00494ac0 ?remove_all@?$phys_link_list@Vpulse_sum_point@@@@QAEXXZ 00C83FC0 f i phys_constraint_solver_multithreaded.o
+92	PENDING	0002:00494ad0 ?remove_all@?$phys_link_list@Vpulse_sum_angular@@@@QAEXXZ 00C83FD0 f i phys_constraint_solver_multithreaded.o
+93	PENDING	0002:00494ae0 ?remove_all@?$phys_link_list@Vpulse_sum_wheel@@@@QAEXXZ 00C83FE0 f i phys_constraint_solver_multithreaded.o
+94	PENDING	0002:00494af0 ?remove_all@?$phys_link_list@Vpulse_sum_contact@@@@QAEXXZ 00C83FF0 f i phys_constraint_solver_multithreaded.o
+95	PENDING	0002:00494b00 ??9iterator@?$phys_link_list@Vpulse_sum_normal@@@@QBE_NABV01@@Z 00C84000 f i phys_constraint_solver_multithreaded.o
+96	PENDING	0002:00494b20 ??Diterator@?$phys_link_list@Vpulse_sum_normal@@@@QAEAAVpulse_sum_normal@@XZ 00C84020 f i phys_constraint_solver_multithreaded.o
+97	PENDING	0002:00494b30 ??9iterator@?$phys_link_list@Vpulse_sum_point@@@@QBE_NABV01@@Z 00C84030 f i phys_constraint_solver_multithreaded.o
+98	PENDING	0002:00494b50 ??Diterator@?$phys_link_list@Vpulse_sum_point@@@@QAEAAVpulse_sum_point@@XZ 00C84050 f i phys_constraint_solver_multithreaded.o
+99	PENDING	0002:00494b60 ??9iterator@?$phys_link_list@Vpulse_sum_angular@@@@QBE_NABV01@@Z 00C84060 f i phys_constraint_solver_multithreaded.o
+100	PENDING	0002:00494b80 ??Diterator@?$phys_link_list@Vpulse_sum_angular@@@@QAEAAVpulse_sum_angular@@XZ 00C84080 f i phys_constraint_solver_multithreaded.o
+101	PENDING	0002:00494b90 ??9iterator@?$phys_link_list@Vpulse_sum_wheel@@@@QBE_NABV01@@Z 00C84090 f i phys_constraint_solver_multithreaded.o
+102	PENDING	0002:00494bb0 ??Diterator@?$phys_link_list@Vpulse_sum_wheel@@@@QAEAAVpulse_sum_wheel@@XZ 00C840B0 f i phys_constraint_solver_multithreaded.o
+103	PENDING	0002:00494bc0 ??9iterator@?$phys_link_list@Vpulse_sum_contact@@@@QBE_NABV01@@Z 00C840C0 f i phys_constraint_solver_multithreaded.o
+104	PENDING	0002:00494be0 ??Diterator@?$phys_link_list@Vpulse_sum_contact@@@@QAEAAVpulse_sum_contact@@XZ 00C840E0 f i phys_constraint_solver_multithreaded.o
+105	PENDING	0002:00494bf0 ??9iterator@?$phys_link_list@Vpulse_sum_node@@@@QBE_NABV01@@Z 00C840F0 f i phys_constraint_solver_multithreaded.o
+106	PENDING	0002:00494c10 ??Diterator@?$phys_link_list@Vpulse_sum_node@@@@QAEAAVpulse_sum_node@@XZ 00C84110 f i phys_constraint_solver_multithreaded.o
+107	PENDING	0002:00494c20 ?set_next_link@?$phys_link_list_base@Vpulse_sum_node@@@@QAEXQAVpulse_sum_node@@@Z 00C84120 f i phys_constraint_solver_multithreaded.o
+108	PENDING	0002:00494c30 ?get_next_link@?$phys_link_list_base@Vpulse_sum_node@@@@QBEPAVpulse_sum_node@@XZ 00C84130 f i phys_constraint_solver_multithreaded.o
+109	PENDING	0002:00494c40 ?get_next_link@?$phys_link_list_base@Vpulse_sum_normal@@@@QBEPAVpulse_sum_normal@@XZ 00C84140 f i phys_constraint_solver_multithreaded.o
+110	PENDING	0002:00494c50 ?get_next_link@?$phys_link_list_base@Vpulse_sum_point@@@@QBEPAVpulse_sum_point@@XZ 00C84150 f i phys_constraint_solver_multithreaded.o
+111	PENDING	0002:00494c60 ?get_next_link@?$phys_link_list_base@Vpulse_sum_angular@@@@QBEPAVpulse_sum_angular@@XZ 00C84160 f i phys_constraint_solver_multithreaded.o
+112	PENDING	0002:00494c70 ?get_next_link@?$phys_link_list_base@Vpulse_sum_wheel@@@@QBEPAVpulse_sum_wheel@@XZ 00C84170 f i phys_constraint_solver_multithreaded.o
+113	PENDING	0002:00494c80 ?get_next_link@?$phys_link_list_base@Vpulse_sum_contact@@@@QBEPAVpulse_sum_contact@@XZ 00C84180 f i phys_constraint_solver_multithreaded.o
+114	PENDING	0002:00494c90 ??0iterator@?$phys_link_list@Vpulse_sum_normal@@@@QAE@PAVpulse_sum_normal@@@Z 00C84190 f i phys_constraint_solver_multithreaded.o
+115	PENDING	0002:00494ca0 ??0iterator@?$phys_link_list@Vpulse_sum_point@@@@QAE@PAVpulse_sum_point@@@Z 00C841A0 f i phys_constraint_solver_multithreaded.o
+116	PENDING	0002:00494cb0 ??0iterator@?$phys_link_list@Vpulse_sum_angular@@@@QAE@PAVpulse_sum_angular@@@Z 00C841B0 f i phys_constraint_solver_multithreaded.o
+117	PENDING	0002:00494cc0 ??0iterator@?$phys_link_list@Vpulse_sum_wheel@@@@QAE@PAVpulse_sum_wheel@@@Z 00C841C0 f i phys_constraint_solver_multithreaded.o
+118	PENDING	0002:00494cd0 ??0iterator@?$phys_link_list@Vpulse_sum_contact@@@@QAE@PAVpulse_sum_contact@@@Z 00C841D0 f i phys_constraint_solver_multithreaded.o
+119	PENDING	0002:00494ce0 ??0iterator@?$phys_link_list@Vpulse_sum_node@@@@QAE@PAVpulse_sum_node@@@Z 00C841E0 f i phys_constraint_solver_multithreaded.o
+120	PENDING	0002:00494cf0 ??$to_phys_mat33@VMat33@math@@@@YAABVMat33@math@@ABV01@@Z 00C841F0 f i phys_constraint_solver_multithreaded.o
+121	VERIFIED	0002:00494d00 ?orthonormalize@@YAXPAVMat43@math@@@Z 00C84200 f i phys_constraint_solver_multithreaded.o
+122	PENDING	0002:00494e80 ??4user_rigid_body@@QAEAAV0@ABV0@@Z 00C84380 f i phys_constraint_solver_multithreaded.o
+123	PENDING	0002:00494eb0 ?tensor_transform_principle@nuge@@SAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z 00C843B0 f i phys_constraint_solver_multithreaded.o
+124	PENDING	0002:00494fe0 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C844E0 f i phys_constraint_solver_multithreaded.o
+125	PENDING	0002:00495080 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@M@Z 00C84580 f i phys_constraint_solver_multithreaded.o
+126	PENDING	0002:00495130 ?mul_inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C84630 f i phys_constraint_solver_multithreaded.o
+127	PENDING	0002:00495210 ?substep@rbint@@SAXPAVuser_rigid_body@@M@Z 00C84710 f i phys_constraint_solver_multithreaded.o
+128	VERIFIED	0002:00495350 ?euler_integrate_velocity@rbint@@SAXQAVrigid_body@@M@Z 00C84850 f i phys_constraint_solver_multithreaded.o
+129	VERIFIED	0002:00495410 ?euler_integrate_pos@rbint@@SAXQAVrigid_body@@M@Z 00C84910 f i phys_constraint_solver_multithreaded.o
+130	VERIFIED	0002:004955a0 ?gtv@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C84AA0 f i phys_constraint_solver_multithreaded.o
+131	PENDING	0002:00495600 ?calc_abs@pulse_sum_normal@@AAEXABVDir3@math@@@Z 00C84B00 f i phys_constraint_solver_multithreaded.o
+132	PENDING	0002:004957d0 ?get_objective@pulse_sum_normal@@AAE?BMXZ 00C84CD0 f i phys_constraint_solver_multithreaded.o
+133	PENDING	0002:004958a0 ?SOLVER_apply_relaxation@pulse_sum_normal@@AAEXAAM_N@Z 00C84DA0 f i phys_constraint_solver_multithreaded.o
+134	PENDING	0002:00495970 ?SOLVER_solver_prolog@pulse_sum_normal@@AAEXHM@Z 00C84E70 f i phys_constraint_solver_multithreaded.o
+135	PENDING	0002:004959d0 ?calc_abs@pulse_sum_point@@AAEXXZ 00C84ED0 f i phys_constraint_solver_multithreaded.o
+136	PENDING	0002:004960c0 ?get_objective@pulse_sum_point@@AAE?BVDir3@math@@XZ 00C855C0 f i phys_constraint_solver_multithreaded.o
+137	PENDING	0002:00496190 ?SOLVER_solver_prolog@pulse_sum_point@@AAEXHM@Z 00C85690 f i phys_constraint_solver_multithreaded.o
+138	PENDING	0002:004962f0 ?SOLVER_apply_relaxation@pulse_sum_point@@AAEXAAM@Z 00C857F0 f i phys_constraint_solver_multithreaded.o
+139	PENDING	0002:00496460 ?calc_abs@pulse_sum_angular@@AAEXXZ 00C85960 f i phys_constraint_solver_multithreaded.o
+140	PENDING	0002:00496580 ?get_objective@pulse_sum_angular@@AAE?BMXZ 00C85A80 f i phys_constraint_solver_multithreaded.o
+141	PENDING	0002:00496600 ?SOLVER_apply_relaxation@pulse_sum_angular@@AAEXAAM@Z 00C85B00 f i phys_constraint_solver_multithreaded.o
+142	PENDING	0002:00496710 ?SOLVER_solver_prolog@pulse_sum_angular@@AAEXHM@Z 00C85C10 f i phys_constraint_solver_multithreaded.o
+143	PENDING	0002:00496750 ?SOLVER_apply_relaxation@pulse_sum_wheel@@AAEXAAM@Z 00C85C50 f i phys_constraint_solver_multithreaded.o
+144	PENDING	0002:00496810 ?SOLVER_solver_prolog@pulse_sum_wheel@@AAEXHM@Z 00C85D10 f i phys_constraint_solver_multithreaded.o
+145	PENDING	0002:004968f0 ?get_relative_velocity_change_dir@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z 00C85DF0 f i phys_constraint_solver_multithreaded.o
+146	PENDING	0002:004969d0 ?calc_fric_dir@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z 00C85ED0 f i phys_constraint_solver_multithreaded.o
+147	PENDING	0002:00496b80 ?calc_abs_and_fric_dir@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z 00C86080 f i phys_constraint_solver_multithreaded.o
+148	PENDING	0002:00496f00 ?get_vel@psc_cpi@pulse_sum_contact@@QAE?BUvec2@2@PAV2@@Z 00C86400 f i phys_constraint_solver_multithreaded.o
+149	PENDING	0002:00497020 ?get_objective@psc_cpi@pulse_sum_contact@@QAE?BUvec2@2@PAV2@@Z 00C86520 f i phys_constraint_solver_multithreaded.o
+150	PENDING	0002:00497120 ?SOLVER_solver_prolog@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z 00C86620 f i phys_constraint_solver_multithreaded.o
+151	PENDING	0002:00497200 ?SOLVER_apply_relaxation@psc_cpi@pulse_sum_contact@@QAEXPAV2@AAM@Z 00C86700 f i phys_constraint_solver_multithreaded.o
+152	PENDING	0002:00497320 ?get_last_relative_velocity@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z 00C86820 f i phys_constraint_solver_multithreaded.o
+153	PENDING	0002:004973f0 ?get_relative_velocity@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z 00C868F0 f i phys_constraint_solver_multithreaded.o
+154	PENDING	0002:004974c0 ?get_impact_vel@psc_cpi@pulse_sum_contact@@QAE?BMPAV2@ABVDir3@math@@@Z 00C869C0 f i phys_constraint_solver_multithreaded.o
+155	PENDING	0002:00497560 ?get_impact_dist@psc_cpi@pulse_sum_contact@@QAE?BMPAV2@@Z 00C86A60 f i phys_constraint_solver_multithreaded.o
+156	PENDING	0002:00497660 ?setup_vel_uni_restitution@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@MMMM@Z 00C86B60 f i phys_constraint_solver_multithreaded.o
+157	PENDING	0002:004977e0 ?SOLVER_apply_relaxation@pulse_sum_contact@@AAEXAAM@Z 00C86CE0 f i phys_constraint_solver_multithreaded.o
+158	PENDING	0002:00497820 ?SOLVER_solver_prolog@pulse_sum_contact@@AAEXHM@Z 00C86D20 f i phys_constraint_solver_multithreaded.o
+159	PENDING	0002:00497870 ?setup_constraint@rbint@@SAXPAVrigid_body@@PAVpulse_sum_node@@@Z 00C86D70 f i phys_constraint_solver_multithreaded.o
+160	PENDING	0002:00497900 ?add@?$phys_link_list@Vpulse_sum_node@@@@QAEXPAVpulse_sum_node@@@Z 00C86E00 f i phys_constraint_solver_multithreaded.o
+161	PENDING	0002:00497930 ?begin@?$phys_link_list@Vpulse_sum_node@@@@QAE?AViterator@1@XZ 00C86E30 f i phys_constraint_solver_multithreaded.o
+162	PENDING	0002:00497940 ?end@?$phys_link_list@Vpulse_sum_node@@@@QAE?AViterator@1@XZ 00C86E40 f i phys_constraint_solver_multithreaded.o
+163	PENDING	0002:00497950 ?begin@?$phys_link_list@Vpulse_sum_normal@@@@QAE?AViterator@1@XZ 00C86E50 f i phys_constraint_solver_multithreaded.o
+164	PENDING	0002:00497960 ?end@?$phys_link_list@Vpulse_sum_normal@@@@QAE?AViterator@1@XZ 00C86E60 f i phys_constraint_solver_multithreaded.o
+165	PENDING	0002:00497970 ?begin@?$phys_link_list@Vpulse_sum_point@@@@QAE?AViterator@1@XZ 00C86E70 f i phys_constraint_solver_multithreaded.o
+166	PENDING	0002:00497980 ?end@?$phys_link_list@Vpulse_sum_point@@@@QAE?AViterator@1@XZ 00C86E80 f i phys_constraint_solver_multithreaded.o
+167	PENDING	0002:00497990 ?begin@?$phys_link_list@Vpulse_sum_angular@@@@QAE?AViterator@1@XZ 00C86E90 f i phys_constraint_solver_multithreaded.o
+168	PENDING	0002:004979a0 ?end@?$phys_link_list@Vpulse_sum_angular@@@@QAE?AViterator@1@XZ 00C86EA0 f i phys_constraint_solver_multithreaded.o
+169	PENDING	0002:004979b0 ?begin@?$phys_link_list@Vpulse_sum_wheel@@@@QAE?AViterator@1@XZ 00C86EB0 f i phys_constraint_solver_multithreaded.o
+170	PENDING	0002:004979c0 ?end@?$phys_link_list@Vpulse_sum_wheel@@@@QAE?AViterator@1@XZ 00C86EC0 f i phys_constraint_solver_multithreaded.o
+171	PENDING	0002:004979d0 ?begin@?$phys_link_list@Vpulse_sum_contact@@@@QAE?AViterator@1@XZ 00C86ED0 f i phys_constraint_solver_multithreaded.o
+172	PENDING	0002:004979e0 ?end@?$phys_link_list@Vpulse_sum_contact@@@@QAE?AViterator@1@XZ 00C86EE0 f i phys_constraint_solver_multithreaded.o
+173	PENDING	0002:004979f0 ??Eiterator@?$phys_link_list@Vpulse_sum_normal@@@@QAEXH@Z 00C86EF0 f i phys_constraint_solver_multithreaded.o
+174	PENDING	0002:00497a00 ??Eiterator@?$phys_link_list@Vpulse_sum_point@@@@QAEXH@Z 00C86F00 f i phys_constraint_solver_multithreaded.o
+175	PENDING	0002:00497a10 ??Eiterator@?$phys_link_list@Vpulse_sum_angular@@@@QAEXH@Z 00C86F10 f i phys_constraint_solver_multithreaded.o
+176	PENDING	0002:00497a20 ??Eiterator@?$phys_link_list@Vpulse_sum_wheel@@@@QAEXH@Z 00C86F20 f i phys_constraint_solver_multithreaded.o
+177	PENDING	0002:00497a30 ??Eiterator@?$phys_link_list@Vpulse_sum_contact@@@@QAEXH@Z 00C86F30 f i phys_constraint_solver_multithreaded.o
+178	PENDING	0002:00497a40 ??Eiterator@?$phys_link_list@Vpulse_sum_node@@@@QAEXH@Z 00C86F40 f i phys_constraint_solver_multithreaded.o
+179	PENDING	0002:00497a50 ?set@temp_user_rigid_body@pulse_sum_constraint_solver@@QAEXPAV12@PAVuser_rigid_body@@@Z 00C86F50 f i phys_constraint_solver_multithreaded.o
+180	PENDING	0002:00497a90 ?create_pulse_sum_node@pulse_sum_constraint_solver@@QAEPAVpulse_sum_node@@XZ 00C86F90 f i phys_constraint_solver_multithreaded.o
+181	VERIFIED	0002:00497b10 ?solve_constraints@pulse_sum_constraint_solver@@QAEXXZ 00C87010 f i phys_constraint_solver_multithreaded.o
+182	VERIFIED	0002:004980d0 ??0temp_user_rigid_body@pulse_sum_constraint_solver@@QAE@XZ 00C875D0 f i phys_constraint_solver_multithreaded.o
+183	PENDING	0002:004980e0 ?add_urb@pulse_sum_constraint_solver@@QAEXPAPAVtemp_user_rigid_body@1@PAPAVuser_rigid_body_restore_info@1@PAVrigid_body_constraint@@@Z 00C875E0 f i phys_constraint_solver_multithreaded.o
+184	PENDING	0002:00498250 ?execute_constraint_solver@pulse_sum_constraint_solver@@QAEXQAVrigid_body@@@Z 00C87750 f i phys_constraint_solver_multithreaded.o

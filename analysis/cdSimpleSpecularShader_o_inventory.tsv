@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x007D4DD0	0x00BC42D0	??0cdSimpleSpecularShaderMat@@QAE@PAUnglTexture@@0@Z	public: __thiscall cdSimpleSpecularShaderMat::cdSimpleSpecularShaderMat(struct nglTexture *,struct nglTexture *)	cdSimpleSpecularShader.o
+0x007D4E60	0x00BC4360	?InitCDSimpleSpecularShader@@YAXXZ	void __cdecl InitCDSimpleSpecularShader(void)	cdSimpleSpecularShader.o
+0x007D4EB0	0x00BC43B0	?ToggleCDSimpleSpecularShader@@YAXXZ	void __cdecl ToggleCDSimpleSpecularShader(void)	cdSimpleSpecularShader.o
+0x007D4ED0	0x00BC43D0	?Register@cdSimpleSpecularShader@@UAEXXZ	public: virtual void __thiscall cdSimpleSpecularShader::Register(void)	cdSimpleSpecularShader.o
+0x007D4F00	0x00BC4400	?GetEyePos@@YAXPAVnglMeshNode@@AAVVector4@math@@@Z	void __cdecl GetEyePos(class nglMeshNode *,class math::Vector4 &)	cdSimpleSpecularShader.o
+0x007D4FF0	0x00BC44F0	?AddNode@cdSimpleSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdSimpleSpecularShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdSimpleSpecularShader.o
+0x007D5060	0x00BC4560	?Render@cdSimpleSpecularShaderNode@@UAEXXZ	public: virtual void __thiscall cdSimpleSpecularShaderNode::Render(void)	cdSimpleSpecularShader.o

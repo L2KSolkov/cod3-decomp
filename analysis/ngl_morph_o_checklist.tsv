@@ -1,0 +1,13 @@
+index	status	map_line
+1	VERIFIED	0002:004533e0 ?nglGetMorph@@YAPAUnglMorphSet@@ABVtlFixedString@@_N@Z 00C428E0 f ngl_morph.o
+2	VERIFIED	0002:00453420 ?Apply@nglMorphFrame@@MBEXPAUnglMeshSection@@HMI@Z 00C42920 f ngl_morph.o
+3	VERIFIED	0002:00453430 ?Apply@nglMeshMorph@@MBEXPAUnglMeshSection@@HMI@Z 00C42930 f ngl_morph.o
+4	VERIFIED	0002:00453440 ?nglMakeMorphSectionsUnique@@YAXPAUnglMesh@@PAUnglMorphSet@@@Z 00C42940 f ngl_morph.o
+5	VERIFIED	0002:004534b0 ?nglBlendMorphs@@YAXPAUnglMesh@@IPAUnglMorphEntry@@@Z 00C429B0 f ngl_morph.o
+6	VERIFIED	0002:00453570 ?nglMorphInit@@YAXXZ 00C42A70 f ngl_morph.o
+7	VERIFIED	0002:004535b0 ?nglProcessMorph@@YAXPAUnglMorphSet@@@Z 00C42AB0 f ngl_morph.o
+8	VERIFIED	0002:00453600 ??0?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42B00 f i ngl_morph.o
+9	PORTED	0002:00453620 ?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C42B20 f i ngl_morph.o
+10	VERIFIED	0002:00453650 ?Init@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ 00C42B50 f i ngl_morph.o
+11	VERIFIED	0002:00453690 ?Add@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@PAU2@@Z 00C42B90 f i ngl_morph.o
+12	PORTED	0002:004537b0 ??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42CB0 f i ngl_morph.o

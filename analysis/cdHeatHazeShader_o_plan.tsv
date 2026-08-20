@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x007CF460	?ToggleCDHeatHazeShader@@YAXXZ	void __cdecl ToggleCDHeatHazeShader(void)	
+0x007CF470	?InitCDHeatHazeShader@@YAXXZ	void __cdecl InitCDHeatHazeShader(void)	
+0x007CF480	?SetupCDHeatHazeShader@@YAXXZ	void __cdecl SetupCDHeatHazeShader(void)	
+0x007CF740	?RenderCDHeatHazeShader@@YAXXZ	void __cdecl RenderCDHeatHazeShader(void)	

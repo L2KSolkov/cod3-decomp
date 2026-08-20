@@ -1,0 +1,431 @@
+index	status	map_line
+1	VERIFIED	0002:0058afc0 ?RegisterHashStrings@mp_anim_wad@@YAXXZ 00D7A4C0 f mp_anim_wad.o
+2	PORTED	0002:0058c590 ?ResolveAnim@mp_anim_wad@@YAIIIPAII@Z 00D7BA90 f mp_anim_wad.o
+3	VERIFIED	0002:0058c650 ?GetAnim@AnimRef@Broc@@QBEIXZ 00D7BB50 f i mp_anim_wad.o
+4	PORTED	0002:0058c680 ??BBroAnim@@QBE?BIXZ 00D7BB80 f i mp_anim_wad.o
+5	VERIFIED	0002:0058c6a0 ?SetAnim@AnimRef@Broc@@QAEXI@Z 00D7BBA0 f i mp_anim_wad.o
+6	VERIFIED	0002:0058c6e0 ??0BroAnim@@QAE@I@Z 00D7BBE0 f i mp_anim_wad.o
+7	VERIFIED	0002:0058c710 ?ResolveAnimName@mp_anim_wad@@YAPBDI@Z 00D7BC10 f mp_anim_wad.o
+8	VERIFIED	0002:0058c790 ?ValidateAnimationIndices@mp_anim_wad@@YA_NXZ 00D7BC90 f mp_anim_wad.o
+9	PORTED	0002:0058c840 ?IsUnresolved@AnimRef@Broc@@QBE_NXZ 00D7BD40 f i mp_anim_wad.o
+10	VERIFIED	0002:0058c870 ?GetBroAnim@mp_anim_wad@@YAIII@Z 00D7BD70 f mp_anim_wad.o
+11	PORTED	0002:0058c8c0 ?GetEE_script_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7BDC0 f mp_anim_wad.o
+12	PORTED	0002:0058c910 ?IsEEDefined_script_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7BE10 f mp_anim_wad.o
+13	PORTED	0002:0058c9c0 ?GetEE_dontdropweapon@@YAAAUbint@@Ventity@Broc@@@Z 00D7BEC0 f mp_anim_wad.o
+14	PORTED	0002:0058ca10 ?IsEEDefined_dontdropweapon@@YA?AUbbool@@Ventity@Broc@@@Z 00D7BF10 f mp_anim_wad.o
+15	PORTED	0002:0058cac0 ?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7BFC0 f mp_anim_wad.o
+16	PORTED	0002:0058cb10 ?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C010 f mp_anim_wad.o
+17	PORTED	0002:0058cc10 ?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C110 f mp_anim_wad.o
+18	PORTED	0002:0058cc60 ?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C160 f mp_anim_wad.o
+19	PORTED	0002:0058cd60 ?GetEE_script_prespawn_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C260 f mp_anim_wad.o
+20	PORTED	0002:0058cdb0 ?IsEEDefined_script_prespawn_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C2B0 f mp_anim_wad.o
+21	PORTED	0002:0058ce60 ?GetEE_script_burst_max@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C360 f mp_anim_wad.o
+22	PORTED	0002:0058ceb0 ?IsEEDefined_script_burst_max@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C3B0 f mp_anim_wad.o
+23	PORTED	0002:0058cf60 ?GetEE_script_offradius@@YAAAUbint@@Ventity@Broc@@@Z 00D7C460 f mp_anim_wad.o
+24	PORTED	0002:0058cfb0 ?IsEEDefined_script_offradius@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C4B0 f mp_anim_wad.o
+25	PORTED	0002:0058d060 ?GetEE_script_location@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C560 f mp_anim_wad.o
+26	PORTED	0002:0058d0b0 ?IsEEDefined_script_location@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C5B0 f mp_anim_wad.o
+27	PORTED	0002:0058d1b0 ?GetEE_script_area@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C6B0 f mp_anim_wad.o
+28	PORTED	0002:0058d200 ?IsEEDefined_script_area@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C700 f mp_anim_wad.o
+29	PORTED	0002:0058d300 ?GetEE_script_uniquename@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C800 f mp_anim_wad.o
+30	PORTED	0002:0058d350 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C850 f mp_anim_wad.o
+31	PORTED	0002:0058d450 ?GetEE_script_random@@YAAAUbint@@Ventity@Broc@@@Z 00D7C950 f mp_anim_wad.o
+32	PORTED	0002:0058d4a0 ?IsEEDefined_script_random@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C9A0 f mp_anim_wad.o
+33	PORTED	0002:0058d550 ?GetEE_script_health@@YAAAUbint@@Ventity@Broc@@@Z 00D7CA50 f mp_anim_wad.o
+34	PORTED	0002:0058d5a0 ?IsEEDefined_script_health@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CAA0 f mp_anim_wad.o
+35	PORTED	0002:0058d650 ?GetEE_script_flaktype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7CB50 f mp_anim_wad.o
+36	PORTED	0002:0058d6a0 ?IsEEDefined_script_flaktype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CBA0 f mp_anim_wad.o
+37	PORTED	0002:0058d7a0 ?GetEE_script_accuracyStationaryMod@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7CCA0 f mp_anim_wad.o
+38	PORTED	0002:0058d7f0 ?IsEEDefined_script_accuracyStationaryMod@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CCF0 f mp_anim_wad.o
+39	PORTED	0002:0058d8a0 ?GetEE_noshadow@@YAAAUbint@@Ventity@Broc@@@Z 00D7CDA0 f mp_anim_wad.o
+40	PORTED	0002:0058d8f0 ?IsEEDefined_noshadow@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CDF0 f mp_anim_wad.o
+41	PORTED	0002:0058d9a0 ?GetEE_script_offtime@@YAAAUbint@@Ventity@Broc@@@Z 00D7CEA0 f mp_anim_wad.o
+42	PORTED	0002:0058d9f0 ?IsEEDefined_script_offtime@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CEF0 f mp_anim_wad.o
+43	PORTED	0002:0058daa0 ?GetEE_script_playerseek@@YAAAUbint@@Ventity@Broc@@@Z 00D7CFA0 f mp_anim_wad.o
+44	PORTED	0002:0058daf0 ?IsEEDefined_script_playerseek@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CFF0 f mp_anim_wad.o
+45	PORTED	0002:0058dba0 ?GetEE_vehicletype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D0A0 f mp_anim_wad.o
+46	PORTED	0002:0058dbf0 ?IsEEDefined_vehicletype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D0F0 f mp_anim_wad.o
+47	PORTED	0002:0058dcf0 ?GetEE_script_fixbasepose@@YAAAUbint@@Ventity@Broc@@@Z 00D7D1F0 f mp_anim_wad.o
+48	PORTED	0002:0058dd40 ?IsEEDefined_script_fixbasepose@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D240 f mp_anim_wad.o
+49	PORTED	0002:0058ddf0 ?GetEE_script_objective@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D2F0 f mp_anim_wad.o
+50	PORTED	0002:0058de40 ?IsEEDefined_script_objective@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D340 f mp_anim_wad.o
+51	PORTED	0002:0058df40 ?GetEE_script_moveoverride@@YAAAUbint@@Ventity@Broc@@@Z 00D7D440 f mp_anim_wad.o
+52	PORTED	0002:0058df90 ?IsEEDefined_script_moveoverride@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D490 f mp_anim_wad.o
+53	PORTED	0002:0058e040 ?GetEE_script_stalingradspawn@@YAAAUbint@@Ventity@Broc@@@Z 00D7D540 f mp_anim_wad.o
+54	PORTED	0002:0058e090 ?IsEEDefined_script_stalingradspawn@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D590 f mp_anim_wad.o
+55	PORTED	0002:0058e140 ?GetEE_script_new_exploder@@YAAAUbint@@Ventity@Broc@@@Z 00D7D640 f mp_anim_wad.o
+56	PORTED	0002:0058e190 ?IsEEDefined_script_new_exploder@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D690 f mp_anim_wad.o
+57	PORTED	0002:0058e240 ?GetEE_script_squadname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D740 f mp_anim_wad.o
+58	PORTED	0002:0058e290 ?IsEEDefined_script_squadname@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D790 f mp_anim_wad.o
+59	PORTED	0002:0058e390 ?GetEE_weaponinfo@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D890 f mp_anim_wad.o
+60	PORTED	0002:0058e3e0 ?IsEEDefined_weaponinfo@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D8E0 f mp_anim_wad.o
+61	PORTED	0002:0058e4e0 ?GetEE_script_pacifist@@YAAAUbint@@Ventity@Broc@@@Z 00D7D9E0 f mp_anim_wad.o
+62	PORTED	0002:0058e530 ?IsEEDefined_script_pacifist@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DA30 f mp_anim_wad.o
+63	PORTED	0002:0058e5e0 ?GetEE_script_turretweaponpak@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DAE0 f mp_anim_wad.o
+64	PORTED	0002:0058e630 ?IsEEDefined_script_turretweaponpak@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DB30 f mp_anim_wad.o
+65	PORTED	0002:0058e730 ?GetEE_script_fb_retreat_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z 00D7DC30 f mp_anim_wad.o
+66	PORTED	0002:0058e780 ?IsEEDefined_script_fb_retreat_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DC80 f mp_anim_wad.o
+67	PORTED	0002:0058e830 ?GetEE_script_grenades@@YAAAUbint@@Ventity@Broc@@@Z 00D7DD30 f mp_anim_wad.o
+68	PORTED	0002:0058e880 ?IsEEDefined_script_grenades@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DD80 f mp_anim_wad.o
+69	PORTED	0002:0058e930 ?GetEE_script_hidden@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DE30 f mp_anim_wad.o
+70	PORTED	0002:0058e980 ?IsEEDefined_script_hidden@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DE80 f mp_anim_wad.o
+71	PORTED	0002:0058ea80 ?GetEE_script_fb_id@@YAAAUbint@@Ventity@Broc@@@Z 00D7DF80 f mp_anim_wad.o
+72	PORTED	0002:0058ead0 ?IsEEDefined_script_fb_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DFD0 f mp_anim_wad.o
+73	PORTED	0002:0058eb80 ?GetEE_script_effect_id@@YAAAVstring@Broc@@Ventity@2@@Z 00D7E080 f mp_anim_wad.o
+74	PORTED	0002:0058ebd0 ?IsEEDefined_script_effect_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E0D0 f mp_anim_wad.o
+75	PORTED	0002:0058ecd0 ?GetEE_script_speed@@YAAAUbint@@Ventity@Broc@@@Z 00D7E1D0 f mp_anim_wad.o
+76	PORTED	0002:0058ed20 ?IsEEDefined_script_speed@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E220 f mp_anim_wad.o
+77	PORTED	0002:0058edd0 ?GetEE_script_panzer@@YAAAUbint@@Ventity@Broc@@@Z 00D7E2D0 f mp_anim_wad.o
+78	PORTED	0002:0058ee20 ?IsEEDefined_script_panzer@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E320 f mp_anim_wad.o
+79	PORTED	0002:0058eed0 ?GetEE_script_tankmgaccuracy@@YAAAUbint@@Ventity@Broc@@@Z 00D7E3D0 f mp_anim_wad.o
+80	PORTED	0002:0058ef20 ?IsEEDefined_script_tankmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E420 f mp_anim_wad.o
+81	PORTED	0002:0058efd0 ?GetEE_script_colorid_startindex@@YAAAUbint@@Ventity@Broc@@@Z 00D7E4D0 f mp_anim_wad.o
+82	PORTED	0002:0058f020 ?IsEEDefined_script_colorid_startindex@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E520 f mp_anim_wad.o
+83	PORTED	0002:0058f0d0 ?GetEE_script_waittill@@YAAAVstring@Broc@@Ventity@2@@Z 00D7E5D0 f mp_anim_wad.o
+84	PORTED	0002:0058f120 ?IsEEDefined_script_waittill@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E620 f mp_anim_wad.o
+85	PORTED	0002:0058f220 ?GetEE_ambient@@YAAAVstring@Broc@@Ventity@2@@Z 00D7E720 f mp_anim_wad.o
+86	PORTED	0002:0058f270 ?IsEEDefined_ambient@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E770 f mp_anim_wad.o
+87	PORTED	0002:0058f370 ?GetEE_script_burst_min@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7E870 f mp_anim_wad.o
+88	PORTED	0002:0058f3c0 ?IsEEDefined_script_burst_min@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E8C0 f mp_anim_wad.o
+89	PORTED	0002:0058f470 ?GetEE_script_timer@@YAAAUbint@@Ventity@Broc@@@Z 00D7E970 f mp_anim_wad.o
+90	PORTED	0002:0058f4c0 ?IsEEDefined_script_timer@@YA?AUbbool@@Ventity@Broc@@@Z 00D7E9C0 f mp_anim_wad.o
+91	PORTED	0002:0058f570 ?GetEE_script_noautoreenforcements@@YAAAUbint@@Ventity@Broc@@@Z 00D7EA70 f mp_anim_wad.o
+92	PORTED	0002:0058f5c0 ?IsEEDefined_script_noautoreenforcements@@YA?AUbbool@@Ventity@Broc@@@Z 00D7EAC0 f mp_anim_wad.o
+93	PORTED	0002:0058f670 ?GetEE_script_exploder@@YAAAUbint@@Ventity@Broc@@@Z 00D7EB70 f mp_anim_wad.o
+94	PORTED	0002:0058f6c0 ?IsEEDefined_script_exploder@@YA?AUbbool@@Ventity@Broc@@@Z 00D7EBC0 f mp_anim_wad.o
+95	PORTED	0002:0058f770 ?GetEE_script_startinghealth@@YAAAUbint@@Ventity@Broc@@@Z 00D7EC70 f mp_anim_wad.o
+96	PORTED	0002:0058f7c0 ?IsEEDefined_script_startinghealth@@YA?AUbbool@@Ventity@Broc@@@Z 00D7ECC0 f mp_anim_wad.o
+97	PORTED	0002:0058f870 ?GetEE_script_flashlight@@YAAAUbint@@Ventity@Broc@@@Z 00D7ED70 f mp_anim_wad.o
+98	PORTED	0002:0058f8c0 ?IsEEDefined_script_flashlight@@YA?AUbbool@@Ventity@Broc@@@Z 00D7EDC0 f mp_anim_wad.o
+99	PORTED	0002:0058f970 ?GetEE_script_fxid@@YAAAVstring@Broc@@Ventity@2@@Z 00D7EE70 f mp_anim_wad.o
+100	PORTED	0002:0058f9c0 ?IsEEDefined_script_fxid@@YA?AUbbool@@Ventity@Broc@@@Z 00D7EEC0 f mp_anim_wad.o
+101	PORTED	0002:0058fac0 ?GetEE_script_delete@@YAAAUbint@@Ventity@Broc@@@Z 00D7EFC0 f mp_anim_wad.o
+102	PORTED	0002:0058fb10 ?IsEEDefined_script_delete@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F010 f mp_anim_wad.o
+103	PORTED	0002:0058fbc0 ?GetEE_script_balcony@@YAAAUbint@@Ventity@Broc@@@Z 00D7F0C0 f mp_anim_wad.o
+104	PORTED	0002:0058fc10 ?IsEEDefined_script_balcony@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F110 f mp_anim_wad.o
+105	PORTED	0002:0058fcc0 ?GetEE_script_vehiclegroup@@YAAAUbint@@Ventity@Broc@@@Z 00D7F1C0 f mp_anim_wad.o
+106	PORTED	0002:0058fd10 ?IsEEDefined_script_vehiclegroup@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F210 f mp_anim_wad.o
+107	PORTED	0002:0058fdc0 ?GetEE_script_friendlywave@@YAAAUbint@@Ventity@Broc@@@Z 00D7F2C0 f mp_anim_wad.o
+108	PORTED	0002:0058fe10 ?IsEEDefined_script_friendlywave@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F310 f mp_anim_wad.o
+109	PORTED	0002:0058fec0 ?GetEE_script_seekgoal@@YAAAUbint@@Ventity@Broc@@@Z 00D7F3C0 f mp_anim_wad.o
+110	PORTED	0002:0058ff10 ?IsEEDefined_script_seekgoal@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F410 f mp_anim_wad.o
+111	PORTED	0002:0058ffc0 ?GetEE_script_fb_min_respawn_time@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7F4C0 f mp_anim_wad.o
+112	PORTED	0002:00590010 ?IsEEDefined_script_fb_min_respawn_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F510 f mp_anim_wad.o
+113	PORTED	0002:005900c0 ?GetEE_script_dontdeploy@@YAAAUbint@@Ventity@Broc@@@Z 00D7F5C0 f mp_anim_wad.o
+114	PORTED	0002:00590110 ?IsEEDefined_script_dontdeploy@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F610 f mp_anim_wad.o
+115	PORTED	0002:005901c0 ?GetEE_script_idnumber@@YAAAUbint@@Ventity@Broc@@@Z 00D7F6C0 f mp_anim_wad.o
+116	PORTED	0002:00590210 ?IsEEDefined_script_idnumber@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F710 f mp_anim_wad.o
+117	PORTED	0002:005902c0 ?GetEE_script_fb_max_respawn_time@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7F7C0 f mp_anim_wad.o
+118	PORTED	0002:00590310 ?IsEEDefined_script_fb_max_respawn_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F810 f mp_anim_wad.o
+119	PORTED	0002:005903c0 ?GetEE_script_chargegoal@@YAAAUbint@@Ventity@Broc@@@Z 00D7F8C0 f mp_anim_wad.o
+120	PORTED	0002:00590410 ?IsEEDefined_script_chargegoal@@YA?AUbbool@@Ventity@Broc@@@Z 00D7F910 f mp_anim_wad.o
+121	PORTED	0002:005904c0 ?GetEE_script_string@@YAAAVstring@Broc@@Ventity@2@@Z 00D7F9C0 f mp_anim_wad.o
+122	PORTED	0002:00590510 ?IsEEDefined_script_string@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FA10 f mp_anim_wad.o
+123	PORTED	0002:00590610 ?GetEE_script_float@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7FB10 f mp_anim_wad.o
+124	PORTED	0002:00590660 ?IsEEDefined_script_float@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FB60 f mp_anim_wad.o
+125	PORTED	0002:00590710 ?GetEE_script_breathpuff@@YAAAUbint@@Ventity@Broc@@@Z 00D7FC10 f mp_anim_wad.o
+126	PORTED	0002:00590760 ?IsEEDefined_script_breathpuff@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FC60 f mp_anim_wad.o
+127	PORTED	0002:00590810 ?GetEE_script_hdi_time@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7FD10 f mp_anim_wad.o
+128	PORTED	0002:00590860 ?IsEEDefined_script_hdi_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FD60 f mp_anim_wad.o
+129	PORTED	0002:00590910 ?GetEE_script_fxstart@@YAAAUbint@@Ventity@Broc@@@Z 00D7FE10 f mp_anim_wad.o
+130	PORTED	0002:00590960 ?IsEEDefined_script_fxstart@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FE60 f mp_anim_wad.o
+131	PORTED	0002:00590a10 ?GetEE_script_delay_max@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7FF10 f mp_anim_wad.o
+132	PORTED	0002:00590a60 ?IsEEDefined_script_delay_max@@YA?AUbbool@@Ventity@Broc@@@Z 00D7FF60 f mp_anim_wad.o
+133	PORTED	0002:00590b10 ?GetEE_script_int@@YAAAUbint@@Ventity@Broc@@@Z 00D80010 f mp_anim_wad.o
+134	PORTED	0002:00590b60 ?IsEEDefined_script_int@@YA?AUbbool@@Ventity@Broc@@@Z 00D80060 f mp_anim_wad.o
+135	PORTED	0002:00590c10 ?GetEE_script_requires_player@@YAAAUbint@@Ventity@Broc@@@Z 00D80110 f mp_anim_wad.o
+136	PORTED	0002:00590c60 ?IsEEDefined_script_requires_player@@YA?AUbbool@@Ventity@Broc@@@Z 00D80160 f mp_anim_wad.o
+137	PORTED	0002:00590d10 ?GetEE_script_animname@@YAAAVstring@Broc@@Ventity@2@@Z 00D80210 f mp_anim_wad.o
+138	PORTED	0002:00590d60 ?IsEEDefined_script_animname@@YA?AUbbool@@Ventity@Broc@@@Z 00D80260 f mp_anim_wad.o
+139	PORTED	0002:00590e60 ?GetEE_script_battle@@YAAAUbint@@Ventity@Broc@@@Z 00D80360 f mp_anim_wad.o
+140	PORTED	0002:00590eb0 ?IsEEDefined_script_battle@@YA?AUbbool@@Ventity@Broc@@@Z 00D803B0 f mp_anim_wad.o
+141	PORTED	0002:00590f60 ?GetEE_script_followmin@@YAAAUbint@@Ventity@Broc@@@Z 00D80460 f mp_anim_wad.o
+142	PORTED	0002:00590fb0 ?IsEEDefined_script_followmin@@YA?AUbbool@@Ventity@Broc@@@Z 00D804B0 f mp_anim_wad.o
+143	PORTED	0002:00591060 ?GetEE_script_grenadeawareness@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80560 f mp_anim_wad.o
+144	PORTED	0002:005910b0 ?IsEEDefined_script_grenadeawareness@@YA?AUbbool@@Ventity@Broc@@@Z 00D805B0 f mp_anim_wad.o
+145	PORTED	0002:00591160 ?GetEE_script_bravery@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80660 f mp_anim_wad.o
+146	PORTED	0002:005911b0 ?IsEEDefined_script_bravery@@YA?AUbbool@@Ventity@Broc@@@Z 00D806B0 f mp_anim_wad.o
+147	PORTED	0002:00591260 ?GetEE_destructible_id@@YAAAUbint@@Ventity@Broc@@@Z 00D80760 f mp_anim_wad.o
+148	PORTED	0002:005912b0 ?IsEEDefined_destructible_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D807B0 f mp_anim_wad.o
+149	PORTED	0002:00591360 ?GetEE_dontdropgrenade@@YAAAUbint@@Ventity@Broc@@@Z 00D80860 f mp_anim_wad.o
+150	PORTED	0002:005913b0 ?IsEEDefined_dontdropgrenade@@YA?AUbbool@@Ventity@Broc@@@Z 00D808B0 f mp_anim_wad.o
+151	PORTED	0002:00591460 ?GetEE_script_fxstop@@YAAAUbint@@Ventity@Broc@@@Z 00D80960 f mp_anim_wad.o
+152	PORTED	0002:005914b0 ?IsEEDefined_script_fxstop@@YA?AUbbool@@Ventity@Broc@@@Z 00D809B0 f mp_anim_wad.o
+153	PORTED	0002:00591560 ?GetEE_script_accuracyvsplayer@@YAAAUbint@@Ventity@Broc@@@Z 00D80A60 f mp_anim_wad.o
+154	PORTED	0002:005915b0 ?IsEEDefined_script_accuracyvsplayer@@YA?AUbbool@@Ventity@Broc@@@Z 00D80AB0 f mp_anim_wad.o
+155	PORTED	0002:00591660 ?GetEE_script_eventhandler@@YAAAVstring@Broc@@Ventity@2@@Z 00D80B60 f mp_anim_wad.o
+156	PORTED	0002:005916b0 ?IsEEDefined_script_eventhandler@@YA?AUbbool@@Ventity@Broc@@@Z 00D80BB0 f mp_anim_wad.o
+157	PORTED	0002:005917b0 ?GetEE_script_sightrange@@YAAAUbint@@Ventity@Broc@@@Z 00D80CB0 f mp_anim_wad.o
+158	PORTED	0002:00591800 ?IsEEDefined_script_sightrange@@YA?AUbbool@@Ventity@Broc@@@Z 00D80D00 f mp_anim_wad.o
+159	PORTED	0002:005918b0 ?GetEE_script_personality@@YAAAVstring@Broc@@Ventity@2@@Z 00D80DB0 f mp_anim_wad.o
+160	PORTED	0002:00591900 ?IsEEDefined_script_personality@@YA?AUbbool@@Ventity@Broc@@@Z 00D80E00 f mp_anim_wad.o
+161	PORTED	0002:00591a00 ?GetEE_script_followmax@@YAAAUbint@@Ventity@Broc@@@Z 00D80F00 f mp_anim_wad.o
+162	PORTED	0002:00591a50 ?IsEEDefined_script_followmax@@YA?AUbbool@@Ventity@Broc@@@Z 00D80F50 f mp_anim_wad.o
+163	PORTED	0002:00591b00 ?GetEE_script_colorid_time@@YAAAUbfloat@@Ventity@Broc@@@Z 00D81000 f mp_anim_wad.o
+164	PORTED	0002:00591b50 ?IsEEDefined_script_colorid_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D81050 f mp_anim_wad.o
+165	PORTED	0002:00591c00 ?GetEE_script_fb_required_kills@@YAAAUbint@@Ventity@Broc@@@Z 00D81100 f mp_anim_wad.o
+166	PORTED	0002:00591c50 ?IsEEDefined_script_fb_required_kills@@YA?AUbbool@@Ventity@Broc@@@Z 00D81150 f mp_anim_wad.o
+167	PORTED	0002:00591d00 ?GetEE_script_chain@@YAAAVstring@Broc@@Ventity@2@@Z 00D81200 f mp_anim_wad.o
+168	PORTED	0002:00591d50 ?IsEEDefined_script_chain@@YA?AUbbool@@Ventity@Broc@@@Z 00D81250 f mp_anim_wad.o
+169	PORTED	0002:00591e50 ?GetEE_script_usemg42@@YAAAUbint@@Ventity@Broc@@@Z 00D81350 f mp_anim_wad.o
+170	PORTED	0002:00591ea0 ?IsEEDefined_script_usemg42@@YA?AUbbool@@Ventity@Broc@@@Z 00D813A0 f mp_anim_wad.o
+171	PORTED	0002:00591f50 ?GetEE_script_team@@YAAAVstring@Broc@@Ventity@2@@Z 00D81450 f mp_anim_wad.o
+172	PORTED	0002:00591fa0 ?IsEEDefined_script_team@@YA?AUbbool@@Ventity@Broc@@@Z 00D814A0 f mp_anim_wad.o
+173	PORTED	0002:005920a0 ?GetEE_script_multiplier@@YAAAUbint@@Ventity@Broc@@@Z 00D815A0 f mp_anim_wad.o
+174	PORTED	0002:005920f0 ?IsEEDefined_script_multiplier@@YA?AUbbool@@Ventity@Broc@@@Z 00D815F0 f mp_anim_wad.o
+175	PORTED	0002:005921a0 ?GetEE_script_mg42stayput@@YAAAUbint@@Ventity@Broc@@@Z 00D816A0 f mp_anim_wad.o
+176	PORTED	0002:005921f0 ?IsEEDefined_script_mg42stayput@@YA?AUbbool@@Ventity@Broc@@@Z 00D816F0 f mp_anim_wad.o
+177	PORTED	0002:005922a0 ?GetEE_script_lmgaccuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D817A0 f mp_anim_wad.o
+178	PORTED	0002:005922f0 ?IsEEDefined_script_lmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D817F0 f mp_anim_wad.o
+179	PORTED	0002:005923a0 ?GetEE_script_ambush_trigger_distance@@YAAAUbint@@Ventity@Broc@@@Z 00D818A0 f mp_anim_wad.o
+180	PORTED	0002:005923f0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Ventity@Broc@@@Z 00D818F0 f mp_anim_wad.o
+181	PORTED	0002:005924a0 ?GetEE_script_accuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D819A0 f mp_anim_wad.o
+182	PORTED	0002:005924f0 ?IsEEDefined_script_accuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D819F0 f mp_anim_wad.o
+183	PORTED	0002:005925a0 ?GetEE_script_damage@@YAAAUbint@@Ventity@Broc@@@Z 00D81AA0 f mp_anim_wad.o
+184	PORTED	0002:005925f0 ?IsEEDefined_script_damage@@YA?AUbbool@@Ventity@Broc@@@Z 00D81AF0 f mp_anim_wad.o
+185	PORTED	0002:005926a0 ?GetEE_script_fb_min_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D81BA0 f mp_anim_wad.o
+186	PORTED	0002:005926f0 ?IsEEDefined_script_fb_min_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z 00D81BF0 f mp_anim_wad.o
+187	PORTED	0002:005927a0 ?GetEE_script_health_once@@YAAAUbint@@Ventity@Broc@@@Z 00D81CA0 f mp_anim_wad.o
+188	PORTED	0002:005927f0 ?IsEEDefined_script_health_once@@YA?AUbbool@@Ventity@Broc@@@Z 00D81CF0 f mp_anim_wad.o
+189	PORTED	0002:005928a0 ?GetEE_script_delayed_playerseek@@YAAAUbint@@Ventity@Broc@@@Z 00D81DA0 f mp_anim_wad.o
+190	PORTED	0002:005928f0 ?IsEEDefined_script_delayed_playerseek@@YA?AUbbool@@Ventity@Broc@@@Z 00D81DF0 f mp_anim_wad.o
+191	PORTED	0002:005929a0 ?GetEE_script_hdi_index@@YAAAUbint@@Ventity@Broc@@@Z 00D81EA0 f mp_anim_wad.o
+192	PORTED	0002:005929f0 ?IsEEDefined_script_hdi_index@@YA?AUbbool@@Ventity@Broc@@@Z 00D81EF0 f mp_anim_wad.o
+193	PORTED	0002:00592aa0 ?GetEE_script_radius@@YAAAUbint@@Ventity@Broc@@@Z 00D81FA0 f mp_anim_wad.o
+194	PORTED	0002:00592af0 ?IsEEDefined_script_radius@@YA?AUbbool@@Ventity@Broc@@@Z 00D81FF0 f mp_anim_wad.o
+195	PORTED	0002:00592ba0 ?GetEE_script_min_friendlies@@YAAAUbint@@Ventity@Broc@@@Z 00D820A0 f mp_anim_wad.o
+196	PORTED	0002:00592bf0 ?IsEEDefined_script_min_friendlies@@YA?AUbbool@@Ventity@Broc@@@Z 00D820F0 f mp_anim_wad.o
+197	PORTED	0002:00592ca0 ?GetEE_script_favoriteenemy@@YAAAVstring@Broc@@Ventity@2@@Z 00D821A0 f mp_anim_wad.o
+198	PORTED	0002:00592cf0 ?IsEEDefined_script_favoriteenemy@@YA?AUbbool@@Ventity@Broc@@@Z 00D821F0 f mp_anim_wad.o
+199	PORTED	0002:00592df0 ?GetEE_script_kill_chain@@YAAAVstring@Broc@@Ventity@2@@Z 00D822F0 f mp_anim_wad.o
+200	PORTED	0002:00592e40 ?IsEEDefined_script_kill_chain@@YA?AUbbool@@Ventity@Broc@@@Z 00D82340 f mp_anim_wad.o
+201	PORTED	0002:00592f40 ?GetEE_script_delay_min@@YAAAUbfloat@@Ventity@Broc@@@Z 00D82440 f mp_anim_wad.o
+202	PORTED	0002:00592f90 ?IsEEDefined_script_delay_min@@YA?AUbbool@@Ventity@Broc@@@Z 00D82490 f mp_anim_wad.o
+203	PORTED	0002:00593040 ?GetEE_script_colorid_endindex@@YAAAUbint@@Ventity@Broc@@@Z 00D82540 f mp_anim_wad.o
+204	PORTED	0002:00593090 ?IsEEDefined_script_colorid_endindex@@YA?AUbbool@@Ventity@Broc@@@Z 00D82590 f mp_anim_wad.o
+205	PORTED	0002:00593140 ?GetEE_script_sound@@YAAAVstring@Broc@@Ventity@2@@Z 00D82640 f mp_anim_wad.o
+206	PORTED	0002:00593190 ?IsEEDefined_script_sound@@YA?AUbbool@@Ventity@Broc@@@Z 00D82690 f mp_anim_wad.o
+207	PORTED	0002:00593290 ?GetEE_script_firefx@@YAAAVstring@Broc@@Ventity@2@@Z 00D82790 f mp_anim_wad.o
+208	PORTED	0002:005932e0 ?IsEEDefined_script_firefx@@YA?AUbbool@@Ventity@Broc@@@Z 00D827E0 f mp_anim_wad.o
+209	PORTED	0002:005933e0 ?GetEE_script_wait@@YAAAUbfloat@@Ventity@Broc@@@Z 00D828E0 f mp_anim_wad.o
+210	PORTED	0002:00593430 ?IsEEDefined_script_wait@@YA?AUbbool@@Ventity@Broc@@@Z 00D82930 f mp_anim_wad.o
+211	PORTED	0002:005934e0 ?GetEE_script_ignoreme@@YAAAUbint@@Ventity@Broc@@@Z 00D829E0 f mp_anim_wad.o
+212	PORTED	0002:00593530 ?IsEEDefined_script_ignoreme@@YA?AUbbool@@Ventity@Broc@@@Z 00D82A30 f mp_anim_wad.o
+213	PORTED	0002:005935e0 ?GetEE_script_fb_respawn_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z 00D82AE0 f mp_anim_wad.o
+214	PORTED	0002:00593630 ?IsEEDefined_script_fb_respawn_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z 00D82B30 f mp_anim_wad.o
+215	PORTED	0002:005936e0 ?GetEE_script_bloom_startindex@@YAAAUbint@@Ventity@Broc@@@Z 00D82BE0 f mp_anim_wad.o
+216	PORTED	0002:00593730 ?IsEEDefined_script_bloom_startindex@@YA?AUbbool@@Ventity@Broc@@@Z 00D82C30 f mp_anim_wad.o
+217	PORTED	0002:005937e0 ?GetEE_script_mg42@@YAAAUbint@@Ventity@Broc@@@Z 00D82CE0 f mp_anim_wad.o
+218	PORTED	0002:00593830 ?IsEEDefined_script_mg42@@YA?AUbbool@@Ventity@Broc@@@Z 00D82D30 f mp_anim_wad.o
+219	PORTED	0002:005938e0 ?GetEE_script_bloom_endindex@@YAAAUbint@@Ventity@Broc@@@Z 00D82DE0 f mp_anim_wad.o
+220	PORTED	0002:00593930 ?IsEEDefined_script_bloom_endindex@@YA?AUbbool@@Ventity@Broc@@@Z 00D82E30 f mp_anim_wad.o
+221	PORTED	0002:005939e0 ?GetEE_transparent@@YAAAUbint@@Ventity@Broc@@@Z 00D82EE0 f mp_anim_wad.o
+222	PORTED	0002:00593a30 ?IsEEDefined_transparent@@YA?AUbbool@@Ventity@Broc@@@Z 00D82F30 f mp_anim_wad.o
+223	PORTED	0002:00593ae0 ?GetEE_script_additive_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D82FE0 f mp_anim_wad.o
+224	PORTED	0002:00593b30 ?IsEEDefined_script_additive_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D83030 f mp_anim_wad.o
+225	PORTED	0002:00593be0 ?GetEE_script_squadnum@@YAAAUbint@@Ventity@Broc@@@Z 00D830E0 f mp_anim_wad.o
+226	PORTED	0002:00593c30 ?IsEEDefined_script_squadnum@@YA?AUbbool@@Ventity@Broc@@@Z 00D83130 f mp_anim_wad.o
+227	PORTED	0002:00593ce0 ?GetEE_script_patroller@@YAAAUbint@@Ventity@Broc@@@Z 00D831E0 f mp_anim_wad.o
+228	PORTED	0002:00593d30 ?IsEEDefined_script_patroller@@YA?AUbbool@@Ventity@Broc@@@Z 00D83230 f mp_anim_wad.o
+229	PORTED	0002:00593de0 ?GetEE_script_accuracyvsai@@YAAAUbint@@Ventity@Broc@@@Z 00D832E0 f mp_anim_wad.o
+230	PORTED	0002:00593e30 ?IsEEDefined_script_accuracyvsai@@YA?AUbbool@@Ventity@Broc@@@Z 00D83330 f mp_anim_wad.o
+231	PORTED	0002:00593ee0 ?GetEE_script_ambush_type@@YAAAVstring@Broc@@Ventity@2@@Z 00D833E0 f mp_anim_wad.o
+232	PORTED	0002:00593f30 ?IsEEDefined_script_ambush_type@@YA?AUbbool@@Ventity@Broc@@@Z 00D83430 f mp_anim_wad.o
+233	PORTED	0002:00594030 ?GetEE_script_mg42auto@@YAAAUbint@@Ventity@Broc@@@Z 00D83530 f mp_anim_wad.o
+234	PORTED	0002:00594080 ?IsEEDefined_script_mg42auto@@YA?AUbbool@@Ventity@Broc@@@Z 00D83580 f mp_anim_wad.o
+235	PORTED	0002:00594130 ?GetEE_radius@@YAAAUbint@@Ventity@Broc@@@Z 00D83630 f mp_anim_wad.o
+236	PORTED	0002:00594180 ?IsEEDefined_radius@@YA?AUbbool@@Ventity@Broc@@@Z 00D83680 f mp_anim_wad.o
+237	PORTED	0002:00594230 ?GetEE_script_killspawner@@YAAAUbint@@Ventity@Broc@@@Z 00D83730 f mp_anim_wad.o
+238	PORTED	0002:00594280 ?IsEEDefined_script_killspawner@@YA?AUbbool@@Ventity@Broc@@@Z 00D83780 f mp_anim_wad.o
+239	PORTED	0002:00594330 ?GetEE_script_aitargetname@@YAAAVstring@Broc@@Ventity@2@@Z 00D83830 f mp_anim_wad.o
+240	PORTED	0002:00594380 ?IsEEDefined_script_aitargetname@@YA?AUbbool@@Ventity@Broc@@@Z 00D83880 f mp_anim_wad.o
+241	PORTED	0002:00594480 ?GetEE_script_landmark@@YAAAVstring@Broc@@Ventity@2@@Z 00D83980 f mp_anim_wad.o
+242	PORTED	0002:005944d0 ?IsEEDefined_script_landmark@@YA?AUbbool@@Ventity@Broc@@@Z 00D839D0 f mp_anim_wad.o
+243	PORTED	0002:005945d0 ?GetEE_script_bloom_time@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83AD0 f mp_anim_wad.o
+244	PORTED	0002:00594620 ?IsEEDefined_script_bloom_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D83B20 f mp_anim_wad.o
+245	PORTED	0002:005946d0 ?GetEE_dontdrawoncompass@@YAAAUbint@@Ventity@Broc@@@Z 00D83BD0 f mp_anim_wad.o
+246	PORTED	0002:00594720 ?IsEEDefined_dontdrawoncompass@@YA?AUbbool@@Ventity@Broc@@@Z 00D83C20 f mp_anim_wad.o
+247	PORTED	0002:005947d0 ?GetEE_script_walkdist@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83CD0 f mp_anim_wad.o
+248	PORTED	0002:00594820 ?IsEEDefined_script_walkdist@@YA?AUbbool@@Ventity@Broc@@@Z 00D83D20 f mp_anim_wad.o
+249	PORTED	0002:005948d0 ?GetEE_script_suppression@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83DD0 f mp_anim_wad.o
+250	PORTED	0002:00594920 ?IsEEDefined_script_suppression@@YA?AUbbool@@Ventity@Broc@@@Z 00D83E20 f mp_anim_wad.o
+251	PORTED	0002:005949d0 ?GetEE_script_scale@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83ED0 f mp_anim_wad.o
+252	PORTED	0002:00594a20 ?IsEEDefined_script_scale@@YA?AUbbool@@Ventity@Broc@@@Z 00D83F20 f mp_anim_wad.o
+253	PORTED	0002:00594ad0 ?GetEE_script_hdi_time2@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83FD0 f mp_anim_wad.o
+254	PORTED	0002:00594b20 ?IsEEDefined_script_hdi_time2@@YA?AUbbool@@Ventity@Broc@@@Z 00D84020 f mp_anim_wad.o
+255	PORTED	0002:00594bd0 ?GetEE_script_fb_max_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D840D0 f mp_anim_wad.o
+256	PORTED	0002:00594c20 ?IsEEDefined_script_fb_max_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z 00D84120 f mp_anim_wad.o
+257	PORTED	0002:00594cd0 ?GetEE_script_door@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D841D0 f mp_anim_wad.o
+258	PORTED	0002:00594d20 ??Cpathnode@Broc@@QAEPAV01@XZ 00D84220 f i mp_anim_wad.o
+259	PORTED	0002:00594d40 ?Get@script_door_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84240 f i mp_anim_wad.o
+260	PORTED	0002:00594df0 ?IsEEDefined_script_door@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D842F0 f mp_anim_wad.o
+261	PORTED	0002:00594e60 ?IsDefined@script_door_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84360 f i mp_anim_wad.o
+262	PORTED	0002:00594ef0 ?IsDefined@Broc@@YA_NABVpathnode@1@@Z 00D843F0 f i mp_anim_wad.o
+263	PORTED	0002:00594f10 ?GetEE_script_delay@@YA?AUbfloat@@Vpathnode@Broc@@@Z 00D84410 f mp_anim_wad.o
+264	PORTED	0002:00594f40 ?Get@script_delay_struct@__unnamed@pathnode@Broc@@QBE?BUbfloat@@XZ 00D84440 f i mp_anim_wad.o
+265	PORTED	0002:00594f90 ?IsEEDefined_script_delay@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84490 f mp_anim_wad.o
+266	PORTED	0002:00595000 ?IsDefined@script_delay_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84500 f i mp_anim_wad.o
+267	PORTED	0002:00595040 ?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z 00D84540 f mp_anim_wad.o
+268	PORTED	0002:00595070 ?Get@spawnflags_struct@__unnamed@pathnode@Broc@@QBE?BFXZ 00D84570 f i mp_anim_wad.o
+269	PORTED	0002:005950a0 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D845A0 f mp_anim_wad.o
+270	PORTED	0002:005950f0 ?Get@script_noteworthy_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D845F0 f i mp_anim_wad.o
+271	PORTED	0002:005951a0 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D846A0 f mp_anim_wad.o
+272	PORTED	0002:00595210 ?IsDefined@script_noteworthy_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84710 f i mp_anim_wad.o
+273	PORTED	0002:00595240 ?GetEE_script_fb_id@@YA?AUbint@@Vpathnode@Broc@@@Z 00D84740 f mp_anim_wad.o
+274	PORTED	0002:00595270 ?Get@script_fb_id_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D84770 f i mp_anim_wad.o
+275	PORTED	0002:005952c0 ?IsEEDefined_script_fb_id@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D847C0 f mp_anim_wad.o
+276	PORTED	0002:00595330 ?IsDefined@script_fb_id_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84830 f i mp_anim_wad.o
+277	PORTED	0002:00595370 ?GetEE_script_waittill@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D84870 f mp_anim_wad.o
+278	PORTED	0002:005953c0 ?Get@script_waittill_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D848C0 f i mp_anim_wad.o
+279	PORTED	0002:00595470 ?IsEEDefined_script_waittill@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84970 f mp_anim_wad.o
+280	PORTED	0002:005954e0 ?IsDefined@script_waittill_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D849E0 f i mp_anim_wad.o
+281	PORTED	0002:00595570 ?GetEE_target@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D84A70 f mp_anim_wad.o
+282	PORTED	0002:005955c0 ?Get@target_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84AC0 f i mp_anim_wad.o
+283	PORTED	0002:00595670 ?IsEEDefined_target@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84B70 f mp_anim_wad.o
+284	PORTED	0002:005956e0 ?IsDefined@target_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84BE0 f i mp_anim_wad.o
+285	PORTED	0002:00595710 ?GetEE_script_mg42@@YA?AUbint@@Vpathnode@Broc@@@Z 00D84C10 f mp_anim_wad.o
+286	PORTED	0002:00595740 ?Get@script_mg42_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D84C40 f i mp_anim_wad.o
+287	PORTED	0002:00595790 ?IsEEDefined_script_mg42@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84C90 f mp_anim_wad.o
+288	PORTED	0002:00595800 ?IsDefined@script_mg42_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84D00 f i mp_anim_wad.o
+289	PORTED	0002:00595840 ?GetEE_on_goal@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D84D40 f mp_anim_wad.o
+290	PORTED	0002:00595890 ?Get@on_goal_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84D90 f i mp_anim_wad.o
+291	PORTED	0002:00595940 ?IsEEDefined_on_goal@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84E40 f mp_anim_wad.o
+292	PORTED	0002:005959b0 ?IsDefined@on_goal_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84EB0 f i mp_anim_wad.o
+293	PORTED	0002:005959e0 ?GetEE_script_ambush_type@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D84EE0 f mp_anim_wad.o
+294	PORTED	0002:00595a30 ?Get@script_ambush_type_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84F30 f i mp_anim_wad.o
+295	PORTED	0002:00595ae0 ?IsEEDefined_script_ambush_type@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84FE0 f mp_anim_wad.o
+296	PORTED	0002:00595b50 ?IsDefined@script_ambush_type_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85050 f i mp_anim_wad.o
+297	PORTED	0002:00595be0 ?GetEE_radius@@YA?AUbfloat@@Vpathnode@Broc@@@Z 00D850E0 f mp_anim_wad.o
+298	PORTED	0002:00595c10 ?Get@radius_struct@__unnamed@pathnode@Broc@@QBE?BUbfloat@@XZ 00D85110 f i mp_anim_wad.o
+299	PORTED	0002:00595c50 ?IsEEDefined_radius@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85150 f mp_anim_wad.o
+300	PORTED	0002:00595cc0 ?IsDefined@radius_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D851C0 f i mp_anim_wad.o
+301	PORTED	0002:00595cf0 ?GetEE_origin@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D851F0 f mp_anim_wad.o
+302	PORTED	0002:00595d20 ?Get@origin_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85220 f i mp_anim_wad.o
+303	PORTED	0002:00595d70 ?IsEEDefined_origin@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85270 f mp_anim_wad.o
+304	PORTED	0002:00595de0 ?IsDefined@origin_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D852E0 f i mp_anim_wad.o
+305	PORTED	0002:00595e10 ?GetEE_script_chain@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85310 f mp_anim_wad.o
+306	PORTED	0002:00595e60 ?Get@script_chain_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85360 f i mp_anim_wad.o
+307	PORTED	0002:00595f10 ?IsEEDefined_script_chain@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85410 f mp_anim_wad.o
+308	PORTED	0002:00595f80 ?IsDefined@script_chain_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85480 f i mp_anim_wad.o
+309	PORTED	0002:00596010 ?GetEE_targetname@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85510 f mp_anim_wad.o
+310	PORTED	0002:00596060 ?Get@targetname_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85560 f i mp_anim_wad.o
+311	PORTED	0002:00596110 ?IsEEDefined_targetname@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85610 f mp_anim_wad.o
+312	PORTED	0002:00596180 ?IsDefined@targetname_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85680 f i mp_anim_wad.o
+313	PORTED	0002:005961b0 ?GetEE_animscript@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D856B0 f mp_anim_wad.o
+314	PORTED	0002:00596200 ?Get@animscript_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85700 f i mp_anim_wad.o
+315	PORTED	0002:005962b0 ?IsEEDefined_animscript@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D857B0 f mp_anim_wad.o
+316	PORTED	0002:00596320 ?IsDefined@animscript_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85820 f i mp_anim_wad.o
+317	PORTED	0002:00596350 ?GetEE_script_ambush_trigger_distance@@YA?AUbint@@Vpathnode@Broc@@@Z 00D85850 f mp_anim_wad.o
+318	PORTED	0002:00596380 ?Get@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D85880 f i mp_anim_wad.o
+319	PORTED	0002:005963d0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D858D0 f mp_anim_wad.o
+320	PORTED	0002:00596440 ?IsDefined@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85940 f i mp_anim_wad.o
+321	PORTED	0002:00596480 ?GetEE_type@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85980 f mp_anim_wad.o
+322	PORTED	0002:005964d0 ?Get@type_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D859D0 f i mp_anim_wad.o
+323	PORTED	0002:00596580 ?IsEEDefined_type@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85A80 f mp_anim_wad.o
+324	PORTED	0002:005965f0 ?IsDefined@type_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85AF0 f i mp_anim_wad.o
+325	PORTED	0002:00596620 ?GetEE_angles@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D85B20 f mp_anim_wad.o
+326	PORTED	0002:00596650 ?Get@angles_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85B50 f i mp_anim_wad.o
+327	PORTED	0002:005966a0 ?IsEEDefined_angles@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85BA0 f mp_anim_wad.o
+328	PORTED	0002:00596710 ?IsDefined@angles_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85C10 f i mp_anim_wad.o
+329	PORTED	0002:00596740 ?GetEE_reservename@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85C40 f mp_anim_wad.o
+330	PORTED	0002:00596790 ?Get@reservename_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85C90 f i mp_anim_wad.o
+331	PORTED	0002:00596840 ?IsEEDefined_reservename@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85D40 f mp_anim_wad.o
+332	PORTED	0002:005968b0 ?IsDefined@reservename_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85DB0 f i mp_anim_wad.o
+333	PORTED	0002:005968e0 ?GetEE_script_delay@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D85DE0 f mp_anim_wad.o
+334	PORTED	0002:00596910 ??Cvehiclenode@Broc@@QAEPAV01@XZ 00D85E10 f i mp_anim_wad.o
+335	PORTED	0002:00596930 ?Get@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D85E30 f i mp_anim_wad.o
+336	PORTED	0002:00596980 ?IsEEDefined_script_delay@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85E80 f mp_anim_wad.o
+337	PORTED	0002:005969f0 ?IsDefined@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D85EF0 f i mp_anim_wad.o
+338	PORTED	0002:00596a30 ?IsDefined@Broc@@YA_NABVvehiclenode@1@@Z 00D85F30 f i mp_anim_wad.o
+339	PORTED	0002:00596a50 ?GetEE_endswitch@@YA?AVvehiclenode@Broc@@V12@@Z 00D85F50 f mp_anim_wad.o
+340	PORTED	0002:00596a80 ?Get@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D85F80 f i mp_anim_wad.o
+341	PORTED	0002:00596ad0 ?IsEEDefined_endswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85FD0 f mp_anim_wad.o
+342	PORTED	0002:00596b40 ?IsDefined@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86040 f i mp_anim_wad.o
+343	PORTED	0002:00596b80 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D86080 f mp_anim_wad.o
+344	PORTED	0002:00596bd0 ?Get@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D860D0 f i mp_anim_wad.o
+345	PORTED	0002:00596c80 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86180 f mp_anim_wad.o
+346	PORTED	0002:00596cf0 ?IsDefined@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D861F0 f i mp_anim_wad.o
+347	PORTED	0002:00596d20 ?GetEE_detourstart@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86220 f mp_anim_wad.o
+348	PORTED	0002:00596d50 ?Get@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86250 f i mp_anim_wad.o
+349	PORTED	0002:00596da0 ?IsEEDefined_detourstart@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D862A0 f mp_anim_wad.o
+350	PORTED	0002:00596e10 ?IsDefined@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86310 f i mp_anim_wad.o
+351	PORTED	0002:00596e50 ?GetEE_eventwait_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86350 f mp_anim_wad.o
+352	PORTED	0002:00596e80 ?Get@eventwait_used_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86380 f i mp_anim_wad.o
+353	PORTED	0002:00596ed0 ?IsEEDefined_eventwait_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D863D0 f mp_anim_wad.o
+354	PORTED	0002:00596f40 ?IsDefined@eventwait_used_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86440 f i mp_anim_wad.o
+355	PORTED	0002:00596f80 ?GetEE_detoured@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86480 f mp_anim_wad.o
+356	PORTED	0002:00596fb0 ?Get@detoured_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D864B0 f i mp_anim_wad.o
+357	PORTED	0002:00597000 ?IsEEDefined_detoured@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86500 f mp_anim_wad.o
+358	PORTED	0002:00597070 ?IsDefined@detoured_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86570 f i mp_anim_wad.o
+359	PORTED	0002:005970b0 ?GetEE_script_uniquename@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D865B0 f mp_anim_wad.o
+360	PORTED	0002:00597100 ?Get@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86600 f i mp_anim_wad.o
+361	PORTED	0002:005971b0 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D866B0 f mp_anim_wad.o
+362	PORTED	0002:00597220 ?IsDefined@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86720 f i mp_anim_wad.o
+363	PORTED	0002:005972b0 ?GetEE_target@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D867B0 f mp_anim_wad.o
+364	PORTED	0002:00597300 ?Get@target_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86800 f i mp_anim_wad.o
+365	PORTED	0002:005973b0 ?IsEEDefined_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D868B0 f mp_anim_wad.o
+366	PORTED	0002:00597420 ?IsDefined@target_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86920 f i mp_anim_wad.o
+367	PORTED	0002:00597450 ?GetEE_speed@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D86950 f mp_anim_wad.o
+368	PORTED	0002:00597480 ?Get@speed_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D86980 f i mp_anim_wad.o
+369	PORTED	0002:005974c0 ?IsEEDefined_speed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D869C0 f mp_anim_wad.o
+370	PORTED	0002:00597530 ?IsDefined@speed_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86A30 f i mp_anim_wad.o
+371	PORTED	0002:00597560 ?GetEE_playerhasbeenhere@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86A60 f mp_anim_wad.o
+372	PORTED	0002:00597590 ?Get@playerhasbeenhere_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86A90 f i mp_anim_wad.o
+373	PORTED	0002:005975e0 ?IsEEDefined_playerhasbeenhere@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86AE0 f mp_anim_wad.o
+374	PORTED	0002:00597650 ?IsDefined@playerhasbeenhere_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86B50 f i mp_anim_wad.o
+375	PORTED	0002:00597690 ?GetEE_lookahead@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D86B90 f mp_anim_wad.o
+376	PORTED	0002:005976c0 ?Get@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D86BC0 f i mp_anim_wad.o
+377	PORTED	0002:00597700 ?IsEEDefined_lookahead@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86C00 f mp_anim_wad.o
+378	PORTED	0002:00597770 ?IsDefined@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86C70 f i mp_anim_wad.o
+379	PORTED	0002:005977a0 ?GetEE_friendlywait@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86CA0 f mp_anim_wad.o
+380	PORTED	0002:005977d0 ?Get@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86CD0 f i mp_anim_wad.o
+381	PORTED	0002:00597820 ?IsEEDefined_friendlywait@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86D20 f mp_anim_wad.o
+382	PORTED	0002:00597890 ?IsDefined@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86D90 f i mp_anim_wad.o
+383	PORTED	0002:005978d0 ?GetEE_offramp_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86DD0 f mp_anim_wad.o
+384	PORTED	0002:00597900 ?Get@offramp_used_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86E00 f i mp_anim_wad.o
+385	PORTED	0002:00597950 ?IsEEDefined_offramp_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86E50 f mp_anim_wad.o
+386	PORTED	0002:005979c0 ?IsDefined@offramp_used_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86EC0 f i mp_anim_wad.o
+387	PORTED	0002:00597a00 ?GetEE_origin@@YA?AUvector@Broc@@Vvehiclenode@2@@Z 00D86F00 f mp_anim_wad.o
+388	PORTED	0002:00597a30 ?Get@origin_struct@__unnamed@vehiclenode@Broc@@QBE?BUvector@4@XZ 00D86F30 f i mp_anim_wad.o
+389	PORTED	0002:00597a80 ?IsEEDefined_origin@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86F80 f mp_anim_wad.o
+390	PORTED	0002:00597af0 ?IsDefined@origin_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86FF0 f i mp_anim_wad.o
+391	PORTED	0002:00597b20 ?GetEE_startswitch@@YA?AVvehiclenode@Broc@@V12@@Z 00D87020 f mp_anim_wad.o
+392	PORTED	0002:00597b50 ?Get@startswitch_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D87050 f i mp_anim_wad.o
+393	PORTED	0002:00597ba0 ?IsEEDefined_startswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D870A0 f mp_anim_wad.o
+394	PORTED	0002:00597c10 ?IsDefined@startswitch_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87110 f i mp_anim_wad.o
+395	PORTED	0002:00597c50 ?GetEE_crash_path_target@@YA?AVvehiclenode@Broc@@V12@@Z 00D87150 f mp_anim_wad.o
+396	PORTED	0002:00597c80 ?Get@crash_path_target_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D87180 f i mp_anim_wad.o
+397	PORTED	0002:00597cd0 ?IsEEDefined_crash_path_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D871D0 f mp_anim_wad.o
+398	PORTED	0002:00597d40 ?IsDefined@crash_path_target_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87240 f i mp_anim_wad.o
+399	PORTED	0002:00597d80 ?GetEE_detourpath@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D87280 f mp_anim_wad.o
+400	PORTED	0002:00597db0 ?Get@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D872B0 f i mp_anim_wad.o
+401	PORTED	0002:00597e00 ?IsEEDefined_detourpath@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87300 f mp_anim_wad.o
+402	PORTED	0002:00597e70 ?IsDefined@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87370 f i mp_anim_wad.o
+403	PORTED	0002:00597eb0 ?GetEE_eventwaiting@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D873B0 f mp_anim_wad.o
+404	PORTED	0002:00597ee0 ?Get@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D873E0 f i mp_anim_wad.o
+405	PORTED	0002:00597f30 ?IsEEDefined_eventwaiting@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87430 f mp_anim_wad.o
+406	PORTED	0002:00597fa0 ?IsDefined@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D874A0 f i mp_anim_wad.o
+407	PORTED	0002:00597fe0 ?GetEE_derailed@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D874E0 f mp_anim_wad.o
+408	PORTED	0002:00598010 ?Get@derailed_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D87510 f i mp_anim_wad.o
+409	PORTED	0002:00598060 ?IsEEDefined_derailed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87560 f mp_anim_wad.o
+410	PORTED	0002:005980d0 ?IsDefined@derailed_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D875D0 f i mp_anim_wad.o
+411	PORTED	0002:00598110 ?GetEE_targetname@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D87610 f mp_anim_wad.o
+412	PORTED	0002:00598160 ?Get@targetname_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D87660 f i mp_anim_wad.o
+413	PORTED	0002:00598210 ?IsEEDefined_targetname@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87710 f mp_anim_wad.o
+414	PORTED	0002:00598280 ?IsDefined@targetname_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87780 f i mp_anim_wad.o
+415	PORTED	0002:005982b0 ?GetEE_angles@@YA?AUvector@Broc@@Vvehiclenode@2@@Z 00D877B0 f mp_anim_wad.o
+416	PORTED	0002:005982e0 ?Get@angles_struct@__unnamed@vehiclenode@Broc@@QBE?BUvector@4@XZ 00D877E0 f i mp_anim_wad.o
+417	PORTED	0002:00598330 ?IsEEDefined_angles@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87830 f mp_anim_wad.o
+418	PORTED	0002:005983a0 ?IsDefined@angles_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D878A0 f i mp_anim_wad.o
+419	VERIFIED	0002:005983d0 ?main@_mp_setup@@YAXXZ 00D878D0 f mp_anim_wad.o
+420	VERIFIED	0002:005983f0 ?hack_function_to_allow_the_script_to_compile@_mp_setup@@YAXXZ 00D878F0 f mp_anim_wad.o
+421	PORTED	0002:00598460 ?SetAnimKnob@Broc@@YAXABVentity@1@IMMM@Z 00D87960 f i mp_anim_wad.o
+422	PORTED	0002:005984b0 ?ValidateAnimRef@Broc@@YA?AUBroAnim@@AAVAnimRef@1@PBDH@Z 00D879B0 f i mp_anim_wad.o
+423	PORTED	0002:00598610 ??$IsDefined2@Ubint@@@@YA_NABUbint@@@Z 00D87B10 f i mp_anim_wad.o
+424	PORTED	0002:00598630 ??$IsDefined2@Ubfloat@@@@YA_NABUbfloat@@@Z 00D87B30 f i mp_anim_wad.o
+425	PORTED	0002:00598650 ??$IsDefined2@Vstring@Broc@@@@YA_NABVstring@Broc@@@Z 00D87B50 f i mp_anim_wad.o
+426	PORTED	0002:00598670 ??$IsDefined2@Vvehiclenode@Broc@@@@YA_NABVvehiclenode@Broc@@@Z 00D87B70 f i mp_anim_wad.o
+427	PORTED	0002:00598690 ??$?8I@BroAnim@@QBE_NABI@Z 00D87B90 f i mp_anim_wad.o
+428	PORTED	0002:005986c0 ??$println@$$BY0DA@$$CBD@Broc@@YAXAAY0DA@$$CBD@Z 00D87BC0 f i mp_anim_wad.o
+429	PORTED	0002:00598750 ??$ConcatText@$$BY0DA@$$CBD@Broc@@YAXAAVstring@0@AAY0DA@$$CBD@Z 00D87C50 f i mp_anim_wad.o
+430	VERIFIED	0002:00598790 ??0AnimRef@Broc@@QAE@HH@Z 00D87C90 f i mp_anim_wad.o

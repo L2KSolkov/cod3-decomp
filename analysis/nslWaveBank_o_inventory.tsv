@@ -1,0 +1,49 @@
+ida_ea	va	name	signature	family
+0x00826EA0	0x00C163A0	?nslWaveNameCompareText@@YAHPBTnslWaveName@@0@Z	int __cdecl nslWaveNameCompareText(union nslWaveName const *,union nslWaveName const *)	nslWaveBank.o
+0x00826EC0	0x00C163C0	?nslWaveNameCompareHash@@YAHPBTnslWaveName@@0@Z	int __cdecl nslWaveNameCompareHash(union nslWaveName const *,union nslWaveName const *)	nslWaveBank.o
+0x00826EE0	0x00C163E0	?nslWaveBankGetSlot@@YAPAUnslWaveBankSlot@@W4nslWaveBankID@@@Z	struct nslWaveBankSlot * __cdecl nslWaveBankGetSlot(enum nslWaveBankID)	nslWaveBank.o
+0x00826F20	0x00C16420	?nslWaveBankGetAram@@YAPAXW4nslWaveBankID@@@Z	void * __cdecl nslWaveBankGetAram(enum nslWaveBankID)	nslWaveBank.o
+0x00826F70	0x00C16470	?nslWavePtr@@YAPAUnslWave@@W4nslWaveID@@@Z	struct nslWave * __cdecl nslWavePtr(enum nslWaveID)	nslWaveBank.o
+0x00826FE0	0x00C164E0	?nslWaveGetBank@@YA?AW4nslWaveBankID@@W4nslWaveID@@@Z	enum nslWaveBankID __cdecl nslWaveGetBank(enum nslWaveID)	nslWaveBank.o
+0x00827040	0x00C16540	?nslWaveGetName@@YAPBDW4nslWaveID@@@Z	char const * __cdecl nslWaveGetName(enum nslWaveID)	nslWaveBank.o
+0x008270B0	0x00C165B0	?nslWaveGetHash@@YAIW4nslWaveID@@@Z	unsigned int __cdecl nslWaveGetHash(enum nslWaveID)	nslWaveBank.o
+0x00827140	0x00C16640	?nslWaveGetGroupName@@YAPBDW4nslWaveID@@@Z	char const * __cdecl nslWaveGetGroupName(enum nslWaveID)	nslWaveBank.o
+0x00827170	0x00C16670	?nslWaveGetParam@@YAMW4nslWaveID@@HM@Z	float __cdecl nslWaveGetParam(enum nslWaveID,int,float)	nslWaveBank.o
+0x008271F0	0x00C166F0	?nslWaveGetLength@@YAHW4nslWaveID@@@Z	int __cdecl nslWaveGetLength(enum nslWaveID)	nslWaveBank.o
+0x00827220	0x00C16720	?nslWaveIsStreaming@@YAHW4nslWaveID@@@Z	int __cdecl nslWaveIsStreaming(enum nslWaveID)	nslWaveBank.o
+0x00827250	0x00C16750	?nslWaveIsLooping@@YAHW4nslWaveID@@@Z	int __cdecl nslWaveIsLooping(enum nslWaveID)	nslWaveBank.o
+0x00827280	0x00C16780	?nslWaveGetChannelCount@@YAHW4nslWaveID@@@Z	int __cdecl nslWaveGetChannelCount(enum nslWaveID)	nslWaveBank.o
+0x008272D0	0x00C167D0	?nslWaveIsImportant@@YAHW4nslWaveID@@@Z	int __cdecl nslWaveIsImportant(enum nslWaveID)	nslWaveBank.o
+0x00827300	0x00C16800	?nslWaveBankLoad@@YA?AW4nslWaveBankID@@W4nflFileID@@II@Z	enum nslWaveBankID __cdecl nslWaveBankLoad(enum nflFileID,unsigned int,unsigned int)	nslWaveBank.o
+0x008273C0	0x00C168C0	?nslWaveBankGetState@@YA?AW4nslWaveBankState@@W4nslWaveBankID@@@Z	enum nslWaveBankState __cdecl nslWaveBankGetState(enum nslWaveBankID)	nslWaveBank.o
+0x00827420	0x00C16920	?nslWaveBankPtr@@YAPAUnslWaveBank@@W4nslWaveBankID@@@Z	struct nslWaveBank * __cdecl nslWaveBankPtr(enum nslWaveBankID)	nslWaveBank.o
+0x00827470	0x00C16970	?nslWaveBankGetName@@YAPBDW4nslWaveBankID@@@Z	char const * __cdecl nslWaveBankGetName(enum nslWaveBankID)	nslWaveBank.o
+0x008274C0	0x00C169C0	?nslWaveBankGetFile@@YA?AW4nflFileID@@W4nslWaveBankID@@@Z	enum nflFileID __cdecl nslWaveBankGetFile(enum nslWaveBankID)	nslWaveBank.o
+0x00827510	0x00C16A10	?nslWaveBankGetFileOffset@@YAIW4nslWaveBankID@@@Z	unsigned int __cdecl nslWaveBankGetFileOffset(enum nslWaveBankID)	nslWaveBank.o
+0x00827560	0x00C16A60	?nslWaveBankGetWave@@YA?AW4nslWaveID@@W4nslWaveBankID@@H@Z	enum nslWaveID __cdecl nslWaveBankGetWave(enum nslWaveBankID,int)	nslWaveBank.o
+0x008275C0	0x00C16AC0	?nslWaveBankGetWaveName@@YAPBDW4nslWaveBankID@@H@Z	char const * __cdecl nslWaveBankGetWaveName(enum nslWaveBankID,int)	nslWaveBank.o
+0x008275E0	0x00C16AE0	?nslWaveBankGetWaveCount@@YAHW4nslWaveBankID@@@Z	int __cdecl nslWaveBankGetWaveCount(enum nslWaveBankID)	nslWaveBank.o
+0x00827630	0x00C16B30	?nslWaveBankGetAramSize@@YAHW4nslWaveBankID@@@Z	int __cdecl nslWaveBankGetAramSize(enum nslWaveBankID)	nslWaveBank.o
+0x00827680	0x00C16B80	?nslWaveBankGetTextSize@@YAHW4nslWaveBankID@@@Z	int __cdecl nslWaveBankGetTextSize(enum nslWaveBankID)	nslWaveBank.o
+0x008276D0	0x00C16BD0	?nslWaveBankGetInfoSize@@YAHW4nslWaveBankID@@@Z	int __cdecl nslWaveBankGetInfoSize(enum nslWaveBankID)	nslWaveBank.o
+0x00827720	0x00C16C20	?nslWaveBankGetStreamSize@@YAHW4nslWaveBankID@@@Z	int __cdecl nslWaveBankGetStreamSize(enum nslWaveBankID)	nslWaveBank.o
+0x00827770	0x00C16C70	?nslWaveBankGet@@YA?AW4nslWaveBankID@@H@Z	enum nslWaveBankID __cdecl nslWaveBankGet(int)	nslWaveBank.o
+0x008277A0	0x00C16CA0	?nslWaveBankSlotsGetCount@@YAIXZ	unsigned int __cdecl nslWaveBankSlotsGetCount(void)	nslWaveBank.o
+0x008277B0	0x00C16CB0	?nslWaveBankSlotsGetUsedCount@@YAIXZ	unsigned int __cdecl nslWaveBankSlotsGetUsedCount(void)	nslWaveBank.o
+0x008277E0	0x00C16CE0	?nslWaveBankSlotsGetLoadingCount@@YAIXZ	unsigned int __cdecl nslWaveBankSlotsGetLoadingCount(void)	nslWaveBank.o
+0x00827810	0x00C16D10	?nslWaveBankSlotsGetLoadedCount@@YAIXZ	unsigned int __cdecl nslWaveBankSlotsGetLoadedCount(void)	nslWaveBank.o
+0x00827840	0x00C16D40	?nslWaveBankLookup@@YAHPBUnslWaveBank@@PBTnslWaveName@@@Z	int __cdecl nslWaveBankLookup(struct nslWaveBank const *,union nslWaveName const *)	nslWaveBank.o
+0x00827A00	0x00C16F00	?nslWaveBankGetFile@@YA?AW4nflFileID@@PBUnslWaveBank@@PAI@Z	enum nflFileID __cdecl nslWaveBankGetFile(struct nslWaveBank const *,unsigned int *)	nslWaveBank.o
+0x00827A30	0x00C16F30	?nslWaveBankSetFile@@YAHPAUnslWaveBank@@W4nflFileID@@I@Z	int __cdecl nslWaveBankSetFile(struct nslWaveBank *,enum nflFileID,unsigned int)	nslWaveBank.o
+0x00827AA0	0x00C16FA0	?nslWaveBankSetAram@@YAHPAUnslWaveBank@@PAX@Z	int __cdecl nslWaveBankSetAram(struct nslWaveBank *,void *)	nslWaveBank.o
+0x00827B00	0x00C17000	?nslWaveBankGetAram@@YAPAXPBUnslWaveBank@@@Z	void * __cdecl nslWaveBankGetAram(struct nslWaveBank const *)	nslWaveBank.o
+0x00827B20	0x00C17020	?nslWaveBankFree@@YAXPAUnslWaveBank@@@Z	void __cdecl nslWaveBankFree(struct nslWaveBank *)	nslWaveBank.o
+0x00827BD0	0x00C170D0	?nslWaveLookup@@YA?AW4nslWaveID@@PBTnslWaveName@@@Z	enum nslWaveID __cdecl nslWaveLookup(union nslWaveName const *)	nslWaveBank.o
+0x00827C40	0x00C17140	?nslWaveGetFile@@YA?AW4nflFileID@@W4nslWaveID@@@Z	enum nflFileID __cdecl nslWaveGetFile(enum nslWaveID)	nslWaveBank.o
+0x00827C90	0x00C17190	?nslWaveBankFree@@YAXW4nslWaveBankID@@@Z	void __cdecl nslWaveBankFree(enum nslWaveBankID)	nslWaveBank.o
+0x00827DC0	0x00C172C0	?nslWaveBankLookup@@YAHPBUnslWaveBank@@PBD@Z	int __cdecl nslWaveBankLookup(struct nslWaveBank const *,char const *)	nslWaveBank.o
+0x00827E10	0x00C17310	?nslWaveBankLookup@@YAHPBUnslWaveBank@@I@Z	int __cdecl nslWaveBankLookup(struct nslWaveBank const *,unsigned int)	nslWaveBank.o
+0x00827E40	0x00C17340	?nslWaveLookup@@YA?AW4nslWaveID@@PBD@Z	enum nslWaveID __cdecl nslWaveLookup(char const *)	nslWaveBank.o
+0x00827EF0	0x00C173F0	?nslWaveLookup@@YA?AW4nslWaveID@@I@Z	enum nslWaveID __cdecl nslWaveLookup(unsigned int)	nslWaveBank.o
+0x00827F80	0x00C17480	?nslUpdateBanks@@YAXXZ	void __cdecl nslUpdateBanks(void)	nslWaveBank.o
+0x008281A0	0x00C176A0	?nslWaveBankLoadBlocking@@YA?AW4nslWaveBankID@@W4nflFileID@@II@Z	enum nslWaveBankID __cdecl nslWaveBankLoadBlocking(enum nflFileID,unsigned int,unsigned int)	nslWaveBank.o

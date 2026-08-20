@@ -1,0 +1,437 @@
+index	status	map_line
+1	PORTED	0002:0037bcf0 ?do_it@?$endian_reverser_t@$00@@SAXPAE@Z 00B6B1F0 f i mp_actors.o
+2	PORTED	0002:0037bd00 ??9NodeHandle@PathNodes@@QBE_NABV01@@Z 00B6B200 f i mp_actors.o
+3	VERIFIED	0002:0037bd20 ?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z 00B6B220 f i mp_actors.o
+4	VERIFIED	0002:0037bdb0 ?Spawner@AIType@@QAEXPAVEntity@@@Z 00B6B2B0 f mp_actors.o
+5	VERIFIED	0002:0037be40 ??Asentient_info_array@@QAEAAUsentient_info_t@@H@Z 00B6B340 f mp_actors.o
+6	VERIFIED	0002:0037be50 ?FreeIndex@sentient_info_array@@QAEXH@Z 00B6B350 f mp_actors.o
+7	VERIFIED	0002:0037be60 ?Actor_NextActor@@YIPAUactor_s@@PAU1@H@Z 00B6B360 f mp_actors.o
+8	VERIFIED	0002:0037be70 ?Actor_FirstActor@@YIPAUactor_s@@H@Z 00B6B370 f mp_actors.o
+9	VERIFIED	0002:0037be80 ?Actor_GetEnt@@YIPAVEntity@@PAUactor_s@@@Z 00B6B380 f mp_actors.o
+10	VERIFIED	0002:0037be90 ?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z 00B6B390 f mp_actors.o
+11	VERIFIED	0002:0037bea0 ?G_FlushCorpses@@YAXXZ 00B6B3A0 f mp_actors.o
+12	VERIFIED	0002:0037beb0 ?Actor_Pain@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z 00B6B3B0 f mp_actors.o
+13	VERIFIED	0002:0037bec0 ?Actor_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z 00B6B3C0 f mp_actors.o
+14	VERIFIED	0002:0037bed0 ?Actor_EntInfo@@YAXPAVEntity@@@Z 00B6B3D0 f mp_actors.o
+15	VERIFIED	0002:0037bee0 ?Actor_Touch@@YAXPAVEntity@@0H@Z 00B6B3E0 f mp_actors.o
+16	VERIFIED	0002:0037bef0 ?Actor_Think@@YAXPAVEntity@@H@Z 00B6B3F0 f mp_actors.o
+17	VERIFIED	0002:0037bf00 ?Actor_SetDesiredBodyAngle@@YIXPAUai_orient_t@@M@Z 00B6B400 f mp_actors.o
+18	VERIFIED	0002:0037bf10 ?Actor_DissociateGrenade@@YIXPAVEntity@@@Z 00B6B410 f mp_actors.o
+19	VERIFIED	0002:0037bf20 ?Actor_HitTarget@@YAXPAUweaponParms@@QAM1@Z 00B6B420 f mp_actors.o
+20	VERIFIED	0002:0037bf30 ?Actor_MissTarget@@YAXPAUweaponParms@@QAM1@Z 00B6B430 f mp_actors.o
+21	VERIFIED	0002:0037bf40 ?Actor_KillBroAnimScriptImmediate@@YIXPAUactor_s@@@Z 00B6B440 f mp_actors.o
+22	VERIFIED	0002:0037bf50 ?Actor_DissociateEntity@@YAXPAUactor_s@@PAVEntity@@@Z 00B6B450 f mp_actors.o
+23	VERIFIED	0002:0037bf60 ?Actor_GrenadeBounced@@YIXPAVEntity@@0@Z 00B6B460 f mp_actors.o
+24	VERIFIED	0002:0037bf70 ?Actor_CanAttackAll@@YIXPAUactor_s@@@Z 00B6B470 f mp_actors.o
+25	VERIFIED	0002:0037bf80 ?G_DropActorSpawnersToFloor@@YAXXZ 00B6B480 f mp_actors.o
+26	VERIFIED	0002:0037bf90 ?Actor_OrientCorpseToGround@@YAXPAVEntity@@H@Z 00B6B490 f mp_actors.o
+27	VERIFIED	0002:0037bfa0 ?Actor_CorpseThink@@YAXPAVEntity@@H@Z 00B6B4A0 f mp_actors.o
+28	VERIFIED	0002:0037bfb0 ?Actor_Grenade_CheckGrenadeHintToss@@YIHPAUactor_s@@QBM1QAM_N@Z 00B6B4B0 f mp_actors.o
+29	VERIFIED	0002:0037bfc0 ?Actor_NodeClaimRevoked@@YIXPAUactor_s@@@Z 00B6B4C0 f mp_actors.o
+30	VERIFIED	0002:0037bfd0 ?Actor_CanSeePointEx@@YIMPAUactor_s@@QBMMMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00B6B4D0 f mp_actors.o
+31	VERIFIED	0002:0037bfe0 ?Actor_BroadcastPointEvent@@YIXPAVEntity@@W4ai_event_t@@HABVPosition3@math@@M@Z 00B6B4E0 f mp_actors.o
+32	VERIFIED	0002:0037bff0 ?Actor_BroadcastLineEvent@@YIXPAVEntity@@W4ai_event_t@@HQBM2M@Z 00B6B4F0 f mp_actors.o
+33	VERIFIED	0002:0037c000 ?Actor_DissociateSentient@@YAXPAUactor_s@@PAUsentient_s@@W4team_t@@@Z 00B6B500 f mp_actors.o
+34	VERIFIED	0002:0037c010 ?Actor_Alloc@@YAPAUactor_s@@W4TPakId@@@Z 00B6B510 f mp_actors.o
+35	VERIFIED	0002:0037c020 ?ActorCorpse_Free@@YAXPAVEntity@@@Z 00B6B520 f mp_actors.o
+36	VERIFIED	0002:0037c030 ?Actor_Free@@YAXPAUactor_s@@@Z 00B6B530 f mp_actors.o
+37	VERIFIED	0002:0037c040 ?Actor_FreeExpendable@@YAXXZ 00B6B540 f mp_actors.o
+38	VERIFIED	0002:0037c050 ?G_InitActors@@YAXXZ 00B6B550 f mp_actors.o
+39	VERIFIED	0002:0037c060 ?G_GetActorIndex@@YAHPAUactor_s@@@Z 00B6B560 f mp_actors.o
+40	VERIFIED	0002:0037c070 ?G_GetActorCorpseIndex@@YAHPAVEntity@@@Z 00B6B570 f mp_actors.o
+41	VERIFIED	0002:0037c080 ?Actor_GetCorpseAngles@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HABVPosition3@math@@MPAM22@Z 00B6B580 f mp_actors.o
+42	VERIFIED	0002:0037c090 ?G_GetActorAnimTree@@YAPAVXAnimTree@@PAUactor_s@@@Z 00B6B590 f mp_actors.o
+43	VERIFIED	0002:0037c0a0 ?G_GetActorCorpseAnimTree@@YAPAVXAnimTree@@PAVEntity@@@Z 00B6B5A0 f mp_actors.o
+44	VERIFIED	0002:0037c0b0 ?Actor_SetDefaultState@@YAXPAUactor_s@@@Z 00B6B5B0 f mp_actors.o
+45	VERIFIED	0002:0037c0c0 ?Actor_SetDefaults@@YAXPAUactor_s@@@Z 00B6B5C0 f mp_actors.o
+46	VERIFIED	0002:0037c0d0 ?Actor_FinishSpawning@@YAXPAUactor_s@@@Z 00B6B5D0 f mp_actors.o
+47	VERIFIED	0002:0037c0e0 ?Actor_FinishSpawningAll@@YAXXZ 00B6B5E0 f mp_actors.o
+48	VERIFIED	0002:0037c0f0 ?Actor_InvalidateCache@@YAXPAUactor_s@@@Z 00B6B5F0 f mp_actors.o
+49	VERIFIED	0002:0037c100 ?Actor_BroadcastTeamEvent@@YIXPAUsentient_s@@W4ai_event_t@@@Z 00B6B600 f mp_actors.o
+50	VERIFIED	0002:0037c110 ?Actor_GetSpreadMetric@@YAXPAUactor_s@@MPAM1PAUweaponFileInfo_t@@QAM3@Z 00B6B610 f mp_actors.o
+51	VERIFIED	0002:0037c120 ?Actor_PointSatisfiesGoal@@YIHPAUactor_s@@QBMM@Z 00B6B620 f mp_actors.o
+52	VERIFIED	0002:0037c130 ?Actor_NodeSatisfiesGoal@@YIHPAUactor_s@@PBUPathNode@PathNodes@@@Z 00B6B630 f mp_actors.o
+53	VERIFIED	0002:0037c140 ?Actor_UnclaimedNode@@YIHPAUactor_s@@PBUPathNode@PathNodes@@@Z 00B6B640 f mp_actors.o
+54	VERIFIED	0002:0037c150 ?Actor_IsAtGoal@@YIHPAUactor_s@@W4goalRadiusCheck@@@Z 00B6B650 f mp_actors.o
+55	VERIFIED	0002:0037c160 ?Actor_FindPathToGoal@@YIXPAUactor_s@@MHHH@Z 00B6B660 f mp_actors.o
+56	VERIFIED	0002:0037c170 ?Actor_ExistsPathToGoal@@YIHPAUactor_s@@QAM@Z 00B6B670 f mp_actors.o
+57	VERIFIED	0002:0037c180 ?Actor_FlagEnemyUnattackable@@YIXPAUactor_s@@@Z 00B6B680 f mp_actors.o
+58	VERIFIED	0002:0037c190 ?Actor_FlagEnemyUnattackableForDuration@@YIXPAUactor_s@@H@Z 00B6B690 f mp_actors.o
+59	VERIFIED	0002:0037c1a0 ?Actor_ForgetEnemy@@YIXPAUactor_s@@@Z 00B6B6A0 f mp_actors.o
+60	VERIFIED	0002:0037c1b0 ?Actor_CaresAboutInfo@@YIHPAUactor_s@@PAUsentient_s@@@Z 00B6B6B0 f mp_actors.o
+61	VERIFIED	0002:0037c1c0 ?Actor_UpdateThreat@@YIXPAUactor_s@@H@Z 00B6B6C0 f mp_actors.o
+62	VERIFIED	0002:0037c1d0 ?Actor_FillWeaponParms@@YAXPAUactor_s@@PAUweaponParms@@@Z 00B6B6D0 f mp_actors.o
+63	VERIFIED	0002:0037c1e0 ?Actor_CanSeePointFrom@@YIMPAUactor_s@@QBM1MV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00B6B6E0 f mp_actors.o
+64	VERIFIED	0002:0037c1f0 ?Actor_CanSeePoint@@YIMPAUactor_s@@QBM@Z 00B6B6F0 f mp_actors.o
+65	VERIFIED	0002:0037c200 ?Actor_CanSeeEntityPoint@@YIMPAUactor_s@@QBMPBVEntity@@@Z 00B6B700 f mp_actors.o
+66	VERIFIED	0002:0037c210 ?Actor_CanSeeEntity@@YIMPAUactor_s@@PBVEntity@@@Z 00B6B710 f mp_actors.o
+67	VERIFIED	0002:0037c220 ?Actor_CanSeeEntityNoFov@@YIMPAUactor_s@@PBVEntity@@@Z 00B6B720 f mp_actors.o
+68	VERIFIED	0002:0037c230 ?Actor_CanSeeEntityEx@@YIMPAUactor_s@@PBVEntity@@MM@Z 00B6B730 f mp_actors.o
+69	VERIFIED	0002:0037c240 ?Actor_CanSeeSentient@@YIMPAUactor_s@@PAUsentient_s@@H@Z 00B6B740 f mp_actors.o
+70	VERIFIED	0002:0037c250 ?Actor_CanSeeSentientNoFov@@YIMPAUactor_s@@PAUsentient_s@@@Z 00B6B750 f mp_actors.o
+71	VERIFIED	0002:0037c260 ?Actor_CanSeeEnemy@@YIMPAUactor_s@@H@Z 00B6B760 f mp_actors.o
+72	VERIFIED	0002:0037c270 ?Actor_CanSeeEnemyNoFov@@YIMPAUactor_s@@@Z 00B6B770 f mp_actors.o
+73	VERIFIED	0002:0037c280 ?Actor_CanSeeGoal@@YIMPAUactor_s@@H@Z 00B6B780 f mp_actors.o
+74	VERIFIED	0002:0037c290 ?Actor_CanSeeSentientEx@@YIMPAUactor_s@@PAUsentient_s@@MMH@Z 00B6B790 f mp_actors.o
+75	VERIFIED	0002:0037c2a0 ?Actor_CanSeeEnemyEx@@YIMPAUactor_s@@MMH@Z 00B6B7A0 f mp_actors.o
+76	VERIFIED	0002:0037c2b0 ?Actor_CanSeeGoalEx@@YIMPAUactor_s@@MMH@Z 00B6B7B0 f mp_actors.o
+77	VERIFIED	0002:0037c2c0 ?Actor_CanShootFrom@@YIHPAUactor_s@@QBM1@Z 00B6B7C0 f mp_actors.o
+78	VERIFIED	0002:0037c2d0 ?Actor_CanShootEnemy@@YIHPAUactor_s@@@Z 00B6B7D0 f mp_actors.o
+79	VERIFIED	0002:0037c2e0 ?Actor_CanHear@@YIHPAUactor_s@@QBMMM@Z 00B6B7E0 f mp_actors.o
+80	VERIFIED	0002:0037c2f0 ?Actor_UpdateSight@@YIXPAUactor_s@@@Z 00B6B7F0 f mp_actors.o
+81	PORTED	0002:0037c300 ?Actor_Cover_PickAttackScript@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B6B800 f mp_actors.o
+82	PORTED	0002:0037c310 ?Actor_Cover_CanAttack@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@PAPAUscr_animscript_t@@_N@Z 00B6B810 f mp_actors.o
+83	PORTED	0002:0037c320 ?Actor_Cover_FindCoverNearSelf@@YI?BHPAUactor_s@@H@Z 00B6B820 f mp_actors.o
+84	PORTED	0002:0037c330 ?Actor_Cover_FindCoverNearPoint@@YI?BHPAUactor_s@@QBM@Z 00B6B830 f mp_actors.o
+85	PORTED	0002:0037c340 ?Actor_Cover_FindCoverFromPoint@@YI?BHPAUactor_s@@QBMM@Z 00B6B840 f mp_actors.o
+86	PORTED	0002:0037c350 ?Actor_Cover_IsValidCover@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@_N@Z 00B6B850 f mp_actors.o
+87	PORTED	0002:0037c360 ?Actor_Cover_FindNewCover@@YI?BHPAUactor_s@@@Z 00B6B860 f mp_actors.o
+88	VERIFIED	0002:0037c370 ?Actor_PreThink@@YIXPAUactor_s@@H@Z 00B6B870 f mp_actors.o
+89	VERIFIED	0002:0037c380 ?Actor_PostThink@@YIXPAUactor_s@@H@Z 00B6B880 f mp_actors.o
+90	VERIFIED	0002:0037c390 ?Actor_IsStateOnStack@@YIHPAUactor_s@@W4ai_state_e@@@Z 00B6B890 f mp_actors.o
+91	VERIFIED	0002:0037c3a0 ?Actor_IsCurState@@YIHPAUactor_s@@W4ai_state_e@@@Z 00B6B8A0 f mp_actors.o
+92	VERIFIED	0002:0037c3b0 ?Actor_PendingTransitionTo@@YIHPAUactor_s@@W4ai_state_e@@@Z 00B6B8B0 f mp_actors.o
+93	VERIFIED	0002:0037c3c0 ?Actor_SetDoingMelee@@YIXPAUactor_s@@_N@Z 00B6B8C0 f mp_actors.o
+94	VERIFIED	0002:0037c3d0 ?Actor_SetMeleeInteractable@@YIXPAUactor_s@@_N@Z 00B6B8D0 f mp_actors.o
+95	VERIFIED	0002:0037c3e0 ?Actor_SetState@@YIXPAUactor_s@@W4ai_state_e@@@Z 00B6B8E0 f mp_actors.o
+96	VERIFIED	0002:0037c3f0 ?Actor_PushState@@YIHPAUactor_s@@W4ai_state_e@@@Z 00B6B8F0 f mp_actors.o
+97	VERIFIED	0002:0037c400 ?Actor_PopState@@YIXPAUactor_s@@@Z 00B6B900 f mp_actors.o
+98	VERIFIED	0002:0037c410 ?Actor_ForceState@@YIXPAUactor_s@@W4ai_state_e@@@Z 00B6B910 f mp_actors.o
+99	VERIFIED	0002:0037c420 ?VisCache_Flush@@YIXPAUvis_cache_t@@@Z 00B6B920 f mp_actors.o
+100	VERIFIED	0002:0037c430 ?VisCache_Copy@@YIXPAUvis_cache_t@@PBU1@@Z 00B6B930 f mp_actors.o
+101	VERIFIED	0002:0037c440 ?VisCache_Update@@YIXPAUvis_cache_t@@HM@Z 00B6B940 f mp_actors.o
+102	VERIFIED	0002:0037c450 ?Actor_GetEyePosition@@YIXPAUactor_s@@QAM@Z 00B6B950 f mp_actors.o
+103	VERIFIED	0002:0037c460 ?Actor_GetEyeDirection@@YIXPAUactor_s@@QAM@Z 00B6B960 f mp_actors.o
+104	VERIFIED	0002:0037c470 ?Actor_GetEyeOffset@@YIXPAUactor_s@@QAM@Z 00B6B970 f mp_actors.o
+105	VERIFIED	0002:0037c480 ?Actor_GetMuzzleInfo@@YIHPAUactor_s@@QAM1@Z 00B6B980 f mp_actors.o
+106	VERIFIED	0002:0037c490 ?Actor_UpdateLastKnownPos@@YIXPAUactor_s@@PAUsentient_s@@@Z 00B6B990 f mp_actors.o
+107	VERIFIED	0002:0037c4a0 ?Actor_Grenade_CheckMinimumEnergyToss@@YIHPAUactor_s@@QBM1QAM@Z 00B6B9A0 f mp_actors.o
+108	VERIFIED	0002:0037c4b0 ?Actor_Grenade_CheckMaximumEnergyToss@@YIHPAUactor_s@@QBM1HQAM@Z 00B6B9B0 f mp_actors.o
+109	VERIFIED	0002:0037c4c0 ?Actor_Grenade_IsPointSafe@@YIHPAUactor_s@@QBM@Z 00B6B9C0 f mp_actors.o
+110	VERIFIED	0002:0037c4d0 ?Actor_Grenade_IsValidTrajectory@@YIHPAUactor_s@@QBM11@Z 00B6B9D0 f mp_actors.o
+111	VERIFIED	0002:0037c4e0 ?Actor_HasPath@@YIHPBUactor_s@@@Z 00B6B9E0 f mp_actors.o
+112	VERIFIED	0002:0037c4f0 ?Actor_InitPath@@YIXPAUactor_s@@@Z 00B6B9F0 f mp_actors.o
+113	VERIFIED	0002:0037c500 ?Actor_ClearPath@@YIXPAUactor_s@@@Z 00B6BA00 f mp_actors.o
+114	VERIFIED	0002:0037c510 ?Actor_GetFinalPathGoal@@YIXPAUactor_s@@QAM@Z 00B6BA10 f mp_actors.o
+115	VERIFIED	0002:0037c520 ?Actor_GetAnimDeltas@@YIXPAUactor_s@@QAM1@Z 00B6BA20 f mp_actors.o
+116	VERIFIED	0002:0037c530 ?Actor_UpdateOriginAndAngles@@YIXPAUactor_s@@H@Z 00B6BA30 f mp_actors.o
+117	VERIFIED	0002:0037c540 ?Actor_PredictOriginAndAngles@@YIXPAUactor_s@@@Z 00B6BA40 f mp_actors.o
+118	VERIFIED	0002:0037c550 ?Actor_PredictAnim@@YIXPAUactor_s@@@Z 00B6BA50 f mp_actors.o
+119	VERIFIED	0002:0037c560 ?Actor_MoveAlongPathWithTeam@@YI?AW4ai_teammove_t@@PAUactor_s@@HH@Z 00B6BA60 f mp_actors.o
+120	VERIFIED	0002:0037c570 ?Actor_AtClaimNode@@YIHPAUactor_s@@@Z 00B6BA70 f mp_actors.o
+121	VERIFIED	0002:0037c580 ?Actor_CheckCollisions@@YIXPAUactor_s@@@Z 00B6BA80 f mp_actors.o
+122	VERIFIED	0002:0037c590 ?Actor_PathEncroachesPoint2D@@YIHPAUactor_s@@QBMM@Z 00B6BA90 f mp_actors.o
+123	VERIFIED	0002:0037c5a0 ?Path_UpdateBadPlaceCount@@YAXPAXH@Z 00B6BAA0 f mp_actors.o
+124	VERIFIED	0002:0037c5b0 ?Path_RemoveBadPlace@@YAXABVstring@Broc@@@Z 00B6BAB0 f mp_actors.o
+125	VERIFIED	0002:0037c5c0 ?Path_MakeArcBadPlace@@YAXABVstring@Broc@@HHPAUBadPlaceArc@@@Z 00B6BAC0 f mp_actors.o
+126	VERIFIED	0002:0037c5d0 ?Path_InitBadPlaces@@YAXXZ 00B6BAD0 f mp_actors.o
+127	VERIFIED	0002:0037c5e0 ?Path_ShutdownBadPlaces@@YAXXZ 00B6BAE0 f mp_actors.o
+128	VERIFIED	0002:0037c5f0 ?Path_RunBadPlaces@@YAXXZ 00B6BAF0 f mp_actors.o
+129	VERIFIED	0002:0037c600 ?Actor_Physics@@YAHPAUactor_physics_t@@@Z 00B6BB00 f mp_actors.o
+130	VERIFIED	0002:0037c610 ?Actor_PostPhysics@@YAXPAUactor_physics_t@@@Z 00B6BB10 f mp_actors.o
+131	VERIFIED	0002:0037c620 ?Actor_Grenade_GetTossPositions@@YIHPAUactor_s@@QBM11QAM2@Z 00B6BB20 f mp_actors.o
+132	VERIFIED	0002:0037c630 ?Actor_Grenade_CheckToss@@YIHPAUactor_s@@QBM1Vstring@Broc@@QAM3H@Z 00B6BB30 f mp_actors.o
+133	VERIFIED	0002:0037c650 ?Actor_Grenade_IsSafeTarget@@YIHPAUactor_s@@QBMH@Z 00B6BB50 f mp_actors.o
+134	VERIFIED	0002:0037c660 ?Actor_GrenadePing@@YIXPAUactor_s@@PAVEntity@@@Z 00B6BB60 f mp_actors.o
+135	VERIFIED	0002:0037c670 ?Actor_Grenade_Attach@@YIXPAUactor_s@@@Z 00B6BB70 f mp_actors.o
+136	VERIFIED	0002:0037c680 ?Actor_Grenade_Detach@@YIXPAUactor_s@@@Z 00B6BB80 f mp_actors.o
+137	VERIFIED	0002:0037c690 ?Actor_Grenade_DropIfHeld@@YIXPAUactor_s@@@Z 00B6BB90 f mp_actors.o
+138	VERIFIED	0002:0037c6a0 ?Actor_IsSuppressed@@YIHPAUactor_s@@@Z 00B6BBA0 f mp_actors.o
+139	VERIFIED	0002:0037c6b0 ?Actor_IsMoveSuppressed@@YIHPAUactor_s@@@Z 00B6BBB0 f mp_actors.o
+140	PORTED	0002:0037c6c0 ?Actor_GetSuppressionPlanes@@YI?BHPAUactor_s@@QAY01MQAM@Z 00B6BBC0 f mp_actors.o
+141	PORTED	0002:0037c6d0 ?Actor_GetSuppressionCount@@YI?BHPAUactor_s@@@Z 00B6BBD0 f mp_actors.o
+142	VERIFIED	0002:0037c6e0 ?Actor_InterruptPoint@@YAXPAUactor_s@@@Z 00B6BBE0 f mp_actors.o
+143	VERIFIED	0002:0037c6f0 ?Actor_CurrentLookAtAnimYawMax@@YAMPAUactor_s@@@Z 00B6BBF0 f mp_actors.o
+144	VERIFIED	0002:0037c700 ?Actor_CurrentLookAtYawMax@@YAMPAUactor_s@@@Z 00B6BC00 f mp_actors.o
+145	VERIFIED	0002:0037c710 ?Path_Copy@@YIXPBUpath_t@@PAU1@@Z 00B6BC10 f mp_actors.o
+146	VERIFIED	0002:0037c720 ?Path_Begin@@YIXPAUpath_t@@@Z 00B6BC20 f mp_actors.o
+147	VERIFIED	0002:0037c730 ?Path_Clear@@YIXPAUpath_t@@@Z 00B6BC30 f mp_actors.o
+148	PORTED	0002:0037c740 ?Path_Exists@@YI?BHPBUpath_t@@@Z 00B6BC40 f mp_actors.o
+149	PORTED	0002:0037c750 ?Path_CompleteLookahead@@YI?BHPBUpath_t@@@Z 00B6BC50 f mp_actors.o
+150	PORTED	0002:0037c760 ?Path_AttemptedCompleteLookahead@@YI?BHPBUpath_t@@@Z 00B6BC60 f mp_actors.o
+151	PORTED	0002:0037c770 ?Path_UsesObstacleNegotiation@@YI?BHPBUpath_t@@@Z 00B6BC70 f mp_actors.o
+152	PORTED	0002:0037c780 ?Path_AllowsObstacleNegotiation@@YI?BHPBUpath_t@@@Z 00B6BC80 f mp_actors.o
+153	VERIFIED	0002:0037c790 ?Path_GetObstacleNegotiationScript@@YIXPBUpath_t@@PAUscr_animscript_t@@PAM@Z 00B6BC90 f mp_actors.o
+154	VERIFIED	0002:0037c7a0 ?Path_GetFinalGoal@@YIXPBUpath_t@@QAM@Z 00B6BCA0 f mp_actors.o
+155	VERIFIED	0002:0037c7b0 ?Path_NeedsReevaluation@@YIHPAUpath_t@@QBMMH@Z 00B6BCB0 f mp_actors.o
+156	VERIFIED	0002:0037c7c0 ?Sentient_GetScarinessForDistance@@YAMPAUsentient_s@@0M@Z 00B6BCC0 f mp_actors.o
+157	VERIFIED	0002:0037c7d0 ?Actor_Shoot@@YAXPAUactor_s@@MPAY02MW4enumLastShot@@@Z 00B6BCD0 f mp_actors.o
+158	VERIFIED	0002:0037c7e0 ?Actor_Melee@@YAXPAUactor_s@@@Z 00B6BCE0 f mp_actors.o
+159	VERIFIED	0002:0037c7f0 ?PointCouldSeeSpawn@@YAHABVPosition3@math@@0V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@1@Z 00B6BCF0 f mp_actors.o
+160	VERIFIED	0002:0037c800 ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z 00B6BD00 f mp_actors.o
+161	VERIFIED	0002:0037c810 ?SP_actor_spawner@@YAHPAVEntity@@@Z 00B6BD10 f mp_actors.o
+162	VERIFIED	0002:0037c820 ?Actor_InitMove@@YIXPAUactor_s@@@Z 00B6BD20 f mp_actors.o
+163	VERIFIED	0002:0037c830 ?Actor_DoMove@@YIXPAUactor_s@@@Z 00B6BD30 f mp_actors.o
+164	VERIFIED	0002:0037c840 ?Actor_UpdateProneInformation@@YIXPAUactor_s@@H@Z 00B6BD40 f mp_actors.o
+165	VERIFIED	0002:0037c850 ?actor_controller@@YAXPAVEntity@@QAH@Z 00B6BD50 f mp_actors.o
+166	VERIFIED	0002:0037c860 ?Actor_GetPotentialNodeList@@YIXPAUactor_s@@HQAMMMP6IH0PBUPathNode@PathNodes@@@ZP6IM02@Z@Z 00B6BD60 f mp_actors.o
+167	VERIFIED	0002:0037c870 ?Path_AttemptDodge@@YIHPAUpath_t@@QBM11HV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@2HH@Z 00B6BD70 f mp_actors.o
+168	VERIFIED	0002:0037c880 ?Path_MayFaceEnemy@@YIHPAUpath_t@@QAM1@Z 00B6BD80 f mp_actors.o
+169	VERIFIED	0002:0037c890 ?Path_PredictionTrace@@YIHQBM0V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@1HQAM@Z 00B6BD90 f mp_actors.o
+170	VERIFIED	0002:0037c8a0 ?Path_ContainsBadPlaceLink@@YIHPAUpath_t@@W4team_t@@@Z 00B6BDA0 f mp_actors.o
+171	PORTED	0002:0037c8b0 ?EdgesCrissCross2D@@YA?BHQBM000@Z 00B6BDB0 f mp_actors.o
+172	VERIFIED	0002:0037c8c0 ?Actor_SetDesiredLookAngles@@YIXPAUai_orient_t@@MM@Z 00B6BDC0 f mp_actors.o
+173	VERIFIED	0002:0037c8d0 ?Actor_SetDesiredAngles@@YIXPAUai_orient_t@@MM@Z 00B6BDD0 f mp_actors.o
+174	VERIFIED	0002:0037c8e0 ?Actor_SetLookAngles@@YIXPAUactor_s@@MM@Z 00B6BDE0 f mp_actors.o
+175	VERIFIED	0002:0037c8f0 ?Actor_SetBodyAngle@@YIXPAUactor_s@@M@Z 00B6BDF0 f mp_actors.o
+176	VERIFIED	0002:0037c900 ?Actor_ChangeAngles@@YIXPAUactor_s@@MM@Z 00B6BE00 f mp_actors.o
+177	VERIFIED	0002:0037c910 ?Actor_UpdateLookAngles@@YIXPAUactor_s@@H@Z 00B6BE10 f mp_actors.o
+178	VERIFIED	0002:0037c920 ?Actor_UpdateBodyAngle@@YIXPAUactor_s@@H@Z 00B6BE20 f mp_actors.o
+179	VERIFIED	0002:0037c930 ?Actor_FaceVector@@YIXPAUai_orient_t@@QBMM@Z 00B6BE30 f mp_actors.o
+180	VERIFIED	0002:0037c940 ?Actor_FaceEnemy@@YIXPAUactor_s@@PAUai_orient_t@@M@Z 00B6BE40 f mp_actors.o
+181	VERIFIED	0002:0037c950 ?Actor_DecideOrientation@@YIXPAUactor_s@@@Z 00B6BE50 f mp_actors.o
+182	VERIFIED	0002:0037c960 ?Actor_SetOrientMode@@YIXPAUactor_s@@W4ai_orient_mode_t@@@Z 00B6BE60 f mp_actors.o
+183	VERIFIED	0002:0037c970 ?Actor_Get@@YIPAUactor_s@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00B6BE70 f mp_actors.o
+184	VERIFIED	0002:0037c980 ?Path_GetMaxScariness@@YIMPAUpath_t@@PAUactor_s@@@Z 00B6BE80 f mp_actors.o
+185	VERIFIED	0002:0037c990 ?Path_TrimToBravery@@YIHPAUpath_t@@PAUactor_s@@@Z 00B6BE90 f mp_actors.o
+186	VERIFIED	0002:0037c9a0 ?Path_AllowedStancesForPath@@YI?AW4ai_stance_e@@PAUpath_t@@@Z 00B6BEA0 f mp_actors.o
+187	VERIFIED	0002:0037c9b0 ?Path_ApproxDist@@YIMPAUpath_t@@@Z 00B6BEB0 f mp_actors.o
+188	VERIFIED	0002:0037c9c0 ?Actor_Exposed_StartReacquire@@YAXPAUactor_s@@W4canChangeState_t@@@Z 00B6BEC0 f mp_actors.o
+189	VERIFIED	0002:0037c9d0 ?Actor_UseTurret@@YIHPAUactor_s@@PAVEntity@@@Z 00B6BED0 f mp_actors.o
+190	VERIFIED	0002:0037c9e0 ?Actor_StopUseTurret@@YIXPAUactor_s@@@Z 00B6BEE0 f mp_actors.o
+191	VERIFIED	0002:0037c9f0 ?Actor_IsUsingTurret@@YIHPAUactor_s@@@Z 00B6BEF0 f mp_actors.o
+192	VERIFIED	0002:0037ca00 ?Path_GetMovementDir2D@@YIXPAUpath_t@@QAM@Z 00B6BF00 f mp_actors.o
+193	VERIFIED	0002:0037ca10 ?G_GetActorFriendlyIndex@@YAHPAVEntity@@@Z 00B6BF10 f mp_actors.o
+194	VERIFIED	0002:0037ca20 ?G_GetFriendlyIndexActor@@YAPAVEntity@@H@Z 00B6BF20 f mp_actors.o
+195	VERIFIED	0002:0037ca30 ?G_GetNonPVSFriendlyInfo@@YAHQAMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00B6BF30 f mp_actors.o
+196	VERIFIED	0002:0037ca40 ?Path_EncroachesPoint2D@@YIHPAUpath_t@@QBM1M@Z 00B6BF40 f mp_actors.o
+197	VERIFIED	0002:0037ca50 ?Path_DistanceGreaterThan@@YIHPAUpath_t@@M@Z 00B6BF50 f mp_actors.o
+198	VERIFIED	0002:0037ca60 ?Path_AddTrimmedAmount@@YIXPAUpath_t@@QBM@Z 00B6BF60 f mp_actors.o
+199	VERIFIED	0002:0037ca70 ?Path_UpdateLookahead@@YIXPAUpath_t@@QBMHH@Z 00B6BF70 f mp_actors.o
+200	VERIFIED	0002:0037ca80 ?Path_GetForwardStartPos@@YIHPAUpath_t@@QBMQAM@Z 00B6BF80 f mp_actors.o
+201	VERIFIED	0002:0037ca90 ?Path_IsTrimmed@@YIHPAUpath_t@@@Z 00B6BF90 f mp_actors.o
+202	VERIFIED	0002:0037caa0 ?Path_DebugDraw@@YIXPAUpath_t@@QBMH@Z 00B6BFA0 f mp_actors.o
+203	VERIFIED	0002:0037cab0 ?Path_FailedLookahead@@YIHPAUpath_t@@@Z 00B6BFB0 f mp_actors.o
+204	PORTED	0002:0037cac0 ?Path_FindPath@@YI?BHPAUpath_t@@W4team_t@@QBM2H@Z 00B6BFC0 f mp_actors.o
+205	PORTED	0002:0037cad0 ?Path_FindPathFrom@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3H@Z 00B6BFD0 f mp_actors.o
+206	PORTED	0002:0037cae0 ?Path_FindPathFromTo@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM23H@Z 00B6BFE0 f mp_actors.o
+207	PORTED	0002:0037caf0 ?Path_FindPathNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2QAY01MQAMHH@Z 00B6BFF0 f mp_actors.o
+208	PORTED	0002:0037cb00 ?Path_FindPathFromNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3QAY01MQAMHH@Z 00B6C000 f mp_actors.o
+209	PORTED	0002:0037cb10 ?Path_FindPathFromToNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM23QAY01MQAMHH@Z 00B6C010 f mp_actors.o
+210	PORTED	0002:0037cb20 ?Path_FindPathAway@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z 00B6C020 f mp_actors.o
+211	PORTED	0002:0037cb30 ?Path_FindPathFromAway@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MH@Z 00B6C030 f mp_actors.o
+212	PORTED	0002:0037cb40 ?Path_FindPathAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z 00B6C040 f mp_actors.o
+213	PORTED	0002:0037cb50 ?Path_FindPathFromAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MQAY01MQAMHH@Z 00B6C050 f mp_actors.o
+214	PORTED	0002:0037cb60 ?Path_FindPathNear@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z 00B6C060 f mp_actors.o
+215	PORTED	0002:0037cb70 ?Path_FindPathNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z 00B6C070 f mp_actors.o
+216	PORTED	0002:0037cb80 ?Path_FindPathInCylinderNear@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMH@Z 00B6C080 f mp_actors.o
+217	PORTED	0002:0037cb90 ?Path_FindPathInCylinderNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMQAY01MQAMHH@Z 00B6C090 f mp_actors.o
+218	PORTED	0002:0037cba0 ?Path_FindPathFromInCylinder@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM33MMH@Z 00B6C0A0 f mp_actors.o
+219	PORTED	0002:0037cbb0 ?Path_FindPathFromInCylinderNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM33MMQAY01MQAMHH@Z 00B6C0B0 f mp_actors.o
+220	VERIFIED	0002:0037cbc0 ?Initialize@BadPathManager@@QAEXXZ 00B6C0C0 f mp_actors.o
+221	VERIFIED	0002:0037cbd0 ?SP_info_grenade_hint@@YAXPAVEntity@@@Z 00B6C0D0 f mp_actors.o
+222	VERIFIED	0002:0037cbe0 ?SP_actor@@YAHPAVEntity@@@Z 00B6C0E0 f mp_actors.o
+223	VERIFIED	0002:0037cbf0 ?Sentient_Alloc@@YAPAUsentient_s@@XZ 00B6C0F0 f mp_actors.o
+224	VERIFIED	0002:0037ccc0 ?Sentient_Clean@@YAXPAUsentient_s@@@Z 00B6C1C0 f mp_actors.o
+225	VERIFIED	0002:0037cce0 ?Sentient_InheritGoal@@YAXPAUsentient_s@@0W4team_t@@@Z 00B6C1E0 f mp_actors.o
+226	VERIFIED	0002:0037cde0 ?Sentient_DissociateSentient@@YAXPAUsentient_s@@0W4team_t@@@Z 00B6C2E0 f mp_actors.o
+227	VERIFIED	0002:0037cf30 ?Sentient_DissociateEntity@@YAXPAUsentient_s@@PAVEntity@@@Z 00B6C430 f mp_actors.o
+228	VERIFIED	0002:0037d020 ?Sentient_GetOrigin@@YIXPBUsentient_s@@QAM@Z 00B6C520 f mp_actors.o
+229	VERIFIED	0002:0037d170 ?Sentient_GetForwardDir@@YIXPAUsentient_s@@QAM@Z 00B6C670 f mp_actors.o
+230	VERIFIED	0002:0037d2b0 ?Sentient_GetVelocity@@YIXPAUsentient_s@@QAM@Z 00B6C7B0 f mp_actors.o
+231	VERIFIED	0002:0037d440 ?Sentient_GetCentroid@@YIXPAUsentient_s@@QAM@Z 00B6C940 f mp_actors.o
+232	VERIFIED	0002:0037d5d0 ?Sentient_GetEyePosition@@YIXPAUsentient_s@@QAM@Z 00B6CAD0 f mp_actors.o
+233	VERIFIED	0002:0037d770 ?Sentient_GetEyePosition@@YIXPAUsentient_s@@AAVPosition3@math@@@Z 00B6CC70 f mp_actors.o
+234	VERIFIED	0002:0037d7b0 ?Sentient_GetHeadHeight@@YIMPAUsentient_s@@@Z 00B6CCB0 f mp_actors.o
+235	VERIFIED	0002:0037d8d0 ?Sentient_InvalidateNearestNode@@YIXPAUsentient_s@@@Z 00B6CDD0 f mp_actors.o
+236	VERIFIED	0002:0037d930 ?Sentient_SetGoalRadius@@YIXPAUsentient_s@@M@Z 00B6CE30 f mp_actors.o
+237	VERIFIED	0002:0037da00 ?Sentient_SetGoalScriptCallback@@YIXPAUsentient_s@@VHashString@@@Z 00B6CF00 f mp_actors.o
+238	VERIFIED	0002:0037da80 ?Sentient_SetGoalAngle@@YIXPAUsentient_s@@M@Z 00B6CF80 f mp_actors.o
+239	VERIFIED	0002:0037dae0 ?Sentient_ClearGoalAngle@@YIXPAUsentient_s@@@Z 00B6CFE0 f mp_actors.o
+240	VERIFIED	0002:0037db40 ?Sentient_SetGoalAngleTolerance@@YIXPAUsentient_s@@M@Z 00B6D040 f mp_actors.o
+241	VERIFIED	0002:0037dbc0 ?Sentient_HasGoalAngle@@YIHPAUsentient_s@@@Z 00B6D0C0 f mp_actors.o
+242	VERIFIED	0002:0037dc30 ?Sentient_AngleSatisfiesGoal@@YIHPAUsentient_s@@M@Z 00B6D130 f mp_actors.o
+243	VERIFIED	0002:0037dcd0 ?Sentient_SetEnemy@@YIXPAUsentient_s@@0H@Z 00B6D1D0 f mp_actors.o
+244	VERIFIED	0002:0037dce0 ?Sentient_FirstSentient@@YIPAUsentient_s@@H@Z 00B6D1E0 f mp_actors.o
+245	VERIFIED	0002:0037dd80 ?Sentient_NextSentient@@YIPAUsentient_s@@PAU1@H@Z 00B6D280 f mp_actors.o
+246	VERIFIED	0002:0037df40 ?Sentient_NameForTeam@@YIPBDW4team_t@@@Z 00B6D440 f mp_actors.o
+247	VERIFIED	0002:0037dfa0 ?Sentient_SetTeam@@YIXPAUsentient_s@@W4team_t@@@Z 00B6D4A0 f mp_actors.o
+248	VERIFIED	0002:0037e000 ?Sentient_UpdatePlayerTrail@@YAXPAVPlayerState@@@Z 00B6D500 f mp_actors.o
+249	VERIFIED	0002:0037e010 ?Sentient_WriteGlob@@YAXXZ 00B6D510 f mp_actors.o
+250	VERIFIED	0002:0037e020 ?Sentient_ReadGlob@@YAXXZ 00B6D520 f mp_actors.o
+251	VERIFIED	0002:0037e030 ?Sentient_GetTrailPos@@YIXPAUsentient_s@@QAMPAH@Z 00B6D530 f mp_actors.o
+252	VERIFIED	0002:0037e140 ?G_InitSentients@@YAXXZ 00B6D640 f mp_actors.o
+253	VERIFIED	0002:0037e1c0 ?Scr_SetPathnodeField@@YAXHH@Z 00B6D6C0 f mp_actors.o
+254	VERIFIED	0002:0037e280 ?Scr_GetPathnodeField@@YAXHH@Z 00B6D780 f mp_actors.o
+255	VERIFIED	0002:0037e350 ?GScr_AddFieldsForPathnode@@YAXXZ 00B6D850 f mp_actors.o
+256	VERIFIED	0002:0037e3a0 ?Scr_GetPathnode@@YAPAUPathNode@PathNodes@@I@Z 00B6D8A0 f mp_actors.o
+257	VERIFIED	0002:0037e3f0 ?G_FreePathnodesScriptInfo@@YAXXZ 00B6D8F0 f mp_actors.o
+258	VERIFIED	0002:0037e400 ?Path_CompareNodesIncreasing@@YAHPBX0@Z 00B6D900 f mp_actors.o
+259	VERIFIED	0002:0037e420 ?Path_CompareNodesDecreasing@@YAHPBX0@Z 00B6D920 f mp_actors.o
+260	VERIFIED	0002:0037e440 ?Path_Init@@YAXXZ 00B6D940 f mp_actors.o
+261	VERIFIED	0002:0037e450 ?Path_Shutdown@@YAXXZ 00B6D950 f mp_actors.o
+262	VERIFIED	0002:0037e470 ?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z 00B6D970 f mp_actors.o
+263	VERIFIED	0002:0037e490 ?Path_DrawDebugNoLinks@@YAXPBUPathNode@PathNodes@@@Z 00B6D990 f mp_actors.o
+264	VERIFIED	0002:0037e5a0 ?Path_DrawDebugNearestNode@@YAXQBMH@Z 00B6DAA0 f mp_actors.o
+265	VERIFIED	0002:0037e5b0 ?Path_DrawDebugFindPath@@YAXPAUactor_s@@QBM@Z 00B6DAB0 f mp_actors.o
+266	VERIFIED	0002:0037e5c0 ?Path_DrawDebug@@YAXXZ 00B6DAC0 f mp_actors.o
+267	VERIFIED	0002:0037e5e0 ?Path_ClaimNode@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B6DAE0 f mp_actors.o
+268	VERIFIED	0002:0037eb10 ?Path_RelinquishNodePermanently@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B6E010 f mp_actors.o
+269	VERIFIED	0002:0037ec80 ?Path_RelinquishNodeTemporarily@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B6E180 f mp_actors.o
+270	VERIFIED	0002:0037eec0 ?Path_IsNodeValid@@YAHPBUPathNode@PathNodes@@W4team_t@@@Z 00B6E3C0 f mp_actors.o
+271	VERIFIED	0002:0037ef80 ?Path_MarkNodeUnsafe@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z 00B6E480 f mp_actors.o
+272	VERIFIED	0002:0037f060 ?Path_IsNodeUnsafe@@YAHPBUPathNode@PathNodes@@W4team_t@@@Z 00B6E560 f mp_actors.o
+273	VERIFIED	0002:0037f120 ?Path_AllowedStancesForNode@@YA?AW4ai_stance_e@@PAUPathNode@PathNodes@@@Z 00B6E620 f mp_actors.o
+274	VERIFIED	0002:0037f1f0 ?Path_GetType@@YAXPAUPathNode@PathNodes@@H@Z 00B6E6F0 f mp_actors.o
+275	VERIFIED	0002:0037f240 ?Path_SetSentientFlagsFromNode@@YAXPAUsentient_s@@PBUPathNode@PathNodes@@@Z 00B6E740 f mp_actors.o
+276	VERIFIED	0002:0037f280 ?Path_GetAllowedStancesFromSentientFlags@@YA?AW4ai_stance_e@@PAUsentient_s@@@Z 00B6E780 f mp_actors.o
+277	VERIFIED	0002:0037f2b0 ?Path_ResetSentientFlags@@YAXPAUsentient_s@@@Z 00B6E7B0 f mp_actors.o
+278	VERIFIED	0002:0037f2c0 ??0TOC1@PathNodes@@QAE@XZ 00B6E7C0 f mp_actors.o
+279	VERIFIED	0002:0037f2f0 ??0TOC2@PathNodes@@QAE@XZ 00B6E7F0 f mp_actors.o
+280	VERIFIED	0002:0037f300 ??DNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ 00B6E800 f mp_actors.o
+281	VERIFIED	0002:0037f310 ??DNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ 00B6E810 f mp_actors.o
+282	VERIFIED	0002:0037f320 ??CNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ 00B6E820 f mp_actors.o
+283	VERIFIED	0002:0037f330 ??CNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ 00B6E830 f mp_actors.o
+284	VERIFIED	0002:0037f340 ??0PathNodeMgr@@QAE@XZ 00B6E840 f mp_actors.o
+285	VERIFIED	0002:0037f370 ?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z 00B6E870 f mp_actors.o
+286	VERIFIED	0002:0037f380 ?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z 00B6E880 f mp_actors.o
+287	VERIFIED	0002:0037f390 ?UnloadBank@PathNodeMgr@@EAEXW4TPakId@@@Z 00B6E890 f mp_actors.o
+288	VERIFIED	0002:0037f3b0 ?CleanUpManager@PathNodeMgr@@QAEXXZ 00B6E8B0 f mp_actors.o
+289	VERIFIED	0002:0037f3d0 ?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z 00B6E8D0 f mp_actors.o
+290	VERIFIED	0002:0037f400 ?NodesInCylinder_r@PathNodeMgr@@IAEXPAUPathNodeTree@PathNodes@@@Z 00B6E900 f mp_actors.o
+291	VERIFIED	0002:0037f560 ?NodesInCylinder@PathNodeMgr@@QAEHQBMMMPAUPathSort@PathNodes@@HH@Z 00B6EA60 f mp_actors.o
+292	VERIFIED	0002:0037f620 ?InitScriptVariables@PathNodeMgr@@AAEXH@Z 00B6EB20 f mp_actors.o
+293	VERIFIED	0002:0037f920 ?InitScriptVariables@PathNodeMgr@@AAEXXZ 00B6EE20 f mp_actors.o
+294	VERIFIED	0002:0037f930 ?InitLinkCounts@PathNodeMgr@@QAEXH@Z 00B6EE30 f mp_actors.o
+295	VERIFIED	0002:0037f9d0 ?InitLinkInfoArray@PathNodeMgr@@AAEXXZ 00B6EED0 f mp_actors.o
+296	VERIFIED	0002:0037fb60 ?IsConnectedTo@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@0@Z 00B6F060 f mp_actors.o
+297	VERIFIED	0002:0037fba0 ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ 00B6F0A0 f mp_actors.o
+298	VERIFIED	0002:0037fbe0 ?CreateTree_r@PathNodeMgr@@AAEPAUPathNodeTree@PathNodes@@PAPAUPathNode@3@PAPAU23@@Z 00B6F0E0 f mp_actors.o
+299	VERIFIED	0002:0037fc30 ?NodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z 00B6F130 f mp_actors.o
+300	VERIFIED	0002:0037fc60 ?ExpandedNodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z 00B6F160 f mp_actors.o
+301	VERIFIED	0002:0037fc90 ?IsBadPlaceLink@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0W4team_t@@@Z 00B6F190 f mp_actors.o
+302	VERIFIED	0002:0037fe30 ?FindChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@QBMPAU23@@Z 00B6F330 f mp_actors.o
+303	VERIFIED	0002:0037ffe0 ?FindChainIndex@PathNodeMgr@@AAEHABVNodeHandle@PathNodes@@@Z 00B6F4E0 f mp_actors.o
+304	VERIFIED	0002:00380020 ?ChooseDesperationNewChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z 00B6F520 f mp_actors.o
+305	VERIFIED	0002:00380070 ?FirstNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@H@Z 00B6F570 f mp_actors.o
+306	VERIFIED	0002:00380140 ?NextNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@H@Z 00B6F640 f mp_actors.o
+307	VERIFIED	0002:003802e0 ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z 00B6F7E0 f mp_actors.o
+308	VERIFIED	0002:00380370 ?UpdateArcBadPlaceCount@PathNodeMgr@@QAEXPAUBadPlaceArc@@HH@Z 00B6F870 f mp_actors.o
+309	VERIFIED	0002:00380880 ?NodeList@PathNodeMgr@@QAEXXZ 00B6FD80 f mp_actors.o
+310	VERIFIED	0002:00380940 ?FindOverlappingNodes@PathNodeMgr@@QAEXXZ 00B6FE40 f mp_actors.o
+311	VERIFIED	0002:00380c30 ?ValidateNode@PathNodeMgr@@QBEXPAUPathNode@PathNodes@@@Z 00B70130 f mp_actors.o
+312	VERIFIED	0002:00380dc0 ?ValidateAllNodes@PathNodeMgr@@QBEXXZ 00B702C0 f mp_actors.o
+313	VERIFIED	0002:00380e00 ?CheckLinkLeaks@PathNodeMgr@@QBEXXZ 00B70300 f mp_actors.o
+314	VERIFIED	0002:00380ee0 ?LooseFileSupport@PathNodeMgr@@AAEPAEPAEW4TPakId@@PBDPAH@Z 00B703E0 f mp_actors.o
+315	VERIFIED	0002:00380ef0 ?InitPlayer@AIType@@QAEXPAVEntity@@W4TPakId@@@Z 00B703F0 f mp_actors.o
+316	VERIFIED	0002:00380fc0 ??1AITypeManager@@EAE@XZ 00B704C0 f mp_actors.o
+317	VERIFIED	0002:00380fd0 ?Sentient_Dissociate@@YAXPAUsentient_s@@@Z 00B704D0 f mp_actors.o
+318	VERIFIED	0002:00381070 ?Sentient_UpdateActualChainPos@@YIXPAUsentient_s@@@Z 00B70570 f mp_actors.o
+319	VERIFIED	0002:00381130 ?Sentient_NodeClaimRevoked@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z 00B70630 f mp_actors.o
+320	VERIFIED	0002:00381330 ?Path_SetupAnimFunc@@YAXPAUPathNode@PathNodes@@PAW4ENodeType@2@@Z 00B70830 f mp_actors.o
+321	VERIFIED	0002:003814d0 ?Path_NearestNodeNotCrossPlanes@@YAPAUPathNode@PathNodes@@QBMPAUPathSort@2@HHMQAY01MQAMHPAH@Z 00B709D0 f mp_actors.o
+322	VERIFIED	0002:00381980 ?Path_RevokeClaim@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B70E80 f mp_actors.o
+323	VERIFIED	0002:00381a00 ?Path_ForceClaimNode@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z 00B70F00 f mp_actors.o
+324	VERIFIED	0002:00381ce0 ?Path_MarkNodeInvalid@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z 00B711E0 f mp_actors.o
+325	VERIFIED	0002:00381f20 ?Path_MarkNodeValid@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z 00B71420 f mp_actors.o
+326	VERIFIED	0002:00382070 ?Path_SetSentientFlagsFromPath@@YAXPAUsentient_s@@PAUpath_t@@@Z 00B71570 f mp_actors.o
+327	VERIFIED	0002:003820f0 ?SetCoverNodeStatus@PathNodeMgr@@QAEXABVstring@Broc@@H@Z 00B715F0 f mp_actors.o
+328	VERIFIED	0002:003824e0 ?GetNode@PathNodeMgr@@QAEHABVstring@Broc@@0PAH@Z 00B719E0 f mp_actors.o
+329	VERIFIED	0002:00382810 ?GetVehicleNodeIndex@PathNodeMgr@@QAEHABVstring@Broc@@0PAHH@Z 00B71D10 f mp_actors.o
+330	VERIFIED	0002:00382a80 ?InitScriptFunctions@PathNodeMgr@@AAEXH@Z 00B71F80 f mp_actors.o
+331	VERIFIED	0002:00382b00 ?InitScriptFunctions@PathNodeMgr@@AAEXXZ 00B72000 f mp_actors.o
+332	VERIFIED	0002:00382b10 ?NodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z 00B72010 f mp_actors.o
+333	VERIFIED	0002:00382c70 ?ExpandedNodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z 00B72170 f mp_actors.o
+334	VERIFIED	0002:00382de0 ?DisconnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z 00B722E0 f mp_actors.o
+335	VERIFIED	0002:00383020 ?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z 00B72520 f mp_actors.o
+336	VERIFIED	0002:00383150 ?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z 00B72650 f mp_actors.o
+337	VERIFIED	0002:003831e0 ?DisconnectPath@PathNodeMgr@@QAEXPAVEntity@@PAUPathNode@PathNodes@@PAUPathLink@4@@Z 00B726E0 f mp_actors.o
+338	VERIFIED	0002:003832c0 ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z 00B727C0 f mp_actors.o
+339	VERIFIED	0002:003833c0 ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z 00B728C0 f mp_actors.o
+340	VERIFIED	0002:003835f0 ?IsReserveForMe@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z 00B72AF0 f mp_actors.o
+341	VERIFIED	0002:00383640 ?IsReserveForOther@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z 00B72B40 f mp_actors.o
+342	VERIFIED	0002:00383690 ?GetPreviousChainNodeReserveForMe@PathNodeMgr@@IBEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z 00B72B90 f mp_actors.o
+343	VERIFIED	0002:00383700 ?UpdateBestChainNode@PathNodeMgr@@ABEXHHPAUPathNode@PathNodes@@PAPAU23@PAHPAUsentient_s@@@Z 00B72C00 f mp_actors.o
+344	VERIFIED	0002:00383820 ?AttachSentientToChainNode@PathNodeMgr@@QAEXPAUsentient_s@@ABVstring@Broc@@@Z 00B72D20 f mp_actors.o
+345	VERIFIED	0002:00383a00 ?InitPaths@PathNodeMgr@@QAEXXZ 00B72F00 f mp_actors.o
+346	VERIFIED	0002:00383a70 ??0AITypeManager@@AAE@XZ 00B72F70 f mp_actors.o
+347	VERIFIED	0002:00383a90 ?DecodeBank@AITypeManager@@QAEXPBDPAEHW4TPakId@@@Z 00B72F90 f mp_actors.o
+348	VERIFIED	0002:00383ac0 ?Sentient_Free@@YAXPAUsentient_s@@@Z 00B72FC0 f mp_actors.o
+349	VERIFIED	0002:00383cd0 ?Sentient_NearestCoverNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHM_N@Z 00B731D0 f mp_actors.o
+350	VERIFIED	0002:00383da0 ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z 00B732A0 f mp_actors.o
+351	VERIFIED	0002:00383fa0 ?Sentient_FindNearestNodeToSentient@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHH@Z 00B734A0 f mp_actors.o
+352	VERIFIED	0002:00384110 ?Sentient_ClaimNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z 00B73610 f mp_actors.o
+353	VERIFIED	0002:00384230 ?Path_AutoDisconnectPaths@@YAXXZ 00B73730 f mp_actors.o
+354	VERIFIED	0002:00384280 ?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z 00B73780 f mp_actors.o
+355	VERIFIED	0002:00384760 ?Path_DrawFriendlyChain@@YAXXZ 00B73C60 f mp_actors.o
+356	VERIFIED	0002:00384780 ?Path_DrawVisData@@YAXXZ 00B73C80 f mp_actors.o
+357	VERIFIED	0002:003848e0 ?Path_NearestNode@@YAPAUPathNode@PathNodes@@QBMPAUPathSort@2@HHMPAH@Z 00B73DE0 f mp_actors.o
+358	VERIFIED	0002:00384a30 ?Path_CanClaimChainNode@@YAHPBUPathNode@PathNodes@@PAUsentient_s@@@Z 00B73F30 f mp_actors.o
+359	VERIFIED	0002:00384a90 ?Path_CanClaimNode@@YAHPBUPathNode@PathNodes@@PAUsentient_s@@@Z 00B73F90 f mp_actors.o
+360	VERIFIED	0002:00384ab0 ?SetupLevelPaths@PathNodeMgr@@IAE_NXZ 00B73FB0 f mp_actors.o
+361	VERIFIED	0002:00384e50 ?NodesVisible@PathNodeMgr@@QBE_NPAUPathNode@PathNodes@@0@Z 00B74350 f mp_actors.o
+362	VERIFIED	0002:00384f10 ?ChooseSubsequentChainNode_r@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAUsentient_s@@@Z 00B74410 f mp_actors.o
+363	VERIFIED	0002:00385420 ?RunToFirstReserveNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z 00B74920 f mp_actors.o
+364	VERIFIED	0002:00385650 ?ChooseAnyChainNodeIfDeadEnd@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z 00B74B50 f mp_actors.o
+365	VERIFIED	0002:00385810 ?ChoosePreviousChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z 00B74D10 f mp_actors.o
+366	VERIFIED	0002:003859c0 ?ChooseDesperationChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z 00B74EC0 f mp_actors.o
+367	VERIFIED	0002:00385ca0 ?InitEnt@AIType@@QAEXPAVEntity@@@Z 00B751A0 f mp_actors.o
+368	VERIFIED	0002:00385e90 ?InitActor@AIType@@QAEXPAUactor_s@@@Z 00B75390 f mp_actors.o
+369	VERIFIED	0002:00386170 ?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z 00B75670 f mp_actors.o
+370	VERIFIED	0002:003861b0 ?G_TouchTriggersAndVehicles@@YAXPAVEntity@@ABVPosition3@math@@ABUcollision_context_t@@@Z 00B756B0 f mp_actors.o
+371	VERIFIED	0002:00386340 ?Sentient_SetDesiredChainNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z 00B75840 f mp_actors.o
+372	VERIFIED	0002:003864a0 ?Sentient_ClaimChainNode@@YIXPAUsentient_s@@@Z 00B759A0 f mp_actors.o
+373	VERIFIED	0002:00386590 ?DecodeLevelBank@PathNodeMgr@@QAEXPBDPAEHW4TPakId@@@Z 00B75A90 f mp_actors.o
+374	VERIFIED	0002:00386620 ?DecodeZoneBank@PathNodeMgr@@QAEXPBDPAEHW4TPakId@@@Z 00B75B20 f mp_actors.o
+375	VERIFIED	0002:00386660 ?ChooseChainNodeInRange@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@HPAUsentient_s@@@Z 00B75B60 f mp_actors.o
+376	VERIFIED	0002:003866b0 ?ChooseChainPosFromCurrent@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@0_NPAUsentient_s@@H@Z 00B75BB0 f mp_actors.o
+377	VERIFIED	0002:003867f0 ?ChooseChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@HH0PAUsentient_s@@H@Z 00B75CF0 f mp_actors.o
+378	VERIFIED	0002:00386ba0 ?Sentient_UpdateDesiredChainPos@@YIXPAUsentient_s@@HH@Z 00B760A0 f mp_actors.o
+379	VERIFIED	0002:00386f70 ?Sentient_SetGoalPos@@YIXPAUsentient_s@@ABVPosition3@math@@_N@Z 00B76470 f mp_actors.o
+380	VERIFIED	0002:00387190 ?Sentient_UpdateGoalPos@@YIXPAUsentient_s@@@Z 00B76690 f mp_actors.o
+381	VERIFIED	0002:00387320 ?Sentient_SetGoalEntity@@YIXPAUsentient_s@@PAVEntity@@@Z 00B76820 f mp_actors.o
+382	VERIFIED	0002:003874b0 ?Sentient_SetGoalNode@@YIXPAUsentient_s@@PAUPathNode@PathNodes@@@Z 00B769B0 f mp_actors.o
+383	VERIFIED	0002:00387650 ?Sentient_SetGoalFromTarget@@YIXPAUsentient_s@@ABVstring@Broc@@@Z 00B76B50 f mp_actors.o
+384	VERIFIED	0002:0038a850 ?GetNode@PathNodeMgr@@QBEPBUPathNode@PathNodes@@ABVNodeHandle@3@@Z 00B79D50 f i mp_actors.o
+385	PORTED	0002:0038a910 ?IsEmpty@PathNodeMgr@@QBE_NXZ 00B79E10 f i mp_actors.o
+386	PORTED	0002:0038a930 ??0PathLink@PathNodes@@QAE@XZ 00B79E30 f i mp_actors.o
+387	PORTED	0002:0038a940 ?size@?$InplaceVector@VCharacterType@@@@QBEIXZ 00B79E40 f i mp_actors.o
+388	PORTED	0002:0038a950 ??A?$InplaceVector@VCharacterType@@@@QAEAAVCharacterType@@I@Z 00B79E50 f i mp_actors.o
+389	PORTED	0002:0038a9d0 ??1?$InplaceAssetBankSet@VAITypeBank@@@@UAE@XZ 00B79ED0 f i mp_actors.o
+390	PORTED	0002:0038a9e0 ?OnBankUnloaded@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXAAVAITypeBank@@@Z 00B79EE0 f i mp_actors.o
+391	PORTED	0002:0038a9f0 ?capacity@?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QBEHXZ 00B79EF0 f i mp_actors.o
+392	PORTED	0002:0038aa00 ??A?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QAEAAPAUPathNode@PathNodes@@H@Z 00B79F00 f i mp_actors.o
+393	PORTED	0002:0038aa80 ??_G?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o
+394	PORTED	0002:0038aa80 ??_E?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o
+395	PORTED	0002:0038aab0 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QAEAAPAVAITypeBank@@H@Z 00B79FB0 f i mp_actors.o
+396	PORTED	0002:0038ab30 ??$ReverseEndian@D@@YAXAADH@Z 00B7A030 f i mp_actors.o
+397	PORTED	0002:0038ab40 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QBEABQAVAITypeBank@@H@Z 00B7A040 f i mp_actors.o
+398	PORTED	0002:0038abc0 ??0?$IVPointer@VAIType@@@@QAE@W4TPakId@@PAVAIType@@@Z 00B7A0C0 f i mp_actors.o
+399	VERIFIED	0002:0038abe0 ??0?$IVPointer@VAIType@@@@QAE@XZ 00B7A0E0 f i mp_actors.o
+400	PORTED	0002:0038ac00 ?size@?$InplaceVector@PBVAIType@@@@QBEIXZ 00B7A100 f i mp_actors.o
+401	PORTED	0002:0038ac10 ??A?$InplaceVector@PBVAIType@@@@QAEAAPBVAIType@@I@Z 00B7A110 f i mp_actors.o
+402	PORTED	0002:0038ac90 ??0ai_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00B7A190 f i mp_actors.o
+403	PORTED	0002:0038acd0 ??0BadPathManager@@QAE@XZ 00B7A1D0 f i mp_actors.o
+404	VERIFIED	0002:0038ace0 ??_GPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
+405	VERIFIED	0002:0038ace0 ??_EPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
+406	VERIFIED	0002:0038ad10 ??1PathNodeMgr@@UAE@XZ 00B7A210 f i mp_actors.o
+407	PORTED	0002:0038ad20 ?Fixup@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B7A220 f i mp_actors.o
+408	PORTED	0002:0038ada0 ??0?$InplaceAssetBankSet@VAITypeBank@@@@QAE@XZ 00B7A2A0 f i mp_actors.o
+409	PORTED	0002:0038ae70 ?AddBank@?$InplaceAssetBankSet@VAITypeBank@@@@QAEXW4TPakId@@PAVAITypeBank@@@Z 00B7A370 f i mp_actors.o
+410	PORTED	0002:0038af00 ?UnloadBank@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXW4TPakId@@@Z 00B7A400 f i mp_actors.o
+411	PORTED	0002:0038af60 ??$ReverseEndian@G@@YAXAAGH@Z 00B7A460 f i mp_actors.o
+412	PORTED	0002:0038af80 ??$ReverseEndian@VNodeHandle@PathNodes@@@@YAXAAVNodeHandle@PathNodes@@H@Z 00B7A480 f i mp_actors.o
+413	PORTED	0002:0038afa0 ??$ReverseEndian@F@@YAXAAFH@Z 00B7A4A0 f i mp_actors.o
+414	PORTED	0002:0038afc0 ??A?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVAIType@@I@Z 00B7A4C0 f i mp_actors.o
+415	PORTED	0002:0038b040 ??$FindIndex@PBD@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00B7A540 f i mp_actors.o
+416	VERIFIED	0002:0038b070 ??_GAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
+417	VERIFIED	0002:0038b070 ??_EAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
+418	PORTED	0002:0038b0a0 ??$ReverseEndian@W4ENodeType@PathNodes@@@@YAXAAW4ENodeType@PathNodes@@H@Z 00B7A5A0 f i mp_actors.o
+419	PORTED	0002:0038b0d0 ??$ReverseEndian@Vstring@Broc@@@@YAXAAVstring@Broc@@H@Z 00B7A5D0 f i mp_actors.o
+420	PORTED	0002:0038b100 ??$ReverseEndian@PAUPathLink@PathNodes@@@@YAXAAPAUPathLink@PathNodes@@H@Z 00B7A600 f i mp_actors.o
+421	PORTED	0002:0038b130 ??$ReverseEndian@H@@YAXAAHH@Z 00B7A630 f i mp_actors.o
+422	PORTED	0002:0038b160 ??$ReverseEndian@PAUPathNode@PathNodes@@@@YAXAAPAUPathNode@PathNodes@@H@Z 00B7A660 f i mp_actors.o
+423	PORTED	0002:0038b190 ??$ReverseEndian@PAUsentient_s@@@@YAXAAPAUsentient_s@@H@Z 00B7A690 f i mp_actors.o
+424	PORTED	0002:0038b1c0 ??$ReverseEndian@PAVNodeHandle@PathNodes@@@@YAXAAPAVNodeHandle@PathNodes@@H@Z 00B7A6C0 f i mp_actors.o
+425	PORTED	0002:0038b1f0 ??$ReverseEndian@PAUNodeVariableSaver@PathNodes@@@@YAXAAPAUNodeVariableSaver@PathNodes@@H@Z 00B7A6F0 f i mp_actors.o
+426	PORTED	0002:0038b220 ??$ReverseEndian@PAUPathLinkInfo@PathNodes@@@@YAXAAPAUPathLinkInfo@PathNodes@@H@Z 00B7A720 f i mp_actors.o
+427	PORTED	0002:0038b250 ??$ReverseEndian@PAUPathNodeTree@PathNodes@@@@YAXAAPAUPathNodeTree@PathNodes@@H@Z 00B7A750 f i mp_actors.o
+428	PORTED	0002:0038b280 ??$ReverseEndian@PAD@@YAXAAPADH@Z 00B7A780 f i mp_actors.o
+429	PORTED	0002:0038b2b0 ??$ReverseEndian@PAPAUPathNode@PathNodes@@@@YAXAAPAPAUPathNode@PathNodes@@H@Z 00B7A7B0 f i mp_actors.o
+430	PORTED	0002:0038b2e0 ??$ReverseEndian@PAE@@YAXAAPAEH@Z 00B7A7E0 f i mp_actors.o
+431	PORTED	0002:0038b310 ??$Find@PBDV?$IVPointer@VAIType@@@@@?$InplaceAssetBankSet@VAITypeBank@@@@QBE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VAIType@@@@@@PAW42@@Z 00B7A810 f i mp_actors.o
+432	PORTED	0002:0038b4c0 ?Prepare@PathNodeConstant@PathNodes@@QAEIH@Z 00B7A9C0 f i mp_actors.o
+433	PORTED	0002:0038b6d0 ?Prepare@PathNodeTransient@PathNodes@@QAEIH@Z 00B7ABD0 f i mp_actors.o
+434	PORTED	0002:0038b780 ?Prepare@PathNodeDynamic@PathNodes@@QAEIH@Z 00B7AC80 f i mp_actors.o
+435	PORTED	0002:0038b8a0 ?Prepare@TOC1@PathNodes@@QAEIPAEH@Z 00B7ADA0 f i mp_actors.o
+436	PORTED	0002:0038be20 ?Prepare@TOC2@PathNodes@@QAEIPAEH@Z 00B7B320 f i mp_actors.o

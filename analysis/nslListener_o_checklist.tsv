@@ -1,0 +1,8 @@
+index	status	map_line
+1	VERIFIED	0002:00423d50 ?nslGetNumberOfListeners@@YAHXZ 00C13250 f nslListener.o
+2	VERIFIED	0002:00423d60 ?nslSetNumberOfListeners@@YAXH@Z 00C13260 f nslListener.o
+3	VERIFIED	0002:00423d70 ?nslListenerGetGroup@@YAPAUnslGroup@@I@Z 00C13270 f nslListener.o
+4	VERIFIED	0002:00423dd0 ?nslListenerSetMatrix@@YAXIQAY03$$CBM@Z 00C132D0 f nslListener.o
+5	VERIFIED	0002:00423e60 ?nslListenerSetPosition@@YAXIQBM@Z 00C13360 f nslListener.o
+6	VERIFIED	0002:00423ea0 ?nslListenerSetVelocity@@YAXIQBM@Z 00C133A0 f nslListener.o
+7	VERIFIED	0002:00423ee0 ?nslListenerSetOrientation@@YAXIQBM0@Z 00C133E0 f nslListener.o

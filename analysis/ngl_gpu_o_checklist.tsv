@@ -1,0 +1,33 @@
+index	status	map_line
+1	PORTED	0002:0044b690 ??4Mat34@math@@QAEABV01@ABVDiagMat33@1@@Z 00C3AB90 f i ngl_gpu.o
+2	VERIFIED	0002:0044b760 ?nglGpuUnpackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPAVVector4@math@@II@Z 00C3AC60 f ngl_gpu.o
+3	VERIFIED	0002:0044be60 ?nglGpuPackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPBVVector4@math@@II@Z 00C3B360 f ngl_gpu.o
+4	VERIFIED	0002:0044c5a0 ?_nglGpuUnpackTriangleList@@YAIPAUD3DIndexBuffer@@PAGI@Z 00C3BAA0 f ngl_gpu.o
+5	VERIFIED	0002:0044c620 ?_nglGpuPackTriangleList@@YAXPAUD3DIndexBuffer@@PAGI@Z 00C3BB20 f ngl_gpu.o
+6	VERIFIED	0002:0044c670 ?nglGpuPackIndexBuffer@@YAXPAUD3DIndexBuffer@@W4gpuPrimType@@W4gpuIndexType@@PAII@Z 00C3BB70 f ngl_gpu.o
+7	VERIFIED	0002:0044c6c0 ?nglGpuDrawSection@@YAXPAUnglMeshSection@@@Z 00C3BBC0 f ngl_gpu.o
+8	VERIFIED	0002:0044c740 ?nglGpuSetBonesWorld@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z 00C3BC40 f ngl_gpu.o
+9	VERIFIED	0002:0044d000 ?nglGpuInitShaders@@YAXXZ 00C3C500 f ngl_gpu.o
+10	VERIFIED	0002:0044d210 ?nglGpuAcquireDevice@@YAXXZ 00C3C710 f ngl_gpu.o
+11	VERIFIED	0002:0044d220 ?nglGpuReleaseDevice@@YAXXZ 00C3C720 f ngl_gpu.o
+12	VERIFIED	0002:0044d230 ?ngliListSend@@YAXXZ 00C3C730 f ngl_gpu.o
+13	VERIFIED	0002:0044d2a0 ?nglGpuUnpackIndexBuffer@@YAIPAUD3DIndexBuffer@@W4gpuPrimType@@W4gpuIndexType@@PAII@Z 00C3C7A0 f ngl_gpu.o
+14	VERIFIED	0002:0044d370 ?nglGpuSetBonesLocal@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z 00C3C870 f ngl_gpu.o
+15	PORTED	0002:0044db10 ?DrawVertices@D3DDevice@@SGJW4_D3DPRIMITIVETYPE@@II@Z 00C3D010 f i ngl_gpu.o
+16	PORTED	0002:0044db30 ?nglGpuFindVertexElement@@YAPBU_D3DVERTEXSHADERINPUT@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@I@Z 00C3D030 f i ngl_gpu.o
+17	PORTED	0002:0044db50 ?RegisterShader@nglGpuDebugVertexShader@@YAXXZ 00C3D050 f i ngl_gpu.o
+18	PORTED	0002:0044db70 ?RegisterShader@nglGpuQuadPCVertexShader@@YAXXZ 00C3D070 f i ngl_gpu.o
+19	PORTED	0002:0044db90 ?RegisterShader@nglGpuQuadPUVVertexShader@@YAXXZ 00C3D090 f i ngl_gpu.o
+20	PORTED	0002:0044dbb0 ?RegisterShader@nglGpuQuadPCUVVertexShader@@YAXXZ 00C3D0B0 f i ngl_gpu.o
+21	PORTED	0002:0044dbd0 ?RegisterShader@nglGpuQuadPUV4VertexShader@@YAXXZ 00C3D0D0 f i ngl_gpu.o
+22	PORTED	0002:0044dbf0 ?RegisterShader@nglGpuQuadPUVMatColVertexShader@@YAXXZ 00C3D0F0 f i ngl_gpu.o
+23	PORTED	0002:0044dc10 ?RegisterShader@nglGpuDebugPixelShader@@YAXXZ 00C3D110 f i ngl_gpu.o
+24	PORTED	0002:0044dc30 ?RegisterShader@nglGpuTexColPixelShader@@YAXXZ 00C3D130 f i ngl_gpu.o
+25	PORTED	0002:0044dc50 ?RegisterShader@nglGpuTexPixelShader@@YAXXZ 00C3D150 f i ngl_gpu.o
+26	PORTED	0002:0044dc70 ?RegisterShader@nglGpuColPixelShader@@YAXXZ 00C3D170 f i ngl_gpu.o
+27	PORTED	0002:0044dc90 ?RegisterShader@nglGpuFilterPixelShader@@YAXXZ 00C3D190 f i ngl_gpu.o
+28	PORTED	0002:0044dcb0 ?RegisterShader@nglGpuZFogPixelShader@@YAXXZ 00C3D1B0 f i ngl_gpu.o
+29	VERIFIED	0002:0044dcd0 ??$_nglGpuUnpackTriangleStrip@G@@YAIPAUD3DIndexBuffer@@PAGI@Z 00C3D1D0 f i ngl_gpu.o
+30	VERIFIED	0002:0044dd60 ??$_nglGpuUnpackTriangleStrip@I@@YAIPAUD3DIndexBuffer@@PAII@Z 00C3D260 f i ngl_gpu.o
+31	VERIFIED	0002:0044dde0 ??$_nglGpuUnpackTriangleFan@G@@YAIPAUD3DIndexBuffer@@PAGI@Z 00C3D2E0 f i ngl_gpu.o
+32	VERIFIED	0002:0044de60 ??$_nglGpuUnpackTriangleFan@I@@YAIPAUD3DIndexBuffer@@PAII@Z 00C3D360 f i ngl_gpu.o

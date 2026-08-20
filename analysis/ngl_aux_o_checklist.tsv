@@ -1,0 +1,165 @@
+index	status	map_line
+1	VERIFIED	0002:003c2c70 ?GetKeyPtr@@YAPBVtlFixedString@@PBUnglMaterial@@@Z 00BB2170 f i ngl_aux.o
+2	PORTED	0002:003c2c80 ?nglMeshAllocFnStub@@YAPAXHHH@Z 00BB2180 f ngl_aux.o
+3	PORTED	0002:003c2cd0 ?auxGetSphereCenter@@YA?AVPosition3@math@@PAUnglMesh@@@Z 00BB21D0 f ngl_aux.o
+4	VERIFIED	0002:003c2cf0 ?auxGetSphereRadius@@YAMPAUnglMesh@@@Z 00BB21F0 f ngl_aux.o
+5	PORTED	0002:003c2d30 ?auxGetSphereCenter@@YA?AVPosition3@math@@PAUnglMeshSection@@@Z 00BB2230 f ngl_aux.o
+6	VERIFIED	0002:003c2d50 ?auxGetSphereRadius@@YAMPAUnglMeshSection@@@Z 00BB2250 f ngl_aux.o
+7	PORTED	0002:003c2d90 ?auxGetSphere@@YA?AVVector4@math@@PAUnglMesh@@@Z 00BB2290 f ngl_aux.o
+8	PORTED	0002:003c2dc0 ?auxGetSphere@@YA?AVVector4@math@@PAUnglMeshSection@@@Z 00BB22C0 f ngl_aux.o
+9	VERIFIED	0002:003c2df0 ?cdGetClipResult@@YAHPBUnglMeshSection@@PBVnglMeshNode@@PAUnglScene@@@Z 00BB22F0 f ngl_aux.o
+10	VERIFIED	0002:003c2e90 ?auxGetHash@@YAIPBUnglTexture@@@Z 00BB2390 f ngl_aux.o
+11	VERIFIED	0002:003c2ea0 ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z 00BB23A0 f ngl_aux.o
+12	VERIFIED	0002:003c2f00 ?auxGetNBones@@YAHPAUnglMesh@@@Z 00BB2400 f ngl_aux.o
+13	VERIFIED	0002:003c2f20 ?auxCreateScratchMesh@@YAPAUnglMesh@@HH@Z 00BB2420 f ngl_aux.o
+14	VERIFIED	0002:003c2f30 ?auxCloseScratchMesh@@YAPAUnglMesh@@PAU1@@Z 00BB2430 f ngl_aux.o
+15	PORTED	0002:003c2f40 ?auxIsTextureAnimated@@YA_NPAUnglTexture@@@Z 00BB2440 f ngl_aux.o
+16	VERIFIED	0002:003c2f60 ??DauxMeshIterator@@QAEPAUnglMesh@@XZ 00BB2460 f ngl_aux.o
+17	VERIFIED	0002:003c2fa0 ??EauxMeshIterator@@QAE?AV0@H@Z 00BB24A0 f ngl_aux.o
+18	PORTED	0002:003c2fd0 ?StandardRelease@?$tlResourceDirectory@VnglFont@@@@QAEHPAVnglFont@@H_N@Z 00BB24D0 f ngl_aux.o
+19	PORTED	0002:003c2fe0 ?StandardRelease@?$tlResourceDirectory@UnglMaterial@@@@QAEHPAUnglMaterial@@H_N@Z 00BB24E0 f ngl_aux.o
+20	PORTED	0002:003c2ff0 ?StandardRelease@?$tlResourceDirectory@UnglMesh@@@@QAEHPAUnglMesh@@H_N@Z 00BB24F0 f ngl_aux.o
+21	PORTED	0002:003c3000 ?StandardRelease@?$tlResourceDirectory@UnglTexture@@@@QAEHPAUnglTexture@@H_N@Z 00BB2500 f ngl_aux.o
+22	PORTED	0002:003c3010 ?StandardLoad@?$tlResourceDirectory@VnglFont@@@@QAEPAVnglFont@@ABVtlFixedString@@@Z 00BB2510 f ngl_aux.o
+23	PORTED	0002:003c3020 ?StandardLoad@?$tlResourceDirectory@UnglMaterial@@@@QAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB2520 f ngl_aux.o
+24	PORTED	0002:003c3030 ?StandardLoad@?$tlResourceDirectory@UnglMesh@@@@QAEPAUnglMesh@@ABVtlFixedString@@@Z 00BB2530 f ngl_aux.o
+25	PORTED	0002:003c3040 ?StandardLoad@?$tlResourceDirectory@UnglTexture@@@@QAEPAUnglTexture@@ABVtlFixedString@@@Z 00BB2540 f ngl_aux.o
+26	VERIFIED	0002:003c3050 ?auxSetFontDirectory@@YAXPAV?$tlResourceDirectory@VnglFont@@@@@Z 00BB2550 f ngl_aux.o
+27	VERIFIED	0002:003c3060 ?auxGetFontDirectory@@YAPAV?$tlResourceDirectory@VnglFont@@@@XZ 00BB2560 f ngl_aux.o
+28	VERIFIED	0002:003c3070 ?auxSetMaterialDirectory@@YAXPAV?$tlResourceDirectory@UnglMaterial@@@@@Z 00BB2570 f ngl_aux.o
+29	VERIFIED	0002:003c3080 ?auxGetMaterialDirectory@@YAPAV?$tlResourceDirectory@UnglMaterial@@@@XZ 00BB2580 f ngl_aux.o
+30	VERIFIED	0002:003c3090 ?auxSetMeshDirectory@@YAXPAV?$tlResourceDirectory@UnglMesh@@@@@Z 00BB2590 f ngl_aux.o
+31	VERIFIED	0002:003c30a0 ?auxGetMeshDirectory@@YAPAV?$tlResourceDirectory@UnglMesh@@@@XZ 00BB25A0 f ngl_aux.o
+32	VERIFIED	0002:003c30b0 ?auxSetTextureDirectory@@YAXPAV?$tlResourceDirectory@UnglTexture@@@@@Z 00BB25B0 f ngl_aux.o
+33	VERIFIED	0002:003c30c0 ?auxGetTextureDirectory@@YAPAV?$tlResourceDirectory@UnglTexture@@@@XZ 00BB25C0 f ngl_aux.o
+34	VERIFIED	0002:003c30d0 ?auxTextureDirectoryAdd@@YAXPAUnglTexture@@@Z 00BB25D0 f ngl_aux.o
+35	VERIFIED	0002:003c3100 ?auxFontDirectoryAdd@@YAXPAVnglFont@@@Z 00BB2600 f ngl_aux.o
+36	VERIFIED	0002:003c3130 ?auxMaterialDirectoryAdd@@YAXPAUnglMaterial@@@Z 00BB2630 f ngl_aux.o
+37	VERIFIED	0002:003c3160 ?auxMeshDirectoryAdd@@YAXPAUnglMesh@@@Z 00BB2660 f ngl_aux.o
+38	VERIFIED	0002:003c3190 ?auxFontDirectoryDelete@@YAXPAVnglFont@@@Z 00BB2690 f ngl_aux.o
+39	VERIFIED	0002:003c31b0 ?auxMaterialDirectoryDelete@@YAXPAUnglMaterial@@@Z 00BB26B0 f ngl_aux.o
+40	VERIFIED	0002:003c31d0 ?auxMeshDirectoryDelete@@YAXPAUnglMesh@@@Z 00BB26D0 f ngl_aux.o
+41	VERIFIED	0002:003c31f0 ?auxTextureDirectoryDelete@@YAXPAUnglTexture@@@Z 00BB26F0 f ngl_aux.o
+42	PORTED	0002:003c3210 ??2?$tlResourceDirectory@VnglFont@@@@SAPAXI@Z 00BB2710 f i ngl_aux.o
+43	PORTED	0002:003c3230 ??3?$tlResourceDirectory@VnglFont@@@@SAXPAX@Z 00BB2730 f i ngl_aux.o
+44	PORTED	0002:003c3240 ??1?$tlResourceDirectory@VnglFont@@@@UAE@XZ 00BB2740 f i ngl_aux.o
+45	PORTED	0002:003c3250 ?DirectoryName@?$tlResourceDirectory@VnglFont@@@@UAEPBDXZ 00BB2750 f i ngl_aux.o
+46	PORTED	0002:003c3260 ?ReleaseAll@?$tlResourceDirectory@VnglFont@@@@UAEX_N0H@Z 00BB2760 f i ngl_aux.o
+47	PORTED	0002:003c3360 ?Load@?$tlResourceDirectory@VnglFont@@@@UAEPAVnglFont@@ABVtlFixedString@@@Z 00BB2860 f i ngl_aux.o
+48	PORTED	0002:003c3370 ?Release@?$tlResourceDirectory@VnglFont@@@@UAEHPAVnglFont@@H_N@Z 00BB2870 f i ngl_aux.o
+49	PORTED	0002:003c3380 ??2?$tlResourceDirectory@UnglMaterial@@@@SAPAXI@Z 00BB2880 f i ngl_aux.o
+50	PORTED	0002:003c33a0 ??3?$tlResourceDirectory@UnglMaterial@@@@SAXPAX@Z 00BB28A0 f i ngl_aux.o
+51	PORTED	0002:003c33b0 ??1?$tlResourceDirectory@UnglMaterial@@@@UAE@XZ 00BB28B0 f i ngl_aux.o
+52	PORTED	0002:003c33c0 ?DirectoryName@?$tlResourceDirectory@UnglMaterial@@@@UAEPBDXZ 00BB28C0 f i ngl_aux.o
+53	PORTED	0002:003c33d0 ?ReleaseAll@?$tlResourceDirectory@UnglMaterial@@@@UAEX_N0H@Z 00BB28D0 f i ngl_aux.o
+54	PORTED	0002:003c34d0 ?Load@?$tlResourceDirectory@UnglMaterial@@@@UAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB29D0 f i ngl_aux.o
+55	PORTED	0002:003c34e0 ?Release@?$tlResourceDirectory@UnglMaterial@@@@UAEHPAUnglMaterial@@H_N@Z 00BB29E0 f i ngl_aux.o
+56	PORTED	0002:003c34f0 ??2?$tlResourceDirectory@UnglMesh@@@@SAPAXI@Z 00BB29F0 f i ngl_aux.o
+57	PORTED	0002:003c3510 ??3?$tlResourceDirectory@UnglMesh@@@@SAXPAX@Z 00BB2A10 f i ngl_aux.o
+58	PORTED	0002:003c3520 ??1?$tlResourceDirectory@UnglMesh@@@@UAE@XZ 00BB2A20 f i ngl_aux.o
+59	PORTED	0002:003c3530 ?DirectoryName@?$tlResourceDirectory@UnglMesh@@@@UAEPBDXZ 00BB2A30 f i ngl_aux.o
+60	PORTED	0002:003c3540 ?ReleaseAll@?$tlResourceDirectory@UnglMesh@@@@UAEX_N0H@Z 00BB2A40 f i ngl_aux.o
+61	PORTED	0002:003c3640 ?Load@?$tlResourceDirectory@UnglMesh@@@@UAEPAUnglMesh@@ABVtlFixedString@@@Z 00BB2B40 f i ngl_aux.o
+62	PORTED	0002:003c3650 ?Release@?$tlResourceDirectory@UnglMesh@@@@UAEHPAUnglMesh@@H_N@Z 00BB2B50 f i ngl_aux.o
+63	PORTED	0002:003c3660 ??2?$tlResourceDirectory@UnglTexture@@@@SAPAXI@Z 00BB2B60 f i ngl_aux.o
+64	PORTED	0002:003c3680 ??3?$tlResourceDirectory@UnglTexture@@@@SAXPAX@Z 00BB2B80 f i ngl_aux.o
+65	PORTED	0002:003c3690 ??1?$tlResourceDirectory@UnglTexture@@@@UAE@XZ 00BB2B90 f i ngl_aux.o
+66	PORTED	0002:003c36a0 ?DirectoryName@?$tlResourceDirectory@UnglTexture@@@@UAEPBDXZ 00BB2BA0 f i ngl_aux.o
+67	PORTED	0002:003c36b0 ?ReleaseAll@?$tlResourceDirectory@UnglTexture@@@@UAEX_N0H@Z 00BB2BB0 f i ngl_aux.o
+68	PORTED	0002:003c37b0 ?Load@?$tlResourceDirectory@UnglTexture@@@@UAEPAUnglTexture@@ABVtlFixedString@@@Z 00BB2CB0 f i ngl_aux.o
+69	PORTED	0002:003c37c0 ?Release@?$tlResourceDirectory@UnglTexture@@@@UAEHPAUnglTexture@@H_N@Z 00BB2CC0 f i ngl_aux.o
+70	PORTED	0002:003c37d0 ??_E?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o
+71	PORTED	0002:003c37d0 ??_G?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o
+72	PORTED	0002:003c3800 ??_E?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o
+73	PORTED	0002:003c3800 ??_G?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o
+74	PORTED	0002:003c3830 ??_G?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o
+75	PORTED	0002:003c3830 ??_E?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o
+76	PORTED	0002:003c3860 ??_E?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o
+77	PORTED	0002:003c3860 ??_G?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o
+78	PORTED	0002:003c3890 ??0?$tlResourceDirectory@VnglFont@@@@QAE@XZ 00BB2D90 f i ngl_aux.o
+79	PORTED	0002:003c38a0 ??0?$tlResourceDirectory@UnglMaterial@@@@QAE@XZ 00BB2DA0 f i ngl_aux.o
+80	PORTED	0002:003c38b0 ??0?$tlResourceDirectory@UnglMesh@@@@QAE@XZ 00BB2DB0 f i ngl_aux.o
+81	PORTED	0002:003c38c0 ??0?$tlResourceDirectory@UnglTexture@@@@QAE@XZ 00BB2DC0 f i ngl_aux.o
+82	PORTED	0002:003c38d0 ??0?$delegate_directory@VnglFont@@@@QAE@PAV?$tlSkipList@VnglFont@@VtlFixedString@@@@@Z 00BB2DD0 f i ngl_aux.o
+83	PORTED	0002:003c38f0 ??0?$delegate_directory@UnglMesh@@@@QAE@PAV?$tlSkipList@UnglMesh@@VtlFixedString@@@@@Z 00BB2DF0 f i ngl_aux.o
+84	PORTED	0002:003c3910 ??0?$delegate_directory@UnglMaterial@@@@QAE@PAV?$tlSkipList@UnglMaterial@@VtlFixedString@@@@@Z 00BB2E10 f i ngl_aux.o
+85	PORTED	0002:003c3930 ??0?$delegate_directory@UnglTexture@@@@QAE@PAV?$tlSkipList@UnglTexture@@VtlFixedString@@@@@Z 00BB2E30 f i ngl_aux.o
+86	PORTED	0002:003c3950 ??_E?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o
+87	PORTED	0002:003c3950 ??_G?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o
+88	PORTED	0002:003c3980 ??1?$delegate_directory@VnglFont@@@@UAE@XZ 00BB2E80 f i ngl_aux.o
+89	PORTED	0002:003c3990 ??_G?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o
+90	PORTED	0002:003c3990 ??_E?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o
+91	PORTED	0002:003c39c0 ??1?$delegate_directory@UnglMesh@@@@UAE@XZ 00BB2EC0 f i ngl_aux.o
+92	PORTED	0002:003c39d0 ??_G?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o
+93	PORTED	0002:003c39d0 ??_E?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o
+94	PORTED	0002:003c3a00 ??1?$delegate_directory@UnglMaterial@@@@UAE@XZ 00BB2F00 f i ngl_aux.o
+95	PORTED	0002:003c3a10 ??_E?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o
+96	PORTED	0002:003c3a10 ??_G?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o
+97	PORTED	0002:003c3a40 ??1?$delegate_directory@UnglTexture@@@@UAE@XZ 00BB2F40 f i ngl_aux.o
+98	VERIFIED	0002:003c3a50 ??0ngl_aux_static_init@@QAE@XZ 00BB2F50 f i ngl_aux.o
+99	PORTED	0002:003c3b00 ?Find@?$delegate_directory@VnglFont@@@@UAEPAVnglFont@@ABVtlFixedString@@@Z 00BB3000 f i ngl_aux.o
+100	PORTED	0002:003c3b10 ?Del@?$delegate_directory@VnglFont@@@@UAE_NQAVnglFont@@@Z 00BB3010 f i ngl_aux.o
+101	VERIFIED	0002:003c3b20 ?Del@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE_NPBVnglFont@@@Z 00BB3020 f i ngl_aux.o
+102	PORTED	0002:003c3c50 ?Enumerate@?$delegate_directory@VnglFont@@@@UAEPAVIterator@?$tlResourceDirectory@VnglFont@@@@XZ 00BB3150 f i ngl_aux.o
+103	PORTED	0002:003c3c90 ?reset@SkipListIterator@?$delegate_directory@VnglFont@@@@UAEXXZ 00BB3190 f i ngl_aux.o
+104	PORTED	0002:003c3cb0 ??RSkipListIterator@?$delegate_directory@VnglFont@@@@UBE_NXZ 00BB31B0 f i ngl_aux.o
+105	PORTED	0002:003c3cc0 ??ESkipListIterator@?$delegate_directory@VnglFont@@@@UAEXXZ 00BB31C0 f i ngl_aux.o
+106	PORTED	0002:003c3cd0 ??DSkipListIterator@?$delegate_directory@VnglFont@@@@UBEPAVnglFont@@XZ 00BB31D0 f i ngl_aux.o
+107	PORTED	0002:003c3ce0 ??_GSkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o
+108	PORTED	0002:003c3ce0 ??_ESkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o
+109	PORTED	0002:003c3d10 ??1SkipListIterator@?$delegate_directory@VnglFont@@@@UAE@XZ 00BB3210 f i ngl_aux.o
+110	PORTED	0002:003c3d20 ??_GIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o
+111	PORTED	0002:003c3d20 ??_EIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o
+112	PORTED	0002:003c3d50 ?Find@?$delegate_directory@UnglMesh@@@@UAEPAUnglMesh@@ABVtlFixedString@@@Z 00BB3250 f i ngl_aux.o
+113	PORTED	0002:003c3d60 ?Del@?$delegate_directory@UnglMesh@@@@UAE_NQAUnglMesh@@@Z 00BB3260 f i ngl_aux.o
+114	VERIFIED	0002:003c3d70 ?Del@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE_NPBUnglMesh@@@Z 00BB3270 f i ngl_aux.o
+115	PORTED	0002:003c3ea0 ?Enumerate@?$delegate_directory@UnglMesh@@@@UAEPAVIterator@?$tlResourceDirectory@UnglMesh@@@@XZ 00BB33A0 f i ngl_aux.o
+116	PORTED	0002:003c3ee0 ?reset@SkipListIterator@?$delegate_directory@UnglMesh@@@@UAEXXZ 00BB33E0 f i ngl_aux.o
+117	PORTED	0002:003c3f00 ??RSkipListIterator@?$delegate_directory@UnglMesh@@@@UBE_NXZ 00BB3400 f i ngl_aux.o
+118	PORTED	0002:003c3f10 ??ESkipListIterator@?$delegate_directory@UnglMesh@@@@UAEXXZ 00BB3410 f i ngl_aux.o
+119	PORTED	0002:003c3f20 ??DSkipListIterator@?$delegate_directory@UnglMesh@@@@UBEPAUnglMesh@@XZ 00BB3420 f i ngl_aux.o
+120	PORTED	0002:003c3f30 ??_ESkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o
+121	PORTED	0002:003c3f30 ??_GSkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o
+122	PORTED	0002:003c3f60 ??1SkipListIterator@?$delegate_directory@UnglMesh@@@@UAE@XZ 00BB3460 f i ngl_aux.o
+123	PORTED	0002:003c3f70 ??_GIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o
+124	PORTED	0002:003c3f70 ??_EIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o
+125	PORTED	0002:003c3fa0 ?Find@?$delegate_directory@UnglMaterial@@@@UAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB34A0 f i ngl_aux.o
+126	PORTED	0002:003c3fb0 ?Find@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB34B0 f i ngl_aux.o
+127	PORTED	0002:003c4070 ?Del@?$delegate_directory@UnglMaterial@@@@UAE_NQAUnglMaterial@@@Z 00BB3570 f i ngl_aux.o
+128	VERIFIED	0002:003c4080 ?Del@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE_NPBUnglMaterial@@@Z 00BB3580 f i ngl_aux.o
+129	PORTED	0002:003c41b0 ?Enumerate@?$delegate_directory@UnglMaterial@@@@UAEPAVIterator@?$tlResourceDirectory@UnglMaterial@@@@XZ 00BB36B0 f i ngl_aux.o
+130	PORTED	0002:003c41f0 ?reset@SkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEXXZ 00BB36F0 f i ngl_aux.o
+131	PORTED	0002:003c4210 ??RSkipListIterator@?$delegate_directory@UnglMaterial@@@@UBE_NXZ 00BB3710 f i ngl_aux.o
+132	PORTED	0002:003c4220 ??ESkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEXXZ 00BB3720 f i ngl_aux.o
+133	PORTED	0002:003c4230 ??DSkipListIterator@?$delegate_directory@UnglMaterial@@@@UBEPAUnglMaterial@@XZ 00BB3730 f i ngl_aux.o
+134	PORTED	0002:003c4240 ??_ESkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o
+135	PORTED	0002:003c4240 ??_GSkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o
+136	PORTED	0002:003c4270 ??1SkipListIterator@?$delegate_directory@UnglMaterial@@@@UAE@XZ 00BB3770 f i ngl_aux.o
+137	PORTED	0002:003c4280 ??_EIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o
+138	PORTED	0002:003c4280 ??_GIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o
+139	PORTED	0002:003c42b0 ?Find@?$delegate_directory@UnglTexture@@@@UAEPAUnglTexture@@ABVtlFixedString@@@Z 00BB37B0 f i ngl_aux.o
+140	PORTED	0002:003c42c0 ?Del@?$delegate_directory@UnglTexture@@@@UAE_NQAUnglTexture@@@Z 00BB37C0 f i ngl_aux.o
+141	VERIFIED	0002:003c42d0 ?Del@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE_NPBUnglTexture@@@Z 00BB37D0 f i ngl_aux.o
+142	PORTED	0002:003c4400 ?Enumerate@?$delegate_directory@UnglTexture@@@@UAEPAVIterator@?$tlResourceDirectory@UnglTexture@@@@XZ 00BB3900 f i ngl_aux.o
+143	PORTED	0002:003c4440 ?reset@SkipListIterator@?$delegate_directory@UnglTexture@@@@UAEXXZ 00BB3940 f i ngl_aux.o
+144	PORTED	0002:003c4460 ??RSkipListIterator@?$delegate_directory@UnglTexture@@@@UBE_NXZ 00BB3960 f i ngl_aux.o
+145	PORTED	0002:003c4470 ??ESkipListIterator@?$delegate_directory@UnglTexture@@@@UAEXXZ 00BB3970 f i ngl_aux.o
+146	PORTED	0002:003c4480 ??DSkipListIterator@?$delegate_directory@UnglTexture@@@@UBEPAUnglTexture@@XZ 00BB3980 f i ngl_aux.o
+147	PORTED	0002:003c4490 ??_ESkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o
+148	PORTED	0002:003c4490 ??_GSkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o
+149	PORTED	0002:003c44c0 ??1SkipListIterator@?$delegate_directory@UnglTexture@@@@UAE@XZ 00BB39C0 f i ngl_aux.o
+150	PORTED	0002:003c44d0 ??_GIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o
+151	PORTED	0002:003c44d0 ??_EIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o
+152	PORTED	0002:003c4500 ?Add@?$delegate_directory@VnglFont@@@@UAEPAVnglFont@@PAV2@@Z 00BB3A00 f i ngl_aux.o
+153	VERIFIED	0002:003c4510 ?Add@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAVnglFont@@PAV2@@Z 00BB3A10 f i ngl_aux.o
+154	PORTED	0002:003c4630 ?RandomLevel@_tlSkipListBase@@IAEHXZ 00BB3B30 f i ngl_aux.o
+155	VERIFIED	0002:003c4670 ?Init@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEXXZ 00BB3B70 f i ngl_aux.o
+156	PORTED	0002:003c46b0 ?Add@?$delegate_directory@UnglMesh@@@@UAEPAUnglMesh@@PAU2@@Z 00BB3BB0 f i ngl_aux.o
+157	VERIFIED	0002:003c46c0 ?Add@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUnglMesh@@PAU2@@Z 00BB3BC0 f i ngl_aux.o
+158	VERIFIED	0002:003c47e0 ?Init@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEXXZ 00BB3CE0 f i ngl_aux.o
+159	PORTED	0002:003c4820 ?Add@?$delegate_directory@UnglMaterial@@@@UAEPAUnglMaterial@@PAU2@@Z 00BB3D20 f i ngl_aux.o
+160	VERIFIED	0002:003c4830 ?Add@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUnglMaterial@@PAU2@@Z 00BB3D30 f i ngl_aux.o
+161	VERIFIED	0002:003c4950 ?Init@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEXXZ 00BB3E50 f i ngl_aux.o
+162	PORTED	0002:003c4990 ?Add@?$delegate_directory@UnglTexture@@@@UAEPAUnglTexture@@PAU2@@Z 00BB3E90 f i ngl_aux.o
+163	VERIFIED	0002:003c49a0 ?Add@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEPAUnglTexture@@PAU2@@Z 00BB3EA0 f i ngl_aux.o
+164	VERIFIED	0002:003c4ac0 ?Init@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEXXZ 00BB3FC0 f i ngl_aux.o

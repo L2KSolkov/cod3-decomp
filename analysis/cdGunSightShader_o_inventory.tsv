@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007CE100	0x00BBD600	??0cdGunSightShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdGunSightShaderMat::cdGunSightShaderMat(struct nglTexture *)	cdGunSightShader.o
+0x007CE190	0x00BBD690	?InitCDGunSightShader@@YAXXZ	void __cdecl InitCDGunSightShader(void)	cdGunSightShader.o
+0x007CE1E0	0x00BBD6E0	?ToggleCDGunSightShader@@YAXXZ	void __cdecl ToggleCDGunSightShader(void)	cdGunSightShader.o
+0x007CE200	0x00BBD700	?Register@cdGunSightShader@@UAEXXZ	public: virtual void __thiscall cdGunSightShader::Register(void)	cdGunSightShader.o
+0x007CE240	0x00BBD740	?AddNode@cdGunSightShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdGunSightShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdGunSightShader.o
+0x007CE2B0	0x00BBD7B0	?Render@cdGunSightShaderNode@@UAEXXZ	public: virtual void __thiscall cdGunSightShaderNode::Render(void)	cdGunSightShader.o

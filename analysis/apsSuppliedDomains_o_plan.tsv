@@ -1,0 +1,27 @@
+ida_ea	name	signature	source_cpp
+0x00810770	?Fixup@apsDomain@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsDomain::Fixup(struct apsFixupParams const &)	
+0x008107C0	?GetValue@apsSphereDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsSphereDomain::GetValue(int,float *)const 	
+0x00810A10	?TestValue@apsSphereDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsSphereDomain::TestValue(int,float *)const 	
+0x00810B20	?GetValue@apsYHemisphereDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsYHemisphereDomain::GetValue(int,float *)const 	
+0x00810D80	?TestValue@apsYHemisphereDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsYHemisphereDomain::TestValue(int,float *)const 	
+0x00810EB0	?GetValue@apsZHemisphereDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsZHemisphereDomain::GetValue(int,float *)const 	
+0x00811110	?TestValue@apsZHemisphereDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsZHemisphereDomain::TestValue(int,float *)const 	
+0x00811240	?GetValue@apsSphereSurfaceDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsSphereSurfaceDomain::GetValue(int,float *)const 	
+0x00811420	?TestValue@apsSphereSurfaceDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsSphereSurfaceDomain::TestValue(int,float *)const 	
+0x00811530	?GetValue@apsLineDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsLineDomain::GetValue(int,float *)const 	
+0x00811610	?TestValue@apsLineDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsLineDomain::TestValue(int,float *)const 	
+0x00811620	?GetValue@apsDiscDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsDiscDomain::GetValue(int,float *)const 	
+0x008118B0	?TestValue@apsDiscDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsDiscDomain::TestValue(int,float *)const 	
+0x008118C0	?TestValue@apsCircleDomain@@UBEIHPAM@Z	public: virtual unsigned int __thiscall apsCircleDomain::TestValue(int,float *)const 	
+0x008118D0	??0apsSphereDomain@@QAE@ABVDir3@math@@M@Z	public: __thiscall apsSphereDomain::apsSphereDomain(class math::Dir3 const &,float)	
+0x00811900	??0apsSphereDomain@@QAE@ABUapsSphere@@@Z	public: __thiscall apsSphereDomain::apsSphereDomain(struct apsSphere const &)	
+0x00811930	??0apsYHemisphereDomain@@QAE@ABVDir3@math@@M@Z	public: __thiscall apsYHemisphereDomain::apsYHemisphereDomain(class math::Dir3 const &,float)	
+0x00811960	??0apsYHemisphereDomain@@QAE@ABUapsSphere@@@Z	public: __thiscall apsYHemisphereDomain::apsYHemisphereDomain(struct apsSphere const &)	
+0x00811990	??0apsZHemisphereDomain@@QAE@ABVDir3@math@@M@Z	public: __thiscall apsZHemisphereDomain::apsZHemisphereDomain(class math::Dir3 const &,float)	
+0x008119C0	??0apsZHemisphereDomain@@QAE@ABUapsSphere@@@Z	public: __thiscall apsZHemisphereDomain::apsZHemisphereDomain(struct apsSphere const &)	
+0x008119F0	??0apsSphereSurfaceDomain@@QAE@ABVDir3@math@@M@Z	public: __thiscall apsSphereSurfaceDomain::apsSphereSurfaceDomain(class math::Dir3 const &,float)	
+0x00811A20	??0apsSphereSurfaceDomain@@QAE@ABUapsSphere@@@Z	public: __thiscall apsSphereSurfaceDomain::apsSphereSurfaceDomain(struct apsSphere const &)	
+0x00811A50	??0apsLineDomain@@QAE@ABVDir3@math@@0@Z	public: __thiscall apsLineDomain::apsLineDomain(class math::Dir3 const &,class math::Dir3 const &)	
+0x00811AB0	??0apsDiscDomain@@QAE@ABVDir3@math@@0M@Z	public: __thiscall apsDiscDomain::apsDiscDomain(class math::Dir3 const &,class math::Dir3 const &,float)	
+0x00811C80	??0apsCircleDomain@@QAE@ABVDir3@math@@0M@Z	public: __thiscall apsCircleDomain::apsCircleDomain(class math::Dir3 const &,class math::Dir3 const &,float)	
+0x00811E50	?GetValue@apsCircleDomain@@UBEXHPAM@Z	public: virtual void __thiscall apsCircleDomain::GetValue(int,float *)const 	

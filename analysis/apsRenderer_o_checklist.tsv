@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:004120e0 ?AddNode@apsRenderer@@QAEXPAVapsRenderNode@@M@Z 00C015E0 f apsRenderer.o
+2	VERIFIED	0002:00412160 ?SphereIsVisible@apsRenderer@@QAEIABUapsSphere@@PAUnglScene@@@Z 00C01660 f apsRenderer.o
+3	VERIFIED	0002:004121f0 ?Fixup@apsRenderer@@QAEXABUapsFixupParams@@@Z 00C016F0 f apsRenderer.o

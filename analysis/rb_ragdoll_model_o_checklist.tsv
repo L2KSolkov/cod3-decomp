@@ -1,0 +1,93 @@
+index	status	map_line
+1	PORTED	0002:0047c5e0 ?set_time@outer_time@@QAEXM@Z 00C6BAE0 f i rb_ragdoll_model.o
+2	VERIFIED	0002:0047c5f0 ?add_force@rigid_body@@QAEXABVDir3@math@@@Z 00C6BAF0 f i rb_ragdoll_model.o
+3	VERIFIED	0002:0047c6f0 ?add_torque@rigid_body@@QAEXABVDir3@math@@@Z 00C6BBF0 f i rb_ragdoll_model.o
+4	PORTED	0002:0047c7f0 ?get_gravity_multiplier@rigid_body@@QBEMXZ 00C6BCF0 f i rb_ragdoll_model.o
+5	PORTED	0002:0047c800 ?set_time_scale@rigid_body@@QAEXM@Z 00C6BD00 f i rb_ragdoll_model.o
+6	PORTED	0002:0047c820 ?set_max_delta_t@rigid_body@@QAEXM@Z 00C6BD20 f i rb_ragdoll_model.o
+7	PORTED	0002:0047c840 ?get_stable_te@rigid_body@@QBE?BMXZ 00C6BD40 f i rb_ragdoll_model.o
+8	VERIFIED	0002:0047c850 ?reset_stability@rb_ragdoll_model@@QAEXXZ 00C6BD50 f rb_ragdoll_model.o
+9	VERIFIED	0002:0047c890 ?reset_ballistic_target@rb_ragdoll_model@@QAEXXZ 00C6BD90 f rb_ragdoll_model.o
+10	PORTED	0002:0047c8a0 ?set_ballistic_target@rb_ragdoll_model@@QAEXABVDir3@math@@@Z 00C6BDA0 f rb_ragdoll_model.o
+11	VERIFIED	0002:0047c8e0 ?get_rigid_body_id@rb_ragdoll_model@@QAEHQBVrigid_body@@@Z 00C6BDE0 f rb_ragdoll_model.o
+12	VERIFIED	0002:0047c940 ?add_rigid_body@rb_ragdoll_model@@QAEPAVrigid_body@@H@Z 00C6BE40 f rb_ragdoll_model.o
+13	VERIFIED	0002:0047c9e0 ?add_joint@rb_ragdoll_model@@QAEPAVrigid_body_constraint_ragdoll@@HH@Z 00C6BEE0 f rb_ragdoll_model.o
+14	PORTED	0002:0047cbe0 ?add_actuator@rb_ragdoll_model@@QAEPAVrigid_body_constraint_angular_actuator@@HH@Z 00C6C0E0 f rb_ragdoll_model.o
+15	VERIFIED	0002:0047cdf0 ?remove_actuator@rb_ragdoll_model@@QAEXH@Z 00C6C2F0 f rb_ragdoll_model.o
+16	VERIFIED	0002:0047cef0 ?update_ballistic_target@rb_ragdoll_model@@QAEXXZ 00C6C3F0 f rb_ragdoll_model.o
+17	VERIFIED	0002:0047cf70 ?get_ballistic_info@rb_ragdoll_model@@QAEXPAVDir3@math@@0PAM@Z 00C6C470 f rb_ragdoll_model.o
+18	VERIFIED	0002:0047d060 ?get_gravity_multiplier@rb_ragdoll_model@@QAEMH@Z 00C6C560 f rb_ragdoll_model.o
+19	VERIFIED	0002:0047d0b0 ?set_gravity_multiplier@rb_ragdoll_model@@QAEXHM@Z 00C6C5B0 f rb_ragdoll_model.o
+20	PORTED	0002:0047d100 ?apply_pulse@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z 00C6C600 f rb_ragdoll_model.o
+21	PORTED	0002:0047d1c0 ?apply_pulse@rb_ragdoll_model@@QAEXHABVDir3@math@@0M@Z 00C6C6C0 f rb_ragdoll_model.o
+22	PORTED	0002:0047d290 ?apply_pulse_damp_tvel@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z 00C6C790 f rb_ragdoll_model.o
+23	PORTED	0002:0047d4d0 ?apply_pulse_damp_avel@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z 00C6C9D0 f rb_ragdoll_model.o
+24	PORTED	0002:0047d710 ?apply_pulse_damp_tvel@rb_ragdoll_model@@QAEXABVDir3@math@@@Z 00C6CC10 f rb_ragdoll_model.o
+25	PORTED	0002:0047d740 ?apply_pulse_damp_avel@rb_ragdoll_model@@QAEXABVDir3@math@@@Z 00C6CC40 f rb_ragdoll_model.o
+26	VERIFIED	0002:0047d770 ?set_max_rb_index@rb_ragdoll_model@@QAEXH@Z 00C6CC70 f rb_ragdoll_model.o
+27	VERIFIED	0002:0047d890 ?pull_joints_together@rb_ragdoll_model@@QAEXXZ 00C6CD90 f rb_ragdoll_model.o
+28	VERIFIED	0002:0047d910 ?remove_rigid_body@rb_ragdoll_model@@QAEXH@Z 00C6CE10 f rb_ragdoll_model.o
+29	PORTED	0002:0047da80 ?add_rbc_with_urb_point@rb_ragdoll_model@@QAEXQBVMat43@math@@HABVDir3@3@1@Z 00C6CF80 f rb_ragdoll_model.o
+30	VERIFIED	0002:0047db50 ?remove_all_user_rigid_body@rb_ragdoll_model@@QAEXXZ 00C6D050 f rb_ragdoll_model.o
+31	VERIFIED	0002:0047dba0 ?update_stability@rb_ragdoll_model@@QAEXM@Z 00C6D0A0 f rb_ragdoll_model.o
+32	VERIFIED	0002:0047dd50 ?set_gravity_multiplier@rb_ragdoll_model@@QAEXM@Z 00C6D250 f rb_ragdoll_model.o
+33	PORTED	0002:0047dd80 ?apply_pulse_velocity_field@rb_ragdoll_model@@QAEXABVDir3@math@@@Z 00C6D280 f rb_ragdoll_model.o
+34	VERIFIED	0002:0047de70 ?disable_forces@rb_ragdoll_model@@QAEXXZ 00C6D370 f rb_ragdoll_model.o
+35	VERIFIED	0002:0047dea0 ?enable_forces@rb_ragdoll_model@@QAEXXZ 00C6D3A0 f rb_ragdoll_model.o
+36	VERIFIED	0002:0047ded0 ?set_time_scale@rb_ragdoll_model@@QAEXM@Z 00C6D3D0 f rb_ragdoll_model.o
+37	VERIFIED	0002:0047df00 ?set_max_delta_t@rb_ragdoll_model@@QAEXM@Z 00C6D400 f rb_ragdoll_model.o
+38	PORTED	0002:0047df30 ?add_rbc_with_urb_point@rb_ragdoll_model@@QAEXQBVMat43@math@@HABVDir3@3@@Z 00C6D430 f rb_ragdoll_model.o
+39	PORTED	0002:0047e140 ??0phys_list_condition_functor_has_rigid_body@@QAE@QAVrigid_body@@H@Z 00C6D640 f i rb_ragdoll_model.o
+40	PORTED	0002:0047e160 ?test@phys_list_condition_functor_has_rigid_body@@QAE_NPAVrigid_body_constraint@@@Z 00C6D660 f i rb_ragdoll_model.o
+41	PORTED	0002:0047e180 ?get_count@?$phys_static_array@PAVrigid_body@@$09@@QBE?BHXZ 00C6D680 f i rb_ragdoll_model.o
+42	PORTED	0002:0047e190 ?get_count@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QBE?BHXZ 00C6D690 f i rb_ragdoll_model.o
+43	PORTED	0002:0047e1a0 ??A?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAEAAPAVrigid_body_constraint_angular_actuator@@H@Z 00C6D6A0 f i rb_ragdoll_model.o
+44	PORTED	0002:0047e1e0 ?get_count@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QBE?BHXZ 00C6D6E0 f i rb_ragdoll_model.o
+45	PORTED	0002:0047e1f0 ?find_by_val@?$phys_static_array@PAVuser_rigid_body@@$09@@QBEPAPAVuser_rigid_body@@ABQAV2@@Z 00C6D6F0 f i rb_ragdoll_model.o
+46	PORTED	0002:0047e230 ?find_by_val@?$phys_static_array@PAVrigid_body_constraint@@$09@@QBEPAPAVrigid_body_constraint@@ABQAV2@@Z 00C6D730 f i rb_ragdoll_model.o
+47	PORTED	0002:0047e270 ??Eiterator@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAEXH@Z 00C6D770 f i rb_ragdoll_model.o
+48	PORTED	0002:0047e280 ??9iterator@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QBE_NABV01@@Z 00C6D780 f i rb_ragdoll_model.o
+49	PORTED	0002:0047e2a0 ??Diterator@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAEAAPAVrigid_body_constraint_ragdoll@@XZ 00C6D7A0 f i rb_ragdoll_model.o
+50	PORTED	0002:0047e2b0 ??Eiterator@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAEXH@Z 00C6D7B0 f i rb_ragdoll_model.o
+51	PORTED	0002:0047e2c0 ??9iterator@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QBE_NABV01@@Z 00C6D7C0 f i rb_ragdoll_model.o
+52	PORTED	0002:0047e2e0 ??Diterator@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAEAAPAVrigid_body_constraint_angular_actuator@@XZ 00C6D7E0 f i rb_ragdoll_model.o
+53	PORTED	0002:0047e2f0 ??Eiterator@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAEXH@Z 00C6D7F0 f i rb_ragdoll_model.o
+54	PORTED	0002:0047e300 ??9iterator@?$phys_static_array@PAVrigid_body_constraint@@$09@@QBE_NABV01@@Z 00C6D800 f i rb_ragdoll_model.o
+55	PORTED	0002:0047e320 ??Diterator@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAEAAPAVrigid_body_constraint@@XZ 00C6D820 f i rb_ragdoll_model.o
+56	PORTED	0002:0047e330 ??Eiterator@?$phys_static_array@PAVuser_rigid_body@@$09@@QAEXH@Z 00C6D830 f i rb_ragdoll_model.o
+57	PORTED	0002:0047e340 ??9iterator@?$phys_static_array@PAVuser_rigid_body@@$09@@QBE_NABV01@@Z 00C6D840 f i rb_ragdoll_model.o
+58	PORTED	0002:0047e360 ??Diterator@?$phys_static_array@PAVuser_rigid_body@@$09@@QAEAAPAVuser_rigid_body@@XZ 00C6D860 f i rb_ragdoll_model.o
+59	PORTED	0002:0047e370 ??Eiterator@?$phys_static_array@PAVrigid_body@@$09@@QAEXH@Z 00C6D870 f i rb_ragdoll_model.o
+60	PORTED	0002:0047e380 ??9iterator@?$phys_static_array@PAVrigid_body@@$09@@QBE_NABV01@@Z 00C6D880 f i rb_ragdoll_model.o
+61	PORTED	0002:0047e3a0 ??Diterator@?$phys_static_array@PAVrigid_body@@$09@@QAEAAPAVrigid_body@@XZ 00C6D8A0 f i rb_ragdoll_model.o
+62	PORTED	0002:0047e3b0 ?add@?$phys_static_array@PAVrigid_body@@$09@@QAEPAPAVrigid_body@@_NPBD@Z 00C6D8B0 f i rb_ragdoll_model.o
+63	PORTED	0002:0047e3f0 ?add@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAEPAPAVrigid_body_constraint_ragdoll@@_NPBD@Z 00C6D8F0 f i rb_ragdoll_model.o
+64	PORTED	0002:0047e430 ?add@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAEPAPAVrigid_body_constraint_angular_actuator@@_NPBD@Z 00C6D930 f i rb_ragdoll_model.o
+65	PORTED	0002:0047e470 ?reset_buffer@?$phys_static_array@PAVuser_rigid_body@@$09@@AAEXXZ 00C6D970 f i rb_ragdoll_model.o
+66	PORTED	0002:0047e480 ?add@?$phys_static_array@PAVuser_rigid_body@@$09@@QAEPAPAVuser_rigid_body@@_NPBD@Z 00C6D980 f i rb_ragdoll_model.o
+67	PORTED	0002:0047e4c0 ?reset_buffer@?$phys_static_array@PAVrigid_body_constraint@@$09@@AAEXXZ 00C6D9C0 f i rb_ragdoll_model.o
+68	PORTED	0002:0047e4d0 ?add@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAEPAPAVrigid_body_constraint@@_NPBD@Z 00C6D9D0 f i rb_ragdoll_model.o
+69	PORTED	0002:0047e510 ??0iterator@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE@PAPAVrigid_body_constraint_ragdoll@@@Z 00C6DA10 f i rb_ragdoll_model.o
+70	PORTED	0002:0047e520 ??0iterator@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE@PAPAVrigid_body_constraint_angular_actuator@@@Z 00C6DA20 f i rb_ragdoll_model.o
+71	PORTED	0002:0047e530 ??0iterator@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAE@PAPAVrigid_body_constraint@@@Z 00C6DA30 f i rb_ragdoll_model.o
+72	PORTED	0002:0047e540 ??0iterator@?$phys_static_array@PAVuser_rigid_body@@$09@@QAE@PAPAVuser_rigid_body@@@Z 00C6DA40 f i rb_ragdoll_model.o
+73	PORTED	0002:0047e550 ??0iterator@?$phys_static_array@PAVrigid_body@@$09@@QAE@PAPAVrigid_body@@@Z 00C6DA50 f i rb_ragdoll_model.o
+74	PORTED	0002:0047e560 ?begin@?$phys_static_array@PAVrigid_body@@$09@@QAE?AViterator@1@XZ 00C6DA60 f i rb_ragdoll_model.o
+75	PORTED	0002:0047e570 ?end@?$phys_static_array@PAVrigid_body@@$09@@QAE?AViterator@1@XZ 00C6DA70 f i rb_ragdoll_model.o
+76	PORTED	0002:0047e590 ?push_back@?$phys_static_array@PAVrigid_body@@$09@@QAEXABQAVrigid_body@@@Z 00C6DA90 f i rb_ragdoll_model.o
+77	PORTED	0002:0047e5d0 ?begin@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE?AViterator@1@XZ 00C6DAD0 f i rb_ragdoll_model.o
+78	PORTED	0002:0047e5e0 ?end@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE?AViterator@1@XZ 00C6DAE0 f i rb_ragdoll_model.o
+79	PORTED	0002:0047e600 ?push_back@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAEXABQAVrigid_body_constraint_ragdoll@@@Z 00C6DB00 f i rb_ragdoll_model.o
+80	PORTED	0002:0047e640 ?begin@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE?AViterator@1@XZ 00C6DB40 f i rb_ragdoll_model.o
+81	PORTED	0002:0047e650 ?end@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE?AViterator@1@XZ 00C6DB50 f i rb_ragdoll_model.o
+82	PORTED	0002:0047e670 ?push_back@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAEXABQAVrigid_body_constraint_angular_actuator@@@Z 00C6DB70 f i rb_ragdoll_model.o
+83	PORTED	0002:0047e6b0 ?remove_all@?$phys_static_array@PAVuser_rigid_body@@$09@@QAEXXZ 00C6DBB0 f i rb_ragdoll_model.o
+84	PORTED	0002:0047e6c0 ?begin@?$phys_static_array@PAVuser_rigid_body@@$09@@QAE?AViterator@1@XZ 00C6DBC0 f i rb_ragdoll_model.o
+85	PORTED	0002:0047e6d0 ?end@?$phys_static_array@PAVuser_rigid_body@@$09@@QAE?AViterator@1@XZ 00C6DBD0 f i rb_ragdoll_model.o
+86	PORTED	0002:0047e6f0 ?push_back@?$phys_static_array@PAVuser_rigid_body@@$09@@QAEXABQAVuser_rigid_body@@@Z 00C6DBF0 f i rb_ragdoll_model.o
+87	PORTED	0002:0047e730 ?remove_all@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAEXXZ 00C6DC30 f i rb_ragdoll_model.o
+88	PORTED	0002:0047e740 ?begin@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAE?AViterator@1@XZ 00C6DC40 f i rb_ragdoll_model.o
+89	PORTED	0002:0047e750 ?end@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAE?AViterator@1@XZ 00C6DC50 f i rb_ragdoll_model.o
+90	PORTED	0002:0047e770 ?push_back@?$phys_static_array@PAVrigid_body_constraint@@$09@@QAEXABQAVrigid_body_constraint@@@Z 00C6DC70 f i rb_ragdoll_model.o
+91	PORTED	0002:0047e7b0 ?add_user_rigid_body@rb_ragdoll_model@@QAEXQAVuser_rigid_body@@@Z 00C6DCB0 f i rb_ragdoll_model.o
+92	PORTED	0002:0047e830 ?add_rbc_with_urb@rb_ragdoll_model@@QAEXQAVrigid_body_constraint@@@Z 00C6DD30 f i rb_ragdoll_model.o

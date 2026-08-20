@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:00417710 ?Render@apsColorUVARectangleNode@@UAEXXZ 00C06C10 f apsColorUVARectangleNode.o
+2	PORTED	0002:00417730 ?GetVShader@apsColorUVARectangleRender@@YAKXZ 00C06C30 f i apsColorUVARectangleNode.o
+3	PORTED	0002:00417740 ?GetPShader@apsColorUVARectangleRenderPixel@@YAPAKXZ 00C06C40 f i apsColorUVARectangleNode.o
+4	PORTED	0002:00417750 ?GetPos@ColorUVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ 00C06C50 f i apsColorUVARectangleNode.o
+5	PORTED	0002:00417760 ?GetColor@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ 00C06C60 f i apsColorUVARectangleNode.o
+6	PORTED	0002:00417770 ?GetWidth@ColorUVARectangleParticle@@QAEMXZ 00C06C70 f i apsColorUVARectangleNode.o
+7	PORTED	0002:00417780 ?GetHeight@ColorUVARectangleParticle@@QAEMXZ 00C06C80 f i apsColorUVARectangleNode.o
+8	PORTED	0002:00417790 ?GetAngle@ColorUVARectangleParticle@@QAEMXZ 00C06C90 f i apsColorUVARectangleNode.o
+9	PORTED	0002:004177a0 ?GetFrame@ColorUVARectangleParticle@@QAEMXZ 00C06CA0 f i apsColorUVARectangleNode.o
+10	PORTED	0002:004177b0 ?GetVelocity@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ 00C06CB0 f i apsColorUVARectangleNode.o
+11	PORTED	0002:004177c0 ??0?$cNodeRenderer@UColorUVARectangleParticle@@VapsColorUVARectangleNode@@@@QAE@AAVapsColorUVARectangleNode@@@Z 00C06CC0 f i apsColorUVARectangleNode.o
+12	PORTED	0002:004177d0 ?SetupDefaultShaders@?$cNodeRenderer@UColorUVARectangleParticle@@VapsColorUVARectangleNode@@@@QAEXABVMat43@math@@@Z 00C06CD0 f i apsColorUVARectangleNode.o
+13	PORTED	0002:00417a80 ??$fncompare@UColorUVARectangleParticle@@@apsRenderSort@@YAHPBX0@Z 00C06F80 f i apsColorUVARectangleNode.o
+14	PORTED	0002:00417ac0 ?SetupShaders@?$cNodeRenderer@UColorUVARectangleParticle@@VapsColorUVARectangleNode@@@@QAEXXZ 00C06FC0 f i apsColorUVARectangleNode.o
+15	PORTED	0002:00417ad0 ??$SortPointers@UColorUVARectangleParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C06FD0 f i apsColorUVARectangleNode.o
+16	VERIFIED	0002:00417b10 ?Render@?$cNodeRenderer@UColorUVARectangleParticle@@VapsColorUVARectangleNode@@@@QAEXXZ 00C07010 f i apsColorUVARectangleNode.o

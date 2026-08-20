@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:003d2b70 ?InitCDCharShader@@YAXXZ 00BC2070 f cdCharShader.o
+2	VERIFIED	0002:003d2bc0 ?ToggleCDCharShader@@YAXXZ 00BC20C0 f cdCharShader.o
+3	VERIFIED	0002:003d2be0 ?Register@cdCharShader@@UAEXXZ 00BC20E0 f cdCharShader.o
+4	VERIFIED	0002:003d2c40 ?AddNode@cdCharShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC2140 f cdCharShader.o
+5	PORTED	0002:003d2cb0 ?Render@cdCharShaderNode@@UAEXXZ 00BC21B0 f cdCharShader.o
+6	VERIFIED	0002:003d30c0 ??0cdCharShader@@QAE@XZ 00BC25C0 f i cdCharShader.o
+7	VERIFIED	0002:003d30f0 ?GetName@cdCharShader@@UAE?AVtlFixedString@@XZ 00BC25F0 f i cdCharShader.o
+8	PORTED	0002:003d3110 ?RegisterShader@cdCharShaderRender@@YAXXZ 00BC2610 f i cdCharShader.o
+9	PORTED	0002:003d3130 ?RegisterVShader@cdCharShaderRender@@YAXXZ 00BC2630 f i cdCharShader.o
+10	PORTED	0002:003d3150 ?GetVShader@cdCharShaderRender@@YAKXZ 00BC2650 f i cdCharShader.o
+11	PORTED	0002:003d3160 ?RegisterShader@cdCharPixel@@YAXXZ 00BC2660 f i cdCharShader.o
+12	PORTED	0002:003d3180 ?RegisterPShader@cdCharPixel@@YAXXZ 00BC2680 f i cdCharShader.o
+13	PORTED	0002:003d31a0 ?GetPShader@cdCharPixel@@YAPAKXZ 00BC26A0 f i cdCharShader.o
+14	PORTED	0002:003d31b0 ?RegisterShader@cdCharFullbrightPixel@@YAXXZ 00BC26B0 f i cdCharShader.o
+15	PORTED	0002:003d31d0 ?RegisterPShader@cdCharFullbrightPixel@@YAXXZ 00BC26D0 f i cdCharShader.o
+16	PORTED	0002:003d31f0 ?GetPShader@cdCharFullbrightPixel@@YAPAKXZ 00BC26F0 f i cdCharShader.o
+17	PORTED	0002:003d3200 ??0cdCharShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdCharShaderMat@@@Z 00BC2700 f i cdCharShader.o
+18	PORTED	0002:003d3230 ??_EcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o
+19	PORTED	0002:003d3230 ??_GcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o
+20	PORTED	0002:003d3260 ??1cdCharShaderNode@@UAE@XZ 00BC2760 f i cdCharShader.o
+21	VERIFIED	0002:003d3270 ??_GcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o
+22	VERIFIED	0002:003d3270 ??_EcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o
+23	VERIFIED	0002:003d32a0 ??1cdCharShader@@UAE@XZ 00BC27A0 f i cdCharShader.o
+24	PORTED	0002:003d32b0 ??0CharContext@@QAE@XZ 00BC27B0 f i cdCharShader.o

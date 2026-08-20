@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x00832260	?MacroBlockIdct@@YAXPAF@Z	void __cdecl MacroBlockIdct(short *)	
+0x00832A10	?MacroBlockIdctCopy@@YAXPAFPAEH@Z	void __cdecl MacroBlockIdctCopy(short *,unsigned char *,int)	
+0x00832A90	?MacroBlockIdctAdd@@YAXHPAFPAEH@Z	void __cdecl MacroBlockIdctAdd(int,short *,unsigned char *,int)	

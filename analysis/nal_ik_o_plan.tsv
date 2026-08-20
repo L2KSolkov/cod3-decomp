@@ -1,0 +1,3 @@
+ida_ea	name	signature	source_cpp
+0x0086FC90	?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z	void __cdecl nalIKMap2DTo3D(float,float,float,float,float,class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,float,float,class nalMatrix4x4 &,class nalMatrix4x4 &)	
+0x00870330	?nalIKSolve2D@@YAXABVnalMatrix4x4@@ABVDir3@math@@1MMMMAAV23@2AAM333@Z	void __cdecl nalIKSolve2D(class nalMatrix4x4 const &,class math::Dir3 const &,class math::Dir3 const &,float,float,float,float,class math::Dir3 &,class math::Dir3 &,float &,float &,float &,float &)	

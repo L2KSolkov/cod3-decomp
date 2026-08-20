@@ -1,0 +1,44 @@
+index	status	map_line
+1	PORTED	0002:0043fd00 ?CreateDevice@Direct3D@@SGJIW4_D3DDEVTYPE@@PAXKPAU_D3DPRESENT_PARAMETERS_@@PAPAUD3DDevice@@@Z 00C2F200 f i ngl_dx_core.o
+2	PORTED	0002:0043fd10 ?SetPushBufferSize@Direct3D@@SGJKK@Z 00C2F210 f i ngl_dx_core.o
+3	VERIFIED	0002:0043ff80 ?nglDxCheckErrorD3D@@YAJJPBDI@Z 00C2F480 f ngl_dx_core.o
+4	VERIFIED	0002:0043ffe0 ?nglFlip@@YAXXZ 00C2F4E0 f ngl_dx_core.o
+5	VERIFIED	0002:00440010 ?nglSetDisplayMode@@YAXPAII@Z 00C2F510 f ngl_dx_core.o
+6	VERIFIED	0002:00440130 ?nglXbSetGammaRamp@@YAXPAE@Z 00C2F630 f ngl_dx_core.o
+7	VERIFIED	0002:00440150 ?nglDxInitOcclusionQuery@@YAXXZ 00C2F650 f ngl_dx_core.o
+8	VERIFIED	0002:00440160 ?nglXbInitPushBufferSize@@YAXXZ 00C2F660 f ngl_dx_core.o
+9	VERIFIED	0002:00440210 ?nglDxInitDisplayMode@@YAXXZ 00C2F710 f ngl_dx_core.o
+10	VERIFIED	0002:00440240 ?nglDxInitPresentParams@@YAXXZ 00C2F740 f ngl_dx_core.o
+11	VERIFIED	0002:004402f0 ?nglRenderStartCallback@@YAXK@Z 00C2F7F0 f ngl_dx_core.o
+12	VERIFIED	0002:00440320 ?nglRenderFinishCallback@@YAXK@Z 00C2F820 f ngl_dx_core.o
+13	VERIFIED	0002:00440360 ?nglVBlankCallback@@YAXPAU_D3DVBLANKDATA@@@Z 00C2F860 f ngl_dx_core.o
+14	VERIFIED	0002:00440370 ?ngliLoadPhysicalSection@@YAXPAVapkFile@apk@@PAUapkFileSection@2@PAX@Z 00C2F870 f ngl_dx_core.o
+15	VERIFIED	0002:00440380 ?ngliUnloadPhysicalSection@@YAXPAVapkFile@apk@@PAUapkFileSection@2@PAX@Z 00C2F880 f ngl_dx_core.o
+16	VERIFIED	0002:00440390 ?ngliPreInit@@YAXXZ 00C2F890 f ngl_dx_core.o
+17	VERIFIED	0002:004404c0 ?ngliPostInit@@YAXXZ 00C2F9C0 f ngl_dx_core.o
+18	VERIFIED	0002:004404e0 ?ngliExit@@YAXXZ 00C2F9E0 f ngl_dx_core.o
+19	VERIFIED	0002:004404f0 ?nglDxSetFrameLockParams@@YAXW4nglFrameLockType@@@Z 00C2F9F0 f ngl_dx_core.o
+20	VERIFIED	0002:004405a0 ?nglSetFrameLock@@YA?AW4nglFrameLockType@@W41@@Z 00C2FAA0 f ngl_dx_core.o
+21	VERIFIED	0002:00440600 ?nglWaitForRendering@@YAXXZ 00C2FB00 f ngl_dx_core.o
+22	VERIFIED	0002:00440610 ?ngliListInit@@YAXXZ 00C2FB10 f ngl_dx_core.o
+23	VERIFIED	0002:00440700 ?nglRenderPerfInfo@@YAXXZ 00C2FC00 f ngl_dx_core.o
+24	VERIFIED	0002:004408b0 ?nglRenderDebug@@YAXXZ 00C2FDB0 f ngl_dx_core.o
+25	VERIFIED	0002:004408d0 ?nglListSendBatch@@YAXPAUjqBatch@@@Z 00C2FDD0 f ngl_dx_core.o
+26	VERIFIED	0002:00440ce0 ?ngliWaitForResource@@YAXXZ 00C301E0 f ngl_dx_core.o
+27	VERIFIED	0002:00440d30 ?nglDxResetDevice@@YAXXZ 00C30230 f ngl_dx_core.o
+28	PORTED	0002:00440d60 ?GetDeviceCaps@D3DDevice@@SGJPAU_D3DCAPS8@@@Z 00C30260 f i ngl_dx_core.o
+29	PORTED	0002:00440d80 ?Reset@D3DDevice@@SGJPAU_D3DPRESENT_PARAMETERS_@@@Z 00C30280 f i ngl_dx_core.o
+30	PORTED	0002:00440d90 ?Present@D3DDevice@@SGJPBUtagRECT@@0PAX1@Z 00C30290 f i ngl_dx_core.o
+31	PORTED	0002:00440da0 ?SetGammaRamp@D3DDevice@@SGXKPBU_D3DGAMMARAMP@@@Z 00C302A0 f i ngl_dx_core.o
+32	PORTED	0002:00440db0 ?BeginScene@D3DDevice@@SGJXZ 00C302B0 f i ngl_dx_core.o
+33	PORTED	0002:00440dc0 ?EndScene@D3DDevice@@SGJXZ 00C302C0 f i ngl_dx_core.o
+34	PORTED	0002:00440dd0 ?BlockUntilIdle@D3DDevice@@SGXXZ 00C302D0 f i ngl_dx_core.o
+35	PORTED	0002:00440de0 ?SetVerticalBlankCallback@D3DDevice@@SGXP6AXPAU_D3DVBLANKDATA@@@Z@Z 00C302E0 f i ngl_dx_core.o
+36	PORTED	0002:00440df0 ?InsertFence@D3DDevice@@SGKXZ 00C302F0 f i ngl_dx_core.o
+37	PORTED	0002:00440e00 ?BlockOnFence@D3DDevice@@SGXK@Z 00C30300 f i ngl_dx_core.o
+38	PORTED	0002:00440e10 ?InsertCallback@D3DDevice@@SGXW4_D3DCALLBACKTYPE@@P6AXK@ZK@Z 00C30310 f i ngl_dx_core.o
+39	PORTED	0002:00440e20 ?gpuInsertCallback@@YAXW4gpuCallbackType@@P6AXK@ZPAX@Z 00C30320 f i ngl_dx_core.o
+40	PORTED	0002:00440e40 ?gpuSetVBlankCallback@@YAXP6AXPAU_D3DVBLANKDATA@@@Z@Z 00C30340 f i ngl_dx_core.o
+41	PORTED	0002:00440e50 ??0nglDisplayModeType@@QAE@HH_N0I@Z 00C30350 f i ngl_dx_core.o
+42	PORTED	0002:00440e80 ?SetPresentationInterval@nglDxRenderState@@QAEXI@Z 00C30380 f i ngl_dx_core.o
+43	PORTED	0002:00440eb0 ?Flush@nglDxTexCacheClass@@QAEXXZ 00C303B0 f i ngl_dx_core.o

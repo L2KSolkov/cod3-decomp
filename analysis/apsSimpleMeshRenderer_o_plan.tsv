@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x00802920	?Init@apsSimpleMeshRenderer@@SAXXZ	public: static void __cdecl apsSimpleMeshRenderer::Init(void)	
+0x00802950	?InitShader@apsSimpleMeshRenderer@@SAXXZ	public: static void __cdecl apsSimpleMeshRenderer::InitShader(void)	
+0x00802990	??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsSimpleMeshRenderer::apsSimpleMeshRenderer(class apsSimpleMeshRenderer::cArgs const &)	
+0x008029C0	?Render@apsSimpleMeshRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsSimpleMeshRenderer::Render(struct apsRendererRenderInfo const &)	

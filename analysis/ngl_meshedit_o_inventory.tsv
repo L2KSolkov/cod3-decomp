@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x00844780	0x00C33C80	?nglSetMeshSphere@@YAXPAUnglMesh@@ABVPosition3@math@@M@Z	void __cdecl nglSetMeshSphere(struct nglMesh *,class math::Position3 const &,float)	ngl_meshedit.o
+0x00844820	0x00C33D20	?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z	void __cdecl nglAddMeshSection(struct nglMesh *,struct nglMeshSection *,struct nglMaterial *,int)	ngl_meshedit.o
+0x00844890	0x00C33D90	?nglDestroyMesh@@YAXPAUnglMesh@@@Z	void __cdecl nglDestroyMesh(struct nglMesh *)	ngl_meshedit.o
+0x00844910	0x00C33E10	?nglCreateMeshClone@@YAPAUnglMesh@@PAU1@@Z	struct nglMesh * __cdecl nglCreateMeshClone(struct nglMesh *)	ngl_meshedit.o
+0x00844A10	0x00C33F10	?nglCopyMesh@@YAXPAUnglMesh@@0@Z	void __cdecl nglCopyMesh(struct nglMesh *,struct nglMesh *)	ngl_meshedit.o
+0x00844A80	0x00C33F80	?nglMakeSectionUnique@@YAXPAUnglMesh@@H@Z	void __cdecl nglMakeSectionUnique(struct nglMesh *,int)	ngl_meshedit.o
+0x00844AC0	0x00C33FC0	?nglCreateScratchMesh@@YAPAUnglMesh@@II@Z	struct nglMesh * __cdecl nglCreateScratchMesh(unsigned int,unsigned int)	ngl_meshedit.o
+0x00844B90	0x00C34090	?nglCreateMesh@@YAPAUnglMesh@@II@Z	struct nglMesh * __cdecl nglCreateMesh(unsigned int,unsigned int)	ngl_meshedit.o
+0x00844C80	0x00C34180	?nglCreateMeshCopy@@YAPAUnglMesh@@PAU1@@Z	struct nglMesh * __cdecl nglCreateMeshCopy(struct nglMesh *)	ngl_meshedit.o

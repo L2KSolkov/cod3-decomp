@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007E0520	0x00BCFA20	??0cdBackgroundShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdBackgroundShaderMat::cdBackgroundShaderMat(struct nglTexture *)	cdBackgroundShader.o
+0x007E05B0	0x00BCFAB0	?InitCDBackgroundShader@@YAXXZ	void __cdecl InitCDBackgroundShader(void)	cdBackgroundShader.o
+0x007E0600	0x00BCFB00	?ToggleCDBackgroundShader@@YAXXZ	void __cdecl ToggleCDBackgroundShader(void)	cdBackgroundShader.o
+0x007E0620	0x00BCFB20	?Register@cdBackgroundShader@@UAEXXZ	public: virtual void __thiscall cdBackgroundShader::Register(void)	cdBackgroundShader.o
+0x007E0680	0x00BCFB80	?AddNode@cdBackgroundShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdBackgroundShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdBackgroundShader.o
+0x007E06F0	0x00BCFBF0	?Render@cdBackgroundShaderNode@@UAEXXZ	public: virtual void __thiscall cdBackgroundShaderNode::Render(void)	cdBackgroundShader.o

@@ -1,0 +1,16 @@
+ida_ea	va	name	signature	family
+0x0082A020	0x00C19520	?nslWaveGetSourceDirectory@@YAPBDXZ	char const * __cdecl nslWaveGetSourceDirectory(void)	nslWave.o
+0x0082A030	0x00C19530	?nslWaveGetObjectDirectory@@YAPBDXZ	char const * __cdecl nslWaveGetObjectDirectory(void)	nslWave.o
+0x0082A040	0x00C19540	?nslWaveSetSourceDirectory@@YAXPBD@Z	void __cdecl nslWaveSetSourceDirectory(char const *)	nslWave.o
+0x0082A0D0	0x00C195D0	?nslWaveSetObjectDirectory@@YAXPBD@Z	void __cdecl nslWaveSetObjectDirectory(char const *)	nslWave.o
+0x0082A160	0x00C19660	?nslWaveGetSourceFilename@@YAPBDPBDPADH@Z	char const * __cdecl nslWaveGetSourceFilename(char const *,char *,int)	nslWave.o
+0x0082A1A0	0x00C196A0	?nslWaveGetObjectFilename@@YAPBDPBD0PADH@Z	char const * __cdecl nslWaveGetObjectFilename(char const *,char const *,char *,int)	nslWave.o
+0x0082A1E0	0x00C196E0	?nslWaveInfoAlloc@@YAPAUnslWaveInfo@@XZ	struct nslWaveInfo * __cdecl nslWaveInfoAlloc(void)	nslWave.o
+0x0082A1F0	0x00C196F0	?nslWaveInfoSize@@YAIPBUnslWaveInfo@@@Z	unsigned int __cdecl nslWaveInfoSize(struct nslWaveInfo const *)	nslWave.o
+0x0082A220	0x00C19720	?nslWaveAlloc@@YAPAUnslWave@@XZ	struct nslWave * __cdecl nslWaveAlloc(void)	nslWave.o
+0x0082A250	0x00C19750	?nslWaveInfoFree@@YAXPAUnslWaveInfo@@@Z	void __cdecl nslWaveInfoFree(struct nslWaveInfo *)	nslWave.o
+0x0082A280	0x00C19780	?nslWaveFree@@YAXPAUnslWave@@@Z	void __cdecl nslWaveFree(struct nslWave *)	nslWave.o
+0x0082A300	0x00C19800	?nslWaveSetSoundInfo@@YAXPAUnslWave@@PBUnslWaveInfo@@@Z	void __cdecl nslWaveSetSoundInfo(struct nslWave *,struct nslWaveInfo const *)	nslWave.o
+0x0082A380	0x00C19880	?nslWaveGetInfo@@YAPBUnslWaveInfo@@PBUnslWave@@@Z	struct nslWaveInfo const * __cdecl nslWaveGetInfo(struct nslWave const *)	nslWave.o
+0x0082A3A0	0x00C198A0	?nslWaveInfoCopy@@YAPAUnslWaveInfo@@PBU1@@Z	struct nslWaveInfo * __cdecl nslWaveInfoCopy(struct nslWaveInfo const *)	nslWave.o
+0x0082A440	0x00C19940	?nslWaveCopy@@YAPAUnslWave@@PBU1@IHHQAPBD@Z	struct nslWave * __cdecl nslWaveCopy(struct nslWave const *,unsigned int,int,int,char const * * const)	nslWave.o

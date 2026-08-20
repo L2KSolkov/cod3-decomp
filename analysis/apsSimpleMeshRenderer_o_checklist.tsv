@@ -1,0 +1,31 @@
+index	status	map_line
+1	PORTED	0002:004025e0 ?Center@apsSphere@@QBEABUPacked@Dir3@math@@XZ 00BF1AE0 f i apsSimpleMeshRenderer.o
+2	PORTED	0002:004025f0 ?Radius@apsSphere@@QBE?BMXZ 00BF1AF0 f i apsSimpleMeshRenderer.o
+3	PORTED	0002:00402630 ?GetDist@apsRenderNode@@QBEMPAUnglScene@@@Z 00BF1B30 f i apsSimpleMeshRenderer.o
+4	PORTED	0002:004026e0 ?SetFlags@apsRenderNode@@QAEXI@Z 00BF1BE0 f i apsSimpleMeshRenderer.o
+5	VERIFIED	0002:00402700 ?SetMatrix@apsRenderNode@@QAEXPBVMat43@math@@@Z 00BF1C00 f i apsSimpleMeshRenderer.o
+6	PORTED	0002:004027a0 ?SetSphere@apsRenderNode@@QAEXABUapsSphere@@@Z 00BF1CA0 f i apsSimpleMeshRenderer.o
+7	VERIFIED	0002:004027d0 ?SetParticles@apsRenderNode@@QAEXHPAEH@Z 00BF1CD0 f i apsSimpleMeshRenderer.o
+8	VERIFIED	0002:00402820 ??1apsRenderNode@@UAE@XZ 00BF1D20 f i apsSimpleMeshRenderer.o
+9	PORTED	0002:00402830 ?SetRenderer@apsSimpleMeshNode@@QAEXPAVapsSimpleMeshRenderer@@@Z 00BF1D30 f i apsSimpleMeshRenderer.o
+10	PORTED	0002:00402840 ?SetLightContext@apsSimpleMeshNode@@QAEXPAUnglLightContext@@@Z 00BF1D40 f i apsSimpleMeshRenderer.o
+11	PORTED	0002:00402850 ?SetRequiredParticleFields@apsRenderer@@QAEXI@Z 00BF1D50 f i apsSimpleMeshRenderer.o
+12	VERIFIED	0002:00402860 ??0apsSimpleMeshShader@@QAE@XZ 00BF1D60 f i apsSimpleMeshRenderer.o
+13	VERIFIED	0002:00402890 ?GetName@apsSimpleMeshShader@@UAE?AVtlFixedString@@XZ 00BF1D90 f i apsSimpleMeshRenderer.o
+14	VERIFIED	0002:004028b0 ?AddNode@apsSimpleMeshShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BF1DB0 f i apsSimpleMeshRenderer.o
+15	PORTED	0002:004028c0 ?RegisterVShader@apsSimpleMeshRender@@YAXXZ 00BF1DC0 f i apsSimpleMeshRenderer.o
+16	PORTED	0002:004028e0 ?RegisterPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1DE0 f i apsSimpleMeshRenderer.o
+17	PORTED	0002:00402900 ?InitPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1E00 f i apsSimpleMeshRenderer.o
+18	VERIFIED	0002:00402920 ?Init@apsSimpleMeshRenderer@@SAXXZ 00BF1E20 f apsSimpleMeshRenderer.o
+19	VERIFIED	0002:00402950 ?InitShader@apsSimpleMeshRenderer@@SAXXZ 00BF1E50 f apsSimpleMeshRenderer.o
+20	PORTED	0002:00402990 ??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z 00BF1E90 f apsSimpleMeshRenderer.o
+21	VERIFIED	0002:004029c0 ?Render@apsSimpleMeshRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF1EC0 f apsSimpleMeshRenderer.o
+22	PORTED	0002:00402b60 ??0apsRenderNode@@QAE@XZ 00BF2060 f i apsSimpleMeshRenderer.o
+23	VERIFIED	0002:00402b70 ??_EapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o
+24	VERIFIED	0002:00402b70 ??_GapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o
+25	VERIFIED	0002:00402ba0 ??_EapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o
+26	VERIFIED	0002:00402ba0 ??_GapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o
+27	PORTED	0002:00402bd0 ??0apsSimpleMeshNode@@QAE@XZ 00BF20D0 f i apsSimpleMeshRenderer.o
+28	VERIFIED	0002:00402be0 ?GetDesc@apsSimpleMeshNode@@UAEXPAD@Z 00BF20E0 f i apsSimpleMeshRenderer.o
+29	PORTED	0002:00402c20 ??_GapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o
+30	PORTED	0002:00402c20 ??_EapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o

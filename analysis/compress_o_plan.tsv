@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x007E31D0	_compress2	_compress2	
+0x007E3270	_compress	_compress	
+0x007E3290	_compressBound	_compressBound	

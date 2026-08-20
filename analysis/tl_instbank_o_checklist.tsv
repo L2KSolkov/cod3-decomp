@@ -1,0 +1,10 @@
+index	status	map_line
+1	VERIFIED	0002:00433b90 ??0tlInstanceBank@@QAE@XZ 00C23090 f tl_instbank.o
+2	VERIFIED	0002:00433ba0 ?NewNodeOfLevel@tlInstanceBank@@AAEPAUInstance@1@H@Z 00C230A0 f tl_instbank.o
+3	VERIFIED	0002:00433bc0 ?RandomLevel@tlInstanceBank@@AAEHXZ 00C230C0 f tl_instbank.o
+4	VERIFIED	0002:00433c00 ?Insert@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@PAX@Z 00C23100 f tl_instbank.o
+5	VERIFIED	0002:00433d50 ?Delete@tlInstanceBank@@QAEHABVtlFixedString@@@Z 00C23250 f tl_instbank.o
+6	VERIFIED	0002:00433ea0 ?Search@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@@Z 00C233A0 f tl_instbank.o
+7	VERIFIED	0002:00433f50 ?Destroy@tlInstanceBank@@QAEXXZ 00C23450 f tl_instbank.o
+8	VERIFIED	0002:00433fb0 ??1tlInstanceBank@@QAE@XZ 00C234B0 f tl_instbank.o
+9	VERIFIED	0002:00433fc0 ?Init@tlInstanceBank@@QAEXXZ 00C234C0 f tl_instbank.o

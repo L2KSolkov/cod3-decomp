@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007DF0D0	?InitCDWorldShader@@YAXXZ	void __cdecl InitCDWorldShader(void)	
+0x007DF120	?ToggleCDWorldShader@@YAXXZ	void __cdecl ToggleCDWorldShader(void)	
+0x007DF140	?Register@cdWorldShader@@UAEXXZ	public: virtual void __thiscall cdWorldShader::Register(void)	
+0x007DF180	?AddNode@cdWorldShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007DF220	?Render@cdWorldShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldShaderNode::Render(void)	

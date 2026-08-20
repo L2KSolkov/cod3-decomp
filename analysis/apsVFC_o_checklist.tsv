@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:00402030 ?GetFrustumInfo@VFC@@YAXAAUFrustumInfo@1@PBUnglScene@@@Z 00BF1530 f apsVFC.o
+2	VERIFIED	0002:00402490 ?AABBvsFrustum@VFC@@YA?AW4eStatus@1@ABUAABB@1@ABUFrustumInfo@1@@Z 00BF1990 f apsVFC.o
+3	VERIFIED	0002:00402560 ?AABBOutsideFrustum@VFC@@YA_NABUAABB@1@ABUFrustumInfo@1@@Z 00BF1A60 f apsVFC.o

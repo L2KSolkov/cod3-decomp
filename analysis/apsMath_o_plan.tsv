@@ -1,0 +1,9 @@
+ida_ea	name	signature	source_cpp
+0x00807200	?CreateFromVectorsDirUp@apsMath@@YAXAAVMat43@math@@ABVDir3@3@1@Z	void __cdecl apsMath::CreateFromVectorsDirUp(class math::Mat43 &,class math::Dir3 const &,class math::Dir3 const &)	
+0x00807370	?RotatePoint@apsQuaternion@@QAEXAAVDir3@math@@@Z	public: void __thiscall apsQuaternion::RotatePoint(class math::Dir3 &)	
+0x00807560	?GetBoxPoints@apsMath@@YAXABUapsBounds@@PAVDir3@math@@@Z	void __cdecl apsMath::GetBoxPoints(struct apsBounds const &,class math::Dir3 *)	
+0x00807740	?InverseOrtho@apsMath@@YA?AVMat43@math@@ABV23@@Z	class math::Mat43 __cdecl apsMath::InverseOrtho(class math::Mat43 const &)	
+0x00807840	?QuaternionFromMatrix@apsMath@@YA?AUapsQuaternion@@ABVMat43@math@@@Z	struct apsQuaternion __cdecl apsMath::QuaternionFromMatrix(class math::Mat43 const &)	
+0x00807AC0	?GetQuaternionMatrix@apsMath@@YAXAAVMat43@math@@ABUapsQuaternion@@ABVDir3@3@@Z	void __cdecl apsMath::GetQuaternionMatrix(class math::Mat43 &,struct apsQuaternion const &,class math::Dir3 const &)	
+0x00807C60	??0apsQuaternion@@QAE@ABVDir3@math@@M@Z	public: __thiscall apsQuaternion::apsQuaternion(class math::Dir3 const &,float)	
+0x00807D70	?QuaternionFromEuler@apsMath@@YA?AUapsQuaternion@@MMM@Z	struct apsQuaternion __cdecl apsMath::QuaternionFromEuler(float,float,float)	

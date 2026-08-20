@@ -1,0 +1,9 @@
+index	status	map_line
+1	VERIFIED	0002:0042cec0 _txPrintv 00C1C3C0 f tx_tl.o
+2	VERIFIED	0002:0042cf90 _txBreak 00C1C490 f tx_tl.o
+3	VERIFIED	0002:0042cfa0 _txMemAllocEx 00C1C4A0 f tx_tl.o
+4	VERIFIED	0002:0042cfd0 _txMemAlloc 00C1C4D0 f tx_tl.o
+5	VERIFIED	0002:0042cff0 _txMemFree 00C1C4F0 f tx_tl.o
+6	VERIFIED	0002:0042d000 _txMemRealloc 00C1C500 f tx_tl.o
+7	VERIFIED	0002:0042d010 _txMemReallocAdHoc 00C1C510 f tx_tl.o
+8	VERIFIED	0002:0042d060 _txAssertFailed 00C1C560 f tx_tl.o

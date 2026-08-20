@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x007CFF90	0x00BBF490	?InitCDGlassShader@@YAXXZ	void __cdecl InitCDGlassShader(void)	cdGlassShader.o
+0x007CFFE0	0x00BBF4E0	?ToggleCDGlassShader@@YAXXZ	void __cdecl ToggleCDGlassShader(void)	cdGlassShader.o
+0x007D0000	0x00BBF500	?Register@cdGlassShader@@UAEXXZ	public: virtual void __thiscall cdGlassShader::Register(void)	cdGlassShader.o
+0x007D0030	0x00BBF530	?Render@cdGlassShaderNode@@UAEXXZ	public: virtual void __thiscall cdGlassShaderNode::Render(void)	cdGlassShader.o

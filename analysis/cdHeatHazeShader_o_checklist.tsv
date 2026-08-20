@@ -1,0 +1,21 @@
+index	status	map_line
+1	VERIFIED	0002:003cf460 ?ToggleCDHeatHazeShader@@YAXXZ 00BBE960 f cdHeatHazeShader.o
+2	VERIFIED	0002:003cf470 ?InitCDHeatHazeShader@@YAXXZ 00BBE970 f cdHeatHazeShader.o
+3	VERIFIED	0002:003cf480 ?SetupCDHeatHazeShader@@YAXXZ 00BBE980 f cdHeatHazeShader.o
+4	VERIFIED	0002:003cf740 ?RenderCDHeatHazeShader@@YAXXZ 00BBEC40 f cdHeatHazeShader.o
+5	PORTED	0002:003cfad0 ?CreateVertexBuffer@D3DDevice@@SGJIKKKPAPAUD3DVertexBuffer@@@Z 00BBEFD0 f i cdHeatHazeShader.o
+6	PORTED	0002:003cfb00 ?Lock@D3DVertexBuffer@@QAGJIIPAPAEK@Z 00BBF000 f i cdHeatHazeShader.o
+7	PORTED	0002:003cfb20 ?Unlock@D3DVertexBuffer@@QAGJXZ 00BBF020 f i cdHeatHazeShader.o
+8	PORTED	0002:003cfb30 ?CreateVertexBuffer@gpuD3DDevice@@QAEJIKKKPAPAUD3DVertexBuffer@@PAPAX@Z 00BBF030 f i cdHeatHazeShader.o
+9	PORTED	0002:003cfb60 ?gpuCreateVertexBuffer@@YAPAUD3DVertexBuffer@@IPBUgpuVertexFormat@@W4gpuBufferUsage@@@Z 00BBF060 f i cdHeatHazeShader.o
+10	PORTED	0002:003cfb80 ?gpuMapVertexBuffer@@YAPAXPAUD3DVertexBuffer@@II@Z 00BBF080 f i cdHeatHazeShader.o
+11	PORTED	0002:003cfba0 ?gpuUnmapVertexBuffer@@YAXPAUD3DVertexBuffer@@@Z 00BBF0A0 f i cdHeatHazeShader.o
+12	PORTED	0002:003cfbb0 ?gpuSetZTest@@YAXW4gpuCmpMode@@@Z 00BBF0B0 f i cdHeatHazeShader.o
+13	PORTED	0002:003cfbf0 ?RegisterShader@cdHeatHazeRender@@YAXXZ 00BBF0F0 f i cdHeatHazeShader.o
+14	PORTED	0002:003cfc10 ?RegisterVShader@cdHeatHazeRender@@YAXXZ 00BBF110 f i cdHeatHazeShader.o
+15	PORTED	0002:003cfc30 ?GetVShader@cdHeatHazeRender@@YAKXZ 00BBF130 f i cdHeatHazeShader.o
+16	PORTED	0002:003cfc40 ?RegisterShader@cdHeatHazePixel@@YAXXZ 00BBF140 f i cdHeatHazeShader.o
+17	PORTED	0002:003cfc60 ?RegisterPShader@cdHeatHazePixel@@YAXXZ 00BBF160 f i cdHeatHazeShader.o
+18	PORTED	0002:003cfc80 ?GetPShader@cdHeatHazePixel@@YAPAKXZ 00BBF180 f i cdHeatHazeShader.o
+19	PORTED	0002:003cfc90 ??$SetConstants@UcdHeatHazeParams@cdHeatHazeRender@@@cdHeatHazeRender@@YAXABUcdHeatHazeParams@0@@Z 00BBF190 f i cdHeatHazeShader.o
+20	PORTED	0002:003cfcb0 ??0cdHeatHazeParams@cdHeatHazeRender@@QAE@XZ 00BBF1B0 f i cdHeatHazeShader.o

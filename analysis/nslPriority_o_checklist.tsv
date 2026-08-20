@@ -1,0 +1,8 @@
+index	status	map_line
+1	VERIFIED	0002:00428d50 ?nslVoiceGetAttenuation@@YAMPAUnslVoice@@@Z 00C18250 f nslPriority.o
+2	VERIFIED	0002:00428dd0 ?nslSourceGetAttenuation@@YAMPAUnslSource@@@Z 00C182D0 f nslPriority.o
+3	VERIFIED	0002:00428e70 ?nslSourceIs3D@@YAHPAUnslSource@@@Z 00C18370 f nslPriority.o
+4	VERIFIED	0002:00428ef0 ?nslPriorityCanPlay@@YAHH@Z 00C183F0 f nslPriority.o
+5	VERIFIED	0002:00428f30 ?nslSourceGetPriority@@YAHPAUnslSource@@@Z 00C18430 f nslPriority.o
+6	VERIFIED	0002:00428fc0 ?nslVoiceGetPriority@@YAHAAUnslVoice@@@Z 00C184C0 f nslPriority.o
+7	VERIFIED	0002:00428fe0 ?nslPriorityUpdate@@YAXXZ 00C184E0 f nslPriority.o

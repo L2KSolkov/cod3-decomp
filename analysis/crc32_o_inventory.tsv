@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x007E81A0	0x00BD76A0	_get_crc_table	_get_crc_table	crc32.o
+0x007E87B0	0x00BD7CB0	_crc32_combine	_crc32_combine	crc32.o
+0x007E8890	0x00BD7D90	_crc32	_crc32	crc32.o

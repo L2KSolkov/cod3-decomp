@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007EABF0	0x00BDA0F0	_inflate_table	_inflate_table	inftrees.o

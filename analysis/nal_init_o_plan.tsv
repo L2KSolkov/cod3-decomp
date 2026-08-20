@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x00854490	?nalSetAnimPath@@YAXPBD@Z	void __cdecl nalSetAnimPath(char const *)	
+0x008544C0	?nalGetAnimPath@@YAPBDXZ	char const * __cdecl nalGetAnimPath(void)	
+0x008544D0	?nalSetSkeletonPath@@YAXPBD@Z	void __cdecl nalSetSkeletonPath(char const *)	
+0x00854500	?nalGetSkeletonPath@@YAPBDXZ	char const * __cdecl nalGetSkeletonPath(void)	
+0x00854510	?nalGetVersion@@YAIXZ	unsigned int __cdecl nalGetVersion(void)	
+0x00854520	?nalEnableScratchPadUse@@YAXXZ	void __cdecl nalEnableScratchPadUse(void)	
+0x00854530	?nalDisableScratchPadUse@@YAXXZ	void __cdecl nalDisableScratchPadUse(void)	
+0x00854540	?nalEnablePerformanceWarnings@@YAXXZ	void __cdecl nalEnablePerformanceWarnings(void)	
+0x00854550	?nalDisablePerformanceWarnings@@YAXXZ	void __cdecl nalDisablePerformanceWarnings(void)	
+0x00854560	?nalExit@@YAXXZ	void __cdecl nalExit(void)	
+0x008545E0	?nalInit@@YAXPAVnalHeap@@@Z	void __cdecl nalInit(class nalHeap *)	

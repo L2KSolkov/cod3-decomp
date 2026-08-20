@@ -1,0 +1,8 @@
+index	status	map_line
+1	VERIFIED	0002:00452980 ?nglSceneDumpStart@@YAXXZ 00C41E80 f ngl_scenedump.o
+2	VERIFIED	0002:004529f0 ?nglSceneDumpEnd@@YAXXZ 00C41EF0 f ngl_scenedump.o
+3	VERIFIED	0002:00452a30 ?nglSceneDumpCamera@@YAXABVMat43@math@@@Z 00C41F30 f ngl_scenedump.o
+4	VERIFIED	0002:00452b30 ?nglSceneDumpMesh@@YAXPAUnglMesh@@ABVMat43@math@@PBVnglMeshParams@@@Z 00C42030 f ngl_scenedump.o
+5	VERIFIED	0002:00452d80 ?nglSceneDumpQuad@@YAXPAUnglQuad@@@Z 00C42280 f ngl_scenedump.o
+6	VERIFIED	0002:00452e80 ?nglSceneDumpDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z 00C42380 f ngl_scenedump.o
+7	VERIFIED	0002:00452f30 ?nglSceneDumpPointLight@@YAXW4nglLightType@@IABVPosition3@math@@MMABVVector4@3@@Z 00C42430 f ngl_scenedump.o

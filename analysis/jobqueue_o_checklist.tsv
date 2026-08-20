@@ -1,0 +1,27 @@
+index	status	map_line
+1	PENDING	0002:00434e40 ?jqCreateMutex@@YAHH@Z 00C24340 f i jobqueue.o
+2	PENDING	0002:00434e50 ?jqDestroyMutex@@YAXH@Z 00C24350 f i jobqueue.o
+3	PENDING	0002:00434e60 ?jqLockMutex@@YAXH@Z 00C24360 f i jobqueue.o
+4	PENDING	0002:00434e70 ?jqUnlockMutex@@YAXH@Z 00C24370 f i jobqueue.o
+5	VERIFIED	0002:00434e80 ?jqInit@@YAXXZ 00C24380 f jobqueue.o
+6	VERIFIED	0002:00434e90 ?jqGetMaxWorkers@@YAHXZ 00C24390 f jobqueue.o
+7	VERIFIED	0002:00434ea0 ?jqStop@@YAXXZ 00C243A0 f jobqueue.o
+8	VERIFIED	0002:00434ef0 ?jqLockBatchPool@@YAXXZ 00C243F0 f jobqueue.o
+9	VERIFIED	0002:00434f00 ?jqUnlockBatchPool@@YAXXZ 00C24400 f jobqueue.o
+10	VERIFIED	0002:00434f10 ?jqStart@@YAXH@Z 00C24410 f jobqueue.o
+11	VERIFIED	0002:00434f90 ?jqSetBatchPoolSize@@YAXH@Z 00C24490 f jobqueue.o
+12	VERIFIED	0002:004350a0 ?jqAddBatch@@YAHABUjqBatch@@@Z 00C245A0 f jobqueue.o
+13	VERIFIED	0002:004351f0 ?jqSetBatchGroupPoolSize@@YAXH@Z 00C246F0 f jobqueue.o
+14	VERIFIED	0002:00435280 ?jqAddBatchGroupDependency@@YAXHH@Z 00C24780 f jobqueue.o
+15	VERIFIED	0002:004352b0 ?jqRemoveBatchGroupDependency@@YAXHH@Z 00C247B0 f jobqueue.o
+16	VERIFIED	0002:00435320 ?jqCreateBatchGroup@@YAHXZ 00C24820 f jobqueue.o
+17	VERIFIED	0002:00435390 ?jqDestroyBatchGroup@@YAXH@Z 00C24890 f jobqueue.o
+18	VERIFIED	0002:004353d0 ?jqShutdown@@YAXXZ 00C248D0 f jobqueue.o
+19	PENDING	0002:004353f0 ?Ptr@?$jqPtr@UjqBatch@@@@QAEAAPAUjqBatch@@XZ 00C248F0 f i jobqueue.o
+20	PENDING	0002:00435400 ?Ptr@?$jqPtr@UjqBatchGroup@@@@QAEAAPAUjqBatchGroup@@XZ 00C24900 f i jobqueue.o
+21	PENDING	0002:00435410 ??0?$jqPtr@UjqBatch@@@@QAE@PAUjqBatch@@@Z 00C24910 f i jobqueue.o
+22	PENDING	0002:00435420 ??4?$jqPtr@UjqBatch@@@@QAEABV0@PAUjqBatch@@@Z 00C24920 f i jobqueue.o
+23	PENDING	0002:00435430 ??B?$jqPtr@UjqBatch@@@@QAEPAUjqBatch@@XZ 00C24930 f i jobqueue.o
+24	PENDING	0002:00435440 ??0?$jqPtr@UjqBatchGroup@@@@QAE@PAUjqBatchGroup@@@Z 00C24940 f i jobqueue.o
+25	PENDING	0002:00435450 ??4?$jqPtr@UjqBatchGroup@@@@QAEABV0@PAUjqBatchGroup@@@Z 00C24950 f i jobqueue.o
+26	PENDING	0002:00435460 ??B?$jqPtr@UjqBatchGroup@@@@QAEPAUjqBatchGroup@@XZ 00C24960 f i jobqueue.o

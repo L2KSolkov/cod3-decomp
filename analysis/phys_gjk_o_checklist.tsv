@@ -1,0 +1,38 @@
+index	status	map_line
+1	PORTED	0002:00479700 ?get_support_dir@phys_gjk_cache_info@@QBEABVDir3@math@@XZ 00C68C00 f i phys_gjk.o
+2	PORTED	0002:00479730 ?get_simplex@phys_gjk_cache_info@@QAEXPAVDir3@math@@0PAH@Z 00C68C30 f i phys_gjk.o
+3	PORTED	0002:00479840 ?set_flag_was_touched@phys_gjk_cache_info@@QAEXXZ 00C68D40 f i phys_gjk.o
+4	PORTED	0002:00479850 ?set_simplex@phys_gjk_cache_info@@QAEXQBVDir3@math@@0H@Z 00C68D50 f i phys_gjk.o
+5	PORTED	0002:00479930 ?invalidate_support_dir@phys_gjk_cache_info@@QAEXXZ 00C68E30 f i phys_gjk.o
+6	PORTED	0002:00479940 ?is_support_dir_valid@phys_gjk_cache_info@@QBE?BHXZ 00C68E40 f i phys_gjk.o
+7	PORTED	0002:00479950 ?is_simplex_valid@phys_gjk_cache_info@@QBE?BHXZ 00C68E50 f i phys_gjk.o
+8	PORTED	0002:00479960 ?get_std_pen_thresh@phys_gjk_info@@SA?BMXZ 00C68E60 f i phys_gjk.o
+9	PORTED	0002:00479970 ?get_std_sin_ang_conv_thresh_sq@phys_gjk_info@@SA?BMXZ 00C68E70 f i phys_gjk.o
+10	PORTED	0002:00479980 ?get_std_conv_thresh@phys_gjk_info@@SA?BMXZ 00C68E80 f i phys_gjk.o
+11	PORTED	0002:00479990 ?get_std_sep_conv_thresh@phys_gjk_info@@SA?BMXZ 00C68E90 f i phys_gjk.o
+12	PORTED	0002:004799a0 ?get_std_extra_separation@phys_gjk_info@@SA?BMXZ 00C68EA0 f i phys_gjk.o
+13	PORTED	0002:004799b0 ?set_flag@phys_gjk_info@@QAEXHH@Z 00C68EB0 f i phys_gjk.o
+14	PORTED	0002:004799f0 ?get_flag@phys_gjk_info@@QAEHH@Z 00C68EF0 f i phys_gjk.o
+15	PORTED	0002:00479a00 ?get_set_info@phys_gjk_info@@QAEPAUphys_gjk_set_info@1@H@Z 00C68F00 f i phys_gjk.o
+16	PORTED	0002:00479a20 ?compress_verts@phys_gjk_info@@QAE?BHH@Z 00C68F20 f i phys_gjk.o
+17	VERIFIED	0002:00479bf0 ?comp_closest_points@phys_gjk_info@@QAEXHPAVDir3@math@@0@Z 00C690F0 f i phys_gjk.o
+18	PORTED	0002:00479d20 ?comp_lambda_1@phys_gjk_info@@QAEXH@Z 00C69220 f i phys_gjk.o
+19	VERIFIED	0002:00479d60 ?comp_lambda_2@phys_gjk_info@@QAEXHH@Z 00C69260 f i phys_gjk.o
+20	VERIFIED	0002:00479e50 ?comp_lambda_3@phys_gjk_info@@QAEXHHH@Z 00C69350 f i phys_gjk.o
+21	VERIFIED	0002:0047a040 ?comp_lambda_4@phys_gjk_info@@QAEXXZ 00C69540 f i phys_gjk.o
+22	PORTED	0002:0047a250 ?gjk_subalgorithm@phys_gjk_info@@QAE?BHHH@Z 00C69750 f phys_gjk.o
+23	PORTED	0002:0047a420 ?seed_simplex@phys_gjk_info@@QAE?BHH@Z 00C69920 f phys_gjk.o
+24	PORTED	0002:0047a6a0 ?gjk@phys_gjk_info@@QAE?AW4gjk_retval_e@1@PAVphys_collide_data@@ABVDir3@math@@_N@Z 00C69BA0 f phys_gjk.o
+25	VERIFIED	0002:0047ad80 ?collide@phys_gjk_info@@QAE?AW4gjk_retval_e@1@PAVphys_collide_data@@@Z 00C6A280 f phys_gjk.o
+26	VERIFIED	0002:0047b280 ?phys_collide_do_gjk_collide@phys_gjk_info@@QAE_NPAVphys_collide_data@@M@Z 00C6A780 f phys_gjk.o
+27	PORTED	0002:0047b490 ?set_sign@gjk_sep_dir@@SA?BMMM@Z 00C6A990 f i phys_gjk.o
+28	PORTED	0002:0047b4b0 ?gjk_cache_update_invalid@phys_gjk_info@@QAEXPAVphys_collide_data@@@Z 00C6A9B0 f i phys_gjk.o
+29	PORTED	0002:0047b4e0 ?support@phys_gjk_geom@@QBE?BVDir3@math@@ABVMat43@3@ABV23@@Z 00C6A9E0 f i phys_gjk.o
+30	PORTED	0002:0047b5b0 ?get_center@phys_gjk_geom@@QBE?BVDir3@math@@ABVMat43@3@@Z 00C6AAB0 f i phys_gjk.o
+31	VERIFIED	0002:0047b620 ?comp_v@phys_gjk_info@@QAE_NHPAVDir3@math@@@Z 00C6AB20 f i phys_gjk.o
+32	PORTED	0002:0047b8e0 ?init_gjk@phys_gjk_info@@QAE?BHPAVphys_collide_data@@ABVDir3@math@@_N@Z 00C6ADE0 f i phys_gjk.o
+33	PORTED	0002:0047ba20 ?dist_seg@gjk_sep_dir@@SA?BMABVDir3@math@@00PAV23@@Z 00C6AF20 f i phys_gjk.o
+34	PORTED	0002:0047bb90 ?get_initial_support_dir@phys_gjk_info@@QAE?BVDir3@math@@PAVphys_collide_data@@@Z 00C6B090 f i phys_gjk.o
+35	VERIFIED	0002:0047bc90 ?gjk_cache_update_separated@phys_gjk_info@@QAEXPAVphys_collide_data@@@Z 00C6B190 f i phys_gjk.o
+36	VERIFIED	0002:0047bd30 ?gjk_cache_update_colliding@phys_gjk_info@@QAEXPAVphys_collide_data@@@Z 00C6B230 f i phys_gjk.o
+37	PORTED	0002:0047bde0 ?comp_sep_dir@gjk_sep_dir@@SA?BVDir3@math@@PAVphys_collide_data@@PAVphys_gjk_info@@@Z 00C6B2E0 f i phys_gjk.o

@@ -1,0 +1,44 @@
+ida_ea	va	name	signature	family
+0x007BADD0	0x00BAA2D0	?InitQuickPool@@YAXXZ	void __cdecl InitQuickPool(void)	mem_lib.o
+0x007BAE40	0x00BAA340	?alloc_size@mem_sentinel@@YAHHH@Z	int __cdecl mem_sentinel::alloc_size(int,int)	mem_lib.o
+0x007BAE70	0x00BAA370	?init@mem_sentinel@@YAPAXPAXHH@Z	void * __cdecl mem_sentinel::init(void *,int,int)	mem_lib.o
+0x007BAED0	0x00BAA3D0	?mem_enable_no_mem_break@@YAX_N@Z	void __cdecl mem_enable_no_mem_break(bool)	mem_lib.o
+0x007BAEE0	0x00BAA3E0	?mem_break@@YAXXZ	void __cdecl mem_break(void)	mem_lib.o
+0x007BAEF0	0x00BAA3F0	?mem_heap_create@@YAXPAUmem_heap@@PAX10@Z	void __cdecl mem_heap_create(struct mem_heap *,void *,void *,struct mem_heap *)	mem_lib.o
+0x007BAF60	0x00BAA460	?mem_heap_create@@YAHPAX0PAUmem_heap@@@Z	int __cdecl mem_heap_create(void *,void *,struct mem_heap *)	mem_lib.o
+0x007BAFC0	0x00BAA4C0	?mem_heap_destroy@@YAHPAUmem_heap@@@Z	int __cdecl mem_heap_destroy(struct mem_heap *)	mem_lib.o
+0x007BB000	0x00BAA500	?mem_heap_destroy@@YAHH@Z	int __cdecl mem_heap_destroy(int)	mem_lib.o
+0x007BB050	0x00BAA550	?mem_heap_get@@YAPAUmem_heap@@W4mem_heap_type@@@Z	struct mem_heap * __cdecl mem_heap_get(enum mem_heap_type)	mem_lib.o
+0x007BB080	0x00BAA580	?mem_heap_set_current@@YAPAUmem_heap@@PAU1@@Z	struct mem_heap * __cdecl mem_heap_set_current(struct mem_heap *)	mem_lib.o
+0x007BB0A0	0x00BAA5A0	?mem_heap_set_current@@YAPAUmem_heap@@W4mem_heap_type@@@Z	struct mem_heap * __cdecl mem_heap_set_current(enum mem_heap_type)	mem_lib.o
+0x007BB0C0	0x00BAA5C0	?mem_heap_get_current@@YAPAUmem_heap@@XZ	struct mem_heap * __cdecl mem_heap_get_current(void)	mem_lib.o
+0x007BB0D0	0x00BAA5D0	?mem_init@@YAHXZ	int __cdecl mem_init(void)	mem_lib.o
+0x007BB1D0	0x00BAA6D0	?mem_alt_sbrk@@YAPAXJ@Z	void * __cdecl mem_alt_sbrk(long)	mem_lib.o
+0x007BB200	0x00BAA700	?mem_get_current_av@@YAPAUmalloc_state@@XZ	struct malloc_state * __cdecl mem_get_current_av(void)	mem_lib.o
+0x007BB210	0x00BAA710	?validate_chunk_list@@YAXPAUmalloc_chunk@@_N@Z	void __cdecl validate_chunk_list(struct malloc_chunk *,bool)	mem_lib.o
+0x007BB280	0x00BAA780	?mem_validate_heap@@YAXPAUmem_heap@@@Z	void __cdecl mem_validate_heap(struct mem_heap *)	mem_lib.o
+0x007BB310	0x00BAA810	?mem_push_context@@YAXPBD@Z	void __cdecl mem_push_context(char const *)	mem_lib.o
+0x007BB320	0x00BAA820	?mem_pop_context@@YAXXZ	void __cdecl mem_pop_context(void)	mem_lib.o
+0x007BB330	0x00BAA830	?mem_get_used_bytes@@YAHW4mem_heap_type@@@Z	int __cdecl mem_get_used_bytes(enum mem_heap_type)	mem_lib.o
+0x007BB380	0x00BAA880	?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z	int __cdecl mem_get_high_used_bytes(enum mem_heap_type)	mem_lib.o
+0x007BB3D0	0x00BAA8D0	?mem_get_free_bytes@@YAHW4mem_heap_type@@@Z	int __cdecl mem_get_free_bytes(enum mem_heap_type)	mem_lib.o
+0x007BB470	0x00BAA970	?mem_report_mem_usage@@YAXXZ	void __cdecl mem_report_mem_usage(void)	mem_lib.o
+0x007BB480	0x00BAA980	?mem_set_checkpoint@@YAHXZ	int __cdecl mem_set_checkpoint(void)	mem_lib.o
+0x007BB490	0x00BAA990	?mem_heap_free@mem_sentinel@@YAPAXPAX@Z	void * __cdecl mem_sentinel::mem_heap_free(void *)	mem_lib.o
+0x007BB510	0x00BAAA10	?mem_heap_realloc_private@@YAPAXPAXI@Z	void * __cdecl mem_heap_realloc_private(void *,unsigned int)	mem_lib.o
+0x007BB5A0	0x00BAAAA0	?mem_heap_malloc_private@@YAPAXHI@Z	void * __cdecl mem_heap_malloc_private(int,unsigned int)	mem_lib.o
+0x007BB8B0	0x00BAADB0	?mem_heap_free_private@@YAXPAUmem_heap@@PAX@Z	void __cdecl mem_heap_free_private(struct mem_heap *,void *)	mem_lib.o
+0x007BB910	0x00BAAE10	?mem_heap_malloc@@YAPAXI@Z	void * __cdecl mem_heap_malloc(unsigned int)	mem_lib.o
+0x007BB930	0x00BAAE30	?mem_heap_malloc@@YAPAXHI@Z	void * __cdecl mem_heap_malloc(int,unsigned int)	mem_lib.o
+0x007BB940	0x00BAAE40	?mem_heap_malloc@@YAPAXPAUmem_heap@@HI@Z	void * __cdecl mem_heap_malloc(struct mem_heap *,int,unsigned int)	mem_lib.o
+0x007BB990	0x00BAAE90	?mem_heap_malloc_ctx@@YAPAXHIPBD0H@Z	void * __cdecl mem_heap_malloc_ctx(int,unsigned int,char const *,char const *,int)	mem_lib.o
+0x007BB9B0	0x00BAAEB0	?mem_heap_calloc@@YAPAXHI@Z	void * __cdecl mem_heap_calloc(int,unsigned int)	mem_lib.o
+0x007BB9F0	0x00BAAEF0	?mem_heap_calloc@@YAPAXPAUmem_heap@@HI@Z	void * __cdecl mem_heap_calloc(struct mem_heap *,int,unsigned int)	mem_lib.o
+0x007BBA50	0x00BAAF50	?mem_heap_realloc@@YAPAXPAXI@Z	void * __cdecl mem_heap_realloc(void *,unsigned int)	mem_lib.o
+0x007BBA60	0x00BAAF60	?mem_heap_realloc@@YAPAXPAUmem_heap@@PAXI@Z	void * __cdecl mem_heap_realloc(struct mem_heap *,void *,unsigned int)	mem_lib.o
+0x007BBAB0	0x00BAAFB0	?mem_heap_free@@YAXPAUmem_heap@@PAX@Z	void __cdecl mem_heap_free(struct mem_heap *,void *)	mem_lib.o
+0x007BBAC0	0x00BAAFC0	?debug_malloc@@YAPAXI@Z	void * __cdecl debug_malloc(unsigned int)	mem_lib.o
+0x007BBB00	0x00BAB000	?mem_heap_free_check_reserve@@YA_NPAUmem_heap@@PAX@Z	bool __cdecl mem_heap_free_check_reserve(struct mem_heap *,void *)	mem_lib.o
+0x007BBB50	0x00BAB050	?mem_heap_free_private@@YAXPAX@Z	void __cdecl mem_heap_free_private(void *)	mem_lib.o
+0x007BBDA0	0x00BAB2A0	?mem_heap_free@@YAXPAX@Z	void __cdecl mem_heap_free(void *)	mem_lib.o
+0x007BBDB0	0x00BAB2B0	?debug_free@@YAXPAX@Z	void __cdecl debug_free(void *)	mem_lib.o

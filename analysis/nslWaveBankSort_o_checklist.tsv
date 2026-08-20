@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:00429770 ?nslWaveBankSortSwap@@YAXPATnslWaveName@@PAUnslWave@@II@Z 00C18C70 f nslWaveBankSort.o
+2	VERIFIED	0002:004297e0 ?nslWaveBankSortRecursive@@YAXPAUnslWaveBank@@HHP6AHPBTnslWaveName@@1@Z@Z 00C18CE0 f nslWaveBankSort.o
+3	VERIFIED	0002:00429c90 ?nslWaveBankSort@@YAXPAUnslWaveBank@@@Z 00C19190 f nslWaveBankSort.o

@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:0041aff0 ?Render@apsColorUVANode@@UAEXXZ 00C0A4F0 f apsColorUVANode.o
+2	PORTED	0002:0041b010 ?GetVShader@apsColorUVARender@@YAKXZ 00C0A510 f i apsColorUVANode.o
+3	PORTED	0002:0041b020 ?GetPShader@apsColorUVARenderPixel@@YAPAKXZ 00C0A520 f i apsColorUVANode.o
+4	PORTED	0002:0041b030 ?GetPos@ColorUVAParticle@@QAEAAUPacked@Dir3@math@@XZ 00C0A530 f i apsColorUVANode.o
+5	PORTED	0002:0041b040 ?GetColor@ColorUVAParticle@@QAEAAVVector4@math@@XZ 00C0A540 f i apsColorUVANode.o
+6	PORTED	0002:0041b050 ?GetWidth@ColorUVAParticle@@QAEMXZ 00C0A550 f i apsColorUVANode.o
+7	PORTED	0002:0041b060 ?GetHeight@ColorUVAParticle@@QAEMXZ 00C0A560 f i apsColorUVANode.o
+8	PORTED	0002:0041b070 ?GetAngle@ColorUVAParticle@@QAEMXZ 00C0A570 f i apsColorUVANode.o
+9	PORTED	0002:0041b080 ?GetFrame@ColorUVAParticle@@QAEMXZ 00C0A580 f i apsColorUVANode.o
+10	PORTED	0002:0041b090 ?GetVelocity@ColorUVAParticle@@QAEAAVVector4@math@@XZ 00C0A590 f i apsColorUVANode.o
+11	PORTED	0002:0041b0a0 ??0?$cNodeRenderer@UColorUVAParticle@@VapsColorUVANode@@@@QAE@AAVapsColorUVANode@@@Z 00C0A5A0 f i apsColorUVANode.o
+12	PORTED	0002:0041b0b0 ?SetupDefaultShaders@?$cNodeRenderer@UColorUVAParticle@@VapsColorUVANode@@@@QAEXABVMat43@math@@@Z 00C0A5B0 f i apsColorUVANode.o
+13	PORTED	0002:0041b360 ??$fncompare@UColorUVAParticle@@@apsRenderSort@@YAHPBX0@Z 00C0A860 f i apsColorUVANode.o
+14	PORTED	0002:0041b3a0 ?SetupShaders@?$cNodeRenderer@UColorUVAParticle@@VapsColorUVANode@@@@QAEXXZ 00C0A8A0 f i apsColorUVANode.o
+15	PORTED	0002:0041b3b0 ??$SortPointers@UColorUVAParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C0A8B0 f i apsColorUVANode.o
+16	VERIFIED	0002:0041b3f0 ?Render@?$cNodeRenderer@UColorUVAParticle@@VapsColorUVANode@@@@QAEXXZ 00C0A8F0 f i apsColorUVANode.o

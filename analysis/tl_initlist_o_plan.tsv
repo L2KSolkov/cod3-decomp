@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00833B70	?tlInitListInit@@YAXXZ	void __cdecl tlInitListInit(void)	

@@ -1,0 +1,5 @@
+index	status	map_line
+1	VERIFIED	0002:00450520 ?nglGetUnusedWorkBuffer@@YAXPAPAXPAI@Z 00C3FA20 f ngl_dx_buf.o
+2	VERIFIED	0002:00450550 ?nglXbSetPushBufferSize@@YAXII@Z 00C3FA50 f ngl_dx_buf.o
+3	VERIFIED	0002:00450570 ?nglSetBufferSize@@YAXW4nglBufferType@@I_N@Z 00C3FA70 f ngl_dx_buf.o
+4	VERIFIED	0002:00450710 ?ngliInitWorkBuffers@@YAXXZ 00C3FC10 f ngl_dx_buf.o

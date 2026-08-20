@@ -1,0 +1,731 @@
+index	status	map_line
+1	VERIFIED	0002:002631d0 ?empty@InplaceString@@QBE_NXZ 00A526D0 f i streamer.o
+2	VERIFIED	0002:002631e0 ??0mem_info@@QAE@PAEH@Z 00A526E0 f i streamer.o
+3	PORTED	0002:00263200 ??0Color32@@QAE@I@Z 00A52700 f i streamer.o
+4	PORTED	0002:00263220 ?to_ulong@Color32@@QBEIXZ 00A52720 f i streamer.o
+5	VERIFIED	0002:00263230 ?to_float@NumBanks@@QAEAAMXZ 00A52730 f i streamer.o
+6	VERIFIED	0002:00263240 ?to_float@NumBanks@@QBEMXZ 00A52740 f i streamer.o
+7	VERIFIED	0002:00263250 ?GetNumBanks@BankManager@@QBEMXZ 00A52750 f i streamer.o
+8	VERIFIED	0002:00263260 ?get_bank_size@BankManager@@QBEIXZ 00A52760 f i streamer.o
+9	VERIFIED	0002:00263270 ?get_free_banks@BankManager@@QBE?AUTBankAlloc@@XZ 00A52770 f i streamer.o
+10	VERIFIED	0002:002632a0 ?GetMramArena@BankManager@@QAEPAEXZ 00A527A0 f i streamer.o
+11	VERIFIED	0002:002632b0 ?MemInBank@BankManager@@QBE_NPAX@Z 00A527B0 f i streamer.o
+12	VERIFIED	0002:00263300 ?get_low_water_mark@BankManager@@QBEMXZ 00A52800 f i streamer.o
+13	VERIFIED	0002:00263310 ?APKBANK_UNPACK@@YAXIPAG0@Z 00A52810 f i streamer.o
+14	VERIFIED	0002:00263330 ?FixDown@PakHeader@@QAEXXZ 00A52830 f i streamer.o
+15	VERIFIED	0002:002633e0 ?FixUp@PakHeader@@QAEX_NH@Z 00A528E0 f i streamer.o
+16	VERIFIED	0002:002634a0 ?get_dlist_node@PakFile@@QAEPAXXZ 00A529A0 f i streamer.o
+17	VERIFIED	0002:002634b0 ??2PakFile@@SAPAXI_NPBDH@Z 00A529B0 f i streamer.o
+18	VERIFIED	0002:002634d0 ??3PakFile@@SAXPAX_NPBDH@Z 00A529D0 f i streamer.o
+19	VERIFIED	0002:002634f0 ??3PakFile@@SAXPAX@Z 00A529F0 f i streamer.o
+20	VERIFIED	0002:00263510 ?GetId@PakFile@@QBE?AW4TPakId@@XZ 00A52A10 f i streamer.o
+21	VERIFIED	0002:00263520 ?GetType@PakFile@@QBE?AW4EPakType@@XZ 00A52A20 f i streamer.o
+22	VERIFIED	0002:00263530 ?IsLoading@PakFile@@QBE_NXZ 00A52A30 f i streamer.o
+23	VERIFIED	0002:00263550 ?IsLoaded@PakFile@@QBE_NXZ 00A52A50 f i streamer.o
+24	VERIFIED	0002:00263570 ?IsUnloading@PakFile@@QBE_NXZ 00A52A70 f i streamer.o
+25	VERIFIED	0002:002635a0 ?IsUnloaded@PakFile@@QBE_NXZ 00A52AA0 f i streamer.o
+26	VERIFIED	0002:002635c0 ?IsCancelled@PakFile@@QBE_NXZ 00A52AC0 f i streamer.o
+27	VERIFIED	0002:002635e0 ?IsFillingBanks@PakManager@@QBE_NXZ 00A52AE0 f i streamer.o
+28	VERIFIED	0002:002635f0 ?GetAnimPakId@PakManager@@QBE?AW4TPakId@@XZ 00A52AF0 f i streamer.o
+29	VERIFIED	0002:00263600 ?IsValid@PakManager@@QBE_NW4TPakId@@@Z 00A52B00 f i streamer.o
+30	VERIFIED	0002:00263630 ?GetLevelPakId@PakManager@@QBE?AW4TPakId@@XZ 00A52B30 f i streamer.o
+31	PORTED	0002:00263640 ?UnConst@PakManager@@ABEPAUPakInfoNode@@PBU2@@Z 00A52B40 f i streamer.o
+32	VERIFIED	0002:00263650 ?GetPosition@ZdNode@@QBEABVPosition3@math@@XZ 00A52B50 f i streamer.o
+33	VERIFIED	0002:00263660 ?GetStreamZone@ZdNode@@QBEPBVStreamZone@@XZ 00A52B60 f i streamer.o
+34	PORTED	0002:00263670 ?GetZoneBitset@ZdNode@@QBEABV?$BitSet@$0EA@@@XZ 00A52B70 f i streamer.o
+35	VERIFIED	0002:00263680 ?GetZoneDistances@ZdNode@@QBEABV?$InplaceVector@M@@XZ 00A52B80 f i streamer.o
+36	PORTED	0002:00263690 ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ 00A52B90 f i streamer.o
+37	VERIFIED	0002:002636a0 ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ 00A52BA0 f i streamer.o
+38	VERIFIED	0002:002636b0 ?GetName@StreamZone@@QBEPBDXZ 00A52BB0 f i streamer.o
+39	PORTED	0002:002636c0 ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z 00A52BC0 f i streamer.o
+40	PORTED	0002:002636d0 ?GetZoneBitset@ZoneOverrideBrushSet@@QBEABV?$BitSet@$0EA@@@XZ 00A52BD0 f i streamer.o
+41	VERIFIED	0002:002636e0 ?GetZoneDistances@ZoneOverrideBrushSet@@QBEABV?$InplaceVector@M@@XZ 00A52BE0 f i streamer.o
+42	PORTED	0002:002636f0 ?GetNonZoneDistances@ZoneOverrideBrushSet@@QAEAAV?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@XZ 00A52BF0 f i streamer.o
+43	VERIFIED	0002:00263700 ?WasInside@ZoneOverrideBrushSet@@QBE_NXZ 00A52C00 f i streamer.o
+44	VERIFIED	0002:00263710 ?SetInside@ZoneOverrideBrushSet@@QAEX_N@Z 00A52C10 f i streamer.o
+45	VERIFIED	0002:00263720 ?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z 00A52C20 f i streamer.o
+46	VERIFIED	0002:00263730 ?strnicmp@InstanceBank@@QBEHPBD0H@Z 00A52C30 f i streamer.o
+47	VERIFIED	0002:002637b0 ?GetType@InstanceBank@@QBE?AW4eInstanceBankType@@XZ 00A52CB0 f i streamer.o
+48	VERIFIED	0002:002637c0 ?GetTypeStr@InstanceBank@@QBEPBDXZ 00A52CC0 f i streamer.o
+49	VERIFIED	0002:002637d0 ?Inst@XModelPartsManager@@SAPAV1@XZ 00A52CD0 f i streamer.o
+50	VERIFIED	0002:002637e0 ?nalGetAnimDirectory@@YAPAV?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@XZ 00A52CE0 f i streamer.o
+51	VERIFIED	0002:002637f0 ?nalSetAnimDirectory@@YAXPAV?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@@Z 00A52CF0 f i streamer.o
+52	PORTED	0002:00263800 ?nalGetAnimFileDirectory@@YAPAV?$tlResourceDirectory@VnalAnimFile@@@@XZ 00A52D00 f i streamer.o
+53	PORTED	0002:00263810 ?nalSetAnimFileDirectory@@YAXPAV?$tlResourceDirectory@VnalAnimFile@@@@@Z 00A52D10 f i streamer.o
+54	VERIFIED	0002:00263820 ?nalGetSkeletonDirectory@@YAPAV?$tlResourceDirectory@VnalBaseSkeleton@@@@XZ 00A52D20 f i streamer.o
+55	VERIFIED	0002:00263830 ?nalSetSkeletonDirectory@@YAXPAV?$tlResourceDirectory@VnalBaseSkeleton@@@@@Z 00A52D30 f i streamer.o
+56	VERIFIED	0002:00263840 ?nalGetSceneAnimDirectory@@YAPAV?$tlResourceDirectory@VnalSceneAnim@@@@XZ 00A52D40 f i streamer.o
+57	VERIFIED	0002:00263850 ?nalSetSceneAnimDirectory@@YAXPAV?$tlResourceDirectory@VnalSceneAnim@@@@@Z 00A52D50 f i streamer.o
+58	VERIFIED	0002:00263860 ?GetDirectory@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAV?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@XZ 00A52D60 f i streamer.o
+59	VERIFIED	0002:00263870 ?SetDirectory@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAXPAV?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@@Z 00A52D70 f i streamer.o
+60	VERIFIED	0002:00263880 ?GetDirectory@?$cdResourceDirectory@VnalSceneAnim@@@@SAPAV?$tlResourceDirectory@VnalSceneAnim@@@@XZ 00A52D80 f i streamer.o
+61	VERIFIED	0002:00263890 ?SetDirectory@?$cdResourceDirectory@VnalSceneAnim@@@@SAXPAV?$tlResourceDirectory@VnalSceneAnim@@@@@Z 00A52D90 f i streamer.o
+62	PORTED	0002:002638a0 ?GetDirectory@?$cdResourceDirectory@VnalAnimFile@@@@SAPAV?$tlResourceDirectory@VnalAnimFile@@@@XZ 00A52DA0 f i streamer.o
+63	PORTED	0002:002638b0 ?SetDirectory@?$cdResourceDirectory@VnalAnimFile@@@@SAXPAV?$tlResourceDirectory@VnalAnimFile@@@@@Z 00A52DB0 f i streamer.o
+64	VERIFIED	0002:002638c0 ?GetDirectory@?$cdResourceDirectory@VnalBaseSkeleton@@@@SAPAV?$tlResourceDirectory@VnalBaseSkeleton@@@@XZ 00A52DC0 f i streamer.o
+65	VERIFIED	0002:002638d0 ?SetDirectory@?$cdResourceDirectory@VnalBaseSkeleton@@@@SAXPAV?$tlResourceDirectory@VnalBaseSkeleton@@@@@Z 00A52DD0 f i streamer.o
+66	VERIFIED	0002:002638e0 ?Order@tlFixedString@@QBEHABV1@@Z 00A52DE0 f i streamer.o
+67	VERIFIED	0002:00263930 ?LengthSquared@math@@YAMABVPosition3@1@@Z 00A52E30 f i streamer.o
+68	VERIFIED	0002:00263990 ??Hmath@@YA?AVVector4@0@ABV10@ABVPosition3@0@@Z 00A52E90 f i streamer.o
+69	VERIFIED	0002:002639e0 ??Kmath@@YA?AVVector4@0@ABV10@M@Z 00A52EE0 f i streamer.o
+70	VERIFIED	0002:00263a20 ??0Mat44@math@@QAE@ABVVector4@1@000@Z 00A52F20 f i streamer.o
+71	VERIFIED	0002:00263ac0 ?GetX@Mat44@math@@QAEAAVVector4@2@XZ 00A52FC0 f i streamer.o
+72	VERIFIED	0002:00263ad0 ?GetY@Mat44@math@@QAEAAVVector4@2@XZ 00A52FD0 f i streamer.o
+73	VERIFIED	0002:00263ae0 ?GetZ@Mat44@math@@QAEAAVVector4@2@XZ 00A52FE0 f i streamer.o
+74	VERIFIED	0002:00263af0 ?GetW@Mat44@math@@QAEAAVVector4@2@XZ 00A52FF0 f i streamer.o
+75	VERIFIED	0002:00263b00 ??0Mat44@math@@QAE@ABVMat33@1@@Z 00A53000 f i streamer.o
+76	VERIFIED	0002:00263b80 ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z 00A53080 f i streamer.o
+77	VERIFIED	0002:00263c00 ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z 00A53100 f i streamer.o
+78	VERIFIED	0002:00263c80 ??XVector4@math@@QAEABV01@ABVMat44@1@@Z 00A53180 f i streamer.o
+79	VERIFIED	0002:00263d10 ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z 00A53210 f i streamer.o
+80	VERIFIED	0002:00263f70 ??0LoadStats@@QAE@XZ 00A53470 f i streamer.o
+81	VERIFIED	0002:00263fa0 ?GetTime@LoadStats@@SAM_K0@Z 00A534A0 f i streamer.o
+82	VERIFIED	0002:00264000 ?GetFileExt@@YAPBDPBD@Z 00A53500 f streamer.o
+83	PORTED	0002:00264030 ?GetWorkAmount@@YAIPBD@Z 00A53530 f streamer.o
+84	PORTED	0002:00264b90 ?GetLoadTime@PakFile@@ABEMXZ 00A54090 f streamer.o
+85	VERIFIED	0002:00264bc0 ?GetProgress@PakFile@@QBEMXZ 00A540C0 f streamer.o
+86	VERIFIED	0002:00264c30 ?IsCancelOk@PakFile@@QBE_NXZ 00A54130 f streamer.o
+87	PORTED	0002:00264c40 ?CopyHeader@PakFile@@AAEXXZ 00A54140 f streamer.o
+88	PORTED	0002:00264cd0 ?DetermineNextFile@PakFile@@AAEXXZ 00A541D0 f streamer.o
+89	PORTED	0002:00264e50 ?GetInfo@PakFile@@QBEPBUPakInfoNode@@XZ 00A54350 f streamer.o
+90	PORTED	0002:00264e80 ?ValidateRange@PakFile@@ABEXPAX@Z 00A54380 f streamer.o
+91	PORTED	0002:00264ec0 ?IsRequestValid@PakFile@@ABE_NAATTRequestId@@@Z 00A543C0 f streamer.o
+92	PORTED	0002:00264ee0 ?SetRequestInvalid@PakFile@@ABEXAATTRequestId@@@Z 00A543E0 f streamer.o
+93	PORTED	0002:00264ef0 ?IsRequestDone@PakFile@@ABE_NAATTRequestId@@@Z 00A543F0 f streamer.o
+94	VERIFIED	0002:00265080 ?stream_alloc@@YAPAEH_N@Z 00A54580 f streamer.o
+95	VERIFIED	0002:002651a0 ?stream_free@@YAXPAE_N@Z 00A546A0 f streamer.o
+96	PORTED	0002:00265210 ?DecodeDB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54710 f streamer.o
+97	PORTED	0002:00265230 ?DecodeXModelBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54730 f streamer.o
+98	PORTED	0002:00265250 ?DecodeXModelPartsBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54750 f streamer.o
+99	PORTED	0002:00265270 ?DecodeAITypeBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54770 f streamer.o
+100	PORTED	0002:00265290 ?DecodeLightGrid@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54790 f streamer.o
+101	PORTED	0002:002652b0 ?DecodeGrassInfo@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A547B0 f streamer.o
+102	PORTED	0002:002652c0 ?DecodeLevelPath@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A547C0 f streamer.o
+103	PORTED	0002:002652e0 ?DecodeZonePath@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A547E0 f streamer.o
+104	PORTED	0002:00265300 ?DecodeSTB@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54800 f streamer.o
+105	PORTED	0002:00265320 ?DecodeSPT@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54820 f streamer.o
+106	PORTED	0002:00265330 ?DecodeWIND@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54830 f streamer.o
+107	PORTED	0002:00265340 ?DecodeSEED@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A54840 f streamer.o
+108	VERIFIED	0002:00265350 ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z 00A54850 f streamer.o
+109	VERIFIED	0002:00265370 ?TogglePakRender@@YAXXZ 00A54870 f streamer.o
+110	PORTED	0002:00265390 ?PakGetThreadId@@YAIXZ 00A54890 f streamer.o
+111	VERIFIED	0002:002653a0 ?ValidatePakId@@YAXW4TPakId@@@Z 00A548A0 f streamer.o
+112	VERIFIED	0002:00265400 ?CurPakId@@YA?AW4TPakId@@XZ 00A54900 f streamer.o
+113	VERIFIED	0002:00265410 ?ClearFileLocationInfo@PakManager@@QAEXXZ 00A54910 f streamer.o
+114	VERIFIED	0002:00265420 ?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z 00A54920 f streamer.o
+115	VERIFIED	0002:00265450 ?ClearUserDistance@PakManager@@QAEXPBUPakInfoNode@@@Z 00A54950 f streamer.o
+116	VERIFIED	0002:00265470 ?MyRenderText@@YAXPBDHHABVColor@@MM@Z 00A54970 f streamer.o
+117	PORTED	0002:00265570 ?GetDistance@PakManager@@ABEMPBUPakInfoNode@@@Z 00A54A70 f streamer.o
+118	VERIFIED	0002:002656b0 ?GetNumBanks@PakManager@@QBE?AVNumBanks@@PBUPakInfoNode@@@Z 00A54BB0 f streamer.o
+119	VERIFIED	0002:00265710 ?SetSoundProgress@PakManager@@QAEXM@Z 00A54C10 f streamer.o
+120	VERIFIED	0002:00265760 ?SetBrocProgress@PakManager@@QAEXM@Z 00A54C60 f streamer.o
+121	VERIFIED	0002:002657a0 ?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z 00A54CA0 f streamer.o
+122	VERIFIED	0002:002657d0 ?IsUnloaded@PakManager@@QBE_NW4TPakId@@@Z 00A54CD0 f streamer.o
+123	VERIFIED	0002:00265800 ?IsLoading@PakManager@@QBE_NW4TPakId@@@Z 00A54D00 f streamer.o
+124	VERIFIED	0002:00265830 ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z 00A54D30 f streamer.o
+125	VERIFIED	0002:00265850 ?LoadWbk@PakManager@@QAEXVtlFixedString@@_N@Z 00A54D50 f streamer.o
+126	PORTED	0002:00265870 ?NflMessage@@YAXPBD@Z 00A54D70 f streamer.o
+127	VERIFIED	0002:00265880 ?NflError@@YAXPBD@Z 00A54D80 f streamer.o
+128	VERIFIED	0002:002658a0 ?NflWarning@@YAXPBD@Z 00A54DA0 f streamer.o
+129	VERIFIED	0002:002658c0 ?ShutdownNfl@@YAXXZ 00A54DC0 f streamer.o
+130	PORTED	0002:002658d0 ?codNflUpdate@@YAXXZ 00A54DD0 f streamer.o
+131	VERIFIED	0002:002658f0 ?codNflReadFile@@YAIW4nflFileID@@IPAXI@Z 00A54DF0 f streamer.o
+132	VERIFIED	0002:00265930 ?codNflCallback@@YAXW4nflRequestState@@W4nflRequestID@@PAX@Z 00A54E30 f streamer.o
+133	VERIFIED	0002:00265960 ?ToggleZoneGraph@@YAXXZ 00A54E60 f streamer.o
+134	VERIFIED	0002:002659c0 ?SetInitialCell@StreamZoneManager@@QAEXH@Z 00A54EC0 f streamer.o
+135	VERIFIED	0002:002659d0 ?SetInitialPosition@StreamZoneManager@@QAEXABVPosition3@math@@@Z 00A54ED0 f streamer.o
+136	VERIFIED	0002:00265a00 ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z 00A54F00 f streamer.o
+137	VERIFIED	0002:00265a10 ?ToggleSceneFX@SceneManager@@QAEXM@Z 00A54F10 f streamer.o
+138	VERIFIED	0002:00265a70 ?ToggleRenderEnts@SceneManager@@QAEXXZ 00A54F70 f streamer.o
+139	VERIFIED	0002:00265a90 ?ToggleRenderLights@SceneManager@@QAEXXZ 00A54F90 f streamer.o
+140	PORTED	0002:00265ab0 ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z 00A54FB0 f streamer.o
+141	VERIFIED	0002:00265b60 ?cdDestroyApk@@YAXPAVapkFile@apk@@@Z 00A55060 f streamer.o
+142	VERIFIED	0002:00265b70 ?cdLoadTexureInplace@@YAPAUnglTexture@@PAX@Z 00A55070 f streamer.o
+143	VERIFIED	0002:00265c10 ?cdDestroyTexture@@YAXPAUnglTexture@@@Z 00A55110 f streamer.o
+144	VERIFIED	0002:00265d70 ?cdLoadCharSkelInplace@@YAXPAX@Z 00A55270 f streamer.o
+145	VERIFIED	0002:00265ec0 ?GetHeapUsage@PakFile@@QBEXAAH0@Z 00A553C0 f streamer.o
+146	PORTED	0002:00265f60 ?CreateHeap@PakFile@@AAEPAUmem_heap@@PAEI@Z 00A55460 f streamer.o
+147	VERIFIED	0002:00265fe0 ?MemAlloc@PakFile@@QAEPAXII_N@Z 00A554E0 f streamer.o
+148	VERIFIED	0002:00266110 ?MemFree@PakFile@@QAE_NPAX_N@Z 00A55610 f streamer.o
+149	VERIFIED	0002:002661d0 ?IsInPakHeap@PakFile@@QAE_NPAX@Z 00A556D0 f streamer.o
+150	VERIFIED	0002:00266270 ?GetSection@PakFile@@QBEPBUSection@PakHeader@@PBD@Z 00A55770 f streamer.o
+151	PORTED	0002:00266320 ?PakReadDataAsync@PakFile@@ABE?ATTRequestId@@PAEIII_N@Z 00A55820 f streamer.o
+152	VERIFIED	0002:002663a0 ??0AssetBankSet@@QAE@XZ 00A558A0 f streamer.o
+153	PORTED	0002:002663d0 ?DecodeCharSkel@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A558D0 f streamer.o
+154	VERIFIED	0002:002663f0 ?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z 00A558F0 f streamer.o
+155	VERIFIED	0002:00266530 ?DecodeMipsettings@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z 00A55A30 f streamer.o
+156	VERIFIED	0002:002665a0 ?ReleaseSkeletons@InstanceBankMgr@@QAEXW4TPakId@@@Z 00A55AA0 f streamer.o
+157	VERIFIED	0002:00266610 ?Enumerate@InstanceBankMgr@@QAEXW4TPakId@@P6AXPBDW4eInstanceBankType@@PAX3@Z3@Z 00A55B10 f streamer.o
+158	VERIFIED	0002:002666b0 ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z 00A55BB0 f streamer.o
+159	VERIFIED	0002:002667d0 ?ResetPriorities@PakManager@@QAEX_N@Z 00A55CD0 f streamer.o
+160	VERIFIED	0002:00266950 ?SetDistance@PakManager@@QAEXPBUPakInfoNode@@M_N@Z 00A55E50 f streamer.o
+161	PORTED	0002:002669e0 ?GetUnloadedPrereq@PakManager@@ABEPAUPakInfoNode@@PBU2@@Z 00A55EE0 f streamer.o
+162	PORTED	0002:00266a40 ?RegisterPakLoaded@PakManager@@AAEXPAUPakInfoNode@@@Z 00A55F40 f streamer.o
+163	PORTED	0002:00266b90 ?RegisterPakUnloaded@PakManager@@AAEXPAUPakInfoNode@@@Z 00A56090 f streamer.o
+164	PORTED	0002:00266c50 ?GetContextStack@PakManager@@ABEAAV?$ae_sized_array@W4TPakId@@$0IA@@@XZ 00A56150 f streamer.o
+165	VERIFIED	0002:00266d00 ?PushContext@PakManager@@QAEXW4TPakId@@@Z 00A56200 f streamer.o
+166	PORTED	0002:00266d20 ?PushContext@PakManager@@AAEXPBUPakInfoNode@@@Z 00A56220 f streamer.o
+167	VERIFIED	0002:00266d40 ?MemAlloc@PakManager@@QAEPAXW4TPakId@@I_N@Z 00A56240 f streamer.o
+168	VERIFIED	0002:00266df0 ?MemAlign@PakManager@@QAEPAXW4TPakId@@II@Z 00A562F0 f streamer.o
+169	VERIFIED	0002:00266e90 ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z 00A56390 f streamer.o
+170	PORTED	0002:00266f50 ?StartupNfl@@YAXPBD@Z 00A56450 f streamer.o
+171	VERIFIED	0002:00266fe0 ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z 00A564E0 f streamer.o
+172	VERIFIED	0002:002672b0 ?CheckpointRestart@StreamZoneManager@@QAEXXZ 00A567B0 f streamer.o
+173	VERIFIED	0002:00267380 ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z 00A56880 f streamer.o
+174	PORTED	0002:00267450 ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@H@Z 00A56950 f streamer.o
+175	VERIFIED	0002:002674d0 ?OnLoaded@StreamZoneManager@@QAEXW4TPakId@@@Z 00A569D0 f streamer.o
+176	VERIFIED	0002:002676e0 ?OnUnload@StreamZoneManager@@QAEXW4TPakId@@@Z 00A56BE0 f streamer.o
+177	PORTED	0002:002678f0 ?RenderZoneGraph@StreamZoneManager@@QBEXPBVZoneBoundaryBank@@@Z 00A56DF0 f streamer.o
+178	VERIFIED	0002:002688c0 ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z 00A57DC0 f streamer.o
+179	PORTED	0002:00268a30 ?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@H@Z 00A57F30 f streamer.o
+180	VERIFIED	0002:00268ae0 ?GetNumZones@StreamZoneManager@@QBEHXZ 00A57FE0 f streamer.o
+181	VERIFIED	0002:00268b30 ?Console_ToggleSceneFX@@YAXXZ 00A58030 f streamer.o
+182	VERIFIED	0002:00268bf0 ?Console_ToggleRenderEnts@@YAXXZ 00A580F0 f streamer.o
+183	VERIFIED	0002:00268c10 ?Console_ToggleRenderLights@@YAXXZ 00A58110 f streamer.o
+184	VERIFIED	0002:00268c30 ?RestartPersistentArray@SceneManager@@QAEXXZ 00A58130 f streamer.o
+185	VERIFIED	0002:00268cb0 ?ResetAllStaticModels@SceneManager@@QAEXXZ 00A581B0 f streamer.o
+186	PORTED	0002:00268d80 ?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z 00A58280 f streamer.o
+187	VERIFIED	0002:00268ed0 ?EnableEffect@SceneManager@@QAEXI@Z 00A583D0 f streamer.o
+188	VERIFIED	0002:00268fc0 ?DisableEffect@SceneManager@@QAEXI@Z 00A584C0 f streamer.o
+189	VERIFIED	0002:002690b0 ?UpdateEffects@SceneManager@@QAEXM@Z 00A585B0 f streamer.o
+190	VERIFIED	0002:00269530 ?DebugRenderFX@SceneManager@@QAEXXZ 00A58A30 f streamer.o
+191	VERIFIED	0002:00269a20 ?DebugRenderLights@SceneManager@@QAEXXZ 00A58F20 f streamer.o
+192	VERIFIED	0002:00269af0 ?RenderInstanceGroups@SceneManager@@QAEXXZ 00A58FF0 f streamer.o
+193	PORTED	0002:0026a0b0 ?GetBank@SceneManager@@AAEPAVSceneBank@@W4TPakId@@@Z 00A595B0 f streamer.o
+194	PORTED	0002:0026a120 ?InitiateHeaderRead@PakFile@@AAEXXZ 00A59620 f streamer.o
+195	PORTED	0002:0026a380 ?UpdateReads@PakFile@@AAEXXZ 00A59880 f streamer.o
+196	PORTED	0002:0026a790 ?IsNextFileReady@PakFile@@AAE_NXZ 00A59C90 f streamer.o
+197	PORTED	0002:0026a900 ?RenderDebug@PakFile@@ABEXXZ 00A59E00 f streamer.o
+198	VERIFIED	0002:0026aff0 ?AddHeap@PakFile@@QAEXPAEI@Z 00A5A4F0 f streamer.o
+199	VERIFIED	0002:0026b040 ??0PakHeapContext@@QAE@W4TPakId@@_N@Z 00A5A540 f streamer.o
+200	VERIFIED	0002:0026b0e0 ?UnloadBanks@AssetBankSet@@SAXW4TPakId@@@Z 00A5A5E0 f streamer.o
+201	VERIFIED	0002:0026b120 ?IsEmpty@TBankAlloc@@QBE_NXZ 00A5A620 f streamer.o
+202	VERIFIED	0002:0026b150 ?Clear@TBankAlloc@@QAEXXZ 00A5A650 f streamer.o
+203	VERIFIED	0002:0026b160 ?ToFloat@TBankAlloc@@QBEMXZ 00A5A660 f streamer.o
+204	PORTED	0002:0026b1d0 ??1BankManager@@AAE@XZ 00A5A6D0 f streamer.o
+205	PORTED	0002:0026b540 ?GetAllocs@BankManager@@QBEXUTBankAlloc@@ABVNumBanks@@AAV?$ae_sized_array@Vmem_info@@$0CA@@@@Z 00A5AA40 f streamer.o
+206	VERIFIED	0002:0026b850 ?release@BankManager@@QAEXAAUTBankAlloc@@@Z 00A5AD50 f streamer.o
+207	VERIFIED	0002:0026b910 ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z 00A5AE10 f streamer.o
+208	PORTED	0002:0026b9a0 ?get_alloc@BankManager@@QBE?AVmem_info@@ABUTBankAlloc@@H_N@Z 00A5AEA0 f streamer.o
+209	VERIFIED	0002:0026bc50 ?get_free_count@BankManager@@QBE?AVNumBanks@@XZ 00A5B150 f streamer.o
+210	PORTED	0002:0026bd40 ?DecodeMipSettings@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5B240 f streamer.o
+211	PORTED	0002:0026bd60 ?DecodeInstanceBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5B260 f streamer.o
+212	PORTED	0002:0026bd80 ?DecodeHeap@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5B280 f streamer.o
+213	VERIFIED	0002:0026bde0 ??0InstanceBankMgr@@QAE@XZ 00A5B2E0 f streamer.o
+214	VERIFIED	0002:0026be80 ??1InstanceBankMgr@@QAE@XZ 00A5B380 f streamer.o
+215	VERIFIED	0002:0026bef0 ?Add@InstanceBankMgr@@QAEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@I@Z 00A5B3F0 f streamer.o
+216	VERIFIED	0002:0026c010 ?ReleaseAnims@InstanceBankMgr@@QAEXW4TPakId@@@Z 00A5B510 f streamer.o
+217	VERIFIED	0002:0026c500 ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z 00A5BA00 f streamer.o
+218	PORTED	0002:0026c5f0 ?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z 00A5BAF0 f streamer.o
+219	PORTED	0002:0026c620 ?Reset@PakManager@@AAEXXZ 00A5BB20 f streamer.o
+220	VERIFIED	0002:0026c660 ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@PBD@Z 00A5BB60 f streamer.o
+221	PORTED	0002:0026c770 ?PrintBankUsage@@YAMPADMABUTBankAlloc@@_N@Z 00A5BC70 f streamer.o
+222	PORTED	0002:0026c8b0 ?GetBestUnloadedPak@PakManager@@ABEPAUPakInfoNode@@XZ 00A5BDB0 f streamer.o
+223	VERIFIED	0002:0026cb60 ?GetTopContext@PakManager@@QBE?AW4TPakId@@XZ 00A5C060 f streamer.o
+224	VERIFIED	0002:0026cb90 ?PopContext@PakManager@@QAE?AW4TPakId@@XZ 00A5C090 f streamer.o
+225	PORTED	0002:0026cbc0 ?UnloadBank@StreamZoneManager@@UAEXW4TPakId@@@Z 00A5C0C0 f streamer.o
+226	PORTED	0002:0026ccd0 ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@V?$BitSet@$0EA@@@ABV?$InplaceVector@M@@_N@Z 00A5C1D0 f streamer.o
+227	VERIFIED	0002:0026cd60 ?DebugRender@StreamZoneManager@@QAEXXZ 00A5C260 f streamer.o
+228	VERIFIED	0002:0026cef0 ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@PBD@Z 00A5C3F0 f streamer.o
+229	PORTED	0002:0026cfa0 ?RenderGlowBeam@@YAXAAVPosition3@math@@0MI@Z 00A5C4A0 f streamer.o
+230	PORTED	0002:0026d320 ?RenderGlowSprite@@YAXAAVPosition3@math@@MI@Z 00A5C820 f streamer.o
+231	PORTED	0002:0026d670 ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z 00A5CB70 f streamer.o
+232	PORTED	0002:0026dca0 ?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z 00A5D1A0 f streamer.o
+233	PORTED	0002:0026dfe0 ?AddBank@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z 00A5D4E0 f streamer.o
+234	VERIFIED	0002:0026e400 ?SetupAllocator@PakFile@@SAXXZ 00A5D900 f streamer.o
+235	PORTED	0002:0026e540 ?CancelLoading@PakFile@@AAEXXZ 00A5DA40 f streamer.o
+236	PORTED	0002:0026e7c0 ?BeginAsyncUnload@PakFile@@AAEXXZ 00A5DCC0 f streamer.o
+237	PORTED	0002:0026e860 ?UnloadSerialized@PakFile@@AAEXXZ 00A5DD60 f streamer.o
+238	PORTED	0002:0026e930 ?CreateHeaps@PakFile@@AAEXXZ 00A5DE30 f streamer.o
+239	PORTED	0002:0026ee30 ?DestroyHeaps@PakFile@@AAEXXZ 00A5E330 f streamer.o
+240	VERIFIED	0002:0026f060 ??1PakHeapContext@@QAE@XZ 00A5E560 f streamer.o
+241	PORTED	0002:0026f0a0 ??0BankManager@@AAE@XZ 00A5E5A0 f streamer.o
+242	VERIFIED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o
+243	VERIFIED	0002:0026f390 ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z 00A5E890 f streamer.o
+244	VERIFIED	0002:0026f3c0 ?GetName@@YA?AVtlFixedString@@PBD@Z 00A5E8C0 f streamer.o
+245	VERIFIED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o
+246	PORTED	0002:0026f4c0 ?DecodeSkeleton@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5E9C0 f streamer.o
+247	PORTED	0002:0026f590 ?DecodeAnim@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5EA90 f streamer.o
+248	VERIFIED	0002:0026f670 ?GetMultiApkFcn@@YAP6AXPBDPAUMultiApk@@W4TPakId@@@Z0@Z 00A5EB70 f streamer.o
+249	VERIFIED	0002:0026f6f0 ?Add@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00A5EBF0 f streamer.o
+250	VERIFIED	0002:0026f760 ?Add@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@PAV2@@Z 00A5EC60 f streamer.o
+251	PORTED	0002:0026f7d0 ?Add@?$cdResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00A5ECD0 f streamer.o
+252	VERIFIED	0002:0026f840 ?Add@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@PAV2@@Z 00A5ED40 f streamer.o
+253	VERIFIED	0002:0026f8b0 ?RegisterAnimOffset@InstanceBankMgr@@QAEXPBDIIW4TPakId@@@Z 00A5EDB0 f streamer.o
+254	VERIFIED	0002:0026fa30 ?ConsoleSetPakDistance@@YAXXZ 00A5EF30 f streamer.o
+255	VERIFIED	0002:0026fab0 ?ConsoleClearPakDistance@@YAXXZ 00A5EFB0 f streamer.o
+256	PORTED	0002:0026fb10 ?GetAllPaks@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z 00A5F010 f streamer.o
+257	VERIFIED	0002:0026fb80 ??1PakManager@@QAE@XZ 00A5F080 f streamer.o
+258	PORTED	0002:0026fc30 ?GetPakPrerequisites@PakManager@@QBEXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@AAV?$BitSet@$0GD@@@@Z 00A5F130 f streamer.o
+259	PORTED	0002:0026fe10 ?UpdateInfo@PakManager@@AAEXXZ 00A5F310 f streamer.o
+260	VERIFIED	0002:00270370 ?AsyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z 00A5F870 f streamer.o
+261	VERIFIED	0002:00270480 ?DebugRender@PakManager@@QAEXXZ 00A5F980 f streamer.o
+262	PORTED	0002:00271360 ?GetBestUnloadablePak@PakManager@@ABEPAUPakInfoNode@@XZ 00A60860 f streamer.o
+263	PORTED	0002:00271480 ?UpdateLoading@PakManager@@AAEXXZ 00A60980 f streamer.o
+264	PORTED	0002:00271600 ?ProgressUpdate@PakManager@@AAEXXZ 00A60B00 f streamer.o
+265	VERIFIED	0002:00271900 ?GetPakName@PakManager@@QBEPBDW4TPakId@@@Z 00A60E00 f streamer.o
+266	VERIFIED	0002:002719e0 ?IsLoaded@PakManager@@QBE_NPBD@Z 00A60EE0 f streamer.o
+267	PORTED	0002:00271a70 ?CopyContextStack@PakManager@@QBEXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z 00A60F70 f streamer.o
+268	VERIFIED	0002:00271c60 ?FindPakId@PakManager@@QBE?AW4TPakId@@W4EPakType@@@Z 00A61160 f streamer.o
+269	VERIFIED	0002:00271cc0 ?FindPakId@PakManager@@QBE?AW4TPakId@@PBD@Z 00A611C0 f streamer.o
+270	PORTED	0002:00271d60 ?GetActivePakIds@PakManager@@QBEXAAV?$ae_vector@W4TPakId@@@@@Z 00A61260 f streamer.o
+271	VERIFIED	0002:00271df0 ?GetUnloadableBankCount@PakManager@@QBEH_N@Z 00A612F0 f streamer.o
+272	VERIFIED	0002:00271ed0 ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z 00A613D0 f streamer.o
+273	VERIFIED	0002:00271f30 ?CrazyTempMemGiveBack@PakManager@@QAEXPAX@Z 00A61430 f streamer.o
+274	VERIFIED	0002:00271fc0 ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z 00A614C0 f streamer.o
+275	VERIFIED	0002:002720b0 ?AddGlowSprite@@YAXQAMMI@Z 00A615B0 f streamer.o
+276	VERIFIED	0002:00272100 ?AddGlowBeam@@YAXQAM0MI@Z 00A61600 f streamer.o
+277	VERIFIED	0002:00272170 ?DebugRenderEnts@SceneManager@@QAEXXZ 00A61670 f streamer.o
+278	PORTED	0002:00273190 ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z 00A62690 f streamer.o
+279	PORTED	0002:00273d60 ?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z 00A63260 f streamer.o
+280	VERIFIED	0002:002744b0 ?cdInvokeMultiApkCallbacks@@YAXPBD0W4TPakId@@PAVapkFile@apk@@PAVapkFileEntry@3@@Z 00A639B0 f streamer.o
+281	VERIFIED	0002:002746c0 ?AsyncLoad@PakFile@@QAEXVNumBanks@@@Z 00A63BC0 f streamer.o
+282	VERIFIED	0002:002747d0 ?AsyncUnload@PakFile@@QAEXXZ 00A63CD0 f streamer.o
+283	PORTED	0002:00274810 ?InitiateDataLoad@PakFile@@AAEXXZ 00A63D10 f streamer.o
+284	VERIFIED	0002:00275410 ?AddApk@PakFile@@QAEXPAVapkFile@apk@@@Z 00A64910 f streamer.o
+285	VERIFIED	0002:002754a0 ?ReleaseApks@PakFile@@QAEXXZ 00A649A0 f streamer.o
+286	PORTED	0002:00275580 ?UnloadInplace@PakFile@@AAEXXZ 00A64A80 f streamer.o
+287	PORTED	0002:00275630 ?FinishUnload@PakFile@@AAEXXZ 00A64B30 f streamer.o
+288	VERIFIED	0002:00275850 ??1AssetBankSet@@UAE@XZ 00A64D50 f streamer.o
+289	PORTED	0002:002758c0 ?GetPakPrerequisites@@YAXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z 00A64DC0 f streamer.o
+290	PORTED	0002:00275960 ?get_context_stack@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z 00A64E60 f streamer.o
+291	PORTED	0002:00275980 ?DecodeFLI@PakManager@@QAEXPBDPAEHW4TPakId@@@Z 00A64E80 f streamer.o
+292	PORTED	0002:00275b20 ?DecodeFLI@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A65020 f streamer.o
+293	VERIFIED	0002:00275b40 ?SetPriorities@StreamZoneManager@@QAEXXZ 00A65040 f streamer.o
+294	PORTED	0002:00275e10 ??1SceneManager@@UAE@XZ 00A65310 f streamer.o
+295	VERIFIED	0002:00275e20 ?DebugRender@SceneManager@@QAEXXZ 00A65320 f streamer.o
+296	VERIFIED	0002:00275ea0 ?RenderLightGlows@SceneManager@@QAEXXZ 00A653A0 f streamer.o
+297	PORTED	0002:00276b20 ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z 00A66020 f streamer.o
+298	PORTED	0002:00276c50 ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z 00A66150 f streamer.o
+299	PORTED	0002:002773b0 ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z 00A668B0 f streamer.o
+300	VERIFIED	0002:00277500 ?cdLoadApkInplace@@YAPAVapkFile@apk@@PBDPAEHW4TPakId@@PAVPakFile@@@Z 00A66A00 f streamer.o
+301	VERIFIED	0002:002775a0 ??0PakFile@@QAE@W4EPakType@@PBDW4TPakId@@VNumBanks@@@Z 00A66AA0 f streamer.o
+302	PORTED	0002:00277750 ?UpdateUnloading@PakFile@@AAEXXZ 00A66C50 f streamer.o
+303	PORTED	0002:00277810 ?SyncUnload@PakFile@@AAEXXZ 00A66D10 f streamer.o
+304	PORTED	0002:00277830 ?DecodeTexture@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A66D30 f streamer.o
+305	PORTED	0002:00277840 ?DecodeFont@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A66D40 f streamer.o
+306	PORTED	0002:00277850 ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@@Z 00A66D50 f streamer.o
+307	PORTED	0002:00277960 ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@I@Z 00A66E60 f streamer.o
+308	VERIFIED	0002:00277a60 ?cdGetTexture@@YAPAUnglTexture@@W4TPakId@@ABVtlFixedString@@@Z 00A66F60 f streamer.o
+309	VERIFIED	0002:00277a90 ?cdGetMesh@@YAPAUnglMesh@@W4TPakId@@ABVtlFixedString@@@Z 00A66F90 f streamer.o
+310	VERIFIED	0002:00277ac0 ?cdGetEffectTemplate@@YAPAVapsEffectTemplate@@W4TPakId@@ABVtlFixedString@@@Z 00A66FC0 f streamer.o
+311	VERIFIED	0002:00277b40 ?cdGetFont@@YAPAVnglFont@@W4TPakId@@ABVtlFixedString@@@Z 00A67040 f streamer.o
+312	VERIFIED	0002:00277bc0 ?cdGetMeshFile@@YAPAUMultiApk@@W4TPakId@@ABVtlFixedString@@@Z 00A670C0 f streamer.o
+313	VERIFIED	0002:00277be0 ?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@W4TPakId@@ABVtlFixedString@@@Z 00A670E0 f streamer.o
+314	VERIFIED	0002:00277c00 ?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@I@Z 00A67100 f streamer.o
+315	VERIFIED	0002:00277c20 ?cdGetSkeleton@@YAPAVnalBaseSkeleton@@W4TPakId@@ABVtlFixedString@@@Z 00A67120 f streamer.o
+316	VERIFIED	0002:00277c90 ?AsyncLoadPak@PakManager@@QAE?AW4TPakId@@W4EPakType@@PBDVNumBanks@@@Z 00A67190 f streamer.o
+317	VERIFIED	0002:00277f40 ?AsyncLoadPakHeader@PakManager@@QAEPAVPakFile@@W4EPakType@@PBDVNumBanks@@@Z 00A67440 f streamer.o
+318	PORTED	0002:00278040 ?UpdateNormal@PakManager@@AAEXXZ 00A67540 f streamer.o
+319	VERIFIED	0002:00278250 ??0StreamZoneManager@@QAE@XZ 00A67750 f streamer.o
+320	PORTED	0002:002782f0 ??1StreamZoneManager@@UAE@XZ 00A677F0 f streamer.o
+321	PORTED	0002:00278350 ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z 00A67850 f streamer.o
+322	VERIFIED	0002:002786a0 ??0SceneManager@@QAE@XZ 00A67BA0 f streamer.o
+323	PORTED	0002:002787e0 ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z 00A67CE0 f streamer.o
+324	VERIFIED	0002:002788f0 ?InstanceEntities@SceneManager@@QAEXXZ 00A67DF0 f streamer.o
+325	VERIFIED	0002:00278d40 ?cdGetResource@@YAPAXABVtlFixedString@@I_N@Z 00A68240 f streamer.o
+326	VERIFIED	0002:00278ed0 ?apkGetResource@@YAPAXABVtlFixedString@@I@Z 00A683D0 f streamer.o
+327	VERIFIED	0002:00278ef0 ?cdInitApk@@YAXXZ 00A683F0 f streamer.o
+328	VERIFIED	0002:00278fa0 ??1PakFile@@QAE@XZ 00A684A0 f streamer.o
+329	VERIFIED	0002:00279130 ?Find@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00A68630 f streamer.o
+330	VERIFIED	0002:00279160 ?Find@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00A68660 f streamer.o
+331	PORTED	0002:00279190 ?Find@?$cdResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00A68690 f streamer.o
+332	VERIFIED	0002:002791c0 ?Find@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00A686C0 f streamer.o
+333	VERIFIED	0002:002791f0 ??0PakManager@@QAE@XZ 00A686F0 f streamer.o
+334	PORTED	0002:00279390 ?UpdateUnloading@PakManager@@AAEXXZ 00A68890 f streamer.o
+335	VERIFIED	0002:002795c0 ?DecodeBank@StreamZoneManager@@QAEXPBDPAEHW4TPakId@@@Z 00A68AC0 f streamer.o
+336	VERIFIED	0002:00279d20 ?DecodeScene@SceneManager@@QAEXPBDPAEHW4TPakId@@@Z 00A69220 f streamer.o
+337	PORTED	0002:00279dd0 ?DecodeZoneBoundaryBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A692D0 f streamer.o
+338	PORTED	0002:00279df0 ?DecodeScene@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A692F0 f streamer.o
+339	PORTED	0002:00279e10 ?GetDecoder@@YAP6AXPBDPAEHW4TPakId@@PAVPakFile@@@Z0@Z 00A69310 f streamer.o
+340	PORTED	0002:0027a150 ?Decode@PakFile@@AAEXPBDHW4TPakId@@@Z 00A69650 f streamer.o
+341	PORTED	0002:0027a380 ?UpdateLoading@PakFile@@AAEXXZ 00A69880 f streamer.o
+342	VERIFIED	0002:0027ad70 ?Update@PakFile@@QAEXXZ 00A6A270 f streamer.o
+343	VERIFIED	0002:0027ad90 ?SyncLoadFLI@PakManager@@QAEPBUPakInfoNode@@W4EPakType@@PBD@Z 00A6A290 f streamer.o
+344	VERIFIED	0002:0027b060 ?Update@PakManager@@QAEX_N@Z 00A6A560 f streamer.o
+345	VERIFIED	0002:0027b140 ?UnloadAll@PakManager@@QAEXXZ 00A6A640 f streamer.o
+346	VERIFIED	0002:0027b170 ?FillBanks@PakManager@@QAEXXZ 00A6A670 f streamer.o
+347	VERIFIED	0002:0027b1c0 ?SyncLoadPak@PakManager@@QAE?AW4TPakId@@PBUPakInfoNode@@@Z 00A6A6C0 f streamer.o
+348	VERIFIED	0002:0027b290 ?SyncLoadPak@PakManager@@QAE?AW4TPakId@@W4EPakType@@PBDVNumBanks@@@Z 00A6A790 f streamer.o
+349	VERIFIED	0002:0027b340 ?SyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z 00A6A840 f streamer.o
+350	VERIFIED	0002:002810e0 ?reset@ThroughputMeasurer@@QAEXXZ 00A705E0 f i streamer.o
+351	VERIFIED	0002:00281110 ?safeGetTime@ThroughputMeasurer@@QBEMXZ 00A70610 f i streamer.o
+352	VERIFIED	0002:00281180 ?start@ThroughputMeasurer@@QAEXXZ 00A70680 f i streamer.o
+353	VERIFIED	0002:002811a0 ?Update@ThroughputMeasurer@@QAEXH@Z 00A706A0 f i streamer.o
+354	PORTED	0002:00281240 ??XMat44@math@@QAEABV01@ABVMat33@1@@Z 00A70740 f i streamer.o
+355	VERIFIED	0002:00281450 ?AxisSinCosToRotMat@math@@YA?AVMat33@1@ABVDir3@1@MM@Z 00A70950 f i streamer.o
+356	PORTED	0002:00281650 ?Inst@LightGridMgr@@SAPAV1@XZ 00A70B50 f i streamer.o
+357	VERIFIED	0002:00281660 ?GetLoopDelayMin@SceneEffect@@QBEMXZ 00A70B60 f i streamer.o
+358	VERIFIED	0002:00281680 ?GetLoopDelayMax@SceneEffect@@QBEMXZ 00A70B80 f i streamer.o
+359	VERIFIED	0002:002816a0 ?GetSceneHeapSize@SceneBank@@QAEHXZ 00A70BA0 f i streamer.o
+360	PORTED	0002:002816b0 ?GetWidth@nglTexture@@QBEHXZ 00A70BB0 f i streamer.o
+361	PORTED	0002:002816c0 ?GetHeight@nglTexture@@QBEHXZ 00A70BC0 f i streamer.o
+362	VERIFIED	0002:002816d0 ?GetKeyPtr@@YAPBVtlFixedString@@PBUnglTexture@@@Z 00A70BD0 f i streamer.o
+363	VERIFIED	0002:002816e0 ?GetKeyPtr@@YAPBVtlFixedString@@PBUnglMesh@@@Z 00A70BE0 f i streamer.o
+364	PORTED	0002:002816f0 ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z 00A70BF0 f i streamer.o
+365	VERIFIED	0002:00281790 ?GetKeyPtr@@YAPBVtlFixedString@@PBVnglFont@@@Z 00A70C90 f i streamer.o
+366	VERIFIED	0002:002817a0 ?GetKeyPtr@@YAPBVtlFixedString@@PBVnalBaseSkeleton@@@Z 00A70CA0 f i streamer.o
+367	VERIFIED	0002:002817b0 ?GetKeyPtr@@YAPBVtlFixedString@@PBV?$nalAnimClass@VnalAnyPose@@@@@Z 00A70CB0 f i streamer.o
+368	PORTED	0002:002817c0 ?GetKeyPtr@@YAPBVtlFixedString@@PBVnalAnimFile@@@Z 00A70CC0 f i streamer.o
+369	PORTED	0002:002817d0 ?GetName@nalSceneAnim@@QBEABVtlFixedString@@XZ 00A70CD0 f i streamer.o
+370	VERIFIED	0002:002817e0 ?GetKeyPtr@@YAPBVtlFixedString@@PBVnalSceneAnim@@@Z 00A70CE0 f i streamer.o
+371	PORTED	0002:002817f0 ?is_unloadable_type@@YA_NW4EPakType@@@Z 00A70CF0 f i streamer.o
+372	PORTED	0002:00281820 ??0nflInitParams@@QAE@XZ 00A70D20 f i streamer.o
+373	VERIFIED	0002:00281850 ??1?$tlResourceDirectory@VnalBaseSkeleton@@@@UAE@XZ 00A70D50 f i streamer.o
+374	VERIFIED	0002:00281860 ?DirectoryName@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPBDXZ 00A70D60 f i streamer.o
+375	VERIFIED	0002:00281870 ?ReleaseAll@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEX_N0H@Z 00A70D70 f i streamer.o
+376	VERIFIED	0002:002819b0 ?Load@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00A70EB0 f i streamer.o
+377	VERIFIED	0002:002819c0 ?Release@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEHPAVnalBaseSkeleton@@H_N@Z 00A70EC0 f i streamer.o
+378	PORTED	0002:002819d0 ??0?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE@XZ 00A70ED0 f i streamer.o
+379	PORTED	0002:002819e0 ?push_back@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXABQAVAssetBankSet@@@Z 00A70EE0 f i streamer.o
+380	PORTED	0002:00281a60 ?size@?$InplaceVector@PBUPakInfoNode@@@@QBEIXZ 00A70F60 f i streamer.o
+381	PORTED	0002:00281a70 ??A?$InplaceVector@PBUPakInfoNode@@@@QAEAAPBUPakInfoNode@@I@Z 00A70F70 f i streamer.o
+382	PORTED	0002:00281af0 ??A?$InplaceVector@PBUPakInfoNode@@@@QBEABQBUPakInfoNode@@I@Z 00A70FF0 f i streamer.o
+383	PORTED	0002:00281b70 ?GetCapacity@?$BitSet@$0EA@@@SAHXZ 00A71070 f i streamer.o
+384	PORTED	0002:00281b80 ?size@?$reserved_dlist@VPakFile@@@@QBEHXZ 00A71080 f i streamer.o
+385	PORTED	0002:00281b90 ??0dlist_node@?$reserved_dlist@VPakFile@@@@QAE@PAU01@0@Z 00A71090 f i streamer.o
+386	PORTED	0002:00281bb0 ??0?$ae_vector@PAVapkFile@apk@@@@QAE@XZ 00A710B0 f i streamer.o
+387	PORTED	0002:00281bc0 ?begin@?$ae_vector@PAVapkFile@apk@@@@QAEPAPAVapkFile@apk@@XZ 00A710C0 f i streamer.o
+388	PORTED	0002:00281bd0 ?end@?$ae_vector@PAVapkFile@apk@@@@QAEPAPAVapkFile@apk@@XZ 00A710D0 f i streamer.o
+389	VERIFIED	0002:00281be0 ??0?$ae_sized_array@PAUmem_heap@@$0M@@@QAE@XZ 00A710E0 f i streamer.o
+390	PORTED	0002:00281bf0 ??A?$ae_sized_array@PAUmem_heap@@$0M@@@QBEABQAUmem_heap@@H@Z 00A710F0 f i streamer.o
+391	PORTED	0002:00281c70 ??A?$ae_sized_array@PAUmem_heap@@$0M@@@QAEAAPAUmem_heap@@H@Z 00A71170 f i streamer.o
+392	PORTED	0002:00281cf0 ?size@?$ae_sized_array@PAUmem_heap@@$0M@@@QBEHXZ 00A711F0 f i streamer.o
+393	PORTED	0002:00281d00 ?empty@?$ae_sized_array@PAUmem_heap@@$0M@@@QBE_NXZ 00A71200 f i streamer.o
+394	PORTED	0002:00281d10 ?capacity@?$ae_sized_array@PAUmem_heap@@$0M@@@QBEHXZ 00A71210 f i streamer.o
+395	VERIFIED	0002:00281d20 ?push_back@?$ae_sized_array@PAUmem_heap@@$0M@@@QAEXABQAUmem_heap@@@Z 00A71220 f i streamer.o
+396	VERIFIED	0002:00281da0 ??0?$ae_sized_array@PAVPakFile@@$03@@QAE@XZ 00A712A0 f i streamer.o
+397	PORTED	0002:00281db0 ??A?$ae_sized_array@PAVPakFile@@$03@@QAEAAPAVPakFile@@H@Z 00A712B0 f i streamer.o
+398	PORTED	0002:00281e30 ?size@?$ae_sized_array@PAVPakFile@@$03@@QBEHXZ 00A71330 f i streamer.o
+399	VERIFIED	0002:00281e40 ?push_back@?$ae_sized_array@PAVPakFile@@$03@@QAEXABQAVPakFile@@@Z 00A71340 f i streamer.o
+400	PORTED	0002:00281ec0 ??0?$ae_vector@PAX@@QAE@XZ 00A713C0 f i streamer.o
+401	PORTED	0002:00281ed0 ?begin@?$ae_vector@PAX@@QAEPAPAXXZ 00A713D0 f i streamer.o
+402	PORTED	0002:00281ee0 ?end@?$ae_vector@PAX@@QAEPAPAXXZ 00A713E0 f i streamer.o
+403	PORTED	0002:00281ef0 ??0?$ae_sized_array@W4TPakId@@$0IA@@@QAE@XZ 00A713F0 f i streamer.o
+404	PORTED	0002:00281f00 ??A?$ae_sized_array@W4TPakId@@$0IA@@@QAEAAW4TPakId@@H@Z 00A71400 f i streamer.o
+405	PORTED	0002:00281f80 ?size@?$ae_sized_array@W4TPakId@@$0IA@@@QBEHXZ 00A71480 f i streamer.o
+406	PORTED	0002:00281f90 ?empty@?$ae_sized_array@W4TPakId@@$0IA@@@QBE_NXZ 00A71490 f i streamer.o
+407	VERIFIED	0002:00281fb0 ?push_back@?$ae_sized_array@W4TPakId@@$0IA@@@QAEXABW4TPakId@@@Z 00A714B0 f i streamer.o
+408	PORTED	0002:00282050 ?pop_back@?$ae_sized_array@W4TPakId@@$0IA@@@QAEAAW4TPakId@@XZ 00A71550 f i streamer.o
+409	PORTED	0002:00282080 ??0?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAE@XZ 00A71580 f i streamer.o
+410	PORTED	0002:00282090 ??0?$ae_vector@UTStbData@PakManager@@@@QAE@XZ 00A71590 f i streamer.o
+411	PORTED	0002:002820a0 ?size@?$InplaceVector@PBVZdNode@@@@QBEIXZ 00A715A0 f i streamer.o
+412	PORTED	0002:002820b0 ??A?$InplaceVector@PBVZdNode@@@@QBEABQBVZdNode@@I@Z 00A715B0 f i streamer.o
+413	PORTED	0002:00282130 ?size@?$InplaceVector@PBVZoneCellBox@@@@QBEIXZ 00A71630 f i streamer.o
+414	PORTED	0002:00282140 ??A?$InplaceVector@PBVZoneCellBox@@@@QBEABQBVZoneCellBox@@I@Z 00A71640 f i streamer.o
+415	PORTED	0002:002821c0 ?size@?$InplaceVector@PBVStreamZone@@@@QBEIXZ 00A716C0 f i streamer.o
+416	PORTED	0002:002821d0 ??A?$InplaceVector@PBVStreamZone@@@@QBEABQBVStreamZone@@I@Z 00A716D0 f i streamer.o
+417	PORTED	0002:00282250 ??A?$InplaceVector@PBVZoneCellDesc@@@@QAEAAPBVZoneCellDesc@@I@Z 00A71750 f i streamer.o
+418	PORTED	0002:002822d0 ?size@?$InplaceVector@VVector4@math@@@@QBEIXZ 00A717D0 f i streamer.o
+419	PORTED	0002:002822e0 ??A?$InplaceVector@VVector4@math@@@@QBEABVVector4@math@@I@Z 00A717E0 f i streamer.o
+420	PORTED	0002:00282360 ?size@?$InplaceVector@VZoneOverrideBrush@@@@QBEIXZ 00A71860 f i streamer.o
+421	PORTED	0002:00282370 ??A?$InplaceVector@VZoneOverrideBrush@@@@QBEABVZoneOverrideBrush@@I@Z 00A71870 f i streamer.o
+422	PORTED	0002:002823f0 ?size@?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QBEIXZ 00A718F0 f i streamer.o
+423	PORTED	0002:00282400 ??A?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QAEAAV?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@I@Z 00A71900 f i streamer.o
+424	PORTED	0002:00282480 ?size@?$InplaceVector@PBVZoneOverrideBrushSet@@@@QBEIXZ 00A71980 f i streamer.o
+425	PORTED	0002:00282490 ??A?$InplaceVector@PBVZoneOverrideBrushSet@@@@QAEAAPBVZoneOverrideBrushSet@@I@Z 00A71990 f i streamer.o
+426	PORTED	0002:00282510 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QBEABQAVZoneBoundaryBank@@H@Z 00A71A10 f i streamer.o
+427	PORTED	0002:00282590 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QAEAAPAVZoneBoundaryBank@@H@Z 00A71A90 f i streamer.o
+428	PORTED	0002:00282610 ?size@?$InplaceVector@VIbEntry@InstanceBank@@@@QBEIXZ 00A71B10 f i streamer.o
+429	PORTED	0002:00282620 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QAEAAVIbEntry@InstanceBank@@I@Z 00A71B20 f i streamer.o
+430	PORTED	0002:002826a0 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QBEABVIbEntry@InstanceBank@@I@Z 00A71BA0 f i streamer.o
+431	PORTED	0002:00282720 ?size@?$InplaceVector@VInstanceBank@@@@QBEIXZ 00A71C20 f i streamer.o
+432	PORTED	0002:00282730 ??A?$InplaceVector@VInstanceBank@@@@QAEAAVInstanceBank@@I@Z 00A71C30 f i streamer.o
+433	PORTED	0002:002827b0 ?EnableRelease@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEX_N@Z 00A71CB0 f i streamer.o
+434	VERIFIED	0002:002827c0 ??1?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE@XZ 00A71CC0 f i streamer.o
+435	VERIFIED	0002:002827d0 ?DirectoryName@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPBDXZ 00A71CD0 f i streamer.o
+436	VERIFIED	0002:002827e0 ?ReleaseAll@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEX_N0H@Z 00A71CE0 f i streamer.o
+437	VERIFIED	0002:00282920 ?Load@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00A71E20 f i streamer.o
+438	VERIFIED	0002:00282930 ?Release@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEHPAV?$nalAnimClass@VnalAnyPose@@@@H_N@Z 00A71E30 f i streamer.o
+439	PORTED	0002:00282940 ?EnableRelease@?$cdResourceDirectory@VnalSceneAnim@@@@QAEX_N@Z 00A71E40 f i streamer.o
+440	VERIFIED	0002:00282950 ??1?$tlResourceDirectory@VnalSceneAnim@@@@UAE@XZ 00A71E50 f i streamer.o
+441	VERIFIED	0002:00282960 ?DirectoryName@?$tlResourceDirectory@VnalSceneAnim@@@@UAEPBDXZ 00A71E60 f i streamer.o
+442	VERIFIED	0002:00282970 ?ReleaseAll@?$tlResourceDirectory@VnalSceneAnim@@@@UAEX_N0H@Z 00A71E70 f i streamer.o
+443	VERIFIED	0002:00282ab0 ?Load@?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00A71FB0 f i streamer.o
+444	VERIFIED	0002:00282ac0 ?Release@?$tlResourceDirectory@VnalSceneAnim@@@@UAEHPAVnalSceneAnim@@H_N@Z 00A71FC0 f i streamer.o
+445	PORTED	0002:00282ad0 ?EnableRelease@?$cdResourceDirectory@VnalAnimFile@@@@QAEX_N@Z 00A71FD0 f i streamer.o
+446	PORTED	0002:00282ae0 ??1?$tlResourceDirectory@VnalAnimFile@@@@UAE@XZ 00A71FE0 f i streamer.o
+447	PORTED	0002:00282af0 ?DirectoryName@?$tlResourceDirectory@VnalAnimFile@@@@UAEPBDXZ 00A71FF0 f i streamer.o
+448	PORTED	0002:00282b00 ?ReleaseAll@?$tlResourceDirectory@VnalAnimFile@@@@UAEX_N0H@Z 00A72000 f i streamer.o
+449	PORTED	0002:00282c40 ?Load@?$tlResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00A72140 f i streamer.o
+450	PORTED	0002:00282c50 ?Release@?$tlResourceDirectory@VnalAnimFile@@@@UAEHPAVnalAnimFile@@H_N@Z 00A72150 f i streamer.o
+451	VERIFIED	0002:00282c60 ??1?$cdResourceDirectory@VnalBaseSkeleton@@@@UAE@XZ 00A72160 f i streamer.o
+452	VERIFIED	0002:00282d30 ?DirectoryName@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPBDXZ 00A72230 f i streamer.o
+453	VERIFIED	0002:00282d40 ?Del@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAE_NQAVnalBaseSkeleton@@@Z 00A72240 f i streamer.o
+454	PORTED	0002:00282d50 ?Enumerate@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAVIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@XZ 00A72250 f i streamer.o
+455	VERIFIED	0002:00282db0 ?ReleaseAll@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEX_N0H@Z 00A722B0 f i streamer.o
+456	PORTED	0002:00282e00 ?Release@?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEHPAVnalBaseSkeleton@@H_N@Z 00A72300 f i streamer.o
+457	PORTED	0002:00282e40 ?EnableRelease@?$cdResourceDirectory@VnalBaseSkeleton@@@@QAEX_N@Z 00A72340 f i streamer.o
+458	PORTED	0002:00282e50 ??Diterator@?$ae_sized_array@PAUmem_heap@@$0M@@@QBEAAPAUmem_heap@@XZ 00A72350 f i streamer.o
+459	PORTED	0002:00282e60 ??Eiterator@?$ae_sized_array@PAUmem_heap@@$0M@@@QAEAAV01@XZ 00A72360 f i streamer.o
+460	PORTED	0002:00282e70 ??9iterator@?$ae_sized_array@PAUmem_heap@@$0M@@@QBE_NV01@@Z 00A72370 f i streamer.o
+461	PORTED	0002:00282e90 ??A?$ae_sized_array@Vmem_info@@$0CA@@@QAEAAVmem_info@@H@Z 00A72390 f i streamer.o
+462	PORTED	0002:00282f10 ?size@?$ae_sized_array@Vmem_info@@$0CA@@@QBEHXZ 00A72410 f i streamer.o
+463	PORTED	0002:00282f20 ?push_back@?$ae_sized_array@Vmem_info@@$0CA@@@QAEXABVmem_info@@@Z 00A72420 f i streamer.o
+464	PORTED	0002:00282fc0 ??Diterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QBEAAPAVAssetBankSet@@XZ 00A724C0 f i streamer.o
+465	PORTED	0002:00282fd0 ??Eiterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEAAV01@XZ 00A724D0 f i streamer.o
+466	PORTED	0002:00282fe0 ??9iterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QBE_NV01@@Z 00A724E0 f i streamer.o
+467	PORTED	0002:00283000 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QAEAAV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 00A72500 f i streamer.o
+468	VERIFIED	0002:00283080 ??A?$InplaceVector@V?$InplaceTreeElement@IVInplaceString@@@@@@QAEAAV?$InplaceTreeElement@IVInplaceString@@@@I@Z 00A72580 f i streamer.o
+469	PORTED	0002:00283100 ?size@?$InplaceVector@VInstanceData@@@@QBEIXZ 00A72600 f i streamer.o
+470	PORTED	0002:00283110 ??A?$InplaceVector@VInstanceData@@@@QAEAAVInstanceData@@I@Z 00A72610 f i streamer.o
+471	PORTED	0002:00283190 ?size@?$InplaceVector@PAVSceneEntity@@@@QBEIXZ 00A72690 f i streamer.o
+472	PORTED	0002:002831a0 ??A?$InplaceVector@PAVSceneEntity@@@@QAEAAPAVSceneEntity@@I@Z 00A726A0 f i streamer.o
+473	PORTED	0002:00283220 ?size@?$InplaceVector@VStaticModel@@@@QBEIXZ 00A72720 f i streamer.o
+474	PORTED	0002:00283230 ??A?$InplaceVector@VStaticModel@@@@QAEAAVStaticModel@@I@Z 00A72730 f i streamer.o
+475	PORTED	0002:002832c0 ?size@?$InplaceVector@VInstanceGroup@@@@QBEIXZ 00A727C0 f i streamer.o
+476	PORTED	0002:002832d0 ??A?$InplaceVector@VInstanceGroup@@@@QAEAAVInstanceGroup@@I@Z 00A727D0 f i streamer.o
+477	PORTED	0002:00283350 ?size@?$InplaceVector@VVehicleNode@@@@QBEIXZ 00A72850 f i streamer.o
+478	PORTED	0002:00283360 ??A?$InplaceVector@VVehicleNode@@@@QAEAAVVehicleNode@@I@Z 00A72860 f i streamer.o
+479	PORTED	0002:002833e0 ?size@?$InplaceVector@VSceneEffect@@@@QBEIXZ 00A728E0 f i streamer.o
+480	PORTED	0002:002833f0 ??A?$InplaceVector@VSceneEffect@@@@QAEAAVSceneEffect@@I@Z 00A728F0 f i streamer.o
+481	PORTED	0002:00283480 ?size@?$InplaceVector@VSceneEffectGroup@@@@QBEIXZ 00A72980 f i streamer.o
+482	PORTED	0002:00283490 ??A?$InplaceVector@VSceneEffectGroup@@@@QAEAAVSceneEffectGroup@@I@Z 00A72990 f i streamer.o
+483	PORTED	0002:00283510 ?size@?$InplaceVector@VSceneLight@@@@QBEIXZ 00A72A10 f i streamer.o
+484	PORTED	0002:00283520 ??A?$InplaceVector@VSceneLight@@@@QAEAAVSceneLight@@I@Z 00A72A20 f i streamer.o
+485	PORTED	0002:002835b0 ??A?$ae_array@PAVSceneBank@@$0GD@@@QAEAAPAVSceneBank@@H@Z 00A72AB0 f i streamer.o
+486	VERIFIED	0002:00283630 ?push_back@?$ae_sized_array@W4TPakId@@$0CA@@@QAEXABW4TPakId@@@Z 00A72B30 f i streamer.o
+487	PORTED	0002:002836c0 ??A?$phys_static_array@VVector4@math@@$0BE@@@QBEABVVector4@math@@H@Z 00A72BC0 f i streamer.o
+488	PORTED	0002:00283720 ?get_count@?$phys_static_array@VVector4@math@@$0BE@@@QBE?BHXZ 00A72C20 f i streamer.o
+489	VERIFIED	0002:00283730 ??A?$phys_static_array@V?$phys_static_array@VVector4@math@@$0BE@@@$0EA@@@QAEAAV?$phys_static_array@VVector4@math@@$0BE@@@H@Z 00A72C30 f i streamer.o
+490	PORTED	0002:00283790 ?get_count@?$phys_static_array@V?$phys_static_array@VVector4@math@@$0BE@@@$0EA@@@QBE?BHXZ 00A72C90 f i streamer.o
+491	VERIFIED	0002:002837a0 ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABViterator@1@@Z 00A72CA0 f i streamer.o
+492	PORTED	0002:002837c0 ??Eiterator@?$reserved_dlist@VPakFile@@@@QAEAAV01@XZ 00A72CC0 f i streamer.o
+493	PORTED	0002:002837e0 ??0?$ae_vector@UGlowSprites@@@@QAE@XZ 00A72CE0 f i streamer.o
+494	PORTED	0002:002837f0 ?size@?$ae_vector@UGlowSprites@@@@QBEHXZ 00A72CF0 f i streamer.o
+495	PORTED	0002:00283800 ??A?$ae_vector@UGlowSprites@@@@QAEAAUGlowSprites@@H@Z 00A72D00 f i streamer.o
+496	PORTED	0002:00283880 ??0?$ae_vector@UGlowBeam@@@@QAE@XZ 00A72D80 f i streamer.o
+497	PORTED	0002:00283890 ?size@?$ae_vector@UGlowBeam@@@@QBEHXZ 00A72D90 f i streamer.o
+498	PORTED	0002:002838a0 ??A?$ae_vector@UGlowBeam@@@@QAEAAUGlowBeam@@H@Z 00A72DA0 f i streamer.o
+499	VERIFIED	0002:00283920 ??0?$ae_sized_array@W4TPakId@@$0GD@@@QAE@XZ 00A72E20 f i streamer.o
+500	PORTED	0002:00283930 ??A?$ae_sized_array@W4TPakId@@$0GD@@@QAEAAW4TPakId@@H@Z 00A72E30 f i streamer.o
+501	PORTED	0002:002839b0 ??0?$nglMeshIterator@Ucdscratch_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A72EB0 f i streamer.o
+502	PORTED	0002:002839f0 ?BeginStrip@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXH@Z 00A72EF0 f i streamer.o
+503	PORTED	0002:00283a30 ??E?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEABV0@XZ 00A72F30 f i streamer.o
+504	PORTED	0002:00283a60 ?WriteFlush@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXXZ 00A72F60 f i streamer.o
+505	PORTED	0002:00283a80 ??0?$ae_sized_array@H$0BA@@@QAE@XZ 00A72F80 f i streamer.o
+506	PORTED	0002:00283a90 ??A?$ae_sized_array@H$0BA@@@QAEAAHH@Z 00A72F90 f i streamer.o
+507	PORTED	0002:00283b10 ?size@?$ae_sized_array@H$0BA@@@QBEHXZ 00A73010 f i streamer.o
+508	PORTED	0002:00283b20 ?push_back@?$ae_sized_array@H$0BA@@@QAEXABH@Z 00A73020 f i streamer.o
+509	VERIFIED	0002:00283ba0 ??0?$ae_sized_array@UnglMeshLOD@@$07@@QAE@XZ 00A730A0 f i streamer.o
+510	PORTED	0002:00283bb0 ??A?$ae_sized_array@UnglMeshLOD@@$07@@QAEAAUnglMeshLOD@@H@Z 00A730B0 f i streamer.o
+511	PORTED	0002:00283c30 ?size@?$ae_sized_array@UnglMeshLOD@@$07@@QBEHXZ 00A73130 f i streamer.o
+512	VERIFIED	0002:00283c40 ?push_back@?$ae_sized_array@UnglMeshLOD@@$07@@QAEXABUnglMeshLOD@@@Z 00A73140 f i streamer.o
+513	VERIFIED	0002:00283cd0 ??0?$ae_sized_array@PAH$0BIA@@@QAE@XZ 00A731D0 f i streamer.o
+514	PORTED	0002:00283ce0 ??A?$ae_sized_array@PAH$0BIA@@@QAEAAPAHH@Z 00A731E0 f i streamer.o
+515	PORTED	0002:00283d60 ??_Fmem_info@@QAEXXZ 00A73260 f i streamer.o
+516	VERIFIED	0002:00283d80 ?pop_back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@XZ 00A73280 f i streamer.o
+517	VERIFIED	0002:00283db0 ??0?$tlResourceDirectory@VnalBaseSkeleton@@@@QAE@XZ 00A732B0 f i streamer.o
+518	VERIFIED	0002:00283dc0 ?node_to_object@?$reserved_dlist@VPakFile@@@@SAPAVPakFile@@PAUdlist_node@1@@Z 00A732C0 f i streamer.o
+519	PORTED	0002:00283dd0 ?clear@?$reserved_dlist@VPakFile@@@@QAEXXZ 00A732D0 f i streamer.o
+520	VERIFIED	0002:00283df0 ?pop@dlist_node@?$reserved_dlist@VPakFile@@@@QAEXXZ 00A732F0 f i streamer.o
+521	PORTED	0002:00283e10 ?construct_array@?$ae_vector@PAVapkFile@apk@@@@AAEPAPAVapkFile@apk@@HH@Z 00A73310 f i streamer.o
+522	PORTED	0002:00283e40 ?destroy_all@?$ae_vector@PAVapkFile@apk@@@@AAEXXZ 00A73340 f i streamer.o
+523	PORTED	0002:00283e70 ?set_size@?$ae_sized_array@PAUmem_heap@@$0M@@@QAEXH@Z 00A73370 f i streamer.o
+524	PORTED	0002:00283e80 ?destroy_all@?$ae_vector@PAX@@AAEXXZ 00A73380 f i streamer.o
+525	PORTED	0002:00283eb0 ?GetNumWords@?$BitSet@$03@@SAHXZ 00A733B0 f i streamer.o
+526	VERIFIED	0002:00283ec0 ??0?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00A733C0 f i streamer.o
+527	VERIFIED	0002:00283ed0 ??0?$tlResourceDirectory@VnalSceneAnim@@@@QAE@XZ 00A733D0 f i streamer.o
+528	PORTED	0002:00283ee0 ??0?$tlResourceDirectory@VnalAnimFile@@@@QAE@XZ 00A733E0 f i streamer.o
+529	PORTED	0002:00283ef0 ??0iterator@?$ae_sized_array@PAUmem_heap@@$0M@@@AAE@PAPAUmem_heap@@@Z 00A733F0 f i streamer.o
+530	PORTED	0002:00283f10 ?set_size@?$ae_sized_array@Vmem_info@@$0CA@@@QAEXH@Z 00A73410 f i streamer.o
+531	PORTED	0002:00283f30 ??0iterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@AAE@PAPAVAssetBankSet@@@Z 00A73430 f i streamer.o
+532	PORTED	0002:00283f50 ?GetNumWords@?$BitSet@$0BN@@@SAHXZ 00A73450 f i streamer.o
+533	PORTED	0002:00283f60 ?capacity@?$ae_fixed_string@$0CAA@G@@SAHXZ 00A73460 f i streamer.o
+534	VERIFIED	0002:00283f70 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@PAUdlist_node@1@0@Z 00A73470 f i streamer.o
+535	VERIFIED	0002:00283f90 ?compare@iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV12@@Z 00A73490 f i streamer.o
+536	PORTED	0002:00283fb0 ?GetNumWords@?$BitSet@$0GD@@@SAHXZ 00A734B0 f i streamer.o
+537	PORTED	0002:00283fc0 ?construct_array@?$ae_vector@W4TPakId@@@@AAEPAW4TPakId@@HH@Z 00A734C0 f i streamer.o
+538	PORTED	0002:00283ff0 ?construct_array@?$ae_vector@UGlowSprites@@@@AAEPAUGlowSprites@@HH@Z 00A734F0 f i streamer.o
+539	PORTED	0002:00284020 ?construct_array@?$ae_vector@UGlowBeam@@@@AAEPAUGlowBeam@@HH@Z 00A73520 f i streamer.o
+540	PORTED	0002:00284040 ?Key@Instance@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00A73540 f i streamer.o
+541	PORTED	0002:00284050 ?Key@Instance@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00A73550 f i streamer.o
+542	PORTED	0002:00284060 ?Key@Instance@?$tlSkipList@VnglFont@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00A73560 f i streamer.o
+543	PORTED	0002:00284070 ?size@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QBEHXZ 00A73570 f i streamer.o
+544	PORTED	0002:00284080 ?pop_back@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEAAPAVAssetBankSet@@XZ 00A73580 f i streamer.o
+545	VERIFIED	0002:002840a0 ?get_head@?$reserved_dlist@VPakFile@@@@QAEPAUdlist_node@1@XZ 00A735A0 f i streamer.o
+546	PORTED	0002:002840b0 ?begin@?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAEPAV?$ae_pair@VtlFixedString@@_N@@XZ 00A735B0 f i streamer.o
+547	PORTED	0002:002840c0 ?begin@?$ae_vector@UTStbData@PakManager@@@@QAEPAUTStbData@PakManager@@XZ 00A735C0 f i streamer.o
+548	PORTED	0002:002840d0 ?c_str@?$ae_fixed_string@$0CAA@G@@QBEPBDXZ 00A735D0 f i streamer.o
+549	PORTED	0002:002840e0 ?length@?$ae_fixed_string@$0CAA@G@@QBEHXZ 00A735E0 f i streamer.o
+550	VERIFIED	0002:002840f0 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@PAVPakFile@@@Z 00A735F0 f i streamer.o
+551	VERIFIED	0002:00284110 ?c_str@?$ae_fixed_string@$0BAA@G@@QBEPBDXZ 00A73610 f i streamer.o
+552	PORTED	0002:00284120 ?begin@?$ae_vector@W4TPakId@@@@QAEPAW4TPakId@@XZ 00A73620 f i streamer.o
+553	PORTED	0002:00284130 ?begin@?$ae_vector@UGlowSprites@@@@QAEPAUGlowSprites@@XZ 00A73630 f i streamer.o
+554	PORTED	0002:00284140 ?end@?$ae_vector@UGlowSprites@@@@QAEPAUGlowSprites@@XZ 00A73640 f i streamer.o
+555	PORTED	0002:00284150 ?construct_array@?$ae_vector@UGlowSprites@@@@AAEPAUGlowSprites@@H@Z 00A73650 f i streamer.o
+556	PORTED	0002:00284180 ?begin@?$ae_vector@UGlowBeam@@@@QAEPAUGlowBeam@@XZ 00A73680 f i streamer.o
+557	PORTED	0002:00284190 ?end@?$ae_vector@UGlowBeam@@@@QAEPAUGlowBeam@@XZ 00A73690 f i streamer.o
+558	PORTED	0002:002841a0 ?construct_array@?$ae_vector@UGlowBeam@@@@AAEPAUGlowBeam@@H@Z 00A736A0 f i streamer.o
+559	VERIFIED	0002:002841c0 ??$SinCos@$02$0A@$0A@$0A@@math@@YA?AVVector4@0@ABV10@@Z 00A736C0 f i streamer.o
+560	PORTED	0002:00284300 ?IsUsed@?$InplaceTree@VInplaceString@@M@@ABE_NI@Z 00A73800 f i streamer.o
+561	PORTED	0002:002843a0 ?WritePosition@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXMMM@Z 00A738A0 f i streamer.o
+562	PORTED	0002:002843e0 ?WriteColor@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXI@Z 00A738E0 f i streamer.o
+563	PORTED	0002:00284400 ?WriteTexCoord@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXMM@Z 00A73900 f i streamer.o
+564	PORTED	0002:00284430 ??APakInfoBank@@QBEPBUPakInfoNode@@H@Z 00A73930 f i streamer.o
+565	PORTED	0002:00284450 ?size@PakInfoBank@@QBEHXZ 00A73950 f i streamer.o
+566	VERIFIED	0002:00284460 ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z 00A73960 f i streamer.o
+567	VERIFIED	0002:00284670 ?intersect@BoundingBox@@QBE_NABVPosition3@math@@@Z 00A73B70 f i streamer.o
+568	PORTED	0002:002847d0 ?GetZdNode@ZoneCellBox@@QBEPBVZdNode@@ABVPosition3@math@@@Z 00A73CD0 f i streamer.o
+569	PORTED	0002:00284890 ?GetZdNode@ZoneCellDesc@@QBEPBVZdNode@@ABVPosition3@math@@_N@Z 00A73D90 f i streamer.o
+570	VERIFIED	0002:00284900 ?IsInsidePlane@ZoneOverrideBrush@@QBE_NABVPosition3@math@@ABVVector4@3@@Z 00A73E00 f i streamer.o
+571	PORTED	0002:002849a0 ?GetZdNode@ZoneBoundaryBank@@QAEPBVZdNode@@HABVPosition3@math@@@Z 00A73EA0 f i streamer.o
+572	PORTED	0002:00284a90 ?GetNumZones@ZoneBoundaryBank@@QBEIXZ 00A73F90 f i streamer.o
+573	PORTED	0002:00284aa0 ?GetStreamZone@ZoneBoundaryBank@@QBEPBVStreamZone@@I@Z 00A73FA0 f i streamer.o
+574	VERIFIED	0002:00284ac0 ?Size@InstanceBank@@QBEIXZ 00A73FC0 f i streamer.o
+575	PORTED	0002:00284ad0 ??AInstanceBank@@QAEAAVIbEntry@0@I@Z 00A73FD0 f i streamer.o
+576	PORTED	0002:00284ae0 ??AInstanceBank@@QBEABVIbEntry@0@I@Z 00A73FE0 f i streamer.o
+577	VERIFIED	0002:00284af0 ?Enumerate@InstanceBank@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z 00A73FF0 f i streamer.o
+578	PORTED	0002:00284b50 ?GetBank@InstanceBankSet@@QAEAAVInstanceBank@@W4eInstanceBankType@@@Z 00A74050 f i streamer.o
+579	VERIFIED	0002:00284be0 ?Fixup@InstanceBankSet@@QAEXXZ 00A740E0 f i streamer.o
+580	VERIFIED	0002:00284d20 ?Enumerate@InstanceBankSet@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z 00A74220 f i streamer.o
+581	PORTED	0002:00284d70 ??0ae_heap_wrapper@@QAE@PAUmem_heap@@@Z 00A74270 f i streamer.o
+582	PORTED	0002:00284d90 ?Malloc@ae_heap_wrapper@@UAEPAXII@Z 00A74290 f i streamer.o
+583	PORTED	0002:00284db0 ?Free@ae_heap_wrapper@@UAEXPAX@Z 00A742B0 f i streamer.o
+584	PORTED	0002:00284dd0 ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z 00A742D0 f i streamer.o
+585	PORTED	0002:00284df0 ?GetHeapPointer@ae_heap_wrapper@@UAEPAUmem_heap@@XZ 00A742F0 f i streamer.o
+586	PORTED	0002:00284e00 ??_Gae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o
+587	PORTED	0002:00284e00 ??_Eae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o
+588	PORTED	0002:00284e30 ??1ae_heap_wrapper@@UAE@XZ 00A74330 f i streamer.o
+589	VERIFIED	0002:00284e40 ?Fixup@MipSettingsBank@@QAEXXZ 00A74340 f i streamer.o
+590	PORTED	0002:00284f80 ??0ThroughputMeasurer@@QAE@XZ 00A74480 f i streamer.o
+591	VERIFIED	0002:00284fb0 ?stop@ThroughputMeasurer@@QAEXH@Z 00A744B0 f i streamer.o
+592	VERIFIED	0002:00285000 ?AxisAngleToRotMat@math@@YA?AVMat33@1@ABVDir3@1@M@Z 00A74500 f i streamer.o
+593	VERIFIED	0002:00285260 ?Fixup@SceneBank@@QAEXXZ 00A74760 f i streamer.o
+594	PORTED	0002:002853a0 ??0TThreadedPakContextStack@@QAE@XZ 00A748A0 f i streamer.o
+595	PORTED	0002:002853b0 ?Find@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUnglMesh@@ABVtlFixedString@@@Z 00A748B0 f i streamer.o
+596	PORTED	0002:00285490 ?Find@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEPAUnglTexture@@ABVtlFixedString@@@Z 00A74990 f i streamer.o
+597	PORTED	0002:00285570 ?Find@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAVnglFont@@ABVtlFixedString@@@Z 00A74A70 f i streamer.o
+598	PORTED	0002:00285650 ?begin@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE?AViterator@1@XZ 00A74B50 f i streamer.o
+599	PORTED	0002:00285660 ?end@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE?AViterator@1@XZ 00A74B60 f i streamer.o
+600	PORTED	0002:00285680 ?Fixup@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74B80 f i streamer.o
+601	VERIFIED	0002:00285700 ?IsEmpty@?$BitSet@$0EA@@@QBE_NXZ 00A74C00 f i streamer.o
+602	PORTED	0002:00285720 ??0?$reserved_dlist@VPakFile@@@@QAE@XZ 00A74C20 f i streamer.o
+603	PORTED	0002:00285740 ?push_back@?$reserved_dlist@VPakFile@@@@QAEXPAVPakFile@@@Z 00A74C40 f i streamer.o
+604	PORTED	0002:00285770 ?end@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ 00A74C70 f i streamer.o
+605	PORTED	0002:00285790 ??1?$ae_vector@PAVapkFile@apk@@@@QAE@XZ 00A74C90 f i streamer.o
+606	VERIFIED	0002:002857c0 ?push_back@?$ae_vector@PAVapkFile@apk@@@@QAEXABQAVapkFile@apk@@@Z 00A74CC0 f i streamer.o
+607	PORTED	0002:00285870 ?clear@?$ae_sized_array@PAUmem_heap@@$0M@@@QAEXXZ 00A74D70 f i streamer.o
+608	PORTED	0002:00285880 ?back@?$ae_sized_array@PAUmem_heap@@$0M@@@QAEAAPAUmem_heap@@XZ 00A74D80 f i streamer.o
+609	PORTED	0002:002858a0 ?begin@?$ae_sized_array@PAUmem_heap@@$0M@@@QAE?AViterator@1@XZ 00A74DA0 f i streamer.o
+610	PORTED	0002:002858b0 ?end@?$ae_sized_array@PAUmem_heap@@$0M@@@QAE?AViterator@1@XZ 00A74DB0 f i streamer.o
+611	PORTED	0002:002858d0 ??1?$ae_vector@PAX@@QAE@XZ 00A74DD0 f i streamer.o
+612	PORTED	0002:00285900 ?back@?$ae_sized_array@W4TPakId@@$0IA@@@QAEAAW4TPakId@@XZ 00A74E00 f i streamer.o
+613	PORTED	0002:00285920 ?Clear@?$BitSet@$03@@QAEXXZ 00A74E20 f i streamer.o
+614	PORTED	0002:00285930 ?Fixup@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74E30 f i streamer.o
+615	PORTED	0002:002859b0 ?AddBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAEXW4TPakId@@PAVZoneBoundaryBank@@@Z 00A74EB0 f i streamer.o
+616	PORTED	0002:00285a40 ?UnloadBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXW4TPakId@@@Z 00A74F40 f i streamer.o
+617	PORTED	0002:00285aa0 ?GetRawPtr@?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ 00A74FA0 f i streamer.o
+618	VERIFIED	0002:00285ac0 ??0?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00A74FC0 f i streamer.o
+619	VERIFIED	0002:00285af0 ?DirectoryName@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPBDXZ 00A74FF0 f i streamer.o
+620	VERIFIED	0002:00285b00 ?Del@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE_NQAV?$nalAnimClass@VnalAnyPose@@@@@Z 00A75000 f i streamer.o
+621	PORTED	0002:00285b10 ?Enumerate@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAVIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@XZ 00A75010 f i streamer.o
+622	VERIFIED	0002:00285b70 ?ReleaseAll@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEX_N0H@Z 00A75070 f i streamer.o
+623	PORTED	0002:00285bc0 ?Release@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEHPAV?$nalAnimClass@VnalAnyPose@@@@H_N@Z 00A750C0 f i streamer.o
+624	VERIFIED	0002:00285c00 ??1?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE@XZ 00A75100 f i streamer.o
+625	VERIFIED	0002:00285cd0 ??0?$cdResourceDirectory@VnalSceneAnim@@@@QAE@XZ 00A751D0 f i streamer.o
+626	VERIFIED	0002:00285d00 ?DirectoryName@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPBDXZ 00A75200 f i streamer.o
+627	VERIFIED	0002:00285d10 ?Del@?$cdResourceDirectory@VnalSceneAnim@@@@UAE_NQAVnalSceneAnim@@@Z 00A75210 f i streamer.o
+628	PORTED	0002:00285d20 ?Enumerate@?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAVIterator@?$tlResourceDirectory@VnalSceneAnim@@@@XZ 00A75220 f i streamer.o
+629	VERIFIED	0002:00285d80 ?ReleaseAll@?$cdResourceDirectory@VnalSceneAnim@@@@UAEX_N0H@Z 00A75280 f i streamer.o
+630	PORTED	0002:00285dd0 ?Release@?$cdResourceDirectory@VnalSceneAnim@@@@UAEHPAVnalSceneAnim@@H_N@Z 00A752D0 f i streamer.o
+631	VERIFIED	0002:00285e10 ??1?$cdResourceDirectory@VnalSceneAnim@@@@UAE@XZ 00A75310 f i streamer.o
+632	PORTED	0002:00285ee0 ??0?$cdResourceDirectory@VnalAnimFile@@@@QAE@XZ 00A753E0 f i streamer.o
+633	PORTED	0002:00285f10 ?DirectoryName@?$cdResourceDirectory@VnalAnimFile@@@@UAEPBDXZ 00A75410 f i streamer.o
+634	PORTED	0002:00285f20 ?Del@?$cdResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z 00A75420 f i streamer.o
+635	PORTED	0002:00285f30 ?Enumerate@?$cdResourceDirectory@VnalAnimFile@@@@UAEPAVIterator@?$tlResourceDirectory@VnalAnimFile@@@@XZ 00A75430 f i streamer.o
+636	PORTED	0002:00285f90 ?ReleaseAll@?$cdResourceDirectory@VnalAnimFile@@@@UAEX_N0H@Z 00A75490 f i streamer.o
+637	PORTED	0002:00285fe0 ?Release@?$cdResourceDirectory@VnalAnimFile@@@@UAEHPAVnalAnimFile@@H_N@Z 00A754E0 f i streamer.o
+638	PORTED	0002:00286020 ??1?$cdResourceDirectory@VnalAnimFile@@@@UAE@XZ 00A75520 f i streamer.o
+639	VERIFIED	0002:002860f0 ??0?$cdResourceDirectory@VnalBaseSkeleton@@@@QAE@XZ 00A755F0 f i streamer.o
+640	PORTED	0002:00286120 ?clear@?$ae_sized_array@Vmem_info@@$0CA@@@QAEXXZ 00A75620 f i streamer.o
+641	VERIFIED	0002:00286130 ?Test@?$BitSet@$0BN@@@QBE_NH@Z 00A75630 f i streamer.o
+642	PORTED	0002:002861c0 ??0?$ae_fixed_string@$0CAA@G@@QAE@PBD@Z 00A756C0 f i streamer.o
+643	VERIFIED	0002:00286200 ??Dconst_iterator@?$reserved_dlist@VPakFile@@@@QBEPBVPakFile@@XZ 00A75700 f i streamer.o
+644	VERIFIED	0002:00286210 ??Diterator@?$reserved_dlist@VPakFile@@@@QAEPAVPakFile@@XZ 00A75710 f i streamer.o
+645	PORTED	0002:00286220 ??9iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV01@@Z 00A75720 f i streamer.o
+646	VERIFIED	0002:00286250 ?Add@?$BitSet@$0GD@@@QAEXH@Z 00A75750 f i streamer.o
+647	VERIFIED	0002:002862e0 ?Test@?$BitSet@$0GD@@@QBE_NH@Z 00A757E0 f i streamer.o
+648	PORTED	0002:00286370 ?back@?$ae_sized_array@UnglMeshLOD@@$07@@QAEAAUnglMeshLOD@@XZ 00A75870 f i streamer.o
+649	VERIFIED	0002:00286390 ??_G?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o
+650	VERIFIED	0002:00286390 ??_E?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o
+651	VERIFIED	0002:002863c0 ??_E?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o
+652	VERIFIED	0002:002863c0 ??_G?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o
+653	VERIFIED	0002:002863f0 ??_G?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o
+654	VERIFIED	0002:002863f0 ??_E?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o
+655	VERIFIED	0002:00286420 ??_G?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o
+656	VERIFIED	0002:00286420 ??_E?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o
+657	VERIFIED	0002:00286450 ??_E?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o
+658	VERIFIED	0002:00286450 ??_G?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o
+659	PORTED	0002:00286480 ??_G?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o
+660	PORTED	0002:00286480 ??_E?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o
+661	PORTED	0002:002864b0 ??_E?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o
+662	PORTED	0002:002864b0 ??_G?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o
+663	VERIFIED	0002:002864e0 ??_G?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o
+664	VERIFIED	0002:002864e0 ??_E?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o
+665	PORTED	0002:00286510 ??0?$ae_sized_array_base@Vmem_info@@$0CA@@@QAE@XZ 00A75A10 f i streamer.o
+666	VERIFIED	0002:00286540 ?back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@XZ 00A75A40 f i streamer.o
+667	PORTED	0002:00286560 ?find@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@PAVPakFile@@@Z 00A75A60 f i streamer.o
+668	PORTED	0002:002865b0 ?destroy_all@?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@AAEXXZ 00A75AB0 f i streamer.o
+669	PORTED	0002:002865e0 ?destroy_all@?$ae_vector@UTStbData@PakManager@@@@AAEXXZ 00A75AE0 f i streamer.o
+670	PORTED	0002:00286610 ??0?$ae_fixed_string@$0CAA@G@@QAE@ABV0@@Z 00A75B10 f i streamer.o
+671	PORTED	0002:00286660 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@AAV1@@Z 00A75B60 f i streamer.o
+672	PORTED	0002:002866b0 ?Clear@?$BitSet@$0GD@@@QAEXXZ 00A75BB0 f i streamer.o
+673	PORTED	0002:002866d0 ??0?$ae_fixed_string@$0BAA@G@@QAE@ABV0@@Z 00A75BD0 f i streamer.o
+674	PORTED	0002:00286720 ?destroy_all@?$ae_vector@W4TPakId@@@@AAEXXZ 00A75C20 f i streamer.o
+675	PORTED	0002:00286750 ?destroy_all@?$ae_vector@UGlowSprites@@@@AAEXXZ 00A75C50 f i streamer.o
+676	PORTED	0002:00286780 ?destroy_all@?$ae_vector@UGlowBeam@@@@AAEXXZ 00A75C80 f i streamer.o
+677	PORTED	0002:002867b0 ?back@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEAAPAVAssetBankSet@@XZ 00A75CB0 f i streamer.o
+678	PORTED	0002:002867d0 ??$Find@PBD@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBUPakInfoNode@@ABQBD@Z 00A75CD0 f i streamer.o
+679	PORTED	0002:00286810 ??$Find@PBD@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBVStreamZone@@ABQBD@Z 00A75D10 f i streamer.o
+680	PORTED	0002:00286850 ??$PakDelete@V?$BitSet@$0GD@@@@@YAXW4TPakId@@PAV?$BitSet@$0GD@@@_N@Z 00A75D50 f i streamer.o
+681	PORTED	0002:00286880 ??$PakDelete@UAnimOffset@@@@YAXW4TPakId@@PAUAnimOffset@@_N@Z 00A75D80 f i streamer.o
+682	PORTED	0002:002868b0 ??$Find@PBD@?$InplaceTree@VInplaceString@@M@@QBEPAMABQBD@Z 00A75DB0 f i streamer.o
+683	PORTED	0002:002869c0 ??$?0$0BAA@G@?$ae_fixed_string@$0CA@E@@QAE@ABV?$ae_fixed_string@$0BAA@G@@@Z 00A75EC0 f i streamer.o
+684	PORTED	0002:00286a00 ??$WriteVertex@G@@YAXAAV?$nglMeshIterator@Ucdscratch_vertex@@G@@MMMIMM@Z 00A75F00 f i streamer.o
+685	PORTED	0002:00286a70 ??APakInfoBank@@QBEPBUPakInfoNode@@PBD@Z 00A75F70 f i streamer.o
+686	PORTED	0002:00286ab0 ?IsInside@ZoneOverrideBrush@@QBE_NABVPosition3@math@@@Z 00A75FB0 f i streamer.o
+687	PORTED	0002:00286b20 ?IsInside@ZoneOverrideBrushSet@@QBE_NABVPosition3@math@@@Z 00A76020 f i streamer.o
+688	PORTED	0002:00286b80 ?GetStreamZone@ZoneBoundaryBank@@QAEPBVStreamZone@@PBD@Z 00A76080 f i streamer.o
+689	VERIFIED	0002:00286bc0 ?Find@InstanceBank@@QBEHPBDI@Z 00A760C0 f i streamer.o
+690	VERIFIED	0002:00286ca0 ?FindEntry@InstanceBankSet@@QAEPAIW4eInstanceBankType@@PBDI@Z 00A761A0 f i streamer.o
+691	PORTED	0002:00286d50 ??_G?$ae_vector@PAVapkFile@apk@@@@QAEPAXI@Z 00A76250 f i streamer.o
+692	PORTED	0002:00286da0 ??1InstanceListNode@@QAE@XZ 00A762A0 f i streamer.o
+693	PORTED	0002:00286e10 ?erase@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXH@Z 00A76310 f i streamer.o
+694	VERIFIED	0002:00286e60 ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ 00A76360 f i streamer.o
+695	PORTED	0002:00286eb0 ?erase@?$reserved_dlist@VPakFile@@@@QAEXPAVPakFile@@@Z 00A763B0 f i streamer.o
+696	PORTED	0002:00286f50 ??0?$BitSet@$03@@QAE@XZ 00A76450 f i streamer.o
+697	PORTED	0002:00286f60 ??1?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAE@XZ 00A76460 f i streamer.o
+698	PORTED	0002:00286f90 ??1?$ae_vector@UTStbData@PakManager@@@@QAE@XZ 00A76490 f i streamer.o
+699	PORTED	0002:00286fc0 ??0?$ae_sized_array@Vmem_info@@$0CA@@@QAE@XZ 00A764C0 f i streamer.o
+700	VERIFIED	0002:00286ff0 ?get_file_name@?$ae_fixed_string@$0CAA@G@@QBE?AV1@_N@Z 00A764F0 f i streamer.o
+701	PORTED	0002:00287080 ??0?$BitSet@$0GD@@@QAE@XZ 00A76580 f i streamer.o
+702	VERIFIED	0002:002870a0 ?get_file_name@?$ae_fixed_string@$0BAA@G@@QBE?AV1@_N@Z 00A765A0 f i streamer.o
+703	VERIFIED	0002:00287130 ?push_back@?$ae_vector@W4TPakId@@@@QAEXABW4TPakId@@@Z 00A76630 f i streamer.o
+704	PORTED	0002:002871e0 ??1?$ae_vector@UGlowSprites@@@@QAE@XZ 00A766E0 f i streamer.o
+705	VERIFIED	0002:00287210 ?push_back@?$ae_vector@UGlowSprites@@@@QAEXABUGlowSprites@@@Z 00A76710 f i streamer.o
+706	PORTED	0002:00287320 ??1?$ae_vector@UGlowBeam@@@@QAE@XZ 00A76820 f i streamer.o
+707	VERIFIED	0002:00287350 ?push_back@?$ae_vector@UGlowBeam@@@@QAEXABUGlowBeam@@@Z 00A76850 f i streamer.o
+708	PORTED	0002:00287420 ?erase@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXH@Z 00A76920 f i streamer.o
+709	VERIFIED	0002:00287470 ?resize@?$ae_vector@UGlowSprites@@@@QAEXH@Z 00A76970 f i streamer.o
+710	VERIFIED	0002:00287550 ?resize@?$ae_vector@UGlowBeam@@@@QAEXH@Z 00A76A50 f i streamer.o
+711	PORTED	0002:00287610 ??_GInstanceListNode@@QAEPAXI@Z 00A76B10 f i streamer.o
+712	VERIFIED	0002:00287640 ?SingletonDebugRender@StreamZoneManager@@SAXXZ 00A76B40 f i streamer.o
+713	PORTED	0002:00287650 ?erase@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXViterator@1@@Z 00A76B50 f i streamer.o
+714	PORTED	0002:002876a0 ?clear@?$ae_vector@UGlowSprites@@@@QAEXXZ 00A76BA0 f i streamer.o
+715	PORTED	0002:002876b0 ?clear@?$ae_vector@UGlowBeam@@@@QAEXXZ 00A76BB0 f i streamer.o
+716	PORTED	0002:002876c0 ??$PakDelete@VInstanceListNode@@@@YAXW4TPakId@@PAVInstanceListNode@@_N@Z 00A76BC0 f i streamer.o
+717	VERIFIED	0002:00287700 ?SingletonDebugRender@PakManager@@SAXXZ 00A76C00 f i streamer.o
+718	PORTED	0002:00287710 ??0?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAE@XZ 00A76C10 f i streamer.o
+719	PORTED	0002:00287800 ?OnBankUnloaded@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXAAVZoneBoundaryBank@@@Z 00A76D00 f i streamer.o
+720	PORTED	0002:00287810 ??1?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAE@XZ 00A76D10 f i streamer.o
+721	PORTED	0002:00287820 ??_E?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o
+722	PORTED	0002:00287820 ??_G?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o
+723	VERIFIED	0002:00287850 ??_GAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
+724	VERIFIED	0002:00287850 ??_EAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
+725	VERIFIED	0002:00287880 ?SingletonDebugRender@SceneManager@@SAXXZ 00A76D80 f i streamer.o
+726	PORTED	0002:00287890 ??_GSceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o
+727	PORTED	0002:00287890 ??_ESceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o
+728	VERIFIED	0002:002878c0 ??_GPakFile@@QAEPAXI@Z 00A76DC0 f i streamer.o
+729	PORTED	0002:002878f0 ??_EStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o
+730	PORTED	0002:002878f0 ??_GStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o

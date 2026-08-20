@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00813C90	?Render@apsBillboardNode@@UAEXXZ	public: virtual void __thiscall apsBillboardNode::Render(void)	

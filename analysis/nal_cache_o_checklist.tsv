@@ -1,0 +1,8 @@
+index	status	map_line
+1	VERIFIED	0002:00468700 ?Release@nalAnimCache@@QAEXXZ 00C57C00 f nal_cache.o
+2	VERIFIED	0002:00468730 ?MemFree@nalAnimCache@@QAEXPAXI@Z 00C57C30 f nal_cache.o
+3	PORTED	0002:00468740 ?Free@nalAnimCache@@QAEXPAVnalObject@1@@Z 00C57C40 f nal_cache.o
+4	PORTED	0002:004687c0 ?Touch@nalAnimCache@@QAEXPAVnalObject@1@@Z 00C57CC0 f nal_cache.o
+5	VERIFIED	0002:00468830 ?MemAlloc@nalAnimCache@@QAEPAXII@Z 00C57D30 f nal_cache.o
+6	PORTED	0002:00468870 ?Allocate@nalAnimCache@@QAEPAVnalObject@1@ABUnalCachedPoseInfo@@HHPAPAV21@@Z 00C57D70 f nal_cache.o
+7	PORTED	0002:00468970 ?IncreaseLOD@nalAnimCache@@QAEXPAVnalObject@1@ABUnalCachedPoseInfo@@HH@Z 00C57E70 f nal_cache.o

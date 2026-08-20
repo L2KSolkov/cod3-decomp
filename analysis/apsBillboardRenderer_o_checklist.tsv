@@ -1,0 +1,13 @@
+index	status	map_line
+1	PORTED	0002:00405c20 ?CopyLightInfoFrom@apsRenderNode@@QAEXABULightInfo@apsLight@@@Z 00BF5120 f i apsBillboardRenderer.o
+2	PORTED	0002:00405c40 ?BlendMode@apsBillboardRenderer@@QBE?AW4apsEBlendMode@@XZ 00BF5140 f i apsBillboardRenderer.o
+3	VERIFIED	0002:00405c50 ?UsesAmbientLighting@apsBillboardRenderer@@QBE_NXZ 00BF5150 f apsBillboardRenderer.o
+4	VERIFIED	0002:00405cd0 ?UsesDiffuseLighting@apsBillboardRenderer@@QBE_NXZ 00BF51D0 f apsBillboardRenderer.o
+5	VERIFIED	0002:00405d50 ?Init@apsBillboardRenderer@@SAXXZ 00BF5250 f apsBillboardRenderer.o
+6	PORTED	0002:00405d80 ?SetNodeParams@apsBillboardRenderer@@QBE_NPAVapsRenderNode@@ABUapsRendererRenderInfo@@@Z 00BF5280 f apsBillboardRenderer.o
+7	PORTED	0002:00405f60 ??0apsBillboardRenderer@@QAE@ABVcArgs@0@@Z 00BF5460 f apsBillboardRenderer.o
+8	VERIFIED	0002:004060f0 ?Render@apsBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF55F0 f apsBillboardRenderer.o
+9	PORTED	0002:00406140 ?RegisterVShader@apsBillboardRender@@YAXXZ 00BF5640 f i apsBillboardRenderer.o
+10	PORTED	0002:00406160 ?RegisterPShader@apsBillboardRenderPixel@@YAXXZ 00BF5660 f i apsBillboardRenderer.o
+11	PORTED	0002:00406180 ?InitPShader@apsBillboardRenderPixel@@YAXXZ 00BF5680 f i apsBillboardRenderer.o
+12	PORTED	0002:004061a0 ??$DefaultRender@VapsBillboardRenderer@@VapsBillboardNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAV0@ABUapsRendererRenderInfo@@@Z 00BF56A0 f i apsBillboardRenderer.o

@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x00805960	??0apsUVARenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsUVARenderer::apsUVARenderer(class apsUVARenderer::cArgs const &)	
+0x00805A50	?Init@apsUVARenderer@@SAXXZ	public: static void __cdecl apsUVARenderer::Init(void)	
+0x00805A80	?Render@apsUVARenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsUVARenderer::Render(struct apsRendererRenderInfo const &)	

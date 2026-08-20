@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x00853F50	0x00C43450	?nglGetVertexDeclaration@@YAPAU_D3DVERTEXATTRIBUTEFORMAT@@PAU1@@Z	struct _D3DVERTEXATTRIBUTEFORMAT * __cdecl nglGetVertexDeclaration(struct _D3DVERTEXATTRIBUTEFORMAT *)	ngl_dx_mesh.o
+0x00854000	0x00C43500	?ngliProcessSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAVapkFileEntry@apk@@@Z	void __cdecl ngliProcessSection(struct nglMesh *,struct nglMeshSection *,class apk::apkFileEntry *)	ngl_dx_mesh.o
+0x00854050	0x00C43550	?ngliReleaseSection@@YAXPAUnglMeshSection@@@Z	void __cdecl ngliReleaseSection(struct nglMeshSection *)	ngl_dx_mesh.o
+0x00854060	0x00C43560	?ngliListAddMesh_GetClipResult@@YAHABVPosition3@math@@MH@Z	int __cdecl ngliListAddMesh_GetClipResult(class math::Position3 const &,float,int)	ngl_dx_mesh.o

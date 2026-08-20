@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007E97A0	__tr_tally	__tr_tally	
+0x007E9F20	__tr_init	__tr_init	
+0x007EA280	__tr_stored_block	__tr_stored_block	
+0x007EA330	__tr_align	__tr_align	
+0x007EA530	__tr_flush_block	__tr_flush_block	

@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x007C4C40	0x00BB4140	?InitCDSimpleInstanceShader@@YAXXZ	void __cdecl InitCDSimpleInstanceShader(void)	cdSimpleInstance.o
+0x007C4C90	0x00BB4190	?ToggleCDSimpleInstanceShader@@YAXXZ	void __cdecl ToggleCDSimpleInstanceShader(void)	cdSimpleInstance.o
+0x007C4CB0	0x00BB41B0	?Create@cdSimpleInstance@@QAEXPAUnglMesh@@PAUnglMeshSection@@H@Z	public: void __thiscall cdSimpleInstance::Create(struct nglMesh *,struct nglMeshSection *,int)	cdSimpleInstance.o
+0x007C4D00	0x00BB4200	?Destroy@cdSimpleInstance@@QAEXXZ	public: void __thiscall cdSimpleInstance::Destroy(void)	cdSimpleInstance.o
+0x007C4D20	0x00BB4220	?Add@cdSimpleInstance@@QAEXABVMat43@math@@MABVMat44@3@1AAV?$ae_sized_array@PAH$0BIA@@@H@Z	public: void __thiscall cdSimpleInstance::Add(class math::Mat43 const &,float,class math::Mat44 const &,class math::Mat44 const &,class ae_sized_array<int *,384> &,int)	cdSimpleInstance.o
+0x007C4FD0	0x00BB44D0	?Finalize@cdSimpleInstance@@QAEXAAV?$ae_sized_array@PAH$0BIA@@@@Z	public: void __thiscall cdSimpleInstance::Finalize(class ae_sized_array<int *,384> &)	cdSimpleInstance.o
+0x007C50F0	0x00BB45F0	?Render@cdSimpleInstance@@QAEXXZ	public: void __thiscall cdSimpleInstance::Render(void)	cdSimpleInstance.o

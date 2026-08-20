@@ -1,0 +1,113 @@
+ida_ea	va	name	signature	family
+0x00926420	0x00D15920	?IsAlpha@Broc@@YA_ND@Z	bool __cdecl Broc::IsAlpha(char)	Broc.o
+0x00926470	0x00D15970	?ToLower@Broc@@YADD@Z	char __cdecl Broc::ToLower(char)	Broc.o
+0x009264B0	0x00D159B0	?length@Broc@@YAIPBD@Z	unsigned int __cdecl Broc::length(char const *)	Broc.o
+0x00926510	0x00D15A10	??0Block@string@Broc@@QAE@HIPBD@Z	public: __thiscall Broc::string::Block::Block(int,unsigned int,char const *)	Broc.o
+0x00926630	0x00D15B30	?Append@Block@string@Broc@@QAEXPBDI@Z	public: void __thiscall Broc::string::Block::Append(char const *,unsigned int)	Broc.o
+0x00926730	0x00D15C30	?DecrementCount@Block@string@Broc@@QAEXXZ	public: void __thiscall Broc::string::Block::DecrementCount(void)	Broc.o
+0x00926790	0x00D15C90	??0string@Broc@@QAE@W4EUndefined@1@@Z	public: __thiscall Broc::string::string(enum Broc::EUndefined)	Broc.o
+0x009267C0	0x00D15CC0	??0string@Broc@@QAE@PAVBlock@01@@Z	public: __thiscall Broc::string::string(class Broc::string::Block *)	Broc.o
+0x00926950	0x00D15E50	??0string@Broc@@QAE@PBD@Z	public: __thiscall Broc::string::string(char const *)	Broc.o
+0x009269C0	0x00D15EC0	??0string@Broc@@QAE@PBDH@Z	public: __thiscall Broc::string::string(char const *,int)	Broc.o
+0x00926A10	0x00D15F10	??0string@Broc@@QAE@ABV01@@Z	public: __thiscall Broc::string::string(class Broc::string const &)	Broc.o
+0x00926BC0	0x00D160C0	??0string@Broc@@QAE@ABV01@H@Z	public: __thiscall Broc::string::string(class Broc::string const &,int)	Broc.o
+0x00926D20	0x00D16220	?AllocBlock@string@Broc@@SA?AV?$ae_pair@PAXH@@H@Z	public: static class ae_pair<void *,int> __cdecl Broc::string::AllocBlock(int)	Broc.o
+0x00926DC0	0x00D162C0	?AllocBlock@string@Broc@@SAPAVBlock@12@PBDII@Z	public: static class Broc::string::Block * __cdecl Broc::string::AllocBlock(char const *,unsigned int,unsigned int)	Broc.o
+0x00926EA0	0x00D163A0	??Ystring@Broc@@QAEAAV01@D@Z	public: class Broc::string & __thiscall Broc::string::operator+=(char)	Broc.o
+0x00926EE0	0x00D163E0	??Ystring@Broc@@QAEAAV01@PBD@Z	public: class Broc::string & __thiscall Broc::string::operator+=(char const *)	Broc.o
+0x00926F20	0x00D16420	??Ystring@Broc@@QAEAAV01@ABV01@@Z	public: class Broc::string & __thiscall Broc::string::operator+=(class Broc::string const &)	Broc.o
+0x00926F60	0x00D16460	??4string@Broc@@QAEAAV01@ABV01@@Z	public: class Broc::string & __thiscall Broc::string::operator=(class Broc::string const &)	Broc.o
+0x009270C0	0x00D165C0	??4string@Broc@@QAEAAV01@PBD@Z	public: class Broc::string & __thiscall Broc::string::operator=(char const *)	Broc.o
+0x00927270	0x00D16770	??4string@Broc@@QAEAAV01@D@Z	public: class Broc::string & __thiscall Broc::string::operator=(char)	Broc.o
+0x00927320	0x00D16820	??0string@Broc@@QAE@I@Z	public: __thiscall Broc::string::string(unsigned int)	Broc.o
+0x009273B0	0x00D168B0	??0string@Broc@@QAE@H@Z	public: __thiscall Broc::string::string(int)	Broc.o
+0x00927440	0x00D16940	??0string@Broc@@QAE@M@Z	public: __thiscall Broc::string::string(float)	Broc.o
+0x009274F0	0x00D169F0	??0string@Broc@@QAE@Ubint@@@Z	public: __thiscall Broc::string::string(struct bint)	Broc.o
+0x00927590	0x00D16A90	??0string@Broc@@QAE@Ubfloat@@@Z	public: __thiscall Broc::string::string(struct bfloat)	Broc.o
+0x00927640	0x00D16B40	??0string@Broc@@QAE@Ubunsigned@@@Z	public: __thiscall Broc::string::string(struct bunsigned)	Broc.o
+0x00927700	0x00D16C00	??0string@Broc@@QAE@Ubbool@@@Z	public: __thiscall Broc::string::string(struct bbool)	Broc.o
+0x009277C0	0x00D16CC0	??1string@Broc@@QAE@XZ	public: __thiscall Broc::string::~string(void)	Broc.o
+0x00927820	0x00D16D20	??4string@Broc@@QAEAAV01@H@Z	public: class Broc::string & __thiscall Broc::string::operator=(int)	Broc.o
+0x00927870	0x00D16D70	??4string@Broc@@QAEAAV01@M@Z	public: class Broc::string & __thiscall Broc::string::operator=(float)	Broc.o
+0x009278C0	0x00D16DC0	??4string@Broc@@QAEAAV01@ABUvector@1@@Z	public: class Broc::string & __thiscall Broc::string::operator=(struct Broc::vector const &)	Broc.o
+0x00927940	0x00D16E40	??Ystring@Broc@@QAEAAV01@H@Z	public: class Broc::string & __thiscall Broc::string::operator+=(int)	Broc.o
+0x009279A0	0x00D16EA0	??Ystring@Broc@@QAEAAV01@I@Z	public: class Broc::string & __thiscall Broc::string::operator+=(unsigned int)	Broc.o
+0x00927A00	0x00D16F00	??Ystring@Broc@@QAEAAV01@M@Z	public: class Broc::string & __thiscall Broc::string::operator+=(float)	Broc.o
+0x00927A70	0x00D16F70	?clear@string@Broc@@QAEXXZ	public: void __thiscall Broc::string::clear(void)	Broc.o
+0x00927AE0	0x00D16FE0	?find@string@Broc@@QBEHPBDI@Z	public: int __thiscall Broc::string::find(char const *,unsigned int)const 	Broc.o
+0x00927C00	0x00D17100	?find@string@Broc@@QBEHID@Z	public: int __thiscall Broc::string::find(unsigned int,char)const 	Broc.o
+0x00927C70	0x00D17170	?rfind@string@Broc@@QBEHPBD@Z	public: int __thiscall Broc::string::rfind(char const *)const 	Broc.o
+0x00927D40	0x00D17240	?remove_leading@string@Broc@@QAEAAV12@PBD@Z	public: class Broc::string & __thiscall Broc::string::remove_leading(char const *)	Broc.o
+0x00927E30	0x00D17330	?remove_trailing@string@Broc@@QAEAAV12@PBD@Z	public: class Broc::string & __thiscall Broc::string::remove_trailing(char const *)	Broc.o
+0x00927F20	0x00D17420	?set_char@string@Broc@@QAEXID@Z	public: void __thiscall Broc::string::set_char(unsigned int,char)	Broc.o
+0x00927F70	0x00D17470	?Append@string@Broc@@AAEXPBDI@Z	private: void __thiscall Broc::string::Append(char const *,unsigned int)	Broc.o
+0x009280E0	0x00D175E0	?substr@string@Broc@@QBE?AV12@II@Z	public: class Broc::string __thiscall Broc::string::substr(unsigned int,unsigned int)const 	Broc.o
+0x00928260	0x00D17760	??8Broc@@YA_NABVstring@0@PBD@Z	bool __cdecl Broc::operator==(class Broc::string const &,char const *)	Broc.o
+0x00928390	0x00D17890	??8Broc@@YA_NABVstring@0@0@Z	bool __cdecl Broc::operator==(class Broc::string const &,class Broc::string const &)	Broc.o
+0x009284C0	0x00D179C0	??HBroc@@YA?AVstring@0@ABV10@0@Z	class Broc::string __cdecl Broc::operator+(class Broc::string const &,class Broc::string const &)	Broc.o
+0x009285C0	0x00D17AC0	??HBroc@@YA?AVstring@0@ABV10@PBD@Z	class Broc::string __cdecl Broc::operator+(class Broc::string const &,char const *)	Broc.o
+0x00928710	0x00D17C10	?string_hash@Broc@@YA?AUHashStr@@PBD@Z	struct HashStr __cdecl Broc::string_hash(char const *)	Broc.o
+0x00928780	0x00D17C80	?string_hash@Broc@@YA?AUHashStr@@ABVstring@1@@Z	struct HashStr __cdecl Broc::string_hash(class Broc::string const &)	Broc.o
+0x009287C0	0x00D17CC0	?strcmp@Broc@@YAHPBD0@Z	int __cdecl Broc::strcmp(char const *,char const *)	Broc.o
+0x00928860	0x00D17D60	??8Broc@@YA_NUHashStr@@ABVstring@0@@Z	bool __cdecl Broc::operator==(struct HashStr,class Broc::string const &)	Broc.o
+0x009288A0	0x00D17DA0	??8Broc@@YA_NABVstring@0@UHashStr@@@Z	bool __cdecl Broc::operator==(class Broc::string const &,struct HashStr)	Broc.o
+0x009288E0	0x00D17DE0	??9Broc@@YA_NUHashStr@@ABVstring@0@@Z	bool __cdecl Broc::operator!=(struct HashStr,class Broc::string const &)	Broc.o
+0x00928920	0x00D17E20	??9Broc@@YA_NABVstring@0@UHashStr@@@Z	bool __cdecl Broc::operator!=(class Broc::string const &,struct HashStr)	Broc.o
+0x00928960	0x00D17E60	?IS_NAN@@YA_NM@Z	bool __cdecl IS_NAN(float)	Broc.o
+0x009289A0	0x00D17EA0	?ThreadExecute@Broc@@YAXPAVAeThreadFunctor@@@Z	void __cdecl Broc::ThreadExecute(class AeThreadFunctor *)	Broc.o
+0x009289D0	0x00D17ED0	?wait_accurate@Broc@@YAXM@Z	void __cdecl Broc::wait_accurate(float)	Broc.o
+0x00928A70	0x00D17F70	?wait@Broc@@YAXM@Z	void __cdecl Broc::wait(float)	Broc.o
+0x00928B70	0x00D18070	?wait_frame@Broc@@YAXH@Z	void __cdecl Broc::wait_frame(int)	Broc.o
+0x00928BC0	0x00D180C0	?waittill@Broc@@YAXVentity@1@UHashStr@@@Z	void __cdecl Broc::waittill(class Broc::entity,struct HashStr)	Broc.o
+0x00928CF0	0x00D181F0	?waittill_timeout@Broc@@YAXVentity@1@UHashStr@@M@Z	void __cdecl Broc::waittill_timeout(class Broc::entity,struct HashStr,float)	Broc.o
+0x00928E20	0x00D18320	?waittillmatch@Broc@@YAXVentity@1@UHashStr@@111@Z	void __cdecl Broc::waittillmatch(class Broc::entity,struct HashStr,struct HashStr,struct HashStr,struct HashStr)	Broc.o
+0x00928F10	0x00D18410	?waittillor@Broc@@YAXVentity@1@UHashStr@@111@Z	void __cdecl Broc::waittillor(class Broc::entity,struct HashStr,struct HashStr,struct HashStr,struct HashStr)	Broc.o
+0x00929000	0x00D18500	?waittill@Broc@@YAXVentity@1@PBD@Z	void __cdecl Broc::waittill(class Broc::entity,char const *)	Broc.o
+0x00929090	0x00D18590	?waittill_loaded@Broc@@YAXW4TPakInfo@@@Z	void __cdecl Broc::waittill_loaded(enum TPakInfo)	Broc.o
+0x009290E0	0x00D185E0	?waittill_unloaded@Broc@@YAXW4TPakInfo@@@Z	void __cdecl Broc::waittill_unloaded(enum TPakInfo)	Broc.o
+0x00929130	0x00D18630	?endon@Broc@@YAXVentity@1@PBD@Z	void __cdecl Broc::endon(class Broc::entity,char const *)	Broc.o
+0x009291A0	0x00D186A0	?thread_sleep_time@Broc@@YAXXZ	void __cdecl Broc::thread_sleep_time(void)	Broc.o
+0x009291F0	0x00D186F0	?thread_sleep_frames@Broc@@YAXXZ	void __cdecl Broc::thread_sleep_frames(void)	Broc.o
+0x00929240	0x00D18740	?thread_sleep_until_notify@Broc@@YAXXZ	void __cdecl Broc::thread_sleep_until_notify(void)	Broc.o
+0x009292D0	0x00D187D0	?thread_debug_wait_msg@Broc@@YAXH@Z	void __cdecl Broc::thread_debug_wait_msg(int)	Broc.o
+0x00929320	0x00D18820	?thread_debug_wait_msg@Broc@@YAXM@Z	void __cdecl Broc::thread_debug_wait_msg(float)	Broc.o
+0x00929370	0x00D18870	?thread_debug_wait_until@Broc@@YAXUHashStr@@000@Z	void __cdecl Broc::thread_debug_wait_until(struct HashStr,struct HashStr,struct HashStr,struct HashStr)	Broc.o
+0x009295A0	0x00D18AA0	??$Initialize@M@EEHelper@Broc@@YAIPBD@Z	unsigned int __cdecl Broc::EEHelper::Initialize<float>(char const *)	Broc.o
+0x009295E0	0x00D18AE0	??$Initialize@H@EEHelper@Broc@@YAIPBD@Z	unsigned int __cdecl Broc::EEHelper::Initialize<int>(char const *)	Broc.o
+0x00929620	0x00D18B20	??$Initialize@Vstring@Broc@@@EEHelper@Broc@@YAIPBD@Z	unsigned int __cdecl Broc::EEHelper::Initialize<class Broc::string>(char const *)	Broc.o
+0x009296C0	0x00D18BC0	??$Equals@H@EEHelper@Broc@@YA_NIPBD@Z	bool __cdecl Broc::EEHelper::Equals<int>(unsigned int,char const *)	Broc.o
+0x00929700	0x00D18C00	??$Equals@M@EEHelper@Broc@@YA_NIPBD@Z	bool __cdecl Broc::EEHelper::Equals<float>(unsigned int,char const *)	Broc.o
+0x00929760	0x00D18C60	??$Equals@Vstring@Broc@@@EEHelper@Broc@@YA_NIPBD@Z	bool __cdecl Broc::EEHelper::Equals<class Broc::string>(unsigned int,char const *)	Broc.o
+0x00929790	0x00D18C90	??$Copy@Vstring@Broc@@@EEHelper@Broc@@YAII@Z	unsigned int __cdecl Broc::EEHelper::Copy<class Broc::string>(unsigned int)	Broc.o
+0x00929840	0x00D18D40	?Initialize@EEDefault@Broc@@YAIPBD@Z	unsigned int __cdecl Broc::EEDefault::Initialize(char const *)	Broc.o
+0x00929890	0x00D18D90	?Copy@EEDefault@Broc@@YAII@Z	unsigned int __cdecl Broc::EEDefault::Copy(unsigned int)	Broc.o
+0x009298E0	0x00D18DE0	?Destruct@EEDefault@Broc@@YAXAAI@Z	void __cdecl Broc::EEDefault::Destruct(unsigned int &)	Broc.o
+0x00929930	0x00D18E30	?Equals@EEDefault@Broc@@YA_NIPBD@Z	bool __cdecl Broc::EEDefault::Equals(unsigned int,char const *)	Broc.o
+0x00929980	0x00D18E80	?GetExtendedEntity@ExtendedEntity@Broc@@SAPAV12@I@Z	public: static class Broc::ExtendedEntity * __cdecl Broc::ExtendedEntity::GetExtendedEntity(unsigned int)	Broc.o
+0x00929AC0	0x00D18FC0	?CreateExtendedEntity@ExtendedEntity@Broc@@CAPAXQAPBDH@Z	private: static void * __cdecl Broc::ExtendedEntity::CreateExtendedEntity(char const * * const,int)	Broc.o
+0x00929DB0	0x00D192B0	?DeleteExtendedEntity@ExtendedEntity@Broc@@CAXPAX@Z	private: static void __cdecl Broc::ExtendedEntity::DeleteExtendedEntity(void *)	Broc.o
+0x00929F60	0x00D19460	?MatchExtendedEntityKey@ExtendedEntity@Broc@@CA_NPAXHPBD@Z	private: static bool __cdecl Broc::ExtendedEntity::MatchExtendedEntityKey(void *,int,char const *)	Broc.o
+0x0092A140	0x00D19640	?CopyExtendedEntity@ExtendedEntity@Broc@@CAPAXPBX@Z	private: static void * __cdecl Broc::ExtendedEntity::CopyExtendedEntity(void const *)	Broc.o
+0x0092A2F0	0x00D197F0	?InitScript@ExtendedEntity@Broc@@SAXAAUBrocExports@@@Z	public: static void __cdecl Broc::ExtendedEntity::InitScript(struct BrocExports &)	Broc.o
+0x0092A340	0x00D19840	??0ExtendedEntity@Broc@@QAE@XZ	public: __thiscall Broc::ExtendedEntity::ExtendedEntity(void)	Broc.o
+0x0092A380	0x00D19880	??0ExtendedEntity@Broc@@AAE@ABV01@@Z	private: __thiscall Broc::ExtendedEntity::ExtendedEntity(class Broc::ExtendedEntity const &)	Broc.o
+0x0092A5D0	0x00D19AD0	??1ExtendedEntity@Broc@@QAE@XZ	public: __thiscall Broc::ExtendedEntity::~ExtendedEntity(void)	Broc.o
+0x0092A7A0	0x00D19CA0	?IsDefined@ExtendedEntity@Broc@@QBE_NI@Z	public: bool __thiscall Broc::ExtendedEntity::IsDefined(unsigned int)const 	Broc.o
+0x0092A990	0x00D19E90	?SetUndefined@ExtendedEntity@Broc@@QAEXI@Z	public: void __thiscall Broc::ExtendedEntity::SetUndefined(unsigned int)	Broc.o
+0x0092AC40	0x00D1A140	?SetVal@ExtendedEntity@Broc@@QAEPAIIABVstring@2@@Z	public: unsigned int * __thiscall Broc::ExtendedEntity::SetVal(unsigned int,class Broc::string const &)	Broc.o
+0x0092ACF0	0x00D1A1F0	?InternalSet@ExtendedEntity@Broc@@AAEPAIII@Z	private: unsigned int * __thiscall Broc::ExtendedEntity::InternalSet(unsigned int,unsigned int)	Broc.o
+0x0092B0E0	0x00D1A5E0	?InternalGet@ExtendedEntity@Broc@@ABEPAII@Z	private: unsigned int * __thiscall Broc::ExtendedEntity::InternalGet(unsigned int)const 	Broc.o
+0x0092B2E0	0x00D1A7E0	?GetInit@ExtendedEntity@Broc@@CAP6AIPBD@ZI@Z	private: static unsigned int (__cdecl*__cdecl Broc::ExtendedEntity::GetInit(unsigned int))(char const *)	Broc.o
+0x0092B4C0	0x00D1A9C0	?GetCopier@ExtendedEntity@Broc@@CAP6AII@ZI@Z	private: static unsigned int (__cdecl*__cdecl Broc::ExtendedEntity::GetCopier(unsigned int))(unsigned int)	Broc.o
+0x0092B6A0	0x00D1ABA0	?GetEquals@ExtendedEntity@Broc@@CAP6A_NIPBD@ZI@Z	private: static bool (__cdecl*__cdecl Broc::ExtendedEntity::GetEquals(unsigned int))(unsigned int,char const *)	Broc.o
+0x0092B880	0x00D1AD80	?GetDestructor@ExtendedEntity@Broc@@CAP6AXAAI@ZI@Z	private: static void (__cdecl*__cdecl Broc::ExtendedEntity::GetDestructor(unsigned int))(unsigned int &)	Broc.o
+0x0092BA60	0x00D1AF60	?UndefineEEField@entity@Broc@@QAEXI@Z	public: void __thiscall Broc::entity::UndefineEEField(unsigned int)	Broc.o
+0x0092BAB0	0x00D1AFB0	?GetNodeArray@Broc@@YAXABVstring@1@0AAV?$dyn_array@Vpathnode@Broc@@@1@@Z	void __cdecl Broc::GetNodeArray(class Broc::string const &,class Broc::string const &,class Broc::dyn_array<class Broc::pathnode> &)	Broc.o
+0x0092BC10	0x00D1B110	?GetAllNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z	void __cdecl Broc::GetAllNodes(class Broc::dyn_array<class Broc::pathnode> &)	Broc.o
+0x0092BD90	0x00D1B290	?GetVehicleNodeArray@Broc@@YAXABVstring@1@0AAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z	void __cdecl Broc::GetVehicleNodeArray(class Broc::string const &,class Broc::string const &,class Broc::dyn_array<class Broc::vehiclenode> &)	Broc.o
+0x0092BEE0	0x00D1B3E0	?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z	void __cdecl Broc::GetAllVehicleNodes(class Broc::dyn_array<class Broc::pathnode> &)	Broc.o
+0x0092C0B0	0x00D1B5B0	?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z	void __cdecl Broc::GetAllVehicleNodes(class Broc::dyn_array<class Broc::vehiclenode> &)	Broc.o
+0x0092C290	0x00D1B790	?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z	void __cdecl Broc::GetEntArray(class Broc::string const &,struct HashStr,class Broc::dyn_array<class Broc::entity> &,unsigned int)	Broc.o
+0x0092C3B0	0x00D1B8B0	?GetAllDronesWithinDistance@Broc@@YAXABUvector@1@MAAV?$dyn_array@Ventity@Broc@@@1@@Z	void __cdecl Broc::GetAllDronesWithinDistance(struct Broc::vector const &,float,class Broc::dyn_array<class Broc::entity> &)	Broc.o
+0x0092C4D0	0x00D1B9D0	?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z	void __cdecl Broc::GetPlayerArray(class Broc::dyn_array<class Broc::entity> &)	Broc.o
+0x0092C5D0	0x00D1BAD0	?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z	void __cdecl Broc::GetLocalPlayerArray(class Broc::dyn_array<class Broc::entity> &)	Broc.o

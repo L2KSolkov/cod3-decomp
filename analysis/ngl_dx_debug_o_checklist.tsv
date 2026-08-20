@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:00451120 ?ngliGetDebugFlagPtr@@YAPAEPBD@Z 00C40620 f ngl_dx_debug.o
+2	VERIFIED	0002:00451130 ?PrintHeader@ngliShaderProfile@@SAXXZ 00C40630 f ngl_dx_debug.o
+3	VERIFIED	0002:00451140 ?Print@ngliShaderProfile@@QAEXXZ 00C40640 f ngl_dx_debug.o
+4	VERIFIED	0002:00451170 ?Record@ngliShaderProfile@@QAEXXZ 00C40670 f ngl_dx_debug.o
+5	VERIFIED	0002:004511b0 ?Compare@ngliShaderProfile@@QAEXPAU1@@Z 00C406B0 f ngl_dx_debug.o

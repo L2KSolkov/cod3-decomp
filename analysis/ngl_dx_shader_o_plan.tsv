@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x0084DF00	?nglDxRegisterVShader@@YAXPAKPBI@Z	void __cdecl nglDxRegisterVShader(unsigned long *,unsigned int const *)	
+0x0084DF10	?nglDxRegisterPShader@@YAXPAPAKPBI@Z	void __cdecl nglDxRegisterPShader(unsigned long * *,unsigned int const *)	
+0x0084DF20	?nglDxSetBonesWorld@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	void __cdecl nglDxSetBonesWorld(int,class nglMeshNode *,struct nglMeshSection *)	
+0x0084E7E0	?nglDxSetupVShaderFog@@YAXHPAVnglMeshNode@@MMMM@Z	void __cdecl nglDxSetupVShaderFog(int,class nglMeshNode *,float,float,float,float)	
+0x0084E8C0	?nglDxSetupVShaderLights@@YAXHPAVnglMeshNode@@@Z	void __cdecl nglDxSetupVShaderLights(int,class nglMeshNode *)	
+0x0084E910	?nglDxRegisterInternalShaders@@YAXXZ	void __cdecl nglDxRegisterInternalShaders(void)	
+0x0084E950	?nglDxInitShaders@@YAX_N@Z	void __cdecl nglDxInitShaders(bool)	
+0x0084EAF0	?nglDxSetupVShaderBones@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	void __cdecl nglDxSetupVShaderBones(int,class nglMeshNode *,struct nglMeshSection *)	
+0x0084F1E0	?nglDxSetBonesLocal@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	void __cdecl nglDxSetBonesLocal(int,class nglMeshNode *,struct nglMeshSection *)	

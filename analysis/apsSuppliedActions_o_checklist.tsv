@@ -1,0 +1,126 @@
+index	status	map_line
+1	PORTED	0002:00409100 ?ASin@math@@YAMM@Z 00BF8600 f i apsSuppliedActions.o
+2	PORTED	0002:004091f0 ?ACos@math@@YAMM@Z 00BF86F0 f i apsSuppliedActions.o
+3	VERIFIED	0002:004092f0 ?FloatAsInt@apsMath@@YAIM@Z 00BF87F0 f i apsSuppliedActions.o
+4	PORTED	0002:00409310 ?apsStore3@@YAXABVDir3@math@@PAM@Z 00BF8810 f i apsSuppliedActions.o
+5	PORTED	0002:00409380 ??$Limit@VDir3@math@@M@apsMath@@YA?AVDir3@math@@ABV12@ABM1@Z 00BF8880 f i apsSuppliedActions.o
+6	VERIFIED	0002:00409400 ??0apsQuaternion@@QAE@ABVDir3@math@@@Z 00BF8900 f i apsSuppliedActions.o
+7	VERIFIED	0002:00409480 ?Set@apsQuaternion@@QAEXMMMM@Z 00BF8980 f i apsSuppliedActions.o
+8	VERIFIED	0002:004094b0 ??YapsQuaternion@@QAEAAU0@ABU0@@Z 00BF89B0 f i apsSuppliedActions.o
+9	VERIFIED	0002:00409500 ?XForm3d_0@apsMath@@YA?AVDir3@math@@ABVMat43@3@ABV23@@Z 00BF8A00 f i apsSuppliedActions.o
+10	PORTED	0002:00409560 ?ATan@apsMath@@YAMMM@Z 00BF8A60 f i apsSuppliedActions.o
+11	VERIFIED	0002:004097a0 ?GetSplineCallback@apsCommon@@SAP6APAMI@ZXZ 00BF8CA0 f i apsSuppliedActions.o
+12	PORTED	0002:004097b0 ?GetVector3@apsDomain@@QBEXAAVDir3@math@@@Z 00BF8CB0 f i apsSuppliedActions.o
+13	VERIFIED	0002:004097d0 ?GetValue@apsDomain@@QBEMXZ 00BF8CD0 f i apsSuppliedActions.o
+14	PORTED	0002:004097f0 ?apsGetFields@@YAIW4apsEPFDField@@@Z 00BF8CF0 f i apsSuppliedActions.o
+15	PORTED	0002:00409800 ?apsGetFields@@YAIW4apsEPFDField@@00@Z 00BF8D00 f i apsSuppliedActions.o
+16	PORTED	0002:00409830 ?apsGetFields@@YAIW4apsEPFDField@@000@Z 00BF8D30 f i apsSuppliedActions.o
+17	PORTED	0002:00409870 ?apsGetFields@@YAIW4apsEPFDField@@0000@Z 00BF8D70 f i apsSuppliedActions.o
+18	PORTED	0002:004098b0 ?apsGetFields@@YAIW4apsEPFDField@@00000@Z 00BF8DB0 f i apsSuppliedActions.o
+19	PORTED	0002:00409900 ?apsGetFields@@YAIW4apsEPFDField@@000000@Z 00BF8E00 f i apsSuppliedActions.o
+20	PORTED	0002:00409960 ?SetField@apsPFD@@QBEXW4apsEPFDField@@PAEM@Z 00BF8E60 f i apsSuppliedActions.o
+21	PORTED	0002:004099b0 ?SetFieldIfPresent@apsPFD@@QBEXW4apsEPFDField@@PAEM@Z 00BF8EB0 f i apsSuppliedActions.o
+22	PORTED	0002:004099e0 ?SetFieldUIIfPresent@apsPFD@@QBEXW4apsEPFDField@@PAEI@Z 00BF8EE0 f i apsSuppliedActions.o
+23	PORTED	0002:00409a10 ?GetEmissionSpillover@apsGroup@@QBEMXZ 00BF8F10 f i apsSuppliedActions.o
+24	PORTED	0002:00409a20 ?SetEmissionSpillover@apsGroup@@QAEXM@Z 00BF8F20 f i apsSuppliedActions.o
+25	PORTED	0002:00409a40 ?RootDistanceFromCamera@apsGroup@@QBEMXZ 00BF8F40 f i apsSuppliedActions.o
+26	PORTED	0002:00409a50 ?GetRaycastCountdown@apsEffect@@QBEIXZ 00BF8F50 f i apsSuppliedActions.o
+27	PORTED	0002:00409a60 ?GetParentAgePercent@apsEffect@@QBEMXZ 00BF8F60 f i apsSuppliedActions.o
+28	PORTED	0002:00409ab0 ?ModifyEmitCountByChance@?A0x7195c61f@@YAMMM@Z 00BF8FB0 f apsSuppliedActions.o
+29	VERIFIED	0002:00409b40 ??0apsSourceAction@@QAE@XZ 00BF9040 f apsSuppliedActions.o
+30	VERIFIED	0002:00409b60 ??0apsSourceAction@@IAE@HHI@Z 00BF9060 f apsSuppliedActions.o
+31	VERIFIED	0002:00409b90 ??0apsBurstAction@@QAE@XZ 00BF9090 f apsSuppliedActions.o
+32	VERIFIED	0002:00409bb0 ??0apsRandomSpawnAction@@QAE@XZ 00BF90B0 f apsSuppliedActions.o
+33	VERIFIED	0002:00409bd0 ??0apsLifetimeAction@@QAE@XZ 00BF90D0 f apsSuppliedActions.o
+34	PORTED	0002:00409bf0 ?Act@apsLifetimeAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF90F0 f apsSuppliedActions.o
+35	PORTED	0002:00409ca0 ?FadeOutParticle@?A0x7195c61f@@YAXABVapsGroup@@PAEPAMMM@Z 00BF91A0 f apsSuppliedActions.o
+36	VERIFIED	0002:00409ce0 ??0apsAlphaFadeAction@@QAE@XZ 00BF91E0 f apsSuppliedActions.o
+37	VERIFIED	0002:00409d00 ??0apsAlphaFadeInOutAction@@QAE@XZ 00BF9200 f apsSuppliedActions.o
+38	VERIFIED	0002:00409d20 ??0apsRandomAlphaFadeInOutAction@@QAE@XZ 00BF9220 f apsSuppliedActions.o
+39	VERIFIED	0002:00409d40 ??0apsLinearScaleAction@@QAE@XZ 00BF9240 f apsSuppliedActions.o
+40	VERIFIED	0002:00409d60 ??0apsLinearScaleAction@@IAE@HHI@Z 00BF9260 f apsSuppliedActions.o
+41	PORTED	0002:00409d90 ?Act@apsLinearScaleAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF9290 f apsSuppliedActions.o
+42	VERIFIED	0002:00409e10 ??0apsLinearScaleSyncAction@@QAE@XZ 00BF9310 f apsSuppliedActions.o
+43	VERIFIED	0002:00409e30 ??0apsExponentialScaleAction@@QAE@XZ 00BF9330 f apsSuppliedActions.o
+44	VERIFIED	0002:00409e50 ??0apsLinearScaleWidthAction@@QAE@XZ 00BF9350 f apsSuppliedActions.o
+45	VERIFIED	0002:00409e70 ??0apsExponentialScaleWidthAction@@QAE@XZ 00BF9370 f apsSuppliedActions.o
+46	VERIFIED	0002:00409e90 ??0apsLinearScaleHeightAction@@QAE@XZ 00BF9390 f apsSuppliedActions.o
+47	VERIFIED	0002:00409eb0 ??0apsExponentialScaleHeightAction@@QAE@XZ 00BF93B0 f apsSuppliedActions.o
+48	VERIFIED	0002:00409ed0 ??0apsMoveAction@@QAE@XZ 00BF93D0 f apsSuppliedActions.o
+49	PORTED	0002:00409ef0 ?Act@apsMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF93F0 f apsSuppliedActions.o
+50	VERIFIED	0002:0040a0c0 ??0apsObjectMoveAction@@QAE@XZ 00BF95C0 f apsSuppliedActions.o
+51	PORTED	0002:0040a0e0 ?Act@apsObjectMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF95E0 f apsSuppliedActions.o
+52	VERIFIED	0002:0040a400 ??0apsPositionMoveAction@@QAE@XZ 00BF9900 f apsSuppliedActions.o
+53	PORTED	0002:0040a420 ?Act@apsPositionMoveAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF9920 f apsSuppliedActions.o
+54	VERIFIED	0002:0040a550 ??0apsMoveAtFixedVelocityAction@@QAE@XZ 00BF9A50 f apsSuppliedActions.o
+55	VERIFIED	0002:0040a570 ??0apsForceAction@@QAE@XZ 00BF9A70 f apsSuppliedActions.o
+56	VERIFIED	0002:0040a590 ??0apsColorShiftAction@@QAE@XZ 00BF9A90 f apsSuppliedActions.o
+57	VERIFIED	0002:0040a5b0 ??0apsVelocityDragAction@@QAE@XZ 00BF9AB0 f apsSuppliedActions.o
+58	VERIFIED	0002:0040a5d0 ??0apsAngularVelocityDragAction@@QAE@XZ 00BF9AD0 f apsSuppliedActions.o
+59	VERIFIED	0002:0040a5f0 ??0apsVectorAngularVelocityDragAction@@QAE@XZ 00BF9AF0 f apsSuppliedActions.o
+60	VERIFIED	0002:0040a610 ??0apsWorldPlaneReflectionAction@@QAE@XZ 00BF9B10 f apsSuppliedActions.o
+61	VERIFIED	0002:0040a630 ??0apsUVAFrameAnimAction@@QAE@XZ 00BF9B30 f apsSuppliedActions.o
+62	VERIFIED	0002:0040a650 ??0apsAngleTrackVelocityAction@@QAE@XZ 00BF9B50 f apsSuppliedActions.o
+63	PORTED	0002:0040a670 ?apsAngleTrackMeshOrientation@@YAXPAE0AAVapsGroup@@AAVapsEffect@@M@Z 00BF9B70 f apsSuppliedActions.o
+64	PORTED	0002:0040a830 ?Act@apsAngleTrackVelocityAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BF9D30 f apsSuppliedActions.o
+65	VERIFIED	0002:0040ab00 ??0apsAngleTrackElementXAction@@QAE@XZ 00BFA000 f apsSuppliedActions.o
+66	VERIFIED	0002:0040ab20 ??0apsAngleTrackElementYAction@@QAE@XZ 00BFA020 f apsSuppliedActions.o
+67	VERIFIED	0002:0040ab40 ??0apsAngleTrackElementZAction@@QAE@XZ 00BFA040 f apsSuppliedActions.o
+68	VERIFIED	0002:0040ab60 ??0apsPointAttractorAction@@QAE@XZ 00BFA060 f apsSuppliedActions.o
+69	VERIFIED	0002:0040ab80 ??0apsLineAttractorAction@@QAE@XZ 00BFA080 f apsSuppliedActions.o
+70	VERIFIED	0002:0040aba0 ??0apsDecayLineAttractorAction@@QAE@XZ 00BFA0A0 f apsSuppliedActions.o
+71	VERIFIED	0002:0040abc0 ??0apsKappaTauAction@@QAE@XZ 00BFA0C0 f apsSuppliedActions.o
+72	VERIFIED	0002:0040abe0 ??0apsSpawnAction@@QAE@XZ 00BFA0E0 f apsSuppliedActions.o
+73	PORTED	0002:0040ac00 ?CalculateOrientation@?A0x7195c61f@@YAXAAVMat43@math@@ABVDir3@3@@Z 00BFA100 f apsSuppliedActions.o
+74	PORTED	0002:0040ada0 ?OrientIdentity@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z 00BFA2A0 f apsSuppliedActions.o
+75	PORTED	0002:0040adc0 ?OrientParentVelocity@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z 00BFA2C0 f apsSuppliedActions.o
+76	PORTED	0002:0040ae80 ?OrientCollisionReflect@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z 00BFA380 f apsSuppliedActions.o
+77	PORTED	0002:0040afd0 ?OrientRandom@?A0x7195c61f@@YAXAAVMat43@math@@PBUPacked@Dir3@3@1@Z 00BFA4D0 f apsSuppliedActions.o
+78	VERIFIED	0002:0040b100 ??0apsSpawnOnDeathAction@@QAE@XZ 00BFA600 f apsSuppliedActions.o
+79	VERIFIED	0002:0040b120 ??0apsTrajectoryAction@@QAE@XZ 00BFA620 f apsSuppliedActions.o
+80	VERIFIED	0002:0040b140 ?CheckSplineData@@YAXPAM@Z 00BFA640 f apsSuppliedActions.o
+81	VERIFIED	0002:0040b1c0 ?GetSplineInfo@apsTrajectoryAction@@AAEIAAPAMAAM1AAVDir3@math@@2@Z 00BFA6C0 f apsSuppliedActions.o
+82	VERIFIED	0002:0040b320 ??0apsEnvCollideAction@@QAE@XZ 00BFA820 f apsSuppliedActions.o
+83	PORTED	0002:0040b340 ?Act@apsEnvCollideAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFA840 f apsSuppliedActions.o
+84	PORTED	0002:0040b710 ?Act@apsSourceAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFAC10 f apsSuppliedActions.o
+85	VERIFIED	0002:0040c5c0 ?GetEmissionCount@apsSourceAction@@UAEHAAVapsGroup@@M@Z 00BFBAC0 f apsSuppliedActions.o
+86	VERIFIED	0002:0040c640 ?GetEmissionCount@apsBurstAction@@UAEHAAVapsGroup@@M@Z 00BFBB40 f apsSuppliedActions.o
+87	VERIFIED	0002:0040c6c0 ?GetEmissionCount@apsRandomSpawnAction@@UAEHAAVapsGroup@@M@Z 00BFBBC0 f apsSuppliedActions.o
+88	PORTED	0002:0040c760 ?Act@apsAlphaFadeAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFBC60 f apsSuppliedActions.o
+89	PORTED	0002:0040c9b0 ?Act@apsAlphaFadeInOutAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFBEB0 f apsSuppliedActions.o
+90	PORTED	0002:0040cc60 ?Act@apsRandomAlphaFadeInOutAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC160 f apsSuppliedActions.o
+91	VERIFIED	0002:0040cee0 ?GetScaleAmountForFrame@apsLinearScaleAction@@EBEMAAVapsEffect@@M@Z 00BFC3E0 f apsSuppliedActions.o
+92	VERIFIED	0002:0040cf20 ?GetScaleAmountForFrame@apsLinearScaleSyncAction@@EBEMAAVapsEffect@@M@Z 00BFC420 f apsSuppliedActions.o
+93	PORTED	0002:0040cff0 ?Act@apsExponentialScaleAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC4F0 f apsSuppliedActions.o
+94	PORTED	0002:0040d0b0 ?Act@apsLinearScaleWidthAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC5B0 f apsSuppliedActions.o
+95	PORTED	0002:0040d150 ?Act@apsExponentialScaleWidthAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC650 f apsSuppliedActions.o
+96	PORTED	0002:0040d210 ?Act@apsLinearScaleHeightAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC710 f apsSuppliedActions.o
+97	PORTED	0002:0040d2c0 ?Act@apsExponentialScaleHeightAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC7C0 f apsSuppliedActions.o
+98	PORTED	0002:0040d380 ?Act@apsMoveAtFixedVelocityAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFC880 f apsSuppliedActions.o
+99	PORTED	0002:0040d5b0 ?Act@apsForceAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFCAB0 f apsSuppliedActions.o
+100	PORTED	0002:0040d820 ?Act@apsColorShiftAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFCD20 f apsSuppliedActions.o
+101	PORTED	0002:0040dbe0 ?Act@apsVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFD0E0 f apsSuppliedActions.o
+102	PORTED	0002:0040dce0 ?Act@apsAngularVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFD1E0 f apsSuppliedActions.o
+103	PORTED	0002:0040ddc0 ?Act@apsVectorAngularVelocityDragAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFD2C0 f apsSuppliedActions.o
+104	PORTED	0002:0040dec0 ?Act@apsWorldPlaneReflectionAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFD3C0 f apsSuppliedActions.o
+105	PORTED	0002:0040e2b0 ?Act@apsUVAFrameAnimAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFD7B0 f apsSuppliedActions.o
+106	PORTED	0002:0040e520 ?Act@apsAngleTrackElementXAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFDA20 f apsSuppliedActions.o
+107	PORTED	0002:0040e660 ?Act@apsAngleTrackElementYAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFDB60 f apsSuppliedActions.o
+108	PORTED	0002:0040e7a0 ?Act@apsAngleTrackElementZAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFDCA0 f apsSuppliedActions.o
+109	PORTED	0002:0040e8e0 ?Act@apsPointAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFDDE0 f apsSuppliedActions.o
+110	PORTED	0002:0040ebd0 ?Act@apsLineAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFE0D0 f apsSuppliedActions.o
+111	PORTED	0002:0040f050 ?Act@apsDecayLineAttractorAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFE550 f apsSuppliedActions.o
+112	PORTED	0002:0040f500 ?Act@apsKappaTauAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFEA00 f apsSuppliedActions.o
+113	PORTED	0002:0040fc50 ?Act@apsSpawnAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFF150 f apsSuppliedActions.o
+114	PORTED	0002:0040feb0 ?Act@apsSpawnOnDeathAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFF3B0 f apsSuppliedActions.o
+115	PORTED	0002:004100e0 ?Act@apsTrajectoryAction@@UAEXPAE0AAVapsGroup@@AAVapsEffect@@MM@Z 00BFF5E0 f apsSuppliedActions.o
+116	PORTED	0002:00410540 ??0?$apsParameter@M@@QAE@W4apsEPFDField@@ABVapsPFD@@PAE@Z 00BFFA40 f i apsSuppliedActions.o
+117	PORTED	0002:004105a0 ?GetVal@?$apsParameter@M@@QBEAAMXZ 00BFFAA0 f i apsSuppliedActions.o
+118	PORTED	0002:004105b0 ?Increment@?$apsParameter@M@@QAEXXZ 00BFFAB0 f i apsSuppliedActions.o
+119	PORTED	0002:004105c0 ?AtEnd@?$apsParameter@M@@QBEIPAE@Z 00BFFAC0 f i apsSuppliedActions.o
+120	PORTED	0002:004105e0 ??0?$apsParameter@UPacked@Dir3@math@@@@QAE@W4apsEPFDField@@ABVapsPFD@@PAE@Z 00BFFAE0 f i apsSuppliedActions.o
+121	PORTED	0002:00410640 ?GetVal@?$apsParameter@UPacked@Dir3@math@@@@QBEAAUPacked@Dir3@math@@XZ 00BFFB40 f i apsSuppliedActions.o
+122	PORTED	0002:00410650 ?Increment@?$apsParameter@UPacked@Dir3@math@@@@QAEXXZ 00BFFB50 f i apsSuppliedActions.o
+123	PORTED	0002:00410660 ?AtEnd@?$apsParameter@UPacked@Dir3@math@@@@QBEIPAE@Z 00BFFB60 f i apsSuppliedActions.o
+124	PORTED	0002:00410680 ?GetParamAddr@apsAction@@QBEPAXH@Z 00BFFB80 f i apsSuppliedActions.o
+125	PORTED	0002:004106d0 ?GetDomain@apsAction@@QAEPAVapsDomain@@H@Z 00BFFBD0 f i apsSuppliedActions.o

@@ -1,0 +1,25 @@
+index	status	map_line
+1	PORTED	0002:00478400 ?reset@phys_memory_heap@@QAEXXZ 00C67900 f i phys_collision.o
+2	PORTED	0002:00478410 ?swap@contact_point_info@@QAEXXZ 00C67910 f i phys_collision.o
+3	PORTED	0002:00478430 ?set_solver_priority@rigid_body_constraint_contact@@QAEXH@Z 00C67930 f i phys_collision.o
+4	PORTED	0002:00478440 ?is_swapped@rigid_body_constraint_contact@@QAE?B_NQAVrigid_body@@0@Z 00C67940 f i phys_collision.o
+5	PORTED	0002:00478450 ?get_contact_p@@YAABVDir3@math@@QAPAUcontact_manifold_mesh_point@@@Z 00C67950 f i phys_collision.o
+6	PORTED	0002:00478460 ?set_feature_params@phys_contact_manifold@@QAEXABVDir3@math@@0MM@Z 00C67960 f i phys_collision.o
+7	PORTED	0002:004784c0 ?nullify_pointers@phys_contact_manifold@@QAEXXZ 00C679C0 f i phys_collision.o
+8	PORTED	0002:004784d0 ?get_mesh_point_count@phys_contact_manifold@@QBEHXZ 00C679D0 f i phys_collision.o
+9	PORTED	0002:004784e0 ?get_poly_vert_count@phys_contact_manifold@@QBE?BHXZ 00C679E0 f i phys_collision.o
+10	PORTED	0002:004784f0 ?get_std_feature_distance_eps@phys_contact_manifold@@SA?BMXZ 00C679F0 f i phys_collision.o
+11	PORTED	0002:00478500 ?get_std_feature_penetration_eps@phys_contact_manifold@@SA?BMXZ 00C67A00 f i phys_collision.o
+12	PORTED	0002:00478510 ?get_std_sin_feature_angular_eps_sq@phys_contact_manifold@@SA?BMXZ 00C67A10 f i phys_collision.o
+13	PORTED	0002:00478520 ?nullify_pointers@phys_contact_manifold_process@@QAEXXZ 00C67A20 f i phys_collision.o
+14	PORTED	0002:00478550 ?fast_align_start@phys_memory_heap@@QAEPAXHPBD@Z 00C67A50 f i phys_collision.o
+15	VERIFIED	0002:004785a0 ?add_cpi_simple@rigid_body_constraint_contact@@QAEXPAVcontact_point_info@@QAVrigid_body@@1@Z 00C67AA0 f i phys_collision.o
+16	PORTED	0002:00478690 ?get_cached_cpi@rigid_body_constraint_contact@@QAEPBVcontact_point_info@@XZ 00C67B90 f i phys_collision.o
+17	VERIFIED	0002:004786a0 ?reset_list_mesh_point@phys_contact_manifold@@QAEXXZ 00C67BA0 f i phys_collision.o
+18	VERIFIED	0002:004786f0 ?alloc_sorted_list_mesh_point@phys_contact_manifold@@QAEXXZ 00C67BF0 f i phys_collision.o
+19	PORTED	0002:00478770 ?xform_mesh_points@phys_contact_manifold@@QAEXABVMat43@math@@@Z 00C67C70 f i phys_collision.o
+20	PORTED	0002:004787f0 ?comp_contact_mat@phys_contact_manifold_process@@QAEXABVDir3@math@@@Z 00C67CF0 f i phys_collision.o
+21	PORTED	0002:004789b0 ?copy_poly@phys_contact_manifold_process@@QAEXPAVphys_contact_manifold@@@Z 00C67EB0 f i phys_collision.o
+22	PORTED	0002:00478a90 ?calc_feature_normal@@YA?BVDir3@math@@PAVphys_contact_manifold@@ABV12@@Z 00C67F90 f phys_collision.o
+23	VERIFIED	0002:00478c10 ?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z 00C68110 f phys_collision.o
+24	VERIFIED	0002:00479690 ?set_closest_cached_psc@contact_point_info@@QAEXPBV1@@Z 00C68B90 f i phys_collision.o

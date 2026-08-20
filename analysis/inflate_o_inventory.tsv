@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x007E64D0	0x00BD59D0	_inflateReset	_inflateReset	inflate.o
+0x007E6540	0x00BD5A40	_inflatePrime	_inflatePrime	inflate.o
+0x007E65A0	0x00BD5AA0	_inflateInit2_	_inflateInit2_	inflate.o
+0x007E6670	0x00BD5B70	_inflateInit_	_inflateInit_	inflate.o
+0x007E67E0	0x00BD5CE0	_inflate	_inflate	inflate.o
+0x007E7D50	0x00BD7250	_inflateEnd	_inflateEnd	inflate.o
+0x007E7DA0	0x00BD72A0	_inflateSetDictionary	_inflateSetDictionary	inflate.o
+0x007E7E90	0x00BD7390	_inflateGetHeader	_inflateGetHeader	inflate.o
+0x007E7F20	0x00BD7420	_inflateSync	_inflateSync	inflate.o
+0x007E8020	0x00BD7520	_inflateSyncPoint	_inflateSyncPoint	inflate.o
+0x007E8050	0x00BD7550	_inflateCopy	_inflateCopy	inflate.o

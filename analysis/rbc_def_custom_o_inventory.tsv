@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00898910	0x00C87E10	?setup_constraint@rigid_body_constraint_custom_orientation@@QAEXPAVpulse_sum_constraint_solver@@M@Z	public: void __thiscall rigid_body_constraint_custom_orientation::setup_constraint(class pulse_sum_constraint_solver *,float)	rbc_def_custom.o
+0x00898CF0	0x00C881F0	?setup_constraint@rigid_body_constraint_custom_path@@QAEXPAVpulse_sum_constraint_solver@@M@Z	public: void __thiscall rigid_body_constraint_custom_path::setup_constraint(class pulse_sum_constraint_solver *,float)	rbc_def_custom.o

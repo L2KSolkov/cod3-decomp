@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00833130	0x00C22630	?afmvYUV2RGB16@@YAXPAPAEPAEH@Z	void __cdecl afmvYUV2RGB16(unsigned char * *,unsigned char *,int)	afmv_dx_rgb.o
+0x00833270	0x00C22770	?afmvYUV2RGB32@@YAXPAPAEPAEH@Z	void __cdecl afmvYUV2RGB32(unsigned char * *,unsigned char *,int)	afmv_dx_rgb.o

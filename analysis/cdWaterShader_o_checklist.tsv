@@ -1,0 +1,22 @@
+index	status	map_line
+1	VERIFIED	0002:003d95e0 ??0cdWaterShaderMat@@QAE@PAUnglTexture@@@Z 00BC8AE0 f cdWaterShader.o
+2	VERIFIED	0002:003d9670 ?InitCDWaterShader@@YAXXZ 00BC8B70 f cdWaterShader.o
+3	VERIFIED	0002:003d96c0 ?ToggleCDWaterShader@@YAXXZ 00BC8BC0 f cdWaterShader.o
+4	VERIFIED	0002:003d96e0 ?Register@cdWaterShader@@UAEXXZ 00BC8BE0 f cdWaterShader.o
+5	VERIFIED	0002:003d9720 ?AddNode@cdWaterShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC8C20 f cdWaterShader.o
+6	PORTED	0002:003d9790 ?Render@cdWaterShaderNode@@UAEXXZ 00BC8C90 f cdWaterShader.o
+7	VERIFIED	0002:003d9be0 ??0cdWaterShader@@QAE@XZ 00BC90E0 f i cdWaterShader.o
+8	VERIFIED	0002:003d9c10 ?GetName@cdWaterShader@@UAE?AVtlFixedString@@XZ 00BC9110 f i cdWaterShader.o
+9	PORTED	0002:003d9c30 ?RegisterVShader@cdWaterRender@@YAXXZ 00BC9130 f i cdWaterShader.o
+10	PORTED	0002:003d9c50 ?GetVShader@cdWaterRender@@YAKXZ 00BC9150 f i cdWaterShader.o
+11	PORTED	0002:003d9c60 ?RegisterPShader@cdWaterPixel@@YAXXZ 00BC9160 f i cdWaterShader.o
+12	PORTED	0002:003d9c80 ?GetPShader@cdWaterPixel@@YAPAKXZ 00BC9180 f i cdWaterShader.o
+13	PORTED	0002:003d9c90 ?RegisterPShader@cdWaterFullbrightPixel@@YAXXZ 00BC9190 f i cdWaterShader.o
+14	PORTED	0002:003d9cb0 ?GetPShader@cdWaterFullbrightPixel@@YAPAKXZ 00BC91B0 f i cdWaterShader.o
+15	PORTED	0002:003d9cc0 ??0cdWaterShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWaterShaderMat@@@Z 00BC91C0 f i cdWaterShader.o
+16	PORTED	0002:003d9cf0 ??_GcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o
+17	PORTED	0002:003d9cf0 ??_EcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o
+18	PORTED	0002:003d9d20 ??1cdWaterShaderNode@@UAE@XZ 00BC9220 f i cdWaterShader.o
+19	VERIFIED	0002:003d9d30 ??_EcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o
+20	VERIFIED	0002:003d9d30 ??_GcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o
+21	VERIFIED	0002:003d9d60 ??1cdWaterShader@@UAE@XZ 00BC9260 f i cdWaterShader.o

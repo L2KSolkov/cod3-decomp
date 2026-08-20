@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x007C6360	0x00BB5860	??0cdDebugShaderMat@@QAE@XZ	public: __thiscall cdDebugShaderMat::cdDebugShaderMat(void)	cdDebugShader.o
+0x007C63D0	0x00BB58D0	?InitCDDebugShader@@YAXXZ	void __cdecl InitCDDebugShader(void)	cdDebugShader.o
+0x007C6420	0x00BB5920	?ToggleCDDebugShader@@YAXXZ	void __cdecl ToggleCDDebugShader(void)	cdDebugShader.o
+0x007C6440	0x00BB5940	?Register@cdDebugShader@@UAEXXZ	public: virtual void __thiscall cdDebugShader::Register(void)	cdDebugShader.o
+0x007C6470	0x00BB5970	?GetSortInfo@cdDebugShaderNode@@UAEXAAUnglSortInfo@@@Z	public: virtual void __thiscall cdDebugShaderNode::GetSortInfo(struct nglSortInfo &)	cdDebugShader.o
+0x007C6570	0x00BB5A70	?AddNode@cdDebugShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdDebugShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdDebugShader.o
+0x007C65C0	0x00BB5AC0	?Render@cdDebugShaderNode@@UAEXXZ	public: virtual void __thiscall cdDebugShaderNode::Render(void)	cdDebugShader.o

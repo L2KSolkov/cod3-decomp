@@ -1,0 +1,3 @@
+index	status	map_line
+1	VERIFIED	0002:003cd440 ?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z 00BBC940 f cdDynamicDecalVertexDef.o
+2	PORTED	0002:003cd460 ?InitCDDynamicDecalVertexDefBuilder@@YAXXZ 00BBC960 f cdDynamicDecalVertexDef.o

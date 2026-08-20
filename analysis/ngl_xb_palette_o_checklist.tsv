@@ -1,0 +1,14 @@
+index	status	map_line
+1	PORTED	0002:00453000 ?SetPalette@D3DDevice@@SGJKPAUD3DPalette@@@Z 00C42500 f i ngl_xb_palette.o
+2	PORTED	0002:00453020 ?BlockUntilNotBusy@D3DResource@@QAGXXZ 00C42520 f i ngl_xb_palette.o
+3	VERIFIED	0002:00453040 ?nglDxInitPalette@@YAXXZ 00C42540 f ngl_xb_palette.o
+4	VERIFIED	0002:00453090 ?nglDxUnbindPalettes@@YAXXZ 00C42590 f ngl_xb_palette.o
+5	VERIFIED	0002:004530c0 ?nglCreatePalette@@YAPAUnglPalette@@W4nglPaletteFormat@@IPAX@Z 00C425C0 f ngl_xb_palette.o
+6	VERIFIED	0002:004532d0 ?nglDestroyPalette@@YAXPAUnglPalette@@@Z 00C427D0 f ngl_xb_palette.o
+7	VERIFIED	0002:00453320 ?Lock@nglPalette@@QAEXXZ 00C42820 f ngl_xb_palette.o
+8	VERIFIED	0002:00453340 ?Unlock@nglPalette@@QAEXXZ 00C42840 f ngl_xb_palette.o
+9	VERIFIED	0002:00453350 ?SetEntry32@nglPalette@@QAEXII@Z 00C42850 f ngl_xb_palette.o
+10	VERIFIED	0002:00453370 ?GetEntry32@nglPalette@@QAEII@Z 00C42870 f ngl_xb_palette.o
+11	VERIFIED	0002:00453380 ?nglBindPalette@@YAXIPAUnglPalette@@@Z 00C42880 f ngl_xb_palette.o
+12	PORTED	0002:004533b0 ?Lock@D3DPalette@@QAGJPAPAKK@Z 00C428B0 f i ngl_xb_palette.o
+13	PORTED	0002:004533d0 ?Unlock@D3DPalette@@QAGJXZ 00C428D0 f i ngl_xb_palette.o

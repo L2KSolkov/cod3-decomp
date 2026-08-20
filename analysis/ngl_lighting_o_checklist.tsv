@@ -1,0 +1,42 @@
+index	status	map_line
+1	PORTED	0002:00444d80 ??Dmath@@YAMABVVector4@0@ABVPosition3@0@@Z 00C34280 f i ngl_lighting.o
+2	PORTED	0002:00444df0 ?Max@math@@YA?AVVector4@1@ABVPosition3@1@ABV21@@Z 00C342F0 f i ngl_lighting.o
+3	PORTED	0002:00444e30 ??0TranMat43@math@@QAE@XZ 00C34330 f i ngl_lighting.o
+4	PORTED	0002:00444e40 ??0TranMat43@math@@QAE@ABV01@@Z 00C34340 f i ngl_lighting.o
+5	PORTED	0002:00444e60 ?Mul@math@@YA?AVMat33@1@ABVDiagMat33@1@ABV21@@Z 00C34360 f i ngl_lighting.o
+6	PORTED	0002:00444f10 ?Mul@math@@YA?AVMat43@1@ABVTranMat43@1@ABVMat33@1@@Z 00C34410 f i ngl_lighting.o
+7	PORTED	0002:00444ff0 ??Dmath@@YA?AVMat33@0@ABVDiagMat33@0@ABV10@@Z 00C344F0 f i ngl_lighting.o
+8	PORTED	0002:004450a0 ??Dmath@@YA?AVMat43@0@ABVTranMat43@0@ABVMat33@0@@Z 00C345A0 f i ngl_lighting.o
+9	PORTED	0002:00445180 ??Dmath@@YA?AVMat43@0@ABV10@ABVTranMat43@0@@Z 00C34680 f i ngl_lighting.o
+10	PORTED	0002:00445240 ?Inv@math@@YA?AVMat33@1@ABV21@@Z 00C34740 f i ngl_lighting.o
+11	PORTED	0002:004452f0 ?Inv@math@@YA?AVTranMat43@1@ABV21@@Z 00C347F0 f i ngl_lighting.o
+12	PORTED	0002:00445330 ??RnglLightContextParamType@@QAEAAU0@XZ 00C34830 f i ngl_lighting.o
+13	PORTED	0002:00445340 ?nglDistanceToPlane@@YAMABVVector4@math@@0@Z 00C34840 f i ngl_lighting.o
+14	PORTED	0002:004453b0 ?nglIsSphereVisible@@YA_NPAUnglFrustum@@ABVVector4@math@@M@Z 00C348B0 f i ngl_lighting.o
+15	PORTED	0002:00445580 ?nglBuildFrustum@@YAXPAUnglFrustum@@ABVMat43@math@@@Z 00C34A80 f i ngl_lighting.o
+16	VERIFIED	0002:00445930 ?nglSetLightContext@@YAXPAUnglLightContext@@PAUnglScene@@@Z 00C34E30 f ngl_lighting.o
+17	VERIFIED	0002:00445950 ?nglSelectBuildLightContext@@YAPAUnglLightContext@@PAU1@@Z 00C34E50 f ngl_lighting.o
+18	VERIFIED	0002:00445970 ?nglSetAmbientLight@@YAXMMM@Z 00C34E70 f ngl_lighting.o
+19	VERIFIED	0002:00445a10 ?nglDetermineGunLights@@YAXABVPosition3@math@@@Z 00C34F10 f ngl_lighting.o
+20	VERIFIED	0002:00445b10 ?nglGetFakePointLight@@YA_NPAUnglDirLightInfo@@PAUnglPointLightInfo@@ABVPosition3@math@@@Z 00C35010 f ngl_lighting.o
+21	VERIFIED	0002:00445c40 ?nglGetLightAsPointLight@@YAPAUnglPointLightInfo@@PAU1@PAUnglLightNode@@ABVPosition3@math@@@Z 00C35140 f ngl_lighting.o
+22	VERIFIED	0002:00445d20 ?nglGetLightAsDirLight@@YAPAUnglDirLightInfo@@PAU1@PAUnglLightNode@@ABVPosition3@math@@@Z 00C35220 f ngl_lighting.o
+23	VERIFIED	0002:00445da0 ?nglGetSinglePointLight@@YAPAUnglPointLightInfo@@PAU1@ABVPosition3@math@@@Z 00C352A0 f ngl_lighting.o
+24	VERIFIED	0002:00445e20 ?nglGetSingleDirLight@@YAPAUnglDirLightInfo@@PAU1@ABVPosition3@math@@@Z 00C35320 f ngl_lighting.o
+25	VERIFIED	0002:00445ed0 ?nglGetDirLightMatrix@@YAXPAVnglMeshNode@@PAVMat44@math@@1@Z 00C353D0 f ngl_lighting.o
+26	VERIFIED	0002:004460c0 ?nglCreateLightContext@@YAPAUnglLightContext@@XZ 00C355C0 f ngl_lighting.o
+27	VERIFIED	0002:00446160 ?nglListAddLight@@YAXW4nglLightType@@PAXI@Z 00C35660 f ngl_lighting.o
+28	VERIFIED	0002:00446270 ?nglListAddDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z 00C35770 f ngl_lighting.o
+29	VERIFIED	0002:00446310 ?nglListAddPointLight@@YAXIABVPosition3@math@@MMABVVector4@2@_N@Z 00C35810 f ngl_lighting.o
+30	VERIFIED	0002:004463f0 ?nglListAddPointLightGun@@YAXIABVPosition3@math@@MMABVVector4@2@_N@Z 00C358F0 f ngl_lighting.o
+31	VERIFIED	0002:004464d0 ?nglDetermineProjLights@@YAXPAVnglMeshNode@@@Z 00C359D0 f ngl_lighting.o
+32	VERIFIED	0002:004467a0 ?nglCheckAvailableLights@@YAIPAVnglMeshNode@@@Z 00C35CA0 f ngl_lighting.o
+33	VERIFIED	0002:00446830 ?nglDetermineLights@@YAXPAVnglMeshNode@@@Z 00C35D30 f ngl_lighting.o
+34	VERIFIED	0002:00446a10 ?nglListAddProjLightNode@@YAXW4nglLightType@@PAXI@Z 00C35F10 f ngl_lighting.o
+35	VERIFIED	0002:00446b20 ?nglListAddProjectorLight@@YAXPAXI@Z 00C36020 f ngl_lighting.o
+36	VERIFIED	0002:00446b40 ?nglListAddDirProjectorLight@@YAXIABVMat43@math@@ABVPosition3@2@IPAUnglTexture@@@Z 00C36040 f ngl_lighting.o
+37	VERIFIED	0002:004470e0 ?nglListAddDicLight@@YAXIPAUnglDicLightInfo@@@Z 00C365E0 f ngl_lighting.o
+38	PORTED	0002:00447120 ??0nglLightContext@@QAE@XZ 00C36620 f i ngl_lighting.o
+39	PORTED	0002:00447130 ??$IsSet@UnglLightContextParamType@@@nglParamSet@@QAE_NABUnglLightContextParamType@@@Z 00C36630 f i ngl_lighting.o
+40	PORTED	0002:00447160 ??$Get@UnglLightContextParamType@@@nglParamSet@@QAEPAUnglLightContext@@ABUnglLightContextParamType@@@Z 00C36660 f i ngl_lighting.o
+41	PORTED	0002:004471c0 ??0nglDicLightInfo@@QAE@XZ 00C366C0 f i ngl_lighting.o

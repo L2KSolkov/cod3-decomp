@@ -1,0 +1,69 @@
+ida_ea	va	name	signature	family
+0x008207A0	0x00C0FCA0	?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z	struct nslSource * __cdecl nslSourcePtr(enum nslSourceID)	nslSource.o
+0x008207D0	0x00C0FCD0	?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z	struct nslEmitter * __cdecl nslEmitterPtr(enum nslEmitterID)	nslSource.o
+0x00820800	0x00C0FD00	?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z	enum nslEmitterID __cdecl nslNewEmitter(float const *)	nslSource.o
+0x008208A0	0x00C0FDA0	?nslFreeEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslFreeEmitter(enum nslEmitterID)	nslSource.o
+0x008208C0	0x00C0FDC0	?nslFreeSourceVoice@@YAXW4nslSourceID@@@Z	void __cdecl nslFreeSourceVoice(enum nslSourceID)	nslSource.o
+0x00820920	0x00C0FE20	?nslFreeSource@@YAXW4nslSourceID@@@Z	void __cdecl nslFreeSource(enum nslSourceID)	nslSource.o
+0x00820980	0x00C0FE80	?nslQueueSource@@YAXW4nslSourceID@@@Z	void __cdecl nslQueueSource(enum nslSourceID)	nslSource.o
+0x008209C0	0x00C0FEC0	?nslPlaySource@@YAXW4nslSourceID@@@Z	void __cdecl nslPlaySource(enum nslSourceID)	nslSource.o
+0x00820B50	0x00C10050	?nslStopSource@@YAXW4nslSourceID@@@Z	void __cdecl nslStopSource(enum nslSourceID)	nslSource.o
+0x00820B60	0x00C10060	?nslSetSourceCallback@@YAXW4nslSourceID@@IP6AXPAX10I1H@Z11@Z	void __cdecl nslSetSourceCallback(enum nslSourceID,unsigned int,void (__cdecl*)(void *,void *,enum nslSourceID,unsigned int,void *,int),void *,void *)	nslSource.o
+0x00820BC0	0x00C100C0	?nslPauseSource@@YAXW4nslSourceID@@@Z	void __cdecl nslPauseSource(enum nslSourceID)	nslSource.o
+0x00820C30	0x00C10130	?nslUnpauseSource@@YAXW4nslSourceID@@@Z	void __cdecl nslUnpauseSource(enum nslSourceID)	nslSource.o
+0x00820CB0	0x00C101B0	?nslGetSourceWaveID@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	enum nslWaveID __cdecl nslGetSourceWaveID(enum nslSourceID)	nslSource.o
+0x00820CF0	0x00C101F0	?nslGetSourceWave@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	enum nslWaveID __cdecl nslGetSourceWave(enum nslSourceID)	nslSource.o
+0x00820D30	0x00C10230	?nslGetSourceName@@YAPBDW4nslSourceID@@@Z	char const * __cdecl nslGetSourceName(enum nslSourceID)	nslSource.o
+0x00820D70	0x00C10270	?nslGetSourceGroup@@YAPBDW4nslSourceID@@@Z	char const * __cdecl nslGetSourceGroup(enum nslSourceID)	nslSource.o
+0x00820DD0	0x00C102D0	?nslGetSourceLength@@YAIW4nslSourceID@@@Z	unsigned int __cdecl nslGetSourceLength(enum nslSourceID)	nslSource.o
+0x00820E10	0x00C10310	?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z	enum nslSourceState __cdecl nslGetSourceState(enum nslSourceID)	nslSource.o
+0x00820E90	0x00C10390	?nslSetSourceOffset@@YAXW4nslSourceID@@I@Z	void __cdecl nslSetSourceOffset(enum nslSourceID,unsigned int)	nslSource.o
+0x00820ED0	0x00C103D0	?nslGetSourceOffset@@YAIW4nslSourceID@@@Z	unsigned int __cdecl nslGetSourceOffset(enum nslSourceID)	nslSource.o
+0x00820F10	0x00C10410	?nslSetSourceParam@@YAXW4nslSourceID@@HM@Z	void __cdecl nslSetSourceParam(enum nslSourceID,int,float)	nslSource.o
+0x00820F80	0x00C10480	?nslSetEmitterParam@@YAXW4nslEmitterID@@HM@Z	void __cdecl nslSetEmitterParam(enum nslEmitterID,int,float)	nslSource.o
+0x00820FF0	0x00C104F0	?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z	float __cdecl nslGetSourceParam(enum nslSourceID,int,float)	nslSource.o
+0x00821050	0x00C10550	?nslGetEmitterParam@@YAMW4nslEmitterID@@HM@Z	float __cdecl nslGetEmitterParam(enum nslEmitterID,int,float)	nslSource.o
+0x008210B0	0x00C105B0	?nslSetSourcePosition@@YAXW4nslSourceID@@QBM@Z	void __cdecl nslSetSourcePosition(enum nslSourceID,float const * const)	nslSource.o
+0x008211C0	0x00C106C0	?nslSetEmitterPosition@@YAXW4nslEmitterID@@QBM@Z	void __cdecl nslSetEmitterPosition(enum nslEmitterID,float const * const)	nslSource.o
+0x008212D0	0x00C107D0	?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z	void __cdecl nslGetSourcePosition(enum nslSourceID,float * const)	nslSource.o
+0x00821320	0x00C10820	?nslGetEmitterPosition@@YAXW4nslEmitterID@@QAM@Z	void __cdecl nslGetEmitterPosition(enum nslEmitterID,float * const)	nslSource.o
+0x00821370	0x00C10870	?nslSetSourceVelocity@@YAXW4nslSourceID@@QBM@Z	void __cdecl nslSetSourceVelocity(enum nslSourceID,float const * const)	nslSource.o
+0x00821480	0x00C10980	?nslSetEmitterVelocity@@YAXW4nslEmitterID@@QBM@Z	void __cdecl nslSetEmitterVelocity(enum nslEmitterID,float const * const)	nslSource.o
+0x00821590	0x00C10A90	?nslGetSourceVelocity@@YAXW4nslSourceID@@QAM@Z	void __cdecl nslGetSourceVelocity(enum nslSourceID,float * const)	nslSource.o
+0x008215E0	0x00C10AE0	?nslGetEmitterVelocity@@YAXW4nslEmitterID@@QAM@Z	void __cdecl nslGetEmitterVelocity(enum nslEmitterID,float * const)	nslSource.o
+0x00821630	0x00C10B30	?nslSetSourceEmitter@@YAXW4nslSourceID@@W4nslEmitterID@@@Z	void __cdecl nslSetSourceEmitter(enum nslSourceID,enum nslEmitterID)	nslSource.o
+0x00821830	0x00C10D30	?nslGetSourceEmitter@@YA?AW4nslEmitterID@@W4nslSourceID@@@Z	enum nslEmitterID __cdecl nslGetSourceEmitter(enum nslSourceID)	nslSource.o
+0x00821870	0x00C10D70	?nslAddEmitterSource@@YAXW4nslEmitterID@@W4nslSourceID@@@Z	void __cdecl nslAddEmitterSource(enum nslEmitterID,enum nslSourceID)	nslSource.o
+0x00821890	0x00C10D90	?nslRemoveEmitterSource@@YAXW4nslEmitterID@@W4nslSourceID@@@Z	void __cdecl nslRemoveEmitterSource(enum nslEmitterID,enum nslSourceID)	nslSource.o
+0x00821900	0x00C10E00	?nslDebugDraw@@YAXXZ	void __cdecl nslDebugDraw(void)	nslSource.o
+0x00821910	0x00C10E10	?nslUpdateSources@@YAXXZ	void __cdecl nslUpdateSources(void)	nslSource.o
+0x00822520	0x00C11A20	?nslUpdateEmitters@@YAXXZ	void __cdecl nslUpdateEmitters(void)	nslSource.o
+0x008225A0	0x00C11AA0	?nslPause@@YAXXZ	void __cdecl nslPause(void)	nslSource.o
+0x008225B0	0x00C11AB0	?nslStop@@YAXXZ	void __cdecl nslStop(void)	nslSource.o
+0x008225C0	0x00C11AC0	?nslUnpause@@YAXXZ	void __cdecl nslUnpause(void)	nslSource.o
+0x008225D0	0x00C11AD0	?nslGetState@@YA?AW4nslSourceState@@XZ	enum nslSourceState __cdecl nslGetState(void)	nslSource.o
+0x008225E0	0x00C11AE0	?nslQueueEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslQueueEmitter(enum nslEmitterID)	nslSource.o
+0x00822600	0x00C11B00	?nslPlayEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslPlayEmitter(enum nslEmitterID)	nslSource.o
+0x00822620	0x00C11B20	?nslPauseEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslPauseEmitter(enum nslEmitterID)	nslSource.o
+0x00822640	0x00C11B40	?nslStopEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslStopEmitter(enum nslEmitterID)	nslSource.o
+0x00822660	0x00C11B60	?nslUnpauseEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslUnpauseEmitter(enum nslEmitterID)	nslSource.o
+0x00822680	0x00C11B80	?nslGetEmitterState@@YA?AW4nslSourceState@@W4nslEmitterID@@@Z	enum nslSourceState __cdecl nslGetEmitterState(enum nslEmitterID)	nslSource.o
+0x008226A0	0x00C11BA0	?nslDampenSource@@YAXW4nslSourceID@@@Z	void __cdecl nslDampenSource(enum nslSourceID)	nslSource.o
+0x008226E0	0x00C11BE0	?nslUndampenSource@@YAXW4nslSourceID@@@Z	void __cdecl nslUndampenSource(enum nslSourceID)	nslSource.o
+0x00822720	0x00C11C20	?nslDampenGuardSource@@YAXW4nslSourceID@@@Z	void __cdecl nslDampenGuardSource(enum nslSourceID)	nslSource.o
+0x00822770	0x00C11C70	?nslDampenGuardEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslDampenGuardEmitter(enum nslEmitterID)	nslSource.o
+0x00822790	0x00C11C90	?nslDampenEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslDampenEmitter(enum nslEmitterID)	nslSource.o
+0x008227B0	0x00C11CB0	?nslUndampenEmitter@@YAXW4nslEmitterID@@@Z	void __cdecl nslUndampenEmitter(enum nslEmitterID)	nslSource.o
+0x008227D0	0x00C11CD0	?nslDampen@@YAXM@Z	void __cdecl nslDampen(float)	nslSource.o
+0x008227F0	0x00C11CF0	?nslUndampen@@YAXXZ	void __cdecl nslUndampen(void)	nslSource.o
+0x00822800	0x00C11D00	?nslSetSourceEffect@@YAXW4nslSourceID@@H@Z	void __cdecl nslSetSourceEffect(enum nslSourceID,int)	nslSource.o
+0x00822870	0x00C11D70	?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z	void __cdecl nslSetSourceEffectOn(enum nslSourceID)	nslSource.o
+0x008228E0	0x00C11DE0	?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z	void __cdecl nslSetSourceEffectOff(enum nslSourceID)	nslSource.o
+0x00822950	0x00C11E50	?nslGetSourceEffect@@YAHW4nslSourceID@@@Z	int __cdecl nslGetSourceEffect(enum nslSourceID)	nslSource.o
+0x00822990	0x00C11E90	?nslSetEmitterEffectOn@@YAXW4nslEmitterID@@@Z	void __cdecl nslSetEmitterEffectOn(enum nslEmitterID)	nslSource.o
+0x008229B0	0x00C11EB0	?nslSetEmitterEffectOff@@YAXW4nslEmitterID@@@Z	void __cdecl nslSetEmitterEffectOff(enum nslEmitterID)	nslSource.o
+0x008229D0	0x00C11ED0	?nslNewSource@@YA?AW4nslSourceID@@W4nslWaveID@@H@Z	enum nslSourceID __cdecl nslNewSource(enum nslWaveID,int)	nslSource.o
+0x00822D40	0x00C12240	?nslNewSource@@YA?AW4nslSourceID@@PBDH@Z	enum nslSourceID __cdecl nslNewSource(char const *,int)	nslSource.o
+0x00822D60	0x00C12260	?nslIsSourceQueued@@YAHW4nslSourceID@@@Z	int __cdecl nslIsSourceQueued(enum nslSourceID)	nslSource.o
+0x00822D80	0x00C12280	?nslIsSourcePlaying@@YAHW4nslSourceID@@@Z	int __cdecl nslIsSourcePlaying(enum nslSourceID)	nslSource.o
+0x00822DA0	0x00C122A0	?nslIsSourceFinished@@YAHW4nslSourceID@@@Z	int __cdecl nslIsSourceFinished(enum nslSourceID)	nslSource.o

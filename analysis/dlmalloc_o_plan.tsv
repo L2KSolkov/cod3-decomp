@@ -1,0 +1,16 @@
+ida_ea	name	signature	source_cpp
+0x007BC250	_dlmalloc_usable_size	_dlmalloc_usable_size	
+0x007BC290	_dlmalloc_stats	_dlmalloc_stats	
+0x007BC400	_dlmalloc_trim	_dlmalloc_trim	
+0x007BC420	_dlmallinfo	_dlmallinfo	
+0x007BC530	_dlmallopt	_dlmallopt	
+0x007BC630	_dlfree	_dlfree	
+0x007BC710	_dlcfree	_dlcfree	
+0x007BC8C0	_dlmalloc	_dlmalloc	
+0x007BCD40	_dlrealloc	_dlrealloc	
+0x007BCF50	_dlmemalign	_dlmemalign	
+0x007BD0A0	_dlcalloc	_dlcalloc	
+0x007BD2E0	_dlvalloc	_dlvalloc	
+0x007BD310	_dlpvalloc	_dlpvalloc	
+0x007BD350	_dlindependent_calloc	_dlindependent_calloc	
+0x007BD370	_dlindependent_comalloc	_dlindependent_comalloc	

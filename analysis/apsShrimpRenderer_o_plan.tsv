@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x008044F0	?Init@apsShrimpRenderer@@SAXXZ	public: static void __cdecl apsShrimpRenderer::Init(void)	
+0x00804520	??0apsShrimpRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsShrimpRenderer::apsShrimpRenderer(class apsShrimpRenderer::cArgs const &)	
+0x008045E0	?Render@apsShrimpRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsShrimpRenderer::Render(struct apsRendererRenderInfo const &)	

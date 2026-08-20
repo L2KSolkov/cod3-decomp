@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x00852980	?nglSceneDumpStart@@YAXXZ	void __cdecl nglSceneDumpStart(void)	
+0x008529F0	?nglSceneDumpEnd@@YAXXZ	void __cdecl nglSceneDumpEnd(void)	
+0x00852A30	?nglSceneDumpCamera@@YAXABVMat43@math@@@Z	void __cdecl nglSceneDumpCamera(class math::Mat43 const &)	
+0x00852B30	?nglSceneDumpMesh@@YAXPAUnglMesh@@ABVMat43@math@@PBVnglMeshParams@@@Z	void __cdecl nglSceneDumpMesh(struct nglMesh *,class math::Mat43 const &,class nglMeshParams const *)	
+0x00852D80	?nglSceneDumpQuad@@YAXPAUnglQuad@@@Z	void __cdecl nglSceneDumpQuad(struct nglQuad *)	
+0x00852E80	?nglSceneDumpDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z	void __cdecl nglSceneDumpDirLight(unsigned int,class math::Dir3 const &,class math::Vector4 const &)	
+0x00852F30	?nglSceneDumpPointLight@@YAXW4nglLightType@@IABVPosition3@math@@MMABVVector4@3@@Z	void __cdecl nglSceneDumpPointLight(enum nglLightType,unsigned int,class math::Position3 const &,float,float,class math::Vector4 const &)	

@@ -1,0 +1,16 @@
+ida_ea	va	name	signature	family
+0x0082C990	0x00C1BE90	_txSlotEntryInit	_txSlotEntryInit	txSlotPool.o
+0x0082C9B0	0x00C1BEB0	_txSlotEntryLinkHead	_txSlotEntryLinkHead	txSlotPool.o
+0x0082C9D0	0x00C1BED0	_txSlotEntryLinkTail	_txSlotEntryLinkTail	txSlotPool.o
+0x0082C9F0	0x00C1BEF0	_txSlotEntryUnlink	_txSlotEntryUnlink	txSlotPool.o
+0x0082CA10	0x00C1BF10	_txSlotEntryPtr	_txSlotEntryPtr	txSlotPool.o
+0x0082CA50	0x00C1BF50	_txSlotIndex	_txSlotIndex	txSlotPool.o
+0x0082CA90	0x00C1BF90	_txSlotPoolInit	_txSlotPoolInit	txSlotPool.o
+0x0082CB40	0x00C1C040	_txSlotExists	_txSlotExists	txSlotPool.o
+0x0082CB90	0x00C1C090	_txSlotEntryInc	_txSlotEntryInc	txSlotPool.o
+0x0082CBD0	0x00C1C0D0	_txSlotNew	_txSlotNew	txSlotPool.o
+0x0082CC40	0x00C1C140	_txSlotFree	_txSlotFree	txSlotPool.o
+0x0082CCB0	0x00C1C1B0	_txSlotFirst	_txSlotFirst	txSlotPool.o
+0x0082CCC0	0x00C1C1C0	_txSlotLast	_txSlotLast	txSlotPool.o
+0x0082CCD0	0x00C1C1D0	_txSlotNext	_txSlotNext	txSlotPool.o
+0x0082CD20	0x00C1C220	_txSlotPrev	_txSlotPrev	txSlotPool.o

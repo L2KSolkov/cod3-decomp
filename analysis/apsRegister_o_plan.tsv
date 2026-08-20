@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007F3E00	?GetNewSimpleMeshRenderer@@YAPAVapsSimpleMeshRenderer@@ABV?$apsArray@VapsParam@@@@@Z	class apsSimpleMeshRenderer * __cdecl GetNewSimpleMeshRenderer(class apsArray<class apsParam> const &)	
+0x007F3F30	?GetNewShrimpRenderer@@YAPAVapsShrimpRenderer@@ABV?$apsArray@VapsParam@@@@@Z	class apsShrimpRenderer * __cdecl GetNewShrimpRenderer(class apsArray<class apsParam> const &)	
+0x007F43B0	?apsGetRenderer@@YAPAVapsRenderer@@PBDPBIABV?$apsArray@VapsParam@@@@PAUapsFixupParams@@@Z	class apsRenderer * __cdecl apsGetRenderer(char const *,unsigned int const *,class apsArray<class apsParam> const &,struct apsFixupParams *)	
+0x007F47B0	?apsGetDomain@@YAPAVapsDomain@@PBDPBIABV?$apsArray@VapsParam@@@@PAUapsFixupParams@@@Z	class apsDomain * __cdecl apsGetDomain(char const *,unsigned int const *,class apsArray<class apsParam> const &,struct apsFixupParams *)	
+0x007F54F0	?apsGetAction@@YAPAVapsAction@@PBDPBIPAUapsFixupParams@@@Z	class apsAction * __cdecl apsGetAction(char const *,unsigned int const *,struct apsFixupParams *)	
+0x007F6460	?apsLoadEffectInplace@@YAPAVapsEffectTemplate@@PAVapkFile@apk@@PAVapkFileEntry@3@@Z	class apsEffectTemplate * __cdecl apsLoadEffectInplace(class apk::apkFile *,class apk::apkFileEntry *)	

@@ -1,0 +1,9 @@
+index	status	map_line
+1	PORTED	0002:002f0790 ?Begin@CG_MotionBlur@@YAXMMM@Z 00ADFC90 f nextgen.o
+2	PORTED	0002:002f07d0 ?End@CG_MotionBlur@@YAXXZ 00ADFCD0 f nextgen.o
+3	PORTED	0002:002f07e0 ?Callback@CG_MotionBlur@@YAXPAX@Z 00ADFCE0 f nextgen.o
+4	PORTED	0002:002f0880 ?AddPostCallback@CG_MotionBlur@@YAXXZ 00ADFD80 f nextgen.o
+5	PORTED	0002:002f0920 ?blurCallBack@CG_SceneBlur@@YAXPAX@Z 00ADFE20 f nextgen.o
+6	PORTED	0002:002f0960 ?Set@CG_SceneBlur@@YAXHM@Z 00ADFE60 f nextgen.o
+7	PORTED	0002:002f0980 ?End@CG_SceneBlur@@YAXXZ 00ADFE80 f nextgen.o
+8	PORTED	0002:002f0990 ?AddPostCallback@CG_SceneBlur@@YAXXZ 00ADFE90 f nextgen.o

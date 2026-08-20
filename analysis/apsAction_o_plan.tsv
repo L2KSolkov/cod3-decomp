@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x008081F0	?SetParam@apsAction@@QAEXHM@Z	public: void __thiscall apsAction::SetParam(int,float)	
+0x00808260	?SetDomain@apsAction@@QAEXHPAVapsDomain@@@Z	public: void __thiscall apsAction::SetDomain(int,class apsDomain *)	
+0x008082F0	?Fixup@apsAction@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsAction::Fixup(struct apsFixupParams const &)	
+0x00808430	??1apsAction@@UAE@XZ	public: virtual __thiscall apsAction::~apsAction(void)	
+0x00808500	??0apsAction@@IAE@HHW4IterationStyle@0@I@Z	protected: __thiscall apsAction::apsAction(int,int,enum apsAction::IterationStyle,unsigned int)	

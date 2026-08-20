@@ -1,0 +1,28 @@
+index	status	map_line
+1	VERIFIED	0002:003df0d0 ?InitCDWorldShader@@YAXXZ 00BCE5D0 f cdWorldShader.o
+2	VERIFIED	0002:003df120 ?ToggleCDWorldShader@@YAXXZ 00BCE620 f cdWorldShader.o
+3	VERIFIED	0002:003df140 ?Register@cdWorldShader@@UAEXXZ 00BCE640 f cdWorldShader.o
+4	VERIFIED	0002:003df180 ?AddNode@cdWorldShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCE680 f cdWorldShader.o
+5	PORTED	0002:003df220 ?Render@cdWorldShaderNode@@UAEXXZ 00BCE720 f cdWorldShader.o
+6	PORTED	0002:003dffe0 ?RegisterShader@cdWorldRender@@YAXXZ 00BCF4E0 f i cdWorldShader.o
+7	PORTED	0002:003e0010 ?RegisterVShader@cdWorldRender@@YAXXZ 00BCF510 f i cdWorldShader.o
+8	PORTED	0002:003e0020 ?GetVShader@cdWorldRender@@YAKII@Z 00BCF520 f i cdWorldShader.o
+9	PORTED	0002:003e0040 ?RegisterShader@cdWorldProjectedRender@@YAXXZ 00BCF540 f i cdWorldShader.o
+10	PORTED	0002:003e0070 ?RegisterVShader@cdWorldProjectedRender@@YAXXZ 00BCF570 f i cdWorldShader.o
+11	PORTED	0002:003e0080 ?GetVShader@cdWorldProjectedRender@@YAKI@Z 00BCF580 f i cdWorldShader.o
+12	PORTED	0002:003e0090 ?RegisterShader@cdWorldPixel@@YAXXZ 00BCF590 f i cdWorldShader.o
+13	PORTED	0002:003e00c0 ?RegisterPShader@cdWorldPixel@@YAXXZ 00BCF5C0 f i cdWorldShader.o
+14	PORTED	0002:003e00d0 ?GetPShader@cdWorldPixel@@YAPAKIII@Z 00BCF5D0 f i cdWorldShader.o
+15	PORTED	0002:003e00f0 ?RegisterShader@cdWorldProjectedPixel@@YAXXZ 00BCF5F0 f i cdWorldShader.o
+16	PORTED	0002:003e0120 ?RegisterPShader@cdWorldProjectedPixel@@YAXXZ 00BCF620 f i cdWorldShader.o
+17	PORTED	0002:003e0130 ?GetPShader@cdWorldProjectedPixel@@YAPAKI@Z 00BCF630 f i cdWorldShader.o
+18	PORTED	0002:003e0140 ?RegisterShader@cdWorldSolidColorPixel@@YAXXZ 00BCF640 f i cdWorldShader.o
+19	PORTED	0002:003e0160 ?RegisterPShader@cdWorldSolidColorPixel@@YAXXZ 00BCF660 f i cdWorldShader.o
+20	PORTED	0002:003e0180 ?GetPShader@cdWorldSolidColorPixel@@YAPAKXZ 00BCF680 f i cdWorldShader.o
+21	VERIFIED	0002:003e0190 ??0cdWorldShader@@QAE@XZ 00BCF690 f i cdWorldShader.o
+22	VERIFIED	0002:003e01c0 ?GetName@cdWorldShader@@UAE?AVtlFixedString@@XZ 00BCF6C0 f i cdWorldShader.o
+23	PORTED	0002:003e01e0 ??0cdWorldParams@cdWorldRender@@QAE@XZ 00BCF6E0 f i cdWorldShader.o
+24	PORTED	0002:003e01f0 ??$SetConstants@UcdWorldParams@cdWorldRender@@@cdWorldRender@@YAXABUcdWorldParams@0@@Z 00BCF6F0 f i cdWorldShader.o
+25	VERIFIED	0002:003e0210 ??_GcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o
+26	VERIFIED	0002:003e0210 ??_EcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o
+27	VERIFIED	0002:003e0240 ??1cdWorldShader@@UAE@XZ 00BCF740 f i cdWorldShader.o

@@ -1,0 +1,17 @@
+index	status	map_line
+1	PORTED	0002:003e1a80 ?GetUIXRender@LiveWrapper@@QAE_NXZ 00BD0F80 f i controller_xbox.o
+2	PORTED	0002:003e1a90 ??0motor_info@?A0x259e6277@@QAE@XZ 00BD0F90 f i controller_xbox.o
+3	PORTED	0002:003e1aa0 ?compute_motor_speed@?A0x259e6277@@YAGM@Z 00BD0FA0 f controller_xbox.o
+4	PORTED	0002:003e1b10 ?refresh_device_list@?A0x259e6277@@YAXXZ 00BD1010 f controller_xbox.o
+5	VERIFIED	0002:003e1c60 ??0controller@@QAE@XZ 00BD1160 f controller_xbox.o
+6	VERIFIED	0002:003e1d90 ?inst@controller@@SAPAV1@XZ 00BD1290 f controller_xbox.o
+7	VERIFIED	0002:003e1dc0 ?poll@controller@@QAEXXZ 00BD12C0 f controller_xbox.o
+8	VERIFIED	0002:003e2030 ?controller_is_connected@controller@@QAE_NH@Z 00BD1530 f controller_xbox.o
+9	VERIFIED	0002:003e2050 ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z 00BD1550 f controller_xbox.o
+10	VERIFIED	0002:003e2220 ?button_released@controller@@QAE_NHW4ButtonIndex@1@@Z 00BD1720 f controller_xbox.o
+11	VERIFIED	0002:003e23d0 ?button_released_clear@controller@@QAE_NHW4ButtonIndex@1@@Z 00BD18D0 f controller_xbox.o
+12	VERIFIED	0002:003e2670 ?button_pressed@controller@@QAE_NHW4ButtonIndex@1@@Z 00BD1B70 f controller_xbox.o
+13	VERIFIED	0002:003e2810 ?button_pressed_clear@controller@@QAE_NHW4ButtonIndex@1@@Z 00BD1D10 f controller_xbox.o
+14	VERIFIED	0002:003e2ab0 ?stick_value@controller@@QAEXHW4StickIndex@1@AAH1@Z 00BD1FB0 f controller_xbox.o
+15	VERIFIED	0002:003e2b20 ?rumble@controller@@QAEXHW4RumbleIndex@1@M@Z 00BD2020 f controller_xbox.o
+16	VERIFIED	0002:003e2c50 ?stop_all_rumble@controller@@QAEXXZ 00BD2150 f controller_xbox.o

@@ -1,0 +1,9 @@
+ida_ea	va	name	signature	family
+0x006F0790	0x00ADFC90	?Begin@CG_MotionBlur@@YAXMMM@Z	void __cdecl CG_MotionBlur::Begin(float,float,float)	nextgen.o
+0x006F07D0	0x00ADFCD0	?End@CG_MotionBlur@@YAXXZ	void __cdecl CG_MotionBlur::End(void)	nextgen.o
+0x006F07E0	0x00ADFCE0	?Callback@CG_MotionBlur@@YAXPAX@Z	void __cdecl CG_MotionBlur::Callback(void *)	nextgen.o
+0x006F0880	0x00ADFD80	?AddPostCallback@CG_MotionBlur@@YAXXZ	void __cdecl CG_MotionBlur::AddPostCallback(void)	nextgen.o
+0x006F0920	0x00ADFE20	?blurCallBack@CG_SceneBlur@@YAXPAX@Z	void __cdecl CG_SceneBlur::blurCallBack(void *)	nextgen.o
+0x006F0960	0x00ADFE60	?Set@CG_SceneBlur@@YAXHM@Z	void __cdecl CG_SceneBlur::Set(int,float)	nextgen.o
+0x006F0980	0x00ADFE80	?End@CG_SceneBlur@@YAXXZ	void __cdecl CG_SceneBlur::End(void)	nextgen.o
+0x006F0990	0x00ADFE90	?AddPostCallback@CG_SceneBlur@@YAXXZ	void __cdecl CG_SceneBlur::AddPostCallback(void)	nextgen.o

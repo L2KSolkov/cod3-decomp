@@ -1,0 +1,12 @@
+index	status	map_line
+1	PORTED	0002:004056e0 ??0apsColorBillboardRenderer@@QAE@ABVcArgs@0@@Z 00BF4BE0 f apsColorBillboardRenderer.o
+2	VERIFIED	0002:00405720 ?Init@apsColorBillboardRenderer@@SAXXZ 00BF4C20 f apsColorBillboardRenderer.o
+3	VERIFIED	0002:00405750 ?Render@apsColorBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4C50 f apsColorBillboardRenderer.o
+4	PORTED	0002:00405770 ?RegisterVShader@apsColorBillboardRender@@YAXXZ 00BF4C70 f i apsColorBillboardRenderer.o
+5	PORTED	0002:00405790 ?RegisterPShader@apsColorBillboardRenderPixel@@YAXXZ 00BF4C90 f i apsColorBillboardRenderer.o
+6	PORTED	0002:004057b0 ?InitPShader@apsColorBillboardRenderPixel@@YAXXZ 00BF4CB0 f i apsColorBillboardRenderer.o
+7	PORTED	0002:004057d0 ??0apsColorBillboardNode@@QAE@XZ 00BF4CD0 f i apsColorBillboardRenderer.o
+8	VERIFIED	0002:004057e0 ?GetDesc@apsColorBillboardNode@@UAEXPAD@Z 00BF4CE0 f i apsColorBillboardRenderer.o
+9	PORTED	0002:00405830 ??_EapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o
+10	PORTED	0002:00405830 ??_GapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o
+11	PORTED	0002:00405860 ??$DefaultRender@VapsColorBillboardRenderer@@VapsColorBillboardNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsColorBillboardRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4D60 f i apsColorBillboardRenderer.o

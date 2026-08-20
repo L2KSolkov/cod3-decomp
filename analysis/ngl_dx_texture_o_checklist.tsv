@@ -1,0 +1,18 @@
+index	status	map_line
+1	VERIFIED	0002:00441860 ?ngliUnloadTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z 00C30D60 f ngl_dx_texture.o
+2	VERIFIED	0002:004418a0 ?nglDxUnbindTexStages@@YAXXZ 00C30DA0 f ngl_dx_texture.o
+3	VERIFIED	0002:00441940 ?nglDxSetTexture@@YAXIPAUnglTexture@@II@Z 00C30E40 f ngl_dx_texture.o
+4	VERIFIED	0002:00441a10 ?nglGetFrontBufferTex@@YAPAUnglTexture@@XZ 00C30F10 f ngl_dx_texture.o
+5	VERIFIED	0002:00441a30 ?nglGetBackBufferTex@@YAPAUnglTexture@@XZ 00C30F30 f ngl_dx_texture.o
+6	VERIFIED	0002:00441a50 ?ngliLockSceneTextures@@YAXXZ 00C30F50 f ngl_dx_texture.o
+7	VERIFIED	0002:00441a60 ?ngliUnlockSceneTextures@@YAXXZ 00C30F60 f ngl_dx_texture.o
+8	VERIFIED	0002:00441a70 ?ngliInitIdentityPalette@@YAXXZ 00C30F70 f ngl_dx_texture.o
+9	VERIFIED	0002:00441a80 ?ngliGenMipmaps@@YAXPAUnglTexture@@@Z 00C30F80 f ngl_dx_texture.o
+10	VERIFIED	0002:00441da0 ?ngliInitWhiteTexture@@YAXXZ 00C312A0 f ngl_dx_texture.o
+11	PORTED	0002:00441e10 ?SetTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z 00C31310 f i ngl_dx_texture.o
+12	PORTED	0002:00441e30 ?SwitchTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z 00C31330 f i ngl_dx_texture.o
+13	PORTED	0002:00441e60 ?GetLevelCount@D3DBaseTexture@@QAGKXZ 00C31360 f i ngl_dx_texture.o
+14	PORTED	0002:00441e70 ?SetMaxAnisotropy@nglDxRenderState@@QAEHHH@Z 00C31370 f i ngl_dx_texture.o
+15	VERIFIED	0002:00441eb0 ??0nglDxTexCacheClass@@QAE@XZ 00C313B0 f i ngl_dx_texture.o
+16	VERIFIED	0002:00441ec0 ?SetFilter@nglDxTexCacheClass@@QAEXIII@Z 00C313C0 f i ngl_dx_texture.o
+17	PORTED	0002:00442180 ?NewNodeOfLevel@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C31680 f i ngl_dx_texture.o

@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00850240	?nglDxSetFSAA@@YA_NW4nglFSAAMode@@@Z	bool __cdecl nglDxSetFSAA(enum nglFSAAMode)	

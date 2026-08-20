@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x00835470	?jqValidate@@YAXXZ	void __cdecl jqValidate(void)	
+0x00835480	?jqStart@@YAXI@Z	void __cdecl jqStart(unsigned int)	
+0x00835490	?jqSetBatchPoolSize@@YAXI@Z	void __cdecl jqSetBatchPoolSize(unsigned int)	
+0x008354A0	?_jqAddBatch@@YAXPAUjqBatch@@@Z	void __cdecl _jqAddBatch(struct jqBatch *)	
+0x008354C0	?jqRemoveBatch@@YA_NH@Z	bool __cdecl jqRemoveBatch(int)	
+0x008354D0	?jqFlush@@YAXH@Z	void __cdecl jqFlush(int)	
+0x008354E0	?jqSetBatchGroupPoolSize@@YAXI@Z	void __cdecl jqSetBatchGroupPoolSize(unsigned int)	
+0x008354F0	?_jqInit@@YAXXZ	void __cdecl _jqInit(void)	
+0x00835500	?_jqShutdown@@YAXXZ	void __cdecl _jqShutdown(void)	
+0x00835510	?_jqStart@@YAXH@Z	void __cdecl _jqStart(int)	
+0x00835520	?_jqStop@@YAXXZ	void __cdecl _jqStop(void)	

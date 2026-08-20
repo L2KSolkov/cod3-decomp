@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:0041d260 ??Kmath@@YA?AVMat43@0@ABV10@0@Z 00C0C760 f i cdl_common.o
+2	PORTED	0002:0041d420 ?get_min@cdlConvex@@QBE?BVPosition3@math@@XZ 00C0C920 f i cdl_common.o
+3	PORTED	0002:0041d450 ?get_max@cdlConvex@@QBE?BVPosition3@math@@XZ 00C0C950 f i cdl_common.o
+4	PORTED	0002:0041d480 ?get_dims@cdlConvex@@QBEABVDir3@math@@XZ 00C0C980 f i cdl_common.o
+5	PORTED	0002:0041d490 ?get_center_local@cdlConvex@@QBEABVPosition3@math@@XZ 00C0C990 f i cdl_common.o
+6	PORTED	0002:0041d4a0 ?get_radius@cdlConvex@@QBEMXZ 00C0C9A0 f i cdl_common.o
+7	VERIFIED	0002:0041d4e0 ?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z 00C0C9E0 f cdl_common.o
+8	PORTED	0002:0041d5e0 ?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVPosition3@3@@Z 00C0CAE0 f cdl_common.o
+9	PORTED	0002:0041d6f0 ?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVcdlSphere@@@Z 00C0CBF0 f cdl_common.o
+10	PORTED	0002:0041d8c0 ?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@@Z 00C0CDC0 f cdl_common.o
+11	PORTED	0002:0041d930 ?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@ABVMat43@2@@Z 00C0CE30 f cdl_common.o
+12	VERIFIED	0002:0041da20 ?is_inside@@YA_NABVDir3@math@@000@Z 00C0CF20 f cdl_common.o
+13	VERIFIED	0002:0041db50 ?calc_closest@@YA?AVPosition3@math@@ABV12@000@Z 00C0D050 f cdl_common.o
+14	VERIFIED	0002:0041df30 ?dist2@@YAMABVPosition3@math@@000@Z 00C0D430 f cdl_common.o
+15	PORTED	0002:0041e130 ?intersect@@YA_NABVcdlConvex@@ABVMat43@math@@01M@Z 00C0D630 f cdl_common.o
+16	PORTED	0002:0041e4d0 ?get_center@cdlConvex@@QBE?BVPosition3@math@@ABVMat43@3@@Z 00C0D9D0 f i cdl_common.o

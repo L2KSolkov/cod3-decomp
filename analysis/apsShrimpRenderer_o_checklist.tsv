@@ -1,0 +1,15 @@
+index	status	map_line
+1	PORTED	0002:004043d0 ?Multiply@apsMath@@YA?AVVector4@math@@ABV23@0@Z 00BF38D0 f i apsShrimpRenderer.o
+2	VERIFIED	0002:00404400 ?GetBlendColor@apsInternal@@YA?AVVector4@math@@PAUnglLightContext@@@Z 00BF3900 f i apsShrimpRenderer.o
+3	PORTED	0002:00404450 ?SetBlendColor@apsRenderNode@@QAEXABVVector4@math@@@Z 00BF3950 f i apsShrimpRenderer.o
+4	PORTED	0002:00404480 ?SetRenderer@apsShrimpNode@@QAEXPAVapsShrimpRenderer@@@Z 00BF3980 f i apsShrimpRenderer.o
+5	PORTED	0002:00404490 ?RegisterVShader@apsShrimpRender@@YAXXZ 00BF3990 f i apsShrimpRenderer.o
+6	PORTED	0002:004044b0 ?RegisterPShader@apsShrimpRenderPixel@@YAXXZ 00BF39B0 f i apsShrimpRenderer.o
+7	PORTED	0002:004044d0 ?InitPShader@apsShrimpRenderPixel@@YAXXZ 00BF39D0 f i apsShrimpRenderer.o
+8	VERIFIED	0002:004044f0 ?Init@apsShrimpRenderer@@SAXXZ 00BF39F0 f apsShrimpRenderer.o
+9	PORTED	0002:00404520 ??0apsShrimpRenderer@@QAE@ABVcArgs@0@@Z 00BF3A20 f apsShrimpRenderer.o
+10	VERIFIED	0002:004045e0 ?Render@apsShrimpRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF3AE0 f apsShrimpRenderer.o
+11	PORTED	0002:00404830 ??0apsShrimpNode@@QAE@XZ 00BF3D30 f i apsShrimpRenderer.o
+12	VERIFIED	0002:00404840 ?GetDesc@apsShrimpNode@@UAEXPAD@Z 00BF3D40 f i apsShrimpRenderer.o
+13	PORTED	0002:00404870 ??_EapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o
+14	PORTED	0002:00404870 ??_GapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o

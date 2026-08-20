@@ -1,0 +1,14 @@
+ida_ea	va	name	signature	family
+0x00824590	0x00C13A90	?nslDriverVoiceSize@@YAIXZ	unsigned int __cdecl nslDriverVoiceSize(void)	nslDriverXBOXDSOUND.o
+0x00824680	0x00C13B80	?nslDriverClamp@@YAMMMM@Z	float __cdecl nslDriverClamp(float,float,float)	nslDriverXBOXDSOUND.o
+0x008246B0	0x00C13BB0	?nslDriverCalculateRolloff@@YAXPAMMPBUnslWave@@@Z	void __cdecl nslDriverCalculateRolloff(float *,float,struct nslWave const *)	nslDriverXBOXDSOUND.o
+0x00824EF0	0x00C143F0	?nslDriverGetVoiceType@@YAEPBUnslWave@@@Z	unsigned char __cdecl nslDriverGetVoiceType(struct nslWave const *)	nslDriverXBOXDSOUND.o
+0x00824F20	0x00C14420	?nslDriverInit@@YAHPAUnslInitParams@@@Z	int __cdecl nslDriverInit(struct nslInitParams *)	nslDriverXBOXDSOUND.o
+0x00825010	0x00C14510	?nslDriverExit@@YAXXZ	void __cdecl nslDriverExit(void)	nslDriverXBOXDSOUND.o
+0x00825020	0x00C14520	?Init@nslDriverVoice@@QAEJPBUnslVoice@@PBUnslWave@@@Z	public: long __thiscall nslDriverVoice::Init(struct nslVoice const *,struct nslWave const *)	nslDriverXBOXDSOUND.o
+0x00825210	0x00C14710	?FindFreePacket@nslDriverVoice@@QAEHPAH@Z	public: int __thiscall nslDriverVoice::FindFreePacket(int *)	nslDriverXBOXDSOUND.o
+0x00825270	0x00C14770	?ProcessSource@nslDriverVoice@@QAEJH@Z	public: long __thiscall nslDriverVoice::ProcessSource(int)	nslDriverXBOXDSOUND.o
+0x00825390	0x00C14890	?nslSetEffect@@YAXPBUnslEffect@@@Z	void __cdecl nslSetEffect(struct nslEffect const *)	nslDriverXBOXDSOUND.o
+0x008257A0	0x00C14CA0	?nslDriverStart@@YAHXZ	int __cdecl nslDriverStart(void)	nslDriverXBOXDSOUND.o
+0x00825800	0x00C14D00	?Process@nslDriverVoice@@QAEJXZ	public: long __thiscall nslDriverVoice::Process(void)	nslDriverXBOXDSOUND.o
+0x00825A10	0x00C14F10	?nslDriverUpdate@@YAXXZ	void __cdecl nslDriverUpdate(void)	nslDriverXBOXDSOUND.o

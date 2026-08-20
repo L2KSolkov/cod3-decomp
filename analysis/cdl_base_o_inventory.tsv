@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x0081E550	0x00C0DA50	?cdl_init@@YAXXZ	void __cdecl cdl_init(void)	cdl_base.o
+0x0081E560	0x00C0DA60	?cdl_profile_reset@@YAXXZ	void __cdecl cdl_profile_reset(void)	cdl_base.o

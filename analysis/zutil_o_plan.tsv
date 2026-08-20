@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007EA740	_zlibVersion	_zlibVersion	
+0x007EA750	_zlibCompileFlags	_zlibCompileFlags	
+0x007EA760	_zError	_zError	
+0x007EA780	_zcalloc	_zcalloc	
+0x007EA7A0	_zcfree	_zcfree	

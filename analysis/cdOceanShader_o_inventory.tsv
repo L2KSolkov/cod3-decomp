@@ -1,0 +1,13 @@
+ida_ea	va	name	signature	family
+0x007D7180	0x00BC6680	??0cdOceanShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdOceanShaderMat::cdOceanShaderMat(struct nglTexture *)	cdOceanShader.o
+0x007D7200	0x00BC6700	?InitCDOceanShader@@YAXXZ	void __cdecl InitCDOceanShader(void)	cdOceanShader.o
+0x007D7250	0x00BC6750	?ToggleCDOceanShader@@YAXXZ	void __cdecl ToggleCDOceanShader(void)	cdOceanShader.o
+0x007D7E50	0x00BC7350	?GetVShader@cdOceanShaderNode@@UAEKXZ	public: virtual unsigned long __thiscall cdOceanShaderNode::GetVShader(void)	cdOceanShader.o
+0x007D7E60	0x00BC7360	?GetFullbrightPShader@cdOceanShaderNode@@UAEPAKXZ	public: virtual unsigned long * __thiscall cdOceanShaderNode::GetFullbrightPShader(void)	cdOceanShader.o
+0x007D7E70	0x00BC7370	?GetPShader@cdOceanShaderNode@@UAEPAKHHH@Z	public: virtual unsigned long * __thiscall cdOceanShaderNode::GetPShader(int,int,int)	cdOceanShader.o
+0x007D7E90	0x00BC7390	?GetVShaderFogConstantOffset@cdOceanShaderNode@@UAEHXZ	public: virtual int __thiscall cdOceanShaderNode::GetVShaderFogConstantOffset(void)	cdOceanShader.o
+0x007D7EA0	0x00BC73A0	?GetVShaderParamsStartAddress@cdOceanShaderNode@@UAEHXZ	public: virtual int __thiscall cdOceanShaderNode::GetVShaderParamsStartAddress(void)	cdOceanShader.o
+0x007D7EB0	0x00BC73B0	?Register@cdOceanShader@@UAEXXZ	public: virtual void __thiscall cdOceanShader::Register(void)	cdOceanShader.o
+0x007D7F00	0x00BC7400	?AddNode@cdOceanShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdOceanShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdOceanShader.o
+0x007D7F70	0x00BC7470	?SetContext@cdOceanShaderNode@@QAEXXZ	public: void __thiscall cdOceanShaderNode::SetContext(void)	cdOceanShader.o
+0x007D8D30	0x00BC8230	?Render@cdOceanShaderNode@@UAEXXZ	public: virtual void __thiscall cdOceanShaderNode::Render(void)	cdOceanShader.o

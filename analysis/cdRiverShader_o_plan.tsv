@@ -1,0 +1,11 @@
+ida_ea	name	signature	source_cpp
+0x007D6BC0	??0cdRiverShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdRiverShaderMat::cdRiverShaderMat(struct nglTexture *)	
+0x007D6BE0	?InitCDRiverShader@@YAXXZ	void __cdecl InitCDRiverShader(void)	
+0x007D6C30	?ToggleCDRiverShader@@YAXXZ	void __cdecl ToggleCDRiverShader(void)	
+0x007D6C50	?Register@cdRiverShader@@UAEXXZ	public: virtual void __thiscall cdRiverShader::Register(void)	
+0x007D6CA0	?GetVShader@cdRiverShaderNode@@UAEKXZ	public: virtual unsigned long __thiscall cdRiverShaderNode::GetVShader(void)	
+0x007D6CB0	?GetFullbrightPShader@cdRiverShaderNode@@UAEPAKXZ	public: virtual unsigned long * __thiscall cdRiverShaderNode::GetFullbrightPShader(void)	
+0x007D6CC0	?GetPShader@cdRiverShaderNode@@UAEPAKHHH@Z	public: virtual unsigned long * __thiscall cdRiverShaderNode::GetPShader(int,int,int)	
+0x007D6CE0	?GetVShaderParamsStartAddress@cdRiverShaderNode@@UAEHXZ	public: virtual int __thiscall cdRiverShaderNode::GetVShaderParamsStartAddress(void)	
+0x007D6CF0	?GetVShaderFogConstantOffset@cdRiverShaderNode@@UAEHXZ	public: virtual int __thiscall cdRiverShaderNode::GetVShaderFogConstantOffset(void)	
+0x007D6D00	?AddNode@cdRiverShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdRiverShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	

@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x00823D50	0x00C13250	?nslGetNumberOfListeners@@YAHXZ	int __cdecl nslGetNumberOfListeners(void)	nslListener.o
+0x00823D60	0x00C13260	?nslSetNumberOfListeners@@YAXH@Z	void __cdecl nslSetNumberOfListeners(int)	nslListener.o
+0x00823D70	0x00C13270	?nslListenerGetGroup@@YAPAUnslGroup@@I@Z	struct nslGroup * __cdecl nslListenerGetGroup(unsigned int)	nslListener.o
+0x00823DD0	0x00C132D0	?nslListenerSetMatrix@@YAXIQAY03$$CBM@Z	void __cdecl nslListenerSetMatrix(unsigned int,float const (* const)[4])	nslListener.o
+0x00823E60	0x00C13360	?nslListenerSetPosition@@YAXIQBM@Z	void __cdecl nslListenerSetPosition(unsigned int,float const * const)	nslListener.o
+0x00823EA0	0x00C133A0	?nslListenerSetVelocity@@YAXIQBM@Z	void __cdecl nslListenerSetVelocity(unsigned int,float const * const)	nslListener.o
+0x00823EE0	0x00C133E0	?nslListenerSetOrientation@@YAXIQBM0@Z	void __cdecl nslListenerSetOrientation(unsigned int,float const * const,float const * const)	nslListener.o

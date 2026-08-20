@@ -1,0 +1,23 @@
+index	status	map_line
+1	VERIFIED	0002:003cd770 ??0cdGunSightSpecularShaderMat@@QAE@PAUnglTexture@@0@Z 00BBCC70 f cdGunSightSpecularShader.o
+2	VERIFIED	0002:003cd800 ?InitCDGunSightSpecularShader@@YAXXZ 00BBCD00 f cdGunSightSpecularShader.o
+3	VERIFIED	0002:003cd850 ?ToggleCDGunSightSpecularShader@@YAXXZ 00BBCD50 f cdGunSightSpecularShader.o
+4	VERIFIED	0002:003cd870 ?Register@cdGunSightSpecularShader@@UAEXXZ 00BBCD70 f cdGunSightSpecularShader.o
+5	VERIFIED	0002:003cd8a0 ?AddNode@cdGunSightSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBCDA0 f cdGunSightSpecularShader.o
+6	PORTED	0002:003cd910 ?Render@cdGunSightSpecularShaderNode@@UAEXXZ 00BBCE10 f cdGunSightSpecularShader.o
+7	VERIFIED	0002:003cdc80 ??0cdGunSightSpecularShader@@QAE@XZ 00BBD180 f i cdGunSightSpecularShader.o
+8	VERIFIED	0002:003cdcb0 ?GetName@cdGunSightSpecularShader@@UAE?AVtlFixedString@@XZ 00BBD1B0 f i cdGunSightSpecularShader.o
+9	PORTED	0002:003cdcd0 ?RegisterVShader@cdGunSightSpecularRender@@YAXXZ 00BBD1D0 f i cdGunSightSpecularShader.o
+10	PORTED	0002:003cdd00 ?GetVShader@cdGunSightSpecularRender@@YAKI@Z 00BBD200 f i cdGunSightSpecularShader.o
+11	PORTED	0002:003cdd10 ?RegisterPShader@cdGunSightSpecularPixel@@YAXXZ 00BBD210 f i cdGunSightSpecularShader.o
+12	PORTED	0002:003cdd30 ?GetPShader@cdGunSightSpecularPixel@@YAPAKXZ 00BBD230 f i cdGunSightSpecularShader.o
+13	PORTED	0002:003cdd40 ?RegisterPShader@cdGunSightSpecularFullbrightPixel@@YAXXZ 00BBD240 f i cdGunSightSpecularShader.o
+14	PORTED	0002:003cdd60 ?GetPShader@cdGunSightSpecularFullbrightPixel@@YAPAKXZ 00BBD260 f i cdGunSightSpecularShader.o
+15	PORTED	0002:003cdd70 ??0cdGunSightSpecularShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdGunSightSpecularShaderMat@@@Z 00BBD270 f i cdGunSightSpecularShader.o
+16	PORTED	0002:003cdda0 ??_EcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o
+17	PORTED	0002:003cdda0 ??_GcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o
+18	PORTED	0002:003cddd0 ??1cdGunSightSpecularShaderNode@@UAE@XZ 00BBD2D0 f i cdGunSightSpecularShader.o
+19	VERIFIED	0002:003cdde0 ??_GcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o
+20	VERIFIED	0002:003cdde0 ??_EcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o
+21	VERIFIED	0002:003cde10 ??1cdGunSightSpecularShader@@UAE@XZ 00BBD310 f i cdGunSightSpecularShader.o
+22	PORTED	0002:003cde20 ??0GunSightSpecularContext@@QAE@XZ 00BBD320 f i cdGunSightSpecularShader.o

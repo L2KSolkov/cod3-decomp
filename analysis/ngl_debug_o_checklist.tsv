@@ -1,0 +1,63 @@
+index	status	map_line
+1	PENDING	0002:00435530 ?tlFTOI@@YAHM@Z 00C24A30 f i ngl_debug.o
+2	PENDING	0002:00435540 ?Min@math@@YAMMM@Z 00C24A40 f i ngl_debug.o
+3	PENDING	0002:00435570 ?Vector4_Half@math@@YA?AVVector4@1@XZ 00C24A70 f i ngl_debug.o
+4	PENDING	0002:004355a0 ?SetX@Mat33@math@@QAEXABVDir3@2@@Z 00C24AA0 f i ngl_debug.o
+5	PENDING	0002:004355c0 ?SetY@Mat33@math@@QAEXABVDir3@2@@Z 00C24AC0 f i ngl_debug.o
+6	PENDING	0002:004355f0 ?SetZ@Mat33@math@@QAEXABVDir3@2@@Z 00C24AF0 f i ngl_debug.o
+7	PENDING	0002:00435620 ??0TranMat43@math@@QAE@ABVPosition3@1@@Z 00C24B20 f i ngl_debug.o
+8	PENDING	0002:00435640 ?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ 00C24B40 f i ngl_debug.o
+9	PENDING	0002:00435670 ??0Mat43@math@@QAE@ABVTranMat43@1@@Z 00C24B70 f i ngl_debug.o
+10	PENDING	0002:004356c0 ?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z 00C24BC0 f i ngl_debug.o
+11	PENDING	0002:004356f0 ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z 00C24BF0 f i ngl_debug.o
+12	PENDING	0002:00435720 ?Sin@math@@YA?AVVector4@1@ABV21@@Z 00C24C20 f i ngl_debug.o
+13	PENDING	0002:00435800 ?Sin@math@@YAMM@Z 00C24D00 f i ngl_debug.o
+14	VERIFIED	0002:00435910 ?nglGetDebugFlagPtr@@YAPAEPBD@Z 00C24E10 f ngl_debug.o
+15	VERIFIED	0002:00435a90 ?nglSetDebugFlag@@YAXPBDH@Z 00C24F90 f ngl_debug.o
+16	VERIFIED	0002:00435af0 ?nglGetDebugFlag@@YAHPBD@Z 00C24FF0 f ngl_debug.o
+17	VERIFIED	0002:00435b10 ?nglDebugInit@@YAXXZ 00C25010 f ngl_debug.o
+18	VERIFIED	0002:00435b90 ?nglAveragePerfInfo@@YAXI@Z 00C25090 f ngl_debug.o
+19	VERIFIED	0002:00435d40 ?nglProfileShaders@@YAXXZ 00C25240 f ngl_debug.o
+20	VERIFIED	0002:00435d70 ?nglDestroyProfiler@@YAXXZ 00C25270 f ngl_debug.o
+21	VERIFIED	0002:00435d90 ?nglProfileEvalShader@@YA_NPAVnglShader@@@Z 00C25290 f ngl_debug.o
+22	VERIFIED	0002:00435dc0 ?nglRenderPerfBar@@YAXXZ 00C252C0 f ngl_debug.o
+23	VERIFIED	0002:00436150 ?GetDesc@nglDebugLineNode@@UAEXPAD@Z 00C25650 f ngl_debug.o
+24	VERIFIED	0002:00436160 ?nglFlushLinesBatch@@YAXXZ 00C25660 f ngl_debug.o
+25	VERIFIED	0002:00436170 ?nglInitShaderProfiling@@YAXXZ 00C25670 f ngl_debug.o
+26	VERIFIED	0002:00436180 ??0nglDebugLineNode@@QAE@XZ 00C25680 f ngl_debug.o
+27	VERIFIED	0002:004361b0 ?nglDebugAddLine@@YAXABVPosition3@math@@0I@Z 00C256B0 f ngl_debug.o
+28	VERIFIED	0002:00436310 ?nglDebugAddRay@@YAXABVPosition3@math@@0I@Z 00C25810 f ngl_debug.o
+29	VERIFIED	0002:00436680 ?nglDebugAddAxes@@YAXABVMat43@math@@MIII@Z 00C25B80 f ngl_debug.o
+30	VERIFIED	0002:00436720 ?nglDebugAddBox@@YAXABVMat43@math@@ABVDiagMat33@2@I@Z 00C25C20 f ngl_debug.o
+31	VERIFIED	0002:00437190 ?nglDebugAddGrid@@YAXABVMat43@math@@HHMMI@Z 00C26690 f ngl_debug.o
+32	VERIFIED	0002:004372f0 ?nglDebugAddEllipse@@YAXABVMat43@math@@MMI@Z 00C267F0 f ngl_debug.o
+33	VERIFIED	0002:00437620 ?nglDebugAddCircle@@YAXABVMat43@math@@MI@Z 00C26B20 f ngl_debug.o
+34	VERIFIED	0002:00437640 ?nglDebugAddCylinder@@YAXABVMat43@math@@MMI@Z 00C26B40 f ngl_debug.o
+35	VERIFIED	0002:00437840 ?nglDebugAddEllipsoid@@YAXABVMat43@math@@ABVDir3@2@I@Z 00C26D40 f ngl_debug.o
+36	VERIFIED	0002:00437a40 ?nglDebugAddSphere@@YAXABVPosition3@math@@MI@Z 00C26F40 f ngl_debug.o
+37	VERIFIED	0002:00437b60 ?nglDebugAddPyramid@@YAXABVMat43@math@@ABVDir3@2@I@Z 00C27060 f ngl_debug.o
+38	VERIFIED	0002:00437ca0 ?nglDebugAddLabel@@YAXABVPosition3@math@@IPBDZZ 00C271A0 f ngl_debug.o
+39	VERIFIED	0002:00437fe0 ?nglDebugAddTriData@@YAXIPBVPosition3@math@@PBEIIIII@Z 00C274E0 f ngl_debug.o
+40	VERIFIED	0002:00438380 ?nglDebugAddTriList@@YAXIPBVPosition3@math@@PBEI@Z 00C27880 f ngl_debug.o
+41	VERIFIED	0002:004383b0 ?nglDebugAddQuadList@@YAXIPBVPosition3@math@@PBEI@Z 00C278B0 f ngl_debug.o
+42	VERIFIED	0002:004383f0 ?nglDebugAddTriStrip@@YAXIPBVPosition3@math@@PBEI@Z 00C278F0 f ngl_debug.o
+43	VERIFIED	0002:00438440 ?nglDebugAddTri@@YAXABVPosition3@math@@00I@Z 00C27940 f ngl_debug.o
+44	VERIFIED	0002:004384d0 ?nglDebugAddQuad@@YAXABVPosition3@math@@000I@Z 00C279D0 f ngl_debug.o
+45	VERIFIED	0002:00438580 ?nglDebugAddBoxSolid@@YAXABVMat43@math@@ABVDiagMat33@2@I@Z 00C27A80 f ngl_debug.o
+46	VERIFIED	0002:004388a0 ?nglDebugAddPyramidSolid@@YAXABVMat43@math@@ABVDir3@2@I@Z 00C27DA0 f ngl_debug.o
+47	VERIFIED	0002:00438980 ?nglDebugAddEllipsoidSolid@@YAXABVMat43@math@@ABVDir3@2@I@Z 00C27E80 f ngl_debug.o
+48	VERIFIED	0002:00438d00 ?nglDebugAddCylinderSolid@@YAXABVMat43@math@@MMI@Z 00C28200 f ngl_debug.o
+49	VERIFIED	0002:00439020 ?nglDebugAddSphereSolid@@YAXABVPosition3@math@@MI@Z 00C28520 f ngl_debug.o
+50	VERIFIED	0002:004390b0 ??0nglShaderProfiler@@QAE@XZ 00C285B0 f i ngl_debug.o
+51	VERIFIED	0002:00439110 ?Destroy@nglShaderProfiler@@QAEXXZ 00C28610 f i ngl_debug.o
+52	PENDING	0002:00439130 ??1nglShaderProfiler@@QAE@XZ 00C28630 f i ngl_debug.o
+53	VERIFIED	0002:00439150 ?PrintResults@nglShaderProfiler@@QAEXXZ 00C28650 f i ngl_debug.o
+54	PENDING	0002:004391a0 ??_GnglShaderProfiler@@QAEPAXI@Z 00C286A0 f i ngl_debug.o
+55	VERIFIED	0002:004391e0 ??1nglDebugLineNode@@UAE@XZ 00C286E0 f i ngl_debug.o
+56	PENDING	0002:004391f0 ??$tl_clamp@IHH@@YAIABIABH1@Z 00C286F0 f i ngl_debug.o
+57	VERIFIED	0002:00439210 ?ProfileFrame@nglShaderProfiler@@QAEXXZ 00C28710 f i ngl_debug.o
+58	VERIFIED	0002:00439390 ??_EnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o
+59	VERIFIED	0002:00439390 ??_GnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o
+60	VERIFIED	0002:004393c0 ??0nglDebugTriNode@@QAE@XZ 00C288C0 f i ngl_debug.o
+61	VERIFIED	0002:004393f0 ??_EnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o
+62	VERIFIED	0002:004393f0 ??_GnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o

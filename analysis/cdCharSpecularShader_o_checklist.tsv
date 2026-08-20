@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:003d2130 ?InitCDCharSpecularShader@@YAXXZ 00BC1630 f cdCharSpecularShader.o
+2	VERIFIED	0002:003d2180 ?ToggleCDCharSpecularShader@@YAXXZ 00BC1680 f cdCharSpecularShader.o
+3	VERIFIED	0002:003d21a0 ?Register@cdCharSpecularShader@@UAEXXZ 00BC16A0 f cdCharSpecularShader.o
+4	VERIFIED	0002:003d21f0 ?AddNode@cdCharSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC16F0 f cdCharSpecularShader.o
+5	PORTED	0002:003d2260 ?Render@cdCharSpecularShaderNode@@UAEXXZ 00BC1760 f cdCharSpecularShader.o
+6	VERIFIED	0002:003d26a0 ??0cdCharSpecularShader@@QAE@XZ 00BC1BA0 f i cdCharSpecularShader.o
+7	VERIFIED	0002:003d26d0 ?GetName@cdCharSpecularShader@@UAE?AVtlFixedString@@XZ 00BC1BD0 f i cdCharSpecularShader.o
+8	PORTED	0002:003d26f0 ?RegisterShader@cdCharSpecularShaderRender@@YAXXZ 00BC1BF0 f i cdCharSpecularShader.o
+9	PORTED	0002:003d2720 ?RegisterVShader@cdCharSpecularShaderRender@@YAXXZ 00BC1C20 f i cdCharSpecularShader.o
+10	PORTED	0002:003d2730 ?GetVShader@cdCharSpecularShaderRender@@YAKI@Z 00BC1C30 f i cdCharSpecularShader.o
+11	PORTED	0002:003d2740 ?RegisterShader@cdCharSpecularPixel@@YAXXZ 00BC1C40 f i cdCharSpecularShader.o
+12	PORTED	0002:003d2760 ?RegisterPShader@cdCharSpecularPixel@@YAXXZ 00BC1C60 f i cdCharSpecularShader.o
+13	PORTED	0002:003d2780 ?GetPShader@cdCharSpecularPixel@@YAPAKXZ 00BC1C80 f i cdCharSpecularShader.o
+14	PORTED	0002:003d2790 ?RegisterShader@cdCharSpecularFullbrightPixel@@YAXXZ 00BC1C90 f i cdCharSpecularShader.o
+15	PORTED	0002:003d27b0 ?RegisterPShader@cdCharSpecularFullbrightPixel@@YAXXZ 00BC1CB0 f i cdCharSpecularShader.o
+16	PORTED	0002:003d27d0 ?GetPShader@cdCharSpecularFullbrightPixel@@YAPAKXZ 00BC1CD0 f i cdCharSpecularShader.o
+17	PORTED	0002:003d27e0 ??0cdCharSpecularShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdCharSpecularShaderMat@@@Z 00BC1CE0 f i cdCharSpecularShader.o
+18	PORTED	0002:003d2810 ??_EcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o
+19	PORTED	0002:003d2810 ??_GcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o
+20	PORTED	0002:003d2840 ??1cdCharSpecularShaderNode@@UAE@XZ 00BC1D40 f i cdCharSpecularShader.o
+21	VERIFIED	0002:003d2850 ??_GcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o
+22	VERIFIED	0002:003d2850 ??_EcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o
+23	VERIFIED	0002:003d2880 ??1cdCharSpecularShader@@UAE@XZ 00BC1D80 f i cdCharSpecularShader.o
+24	PORTED	0002:003d2890 ??0CharSpecularContext@@QAE@XZ 00BC1D90 f i cdCharSpecularShader.o

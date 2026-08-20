@@ -1,0 +1,26 @@
+index	status	map_line
+1	VERIFIED	0002:003de770 ??0cdWorldVertexLitShaderMat@@QAE@PAUnglTexture@@@Z 00BCDC70 f cdWorldVertexLitShader.o
+2	VERIFIED	0002:003de800 ?InitCDWorldVertexLitShader@@YAXXZ 00BCDD00 f cdWorldVertexLitShader.o
+3	VERIFIED	0002:003de850 ?ToggleCDWorldVertexLitShader@@YAXXZ 00BCDD50 f cdWorldVertexLitShader.o
+4	VERIFIED	0002:003de870 ?Register@cdWorldVertexLitShader@@UAEXXZ 00BCDD70 f cdWorldVertexLitShader.o
+5	VERIFIED	0002:003de8d0 ?AddNode@cdWorldVertexLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCDDD0 f cdWorldVertexLitShader.o
+6	VERIFIED	0002:003de940 ?Render@cdWorldVertexLitShaderNode@@UAEXXZ 00BCDE40 f cdWorldVertexLitShader.o
+7	VERIFIED	0002:003dec00 ??0cdWorldVertexLitShader@@QAE@XZ 00BCE100 f i cdWorldVertexLitShader.o
+8	VERIFIED	0002:003dec30 ?GetName@cdWorldVertexLitShader@@UAE?AVtlFixedString@@XZ 00BCE130 f i cdWorldVertexLitShader.o
+9	PORTED	0002:003dec50 ?RegisterShader@cdWorldVertexLitRender@@YAXXZ 00BCE150 f i cdWorldVertexLitShader.o
+10	PORTED	0002:003dec70 ?RegisterVShader@cdWorldVertexLitRender@@YAXXZ 00BCE170 f i cdWorldVertexLitShader.o
+11	PORTED	0002:003dec90 ?GetVShader@cdWorldVertexLitRender@@YAKXZ 00BCE190 f i cdWorldVertexLitShader.o
+12	PORTED	0002:003deca0 ?RegisterShader@cdWorldVertexLitPixel@@YAXXZ 00BCE1A0 f i cdWorldVertexLitShader.o
+13	PORTED	0002:003decc0 ?RegisterPShader@cdWorldVertexLitPixel@@YAXXZ 00BCE1C0 f i cdWorldVertexLitShader.o
+14	PORTED	0002:003dece0 ?GetPShader@cdWorldVertexLitPixel@@YAPAKXZ 00BCE1E0 f i cdWorldVertexLitShader.o
+15	PORTED	0002:003decf0 ?RegisterShader@cdWorldVertexLitFullbrightPixel@@YAXXZ 00BCE1F0 f i cdWorldVertexLitShader.o
+16	PORTED	0002:003ded10 ?RegisterPShader@cdWorldVertexLitFullbrightPixel@@YAXXZ 00BCE210 f i cdWorldVertexLitShader.o
+17	PORTED	0002:003ded30 ?GetPShader@cdWorldVertexLitFullbrightPixel@@YAPAKXZ 00BCE230 f i cdWorldVertexLitShader.o
+18	VERIFIED	0002:003ded40 ??0BackgroundContext@@QAE@XZ 00BCE240 f i cdWorldVertexLitShader.o
+19	PORTED	0002:003ded50 ??0cdWorldVertexLitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldVertexLitShaderMat@@@Z 00BCE250 f i cdWorldVertexLitShader.o
+20	PORTED	0002:003ded80 ??_GcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o
+21	PORTED	0002:003ded80 ??_EcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o
+22	PORTED	0002:003dedb0 ??1cdWorldVertexLitShaderNode@@UAE@XZ 00BCE2B0 f i cdWorldVertexLitShader.o
+23	VERIFIED	0002:003dedc0 ??_GcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o
+24	VERIFIED	0002:003dedc0 ??_EcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o
+25	VERIFIED	0002:003dedf0 ??1cdWorldVertexLitShader@@UAE@XZ 00BCE2F0 f i cdWorldVertexLitShader.o

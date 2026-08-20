@@ -1,0 +1,522 @@
+ida_ea	va	name	signature	family
+0x004EBE60	0x008DB360	?Controller_LockPort@@YAXH@Z	void __cdecl Controller_LockPort(int)	game2.o
+0x004EBEA0	0x008DB3A0	?Controller_UnlockPort@@YAXXZ	void __cdecl Controller_UnlockPort(void)	game2.o
+0x004EBEB0	0x008DB3B0	?IN_Shutdown@@YAXXZ	void __cdecl IN_Shutdown(void)	game2.o
+0x004EBEC0	0x008DB3C0	?RecalibrateInput@@YAHH@Z	int __cdecl RecalibrateInput(int)	game2.o
+0x004EBF20	0x008DB420	?EventAllKeysReleased@@YAXH@Z	void __cdecl EventAllKeysReleased(int)	game2.o
+0x004EBFF0	0x008DB4F0	??1TestFPS@@QAE@XZ	public: __thiscall TestFPS::~TestFPS(void)	game2.o
+0x004EC020	0x008DB520	?GetPath@TestFPS@@AAEXPAD@Z	private: void __thiscall TestFPS::GetPath(char *)	game2.o
+0x004EC050	0x008DB550	?ResetKeys@InspectorManager@@AAEXXZ	private: void __thiscall InspectorManager::ResetKeys(void)	game2.o
+0x004EC090	0x008DB590	?ReadKeys@InspectorManager@@AAEXXZ	private: void __thiscall InspectorManager::ReadKeys(void)	game2.o
+0x004EC260	0x008DB760	?AddSubMenu@InspectorManager@@QAEPAU_INSPECTOR_MENU@@PAU2@PAD@Z	public: struct _INSPECTOR_MENU * __thiscall InspectorManager::AddSubMenu(struct _INSPECTOR_MENU *,char *)	game2.o
+0x004EC3B0	0x008DB8B0	?AddItem@InspectorManager@@QAEPAU_INSPECTOR_MENU_ITEM@@PAU_INSPECTOR_MENU@@PADPAXH@Z	public: struct _INSPECTOR_MENU_ITEM * __thiscall InspectorManager::AddItem(struct _INSPECTOR_MENU *,char *,void *,int)	game2.o
+0x004EC490	0x008DB990	?FreeSubMenu@InspectorManager@@AAEXPAU_INSPECTOR_MENU@@@Z	private: void __thiscall InspectorManager::FreeSubMenu(struct _INSPECTOR_MENU *)	game2.o
+0x004EC530	0x008DBA30	?UpdateInput@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::UpdateInput(void)	game2.o
+0x004EC550	0x008DBA50	?ProfilerUpdate@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::ProfilerUpdate(void)	game2.o
+0x004EC560	0x008DBA60	?RenderStart@InspectorManager@@AAEHXZ	private: int __thiscall InspectorManager::RenderStart(void)	game2.o
+0x004EC570	0x008DBA70	?RenderFinish@InspectorManager@@AAEXXZ	private: void __thiscall InspectorManager::RenderFinish(void)	game2.o
+0x004EC580	0x008DBA80	?RenderSetStates@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::RenderSetStates(void)	game2.o
+0x004EC590	0x008DBA90	?RenderRestoreStates@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::RenderRestoreStates(void)	game2.o
+0x004EC5A0	0x008DBAA0	?SetFontColor@InspectorManager@@QAEXMMMM@Z	public: void __thiscall InspectorManager::SetFontColor(float,float,float,float)	game2.o
+0x004EC5D0	0x008DBAD0	?Print@InspectorManager@@QAEXPADHHM@Z	public: void __thiscall InspectorManager::Print(char *,int,int,float)	game2.o
+0x004EC690	0x008DBB90	?GetTextSize@InspectorManager@@QAEXPADPAH1M@Z	public: void __thiscall InspectorManager::GetTextSize(char *,int *,int *,float)	game2.o
+0x004EC6D0	0x008DBBD0	?TakeCubeMapShot@@YAXXZ	void __cdecl TakeCubeMapShot(void)	game2.o
+0x004EC6E0	0x008DBBE0	?PlayRumble@@YAXXZ	void __cdecl PlayRumble(void)	game2.o
+0x004EC720	0x008DBC20	?AddRenderMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddRenderMenus(void)	game2.o
+0x004EC8A0	0x008DBDA0	?AddPhysicsMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddPhysicsMenus(void)	game2.o
+0x004EC8D0	0x008DBDD0	?reticleCenterSize_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reticleCenterSize_Function(int)	game2.o
+0x004EC900	0x008DBE00	?reticleSideSize_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reticleSideSize_Function(int)	game2.o
+0x004EC930	0x008DBE30	?reticleMinOfs_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reticleMinOfs_Function(int)	game2.o
+0x004EC960	0x008DBE60	?duckedOfsF_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedOfsF_Function(float)	game2.o
+0x004EC9A0	0x008DBEA0	?duckedOfsR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedOfsR_Function(float)	game2.o
+0x004EC9E0	0x008DBEE0	?duckedOfsU_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedOfsU_Function(float)	game2.o
+0x004ECA20	0x008DBF20	?proneOfsF_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneOfsF_Function(float)	game2.o
+0x004ECA60	0x008DBF60	?proneOfsR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneOfsR_Function(float)	game2.o
+0x004ECAA0	0x008DBFA0	?proneOfsU_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneOfsU_Function(float)	game2.o
+0x004ECAE0	0x008DBFE0	?standMoveF_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::standMoveF_Function(float)	game2.o
+0x004ECB20	0x008DC020	?standMoveR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::standMoveR_Function(float)	game2.o
+0x004ECB60	0x008DC060	?standMoveU_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::standMoveU_Function(float)	game2.o
+0x004ECBA0	0x008DC0A0	?duckedMoveF_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedMoveF_Function(float)	game2.o
+0x004ECBE0	0x008DC0E0	?duckedMoveR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedMoveR_Function(float)	game2.o
+0x004ECC20	0x008DC120	?duckedMoveU_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedMoveU_Function(float)	game2.o
+0x004ECC60	0x008DC160	?proneMoveF_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneMoveF_Function(float)	game2.o
+0x004ECCA0	0x008DC1A0	?proneMoveR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneMoveR_Function(float)	game2.o
+0x004ECCE0	0x008DC1E0	?proneMoveU_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneMoveU_Function(float)	game2.o
+0x004ECD20	0x008DC220	?proneRotP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneRotP_Function(float)	game2.o
+0x004ECD60	0x008DC260	?proneRotY_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneRotY_Function(float)	game2.o
+0x004ECDA0	0x008DC2A0	?proneRotR_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneRotR_Function(float)	game2.o
+0x004ECDE0	0x008DC2E0	?standMoveMinSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::standMoveMinSpeed_Function(float)	game2.o
+0x004ECE20	0x008DC320	?duckedMoveMinSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::duckedMoveMinSpeed_Function(float)	game2.o
+0x004ECE60	0x008DC360	?proneMoveMinSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneMoveMinSpeed_Function(float)	game2.o
+0x004ECEA0	0x008DC3A0	?posProneRotRate_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::posProneRotRate_Function(float)	game2.o
+0x004ECEE0	0x008DC3E0	?proneRotMinSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::proneRotMinSpeed_Function(float)	game2.o
+0x004ECF20	0x008DC420	?damage_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damage_Function(int)	game2.o
+0x004ECF50	0x008DC450	?meleeDamage_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeDamage_Function(int)	game2.o
+0x004ECF80	0x008DC480	?sensitivityScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::sensitivityScale_Function(float)	game2.o
+0x004ECFC0	0x008DC4C0	?damageInnerRadius_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damageInnerRadius_Function(int)	game2.o
+0x004ECFF0	0x008DC4F0	?damageOuterRadius_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damageOuterRadius_Function(int)	game2.o
+0x004ED020	0x008DC520	?minDamagePercent_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::minDamagePercent_Function(int)	game2.o
+0x004ED050	0x008DC550	?fireDelay_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::fireDelay_Function(int)	game2.o
+0x004ED080	0x008DC580	?meleeDelay_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeDelay_Function(int)	game2.o
+0x004ED0B0	0x008DC5B0	?fireTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::fireTime_Function(int)	game2.o
+0x004ED0E0	0x008DC5E0	?rechamberTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::rechamberTime_Function(int)	game2.o
+0x004ED110	0x008DC610	?rechamberBoltTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::rechamberBoltTime_Function(int)	game2.o
+0x004ED140	0x008DC640	?holdFireTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::holdFireTime_Function(int)	game2.o
+0x004ED170	0x008DC670	?meleeTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeTime_Function(int)	game2.o
+0x004ED1A0	0x008DC6A0	?reloadTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadTime_Function(int)	game2.o
+0x004ED1D0	0x008DC6D0	?reloadEmptyTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadEmptyTime_Function(int)	game2.o
+0x004ED200	0x008DC700	?reloadAddTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadAddTime_Function(int)	game2.o
+0x004ED230	0x008DC730	?reloadStartTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadStartTime_Function(int)	game2.o
+0x004ED260	0x008DC760	?reloadStartAddTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadStartAddTime_Function(int)	game2.o
+0x004ED290	0x008DC790	?reloadEndTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::reloadEndTime_Function(int)	game2.o
+0x004ED2C0	0x008DC7C0	?dropTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::dropTime_Function(int)	game2.o
+0x004ED2F0	0x008DC7F0	?raiseTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::raiseTime_Function(int)	game2.o
+0x004ED320	0x008DC820	?altDropTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::altDropTime_Function(int)	game2.o
+0x004ED350	0x008DC850	?altRaiseTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::altRaiseTime_Function(int)	game2.o
+0x004ED380	0x008DC880	?fuseTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::fuseTime_Function(int)	game2.o
+0x004ED3B0	0x008DC8B0	?moveSpeedScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::moveSpeedScale_Function(float)	game2.o
+0x004ED3F0	0x008DC8F0	?gunMaxPitch_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::gunMaxPitch_Function(float)	game2.o
+0x004ED430	0x008DC930	?gunMaxYaw_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::gunMaxYaw_Function(float)	game2.o
+0x004ED470	0x008DC970	?swayMaxAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayMaxAngle_Function(float)	game2.o
+0x004ED4B0	0x008DC9B0	?swayLerpSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayLerpSpeed_Function(float)	game2.o
+0x004ED4F0	0x008DC9F0	?swayPitchScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayPitchScale_Function(float)	game2.o
+0x004ED530	0x008DCA30	?swayYawScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayYawScale_Function(float)	game2.o
+0x004ED570	0x008DCA70	?swayHorizScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayHorizScale_Function(float)	game2.o
+0x004ED5B0	0x008DCAB0	?swayVertScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayVertScale_Function(float)	game2.o
+0x004ED5F0	0x008DCAF0	?swayShellShockScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::swayShellShockScale_Function(float)	game2.o
+0x004ED630	0x008DCB30	?adsSwayMaxAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayMaxAngle_Function(float)	game2.o
+0x004ED670	0x008DCB70	?adsSwayLerpSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayLerpSpeed_Function(float)	game2.o
+0x004ED6B0	0x008DCBB0	?adsSwayPitchScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayPitchScale_Function(float)	game2.o
+0x004ED6F0	0x008DCBF0	?adsSwayYawScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayYawScale_Function(float)	game2.o
+0x004ED730	0x008DCC30	?adsSwayHorizScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayHorizScale_Function(float)	game2.o
+0x004ED770	0x008DCC70	?adsSwayVertScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSwayVertScale_Function(float)	game2.o
+0x004ED7B0	0x008DCCB0	?takedamage_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::takedamage_Function(int)	game2.o
+0x004ED7E0	0x008DCCE0	?explosionRadius_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionRadius_Function(int)	game2.o
+0x004ED810	0x008DCD10	?explosionInnerDamage_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionInnerDamage_Function(int)	game2.o
+0x004ED840	0x008DCD40	?explosionOuterDamage_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionOuterDamage_Function(int)	game2.o
+0x004ED870	0x008DCD70	?projectileSpeed_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::projectileSpeed_Function(int)	game2.o
+0x004ED8A0	0x008DCDA0	?projectileSpeedUp_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::projectileSpeedUp_Function(int)	game2.o
+0x004ED8D0	0x008DCDD0	?triggerRadius_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::triggerRadius_Function(int)	game2.o
+0x004ED900	0x008DCE00	?adsTransInTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsTransInTime_Function(int)	game2.o
+0x004ED930	0x008DCE30	?adsTransOutTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsTransOutTime_Function(int)	game2.o
+0x004ED960	0x008DCE60	?adsIdleAmount_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsIdleAmount_Function(float)	game2.o
+0x004ED9A0	0x008DCEA0	?adsZoomFov_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsZoomFov_Function(float)	game2.o
+0x004ED9E0	0x008DCEE0	?adsSensitivityScale_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSensitivityScale_Function(float)	game2.o
+0x004EDA20	0x008DCF20	?adsZoomInFrac_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsZoomInFrac_Function(float)	game2.o
+0x004EDA60	0x008DCF60	?adsZoomOutFrac_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsZoomOutFrac_Function(float)	game2.o
+0x004EDAA0	0x008DCFA0	?adsOverlayWidth_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsOverlayWidth_Function(float)	game2.o
+0x004EDAE0	0x008DCFE0	?adsOverlayHeight_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsOverlayHeight_Function(float)	game2.o
+0x004EDB20	0x008DD020	?adsBobFactor_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsBobFactor_Function(float)	game2.o
+0x004EDB60	0x008DD060	?adsViewBobMult_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewBobMult_Function(float)	game2.o
+0x004EDBA0	0x008DD0A0	?adsAimPitch_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsAimPitch_Function(float)	game2.o
+0x004EDBE0	0x008DD0E0	?adsCrosshairInFrac_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsCrosshairInFrac_Function(float)	game2.o
+0x004EDC20	0x008DD120	?adsCrosshairOutFrac_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsCrosshairOutFrac_Function(float)	game2.o
+0x004EDC60	0x008DD160	?adsReloadTransTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsReloadTransTime_Function(int)	game2.o
+0x004EDC90	0x008DD190	?adsTransBlendTime_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsTransBlendTime_Function(int)	game2.o
+0x004EDCC0	0x008DD1C0	?adsGunKickPitchMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickPitchMin_Function(float)	game2.o
+0x004EDD00	0x008DD200	?adsGunKickPitchMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickPitchMax_Function(float)	game2.o
+0x004EDD40	0x008DD240	?adsGunKickYawMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickYawMin_Function(float)	game2.o
+0x004EDD80	0x008DD280	?adsGunKickYawMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickYawMax_Function(float)	game2.o
+0x004EDDC0	0x008DD2C0	?adsGunKickAccel_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickAccel_Function(float)	game2.o
+0x004EDE00	0x008DD300	?adsGunKickSpeedMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickSpeedMax_Function(float)	game2.o
+0x004EDE40	0x008DD340	?adsGunKickSpeedDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickSpeedDecay_Function(float)	game2.o
+0x004EDE80	0x008DD380	?adsGunKickStaticDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsGunKickStaticDecay_Function(float)	game2.o
+0x004EDEC0	0x008DD3C0	?adsViewKickPitchMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewKickPitchMin_Function(float)	game2.o
+0x004EDF00	0x008DD400	?adsViewKickPitchMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewKickPitchMax_Function(float)	game2.o
+0x004EDF40	0x008DD440	?adsViewKickYawMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewKickYawMin_Function(float)	game2.o
+0x004EDF80	0x008DD480	?adsViewKickYawMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewKickYawMax_Function(float)	game2.o
+0x004EDFC0	0x008DD4C0	?adsViewKickCenterSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsViewKickCenterSpeed_Function(float)	game2.o
+0x004EE000	0x008DD500	?adsSpread_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpread_Function(float)	game2.o
+0x004EE040	0x008DD540	?adsSpreadDucked_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpreadDucked_Function(float)	game2.o
+0x004EE080	0x008DD580	?adsSpreadProne_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpreadProne_Function(float)	game2.o
+0x004EE0C0	0x008DD5C0	?hipSpreadStandMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadStandMin_Function(float)	game2.o
+0x004EE100	0x008DD600	?hipSpreadDuckedMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDuckedMin_Function(float)	game2.o
+0x004EE140	0x008DD640	?hipSpreadProneMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadProneMin_Function(float)	game2.o
+0x004EE180	0x008DD680	?hipSpreadMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadMax_Function(float)	game2.o
+0x004EE1C0	0x008DD6C0	?hipSpreadDecayRate_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDecayRate_Function(float)	game2.o
+0x004EE200	0x008DD700	?hipSpreadFireAdd_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadFireAdd_Function(float)	game2.o
+0x004EE240	0x008DD740	?hipSpreadTurnAdd_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadTurnAdd_Function(float)	game2.o
+0x004EE280	0x008DD780	?hipSpreadMoveAdd_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadMoveAdd_Function(float)	game2.o
+0x004EE2C0	0x008DD7C0	?hipSpreadDuckedDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDuckedDecay_Function(float)	game2.o
+0x004EE300	0x008DD800	?hipSpreadProneDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadProneDecay_Function(float)	game2.o
+0x004EE340	0x008DD840	?hipReticleSidePos_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipReticleSidePos_Function(float)	game2.o
+0x004EE380	0x008DD880	?hipIdleAmount_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipIdleAmount_Function(float)	game2.o
+0x004EE3C0	0x008DD8C0	?hipGunKickPitchMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickPitchMin_Function(float)	game2.o
+0x004EE400	0x008DD900	?hipGunKickPitchMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickPitchMax_Function(float)	game2.o
+0x004EE440	0x008DD940	?hipGunKickYawMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickYawMin_Function(float)	game2.o
+0x004EE480	0x008DD980	?hipGunKickYawMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickYawMax_Function(float)	game2.o
+0x004EE4C0	0x008DD9C0	?hipGunKickAccel_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickAccel_Function(float)	game2.o
+0x004EE500	0x008DDA00	?hipGunKickSpeedMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickSpeedMax_Function(float)	game2.o
+0x004EE540	0x008DDA40	?hipGunKickSpeedDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickSpeedDecay_Function(float)	game2.o
+0x004EE580	0x008DDA80	?hipGunKickStaticDecay_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipGunKickStaticDecay_Function(float)	game2.o
+0x004EE5C0	0x008DDAC0	?hipViewKickPitchMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipViewKickPitchMin_Function(float)	game2.o
+0x004EE600	0x008DDB00	?hipViewKickPitchMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipViewKickPitchMax_Function(float)	game2.o
+0x004EE640	0x008DDB40	?hipViewKickYawMin_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipViewKickYawMin_Function(float)	game2.o
+0x004EE680	0x008DDB80	?hipViewKickYawMax_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipViewKickYawMax_Function(float)	game2.o
+0x004EE6C0	0x008DDBC0	?hipViewKickCenterSpeed_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipViewKickCenterSpeed_Function(float)	game2.o
+0x004EE700	0x008DDC00	?aiEffectiveRange_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::aiEffectiveRange_Function(float)	game2.o
+0x004EE740	0x008DDC40	?aiMissRange_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::aiMissRange_Function(float)	game2.o
+0x004EE780	0x008DDC80	?aiDamageMod_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::aiDamageMod_Function(float)	game2.o
+0x004EE7C0	0x008DDCC0	?bulletConeAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::bulletConeAngle_Function(float)	game2.o
+0x004EE800	0x008DDD00	?adsBulletConeAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsBulletConeAngle_Function(float)	game2.o
+0x004EE840	0x008DDD40	?animIKOffsetTime_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKOffsetTime_Function(float)	game2.o
+0x004EE880	0x008DDD80	?animIKOffsetForce_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKOffsetForce_Function(float)	game2.o
+0x004EE8C0	0x008DDDC0	?animIKOffsetDist_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKOffsetDist_Function(float)	game2.o
+0x004EE900	0x008DDE00	?animIKPitchTime_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKPitchTime_Function(float)	game2.o
+0x004EE940	0x008DDE40	?animIKPitchForce_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKPitchForce_Function(float)	game2.o
+0x004EE980	0x008DDE80	?animIKPitchAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKPitchAngle_Function(float)	game2.o
+0x004EE9C0	0x008DDEC0	?animIKTorsoRecoilPitchTime_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKTorsoRecoilPitchTime_Function(float)	game2.o
+0x004EEA00	0x008DDF00	?animIKTorsoRecoilPitchForce_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKTorsoRecoilPitchForce_Function(float)	game2.o
+0x004EEA40	0x008DDF40	?animIKTorsoRecoilPitchAngle_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::animIKTorsoRecoilPitchAngle_Function(float)	game2.o
+0x004EEA80	0x008DDF80	?damageMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damageMP_Function(int)	game2.o
+0x004EEAB0	0x008DDFB0	?meleeDamageMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeDamageMP_Function(int)	game2.o
+0x004EEAE0	0x008DDFE0	?damageInnerRadiusMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damageInnerRadiusMP_Function(int)	game2.o
+0x004EEB10	0x008DE010	?damageOuterRadiusMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::damageOuterRadiusMP_Function(int)	game2.o
+0x004EEB40	0x008DE040	?minDamagePercentMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::minDamagePercentMP_Function(int)	game2.o
+0x004EEB70	0x008DE070	?fireDelayMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::fireDelayMP_Function(int)	game2.o
+0x004EEBA0	0x008DE0A0	?meleeDelayMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeDelayMP_Function(int)	game2.o
+0x004EEBD0	0x008DE0D0	?fireTimeMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::fireTimeMP_Function(int)	game2.o
+0x004EEC00	0x008DE100	?meleeTimeMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::meleeTimeMP_Function(int)	game2.o
+0x004EEC30	0x008DE130	?explosionRadiusMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionRadiusMP_Function(int)	game2.o
+0x004EEC60	0x008DE160	?explosionInnerDamageMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionInnerDamageMP_Function(int)	game2.o
+0x004EEC90	0x008DE190	?explosionOuterDamageMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::explosionOuterDamageMP_Function(int)	game2.o
+0x004EECC0	0x008DE1C0	?maxAmmoMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::maxAmmoMP_Function(int)	game2.o
+0x004EECF0	0x008DE1F0	?sensitivityScaleMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::sensitivityScaleMP_Function(float)	game2.o
+0x004EED30	0x008DE230	?adsZoomFovMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsZoomFovMP_Function(float)	game2.o
+0x004EED70	0x008DE270	?adsTransInTimeMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsTransInTimeMP_Function(int)	game2.o
+0x004EEDA0	0x008DE2A0	?adsTransOutTimeMP_Function@weaponFuncs@@YAHH@Z	int __cdecl weaponFuncs::adsTransOutTimeMP_Function(int)	game2.o
+0x004EEDD0	0x008DE2D0	?adsSensitivityScaleMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSensitivityScaleMP_Function(float)	game2.o
+0x004EEE10	0x008DE310	?adsSpreadMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpreadMP_Function(float)	game2.o
+0x004EEE50	0x008DE350	?adsSpreadDuckedMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpreadDuckedMP_Function(float)	game2.o
+0x004EEE90	0x008DE390	?adsSpreadProneMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::adsSpreadProneMP_Function(float)	game2.o
+0x004EEED0	0x008DE3D0	?hipSpreadStandMinMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadStandMinMP_Function(float)	game2.o
+0x004EEF10	0x008DE410	?hipSpreadDuckedMinMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDuckedMinMP_Function(float)	game2.o
+0x004EEF50	0x008DE450	?hipSpreadProneMinMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadProneMinMP_Function(float)	game2.o
+0x004EEF90	0x008DE490	?hipSpreadMaxMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadMaxMP_Function(float)	game2.o
+0x004EEFD0	0x008DE4D0	?hipSpreadDecayRateMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDecayRateMP_Function(float)	game2.o
+0x004EF010	0x008DE510	?hipSpreadFireAddMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadFireAddMP_Function(float)	game2.o
+0x004EF050	0x008DE550	?hipSpreadTurnAddMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadTurnAddMP_Function(float)	game2.o
+0x004EF090	0x008DE590	?hipSpreadMoveAddMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadMoveAddMP_Function(float)	game2.o
+0x004EF0D0	0x008DE5D0	?hipSpreadDuckedDecayMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadDuckedDecayMP_Function(float)	game2.o
+0x004EF110	0x008DE610	?hipSpreadProneDecayMP_Function@weaponFuncs@@YAMM@Z	float __cdecl weaponFuncs::hipSpreadProneDecayMP_Function(float)	game2.o
+0x004EF150	0x008DE650	?speed_max_Function@@YAMM@Z	float __cdecl speed_max_Function(float)	game2.o
+0x004EF1B0	0x008DE6B0	?accel_max_Function@@YAMM@Z	float __cdecl accel_max_Function(float)	game2.o
+0x004EF210	0x008DE710	?reverse_scale_Function@@YAMM@Z	float __cdecl reverse_scale_Function(float)	game2.o
+0x004EF270	0x008DE770	?steer_angle_max_Function@@YAMM@Z	float __cdecl steer_angle_max_Function(float)	game2.o
+0x004EF2D0	0x008DE7D0	?steer_speed_Function@@YAMM@Z	float __cdecl steer_speed_Function(float)	game2.o
+0x004EF330	0x008DE830	?wheel_radius_Function@@YAMM@Z	float __cdecl wheel_radius_Function(float)	game2.o
+0x004EF390	0x008DE890	?susp_spring_k_Function@@YAMM@Z	float __cdecl susp_spring_k_Function(float)	game2.o
+0x004EF3F0	0x008DE8F0	?susp_damp_k_Function@@YAMM@Z	float __cdecl susp_damp_k_Function(float)	game2.o
+0x004EF450	0x008DE950	?susp_adj_Function@@YAMM@Z	float __cdecl susp_adj_Function(float)	game2.o
+0x004EF4B0	0x008DE9B0	?susp_hard_limit_Function@@YAMM@Z	float __cdecl susp_hard_limit_Function(float)	game2.o
+0x004EF510	0x008DEA10	?tire_fric_fwd_Function@@YAMM@Z	float __cdecl tire_fric_fwd_Function(float)	game2.o
+0x004EF570	0x008DEA70	?tire_fric_side_Function@@YAMM@Z	float __cdecl tire_fric_side_Function(float)	game2.o
+0x004EF5D0	0x008DEAD0	?tire_fric_brake_Function@@YAMM@Z	float __cdecl tire_fric_brake_Function(float)	game2.o
+0x004EF630	0x008DEB30	?tire_fric_hand_brake_Function@@YAMM@Z	float __cdecl tire_fric_hand_brake_Function(float)	game2.o
+0x004EF690	0x008DEB90	?body_mass_Function@@YAMM@Z	float __cdecl body_mass_Function(float)	game2.o
+0x004EF6F0	0x008DEBF0	?mass_center_delta_x_Function@@YAMM@Z	float __cdecl mass_center_delta_x_Function(float)	game2.o
+0x004EF750	0x008DEC50	?mass_center_delta_y_Function@@YAMM@Z	float __cdecl mass_center_delta_y_Function(float)	game2.o
+0x004EF7B0	0x008DECB0	?mass_center_delta_z_Function@@YAMM@Z	float __cdecl mass_center_delta_z_Function(float)	game2.o
+0x004EF810	0x008DED10	?roll_stability_Function@@YAMM@Z	float __cdecl roll_stability_Function(float)	game2.o
+0x004EF870	0x008DED70	?roll_resistance_Function@@YAMM@Z	float __cdecl roll_resistance_Function(float)	game2.o
+0x004EF8D0	0x008DEDD0	?upright_strength_Function@@YAMM@Z	float __cdecl upright_strength_Function(float)	game2.o
+0x004EF930	0x008DEE30	?tilt_fakey_Function@@YAMM@Z	float __cdecl tilt_fakey_Function(float)	game2.o
+0x004EF990	0x008DEE90	?peel_out_max_speed_Function@@YAMM@Z	float __cdecl peel_out_max_speed_Function(float)	game2.o
+0x004EF9F0	0x008DEEF0	?inertia_scale_x_Function@@YAMM@Z	float __cdecl inertia_scale_x_Function(float)	game2.o
+0x004EFA50	0x008DEF50	?tire_damp_coast_Function@@YAMM@Z	float __cdecl tire_damp_coast_Function(float)	game2.o
+0x004EFAB0	0x008DEFB0	?tire_damp_brake_Function@@YAMM@Z	float __cdecl tire_damp_brake_Function(float)	game2.o
+0x004EFB10	0x008DF010	?tire_damp_hand_Function@@YAMM@Z	float __cdecl tire_damp_hand_Function(float)	game2.o
+0x004EFB70	0x008DF070	?steerWheels_Function@vehicleFuncs@@YA_N_N@Z	bool __cdecl vehicleFuncs::steerWheels_Function(bool)	game2.o
+0x004EFB90	0x008DF090	?quadBarrel_Function@vehicleFuncs@@YA_N_N@Z	bool __cdecl vehicleFuncs::quadBarrel_Function(bool)	game2.o
+0x004EFBB0	0x008DF0B0	?bulletDamage_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::bulletDamage_Function(float)	game2.o
+0x004EFBF0	0x008DF0F0	?grenadeDamage_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::grenadeDamage_Function(float)	game2.o
+0x004EFC30	0x008DF130	?mineDamage_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::mineDamage_Function(float)	game2.o
+0x004EFC70	0x008DF170	?projectileDamage_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::projectileDamage_Function(float)	game2.o
+0x004EFCB0	0x008DF1B0	?spClientSeat_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::spClientSeat_Function(int)	game2.o
+0x004EFCD0	0x008DF1D0	?hudIndex_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::hudIndex_Function(int)	game2.o
+0x004EFCF0	0x008DF1F0	?numSeats_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::numSeats_Function(int)	game2.o
+0x004EFD10	0x008DF210	?health_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::health_Function(int)	game2.o
+0x004EFD40	0x008DF240	?texureScroll_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::texureScroll_Function(float)	game2.o
+0x004EFD80	0x008DF280	?texureScrollScale_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::texureScrollScale_Function(float)	game2.o
+0x004EFDC0	0x008DF2C0	?engineSndSpeed_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::engineSndSpeed_Function(float)	game2.o
+0x004EFE00	0x008DF300	?maxSpeed_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::maxSpeed_Function(float)	game2.o
+0x004EFE40	0x008DF340	?accel_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::accel_Function(float)	game2.o
+0x004EFE80	0x008DF380	?rotRate_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::rotRate_Function(float)	game2.o
+0x004EFEC0	0x008DF3C0	?rotAccel_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::rotAccel_Function(float)	game2.o
+0x004EFF00	0x008DF400	?collisionDamage_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::collisionDamage_Function(float)	game2.o
+0x004EFF40	0x008DF440	?collisionSpeed_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::collisionSpeed_Function(float)	game2.o
+0x004EFF80	0x008DF480	?suspensionTravel_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::suspensionTravel_Function(float)	game2.o
+0x004EFFC0	0x008DF4C0	?maxBodyPitch_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::maxBodyPitch_Function(float)	game2.o
+0x004F0000	0x008DF500	?maxBodyRoll_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::maxBodyRoll_Function(float)	game2.o
+0x004F0040	0x008DF540	?boundsRadius_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::boundsRadius_Function(float)	game2.o
+0x004F0080	0x008DF580	?boundsHeight_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::boundsHeight_Function(float)	game2.o
+0x004F00C0	0x008DF5C0	?boundsLength_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::boundsLength_Function(float)	game2.o
+0x004F0100	0x008DF600	?turretHorizSpanLeft_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretHorizSpanLeft_Function(float)	game2.o
+0x004F0140	0x008DF640	?turretHorizSpanRight_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretHorizSpanRight_Function(float)	game2.o
+0x004F0180	0x008DF680	?turretVertSpanUp_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretVertSpanUp_Function(float)	game2.o
+0x004F01C0	0x008DF6C0	?turretVertSpanDown_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretVertSpanDown_Function(float)	game2.o
+0x004F0200	0x008DF700	?turretRotRate_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretRotRate_Function(float)	game2.o
+0x004F0240	0x008DF740	?turretSwirlLerpRate_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretSwirlLerpRate_Function(float)	game2.o
+0x004F0280	0x008DF780	?turretSwirlPitchFactor_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretSwirlPitchFactor_Function(float)	game2.o
+0x004F02C0	0x008DF7C0	?turretGunnerVertSpanUp_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretGunnerVertSpanUp_Function(float)	game2.o
+0x004F0300	0x008DF800	?turretGunnerVertSpanDown_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::turretGunnerVertSpanDown_Function(float)	game2.o
+0x004F0340	0x008DF840	?cameraZOffset_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraZOffset_Function(float)	game2.o
+0x004F0380	0x008DF880	?cameraFPHeightOffset_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraFPHeightOffset_Function(float)	game2.o
+0x004F03C0	0x008DF8C0	?cameraFPFwdOffset_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraFPFwdOffset_Function(float)	game2.o
+0x004F0400	0x008DF900	?cameraFPHeightLerp_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraFPHeightLerp_Function(float)	game2.o
+0x004F0440	0x008DF940	?cameraChaseOffsetX_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraChaseOffsetX_Function(float)	game2.o
+0x004F0480	0x008DF980	?cameraChaseOffsetY_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraChaseOffsetY_Function(float)	game2.o
+0x004F04C0	0x008DF9C0	?cameraChaseOffsetZ_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraChaseOffsetZ_Function(float)	game2.o
+0x004F0500	0x008DFA00	?cameraChaseRadiusInner_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraChaseRadiusInner_Function(float)	game2.o
+0x004F0540	0x008DFA40	?cameraChaseRadiusOuter_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraChaseRadiusOuter_Function(float)	game2.o
+0x004F0580	0x008DFA80	?cameraVehViewRadius_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraVehViewRadius_Function(float)	game2.o
+0x004F05C0	0x008DFAC0	?cameraVehViewMaxPitch_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraVehViewMaxPitch_Function(float)	game2.o
+0x004F0600	0x008DFB00	?cameraVehViewMaxPitchDistAdj_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraVehViewMaxPitchDistAdj_Function(float)	game2.o
+0x004F0640	0x008DFB40	?cameraVehViewFwdBackRatio_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraVehViewFwdBackRatio_Function(float)	game2.o
+0x004F0680	0x008DFB80	?cameraVehViewMoveInPitch_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::cameraVehViewMoveInPitch_Function(float)	game2.o
+0x004F06C0	0x008DFBC0	?camLinkedPitchFactor_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::camLinkedPitchFactor_Function(float)	game2.o
+0x004F0700	0x008DFC00	?pitchBasedCamOffsetX_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::pitchBasedCamOffsetX_Function(float)	game2.o
+0x004F0740	0x008DFC40	?pitchBasedCamOffsetZ_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::pitchBasedCamOffsetZ_Function(float)	game2.o
+0x004F0780	0x008DFC80	?vehicleAnimMatrixColumn_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::vehicleAnimMatrixColumn_Function(int)	game2.o
+0x004F07B0	0x008DFCB0	?hatchOpenAngleRight_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::hatchOpenAngleRight_Function(float)	game2.o
+0x004F07F0	0x008DFCF0	?hatchOpenAngleLeft_Function@vehicleFuncs@@YAMM@Z	float __cdecl vehicleFuncs::hatchOpenAngleLeft_Function(float)	game2.o
+0x004F0830	0x008DFD30	?inactiveBlowupSeconds_Function@vehicleFuncs@@YAHH@Z	int __cdecl vehicleFuncs::inactiveBlowupSeconds_Function(int)	game2.o
+0x004F0860	0x008DFD60	?SetVehicleInertiaBox@@YAM_NHM@Z	float __cdecl SetVehicleInertiaBox(bool,int,float)	game2.o
+0x004F0900	0x008DFE00	?SetVehicleInertiaBoxMinX@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMinX(float)	game2.o
+0x004F0980	0x008DFE80	?SetVehicleInertiaBoxMinY@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMinY(float)	game2.o
+0x004F0A00	0x008DFF00	?SetVehicleInertiaBoxMinZ@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMinZ(float)	game2.o
+0x004F0A80	0x008DFF80	?SetVehicleInertiaBoxMaxX@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMaxX(float)	game2.o
+0x004F0B00	0x008E0000	?SetVehicleInertiaBoxMaxY@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMaxY(float)	game2.o
+0x004F0B80	0x008E0080	?SetVehicleInertiaBoxMaxZ@@YAMM@Z	float __cdecl SetVehicleInertiaBoxMaxZ(float)	game2.o
+0x004F0C00	0x008E0100	?AddAimAssistMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z	public: void __thiscall InspectorManager::AddAimAssistMenus(struct _INSPECTOR_MENU *)	game2.o
+0x004F0D40	0x008E0240	?AddCollisionMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddCollisionMenus(void)	game2.o
+0x004F0E10	0x008E0310	?RenderPlayerStats@@YAXXZ	void __cdecl RenderPlayerStats(void)	game2.o
+0x004F41F0	0x008E36F0	?FN_ControlConfigA@@YAXXZ	void __cdecl FN_ControlConfigA(void)	game2.o
+0x004F4200	0x008E3700	?FN_ControlConfigB@@YAXXZ	void __cdecl FN_ControlConfigB(void)	game2.o
+0x004F4210	0x008E3710	?FN_ControlConfigC@@YAXXZ	void __cdecl FN_ControlConfigC(void)	game2.o
+0x004F4220	0x008E3720	?FN_ControlConfigD@@YAXXZ	void __cdecl FN_ControlConfigD(void)	game2.o
+0x004F4230	0x008E3730	?FN_ControlInvertAim@@YAXXZ	void __cdecl FN_ControlInvertAim(void)	game2.o
+0x004F4240	0x008E3740	?FN_ControlSticksDefault@@YAXXZ	void __cdecl FN_ControlSticksDefault(void)	game2.o
+0x004F4250	0x008E3750	?FN_ControlSticksSouthPaw@@YAXXZ	void __cdecl FN_ControlSticksSouthPaw(void)	game2.o
+0x004F4260	0x008E3760	?FN_ControlSticksLegacy@@YAXXZ	void __cdecl FN_ControlSticksLegacy(void)	game2.o
+0x004F4270	0x008E3770	?FN_ControlSticksLegacySouthPaw@@YAXXZ	void __cdecl FN_ControlSticksLegacySouthPaw(void)	game2.o
+0x004F4280	0x008E3780	?FN_SelectGodMode@@YAXXZ	void __cdecl FN_SelectGodMode(void)	game2.o
+0x004F42A0	0x008E37A0	?FN_ChangeEasyMaxHealth@@YAXXZ	void __cdecl FN_ChangeEasyMaxHealth(void)	game2.o
+0x004F42B0	0x008E37B0	?FN_ChangeMediumMaxHealth@@YAXXZ	void __cdecl FN_ChangeMediumMaxHealth(void)	game2.o
+0x004F42C0	0x008E37C0	?FN_ChangeHardMaxHealth@@YAXXZ	void __cdecl FN_ChangeHardMaxHealth(void)	game2.o
+0x004F42D0	0x008E37D0	?FN_ApplyEasyDifficultyChanges@@YAXXZ	void __cdecl FN_ApplyEasyDifficultyChanges(void)	game2.o
+0x004F42F0	0x008E37F0	?FN_ApplyMediumDifficultyChanges@@YAXXZ	void __cdecl FN_ApplyMediumDifficultyChanges(void)	game2.o
+0x004F4310	0x008E3810	?FN_ApplyHardDifficultyChanges@@YAXXZ	void __cdecl FN_ApplyHardDifficultyChanges(void)	game2.o
+0x004F4330	0x008E3830	?FN_NoClip@@YAXXZ	void __cdecl FN_NoClip(void)	game2.o
+0x004F4350	0x008E3850	?FN_PakRender@@YAXXZ	void __cdecl FN_PakRender(void)	game2.o
+0x004F4360	0x008E3860	?FN_NGLStatDisplay@@YAXXZ	void __cdecl FN_NGLStatDisplay(void)	game2.o
+0x004F4370	0x008E3870	?FN_DefaultShellshockTestFunction@@YAXXZ	void __cdecl FN_DefaultShellshockTestFunction(void)	game2.o
+0x004F43F0	0x008E38F0	?FN_PainShellshockTestFunction@@YAXXZ	void __cdecl FN_PainShellshockTestFunction(void)	game2.o
+0x004F4470	0x008E3970	?FN_DeathShellshockTestFunction@@YAXXZ	void __cdecl FN_DeathShellshockTestFunction(void)	game2.o
+0x004F44F0	0x008E39F0	?FN_CurgenMotionBlur@@YAXXZ	void __cdecl FN_CurgenMotionBlur(void)	game2.o
+0x004F4510	0x008E3A10	?FnReverseOptions@@YAXXZ	void __cdecl FnReverseOptions(void)	game2.o
+0x004F4620	0x008E3B20	?DisplayMessage@DebugThread@@QAEXPADHHMMMMM@Z	public: void __thiscall DebugThread::DisplayMessage(char *,int,int,float,float,float,float,float)	game2.o
+0x004F46A0	0x008E3BA0	?Update@DebugThread@@QAEXXZ	public: void __thiscall DebugThread::Update(void)	game2.o
+0x004F46B0	0x008E3BB0	?FN_DebugThread_Select_EntityHandle@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl FN_DebugThread_Select_EntityHandle(class DbLinkedHandle<class EntityHandleDb,class Entity>)	game2.o
+0x004F46D0	0x008E3BD0	?FN_Multiplayer_MapRestart@@YAXXZ	void __cdecl FN_Multiplayer_MapRestart(void)	game2.o
+0x004F46E0	0x008E3BE0	?FN_Multiplayer_Rank1@@YAXXZ	void __cdecl FN_Multiplayer_Rank1(void)	game2.o
+0x004F4740	0x008E3C40	?FN_Multiplayer_Rank2@@YAXXZ	void __cdecl FN_Multiplayer_Rank2(void)	game2.o
+0x004F47C0	0x008E3CC0	?FN_Multiplayer_Rank3@@YAXXZ	void __cdecl FN_Multiplayer_Rank3(void)	game2.o
+0x004F4810	0x008E3D10	?FN_DumpThreadsForTarget@@YAXXZ	void __cdecl FN_DumpThreadsForTarget(void)	game2.o
+0x004F4820	0x008E3D20	?FN_DumpThreadsForAll@@YAXXZ	void __cdecl FN_DumpThreadsForAll(void)	game2.o
+0x004F4830	0x008E3D30	?FN_DebugEntity_BBoxes@@YAXXZ	void __cdecl FN_DebugEntity_BBoxes(void)	game2.o
+0x004F4860	0x008E3D60	?AddSoundMenus@@YAXPAVInspectorManager@@@Z	void __cdecl AddSoundMenus(class InspectorManager *)	game2.o
+0x004F4A40	0x008E3F40	?SoundDebugRender@@YAXPAVInspectorManager@@@Z	void __cdecl SoundDebugRender(class InspectorManager *)	game2.o
+0x004F4DB0	0x008E42B0	?Initialise@CameraShake@@QAEXXZ	public: void __thiscall CameraShake::Initialise(void)	game2.o
+0x004F4E20	0x008E4320	?GetNewShakeInstance@CameraShake@@AAEPAVCameraShakeInstance@@XZ	private: class CameraShakeInstance * __thiscall CameraShake::GetNewShakeInstance(void)	game2.o
+0x004F4EA0	0x008E43A0	?SetFalloff@CameraShakeInstance@@QAEXPAVPosition3@math@@M@Z	public: void __thiscall CameraShakeInstance::SetFalloff(class math::Position3 *,float)	game2.o
+0x004F4F90	0x008E4490	?StopCameraShake@CameraShake@@QAEXPAVCameraShakeInstance@@@Z	public: void __thiscall CameraShake::StopCameraShake(class CameraShakeInstance *)	game2.o
+0x004F4FB0	0x008E44B0	?GetShakeType@CameraShake@@QAEPAVCameraShakeType@@H@Z	public: class CameraShakeType * __thiscall CameraShake::GetShakeType(int)	game2.o
+0x004F5020	0x008E4520	?SetTime@CameraShakeInstance@@QAEXM@Z	public: void __thiscall CameraShakeInstance::SetTime(float)	game2.o
+0x004F5040	0x008E4540	?SetupInstance@CameraShakeInstance@@QAEXHM@Z	public: void __thiscall CameraShakeInstance::SetupInstance(int,float)	game2.o
+0x004F5110	0x008E4610	?OverrideSettings@CameraShakeInstance@@QAEXMM@Z	public: void __thiscall CameraShakeInstance::OverrideSettings(float,float)	game2.o
+0x004F5150	0x008E4650	?SetTargetMagnitude@CameraShakeInstance@@QAEXM@Z	public: void __thiscall CameraShakeInstance::SetTargetMagnitude(float)	game2.o
+0x004F5190	0x008E4690	??0MsaQuat@@QAE@MMMM@Z	public: __thiscall MsaQuat::MsaQuat(float,float,float,float)	game2.o
+0x004F51C0	0x008E46C0	??0MsaQuat@@QAE@ABV0@@Z	public: __thiscall MsaQuat::MsaQuat(class MsaQuat const &)	game2.o
+0x004F51F0	0x008E46F0	?Multiply@MsaQuat@@QAEXABV1@AAV1@@Z	public: void __thiscall MsaQuat::Multiply(class MsaQuat const &,class MsaQuat &)	game2.o
+0x004F52E0	0x008E47E0	?Normalise@MsaQuat@@QAEMXZ	public: float __thiscall MsaQuat::Normalise(void)	game2.o
+0x004F5360	0x008E4860	?QuaternionToMatrix@MsaQuat@@QAEXPAVPosition3@math@@PAVMat43@3@@Z	public: void __thiscall MsaQuat::QuaternionToMatrix(class math::Position3 *,class math::Mat43 *)	game2.o
+0x004F5570	0x008E4A70	?Magnitude@MsaQuat@@QBEMXZ	public: float __thiscall MsaQuat::Magnitude(void)const 	game2.o
+0x004F55A0	0x008E4AA0	?Init@NoiseManager@@QAEXXZ	public: void __thiscall NoiseManager::Init(void)	game2.o
+0x004F56E0	0x008E4BE0	?Noise@NoiseManager@@QAEMM@Z	public: float __thiscall NoiseManager::Noise(float)	game2.o
+0x004F5770	0x008E4C70	?Normalize2@NoiseManager@@AAEXQAM@Z	private: void __thiscall NoiseManager::Normalize2(float * const)	game2.o
+0x004F57C0	0x008E4CC0	?Normalize3@NoiseManager@@AAEXQAM@Z	private: void __thiscall NoiseManager::Normalize3(float * const)	game2.o
+0x004F5820	0x008E4D20	?GetElapsedTime@NoiseManager@@QAEMXZ	public: float __thiscall NoiseManager::GetElapsedTime(void)	game2.o
+0x004F5830	0x008E4D30	?GetValue@NoiseFloat@@QAEMXZ	public: float __thiscall NoiseFloat::GetValue(void)	game2.o
+0x004F59A0	0x008E4EA0	?EndOfSpline@SplineMgr@@SA_NQBM@Z	public: static bool __cdecl SplineMgr::EndOfSpline(float const * const)	game2.o
+0x004F59D0	0x008E4ED0	??1ScriptEventHandler@@QAE@XZ	public: __thiscall ScriptEventHandler::~ScriptEventHandler(void)	game2.o
+0x004F59F0	0x008E4EF0	?RemoveEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z	public: bool __thiscall ScriptEventHandler::RemoveEvent(class HashString,class HashString)	game2.o
+0x004F5A50	0x008E4F50	?ExecEvents@ScriptEventHandler@@QAE_NPAVEntity@@VHashString@@PAVScriptEventParams@@@Z	public: bool __thiscall ScriptEventHandler::ExecEvents(class Entity *,class HashString,class ScriptEventParams *)	game2.o
+0x004F5AC0	0x008E4FC0	?SegmentSphereIntersection@@YA_NQBM00M@Z	bool __cdecl SegmentSphereIntersection(float const * const,float const * const,float const * const,float)	game2.o
+0x004F5D10	0x008E5210	?SetNoteHandlerEntityHandle@nalPlayMethod@AnimationPlayer@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: void __thiscall AnimationPlayer::nalPlayMethod::SetNoteHandlerEntityHandle(class DbLinkedHandle<class EntityHandleDb,class Entity>)	game2.o
+0x004F5D30	0x008E5230	?DebugDump@AnimationPlayer@@SAXPAVEntity@@@Z	public: static void __cdecl AnimationPlayer::DebugDump(class Entity *)	game2.o
+0x004F5ED0	0x008E53D0	?nalMatrix4x4_to_Axis4@@YAXAAVnalMatrix4x4@@QAY02M@Z	void __cdecl nalMatrix4x4_to_Axis4(class nalMatrix4x4 &,float (* const)[3])	game2.o
+0x004F5F10	0x008E5410	?Invoke@nalAnimCallback@AnimationPlayer@@UAE_NPAV2@@Z	public: virtual bool __thiscall AnimationPlayer::nalAnimCallback::Invoke(class AnimationPlayer *)	game2.o
+0x004F5F20	0x008E5420	??0MetaNalBaseAnim@@QAE@XZ	public: __thiscall MetaNalBaseAnim::MetaNalBaseAnim(void)	game2.o
+0x004F5F50	0x008E5450	?Create@MetaNalBaseAnim@@QAEXPAVMetaAnimData@@@Z	public: void __thiscall MetaNalBaseAnim::Create(class MetaAnimData *)	game2.o
+0x004F5FE0	0x008E54E0	?DelayCreate@MetaNalBaseAnim@@QAEXPAPAV?$nalAnimClass@VnalAnyPose@@@@H@Z	public: void __thiscall MetaNalBaseAnim::DelayCreate(class nalAnimClass<class nalAnyPose> * *,int)	game2.o
+0x004F6010	0x008E5510	?IsDelayCreate@MetaNalBaseAnim@@QAEHXZ	public: int __thiscall MetaNalBaseAnim::IsDelayCreate(void)	game2.o
+0x004F6020	0x008E5520	?CreateAnimInst@MetaNalBaseAnim@@QAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z	public: class nalAnimClass<class nalAnyPose>::nalInstanceClass * __thiscall MetaNalBaseAnim::CreateAnimInst(class nalBaseSkeleton *)	game2.o
+0x004F6040	0x008E5540	?InitDefaultPak@@YAXXZ	void __cdecl InitDefaultPak(void)	game2.o
+0x004F6090	0x008E5590	?FiniDefaultPak@@YAXXZ	void __cdecl FiniDefaultPak(void)	game2.o
+0x004F60A0	0x008E55A0	??0AnimIK@@QAE@XZ	public: __thiscall AnimIK::AnimIK(void)	game2.o
+0x004F60B0	0x008E55B0	??1AnimIK@@QAE@XZ	public: __thiscall AnimIK::~AnimIK(void)	game2.o
+0x004F6270	0x008E5770	?GetGunAndHandMatrix@AnimIK@@AAEXPAVEntity@@AAVnalGenericBoneHandle@nalGeneric@@1AAVnalMatrix4x4@@2@Z	private: void __thiscall AnimIK::GetGunAndHandMatrix(class Entity *,class nalGeneric::nalGenericBoneHandle &,class nalGeneric::nalGenericBoneHandle &,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004F62A0	0x008E57A0	?GetFootMatrices@AnimIK@@AAEXAAVnalMatrix4x4@@0@Z	private: void __thiscall AnimIK::GetFootMatrices(class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004F6340	0x008E5840	?WeaponRecoilTimeScale@AnimIK@@AAEMMMM@Z	private: float __thiscall AnimIK::WeaponRecoilTimeScale(float,float,float)	game2.o
+0x004F64C0	0x008E59C0	?ApplyLadderClimb@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	private: void __thiscall AnimIK::ApplyLadderClimb(class Entity *,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004F64D0	0x008E59D0	?stat_support_Shutdown@@YAXXZ	void __cdecl stat_support_Shutdown(void)	game2.o
+0x004F64E0	0x008E59E0	?stat_CommitStatsToLevel@@YAXXZ	void __cdecl stat_CommitStatsToLevel(void)	game2.o
+0x004F6560	0x008E5A60	?stat_ResetMissionStats@@YAX_N@Z	void __cdecl stat_ResetMissionStats(bool)	game2.o
+0x004F65C0	0x008E5AC0	?stat_LoadMissionStatsFrom@@YAXPAU_xmission_data@@H@Z	void __cdecl stat_LoadMissionStatsFrom(struct _xmission_data *,int)	game2.o
+0x004F6640	0x008E5B40	?stat_ClearMissionStats@@YAXXZ	void __cdecl stat_ClearMissionStats(void)	game2.o
+0x004F6650	0x008E5B50	?stat_GetLevelName@@YAPADXZ	char * __cdecl stat_GetLevelName(void)	game2.o
+0x004F6660	0x008E5B60	?stat_GetStat@@YAHW4eMissionStats@@_N1@Z	int __cdecl stat_GetStat(enum eMissionStats,bool,bool)	game2.o
+0x004F6710	0x008E5C10	?stat_SetStat@@YAXW4eMissionStats@@HPAU_xmission_data@@@Z	void __cdecl stat_SetStat(enum eMissionStats,int,struct _xmission_data *)	game2.o
+0x004F6790	0x008E5C90	?stat_IncStat@@YAXW4eMissionStats@@PAU_xmission_data@@@Z	void __cdecl stat_IncStat(enum eMissionStats,struct _xmission_data *)	game2.o
+0x004F6800	0x008E5D00	?stat_DecStat@@YAXW4eMissionStats@@PAU_xmission_data@@@Z	void __cdecl stat_DecStat(enum eMissionStats,struct _xmission_data *)	game2.o
+0x004F6890	0x008E5D90	?stat_GetAvgStat@@YAMW4eMissionStats@@@Z	float __cdecl stat_GetAvgStat(enum eMissionStats)	game2.o
+0x004F6950	0x008E5E50	?stat_GetWeaponMasks@@YAXPAH00@Z	void __cdecl stat_GetWeaponMasks(int *,int *,int *)	game2.o
+0x004F69D0	0x008E5ED0	?stat_GetMissionCompletionTime@@YAHXZ	int __cdecl stat_GetMissionCompletionTime(void)	game2.o
+0x004F69F0	0x008E5EF0	?stat_UpdateMissionCompletionTime@@YAXXZ	void __cdecl stat_UpdateMissionCompletionTime(void)	game2.o
+0x004F6A70	0x008E5F70	?stat_WasPlayerWeaponUsed@@YA_NHPAH@Z	bool __cdecl stat_WasPlayerWeaponUsed(int,int *)	game2.o
+0x004F6B10	0x008E6010	?stat_FillMask@@YAXW4eWeaponCategory@@PAH11@Z	void __cdecl stat_FillMask(enum eWeaponCategory,int *,int *,int *)	game2.o
+0x004F6B90	0x008E6090	?stat_WasPlayerWeaponCategoryUsed@@YA_NW4eWeaponCategory@@_N@Z	bool __cdecl stat_WasPlayerWeaponCategoryUsed(enum eWeaponCategory,bool)	game2.o
+0x004F6C80	0x008E6180	?stat_SetPlayerWeaponUsed@@YAXH@Z	void __cdecl stat_SetPlayerWeaponUsed(int)	game2.o
+0x004F6CC0	0x008E61C0	?SetCmdBinding@ButtonEntry@@QAEXXZ	public: void __thiscall ButtonEntry::SetCmdBinding(void)	game2.o
+0x004F6D50	0x008E6250	?GetBoundCmdPress@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	public: class BaseCmdFuncInfo const * __thiscall ButtonEntry::GetBoundCmdPress(void)	game2.o
+0x004F6D80	0x008E6280	?GetBoundCmdRelease@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	public: class BaseCmdFuncInfo const * __thiscall ButtonEntry::GetBoundCmdRelease(void)	game2.o
+0x004F6DB0	0x008E62B0	?GetCellBBox@@YA?AVBoundingBox@@HPBVStreamZone@@@Z	class BoundingBox __cdecl GetCellBBox(int,class StreamZone const *)	game2.o
+0x004F6F70	0x008E6470	?GetFilename@TestFPS@@AAEXPAD@Z	private: void __thiscall TestFPS::GetFilename(char *)	game2.o
+0x004F6FC0	0x008E64C0	?CheckForFloor@TestFPS@@AAE_NABVPosition3@math@@AAUtrace_t@@M@Z	private: bool __thiscall TestFPS::CheckForFloor(class math::Position3 const &,struct trace_t &,float)	game2.o
+0x004F7100	0x008E6600	??0InspectorManager@@QAE@XZ	public: __thiscall InspectorManager::InspectorManager(void)	game2.o
+0x004F7180	0x008E6680	?FreeAll@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::FreeAll(void)	game2.o
+0x004F71C0	0x008E66C0	?Update@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::Update(void)	game2.o
+0x004F7880	0x008E6D80	?AddPlayerMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddPlayerMenus(void)	game2.o
+0x004F78F0	0x008E6DF0	?AddDesignerMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddDesignerMenus(void)	game2.o
+0x004F79F0	0x008E6EF0	?AddFXMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddFXMenus(void)	game2.o
+0x004F7D10	0x008E7210	?SetVehicleDebugRender@@YAHH@Z	int __cdecl SetVehicleDebugRender(int)	game2.o
+0x004F7D60	0x008E7260	?AddVehicleMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z	public: void __thiscall InspectorManager::AddVehicleMenus(struct _INSPECTOR_MENU *)	game2.o
+0x004F8570	0x008E7A70	?AddMultiplayerMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddMultiplayerMenus(void)	game2.o
+0x004F8AB0	0x008E7FB0	?DisplayEntitySound@DebugThread@@QAEXABVPosition3@math@@HHHM@Z	public: void __thiscall DebugThread::DisplayEntitySound(class math::Position3 const &,int,int,int,float)	game2.o
+0x004F8F20	0x008E8420	?FN_DebugThread_Select_Player@@YAXXZ	void __cdecl FN_DebugThread_Select_Player(void)	game2.o
+0x004F8F50	0x008E8450	?FN_DebugThread_Select_Level@@YAXXZ	void __cdecl FN_DebugThread_Select_Level(void)	game2.o
+0x004F8F70	0x008E8470	??0CameraShake@@QAE@XZ	public: __thiscall CameraShake::CameraShake(void)	game2.o
+0x004F8FA0	0x008E84A0	?StartCameraShake@CameraShake@@QAEPAVCameraShakeInstance@@HPAVPosition3@math@@MMM@Z	public: class CameraShakeInstance * __thiscall CameraShake::StartCameraShake(int,class math::Position3 *,float,float,float)	game2.o
+0x004F9110	0x008E8610	?AngleToQuaternion@MsaQuat@@QAEXMAAY02$$CBM@Z	public: void __thiscall MsaQuat::AngleToQuaternion(float,float const (&)[3])	game2.o
+0x004F9210	0x008E8710	?AddNoise_2D_EM@CameraShakeInstance@@QAEXHPAVVector4@math@@@Z	public: void __thiscall CameraShakeInstance::AddNoise_2D_EM(int,class math::Vector4 *)	game2.o
+0x004F9340	0x008E8840	?ExpMapToQuaternion@MsaQuat@@QAEXABVVector4@math@@@Z	public: void __thiscall MsaQuat::ExpMapToQuaternion(class math::Vector4 const &)	game2.o
+0x004F94B0	0x008E89B0	?MatrixToQuaternion@MsaQuat@@QAEHPAVMat43@math@@PAVPosition3@3@@Z	public: int __thiscall MsaQuat::MatrixToQuaternion(class math::Mat43 *,class math::Position3 *)	game2.o
+0x004F9700	0x008E8C00	?GetUnusedEntry@SplineMgr@@AAEPAUSplineEntry@1@XZ	private: struct SplineMgr::SplineEntry * __thiscall SplineMgr::GetUnusedEntry(void)	game2.o
+0x004F97C0	0x008E8CC0	?UnloadBank@SplineMgr@@EAEXW4TPakId@@@Z	private: virtual void __thiscall SplineMgr::UnloadBank(enum TPakId)	game2.o
+0x004F9860	0x008E8D60	??0ScriptEventHandler@@QAE@XZ	public: __thiscall ScriptEventHandler::ScriptEventHandler(void)	game2.o
+0x004F98D0	0x008E8DD0	?AddEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z	public: bool __thiscall ScriptEventHandler::AddEvent(class HashString,class HashString)	game2.o
+0x004F9940	0x008E8E40	??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@VFourCC@@@Z	public: __thiscall Task::Task(class DbLinkedHandle<class EntityHandleDb,class Entity>,class FourCC)	game2.o
+0x004F9970	0x008E8E70	??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z	public: __thiscall Task::Task(class DbLinkedHandle<class EntityHandleDb,class Entity>,int)	game2.o
+0x004F99A0	0x008E8EA0	??0HealthRegenTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@MM@Z	public: __thiscall HealthRegenTask::HealthRegenTask(class DbLinkedHandle<class EntityHandleDb,class Entity>,float,float)	game2.o
+0x004F9AC0	0x008E8FC0	?Update@HealthRegenTask@@UAEXPAVEntity@@M@Z	public: virtual void __thiscall HealthRegenTask::Update(class Entity *,float)	game2.o
+0x004F9CC0	0x008E91C0	?Update@SmokeGrenadeMgr@@QAEXM@Z	public: void __thiscall SmokeGrenadeMgr::Update(float)	game2.o
+0x004FA0E0	0x008E95E0	?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z	protected: float __thiscall SmokeGrenadeMgr::CalcOpacity(struct SmokeGrenadeInfo const &)const 	game2.o
+0x004FA220	0x008E9720	?PointCanSeePoint@SmokeGrenadeMgr@@QAE_NQBM0M@Z	public: bool __thiscall SmokeGrenadeMgr::PointCanSeePoint(float const * const,float const * const,float)	game2.o
+0x004FA400	0x008E9900	?EntityCanSeePoint@SmokeGrenadeMgr@@QAE_NPBVEntity@@QBMM@Z	public: bool __thiscall SmokeGrenadeMgr::EntityCanSeePoint(class Entity const *,float const * const,float)	game2.o
+0x004FA460	0x008E9960	?EntityCanSeeEntity@SmokeGrenadeMgr@@QAE_NPBVEntity@@0M@Z	public: bool __thiscall SmokeGrenadeMgr::EntityCanSeeEntity(class Entity const *,class Entity const *,float)	game2.o
+0x004FA500	0x008E9A00	??0nalPlayMethod@AnimationPlayer@@QAE@XZ	public: __thiscall AnimationPlayer::nalPlayMethod::nalPlayMethod(void)	game2.o
+0x004FA550	0x008E9A50	?Advance@AnimationPlayer@@QAEXM@Z	public: void __thiscall AnimationPlayer::Advance(float)	game2.o
+0x004FA690	0x008E9B90	?GetPose@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@PAVnalGenericSkeleton@3@QAY02M@Z	public: void __thiscall AnimationPlayer::GetPose(class nalGeneric::nalGenericPose &,class nalGeneric::nalGenericSkeleton *,float (* const)[3])	game2.o
+0x004FAE20	0x008EA320	?DelayCreate@MetaNalBaseAnim@@QAEXPAV?$nalAnimClass@VnalAnyPose@@@@@Z	public: void __thiscall MetaNalBaseAnim::DelayCreate(class nalAnimClass<class nalAnyPose> *)	game2.o
+0x004FAE50	0x008EA350	?Initialize@AnimIK@@AAEXXZ	private: void __thiscall AnimIK::Initialize(void)	game2.o
+0x004FB150	0x008EA650	?UpdateGunMatrix@AnimIK@@AAEXVnalGenericBoneHandle@nalGeneric@@0AAVnalMatrix4x4@@1@Z	private: void __thiscall AnimIK::UpdateGunMatrix(class nalGeneric::nalGenericBoneHandle,class nalGeneric::nalGenericBoneHandle,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004FB510	0x008EAA10	?ApplyFootIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	private: void __thiscall AnimIK::ApplyFootIK(class Entity *,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004FBD10	0x008EB210	?ApplyHandIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	private: void __thiscall AnimIK::ApplyHandIK(class Entity *,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x004FC5B0	0x008EBAB0	?RotateBone@AnimIK@@AAEXHABVDir3@math@@@Z	private: void __thiscall AnimIK::RotateBone(int,class math::Dir3 const &)	game2.o
+0x004FCA40	0x008EBF40	?ApplyPainFlinch@AnimIK@@AAEXPAVEntity@@@Z	private: void __thiscall AnimIK::ApplyPainFlinch(class Entity *)	game2.o
+0x004FDDC0	0x008ED2C0	?ApplyTorsoRotations@AnimIK@@AAEXPAVEntity@@@Z	private: void __thiscall AnimIK::ApplyTorsoRotations(class Entity *)	game2.o
+0x004FE870	0x008EDD70	?stat_support_Initialize@@YAXXZ	void __cdecl stat_support_Initialize(void)	game2.o
+0x004FE8D0	0x008EDDD0	?stat_SetMissionToTrack@@YA_NPBD_N@Z	bool __cdecl stat_SetMissionToTrack(char const *,bool)	game2.o
+0x004FE9A0	0x008EDEA0	?UpdateBinding@ButtonMgr@@SAXEH@Z	public: static void __cdecl ButtonMgr::UpdateBinding(unsigned char,int)	game2.o
+0x004FEAA0	0x008EDFA0	?SetKeyBinding@ButtonEntry@@QAEXE@Z	public: void __thiscall ButtonEntry::SetKeyBinding(unsigned char)	game2.o
+0x004FEAD0	0x008EDFD0	?Press@ButtonEntry@@QAEX_N@Z	public: void __thiscall ButtonEntry::Press(bool)	game2.o
+0x004FEB60	0x008EE060	?Release@ButtonEntry@@QAEX_N@Z	public: void __thiscall ButtonEntry::Release(bool)	game2.o
+0x004FEC20	0x008EE120	??0TestFPS@@QAE@XZ	public: __thiscall TestFPS::TestFPS(void)	game2.o
+0x004FEC80	0x008EE180	?OutputStats@TestFPS@@AAEXXZ	private: void __thiscall TestFPS::OutputStats(void)	game2.o
+0x004FEF40	0x008EE440	?FN_ShakeTestFunction@@YAXXZ	void __cdecl FN_ShakeTestFunction(void)	game2.o
+0x004FEFB0	0x008EE4B0	?DisplayPoolTotals@@YAXAAVPoolAllocator@@@Z	void __cdecl DisplayPoolTotals(class PoolAllocator &)	game2.o
+0x004FF130	0x008EE630	?CreateCameraShakeMatrix@CameraShake@@QAEPAVMat43@math@@PAV23@@Z	public: class math::Mat43 * __thiscall CameraShake::CreateCameraShakeMatrix(class math::Mat43 *)	game2.o
+0x004FF360	0x008EE860	?Rumble@CameraShake@@QAEXMM@Z	public: void __thiscall CameraShake::Rumble(float,float)	game2.o
+0x004FF5B0	0x008EEAB0	?AddSplineGroupFile@SplineMgr@@QAEXPAEW4TPakId@@@Z	public: void __thiscall SplineMgr::AddSplineGroupFile(unsigned char *,enum TPakId)	game2.o
+0x004FF5D0	0x008EEAD0	?GetSplinePathData@SplineMgr@@QAEPAVSplinePathData@@IAAW4TPakId@@@Z	public: class SplinePathData * __thiscall SplineMgr::GetSplinePathData(unsigned int,enum TPakId &)	game2.o
+0x004FF660	0x008EEB60	?GetSplinePathGroup@SplineMgr@@QAEPAVSplineGroup@@IAAW4TPakId@@@Z	public: class SplineGroup * __thiscall SplineMgr::GetSplinePathGroup(unsigned int,enum TPakId &)	game2.o
+0x004FF6F0	0x008EEBF0	?GetSpline@SplineMgr@@QAEXIPAUSplinePath@@@Z	public: void __thiscall SplineMgr::GetSpline(unsigned int,struct SplinePath *)	game2.o
+0x004FF780	0x008EEC80	?AddEvent@ScriptEventHandler@@QAE_NVHashString@@PBD@Z	public: bool __thiscall ScriptEventHandler::AddEvent(class HashString,char const *)	game2.o
+0x004FF800	0x008EED00	?InsertDroneSlave@@YAHPAVEntity@@I@Z	int __cdecl InsertDroneSlave(class Entity *,unsigned int)	game2.o
+0x004FF880	0x008EED80	?InsertDroneMaster@@YAHPAVEntity@@I@Z	int __cdecl InsertDroneMaster(class Entity *,unsigned int)	game2.o
+0x004FF910	0x008EEE10	?RemoveDrone@@YAHPAVEntity@@I@Z	int __cdecl RemoveDrone(class Entity *,unsigned int)	game2.o
+0x004FF990	0x008EEE90	?LookupHandler@TaskSys@@QBEPAVTaskHandler@@VFourCC@@@Z	public: class TaskHandler * __thiscall TaskSys::LookupHandler(class FourCC)const 	game2.o
+0x004FF9D0	0x008EEED0	?DeliverTasks@TaskSys@@QAEXXZ	public: void __thiscall TaskSys::DeliverTasks(void)	game2.o
+0x004FFA80	0x008EEF80	?PostTask@TaskSys@@QAEXPAVTask@@@Z	public: void __thiscall TaskSys::PostTask(class Task *)	game2.o
+0x004FFAE0	0x008EEFE0	?SendTask@TaskSys@@QAEXPAVTask@@@Z	public: void __thiscall TaskSys::SendTask(class Task *)	game2.o
+0x004FFB20	0x008EF020	??0TaskHandler@@QAE@VFourCC@@V?$Bitmask@I@@@Z	public: __thiscall TaskHandler::TaskHandler(class FourCC,class Bitmask<unsigned int>)	game2.o
+0x004FFB80	0x008EF080	?QuickDeactivation@TaskHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: void __thiscall TaskHandler::QuickDeactivation(class DbLinkedHandle<class EntityHandleDb,class Entity>)	game2.o
+0x004FFBD0	0x008EF0D0	?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z	public: void __thiscall SmokeGrenadeMgr::AddSmokeGrenade(struct SmokeGrenadeInfo const &)	game2.o
+0x004FFC30	0x008EF130	?ApplyFire@AnimIK@@AAEXPAVEntity@@@Z	private: void __thiscall AnimIK::ApplyFire(class Entity *)	game2.o
+0x00501000	0x008F0500	?IN_Frame@@YAXXZ	void __cdecl IN_Frame(void)	game2.o
+0x00501590	0x008F0A90	?InitKeyBindings@ButtonMgr@@SAXH@Z	public: static void __cdecl ButtonMgr::InitKeyBindings(int)	game2.o
+0x005016F0	0x008F0BF0	?ClearBinding@ButtonMgr@@SAXPBVBaseCmdFuncInfo@@H@Z	public: static void __cdecl ButtonMgr::ClearBinding(class BaseCmdFuncInfo const *,int)	game2.o
+0x005017C0	0x008F0CC0	?ClearAllBindings@ButtonMgr@@SAXXZ	public: static void __cdecl ButtonMgr::ClearAllBindings(void)	game2.o
+0x005018C0	0x008F0DC0	?StopTest@TestFPS@@QAEXXZ	public: void __thiscall TestFPS::StopTest(void)	game2.o
+0x00501990	0x008F0E90	?GatherMetrics@TestFPS@@QAEXXZ	public: void __thiscall TestFPS::GatherMetrics(void)	game2.o
+0x00501A60	0x008F0F60	?NextPosition@TestFPS@@AAEXXZ	private: void __thiscall TestFPS::NextPosition(void)	game2.o
+0x00502150	0x008F1650	?IM_RenderGameEntityStats@@YAXXZ	void __cdecl IM_RenderGameEntityStats(void)	game2.o
+0x00503780	0x008F2C80	?FN_DebugThread_Select_EntityName@@YAXPAD0@Z	void __cdecl FN_DebugThread_Select_EntityName(char *,char *)	game2.o
+0x00503840	0x008F2D40	?FN_DebugThread_Select_Nearest@@YAXXZ	void __cdecl FN_DebugThread_Select_Nearest(void)	game2.o
+0x005039E0	0x008F2EE0	?FN_DebugThread_Select_Nearest_Vehicle@@YAXXZ	void __cdecl FN_DebugThread_Select_Nearest_Vehicle(void)	game2.o
+0x00503B70	0x008F3070	?FN_DebugThread_Select_Nearest_Trigger@@YAXXZ	void __cdecl FN_DebugThread_Select_Nearest_Trigger(void)	game2.o
+0x00503D20	0x008F3220	?FN_DebugThread_Select_UniqueIndex@@YAXXZ	void __cdecl FN_DebugThread_Select_UniqueIndex(void)	game2.o
+0x00503E30	0x008F3330	?_Return_MF_UnderCrossHair@@YAPAVEntity@@XZ	class Entity * __cdecl _Return_MF_UnderCrossHair(void)	game2.o
+0x00503FD0	0x008F34D0	?RenderUniqueIndex@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	void __cdecl RenderUniqueIndex(class DbLinkedHandle<class EntityHandleDb,class Entity>)	game2.o
+0x00504560	0x008F3A60	?DecodeSplineGroup@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeSplineGroup(char const *,unsigned char *,int,enum TPakId,class PakFile *)	game2.o
+0x00504580	0x008F3A80	??0SplineMgr@@QAE@XZ	public: __thiscall SplineMgr::SplineMgr(void)	game2.o
+0x005045C0	0x008F3AC0	?GetSpline@SplineMgr@@QAEXPBDPAUSplinePath@@@Z	public: void __thiscall SplineMgr::GetSpline(char const *,struct SplinePath *)	game2.o
+0x005045F0	0x008F3AF0	?ReverseEndianSplinePath@SplineMgr@@AAEXAAUSplinePath@@@Z	private: void __thiscall SplineMgr::ReverseEndianSplinePath(struct SplinePath &)	game2.o
+0x005046C0	0x008F3BC0	?ReverseEndianSplineGroupFile@SplineMgr@@AAEXAAVHashGroupFile@@@Z	private: void __thiscall SplineMgr::ReverseEndianSplineGroupFile(class HashGroupFile &)	game2.o
+0x005048C0	0x008F3DC0	?UpdateDroneAEMap@@YAHPAVEntity@@I@Z	int __cdecl UpdateDroneAEMap(class Entity *,unsigned int)	game2.o
+0x00504970	0x008F3E70	?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z	public: void __thiscall TaskSys::ReleaseTask(class Task *)	game2.o
+0x00504990	0x008F3E90	?Update@TaskHandler@@QAEXMPAVTaskFunctor@@@Z	public: void __thiscall TaskHandler::Update(float,class TaskFunctor *)	game2.o
+0x00504B80	0x008F4080	?DeactivateAll@TaskHandler@@QAEXXZ	public: void __thiscall TaskHandler::DeactivateAll(void)	game2.o
+0x00504BC0	0x008F40C0	?GetTaskForEntity@TaskHandler@@QBEPAVTask@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: class Task * __thiscall TaskHandler::GetTaskForEntity(class DbLinkedHandle<class EntityHandleDb,class Entity>)const 	game2.o
+0x00504C50	0x008F4150	?ReInitialize@SmokeGrenadeMgr@@QAEXXZ	public: void __thiscall SmokeGrenadeMgr::ReInitialize(void)	game2.o
+0x00504C60	0x008F4160	?CreateInstance@nalPlayMethod@AnimationPlayer@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalGenericAnim@nalGeneric@@PAVnalGenericSkeleton@6@@Z	public: virtual class nalAnimClass<class nalAnyPose>::nalInstanceClass * __thiscall AnimationPlayer::nalPlayMethod::CreateInstance(class nalGeneric::nalGenericAnim *,class nalGeneric::nalGenericSkeleton *)	game2.o
+0x00504C90	0x008F4190	?ApplyVehicleSteering@AnimIK@@AAEXPAVEntity@@@Z	private: void __thiscall AnimIK::ApplyVehicleSteering(class Entity *)	game2.o
+0x005068F0	0x008F5DF0	?ApplyADS@AnimIK@@AAEXPAVEntity@@@Z	private: void __thiscall AnimIK::ApplyADS(class Entity *)	game2.o
+0x00507EC0	0x008F73C0	?ApplyTerrainMapping@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	private: void __thiscall AnimIK::ApplyTerrainMapping(class Entity *,class nalMatrix4x4 &,class nalMatrix4x4 &)	game2.o
+0x00509460	0x008F8960	?stat_StatDamageEvent@@YAXPAVEntity@@00HW4hitLocation_t@@@Z	void __cdecl stat_StatDamageEvent(class Entity *,class Entity *,class Entity *,int,enum hitLocation_t)	game2.o
+0x00509610	0x008F8B10	?InitKeyBindings@ButtonMgr@@SAXXZ	public: static void __cdecl ButtonMgr::InitKeyBindings(void)	game2.o
+0x00509620	0x008F8B20	?Test@TestFPS@@QAEXXZ	public: void __thiscall TestFPS::Test(void)	game2.o
+0x00509B50	0x008F9050	?PositionCamera@TestFPS@@QAEXAAUpmove_t@@@Z	public: void __thiscall TestFPS::PositionCamera(struct pmove_t &)	game2.o
+0x00509CA0	0x008F91A0	?UserRenderHook@InspectorManager@@AAEXXZ	private: void __thiscall InspectorManager::UserRenderHook(void)	game2.o
+0x0050A050	0x008F9550	?Render@DebugThread@@QAEXXZ	public: void __thiscall DebugThread::Render(void)	game2.o
+0x0050B690	0x008FAB90	?FN_DebugThread_Select_Target@@YAXXZ	void __cdecl FN_DebugThread_Select_Target(void)	game2.o
+0x0050B6F0	0x008FABF0	?FN_DebugAnims_Select_Target@@YAXXZ	void __cdecl FN_DebugAnims_Select_Target(void)	game2.o
+0x0050B730	0x008FAC30	?CheckAEMapValidation@@YAXXZ	void __cdecl CheckAEMapValidation(void)	game2.o
+0x0050B8E0	0x008FADE0	?Update@TaskSys@@QAEXM@Z	public: void __thiscall TaskSys::Update(float)	game2.o
+0x0050B920	0x008FAE20	?ShutDown@TaskSys@@QAEXXZ	public: void __thiscall TaskSys::ShutDown(void)	game2.o
+0x0050B9C0	0x008FAEC0	?DeactivateTask@TaskSys@@QBEXVHandle@@@Z	public: void __thiscall TaskSys::DeactivateTask(class Handle)const 	game2.o
+0x0050BA00	0x008FAF00	?CreateTaskHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z	public: class Handle __thiscall TaskSys::CreateTaskHandle(class Task *)	game2.o
+0x0050BA90	0x008FAF90	?GetTaskForEntity@TaskSys@@QBEPAVTask@@VFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: class Task * __thiscall TaskSys::GetTaskForEntity(class FourCC,class DbLinkedHandle<class EntityHandleDb,class Entity>)const 	game2.o
+0x0050BAC0	0x008FAFC0	??1TaskHandler@@QAE@XZ	public: __thiscall TaskHandler::~TaskHandler(void)	game2.o
+0x0050BB30	0x008FB030	??1nalPlayMethod@AnimationPlayer@@QAE@XZ	public: __thiscall AnimationPlayer::nalPlayMethod::~nalPlayMethod(void)	game2.o
+0x0050BB80	0x008FB080	?Advance@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@M@Z	public: virtual void __thiscall AnimationPlayer::nalPlayMethod::Advance(class AnimationPlayer::nalAnimState *,float)	game2.o
+0x0050BBC0	0x008FB0C0	?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@nalGeneric@@PAVnalGenericPose@4@@Z	public: void __thiscall AnimIK::Update(class Entity *,class nalGeneric::nalGenericSkeleton *,class nalGeneric::nalGenericPose *)	game2.o
+0x0050BDF0	0x008FB2F0	?IN_Init@@YAXXZ	void __cdecl IN_Init(void)	game2.o
+0x0050BED0	0x008FB3D0	?Render@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::Render(void)	game2.o
+0x0050C420	0x008FB920	?AddDebuggingMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddDebuggingMenus(void)	game2.o
+0x0050C790	0x008FBC90	?AddWeaponMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z	public: void __thiscall InspectorManager::AddWeaponMenus(struct _INSPECTOR_MENU *)	game2.o
+0x0050D810	0x008FCD10	?PostTaskAndAllocateHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z	public: class Handle __thiscall TaskSys::PostTaskAndAllocateHandle(class Task *)	game2.o
+0x0050D840	0x008FCD40	?AddSettingsMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::AddSettingsMenus(void)	game2.o
+0x0050E1B0	0x008FD6B0	?SetupUserMenus@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::SetupUserMenus(void)	game2.o
+0x0050E250	0x008FD750	?Initialise@InspectorManager@@QAEXXZ	public: void __thiscall InspectorManager::Initialise(void)	game2.o

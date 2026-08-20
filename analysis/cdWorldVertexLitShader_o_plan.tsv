@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007DE770	??0cdWorldVertexLitShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdWorldVertexLitShaderMat::cdWorldVertexLitShaderMat(struct nglTexture *)	
+0x007DE800	?InitCDWorldVertexLitShader@@YAXXZ	void __cdecl InitCDWorldVertexLitShader(void)	
+0x007DE850	?ToggleCDWorldVertexLitShader@@YAXXZ	void __cdecl ToggleCDWorldVertexLitShader(void)	
+0x007DE870	?Register@cdWorldVertexLitShader@@UAEXXZ	public: virtual void __thiscall cdWorldVertexLitShader::Register(void)	
+0x007DE8D0	?AddNode@cdWorldVertexLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldVertexLitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007DE940	?Render@cdWorldVertexLitShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldVertexLitShaderNode::Render(void)	

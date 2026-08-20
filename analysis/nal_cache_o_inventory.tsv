@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x00868700	0x00C57C00	?Release@nalAnimCache@@QAEXXZ	public: void __thiscall nalAnimCache::Release(void)	nal_cache.o
+0x00868730	0x00C57C30	?MemFree@nalAnimCache@@QAEXPAXI@Z	public: void __thiscall nalAnimCache::MemFree(void *,unsigned int)	nal_cache.o
+0x00868740	0x00C57C40	?Free@nalAnimCache@@QAEXPAVnalObject@1@@Z	public: void __thiscall nalAnimCache::Free(class nalAnimCache::nalObject *)	nal_cache.o
+0x008687C0	0x00C57CC0	?Touch@nalAnimCache@@QAEXPAVnalObject@1@@Z	public: void __thiscall nalAnimCache::Touch(class nalAnimCache::nalObject *)	nal_cache.o
+0x00868830	0x00C57D30	?MemAlloc@nalAnimCache@@QAEPAXII@Z	public: void * __thiscall nalAnimCache::MemAlloc(unsigned int,unsigned int)	nal_cache.o
+0x00868870	0x00C57D70	?Allocate@nalAnimCache@@QAEPAVnalObject@1@ABUnalCachedPoseInfo@@HHPAPAV21@@Z	public: class nalAnimCache::nalObject * __thiscall nalAnimCache::Allocate(struct nalCachedPoseInfo const &,int,int,class nalAnimCache::nalObject * *)	nal_cache.o
+0x00868970	0x00C57E70	?IncreaseLOD@nalAnimCache@@QAEXPAVnalObject@1@ABUnalCachedPoseInfo@@HH@Z	public: void __thiscall nalAnimCache::IncreaseLOD(class nalAnimCache::nalObject *,struct nalCachedPoseInfo const &,int,int)	nal_cache.o

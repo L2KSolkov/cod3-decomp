@@ -1,0 +1,8 @@
+index	status	map_line
+1	VERIFIED	0002:003c4b00 ??0tlInitListFunction@@QAE@P6AXXZ@Z 00BB4000 f i cdDebugVertexDef.o
+2	VERIFIED	0002:003c4b30 ??1tlInitListFunction@@UAE@XZ 00BB4030 f i cdDebugVertexDef.o
+3	VERIFIED	0002:003c4b40 ?Register@tlInitListFunction@@UAEXXZ 00BB4040 f i cdDebugVertexDef.o
+4	VERIFIED	0002:003c4b50 ??_GtlInitListFunction@@UAEPAXI@Z 00BB4050 f i cdDebugVertexDef.o
+5	VERIFIED	0002:003c4b50 ??_EtlInitListFunction@@UAEPAXI@Z 00BB4050 f i cdDebugVertexDef.o
+6	VERIFIED	0002:003c4b80 ?ProcessCDDebugVertexDef@@YAXPAX@Z 00BB4080 f cdDebugVertexDef.o
+7	VERIFIED	0002:003c4ba0 ?InitCDDebugVertexDefBuilder@@YAXXZ 00BB40A0 f cdDebugVertexDef.o

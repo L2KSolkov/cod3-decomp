@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:003e64d0 _inflateReset 00BD59D0 f inflate.o
+2	VERIFIED	0002:003e6540 _inflatePrime 00BD5A40 f inflate.o
+3	VERIFIED	0002:003e65a0 _inflateInit2_ 00BD5AA0 f inflate.o
+4	VERIFIED	0002:003e6670 _inflateInit_ 00BD5B70 f inflate.o
+5	VERIFIED	0002:003e67e0 _inflate 00BD5CE0 f inflate.o
+6	VERIFIED	0002:003e7d50 _inflateEnd 00BD7250 f inflate.o
+7	VERIFIED	0002:003e7da0 _inflateSetDictionary 00BD72A0 f inflate.o
+8	VERIFIED	0002:003e7e90 _inflateGetHeader 00BD7390 f inflate.o
+9	VERIFIED	0002:003e7f20 _inflateSync 00BD7420 f inflate.o
+10	VERIFIED	0002:003e8020 _inflateSyncPoint 00BD7520 f inflate.o
+11	VERIFIED	0002:003e8050 _inflateCopy 00BD7550 f inflate.o

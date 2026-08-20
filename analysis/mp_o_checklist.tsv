@@ -1,0 +1,1143 @@
+index	status	map_line
+1	PORTED	0002:0032af30 ??0sTime@knet@kuju@@QAE@XZ 00B1A430 f i mp.o
+2	PORTED	0002:0032af40 ??0sTime@knet@kuju@@QAE@ABV012@@Z 00B1A440 f i mp.o
+3	PORTED	0002:0032af60 ??HsTime@knet@kuju@@QBE?AV012@ABV012@@Z 00B1A460 f i mp.o
+4	PORTED	0002:0032af80 ??8sTime@knet@kuju@@QBE_NABV012@@Z 00B1A480 f i mp.o
+5	PORTED	0002:0032afa0 ??MsTime@knet@kuju@@QBE_NABV012@@Z 00B1A4A0 f i mp.o
+6	PORTED	0002:0032afc0 ??OsTime@knet@kuju@@QBE_NABV012@@Z 00B1A4C0 f i mp.o
+7	PORTED	0002:0032afe0 ?getMS@sTime@knet@kuju@@QBEJXZ 00B1A4E0 f i mp.o
+8	PORTED	0002:0032aff0 ?bdMemcpy@@YAPAXQAXQBXI@Z 00B1A4F0 f i mp.o
+9	PORTED	0002:0032b020 ?bdMemcmp@@YAHQBX0I@Z 00B1A520 f i mp.o
+10	PORTED	0002:0032b050 ?bdMemset@@YAPAXQAXHI@Z 00B1A550 f i mp.o
+11	PORTED	0002:0032b090 ?bdStrrchr@@YAPBDQBDH@Z 00B1A590 f i mp.o
+12	PORTED	0002:0032b0a0 ?bdStrstr@@YAPBDQBD0@Z 00B1A5A0 f i mp.o
+13	VERIFIED	0002:0032b0b0 ?bdFprintf@@YAHPAXPBDZZ 00B1A5B0 f i mp.o
+14	PORTED	0002:0032b0d0 ?bdGetStderr@@YAPAXXZ 00B1A5D0 f i mp.o
+15	PORTED	0002:0032b0e0 ?bdVsnprintf@@YAHPADIPBD0@Z 00B1A5E0 f i mp.o
+16	PORTED	0002:0032b120 ??2bdLogImpl@@SAPAXI@Z 00B1A620 f i mp.o
+17	PORTED	0002:0032b130 ??3bdLogImpl@@SAXPAX@Z 00B1A630 f i mp.o
+18	PORTED	0002:0032b140 ??2bdSingletonRegistryImpl@@SAPAXI@Z 00B1A640 f i mp.o
+19	PORTED	0002:0032b150 ??3bdSingletonRegistryImpl@@SAXPAX@Z 00B1A650 f i mp.o
+20	PORTED	0002:0032b160 ??3bdString@@SAXPAX@Z 00B1A660 f i mp.o
+21	PORTED	0002:0032b170 ??2bdString@@SAPAXIPAX@Z 00B1A670 f i mp.o
+22	PORTED	0002:0032b180 ??3bdString@@SAXPAX0@Z 00B1A680 f i mp.o
+23	VERIFIED	0002:0032b190 ?resetReadPosition@bdBitBuffer@@QAEXXZ 00B1A690 f i mp.o
+24	VERIFIED	0002:0032b1a0 ?writeChar8@bdBitBuffer@@QAEXD@Z 00B1A6A0 f i mp.o
+25	VERIFIED	0002:0032b1d0 ?writeUChar8@bdBitBuffer@@QAEXE@Z 00B1A6D0 f i mp.o
+26	PORTED	0002:0032b200 ?writeString@bdBitBuffer@@QAEXABVbdString@@@Z 00B1A700 f i mp.o
+27	VERIFIED	0002:0032b250 ?readBool@bdBitBuffer@@QAE_NAA_N@Z 00B1A750 f i mp.o
+28	VERIFIED	0002:0032b2a0 ?testBool@bdBitBuffer@@QAE_NXZ 00B1A7A0 f i mp.o
+29	VERIFIED	0002:0032b2f0 ?readUChar8@bdBitBuffer@@QAE_NAAE@Z 00B1A7F0 f i mp.o
+30	VERIFIED	0002:0032b330 ?readChar8@bdBitBuffer@@QAE_NAAD@Z 00B1A830 f i mp.o
+31	PORTED	0002:0032b370 ?readString@bdBitBuffer@@QAE_NQADI@Z 00B1A870 f i mp.o
+32	PORTED	0002:0032b3e0 ??3bdInetAddr@@SAXPAX@Z 00B1A8E0 f i mp.o
+33	PORTED	0002:0032b3f0 ??2bdCommonAddr@@SAPAXI@Z 00B1A8F0 f i mp.o
+34	PORTED	0002:0032b400 ??3bdCommonAddr@@SAXPAX@Z 00B1A900 f i mp.o
+35	PORTED	0002:0032b410 ?floor@@YAMM@Z 00B1A910 f i mp.o
+36	VERIFIED	0002:0032b430 ?accept_input_from_all_controllers@controller@@QAEX_N@Z 00B1A930 f i mp.o
+37	PORTED	0002:0032b460 ??0MPEntityHandle@@QAE@H@Z 00B1A960 f i mp.o
+38	VERIFIED	0002:0032b480 ??0MPEntityHandle@@QAE@GG@Z 00B1A980 f i mp.o
+39	PORTED	0002:0032b570 ?GetPeerId@MPEntityHandle@@QBEGXZ 00B1AA70 f i mp.o
+40	PORTED	0002:0032b580 ?getUpdateTime@MultiplayerMgr@@QAE?AVsTime@knet@kuju@@XZ 00B1AA80 f i mp.o
+41	PORTED	0002:0032b5a0 ?SetPlayerUpdateQueued@MultiplayerMgr@@QAEXXZ 00B1AAA0 f i mp.o
+42	PORTED	0002:0032b5b0 ??2MPGameInfo@@SAPAXI@Z 00B1AAB0 f i mp.o
+43	PORTED	0002:0032b5c0 ??3MPGameInfo@@SAXPAX@Z 00B1AAC0 f i mp.o
+44	PORTED	0002:0032b5d0 ??0sAngle@kuju@@QAE@XZ 00B1AAD0 f i mp.o
+45	PORTED	0002:0032b5e0 ?degrees@sAngle@kuju@@QBEMXZ 00B1AAE0 f i mp.o
+46	PORTED	0002:0032b5f0 ?clamp@sAngle@kuju@@CAMM@Z 00B1AAF0 f i mp.o
+47	VERIFIED	0002:0032b650 ??0MPMajorUpdate@@QAE@XZ 00B1AB50 f i mp.o
+48	PORTED	0002:0032b710 ?Clear@MPMajorUpdate@@QAEXXZ 00B1AC10 f i mp.o
+49	PORTED	0002:0032b7d0 ?GetVehicleId@MPPlayer@@QBEEXZ 00B1ACD0 f i mp.o
+50	PORTED	0002:0032b7e0 ?IsMasterClient@MPPlayer@@QBE_NXZ 00B1ACE0 f i mp.o
+51	PORTED	0002:0032b7f0 ?SetMasterClient@MPPlayer@@QAEX_N@Z 00B1ACF0 f i mp.o
+52	PORTED	0002:0032b800 ?GetEntity@MPPlayer@@QBEPBVEntity@@XZ 00B1AD00 f i mp.o
+53	VERIFIED	0002:0032b820 ?SetName@MPPlayer@@QAEXPBD@Z 00B1AD20 f i mp.o
+54	PORTED	0002:0032b850 ?SetInVehicle@MPPlayer@@QAEX_NHE@Z 00B1AD50 f i mp.o
+55	PORTED	0002:0032b870 ?IsInVehicle@MPPlayer@@QBE_NXZ 00B1AD70 f i mp.o
+56	VERIFIED	0002:0032b880 ?IsInVehicle@MPPlayer@@QBE_NE@Z 00B1AD80 f i mp.o
+57	PORTED	0002:0032b8b0 ?GetSeatIndex@MPPlayer@@QBEHXZ 00B1ADB0 f i mp.o
+58	PORTED	0002:0032b8c0 ?SetIsPlaying@MPPlayer@@QAEX_N@Z 00B1ADC0 f i mp.o
+59	PORTED	0002:0032b8d0 ?GetIsPlaying@MPPlayer@@QBE_NXZ 00B1ADD0 f i mp.o
+60	PORTED	0002:0032b8e0 ?SetVehicleEventSequence@MPPlayer@@QAEXI@Z 00B1ADE0 f i mp.o
+61	PORTED	0002:0032b900 ?GetVehicleEventSequence@MPPlayer@@QBEIXZ 00B1AE00 f i mp.o
+62	PORTED	0002:0032b910 ?SetPlayerInfo@MPPlayer@@QAEXABF0@Z 00B1AE10 f i mp.o
+63	PORTED	0002:0032b950 ?SetPlayerStats@MPPlayer@@QAEXFFF@Z 00B1AE50 f i mp.o
+64	PORTED	0002:0032b990 ?SetXUID@MPPlayer@@QAEXABU_XUID@@@Z 00B1AE90 f i mp.o
+65	PORTED	0002:0032b9c0 ?SetPrivateSlot@MPPlayer@@QAEX_N@Z 00B1AEC0 f i mp.o
+66	PORTED	0002:0032b9e0 ?UsedPrivateSlot@MPPlayer@@QAE_NXZ 00B1AEE0 f i mp.o
+67	PORTED	0002:0032b9f0 ?SetTeam@MPPlayer@@QAEXH@Z 00B1AEF0 f i mp.o
+68	PORTED	0002:0032ba10 ?SetLastVoiceTime@MPPlayer@@QAEXJ@Z 00B1AF10 f i mp.o
+69	PORTED	0002:0032ba30 ?GetLastVoiceTime@MPPlayer@@QAEJXZ 00B1AF30 f i mp.o
+70	PORTED	0002:0032ba40 ?IsProne@MPPlayer@@QAE_NXZ 00B1AF40 f i mp.o
+71	PORTED	0002:0032ba50 ?GetLastAnimSheet@MPPlayer@@QAEHXZ 00B1AF50 f i mp.o
+72	PORTED	0002:0032ba60 ?getBitfield@MPPlayerSet@@QBEGXZ 00B1AF60 f i mp.o
+73	PORTED	0002:0032ba70 ?setBitfield@MPPlayerSet@@QAEXG@Z 00B1AF70 f i mp.o
+74	PORTED	0002:0032ba90 ?empty@MPPlayerSet@@QBEIXZ 00B1AF90 f i mp.o
+75	VERIFIED	0002:0032baa0 ?addPlayer@MPPlayerSet@@QAEXK@Z 00B1AFA0 f i mp.o
+76	VERIFIED	0002:0032bb20 ?addPlayers@MPPlayerSet@@QAEXABV1@@Z 00B1B020 f i mp.o
+77	VERIFIED	0002:0032bbc0 ?removePlayer@MPPlayerSet@@QAEXK@Z 00B1B0C0 f i mp.o
+78	PORTED	0002:0032bc40 ?clear@MPPlayerSet@@QAEXXZ 00B1B140 f i mp.o
+79	PORTED	0002:0032bc50 ?GetOccupantId@MPVehicle@@QBEEH@Z 00B1B150 f i mp.o
+80	PORTED	0002:0032bc70 ?GetOccupantCount@MPVehicle@@QBEHXZ 00B1B170 f i mp.o
+81	PORTED	0002:0032bc80 ?GetEntity@MPVehicle@@QAEPAVEntity@@XZ 00B1B180 f i mp.o
+82	PORTED	0002:0032bc90 ?GetEntity@MPVehicle@@QBEPBVEntity@@XZ 00B1B190 f i mp.o
+83	PORTED	0002:0032bca0 ?SetEntity@MPVehicle@@QAEXPAVEntity@@@Z 00B1B1A0 f i mp.o
+84	PORTED	0002:0032bcb0 ??0MPVote@@QAE@XZ 00B1B1B0 f i mp.o
+85	PORTED	0002:0032bcf0 ?Reset@MPVote@@QAEXXZ 00B1B1F0 f i mp.o
+86	PORTED	0002:0032bd50 ?LocalPlayerInGame@MPPlayerManager@@QAE_NXZ 00B1B250 f i mp.o
+87	PORTED	0002:0032bd60 ?GetVote@MPPlayerManager@@QAEPAUMPVote@@XZ 00B1B260 f i mp.o
+88	PORTED	0002:0032bd70 ?GetUpdateRateClose@MPPlayerManager@@QAEIXZ 00B1B270 f i mp.o
+89	PORTED	0002:0032bd80 ?GetUpdateRate@MPPlayerManager@@QAEIXZ 00B1B280 f i mp.o
+90	PORTED	0002:0032bd90 ?MessageBufferingEnabled@MPPlayerManager@@QAE_NXZ 00B1B290 f i mp.o
+91	PORTED	0002:0032bdb0 ?GetNumBufferedMessages@MPPlayerManager@@QAEHXZ 00B1B2B0 f i mp.o
+92	PORTED	0002:0032bdc0 ?GetVehicleEventSequence@MPPlayerManager@@AAEIXZ 00B1B2C0 f i mp.o
+93	PORTED	0002:0032bdd0 ?IncVehicleEventSequence@MPPlayerManager@@AAEXXZ 00B1B2D0 f i mp.o
+94	VERIFIED	0002:0032bde0 ??1cVoiceNetworkManager@knetuser@kuju@@UAE@XZ 00B1B2E0 f i mp.o
+95	PORTED	0002:0032bdf0 ?registerVoiceHandlerInterface@cVoiceNetworkManager@knetuser@kuju@@QAEXPAViVoiceHandlerInterface@123@@Z 00B1B2F0 f i mp.o
+96	VERIFIED	0002:0032be00 ??_EcVoiceNetworkManager@knetuser@kuju@@UAEPAXI@Z 00B1B300 f i mp.o
+97	VERIFIED	0002:0032be00 ??_GcVoiceNetworkManager@knetuser@kuju@@UAEPAXI@Z 00B1B300 f i mp.o
+98	VERIFIED	0002:0032be30 ?setPlayerDistance@cVoiceNetworkManager@knetuser@kuju@@QAEXKKM@Z 00B1B330 f i mp.o
+99	PORTED	0002:0032bf70 ?setPlayerDistance@cVoiceManager@kvoicemanager@kuju@@QAEXKKM@Z 00B1B470 f i mp.o
+100	PORTED	0002:0032bf80 ?isInitialised@cVoiceManager@kvoicemanager@kuju@@QAEIXZ 00B1B480 f i mp.o
+101	PORTED	0002:0032bf90 ?GetLanDiscovery@MPPeer@@QAEAAVMPLanDiscovery@@XZ 00B1B490 f i mp.o
+102	PORTED	0002:0032bfa0 ?GetSessionState@LiveWrapper@@QAE?AW4ESessionState@@XZ 00B1B4A0 f i mp.o
+103	PORTED	0002:0032bfb0 ?SetSessionState@LiveWrapper@@QAEXW4ESessionState@@@Z 00B1B4B0 f i mp.o
+104	PORTED	0002:0032bfc0 ?GetSession@MPLiveEngine@@QAEPAVCSession@@XZ 00B1B4C0 f i mp.o
+105	PORTED	0002:0032bfd0 ?GetCurrentQuery@MPLiveEngine@@QAEPAVQueryInterface@@XZ 00B1B4D0 f i mp.o
+106	PORTED	0002:0032bfe0 ?WasInvited@MPLiveEngine@@QAE_NXZ 00B1B4E0 f i mp.o
+107	PORTED	0002:0032bff0 ??0sServerCreateParams@@QAE@XZ 00B1B4F0 f i mp.o
+108	PORTED	0002:0032c030 ?GetMapRotation@sServerCreateParams@@QAEEXZ 00B1B530 f i mp.o
+109	PORTED	0002:0032c040 ??0sServerQueryParams@@QAE@XZ 00B1B540 f i mp.o
+110	PORTED	0002:0032c070 ?SetGameConnectionType@MPUIInterface@@SAXW4EGameConnectionType@@@Z 00B1B570 f i mp.o
+111	PORTED	0002:0032c080 ?GetCableDisconnect@MPUIInterface@@SA?B_NXZ 00B1B580 f i mp.o
+112	PORTED	0002:0032c090 ?GetNextServerParams@MPUIInterface@@SAPAUsServerCreateParams@@XZ 00B1B590 f i mp.o
+113	PORTED	0002:0032c0a0 ?SetKicked@MPUIInterface@@SAX_N@Z 00B1B5A0 f i mp.o
+114	PORTED	0002:0032c0b0 ?GetKicked@MPUIInterface@@SA_NXZ 00B1B5B0 f i mp.o
+115	PORTED	0002:0032c0c0 ?SetHostDisconnected@MPUIInterface@@SAX_N@Z 00B1B5C0 f i mp.o
+116	PORTED	0002:0032c0d0 ?GetHostDisconnected@MPUIInterface@@SA_NXZ 00B1B5D0 f i mp.o
+117	PORTED	0002:0032c0e0 ?SetHostMigrated@MPUIInterface@@SAX_N@Z 00B1B5E0 f i mp.o
+118	PORTED	0002:0032c0f0 ?GetHostMigrated@MPUIInterface@@SA_NXZ 00B1B5F0 f i mp.o
+119	PORTED	0002:0032c100 ?SetInvited@MPUIInterface@@SAX_N@Z 00B1B600 f i mp.o
+120	PORTED	0002:0032c130 ?IsLogging@MPUIInterface@@SA_NXZ 00B1B630 f i mp.o
+121	PORTED	0002:0032c140 ??2bdGameInfoFactoryImpl@@SAPAXI@Z 00B1B640 f i mp.o
+122	PORTED	0002:0032c150 ??3bdGameInfoFactoryImpl@@SAXPAX@Z 00B1B650 f i mp.o
+123	PORTED	0002:0032c160 ?Swap@clientActive_t@@QAEXPAU1@@Z 00B1B660 f i mp.o
+124	VERIFIED	0002:0032c170 ?Swap@clientConnection_t@@QAEXPAU1@@Z 00B1B670 f i mp.o
+125	PORTED	0002:0032c220 ??2bdNetImpl@@SAPAXI@Z 00B1B720 f i mp.o
+126	PORTED	0002:0032c230 ??3bdNetImpl@@SAXPAX@Z 00B1B730 f i mp.o
+127	PORTED	0002:0032c240 ?GetCurrentSelection@UIListBox@@QAEHXZ 00B1B740 f i mp.o
+128	PORTED	0002:0032c250 ?GetState@MultilineFrontendOverlayMenu@@QAE?BW4eState@1@XZ 00B1B750 f i mp.o
+129	PORTED	0002:0032c260 ?GetState@DialogMenuSystem@@QAE?BW4eState@1@XZ 00B1B760 f i mp.o
+130	VERIFIED	0002:0032c480 ?Stop@MultiplayerMgr@@QAEXXZ 00B1B980 f mp.o
+131	VERIFIED	0002:0032c4a0 ?HandleDiscError@MultiplayerMgr@@QAEXXZ 00B1B9A0 f mp.o
+132	VERIFIED	0002:0032c4b0 ?setSendInterval@MultiplayerMgr@@QAEXH@Z 00B1B9B0 f mp.o
+133	VERIFIED	0002:0032c4d0 ?getSendInterval@MultiplayerMgr@@QBEMXZ 00B1B9D0 f mp.o
+134	VERIFIED	0002:0032c4e0 ?AddTestClient@MultiplayerMgr@@QAEHXZ 00B1B9E0 f mp.o
+135	VERIFIED	0002:0032c4f0 ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z 00B1B9F0 f mp.o
+136	VERIFIED	0002:0032c530 ?getLocalTime@MultiplayerMgr@@QAE?AVsTime@knet@kuju@@XZ 00B1BA30 f mp.o
+137	VERIFIED	0002:0032c610 ?publish@MPLogSubscriber@MultiplayerMgr@@EAEXQBD00I0@Z 00B1BB10 f mp.o
+138	VERIFIED	0002:0032c6f0 ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ 00B1BBF0 f mp.o
+139	VERIFIED	0002:0032c700 ?updateLinkStatus@MultiplayerMgr@@QAEXXZ 00B1BC00 f mp.o
+140	VERIFIED	0002:0032c780 ?getLinkStatus@MultiplayerMgr@@QAE_NXZ 00B1BC80 f mp.o
+141	VERIFIED	0002:0032c790 ?getValidNetConnection@MultiplayerMgr@@QAE_NPBD@Z 00B1BC90 f mp.o
+142	VERIFIED	0002:0032c7d0 ?FromLobby@MultiplayerMgr@@QAE_NXZ 00B1BCD0 f mp.o
+143	VERIFIED	0002:0032c7e0 ?GetVoipGroup@@YA?AW4EVoipGroup@@H@Z 00B1BCE0 f mp.o
+144	VERIFIED	0002:0032c820 ??2MPPeer@@SAPAXI@Z 00B1BD20 f mp.o
+145	VERIFIED	0002:0032c840 ??3MPPeer@@SAXPAX@Z 00B1BD40 f mp.o
+146	VERIFIED	0002:0032c850 ?LeaveSession@MPPeer@@QAEXXZ 00B1BD50 f mp.o
+147	VERIFIED	0002:0032c870 ?CancelJoin@MPPeer@@QAEXXZ 00B1BD70 f mp.o
+148	VERIFIED	0002:0032c890 ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ 00B1BD90 f mp.o
+149	VERIFIED	0002:0032c8a0 ?GetPlayerManager@MPPeer@@QAEPAVMPPlayerManager@@XZ 00B1BDA0 f mp.o
+150	VERIFIED	0002:0032c8b0 ?IsHost@MPPeer@@QAE_NXZ 00B1BDB0 f mp.o
+151	VERIFIED	0002:0032c8d0 ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z 00B1BDD0 f mp.o
+152	VERIFIED	0002:0032c940 ?onSessionConnectFail@MPPeer@@EAEXXZ 00B1BE40 f mp.o
+153	VERIFIED	0002:0032ca00 ?IsQosComplete@MPPeer@@QAE_NH@Z 00B1BF00 f mp.o
+154	VERIFIED	0002:0032ca20 ?IsQosSuccessful@MPPeer@@QAE_NH@Z 00B1BF20 f mp.o
+155	VERIFIED	0002:0032ca50 ?GetQosPing@MPPeer@@QAEHH@Z 00B1BF50 f mp.o
+156	VERIFIED	0002:0032ca90 ?DeleteQosProbes@MPPeer@@QAEXXZ 00B1BF90 f mp.o
+157	VERIFIED	0002:0032cac0 ?FindAvailableQosSlot@MPPeer@@QAEHXZ 00B1BFC0 f mp.o
+158	VERIFIED	0002:0032cae0 ?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ 00B1BFE0 f mp.o
+159	VERIFIED	0002:0032caf0 ?Start@MPLanDiscovery@@QAEXXZ 00B1BFF0 f mp.o
+160	VERIFIED	0002:0032cb60 ?IsDone@MPLanDiscovery@@QAE_NXZ 00B1C060 f mp.o
+161	VERIFIED	0002:0032cb90 ?GetNumResults@MPLanDiscovery@@QBEIXZ 00B1C090 f mp.o
+162	VERIFIED	0002:0032cba0 ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z 00B1C0A0 f mp.o
+163	VERIFIED	0002:0032cc20 ?Reset@MPPlayer@@QAEX_N@Z 00B1C120 f mp.o
+164	VERIFIED	0002:0032ce70 ?IsValid@MPPlayer@@SA_NE@Z 00B1C370 f mp.o
+165	VERIFIED	0002:0032ce80 ?GetNullId@MPPlayer@@SAEXZ 00B1C380 f mp.o
+166	VERIFIED	0002:0032ce90 ?SetId@MPPlayer@@QAEXE@Z 00B1C390 f mp.o
+167	VERIFIED	0002:0032cea0 ?GetId@MPPlayer@@QBEEXZ 00B1C3A0 f mp.o
+168	VERIFIED	0002:0032ceb0 ?GetPlayerAnimationPackFlags@MPPlayer@@IAEHPAVPlayerState@@H@Z 00B1C3B0 f mp.o
+169	VERIFIED	0002:0032d070 ?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z 00B1C570 f mp.o
+170	VERIFIED	0002:0032d0e0 ?StopPartialAnimation@?A0x26f4efd5@@YAXPAVDObj@@I@Z 00B1C5E0 f mp.o
+171	VERIFIED	0002:0032d100 ?PlayAnimFlagAnim@MPPlayer@@IAEXPAVDObj@@IHHH_NMM11@Z 00B1C600 f mp.o
+172	VERIFIED	0002:0032d210 ?SwingAngles@MPPlayer@@IAEXMMMMAAMAAHHM@Z 00B1C710 f mp.o
+173	VERIFIED	0002:0032d390 ?StepLegsYaw@MPPlayer@@IAEXVsTime@knet@kuju@@HMMM@Z 00B1C890 f mp.o
+174	VERIFIED	0002:0032d9a0 ?ChooseFootYawSide@MPPlayer@@IAEHM@Z 00B1CEA0 f mp.o
+175	VERIFIED	0002:0032dad0 ?CalcLegsAnim@MPPlayer@@IAEHPAVEntity@@QAMM_N@Z 00B1CFD0 f mp.o
+176	VERIFIED	0002:0032dd70 ?GroundSurfaceType@MPPlayer@@IAEHH@Z 00B1D270 f mp.o
+177	VERIFIED	0002:0032dde0 ?FootstepEvent@MPPlayer@@IAEHH@Z 00B1D2E0 f mp.o
+178	VERIFIED	0002:0032de40 ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z 00B1D340 f mp.o
+179	VERIFIED	0002:0032df50 ?SetPosition@MPPlayer@@QAEXQBM@Z 00B1D450 f mp.o
+180	VERIFIED	0002:0032dfa0 ?GetPosition@MPPlayer@@QBEXAAY02M@Z 00B1D4A0 f mp.o
+181	VERIFIED	0002:0032dfd0 ?GetAngles@MPPlayer@@QBEXAAY02M@Z 00B1D4D0 f mp.o
+182	VERIFIED	0002:0032dff0 ?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z 00B1D4F0 f mp.o
+183	VERIFIED	0002:0032e020 ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z 00B1D520 f mp.o
+184	VERIFIED	0002:0032e050 ?GetSeatState@@YAHPAUscr_vehicle_t@@H@Z 00B1D550 f mp.o
+185	VERIFIED	0002:0032e110 ?SetSeatState@@YAXPAUscr_vehicle_t@@HH@Z 00B1D610 f mp.o
+186	VERIFIED	0002:0032e190 ??1MPVehicle@@QAE@XZ 00B1D690 f mp.o
+187	VERIFIED	0002:0032e1a0 ?ClearOccupants@MPVehicle@@QAEXXZ 00B1D6A0 f mp.o
+188	VERIFIED	0002:0032e1c0 ?Reset@MPVehicle@@QAEX_N@Z 00B1D6C0 f mp.o
+189	VERIFIED	0002:0032e430 ?IsValid@MPVehicle@@SA_NE@Z 00B1D930 f mp.o
+190	VERIFIED	0002:0032e440 ?GetNullId@MPVehicle@@SAEXZ 00B1D940 f mp.o
+191	VERIFIED	0002:0032e450 ?SetId@MPVehicle@@QAEXE@Z 00B1D950 f mp.o
+192	VERIFIED	0002:0032e460 ?GetId@MPVehicle@@QBEEXZ 00B1D960 f mp.o
+193	VERIFIED	0002:0032e470 ?IsOccupied@MPVehicle@@QBE_NXZ 00B1D970 f mp.o
+194	VERIFIED	0002:0032e480 ?IsFullyOccupied@MPVehicle@@QBE_NXZ 00B1D980 f mp.o
+195	VERIFIED	0002:0032e4a0 ?IsSeatOccupied@MPVehicle@@QBE_NH_N@Z 00B1D9A0 f mp.o
+196	VERIFIED	0002:0032e4d0 ?SetGunnerState@MPVehicle@@QAEXH@Z 00B1D9D0 f mp.o
+197	VERIFIED	0002:0032e510 ?OnModified@MPVehicle@@QAEXXZ 00B1DA10 f mp.o
+198	VERIFIED	0002:0032e5c0 ?GetInVehicle@MPVehicle@@QAEXPAVMPPlayer@@HHH@Z 00B1DAC0 f mp.o
+199	VERIFIED	0002:0032e780 ?SeatChange@MPVehicle@@QAEXPAVMPPlayer@@H@Z 00B1DC80 f mp.o
+200	VERIFIED	0002:0032e8a0 ?IsACorpse@@YA_NPBVEntity@@@Z 00B1DDA0 f mp.o
+201	VERIFIED	0002:0032e8d0 ?AddingLocalPlayer@MPPlayerManager@@QBE_NXZ 00B1DDD0 f mp.o
+202	VERIFIED	0002:0032e8e0 ?GetPlayerEntity@MPPlayerManager@@QAEPAVEntity@@E@Z 00B1DDE0 f mp.o
+203	VERIFIED	0002:0032e970 ?GetPlayerName@MPPlayerManager@@QAEPBDE@Z 00B1DE70 f mp.o
+204	VERIFIED	0002:0032e9e0 ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z 00B1DEE0 f mp.o
+205	VERIFIED	0002:0032ea10 ?AnyLocalPlayers@MPPlayerManager@@QAE_NXZ 00B1DF10 f mp.o
+206	VERIFIED	0002:0032ea30 ?IsLocalId@MPPlayerManager@@QAE_NH@Z 00B1DF30 f mp.o
+207	VERIFIED	0002:0032ea80 ?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z 00B1DF80 f mp.o
+208	VERIFIED	0002:0032eb80 ?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z 00B1E080 f mp.o
+209	VERIFIED	0002:0032ebb0 ?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z 00B1E0B0 f mp.o
+210	VERIFIED	0002:0032ec30 ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B1E130 f mp.o
+211	VERIFIED	0002:0032ec40 ?VehicleEventAddToQueue@MPPlayerManager@@AAEXW4MPVehicleEventType@@EIEHHH@Z 00B1E140 f mp.o
+212	VERIFIED	0002:0032ed50 ?DropHotJoiningPlayers@MPPlayerManager@@QAEXXZ 00B1E250 f mp.o
+213	VERIFIED	0002:0032ed90 ?getPlayerIndex@MPPlayerManager@@QAEEH@Z 00B1E290 f mp.o
+214	VERIFIED	0002:0032edb0 ?AddVehicle@MPPlayerManager@@QAEXPAVEntity@@@Z 00B1E2B0 f mp.o
+215	VERIFIED	0002:0032eeb0 ?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@PBVEntity@@@Z 00B1E3B0 f mp.o
+216	VERIFIED	0002:0032ef50 ?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@E@Z 00B1E450 f mp.o
+217	VERIFIED	0002:0032efe0 ?GetVehicleFromOccupant@MPPlayerManager@@QAEPAVMPVehicle@@PBVMPPlayer@@@Z 00B1E4E0 f mp.o
+218	VERIFIED	0002:0032f060 ?ClearStateVariables@MPPlayerManager@@AAEXXZ 00B1E560 f mp.o
+219	VERIFIED	0002:0032f190 ?IsGuest@MPPlayerManager@@QAE_NH@Z 00B1E690 f mp.o
+220	VERIFIED	0002:0032f1a0 ?PickPlayerTeam@MPPlayerManager@@AAEHQAVMPPlayer@@@Z 00B1E6A0 f mp.o
+221	VERIFIED	0002:0032f240 ?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ 00B1E740 f mp.o
+222	VERIFIED	0002:0032f250 ?DecodeAnimMatrix@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00B1E750 f mp.o
+223	VERIFIED	0002:0032f380 ?Reboot@MPUIInterface@@SAXXZ 00B1E880 f mp.o
+224	VERIFIED	0002:0032f3b0 ?SetMapRotation@sServerCreateParams@@QAEXE@Z 00B1E8B0 f mp.o
+225	VERIFIED	0002:0032f470 ?IsLANGame@MPUIInterface@@SA?B_NXZ 00B1E970 f mp.o
+226	VERIFIED	0002:0032f480 ?IsOnlineGame@MPUIInterface@@SA?B_NXZ 00B1E980 f mp.o
+227	VERIFIED	0002:0032f490 ?IsLocalGame@MPUIInterface@@SA?B_NXZ 00B1E990 f mp.o
+228	VERIFIED	0002:0032f4a0 ?CancelJoin@MPUIInterface@@SAXXZ 00B1E9A0 f mp.o
+229	VERIFIED	0002:0032f520 ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z 00B1EA20 f mp.o
+230	VERIFIED	0002:0032f540 ?GameListingStart@MPUIInterface@@SA_NXZ 00B1EA40 f mp.o
+231	VERIFIED	0002:0032f730 ?IsGameListingComplete@MPUIInterface@@SA?B_NXZ 00B1EC30 f mp.o
+232	VERIFIED	0002:0032f760 ?GameListingEnd@MPUIInterface@@SAXXZ 00B1EC60 f mp.o
+233	VERIFIED	0002:0032f770 ?GetGameTypeString@MPUIInterface@@SAPBDK@Z 00B1EC70 f mp.o
+234	VERIFIED	0002:0032f7d0 ?GetGameTypeShortString@MPUIInterface@@SAPBDK@Z 00B1ECD0 f mp.o
+235	VERIFIED	0002:0032f830 ?GetMapString@MPUIInterface@@SAPBDK@Z 00B1ED30 f mp.o
+236	VERIFIED	0002:0032f8a0 ?GetMapRotationString@MPUIInterface@@SAPBDK@Z 00B1EDA0 f mp.o
+237	VERIFIED	0002:0032f900 ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ 00B1EE00 f mp.o
+238	VERIFIED	0002:0032f910 ?GetTimeLimit@MPUIInterface@@SA?BHK@Z 00B1EE10 f mp.o
+239	VERIFIED	0002:0032f970 ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z 00B1EE70 f mp.o
+240	VERIFIED	0002:0032fa00 ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z 00B1EF00 f mp.o
+241	VERIFIED	0002:0032fb10 ?GetRoundLimitCount@MPUIInterface@@SA?BHXZ 00B1F010 f mp.o
+242	VERIFIED	0002:0032fb20 ?GetRoundLimit@MPUIInterface@@SA?BHK@Z 00B1F020 f mp.o
+243	VERIFIED	0002:0032fb80 ?GetMaxPlayersCount@MPUIInterface@@SA?BHXZ 00B1F080 f mp.o
+244	VERIFIED	0002:0032fb90 ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z 00B1F090 f mp.o
+245	VERIFIED	0002:0032fbf0 ?GetRespawnTimeCount@MPUIInterface@@SA?BHXZ 00B1F0F0 f mp.o
+246	VERIFIED	0002:0032fc00 ?GetRespawnTime@MPUIInterface@@SA?BHK@Z 00B1F100 f mp.o
+247	VERIFIED	0002:0032fc60 ?GetReturnMenu@MPUIInterface@@SA?BHXZ 00B1F160 f mp.o
+248	VERIFIED	0002:0032fc70 ?GetOptionFromValue@MPUIInterface@@SA?BHW4eSetting@1@HW4eGameType@@@Z 00B1F170 f mp.o
+249	VERIFIED	0002:0032ff40 ?InSession@MPUIInterface@@SA?B_NXZ 00B1F440 f mp.o
+250	VERIFIED	0002:0032ff60 ?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z 00B1F460 f mp.o
+251	VERIFIED	0002:0032fff0 ?StartDevice@MPUIInterface@@SAXXZ 00B1F4F0 f mp.o
+252	VERIFIED	0002:00330000 ?PlatformStart@MPUIInterface@@SAXXZ 00B1F500 f mp.o
+253	VERIFIED	0002:00330080 ?PlatformStop@MPUIInterface@@SAXXZ 00B1F580 f mp.o
+254	VERIFIED	0002:00330090 ?NextRoundMapChanges@MPUIInterface@@SA_NXZ 00B1F590 f mp.o
+255	VERIFIED	0002:003300a0 ?NextRoundMapRestart@MPUIInterface@@SA_NXZ 00B1F5A0 f mp.o
+256	VERIFIED	0002:003300d0 ?NextRoundServerParams@MPUIInterface@@SAXXZ 00B1F5D0 f mp.o
+257	VERIFIED	0002:00330220 ?getLocalAddresses@MPUIInterface@@SAXAAV?$bdArray@VbdInetAddr@@@@@Z 00B1F720 f mp.o
+258	VERIFIED	0002:00330230 ?Logging@MPUIInterface@@SAX_N@Z 00B1F730 f mp.o
+259	VERIFIED	0002:00330240 ?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z 00B1F740 f mp.o
+260	VERIFIED	0002:00330260 ??0MPPlayerSet@@QAE@W4eDefaultSets@0@@Z 00B1F760 f mp.o
+261	VERIFIED	0002:003302d0 ?highestPlayerIndex@MPPlayerSet@@QBEKXZ 00B1F7D0 f mp.o
+262	VERIFIED	0002:00330350 ?lowestPlayerIndex@MPPlayerSet@@QBEKXZ 00B1F850 f mp.o
+263	VERIFIED	0002:003303f0 ?debugString@MPPlayerSet@@QBEPBDXZ 00B1F8F0 f mp.o
+264	VERIFIED	0002:00330490 ?numberOfPlayers@MPPlayerSet@@QBEKXZ 00B1F990 f mp.o
+265	VERIFIED	0002:00330500 ??1MPGameInfo@@UAE@XZ 00B1FA00 f mp.o
+266	VERIFIED	0002:00330510 ?getSlots@MPGameInfo@@QBEXAAE000@Z 00B1FA10 f mp.o
+267	VERIFIED	0002:00330540 ?updateSlots@MPGameInfo@@QAEXDDDD@Z 00B1FA40 f mp.o
+268	VERIFIED	0002:003305b0 ?sleepSeconds@cThreadSleep@@SAXK@Z 00B1FAB0 f mp.o
+269	VERIFIED	0002:003305c0 ?sleepMilliseconds@cThreadSleep@@SAXK@Z 00B1FAC0 f mp.o
+270	VERIFIED	0002:003305d0 ?Me@MPOptionsScreenMenu@@SAPAV1@XZ 00B1FAD0 f mp.o
+271	VERIFIED	0002:003305e0 ??0MPOptionsScreenMenu@@QAE@PAVFEMenuSystem@@@Z 00B1FAE0 f mp.o
+272	VERIFIED	0002:00330630 ??1MPOptionsScreenMenu@@UAE@XZ 00B1FB30 f mp.o
+273	VERIFIED	0002:00330690 ?SetPanelFile@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z 00B1FB90 f mp.o
+274	VERIFIED	0002:003309b0 ?PanelFileUnloaded@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z 00B1FEB0 f mp.o
+275	VERIFIED	0002:003309d0 ?OnActivate@MPOptionsScreenMenu@@UAEXXZ 00B1FED0 f mp.o
+276	VERIFIED	0002:00330ac0 ?Draw@MPOptionsScreenMenu@@UAEXXZ 00B1FFC0 f mp.o
+277	VERIFIED	0002:00330af0 ?Update@MPOptionsScreenMenu@@UAEXM@Z 00B1FFF0 f mp.o
+278	VERIFIED	0002:00330b00 ?SaveOptions@MPOptionsScreenMenu@@AAE_NXZ 00B20000 f mp.o
+279	VERIFIED	0002:00330bc0 ?OnUp@MPOptionsScreenMenu@@UAEXH@Z 00B200C0 f mp.o
+280	VERIFIED	0002:00330c50 ?OnDown@MPOptionsScreenMenu@@UAEXH@Z 00B20150 f mp.o
+281	VERIFIED	0002:00330ce0 ?OnTriangle@MPOptionsScreenMenu@@UAEXH@Z 00B201E0 f mp.o
+282	VERIFIED	0002:00330d10 ?Select@MPOptionsScreenMenu@@UAEXH@Z 00B20210 f mp.o
+283	VERIFIED	0002:00330d20 ?OnCross@MPOptionsScreenMenu@@UAEXH@Z 00B20220 f mp.o
+284	VERIFIED	0002:00330d30 ?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z 00B20230 f mp.o
+285	VERIFIED	0002:00330d70 ?Me@MPOptionsSoundMenu@@SAPAV1@XZ 00B20270 f mp.o
+286	VERIFIED	0002:00330d80 ??0MPOptionsSoundMenu@@QAE@PAVFEMenuSystem@@@Z 00B20280 f mp.o
+287	VERIFIED	0002:00330de0 ??1MPOptionsSoundMenu@@UAE@XZ 00B202E0 f mp.o
+288	VERIFIED	0002:00330e40 ?SetPanelFile@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z 00B20340 f mp.o
+289	VERIFIED	0002:003311f0 ?PanelFileUnloaded@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z 00B206F0 f mp.o
+290	VERIFIED	0002:00331210 ?Draw@MPOptionsSoundMenu@@UAEXXZ 00B20710 f mp.o
+291	VERIFIED	0002:00331240 ?Update@MPOptionsSoundMenu@@UAEXM@Z 00B20740 f mp.o
+292	VERIFIED	0002:00331250 ?SetOptions@MPOptionsSoundMenu@@AAEXXZ 00B20750 f mp.o
+293	VERIFIED	0002:00331320 ?OnUp@MPOptionsSoundMenu@@UAEXH@Z 00B20820 f mp.o
+294	VERIFIED	0002:003313b0 ?OnDown@MPOptionsSoundMenu@@UAEXH@Z 00B208B0 f mp.o
+295	VERIFIED	0002:00331440 ?ButtonHeldAction@MPOptionsSoundMenu@@UAEXXZ 00B20940 f mp.o
+296	VERIFIED	0002:003314b0 ?SaveOptions@MPOptionsSoundMenu@@AAE_NXZ 00B209B0 f mp.o
+297	VERIFIED	0002:00331560 ?UpdateWidescreen@MPOptionsSoundMenu@@UAEX_N@Z 00B20A60 f mp.o
+298	VERIFIED	0002:003315a0 ?Me@MPOptionsControlsMenu@@SAPAV1@XZ 00B20AA0 f mp.o
+299	VERIFIED	0002:003315b0 ??0MPOptionsControlsMenu@@QAE@PAVFEMenuSystem@@@Z 00B20AB0 f mp.o
+300	VERIFIED	0002:00331600 ??1MPOptionsControlsMenu@@UAE@XZ 00B20B00 f mp.o
+301	VERIFIED	0002:00331660 ?SetPanelFile@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z 00B20B60 f mp.o
+302	VERIFIED	0002:00331b00 ?PanelFileUnloaded@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z 00B21000 f mp.o
+303	VERIFIED	0002:00331b20 ?Draw@MPOptionsControlsMenu@@UAEXXZ 00B21020 f mp.o
+304	VERIFIED	0002:00331b50 ?Update@MPOptionsControlsMenu@@UAEXM@Z 00B21050 f mp.o
+305	VERIFIED	0002:00331b60 ?SetOptions@MPOptionsControlsMenu@@AAEXXZ 00B21060 f mp.o
+306	VERIFIED	0002:00331ca0 ?OnUp@MPOptionsControlsMenu@@UAEXH@Z 00B211A0 f mp.o
+307	VERIFIED	0002:00331d90 ?OnDown@MPOptionsControlsMenu@@UAEXH@Z 00B21290 f mp.o
+308	VERIFIED	0002:00331e80 ?ButtonHeldAction@MPOptionsControlsMenu@@UAEXXZ 00B21380 f mp.o
+309	VERIFIED	0002:00331ef0 ?SaveOptions@MPOptionsControlsMenu@@AAE_NXZ 00B213F0 f mp.o
+310	VERIFIED	0002:003320f0 ?UpdateWidescreen@MPOptionsControlsMenu@@UAEX_N@Z 00B215F0 f mp.o
+311	VERIFIED	0002:00332130 ?Me@MPOptionsGameplayMenu@@SAPAV1@XZ 00B21630 f mp.o
+312	VERIFIED	0002:00332140 ??0MPOptionsGameplayMenu@@QAE@PAVFEMenuSystem@@@Z 00B21640 f mp.o
+313	VERIFIED	0002:00332190 ??1MPOptionsGameplayMenu@@UAE@XZ 00B21690 f mp.o
+314	VERIFIED	0002:003321f0 ?Draw@MPOptionsGameplayMenu@@UAEXXZ 00B216F0 f mp.o
+315	VERIFIED	0002:00332220 ?SetPanelFile@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z 00B21720 f mp.o
+316	VERIFIED	0002:00332540 ?PanelFileUnloaded@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z 00B21A40 f mp.o
+317	VERIFIED	0002:00332560 ?OnUp@MPOptionsGameplayMenu@@UAEXH@Z 00B21A60 f mp.o
+318	VERIFIED	0002:003325f0 ?OnDown@MPOptionsGameplayMenu@@UAEXH@Z 00B21AF0 f mp.o
+319	VERIFIED	0002:00332680 ?SetOptions@MPOptionsGameplayMenu@@AAEXXZ 00B21B80 f mp.o
+320	VERIFIED	0002:00332720 ?Update@MPOptionsGameplayMenu@@UAEXM@Z 00B21C20 f mp.o
+321	VERIFIED	0002:00332730 ?SaveOptions@MPOptionsGameplayMenu@@AAE_NXZ 00B21C30 f mp.o
+322	VERIFIED	0002:00332890 ?UpdateWidescreen@MPOptionsGameplayMenu@@UAEX_N@Z 00B21D90 f mp.o
+323	VERIFIED	0002:003328d0 ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ 00B21DD0 f mp.o
+324	VERIFIED	0002:003328e0 ??0MPOptionsPreferencesMenu@@QAE@PAVFEMenuSystem@@@Z 00B21DE0 f mp.o
+325	VERIFIED	0002:00332940 ??1MPOptionsPreferencesMenu@@UAE@XZ 00B21E40 f mp.o
+326	VERIFIED	0002:003329a0 ?SetPanelFile@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z 00B21EA0 f mp.o
+327	VERIFIED	0002:00332f30 ?PanelFileUnloaded@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z 00B22430 f mp.o
+328	VERIFIED	0002:00332f50 ?Draw@MPOptionsPreferencesMenu@@UAEXXZ 00B22450 f mp.o
+329	VERIFIED	0002:00332f80 ?Update@MPOptionsPreferencesMenu@@UAEXM@Z 00B22480 f mp.o
+330	VERIFIED	0002:00332f90 ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ 00B22490 f mp.o
+331	VERIFIED	0002:00333050 ?SaveOptions@MPOptionsPreferencesMenu@@AAE_NXZ 00B22550 f mp.o
+332	VERIFIED	0002:003331e0 ?OnUp@MPOptionsPreferencesMenu@@UAEXH@Z 00B226E0 f mp.o
+333	VERIFIED	0002:00333280 ?OnDown@MPOptionsPreferencesMenu@@UAEXH@Z 00B22780 f mp.o
+334	VERIFIED	0002:00333320 ?OnTriangle@MPOptionsPreferencesMenu@@UAEXH@Z 00B22820 f mp.o
+335	VERIFIED	0002:00333350 ?UpdateWidescreen@MPOptionsPreferencesMenu@@UAEX_N@Z 00B22850 f mp.o
+336	VERIFIED	0002:00333390 ?Me@MPProfileEditMenu@@SAPAV1@XZ 00B22890 f mp.o
+337	VERIFIED	0002:003333a0 ?Draw@MPProfileEditMenu@@UAEXXZ 00B228A0 f mp.o
+338	VERIFIED	0002:003333d0 ?Update@MPProfileEditMenu@@UAEXM@Z 00B228D0 f mp.o
+339	VERIFIED	0002:00333400 ?SetPanelFile@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z 00B22900 f mp.o
+340	VERIFIED	0002:00333640 ?PanelFileUnloaded@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z 00B22B40 f mp.o
+341	VERIFIED	0002:00333670 ?OnUp@MPProfileEditMenu@@UAEXH@Z 00B22B70 f mp.o
+342	VERIFIED	0002:003336f0 ?OnDown@MPProfileEditMenu@@UAEXH@Z 00B22BF0 f mp.o
+343	VERIFIED	0002:00333770 ?OnTriangle@MPProfileEditMenu@@UAEXH@Z 00B22C70 f mp.o
+344	VERIFIED	0002:003337a0 ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z 00B22CA0 f mp.o
+345	VERIFIED	0002:003337b0 ?Select@MPProfileEditMenu@@UAEXH@Z 00B22CB0 f mp.o
+346	VERIFIED	0002:00333820 ?OnCross@MPProfileEditMenu@@UAEXH@Z 00B22D20 f mp.o
+347	VERIFIED	0002:00333890 ?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ 00B22D90 f mp.o
+348	VERIFIED	0002:003338d0 ?UpdateWidescreen@MPProfileEditMenu@@UAEX_N@Z 00B22DD0 f mp.o
+349	VERIFIED	0002:00333910 ?Me@MPProfileMainMenu@@SAPAV1@XZ 00B22E10 f mp.o
+350	VERIFIED	0002:00333920 ??0MPProfileMainMenu@@QAE@PAVFEMenuSystem@@@Z 00B22E20 f mp.o
+351	VERIFIED	0002:003339d0 ??1MPProfileMainMenu@@UAE@XZ 00B22ED0 f mp.o
+352	VERIFIED	0002:00333a60 ?Draw@MPProfileMainMenu@@UAEXXZ 00B22F60 f mp.o
+353	VERIFIED	0002:00333a90 ?ClearEntries@MPProfileMainMenu@@QAEXXZ 00B22F90 f mp.o
+354	VERIFIED	0002:00333af0 ?LoadProfileData@MPProfileMainMenu@@SAXXZ 00B22FF0 f mp.o
+355	VERIFIED	0002:00333b20 ?UpdateWidescreen@MPProfileMainMenu@@UAEX_N@Z 00B23020 f mp.o
+356	VERIFIED	0002:00333b60 ?SetPanelFile@MPProfileMainMenu@@UAEXPAVPanelFile@@@Z 00B23060 f mp.o
+357	VERIFIED	0002:00333d80 ?OnCross@MPProfileMainMenu@@UAEXH@Z 00B23280 f mp.o
+358	VERIFIED	0002:00333d90 ?CreateProfile@MPProfileMainMenu@@QAEXXZ 00B23290 f mp.o
+359	VERIFIED	0002:00333db0 ?LoadProfilesDone@MPProfileMainMenu@@QAEXXZ 00B232B0 f mp.o
+360	VERIFIED	0002:00333eb0 ?OnSelectionChange@MPProfileMainMenu@@AAEXXZ 00B233B0 f mp.o
+361	VERIFIED	0002:003341e0 ?OnUp@MPProfileMainMenu@@UAEXH@Z 00B236E0 f mp.o
+362	VERIFIED	0002:00334220 ?ButtonHeldAction@MPProfileMainMenu@@UAEXXZ 00B23720 f mp.o
+363	VERIFIED	0002:00334250 ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z 00B23750 f mp.o
+364	VERIFIED	0002:00334270 ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z 00B23770 f mp.o
+365	VERIFIED	0002:00334280 ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z 00B23780 f mp.o
+366	VERIFIED	0002:00334290 ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z 00B23790 f mp.o
+367	VERIFIED	0002:003342b0 ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z 00B237B0 f mp.o
+368	VERIFIED	0002:003342d0 ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z 00B237D0 f mp.o
+369	VERIFIED	0002:003342e0 ??0cBezier@kuju@@QAE@XZ 00B237E0 f mp.o
+370	VERIFIED	0002:003342f0 ?reset@cBezier@kuju@@QAEXABVPosition3@math@@ABVDir3@4@01@Z 00B237F0 f mp.o
+371	VERIFIED	0002:003343a0 ?position@cBezier@kuju@@QBE?AVPosition3@math@@M@Z 00B238A0 f mp.o
+372	VERIFIED	0002:00334480 ?speed@cBezier@kuju@@QBE?AVDir3@math@@M@Z 00B23980 f mp.o
+373	VERIFIED	0002:00334560 ?speed@cBezierTrajectoryInterpolator@kuju@@QBE?AVDir3@math@@M@Z 00B23A60 f mp.o
+374	VERIFIED	0002:00334660 ?ScoreForStat@PlayerStats@@YAHHH@Z 00B23B60 f mp.o
+375	VERIFIED	0002:003346d0 ?TotalScoreForStats@PlayerStats@@YAHQAF@Z 00B23BD0 f mp.o
+376	VERIFIED	0002:003347c0 ?TotalScoreForSingleStat@PlayerStats@@YAHHH@Z 00B23CC0 f mp.o
+377	VERIFIED	0002:003347e0 ?IsStatSpecificToAPlayerClass@PlayerStats@@YA_NH@Z 00B23CE0 f mp.o
+378	VERIFIED	0002:00334850 ?GetStatSpecificToAPlayerClass@PlayerStats@@YA?AW4EPlayerClass@@H@Z 00B23D50 f mp.o
+379	VERIFIED	0002:003348b0 ??1cVoiceManager@kvoicemanager@kuju@@UAE@XZ 00B23DB0 f mp.o
+380	VERIFIED	0002:003348c0 ?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ 00B23DC0 f mp.o
+381	VERIFIED	0002:003348d0 ?setRemoteListeners@cVoiceManager@kvoicemanager@kuju@@QAEXAAVMPPlayerSet@@@Z 00B23DD0 f mp.o
+382	VERIFIED	0002:003348f0 ?receiveVoiceData@cVoiceManager@kvoicemanager@kuju@@UAEXKPAEK@Z 00B23DF0 f mp.o
+383	VERIFIED	0002:00334910 ?startSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B23E10 f mp.o
+384	VERIFIED	0002:00334950 ?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B23E50 f mp.o
+385	VERIFIED	0002:00334960 ?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B23E60 f mp.o
+386	VERIFIED	0002:00334970 ?stopLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B23E70 f mp.o
+387	VERIFIED	0002:00334980 ?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B23E80 f mp.o
+388	VERIFIED	0002:00334990 ?getDiagnostics@cVoiceManager@kvoicemanager@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z 00B23E90 f mp.o
+389	VERIFIED	0002:003349f0 ?initialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ 00B23EF0 f mp.o
+390	VERIFIED	0002:00334c30 ?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ 00B24130 f mp.o
+391	VERIFIED	0002:00334c40 ?addPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePacket@123@K@Z 00B24140 f mp.o
+392	VERIFIED	0002:00334d50 ?seqIDInList@cVoiceNetworkManager@knetuser@kuju@@AAEIKK@Z 00B24250 f mp.o
+393	VERIFIED	0002:00334d90 ?flushFirstPacketInList@cVoiceNetworkManager@knetuser@kuju@@AAEXKI@Z 00B24290 f mp.o
+394	VERIFIED	0002:00334ec0 ?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ 00B243C0 f mp.o
+395	VERIFIED	0002:00334fa0 ?addVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z 00B244A0 f mp.o
+396	VERIFIED	0002:00335080 ?discardVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z 00B24580 f mp.o
+397	VERIFIED	0002:00335250 ?checkForPendingPacketsAwaitingHandling@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z 00B24750 f mp.o
+398	VERIFIED	0002:003352c0 ?determineClosestDestination@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@AAEAAM@Z 00B247C0 f mp.o
+399	VERIFIED	0002:00335400 ?getRoutePlayerContiguous@cVoiceNetworkManager@knetuser@kuju@@AAEEEEE@Z 00B24900 f mp.o
+400	VERIFIED	0002:003355e0 ?getDiagnostics@cVoiceNetworkManager@knetuser@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z 00B24AE0 f mp.o
+401	VERIFIED	0002:003357f0 ?GetLocalPlayerId@MultiplayerMgr@@QBEHH@Z 00B24CF0 f mp.o
+402	VERIFIED	0002:00335880 ?IsHost@MultiplayerMgr@@QAE_NXZ 00B24D80 f mp.o
+403	VERIFIED	0002:003358a0 ?IsLocalClientHost@MultiplayerMgr@@QAE_NH@Z 00B24DA0 f mp.o
+404	VERIFIED	0002:003358e0 ?AddVehicle@MultiplayerMgr@@QAEXPAVEntity@@@Z 00B24DE0 f mp.o
+405	VERIFIED	0002:00335990 ?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ 00B24E90 f mp.o
+406	VERIFIED	0002:003359c0 ?DropHotJoiningPlayers@MultiplayerMgr@@QAEXXZ 00B24EC0 f mp.o
+407	VERIFIED	0002:00335a00 ?ConnectToSession@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z 00B24F00 f mp.o
+408	VERIFIED	0002:00335a70 ?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z 00B24F70 f mp.o
+409	VERIFIED	0002:00335aa0 ?IsLocalPlayer@MPPeer@@QAE_NPAVEntity@@@Z 00B24FA0 f mp.o
+410	VERIFIED	0002:00335ab0 ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B24FB0 f mp.o
+411	VERIFIED	0002:00335b80 ?UpdateQosProbe@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@_NM@Z 00B25080 f mp.o
+412	VERIFIED	0002:00335bf0 ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z 00B250F0 f mp.o
+413	VERIFIED	0002:00335c40 ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z 00B25140 f mp.o
+414	VERIFIED	0002:00335cc0 ?FindActiveQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z 00B251C0 f mp.o
+415	VERIFIED	0002:00335de0 ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z 00B252E0 f mp.o
+416	VERIFIED	0002:00335e50 ??0MPLanDiscovery@@QAE@XZ 00B25350 f mp.o
+417	VERIFIED	0002:00335ee0 ??1MPLanDiscovery@@UAE@XZ 00B253E0 f mp.o
+418	VERIFIED	0002:00335f60 ?onDiscovery@MPLanDiscovery@@MAEXV?$bdReference@VbdGameInfo@@@@@Z 00B25460 f mp.o
+419	VERIFIED	0002:00335ff0 ?IsValid@MPPlayer@@QBE_NXZ 00B254F0 f mp.o
+420	VERIFIED	0002:00336010 ?IsConnected@MPPlayer@@QBE_NXZ 00B25510 f mp.o
+421	VERIFIED	0002:00336030 ?IsLocalPlayer@MPPlayer@@QBE_NXZ 00B25530 f mp.o
+422	VERIFIED	0002:003360e0 ?SetInvalid@MPPlayer@@QAEXXZ 00B255E0 f mp.o
+423	VERIFIED	0002:00336110 ?SetConnection@MPPlayer@@QAEXV?$bdReference@VbdConnection@@@@@Z 00B25610 f mp.o
+424	VERIFIED	0002:00336190 ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ 00B25690 f mp.o
+425	VERIFIED	0002:003361b0 ?AnimEvent@MPPlayer@@QAEXHHH@Z 00B256B0 f mp.o
+426	VERIFIED	0002:00336380 ?AnimEventSpecial@MPPlayer@@QAEXH@Z 00B25880 f mp.o
+427	VERIFIED	0002:00336470 ?HandleFootstepSounds@MPPlayer@@IAEXXZ 00B25970 f mp.o
+428	VERIFIED	0002:003365f0 ?SetAngles@MPPlayer@@QAEXQBM@Z 00B25AF0 f mp.o
+429	VERIFIED	0002:00336670 ?DebugRender@MPPlayer@@QAEXXZ 00B25B70 f mp.o
+430	VERIFIED	0002:00336ec0 ?SetInvalid@MPVehicle@@QAEXXZ 00B263C0 f mp.o
+431	VERIFIED	0002:00336ee0 ?IsPhysicsPaused@MPVehicle@@QBE_NXZ 00B263E0 f mp.o
+432	VERIFIED	0002:00336f10 ?UpdateFromLocalVehicle@MPVehicle@@QAEXXZ 00B26410 f mp.o
+433	VERIFIED	0002:00337030 ?GetOutOfVehicle@MPVehicle@@QAEXPAVMPPlayer@@H_N@Z 00B26530 f mp.o
+434	VERIFIED	0002:00337210 ?RespawnVehicle@MPVehicle@@QAEXXZ 00B26710 f mp.o
+435	VERIFIED	0002:00337290 ?RelinkOccupant@MPVehicle@@QAEXPAVMPPlayer@@@Z 00B26790 f mp.o
+436	VERIFIED	0002:003373f0 ?AddLocalPlayer@MPPlayerManager@@QAEXH@Z 00B268F0 f mp.o
+437	VERIFIED	0002:003375e0 ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z 00B26AE0 f mp.o
+438	VERIFIED	0002:003376b0 ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z 00B26BB0 f mp.o
+439	VERIFIED	0002:00337770 ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z 00B26C70 f mp.o
+440	VERIFIED	0002:00337830 ?GetPlayerIndex@MPPlayerManager@@QAEHQBVEntity@@@Z 00B26D30 f mp.o
+441	VERIFIED	0002:003378d0 ?GetPlayerInfo@MPPlayerManager@@QAEIPAD@Z 00B26DD0 f mp.o
+442	VERIFIED	0002:00337930 ?SendAll@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N1@Z 00B26E30 f mp.o
+443	VERIFIED	0002:003379f0 ?CountOtherEnemiesInRange@MPPlayerManager@@QAEHPBVMPPlayer@@H@Z 00B26EF0 f mp.o
+444	VERIFIED	0002:00337b90 ?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z 00B27090 f mp.o
+445	VERIFIED	0002:00337c20 ?SendPlayer@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@_N@Z 00B27120 f mp.o
+446	VERIFIED	0002:00337da0 ?acceptSession@MPPlayerManager@@EAE_NABVbdReceivedMessage@@@Z 00B272A0 f mp.o
+447	VERIFIED	0002:003380c0 ?DispatchBufferedMessages@MPPlayerManager@@QAEXXZ 00B275C0 f mp.o
+448	VERIFIED	0002:003381b0 ?FlushBufferedMessages@MPPlayerManager@@QAEXV?$bdReference@VbdConnection@@@@@Z 00B276B0 f mp.o
+449	VERIFIED	0002:003383c0 ?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z 00B278C0 f mp.o
+450	VERIFIED	0002:003383f0 ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z 00B278F0 f mp.o
+451	VERIFIED	0002:00338440 ?SendCallVote@MPPlayerManager@@AAEXQAVMPPlayer@@@Z 00B27940 f mp.o
+452	VERIFIED	0002:00338680 ?HandleAARMapVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B27B80 f mp.o
+453	VERIFIED	0002:00338860 ?HandleAARGameModeVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B27D60 f mp.o
+454	VERIFIED	0002:00338a40 ?HandleVoteEnded@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B27F40 f mp.o
+455	VERIFIED	0002:00338b90 ?HandleSessionID@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28090 f mp.o
+456	VERIFIED	0002:00338c60 ?HandleVoiceCommUpdate@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28160 f mp.o
+457	VERIFIED	0002:00338dd0 ?HandleJoinableFlag@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B282D0 f mp.o
+458	VERIFIED	0002:00338ec0 ?HandleSDHostBombRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B283C0 f mp.o
+459	VERIFIED	0002:00339000 ?HandleSDBombOperationEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28500 f mp.o
+460	VERIFIED	0002:00339160 ?HandleSDBombExplosion@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28660 f mp.o
+461	VERIFIED	0002:00339260 ?HandleWeaponChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28760 f mp.o
+462	VERIFIED	0002:00339350 ?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28850 f mp.o
+463	VERIFIED	0002:003394a0 ?ResetVehicleEventSequenceIds@MPPlayerManager@@QAEXXZ 00B289A0 f mp.o
+464	VERIFIED	0002:00339510 ?VehicleEventProcessEvent@MPPlayerManager@@AAE_NPAUMPVehicleEvent@@@Z 00B28A10 f mp.o
+465	VERIFIED	0002:003397a0 ?VehicleEventProcessAllEvents@MPPlayerManager@@AAEXXZ 00B28CA0 f mp.o
+466	VERIFIED	0002:003397e0 ?HandleGameState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28CE0 f mp.o
+467	VERIFIED	0002:00339a90 ?HandleGameScore@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B28F90 f mp.o
+468	VERIFIED	0002:00339bc0 ?HandleGameStateDOM@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B290C0 f mp.o
+469	VERIFIED	0002:00339d60 ?HandleVoiceData@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B29260 f mp.o
+470	VERIFIED	0002:00339e90 ?HandleMute@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B29390 f mp.o
+471	VERIFIED	0002:00339fa0 ?ClientConnect@MPPlayerManager@@AAEXQAVMPPlayer@@QBM1@Z 00B294A0 f mp.o
+472	VERIFIED	0002:0033a370 ?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z 00B29870 f mp.o
+473	VERIFIED	0002:0033a4b0 ?allPlayers@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ 00B299B0 f mp.o
+474	VERIFIED	0002:0033a590 ?allPlayersButMe@MPPlayerManager@@QAE?AVMPPlayerSet@@H@Z 00B29A90 f mp.o
+475	VERIFIED	0002:0033a650 ?allPlayersButLocal@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ 00B29B50 f mp.o
+476	VERIFIED	0002:0033a700 ?Send@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@VMPPlayerSet@@_N@Z 00B29C00 f mp.o
+477	VERIFIED	0002:0033a880 ?SerializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B29D80 f mp.o
+478	VERIFIED	0002:0033a8a0 ?DeserializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B29DA0 f mp.o
+479	VERIFIED	0002:0033a8c0 ?LocalPlayerExitGame@MPPlayerManager@@QAEXXZ 00B29DC0 f mp.o
+480	VERIFIED	0002:0033a980 ?GetCurrentPlayerCount@MPPlayerManager@@QAEHXZ 00B29E80 f mp.o
+481	VERIFIED	0002:0033a9f0 ?HandleRequestPlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B29EF0 f mp.o
+482	VERIFIED	0002:0033aa30 ?WritePosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B29F30 f mp.o
+483	VERIFIED	0002:0033aae0 ?WritePositionDelta@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@MM@Z 00B29FE0 f mp.o
+484	VERIFIED	0002:0033ab50 ?ReadPositionDelta@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@MAAM@Z 00B2A050 f mp.o
+485	VERIFIED	0002:0033abf0 ?WritePosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVPosition3@math@@@Z 00B2A0F0 f mp.o
+486	VERIFIED	0002:0033aca0 ?ReadPosition@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2A1A0 f mp.o
+487	VERIFIED	0002:0033ad70 ?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2A270 f mp.o
+488	VERIFIED	0002:0033ae10 ?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVPosition3@math@@@Z 00B2A310 f mp.o
+489	VERIFIED	0002:0033aeb0 ?ReadSnappedPosition@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2A3B0 f mp.o
+490	VERIFIED	0002:0033afb0 ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2A4B0 f mp.o
+491	VERIFIED	0002:0033b020 ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z 00B2A520 f mp.o
+492	VERIFIED	0002:0033b090 ?ReadNormal@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2A590 f mp.o
+493	VERIFIED	0002:0033b120 ?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2A620 f mp.o
+494	VERIFIED	0002:0033b1f0 ?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z 00B2A6F0 f mp.o
+495	VERIFIED	0002:0033b2c0 ?ReadAngles@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2A7C0 f mp.o
+496	VERIFIED	0002:0033b400 ?WriteVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2A900 f mp.o
+497	VERIFIED	0002:0033b4d0 ?ReadVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2A9D0 f mp.o
+498	VERIFIED	0002:0033b600 ?WriteCompressedVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2AB00 f mp.o
+499	VERIFIED	0002:0033b770 ?ReadCompressedVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2AC70 f mp.o
+500	VERIFIED	0002:0033b930 ?WriteAnglesYawPitch@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z 00B2AE30 f mp.o
+501	VERIFIED	0002:0033b9e0 ?WriteAnglesYawPitch@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z 00B2AEE0 f mp.o
+502	VERIFIED	0002:0033ba90 ?ReadAnglesYawPitch@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z 00B2AF90 f mp.o
+503	VERIFIED	0002:0033bb90 ?WriteAngle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@M@Z 00B2B090 f mp.o
+504	VERIFIED	0002:0033bc10 ?ReadAngle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAM@Z 00B2B110 f mp.o
+505	VERIFIED	0002:0033bcb0 ?WriteEntityHandle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@VMPEntityHandle@@@Z 00B2B1B0 f mp.o
+506	VERIFIED	0002:0033bd20 ?ReadEntityHandle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAVMPEntityHandle@@@Z 00B2B220 f mp.o
+507	VERIFIED	0002:0033bdb0 ?WritePlayerId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z 00B2B2B0 f mp.o
+508	VERIFIED	0002:0033be10 ?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z 00B2B310 f mp.o
+509	VERIFIED	0002:0033be90 ?WriteVehicleId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z 00B2B390 f mp.o
+510	VERIFIED	0002:0033bef0 ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z 00B2B3F0 f mp.o
+511	VERIFIED	0002:0033bf70 ?WriteSeatIndex@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z 00B2B470 f mp.o
+512	VERIFIED	0002:0033bfd0 ?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z 00B2B4D0 f mp.o
+513	VERIFIED	0002:0033c050 ?WriteEntryPoint@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z 00B2B550 f mp.o
+514	VERIFIED	0002:0033c0b0 ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z 00B2B5B0 f mp.o
+515	VERIFIED	0002:0033c130 ?WritePlayerClass@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z 00B2B630 f mp.o
+516	VERIFIED	0002:0033c190 ?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z 00B2B690 f mp.o
+517	VERIFIED	0002:0033c200 ?WritePlayerTeam@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@W4team_t@@@Z 00B2B700 f mp.o
+518	VERIFIED	0002:0033c280 ?ReadPlayerTeam@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAW4team_t@@@Z 00B2B780 f mp.o
+519	VERIFIED	0002:0033c320 ?WritePlayerData@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUPlayerData@1@@Z 00B2B820 f mp.o
+520	VERIFIED	0002:0033c540 ?ReadPlayerData@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUPlayerData@1@@Z 00B2BA40 f mp.o
+521	VERIFIED	0002:0033c7c0 ?WriteUserCmd@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUusercmd_s@@@Z 00B2BCC0 f mp.o
+522	VERIFIED	0002:0033c8f0 ?ReadUserCmd@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUusercmd_s@@@Z 00B2BDF0 f mp.o
+523	VERIFIED	0002:0033cb40 ?Serialize@sServerCreateParams@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B2C040 f mp.o
+524	VERIFIED	0002:0033cd60 ?Deserialize@sServerCreateParams@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B2C260 f mp.o
+525	VERIFIED	0002:0033d000 ?SetupCvars@MPUIInterface@@SAX_N@Z 00B2C500 f mp.o
+526	VERIFIED	0002:0033d0f0 ?GetDefaultOption@MPUIInterface@@SA?BHW4eSetting@1@W4eGameType@@@Z 00B2C5F0 f mp.o
+527	VERIFIED	0002:0033d430 ?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z 00B2C930 f mp.o
+528	VERIFIED	0002:0033d4b0 ?LoadMap@MPUIInterface@@SAXH_N0@Z 00B2C9B0 f mp.o
+529	VERIFIED	0002:0033d6c0 ?ResolveVote@MPUIInterface@@SAXXZ 00B2CBC0 f mp.o
+530	VERIFIED	0002:0033d9a0 ??0MPGameInfo@@QAE@XZ 00B2CEA0 f mp.o
+531	VERIFIED	0002:0033da50 ??0MPGameInfo@@QAE@IABUXNKID@@ABUXNKEY@@V?$bdReference@VbdCommonAddr@@@@@Z 00B2CF50 f mp.o
+532	VERIFIED	0002:0033dad0 ??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@EEEE@Z 00B2CFD0 f mp.o
+533	VERIFIED	0002:0033db90 ??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@UXNKID@@UXNKEY@@EEEE@Z 00B2D090 f mp.o
+534	VERIFIED	0002:0033dc30 ?serialize@MPGameInfo@@UBEXAAVbdBitBuffer@@@Z 00B2D130 f mp.o
+535	VERIFIED	0002:0033dde0 ?deserialize@MPGameInfo@@UAE_NV?$bdReference@VbdCommonAddr@@@@AAVbdBitBuffer@@@Z 00B2D2E0 f mp.o
+536	VERIFIED	0002:0033dff0 ??8MPGameInfo@@QBE_NABV0@@Z 00B2D4F0 f mp.o
+537	VERIFIED	0002:0033e0d0 ?OnActivate@MPOptionsSoundMenu@@UAEXXZ 00B2D5D0 f mp.o
+538	VERIFIED	0002:0033e140 ?AdjustOptions@MPOptionsSoundMenu@@AAEX_N@Z 00B2D640 f mp.o
+539	VERIFIED	0002:0033e200 ?OnTriangle@MPOptionsSoundMenu@@UAEXH@Z 00B2D700 f mp.o
+540	VERIFIED	0002:0033e230 ?OnActivate@MPOptionsControlsMenu@@UAEXH@Z 00B2D730 f mp.o
+541	VERIFIED	0002:0033e340 ?OnTriangle@MPOptionsControlsMenu@@UAEXH@Z 00B2D840 f mp.o
+542	VERIFIED	0002:0033e370 ?Select@MPOptionsControlsMenu@@UAEXH@Z 00B2D870 f mp.o
+543	VERIFIED	0002:0033e3c0 ?OnCross@MPOptionsControlsMenu@@UAEXH@Z 00B2D8C0 f mp.o
+544	VERIFIED	0002:0033e400 ?OnActivate@MPOptionsGameplayMenu@@UAEXXZ 00B2D900 f mp.o
+545	VERIFIED	0002:0033e4b0 ?OnTriangle@MPOptionsGameplayMenu@@UAEXH@Z 00B2D9B0 f mp.o
+546	VERIFIED	0002:0033e4e0 ?OnActivate@MPOptionsPreferencesMenu@@UAEXXZ 00B2D9E0 f mp.o
+547	VERIFIED	0002:0033e650 ?OnActivate@MPProfileEditMenu@@UAEXH@Z 00B2DB50 f mp.o
+548	VERIFIED	0002:0033e7c0 ?OnActivate@MPProfileMainMenu@@UAEXH@Z 00B2DCC0 f mp.o
+549	VERIFIED	0002:0033e7f0 ?DialogDisplayProfileLoadSuccess@MPProfileMainMenu@@SAXH@Z 00B2DCF0 f mp.o
+550	VERIFIED	0002:0033e8d0 ?DialogDisplayLoading@MPProfileMainMenu@@QAEXXZ 00B2DDD0 f mp.o
+551	VERIFIED	0002:0033e960 ?DialogDisplaySaving@MPProfileMainMenu@@QAEXXZ 00B2DE60 f mp.o
+552	VERIFIED	0002:0033e9f0 ?DialogDisplayDeleting@MPProfileMainMenu@@QAEXXZ 00B2DEF0 f mp.o
+553	VERIFIED	0002:0033ea80 ?DialogDisplaySaveSuccess@MPProfileMainMenu@@QAEXXZ 00B2DF80 f mp.o
+554	VERIFIED	0002:0033eb60 ?DialogDisplayDeleteSuccess@MPProfileMainMenu@@QAEXXZ 00B2E060 f mp.o
+555	VERIFIED	0002:0033ec40 ?DialogDisplayNoMemDevice@MPProfileMainMenu@@QAEXXZ 00B2E140 f mp.o
+556	VERIFIED	0002:0033ed20 ?DialogDisplayDataCorrupt@MPProfileMainMenu@@QAEXXZ 00B2E220 f mp.o
+557	VERIFIED	0002:0033ee00 ?DialogDisplayNoFreeSpace@MPProfileMainMenu@@QAEXXZ 00B2E300 f mp.o
+558	VERIFIED	0002:0033eee0 ??0cBezier@kuju@@QAE@ABVPosition3@math@@ABVDir3@3@01@Z 00B2E3E0 f mp.o
+559	VERIFIED	0002:0033ef10 ??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ 00B2E410 f mp.o
+560	VERIFIED	0002:0033ef30 ?reset@cBezierTrajectoryInterpolator@kuju@@QAEXABVPosition3@math@@ABVDir3@4@M01M_N@Z 00B2E430 f mp.o
+561	VERIFIED	0002:0033f180 ?position@cBezierTrajectoryInterpolator@kuju@@QBE?AVPosition3@math@@M@Z 00B2E680 f mp.o
+562	VERIFIED	0002:0033f240 ?initialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ 00B2E740 f mp.o
+563	VERIFIED	0002:0033f290 ?deinitialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ 00B2E790 f mp.o
+564	VERIFIED	0002:0033f2a0 ??0cVoiceNetworkManager@knetuser@kuju@@QAE@XZ 00B2E7A0 f mp.o
+565	VERIFIED	0002:0033f3f0 ?resetPlayer@cVoiceNetworkManager@knetuser@kuju@@QAEXK@Z 00B2E8F0 f mp.o
+566	VERIFIED	0002:0033f630 ?getFreePacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePacket@123@XZ 00B2EB30 f mp.o
+567	VERIFIED	0002:0033f7c0 ?getFreeVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePendingDispatchPacket@123@XZ 00B2ECC0 f mp.o
+568	VERIFIED	0002:0033f8c0 ?getPlayerIndicesToSendTo@cVoiceNetworkManager@knetuser@kuju@@AAEXAAK0@Z 00B2EDC0 f mp.o
+569	VERIFIED	0002:0033fa30 ?updateVoiceBandwidthSimulation@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z 00B2EF30 f mp.o
+570	VERIFIED	0002:0033fc70 ?getRoutePlayer@cVoiceNetworkManager@knetuser@kuju@@AAEEEE@Z 00B2F170 f mp.o
+571	VERIFIED	0002:0033ffb0 ?GetCurrentPlayerCount@MultiplayerMgr@@QAEHXZ 00B2F4B0 f mp.o
+572	VERIFIED	0002:00340060 ?GetCurrentPlayerCountOnTeam@MultiplayerMgr@@QAEHH@Z 00B2F560 f mp.o
+573	VERIFIED	0002:003401e0 ?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z 00B2F6E0 f mp.o
+574	VERIFIED	0002:00340210 ?GetPlayerName@MultiplayerMgr@@QBEPBDH@Z 00B2F710 f mp.o
+575	VERIFIED	0002:00340260 ?GetPlayerId@MultiplayerMgr@@QBEHPBVEntity@@@Z 00B2F760 f mp.o
+576	VERIFIED	0002:003402f0 ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z 00B2F7F0 f mp.o
+577	VERIFIED	0002:00340310 ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@@Z 00B2F810 f mp.o
+578	VERIFIED	0002:00340390 ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@0@Z 00B2F890 f mp.o
+579	VERIFIED	0002:00340450 ?getVoiceConnection@MultiplayerMgr@@QAEPBDPBVEntity@@@Z 00B2F950 f mp.o
+580	VERIFIED	0002:00340490 ?LoadLevel@MPPeer@@QAEXH_N0@Z 00B2F990 f mp.o
+581	VERIFIED	0002:00340610 ?DropSplitScreenPlayer@MPPeer@@QAEXPAVEntity@@@Z 00B2FB10 f mp.o
+582	VERIFIED	0002:00340730 ?IsPlayerTalking@MPPeer@@QAE_NPAVEntity@@H@Z 00B2FC30 f mp.o
+583	VERIFIED	0002:00340770 ?BulletHitPlayer@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z 00B2FC70 f mp.o
+584	VERIFIED	0002:00340b40 ?AnimEvent@MPPeer@@QAEXH@Z 00B30040 f mp.o
+585	VERIFIED	0002:00340cf0 ?SpotEntity@MPPeer@@QAEXPAVEntity@@@Z 00B301F0 f mp.o
+586	VERIFIED	0002:003410a0 ?FireArtillery@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z 00B305A0 f mp.o
+587	VERIFIED	0002:00341250 ?VehicleDeath@MPPeer@@QAEXPAVEntity@@0HH@Z 00B30750 f mp.o
+588	VERIFIED	0002:00341580 ?VehicleMantled@MPPeer@@QAEXPAVEntity@@0@Z 00B30A80 f mp.o
+589	VERIFIED	0002:00341840 ?PlayerDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z 00B30D40 f mp.o
+590	VERIFIED	0002:00341b70 ?PlayerDead@MPPeer@@QAEXPAVEntity@@00HHHQBM1H@Z 00B31070 f mp.o
+591	VERIFIED	0002:003422f0 ?PlayerRespawn@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z 00B317F0 f mp.o
+592	VERIFIED	0002:003424e0 ?PlayerRevive@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@@Z 00B319E0 f mp.o
+593	VERIFIED	0002:00342670 ?PlayerReviveRequest@MPPeer@@QAEXPAVEntity@@0@Z 00B31B70 f mp.o
+594	VERIFIED	0002:003427c0 ?RoundOver@MPPeer@@QAEXHH@Z 00B31CC0 f mp.o
+595	VERIFIED	0002:00342910 ?NextRound@MPPeer@@QAEX_N@Z 00B31E10 f mp.o
+596	VERIFIED	0002:00342bb0 ?WeaponChange@MPPeer@@QAEXH@Z 00B320B0 f mp.o
+597	VERIFIED	0002:00342cc0 ?EnterGame@MPPeer@@QAEXXZ 00B321C0 f mp.o
+598	VERIFIED	0002:00342d80 ?ExitLevel@MPPeer@@QAEXXZ 00B32280 f mp.o
+599	VERIFIED	0002:00342da0 ?MapRestart@MPPeer@@QAEXXZ 00B322A0 f mp.o
+600	VERIFIED	0002:00342eb0 ?SendInitialGameState@MPPeer@@QAEXPAVEntity@@@Z 00B323B0 f mp.o
+601	VERIFIED	0002:00343040 ?SendGameState@MPPeer@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z 00B32540 f mp.o
+602	VERIFIED	0002:003432f0 ?SendGameScore@MPPeer@@QAEXHH@Z 00B327F0 f mp.o
+603	VERIFIED	0002:00343440 ?SendGameStateHQ@MPPeer@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z 00B32940 f mp.o
+604	VERIFIED	0002:00343640 ?SendGameStateCTF@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z 00B32B40 f mp.o
+605	VERIFIED	0002:003438c0 ?SendGameStateSCF@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z 00B32DC0 f mp.o
+606	VERIFIED	0002:00343ae0 ?SendGameStateDOM@MPPeer@@QAEXPAVEntity@@HHHHH@Z 00B32FE0 f mp.o
+607	VERIFIED	0002:00343cf0 ?SendGameStateSD@MPPeer@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z 00B331F0 f mp.o
+608	VERIFIED	0002:00343f30 ?SendRespawnRequest@MPPeer@@QAEXI@Z 00B33430 f mp.o
+609	VERIFIED	0002:003440f0 ?PickupItem@MPPeer@@QAEXHHPAVEntity@@_N@Z 00B335F0 f mp.o
+610	VERIFIED	0002:003442c0 ?SwapKit@MPPeer@@QAEXHH@Z 00B337C0 f mp.o
+611	VERIFIED	0002:00344400 ?AreaCaptured@MPPeer@@QAEXHHH@Z 00B33900 f mp.o
+612	VERIFIED	0002:00344550 ?AttemptToGetInVehicle@MPPeer@@QAEXPAVEntity@@0HH@Z 00B33A50 f mp.o
+613	VERIFIED	0002:003447c0 ?GetOutOfVehicle@MPPeer@@QAEXPAVEntity@@H@Z 00B33CC0 f mp.o
+614	VERIFIED	0002:00344a50 ?AttemptVehicleSeatChange@MPPeer@@QAEXPAVEntity@@0H@Z 00B33F50 f mp.o
+615	VERIFIED	0002:00344d20 ?VehicleRequestOwnership@MPPeer@@QAEXPAVEntity@@0@Z 00B34220 f mp.o
+616	VERIFIED	0002:00344f10 ?SendHostBombRequest@MPPeer@@QAEXPBVEntity@@_N@Z 00B34410 f mp.o
+617	VERIFIED	0002:00345090 ?SendBombOperation@MPPeer@@QAEXPBVEntity@@_N@Z 00B34590 f mp.o
+618	VERIFIED	0002:003451e0 ?SendBombOperationEvent@MPPeer@@QAEXPBVEntity@@_N1@Z 00B346E0 f mp.o
+619	VERIFIED	0002:003453b0 ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z 00B348B0 f mp.o
+620	VERIFIED	0002:00345510 ?SendCallForMedic@MPPeer@@QAEXPBVEntity@@@Z 00B34A10 f mp.o
+621	VERIFIED	0002:00345650 ?SendPunishTeamKill@MPPeer@@QAEXPBVEntity@@0_N@Z 00B34B50 f mp.o
+622	VERIFIED	0002:003457a0 ?SetPlayerPos@MPPeer@@QAEXPBVEntity@@QAM@Z 00B34CA0 f mp.o
+623	VERIFIED	0002:00345800 ?updateVoiceSubsystem@MPPeer@@AAEXXZ 00B34D00 f mp.o
+624	VERIFIED	0002:00345e80 ?shutdownVoiceSubsystem@MPPeer@@QAEXXZ 00B35380 f mp.o
+625	VERIFIED	0002:00345ea0 ?UpdateNumPlayers@MPPeer@@QAEXHHHH@Z 00B353A0 f mp.o
+626	VERIFIED	0002:00346050 ?GetResult@MPLanDiscovery@@QBEXIAAV?$bdReference@VbdGameInfo@@@@@Z 00B35550 f mp.o
+627	VERIFIED	0002:003460b0 ?serialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@_N1@Z 00B355B0 f mp.o
+628	VERIFIED	0002:003468d0 ?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z 00B35DD0 f mp.o
+629	VERIFIED	0002:00347710 ?UpdateInterpolation@MPPlayer@@QAEXABVsTime@knet@kuju@@@Z 00B36C10 f mp.o
+630	VERIFIED	0002:00347e80 ?SerializeDropWeapon@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HHABVPosition3@math@@ABVDir3@4@2HH@Z 00B37380 f mp.o
+631	VERIFIED	0002:00347f90 ?SerializeDropItem@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HABVPosition3@math@@ABVDir3@4@2HH@Z 00B37490 f mp.o
+632	VERIFIED	0002:00348080 ?DeserializeDropItem@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@PAM11AAH22@Z 00B37580 f mp.o
+633	VERIFIED	0002:003481d0 ?SerializeFireMissile@MPPlayerItems@@SAXV?$bdReference@VbdBitBuffer@@@@HABVPosition3@math@@ABVDir3@4@VMPEntityHandle@@@Z 00B376D0 f mp.o
+634	VERIFIED	0002:003482e0 ??0MPVehicle@@QAE@XZ 00B377E0 f mp.o
+635	VERIFIED	0002:00348320 ?serialize@MPVehicle@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B37820 f mp.o
+636	VERIFIED	0002:00348a00 ?AttemptHotJoin@MPPlayerManager@@QAEXH@Z 00B37F00 f mp.o
+637	VERIFIED	0002:00348a20 ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@QBVMPPlayer@@_N@Z 00B37F20 f mp.o
+638	VERIFIED	0002:00348b40 ?SendOtherEnemiesInRange@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@H_N@Z 00B38040 f mp.o
+639	VERIFIED	0002:00348e20 ?HandleAddPlayerRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B38320 f mp.o
+640	VERIFIED	0002:003494c0 ?HandleAddPlayerReply@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B389C0 f mp.o
+641	VERIFIED	0002:003499f0 ?WritePlayerData@MPPlayerManager@@AAEXV?$bdReference@VbdBitBuffer@@@@QAVMPPlayer@@@Z 00B38EF0 f mp.o
+642	VERIFIED	0002:00349c60 ?HandleLoadLevel@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B39160 f mp.o
+643	VERIFIED	0002:00349df0 ?HandleSpreadFire@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B392F0 f mp.o
+644	VERIFIED	0002:0034a040 ?HandleBulletHit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B39540 f mp.o
+645	VERIFIED	0002:0034a270 ?HandleBulletHitPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B39770 f mp.o
+646	VERIFIED	0002:0034a6a0 ?HandlePainFlinch@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B39BA0 f mp.o
+647	VERIFIED	0002:0034a9c0 ?HandleMelee@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B39EC0 f mp.o
+648	VERIFIED	0002:0034acc0 ?HandleSpotEntity@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3A1C0 f mp.o
+649	VERIFIED	0002:0034af20 ?HandleDenyArtillery@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3A420 f mp.o
+650	VERIFIED	0002:0034b0e0 ?HandleVehicleFireMissile@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3A5E0 f mp.o
+651	VERIFIED	0002:0034b390 ?HandleVehicleDeath@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3A890 f mp.o
+652	VERIFIED	0002:0034b770 ?HandleVehicleMantled@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3AC70 f mp.o
+653	VERIFIED	0002:0034b990 ?HandleVoteRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3AE90 f mp.o
+654	VERIFIED	0002:0034bb70 ?HandleVoteCalled@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B070 f mp.o
+655	VERIFIED	0002:0034bd60 ?HandleVoteResponse@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B260 f mp.o
+656	VERIFIED	0002:0034bfb0 ?HandleSDBombOperation@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B4B0 f mp.o
+657	VERIFIED	0002:0034c1d0 ?HandleCallForMedic@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B6D0 f mp.o
+658	VERIFIED	0002:0034c350 ?HandlePunishTeamKill@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B850 f mp.o
+659	VERIFIED	0002:0034c4e0 ?HandleAnimEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3B9E0 f mp.o
+660	VERIFIED	0002:0034c750 ?HandleServerParams@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3BC50 f mp.o
+661	VERIFIED	0002:0034c840 ?HandlePlayerDamage@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3BD40 f mp.o
+662	VERIFIED	0002:0034cb90 ?HandlePlayerRespawnRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3C090 f mp.o
+663	VERIFIED	0002:0034cda0 ?HandlePlayerReviveRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3C2A0 f mp.o
+664	VERIFIED	0002:0034d0f0 ?HandleVehicleRequestEntry@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3C5F0 f mp.o
+665	VERIFIED	0002:0034d560 ?HandleVehicleSeatChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3CA60 f mp.o
+666	VERIFIED	0002:0034d710 ?HandleVehicleRequestOwnership@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3CC10 f mp.o
+667	VERIFIED	0002:0034d9b0 ?HandleVehicleChangeOwnership@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3CEB0 f mp.o
+668	VERIFIED	0002:0034db30 ?HandleVehicleEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D030 f mp.o
+669	VERIFIED	0002:0034dd10 ?HandleVehicleExit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D210 f mp.o
+670	VERIFIED	0002:0034dea0 ?HandleInitialGameState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D3A0 f mp.o
+671	VERIFIED	0002:0034dfb0 ?HandleVehicleRespawn@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D4B0 f mp.o
+672	VERIFIED	0002:0034e0e0 ?HandleGameStateCTF@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D5E0 f mp.o
+673	VERIFIED	0002:0034e450 ?HandleGameStateHQ@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3D950 f mp.o
+674	VERIFIED	0002:0034e6d0 ?HandleGameStateSCF@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3DBD0 f mp.o
+675	VERIFIED	0002:0034e930 ?HandleGameStateSD@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3DE30 f mp.o
+676	VERIFIED	0002:0034ebd0 ?HandlePlayerStateHash@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B3E0D0 f mp.o
+677	VERIFIED	0002:0034ecd0 ?MP_ResolveAnims@@YAXXZ 00B3E1D0 f mp.o
+678	VERIFIED	0002:0034ed40 ?ExitFrontend@MPUIInterface@@SAXH@Z 00B3E240 f mp.o
+679	VERIFIED	0002:0034ed90 ?Update@MPProfileMainMenu@@UAEXM@Z 00B3E290 f mp.o
+680	VERIFIED	0002:0034ef00 ?DialogDisplayProfileLoading@MPProfileMainMenu@@QAEXH@Z 00B3E400 f mp.o
+681	VERIFIED	0002:0034efd0 ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z 00B3E4D0 f mp.o
+682	VERIFIED	0002:0034eff0 ??0cVoiceManager@kvoicemanager@kuju@@QAE@XZ 00B3E4F0 f mp.o
+683	VERIFIED	0002:0034f030 ?evaluatePlayers@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B3E530 f mp.o
+684	VERIFIED	0002:0034f120 ?handlePacket@cVoiceNetworkManager@knetuser@kuju@@UAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B3E620 f mp.o
+685	VERIFIED	0002:0034f500 ?sendVoiceData@cVoiceNetworkManager@knetuser@kuju@@QAEXVMPPlayerSet@@PAEK@Z 00B3EA00 f mp.o
+686	VERIFIED	0002:0034f6d0 ?handleDirectDestinations@cVoiceNetworkManager@knetuser@kuju@@AAEXAAVMPPlayerSet@@0K@Z 00B3EBD0 f mp.o
+687	VERIFIED	0002:0034f740 ?dispatchVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@K@Z 00B3EC40 f mp.o
+688	VERIFIED	0002:0034fb00 ?dispatchPacketDirectToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@E@Z 00B3F000 f mp.o
+689	VERIFIED	0002:0034fb90 ?dispatchPacketOnOptimalRouteToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEIABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@EAAVMPPlayerSet@@@Z 00B3F090 f mp.o
+690	VERIFIED	0002:0034fda0 ?selectVoicesAndDispatch@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@IAAVMPPlayerSet@@AAK@Z 00B3F2A0 f mp.o
+691	VERIFIED	0002:0034ff40 ?dispatchPendingVoicePackets@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@AAVMPPlayerSet@@AAK@Z 00B3F440 f mp.o
+692	VERIFIED	0002:00350000 ?checkForPendingPacketsAwaitingDispatch@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z 00B3F500 f mp.o
+693	VERIFIED	0002:003500c0 ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z 00B3F5C0 f mp.o
+694	VERIFIED	0002:003500e0 ?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z 00B3F5E0 f mp.o
+695	VERIFIED	0002:00350100 ?LoadLevel@MultiplayerMgr@@QAEXH_N0@Z 00B3F600 f mp.o
+696	VERIFIED	0002:00350170 ?IsPlayerTalking@MultiplayerMgr@@QAE_NPAVEntity@@@Z 00B3F670 f mp.o
+697	VERIFIED	0002:003501b0 ?IsLocalPlayerPhysicsOwner@MultiplayerMgr@@QAE_NPAVEntity@@_N@Z 00B3F6B0 f mp.o
+698	VERIFIED	0002:003502a0 ?BulletHitPlayer@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z 00B3F7A0 f mp.o
+699	VERIFIED	0002:00350330 ?AnimEvent@MultiplayerMgr@@QAEXH@Z 00B3F830 f mp.o
+700	VERIFIED	0002:00350350 ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z 00B3F850 f mp.o
+701	VERIFIED	0002:00350370 ?FireArtillery@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z 00B3F870 f mp.o
+702	VERIFIED	0002:00350390 ?VehicleDeath@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z 00B3F890 f mp.o
+703	VERIFIED	0002:003503b0 ?VehicleMantled@MultiplayerMgr@@QAEXPAVEntity@@0@Z 00B3F8B0 f mp.o
+704	VERIFIED	0002:003503d0 ?PlayerDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z 00B3F8D0 f mp.o
+705	VERIFIED	0002:003503f0 ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z 00B3F8F0 f mp.o
+706	VERIFIED	0002:003504b0 ?PlayerRespawn@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z 00B3F9B0 f mp.o
+707	VERIFIED	0002:00350520 ?PlayerRevive@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@@Z 00B3FA20 f mp.o
+708	VERIFIED	0002:00350590 ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z 00B3FA90 f mp.o
+709	VERIFIED	0002:00350600 ?RoundOver@MultiplayerMgr@@QAEXHH@Z 00B3FB00 f mp.o
+710	VERIFIED	0002:00350630 ?NextRound@MultiplayerMgr@@QAEX_N@Z 00B3FB30 f mp.o
+711	VERIFIED	0002:00350690 ?WeaponChange@MultiplayerMgr@@QAEXH@Z 00B3FB90 f mp.o
+712	VERIFIED	0002:003506f0 ?ExitLevel@MultiplayerMgr@@QAEXXZ 00B3FBF0 f mp.o
+713	VERIFIED	0002:00350720 ?SendInitialGameState@MultiplayerMgr@@QAEXPAVEntity@@@Z 00B3FC20 f mp.o
+714	VERIFIED	0002:00350780 ?SendGameState@MultiplayerMgr@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z 00B3FC80 f mp.o
+715	VERIFIED	0002:00350820 ?SendGameScore@MultiplayerMgr@@QAEXHH@Z 00B3FD20 f mp.o
+716	VERIFIED	0002:00350890 ?SendGameStateHQ@MultiplayerMgr@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z 00B3FD90 f mp.o
+717	VERIFIED	0002:00350910 ?SendGameStateCTF@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z 00B3FE10 f mp.o
+718	VERIFIED	0002:00350990 ?SendGameStateSCF@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z 00B3FE90 f mp.o
+719	VERIFIED	0002:00350a00 ?SendGameStateDOM@MultiplayerMgr@@QAEXPAVEntity@@HHHHH@Z 00B3FF00 f mp.o
+720	VERIFIED	0002:00350a80 ?SendGameStateSD@MultiplayerMgr@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z 00B3FF80 f mp.o
+721	VERIFIED	0002:00350b00 ?SendRespawnRequest@MultiplayerMgr@@QAEXI@Z 00B40000 f mp.o
+722	VERIFIED	0002:00350b50 ?PickupItem@MultiplayerMgr@@QAEXHHPAVEntity@@_N@Z 00B40050 f mp.o
+723	VERIFIED	0002:00350bc0 ?SwapKit@MultiplayerMgr@@QAEXHH@Z 00B400C0 f mp.o
+724	VERIFIED	0002:00350c30 ?AreaCaptured@MultiplayerMgr@@QAEXHHH@Z 00B40130 f mp.o
+725	VERIFIED	0002:00350ca0 ?AttemptToGetInVehicle@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z 00B401A0 f mp.o
+726	VERIFIED	0002:00350cc0 ?GetOutOfVehicle@MultiplayerMgr@@QAEXPAVEntity@@H@Z 00B401C0 f mp.o
+727	VERIFIED	0002:00350d30 ?AttemptVehicleSeatChange@MultiplayerMgr@@QAEXPAVEntity@@0H@Z 00B40230 f mp.o
+728	VERIFIED	0002:00350da0 ?VehicleRequestOwnership@MultiplayerMgr@@QAEXPAVEntity@@0@Z 00B402A0 f mp.o
+729	VERIFIED	0002:00350ee0 ?SendHostBombRequest@MultiplayerMgr@@QAEXPBVEntity@@_N@Z 00B403E0 f mp.o
+730	VERIFIED	0002:00350f50 ?SendBombOperation@MultiplayerMgr@@QAEXPBVEntity@@_N@Z 00B40450 f mp.o
+731	VERIFIED	0002:00350fc0 ?SendBombOperationEvent@MultiplayerMgr@@QAEXPBVEntity@@_N1@Z 00B404C0 f mp.o
+732	VERIFIED	0002:00351030 ?SendBombExplosion@MultiplayerMgr@@QAEXPBVEntity@@@Z 00B40530 f mp.o
+733	VERIFIED	0002:00351090 ?SetPlayerPos@MultiplayerMgr@@QAEXPBVEntity@@QAM@Z 00B40590 f mp.o
+734	VERIFIED	0002:00351100 ?MapRestart@MultiplayerMgr@@QAEXXZ 00B40600 f mp.o
+735	VERIFIED	0002:00351160 ?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z 00B40660 f mp.o
+736	VERIFIED	0002:00351190 ?DropSplitScreenPlayer@MultiplayerMgr@@QAEXH@Z 00B40690 f mp.o
+737	VERIFIED	0002:003511e0 ?shutdownVoiceSubsystem@MultiplayerMgr@@QAEXXZ 00B406E0 f mp.o
+738	VERIFIED	0002:00351200 ?VehicleDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z 00B40700 f mp.o
+739	VERIFIED	0002:003514f0 ?DropItem@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z 00B409F0 f mp.o
+740	VERIFIED	0002:00351650 ?InitializeVehicles@MPPeer@@QAEXXZ 00B40B50 f mp.o
+741	VERIFIED	0002:00351720 ?serializeVehicle@MPPlayer@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B40C20 f mp.o
+742	VERIFIED	0002:003519d0 ?deserializeVehicle@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@PAVMPVehicle@@@Z 00B40ED0 f mp.o
+743	VERIFIED	0002:00351d20 ?Step@MPPlayer@@QAEXXZ 00B41220 f mp.o
+744	VERIFIED	0002:00354750 ?OnModified@MPPlayer@@QAEXXZ 00B43C50 f mp.o
+745	VERIFIED	0002:00354ba0 ?Destroy@sDroppedItem@MPPlayerItems@@QAEXXZ 00B440A0 f mp.o
+746	VERIFIED	0002:00354c00 ??0MPPlayerItems@@QAE@XZ 00B44100 f mp.o
+747	VERIFIED	0002:00354c90 ?RemoveAll@MPPlayerItems@@QAEXXZ 00B44190 f mp.o
+748	VERIFIED	0002:00354f00 ?RemoveAll@MPPlayerItems@@QAEXW4EDroppedItemTypes@@@Z 00B44400 f mp.o
+749	VERIFIED	0002:00354fe0 ?RemoveItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@F@Z 00B444E0 f mp.o
+750	VERIFIED	0002:00355070 ?FindItemID@MPPlayerItems@@QAE_NW4EDroppedItemTypes@@PAVEntity@@AAF@Z 00B44570 f mp.o
+751	VERIFIED	0002:00355140 ?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z 00B44640 f mp.o
+752	VERIFIED	0002:003551f0 ?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z 00B446F0 f mp.o
+753	VERIFIED	0002:00355300 ?FindOldestItem@MPPlayerItems@@AAEFABV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@@Z 00B44800 f mp.o
+754	VERIFIED	0002:003553d0 ?deserialize@MPVehicle@@QAE_NV?$bdReference@VbdBitBuffer@@@@_NH@Z 00B448D0 f mp.o
+755	VERIFIED	0002:00355c20 ?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z 00B45120 f mp.o
+756	VERIFIED	0002:00355d80 ?UpdateInterpolation@MPVehicle@@QAEXABVsTime@knet@kuju@@@Z 00B45280 f mp.o
+757	VERIFIED	0002:003565e0 ?DebugRender@MPVehicle@@QAEXXZ 00B45AE0 f mp.o
+758	VERIFIED	0002:00357750 ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N@Z 00B46C50 f mp.o
+759	VERIFIED	0002:003577c0 ?SendPlayerEnter@MPPlayerManager@@QAEXPAVMPPlayer@@@Z 00B46CC0 f mp.o
+760	VERIFIED	0002:003578d0 ?HandlePlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B46DD0 f mp.o
+761	VERIFIED	0002:00357a20 ?HandlePlayerStatePassenger@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B46F20 f mp.o
+762	VERIFIED	0002:00357bd0 ?HandlePlayerInfo@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B470D0 f mp.o
+763	VERIFIED	0002:00357e70 ?HandlePlayerTeam@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B47370 f mp.o
+764	VERIFIED	0002:003580a0 ?HandleFireArtillery@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B475A0 f mp.o
+765	VERIFIED	0002:003584f0 ?HandleVehicleDamage@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B479F0 f mp.o
+766	VERIFIED	0002:003587a0 ?HandlePlayerDead@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B47CA0 f mp.o
+767	VERIFIED	0002:00358d00 ?HandleVehicleRequestSeatChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B48200 f mp.o
+768	VERIFIED	0002:003590c0 ?HandleVehicleState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B485C0 f mp.o
+769	VERIFIED	0002:003592d0 ?SendLocalPlayerInfo@MPPlayerManager@@QAEXPBVMPPlayer@@@Z 00B487D0 f mp.o
+770	VERIFIED	0002:00359800 ?SendPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@_N1@Z 00B48D00 f mp.o
+771	VERIFIED	0002:00359a20 ?SendLocalPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@0@Z 00B48F20 f mp.o
+772	VERIFIED	0002:00359d60 ?SerializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B49260 f mp.o
+773	VERIFIED	0002:0035a0e0 ?DeserializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B495E0 f mp.o
+774	VERIFIED	0002:0035a4f0 ?ApplyLocalPhysicsToVehicle@MPPlayerManager@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z 00B499F0 f mp.o
+775	VERIFIED	0002:0035a570 ?LocalPlayerEnterGame@MPPlayerManager@@QAEXXZ 00B49A70 f mp.o
+776	VERIFIED	0002:0035a890 ?DebugRender@MPPlayerManager@@QAEXXZ 00B49D90 f mp.o
+777	VERIFIED	0002:0035a8e0 ?NextRound@MPUIInterface@@SAXXZ 00B49DE0 f mp.o
+778	VERIFIED	0002:0035a980 ?LoadSelectedProfile@MPProfileMainMenu@@AAEX_N@Z 00B49E80 f mp.o
+779	VERIFIED	0002:0035a9e0 ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z 00B49EE0 f mp.o
+780	VERIFIED	0002:0035aad0 ?dispatchVoiceData@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B49FD0 f mp.o
+781	VERIFIED	0002:0035ac10 ?LevelLoaded@MultiplayerMgr@@QAEXXZ 00B4A110 f mp.o
+782	VERIFIED	0002:0035ac20 ?VehicleDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z 00B4A120 f mp.o
+783	VERIFIED	0002:0035ac40 ?ChangeTeam@MultiplayerMgr@@QAE_NPAVEntity@@H_N1@Z 00B4A140 f mp.o
+784	VERIFIED	0002:0035ae30 ?DropItem@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z 00B4A330 f mp.o
+785	VERIFIED	0002:0035aeb0 ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVMat43@math@@ABVDir3@4@@Z 00B4A3B0 f mp.o
+786	VERIFIED	0002:0035af40 ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z 00B4A440 f mp.o
+787	VERIFIED	0002:0035af60 ?SendServerParams@MPPeer@@QAEXXZ 00B4A460 f mp.o
+788	VERIFIED	0002:0035b0c0 ?SpreadFire@MPPeer@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z 00B4A5C0 f mp.o
+789	VERIFIED	0002:0035b330 ?BulletHit@MPPeer@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z 00B4A830 f mp.o
+790	VERIFIED	0002:0035b540 ?MeleeHit@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z 00B4AA40 f mp.o
+791	VERIFIED	0002:0035b920 ?FireMissile@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z 00B4AE20 f mp.o
+792	VERIFIED	0002:0035ba50 ?VehicleFireMissile@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z 00B4AF50 f mp.o
+793	VERIFIED	0002:0035bc40 ?ProjectileExplosion@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@EVMPEntityHandle@@@Z 00B4B140 f mp.o
+794	VERIFIED	0002:0035bde0 ?EnterLevel@MPPeer@@QAEXXZ 00B4B2E0 f mp.o
+795	VERIFIED	0002:0035be00 ?SendVehicleStates@MPPeer@@QAEXPAVEntity@@@Z 00B4B300 f mp.o
+796	VERIFIED	0002:0035bf90 ?BroadcastVehicleRespawn@MPPeer@@QAEXPAVEntity@@@Z 00B4B490 f mp.o
+797	VERIFIED	0002:0035c160 ?DropWeapon@MPPeer@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z 00B4B660 f mp.o
+798	VERIFIED	0002:0035c2a0 ?SwapWeapon@MPPeer@@QAEXHHHH@Z 00B4B7A0 f mp.o
+799	VERIFIED	0002:0035c420 ?DebugRender@MPPeer@@QAEXXZ 00B4B920 f mp.o
+800	VERIFIED	0002:0035c960 ?PlayerSpawn@MPPlayer@@QAEXQAM0@Z 00B4BE60 f mp.o
+801	VERIFIED	0002:0035cd10 ?PlayerRevive@MPPlayer@@QAEXQAM0@Z 00B4C210 f mp.o
+802	VERIFIED	0002:0035d250 ??1MPPlayerItems@@QAE@XZ 00B4C750 f mp.o
+803	VERIFIED	0002:0035d300 ?AddItem@MPPlayerItems@@QAEFW4EDroppedItemTypes@@PAVEntity@@@Z 00B4C800 f mp.o
+804	VERIFIED	0002:0035d3c0 ?FindFreeSlot@MPPlayerItems@@QAEFW4EDroppedItemTypes@@@Z 00B4C8C0 f mp.o
+805	VERIFIED	0002:0035d410 ?Step@MPVehicle@@QAEXXZ 00B4C910 f mp.o
+806	VERIFIED	0002:0035d440 ?Reset@MPPlayerManager@@QAEXXZ 00B4C940 f mp.o
+807	VERIFIED	0002:0035d590 ?Step@MPPlayerManager@@QAEXM@Z 00B4CA90 f mp.o
+808	VERIFIED	0002:0035e1e0 ?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z 00B4D6E0 f mp.o
+809	VERIFIED	0002:0035e440 ?HandlePlayerEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4D940 f mp.o
+810	VERIFIED	0002:0035e600 ?HandlePlayerSetup@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4DB00 f mp.o
+811	VERIFIED	0002:0035ed70 ?HandleMapRestart@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4E270 f mp.o
+812	VERIFIED	0002:0035edf0 ?HandlePlayerRespawn@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4E2F0 f mp.o
+813	VERIFIED	0002:0035f1f0 ?HandlePlayerRevive@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4E6F0 f mp.o
+814	VERIFIED	0002:0035f5b0 ?HandleProjectileExplosion@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4EAB0 f mp.o
+815	VERIFIED	0002:0035f870 ?HandleRoundOver@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4ED70 f mp.o
+816	VERIFIED	0002:0035fa90 ?HandleNextRound@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4EF90 f mp.o
+817	VERIFIED	0002:0035fd50 ?HandlePickupItem@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4F250 f mp.o
+818	VERIFIED	0002:0035ffa0 ?HandleVehicleStates@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4F4A0 f mp.o
+819	VERIFIED	0002:003600a0 ?SwapPlayers@MPPlayerManager@@AAEXHH@Z 00B4F5A0 f mp.o
+820	VERIFIED	0002:00360230 ?HandleDropSplitScreenPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B4F730 f mp.o
+821	VERIFIED	0002:00360450 ?RemoveDroppedItems@MPPlayerManager@@QAEXXZ 00B4F950 f mp.o
+822	VERIFIED	0002:00360480 ?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z 00B4F980 f mp.o
+823	VERIFIED	0002:00360590 ?FindDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z 00B4FA90 f mp.o
+824	VERIFIED	0002:00360690 ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z 00B4FB90 f mp.o
+825	VERIFIED	0002:00360710 ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z 00B4FC10 f mp.o
+826	VERIFIED	0002:00360f90 ?OnTriangle@MPProfileMainMenu@@UAEXH@Z 00B50490 f mp.o
+827	VERIFIED	0002:00360fe0 ?DialogDisplayProfileSelected@MPProfileMainMenu@@QAEXXZ 00B504E0 f mp.o
+828	VERIFIED	0002:003610d0 ?updateSystem@cVoiceManager@kvoicemanager@kuju@@AAEXAAVsTime@knet@3@@Z 00B505D0 f mp.o
+829	VERIFIED	0002:003610f0 ??0MultiplayerMgr@@QAE@XZ 00B505F0 f mp.o
+830	VERIFIED	0002:00361290 ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z 00B50790 f mp.o
+831	VERIFIED	0002:003612b0 ?BulletHit@MultiplayerMgr@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z 00B507B0 f mp.o
+832	VERIFIED	0002:003612d0 ?MeleeHit@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z 00B507D0 f mp.o
+833	VERIFIED	0002:003612f0 ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z 00B507F0 f mp.o
+834	VERIFIED	0002:00361320 ?VehicleFireMissile@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z 00B50820 f mp.o
+835	VERIFIED	0002:00361340 ?ProjectileExplosion@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@E0@Z 00B50840 f mp.o
+836	VERIFIED	0002:003613a0 ?EnterGame@MultiplayerMgr@@QAEXXZ 00B508A0 f mp.o
+837	VERIFIED	0002:003613d0 ?EnterLevel@MultiplayerMgr@@QAEXXZ 00B508D0 f mp.o
+838	VERIFIED	0002:00361400 ?SendVehicleStates@MultiplayerMgr@@QAEXPAVEntity@@@Z 00B50900 f mp.o
+839	VERIFIED	0002:00361460 ?BroadcastVehicleRespawn@MultiplayerMgr@@QAEXPAVEntity@@@Z 00B50960 f mp.o
+840	VERIFIED	0002:003614c0 ?RemoveDroppedItems@MultiplayerMgr@@QAEXXZ 00B509C0 f mp.o
+841	VERIFIED	0002:003614f0 ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z 00B509F0 f mp.o
+842	VERIFIED	0002:00361510 ?FindDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z 00B50A10 f mp.o
+843	VERIFIED	0002:00361550 ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HH@Z 00B50A50 f mp.o
+844	VERIFIED	0002:00361570 ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HPAV2@@Z 00B50A70 f mp.o
+845	VERIFIED	0002:003615c0 ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z 00B50AC0 f mp.o
+846	VERIFIED	0002:003615e0 ?SwapWeapon@MultiplayerMgr@@QAEXHHHH@Z 00B50AE0 f mp.o
+847	VERIFIED	0002:00361650 ?SendServerParams@MultiplayerMgr@@QAEXXZ 00B50B50 f mp.o
+848	VERIFIED	0002:003616b0 ?MPDebugRenderer@@YAXXZ 00B50BB0 f mp.o
+849	VERIFIED	0002:003616c0 ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z 00B50BC0 f mp.o
+850	VERIFIED	0002:00361710 ?Disconnect@MPPeer@@QAEXXZ 00B50C10 f mp.o
+851	VERIFIED	0002:00361770 ?AddQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@_N@Z 00B50C70 f mp.o
+852	VERIFIED	0002:00361910 ?onSessionConnectSuccess@MPPeer@@EAEXXZ 00B50E10 f mp.o
+853	VERIFIED	0002:003619d0 ?CreateLocalGameInfo@MPPeer@@AAE_NAAV?$bdReference@VMPGameInfo@@@@@Z 00B50ED0 f mp.o
+854	VERIFIED	0002:00361ce0 ??0MPPlayer@@QAE@XZ 00B511E0 f mp.o
+855	VERIFIED	0002:00361e30 ??1MPPlayer@@QAE@XZ 00B51330 f mp.o
+856	VERIFIED	0002:00361ea0 ?DeserializeDropWeapon@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@@Z 00B513A0 f mp.o
+857	VERIFIED	0002:003621a0 ?DeserializeFireMissile@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@_N@Z 00B516A0 f mp.o
+858	VERIFIED	0002:003624e0 ??1MPPlayerManager@@UAE@XZ 00B519E0 f mp.o
+859	VERIFIED	0002:003625e0 ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z 00B51AE0 f mp.o
+860	VERIFIED	0002:003626f0 ?HandlePlayerJoin@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B51BF0 f mp.o
+861	VERIFIED	0002:003629d0 ?HandleFireMissile@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B51ED0 f mp.o
+862	VERIFIED	0002:00362ae0 ?HandleGameEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B51FE0 f mp.o
+863	VERIFIED	0002:00362b40 ?HandleDropItem@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B52040 f mp.o
+864	VERIFIED	0002:00362f20 ?HandleDropWeapon@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B52420 f mp.o
+865	VERIFIED	0002:00363040 ?HandleSwapWeapon@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B52540 f mp.o
+866	VERIFIED	0002:00363420 ?HandleSwapKit@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B52920 f mp.o
+867	VERIFIED	0002:00363830 ?RegisterDroppedItem@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z 00B52D30 f mp.o
+868	VERIFIED	0002:00363960 ?GetNextDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z 00B52E60 f mp.o
+869	VERIFIED	0002:00363a10 ?HandleDroppedItems@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B52F10 f mp.o
+870	VERIFIED	0002:00363e40 ?FromXboxLive@sGameListing@@QAEXABVCDefaultResult@@@Z 00B53340 f mp.o
+871	VERIFIED	0002:00364090 ?HandleQuery@MPUIInterface@@SAXXZ 00B53590 f mp.o
+872	VERIFIED	0002:00364180 ?bdNetStart@MPUIInterface@@SAXXZ 00B53680 f mp.o
+873	VERIFIED	0002:00364210 ?Select@MPProfileMainMenu@@UAEXH@Z 00B53710 f mp.o
+874	VERIFIED	0002:003642b0 ?update@cVoiceManager@kvoicemanager@kuju@@QAEXXZ 00B537B0 f mp.o
+875	VERIFIED	0002:00364310 ?Disconnect@MultiplayerMgr@@QAEXXZ 00B53810 f mp.o
+876	VERIFIED	0002:00364370 ?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z 00B53870 f mp.o
+877	VERIFIED	0002:003643b0 ?GetNextDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z 00B538B0 f mp.o
+878	VERIFIED	0002:003643f0 ??1MPPeer@@UAE@XZ 00B538F0 f mp.o
+879	VERIFIED	0002:00364520 ?Step@MPPeer@@QAEXM_N@Z 00B53A20 f mp.o
+880	VERIFIED	0002:00364620 ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z 00B53B20 f mp.o
+881	VERIFIED	0002:003646e0 ?onSessionStatusChange@MPPeer@@EAEXW4bdSessionStatus@bdSession@@0@Z 00B53BE0 f mp.o
+882	VERIFIED	0002:00364c50 ??0MPPlayerManager@@QAE@QAVbdSession@@@Z 00B54150 f mp.o
+883	VERIFIED	0002:00365360 ?ExitGame@MPUIInterface@@SAXXZ 00B54860 f mp.o
+884	VERIFIED	0002:00365430 ??0MPPeer@@QAE@XZ 00B54930 f mp.o
+885	VERIFIED	0002:003655e0 ?CreateGame@MPPeer@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z 00B54AE0 f mp.o
+886	VERIFIED	0002:003656c0 ??0MPProfileEditMenu@@QAE@PAVFEMenuSystem@@@Z 00B54BC0 f mp.o
+887	VERIFIED	0002:00365750 ??1MPProfileEditMenu@@UAE@XZ 00B54C50 f mp.o
+888	VERIFIED	0002:003657c0 ?Step@MultiplayerMgr@@QAEXH_N0@Z 00B54CC0 f mp.o
+889	VERIFIED	0002:00365d40 ?CreateGame@MultiplayerMgr@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z 00B55240 f mp.o
+890	VERIFIED	0002:00365db0 ?run@MPLevelLoader@@UAEIPAX@Z 00B552B0 f mp.o
+891	VERIFIED	0002:00365e00 ?BlockUntilNetReady@MPUIInterface@@SA_NXZ 00B55300 f mp.o
+892	VERIFIED	0002:00365e50 ?Step@MPUIInterface@@SAXXZ 00B55350 f mp.o
+893	VERIFIED	0002:00365fc0 ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z 00B554C0 f mp.o
+894	VERIFIED	0002:00366000 ?bdNetStop@MPUIInterface@@SAXXZ 00B55500 f mp.o
+895	VERIFIED	0002:00366060 ??1MultiplayerMgr@@QAE@XZ 00B55560 f mp.o
+896	VERIFIED	0002:003660e0 ?StartGame@MPUIInterface@@SA_N_N0@Z 00B555E0 f mp.o
+897	VERIFIED	0002:00366260 ?StartServer@MPUIInterface@@SA?B_N_N0@Z 00B55760 f mp.o
+898	VERIFIED	0002:003663e0 ?StartClient@MPUIInterface@@SA?B_NAAUsGameListing@@_NH@Z 00B558E0 f mp.o
+899	VERIFIED	0002:00366510 ?StartDevServer@MultiplayerMgr@@QAEXXZ 00B55A10 f mp.o
+900	VERIFIED	0002:00374fd0 ??0MPLogSubscriber@MultiplayerMgr@@QAE@XZ 00B644D0 f i mp.o
+901	VERIFIED	0002:00374ff0 ??1MPLogSubscriber@MultiplayerMgr@@UAE@XZ 00B644F0 f i mp.o
+902	VERIFIED	0002:00375000 ??_EMPLogSubscriber@MultiplayerMgr@@UAEPAXI@Z 00B64500 f i mp.o
+903	VERIFIED	0002:00375000 ??_GMPLogSubscriber@MultiplayerMgr@@UAEPAXI@Z 00B64500 f i mp.o
+904	VERIFIED	0002:00375030 ??0?$bdCreatorBase@VbdGameInfo@@@@QAE@XZ 00B64530 f i mp.o
+905	VERIFIED	0002:00375040 ?SetModifierFrame@AnimationPlayer@@QAEXIM@Z 00B64540 f i mp.o
+906	VERIFIED	0002:00375080 ?SetModifierType@AnimationPlayer@@QAEXIW4AnimationPlayerModifierType@1@@Z 00B64580 f i mp.o
+907	VERIFIED	0002:003750c0 ?StopAnims@AnimationPlayer@@QAEXXZ 00B645C0 f i mp.o
+908	PORTED	0002:00375150 ?GetCurrentAnimTime@AnimationPlayer@@QAEMXZ 00B64650 f i mp.o
+909	PORTED	0002:00375160 ?IsModifierRunning@AnimationPlayer@@QAEII@Z 00B64660 f i mp.o
+910	VERIFIED	0002:00375190 ?SetModifierCallback@AnimationPlayer@@QAEXIPAVnalAnimCallback@1@@Z 00B64690 f i mp.o
+911	VERIFIED	0002:003751c0 ?SetModifierAlpha@AnimationPlayer@@QAE_NIMPAVnalGenericAnim@nalGeneric@@M@Z 00B646C0 f i mp.o
+912	VERIFIED	0002:00375230 ?SetModifierSpeed@AnimationPlayer@@QAE_NIMPAVnalGenericAnim@nalGeneric@@M@Z 00B64730 f i mp.o
+913	VERIFIED	0002:003752a0 ?GetModifierAnim@AnimationPlayer@@QAEPAVnalGenericAnim@nalGeneric@@I@Z 00B647A0 f i mp.o
+914	VERIFIED	0002:003752e0 ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@MI@Z 00B647E0 f i mp.o
+915	VERIFIED	0002:00375320 ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@W4AnimationPlayerModifierType@1@MI@Z 00B64820 f i mp.o
+916	PORTED	0002:00375370 ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@MIMMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@M@Z 00B64870 f i mp.o
+917	VERIFIED	0002:003753c0 ?IsIdle@AnimationPlayer@@QAE_NXZ 00B648C0 f i mp.o
+918	VERIFIED	0002:00375480 ?IsIdleNonTorso@AnimationPlayer@@QAE_N_N@Z 00B64980 f i mp.o
+919	VERIFIED	0002:00375580 ?IsTorsoAnimPlaying@AnimationPlayer@@QAE_NXZ 00B64A80 f i mp.o
+920	PORTED	0002:003755e0 ??0DebugPhysicsParams@PlayerDebug@@QAE@XZ 00B64AE0 f i mp.o
+921	PORTED	0002:003755f0 ??0__unnamed@MPPlayer@@QAE@XZ 00B64AF0 f i mp.o
+922	PORTED	0002:00375600 ??0DebugPhysicsParams@VehicleDebug@@QAE@XZ 00B64B00 f i mp.o
+923	PORTED	0002:00375610 ??4ITitlePlayersListItem@@QAEAAU0@ABU0@@Z 00B64B10 f i mp.o
+924	PORTED	0002:00375620 ?Init@MPOptionsScreenMenu@@UAEXXZ 00B64B20 f i mp.o
+925	PORTED	0002:00375630 ?SetAlpha@FESlider@@QAEXM@Z 00B64B30 f i mp.o
+926	PORTED	0002:00375650 ?Init@MPOptionsSoundMenu@@UAEXXZ 00B64B50 f i mp.o
+927	PORTED	0002:00375660 ?Init@MPOptionsControlsMenu@@UAEXXZ 00B64B60 f i mp.o
+928	PORTED	0002:00375670 ?Init@MPOptionsGameplayMenu@@UAEXXZ 00B64B70 f i mp.o
+929	PORTED	0002:00375680 ?Init@MPOptionsPreferencesMenu@@UAEXXZ 00B64B80 f i mp.o
+930	PORTED	0002:00375690 ?Init@MPProfileMainMenu@@UAEXXZ 00B64B90 f i mp.o
+931	PORTED	0002:003756a0 ??0?$tLinearInterpolator@VPosition3@math@@@kuju@@QAE@XZ 00B64BA0 f i mp.o
+932	PORTED	0002:003756b0 ??0iVoiceHandlerInterface@cVoiceNetworkManager@knetuser@kuju@@QAE@XZ 00B64BB0 f i mp.o
+933	PORTED	0002:003756c0 ?receiveVoiceData@iVoiceHandlerInterface@cVoiceNetworkManager@knetuser@kuju@@UAEXKPAEK@Z 00B64BC0 f i mp.o
+934	PORTED	0002:003756d0 ??0sVoicePacket@cVoiceNetworkManager@knetuser@kuju@@QAE@XZ 00B64BD0 f i mp.o
+935	VERIFIED	0002:003756e0 ??0sVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@QAE@XZ 00B64BE0 f i mp.o
+936	PORTED	0002:00375700 ?reset@?$tLinearInterpolator@VPosition3@math@@@kuju@@QAEXABVPosition3@math@@M0M@Z 00B64C00 f i mp.o
+937	PORTED	0002:00375770 ?get@?$tLinearInterpolator@VPosition3@math@@@kuju@@QBE?AVPosition3@math@@M@Z 00B64C70 f i mp.o
+938	VERIFIED	0002:00375850 ??0?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAE@XZ 00B64D50 f i mp.o
+939	PORTED	0002:00375860 ?size@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QBEHXZ 00B64D60 f i mp.o
+940	PORTED	0002:00375870 ??A?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QBEABUsDroppedItem@MPPlayerItems@@H@Z 00B64D70 f i mp.o
+941	VERIFIED	0002:003758f0 ??A?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAEAAUsDroppedItem@MPPlayerItems@@H@Z 00B64DF0 f i mp.o
+942	PORTED	0002:00375970 ?reset@?$tAngularInterpolator@M@@QAEXABMM0M@Z 00B64E70 f i mp.o
+943	PORTED	0002:00375a70 ?get@?$tAngularInterpolator@M@@QBEMM@Z 00B64F70 f i mp.o
+944	PORTED	0002:00375b50 ?reset@?$tLinearInterpolator@M@kuju@@QAEXABMM0M@Z 00B65050 f i mp.o
+945	PORTED	0002:00375b90 ?get@?$tLinearInterpolator@M@kuju@@QBEMM@Z 00B65090 f i mp.o
+946	PORTED	0002:00375bf0 ??2?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@SAPAXI@Z 00B650F0 f i mp.o
+947	PORTED	0002:00375c00 ?begin@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAEPAUsDroppedItem@MPPlayerItems@@XZ 00B65100 f i mp.o
+948	PORTED	0002:00375c10 ?end@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAEPAUsDroppedItem@MPPlayerItems@@XZ 00B65110 f i mp.o
+949	VERIFIED	0002:00375c20 ?destroy_all@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@AAEXXZ 00B65120 f i mp.o
+950	PORTED	0002:00375c50 ??0?$bdFastArray@P6AXXZ@@QAE@XZ 00B65150 f i mp.o
+951	PORTED	0002:00375c60 ?getSize@?$bdFastArray@E@@QBEIXZ 00B65160 f i mp.o
+952	PORTED	0002:00375c70 ??$endianSwap@F@bdBitBuffer@@SAXABFAAF@Z 00B65170 f i mp.o
+953	PORTED	0002:00375c90 ??$endianSwap@G@bdBitBuffer@@SAXABGAAG@Z 00B65190 f i mp.o
+954	PORTED	0002:00375cb0 ??$endianSwap@H@bdBitBuffer@@SAXABHAAH@Z 00B651B0 f i mp.o
+955	PORTED	0002:00375cd0 ??$endianSwap@I@bdBitBuffer@@SAXABIAAI@Z 00B651D0 f i mp.o
+956	PORTED	0002:00375cf0 ??$endianSwap@M@bdBitBuffer@@SAXABMAAM@Z 00B651F0 f i mp.o
+957	PORTED	0002:00375d10 ?begin@?$bdFastArray@D@@QAEPADXZ 00B65210 f i mp.o
+958	PORTED	0002:00375d20 ??0?$bdReference@VbdCommonAddr@@@@QAE@ABV0@@Z 00B65220 f i mp.o
+959	VERIFIED	0002:00375d40 ??0?$bdReference@VbdCommonAddr@@@@QAE@PAVbdCommonAddr@@@Z 00B65240 f i mp.o
+960	VERIFIED	0002:00375d60 ??0?$bdReference@VbdCommonAddr@@@@QAE@XZ 00B65260 f i mp.o
+961	PORTED	0002:00375d70 ??1?$bdReference@VbdCommonAddr@@@@QAE@XZ 00B65270 f i mp.o
+962	PORTED	0002:00375da0 ??4?$bdReference@VbdCommonAddr@@@@QAEABV0@ABV0@@Z 00B652A0 f i mp.o
+963	PORTED	0002:00375df0 ??4?$bdReference@VbdCommonAddr@@@@QAEXPAVbdCommonAddr@@@Z 00B652F0 f i mp.o
+964	PORTED	0002:00375e30 ??C?$bdReference@VbdCommonAddr@@@@QBEPAVbdCommonAddr@@XZ 00B65330 f i mp.o
+965	PORTED	0002:00375e40 ??C?$bdReference@VbdCommonAddr@@@@QAEPAVbdCommonAddr@@XZ 00B65340 f i mp.o
+966	PORTED	0002:00375e50 ??D?$bdReference@VbdCommonAddr@@@@QBEABVbdCommonAddr@@XZ 00B65350 f i mp.o
+967	VERIFIED	0002:00375e60 ??0?$bdReference@VbdMessage@@@@QAE@XZ 00B65360 f i mp.o
+968	PORTED	0002:00375e70 ??4?$bdReference@VbdMessage@@@@QAEABV0@ABV0@@Z 00B65370 f i mp.o
+969	PORTED	0002:00375ec0 ??4?$bdReference@VbdMessage@@@@QAEXPAVbdMessage@@@Z 00B653C0 f i mp.o
+970	PORTED	0002:00375f00 ??C?$bdReference@VbdMessage@@@@QBEPAVbdMessage@@XZ 00B65400 f i mp.o
+971	PORTED	0002:00375f10 ??0?$bdReference@VbdConnection@@@@QAE@ABV0@@Z 00B65410 f i mp.o
+972	VERIFIED	0002:00375f30 ??0?$bdReference@VbdConnection@@@@QAE@XZ 00B65430 f i mp.o
+973	PORTED	0002:00375f40 ??1?$bdReference@VbdConnection@@@@QAE@XZ 00B65440 f i mp.o
+974	PORTED	0002:00375f70 ??4?$bdReference@VbdConnection@@@@QAEABV0@ABV0@@Z 00B65470 f i mp.o
+975	PORTED	0002:00375fc0 ??4?$bdReference@VbdConnection@@@@QAEXPAVbdConnection@@@Z 00B654C0 f i mp.o
+976	PORTED	0002:00376000 ??7?$bdReference@VbdConnection@@@@QBE_NXZ 00B65500 f i mp.o
+977	PORTED	0002:00376010 ?notNull@?$bdReference@VbdConnection@@@@QBE_NXZ 00B65510 f i mp.o
+978	PORTED	0002:00376020 ??B?$bdReference@VbdConnection@@@@QAEPAVbdConnection@@XZ 00B65520 f i mp.o
+979	PORTED	0002:00376030 ??C?$bdReference@VbdConnection@@@@QBEPAVbdConnection@@XZ 00B65530 f i mp.o
+980	PORTED	0002:00376040 ??C?$bdReference@VbdConnection@@@@QAEPAVbdConnection@@XZ 00B65540 f i mp.o
+981	PORTED	0002:00376050 ??0?$bdReference@VbdGameInfo@@@@QAE@ABV0@@Z 00B65550 f i mp.o
+982	VERIFIED	0002:00376070 ??0?$bdReference@VbdGameInfo@@@@QAE@XZ 00B65570 f i mp.o
+983	PORTED	0002:00376080 ??1?$bdReference@VbdGameInfo@@@@QAE@XZ 00B65580 f i mp.o
+984	PORTED	0002:003760b0 ??4?$bdReference@VbdGameInfo@@@@QAEABV0@ABV0@@Z 00B655B0 f i mp.o
+985	PORTED	0002:00376100 ??4?$bdReference@VbdGameInfo@@@@QAEXPAVbdGameInfo@@@Z 00B65600 f i mp.o
+986	PORTED	0002:00376140 ??0?$bdReference@VMPGameInfo@@@@QAE@PAVMPGameInfo@@@Z 00B65640 f i mp.o
+987	VERIFIED	0002:00376160 ??0?$bdReference@VMPGameInfo@@@@QAE@XZ 00B65660 f i mp.o
+988	PORTED	0002:00376170 ??1?$bdReference@VMPGameInfo@@@@QAE@XZ 00B65670 f i mp.o
+989	PORTED	0002:003761a0 ??4?$bdReference@VMPGameInfo@@@@QAEABV0@ABV0@@Z 00B656A0 f i mp.o
+990	PORTED	0002:003761f0 ??4?$bdReference@VMPGameInfo@@@@QAEXPAVMPGameInfo@@@Z 00B656F0 f i mp.o
+991	PORTED	0002:00376230 ?isNull@?$bdReference@VMPGameInfo@@@@QBE_NXZ 00B65730 f i mp.o
+992	PORTED	0002:00376240 ??C?$bdReference@VMPGameInfo@@@@QBEPAVMPGameInfo@@XZ 00B65740 f i mp.o
+993	PORTED	0002:00376250 ??C?$bdReference@VMPGameInfo@@@@QAEPAVMPGameInfo@@XZ 00B65750 f i mp.o
+994	PORTED	0002:00376260 ??0?$bdReference@VbdBitBuffer@@@@QAE@ABV0@@Z 00B65760 f i mp.o
+995	PORTED	0002:00376280 ??4?$bdReference@VbdBitBuffer@@@@QAEABV0@ABV0@@Z 00B65780 f i mp.o
+996	PORTED	0002:003762d0 ??C?$bdReference@VbdBitBuffer@@@@QBEPAVbdBitBuffer@@XZ 00B657D0 f i mp.o
+997	PORTED	0002:003762e0 ??1?$bdReference@VbdByteBuffer@@@@QAE@XZ 00B657E0 f i mp.o
+998	PORTED	0002:00376310 ??C?$bdReference@VbdByteBuffer@@@@QAEPAVbdByteBuffer@@XZ 00B65810 f i mp.o
+999	PORTED	0002:00376320 ??0?$bdArray@VbdString@@@@QAE@XZ 00B65820 f i mp.o
+1000	PORTED	0002:00376330 ??0?$bdArray@VbdInetAddr@@@@QAE@XZ 00B65830 f i mp.o
+1001	VERIFIED	0002:00376340 ??1?$bdCreatorBase@VbdGameInfo@@@@UAE@XZ 00B65840 f i mp.o
+1002	PORTED	0002:00376350 ??$?0VMPGameInfo@@@?$bdReference@VbdGameInfo@@@@QAE@AAV?$bdReference@VMPGameInfo@@@@@Z 00B65850 f i mp.o
+1003	PORTED	0002:00376370 ??$?8VbdCommonAddr@@@?$bdReference@VbdCommonAddr@@@@QBE_NABV0@@Z 00B65870 f i mp.o
+1004	PORTED	0002:00376390 ??$?8VbdConnection@@@?$bdReference@VbdConnection@@@@QBE_NABV0@@Z 00B65890 f i mp.o
+1005	PORTED	0002:003763b0 ??$?0VMPGameInfo@@@?$bdReference@VMPGameInfo@@@@QAE@AAV0@@Z 00B658B0 f i mp.o
+1006	PORTED	0002:003763d0 ??$readFull@UXNKID@@@bdBitBuffer@@QAE_NAAUXNKID@@@Z 00B658D0 f i mp.o
+1007	PORTED	0002:00376400 ??$readFull@W4_UIX_VOICE_STATUS_TYPE@@@bdBitBuffer@@QAE_NAAW4_UIX_VOICE_STATUS_TYPE@@@Z 00B65900 f i mp.o
+1008	PORTED	0002:00376430 ??$readFull@U_XUID@@@bdBitBuffer@@QAE_NAAU_XUID@@@Z 00B65930 f i mp.o
+1009	PORTED	0002:00376460 ??$writeFull@$$BY0BI@$$CBD@bdBitBuffer@@QAEXAAY0BI@$$CBD@Z 00B65960 f i mp.o
+1010	PORTED	0002:00376490 ??$readFull@$$BY0BI@D@bdBitBuffer@@QAE_NAAY0BI@D@Z 00B65990 f i mp.o
+1011	PORTED	0002:003764c0 ??_GbdGameInfoFactoryImpl@@IAEPAXI@Z 00B659C0 f i mp.o
+1012	PORTED	0002:003764f0 ?destroyInstance@?$bdSingleton@VbdLogImpl@@@@SAXXZ 00B659F0 f i mp.o
+1013	PORTED	0002:00376520 ?copyObjectObject@?$bdFastArray@P6AXXZ@@IBEXPAP6AXXZABQ6AXXZ@Z 00B65A20 f i mp.o
+1014	PORTED	0002:00376540 ??$bdAllocate@D@@YAPADI@Z 00B65A40 f i mp.o
+1015	PORTED	0002:00376550 ?copyObjectObject@?$bdFastArray@D@@IBEXPADABD@Z 00B65A50 f i mp.o
+1016	PORTED	0002:00376570 ??C?$bdReference@VbdGameInfo@@@@QAEPAVbdGameInfo@@XZ 00B65A70 f i mp.o
+1017	PORTED	0002:00376580 ?destroyInstance@?$bdSingleton@VbdGameInfoFactoryImpl@@@@SAXXZ 00B65A80 f i mp.o
+1018	PORTED	0002:003765b0 ?copyConstructObjectObject@?$bdArray@VbdString@@@@IBEXPAVbdString@@ABV2@@Z 00B65AB0 f i mp.o
+1019	PORTED	0002:00376610 ??$bdDeallocate@VbdString@@@@YAXPAVbdString@@@Z 00B65B10 f i mp.o
+1020	PORTED	0002:00376620 ?destroyInstance@?$bdSingleton@VbdNetImpl@@@@SAXXZ 00B65B20 f i mp.o
+1021	VERIFIED	0002:00376650 ??_GbdString@@QAEPAXI@Z 00B65B50 f i mp.o
+1022	PORTED	0002:00376680 ?destroyInstance@?$bdSingleton@VbdSingletonRegistryImpl@@@@SAXXZ 00B65B80 f i mp.o
+1023	PORTED	0002:003766b0 ?copyArrayArray@?$bdFastArray@P6AXXZ@@IBEXPAP6AXXZPBQ6AXXZI@Z 00B65BB0 f i mp.o
+1024	PORTED	0002:003766d0 ??$bdAllocate@P6AXXZ@@YAPAP6AXXZI@Z 00B65BD0 f i mp.o
+1025	PORTED	0002:003766f0 ??$bdDeallocate@P6AXXZ@@YAXPAP6AXXZ@Z 00B65BF0 f i mp.o
+1026	PORTED	0002:00376700 ?copyArrayArray@?$bdFastArray@D@@IBEXPADPBDI@Z 00B65C00 f i mp.o
+1027	PORTED	0002:00376730 ??$bdDeallocate@D@@YAXPAD@Z 00B65C30 f i mp.o
+1028	PORTED	0002:00376740 ?copyConstructArrayArray@?$bdArray@VbdString@@@@IBEXPAVbdString@@PBV2@I@Z 00B65C40 f i mp.o
+1029	PORTED	0002:003767d0 ??$bdAllocate@VbdString@@@@YAPAVbdString@@I@Z 00B65CD0 f i mp.o
+1030	PORTED	0002:003767f0 ??$bdDeallocate@VbdInetAddr@@@@YAXPAVbdInetAddr@@@Z 00B65CF0 f i mp.o
+1031	PORTED	0002:00376800 ??_GbdInetAddr@@QAEPAXI@Z 00B65D00 f i mp.o
+1032	VERIFIED	0002:00376830 ?bdSnprintf@@YAHPADIPBDZZ 00B65D30 f i mp.o
+1033	VERIFIED	0002:00376880 ?getDataSize@bdBitBuffer@@QBEIXZ 00B65D80 f i mp.o
+1034	VERIFIED	0002:00376890 ?writeInt16@bdBitBuffer@@QAEXF@Z 00B65D90 f i mp.o
+1035	VERIFIED	0002:003768d0 ?writeUInt16@bdBitBuffer@@QAEXG@Z 00B65DD0 f i mp.o
+1036	VERIFIED	0002:00376910 ?writeInt32@bdBitBuffer@@QAEXH@Z 00B65E10 f i mp.o
+1037	VERIFIED	0002:00376950 ?writeUInt32@bdBitBuffer@@QAEXI@Z 00B65E50 f i mp.o
+1038	VERIFIED	0002:00376990 ?writeFloat32@bdBitBuffer@@QAEXM@Z 00B65E90 f i mp.o
+1039	PORTED	0002:003769d0 ?writeBlob@bdBitBuffer@@QAEXQBXI@Z 00B65ED0 f i mp.o
+1040	VERIFIED	0002:00376a30 ?readInt16@bdBitBuffer@@QAE_NAAF@Z 00B65F30 f i mp.o
+1041	VERIFIED	0002:00376a80 ?readUInt16@bdBitBuffer@@QAE_NAAG@Z 00B65F80 f i mp.o
+1042	VERIFIED	0002:00376ad0 ?readInt32@bdBitBuffer@@QAE_NAAH@Z 00B65FD0 f i mp.o
+1043	VERIFIED	0002:00376b20 ?readUInt32@bdBitBuffer@@QAE_NAAI@Z 00B66020 f i mp.o
+1044	VERIFIED	0002:00376b70 ?readFloat32@bdBitBuffer@@QAE_NAAM@Z 00B66070 f i mp.o
+1045	VERIFIED	0002:00376bd0 ??0bdQoSRemoteAddr@@QAE@XZ 00B660D0 f i mp.o
+1046	VERIFIED	0002:00376be0 ??0bdQoSRemoteAddr@@QAE@ABV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z 00B660E0 f i mp.o
+1047	PORTED	0002:00376c40 ??0sAngle@kuju@@QAE@ABM@Z 00B66140 f i mp.o
+1048	PORTED	0002:00376cb0 ??GsAngle@kuju@@QBE?AU01@ABU01@@Z 00B661B0 f i mp.o
+1049	PORTED	0002:00376d20 ??0sDroppedItem@MPPlayerItems@@QAE@XZ 00B66220 f i mp.o
+1050	PORTED	0002:00376d40 ?GetTotalScoreForSingleStat@clientPersistent_t@@QAEHH@Z 00B66240 f i mp.o
+1051	PORTED	0002:00376de0 ?IsPhysicsOwner@scr_vehicle_t@@QAE_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00B662E0 f i mp.o
+1052	PORTED	0002:00376e00 ?IsInVehicle@scr_vehicle_t@@QAE_NPAVEntity@@@Z 00B66300 f i mp.o
+1053	PORTED	0002:00376e30 ?IsValid@MPVehicle@@QBE_NXZ 00B66330 f i mp.o
+1054	VERIFIED	0002:00376e40 ??0?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@QAE@XZ 00B66340 f i mp.o
+1055	PORTED	0002:00376e50 ?getSizeOf@?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@UBEIXZ 00B66350 f i mp.o
+1056	VERIFIED	0002:00376e60 ??_E?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@UAEPAXI@Z 00B66360 f i mp.o
+1057	VERIFIED	0002:00376e60 ??_G?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@UAEPAXI@Z 00B66360 f i mp.o
+1058	VERIFIED	0002:00376e90 ??1?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@UAE@XZ 00B66390 f i mp.o
+1059	VERIFIED	0002:00376ea0 ??_G?$bdCreatorBase@VbdGameInfo@@@@UAEPAXI@Z 00B663A0 f i mp.o
+1060	VERIFIED	0002:00376ea0 ??_E?$bdCreatorBase@VbdGameInfo@@@@UAEPAXI@Z 00B663A0 f i mp.o
+1061	PORTED	0002:00376ed0 ??0PlayerData@MPUtility@@QAE@XZ 00B663D0 f i mp.o
+1062	PORTED	0002:00376f50 ??1bdQoSRemoteAddr@@QAE@XZ 00B66450 f i mp.o
+1063	PORTED	0002:00376f80 ??4bdQoSRemoteAddr@@QAEAAV0@ABV0@@Z 00B66480 f i mp.o
+1064	VERIFIED	0002:00377000 ??0DebugUpdatePoint@PlayerDebug@@QAE@XZ 00B66500 f i mp.o
+1065	VERIFIED	0002:00377010 ??0DebugUpdatePoint@VehicleDebug@@QAE@XZ 00B66510 f i mp.o
+1066	PORTED	0002:00377020 ??4LivePlayer@@QAEAAV0@ABV0@@Z 00B66520 f i mp.o
+1067	VERIFIED	0002:003770a0 ??_GMPGameInfo@@UAEPAXI@Z 00B665A0 f i mp.o
+1068	VERIFIED	0002:003770a0 ??_EMPGameInfo@@UAEPAXI@Z 00B665A0 f i mp.o
+1069	VERIFIED	0002:003770d0 ??_GMPOptionsScreenMenu@@UAEPAXI@Z 00B665D0 f i mp.o
+1070	VERIFIED	0002:003770d0 ??_EMPOptionsScreenMenu@@UAEPAXI@Z 00B665D0 f i mp.o
+1071	VERIFIED	0002:00377100 ??_EMPOptionsSoundMenu@@UAEPAXI@Z 00B66600 f i mp.o
+1072	VERIFIED	0002:00377100 ??_GMPOptionsSoundMenu@@UAEPAXI@Z 00B66600 f i mp.o
+1073	VERIFIED	0002:00377130 ??_EMPOptionsControlsMenu@@UAEPAXI@Z 00B66630 f i mp.o
+1074	VERIFIED	0002:00377130 ??_GMPOptionsControlsMenu@@UAEPAXI@Z 00B66630 f i mp.o
+1075	VERIFIED	0002:00377160 ??_GMPOptionsGameplayMenu@@UAEPAXI@Z 00B66660 f i mp.o
+1076	VERIFIED	0002:00377160 ??_EMPOptionsGameplayMenu@@UAEPAXI@Z 00B66660 f i mp.o
+1077	VERIFIED	0002:00377190 ??_GMPOptionsPreferencesMenu@@UAEPAXI@Z 00B66690 f i mp.o
+1078	VERIFIED	0002:00377190 ??_EMPOptionsPreferencesMenu@@UAEPAXI@Z 00B66690 f i mp.o
+1079	PORTED	0002:003771c0 ?OnDown@MPProfileMainMenu@@UAEXH@Z 00B666C0 f i mp.o
+1080	VERIFIED	0002:003771e0 ??_EMPProfileMainMenu@@UAEPAXI@Z 00B666E0 f i mp.o
+1081	VERIFIED	0002:003771e0 ??_GMPProfileMainMenu@@UAEPAXI@Z 00B666E0 f i mp.o
+1082	VERIFIED	0002:00377210 ??_GcVoiceManager@kvoicemanager@kuju@@UAEPAXI@Z 00B66710 f i mp.o
+1083	VERIFIED	0002:00377210 ??_EcVoiceManager@kvoicemanager@kuju@@UAEPAXI@Z 00B66710 f i mp.o
+1084	VERIFIED	0002:00377240 ??1?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAE@XZ 00B66740 f i mp.o
+1085	PORTED	0002:00377270 ?construct_array@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@AAEPAUsDroppedItem@MPPlayerItems@@H@Z 00B66770 f i mp.o
+1086	PORTED	0002:003772c0 ??0?$bdFastArray@D@@QAE@I@Z 00B667C0 f i mp.o
+1087	PORTED	0002:003772f0 ?create@?$bdCreator@VMPGameInfo@@VbdGameInfo@@@@UBEPAVbdGameInfo@@XZ 00B667F0 f i mp.o
+1088	PORTED	0002:00377360 ??$reference_cast@VMPGameInfo@@VbdGameInfo@@@@YAPAVMPGameInfo@@V?$bdReference@VbdGameInfo@@@@@Z 00B66860 f i mp.o
+1089	PORTED	0002:00377390 ?increaseCapacity@?$bdFastArray@P6AXXZ@@QAEXI@Z 00B66890 f i mp.o
+1090	PORTED	0002:00377400 ?clear@?$bdFastArray@P6AXXZ@@QAEXXZ 00B66900 f i mp.o
+1091	PORTED	0002:00377420 ?increaseCapacity@?$bdFastArray@D@@QAEXI@Z 00B66920 f i mp.o
+1092	PORTED	0002:003774a0 ?clear@?$bdFastArray@D@@QAEXXZ 00B669A0 f i mp.o
+1093	PORTED	0002:003774c0 ?destruct@?$bdArray@VbdString@@@@IBEXPAVbdString@@I@Z 00B669C0 f i mp.o
+1094	PORTED	0002:003774f0 ?destruct@?$bdArray@VbdInetAddr@@@@IBEXPAVbdInetAddr@@I@Z 00B669F0 f i mp.o
+1095	VERIFIED	0002:00377520 ??_EMPLanDiscovery@@UAEPAXI@Z 00B66A20 f i mp.o
+1096	VERIFIED	0002:00377520 ??_GMPLanDiscovery@@UAEPAXI@Z 00B66A20 f i mp.o
+1097	PORTED	0002:00377550 ?OnLeft@MPOptionsSoundMenu@@UAEXH@Z 00B66A50 f i mp.o
+1098	PORTED	0002:00377570 ?OnRight@MPOptionsSoundMenu@@UAEXH@Z 00B66A70 f i mp.o
+1099	VERIFIED	0002:00377590 ?resize@?$ae_vector@UsDroppedItem@MPPlayerItems@@@@QAEXH@Z 00B66A90 f i mp.o
+1100	PORTED	0002:00377650 ??1?$bdFastArray@P6AXXZ@@QAE@XZ 00B66B50 f i mp.o
+1101	PORTED	0002:00377670 ?pushBack@?$bdFastArray@P6AXXZ@@QAEXABQ6AXXZ@Z 00B66B70 f i mp.o
+1102	PORTED	0002:003776b0 ??1?$bdFastArray@D@@QAE@XZ 00B66BB0 f i mp.o
+1103	PORTED	0002:003776d0 ?pushBack@?$bdFastArray@D@@QAEXABD@Z 00B66BD0 f i mp.o
+1104	PORTED	0002:00377710 ?clear@?$bdArray@VbdString@@@@QAEXXZ 00B66C10 f i mp.o
+1105	PORTED	0002:00377760 ?increaseCapacity@?$bdArray@VbdString@@@@QAEXI@Z 00B66C60 f i mp.o
+1106	PORTED	0002:00377800 ?clear@?$bdArray@VbdInetAddr@@@@QAEXXZ 00B66D00 f i mp.o
+1107	PORTED	0002:00377850 ?add@bdSingletonRegistryImpl@@QAE_NQ6AXXZ@Z 00B66D50 f i mp.o
+1108	PORTED	0002:003778d0 ??0bdSingletonRegistryImpl@@IAE@XZ 00B66DD0 f i mp.o
+1109	PORTED	0002:003778f0 ??_EbdSingletonRegistryImpl@@MAEPAXI@Z 00B66DF0 f i mp.o
+1110	PORTED	0002:003778f0 ??_GbdSingletonRegistryImpl@@MAEPAXI@Z 00B66DF0 f i mp.o
+1111	PORTED	0002:00377920 ??1bdSingletonRegistryImpl@@MAE@XZ 00B66E20 f i mp.o
+1112	VERIFIED	0002:00377950 ?readString@bdBitBuffer@@QAE_NAAVbdString@@@Z 00B66E50 f i mp.o
+1113	PORTED	0002:00377a90 ?Swap@cgs_t@@QAEXPAU1@@Z 00B66F90 f i mp.o
+1114	PORTED	0002:00377b10 ??1?$bdArray@VbdString@@@@QAE@XZ 00B67010 f i mp.o
+1115	PORTED	0002:00377b60 ?pushBack@?$bdArray@VbdString@@@@QAEXABVbdString@@@Z 00B67060 f i mp.o
+1116	PORTED	0002:00377ba0 ??1?$bdArray@VbdInetAddr@@@@QAE@XZ 00B670A0 f i mp.o
+1117	PORTED	0002:00377bf0 ?getInstance@?$bdSingleton@VbdSingletonRegistryImpl@@@@SAPAVbdSingletonRegistryImpl@@XZ 00B670F0 f i mp.o
+1118	PORTED	0002:00377c80 ?RemoveAllItems@MPPlayer@@QAEXXZ 00B67180 f i mp.o
+1119	PORTED	0002:00377c90 ?RemoveAllItems@MPPlayer@@QAEXW4EDroppedItemTypes@@@Z 00B67190 f i mp.o
+1120	VERIFIED	0002:00377ca0 ?RemoveItem@MPPlayer@@QAEXW4EDroppedItemTypes@@VMPEntityHandle@@@Z 00B671A0 f i mp.o
+1121	PORTED	0002:00377d30 ?SetItem@MPPlayer@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z 00B67230 f i mp.o
+1122	PORTED	0002:00377d40 ?FindDroppedItemID@MPPlayer@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z 00B67240 f i mp.o
+1123	PORTED	0002:00377db0 ?Swap@cg_t@@QAEXPAU1@@Z 00B672B0 f i mp.o
+1124	VERIFIED	0002:00377e30 ??0bdNetStartParams@@QAE@XZ 00B67330 f i mp.o
+1125	PORTED	0002:00378070 ??1bdNetStartParams@@QAE@XZ 00B67570 f i mp.o
+1126	VERIFIED	0002:00378140 ?getInstance@?$bdSingleton@VbdLogImpl@@@@SAPAVbdLogImpl@@XZ 00B67640 f i mp.o
+1127	VERIFIED	0002:00378210 ?getInstance@?$bdSingleton@VbdGameInfoFactoryImpl@@@@SAPAVbdGameInfoFactoryImpl@@XZ 00B67710 f i mp.o
+1128	VERIFIED	0002:00378310 ?getInstance@?$bdSingleton@VbdNetImpl@@@@SAPAVbdNetImpl@@XZ 00B67810 f i mp.o
+1129	PORTED	0002:003783e0 ?AddItem@MPPlayer@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z 00B678E0 f i mp.o
+1130	PORTED	0002:00378420 ?GetNextDroppedItemID@MPPlayer@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@@Z 00B67920 f i mp.o
+1131	PORTED	0002:00378480 ??_EMPPlayerManager@@W3AEPAXI@Z 00B67980 f i mp.o
+1132	PORTED	0002:00378490 ??_EMPPlayerManager@@W7AEPAXI@Z 00B67990 f i mp.o
+1133	PORTED	0002:003784a0 ??_EMPPeer@@W3AEPAXI@Z 00B679A0 f i mp.o
+1134	VERIFIED	0002:003784b0 ??_EMPPlayerManager@@UAEPAXI@Z 00B679B0 f i mp.o
+1135	VERIFIED	0002:003784b0 ??_GMPPlayerManager@@UAEPAXI@Z 00B679B0 f i mp.o
+1136	VERIFIED	0002:003784e0 ??_GMPPeer@@UAEPAXI@Z 00B679E0 f i mp.o
+1137	VERIFIED	0002:003784e0 ??_EMPPeer@@UAEPAXI@Z 00B679E0 f i mp.o
+1138	PORTED	0002:00378510 ?Init@MPProfileEditMenu@@UAEXXZ 00B67A10 f i mp.o
+1139	PORTED	0002:00378520 ?OnLeft@MPProfileEditMenu@@UAEXH@Z 00B67A20 f i mp.o
+1140	PORTED	0002:00378530 ?OnRight@MPProfileEditMenu@@UAEXH@Z 00B67A30 f i mp.o
+1141	VERIFIED	0002:00378540 ??_EMPProfileEditMenu@@UAEPAXI@Z 00B67A40 f i mp.o
+1142	VERIFIED	0002:00378540 ??_GMPProfileEditMenu@@UAEPAXI@Z 00B67A40 f i mp.o

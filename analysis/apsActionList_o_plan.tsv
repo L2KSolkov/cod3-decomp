@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x008087F0	?GetVisibleParticleUpdateDelay@?A0xf0029792@@YAMMPAI@Z	float __cdecl `anonymous namespace'::GetVisibleParticleUpdateDelay(float,unsigned int *)	
+0x00808830	?Apply@apsActionList@@QAEXPAVapsGroup@@AAVapsEffect@@MMII@Z	public: void __thiscall apsActionList::Apply(class apsGroup *,class apsEffect &,float,float,unsigned int,unsigned int)	
+0x00808BA0	?EnhancePFD@apsActionList@@QAEXAAVapsPFD@@@Z	public: void __thiscall apsActionList::EnhancePFD(class apsPFD &)	
+0x00808BE0	?Fixup@apsActionList@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsActionList::Fixup(struct apsFixupParams const &)	
+0x00808C90	??0apsActionList@@QAE@XZ	public: __thiscall apsActionList::apsActionList(void)	
+0x00808CA0	??1apsActionList@@QAE@XZ	public: __thiscall apsActionList::~apsActionList(void)	
+0x00808D30	?Add@apsActionList@@QAEXPAVapsAction@@@Z	public: void __thiscall apsActionList::Add(class apsAction *)	

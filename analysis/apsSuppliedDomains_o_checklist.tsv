@@ -1,0 +1,28 @@
+index	status	map_line
+1	PORTED	0002:00410730 ?FloatRand@apsMath@@YAMXZ 00BFFC30 f i apsSuppliedDomains.o
+2	VERIFIED	0002:00410770 ?Fixup@apsDomain@@QAEXABUapsFixupParams@@@Z 00BFFC70 f apsSuppliedDomains.o
+3	VERIFIED	0002:004107c0 ?GetValue@apsSphereDomain@@UBEXHPAM@Z 00BFFCC0 f apsSuppliedDomains.o
+4	VERIFIED	0002:00410a10 ?TestValue@apsSphereDomain@@UBEIHPAM@Z 00BFFF10 f apsSuppliedDomains.o
+5	VERIFIED	0002:00410b20 ?GetValue@apsYHemisphereDomain@@UBEXHPAM@Z 00C00020 f apsSuppliedDomains.o
+6	VERIFIED	0002:00410d80 ?TestValue@apsYHemisphereDomain@@UBEIHPAM@Z 00C00280 f apsSuppliedDomains.o
+7	VERIFIED	0002:00410eb0 ?GetValue@apsZHemisphereDomain@@UBEXHPAM@Z 00C003B0 f apsSuppliedDomains.o
+8	VERIFIED	0002:00411110 ?TestValue@apsZHemisphereDomain@@UBEIHPAM@Z 00C00610 f apsSuppliedDomains.o
+9	VERIFIED	0002:00411240 ?GetValue@apsSphereSurfaceDomain@@UBEXHPAM@Z 00C00740 f apsSuppliedDomains.o
+10	VERIFIED	0002:00411420 ?TestValue@apsSphereSurfaceDomain@@UBEIHPAM@Z 00C00920 f apsSuppliedDomains.o
+11	VERIFIED	0002:00411530 ?GetValue@apsLineDomain@@UBEXHPAM@Z 00C00A30 f apsSuppliedDomains.o
+12	VERIFIED	0002:00411610 ?TestValue@apsLineDomain@@UBEIHPAM@Z 00C00B10 f apsSuppliedDomains.o
+13	VERIFIED	0002:00411620 ?GetValue@apsDiscDomain@@UBEXHPAM@Z 00C00B20 f apsSuppliedDomains.o
+14	VERIFIED	0002:004118b0 ?TestValue@apsDiscDomain@@UBEIHPAM@Z 00C00DB0 f apsSuppliedDomains.o
+15	VERIFIED	0002:004118c0 ?TestValue@apsCircleDomain@@UBEIHPAM@Z 00C00DC0 f apsSuppliedDomains.o
+16	VERIFIED	0002:004118d0 ??0apsSphereDomain@@QAE@ABVDir3@math@@M@Z 00C00DD0 f apsSuppliedDomains.o
+17	VERIFIED	0002:00411900 ??0apsSphereDomain@@QAE@ABUapsSphere@@@Z 00C00E00 f apsSuppliedDomains.o
+18	VERIFIED	0002:00411930 ??0apsYHemisphereDomain@@QAE@ABVDir3@math@@M@Z 00C00E30 f apsSuppliedDomains.o
+19	VERIFIED	0002:00411960 ??0apsYHemisphereDomain@@QAE@ABUapsSphere@@@Z 00C00E60 f apsSuppliedDomains.o
+20	VERIFIED	0002:00411990 ??0apsZHemisphereDomain@@QAE@ABVDir3@math@@M@Z 00C00E90 f apsSuppliedDomains.o
+21	VERIFIED	0002:004119c0 ??0apsZHemisphereDomain@@QAE@ABUapsSphere@@@Z 00C00EC0 f apsSuppliedDomains.o
+22	VERIFIED	0002:004119f0 ??0apsSphereSurfaceDomain@@QAE@ABVDir3@math@@M@Z 00C00EF0 f apsSuppliedDomains.o
+23	VERIFIED	0002:00411a20 ??0apsSphereSurfaceDomain@@QAE@ABUapsSphere@@@Z 00C00F20 f apsSuppliedDomains.o
+24	VERIFIED	0002:00411a50 ??0apsLineDomain@@QAE@ABVDir3@math@@0@Z 00C00F50 f apsSuppliedDomains.o
+25	VERIFIED	0002:00411ab0 ??0apsDiscDomain@@QAE@ABVDir3@math@@0M@Z 00C00FB0 f apsSuppliedDomains.o
+26	VERIFIED	0002:00411c80 ??0apsCircleDomain@@QAE@ABVDir3@math@@0M@Z 00C01180 f apsSuppliedDomains.o
+27	VERIFIED	0002:00411e50 ?GetValue@apsCircleDomain@@UBEXHPAM@Z 00C01350 f apsSuppliedDomains.o

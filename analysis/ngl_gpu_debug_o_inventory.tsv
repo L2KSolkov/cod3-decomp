@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00851460	0x00C40960	?Render@nglDebugLineNode@@UAEXXZ	public: virtual void __thiscall nglDebugLineNode::Render(void)	ngl_gpu_debug.o
+0x00851620	0x00C40B20	?Render@nglDebugTriNode@@UAEXXZ	public: virtual void __thiscall nglDebugTriNode::Render(void)	ngl_gpu_debug.o

@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00800060	0x00BEF560	?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ	public: static void __cdecl apsDebug::PrintWarning(enum apsDebug::eWarningLevel,char const *,...)	apsDebug.o
+0x008000C0	0x00BEF5C0	?Print@apsDebug@@SAXPBDZZ	public: static void __cdecl apsDebug::Print(char const *,...)	apsDebug.o

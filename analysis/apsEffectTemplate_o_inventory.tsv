@@ -1,0 +1,32 @@
+ida_ea	va	name	signature	family
+0x008002A0	0x00BEF7A0	?RebuildPFD@Element@apsEffectTemplate@@QAEXXZ	public: void __thiscall apsEffectTemplate::Element::RebuildPFD(void)	apsEffectTemplate.o
+0x008002E0	0x00BEF7E0	?SetLocalToWorldTransform@apsEffectTemplate@@QAEXABVMat43@math@@@Z	public: void __thiscall apsEffectTemplate::SetLocalToWorldTransform(class math::Mat43 const &)	apsEffectTemplate.o
+0x00800360	0x00BEF860	?SetNanoGraphName@Element@apsEffectTemplate@@QAEXPBD@Z	public: void __thiscall apsEffectTemplate::Element::SetNanoGraphName(char const *)	apsEffectTemplate.o
+0x00800430	0x00BEF930	?BeginReport@apsEffectTemplate@@QAEXXZ	public: void __thiscall apsEffectTemplate::BeginReport(void)	apsEffectTemplate.o
+0x00800460	0x00BEF960	?Report@apsEffectTemplate@@QAEXXZ	public: void __thiscall apsEffectTemplate::Report(void)	apsEffectTemplate.o
+0x008004B0	0x00BEF9B0	?SetBeginTime@apsEffectTemplate@@QAEXHM@Z	public: void __thiscall apsEffectTemplate::SetBeginTime(int,float)	apsEffectTemplate.o
+0x00800530	0x00BEFA30	?SetEndTime@apsEffectTemplate@@QAEXHM@Z	public: void __thiscall apsEffectTemplate::SetEndTime(int,float)	apsEffectTemplate.o
+0x008005B0	0x00BEFAB0	?SetLocalSpace@apsEffectTemplate@@QAEXHI@Z	public: void __thiscall apsEffectTemplate::SetLocalSpace(int,unsigned int)	apsEffectTemplate.o
+0x00800640	0x00BEFB40	?SetNanoGraphName@apsEffectTemplate@@QAEXHPBD@Z	public: void __thiscall apsEffectTemplate::SetNanoGraphName(int,char const *)	apsEffectTemplate.o
+0x008006C0	0x00BEFBC0	?SetNanoWeight@apsEffectTemplate@@QAEXHM@Z	public: void __thiscall apsEffectTemplate::SetNanoWeight(int,float)	apsEffectTemplate.o
+0x00800740	0x00BEFC40	?GetModifierNumber@apsEffectTemplate@@QBEHABVtlFixedString@@@Z	public: int __thiscall apsEffectTemplate::GetModifierNumber(class tlFixedString const &)const 	apsEffectTemplate.o
+0x008007D0	0x00BEFCD0	?SetModifier@apsEffectTemplate@@QAEXHABVtlFixedString@@HHH@Z	public: void __thiscall apsEffectTemplate::SetModifier(int,class tlFixedString const &,int,int,int)	apsEffectTemplate.o
+0x00800940	0x00BEFE40	?SetEnableRendering@apsEffectTemplate@@QAEXHI@Z	public: void __thiscall apsEffectTemplate::SetEnableRendering(int,unsigned int)	apsEffectTemplate.o
+0x008009D0	0x00BEFED0	?GetEnableRendering@apsEffectTemplate@@QBEIH@Z	public: unsigned int __thiscall apsEffectTemplate::GetEnableRendering(int)const 	apsEffectTemplate.o
+0x00800A50	0x00BEFF50	?Fixup@apsEffectTemplate@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsEffectTemplate::Fixup(struct apsFixupParams const &)	apsEffectTemplate.o
+0x00800B10	0x00BF0010	?CalcMemoryNeeded@apsEffectTemplate@@QAEXXZ	public: void __thiscall apsEffectTemplate::CalcMemoryNeeded(void)	apsEffectTemplate.o
+0x00800B90	0x00BF0090	?TestAlloc@apsEffectTemplate@@QAEIXZ	public: unsigned int __thiscall apsEffectTemplate::TestAlloc(void)	apsEffectTemplate.o
+0x00800BD0	0x00BF00D0	?MemoryMatch@apsEffectTemplate@@QAEIPAV1@@Z	public: unsigned int __thiscall apsEffectTemplate::MemoryMatch(class apsEffectTemplate *)	apsEffectTemplate.o
+0x00800CD0	0x00BF01D0	?Free@Element@apsEffectTemplate@@QAEXXZ	public: void __thiscall apsEffectTemplate::Element::Free(void)	apsEffectTemplate.o
+0x00800D30	0x00BF0230	??0apsEffectTemplate@@QAE@PBD@Z	public: __thiscall apsEffectTemplate::apsEffectTemplate(char const *)	apsEffectTemplate.o
+0x00800DE0	0x00BF02E0	??1apsEffectTemplate@@QAE@XZ	public: __thiscall apsEffectTemplate::~apsEffectTemplate(void)	apsEffectTemplate.o
+0x00800F40	0x00BF0440	?SetNumElements@apsEffectTemplate@@QAEXH@Z	public: void __thiscall apsEffectTemplate::SetNumElements(int)	apsEffectTemplate.o
+0x00801040	0x00BF0540	?AddElement@apsEffectTemplate@@QAEHXZ	public: int __thiscall apsEffectTemplate::AddElement(void)	apsEffectTemplate.o
+0x00801070	0x00BF0570	?RemoveElement@apsEffectTemplate@@QAEXH@Z	public: void __thiscall apsEffectTemplate::RemoveElement(int)	apsEffectTemplate.o
+0x00801100	0x00BF0600	?SetMaxNumParticles@apsEffectTemplate@@QAEXHH@Z	public: void __thiscall apsEffectTemplate::SetMaxNumParticles(int,int)	apsEffectTemplate.o
+0x00801180	0x00BF0680	?SetRenderer@apsEffectTemplate@@QAEXHPAVapsRenderer@@@Z	public: void __thiscall apsEffectTemplate::SetRenderer(int,class apsRenderer *)	apsEffectTemplate.o
+0x008012C0	0x00BF07C0	?SetActionList@apsEffectTemplate@@QAEXHPAVapsActionList@@@Z	public: void __thiscall apsEffectTemplate::SetActionList(int,class apsActionList *)	apsEffectTemplate.o
+0x00801400	0x00BF0900	?SetElementData@apsEffectTemplate@@QAEXHHMMPAVapsRenderer@@PAVapsActionList@@I@Z	public: void __thiscall apsEffectTemplate::SetElementData(int,int,float,float,class apsRenderer *,class apsActionList *,unsigned int)	apsEffectTemplate.o
+0x00801720	0x00BF0C20	?SetNumModifiers@apsEffectTemplate@@QAEXH@Z	public: void __thiscall apsEffectTemplate::SetNumModifiers(int)	apsEffectTemplate.o
+0x00801750	0x00BF0C50	?AddModifier@apsEffectTemplate@@QAEHXZ	public: int __thiscall apsEffectTemplate::AddModifier(void)	apsEffectTemplate.o
+0x00801780	0x00BF0C80	?RemoveModifier@apsEffectTemplate@@QAEXH@Z	public: void __thiscall apsEffectTemplate::RemoveModifier(int)	apsEffectTemplate.o

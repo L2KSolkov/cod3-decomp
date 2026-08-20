@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00823400	0x00C12900	?nslUpdateListener@@YAXXZ	void __cdecl nslUpdateListener(void)	nslUpdate.o
+0x00823700	0x00C12C00	?nslUpdate@@YAXXZ	void __cdecl nslUpdate(void)	nslUpdate.o

@@ -1,0 +1,11 @@
+index	status	map_line
+1	VERIFIED	0002:0042a4e0 ??0nflRequestParams@@QAE@XZ 00C199E0 f i nfl_common.o
+2	VERIFIED	0002:0042a510 ?nflFileExists@@YAIW4nflMediaID@@PBD@Z 00C19A10 f nfl_common.o
+3	VERIFIED	0002:0042a540 ?nflGetFileSize@@YAIW4nflMediaID@@PBD@Z 00C19A40 f nfl_common.o
+4	VERIFIED	0002:0042a570 ?nflReadFileAsyncWithCallBack@@YA?AW4nflRequestID@@W4nflFileID@@IPAXIP6AXW4nflRequestState@@W41@1@Z@Z 00C19A70 f nfl_common.o
+5	VERIFIED	0002:0042a5c0 ?nflReadFileAsync@@YA?AW4nflRequestID@@W4nflFileID@@IPAXI@Z 00C19AC0 f nfl_common.o
+6	VERIFIED	0002:0042a610 ?nflWriteFileAsync@@YA?AW4nflRequestID@@W4nflFileID@@IPAXI@Z 00C19B10 f nfl_common.o
+7	VERIFIED	0002:0042a660 ?nfsReadWriteFile@@YAIW4nflFileID@@IPAXIH@Z 00C19B60 f nfl_common.o
+8	VERIFIED	0002:0042a720 ?nflReadFile@@YAIW4nflFileID@@IPAXI@Z 00C19C20 f nfl_common.o
+9	VERIFIED	0002:0042a740 ?nflWriteFile@@YAIW4nflFileID@@IPAXI@Z 00C19C40 f nfl_common.o
+10	VERIFIED	0002:0042a760 ?nflGetVersion@@YAIXZ 00C19C60 f nfl_common.o

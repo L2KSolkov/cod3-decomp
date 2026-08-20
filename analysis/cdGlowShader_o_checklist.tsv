@@ -1,0 +1,51 @@
+index	status	map_line
+1	VERIFIED	0002:003c1280 ?ToggleCDGlowShader@@YAXXZ 00BB0780 f cdGlowShader.o
+2	VERIFIED	0002:003c12a0 ?InitCDGlowShader@@YAXXZ 00BB07A0 f cdGlowShader.o
+3	VERIFIED	0002:003c1370 ?SetupCDGlowShader@@YAXXZ 00BB0870 f cdGlowShader.o
+4	PORTED	0002:003c13e0 ?GlowSetTaps@@YAXABUFilterTaps@@000@Z 00BB08E0 f cdGlowShader.o
+5	PORTED	0002:003c1430 ?LerpTaps@@YA?AUFilterTaps@@ABU1@0M@Z 00BB0930 f cdGlowShader.o
+6	PORTED	0002:003c1540 ?GlowFilter@@YAXPAUnglTexture@@M_N@Z 00BB0A40 f cdGlowShader.o
+7	VERIFIED	0002:003c1900 ?GlowCallback@@YAXPAX@Z 00BB0E00 f cdGlowShader.o
+8	PORTED	0002:003c23b0 ?SetTextureStageState@D3DDevice@@SGJKW4_D3DTEXTURESTAGESTATETYPE@@K@Z 00BB18B0 f i cdGlowShader.o
+9	PORTED	0002:003c2470 ?DrawPrimitiveUP@D3DDevice@@SGJW4_D3DPRIMITIVETYPE@@IPBXI@Z 00BB1970 f i cdGlowShader.o
+10	PORTED	0002:003c24a0 ?LoadVertexShaderProgram@D3DDevice@@SGJPBKK@Z 00BB19A0 f i cdGlowShader.o
+11	PORTED	0002:003c24c0 ?SelectVertexShaderDirect@D3DDevice@@SGJPAU_D3DVERTEXATTRIBUTEFORMAT@@K@Z 00BB19C0 f i cdGlowShader.o
+12	PORTED	0002:003c24e0 ?SetPixelShaderConstant@D3DDevice@@SGJKPBXK@Z 00BB19E0 f i cdGlowShader.o
+13	PORTED	0002:003c2500 ?gpuGetPrimCount@@YAIW4gpuPrimType@@I@Z 00BB1A00 f i cdGlowShader.o
+14	PORTED	0002:003c2570 ?SetPixelShaderConstantF@gpuD3DDevice@@QAEJIPBMI@Z 00BB1A70 f i cdGlowShader.o
+15	PORTED	0002:003c2590 ?SetSamplerState@gpuD3DDevice@@QAEJKW4D3DSAMPLERSTATETYPE@@K@Z 00BB1A90 f i cdGlowShader.o
+16	PORTED	0002:003c2650 ?SetVertexDeclaration@gpuD3DDevice@@QAEJPAU_D3DVERTEXATTRIBUTEFORMAT@@@Z 00BB1B50 f i cdGlowShader.o
+17	PORTED	0002:003c2670 ?gpuCreateVertexFormat@@YA?AUgpuVertexFormat@@IPBU_D3DVERTEXSHADERINPUT@@@Z 00BB1B70 f i cdGlowShader.o
+18	PORTED	0002:003c2750 ?gpuSetVertexShader@@YAXK@Z 00BB1C50 f i cdGlowShader.o
+19	PORTED	0002:003c2780 ?gpuSetPixelShader@@YAXPAK@Z 00BB1C80 f i cdGlowShader.o
+20	PORTED	0002:003c27a0 ?gpuSetPixelConstant@@YAXHABVVector4@math@@@Z 00BB1CA0 f i cdGlowShader.o
+21	PORTED	0002:003c27c0 ?gpuDrawPrimitivePtr@@YAXW4gpuPrimType@@IPAXPAUgpuVertexFormat@@@Z 00BB1CC0 f i cdGlowShader.o
+22	PORTED	0002:003c2820 ?SetCullMode@nglDxRenderState@@QAEXI@Z 00BB1D20 f i cdGlowShader.o
+23	PORTED	0002:003c2850 ?SetFillMode@nglDxRenderState@@QAEXI@Z 00BB1D50 f i cdGlowShader.o
+24	PORTED	0002:003c2880 ?SetAddressModeU@nglDxTexCacheClass@@QAEXII@Z 00BB1D80 f i cdGlowShader.o
+25	PORTED	0002:003c28d0 ?SetAddressModeV@nglDxTexCacheClass@@QAEXII@Z 00BB1DD0 f i cdGlowShader.o
+26	PORTED	0002:003c2920 ?nglDxSetTextureU@@YAXHI@Z 00BB1E20 f i cdGlowShader.o
+27	PORTED	0002:003c2980 ?nglDxSetTextureV@@YAXHI@Z 00BB1E80 f i cdGlowShader.o
+28	PORTED	0002:003c29e0 ?nglDxSetTextureUV@@YAXHI@Z 00BB1EE0 f i cdGlowShader.o
+29	VERIFIED	0002:003c2a00 ??0cdGlowShader@@QAE@XZ 00BB1F00 f i cdGlowShader.o
+30	VERIFIED	0002:003c2a30 ?GetName@cdGlowShader@@UAE?AVtlFixedString@@XZ 00BB1F30 f i cdGlowShader.o
+31	PORTED	0002:003c2a50 ?AddNode@cdGlowShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB1F50 f i cdGlowShader.o
+32	PORTED	0002:003c2a60 ?RegisterShader@cdGlowRender4@@YAXXZ 00BB1F60 f i cdGlowShader.o
+33	PORTED	0002:003c2a80 ?RegisterVShader@cdGlowRender4@@YAXXZ 00BB1F80 f i cdGlowShader.o
+34	PORTED	0002:003c2aa0 ?GetVShader@cdGlowRender4@@YAKXZ 00BB1FA0 f i cdGlowShader.o
+35	PORTED	0002:003c2ab0 ?RegisterShader@cdGlowRender1@@YAXXZ 00BB1FB0 f i cdGlowShader.o
+36	PORTED	0002:003c2ad0 ?RegisterVShader@cdGlowRender1@@YAXXZ 00BB1FD0 f i cdGlowShader.o
+37	PORTED	0002:003c2af0 ?GetVShader@cdGlowRender1@@YAKXZ 00BB1FF0 f i cdGlowShader.o
+38	PORTED	0002:003c2b00 ?RegisterShader@cdGlowShrink@@YAXXZ 00BB2000 f i cdGlowShader.o
+39	PORTED	0002:003c2b20 ?RegisterPShader@cdGlowShrink@@YAXXZ 00BB2020 f i cdGlowShader.o
+40	PORTED	0002:003c2b40 ?GetPShader@cdGlowShrink@@YAPAKXZ 00BB2040 f i cdGlowShader.o
+41	PORTED	0002:003c2b50 ?RegisterShader@cdGlowBlur@@YAXXZ 00BB2050 f i cdGlowShader.o
+42	PORTED	0002:003c2b70 ?RegisterPShader@cdGlowBlur@@YAXXZ 00BB2070 f i cdGlowShader.o
+43	PORTED	0002:003c2b90 ?GetPShader@cdGlowBlur@@YAPAKXZ 00BB2090 f i cdGlowShader.o
+44	PORTED	0002:003c2ba0 ?RegisterShader@cdGlowApply@@YAXXZ 00BB20A0 f i cdGlowShader.o
+45	PORTED	0002:003c2bc0 ?RegisterPShader@cdGlowApply@@YAXXZ 00BB20C0 f i cdGlowShader.o
+46	PORTED	0002:003c2be0 ?GetPShader@cdGlowApply@@YAPAKXZ 00BB20E0 f i cdGlowShader.o
+47	PORTED	0002:003c2bf0 ??$tl_clamp@MHH@@YAMABMABH1@Z 00BB20F0 f i cdGlowShader.o
+48	VERIFIED	0002:003c2c30 ??_EcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o
+49	VERIFIED	0002:003c2c30 ??_GcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o
+50	VERIFIED	0002:003c2c60 ??1cdGlowShader@@UAE@XZ 00BB2160 f i cdGlowShader.o

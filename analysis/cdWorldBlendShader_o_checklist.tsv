@@ -1,0 +1,32 @@
+index	status	map_line
+1	VERIFIED	0002:003dd2a0 ?InitCDWorldBlendShader@@YAXXZ 00BCC7A0 f cdWorldBlendShader.o
+2	VERIFIED	0002:003dd2f0 ?ToggleCDWorldBlendShader@@YAXXZ 00BCC7F0 f cdWorldBlendShader.o
+3	VERIFIED	0002:003dd310 ?Register@cdWorldBlendShader@@UAEXXZ 00BCC810 f cdWorldBlendShader.o
+4	VERIFIED	0002:003dd350 ?AddNode@cdWorldBlendShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCC850 f cdWorldBlendShader.o
+5	PORTED	0002:003dd3e0 ?Render@cdWorldBlendShaderNode@@UAEXXZ 00BCC8E0 f cdWorldBlendShader.o
+6	PORTED	0002:003de1d0 ?RegisterShader@cdWorldBlendRender@@YAXXZ 00BCD6D0 f i cdWorldBlendShader.o
+7	PORTED	0002:003de200 ?RegisterVShader@cdWorldBlendRender@@YAXXZ 00BCD700 f i cdWorldBlendShader.o
+8	PORTED	0002:003de210 ?GetVShader@cdWorldBlendRender@@YAKI@Z 00BCD710 f i cdWorldBlendShader.o
+9	PORTED	0002:003de220 ?RegisterShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD720 f i cdWorldBlendShader.o
+10	PORTED	0002:003de250 ?RegisterVShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD750 f i cdWorldBlendShader.o
+11	PORTED	0002:003de260 ?GetVShader@cdWorldBlendProjectedRender@@YAKI@Z 00BCD760 f i cdWorldBlendShader.o
+12	PORTED	0002:003de270 ?RegisterShader@cdWorldBlendPixel@@YAXXZ 00BCD770 f i cdWorldBlendShader.o
+13	PORTED	0002:003de2a0 ?RegisterPShader@cdWorldBlendPixel@@YAXXZ 00BCD7A0 f i cdWorldBlendShader.o
+14	PORTED	0002:003de2b0 ?GetPShader@cdWorldBlendPixel@@YAPAKII@Z 00BCD7B0 f i cdWorldBlendShader.o
+15	PORTED	0002:003de2d0 ?RegisterShader@cdWorldBlendProjectedPixel@@YAXXZ 00BCD7D0 f i cdWorldBlendShader.o
+16	PORTED	0002:003de300 ?RegisterPShader@cdWorldBlendProjectedPixel@@YAXXZ 00BCD800 f i cdWorldBlendShader.o
+17	PORTED	0002:003de310 ?GetPShader@cdWorldBlendProjectedPixel@@YAPAKI@Z 00BCD810 f i cdWorldBlendShader.o
+18	PORTED	0002:003de320 ?RegisterShader@cdWorldBlendSolidColorPixel@@YAXXZ 00BCD820 f i cdWorldBlendShader.o
+19	PORTED	0002:003de340 ?RegisterPShader@cdWorldBlendSolidColorPixel@@YAXXZ 00BCD840 f i cdWorldBlendShader.o
+20	PORTED	0002:003de360 ?GetPShader@cdWorldBlendSolidColorPixel@@YAPAKXZ 00BCD860 f i cdWorldBlendShader.o
+21	VERIFIED	0002:003de370 ??0cdWorldBlendShader@@QAE@XZ 00BCD870 f i cdWorldBlendShader.o
+22	VERIFIED	0002:003de3a0 ?GetName@cdWorldBlendShader@@UAE?AVtlFixedString@@XZ 00BCD8A0 f i cdWorldBlendShader.o
+23	PORTED	0002:003de3c0 ??0cdWorldBlendParams@cdWorldBlendRender@@QAE@XZ 00BCD8C0 f i cdWorldBlendShader.o
+24	PORTED	0002:003de3d0 ??$SetConstants@UcdWorldBlendParams@cdWorldBlendRender@@@cdWorldBlendRender@@YAXABUcdWorldBlendParams@0@@Z 00BCD8D0 f i cdWorldBlendShader.o
+25	PORTED	0002:003de3f0 ??0cdWorldBlendShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldBlendShaderMat@@@Z 00BCD8F0 f i cdWorldBlendShader.o
+26	PORTED	0002:003de420 ??_EcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o
+27	PORTED	0002:003de420 ??_GcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o
+28	PORTED	0002:003de450 ??1cdWorldBlendShaderNode@@UAE@XZ 00BCD950 f i cdWorldBlendShader.o
+29	VERIFIED	0002:003de460 ??_EcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o
+30	VERIFIED	0002:003de460 ??_GcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o
+31	VERIFIED	0002:003de490 ??1cdWorldBlendShader@@UAE@XZ 00BCD990 f i cdWorldBlendShader.o

@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00819D30	0x00C09230	?Render@apsRectangleNode@@UAEXXZ	public: virtual void __thiscall apsRectangleNode::Render(void)	apsRectangleNode.o

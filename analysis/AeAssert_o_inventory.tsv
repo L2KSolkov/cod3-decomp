@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x007BE240	0x00BAD740	?IsIgnored@AeAssert@@YA_NXZ	bool __cdecl AeAssert::IsIgnored(void)	AeAssert.o
+0x007BE430	0x00BAD930	?SetupRouterAssert@AeAssert@@YAXHPBD000000@Z	void __cdecl AeAssert::SetupRouterAssert(int,char const *,char const *,char const *,char const *,char const *,char const *,char const *)	AeAssert.o
+0x007BE4F0	0x00BAD9F0	?PumpXenonUI@AeAssert@@YAXXZ	void __cdecl AeAssert::PumpXenonUI(void)	AeAssert.o
+0x007BE500	0x00BADA00	?OnScreenMessageHandler@AeAssert@@YA_NW4ONSCREEN_MESSAGE_TYPE@1@PAD@Z	bool __cdecl AeAssert::OnScreenMessageHandler(enum AeAssert::ONSCREEN_MESSAGE_TYPE,char *)	AeAssert.o
+0x007BEC70	0x00BAE170	?Assert@AeAssert@@YA_NPBDZZ	bool __cdecl AeAssert::Assert(char const *,...)	AeAssert.o
+0x007BECB0	0x00BAE1B0	?Error@AeAssert@@YA_NPBDZZ	bool __cdecl AeAssert::Error(char const *,...)	AeAssert.o
+0x007BECF0	0x00BAE1F0	?Warning@AeAssert@@YA_NPBDZZ	bool __cdecl AeAssert::Warning(char const *,...)	AeAssert.o

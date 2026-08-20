@@ -1,0 +1,32 @@
+ida_ea	va	name	signature	family
+0x0087C850	0x00C6BD50	?reset_stability@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::reset_stability(void)	rb_ragdoll_model.o
+0x0087C890	0x00C6BD90	?reset_ballistic_target@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::reset_ballistic_target(void)	rb_ragdoll_model.o
+0x0087C8A0	0x00C6BDA0	?set_ballistic_target@rb_ragdoll_model@@QAEXABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::set_ballistic_target(class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087C8E0	0x00C6BDE0	?get_rigid_body_id@rb_ragdoll_model@@QAEHQBVrigid_body@@@Z	public: int __thiscall rb_ragdoll_model::get_rigid_body_id(class rigid_body const * const)	rb_ragdoll_model.o
+0x0087C940	0x00C6BE40	?add_rigid_body@rb_ragdoll_model@@QAEPAVrigid_body@@H@Z	public: class rigid_body * __thiscall rb_ragdoll_model::add_rigid_body(int)	rb_ragdoll_model.o
+0x0087C9E0	0x00C6BEE0	?add_joint@rb_ragdoll_model@@QAEPAVrigid_body_constraint_ragdoll@@HH@Z	public: class rigid_body_constraint_ragdoll * __thiscall rb_ragdoll_model::add_joint(int,int)	rb_ragdoll_model.o
+0x0087CBE0	0x00C6C0E0	?add_actuator@rb_ragdoll_model@@QAEPAVrigid_body_constraint_angular_actuator@@HH@Z	public: class rigid_body_constraint_angular_actuator * __thiscall rb_ragdoll_model::add_actuator(int,int)	rb_ragdoll_model.o
+0x0087CDF0	0x00C6C2F0	?remove_actuator@rb_ragdoll_model@@QAEXH@Z	public: void __thiscall rb_ragdoll_model::remove_actuator(int)	rb_ragdoll_model.o
+0x0087CEF0	0x00C6C3F0	?update_ballistic_target@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::update_ballistic_target(void)	rb_ragdoll_model.o
+0x0087CF70	0x00C6C470	?get_ballistic_info@rb_ragdoll_model@@QAEXPAVDir3@math@@0PAM@Z	public: void __thiscall rb_ragdoll_model::get_ballistic_info(class math::Dir3 *,class math::Dir3 *,float *)	rb_ragdoll_model.o
+0x0087D060	0x00C6C560	?get_gravity_multiplier@rb_ragdoll_model@@QAEMH@Z	public: float __thiscall rb_ragdoll_model::get_gravity_multiplier(int)	rb_ragdoll_model.o
+0x0087D0B0	0x00C6C5B0	?set_gravity_multiplier@rb_ragdoll_model@@QAEXHM@Z	public: void __thiscall rb_ragdoll_model::set_gravity_multiplier(int,float)	rb_ragdoll_model.o
+0x0087D100	0x00C6C600	?apply_pulse@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse(int,class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087D1C0	0x00C6C6C0	?apply_pulse@rb_ragdoll_model@@QAEXHABVDir3@math@@0M@Z	public: void __thiscall rb_ragdoll_model::apply_pulse(int,class math::Dir3 const &,class math::Dir3 const &,float)	rb_ragdoll_model.o
+0x0087D290	0x00C6C790	?apply_pulse_damp_tvel@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse_damp_tvel(int,class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087D4D0	0x00C6C9D0	?apply_pulse_damp_avel@rb_ragdoll_model@@QAEXHABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse_damp_avel(int,class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087D710	0x00C6CC10	?apply_pulse_damp_tvel@rb_ragdoll_model@@QAEXABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse_damp_tvel(class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087D740	0x00C6CC40	?apply_pulse_damp_avel@rb_ragdoll_model@@QAEXABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse_damp_avel(class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087D770	0x00C6CC70	?set_max_rb_index@rb_ragdoll_model@@QAEXH@Z	public: void __thiscall rb_ragdoll_model::set_max_rb_index(int)	rb_ragdoll_model.o
+0x0087D890	0x00C6CD90	?pull_joints_together@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::pull_joints_together(void)	rb_ragdoll_model.o
+0x0087D910	0x00C6CE10	?remove_rigid_body@rb_ragdoll_model@@QAEXH@Z	public: void __thiscall rb_ragdoll_model::remove_rigid_body(int)	rb_ragdoll_model.o
+0x0087DA80	0x00C6CF80	?add_rbc_with_urb_point@rb_ragdoll_model@@QAEXQBVMat43@math@@HABVDir3@3@1@Z	public: void __thiscall rb_ragdoll_model::add_rbc_with_urb_point(class math::Mat43 const * const,int,class math::Dir3 const &,class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087DB50	0x00C6D050	?remove_all_user_rigid_body@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::remove_all_user_rigid_body(void)	rb_ragdoll_model.o
+0x0087DBA0	0x00C6D0A0	?update_stability@rb_ragdoll_model@@QAEXM@Z	public: void __thiscall rb_ragdoll_model::update_stability(float)	rb_ragdoll_model.o
+0x0087DD50	0x00C6D250	?set_gravity_multiplier@rb_ragdoll_model@@QAEXM@Z	public: void __thiscall rb_ragdoll_model::set_gravity_multiplier(float)	rb_ragdoll_model.o
+0x0087DD80	0x00C6D280	?apply_pulse_velocity_field@rb_ragdoll_model@@QAEXABVDir3@math@@@Z	public: void __thiscall rb_ragdoll_model::apply_pulse_velocity_field(class math::Dir3 const &)	rb_ragdoll_model.o
+0x0087DE70	0x00C6D370	?disable_forces@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::disable_forces(void)	rb_ragdoll_model.o
+0x0087DEA0	0x00C6D3A0	?enable_forces@rb_ragdoll_model@@QAEXXZ	public: void __thiscall rb_ragdoll_model::enable_forces(void)	rb_ragdoll_model.o
+0x0087DED0	0x00C6D3D0	?set_time_scale@rb_ragdoll_model@@QAEXM@Z	public: void __thiscall rb_ragdoll_model::set_time_scale(float)	rb_ragdoll_model.o
+0x0087DF00	0x00C6D400	?set_max_delta_t@rb_ragdoll_model@@QAEXM@Z	public: void __thiscall rb_ragdoll_model::set_max_delta_t(float)	rb_ragdoll_model.o
+0x0087DF30	0x00C6D430	?add_rbc_with_urb_point@rb_ragdoll_model@@QAEXQBVMat43@math@@HABVDir3@3@@Z	public: void __thiscall rb_ragdoll_model::add_rbc_with_urb_point(class math::Mat43 const * const,int,class math::Dir3 const &)	rb_ragdoll_model.o

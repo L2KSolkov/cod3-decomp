@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x00804180	?AddError@apsError@@QAAXW4eErrorType@1@PBDZZ	public: void __cdecl apsError::AddError(enum apsError::eErrorType,char const *,...)	
+0x008041C0	??0apsError@@QAE@XZ	public: __thiscall apsError::apsError(void)	
+0x00804290	??1apsError@@QAE@XZ	public: __thiscall apsError::~apsError(void)	

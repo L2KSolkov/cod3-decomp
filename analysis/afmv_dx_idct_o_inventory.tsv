@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x00832260	0x00C21760	?MacroBlockIdct@@YAXPAF@Z	void __cdecl MacroBlockIdct(short *)	afmv_dx_idct.o
+0x00832A10	0x00C21F10	?MacroBlockIdctCopy@@YAXPAFPAEH@Z	void __cdecl MacroBlockIdctCopy(short *,unsigned char *,int)	afmv_dx_idct.o
+0x00832A90	0x00C21F90	?MacroBlockIdctAdd@@YAXHPAFPAEH@Z	void __cdecl MacroBlockIdctAdd(int,short *,unsigned char *,int)	afmv_dx_idct.o

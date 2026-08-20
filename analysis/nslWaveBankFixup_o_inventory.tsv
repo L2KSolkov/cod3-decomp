@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00829DD0	0x00C192D0	?nslWaveBankFixup@@YAHPAUnslWaveBank@@@Z	int __cdecl nslWaveBankFixup(struct nslWaveBank *)	nslWaveBankFixup.o

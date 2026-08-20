@@ -28,6 +28,7 @@ GAME_SUMMARY = ROOT / "analysis" / "game_related_manifest_function_checklist_sum
 SHELL_FORMAT_INVENTORY = ROOT / "analysis" / "game_related_inventory.tsv"
 SHELL_FORMAT_PLAN = ROOT / "analysis" / "game_related_plan.tsv"
 SHELL_FORMAT_CHECKLIST = ROOT / "analysis" / "game_related_checklist.tsv"
+OBJECT_TABLE_DIR = ROOT / "analysis"
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -199,7 +200,7 @@ def main() -> None:
     with GAME_SUMMARY.open("w", encoding="utf-8", newline="") as stream:
         write_summary(stream, game_counts)
 
-    write_shell_format_tables(game_rows)
+    write_shell_format_tables(game_rows, rows)
 
     print(f"manifest rows: {len(rows)}")
     print(f"debug libraries: {len(list(BUILD.glob('*.lib')))}")
@@ -217,6 +218,8 @@ def main() -> None:
 
 def shell_status(row: dict[str, str]) -> str:
     """Map the detailed audit result to the shell.o checklist vocabulary."""
+    if shell_skip_note(row):
+        return "SKIPPED"
     if row["verification"] == "VERIFIED":
         return "VERIFIED"
     if row["aggregate_status"] in {"PORTED", "COMPLETE", "VALIDATED"}:
@@ -224,6 +227,23 @@ def shell_status(row: dict[str, str]) -> str:
     if row["aggregate_status"] == "IN_PROGRESS":
         return "PENDING"
     return "PENDING"
+
+
+def shell_skip_note(row: dict[str, str]) -> str:
+    """Return a note for library/compiler helper rows omitted from porting."""
+    name = row.get("name", "")
+    if (
+        "std@@" in name
+        or "char_traits" in name
+        or "basic_string" in name
+        or "basic_ostream" in name
+        or "basic_istream" in name
+        or "allocator" in name
+        or name.startswith("??2@")
+        or name.startswith("??3@")
+    ):
+        return "SKIPPED: STL/compiler helper; supplied by the toolchain/library"
+    return ""
 
 
 def shell_map_line(row: dict[str, str]) -> str:
@@ -271,17 +291,14 @@ def demangle_names(names: list[str]) -> dict[str, str]:
     return {name: result.get(name, name) for name in unique}
 
 
-def write_shell_format_tables(game_rows: list[dict[str, str]]) -> None:
-    """Emit the shell.o inventory/plan/checklist layout for all target objects.
-
-    The shell.o tables intentionally omit inline functions from inventory/plan,
-    while the checklist retains every manifest row.  The manifest map identity
-    is retained in each checklist line so rows remain attributable when the
-    combined game/engine table is reviewed.
-    """
-    non_inline = [row for row in game_rows if row["is_inline"] != "1"]
-    signatures = demangle_names([row["name"] for row in non_inline])
-    with SHELL_FORMAT_INVENTORY.open("w", encoding="utf-8", newline="") as stream:
+def write_shell_table_set(prefix: Path, rows: list[dict[str, str]],
+                          signatures: dict[str, str]) -> None:
+    """Emit one shell.o-shaped inventory/plan/checklist set."""
+    non_inline = [row for row in rows if row["is_inline"] != "1"]
+    inventory = prefix.with_name(prefix.name + "_inventory.tsv")
+    plan = prefix.with_name(prefix.name + "_plan.tsv")
+    checklist = prefix.with_name(prefix.name + "_checklist.tsv")
+    with inventory.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(
             stream,
             fieldnames=["ida_ea", "va", "name", "signature", "family"],
@@ -296,11 +313,11 @@ def write_shell_format_tables(game_rows: list[dict[str, str]]) -> None:
                     "va": row["va"],
                     "name": row["name"],
                     "signature": signatures[row["name"]],
-                    "family": row["source_cpp"] or row["obj"],
+                    "family": row.get("source_cpp", "") or row["obj"],
                 }
             )
 
-    with SHELL_FORMAT_PLAN.open("w", encoding="utf-8", newline="") as stream:
+    with plan.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(
             stream,
             fieldnames=["ida_ea", "name", "signature", "source_cpp"],
@@ -314,11 +331,11 @@ def write_shell_format_tables(game_rows: list[dict[str, str]]) -> None:
                     "ida_ea": row["ida_ea"],
                     "name": row["name"],
                     "signature": signatures[row["name"]],
-                    "source_cpp": row["source_cpp"],
+                    "source_cpp": row.get("source_cpp", ""),
                 }
             )
 
-    with SHELL_FORMAT_CHECKLIST.open("w", encoding="utf-8", newline="") as stream:
+    with checklist.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(
             stream,
             fieldnames=["index", "status", "map_line"],
@@ -326,14 +343,40 @@ def write_shell_format_tables(game_rows: list[dict[str, str]]) -> None:
             lineterminator="\n",
         )
         writer.writeheader()
-        for index, row in enumerate(game_rows, 1):
+        for index, row in enumerate(rows, 1):
+            note = shell_skip_note(row)
+            map_line = shell_map_line(row)
+            if note:
+                map_line += "  " + note
             writer.writerow(
                 {
                     "index": index,
                     "status": shell_status(row),
-                    "map_line": shell_map_line(row),
+                    "map_line": map_line,
                 }
             )
+
+
+def write_shell_format_tables(game_rows: list[dict[str, str]],
+                              manifest_rows: list[dict[str, str]]) -> None:
+    """Emit shell.o-shaped tables for the combined and per-object audits.
+
+    The shell.o tables intentionally omit inline functions from inventory/plan,
+    while the checklist retains every manifest row.  The manifest map identity
+    is retained in each checklist line so rows remain attributable when the
+    combined game/engine table is reviewed.
+    """
+    non_inline = [row for row in game_rows if row["is_inline"] != "1"]
+    signatures = demangle_names([row["name"] for row in non_inline])
+    write_shell_table_set(ROOT / "analysis" / "game_related", game_rows, signatures)
+    object_rows: defaultdict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in manifest_rows:
+        object_rows[row["obj"]].append(row)
+    all_non_inline = [row for row in manifest_rows if row["is_inline"] != "1"]
+    all_signatures = demangle_names([row["name"] for row in all_non_inline])
+    for obj, rows in sorted(object_rows.items()):
+        stem = obj.replace(".", "_")
+        write_shell_table_set(OBJECT_TABLE_DIR / stem, rows, all_signatures)
 
 
 def write_summary(stream, by_obj_counts: defaultdict[str, Counter[str]]) -> None:

@@ -1,0 +1,11 @@
+index	status	map_line
+1	PORTED	0002:00477f90 ??2nalClientAnimNode@nalSceneAnimInstance@@SAPAXI@Z 00C67490 f i nal_sceneanim.o
+2	PORTED	0002:00477fb0 ??3nalClientAnimNode@nalSceneAnimInstance@@SAXPAX@Z 00C674B0 f i nal_sceneanim.o
+3	PORTED	0002:00477fc0 ??1nalSceneAnimInstance@@UAE@XZ 00C674C0 f nal_sceneanim.o
+4	PORTED	0002:00478010 ?AddClientAnim@nalSceneAnimInstance@@IAEXPAVnalClientSceneAnim@@PAV?$nalAnimClass@VnalAnyPose@@@@@Z 00C67510 f nal_sceneanim.o
+5	PORTED	0002:00478060 ?Render@nalSceneAnimInstance@@QBEXXZ 00C67560 f nal_sceneanim.o
+6	PORTED	0002:004780c0 ?CreateInstance@nalSceneAnim@@QAEPAVnalSceneAnimInstance@@P6APAVnalClientSceneAnim@@PBV1@ABVtlFixedString@@PAX@Z2@Z 00C675C0 f nal_sceneanim.o
+7	PORTED	0002:00478100 ?Advance@nalStaticInstance@@UAEXM@Z 00C67600 f nal_sceneanim.o
+8	PORTED	0002:00478330 ??0nalStaticInstance@@QAE@PAVnalSceneAnim@@P6APAVnalClientSceneAnim@@PBV1@ABVtlFixedString@@PAX@Z3@Z 00C67830 f i nal_sceneanim.o
+9	PORTED	0002:004783d0 ??_GnalStaticInstance@@UAEPAXI@Z 00C678D0 f i nal_sceneanim.o
+10	PORTED	0002:004783d0 ??_EnalStaticInstance@@UAEPAXI@Z 00C678D0 f i nal_sceneanim.o

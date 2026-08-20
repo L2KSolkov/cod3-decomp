@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x00851090	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	void __cdecl nglDxSetRenderTarget(struct nglTexture const *,struct nglTexture const *,unsigned int,int)	

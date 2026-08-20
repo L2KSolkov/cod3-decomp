@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x007C4B80	0x00BB4080	?ProcessCDDebugVertexDef@@YAXPAX@Z	void __cdecl ProcessCDDebugVertexDef(void *)	cdDebugVertexDef.o
+0x007C4BA0	0x00BB40A0	?InitCDDebugVertexDefBuilder@@YAXXZ	void __cdecl InitCDDebugVertexDefBuilder(void)	cdDebugVertexDef.o

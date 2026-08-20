@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:00415150 ?Render@apsColorRectangleNode@@UAEXXZ 00C04650 f apsColorRectangleNode.o
+2	PORTED	0002:00415170 ?GetVShader@apsColorRectangleRender@@YAKXZ 00C04670 f i apsColorRectangleNode.o
+3	PORTED	0002:00415180 ?GetPShader@apsColorRectangleRenderPixel@@YAPAKXZ 00C04680 f i apsColorRectangleNode.o
+4	PORTED	0002:00415190 ?GetPos@ColorRectangleParticle@@QAEAAUPacked@Dir3@math@@XZ 00C04690 f i apsColorRectangleNode.o
+5	PORTED	0002:004151a0 ?GetColor@ColorRectangleParticle@@QAEAAVVector4@math@@XZ 00C046A0 f i apsColorRectangleNode.o
+6	PORTED	0002:004151b0 ?GetWidth@ColorRectangleParticle@@QAEMXZ 00C046B0 f i apsColorRectangleNode.o
+7	PORTED	0002:004151c0 ?GetHeight@ColorRectangleParticle@@QAEMXZ 00C046C0 f i apsColorRectangleNode.o
+8	PORTED	0002:004151d0 ?GetAngle@ColorRectangleParticle@@QAEMXZ 00C046D0 f i apsColorRectangleNode.o
+9	PORTED	0002:004151e0 ?GetFrame@ColorRectangleParticle@@QAEMXZ 00C046E0 f i apsColorRectangleNode.o
+10	PORTED	0002:004151f0 ?GetVelocity@ColorRectangleParticle@@QAEAAVVector4@math@@XZ 00C046F0 f i apsColorRectangleNode.o
+11	PORTED	0002:00415200 ??0?$cNodeRenderer@UColorRectangleParticle@@VapsColorRectangleNode@@@@QAE@AAVapsColorRectangleNode@@@Z 00C04700 f i apsColorRectangleNode.o
+12	PORTED	0002:00415210 ?SetupDefaultShaders@?$cNodeRenderer@UColorRectangleParticle@@VapsColorRectangleNode@@@@QAEXABVMat43@math@@@Z 00C04710 f i apsColorRectangleNode.o
+13	PORTED	0002:004154c0 ??$fncompare@UColorRectangleParticle@@@apsRenderSort@@YAHPBX0@Z 00C049C0 f i apsColorRectangleNode.o
+14	PORTED	0002:00415500 ?SetupShaders@?$cNodeRenderer@UColorRectangleParticle@@VapsColorRectangleNode@@@@QAEXXZ 00C04A00 f i apsColorRectangleNode.o
+15	PORTED	0002:00415510 ??$SortPointers@UColorRectangleParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C04A10 f i apsColorRectangleNode.o
+16	VERIFIED	0002:00415550 ?Render@?$cNodeRenderer@UColorRectangleParticle@@VapsColorRectangleNode@@@@QAEXXZ 00C04A50 f i apsColorRectangleNode.o

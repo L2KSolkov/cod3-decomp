@@ -1,0 +1,11 @@
+ida_ea	name	signature	source_cpp
+0x00841860	?ngliUnloadTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z	void __cdecl ngliUnloadTexture(class apk::apkFile *,class apk::apkFileEntry *)	
+0x008418A0	?nglDxUnbindTexStages@@YAXXZ	void __cdecl nglDxUnbindTexStages(void)	
+0x00841940	?nglDxSetTexture@@YAXIPAUnglTexture@@II@Z	void __cdecl nglDxSetTexture(unsigned int,struct nglTexture *,unsigned int,unsigned int)	
+0x00841A10	?nglGetFrontBufferTex@@YAPAUnglTexture@@XZ	struct nglTexture * __cdecl nglGetFrontBufferTex(void)	
+0x00841A30	?nglGetBackBufferTex@@YAPAUnglTexture@@XZ	struct nglTexture * __cdecl nglGetBackBufferTex(void)	
+0x00841A50	?ngliLockSceneTextures@@YAXXZ	void __cdecl ngliLockSceneTextures(void)	
+0x00841A60	?ngliUnlockSceneTextures@@YAXXZ	void __cdecl ngliUnlockSceneTextures(void)	
+0x00841A70	?ngliInitIdentityPalette@@YAXXZ	void __cdecl ngliInitIdentityPalette(void)	
+0x00841A80	?ngliGenMipmaps@@YAXPAUnglTexture@@@Z	void __cdecl ngliGenMipmaps(struct nglTexture *)	
+0x00841DA0	?ngliInitWhiteTexture@@YAXXZ	void __cdecl ngliInitWhiteTexture(void)	

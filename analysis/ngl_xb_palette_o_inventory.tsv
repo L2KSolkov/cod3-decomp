@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x00853040	0x00C42540	?nglDxInitPalette@@YAXXZ	void __cdecl nglDxInitPalette(void)	ngl_xb_palette.o
+0x00853090	0x00C42590	?nglDxUnbindPalettes@@YAXXZ	void __cdecl nglDxUnbindPalettes(void)	ngl_xb_palette.o
+0x008530C0	0x00C425C0	?nglCreatePalette@@YAPAUnglPalette@@W4nglPaletteFormat@@IPAX@Z	struct nglPalette * __cdecl nglCreatePalette(enum nglPaletteFormat,unsigned int,void *)	ngl_xb_palette.o
+0x008532D0	0x00C427D0	?nglDestroyPalette@@YAXPAUnglPalette@@@Z	void __cdecl nglDestroyPalette(struct nglPalette *)	ngl_xb_palette.o
+0x00853320	0x00C42820	?Lock@nglPalette@@QAEXXZ	public: void __thiscall nglPalette::Lock(void)	ngl_xb_palette.o
+0x00853340	0x00C42840	?Unlock@nglPalette@@QAEXXZ	public: void __thiscall nglPalette::Unlock(void)	ngl_xb_palette.o
+0x00853350	0x00C42850	?SetEntry32@nglPalette@@QAEXII@Z	public: void __thiscall nglPalette::SetEntry32(unsigned int,unsigned int)	ngl_xb_palette.o
+0x00853370	0x00C42870	?GetEntry32@nglPalette@@QAEII@Z	public: unsigned int __thiscall nglPalette::GetEntry32(unsigned int)	ngl_xb_palette.o
+0x00853380	0x00C42880	?nglBindPalette@@YAXIPAUnglPalette@@@Z	void __cdecl nglBindPalette(unsigned int,struct nglPalette *)	ngl_xb_palette.o

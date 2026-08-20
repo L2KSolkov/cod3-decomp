@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:0044fc90 ?Reset@nglDxRenderState@@QAEXXZ 00C3F190 f ngl_dx_state.o
+2	VERIFIED	0002:0044fcc0 ?SetBlendMode@nglDxRenderState@@QAEXI@Z 00C3F1C0 f ngl_dx_state.o
+3	VERIFIED	0002:0044fed0 ?FSAAFixup@nglDxRenderState@@QAEXXZ 00C3F3D0 f ngl_dx_state.o
+4	VERIFIED	0002:0044fee0 ?Init@nglDxRenderState@@QAEXXZ 00C3F3E0 f ngl_dx_state.o
+5	VERIFIED	0002:00450000 ?SetBlendColor@nglDxRenderState@@QAEXI@Z 00C3F500 f i ngl_dx_state.o

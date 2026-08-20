@@ -1,0 +1,26 @@
+index	status	map_line
+1	VERIFIED	0002:00403240 ?Init@apsInternal@@YAXH@Z 00BF2740 f apsInternal.o
+2	VERIFIED	0002:00403250 ?GetViewCoordinateSystem@apsInternal@@YAXAAVDir3@math@@00@Z 00BF2750 f apsInternal.o
+3	VERIFIED	0002:004033b0 ?GetUserCoordinateSystem@apsInternal@@YAXABVDir3@math@@AAV23@11@Z 00BF28B0 f apsInternal.o
+4	VERIFIED	0002:004035c0 ?GetLocalLights@apsInternal@@YAXPAUnglLightContext@@ABUapsSphere@@@Z 00BF2AC0 f apsInternal.o
+5	VERIFIED	0002:004036d0 ?SetupBlendAndTexture@apsInternal@@YAXPAUnglTexture@@W4apsEBlendMode@@_NH@Z 00BF2BD0 f apsInternal.o
+6	VERIFIED	0002:00403990 ?SetupFog@apsInternal@@YAXHMMMM_N@Z 00BF2E90 f apsInternal.o
+7	VERIFIED	0002:00403a40 ?SetupAlphaFade@apsInternal@@YAXHMM@Z 00BF2F40 f apsInternal.o
+8	VERIFIED	0002:00403b00 ?QueueSpawnedEffect@apsInternal@@YAXHPBVapsEffectTemplate@@MABUapsQuaternion@@ABVDir3@math@@M@Z 00BF3000 f apsInternal.o
+9	VERIFIED	0002:00403b30 ?RemoveFromSpawnedEffectQueueByPakId@apsInternal@@YAXH@Z 00BF3030 f apsInternal.o
+10	VERIFIED	0002:00403b50 ?ClearSpawnedEffectQueue@apsInternal@@YAXXZ 00BF3050 f apsInternal.o
+11	VERIFIED	0002:00403b60 ?GetLightMatrices@apsInternal@@YAXAAVMat43@math@@0ABV23@PAUnglLightContext@@ABUapsSphere@@@Z 00BF3060 f apsInternal.o
+12	VERIFIED	0002:00403d90 ?SubmitSpawnedEffectQueue@apsInternal@@YAXXZ 00BF3290 f apsInternal.o
+13	PORTED	0002:00403da0 ?nglSpheresIntersect@@YAHABVPosition3@math@@M0M@Z 00BF32A0 f i apsInternal.o
+14	VERIFIED	0002:00403e20 ??0apsQuaternion@@QAE@XZ 00BF3320 f i apsInternal.o
+15	PORTED	0002:00403e30 ?XForm3d_0@apsMath@@YA?AVVector4@math@@ABVMat43@3@ABV23@@Z 00BF3330 f i apsInternal.o
+16	PORTED	0002:00403ea0 ?Camera@apsCommon@@SAAAUCameraSettings@1@XZ 00BF33A0 f i apsInternal.o
+17	VERIFIED	0002:00403eb0 ?SetParentAgePercent@apsEffect@@QAEXM@Z 00BF33B0 f i apsInternal.o
+18	PORTED	0002:00403ed0 ?SetLightDir@apsInternal@@YAXHAAVMat43@math@@ABVVector4@3@@Z 00BF33D0 f i apsInternal.o
+19	PORTED	0002:00403f00 ?SetLightColor@apsInternal@@YAXHAAVMat43@math@@ABVVector4@3@@Z 00BF3400 f i apsInternal.o
+20	VERIFIED	0002:00403f80 ?Add@SpawnedEffectQueue@apsInternal@@QAEXHPBVapsEffectTemplate@@MABUapsQuaternion@@ABVDir3@math@@M@Z 00BF3480 f i apsInternal.o
+21	VERIFIED	0002:00404010 ?Clear@SpawnedEffectQueue@apsInternal@@QAEXXZ 00BF3510 f i apsInternal.o
+22	VERIFIED	0002:00404020 ?RemoveByPakId@SpawnedEffectQueue@apsInternal@@QAEXH@Z 00BF3520 f i apsInternal.o
+23	VERIFIED	0002:00404080 ??0Entry@SpawnedEffectQueue@apsInternal@@QAE@XZ 00BF3580 f i apsInternal.o
+24	VERIFIED	0002:00404090 ??0SpawnedEffectQueue@apsInternal@@QAE@XZ 00BF3590 f i apsInternal.o
+25	VERIFIED	0002:004040a0 ?Submit@SpawnedEffectQueue@apsInternal@@QAEXXZ 00BF35A0 f i apsInternal.o

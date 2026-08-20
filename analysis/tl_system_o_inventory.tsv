@@ -1,0 +1,24 @@
+ida_ea	va	name	signature	family
+0x008333A0	0x00C228A0	?tlSetSystemCallbacks@@YAXPBUtlSystemCallbacks@@@Z	void __cdecl tlSetSystemCallbacks(struct tlSystemCallbacks const *)	tl_system.o
+0x008333C0	0x00C228C0	?tlLinkFrame@@YAXXZ	void __cdecl tlLinkFrame(void)	tl_system.o
+0x008333D0	0x00C228D0	?tlLinkConnected@@YA_NXZ	bool __cdecl tlLinkConnected(void)	tl_system.o
+0x008333E0	0x00C228E0	?tlSetFileServerRootPC@@YAXPBD@Z	void __cdecl tlSetFileServerRootPC(char const *)	tl_system.o
+0x00833400	0x00C22900	?tlMemFree@@YAXPAX@Z	void __cdecl tlMemFree(void *)	tl_system.o
+0x00833440	0x00C22940	?tlReleaseFile@@YAXPAUtlFileBuf@@@Z	void __cdecl tlReleaseFile(struct tlFileBuf *)	tl_system.o
+0x008334B0	0x00C229B0	?tlFinalPrint@@YAXPBD@Z	void __cdecl tlFinalPrint(char const *)	tl_system.o
+0x008334C0	0x00C229C0	?tlGetVersion@@YAHXZ	int __cdecl tlGetVersion(void)	tl_system.o
+0x008334D0	0x00C229D0	?tlGetFreeMemory@@YAIXZ	unsigned int __cdecl tlGetFreeMemory(void)	tl_system.o
+0x008334F0	0x00C229F0	?tlSetCurrentThreadName@@YAXPBD@Z	void __cdecl tlSetCurrentThreadName(char const *)	tl_system.o
+0x00833580	0x00C22A80	?tlFatalHandler@@YA_NPBD@Z	bool __cdecl tlFatalHandler(char const *)	tl_system.o
+0x008335C0	0x00C22AC0	?tlFatal@@YAXPBDZZ	void __cdecl tlFatal(char const *,...)	tl_system.o
+0x00833620	0x00C22B20	?_tlAssert@@YA_NPBDH00@Z	bool __cdecl _tlAssert(char const *,int,char const *,char const *)	tl_system.o
+0x008336A0	0x00C22BA0	?tlMemAlloc@@YAPAXIII@Z	void * __cdecl tlMemAlloc(unsigned int,unsigned int,unsigned int)	tl_system.o
+0x00833730	0x00C22C30	?tlMemRealloc@@YAPAXPAXIII@Z	void * __cdecl tlMemRealloc(void *,unsigned int,unsigned int,unsigned int)	tl_system.o
+0x008337B0	0x00C22CB0	?tlPrint@@YAXPBD@Z	void __cdecl tlPrint(char const *)	tl_system.o
+0x008337C0	0x00C22CC0	?tlStackRangeInit@@YAXXZ	void __cdecl tlStackRangeInit(void)	tl_system.o
+0x00833830	0x00C22D30	?tlScratchPadInit@@YAPAXXZ	void * __cdecl tlScratchPadInit(void)	tl_system.o
+0x008338B0	0x00C22DB0	?tlScratchPadReset@@YAXXZ	void __cdecl tlScratchPadReset(void)	tl_system.o
+0x00833940	0x00C22E40	?tlDebugPrint@@YAXPBD@Z	void __cdecl tlDebugPrint(char const *)	tl_system.o
+0x00833960	0x00C22E60	?tlPrintf@@YAXPBDZZ	void __cdecl tlPrintf(char const *,...)	tl_system.o
+0x008339B0	0x00C22EB0	?tlReadFile@@YA_NPBDPAUtlFileBuf@@II@Z	bool __cdecl tlReadFile(char const *,struct tlFileBuf *,unsigned int,unsigned int)	tl_system.o
+0x00833AF0	0x00C22FF0	?tlWarning@@YAXPBDZZ	void __cdecl tlWarning(char const *,...)	tl_system.o

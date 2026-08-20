@@ -1,0 +1,836 @@
+index	status	map_line
+1	VERIFIED	0002:0038beb0 ?GetCurrOption@FEComboBox@@QBEFXZ 00B7B3B0 f i mp_shell.o
+2	VERIFIED	0002:0038bec0 ?GetMaxScoreLimitCount@MPUIInterface@@SA?BHXZ 00B7B3C0 f i mp_shell.o
+3	VERIFIED	0002:0038bed0 ?SetViewOnlineStatus@MPUIInterface@@SAX_N@Z 00B7B3D0 f i mp_shell.o
+4	VERIFIED	0002:0038bee0 ?BlockRefresh@UIListBox@@QAEX_N@Z 00B7B3E0 f i mp_shell.o
+5	VERIFIED	0002:0038bef0 ?GetState@OverlayMenu@@QAE?BW4eState@1@XZ 00B7B3F0 f i mp_shell.o
+6	VERIFIED	0002:0038bf00 ??0CreateSessionMenu@@QAE@PAVFEMenuSystem@@@Z 00B7B400 f mp_shell.o
+7	VERIFIED	0002:0038bfe0 ??1CreateSessionMenu@@UAE@XZ 00B7B4E0 f mp_shell.o
+8	VERIFIED	0002:0038c060 ?Me@CreateSessionMenu@@SAPAV1@XZ 00B7B560 f mp_shell.o
+9	VERIFIED	0002:0038c070 ?PanelFileUnloaded@CreateSessionMenu@@UAEXPAVPanelFile@@@Z 00B7B570 f mp_shell.o
+10	VERIFIED	0002:0038c080 ?Init@CreateSessionMenu@@UAEXXZ 00B7B580 f mp_shell.o
+11	VERIFIED	0002:0038c090 ?UpdateNetworking@CreateSessionMenu@@IAEXXZ 00B7B590 f mp_shell.o
+12	VERIFIED	0002:0038c0c0 ?Update@CreateSessionMenu@@UAEXM@Z 00B7B5C0 f mp_shell.o
+13	VERIFIED	0002:0038c100 ?UpdatePrivateSlots@CreateSessionMenu@@IAEXXZ 00B7B600 f mp_shell.o
+14	VERIFIED	0002:0038c290 ?GrabSessionName@CreateSessionMenu@@IAEXXZ 00B7B790 f mp_shell.o
+15	VERIFIED	0002:0038c330 ?Draw@CreateSessionMenu@@UAEXXZ 00B7B830 f mp_shell.o
+16	VERIFIED	0002:0038c350 ?OnCircle@CreateSessionMenu@@UAEXH@Z 00B7B850 f mp_shell.o
+17	VERIFIED	0002:0038c360 ?OnTriangle@CreateSessionMenu@@UAEXH@Z 00B7B860 f mp_shell.o
+18	VERIFIED	0002:0038c380 ?SetGameTypeDefaults@CreateSessionMenu@@QAEXXZ 00B7B880 f mp_shell.o
+19	VERIFIED	0002:0038c3f0 ??0CreateLanSessionMenu@@QAE@PAVFEMenuSystem@@@Z 00B7B8F0 f mp_shell.o
+20	VERIFIED	0002:0038c4c0 ??1CreateLanSessionMenu@@UAE@XZ 00B7B9C0 f mp_shell.o
+21	VERIFIED	0002:0038c530 ?Me@CreateLanSessionMenu@@SAPAV1@XZ 00B7BA30 f mp_shell.o
+22	VERIFIED	0002:0038c540 ?PanelFileUnloaded@CreateLanSessionMenu@@UAEXPAVPanelFile@@@Z 00B7BA40 f mp_shell.o
+23	VERIFIED	0002:0038c550 ?Init@CreateLanSessionMenu@@UAEXXZ 00B7BA50 f mp_shell.o
+24	VERIFIED	0002:0038c560 ?UpdateNetworking@CreateLanSessionMenu@@IAEXXZ 00B7BA60 f mp_shell.o
+25	VERIFIED	0002:0038c590 ?Update@CreateLanSessionMenu@@UAEXM@Z 00B7BA90 f mp_shell.o
+26	VERIFIED	0002:0038c5d0 ?OnDeactivate@CreateLanSessionMenu@@UAEXPAVFEMenu@@@Z 00B7BAD0 f mp_shell.o
+27	VERIFIED	0002:0038c5e0 ?GrabSessionName@CreateLanSessionMenu@@IAEXH@Z 00B7BAE0 f mp_shell.o
+28	VERIFIED	0002:0038c680 ?Draw@CreateLanSessionMenu@@UAEXXZ 00B7BB80 f mp_shell.o
+29	VERIFIED	0002:0038c6a0 ?OnCircle@CreateLanSessionMenu@@UAEXH@Z 00B7BBA0 f mp_shell.o
+30	VERIFIED	0002:0038c6b0 ?OnUp@CreateLanSessionMenu@@UAEXH@Z 00B7BBB0 f mp_shell.o
+31	VERIFIED	0002:0038c700 ?OnDown@CreateLanSessionMenu@@UAEXH@Z 00B7BC00 f mp_shell.o
+32	VERIFIED	0002:0038c750 ?OnTriangle@CreateLanSessionMenu@@UAEXH@Z 00B7BC50 f mp_shell.o
+33	VERIFIED	0002:0038c760 ?SetGameTypeDefaults@CreateLanSessionMenu@@QAEXXZ 00B7BC60 f mp_shell.o
+34	VERIFIED	0002:0038c7d0 ??0CreateSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z 00B7BCD0 f mp_shell.o
+35	VERIFIED	0002:0038c8a0 ??1CreateSessionAdvancedMenu@@UAE@XZ 00B7BDA0 f mp_shell.o
+36	VERIFIED	0002:0038c940 ?OnDeactivate@CreateSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z 00B7BE40 f mp_shell.o
+37	VERIFIED	0002:0038c9a0 ?Draw@CreateSessionAdvancedMenu@@UAEXXZ 00B7BEA0 f mp_shell.o
+38	VERIFIED	0002:0038c9c0 ?Update@CreateSessionAdvancedMenu@@UAEXM@Z 00B7BEC0 f mp_shell.o
+39	VERIFIED	0002:0038ca60 ?OnTriangle@CreateSessionAdvancedMenu@@UAEXH@Z 00B7BF60 f mp_shell.o
+40	VERIFIED	0002:0038cad0 ?Me@CreateSessionAdvancedMenu@@SAPAV1@XZ 00B7BFD0 f mp_shell.o
+41	VERIFIED	0002:0038cae0 ?GrabSessionName@CreateSessionAdvancedMenu@@IAEXXZ 00B7BFE0 f mp_shell.o
+42	VERIFIED	0002:0038cb70 ??0CreateLanSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z 00B7C070 f mp_shell.o
+43	VERIFIED	0002:0038cc50 ??1CreateLanSessionAdvancedMenu@@UAE@XZ 00B7C150 f mp_shell.o
+44	VERIFIED	0002:0038ccf0 ?OnDeactivate@CreateLanSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z 00B7C1F0 f mp_shell.o
+45	VERIFIED	0002:0038cd50 ?Draw@CreateLanSessionAdvancedMenu@@UAEXXZ 00B7C250 f mp_shell.o
+46	VERIFIED	0002:0038cd70 ?Update@CreateLanSessionAdvancedMenu@@UAEXM@Z 00B7C270 f mp_shell.o
+47	VERIFIED	0002:0038ce10 ?OnTriangle@CreateLanSessionAdvancedMenu@@UAEXH@Z 00B7C310 f mp_shell.o
+48	VERIFIED	0002:0038ce80 ?Me@CreateLanSessionAdvancedMenu@@SAPAV1@XZ 00B7C380 f mp_shell.o
+49	VERIFIED	0002:0038ce90 ?GrabSessionName@CreateLanSessionAdvancedMenu@@IAEXXZ 00B7C390 f mp_shell.o
+50	VERIFIED	0002:0038cee0 ?OnUp@CreateLanSessionAdvancedMenu@@UAEXH@Z 00B7C3E0 f mp_shell.o
+51	VERIFIED	0002:0038cf10 ?OnDown@CreateLanSessionAdvancedMenu@@UAEXH@Z 00B7C410 f mp_shell.o
+52	VERIFIED	0002:0038cf40 ??0FindSessionMenu@@QAE@PAVFEMenuSystem@@@Z 00B7C440 f mp_shell.o
+53	VERIFIED	0002:0038d020 ??1FindSessionMenu@@UAE@XZ 00B7C520 f mp_shell.o
+54	VERIFIED	0002:0038d0d0 ?Me@FindSessionMenu@@SAPAV1@XZ 00B7C5D0 f mp_shell.o
+55	VERIFIED	0002:0038d0e0 ?PanelFileUnloaded@FindSessionMenu@@UAEXPAVPanelFile@@@Z 00B7C5E0 f mp_shell.o
+56	VERIFIED	0002:0038d0f0 ?Init@FindSessionMenu@@UAEXXZ 00B7C5F0 f mp_shell.o
+57	VERIFIED	0002:0038d100 ?UpdateNetworking@FindSessionMenu@@IAEXXZ 00B7C600 f mp_shell.o
+58	VERIFIED	0002:0038d130 ?Update@FindSessionMenu@@UAEXM@Z 00B7C630 f mp_shell.o
+59	VERIFIED	0002:0038d170 ?UpdateHighlight@FindSessionMenu@@IAEXXZ 00B7C670 f mp_shell.o
+60	VERIFIED	0002:0038d1f0 ?OnDeactivate@FindSessionMenu@@UAEXPAVFEMenu@@@Z 00B7C6F0 f mp_shell.o
+61	VERIFIED	0002:0038d200 ?Draw@FindSessionMenu@@UAEXXZ 00B7C700 f mp_shell.o
+62	VERIFIED	0002:0038d220 ?OnTriangle@FindSessionMenu@@UAEXH@Z 00B7C720 f mp_shell.o
+63	VERIFIED	0002:0038d230 ?OnUp@FindSessionMenu@@UAEXH@Z 00B7C730 f mp_shell.o
+64	VERIFIED	0002:0038d250 ?OnDown@FindSessionMenu@@UAEXH@Z 00B7C750 f mp_shell.o
+65	VERIFIED	0002:0038d270 ??0FindLanSessionMenu@@QAE@PAVFEMenuSystem@@@Z 00B7C770 f mp_shell.o
+66	VERIFIED	0002:0038d350 ??1FindLanSessionMenu@@UAE@XZ 00B7C850 f mp_shell.o
+67	VERIFIED	0002:0038d400 ?Me@FindLanSessionMenu@@SAPAV1@XZ 00B7C900 f mp_shell.o
+68	VERIFIED	0002:0038d410 ?PanelFileUnloaded@FindLanSessionMenu@@UAEXPAVPanelFile@@@Z 00B7C910 f mp_shell.o
+69	VERIFIED	0002:0038d420 ?Init@FindLanSessionMenu@@UAEXXZ 00B7C920 f mp_shell.o
+70	VERIFIED	0002:0038d430 ?UpdateNetworking@FindLanSessionMenu@@IAEXXZ 00B7C930 f mp_shell.o
+71	VERIFIED	0002:0038d460 ?Update@FindLanSessionMenu@@UAEXM@Z 00B7C960 f mp_shell.o
+72	VERIFIED	0002:0038d4a0 ?UpdateHighlight@FindLanSessionMenu@@IAEXXZ 00B7C9A0 f mp_shell.o
+73	VERIFIED	0002:0038d520 ?OnDeactivate@FindLanSessionMenu@@UAEXPAVFEMenu@@@Z 00B7CA20 f mp_shell.o
+74	VERIFIED	0002:0038d530 ?Draw@FindLanSessionMenu@@UAEXXZ 00B7CA30 f mp_shell.o
+75	VERIFIED	0002:0038d550 ?OnTriangle@FindLanSessionMenu@@UAEXH@Z 00B7CA50 f mp_shell.o
+76	VERIFIED	0002:0038d560 ?OnUp@FindLanSessionMenu@@UAEXH@Z 00B7CA60 f mp_shell.o
+77	VERIFIED	0002:0038d580 ?OnDown@FindLanSessionMenu@@UAEXH@Z 00B7CA80 f mp_shell.o
+78	VERIFIED	0002:0038d5a0 ?Init@GameSettingsEdit@@UAEXXZ 00B7CAA0 f mp_shell.o
+79	VERIFIED	0002:0038d5b0 ?UpdateHighlight@GameSettingsEdit@@IAEXXZ 00B7CAB0 f mp_shell.o
+80	VERIFIED	0002:0038d670 ?UpdateScrollBar@GameSettingsEdit@@IAEXXZ 00B7CB70 f mp_shell.o
+81	VERIFIED	0002:0038d6d0 ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z 00B7CBD0 f mp_shell.o
+82	VERIFIED	0002:0038d6f0 ?Me@GameSettingsEdit@@SAPAV1@H@Z 00B7CBF0 f mp_shell.o
+83	VERIFIED	0002:0038d710 ?OnL1@GameSettingsEdit@@UAEXH@Z 00B7CC10 f mp_shell.o
+84	VERIFIED	0002:0038d720 ?OnR1@GameSettingsEdit@@UAEXH@Z 00B7CC20 f mp_shell.o
+85	VERIFIED	0002:0038d730 ?OnCross@GameSettingsEdit@@UAEXH@Z 00B7CC30 f mp_shell.o
+86	VERIFIED	0002:0038d740 ?ResponseNoJustGoBackToPauseMenuHelper@GameSettingsEdit@@IAE_NXZ 00B7CC40 f mp_shell.o
+87	VERIFIED	0002:0038d750 ?ResponseNoJustGoBackToPauseMenu@GameSettingsEdit@@KA_NH@Z 00B7CC50 f mp_shell.o
+88	VERIFIED	0002:0038d780 ?OnCircle@GameSettingsEdit@@UAEXH@Z 00B7CC80 f mp_shell.o
+89	VERIFIED	0002:0038d790 ?OnSquare@GameSettingsEdit@@UAEXH@Z 00B7CC90 f mp_shell.o
+90	VERIFIED	0002:0038d7a0 ?OnStart@GameSettingsEdit@@UAEXH@Z 00B7CCA0 f mp_shell.o
+91	VERIFIED	0002:0038d7b0 ?ButtonHeldAction@GameSettingsEdit@@MAEXXZ 00B7CCB0 f mp_shell.o
+92	VERIFIED	0002:0038d7c0 ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z 00B7CCC0 f mp_shell.o
+93	VERIFIED	0002:0038d7f0 ?DisableTeamGameOptions@GameSettingsEdit@@IAEX_N@Z 00B7CCF0 f mp_shell.o
+94	VERIFIED	0002:0038d850 ?GetScoreLimitsForGameType@GameSettingsEdit@@IAEXW4eGameType@@@Z 00B7CD50 f mp_shell.o
+95	VERIFIED	0002:0038d8d0 ?Me@AARGameSettingsEdit@@SAPAV1@H@Z 00B7CDD0 f mp_shell.o
+96	VERIFIED	0002:0038d8e0 ?SetTimerText@AARGameSettingsEdit@@AAEXXZ 00B7CDE0 f mp_shell.o
+97	VERIFIED	0002:0038d970 ?ResponseNoJustGoBackToPauseMenu@AARGameSettingsEdit@@SA_NH@Z 00B7CE70 f mp_shell.o
+98	VERIFIED	0002:0038d990 ?Init@GameSettingsView@@UAEXXZ 00B7CE90 f mp_shell.o
+99	VERIFIED	0002:0038d9a0 ?SetPanelFileMain@GameSettingsView@@IAEXPAVPanelFile@@@Z 00B7CEA0 f mp_shell.o
+100	VERIFIED	0002:0038dc10 ?UpdateOption@GameSettingsView@@IAEXHPAVFEText@@@Z 00B7D110 f mp_shell.o
+101	VERIFIED	0002:0038dd70 ?UpdateScrollBar@GameSettingsView@@IAEXXZ 00B7D270 f mp_shell.o
+102	VERIFIED	0002:0038ddc0 ?Update@GameSettingsView@@UAEXM@Z 00B7D2C0 f mp_shell.o
+103	VERIFIED	0002:0038df70 ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z 00B7D470 f mp_shell.o
+104	VERIFIED	0002:0038df80 ?Me@GameSettingsView@@SAPAV1@H@Z 00B7D480 f mp_shell.o
+105	VERIFIED	0002:0038dfa0 ?OnLeft@GameSettingsView@@UAEXH@Z 00B7D4A0 f mp_shell.o
+106	VERIFIED	0002:0038dfb0 ?OnRight@GameSettingsView@@UAEXH@Z 00B7D4B0 f mp_shell.o
+107	VERIFIED	0002:0038dfc0 ?OnL1@GameSettingsView@@UAEXH@Z 00B7D4C0 f mp_shell.o
+108	VERIFIED	0002:0038dfd0 ?OnR1@GameSettingsView@@UAEXH@Z 00B7D4D0 f mp_shell.o
+109	VERIFIED	0002:0038dfe0 ?OnCross@GameSettingsView@@UAEXH@Z 00B7D4E0 f mp_shell.o
+110	VERIFIED	0002:0038dff0 ?OnTriangle@GameSettingsView@@UAEXH@Z 00B7D4F0 f mp_shell.o
+111	VERIFIED	0002:0038e000 ?OnCircle@GameSettingsView@@UAEXH@Z 00B7D500 f mp_shell.o
+112	VERIFIED	0002:0038e010 ?OnSquare@GameSettingsView@@UAEXH@Z 00B7D510 f mp_shell.o
+113	VERIFIED	0002:0038e020 ?ButtonHeldAction@GameSettingsView@@MAEXXZ 00B7D520 f mp_shell.o
+114	VERIFIED	0002:0038e030 ?Me@AARGameSettingsView@@SAPAV1@H@Z 00B7D530 f mp_shell.o
+115	VERIFIED	0002:0038e040 ?SetPanelFile@AARGameSettingsView@@UAEXPAVPanelFile@@@Z 00B7D540 f mp_shell.o
+116	VERIFIED	0002:0038e050 ?SetTimerText@AARGameSettingsView@@AAEXXZ 00B7D550 f mp_shell.o
+117	VERIFIED	0002:0038e0e0 ??0InitialLoadingMenu@@QAE@PAVFEMenuSystem@@@Z 00B7D5E0 f mp_shell.o
+118	VERIFIED	0002:0038e120 ?OnActivate@InitialLoadingMenu@@UAEXXZ 00B7D620 f mp_shell.o
+119	VERIFIED	0002:0038e140 ?Draw@InitialLoadingMenu@@UAEXXZ 00B7D640 f mp_shell.o
+120	VERIFIED	0002:0038e160 ?Select@InitialLoadingMenu@@UAEXH@Z 00B7D660 f mp_shell.o
+121	VERIFIED	0002:0038e170 ?SetPanelFile@InitialLoadingMenu@@UAEXPAVPanelFile@@@Z 00B7D670 f mp_shell.o
+122	VERIFIED	0002:0038e220 ?Me@InitialLoadingMenu@@SAPAV1@XZ 00B7D720 f mp_shell.o
+123	VERIFIED	0002:0038e230 ??0InstantActionMenu@@QAE@PAVFEMenuSystem@@@Z 00B7D730 f mp_shell.o
+124	VERIFIED	0002:0038e280 ?OnActivate@InstantActionMenu@@UAEXXZ 00B7D780 f mp_shell.o
+125	VERIFIED	0002:0038e290 ?Draw@InstantActionMenu@@UAEXXZ 00B7D790 f mp_shell.o
+126	VERIFIED	0002:0038e2b0 ?Update@InstantActionMenu@@UAEXM@Z 00B7D7B0 f mp_shell.o
+127	VERIFIED	0002:0038e300 ?Select@InstantActionMenu@@UAEXH@Z 00B7D800 f mp_shell.o
+128	VERIFIED	0002:0038e410 ?OnTriangle@InstantActionMenu@@UAEXH@Z 00B7D910 f mp_shell.o
+129	VERIFIED	0002:0038e420 ?SetPanelFile@InstantActionMenu@@UAEXPAVPanelFile@@@Z 00B7D920 f mp_shell.o
+130	VERIFIED	0002:0038e6a0 ?Me@InstantActionMenu@@SAPAV1@XZ 00B7DBA0 f mp_shell.o
+131	VERIFIED	0002:0038e6b0 ?OnDeactivate@PlayLanMenu@@UAEXPAVFEMenu@@@Z 00B7DBB0 f mp_shell.o
+132	VERIFIED	0002:0038e6c0 ?Draw@PlayLanMenu@@UAEXXZ 00B7DBC0 f mp_shell.o
+133	VERIFIED	0002:0038e6e0 ?OnCross@PlayLanMenu@@UAEXH@Z 00B7DBE0 f mp_shell.o
+134	VERIFIED	0002:0038e770 ?OnTriangle@PlayLanMenu@@UAEXH@Z 00B7DC70 f mp_shell.o
+135	VERIFIED	0002:0038e780 ?Me@PlayLanMenu@@SAPAV1@XZ 00B7DC80 f mp_shell.o
+136	VERIFIED	0002:0038e790 ??0PlayOnlineMenu@@QAE@PAVFEMenuSystem@@@Z 00B7DC90 f mp_shell.o
+137	VERIFIED	0002:0038e7e0 ?OnDeactivate@PlayOnlineMenu@@UAEXPAVFEMenu@@@Z 00B7DCE0 f mp_shell.o
+138	VERIFIED	0002:0038e7f0 ?Draw@PlayOnlineMenu@@UAEXXZ 00B7DCF0 f mp_shell.o
+139	VERIFIED	0002:0038e810 ?OnTriangle@PlayOnlineMenu@@UAEXH@Z 00B7DD10 f mp_shell.o
+140	VERIFIED	0002:0038e820 ?Me@PlayOnlineMenu@@SAPAV1@XZ 00B7DD20 f mp_shell.o
+141	VERIFIED	0002:0038e830 ?TogglePreviewImage@PlayOnlineMenu@@QAEXH_N@Z 00B7DD30 f mp_shell.o
+142	VERIFIED	0002:0038e8a0 ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z 00B7DDA0 f mp_shell.o
+143	VERIFIED	0002:0038e910 ?UpdateTextDescription@PlayOnlineMenu@@IAEXH@Z 00B7DE10 f mp_shell.o
+144	VERIFIED	0002:0038e9b0 ??0PressStartMenu@@QAE@PAVFEMenuSystem@@@Z 00B7DEB0 f mp_shell.o
+145	VERIFIED	0002:0038e9f0 ?OnActivate@PressStartMenu@@UAEXXZ 00B7DEF0 f mp_shell.o
+146	VERIFIED	0002:0038ea10 ?Draw@PressStartMenu@@UAEXXZ 00B7DF10 f mp_shell.o
+147	VERIFIED	0002:0038ea30 ?Update@PressStartMenu@@UAEXM@Z 00B7DF30 f mp_shell.o
+148	VERIFIED	0002:0038ea50 ?Select@PressStartMenu@@UAEXH@Z 00B7DF50 f mp_shell.o
+149	VERIFIED	0002:0038ea60 ?OnTriangle@PressStartMenu@@UAEXH@Z 00B7DF60 f mp_shell.o
+150	VERIFIED	0002:0038ea70 ?OnStart@PressStartMenu@@UAEXH@Z 00B7DF70 f mp_shell.o
+151	VERIFIED	0002:0038ea80 ?SetPanelFile@PressStartMenu@@UAEXPAVPanelFile@@@Z 00B7DF80 f mp_shell.o
+152	VERIFIED	0002:0038eb00 ?Me@PressStartMenu@@SAPAV1@XZ 00B7E000 f mp_shell.o
+153	VERIFIED	0002:0038eb10 ??0SessionDetailsMenu@@QAE@PAVFEMenuSystem@@@Z 00B7E010 f mp_shell.o
+154	VERIFIED	0002:0038eb50 ?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z 00B7E050 f mp_shell.o
+155	VERIFIED	0002:0038eb60 ?Draw@SessionDetailsMenu@@UAEXXZ 00B7E060 f mp_shell.o
+156	VERIFIED	0002:0038eb80 ?OnTriangle@SessionDetailsMenu@@UAEXH@Z 00B7E080 f mp_shell.o
+157	VERIFIED	0002:0038eb90 ?SetPanelFile@SessionDetailsMenu@@UAEXPAVPanelFile@@@Z 00B7E090 f mp_shell.o
+158	VERIFIED	0002:0038ee70 ?Me@SessionDetailsMenu@@SAPAV1@XZ 00B7E370 f mp_shell.o
+159	VERIFIED	0002:0038ee80 ?Draw@SessionListMenu@@UAEXXZ 00B7E380 f mp_shell.o
+160	VERIFIED	0002:0038eea0 ?OnTriangle@SessionListMenu@@UAEXH@Z 00B7E3A0 f mp_shell.o
+161	VERIFIED	0002:0038eec0 ?OnCircle@SessionListMenu@@UAEXH@Z 00B7E3C0 f mp_shell.o
+162	VERIFIED	0002:0038eee0 ?Me@SessionListMenu@@SAPAV1@XZ 00B7E3E0 f mp_shell.o
+163	VERIFIED	0002:0038eef0 ?TidyGamesList@SessionListMenu@@IAEXXZ 00B7E3F0 f mp_shell.o
+164	VERIFIED	0002:0038ef10 ?Draw@SessionLanListMenu@@UAEXXZ 00B7E410 f mp_shell.o
+165	VERIFIED	0002:0038ef30 ?OnTriangle@SessionLanListMenu@@UAEXH@Z 00B7E430 f mp_shell.o
+166	VERIFIED	0002:0038ef50 ?OnCircle@SessionLanListMenu@@UAEXH@Z 00B7E450 f mp_shell.o
+167	VERIFIED	0002:0038ef70 ?Me@SessionLanListMenu@@SAPAV1@XZ 00B7E470 f mp_shell.o
+168	VERIFIED	0002:0038ef80 ?TidyGamesList@SessionLanListMenu@@IAEXXZ 00B7E480 f mp_shell.o
+169	VERIFIED	0002:0038efa0 ?OnCross@SessionLanListMenu@@UAEXH@Z 00B7E4A0 f mp_shell.o
+170	VERIFIED	0002:0038efb0 ??0OverlayMenuBase@@QAE@PAVFEMenuSystem@@H@Z 00B7E4B0 f mp_shell.o
+171	VERIFIED	0002:0038eff0 ?OnActivate@OverlayMenuBase@@UAEXXZ 00B7E4F0 f mp_shell.o
+172	VERIFIED	0002:0038f010 ?Draw@OverlayMenuBase@@UAEXXZ 00B7E510 f mp_shell.o
+173	VERIFIED	0002:0038f030 ?Update@OverlayMenuBase@@UAEXM@Z 00B7E530 f mp_shell.o
+174	VERIFIED	0002:0038f050 ?Accept@OverlayMenuBase@@UAEXXZ 00B7E550 f mp_shell.o
+175	VERIFIED	0002:0038f090 ?OnTriangle@OverlayMenuBase@@UAEXH@Z 00B7E590 f mp_shell.o
+176	VERIFIED	0002:0038f0f0 ?UpdateSplitScreen@OverlayMenuBase@@UAEXXZ 00B7E5F0 f mp_shell.o
+177	VERIFIED	0002:0038f120 ?OnCross@OverlayMenu@@UAEXH@Z 00B7E620 f mp_shell.o
+178	VERIFIED	0002:0038f330 ?OnCircle@OverlayMenu@@UAEXH@Z 00B7E830 f mp_shell.o
+179	VERIFIED	0002:0038f340 ?OnSquare@OverlayMenu@@UAEXH@Z 00B7E840 f mp_shell.o
+180	VERIFIED	0002:0038f3c0 ?Select@OverlayMenu@@UAEXH@Z 00B7E8C0 f mp_shell.o
+181	VERIFIED	0002:0038f3d0 ?Me@OverlayMenu@@SAPAV1@H@Z 00B7E8D0 f mp_shell.o
+182	VERIFIED	0002:0038f3f0 ?OnUp@OverlayMenu@@UAEXH@Z 00B7E8F0 f mp_shell.o
+183	VERIFIED	0002:0038f450 ?OnDown@OverlayMenu@@UAEXH@Z 00B7E950 f mp_shell.o
+184	VERIFIED	0002:0038f4c0 ?LogonUpdate@OverlayMenu@@IAEXXZ 00B7E9C0 f mp_shell.o
+185	VERIFIED	0002:0038f4d0 ?Select@InGameOverlay@@UAEXH@Z 00B7E9D0 f mp_shell.o
+186	VERIFIED	0002:0038f4e0 ?Me@InGameOverlay@@SAPAV1@H@Z 00B7E9E0 f mp_shell.o
+187	VERIFIED	0002:0038f510 ?Update@InGameOverlay@@UAEXM@Z 00B7EA10 f mp_shell.o
+188	VERIFIED	0002:0038f590 ?OnTriangle@InGameOverlay@@UAEXH@Z 00B7EA90 f mp_shell.o
+189	VERIFIED	0002:0038f5e0 ?OnCross@InGameOverlay@@UAEXH@Z 00B7EAE0 f mp_shell.o
+190	VERIFIED	0002:0038f780 ?OnCircle@InGameOverlay@@UAEXH@Z 00B7EC80 f mp_shell.o
+191	VERIFIED	0002:0038f790 ?OnSquare@InGameOverlay@@UAEXH@Z 00B7EC90 f mp_shell.o
+192	VERIFIED	0002:0038f7a0 ?OnUp@InGameOverlay@@UAEXH@Z 00B7ECA0 f mp_shell.o
+193	VERIFIED	0002:0038f7e0 ?Draw@InGameOverlay@@UAEXXZ 00B7ECE0 f mp_shell.o
+194	VERIFIED	0002:0038f830 ?OnDown@InGameOverlay@@UAEXH@Z 00B7ED30 f mp_shell.o
+195	VERIFIED	0002:0038f870 ?Select@AAROverlay@@UAEXH@Z 00B7ED70 f mp_shell.o
+196	VERIFIED	0002:0038f880 ?Me@AAROverlay@@SAPAV1@H@Z 00B7ED80 f mp_shell.o
+197	VERIFIED	0002:0038f8a0 ?Update@AAROverlay@@UAEXM@Z 00B7EDA0 f mp_shell.o
+198	VERIFIED	0002:0038f920 ?OnTriangle@AAROverlay@@UAEXH@Z 00B7EE20 f mp_shell.o
+199	VERIFIED	0002:0038f970 ?OnCross@AAROverlay@@UAEXH@Z 00B7EE70 f mp_shell.o
+200	VERIFIED	0002:0038fb10 ?OnCircle@AAROverlay@@UAEXH@Z 00B7F010 f mp_shell.o
+201	VERIFIED	0002:0038fb20 ?OnSquare@AAROverlay@@UAEXH@Z 00B7F020 f mp_shell.o
+202	VERIFIED	0002:0038fb30 ?OnUp@AAROverlay@@UAEXH@Z 00B7F030 f mp_shell.o
+203	VERIFIED	0002:0038fb70 ?Draw@AAROverlay@@UAEXXZ 00B7F070 f mp_shell.o
+204	VERIFIED	0002:0038fbc0 ?OnDown@AAROverlay@@UAEXH@Z 00B7F0C0 f mp_shell.o
+205	VERIFIED	0002:0038fcb0 ??0MultilineOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 00B7F1B0 f mp_shell.o
+206	VERIFIED	0002:0038fd20 ?OnActivate@MultilineOverlayMenu@@UAEXXZ 00B7F220 f mp_shell.o
+207	VERIFIED	0002:0038fd70 ?SetPanelFile@MultilineOverlayMenu@@UAEXPAVPanelFile@@@Z 00B7F270 f mp_shell.o
+208	VERIFIED	0002:00390000 ?OnStart@MultilineFrontendOverlayMenu@@UAEXH@Z 00B7F500 f mp_shell.o
+209	VERIFIED	0002:00390030 ?OnCross@MultilineFrontendOverlayMenu@@UAEXH@Z 00B7F530 f mp_shell.o
+210	VERIFIED	0002:00390040 ?Update@MultilineFrontendOverlayMenu@@UAEXM@Z 00B7F540 f mp_shell.o
+211	VERIFIED	0002:00390060 ?Me@MultilineFrontendOverlayMenu@@SAPAV1@XZ 00B7F560 f mp_shell.o
+212	VERIFIED	0002:00390070 ?SetState@MultilineFrontendOverlayMenu@@QAEXW4eState@1@@Z 00B7F570 f mp_shell.o
+213	VERIFIED	0002:00390280 ?SetTempState@MultilineFrontendOverlayMenu@@QAEXW4eState@1@@Z 00B7F780 f mp_shell.o
+214	VERIFIED	0002:003902a0 ?OnTriangle@MultilineFrontendOverlayMenu@@UAEXH@Z 00B7F7A0 f mp_shell.o
+215	VERIFIED	0002:003902b0 ?OnDeactivate@MultilineIngameOverlayMenu@@UAEXPAVFEMenu@@@Z 00B7F7B0 f mp_shell.o
+216	VERIFIED	0002:003902d0 ?OnStart@MultilineIngameOverlayMenu@@UAEXH@Z 00B7F7D0 f mp_shell.o
+217	VERIFIED	0002:00390300 ?Update@MultilineIngameOverlayMenu@@UAEXM@Z 00B7F800 f mp_shell.o
+218	VERIFIED	0002:003903b0 ?Me@MultilineIngameOverlayMenu@@SAPAV1@XZ 00B7F8B0 f mp_shell.o
+219	VERIFIED	0002:003903d0 ?SetState@MultilineIngameOverlayMenu@@QAEXW4eState@1@@Z 00B7F8D0 f mp_shell.o
+220	VERIFIED	0002:00390580 ??0VoteGameTypeMenu@@QAE@PAVFEMenuSystem@@@Z 00B7FA80 f mp_shell.o
+221	VERIFIED	0002:003905c0 ?OnActivate@VoteGameTypeMenu@@UAEXXZ 00B7FAC0 f mp_shell.o
+222	VERIFIED	0002:003906b0 ?Draw@VoteGameTypeMenu@@UAEXXZ 00B7FBB0 f mp_shell.o
+223	VERIFIED	0002:003906d0 ?SetPanelFile@VoteGameTypeMenu@@UAEXPAVPanelFile@@@Z 00B7FBD0 f mp_shell.o
+224	VERIFIED	0002:003907d0 ??0VoteMapMenu@@QAE@PAVFEMenuSystem@@@Z 00B7FCD0 f mp_shell.o
+225	VERIFIED	0002:00390810 ?OnActivate@VoteMapMenu@@UAEXXZ 00B7FD10 f mp_shell.o
+226	VERIFIED	0002:00390920 ?OnDeactivate@VoteMapMenu@@UAEXPAVFEMenu@@@Z 00B7FE20 f mp_shell.o
+227	VERIFIED	0002:00390930 ?Draw@VoteMapMenu@@UAEXXZ 00B7FE30 f mp_shell.o
+228	VERIFIED	0002:00390950 ?SetPanelFile@VoteMapMenu@@UAEXPAVPanelFile@@@Z 00B7FE50 f mp_shell.o
+229	VERIFIED	0002:00390a50 ?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z 00B7FF50 f mp_shell.o
+230	VERIFIED	0002:00390a60 ?LocalIndexToPlayerClass@WeaponSelectMenu@@IAE?AW4EPlayerClass@@H@Z 00B7FF60 f mp_shell.o
+231	VERIFIED	0002:00390b90 ?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z 00B80090 f mp_shell.o
+232	VERIFIED	0002:00390c60 ?OnStart@WeaponSelectMenu@@UAEXH@Z 00B80160 f mp_shell.o
+233	VERIFIED	0002:00390c70 ?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ 00B80170 f mp_shell.o
+234	VERIFIED	0002:00390c90 ?Update@WeaponSelectMenu@@UAEXM@Z 00B80190 f mp_shell.o
+235	VERIFIED	0002:00390cf0 ?scoreboard_player_sorter@@YAHPBX0@Z 00B801F0 f mp_shell.o
+236	VERIFIED	0002:00390d20 ?UpdateSplitScreen@InGameScoreBoard@@UAEXXZ 00B80220 f mp_shell.o
+237	VERIFIED	0002:00390d50 ?Init@InGameScoreBoard@@UAEXXZ 00B80250 f mp_shell.o
+238	VERIFIED	0002:00390d60 ?OnDeactivate@InGameScoreBoard@@UAEXPAVFEMenu@@@Z 00B80260 f mp_shell.o
+239	VERIFIED	0002:00390da0 ?Draw@InGameScoreBoard@@UAEXXZ 00B802A0 f mp_shell.o
+240	VERIFIED	0002:00390dc0 ?GetAlliesScore@InGameScoreBoard@@IAEHXZ 00B802C0 f mp_shell.o
+241	VERIFIED	0002:00390dd0 ?GetAxisScore@InGameScoreBoard@@IAEHXZ 00B802D0 f mp_shell.o
+242	VERIFIED	0002:00390de0 ?OnButtonRelease@InGameScoreBoard@@UAEXHH@Z 00B802E0 f mp_shell.o
+243	VERIFIED	0002:00390e10 ?OnTriangle@InGameScoreBoard@@UAEXH@Z 00B80310 f mp_shell.o
+244	VERIFIED	0002:00390e20 ?OnSquare@InGameScoreBoard@@UAEXH@Z 00B80320 f mp_shell.o
+245	VERIFIED	0002:00390e30 ?OnSelect@InGameScoreBoard@@UAEXH@Z 00B80330 f mp_shell.o
+246	VERIFIED	0002:00390e90 ?Init@InGameSwitchSides@@UAEXXZ 00B80390 f mp_shell.o
+247	VERIFIED	0002:00390ea0 ?OnDeactivate@InGameSwitchSides@@QAEXPAVModelMenu@@@Z 00B803A0 f mp_shell.o
+248	VERIFIED	0002:00390eb0 ?OnTriangle@InGameSwitchSides@@UAEXH@Z 00B803B0 f mp_shell.o
+249	VERIFIED	0002:00390ec0 ?ResponseNoNevermind@InGameSwitchSides@@KA_NH@Z 00B803C0 f mp_shell.o
+250	VERIFIED	0002:00390ed0 ?ResponseGoBack@InGameSwitchSides@@KAXH@Z 00B803D0 f mp_shell.o
+251	VERIFIED	0002:00390ef0 ??0AARBaseMenu@@QAE@PAVFEMenuSystem@@H@Z 00B803F0 f mp_shell.o
+252	VERIFIED	0002:00390f70 ??1AARBaseMenu@@UAE@XZ 00B80470 f mp_shell.o
+253	VERIFIED	0002:00390f90 ?OnStart@AARBaseMenu@@UAEXH@Z 00B80490 f mp_shell.o
+254	VERIFIED	0002:00390fd0 ?player_sorter@@YAHPBX0@Z 00B804D0 f mp_shell.o
+255	VERIFIED	0002:00391000 ?PanelFileUnloaded@AARScoreboardBase@@UAEXPAVPanelFile@@@Z 00B80500 f mp_shell.o
+256	VERIFIED	0002:00391010 ?Init@AARScoreboardBase@@UAEXXZ 00B80510 f mp_shell.o
+257	VERIFIED	0002:00391020 ?OnDeactivate@AARScoreboardBase@@QAEXPAVAARBaseMenu@@@Z 00B80520 f mp_shell.o
+258	VERIFIED	0002:00391040 ?OnSquare@AARScoreboardBase@@UAEXH@Z 00B80540 f mp_shell.o
+259	VERIFIED	0002:00391050 ?Draw@AARScoreboardBase@@UAEXXZ 00B80550 f mp_shell.o
+260	VERIFIED	0002:00391070 ?GetAlliesScore@AARScoreboardBase@@IAEHXZ 00B80570 f mp_shell.o
+261	VERIFIED	0002:00391080 ?GetAxisScore@AARScoreboardBase@@IAEHXZ 00B80580 f mp_shell.o
+262	VERIFIED	0002:00391090 ?OnLeft@AARScoreboardBase@@UAEXH@Z 00B80590 f mp_shell.o
+263	VERIFIED	0002:003910a0 ?OnRight@AARScoreboardBase@@UAEXH@Z 00B805A0 f mp_shell.o
+264	VERIFIED	0002:003910b0 ?OnUp@AARScoreboardBase@@UAEXH@Z 00B805B0 f mp_shell.o
+265	VERIFIED	0002:003910c0 ?OnDown@AARScoreboardBase@@UAEXH@Z 00B805C0 f mp_shell.o
+266	VERIFIED	0002:003910d0 ?Draw@AARScoreboardWinner@@UAEXXZ 00B805D0 f mp_shell.o
+267	VERIFIED	0002:003910f0 ?OnR1@AARScoreboardWinner@@UAEXH@Z 00B805F0 f mp_shell.o
+268	VERIFIED	0002:00391110 ?OnL1@AARScoreboardWinner@@UAEXH@Z 00B80610 f mp_shell.o
+269	VERIFIED	0002:00391130 ?Draw@AARScoreboardLoser@@UAEXXZ 00B80630 f mp_shell.o
+270	VERIFIED	0002:00391150 ?OnR1@AARScoreboardLoser@@UAEXH@Z 00B80650 f mp_shell.o
+271	VERIFIED	0002:00391160 ?OnL1@AARScoreboardLoser@@UAEXH@Z 00B80660 f mp_shell.o
+272	VERIFIED	0002:00391170 ??0AARPersonalStats@@QAE@PAVFEMenuSystem@@@Z 00B80670 f mp_shell.o
+273	VERIFIED	0002:00391230 ??1AARPersonalStats@@UAE@XZ 00B80730 f mp_shell.o
+274	VERIFIED	0002:003912c0 ?Me@AARPersonalStats@@SAPAV1@XZ 00B807C0 f mp_shell.o
+275	VERIFIED	0002:003912d0 ?PanelFileUnloaded@AARPersonalStats@@UAEXPAVPanelFile@@@Z 00B807D0 f mp_shell.o
+276	VERIFIED	0002:003912e0 ?Init@AARPersonalStats@@UAEXXZ 00B807E0 f mp_shell.o
+277	VERIFIED	0002:003912f0 ?OnCross@AARPersonalStats@@UAEXH@Z 00B807F0 f mp_shell.o
+278	VERIFIED	0002:00391300 ?OnUp@AARPersonalStats@@UAEXH@Z 00B80800 f mp_shell.o
+279	VERIFIED	0002:00391310 ?OnDown@AARPersonalStats@@UAEXH@Z 00B80810 f mp_shell.o
+280	VERIFIED	0002:00391320 ?OnR1@AARPersonalStats@@UAEXH@Z 00B80820 f mp_shell.o
+281	VERIFIED	0002:00391340 ?OnLeft@AARPersonalStats@@UAEXH@Z 00B80840 f mp_shell.o
+282	VERIFIED	0002:00391350 ?OnRight@AARPersonalStats@@UAEXH@Z 00B80850 f mp_shell.o
+283	VERIFIED	0002:00391360 ?OnL1@AARPersonalStats@@UAEXH@Z 00B80860 f mp_shell.o
+284	VERIFIED	0002:003913a0 ?GetClassSpecificScore@AARPersonalStats@@IAEXW4EPlayerClass@@AAH111@Z 00B808A0 f mp_shell.o
+285	VERIFIED	0002:00391510 ?Me@AARMapVote@@SAPAV1@XZ 00B80A10 f mp_shell.o
+286	VERIFIED	0002:00391520 ?PanelFileUnloaded@AARMapVote@@UAEXPAVPanelFile@@@Z 00B80A20 f mp_shell.o
+287	VERIFIED	0002:00391540 ?Init@AARMapVote@@UAEXXZ 00B80A40 f mp_shell.o
+288	VERIFIED	0002:00391550 ?OnDeactivate@AARMapVote@@QAEXPAVAARBaseMenu@@@Z 00B80A50 f mp_shell.o
+289	VERIFIED	0002:00391560 ?OnUp@AARMapVote@@UAEXH@Z 00B80A60 f mp_shell.o
+290	VERIFIED	0002:003915d0 ?OnDown@AARMapVote@@UAEXH@Z 00B80AD0 f mp_shell.o
+291	VERIFIED	0002:00391640 ?OnR1@AARMapVote@@UAEXH@Z 00B80B40 f mp_shell.o
+292	VERIFIED	0002:00391650 ?OnLeft@AARMapVote@@UAEXH@Z 00B80B50 f mp_shell.o
+293	VERIFIED	0002:00391660 ?OnRight@AARMapVote@@UAEXH@Z 00B80B60 f mp_shell.o
+294	VERIFIED	0002:00391670 ?OnL1@AARMapVote@@UAEXH@Z 00B80B70 f mp_shell.o
+295	VERIFIED	0002:00391690 ?VoteOnMap@AARMapVote@@QAEXHH@Z 00B80B90 f mp_shell.o
+296	VERIFIED	0002:003917f0 ?Me@AARGameModeVote@@SAPAV1@XZ 00B80CF0 f mp_shell.o
+297	VERIFIED	0002:00391800 ?PanelFileUnloaded@AARGameModeVote@@UAEXPAVPanelFile@@@Z 00B80D00 f mp_shell.o
+298	VERIFIED	0002:00391870 ?Init@AARGameModeVote@@UAEXXZ 00B80D70 f mp_shell.o
+299	VERIFIED	0002:00391880 ?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z 00B80D80 f mp_shell.o
+300	VERIFIED	0002:00391890 ?OnUp@AARGameModeVote@@UAEXH@Z 00B80D90 f mp_shell.o
+301	VERIFIED	0002:003918e0 ?OnDown@AARGameModeVote@@UAEXH@Z 00B80DE0 f mp_shell.o
+302	VERIFIED	0002:00391930 ?OnR1@AARGameModeVote@@UAEXH@Z 00B80E30 f mp_shell.o
+303	VERIFIED	0002:00391950 ?OnLeft@AARGameModeVote@@UAEXH@Z 00B80E50 f mp_shell.o
+304	VERIFIED	0002:00391960 ?OnRight@AARGameModeVote@@UAEXH@Z 00B80E60 f mp_shell.o
+305	VERIFIED	0002:00391970 ?OnL1@AARGameModeVote@@UAEXH@Z 00B80E70 f mp_shell.o
+306	VERIFIED	0002:00391990 ?UnPause@PauseMenu@@QAEXXZ 00B80E90 f mp_shell.o
+307	VERIFIED	0002:003919e0 ?Update@PauseMenu@@UAEXM@Z 00B80EE0 f mp_shell.o
+308	VERIFIED	0002:00391b30 ?OnDeactivate@PauseMenu@@UAEXPAVFEMenu@@@Z 00B81030 f mp_shell.o
+309	VERIFIED	0002:00391b60 ?SetGameSettingsText@PauseMenu@@QAEXXZ 00B81060 f mp_shell.o
+310	VERIFIED	0002:00391bb0 ?Quit@PauseMenu@@IAEXXZ 00B810B0 f mp_shell.o
+311	VERIFIED	0002:00391bc0 ?TeamChange@PauseMenu@@IAEXXZ 00B810C0 f mp_shell.o
+312	VERIFIED	0002:00391c90 ?ResponseYesQuit@PauseMenu@@KA_NH@Z 00B81190 f mp_shell.o
+313	VERIFIED	0002:00391cc0 ?ResponseYesTeamChange@PauseMenu@@KA_NH@Z 00B811C0 f mp_shell.o
+314	VERIFIED	0002:00391ce0 ?ResponseGoBack@PauseMenu@@KAXH@Z 00B811E0 f mp_shell.o
+315	VERIFIED	0002:00391d00 ?Suicide@PauseMenu@@IAEXXZ 00B81200 f mp_shell.o
+316	VERIFIED	0002:00391d50 ?ButtonHeldAction@PauseMenu@@UAEXXZ 00B81250 f mp_shell.o
+317	VERIFIED	0002:00391d80 ??0AARPauseMenu@@QAE@PAVFEMenuSystem@@@Z 00B81280 f mp_shell.o
+318	VERIFIED	0002:00391dc0 ??1AARPauseMenu@@UAE@XZ 00B812C0 f mp_shell.o
+319	VERIFIED	0002:00391dd0 ?ButtonHeldAction@AARPauseMenu@@UAEXXZ 00B812D0 f mp_shell.o
+320	VERIFIED	0002:00391e00 ?ResponseGoBack@AARPauseMenu@@SAXH@Z 00B81300 f mp_shell.o
+321	VERIFIED	0002:00391e20 ?PanelFileUnloaded@AARPauseMenu@@UAEXPAVPanelFile@@@Z 00B81320 f mp_shell.o
+322	VERIFIED	0002:00391e30 ?OnDeactivate@AARPauseMenu@@UAEXPAVFEMenu@@@Z 00B81330 f mp_shell.o
+323	VERIFIED	0002:00391e60 ?UnPause@AARPauseMenu@@QAEXH@Z 00B81360 f mp_shell.o
+324	VERIFIED	0002:00391ea0 ?OnTriangle@AARPauseMenu@@UAEXH@Z 00B813A0 f mp_shell.o
+325	VERIFIED	0002:00391ee0 ?OnStart@AARPauseMenu@@UAEXH@Z 00B813E0 f mp_shell.o
+326	VERIFIED	0002:00391f20 ?OnActivate@AARPauseMenu@@UAEXXZ 00B81420 f mp_shell.o
+327	VERIFIED	0002:00392080 ?UpdateSplitScreen@AARPauseMenu@@UAEXXZ 00B81580 f mp_shell.o
+328	VERIFIED	0002:00392090 ?SetPanelFile@AARPauseMenu@@UAEXPAVPanelFile@@@Z 00B81590 f mp_shell.o
+329	VERIFIED	0002:00392240 ?Draw@AARPauseMenu@@UAEXXZ 00B81740 f mp_shell.o
+330	VERIFIED	0002:00392260 ?OnUp@AARPauseMenu@@UAEXH@Z 00B81760 f mp_shell.o
+331	VERIFIED	0002:00392270 ?OnDown@AARPauseMenu@@UAEXH@Z 00B81770 f mp_shell.o
+332	VERIFIED	0002:00392280 ?SetTimerText@AARPauseMenu@@AAEXXZ 00B81780 f mp_shell.o
+333	VERIFIED	0002:00392310 ??0HotJoinMenu@@QAE@PAVFEMenuSystem@@@Z 00B81810 f mp_shell.o
+334	VERIFIED	0002:00392390 ?OnActivate@HotJoinMenu@@UAEXXZ 00B81890 f mp_shell.o
+335	VERIFIED	0002:00392460 ?OnDeactivate@HotJoinMenu@@UAEXPAVFEMenu@@@Z 00B81960 f mp_shell.o
+336	VERIFIED	0002:00392470 ?Draw@HotJoinMenu@@UAEXXZ 00B81970 f mp_shell.o
+337	VERIFIED	0002:003924e0 ?Update@HotJoinMenu@@UAEXM@Z 00B819E0 f mp_shell.o
+338	VERIFIED	0002:003924f0 ?SetPanelFile@HotJoinMenu@@UAEXPAVPanelFile@@@Z 00B819F0 f mp_shell.o
+339	VERIFIED	0002:00392560 ?OnUp@HotJoinMenu@@UAEXH@Z 00B81A60 f mp_shell.o
+340	VERIFIED	0002:00392570 ?OnDown@HotJoinMenu@@UAEXH@Z 00B81A70 f mp_shell.o
+341	VERIFIED	0002:00392580 ?Close@HotJoinMenu@@QAEX_N@Z 00B81A80 f mp_shell.o
+342	VERIFIED	0002:003925e0 ?UpdateSplitScreen@HotJoinMenu@@UAEXXZ 00B81AE0 f mp_shell.o
+343	VERIFIED	0002:00392600 ?Join@HotJoinMenu@@QAEXXZ 00B81B00 f mp_shell.o
+344	VERIFIED	0002:00392620 ?DisplayError@HotJoinMenu@@QAEXPBD@Z 00B81B20 f mp_shell.o
+345	VERIFIED	0002:00392660 ??0SpectateMenu@@QAE@PAVFEMenuSystem@@@Z 00B81B60 f mp_shell.o
+346	VERIFIED	0002:003926e0 ??1SpectateMenu@@UAE@XZ 00B81BE0 f mp_shell.o
+347	VERIFIED	0002:003926f0 ?OnDeactivate@SpectateMenu@@UAEXPAVFEMenu@@@Z 00B81BF0 f mp_shell.o
+348	VERIFIED	0002:00392700 ?Clear@SpectateMenu@@QAEXXZ 00B81C00 f mp_shell.o
+349	VERIFIED	0002:00392710 ?Update@SpectateMenu@@UAEXM@Z 00B81C10 f mp_shell.o
+350	VERIFIED	0002:00392780 ?UpdateSeconds@SpectateMenu@@QAEXXZ 00B81C80 f mp_shell.o
+351	VERIFIED	0002:00392880 ?UpdateHelpbar@SpectateMenu@@QAEXXZ 00B81D80 f mp_shell.o
+352	VERIFIED	0002:00392950 ?Draw@SpectateMenu@@UAEXXZ 00B81E50 f mp_shell.o
+353	VERIFIED	0002:00392970 ?SetTeamKill@SpectateMenu@@QAEX_NPAVEntity@@@Z 00B81E70 f mp_shell.o
+354	VERIFIED	0002:003929a0 ?OnStart@SpectateMenu@@UAEXH@Z 00B81EA0 f mp_shell.o
+355	VERIFIED	0002:003929c0 ?OnSelect@SpectateMenu@@UAEXH@Z 00B81EC0 f mp_shell.o
+356	VERIFIED	0002:003929e0 ?OnCross@SpectateMenu@@UAEXH@Z 00B81EE0 f mp_shell.o
+357	VERIFIED	0002:00392a40 ?OnTrueCircle@SpectateMenu@@UAEXH@Z 00B81F40 f mp_shell.o
+358	VERIFIED	0002:00392a90 ?OnSquare@SpectateMenu@@UAEXH@Z 00B81F90 f mp_shell.o
+359	VERIFIED	0002:00392ac0 ?OnRight@SpectateMenu@@UAEXH@Z 00B81FC0 f mp_shell.o
+360	VERIFIED	0002:00392b40 ?OnLeft@SpectateMenu@@UAEXH@Z 00B82040 f mp_shell.o
+361	VERIFIED	0002:00392bd0 ?SetPanelFile@SpectateMenu@@UAEXPAVPanelFile@@@Z 00B820D0 f mp_shell.o
+362	VERIFIED	0002:00392d10 ?UpdateSplitScreen@SpectateMenu@@UAEXXZ 00B82210 f mp_shell.o
+363	VERIFIED	0002:00392d60 ?UpdateWidescreen@SpectateMenu@@UAEX_N@Z 00B82260 f mp_shell.o
+364	VERIFIED	0002:00392d70 ?MI_ResetMapList@@YAXXZ 00B82270 f mp_shell.o
+365	VERIFIED	0002:00392dd0 ?MI_InitMapList@@YAXXZ 00B822D0 f mp_shell.o
+366	VERIFIED	0002:00392de0 ?MI_IsAvailableMap@@YA_ND@Z 00B822E0 f mp_shell.o
+367	VERIFIED	0002:00392e10 ?MI_IsMapPackAvailable@@YA_ND@Z 00B82310 f mp_shell.o
+368	VERIFIED	0002:00392e40 ?remove_underscores@@YAPADPAD@Z 00B82340 f mp_shell.o
+369	VERIFIED	0002:00392e70 ?MI_UpdateMapList@@YAXXZ 00B82370 f mp_shell.o
+370	VERIFIED	0002:00392e80 ?MI_GetMapDisplayName@@YAPADD@Z 00B82380 f mp_shell.o
+371	VERIFIED	0002:00392ec0 ?MI_GetMapLocation@@YAPADD@Z 00B823C0 f mp_shell.o
+372	VERIFIED	0002:00392f00 ?MI_GetMapTitle@@YAPADD@Z 00B82400 f mp_shell.o
+373	VERIFIED	0002:00392f40 ?MI_GetMapPack@@YADD@Z 00B82440 f mp_shell.o
+374	VERIFIED	0002:00392f80 ?MI_GetMapShortname@@YAPADD@Z 00B82480 f mp_shell.o
+375	VERIFIED	0002:00392fc0 ?MI_GetMapIDbyShortname@@YADPAD@Z 00B824C0 f mp_shell.o
+376	VERIFIED	0002:00393010 ?MI_GetMapIDbyIndex@@YADD@Z 00B82510 f mp_shell.o
+377	VERIFIED	0002:00393030 ?MI_GetMapIndexbyID@@YADD@Z 00B82530 f mp_shell.o
+378	VERIFIED	0002:00393060 ?UpdateSplitScreen@FESplitScreenMenu@@UAEXXZ 00B82560 f mp_shell.o
+379	VERIFIED	0002:003930c0 ?SwapMenus@FESplitScreenMenu@@MAEXXZ 00B825C0 f mp_shell.o
+380	VERIFIED	0002:003930d0 ?SetPanelFile@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z 00B825D0 f mp_shell.o
+381	VERIFIED	0002:003930e0 ?OnActivate@FESplitScreenMenu@@UAEXXZ 00B825E0 f mp_shell.o
+382	VERIFIED	0002:00393100 ?Draw@FESplitScreenMenu@@UAEXXZ 00B82600 f mp_shell.o
+383	VERIFIED	0002:00393150 ?AddMainEntry@FESplitScreenMenu@@QAEXHPAVFEText@@@Z 00B82650 f mp_shell.o
+384	VERIFIED	0002:00393170 ?AddMainComboBox@FESplitScreenMenu@@QAEPAVFEComboBox@@HHPAVFEText@@0PAVPanelQuad@@1@Z 00B82670 f mp_shell.o
+385	VERIFIED	0002:00393180 ?AddMainSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVPanelQuad@@PAVFEText@@@Z 00B82680 f mp_shell.o
+386	VERIFIED	0002:00393190 ?AddMainSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVFEText@@0@Z 00B82690 f mp_shell.o
+387	VERIFIED	0002:003931a0 ?SetPanelFileBackground@FESplitScreenMenu@@IAEXPAVPanelFile@@@Z 00B826A0 f mp_shell.o
+388	VERIFIED	0002:003931b0 ?Update@ModelMenu@@UAEXM@Z 00B826B0 f mp_shell.o
+389	VERIFIED	0002:003931c0 ?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z 00B826C0 f mp_shell.o
+390	VERIFIED	0002:00393240 ?SetLightDirection@ModelMenu@@IAEXHABVDir3@math@@@Z 00B82740 f mp_shell.o
+391	VERIFIED	0002:00393300 ?SetLightBrightness@ModelMenu@@IAEXHM@Z 00B82800 f mp_shell.o
+392	VERIFIED	0002:00393370 ?GetClassModel@ModelMenu@@IAEPBDHH@Z 00B82870 f mp_shell.o
+393	VERIFIED	0002:00393450 ?DebugControls@ModelMenu@@IAEXXZ 00B82950 f mp_shell.o
+394	VERIFIED	0002:00393460 ?DebugRender@ModelMenu@@IAEXXZ 00B82960 f mp_shell.o
+395	VERIFIED	0002:00393470 ?ActivateMenu@AARMenuSystem@@QAEXH@Z 00B82970 f mp_shell.o
+396	VERIFIED	0002:003934a0 ?Draw@AARMenuSystem@@UAEXXZ 00B829A0 f mp_shell.o
+397	VERIFIED	0002:003934e0 ?Update@AARMenuSystem@@UAEXM@Z 00B829E0 f mp_shell.o
+398	VERIFIED	0002:00393520 ?CheckForNoMenus@AARMenuSystem@@IAEXXZ 00B82A20 f mp_shell.o
+399	VERIFIED	0002:00393540 ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z 00B82A40 f mp_shell.o
+400	VERIFIED	0002:00393570 ?SetPanelFile@CreateSessionMenu@@UAEXPAVPanelFile@@@Z 00B82A70 f mp_shell.o
+401	VERIFIED	0002:003942c0 ?UpdateHighlight@CreateSessionMenu@@IAEXXZ 00B837C0 f mp_shell.o
+402	VERIFIED	0002:00394330 ?OnDeactivate@CreateSessionMenu@@UAEXPAVFEMenu@@@Z 00B83830 f mp_shell.o
+403	VERIFIED	0002:00394390 ?OnSquare@CreateSessionMenu@@UAEXH@Z 00B83890 f mp_shell.o
+404	VERIFIED	0002:003943f0 ?OnUp@CreateSessionMenu@@UAEXH@Z 00B838F0 f mp_shell.o
+405	VERIFIED	0002:00394410 ?OnDown@CreateSessionMenu@@UAEXH@Z 00B83910 f mp_shell.o
+406	VERIFIED	0002:00394430 ?SetMapDefaults@CreateSessionMenu@@QAEXXZ 00B83930 f mp_shell.o
+407	VERIFIED	0002:00394490 ?SetPanelFile@CreateLanSessionMenu@@UAEXPAVPanelFile@@@Z 00B83990 f mp_shell.o
+408	VERIFIED	0002:00395070 ?OnSquare@CreateLanSessionMenu@@UAEXH@Z 00B84570 f mp_shell.o
+409	VERIFIED	0002:003950c0 ?SetMapDefaults@CreateLanSessionMenu@@QAEXXZ 00B845C0 f mp_shell.o
+410	VERIFIED	0002:00395120 ?OnActivate@CreateSessionAdvancedMenu@@UAEXXZ 00B84620 f mp_shell.o
+411	VERIFIED	0002:003952f0 ?SetPanelFile@CreateSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z 00B847F0 f mp_shell.o
+412	VERIFIED	0002:003964d0 ?OnActivate@CreateLanSessionAdvancedMenu@@UAEXXZ 00B859D0 f mp_shell.o
+413	VERIFIED	0002:003966e0 ?SetPanelFile@CreateLanSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z 00B85BE0 f mp_shell.o
+414	VERIFIED	0002:003978c0 ?SetPanelFile@FindSessionMenu@@UAEXPAVPanelFile@@@Z 00B86DC0 f mp_shell.o
+415	VERIFIED	0002:00398b80 ?OnActivate@FindSessionMenu@@UAEXXZ 00B88080 f mp_shell.o
+416	VERIFIED	0002:00398cd0 ?OnCross@FindSessionMenu@@UAEXH@Z 00B881D0 f mp_shell.o
+417	VERIFIED	0002:00398da0 ?SetPanelFile@FindLanSessionMenu@@UAEXPAVPanelFile@@@Z 00B882A0 f mp_shell.o
+418	VERIFIED	0002:0039a070 ?OnActivate@FindLanSessionMenu@@UAEXXZ 00B89570 f mp_shell.o
+419	VERIFIED	0002:0039a1c0 ?OnCross@FindLanSessionMenu@@UAEXH@Z 00B896C0 f mp_shell.o
+420	VERIFIED	0002:0039a290 ?AddOptionsToCombos@GameSettingsEdit@@IAEXXZ 00B89790 f mp_shell.o
+421	VERIFIED	0002:0039a4c0 ?OnActivate@GameSettingsEdit@@UAEXXZ 00B899C0 f mp_shell.o
+422	VERIFIED	0002:0039a760 ?Update@GameSettingsEdit@@UAEXM@Z 00B89C60 f mp_shell.o
+423	VERIFIED	0002:0039a930 ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z 00B89E30 f mp_shell.o
+424	VERIFIED	0002:0039ab30 ?Draw@GameSettingsEdit@@UAEXXZ 00B8A030 f mp_shell.o
+425	VERIFIED	0002:0039ab40 ?OnUp@GameSettingsEdit@@UAEXH@Z 00B8A040 f mp_shell.o
+426	VERIFIED	0002:0039abe0 ?OnDown@GameSettingsEdit@@UAEXH@Z 00B8A0E0 f mp_shell.o
+427	VERIFIED	0002:0039ac80 ?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ 00B8A180 f mp_shell.o
+428	VERIFIED	0002:0039ad30 ?OnLeft@GameSettingsEdit@@UAEXH@Z 00B8A230 f mp_shell.o
+429	VERIFIED	0002:0039ad50 ?OnRight@GameSettingsEdit@@UAEXH@Z 00B8A250 f mp_shell.o
+430	VERIFIED	0002:0039ad70 ?ResponseYesApplyNowHelper@GameSettingsEdit@@IAE_NXZ 00B8A270 f mp_shell.o
+431	VERIFIED	0002:0039ae80 ?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z 00B8A380 f mp_shell.o
+432	VERIFIED	0002:0039aea0 ?OnTriangle@GameSettingsEdit@@UAEXH@Z 00B8A3A0 f mp_shell.o
+433	VERIFIED	0002:0039b0a0 ?OnActivate@AARGameSettingsEdit@@UAEXXZ 00B8A5A0 f mp_shell.o
+434	VERIFIED	0002:0039b140 ?Update@AARGameSettingsEdit@@UAEXM@Z 00B8A640 f mp_shell.o
+435	VERIFIED	0002:0039b160 ?ResponseYesApplyNow@AARGameSettingsEdit@@SA_NH@Z 00B8A660 f mp_shell.o
+436	VERIFIED	0002:0039b170 ?OnTriangle@AARGameSettingsEdit@@UAEXH@Z 00B8A670 f mp_shell.o
+437	VERIFIED	0002:0039b360 ?SetPanelFileSplitScreen@GameSettingsView@@IAEXPAVPanelFile@@@Z 00B8A860 f mp_shell.o
+438	VERIFIED	0002:0039b460 ?UpdateOptions@GameSettingsView@@IAEXXZ 00B8A960 f mp_shell.o
+439	VERIFIED	0002:0039b640 ?UpdateSplitScreenOptions@GameSettingsView@@IAEXH@Z 00B8AB40 f mp_shell.o
+440	VERIFIED	0002:0039b750 ?Draw@GameSettingsView@@UAEXXZ 00B8AC50 f mp_shell.o
+441	VERIFIED	0002:0039b760 ?OnUp@GameSettingsView@@UAEXH@Z 00B8AC60 f mp_shell.o
+442	VERIFIED	0002:0039b7f0 ?OnDown@GameSettingsView@@UAEXH@Z 00B8ACF0 f mp_shell.o
+443	VERIFIED	0002:0039b890 ?OnStart@GameSettingsView@@UAEXH@Z 00B8AD90 f mp_shell.o
+444	VERIFIED	0002:0039b8f0 ?Update@AARGameSettingsView@@UAEXM@Z 00B8ADF0 f mp_shell.o
+445	VERIFIED	0002:0039b910 ?SetLiveOnXBox@PlayLanMenu@@IAEXXZ 00B8AE10 f mp_shell.o
+446	VERIFIED	0002:0039b980 ?SetPanelFile@PlayLanMenu@@UAEXPAVPanelFile@@@Z 00B8AE80 f mp_shell.o
+447	VERIFIED	0002:0039c510 ?ClearPreviewImages@PlayLanMenu@@IAEXXZ 00B8BA10 f mp_shell.o
+448	VERIFIED	0002:0039c580 ?SetPreviewImage@PlayLanMenu@@IAEXXZ 00B8BA80 f mp_shell.o
+449	VERIFIED	0002:0039c5b0 ?SetOptionText@PlayLanMenu@@IAEXXZ 00B8BAB0 f mp_shell.o
+450	VERIFIED	0002:0039c5e0 ?SetDescriptionText@PlayLanMenu@@IAEXXZ 00B8BAE0 f mp_shell.o
+451	VERIFIED	0002:0039c620 ?OnDown@PlayLanMenu@@UAEXH@Z 00B8BB20 f mp_shell.o
+452	VERIFIED	0002:0039c6c0 ?OnUp@PlayLanMenu@@UAEXH@Z 00B8BBC0 f mp_shell.o
+453	VERIFIED	0002:0039c760 ?OnActivate@PlayOnlineMenu@@UAEXXZ 00B8BC60 f mp_shell.o
+454	VERIFIED	0002:0039c800 ?SetPanelFile@PlayOnlineMenu@@UAEXPAVPanelFile@@@Z 00B8BD00 f mp_shell.o
+455	VERIFIED	0002:0039cb30 ?OnUp@PlayOnlineMenu@@UAEXH@Z 00B8C030 f mp_shell.o
+456	VERIFIED	0002:0039cb90 ?OnDown@PlayOnlineMenu@@UAEXH@Z 00B8C090 f mp_shell.o
+457	VERIFIED	0002:0039cbf0 ?UpdateDetails@SessionDetailsMenu@@IAEXXZ 00B8C0F0 f mp_shell.o
+458	VERIFIED	0002:0039cd20 ?UpdateGameInfo@SessionListMenu@@IAEXXZ 00B8C220 f mp_shell.o
+459	VERIFIED	0002:0039cf40 ?RepopulateSessionList@SessionListMenu@@IAEXXZ 00B8C440 f mp_shell.o
+460	VERIFIED	0002:0039d0e0 ?OnUp@SessionListMenu@@UAEXH@Z 00B8C5E0 f mp_shell.o
+461	VERIFIED	0002:0039d110 ?OnDown@SessionListMenu@@UAEXH@Z 00B8C610 f mp_shell.o
+462	VERIFIED	0002:0039d140 ?SetPanelFile@SessionListMenu@@UAEXPAVPanelFile@@@Z 00B8C640 f mp_shell.o
+463	VERIFIED	0002:0039db60 ?UpdateGameInfo@SessionLanListMenu@@IAEXXZ 00B8D060 f mp_shell.o
+464	VERIFIED	0002:0039dcc0 ?RepopulateSessionList@SessionLanListMenu@@IAEXXZ 00B8D1C0 f mp_shell.o
+465	VERIFIED	0002:0039de80 ?OnUp@SessionLanListMenu@@UAEXH@Z 00B8D380 f mp_shell.o
+466	VERIFIED	0002:0039deb0 ?OnDown@SessionLanListMenu@@UAEXH@Z 00B8D3B0 f mp_shell.o
+467	VERIFIED	0002:0039dee0 ?SetPanelFile@SessionLanListMenu@@UAEXPAVPanelFile@@@Z 00B8D3E0 f mp_shell.o
+468	VERIFIED	0002:0039e900 ?SetPanelFile@OverlayMenu@@UAEXPAVPanelFile@@@Z 00B8DE00 f mp_shell.o
+469	VERIFIED	0002:0039f010 ?SetState@OverlayMenu@@QAEXW4eState@1@@Z 00B8E510 f mp_shell.o
+470	VERIFIED	0002:0039f620 ?SetPanelFile@InGameOverlay@@UAEXPAVPanelFile@@@Z 00B8EB20 f mp_shell.o
+471	VERIFIED	0002:0039fbc0 ?SetState@InGameOverlay@@QAEXW4eState@1@@Z 00B8F0C0 f mp_shell.o
+472	VERIFIED	0002:0039feb0 ?SetPanelFile@AAROverlay@@UAEXPAVPanelFile@@@Z 00B8F3B0 f mp_shell.o
+473	VERIFIED	0002:003a0450 ?SetState@AAROverlay@@QAEXW4eState@1@@Z 00B8F950 f mp_shell.o
+474	VERIFIED	0002:003a0740 ?Select@MultilineOverlayMenu@@UAEXH@Z 00B8FC40 f mp_shell.o
+475	VERIFIED	0002:003a0800 ?Select@VoteGameTypeMenu@@UAEXH@Z 00B8FD00 f mp_shell.o
+476	VERIFIED	0002:003a09b0 ?OnStart@VoteGameTypeMenu@@UAEXH@Z 00B8FEB0 f mp_shell.o
+477	VERIFIED	0002:003a0a10 ?Select@VoteMapMenu@@UAEXH@Z 00B8FF10 f mp_shell.o
+478	VERIFIED	0002:003a0bc0 ?OnStart@VoteMapMenu@@UAEXH@Z 00B900C0 f mp_shell.o
+479	VERIFIED	0002:003a0c20 ?SetPanelFileMain@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z 00B90120 f mp_shell.o
+480	VERIFIED	0002:003a1800 ?ClearClassGauges@WeaponSelectMenu@@IAEXXZ 00B90D00 f mp_shell.o
+481	VERIFIED	0002:003a1890 ?SetClassGauges@WeaponSelectMenu@@IAEXXZ 00B90D90 f mp_shell.o
+482	VERIFIED	0002:003a19e0 ?CloseMenu@WeaponSelectMenu@@IAEXXZ 00B90EE0 f mp_shell.o
+483	VERIFIED	0002:003a1a20 ?SetWinningTeam@InGameScoreBoard@@MAEXW4team_t@@@Z 00B90F20 f mp_shell.o
+484	VERIFIED	0002:003a1b60 ?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ 00B91060 f mp_shell.o
+485	VERIFIED	0002:003a1ba0 ?SetPanelFile@InGameScoreBoard@@UAEXPAVPanelFile@@@Z 00B910A0 f mp_shell.o
+486	VERIFIED	0002:003a26a0 ?Update@InGameScoreBoard@@UAEXM@Z 00B91BA0 f mp_shell.o
+487	VERIFIED	0002:003a2c40 ?SetPanelContents@InGameScoreBoard@@IAEXXZ 00B92140 f mp_shell.o
+488	VERIFIED	0002:003a2dc0 ?OnCross@InGameScoreBoard@@UAEXH@Z 00B922C0 f mp_shell.o
+489	VERIFIED	0002:003a2e00 ?OnUp@InGameScoreBoard@@UAEXH@Z 00B92300 f mp_shell.o
+490	VERIFIED	0002:003a2e30 ?OnDown@InGameScoreBoard@@UAEXH@Z 00B92330 f mp_shell.o
+491	VERIFIED	0002:003a2e60 ?SetPanelFileMain@InGameSwitchSides@@IAEXPAVPanelFile@@@Z 00B92360 f mp_shell.o
+492	VERIFIED	0002:003a3100 ?NotifySameTeam@InGameSwitchSides@@IAEXXZ 00B92600 f mp_shell.o
+493	VERIFIED	0002:003a3200 ?PickTeam@InGameSwitchSides@@IAEXXZ 00B92700 f mp_shell.o
+494	VERIFIED	0002:003a3300 ?SwitchTeams@InGameSwitchSides@@QAEXXZ 00B92800 f mp_shell.o
+495	VERIFIED	0002:003a33c0 ?SwapMenus@InGameSwitchSides@@MAEXXZ 00B928C0 f mp_shell.o
+496	VERIFIED	0002:003a3410 ?SetPanelFile@AARBaseMenu@@UAEXPAVPanelFile@@@Z 00B92910 f mp_shell.o
+497	VERIFIED	0002:003a3680 ?OnL1@AARBaseMenu@@UAEXH@Z 00B92B80 f mp_shell.o
+498	VERIFIED	0002:003a36d0 ?OnR1@AARBaseMenu@@UAEXH@Z 00B92BD0 f mp_shell.o
+499	VERIFIED	0002:003a3720 ?SetTimerText@AARBaseMenu@@QAEXXZ 00B92C20 f mp_shell.o
+500	VERIFIED	0002:003a37b0 ?SetWinningTeam@AARScoreboardBase@@MAEXW4team_t@@@Z 00B92CB0 f mp_shell.o
+501	VERIFIED	0002:003a38f0 ?RecalculateWinningTeam@AARScoreboardBase@@IAEXXZ 00B92DF0 f mp_shell.o
+502	VERIFIED	0002:003a3950 ?SetPanelFile@AARScoreboardBase@@UAEXPAVPanelFile@@@Z 00B92E50 f mp_shell.o
+503	VERIFIED	0002:003a3f80 ?SetPanelFile@AARScoreboardWinner@@UAEXPAVPanelFile@@@Z 00B93480 f mp_shell.o
+504	VERIFIED	0002:003a3fc0 ?SetWinningTeam@AARScoreboardWinner@@UAEXW4team_t@@@Z 00B934C0 f mp_shell.o
+505	VERIFIED	0002:003a4090 ?SetPanelFile@AARScoreboardLoser@@UAEXPAVPanelFile@@@Z 00B93590 f mp_shell.o
+506	VERIFIED	0002:003a4100 ?SetWinningTeam@AARScoreboardLoser@@UAEXW4team_t@@@Z 00B93600 f mp_shell.o
+507	VERIFIED	0002:003a41c0 ?SetGenericScores@AARPersonalStats@@IAEXXZ 00B936C0 f mp_shell.o
+508	VERIFIED	0002:003a4480 ?OnDeactivate@AARPersonalStats@@QAEXPAVAARBaseMenu@@@Z 00B93980 f mp_shell.o
+509	VERIFIED	0002:003a4500 ?SetClassSpecificEntries@AARPersonalStats@@IAEXXZ 00B93A00 f mp_shell.o
+510	VERIFIED	0002:003a49c0 ?Draw@AARPersonalStats@@UAEXXZ 00B93EC0 f mp_shell.o
+511	VERIFIED	0002:003a4a60 ?SetPanelHelpBar@AARPersonalStats@@IAEXXZ 00B93F60 f mp_shell.o
+512	VERIFIED	0002:003a4b50 ?SetPanelFile@AARMapVote@@UAEXPAVPanelFile@@@Z 00B94050 f mp_shell.o
+513	VERIFIED	0002:003a5220 ?Draw@AARMapVote@@UAEXXZ 00B94720 f mp_shell.o
+514	VERIFIED	0002:003a52c0 ?SelectMap@AARMapVote@@IAEXH@Z 00B947C0 f mp_shell.o
+515	VERIFIED	0002:003a54d0 ?ResetPanel@AARMapVote@@QAEXXZ 00B949D0 f mp_shell.o
+516	VERIFIED	0002:003a5600 ?TallyVotes@AARMapVote@@QAEXXZ 00B94B00 f mp_shell.o
+517	VERIFIED	0002:003a5770 ?SetPanelFile@AARGameModeVote@@UAEXPAVPanelFile@@@Z 00B94C70 f mp_shell.o
+518	VERIFIED	0002:003a5ee0 ?Draw@AARGameModeVote@@UAEXXZ 00B953E0 f mp_shell.o
+519	VERIFIED	0002:003a5f80 ?VoteOnMode@AARGameModeVote@@QAEXHH@Z 00B95480 f mp_shell.o
+520	VERIFIED	0002:003a60e0 ?SelectMode@AARGameModeVote@@IAEXH@Z 00B955E0 f mp_shell.o
+521	VERIFIED	0002:003a62f0 ?ResetPanel@AARGameModeVote@@QAEXXZ 00B957F0 f mp_shell.o
+522	VERIFIED	0002:003a6380 ?TallyVotes@AARGameModeVote@@QAEXXZ 00B95880 f mp_shell.o
+523	VERIFIED	0002:003a6530 ?SetPanelFileMain@PauseMenu@@IAEXPAVPanelFile@@@Z 00B95A30 f mp_shell.o
+524	VERIFIED	0002:003a6700 ?OnActivate@PauseMenu@@UAEXXZ 00B95C00 f mp_shell.o
+525	VERIFIED	0002:003a6820 ?ResponseYesSuicide@PauseMenu@@KA_NH@Z 00B95D20 f mp_shell.o
+526	VERIFIED	0002:003a6880 ?AttemptQuit@PauseMenu@@IAEXXZ 00B95D80 f mp_shell.o
+527	VERIFIED	0002:003a69f0 ?AttemptTeamChange@PauseMenu@@IAEXXZ 00B95EF0 f mp_shell.o
+528	VERIFIED	0002:003a6b50 ?UpdateSplitScreen@PauseMenu@@UAEXXZ 00B96050 f mp_shell.o
+529	VERIFIED	0002:003a6ba0 ?Quit@AARPauseMenu@@SAXH@Z 00B960A0 f mp_shell.o
+530	VERIFIED	0002:003a6c70 ?ResponseYesQuit@AARPauseMenu@@SA_NH@Z 00B96170 f mp_shell.o
+531	VERIFIED	0002:003a6c90 ?AttemptQuit@AARPauseMenu@@QAEXXZ 00B96190 f mp_shell.o
+532	VERIFIED	0002:003a6df0 ?Update@AARPauseMenu@@UAEXM@Z 00B962F0 f mp_shell.o
+533	VERIFIED	0002:003a6ea0 ?OnCross@AARPauseMenu@@UAEXH@Z 00B963A0 f mp_shell.o
+534	VERIFIED	0002:003a6f50 ?OnCross@HotJoinMenu@@UAEXH@Z 00B96450 f mp_shell.o
+535	VERIFIED	0002:003a6fd0 ?OnStart@HotJoinMenu@@UAEXH@Z 00B964D0 f mp_shell.o
+536	VERIFIED	0002:003a7000 ?SetMedic@SpectateMenu@@QAEX_N@Z 00B96500 f mp_shell.o
+537	VERIFIED	0002:003a7020 ?UpdateState@SpectateMenu@@QAEXXZ 00B96520 f mp_shell.o
+538	VERIFIED	0002:003a7150 ??0FESplitScreenMenu@@QAE@PAVFEMenuSystem@@H@Z 00B96650 f mp_shell.o
+539	VERIFIED	0002:003a71e0 ??0FESplitScreenMenu@@AAE@ABV0@@Z 00B966E0 f mp_shell.o
+540	VERIFIED	0002:003a7290 ??1FESplitScreenMenu@@UAE@XZ 00B96790 f mp_shell.o
+541	VERIFIED	0002:003a7300 ?AddSplitScreenEntry@FESplitScreenMenu@@QAEXHPAVFEText@@@Z 00B96800 f mp_shell.o
+542	VERIFIED	0002:003a7330 ?AddSplitScreenComboBox@FESplitScreenMenu@@QAEPAVFEComboBox@@HHPAVFEText@@0PAVPanelQuad@@1@Z 00B96830 f mp_shell.o
+543	VERIFIED	0002:003a7370 ?AddSplitScreenSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVPanelQuad@@PAVFEText@@@Z 00B96870 f mp_shell.o
+544	VERIFIED	0002:003a73b0 ?AddSplitScreenSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVFEText@@0@Z 00B968B0 f mp_shell.o
+545	VERIFIED	0002:003a73f0 ??0ModelMenu@@QAE@PAVFEMenuSystem@@H@Z 00B968F0 f mp_shell.o
+546	VERIFIED	0002:003a74b0 ??1ModelMenu@@UAE@XZ 00B969B0 f mp_shell.o
+547	VERIFIED	0002:003a74c0 ?NewMenuActive@AARMenuSystem@@MAEXXZ 00B969C0 f mp_shell.o
+548	VERIFIED	0002:003a74e0 ?GetPanelFileUsers@AARMenuSystem@@QAE_NPBDAAV?$ae_sized_array@PAVPanelFileUser@@$0M@@@@Z 00B969E0 f mp_shell.o
+549	VERIFIED	0002:003a76c0 ?OnActivate@CreateSessionMenu@@UAEXXZ 00B96BC0 f mp_shell.o
+550	VERIFIED	0002:003a79c0 ?OnCross@CreateSessionMenu@@UAEXH@Z 00B96EC0 f mp_shell.o
+551	VERIFIED	0002:003a7b00 ?OnLeft@CreateSessionMenu@@UAEXH@Z 00B97000 f mp_shell.o
+552	VERIFIED	0002:003a7b50 ?OnRight@CreateSessionMenu@@UAEXH@Z 00B97050 f mp_shell.o
+553	VERIFIED	0002:003a7ba0 ?OnActivate@CreateLanSessionMenu@@UAEXXZ 00B970A0 f mp_shell.o
+554	VERIFIED	0002:003a7db0 ?OnCross@CreateLanSessionMenu@@UAEXH@Z 00B972B0 f mp_shell.o
+555	VERIFIED	0002:003a7ef0 ?OnLeft@CreateLanSessionMenu@@UAEXH@Z 00B973F0 f mp_shell.o
+556	VERIFIED	0002:003a7f30 ?OnRight@CreateLanSessionMenu@@UAEXH@Z 00B97430 f mp_shell.o
+557	VERIFIED	0002:003a7f70 ??0GameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z 00B97470 f mp_shell.o
+558	VERIFIED	0002:003a8060 ??1GameSettingsEdit@@UAE@XZ 00B97560 f mp_shell.o
+559	VERIFIED	0002:003a80c0 ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z 00B975C0 f mp_shell.o
+560	VERIFIED	0002:003a85e0 ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z 00B97AE0 f mp_shell.o
+561	VERIFIED	0002:003a8c50 ?SwapMenus@GameSettingsEdit@@MAEXXZ 00B98150 f mp_shell.o
+562	VERIFIED	0002:003a8c60 ??0AARGameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z 00B98160 f mp_shell.o
+563	VERIFIED	0002:003a8cc0 ??1AARGameSettingsEdit@@UAE@XZ 00B981C0 f mp_shell.o
+564	VERIFIED	0002:003a8ce0 ?SetPanelFile@AARGameSettingsEdit@@UAEXPAVPanelFile@@@Z 00B981E0 f mp_shell.o
+565	VERIFIED	0002:003a8cf0 ??0GameSettingsView@@QAE@PAVFEMenuSystem@@@Z 00B981F0 f mp_shell.o
+566	VERIFIED	0002:003a8dc0 ??1GameSettingsView@@UAE@XZ 00B982C0 f mp_shell.o
+567	VERIFIED	0002:003a8e20 ?SetPanelFile@GameSettingsView@@UAEXPAVPanelFile@@@Z 00B98320 f mp_shell.o
+568	VERIFIED	0002:003a8e70 ?OnActivate@GameSettingsView@@UAEXXZ 00B98370 f mp_shell.o
+569	VERIFIED	0002:003a8eb0 ?SwapMenus@GameSettingsView@@MAEXXZ 00B983B0 f mp_shell.o
+570	VERIFIED	0002:003a8ed0 ??0AARGameSettingsView@@QAE@PAVFEMenuSystem@@@Z 00B983D0 f mp_shell.o
+571	VERIFIED	0002:003a8f30 ??1AARGameSettingsView@@UAE@XZ 00B98430 f mp_shell.o
+572	VERIFIED	0002:003a8f40 ?OnActivate@AARGameSettingsView@@UAEXXZ 00B98440 f mp_shell.o
+573	VERIFIED	0002:003a9010 ?OnActivate@PlayLanMenu@@UAEXXZ 00B98510 f mp_shell.o
+574	VERIFIED	0002:003a90b0 ?Update@PlayLanMenu@@UAEXM@Z 00B985B0 f mp_shell.o
+575	VERIFIED	0002:003a9240 ?Select@PlayOnlineMenu@@UAEXHH@Z 00B98740 f mp_shell.o
+576	VERIFIED	0002:003a9370 ?LaunchQuickMatch@PlayOnlineMenu@@IAEXXZ 00B98870 f mp_shell.o
+577	VERIFIED	0002:003a94c0 ?OnActivate@SessionDetailsMenu@@UAEXXZ 00B989C0 f mp_shell.o
+578	VERIFIED	0002:003a9550 ?Update@SessionDetailsMenu@@UAEXM@Z 00B98A50 f mp_shell.o
+579	VERIFIED	0002:003a9630 ?Select@SessionDetailsMenu@@UAEXH@Z 00B98B30 f mp_shell.o
+580	VERIFIED	0002:003a9730 ?Select@SessionListMenu@@UAEXH@Z 00B98C30 f mp_shell.o
+581	VERIFIED	0002:003a9870 ?OnCross@SessionListMenu@@UAEXH@Z 00B98D70 f mp_shell.o
+582	VERIFIED	0002:003a99a0 ?InitMenu@SessionListMenu@@IAEXXZ 00B98EA0 f mp_shell.o
+583	VERIFIED	0002:003a9a40 ?Select@SessionLanListMenu@@UAEXH@Z 00B98F40 f mp_shell.o
+584	VERIFIED	0002:003a9b70 ?InitMenu@SessionLanListMenu@@IAEXXZ 00B99070 f mp_shell.o
+585	VERIFIED	0002:003a9be0 ??0WeaponSelectMenu@@QAE@PAVFEMenuSystem@@@Z 00B990E0 f mp_shell.o
+586	VERIFIED	0002:003a9c80 ??1WeaponSelectMenu@@UAE@XZ 00B99180 f mp_shell.o
+587	VERIFIED	0002:003a9cf0 ?Select@WeaponSelectMenu@@UAEXH@Z 00B991F0 f mp_shell.o
+588	VERIFIED	0002:003a9d40 ?OnTriangle@WeaponSelectMenu@@UAEXH@Z 00B99240 f mp_shell.o
+589	VERIFIED	0002:003a9d90 ?SetPanelFileSplitScreen@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z 00B99290 f mp_shell.o
+590	VERIFIED	0002:003a9e60 ?OnActivate@InGameScoreBoard@@UAEXXZ 00B99360 f mp_shell.o
+591	VERIFIED	0002:003a9e90 ??0InGameSwitchSides@@QAE@PAVFEMenuSystem@@@Z 00B99390 f mp_shell.o
+592	VERIFIED	0002:003a9ec0 ??1InGameSwitchSides@@UAE@XZ 00B993C0 f mp_shell.o
+593	VERIFIED	0002:003a9ed0 ?SetPanelFileSplitScreen@InGameSwitchSides@@IAEXPAVPanelFile@@@Z 00B993D0 f mp_shell.o
+594	VERIFIED	0002:003a9fa0 ?ResponseYesSwitch@InGameSwitchSides@@KA_NH@Z 00B994A0 f mp_shell.o
+595	VERIFIED	0002:003a9fc0 ?OnActivate@AARBaseMenu@@UAEXXZ 00B994C0 f mp_shell.o
+596	VERIFIED	0002:003aa000 ?Update@AARBaseMenu@@UAEXM@Z 00B99500 f mp_shell.o
+597	VERIFIED	0002:003aa010 ?OnActivate@AARScoreboardBase@@UAEXXZ 00B99510 f mp_shell.o
+598	VERIFIED	0002:003aa0a0 ?Update@AARScoreboardBase@@UAEXM@Z 00B995A0 f mp_shell.o
+599	VERIFIED	0002:003aa8c0 ?OnActivate@AARScoreboardWinner@@UAEXXZ 00B99DC0 f mp_shell.o
+600	VERIFIED	0002:003aaa00 ?Update@AARScoreboardWinner@@UAEXM@Z 00B99F00 f mp_shell.o
+601	VERIFIED	0002:003aaa10 ?OnActivate@AARScoreboardLoser@@UAEXXZ 00B99F10 f mp_shell.o
+602	VERIFIED	0002:003aaa40 ?Update@AARScoreboardLoser@@UAEXM@Z 00B99F40 f mp_shell.o
+603	VERIFIED	0002:003aaa50 ?SetPanelFile@AARPersonalStats@@UAEXPAVPanelFile@@@Z 00B99F50 f mp_shell.o
+604	VERIFIED	0002:003ab410 ?Update@AARPersonalStats@@UAEXM@Z 00B9A910 f mp_shell.o
+605	VERIFIED	0002:003ab420 ?OnActivate@AARPersonalStats@@UAEXXZ 00B9A920 f mp_shell.o
+606	VERIFIED	0002:003ab4f0 ?Update@AARMapVote@@UAEXM@Z 00B9A9F0 f mp_shell.o
+607	VERIFIED	0002:003ab510 ?OnActivate@AARMapVote@@UAEXXZ 00B9AA10 f mp_shell.o
+608	VERIFIED	0002:003ab670 ?OnCross@AARMapVote@@UAEXH@Z 00B9AB70 f mp_shell.o
+609	VERIFIED	0002:003ab6f0 ?Update@AARGameModeVote@@UAEXM@Z 00B9ABF0 f mp_shell.o
+610	VERIFIED	0002:003ab710 ?OnActivate@AARGameModeVote@@UAEXXZ 00B9AC10 f mp_shell.o
+611	VERIFIED	0002:003ab770 ?OnCross@AARGameModeVote@@UAEXH@Z 00B9AC70 f mp_shell.o
+612	VERIFIED	0002:003ab7f0 ??0PauseMenu@@QAE@PAVFEMenuSystem@@@Z 00B9ACF0 f mp_shell.o
+613	VERIFIED	0002:003ab850 ??1PauseMenu@@UAE@XZ 00B9AD50 f mp_shell.o
+614	VERIFIED	0002:003ab860 ?SetPanelFileSplitScreen@PauseMenu@@IAEXPAVPanelFile@@@Z 00B9AD60 f mp_shell.o
+615	VERIFIED	0002:003ab990 ?AttemptSuicide@PauseMenu@@IAEXXZ 00B9AE90 f mp_shell.o
+616	VERIFIED	0002:003abac0 ?OnCross@PauseMenu@@UAEXH@Z 00B9AFC0 f mp_shell.o
+617	VERIFIED	0002:003abbb0 ?OnActivate@SpectateMenu@@UAEXH@Z 00B9B0B0 f mp_shell.o
+618	VERIFIED	0002:003abbd0 ?SetPanelFile@GameSettingsEdit@@UAEXPAVPanelFile@@@Z 00B9B0D0 f mp_shell.o
+619	VERIFIED	0002:003abc20 ?Update@PlayOnlineMenu@@UAEXM@Z 00B9B120 f mp_shell.o
+620	VERIFIED	0002:003abe70 ?OnActivate@SessionListMenu@@UAEXXZ 00B9B370 f mp_shell.o
+621	VERIFIED	0002:003abea0 ?Refresh@SessionListMenu@@IAEXXZ 00B9B3A0 f mp_shell.o
+622	VERIFIED	0002:003abeb0 ?OnActivate@SessionLanListMenu@@UAEXXZ 00B9B3B0 f mp_shell.o
+623	VERIFIED	0002:003abee0 ?Refresh@SessionLanListMenu@@IAEXXZ 00B9B3E0 f mp_shell.o
+624	VERIFIED	0002:003abef0 ?PanelFileUnloaded@AAROverlay@@UAEXPAVPanelFile@@@Z 00B9B3F0 f mp_shell.o
+625	VERIFIED	0002:003abf20 ?SetPanelFile@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z 00B9B420 f mp_shell.o
+626	VERIFIED	0002:003abf70 ?PanelFileUnloaded@InGameScoreBoard@@UAEXPAVPanelFile@@@Z 00B9B470 f mp_shell.o
+627	VERIFIED	0002:003abfc0 ?SetPanelFile@InGameSwitchSides@@UAEXPAVPanelFile@@@Z 00B9B4C0 f mp_shell.o
+628	VERIFIED	0002:003ac010 ?AttemptSwitchTeam@InGameSwitchSides@@IAEXXZ 00B9B510 f mp_shell.o
+629	VERIFIED	0002:003ac160 ?PanelFileUnloaded@AARScoreboardLoser@@UAEXPAVPanelFile@@@Z 00B9B660 f mp_shell.o
+630	VERIFIED	0002:003ac190 ?SetPanelFile@PauseMenu@@UAEXPAVPanelFile@@@Z 00B9B690 f mp_shell.o
+631	VERIFIED	0002:003ac200 ?PanelFileUnloaded@HotJoinMenu@@UAEXPAVPanelFile@@@Z 00B9B700 f mp_shell.o
+632	VERIFIED	0002:003ac230 ?PanelFileUnloaded@SpectateMenu@@UAEXPAVPanelFile@@@Z 00B9B730 f mp_shell.o
+633	VERIFIED	0002:003ac280 ?PanelFileUnloaded@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z 00B9B780 f mp_shell.o
+634	VERIFIED	0002:003ac5e0 ?OnActivate@ModelMenu@@UAEXXZ 00B9BAE0 f mp_shell.o
+635	VERIFIED	0002:003ac6d0 ?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z 00B9BBD0 f mp_shell.o
+636	VERIFIED	0002:003ac7a0 ?UpdateClassModel@ModelMenu@@IAEXHHH@Z 00B9BCA0 f mp_shell.o
+637	VERIFIED	0002:003acaf0 ?AddDObjToScene@ModelMenu@@IAEXXZ 00B9BFF0 f mp_shell.o
+638	VERIFIED	0002:003ad150 ?UpdateModelPosition@ModelMenu@@IAEXXZ 00B9C650 f mp_shell.o
+639	VERIFIED	0002:003ad330 ?PanelFileUnloaded@GameSettingsEdit@@UAEXPAVPanelFile@@@Z 00B9C830 f mp_shell.o
+640	VERIFIED	0002:003ad340 ?PanelFileUnloaded@GameSettingsView@@UAEXPAVPanelFile@@@Z 00B9C840 f mp_shell.o
+641	VERIFIED	0002:003ad350 ?Update@SessionListMenu@@UAEXM@Z 00B9C850 f mp_shell.o
+642	VERIFIED	0002:003ad4c0 ?OnSquare@SessionListMenu@@UAEXH@Z 00B9C9C0 f mp_shell.o
+643	VERIFIED	0002:003ad4e0 ?Update@SessionLanListMenu@@UAEXM@Z 00B9C9E0 f mp_shell.o
+644	VERIFIED	0002:003ad600 ?OnSquare@SessionLanListMenu@@UAEXH@Z 00B9CB00 f mp_shell.o
+645	VERIFIED	0002:003ad620 ?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z 00B9CB20 f mp_shell.o
+646	VERIFIED	0002:003ad650 ?PanelFileUnloaded@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z 00B9CB50 f mp_shell.o
+647	VERIFIED	0002:003ad670 ?SetSwitchKit@WeaponSelectMenu@@IAEXXZ 00B9CB70 f mp_shell.o
+648	VERIFIED	0002:003ae080 ?UpdateModel@InGameSwitchSides@@IAEXXZ 00B9D580 f mp_shell.o
+649	VERIFIED	0002:003ae430 ?Draw3D@ModelMenu@@UAEXXZ 00B9D930 f mp_shell.o
+650	VERIFIED	0002:003ae450 ?Update@InitialLoadingMenu@@UAEXM@Z 00B9D950 f mp_shell.o
+651	VERIFIED	0002:003ae570 ?Update@OverlayMenu@@UAEXM@Z 00B9DA70 f mp_shell.o
+652	VERIFIED	0002:003aeb40 ?OnTriangle@OverlayMenu@@UAEXH@Z 00B9E040 f mp_shell.o
+653	VERIFIED	0002:003aeca0 ?ActivationToggle@WeaponSelectMenu@@IAEX_N@Z 00B9E1A0 f mp_shell.o
+654	VERIFIED	0002:003aedb0 ?OnActivate@WeaponSelectMenu@@UAEXXZ 00B9E2B0 f mp_shell.o
+655	VERIFIED	0002:003af120 ?OnCross@WeaponSelectMenu@@UAEXH@Z 00B9E620 f mp_shell.o
+656	VERIFIED	0002:003af1c0 ?OnUp@WeaponSelectMenu@@UAEXH@Z 00B9E6C0 f mp_shell.o
+657	VERIFIED	0002:003af200 ?OnDown@WeaponSelectMenu@@UAEXH@Z 00B9E700 f mp_shell.o
+658	VERIFIED	0002:003af240 ?OnActivate@InGameSwitchSides@@UAEXXZ 00B9E740 f mp_shell.o
+659	VERIFIED	0002:003af2d0 ?OnCross@InGameSwitchSides@@UAEXH@Z 00B9E7D0 f mp_shell.o
+660	VERIFIED	0002:003af300 ?OnUp@InGameSwitchSides@@UAEXH@Z 00B9E800 f mp_shell.o
+661	VERIFIED	0002:003af370 ?OnDown@InGameSwitchSides@@UAEXH@Z 00B9E870 f mp_shell.o
+662	VERIFIED	0002:003af3e0 ??0PlayLanMenu@@QAE@PAVFEMenuSystem@@@Z 00B9E8E0 f mp_shell.o
+663	VERIFIED	0002:003af4b0 ??0SessionListMenu@@QAE@PAVFEMenuSystem@@@Z 00B9E9B0 f mp_shell.o
+664	VERIFIED	0002:003af590 ??1SessionListMenu@@UAE@XZ 00B9EA90 f mp_shell.o
+665	VERIFIED	0002:003af640 ??0SessionLanListMenu@@QAE@PAVFEMenuSystem@@@Z 00B9EB40 f mp_shell.o
+666	VERIFIED	0002:003af710 ??1SessionLanListMenu@@UAE@XZ 00B9EC10 f mp_shell.o
+667	VERIFIED	0002:003af7c0 ??0OverlayMenu@@QAE@PAVFEMenuSystem@@H@Z 00B9ECC0 f mp_shell.o
+668	VERIFIED	0002:003af8a0 ??1OverlayMenu@@UAE@XZ 00B9EDA0 f mp_shell.o
+669	VERIFIED	0002:003af940 ??0InGameOverlay@@QAE@PAVFEMenuSystem@@@Z 00B9EE40 f mp_shell.o
+670	VERIFIED	0002:003afa00 ??1InGameOverlay@@UAE@XZ 00B9EF00 f mp_shell.o
+671	VERIFIED	0002:003afaa0 ??0AAROverlay@@QAE@PAVFEMenuSystem@@@Z 00B9EFA0 f mp_shell.o
+672	VERIFIED	0002:003afb60 ??1AAROverlay@@UAE@XZ 00B9F060 f mp_shell.o
+673	VERIFIED	0002:003afc00 ??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z 00B9F100 f mp_shell.o
+674	VERIFIED	0002:003afd30 ??1AARMapVote@@UAE@XZ 00B9F230 f mp_shell.o
+675	VERIFIED	0002:003afe40 ??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z 00B9F340 f mp_shell.o
+676	VERIFIED	0002:003aff70 ??1AARGameModeVote@@UAE@XZ 00B9F470 f mp_shell.o
+677	VERIFIED	0002:003b0070 ??1InGameScoreBoard@@UAE@XZ 00B9F570 f mp_shell.o
+678	VERIFIED	0002:003b0140 ??0AARScoreboardBase@@QAE@PAVFEMenuSystem@@@Z 00B9F640 f mp_shell.o
+679	VERIFIED	0002:003b01f0 ??1AARScoreboardBase@@UAE@XZ 00B9F6F0 f mp_shell.o
+680	VERIFIED	0002:003b0280 ??0AARScoreboardWinner@@QAE@PAVFEMenuSystem@@@Z 00B9F780 f mp_shell.o
+681	VERIFIED	0002:003b02a0 ??1AARScoreboardWinner@@UAE@XZ 00B9F7A0 f mp_shell.o
+682	VERIFIED	0002:003b02b0 ??0AARScoreboardLoser@@QAE@PAVFEMenuSystem@@@Z 00B9F7B0 f mp_shell.o
+683	VERIFIED	0002:003b02d0 ??1AARScoreboardLoser@@UAE@XZ 00B9F7D0 f mp_shell.o
+684	VERIFIED	0002:003b02e0 ??0AARMenuSystem@@QAE@XZ 00B9F7E0 f mp_shell.o
+685	VERIFIED	0002:003b0590 ??0InGameScoreBoard@@QAE@PAVFEMenuSystem@@@Z 00B9FA90 f mp_shell.o
+686	PORTED	0002:003b98b0 ?Init@CreateSessionAdvancedMenu@@UAEXXZ 00BA8DB0 f i mp_shell.o
+687	PORTED	0002:003b98c0 ?Init@CreateLanSessionAdvancedMenu@@UAEXXZ 00BA8DC0 f i mp_shell.o
+688	PORTED	0002:003b98d0 ?SetHighlightQuad@UIHighlightListBox@@QAEXPAVPanelQuad@@@Z 00BA8DD0 f i mp_shell.o
+689	PORTED	0002:003b9900 ?SetHighlightedSelectedTextColor@UIHighlightListBox@@QAEXVcolor32@@@Z 00BA8E00 f i mp_shell.o
+690	PORTED	0002:003b9920 ?SetHighlightedUnselectedTextColor@UIHighlightListBox@@QAEXVcolor32@@@Z 00BA8E20 f i mp_shell.o
+691	PORTED	0002:003b9940 ?GetFirstLocalPlayer@@YAPAVEntity@@XZ 00BA8E40 f i mp_shell.o
+692	VERIFIED	0002:003b9950 ?ResponseNoNevermind@PauseMenu@@KA_NH@Z 00BA8E50 f i mp_shell.o
+693	VERIFIED	0002:003b9960 ?ResponseNoNevermind@AARPauseMenu@@SA_NH@Z 00BA8E60 f i mp_shell.o
+694	PORTED	0002:003b9970 ?Me@AARPauseMenu@@SAPAV1@XZ 00BA8E70 f i mp_shell.o
+695	PORTED	0002:003b9980 ?Init@InitialLoadingMenu@@UAEXXZ 00BA8E80 f i mp_shell.o
+696	PORTED	0002:003b9990 ?OnTriangle@InitialLoadingMenu@@UAEXH@Z 00BA8E90 f i mp_shell.o
+697	PORTED	0002:003b99a0 ?Init@InstantActionMenu@@UAEXXZ 00BA8EA0 f i mp_shell.o
+698	PORTED	0002:003b99b0 ?Init@PlayOnlineMenu@@UAEXXZ 00BA8EB0 f i mp_shell.o
+699	PORTED	0002:003b99c0 ?Init@PressStartMenu@@UAEXXZ 00BA8EC0 f i mp_shell.o
+700	PORTED	0002:003b99d0 ?Init@SessionDetailsMenu@@UAEXXZ 00BA8ED0 f i mp_shell.o
+701	PORTED	0002:003b99e0 ?ForceRefresh@SessionListMenu@@QAEXXZ 00BA8EE0 f i mp_shell.o
+702	PORTED	0002:003b99f0 ?ForceRefresh@SessionLanListMenu@@QAEXXZ 00BA8EF0 f i mp_shell.o
+703	VERIFIED	0002:003b9a00 ??_EOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o
+704	VERIFIED	0002:003b9a00 ??_GOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o
+705	PORTED	0002:003b9a30 ?Init@VoteGameTypeMenu@@UAEXXZ 00BA8F30 f i mp_shell.o
+706	PORTED	0002:003b9a40 ?Update@VoteGameTypeMenu@@UAEXM@Z 00BA8F40 f i mp_shell.o
+707	PORTED	0002:003b9a50 ?OnTriangle@VoteGameTypeMenu@@UAEXH@Z 00BA8F50 f i mp_shell.o
+708	VERIFIED	0002:003b9a60 ??_GVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o
+709	VERIFIED	0002:003b9a60 ??_EVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o
+710	VERIFIED	0002:003b9a90 ??1VoteGameTypeMenu@@UAE@XZ 00BA8F90 f i mp_shell.o
+711	PORTED	0002:003b9aa0 ?Init@VoteMapMenu@@UAEXXZ 00BA8FA0 f i mp_shell.o
+712	PORTED	0002:003b9ab0 ?Update@VoteMapMenu@@UAEXM@Z 00BA8FB0 f i mp_shell.o
+713	PORTED	0002:003b9ac0 ?OnTriangle@VoteMapMenu@@UAEXH@Z 00BA8FC0 f i mp_shell.o
+714	VERIFIED	0002:003b9ad0 ??_GVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o
+715	VERIFIED	0002:003b9ad0 ??_EVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o
+716	VERIFIED	0002:003b9b00 ??1VoteMapMenu@@UAE@XZ 00BA9000 f i mp_shell.o
+717	PORTED	0002:003b9b10 ?SetAnimSpeed@ModelMenu@@IAEXM@Z 00BA9010 f i mp_shell.o
+718	PORTED	0002:003b9b30 ?Me@AARScoreboardWinner@@SAPAV1@XZ 00BA9030 f i mp_shell.o
+719	PORTED	0002:003b9b40 ?Me@AARScoreboardLoser@@SAPAV1@XZ 00BA9040 f i mp_shell.o
+720	PORTED	0002:003b9b50 ?Init@HotJoinMenu@@UAEXXZ 00BA9050 f i mp_shell.o
+721	VERIFIED	0002:003b9b60 ??_EHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o
+722	VERIFIED	0002:003b9b60 ??_GHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o
+723	VERIFIED	0002:003b9b90 ??1HotJoinMenu@@UAE@XZ 00BA9090 f i mp_shell.o
+724	PORTED	0002:003b9ba0 ?Init@SpectateMenu@@UAEXXZ 00BA90A0 f i mp_shell.o
+725	VERIFIED	0002:003b9bb0 ??A?$ae_array@PAVFEText@@$07@@QAEAAPAVFEText@@H@Z 00BA90B0 f i mp_shell.o
+726	VERIFIED	0002:003b9c30 ??A?$ae_array@PAVPanelQuad@@$07@@QAEAAPAVPanelQuad@@H@Z 00BA9130 f i mp_shell.o
+727	VERIFIED	0002:003b9cb0 ??A?$ae_array@PAVPanelQuad@@$00@@QAEAAPAVPanelQuad@@H@Z 00BA91B0 f i mp_shell.o
+728	VERIFIED	0002:003b9d30 ??A?$ae_array@PAVFEText@@$05@@QAEAAPAVFEText@@H@Z 00BA9230 f i mp_shell.o
+729	VERIFIED	0002:003b9db0 ??A?$ae_array@PAVFEText@@$0M@@@QAEAAPAVFEText@@H@Z 00BA92B0 f i mp_shell.o
+730	VERIFIED	0002:003b9e30 ??A?$ae_array@PAVFEText@@$09@@QAEAAPAVFEText@@H@Z 00BA9330 f i mp_shell.o
+731	PORTED	0002:003b9eb0 ??0?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93B0 f i mp_shell.o
+732	PORTED	0002:003b9ed0 ??1?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93D0 f i mp_shell.o
+733	PORTED	0002:003b9ee0 ?size@?$ae_array_dynamic@PAVFEMenuEntry@@@@QBEHXZ 00BA93E0 f i mp_shell.o
+734	VERIFIED	0002:003b9ef0 ??A?$ae_array_dynamic@PAVFEMenuEntry@@@@QAEAAPAVFEMenuEntry@@H@Z 00BA93F0 f i mp_shell.o
+735	VERIFIED	0002:003b9f70 ??A?$ae_array@PAVPanelQuad@@$06@@QAEAAPAVPanelQuad@@H@Z 00BA9470 f i mp_shell.o
+736	PORTED	0002:003b9ff0 ??A?$ae_array@UsScoreboardPlayerSlot@InGameScoreBoard@@$0BA@@@QAEAAUsScoreboardPlayerSlot@InGameScoreBoard@@H@Z 00BA94F0 f i mp_shell.o
+737	PORTED	0002:003ba070 ??A?$ae_array@PAVPanelQuad@@$0P@@@QAEAAPAVPanelQuad@@H@Z 00BA9570 f i mp_shell.o
+738	VERIFIED	0002:003ba0f0 ??A?$ae_array@PAVFEText@@$0N@@@QAEAAPAVFEText@@H@Z 00BA95F0 f i mp_shell.o
+739	PORTED	0002:003ba170 ??A?$ae_array@UsScoreboardPlayerSlot@AARScoreboardBase@@$0BA@@@QAEAAUsScoreboardPlayerSlot@AARScoreboardBase@@H@Z 00BA9670 f i mp_shell.o
+740	VERIFIED	0002:003ba1f0 ??A?$ae_array@PAVPanelQuad@@$01@@QAEAAPAVPanelQuad@@H@Z 00BA96F0 f i mp_shell.o
+741	VERIFIED	0002:003ba270 ??A?$ae_array@PAVFEText@@$0O@@@QAEAAPAVFEText@@H@Z 00BA9770 f i mp_shell.o
+742	VERIFIED	0002:003ba2f0 ??A?$ae_array@PAVPanelQuad@@$09@@QAEAAPAVPanelQuad@@H@Z 00BA97F0 f i mp_shell.o
+743	PORTED	0002:003ba370 ??A?$ae_array@H$06@@QAEAAHH@Z 00BA9870 f i mp_shell.o
+744	VERIFIED	0002:003ba3f0 ??_ECreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
+745	VERIFIED	0002:003ba3f0 ??_GCreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
+746	VERIFIED	0002:003ba420 ??_GCreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o
+747	VERIFIED	0002:003ba420 ??_ECreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o
+748	VERIFIED	0002:003ba450 ??_GCreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o
+749	VERIFIED	0002:003ba450 ??_ECreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o
+750	VERIFIED	0002:003ba480 ??_GCreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o
+751	VERIFIED	0002:003ba480 ??_ECreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o
+752	VERIFIED	0002:003ba4b0 ??_EFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o
+753	VERIFIED	0002:003ba4b0 ??_GFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o
+754	VERIFIED	0002:003ba4e0 ??_GFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o
+755	VERIFIED	0002:003ba4e0 ??_EFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o
+756	VERIFIED	0002:003ba510 ??_EInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o
+757	VERIFIED	0002:003ba510 ??_GInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o
+758	VERIFIED	0002:003ba540 ??1InitialLoadingMenu@@UAE@XZ 00BA9A40 f i mp_shell.o
+759	VERIFIED	0002:003ba550 ??_EInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o
+760	VERIFIED	0002:003ba550 ??_GInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o
+761	VERIFIED	0002:003ba580 ??1InstantActionMenu@@UAE@XZ 00BA9A80 f i mp_shell.o
+762	VERIFIED	0002:003ba590 ??_EPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o
+763	VERIFIED	0002:003ba590 ??_GPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o
+764	VERIFIED	0002:003ba5c0 ??1PlayOnlineMenu@@UAE@XZ 00BA9AC0 f i mp_shell.o
+765	VERIFIED	0002:003ba5d0 ??_GPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o
+766	VERIFIED	0002:003ba5d0 ??_EPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o
+767	VERIFIED	0002:003ba600 ??1PressStartMenu@@UAE@XZ 00BA9B00 f i mp_shell.o
+768	VERIFIED	0002:003ba610 ??_GSessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o
+769	VERIFIED	0002:003ba610 ??_ESessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o
+770	VERIFIED	0002:003ba640 ??1SessionDetailsMenu@@UAE@XZ 00BA9B40 f i mp_shell.o
+771	VERIFIED	0002:003ba650 ??_GAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o
+772	VERIFIED	0002:003ba650 ??_EAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o
+773	VERIFIED	0002:003ba680 ??_GAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o
+774	VERIFIED	0002:003ba680 ??_EAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o
+775	VERIFIED	0002:003ba6b0 ??_GAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o
+776	VERIFIED	0002:003ba6b0 ??_EAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o
+777	PORTED	0002:003ba6e0 ?OnTriangle@HotJoinMenu@@UAEXH@Z 00BA9BE0 f i mp_shell.o
+778	VERIFIED	0002:003ba740 ??_GSpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o
+779	VERIFIED	0002:003ba740 ??_ESpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o
+780	PORTED	0002:003ba770 ?Init@ModelMenu@@UAEXXZ 00BA9C70 f i mp_shell.o
+781	PORTED	0002:003ba780 ?Init@WeaponSelectMenu@@UAEXXZ 00BA9C80 f i mp_shell.o
+782	PORTED	0002:003ba790 ?OnTriangle@PauseMenu@@UAEXH@Z 00BA9C90 f i mp_shell.o
+783	PORTED	0002:003ba7f0 ?OnStart@PauseMenu@@UAEXH@Z 00BA9CF0 f i mp_shell.o
+784	VERIFIED	0002:003ba850 ??_GFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o
+785	VERIFIED	0002:003ba850 ??_EFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o
+786	VERIFIED	0002:003ba880 ??_GModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o
+787	VERIFIED	0002:003ba880 ??_EModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o
+788	VERIFIED	0002:003ba8b0 ??_EGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o
+789	VERIFIED	0002:003ba8b0 ??_GGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o
+790	VERIFIED	0002:003ba8e0 ??_GAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o
+791	VERIFIED	0002:003ba8e0 ??_EAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o
+792	VERIFIED	0002:003ba910 ??_EGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o
+793	VERIFIED	0002:003ba910 ??_GGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o
+794	VERIFIED	0002:003ba940 ??_GAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o
+795	VERIFIED	0002:003ba940 ??_EAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o
+796	VERIFIED	0002:003ba970 ??_GWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o
+797	VERIFIED	0002:003ba970 ??_EWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o
+798	VERIFIED	0002:003ba9a0 ??_GInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o
+799	VERIFIED	0002:003ba9a0 ??_EInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o
+800	VERIFIED	0002:003ba9d0 ??_EPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o
+801	VERIFIED	0002:003ba9d0 ??_GPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o
+802	PORTED	0002:003baa00 ?SetModelPosition@ModelMenu@@IAEXABVPosition3@math@@@Z 00BA9F00 f i mp_shell.o
+803	PORTED	0002:003baa40 ?SetModelAngles@ModelMenu@@IAEXABVDir3@math@@@Z 00BA9F40 f i mp_shell.o
+804	PORTED	0002:003baa80 ?Init@PlayLanMenu@@UAEXXZ 00BA9F80 f i mp_shell.o
+805	PORTED	0002:003baa90 ?Init@SessionListMenu@@UAEXXZ 00BA9F90 f i mp_shell.o
+806	PORTED	0002:003baaa0 ?Init@SessionLanListMenu@@UAEXXZ 00BA9FA0 f i mp_shell.o
+807	VERIFIED	0002:003baab0 ??_GPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o
+808	VERIFIED	0002:003baab0 ??_EPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o
+809	VERIFIED	0002:003baae0 ??1PlayLanMenu@@UAE@XZ 00BA9FE0 f i mp_shell.o
+810	VERIFIED	0002:003bab50 ??_ESessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o
+811	VERIFIED	0002:003bab50 ??_GSessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o
+812	VERIFIED	0002:003bab80 ??_ESessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o
+813	VERIFIED	0002:003bab80 ??_GSessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o
+814	VERIFIED	0002:003babb0 ??_EOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o
+815	VERIFIED	0002:003babb0 ??_GOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o
+816	VERIFIED	0002:003babe0 ??_EInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o
+817	VERIFIED	0002:003babe0 ??_GInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o
+818	VERIFIED	0002:003bac10 ??_EAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o
+819	VERIFIED	0002:003bac10 ??_GAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o
+820	PORTED	0002:003bac40 ?UpdateWidescreen@AARScoreboardBase@@MAEX_N@Z 00BAA140 f i mp_shell.o
+821	VERIFIED	0002:003bac50 ??_GAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o
+822	VERIFIED	0002:003bac50 ??_EAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o
+823	VERIFIED	0002:003bac80 ??_GAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o
+824	VERIFIED	0002:003bac80 ??_EAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o
+825	VERIFIED	0002:003bacb0 ??_EAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o
+826	VERIFIED	0002:003bacb0 ??_GAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o
+827	VERIFIED	0002:003bace0 ??1AARMenuSystem@@UAE@XZ 00BAA1E0 f i mp_shell.o
+828	VERIFIED	0002:003bacf0 ??_GInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o
+829	VERIFIED	0002:003bacf0 ??_EInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o
+830	VERIFIED	0002:003bad20 ??_EAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o
+831	VERIFIED	0002:003bad20 ??_GAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o
+832	VERIFIED	0002:003bad50 ??_EAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o
+833	VERIFIED	0002:003bad50 ??_GAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o
+834	VERIFIED	0002:003bad80 ??_GAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o
+835	VERIFIED	0002:003bad80 ??_EAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o

@@ -1,0 +1,12 @@
+index	status	map_line
+1	PORTED	0002:00404f60 ??0apsUVARectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF4460 f apsUVARectangleRenderer.o
+2	VERIFIED	0002:00404fa0 ?Init@apsUVARectangleRenderer@@SAXXZ 00BF44A0 f apsUVARectangleRenderer.o
+3	VERIFIED	0002:00404fd0 ?Render@apsUVARectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF44D0 f apsUVARectangleRenderer.o
+4	PORTED	0002:00405010 ?RegisterVShader@apsUVARectangleRender@@YAXXZ 00BF4510 f i apsUVARectangleRenderer.o
+5	PORTED	0002:00405030 ?RegisterPShader@apsUVARectangleRenderPixel@@YAXXZ 00BF4530 f i apsUVARectangleRenderer.o
+6	PORTED	0002:00405050 ?InitPShader@apsUVARectangleRenderPixel@@YAXXZ 00BF4550 f i apsUVARectangleRenderer.o
+7	PORTED	0002:00405070 ??0apsUVARectangleNode@@QAE@XZ 00BF4570 f i apsUVARectangleRenderer.o
+8	VERIFIED	0002:00405080 ?GetDesc@apsUVARectangleNode@@UAEXPAD@Z 00BF4580 f i apsUVARectangleRenderer.o
+9	PORTED	0002:004050c0 ??_GapsUVARectangleNode@@UAEPAXI@Z 00BF45C0 f i apsUVARectangleRenderer.o
+10	PORTED	0002:004050c0 ??_EapsUVARectangleNode@@UAEPAXI@Z 00BF45C0 f i apsUVARectangleRenderer.o
+11	PORTED	0002:004050f0 ??$DefaultRender@VapsUVARectangleRenderer@@VapsUVARectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsUVARectangleRenderer@@ABUapsRendererRenderInfo@@@Z 00BF45F0 f i apsUVARectangleRenderer.o

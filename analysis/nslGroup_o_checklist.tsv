@@ -1,0 +1,9 @@
+index	status	map_line
+1	VERIFIED	0002:00423950 ?nslGroupGet@@YAPAUnslGroup@@I@Z 00C12E50 f nslGroup.o
+2	VERIFIED	0002:00423980 ?nslGroupGet@@YAPAUnslGroup@@PBD@Z 00C12E80 f nslGroup.o
+3	VERIFIED	0002:00423a70 ?nslGroupSetParam@@YAXPBDHM@Z 00C12F70 f nslGroup.o
+4	VERIFIED	0002:00423ac0 ?nslGroupGetParam@@YAMPBDHM@Z 00C12FC0 f nslGroup.o
+5	VERIFIED	0002:00423b00 ?nslGroupSetVolume@@YAXPBDM@Z 00C13000 f nslGroup.o
+6	VERIFIED	0002:00423b20 ?nslGroupGetVolume@@YAMPBDM@Z 00C13020 f nslGroup.o
+7	VERIFIED	0002:00423b60 ?nslSetMasterVolume@@YAXM@Z 00C13060 f nslGroup.o
+8	VERIFIED	0002:00423ba0 ?nslGetMasterVolume@@YAMXZ 00C130A0 f nslGroup.o

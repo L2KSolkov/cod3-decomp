@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00878A90	0x00C67F90	?calc_feature_normal@@YA?BVDir3@math@@PAVphys_contact_manifold@@ABV12@@Z	class math::Dir3 const __cdecl calc_feature_normal(class phys_contact_manifold *,class math::Dir3 const &)	phys_collision.o
+0x00878C10	0x00C68110	?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z	public: void __thiscall phys_contact_manifold_process::process(class phys_collide_data *)	phys_collision.o

@@ -1,0 +1,16 @@
+index	status	map_line
+1	VERIFIED	0002:0042c990 _txSlotEntryInit 00C1BE90 f txSlotPool.o
+2	VERIFIED	0002:0042c9b0 _txSlotEntryLinkHead 00C1BEB0 f txSlotPool.o
+3	VERIFIED	0002:0042c9d0 _txSlotEntryLinkTail 00C1BED0 f txSlotPool.o
+4	VERIFIED	0002:0042c9f0 _txSlotEntryUnlink 00C1BEF0 f txSlotPool.o
+5	VERIFIED	0002:0042ca10 _txSlotEntryPtr 00C1BF10 f txSlotPool.o
+6	VERIFIED	0002:0042ca50 _txSlotIndex 00C1BF50 f txSlotPool.o
+7	VERIFIED	0002:0042ca90 _txSlotPoolInit 00C1BF90 f txSlotPool.o
+8	VERIFIED	0002:0042cb40 _txSlotExists 00C1C040 f txSlotPool.o
+9	VERIFIED	0002:0042cb90 _txSlotEntryInc 00C1C090 f txSlotPool.o
+10	VERIFIED	0002:0042cbd0 _txSlotNew 00C1C0D0 f txSlotPool.o
+11	VERIFIED	0002:0042cc40 _txSlotFree 00C1C140 f txSlotPool.o
+12	VERIFIED	0002:0042ccb0 _txSlotFirst 00C1C1B0 f txSlotPool.o
+13	VERIFIED	0002:0042ccc0 _txSlotLast 00C1C1C0 f txSlotPool.o
+14	VERIFIED	0002:0042ccd0 _txSlotNext 00C1C1D0 f txSlotPool.o
+15	VERIFIED	0002:0042cd20 _txSlotPrev 00C1C220 f txSlotPool.o

@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x0087A250	0x00C69750	?gjk_subalgorithm@phys_gjk_info@@QAE?BHHH@Z	public: int const __thiscall phys_gjk_info::gjk_subalgorithm(int,int)	phys_gjk.o
+0x0087A420	0x00C69920	?seed_simplex@phys_gjk_info@@QAE?BHH@Z	public: int const __thiscall phys_gjk_info::seed_simplex(int)	phys_gjk.o
+0x0087A6A0	0x00C69BA0	?gjk@phys_gjk_info@@QAE?AW4gjk_retval_e@1@PAVphys_collide_data@@ABVDir3@math@@_N@Z	public: enum phys_gjk_info::gjk_retval_e __thiscall phys_gjk_info::gjk(class phys_collide_data *,class math::Dir3 const &,bool)	phys_gjk.o
+0x0087AD80	0x00C6A280	?collide@phys_gjk_info@@QAE?AW4gjk_retval_e@1@PAVphys_collide_data@@@Z	public: enum phys_gjk_info::gjk_retval_e __thiscall phys_gjk_info::collide(class phys_collide_data *)	phys_gjk.o
+0x0087B280	0x00C6A780	?phys_collide_do_gjk_collide@phys_gjk_info@@QAE_NPAVphys_collide_data@@M@Z	public: bool __thiscall phys_gjk_info::phys_collide_do_gjk_collide(class phys_collide_data *,float)	phys_gjk.o

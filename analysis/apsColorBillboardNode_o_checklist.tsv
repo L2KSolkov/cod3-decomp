@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:0041c2a0 ?Render@apsColorBillboardNode@@UAEXXZ 00C0B7A0 f apsColorBillboardNode.o
+2	PORTED	0002:0041c2c0 ?GetVShader@apsColorBillboardRender@@YAKXZ 00C0B7C0 f i apsColorBillboardNode.o
+3	PORTED	0002:0041c2d0 ?GetPShader@apsColorBillboardRenderPixel@@YAPAKXZ 00C0B7D0 f i apsColorBillboardNode.o
+4	PORTED	0002:0041c2e0 ?GetPos@ColorBillboardParticle@@QAEAAUPacked@Dir3@math@@XZ 00C0B7E0 f i apsColorBillboardNode.o
+5	PORTED	0002:0041c2f0 ?GetColor@ColorBillboardParticle@@QAEAAVVector4@math@@XZ 00C0B7F0 f i apsColorBillboardNode.o
+6	PORTED	0002:0041c300 ?GetWidth@ColorBillboardParticle@@QAEMXZ 00C0B800 f i apsColorBillboardNode.o
+7	PORTED	0002:0041c310 ?GetHeight@ColorBillboardParticle@@QAEMXZ 00C0B810 f i apsColorBillboardNode.o
+8	PORTED	0002:0041c320 ?GetAngle@ColorBillboardParticle@@QAEMXZ 00C0B820 f i apsColorBillboardNode.o
+9	PORTED	0002:0041c330 ?GetFrame@ColorBillboardParticle@@QAEMXZ 00C0B830 f i apsColorBillboardNode.o
+10	PORTED	0002:0041c340 ?GetVelocity@ColorBillboardParticle@@QAEAAVVector4@math@@XZ 00C0B840 f i apsColorBillboardNode.o
+11	PORTED	0002:0041c350 ??0?$cNodeRenderer@UColorBillboardParticle@@VapsColorBillboardNode@@@@QAE@AAVapsColorBillboardNode@@@Z 00C0B850 f i apsColorBillboardNode.o
+12	PORTED	0002:0041c360 ?SetupDefaultShaders@?$cNodeRenderer@UColorBillboardParticle@@VapsColorBillboardNode@@@@QAEXABVMat43@math@@@Z 00C0B860 f i apsColorBillboardNode.o
+13	PORTED	0002:0041c610 ??$fncompare@UColorBillboardParticle@@@apsRenderSort@@YAHPBX0@Z 00C0BB10 f i apsColorBillboardNode.o
+14	PORTED	0002:0041c650 ?SetupShaders@?$cNodeRenderer@UColorBillboardParticle@@VapsColorBillboardNode@@@@QAEXXZ 00C0BB50 f i apsColorBillboardNode.o
+15	PORTED	0002:0041c660 ??$SortPointers@UColorBillboardParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z 00C0BB60 f i apsColorBillboardNode.o
+16	VERIFIED	0002:0041c6a0 ?Render@?$cNodeRenderer@UColorBillboardParticle@@VapsColorBillboardNode@@@@QAEXXZ 00C0BBA0 f i apsColorBillboardNode.o

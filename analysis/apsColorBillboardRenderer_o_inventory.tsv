@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x008056E0	0x00BF4BE0	??0apsColorBillboardRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsColorBillboardRenderer::apsColorBillboardRenderer(class apsColorBillboardRenderer::cArgs const &)	apsColorBillboardRenderer.o
+0x00805720	0x00BF4C20	?Init@apsColorBillboardRenderer@@SAXXZ	public: static void __cdecl apsColorBillboardRenderer::Init(void)	apsColorBillboardRenderer.o
+0x00805750	0x00BF4C50	?Render@apsColorBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsColorBillboardRenderer::Render(struct apsRendererRenderInfo const &)	apsColorBillboardRenderer.o

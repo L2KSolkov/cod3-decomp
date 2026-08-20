@@ -1,0 +1,30 @@
+index	status	map_line
+1	PORTED	0002:00470460 ?set_vtbl_ptr@nalVirtual@@QAEXPAX@Z 00C5F960 f i nal_anim.o
+2	VERIFIED	0002:00470470 ?GetAnimTypeName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ 00C5F970 f i nal_anim.o
+3	PORTED	0002:00470480 ?GetAnimTypeName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00C5F980 f i nal_anim.o
+4	PORTED	0002:004704b0 ?SetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QAEXPBVnalBaseSkeleton@@@Z 00C5F9B0 f i nal_anim.o
+5	PORTED	0002:004704c0 ?GetVersion@?$nalAnimClass@VnalAnyPose@@@@QBEIXZ 00C5F9C0 f i nal_anim.o
+6	PORTED	0002:004704d0 ?StandardLoad@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C5F9D0 f nal_anim.o
+7	PORTED	0002:004704e0 ?StandardRelease@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEHPAV?$nalAnimClass@VnalAnyPose@@@@H_N@Z 00C5F9E0 f nal_anim.o
+8	VERIFIED	0002:004704f0 ?nalGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C5F9F0 f nal_anim.o
+9	PORTED	0002:00470510 ?nalGetFirstAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@PAVnalAnimFile@@@Z 00C5FA10 f nal_anim.o
+10	VERIFIED	0002:00470530 ?nalGetFirstAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C5FA30 f nal_anim.o
+11	VERIFIED	0002:00470550 ?nalGetNextAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@PAV1@@Z 00C5FA50 f nal_anim.o
+12	PORTED	0002:00470570 ?nalLoadAnimFileInternal@@YA_NPAVnalAnimFile@@@Z 00C5FA70 f nal_anim.o
+13	PORTED	0002:00470700 ?StandardLoad@?$tlResourceDirectory@VnalAnimFile@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C5FC00 f nal_anim.o
+14	PORTED	0002:00470810 ?nalLoadAnimFile@@YAPAVnalAnimFile@@ABVtlFixedString@@@Z 00C5FD10 f nal_anim.o
+15	PORTED	0002:00470840 ?nalLoadAnimFileInPlace@@YAPAVnalAnimFile@@ABVtlFixedString@@PAX@Z 00C5FD40 f nal_anim.o
+16	PORTED	0002:004708d0 ?StandardRelease@?$tlResourceDirectory@VnalAnimFile@@@@QAEHPAVnalAnimFile@@H_N@Z 00C5FDD0 f nal_anim.o
+17	PORTED	0002:00470960 ?nalReleaseAnimFile@@YAHPAVnalAnimFile@@@Z 00C5FE60 f nal_anim.o
+18	VERIFIED	0002:00470980 ?nalReleaseAnimFile@@YAHABVtlFixedString@@@Z 00C5FE80 f nal_anim.o
+19	VERIFIED	0002:004709b0 ?nalReleaseAllAnimFiles@@YAXXZ 00C5FEB0 f nal_anim.o
+20	VERIFIED	0002:004709d0 ?nalGetSceneAnim@@YAPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C5FED0 f nal_anim.o
+21	PORTED	0002:004709f0 ?nalLoadSceneAnimInternal@@YA_NPAVnalSceneAnim@@@Z 00C5FEF0 f nal_anim.o
+22	PORTED	0002:00470b80 ?nalReleaseSceneAnimInternal@@YAXPAVnalSceneAnim@@@Z 00C60080 f nal_anim.o
+23	PORTED	0002:00470bb0 ?StandardLoad@?$tlResourceDirectory@VnalSceneAnim@@@@QAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C600B0 f nal_anim.o
+24	VERIFIED	0002:00470cc0 ?nalLoadSceneAnim@@YAPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C601C0 f nal_anim.o
+25	VERIFIED	0002:00470cf0 ?nalLoadSceneAnimInPlace@@YAPAVnalSceneAnim@@ABVtlFixedString@@PAX@Z 00C601F0 f nal_anim.o
+26	PORTED	0002:00470d80 ?StandardRelease@?$tlResourceDirectory@VnalSceneAnim@@@@QAEHPAVnalSceneAnim@@H_N@Z 00C60280 f nal_anim.o
+27	VERIFIED	0002:00470dd0 ?nalReleaseSceneAnim@@YAHPAVnalSceneAnim@@@Z 00C602D0 f nal_anim.o
+28	VERIFIED	0002:00470df0 ?nalReleaseSceneAnim@@YAHABVtlFixedString@@@Z 00C602F0 f nal_anim.o
+29	VERIFIED	0002:00470e20 ?nalReleaseAllSceneAnims@@YAXXZ 00C60320 f nal_anim.o

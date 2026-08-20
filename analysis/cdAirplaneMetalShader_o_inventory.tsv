@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007D4130	0x00BC3630	?InitCDAirplaneMetalShader@@YAXXZ	void __cdecl InitCDAirplaneMetalShader(void)	cdAirplaneMetalShader.o
+0x007D4180	0x00BC3680	?ToggleCDAirplaneMetalShader@@YAXXZ	void __cdecl ToggleCDAirplaneMetalShader(void)	cdAirplaneMetalShader.o
+0x007D41A0	0x00BC36A0	?Register@cdAirplaneMetalShader@@UAEXXZ	public: virtual void __thiscall cdAirplaneMetalShader::Register(void)	cdAirplaneMetalShader.o
+0x007D41E0	0x00BC36E0	?AddNode@cdAirplaneMetalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdAirplaneMetalShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdAirplaneMetalShader.o
+0x007D4250	0x00BC3750	?Render@cdAirplaneMetalShaderNode@@UAEXXZ	public: virtual void __thiscall cdAirplaneMetalShaderNode::Render(void)	cdAirplaneMetalShader.o

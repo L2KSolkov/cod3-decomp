@@ -1,0 +1,28 @@
+index	status	map_line
+1	VERIFIED	0002:00451a30 ?ngliSetRenderTarget@@YAXPAUnglTexture@@@Z 00C40F30 f ngl_dx_scene.o
+2	VERIFIED	0002:00451ae0 ?nglSetCubeMapRenderTarget@@YAXPAUnglTexture@@H@Z 00C40FE0 f ngl_dx_scene.o
+3	VERIFIED	0002:00451b70 ?ngliSetZTarget@@YAXPAUnglTexture@@@Z 00C41070 f ngl_dx_scene.o
+4	VERIFIED	0002:00451bd0 ?nglGetFSAAParams@@YA?AVVector4@math@@PAUnglTexture@@@Z 00C410D0 f ngl_dx_scene.o
+5	VERIFIED	0002:00451ca0 ?DeviceXBox@@YA?AVMat44@math@@PAUnglTexture@@ABVVector4@2@@Z 00C411A0 f ngl_dx_scene.o
+6	VERIFIED	0002:00451e10 ?ngliGetDeviceMatrix@@YA?AVMat44@math@@PAUnglTexture@@@Z 00C41310 f ngl_dx_scene.o
+7	VERIFIED	0002:00451e50 ?ngliCalculateMatrices@@YAXXZ 00C41350 f ngl_dx_scene.o
+8	VERIFIED	0002:00451e60 ?ngliSetClearStencil@@YAXI@Z 00C41360 f ngl_dx_scene.o
+9	VERIFIED	0002:00451e70 ?nglDxSetGarbageStates@@YAXXZ 00C41370 f ngl_dx_scene.o
+10	VERIFIED	0002:00451f80 ?nglDxSetupScene@@YAXPAUnglScene@@@Z 00C41480 f ngl_dx_scene.o
+11	VERIFIED	0002:004523f0 ?nglRenderScene@@YAXXZ 00C418F0 f ngl_dx_scene.o
+12	VERIFIED	0002:00452640 ?ngliRenderSceneNode@@YAXPAX@Z 00C41B40 f ngl_dx_scene.o
+13	VERIFIED	0002:00452690 ?ngliSetDefaultSceneParams@@YAXXZ 00C41B90 f ngl_dx_scene.o
+14	VERIFIED	0002:004526a0 ?ngliSetupBeginSceneDefaults@@YAXPAUnglScene@@@Z 00C41BA0 f ngl_dx_scene.o
+15	VERIFIED	0002:004526c0 ?ngliSetupBeginScene@@YAXPAUnglScene@@@Z 00C41BC0 f ngl_dx_scene.o
+16	VERIFIED	0002:004526f0 ?ngliEnableFog@@YAX_N@Z 00C41BF0 f ngl_dx_scene.o
+17	VERIFIED	0002:00452720 ?ngliEnableDepthOfField@@YAX_N@Z 00C41C20 f ngl_dx_scene.o
+18	PORTED	0002:00452750 ?Clear@D3DDevice@@SGJKPBU_D3DRECT@@KKMK@Z 00C41C50 f i ngl_dx_scene.o
+19	PORTED	0002:00452780 ?SetViewport@D3DDevice@@SGJPBU_D3DVIEWPORT8@@@Z 00C41C80 f i ngl_dx_scene.o
+20	PORTED	0002:004527a0 ?ngliPreRenderNode@@YAXXZ 00C41CA0 f i ngl_dx_scene.o
+21	VERIFIED	0002:004527b0 ?nglBeginRenderNode@@YAXPAVnglRenderNode@@@Z 00C41CB0 f i ngl_dx_scene.o
+22	PORTED	0002:00452810 ?nglAdvanceRenderNode@@YAXXZ 00C41D10 f i ngl_dx_scene.o
+23	PORTED	0002:004528b0 ?GetStencil@nglDxRenderState@@QAE_NXZ 00C41DB0 f i ngl_dx_scene.o
+24	PORTED	0002:004528c0 ?SetStencilPass@nglDxRenderState@@QAEXI@Z 00C41DC0 f i ngl_dx_scene.o
+25	PORTED	0002:004528f0 ?SetStencilFunc@nglDxRenderState@@QAEXI@Z 00C41DF0 f i ngl_dx_scene.o
+26	PORTED	0002:00452920 ?SetStencilMask@nglDxRenderState@@QAEXI@Z 00C41E20 f i ngl_dx_scene.o
+27	PORTED	0002:00452950 ?SetRopZCmpAlwaysRead@nglDxRenderState@@QAEX_N@Z 00C41E50 f i ngl_dx_scene.o

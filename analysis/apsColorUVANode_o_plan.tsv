@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x0081AFF0	?Render@apsColorUVANode@@UAEXXZ	public: virtual void __thiscall apsColorUVANode::Render(void)	

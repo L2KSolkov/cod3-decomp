@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:003e0520 ??0cdBackgroundShaderMat@@QAE@PAUnglTexture@@@Z 00BCFA20 f cdBackgroundShader.o
+2	VERIFIED	0002:003e05b0 ?InitCDBackgroundShader@@YAXXZ 00BCFAB0 f cdBackgroundShader.o
+3	VERIFIED	0002:003e0600 ?ToggleCDBackgroundShader@@YAXXZ 00BCFB00 f cdBackgroundShader.o
+4	VERIFIED	0002:003e0620 ?Register@cdBackgroundShader@@UAEXXZ 00BCFB20 f cdBackgroundShader.o
+5	VERIFIED	0002:003e0680 ?AddNode@cdBackgroundShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCFB80 f cdBackgroundShader.o
+6	VERIFIED	0002:003e06f0 ?Render@cdBackgroundShaderNode@@UAEXXZ 00BCFBF0 f cdBackgroundShader.o
+7	VERIFIED	0002:003e09d0 ??0cdBackgroundShader@@QAE@XZ 00BCFED0 f i cdBackgroundShader.o
+8	VERIFIED	0002:003e0a00 ?GetName@cdBackgroundShader@@UAE?AVtlFixedString@@XZ 00BCFF00 f i cdBackgroundShader.o
+9	PORTED	0002:003e0a20 ?RegisterShader@cdBackgroundRender@@YAXXZ 00BCFF20 f i cdBackgroundShader.o
+10	PORTED	0002:003e0a40 ?RegisterVShader@cdBackgroundRender@@YAXXZ 00BCFF40 f i cdBackgroundShader.o
+11	PORTED	0002:003e0a60 ?GetVShader@cdBackgroundRender@@YAKXZ 00BCFF60 f i cdBackgroundShader.o
+12	PORTED	0002:003e0a70 ?RegisterShader@cdBackgroundPixel@@YAXXZ 00BCFF70 f i cdBackgroundShader.o
+13	PORTED	0002:003e0a90 ?RegisterPShader@cdBackgroundPixel@@YAXXZ 00BCFF90 f i cdBackgroundShader.o
+14	PORTED	0002:003e0ab0 ?GetPShader@cdBackgroundPixel@@YAPAKXZ 00BCFFB0 f i cdBackgroundShader.o
+15	PORTED	0002:003e0ac0 ?RegisterShader@cdBackgroundFullbrightPixel@@YAXXZ 00BCFFC0 f i cdBackgroundShader.o
+16	PORTED	0002:003e0ae0 ?RegisterPShader@cdBackgroundFullbrightPixel@@YAXXZ 00BCFFE0 f i cdBackgroundShader.o
+17	PORTED	0002:003e0b00 ?GetPShader@cdBackgroundFullbrightPixel@@YAPAKXZ 00BD0000 f i cdBackgroundShader.o
+18	PORTED	0002:003e0b10 ??0cdBackgroundShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdBackgroundShaderMat@@@Z 00BD0010 f i cdBackgroundShader.o
+19	PORTED	0002:003e0b40 ??_GcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o
+20	PORTED	0002:003e0b40 ??_EcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o
+21	PORTED	0002:003e0b70 ??1cdBackgroundShaderNode@@UAE@XZ 00BD0070 f i cdBackgroundShader.o
+22	VERIFIED	0002:003e0b80 ??_GcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o
+23	VERIFIED	0002:003e0b80 ??_EcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o
+24	VERIFIED	0002:003e0bb0 ??1cdBackgroundShader@@UAE@XZ 00BD00B0 f i cdBackgroundShader.o

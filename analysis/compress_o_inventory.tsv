@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x007E31D0	0x00BD26D0	_compress2	_compress2	compress.o
+0x007E3270	0x00BD2770	_compress	_compress	compress.o
+0x007E3290	0x00BD2790	_compressBound	_compressBound	compress.o

@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007D1720	0x00BC0C20	??0cdDecalShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdDecalShaderMat::cdDecalShaderMat(struct nglTexture *)	cdDecalShader.o
+0x007D17B0	0x00BC0CB0	?InitCDDecalShader@@YAXXZ	void __cdecl InitCDDecalShader(void)	cdDecalShader.o
+0x007D1800	0x00BC0D00	?ToggleCDDecalShader@@YAXXZ	void __cdecl ToggleCDDecalShader(void)	cdDecalShader.o
+0x007D1820	0x00BC0D20	?Register@cdDecalShader@@UAEXXZ	public: virtual void __thiscall cdDecalShader::Register(void)	cdDecalShader.o
+0x007D1860	0x00BC0D60	?AddNode@cdDecalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdDecalShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdDecalShader.o
+0x007D18E0	0x00BC0DE0	?Render@cdDecalShaderNode@@UAEXXZ	public: virtual void __thiscall cdDecalShaderNode::Render(void)	cdDecalShader.o

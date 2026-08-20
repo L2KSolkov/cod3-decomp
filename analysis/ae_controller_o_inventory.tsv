@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x007BF240	0x00BAE740	?InitController@@YAXH@Z	void __cdecl InitController(int)	ae_controller.o
+0x007BF250	0x00BAE750	?PollController@@YAHHPAH@Z	int __cdecl PollController(int,int *)	ae_controller.o

@@ -1,0 +1,37 @@
+index	status	map_line
+1	PORTED	0002:00470e60 ?LengthSquared@math@@YAMABVDir3@1@@Z 00C60360 f i nal_generic_component.o
+2	PORTED	0002:00470eb0 ??0Quaternion@math@@QAE@ABVVector4@1@@Z 00C603B0 f i nal_generic_component.o
+3	PORTED	0002:00470ed0 ??0Quaternion@math@@QAE@ABVDir3@1@@Z 00C603D0 f i nal_generic_component.o
+4	PORTED	0002:00470f50 ??Gmath@@YA?AVQuaternion@0@ABV10@@Z 00C60450 f i nal_generic_component.o
+5	PORTED	0002:00470f90 ??Smath@@YA?AVQuaternion@0@ABV10@@Z 00C60490 f i nal_generic_component.o
+6	PORTED	0002:00470fd0 ?Length@math@@YAMABVQuaternion@1@@Z 00C604D0 f i nal_generic_component.o
+7	PORTED	0002:00471030 ?Lerp@math@@YA?AVQuaternion@1@MABV21@0@Z 00C60530 f i nal_generic_component.o
+8	PORTED	0002:00471160 ?nalQuarterLerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00C60660 f i nal_generic_component.o
+9	PORTED	0002:00471290 ?Store@?$nalPackedFloatDecoder@F@nalEntropyDecoder@@IBEXMPAFMM@Z 00C60790 f i nal_generic_component.o
+10	VERIFIED	0002:004712e0 ?Register@nalComponentInitList@@UAEXXZ 00C607E0 f nal_generic_component.o
+11	PORTED	0002:00471310 ?Blend@nalComponentU8Base@@UBEXHPAXPBX1M@Z 00C60810 f nal_generic_component.o
+12	PORTED	0002:00471380 ?BlendArray@nalComponentU8Base@@UBEXHPAXPBX1AAPBM@Z 00C60880 f nal_generic_component.o
+13	PORTED	0002:00471400 ?Blend@nalComponentSignalCounter@@UBEXHPAXPBX1M@Z 00C60900 f nal_generic_component.o
+14	PORTED	0002:00471470 ?BlendArray@nalComponentSignalCounter@@UBEXHPAXPBX1AAPBM@Z 00C60970 f nal_generic_component.o
+15	PORTED	0002:00471560 ?Blend@nalComponentRLE8Int1@@UBEXHPAXPBX1M@Z 00C60A60 f nal_generic_component.o
+16	PORTED	0002:004715d0 ?BlendArray@nalComponentRLE8Int1@@UBEXHPAXPBX1AAPBM@Z 00C60AD0 f nal_generic_component.o
+17	PORTED	0002:00471650 ?Blend@nalComponentFloat1Base@@UBEXHPAXPBX1M@Z 00C60B50 f nal_generic_component.o
+18	PORTED	0002:00471770 ?BlendArray@nalComponentFloat1Base@@UBEXHPAXPBX1AAPBM@Z 00C60C70 f nal_generic_component.o
+19	PORTED	0002:004718d0 ?Blend@nalComponentFloat3Base@@UBEXHPAXPBX1M@Z 00C60DD0 f nal_generic_component.o
+20	PORTED	0002:00471950 ?BlendArray@nalComponentFloat3Base@@UBEXHPAXPBX1AAPBM@Z 00C60E50 f nal_generic_component.o
+21	PORTED	0002:004719d0 ?Blend@nalComponentFloat4Base@@UBEXHPAXPBX1M@Z 00C60ED0 f nal_generic_component.o
+22	PORTED	0002:00471a50 ?BlendArray@nalComponentFloat4Base@@UBEXHPAXPBX1AAPBM@Z 00C60F50 f nal_generic_component.o
+23	PORTED	0002:00471ad0 ?Blend@nalComponentQuatBase@@UBEXHPAXPBX1M@Z 00C60FD0 f nal_generic_component.o
+24	PORTED	0002:00471d40 ?BlendIntra@nalComponentQuatBase@@UBEXHPAXPBX1M@Z 00C61240 f nal_generic_component.o
+25	PORTED	0002:00472150 ?BlendArray@nalComponentQuatBase@@UBEXHPAXPBX1AAPBM@Z 00C61650 f nal_generic_component.o
+26	PORTED	0002:004723c0 ?Blend@nalComponentPOBase@@UBEXHPAXPBX1M@Z 00C618C0 f nal_generic_component.o
+27	PORTED	0002:00472430 ?BlendArray@nalComponentPOBase@@UBEXHPAXPBX1AAPBM@Z 00C61930 f nal_generic_component.o
+28	PORTED	0002:004729e0 ?Blend@nalComponentIKSpinBase@@UBEXHPAXPBX1M@Z 00C61EE0 f nal_generic_component.o
+29	PORTED	0002:00472a50 ?BlendArray@nalComponentIKSpinBase@@UBEXHPAXPBX1AAPBM@Z 00C61F50 f nal_generic_component.o
+30	PORTED	0002:00472ac0 ?ComponentPartialDecode@nalComponentPacked16EntropyIKSpin@@SAXPAUStateType@nalComponentPacked16EntropyIKSpinData@@PAUCacheType@3@PAXHHHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@3@@Z 00C61FC0 f nal_generic_component.o
+31	PORTED	0002:00472c40 ?ComponentCycleTrajectory@nalComponentTrajectoryPO@@SAXPAVnalPositionOrientation@@0HPAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@nalComponentTrajectoryPOData@@_N@Z 00C62140 f nal_generic_component.o
+32	PORTED	0002:00472d70 ?ComponentCycleTrajectory@nalComponentEntropyTrajectoryPO@@SAXPAVnalPositionOrientation@@0HPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyTrajectoryPOData@@PAUSkeletonComponentData@6@PAUAnimComponentData@6@_N@Z 00C62270 f nal_generic_component.o
+33	PORTED	0002:00472ea0 ?Decode@?$nalPackedFloatDecoder@F@nalEntropyDecoder@@QAEXPAFIIMMMPAX@Z 00C623A0 f i nal_generic_component.o
+34	PORTED	0002:00472f20 ?Store@?$nalPackedQuatDecoder@VnalQuaternion16@nalEntropyDecoder@@@nalEntropyDecoder@@IBEXABVQuaternion@math@@PAVnalQuaternion16@2@@Z 00C62420 f i nal_generic_component.o
+35	PORTED	0002:00472f50 ?Inverse@nalPositionOrientation@@QBE?AV1@XZ 00C62450 f i nal_generic_component.o
+36	PORTED	0002:00473010 ??$IntegerPower@VnalPositionOrientation@@@@YA?AVnalPositionOrientation@@ABV0@H@Z 00C62510 f i nal_generic_component.o

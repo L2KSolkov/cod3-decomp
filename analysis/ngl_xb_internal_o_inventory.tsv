@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x008540B0	0x00C435B0	?CreateVertexDeclaration@nglDirect3DDevice@@SAXPBU_D3DVERTEXSHADERINPUT@@PAPAU_D3DVERTEXATTRIBUTEFORMAT@@@Z	public: static void __cdecl nglDirect3DDevice::CreateVertexDeclaration(struct _D3DVERTEXSHADERINPUT const *,struct _D3DVERTEXATTRIBUTEFORMAT * *)	ngl_xb_internal.o

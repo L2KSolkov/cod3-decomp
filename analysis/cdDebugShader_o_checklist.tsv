@@ -1,0 +1,27 @@
+index	status	map_line
+1	VERIFIED	0002:003c6360 ??0cdDebugShaderMat@@QAE@XZ 00BB5860 f cdDebugShader.o
+2	VERIFIED	0002:003c63d0 ?InitCDDebugShader@@YAXXZ 00BB58D0 f cdDebugShader.o
+3	VERIFIED	0002:003c6420 ?ToggleCDDebugShader@@YAXXZ 00BB5920 f cdDebugShader.o
+4	VERIFIED	0002:003c6440 ?Register@cdDebugShader@@UAEXXZ 00BB5940 f cdDebugShader.o
+5	VERIFIED	0002:003c6470 ?GetSortInfo@cdDebugShaderNode@@UAEXAAUnglSortInfo@@@Z 00BB5970 f cdDebugShader.o
+6	VERIFIED	0002:003c6570 ?AddNode@cdDebugShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB5A70 f cdDebugShader.o
+7	VERIFIED	0002:003c65c0 ?Render@cdDebugShaderNode@@UAEXXZ 00BB5AC0 f cdDebugShader.o
+8	PORTED	0002:003c67d0 ??RnglTintParamType@@QAEAAU0@XZ 00BB5CD0 f i cdDebugShader.o
+9	PORTED	0002:003c67e0 ?gpuSetVertexConstant@@YAXHPAVVector4@math@@I@Z 00BB5CE0 f i cdDebugShader.o
+10	VERIFIED	0002:003c6810 ?nglListAddNode@@YAXPAVnglRenderNode@@@Z 00BB5D10 f i cdDebugShader.o
+11	VERIFIED	0002:003c6890 ??0cdDebugShader@@QAE@XZ 00BB5D90 f i cdDebugShader.o
+12	VERIFIED	0002:003c68c0 ?GetName@cdDebugShader@@UAE?AVtlFixedString@@XZ 00BB5DC0 f i cdDebugShader.o
+13	PORTED	0002:003c68e0 ?RegisterVShader@cdDebugShaderRender@@YAXXZ 00BB5DE0 f i cdDebugShader.o
+14	PORTED	0002:003c6900 ?GetVShader@cdDebugShaderRender@@YAKXZ 00BB5E00 f i cdDebugShader.o
+15	PORTED	0002:003c6910 ?RegisterPShader@cdDebugPixel@@YAXXZ 00BB5E10 f i cdDebugShader.o
+16	PORTED	0002:003c6930 ?InitPShader@cdDebugPixel@@YAXXZ 00BB5E30 f i cdDebugShader.o
+17	PORTED	0002:003c6950 ?GetPShader@cdDebugPixel@@YAPAKXZ 00BB5E50 f i cdDebugShader.o
+18	PORTED	0002:003c6960 ??$IsSet@UnglTintParamType@@@nglParamSet@@QAE_NABUnglTintParamType@@@Z 00BB5E60 f i cdDebugShader.o
+19	PORTED	0002:003c6990 ??$Get@UnglTintParamType@@@nglParamSet@@QAEPAVVector4@math@@ABUnglTintParamType@@@Z 00BB5E90 f i cdDebugShader.o
+20	PORTED	0002:003c69f0 ??0cdDebugShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDebugShaderMat@@@Z 00BB5EF0 f i cdDebugShader.o
+21	PORTED	0002:003c6a20 ??_GcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o
+22	PORTED	0002:003c6a20 ??_EcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o
+23	PORTED	0002:003c6a50 ??1cdDebugShaderNode@@UAE@XZ 00BB5F50 f i cdDebugShader.o
+24	VERIFIED	0002:003c6a60 ??_EcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o
+25	VERIFIED	0002:003c6a60 ??_GcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o
+26	VERIFIED	0002:003c6a90 ??1cdDebugShader@@UAE@XZ 00BB5F90 f i cdDebugShader.o

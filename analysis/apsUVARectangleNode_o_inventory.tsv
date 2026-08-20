@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x008189C0	0x00C07EC0	?Render@apsUVARectangleNode@@UAEXXZ	public: virtual void __thiscall apsUVARectangleNode::Render(void)	apsUVARectangleNode.o

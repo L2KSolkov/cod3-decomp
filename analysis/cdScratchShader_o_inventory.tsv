@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007C5660	0x00BB4B60	??0cdScratchMaterial@@QAE@PAUnglTexture@@IH_N@Z	public: __thiscall cdScratchMaterial::cdScratchMaterial(struct nglTexture *,unsigned int,int,bool)	cdScratchShader.o
+0x007C5690	0x00BB4B90	?ToggleCDScratchShader@@YAXXZ	void __cdecl ToggleCDScratchShader(void)	cdScratchShader.o
+0x007C56B0	0x00BB4BB0	?Register@cdScratchShader@@UAEXXZ	public: virtual void __thiscall cdScratchShader::Register(void)	cdScratchShader.o
+0x007C56E0	0x00BB4BE0	?InitCDScratchShader@@YAXXZ	void __cdecl InitCDScratchShader(void)	cdScratchShader.o
+0x007C5720	0x00BB4C20	?AddNode@cdScratchShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdScratchShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdScratchShader.o
+0x007C57F0	0x00BB4CF0	?Render@cdScratchShaderNode@@UAEXXZ	public: virtual void __thiscall cdScratchShaderNode::Render(void)	cdScratchShader.o

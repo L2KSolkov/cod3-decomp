@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:00429240 ?nslWaveBankLoaderInit@@YAXPAUnslWaveBankLoader@@IW4nflFileID@@I@Z 00C18740 f nslWaveBankLoader.o
+2	VERIFIED	0002:00429280 ?nslWaveBankLoaderUpdate@@YA?AW4nslWaveBankLoaderState@@PAUnslWaveBankLoader@@@Z 00C18780 f nslWaveBankLoader.o
+3	VERIFIED	0002:004295e0 ?nslWaveBankLoaderCancel@@YAXPAUnslWaveBankLoader@@@Z 00C18AE0 f nslWaveBankLoader.o
+4	VERIFIED	0002:00429610 ?nslWaveBankRestoreNames_HNCompare@@YAHPBX0@Z 00C18B10 f nslWaveBankLoader.o
+5	VERIFIED	0002:00429630 ?nslWaveBankRestoreNames@@YAXPAUnslWaveBank@@@Z 00C18B30 f nslWaveBankLoader.o

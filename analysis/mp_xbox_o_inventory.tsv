@@ -1,0 +1,62 @@
+ida_ea	va	name	signature	family
+0x00778580	0x00B67A80	??0JoinGameMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall JoinGameMenu::JoinGameMenu(class FEMenuSystem *)	mp_xbox.o
+0x007785C0	0x00B67AC0	?OnActivate@JoinGameMenu@@UAEXXZ	public: virtual void __thiscall JoinGameMenu::OnActivate(void)	mp_xbox.o
+0x007786C0	0x00B67BC0	?Draw@JoinGameMenu@@UAEXXZ	public: virtual void __thiscall JoinGameMenu::Draw(void)	mp_xbox.o
+0x007786E0	0x00B67BE0	?Update@JoinGameMenu@@UAEXM@Z	public: virtual void __thiscall JoinGameMenu::Update(float)	mp_xbox.o
+0x00778910	0x00B67E10	?Select@JoinGameMenu@@UAEXH@Z	public: virtual void __thiscall JoinGameMenu::Select(int)	mp_xbox.o
+0x00778920	0x00B67E20	?OnTriangle@JoinGameMenu@@UAEXH@Z	public: virtual void __thiscall JoinGameMenu::OnTriangle(int)	mp_xbox.o
+0x00778930	0x00B67E30	?SetPanelFile@JoinGameMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall JoinGameMenu::SetPanelFile(class PanelFile *)	mp_xbox.o
+0x007789D0	0x00B67ED0	?Me@JoinGameMenu@@SAPAV1@XZ	public: static class JoinGameMenu * __cdecl JoinGameMenu::Me(void)	mp_xbox.o
+0x007789E0	0x00B67EE0	?Draw@MPMainMenuXBox@@UAEXXZ	public: virtual void __thiscall MPMainMenuXBox::Draw(void)	mp_xbox.o
+0x00778A10	0x00B67F10	?OnXBoxLive@MPMainMenuXBox@@IAEXH@Z	protected: void __thiscall MPMainMenuXBox::OnXBoxLive(int)	mp_xbox.o
+0x00778AE0	0x00B67FE0	?OnSplitScreen@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::OnSplitScreen(void)	mp_xbox.o
+0x00778AF0	0x00B67FF0	?OnSystemLinkXBox@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::OnSystemLinkXBox(void)	mp_xbox.o
+0x00778B10	0x00B68010	?OnXboxLiveOptions@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::OnXboxLiveOptions(void)	mp_xbox.o
+0x00778B20	0x00B68020	?OnOption@MPMainMenuXBox@@QAEXH@Z	public: void __thiscall MPMainMenuXBox::OnOption(int)	mp_xbox.o
+0x00778B40	0x00B68040	?OnTriangle@MPMainMenuXBox@@UAEXH@Z	public: virtual void __thiscall MPMainMenuXBox::OnTriangle(int)	mp_xbox.o
+0x00778B60	0x00B68060	?Me@MPMainMenuXBox@@SAPAV1@XZ	public: static class MPMainMenuXBox * __cdecl MPMainMenuXBox::Me(void)	mp_xbox.o
+0x00778B70	0x00B68070	?OnDown@MPMainMenuXBox@@UAEXH@Z	public: virtual void __thiscall MPMainMenuXBox::OnDown(int)	mp_xbox.o
+0x00778BC0	0x00B680C0	?OnUp@MPMainMenuXBox@@UAEXH@Z	public: virtual void __thiscall MPMainMenuXBox::OnUp(int)	mp_xbox.o
+0x00778C10	0x00B68110	?UpdateWidescreen@MPMainMenuXBox@@MAEX_N@Z	protected: virtual void __thiscall MPMainMenuXBox::UpdateWidescreen(bool)	mp_xbox.o
+0x00778C50	0x00B68150	?Init@XBoxLiveIngameOptionsCOD3@@UAEXXZ	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::Init(void)	mp_xbox.o
+0x00778C60	0x00B68160	?Draw@XBoxLiveIngameOptionsCOD3@@UAEXXZ	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::Draw(void)	mp_xbox.o
+0x00778C80	0x00B68180	?OnDeactivate@XBoxLiveIngameOptionsCOD3@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnDeactivate(class FEMenu *)	mp_xbox.o
+0x00778C90	0x00B68190	?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z	public: static class XBoxLiveIngameOptionsCOD3 * __cdecl XBoxLiveIngameOptionsCOD3::Me(int)	mp_xbox.o
+0x00778CB0	0x00B681B0	?OnUp@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnUp(int)	mp_xbox.o
+0x00778D10	0x00B68210	?OnDown@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnDown(int)	mp_xbox.o
+0x00778D70	0x00B68270	?OnLeft@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnLeft(int)	mp_xbox.o
+0x00778D80	0x00B68280	?OnRight@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnRight(int)	mp_xbox.o
+0x00778D90	0x00B68290	?OnL1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnL1(int)	mp_xbox.o
+0x00778DA0	0x00B682A0	?OnR1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnR1(int)	mp_xbox.o
+0x00778DB0	0x00B682B0	?OnCross@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnCross(int)	mp_xbox.o
+0x00778EE0	0x00B683E0	?OnTriangle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnTriangle(int)	mp_xbox.o
+0x00778EF0	0x00B683F0	?OnCircle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnCircle(int)	mp_xbox.o
+0x00778F00	0x00B68400	?OnSquare@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnSquare(int)	mp_xbox.o
+0x00778F10	0x00B68410	?OnStart@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnStart(int)	mp_xbox.o
+0x00778F20	0x00B68420	?ButtonHeldAction@XBoxLiveIngameOptionsCOD3@@MAEXXZ	protected: virtual void __thiscall XBoxLiveIngameOptionsCOD3::ButtonHeldAction(void)	mp_xbox.o
+0x00778F30	0x00B68430	?UpdateSplitScreen@XBoxLiveIngameOptionsCOD3@@UAEXXZ	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::UpdateSplitScreen(void)	mp_xbox.o
+0x00778F60	0x00B68460	?WireForSignedOut@XBoxLiveIngameOptionsCOD3@@IAEXXZ	protected: void __thiscall XBoxLiveIngameOptionsCOD3::WireForSignedOut(void)	mp_xbox.o
+0x00778FB0	0x00B684B0	?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ	public: static class AARXBoxLiveIngameOptions * __cdecl AARXBoxLiveIngameOptions::Me(void)	mp_xbox.o
+0x00778FC0	0x00B684C0	?OnCross@AARXBoxLiveIngameOptions@@UAEXH@Z	public: virtual void __thiscall AARXBoxLiveIngameOptions::OnCross(int)	mp_xbox.o
+0x007790C0	0x00B685C0	?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ	public: bool __thiscall AARXBoxLiveIngameOptions::SetTimerText(void)	mp_xbox.o
+0x00779170	0x00B68670	?OnLive@MPMainMenuXBox@@IAEXH@Z	protected: void __thiscall MPMainMenuXBox::OnLive(int)	mp_xbox.o
+0x00779180	0x00B68680	?OnSystemLink@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::OnSystemLink(void)	mp_xbox.o
+0x007791A0	0x00B686A0	?OnCross@MPMainMenuXBox@@UAEXH@Z	public: virtual void __thiscall MPMainMenuXBox::OnCross(int)	mp_xbox.o
+0x00779230	0x00B68730	?SetPanelFile@MPMainMenuXBox@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MPMainMenuXBox::SetPanelFile(class PanelFile *)	mp_xbox.o
+0x00779BB0	0x00B690B0	?SetOptionText@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::SetOptionText(void)	mp_xbox.o
+0x00779C60	0x00B69160	?SetImage@MPMainMenuXBox@@IAEXXZ	protected: void __thiscall MPMainMenuXBox::SetImage(void)	mp_xbox.o
+0x00779D30	0x00B69230	?SetPanelFile@XBoxLiveIngameOptionsCOD3@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::SetPanelFile(class PanelFile *)	mp_xbox.o
+0x0077A600	0x00B69B00	?OnActivate@XBoxLiveIngameOptionsCOD3@@UAEXXZ	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::OnActivate(void)	mp_xbox.o
+0x0077A6B0	0x00B69BB0	?WireForSignedIn@XBoxLiveIngameOptionsCOD3@@IAEXXZ	protected: void __thiscall XBoxLiveIngameOptionsCOD3::WireForSignedIn(void)	mp_xbox.o
+0x0077A7C0	0x00B69CC0	?OnActivate@AARXBoxLiveIngameOptions@@UAEXXZ	public: virtual void __thiscall AARXBoxLiveIngameOptions::OnActivate(void)	mp_xbox.o
+0x0077A860	0x00B69D60	?OnActivate@MPMainMenuXBox@@UAEXXZ	public: virtual void __thiscall MPMainMenuXBox::OnActivate(void)	mp_xbox.o
+0x0077A8F0	0x00B69DF0	?Update@MPMainMenuXBox@@UAEXM@Z	public: virtual void __thiscall MPMainMenuXBox::Update(float)	mp_xbox.o
+0x0077A950	0x00B69E50	?Update@XBoxLiveIngameOptionsCOD3@@UAEXM@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::Update(float)	mp_xbox.o
+0x0077AB20	0x00B6A020	?Update@AARXBoxLiveIngameOptions@@UAEXM@Z	public: virtual void __thiscall AARXBoxLiveIngameOptions::Update(float)	mp_xbox.o
+0x0077AB40	0x00B6A040	?PanelFileUnloaded@XBoxLiveIngameOptionsCOD3@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall XBoxLiveIngameOptionsCOD3::PanelFileUnloaded(class PanelFile *)	mp_xbox.o
+0x0077AB80	0x00B6A080	??0MPMainMenuXBox@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MPMainMenuXBox::MPMainMenuXBox(class FEMenuSystem *)	mp_xbox.o
+0x0077AC50	0x00B6A150	??1MPMainMenuXBox@@UAE@XZ	public: virtual __thiscall MPMainMenuXBox::~MPMainMenuXBox(void)	mp_xbox.o
+0x0077AD10	0x00B6A210	??0XBoxLiveIngameOptionsCOD3@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall XBoxLiveIngameOptionsCOD3::XBoxLiveIngameOptionsCOD3(class FEMenuSystem *)	mp_xbox.o
+0x0077AE60	0x00B6A360	??1XBoxLiveIngameOptionsCOD3@@UAE@XZ	public: virtual __thiscall XBoxLiveIngameOptionsCOD3::~XBoxLiveIngameOptionsCOD3(void)	mp_xbox.o
+0x0077AF10	0x00B6A410	??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARXBoxLiveIngameOptions::AARXBoxLiveIngameOptions(class FEMenuSystem *)	mp_xbox.o
+0x0077AF70	0x00B6A470	??1AARXBoxLiveIngameOptions@@UAE@XZ	public: virtual __thiscall AARXBoxLiveIngameOptions::~AARXBoxLiveIngameOptions(void)	mp_xbox.o

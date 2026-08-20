@@ -1,0 +1,21 @@
+index	status	map_line
+1	VERIFIED	0002:0043f6e0 ?nglInitQuad@@YAXPAUnglQuad@@@Z 00C2EBE0 f ngl_quad.o
+2	VERIFIED	0002:0043f750 ?nglSetQuadTex@@YAXPAUnglQuad@@PAUnglTexture@@@Z 00C2EC50 f ngl_quad.o
+3	VERIFIED	0002:0043f760 ?nglSetQuadMapFlags@@YAXPAUnglQuad@@I@Z 00C2EC60 f ngl_quad.o
+4	VERIFIED	0002:0043f770 ?nglSetQuadBlend@@YAXPAUnglQuad@@I@Z 00C2EC70 f ngl_quad.o
+5	VERIFIED	0002:0043f780 ?nglSetQuadUV@@YAXPAUnglQuad@@MMMM@Z 00C2EC80 f ngl_quad.o
+6	VERIFIED	0002:0043f7d0 ?nglSetQuadColor@@YAXPAUnglQuad@@I@Z 00C2ECD0 f ngl_quad.o
+7	VERIFIED	0002:0043f7f0 ?nglSetQuadRect@@YAXPAUnglQuad@@MMMM@Z 00C2ECF0 f ngl_quad.o
+8	VERIFIED	0002:0043f840 ?nglSetQuadZ@@YAXPAUnglQuad@@M@Z 00C2ED40 f ngl_quad.o
+9	VERIFIED	0002:0043f860 ?nglSetQuadVPos@@YAXPAUnglQuad@@HMM@Z 00C2ED60 f ngl_quad.o
+10	VERIFIED	0002:0043f890 ?nglSetQuadVUV@@YAXPAUnglQuad@@HMM@Z 00C2ED90 f ngl_quad.o
+11	VERIFIED	0002:0043f8c0 ?nglSetQuadVColor@@YAXPAUnglQuad@@HI@Z 00C2EDC0 f ngl_quad.o
+12	VERIFIED	0002:0043f8e0 ?nglRotateQuad@@YAXPAUnglQuad@@MMM@Z 00C2EDE0 f ngl_quad.o
+13	VERIFIED	0002:0043f970 ?nglScaleQuad@@YAXPAUnglQuad@@MMMM@Z 00C2EE70 f ngl_quad.o
+14	VERIFIED	0002:0043fa40 ?nglRotateQuadUV@@YAXPAUnglQuad@@MMM@Z 00C2EF40 f ngl_quad.o
+15	VERIFIED	0002:0043fad0 ?nglScaleQuadUV@@YAXPAUnglQuad@@MMMM@Z 00C2EFD0 f ngl_quad.o
+16	VERIFIED	0002:0043fba0 ?nglSetQuadPos@@YAXPAUnglQuad@@MM@Z 00C2F0A0 f ngl_quad.o
+17	VERIFIED	0002:0043fc00 ?nglListAddQuad@@YAXPAUnglQuad@@@Z 00C2F100 f ngl_quad.o
+18	VERIFIED	0002:0043fcc0 ??0nglQuadNode@@QAE@XZ 00C2F1C0 f i ngl_quad.o
+19	VERIFIED	0002:0043fcd0 ??_GnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o
+20	VERIFIED	0002:0043fcd0 ??_EnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o

@@ -1,0 +1,34 @@
+index	status	map_line
+1	VERIFIED	0002:003c92b0 ??0cdWheelMarkShaderMat@@QAE@XZ 00BB87B0 f cdWheelMarkShader.o
+2	VERIFIED	0002:003c9330 ?InitCDWheelMarkShader@@YAXXZ 00BB8830 f cdWheelMarkShader.o
+3	VERIFIED	0002:003c9380 ?ToggleCDWheelMarkShader@@YAXXZ 00BB8880 f cdWheelMarkShader.o
+4	VERIFIED	0002:003c9390 ?InitCDWheelMarkVertexDefBuilder@@YAXXZ 00BB8890 f cdWheelMarkShader.o
+5	VERIFIED	0002:003c93d0 ?Register@cdWheelMarkShader@@UAEXXZ 00BB88D0 f cdWheelMarkShader.o
+6	VERIFIED	0002:003c9410 ?AddNode@cdWheelMarkShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB8910 f cdWheelMarkShader.o
+7	VERIFIED	0002:003c9480 ?Render@cdWheelMarkShaderNode@@UAEXXZ 00BB8980 f cdWheelMarkShader.o
+8	PORTED	0002:003c9860 ?DrawPrimitive@D3DDevice@@SGJW4_D3DPRIMITIVETYPE@@II@Z 00BB8D60 f i cdWheelMarkShader.o
+9	VERIFIED	0002:003c9890 ?gpuSetVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@II@Z 00BB8D90 f i cdWheelMarkShader.o
+10	PORTED	0002:003c98f0 ?gpuDrawPrimitive@@YAXW4gpuPrimType@@IIPAUD3DVertexBuffer@@PAUgpuVertexFormat@@@Z 00BB8DF0 f i cdWheelMarkShader.o
+11	PORTED	0002:003c9940 ?gpuSetCullMode@@YAXW4gpuCullMode@@@Z 00BB8E40 f i cdWheelMarkShader.o
+12	PORTED	0002:003c9960 ?gpuEnableZWrite@@YAX_N@Z 00BB8E60 f i cdWheelMarkShader.o
+13	PORTED	0002:003c9990 ?gpuSetAlpha@@YAXW4gpuBlendMode@@0IW4gpuBlendOp@@@Z 00BB8E90 f i cdWheelMarkShader.o
+14	PORTED	0002:003c9a50 ?gpuSetAlphaTest@@YAXW4gpuCmpMode@@I@Z 00BB8F50 f i cdWheelMarkShader.o
+15	VERIFIED	0002:003c9ac0 ??0cdWheelMarkShader@@QAE@XZ 00BB8FC0 f i cdWheelMarkShader.o
+16	VERIFIED	0002:003c9af0 ?GetName@cdWheelMarkShader@@UAE?AVtlFixedString@@XZ 00BB8FF0 f i cdWheelMarkShader.o
+17	PORTED	0002:003c9b10 ?RegisterShader@cdWheelMarkShaderVertex@@YAXXZ 00BB9010 f i cdWheelMarkShader.o
+18	PORTED	0002:003c9b30 ?RegisterVShader@cdWheelMarkShaderVertex@@YAXXZ 00BB9030 f i cdWheelMarkShader.o
+19	PORTED	0002:003c9b50 ?GetVShader@cdWheelMarkShaderVertex@@YAKXZ 00BB9050 f i cdWheelMarkShader.o
+20	PORTED	0002:003c9b60 ?RegisterShader@cdWheelMarkShaderPixel@@YAXXZ 00BB9060 f i cdWheelMarkShader.o
+21	PORTED	0002:003c9b80 ?RegisterPShader@cdWheelMarkShaderPixel@@YAXXZ 00BB9080 f i cdWheelMarkShader.o
+22	PORTED	0002:003c9ba0 ?GetPShader@cdWheelMarkShaderPixel@@YAPAKXZ 00BB90A0 f i cdWheelMarkShader.o
+23	PORTED	0002:003c9bb0 ??0Params@cdWheelMarkShaderVertex@@QAE@XZ 00BB90B0 f i cdWheelMarkShader.o
+24	PORTED	0002:003c9bc0 ??$IsSet@UcdWheelMarkShaderDataType@@@nglParamSet@@QAE_NABUcdWheelMarkShaderDataType@@@Z 00BB90C0 f i cdWheelMarkShader.o
+25	PORTED	0002:003c9bf0 ??$Get@UcdWheelMarkShaderDataType@@@nglParamSet@@QAEPAUcdWheelMarkShaderStruct@@ABUcdWheelMarkShaderDataType@@@Z 00BB90F0 f i cdWheelMarkShader.o
+26	PORTED	0002:003c9c50 ??$SetConstants@UParams@cdWheelMarkShaderVertex@@@cdWheelMarkShaderVertex@@YAXABUParams@0@@Z 00BB9150 f i cdWheelMarkShader.o
+27	PORTED	0002:003c9c70 ??0cdWheelMarkShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWheelMarkShaderMat@@@Z 00BB9170 f i cdWheelMarkShader.o
+28	PORTED	0002:003c9ca0 ??_EcdWheelMarkShaderNode@@UAEPAXI@Z 00BB91A0 f i cdWheelMarkShader.o
+29	PORTED	0002:003c9ca0 ??_GcdWheelMarkShaderNode@@UAEPAXI@Z 00BB91A0 f i cdWheelMarkShader.o
+30	PORTED	0002:003c9cd0 ??1cdWheelMarkShaderNode@@UAE@XZ 00BB91D0 f i cdWheelMarkShader.o
+31	VERIFIED	0002:003c9ce0 ??_GcdWheelMarkShader@@UAEPAXI@Z 00BB91E0 f i cdWheelMarkShader.o
+32	VERIFIED	0002:003c9ce0 ??_EcdWheelMarkShader@@UAEPAXI@Z 00BB91E0 f i cdWheelMarkShader.o
+33	VERIFIED	0002:003c9d10 ??1cdWheelMarkShader@@UAE@XZ 00BB9210 f i cdWheelMarkShader.o

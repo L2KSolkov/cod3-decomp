@@ -1,0 +1,15 @@
+ida_ea	va	name	signature	family
+0x00888E80	0x00C78380	?set@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@0@Z	public: void __thiscall rigid_body_constraint_ragdoll::set(class math::Dir3 const &,class math::Dir3 const &)	rbc_def_ragdoll.o
+0x00888ED0	0x00C783D0	?set_damp_k@rigid_body_constraint_ragdoll@@QAEXM@Z	public: void __thiscall rigid_body_constraint_ragdoll::set_damp_k(float)	rbc_def_ragdoll.o
+0x00888F00	0x00C78400	?set@ragdoll_joint_limit_info@@QAEXABVDir3@math@@M@Z	public: void __thiscall ragdoll_joint_limit_info::set(class math::Dir3 const &,float)	rbc_def_ragdoll.o
+0x00888FD0	0x00C784D0	?set_b1_ud_loc@ragdoll_joint_limit_info@@QAEXABVDir3@math@@@Z	public: void __thiscall ragdoll_joint_limit_info::set_b1_ud_loc(class math::Dir3 const &)	rbc_def_ragdoll.o
+0x00889040	0x00C78540	?set_theta_limit@ragdoll_joint_limit_info@@QAEXM@Z	public: void __thiscall ragdoll_joint_limit_info::set_theta_limit(float)	rbc_def_ragdoll.o
+0x008890B0	0x00C785B0	?set_snider_style@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@0@Z	public: void __thiscall rigid_body_constraint_ragdoll::set_snider_style(class math::Dir3 const &,class math::Dir3 const &)	rbc_def_ragdoll.o
+0x00889230	0x00C78730	?set_theta_min_max@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@MM@Z	public: void __thiscall rigid_body_constraint_ragdoll::set_theta_min_max(class math::Dir3 const &,float,float)	rbc_def_ragdoll.o
+0x008893A0	0x00C788A0	?set_hinge@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@000MM@Z	public: void __thiscall rigid_body_constraint_ragdoll::set_hinge(class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,float,float)	rbc_def_ragdoll.o
+0x008896A0	0x00C78BA0	?set_swivel@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@000MM@Z	public: void __thiscall rigid_body_constraint_ragdoll::set_swivel(class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,float,float)	rbc_def_ragdoll.o
+0x00889930	0x00C78E30	?add_joint_limit@rigid_body_constraint_ragdoll@@QAEXABVDir3@math@@M@Z	public: void __thiscall rigid_body_constraint_ragdoll::add_joint_limit(class math::Dir3 const &,float)	rbc_def_ragdoll.o
+0x00889990	0x00C78E90	?pull_together@rigid_body_constraint_ragdoll@@QAE?BMXZ	public: float const __thiscall rigid_body_constraint_ragdoll::pull_together(void)	rbc_def_ragdoll.o
+0x00889A60	0x00C78F60	?do_collision@rigid_body_constraint_ragdoll@@QAEXM@Z	public: void __thiscall rigid_body_constraint_ragdoll::do_collision(float)	rbc_def_ragdoll.o
+0x00889D10	0x00C79210	?setup_hinge@rigid_body_constraint_ragdoll@@QAEXPAVpulse_sum_constraint_solver@@ABVDir3@math@@1M@Z	public: void __thiscall rigid_body_constraint_ragdoll::setup_hinge(class pulse_sum_constraint_solver *,class math::Dir3 const &,class math::Dir3 const &,float)	rbc_def_ragdoll.o
+0x00889E10	0x00C79310	?setup_constraint@rigid_body_constraint_ragdoll@@QAEXPAVpulse_sum_constraint_solver@@M@Z	public: void __thiscall rigid_body_constraint_ragdoll::setup_constraint(class pulse_sum_constraint_solver *,float)	rbc_def_ragdoll.o

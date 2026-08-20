@@ -1,0 +1,22 @@
+index	status	map_line
+1	VERIFIED	0002:003d4130 ?InitCDAirplaneMetalShader@@YAXXZ 00BC3630 f cdAirplaneMetalShader.o
+2	VERIFIED	0002:003d4180 ?ToggleCDAirplaneMetalShader@@YAXXZ 00BC3680 f cdAirplaneMetalShader.o
+3	VERIFIED	0002:003d41a0 ?Register@cdAirplaneMetalShader@@UAEXXZ 00BC36A0 f cdAirplaneMetalShader.o
+4	VERIFIED	0002:003d41e0 ?AddNode@cdAirplaneMetalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC36E0 f cdAirplaneMetalShader.o
+5	PORTED	0002:003d4250 ?Render@cdAirplaneMetalShaderNode@@UAEXXZ 00BC3750 f cdAirplaneMetalShader.o
+6	PORTED	0002:003d4960 ?RegisterVShader@cdAirplaneMetalRender@@YAXXZ 00BC3E60 f i cdAirplaneMetalShader.o
+7	PORTED	0002:003d4980 ?GetVShader@cdAirplaneMetalRender@@YAKXZ 00BC3E80 f i cdAirplaneMetalShader.o
+8	PORTED	0002:003d4990 ?RegisterPShader@cdAirplaneMetalPixel@@YAXXZ 00BC3E90 f i cdAirplaneMetalShader.o
+9	PORTED	0002:003d49b0 ?GetPShader@cdAirplaneMetalPixel@@YAPAKXZ 00BC3EB0 f i cdAirplaneMetalShader.o
+10	PORTED	0002:003d49c0 ?RegisterPShader@cdAirplaneMetalSolidColorPixel@@YAXXZ 00BC3EC0 f i cdAirplaneMetalShader.o
+11	PORTED	0002:003d49e0 ?GetPShader@cdAirplaneMetalSolidColorPixel@@YAPAKXZ 00BC3EE0 f i cdAirplaneMetalShader.o
+12	VERIFIED	0002:003d49f0 ??0cdAirplaneMetalShader@@QAE@XZ 00BC3EF0 f i cdAirplaneMetalShader.o
+13	VERIFIED	0002:003d4a20 ?GetName@cdAirplaneMetalShader@@UAE?AVtlFixedString@@XZ 00BC3F20 f i cdAirplaneMetalShader.o
+14	PORTED	0002:003d4a40 ??0Context@@QAE@XZ 00BC3F40 f i cdAirplaneMetalShader.o
+15	PORTED	0002:003d4a50 ??0cdAirplaneMetalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdAirplaneMetalShaderMat@@@Z 00BC3F50 f i cdAirplaneMetalShader.o
+16	PORTED	0002:003d4a80 ??_GcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o
+17	PORTED	0002:003d4a80 ??_EcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o
+18	PORTED	0002:003d4ab0 ??1cdAirplaneMetalShaderNode@@UAE@XZ 00BC3FB0 f i cdAirplaneMetalShader.o
+19	VERIFIED	0002:003d4ac0 ??_EcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o
+20	VERIFIED	0002:003d4ac0 ??_GcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o
+21	VERIFIED	0002:003d4af0 ??1cdAirplaneMetalShader@@UAE@XZ 00BC3FF0 f i cdAirplaneMetalShader.o

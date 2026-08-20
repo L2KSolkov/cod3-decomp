@@ -1,0 +1,333 @@
+ida_ea	va	name	signature	family
+0x0098AFC0	0x00D7A4C0	?RegisterHashStrings@mp_anim_wad@@YAXXZ	void __cdecl mp_anim_wad::RegisterHashStrings(void)	mp_anim_wad.o
+0x0098C590	0x00D7BA90	?ResolveAnim@mp_anim_wad@@YAIIIPAII@Z	unsigned int __cdecl mp_anim_wad::ResolveAnim(unsigned int,unsigned int,unsigned int *,unsigned int)	mp_anim_wad.o
+0x0098C710	0x00D7BC10	?ResolveAnimName@mp_anim_wad@@YAPBDI@Z	char const * __cdecl mp_anim_wad::ResolveAnimName(unsigned int)	mp_anim_wad.o
+0x0098C790	0x00D7BC90	?ValidateAnimationIndices@mp_anim_wad@@YA_NXZ	bool __cdecl mp_anim_wad::ValidateAnimationIndices(void)	mp_anim_wad.o
+0x0098C870	0x00D7BD70	?GetBroAnim@mp_anim_wad@@YAIII@Z	unsigned int __cdecl mp_anim_wad::GetBroAnim(unsigned int,unsigned int)	mp_anim_wad.o
+0x0098C8C0	0x00D7BDC0	?GetEE_script_delay@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_delay(class Broc::entity)	mp_anim_wad.o
+0x0098C910	0x00D7BE10	?IsEEDefined_script_delay@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delay(class Broc::entity)	mp_anim_wad.o
+0x0098C9C0	0x00D7BEC0	?GetEE_dontdropweapon@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_dontdropweapon(class Broc::entity)	mp_anim_wad.o
+0x0098CA10	0x00D7BF10	?IsEEDefined_dontdropweapon@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_dontdropweapon(class Broc::entity)	mp_anim_wad.o
+0x0098CAC0	0x00D7BFC0	?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_explodertype(class Broc::entity)	mp_anim_wad.o
+0x0098CB10	0x00D7C010	?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_explodertype(class Broc::entity)	mp_anim_wad.o
+0x0098CC10	0x00D7C110	?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_friendname(class Broc::entity)	mp_anim_wad.o
+0x0098CC60	0x00D7C160	?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_friendname(class Broc::entity)	mp_anim_wad.o
+0x0098CD60	0x00D7C260	?GetEE_script_prespawn_delay@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_prespawn_delay(class Broc::entity)	mp_anim_wad.o
+0x0098CDB0	0x00D7C2B0	?IsEEDefined_script_prespawn_delay@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_prespawn_delay(class Broc::entity)	mp_anim_wad.o
+0x0098CE60	0x00D7C360	?GetEE_script_burst_max@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_burst_max(class Broc::entity)	mp_anim_wad.o
+0x0098CEB0	0x00D7C3B0	?IsEEDefined_script_burst_max@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_burst_max(class Broc::entity)	mp_anim_wad.o
+0x0098CF60	0x00D7C460	?GetEE_script_offradius@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_offradius(class Broc::entity)	mp_anim_wad.o
+0x0098CFB0	0x00D7C4B0	?IsEEDefined_script_offradius@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_offradius(class Broc::entity)	mp_anim_wad.o
+0x0098D060	0x00D7C560	?GetEE_script_location@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_location(class Broc::entity)	mp_anim_wad.o
+0x0098D0B0	0x00D7C5B0	?IsEEDefined_script_location@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_location(class Broc::entity)	mp_anim_wad.o
+0x0098D1B0	0x00D7C6B0	?GetEE_script_area@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_area(class Broc::entity)	mp_anim_wad.o
+0x0098D200	0x00D7C700	?IsEEDefined_script_area@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_area(class Broc::entity)	mp_anim_wad.o
+0x0098D300	0x00D7C800	?GetEE_script_uniquename@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_uniquename(class Broc::entity)	mp_anim_wad.o
+0x0098D350	0x00D7C850	?IsEEDefined_script_uniquename@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_uniquename(class Broc::entity)	mp_anim_wad.o
+0x0098D450	0x00D7C950	?GetEE_script_random@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_random(class Broc::entity)	mp_anim_wad.o
+0x0098D4A0	0x00D7C9A0	?IsEEDefined_script_random@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_random(class Broc::entity)	mp_anim_wad.o
+0x0098D550	0x00D7CA50	?GetEE_script_health@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_health(class Broc::entity)	mp_anim_wad.o
+0x0098D5A0	0x00D7CAA0	?IsEEDefined_script_health@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_health(class Broc::entity)	mp_anim_wad.o
+0x0098D650	0x00D7CB50	?GetEE_script_flaktype@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_flaktype(class Broc::entity)	mp_anim_wad.o
+0x0098D6A0	0x00D7CBA0	?IsEEDefined_script_flaktype@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_flaktype(class Broc::entity)	mp_anim_wad.o
+0x0098D7A0	0x00D7CCA0	?GetEE_script_accuracyStationaryMod@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_accuracyStationaryMod(class Broc::entity)	mp_anim_wad.o
+0x0098D7F0	0x00D7CCF0	?IsEEDefined_script_accuracyStationaryMod@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_accuracyStationaryMod(class Broc::entity)	mp_anim_wad.o
+0x0098D8A0	0x00D7CDA0	?GetEE_noshadow@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_noshadow(class Broc::entity)	mp_anim_wad.o
+0x0098D8F0	0x00D7CDF0	?IsEEDefined_noshadow@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_noshadow(class Broc::entity)	mp_anim_wad.o
+0x0098D9A0	0x00D7CEA0	?GetEE_script_offtime@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_offtime(class Broc::entity)	mp_anim_wad.o
+0x0098D9F0	0x00D7CEF0	?IsEEDefined_script_offtime@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_offtime(class Broc::entity)	mp_anim_wad.o
+0x0098DAA0	0x00D7CFA0	?GetEE_script_playerseek@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_playerseek(class Broc::entity)	mp_anim_wad.o
+0x0098DAF0	0x00D7CFF0	?IsEEDefined_script_playerseek@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_playerseek(class Broc::entity)	mp_anim_wad.o
+0x0098DBA0	0x00D7D0A0	?GetEE_vehicletype@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_vehicletype(class Broc::entity)	mp_anim_wad.o
+0x0098DBF0	0x00D7D0F0	?IsEEDefined_vehicletype@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_vehicletype(class Broc::entity)	mp_anim_wad.o
+0x0098DCF0	0x00D7D1F0	?GetEE_script_fixbasepose@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fixbasepose(class Broc::entity)	mp_anim_wad.o
+0x0098DD40	0x00D7D240	?IsEEDefined_script_fixbasepose@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fixbasepose(class Broc::entity)	mp_anim_wad.o
+0x0098DDF0	0x00D7D2F0	?GetEE_script_objective@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_objective(class Broc::entity)	mp_anim_wad.o
+0x0098DE40	0x00D7D340	?IsEEDefined_script_objective@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_objective(class Broc::entity)	mp_anim_wad.o
+0x0098DF40	0x00D7D440	?GetEE_script_moveoverride@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_moveoverride(class Broc::entity)	mp_anim_wad.o
+0x0098DF90	0x00D7D490	?IsEEDefined_script_moveoverride@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_moveoverride(class Broc::entity)	mp_anim_wad.o
+0x0098E040	0x00D7D540	?GetEE_script_stalingradspawn@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_stalingradspawn(class Broc::entity)	mp_anim_wad.o
+0x0098E090	0x00D7D590	?IsEEDefined_script_stalingradspawn@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_stalingradspawn(class Broc::entity)	mp_anim_wad.o
+0x0098E140	0x00D7D640	?GetEE_script_new_exploder@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_new_exploder(class Broc::entity)	mp_anim_wad.o
+0x0098E190	0x00D7D690	?IsEEDefined_script_new_exploder@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_new_exploder(class Broc::entity)	mp_anim_wad.o
+0x0098E240	0x00D7D740	?GetEE_script_squadname@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_squadname(class Broc::entity)	mp_anim_wad.o
+0x0098E290	0x00D7D790	?IsEEDefined_script_squadname@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_squadname(class Broc::entity)	mp_anim_wad.o
+0x0098E390	0x00D7D890	?GetEE_weaponinfo@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_weaponinfo(class Broc::entity)	mp_anim_wad.o
+0x0098E3E0	0x00D7D8E0	?IsEEDefined_weaponinfo@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_weaponinfo(class Broc::entity)	mp_anim_wad.o
+0x0098E4E0	0x00D7D9E0	?GetEE_script_pacifist@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_pacifist(class Broc::entity)	mp_anim_wad.o
+0x0098E530	0x00D7DA30	?IsEEDefined_script_pacifist@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_pacifist(class Broc::entity)	mp_anim_wad.o
+0x0098E5E0	0x00D7DAE0	?GetEE_script_turretweaponpak@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_turretweaponpak(class Broc::entity)	mp_anim_wad.o
+0x0098E630	0x00D7DB30	?IsEEDefined_script_turretweaponpak@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_turretweaponpak(class Broc::entity)	mp_anim_wad.o
+0x0098E730	0x00D7DC30	?GetEE_script_fb_retreat_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_retreat_chunk_size(class Broc::entity)	mp_anim_wad.o
+0x0098E780	0x00D7DC80	?IsEEDefined_script_fb_retreat_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_retreat_chunk_size(class Broc::entity)	mp_anim_wad.o
+0x0098E830	0x00D7DD30	?GetEE_script_grenades@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_grenades(class Broc::entity)	mp_anim_wad.o
+0x0098E880	0x00D7DD80	?IsEEDefined_script_grenades@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_grenades(class Broc::entity)	mp_anim_wad.o
+0x0098E930	0x00D7DE30	?GetEE_script_hidden@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_hidden(class Broc::entity)	mp_anim_wad.o
+0x0098E980	0x00D7DE80	?IsEEDefined_script_hidden@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_hidden(class Broc::entity)	mp_anim_wad.o
+0x0098EA80	0x00D7DF80	?GetEE_script_fb_id@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_id(class Broc::entity)	mp_anim_wad.o
+0x0098EAD0	0x00D7DFD0	?IsEEDefined_script_fb_id@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_id(class Broc::entity)	mp_anim_wad.o
+0x0098EB80	0x00D7E080	?GetEE_script_effect_id@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_effect_id(class Broc::entity)	mp_anim_wad.o
+0x0098EBD0	0x00D7E0D0	?IsEEDefined_script_effect_id@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_effect_id(class Broc::entity)	mp_anim_wad.o
+0x0098ECD0	0x00D7E1D0	?GetEE_script_speed@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_speed(class Broc::entity)	mp_anim_wad.o
+0x0098ED20	0x00D7E220	?IsEEDefined_script_speed@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_speed(class Broc::entity)	mp_anim_wad.o
+0x0098EDD0	0x00D7E2D0	?GetEE_script_panzer@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_panzer(class Broc::entity)	mp_anim_wad.o
+0x0098EE20	0x00D7E320	?IsEEDefined_script_panzer@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_panzer(class Broc::entity)	mp_anim_wad.o
+0x0098EED0	0x00D7E3D0	?GetEE_script_tankmgaccuracy@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_tankmgaccuracy(class Broc::entity)	mp_anim_wad.o
+0x0098EF20	0x00D7E420	?IsEEDefined_script_tankmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_tankmgaccuracy(class Broc::entity)	mp_anim_wad.o
+0x0098EFD0	0x00D7E4D0	?GetEE_script_colorid_startindex@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_colorid_startindex(class Broc::entity)	mp_anim_wad.o
+0x0098F020	0x00D7E520	?IsEEDefined_script_colorid_startindex@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_colorid_startindex(class Broc::entity)	mp_anim_wad.o
+0x0098F0D0	0x00D7E5D0	?GetEE_script_waittill@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_waittill(class Broc::entity)	mp_anim_wad.o
+0x0098F120	0x00D7E620	?IsEEDefined_script_waittill@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_waittill(class Broc::entity)	mp_anim_wad.o
+0x0098F220	0x00D7E720	?GetEE_ambient@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_ambient(class Broc::entity)	mp_anim_wad.o
+0x0098F270	0x00D7E770	?IsEEDefined_ambient@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_ambient(class Broc::entity)	mp_anim_wad.o
+0x0098F370	0x00D7E870	?GetEE_script_burst_min@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_burst_min(class Broc::entity)	mp_anim_wad.o
+0x0098F3C0	0x00D7E8C0	?IsEEDefined_script_burst_min@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_burst_min(class Broc::entity)	mp_anim_wad.o
+0x0098F470	0x00D7E970	?GetEE_script_timer@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_timer(class Broc::entity)	mp_anim_wad.o
+0x0098F4C0	0x00D7E9C0	?IsEEDefined_script_timer@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_timer(class Broc::entity)	mp_anim_wad.o
+0x0098F570	0x00D7EA70	?GetEE_script_noautoreenforcements@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_noautoreenforcements(class Broc::entity)	mp_anim_wad.o
+0x0098F5C0	0x00D7EAC0	?IsEEDefined_script_noautoreenforcements@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_noautoreenforcements(class Broc::entity)	mp_anim_wad.o
+0x0098F670	0x00D7EB70	?GetEE_script_exploder@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_exploder(class Broc::entity)	mp_anim_wad.o
+0x0098F6C0	0x00D7EBC0	?IsEEDefined_script_exploder@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_exploder(class Broc::entity)	mp_anim_wad.o
+0x0098F770	0x00D7EC70	?GetEE_script_startinghealth@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_startinghealth(class Broc::entity)	mp_anim_wad.o
+0x0098F7C0	0x00D7ECC0	?IsEEDefined_script_startinghealth@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_startinghealth(class Broc::entity)	mp_anim_wad.o
+0x0098F870	0x00D7ED70	?GetEE_script_flashlight@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_flashlight(class Broc::entity)	mp_anim_wad.o
+0x0098F8C0	0x00D7EDC0	?IsEEDefined_script_flashlight@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_flashlight(class Broc::entity)	mp_anim_wad.o
+0x0098F970	0x00D7EE70	?GetEE_script_fxid@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_fxid(class Broc::entity)	mp_anim_wad.o
+0x0098F9C0	0x00D7EEC0	?IsEEDefined_script_fxid@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fxid(class Broc::entity)	mp_anim_wad.o
+0x0098FAC0	0x00D7EFC0	?GetEE_script_delete@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_delete(class Broc::entity)	mp_anim_wad.o
+0x0098FB10	0x00D7F010	?IsEEDefined_script_delete@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delete(class Broc::entity)	mp_anim_wad.o
+0x0098FBC0	0x00D7F0C0	?GetEE_script_balcony@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_balcony(class Broc::entity)	mp_anim_wad.o
+0x0098FC10	0x00D7F110	?IsEEDefined_script_balcony@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_balcony(class Broc::entity)	mp_anim_wad.o
+0x0098FCC0	0x00D7F1C0	?GetEE_script_vehiclegroup@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_vehiclegroup(class Broc::entity)	mp_anim_wad.o
+0x0098FD10	0x00D7F210	?IsEEDefined_script_vehiclegroup@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_vehiclegroup(class Broc::entity)	mp_anim_wad.o
+0x0098FDC0	0x00D7F2C0	?GetEE_script_friendlywave@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_friendlywave(class Broc::entity)	mp_anim_wad.o
+0x0098FE10	0x00D7F310	?IsEEDefined_script_friendlywave@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_friendlywave(class Broc::entity)	mp_anim_wad.o
+0x0098FEC0	0x00D7F3C0	?GetEE_script_seekgoal@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_seekgoal(class Broc::entity)	mp_anim_wad.o
+0x0098FF10	0x00D7F410	?IsEEDefined_script_seekgoal@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_seekgoal(class Broc::entity)	mp_anim_wad.o
+0x0098FFC0	0x00D7F4C0	?GetEE_script_fb_min_respawn_time@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_fb_min_respawn_time(class Broc::entity)	mp_anim_wad.o
+0x00990010	0x00D7F510	?IsEEDefined_script_fb_min_respawn_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_min_respawn_time(class Broc::entity)	mp_anim_wad.o
+0x009900C0	0x00D7F5C0	?GetEE_script_dontdeploy@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_dontdeploy(class Broc::entity)	mp_anim_wad.o
+0x00990110	0x00D7F610	?IsEEDefined_script_dontdeploy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_dontdeploy(class Broc::entity)	mp_anim_wad.o
+0x009901C0	0x00D7F6C0	?GetEE_script_idnumber@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_idnumber(class Broc::entity)	mp_anim_wad.o
+0x00990210	0x00D7F710	?IsEEDefined_script_idnumber@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_idnumber(class Broc::entity)	mp_anim_wad.o
+0x009902C0	0x00D7F7C0	?GetEE_script_fb_max_respawn_time@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_fb_max_respawn_time(class Broc::entity)	mp_anim_wad.o
+0x00990310	0x00D7F810	?IsEEDefined_script_fb_max_respawn_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_max_respawn_time(class Broc::entity)	mp_anim_wad.o
+0x009903C0	0x00D7F8C0	?GetEE_script_chargegoal@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_chargegoal(class Broc::entity)	mp_anim_wad.o
+0x00990410	0x00D7F910	?IsEEDefined_script_chargegoal@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_chargegoal(class Broc::entity)	mp_anim_wad.o
+0x009904C0	0x00D7F9C0	?GetEE_script_string@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_string(class Broc::entity)	mp_anim_wad.o
+0x00990510	0x00D7FA10	?IsEEDefined_script_string@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_string(class Broc::entity)	mp_anim_wad.o
+0x00990610	0x00D7FB10	?GetEE_script_float@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_float(class Broc::entity)	mp_anim_wad.o
+0x00990660	0x00D7FB60	?IsEEDefined_script_float@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_float(class Broc::entity)	mp_anim_wad.o
+0x00990710	0x00D7FC10	?GetEE_script_breathpuff@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_breathpuff(class Broc::entity)	mp_anim_wad.o
+0x00990760	0x00D7FC60	?IsEEDefined_script_breathpuff@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_breathpuff(class Broc::entity)	mp_anim_wad.o
+0x00990810	0x00D7FD10	?GetEE_script_hdi_time@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_hdi_time(class Broc::entity)	mp_anim_wad.o
+0x00990860	0x00D7FD60	?IsEEDefined_script_hdi_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_hdi_time(class Broc::entity)	mp_anim_wad.o
+0x00990910	0x00D7FE10	?GetEE_script_fxstart@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fxstart(class Broc::entity)	mp_anim_wad.o
+0x00990960	0x00D7FE60	?IsEEDefined_script_fxstart@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fxstart(class Broc::entity)	mp_anim_wad.o
+0x00990A10	0x00D7FF10	?GetEE_script_delay_max@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_delay_max(class Broc::entity)	mp_anim_wad.o
+0x00990A60	0x00D7FF60	?IsEEDefined_script_delay_max@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delay_max(class Broc::entity)	mp_anim_wad.o
+0x00990B10	0x00D80010	?GetEE_script_int@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_int(class Broc::entity)	mp_anim_wad.o
+0x00990B60	0x00D80060	?IsEEDefined_script_int@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_int(class Broc::entity)	mp_anim_wad.o
+0x00990C10	0x00D80110	?GetEE_script_requires_player@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_requires_player(class Broc::entity)	mp_anim_wad.o
+0x00990C60	0x00D80160	?IsEEDefined_script_requires_player@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_requires_player(class Broc::entity)	mp_anim_wad.o
+0x00990D10	0x00D80210	?GetEE_script_animname@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_animname(class Broc::entity)	mp_anim_wad.o
+0x00990D60	0x00D80260	?IsEEDefined_script_animname@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_animname(class Broc::entity)	mp_anim_wad.o
+0x00990E60	0x00D80360	?GetEE_script_battle@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_battle(class Broc::entity)	mp_anim_wad.o
+0x00990EB0	0x00D803B0	?IsEEDefined_script_battle@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_battle(class Broc::entity)	mp_anim_wad.o
+0x00990F60	0x00D80460	?GetEE_script_followmin@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_followmin(class Broc::entity)	mp_anim_wad.o
+0x00990FB0	0x00D804B0	?IsEEDefined_script_followmin@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_followmin(class Broc::entity)	mp_anim_wad.o
+0x00991060	0x00D80560	?GetEE_script_grenadeawareness@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_grenadeawareness(class Broc::entity)	mp_anim_wad.o
+0x009910B0	0x00D805B0	?IsEEDefined_script_grenadeawareness@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_grenadeawareness(class Broc::entity)	mp_anim_wad.o
+0x00991160	0x00D80660	?GetEE_script_bravery@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_bravery(class Broc::entity)	mp_anim_wad.o
+0x009911B0	0x00D806B0	?IsEEDefined_script_bravery@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_bravery(class Broc::entity)	mp_anim_wad.o
+0x00991260	0x00D80760	?GetEE_destructible_id@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_destructible_id(class Broc::entity)	mp_anim_wad.o
+0x009912B0	0x00D807B0	?IsEEDefined_destructible_id@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_destructible_id(class Broc::entity)	mp_anim_wad.o
+0x00991360	0x00D80860	?GetEE_dontdropgrenade@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_dontdropgrenade(class Broc::entity)	mp_anim_wad.o
+0x009913B0	0x00D808B0	?IsEEDefined_dontdropgrenade@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_dontdropgrenade(class Broc::entity)	mp_anim_wad.o
+0x00991460	0x00D80960	?GetEE_script_fxstop@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fxstop(class Broc::entity)	mp_anim_wad.o
+0x009914B0	0x00D809B0	?IsEEDefined_script_fxstop@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fxstop(class Broc::entity)	mp_anim_wad.o
+0x00991560	0x00D80A60	?GetEE_script_accuracyvsplayer@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_accuracyvsplayer(class Broc::entity)	mp_anim_wad.o
+0x009915B0	0x00D80AB0	?IsEEDefined_script_accuracyvsplayer@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_accuracyvsplayer(class Broc::entity)	mp_anim_wad.o
+0x00991660	0x00D80B60	?GetEE_script_eventhandler@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_eventhandler(class Broc::entity)	mp_anim_wad.o
+0x009916B0	0x00D80BB0	?IsEEDefined_script_eventhandler@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_eventhandler(class Broc::entity)	mp_anim_wad.o
+0x009917B0	0x00D80CB0	?GetEE_script_sightrange@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_sightrange(class Broc::entity)	mp_anim_wad.o
+0x00991800	0x00D80D00	?IsEEDefined_script_sightrange@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_sightrange(class Broc::entity)	mp_anim_wad.o
+0x009918B0	0x00D80DB0	?GetEE_script_personality@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_personality(class Broc::entity)	mp_anim_wad.o
+0x00991900	0x00D80E00	?IsEEDefined_script_personality@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_personality(class Broc::entity)	mp_anim_wad.o
+0x00991A00	0x00D80F00	?GetEE_script_followmax@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_followmax(class Broc::entity)	mp_anim_wad.o
+0x00991A50	0x00D80F50	?IsEEDefined_script_followmax@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_followmax(class Broc::entity)	mp_anim_wad.o
+0x00991B00	0x00D81000	?GetEE_script_colorid_time@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_colorid_time(class Broc::entity)	mp_anim_wad.o
+0x00991B50	0x00D81050	?IsEEDefined_script_colorid_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_colorid_time(class Broc::entity)	mp_anim_wad.o
+0x00991C00	0x00D81100	?GetEE_script_fb_required_kills@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_required_kills(class Broc::entity)	mp_anim_wad.o
+0x00991C50	0x00D81150	?IsEEDefined_script_fb_required_kills@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_required_kills(class Broc::entity)	mp_anim_wad.o
+0x00991D00	0x00D81200	?GetEE_script_chain@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_chain(class Broc::entity)	mp_anim_wad.o
+0x00991D50	0x00D81250	?IsEEDefined_script_chain@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_chain(class Broc::entity)	mp_anim_wad.o
+0x00991E50	0x00D81350	?GetEE_script_usemg42@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_usemg42(class Broc::entity)	mp_anim_wad.o
+0x00991EA0	0x00D813A0	?IsEEDefined_script_usemg42@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_usemg42(class Broc::entity)	mp_anim_wad.o
+0x00991F50	0x00D81450	?GetEE_script_team@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_team(class Broc::entity)	mp_anim_wad.o
+0x00991FA0	0x00D814A0	?IsEEDefined_script_team@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_team(class Broc::entity)	mp_anim_wad.o
+0x009920A0	0x00D815A0	?GetEE_script_multiplier@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_multiplier(class Broc::entity)	mp_anim_wad.o
+0x009920F0	0x00D815F0	?IsEEDefined_script_multiplier@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_multiplier(class Broc::entity)	mp_anim_wad.o
+0x009921A0	0x00D816A0	?GetEE_script_mg42stayput@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_mg42stayput(class Broc::entity)	mp_anim_wad.o
+0x009921F0	0x00D816F0	?IsEEDefined_script_mg42stayput@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_mg42stayput(class Broc::entity)	mp_anim_wad.o
+0x009922A0	0x00D817A0	?GetEE_script_lmgaccuracy@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_lmgaccuracy(class Broc::entity)	mp_anim_wad.o
+0x009922F0	0x00D817F0	?IsEEDefined_script_lmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_lmgaccuracy(class Broc::entity)	mp_anim_wad.o
+0x009923A0	0x00D818A0	?GetEE_script_ambush_trigger_distance@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_ambush_trigger_distance(class Broc::entity)	mp_anim_wad.o
+0x009923F0	0x00D818F0	?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_ambush_trigger_distance(class Broc::entity)	mp_anim_wad.o
+0x009924A0	0x00D819A0	?GetEE_script_accuracy@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_accuracy(class Broc::entity)	mp_anim_wad.o
+0x009924F0	0x00D819F0	?IsEEDefined_script_accuracy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_accuracy(class Broc::entity)	mp_anim_wad.o
+0x009925A0	0x00D81AA0	?GetEE_script_damage@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_damage(class Broc::entity)	mp_anim_wad.o
+0x009925F0	0x00D81AF0	?IsEEDefined_script_damage@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_damage(class Broc::entity)	mp_anim_wad.o
+0x009926A0	0x00D81BA0	?GetEE_script_fb_min_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_min_onscreen_enemies(class Broc::entity)	mp_anim_wad.o
+0x009926F0	0x00D81BF0	?IsEEDefined_script_fb_min_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_min_onscreen_enemies(class Broc::entity)	mp_anim_wad.o
+0x009927A0	0x00D81CA0	?GetEE_script_health_once@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_health_once(class Broc::entity)	mp_anim_wad.o
+0x009927F0	0x00D81CF0	?IsEEDefined_script_health_once@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_health_once(class Broc::entity)	mp_anim_wad.o
+0x009928A0	0x00D81DA0	?GetEE_script_delayed_playerseek@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_delayed_playerseek(class Broc::entity)	mp_anim_wad.o
+0x009928F0	0x00D81DF0	?IsEEDefined_script_delayed_playerseek@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delayed_playerseek(class Broc::entity)	mp_anim_wad.o
+0x009929A0	0x00D81EA0	?GetEE_script_hdi_index@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_hdi_index(class Broc::entity)	mp_anim_wad.o
+0x009929F0	0x00D81EF0	?IsEEDefined_script_hdi_index@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_hdi_index(class Broc::entity)	mp_anim_wad.o
+0x00992AA0	0x00D81FA0	?GetEE_script_radius@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_radius(class Broc::entity)	mp_anim_wad.o
+0x00992AF0	0x00D81FF0	?IsEEDefined_script_radius@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_radius(class Broc::entity)	mp_anim_wad.o
+0x00992BA0	0x00D820A0	?GetEE_script_min_friendlies@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_min_friendlies(class Broc::entity)	mp_anim_wad.o
+0x00992BF0	0x00D820F0	?IsEEDefined_script_min_friendlies@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_min_friendlies(class Broc::entity)	mp_anim_wad.o
+0x00992CA0	0x00D821A0	?GetEE_script_favoriteenemy@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_favoriteenemy(class Broc::entity)	mp_anim_wad.o
+0x00992CF0	0x00D821F0	?IsEEDefined_script_favoriteenemy@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_favoriteenemy(class Broc::entity)	mp_anim_wad.o
+0x00992DF0	0x00D822F0	?GetEE_script_kill_chain@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_kill_chain(class Broc::entity)	mp_anim_wad.o
+0x00992E40	0x00D82340	?IsEEDefined_script_kill_chain@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_kill_chain(class Broc::entity)	mp_anim_wad.o
+0x00992F40	0x00D82440	?GetEE_script_delay_min@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_delay_min(class Broc::entity)	mp_anim_wad.o
+0x00992F90	0x00D82490	?IsEEDefined_script_delay_min@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delay_min(class Broc::entity)	mp_anim_wad.o
+0x00993040	0x00D82540	?GetEE_script_colorid_endindex@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_colorid_endindex(class Broc::entity)	mp_anim_wad.o
+0x00993090	0x00D82590	?IsEEDefined_script_colorid_endindex@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_colorid_endindex(class Broc::entity)	mp_anim_wad.o
+0x00993140	0x00D82640	?GetEE_script_sound@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_sound(class Broc::entity)	mp_anim_wad.o
+0x00993190	0x00D82690	?IsEEDefined_script_sound@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_sound(class Broc::entity)	mp_anim_wad.o
+0x00993290	0x00D82790	?GetEE_script_firefx@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_firefx(class Broc::entity)	mp_anim_wad.o
+0x009932E0	0x00D827E0	?IsEEDefined_script_firefx@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_firefx(class Broc::entity)	mp_anim_wad.o
+0x009933E0	0x00D828E0	?GetEE_script_wait@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_wait(class Broc::entity)	mp_anim_wad.o
+0x00993430	0x00D82930	?IsEEDefined_script_wait@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_wait(class Broc::entity)	mp_anim_wad.o
+0x009934E0	0x00D829E0	?GetEE_script_ignoreme@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_ignoreme(class Broc::entity)	mp_anim_wad.o
+0x00993530	0x00D82A30	?IsEEDefined_script_ignoreme@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_ignoreme(class Broc::entity)	mp_anim_wad.o
+0x009935E0	0x00D82AE0	?GetEE_script_fb_respawn_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_respawn_chunk_size(class Broc::entity)	mp_anim_wad.o
+0x00993630	0x00D82B30	?IsEEDefined_script_fb_respawn_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_respawn_chunk_size(class Broc::entity)	mp_anim_wad.o
+0x009936E0	0x00D82BE0	?GetEE_script_bloom_startindex@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_bloom_startindex(class Broc::entity)	mp_anim_wad.o
+0x00993730	0x00D82C30	?IsEEDefined_script_bloom_startindex@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_bloom_startindex(class Broc::entity)	mp_anim_wad.o
+0x009937E0	0x00D82CE0	?GetEE_script_mg42@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_mg42(class Broc::entity)	mp_anim_wad.o
+0x00993830	0x00D82D30	?IsEEDefined_script_mg42@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_mg42(class Broc::entity)	mp_anim_wad.o
+0x009938E0	0x00D82DE0	?GetEE_script_bloom_endindex@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_bloom_endindex(class Broc::entity)	mp_anim_wad.o
+0x00993930	0x00D82E30	?IsEEDefined_script_bloom_endindex@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_bloom_endindex(class Broc::entity)	mp_anim_wad.o
+0x009939E0	0x00D82EE0	?GetEE_transparent@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_transparent(class Broc::entity)	mp_anim_wad.o
+0x00993A30	0x00D82F30	?IsEEDefined_transparent@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_transparent(class Broc::entity)	mp_anim_wad.o
+0x00993AE0	0x00D82FE0	?GetEE_script_additive_delay@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_additive_delay(class Broc::entity)	mp_anim_wad.o
+0x00993B30	0x00D83030	?IsEEDefined_script_additive_delay@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_additive_delay(class Broc::entity)	mp_anim_wad.o
+0x00993BE0	0x00D830E0	?GetEE_script_squadnum@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_squadnum(class Broc::entity)	mp_anim_wad.o
+0x00993C30	0x00D83130	?IsEEDefined_script_squadnum@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_squadnum(class Broc::entity)	mp_anim_wad.o
+0x00993CE0	0x00D831E0	?GetEE_script_patroller@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_patroller(class Broc::entity)	mp_anim_wad.o
+0x00993D30	0x00D83230	?IsEEDefined_script_patroller@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_patroller(class Broc::entity)	mp_anim_wad.o
+0x00993DE0	0x00D832E0	?GetEE_script_accuracyvsai@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_accuracyvsai(class Broc::entity)	mp_anim_wad.o
+0x00993E30	0x00D83330	?IsEEDefined_script_accuracyvsai@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_accuracyvsai(class Broc::entity)	mp_anim_wad.o
+0x00993EE0	0x00D833E0	?GetEE_script_ambush_type@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_ambush_type(class Broc::entity)	mp_anim_wad.o
+0x00993F30	0x00D83430	?IsEEDefined_script_ambush_type@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_ambush_type(class Broc::entity)	mp_anim_wad.o
+0x00994030	0x00D83530	?GetEE_script_mg42auto@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_mg42auto(class Broc::entity)	mp_anim_wad.o
+0x00994080	0x00D83580	?IsEEDefined_script_mg42auto@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_mg42auto(class Broc::entity)	mp_anim_wad.o
+0x00994130	0x00D83630	?GetEE_radius@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_radius(class Broc::entity)	mp_anim_wad.o
+0x00994180	0x00D83680	?IsEEDefined_radius@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_radius(class Broc::entity)	mp_anim_wad.o
+0x00994230	0x00D83730	?GetEE_script_killspawner@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_killspawner(class Broc::entity)	mp_anim_wad.o
+0x00994280	0x00D83780	?IsEEDefined_script_killspawner@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_killspawner(class Broc::entity)	mp_anim_wad.o
+0x00994330	0x00D83830	?GetEE_script_aitargetname@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_aitargetname(class Broc::entity)	mp_anim_wad.o
+0x00994380	0x00D83880	?IsEEDefined_script_aitargetname@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_aitargetname(class Broc::entity)	mp_anim_wad.o
+0x00994480	0x00D83980	?GetEE_script_landmark@@YAAAVstring@Broc@@Ventity@2@@Z	class Broc::string & __cdecl GetEE_script_landmark(class Broc::entity)	mp_anim_wad.o
+0x009944D0	0x00D839D0	?IsEEDefined_script_landmark@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_landmark(class Broc::entity)	mp_anim_wad.o
+0x009945D0	0x00D83AD0	?GetEE_script_bloom_time@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_bloom_time(class Broc::entity)	mp_anim_wad.o
+0x00994620	0x00D83B20	?IsEEDefined_script_bloom_time@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_bloom_time(class Broc::entity)	mp_anim_wad.o
+0x009946D0	0x00D83BD0	?GetEE_dontdrawoncompass@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_dontdrawoncompass(class Broc::entity)	mp_anim_wad.o
+0x00994720	0x00D83C20	?IsEEDefined_dontdrawoncompass@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_dontdrawoncompass(class Broc::entity)	mp_anim_wad.o
+0x009947D0	0x00D83CD0	?GetEE_script_walkdist@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_walkdist(class Broc::entity)	mp_anim_wad.o
+0x00994820	0x00D83D20	?IsEEDefined_script_walkdist@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_walkdist(class Broc::entity)	mp_anim_wad.o
+0x009948D0	0x00D83DD0	?GetEE_script_suppression@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_suppression(class Broc::entity)	mp_anim_wad.o
+0x00994920	0x00D83E20	?IsEEDefined_script_suppression@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_suppression(class Broc::entity)	mp_anim_wad.o
+0x009949D0	0x00D83ED0	?GetEE_script_scale@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_scale(class Broc::entity)	mp_anim_wad.o
+0x00994A20	0x00D83F20	?IsEEDefined_script_scale@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_scale(class Broc::entity)	mp_anim_wad.o
+0x00994AD0	0x00D83FD0	?GetEE_script_hdi_time2@@YAAAUbfloat@@Ventity@Broc@@@Z	struct bfloat & __cdecl GetEE_script_hdi_time2(class Broc::entity)	mp_anim_wad.o
+0x00994B20	0x00D84020	?IsEEDefined_script_hdi_time2@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_hdi_time2(class Broc::entity)	mp_anim_wad.o
+0x00994BD0	0x00D840D0	?GetEE_script_fb_max_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z	struct bint & __cdecl GetEE_script_fb_max_onscreen_enemies(class Broc::entity)	mp_anim_wad.o
+0x00994C20	0x00D84120	?IsEEDefined_script_fb_max_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_max_onscreen_enemies(class Broc::entity)	mp_anim_wad.o
+0x00994CD0	0x00D841D0	?GetEE_script_door@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_script_door(class Broc::pathnode)	mp_anim_wad.o
+0x00994DF0	0x00D842F0	?IsEEDefined_script_door@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_door(class Broc::pathnode)	mp_anim_wad.o
+0x00994F10	0x00D84410	?GetEE_script_delay@@YA?AUbfloat@@Vpathnode@Broc@@@Z	struct bfloat __cdecl GetEE_script_delay(class Broc::pathnode)	mp_anim_wad.o
+0x00994F90	0x00D84490	?IsEEDefined_script_delay@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delay(class Broc::pathnode)	mp_anim_wad.o
+0x00995040	0x00D84540	?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z	short __cdecl GetEE_spawnflags(class Broc::pathnode)	mp_anim_wad.o
+0x009950A0	0x00D845A0	?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_script_noteworthy(class Broc::pathnode)	mp_anim_wad.o
+0x009951A0	0x00D846A0	?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_noteworthy(class Broc::pathnode)	mp_anim_wad.o
+0x00995240	0x00D84740	?GetEE_script_fb_id@@YA?AUbint@@Vpathnode@Broc@@@Z	struct bint __cdecl GetEE_script_fb_id(class Broc::pathnode)	mp_anim_wad.o
+0x009952C0	0x00D847C0	?IsEEDefined_script_fb_id@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_fb_id(class Broc::pathnode)	mp_anim_wad.o
+0x00995370	0x00D84870	?GetEE_script_waittill@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_script_waittill(class Broc::pathnode)	mp_anim_wad.o
+0x00995470	0x00D84970	?IsEEDefined_script_waittill@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_waittill(class Broc::pathnode)	mp_anim_wad.o
+0x00995570	0x00D84A70	?GetEE_target@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_target(class Broc::pathnode)	mp_anim_wad.o
+0x00995670	0x00D84B70	?IsEEDefined_target@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_target(class Broc::pathnode)	mp_anim_wad.o
+0x00995710	0x00D84C10	?GetEE_script_mg42@@YA?AUbint@@Vpathnode@Broc@@@Z	struct bint __cdecl GetEE_script_mg42(class Broc::pathnode)	mp_anim_wad.o
+0x00995790	0x00D84C90	?IsEEDefined_script_mg42@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_mg42(class Broc::pathnode)	mp_anim_wad.o
+0x00995840	0x00D84D40	?GetEE_on_goal@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_on_goal(class Broc::pathnode)	mp_anim_wad.o
+0x00995940	0x00D84E40	?IsEEDefined_on_goal@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_on_goal(class Broc::pathnode)	mp_anim_wad.o
+0x009959E0	0x00D84EE0	?GetEE_script_ambush_type@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_script_ambush_type(class Broc::pathnode)	mp_anim_wad.o
+0x00995AE0	0x00D84FE0	?IsEEDefined_script_ambush_type@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_ambush_type(class Broc::pathnode)	mp_anim_wad.o
+0x00995BE0	0x00D850E0	?GetEE_radius@@YA?AUbfloat@@Vpathnode@Broc@@@Z	struct bfloat __cdecl GetEE_radius(class Broc::pathnode)	mp_anim_wad.o
+0x00995C50	0x00D85150	?IsEEDefined_radius@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_radius(class Broc::pathnode)	mp_anim_wad.o
+0x00995CF0	0x00D851F0	?GetEE_origin@@YA?AUvector@Broc@@Vpathnode@2@@Z	struct Broc::vector __cdecl GetEE_origin(class Broc::pathnode)	mp_anim_wad.o
+0x00995D70	0x00D85270	?IsEEDefined_origin@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_origin(class Broc::pathnode)	mp_anim_wad.o
+0x00995E10	0x00D85310	?GetEE_script_chain@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_script_chain(class Broc::pathnode)	mp_anim_wad.o
+0x00995F10	0x00D85410	?IsEEDefined_script_chain@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_chain(class Broc::pathnode)	mp_anim_wad.o
+0x00996010	0x00D85510	?GetEE_targetname@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_targetname(class Broc::pathnode)	mp_anim_wad.o
+0x00996110	0x00D85610	?IsEEDefined_targetname@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_targetname(class Broc::pathnode)	mp_anim_wad.o
+0x009961B0	0x00D856B0	?GetEE_animscript@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_animscript(class Broc::pathnode)	mp_anim_wad.o
+0x009962B0	0x00D857B0	?IsEEDefined_animscript@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_animscript(class Broc::pathnode)	mp_anim_wad.o
+0x00996350	0x00D85850	?GetEE_script_ambush_trigger_distance@@YA?AUbint@@Vpathnode@Broc@@@Z	struct bint __cdecl GetEE_script_ambush_trigger_distance(class Broc::pathnode)	mp_anim_wad.o
+0x009963D0	0x00D858D0	?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_ambush_trigger_distance(class Broc::pathnode)	mp_anim_wad.o
+0x00996480	0x00D85980	?GetEE_type@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_type(class Broc::pathnode)	mp_anim_wad.o
+0x00996580	0x00D85A80	?IsEEDefined_type@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_type(class Broc::pathnode)	mp_anim_wad.o
+0x00996620	0x00D85B20	?GetEE_angles@@YA?AUvector@Broc@@Vpathnode@2@@Z	struct Broc::vector __cdecl GetEE_angles(class Broc::pathnode)	mp_anim_wad.o
+0x009966A0	0x00D85BA0	?IsEEDefined_angles@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_angles(class Broc::pathnode)	mp_anim_wad.o
+0x00996740	0x00D85C40	?GetEE_reservename@@YA?AVstring@Broc@@Vpathnode@2@@Z	class Broc::string __cdecl GetEE_reservename(class Broc::pathnode)	mp_anim_wad.o
+0x00996840	0x00D85D40	?IsEEDefined_reservename@@YA?AUbbool@@Vpathnode@Broc@@@Z	struct bbool __cdecl IsEEDefined_reservename(class Broc::pathnode)	mp_anim_wad.o
+0x009968E0	0x00D85DE0	?GetEE_script_delay@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z	struct bfloat __cdecl GetEE_script_delay(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996980	0x00D85E80	?IsEEDefined_script_delay@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_delay(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996A50	0x00D85F50	?GetEE_endswitch@@YA?AVvehiclenode@Broc@@V12@@Z	class Broc::vehiclenode __cdecl GetEE_endswitch(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996AD0	0x00D85FD0	?IsEEDefined_endswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_endswitch(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996B80	0x00D86080	?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vvehiclenode@2@@Z	class Broc::string __cdecl GetEE_script_noteworthy(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996C80	0x00D86180	?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_noteworthy(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996D20	0x00D86220	?GetEE_detourstart@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_detourstart(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996DA0	0x00D862A0	?IsEEDefined_detourstart@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_detourstart(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996E50	0x00D86350	?GetEE_eventwait_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_eventwait_used(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996ED0	0x00D863D0	?IsEEDefined_eventwait_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_eventwait_used(class Broc::vehiclenode)	mp_anim_wad.o
+0x00996F80	0x00D86480	?GetEE_detoured@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_detoured(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997000	0x00D86500	?IsEEDefined_detoured@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_detoured(class Broc::vehiclenode)	mp_anim_wad.o
+0x009970B0	0x00D865B0	?GetEE_script_uniquename@@YA?AVstring@Broc@@Vvehiclenode@2@@Z	class Broc::string __cdecl GetEE_script_uniquename(class Broc::vehiclenode)	mp_anim_wad.o
+0x009971B0	0x00D866B0	?IsEEDefined_script_uniquename@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_script_uniquename(class Broc::vehiclenode)	mp_anim_wad.o
+0x009972B0	0x00D867B0	?GetEE_target@@YA?AVstring@Broc@@Vvehiclenode@2@@Z	class Broc::string __cdecl GetEE_target(class Broc::vehiclenode)	mp_anim_wad.o
+0x009973B0	0x00D868B0	?IsEEDefined_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_target(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997450	0x00D86950	?GetEE_speed@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z	struct bfloat __cdecl GetEE_speed(class Broc::vehiclenode)	mp_anim_wad.o
+0x009974C0	0x00D869C0	?IsEEDefined_speed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_speed(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997560	0x00D86A60	?GetEE_playerhasbeenhere@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_playerhasbeenhere(class Broc::vehiclenode)	mp_anim_wad.o
+0x009975E0	0x00D86AE0	?IsEEDefined_playerhasbeenhere@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_playerhasbeenhere(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997690	0x00D86B90	?GetEE_lookahead@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z	struct bfloat __cdecl GetEE_lookahead(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997700	0x00D86C00	?IsEEDefined_lookahead@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_lookahead(class Broc::vehiclenode)	mp_anim_wad.o
+0x009977A0	0x00D86CA0	?GetEE_friendlywait@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_friendlywait(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997820	0x00D86D20	?IsEEDefined_friendlywait@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_friendlywait(class Broc::vehiclenode)	mp_anim_wad.o
+0x009978D0	0x00D86DD0	?GetEE_offramp_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_offramp_used(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997950	0x00D86E50	?IsEEDefined_offramp_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_offramp_used(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997A00	0x00D86F00	?GetEE_origin@@YA?AUvector@Broc@@Vvehiclenode@2@@Z	struct Broc::vector __cdecl GetEE_origin(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997A80	0x00D86F80	?IsEEDefined_origin@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_origin(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997B20	0x00D87020	?GetEE_startswitch@@YA?AVvehiclenode@Broc@@V12@@Z	class Broc::vehiclenode __cdecl GetEE_startswitch(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997BA0	0x00D870A0	?IsEEDefined_startswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_startswitch(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997C50	0x00D87150	?GetEE_crash_path_target@@YA?AVvehiclenode@Broc@@V12@@Z	class Broc::vehiclenode __cdecl GetEE_crash_path_target(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997CD0	0x00D871D0	?IsEEDefined_crash_path_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_crash_path_target(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997D80	0x00D87280	?GetEE_detourpath@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_detourpath(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997E00	0x00D87300	?IsEEDefined_detourpath@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_detourpath(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997EB0	0x00D873B0	?GetEE_eventwaiting@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_eventwaiting(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997F30	0x00D87430	?IsEEDefined_eventwaiting@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_eventwaiting(class Broc::vehiclenode)	mp_anim_wad.o
+0x00997FE0	0x00D874E0	?GetEE_derailed@@YA?AUbint@@Vvehiclenode@Broc@@@Z	struct bint __cdecl GetEE_derailed(class Broc::vehiclenode)	mp_anim_wad.o
+0x00998060	0x00D87560	?IsEEDefined_derailed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_derailed(class Broc::vehiclenode)	mp_anim_wad.o
+0x00998110	0x00D87610	?GetEE_targetname@@YA?AVstring@Broc@@Vvehiclenode@2@@Z	class Broc::string __cdecl GetEE_targetname(class Broc::vehiclenode)	mp_anim_wad.o
+0x00998210	0x00D87710	?IsEEDefined_targetname@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_targetname(class Broc::vehiclenode)	mp_anim_wad.o
+0x009982B0	0x00D877B0	?GetEE_angles@@YA?AUvector@Broc@@Vvehiclenode@2@@Z	struct Broc::vector __cdecl GetEE_angles(class Broc::vehiclenode)	mp_anim_wad.o
+0x00998330	0x00D87830	?IsEEDefined_angles@@YA?AUbbool@@Vvehiclenode@Broc@@@Z	struct bbool __cdecl IsEEDefined_angles(class Broc::vehiclenode)	mp_anim_wad.o
+0x009983D0	0x00D878D0	?main@_mp_setup@@YAXXZ	void __cdecl _mp_setup::main(void)	mp_anim_wad.o
+0x009983F0	0x00D878F0	?hack_function_to_allow_the_script_to_compile@_mp_setup@@YAXXZ	void __cdecl _mp_setup::hack_function_to_allow_the_script_to_compile(void)	mp_anim_wad.o

@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007E1A10	0x00BD0F10	?ExtractNode@@YAXIHPAHPAI@Z	void __cdecl ExtractNode(unsigned int,int,int *,unsigned int *)	InplaceFileBuilder.o

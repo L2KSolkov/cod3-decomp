@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:003e81a0 _get_crc_table 00BD76A0 f crc32.o
+2	VERIFIED	0002:003e87b0 _crc32_combine 00BD7CB0 f crc32.o
+3	VERIFIED	0002:003e8890 _crc32 00BD7D90 f crc32.o

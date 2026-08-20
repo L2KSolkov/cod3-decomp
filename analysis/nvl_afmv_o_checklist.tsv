@@ -1,0 +1,33 @@
+index	status	map_line
+1	VERIFIED	0002:0042ece0 ??0nvlAFMVMovie@@QAE@XZ 00C1E1E0 f nvl_afmv.o
+2	VERIFIED	0002:0042ed60 ??1nvlAFMVMovie@@UAE@XZ 00C1E260 f nvl_afmv.o
+3	VERIFIED	0002:0042ed80 ?InitMovie@nvlAFMVMovie@@UAE?AW4nvlResult@@XZ 00C1E280 f nvl_afmv.o
+4	VERIFIED	0002:0042edf0 ?ParseHeader@nvlAFMVMovie@@QAE?AW4nvlResult@@W4nflFileID@@_NHH@Z 00C1E2F0 f nvl_afmv.o
+5	VERIFIED	0002:0042efa0 ?ProcessUserDataChunk@nvlAFMVMovie@@IAEX_N@Z 00C1E4A0 f nvl_afmv.o
+6	VERIFIED	0002:0042f010 ?GetIntraCoefB14@nvlAFMVMovie@@IAEXQBG@Z 00C1E510 f nvl_afmv.o
+7	VERIFIED	0002:0042f2c0 ?GetIntraCoefB15@nvlAFMVMovie@@IAEXQBG@Z 00C1E7C0 f nvl_afmv.o
+8	VERIFIED	0002:0042f540 ?GetNonIntraCoef@nvlAFMVMovie@@IAEHQBG@Z 00C1EA40 f nvl_afmv.o
+9	VERIFIED	0002:0042f810 ?DoMotionFrame@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1ED10 f nvl_afmv.o
+10	VERIFIED	0002:0042fa20 ?DoMotionField@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1EF20 f nvl_afmv.o
+11	VERIFIED	0002:0042fe70 ?DoMotionDualP@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1F370 f nvl_afmv.o
+12	VERIFIED	0002:00430440 ?DoMotionSame@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1F940 f nvl_afmv.o
+13	VERIFIED	0002:00430580 ?DoMotionCopy@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1FA80 f nvl_afmv.o
+14	VERIFIED	0002:00430630 ?DecodeSlice@nvlAFMVMovie@@IAEHXZ 00C1FB30 f nvl_afmv.o
+15	VERIFIED	0002:00430ff0 ?DecodeFrame@nvlAFMVMovie@@UAE?AW4nvlFrameState@@XZ 00C204F0 f nvl_afmv.o
+16	PENDING	0002:00431610 ?LockRect@D3DTexture@@QAGJIPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z 00C20B10 f i nvl_afmv.o
+17	PENDING	0002:00431640 ?UnlockRect@D3DTexture@@QAGJI@Z 00C20B40 f i nvl_afmv.o
+18	VERIFIED	0002:00431650 ?nvlLockTexture@@YAPAEPAUnglTexture@@_N@Z 00C20B50 f i nvl_afmv.o
+19	VERIFIED	0002:00431690 ?nvlUnlockTexture@@YAXPAUnglTexture@@_N@Z 00C20B90 f i nvl_afmv.o
+20	PENDING	0002:004316a0 ?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z 00C20BA0 f i nvl_afmv.o
+21	PENDING	0002:00431730 ?GetMBModes@nvlAFMVMovie@@IAEHXZ 00C20C30 f i nvl_afmv.o
+22	PENDING	0002:004318e0 ?GetQuantScale@nvlAFMVMovie@@IAEXXZ 00C20DE0 f i nvl_afmv.o
+23	PENDING	0002:00431920 ?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z 00C20E20 f i nvl_afmv.o
+24	PENDING	0002:00431a90 ?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z 00C20F90 f i nvl_afmv.o
+25	PENDING	0002:00431ab0 ?GetDMV@nvlAFMVMovie@@IAEHXZ 00C20FB0 f i nvl_afmv.o
+26	PENDING	0002:00431af0 ?GetCBP@nvlAFMVMovie@@IAEHXZ 00C20FF0 f i nvl_afmv.o
+27	PENDING	0002:00431b80 ?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ 00C21080 f i nvl_afmv.o
+28	PENDING	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
+29	PENDING	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
+30	PENDING	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
+31	VERIFIED	0002:00431f20 ??_GnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o
+32	VERIFIED	0002:00431f20 ??_EnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o

@@ -1,0 +1,3 @@
+ida_ea	name	signature	source_cpp
+0x007C4B80	?ProcessCDDebugVertexDef@@YAXPAX@Z	void __cdecl ProcessCDDebugVertexDef(void *)	
+0x007C4BA0	?InitCDDebugVertexDefBuilder@@YAXXZ	void __cdecl InitCDDebugVertexDefBuilder(void)	

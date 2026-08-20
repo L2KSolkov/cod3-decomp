@@ -1,0 +1,10 @@
+ida_ea	va	name	signature	family
+0x00833B90	0x00C23090	??0tlInstanceBank@@QAE@XZ	public: __thiscall tlInstanceBank::tlInstanceBank(void)	tl_instbank.o
+0x00833BA0	0x00C230A0	?NewNodeOfLevel@tlInstanceBank@@AAEPAUInstance@1@H@Z	private: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::NewNodeOfLevel(int)	tl_instbank.o
+0x00833BC0	0x00C230C0	?RandomLevel@tlInstanceBank@@AAEHXZ	private: int __thiscall tlInstanceBank::RandomLevel(void)	tl_instbank.o
+0x00833C00	0x00C23100	?Insert@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@PAX@Z	public: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::Insert(class tlFixedString const &,void *)	tl_instbank.o
+0x00833D50	0x00C23250	?Delete@tlInstanceBank@@QAEHABVtlFixedString@@@Z	public: int __thiscall tlInstanceBank::Delete(class tlFixedString const &)	tl_instbank.o
+0x00833EA0	0x00C233A0	?Search@tlInstanceBank@@QAEPAUInstance@1@ABVtlFixedString@@@Z	public: struct tlInstanceBank::Instance * __thiscall tlInstanceBank::Search(class tlFixedString const &)	tl_instbank.o
+0x00833F50	0x00C23450	?Destroy@tlInstanceBank@@QAEXXZ	public: void __thiscall tlInstanceBank::Destroy(void)	tl_instbank.o
+0x00833FB0	0x00C234B0	??1tlInstanceBank@@QAE@XZ	public: __thiscall tlInstanceBank::~tlInstanceBank(void)	tl_instbank.o
+0x00833FC0	0x00C234C0	?Init@tlInstanceBank@@QAEXXZ	public: void __thiscall tlInstanceBank::Init(void)	tl_instbank.o

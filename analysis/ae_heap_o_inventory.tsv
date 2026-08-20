@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007BBE20	0x00BAB320	??1ae_heap_base@@UAE@XZ	public: virtual __thiscall ae_heap_base::~ae_heap_base(void)	ae_heap.o
+0x007BBE30	0x00BAB330	??0ae_heap@@QAE@I@Z	public: __thiscall ae_heap::ae_heap(unsigned int)	ae_heap.o
+0x007BBE90	0x00BAB390	??1ae_heap@@UAE@XZ	public: virtual __thiscall ae_heap::~ae_heap(void)	ae_heap.o
+0x007BBEE0	0x00BAB3E0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	protected: void * __thiscall ae_heap_base::MemAlloc(unsigned int,unsigned int,struct mem_heap *)	ae_heap.o
+0x007BBF20	0x00BAB420	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	protected: void __thiscall ae_heap_base::MemFree(void *,struct mem_heap *)	ae_heap.o
+0x007BBF40	0x00BAB440	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	protected: bool __thiscall ae_heap_base::MemCheckFree(void *,struct mem_heap *)	ae_heap.o

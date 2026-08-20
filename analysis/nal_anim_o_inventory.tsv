@@ -1,0 +1,25 @@
+ida_ea	va	name	signature	family
+0x008704D0	0x00C5F9D0	?StandardLoad@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z	public: class nalAnimClass<class nalAnyPose> * __thiscall tlResourceDirectory<class nalAnimClass<class nalAnyPose> >::StandardLoad(class tlFixedString const &)	nal_anim.o
+0x008704E0	0x00C5F9E0	?StandardRelease@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEHPAV?$nalAnimClass@VnalAnyPose@@@@H_N@Z	public: int __thiscall tlResourceDirectory<class nalAnimClass<class nalAnyPose> >::StandardRelease(class nalAnimClass<class nalAnyPose> *,int,bool)	nal_anim.o
+0x008704F0	0x00C5F9F0	?nalGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z	class nalAnimClass<class nalAnyPose> * __cdecl nalGetAnim(class tlFixedString const &)	nal_anim.o
+0x00870510	0x00C5FA10	?nalGetFirstAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@PAVnalAnimFile@@@Z	class nalAnimClass<class nalAnyPose> * __cdecl nalGetFirstAnimInFile(class nalAnimFile *)	nal_anim.o
+0x00870530	0x00C5FA30	?nalGetFirstAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z	class nalAnimClass<class nalAnyPose> * __cdecl nalGetFirstAnimInFile(class tlFixedString const &)	nal_anim.o
+0x00870550	0x00C5FA50	?nalGetNextAnimInFile@@YAPAV?$nalAnimClass@VnalAnyPose@@@@PAV1@@Z	class nalAnimClass<class nalAnyPose> * __cdecl nalGetNextAnimInFile(class nalAnimClass<class nalAnyPose> *)	nal_anim.o
+0x00870570	0x00C5FA70	?nalLoadAnimFileInternal@@YA_NPAVnalAnimFile@@@Z	bool __cdecl nalLoadAnimFileInternal(class nalAnimFile *)	nal_anim.o
+0x00870700	0x00C5FC00	?StandardLoad@?$tlResourceDirectory@VnalAnimFile@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z	public: class nalAnimFile * __thiscall tlResourceDirectory<class nalAnimFile>::StandardLoad(class tlFixedString const &)	nal_anim.o
+0x00870810	0x00C5FD10	?nalLoadAnimFile@@YAPAVnalAnimFile@@ABVtlFixedString@@@Z	class nalAnimFile * __cdecl nalLoadAnimFile(class tlFixedString const &)	nal_anim.o
+0x00870840	0x00C5FD40	?nalLoadAnimFileInPlace@@YAPAVnalAnimFile@@ABVtlFixedString@@PAX@Z	class nalAnimFile * __cdecl nalLoadAnimFileInPlace(class tlFixedString const &,void *)	nal_anim.o
+0x008708D0	0x00C5FDD0	?StandardRelease@?$tlResourceDirectory@VnalAnimFile@@@@QAEHPAVnalAnimFile@@H_N@Z	public: int __thiscall tlResourceDirectory<class nalAnimFile>::StandardRelease(class nalAnimFile *,int,bool)	nal_anim.o
+0x00870960	0x00C5FE60	?nalReleaseAnimFile@@YAHPAVnalAnimFile@@@Z	int __cdecl nalReleaseAnimFile(class nalAnimFile *)	nal_anim.o
+0x00870980	0x00C5FE80	?nalReleaseAnimFile@@YAHABVtlFixedString@@@Z	int __cdecl nalReleaseAnimFile(class tlFixedString const &)	nal_anim.o
+0x008709B0	0x00C5FEB0	?nalReleaseAllAnimFiles@@YAXXZ	void __cdecl nalReleaseAllAnimFiles(void)	nal_anim.o
+0x008709D0	0x00C5FED0	?nalGetSceneAnim@@YAPAVnalSceneAnim@@ABVtlFixedString@@@Z	class nalSceneAnim * __cdecl nalGetSceneAnim(class tlFixedString const &)	nal_anim.o
+0x008709F0	0x00C5FEF0	?nalLoadSceneAnimInternal@@YA_NPAVnalSceneAnim@@@Z	bool __cdecl nalLoadSceneAnimInternal(class nalSceneAnim *)	nal_anim.o
+0x00870B80	0x00C60080	?nalReleaseSceneAnimInternal@@YAXPAVnalSceneAnim@@@Z	void __cdecl nalReleaseSceneAnimInternal(class nalSceneAnim *)	nal_anim.o
+0x00870BB0	0x00C600B0	?StandardLoad@?$tlResourceDirectory@VnalSceneAnim@@@@QAEPAVnalSceneAnim@@ABVtlFixedString@@@Z	public: class nalSceneAnim * __thiscall tlResourceDirectory<class nalSceneAnim>::StandardLoad(class tlFixedString const &)	nal_anim.o
+0x00870CC0	0x00C601C0	?nalLoadSceneAnim@@YAPAVnalSceneAnim@@ABVtlFixedString@@@Z	class nalSceneAnim * __cdecl nalLoadSceneAnim(class tlFixedString const &)	nal_anim.o
+0x00870CF0	0x00C601F0	?nalLoadSceneAnimInPlace@@YAPAVnalSceneAnim@@ABVtlFixedString@@PAX@Z	class nalSceneAnim * __cdecl nalLoadSceneAnimInPlace(class tlFixedString const &,void *)	nal_anim.o
+0x00870D80	0x00C60280	?StandardRelease@?$tlResourceDirectory@VnalSceneAnim@@@@QAEHPAVnalSceneAnim@@H_N@Z	public: int __thiscall tlResourceDirectory<class nalSceneAnim>::StandardRelease(class nalSceneAnim *,int,bool)	nal_anim.o
+0x00870DD0	0x00C602D0	?nalReleaseSceneAnim@@YAHPAVnalSceneAnim@@@Z	int __cdecl nalReleaseSceneAnim(class nalSceneAnim *)	nal_anim.o
+0x00870DF0	0x00C602F0	?nalReleaseSceneAnim@@YAHABVtlFixedString@@@Z	int __cdecl nalReleaseSceneAnim(class tlFixedString const &)	nal_anim.o
+0x00870E20	0x00C60320	?nalReleaseAllSceneAnims@@YAXXZ	void __cdecl nalReleaseAllSceneAnims(void)	nal_anim.o

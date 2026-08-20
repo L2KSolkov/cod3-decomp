@@ -1,0 +1,20 @@
+index	status	map_line
+1	PORTED	0002:003bfe20 ??Smath@@YA?AVVector4@0@ABV10@@Z 00BAF320 f i cdOceanGlobals.o
+2	PORTED	0002:003bfe60 ?Floor@math@@YA?AVVector4@1@ABV21@@Z 00BAF360 f i cdOceanGlobals.o
+3	PORTED	0002:003bfea0 ?Dot@math@@YAMABVVector4@1@0@Z 00BAF3A0 f i cdOceanGlobals.o
+4	VERIFIED	0002:003bff00 ?SetDefaults@WaveBank@cdOceanGlobals@@QAEXXZ 00BAF400 f i cdOceanGlobals.o
+5	VERIFIED	0002:003c0110 ??0WaveBank@cdOceanGlobals@@QAE@XZ 00BAF610 f i cdOceanGlobals.o
+6	VERIFIED	0002:003c0120 ?SetSeaLevel@cdOceanGlobals@@YAXHM@Z 00BAF620 f cdOceanGlobals.o
+7	VERIFIED	0002:003c01b0 ?SetLayerAlpha@cdOceanGlobals@@YAXHMM@Z 00BAF6B0 f cdOceanGlobals.o
+8	VERIFIED	0002:003c0260 ?SetLayerScroll@cdOceanGlobals@@YAXHHMM@Z 00BAF760 f cdOceanGlobals.o
+9	VERIFIED	0002:003c03b0 ?SetLayerScale@cdOceanGlobals@@YAXHHMM@Z 00BAF8B0 f cdOceanGlobals.o
+10	VERIFIED	0002:003c0500 ?SetWaveOrigin@cdOceanGlobals@@YAXHHMM@Z 00BAFA00 f cdOceanGlobals.o
+11	VERIFIED	0002:003c0620 ?SetWaveHeading@cdOceanGlobals@@YAXHHM@Z 00BAFB20 f cdOceanGlobals.o
+12	VERIFIED	0002:003c0690 ?SetWaveDistance@cdOceanGlobals@@YAXHHM@Z 00BAFB90 f cdOceanGlobals.o
+13	VERIFIED	0002:003c0700 ?SetWaveWavelength@cdOceanGlobals@@YAXHHM@Z 00BAFC00 f cdOceanGlobals.o
+14	VERIFIED	0002:003c0770 ?SetWaveAmplitude@cdOceanGlobals@@YAXHHM@Z 00BAFC70 f cdOceanGlobals.o
+15	VERIFIED	0002:003c07e0 ?SetWavePhase@cdOceanGlobals@@YAXHHM@Z 00BAFCE0 f cdOceanGlobals.o
+16	VERIFIED	0002:003c0850 ?SetWaveTimescale@cdOceanGlobals@@YAXHHM@Z 00BAFD50 f cdOceanGlobals.o
+17	VERIFIED	0002:003c08c0 ?Init@cdOceanGlobals@@YAXXZ 00BAFDC0 f cdOceanGlobals.o
+18	PORTED	0002:003c08e0 ?DumpSettings@cdOceanGlobals@@YAXH@Z 00BAFDE0 f cdOceanGlobals.o
+19	VERIFIED	0002:003c0b70 ?GetHeight@cdOceanGlobals@@YAMHMM@Z 00BB0070 f cdOceanGlobals.o

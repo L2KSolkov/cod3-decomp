@@ -1,0 +1,23 @@
+ida_ea	name	signature	source_cpp
+0x007EB370	?MemAlign@apsAllocator@@UBEPAXII@Z	public: virtual void * __thiscall apsAllocator::MemAlign(unsigned int,unsigned int)const 	
+0x007EB3A0	?MemFree@apsAllocator@@UBEXPAX@Z	public: virtual void __thiscall apsAllocator::MemFree(void *)const 	
+0x007EB3C0	?MemResize@apsAllocator@@UBEPAXPAXII@Z	public: virtual void * __thiscall apsAllocator::MemResize(void *,unsigned int,unsigned int)const 	
+0x007EB3D0	?InitShaders@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::InitShaders(void)	
+0x007EB3E0	?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z	public: static void __cdecl apsCommon::SetupFrame(class math::Mat43 const &,float)	
+0x007EB750	?Report@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::Report(void)	
+0x007EB780	?SetClient@apsCommon@@SAXPAVapsClient@@@Z	public: static void __cdecl apsCommon::SetClient(class apsClient *)	
+0x007EB790	?GetAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetAllocator(void)	
+0x007EB7A0	?GetCurrentPakId@apsCommon@@SAHXZ	public: static int __cdecl apsCommon::GetCurrentPakId(void)	
+0x007EB7B0	?SetCurrentPakId@apsCommon@@SAHH@Z	public: static int __cdecl apsCommon::SetCurrentPakId(int)	
+0x007EB7D0	?PakAllocs@apsCommon@@SAHXZ	public: static int __cdecl apsCommon::PakAllocs(void)	
+0x007EB7E0	?SetPakAllocs@apsCommon@@SAHH@Z	public: static int __cdecl apsCommon::SetPakAllocs(int)	
+0x007EB800	?GetDefaultAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetDefaultAllocator(void)	
+0x007EB810	?SetAllocator@apsCommon@@SAPAVapsAllocator@@PAV2@@Z	public: static class apsAllocator * __cdecl apsCommon::SetAllocator(class apsAllocator *)	
+0x007EB840	?GetBlockAllocator@apsCommon@@SAPAVapsAllocator@@XZ	public: static class apsAllocator * __cdecl apsCommon::GetBlockAllocator(void)	
+0x007EB850	?SetBlockAllocator@apsCommon@@SAXPAVapsAllocator@@@Z	public: static void __cdecl apsCommon::SetBlockAllocator(class apsAllocator *)	
+0x007EB860	?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::SubmitSpawnedEffectQueue(void)	
+0x007EB870	?RemoveFromSpawnedEffectQueueByPakId@apsCommon@@SAXH@Z	public: static void __cdecl apsCommon::RemoveFromSpawnedEffectQueueByPakId(int)	
+0x007EB880	?ClearSpawnedEffectQueue@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::ClearSpawnedEffectQueue(void)	
+0x007EB890	?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z	public: static struct apsCommon::PlayerViewPort * __cdecl apsCommon::GetPlayerViewPort(unsigned int)	
+0x007EB8D0	?Init@apsCommon@@SAXIHI@Z	public: static void __cdecl apsCommon::Init(unsigned int,int,unsigned int)	
+0x007EBA40	?Term@apsCommon@@SAXXZ	public: static void __cdecl apsCommon::Term(void)	

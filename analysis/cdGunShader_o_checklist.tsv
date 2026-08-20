@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:003cea70 ??0cdGunShaderMat@@QAE@PAUnglTexture@@@Z 00BBDF70 f cdGunShader.o
+2	VERIFIED	0002:003ceb00 ?InitCDGunShader@@YAXXZ 00BBE000 f cdGunShader.o
+3	VERIFIED	0002:003ceb50 ?ToggleCDGunShader@@YAXXZ 00BBE050 f cdGunShader.o
+4	VERIFIED	0002:003ceb70 ?Register@cdGunShader@@UAEXXZ 00BBE070 f cdGunShader.o
+5	VERIFIED	0002:003cebd0 ?AddNode@cdGunShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBE0D0 f cdGunShader.o
+6	PORTED	0002:003cec40 ?Render@cdGunShaderNode@@UAEXXZ 00BBE140 f cdGunShader.o
+7	VERIFIED	0002:003cef90 ??0cdGunShader@@QAE@XZ 00BBE490 f i cdGunShader.o
+8	VERIFIED	0002:003cefc0 ?GetName@cdGunShader@@UAE?AVtlFixedString@@XZ 00BBE4C0 f i cdGunShader.o
+9	PORTED	0002:003cefe0 ?RegisterShader@cdGunRender@@YAXXZ 00BBE4E0 f i cdGunShader.o
+10	PORTED	0002:003cf000 ?RegisterVShader@cdGunRender@@YAXXZ 00BBE500 f i cdGunShader.o
+11	PORTED	0002:003cf020 ?GetVShader@cdGunRender@@YAKXZ 00BBE520 f i cdGunShader.o
+12	PORTED	0002:003cf030 ?RegisterShader@cdGunPixel@@YAXXZ 00BBE530 f i cdGunShader.o
+13	PORTED	0002:003cf050 ?RegisterPShader@cdGunPixel@@YAXXZ 00BBE550 f i cdGunShader.o
+14	PORTED	0002:003cf070 ?GetPShader@cdGunPixel@@YAPAKXZ 00BBE570 f i cdGunShader.o
+15	PORTED	0002:003cf080 ?RegisterShader@cdGunFullbrightPixel@@YAXXZ 00BBE580 f i cdGunShader.o
+16	PORTED	0002:003cf0a0 ?RegisterPShader@cdGunFullbrightPixel@@YAXXZ 00BBE5A0 f i cdGunShader.o
+17	PORTED	0002:003cf0c0 ?GetPShader@cdGunFullbrightPixel@@YAPAKXZ 00BBE5C0 f i cdGunShader.o
+18	PORTED	0002:003cf0d0 ??0cdGunShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdGunShaderMat@@@Z 00BBE5D0 f i cdGunShader.o
+19	PORTED	0002:003cf100 ??_GcdGunShaderNode@@UAEPAXI@Z 00BBE600 f i cdGunShader.o
+20	PORTED	0002:003cf100 ??_EcdGunShaderNode@@UAEPAXI@Z 00BBE600 f i cdGunShader.o
+21	PORTED	0002:003cf130 ??1cdGunShaderNode@@UAE@XZ 00BBE630 f i cdGunShader.o
+22	VERIFIED	0002:003cf140 ??_EcdGunShader@@UAEPAXI@Z 00BBE640 f i cdGunShader.o
+23	VERIFIED	0002:003cf140 ??_GcdGunShader@@UAEPAXI@Z 00BBE640 f i cdGunShader.o
+24	VERIFIED	0002:003cf170 ??1cdGunShader@@UAE@XZ 00BBE670 f i cdGunShader.o

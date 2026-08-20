@@ -1,0 +1,9 @@
+ida_ea	name	signature	source_cpp
+0x0082CEC0	_txPrintv	_txPrintv	
+0x0082CF90	_txBreak	_txBreak	
+0x0082CFA0	_txMemAllocEx	_txMemAllocEx	
+0x0082CFD0	_txMemAlloc	_txMemAlloc	
+0x0082CFF0	_txMemFree	_txMemFree	
+0x0082D000	_txMemRealloc	_txMemRealloc	
+0x0082D010	_txMemReallocAdHoc	_txMemReallocAdHoc	
+0x0082D060	_txAssertFailed	_txAssertFailed	

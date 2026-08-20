@@ -1,0 +1,14 @@
+ida_ea	va	name	signature	family
+0x0084B760	0x00C3AC60	?nglGpuUnpackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPAVVector4@math@@II@Z	void __cdecl nglGpuUnpackVertexBuffer(struct D3DVertexBuffer *,struct gpuVertexFormat *,enum gpuVertexElementUsage,unsigned int,class math::Vector4 *,unsigned int,unsigned int)	ngl_gpu.o
+0x0084BE60	0x00C3B360	?nglGpuPackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPBVVector4@math@@II@Z	void __cdecl nglGpuPackVertexBuffer(struct D3DVertexBuffer *,struct gpuVertexFormat *,enum gpuVertexElementUsage,unsigned int,class math::Vector4 const *,unsigned int,unsigned int)	ngl_gpu.o
+0x0084C5A0	0x00C3BAA0	?_nglGpuUnpackTriangleList@@YAIPAUD3DIndexBuffer@@PAGI@Z	unsigned int __cdecl _nglGpuUnpackTriangleList(struct D3DIndexBuffer *,unsigned short *,unsigned int)	ngl_gpu.o
+0x0084C620	0x00C3BB20	?_nglGpuPackTriangleList@@YAXPAUD3DIndexBuffer@@PAGI@Z	void __cdecl _nglGpuPackTriangleList(struct D3DIndexBuffer *,unsigned short *,unsigned int)	ngl_gpu.o
+0x0084C670	0x00C3BB70	?nglGpuPackIndexBuffer@@YAXPAUD3DIndexBuffer@@W4gpuPrimType@@W4gpuIndexType@@PAII@Z	void __cdecl nglGpuPackIndexBuffer(struct D3DIndexBuffer *,enum gpuPrimType,enum gpuIndexType,unsigned int *,unsigned int)	ngl_gpu.o
+0x0084C6C0	0x00C3BBC0	?nglGpuDrawSection@@YAXPAUnglMeshSection@@@Z	void __cdecl nglGpuDrawSection(struct nglMeshSection *)	ngl_gpu.o
+0x0084C740	0x00C3BC40	?nglGpuSetBonesWorld@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	void __cdecl nglGpuSetBonesWorld(int,class nglMeshNode *,struct nglMeshSection *)	ngl_gpu.o
+0x0084D000	0x00C3C500	?nglGpuInitShaders@@YAXXZ	void __cdecl nglGpuInitShaders(void)	ngl_gpu.o
+0x0084D210	0x00C3C710	?nglGpuAcquireDevice@@YAXXZ	void __cdecl nglGpuAcquireDevice(void)	ngl_gpu.o
+0x0084D220	0x00C3C720	?nglGpuReleaseDevice@@YAXXZ	void __cdecl nglGpuReleaseDevice(void)	ngl_gpu.o
+0x0084D230	0x00C3C730	?ngliListSend@@YAXXZ	void __cdecl ngliListSend(void)	ngl_gpu.o
+0x0084D2A0	0x00C3C7A0	?nglGpuUnpackIndexBuffer@@YAIPAUD3DIndexBuffer@@W4gpuPrimType@@W4gpuIndexType@@PAII@Z	unsigned int __cdecl nglGpuUnpackIndexBuffer(struct D3DIndexBuffer *,enum gpuPrimType,enum gpuIndexType,unsigned int *,unsigned int)	ngl_gpu.o
+0x0084D370	0x00C3C870	?nglGpuSetBonesLocal@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	void __cdecl nglGpuSetBonesLocal(int,class nglMeshNode *,struct nglMeshSection *)	ngl_gpu.o

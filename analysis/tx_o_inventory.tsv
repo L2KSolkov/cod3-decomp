@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x0082CD70	0x00C1C270	_txTime	_txTime	tx.o
+0x0082CDA0	0x00C1C2A0	_txMatch	_txMatch	tx.o
+0x0082CE40	0x00C1C340	_txInit	_txInit	tx.o
+0x0082CE50	0x00C1C350	_txGetPrimeLessThanPow2	_txGetPrimeLessThanPow2	tx.o
+0x0082CEA0	0x00C1C3A0	_txPrintf	_txPrintf	tx.o

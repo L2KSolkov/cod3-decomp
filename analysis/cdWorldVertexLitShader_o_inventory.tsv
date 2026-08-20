@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007DE770	0x00BCDC70	??0cdWorldVertexLitShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdWorldVertexLitShaderMat::cdWorldVertexLitShaderMat(struct nglTexture *)	cdWorldVertexLitShader.o
+0x007DE800	0x00BCDD00	?InitCDWorldVertexLitShader@@YAXXZ	void __cdecl InitCDWorldVertexLitShader(void)	cdWorldVertexLitShader.o
+0x007DE850	0x00BCDD50	?ToggleCDWorldVertexLitShader@@YAXXZ	void __cdecl ToggleCDWorldVertexLitShader(void)	cdWorldVertexLitShader.o
+0x007DE870	0x00BCDD70	?Register@cdWorldVertexLitShader@@UAEXXZ	public: virtual void __thiscall cdWorldVertexLitShader::Register(void)	cdWorldVertexLitShader.o
+0x007DE8D0	0x00BCDDD0	?AddNode@cdWorldVertexLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldVertexLitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdWorldVertexLitShader.o
+0x007DE940	0x00BCDE40	?Render@cdWorldVertexLitShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldVertexLitShaderNode::Render(void)	cdWorldVertexLitShader.o

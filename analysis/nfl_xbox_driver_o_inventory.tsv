@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x0082D560	0x00C1CA60	?nfd_xbox_MediaBind@@YA?AW4nfdError@@W4nflMediaID@@PBDPADH@Z	enum nfdError __cdecl nfd_xbox_MediaBind(enum nflMediaID,char const *,char *,int)	nfl_xbox_driver.o

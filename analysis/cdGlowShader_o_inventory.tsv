@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x007C1280	0x00BB0780	?ToggleCDGlowShader@@YAXXZ	void __cdecl ToggleCDGlowShader(void)	cdGlowShader.o
+0x007C12A0	0x00BB07A0	?InitCDGlowShader@@YAXXZ	void __cdecl InitCDGlowShader(void)	cdGlowShader.o
+0x007C1370	0x00BB0870	?SetupCDGlowShader@@YAXXZ	void __cdecl SetupCDGlowShader(void)	cdGlowShader.o
+0x007C13E0	0x00BB08E0	?GlowSetTaps@@YAXABUFilterTaps@@000@Z	void __cdecl GlowSetTaps(struct FilterTaps const &,struct FilterTaps const &,struct FilterTaps const &,struct FilterTaps const &)	cdGlowShader.o
+0x007C1430	0x00BB0930	?LerpTaps@@YA?AUFilterTaps@@ABU1@0M@Z	struct FilterTaps __cdecl LerpTaps(struct FilterTaps const &,struct FilterTaps const &,float)	cdGlowShader.o
+0x007C1540	0x00BB0A40	?GlowFilter@@YAXPAUnglTexture@@M_N@Z	void __cdecl GlowFilter(struct nglTexture *,float,bool)	cdGlowShader.o
+0x007C1900	0x00BB0E00	?GlowCallback@@YAXPAX@Z	void __cdecl GlowCallback(void *)	cdGlowShader.o

@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x008065D0	0x00BF5AD0	?TestAlloc@apsGroupManager@@QAEIH@Z	public: unsigned int __thiscall apsGroupManager::TestAlloc(int)	apsGroupMgr.o
+0x00806620	0x00BF5B20	?Report@apsGroupManager@@QAEXXZ	public: void __thiscall apsGroupManager::Report(void)	apsGroupMgr.o
+0x00806770	0x00BF5C70	??0apsGroupManager@@QAE@H@Z	public: __thiscall apsGroupManager::apsGroupManager(int)	apsGroupMgr.o
+0x008067F0	0x00BF5CF0	?CreateGroup@apsGroupManager@@QAEPAVapsGroup@@HPAVapsRenderer@@ABVapsPFD@@I@Z	public: class apsGroup * __thiscall apsGroupManager::CreateGroup(int,class apsRenderer *,class apsPFD const &,unsigned int)	apsGroupMgr.o
+0x008068C0	0x00BF5DC0	?DestroyGroup@apsGroupManager@@QAEXPAVapsGroup@@I@Z	public: void __thiscall apsGroupManager::DestroyGroup(class apsGroup *,unsigned int)	apsGroupMgr.o
+0x00806A30	0x00BF5F30	?DestroyAllGroups@apsGroupManager@@QAEXXZ	public: void __thiscall apsGroupManager::DestroyAllGroups(void)	apsGroupMgr.o
+0x00806A60	0x00BF5F60	??1apsGroupManager@@QAE@XZ	public: __thiscall apsGroupManager::~apsGroupManager(void)	apsGroupMgr.o

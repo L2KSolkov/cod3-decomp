@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00850240	0x00C3F740	?nglDxSetFSAA@@YA_NW4nglFSAAMode@@@Z	bool __cdecl nglDxSetFSAA(enum nglFSAAMode)	ngl_dx_fsaa.o

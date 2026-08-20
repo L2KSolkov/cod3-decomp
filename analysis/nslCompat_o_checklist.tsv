@@ -1,0 +1,22 @@
+index	status	map_line
+1	VERIFIED	0002:00420290 ?nslVoiceGet@@YAPAUnslVoice@@H@Z 00C0F790 f nslCompat.o
+2	VERIFIED	0002:004202a0 ?nslGetGroup@@YAPAUnslGroup@@PBD@Z 00C0F7A0 f nslCompat.o
+3	VERIFIED	0002:004202b0 ?nslGetListenerGroup@@YAPAUnslGroup@@XZ 00C0F7B0 f nslCompat.o
+4	VERIFIED	0002:004202c0 ?nslGetMasterGroup@@YAPAUnslGroup@@XZ 00C0F7C0 f nslCompat.o
+5	VERIFIED	0002:004202d0 ?nslFreeBank@@YAXW4nslBankID@@@Z 00C0F7D0 f nslCompat.o
+6	VERIFIED	0002:004202e0 ?nslGetBankState@@YAHW4nslBankID@@@Z 00C0F7E0 f nslCompat.o
+7	VERIFIED	0002:004202f0 ?nslLoadBank@@YA?AW4nslBankID@@III@Z 00C0F7F0 f nslCompat.o
+8	VERIFIED	0002:00420310 ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z 00C0F810 f nslCompat.o
+9	VERIFIED	0002:00420320 ?nslGetWaveLength@@YAHW4nslWaveID@@@Z 00C0F820 f nslCompat.o
+10	VERIFIED	0002:00420330 ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z 00C0F830 f nslCompat.o
+11	VERIFIED	0002:00420340 ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z 00C0F840 f nslCompat.o
+12	VERIFIED	0002:00420350 ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z 00C0F850 f nslCompat.o
+13	VERIFIED	0002:00420360 ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z 00C0F860 f nslCompat.o
+14	VERIFIED	0002:00420370 ?nslSetListenerOrientation@@YAXQBM0@Z 00C0F870 f nslCompat.o
+15	VERIFIED	0002:00420390 ?nslSetListenerPosition@@YAXQBM@Z 00C0F890 f nslCompat.o
+16	VERIFIED	0002:004203b0 ?nslNumBanksInUse@@YAHXZ 00C0F8B0 f nslCompat.o
+17	VERIFIED	0002:004203c0 ?nslAreAllBanksLoaded@@YAHXZ 00C0F8C0 f nslCompat.o
+18	VERIFIED	0002:004203d0 ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z 00C0F8D0 f nslCompat.o
+19	VERIFIED	0002:004203e0 ?nslGetVoice@@YAPAUnslVoice@@I@Z 00C0F8E0 f nslCompat.o
+20	VERIFIED	0002:004203f0 ?nslGetNumVoices@@YAIXZ 00C0F8F0 f nslCompat.o
+21	VERIFIED	0002:00420400 ?nslGetMaxNumVoices@@YAIXZ 00C0F900 f nslCompat.o

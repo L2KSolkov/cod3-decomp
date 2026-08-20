@@ -1,0 +1,7 @@
+ida_ea	va	name	signature	family
+0x007D58E0	0x00BC4DE0	??0cdSimplePrelitShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdSimplePrelitShaderMat::cdSimplePrelitShaderMat(struct nglTexture *)	cdSimplePrelitShader.o
+0x007D5970	0x00BC4E70	?InitCDSimplePrelitShader@@YAXXZ	void __cdecl InitCDSimplePrelitShader(void)	cdSimplePrelitShader.o
+0x007D59C0	0x00BC4EC0	?ToggleCDSimplePrelitShader@@YAXXZ	void __cdecl ToggleCDSimplePrelitShader(void)	cdSimplePrelitShader.o
+0x007D59E0	0x00BC4EE0	?Register@cdSimplePrelitShader@@UAEXXZ	public: virtual void __thiscall cdSimplePrelitShader::Register(void)	cdSimplePrelitShader.o
+0x007D5A10	0x00BC4F10	?AddNode@cdSimplePrelitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdSimplePrelitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdSimplePrelitShader.o
+0x007D5A80	0x00BC4F80	?Render@cdSimplePrelitShaderNode@@UAEXXZ	public: virtual void __thiscall cdSimplePrelitShaderNode::Render(void)	cdSimplePrelitShader.o

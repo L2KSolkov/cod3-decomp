@@ -1,0 +1,18 @@
+ida_ea	va	name	signature	family
+0x0083F6E0	0x00C2EBE0	?nglInitQuad@@YAXPAUnglQuad@@@Z	void __cdecl nglInitQuad(struct nglQuad *)	ngl_quad.o
+0x0083F750	0x00C2EC50	?nglSetQuadTex@@YAXPAUnglQuad@@PAUnglTexture@@@Z	void __cdecl nglSetQuadTex(struct nglQuad *,struct nglTexture *)	ngl_quad.o
+0x0083F760	0x00C2EC60	?nglSetQuadMapFlags@@YAXPAUnglQuad@@I@Z	void __cdecl nglSetQuadMapFlags(struct nglQuad *,unsigned int)	ngl_quad.o
+0x0083F770	0x00C2EC70	?nglSetQuadBlend@@YAXPAUnglQuad@@I@Z	void __cdecl nglSetQuadBlend(struct nglQuad *,unsigned int)	ngl_quad.o
+0x0083F780	0x00C2EC80	?nglSetQuadUV@@YAXPAUnglQuad@@MMMM@Z	void __cdecl nglSetQuadUV(struct nglQuad *,float,float,float,float)	ngl_quad.o
+0x0083F7D0	0x00C2ECD0	?nglSetQuadColor@@YAXPAUnglQuad@@I@Z	void __cdecl nglSetQuadColor(struct nglQuad *,unsigned int)	ngl_quad.o
+0x0083F7F0	0x00C2ECF0	?nglSetQuadRect@@YAXPAUnglQuad@@MMMM@Z	void __cdecl nglSetQuadRect(struct nglQuad *,float,float,float,float)	ngl_quad.o
+0x0083F840	0x00C2ED40	?nglSetQuadZ@@YAXPAUnglQuad@@M@Z	void __cdecl nglSetQuadZ(struct nglQuad *,float)	ngl_quad.o
+0x0083F860	0x00C2ED60	?nglSetQuadVPos@@YAXPAUnglQuad@@HMM@Z	void __cdecl nglSetQuadVPos(struct nglQuad *,int,float,float)	ngl_quad.o
+0x0083F890	0x00C2ED90	?nglSetQuadVUV@@YAXPAUnglQuad@@HMM@Z	void __cdecl nglSetQuadVUV(struct nglQuad *,int,float,float)	ngl_quad.o
+0x0083F8C0	0x00C2EDC0	?nglSetQuadVColor@@YAXPAUnglQuad@@HI@Z	void __cdecl nglSetQuadVColor(struct nglQuad *,int,unsigned int)	ngl_quad.o
+0x0083F8E0	0x00C2EDE0	?nglRotateQuad@@YAXPAUnglQuad@@MMM@Z	void __cdecl nglRotateQuad(struct nglQuad *,float,float,float)	ngl_quad.o
+0x0083F970	0x00C2EE70	?nglScaleQuad@@YAXPAUnglQuad@@MMMM@Z	void __cdecl nglScaleQuad(struct nglQuad *,float,float,float,float)	ngl_quad.o
+0x0083FA40	0x00C2EF40	?nglRotateQuadUV@@YAXPAUnglQuad@@MMM@Z	void __cdecl nglRotateQuadUV(struct nglQuad *,float,float,float)	ngl_quad.o
+0x0083FAD0	0x00C2EFD0	?nglScaleQuadUV@@YAXPAUnglQuad@@MMMM@Z	void __cdecl nglScaleQuadUV(struct nglQuad *,float,float,float,float)	ngl_quad.o
+0x0083FBA0	0x00C2F0A0	?nglSetQuadPos@@YAXPAUnglQuad@@MM@Z	void __cdecl nglSetQuadPos(struct nglQuad *,float,float)	ngl_quad.o
+0x0083FC00	0x00C2F100	?nglListAddQuad@@YAXPAUnglQuad@@@Z	void __cdecl nglListAddQuad(struct nglQuad *)	ngl_quad.o

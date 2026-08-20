@@ -1,0 +1,20 @@
+index	status	map_line
+1	VERIFIED	0002:00408020 ?SetVtable@apsVirtualBase@@QAEXI@Z 00BF7520 f i apsAction.o
+2	PORTED	0002:00408030 ?size@?$apsArray@M@@QBEHXZ 00BF7530 f i apsAction.o
+3	VERIFIED	0002:00408040 ??A?$apsArray@M@@QAEAAMH@Z 00BF7540 f i apsAction.o
+4	PORTED	0002:00408090 ?size@?$apsArray@PAVapsDomain@@@@QBEHXZ 00BF7590 f i apsAction.o
+5	VERIFIED	0002:004080a0 ??A?$apsArray@PAVapsDomain@@@@QAEAAPAVapsDomain@@H@Z 00BF75A0 f i apsAction.o
+6	PORTED	0002:004080f0 ?end@?$apsArray@PAVapsDomain@@@@QAEPAPAVapsDomain@@XZ 00BF75F0 f i apsAction.o
+7	PORTED	0002:00408100 ?construct_array@?$apsArray@M@@AAEPAMH@Z 00BF7600 f i apsAction.o
+8	PORTED	0002:00408140 ?construct_array@?$apsArray@PAVapsDomain@@@@AAEPAPAVapsDomain@@H@Z 00BF7640 f i apsAction.o
+9	VERIFIED	0002:00408180 ??$apsDestroy@VapsDomain@@@@YAXPAVapsDomain@@@Z 00BF7680 f i apsAction.o
+10	PORTED	0002:00408190 ??$apsFixUp@M@@YAXAAPAMPAX@Z 00BF7690 f i apsAction.o
+11	PORTED	0002:004081b0 ??$apsFixUp@PAVapsDomain@@@@YAXAAPAPAVapsDomain@@PAX@Z 00BF76B0 f i apsAction.o
+12	PORTED	0002:004081d0 ??$apsFixUp@VapsDomain@@@@YAXAAPAVapsDomain@@PAX@Z 00BF76D0 f i apsAction.o
+13	VERIFIED	0002:004081f0 ?SetParam@apsAction@@QAEXHM@Z 00BF76F0 f apsAction.o
+14	VERIFIED	0002:00408260 ?SetDomain@apsAction@@QAEXHPAVapsDomain@@@Z 00BF7760 f apsAction.o
+15	VERIFIED	0002:004082f0 ?Fixup@apsAction@@QAEXABUapsFixupParams@@@Z 00BF77F0 f apsAction.o
+16	VERIFIED	0002:00408430 ??1apsAction@@UAE@XZ 00BF7930 f apsAction.o
+17	VERIFIED	0002:00408500 ??0apsAction@@IAE@HHW4IterationStyle@0@I@Z 00BF7A00 f apsAction.o
+18	VERIFIED	0002:00408610 ??0?$apsArray@M@@QAE@HABM@Z 00BF7B10 f i apsAction.o
+19	VERIFIED	0002:004086a0 ??0?$apsArray@PAVapsDomain@@@@QAE@HABQAVapsDomain@@@Z 00BF7BA0 f i apsAction.o

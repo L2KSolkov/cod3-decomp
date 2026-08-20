@@ -1,0 +1,53 @@
+ida_ea	va	name	signature	family
+0x0082A780	0x00C19C80	?nfsLock@@YAXXZ	void __cdecl nfsLock(void)	nfl_system.o
+0x0082A7A0	0x00C19CA0	?nfsUnlock@@YAXXZ	void __cdecl nfsUnlock(void)	nfl_system.o
+0x0082A7C0	0x00C19CC0	?nfsGetMediaDriverIndex@@YAHW4nflMediaID@@@Z	int __cdecl nfsGetMediaDriverIndex(enum nflMediaID)	nfl_system.o
+0x0082A800	0x00C19D00	?nfsGetMediaDriver@@YAPAUnfdDriver@@W4nflMediaID@@@Z	struct nfdDriver * __cdecl nfsGetMediaDriver(enum nflMediaID)	nfl_system.o
+0x0082A830	0x00C19D30	?nfsGetFile@@YAPAUnfsFile@@W4nflFileID@@@Z	struct nfsFile * __cdecl nfsGetFile(enum nflFileID)	nfl_system.o
+0x0082A860	0x00C19D60	?nfsGetNativeFileID@@YA?AW4nflFileID@@W41@@Z	enum nflFileID __cdecl nfsGetNativeFileID(enum nflFileID)	nfl_system.o
+0x0082A950	0x00C19E50	?nfsGetNativeFile@@YAPAUnfsFile@@W4nflFileID@@@Z	struct nfsFile * __cdecl nfsGetNativeFile(enum nflFileID)	nfl_system.o
+0x0082A990	0x00C19E90	?nfsGetFileDriver@@YAPAUnfdDriver@@W4nflFileID@@@Z	struct nfdDriver * __cdecl nfsGetFileDriver(enum nflFileID)	nfl_system.o
+0x0082A9D0	0x00C19ED0	?nflGetFileMedia@@YA?AW4nflMediaID@@W4nflFileID@@@Z	enum nflMediaID __cdecl nflGetFileMedia(enum nflFileID)	nfl_system.o
+0x0082AA10	0x00C19F10	?nflGetFileName@@YAPBDW4nflFileID@@@Z	char const * __cdecl nflGetFileName(enum nflFileID)	nfl_system.o
+0x0082AA50	0x00C19F50	?nfsGetFileHandle@@YAPAXW4nflFileID@@@Z	void * __cdecl nfsGetFileHandle(enum nflFileID)	nfl_system.o
+0x0082AA90	0x00C19F90	?nfsGetStream@@YAPAUnfsStream@@W4nflStreamID@@@Z	struct nfsStream * __cdecl nfsGetStream(enum nflStreamID)	nfl_system.o
+0x0082AAD0	0x00C19FD0	?nfsGetRequest@@YAPAUnfsRequest@@W4nflRequestID@@@Z	struct nfsRequest * __cdecl nfsGetRequest(enum nflRequestID)	nfl_system.o
+0x0082AB00	0x00C1A000	?nfsExportRequestState@@YA?AW4nflRequestState@@W4nfsRequestState@@@Z	enum nflRequestState __cdecl nfsExportRequestState(enum nfsRequestState)	nfl_system.o
+0x0082AB60	0x00C1A060	?nfsPreAllocate@@YAPAXII@Z	void * __cdecl nfsPreAllocate(unsigned int,unsigned int)	nfl_system.o
+0x0082AC30	0x00C1A130	?nfsPreAllocateWorkSpace@@YAIPAX@Z	unsigned int __cdecl nfsPreAllocateWorkSpace(void *)	nfl_system.o
+0x0082AE20	0x00C1A320	?nflInit@@YAIPBUnflInitParams@@@Z	unsigned int __cdecl nflInit(struct nflInitParams const *)	nfl_system.o
+0x0082AF00	0x00C1A400	?nflShutdown@@YAXXZ	void __cdecl nflShutdown(void)	nfl_system.o
+0x0082AF30	0x00C1A430	?nflGetMediaAlignments@@YAPAUnflMediaAlignments@@W4nflMediaID@@PAU1@@Z	struct nflMediaAlignments * __cdecl nflGetMediaAlignments(enum nflMediaID,struct nflMediaAlignments *)	nfl_system.o
+0x0082AF80	0x00C1A480	?nflSetStreamPriority@@YAXW4nflStreamID@@W4nflPriority@@@Z	void __cdecl nflSetStreamPriority(enum nflStreamID,enum nflPriority)	nfl_system.o
+0x0082B090	0x00C1A590	?nflGetStreamPriority@@YA?AW4nflPriority@@W4nflStreamID@@@Z	enum nflPriority __cdecl nflGetStreamPriority(enum nflStreamID)	nfl_system.o
+0x0082B0D0	0x00C1A5D0	?nfsOpenFile@@YA?AW4nflFileID@@W4nflMediaID@@PBDW4nfdFileFlags@@PAI@Z	enum nflFileID __cdecl nfsOpenFile(enum nflMediaID,char const *,enum nfdFileFlags,unsigned int *)	nfl_system.o
+0x0082B310	0x00C1A810	?nflOpenSubFile@@YA?AW4nflFileID@@W41@IIII@Z	enum nflFileID __cdecl nflOpenSubFile(enum nflFileID,unsigned int,unsigned int,unsigned int,unsigned int)	nfl_system.o
+0x0082B4E0	0x00C1A9E0	?nflGetFileSize@@YAIW4nflFileID@@@Z	unsigned int __cdecl nflGetFileSize(enum nflFileID)	nfl_system.o
+0x0082B520	0x00C1AA20	?nflOpenFile@@YA?AW4nflFileID@@W4nflMediaID@@PBD@Z	enum nflFileID __cdecl nflOpenFile(enum nflMediaID,char const *)	nfl_system.o
+0x0082B540	0x00C1AA40	?nflOpenFileEx@@YA?AW4nflFileID@@W4nflMediaID@@PBDPAI@Z	enum nflFileID __cdecl nflOpenFileEx(enum nflMediaID,char const *,unsigned int *)	nfl_system.o
+0x0082B560	0x00C1AA60	?nflCreateFile@@YA?AW4nflFileID@@W4nflMediaID@@PBDI@Z	enum nflFileID __cdecl nflCreateFile(enum nflMediaID,char const *,unsigned int)	nfl_system.o
+0x0082B590	0x00C1AA90	?nflGetRequestState@@YA?AW4nflRequestState@@W4nflRequestID@@@Z	enum nflRequestState __cdecl nflGetRequestState(enum nflRequestID)	nfl_system.o
+0x0082B5D0	0x00C1AAD0	?nflSetRequestPriority@@YAXW4nflRequestID@@W4nflPriority@@@Z	void __cdecl nflSetRequestPriority(enum nflRequestID,enum nflPriority)	nfl_system.o
+0x0082B640	0x00C1AB40	?nflGetRequestPriority@@YA?AW4nflPriority@@W4nflRequestID@@@Z	enum nflPriority __cdecl nflGetRequestPriority(enum nflRequestID)	nfl_system.o
+0x0082B680	0x00C1AB80	?nflGetRequestInfo@@YAPAUnflRequestInfo@@W4nflRequestID@@PAU1@@Z	struct nflRequestInfo * __cdecl nflGetRequestInfo(enum nflRequestID,struct nflRequestInfo *)	nfl_system.o
+0x0082B6D0	0x00C1ABD0	?nflGetRequestProgress@@YAMW4nflRequestID@@@Z	float __cdecl nflGetRequestProgress(enum nflRequestID)	nfl_system.o
+0x0082B740	0x00C1AC40	?nfsResumeUpdateThread@@YAXXZ	void __cdecl nfsResumeUpdateThread(void)	nfl_system.o
+0x0082B760	0x00C1AC60	?nflAddRequest@@YA?AW4nflRequestID@@PBUnflRequestParams@@@Z	enum nflRequestID __cdecl nflAddRequest(struct nflRequestParams const *)	nfl_system.o
+0x0082B910	0x00C1AE10	?nflCancelRequest@@YAXW4nflRequestID@@@Z	void __cdecl nflCancelRequest(enum nflRequestID)	nfl_system.o
+0x0082B990	0x00C1AE90	?nfsUpdateDriver@@YAHPAUnfdDriver@@@Z	int __cdecl nfsUpdateDriver(struct nfdDriver *)	nfl_system.o
+0x0082BBA0	0x00C1B0A0	?nfsScheduleRequest@@YA?AW4nflRequestID@@PAUnfdDriver@@@Z	enum nflRequestID __cdecl nfsScheduleRequest(struct nfdDriver *)	nfl_system.o
+0x0082BCC0	0x00C1B1C0	?nfsExecuteRequest@@YA?AW4nfdError@@PAUnfdDriver@@W4nflRequestID@@@Z	enum nfdError __cdecl nfsExecuteRequest(struct nfdDriver *,enum nflRequestID)	nfl_system.o
+0x0082BFA0	0x00C1B4A0	?nfsAddRequestToCallList@@YAXPAUnfsRequest@@H@Z	void __cdecl nfsAddRequestToCallList(struct nfsRequest *,int)	nfl_system.o
+0x0082C000	0x00C1B500	?nfsUpdate@@YAHXZ	int __cdecl nfsUpdate(void)	nfl_system.o
+0x0082C120	0x00C1B620	?nfsUpdateThread@@YGKPAX@Z	unsigned long __stdcall nfsUpdateThread(void *)	nfl_system.o
+0x0082C190	0x00C1B690	?nflUpdate@@YAXXZ	void __cdecl nflUpdate(void)	nfl_system.o
+0x0082C330	0x00C1B830	?nflGetFileHandle@@YAPAXW4nflFileID@@PAI111@Z	void * __cdecl nflGetFileHandle(enum nflFileID,unsigned int *,unsigned int *,unsigned int *,unsigned int *)	nfl_system.o
+0x0082C460	0x00C1B960	?nflGetState@@YA?AW4nflState@@XZ	enum nflState __cdecl nflGetState(void)	nfl_system.o
+0x0082C4D0	0x00C1B9D0	?nflGetStateText@@YAPBDW4nflState@@@Z	char const * __cdecl nflGetStateText(enum nflState)	nfl_system.o
+0x0082C520	0x00C1BA20	?nflRetry@@YAXXZ	void __cdecl nflRetry(void)	nfl_system.o
+0x0082C5D0	0x00C1BAD0	?nflCreateStream@@YA?AW4nflStreamID@@PBUnflStreamParams@@@Z	enum nflStreamID __cdecl nflCreateStream(struct nflStreamParams const *)	nfl_system.o
+0x0082C600	0x00C1BB00	?nflCancelStreamRequests@@YAXW4nflStreamID@@@Z	void __cdecl nflCancelStreamRequests(enum nflStreamID)	nfl_system.o
+0x0082C680	0x00C1BB80	?nflDestroyStream@@YAXW4nflStreamID@@@Z	void __cdecl nflDestroyStream(enum nflStreamID)	nfl_system.o
+0x0082C6A0	0x00C1BBA0	?nflCancelFileRequests@@YAXW4nflFileID@@@Z	void __cdecl nflCancelFileRequests(enum nflFileID)	nfl_system.o
+0x0082C740	0x00C1BC40	?nflCloseFile@@YAXW4nflFileID@@@Z	void __cdecl nflCloseFile(enum nflFileID)	nfl_system.o
+0x0082C860	0x00C1BD60	?nflStart@@YAXPAX@Z	void __cdecl nflStart(void *)	nfl_system.o

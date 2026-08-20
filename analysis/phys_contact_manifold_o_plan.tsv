@@ -1,0 +1,11 @@
+ida_ea	name	signature	source_cpp
+0x008873A0	?compute_convex_poly_area@phys_contact_manifold@@QAE?BMXZ	public: float const __thiscall phys_contact_manifold::compute_convex_poly_area(void)	
+0x00887460	?compute_convex_poly_perimeter@phys_contact_manifold@@QAE?BMXZ	public: float const __thiscall phys_contact_manifold::compute_convex_poly_perimeter(void)	
+0x008874F0	?qsort@phys_contact_manifold@@QAEXPAPAUcontact_manifold_mesh_point@@0@Z	public: void __thiscall phys_contact_manifold::qsort(struct contact_manifold_mesh_point * *,struct contact_manifold_mesh_point * *)	
+0x00887590	?setup_list_sorted_mesh_point@phys_contact_manifold@@QAEXXZ	public: void __thiscall phys_contact_manifold::setup_list_sorted_mesh_point(void)	
+0x008875B0	?generate_convex_poly_internal@phys_contact_manifold@@QAEXXZ	public: void __thiscall phys_contact_manifold::generate_convex_poly_internal(void)	
+0x008877C0	?find_bottom@phys_contact_manifold_process@@QAE_NPAUbridge@1@PAUisect_info@1@1@Z	public: bool __thiscall phys_contact_manifold_process::find_bottom(struct phys_contact_manifold_process::bridge *,struct phys_contact_manifold_process::isect_info *,struct phys_contact_manifold_process::isect_info *)	
+0x00887A10	?comp_feature_normal@phys_contact_manifold@@QAE?BVDir3@math@@ABVMat43@3@@Z	public: class math::Dir3 const __thiscall phys_contact_manifold::comp_feature_normal(class math::Mat43 const &)	
+0x00887EA0	?generate_convex_poly@phys_contact_manifold@@QAEXABVMat43@math@@@Z	public: void __thiscall phys_contact_manifold::generate_convex_poly(class math::Mat43 const &)	
+0x008880A0	?intersect_poly_segment@phys_contact_manifold_process@@QAEXPAVphys_contact_manifold@@ABVDir3@math@@1@Z	public: void __thiscall phys_contact_manifold_process::intersect_poly_segment(class phys_contact_manifold *,class math::Dir3 const &,class math::Dir3 const &)	
+0x00888340	?intersect_poly_poly@phys_contact_manifold_process@@QAEXXZ	public: void __thiscall phys_contact_manifold_process::intersect_poly_poly(void)	

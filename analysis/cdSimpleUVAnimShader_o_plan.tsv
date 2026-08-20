@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x007C6D70	??0cdSimpleUVAnimShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdSimpleUVAnimShaderMat::cdSimpleUVAnimShaderMat(struct nglTexture *)	
+0x007C6E00	?InitCDSimpleUVAnimShader@@YAXXZ	void __cdecl InitCDSimpleUVAnimShader(void)	
+0x007C6E50	?ToggleCDSimpleUVAnimShader@@YAXXZ	void __cdecl ToggleCDSimpleUVAnimShader(void)	
+0x007C6E70	?Register@cdSimpleUVAnimShader@@UAEXXZ	public: virtual void __thiscall cdSimpleUVAnimShader::Register(void)	
+0x007C6ED0	?AddNode@cdSimpleUVAnimShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdSimpleUVAnimShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007C6F40	?SetTextureMatrix@cdSimpleUVAnimShaderNode@@IAEXAAVMat44@math@@@Z	protected: void __thiscall cdSimpleUVAnimShaderNode::SetTextureMatrix(class math::Mat44 &)	
+0x007C70E0	?Render@cdSimpleUVAnimShaderNode@@UAEXXZ	public: virtual void __thiscall cdSimpleUVAnimShaderNode::Render(void)	

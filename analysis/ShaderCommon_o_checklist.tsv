@@ -1,0 +1,34 @@
+index	status	map_line
+1	PORTED	0002:003bf3d0 ?ToggleParticles@@YAXXZ 00BAE8D0 f ShaderCommon.o
+2	PORTED	0002:003bf3f0 ?ToggleFog@@YAXXZ 00BAE8F0 f ShaderCommon.o
+3	VERIFIED	0002:003bf410 ?SetDebugRenderMode@ShaderCommon@@YAXW4EDebugRenderMode@1@@Z 00BAE910 f ShaderCommon.o
+4	VERIFIED	0002:003bf420 ?GetDebugRenderMode@ShaderCommon@@YA?AW4EDebugRenderMode@1@XZ 00BAE920 f ShaderCommon.o
+5	VERIFIED	0002:003bf430 ?SetTextureSizeMipLevel@ShaderCommon@@YAXH@Z 00BAE930 f ShaderCommon.o
+6	VERIFIED	0002:003bf440 ?FinishShotPerfTest@ShaderCommon@@YAXPAX@Z 00BAE940 f ShaderCommon.o
+7	VERIFIED	0002:003bf450 ?InitShaders@ShaderCommon@@YAXXZ 00BAE950 f ShaderCommon.o
+8	VERIFIED	0002:003bf500 ?RegisterShaders@ShaderCommon@@YAXXZ 00BAEA00 f ShaderCommon.o
+9	VERIFIED	0002:003bf510 ?SetupFrame@ShaderCommon@@YAXM@Z 00BAEA10 f ShaderCommon.o
+10	PORTED	0002:003bf540 ?SetupSceneCallback@ShaderCommon@@YAXPAX@Z 00BAEA40 f ShaderCommon.o
+11	PORTED	0002:003bf550 ?ShaderGetTexture@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00BAEA50 f ShaderCommon.o
+12	PORTED	0002:003bf5a0 ?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00BAEAA0 f ShaderCommon.o
+13	PORTED	0002:003bf5d0 ?GetFarFogColor@ShaderCommon@@YA?AVVector4@math@@XZ 00BAEAD0 f ShaderCommon.o
+14	VERIFIED	0002:003bf630 ?GlowInit@ShaderCommon@@YAXXZ 00BAEB30 f ShaderCommon.o
+15	PORTED	0002:003bf640 ?GlowRender@ShaderCommon@@YAXXZ 00BAEB40 f ShaderCommon.o
+16	VERIFIED	0002:003bf690 ?HeatHazeInit@ShaderCommon@@YAXXZ 00BAEB90 f ShaderCommon.o
+17	VERIFIED	0002:003bf6a0 ?HeatHazeCallback@ShaderCommon@@YAXPAX@Z 00BAEBA0 f ShaderCommon.o
+18	PORTED	0002:003bf6b0 ?StartShotPerfTest@ShaderCommon@@YAPAXXZ 00BAEBB0 f ShaderCommon.o
+19	VERIFIED	0002:003bf6d0 ?ToggleShader@ShaderCommon@@YAXPBD@Z 00BAEBD0 f ShaderCommon.o
+20	PORTED	0002:003bf820 ?UpdateShotPerfTest@ShaderCommon@@YA_NPAXM@Z 00BAED20 f ShaderCommon.o
+21	PORTED	0002:003bf840 ?GetShotPerfResults@ShaderCommon@@YAXPAXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z 00BAED40 f ShaderCommon.o
+22	VERIFIED	0002:003bf860 ??0ShaderInfo@ShotPerfTest@ShaderCommon@@QAE@XZ 00BAED60 f i ShaderCommon.o
+23	PORTED	0002:003bf8a0 ?Finalize@ShaderInfo@ShotPerfTest@ShaderCommon@@AAEXXZ 00BAEDA0 f i ShaderCommon.o
+24	PORTED	0002:003bf900 ?IsFinished@ShotPerfTest@ShaderCommon@@QBE_NXZ 00BAEE00 f i ShaderCommon.o
+25	PORTED	0002:003bf910 ?empty@?$ae_fixed_string@$0EA@E@@QBE_NXZ 00BAEE10 f i ShaderCommon.o
+26	PORTED	0002:003bf920 ??A?$ae_fixed_string@$0EA@E@@QAEAADH@Z 00BAEE20 f i ShaderCommon.o
+27	VERIFIED	0002:003bf990 ?to_lower@?$ae_fixed_string@$0EA@E@@QAEXXZ 00BAEE90 f i ShaderCommon.o
+28	VERIFIED	0002:003bf9a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@QAEXABV?$ae_fixed_string@$0CAA@G@@@Z 00BAEEA0 f i ShaderCommon.o
+29	VERIFIED	0002:003bfa20 ?Update@ShaderInfo@ShotPerfTest@ShaderCommon@@QAEXM@Z 00BAEF20 f i ShaderCommon.o
+30	VERIFIED	0002:003bfb30 ??0ShotPerfTest@ShaderCommon@@QAE@XZ 00BAF030 f i ShaderCommon.o
+31	VERIFIED	0002:003bfbb0 ??0?$ae_formatted_string@$0CAA@G@@QAA@PBDZZ 00BAF0B0 f i ShaderCommon.o
+32	VERIFIED	0002:003bfc00 ?Update@ShotPerfTest@ShaderCommon@@QAEXM@Z 00BAF100 f i ShaderCommon.o
+33	PORTED	0002:003bfd00 ?GenerateReport@ShotPerfTest@ShaderCommon@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z 00BAF200 f i ShaderCommon.o

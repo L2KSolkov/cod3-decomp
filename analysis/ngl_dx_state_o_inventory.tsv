@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x0084FC90	0x00C3F190	?Reset@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::Reset(void)	ngl_dx_state.o
+0x0084FCC0	0x00C3F1C0	?SetBlendMode@nglDxRenderState@@QAEXI@Z	public: void __thiscall nglDxRenderState::SetBlendMode(unsigned int)	ngl_dx_state.o
+0x0084FED0	0x00C3F3D0	?FSAAFixup@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::FSAAFixup(void)	ngl_dx_state.o
+0x0084FEE0	0x00C3F3E0	?Init@nglDxRenderState@@QAEXXZ	public: void __thiscall nglDxRenderState::Init(void)	ngl_dx_state.o

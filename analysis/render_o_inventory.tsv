@@ -1,0 +1,427 @@
+ida_ea	va	name	signature	family
+0x006BC300	0x00AAB800	?SetEnabled@FogConfig@@YAXH@Z	void __cdecl FogConfig::SetEnabled(int)	render.o
+0x006BC310	0x00AAB810	?SetRange@FogConfig@@YAXMM@Z	void __cdecl FogConfig::SetRange(float,float)	render.o
+0x006BC330	0x00AAB830	?SetVal@FogConfig@@YAXMM@Z	void __cdecl FogConfig::SetVal(float,float)	render.o
+0x006BC350	0x00AAB850	?SetColor@FogConfig@@YAXMMM@Z	void __cdecl FogConfig::SetColor(float,float,float)	render.o
+0x006BC4A0	0x00AAB9A0	?SetColorInt@FogConfig@@YAXHHH@Z	void __cdecl FogConfig::SetColorInt(int,int,int)	render.o
+0x006BC4F0	0x00AAB9F0	?Apply@FogConfig@@YAXXZ	void __cdecl FogConfig::Apply(void)	render.o
+0x006BC550	0x00AABA50	?GetEnabled@FogConfig@@YAXAAH@Z	void __cdecl FogConfig::GetEnabled(int &)	render.o
+0x006BC560	0x00AABA60	?GetColor@FogConfig@@YAXAAM00@Z	void __cdecl FogConfig::GetColor(float &,float &,float &)	render.o
+0x006BC5A0	0x00AABAA0	?GetColorInt@FogConfig@@YAXAAH00@Z	void __cdecl FogConfig::GetColorInt(int &,int &,int &)	render.o
+0x006BC5F0	0x00AABAF0	?GetRange@FogConfig@@YAXAAM0@Z	void __cdecl FogConfig::GetRange(float &,float &)	render.o
+0x006BC620	0x00AABB20	?GetVal@FogConfig@@YAXAAM0@Z	void __cdecl FogConfig::GetVal(float &,float &)	render.o
+0x006BC870	0x00AABD70	?SetLightGridFailedColor@LightGridMgr@@QAEXXZ	public: void __thiscall LightGridMgr::SetLightGridFailedColor(void)	render.o
+0x006BC8B0	0x00AABDB0	?GetGridInfo@LightGridMgr@@AAE_NABUTOC@LightGrid@@HABVPosition3@math@@PAPBUGridPoint@3@PAM@Z	private: bool __thiscall LightGridMgr::GetGridInfo(struct LightGrid::TOC const &,int,class math::Position3 const &,struct LightGrid::GridPoint const * *,float *)	render.o
+0x006BCBB0	0x00AAC0B0	?GetAmbientColors@LightGridMgr@@AAEXPAPBUGridPoint@LightGrid@@PAVPosition3@math@@@Z	private: void __thiscall LightGridMgr::GetAmbientColors(struct LightGrid::GridPoint const * *,class math::Position3 *)	render.o
+0x006BCE00	0x00AAC300	??0TimerRenderBars@@QAE@XZ	public: __thiscall TimerRenderBars::TimerRenderBars(void)	render.o
+0x006BCE60	0x00AAC360	?Init@TimerRenderBars@@QAEXXZ	public: void __thiscall TimerRenderBars::Init(void)	render.o
+0x006BCEE0	0x00AAC3E0	?DeltaTimeScale@TimerRenderBars@@QAEXH@Z	public: void __thiscall TimerRenderBars::DeltaTimeScale(int)	render.o
+0x006BCF00	0x00AAC400	?Init@DebugRender@@QAEXXZ	public: void __thiscall DebugRender::Init(void)	render.o
+0x006BD000	0x00AAC500	?extract_color@@YAIABVColor@@@Z	unsigned int __cdecl extract_color(class Color const &)	render.o
+0x006BD060	0x00AAC560	?compute_orth_unit_vector@@YA?BVDir3@math@@ABV12@@Z	class math::Dir3 const __cdecl compute_orth_unit_vector(class math::Dir3 const &)	render.o
+0x006BD200	0x00AAC700	?RenderLineBox@DebugRender@@SAXABVMat43@math@@ABVDiagMat33@3@ABVColor@@@Z	public: static void __cdecl DebugRender::RenderLineBox(class math::Mat43 const &,class math::DiagMat33 const &,class Color const &)	render.o
+0x006BD230	0x00AAC730	?RenderQuad2D@DebugRender@@SAXMMMMMABVColor@@@Z	public: static void __cdecl DebugRender::RenderQuad2D(float,float,float,float,float,class Color const &)	render.o
+0x006BD2D0	0x00AAC7D0	?RenderText@DebugRender@@SAXPBDHHABVColor@@MM@Z	public: static void __cdecl DebugRender::RenderText(char const *,int,int,class Color const &,float,float)	render.o
+0x006BD390	0x00AAC890	?XModelEnforceExist@@YAXH@Z	void __cdecl XModelEnforceExist(int)	render.o
+0x006BD3A0	0x00AAC8A0	?XModelSetOptimize@@YAXH@Z	void __cdecl XModelSetOptimize(int)	render.o
+0x006BD3B0	0x00AAC8B0	?XModelGetSurfaces@@YAHV?$IVPointer@VXModel@@@@PAPAPAVXSurface@@H@Z	int __cdecl XModelGetSurfaces(class IVPointer<class XModel>,class XSurface * * *,int)	render.o
+0x006BD3C0	0x00AAC8C0	?XModelGetSurfaceName@@YAPBDV?$IVPointer@VXModel@@@@HH@Z	char const * __cdecl XModelGetSurfaceName(class IVPointer<class XModel>,int,int)	render.o
+0x006BD3D0	0x00AAC8D0	?XSurfaceCloneSurface@@YAPAVXSurface@@PAV1@@Z	class XSurface * __cdecl XSurfaceCloneSurface(class XSurface *)	render.o
+0x006BD440	0x00AAC940	?XSurfaceGetNumVerts@@YAHPAVXSurface@@@Z	int __cdecl XSurfaceGetNumVerts(class XSurface *)	render.o
+0x006BD450	0x00AAC950	?XSurfaceGetNumTris@@YAHPAVXSurface@@@Z	int __cdecl XSurfaceGetNumTris(class XSurface *)	render.o
+0x006BD460	0x00AAC960	?XSurfaceTileMode@@YA?AW4XSurfTile_e@@PAVXSurface@@@Z	enum XSurfTile_e __cdecl XSurfaceTileMode(class XSurface *)	render.o
+0x006BD470	0x00AAC970	?XSurfaceGetTris@@YAXPAVXSurface@@PAGG@Z	void __cdecl XSurfaceGetTris(class XSurface *,unsigned short *,unsigned short)	render.o
+0x006BD5C0	0x00AACAC0	?XSurfaceGetVertexInfoArray@@YA?ATXVariantVertexInfo_u@@PAVXSurface@@@Z	union XVariantVertexInfo_u __cdecl XSurfaceGetVertexInfoArray(class XSurface *)	render.o
+0x006BD5D0	0x00AACAD0	?XSurfaceGetTexCoordArray@@YAPAY01MPAVXSurface@@@Z	float (* __cdecl XSurfaceGetTexCoordArray(class XSurface *))[2]	render.o
+0x006BD5E0	0x00AACAE0	?XSurfaceGetBlendInfoArray@@YAPAUXBlendInfo@@PAVXSurface@@@Z	struct XBlendInfo * __cdecl XSurfaceGetBlendInfoArray(class XSurface *)	render.o
+0x006BD5F0	0x00AACAF0	?XSurfaceGetBoneIndex@@YAHPAVXSurface@@@Z	int __cdecl XSurfaceGetBoneIndex(class XSurface *)	render.o
+0x006BD600	0x00AACB00	?XSurfaceRemapTextureCoordinates@@YAXPAVXSurface@@QAM1HH@Z	void __cdecl XSurfaceRemapTextureCoordinates(class XSurface *,float * const,float * const,int,int)	render.o
+0x006BD800	0x00AACD00	?XSurfaceGetVerts@@YAXPAVXSurface@@PAUDObjSkelMat@@PAM22@Z	void __cdecl XSurfaceGetVerts(class XSurface *,struct DObjSkelMat *,float *,float *,float *)	render.o
+0x006BDC00	0x00AAD100	?OnBankUnloaded@XModelPartsManager@@EAEXAAVXModelPartsBank@@@Z	private: virtual void __thiscall XModelPartsManager::OnBankUnloaded(class XModelPartsBank &)	render.o
+0x006BDC10	0x00AAD110	?DObjInit@@YAXXZ	void __cdecl DObjInit(void)	render.o
+0x006BDC20	0x00AAD120	?DObjShutdown@@YAXXZ	void __cdecl DObjShutdown(void)	render.o
+0x006BDC30	0x00AAD130	?DObjIgnoreCollision@@YAHPAVDObj@@H@Z	int __cdecl DObjIgnoreCollision(class DObj *,int)	render.o
+0x006BDC60	0x00AAD160	?DObjGetHierarchyBits@@YAXPAVDObj@@HQAH@Z	void __cdecl DObjGetHierarchyBits(class DObj *,int,int * const)	render.o
+0x006BDDF0	0x00AAD2F0	?DObjCompleteHierarchyBits@@YAXPAVDObj@@QAH@Z	void __cdecl DObjCompleteHierarchyBits(class DObj *,int * const)	render.o
+0x006BDEE0	0x00AAD3E0	?DObjCalcSkel@@YAXPAVDObj@@QAH@Z	void __cdecl DObjCalcSkel(class DObj *,int * const)	render.o
+0x006BDEF0	0x00AAD3F0	?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z	struct DObjSkelMat * __cdecl DObjGetMatrixArray(class DObj const *,int)	render.o
+0x006BDF70	0x00AAD470	?DObjGetAllocSkelSize@@YAHPAVDObj@@@Z	int __cdecl DObjGetAllocSkelSize(class DObj *)	render.o
+0x006BDF90	0x00AAD490	?DObjSkelExists@@YAHPAVDObj@@H@Z	int __cdecl DObjSkelExists(class DObj *,int)	render.o
+0x006BDFB0	0x00AAD4B0	?DObjSkelExistsConst@@YAHPAVDObj@@H@Z	int __cdecl DObjSkelExistsConst(class DObj *,int)	render.o
+0x006BDFD0	0x00AAD4D0	?DObjGetNumModels@@YAHPAVDObj@@@Z	int __cdecl DObjGetNumModels(class DObj *)	render.o
+0x006BDFE0	0x00AAD4E0	?DObjSetRotTransIndex@@YAHPAVDObj@@QAHH@Z	int __cdecl DObjSetRotTransIndex(class DObj *,int * const,int)	render.o
+0x006BDFF0	0x00AAD4F0	?DObjSetControlRotTransIndex@@YAHPAVDObj@@QAHH@Z	int __cdecl DObjSetControlRotTransIndex(class DObj *,int * const,int)	render.o
+0x006BE150	0x00AAD650	?DObjGetNumSurfaces@@YAHPAVDObj@@PAH@Z	int __cdecl DObjGetNumSurfaces(class DObj *,int *)	render.o
+0x006BE160	0x00AAD660	?DObjGetSurface@@YAPAVXSurface@@PAVDObj@@HHPAH@Z	class XSurface * __cdecl DObjGetSurface(class DObj *,int,int,int *)	render.o
+0x006BE170	0x00AAD670	?DObjGetSurfaceName@@YAPBDPAVDObj@@HHPAH@Z	char const * __cdecl DObjGetSurfaceName(class DObj *,int,int,int *)	render.o
+0x006BE180	0x00AAD680	?DObjGetSurfaces@@YAXPAVDObj@@PAUDSurface_s@@QAHPAH@Z	void __cdecl DObjGetSurfaces(class DObj *,struct DSurface_s *,int * const,int *)	render.o
+0x006BE190	0x00AAD690	?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z	class XAnimTree * __cdecl DObjGetTree(class DObj *)	render.o
+0x006BE1E0	0x00AAD6E0	?DObjNumBones@@YAHPAVDObj@@@Z	int __cdecl DObjNumBones(class DObj *)	render.o
+0x006BE320	0x00AAD820	?GetMat@DObj@@QAEABVMat43@math@@H@Z	public: class math::Mat43 const & __thiscall DObj::GetMat(int)	render.o
+0x006BE390	0x00AAD890	?R_XModelDebugAxes@@YAXPAVtrRefEntity@@QAH@Z	void __cdecl R_XModelDebugAxes(class trRefEntity *,int * const)	render.o
+0x006BE630	0x00AADB30	?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@@Z	class math::Mat43 * __cdecl nglListAddMesh_GetScaledMatrix(class math::Mat43 const &,class nglMeshParams *)	render.o
+0x006BE890	0x00AADD90	?render_view_model_arms@@YAXHAAVnglMeshParams@@ABVMat43@math@@AAV23@@Z	void __cdecl render_view_model_arms(int,class nglMeshParams &,class math::Mat43 const &,class math::Mat43 &)	render.o
+0x006BEA90	0x00AADF90	?render_view_model_weapon@@YAXHAAVnglMeshParams@@AAVMat43@math@@@Z	void __cdecl render_view_model_weapon(int,class nglMeshParams &,class math::Mat43 &)	render.o
+0x006BEB80	0x00AAE080	?ModelLightingHack@@YAXXZ	void __cdecl ModelLightingHack(void)	render.o
+0x006BECC0	0x00AAE1C0	??0world_t@@QAE@XZ	public: __thiscall world_t::world_t(void)	render.o
+0x006BECD0	0x00AAE1D0	?RE_LoadWorldMap@@YAXPBDPAH@Z	void __cdecl RE_LoadWorldMap(char const *,int *)	render.o
+0x006BED00	0x00AAE200	?R_PerformanceCounters@@YAXXZ	void __cdecl R_PerformanceCounters(void)	render.o
+0x006BED10	0x00AAE210	?R_IssueRenderCommands@@YAXH@Z	void __cdecl R_IssueRenderCommands(int)	render.o
+0x006BED20	0x00AAE220	?R_SyncRenderThread@@YAXXZ	void __cdecl R_SyncRenderThread(void)	render.o
+0x006BED30	0x00AAE230	?R_AddDrawSurfCmd@@YAXPAUdrawSurf_s@@H@Z	void __cdecl R_AddDrawSurfCmd(struct drawSurf_s *,int)	render.o
+0x006BED40	0x00AAE240	?RE_SetColor@@YAXPBM@Z	void __cdecl RE_SetColor(float const *)	render.o
+0x006BEDB0	0x00AAE2B0	?RE_StretchPic@@YAXMMMMMMMMPAUnglTexture@@M@Z	void __cdecl RE_StretchPic(float,float,float,float,float,float,float,float,struct nglTexture *,float)	render.o
+0x006BEE50	0x00AAE350	?RE_DrawQuadPic@@YAXPAY01$$CBM0PAUnglTexture@@@Z	void __cdecl RE_DrawQuadPic(float const (*)[2],float const (*)[2],struct nglTexture *)	render.o
+0x006BEF40	0x00AAE440	?RE_BeginFrame@@YAXXZ	void __cdecl RE_BeginFrame(void)	render.o
+0x006BF020	0x00AAE520	?RE_SaveScreen@@YAXXZ	void __cdecl RE_SaveScreen(void)	render.o
+0x006BF030	0x00AAE530	?RE_TrackStatistics@@YAXPAUtrStatistics_t@@@Z	void __cdecl RE_TrackStatistics(struct trStatistics_t *)	render.o
+0x006BF040	0x00AAE540	?R_ShutdownDebug@@YAXXZ	void __cdecl R_ShutdownDebug(void)	render.o
+0x006BF060	0x00AAE560	?RE_LocateDebugStrings@@YAXPAUtrDebugString_t@@H@Z	void __cdecl RE_LocateDebugStrings(struct trDebugString_t *,int)	render.o
+0x006BF080	0x00AAE580	?RE_LocateDebugLines@@YAXPAUtrDebugLine_t@@H@Z	void __cdecl RE_LocateDebugLines(struct trDebugLine_t *,int)	render.o
+0x006BF330	0x00AAE830	?R_SetPlaneSidesDPVS@@YAXPAUdpvs_plane_t@@@Z	void __cdecl R_SetPlaneSidesDPVS(struct dpvs_plane_t *)	render.o
+0x006BF380	0x00AAE880	?RE_GetFarPlaneDist@@YAMXZ	float __cdecl RE_GetFarPlaneDist(void)	render.o
+0x006BF830	0x00AAED30	?R_AddModelToCell@@YAXPAVBspCell@@PAVtrRefEntity@@ABVVector4@math@@@Z	void __cdecl R_AddModelToCell(class BspCell *,class trRefEntity *,class math::Vector4 const &)	render.o
+0x006BFB40	0x00AAF040	?RE_SetCullDist@@YAXM@Z	void __cdecl RE_SetCullDist(float)	render.o
+0x006BFB70	0x00AAF070	?_codListAddMesh@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@P6AXPAV1@@Z@Z	class nglMeshNode * __cdecl _codListAddMesh(struct nglMesh *,class math::Mat43 const &,class nglMeshParams *,struct nglShaderParamSet *,void (__cdecl*)(class nglMeshNode *))	render.o
+0x006BFD50	0x00AAF250	?_codListBeginScene@@YAXW4nglSceneParamType@@@Z	void __cdecl _codListBeginScene(enum nglSceneParamType)	render.o
+0x006BFE30	0x00AAF330	?_codListEndScene@@YAXXZ	void __cdecl _codListEndScene(void)	render.o
+0x006BFF30	0x00AAF430	?readInt@@YAHXZ	int __cdecl readInt(void)	render.o
+0x006BFF70	0x00AAF470	?readFloat@@YAMXZ	float __cdecl readFloat(void)	render.o
+0x006BFFB0	0x00AAF4B0	?R_InitFreeType@@YAXXZ	void __cdecl R_InitFreeType(void)	render.o
+0x006BFFC0	0x00AAF4C0	?R_DoneFreeType@@YAXXZ	void __cdecl R_DoneFreeType(void)	render.o
+0x006BFFD0	0x00AAF4D0	?R_GetFontInfo@@YAPAVnglFont@@HM@Z	class nglFont * __cdecl R_GetFontInfo(int,float)	render.o
+0x006C0000	0x00AAF500	?RE_Text_Height@@YAHHM@Z	int __cdecl RE_Text_Height(int,float)	render.o
+0x006C0400	0x00AAF900	?GL_CheckErrors@@YAXPBD@Z	void __cdecl GL_CheckErrors(char const *)	render.o
+0x006C0410	0x00AAF910	?R_TakeScreenshot@@YAXHHHHPAD@Z	void __cdecl R_TakeScreenshot(int,int,int,int,char *)	render.o
+0x006C0420	0x00AAF920	?R_TakeScreenshotJPEG@@YAXHHHHPAD@Z	void __cdecl R_TakeScreenshotJPEG(int,int,int,int,char *)	render.o
+0x006C0430	0x00AAF930	?R_ScreenshotFilename@@YAXHPAD@Z	void __cdecl R_ScreenshotFilename(int,char *)	render.o
+0x006C0480	0x00AAF980	?R_ScreenshotFilenameJPEG@@YAXHPAD@Z	void __cdecl R_ScreenshotFilenameJPEG(int,char *)	render.o
+0x006C04D0	0x00AAF9D0	?R_LevelShot@@YAXXZ	void __cdecl R_LevelShot(void)	render.o
+0x006C04E0	0x00AAF9E0	?R_SaveGameShot@@YAXPBD@Z	void __cdecl R_SaveGameShot(char const *)	render.o
+0x006C04F0	0x00AAF9F0	?RE_CubemapShot@@YAXPBDHHMM@Z	void __cdecl RE_CubemapShot(char const *,int,int,float,float)	render.o
+0x006C0500	0x00AAFA00	?RE_CubemapWaterShot@@YAXPBDHHQAM1@Z	void __cdecl RE_CubemapWaterShot(char const *,int,int,float * const,float * const)	render.o
+0x006C0510	0x00AAFA10	?R_ScreenShotHigh_f@@YAXXZ	void __cdecl R_ScreenShotHigh_f(void)	render.o
+0x006C0540	0x00AAFA40	?R_SetNVFogMode@@YAXXZ	void __cdecl R_SetNVFogMode(void)	render.o
+0x006C0550	0x00AAFA50	?GL_SetDefaultState@@YAXXZ	void __cdecl GL_SetDefaultState(void)	render.o
+0x006C0560	0x00AAFA60	?R_VboRefresh_f@@YAXXZ	void __cdecl R_VboRefresh_f(void)	render.o
+0x006C0570	0x00AAFA70	?HackUpGLConfig@@YAXXZ	void __cdecl HackUpGLConfig(void)	render.o
+0x006C06A0	0x00AAFBA0	?RE_EndRegistration@@YAXXZ	void __cdecl RE_EndRegistration(void)	render.o
+0x006C06B0	0x00AAFBB0	?nglStartOverExposure@@YAXMMMMM@Z	void __cdecl nglStartOverExposure(float,float,float,float,float)	render.o
+0x006C0720	0x00AAFC20	?nglStartOverExposureEx@@YAXMMMMMMM@Z	void __cdecl nglStartOverExposureEx(float,float,float,float,float,float,float)	render.o
+0x006C07D0	0x00AAFCD0	?nglCycleOverExposure@@YAXPAUBP_OVEREXPOSURE@@H@Z	void __cdecl nglCycleOverExposure(struct BP_OVEREXPOSURE *,int)	render.o
+0x006C07E0	0x00AAFCE0	??0refEntity_t@@QAE@H@Z	public: __thiscall refEntity_t::refEntity_t(int)	render.o
+0x006C0800	0x00AAFD00	?GetTrRefentity@refEntity_t@@QAEPAVtrRefEntity@@XZ	public: class trRefEntity * __thiscall refEntity_t::GetTrRefentity(void)	render.o
+0x006C0810	0x00AAFD10	?SetInSnapshot@trRefEntity@@QAEXXZ	public: void __thiscall trRefEntity::SetInSnapshot(void)	render.o
+0x006C0820	0x00AAFD20	?IsInSnapshot@trRefEntity@@QBE_NXZ	public: bool __thiscall trRefEntity::IsInSnapshot(void)const 	render.o
+0x006C0840	0x00AAFD40	?R_Fog@@YAXPAUglfog_t@@@Z	void __cdecl R_Fog(struct glfog_t *)	render.o
+0x006C0850	0x00AAFD50	?R_FogOff@@YAXXZ	void __cdecl R_FogOff(void)	render.o
+0x006C0860	0x00AAFD60	?R_FogOn@@YAXXZ	void __cdecl R_FogOn(void)	render.o
+0x006C0870	0x00AAFD70	?R_SetFogColor@@YAXXZ	void __cdecl R_SetFogColor(void)	render.o
+0x006C0880	0x00AAFD80	?R_SetFog@@YAXHHHMMMM@Z	void __cdecl R_SetFog(int,int,int,float,float,float,float)	render.o
+0x006C0A10	0x00AAFF10	?R_UpdateOverTime@@YAMMMHHH@Z	float __cdecl R_UpdateOverTime(float,float,int,int,int)	render.o
+0x006C0A80	0x00AAFF80	?R_LocalNormalToWorld@@YAXQAM0@Z	void __cdecl R_LocalNormalToWorld(float * const,float * const)	render.o
+0x006C0B30	0x00AB0030	?R_LocalPointToWorld@@YAXQAM0@Z	void __cdecl R_LocalPointToWorld(float * const,float * const)	render.o
+0x006C0BF0	0x00AB00F0	?R_TransformModelToClip@@YAXQBMPBM1QAM2@Z	void __cdecl R_TransformModelToClip(float const * const,float const *,float const *,float * const,float * const)	render.o
+0x006C0DA0	0x00AB02A0	?R_TransformHomogenousModelToClip@@YAXQBMPBM1QAM2@Z	void __cdecl R_TransformHomogenousModelToClip(float const * const,float const *,float const *,float * const,float * const)	render.o
+0x006C0F70	0x00AB0470	?myGlMultMatrix@@YAXPBM0PAM@Z	void __cdecl myGlMultMatrix(float const *,float const *,float *)	render.o
+0x006C1080	0x00AB0580	?R_RotateForModelEntity@@YAXPAVtrRefEntity@@PBUviewParms_t@@PAUorientationr_t@@@Z	void __cdecl R_RotateForModelEntity(class trRefEntity *,struct viewParms_t const *,struct orientationr_t *)	render.o
+0x006C1270	0x00AB0770	?R_RotateForEntity@@YAXPAVtrRefEntity@@PBUviewParms_t@@PAUorientationr_t@@@Z	void __cdecl R_RotateForEntity(class trRefEntity *,struct viewParms_t const *,struct orientationr_t *)	render.o
+0x006C12B0	0x00AB07B0	?R_RotateForViewer@@YAXXZ	void __cdecl R_RotateForViewer(void)	render.o
+0x006C1630	0x00AB0B30	?R_SetFrameFog@@YAXXZ	void __cdecl R_SetFrameFog(void)	render.o
+0x006C1830	0x00AB0D30	?R_SetupProjection@@YAXXZ	void __cdecl R_SetupProjection(void)	render.o
+0x006C1960	0x00AB0E60	?R_MirrorPoint@@YAXQAMPAUorientation_t@@10@Z	void __cdecl R_MirrorPoint(float * const,struct orientation_t *,struct orientation_t *,float * const)	render.o
+0x006C1A90	0x00AB0F90	?R_MirrorVector@@YAXQAMPAUorientation_t@@10@Z	void __cdecl R_MirrorVector(float * const,struct orientation_t *,struct orientation_t *,float * const)	render.o
+0x006C1BC0	0x00AB10C0	?R_PlaneForSurface@@YAXPAW4surfaceType_t@@PAUcplane_s@@@Z	void __cdecl R_PlaneForSurface(enum surfaceType_t *,struct cplane_s *)	render.o
+0x006C1D20	0x00AB1220	?qsortFast@@YAXPAXII@Z	void __cdecl qsortFast(void *,unsigned int,unsigned int)	render.o
+0x006C1E70	0x00AB1370	?R_SetWindowQuadRect@@YAXAAUnglQuad@@@Z	void __cdecl R_SetWindowQuadRect(struct nglQuad &)	render.o
+0x006C1F40	0x00AB1440	?R_ClearAlpha@@YAXXZ	void __cdecl R_ClearAlpha(void)	render.o
+0x006C1F50	0x00AB1450	?R_GetZBufferValue@@YAMMM@Z	float __cdecl R_GetZBufferValue(float,float)	render.o
+0x006C2120	0x00AB1620	?NGLPreSceneCallBack@@YAXPAX@Z	void __cdecl NGLPreSceneCallBack(void *)	render.o
+0x006C2130	0x00AB1630	?HandleFullScreenBlur@@YAXH@Z	void __cdecl HandleFullScreenBlur(int)	render.o
+0x006C21F0	0x00AB16F0	?R_ApplyGammaCorrection@@YAX_NH@Z	void __cdecl R_ApplyGammaCorrection(bool,int)	render.o
+0x006C2200	0x00AB1700	?XboxNGLMidSceneCallBack@@YAXPAX@Z	void __cdecl XboxNGLMidSceneCallBack(void *)	render.o
+0x006C2360	0x00AB1860	?XboxNGLPostSceneCallBack@@YAXPAX@Z	void __cdecl XboxNGLPostSceneCallBack(void *)	render.o
+0x006C2370	0x00AB1870	?EndOfRenderCallback@@YAXPAX@Z	void __cdecl EndOfRenderCallback(void *)	render.o
+0x006C2380	0x00AB1880	?R_GetViewModelArmsScale@@YAMH@Z	float __cdecl R_GetViewModelArmsScale(int)	render.o
+0x006C23A0	0x00AB18A0	?R_GetViewModelWeaponScale@@YAMH@Z	float __cdecl R_GetViewModelWeaponScale(int)	render.o
+0x006C23C0	0x00AB18C0	?cdProjShadow_Init@@YAPAUnglTexture@@XZ	struct nglTexture * __cdecl cdProjShadow_Init(void)	render.o
+0x006C23F0	0x00AB18F0	?cdProjShadow_CleanUp@@YAXXZ	void __cdecl cdProjShadow_CleanUp(void)	render.o
+0x006C2420	0x00AB1920	?cdProjShadow_Begin@@YAXXZ	void __cdecl cdProjShadow_Begin(void)	render.o
+0x006C28C0	0x00AB1DC0	?R_GetXModelBounds@@YAXPAVXModel@@QAY02MAAVBoundingBox@@@Z	void __cdecl R_GetXModelBounds(class XModel *,float (* const)[3],class BoundingBox &)	render.o
+0x006C2970	0x00AB1E70	?R_ModelBounds@@YAXV?$IVPointer@VXModel@@@@W4TPakId@@QAM2@Z	void __cdecl R_ModelBounds(class IVPointer<class XModel>,enum TPakId,float * const,float * const)	render.o
+0x006C29A0	0x00AB1EA0	?RE_ClearScene@@YAXXZ	void __cdecl RE_ClearScene(void)	render.o
+0x006C29D0	0x00AB1ED0	?RE_AddPolyToScene@@YAXHHPBUpolyVert_t@@@Z	void __cdecl RE_AddPolyToScene(int,int,struct polyVert_t const *)	render.o
+0x006C29E0	0x00AB1EE0	?RE_SetViewModelInfoIndex@@YAXH@Z	void __cdecl RE_SetViewModelInfoIndex(int)	render.o
+0x006C2A00	0x00AB1F00	?R_GetLodDist@@YAMPBUrefEntity_t@@@Z	float __cdecl R_GetLodDist(struct refEntity_t const *)	render.o
+0x006C2A60	0x00AB1F60	?R_GetLodDist@@YAMABVMat43@math@@M@Z	float __cdecl R_GetLodDist(class math::Mat43 const &,float)	render.o
+0x006C2B00	0x00AB2000	?GetTextureData@@YAPAUnglTexture@@PBDH0@Z	struct nglTexture * __cdecl GetTextureData(char const *,int,char const *)	render.o
+0x006C2BB0	0x00AB20B0	?R_InitShaders@@YAXXZ	void __cdecl R_InitShaders(void)	render.o
+0x006C2BC0	0x00AB20C0	?R_FindShader@@YAPAUshader_t@@PBDHHH@Z	struct shader_t * __cdecl R_FindShader(char const *,int,int,int)	render.o
+0x006C2C10	0x00AB2110	?R_UseCachedLightSample@@YAXABVLightGridData@@@Z	void __cdecl R_UseCachedLightSample(class LightGridData const &)	render.o
+0x006C2CF0	0x00AB21F0	?ui_dllEntry@@YAXP6AHHZZ@Z	void __cdecl ui_dllEntry(int (__cdecl*)(int,...))	render.o
+0x006C2D00	0x00AB2200	?trap_R_Text_Height@@YAHHM@Z	int __cdecl trap_R_Text_Height(int,float)	render.o
+0x006C2D10	0x00AB2210	?trap_R_Text_Paint@@YAXMMHMQBMPBDMHH@Z	void __cdecl trap_R_Text_Paint(float,float,int,float,float const * const,char const *,float,int,int)	render.o
+0x006C2D20	0x00AB2220	?trap_R_Text_PaintWithCursor@@YAXMMHMQBMPBDHDHH@Z	void __cdecl trap_R_Text_PaintWithCursor(float,float,int,float,float const * const,char const *,int,char,int,int)	render.o
+0x006C2D60	0x00AB2260	?SEH_LocalizeTextMessage@@YAPBDPBD0@Z	char const * __cdecl SEH_LocalizeTextMessage(char const *,char const *)	render.o
+0x006C2D80	0x00AB2280	?trap_R_RegisterShaderNoMip@@YAHPBDH@Z	int __cdecl trap_R_RegisterShaderNoMip(char const *,int)	render.o
+0x006C2D90	0x00AB2290	?trap_R_ClearScene@@YAXXZ	void __cdecl trap_R_ClearScene(void)	render.o
+0x006C2DA0	0x00AB22A0	?trap_R_AddPolyToScene@@YAXPAUnglTexture@@HPBUpolyVert_t@@@Z	void __cdecl trap_R_AddPolyToScene(struct nglTexture *,int,struct polyVert_t const *)	render.o
+0x006C2DB0	0x00AB22B0	?trap_R_AddLightToScene@@YAXQBMMMMM@Z	void __cdecl trap_R_AddLightToScene(float const * const,float,float,float,float)	render.o
+0x006C2DC0	0x00AB22C0	?trap_R_RenderScene@@YAXPBUrefdef_s@@@Z	void __cdecl trap_R_RenderScene(struct refdef_s const *)	render.o
+0x006C2DD0	0x00AB22D0	?trap_R_SetColor@@YAXPBM@Z	void __cdecl trap_R_SetColor(float const *)	render.o
+0x006C2DE0	0x00AB22E0	?trap_R_DrawStretchPic@@YAXMMMMMMMMPAUnglTexture@@M@Z	void __cdecl trap_R_DrawStretchPic(float,float,float,float,float,float,float,float,struct nglTexture *,float)	render.o
+0x006C2DF0	0x00AB22F0	?ui_Z_MallocInternal@@YAPAXH@Z	void * __cdecl ui_Z_MallocInternal(int)	render.o
+0x006C2E00	0x00AB2300	?ui_Z_FreeInternal@@YAXPAX@Z	void __cdecl ui_Z_FreeInternal(void *)	render.o
+0x006C2E10	0x00AB2310	?apsGetStats@@YAXAAUapsStats@@@Z	void __cdecl apsGetStats(struct apsStats &)	render.o
+0x006C2E50	0x00AB2350	?apsReportStatus@@YAXXZ	void __cdecl apsReportStatus(void)	render.o
+0x006C2E60	0x00AB2360	?apsGetPoolInfo@@YA_NHAAH000@Z	bool __cdecl apsGetPoolInfo(int,int &,int &,int &,int &)	render.o
+0x006C2E90	0x00AB2390	?apsResetPools@@YAXXZ	void __cdecl apsResetPools(void)	render.o
+0x006C2EA0	0x00AB23A0	?apsAddPool@@YAXHH@Z	void __cdecl apsAddPool(int,int)	render.o
+0x006C2EB0	0x00AB23B0	?apsCreateDefaultPools@@YAXXZ	void __cdecl apsCreateDefaultPools(void)	render.o
+0x006C2EC0	0x00AB23C0	?apsCreateBigBufferPools@@YAXXZ	void __cdecl apsCreateBigBufferPools(void)	render.o
+0x006C2F80	0x00AB2480	?apsInitParticleMemory@@YAXH_N@Z	void __cdecl apsInitParticleMemory(int,bool)	render.o
+0x006C3070	0x00AB2570	?apsInitLevelSpecificParticleMemory@@YAXPBD@Z	void __cdecl apsInitLevelSpecificParticleMemory(char const *)	render.o
+0x006C3080	0x00AB2580	?apsUpdate@@YAXM@Z	void __cdecl apsUpdate(float)	render.o
+0x006C3090	0x00AB2590	?apsMemAlloc@@YAPAXIII@Z	void * __cdecl apsMemAlloc(unsigned int,unsigned int,unsigned int)	render.o
+0x006C3110	0x00AB2610	?apsMemFree@@YAXPAX@Z	void __cdecl apsMemFree(void *)	render.o
+0x006C3190	0x00AB2690	??0apsMemConfig@@QAE@W4TPakId@@@Z	public: __thiscall apsMemConfig::apsMemConfig(enum TPakId)	render.o
+0x006C31C0	0x00AB26C0	??1apsMemConfig@@QAE@XZ	public: __thiscall apsMemConfig::~apsMemConfig(void)	render.o
+0x006C31E0	0x00AB26E0	?apsDebugRender@@YAXXZ	void __cdecl apsDebugRender(void)	render.o
+0x006C31F0	0x00AB26F0	?DebugDrawBox@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@@Z	public: virtual void __thiscall ApsGameClient::DebugDrawBox(class math::Dir3 const &,class math::Dir3 const &,class math::Vector4 const &)	render.o
+0x006C3200	0x00AB2700	?DebugDrawSolidSphere@ApsGameClient@@UAEXABVDir3@math@@MABVVector4@3@@Z	public: virtual void __thiscall ApsGameClient::DebugDrawSolidSphere(class math::Dir3 const &,float,class math::Vector4 const &)	render.o
+0x006C3210	0x00AB2710	?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@M@Z	public: virtual void __thiscall ApsGameClient::DebugDrawLine(class math::Dir3 const &,class math::Dir3 const &,class math::Vector4 const &,float)	render.o
+0x006C3220	0x00AB2720	??1ParticleEffect@@QAE@XZ	public: __thiscall ParticleEffect::~ParticleEffect(void)	render.o
+0x006C32D0	0x00AB27D0	?DestroyArray@ParticleEffect@@SAXXZ	public: static void __cdecl ParticleEffect::DestroyArray(void)	render.o
+0x006C3310	0x00AB2810	?FX_TermFX@@YAXXZ	void __cdecl FX_TermFX(void)	render.o
+0x006C3370	0x00AB2870	?FX_RegisterEffect@@YAHPBD@Z	int __cdecl FX_RegisterEffect(char const *)	render.o
+0x006C33D0	0x00AB28D0	?InitCDAepsShader@@YAXXZ	void __cdecl InitCDAepsShader(void)	render.o
+0x006C3420	0x00AB2920	?FX_SetRainDrops@@YAX_N@Z	void __cdecl FX_SetRainDrops(bool)	render.o
+0x006C3430	0x00AB2930	?UpdateNanoDynamicSystem@@YAXPAVapsEffect@@@Z	void __cdecl UpdateNanoDynamicSystem(class apsEffect *)	render.o
+0x006C3440	0x00AB2940	?FX_ParticleEffectSampleLightGrid@@YAPAUnglLightContext@@PAVapsEffect@@@Z	struct nglLightContext * __cdecl FX_ParticleEffectSampleLightGrid(class apsEffect *)	render.o
+0x006C3470	0x00AB2970	?GetSortKey@ParticleEffect@@QAEIXZ	public: unsigned int __thiscall ParticleEffect::GetSortKey(void)	render.o
+0x006C3480	0x00AB2980	??0LightEffect@@QAE@W4eType@0@M@Z	public: __thiscall LightEffect::LightEffect(enum LightEffect::eType,float)	render.o
+0x006C34C0	0x00AB29C0	??1LightEffect@@QAE@XZ	public: __thiscall LightEffect::~LightEffect(void)	render.o
+0x006C34D0	0x00AB29D0	?Start@LightEffect@@QAEXXZ	public: void __thiscall LightEffect::Start(void)	render.o
+0x006C3500	0x00AB2A00	?IsLightFinished@LightEffect@@QAE_NXZ	public: bool __thiscall LightEffect::IsLightFinished(void)	render.o
+0x006C3550	0x00AB2A50	?GetTagFlashPos@@YA?AVPosition3@math@@PAVEntity@@@Z	class math::Position3 __cdecl GetTagFlashPos(class Entity *)	render.o
+0x006C36B0	0x00AB2BB0	?SetColor@LightEffect@@QAEXMMMM@Z	public: void __thiscall LightEffect::SetColor(float,float,float,float)	render.o
+0x006C36F0	0x00AB2BF0	?SetScale@LightEffect@@QAEXM@Z	public: void __thiscall LightEffect::SetScale(float)	render.o
+0x006C3710	0x00AB2C10	??0DynamicDecalSet@@QAE@PAUnglTexture@@M_NH@Z	public: __thiscall DynamicDecalSet::DynamicDecalSet(struct nglTexture *,float,bool,int)	render.o
+0x006C3770	0x00AB2C70	??1DynamicDecalSet@@QAE@XZ	public: __thiscall DynamicDecalSet::~DynamicDecalSet(void)	render.o
+0x006C3790	0x00AB2C90	?Update@DynamicDecalSet@@QAEXM@Z	public: void __thiscall DynamicDecalSet::Update(float)	render.o
+0x006C3880	0x00AB2D80	?FindFreeDecal@DynamicDecalSet@@QAEHXZ	public: int __thiscall DynamicDecalSet::FindFreeDecal(void)	render.o
+0x006C38B0	0x00AB2DB0	?Reset@WheelMarkMgr@@SAXXZ	public: static void __cdecl WheelMarkMgr::Reset(void)	render.o
+0x006C38C0	0x00AB2DC0	?CreateMesh@WheelMark@@QAEXXZ	public: void __thiscall WheelMark::CreateMesh(void)	render.o
+0x006C3910	0x00AB2E10	?DestroyMesh@WheelMark@@QAEXXZ	public: void __thiscall WheelMark::DestroyMesh(void)	render.o
+0x006C3920	0x00AB2E20	?New@WheelMark@@QAEXXZ	public: void __thiscall WheelMark::New(void)	render.o
+0x006C39F0	0x00AB2EF0	?UpdateSplash@WheelMark@@QAEXABVPosition3@math@@@Z	public: void __thiscall WheelMark::UpdateSplash(class math::Position3 const &)	render.o
+0x006C3AB0	0x00AB2FB0	?Stop@WheelMark@@QAEXXZ	public: void __thiscall WheelMark::Stop(void)	render.o
+0x006C3AD0	0x00AB2FD0	??0TranslucentStat@@QAE@XZ	public: __thiscall TranslucentStat::TranslucentStat(void)	render.o
+0x006C3AE0	0x00AB2FE0	?StartQuery@TranslucentStat@@QAEXXZ	public: void __thiscall TranslucentStat::StartQuery(void)	render.o
+0x006C3AF0	0x00AB2FF0	?EndQuery@TranslucentStat@@QAEXXZ	public: void __thiscall TranslucentStat::EndQuery(void)	render.o
+0x006C3B00	0x00AB3000	?RenderDebugStats@TranslucentStat@@QAEXXZ	public: void __thiscall TranslucentStat::RenderDebugStats(void)	render.o
+0x006C3B10	0x00AB3010	?Shutdown@TranslucentStat@@QAEXXZ	public: void __thiscall TranslucentStat::Shutdown(void)	render.o
+0x006C3B20	0x00AB3020	??0LightGridMgr@@QAE@XZ	public: __thiscall LightGridMgr::LightGridMgr(void)	render.o
+0x006C3BC0	0x00AB30C0	?UnloadBank@LightGridMgr@@EAEXW4TPakId@@@Z	private: virtual void __thiscall LightGridMgr::UnloadBank(enum TPakId)	render.o
+0x006C3BE0	0x00AB30E0	?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z	public: struct LightGrid::TOC * __thiscall LightGridMgr::GetLightGrid(enum TPakId)	render.o
+0x006C3C40	0x00AB3140	?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z	public: struct LightGrid::TOC * __thiscall LightGridMgr::GetLightGrid(int)	render.o
+0x006C3C70	0x00AB3170	?Render@TimerRenderBars@@QAEXXZ	public: void __thiscall TimerRenderBars::Render(void)	render.o
+0x006C4060	0x00AB3560	??0DebugRender@@QAE@XZ	public: __thiscall DebugRender::DebugRender(void)	render.o
+0x006C4080	0x00AB3580	?AddRenderer@DebugRender@@QAEXP6AXXZ@Z	public: void __thiscall DebugRender::AddRenderer(void (__cdecl*)(void))	render.o
+0x006C40A0	0x00AB35A0	?RenderText3DOff2D@DebugRender@@SAXPBDABVPosition3@math@@ABVDir3@3@ABVColor@@MM@Z	public: static void __cdecl DebugRender::RenderText3DOff2D(char const *,class math::Position3 const &,class math::Dir3 const &,class Color const &,float,float)	render.o
+0x006C41C0	0x00AB36C0	?RenderText3D@DebugRender@@SAXABVPosition3@math@@ABVColor@@MPBDZZ	public: static void __cdecl DebugRender::RenderText3D(class math::Position3 const &,class Color const &,float,char const *,...)	render.o
+0x006C4370	0x00AB3870	?profile_reset@@YAXXZ	void __cdecl profile_reset(void)	render.o
+0x006C4570	0x00AB3A70	?ReadQuat@@YAXPAF0@Z	void __cdecl ReadQuat(short *,short *)	render.o
+0x006C4640	0x00AB3B40	?ReadQuat2@@YAXPAF0@Z	void __cdecl ReadQuat2(short *,short *)	render.o
+0x006C46E0	0x00AB3BE0	??1XModelManager@@EAE@XZ	private: virtual __thiscall XModelManager::~XModelManager(void)	render.o
+0x006C46F0	0x00AB3BF0	??1XModelPartsManager@@EAE@XZ	private: virtual __thiscall XModelPartsManager::~XModelPartsManager(void)	render.o
+0x006C4700	0x00AB3C00	?AssignHashName@XModelPartsManager@@QAEXPAVXModelParts@@@Z	public: void __thiscall XModelPartsManager::AssignHashName(class XModelParts *)	render.o
+0x006C4760	0x00AB3C60	??2DObj@@SAPAXI@Z	public: static void * __cdecl DObj::operator new(unsigned int)	render.o
+0x006C4770	0x00AB3C70	??3DObj@@SAXPAX@Z	public: static void __cdecl DObj::operator delete(void *)	render.o
+0x006C47A0	0x00AB3CA0	?DObjFree@@YAXPAVDObj@@H@Z	void __cdecl DObjFree(class DObj *,int)	render.o
+0x006C4970	0x00AB3E70	?DObjDeleteAnimationPlayers@@YAXPAVDObj@@@Z	void __cdecl DObjDeleteAnimationPlayers(class DObj *)	render.o
+0x006C49B0	0x00AB3EB0	?R_RefreshCell@@YAXH_N@Z	void __cdecl R_RefreshCell(int,bool)	render.o
+0x006C4D60	0x00AB4260	?DecodeBSP@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeBSP(char const *,unsigned char *,int,enum TPakId,class PakFile *)	render.o
+0x006C4E80	0x00AB4380	?R_InitDebug@@YAXXZ	void __cdecl R_InitDebug(void)	render.o
+0x006C4EA0	0x00AB43A0	?RB_DrawDebugStrings@@YAXPAUtrDebugString_t@@H@Z	void __cdecl RB_DrawDebugStrings(struct trDebugString_t *,int)	render.o
+0x006C52B0	0x00AB47B0	?R_CellForPoint@@YAHABVPosition3@math@@@Z	int __cdecl R_CellForPoint(class math::Position3 const &)	render.o
+0x006C5380	0x00AB4880	?calc_cell_index@@YAHABVPosition3@math@@AAY03MAAH@Z	int __cdecl calc_cell_index(class math::Position3 const &,float (&)[4],int &)	render.o
+0x006C5520	0x00AB4A20	?R_PortalClipPlanes@@YAPAUdpvs_plane_t@@PAVBspPortal@@PBU1@1HPAH@Z	struct dpvs_plane_t * __cdecl R_PortalClipPlanes(class BspPortal *,struct dpvs_plane_t const *,struct dpvs_plane_t const *,int,int *)	render.o
+0x006C57D0	0x00AB4CD0	?R_FilterModelIntoCells_r@@YAXPAVBspNode@@PAVtrRefEntity@@ABVVector4@math@@@Z	void __cdecl R_FilterModelIntoCells_r(class BspNode *,class trRefEntity *,class math::Vector4 const &)	render.o
+0x006C5B40	0x00AB5040	?RE_Text_Width@@YAHPBDHMMH@Z	int __cdecl RE_Text_Width(char const *,int,float,float,int)	render.o
+0x006C5F80	0x00AB5480	?RE_Text_ConsoleWidth@@YAHPBFHMMH@Z	int __cdecl RE_Text_ConsoleWidth(short const *,int,float,float,int)	render.o
+0x006C6070	0x00AB5570	?RE_Text_PaintWithCursor@@YAXMMHMQBMPBDHDMHH@Z	void __cdecl RE_Text_PaintWithCursor(float,float,int,float,float const * const,char const *,int,char,float,int,int)	render.o
+0x006C6480	0x00AB5980	?RE_Shutdown@@YAXH@Z	void __cdecl RE_Shutdown(int)	render.o
+0x006C65B0	0x00AB5AB0	?R_SetupFrustum@@YAXXZ	void __cdecl R_SetupFrustum(void)	render.o
+0x006C67F0	0x00AB5CF0	?R_ShowAlphaChannel@@YAXXZ	void __cdecl R_ShowAlphaChannel(void)	render.o
+0x006C68B0	0x00AB5DB0	?R_RenderGlow@@YAXXZ	void __cdecl R_RenderGlow(void)	render.o
+0x006C69C0	0x00AB5EC0	?R_RenderSky@@YAXXZ	void __cdecl R_RenderSky(void)	render.o
+0x006C6AA0	0x00AB5FA0	?R_SetViewModelScale@@YAXHMMHHPAVMat43@math@@@Z	void __cdecl R_SetViewModelScale(int,float,float,int,int,class math::Mat43 *)	render.o
+0x006C6C70	0x00AB6170	?R_ToggleSmpFrame@@YAXXZ	void __cdecl R_ToggleSmpFrame(void)	render.o
+0x006C6CE0	0x00AB61E0	?R_AddModelToCell@@YAXPAUworld_t@@PAVStaticModel@@H@Z	void __cdecl R_AddModelToCell(struct world_t *,class StaticModel *,int)	render.o
+0x006C6DC0	0x00AB62C0	?R_FilterModelIntoCells_r@@YAXPAUworld_t@@PAVBspNode@@PAVStaticModel@@ABVPosition3@math@@3@Z	void __cdecl R_FilterModelIntoCells_r(struct world_t *,class BspNode *,class StaticModel *,class math::Position3 const &,class math::Position3 const &)	render.o
+0x006C7130	0x00AB6630	?R_DestroyStaticModels@@YAXW4TPakId@@@Z	void __cdecl R_DestroyStaticModels(enum TPakId)	render.o
+0x006C71C0	0x00AB66C0	?apsCheckErrors@@YAHXZ	int __cdecl apsCheckErrors(void)	render.o
+0x006C7330	0x00AB6830	??0ParticleEffect@@QAE@_N@Z	public: __thiscall ParticleEffect::ParticleEffect(bool)	render.o
+0x006C7390	0x00AB6890	?New@ParticleEffect@@SAPAV1@XZ	public: static class ParticleEffect * __cdecl ParticleEffect::New(void)	render.o
+0x006C74D0	0x00AB69D0	?Delete@ParticleEffect@@SAXPAV1@@Z	public: static void __cdecl ParticleEffect::Delete(class ParticleEffect *)	render.o
+0x006C7550	0x00AB6A50	?IsFreePoolEmpty@ParticleEffect@@SA_NXZ	public: static bool __cdecl ParticleEffect::IsFreePoolEmpty(void)	render.o
+0x006C7570	0x00AB6A70	?Report@ParticleEffect@@QAEXXZ	public: void __thiscall ParticleEffect::Report(void)	render.o
+0x006C75B0	0x00AB6AB0	?FX_ElectEffectToKill@@YAPAVParticleEffect@@PAVapsEffectTemplate@@@Z	class ParticleEffect * __cdecl FX_ElectEffectToKill(class apsEffectTemplate *)	render.o
+0x006C7620	0x00AB6B20	?FX_DumpParticleEffectList@@YAXXZ	void __cdecl FX_DumpParticleEffectList(void)	render.o
+0x006C7690	0x00AB6B90	?FX_SortParticleEffectList@@YAXHH@Z	void __cdecl FX_SortParticleEffectList(int,int)	render.o
+0x006C7B60	0x00AB7060	?FX_ReportFX@@YAXXZ	void __cdecl FX_ReportFX(void)	render.o
+0x006C7BC0	0x00AB70C0	?FX_KillEffects@@YAXW4TPakId@@@Z	void __cdecl FX_KillEffects(enum TPakId)	render.o
+0x006C7C70	0x00AB7170	?FX_UpdateRainDrops@@YAXM@Z	void __cdecl FX_UpdateRainDrops(float)	render.o
+0x006C8140	0x00AB7640	?InvalidateParticleCollisionCaches@@YAXXZ	void __cdecl InvalidateParticleCollisionCaches(void)	render.o
+0x006C8180	0x00AB7680	?ProximityUpdate@@YAXAAURaycastData@ParticleEffect@@ABUCollisionData@apsEffect@@@Z	void __cdecl ProximityUpdate(struct ParticleEffect::RaycastData &,struct apsEffect::CollisionData const &)	render.o
+0x006C8300	0x00AB7800	?calc_cull_status@@YAHPAVParticleEffect@@@Z	int __cdecl calc_cull_status(class ParticleEffect *)	render.o
+0x006C84F0	0x00AB79F0	?IsOkToSpawnNewEffect@@YA_NPAVapsEffectTemplate@@H@Z	bool __cdecl IsOkToSpawnNewEffect(class apsEffectTemplate *,int)	render.o
+0x006C8680	0x00AB7B80	?Cmd_PFXReport_f@@YAXXZ	void __cdecl Cmd_PFXReport_f(void)	render.o
+0x006C86D0	0x00AB7BD0	?RemoveLight@@YAXPAVLightEffect@@@Z	void __cdecl RemoveLight(class LightEffect *)	render.o
+0x006C8720	0x00AB7C20	?Render@DynamicDecalSet@@QAEXXZ	public: void __thiscall DynamicDecalSet::Render(void)	render.o
+0x006C8E50	0x00AB8350	?Init@WheelMarkMgr@@SAXXZ	public: static void __cdecl WheelMarkMgr::Init(void)	render.o
+0x006C8F40	0x00AB8440	?Exit@WheelMarkMgr@@SAXXZ	public: static void __cdecl WheelMarkMgr::Exit(void)	render.o
+0x006C8F80	0x00AB8480	?Assign@WheelMark@@QAEXPAVEntity@@W4wheel_e@@@Z	public: void __thiscall WheelMark::Assign(class Entity *,enum wheel_e)	render.o
+0x006C8FB0	0x00AB84B0	?AddPoint@WheelMark@@QAEXABVPosition3@math@@ABVDir3@3@MMIM@Z	public: void __thiscall WheelMark::AddPoint(class math::Position3 const &,class math::Dir3 const &,float,float,unsigned int,float)	render.o
+0x006C93F0	0x00AB88F0	?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z	public: struct LightGrid::TOC * __thiscall LightGridMgr::GetLightGrid(class math::Position3 const &,int *)	render.o
+0x006C9530	0x00AB8A30	?GetLightListForGrid@LightGridMgr@@AAEXABUTOC@LightGrid@@PAPBUGridPoint@3@PAMAAV?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@@Z	private: void __thiscall LightGridMgr::GetLightListForGrid(struct LightGrid::TOC const &,struct LightGrid::GridPoint const * *,float *,class ae_sized_array<struct LightGrid::LightIndex,12> &)	render.o
+0x006C9790	0x00AB8C90	?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z	public: void __thiscall LightGridMgr::SampleLightGrid(struct LightGrid::TOC const &,int,class math::Position3 const &,class LightGridData *)	render.o
+0x006C9E20	0x00AB9320	?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVMat44@5@2@Z	public: void __thiscall LightGridMgr::SampleLightGrid(struct LightGrid::TOC const &,int,class math::Position3 const &,class math::Mat44 *,class math::Mat44 *)	render.o
+0x006CA2A0	0x00AB97A0	?setup_color@@YAXABVColor@@AAUnglShaderParamSet@@@Z	void __cdecl setup_color(class Color const &,struct nglShaderParamSet &)	render.o
+0x006CA350	0x00AB9850	?RenderTexturedQuad2D@DebugRender@@SAXMMMMMABVColor@@PAUnglTexture@@@Z	public: static void __cdecl DebugRender::RenderTexturedQuad2D(float,float,float,float,float,class Color const &,struct nglTexture *)	render.o
+0x006CA460	0x00AB9960	?XModelBad@@YAHV?$IVPointer@VXModel@@@@@Z	int __cdecl XModelBad(class IVPointer<class XModel>)	render.o
+0x006CA4C0	0x00AB99C0	?XModelGetName@@YAPBDV?$IVPointer@VXModel@@@@@Z	char const * __cdecl XModelGetName(class IVPointer<class XModel>)	render.o
+0x006CA4E0	0x00AB99E0	?XModelGetContents@@YAHV?$IVPointer@VXModel@@@@@Z	int __cdecl XModelGetContents(class IVPointer<class XModel>)	render.o
+0x006CA550	0x00AB9A50	?XModelGetNumLods@@YAHV?$IVPointer@VXModel@@@@@Z	int __cdecl XModelGetNumLods(class IVPointer<class XModel>)	render.o
+0x006CA570	0x00AB9A70	?XModelGetLodForDist@@YAHV?$IVPointer@VXModel@@@@M@Z	int __cdecl XModelGetLodForDist(class IVPointer<class XModel>,float)	render.o
+0x006CA5F0	0x00AB9AF0	?XModelTransform@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z	void __cdecl XModelTransform(class IVPointer<class XModel>,struct DObjSkelMat *,struct DObjSkelMat *)	render.o
+0x006CA670	0x00AB9B70	?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z	void __cdecl XModelGetBasePose(class IVPointer<class XModel>,struct DObjSkelMat *,struct DObjSkelMat *)	render.o
+0x006CAD70	0x00ABA270	?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAVMat43@math@@@Z	void __cdecl XModelGetBasePose(class IVPointer<class XModel>,class math::Mat43 *)	render.o
+0x006CB0A0	0x00ABA5A0	?XModelUpdateChildren@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@H@Z	void __cdecl XModelUpdateChildren(class IVPointer<class XModel>,struct DObjSkelMat *,int)	render.o
+0x006CB470	0x00ABA970	?XModelTraceLine@@YAHV?$IVPointer@VXModel@@@@PAUtrace_t@@PAUDObjSkelMat@@QBM3H@Z	int __cdecl XModelTraceLine(class IVPointer<class XModel>,struct trace_t *,struct DObjSkelMat *,float const * const,float const * const,int)	render.o
+0x006CBBA0	0x00ABB0A0	?XModelGetStaticBounds@@YAHV?$IVPointer@VXModel@@@@QAY02MAAVPosition3@math@@2PBVMat43@3@H@Z	int __cdecl XModelGetStaticBounds(class IVPointer<class XModel>,float (* const)[3],class math::Position3 &,class math::Position3 &,class math::Mat43 const *,int)	render.o
+0x006CBDD0	0x00ABB2D0	??0XModelManager@@AAE@XZ	private: __thiscall XModelManager::XModelManager(void)	render.o
+0x006CBDF0	0x00ABB2F0	??0XModelPartsManager@@AAE@XZ	private: __thiscall XModelPartsManager::XModelPartsManager(void)	render.o
+0x006CBE10	0x00ABB310	?PostProcess@XModelPartsManager@@AAEXPAVXModelPartsBank@@W4TPakId@@@Z	private: void __thiscall XModelPartsManager::PostProcess(class XModelPartsBank *,enum TPakId)	render.o
+0x006CC380	0x00ABB880	?DObjGetBasePose@@YAXPAVDObj@@@Z	void __cdecl DObjGetBasePose(class DObj *)	render.o
+0x006CC490	0x00ABB990	?DObjUpdateChildren@@YAXPAVDObj@@H@Z	void __cdecl DObjUpdateChildren(class DObj *,int)	render.o
+0x006CC6D0	0x00ABBBD0	?DObjCreateSkel@@YAXPAVDObj@@PAD@Z	void __cdecl DObjCreateSkel(class DObj *,char *)	render.o
+0x006CC870	0x00ABBD70	?DObjGetBounds@@YAXPBVDObj@@AAVPosition3@math@@1@Z	void __cdecl DObjGetBounds(class DObj const *,class math::Position3 &,class math::Position3 &)	render.o
+0x006CC8F0	0x00ABBDF0	?DObjGetBoneInfo@@YAXPAVDObj@@PAPAVXBoneInfo@@@Z	void __cdecl DObjGetBoneInfo(class DObj *,class XBoneInfo * *)	render.o
+0x006CCA50	0x00ABBF50	?DObjGetBoneName@@YAPBDPAVDObj@@H@Z	char const * __cdecl DObjGetBoneName(class DObj *,int)	render.o
+0x006CCD10	0x00ABC210	?DObjBad@@YAHPAVDObj@@@Z	int __cdecl DObjBad(class DObj *)	render.o
+0x006CCD90	0x00ABC290	?DObjTraceline@@YAXPBVDObj@@ABVPosition3@math@@1PAEPAUDObjTrace_s@@M@Z	void __cdecl DObjTraceline(class DObj const *,class math::Position3 const &,class math::Position3 const &,unsigned char *,struct DObjTrace_s *,float)	render.o
+0x006CDDA0	0x00ABD2A0	?DObjGeomTraceline@@YAXPBVDObj@@ABVPosition3@math@@1HPAUDObjTrace_s@@M@Z	void __cdecl DObjGeomTraceline(class DObj const *,class math::Position3 const &,class math::Position3 const &,int,struct DObjTrace_s *,float)	render.o
+0x006CDEF0	0x00ABD3F0	?DObjGetLodForDist@@YAHPAVDObj@@HM@Z	int __cdecl DObjGetLodForDist(class DObj *,int,float)	render.o
+0x006CDF20	0x00ABD420	?DObjHasContents@@YAHPBVDObj@@H@Z	int __cdecl DObjHasContents(class DObj const *,int)	render.o
+0x006CDFE0	0x00ABD4E0	?DObjCreateAnimationPlayer@@YAXPAVDObj@@H@Z	void __cdecl DObjCreateAnimationPlayer(class DObj *,int)	render.o
+0x006CE180	0x00ABD680	?GetBoneIndexInternal@DObj@@QBEHI@Z	public: int __thiscall DObj::GetBoneIndexInternal(unsigned int)const 	render.o
+0x006CE370	0x00ABD870	?GetBoneIndex@DObj@@QBEHPBD@Z	public: int __thiscall DObj::GetBoneIndex(char const *)const 	render.o
+0x006CE560	0x00ABDA60	?GetBoneParent@DObj@@QAEHH@Z	public: int __thiscall DObj::GetBoneParent(int)	render.o
+0x006CE610	0x00ABDB10	?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z	public: struct math::Mat43::Packed const & __thiscall DObj::GetBaseRelMat(int)	render.o
+0x006CE750	0x00ABDC50	?DObjUpdateLod@@YAXPAVEntity@@@Z	void __cdecl DObjUpdateLod(class Entity *)	render.o
+0x006CE850	0x00ABDD50	?AddTextureMatrix@@YA_NPAVEntity@@IAAUnglShaderParamSet@@@Z	bool __cdecl AddTextureMatrix(class Entity *,unsigned int,struct nglShaderParamSet &)	render.o
+0x006CED60	0x00ABE260	?do_shadow@@YAXPAVDObj@@HHPAUnglMesh@@ABVMat43@math@@2AAVnglMeshParams@@AAUnglShaderParamSet@@PAVnglMeshNode@@@Z	void __cdecl do_shadow(class DObj *,int,int,struct nglMesh *,class math::Mat43 const &,class math::Mat43 const &,class nglMeshParams &,struct nglShaderParamSet &,class nglMeshNode *)	render.o
+0x006CEFA0	0x00ABE4A0	?calc_lighting@@YAPAUnglLightContext@@PAVEntity@@ABVMat43@math@@MAAUnglShaderParamSet@@@Z	struct nglLightContext * __cdecl calc_lighting(class Entity *,class math::Mat43 const &,float,struct nglShaderParamSet &)	render.o
+0x006CF200	0x00ABE700	?R_AddXModelSurfaces_DistanceHack@@YAHPAVDObj@@PAVEntity@@ABVMat43@math@@@Z	int __cdecl R_AddXModelSurfaces_DistanceHack(class DObj *,class Entity *,class math::Mat43 const &)	render.o
+0x006CF9E0	0x00ABEEE0	?R_AddMenuModelSurfaces@@YAHPAVDObj@@PAVEntity@@ABVMat43@math@@MAAUnglShaderParamSet@@PAUnglLightContext@@_N5@Z	int __cdecl R_AddMenuModelSurfaces(class DObj *,class Entity *,class math::Mat43 const &,float,struct nglShaderParamSet &,struct nglLightContext *,bool,bool)	render.o
+0x006D02D0	0x00ABF7D0	?R_AddNonVehicleSurfaces@@YAHPAVDObj@@PAVEntity@@ABVMat43@math@@M_N3@Z	int __cdecl R_AddNonVehicleSurfaces(class DObj *,class Entity *,class math::Mat43 const &,float,bool,bool)	render.o
+0x006D0B50	0x00AC0050	?R_AddVehicleSurfaces@@YAHPAVDObj@@PAVEntity@@ABVMat43@math@@M_N@Z	int __cdecl R_AddVehicleSurfaces(class DObj *,class Entity *,class math::Mat43 const &,float,bool)	render.o
+0x006D1250	0x00AC0750	?R_AddViewModelSurfaces@@YAHHPAVDObj@@ABVMat43@math@@@Z	int __cdecl R_AddViewModelSurfaces(int,class DObj *,class math::Mat43 const &)	render.o
+0x006D1940	0x00AC0E40	?R_AddXModelSurfaces@@YAXPAVtrRefEntity@@@Z	void __cdecl R_AddXModelSurfaces(class trRefEntity *)	render.o
+0x006D1C30	0x00AC1130	?RE_StretchPicRotate@@YAXMMMMMMMMMPAUnglTexture@@@Z	void __cdecl RE_StretchPicRotate(float,float,float,float,float,float,float,float,float,struct nglTexture *)	render.o
+0x006D1DB0	0x00AC12B0	?RE_EndFrame@@YAXPAH0@Z	void __cdecl RE_EndFrame(int *,int *)	render.o
+0x006D1E70	0x00AC1370	?computeLOD@@YAMPAVDObj@@ABVPosition3@math@@@Z	float __cdecl computeLOD(class DObj *,class math::Position3 const &)	render.o
+0x006D1FE0	0x00AC14E0	?RE_Text_Paint@@YAXMMHMQBMPBDMHH@Z	void __cdecl RE_Text_Paint(float,float,int,float,float const * const,char const *,float,int,int)	render.o
+0x006D2020	0x00AC1520	?RE_Text_ConsolePaint@@YAXMMHMQBMPBFMHH@Z	void __cdecl RE_Text_ConsolePaint(float,float,int,float,float const * const,short const *,float,int,int)	render.o
+0x006D2280	0x00AC1780	?R_ScreenShot_f@@YAXXZ	void __cdecl R_ScreenShot_f(void)	render.o
+0x006D22B0	0x00AC17B0	?R_Register@@YAXXZ	void __cdecl R_Register(void)	render.o
+0x006D27F0	0x00AC1CF0	?R_Init@@YAXXZ	void __cdecl R_Init(void)	render.o
+0x006D2870	0x00AC1D70	?R_GetXModelBounds@@YAXPAVDObj@@QAY02MQAM2@Z	void __cdecl R_GetXModelBounds(class DObj *,float (* const)[3],float * const,float * const)	render.o
+0x006D2970	0x00AC1E70	?RE_BeginRegistration@@YAXPAUglconfig_t@@@Z	void __cdecl RE_BeginRegistration(struct glconfig_t *)	render.o
+0x006D29C0	0x00AC1EC0	?RE_AddPolyToScene@@YAXPAUnglTexture@@HPBUpolyVert_t@@@Z	void __cdecl RE_AddPolyToScene(struct nglTexture *,int,struct polyVert_t const *)	render.o
+0x006D2CD0	0x00AC21D0	?RE_AddRefEntityToScene@@YAXPAUrefEntity_t@@H@Z	void __cdecl RE_AddRefEntityToScene(struct refEntity_t *,int)	render.o
+0x006D2D30	0x00AC2230	?RE_AddViewModelToScene@@YAXPAUrefEntity_t@@@Z	void __cdecl RE_AddViewModelToScene(struct refEntity_t *)	render.o
+0x006D2D70	0x00AC2270	?R_AddStaticModelSurfaces@@YAXPAVStaticModel@@@Z	void __cdecl R_AddStaticModelSurfaces(class StaticModel *)	render.o
+0x006D3580	0x00AC2A80	?InitArray@ParticleEffect@@SAXXZ	public: static void __cdecl ParticleEffect::InitArray(void)	render.o
+0x006D3650	0x00AC2B50	?RemoveDeadEffects@@YAXXZ	void __cdecl RemoveDeadEffects(void)	render.o
+0x006D3730	0x00AC2C30	?PlayEffect@@YAPAVParticleEffect@@W4TPakId@@HAAVMat43@math@@V?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H_N@Z	class ParticleEffect * __cdecl PlayEffect(enum TPakId,int,class math::Mat43 &,class DbLinkedHandle<class DObjHandleDb,class DObj>,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,bool)	render.o
+0x006D3A00	0x00AC2F00	?PlayEffect@@YAPAVParticleEffect@@W4TPakId@@HQBM@Z	class ParticleEffect * __cdecl PlayEffect(enum TPakId,int,float const * const)	render.o
+0x006D3A90	0x00AC2F90	?PlayEffect@@YAPAVParticleEffect@@W4TPakId@@HQBMQAY02$$CBM@Z	class ParticleEffect * __cdecl PlayEffect(enum TPakId,int,float const * const,float const (* const)[3])	render.o
+0x006D3BA0	0x00AC30A0	?FX_PlaySimpleEffectID@@YAPAVParticleEffect@@W4TPakId@@HABVPosition3@math@@@Z	class ParticleEffect * __cdecl FX_PlaySimpleEffectID(enum TPakId,int,class math::Position3 const &)	render.o
+0x006D3BB0	0x00AC30B0	?FX_PlayEffectID@@YAPAVParticleEffect@@W4TPakId@@HABVPosition3@math@@QBM@Z	class ParticleEffect * __cdecl FX_PlayEffectID(enum TPakId,int,class math::Position3 const &,float const * const)	render.o
+0x006D3C10	0x00AC3110	?AddLight@@YAPAVLightEffect@@W4TPakId@@W4eType@1@ABVPosition3@math@@W4eTime@1@@Z	class LightEffect * __cdecl AddLight(enum TPakId,enum LightEffect::eType,class math::Position3 const &,enum LightEffect::eTime)	render.o
+0x006D3CF0	0x00AC31F0	?UpdateLights@@YAXM@Z	void __cdecl UpdateLights(float)	render.o
+0x006D3FD0	0x00AC34D0	?Add@DynamicDecalSet@@QAEXABVPosition3@math@@0MMVColor@@_N@Z	public: void __thiscall DynamicDecalSet::Add(class math::Position3 const &,class math::Position3 const &,float,float,class Color,bool)	render.o
+0x006D44A0	0x00AC39A0	?Find@WheelMarkMgr@@SAPAVWheelMark@@PAVEntity@@W4wheel_e@@@Z	public: static class WheelMark * __cdecl WheelMarkMgr::Find(class Entity *,enum wheel_e)	render.o
+0x006D4590	0x00AC3A90	?Render@WheelMark@@QAEXXZ	public: void __thiscall WheelMark::Render(void)	render.o
+0x006D46A0	0x00AC3BA0	?AddVertexPointLights@LightGridMgr@@QAEXW4TPakId@@PAUTOC@LightGrid@@@Z	public: void __thiscall LightGridMgr::AddVertexPointLights(enum TPakId,struct LightGrid::TOC *)	render.o
+0x006D47E0	0x00AC3CE0	?RenderLightGridDebugSphere@LightGridMgr@@QAEXABVPosition3@math@@@Z	public: void __thiscall LightGridMgr::RenderLightGridDebugSphere(class math::Position3 const &)	render.o
+0x006D4900	0x00AC3E00	?RenderLightGridDebugSpheres@LightGridMgr@@QAEXXZ	public: void __thiscall LightGridMgr::RenderLightGridDebugSpheres(void)	render.o
+0x006D4AF0	0x00AC3FF0	?RenderSphere@DebugRender@@SAXABVPosition3@math@@MABVColor@@@Z	public: static void __cdecl DebugRender::RenderSphere(class math::Position3 const &,float,class Color const &)	render.o
+0x006D4C10	0x00AC4110	?RenderCapsule@DebugRender@@SAXABVPosition3@math@@0MABVColor@@@Z	public: static void __cdecl DebugRender::RenderCapsule(class math::Position3 const &,class math::Position3 const &,float,class Color const &)	render.o
+0x006D4EC0	0x00AC43C0	?RenderCylinder@DebugRender@@SAXABVPosition3@math@@0MABVColor@@@Z	public: static void __cdecl DebugRender::RenderCylinder(class math::Position3 const &,class math::Position3 const &,float,class Color const &)	render.o
+0x006D50C0	0x00AC45C0	?RenderTriangle@DebugRender@@SAXABVPosition3@math@@00ABVColor@@_N@Z	public: static void __cdecl DebugRender::RenderTriangle(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class Color const &,bool)	render.o
+0x006D5310	0x00AC4810	?RenderQuad@DebugRender@@SAXABVPosition3@math@@000ABVColor@@_N@Z	public: static void __cdecl DebugRender::RenderQuad(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class Color const &,bool)	render.o
+0x006D5560	0x00AC4A60	?RenderBox@DebugRender@@SAXABVPosition3@math@@0ABVColor@@@Z	public: static void __cdecl DebugRender::RenderBox(class math::Position3 const &,class math::Position3 const &,class Color const &)	render.o
+0x006D5A70	0x00AC4F70	?RenderQuad@DebugRender@@SAXABVPosition3@math@@000ABVColor@@111_N@Z	public: static void __cdecl DebugRender::RenderQuad(class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class math::Position3 const &,class Color const &,class Color const &,class Color const &,class Color const &,bool)	render.o
+0x006D5CC0	0x00AC51C0	?RenderCone@DebugRender@@SAXABVPosition3@math@@ABVDir3@3@MMABVColor@@@Z	public: static void __cdecl DebugRender::RenderCone(class math::Position3 const &,class math::Dir3 const &,float,float,class Color const &)	render.o
+0x006D5FD0	0x00AC54D0	?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z	public: class IVPointer<class XModel> __thiscall XModelManager::GetXModel(enum TPakId,char const *)	render.o
+0x006D60F0	0x00AC55F0	?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z	public: class IVPointer<class XModelParts> __thiscall XModelPartsManager::GetXModelParts(enum TPakId,char const *)	render.o
+0x006D6120	0x00AC5620	?DecodeBank@XModelPartsManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall XModelPartsManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	render.o
+0x006D6150	0x00AC5650	??1DObj@@QAE@XZ	public: __thiscall DObj::~DObj(void)	render.o
+0x006D6210	0x00AC5710	?DObjDumpInfo@@YAXPAVDObj@@@Z	void __cdecl DObjDumpInfo(class DObj *)	render.o
+0x006D63D0	0x00AC58D0	?DObjCreate@@YAXPAVDObjModel@@GPAVXAnimTree@@PAVDObj@@G@Z	void __cdecl DObjCreate(class DObjModel *,unsigned short,class XAnimTree *,class DObj *,unsigned short)	render.o
+0x006D69F0	0x00AC5EF0	?DObjGetBoneIndex@@YAHPBVDObj@@I@Z	int __cdecl DObjGetBoneIndex(class DObj const *,unsigned int)	render.o
+0x006D7030	0x00AC6530	?R_AddEntitySurfaces@@YAXXZ	void __cdecl R_AddEntitySurfaces(void)	render.o
+0x006D7430	0x00AC6930	?R_RenderViewModels@@YAXPAUviewParms_t@@@Z	void __cdecl R_RenderViewModels(struct viewParms_t *)	render.o
+0x006D7680	0x00AC6B80	?RE_RegisterModel@@YA?AV?$IVPointer@VXModel@@@@PBDW4TPakId@@H@Z	class IVPointer<class XModel> __cdecl RE_RegisterModel(char const *,enum TPakId,int)	render.o
+0x006D76A0	0x00AC6BA0	?CreateSpawnedEffectImmediate@ApsGameClient@@UAEPAVapsEffect@@HPBVapsEffectTemplate@@M@Z	public: virtual class apsEffect * __thiscall ApsGameClient::CreateSpawnedEffectImmediate(int,class apsEffectTemplate const *,float)	render.o
+0x006D7710	0x00AC6C10	?FX_BuildSortedParticleEffectList@@YAXXZ	void __cdecl FX_BuildSortedParticleEffectList(void)	render.o
+0x006D77B0	0x00AC6CB0	?FX_ClearFX@@YAXXZ	void __cdecl FX_ClearFX(void)	render.o
+0x006D7850	0x00AC6D50	?FX_InitFX@@YAXXZ	void __cdecl FX_InitFX(void)	render.o
+0x006D7890	0x00AC6D90	?RenderEffectsInternal@@YAXXZ	void __cdecl RenderEffectsInternal(void)	render.o
+0x006D79C0	0x00AC6EC0	?RenderEffects@@YAXXZ	void __cdecl RenderEffects(void)	render.o
+0x006D79D0	0x00AC6ED0	?FX_GetBoneIndex@@YAHPBVDObj@@I@Z	int __cdecl FX_GetBoneIndex(class DObj const *,unsigned int)	render.o
+0x006D79F0	0x00AC6EF0	?FX_GetBoneOrientation@@YA_NV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@HPAUorientation_t@@@Z	bool __cdecl FX_GetBoneOrientation(class DbLinkedHandle<class DObjHandleDb,class DObj>,int,struct orientation_t *)	render.o
+0x006D8310	0x00AC7810	?FX_PlayEntityEffectID@@YAPAVParticleEffect@@W4TPakId@@HABVPosition3@math@@QAY02$$CBMV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H_N@Z	class ParticleEffect * __cdecl FX_PlayEntityEffectID(enum TPakId,int,class math::Position3 const &,float const (* const)[3],class DbLinkedHandle<class DObjHandleDb,class DObj>,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,bool)	render.o
+0x006D8490	0x00AC7990	?InitLights@@YAXXZ	void __cdecl InitLights(void)	render.o
+0x006D84D0	0x00AC79D0	?Render@DynamicDecalMgr@@QAEXXZ	public: void __thiscall DynamicDecalMgr::Render(void)	render.o
+0x006D8500	0x00AC7A00	?Update@DynamicDecalMgr@@QAEXM@Z	public: void __thiscall DynamicDecalMgr::Update(float)	render.o
+0x006D8530	0x00AC7A30	?Render@WheelMarkMgr@@SAXXZ	public: static void __cdecl WheelMarkMgr::Render(void)	render.o
+0x006D8560	0x00AC7A60	?DecodeBank@LightGridMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall LightGridMgr::DecodeBank(char const *,unsigned char *,int,enum TPakId)	render.o
+0x006D85B0	0x00AC7AB0	?RenderLine@DebugRender@@SAXABVPosition3@math@@0ABVColor@@M@Z	public: static void __cdecl DebugRender::RenderLine(class math::Position3 const &,class math::Position3 const &,class Color const &,float)	render.o
+0x006D8790	0x00AC7C90	?RenderPoint@DebugRender@@SAXABVPosition3@math@@ABVColor@@M@Z	public: static void __cdecl DebugRender::RenderPoint(class math::Position3 const &,class Color const &,float)	render.o
+0x006D8830	0x00AC7D30	?RenderLineBox@DebugRender@@SAXABVPosition3@math@@0ABVColor@@M@Z	public: static void __cdecl DebugRender::RenderLineBox(class math::Position3 const &,class math::Position3 const &,class Color const &,float)	render.o
+0x006D90E0	0x00AC85E0	?RenderBeamCube@DebugRender@@SAXABVPosition3@math@@MABVColor@@M@Z	public: static void __cdecl DebugRender::RenderBeamCube(class math::Position3 const &,float,class Color const &,float)	render.o
+0x006D9170	0x00AC8670	?RenderCircle@DebugRender@@SAXABVPosition3@math@@MABVColor@@M@Z	public: static void __cdecl DebugRender::RenderCircle(class math::Position3 const &,float,class Color const &,float)	render.o
+0x006D9370	0x00AC8870	?RenderAxis@DebugRender@@SAXABVMat43@math@@MM@Z	public: static void __cdecl DebugRender::RenderAxis(class math::Mat43 const &,float,float)	render.o
+0x006D9490	0x00AC8990	?Render@DebugRender@@QAEXXZ	public: void __thiscall DebugRender::Render(void)	render.o
+0x006D9730	0x00AC8C30	?PostProcess@XModelManager@@AAEXPAVXModelBank@@W4TPakId@@@Z	private: void __thiscall XModelManager::PostProcess(class XModelBank *,enum TPakId)	render.o
+0x006D9920	0x00AC8E20	??0DObj@@QAE@W4TPakId@@@Z	public: __thiscall DObj::DObj(enum TPakId)	render.o
+0x006D9A30	0x00AC8F30	?RB_DrawDebugLines@@YAXPAUtrDebugLine_t@@H@Z	void __cdecl RB_DrawDebugLines(struct trDebugLine_t *,int)	render.o
+0x006D9B20	0x00AC9020	?RB_DrawDebug@@YAXXZ	void __cdecl RB_DrawDebug(void)	render.o
+0x006D9E00	0x00AC9300	?R_AddWorldSurfacesDPVS@@YAXXZ	void __cdecl R_AddWorldSurfacesDPVS(void)	render.o
+0x006DA090	0x00AC9590	?R_GenerateDrawSurfs@@YAXXZ	void __cdecl R_GenerateDrawSurfs(void)	render.o
+0x006DA0C0	0x00AC95C0	?GetLightInfoAtPosition@ApsGameClient@@UAE_NABVDir3@math@@AAULightInfo@apsLight@@@Z	public: virtual bool __thiscall ApsGameClient::GetLightInfoAtPosition(class math::Dir3 const &,struct apsLight::LightInfo &)	render.o
+0x006DA3C0	0x00AC98C0	?FX_RenderFX@@YAXXZ	void __cdecl FX_RenderFX(void)	render.o
+0x006DA3F0	0x00AC98F0	?ProcessEffectsCollisions@@YAXXZ	void __cdecl ProcessEffectsCollisions(void)	render.o
+0x006DA720	0x00AC9C20	?ThreadedUpdateEffects@@YAXPAUjqBatch@@@Z	void __cdecl ThreadedUpdateEffects(struct jqBatch *)	render.o
+0x006DAB20	0x00ACA020	?UpdateEffects@@YAX_N@Z	void __cdecl UpdateEffects(bool)	render.o
+0x006DAB90	0x00ACA090	?fx_debug_render@@YAXXZ	void __cdecl fx_debug_render(void)	render.o
+0x006DAF80	0x00ACA480	?RenderLightGridDebugLines@LightGridMgr@@QAEXXZ	public: void __thiscall LightGridMgr::RenderLightGridDebugLines(void)	render.o
+0x006DB240	0x00ACA740	?RenderDebugText@LightGridMgr@@QAEXXZ	public: void __thiscall LightGridMgr::RenderDebugText(void)	render.o
+0x006DBB70	0x00ACB070	?RenderPoly@DebugRender@@SAXHPBVPosition3@math@@ABVColor@@@Z	public: static void __cdecl DebugRender::RenderPoly(int,class math::Position3 const *,class Color const &)	render.o
+0x006DBBB0	0x00ACB0B0	?DecodeBank@XModelManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall XModelManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	render.o
+0x006DBC20	0x00ACB120	?FX_UpdateFX@@YAX_N@Z	void __cdecl FX_UpdateFX(bool)	render.o
+0x006DBE00	0x00ACB300	?R_RenderView@@YAXPAUviewParms_t@@@Z	void __cdecl R_RenderView(struct viewParms_t *)	render.o
+0x006DC6C0	0x00ACBBC0	?RE_RenderScene@@YAXPBUrefdef_s@@@Z	void __cdecl RE_RenderScene(struct refdef_s const *)	render.o
+0x006DCA30	0x00ACBF30	?UpdateAndRender@ApsGameClient@@UAEXM@Z	public: virtual void __thiscall ApsGameClient::UpdateAndRender(float)	render.o
+0x006DCCB0	0x00ACC1B0	?GetRefAPI@@YAPAUrefexport_t@@HPAUrefimport_t@@@Z	struct refexport_t * __cdecl GetRefAPI(int,struct refimport_t *)	render.o
+0x006DCE20	0x00ACC320	??1DynamicDecalMgr@@QAE@XZ	public: __thiscall DynamicDecalMgr::~DynamicDecalMgr(void)	render.o
+0x006DCEC0	0x00ACC3C0	?DestroyAllDecals@DynamicDecalMgr@@QAEXXZ	public: void __thiscall DynamicDecalMgr::DestroyAllDecals(void)	render.o
+0x006DCF30	0x00ACC430	??0DynamicDecalMgr@@QAE@XZ	public: __thiscall DynamicDecalMgr::DynamicDecalMgr(void)	render.o
+0x006DCF40	0x00ACC440	?DebugDrawSolidSphere@ApsGameClient@@UAEXABVDir3@math@@MABVVector4@3@M@Z	public: virtual void __thiscall ApsGameClient::DebugDrawSolidSphere(class math::Dir3 const &,float,class math::Vector4 const &,float)	render.o
+0x006DD030	0x00ACC530	?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@MM@Z	public: virtual void __thiscall ApsGameClient::DebugDrawLine(class math::Dir3 const &,class math::Dir3 const &,class math::Vector4 const &,float,float)	render.o
+0x006DD170	0x00ACC670	?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@1@Z	public: void __thiscall DynamicDecalMgr::Add(struct nglTexture *,float,bool,int,class math::Position3 const &,class math::Position3 const &,float,float,class Color const &,bool)	render.o

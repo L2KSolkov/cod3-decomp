@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x007C5350	0x00BB4850	?ProcessCDScratchVertexDef@@YAXPAX@Z	void __cdecl ProcessCDScratchVertexDef(void *)	cdScratchVertexDef.o
+0x007C5370	0x00BB4870	?InitCDScratchVertexDefBuilder@@YAXXZ	void __cdecl InitCDScratchVertexDefBuilder(void)	cdScratchVertexDef.o

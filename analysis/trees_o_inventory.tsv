@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007E97A0	0x00BD8CA0	__tr_tally	__tr_tally	trees.o
+0x007E9F20	0x00BD9420	__tr_init	__tr_init	trees.o
+0x007EA280	0x00BD9780	__tr_stored_block	__tr_stored_block	trees.o
+0x007EA330	0x00BD9830	__tr_align	__tr_align	trees.o
+0x007EA530	0x00BD9A30	__tr_flush_block	__tr_flush_block	trees.o

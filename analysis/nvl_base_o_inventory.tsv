@@ -1,0 +1,22 @@
+ida_ea	va	name	signature	family
+0x0082E3F0	0x00C1D8F0	?GetVersion@nvlMovieBase@@SAIXZ	public: static unsigned int __cdecl nvlMovieBase::GetVersion(void)	nvl_base.o
+0x0082E400	0x00C1D900	?GetFileID@nvlMovieBase@@QAE?AW4nflFileID@@XZ	public: enum nflFileID __thiscall nvlMovieBase::GetFileID(void)	nvl_base.o
+0x0082E410	0x00C1D910	?ReleaseMovie@nvlMovieBase@@QAE?AW4nflFileID@@XZ	public: enum nflFileID __thiscall nvlMovieBase::ReleaseMovie(void)	nvl_base.o
+0x0082E4C0	0x00C1D9C0	?SetMovieState@nvlMovieBase@@QAE?AW4nvlMovieState@@W42@@Z	public: enum nvlMovieState __thiscall nvlMovieBase::SetMovieState(enum nvlMovieState)	nvl_base.o
+0x0082E4D0	0x00C1D9D0	?GetMovieState@nvlMovieBase@@QAE?AW4nvlMovieState@@XZ	public: enum nvlMovieState __thiscall nvlMovieBase::GetMovieState(void)	nvl_base.o
+0x0082E4E0	0x00C1D9E0	?SetUserDataCallback@nvlMovieBase@@QAEXP6AXPAEI_NPAX@Z2@Z	public: void __thiscall nvlMovieBase::SetUserDataCallback(void (__cdecl*)(unsigned char *,unsigned int,bool,void *),void *)	nvl_base.o
+0x0082E500	0x00C1DA00	?GetNumFrames@nvlMovieBase@@QAEHXZ	public: int __thiscall nvlMovieBase::GetNumFrames(void)	nvl_base.o
+0x0082E510	0x00C1DA10	?GetFrameNumber@nvlMovieBase@@QAEHXZ	public: int __thiscall nvlMovieBase::GetFrameNumber(void)	nvl_base.o
+0x0082E520	0x00C1DA20	?GetTexture@nvlMovieBase@@QAEPAUnglTexture@@XZ	public: struct nglTexture * __thiscall nvlMovieBase::GetTexture(void)	nvl_base.o
+0x0082E530	0x00C1DA30	?DecodeFrame@nvlMovieBase@@UAE?AW4nvlFrameState@@XZ	public: virtual enum nvlFrameState __thiscall nvlMovieBase::DecodeFrame(void)	nvl_base.o
+0x0082E540	0x00C1DA40	?SetConvertNTSCtoPAL@nvlMovieBase@@SAX_N@Z	public: static void __cdecl nvlMovieBase::SetConvertNTSCtoPAL(bool)	nvl_base.o
+0x0082E550	0x00C1DA50	?SetAudioTrack@nvlMovieBase@@QAE?AW4nvlResult@@H@Z	public: enum nvlResult __thiscall nvlMovieBase::SetAudioTrack(int)	nvl_base.o
+0x0082E560	0x00C1DA60	?IsBufferLoading@nvlMovieBase@@QAE_NXZ	public: bool __thiscall nvlMovieBase::IsBufferLoading(void)	nvl_base.o
+0x0082E590	0x00C1DA90	?Reset@nvlMovieBase@@UAEXXZ	public: virtual void __thiscall nvlMovieBase::Reset(void)	nvl_base.o
+0x0082E610	0x00C1DB10	?CheckNextNFLRequest@nvlMovieBase@@AAEXXZ	private: void __thiscall nvlMovieBase::CheckNextNFLRequest(void)	nvl_base.o
+0x0082E730	0x00C1DC30	??0nvlMovieBase@@QAE@XZ	public: __thiscall nvlMovieBase::nvlMovieBase(void)	nvl_base.o
+0x0082E780	0x00C1DC80	??1nvlMovieBase@@UAE@XZ	public: virtual __thiscall nvlMovieBase::~nvlMovieBase(void)	nvl_base.o
+0x0082E790	0x00C1DC90	?InitMovie@nvlMovieBase@@UAE?AW4nvlResult@@XZ	public: virtual enum nvlResult __thiscall nvlMovieBase::InitMovie(void)	nvl_base.o
+0x0082E970	0x00C1DE70	?BufferCheckBytes@nvlMovieBase@@QAE_NH_N@Z	public: bool __thiscall nvlMovieBase::BufferCheckBytes(int,bool)	nvl_base.o
+0x0082EB80	0x00C1E080	?IsBufferFull@nvlMovieBase@@QAE_NXZ	public: bool __thiscall nvlMovieBase::IsBufferFull(void)	nvl_base.o
+0x0082EBF0	0x00C1E0F0	?RequestCallback@nvlMovieBase@@QAEXW4nflRequestState@@W4nflRequestID@@@Z	public: void __thiscall nvlMovieBase::RequestCallback(enum nflRequestState,enum nflRequestID)	nvl_base.o

@@ -1,0 +1,748 @@
+index	status	map_line
+1	PORTED	0002:002f0a40 ?phys_sqr@@YA?BMM@Z 00ADFF40 f i physics.o
+2	PORTED	0002:002f0a50 ?capture_user_start@phys_memory_heap@@QAEXXZ 00ADFF50 f i physics.o
+3	PORTED	0002:002f0a60 ?reset_to_user_start@phys_memory_heap@@QAEXXZ 00ADFF60 f i physics.o
+4	PORTED	0002:002f0a70 ?get_buffer_start@phys_memory_heap@@QBEPADXZ 00ADFF70 f i physics.o
+5	PORTED	0002:002f0a80 ?get_buffer_cur@phys_memory_heap@@QBEPADXZ 00ADFF80 f i physics.o
+6	PORTED	0002:002f0a90 ?tlPrefetch@@YAXPAXI@Z 00ADFF90 f i physics.o
+7	PORTED	0002:002f0ab0 ?GetScriptEventHandler@Entity@@QAEPAVScriptEventHandler@@XZ 00ADFFB0 f i physics.o
+8	PORTED	0002:002f0ac0 ?phys_timers_reset@@YAXXZ 00ADFFC0 f i physics.o
+9	PORTED	0002:002f0ad0 ?get_phys_matrix@@YAPAVMat43@math@@PAVEntity@@@Z 00ADFFD0 f i physics.o
+10	PORTED	0002:002f0ae0 ?toPosition3@@YA?BVPosition3@math@@ABVDir3@2@@Z 00ADFFE0 f i physics.o
+11	VERIFIED	0002:002f0b80 ?set_max_avel@rigid_body@@QAEXM@Z 00AE0080 f i physics.o
+12	PORTED	0002:002f0bf0 ?set_fric_coef@rigid_body@@QAEXM@Z 00AE00F0 f i physics.o
+13	PORTED	0002:002f0c60 ?set_flag@rigid_body@@QAEXIH@Z 00AE0160 f i physics.o
+14	PORTED	0002:002f0cb0 ?is_environment_rigid_body@rigid_body@@QBE?BIXZ 00AE01B0 f i physics.o
+15	PORTED	0002:002f0cc0 ?debug_flag_is_in_collision@rigid_body@@QBE?BIXZ 00AE01C0 f i physics.o
+16	PORTED	0002:002f0ce0 ?debug_flag_is_not_in_collision@rigid_body@@QBE?BIXZ 00AE01E0 f i physics.o
+17	VERIFIED	0002:002f0d00 ?get_mat@rigid_body@@QBEABVMat43@math@@XZ 00AE0200 f i physics.o
+18	VERIFIED	0002:002f0d50 ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ 00AE0250 f i physics.o
+19	PORTED	0002:002f0da0 ?get_mat_for_setup@rigid_body@@QBEABVMat43@math@@XZ 00AE02A0 f i physics.o
+20	PORTED	0002:002f0db0 ?dangerous_get_mat_for_setup@rigid_body@@QAEAAVMat43@math@@XZ 00AE02B0 f i physics.o
+21	PORTED	0002:002f0dc0 ?get_col_mat@rigid_body@@QBEABVMat43@math@@XZ 00AE02C0 f i physics.o
+22	PORTED	0002:002f0e10 ?get_t_vel@rigid_body@@QBEABVDir3@math@@XZ 00AE0310 f i physics.o
+23	PORTED	0002:002f0e20 ?get_a_vel@rigid_body@@QBEABVDir3@math@@XZ 00AE0320 f i physics.o
+24	PORTED	0002:002f0e30 ?Inv@math@@YA?AVDir3@1@ABV21@@Z 00AE0330 f i physics.o
+25	PORTED	0002:002f0e80 ?set_gravity_multiplier@rigid_body@@QAEXM@Z 00AE0380 f i physics.o
+26	VERIFIED	0002:002f0ea0 ?set_gravity_dir@rigid_body@@QAEXABVDir3@math@@@Z 00AE03A0 f i physics.o
+27	PORTED	0002:002f0fa0 ?get_inv_inertia@rigid_body@@QBEABVDir3@math@@XZ 00AE04A0 f i physics.o
+28	PORTED	0002:002f0fb0 ?get_fric_coef@rigid_body@@QBE?BMXZ 00AE04B0 f i physics.o
+29	PORTED	0002:002f0fc0 ?is_group_stable@rigid_body@@QBE?BIXZ 00AE04C0 f i physics.o
+30	PORTED	0002:002f0fd0 ?get_contact_count@rigid_body@@QBE?BHXZ 00AE04D0 f i physics.o
+31	PORTED	0002:002f0fe0 ??0pulse_sum_cache@@QAE@XZ 00AE04E0 f i physics.o
+32	PORTED	0002:002f0ff0 ?get_b1@rigid_body_constraint@@QBEPAVrigid_body@@XZ 00AE04F0 f i physics.o
+33	PORTED	0002:002f1000 ?get_b2@rigid_body_constraint@@QBEPAVrigid_body@@XZ 00AE0500 f i physics.o
+34	PORTED	0002:002f1010 ?set_flag@rigid_body_constraint_ragdoll@@QAEXI_N@Z 00AE0510 f i physics.o
+35	PORTED	0002:002f1050 ?get_flag@rigid_body_constraint_ragdoll@@QBE?BII@Z 00AE0550 f i physics.o
+36	VERIFIED	0002:002f1060 ?get_joint_limit_active@rigid_body_constraint_ragdoll@@QBE?BII@Z 00AE0560 f i physics.o
+37	PORTED	0002:002f10c0 ?set_damp_type_implicit@rigid_body_constraint_ragdoll@@QAEXXZ 00AE05C0 f i physics.o
+38	PORTED	0002:002f10d0 ?set_flag@rigid_body_constraint_hinge@@QAEXHI@Z 00AE05D0 f i physics.o
+39	PORTED	0002:002f1120 ?is_stable@rb_ragdoll_model@@QAE_NXZ 00AE0620 f i physics.o
+40	PORTED	0002:002f1130 ?set_flag@contact_point_info@@QAEXIH@Z 00AE0630 f i physics.o
+41	PORTED	0002:002f1170 ?get_next_link@contact_point_info@@QBEPAV1@XZ 00AE0670 f i physics.o
+42	VERIFIED	0002:002f1180 ?set@contact_point_info@@QAEXMMM_N@Z 00AE0680 f i physics.o
+43	PORTED	0002:002f1240 ??0rigid_body_pair_key@@QAE@XZ 00AE0740 f i physics.o
+44	PORTED	0002:002f1250 ??0rigid_body_pair_key@@QAE@QAVrigid_body@@0@Z 00AE0750 f i physics.o
+45	PORTED	0002:002f1320 ??Mrigid_body_pair_key@@QBEHABV0@@Z 00AE0820 f i physics.o
+46	PORTED	0002:002f1350 ??Origid_body_pair_key@@QBEHABV0@@Z 00AE0850 f i physics.o
+47	PORTED	0002:002f1380 ??8rigid_body_pair_key@@QBEHABV0@@Z 00AE0880 f i physics.o
+48	PORTED	0002:002f13b0 ?get_avl_key@rigid_body_constraint_contact@@QBEABVrigid_body_pair_key@@XZ 00AE08B0 f i physics.o
+49	PORTED	0002:002f13c0 ?get_std_max_restitution_vel@rigid_body_constraint_contact@@SA?BMXZ 00AE08C0 f i physics.o
+50	PORTED	0002:002f13d0 ?get_std_active_limit_distance_eps@rigid_body_constraint_contact@@SA?BMXZ 00AE08D0 f i physics.o
+51	PORTED	0002:002f13e0 ?get_std_contact_min_sep_dist@rigid_body_constraint_contact@@SA?BMXZ 00AE08E0 f i physics.o
+52	PORTED	0002:002f13f0 ?calc_contact_buffer_size@rigid_body_constraint_contact@@SA?BHHH@Z 00AE08F0 f i physics.o
+53	PORTED	0002:002f1410 ?get_wheel_flag@rigid_body_constraint_wheel@@ABE?BIW4internal_wheel_flags_e@1@@Z 00AE0910 f i physics.o
+54	PORTED	0002:002f1430 ?set_side_fric_k@rigid_body_constraint_wheel@@QAEXM@Z 00AE0930 f i physics.o
+55	PORTED	0002:002f1450 ?set_fwd_fric_k@rigid_body_constraint_wheel@@QAEXM@Z 00AE0950 f i physics.o
+56	PORTED	0002:002f1470 ?set_suspension_stiffness_k@rigid_body_constraint_wheel@@QAEXM@Z 00AE0970 f i physics.o
+57	PORTED	0002:002f1490 ?get_wheel_radius@rigid_body_constraint_wheel@@QAEMXZ 00AE0990 f i physics.o
+58	PORTED	0002:002f14a0 ?set_wheel_flag@rigid_body_constraint_wheel@@QAEXW4wheel_flags_e@1@I@Z 00AE09A0 f i physics.o
+59	PORTED	0002:002f14f0 ?get_wheel_is_colliding@rigid_body_constraint_wheel@@QBE?BIXZ 00AE09F0 f i physics.o
+60	PORTED	0002:002f1500 ?get_wheel_hard_limit_active@rigid_body_constraint_wheel@@QBE?BIXZ 00AE0A00 f i physics.o
+61	PORTED	0002:002f1510 ?set_wheel_axis_loc@rigid_body_constraint_wheel@@QAEXABVDir3@math@@@Z 00AE0A10 f i physics.o
+62	PORTED	0002:002f1540 ?set_turning_radius_ratio_max_speed@rigid_body_constraint_wheel@@QAEXM@Z 00AE0A40 f i physics.o
+63	PORTED	0002:002f1560 ?set_turning_radius_ratio_accel@rigid_body_constraint_wheel@@QAEXM@Z 00AE0A60 f i physics.o
+64	PORTED	0002:002f1580 ?get_roll_stability_factor@rigid_body_constraint_wheel@@QAEMXZ 00AE0A80 f i physics.o
+65	PORTED	0002:002f1590 ?get_wheel_state@rigid_body_constraint_wheel@@QAEIXZ 00AE0A90 f i physics.o
+66	PORTED	0002:002f15a0 ?get_wheel_center_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ 00AE0AA0 f i physics.o
+67	PORTED	0002:002f15d0 ?get_suspension_dir_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ 00AE0AD0 f i physics.o
+68	PORTED	0002:002f1600 ?get_wheel_axis_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ 00AE0B00 f i physics.o
+69	PORTED	0002:002f1630 ?get_wheel_center_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@H@Z 00AE0B30 f i physics.o
+70	PORTED	0002:002f1660 ?get_suspension_dir_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@H@Z 00AE0B60 f i physics.o
+71	PORTED	0002:002f1690 ?get_wheel_axis_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@H@Z 00AE0B90 f i physics.o
+72	PORTED	0002:002f16c0 ?get_hard_limit_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00AE0BC0 f i physics.o
+73	PORTED	0002:002f16d0 ?get_hitn_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ 00AE0BD0 f i physics.o
+74	PORTED	0002:002f1700 ?get_wheel_pos@rigid_body_constraint_wheel@@QBE?BMXZ 00AE0C00 f i physics.o
+75	PORTED	0002:002f1710 ?get_wheel_displaced_center_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ 00AE0C10 f i physics.o
+76	PORTED	0002:002f1760 ?get_wheel_is_sliding@rigid_body_constraint_wheel@@QBE?BIXZ 00AE0C60 f i physics.o
+77	PORTED	0002:002f1770 ?set_wheel_pos@rigid_body_constraint_wheel@@QAEXM@Z 00AE0C70 f i physics.o
+78	PORTED	0002:002f1790 ?set_active@rigid_body_constraint_custom_orientation@@QAEX_N@Z 00AE0C90 f i physics.o
+79	PORTED	0002:002f17a0 ?set_no_orientation_correction@rigid_body_constraint_custom_orientation@@QAEX_N@Z 00AE0CA0 f i physics.o
+80	PORTED	0002:002f17b0 ?set_resistance@rigid_body_constraint_custom_orientation@@QAEXM@Z 00AE0CB0 f i physics.o
+81	PORTED	0002:002f17d0 ?set_upright_strength@rigid_body_constraint_custom_orientation@@QAEXM@Z 00AE0CD0 f i physics.o
+82	PORTED	0002:002f17f0 ??0phys_gjk_geom_id_pair_key@@QAE@XZ 00AE0CF0 f i physics.o
+83	PORTED	0002:002f1800 ??0phys_gjk_geom_id_pair_key@@QAE@ABI0@Z 00AE0D00 f i physics.o
+84	PORTED	0002:002f1860 ??Mphys_gjk_geom_id_pair_key@@QBE?BHABV0@@Z 00AE0D60 f i physics.o
+85	PORTED	0002:002f1890 ??Ophys_gjk_geom_id_pair_key@@QBE?BHABV0@@Z 00AE0D90 f i physics.o
+86	PORTED	0002:002f18c0 ??8phys_gjk_geom_id_pair_key@@QBE?BHABV0@@Z 00AE0DC0 f i physics.o
+87	PORTED	0002:002f18f0 ?get_key@phys_gjk_cache_info@@QBEABVphys_gjk_geom_id_pair_key@@XZ 00AE0DF0 f i physics.o
+88	PORTED	0002:002f1900 ?get_flag@phys_gjk_cache_info@@QBE?BII@Z 00AE0E00 f i physics.o
+89	PORTED	0002:002f1910 ?set_flag@phys_gjk_cache_info@@QAEXI_N@Z 00AE0E10 f i physics.o
+90	VERIFIED	0002:002f1950 ?update_swapped@phys_gjk_cache_info@@QAEX_N@Z 00AE0E50 f i physics.o
+91	PORTED	0002:002f1a60 ?set_support_dir@phys_gjk_cache_info@@QAEXABVDir3@math@@@Z 00AE0F60 f i physics.o
+92	PORTED	0002:002f1a90 ?invalidate_simplex@phys_gjk_cache_info@@QAEXXZ 00AE0F90 f i physics.o
+93	PORTED	0002:002f1aa0 ?set_gjk_cache_info@phys_collide_data@@QAEXPAUphys_gjk_cache_info@@@Z 00AE0FA0 f i physics.o
+94	PORTED	0002:002f1ab0 ?Min@math@@YA?AVDir3@1@ABV21@0@Z 00AE0FB0 f i physics.o
+95	PORTED	0002:002f1af0 ?set_do_gjk_collide_and_contact_manifold@phys_collide_data@@QAEXPBVphys_gjk_geom@@0PBVMat43@math@@111PAVrigid_body@@2IIMMPAUphys_gjk_cache_info@@PAVphys_collide_data_callback@@PAVphys_gjk_info@@PAVphys_contact_manifold_process@@_NH@Z 00AE0FF0 f i physics.o
+96	PORTED	0002:002f1b90 ?Min@math@@YA?AVDir3@1@ABV21@ABVPosition3@1@@Z 00AE1090 f i physics.o
+97	PORTED	0002:002f1bd0 ?set_do_gjk_intersect@phys_collide_data@@QAEXPBVphys_gjk_geom@@0PBVMat43@math@@1IIPAUphys_gjk_cache_info@@PAVphys_gjk_info@@@Z 00AE10D0 f i physics.o
+98	PORTED	0002:002f1c20 ?Min@math@@YA?AVVector4@1@ABV21@0@Z 00AE1120 f i physics.o
+99	PORTED	0002:002f1c60 ?Max@math@@YA?AVDir3@1@ABV21@0@Z 00AE1160 f i physics.o
+100	PORTED	0002:002f1ca0 ?Max@math@@YA?AVDir3@1@ABV21@ABVPosition3@1@@Z 00AE11A0 f i physics.o
+101	PORTED	0002:002f1ce0 ?Max@math@@YA?AVVector4@1@ABV21@0@Z 00AE11E0 f i physics.o
+102	PORTED	0002:002f1d20 ?set_allocater@phys_contact_manifold@@QAEXPAVphys_memory_heap@@@Z 00AE1220 f i physics.o
+103	VERIFIED	0002:002f1d30 ??0phys_contact_manifold@@QAE@XZ 00AE1230 f i physics.o
+104	VERIFIED	0002:002f1d40 ?phys_collide_do_gjk_collide_and_contact_manifold@@YAXPAVphys_collide_data@@@Z 00AE1240 f i physics.o
+105	PORTED	0002:002f1d90 ?phys_collide_do_gjk_intersect@@YA_NPAVphys_collide_data@@@Z 00AE1290 f i physics.o
+106	PORTED	0002:002f1db0 ??0phys_gjk_geom@@QAE@XZ 00AE12B0 f i physics.o
+107	PORTED	0002:002f1dc0 ?get_geom_radius@phys_gjk_geom@@UBE?BMXZ 00AE12C0 f i physics.o
+108	PORTED	0002:002f1dd0 ??0DiagMat33@math@@QAE@ABVDir3@1@@Z 00AE12D0 f i physics.o
+109	VERIFIED	0002:002f1df0 ?get_warning_level@phys_collision_allocater@@QAEHXZ 00AE12F0 f i physics.o
+110	VERIFIED	0002:002f1e10 ?reset_warning_level@phys_collision_allocater@@QAEXXZ 00AE1310 f i physics.o
+111	VERIFIED	0002:002f1e20 ?set_buffer@phys_collision_allocater@@QAEXQAXHH@Z 00AE1320 f i physics.o
+112	VERIFIED	0002:002f1e60 ?capture_user_start@phys_collision_allocater@@QAEXXZ 00AE1360 f i physics.o
+113	VERIFIED	0002:002f1e90 ?reset_to_user_start@phys_collision_allocater@@QAEXXZ 00AE1390 f i physics.o
+114	VERIFIED	0002:002f1ec0 ?comp_aabb@phys_gjk_geom_list@@QAEXABVMat43@math@@@Z 00AE13C0 f i physics.o
+115	PORTED	0002:002f1f90 ??0phys_gjk_geom_list@@QAE@XZ 00AE1490 f i physics.o
+116	PORTED	0002:002f1fa0 ?set_aabb@phys_gjk_geom_cod_base@@QAEXABVDir3@math@@0@Z 00AE14A0 f i physics.o
+117	PORTED	0002:002f2000 ?GetW@Packed@Mat43@math@@QBEABU1Position3@3@XZ 00AE1500 f i physics.o
+118	PORTED	0002:002f2010 ?add_aabb@phys_gjk_geom_cod_base@@QAEXABVDir3@math@@0@Z 00AE1510 f i physics.o
+119	PORTED	0002:002f2060 ?set_unique_id@phys_gjk_geom_cod_base@@QAEXI@Z 00AE1560 f i physics.o
+120	PORTED	0002:002f2070 ?set_next_geom@phys_gjk_geom_cod_base@@QAEXPAV1@@Z 00AE1570 f i physics.o
+121	VERIFIED	0002:002f2080 ?add_active_eps_aabb@@YAXPAVDir3@math@@0@Z 00AE1580 f i physics.o
+122	VERIFIED	0002:002f2170 ?make_unique_id@@YAIPAVEntity@@I@Z 00AE1670 f i physics.o
+123	PORTED	0002:002f21d0 ?make_unique_id@@YAIPBUcdl_object_t@@@Z 00AE16D0 f i physics.o
+124	PORTED	0002:002f21e0 ?get_avl_key@gjk_geom_info@gjk_geom_database@@QBEABIXZ 00AE16E0 f i physics.o
+125	PORTED	0002:002f21f0 ?set_avl_key@gjk_geom_info@gjk_geom_database@@QAEXABI@Z 00AE16F0 f i physics.o
+126	PORTED	0002:002f2200 ?reset_counts@gjk_geom_database@@QAEXXZ 00AE1700 f i physics.o
+127	PORTED	0002:002f2220 ?reset@physics_colgeom_visitor@@QAEXH@Z 00AE1720 f i physics.o
+128	PORTED	0002:002f2250 ?create_phys_collide_data@@YAPAVphys_collide_data@@XZ 00AE1750 f i physics.o
+129	PORTED	0002:002f2260 ?get_temp_phys_collide_data@@YAPAVphys_collide_data@@XZ 00AE1760 f i physics.o
+130	PORTED	0002:002f2270 ?reset_list_phys_collide_data@@YAXXZ 00AE1770 f i physics.o
+131	PORTED	0002:002f2280 ??0Mat33@math@@QAE@ABVMat43@1@@Z 00AE1780 f i physics.o
+132	VERIFIED	0002:002f2300 ??0cdl_cinfo2@@QAE@XZ 00AE1800 f i physics.o
+133	PORTED	0002:002f2310 ?get_p1@rb_collision_capsule@@QAEABVPosition3@math@@XZ 00AE1810 f i physics.o
+134	PORTED	0002:002f2320 ?get_p2@rb_collision_capsule@@QAEABVPosition3@math@@XZ 00AE1820 f i physics.o
+135	PORTED	0002:002f2330 ?get_r@rb_collision_capsule@@QAE?BMXZ 00AE1830 f i physics.o
+136	PORTED	0002:002f2340 ?set@rb_capsule_pair@@QAEXQAVrigid_body_sphere_list@@0@Z 00AE1840 f i physics.o
+137	PORTED	0002:002f2360 ?xform@rb_collision_sphere@@QAEXABVMat43@math@@@Z 00AE1860 f i physics.o
+138	VERIFIED	0002:002f2370 ??0rb_collision_capsule@@QAE@XZ 00AE1870 f i physics.o
+139	PORTED	0002:002f2380 ?set_bp_info@biped_system@@AAEXPAVbiped_phys_info@@@Z 00AE1880 f i physics.o
+140	PORTED	0002:002f23a0 ?get_bp_info@biped_system@@QAEPAVbiped_phys_info@@XZ 00AE18A0 f i physics.o
+141	VERIFIED	0002:002f23b0 ?apply_pulse_to_bone@biped_system@@QAEXW4phys_bones@@ABVDir3@math@@@Z 00AE18B0 f i physics.o
+142	PORTED	0002:002f2420 ??0Mat43@math@@QAE@ABVMat33@1@@Z 00AE1920 f i physics.o
+143	VERIFIED	0002:002f24d0 ?apply_pulse_to_bone@biped_system@@QAEXW4phys_bones@@ABVPosition3@math@@ABVDir3@4@M@Z 00AE19D0 f i physics.o
+144	PORTED	0002:002f2550 ?is_stable@biped_system@@QAE_NXZ 00AE1A50 f i physics.o
+145	PORTED	0002:002f2560 ??4Mat43@math@@QAEABV01@ABVMat33@1@@Z 00AE1A60 f i physics.o
+146	PORTED	0002:002f2610 ??0client_bone_info@@QAE@XZ 00AE1B10 f i physics.o
+147	PORTED	0002:002f2620 ?Init@RBVehicleController@@QAEXXZ 00AE1B20 f i physics.o
+148	PORTED	0002:002f2630 ?get_brake@rb_vehicle@@QBEMXZ 00AE1B30 f i physics.o
+149	PORTED	0002:002f2640 ?get_hand_brake@rb_vehicle@@QBEMXZ 00AE1B40 f i physics.o
+150	PORTED	0002:002f2650 ?get_current_side_fric_scale@rb_vehicle@@QAEMXZ 00AE1B50 f i physics.o
+151	PORTED	0002:002f2660 ?get_current_fwd_fric_scale@rb_vehicle@@QAEMXZ 00AE1B60 f i physics.o
+152	PORTED	0002:002f2670 ?get_num_wheels_colliding@rb_vehicle@@QBEHXZ 00AE1B70 f i physics.o
+153	PORTED	0002:002f2680 ?set_flag@rb_vehicle@@AAEXW4rb_vehicle_model_flags_e@1@I@Z 00AE1B80 f i physics.o
+154	PORTED	0002:002f26d0 ?set_acceleration_factor@rb_vehicle@@QAEXM@Z 00AE1BD0 f i physics.o
+155	PORTED	0002:002f2700 ?set_desired_speed_factor@rb_vehicle@@QAEXM@Z 00AE1C00 f i physics.o
+156	PORTED	0002:002f2720 ?set_coasting_factor@rb_vehicle@@QAEXM@Z 00AE1C20 f i physics.o
+157	PORTED	0002:002f2740 ?get_steer_front_back_length@rb_vehicle@@QBE?BMXZ 00AE1C40 f i physics.o
+158	PORTED	0002:002f2750 ?set_power_braking@rb_vehicle@@QAEXI@Z 00AE1C50 f i physics.o
+159	PORTED	0002:002f2790 ?set_braking@rb_vehicle@@QAEXI@Z 00AE1C90 f i physics.o
+160	PORTED	0002:002f27d0 ?set_forward_accelration@rb_vehicle@@QAEXI@Z 00AE1CD0 f i physics.o
+161	PORTED	0002:002f2810 ?set_reverse_accelration@rb_vehicle@@QAEXI@Z 00AE1D10 f i physics.o
+162	PORTED	0002:002f2850 ?set_coasting@rb_vehicle@@QAEXI@Z 00AE1D50 f i physics.o
+163	PORTED	0002:002f2890 ?SetM33@Mat43@math@@QAEXABVMat33@2@@Z 00AE1D90 f i physics.o
+164	VERIFIED	0002:002f2910 ?set_brake@rb_vehicle@@QAEXM@Z 00AE1E10 f i physics.o
+165	VERIFIED	0002:002f29b0 ?set_hand_brake@rb_vehicle@@QAEXM@Z 00AE1EB0 f i physics.o
+166	VERIFIED	0002:002f2a50 ?set_throttle@rb_vehicle@@QAEXM@Z 00AE1F50 f i physics.o
+167	PORTED	0002:002f2af0 ?Mul@math@@YA?AVDir3@1@ABV21@ABVDiagMat33@1@@Z 00AE1FF0 f i physics.o
+168	PORTED	0002:002f2b30 ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat43@1@@Z 00AE2030 f i physics.o
+169	PORTED	0002:002f2ba0 ??Dmath@@YA?AVDir3@0@ABV10@ABVDiagMat33@0@@Z 00AE20A0 f i physics.o
+170	PORTED	0002:002f2be0 ??Dmath@@YA?AVDir3@0@ABV10@ABVMat43@0@@Z 00AE20E0 f i physics.o
+171	PORTED	0002:002f2c50 ?GetNumBones@DObj@@QAEIXZ 00AE2150 f i physics.o
+172	PORTED	0002:002f2c60 ?set@prop_collide_callback@@QAEXPAVrb_extra_info@@HABVrigid_body_pair_key@@@Z 00AE2160 f i physics.o
+173	PORTED	0002:002f2c90 ?get_avl_key@prop_collide_callback@@QBEABVrigid_body_pair_key@@XZ 00AE2190 f i physics.o
+174	PORTED	0002:002f2ca0 ?set_avl_key@prop_collide_callback@@QAEXABVrigid_body_pair_key@@@Z 00AE21A0 f i physics.o
+175	PORTED	0002:002f2cb0 ??0prop_collide_callback@@QAE@XZ 00AE21B0 f i physics.o
+176	PORTED	0002:002f2cc0 ?Transpose@math@@YA?AVMat33@1@ABV21@@Z 00AE21C0 f i physics.o
+177	PORTED	0002:002f2d90 ??Smath@@YA?AVMat33@0@ABV10@@Z 00AE2290 f i physics.o
+178	PORTED	0002:002f2e60 ??Kmath@@YA?AVDir3@0@ABV10@ABVMat43@0@@Z 00AE2360 f i physics.o
+179	PORTED	0002:002f2f00 ??0physics_colgeom_visitor@@QAE@XZ 00AE2400 f i physics.o
+180	PORTED	0002:002f2f10 ??0phys_gjk_collision_info@@QAE@XZ 00AE2410 f i physics.o
+181	VERIFIED	0002:002f2f20 ?PhysShutdown@@YAXXZ 00AE2420 f physics.o
+182	VERIFIED	0002:002f2f30 ?GetPhysBoneID@@YAHW4hitLocation_t@@@Z 00AE2430 f physics.o
+183	VERIFIED	0002:002f2fd0 ?collision_epilog@rb_extra_info@@QAEXXZ 00AE24D0 f physics.o
+184	VERIFIED	0002:002f2ff0 ?allocate_buffer@phys_collision_allocater@@AAEXXZ 00AE24F0 f physics.o
+185	VERIFIED	0002:002f30b0 ?free_buffers@phys_collision_allocater@@AAEXXZ 00AE25B0 f physics.o
+186	VERIFIED	0002:002f30f0 ?generate_local_entities_list@@YAPAVTouchEntityData@@ABVDir3@math@@0H@Z 00AE25F0 f physics.o
+187	VERIFIED	0002:002f3150 ?update_vel_matrices@biped_phys_info@@QAEXXZ 00AE2650 f physics.o
+188	VERIFIED	0002:002f3af0 ?get_cur_vel@biped_phys_info@@QAEXHABVPosition3@math@@PAVDir3@3@1@Z 00AE2FF0 f physics.o
+189	VERIFIED	0002:002f3cf0 ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z 00AE31F0 f physics.o
+190	VERIFIED	0002:002f3eb0 ?update_bone_vel_info@biped_phys_info@@AAEXM@Z 00AE33B0 f physics.o
+191	VERIFIED	0002:002f4120 ?copy_skeleton@phys_anim_bone_array@@SAXPAVEntity@@QAVMat43@math@@@Z 00AE3620 f physics.o
+192	VERIFIED	0002:002f41f0 ?write_skeleton@phys_anim_bone_array@@SAXPAVEntity@@QAVMat43@math@@@Z 00AE36F0 f physics.o
+193	VERIFIED	0002:002f42c0 ?set@bone_mass_info@@QAEXHHMMMABVPosition3@math@@HMMMHHW4joint_type_e@1@MMABVDir3@3@222M@Z 00AE37C0 f physics.o
+194	VERIFIED	0002:002f43f0 ?setup_user_bone_ids@@YAXPAVEntity@@@Z 00AE38F0 f physics.o
+195	VERIFIED	0002:002f44f0 ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z 00AE39F0 f physics.o
+196	VERIFIED	0002:002f4500 ?initialize_members@biped_system@@AAEXXZ 00AE3A00 f physics.o
+197	VERIFIED	0002:002f4530 ?recreate_bps@biped_system@@QAEXPAVEntity@@H@Z 00AE3A30 f physics.o
+198	PORTED	0002:002f4570 ?get_joint_damp_k@@YAMH@Z 00AE3A70 f physics.o
+199	VERIFIED	0002:002f45e0 ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z 00AE3AE0 f physics.o
+200	VERIFIED	0002:002f45f0 ?debug_render@biped_system@@QAEXXZ 00AE3AF0 f physics.o
+201	VERIFIED	0002:002f4600 ?render_single_rigid_body@@YAXQAVrigid_body@@@Z 00AE3B00 f physics.o
+202	VERIFIED	0002:002f4650 ?set@rb_collision_capsule@@QAEXABVPosition3@math@@0M@Z 00AE3B50 f physics.o
+203	VERIFIED	0002:002f46a0 ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z 00AE3BA0 f physics.o
+204	VERIFIED	0002:002f46b0 ??0vehicle_rb_parameter@@QAE@XZ 00AE3BB0 f physics.o
+205	VERIFIED	0002:002f4830 ?_align_wheels@rb_vehicle@@AAEXXZ 00AE3D30 f physics.o
+206	VERIFIED	0002:002f4930 ?_set_default_pose_wheels_only@rb_vehicle@@AAEXXZ 00AE3E30 f physics.o
+207	VERIFIED	0002:002f4a00 ?process_hitp@rb_vehicle@@QAE?AVPosition3@math@@ABV23@@Z 00AE3F00 f physics.o
+208	VERIFIED	0002:002f4a30 ?_calc_initial_susp_spring_k@rb_vehicle@@AAEMPAVrigid_body_constraint_wheel@@@Z 00AE3F30 f physics.o
+209	VERIFIED	0002:002f4ad0 ?is_peeling_out@rb_vehicle@@QBE_NXZ 00AE3FD0 f physics.o
+210	VERIFIED	0002:002f4b00 ?_update_fakey_stuff@rb_vehicle@@AAEXM@Z 00AE4000 f physics.o
+211	VERIFIED	0002:002f4f30 ?set_default_pose@rb_vehicle@@QAEXXZ 00AE4430 f physics.o
+212	VERIFIED	0002:002f4f50 ?remove_wheels@rb_vehicle@@QAEXXZ 00AE4450 f physics.o
+213	VERIFIED	0002:002f4fd0 ?set@rb_vehicle@@QAEXMMMMMMMMABVDir3@math@@M@Z 00AE44D0 f physics.o
+214	PORTED	0002:002f50a0 ?update_steering@rb_vehicle@@QAEXM@Z 00AE45A0 f physics.o
+215	VERIFIED	0002:002f5780 ?update_braking_and_acceleration@rb_vehicle@@QAEXM@Z 00AE4C80 f physics.o
+216	VERIFIED	0002:002f5860 ?update_from_network@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@1@Z 00AE4D60 f physics.o
+217	VERIFIED	0002:002f5b00 ?RecalibrateInputCustom@@YAHHH@Z 00AE5000 f physics.o
+218	VERIFIED	0002:002f5b50 ?UpdateJump@RBVehicleController@@AAEXAAVrb_vehicle@@@Z 00AE5050 f physics.o
+219	VERIFIED	0002:002f5b60 ?path_constraint_update@@YAXPAVrigid_body_constraint_custom_path@@PAVEntity@@@Z 00AE5060 f physics.o
+220	VERIFIED	0002:002f5cc0 ?path_constraint_create@@YAPAVrigid_body_constraint_custom_path@@PAVEntity@@@Z 00AE51C0 f physics.o
+221	VERIFIED	0002:002f5f00 ?path_constraint_destroy@@YAXPAVrigid_body_constraint_custom_path@@@Z 00AE5400 f physics.o
+222	PORTED	0002:002f5f70 ?UpdateWheelMarks@@YAXPAVEntity@@W4wheel_e@@W4wheel_effect_state_e@@ABVPosition3@math@@ABVDir3@5@@Z 00AE5470 f physics.o
+223	VERIFIED	0002:002f61c0 ?KillEntity@@YAXPAVEntity@@@Z 00AE56C0 f physics.o
+224	VERIFIED	0002:002f6300 ?SetModel@@YAXPAVEntity@@PBD@Z 00AE5800 f physics.o
+225	VERIFIED	0002:002f6360 ?MoveGravity@@YAXPAVEntity@@QBMM@Z 00AE5860 f physics.o
+226	VERIFIED	0002:002f6470 ?DeletePiece@Destructible@@QAEXPAVEntity@@@Z 00AE5970 f physics.o
+227	VERIFIED	0002:002f64b0 ?InvalidateCoverNode@Destructible@@SAXPAVEntity@@@Z 00AE59B0 f physics.o
+228	VERIFIED	0002:002f64e0 ?init@rtree_root_t@@QAEXXZ 00AE59E0 f physics.o
+229	PORTED	0002:002f6570 ?rtree_node_overlap_test@@YA_NABUrtree_node_t@@IPBU1@@Z 00AE5A70 f physics.o
+230	VERIFIED	0002:002f6620 ?traverse_rtree@@YAXABVPosition3@math@@0ABUrtree_root_t@@AAUsubdivision_visitor@@@Z 00AE5B20 f physics.o
+231	VERIFIED	0002:002f6ac0 ?absolutely_fatal_irrecoverable_error_infinite_loop@@YAXXZ 00AE5FC0 f physics.o
+232	VERIFIED	0002:002f6ad0 ?rtree_query_size_error_handler@@YA_NABVPosition3@math@@0@Z 00AE5FD0 f physics.o
+233	VERIFIED	0002:002f6c20 ?setup@wheel_collision_info@@QAEXPAVrigid_body@@PAVrigid_body_constraint_wheel@@@Z 00AE6120 f physics.o
+234	VERIFIED	0002:002f6d20 ?collision_memory_epilog@@YAXXZ 00AE6220 f physics.o
+235	VERIFIED	0002:002f6da0 ?set@rb_extra_info@@QAEXQAVEntity@@QAVrigid_body@@ABVMat43@math@@MABVPosition3@5@@Z 00AE62A0 f physics.o
+236	VERIFIED	0002:002f6e60 ?set_priority@rb_extra_info@@QAEXW4EPropPriority@@@Z 00AE6360 f physics.o
+237	VERIFIED	0002:002f6ec0 ?evaluate_effect_priority@rb_extra_info@@QAEXXZ 00AE63C0 f physics.o
+238	VERIFIED	0002:002f7060 ?phys_collision_allocater_ballistic_reinit@@YAXXZ 00AE6560 f physics.o
+239	VERIFIED	0002:002f70b0 ?generate_local_primitive_list@@YAPAUphysics_colgeom_visitor@@ABVDir3@math@@0H@Z 00AE65B0 f physics.o
+240	VERIFIED	0002:002f71c0 ??0biped_phys_info@@QAE@XZ 00AE66C0 f physics.o
+241	VERIFIED	0002:002f71e0 ?setup@biped_phys_info@@AAE_NPAVEntity@@@Z 00AE66E0 f physics.o
+242	VERIFIED	0002:002f7620 ?prolog_frame_advance@biped_phys_info@@QAEXM@Z 00AE6B20 f physics.o
+243	VERIFIED	0002:002f76a0 ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z 00AE6BA0 f physics.o
+244	VERIFIED	0002:002f79b0 ?copy_back_tween@phys_anim_bone_array@@QAEXPAVEntity@@M@Z 00AE6EB0 f physics.o
+245	VERIFIED	0002:002f8190 ?copy_tween_start@phys_anim_bone_array@@QAEXPAVEntity@@@Z 00AE7690 f physics.o
+246	VERIFIED	0002:002f8cb0 ?get_phys_bone@phys_anim_bone_array@@QAEHH@Z 00AE81B0 f physics.o
+247	VERIFIED	0002:002f8e20 ?get_bone@phys_anim_bone_array@@QAEHH@Z 00AE8320 f physics.o
+248	VERIFIED	0002:002f8ef0 ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z 00AE83F0 f physics.o
+249	VERIFIED	0002:002f9070 ?calc_stuff@bone_mass_info@@QAEXQAVEntity@@@Z 00AE8570 f physics.o
+250	VERIFIED	0002:002f94d0 ?setup_bone_mass_info@@YAXPAVEntity@@@Z 00AE89D0 f physics.o
+251	VERIFIED	0002:002fa800 ?remove_system@biped_system@@AAEXXZ 00AE9D00 f physics.o
+252	PORTED	0002:002fa860 ?calc_bone_mat_from_rb@@YAXPAVEntity@@HPAVrigid_body@@ABVMat43@math@@@Z 00AE9D60 f physics.o
+253	VERIFIED	0002:002fa9e0 ?calc_rb_mat_from_bone@@YAXPAVEntity@@HPAVrigid_body@@ABVMat43@math@@@Z 00AE9EE0 f physics.o
+254	VERIFIED	0002:002faa40 ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z 00AE9F40 f physics.o
+255	VERIFIED	0002:002faa60 ?update_stability@biped_system@@AAEXM@Z 00AE9F60 f physics.o
+256	VERIFIED	0002:002facb0 ?epilog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z 00AEA1B0 f physics.o
+257	VERIFIED	0002:002fad30 ?render_single_joint@biped_system@@QAEXPBVrigid_body_constraint_ragdoll@@V?$Bitmask@I@@@Z 00AEA230 f physics.o
+258	VERIFIED	0002:002fb610 ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z 00AEAB10 f physics.o
+259	VERIFIED	0002:002fb690 ?xform@rb_collision_capsule@@QAEXABVMat43@math@@@Z 00AEAB90 f physics.o
+260	VERIFIED	0002:002fb740 ?collide_crapsule_crapsule@@YA_NABVPosition3@math@@0M00MPAV12@1PAVDir3@2@@Z 00AEAC40 f physics.o
+261	VERIFIED	0002:002fbd50 ?calc_bounding_sphere@rigid_body_sphere_list@@AAEXXZ 00AEB250 f physics.o
+262	VERIFIED	0002:002fbe40 ?comp_aabb@phys_gjk_geom_ragdoll_1@@UAEXABVMat43@math@@@Z 00AEB340 f physics.o
+263	VERIFIED	0002:002fbfb0 ?AddRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z 00AEB4B0 f physics.o
+264	VERIFIED	0002:002fbfe0 ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z 00AEB4E0 f physics.o
+265	VERIFIED	0002:002fc080 ??0rb_vehicle@@QAE@XZ 00AEB580 f physics.o
+266	VERIFIED	0002:002fc140 ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z 00AEB640 f physics.o
+267	VERIFIED	0002:002fc200 ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ 00AEB700 f physics.o
+268	VERIFIED	0002:002fc290 ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ 00AEB790 f physics.o
+269	VERIFIED	0002:002fc320 ?get_rb_position@rb_vehicle@@QBE?AVPosition3@math@@XZ 00AEB820 f physics.o
+270	VERIFIED	0002:002fc3d0 ?get_rb_angles@rb_vehicle@@QBE?AVDir3@math@@XZ 00AEB8D0 f physics.o
+271	VERIFIED	0002:002fc490 ?_update_orientation_constraint@rb_vehicle@@AAEXXZ 00AEB990 f physics.o
+272	PORTED	0002:002fc5b0 ?calc_tread_matrices@rb_vehicle@@QAEXXZ 00AEBAB0 f physics.o
+273	VERIFIED	0002:002fcb70 ?_update_friction@rb_vehicle@@AAEXM@Z 00AEC070 f physics.o
+274	VERIFIED	0002:002fcd60 ?cleanup_path@rb_vehicle@@QAEXXZ 00AEC260 f physics.o
+275	VERIFIED	0002:002fcd90 ?get_vehicle@rb_vehicle@@SAPAV1@H@Z 00AEC290 f physics.o
+276	VERIFIED	0002:002fcde0 ?get_num_rb_vehicles@rb_vehicle@@SAHXZ 00AEC2E0 f physics.o
+277	VERIFIED	0002:002fcdf0 ?debug_render@rb_vehicle@@QAEXXZ 00AEC2F0 f physics.o
+278	VERIFIED	0002:002fd850 ?update_from_scene_anim@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@@Z 00AECD50 f physics.o
+279	VERIFIED	0002:002fda20 ?UpdateVehicleInputs@RBVehicleController@@AAEXAAVrb_vehicle@@MMM@Z 00AECF20 f physics.o
+280	VERIFIED	0002:002fdd20 ?UpdateControlsDefault@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z 00AED220 f physics.o
+281	VERIFIED	0002:002fde40 ?UpdateControlsTank@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z 00AED340 f physics.o
+282	VERIFIED	0002:002fe100 ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z 00AED600 f physics.o
+283	PORTED	0002:002fe160 ?get_gjk_geom_id@@YA?BIPAVEntity@@@Z 00AED660 f physics.o
+284	VERIFIED	0002:002fe290 ?Initialize@Destructible@@QAEXPAVEntity@@_N@Z 00AED790 f physics.o
+285	VERIFIED	0002:002fe3a0 ?process@wheel_collision_info@@QAEXPAVrb_extra_info@@H@Z 00AED8A0 f physics.o
+286	VERIFIED	0002:002fe630 ?setup@vehicle_collision_info@@QAEXPAVrb_extra_info@@@Z 00AEDB30 f physics.o
+287	VERIFIED	0002:002fe770 ?process@vehicle_collision_info@@QAEXPAVrb_extra_info@@@Z 00AEDC70 f physics.o
+288	VERIFIED	0002:002fe7b0 ?create_vehicle_collision_info@@YAPAVvehicle_collision_info@@PAVrb_extra_info@@@Z 00AEDCB0 f physics.o
+289	VERIFIED	0002:002fe870 ?DecodeBank@PhysDataBankManager@@QAEXPBDPAEHW4TPakId@@@Z 00AEDD70 f physics.o
+290	VERIFIED	0002:002fe8a0 ?frame_advance@rb_extra_info@@QAEXM@Z 00AEDDA0 f physics.o
+291	VERIFIED	0002:002fe8d0 ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z 00AEDDD0 f physics.o
+292	VERIFIED	0002:002fe9b0 ?hit_entity@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@4@MM@Z 00AEDEB0 f physics.o
+293	VERIFIED	0002:002fea40 ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z 00AEDF40 f physics.o
+294	VERIFIED	0002:002fea80 ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z 00AEDF80 f physics.o
+295	VERIFIED	0002:002fead0 ?get_entity_rb@rb_prop_system@@YAPBVrigid_body@@PAVEntity@@@Z 00AEDFD0 f physics.o
+296	VERIFIED	0002:002feb10 ?create_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z 00AEE010 f physics.o
+297	VERIFIED	0002:002fedb0 ?create_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@@Z 00AEE2B0 f physics.o
+298	VERIFIED	0002:002ff020 ?create_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@@Z 00AEE520 f physics.o
+299	VERIFIED	0002:002ff0e0 ?prop_system_collision_epilog@@YAXXZ 00AEE5E0 f physics.o
+300	PORTED	0002:002ff120 ?collide_segment@@YAXPAVwheel_collision_info@@PAVEntity@@1PAVrigid_body@@ABVMat43@math@@PAVphys_gjk_geom_cod_base@@@Z 00AEE620 f physics.o
+301	VERIFIED	0002:002ff680 ?unpack@@YAXABUcdl_vinfo_t@@ABV?$cdl_array@Uvi4@@@@PAVDir3@math@@@Z 00AEEB80 f physics.o
+302	VERIFIED	0002:002ff7b0 ?prolog_frame_advance_all@biped_phys_info@@SAXM@Z 00AEECB0 f physics.o
+303	VERIFIED	0002:002ff7f0 ?debug_render@biped_phys_info@@QAEXXZ 00AEECF0 f physics.o
+304	VERIFIED	0002:002ff860 ?DObjMatriceModelToLocal@@YAXPAVEntity@@@Z 00AEED60 f physics.o
+305	VERIFIED	0002:002fff40 ?attach_physics_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z 00AEF440 f physics.o
+306	VERIFIED	0002:003004d0 ?do_test@rb_capsule_pair@@QAEXQAX@Z 00AEF9D0 f physics.o
+307	VERIFIED	0002:00300730 ?init_tunnel_test@rigid_body_sphere_list@@QAEXAAVPosition3@math@@@Z 00AEFC30 f physics.o
+308	VERIFIED	0002:003007a0 ?init@phys_gjk_geom_ragdoll_1@@QAEXPAVrigid_body_sphere_list@@@Z 00AEFCA0 f physics.o
+309	VERIFIED	0002:00300910 ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ 00AEFE10 f physics.o
+310	VERIFIED	0002:00300d10 ?get_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z 00AF0210 f physics.o
+311	VERIFIED	0002:00300d50 ?pause_physics@rb_vehicle@@QAEX_N@Z 00AF0250 f physics.o
+312	VERIFIED	0002:00300f60 ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z 00AF0460 f physics.o
+313	VERIFIED	0002:00301a70 ?end_path@rb_vehicle@@QAEXXZ 00AF0F70 f physics.o
+314	VERIFIED	0002:00301ac0 ?add_vehicle@rb_vehicle@@SAPAV1@XZ 00AF0FC0 f physics.o
+315	VERIFIED	0002:00301b20 ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z 00AF1020 f physics.o
+316	VERIFIED	0002:00301b40 ?debug_render_all@rb_vehicle@@SAXXZ 00AF1040 f physics.o
+317	PORTED	0002:00301b70 ?get_wheel_matrix@rb_vehicle@@QBEXHPAVMat43@math@@@Z 00AF1070 f physics.o
+318	VERIFIED	0002:00302060 ?UpdateScriptVehicleControl@RBVehicleController@@AAEXAAVrb_vehicle@@@Z 00AF1560 f physics.o
+319	VERIFIED	0002:00302580 ?UpdateControlsStrafeMode@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z 00AF1A80 f physics.o
+320	VERIFIED	0002:00302730 ?UpdateControlsTankStrafeMode@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z 00AF1C30 f physics.o
+321	VERIFIED	0002:00302740 ?process_prop_collide_callbacks@@YAXXZ 00AF1C40 f physics.o
+322	VERIFIED	0002:00302c80 ?DecodeBank@DestructibleBankManager@@QAEXPBDPAEHW4TPakId@@@Z 00AF2180 f physics.o
+323	VERIFIED	0002:00302cb0 ?collision_memory_prolog@@YAXXZ 00AF21B0 f physics.o
+324	VERIFIED	0002:00302ea0 ?CalculatePhysData@@YAXPAVEntity@@AAM11@Z 00AF23A0 f physics.o
+325	VERIFIED	0002:003030b0 ?CalculatePhysData@@YAXPAVEntity@@V?$IVPointer@VPhysData@@@@@Z 00AF25B0 f physics.o
+326	VERIFIED	0002:003031b0 ?DecodePhysData@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00AF26B0 f physics.o
+327	VERIFIED	0002:003031e0 ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z 00AF26E0 f physics.o
+328	VERIFIED	0002:003032b0 ?frame_advance@rb_prop_system@@YAXM@Z 00AF27B0 f physics.o
+329	VERIFIED	0002:003035b0 ?SetupConstraints@@YAXPAVrb_extra_info@@@Z 00AF2AB0 f physics.o
+330	VERIFIED	0002:00303db0 ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z 00AF32B0 f physics.o
+331	PORTED	0002:00303dc0 ?add_to_sorted_list@gjk_geom_database@@QAEPAUgjk_geom_info@1@PAXI@Z 00AF32C0 f physics.o
+332	VERIFIED	0002:00303e10 ?try_get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z 00AF3310 f physics.o
+333	VERIFIED	0002:00303e70 ?try_get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z 00AF3370 f physics.o
+334	VERIFIED	0002:00303ef0 ?try_get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z 00AF33F0 f physics.o
+335	VERIFIED	0002:00303f70 ?get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z 00AF3470 f physics.o
+336	VERIFIED	0002:00303fe0 ?get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z 00AF34E0 f physics.o
+337	VERIFIED	0002:00304040 ?get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z 00AF3540 f physics.o
+338	VERIFIED	0002:003040a0 ?nuge_get_entity@@YAPAVEntity@@ABVstring@Broc@@@Z 00AF35A0 f physics.o
+339	VERIFIED	0002:003041b0 ?nuge_get_actor@@YAPAVEntity@@XZ 00AF36B0 f physics.o
+340	VERIFIED	0002:00304290 ?RBAdvanceDebug@@YAXM@Z 00AF3790 f physics.o
+341	VERIFIED	0002:00304390 ?physics_debug_render@@YAXXZ 00AF3890 f physics.o
+342	VERIFIED	0002:003049e0 ?debug_render_all@biped_phys_info@@SAXXZ 00AF3EE0 f physics.o
+343	VERIFIED	0002:00304a10 ?do_all_biped_system_process_collision_events@@YAXXZ 00AF3F10 f physics.o
+344	VERIFIED	0002:00304a50 ?set@rigid_body_sphere_list@@QAEXQAVrigid_body@@@Z 00AF3F50 f physics.o
+345	VERIFIED	0002:00304a90 ?collide_ray_object_list@@YA_NPAUphysics_colgeom_visitor@@ABVDir3@math@@111PAM@Z 00AF3F90 f physics.o
+346	VERIFIED	0002:00304ea0 ?add_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z 00AF43A0 f physics.o
+347	VERIFIED	0002:00304f00 ?switch_parms@rb_vehicle@@QAEX_N@Z 00AF4400 f physics.o
+348	VERIFIED	0002:00305010 ?GetPlayerRBVehicle@@YAPAVrb_vehicle@@XZ 00AF4510 f physics.o
+349	VERIFIED	0002:00305070 ?_update_wheel_effects@rb_vehicle@@AAEXM@Z 00AF4570 f physics.o
+350	VERIFIED	0002:003057a0 ?AddPiece@Destructible@@QAEXPAVEntity@@PBD@Z 00AF4CA0 f physics.o
+351	VERIFIED	0002:00305ca0 ?DecodeDestructible@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00AF51A0 f physics.o
+352	VERIFIED	0002:00305cd0 ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z 00AF51D0 f physics.o
+353	VERIFIED	0002:00305da0 ?FindInitialVel@@YA_NPAVEntity@@AAVDir3@math@@1@Z 00AF52A0 f physics.o
+354	VERIFIED	0002:00305f90 ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ 00AF5490 f physics.o
+355	VERIFIED	0002:003060e0 ?collision_prolog@rb_extra_info@@QAEXXZ 00AF55E0 f physics.o
+356	VERIFIED	0002:00306150 ?add_entity@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@MM@Z 00AF5650 f physics.o
+357	VERIFIED	0002:00306d10 ?add_environmental_point_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@1@Z 00AF6210 f physics.o
+358	VERIFIED	0002:00306d80 ?add_entity_point_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@01@Z 00AF6280 f physics.o
+359	VERIFIED	0002:00307010 ?add_environmental_dist_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@1MM@Z 00AF6510 f physics.o
+360	VERIFIED	0002:00307080 ?add_entity_dist_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@01MM@Z 00AF6580 f physics.o
+361	VERIFIED	0002:00307100 ?set_gjk_cache_info@@YAXPAVphys_collide_data@@@Z 00AF6600 f physics.o
+362	VERIFIED	0002:00307130 ?prop_system_collision_prolog@@YAXXZ 00AF6630 f physics.o
+363	VERIFIED	0002:00307180 ?setup_physics@biped_system@@AAEXPAVEntity@@@Z 00AF6680 f physics.o
+364	VERIFIED	0002:00308c80 ?setup_initial_gjk_cache@biped_system@@QAEXIABVDir3@math@@@Z 00AF8180 f physics.o
+365	VERIFIED	0002:00308d50 ?create_bps@biped_system@@QAEXPAVEntity@@H@Z 00AF8250 f physics.o
+366	VERIFIED	0002:00308dc0 ?remove_colgeom@ragdoll_collision_callback@@QAEXH@Z 00AF82C0 f physics.o
+367	VERIFIED	0002:00308e30 ?start_physics@rb_vehicle@@QAEXXZ 00AF8330 f physics.o
+368	VERIFIED	0002:00309090 ?_update_unpause@rb_vehicle@@AAEXXZ 00AF8590 f physics.o
+369	VERIFIED	0002:003091e0 ?_update_epilog@rb_vehicle@@AAEXM@Z 00AF86E0 f physics.o
+370	VERIFIED	0002:003096a0 ?frame_epilog_all_systems@rb_vehicle@@SAXM@Z 00AF8BA0 f physics.o
+371	PORTED	0002:003096e0 ?SetAVel@@YAXPAVEntity@@ABVDir3@math@@@Z 00AF8BE0 f physics.o
+372	PORTED	0002:00309720 ?SpawnBrokenPiece@@YAPAVEntity@@PAV1@PBD1ABVPosition3@math@@_N@Z 00AF8C20 f physics.o
+373	PORTED	0002:003099c0 ?CheckpointExplode@Destructible@@QAEXXZ 00AF8EC0 f physics.o
+374	VERIFIED	0002:00309b10 ?collide_terrain@prop_phys_collision@@SAXPAVrb_extra_info@@@Z 00AF9010 f physics.o
+375	VERIFIED	0002:0030a330 ?collide_entities@prop_phys_collision@@SAXPAVrb_extra_info@@@Z 00AF9830 f physics.o
+376	VERIFIED	0002:0030ac40 ?collide_bodies@prop_phys_collision@@SAXPAVrb_extra_info@@0@Z 00AFA140 f physics.o
+377	VERIFIED	0002:0030afe0 ?get_all_collisions@prop_phys_collision@@SAXXZ 00AFA4E0 f physics.o
+378	VERIFIED	0002:0030b190 ?create_bp_sys@biped_phys_info@@QAEXH@Z 00AFA690 f physics.o
+379	VERIFIED	0002:0030b2d0 ?remove_rigid_body@biped_system@@QAEXW4phys_bones@@@Z 00AFA7D0 f physics.o
+380	VERIFIED	0002:0030b300 ?collide_terrain@ragdoll_collision_callback@@QAEXXZ 00AFA800 f physics.o
+381	VERIFIED	0002:0030bd00 ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ 00AFB200 f physics.o
+382	VERIFIED	0002:0030c080 ?unpause_physics@rb_vehicle@@QAEXXZ 00AFB580 f physics.o
+383	VERIFIED	0002:0030c0a0 ?start_path@rb_vehicle@@QAEXH@Z 00AFB5A0 f physics.o
+384	VERIFIED	0002:0030c350 ?teleport@rb_vehicle@@QAEXABUvector@Broc@@PBU23@@Z 00AFB850 f physics.o
+385	VERIFIED	0002:0030c530 ?UpdateControls@RBVehicleController@@QAEXAAVrb_vehicle@@@Z 00AFBA30 f physics.o
+386	VERIFIED	0002:0030c8c0 ?prop_system_collision_process@@YAXXZ 00AFBDC0 f physics.o
+387	VERIFIED	0002:0030c8d0 ?do_all_biped_system_collision_callback@@YAXXZ 00AFBDD0 f physics.o
+388	PORTED	0002:0030c910 ?teleport@rb_vehicle@@QAEXABVPosition3@math@@PBV23@@Z 00AFBE10 f physics.o
+389	VERIFIED	0002:0030ca40 ?_update_prolog@rb_vehicle@@AAEXM@Z 00AFBF40 f physics.o
+390	VERIFIED	0002:0030cf60 ?frame_prolog_all_systems@rb_vehicle@@SAXM@Z 00AFC460 f physics.o
+391	VERIFIED	0002:0030cfa0 ?physics_collision_callback@@YAXXZ 00AFC4A0 f physics.o
+392	VERIFIED	0002:0030cfe0 ?PhysInit@@YAXXZ 00AFC4E0 f physics.o
+393	VERIFIED	0002:0030d080 ?destroy_bp_sys@biped_phys_info@@QAEX_N@Z 00AFC580 f physics.o
+394	VERIFIED	0002:0030d0d0 ?StopPhysics@@YAXPAVEntity@@@Z 00AFC5D0 f physics.o
+395	VERIFIED	0002:0030d140 ??1biped_phys_info@@QAE@XZ 00AFC640 f physics.o
+396	VERIFIED	0002:0030d160 ?epilog_frame_advance@biped_phys_info@@QAEXM@Z 00AFC660 f physics.o
+397	VERIFIED	0002:0030d210 ?epilog_frame_advance_all@biped_phys_info@@SAXM@Z 00AFC710 f physics.o
+398	VERIFIED	0002:0030d250 ?UpdateRigidBody@@YAXM@Z 00AFC750 f physics.o
+399	VERIFIED	0002:0030d300 ?create_biped_phys_info@@YAPAVbiped_phys_info@@PAVEntity@@@Z 00AFC800 f physics.o
+400	VERIFIED	0002:0030d350 ?destroy_biped_phys_info@@YAXPAVbiped_phys_info@@@Z 00AFC850 f physics.o
+401	VERIFIED	0002:0030d380 ?ApplyPhysics@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@3@M_NW4hitLocation_t@@@Z 00AFC880 f physics.o
+402	VERIFIED	0002:0030d870 ?ThrowPiece@Destructible@@QAEXPAVEntity@@MABVPosition3@math@@1_N@Z 00AFCD70 f physics.o
+403	VERIFIED	0002:0030d930 ?DoDamage@Destructible@@QAE_NPAVEntity@@MABVPosition3@math@@ABVDir3@4@H_N@Z 00AFCE30 f physics.o
+404	VERIFIED	0002:0030ef20 ?FN_HangEntity@@YAXXZ 00AFE420 f physics.o
+405	PORTED	0002:00316090 ?GetW@Quaternion@math@@QBEMXZ 00B05590 f i physics.o
+406	PORTED	0002:003160e0 ?GetImag@Quaternion@math@@QBE?AVDir3@2@XZ 00B055E0 f i physics.o
+407	PORTED	0002:00316110 ?get_wheel_count@@YA?BHPAVrb_vehicle@@@Z 00B05610 f i physics.o
+408	PORTED	0002:00316140 ?QuaternionToAxisSinCos@math@@YAXABVQuaternion@1@AAVDir3@1@AAM2@Z 00B05640 f i physics.o
+409	PORTED	0002:00316240 ?GetPrevViewDir@Camera@@QAE?AVPosition3@math@@XZ 00B05740 f i physics.o
+410	VERIFIED	0002:00316270 ??0phys_collide_data_callback@@QAE@XZ 00B05770 f i physics.o
+411	PORTED	0002:00316280 ?set_identity@@YAXAAVMat43@math@@@Z 00B05780 f i physics.o
+412	VERIFIED	0002:00316350 ?IS_BAD_NUMBER@@YA_NM@Z 00B05850 f i physics.o
+413	PORTED	0002:003163a0 ?set_damp_k@bone_mass_info@@QAEXM@Z 00B058A0 f i physics.o
+414	PORTED	0002:003163c0 ?add_joint_limit@bone_mass_info@@QAEXABVDir3@math@@M@Z 00B058C0 f i physics.o
+415	PORTED	0002:00316420 ?set_capsule@bone_mass_info@@QAEXMABVPosition3@math@@@Z 00B05920 f i physics.o
+416	VERIFIED	0002:00316460 ??0bone_mass_info@@QAE@XZ 00B05960 f i physics.o
+417	PORTED	0002:00316470 ??0rb_collision_sphere@@QAE@XZ 00B05970 f i physics.o
+418	VERIFIED	0002:00316480 ?phys_make_rotate@@YAXPAVMat43@math@@ABVDir3@2@1@Z 00B05980 f i physics.o
+419	VERIFIED	0002:00316760 ?merge_spheres@@YAXABVPosition3@math@@MPAV12@PAM@Z 00B05C60 f i physics.o
+420	PORTED	0002:003168f0 ?get_list_cpi_@rbcint@@SAPAV?$phys_simple_link_list@Vcontact_point_info@@@@PAVrigid_body_constraint_contact@@@Z 00B05DF0 f i physics.o
+421	PORTED	0002:00316900 ??0phys_list_condition_functor_has_rb_colgeom@@QAE@QAVrigid_body_sphere_list@@@Z 00B05E00 f i physics.o
+422	PORTED	0002:00316920 ?test@phys_list_condition_functor_has_rb_colgeom@@QAE_NABVrb_capsule_pair@@@Z 00B05E20 f i physics.o
+423	PORTED	0002:00316950 ??_FHandle@@QAEXXZ 00B05E50 f i physics.o
+424	VERIFIED	0002:00316960 ??0RBVehicleController@@QAE@XZ 00B05E60 f i physics.o
+425	PORTED	0002:00316970 ??0wheel_collision_info@@QAE@XZ 00B05E70 f i physics.o
+426	PORTED	0002:00316980 ?size@?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QBEIXZ 00B05E80 f i physics.o
+427	PORTED	0002:00316990 ??A?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@I@Z 00B05E90 f i physics.o
+428	PORTED	0002:00316a10 ??A?$InplaceVector@UPacked@Position3@math@@@@QAEAAUPacked@Position3@math@@I@Z 00B05F10 f i physics.o
+429	VERIFIED	0002:00316a90 ??0?$phys_static_array@PAVrigid_body@@$09@@QAE@XZ 00B05F90 f i physics.o
+430	VERIFIED	0002:00316aa0 ??A?$phys_static_array@PAVrigid_body@@$09@@QAEAAPAVrigid_body@@H@Z 00B05FA0 f i physics.o
+431	VERIFIED	0002:00316af0 ??0?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE@XZ 00B05FF0 f i physics.o
+432	VERIFIED	0002:00316b00 ??A?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAEAAPAVrigid_body_constraint_ragdoll@@H@Z 00B06000 f i physics.o
+433	PORTED	0002:00316b50 ??0?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE@XZ 00B06050 f i physics.o
+434	PORTED	0002:00316b60 ??0?$phys_static_array@PAVuser_rigid_body@@$09@@QAE@XZ 00B06060 f i physics.o
+435	PORTED	0002:00316b70 ??0?$phys_static_array@PAVrigid_body_constraint@@$09@@QAE@XZ 00B06070 f i physics.o
+436	PORTED	0002:00316b80 ?add@?$phys_simple_link_list@Vcontact_point_info@@@@QAEXPAVcontact_point_info@@@Z 00B06080 f i physics.o
+437	PORTED	0002:00316ba0 ?get_first@?$phys_simple_link_list@Vcontact_point_info@@@@QBEPAVcontact_point_info@@XZ 00B060A0 f i physics.o
+438	PORTED	0002:00316bb0 ??Eiterator@?$phys_simple_link_list@Vcontact_point_info@@@@QAEXH@Z 00B060B0 f i physics.o
+439	PORTED	0002:00316bc0 ??9iterator@?$phys_simple_link_list@Vcontact_point_info@@@@QBE_NABV01@@Z 00B060C0 f i physics.o
+440	PORTED	0002:00316be0 ??Diterator@?$phys_simple_link_list@Vcontact_point_info@@@@QAEAAVcontact_point_info@@XZ 00B060E0 f i physics.o
+441	PORTED	0002:00316bf0 ??0?$phys_link_list@Vcontact_point_info@@@@QAE@XZ 00B060F0 f i physics.o
+442	PORTED	0002:00316c10 ?remove_all@?$phys_link_list@Vcontact_point_info@@@@QAEXXZ 00B06110 f i physics.o
+443	PORTED	0002:00316c30 ?remove_all@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@QAEXXZ 00B06130 f i physics.o
+444	PORTED	0002:00316c40 ?find@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@QAEPAUgjk_geom_info@gjk_geom_database@@ABI@Z 00B06140 f i physics.o
+445	PORTED	0002:00316c80 ??0?$phys_static_array@Vrb_collision_sphere@@$01@@QAE@XZ 00B06180 f i physics.o
+446	PORTED	0002:00316c90 ??A?$phys_static_array@Vrb_collision_sphere@@$01@@QAEAAVrb_collision_sphere@@H@Z 00B06190 f i physics.o
+447	PORTED	0002:00316cf0 ?get_count@?$phys_static_array@Vrb_collision_sphere@@$01@@QBE?BHXZ 00B061F0 f i physics.o
+448	PORTED	0002:00316d00 ?back@?$phys_static_array@Vrb_collision_sphere@@$01@@QAEAAVrb_collision_sphere@@XZ 00B06200 f i physics.o
+449	PORTED	0002:00316d50 ??A?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEAAVrigid_body_sphere_list@@H@Z 00B06250 f i physics.o
+450	PORTED	0002:00316dc0 ?add@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAEPAVrb_capsule_pair@@_NPBD@Z 00B062C0 f i physics.o
+451	VERIFIED	0002:00316e00 ??0?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAE@XZ 00B06300 f i physics.o
+452	PORTED	0002:00316e20 ??A?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAEAAVphys_anim_bone@@H@Z 00B06320 f i physics.o
+453	PORTED	0002:00316e80 ?get_count@?$phys_static_array@Vphys_anim_bone@@$0FK@@@QBE?BHXZ 00B06380 f i physics.o
+454	VERIFIED	0002:00316e90 ??0?$phys_static_array@VQuaternion@math@@$0FK@@@QAE@XZ 00B06390 f i physics.o
+455	PORTED	0002:00316eb0 ?add@?$phys_static_array@VQuaternion@math@@$0FK@@@QAEPAVQuaternion@math@@_NPBD@Z 00B063B0 f i physics.o
+456	PORTED	0002:00316f10 ??A?$phys_static_array@VQuaternion@math@@$0FK@@@QAEAAVQuaternion@math@@H@Z 00B06410 f i physics.o
+457	PORTED	0002:00316f70 ?get_count@?$phys_static_array@VQuaternion@math@@$0FK@@@QBE?BHXZ 00B06470 f i physics.o
+458	VERIFIED	0002:00316f80 ??0?$phys_static_array@VPosition3@math@@$0FK@@@QAE@XZ 00B06480 f i physics.o
+459	PORTED	0002:00316fa0 ?add@?$phys_static_array@VPosition3@math@@$0FK@@@QAEPAVPosition3@math@@_NPBD@Z 00B064A0 f i physics.o
+460	PORTED	0002:00317000 ??A?$phys_static_array@VPosition3@math@@$0FK@@@QAEAAVPosition3@math@@H@Z 00B06500 f i physics.o
+461	PORTED	0002:00317060 ??A?$phys_safe_array@Vclient_bone_info@@$09@@QAEAAVclient_bone_info@@H@Z 00B06560 f i physics.o
+462	PORTED	0002:003170c0 ?size@?$InplaceVector@VPhysConstraint@@@@QBEIXZ 00B065C0 f i physics.o
+463	PORTED	0002:003170d0 ??A?$InplaceVector@VPhysConstraint@@@@QAEAAVPhysConstraint@@I@Z 00B065D0 f i physics.o
+464	PORTED	0002:00317150 ?remove_all@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEXXZ 00B06650 f i physics.o
+465	PORTED	0002:00317160 ?find@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEPAVprop_collide_callback@@ABVrigid_body_pair_key@@@Z 00B06660 f i physics.o
+466	PORTED	0002:003171c0 ?add_nc@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEPAVbiped_system@@_NPBD@Z 00B066C0 f i physics.o
+467	PORTED	0002:00317210 ?get_count@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QBE?BHXZ 00B06710 f i physics.o
+468	PORTED	0002:00317220 ??A?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAEAAVrb_extra_info@@H@Z 00B06720 f i physics.o
+469	PORTED	0002:00317290 ?get_count@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QBE?BHXZ 00B06790 f i physics.o
+470	PORTED	0002:003172a0 ??Eiterator@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAEXH@Z 00B067A0 f i physics.o
+471	PORTED	0002:003172b0 ??9iterator@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE_NABV01@@Z 00B067B0 f i physics.o
+472	PORTED	0002:003172d0 ??Diterator@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAEAAVrb_extra_info@@XZ 00B067D0 f i physics.o
+473	PORTED	0002:003172e0 ??Eiterator@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAEXH@Z 00B067E0 f i physics.o
+474	PORTED	0002:003172f0 ??9iterator@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE_NABV01@@Z 00B067F0 f i physics.o
+475	PORTED	0002:00317310 ??Diterator@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAEAAVbiped_phys_info@@XZ 00B06810 f i physics.o
+476	PORTED	0002:00317320 ??Eiterator@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEXH@Z 00B06820 f i physics.o
+477	PORTED	0002:00317330 ??9iterator@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE_NABV01@@Z 00B06830 f i physics.o
+478	PORTED	0002:00317350 ??Diterator@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEAAVbiped_system@@XZ 00B06850 f i physics.o
+479	PORTED	0002:00317360 ??Eiterator@?$phys_static_array@Vrb_collision_sphere@@$01@@QAEXH@Z 00B06860 f i physics.o
+480	PORTED	0002:00317370 ??9iterator@?$phys_static_array@Vrb_collision_sphere@@$01@@QBE_NABV01@@Z 00B06870 f i physics.o
+481	PORTED	0002:00317390 ??Diterator@?$phys_static_array@Vrb_collision_sphere@@$01@@QAEAAVrb_collision_sphere@@XZ 00B06890 f i physics.o
+482	PORTED	0002:003173a0 ??Eiterator@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEXH@Z 00B068A0 f i physics.o
+483	PORTED	0002:003173b0 ??9iterator@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE_NABV01@@Z 00B068B0 f i physics.o
+484	PORTED	0002:003173d0 ??Diterator@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEAAVrigid_body_sphere_list@@XZ 00B068D0 f i physics.o
+485	PORTED	0002:003173e0 ??Eiterator@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAEXH@Z 00B068E0 f i physics.o
+486	PORTED	0002:003173f0 ??9iterator@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE_NABV01@@Z 00B068F0 f i physics.o
+487	PORTED	0002:00317410 ??Diterator@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAEAAVrb_capsule_pair@@XZ 00B06910 f i physics.o
+488	VERIFIED	0002:00317420 ?add@?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@QAEPAVvehicle_rb_parameter@@_NPBD@Z 00B06920 f i physics.o
+489	PORTED	0002:00317480 ??A?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@QAEAAVvehicle_rb_parameter@@H@Z 00B06980 f i physics.o
+490	PORTED	0002:003174f0 ?get_count@?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@QBE?BHXZ 00B069F0 f i physics.o
+491	PORTED	0002:00317500 ??A?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAEAAVrb_vehicle@@H@Z 00B06A00 f i physics.o
+492	PORTED	0002:00317570 ?get_count@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QBE?BHXZ 00B06A70 f i physics.o
+493	PORTED	0002:00317580 ??Eiterator@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAEXH@Z 00B06A80 f i physics.o
+494	PORTED	0002:00317590 ??9iterator@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE_NABV01@@Z 00B06A90 f i physics.o
+495	PORTED	0002:003175b0 ??Diterator@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAEAAVrb_vehicle@@XZ 00B06AB0 f i physics.o
+496	PORTED	0002:003175c0 ?find@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAEPAVrigid_body_constraint_contact@@ABVrigid_body_pair_key@@@Z 00B06AC0 f i physics.o
+497	PORTED	0002:00317620 ??0phys_anim_bone@@QAE@XZ 00B06B20 f i physics.o
+498	VERIFIED	0002:00317630 ??0rb_extra_info@@QAE@XZ 00B06B30 f i physics.o
+499	PORTED	0002:00317640 ?call_destructors@?$phys_static_array@PAVrigid_body@@$09@@AAEXXZ 00B06B40 f i physics.o
+500	PORTED	0002:00317650 ?call_destructors@?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@AAEXXZ 00B06B50 f i physics.o
+501	PORTED	0002:00317660 ?call_destructors@?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@AAEXXZ 00B06B60 f i physics.o
+502	PORTED	0002:00317670 ?call_destructors@?$phys_static_array@PAVuser_rigid_body@@$09@@AAEXXZ 00B06B70 f i physics.o
+503	PORTED	0002:00317680 ?call_destructors@?$phys_static_array@PAVrigid_body_constraint@@$09@@AAEXXZ 00B06B80 f i physics.o
+504	PORTED	0002:00317690 ??0iterator@?$phys_simple_link_list@Vcontact_point_info@@@@QAE@PAVcontact_point_info@@@Z 00B06B90 f i physics.o
+505	PORTED	0002:003176b0 ?init@?$phys_inplace_avl_tree_node@IUgjk_geom_info@gjk_geom_database@@@@QAEXXZ 00B06BB0 f i physics.o
+506	PORTED	0002:003176c0 ?call_destructors@?$phys_static_array@Vrb_collision_sphere@@$01@@AAEXXZ 00B06BC0 f i physics.o
+507	PORTED	0002:003176d0 ?add@?$phys_static_array@Vrb_collision_sphere@@$01@@QAEPAVrb_collision_sphere@@_NPBD@Z 00B06BD0 f i physics.o
+508	PORTED	0002:00317720 ?is_member@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QBE_NPBVrigid_body_sphere_list@@@Z 00B06C20 f i physics.o
+509	PORTED	0002:00317790 ?call_destructors@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@AAEXXZ 00B06C90 f i physics.o
+510	PORTED	0002:003177a0 ?reset_buffer@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@AAEXXZ 00B06CA0 f i physics.o
+511	PORTED	0002:00317830 ?is_member@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QBE_NPBVrb_capsule_pair@@@Z 00B06D30 f i physics.o
+512	PORTED	0002:00317870 ?call_destructors@?$phys_static_array@Vphys_anim_bone@@$0FK@@@AAEXXZ 00B06D70 f i physics.o
+513	PORTED	0002:00317880 ?reset_buffer@?$phys_static_array@Vphys_anim_bone@@$0FK@@@AAEXXZ 00B06D80 f i physics.o
+514	PORTED	0002:00317890 ?call_destructors@?$phys_static_array@VQuaternion@math@@$0FK@@@AAEXXZ 00B06D90 f i physics.o
+515	PORTED	0002:003178a0 ?call_destructors@?$phys_static_array@VPosition3@math@@$0FK@@@AAEXXZ 00B06DA0 f i physics.o
+516	PORTED	0002:003178b0 ?init@?$phys_inplace_avl_tree_node@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEXXZ 00B06DB0 f i physics.o
+517	VERIFIED	0002:003178c0 ?is_member@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QBE_NPBVbiped_phys_info@@@Z 00B06DC0 f i physics.o
+518	VERIFIED	0002:00317930 ?is_member@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QBE_NPBVbiped_system@@@Z 00B06E30 f i physics.o
+519	PORTED	0002:003179a0 ?call_destructors@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@AAEXXZ 00B06EA0 f i physics.o
+520	PORTED	0002:003179b0 ?reset_buffer@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@AAEXXZ 00B06EB0 f i physics.o
+521	VERIFIED	0002:00317a90 ?is_member@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QBE_NPBVrb_extra_info@@@Z 00B06F90 f i physics.o
+522	PORTED	0002:00317b10 ?call_destructors@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@AAEXXZ 00B07010 f i physics.o
+523	PORTED	0002:00317b20 ?reset_buffer@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@AAEXXZ 00B07020 f i physics.o
+524	PORTED	0002:00317c10 ?remove_all@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXXZ 00B07110 f i physics.o
+525	PORTED	0002:00317c20 ??0iterator@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE@PAPAVrb_extra_info@@@Z 00B07120 f i physics.o
+526	PORTED	0002:00317c40 ??0iterator@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE@PAPAVbiped_phys_info@@@Z 00B07140 f i physics.o
+527	PORTED	0002:00317c60 ??0iterator@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE@PAPAVbiped_system@@@Z 00B07160 f i physics.o
+528	PORTED	0002:00317c80 ??0iterator@?$phys_static_array@Vrb_collision_sphere@@$01@@QAE@PAVrb_collision_sphere@@@Z 00B07180 f i physics.o
+529	PORTED	0002:00317ca0 ??0iterator@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE@PAPAVrigid_body_sphere_list@@@Z 00B071A0 f i physics.o
+530	PORTED	0002:00317cc0 ??0iterator@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE@PAPAVrb_capsule_pair@@@Z 00B071C0 f i physics.o
+531	PORTED	0002:00317ce0 ?call_destructors@?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@AAEXXZ 00B071E0 f i physics.o
+532	PORTED	0002:00317cf0 ?reset_buffer@?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@AAEXXZ 00B071F0 f i physics.o
+533	PORTED	0002:00317e50 ?call_destructors@?$phys_static_memory_pool@Vrb_vehicle@@$09@@AAEXXZ 00B07350 f i physics.o
+534	PORTED	0002:00317e60 ?reset_buffer@?$phys_static_memory_pool@Vrb_vehicle@@$09@@AAEXXZ 00B07360 f i physics.o
+535	VERIFIED	0002:00317fc0 ?is_member@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QBE_NPBVrb_vehicle@@@Z 00B074C0 f i physics.o
+536	PORTED	0002:00318040 ??0iterator@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE@PAPAVrb_vehicle@@@Z 00B07540 f i physics.o
+537	PORTED	0002:00318060 ??Eiterator@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEXH@Z 00B07560 f i physics.o
+538	PORTED	0002:00318070 ??9iterator@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE_NABV01@@Z 00B07570 f i physics.o
+539	PORTED	0002:00318090 ??Diterator@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEAAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@XZ 00B07590 f i physics.o
+540	VERIFIED	0002:003180a0 ??0phys_gjk_cache_info@@QAE@XZ 00B075A0 f i physics.o
+541	PORTED	0002:003180b0 ?avl_max@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@AAEHHH@Z 00B075B0 f i physics.o
+542	PORTED	0002:003180d0 ?avl_max@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@AAEHHH@Z 00B075D0 f i physics.o
+543	PORTED	0002:003180f0 ?is_member@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QBE_NPBUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B075F0 f i physics.o
+544	PORTED	0002:00318170 ?get_avl_key@phys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QBEABVphys_gjk_geom_id_pair_key@@XZ 00B07670 f i physics.o
+545	PORTED	0002:00318180 ?set_avl_key@phys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEXABVphys_gjk_geom_id_pair_key@@@Z 00B07680 f i physics.o
+546	PORTED	0002:00318190 ?init@?$phys_inplace_avl_tree_node@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXXZ 00B07690 f i physics.o
+547	PORTED	0002:003181a0 ??0iterator@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE@PAPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B076A0 f i physics.o
+548	PORTED	0002:003181c0 ?avl_max@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@AAEHHH@Z 00B076C0 f i physics.o
+549	PORTED	0002:003181e0 ??$toDir3@VPosition3@math@@@@YAABVDir3@math@@ABVPosition3@1@@Z 00B076E0 f i physics.o
+550	PORTED	0002:003181f0 ??$toMat33@VMat43@math@@@@YAABVMat33@math@@ABVMat43@1@@Z 00B076F0 f i physics.o
+551	PORTED	0002:00318200 ??$toDiagMat33@VDir3@math@@@@YAABVDiagMat33@math@@ABVDir3@1@@Z 00B07700 f i physics.o
+552	PORTED	0002:00318210 ??$toPosition3@VPosition3@math@@@@YAABVPosition3@math@@ABV01@@Z 00B07710 f i physics.o
+553	PORTED	0002:00318220 ??$get_active_eps_aabb@Vphys_gjk_geom_list@@@@YAXPAVphys_gjk_geom_list@@PAVDir3@math@@1@Z 00B07720 f i physics.o
+554	PORTED	0002:00318310 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QBEABQAVDestructibleBank@@H@Z 00B07810 f i physics.o
+555	PORTED	0002:00318390 ??0?$IVPointer@VDestructible@@@@QAE@W4TPakId@@PAVDestructible@@@Z 00B07890 f i physics.o
+556	PORTED	0002:003183b0 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QBEABQAVPhysDataBank@@H@Z 00B078B0 f i physics.o
+557	PORTED	0002:00318430 ??0?$IVPointer@VPhysData@@@@QAE@W4TPakId@@PAVPhysData@@@Z 00B07930 f i physics.o
+558	PORTED	0002:00318450 ?size@?$InplaceVector@PBVDestructible@@@@QBEIXZ 00B07950 f i physics.o
+559	PORTED	0002:00318460 ??A?$InplaceVector@PBVDestructible@@@@QAEAAPBVDestructible@@I@Z 00B07960 f i physics.o
+560	PORTED	0002:003184e0 ?size@?$InplaceVector@PBVPhysData@@@@QBEIXZ 00B079E0 f i physics.o
+561	PORTED	0002:003184f0 ??A?$InplaceVector@PBVPhysData@@@@QAEAAPBVPhysData@@I@Z 00B079F0 f i physics.o
+562	VERIFIED	0002:00318570 ?get_type@DCGSet@@QBEHI@Z 00B07A70 f i physics.o
+563	VERIFIED	0002:003185f0 ?phys_full_multiply_mat@@YAXAAVMat43@math@@ABV12@1@Z 00B07AF0 f i physics.o
+564	VERIFIED	0002:003187c0 ?phys_full_inv_multiply_mat@@YAXAAVMat43@math@@ABV12@1@Z 00B07CC0 f i physics.o
+565	VERIFIED	0002:00318a10 ?PHYS_ASSERT_UNIT@@YAXABVDir3@math@@@Z 00B07F10 f i physics.o
+566	PORTED	0002:00318ab0 ?PHYS_ASSERT_ALIGNED@@YAXPBVDir3@math@@@Z 00B07FB0 f i physics.o
+567	VERIFIED	0002:00318af0 ?allocate@phys_memory_heap@@QAEPAXHH_NPBD@Z 00B07FF0 f i physics.o
+568	VERIFIED	0002:00318b90 ?translate_col_mat@rigid_body@@QAEXABVDir3@math@@@Z 00B08090 f i physics.o
+569	VERIFIED	0002:00318cb0 ?get_rigid_body@rb_ragdoll_model@@QAEPAVrigid_body@@H@Z 00B081B0 f i physics.o
+570	VERIFIED	0002:00318d20 ?get_joint@rb_ragdoll_model@@QAEPAVrigid_body_constraint_ragdoll@@H@Z 00B08220 f i physics.o
+571	VERIFIED	0002:00318d90 ?get_closest_psc@contact_point_info@@QBEXABVDir3@math@@00PAMPAPBUpulse_sum_cache_info@1@@Z 00B08290 f i physics.o
+572	PORTED	0002:00318ee0 ?set_normal@contact_point_info@@QAEXABVDir3@math@@@Z 00B083E0 f i physics.o
+573	PORTED	0002:00318f20 ?create_cpi@contact_point_info@@SAPAV1@H_NPAVphys_memory_heap@@@Z 00B08420 f i physics.o
+574	PORTED	0002:00318ff0 ??0pulse_sum_cache_info@contact_point_info@@QAE@XZ 00B084F0 f i physics.o
+575	PORTED	0002:00319010 ?constructor@phys_gjk_cache_info@@QAEXABVphys_gjk_geom_id_pair_key@@_N@Z 00B08510 f i physics.o
+576	VERIFIED	0002:00319050 ??0phys_contact_manifold_process@@QAE@XZ 00B08550 f i physics.o
+577	VERIFIED	0002:003190d0 ??0phys_gjk_geom_cod_base@@QAE@XZ 00B085D0 f i physics.o
+578	PORTED	0002:003190e0 ?comp_aabb@phys_gjk_geom_cod_base@@UAEXABVMat43@math@@@Z 00B085E0 f i physics.o
+579	VERIFIED	0002:003190f0 ?nullify_buffer@phys_collision_allocater@@QAEXXZ 00B085F0 f i physics.o
+580	VERIFIED	0002:00319180 ?allocate@phys_collision_allocater@@QAEPAXHH_NPBD@Z 00B08680 f i physics.o
+581	PORTED	0002:00319260 ?create@phys_gjk_geom_list@@SAPAV1@XZ 00B08760 f i physics.o
+582	PORTED	0002:00319280 ??0phys_gjk_geom_vert_list@@QAE@XZ 00B08780 f i physics.o
+583	PORTED	0002:00319290 ?get_center@phys_gjk_geom_vert_list@@UBE?BVDir3@math@@XZ 00B08790 f i physics.o
+584	PORTED	0002:003192f0 ?support@phys_gjk_geom_vert_list@@UBE?BVDir3@math@@ABV23@@Z 00B087F0 f i physics.o
+585	PORTED	0002:003193e0 ?get_feature@phys_gjk_geom_vert_list@@UBEXPAVphys_contact_manifold@@@Z 00B088E0 f i physics.o
+586	PORTED	0002:00319430 ?is_feature_point@phys_contact_manifold@@QBE?B_NABVDir3@math@@@Z 00B08930 f i physics.o
+587	PORTED	0002:00319500 ?add_mesh_point@phys_contact_manifold@@QAEXABVDir3@math@@@Z 00B08A00 f i physics.o
+588	PORTED	0002:003195c0 ?fast_allocate@phys_memory_heap@@QAEPAXHPBD@Z 00B08AC0 f i physics.o
+589	PORTED	0002:00319620 ?comp_aabb@phys_gjk_geom_vert_list@@UAEXABVMat43@math@@@Z 00B08B20 f i physics.o
+590	PORTED	0002:00319790 ?add_aabb@phys_gjk_geom_cod_base@@QAEXABVDir3@math@@@Z 00B08C90 f i physics.o
+591	PORTED	0002:003197e0 ?are_potentially_colliding@@YA?B_NABVDir3@math@@000@Z 00B08CE0 f i physics.o
+592	PORTED	0002:003198c0 ?reset@gjk_geom_database@@QAEXXZ 00B08DC0 f i physics.o
+593	PORTED	0002:003198e0 ?find_in_sorted_list@gjk_geom_database@@QAEPAUgjk_geom_info@1@I@Z 00B08DE0 f i physics.o
+594	VERIFIED	0002:00319920 ?visit@physics_colgeom_visitor@@UAE?AW4visit_result_t@@H@Z 00B08E20 f i physics.o
+595	VERIFIED	0002:00319a90 ?can_have_event@rb_extra_info@@QAE_NXZ 00B08F90 f i physics.o
+596	PORTED	0002:00319b40 ?set_transform@rb_extra_info@@QAEXABVMat43@math@@@Z 00B09040 f i physics.o
+597	VERIFIED	0002:00319be0 ??0phys_gjk_geom_ragdoll_1@@QAE@XZ 00B090E0 f i physics.o
+598	PORTED	0002:00319bf0 ?get_center@phys_gjk_geom_ragdoll_1@@UBE?BVDir3@math@@XZ 00B090F0 f i physics.o
+599	PORTED	0002:00319c20 ?get_geom_radius@phys_gjk_geom_ragdoll_1@@UBE?BMXZ 00B09120 f i physics.o
+600	PORTED	0002:00319c30 ?support@phys_gjk_geom_ragdoll_1@@UBE?BVDir3@math@@ABV23@@Z 00B09130 f i physics.o
+601	PORTED	0002:00319de0 ?get_feature@phys_gjk_geom_ragdoll_1@@UBEXPAVphys_contact_manifold@@@Z 00B092E0 f i physics.o
+602	PORTED	0002:00319ea0 ?add_cp@ragdoll_collision_callback@@QAEPAVrb_capsule_pair@@XZ 00B093A0 f i physics.o
+603	VERIFIED	0002:00319ee0 ?set@client_bone_info@@QAEXABVMat43@math@@QAVEntity@@HH@Z 00B093E0 f i physics.o
+604	VERIFIED	0002:00319fa0 ?rdbi_calc_bone_mat_from_rb@biped_system@@AAEXXZ 00B094A0 f i physics.o
+605	PORTED	0002:0031a060 ??0?$phys_safe_array@Vclient_bone_info@@$09@@QAE@XZ 00B09560 f i physics.o
+606	PORTED	0002:0031a070 ?set_debug_render_flag@biped_phys_info@@QAEXH_N@Z 00B09570 f i physics.o
+607	PORTED	0002:0031a0b0 ?is_actuator_enabled@rb_vehicle@@QAE_NXZ 00B095B0 f i physics.o
+608	VERIFIED	0002:0031a0d0 ?set_steer_factor@rb_vehicle@@QAEXM@Z 00B095D0 f i physics.o
+609	PORTED	0002:0031a130 ?is_script_controlled@rb_vehicle@@QBE_NXZ 00B09630 f i physics.o
+610	PORTED	0002:0031a140 ?set_script_controlled@rb_vehicle@@QAEX_N@Z 00B09640 f i physics.o
+611	PORTED	0002:0031a180 ?is_tank@rb_vehicle@@QBE_NXZ 00B09680 f i physics.o
+612	PORTED	0002:0031a190 ??0phys_collision_allocater@@QAE@XZ 00B09690 f i physics.o
+613	PORTED	0002:0031a1f0 ??0phys_gjk_info@@QAE@XZ 00B096F0 f i physics.o
+614	VERIFIED	0002:0031a200 ??0collide_entities_callback@@QAE@XZ 00B09700 f i physics.o
+615	VERIFIED	0002:0031a210 ?GetPose@nalGenericInstance@nalGeneric@@QAEXHAAVnalGenericPose@2@H@Z 00B09710 f i physics.o
+616	VERIFIED	0002:0031a240 ?full_inverse@@YAXAAVMat43@math@@ABV12@@Z 00B09740 f i physics.o
+617	VERIFIED	0002:0031a430 ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ 00B09930 f i physics.o
+618	PORTED	0002:0031a580 ??A?$cdl_array@Ucdl_vinfo_t@@@@QAEAAUcdl_vinfo_t@@I@Z 00B09A80 f i physics.o
+619	PORTED	0002:0031a5d0 ?Fixup@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09AD0 f i physics.o
+620	PORTED	0002:0031a650 ?AddBank@?$InplaceAssetBankSet@VDestructibleBank@@@@QAEXW4TPakId@@PAVDestructibleBank@@@Z 00B09B50 f i physics.o
+621	PORTED	0002:0031a6e0 ??1?$phys_static_array@PAVrigid_body@@$09@@QAE@XZ 00B09BE0 f i physics.o
+622	PORTED	0002:0031a6f0 ??1?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE@XZ 00B09BF0 f i physics.o
+623	PORTED	0002:0031a700 ??1?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE@XZ 00B09C00 f i physics.o
+624	PORTED	0002:0031a710 ??1?$phys_static_array@PAVuser_rigid_body@@$09@@QAE@XZ 00B09C10 f i physics.o
+625	PORTED	0002:0031a720 ??1?$phys_static_array@PAVrigid_body_constraint@@$09@@QAE@XZ 00B09C20 f i physics.o
+626	PORTED	0002:0031a730 ?begin@?$phys_simple_link_list@Vcontact_point_info@@@@QAE?AViterator@1@XZ 00B09C30 f i physics.o
+627	PORTED	0002:0031a750 ?end@?$phys_simple_link_list@Vcontact_point_info@@@@QAE?AViterator@1@XZ 00B09C50 f i physics.o
+628	PORTED	0002:0031a770 ??0?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@QAE@XZ 00B09C70 f i physics.o
+629	PORTED	0002:0031a780 ??1?$phys_static_array@Vrb_collision_sphere@@$01@@QAE@XZ 00B09C80 f i physics.o
+630	PORTED	0002:0031a790 ?begin@?$phys_static_array@Vrb_collision_sphere@@$01@@QAE?AViterator@1@XZ 00B09C90 f i physics.o
+631	PORTED	0002:0031a7b0 ?end@?$phys_static_array@Vrb_collision_sphere@@$01@@QAE?AViterator@1@XZ 00B09CB0 f i physics.o
+632	PORTED	0002:0031a7d0 ?push_back@?$phys_static_array@Vrb_collision_sphere@@$01@@QAEXABVrb_collision_sphere@@@Z 00B09CD0 f i physics.o
+633	PORTED	0002:0031a800 ?begin@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE?AViterator@1@XZ 00B09D00 f i physics.o
+634	PORTED	0002:0031a820 ?end@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE?AViterator@1@XZ 00B09D20 f i physics.o
+635	PORTED	0002:0031a840 ??0?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE@XZ 00B09D40 f i physics.o
+636	PORTED	0002:0031a860 ??1?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE@XZ 00B09D60 f i physics.o
+637	PORTED	0002:0031a870 ?remove@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAEXPAVrb_capsule_pair@@@Z 00B09D70 f i physics.o
+638	PORTED	0002:0031a9f0 ?begin@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE?AViterator@1@XZ 00B09EF0 f i physics.o
+639	PORTED	0002:0031aa10 ?end@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE?AViterator@1@XZ 00B09F10 f i physics.o
+640	PORTED	0002:0031aa30 ??1?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAE@XZ 00B09F30 f i physics.o
+641	PORTED	0002:0031aa40 ?add@?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAEPAVphys_anim_bone@@_NPBD@Z 00B09F40 f i physics.o
+642	PORTED	0002:0031aaa0 ?remove_all@?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAEXXZ 00B09FA0 f i physics.o
+643	PORTED	0002:0031aab0 ??1?$phys_static_array@VQuaternion@math@@$0FK@@@QAE@XZ 00B09FB0 f i physics.o
+644	PORTED	0002:0031aac0 ??1?$phys_static_array@VPosition3@math@@$0FK@@@QAE@XZ 00B09FC0 f i physics.o
+645	PORTED	0002:0031aad0 ?Fixup@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09FD0 f i physics.o
+646	PORTED	0002:0031ab50 ?AddBank@?$InplaceAssetBankSet@VPhysDataBank@@@@QAEXW4TPakId@@PAVPhysDataBank@@@Z 00B0A050 f i physics.o
+647	PORTED	0002:0031abe0 ??0?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAE@XZ 00B0A0E0 f i physics.o
+648	VERIFIED	0002:0031abf0 ?add@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAEPAVbiped_phys_info@@_NPBD@Z 00B0A0F0 f i physics.o
+649	PORTED	0002:0031ac50 ?begin@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE?AViterator@1@XZ 00B0A150 f i physics.o
+650	PORTED	0002:0031ac70 ?end@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE?AViterator@1@XZ 00B0A170 f i physics.o
+651	PORTED	0002:0031ac90 ?begin@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE?AViterator@1@XZ 00B0A190 f i physics.o
+652	PORTED	0002:0031acb0 ?end@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE?AViterator@1@XZ 00B0A1B0 f i physics.o
+653	VERIFIED	0002:0031acd0 ??0?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE@XZ 00B0A1D0 f i physics.o
+654	VERIFIED	0002:0031ad00 ??1?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE@XZ 00B0A200 f i physics.o
+655	VERIFIED	0002:0031ad10 ?add@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAEPAVrb_extra_info@@_NPBD@Z 00B0A210 f i physics.o
+656	VERIFIED	0002:0031ad70 ?remove@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAEXPAVrb_extra_info@@@Z 00B0A270 f i physics.o
+657	PORTED	0002:0031af20 ?begin@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE?AViterator@1@XZ 00B0A420 f i physics.o
+658	PORTED	0002:0031af40 ?end@?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@QAE?AViterator@1@XZ 00B0A440 f i physics.o
+659	PORTED	0002:0031af60 ??0?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE@XZ 00B0A460 f i physics.o
+660	PORTED	0002:0031af90 ??1?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE@XZ 00B0A490 f i physics.o
+661	PORTED	0002:0031afa0 ??0?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAE@XZ 00B0A4A0 f i physics.o
+662	PORTED	0002:0031afb0 ?next_after_remove@iterator@?$phys_static_memory_pool@Vrb_capsule_pair@@$06@@QAE?AV12@XZ 00B0A4B0 f i physics.o
+663	VERIFIED	0002:0031afd0 ??0?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@QAE@XZ 00B0A4D0 f i physics.o
+664	VERIFIED	0002:0031b000 ??1?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@QAE@XZ 00B0A500 f i physics.o
+665	VERIFIED	0002:0031b010 ??0?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE@XZ 00B0A510 f i physics.o
+666	VERIFIED	0002:0031b040 ??1?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE@XZ 00B0A540 f i physics.o
+667	VERIFIED	0002:0031b050 ?add@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAEPAVrb_vehicle@@_NPBD@Z 00B0A550 f i physics.o
+668	VERIFIED	0002:0031b100 ?remove@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAEXPAVrb_vehicle@@@Z 00B0A600 f i physics.o
+669	PORTED	0002:0031b2b0 ?begin@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE?AViterator@1@XZ 00B0A7B0 f i physics.o
+670	PORTED	0002:0031b2d0 ?end@?$phys_static_memory_pool@Vrb_vehicle@@$09@@QAE?AViterator@1@XZ 00B0A7D0 f i physics.o
+671	PORTED	0002:0031b2f0 ??1rigid_body_sphere_list@@QAE@XZ 00B0A7F0 f i physics.o
+672	PORTED	0002:0031b300 ?rotate_right@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@AAEXAAPAUgjk_geom_info@gjk_geom_database@@@Z 00B0A800 f i physics.o
+673	PORTED	0002:0031b370 ?rotate_left@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@AAEXAAPAUgjk_geom_info@gjk_geom_database@@@Z 00B0A870 f i physics.o
+674	PORTED	0002:0031b3e0 ?rotate_right@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@AAEXAAPAVprop_collide_callback@@@Z 00B0A8E0 f i physics.o
+675	PORTED	0002:0031b450 ?rotate_left@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@AAEXAAPAVprop_collide_callback@@@Z 00B0A950 f i physics.o
+676	PORTED	0002:0031b4c0 ?remove@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEXPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0A9C0 f i physics.o
+677	PORTED	0002:0031b660 ?begin@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE?AViterator@1@XZ 00B0AB60 f i physics.o
+678	PORTED	0002:0031b680 ?end@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE?AViterator@1@XZ 00B0AB80 f i physics.o
+679	PORTED	0002:0031b6a0 ?find@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@ABVphys_gjk_geom_id_pair_key@@@Z 00B0ABA0 f i physics.o
+680	PORTED	0002:0031b700 ?next_after_remove@iterator@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAE?AV12@XZ 00B0AC00 f i physics.o
+681	PORTED	0002:0031b720 ??0phys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAE@XZ 00B0AC20 f i physics.o
+682	PORTED	0002:0031b730 ?rotate_right@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@AAEXAAPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0AC30 f i physics.o
+683	PORTED	0002:0031b7c0 ?rotate_left@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@AAEXAAPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0ACC0 f i physics.o
+684	PORTED	0002:0031b850 ??$are_potentially_colliding@Vphys_gjk_geom_cod_base@@V1@@@YA?B_NPAVphys_gjk_geom_cod_base@@0@Z 00B0AD50 f i physics.o
+685	PORTED	0002:0031b880 ??$are_potentially_colliding@Vphys_gjk_geom_list@@V1@@@YA?B_NPAVphys_gjk_geom_list@@0@Z 00B0AD80 f i physics.o
+686	PORTED	0002:0031b8b0 ??A?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDestructible@@I@Z 00B0ADB0 f i physics.o
+687	PORTED	0002:0031b930 ??A?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVPhysData@@I@Z 00B0AE30 f i physics.o
+688	PORTED	0002:0031b9b0 ??$FindIndex@PAD@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEB0 f i physics.o
+689	PORTED	0002:0031b9e0 ??$FindIndex@PAD@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEE0 f i physics.o
+690	VERIFIED	0002:0031ba10 ??0rb_ragdoll_model@@QAE@XZ 00B0AF10 f i physics.o
+691	VERIFIED	0002:0031ba70 ?set_closest_cached_psc@contact_point_info@@SAXPBV1@ABVDir3@math@@11PAUpulse_sum_cache_info@1@@Z 00B0AF70 f i physics.o
+692	PORTED	0002:0031bb10 ?add_point_list@rigid_body_constraint_contact@@QAEXQAVrigid_body@@0PBVDir3@math@@1HABV34@MMM_N@Z 00B0B010 f i physics.o
+693	VERIFIED	0002:0031bd70 ??0phys_gjk_geom_aabb@@QAE@ABVDir3@math@@0@Z 00B0B270 f i physics.o
+694	PORTED	0002:0031bde0 ?get_center@phys_gjk_geom_aabb@@UBE?BVDir3@math@@XZ 00B0B2E0 f i physics.o
+695	PORTED	0002:0031be10 ?support@phys_gjk_geom_aabb@@UBE?BVDir3@math@@ABV23@@Z 00B0B310 f i physics.o
+696	PORTED	0002:0031bfa0 ?get_feature@phys_gjk_geom_aabb@@UBEXPAVphys_contact_manifold@@@Z 00B0B4A0 f i physics.o
+697	PORTED	0002:0031c030 ?comp_aabb@phys_gjk_geom_aabb@@UAEXABVMat43@math@@@Z 00B0B530 f i physics.o
+698	VERIFIED	0002:0031c1c0 ?create@phys_gjk_geom_aabb@@SAPAV1@ABVDir3@math@@0@Z 00B0B6C0 f i physics.o
+699	VERIFIED	0002:0031c200 ?create@phys_gjk_geom_vert_list@@SAPAV1@HPAVDCGSet@@H@Z 00B0B700 f i physics.o
+700	VERIFIED	0002:0031c2e0 ??0rigid_body_sphere_list@@QAE@XZ 00B0B7E0 f i physics.o
+701	PORTED	0002:0031c310 ??1rb_ragdoll_model@@QAE@XZ 00B0B810 f i physics.o
+702	VERIFIED	0002:0031c320 ??0phys_anim_bone_array@@QAE@XZ 00B0B820 f i physics.o
+703	PORTED	0002:0031c350 ??1phys_anim_bone_array@@QAE@XZ 00B0B850 f i physics.o
+704	VERIFIED	0002:0031c360 ?GetHighLOD@DObj@@QAEHXZ 00B0B860 f i physics.o
+705	VERIFIED	0002:0031c400 ??0?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAE@XZ 00B0B900 f i physics.o
+706	VERIFIED	0002:0031c430 ??1?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAE@XZ 00B0B930 f i physics.o
+707	PORTED	0002:0031c440 ??0gjk_geom_database@@QAE@XZ 00B0B940 f i physics.o
+708	VERIFIED	0002:0031c450 ?update_colgeom@rigid_body_sphere_list@@QAEXXZ 00B0B950 f i physics.o
+709	PORTED	0002:0031c500 ?ENTITY_VIEW@@YAPAVEntity@@H@Z 00B0BA00 f i physics.o
+710	PORTED	0002:0031c520 ?add@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@QAEXABIPAUgjk_geom_info@gjk_geom_database@@@Z 00B0BA20 f i physics.o
+711	PORTED	0002:0031c8e0 ?add@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEPAVrigid_body_sphere_list@@_NPBD@Z 00B0BDE0 f i physics.o
+712	PORTED	0002:0031c950 ?add@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEXABVrigid_body_pair_key@@PAVprop_collide_callback@@@Z 00B0BE50 f i physics.o
+713	PORTED	0002:0031cd40 ??_Grigid_body_sphere_list@@QAEPAXI@Z 00B0C240 f i physics.o
+714	PORTED	0002:0031cd70 ?call_destructors@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@AAEXXZ 00B0C270 f i physics.o
+715	PORTED	0002:0031cda0 ?reset_buffer@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@AAEXXZ 00B0C2A0 f i physics.o
+716	PORTED	0002:0031ce20 ?add@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@_NPBD@Z 00B0C320 f i physics.o
+717	PORTED	0002:0031ce70 ?add@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@PAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0C370 f i physics.o
+718	PORTED	0002:0031d2f0 ?remove@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@@Z 00B0C7F0 f i physics.o
+719	VERIFIED	0002:0031d800 ??$Find@PADV?$IVPointer@VPhysData@@@@@?$InplaceAssetBankSet@VPhysDataBank@@@@QBE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VPhysData@@@@@@PAW42@@Z 00B0CD00 f i physics.o
+720	VERIFIED	0002:0031d9b0 ??$Find@PADV?$IVPointer@VDestructible@@@@@?$InplaceAssetBankSet@VDestructibleBank@@@@QBE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VDestructible@@@@@@PAW42@@Z 00B0CEB0 f i physics.o
+721	VERIFIED	0002:0031db60 ?create_prop_collide_callback@@YAXPAVrb_extra_info@@HPAVrigid_body@@1@Z 00B0D060 f i physics.o
+722	VERIFIED	0002:0031dbf0 ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z 00B0D0F0 f i physics.o
+723	PORTED	0002:0031de70 ??0?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE@XZ 00B0D370 f i physics.o
+724	PORTED	0002:0031dea0 ??1?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE@XZ 00B0D3A0 f i physics.o
+725	PORTED	0002:0031ded0 ?remove@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEXPAVrigid_body_sphere_list@@@Z 00B0D3D0 f i physics.o
+726	VERIFIED	0002:0031e090 ?get_gjk_cache_info@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEPAUphys_gjk_cache_info@@II_N@Z 00B0D590 f i physics.o
+727	VERIFIED	0002:0031e1c0 ?update_cache@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEXXZ 00B0D6C0 f i physics.o
+728	PORTED	0002:0031e240 ??0ragdoll_collision_callback@@QAE@XZ 00B0D740 f i physics.o
+729	PORTED	0002:0031e290 ??1ragdoll_collision_callback@@QAE@XZ 00B0D790 f i physics.o
+730	PORTED	0002:0031e2a0 ?Init@biped_phys_info@@SAXXZ 00B0D7A0 f i physics.o
+731	VERIFIED	0002:0031e2c0 ?list_phys_collide_data_add@@YAXPAVphys_collide_data@@@Z 00B0D7C0 f i physics.o
+732	PORTED	0002:0031e320 ?do_gjk_intersect@@YA_NPAVphys_collide_data@@_N@Z 00B0D820 f i physics.o
+733	VERIFIED	0002:0031e370 ??0biped_system@@QAE@PAVbiped_phys_info@@@Z 00B0D870 f i physics.o
+734	PORTED	0002:0031e440 ??1biped_system@@QAE@XZ 00B0D940 f i physics.o
+735	PORTED	0002:0031e490 ??_Gbiped_system@@QAEPAXI@Z 00B0D990 f i physics.o
+736	PORTED	0002:0031e4c0 ?call_destructors@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@AAEXXZ 00B0D9C0 f i physics.o
+737	PORTED	0002:0031e500 ?reset_buffer@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@AAEXXZ 00B0DA00 f i physics.o
+738	VERIFIED	0002:0031e590 ??0?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE@XZ 00B0DA90 f i physics.o
+739	VERIFIED	0002:0031e5c0 ??1?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE@XZ 00B0DAC0 f i physics.o
+740	VERIFIED	0002:0031e600 ?remove@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEXPAVbiped_system@@@Z 00B0DB00 f i physics.o
+741	PORTED	0002:0031e7c0 ??_Gbiped_phys_info@@QAEPAXI@Z 00B0DCC0 f i physics.o
+742	PORTED	0002:0031e800 ?call_destructors@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@AAEXXZ 00B0DD00 f i physics.o
+743	PORTED	0002:0031e8d0 ?reset_buffer@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@AAEXXZ 00B0DDD0 f i physics.o
+744	VERIFIED	0002:0031e990 ??0?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE@XZ 00B0DE90 f i physics.o
+745	VERIFIED	0002:0031e9c0 ??1?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE@XZ 00B0DEC0 f i physics.o
+746	VERIFIED	0002:0031e9d0 ?remove@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAEXPAVbiped_phys_info@@@Z 00B0DED0 f i physics.o
+747	PORTED	0002:0031eba0 ?process@collide_entities_callback@@UAE?B_NPBVphys_collide_data@@@Z 00B0E0A0 f i physics.o

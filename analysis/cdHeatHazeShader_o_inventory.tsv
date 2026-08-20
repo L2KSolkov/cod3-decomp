@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x007CF460	0x00BBE960	?ToggleCDHeatHazeShader@@YAXXZ	void __cdecl ToggleCDHeatHazeShader(void)	cdHeatHazeShader.o
+0x007CF470	0x00BBE970	?InitCDHeatHazeShader@@YAXXZ	void __cdecl InitCDHeatHazeShader(void)	cdHeatHazeShader.o
+0x007CF480	0x00BBE980	?SetupCDHeatHazeShader@@YAXXZ	void __cdecl SetupCDHeatHazeShader(void)	cdHeatHazeShader.o
+0x007CF740	0x00BBEC40	?RenderCDHeatHazeShader@@YAXXZ	void __cdecl RenderCDHeatHazeShader(void)	cdHeatHazeShader.o

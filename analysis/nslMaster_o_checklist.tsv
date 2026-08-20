@@ -1,0 +1,17 @@
+index	status	map_line
+1	VERIFIED	0002:00426580 ?nslMasterGetGroup@@YAPAUnslGroup@@XZ 00C15A80 f nslMaster.o
+2	VERIFIED	0002:00426590 ?nslIsBusVolumeName@@YA_NI@Z 00C15A90 f nslMaster.o
+3	VERIFIED	0002:004265b0 ?nslSetBusVolume@@YAXIM@Z 00C15AB0 f nslMaster.o
+4	VERIFIED	0002:004265e0 ?nslSetBusPitch@@YAXIM@Z 00C15AE0 f nslMaster.o
+5	VERIFIED	0002:00426610 ?nslSetBusVolume@@YAXM@Z 00C15B10 f nslMaster.o
+6	VERIFIED	0002:00426630 ?nslSetBusPitch@@YAXM@Z 00C15B30 f nslMaster.o
+7	VERIFIED	0002:00426650 ?nslSetBusVolumeAddBus@@YAXI@Z 00C15B50 f nslMaster.o
+8	VERIFIED	0002:00426670 ?nslSetBusPitchAddBus@@YAXI@Z 00C15B70 f nslMaster.o
+9	VERIFIED	0002:00426690 ?nslGetBusIdVolumeCount@@YAHXZ 00C15B90 f nslMaster.o
+10	VERIFIED	0002:004266a0 ?nslGetBusIdPitchCount@@YAHXZ 00C15BA0 f nslMaster.o
+11	VERIFIED	0002:004266b0 ?nslSetBusVolumeRemoveBus@@YAXI@Z 00C15BB0 f nslMaster.o
+12	VERIFIED	0002:00426710 ?nslSetBusPitchRemoveBus@@YAXI@Z 00C15C10 f nslMaster.o
+13	VERIFIED	0002:00426770 ?nslGetBusIdVolume@@YAIH@Z 00C15C70 f nslMaster.o
+14	VERIFIED	0002:00426780 ?nslGetBusIdPitch@@YAIH@Z 00C15C80 f nslMaster.o
+15	VERIFIED	0002:00426790 ?nslGetBusVolume@@YAMXZ 00C15C90 f nslMaster.o
+16	VERIFIED	0002:004267a0 ?nslGetBusPitch@@YAMXZ 00C15CA0 f nslMaster.o

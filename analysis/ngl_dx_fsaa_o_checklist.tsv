@@ -1,0 +1,3 @@
+index	status	map_line
+1	VERIFIED	0002:00450240 ?nglDxSetFSAA@@YA_NW4nglFSAAMode@@@Z 00C3F740 f ngl_dx_fsaa.o
+2	PORTED	0002:004504f0 ?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z 00C3F9F0 f i ngl_dx_fsaa.o

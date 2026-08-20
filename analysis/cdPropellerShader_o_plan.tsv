@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x007D0D50	??0cdPropellerShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdPropellerShaderMat::cdPropellerShaderMat(struct nglTexture *)	
+0x007D0DE0	?InitCDPropellerShader@@YAXXZ	void __cdecl InitCDPropellerShader(void)	
+0x007D0E30	?ToggleCDPropellerShader@@YAXXZ	void __cdecl ToggleCDPropellerShader(void)	
+0x007D0E50	?Register@cdPropellerShader@@UAEXXZ	public: virtual void __thiscall cdPropellerShader::Register(void)	
+0x007D0E90	?AddNode@cdPropellerShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdPropellerShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007D0F10	?Render@cdPropellerShaderNode@@UAEXXZ	public: virtual void __thiscall cdPropellerShaderNode::Render(void)	

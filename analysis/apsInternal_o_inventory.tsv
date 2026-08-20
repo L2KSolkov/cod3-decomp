@@ -1,0 +1,13 @@
+ida_ea	va	name	signature	family
+0x00803240	0x00BF2740	?Init@apsInternal@@YAXH@Z	void __cdecl apsInternal::Init(int)	apsInternal.o
+0x00803250	0x00BF2750	?GetViewCoordinateSystem@apsInternal@@YAXAAVDir3@math@@00@Z	void __cdecl apsInternal::GetViewCoordinateSystem(class math::Dir3 &,class math::Dir3 &,class math::Dir3 &)	apsInternal.o
+0x008033B0	0x00BF28B0	?GetUserCoordinateSystem@apsInternal@@YAXABVDir3@math@@AAV23@11@Z	void __cdecl apsInternal::GetUserCoordinateSystem(class math::Dir3 const &,class math::Dir3 &,class math::Dir3 &,class math::Dir3 &)	apsInternal.o
+0x008035C0	0x00BF2AC0	?GetLocalLights@apsInternal@@YAXPAUnglLightContext@@ABUapsSphere@@@Z	void __cdecl apsInternal::GetLocalLights(struct nglLightContext *,struct apsSphere const &)	apsInternal.o
+0x008036D0	0x00BF2BD0	?SetupBlendAndTexture@apsInternal@@YAXPAUnglTexture@@W4apsEBlendMode@@_NH@Z	void __cdecl apsInternal::SetupBlendAndTexture(struct nglTexture *,enum apsEBlendMode,bool,int)	apsInternal.o
+0x00803990	0x00BF2E90	?SetupFog@apsInternal@@YAXHMMMM_N@Z	void __cdecl apsInternal::SetupFog(int,float,float,float,float,bool)	apsInternal.o
+0x00803A40	0x00BF2F40	?SetupAlphaFade@apsInternal@@YAXHMM@Z	void __cdecl apsInternal::SetupAlphaFade(int,float,float)	apsInternal.o
+0x00803B00	0x00BF3000	?QueueSpawnedEffect@apsInternal@@YAXHPBVapsEffectTemplate@@MABUapsQuaternion@@ABVDir3@math@@M@Z	void __cdecl apsInternal::QueueSpawnedEffect(int,class apsEffectTemplate const *,float,struct apsQuaternion const &,class math::Dir3 const &,float)	apsInternal.o
+0x00803B30	0x00BF3030	?RemoveFromSpawnedEffectQueueByPakId@apsInternal@@YAXH@Z	void __cdecl apsInternal::RemoveFromSpawnedEffectQueueByPakId(int)	apsInternal.o
+0x00803B50	0x00BF3050	?ClearSpawnedEffectQueue@apsInternal@@YAXXZ	void __cdecl apsInternal::ClearSpawnedEffectQueue(void)	apsInternal.o
+0x00803B60	0x00BF3060	?GetLightMatrices@apsInternal@@YAXAAVMat43@math@@0ABV23@PAUnglLightContext@@ABUapsSphere@@@Z	void __cdecl apsInternal::GetLightMatrices(class math::Mat43 &,class math::Mat43 &,class math::Mat43 const &,struct nglLightContext *,struct apsSphere const &)	apsInternal.o
+0x00803D90	0x00BF3290	?SubmitSpawnedEffectQueue@apsInternal@@YAXXZ	void __cdecl apsInternal::SubmitSpawnedEffectQueue(void)	apsInternal.o

@@ -1,0 +1,314 @@
+ida_ea	va	name	signature	family
+0x00528440	0x00917940	?CL_GetGlconfig@@YAXPAUglconfig_t@@@Z	void __cdecl CL_GetGlconfig(struct glconfig_t *)	cl.o
+0x00528460	0x00917960	?CL_GetUserCmd@@YAHHPAUusercmd_s@@@Z	int __cdecl CL_GetUserCmd(int,struct usercmd_s *)	cl.o
+0x005284E0	0x009179E0	?CL_GetCurrentCmdNumber@@YAHXZ	int __cdecl CL_GetCurrentCmdNumber(void)	cl.o
+0x00528500	0x00917A00	?CL_CapTurnRate@@YAXMM@Z	void __cdecl CL_CapTurnRate(float,float)	cl.o
+0x00528530	0x00917A30	?CL_SetViewAngles@@YAXQAM@Z	void __cdecl CL_SetViewAngles(float * const)	cl.o
+0x005285B0	0x00917AB0	?CL_SetViewAnglesAxis@@YAXHM@Z	void __cdecl CL_SetViewAnglesAxis(int,float)	cl.o
+0x00528670	0x00917B70	?CL_SaveWrite@@YAXPBXH@Z	void __cdecl CL_SaveWrite(void const *,int)	cl.o
+0x005286F0	0x00917BF0	?CL_LoadRead@@YAXPBXH@Z	void __cdecl CL_LoadRead(void const *,int)	cl.o
+0x00528710	0x00917C10	?CL_GetCurrentSnapshotNumber@@YAXPAH0@Z	void __cdecl CL_GetCurrentSnapshotNumber(int *,int *)	cl.o
+0x00528750	0x00917C50	?CL_GetSnapshot@@YAHHPAUsnapshot_t@@@Z	int __cdecl CL_GetSnapshot(int,struct snapshot_t *)	cl.o
+0x005287F0	0x00917CF0	?CL_SetUserCmdValue@@YAXHHM@Z	void __cdecl CL_SetUserCmdValue(int,int,float)	cl.o
+0x00528820	0x00917D20	?CL_SetUserCmdAimValues@@YAXMMMMM@Z	void __cdecl CL_SetUserCmdAimValues(float,float,float,float,float)	cl.o
+0x00528880	0x00917D80	?CL_SetUserCmdInShellshock@@YAXH@Z	void __cdecl CL_SetUserCmdInShellshock(int)	cl.o
+0x005288A0	0x00917DA0	?CL_AddCgameCommand@@YAXPBDP6AXXZ@Z	void __cdecl CL_AddCgameCommand(char const *,void (__cdecl*)(void))	cl.o
+0x005288B0	0x00917DB0	?CL_CM_LoadMap@@YAXPBD@Z	void __cdecl CL_CM_LoadMap(char const *)	cl.o
+0x005288C0	0x00917DC0	?CL_ShutdownCGame@@YAXXZ	void __cdecl CL_ShutdownCGame(void)	cl.o
+0x00528900	0x00917E00	?CL_DObjInvalidateSkels@@YAXXZ	void __cdecl CL_DObjInvalidateSkels(void)	cl.o
+0x00528960	0x00917E60	?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z	void __cdecl CL_DObjCalcAnim(class DObj *,int * const)	cl.o
+0x00528970	0x00917E70	?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z	int __cdecl CL_DObjCreateSkelForBone(class DObj *,int)	cl.o
+0x00528A10	0x00917F10	?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z	int __cdecl CL_DObjCreateSkelForBones(class DObj *,int * const)	cl.o
+0x00528AF0	0x00917FF0	?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z	void __cdecl CL_DObjCalcSkel(class DObj *,int * const)	cl.o
+0x00528BA0	0x009180A0	?LoadWorld@@YAXPBD@Z	void __cdecl LoadWorld(char const *)	cl.o
+0x00528BD0	0x009180D0	?CL_CgameSystemCalls@@YAHPAH@Z	int __cdecl CL_CgameSystemCalls(int *)	cl.o
+0x00528E20	0x00918320	?CL_GameCommand@@YAHXZ	int __cdecl CL_GameCommand(void)	cl.o
+0x00528E40	0x00918340	?CL_CGameRendering@@YAXXZ	void __cdecl CL_CGameRendering(void)	cl.o
+0x00528E70	0x00918370	?CL_FirstSnapshot@@YAXXZ	void __cdecl CL_FirstSnapshot(void)	cl.o
+0x00528F60	0x00918460	?CL_SetCGameTime@@YAXXZ	void __cdecl CL_SetCGameTime(void)	cl.o
+0x00528F80	0x00918480	?CL_SaveViewModelAnimTrees@@YAXXZ	void __cdecl CL_SaveViewModelAnimTrees(void)	cl.o
+0x00528FA0	0x009184A0	?CL_LoadViewModelAnimTrees@@YAXXZ	void __cdecl CL_LoadViewModelAnimTrees(void)	cl.o
+0x00528FC0	0x009184C0	?CL_SaveWeaponInfo@@YAXXZ	void __cdecl CL_SaveWeaponInfo(void)	cl.o
+0x00528FE0	0x009184E0	?CL_LoadWeaponInfo@@YAXXZ	void __cdecl CL_LoadWeaponInfo(void)	cl.o
+0x00529000	0x00918500	?CL_LookupColor@@YAXEQAM@Z	void __cdecl CL_LookupColor(unsigned char,float * const)	cl.o
+0x00529070	0x00918570	?Con_ToggleConsole_f@@YAXXZ	void __cdecl Con_ToggleConsole_f(void)	cl.o
+0x005290C0	0x009185C0	?Con_Dump_f@@YAXXZ	void __cdecl Con_Dump_f(void)	cl.o
+0x00529550	0x00918A50	?CL_SaveMessages@@YAHPAEH@Z	int __cdecl CL_SaveMessages(unsigned char *,int)	cl.o
+0x005295A0	0x00918AA0	?Con_DrawMiniConsole@@YAXHHM@Z	void __cdecl Con_DrawMiniConsole(int,int,float)	cl.o
+0x005295B0	0x00918AB0	?Con_DrawSubtitles@@YAXHHMW4msgwnd_mode_t@@@Z	void __cdecl Con_DrawSubtitles(int,int,float,enum msgwnd_mode_t)	cl.o
+0x005295C0	0x00918AC0	?Con_RunConsole@@YAXXZ	void __cdecl Con_RunConsole(void)	cl.o
+0x00529650	0x00918B50	?Con_PageUp@@YAXXZ	void __cdecl Con_PageUp(void)	cl.o
+0x00529680	0x00918B80	?Con_PageDown@@YAXXZ	void __cdecl Con_PageDown(void)	cl.o
+0x005296A0	0x00918BA0	?Con_Top@@YAXXZ	void __cdecl Con_Top(void)	cl.o
+0x005296C0	0x00918BC0	?Con_Bottom@@YAXXZ	void __cdecl Con_Bottom(void)	cl.o
+0x00529720	0x00918C20	?Con_ClearNotify@@YAXXZ	void __cdecl Con_ClearNotify(void)	cl.o
+0x00529780	0x00918C80	?Con_ClearMiniConsole@@YAXXZ	void __cdecl Con_ClearMiniConsole(void)	cl.o
+0x00529790	0x00918C90	?Con_ClearSubtitles@@YAXXZ	void __cdecl Con_ClearSubtitles(void)	cl.o
+0x005297A0	0x00918CA0	?Con_CheckResize@@YAXXZ	void __cdecl Con_CheckResize(void)	cl.o
+0x00529AB0	0x00918FB0	?Con_UpdateNotifyLine@@YAXW4print_msg_type_t@@HHH@Z	void __cdecl Con_UpdateNotifyLine(enum print_msg_type_t,int,int,int)	cl.o
+0x00529DD0	0x009192D0	?Con_Linefeed@@YAXW4print_msg_type_t@@HH@Z	void __cdecl Con_Linefeed(enum print_msg_type_t,int,int)	cl.o
+0x0052A270	0x00919770	?Con_DrawStringOnHUD@@YAXHHPBFHMH@Z	void __cdecl Con_DrawStringOnHUD(int,int,short const *,int,float,int)	cl.o
+0x0052A530	0x00919A30	?CL_BackUpKeys@@YAXXZ	void __cdecl CL_BackUpKeys(void)	cl.o
+0x0052A560	0x00919A60	?CL_RecallKeys@@YAXXZ	void __cdecl CL_RecallKeys(void)	cl.o
+0x0052A590	0x00919A90	?CL_InitButtons@@YAXXZ	void __cdecl CL_InitButtons(void)	cl.o
+0x0052A5C0	0x00919AC0	?IN_MLookDown@@YAXXZ	void __cdecl IN_MLookDown(void)	cl.o
+0x0052A5D0	0x00919AD0	?IN_KeyDown@@YAXPAUkbutton_t@@HH@Z	void __cdecl IN_KeyDown(struct kbutton_t *,int,int)	cl.o
+0x0052A630	0x00919B30	?IN_KeyUp@@YAXPAUkbutton_t@@HH@Z	void __cdecl IN_KeyUp(struct kbutton_t *,int,int)	cl.o
+0x0052A790	0x00919C90	?CL_KeyState@@YAMPAUkbutton_t@@@Z	float __cdecl CL_KeyState(struct kbutton_t *)	cl.o
+0x0052A820	0x00919D20	?CL_SetTempStanceStatus@@YAXXZ	void __cdecl CL_SetTempStanceStatus(void)	cl.o
+0x0052A860	0x00919D60	?IN_UpDown@@YAXHH@Z	void __cdecl IN_UpDown(int,int)	cl.o
+0x0052A8E0	0x00919DE0	?IN_UpUp@@YAXHH@Z	void __cdecl IN_UpUp(int,int)	cl.o
+0x0052A910	0x00919E10	?IN_DownDown@@YAXHH@Z	void __cdecl IN_DownDown(int,int)	cl.o
+0x0052A960	0x00919E60	?IN_DownUp@@YAXHH@Z	void __cdecl IN_DownUp(int,int)	cl.o
+0x0052A9B0	0x00919EB0	?IN_LeftDown@@YAXHH@Z	void __cdecl IN_LeftDown(int,int)	cl.o
+0x0052AA10	0x00919F10	?IN_LeftUp@@YAXHH@Z	void __cdecl IN_LeftUp(int,int)	cl.o
+0x0052AA30	0x00919F30	?IN_RightDown@@YAXHH@Z	void __cdecl IN_RightDown(int,int)	cl.o
+0x0052AA50	0x00919F50	?IN_RightUp@@YAXHH@Z	void __cdecl IN_RightUp(int,int)	cl.o
+0x0052AA70	0x00919F70	?IN_ForwardDown@@YAXHH@Z	void __cdecl IN_ForwardDown(int,int)	cl.o
+0x0052AA90	0x00919F90	?IN_ForwardUp@@YAXHH@Z	void __cdecl IN_ForwardUp(int,int)	cl.o
+0x0052AAB0	0x00919FB0	?IN_BackDown@@YAXHH@Z	void __cdecl IN_BackDown(int,int)	cl.o
+0x0052AAD0	0x00919FD0	?IN_BackUp@@YAXHH@Z	void __cdecl IN_BackUp(int,int)	cl.o
+0x0052AAF0	0x00919FF0	?IN_LookupDown@@YAXHH@Z	void __cdecl IN_LookupDown(int,int)	cl.o
+0x0052AB10	0x0091A010	?IN_LookupUp@@YAXHH@Z	void __cdecl IN_LookupUp(int,int)	cl.o
+0x0052AB30	0x0091A030	?IN_LookdownDown@@YAXHH@Z	void __cdecl IN_LookdownDown(int,int)	cl.o
+0x0052AB50	0x0091A050	?IN_LookdownUp@@YAXHH@Z	void __cdecl IN_LookdownUp(int,int)	cl.o
+0x0052AB70	0x0091A070	?IN_MoveleftDown@@YAXHH@Z	void __cdecl IN_MoveleftDown(int,int)	cl.o
+0x0052AB90	0x0091A090	?IN_MoveleftUp@@YAXHH@Z	void __cdecl IN_MoveleftUp(int,int)	cl.o
+0x0052ABB0	0x0091A0B0	?IN_MoverightDown@@YAXHH@Z	void __cdecl IN_MoverightDown(int,int)	cl.o
+0x0052ABD0	0x0091A0D0	?IN_MoverightUp@@YAXHH@Z	void __cdecl IN_MoverightUp(int,int)	cl.o
+0x0052ABF0	0x0091A0F0	?IN_SpeedDown@@YAXHH@Z	void __cdecl IN_SpeedDown(int,int)	cl.o
+0x0052AC10	0x0091A110	?IN_SpeedUp@@YAXHH@Z	void __cdecl IN_SpeedUp(int,int)	cl.o
+0x0052AC30	0x0091A130	?IN_StrafeDown@@YAXHH@Z	void __cdecl IN_StrafeDown(int,int)	cl.o
+0x0052AC50	0x0091A150	?IN_StrafeUp@@YAXHH@Z	void __cdecl IN_StrafeUp(int,int)	cl.o
+0x0052AC70	0x0091A170	?IN_Button0Up@@YAXHH@Z	void __cdecl IN_Button0Up(int,int)	cl.o
+0x0052AC90	0x0091A190	?IN_Button1Down@@YAXHH@Z	void __cdecl IN_Button1Down(int,int)	cl.o
+0x0052ACB0	0x0091A1B0	?IN_Button1Up@@YAXHH@Z	void __cdecl IN_Button1Up(int,int)	cl.o
+0x0052ACD0	0x0091A1D0	?IN_Button4Down@@YAXHH@Z	void __cdecl IN_Button4Down(int,int)	cl.o
+0x0052ACF0	0x0091A1F0	?IN_Button4Up@@YAXHH@Z	void __cdecl IN_Button4Up(int,int)	cl.o
+0x0052AD10	0x0091A210	?IN_Button5Down@@YAXHH@Z	void __cdecl IN_Button5Down(int,int)	cl.o
+0x0052AD30	0x0091A230	?IN_Button5Up@@YAXHH@Z	void __cdecl IN_Button5Up(int,int)	cl.o
+0x0052AD50	0x0091A250	?IN_ActivateDown@@YAXHH@Z	void __cdecl IN_ActivateDown(int,int)	cl.o
+0x0052AD70	0x0091A270	?IN_ActivateUp@@YAXHH@Z	void __cdecl IN_ActivateUp(int,int)	cl.o
+0x0052AD90	0x0091A290	?IN_ActivateReloadDown@@YAXHH@Z	void __cdecl IN_ActivateReloadDown(int,int)	cl.o
+0x0052ADB0	0x0091A2B0	?IN_ActivateReloadUp@@YAXHH@Z	void __cdecl IN_ActivateReloadUp(int,int)	cl.o
+0x0052ADD0	0x0091A2D0	?IN_Wbutton0Down@@YAXHH@Z	void __cdecl IN_Wbutton0Down(int,int)	cl.o
+0x0052ADF0	0x0091A2F0	?IN_Wbutton0Up@@YAXHH@Z	void __cdecl IN_Wbutton0Up(int,int)	cl.o
+0x0052AE10	0x0091A310	?IN_Wbutton2Down@@YAXHH@Z	void __cdecl IN_Wbutton2Down(int,int)	cl.o
+0x0052AE30	0x0091A330	?IN_Wbutton2Up@@YAXHH@Z	void __cdecl IN_Wbutton2Up(int,int)	cl.o
+0x0052AE50	0x0091A350	?IN_ReloadDown@@YAXHH@Z	void __cdecl IN_ReloadDown(int,int)	cl.o
+0x0052AE70	0x0091A370	?IN_ReloadUp@@YAXHH@Z	void __cdecl IN_ReloadUp(int,int)	cl.o
+0x0052AE90	0x0091A390	?IN_LeanLeftDown@@YAXHH@Z	void __cdecl IN_LeanLeftDown(int,int)	cl.o
+0x0052AEB0	0x0091A3B0	?IN_LeanLeftUp@@YAXHH@Z	void __cdecl IN_LeanLeftUp(int,int)	cl.o
+0x0052AED0	0x0091A3D0	?IN_LeanRightDown@@YAXHH@Z	void __cdecl IN_LeanRightDown(int,int)	cl.o
+0x0052AEF0	0x0091A3F0	?IN_LeanRightUp@@YAXHH@Z	void __cdecl IN_LeanRightUp(int,int)	cl.o
+0x0052AF10	0x0091A410	?IN_Wbutton6Down@@YAXHH@Z	void __cdecl IN_Wbutton6Down(int,int)	cl.o
+0x0052AF60	0x0091A460	?IN_Wbutton6Up@@YAXHH@Z	void __cdecl IN_Wbutton6Up(int,int)	cl.o
+0x0052AFB0	0x0091A4B0	?IN_Wbutton7Down@@YAXHH@Z	void __cdecl IN_Wbutton7Down(int,int)	cl.o
+0x0052AFD0	0x0091A4D0	?IN_Wbutton7Up@@YAXHH@Z	void __cdecl IN_Wbutton7Up(int,int)	cl.o
+0x0052AFF0	0x0091A4F0	?IN_ToggleADS@@YAXHH@Z	void __cdecl IN_ToggleADS(int,int)	cl.o
+0x0052B010	0x0091A510	?IN_SprintDown@@YAXHH@Z	void __cdecl IN_SprintDown(int,int)	cl.o
+0x0052B030	0x0091A530	?IN_SprintUp@@YAXHH@Z	void __cdecl IN_SprintUp(int,int)	cl.o
+0x0052B050	0x0091A550	?IN_ButtonDown@@YAXHH@Z	void __cdecl IN_ButtonDown(int,int)	cl.o
+0x0052B070	0x0091A570	?IN_ButtonUp@@YAXHH@Z	void __cdecl IN_ButtonUp(int,int)	cl.o
+0x0052B090	0x0091A590	?IN_CenterView@@YAXXZ	void __cdecl IN_CenterView(void)	cl.o
+0x0052B0C0	0x0091A5C0	?IN_LowerStance@@YAXXZ	void __cdecl IN_LowerStance(void)	cl.o
+0x0052B130	0x0091A630	?IN_RaiseStance@@YAXXZ	void __cdecl IN_RaiseStance(void)	cl.o
+0x0052B170	0x0091A670	?IN_ToggleCrouch@@YAXXZ	void __cdecl IN_ToggleCrouch(void)	cl.o
+0x0052B1D0	0x0091A6D0	?IN_ToggleProne@@YAXXZ	void __cdecl IN_ToggleProne(void)	cl.o
+0x0052B230	0x0091A730	?IN_GoProne@@YAXXZ	void __cdecl IN_GoProne(void)	cl.o
+0x0052B280	0x0091A780	?IN_GoCrouch@@YAXXZ	void __cdecl IN_GoCrouch(void)	cl.o
+0x0052B2D0	0x0091A7D0	?IN_GoStandDown@@YAXHH@Z	void __cdecl IN_GoStandDown(int,int)	cl.o
+0x0052B360	0x0091A860	?IN_GoStandUp@@YAXHH@Z	void __cdecl IN_GoStandUp(int,int)	cl.o
+0x0052B390	0x0091A890	?IN_Stance_Down@@YAXXZ	void __cdecl IN_Stance_Down(void)	cl.o
+0x0052B410	0x0091A910	?IN_Stance_Up@@YAXXZ	void __cdecl IN_Stance_Up(void)	cl.o
+0x0052B450	0x0091A950	?IN_LeanRightSwitchNextDown@@YAXHH@Z	void __cdecl IN_LeanRightSwitchNextDown(int,int)	cl.o
+0x0052B490	0x0091A990	?IN_LeanRightSwitchNextUp@@YAXHH@Z	void __cdecl IN_LeanRightSwitchNextUp(int,int)	cl.o
+0x0052B4B0	0x0091A9B0	?IN_LeanLeftSwitchNextDown@@YAXHH@Z	void __cdecl IN_LeanLeftSwitchNextDown(int,int)	cl.o
+0x0052B4F0	0x0091A9F0	?IN_LeanLeftSwitchNextUp@@YAXHH@Z	void __cdecl IN_LeanLeftSwitchNextUp(int,int)	cl.o
+0x0052B510	0x0091AA10	?IN_TogglePaused@@YAXXZ	void __cdecl IN_TogglePaused(void)	cl.o
+0x0052B540	0x0091AA40	?IN_SmokeGrenadeAttackDown@@YAXHH@Z	void __cdecl IN_SmokeGrenadeAttackDown(int,int)	cl.o
+0x0052B5C0	0x0091AAC0	?IN_SmokeGrenadeAttackUp@@YAXHH@Z	void __cdecl IN_SmokeGrenadeAttackUp(int,int)	cl.o
+0x0052B5E0	0x0091AAE0	?IN_ClassButtonDown@@YAXHH@Z	void __cdecl IN_ClassButtonDown(int,int)	cl.o
+0x0052B700	0x0091AC00	?IN_ClassButtonUp@@YAXHH@Z	void __cdecl IN_ClassButtonUp(int,int)	cl.o
+0x0052B720	0x0091AC20	?IN_GrenadeAttackDown@@YAXHH@Z	void __cdecl IN_GrenadeAttackDown(int,int)	cl.o
+0x0052B840	0x0091AD40	?IN_GrenadeAttackUp@@YAXHH@Z	void __cdecl IN_GrenadeAttackUp(int,int)	cl.o
+0x0052B870	0x0091AD70	?IN_ActivateMoveUpDown@@YAXHH@Z	void __cdecl IN_ActivateMoveUpDown(int,int)	cl.o
+0x0052B920	0x0091AE20	?IN_ActivateMoveUpUp@@YAXHH@Z	void __cdecl IN_ActivateMoveUpUp(int,int)	cl.o
+0x0052B960	0x0091AE60	?IN_ActivateMeleeDown@@YAXHH@Z	void __cdecl IN_ActivateMeleeDown(int,int)	cl.o
+0x0052B9C0	0x0091AEC0	?IN_ActivateMeleeUp@@YAXHH@Z	void __cdecl IN_ActivateMeleeUp(int,int)	cl.o
+0x0052B9F0	0x0091AEF0	?IN_AnalogStickLeanDown@@YAXXZ	void __cdecl IN_AnalogStickLeanDown(void)	cl.o
+0x0052BA00	0x0091AF00	?IN_AnalogStickLeanUp@@YAXXZ	void __cdecl IN_AnalogStickLeanUp(void)	cl.o
+0x0052BA10	0x0091AF10	?CL_AdjustAngles@@YAXXZ	void __cdecl CL_AdjustAngles(void)	cl.o
+0x0052BAE0	0x0091AFE0	?CL_IsADS@@YA_NH@Z	bool __cdecl CL_IsADS(int)	cl.o
+0x0052BB50	0x0091B050	?CL_StanceButtonUpdate@@YAXXZ	void __cdecl CL_StanceButtonUpdate(void)	cl.o
+0x0052BC10	0x0091B110	?CL_KeyMove@@YAXPAUusercmd_s@@@Z	void __cdecl CL_KeyMove(struct usercmd_s *)	cl.o
+0x0052BE60	0x0091B360	?CL_MouseEvent@@YAXHHH@Z	void __cdecl CL_MouseEvent(int,int,int)	cl.o
+0x0052BEB0	0x0091B3B0	?CL_JoystickEvent@@YAXHHH@Z	void __cdecl CL_JoystickEvent(int,int,int)	cl.o
+0x0052BEF0	0x0091B3F0	?CL_JoystickMove@@YAXPAUusercmd_s@@@Z	void __cdecl CL_JoystickMove(struct usercmd_s *)	cl.o
+0x0052BFF0	0x0091B4F0	?GetAverageDelta@@YAXAAMAAHH@Z	void __cdecl GetAverageDelta(float &,int &,int)	cl.o
+0x0052C080	0x0091B580	?CL_CmdButtons@@YAXPAUusercmd_s@@@Z	void __cdecl CL_CmdButtons(struct usercmd_s *)	cl.o
+0x0052C100	0x0091B600	?CL_SetUsercmdButtonsWeapons@@YAXHH@Z	void __cdecl CL_SetUsercmdButtonsWeapons(int,int)	cl.o
+0x0052C140	0x0091B640	?CL_FinishMove@@YAXPAUusercmd_s@@@Z	void __cdecl CL_FinishMove(struct usercmd_s *)	cl.o
+0x0052C280	0x0091B780	?CL_GetCurUserCmd@@YAABUusercmd_s@@H@Z	struct usercmd_s const & __cdecl CL_GetCurUserCmd(int)	cl.o
+0x0052C2B0	0x0091B7B0	?IN_EnableAsserts@@YAXXZ	void __cdecl IN_EnableAsserts(void)	cl.o
+0x0052C2C0	0x0091B7C0	?CL_ShutdownInput@@YAXXZ	void __cdecl CL_ShutdownInput(void)	cl.o
+0x0052C540	0x0091BA40	?CL_ClearKeys@@YAXXZ	void __cdecl CL_ClearKeys(void)	cl.o
+0x0052C560	0x0091BA60	?CL_ClearKeysForAll@@YAXXZ	void __cdecl CL_ClearKeysForAll(void)	cl.o
+0x0052C590	0x0091BA90	?Field_Paste@@YAXPAUfield_t@@@Z	void __cdecl Field_Paste(struct field_t *)	cl.o
+0x0052C7F0	0x0091BCF0	?Key_GetOverstrikeMode@@YAHXZ	int __cdecl Key_GetOverstrikeMode(void)	cl.o
+0x0052C800	0x0091BD00	?Key_SetOverstrikeMode@@YAXH@Z	void __cdecl Key_SetOverstrikeMode(int)	cl.o
+0x0052C810	0x0091BD10	?SetBinding@KeyInfoEntry@@QAEXPBD@Z	public: void __thiscall KeyInfoEntry::SetBinding(char const *)	cl.o
+0x0052C860	0x0091BD60	?Key_StringToKeynum@@YAHPAD@Z	int __cdecl Key_StringToKeynum(char *)	cl.o
+0x0052C960	0x0091BE60	?Key_KeynumToString@@YAPADHH@Z	char * __cdecl Key_KeynumToString(int,int)	cl.o
+0x0052CA80	0x0091BF80	?CL_PortInPlay@@YA_NH@Z	bool __cdecl CL_PortInPlay(int)	cl.o
+0x0052CAB0	0x0091BFB0	?CL_GetKeyBinding@@YAHPBDPAPBD1@Z	int __cdecl CL_GetKeyBinding(char const *,char const * *,char const * *)	cl.o
+0x0052CAF0	0x0091BFF0	?CL_PreAllocStrings@@YAXXZ	void __cdecl CL_PreAllocStrings(void)	cl.o
+0x0052CBB0	0x0091C0B0	?CL_EndgameMenu@@YAXXZ	void __cdecl CL_EndgameMenu(void)	cl.o
+0x0052CBC0	0x0091C0C0	?CL_CDDialog@@YAXXZ	void __cdecl CL_CDDialog(void)	cl.o
+0x0052CBD0	0x0091C0D0	?CL_AddReliableCommand@@YAXPBD@Z	void __cdecl CL_AddReliableCommand(char const *)	cl.o
+0x0052CC70	0x0091C170	?CL_ChangeReliableCommand@@YAXXZ	void __cdecl CL_ChangeReliableCommand(void)	cl.o
+0x0052CCC0	0x0091C1C0	?CL_ForwardCommandToServer@@YAXPBD@Z	void __cdecl CL_ForwardCommandToServer(char const *)	cl.o
+0x0052CD20	0x0091C220	?CL_ForwardToServer_f@@YAXXZ	void __cdecl CL_ForwardToServer_f(void)	cl.o
+0x0052CD60	0x0091C260	?CL_Setenv_f@@YAXXZ	void __cdecl CL_Setenv_f(void)	cl.o
+0x0052CD70	0x0091C270	?CL_Disconnect_f@@YAXXZ	void __cdecl CL_Disconnect_f(void)	cl.o
+0x0052CD80	0x0091C280	?CL_ResetPureClientAtServer@@YAXXZ	void __cdecl CL_ResetPureClientAtServer(void)	cl.o
+0x0052CDA0	0x0091C2A0	?CL_ConnectResponse@@YAXUnetadr_t@@@Z	void __cdecl CL_ConnectResponse(struct netadr_t)	cl.o
+0x0052CE50	0x0091C350	?CL_SetFrametime@@YAXHH@Z	void __cdecl CL_SetFrametime(int,int)	cl.o
+0x0052CE70	0x0091C370	?CL_UpdateFog@@YAXXZ	void __cdecl CL_UpdateFog(void)	cl.o
+0x0052CE80	0x0091C380	?CL_RefPrintf@@YAXHPBDZZ	void __cdecl CL_RefPrintf(int,char const *,...)	cl.o
+0x0052CF00	0x0091C400	?CL_ShutdownRef@@YAXXZ	void __cdecl CL_ShutdownRef(void)	cl.o
+0x0052CF30	0x0091C430	?CL_InitRenderer@@YAXXZ	void __cdecl CL_InitRenderer(void)	cl.o
+0x0052CFC0	0x0091C4C0	?CL_ScaledMilliseconds@@YAHXZ	int __cdecl CL_ScaledMilliseconds(void)	cl.o
+0x0052CFE0	0x0091C4E0	?CG_GetGameModel@@YAFF@Z	short __cdecl CG_GetGameModel(short)	cl.o
+0x0052D000	0x0091C500	?CL_GetFontInfo@@YAPAVnglFont@@HM@Z	class nglFont * __cdecl CL_GetFontInfo(int,float)	cl.o
+0x0052D020	0x0091C520	?CL_ShellExecute_URL_f@@YAXXZ	void __cdecl CL_ShellExecute_URL_f(void)	cl.o
+0x0052D080	0x0091C580	?CL_IncAnimWeight_f@@YAXXZ	void __cdecl CL_IncAnimWeight_f(void)	cl.o
+0x0052D110	0x0091C610	?CL_DecAnimWeight_f@@YAXXZ	void __cdecl CL_DecAnimWeight_f(void)	cl.o
+0x0052D190	0x0091C690	?CL_DumpDXFFile_f@@YAXXZ	void __cdecl CL_DumpDXFFile_f(void)	cl.o
+0x0052D2A0	0x0091C7A0	?CL_AddDebugString@@YAXQAM0MPBDH@Z	void __cdecl CL_AddDebugString(float * const,float * const,float,char const *,int)	cl.o
+0x0052D3A0	0x0091C8A0	?CL_AddDebugString2D@@YAXHHQAMMPBDH@Z	void __cdecl CL_AddDebugString2D(int,int,float * const,float,char const *,int)	cl.o
+0x0052D4A0	0x0091C9A0	?CL_AddDebugLine@@YAXQBM00HHHH@Z	void __cdecl CL_AddDebugLine(float const * const,float const * const,float const * const,int,int,int,int)	cl.o
+0x0052D600	0x0091CB00	?CL_FlushDebugData@@YAXH@Z	void __cdecl CL_FlushDebugData(int)	cl.o
+0x0052D840	0x0091CD40	?CL_UpdateDebugData@@YAXXZ	void __cdecl CL_UpdateDebugData(void)	cl.o
+0x0052D930	0x0091CE30	?CL_ShutdownDebugData@@YAXXZ	void __cdecl CL_ShutdownDebugData(void)	cl.o
+0x0052D9D0	0x0091CED0	?CL_Netchan_Transmit@@YAXPAUnetchan_t@@PAUmsg_t@@@Z	void __cdecl CL_Netchan_Transmit(struct netchan_t *,struct msg_t *)	cl.o
+0x0052DA00	0x0091CF00	?CL_Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z	int __cdecl CL_Netchan_Process(struct netchan_t *,struct msg_t *)	cl.o
+0x0052DA10	0x0091CF10	?SHOWNET@@YAXPAUmsg_t@@PAD@Z	void __cdecl SHOWNET(struct msg_t *,char *)	cl.o
+0x0052DA40	0x0091CF40	?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z	void __cdecl CL_ParsePacketEntities(struct msg_t *,struct clSnapshot_t *)	cl.o
+0x0052DA50	0x0091CF50	?CL_ParseCommandString@@YAXPAUmsg_t@@@Z	void __cdecl CL_ParseCommandString(struct msg_t *)	cl.o
+0x0052DAB0	0x0091CFB0	?SCR_DrawNamedPic@@YAXMMMMPBDH@Z	void __cdecl SCR_DrawNamedPic(float,float,float,float,char const *,int)	cl.o
+0x0052DAC0	0x0091CFC0	?SCR_AdjustFrom640@@YAXPAM000@Z	void __cdecl SCR_AdjustFrom640(float *,float *,float *,float *)	cl.o
+0x0052DB40	0x0091D040	?SCR_FillRect@@YAXMMMMPBM@Z	void __cdecl SCR_FillRect(float,float,float,float,float const *)	cl.o
+0x0052DBD0	0x0091D0D0	?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z	void __cdecl SCR_DrawPic(float,float,float,float,struct nglTexture *)	cl.o
+0x0052DC50	0x0091D150	?SCR_AdjustTo640@@YAXPAM000@Z	void __cdecl SCR_AdjustTo640(float *,float *,float *,float *)	cl.o
+0x0052DCE0	0x0091D1E0	?SCR_DrawSmallChar@@YAXHHH@Z	void __cdecl SCR_DrawSmallChar(int,int,int)	cl.o
+0x0052DDB0	0x0091D2B0	?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z	void __cdecl SCR_DrawSmallStringExt(int,int,char const *,float const * const)	cl.o
+0x0052DE40	0x0091D340	?SCR_DrawConsoleString@@YAXHHPBFHQBM@Z	void __cdecl SCR_DrawConsoleString(int,int,short const *,int,float const * const)	cl.o
+0x0052DED0	0x0091D3D0	?SCR_DebugGraph@@YAXMH@Z	void __cdecl SCR_DebugGraph(float,int)	cl.o
+0x0052DEE0	0x0091D3E0	?SCR_DrawDebugGraph@@YAXXZ	void __cdecl SCR_DrawDebugGraph(void)	cl.o
+0x0052DEF0	0x0091D3F0	?SCR_Init@@YAXXZ	void __cdecl SCR_Init(void)	cl.o
+0x0052DF00	0x0091D400	?CL_IsCGameRendering@@YAHXZ	int __cdecl CL_IsCGameRendering(void)	cl.o
+0x0052DF80	0x0091D480	?CL_CubemapShot_f@@YAXXZ	void __cdecl CL_CubemapShot_f(void)	cl.o
+0x0052E250	0x0091D750	?CL_GetGlconfigUI@@YAXPAUglconfig_t@@@Z	void __cdecl CL_GetGlconfigUI(struct glconfig_t *)	cl.o
+0x0052E270	0x0091D770	?GetClipboardDataUI@@YAXPADH@Z	void __cdecl GetClipboardDataUI(char *,int)	cl.o
+0x0052E280	0x0091D780	?Key_KeynumToStringBuf@@YAXHPADH@Z	void __cdecl Key_KeynumToStringBuf(int,char *,int)	cl.o
+0x0052E2B0	0x0091D7B0	?Key_GetCatcher@@YAHXZ	int __cdecl Key_GetCatcher(void)	cl.o
+0x0052E2C0	0x0091D7C0	?Key_SetCatcher@@YAXH@Z	void __cdecl Key_SetCatcher(int)	cl.o
+0x0052E2D0	0x0091D7D0	?GetConfigString@@YAHHPADH@Z	int __cdecl GetConfigString(int,char *,int)	cl.o
+0x0052E3C0	0x0091D8C0	?CL_UISystemCalls@@YAHPAH@Z	int __cdecl CL_UISystemCalls(int *)	cl.o
+0x0052E3E0	0x0091D8E0	?CL_ShutdownUI@@YAXXZ	void __cdecl CL_ShutdownUI(void)	cl.o
+0x0052E500	0x0091DA00	?CL_InitUI@@YAXXZ	void __cdecl CL_InitUI(void)	cl.o
+0x0052E660	0x0091DB60	?CL_InitGamepadAxisBindings@@YAXXZ	void __cdecl CL_InitGamepadAxisBindings(void)	cl.o
+0x0052EBB0	0x0091E0B0	?Gamepad_WriteBindings@@YAXH@Z	void __cdecl Gamepad_WriteBindings(int)	cl.o
+0x0052EE00	0x0091E300	?CL_GamepadEvent@@YAXHHH@Z	void __cdecl CL_GamepadEvent(int,int,int)	cl.o
+0x0052EE40	0x0091E340	?CL_GamepadAxisValue@@YAMH@Z	float __cdecl CL_GamepadAxisValue(int)	cl.o
+0x0052EF30	0x0091E430	?CL_GamepadPhysicalAxisValue@@YAMH@Z	float __cdecl CL_GamepadPhysicalAxisValue(int)	cl.o
+0x0052EF50	0x0091E450	?InitializeClientControllers@LocalClient@@YAXXZ	void __cdecl LocalClient::InitializeClientControllers(void)	cl.o
+0x0052EF60	0x0091E460	?LastLocalClientIndex@LocalClient@@YAHXZ	int __cdecl LocalClient::LastLocalClientIndex(void)	cl.o
+0x0052EF70	0x0091E470	?SetLastLocalClientIndex@LocalClient@@YAXH@Z	void __cdecl LocalClient::SetLastLocalClientIndex(int)	cl.o
+0x0052EF80	0x0091E480	?FirstLocalClientIndex@LocalClient@@YAHXZ	int __cdecl LocalClient::FirstLocalClientIndex(void)	cl.o
+0x0052EF90	0x0091E490	?SetFirstLocalClientIndex@LocalClient@@YAXH@Z	void __cdecl LocalClient::SetFirstLocalClientIndex(int)	cl.o
+0x0052EFA0	0x0091E4A0	?NumLocalClients@LocalClient@@YAHXZ	int __cdecl LocalClient::NumLocalClients(void)	cl.o
+0x0052EFB0	0x0091E4B0	?SetNumLocalClients@LocalClient@@YAXH@Z	void __cdecl LocalClient::SetNumLocalClients(int)	cl.o
+0x0052EFC0	0x0091E4C0	?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z	int __cdecl LocalClient::GetNumLocalClientsByState(enum ELocalPlayerStates)	cl.o
+0x0052EFE0	0x0091E4E0	?ClientToPort@LocalClient@@YAHH@Z	int __cdecl LocalClient::ClientToPort(int)	cl.o
+0x0052F010	0x0091E510	?PortToClient@LocalClient@@YAHH@Z	int __cdecl LocalClient::PortToClient(int)	cl.o
+0x0052F020	0x0091E520	?PortIsState@LocalClient@@YA_NHH@Z	bool __cdecl LocalClient::PortIsState(int,int)	cl.o
+0x0052F040	0x0091E540	?PortToValidClient@LocalClient@@YAHH@Z	int __cdecl LocalClient::PortToValidClient(int)	cl.o
+0x0052F080	0x0091E580	?SetClientPort@LocalClient@@YAXHH@Z	void __cdecl LocalClient::SetClientPort(int,int)	cl.o
+0x0052F0A0	0x0091E5A0	?UpdatePlayerPorts@LocalClient@@YAXH@Z	void __cdecl LocalClient::UpdatePlayerPorts(int)	cl.o
+0x0052F0F0	0x0091E5F0	?ConfigureLocalClients@LocalClient@@YAXXZ	void __cdecl LocalClient::ConfigureLocalClients(void)	cl.o
+0x0052F140	0x0091E640	?QuitClientOutOfGame@LocalClient@@YA_NH@Z	bool __cdecl LocalClient::QuitClientOutOfGame(int)	cl.o
+0x0052F210	0x0091E710	?CL_Restart@@YAXXZ	void __cdecl CL_Restart(void)	cl.o
+0x0052F290	0x0091E790	?CL_GetConfigString@@YAPBDH@Z	char const * __cdecl CL_GetConfigString(int)	cl.o
+0x0052F2B0	0x0091E7B0	?CL_InitCGame@@YAXXZ	void __cdecl CL_InitCGame(void)	cl.o
+0x0052F550	0x0091EA50	?Con_Clear_f@@YAXXZ	void __cdecl Con_Clear_f(void)	cl.o
+0x0052F590	0x0091EA90	?Con_Init@@YAXXZ	void __cdecl Con_Init(void)	cl.o
+0x0052F670	0x0091EB70	?CL_RestoreMessages@@YAHPAEH@Z	int __cdecl CL_RestoreMessages(unsigned char *,int)	cl.o
+0x0052F750	0x0091EC50	?Con_Close@@YAXXZ	void __cdecl Con_Close(void)	cl.o
+0x0052F790	0x0091EC90	?CL_ConsolePrint@@YAXW4print_msg_type_t@@PBDHHH@Z	void __cdecl CL_ConsolePrint(enum print_msg_type_t,char const *,int,int,int)	cl.o
+0x0052FA70	0x0091EF70	?CL_DeathMessagePrint@@YAXW4print_msg_type_t@@PBDQAM121MM2H@Z	void __cdecl CL_DeathMessagePrint(enum print_msg_type_t,char const *,float * const,char const *,float * const,char const *,float,float,float * const,int)	cl.o
+0x005304E0	0x0091F9E0	?Con_DrawBoldMessages@@YAXHHMW4msgwnd_mode_t@@@Z	void __cdecl Con_DrawBoldMessages(int,int,float,enum msgwnd_mode_t)	cl.o
+0x00530510	0x0091FA10	?IN_MLookUp@@YAXXZ	void __cdecl IN_MLookUp(void)	cl.o
+0x00530560	0x0091FA60	?IN_SprintBreathDown@@YAXHH@Z	void __cdecl IN_SprintBreathDown(int,int)	cl.o
+0x00530610	0x0091FB10	?IN_SprintBreathUp@@YAXHH@Z	void __cdecl IN_SprintBreathUp(int,int)	cl.o
+0x005306C0	0x0091FBC0	?IN_HoldBreathDown@@YAXHH@Z	void __cdecl IN_HoldBreathDown(int,int)	cl.o
+0x00530720	0x0091FC20	?IN_HoldBreathUp@@YAXHH@Z	void __cdecl IN_HoldBreathUp(int,int)	cl.o
+0x00530780	0x0091FC80	?GetSwirlSpeedDirect@@YAXAAMAAHH@Z	void __cdecl GetSwirlSpeedDirect(float &,int &,int)	cl.o
+0x005308B0	0x0091FDB0	?SwirlControl@@YAXH@Z	void __cdecl SwirlControl(int)	cl.o
+0x00530AC0	0x0091FFC0	?CLSwirlControl@@YAXXZ	void __cdecl CLSwirlControl(void)	cl.o
+0x00530AE0	0x0091FFE0	?CL_GamepadMove@@YAXPAUusercmd_s@@@Z	void __cdecl CL_GamepadMove(struct usercmd_s *)	cl.o
+0x005311E0	0x009206E0	?CL_CreateCmd@@YA?AUusercmd_s@@XZ	struct usercmd_s __cdecl CL_CreateCmd(void)	cl.o
+0x00531350	0x00920850	?CL_CreateNewCommands@@YAXXZ	void __cdecl CL_CreateNewCommands(void)	cl.o
+0x00531400	0x00920900	?CL_WritePacket@@YAXXZ	void __cdecl CL_WritePacket(void)	cl.o
+0x00531590	0x00920A90	?CL_SendCmd@@YAXXZ	void __cdecl CL_SendCmd(void)	cl.o
+0x005315B0	0x00920AB0	?Field_Draw@@YAXPAUfield_t@@HHH@Z	void __cdecl Field_Draw(struct field_t *,int,int,int)	cl.o
+0x00531700	0x00920C00	?Field_AdjustScroll@@YAXPAUfield_t@@@Z	void __cdecl Field_AdjustScroll(struct field_t *)	cl.o
+0x00531900	0x00920E00	?Field_KeyDownEvent@@YAXPAUfield_t@@H@Z	void __cdecl Field_KeyDownEvent(struct field_t *,int)	cl.o
+0x00531B40	0x00921040	?Field_CharEvent@@YAXPAUfield_t@@H@Z	void __cdecl Field_CharEvent(struct field_t *,int)	cl.o
+0x00531DF0	0x009212F0	?SetBinding@KeyInfo@@SAXHHPBD@Z	public: static void __cdecl KeyInfo::SetBinding(int,int,char const *)	cl.o
+0x00531E60	0x00921360	?GetKey@KeyInfo@@SAHPBDH@Z	public: static int __cdecl KeyInfo::GetKey(char const *,int)	cl.o
+0x00531F20	0x00921420	?ClearAllBindings@KeyInfo@@SAXXZ	public: static void __cdecl KeyInfo::ClearAllBindings(void)	cl.o
+0x00531FB0	0x009214B0	?Key_Unbind_f@@YAXXZ	void __cdecl Key_Unbind_f(void)	cl.o
+0x00532040	0x00921540	?Key_Unbindall_f@@YAXXZ	void __cdecl Key_Unbindall_f(void)	cl.o
+0x00532150	0x00921650	?Key_Bind_f@@YAXXZ	void __cdecl Key_Bind_f(void)	cl.o
+0x00532320	0x00921820	?Key_WriteBindings@@YAXH@Z	void __cdecl Key_WriteBindings(int)	cl.o
+0x00532520	0x00921A20	?Key_Bindlist_f@@YAXXZ	void __cdecl Key_Bindlist_f(void)	cl.o
+0x00532700	0x00921C00	?CL_InitKeyCommands@@YAXXZ	void __cdecl CL_InitKeyCommands(void)	cl.o
+0x00532740	0x00921C40	?CL_CharEvent@@YAXH@Z	void __cdecl CL_CharEvent(int)	cl.o
+0x00532780	0x00921C80	?CL_ShutdownAll@@YAXXZ	void __cdecl CL_ShutdownAll(void)	cl.o
+0x005327E0	0x00921CE0	?CL_ClearState@@YAXXZ	void __cdecl CL_ClearState(void)	cl.o
+0x00532880	0x00921D80	?CL_Disconnect@@YAXH@Z	void __cdecl CL_Disconnect(int)	cl.o
+0x005328C0	0x00921DC0	?CL_StartHunkUsers@@YAXXZ	void __cdecl CL_StartHunkUsers(void)	cl.o
+0x00532930	0x00921E30	?CL_InitRef@@YAXXZ	void __cdecl CL_InitRef(void)	cl.o
+0x00532A70	0x00921F70	?CL_Shutdown@@YAXXZ	void __cdecl CL_Shutdown(void)	cl.o
+0x00532C30	0x00922130	?CL_SystemInfoChanged@@YAXXZ	void __cdecl CL_SystemInfoChanged(void)	cl.o
+0x00532D50	0x00922250	?CL_ParseGamestate@@YAXPAVstring@Broc@@@Z	void __cdecl CL_ParseGamestate(class Broc::string *)	cl.o
+0x00532EC0	0x009223C0	?Key_GetBindingBuf@@YAXHPADH@Z	void __cdecl Key_GetBindingBuf(int,char *,int)	cl.o
+0x00532F10	0x00922410	?CL_InitGamepadCommands@@YAXXZ	void __cdecl CL_InitGamepadCommands(void)	cl.o
+0x00532F40	0x00922440	?CL_ConfigstringModified@@YAXXZ	void __cdecl CL_ConfigstringModified(void)	cl.o
+0x00533080	0x00922580	?CL_GetServerCommand@@YAHH@Z	int __cdecl CL_GetServerCommand(int)	cl.o
+0x005331E0	0x009226E0	?CL_SubtitlePrint@@YAXPBDHH@Z	void __cdecl CL_SubtitlePrint(char const *,int,int)	cl.o
+0x00533330	0x00922830	?CL_ConsoleFixPosition@@YAXXZ	void __cdecl CL_ConsoleFixPosition(void)	cl.o
+0x005333E0	0x009228E0	?Con_DrawInput@@YAXXZ	void __cdecl Con_DrawInput(void)	cl.o
+0x00533450	0x00922950	?Con_DrawNotify@@YAXHHMW4msgwnd_mode_t@@@Z	void __cdecl Con_DrawNotify(int,int,float,enum msgwnd_mode_t)	cl.o
+0x00533480	0x00922980	?Con_DrawSolidConsole@@YAXM@Z	void __cdecl Con_DrawSolidConsole(float)	cl.o
+0x005338E0	0x00922DE0	?Con_DrawConsole@@YAXXZ	void __cdecl Con_DrawConsole(void)	cl.o
+0x00533970	0x00922E70	?IN_BinocularsDown@@YAXHH@Z	void __cdecl IN_BinocularsDown(int,int)	cl.o
+0x00533A80	0x00922F80	?IN_BinocularsUp@@YAXHH@Z	void __cdecl IN_BinocularsUp(int,int)	cl.o
+0x00533A90	0x00922F90	?CL_ParseSnapshot@@YAXPAUmsg_t@@@Z	void __cdecl CL_ParseSnapshot(struct msg_t *)	cl.o
+0x00533BD0	0x009230D0	?CL_ParseServerMessage@@YAXPAUmsg_t@@@Z	void __cdecl CL_ParseServerMessage(struct msg_t *)	cl.o
+0x00533D60	0x00923260	?SCR_DrawScreenField@@YAXXZ	void __cdecl SCR_DrawScreenField(void)	cl.o
+0x00533F20	0x00923420	?SCR_UpdateScreen@@YAXM@Z	void __cdecl SCR_UpdateScreen(float)	cl.o
+0x00534100	0x00923600	?IN_Button0Down@@YAXHH@Z	void __cdecl IN_Button0Down(int,int)	cl.o
+0x00534140	0x00923640	?CL_InitInput@@YAXXZ	void __cdecl CL_InitInput(void)	cl.o
+0x00534670	0x00923B70	?CL_PacketEvent@@YAXUnetadr_t@@PAUmsg_t@@H@Z	void __cdecl CL_PacketEvent(struct netadr_t,struct msg_t *,int)	cl.o
+0x005347E0	0x00923CE0	?CL_Frame@@YAXHM@Z	void __cdecl CL_Frame(int,float)	cl.o
+0x00534C20	0x00924120	?SCR_UpdateScreen@@YAXXZ	void __cdecl SCR_UpdateScreen(void)	cl.o
+0x00534C30	0x00924130	?CL_StartLoading@@YAXXZ	void __cdecl CL_StartLoading(void)	cl.o
+0x00534CB0	0x009241B0	?Console_Key@@YAXH@Z	void __cdecl Console_Key(int)	cl.o
+0x005350A0	0x009245A0	?CompleteAndExecCommand@@YAXPAD@Z	void __cdecl CompleteAndExecCommand(char *)	cl.o
+0x00535120	0x00924620	?CL_KeyEvent@@YAXHHI@Z	void __cdecl CL_KeyEvent(int,int,unsigned int)	cl.o
+0x005355C0	0x00924AC0	?Key_ClearStates@@YAXXZ	void __cdecl Key_ClearStates(void)	cl.o
+0x005358C0	0x00924DC0	?CL_MapLoading@@YAXXZ	void __cdecl CL_MapLoading(void)	cl.o
+0x005359E0	0x00924EE0	?CL_Init@@YAXXZ	void __cdecl CL_Init(void)	cl.o

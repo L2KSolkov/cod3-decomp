@@ -1,0 +1,18 @@
+ida_ea	va	name	signature	family
+0x00843610	0x00C32B10	?nglCanReleaseMesh@@YA_NPAUnglMesh@@@Z	bool __cdecl nglCanReleaseMesh(struct nglMesh *)	ngl_mesh.o
+0x00843630	0x00C32B30	?nglProcessMaterial@@YAXPAUnglMaterial@@@Z	void __cdecl nglProcessMaterial(struct nglMaterial *)	ngl_mesh.o
+0x008436F0	0x00C32BF0	?nglProcessSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAVapkFileEntry@apk@@@Z	void __cdecl nglProcessSection(struct nglMesh *,struct nglMeshSection *,class apk::apkFileEntry *)	ngl_mesh.o
+0x00843780	0x00C32C80	?nglProcessMesh@@YAXPAUnglMesh@@PAVapkFileEntry@apk@@@Z	void __cdecl nglProcessMesh(struct nglMesh *,class apk::apkFileEntry *)	ngl_mesh.o
+0x008437E0	0x00C32CE0	?nglUnloadMesh@@YAXPAUnglMesh@@@Z	void __cdecl nglUnloadMesh(struct nglMesh *)	ngl_mesh.o
+0x00843830	0x00C32D30	?nglGetLOD@@YAIPAUnglMesh@@ABVMat43@math@@PAUnglScene@@@Z	unsigned int __cdecl nglGetLOD(struct nglMesh *,class math::Mat43 const &,struct nglScene *)	ngl_mesh.o
+0x00843A20	0x00C32F20	?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@PAM@Z	class math::Mat43 * __cdecl nglListAddMesh_GetScaledMatrix(class math::Mat43 const &,class nglMeshParams *,float *)	ngl_mesh.o
+0x00843B90	0x00C33090	?nglListAddMesh_Sections@@YAPAVnglMeshNode@@PAUnglMesh@@PAV1@@Z	class nglMeshNode * __cdecl nglListAddMesh_Sections(struct nglMesh *,class nglMeshNode *)	ngl_mesh.o
+0x00843C50	0x00C33150	?nglListAddMesh_Setup@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@P6AXPAV1@@Z@Z	class nglMeshNode * __cdecl nglListAddMesh_Setup(struct nglMesh *,class math::Mat43 const &,class nglMeshParams *,struct nglShaderParamSet *,void (__cdecl*)(class nglMeshNode *))	ngl_mesh.o
+0x00844250	0x00C33750	?nglListAddMesh@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@P6AXPAV1@@Z@Z	class nglMeshNode * __cdecl nglListAddMesh(struct nglMesh *,class math::Mat43 const &,class nglMeshParams *,struct nglShaderParamSet *,void (__cdecl*)(class nglMeshNode *))	ngl_mesh.o
+0x00844290	0x00C33790	?nglAPKMeshLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKMeshLoadCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_mesh.o
+0x00844310	0x00C33810	?nglAPKMeshDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKMeshDeleteCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_mesh.o
+0x00844380	0x00C33880	?nglAPKMaterialLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKMaterialLoadCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_mesh.o
+0x008443E0	0x00C338E0	?nglAPKMaterialDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	void __cdecl nglAPKMaterialDeleteCallback(class apk::apkFile *,class apk::apkFileEntry *,void *)	ngl_mesh.o
+0x00844420	0x00C33920	?nglMeshInit@@YAXXZ	void __cdecl nglMeshInit(void)	ngl_mesh.o
+0x00844530	0x00C33A30	?nglGetMesh@@YAPAUnglMesh@@ABVtlFixedString@@_N@Z	struct nglMesh * __cdecl nglGetMesh(class tlFixedString const &,bool)	ngl_mesh.o
+0x00844580	0x00C33A80	?nglGetMaterial@@YAPAUnglMaterial@@ABVtlFixedString@@_N@Z	struct nglMaterial * __cdecl nglGetMaterial(class tlFixedString const &,bool)	ngl_mesh.o

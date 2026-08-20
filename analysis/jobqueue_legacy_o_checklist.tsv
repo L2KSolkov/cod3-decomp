@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:00435470 ?jqValidate@@YAXXZ 00C24970 f jobqueue_legacy.o
+2	PORTED	0002:00435480 ?jqStart@@YAXI@Z 00C24980 f jobqueue_legacy.o
+3	PORTED	0002:00435490 ?jqSetBatchPoolSize@@YAXI@Z 00C24990 f jobqueue_legacy.o
+4	VERIFIED	0002:004354a0 ?_jqAddBatch@@YAXPAUjqBatch@@@Z 00C249A0 f jobqueue_legacy.o
+5	VERIFIED	0002:004354c0 ?jqRemoveBatch@@YA_NH@Z 00C249C0 f jobqueue_legacy.o
+6	VERIFIED	0002:004354d0 ?jqFlush@@YAXH@Z 00C249D0 f jobqueue_legacy.o
+7	PORTED	0002:004354e0 ?jqSetBatchGroupPoolSize@@YAXI@Z 00C249E0 f jobqueue_legacy.o
+8	VERIFIED	0002:004354f0 ?_jqInit@@YAXXZ 00C249F0 f jobqueue_legacy.o
+9	VERIFIED	0002:00435500 ?_jqShutdown@@YAXXZ 00C24A00 f jobqueue_legacy.o
+10	VERIFIED	0002:00435510 ?_jqStart@@YAXH@Z 00C24A10 f jobqueue_legacy.o
+11	VERIFIED	0002:00435520 ?_jqStop@@YAXXZ 00C24A20 f jobqueue_legacy.o

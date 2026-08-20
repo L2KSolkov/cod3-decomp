@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x007E88B0	0x00BD7DB0	_adler32	_adler32	adler32.o
+0x007E8B00	0x00BD8000	_adler32_combine	_adler32_combine	adler32.o

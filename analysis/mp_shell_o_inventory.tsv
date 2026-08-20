@@ -1,0 +1,681 @@
+ida_ea	va	name	signature	family
+0x0078BF00	0x00B7B400	??0CreateSessionMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall CreateSessionMenu::CreateSessionMenu(class FEMenuSystem *)	mp_shell.o
+0x0078BFE0	0x00B7B4E0	??1CreateSessionMenu@@UAE@XZ	public: virtual __thiscall CreateSessionMenu::~CreateSessionMenu(void)	mp_shell.o
+0x0078C060	0x00B7B560	?Me@CreateSessionMenu@@SAPAV1@XZ	public: static class CreateSessionMenu * __cdecl CreateSessionMenu::Me(void)	mp_shell.o
+0x0078C070	0x00B7B570	?PanelFileUnloaded@CreateSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateSessionMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x0078C080	0x00B7B580	?Init@CreateSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateSessionMenu::Init(void)	mp_shell.o
+0x0078C090	0x00B7B590	?UpdateNetworking@CreateSessionMenu@@IAEXXZ	protected: void __thiscall CreateSessionMenu::UpdateNetworking(void)	mp_shell.o
+0x0078C0C0	0x00B7B5C0	?Update@CreateSessionMenu@@UAEXM@Z	public: virtual void __thiscall CreateSessionMenu::Update(float)	mp_shell.o
+0x0078C100	0x00B7B600	?UpdatePrivateSlots@CreateSessionMenu@@IAEXXZ	protected: void __thiscall CreateSessionMenu::UpdatePrivateSlots(void)	mp_shell.o
+0x0078C290	0x00B7B790	?GrabSessionName@CreateSessionMenu@@IAEXXZ	protected: void __thiscall CreateSessionMenu::GrabSessionName(void)	mp_shell.o
+0x0078C330	0x00B7B830	?Draw@CreateSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateSessionMenu::Draw(void)	mp_shell.o
+0x0078C350	0x00B7B850	?OnCircle@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnCircle(int)	mp_shell.o
+0x0078C360	0x00B7B860	?OnTriangle@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnTriangle(int)	mp_shell.o
+0x0078C380	0x00B7B880	?SetGameTypeDefaults@CreateSessionMenu@@QAEXXZ	public: void __thiscall CreateSessionMenu::SetGameTypeDefaults(void)	mp_shell.o
+0x0078C3F0	0x00B7B8F0	??0CreateLanSessionMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall CreateLanSessionMenu::CreateLanSessionMenu(class FEMenuSystem *)	mp_shell.o
+0x0078C4C0	0x00B7B9C0	??1CreateLanSessionMenu@@UAE@XZ	public: virtual __thiscall CreateLanSessionMenu::~CreateLanSessionMenu(void)	mp_shell.o
+0x0078C530	0x00B7BA30	?Me@CreateLanSessionMenu@@SAPAV1@XZ	public: static class CreateLanSessionMenu * __cdecl CreateLanSessionMenu::Me(void)	mp_shell.o
+0x0078C540	0x00B7BA40	?PanelFileUnloaded@CreateLanSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateLanSessionMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x0078C550	0x00B7BA50	?Init@CreateLanSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateLanSessionMenu::Init(void)	mp_shell.o
+0x0078C560	0x00B7BA60	?UpdateNetworking@CreateLanSessionMenu@@IAEXXZ	protected: void __thiscall CreateLanSessionMenu::UpdateNetworking(void)	mp_shell.o
+0x0078C590	0x00B7BA90	?Update@CreateLanSessionMenu@@UAEXM@Z	public: virtual void __thiscall CreateLanSessionMenu::Update(float)	mp_shell.o
+0x0078C5D0	0x00B7BAD0	?OnDeactivate@CreateLanSessionMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall CreateLanSessionMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078C5E0	0x00B7BAE0	?GrabSessionName@CreateLanSessionMenu@@IAEXH@Z	protected: void __thiscall CreateLanSessionMenu::GrabSessionName(int)	mp_shell.o
+0x0078C680	0x00B7BB80	?Draw@CreateLanSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateLanSessionMenu::Draw(void)	mp_shell.o
+0x0078C6A0	0x00B7BBA0	?OnCircle@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnCircle(int)	mp_shell.o
+0x0078C6B0	0x00B7BBB0	?OnUp@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnUp(int)	mp_shell.o
+0x0078C700	0x00B7BC00	?OnDown@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnDown(int)	mp_shell.o
+0x0078C750	0x00B7BC50	?OnTriangle@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnTriangle(int)	mp_shell.o
+0x0078C760	0x00B7BC60	?SetGameTypeDefaults@CreateLanSessionMenu@@QAEXXZ	public: void __thiscall CreateLanSessionMenu::SetGameTypeDefaults(void)	mp_shell.o
+0x0078C7D0	0x00B7BCD0	??0CreateSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall CreateSessionAdvancedMenu::CreateSessionAdvancedMenu(class FEMenuSystem *)	mp_shell.o
+0x0078C8A0	0x00B7BDA0	??1CreateSessionAdvancedMenu@@UAE@XZ	public: virtual __thiscall CreateSessionAdvancedMenu::~CreateSessionAdvancedMenu(void)	mp_shell.o
+0x0078C940	0x00B7BE40	?OnDeactivate@CreateSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall CreateSessionAdvancedMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078C9A0	0x00B7BEA0	?Draw@CreateSessionAdvancedMenu@@UAEXXZ	public: virtual void __thiscall CreateSessionAdvancedMenu::Draw(void)	mp_shell.o
+0x0078C9C0	0x00B7BEC0	?Update@CreateSessionAdvancedMenu@@UAEXM@Z	public: virtual void __thiscall CreateSessionAdvancedMenu::Update(float)	mp_shell.o
+0x0078CA60	0x00B7BF60	?OnTriangle@CreateSessionAdvancedMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionAdvancedMenu::OnTriangle(int)	mp_shell.o
+0x0078CAD0	0x00B7BFD0	?Me@CreateSessionAdvancedMenu@@SAPAV1@XZ	public: static class CreateSessionAdvancedMenu * __cdecl CreateSessionAdvancedMenu::Me(void)	mp_shell.o
+0x0078CAE0	0x00B7BFE0	?GrabSessionName@CreateSessionAdvancedMenu@@IAEXXZ	protected: void __thiscall CreateSessionAdvancedMenu::GrabSessionName(void)	mp_shell.o
+0x0078CB70	0x00B7C070	??0CreateLanSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall CreateLanSessionAdvancedMenu::CreateLanSessionAdvancedMenu(class FEMenuSystem *)	mp_shell.o
+0x0078CC50	0x00B7C150	??1CreateLanSessionAdvancedMenu@@UAE@XZ	public: virtual __thiscall CreateLanSessionAdvancedMenu::~CreateLanSessionAdvancedMenu(void)	mp_shell.o
+0x0078CCF0	0x00B7C1F0	?OnDeactivate@CreateLanSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078CD50	0x00B7C250	?Draw@CreateLanSessionAdvancedMenu@@UAEXXZ	public: virtual void __thiscall CreateLanSessionAdvancedMenu::Draw(void)	mp_shell.o
+0x0078CD70	0x00B7C270	?Update@CreateLanSessionAdvancedMenu@@UAEXM@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::Update(float)	mp_shell.o
+0x0078CE10	0x00B7C310	?OnTriangle@CreateLanSessionAdvancedMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::OnTriangle(int)	mp_shell.o
+0x0078CE80	0x00B7C380	?Me@CreateLanSessionAdvancedMenu@@SAPAV1@XZ	public: static class CreateLanSessionAdvancedMenu * __cdecl CreateLanSessionAdvancedMenu::Me(void)	mp_shell.o
+0x0078CE90	0x00B7C390	?GrabSessionName@CreateLanSessionAdvancedMenu@@IAEXXZ	protected: void __thiscall CreateLanSessionAdvancedMenu::GrabSessionName(void)	mp_shell.o
+0x0078CEE0	0x00B7C3E0	?OnUp@CreateLanSessionAdvancedMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::OnUp(int)	mp_shell.o
+0x0078CF10	0x00B7C410	?OnDown@CreateLanSessionAdvancedMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::OnDown(int)	mp_shell.o
+0x0078CF40	0x00B7C440	??0FindSessionMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall FindSessionMenu::FindSessionMenu(class FEMenuSystem *)	mp_shell.o
+0x0078D020	0x00B7C520	??1FindSessionMenu@@UAE@XZ	public: virtual __thiscall FindSessionMenu::~FindSessionMenu(void)	mp_shell.o
+0x0078D0D0	0x00B7C5D0	?Me@FindSessionMenu@@SAPAV1@XZ	public: static class FindSessionMenu * __cdecl FindSessionMenu::Me(void)	mp_shell.o
+0x0078D0E0	0x00B7C5E0	?PanelFileUnloaded@FindSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FindSessionMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x0078D0F0	0x00B7C5F0	?Init@FindSessionMenu@@UAEXXZ	public: virtual void __thiscall FindSessionMenu::Init(void)	mp_shell.o
+0x0078D100	0x00B7C600	?UpdateNetworking@FindSessionMenu@@IAEXXZ	protected: void __thiscall FindSessionMenu::UpdateNetworking(void)	mp_shell.o
+0x0078D130	0x00B7C630	?Update@FindSessionMenu@@UAEXM@Z	public: virtual void __thiscall FindSessionMenu::Update(float)	mp_shell.o
+0x0078D170	0x00B7C670	?UpdateHighlight@FindSessionMenu@@IAEXXZ	protected: void __thiscall FindSessionMenu::UpdateHighlight(void)	mp_shell.o
+0x0078D1F0	0x00B7C6F0	?OnDeactivate@FindSessionMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall FindSessionMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078D200	0x00B7C700	?Draw@FindSessionMenu@@UAEXXZ	public: virtual void __thiscall FindSessionMenu::Draw(void)	mp_shell.o
+0x0078D220	0x00B7C720	?OnTriangle@FindSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindSessionMenu::OnTriangle(int)	mp_shell.o
+0x0078D230	0x00B7C730	?OnUp@FindSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindSessionMenu::OnUp(int)	mp_shell.o
+0x0078D250	0x00B7C750	?OnDown@FindSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindSessionMenu::OnDown(int)	mp_shell.o
+0x0078D270	0x00B7C770	??0FindLanSessionMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall FindLanSessionMenu::FindLanSessionMenu(class FEMenuSystem *)	mp_shell.o
+0x0078D350	0x00B7C850	??1FindLanSessionMenu@@UAE@XZ	public: virtual __thiscall FindLanSessionMenu::~FindLanSessionMenu(void)	mp_shell.o
+0x0078D400	0x00B7C900	?Me@FindLanSessionMenu@@SAPAV1@XZ	public: static class FindLanSessionMenu * __cdecl FindLanSessionMenu::Me(void)	mp_shell.o
+0x0078D410	0x00B7C910	?PanelFileUnloaded@FindLanSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FindLanSessionMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x0078D420	0x00B7C920	?Init@FindLanSessionMenu@@UAEXXZ	public: virtual void __thiscall FindLanSessionMenu::Init(void)	mp_shell.o
+0x0078D430	0x00B7C930	?UpdateNetworking@FindLanSessionMenu@@IAEXXZ	protected: void __thiscall FindLanSessionMenu::UpdateNetworking(void)	mp_shell.o
+0x0078D460	0x00B7C960	?Update@FindLanSessionMenu@@UAEXM@Z	public: virtual void __thiscall FindLanSessionMenu::Update(float)	mp_shell.o
+0x0078D4A0	0x00B7C9A0	?UpdateHighlight@FindLanSessionMenu@@IAEXXZ	protected: void __thiscall FindLanSessionMenu::UpdateHighlight(void)	mp_shell.o
+0x0078D520	0x00B7CA20	?OnDeactivate@FindLanSessionMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall FindLanSessionMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078D530	0x00B7CA30	?Draw@FindLanSessionMenu@@UAEXXZ	public: virtual void __thiscall FindLanSessionMenu::Draw(void)	mp_shell.o
+0x0078D550	0x00B7CA50	?OnTriangle@FindLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindLanSessionMenu::OnTriangle(int)	mp_shell.o
+0x0078D560	0x00B7CA60	?OnUp@FindLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindLanSessionMenu::OnUp(int)	mp_shell.o
+0x0078D580	0x00B7CA80	?OnDown@FindLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindLanSessionMenu::OnDown(int)	mp_shell.o
+0x0078D5A0	0x00B7CAA0	?Init@GameSettingsEdit@@UAEXXZ	public: virtual void __thiscall GameSettingsEdit::Init(void)	mp_shell.o
+0x0078D5B0	0x00B7CAB0	?UpdateHighlight@GameSettingsEdit@@IAEXXZ	protected: void __thiscall GameSettingsEdit::UpdateHighlight(void)	mp_shell.o
+0x0078D670	0x00B7CB70	?UpdateScrollBar@GameSettingsEdit@@IAEXXZ	protected: void __thiscall GameSettingsEdit::UpdateScrollBar(void)	mp_shell.o
+0x0078D6D0	0x00B7CBD0	?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z	public: void __thiscall GameSettingsEdit::OnDeactivate(class FESplitScreenMenu *)	mp_shell.o
+0x0078D6F0	0x00B7CBF0	?Me@GameSettingsEdit@@SAPAV1@H@Z	public: static class GameSettingsEdit * __cdecl GameSettingsEdit::Me(int)	mp_shell.o
+0x0078D710	0x00B7CC10	?OnL1@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnL1(int)	mp_shell.o
+0x0078D720	0x00B7CC20	?OnR1@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnR1(int)	mp_shell.o
+0x0078D730	0x00B7CC30	?OnCross@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnCross(int)	mp_shell.o
+0x0078D740	0x00B7CC40	?ResponseNoJustGoBackToPauseMenuHelper@GameSettingsEdit@@IAE_NXZ	protected: bool __thiscall GameSettingsEdit::ResponseNoJustGoBackToPauseMenuHelper(void)	mp_shell.o
+0x0078D750	0x00B7CC50	?ResponseNoJustGoBackToPauseMenu@GameSettingsEdit@@KA_NH@Z	protected: static bool __cdecl GameSettingsEdit::ResponseNoJustGoBackToPauseMenu(int)	mp_shell.o
+0x0078D780	0x00B7CC80	?OnCircle@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnCircle(int)	mp_shell.o
+0x0078D790	0x00B7CC90	?OnSquare@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnSquare(int)	mp_shell.o
+0x0078D7A0	0x00B7CCA0	?OnStart@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnStart(int)	mp_shell.o
+0x0078D7B0	0x00B7CCB0	?ButtonHeldAction@GameSettingsEdit@@MAEXXZ	protected: virtual void __thiscall GameSettingsEdit::ButtonHeldAction(void)	mp_shell.o
+0x0078D7C0	0x00B7CCC0	?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z	protected: void __thiscall GameSettingsEdit::UpdateMapChangeStatus(bool)	mp_shell.o
+0x0078D7F0	0x00B7CCF0	?DisableTeamGameOptions@GameSettingsEdit@@IAEX_N@Z	protected: void __thiscall GameSettingsEdit::DisableTeamGameOptions(bool)	mp_shell.o
+0x0078D850	0x00B7CD50	?GetScoreLimitsForGameType@GameSettingsEdit@@IAEXW4eGameType@@@Z	protected: void __thiscall GameSettingsEdit::GetScoreLimitsForGameType(enum eGameType)	mp_shell.o
+0x0078D8D0	0x00B7CDD0	?Me@AARGameSettingsEdit@@SAPAV1@H@Z	public: static class AARGameSettingsEdit * __cdecl AARGameSettingsEdit::Me(int)	mp_shell.o
+0x0078D8E0	0x00B7CDE0	?SetTimerText@AARGameSettingsEdit@@AAEXXZ	private: void __thiscall AARGameSettingsEdit::SetTimerText(void)	mp_shell.o
+0x0078D970	0x00B7CE70	?ResponseNoJustGoBackToPauseMenu@AARGameSettingsEdit@@SA_NH@Z	public: static bool __cdecl AARGameSettingsEdit::ResponseNoJustGoBackToPauseMenu(int)	mp_shell.o
+0x0078D990	0x00B7CE90	?Init@GameSettingsView@@UAEXXZ	public: virtual void __thiscall GameSettingsView::Init(void)	mp_shell.o
+0x0078D9A0	0x00B7CEA0	?SetPanelFileMain@GameSettingsView@@IAEXPAVPanelFile@@@Z	protected: void __thiscall GameSettingsView::SetPanelFileMain(class PanelFile *)	mp_shell.o
+0x0078DC10	0x00B7D110	?UpdateOption@GameSettingsView@@IAEXHPAVFEText@@@Z	protected: void __thiscall GameSettingsView::UpdateOption(int,class FEText *)	mp_shell.o
+0x0078DD70	0x00B7D270	?UpdateScrollBar@GameSettingsView@@IAEXXZ	protected: void __thiscall GameSettingsView::UpdateScrollBar(void)	mp_shell.o
+0x0078DDC0	0x00B7D2C0	?Update@GameSettingsView@@UAEXM@Z	public: virtual void __thiscall GameSettingsView::Update(float)	mp_shell.o
+0x0078DF70	0x00B7D470	?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z	public: void __thiscall GameSettingsView::OnDeactivate(class FESplitScreenMenu *)	mp_shell.o
+0x0078DF80	0x00B7D480	?Me@GameSettingsView@@SAPAV1@H@Z	public: static class GameSettingsView * __cdecl GameSettingsView::Me(int)	mp_shell.o
+0x0078DFA0	0x00B7D4A0	?OnLeft@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnLeft(int)	mp_shell.o
+0x0078DFB0	0x00B7D4B0	?OnRight@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnRight(int)	mp_shell.o
+0x0078DFC0	0x00B7D4C0	?OnL1@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnL1(int)	mp_shell.o
+0x0078DFD0	0x00B7D4D0	?OnR1@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnR1(int)	mp_shell.o
+0x0078DFE0	0x00B7D4E0	?OnCross@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnCross(int)	mp_shell.o
+0x0078DFF0	0x00B7D4F0	?OnTriangle@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnTriangle(int)	mp_shell.o
+0x0078E000	0x00B7D500	?OnCircle@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnCircle(int)	mp_shell.o
+0x0078E010	0x00B7D510	?OnSquare@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnSquare(int)	mp_shell.o
+0x0078E020	0x00B7D520	?ButtonHeldAction@GameSettingsView@@MAEXXZ	protected: virtual void __thiscall GameSettingsView::ButtonHeldAction(void)	mp_shell.o
+0x0078E030	0x00B7D530	?Me@AARGameSettingsView@@SAPAV1@H@Z	public: static class AARGameSettingsView * __cdecl AARGameSettingsView::Me(int)	mp_shell.o
+0x0078E040	0x00B7D540	?SetPanelFile@AARGameSettingsView@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARGameSettingsView::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0078E050	0x00B7D550	?SetTimerText@AARGameSettingsView@@AAEXXZ	private: void __thiscall AARGameSettingsView::SetTimerText(void)	mp_shell.o
+0x0078E0E0	0x00B7D5E0	??0InitialLoadingMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InitialLoadingMenu::InitialLoadingMenu(class FEMenuSystem *)	mp_shell.o
+0x0078E120	0x00B7D620	?OnActivate@InitialLoadingMenu@@UAEXXZ	public: virtual void __thiscall InitialLoadingMenu::OnActivate(void)	mp_shell.o
+0x0078E140	0x00B7D640	?Draw@InitialLoadingMenu@@UAEXXZ	public: virtual void __thiscall InitialLoadingMenu::Draw(void)	mp_shell.o
+0x0078E160	0x00B7D660	?Select@InitialLoadingMenu@@UAEXH@Z	public: virtual void __thiscall InitialLoadingMenu::Select(int)	mp_shell.o
+0x0078E170	0x00B7D670	?SetPanelFile@InitialLoadingMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InitialLoadingMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0078E220	0x00B7D720	?Me@InitialLoadingMenu@@SAPAV1@XZ	public: static class InitialLoadingMenu * __cdecl InitialLoadingMenu::Me(void)	mp_shell.o
+0x0078E230	0x00B7D730	??0InstantActionMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InstantActionMenu::InstantActionMenu(class FEMenuSystem *)	mp_shell.o
+0x0078E280	0x00B7D780	?OnActivate@InstantActionMenu@@UAEXXZ	public: virtual void __thiscall InstantActionMenu::OnActivate(void)	mp_shell.o
+0x0078E290	0x00B7D790	?Draw@InstantActionMenu@@UAEXXZ	public: virtual void __thiscall InstantActionMenu::Draw(void)	mp_shell.o
+0x0078E2B0	0x00B7D7B0	?Update@InstantActionMenu@@UAEXM@Z	public: virtual void __thiscall InstantActionMenu::Update(float)	mp_shell.o
+0x0078E300	0x00B7D800	?Select@InstantActionMenu@@UAEXH@Z	public: virtual void __thiscall InstantActionMenu::Select(int)	mp_shell.o
+0x0078E410	0x00B7D910	?OnTriangle@InstantActionMenu@@UAEXH@Z	public: virtual void __thiscall InstantActionMenu::OnTriangle(int)	mp_shell.o
+0x0078E420	0x00B7D920	?SetPanelFile@InstantActionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InstantActionMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0078E6A0	0x00B7DBA0	?Me@InstantActionMenu@@SAPAV1@XZ	public: static class InstantActionMenu * __cdecl InstantActionMenu::Me(void)	mp_shell.o
+0x0078E6B0	0x00B7DBB0	?OnDeactivate@PlayLanMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall PlayLanMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078E6C0	0x00B7DBC0	?Draw@PlayLanMenu@@UAEXXZ	public: virtual void __thiscall PlayLanMenu::Draw(void)	mp_shell.o
+0x0078E6E0	0x00B7DBE0	?OnCross@PlayLanMenu@@UAEXH@Z	public: virtual void __thiscall PlayLanMenu::OnCross(int)	mp_shell.o
+0x0078E770	0x00B7DC70	?OnTriangle@PlayLanMenu@@UAEXH@Z	public: virtual void __thiscall PlayLanMenu::OnTriangle(int)	mp_shell.o
+0x0078E780	0x00B7DC80	?Me@PlayLanMenu@@SAPAV1@XZ	public: static class PlayLanMenu * __cdecl PlayLanMenu::Me(void)	mp_shell.o
+0x0078E790	0x00B7DC90	??0PlayOnlineMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall PlayOnlineMenu::PlayOnlineMenu(class FEMenuSystem *)	mp_shell.o
+0x0078E7E0	0x00B7DCE0	?OnDeactivate@PlayOnlineMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall PlayOnlineMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078E7F0	0x00B7DCF0	?Draw@PlayOnlineMenu@@UAEXXZ	public: virtual void __thiscall PlayOnlineMenu::Draw(void)	mp_shell.o
+0x0078E810	0x00B7DD10	?OnTriangle@PlayOnlineMenu@@UAEXH@Z	public: virtual void __thiscall PlayOnlineMenu::OnTriangle(int)	mp_shell.o
+0x0078E820	0x00B7DD20	?Me@PlayOnlineMenu@@SAPAV1@XZ	public: static class PlayOnlineMenu * __cdecl PlayOnlineMenu::Me(void)	mp_shell.o
+0x0078E830	0x00B7DD30	?TogglePreviewImage@PlayOnlineMenu@@QAEXH_N@Z	public: void __thiscall PlayOnlineMenu::TogglePreviewImage(int,bool)	mp_shell.o
+0x0078E8A0	0x00B7DDA0	?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z	protected: void __thiscall PlayOnlineMenu::InitQuickMatchParameters(int)	mp_shell.o
+0x0078E910	0x00B7DE10	?UpdateTextDescription@PlayOnlineMenu@@IAEXH@Z	protected: void __thiscall PlayOnlineMenu::UpdateTextDescription(int)	mp_shell.o
+0x0078E9B0	0x00B7DEB0	??0PressStartMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall PressStartMenu::PressStartMenu(class FEMenuSystem *)	mp_shell.o
+0x0078E9F0	0x00B7DEF0	?OnActivate@PressStartMenu@@UAEXXZ	public: virtual void __thiscall PressStartMenu::OnActivate(void)	mp_shell.o
+0x0078EA10	0x00B7DF10	?Draw@PressStartMenu@@UAEXXZ	public: virtual void __thiscall PressStartMenu::Draw(void)	mp_shell.o
+0x0078EA30	0x00B7DF30	?Update@PressStartMenu@@UAEXM@Z	public: virtual void __thiscall PressStartMenu::Update(float)	mp_shell.o
+0x0078EA50	0x00B7DF50	?Select@PressStartMenu@@UAEXH@Z	public: virtual void __thiscall PressStartMenu::Select(int)	mp_shell.o
+0x0078EA60	0x00B7DF60	?OnTriangle@PressStartMenu@@UAEXH@Z	public: virtual void __thiscall PressStartMenu::OnTriangle(int)	mp_shell.o
+0x0078EA70	0x00B7DF70	?OnStart@PressStartMenu@@UAEXH@Z	public: virtual void __thiscall PressStartMenu::OnStart(int)	mp_shell.o
+0x0078EA80	0x00B7DF80	?SetPanelFile@PressStartMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall PressStartMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0078EB00	0x00B7E000	?Me@PressStartMenu@@SAPAV1@XZ	public: static class PressStartMenu * __cdecl PressStartMenu::Me(void)	mp_shell.o
+0x0078EB10	0x00B7E010	??0SessionDetailsMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall SessionDetailsMenu::SessionDetailsMenu(class FEMenuSystem *)	mp_shell.o
+0x0078EB50	0x00B7E050	?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall SessionDetailsMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x0078EB60	0x00B7E060	?Draw@SessionDetailsMenu@@UAEXXZ	public: virtual void __thiscall SessionDetailsMenu::Draw(void)	mp_shell.o
+0x0078EB80	0x00B7E080	?OnTriangle@SessionDetailsMenu@@UAEXH@Z	public: virtual void __thiscall SessionDetailsMenu::OnTriangle(int)	mp_shell.o
+0x0078EB90	0x00B7E090	?SetPanelFile@SessionDetailsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall SessionDetailsMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0078EE70	0x00B7E370	?Me@SessionDetailsMenu@@SAPAV1@XZ	public: static class SessionDetailsMenu * __cdecl SessionDetailsMenu::Me(void)	mp_shell.o
+0x0078EE80	0x00B7E380	?Draw@SessionListMenu@@UAEXXZ	public: virtual void __thiscall SessionListMenu::Draw(void)	mp_shell.o
+0x0078EEA0	0x00B7E3A0	?OnTriangle@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnTriangle(int)	mp_shell.o
+0x0078EEC0	0x00B7E3C0	?OnCircle@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnCircle(int)	mp_shell.o
+0x0078EEE0	0x00B7E3E0	?Me@SessionListMenu@@SAPAV1@XZ	public: static class SessionListMenu * __cdecl SessionListMenu::Me(void)	mp_shell.o
+0x0078EEF0	0x00B7E3F0	?TidyGamesList@SessionListMenu@@IAEXXZ	protected: void __thiscall SessionListMenu::TidyGamesList(void)	mp_shell.o
+0x0078EF10	0x00B7E410	?Draw@SessionLanListMenu@@UAEXXZ	public: virtual void __thiscall SessionLanListMenu::Draw(void)	mp_shell.o
+0x0078EF30	0x00B7E430	?OnTriangle@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnTriangle(int)	mp_shell.o
+0x0078EF50	0x00B7E450	?OnCircle@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnCircle(int)	mp_shell.o
+0x0078EF70	0x00B7E470	?Me@SessionLanListMenu@@SAPAV1@XZ	public: static class SessionLanListMenu * __cdecl SessionLanListMenu::Me(void)	mp_shell.o
+0x0078EF80	0x00B7E480	?TidyGamesList@SessionLanListMenu@@IAEXXZ	protected: void __thiscall SessionLanListMenu::TidyGamesList(void)	mp_shell.o
+0x0078EFA0	0x00B7E4A0	?OnCross@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnCross(int)	mp_shell.o
+0x0078EFB0	0x00B7E4B0	??0OverlayMenuBase@@QAE@PAVFEMenuSystem@@H@Z	public: __thiscall OverlayMenuBase::OverlayMenuBase(class FEMenuSystem *,int)	mp_shell.o
+0x0078EFF0	0x00B7E4F0	?OnActivate@OverlayMenuBase@@UAEXXZ	public: virtual void __thiscall OverlayMenuBase::OnActivate(void)	mp_shell.o
+0x0078F010	0x00B7E510	?Draw@OverlayMenuBase@@UAEXXZ	public: virtual void __thiscall OverlayMenuBase::Draw(void)	mp_shell.o
+0x0078F030	0x00B7E530	?Update@OverlayMenuBase@@UAEXM@Z	public: virtual void __thiscall OverlayMenuBase::Update(float)	mp_shell.o
+0x0078F050	0x00B7E550	?Accept@OverlayMenuBase@@UAEXXZ	public: virtual void __thiscall OverlayMenuBase::Accept(void)	mp_shell.o
+0x0078F090	0x00B7E590	?OnTriangle@OverlayMenuBase@@UAEXH@Z	public: virtual void __thiscall OverlayMenuBase::OnTriangle(int)	mp_shell.o
+0x0078F0F0	0x00B7E5F0	?UpdateSplitScreen@OverlayMenuBase@@UAEXXZ	public: virtual void __thiscall OverlayMenuBase::UpdateSplitScreen(void)	mp_shell.o
+0x0078F120	0x00B7E620	?OnCross@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnCross(int)	mp_shell.o
+0x0078F330	0x00B7E830	?OnCircle@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnCircle(int)	mp_shell.o
+0x0078F340	0x00B7E840	?OnSquare@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnSquare(int)	mp_shell.o
+0x0078F3C0	0x00B7E8C0	?Select@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::Select(int)	mp_shell.o
+0x0078F3D0	0x00B7E8D0	?Me@OverlayMenu@@SAPAV1@H@Z	public: static class OverlayMenu * __cdecl OverlayMenu::Me(int)	mp_shell.o
+0x0078F3F0	0x00B7E8F0	?OnUp@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnUp(int)	mp_shell.o
+0x0078F450	0x00B7E950	?OnDown@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnDown(int)	mp_shell.o
+0x0078F4C0	0x00B7E9C0	?LogonUpdate@OverlayMenu@@IAEXXZ	protected: void __thiscall OverlayMenu::LogonUpdate(void)	mp_shell.o
+0x0078F4D0	0x00B7E9D0	?Select@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::Select(int)	mp_shell.o
+0x0078F4E0	0x00B7E9E0	?Me@InGameOverlay@@SAPAV1@H@Z	public: static class InGameOverlay * __cdecl InGameOverlay::Me(int)	mp_shell.o
+0x0078F510	0x00B7EA10	?Update@InGameOverlay@@UAEXM@Z	public: virtual void __thiscall InGameOverlay::Update(float)	mp_shell.o
+0x0078F590	0x00B7EA90	?OnTriangle@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnTriangle(int)	mp_shell.o
+0x0078F5E0	0x00B7EAE0	?OnCross@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnCross(int)	mp_shell.o
+0x0078F780	0x00B7EC80	?OnCircle@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnCircle(int)	mp_shell.o
+0x0078F790	0x00B7EC90	?OnSquare@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnSquare(int)	mp_shell.o
+0x0078F7A0	0x00B7ECA0	?OnUp@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnUp(int)	mp_shell.o
+0x0078F7E0	0x00B7ECE0	?Draw@InGameOverlay@@UAEXXZ	public: virtual void __thiscall InGameOverlay::Draw(void)	mp_shell.o
+0x0078F830	0x00B7ED30	?OnDown@InGameOverlay@@UAEXH@Z	public: virtual void __thiscall InGameOverlay::OnDown(int)	mp_shell.o
+0x0078F870	0x00B7ED70	?Select@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::Select(int)	mp_shell.o
+0x0078F880	0x00B7ED80	?Me@AAROverlay@@SAPAV1@H@Z	public: static class AAROverlay * __cdecl AAROverlay::Me(int)	mp_shell.o
+0x0078F8A0	0x00B7EDA0	?Update@AAROverlay@@UAEXM@Z	public: virtual void __thiscall AAROverlay::Update(float)	mp_shell.o
+0x0078F920	0x00B7EE20	?OnTriangle@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnTriangle(int)	mp_shell.o
+0x0078F970	0x00B7EE70	?OnCross@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnCross(int)	mp_shell.o
+0x0078FB10	0x00B7F010	?OnCircle@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnCircle(int)	mp_shell.o
+0x0078FB20	0x00B7F020	?OnSquare@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnSquare(int)	mp_shell.o
+0x0078FB30	0x00B7F030	?OnUp@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnUp(int)	mp_shell.o
+0x0078FB70	0x00B7F070	?Draw@AAROverlay@@UAEXXZ	public: virtual void __thiscall AAROverlay::Draw(void)	mp_shell.o
+0x0078FBC0	0x00B7F0C0	?OnDown@AAROverlay@@UAEXH@Z	public: virtual void __thiscall AAROverlay::OnDown(int)	mp_shell.o
+0x0078FCB0	0x00B7F1B0	??0MultilineOverlayMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall MultilineOverlayMenu::MultilineOverlayMenu(class FEMenuSystem *)	mp_shell.o
+0x0078FD20	0x00B7F220	?OnActivate@MultilineOverlayMenu@@UAEXXZ	public: virtual void __thiscall MultilineOverlayMenu::OnActivate(void)	mp_shell.o
+0x0078FD70	0x00B7F270	?SetPanelFile@MultilineOverlayMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall MultilineOverlayMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00790000	0x00B7F500	?OnStart@MultilineFrontendOverlayMenu@@UAEXH@Z	public: virtual void __thiscall MultilineFrontendOverlayMenu::OnStart(int)	mp_shell.o
+0x00790030	0x00B7F530	?OnCross@MultilineFrontendOverlayMenu@@UAEXH@Z	public: virtual void __thiscall MultilineFrontendOverlayMenu::OnCross(int)	mp_shell.o
+0x00790040	0x00B7F540	?Update@MultilineFrontendOverlayMenu@@UAEXM@Z	public: virtual void __thiscall MultilineFrontendOverlayMenu::Update(float)	mp_shell.o
+0x00790060	0x00B7F560	?Me@MultilineFrontendOverlayMenu@@SAPAV1@XZ	public: static class MultilineFrontendOverlayMenu * __cdecl MultilineFrontendOverlayMenu::Me(void)	mp_shell.o
+0x00790070	0x00B7F570	?SetState@MultilineFrontendOverlayMenu@@QAEXW4eState@1@@Z	public: void __thiscall MultilineFrontendOverlayMenu::SetState(enum MultilineFrontendOverlayMenu::eState)	mp_shell.o
+0x00790280	0x00B7F780	?SetTempState@MultilineFrontendOverlayMenu@@QAEXW4eState@1@@Z	public: void __thiscall MultilineFrontendOverlayMenu::SetTempState(enum MultilineFrontendOverlayMenu::eState)	mp_shell.o
+0x007902A0	0x00B7F7A0	?OnTriangle@MultilineFrontendOverlayMenu@@UAEXH@Z	public: virtual void __thiscall MultilineFrontendOverlayMenu::OnTriangle(int)	mp_shell.o
+0x007902B0	0x00B7F7B0	?OnDeactivate@MultilineIngameOverlayMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall MultilineIngameOverlayMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x007902D0	0x00B7F7D0	?OnStart@MultilineIngameOverlayMenu@@UAEXH@Z	public: virtual void __thiscall MultilineIngameOverlayMenu::OnStart(int)	mp_shell.o
+0x00790300	0x00B7F800	?Update@MultilineIngameOverlayMenu@@UAEXM@Z	public: virtual void __thiscall MultilineIngameOverlayMenu::Update(float)	mp_shell.o
+0x007903B0	0x00B7F8B0	?Me@MultilineIngameOverlayMenu@@SAPAV1@XZ	public: static class MultilineIngameOverlayMenu * __cdecl MultilineIngameOverlayMenu::Me(void)	mp_shell.o
+0x007903D0	0x00B7F8D0	?SetState@MultilineIngameOverlayMenu@@QAEXW4eState@1@@Z	public: void __thiscall MultilineIngameOverlayMenu::SetState(enum MultilineIngameOverlayMenu::eState)	mp_shell.o
+0x00790580	0x00B7FA80	??0VoteGameTypeMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall VoteGameTypeMenu::VoteGameTypeMenu(class FEMenuSystem *)	mp_shell.o
+0x007905C0	0x00B7FAC0	?OnActivate@VoteGameTypeMenu@@UAEXXZ	public: virtual void __thiscall VoteGameTypeMenu::OnActivate(void)	mp_shell.o
+0x007906B0	0x00B7FBB0	?Draw@VoteGameTypeMenu@@UAEXXZ	public: virtual void __thiscall VoteGameTypeMenu::Draw(void)	mp_shell.o
+0x007906D0	0x00B7FBD0	?SetPanelFile@VoteGameTypeMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall VoteGameTypeMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007907D0	0x00B7FCD0	??0VoteMapMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall VoteMapMenu::VoteMapMenu(class FEMenuSystem *)	mp_shell.o
+0x00790810	0x00B7FD10	?OnActivate@VoteMapMenu@@UAEXXZ	public: virtual void __thiscall VoteMapMenu::OnActivate(void)	mp_shell.o
+0x00790920	0x00B7FE20	?OnDeactivate@VoteMapMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall VoteMapMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00790930	0x00B7FE30	?Draw@VoteMapMenu@@UAEXXZ	public: virtual void __thiscall VoteMapMenu::Draw(void)	mp_shell.o
+0x00790950	0x00B7FE50	?SetPanelFile@VoteMapMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall VoteMapMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00790A50	0x00B7FF50	?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall WeaponSelectMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00790A60	0x00B7FF60	?LocalIndexToPlayerClass@WeaponSelectMenu@@IAE?AW4EPlayerClass@@H@Z	protected: enum EPlayerClass __thiscall WeaponSelectMenu::LocalIndexToPlayerClass(int)	mp_shell.o
+0x00790B90	0x00B80090	?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z	protected: int __thiscall WeaponSelectMenu::PlayerClassToLocalIndex(int)	mp_shell.o
+0x00790C60	0x00B80160	?OnStart@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::OnStart(int)	mp_shell.o
+0x00790C70	0x00B80170	?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ	protected: void __thiscall WeaponSelectMenu::SetClassOptionHeader(void)	mp_shell.o
+0x00790C90	0x00B80190	?Update@WeaponSelectMenu@@UAEXM@Z	public: virtual void __thiscall WeaponSelectMenu::Update(float)	mp_shell.o
+0x00790CF0	0x00B801F0	?scoreboard_player_sorter@@YAHPBX0@Z	int __cdecl scoreboard_player_sorter(void const *,void const *)	mp_shell.o
+0x00790D20	0x00B80220	?UpdateSplitScreen@InGameScoreBoard@@UAEXXZ	public: virtual void __thiscall InGameScoreBoard::UpdateSplitScreen(void)	mp_shell.o
+0x00790D50	0x00B80250	?Init@InGameScoreBoard@@UAEXXZ	public: virtual void __thiscall InGameScoreBoard::Init(void)	mp_shell.o
+0x00790D60	0x00B80260	?OnDeactivate@InGameScoreBoard@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall InGameScoreBoard::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00790DA0	0x00B802A0	?Draw@InGameScoreBoard@@UAEXXZ	public: virtual void __thiscall InGameScoreBoard::Draw(void)	mp_shell.o
+0x00790DC0	0x00B802C0	?GetAlliesScore@InGameScoreBoard@@IAEHXZ	protected: int __thiscall InGameScoreBoard::GetAlliesScore(void)	mp_shell.o
+0x00790DD0	0x00B802D0	?GetAxisScore@InGameScoreBoard@@IAEHXZ	protected: int __thiscall InGameScoreBoard::GetAxisScore(void)	mp_shell.o
+0x00790DE0	0x00B802E0	?OnButtonRelease@InGameScoreBoard@@UAEXHH@Z	public: virtual void __thiscall InGameScoreBoard::OnButtonRelease(int,int)	mp_shell.o
+0x00790E10	0x00B80310	?OnTriangle@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnTriangle(int)	mp_shell.o
+0x00790E20	0x00B80320	?OnSquare@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnSquare(int)	mp_shell.o
+0x00790E30	0x00B80330	?OnSelect@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnSelect(int)	mp_shell.o
+0x00790E90	0x00B80390	?Init@InGameSwitchSides@@UAEXXZ	public: virtual void __thiscall InGameSwitchSides::Init(void)	mp_shell.o
+0x00790EA0	0x00B803A0	?OnDeactivate@InGameSwitchSides@@QAEXPAVModelMenu@@@Z	public: void __thiscall InGameSwitchSides::OnDeactivate(class ModelMenu *)	mp_shell.o
+0x00790EB0	0x00B803B0	?OnTriangle@InGameSwitchSides@@UAEXH@Z	public: virtual void __thiscall InGameSwitchSides::OnTriangle(int)	mp_shell.o
+0x00790EC0	0x00B803C0	?ResponseNoNevermind@InGameSwitchSides@@KA_NH@Z	protected: static bool __cdecl InGameSwitchSides::ResponseNoNevermind(int)	mp_shell.o
+0x00790ED0	0x00B803D0	?ResponseGoBack@InGameSwitchSides@@KAXH@Z	protected: static void __cdecl InGameSwitchSides::ResponseGoBack(int)	mp_shell.o
+0x00790EF0	0x00B803F0	??0AARBaseMenu@@QAE@PAVFEMenuSystem@@H@Z	public: __thiscall AARBaseMenu::AARBaseMenu(class FEMenuSystem *,int)	mp_shell.o
+0x00790F70	0x00B80470	??1AARBaseMenu@@UAE@XZ	public: virtual __thiscall AARBaseMenu::~AARBaseMenu(void)	mp_shell.o
+0x00790F90	0x00B80490	?OnStart@AARBaseMenu@@UAEXH@Z	public: virtual void __thiscall AARBaseMenu::OnStart(int)	mp_shell.o
+0x00790FD0	0x00B804D0	?player_sorter@@YAHPBX0@Z	int __cdecl player_sorter(void const *,void const *)	mp_shell.o
+0x00791000	0x00B80500	?PanelFileUnloaded@AARScoreboardBase@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARScoreboardBase::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x00791010	0x00B80510	?Init@AARScoreboardBase@@UAEXXZ	public: virtual void __thiscall AARScoreboardBase::Init(void)	mp_shell.o
+0x00791020	0x00B80520	?OnDeactivate@AARScoreboardBase@@QAEXPAVAARBaseMenu@@@Z	public: void __thiscall AARScoreboardBase::OnDeactivate(class AARBaseMenu *)	mp_shell.o
+0x00791040	0x00B80540	?OnSquare@AARScoreboardBase@@UAEXH@Z	public: virtual void __thiscall AARScoreboardBase::OnSquare(int)	mp_shell.o
+0x00791050	0x00B80550	?Draw@AARScoreboardBase@@UAEXXZ	public: virtual void __thiscall AARScoreboardBase::Draw(void)	mp_shell.o
+0x00791070	0x00B80570	?GetAlliesScore@AARScoreboardBase@@IAEHXZ	protected: int __thiscall AARScoreboardBase::GetAlliesScore(void)	mp_shell.o
+0x00791080	0x00B80580	?GetAxisScore@AARScoreboardBase@@IAEHXZ	protected: int __thiscall AARScoreboardBase::GetAxisScore(void)	mp_shell.o
+0x00791090	0x00B80590	?OnLeft@AARScoreboardBase@@UAEXH@Z	public: virtual void __thiscall AARScoreboardBase::OnLeft(int)	mp_shell.o
+0x007910A0	0x00B805A0	?OnRight@AARScoreboardBase@@UAEXH@Z	public: virtual void __thiscall AARScoreboardBase::OnRight(int)	mp_shell.o
+0x007910B0	0x00B805B0	?OnUp@AARScoreboardBase@@UAEXH@Z	public: virtual void __thiscall AARScoreboardBase::OnUp(int)	mp_shell.o
+0x007910C0	0x00B805C0	?OnDown@AARScoreboardBase@@UAEXH@Z	public: virtual void __thiscall AARScoreboardBase::OnDown(int)	mp_shell.o
+0x007910D0	0x00B805D0	?Draw@AARScoreboardWinner@@UAEXXZ	public: virtual void __thiscall AARScoreboardWinner::Draw(void)	mp_shell.o
+0x007910F0	0x00B805F0	?OnR1@AARScoreboardWinner@@UAEXH@Z	public: virtual void __thiscall AARScoreboardWinner::OnR1(int)	mp_shell.o
+0x00791110	0x00B80610	?OnL1@AARScoreboardWinner@@UAEXH@Z	public: virtual void __thiscall AARScoreboardWinner::OnL1(int)	mp_shell.o
+0x00791130	0x00B80630	?Draw@AARScoreboardLoser@@UAEXXZ	public: virtual void __thiscall AARScoreboardLoser::Draw(void)	mp_shell.o
+0x00791150	0x00B80650	?OnR1@AARScoreboardLoser@@UAEXH@Z	public: virtual void __thiscall AARScoreboardLoser::OnR1(int)	mp_shell.o
+0x00791160	0x00B80660	?OnL1@AARScoreboardLoser@@UAEXH@Z	public: virtual void __thiscall AARScoreboardLoser::OnL1(int)	mp_shell.o
+0x00791170	0x00B80670	??0AARPersonalStats@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARPersonalStats::AARPersonalStats(class FEMenuSystem *)	mp_shell.o
+0x00791230	0x00B80730	??1AARPersonalStats@@UAE@XZ	public: virtual __thiscall AARPersonalStats::~AARPersonalStats(void)	mp_shell.o
+0x007912C0	0x00B807C0	?Me@AARPersonalStats@@SAPAV1@XZ	public: static class AARPersonalStats * __cdecl AARPersonalStats::Me(void)	mp_shell.o
+0x007912D0	0x00B807D0	?PanelFileUnloaded@AARPersonalStats@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARPersonalStats::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007912E0	0x00B807E0	?Init@AARPersonalStats@@UAEXXZ	public: virtual void __thiscall AARPersonalStats::Init(void)	mp_shell.o
+0x007912F0	0x00B807F0	?OnCross@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnCross(int)	mp_shell.o
+0x00791300	0x00B80800	?OnUp@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnUp(int)	mp_shell.o
+0x00791310	0x00B80810	?OnDown@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnDown(int)	mp_shell.o
+0x00791320	0x00B80820	?OnR1@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnR1(int)	mp_shell.o
+0x00791340	0x00B80840	?OnLeft@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnLeft(int)	mp_shell.o
+0x00791350	0x00B80850	?OnRight@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnRight(int)	mp_shell.o
+0x00791360	0x00B80860	?OnL1@AARPersonalStats@@UAEXH@Z	public: virtual void __thiscall AARPersonalStats::OnL1(int)	mp_shell.o
+0x007913A0	0x00B808A0	?GetClassSpecificScore@AARPersonalStats@@IAEXW4EPlayerClass@@AAH111@Z	protected: void __thiscall AARPersonalStats::GetClassSpecificScore(enum EPlayerClass,int &,int &,int &,int &)	mp_shell.o
+0x00791510	0x00B80A10	?Me@AARMapVote@@SAPAV1@XZ	public: static class AARMapVote * __cdecl AARMapVote::Me(void)	mp_shell.o
+0x00791520	0x00B80A20	?PanelFileUnloaded@AARMapVote@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARMapVote::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x00791540	0x00B80A40	?Init@AARMapVote@@UAEXXZ	public: virtual void __thiscall AARMapVote::Init(void)	mp_shell.o
+0x00791550	0x00B80A50	?OnDeactivate@AARMapVote@@QAEXPAVAARBaseMenu@@@Z	public: void __thiscall AARMapVote::OnDeactivate(class AARBaseMenu *)	mp_shell.o
+0x00791560	0x00B80A60	?OnUp@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnUp(int)	mp_shell.o
+0x007915D0	0x00B80AD0	?OnDown@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnDown(int)	mp_shell.o
+0x00791640	0x00B80B40	?OnR1@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnR1(int)	mp_shell.o
+0x00791650	0x00B80B50	?OnLeft@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnLeft(int)	mp_shell.o
+0x00791660	0x00B80B60	?OnRight@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnRight(int)	mp_shell.o
+0x00791670	0x00B80B70	?OnL1@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnL1(int)	mp_shell.o
+0x00791690	0x00B80B90	?VoteOnMap@AARMapVote@@QAEXHH@Z	public: void __thiscall AARMapVote::VoteOnMap(int,int)	mp_shell.o
+0x007917F0	0x00B80CF0	?Me@AARGameModeVote@@SAPAV1@XZ	public: static class AARGameModeVote * __cdecl AARGameModeVote::Me(void)	mp_shell.o
+0x00791800	0x00B80D00	?PanelFileUnloaded@AARGameModeVote@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARGameModeVote::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x00791870	0x00B80D70	?Init@AARGameModeVote@@UAEXXZ	public: virtual void __thiscall AARGameModeVote::Init(void)	mp_shell.o
+0x00791880	0x00B80D80	?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z	public: void __thiscall AARGameModeVote::OnDeactivate(class AARBaseMenu *)	mp_shell.o
+0x00791890	0x00B80D90	?OnUp@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnUp(int)	mp_shell.o
+0x007918E0	0x00B80DE0	?OnDown@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnDown(int)	mp_shell.o
+0x00791930	0x00B80E30	?OnR1@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnR1(int)	mp_shell.o
+0x00791950	0x00B80E50	?OnLeft@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnLeft(int)	mp_shell.o
+0x00791960	0x00B80E60	?OnRight@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnRight(int)	mp_shell.o
+0x00791970	0x00B80E70	?OnL1@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnL1(int)	mp_shell.o
+0x00791990	0x00B80E90	?UnPause@PauseMenu@@QAEXXZ	public: void __thiscall PauseMenu::UnPause(void)	mp_shell.o
+0x007919E0	0x00B80EE0	?Update@PauseMenu@@UAEXM@Z	public: virtual void __thiscall PauseMenu::Update(float)	mp_shell.o
+0x00791B30	0x00B81030	?OnDeactivate@PauseMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall PauseMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00791B60	0x00B81060	?SetGameSettingsText@PauseMenu@@QAEXXZ	public: void __thiscall PauseMenu::SetGameSettingsText(void)	mp_shell.o
+0x00791BB0	0x00B810B0	?Quit@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::Quit(void)	mp_shell.o
+0x00791BC0	0x00B810C0	?TeamChange@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::TeamChange(void)	mp_shell.o
+0x00791C90	0x00B81190	?ResponseYesQuit@PauseMenu@@KA_NH@Z	protected: static bool __cdecl PauseMenu::ResponseYesQuit(int)	mp_shell.o
+0x00791CC0	0x00B811C0	?ResponseYesTeamChange@PauseMenu@@KA_NH@Z	protected: static bool __cdecl PauseMenu::ResponseYesTeamChange(int)	mp_shell.o
+0x00791CE0	0x00B811E0	?ResponseGoBack@PauseMenu@@KAXH@Z	protected: static void __cdecl PauseMenu::ResponseGoBack(int)	mp_shell.o
+0x00791D00	0x00B81200	?Suicide@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::Suicide(void)	mp_shell.o
+0x00791D50	0x00B81250	?ButtonHeldAction@PauseMenu@@UAEXXZ	public: virtual void __thiscall PauseMenu::ButtonHeldAction(void)	mp_shell.o
+0x00791D80	0x00B81280	??0AARPauseMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARPauseMenu::AARPauseMenu(class FEMenuSystem *)	mp_shell.o
+0x00791DC0	0x00B812C0	??1AARPauseMenu@@UAE@XZ	public: virtual __thiscall AARPauseMenu::~AARPauseMenu(void)	mp_shell.o
+0x00791DD0	0x00B812D0	?ButtonHeldAction@AARPauseMenu@@UAEXXZ	public: virtual void __thiscall AARPauseMenu::ButtonHeldAction(void)	mp_shell.o
+0x00791E00	0x00B81300	?ResponseGoBack@AARPauseMenu@@SAXH@Z	public: static void __cdecl AARPauseMenu::ResponseGoBack(int)	mp_shell.o
+0x00791E20	0x00B81320	?PanelFileUnloaded@AARPauseMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARPauseMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x00791E30	0x00B81330	?OnDeactivate@AARPauseMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall AARPauseMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00791E60	0x00B81360	?UnPause@AARPauseMenu@@QAEXH@Z	public: void __thiscall AARPauseMenu::UnPause(int)	mp_shell.o
+0x00791EA0	0x00B813A0	?OnTriangle@AARPauseMenu@@UAEXH@Z	public: virtual void __thiscall AARPauseMenu::OnTriangle(int)	mp_shell.o
+0x00791EE0	0x00B813E0	?OnStart@AARPauseMenu@@UAEXH@Z	public: virtual void __thiscall AARPauseMenu::OnStart(int)	mp_shell.o
+0x00791F20	0x00B81420	?OnActivate@AARPauseMenu@@UAEXXZ	public: virtual void __thiscall AARPauseMenu::OnActivate(void)	mp_shell.o
+0x00792080	0x00B81580	?UpdateSplitScreen@AARPauseMenu@@UAEXXZ	public: virtual void __thiscall AARPauseMenu::UpdateSplitScreen(void)	mp_shell.o
+0x00792090	0x00B81590	?SetPanelFile@AARPauseMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARPauseMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00792240	0x00B81740	?Draw@AARPauseMenu@@UAEXXZ	public: virtual void __thiscall AARPauseMenu::Draw(void)	mp_shell.o
+0x00792260	0x00B81760	?OnUp@AARPauseMenu@@UAEXH@Z	public: virtual void __thiscall AARPauseMenu::OnUp(int)	mp_shell.o
+0x00792270	0x00B81770	?OnDown@AARPauseMenu@@UAEXH@Z	public: virtual void __thiscall AARPauseMenu::OnDown(int)	mp_shell.o
+0x00792280	0x00B81780	?SetTimerText@AARPauseMenu@@AAEXXZ	private: void __thiscall AARPauseMenu::SetTimerText(void)	mp_shell.o
+0x00792310	0x00B81810	??0HotJoinMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall HotJoinMenu::HotJoinMenu(class FEMenuSystem *)	mp_shell.o
+0x00792390	0x00B81890	?OnActivate@HotJoinMenu@@UAEXXZ	public: virtual void __thiscall HotJoinMenu::OnActivate(void)	mp_shell.o
+0x00792460	0x00B81960	?OnDeactivate@HotJoinMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall HotJoinMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00792470	0x00B81970	?Draw@HotJoinMenu@@UAEXXZ	public: virtual void __thiscall HotJoinMenu::Draw(void)	mp_shell.o
+0x007924E0	0x00B819E0	?Update@HotJoinMenu@@UAEXM@Z	public: virtual void __thiscall HotJoinMenu::Update(float)	mp_shell.o
+0x007924F0	0x00B819F0	?SetPanelFile@HotJoinMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall HotJoinMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00792560	0x00B81A60	?OnUp@HotJoinMenu@@UAEXH@Z	public: virtual void __thiscall HotJoinMenu::OnUp(int)	mp_shell.o
+0x00792570	0x00B81A70	?OnDown@HotJoinMenu@@UAEXH@Z	public: virtual void __thiscall HotJoinMenu::OnDown(int)	mp_shell.o
+0x00792580	0x00B81A80	?Close@HotJoinMenu@@QAEX_N@Z	public: void __thiscall HotJoinMenu::Close(bool)	mp_shell.o
+0x007925E0	0x00B81AE0	?UpdateSplitScreen@HotJoinMenu@@UAEXXZ	public: virtual void __thiscall HotJoinMenu::UpdateSplitScreen(void)	mp_shell.o
+0x00792600	0x00B81B00	?Join@HotJoinMenu@@QAEXXZ	public: void __thiscall HotJoinMenu::Join(void)	mp_shell.o
+0x00792620	0x00B81B20	?DisplayError@HotJoinMenu@@QAEXPBD@Z	public: void __thiscall HotJoinMenu::DisplayError(char const *)	mp_shell.o
+0x00792660	0x00B81B60	??0SpectateMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall SpectateMenu::SpectateMenu(class FEMenuSystem *)	mp_shell.o
+0x007926E0	0x00B81BE0	??1SpectateMenu@@UAE@XZ	public: virtual __thiscall SpectateMenu::~SpectateMenu(void)	mp_shell.o
+0x007926F0	0x00B81BF0	?OnDeactivate@SpectateMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall SpectateMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00792700	0x00B81C00	?Clear@SpectateMenu@@QAEXXZ	public: void __thiscall SpectateMenu::Clear(void)	mp_shell.o
+0x00792710	0x00B81C10	?Update@SpectateMenu@@UAEXM@Z	public: virtual void __thiscall SpectateMenu::Update(float)	mp_shell.o
+0x00792780	0x00B81C80	?UpdateSeconds@SpectateMenu@@QAEXXZ	public: void __thiscall SpectateMenu::UpdateSeconds(void)	mp_shell.o
+0x00792880	0x00B81D80	?UpdateHelpbar@SpectateMenu@@QAEXXZ	public: void __thiscall SpectateMenu::UpdateHelpbar(void)	mp_shell.o
+0x00792950	0x00B81E50	?Draw@SpectateMenu@@UAEXXZ	public: virtual void __thiscall SpectateMenu::Draw(void)	mp_shell.o
+0x00792970	0x00B81E70	?SetTeamKill@SpectateMenu@@QAEX_NPAVEntity@@@Z	public: void __thiscall SpectateMenu::SetTeamKill(bool,class Entity *)	mp_shell.o
+0x007929A0	0x00B81EA0	?OnStart@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnStart(int)	mp_shell.o
+0x007929C0	0x00B81EC0	?OnSelect@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnSelect(int)	mp_shell.o
+0x007929E0	0x00B81EE0	?OnCross@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnCross(int)	mp_shell.o
+0x00792A40	0x00B81F40	?OnTrueCircle@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnTrueCircle(int)	mp_shell.o
+0x00792A90	0x00B81F90	?OnSquare@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnSquare(int)	mp_shell.o
+0x00792AC0	0x00B81FC0	?OnRight@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnRight(int)	mp_shell.o
+0x00792B40	0x00B82040	?OnLeft@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnLeft(int)	mp_shell.o
+0x00792BD0	0x00B820D0	?SetPanelFile@SpectateMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall SpectateMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00792D10	0x00B82210	?UpdateSplitScreen@SpectateMenu@@UAEXXZ	public: virtual void __thiscall SpectateMenu::UpdateSplitScreen(void)	mp_shell.o
+0x00792D60	0x00B82260	?UpdateWidescreen@SpectateMenu@@UAEX_N@Z	public: virtual void __thiscall SpectateMenu::UpdateWidescreen(bool)	mp_shell.o
+0x00792D70	0x00B82270	?MI_ResetMapList@@YAXXZ	void __cdecl MI_ResetMapList(void)	mp_shell.o
+0x00792DD0	0x00B822D0	?MI_InitMapList@@YAXXZ	void __cdecl MI_InitMapList(void)	mp_shell.o
+0x00792DE0	0x00B822E0	?MI_IsAvailableMap@@YA_ND@Z	bool __cdecl MI_IsAvailableMap(char)	mp_shell.o
+0x00792E10	0x00B82310	?MI_IsMapPackAvailable@@YA_ND@Z	bool __cdecl MI_IsMapPackAvailable(char)	mp_shell.o
+0x00792E40	0x00B82340	?remove_underscores@@YAPADPAD@Z	char * __cdecl remove_underscores(char *)	mp_shell.o
+0x00792E70	0x00B82370	?MI_UpdateMapList@@YAXXZ	void __cdecl MI_UpdateMapList(void)	mp_shell.o
+0x00792E80	0x00B82380	?MI_GetMapDisplayName@@YAPADD@Z	char * __cdecl MI_GetMapDisplayName(char)	mp_shell.o
+0x00792EC0	0x00B823C0	?MI_GetMapLocation@@YAPADD@Z	char * __cdecl MI_GetMapLocation(char)	mp_shell.o
+0x00792F00	0x00B82400	?MI_GetMapTitle@@YAPADD@Z	char * __cdecl MI_GetMapTitle(char)	mp_shell.o
+0x00792F40	0x00B82440	?MI_GetMapPack@@YADD@Z	char __cdecl MI_GetMapPack(char)	mp_shell.o
+0x00792F80	0x00B82480	?MI_GetMapShortname@@YAPADD@Z	char * __cdecl MI_GetMapShortname(char)	mp_shell.o
+0x00792FC0	0x00B824C0	?MI_GetMapIDbyShortname@@YADPAD@Z	char __cdecl MI_GetMapIDbyShortname(char *)	mp_shell.o
+0x00793010	0x00B82510	?MI_GetMapIDbyIndex@@YADD@Z	char __cdecl MI_GetMapIDbyIndex(char)	mp_shell.o
+0x00793030	0x00B82530	?MI_GetMapIndexbyID@@YADD@Z	char __cdecl MI_GetMapIndexbyID(char)	mp_shell.o
+0x00793060	0x00B82560	?UpdateSplitScreen@FESplitScreenMenu@@UAEXXZ	public: virtual void __thiscall FESplitScreenMenu::UpdateSplitScreen(void)	mp_shell.o
+0x007930C0	0x00B825C0	?SwapMenus@FESplitScreenMenu@@MAEXXZ	protected: virtual void __thiscall FESplitScreenMenu::SwapMenus(void)	mp_shell.o
+0x007930D0	0x00B825D0	?SetPanelFile@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FESplitScreenMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007930E0	0x00B825E0	?OnActivate@FESplitScreenMenu@@UAEXXZ	public: virtual void __thiscall FESplitScreenMenu::OnActivate(void)	mp_shell.o
+0x00793100	0x00B82600	?Draw@FESplitScreenMenu@@UAEXXZ	public: virtual void __thiscall FESplitScreenMenu::Draw(void)	mp_shell.o
+0x00793150	0x00B82650	?AddMainEntry@FESplitScreenMenu@@QAEXHPAVFEText@@@Z	public: void __thiscall FESplitScreenMenu::AddMainEntry(int,class FEText *)	mp_shell.o
+0x00793170	0x00B82670	?AddMainComboBox@FESplitScreenMenu@@QAEPAVFEComboBox@@HHPAVFEText@@0PAVPanelQuad@@1@Z	public: class FEComboBox * __thiscall FESplitScreenMenu::AddMainComboBox(int,int,class FEText *,class FEText *,class PanelQuad *,class PanelQuad *)	mp_shell.o
+0x00793180	0x00B82680	?AddMainSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVPanelQuad@@PAVFEText@@@Z	public: class FESlider * __thiscall FESplitScreenMenu::AddMainSlider(int,class PanelQuad *,class FEText *)	mp_shell.o
+0x00793190	0x00B82690	?AddMainSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVFEText@@0@Z	public: class FESlider * __thiscall FESplitScreenMenu::AddMainSlider(int,class FEText *,class FEText *)	mp_shell.o
+0x007931A0	0x00B826A0	?SetPanelFileBackground@FESplitScreenMenu@@IAEXPAVPanelFile@@@Z	protected: void __thiscall FESplitScreenMenu::SetPanelFileBackground(class PanelFile *)	mp_shell.o
+0x007931B0	0x00B826B0	?Update@ModelMenu@@UAEXM@Z	public: virtual void __thiscall ModelMenu::Update(float)	mp_shell.o
+0x007931C0	0x00B826C0	?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z	protected: void __thiscall ModelMenu::SetLightColor(int,class math::Vector4 const &)	mp_shell.o
+0x00793240	0x00B82740	?SetLightDirection@ModelMenu@@IAEXHABVDir3@math@@@Z	protected: void __thiscall ModelMenu::SetLightDirection(int,class math::Dir3 const &)	mp_shell.o
+0x00793300	0x00B82800	?SetLightBrightness@ModelMenu@@IAEXHM@Z	protected: void __thiscall ModelMenu::SetLightBrightness(int,float)	mp_shell.o
+0x00793370	0x00B82870	?GetClassModel@ModelMenu@@IAEPBDHH@Z	protected: char const * __thiscall ModelMenu::GetClassModel(int,int)	mp_shell.o
+0x00793450	0x00B82950	?DebugControls@ModelMenu@@IAEXXZ	protected: void __thiscall ModelMenu::DebugControls(void)	mp_shell.o
+0x00793460	0x00B82960	?DebugRender@ModelMenu@@IAEXXZ	protected: void __thiscall ModelMenu::DebugRender(void)	mp_shell.o
+0x00793470	0x00B82970	?ActivateMenu@AARMenuSystem@@QAEXH@Z	public: void __thiscall AARMenuSystem::ActivateMenu(int)	mp_shell.o
+0x007934A0	0x00B829A0	?Draw@AARMenuSystem@@UAEXXZ	public: virtual void __thiscall AARMenuSystem::Draw(void)	mp_shell.o
+0x007934E0	0x00B829E0	?Update@AARMenuSystem@@UAEXM@Z	public: virtual void __thiscall AARMenuSystem::Update(float)	mp_shell.o
+0x00793520	0x00B82A20	?CheckForNoMenus@AARMenuSystem@@IAEXXZ	protected: void __thiscall AARMenuSystem::CheckForNoMenus(void)	mp_shell.o
+0x00793540	0x00B82A40	?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z	public: virtual void __thiscall AARMenuSystem::UpdateWidescreen(bool)	mp_shell.o
+0x00793570	0x00B82A70	?SetPanelFile@CreateSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateSessionMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007942C0	0x00B837C0	?UpdateHighlight@CreateSessionMenu@@IAEXXZ	protected: void __thiscall CreateSessionMenu::UpdateHighlight(void)	mp_shell.o
+0x00794330	0x00B83830	?OnDeactivate@CreateSessionMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall CreateSessionMenu::OnDeactivate(class FEMenu *)	mp_shell.o
+0x00794390	0x00B83890	?OnSquare@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnSquare(int)	mp_shell.o
+0x007943F0	0x00B838F0	?OnUp@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnUp(int)	mp_shell.o
+0x00794410	0x00B83910	?OnDown@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnDown(int)	mp_shell.o
+0x00794430	0x00B83930	?SetMapDefaults@CreateSessionMenu@@QAEXXZ	public: void __thiscall CreateSessionMenu::SetMapDefaults(void)	mp_shell.o
+0x00794490	0x00B83990	?SetPanelFile@CreateLanSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateLanSessionMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00795070	0x00B84570	?OnSquare@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnSquare(int)	mp_shell.o
+0x007950C0	0x00B845C0	?SetMapDefaults@CreateLanSessionMenu@@QAEXXZ	public: void __thiscall CreateLanSessionMenu::SetMapDefaults(void)	mp_shell.o
+0x00795120	0x00B84620	?OnActivate@CreateSessionAdvancedMenu@@UAEXXZ	public: virtual void __thiscall CreateSessionAdvancedMenu::OnActivate(void)	mp_shell.o
+0x007952F0	0x00B847F0	?SetPanelFile@CreateSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateSessionAdvancedMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007964D0	0x00B859D0	?OnActivate@CreateLanSessionAdvancedMenu@@UAEXXZ	public: virtual void __thiscall CreateLanSessionAdvancedMenu::OnActivate(void)	mp_shell.o
+0x007966E0	0x00B85BE0	?SetPanelFile@CreateLanSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall CreateLanSessionAdvancedMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007978C0	0x00B86DC0	?SetPanelFile@FindSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FindSessionMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x00798B80	0x00B88080	?OnActivate@FindSessionMenu@@UAEXXZ	public: virtual void __thiscall FindSessionMenu::OnActivate(void)	mp_shell.o
+0x00798CD0	0x00B881D0	?OnCross@FindSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindSessionMenu::OnCross(int)	mp_shell.o
+0x00798DA0	0x00B882A0	?SetPanelFile@FindLanSessionMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FindLanSessionMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079A070	0x00B89570	?OnActivate@FindLanSessionMenu@@UAEXXZ	public: virtual void __thiscall FindLanSessionMenu::OnActivate(void)	mp_shell.o
+0x0079A1C0	0x00B896C0	?OnCross@FindLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall FindLanSessionMenu::OnCross(int)	mp_shell.o
+0x0079A290	0x00B89790	?AddOptionsToCombos@GameSettingsEdit@@IAEXXZ	protected: void __thiscall GameSettingsEdit::AddOptionsToCombos(void)	mp_shell.o
+0x0079A4C0	0x00B899C0	?OnActivate@GameSettingsEdit@@UAEXXZ	public: virtual void __thiscall GameSettingsEdit::OnActivate(void)	mp_shell.o
+0x0079A760	0x00B89C60	?Update@GameSettingsEdit@@UAEXM@Z	public: virtual void __thiscall GameSettingsEdit::Update(float)	mp_shell.o
+0x0079A930	0x00B89E30	?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z	protected: void __thiscall GameSettingsEdit::UpdateSplitScreenOptions(int)	mp_shell.o
+0x0079AB30	0x00B8A030	?Draw@GameSettingsEdit@@UAEXXZ	public: virtual void __thiscall GameSettingsEdit::Draw(void)	mp_shell.o
+0x0079AB40	0x00B8A040	?OnUp@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnUp(int)	mp_shell.o
+0x0079ABE0	0x00B8A0E0	?OnDown@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnDown(int)	mp_shell.o
+0x0079AC80	0x00B8A180	?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ	protected: void __thiscall GameSettingsEdit::SetGameTypeDefaults(void)	mp_shell.o
+0x0079AD30	0x00B8A230	?OnLeft@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnLeft(int)	mp_shell.o
+0x0079AD50	0x00B8A250	?OnRight@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnRight(int)	mp_shell.o
+0x0079AD70	0x00B8A270	?ResponseYesApplyNowHelper@GameSettingsEdit@@IAE_NXZ	protected: bool __thiscall GameSettingsEdit::ResponseYesApplyNowHelper(void)	mp_shell.o
+0x0079AE80	0x00B8A380	?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z	protected: static bool __cdecl GameSettingsEdit::ResponseYesApplyNow(int)	mp_shell.o
+0x0079AEA0	0x00B8A3A0	?OnTriangle@GameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall GameSettingsEdit::OnTriangle(int)	mp_shell.o
+0x0079B0A0	0x00B8A5A0	?OnActivate@AARGameSettingsEdit@@UAEXXZ	public: virtual void __thiscall AARGameSettingsEdit::OnActivate(void)	mp_shell.o
+0x0079B140	0x00B8A640	?Update@AARGameSettingsEdit@@UAEXM@Z	public: virtual void __thiscall AARGameSettingsEdit::Update(float)	mp_shell.o
+0x0079B160	0x00B8A660	?ResponseYesApplyNow@AARGameSettingsEdit@@SA_NH@Z	public: static bool __cdecl AARGameSettingsEdit::ResponseYesApplyNow(int)	mp_shell.o
+0x0079B170	0x00B8A670	?OnTriangle@AARGameSettingsEdit@@UAEXH@Z	public: virtual void __thiscall AARGameSettingsEdit::OnTriangle(int)	mp_shell.o
+0x0079B360	0x00B8A860	?SetPanelFileSplitScreen@GameSettingsView@@IAEXPAVPanelFile@@@Z	protected: void __thiscall GameSettingsView::SetPanelFileSplitScreen(class PanelFile *)	mp_shell.o
+0x0079B460	0x00B8A960	?UpdateOptions@GameSettingsView@@IAEXXZ	protected: void __thiscall GameSettingsView::UpdateOptions(void)	mp_shell.o
+0x0079B640	0x00B8AB40	?UpdateSplitScreenOptions@GameSettingsView@@IAEXH@Z	protected: void __thiscall GameSettingsView::UpdateSplitScreenOptions(int)	mp_shell.o
+0x0079B750	0x00B8AC50	?Draw@GameSettingsView@@UAEXXZ	public: virtual void __thiscall GameSettingsView::Draw(void)	mp_shell.o
+0x0079B760	0x00B8AC60	?OnUp@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnUp(int)	mp_shell.o
+0x0079B7F0	0x00B8ACF0	?OnDown@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnDown(int)	mp_shell.o
+0x0079B890	0x00B8AD90	?OnStart@GameSettingsView@@UAEXH@Z	public: virtual void __thiscall GameSettingsView::OnStart(int)	mp_shell.o
+0x0079B8F0	0x00B8ADF0	?Update@AARGameSettingsView@@UAEXM@Z	public: virtual void __thiscall AARGameSettingsView::Update(float)	mp_shell.o
+0x0079B910	0x00B8AE10	?SetLiveOnXBox@PlayLanMenu@@IAEXXZ	protected: void __thiscall PlayLanMenu::SetLiveOnXBox(void)	mp_shell.o
+0x0079B980	0x00B8AE80	?SetPanelFile@PlayLanMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall PlayLanMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079C510	0x00B8BA10	?ClearPreviewImages@PlayLanMenu@@IAEXXZ	protected: void __thiscall PlayLanMenu::ClearPreviewImages(void)	mp_shell.o
+0x0079C580	0x00B8BA80	?SetPreviewImage@PlayLanMenu@@IAEXXZ	protected: void __thiscall PlayLanMenu::SetPreviewImage(void)	mp_shell.o
+0x0079C5B0	0x00B8BAB0	?SetOptionText@PlayLanMenu@@IAEXXZ	protected: void __thiscall PlayLanMenu::SetOptionText(void)	mp_shell.o
+0x0079C5E0	0x00B8BAE0	?SetDescriptionText@PlayLanMenu@@IAEXXZ	protected: void __thiscall PlayLanMenu::SetDescriptionText(void)	mp_shell.o
+0x0079C620	0x00B8BB20	?OnDown@PlayLanMenu@@UAEXH@Z	public: virtual void __thiscall PlayLanMenu::OnDown(int)	mp_shell.o
+0x0079C6C0	0x00B8BBC0	?OnUp@PlayLanMenu@@UAEXH@Z	public: virtual void __thiscall PlayLanMenu::OnUp(int)	mp_shell.o
+0x0079C760	0x00B8BC60	?OnActivate@PlayOnlineMenu@@UAEXXZ	public: virtual void __thiscall PlayOnlineMenu::OnActivate(void)	mp_shell.o
+0x0079C800	0x00B8BD00	?SetPanelFile@PlayOnlineMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall PlayOnlineMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079CB30	0x00B8C030	?OnUp@PlayOnlineMenu@@UAEXH@Z	public: virtual void __thiscall PlayOnlineMenu::OnUp(int)	mp_shell.o
+0x0079CB90	0x00B8C090	?OnDown@PlayOnlineMenu@@UAEXH@Z	public: virtual void __thiscall PlayOnlineMenu::OnDown(int)	mp_shell.o
+0x0079CBF0	0x00B8C0F0	?UpdateDetails@SessionDetailsMenu@@IAEXXZ	protected: void __thiscall SessionDetailsMenu::UpdateDetails(void)	mp_shell.o
+0x0079CD20	0x00B8C220	?UpdateGameInfo@SessionListMenu@@IAEXXZ	protected: void __thiscall SessionListMenu::UpdateGameInfo(void)	mp_shell.o
+0x0079CF40	0x00B8C440	?RepopulateSessionList@SessionListMenu@@IAEXXZ	protected: void __thiscall SessionListMenu::RepopulateSessionList(void)	mp_shell.o
+0x0079D0E0	0x00B8C5E0	?OnUp@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnUp(int)	mp_shell.o
+0x0079D110	0x00B8C610	?OnDown@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnDown(int)	mp_shell.o
+0x0079D140	0x00B8C640	?SetPanelFile@SessionListMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall SessionListMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079DB60	0x00B8D060	?UpdateGameInfo@SessionLanListMenu@@IAEXXZ	protected: void __thiscall SessionLanListMenu::UpdateGameInfo(void)	mp_shell.o
+0x0079DCC0	0x00B8D1C0	?RepopulateSessionList@SessionLanListMenu@@IAEXXZ	protected: void __thiscall SessionLanListMenu::RepopulateSessionList(void)	mp_shell.o
+0x0079DE80	0x00B8D380	?OnUp@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnUp(int)	mp_shell.o
+0x0079DEB0	0x00B8D3B0	?OnDown@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnDown(int)	mp_shell.o
+0x0079DEE0	0x00B8D3E0	?SetPanelFile@SessionLanListMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall SessionLanListMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079E900	0x00B8DE00	?SetPanelFile@OverlayMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall OverlayMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079F010	0x00B8E510	?SetState@OverlayMenu@@QAEXW4eState@1@@Z	public: void __thiscall OverlayMenu::SetState(enum OverlayMenu::eState)	mp_shell.o
+0x0079F620	0x00B8EB20	?SetPanelFile@InGameOverlay@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameOverlay::SetPanelFile(class PanelFile *)	mp_shell.o
+0x0079FBC0	0x00B8F0C0	?SetState@InGameOverlay@@QAEXW4eState@1@@Z	public: void __thiscall InGameOverlay::SetState(enum InGameOverlay::eState)	mp_shell.o
+0x0079FEB0	0x00B8F3B0	?SetPanelFile@AAROverlay@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AAROverlay::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A0450	0x00B8F950	?SetState@AAROverlay@@QAEXW4eState@1@@Z	public: void __thiscall AAROverlay::SetState(enum AAROverlay::eState)	mp_shell.o
+0x007A0740	0x00B8FC40	?Select@MultilineOverlayMenu@@UAEXH@Z	public: virtual void __thiscall MultilineOverlayMenu::Select(int)	mp_shell.o
+0x007A0800	0x00B8FD00	?Select@VoteGameTypeMenu@@UAEXH@Z	public: virtual void __thiscall VoteGameTypeMenu::Select(int)	mp_shell.o
+0x007A09B0	0x00B8FEB0	?OnStart@VoteGameTypeMenu@@UAEXH@Z	public: virtual void __thiscall VoteGameTypeMenu::OnStart(int)	mp_shell.o
+0x007A0A10	0x00B8FF10	?Select@VoteMapMenu@@UAEXH@Z	public: virtual void __thiscall VoteMapMenu::Select(int)	mp_shell.o
+0x007A0BC0	0x00B900C0	?OnStart@VoteMapMenu@@UAEXH@Z	public: virtual void __thiscall VoteMapMenu::OnStart(int)	mp_shell.o
+0x007A0C20	0x00B90120	?SetPanelFileMain@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z	protected: void __thiscall WeaponSelectMenu::SetPanelFileMain(class PanelFile *)	mp_shell.o
+0x007A1800	0x00B90D00	?ClearClassGauges@WeaponSelectMenu@@IAEXXZ	protected: void __thiscall WeaponSelectMenu::ClearClassGauges(void)	mp_shell.o
+0x007A1890	0x00B90D90	?SetClassGauges@WeaponSelectMenu@@IAEXXZ	protected: void __thiscall WeaponSelectMenu::SetClassGauges(void)	mp_shell.o
+0x007A19E0	0x00B90EE0	?CloseMenu@WeaponSelectMenu@@IAEXXZ	protected: void __thiscall WeaponSelectMenu::CloseMenu(void)	mp_shell.o
+0x007A1A20	0x00B90F20	?SetWinningTeam@InGameScoreBoard@@MAEXW4team_t@@@Z	protected: virtual void __thiscall InGameScoreBoard::SetWinningTeam(enum team_t)	mp_shell.o
+0x007A1B60	0x00B91060	?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ	protected: void __thiscall InGameScoreBoard::RecalculateWinningTeam(void)	mp_shell.o
+0x007A1BA0	0x00B910A0	?SetPanelFile@InGameScoreBoard@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameScoreBoard::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A26A0	0x00B91BA0	?Update@InGameScoreBoard@@UAEXM@Z	public: virtual void __thiscall InGameScoreBoard::Update(float)	mp_shell.o
+0x007A2C40	0x00B92140	?SetPanelContents@InGameScoreBoard@@IAEXXZ	protected: void __thiscall InGameScoreBoard::SetPanelContents(void)	mp_shell.o
+0x007A2DC0	0x00B922C0	?OnCross@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnCross(int)	mp_shell.o
+0x007A2E00	0x00B92300	?OnUp@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnUp(int)	mp_shell.o
+0x007A2E30	0x00B92330	?OnDown@InGameScoreBoard@@UAEXH@Z	public: virtual void __thiscall InGameScoreBoard::OnDown(int)	mp_shell.o
+0x007A2E60	0x00B92360	?SetPanelFileMain@InGameSwitchSides@@IAEXPAVPanelFile@@@Z	protected: void __thiscall InGameSwitchSides::SetPanelFileMain(class PanelFile *)	mp_shell.o
+0x007A3100	0x00B92600	?NotifySameTeam@InGameSwitchSides@@IAEXXZ	protected: void __thiscall InGameSwitchSides::NotifySameTeam(void)	mp_shell.o
+0x007A3200	0x00B92700	?PickTeam@InGameSwitchSides@@IAEXXZ	protected: void __thiscall InGameSwitchSides::PickTeam(void)	mp_shell.o
+0x007A3300	0x00B92800	?SwitchTeams@InGameSwitchSides@@QAEXXZ	public: void __thiscall InGameSwitchSides::SwitchTeams(void)	mp_shell.o
+0x007A33C0	0x00B928C0	?SwapMenus@InGameSwitchSides@@MAEXXZ	protected: virtual void __thiscall InGameSwitchSides::SwapMenus(void)	mp_shell.o
+0x007A3410	0x00B92910	?SetPanelFile@AARBaseMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARBaseMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A3680	0x00B92B80	?OnL1@AARBaseMenu@@UAEXH@Z	public: virtual void __thiscall AARBaseMenu::OnL1(int)	mp_shell.o
+0x007A36D0	0x00B92BD0	?OnR1@AARBaseMenu@@UAEXH@Z	public: virtual void __thiscall AARBaseMenu::OnR1(int)	mp_shell.o
+0x007A3720	0x00B92C20	?SetTimerText@AARBaseMenu@@QAEXXZ	public: void __thiscall AARBaseMenu::SetTimerText(void)	mp_shell.o
+0x007A37B0	0x00B92CB0	?SetWinningTeam@AARScoreboardBase@@MAEXW4team_t@@@Z	protected: virtual void __thiscall AARScoreboardBase::SetWinningTeam(enum team_t)	mp_shell.o
+0x007A38F0	0x00B92DF0	?RecalculateWinningTeam@AARScoreboardBase@@IAEXXZ	protected: void __thiscall AARScoreboardBase::RecalculateWinningTeam(void)	mp_shell.o
+0x007A3950	0x00B92E50	?SetPanelFile@AARScoreboardBase@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARScoreboardBase::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A3F80	0x00B93480	?SetPanelFile@AARScoreboardWinner@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARScoreboardWinner::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A3FC0	0x00B934C0	?SetWinningTeam@AARScoreboardWinner@@UAEXW4team_t@@@Z	public: virtual void __thiscall AARScoreboardWinner::SetWinningTeam(enum team_t)	mp_shell.o
+0x007A4090	0x00B93590	?SetPanelFile@AARScoreboardLoser@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARScoreboardLoser::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A4100	0x00B93600	?SetWinningTeam@AARScoreboardLoser@@UAEXW4team_t@@@Z	public: virtual void __thiscall AARScoreboardLoser::SetWinningTeam(enum team_t)	mp_shell.o
+0x007A41C0	0x00B936C0	?SetGenericScores@AARPersonalStats@@IAEXXZ	protected: void __thiscall AARPersonalStats::SetGenericScores(void)	mp_shell.o
+0x007A4480	0x00B93980	?OnDeactivate@AARPersonalStats@@QAEXPAVAARBaseMenu@@@Z	public: void __thiscall AARPersonalStats::OnDeactivate(class AARBaseMenu *)	mp_shell.o
+0x007A4500	0x00B93A00	?SetClassSpecificEntries@AARPersonalStats@@IAEXXZ	protected: void __thiscall AARPersonalStats::SetClassSpecificEntries(void)	mp_shell.o
+0x007A49C0	0x00B93EC0	?Draw@AARPersonalStats@@UAEXXZ	public: virtual void __thiscall AARPersonalStats::Draw(void)	mp_shell.o
+0x007A4A60	0x00B93F60	?SetPanelHelpBar@AARPersonalStats@@IAEXXZ	protected: void __thiscall AARPersonalStats::SetPanelHelpBar(void)	mp_shell.o
+0x007A4B50	0x00B94050	?SetPanelFile@AARMapVote@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARMapVote::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A5220	0x00B94720	?Draw@AARMapVote@@UAEXXZ	public: virtual void __thiscall AARMapVote::Draw(void)	mp_shell.o
+0x007A52C0	0x00B947C0	?SelectMap@AARMapVote@@IAEXH@Z	protected: void __thiscall AARMapVote::SelectMap(int)	mp_shell.o
+0x007A54D0	0x00B949D0	?ResetPanel@AARMapVote@@QAEXXZ	public: void __thiscall AARMapVote::ResetPanel(void)	mp_shell.o
+0x007A5600	0x00B94B00	?TallyVotes@AARMapVote@@QAEXXZ	public: void __thiscall AARMapVote::TallyVotes(void)	mp_shell.o
+0x007A5770	0x00B94C70	?SetPanelFile@AARGameModeVote@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARGameModeVote::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A5EE0	0x00B953E0	?Draw@AARGameModeVote@@UAEXXZ	public: virtual void __thiscall AARGameModeVote::Draw(void)	mp_shell.o
+0x007A5F80	0x00B95480	?VoteOnMode@AARGameModeVote@@QAEXHH@Z	public: void __thiscall AARGameModeVote::VoteOnMode(int,int)	mp_shell.o
+0x007A60E0	0x00B955E0	?SelectMode@AARGameModeVote@@IAEXH@Z	protected: void __thiscall AARGameModeVote::SelectMode(int)	mp_shell.o
+0x007A62F0	0x00B957F0	?ResetPanel@AARGameModeVote@@QAEXXZ	public: void __thiscall AARGameModeVote::ResetPanel(void)	mp_shell.o
+0x007A6380	0x00B95880	?TallyVotes@AARGameModeVote@@QAEXXZ	public: void __thiscall AARGameModeVote::TallyVotes(void)	mp_shell.o
+0x007A6530	0x00B95A30	?SetPanelFileMain@PauseMenu@@IAEXPAVPanelFile@@@Z	protected: void __thiscall PauseMenu::SetPanelFileMain(class PanelFile *)	mp_shell.o
+0x007A6700	0x00B95C00	?OnActivate@PauseMenu@@UAEXXZ	public: virtual void __thiscall PauseMenu::OnActivate(void)	mp_shell.o
+0x007A6820	0x00B95D20	?ResponseYesSuicide@PauseMenu@@KA_NH@Z	protected: static bool __cdecl PauseMenu::ResponseYesSuicide(int)	mp_shell.o
+0x007A6880	0x00B95D80	?AttemptQuit@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::AttemptQuit(void)	mp_shell.o
+0x007A69F0	0x00B95EF0	?AttemptTeamChange@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::AttemptTeamChange(void)	mp_shell.o
+0x007A6B50	0x00B96050	?UpdateSplitScreen@PauseMenu@@UAEXXZ	public: virtual void __thiscall PauseMenu::UpdateSplitScreen(void)	mp_shell.o
+0x007A6BA0	0x00B960A0	?Quit@AARPauseMenu@@SAXH@Z	public: static void __cdecl AARPauseMenu::Quit(int)	mp_shell.o
+0x007A6C70	0x00B96170	?ResponseYesQuit@AARPauseMenu@@SA_NH@Z	public: static bool __cdecl AARPauseMenu::ResponseYesQuit(int)	mp_shell.o
+0x007A6C90	0x00B96190	?AttemptQuit@AARPauseMenu@@QAEXXZ	public: void __thiscall AARPauseMenu::AttemptQuit(void)	mp_shell.o
+0x007A6DF0	0x00B962F0	?Update@AARPauseMenu@@UAEXM@Z	public: virtual void __thiscall AARPauseMenu::Update(float)	mp_shell.o
+0x007A6EA0	0x00B963A0	?OnCross@AARPauseMenu@@UAEXH@Z	public: virtual void __thiscall AARPauseMenu::OnCross(int)	mp_shell.o
+0x007A6F50	0x00B96450	?OnCross@HotJoinMenu@@UAEXH@Z	public: virtual void __thiscall HotJoinMenu::OnCross(int)	mp_shell.o
+0x007A6FD0	0x00B964D0	?OnStart@HotJoinMenu@@UAEXH@Z	public: virtual void __thiscall HotJoinMenu::OnStart(int)	mp_shell.o
+0x007A7000	0x00B96500	?SetMedic@SpectateMenu@@QAEX_N@Z	public: void __thiscall SpectateMenu::SetMedic(bool)	mp_shell.o
+0x007A7020	0x00B96520	?UpdateState@SpectateMenu@@QAEXXZ	public: void __thiscall SpectateMenu::UpdateState(void)	mp_shell.o
+0x007A7150	0x00B96650	??0FESplitScreenMenu@@QAE@PAVFEMenuSystem@@H@Z	public: __thiscall FESplitScreenMenu::FESplitScreenMenu(class FEMenuSystem *,int)	mp_shell.o
+0x007A71E0	0x00B966E0	??0FESplitScreenMenu@@AAE@ABV0@@Z	private: __thiscall FESplitScreenMenu::FESplitScreenMenu(class FESplitScreenMenu const &)	mp_shell.o
+0x007A7290	0x00B96790	??1FESplitScreenMenu@@UAE@XZ	public: virtual __thiscall FESplitScreenMenu::~FESplitScreenMenu(void)	mp_shell.o
+0x007A7300	0x00B96800	?AddSplitScreenEntry@FESplitScreenMenu@@QAEXHPAVFEText@@@Z	public: void __thiscall FESplitScreenMenu::AddSplitScreenEntry(int,class FEText *)	mp_shell.o
+0x007A7330	0x00B96830	?AddSplitScreenComboBox@FESplitScreenMenu@@QAEPAVFEComboBox@@HHPAVFEText@@0PAVPanelQuad@@1@Z	public: class FEComboBox * __thiscall FESplitScreenMenu::AddSplitScreenComboBox(int,int,class FEText *,class FEText *,class PanelQuad *,class PanelQuad *)	mp_shell.o
+0x007A7370	0x00B96870	?AddSplitScreenSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVPanelQuad@@PAVFEText@@@Z	public: class FESlider * __thiscall FESplitScreenMenu::AddSplitScreenSlider(int,class PanelQuad *,class FEText *)	mp_shell.o
+0x007A73B0	0x00B968B0	?AddSplitScreenSlider@FESplitScreenMenu@@QAEPAVFESlider@@HPAVFEText@@0@Z	public: class FESlider * __thiscall FESplitScreenMenu::AddSplitScreenSlider(int,class FEText *,class FEText *)	mp_shell.o
+0x007A73F0	0x00B968F0	??0ModelMenu@@QAE@PAVFEMenuSystem@@H@Z	public: __thiscall ModelMenu::ModelMenu(class FEMenuSystem *,int)	mp_shell.o
+0x007A74B0	0x00B969B0	??1ModelMenu@@UAE@XZ	public: virtual __thiscall ModelMenu::~ModelMenu(void)	mp_shell.o
+0x007A74C0	0x00B969C0	?NewMenuActive@AARMenuSystem@@MAEXXZ	protected: virtual void __thiscall AARMenuSystem::NewMenuActive(void)	mp_shell.o
+0x007A74E0	0x00B969E0	?GetPanelFileUsers@AARMenuSystem@@QAE_NPBDAAV?$ae_sized_array@PAVPanelFileUser@@$0M@@@@Z	public: bool __thiscall AARMenuSystem::GetPanelFileUsers(char const *,class ae_sized_array<class PanelFileUser *,12> &)	mp_shell.o
+0x007A76C0	0x00B96BC0	?OnActivate@CreateSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateSessionMenu::OnActivate(void)	mp_shell.o
+0x007A79C0	0x00B96EC0	?OnCross@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnCross(int)	mp_shell.o
+0x007A7B00	0x00B97000	?OnLeft@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnLeft(int)	mp_shell.o
+0x007A7B50	0x00B97050	?OnRight@CreateSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateSessionMenu::OnRight(int)	mp_shell.o
+0x007A7BA0	0x00B970A0	?OnActivate@CreateLanSessionMenu@@UAEXXZ	public: virtual void __thiscall CreateLanSessionMenu::OnActivate(void)	mp_shell.o
+0x007A7DB0	0x00B972B0	?OnCross@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnCross(int)	mp_shell.o
+0x007A7EF0	0x00B973F0	?OnLeft@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnLeft(int)	mp_shell.o
+0x007A7F30	0x00B97430	?OnRight@CreateLanSessionMenu@@UAEXH@Z	public: virtual void __thiscall CreateLanSessionMenu::OnRight(int)	mp_shell.o
+0x007A7F70	0x00B97470	??0GameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall GameSettingsEdit::GameSettingsEdit(class FEMenuSystem *)	mp_shell.o
+0x007A8060	0x00B97560	??1GameSettingsEdit@@UAE@XZ	public: virtual __thiscall GameSettingsEdit::~GameSettingsEdit(void)	mp_shell.o
+0x007A80C0	0x00B975C0	?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z	protected: void __thiscall GameSettingsEdit::SetPanelFileMain(class PanelFile *)	mp_shell.o
+0x007A85E0	0x00B97AE0	?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z	protected: void __thiscall GameSettingsEdit::SetPanelFileSplitScreen(class PanelFile *)	mp_shell.o
+0x007A8C50	0x00B98150	?SwapMenus@GameSettingsEdit@@MAEXXZ	protected: virtual void __thiscall GameSettingsEdit::SwapMenus(void)	mp_shell.o
+0x007A8C60	0x00B98160	??0AARGameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARGameSettingsEdit::AARGameSettingsEdit(class FEMenuSystem *)	mp_shell.o
+0x007A8CC0	0x00B981C0	??1AARGameSettingsEdit@@UAE@XZ	public: virtual __thiscall AARGameSettingsEdit::~AARGameSettingsEdit(void)	mp_shell.o
+0x007A8CE0	0x00B981E0	?SetPanelFile@AARGameSettingsEdit@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARGameSettingsEdit::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A8CF0	0x00B981F0	??0GameSettingsView@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall GameSettingsView::GameSettingsView(class FEMenuSystem *)	mp_shell.o
+0x007A8DC0	0x00B982C0	??1GameSettingsView@@UAE@XZ	public: virtual __thiscall GameSettingsView::~GameSettingsView(void)	mp_shell.o
+0x007A8E20	0x00B98320	?SetPanelFile@GameSettingsView@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall GameSettingsView::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007A8E70	0x00B98370	?OnActivate@GameSettingsView@@UAEXXZ	public: virtual void __thiscall GameSettingsView::OnActivate(void)	mp_shell.o
+0x007A8EB0	0x00B983B0	?SwapMenus@GameSettingsView@@MAEXXZ	protected: virtual void __thiscall GameSettingsView::SwapMenus(void)	mp_shell.o
+0x007A8ED0	0x00B983D0	??0AARGameSettingsView@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARGameSettingsView::AARGameSettingsView(class FEMenuSystem *)	mp_shell.o
+0x007A8F30	0x00B98430	??1AARGameSettingsView@@UAE@XZ	public: virtual __thiscall AARGameSettingsView::~AARGameSettingsView(void)	mp_shell.o
+0x007A8F40	0x00B98440	?OnActivate@AARGameSettingsView@@UAEXXZ	public: virtual void __thiscall AARGameSettingsView::OnActivate(void)	mp_shell.o
+0x007A9010	0x00B98510	?OnActivate@PlayLanMenu@@UAEXXZ	public: virtual void __thiscall PlayLanMenu::OnActivate(void)	mp_shell.o
+0x007A90B0	0x00B985B0	?Update@PlayLanMenu@@UAEXM@Z	public: virtual void __thiscall PlayLanMenu::Update(float)	mp_shell.o
+0x007A9240	0x00B98740	?Select@PlayOnlineMenu@@UAEXHH@Z	public: virtual void __thiscall PlayOnlineMenu::Select(int,int)	mp_shell.o
+0x007A9370	0x00B98870	?LaunchQuickMatch@PlayOnlineMenu@@IAEXXZ	protected: void __thiscall PlayOnlineMenu::LaunchQuickMatch(void)	mp_shell.o
+0x007A94C0	0x00B989C0	?OnActivate@SessionDetailsMenu@@UAEXXZ	public: virtual void __thiscall SessionDetailsMenu::OnActivate(void)	mp_shell.o
+0x007A9550	0x00B98A50	?Update@SessionDetailsMenu@@UAEXM@Z	public: virtual void __thiscall SessionDetailsMenu::Update(float)	mp_shell.o
+0x007A9630	0x00B98B30	?Select@SessionDetailsMenu@@UAEXH@Z	public: virtual void __thiscall SessionDetailsMenu::Select(int)	mp_shell.o
+0x007A9730	0x00B98C30	?Select@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::Select(int)	mp_shell.o
+0x007A9870	0x00B98D70	?OnCross@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnCross(int)	mp_shell.o
+0x007A99A0	0x00B98EA0	?InitMenu@SessionListMenu@@IAEXXZ	protected: void __thiscall SessionListMenu::InitMenu(void)	mp_shell.o
+0x007A9A40	0x00B98F40	?Select@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::Select(int)	mp_shell.o
+0x007A9B70	0x00B99070	?InitMenu@SessionLanListMenu@@IAEXXZ	protected: void __thiscall SessionLanListMenu::InitMenu(void)	mp_shell.o
+0x007A9BE0	0x00B990E0	??0WeaponSelectMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall WeaponSelectMenu::WeaponSelectMenu(class FEMenuSystem *)	mp_shell.o
+0x007A9C80	0x00B99180	??1WeaponSelectMenu@@UAE@XZ	public: virtual __thiscall WeaponSelectMenu::~WeaponSelectMenu(void)	mp_shell.o
+0x007A9CF0	0x00B991F0	?Select@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::Select(int)	mp_shell.o
+0x007A9D40	0x00B99240	?OnTriangle@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::OnTriangle(int)	mp_shell.o
+0x007A9D90	0x00B99290	?SetPanelFileSplitScreen@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z	protected: void __thiscall WeaponSelectMenu::SetPanelFileSplitScreen(class PanelFile *)	mp_shell.o
+0x007A9E60	0x00B99360	?OnActivate@InGameScoreBoard@@UAEXXZ	public: virtual void __thiscall InGameScoreBoard::OnActivate(void)	mp_shell.o
+0x007A9E90	0x00B99390	??0InGameSwitchSides@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InGameSwitchSides::InGameSwitchSides(class FEMenuSystem *)	mp_shell.o
+0x007A9EC0	0x00B993C0	??1InGameSwitchSides@@UAE@XZ	public: virtual __thiscall InGameSwitchSides::~InGameSwitchSides(void)	mp_shell.o
+0x007A9ED0	0x00B993D0	?SetPanelFileSplitScreen@InGameSwitchSides@@IAEXPAVPanelFile@@@Z	protected: void __thiscall InGameSwitchSides::SetPanelFileSplitScreen(class PanelFile *)	mp_shell.o
+0x007A9FA0	0x00B994A0	?ResponseYesSwitch@InGameSwitchSides@@KA_NH@Z	protected: static bool __cdecl InGameSwitchSides::ResponseYesSwitch(int)	mp_shell.o
+0x007A9FC0	0x00B994C0	?OnActivate@AARBaseMenu@@UAEXXZ	public: virtual void __thiscall AARBaseMenu::OnActivate(void)	mp_shell.o
+0x007AA000	0x00B99500	?Update@AARBaseMenu@@UAEXM@Z	public: virtual void __thiscall AARBaseMenu::Update(float)	mp_shell.o
+0x007AA010	0x00B99510	?OnActivate@AARScoreboardBase@@UAEXXZ	public: virtual void __thiscall AARScoreboardBase::OnActivate(void)	mp_shell.o
+0x007AA0A0	0x00B995A0	?Update@AARScoreboardBase@@UAEXM@Z	public: virtual void __thiscall AARScoreboardBase::Update(float)	mp_shell.o
+0x007AA8C0	0x00B99DC0	?OnActivate@AARScoreboardWinner@@UAEXXZ	public: virtual void __thiscall AARScoreboardWinner::OnActivate(void)	mp_shell.o
+0x007AAA00	0x00B99F00	?Update@AARScoreboardWinner@@UAEXM@Z	public: virtual void __thiscall AARScoreboardWinner::Update(float)	mp_shell.o
+0x007AAA10	0x00B99F10	?OnActivate@AARScoreboardLoser@@UAEXXZ	public: virtual void __thiscall AARScoreboardLoser::OnActivate(void)	mp_shell.o
+0x007AAA40	0x00B99F40	?Update@AARScoreboardLoser@@UAEXM@Z	public: virtual void __thiscall AARScoreboardLoser::Update(float)	mp_shell.o
+0x007AAA50	0x00B99F50	?SetPanelFile@AARPersonalStats@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARPersonalStats::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007AB410	0x00B9A910	?Update@AARPersonalStats@@UAEXM@Z	public: virtual void __thiscall AARPersonalStats::Update(float)	mp_shell.o
+0x007AB420	0x00B9A920	?OnActivate@AARPersonalStats@@UAEXXZ	public: virtual void __thiscall AARPersonalStats::OnActivate(void)	mp_shell.o
+0x007AB4F0	0x00B9A9F0	?Update@AARMapVote@@UAEXM@Z	public: virtual void __thiscall AARMapVote::Update(float)	mp_shell.o
+0x007AB510	0x00B9AA10	?OnActivate@AARMapVote@@UAEXXZ	public: virtual void __thiscall AARMapVote::OnActivate(void)	mp_shell.o
+0x007AB670	0x00B9AB70	?OnCross@AARMapVote@@UAEXH@Z	public: virtual void __thiscall AARMapVote::OnCross(int)	mp_shell.o
+0x007AB6F0	0x00B9ABF0	?Update@AARGameModeVote@@UAEXM@Z	public: virtual void __thiscall AARGameModeVote::Update(float)	mp_shell.o
+0x007AB710	0x00B9AC10	?OnActivate@AARGameModeVote@@UAEXXZ	public: virtual void __thiscall AARGameModeVote::OnActivate(void)	mp_shell.o
+0x007AB770	0x00B9AC70	?OnCross@AARGameModeVote@@UAEXH@Z	public: virtual void __thiscall AARGameModeVote::OnCross(int)	mp_shell.o
+0x007AB7F0	0x00B9ACF0	??0PauseMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall PauseMenu::PauseMenu(class FEMenuSystem *)	mp_shell.o
+0x007AB850	0x00B9AD50	??1PauseMenu@@UAE@XZ	public: virtual __thiscall PauseMenu::~PauseMenu(void)	mp_shell.o
+0x007AB860	0x00B9AD60	?SetPanelFileSplitScreen@PauseMenu@@IAEXPAVPanelFile@@@Z	protected: void __thiscall PauseMenu::SetPanelFileSplitScreen(class PanelFile *)	mp_shell.o
+0x007AB990	0x00B9AE90	?AttemptSuicide@PauseMenu@@IAEXXZ	protected: void __thiscall PauseMenu::AttemptSuicide(void)	mp_shell.o
+0x007ABAC0	0x00B9AFC0	?OnCross@PauseMenu@@UAEXH@Z	public: virtual void __thiscall PauseMenu::OnCross(int)	mp_shell.o
+0x007ABBB0	0x00B9B0B0	?OnActivate@SpectateMenu@@UAEXH@Z	public: virtual void __thiscall SpectateMenu::OnActivate(int)	mp_shell.o
+0x007ABBD0	0x00B9B0D0	?SetPanelFile@GameSettingsEdit@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall GameSettingsEdit::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007ABC20	0x00B9B120	?Update@PlayOnlineMenu@@UAEXM@Z	public: virtual void __thiscall PlayOnlineMenu::Update(float)	mp_shell.o
+0x007ABE70	0x00B9B370	?OnActivate@SessionListMenu@@UAEXXZ	public: virtual void __thiscall SessionListMenu::OnActivate(void)	mp_shell.o
+0x007ABEA0	0x00B9B3A0	?Refresh@SessionListMenu@@IAEXXZ	protected: void __thiscall SessionListMenu::Refresh(void)	mp_shell.o
+0x007ABEB0	0x00B9B3B0	?OnActivate@SessionLanListMenu@@UAEXXZ	public: virtual void __thiscall SessionLanListMenu::OnActivate(void)	mp_shell.o
+0x007ABEE0	0x00B9B3E0	?Refresh@SessionLanListMenu@@IAEXXZ	protected: void __thiscall SessionLanListMenu::Refresh(void)	mp_shell.o
+0x007ABEF0	0x00B9B3F0	?PanelFileUnloaded@AAROverlay@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AAROverlay::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007ABF20	0x00B9B420	?SetPanelFile@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall WeaponSelectMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007ABF70	0x00B9B470	?PanelFileUnloaded@InGameScoreBoard@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameScoreBoard::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007ABFC0	0x00B9B4C0	?SetPanelFile@InGameSwitchSides@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameSwitchSides::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007AC010	0x00B9B510	?AttemptSwitchTeam@InGameSwitchSides@@IAEXXZ	protected: void __thiscall InGameSwitchSides::AttemptSwitchTeam(void)	mp_shell.o
+0x007AC160	0x00B9B660	?PanelFileUnloaded@AARScoreboardLoser@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall AARScoreboardLoser::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AC190	0x00B9B690	?SetPanelFile@PauseMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall PauseMenu::SetPanelFile(class PanelFile *)	mp_shell.o
+0x007AC200	0x00B9B700	?PanelFileUnloaded@HotJoinMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall HotJoinMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AC230	0x00B9B730	?PanelFileUnloaded@SpectateMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall SpectateMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AC280	0x00B9B780	?PanelFileUnloaded@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall FESplitScreenMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AC5E0	0x00B9BAE0	?OnActivate@ModelMenu@@UAEXXZ	public: virtual void __thiscall ModelMenu::OnActivate(void)	mp_shell.o
+0x007AC6D0	0x00B9BBD0	?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z	protected: void __thiscall ModelMenu::PlayModifierAnim(int,int,int,bool)	mp_shell.o
+0x007AC7A0	0x00B9BCA0	?UpdateClassModel@ModelMenu@@IAEXHHH@Z	protected: void __thiscall ModelMenu::UpdateClassModel(int,int,int)	mp_shell.o
+0x007ACAF0	0x00B9BFF0	?AddDObjToScene@ModelMenu@@IAEXXZ	protected: void __thiscall ModelMenu::AddDObjToScene(void)	mp_shell.o
+0x007AD150	0x00B9C650	?UpdateModelPosition@ModelMenu@@IAEXXZ	protected: void __thiscall ModelMenu::UpdateModelPosition(void)	mp_shell.o
+0x007AD330	0x00B9C830	?PanelFileUnloaded@GameSettingsEdit@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall GameSettingsEdit::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AD340	0x00B9C840	?PanelFileUnloaded@GameSettingsView@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall GameSettingsView::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AD350	0x00B9C850	?Update@SessionListMenu@@UAEXM@Z	public: virtual void __thiscall SessionListMenu::Update(float)	mp_shell.o
+0x007AD4C0	0x00B9C9C0	?OnSquare@SessionListMenu@@UAEXH@Z	public: virtual void __thiscall SessionListMenu::OnSquare(int)	mp_shell.o
+0x007AD4E0	0x00B9C9E0	?Update@SessionLanListMenu@@UAEXM@Z	public: virtual void __thiscall SessionLanListMenu::Update(float)	mp_shell.o
+0x007AD600	0x00B9CB00	?OnSquare@SessionLanListMenu@@UAEXH@Z	public: virtual void __thiscall SessionLanListMenu::OnSquare(int)	mp_shell.o
+0x007AD620	0x00B9CB20	?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameOverlay::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AD650	0x00B9CB50	?PanelFileUnloaded@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall WeaponSelectMenu::PanelFileUnloaded(class PanelFile *)	mp_shell.o
+0x007AD670	0x00B9CB70	?SetSwitchKit@WeaponSelectMenu@@IAEXXZ	protected: void __thiscall WeaponSelectMenu::SetSwitchKit(void)	mp_shell.o
+0x007AE080	0x00B9D580	?UpdateModel@InGameSwitchSides@@IAEXXZ	protected: void __thiscall InGameSwitchSides::UpdateModel(void)	mp_shell.o
+0x007AE430	0x00B9D930	?Draw3D@ModelMenu@@UAEXXZ	public: virtual void __thiscall ModelMenu::Draw3D(void)	mp_shell.o
+0x007AE450	0x00B9D950	?Update@InitialLoadingMenu@@UAEXM@Z	public: virtual void __thiscall InitialLoadingMenu::Update(float)	mp_shell.o
+0x007AE570	0x00B9DA70	?Update@OverlayMenu@@UAEXM@Z	public: virtual void __thiscall OverlayMenu::Update(float)	mp_shell.o
+0x007AEB40	0x00B9E040	?OnTriangle@OverlayMenu@@UAEXH@Z	public: virtual void __thiscall OverlayMenu::OnTriangle(int)	mp_shell.o
+0x007AECA0	0x00B9E1A0	?ActivationToggle@WeaponSelectMenu@@IAEX_N@Z	protected: void __thiscall WeaponSelectMenu::ActivationToggle(bool)	mp_shell.o
+0x007AEDB0	0x00B9E2B0	?OnActivate@WeaponSelectMenu@@UAEXXZ	public: virtual void __thiscall WeaponSelectMenu::OnActivate(void)	mp_shell.o
+0x007AF120	0x00B9E620	?OnCross@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::OnCross(int)	mp_shell.o
+0x007AF1C0	0x00B9E6C0	?OnUp@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::OnUp(int)	mp_shell.o
+0x007AF200	0x00B9E700	?OnDown@WeaponSelectMenu@@UAEXH@Z	public: virtual void __thiscall WeaponSelectMenu::OnDown(int)	mp_shell.o
+0x007AF240	0x00B9E740	?OnActivate@InGameSwitchSides@@UAEXXZ	public: virtual void __thiscall InGameSwitchSides::OnActivate(void)	mp_shell.o
+0x007AF2D0	0x00B9E7D0	?OnCross@InGameSwitchSides@@UAEXH@Z	public: virtual void __thiscall InGameSwitchSides::OnCross(int)	mp_shell.o
+0x007AF300	0x00B9E800	?OnUp@InGameSwitchSides@@UAEXH@Z	public: virtual void __thiscall InGameSwitchSides::OnUp(int)	mp_shell.o
+0x007AF370	0x00B9E870	?OnDown@InGameSwitchSides@@UAEXH@Z	public: virtual void __thiscall InGameSwitchSides::OnDown(int)	mp_shell.o
+0x007AF3E0	0x00B9E8E0	??0PlayLanMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall PlayLanMenu::PlayLanMenu(class FEMenuSystem *)	mp_shell.o
+0x007AF4B0	0x00B9E9B0	??0SessionListMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall SessionListMenu::SessionListMenu(class FEMenuSystem *)	mp_shell.o
+0x007AF590	0x00B9EA90	??1SessionListMenu@@UAE@XZ	public: virtual __thiscall SessionListMenu::~SessionListMenu(void)	mp_shell.o
+0x007AF640	0x00B9EB40	??0SessionLanListMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall SessionLanListMenu::SessionLanListMenu(class FEMenuSystem *)	mp_shell.o
+0x007AF710	0x00B9EC10	??1SessionLanListMenu@@UAE@XZ	public: virtual __thiscall SessionLanListMenu::~SessionLanListMenu(void)	mp_shell.o
+0x007AF7C0	0x00B9ECC0	??0OverlayMenu@@QAE@PAVFEMenuSystem@@H@Z	public: __thiscall OverlayMenu::OverlayMenu(class FEMenuSystem *,int)	mp_shell.o
+0x007AF8A0	0x00B9EDA0	??1OverlayMenu@@UAE@XZ	public: virtual __thiscall OverlayMenu::~OverlayMenu(void)	mp_shell.o
+0x007AF940	0x00B9EE40	??0InGameOverlay@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InGameOverlay::InGameOverlay(class FEMenuSystem *)	mp_shell.o
+0x007AFA00	0x00B9EF00	??1InGameOverlay@@UAE@XZ	public: virtual __thiscall InGameOverlay::~InGameOverlay(void)	mp_shell.o
+0x007AFAA0	0x00B9EFA0	??0AAROverlay@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AAROverlay::AAROverlay(class FEMenuSystem *)	mp_shell.o
+0x007AFB60	0x00B9F060	??1AAROverlay@@UAE@XZ	public: virtual __thiscall AAROverlay::~AAROverlay(void)	mp_shell.o
+0x007AFC00	0x00B9F100	??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARMapVote::AARMapVote(class FEMenuSystem *)	mp_shell.o
+0x007AFD30	0x00B9F230	??1AARMapVote@@UAE@XZ	public: virtual __thiscall AARMapVote::~AARMapVote(void)	mp_shell.o
+0x007AFE40	0x00B9F340	??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARGameModeVote::AARGameModeVote(class FEMenuSystem *)	mp_shell.o
+0x007AFF70	0x00B9F470	??1AARGameModeVote@@UAE@XZ	public: virtual __thiscall AARGameModeVote::~AARGameModeVote(void)	mp_shell.o
+0x007B0070	0x00B9F570	??1InGameScoreBoard@@UAE@XZ	public: virtual __thiscall InGameScoreBoard::~InGameScoreBoard(void)	mp_shell.o
+0x007B0140	0x00B9F640	??0AARScoreboardBase@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARScoreboardBase::AARScoreboardBase(class FEMenuSystem *)	mp_shell.o
+0x007B01F0	0x00B9F6F0	??1AARScoreboardBase@@UAE@XZ	public: virtual __thiscall AARScoreboardBase::~AARScoreboardBase(void)	mp_shell.o
+0x007B0280	0x00B9F780	??0AARScoreboardWinner@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARScoreboardWinner::AARScoreboardWinner(class FEMenuSystem *)	mp_shell.o
+0x007B02A0	0x00B9F7A0	??1AARScoreboardWinner@@UAE@XZ	public: virtual __thiscall AARScoreboardWinner::~AARScoreboardWinner(void)	mp_shell.o
+0x007B02B0	0x00B9F7B0	??0AARScoreboardLoser@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall AARScoreboardLoser::AARScoreboardLoser(class FEMenuSystem *)	mp_shell.o
+0x007B02D0	0x00B9F7D0	??1AARScoreboardLoser@@UAE@XZ	public: virtual __thiscall AARScoreboardLoser::~AARScoreboardLoser(void)	mp_shell.o
+0x007B02E0	0x00B9F7E0	??0AARMenuSystem@@QAE@XZ	public: __thiscall AARMenuSystem::AARMenuSystem(void)	mp_shell.o
+0x007B0590	0x00B9FA90	??0InGameScoreBoard@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InGameScoreBoard::InGameScoreBoard(class FEMenuSystem *)	mp_shell.o

@@ -1,0 +1,7 @@
+ida_ea	name	signature	source_cpp
+0x00805C50	?UsesAmbientLighting@apsBillboardRenderer@@QBE_NXZ	public: bool __thiscall apsBillboardRenderer::UsesAmbientLighting(void)const 	
+0x00805CD0	?UsesDiffuseLighting@apsBillboardRenderer@@QBE_NXZ	public: bool __thiscall apsBillboardRenderer::UsesDiffuseLighting(void)const 	
+0x00805D50	?Init@apsBillboardRenderer@@SAXXZ	public: static void __cdecl apsBillboardRenderer::Init(void)	
+0x00805D80	?SetNodeParams@apsBillboardRenderer@@QBE_NPAVapsRenderNode@@ABUapsRendererRenderInfo@@@Z	public: bool __thiscall apsBillboardRenderer::SetNodeParams(class apsRenderNode *,struct apsRendererRenderInfo const &)const 	
+0x00805F60	??0apsBillboardRenderer@@QAE@ABVcArgs@0@@Z	public: __thiscall apsBillboardRenderer::apsBillboardRenderer(class apsBillboardRenderer::cArgs const &)	
+0x008060F0	?Render@apsBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	public: virtual enum apsRenderer::eRenderResult __thiscall apsBillboardRenderer::Render(struct apsRendererRenderInfo const &)	

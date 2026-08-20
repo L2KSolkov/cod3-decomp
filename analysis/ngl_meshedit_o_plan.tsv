@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x00844780	?nglSetMeshSphere@@YAXPAUnglMesh@@ABVPosition3@math@@M@Z	void __cdecl nglSetMeshSphere(struct nglMesh *,class math::Position3 const &,float)	
+0x00844820	?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z	void __cdecl nglAddMeshSection(struct nglMesh *,struct nglMeshSection *,struct nglMaterial *,int)	
+0x00844890	?nglDestroyMesh@@YAXPAUnglMesh@@@Z	void __cdecl nglDestroyMesh(struct nglMesh *)	
+0x00844910	?nglCreateMeshClone@@YAPAUnglMesh@@PAU1@@Z	struct nglMesh * __cdecl nglCreateMeshClone(struct nglMesh *)	
+0x00844A10	?nglCopyMesh@@YAXPAUnglMesh@@0@Z	void __cdecl nglCopyMesh(struct nglMesh *,struct nglMesh *)	
+0x00844A80	?nglMakeSectionUnique@@YAXPAUnglMesh@@H@Z	void __cdecl nglMakeSectionUnique(struct nglMesh *,int)	
+0x00844AC0	?nglCreateScratchMesh@@YAPAUnglMesh@@II@Z	struct nglMesh * __cdecl nglCreateScratchMesh(unsigned int,unsigned int)	
+0x00844B90	?nglCreateMesh@@YAPAUnglMesh@@II@Z	struct nglMesh * __cdecl nglCreateMesh(unsigned int,unsigned int)	
+0x00844C80	?nglCreateMeshCopy@@YAPAUnglMesh@@PAU1@@Z	struct nglMesh * __cdecl nglCreateMeshCopy(struct nglMesh *)	

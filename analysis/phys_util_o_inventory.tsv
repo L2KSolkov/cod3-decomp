@@ -1,0 +1,9 @@
+ida_ea	va	name	signature	family
+0x008836A0	0x00C72BA0	?get_ballistic_info@nuge@@SAXQBQAVrigid_body@@HPAVDir3@math@@1PAM@Z	public: static void __cdecl nuge::get_ballistic_info(class rigid_body * const * const,int,class math::Dir3 *,class math::Dir3 *,float *)	phys_util.o
+0x00883830	0x00C72D30	?apply_ballistic_target@nuge@@SAXQBQAVrigid_body@@HABVDir3@math@@QAM@Z	public: static void __cdecl nuge::apply_ballistic_target(class rigid_body * const * const,int,class math::Dir3 const &,float * const)	phys_util.o
+0x00883D40	0x00C73240	?calc_velocities@nuge@@SAXABVMat43@math@@0MPAVDir3@3@1@Z	public: static void __cdecl nuge::calc_velocities(class math::Mat43 const &,class math::Mat43 const &,float,class math::Dir3 *,class math::Dir3 *)	phys_util.o
+0x00884360	0x00C73860	?calc_velocities@nuge@@SAXABVMat43@math@@0ABVDir3@3@MPAV43@2@Z	public: static void __cdecl nuge::calc_velocities(class math::Mat43 const &,class math::Mat43 const &,class math::Dir3 const &,float,class math::Dir3 *,class math::Dir3 *)	phys_util.o
+0x00884460	0x00C73960	?calc_sphere_inertia@nuge@@SAXMPAVDir3@math@@PAM@Z	public: static void __cdecl nuge::calc_sphere_inertia(float,class math::Dir3 *,float *)	phys_util.o
+0x00884500	0x00C73A00	?calc_box_inertia@nuge@@SAXABVDir3@math@@PAV23@PAM@Z	public: static void __cdecl nuge::calc_box_inertia(class math::Dir3 const &,class math::Dir3 *,float *)	phys_util.o
+0x008846A0	0x00C73BA0	?calc_bound_sphere@nuge@@SAXPBVDir3@math@@HPAMPAV23@@Z	public: static void __cdecl nuge::calc_bound_sphere(class math::Dir3 const *,int,float *,class math::Dir3 *)	phys_util.o
+0x008847B0	0x00C73CB0	?calc_bound_box@nuge@@SAXPBVDir3@math@@HPAV23@1@Z	public: static void __cdecl nuge::calc_bound_box(class math::Dir3 const *,int,class math::Dir3 *,class math::Dir3 *)	phys_util.o

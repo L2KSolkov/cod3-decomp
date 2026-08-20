@@ -1,0 +1,5 @@
+index	status	map_line
+1	VERIFIED	0002:00453f50 ?nglGetVertexDeclaration@@YAPAU_D3DVERTEXATTRIBUTEFORMAT@@PAU1@@Z 00C43450 f ngl_dx_mesh.o
+2	VERIFIED	0002:00454000 ?ngliProcessSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAVapkFileEntry@apk@@@Z 00C43500 f ngl_dx_mesh.o
+3	VERIFIED	0002:00454050 ?ngliReleaseSection@@YAXPAUnglMeshSection@@@Z 00C43550 f ngl_dx_mesh.o
+4	VERIFIED	0002:00454060 ?ngliListAddMesh_GetClipResult@@YAHABVPosition3@math@@MH@Z 00C43560 f ngl_dx_mesh.o

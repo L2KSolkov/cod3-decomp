@@ -1,0 +1,16 @@
+ida_ea	va	name	signature	family
+0x007BC250	0x00BAB750	_dlmalloc_usable_size	_dlmalloc_usable_size	dlmalloc.o
+0x007BC290	0x00BAB790	_dlmalloc_stats	_dlmalloc_stats	dlmalloc.o
+0x007BC400	0x00BAB900	_dlmalloc_trim	_dlmalloc_trim	dlmalloc.o
+0x007BC420	0x00BAB920	_dlmallinfo	_dlmallinfo	dlmalloc.o
+0x007BC530	0x00BABA30	_dlmallopt	_dlmallopt	dlmalloc.o
+0x007BC630	0x00BABB30	_dlfree	_dlfree	dlmalloc.o
+0x007BC710	0x00BABC10	_dlcfree	_dlcfree	dlmalloc.o
+0x007BC8C0	0x00BABDC0	_dlmalloc	_dlmalloc	dlmalloc.o
+0x007BCD40	0x00BAC240	_dlrealloc	_dlrealloc	dlmalloc.o
+0x007BCF50	0x00BAC450	_dlmemalign	_dlmemalign	dlmalloc.o
+0x007BD0A0	0x00BAC5A0	_dlcalloc	_dlcalloc	dlmalloc.o
+0x007BD2E0	0x00BAC7E0	_dlvalloc	_dlvalloc	dlmalloc.o
+0x007BD310	0x00BAC810	_dlpvalloc	_dlpvalloc	dlmalloc.o
+0x007BD350	0x00BAC850	_dlindependent_calloc	_dlindependent_calloc	dlmalloc.o
+0x007BD370	0x00BAC870	_dlindependent_comalloc	_dlindependent_comalloc	dlmalloc.o

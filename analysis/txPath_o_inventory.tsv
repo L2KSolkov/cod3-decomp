@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x0082D0A0	0x00C1C5A0	_txPathFix	_txPathFix	txPath.o
+0x0082D170	0x00C1C670	_txPathFormat	_txPathFormat	txPath.o
+0x0082D1E0	0x00C1C6E0	_txPathMake	_txPathMake	txPath.o
+0x0082D250	0x00C1C750	_txPathDirEnd	_txPathDirEnd	txPath.o
+0x0082D270	0x00C1C770	_txPathFileStart	_txPathFileStart	txPath.o
+0x0082D290	0x00C1C790	_txPathExtStart	_txPathExtStart	txPath.o
+0x0082D2C0	0x00C1C7C0	_txPathFile	_txPathFile	txPath.o
+0x0082D320	0x00C1C820	_txPathExt	_txPathExt	txPath.o
+0x0082D390	0x00C1C890	_txPathDir	_txPathDir	txPath.o
+0x0082D3E0	0x00C1C8E0	_txPathName	_txPathName	txPath.o
+0x0082D450	0x00C1C950	_txPathNormalize	_txPathNormalize	txPath.o

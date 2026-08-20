@@ -1,0 +1,15 @@
+ida_ea	va	name	signature	family
+0x007C0120	0x00BAF620	?SetSeaLevel@cdOceanGlobals@@YAXHM@Z	void __cdecl cdOceanGlobals::SetSeaLevel(int,float)	cdOceanGlobals.o
+0x007C01B0	0x00BAF6B0	?SetLayerAlpha@cdOceanGlobals@@YAXHMM@Z	void __cdecl cdOceanGlobals::SetLayerAlpha(int,float,float)	cdOceanGlobals.o
+0x007C0260	0x00BAF760	?SetLayerScroll@cdOceanGlobals@@YAXHHMM@Z	void __cdecl cdOceanGlobals::SetLayerScroll(int,int,float,float)	cdOceanGlobals.o
+0x007C03B0	0x00BAF8B0	?SetLayerScale@cdOceanGlobals@@YAXHHMM@Z	void __cdecl cdOceanGlobals::SetLayerScale(int,int,float,float)	cdOceanGlobals.o
+0x007C0500	0x00BAFA00	?SetWaveOrigin@cdOceanGlobals@@YAXHHMM@Z	void __cdecl cdOceanGlobals::SetWaveOrigin(int,int,float,float)	cdOceanGlobals.o
+0x007C0620	0x00BAFB20	?SetWaveHeading@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWaveHeading(int,int,float)	cdOceanGlobals.o
+0x007C0690	0x00BAFB90	?SetWaveDistance@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWaveDistance(int,int,float)	cdOceanGlobals.o
+0x007C0700	0x00BAFC00	?SetWaveWavelength@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWaveWavelength(int,int,float)	cdOceanGlobals.o
+0x007C0770	0x00BAFC70	?SetWaveAmplitude@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWaveAmplitude(int,int,float)	cdOceanGlobals.o
+0x007C07E0	0x00BAFCE0	?SetWavePhase@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWavePhase(int,int,float)	cdOceanGlobals.o
+0x007C0850	0x00BAFD50	?SetWaveTimescale@cdOceanGlobals@@YAXHHM@Z	void __cdecl cdOceanGlobals::SetWaveTimescale(int,int,float)	cdOceanGlobals.o
+0x007C08C0	0x00BAFDC0	?Init@cdOceanGlobals@@YAXXZ	void __cdecl cdOceanGlobals::Init(void)	cdOceanGlobals.o
+0x007C08E0	0x00BAFDE0	?DumpSettings@cdOceanGlobals@@YAXH@Z	void __cdecl cdOceanGlobals::DumpSettings(int)	cdOceanGlobals.o
+0x007C0B70	0x00BB0070	?GetHeight@cdOceanGlobals@@YAMHMM@Z	float __cdecl cdOceanGlobals::GetHeight(int,float,float)	cdOceanGlobals.o

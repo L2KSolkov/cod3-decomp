@@ -1,0 +1,11 @@
+index	status	map_line
+1	VERIFIED	0002:00412530 ?Render@apsSimpleMeshNode@@UAEXXZ 00C01A30 f apsSimpleMeshNode.o
+2	PORTED	0002:00412c50 ?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z 00C02150 f i apsSimpleMeshNode.o
+3	PORTED	0002:00412cb0 ??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z 00C021B0 f i apsSimpleMeshNode.o
+4	PORTED	0002:00412cd0 ?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ 00C021D0 f i apsSimpleMeshNode.o
+5	PORTED	0002:00412ce0 ?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ 00C021E0 f i apsSimpleMeshNode.o
+6	PORTED	0002:00412d20 ?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ 00C02220 f i apsSimpleMeshNode.o
+7	PORTED	0002:00412d30 ?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ 00C02230 f i apsSimpleMeshNode.o
+8	PORTED	0002:00412d40 ?GetVShader@apsSimpleMeshRender@@YAKXZ 00C02240 f i apsSimpleMeshNode.o
+9	PORTED	0002:00412d50 ?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ 00C02250 f i apsSimpleMeshNode.o
+10	VERIFIED	0002:00412d60 ??0MeshParticleContext@@QAE@XZ 00C02260 f i apsSimpleMeshNode.o

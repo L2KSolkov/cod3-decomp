@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007E18D0	0x00BD0DD0	?Fixup@PtrFixupTable@@QAEXPBX@Z	public: void __thiscall PtrFixupTable::Fixup(void const *)	PtrFixupTable.o

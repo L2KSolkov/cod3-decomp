@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x007C9FF0	??0cdFlagShaderMat@@QAE@PAUnglTexture@@@Z	public: __thiscall cdFlagShaderMat::cdFlagShaderMat(struct nglTexture *)	
+0x007CA080	?InitCDFlagShader@@YAXXZ	void __cdecl InitCDFlagShader(void)	
+0x007CA160	?ToggleCDFlagShader@@YAXXZ	void __cdecl ToggleCDFlagShader(void)	
+0x007CA180	?CalculateFlagMatrix@@YAXAAVMat43@math@@PAUnglMeshSection@@M@Z	void __cdecl CalculateFlagMatrix(class math::Mat43 &,struct nglMeshSection *,float)	
+0x007CA3C0	?Register@cdFlagShader@@UAEXXZ	public: virtual void __thiscall cdFlagShader::Register(void)	
+0x007CA400	?AddNode@cdFlagShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdFlagShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007CA470	?Render@cdFlagShaderNode@@UAEXXZ	public: virtual void __thiscall cdFlagShaderNode::Render(void)	

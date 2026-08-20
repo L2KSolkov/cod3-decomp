@@ -1,0 +1,12 @@
+index	status	map_line
+1	PORTED	0002:00483530 ??Dmath@@YA?AVMat33@0@ABV10@0@Z 00C72A30 f i phys_util.o
+2	PORTED	0002:00483650 ?GetReal@Quaternion@math@@QBEMXZ 00C72B50 f i phys_util.o
+3	PORTED	0002:00483690 ?get_inv_mass@rigid_body@@QBE?BMXZ 00C72B90 f i phys_util.o
+4	PORTED	0002:004836a0 ?get_ballistic_info@nuge@@SAXQBQAVrigid_body@@HPAVDir3@math@@1PAM@Z 00C72BA0 f phys_util.o
+5	PORTED	0002:00483830 ?apply_ballistic_target@nuge@@SAXQBQAVrigid_body@@HABVDir3@math@@QAM@Z 00C72D30 f phys_util.o
+6	PORTED	0002:00483d40 ?calc_velocities@nuge@@SAXABVMat43@math@@0MPAVDir3@3@1@Z 00C73240 f phys_util.o
+7	PORTED	0002:00484360 ?calc_velocities@nuge@@SAXABVMat43@math@@0ABVDir3@3@MPAV43@2@Z 00C73860 f phys_util.o
+8	PORTED	0002:00484460 ?calc_sphere_inertia@nuge@@SAXMPAVDir3@math@@PAM@Z 00C73960 f phys_util.o
+9	PORTED	0002:00484500 ?calc_box_inertia@nuge@@SAXABVDir3@math@@PAV23@PAM@Z 00C73A00 f phys_util.o
+10	PORTED	0002:004846a0 ?calc_bound_sphere@nuge@@SAXPBVDir3@math@@HPAMPAV23@@Z 00C73BA0 f phys_util.o
+11	PORTED	0002:004847b0 ?calc_bound_box@nuge@@SAXPBVDir3@math@@HPAV23@1@Z 00C73CB0 f phys_util.o

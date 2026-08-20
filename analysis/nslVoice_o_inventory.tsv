@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x008285E0	0x00C17AE0	?nslVoicePtr@@YAPAUnslVoice@@H@Z	struct nslVoice * __cdecl nslVoicePtr(int)	nslVoice.o
+0x00828610	0x00C17B10	?nslVoiceCount@@YAIXZ	unsigned int __cdecl nslVoiceCount(void)	nslVoice.o
+0x00828620	0x00C17B20	?nslVoiceAlloc@@YAHW4nslWaveID@@W4nslSourceID@@H@Z	int __cdecl nslVoiceAlloc(enum nslWaveID,enum nslSourceID,int)	nslVoice.o
+0x00828700	0x00C17C00	?nslVoiceFree@@YAXH@Z	void __cdecl nslVoiceFree(int)	nslVoice.o
+0x00828750	0x00C17C50	?nslVoiceRender@@YAXPAUnslVoice@@@Z	void __cdecl nslVoiceRender(struct nslVoice *)	nslVoice.o

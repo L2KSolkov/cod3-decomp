@@ -1,0 +1,13 @@
+ida_ea	name	signature	source_cpp
+0x007E4490	_deflateSetDictionary	_deflateSetDictionary	
+0x007E45B0	_deflateSetHeader	_deflateSetHeader	
+0x007E45E0	_deflatePrime	_deflatePrime	
+0x007E4620	_deflateTune	_deflateTune	
+0x007E4660	_deflateBound	_deflateBound	
+0x007E4740	_deflate	_deflate	
+0x007E4FE0	_deflateEnd	_deflateEnd	
+0x007E50B0	_deflateCopy	_deflateCopy	
+0x007E60B0	_deflateReset	_deflateReset	
+0x007E6150	_deflateParams	_deflateParams	
+0x007E6250	_deflateInit2_	_deflateInit2_	
+0x007E64A0	_deflateInit_	_deflateInit_	

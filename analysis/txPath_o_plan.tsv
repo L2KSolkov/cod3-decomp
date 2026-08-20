@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x0082D0A0	_txPathFix	_txPathFix	
+0x0082D170	_txPathFormat	_txPathFormat	
+0x0082D1E0	_txPathMake	_txPathMake	
+0x0082D250	_txPathDirEnd	_txPathDirEnd	
+0x0082D270	_txPathFileStart	_txPathFileStart	
+0x0082D290	_txPathExtStart	_txPathExtStart	
+0x0082D2C0	_txPathFile	_txPathFile	
+0x0082D320	_txPathExt	_txPathExt	
+0x0082D390	_txPathDir	_txPathDir	
+0x0082D3E0	_txPathName	_txPathName	
+0x0082D450	_txPathNormalize	_txPathNormalize	

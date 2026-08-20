@@ -1,0 +1,9 @@
+ida_ea	va	name	signature	family
+0x00823950	0x00C12E50	?nslGroupGet@@YAPAUnslGroup@@I@Z	struct nslGroup * __cdecl nslGroupGet(unsigned int)	nslGroup.o
+0x00823980	0x00C12E80	?nslGroupGet@@YAPAUnslGroup@@PBD@Z	struct nslGroup * __cdecl nslGroupGet(char const *)	nslGroup.o
+0x00823A70	0x00C12F70	?nslGroupSetParam@@YAXPBDHM@Z	void __cdecl nslGroupSetParam(char const *,int,float)	nslGroup.o
+0x00823AC0	0x00C12FC0	?nslGroupGetParam@@YAMPBDHM@Z	float __cdecl nslGroupGetParam(char const *,int,float)	nslGroup.o
+0x00823B00	0x00C13000	?nslGroupSetVolume@@YAXPBDM@Z	void __cdecl nslGroupSetVolume(char const *,float)	nslGroup.o
+0x00823B20	0x00C13020	?nslGroupGetVolume@@YAMPBDM@Z	float __cdecl nslGroupGetVolume(char const *,float)	nslGroup.o
+0x00823B60	0x00C13060	?nslSetMasterVolume@@YAXM@Z	void __cdecl nslSetMasterVolume(float)	nslGroup.o
+0x00823BA0	0x00C130A0	?nslGetMasterVolume@@YAMXZ	float __cdecl nslGetMasterVolume(void)	nslGroup.o

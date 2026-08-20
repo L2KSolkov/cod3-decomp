@@ -1,0 +1,15 @@
+ida_ea	va	name	signature	family
+0x007E1AA0	0x00BD0FA0	?compute_motor_speed@?A0x259e6277@@YAGM@Z	unsigned short __cdecl `anonymous namespace'::compute_motor_speed(float)	controller_xbox.o
+0x007E1B10	0x00BD1010	?refresh_device_list@?A0x259e6277@@YAXXZ	void __cdecl `anonymous namespace'::refresh_device_list(void)	controller_xbox.o
+0x007E1C60	0x00BD1160	??0controller@@QAE@XZ	public: __thiscall controller::controller(void)	controller_xbox.o
+0x007E1D90	0x00BD1290	?inst@controller@@SAPAV1@XZ	public: static class controller * __cdecl controller::inst(void)	controller_xbox.o
+0x007E1DC0	0x00BD12C0	?poll@controller@@QAEXXZ	public: void __thiscall controller::poll(void)	controller_xbox.o
+0x007E2030	0x00BD1530	?controller_is_connected@controller@@QAE_NH@Z	public: bool __thiscall controller::controller_is_connected(int)	controller_xbox.o
+0x007E2050	0x00BD1550	?button_value@controller@@QAEHHW4ButtonIndex@1@@Z	public: int __thiscall controller::button_value(int,enum controller::ButtonIndex)	controller_xbox.o
+0x007E2220	0x00BD1720	?button_released@controller@@QAE_NHW4ButtonIndex@1@@Z	public: bool __thiscall controller::button_released(int,enum controller::ButtonIndex)	controller_xbox.o
+0x007E23D0	0x00BD18D0	?button_released_clear@controller@@QAE_NHW4ButtonIndex@1@@Z	public: bool __thiscall controller::button_released_clear(int,enum controller::ButtonIndex)	controller_xbox.o
+0x007E2670	0x00BD1B70	?button_pressed@controller@@QAE_NHW4ButtonIndex@1@@Z	public: bool __thiscall controller::button_pressed(int,enum controller::ButtonIndex)	controller_xbox.o
+0x007E2810	0x00BD1D10	?button_pressed_clear@controller@@QAE_NHW4ButtonIndex@1@@Z	public: bool __thiscall controller::button_pressed_clear(int,enum controller::ButtonIndex)	controller_xbox.o
+0x007E2AB0	0x00BD1FB0	?stick_value@controller@@QAEXHW4StickIndex@1@AAH1@Z	public: void __thiscall controller::stick_value(int,enum controller::StickIndex,int &,int &)	controller_xbox.o
+0x007E2B20	0x00BD2020	?rumble@controller@@QAEXHW4RumbleIndex@1@M@Z	public: void __thiscall controller::rumble(int,enum controller::RumbleIndex,float)	controller_xbox.o
+0x007E2C50	0x00BD2150	?stop_all_rumble@controller@@QAEXXZ	public: void __thiscall controller::stop_all_rumble(void)	controller_xbox.o

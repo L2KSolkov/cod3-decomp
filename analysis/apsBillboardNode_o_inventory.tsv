@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00813C90	0x00C03190	?Render@apsBillboardNode@@UAEXXZ	public: virtual void __thiscall apsBillboardNode::Render(void)	apsBillboardNode.o

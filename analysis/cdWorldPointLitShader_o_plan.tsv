@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x007DBB00	?InitCDWorldPointLitShader@@YAXXZ	void __cdecl InitCDWorldPointLitShader(void)	
+0x007DBB50	?ToggleCDWorldPointLitShader@@YAXXZ	void __cdecl ToggleCDWorldPointLitShader(void)	
+0x007DBB70	?Register@cdWorldPointLitShader@@UAEXXZ	public: virtual void __thiscall cdWorldPointLitShader::Register(void)	
+0x007DBBB0	?AddNode@cdWorldPointLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWorldPointLitShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007DBC60	?Render@cdWorldPointLitShaderNode@@UAEXXZ	public: virtual void __thiscall cdWorldPointLitShaderNode::Render(void)	

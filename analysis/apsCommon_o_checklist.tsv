@@ -1,0 +1,49 @@
+index	status	map_line
+1	PORTED	0002:003eb040 ??4Mat34@math@@QAEABV01@ABV01@@Z 00BDA540 f i apsCommon.o
+2	VERIFIED	0002:003eb0b0 ??1apsAllocator@@UAE@XZ 00BDA5B0 f i apsCommon.o
+3	VERIFIED	0002:003eb0c0 ??_GapsAllocator@@UAEPAXI@Z 00BDA5C0 f i apsCommon.o
+4	VERIFIED	0002:003eb0c0 ??_EapsAllocator@@UAEPAXI@Z 00BDA5C0 f i apsCommon.o
+5	PORTED	0002:003eb0f0 ?SetBaseRate@apsLOD@@QAEXM@Z 00BDA5F0 f i apsCommon.o
+6	PORTED	0002:003eb100 ?SetIdleRate@apsLOD@@QAEXM@Z 00BDA600 f i apsCommon.o
+7	PORTED	0002:003eb120 ?SetRange@apsLOD@@QAEXHMM@Z 00BDA620 f i apsCommon.o
+8	VERIFIED	0002:003eb180 ?SetDefaults@apsLOD@@QAEXXZ 00BDA680 f i apsCommon.o
+9	VERIFIED	0002:003eb210 ?SetEnabled@apsLOD@@QAEXI@Z 00BDA710 f i apsCommon.o
+10	PORTED	0002:003eb220 ?Dir@CameraSettings@apsCommon@@QAEAAVDir3@math@@XZ 00BDA720 f i apsCommon.o
+11	PORTED	0002:003eb230 ?Up@CameraSettings@apsCommon@@QAEAAVDir3@math@@XZ 00BDA730 f i apsCommon.o
+12	PORTED	0002:003eb240 ?Left@CameraSettings@apsCommon@@QAEAAVDir3@math@@XZ 00BDA740 f i apsCommon.o
+13	PORTED	0002:003eb250 ?Roll@CameraSettings@apsCommon@@QAEAAMXZ 00BDA750 f i apsCommon.o
+14	PORTED	0002:003eb260 ?XFlip@CameraSettings@apsCommon@@QAEAAMXZ 00BDA760 f i apsCommon.o
+15	VERIFIED	0002:003eb270 ?Init@CameraSettings@apsCommon@@QAEXXZ 00BDA770 f i apsCommon.o
+16	PORTED	0002:003eb300 ?SetFlag@apsCommon@@KAXI@Z 00BDA800 f i apsCommon.o
+17	PORTED	0002:003eb320 ?ClearFlag@apsCommon@@KAXI@Z 00BDA820 f i apsCommon.o
+18	PORTED	0002:003eb340 ?IsFlagSet@apsCommon@@KAII@Z 00BDA840 f i apsCommon.o
+19	VERIFIED	0002:003eb360 ?SetEnabled@apsDebug@@SAXI@Z 00BDA860 f i apsCommon.o
+20	VERIFIED	0002:003eb370 ?MemAlign@apsAllocator@@UBEPAXII@Z 00BDA870 f apsCommon.o
+21	VERIFIED	0002:003eb3a0 ?MemFree@apsAllocator@@UBEXPAX@Z 00BDA8A0 f apsCommon.o
+22	VERIFIED	0002:003eb3c0 ?MemResize@apsAllocator@@UBEPAXPAXII@Z 00BDA8C0 f apsCommon.o
+23	VERIFIED	0002:003eb3d0 ?InitShaders@apsCommon@@SAXXZ 00BDA8D0 f apsCommon.o
+24	VERIFIED	0002:003eb3e0 ?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z 00BDA8E0 f apsCommon.o
+25	VERIFIED	0002:003eb750 ?Report@apsCommon@@SAXXZ 00BDAC50 f apsCommon.o
+26	VERIFIED	0002:003eb780 ?SetClient@apsCommon@@SAXPAVapsClient@@@Z 00BDAC80 f apsCommon.o
+27	VERIFIED	0002:003eb790 ?GetAllocator@apsCommon@@SAPAVapsAllocator@@XZ 00BDAC90 f apsCommon.o
+28	VERIFIED	0002:003eb7a0 ?GetCurrentPakId@apsCommon@@SAHXZ 00BDACA0 f apsCommon.o
+29	VERIFIED	0002:003eb7b0 ?SetCurrentPakId@apsCommon@@SAHH@Z 00BDACB0 f apsCommon.o
+30	VERIFIED	0002:003eb7d0 ?PakAllocs@apsCommon@@SAHXZ 00BDACD0 f apsCommon.o
+31	VERIFIED	0002:003eb7e0 ?SetPakAllocs@apsCommon@@SAHH@Z 00BDACE0 f apsCommon.o
+32	VERIFIED	0002:003eb800 ?GetDefaultAllocator@apsCommon@@SAPAVapsAllocator@@XZ 00BDAD00 f apsCommon.o
+33	VERIFIED	0002:003eb810 ?SetAllocator@apsCommon@@SAPAVapsAllocator@@PAV2@@Z 00BDAD10 f apsCommon.o
+34	VERIFIED	0002:003eb840 ?GetBlockAllocator@apsCommon@@SAPAVapsAllocator@@XZ 00BDAD40 f apsCommon.o
+35	VERIFIED	0002:003eb850 ?SetBlockAllocator@apsCommon@@SAXPAVapsAllocator@@@Z 00BDAD50 f apsCommon.o
+36	VERIFIED	0002:003eb860 ?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ 00BDAD60 f apsCommon.o
+37	VERIFIED	0002:003eb870 ?RemoveFromSpawnedEffectQueueByPakId@apsCommon@@SAXH@Z 00BDAD70 f apsCommon.o
+38	VERIFIED	0002:003eb880 ?ClearSpawnedEffectQueue@apsCommon@@SAXXZ 00BDAD80 f apsCommon.o
+39	VERIFIED	0002:003eb890 ?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z 00BDAD90 f apsCommon.o
+40	VERIFIED	0002:003eb8d0 ?Init@apsCommon@@SAXIHI@Z 00BDADD0 f apsCommon.o
+41	VERIFIED	0002:003eba40 ?Term@apsCommon@@SAXXZ 00BDAF40 f apsCommon.o
+42	VERIFIED	0002:003ebaa0 ??0apsAllocator@@QAE@XZ 00BDAFA0 f i apsCommon.o
+43	VERIFIED	0002:003ebab0 ??0CameraSettings@apsCommon@@QAE@XZ 00BDAFB0 f i apsCommon.o
+44	VERIFIED	0002:003ebac0 ?InstancePtr@?$apsSingleton@VapsError@@@@SAPAVapsError@@XZ 00BDAFC0 f i apsCommon.o
+45	VERIFIED	0002:003ebad0 ??_GapsError@@QAEPAXI@Z 00BDAFD0 f i apsCommon.o
+46	VERIFIED	0002:003ebb00 ??0PlayerViewPort@apsCommon@@QAE@XZ 00BDB000 f i apsCommon.o
+47	PORTED	0002:003ebb20 ?Initialised@apsCommon@@SAIXZ 00BDB020 f i apsCommon.o
+48	PORTED	0002:003ebb30 ??$apsDestroy@VapsError@@@@YAXPAVapsError@@@Z 00BDB030 f i apsCommon.o

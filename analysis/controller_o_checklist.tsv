@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:003e2ca0 ?button_value@controller@@QAEHW4ButtonIndex@1@PAH@Z 00BD21A0 f controller.o
+2	VERIFIED	0002:003e2d20 ?button_released@controller@@QAE_NW4ButtonIndex@1@PAH@Z 00BD2220 f controller.o
+3	VERIFIED	0002:003e2da0 ?button_released_clear@controller@@QAE_NW4ButtonIndex@1@PAH@Z 00BD22A0 f controller.o
+4	VERIFIED	0002:003e2e20 ?button_pressed@controller@@QAE_NW4ButtonIndex@1@PAH@Z 00BD2320 f controller.o
+5	VERIFIED	0002:003e2ea0 ?any_button_pressed@controller@@QAE_NPAH@Z 00BD23A0 f controller.o
+6	VERIFIED	0002:003e2ee0 ?button_pressed_clear@controller@@QAE_NW4ButtonIndex@1@PAH@Z 00BD23E0 f controller.o
+7	PORTED	0002:003e2f60 ?stick_value@controller@@QAEXW4StickIndex@1@AAH1PAH@Z 00BD2460 f controller.o
+8	VERIFIED	0002:003e3030 ?stick_value_x@controller@@QAEHW4StickIndex@1@PAH@Z 00BD2530 f controller.o
+9	VERIFIED	0002:003e30d0 ?stick_value_y@controller@@QAEHW4StickIndex@1@PAH@Z 00BD25D0 f controller.o
+10	VERIFIED	0002:003e3170 ?stick_value_x@controller@@QAEHHW4StickIndex@1@@Z 00BD2670 f controller.o
+11	VERIFIED	0002:003e31a0 ?stick_value_y@controller@@QAEHHW4StickIndex@1@@Z 00BD26A0 f controller.o

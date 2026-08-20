@@ -1,0 +1,15 @@
+ida_ea	va	name	signature	family
+0x0088B5B0	0x00C7AAB0	?verify_time_scale@@YAXPAVrigid_body_constraint@@ABVouter_time@@@Z	void __cdecl verify_time_scale(class rigid_body_constraint *,class outer_time const &)	physics_system_internal.o
+0x0088B650	0x00C7AB50	?IPN_merge@@YAXPAVrigid_body@@0@Z	void __cdecl IPN_merge(class rigid_body *,class rigid_body *)	physics_system_internal.o
+0x0088B730	0x00C7AC30	?IPN_verify_time_scale@@YAXPAVrigid_body@@@Z	void __cdecl IPN_verify_time_scale(class rigid_body *)	physics_system_internal.o
+0x0088B890	0x00C7AD90	?IPN_verify_rigid_bodies@@YAXPAVrigid_body@@@Z	void __cdecl IPN_verify_rigid_bodies(class rigid_body *)	physics_system_internal.o
+0x0088C830	0x00C7BD30	?generate_partitions_and_stuff@physics_system@@QAEXPAUlist_constraint_solver@phys_constraint_solver_multithreaded@@PAHM@Z	public: void __thiscall physics_system::generate_partitions_and_stuff(struct phys_constraint_solver_multithreaded::list_constraint_solver *,int *,float)	physics_system_internal.o
+0x0088D550	0x00C7CA50	?get_alignment@physics_system@@SA?BHXZ	public: static int const __cdecl physics_system::get_alignment(void)	physics_system_internal.o
+0x0088D560	0x00C7CA60	?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z	public: static int const __cdecl physics_system::get_buffer_size(class phys_mem_info const &)	physics_system_internal.o
+0x0088D620	0x00C7CB20	?time_step@physics_system@@QAEXM_N@Z	public: void __thiscall physics_system::time_step(float,bool)	physics_system_internal.o
+0x0088DA40	0x00C7CF40	??0physics_system@@QAE@XZ	public: __thiscall physics_system::physics_system(void)	physics_system_internal.o
+0x0088DC70	0x00C7D170	?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z	public: static class physics_system * __cdecl physics_system::allocate_buffer(class phys_mem_info const &,class phys_memory_heap &)	physics_system_internal.o
+0x0088DE20	0x00C7D320	?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z	public: static void __cdecl physics_system::create_inst(class phys_mem_info &)	physics_system_internal.o
+0x0088DEC0	0x00C7D3C0	?frame_advance@physics_system@@QAEXM@Z	public: void __thiscall physics_system::frame_advance(float)	physics_system_internal.o
+0x0088E130	0x00C7D630	?free_buffer@physics_system@@SAXPAV1@@Z	public: static void __cdecl physics_system::free_buffer(class physics_system *)	physics_system_internal.o
+0x0088E140	0x00C7D640	?destroy_inst@physics_system@@SAXXZ	public: static void __cdecl physics_system::destroy_inst(void)	physics_system_internal.o

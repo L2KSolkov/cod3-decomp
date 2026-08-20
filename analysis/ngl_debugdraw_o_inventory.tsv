@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x00850790	0x00C3FC90	?nglDebugDrawBegin@@YAXXZ	void __cdecl nglDebugDrawBegin(void)	ngl_debugdraw.o
+0x00850890	0x00C3FD90	?nglDebugDrawEnd@@YAXXZ	void __cdecl nglDebugDrawEnd(void)	ngl_debugdraw.o
+0x008508E0	0x00C3FDE0	?nglDebugDrawGetWidth@@YAHXZ	int __cdecl nglDebugDrawGetWidth(void)	ngl_debugdraw.o
+0x00850920	0x00C3FE20	?nglDebugDrawGetHeight@@YAHXZ	int __cdecl nglDebugDrawGetHeight(void)	ngl_debugdraw.o
+0x00850A70	0x00C3FF70	?nglDebugDrawPlot@@YAXHHII@Z	void __cdecl nglDebugDrawPlot(int,int,unsigned int,unsigned int)	ngl_debugdraw.o
+0x00850B60	0x00C40060	?nglDebugDrawHLine@@YAXHHHI@Z	void __cdecl nglDebugDrawHLine(int,int,int,unsigned int)	ngl_debugdraw.o
+0x00850BC0	0x00C400C0	?nglDebugDrawVLine@@YAXHHHI@Z	void __cdecl nglDebugDrawVLine(int,int,int,unsigned int)	ngl_debugdraw.o
+0x00850C20	0x00C40120	?nglDebugDrawRectFill@@YAXHHHHI@Z	void __cdecl nglDebugDrawRectFill(int,int,int,int,unsigned int)	ngl_debugdraw.o
+0x00850C80	0x00C40180	?nglDebugDrawRect@@YAXHHHHI@Z	void __cdecl nglDebugDrawRect(int,int,int,int,unsigned int)	ngl_debugdraw.o
+0x00850D00	0x00C40200	?nglDebugDrawTextInternal@@YAXHHIPBDZZ	void __cdecl nglDebugDrawTextInternal(int,int,unsigned int,char const *,...)	ngl_debugdraw.o
+0x00850FB0	0x00C404B0	?nglDebugDrawText@@YAHHHIPBDZZ	int __cdecl nglDebugDrawText(int,int,unsigned int,char const *,...)	ngl_debugdraw.o

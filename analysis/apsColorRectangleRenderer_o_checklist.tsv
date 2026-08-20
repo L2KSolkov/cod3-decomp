@@ -1,0 +1,22 @@
+index	status	map_line
+1	PORTED	0002:004048a0 ?GetShimmerScene@apsCommon@@SAPAUnglScene@@XZ 00BF3DA0 f i apsColorRectangleRenderer.o
+2	PORTED	0002:004048b0 ?Renderer@apsBillboardNode@@QAEAAVapsBillboardRenderer@@XZ 00BF3DB0 f i apsColorRectangleRenderer.o
+3	PORTED	0002:004048f0 ?SetRenderer@apsBillboardNode@@QAEXPAVapsBillboardRenderer@@@Z 00BF3DF0 f i apsColorRectangleRenderer.o
+4	PORTED	0002:00404900 ?SetRenderSortBuffer@apsBillboardNode@@QAEXPAUBuffer@apsRenderSort@@@Z 00BF3E00 f i apsColorRectangleRenderer.o
+5	PORTED	0002:00404910 ?IsShimmer@apsBillboardRenderer@@QBEHXZ 00BF3E10 f i apsColorRectangleRenderer.o
+6	PORTED	0002:00404920 ??0apsColorRectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF3E20 f apsColorRectangleRenderer.o
+7	VERIFIED	0002:00404960 ?Init@apsColorRectangleRenderer@@SAXXZ 00BF3E60 f apsColorRectangleRenderer.o
+8	VERIFIED	0002:00404990 ?Render@apsColorRectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF3E90 f apsColorRectangleRenderer.o
+9	PORTED	0002:004049b0 ?RegisterVShader@apsColorRectangleRender@@YAXXZ 00BF3EB0 f i apsColorRectangleRenderer.o
+10	PORTED	0002:004049d0 ?RegisterPShader@apsColorRectangleRenderPixel@@YAXXZ 00BF3ED0 f i apsColorRectangleRenderer.o
+11	PORTED	0002:004049f0 ?InitPShader@apsColorRectangleRenderPixel@@YAXXZ 00BF3EF0 f i apsColorRectangleRenderer.o
+12	PORTED	0002:00404a10 ??1apsBillboardNode@@UAE@XZ 00BF3F10 f i apsColorRectangleRenderer.o
+13	PORTED	0002:00404a20 ??0apsBillboardNode@@QAE@XZ 00BF3F20 f i apsColorRectangleRenderer.o
+14	VERIFIED	0002:00404a30 ?GetDesc@apsBillboardNode@@UAEXPAD@Z 00BF3F30 f i apsColorRectangleRenderer.o
+15	PORTED	0002:00404a70 ??_EapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o
+16	PORTED	0002:00404a70 ??_GapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o
+17	PORTED	0002:00404aa0 ??0apsColorRectangleNode@@QAE@XZ 00BF3FA0 f i apsColorRectangleRenderer.o
+18	VERIFIED	0002:00404ab0 ?GetDesc@apsColorRectangleNode@@UAEXPAD@Z 00BF3FB0 f i apsColorRectangleRenderer.o
+19	PORTED	0002:00404b00 ??_EapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o
+20	PORTED	0002:00404b00 ??_GapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o
+21	PORTED	0002:00404b30 ??$DefaultRender@VapsColorRectangleRenderer@@VapsColorRectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsColorRectangleRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4030 f i apsColorRectangleRenderer.o

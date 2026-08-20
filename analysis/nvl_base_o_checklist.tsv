@@ -1,0 +1,24 @@
+index	status	map_line
+1	PENDING	0002:0042e3f0 ?GetVersion@nvlMovieBase@@SAIXZ 00C1D8F0 f nvl_base.o
+2	VERIFIED	0002:0042e400 ?GetFileID@nvlMovieBase@@QAE?AW4nflFileID@@XZ 00C1D900 f nvl_base.o
+3	VERIFIED	0002:0042e410 ?ReleaseMovie@nvlMovieBase@@QAE?AW4nflFileID@@XZ 00C1D910 f nvl_base.o
+4	VERIFIED	0002:0042e4c0 ?SetMovieState@nvlMovieBase@@QAE?AW4nvlMovieState@@W42@@Z 00C1D9C0 f nvl_base.o
+5	VERIFIED	0002:0042e4d0 ?GetMovieState@nvlMovieBase@@QAE?AW4nvlMovieState@@XZ 00C1D9D0 f nvl_base.o
+6	VERIFIED	0002:0042e4e0 ?SetUserDataCallback@nvlMovieBase@@QAEXP6AXPAEI_NPAX@Z2@Z 00C1D9E0 f nvl_base.o
+7	VERIFIED	0002:0042e500 ?GetNumFrames@nvlMovieBase@@QAEHXZ 00C1DA00 f nvl_base.o
+8	VERIFIED	0002:0042e510 ?GetFrameNumber@nvlMovieBase@@QAEHXZ 00C1DA10 f nvl_base.o
+9	VERIFIED	0002:0042e520 ?GetTexture@nvlMovieBase@@QAEPAUnglTexture@@XZ 00C1DA20 f nvl_base.o
+10	VERIFIED	0002:0042e530 ?DecodeFrame@nvlMovieBase@@UAE?AW4nvlFrameState@@XZ 00C1DA30 f nvl_base.o
+11	VERIFIED	0002:0042e540 ?SetConvertNTSCtoPAL@nvlMovieBase@@SAX_N@Z 00C1DA40 f nvl_base.o
+12	VERIFIED	0002:0042e550 ?SetAudioTrack@nvlMovieBase@@QAE?AW4nvlResult@@H@Z 00C1DA50 f nvl_base.o
+13	VERIFIED	0002:0042e560 ?IsBufferLoading@nvlMovieBase@@QAE_NXZ 00C1DA60 f nvl_base.o
+14	VERIFIED	0002:0042e590 ?Reset@nvlMovieBase@@UAEXXZ 00C1DA90 f nvl_base.o
+15	VERIFIED	0002:0042e610 ?CheckNextNFLRequest@nvlMovieBase@@AAEXXZ 00C1DB10 f nvl_base.o
+16	VERIFIED	0002:0042e730 ??0nvlMovieBase@@QAE@XZ 00C1DC30 f nvl_base.o
+17	VERIFIED	0002:0042e780 ??1nvlMovieBase@@UAE@XZ 00C1DC80 f nvl_base.o
+18	VERIFIED	0002:0042e790 ?InitMovie@nvlMovieBase@@UAE?AW4nvlResult@@XZ 00C1DC90 f nvl_base.o
+19	VERIFIED	0002:0042e970 ?BufferCheckBytes@nvlMovieBase@@QAE_NH_N@Z 00C1DE70 f nvl_base.o
+20	VERIFIED	0002:0042eb80 ?IsBufferFull@nvlMovieBase@@QAE_NXZ 00C1E080 f nvl_base.o
+21	VERIFIED	0002:0042ebf0 ?RequestCallback@nvlMovieBase@@QAEXW4nflRequestState@@W4nflRequestID@@@Z 00C1E0F0 f nvl_base.o
+22	VERIFIED	0002:0042eca0 ??_GnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o
+23	VERIFIED	0002:0042eca0 ??_EnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o

@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:003bc0d0 ?mem_get_arena_hi@@YAPAXXZ 00BAB5D0 f mem_lib_platform.o
+2	VERIFIED	0002:003bc0f0 ?mem_get_arena_lo@@YAPAXXZ 00BAB5F0 f mem_lib_platform.o
+3	VERIFIED	0002:003bc110 ?mem_get_debug_arena_hi@@YAPAXXZ 00BAB610 f mem_lib_platform.o
+4	VERIFIED	0002:003bc130 ?mem_get_debug_arena_lo@@YAPAXXZ 00BAB630 f mem_lib_platform.o
+5	VERIFIED	0002:003bc150 ?mem_get_combine_arena_hi@@YAPAXXZ 00BAB650 f mem_lib_platform.o
+6	VERIFIED	0002:003bc170 ?mem_get_combine_arena_lo@@YAPAXXZ 00BAB670 f mem_lib_platform.o
+7	PORTED	0002:003bc190 ?mem_get_stack@@YAXPAIH@Z 00BAB690 f mem_lib_platform.o
+8	VERIFIED	0002:003bc1a0 ?mem_host_fopen@@YAIPBD0@Z 00BAB6A0 f mem_lib_platform.o
+9	VERIFIED	0002:003bc1b0 ?mem_host_fclose@@YAHI@Z 00BAB6B0 f mem_lib_platform.o
+10	PORTED	0002:003bc1d0 ?mem_host_fwrite@@YAHPBXHI@Z 00BAB6D0 f mem_lib_platform.o
+11	VERIFIED	0002:003bc1f0 ?mem_host_fprintf@@YAHIPBDZZ 00BAB6F0 f mem_lib_platform.o

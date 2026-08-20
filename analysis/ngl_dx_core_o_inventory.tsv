@@ -1,0 +1,26 @@
+ida_ea	va	name	signature	family
+0x0083FF80	0x00C2F480	?nglDxCheckErrorD3D@@YAJJPBDI@Z	long __cdecl nglDxCheckErrorD3D(long,char const *,unsigned int)	ngl_dx_core.o
+0x0083FFE0	0x00C2F4E0	?nglFlip@@YAXXZ	void __cdecl nglFlip(void)	ngl_dx_core.o
+0x00840010	0x00C2F510	?nglSetDisplayMode@@YAXPAII@Z	void __cdecl nglSetDisplayMode(unsigned int *,unsigned int)	ngl_dx_core.o
+0x00840130	0x00C2F630	?nglXbSetGammaRamp@@YAXPAE@Z	void __cdecl nglXbSetGammaRamp(unsigned char *)	ngl_dx_core.o
+0x00840150	0x00C2F650	?nglDxInitOcclusionQuery@@YAXXZ	void __cdecl nglDxInitOcclusionQuery(void)	ngl_dx_core.o
+0x00840160	0x00C2F660	?nglXbInitPushBufferSize@@YAXXZ	void __cdecl nglXbInitPushBufferSize(void)	ngl_dx_core.o
+0x00840210	0x00C2F710	?nglDxInitDisplayMode@@YAXXZ	void __cdecl nglDxInitDisplayMode(void)	ngl_dx_core.o
+0x00840240	0x00C2F740	?nglDxInitPresentParams@@YAXXZ	void __cdecl nglDxInitPresentParams(void)	ngl_dx_core.o
+0x008402F0	0x00C2F7F0	?nglRenderStartCallback@@YAXK@Z	void __cdecl nglRenderStartCallback(unsigned long)	ngl_dx_core.o
+0x00840320	0x00C2F820	?nglRenderFinishCallback@@YAXK@Z	void __cdecl nglRenderFinishCallback(unsigned long)	ngl_dx_core.o
+0x00840360	0x00C2F860	?nglVBlankCallback@@YAXPAU_D3DVBLANKDATA@@@Z	void __cdecl nglVBlankCallback(struct _D3DVBLANKDATA *)	ngl_dx_core.o
+0x00840370	0x00C2F870	?ngliLoadPhysicalSection@@YAXPAVapkFile@apk@@PAUapkFileSection@2@PAX@Z	void __cdecl ngliLoadPhysicalSection(class apk::apkFile *,struct apk::apkFileSection *,void *)	ngl_dx_core.o
+0x00840380	0x00C2F880	?ngliUnloadPhysicalSection@@YAXPAVapkFile@apk@@PAUapkFileSection@2@PAX@Z	void __cdecl ngliUnloadPhysicalSection(class apk::apkFile *,struct apk::apkFileSection *,void *)	ngl_dx_core.o
+0x00840390	0x00C2F890	?ngliPreInit@@YAXXZ	void __cdecl ngliPreInit(void)	ngl_dx_core.o
+0x008404C0	0x00C2F9C0	?ngliPostInit@@YAXXZ	void __cdecl ngliPostInit(void)	ngl_dx_core.o
+0x008404E0	0x00C2F9E0	?ngliExit@@YAXXZ	void __cdecl ngliExit(void)	ngl_dx_core.o
+0x008404F0	0x00C2F9F0	?nglDxSetFrameLockParams@@YAXW4nglFrameLockType@@@Z	void __cdecl nglDxSetFrameLockParams(enum nglFrameLockType)	ngl_dx_core.o
+0x008405A0	0x00C2FAA0	?nglSetFrameLock@@YA?AW4nglFrameLockType@@W41@@Z	enum nglFrameLockType __cdecl nglSetFrameLock(enum nglFrameLockType)	ngl_dx_core.o
+0x00840600	0x00C2FB00	?nglWaitForRendering@@YAXXZ	void __cdecl nglWaitForRendering(void)	ngl_dx_core.o
+0x00840610	0x00C2FB10	?ngliListInit@@YAXXZ	void __cdecl ngliListInit(void)	ngl_dx_core.o
+0x00840700	0x00C2FC00	?nglRenderPerfInfo@@YAXXZ	void __cdecl nglRenderPerfInfo(void)	ngl_dx_core.o
+0x008408B0	0x00C2FDB0	?nglRenderDebug@@YAXXZ	void __cdecl nglRenderDebug(void)	ngl_dx_core.o
+0x008408D0	0x00C2FDD0	?nglListSendBatch@@YAXPAUjqBatch@@@Z	void __cdecl nglListSendBatch(struct jqBatch *)	ngl_dx_core.o
+0x00840CE0	0x00C301E0	?ngliWaitForResource@@YAXXZ	void __cdecl ngliWaitForResource(void)	ngl_dx_core.o
+0x00840D30	0x00C30230	?nglDxResetDevice@@YAXXZ	void __cdecl nglDxResetDevice(void)	ngl_dx_core.o

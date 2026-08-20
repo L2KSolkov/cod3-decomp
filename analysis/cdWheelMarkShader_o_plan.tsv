@@ -1,0 +1,8 @@
+ida_ea	name	signature	source_cpp
+0x007C92B0	??0cdWheelMarkShaderMat@@QAE@XZ	public: __thiscall cdWheelMarkShaderMat::cdWheelMarkShaderMat(void)	
+0x007C9330	?InitCDWheelMarkShader@@YAXXZ	void __cdecl InitCDWheelMarkShader(void)	
+0x007C9380	?ToggleCDWheelMarkShader@@YAXXZ	void __cdecl ToggleCDWheelMarkShader(void)	
+0x007C9390	?InitCDWheelMarkVertexDefBuilder@@YAXXZ	void __cdecl InitCDWheelMarkVertexDefBuilder(void)	
+0x007C93D0	?Register@cdWheelMarkShader@@UAEXXZ	public: virtual void __thiscall cdWheelMarkShader::Register(void)	
+0x007C9410	?AddNode@cdWheelMarkShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdWheelMarkShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	
+0x007C9480	?Render@cdWheelMarkShaderNode@@UAEXXZ	public: virtual void __thiscall cdWheelMarkShaderNode::Render(void)	

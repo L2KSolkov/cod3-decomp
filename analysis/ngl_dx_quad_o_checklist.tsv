@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:00447480 ?nglRenderQuad@@YAXPAUnglQuad@@@Z 00C36980 f ngl_dx_quad.o
+2	VERIFIED	0002:004479b0 ?Render@nglQuadNode@@UAEXXZ 00C36EB0 f ngl_dx_quad.o
+3	PORTED	0002:004479d0 ?BeginPush@D3DDevice@@SGJKPAPAK@Z 00C36ED0 f i ngl_dx_quad.o
+4	PORTED	0002:004479f0 ?EndPush@D3DDevice@@SGJPAK@Z 00C36EF0 f i ngl_dx_quad.o
+5	PORTED	0002:00447a10 ?End@nglXbPushQuadClass@@QAEHXZ 00C36F10 f i ngl_dx_quad.o
+6	PORTED	0002:00447a40 ?Pos@nglXbPushQuadClass@@QAEXMMM@Z 00C36F40 f i ngl_dx_quad.o
+7	PORTED	0002:00447a80 ?Color@nglXbPushQuadClass@@QAEXI@Z 00C36F80 f i ngl_dx_quad.o
+8	PORTED	0002:00447aa0 ?UV@nglXbPushQuadClass@@QAEXMM@Z 00C36FA0 f i ngl_dx_quad.o
+9	PORTED	0002:00447ad0 ?SetYUV@nglDxRenderState@@QAEX_N@Z 00C36FD0 f i ngl_dx_quad.o
+10	PORTED	0002:00447b00 ?Begin@nglXbPushQuadClass@@QAEHI@Z 00C37000 f i ngl_dx_quad.o
+11	VERIFIED	0002:00447b70 ?nglDxViewToScreenZ@@YAMMPAUnglScene@@@Z 00C37070 f i ngl_dx_quad.o

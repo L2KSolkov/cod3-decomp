@@ -1,0 +1,146 @@
+index	status	map_line
+1	PORTED	0002:003ed5c0 ??Hmath@@YA?AVVector4@0@ABV10@ABVDir3@0@@Z 00BDCAC0 f i apsEffect.o
+2	PORTED	0002:003ed600 ?Accumulate@apsBounds@@QAEXABU1@@Z 00BDCB00 f i apsEffect.o
+3	PORTED	0002:003ed640 ?GetInt@RandomNumberGenerator@apsMath@@QAEHXZ 00BDCB40 f i apsEffect.o
+4	VERIFIED	0002:003ed660 ?GetFloat@RandomNumberGenerator@apsMath@@QAEMXZ 00BDCB60 f i apsEffect.o
+5	VERIFIED	0002:003ed6a0 ?GetFloat@RandomNumberGenerator@apsMath@@QAEMMM@Z 00BDCBA0 f i apsEffect.o
+6	VERIFIED	0002:003ed6e0 ?FloatRand@apsMath@@YAMMM@Z 00BDCBE0 f i apsEffect.o
+7	VERIFIED	0002:003ed730 ?Multiply43@apsMath@@YAXAAVMat43@math@@ABV23@1@Z 00BDCC30 f i apsEffect.o
+8	PORTED	0002:003ed8a0 ?IsStopping@apsEffect@@QAEHXZ 00BDCDA0 f i apsEffect.o
+9	PORTED	0002:003ed8b0 ?Template@apsEffect@@QBEABVapsEffectTemplate@@XZ 00BDCDB0 f i apsEffect.o
+10	PORTED	0002:003ed8f0 ?GetStride@apsPFD@@QBEHXZ 00BDCDF0 f i apsEffect.o
+11	PORTED	0002:003ed900 ?AddRef@apsEffectTemplate@@QBEXXZ 00BDCE00 f i apsEffect.o
+12	PORTED	0002:003ed910 ?RemoveRef@apsEffectTemplate@@QBEXXZ 00BDCE10 f i apsEffect.o
+13	PORTED	0002:003ed920 ?GetLocalToWorldTransform@apsEffectTemplate@@QBEABVMat43@math@@XZ 00BDCE20 f i apsEffect.o
+14	PORTED	0002:003ed930 ?IsLocalSpace@Element@apsEffectTemplate@@QBEIXZ 00BDCE30 f i apsEffect.o
+15	PORTED	0002:003ed940 ?MaxNumParticles@Element@apsEffectTemplate@@QBEHXZ 00BDCE40 f i apsEffect.o
+16	PORTED	0002:003ed950 ?BeginTime@Element@apsEffectTemplate@@QBEMXZ 00BDCE50 f i apsEffect.o
+17	PORTED	0002:003ed960 ?Renderer@Element@apsEffectTemplate@@QBEPAVapsRenderer@@XZ 00BDCE60 f i apsEffect.o
+18	PORTED	0002:003ed970 ?ActionList@Element@apsEffectTemplate@@QBEPAVapsActionList@@XZ 00BDCE70 f i apsEffect.o
+19	PORTED	0002:003ed980 ?GetPFD@Element@apsEffectTemplate@@QBEABVapsPFD@@XZ 00BDCE80 f i apsEffect.o
+20	PORTED	0002:003ed990 ?GetMemoryNeeded@apsEffectTemplate@@QBEHXZ 00BDCE90 f i apsEffect.o
+21	PORTED	0002:003ed9a0 ?GetTimeScale@apsEffectTemplate@@QBEMXZ 00BDCEA0 f i apsEffect.o
+22	PORTED	0002:003ed9b0 ?IncTotalInstances@Stats@apsEffectTemplate@@QAEXXZ 00BDCEB0 f i apsEffect.o
+23	PORTED	0002:003ed9c0 ?IncActiveInstances@Stats@apsEffectTemplate@@QAEXXZ 00BDCEC0 f i apsEffect.o
+24	PORTED	0002:003ed9e0 ?DecActiveInstances@Stats@apsEffectTemplate@@QAEXXZ 00BDCEE0 f i apsEffect.o
+25	PORTED	0002:003ed9f0 ?IncFailedElements@Stats@apsEffectTemplate@@QAEXXZ 00BDCEF0 f i apsEffect.o
+26	PORTED	0002:003eda00 ?IncFailedModifiers@Stats@apsEffectTemplate@@QAEXXZ 00BDCF00 f i apsEffect.o
+27	PORTED	0002:003eda10 ?GetStats@apsEffectTemplate@@QAEAAUStats@1@XZ 00BDCF10 f i apsEffect.o
+28	VERIFIED	0002:003eda20 ??0LightInfo@apsLight@@QAE@XZ 00BDCF20 f i apsEffect.o
+29	PORTED	0002:003eda30 ?IsDynamicallyLit@apsRenderer@@QBE_NXZ 00BDCF30 f i apsEffect.o
+30	PORTED	0002:003eda40 ?GetNumParticles@apsGroup@@QBEHXZ 00BDCF40 f i apsEffect.o
+31	PORTED	0002:003eda50 ?GetMaxNumParticles@apsGroup@@QBEHXZ 00BDCF50 f i apsEffect.o
+32	PORTED	0002:003eda60 ?GetMaxUsedParticles@apsGroup@@QBEHXZ 00BDCF60 f i apsEffect.o
+33	PORTED	0002:003eda70 ?GetLastPosition@apsGroup@@QBEABVDir3@math@@XZ 00BDCF70 f i apsEffect.o
+34	PORTED	0002:003eda80 ?GetPFD@apsGroup@@QBEABVapsPFD@@XZ 00BDCF80 f i apsEffect.o
+35	PORTED	0002:003eda90 ?SetRenderer@apsGroup@@QAEXPAVapsRenderer@@@Z 00BDCF90 f i apsEffect.o
+36	PORTED	0002:003edaa0 ?SetEnableRendering@apsGroup@@QAEXI@Z 00BDCFA0 f i apsEffect.o
+37	PORTED	0002:003edad0 ?SetBeingRemoved@apsGroup@@QAEXI@Z 00BDCFD0 f i apsEffect.o
+38	PORTED	0002:003edb00 ?IsBeingRemoved@apsGroup@@QBEIXZ 00BDD000 f i apsEffect.o
+39	PORTED	0002:003edb10 ?SetScreenFacingNormal@apsGroup@@QAEXABVDir3@math@@@Z 00BDD010 f i apsEffect.o
+40	PORTED	0002:003edb30 ?NeedsDynamicLightInfo@apsGroup@@QBE_NXZ 00BDD030 f i apsEffect.o
+41	PORTED	0002:003edb40 ?IsVisible@apsGroup@@QBEIXZ 00BDD040 f i apsEffect.o
+42	PORTED	0002:003edb50 ?SetCulled@apsGroup@@QAEXI@Z 00BDD050 f i apsEffect.o
+43	PORTED	0002:003edb80 ?SetUpdateTime@apsGroup@@QAEXM@Z 00BDD080 f i apsEffect.o
+44	PORTED	0002:003edba0 ?UpdateTime@apsGroup@@QBEMXZ 00BDD0A0 f i apsEffect.o
+45	PORTED	0002:003edbb0 ?UpdateDelay@apsGroup@@QBEMXZ 00BDD0B0 f i apsEffect.o
+46	PORTED	0002:003edbc0 ?BoundSphereDistanceFromCamera@apsGroup@@QBEMXZ 00BDD0C0 f i apsEffect.o
+47	VERIFIED	0002:003edbd0 ?TheRealInitializeLOL@apsEffect@@IAEXXZ 00BDD0D0 f apsEffect.o
+48	VERIFIED	0002:003edbf0 ?StopEmitting@apsEffect@@QAEXXZ 00BDD0F0 f apsEffect.o
+49	VERIFIED	0002:003edc00 ?GetModifierId@apsEffect@@QAEHPBD@Z 00BDD100 f apsEffect.o
+50	PORTED	0002:003edc50 ?GetLightInfo@?A0xadc4f7bf@@YAXPBVapsEffect@@AAULightInfo@apsLight@@@Z 00BDD150 f apsEffect.o
+51	VERIFIED	0002:003edc90 ?GetRaycastResult@apsEffect@@QBEABURaycastResult@1@I@Z 00BDD190 f apsEffect.o
+52	VERIFIED	0002:003edd00 ?AccumulateCollisionBounds@apsEffect@@QAEXABUapsBounds@@@Z 00BDD200 f apsEffect.o
+53	VERIFIED	0002:003edd50 ?IncrementRaycastCountdown@apsEffect@@QAEXXZ 00BDD250 f apsEffect.o
+54	VERIFIED	0002:003edd70 ?GetRaycastCountdownMaxValue@apsEffect@@SAIXZ 00BDD270 f apsEffect.o
+55	VERIFIED	0002:003edd80 ?IsPoolEmpty@apsEffect@@SAIXZ 00BDD280 f apsEffect.o
+56	VERIFIED	0002:003eddc0 ?TestAlloc@apsEffect@@SAIPAVapsEffectTemplate@@@Z 00BDD2C0 f apsEffect.o
+57	VERIFIED	0002:003ede40 ?GetNumActiveEffects@apsEffect@@SAHXZ 00BDD340 f apsEffect.o
+58	VERIFIED	0002:003ede80 ?ReportTemplate@apsEffect@@QAEXXZ 00BDD380 f apsEffect.o
+59	VERIFIED	0002:003edf00 ?SetLocalToWorldTransform@apsEffect@@QAEXABVMat43@math@@@Z 00BDD400 f apsEffect.o
+60	VERIFIED	0002:003edf70 ?CountParticles@apsEffect@@QAEHXZ 00BDD470 f apsEffect.o
+61	VERIFIED	0002:003edfa0 ?SetModifierValue@apsEffect@@QAEXHM@Z 00BDD4A0 f apsEffect.o
+62	VERIFIED	0002:003ee020 ?GetModifierValue@apsEffect@@QAEMH@Z 00BDD520 f apsEffect.o
+63	VERIFIED	0002:003ee090 ?GetModifierTemplateValue@apsEffect@@QAEMH@Z 00BDD590 f apsEffect.o
+64	VERIFIED	0002:003ee1c0 ?swap_modifiers@apsEffect@@AAEXXZ 00BDD6C0 f apsEffect.o
+65	VERIFIED	0002:003ee250 ?Render@apsEffect@@QAEXPAUnglLightContext@@ABUFrustumInfo@VFC@@@Z 00BDD750 f apsEffect.o
+66	VERIFIED	0002:003ee300 ?GetBounds@apsEffect@@QAEXAAUapsBounds@@@Z 00BDD800 f apsEffect.o
+67	VERIFIED	0002:003ee390 ?SetPosition@apsEffect@@QAEXABVDir3@math@@@Z 00BDD890 f apsEffect.o
+68	VERIFIED	0002:003ee3d0 ?SetCulled@apsEffect@@QAEXI@Z 00BDD8D0 f apsEffect.o
+69	VERIFIED	0002:003ee430 ?Report@apsEffect@@QAEXH@Z 00BDD930 f apsEffect.o
+70	VERIFIED	0002:003ee6e0 ??0apsEffect@@QAE@PBVapsEffectTemplate@@M@Z 00BDDBE0 f apsEffect.o
+71	VERIFIED	0002:003ee950 ??1apsEffect@@QAE@XZ 00BDDE50 f apsEffect.o
+72	VERIFIED	0002:003eeb00 ?Construct@apsEffect@@IAEIPBVapsEffectTemplate@@M@Z 00BDE000 f apsEffect.o
+73	VERIFIED	0002:003eee60 ?Update@apsEffect@@QAEXM@Z 00BDE360 f apsEffect.o
+74	VERIFIED	0002:003ef460 ?IsDone@apsEffect@@QAEIXZ 00BDE960 f apsEffect.o
+75	VERIFIED	0002:003ef520 ?FastForward@apsEffect@@QAEXMH@Z 00BDEA20 f apsEffect.o
+76	VERIFIED	0002:003ef580 ?CalcSortKey@apsEffect@@QAEXXZ 00BDEA80 f apsEffect.o
+77	VERIFIED	0002:003ef650 ?RequestRaycast@apsEffect@@QAEIABVDir3@math@@0@Z 00BDEB50 f apsEffect.o
+78	VERIFIED	0002:003ef7a0 ?ReportEffects@apsEffect@@SAXXZ 00BDECA0 f apsEffect.o
+79	VERIFIED	0002:003ef860 ?Destruct@apsEffect@@IAEII@Z 00BDED60 f apsEffect.o
+80	VERIFIED	0002:003ef880 ?InitPool@apsEffect@@SAXH@Z 00BDED80 f apsEffect.o
+81	VERIFIED	0002:003ef8b0 ?New@apsEffect@@SAPAV1@PBVapsEffectTemplate@@M@Z 00BDEDB0 f apsEffect.o
+82	VERIFIED	0002:003ef9a0 ?Delete@apsEffect@@SAXPAV1@I@Z 00BDEEA0 f apsEffect.o
+83	VERIFIED	0002:003efa00 ?TermPool@apsEffect@@SAXXZ 00BDEF00 f apsEffect.o
+84	PORTED	0002:003efa30 ??0RaycastRequest@apsEffect@@QAE@XZ 00BDEF30 f i apsEffect.o
+85	PORTED	0002:003efa40 ??0RaycastResult@apsEffect@@QAE@XZ 00BDEF40 f i apsEffect.o
+86	VERIFIED	0002:003efa50 ??0?$apsBlockArray@PAVapsGroup@@@@QAE@XZ 00BDEF50 f i apsEffect.o
+87	PORTED	0002:003efa60 ?begin@?$apsBlockArray@PAVapsGroup@@@@QAEPAPAVapsGroup@@XZ 00BDEF60 f i apsEffect.o
+88	PORTED	0002:003efa70 ?end@?$apsBlockArray@PAVapsGroup@@@@QAEPAPAVapsGroup@@XZ 00BDEF70 f i apsEffect.o
+89	PORTED	0002:003efa80 ?destroy_all@?$apsBlockArray@PAVapsGroup@@@@QAEXXZ 00BDEF80 f i apsEffect.o
+90	VERIFIED	0002:003efad0 ??0?$apsBlockArray@UModifier@apsEffect@@@@QAE@XZ 00BDEFD0 f i apsEffect.o
+91	PORTED	0002:003efae0 ?size@?$apsBlockArray@UModifier@apsEffect@@@@QBEHXZ 00BDEFE0 f i apsEffect.o
+92	PORTED	0002:003efaf0 ??A?$apsBlockArray@UModifier@apsEffect@@@@QAEAAUModifier@apsEffect@@H@Z 00BDEFF0 f i apsEffect.o
+93	PORTED	0002:003efb40 ?begin@?$apsBlockArray@UModifier@apsEffect@@@@QAEPAUModifier@apsEffect@@XZ 00BDF040 f i apsEffect.o
+94	PORTED	0002:003efb50 ?end@?$apsBlockArray@UModifier@apsEffect@@@@QAEPAUModifier@apsEffect@@XZ 00BDF050 f i apsEffect.o
+95	PORTED	0002:003efb60 ?destroy_all@?$apsBlockArray@UModifier@apsEffect@@@@QAEXXZ 00BDF060 f i apsEffect.o
+96	PORTED	0002:003efbb0 ??A?$apsArray@M@@QBEABMH@Z 00BDF0B0 f i apsEffect.o
+97	PORTED	0002:003efc00 ?size@?$apsArray@PAVapsAction@@@@QBEHXZ 00BDF100 f i apsEffect.o
+98	PORTED	0002:003efc10 ??A?$apsArray@PAVapsAction@@@@QAEAAPAVapsAction@@H@Z 00BDF110 f i apsEffect.o
+99	PORTED	0002:003efc60 ?size@?$apsArray@UModifier@apsEffectTemplate@@@@QBEHXZ 00BDF160 f i apsEffect.o
+100	PORTED	0002:003efc70 ??A?$apsArray@UModifier@apsEffectTemplate@@@@QBEABUModifier@apsEffectTemplate@@H@Z 00BDF170 f i apsEffect.o
+101	VERIFIED	0002:003efcc0 ?Instance@?$apsSingleton@VapsGroupManager@@@@SAAAVapsGroupManager@@XZ 00BDF1C0 f i apsEffect.o
+102	VERIFIED	0002:003efcf0 ?InstancePtr@?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@SAPAV?$PoolAllocator@VapsEffect@@@apsMemory@@XZ 00BDF1F0 f i apsEffect.o
+103	PORTED	0002:003efd00 ?Instance@?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@SAAAV?$PoolAllocator@VapsEffect@@@apsMemory@@XZ 00BDF200 f i apsEffect.o
+104	PORTED	0002:003efd30 ?Alloc@?$PoolAllocator@VapsEffect@@@apsMemory@@QAEPAVapsEffect@@XZ 00BDF230 f i apsEffect.o
+105	PORTED	0002:003efd40 ?Free@?$PoolAllocator@VapsEffect@@@apsMemory@@QAEXPBVapsEffect@@@Z 00BDF240 f i apsEffect.o
+106	PORTED	0002:003efd50 ?GetPool@?$PoolAllocator@VapsEffect@@@apsMemory@@QAEAAVPool@2@XZ 00BDF250 f i apsEffect.o
+107	PORTED	0002:003efd60 ?construct_array@?$apsBlockArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@H@Z 00BDF260 f i apsEffect.o
+108	PORTED	0002:003efdb0 ?construct_array@?$apsBlockArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@HH@Z 00BDF2B0 f i apsEffect.o
+109	PORTED	0002:003efe00 ?resize_array@?$apsBlockArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@HH@Z 00BDF300 f i apsEffect.o
+110	PORTED	0002:003efe60 ?construct_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z 00BDF360 f i apsEffect.o
+111	PORTED	0002:003efeb0 ?resize_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z 00BDF3B0 f i apsEffect.o
+112	PORTED	0002:003eff10 ??0?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF410 f i apsEffect.o
+113	PORTED	0002:003eff50 ??1?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF450 f i apsEffect.o
+114	PORTED	0002:003eff90 ??$Max@H@apsMath@@YAHABH0@Z 00BDF490 f i apsEffect.o
+115	PORTED	0002:003effb0 ??$Min@H@apsMath@@YAHABH0@Z 00BDF4B0 f i apsEffect.o
+116	VERIFIED	0002:003effd0 ?GetParam@apsAction@@QBEMH@Z 00BDF4D0 f i apsEffect.o
+117	VERIFIED	0002:003f0030 ?GetAction@apsActionList@@QAEPAVapsAction@@H@Z 00BDF530 f i apsEffect.o
+118	PORTED	0002:003f00b0 ?GetNumModifiers@apsEffectTemplate@@QBEHXZ 00BDF5B0 f i apsEffect.o
+119	PORTED	0002:003f00c0 ?GetModifier@apsEffectTemplate@@ABEABUModifier@1@H@Z 00BDF5C0 f i apsEffect.o
+120	PORTED	0002:003f0140 ?GetMaxNumParticles@apsEffectTemplate@@QBEHH@Z 00BDF640 f i apsEffect.o
+121	PORTED	0002:003f0160 ?GetBeginTime@apsEffectTemplate@@QBEMH@Z 00BDF660 f i apsEffect.o
+122	PORTED	0002:003f0180 ?GetRenderer@apsEffectTemplate@@QBEPAVapsRenderer@@H@Z 00BDF680 f i apsEffect.o
+123	PORTED	0002:003f01a0 ?GetActionList@apsEffectTemplate@@QBEPAVapsActionList@@H@Z 00BDF6A0 f i apsEffect.o
+124	PORTED	0002:003f01c0 ?GetLocalSpace@apsEffectTemplate@@QBEIH@Z 00BDF6C0 f i apsEffect.o
+125	PORTED	0002:003f01e0 ?GetPFD@apsEffectTemplate@@QBEABVapsPFD@@H@Z 00BDF6E0 f i apsEffect.o
+126	PORTED	0002:003f0200 ?GetElementNumber@apsEffectTemplate@@QBEHH@Z 00BDF700 f i apsEffect.o
+127	PORTED	0002:003f0220 ?GetActionNumber@apsEffectTemplate@@QBEHH@Z 00BDF720 f i apsEffect.o
+128	PORTED	0002:003f0240 ?GetParamNumber@apsEffectTemplate@@QBEHH@Z 00BDF740 f i apsEffect.o
+129	PORTED	0002:003f0260 ??0CollisionData@apsEffect@@QAE@XZ 00BDF760 f i apsEffect.o
+130	VERIFIED	0002:003f0270 ??0?$apsBlockArray@PAVapsGroup@@@@QAE@HABQAVapsGroup@@@Z 00BDF770 f i apsEffect.o
+131	VERIFIED	0002:003f0310 ??1?$apsBlockArray@PAVapsGroup@@@@QAE@XZ 00BDF810 f i apsEffect.o
+132	PORTED	0002:003f0320 ?reserve@?$apsBlockArray@PAVapsGroup@@@@QAEIH@Z 00BDF820 f i apsEffect.o
+133	PORTED	0002:003f03b0 ?push_back@?$apsBlockArray@PAVapsGroup@@@@QAEIABQAVapsGroup@@@Z 00BDF8B0 f i apsEffect.o
+134	VERIFIED	0002:003f0480 ??1?$apsBlockArray@UModifier@apsEffect@@@@QAE@XZ 00BDF980 f i apsEffect.o
+135	PORTED	0002:003f0490 ?reserve@?$apsBlockArray@UModifier@apsEffect@@@@QAEIH@Z 00BDF990 f i apsEffect.o
+136	PORTED	0002:003f0550 ?push_back@?$apsBlockArray@UModifier@apsEffect@@@@QAEIABUModifier@apsEffect@@@Z 00BDFA50 f i apsEffect.o
+137	PORTED	0002:003f0670 ??$Limit@HH@apsMath@@YAHABH00@Z 00BDFB70 f i apsEffect.o
+138	PORTED	0002:003f0690 ??0apsEffect@@QAE@XZ 00BDFB90 f i apsEffect.o
+139	VERIFIED	0002:003f06c0 ??_GapsEffect@@QAEPAXI@Z 00BDFBC0 f i apsEffect.o
+140	VERIFIED	0002:003f06f0 ??$AEPS_VECTOR_NEW@VapsEffect@@@@YAPAVapsEffect@@HH@Z 00BDFBF0 f i apsEffect.o
+141	PORTED	0002:003f0750 ??$AEPS_VECTOR_DELETE@VapsEffect@@@@YAXHPAVapsEffect@@@Z 00BDFC50 f i apsEffect.o
+142	VERIFIED	0002:003f0790 ??0?$PoolAllocator@VapsEffect@@@apsMemory@@QAE@H@Z 00BDFC90 f i apsEffect.o
+143	VERIFIED	0002:003f0800 ??1?$PoolAllocator@VapsEffect@@@apsMemory@@QAE@XZ 00BDFD00 f i apsEffect.o
+144	VERIFIED	0002:003f0890 ??_G?$PoolAllocator@VapsEffect@@@apsMemory@@QAEPAXI@Z 00BDFD90 f i apsEffect.o
+145	PORTED	0002:003f08c0 ??$apsDestroy@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@YAXPAV?$PoolAllocator@VapsEffect@@@apsMemory@@@Z 00BDFDC0 f i apsEffect.o

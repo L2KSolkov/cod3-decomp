@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x007E1800	?GetNullBuffer@@YAPADH@Z	char * __cdecl GetNullBuffer(int)	

@@ -1,0 +1,10 @@
+ida_ea	name	signature	source_cpp
+0x007BED90	?ae_stricmpn@@YAHPBD0H@Z	int __cdecl ae_stricmpn(char const *,char const *,int)	
+0x007BEDF0	?StrStrEqu@AeStringSupport@@YA_NPBDH0H@Z	bool __cdecl AeStringSupport::StrStrEqu(char const *,int,char const *,int)	
+0x007BEF00	?StrCStrEqu@AeStringSupport@@YA_NPBDH0H@Z	bool __cdecl AeStringSupport::StrCStrEqu(char const *,int,char const *,int)	
+0x007BEF50	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	void __cdecl AeStringSupport::CStrToAeStr(char *,int &,int,char const *)	
+0x007BEFA0	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	void __cdecl AeStringSupport::Concat(char *,int &,int,char const *)	
+0x007BEFE0	?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z	void __cdecl AeStringSupport::AeStrCopy(char *,int &,int,char const *,int)	
+0x007BF040	?SubStr@AeStringSupport@@YAXPADAAHPBDHHH@Z	void __cdecl AeStringSupport::SubStr(char *,int &,char const *,int,int,int)	
+0x007BF0A0	?Split@AeStringSupport@@YAXPADAAH01DH@Z	void __cdecl AeStringSupport::Split(char *,int &,char *,int &,char,int)	
+0x007BF160	?GetFileName@AeStringSupport@@YAXPADAAHPBDH_N@Z	void __cdecl AeStringSupport::GetFileName(char *,int &,char const *,int,bool)	

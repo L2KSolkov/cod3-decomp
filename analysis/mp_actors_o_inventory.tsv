@@ -1,0 +1,381 @@
+ida_ea	va	name	signature	family
+0x0077BDB0	0x00B6B2B0	?Spawner@AIType@@QAEXPAVEntity@@@Z	public: void __thiscall AIType::Spawner(class Entity *)	mp_actors.o
+0x0077BE40	0x00B6B340	??Asentient_info_array@@QAEAAUsentient_info_t@@H@Z	public: struct sentient_info_t & __thiscall sentient_info_array::operator[](int)	mp_actors.o
+0x0077BE50	0x00B6B350	?FreeIndex@sentient_info_array@@QAEXH@Z	public: void __thiscall sentient_info_array::FreeIndex(int)	mp_actors.o
+0x0077BE60	0x00B6B360	?Actor_NextActor@@YIPAUactor_s@@PAU1@H@Z	struct actor_s * __fastcall Actor_NextActor(struct actor_s *,int)	mp_actors.o
+0x0077BE70	0x00B6B370	?Actor_FirstActor@@YIPAUactor_s@@H@Z	struct actor_s * __fastcall Actor_FirstActor(int)	mp_actors.o
+0x0077BE80	0x00B6B380	?Actor_GetEnt@@YIPAVEntity@@PAUactor_s@@@Z	class Entity * __fastcall Actor_GetEnt(struct actor_s *)	mp_actors.o
+0x0077BE90	0x00B6B390	?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z	int __cdecl Actor_CheckArmor(struct actor_s *,int,int)	mp_actors.o
+0x0077BEA0	0x00B6B3A0	?G_FlushCorpses@@YAXXZ	void __cdecl G_FlushCorpses(void)	mp_actors.o
+0x0077BEB0	0x00B6B3B0	?Actor_Pain@@YAXPAVEntity@@0HQBMH1W4hitLocation_t@@@Z	void __cdecl Actor_Pain(class Entity *,class Entity *,int,float const * const,int,float const * const,enum hitLocation_t)	mp_actors.o
+0x0077BEC0	0x00B6B3C0	?Actor_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z	void __cdecl Actor_Die(class Entity *,class Entity *,class Entity *,int,int,int,float const * const,float const * const,enum hitLocation_t)	mp_actors.o
+0x0077BED0	0x00B6B3D0	?Actor_EntInfo@@YAXPAVEntity@@@Z	void __cdecl Actor_EntInfo(class Entity *)	mp_actors.o
+0x0077BEE0	0x00B6B3E0	?Actor_Touch@@YAXPAVEntity@@0H@Z	void __cdecl Actor_Touch(class Entity *,class Entity *,int)	mp_actors.o
+0x0077BEF0	0x00B6B3F0	?Actor_Think@@YAXPAVEntity@@H@Z	void __cdecl Actor_Think(class Entity *,int)	mp_actors.o
+0x0077BF00	0x00B6B400	?Actor_SetDesiredBodyAngle@@YIXPAUai_orient_t@@M@Z	void __fastcall Actor_SetDesiredBodyAngle(struct ai_orient_t *,float)	mp_actors.o
+0x0077BF10	0x00B6B410	?Actor_DissociateGrenade@@YIXPAVEntity@@@Z	void __fastcall Actor_DissociateGrenade(class Entity *)	mp_actors.o
+0x0077BF20	0x00B6B420	?Actor_HitTarget@@YAXPAUweaponParms@@QAM1@Z	void __cdecl Actor_HitTarget(struct weaponParms *,float * const,float * const)	mp_actors.o
+0x0077BF30	0x00B6B430	?Actor_MissTarget@@YAXPAUweaponParms@@QAM1@Z	void __cdecl Actor_MissTarget(struct weaponParms *,float * const,float * const)	mp_actors.o
+0x0077BF40	0x00B6B440	?Actor_KillBroAnimScriptImmediate@@YIXPAUactor_s@@@Z	void __fastcall Actor_KillBroAnimScriptImmediate(struct actor_s *)	mp_actors.o
+0x0077BF50	0x00B6B450	?Actor_DissociateEntity@@YAXPAUactor_s@@PAVEntity@@@Z	void __cdecl Actor_DissociateEntity(struct actor_s *,class Entity *)	mp_actors.o
+0x0077BF60	0x00B6B460	?Actor_GrenadeBounced@@YIXPAVEntity@@0@Z	void __fastcall Actor_GrenadeBounced(class Entity *,class Entity *)	mp_actors.o
+0x0077BF70	0x00B6B470	?Actor_CanAttackAll@@YIXPAUactor_s@@@Z	void __fastcall Actor_CanAttackAll(struct actor_s *)	mp_actors.o
+0x0077BF80	0x00B6B480	?G_DropActorSpawnersToFloor@@YAXXZ	void __cdecl G_DropActorSpawnersToFloor(void)	mp_actors.o
+0x0077BF90	0x00B6B490	?Actor_OrientCorpseToGround@@YAXPAVEntity@@H@Z	void __cdecl Actor_OrientCorpseToGround(class Entity *,int)	mp_actors.o
+0x0077BFA0	0x00B6B4A0	?Actor_CorpseThink@@YAXPAVEntity@@H@Z	void __cdecl Actor_CorpseThink(class Entity *,int)	mp_actors.o
+0x0077BFB0	0x00B6B4B0	?Actor_Grenade_CheckGrenadeHintToss@@YIHPAUactor_s@@QBM1QAM_N@Z	int __fastcall Actor_Grenade_CheckGrenadeHintToss(struct actor_s *,float const * const,float const * const,float * const,bool)	mp_actors.o
+0x0077BFC0	0x00B6B4C0	?Actor_NodeClaimRevoked@@YIXPAUactor_s@@@Z	void __fastcall Actor_NodeClaimRevoked(struct actor_s *)	mp_actors.o
+0x0077BFD0	0x00B6B4D0	?Actor_CanSeePointEx@@YIMPAUactor_s@@QBMMMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	float __fastcall Actor_CanSeePointEx(struct actor_s *,float const * const,float,float,class DbLinkedHandle<class EntityHandleDb,class Entity>)	mp_actors.o
+0x0077BFE0	0x00B6B4E0	?Actor_BroadcastPointEvent@@YIXPAVEntity@@W4ai_event_t@@HABVPosition3@math@@M@Z	void __fastcall Actor_BroadcastPointEvent(class Entity *,enum ai_event_t,int,class math::Position3 const &,float)	mp_actors.o
+0x0077BFF0	0x00B6B4F0	?Actor_BroadcastLineEvent@@YIXPAVEntity@@W4ai_event_t@@HQBM2M@Z	void __fastcall Actor_BroadcastLineEvent(class Entity *,enum ai_event_t,int,float const * const,float const * const,float)	mp_actors.o
+0x0077C000	0x00B6B500	?Actor_DissociateSentient@@YAXPAUactor_s@@PAUsentient_s@@W4team_t@@@Z	void __cdecl Actor_DissociateSentient(struct actor_s *,struct sentient_s *,enum team_t)	mp_actors.o
+0x0077C010	0x00B6B510	?Actor_Alloc@@YAPAUactor_s@@W4TPakId@@@Z	struct actor_s * __cdecl Actor_Alloc(enum TPakId)	mp_actors.o
+0x0077C020	0x00B6B520	?ActorCorpse_Free@@YAXPAVEntity@@@Z	void __cdecl ActorCorpse_Free(class Entity *)	mp_actors.o
+0x0077C030	0x00B6B530	?Actor_Free@@YAXPAUactor_s@@@Z	void __cdecl Actor_Free(struct actor_s *)	mp_actors.o
+0x0077C040	0x00B6B540	?Actor_FreeExpendable@@YAXXZ	void __cdecl Actor_FreeExpendable(void)	mp_actors.o
+0x0077C050	0x00B6B550	?G_InitActors@@YAXXZ	void __cdecl G_InitActors(void)	mp_actors.o
+0x0077C060	0x00B6B560	?G_GetActorIndex@@YAHPAUactor_s@@@Z	int __cdecl G_GetActorIndex(struct actor_s *)	mp_actors.o
+0x0077C070	0x00B6B570	?G_GetActorCorpseIndex@@YAHPAVEntity@@@Z	int __cdecl G_GetActorCorpseIndex(class Entity *)	mp_actors.o
+0x0077C080	0x00B6B580	?Actor_GetCorpseAngles@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HABVPosition3@math@@MPAM22@Z	void __cdecl Actor_GetCorpseAngles(class DbLinkedHandle<class EntityHandleDb,class Entity>,int,class math::Position3 const &,float,float *,float *,float *)	mp_actors.o
+0x0077C090	0x00B6B590	?G_GetActorAnimTree@@YAPAVXAnimTree@@PAUactor_s@@@Z	class XAnimTree * __cdecl G_GetActorAnimTree(struct actor_s *)	mp_actors.o
+0x0077C0A0	0x00B6B5A0	?G_GetActorCorpseAnimTree@@YAPAVXAnimTree@@PAVEntity@@@Z	class XAnimTree * __cdecl G_GetActorCorpseAnimTree(class Entity *)	mp_actors.o
+0x0077C0B0	0x00B6B5B0	?Actor_SetDefaultState@@YAXPAUactor_s@@@Z	void __cdecl Actor_SetDefaultState(struct actor_s *)	mp_actors.o
+0x0077C0C0	0x00B6B5C0	?Actor_SetDefaults@@YAXPAUactor_s@@@Z	void __cdecl Actor_SetDefaults(struct actor_s *)	mp_actors.o
+0x0077C0D0	0x00B6B5D0	?Actor_FinishSpawning@@YAXPAUactor_s@@@Z	void __cdecl Actor_FinishSpawning(struct actor_s *)	mp_actors.o
+0x0077C0E0	0x00B6B5E0	?Actor_FinishSpawningAll@@YAXXZ	void __cdecl Actor_FinishSpawningAll(void)	mp_actors.o
+0x0077C0F0	0x00B6B5F0	?Actor_InvalidateCache@@YAXPAUactor_s@@@Z	void __cdecl Actor_InvalidateCache(struct actor_s *)	mp_actors.o
+0x0077C100	0x00B6B600	?Actor_BroadcastTeamEvent@@YIXPAUsentient_s@@W4ai_event_t@@@Z	void __fastcall Actor_BroadcastTeamEvent(struct sentient_s *,enum ai_event_t)	mp_actors.o
+0x0077C110	0x00B6B610	?Actor_GetSpreadMetric@@YAXPAUactor_s@@MPAM1PAUweaponFileInfo_t@@QAM3@Z	void __cdecl Actor_GetSpreadMetric(struct actor_s *,float,float *,float *,struct weaponFileInfo_t *,float * const,float * const)	mp_actors.o
+0x0077C120	0x00B6B620	?Actor_PointSatisfiesGoal@@YIHPAUactor_s@@QBMM@Z	int __fastcall Actor_PointSatisfiesGoal(struct actor_s *,float const * const,float)	mp_actors.o
+0x0077C130	0x00B6B630	?Actor_NodeSatisfiesGoal@@YIHPAUactor_s@@PBUPathNode@PathNodes@@@Z	int __fastcall Actor_NodeSatisfiesGoal(struct actor_s *,struct PathNodes::PathNode const *)	mp_actors.o
+0x0077C140	0x00B6B640	?Actor_UnclaimedNode@@YIHPAUactor_s@@PBUPathNode@PathNodes@@@Z	int __fastcall Actor_UnclaimedNode(struct actor_s *,struct PathNodes::PathNode const *)	mp_actors.o
+0x0077C150	0x00B6B650	?Actor_IsAtGoal@@YIHPAUactor_s@@W4goalRadiusCheck@@@Z	int __fastcall Actor_IsAtGoal(struct actor_s *,enum goalRadiusCheck)	mp_actors.o
+0x0077C160	0x00B6B660	?Actor_FindPathToGoal@@YIXPAUactor_s@@MHHH@Z	void __fastcall Actor_FindPathToGoal(struct actor_s *,float,int,int,int)	mp_actors.o
+0x0077C170	0x00B6B670	?Actor_ExistsPathToGoal@@YIHPAUactor_s@@QAM@Z	int __fastcall Actor_ExistsPathToGoal(struct actor_s *,float * const)	mp_actors.o
+0x0077C180	0x00B6B680	?Actor_FlagEnemyUnattackable@@YIXPAUactor_s@@@Z	void __fastcall Actor_FlagEnemyUnattackable(struct actor_s *)	mp_actors.o
+0x0077C190	0x00B6B690	?Actor_FlagEnemyUnattackableForDuration@@YIXPAUactor_s@@H@Z	void __fastcall Actor_FlagEnemyUnattackableForDuration(struct actor_s *,int)	mp_actors.o
+0x0077C1A0	0x00B6B6A0	?Actor_ForgetEnemy@@YIXPAUactor_s@@@Z	void __fastcall Actor_ForgetEnemy(struct actor_s *)	mp_actors.o
+0x0077C1B0	0x00B6B6B0	?Actor_CaresAboutInfo@@YIHPAUactor_s@@PAUsentient_s@@@Z	int __fastcall Actor_CaresAboutInfo(struct actor_s *,struct sentient_s *)	mp_actors.o
+0x0077C1C0	0x00B6B6C0	?Actor_UpdateThreat@@YIXPAUactor_s@@H@Z	void __fastcall Actor_UpdateThreat(struct actor_s *,int)	mp_actors.o
+0x0077C1D0	0x00B6B6D0	?Actor_FillWeaponParms@@YAXPAUactor_s@@PAUweaponParms@@@Z	void __cdecl Actor_FillWeaponParms(struct actor_s *,struct weaponParms *)	mp_actors.o
+0x0077C1E0	0x00B6B6E0	?Actor_CanSeePointFrom@@YIMPAUactor_s@@QBM1MV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	float __fastcall Actor_CanSeePointFrom(struct actor_s *,float const * const,float const * const,float,class DbLinkedHandle<class EntityHandleDb,class Entity>)	mp_actors.o
+0x0077C1F0	0x00B6B6F0	?Actor_CanSeePoint@@YIMPAUactor_s@@QBM@Z	float __fastcall Actor_CanSeePoint(struct actor_s *,float const * const)	mp_actors.o
+0x0077C200	0x00B6B700	?Actor_CanSeeEntityPoint@@YIMPAUactor_s@@QBMPBVEntity@@@Z	float __fastcall Actor_CanSeeEntityPoint(struct actor_s *,float const * const,class Entity const *)	mp_actors.o
+0x0077C210	0x00B6B710	?Actor_CanSeeEntity@@YIMPAUactor_s@@PBVEntity@@@Z	float __fastcall Actor_CanSeeEntity(struct actor_s *,class Entity const *)	mp_actors.o
+0x0077C220	0x00B6B720	?Actor_CanSeeEntityNoFov@@YIMPAUactor_s@@PBVEntity@@@Z	float __fastcall Actor_CanSeeEntityNoFov(struct actor_s *,class Entity const *)	mp_actors.o
+0x0077C230	0x00B6B730	?Actor_CanSeeEntityEx@@YIMPAUactor_s@@PBVEntity@@MM@Z	float __fastcall Actor_CanSeeEntityEx(struct actor_s *,class Entity const *,float,float)	mp_actors.o
+0x0077C240	0x00B6B740	?Actor_CanSeeSentient@@YIMPAUactor_s@@PAUsentient_s@@H@Z	float __fastcall Actor_CanSeeSentient(struct actor_s *,struct sentient_s *,int)	mp_actors.o
+0x0077C250	0x00B6B750	?Actor_CanSeeSentientNoFov@@YIMPAUactor_s@@PAUsentient_s@@@Z	float __fastcall Actor_CanSeeSentientNoFov(struct actor_s *,struct sentient_s *)	mp_actors.o
+0x0077C260	0x00B6B760	?Actor_CanSeeEnemy@@YIMPAUactor_s@@H@Z	float __fastcall Actor_CanSeeEnemy(struct actor_s *,int)	mp_actors.o
+0x0077C270	0x00B6B770	?Actor_CanSeeEnemyNoFov@@YIMPAUactor_s@@@Z	float __fastcall Actor_CanSeeEnemyNoFov(struct actor_s *)	mp_actors.o
+0x0077C280	0x00B6B780	?Actor_CanSeeGoal@@YIMPAUactor_s@@H@Z	float __fastcall Actor_CanSeeGoal(struct actor_s *,int)	mp_actors.o
+0x0077C290	0x00B6B790	?Actor_CanSeeSentientEx@@YIMPAUactor_s@@PAUsentient_s@@MMH@Z	float __fastcall Actor_CanSeeSentientEx(struct actor_s *,struct sentient_s *,float,float,int)	mp_actors.o
+0x0077C2A0	0x00B6B7A0	?Actor_CanSeeEnemyEx@@YIMPAUactor_s@@MMH@Z	float __fastcall Actor_CanSeeEnemyEx(struct actor_s *,float,float,int)	mp_actors.o
+0x0077C2B0	0x00B6B7B0	?Actor_CanSeeGoalEx@@YIMPAUactor_s@@MMH@Z	float __fastcall Actor_CanSeeGoalEx(struct actor_s *,float,float,int)	mp_actors.o
+0x0077C2C0	0x00B6B7C0	?Actor_CanShootFrom@@YIHPAUactor_s@@QBM1@Z	int __fastcall Actor_CanShootFrom(struct actor_s *,float const * const,float const * const)	mp_actors.o
+0x0077C2D0	0x00B6B7D0	?Actor_CanShootEnemy@@YIHPAUactor_s@@@Z	int __fastcall Actor_CanShootEnemy(struct actor_s *)	mp_actors.o
+0x0077C2E0	0x00B6B7E0	?Actor_CanHear@@YIHPAUactor_s@@QBMMM@Z	int __fastcall Actor_CanHear(struct actor_s *,float const * const,float,float)	mp_actors.o
+0x0077C2F0	0x00B6B7F0	?Actor_UpdateSight@@YIXPAUactor_s@@@Z	void __fastcall Actor_UpdateSight(struct actor_s *)	mp_actors.o
+0x0077C300	0x00B6B800	?Actor_Cover_PickAttackScript@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@@Z	int const __fastcall Actor_Cover_PickAttackScript(struct actor_s *,struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x0077C310	0x00B6B810	?Actor_Cover_CanAttack@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@PAPAUscr_animscript_t@@_N@Z	int const __fastcall Actor_Cover_CanAttack(struct actor_s *,struct PathNodes::PathNode *,struct sentient_s *,struct scr_animscript_t * *,bool)	mp_actors.o
+0x0077C320	0x00B6B820	?Actor_Cover_FindCoverNearSelf@@YI?BHPAUactor_s@@H@Z	int const __fastcall Actor_Cover_FindCoverNearSelf(struct actor_s *,int)	mp_actors.o
+0x0077C330	0x00B6B830	?Actor_Cover_FindCoverNearPoint@@YI?BHPAUactor_s@@QBM@Z	int const __fastcall Actor_Cover_FindCoverNearPoint(struct actor_s *,float const * const)	mp_actors.o
+0x0077C340	0x00B6B840	?Actor_Cover_FindCoverFromPoint@@YI?BHPAUactor_s@@QBMM@Z	int const __fastcall Actor_Cover_FindCoverFromPoint(struct actor_s *,float const * const,float)	mp_actors.o
+0x0077C350	0x00B6B850	?Actor_Cover_IsValidCover@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@_N@Z	int const __fastcall Actor_Cover_IsValidCover(struct actor_s *,struct PathNodes::PathNode *,bool)	mp_actors.o
+0x0077C360	0x00B6B860	?Actor_Cover_FindNewCover@@YI?BHPAUactor_s@@@Z	int const __fastcall Actor_Cover_FindNewCover(struct actor_s *)	mp_actors.o
+0x0077C370	0x00B6B870	?Actor_PreThink@@YIXPAUactor_s@@H@Z	void __fastcall Actor_PreThink(struct actor_s *,int)	mp_actors.o
+0x0077C380	0x00B6B880	?Actor_PostThink@@YIXPAUactor_s@@H@Z	void __fastcall Actor_PostThink(struct actor_s *,int)	mp_actors.o
+0x0077C390	0x00B6B890	?Actor_IsStateOnStack@@YIHPAUactor_s@@W4ai_state_e@@@Z	int __fastcall Actor_IsStateOnStack(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C3A0	0x00B6B8A0	?Actor_IsCurState@@YIHPAUactor_s@@W4ai_state_e@@@Z	int __fastcall Actor_IsCurState(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C3B0	0x00B6B8B0	?Actor_PendingTransitionTo@@YIHPAUactor_s@@W4ai_state_e@@@Z	int __fastcall Actor_PendingTransitionTo(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C3C0	0x00B6B8C0	?Actor_SetDoingMelee@@YIXPAUactor_s@@_N@Z	void __fastcall Actor_SetDoingMelee(struct actor_s *,bool)	mp_actors.o
+0x0077C3D0	0x00B6B8D0	?Actor_SetMeleeInteractable@@YIXPAUactor_s@@_N@Z	void __fastcall Actor_SetMeleeInteractable(struct actor_s *,bool)	mp_actors.o
+0x0077C3E0	0x00B6B8E0	?Actor_SetState@@YIXPAUactor_s@@W4ai_state_e@@@Z	void __fastcall Actor_SetState(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C3F0	0x00B6B8F0	?Actor_PushState@@YIHPAUactor_s@@W4ai_state_e@@@Z	int __fastcall Actor_PushState(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C400	0x00B6B900	?Actor_PopState@@YIXPAUactor_s@@@Z	void __fastcall Actor_PopState(struct actor_s *)	mp_actors.o
+0x0077C410	0x00B6B910	?Actor_ForceState@@YIXPAUactor_s@@W4ai_state_e@@@Z	void __fastcall Actor_ForceState(struct actor_s *,enum ai_state_e)	mp_actors.o
+0x0077C420	0x00B6B920	?VisCache_Flush@@YIXPAUvis_cache_t@@@Z	void __fastcall VisCache_Flush(struct vis_cache_t *)	mp_actors.o
+0x0077C430	0x00B6B930	?VisCache_Copy@@YIXPAUvis_cache_t@@PBU1@@Z	void __fastcall VisCache_Copy(struct vis_cache_t *,struct vis_cache_t const *)	mp_actors.o
+0x0077C440	0x00B6B940	?VisCache_Update@@YIXPAUvis_cache_t@@HM@Z	void __fastcall VisCache_Update(struct vis_cache_t *,int,float)	mp_actors.o
+0x0077C450	0x00B6B950	?Actor_GetEyePosition@@YIXPAUactor_s@@QAM@Z	void __fastcall Actor_GetEyePosition(struct actor_s *,float * const)	mp_actors.o
+0x0077C460	0x00B6B960	?Actor_GetEyeDirection@@YIXPAUactor_s@@QAM@Z	void __fastcall Actor_GetEyeDirection(struct actor_s *,float * const)	mp_actors.o
+0x0077C470	0x00B6B970	?Actor_GetEyeOffset@@YIXPAUactor_s@@QAM@Z	void __fastcall Actor_GetEyeOffset(struct actor_s *,float * const)	mp_actors.o
+0x0077C480	0x00B6B980	?Actor_GetMuzzleInfo@@YIHPAUactor_s@@QAM1@Z	int __fastcall Actor_GetMuzzleInfo(struct actor_s *,float * const,float * const)	mp_actors.o
+0x0077C490	0x00B6B990	?Actor_UpdateLastKnownPos@@YIXPAUactor_s@@PAUsentient_s@@@Z	void __fastcall Actor_UpdateLastKnownPos(struct actor_s *,struct sentient_s *)	mp_actors.o
+0x0077C4A0	0x00B6B9A0	?Actor_Grenade_CheckMinimumEnergyToss@@YIHPAUactor_s@@QBM1QAM@Z	int __fastcall Actor_Grenade_CheckMinimumEnergyToss(struct actor_s *,float const * const,float const * const,float * const)	mp_actors.o
+0x0077C4B0	0x00B6B9B0	?Actor_Grenade_CheckMaximumEnergyToss@@YIHPAUactor_s@@QBM1HQAM@Z	int __fastcall Actor_Grenade_CheckMaximumEnergyToss(struct actor_s *,float const * const,float const * const,int,float * const)	mp_actors.o
+0x0077C4C0	0x00B6B9C0	?Actor_Grenade_IsPointSafe@@YIHPAUactor_s@@QBM@Z	int __fastcall Actor_Grenade_IsPointSafe(struct actor_s *,float const * const)	mp_actors.o
+0x0077C4D0	0x00B6B9D0	?Actor_Grenade_IsValidTrajectory@@YIHPAUactor_s@@QBM11@Z	int __fastcall Actor_Grenade_IsValidTrajectory(struct actor_s *,float const * const,float const * const,float const * const)	mp_actors.o
+0x0077C4E0	0x00B6B9E0	?Actor_HasPath@@YIHPBUactor_s@@@Z	int __fastcall Actor_HasPath(struct actor_s const *)	mp_actors.o
+0x0077C4F0	0x00B6B9F0	?Actor_InitPath@@YIXPAUactor_s@@@Z	void __fastcall Actor_InitPath(struct actor_s *)	mp_actors.o
+0x0077C500	0x00B6BA00	?Actor_ClearPath@@YIXPAUactor_s@@@Z	void __fastcall Actor_ClearPath(struct actor_s *)	mp_actors.o
+0x0077C510	0x00B6BA10	?Actor_GetFinalPathGoal@@YIXPAUactor_s@@QAM@Z	void __fastcall Actor_GetFinalPathGoal(struct actor_s *,float * const)	mp_actors.o
+0x0077C520	0x00B6BA20	?Actor_GetAnimDeltas@@YIXPAUactor_s@@QAM1@Z	void __fastcall Actor_GetAnimDeltas(struct actor_s *,float * const,float * const)	mp_actors.o
+0x0077C530	0x00B6BA30	?Actor_UpdateOriginAndAngles@@YIXPAUactor_s@@H@Z	void __fastcall Actor_UpdateOriginAndAngles(struct actor_s *,int)	mp_actors.o
+0x0077C540	0x00B6BA40	?Actor_PredictOriginAndAngles@@YIXPAUactor_s@@@Z	void __fastcall Actor_PredictOriginAndAngles(struct actor_s *)	mp_actors.o
+0x0077C550	0x00B6BA50	?Actor_PredictAnim@@YIXPAUactor_s@@@Z	void __fastcall Actor_PredictAnim(struct actor_s *)	mp_actors.o
+0x0077C560	0x00B6BA60	?Actor_MoveAlongPathWithTeam@@YI?AW4ai_teammove_t@@PAUactor_s@@HH@Z	enum ai_teammove_t __fastcall Actor_MoveAlongPathWithTeam(struct actor_s *,int,int)	mp_actors.o
+0x0077C570	0x00B6BA70	?Actor_AtClaimNode@@YIHPAUactor_s@@@Z	int __fastcall Actor_AtClaimNode(struct actor_s *)	mp_actors.o
+0x0077C580	0x00B6BA80	?Actor_CheckCollisions@@YIXPAUactor_s@@@Z	void __fastcall Actor_CheckCollisions(struct actor_s *)	mp_actors.o
+0x0077C590	0x00B6BA90	?Actor_PathEncroachesPoint2D@@YIHPAUactor_s@@QBMM@Z	int __fastcall Actor_PathEncroachesPoint2D(struct actor_s *,float const * const,float)	mp_actors.o
+0x0077C5A0	0x00B6BAA0	?Path_UpdateBadPlaceCount@@YAXPAXH@Z	void __cdecl Path_UpdateBadPlaceCount(void *,int)	mp_actors.o
+0x0077C5B0	0x00B6BAB0	?Path_RemoveBadPlace@@YAXABVstring@Broc@@@Z	void __cdecl Path_RemoveBadPlace(class Broc::string const &)	mp_actors.o
+0x0077C5C0	0x00B6BAC0	?Path_MakeArcBadPlace@@YAXABVstring@Broc@@HHPAUBadPlaceArc@@@Z	void __cdecl Path_MakeArcBadPlace(class Broc::string const &,int,int,struct BadPlaceArc *)	mp_actors.o
+0x0077C5D0	0x00B6BAD0	?Path_InitBadPlaces@@YAXXZ	void __cdecl Path_InitBadPlaces(void)	mp_actors.o
+0x0077C5E0	0x00B6BAE0	?Path_ShutdownBadPlaces@@YAXXZ	void __cdecl Path_ShutdownBadPlaces(void)	mp_actors.o
+0x0077C5F0	0x00B6BAF0	?Path_RunBadPlaces@@YAXXZ	void __cdecl Path_RunBadPlaces(void)	mp_actors.o
+0x0077C600	0x00B6BB00	?Actor_Physics@@YAHPAUactor_physics_t@@@Z	int __cdecl Actor_Physics(struct actor_physics_t *)	mp_actors.o
+0x0077C610	0x00B6BB10	?Actor_PostPhysics@@YAXPAUactor_physics_t@@@Z	void __cdecl Actor_PostPhysics(struct actor_physics_t *)	mp_actors.o
+0x0077C620	0x00B6BB20	?Actor_Grenade_GetTossPositions@@YIHPAUactor_s@@QBM11QAM2@Z	int __fastcall Actor_Grenade_GetTossPositions(struct actor_s *,float const * const,float const * const,float const * const,float * const,float * const)	mp_actors.o
+0x0077C630	0x00B6BB30	?Actor_Grenade_CheckToss@@YIHPAUactor_s@@QBM1Vstring@Broc@@QAM3H@Z	int __fastcall Actor_Grenade_CheckToss(struct actor_s *,float const * const,float const * const,class Broc::string,float * const,float * const,int)	mp_actors.o
+0x0077C650	0x00B6BB50	?Actor_Grenade_IsSafeTarget@@YIHPAUactor_s@@QBMH@Z	int __fastcall Actor_Grenade_IsSafeTarget(struct actor_s *,float const * const,int)	mp_actors.o
+0x0077C660	0x00B6BB60	?Actor_GrenadePing@@YIXPAUactor_s@@PAVEntity@@@Z	void __fastcall Actor_GrenadePing(struct actor_s *,class Entity *)	mp_actors.o
+0x0077C670	0x00B6BB70	?Actor_Grenade_Attach@@YIXPAUactor_s@@@Z	void __fastcall Actor_Grenade_Attach(struct actor_s *)	mp_actors.o
+0x0077C680	0x00B6BB80	?Actor_Grenade_Detach@@YIXPAUactor_s@@@Z	void __fastcall Actor_Grenade_Detach(struct actor_s *)	mp_actors.o
+0x0077C690	0x00B6BB90	?Actor_Grenade_DropIfHeld@@YIXPAUactor_s@@@Z	void __fastcall Actor_Grenade_DropIfHeld(struct actor_s *)	mp_actors.o
+0x0077C6A0	0x00B6BBA0	?Actor_IsSuppressed@@YIHPAUactor_s@@@Z	int __fastcall Actor_IsSuppressed(struct actor_s *)	mp_actors.o
+0x0077C6B0	0x00B6BBB0	?Actor_IsMoveSuppressed@@YIHPAUactor_s@@@Z	int __fastcall Actor_IsMoveSuppressed(struct actor_s *)	mp_actors.o
+0x0077C6C0	0x00B6BBC0	?Actor_GetSuppressionPlanes@@YI?BHPAUactor_s@@QAY01MQAM@Z	int const __fastcall Actor_GetSuppressionPlanes(struct actor_s *,float (* const)[2],float * const)	mp_actors.o
+0x0077C6D0	0x00B6BBD0	?Actor_GetSuppressionCount@@YI?BHPAUactor_s@@@Z	int const __fastcall Actor_GetSuppressionCount(struct actor_s *)	mp_actors.o
+0x0077C6E0	0x00B6BBE0	?Actor_InterruptPoint@@YAXPAUactor_s@@@Z	void __cdecl Actor_InterruptPoint(struct actor_s *)	mp_actors.o
+0x0077C6F0	0x00B6BBF0	?Actor_CurrentLookAtAnimYawMax@@YAMPAUactor_s@@@Z	float __cdecl Actor_CurrentLookAtAnimYawMax(struct actor_s *)	mp_actors.o
+0x0077C700	0x00B6BC00	?Actor_CurrentLookAtYawMax@@YAMPAUactor_s@@@Z	float __cdecl Actor_CurrentLookAtYawMax(struct actor_s *)	mp_actors.o
+0x0077C710	0x00B6BC10	?Path_Copy@@YIXPBUpath_t@@PAU1@@Z	void __fastcall Path_Copy(struct path_t const *,struct path_t *)	mp_actors.o
+0x0077C720	0x00B6BC20	?Path_Begin@@YIXPAUpath_t@@@Z	void __fastcall Path_Begin(struct path_t *)	mp_actors.o
+0x0077C730	0x00B6BC30	?Path_Clear@@YIXPAUpath_t@@@Z	void __fastcall Path_Clear(struct path_t *)	mp_actors.o
+0x0077C740	0x00B6BC40	?Path_Exists@@YI?BHPBUpath_t@@@Z	int const __fastcall Path_Exists(struct path_t const *)	mp_actors.o
+0x0077C750	0x00B6BC50	?Path_CompleteLookahead@@YI?BHPBUpath_t@@@Z	int const __fastcall Path_CompleteLookahead(struct path_t const *)	mp_actors.o
+0x0077C760	0x00B6BC60	?Path_AttemptedCompleteLookahead@@YI?BHPBUpath_t@@@Z	int const __fastcall Path_AttemptedCompleteLookahead(struct path_t const *)	mp_actors.o
+0x0077C770	0x00B6BC70	?Path_UsesObstacleNegotiation@@YI?BHPBUpath_t@@@Z	int const __fastcall Path_UsesObstacleNegotiation(struct path_t const *)	mp_actors.o
+0x0077C780	0x00B6BC80	?Path_AllowsObstacleNegotiation@@YI?BHPBUpath_t@@@Z	int const __fastcall Path_AllowsObstacleNegotiation(struct path_t const *)	mp_actors.o
+0x0077C790	0x00B6BC90	?Path_GetObstacleNegotiationScript@@YIXPBUpath_t@@PAUscr_animscript_t@@PAM@Z	void __fastcall Path_GetObstacleNegotiationScript(struct path_t const *,struct scr_animscript_t *,float *)	mp_actors.o
+0x0077C7A0	0x00B6BCA0	?Path_GetFinalGoal@@YIXPBUpath_t@@QAM@Z	void __fastcall Path_GetFinalGoal(struct path_t const *,float * const)	mp_actors.o
+0x0077C7B0	0x00B6BCB0	?Path_NeedsReevaluation@@YIHPAUpath_t@@QBMMH@Z	int __fastcall Path_NeedsReevaluation(struct path_t *,float const * const,float,int)	mp_actors.o
+0x0077C7C0	0x00B6BCC0	?Sentient_GetScarinessForDistance@@YAMPAUsentient_s@@0M@Z	float __cdecl Sentient_GetScarinessForDistance(struct sentient_s *,struct sentient_s *,float)	mp_actors.o
+0x0077C7D0	0x00B6BCD0	?Actor_Shoot@@YAXPAUactor_s@@MPAY02MW4enumLastShot@@@Z	void __cdecl Actor_Shoot(struct actor_s *,float,float (*)[3],enum enumLastShot)	mp_actors.o
+0x0077C7E0	0x00B6BCE0	?Actor_Melee@@YAXPAUactor_s@@@Z	void __cdecl Actor_Melee(struct actor_s *)	mp_actors.o
+0x0077C7F0	0x00B6BCF0	?PointCouldSeeSpawn@@YAHABVPosition3@math@@0V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@1@Z	int __cdecl PointCouldSeeSpawn(class math::Position3 const &,class math::Position3 const &,class DbLinkedHandle<class EntityHandleDb,class Entity>,class DbLinkedHandle<class EntityHandleDb,class Entity>)	mp_actors.o
+0x0077C800	0x00B6BD00	?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z	class Entity * __cdecl SpawnActor(class Entity *,class Broc::string const &,enum enumForceSpawn,enum TPakId)	mp_actors.o
+0x0077C810	0x00B6BD10	?SP_actor_spawner@@YAHPAVEntity@@@Z	int __cdecl SP_actor_spawner(class Entity *)	mp_actors.o
+0x0077C820	0x00B6BD20	?Actor_InitMove@@YIXPAUactor_s@@@Z	void __fastcall Actor_InitMove(struct actor_s *)	mp_actors.o
+0x0077C830	0x00B6BD30	?Actor_DoMove@@YIXPAUactor_s@@@Z	void __fastcall Actor_DoMove(struct actor_s *)	mp_actors.o
+0x0077C840	0x00B6BD40	?Actor_UpdateProneInformation@@YIXPAUactor_s@@H@Z	void __fastcall Actor_UpdateProneInformation(struct actor_s *,int)	mp_actors.o
+0x0077C850	0x00B6BD50	?actor_controller@@YAXPAVEntity@@QAH@Z	void __cdecl actor_controller(class Entity *,int * const)	mp_actors.o
+0x0077C860	0x00B6BD60	?Actor_GetPotentialNodeList@@YIXPAUactor_s@@HQAMMMP6IH0PBUPathNode@PathNodes@@@ZP6IM02@Z@Z	void __fastcall Actor_GetPotentialNodeList(struct actor_s *,int,float * const,float,float,int (__fastcall*)(struct actor_s *,struct PathNodes::PathNode const *),float (__fastcall*)(struct actor_s *,struct PathNodes::PathNode const *))	mp_actors.o
+0x0077C870	0x00B6BD70	?Path_AttemptDodge@@YIHPAUpath_t@@QBM11HV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@2HH@Z	int __fastcall Path_AttemptDodge(struct path_t *,float const * const,float const * const,float const * const,int,class DbLinkedHandle<class EntityHandleDb,class Entity>,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,int)	mp_actors.o
+0x0077C880	0x00B6BD80	?Path_MayFaceEnemy@@YIHPAUpath_t@@QAM1@Z	int __fastcall Path_MayFaceEnemy(struct path_t *,float * const,float * const)	mp_actors.o
+0x0077C890	0x00B6BD90	?Path_PredictionTrace@@YIHQBM0V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@1HQAM@Z	int __fastcall Path_PredictionTrace(float const * const,float const * const,class DbLinkedHandle<class EntityHandleDb,class Entity>,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,float * const)	mp_actors.o
+0x0077C8A0	0x00B6BDA0	?Path_ContainsBadPlaceLink@@YIHPAUpath_t@@W4team_t@@@Z	int __fastcall Path_ContainsBadPlaceLink(struct path_t *,enum team_t)	mp_actors.o
+0x0077C8B0	0x00B6BDB0	?EdgesCrissCross2D@@YA?BHQBM000@Z	int const __cdecl EdgesCrissCross2D(float const * const,float const * const,float const * const,float const * const)	mp_actors.o
+0x0077C8C0	0x00B6BDC0	?Actor_SetDesiredLookAngles@@YIXPAUai_orient_t@@MM@Z	void __fastcall Actor_SetDesiredLookAngles(struct ai_orient_t *,float,float)	mp_actors.o
+0x0077C8D0	0x00B6BDD0	?Actor_SetDesiredAngles@@YIXPAUai_orient_t@@MM@Z	void __fastcall Actor_SetDesiredAngles(struct ai_orient_t *,float,float)	mp_actors.o
+0x0077C8E0	0x00B6BDE0	?Actor_SetLookAngles@@YIXPAUactor_s@@MM@Z	void __fastcall Actor_SetLookAngles(struct actor_s *,float,float)	mp_actors.o
+0x0077C8F0	0x00B6BDF0	?Actor_SetBodyAngle@@YIXPAUactor_s@@M@Z	void __fastcall Actor_SetBodyAngle(struct actor_s *,float)	mp_actors.o
+0x0077C900	0x00B6BE00	?Actor_ChangeAngles@@YIXPAUactor_s@@MM@Z	void __fastcall Actor_ChangeAngles(struct actor_s *,float,float)	mp_actors.o
+0x0077C910	0x00B6BE10	?Actor_UpdateLookAngles@@YIXPAUactor_s@@H@Z	void __fastcall Actor_UpdateLookAngles(struct actor_s *,int)	mp_actors.o
+0x0077C920	0x00B6BE20	?Actor_UpdateBodyAngle@@YIXPAUactor_s@@H@Z	void __fastcall Actor_UpdateBodyAngle(struct actor_s *,int)	mp_actors.o
+0x0077C930	0x00B6BE30	?Actor_FaceVector@@YIXPAUai_orient_t@@QBMM@Z	void __fastcall Actor_FaceVector(struct ai_orient_t *,float const * const,float)	mp_actors.o
+0x0077C940	0x00B6BE40	?Actor_FaceEnemy@@YIXPAUactor_s@@PAUai_orient_t@@M@Z	void __fastcall Actor_FaceEnemy(struct actor_s *,struct ai_orient_t *,float)	mp_actors.o
+0x0077C950	0x00B6BE50	?Actor_DecideOrientation@@YIXPAUactor_s@@@Z	void __fastcall Actor_DecideOrientation(struct actor_s *)	mp_actors.o
+0x0077C960	0x00B6BE60	?Actor_SetOrientMode@@YIXPAUactor_s@@W4ai_orient_mode_t@@@Z	void __fastcall Actor_SetOrientMode(struct actor_s *,enum ai_orient_mode_t)	mp_actors.o
+0x0077C970	0x00B6BE70	?Actor_Get@@YIPAUactor_s@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	struct actor_s * __fastcall Actor_Get(class DbLinkedHandle<class EntityHandleDb,class Entity>)	mp_actors.o
+0x0077C980	0x00B6BE80	?Path_GetMaxScariness@@YIMPAUpath_t@@PAUactor_s@@@Z	float __fastcall Path_GetMaxScariness(struct path_t *,struct actor_s *)	mp_actors.o
+0x0077C990	0x00B6BE90	?Path_TrimToBravery@@YIHPAUpath_t@@PAUactor_s@@@Z	int __fastcall Path_TrimToBravery(struct path_t *,struct actor_s *)	mp_actors.o
+0x0077C9A0	0x00B6BEA0	?Path_AllowedStancesForPath@@YI?AW4ai_stance_e@@PAUpath_t@@@Z	enum ai_stance_e __fastcall Path_AllowedStancesForPath(struct path_t *)	mp_actors.o
+0x0077C9B0	0x00B6BEB0	?Path_ApproxDist@@YIMPAUpath_t@@@Z	float __fastcall Path_ApproxDist(struct path_t *)	mp_actors.o
+0x0077C9C0	0x00B6BEC0	?Actor_Exposed_StartReacquire@@YAXPAUactor_s@@W4canChangeState_t@@@Z	void __cdecl Actor_Exposed_StartReacquire(struct actor_s *,enum canChangeState_t)	mp_actors.o
+0x0077C9D0	0x00B6BED0	?Actor_UseTurret@@YIHPAUactor_s@@PAVEntity@@@Z	int __fastcall Actor_UseTurret(struct actor_s *,class Entity *)	mp_actors.o
+0x0077C9E0	0x00B6BEE0	?Actor_StopUseTurret@@YIXPAUactor_s@@@Z	void __fastcall Actor_StopUseTurret(struct actor_s *)	mp_actors.o
+0x0077C9F0	0x00B6BEF0	?Actor_IsUsingTurret@@YIHPAUactor_s@@@Z	int __fastcall Actor_IsUsingTurret(struct actor_s *)	mp_actors.o
+0x0077CA00	0x00B6BF00	?Path_GetMovementDir2D@@YIXPAUpath_t@@QAM@Z	void __fastcall Path_GetMovementDir2D(struct path_t *,float * const)	mp_actors.o
+0x0077CA10	0x00B6BF10	?G_GetActorFriendlyIndex@@YAHPAVEntity@@@Z	int __cdecl G_GetActorFriendlyIndex(class Entity *)	mp_actors.o
+0x0077CA20	0x00B6BF20	?G_GetFriendlyIndexActor@@YAPAVEntity@@H@Z	class Entity * __cdecl G_GetFriendlyIndexActor(int)	mp_actors.o
+0x0077CA30	0x00B6BF30	?G_GetNonPVSFriendlyInfo@@YAHQAMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	int __cdecl G_GetNonPVSFriendlyInfo(float * const,class DbLinkedHandle<class EntityHandleDb,class Entity>)	mp_actors.o
+0x0077CA40	0x00B6BF40	?Path_EncroachesPoint2D@@YIHPAUpath_t@@QBM1M@Z	int __fastcall Path_EncroachesPoint2D(struct path_t *,float const * const,float const * const,float)	mp_actors.o
+0x0077CA50	0x00B6BF50	?Path_DistanceGreaterThan@@YIHPAUpath_t@@M@Z	int __fastcall Path_DistanceGreaterThan(struct path_t *,float)	mp_actors.o
+0x0077CA60	0x00B6BF60	?Path_AddTrimmedAmount@@YIXPAUpath_t@@QBM@Z	void __fastcall Path_AddTrimmedAmount(struct path_t *,float const * const)	mp_actors.o
+0x0077CA70	0x00B6BF70	?Path_UpdateLookahead@@YIXPAUpath_t@@QBMHH@Z	void __fastcall Path_UpdateLookahead(struct path_t *,float const * const,int,int)	mp_actors.o
+0x0077CA80	0x00B6BF80	?Path_GetForwardStartPos@@YIHPAUpath_t@@QBMQAM@Z	int __fastcall Path_GetForwardStartPos(struct path_t *,float const * const,float * const)	mp_actors.o
+0x0077CA90	0x00B6BF90	?Path_IsTrimmed@@YIHPAUpath_t@@@Z	int __fastcall Path_IsTrimmed(struct path_t *)	mp_actors.o
+0x0077CAA0	0x00B6BFA0	?Path_DebugDraw@@YIXPAUpath_t@@QBMH@Z	void __fastcall Path_DebugDraw(struct path_t *,float const * const,int)	mp_actors.o
+0x0077CAB0	0x00B6BFB0	?Path_FailedLookahead@@YIHPAUpath_t@@@Z	int __fastcall Path_FailedLookahead(struct path_t *)	mp_actors.o
+0x0077CAC0	0x00B6BFC0	?Path_FindPath@@YI?BHPAUpath_t@@W4team_t@@QBM2H@Z	int const __fastcall Path_FindPath(struct path_t *,enum team_t,float const * const,float const * const,int)	mp_actors.o
+0x0077CAD0	0x00B6BFD0	?Path_FindPathFrom@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3H@Z	int const __fastcall Path_FindPathFrom(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,int)	mp_actors.o
+0x0077CAE0	0x00B6BFE0	?Path_FindPathFromTo@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM23H@Z	int const __fastcall Path_FindPathFromTo(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,struct PathNodes::PathNode *,float const * const,int)	mp_actors.o
+0x0077CAF0	0x00B6BFF0	?Path_FindPathNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2QAY01MQAMHH@Z	int const __fastcall Path_FindPathNotCrossPlanes(struct path_t *,enum team_t,float const * const,float const * const,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB00	0x00B6C000	?Path_FindPathFromNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3QAY01MQAMHH@Z	int const __fastcall Path_FindPathFromNotCrossPlanes(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB10	0x00B6C010	?Path_FindPathFromToNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM23QAY01MQAMHH@Z	int const __fastcall Path_FindPathFromToNotCrossPlanes(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,struct PathNodes::PathNode *,float const * const,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB20	0x00B6C020	?Path_FindPathAway@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z	int const __fastcall Path_FindPathAway(struct path_t *,enum team_t,float const * const,float const * const,float,int)	mp_actors.o
+0x0077CB30	0x00B6C030	?Path_FindPathFromAway@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MH@Z	int const __fastcall Path_FindPathFromAway(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,float,int)	mp_actors.o
+0x0077CB40	0x00B6C040	?Path_FindPathAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z	int const __fastcall Path_FindPathAwayNotCrossPlanes(struct path_t *,enum team_t,float const * const,float const * const,float,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB50	0x00B6C050	?Path_FindPathFromAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MQAY01MQAMHH@Z	int const __fastcall Path_FindPathFromAwayNotCrossPlanes(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,float,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB60	0x00B6C060	?Path_FindPathNear@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z	int const __fastcall Path_FindPathNear(struct path_t *,enum team_t,float const * const,float const * const,float,int)	mp_actors.o
+0x0077CB70	0x00B6C070	?Path_FindPathNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z	int const __fastcall Path_FindPathNearNotCrossPlanes(struct path_t *,enum team_t,float const * const,float const * const,float,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CB80	0x00B6C080	?Path_FindPathInCylinderNear@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMH@Z	int const __fastcall Path_FindPathInCylinderNear(struct path_t *,enum team_t,float const * const,float const * const,float const * const,float,float,float,int)	mp_actors.o
+0x0077CB90	0x00B6C090	?Path_FindPathInCylinderNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMQAY01MQAMHH@Z	int const __fastcall Path_FindPathInCylinderNearNotCrossPlanes(struct path_t *,enum team_t,float const * const,float const * const,float const * const,float,float,float,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CBA0	0x00B6C0A0	?Path_FindPathFromInCylinder@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM33MMH@Z	int const __fastcall Path_FindPathFromInCylinder(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,float const * const,float,float,int)	mp_actors.o
+0x0077CBB0	0x00B6C0B0	?Path_FindPathFromInCylinderNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM33MMQAY01MQAMHH@Z	int const __fastcall Path_FindPathFromInCylinderNotCrossPlanes(struct path_t *,enum team_t,struct PathNodes::PathNode *,float const * const,float const * const,float const * const,float,float,float (* const)[2],float * const,int,int)	mp_actors.o
+0x0077CBC0	0x00B6C0C0	?Initialize@BadPathManager@@QAEXXZ	public: void __thiscall BadPathManager::Initialize(void)	mp_actors.o
+0x0077CBD0	0x00B6C0D0	?SP_info_grenade_hint@@YAXPAVEntity@@@Z	void __cdecl SP_info_grenade_hint(class Entity *)	mp_actors.o
+0x0077CBE0	0x00B6C0E0	?SP_actor@@YAHPAVEntity@@@Z	int __cdecl SP_actor(class Entity *)	mp_actors.o
+0x0077CBF0	0x00B6C0F0	?Sentient_Alloc@@YAPAUsentient_s@@XZ	struct sentient_s * __cdecl Sentient_Alloc(void)	mp_actors.o
+0x0077CCC0	0x00B6C1C0	?Sentient_Clean@@YAXPAUsentient_s@@@Z	void __cdecl Sentient_Clean(struct sentient_s *)	mp_actors.o
+0x0077CCE0	0x00B6C1E0	?Sentient_InheritGoal@@YAXPAUsentient_s@@0W4team_t@@@Z	void __cdecl Sentient_InheritGoal(struct sentient_s *,struct sentient_s *,enum team_t)	mp_actors.o
+0x0077CDE0	0x00B6C2E0	?Sentient_DissociateSentient@@YAXPAUsentient_s@@0W4team_t@@@Z	void __cdecl Sentient_DissociateSentient(struct sentient_s *,struct sentient_s *,enum team_t)	mp_actors.o
+0x0077CF30	0x00B6C430	?Sentient_DissociateEntity@@YAXPAUsentient_s@@PAVEntity@@@Z	void __cdecl Sentient_DissociateEntity(struct sentient_s *,class Entity *)	mp_actors.o
+0x0077D020	0x00B6C520	?Sentient_GetOrigin@@YIXPBUsentient_s@@QAM@Z	void __fastcall Sentient_GetOrigin(struct sentient_s const *,float * const)	mp_actors.o
+0x0077D170	0x00B6C670	?Sentient_GetForwardDir@@YIXPAUsentient_s@@QAM@Z	void __fastcall Sentient_GetForwardDir(struct sentient_s *,float * const)	mp_actors.o
+0x0077D2B0	0x00B6C7B0	?Sentient_GetVelocity@@YIXPAUsentient_s@@QAM@Z	void __fastcall Sentient_GetVelocity(struct sentient_s *,float * const)	mp_actors.o
+0x0077D440	0x00B6C940	?Sentient_GetCentroid@@YIXPAUsentient_s@@QAM@Z	void __fastcall Sentient_GetCentroid(struct sentient_s *,float * const)	mp_actors.o
+0x0077D5D0	0x00B6CAD0	?Sentient_GetEyePosition@@YIXPAUsentient_s@@QAM@Z	void __fastcall Sentient_GetEyePosition(struct sentient_s *,float * const)	mp_actors.o
+0x0077D770	0x00B6CC70	?Sentient_GetEyePosition@@YIXPAUsentient_s@@AAVPosition3@math@@@Z	void __fastcall Sentient_GetEyePosition(struct sentient_s *,class math::Position3 &)	mp_actors.o
+0x0077D7B0	0x00B6CCB0	?Sentient_GetHeadHeight@@YIMPAUsentient_s@@@Z	float __fastcall Sentient_GetHeadHeight(struct sentient_s *)	mp_actors.o
+0x0077D8D0	0x00B6CDD0	?Sentient_InvalidateNearestNode@@YIXPAUsentient_s@@@Z	void __fastcall Sentient_InvalidateNearestNode(struct sentient_s *)	mp_actors.o
+0x0077D930	0x00B6CE30	?Sentient_SetGoalRadius@@YIXPAUsentient_s@@M@Z	void __fastcall Sentient_SetGoalRadius(struct sentient_s *,float)	mp_actors.o
+0x0077DA00	0x00B6CF00	?Sentient_SetGoalScriptCallback@@YIXPAUsentient_s@@VHashString@@@Z	void __fastcall Sentient_SetGoalScriptCallback(struct sentient_s *,class HashString)	mp_actors.o
+0x0077DA80	0x00B6CF80	?Sentient_SetGoalAngle@@YIXPAUsentient_s@@M@Z	void __fastcall Sentient_SetGoalAngle(struct sentient_s *,float)	mp_actors.o
+0x0077DAE0	0x00B6CFE0	?Sentient_ClearGoalAngle@@YIXPAUsentient_s@@@Z	void __fastcall Sentient_ClearGoalAngle(struct sentient_s *)	mp_actors.o
+0x0077DB40	0x00B6D040	?Sentient_SetGoalAngleTolerance@@YIXPAUsentient_s@@M@Z	void __fastcall Sentient_SetGoalAngleTolerance(struct sentient_s *,float)	mp_actors.o
+0x0077DBC0	0x00B6D0C0	?Sentient_HasGoalAngle@@YIHPAUsentient_s@@@Z	int __fastcall Sentient_HasGoalAngle(struct sentient_s *)	mp_actors.o
+0x0077DC30	0x00B6D130	?Sentient_AngleSatisfiesGoal@@YIHPAUsentient_s@@M@Z	int __fastcall Sentient_AngleSatisfiesGoal(struct sentient_s *,float)	mp_actors.o
+0x0077DCD0	0x00B6D1D0	?Sentient_SetEnemy@@YIXPAUsentient_s@@0H@Z	void __fastcall Sentient_SetEnemy(struct sentient_s *,struct sentient_s *,int)	mp_actors.o
+0x0077DCE0	0x00B6D1E0	?Sentient_FirstSentient@@YIPAUsentient_s@@H@Z	struct sentient_s * __fastcall Sentient_FirstSentient(int)	mp_actors.o
+0x0077DD80	0x00B6D280	?Sentient_NextSentient@@YIPAUsentient_s@@PAU1@H@Z	struct sentient_s * __fastcall Sentient_NextSentient(struct sentient_s *,int)	mp_actors.o
+0x0077DF40	0x00B6D440	?Sentient_NameForTeam@@YIPBDW4team_t@@@Z	char const * __fastcall Sentient_NameForTeam(enum team_t)	mp_actors.o
+0x0077DFA0	0x00B6D4A0	?Sentient_SetTeam@@YIXPAUsentient_s@@W4team_t@@@Z	void __fastcall Sentient_SetTeam(struct sentient_s *,enum team_t)	mp_actors.o
+0x0077E000	0x00B6D500	?Sentient_UpdatePlayerTrail@@YAXPAVPlayerState@@@Z	void __cdecl Sentient_UpdatePlayerTrail(class PlayerState *)	mp_actors.o
+0x0077E010	0x00B6D510	?Sentient_WriteGlob@@YAXXZ	void __cdecl Sentient_WriteGlob(void)	mp_actors.o
+0x0077E020	0x00B6D520	?Sentient_ReadGlob@@YAXXZ	void __cdecl Sentient_ReadGlob(void)	mp_actors.o
+0x0077E030	0x00B6D530	?Sentient_GetTrailPos@@YIXPAUsentient_s@@QAMPAH@Z	void __fastcall Sentient_GetTrailPos(struct sentient_s *,float * const,int *)	mp_actors.o
+0x0077E140	0x00B6D640	?G_InitSentients@@YAXXZ	void __cdecl G_InitSentients(void)	mp_actors.o
+0x0077E1C0	0x00B6D6C0	?Scr_SetPathnodeField@@YAXHH@Z	void __cdecl Scr_SetPathnodeField(int,int)	mp_actors.o
+0x0077E280	0x00B6D780	?Scr_GetPathnodeField@@YAXHH@Z	void __cdecl Scr_GetPathnodeField(int,int)	mp_actors.o
+0x0077E350	0x00B6D850	?GScr_AddFieldsForPathnode@@YAXXZ	void __cdecl GScr_AddFieldsForPathnode(void)	mp_actors.o
+0x0077E3A0	0x00B6D8A0	?Scr_GetPathnode@@YAPAUPathNode@PathNodes@@I@Z	struct PathNodes::PathNode * __cdecl Scr_GetPathnode(unsigned int)	mp_actors.o
+0x0077E3F0	0x00B6D8F0	?G_FreePathnodesScriptInfo@@YAXXZ	void __cdecl G_FreePathnodesScriptInfo(void)	mp_actors.o
+0x0077E400	0x00B6D900	?Path_CompareNodesIncreasing@@YAHPBX0@Z	int __cdecl Path_CompareNodesIncreasing(void const *,void const *)	mp_actors.o
+0x0077E420	0x00B6D920	?Path_CompareNodesDecreasing@@YAHPBX0@Z	int __cdecl Path_CompareNodesDecreasing(void const *,void const *)	mp_actors.o
+0x0077E440	0x00B6D940	?Path_Init@@YAXXZ	void __cdecl Path_Init(void)	mp_actors.o
+0x0077E450	0x00B6D950	?Path_Shutdown@@YAXXZ	void __cdecl Path_Shutdown(void)	mp_actors.o
+0x0077E470	0x00B6D970	?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z	int __cdecl Path_IsDynamicBlockingEntity(class Entity *)	mp_actors.o
+0x0077E490	0x00B6D990	?Path_DrawDebugNoLinks@@YAXPBUPathNode@PathNodes@@@Z	void __cdecl Path_DrawDebugNoLinks(struct PathNodes::PathNode const *)	mp_actors.o
+0x0077E5A0	0x00B6DAA0	?Path_DrawDebugNearestNode@@YAXQBMH@Z	void __cdecl Path_DrawDebugNearestNode(float const * const,int)	mp_actors.o
+0x0077E5B0	0x00B6DAB0	?Path_DrawDebugFindPath@@YAXPAUactor_s@@QBM@Z	void __cdecl Path_DrawDebugFindPath(struct actor_s *,float const * const)	mp_actors.o
+0x0077E5C0	0x00B6DAC0	?Path_DrawDebug@@YAXXZ	void __cdecl Path_DrawDebug(void)	mp_actors.o
+0x0077E5E0	0x00B6DAE0	?Path_ClaimNode@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z	void __cdecl Path_ClaimNode(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x0077EB10	0x00B6E010	?Path_RelinquishNodePermanently@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z	void __cdecl Path_RelinquishNodePermanently(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x0077EC80	0x00B6E180	?Path_RelinquishNodeTemporarily@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z	void __cdecl Path_RelinquishNodeTemporarily(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x0077EEC0	0x00B6E3C0	?Path_IsNodeValid@@YAHPBUPathNode@PathNodes@@W4team_t@@@Z	int __cdecl Path_IsNodeValid(struct PathNodes::PathNode const *,enum team_t)	mp_actors.o
+0x0077EF80	0x00B6E480	?Path_MarkNodeUnsafe@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z	void __cdecl Path_MarkNodeUnsafe(struct PathNodes::PathNode *,enum team_t)	mp_actors.o
+0x0077F060	0x00B6E560	?Path_IsNodeUnsafe@@YAHPBUPathNode@PathNodes@@W4team_t@@@Z	int __cdecl Path_IsNodeUnsafe(struct PathNodes::PathNode const *,enum team_t)	mp_actors.o
+0x0077F120	0x00B6E620	?Path_AllowedStancesForNode@@YA?AW4ai_stance_e@@PAUPathNode@PathNodes@@@Z	enum ai_stance_e __cdecl Path_AllowedStancesForNode(struct PathNodes::PathNode *)	mp_actors.o
+0x0077F1F0	0x00B6E6F0	?Path_GetType@@YAXPAUPathNode@PathNodes@@H@Z	void __cdecl Path_GetType(struct PathNodes::PathNode *,int)	mp_actors.o
+0x0077F240	0x00B6E740	?Path_SetSentientFlagsFromNode@@YAXPAUsentient_s@@PBUPathNode@PathNodes@@@Z	void __cdecl Path_SetSentientFlagsFromNode(struct sentient_s *,struct PathNodes::PathNode const *)	mp_actors.o
+0x0077F280	0x00B6E780	?Path_GetAllowedStancesFromSentientFlags@@YA?AW4ai_stance_e@@PAUsentient_s@@@Z	enum ai_stance_e __cdecl Path_GetAllowedStancesFromSentientFlags(struct sentient_s *)	mp_actors.o
+0x0077F2B0	0x00B6E7B0	?Path_ResetSentientFlags@@YAXPAUsentient_s@@@Z	void __cdecl Path_ResetSentientFlags(struct sentient_s *)	mp_actors.o
+0x0077F2C0	0x00B6E7C0	??0TOC1@PathNodes@@QAE@XZ	public: __thiscall PathNodes::TOC1::TOC1(void)	mp_actors.o
+0x0077F2F0	0x00B6E7F0	??0TOC2@PathNodes@@QAE@XZ	public: __thiscall PathNodes::TOC2::TOC2(void)	mp_actors.o
+0x0077F300	0x00B6E800	??DNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ	public: struct PathNodes::PathNode * __thiscall PathNodes::NodeHandle::operator*(void)	mp_actors.o
+0x0077F310	0x00B6E810	??DNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ	public: struct PathNodes::PathNode const * __thiscall PathNodes::NodeHandle::operator*(void)const 	mp_actors.o
+0x0077F320	0x00B6E820	??CNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ	public: struct PathNodes::PathNode * __thiscall PathNodes::NodeHandle::operator->(void)	mp_actors.o
+0x0077F330	0x00B6E830	??CNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ	public: struct PathNodes::PathNode const * __thiscall PathNodes::NodeHandle::operator->(void)const 	mp_actors.o
+0x0077F340	0x00B6E840	??0PathNodeMgr@@QAE@XZ	public: __thiscall PathNodeMgr::PathNodeMgr(void)	mp_actors.o
+0x0077F370	0x00B6E870	?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z	private: int __thiscall PathNodeMgr::FindZoneIndex(enum TPakId)	mp_actors.o
+0x0077F380	0x00B6E880	?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z	private: int __thiscall PathNodeMgr::FindZoneIndex(char const *)	mp_actors.o
+0x0077F390	0x00B6E890	?UnloadBank@PathNodeMgr@@EAEXW4TPakId@@@Z	private: virtual void __thiscall PathNodeMgr::UnloadBank(enum TPakId)	mp_actors.o
+0x0077F3B0	0x00B6E8B0	?CleanUpManager@PathNodeMgr@@QAEXXZ	public: void __thiscall PathNodeMgr::CleanUpManager(void)	mp_actors.o
+0x0077F3D0	0x00B6E8D0	?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z	public: int __thiscall PathNodeMgr::GetVehicleNodeIndex(struct vehicle_node_t *)	mp_actors.o
+0x0077F400	0x00B6E900	?NodesInCylinder_r@PathNodeMgr@@IAEXPAUPathNodeTree@PathNodes@@@Z	protected: void __thiscall PathNodeMgr::NodesInCylinder_r(struct PathNodes::PathNodeTree *)	mp_actors.o
+0x0077F560	0x00B6EA60	?NodesInCylinder@PathNodeMgr@@QAEHQBMMMPAUPathSort@PathNodes@@HH@Z	public: int __thiscall PathNodeMgr::NodesInCylinder(float const * const,float,float,struct PathNodes::PathSort *,int,int)	mp_actors.o
+0x0077F620	0x00B6EB20	?InitScriptVariables@PathNodeMgr@@AAEXH@Z	private: void __thiscall PathNodeMgr::InitScriptVariables(int)	mp_actors.o
+0x0077F920	0x00B6EE20	?InitScriptVariables@PathNodeMgr@@AAEXXZ	private: void __thiscall PathNodeMgr::InitScriptVariables(void)	mp_actors.o
+0x0077F930	0x00B6EE30	?InitLinkCounts@PathNodeMgr@@QAEXH@Z	public: void __thiscall PathNodeMgr::InitLinkCounts(int)	mp_actors.o
+0x0077F9D0	0x00B6EED0	?InitLinkInfoArray@PathNodeMgr@@AAEXXZ	private: void __thiscall PathNodeMgr::InitLinkInfoArray(void)	mp_actors.o
+0x0077FB60	0x00B6F060	?IsConnectedTo@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@0@Z	public: bool __thiscall PathNodeMgr::IsConnectedTo(struct PathNodes::PathNode const *,struct PathNodes::PathNode const *)const 	mp_actors.o
+0x0077FBA0	0x00B6F0A0	?CheckpointResetNodes@PathNodeMgr@@QAEXXZ	public: void __thiscall PathNodeMgr::CheckpointResetNodes(void)	mp_actors.o
+0x0077FBE0	0x00B6F0E0	?CreateTree_r@PathNodeMgr@@AAEPAUPathNodeTree@PathNodes@@PAPAUPathNode@3@PAPAU23@@Z	private: struct PathNodes::PathNodeTree * __thiscall PathNodeMgr::CreateTree_r(struct PathNodes::PathNode * *,struct PathNodes::PathNodeTree * *)	mp_actors.o
+0x0077FC30	0x00B6F130	?NodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z	private: int const __thiscall PathNodeMgr::NodeVisCacheEntry(class PathNodes::NodeHandle const &,class PathNodes::NodeHandle const &)const 	mp_actors.o
+0x0077FC60	0x00B6F160	?ExpandedNodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z	private: int const __thiscall PathNodeMgr::ExpandedNodeVisCacheEntry(class PathNodes::NodeHandle const &,class PathNodes::NodeHandle const &)const 	mp_actors.o
+0x0077FC90	0x00B6F190	?IsBadPlaceLink@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0W4team_t@@@Z	public: bool __thiscall PathNodeMgr::IsBadPlaceLink(class PathNodes::NodeHandle const &,class PathNodes::NodeHandle const &,enum team_t)const 	mp_actors.o
+0x0077FE30	0x00B6F330	?FindChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@QBMPAU23@@Z	public: struct PathNodes::PathNode * __thiscall PathNodeMgr::FindChainPos(float const * const,struct PathNodes::PathNode *)	mp_actors.o
+0x0077FFE0	0x00B6F4E0	?FindChainIndex@PathNodeMgr@@AAEHABVNodeHandle@PathNodes@@@Z	private: int __thiscall PathNodeMgr::FindChainIndex(class PathNodes::NodeHandle const &)	mp_actors.o
+0x00780020	0x00B6F520	?ChooseDesperationNewChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseDesperationNewChainNode(int,int,int,struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00780070	0x00B6F570	?FirstNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@H@Z	public: struct PathNodes::PathNode * __thiscall PathNodeMgr::FirstNode(int)	mp_actors.o
+0x00780140	0x00B6F640	?NextNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@H@Z	public: struct PathNodes::PathNode * __thiscall PathNodeMgr::NextNode(struct PathNodes::PathNode *,int)	mp_actors.o
+0x007802E0	0x00B6F7E0	?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z	public: void __thiscall PathNodeMgr::DissociateSentient(struct sentient_s *)	mp_actors.o
+0x00780370	0x00B6F870	?UpdateArcBadPlaceCount@PathNodeMgr@@QAEXPAUBadPlaceArc@@HH@Z	public: void __thiscall PathNodeMgr::UpdateArcBadPlaceCount(struct BadPlaceArc *,int,int)	mp_actors.o
+0x00780880	0x00B6FD80	?NodeList@PathNodeMgr@@QAEXXZ	public: void __thiscall PathNodeMgr::NodeList(void)	mp_actors.o
+0x00780940	0x00B6FE40	?FindOverlappingNodes@PathNodeMgr@@QAEXXZ	public: void __thiscall PathNodeMgr::FindOverlappingNodes(void)	mp_actors.o
+0x00780C30	0x00B70130	?ValidateNode@PathNodeMgr@@QBEXPAUPathNode@PathNodes@@@Z	public: void __thiscall PathNodeMgr::ValidateNode(struct PathNodes::PathNode *)const 	mp_actors.o
+0x00780DC0	0x00B702C0	?ValidateAllNodes@PathNodeMgr@@QBEXXZ	public: void __thiscall PathNodeMgr::ValidateAllNodes(void)const 	mp_actors.o
+0x00780E00	0x00B70300	?CheckLinkLeaks@PathNodeMgr@@QBEXXZ	public: void __thiscall PathNodeMgr::CheckLinkLeaks(void)const 	mp_actors.o
+0x00780EE0	0x00B703E0	?LooseFileSupport@PathNodeMgr@@AAEPAEPAEW4TPakId@@PBDPAH@Z	private: unsigned char * __thiscall PathNodeMgr::LooseFileSupport(unsigned char *,enum TPakId,char const *,int *)	mp_actors.o
+0x00780EF0	0x00B703F0	?InitPlayer@AIType@@QAEXPAVEntity@@W4TPakId@@@Z	public: void __thiscall AIType::InitPlayer(class Entity *,enum TPakId)	mp_actors.o
+0x00780FC0	0x00B704C0	??1AITypeManager@@EAE@XZ	private: virtual __thiscall AITypeManager::~AITypeManager(void)	mp_actors.o
+0x00780FD0	0x00B704D0	?Sentient_Dissociate@@YAXPAUsentient_s@@@Z	void __cdecl Sentient_Dissociate(struct sentient_s *)	mp_actors.o
+0x00781070	0x00B70570	?Sentient_UpdateActualChainPos@@YIXPAUsentient_s@@@Z	void __fastcall Sentient_UpdateActualChainPos(struct sentient_s *)	mp_actors.o
+0x00781130	0x00B70630	?Sentient_NodeClaimRevoked@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z	void __fastcall Sentient_NodeClaimRevoked(struct sentient_s *,class PathNodes::NodeHandle)	mp_actors.o
+0x00781330	0x00B70830	?Path_SetupAnimFunc@@YAXPAUPathNode@PathNodes@@PAW4ENodeType@2@@Z	void __cdecl Path_SetupAnimFunc(struct PathNodes::PathNode *,enum PathNodes::ENodeType *)	mp_actors.o
+0x007814D0	0x00B709D0	?Path_NearestNodeNotCrossPlanes@@YAPAUPathNode@PathNodes@@QBMPAUPathSort@2@HHMQAY01MQAMHPAH@Z	struct PathNodes::PathNode * __cdecl Path_NearestNodeNotCrossPlanes(float const * const,struct PathNodes::PathSort *,int,int,float,float (* const)[2],float * const,int,int *)	mp_actors.o
+0x00781980	0x00B70E80	?Path_RevokeClaim@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z	void __cdecl Path_RevokeClaim(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00781A00	0x00B70F00	?Path_ForceClaimNode@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z	void __cdecl Path_ForceClaimNode(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00781CE0	0x00B711E0	?Path_MarkNodeInvalid@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z	void __cdecl Path_MarkNodeInvalid(struct PathNodes::PathNode *,enum team_t)	mp_actors.o
+0x00781F20	0x00B71420	?Path_MarkNodeValid@@YAXPAUPathNode@PathNodes@@W4team_t@@@Z	void __cdecl Path_MarkNodeValid(struct PathNodes::PathNode *,enum team_t)	mp_actors.o
+0x00782070	0x00B71570	?Path_SetSentientFlagsFromPath@@YAXPAUsentient_s@@PAUpath_t@@@Z	void __cdecl Path_SetSentientFlagsFromPath(struct sentient_s *,struct path_t *)	mp_actors.o
+0x007820F0	0x00B715F0	?SetCoverNodeStatus@PathNodeMgr@@QAEXABVstring@Broc@@H@Z	public: void __thiscall PathNodeMgr::SetCoverNodeStatus(class Broc::string const &,int)	mp_actors.o
+0x007824E0	0x00B719E0	?GetNode@PathNodeMgr@@QAEHABVstring@Broc@@0PAH@Z	public: int __thiscall PathNodeMgr::GetNode(class Broc::string const &,class Broc::string const &,int *)	mp_actors.o
+0x00782810	0x00B71D10	?GetVehicleNodeIndex@PathNodeMgr@@QAEHABVstring@Broc@@0PAHH@Z	public: int __thiscall PathNodeMgr::GetVehicleNodeIndex(class Broc::string const &,class Broc::string const &,int *,int)	mp_actors.o
+0x00782A80	0x00B71F80	?InitScriptFunctions@PathNodeMgr@@AAEXH@Z	private: void __thiscall PathNodeMgr::InitScriptFunctions(int)	mp_actors.o
+0x00782B00	0x00B72000	?InitScriptFunctions@PathNodeMgr@@AAEXXZ	private: void __thiscall PathNodeMgr::InitScriptFunctions(void)	mp_actors.o
+0x00782B10	0x00B72010	?NodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z	public: bool __thiscall PathNodeMgr::NodeNumsVisible(class PathNodes::NodeHandle const &,class PathNodes::NodeHandle const &)const 	mp_actors.o
+0x00782C70	0x00B72170	?ExpandedNodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z	public: bool __thiscall PathNodeMgr::ExpandedNodeNumsVisible(class PathNodes::NodeHandle const &,class PathNodes::NodeHandle const &)const 	mp_actors.o
+0x00782DE0	0x00B722E0	?DisconnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z	public: void __thiscall PathNodeMgr::DisconnectPath(struct PathNodes::PathNode *,struct PathNodes::PathLink *)	mp_actors.o
+0x00783020	0x00B72520	?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z	public: void __thiscall PathNodeMgr::ConnectPath(struct PathNodes::PathNode *,struct PathNodes::PathLink *)	mp_actors.o
+0x00783150	0x00B72650	?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z	public: void __thiscall PathNodeMgr::ConnectPath(struct PathNodes::PathNode *,class PathNodes::NodeHandle const &)	mp_actors.o
+0x007831E0	0x00B726E0	?DisconnectPath@PathNodeMgr@@QAEXPAVEntity@@PAUPathNode@PathNodes@@PAUPathLink@4@@Z	public: void __thiscall PathNodeMgr::DisconnectPath(class Entity *,struct PathNodes::PathNode *,struct PathNodes::PathLink *)	mp_actors.o
+0x007832C0	0x00B727C0	?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z	public: void __thiscall PathNodeMgr::ConnectPathsForEntity(class Entity *)	mp_actors.o
+0x007833C0	0x00B728C0	?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z	public: void __thiscall PathNodeMgr::DisconnectPathsForEntity(class Entity *)	mp_actors.o
+0x007835F0	0x00B72AF0	?IsReserveForMe@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z	public: bool __thiscall PathNodeMgr::IsReserveForMe(struct PathNodes::PathNode const *,struct sentient_s const *)const 	mp_actors.o
+0x00783640	0x00B72B40	?IsReserveForOther@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z	public: bool __thiscall PathNodeMgr::IsReserveForOther(struct PathNodes::PathNode const *,struct sentient_s const *)const 	mp_actors.o
+0x00783690	0x00B72B90	?GetPreviousChainNodeReserveForMe@PathNodeMgr@@IBEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::GetPreviousChainNodeReserveForMe(struct PathNodes::PathNode *,struct sentient_s *)const 	mp_actors.o
+0x00783700	0x00B72C00	?UpdateBestChainNode@PathNodeMgr@@ABEXHHPAUPathNode@PathNodes@@PAPAU23@PAHPAUsentient_s@@@Z	private: void __thiscall PathNodeMgr::UpdateBestChainNode(int,int,struct PathNodes::PathNode *,struct PathNodes::PathNode * *,int *,struct sentient_s *)const 	mp_actors.o
+0x00783820	0x00B72D20	?AttachSentientToChainNode@PathNodeMgr@@QAEXPAUsentient_s@@ABVstring@Broc@@@Z	public: void __thiscall PathNodeMgr::AttachSentientToChainNode(struct sentient_s *,class Broc::string const &)	mp_actors.o
+0x00783A00	0x00B72F00	?InitPaths@PathNodeMgr@@QAEXXZ	public: void __thiscall PathNodeMgr::InitPaths(void)	mp_actors.o
+0x00783A70	0x00B72F70	??0AITypeManager@@AAE@XZ	private: __thiscall AITypeManager::AITypeManager(void)	mp_actors.o
+0x00783A90	0x00B72F90	?DecodeBank@AITypeManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall AITypeManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	mp_actors.o
+0x00783AC0	0x00B72FC0	?Sentient_Free@@YAXPAUsentient_s@@@Z	void __cdecl Sentient_Free(struct sentient_s *)	mp_actors.o
+0x00783CD0	0x00B731D0	?Sentient_NearestCoverNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHM_N@Z	struct PathNodes::PathNode * __fastcall Sentient_NearestCoverNode(struct sentient_s *,float (* const)[2],float * const,int,int,float,bool)	mp_actors.o
+0x00783DA0	0x00B732A0	?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z	struct PathNodes::PathNode * __fastcall Sentient_NearestNode(struct sentient_s *,float (* const)[2],float * const,int,int,float,int)	mp_actors.o
+0x00783FA0	0x00B734A0	?Sentient_FindNearestNodeToSentient@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHH@Z	struct PathNodes::PathNode * __fastcall Sentient_FindNearestNodeToSentient(struct sentient_s *,float (* const)[2],float * const,int,int)	mp_actors.o
+0x00784110	0x00B73610	?Sentient_ClaimNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z	void __fastcall Sentient_ClaimNode(struct sentient_s *,class PathNodes::NodeHandle)	mp_actors.o
+0x00784230	0x00B73730	?Path_AutoDisconnectPaths@@YAXXZ	void __cdecl Path_AutoDisconnectPaths(void)	mp_actors.o
+0x00784280	0x00B73780	?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z	void __cdecl Path_DrawDebugNode(struct PathNodes::PathNode const *)	mp_actors.o
+0x00784760	0x00B73C60	?Path_DrawFriendlyChain@@YAXXZ	void __cdecl Path_DrawFriendlyChain(void)	mp_actors.o
+0x00784780	0x00B73C80	?Path_DrawVisData@@YAXXZ	void __cdecl Path_DrawVisData(void)	mp_actors.o
+0x007848E0	0x00B73DE0	?Path_NearestNode@@YAPAUPathNode@PathNodes@@QBMPAUPathSort@2@HHMPAH@Z	struct PathNodes::PathNode * __cdecl Path_NearestNode(float const * const,struct PathNodes::PathSort *,int,int,float,int *)	mp_actors.o
+0x00784A30	0x00B73F30	?Path_CanClaimChainNode@@YAHPBUPathNode@PathNodes@@PAUsentient_s@@@Z	int __cdecl Path_CanClaimChainNode(struct PathNodes::PathNode const *,struct sentient_s *)	mp_actors.o
+0x00784A90	0x00B73F90	?Path_CanClaimNode@@YAHPBUPathNode@PathNodes@@PAUsentient_s@@@Z	int __cdecl Path_CanClaimNode(struct PathNodes::PathNode const *,struct sentient_s *)	mp_actors.o
+0x00784AB0	0x00B73FB0	?SetupLevelPaths@PathNodeMgr@@IAE_NXZ	protected: bool __thiscall PathNodeMgr::SetupLevelPaths(void)	mp_actors.o
+0x00784E50	0x00B74350	?NodesVisible@PathNodeMgr@@QBE_NPAUPathNode@PathNodes@@0@Z	public: bool __thiscall PathNodeMgr::NodesVisible(struct PathNodes::PathNode *,struct PathNodes::PathNode *)const 	mp_actors.o
+0x00784F10	0x00B74410	?ChooseSubsequentChainNode_r@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseSubsequentChainNode_r(int,int,int,struct sentient_s *)	mp_actors.o
+0x00785420	0x00B74920	?RunToFirstReserveNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z	public: struct PathNodes::PathNode * __thiscall PathNodeMgr::RunToFirstReserveNode(struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00785650	0x00B74B50	?ChooseAnyChainNodeIfDeadEnd@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseAnyChainNodeIfDeadEnd(int,int,struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00785810	0x00B74D10	?ChoosePreviousChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChoosePreviousChainNode(int,int,struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x007859C0	0x00B74EC0	?ChooseDesperationChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseDesperationChainNode(int,int,int,struct PathNodes::PathNode *,struct sentient_s *)	mp_actors.o
+0x00785CA0	0x00B751A0	?InitEnt@AIType@@QAEXPAVEntity@@@Z	public: void __thiscall AIType::InitEnt(class Entity *)	mp_actors.o
+0x00785E90	0x00B75390	?InitActor@AIType@@QAEXPAUactor_s@@@Z	public: void __thiscall AIType::InitActor(struct actor_s *)	mp_actors.o
+0x00786170	0x00B75670	?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z	public: class IVPointer<class AIType> __thiscall AITypeManager::GetAIType(enum TPakId,char const *,int)	mp_actors.o
+0x007861B0	0x00B756B0	?G_TouchTriggersAndVehicles@@YAXPAVEntity@@ABVPosition3@math@@ABUcollision_context_t@@@Z	void __cdecl G_TouchTriggersAndVehicles(class Entity *,class math::Position3 const &,struct collision_context_t const &)	mp_actors.o
+0x00786340	0x00B75840	?Sentient_SetDesiredChainNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z	void __fastcall Sentient_SetDesiredChainNode(struct sentient_s *,class PathNodes::NodeHandle)	mp_actors.o
+0x007864A0	0x00B759A0	?Sentient_ClaimChainNode@@YIXPAUsentient_s@@@Z	void __fastcall Sentient_ClaimChainNode(struct sentient_s *)	mp_actors.o
+0x00786590	0x00B75A90	?DecodeLevelBank@PathNodeMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall PathNodeMgr::DecodeLevelBank(char const *,unsigned char *,int,enum TPakId)	mp_actors.o
+0x00786620	0x00B75B20	?DecodeZoneBank@PathNodeMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall PathNodeMgr::DecodeZoneBank(char const *,unsigned char *,int,enum TPakId)	mp_actors.o
+0x00786660	0x00B75B60	?ChooseChainNodeInRange@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@HPAUsentient_s@@@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseChainNodeInRange(int,int,struct PathNodes::PathNode *,int,struct sentient_s *)	mp_actors.o
+0x007866B0	0x00B75BB0	?ChooseChainPosFromCurrent@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@0_NPAUsentient_s@@H@Z	protected: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseChainPosFromCurrent(int,int,struct PathNodes::PathNode *,struct PathNodes::PathNode *,bool,struct sentient_s *,int)	mp_actors.o
+0x007867F0	0x00B75CF0	?ChooseChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@HH0PAUsentient_s@@H@Z	public: struct PathNodes::PathNode * __thiscall PathNodeMgr::ChooseChainPos(struct PathNodes::PathNode *,int,int,struct PathNodes::PathNode *,struct sentient_s *,int)	mp_actors.o
+0x00786BA0	0x00B760A0	?Sentient_UpdateDesiredChainPos@@YIXPAUsentient_s@@HH@Z	void __fastcall Sentient_UpdateDesiredChainPos(struct sentient_s *,int,int)	mp_actors.o
+0x00786F70	0x00B76470	?Sentient_SetGoalPos@@YIXPAUsentient_s@@ABVPosition3@math@@_N@Z	void __fastcall Sentient_SetGoalPos(struct sentient_s *,class math::Position3 const &,bool)	mp_actors.o
+0x00787190	0x00B76690	?Sentient_UpdateGoalPos@@YIXPAUsentient_s@@@Z	void __fastcall Sentient_UpdateGoalPos(struct sentient_s *)	mp_actors.o
+0x00787320	0x00B76820	?Sentient_SetGoalEntity@@YIXPAUsentient_s@@PAVEntity@@@Z	void __fastcall Sentient_SetGoalEntity(struct sentient_s *,class Entity *)	mp_actors.o
+0x007874B0	0x00B769B0	?Sentient_SetGoalNode@@YIXPAUsentient_s@@PAUPathNode@PathNodes@@@Z	void __fastcall Sentient_SetGoalNode(struct sentient_s *,struct PathNodes::PathNode *)	mp_actors.o
+0x00787650	0x00B76B50	?Sentient_SetGoalFromTarget@@YIXPAUsentient_s@@ABVstring@Broc@@@Z	void __fastcall Sentient_SetGoalFromTarget(struct sentient_s *,class Broc::string const &)	mp_actors.o

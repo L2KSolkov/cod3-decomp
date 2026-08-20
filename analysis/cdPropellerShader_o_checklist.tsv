@@ -1,0 +1,23 @@
+index	status	map_line
+1	VERIFIED	0002:003d0d50 ??0cdPropellerShaderMat@@QAE@PAUnglTexture@@@Z 00BC0250 f cdPropellerShader.o
+2	VERIFIED	0002:003d0de0 ?InitCDPropellerShader@@YAXXZ 00BC02E0 f cdPropellerShader.o
+3	VERIFIED	0002:003d0e30 ?ToggleCDPropellerShader@@YAXXZ 00BC0330 f cdPropellerShader.o
+4	VERIFIED	0002:003d0e50 ?Register@cdPropellerShader@@UAEXXZ 00BC0350 f cdPropellerShader.o
+5	VERIFIED	0002:003d0e90 ?AddNode@cdPropellerShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC0390 f cdPropellerShader.o
+6	PORTED	0002:003d0f10 ?Render@cdPropellerShaderNode@@UAEXXZ 00BC0410 f cdPropellerShader.o
+7	VERIFIED	0002:003d12b0 ??0cdPropellerShader@@QAE@XZ 00BC07B0 f i cdPropellerShader.o
+8	VERIFIED	0002:003d12e0 ?GetName@cdPropellerShader@@UAE?AVtlFixedString@@XZ 00BC07E0 f i cdPropellerShader.o
+9	PORTED	0002:003d1300 ?RegisterVShader@cdPropellerRender@@YAXXZ 00BC0800 f i cdPropellerShader.o
+10	PORTED	0002:003d1320 ?GetVShader@cdPropellerRender@@YAKXZ 00BC0820 f i cdPropellerShader.o
+11	PORTED	0002:003d1330 ?RegisterPShader@cdPropellerPixel@@YAXXZ 00BC0830 f i cdPropellerShader.o
+12	PORTED	0002:003d1350 ?GetPShader@cdPropellerPixel@@YAPAKXZ 00BC0850 f i cdPropellerShader.o
+13	PORTED	0002:003d1360 ?RegisterPShader@cdPropellerFullbrightPixel@@YAXXZ 00BC0860 f i cdPropellerShader.o
+14	PORTED	0002:003d1380 ?GetPShader@cdPropellerFullbrightPixel@@YAPAKXZ 00BC0880 f i cdPropellerShader.o
+15	PORTED	0002:003d1390 ??0cdPropellerShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdPropellerShaderMat@@@Z 00BC0890 f i cdPropellerShader.o
+16	PORTED	0002:003d13c0 ??_GcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o
+17	PORTED	0002:003d13c0 ??_EcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o
+18	PORTED	0002:003d13f0 ??1cdPropellerShaderNode@@UAE@XZ 00BC08F0 f i cdPropellerShader.o
+19	VERIFIED	0002:003d1400 ??_GcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o
+20	VERIFIED	0002:003d1400 ??_EcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o
+21	VERIFIED	0002:003d1430 ??1cdPropellerShader@@UAE@XZ 00BC0930 f i cdPropellerShader.o
+22	PORTED	0002:003d1440 ??0PropellerContext@@QAE@XZ 00BC0940 f i cdPropellerShader.o

@@ -1,0 +1,5 @@
+ida_ea	va	name	signature	family
+0x007E0EA0	0x00BD03A0	?InitCDSkyShader@@YAXXZ	void __cdecl InitCDSkyShader(void)	cdSkyShader.o
+0x007E0EF0	0x00BD03F0	?ToggleCDSkyShader@@YAXXZ	void __cdecl ToggleCDSkyShader(void)	cdSkyShader.o
+0x007E0F10	0x00BD0410	?Register@cdSkyShader@@UAEXXZ	public: virtual void __thiscall cdSkyShader::Register(void)	cdSkyShader.o
+0x007E0F50	0x00BD0450	?Render@cdSkyShaderNode@@UAEXXZ	public: virtual void __thiscall cdSkyShaderNode::Render(void)	cdSkyShader.o

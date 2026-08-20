@@ -1,0 +1,21 @@
+ida_ea	va	name	signature	family
+0x00C8F720	0x0107EC20	?RegisterHashStrings@mp_level_wad@@YAXXZ	void __cdecl mp_level_wad::RegisterHashStrings(void)	mp_level_wad.o
+0x00C8F740	0x0107EC40	?ResolveAnim@mp_level_wad@@YAIIIPAII@Z	unsigned int __cdecl mp_level_wad::ResolveAnim(unsigned int,unsigned int,unsigned int *,unsigned int)	mp_level_wad.o
+0x00C8F790	0x0107EC90	?ResolveAnimName@mp_level_wad@@YAPBDI@Z	char const * __cdecl mp_level_wad::ResolveAnimName(unsigned int)	mp_level_wad.o
+0x00C8F7D0	0x0107ECD0	?ValidateAnimationIndices@mp_level_wad@@YA_NXZ	bool __cdecl mp_level_wad::ValidateAnimationIndices(void)	mp_level_wad.o
+0x00C8F830	0x0107ED30	?GetBroAnim@mp_level_wad@@YAIII@Z	unsigned int __cdecl mp_level_wad::GetBroAnim(unsigned int,unsigned int)	mp_level_wad.o
+0x00C8F880	0x0107ED80	?GetNextAnimTree@mp_level_wad@@YA_NHPADH@Z	bool __cdecl mp_level_wad::GetNextAnimTree(int,char *,int)	mp_level_wad.o
+0x00C8F8D0	0x0107EDD0	?SpawnScriptThread@mp_level_wad@@YAII_NVentity@Broc@@11MMMAAUvector@3@@Z	unsigned int __cdecl mp_level_wad::SpawnScriptThread(unsigned int,bool,class Broc::entity,class Broc::entity,class Broc::entity,float,float,float,struct Broc::vector &)	mp_level_wad.o
+0x00C901E0	0x0107F6E0	?ScriptThreadExists@mp_level_wad@@YA_NI@Z	bool __cdecl mp_level_wad::ScriptThreadExists(unsigned int)	mp_level_wad.o
+0x00C902F0	0x0107F7F0	?mp_level_wad_EEGetFunctions@EEHelper@Broc@@YAXIPAP6AIPBD@ZPAP6AII@ZPAP6A_NI0@ZPAP6AXAAI@Z@Z	void __cdecl Broc::EEHelper::mp_level_wad_EEGetFunctions(unsigned int,unsigned int (__cdecl**)(char const *),unsigned int (__cdecl**)(unsigned int),bool (__cdecl**)(unsigned int,char const *),void (__cdecl**)(unsigned int &))	mp_level_wad.o
+0x00C94D50	0x01084250	?main@mp_level@@YAXXZ	void __cdecl mp_level::main(void)	mp_level_wad.o
+0x00C94D70	0x01084270	?hack_ps2_InitScript@mp_level@@YAXAAUBrocExports@@@Z	void __cdecl mp_level::hack_ps2_InitScript(struct BrocExports &)	mp_level_wad.o
+0x00C94E50	0x01084350	?AnimNamespaceVariableResolver@mp_level@@YAXHHHH@Z	void __cdecl mp_level::AnimNamespaceVariableResolver(int,int,int,int)	mp_level_wad.o
+0x00C94E90	0x01084390	?BrocAnimInitialize@mp_level@@YAXXZ	void __cdecl mp_level::BrocAnimInitialize(void)	mp_level_wad.o
+0x00C94EB0	0x010843B0	?BrocAnimCleanup@mp_level@@YAXXZ	void __cdecl mp_level::BrocAnimCleanup(void)	mp_level_wad.o
+0x00C94ED0	0x010843D0	?BrocAnimResolver@mp_level@@YAIPBD0@Z	unsigned int __cdecl mp_level::BrocAnimResolver(char const *,char const *)	mp_level_wad.o
+0x00C94F60	0x01084460	?BrocAnimDebug@mp_level@@YAXVentity@Broc@@@Z	void __cdecl mp_level::BrocAnimDebug(class Broc::entity)	mp_level_wad.o
+0x00C94F80	0x01084480	?MainThreadHook@mp_level@@YAXVentity@Broc@@@Z	void __cdecl mp_level::MainThreadHook(class Broc::entity)	mp_level_wad.o
+0x00C94FA0	0x010844A0	?Shutdown@mp_level@@YAXXZ	void __cdecl mp_level::Shutdown(void)	mp_level_wad.o
+0x00C95160	0x01084660	?InternalMain@mp_level@@YAXXZ	void __cdecl mp_level::InternalMain(void)	mp_level_wad.o
+0x00C95CC0	0x010851C0	?InitScript@mp_level@@YAP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@Z	void (__cdecl*__cdecl mp_level::InitScript(struct BrocAPI * *,struct BrocExports &))(void)	mp_level_wad.o

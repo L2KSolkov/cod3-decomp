@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x00853A70	0x00C42F70	?Render@nglStringNode@@UAEXXZ	public: virtual void __thiscall nglStringNode::Render(void)	ngl_dx_font.o

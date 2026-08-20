@@ -1,0 +1,24 @@
+ida_ea	va	name	signature	family
+0x00834050	0x00C23550	?apkRegisterFileType@apk@@YAXIIP6AXPAVapkFile@1@PAVapkFileEntry@1@PAX@Z32@Z	void __cdecl apk::apkRegisterFileType(unsigned int,unsigned int,void (__cdecl*)(class apk::apkFile *,class apk::apkFileEntry *,void *),void (__cdecl*)(class apk::apkFile *,class apk::apkFileEntry *,void *),void *)	apk.o
+0x00834090	0x00C23590	?apkUnregisterFileType@apk@@YAXII@Z	void __cdecl apk::apkUnregisterFileType(unsigned int,unsigned int)	apk.o
+0x00834100	0x00C23600	?apkRegisterSectionType@apk@@YAXABVtlFixedString@@P6AXPAVapkFile@1@PAUapkFileSection@1@PAX@Z43@Z	void __cdecl apk::apkRegisterSectionType(class tlFixedString const &,void (__cdecl*)(class apk::apkFile *,struct apk::apkFileSection *,void *),void (__cdecl*)(class apk::apkFile *,struct apk::apkFileSection *,void *),void *)	apk.o
+0x00834170	0x00C23670	?apkUnregisterSectionType@apk@@YAXABVtlFixedString@@@Z	void __cdecl apk::apkUnregisterSectionType(class tlFixedString const &)	apk.o
+0x00834200	0x00C23700	?apkSetResourceCallback@apk@@YAXP6APAXABVtlFixedString@@I@Z@Z	void __cdecl apk::apkSetResourceCallback(void * (__cdecl*)(class tlFixedString const &,unsigned int))	apk.o
+0x00834210	0x00C23710	?GetData@apkFileEntry@apk@@QAEPAXPAVapkFile@2@H_N@Z	public: void * __thiscall apk::apkFileEntry::GetData(class apk::apkFile *,int,bool)	apk.o
+0x008342B0	0x00C237B0	?GetDataSize@apkFileEntry@apk@@QAEIPAVapkFile@2@H_NPAPAX@Z	public: unsigned int __thiscall apk::apkFileEntry::GetDataSize(class apk::apkFile *,int,bool,void * *)	apk.o
+0x008343C0	0x00C238C0	?GetFileTypeEntry@apkFile@apk@@QAEPAUapkFileTypeEntry@2@I@Z	public: struct apk::apkFileTypeEntry * __thiscall apk::apkFile::GetFileTypeEntry(unsigned int)	apk.o
+0x008343F0	0x00C238F0	?GetFirstFile@apkFile@apk@@QAEPAVapkFileEntry@2@I@Z	public: class apk::apkFileEntry * __thiscall apk::apkFile::GetFirstFile(unsigned int)	apk.o
+0x00834420	0x00C23920	?GetNextFile@apkFile@apk@@QAEPAVapkFileEntry@2@IPAV32@@Z	public: class apk::apkFileEntry * __thiscall apk::apkFile::GetNextFile(unsigned int,class apk::apkFileEntry *)	apk.o
+0x00834470	0x00C23970	?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@I@Z	public: class apk::apkFileEntry * __thiscall apk::apkFile::GetFile(unsigned int)	apk.o
+0x008344D0	0x00C239D0	?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@ABVtlFixedString@@I@Z	public: class apk::apkFileEntry * __thiscall apk::apkFile::GetFile(class tlFixedString const &,unsigned int)	apk.o
+0x00834570	0x00C23A70	?GetSectionIndex@apkFile@apk@@QAEHABVtlFixedString@@@Z	public: int __thiscall apk::apkFile::GetSectionIndex(class tlFixedString const &)	apk.o
+0x008345C0	0x00C23AC0	?ApplyFixups@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	public: void __thiscall apk::apkFile::ApplyFixups(unsigned int * &,class tlFixedString *)	apk.o
+0x00834630	0x00C23B30	?ApplyReferences@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	public: void __thiscall apk::apkFile::ApplyReferences(unsigned int * &,class tlFixedString *)	apk.o
+0x008346B0	0x00C23BB0	?InvokeLoadCallbacks@apkFile@apk@@QAEX_N@Z	public: void __thiscall apk::apkFile::InvokeLoadCallbacks(bool)	apk.o
+0x008347D0	0x00C23CD0	?InvokeFileLoadCallback@apkFile@apk@@QAE_NPAUapkFileTypeEntry@2@PAVapkFileEntry@2@@Z	public: bool __thiscall apk::apkFile::InvokeFileLoadCallback(struct apk::apkFileTypeEntry *,class apk::apkFileEntry *)	apk.o
+0x00834820	0x00C23D20	?InvokeDeleteCallbacks@apkFile@apk@@QAEXXZ	public: void __thiscall apk::apkFile::InvokeDeleteCallbacks(void)	apk.o
+0x00834930	0x00C23E30	?apkSetRootDirectory@apk@@YAXPBD@Z	void __cdecl apk::apkSetRootDirectory(char const *)	apk.o
+0x00834960	0x00C23E60	?apkDeleteFile@apk@@YAXPAVapkFile@1@@Z	void __cdecl apk::apkDeleteFile(class apk::apkFile *)	apk.o
+0x00834990	0x00C23E90	?ApplyReferencesForEntry@apkFile@apk@@QAEXPAVapkFileEntry@2@@Z	public: void __thiscall apk::apkFile::ApplyReferencesForEntry(class apk::apkFileEntry *)	apk.o
+0x00834B40	0x00C24040	?apkLoadFileInPlace@apk@@YAPAVapkFile@1@PAX_N@Z	class apk::apkFile * __cdecl apk::apkLoadFileInPlace(void *,bool)	apk.o
+0x00834D70	0x00C24270	?apkLoadFile@apk@@YAPAVapkFile@1@PBD@Z	class apk::apkFile * __cdecl apk::apkLoadFile(char const *)	apk.o

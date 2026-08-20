@@ -1,0 +1,542 @@
+ida_ea	va	name	signature	family
+0x004B5650	0x008A4B50	??1EntityNotify@@QAE@XZ	public: __thiscall EntityNotify::~EntityNotify(void)	core.o
+0x004B5670	0x008A4B70	?FS_Initialized@@YAHXZ	int __cdecl FS_Initialized(void)	core.o
+0x004B5680	0x008A4B80	?FS_CheckFileSystemStarted@@YAXXZ	void __cdecl FS_CheckFileSystemStarted(void)	core.o
+0x004B56D0	0x008A4BD0	?FS_LoadStack@@YAHXZ	int __cdecl FS_LoadStack(void)	core.o
+0x004B56E0	0x008A4BE0	?FS_UseSearchPath@@YAHPBUsearchpath_s@@@Z	int __cdecl FS_UseSearchPath(struct searchpath_s const *)	core.o
+0x004B5720	0x008A4C20	?FS_LanguageHasAssets@@YAHH@Z	int __cdecl FS_LanguageHasAssets(int)	core.o
+0x004B5750	0x008A4C50	?FS_HashFileName@@YAJPBDH@Z	long __cdecl FS_HashFileName(char const *,int)	core.o
+0x004B57C0	0x008A4CC0	?FS_FileForHandle@@YAPAU_iobuf@@H@Z	struct _iobuf * __cdecl FS_FileForHandle(int)	core.o
+0x004B58C0	0x008A4DC0	?FS_ForceFlush@@YAXH@Z	void __cdecl FS_ForceFlush(int)	core.o
+0x004B58E0	0x008A4DE0	?FS_filelength@@YAHH@Z	int __cdecl FS_filelength(int)	core.o
+0x004B59B0	0x008A4EB0	?FS_Remove@@YAXPBD@Z	void __cdecl FS_Remove(char const *)	core.o
+0x004B59F0	0x008A4EF0	?FS_FilenameCompare@@YAHPBD0@Z	int __cdecl FS_FilenameCompare(char const *,char const *)	core.o
+0x004B5A70	0x008A4F70	?FS_ShiftedStrStr@@YAPADPBD0H@Z	char * __cdecl FS_ShiftedStrStr(char const *,char const *,int)	core.o
+0x004B5AC0	0x008A4FC0	?FS_GetExtensionSubString@@YAPBDPBD@Z	char const * __cdecl FS_GetExtensionSubString(char const *)	core.o
+0x004B5B00	0x008A5000	?FS_PureIgnoresExtension@@YAHPBD@Z	int __cdecl FS_PureIgnoresExtension(char const *)	core.o
+0x004B5B50	0x008A5050	?FS_ResetFiles@@YAXXZ	void __cdecl FS_ResetFiles(void)	core.o
+0x004B5C00	0x008A5100	?FS_AddNonPackFileDirectory@@YAXPBD0@Z	void __cdecl FS_AddNonPackFileDirectory(char const *,char const *)	core.o
+0x004B5C70	0x008A5170	?FS_GetDataForFile@@YAPAUfileData_s@@PBD00@Z	struct fileData_s * __cdecl FS_GetDataForFile(char const *,char const *,char const *)	core.o
+0x004B5E80	0x008A5380	?FS_ClearDataForFiles@@YAXPAX0@Z	void __cdecl FS_ClearDataForFiles(void *,void *)	core.o
+0x004B5F80	0x008A5480	?FS_FTell@@YAHH@Z	int __cdecl FS_FTell(int)	core.o
+0x004B5FC0	0x008A54C0	?FS_Flush@@YAXH@Z	void __cdecl FS_Flush(int)	core.o
+0x004B5FE0	0x008A54E0	?Q_rand@@YA?BHPAH@Z	int const __cdecl Q_rand(int *)	core.o
+0x004B6000	0x008A5500	?Q_random@@YA?BMPAH@Z	float const __cdecl Q_random(int *)	core.o
+0x004B6030	0x008A5530	?Q_crandom@@YA?BMPAH@Z	float const __cdecl Q_crandom(int *)	core.o
+0x004B6070	0x008A5570	?Q_log2@@YA?BHH@Z	int const __cdecl Q_log2(int)	core.o
+0x004B6090	0x008A5590	?Q_acos@@YA?BMM@Z	float const __cdecl Q_acos(float)	core.o
+0x004B60D0	0x008A55D0	?ClampChar@@YA?BCH@Z	signed char const __cdecl ClampChar(int)	core.o
+0x004B60F0	0x008A55F0	?ClampShort@@YA?BFH@Z	short const __cdecl ClampShort(int)	core.o
+0x004B6110	0x008A5610	?DirToByte@@YA?BEQBM@Z	unsigned char const __cdecl DirToByte(float const * const)	core.o
+0x004B6170	0x008A5670	?ByteToDir@@YAXHQAM@Z	void __cdecl ByteToDir(int,float * const)	core.o
+0x004B61C0	0x008A56C0	?_DotProduct@@YA?BMQBM0@Z	float const __cdecl _DotProduct(float const * const,float const * const)	core.o
+0x004B61E0	0x008A56E0	?_VectorSubtract@@YAXQBM0QAM@Z	void __cdecl _VectorSubtract(float const * const,float const * const,float * const)	core.o
+0x004B6220	0x008A5720	?_VectorAdd@@YAXQBM0QAM@Z	void __cdecl _VectorAdd(float const * const,float const * const,float * const)	core.o
+0x004B6260	0x008A5760	?_VectorCopy@@YAXQBMQAM@Z	void __cdecl _VectorCopy(float const * const,float * const)	core.o
+0x004B6280	0x008A5780	?_VectorScale@@YAXQBMMQAM@Z	void __cdecl _VectorScale(float const * const,float,float * const)	core.o
+0x004B62C0	0x008A57C0	?_VectorMA@@YAXQBMM0QAM@Z	void __cdecl _VectorMA(float const * const,float,float const * const,float * const)	core.o
+0x004B6310	0x008A5810	?VectorCompareEpsilon@@YA?BHQBM0@Z	int const __cdecl VectorCompareEpsilon(float const * const,float const * const)	core.o
+0x004B6360	0x008A5860	?_VectorLength@@YA?BMQBM@Z	float const __cdecl _VectorLength(float const * const)	core.o
+0x004B63B0	0x008A58B0	?VectorDistance@@YA?BMQBM0@Z	float const __cdecl VectorDistance(float const * const,float const * const)	core.o
+0x004B6400	0x008A5900	?VectorDistanceSquared@@YA?BMQBM0@Z	float const __cdecl VectorDistanceSquared(float const * const,float const * const)	core.o
+0x004B6440	0x008A5940	?VectorDistance2D@@YA?BMQBM0@Z	float const __cdecl VectorDistance2D(float const * const,float const * const)	core.o
+0x004B6480	0x008A5980	?VectorDistanceSquared2D@@YA?BMQBM0@Z	float const __cdecl VectorDistanceSquared2D(float const * const,float const * const)	core.o
+0x004B64B0	0x008A59B0	?VectorDistanceSquared2D@@YA?BMABVPosition3@math@@0@Z	float const __cdecl VectorDistanceSquared2D(class math::Position3 const &,class math::Position3 const &)	core.o
+0x004B64E0	0x008A59E0	?CrossProduct@@YAXQBM0QAM@Z	void __cdecl CrossProduct(float const * const,float const * const,float * const)	core.o
+0x004B6540	0x008A5A40	?CrossProductUp@@YAXQBMQAM@Z	void __cdecl CrossProductUp(float const * const,float * const)	core.o
+0x004B6570	0x008A5A70	?VectorNormalize2@@YAMABVDir3@math@@AAV12@@Z	float __cdecl VectorNormalize2(class math::Dir3 const &,class math::Dir3 &)	core.o
+0x004B6620	0x008A5B20	?VectorNormalize@@YA?BMAAVDir3@math@@@Z	float const __cdecl VectorNormalize(class math::Dir3 &)	core.o
+0x004B66B0	0x008A5BB0	?VectorNormalize@@YA?BMQAM@Z	float const __cdecl VectorNormalize(float * const)	core.o
+0x004B6740	0x008A5C40	?VectorNormalize2D@@YA?BMQAM@Z	float const __cdecl VectorNormalize2D(float * const)	core.o
+0x004B67C0	0x008A5CC0	?VectorNormalize4D@@YA?BMQAM@Z	float const __cdecl VectorNormalize4D(float * const)	core.o
+0x004B6870	0x008A5D70	?VectorNormalize2@@YA?BMQBMQAM@Z	float const __cdecl VectorNormalize2(float const * const,float * const)	core.o
+0x004B6920	0x008A5E20	?VectorInverse@@YAXQAM@Z	void __cdecl VectorInverse(float * const)	core.o
+0x004B6950	0x008A5E50	?Vector4Scale@@YAXQBMMQAM@Z	void __cdecl Vector4Scale(float const * const,float,float * const)	core.o
+0x004B69A0	0x008A5EA0	?VectorMax@@YAMQBM@Z	float __cdecl VectorMax(float const * const)	core.o
+0x004B69D0	0x008A5ED0	?VectorRotate@@YAXQBMQAY02$$CBMQAM@Z	void __cdecl VectorRotate(float const * const,float const (* const)[3],float * const)	core.o
+0x004B6AB0	0x008A5FB0	?MakeNormalVectors@@YAXQBMQAM1@Z	void __cdecl MakeNormalVectors(float const * const,float * const,float * const)	core.o
+0x004B6C10	0x008A6110	?GetPerpendicularViewVector@@YAXQBM00QAM@Z	void __cdecl GetPerpendicularViewVector(float const * const,float const * const,float const * const,float * const)	core.o
+0x004B6E50	0x008A6350	?ProjectPointOntoVector@@YAXQAM000@Z	void __cdecl ProjectPointOntoVector(float * const,float * const,float * const,float * const)	core.o
+0x004B6F90	0x008A6490	?MatrixMultiply@@YAXQAY02$$CBM0QAY02M@Z	void __cdecl MatrixMultiply(float const (* const)[3],float const (* const)[3],float (* const)[3])	core.o
+0x004B7120	0x008A6620	?MatrixMultiplyEquals@@YAXQAY02$$CBMQAY02M@Z	void __cdecl MatrixMultiplyEquals(float const (* const)[3],float (* const)[3])	core.o
+0x004B72B0	0x008A67B0	?MatrixMultiply34@@YAXQAY03$$CBM0QAY03M@Z	void __cdecl MatrixMultiply34(float const (* const)[4],float const (* const)[4],float (* const)[4])	core.o
+0x004B74D0	0x008A69D0	?MatrixMultiply43@@YAXQAY02$$CBM0QAY02M@Z	void __cdecl MatrixMultiply43(float const (* const)[3],float const (* const)[3],float (* const)[3])	core.o
+0x004B76F0	0x008A6BF0	?DObjSkelMatrixMultiply43@@YAXPBUDObjSkelMat@@QAY02$$CBMQAY02M@Z	void __cdecl DObjSkelMatrixMultiply43(struct DObjSkelMat const *,float const (* const)[3],float (* const)[3])	core.o
+0x004B7910	0x008A6E10	?MatrixMultiplyRT@@YAXABVMat43@math@@0AAV12@@Z	void __cdecl MatrixMultiplyRT(class math::Mat43 const &,class math::Mat43 const &,class math::Mat43 &)	core.o
+0x004B8000	0x008A7500	?DObjSkel2MatrixMultiply43@@YAXPBUDObjSkelMat@@QAY02$$CBMPAU1@@Z	void __cdecl DObjSkel2MatrixMultiply43(struct DObjSkelMat const *,float const (* const)[3],struct DObjSkelMat *)	core.o
+0x004B8240	0x008A7740	?DObjSkelMatrixMultiply@@YA?AUDObjSkelMat@@PBU1@0@Z	struct DObjSkelMat __cdecl DObjSkelMatrixMultiply(struct DObjSkelMat const *,struct DObjSkelMat const *)	core.o
+0x004B84C0	0x008A79C0	?MatrixTranspose@@YAXQAY02$$CBMQAY02M@Z	void __cdecl MatrixTranspose(float const (* const)[3],float (* const)[3])	core.o
+0x004B8500	0x008A7A00	?MatrixInverse@@YAXQAY02$$CBMQAY02M@Z	void __cdecl MatrixInverse(float const (* const)[3],float (* const)[3])	core.o
+0x004B8710	0x008A7C10	?MatrixInverse44@@YAXQBMQAM@Z	void __cdecl MatrixInverse44(float const * const,float * const)	core.o
+0x004B8ED0	0x008A83D0	?MatrixTransformVector@@YAXQBMQAY02$$CBMQAM@Z	void __cdecl MatrixTransformVector(float const * const,float const (* const)[3],float * const)	core.o
+0x004B8F60	0x008A8460	?MatrixTransposeTransformVector@@YAXQBMQAY02$$CBMQAM@Z	void __cdecl MatrixTransposeTransformVector(float const * const,float const (* const)[3],float * const)	core.o
+0x004B8FF0	0x008A84F0	?MatrixTransformVector43@@YAXQBMQAY02$$CBMQAM@Z	void __cdecl MatrixTransformVector43(float const * const,float const (* const)[3],float * const)	core.o
+0x004B9090	0x008A8590	?MatrixTransformVector43@@YAXQBMQAY02$$CBMAAVPosition3@math@@@Z	void __cdecl MatrixTransformVector43(float const * const,float const (* const)[3],class math::Position3 &)	core.o
+0x004B9130	0x008A8630	?DObjSkelMatrixTransformVector43@@YAXQBMPBUDObjSkelMat@@QAM@Z	void __cdecl DObjSkelMatrixTransformVector43(float const * const,struct DObjSkelMat const *,float * const)	core.o
+0x004B91D0	0x008A86D0	?MatrixTransposeTransformVector43@@YAXQBMQAY02$$CBMQAM@Z	void __cdecl MatrixTransposeTransformVector43(float const * const,float const (* const)[3],float * const)	core.o
+0x004B9280	0x008A8780	?MatrixTransformVector43Equals@@YAXPAMPBM@Z	void __cdecl MatrixTransformVector43Equals(float *,float const *)	core.o
+0x004B9320	0x008A8820	?QuatMultiply@@YAXPBM0PAM@Z	void __cdecl QuatMultiply(float const *,float const *,float *)	core.o
+0x004B9410	0x008A8910	?QuatInverse@@YAXPBMPAM@Z	void __cdecl QuatInverse(float const *,float *)	core.o
+0x004B9450	0x008A8950	?ConvertQuatToMat@@YAXPAM@Z	void __cdecl ConvertQuatToMat(float *)	core.o
+0x004B95E0	0x008A8AE0	?QuatEigenTrace@@YAMQAM@Z	float __cdecl QuatEigenTrace(float * const)	core.o
+0x004B9670	0x008A8B70	?AngleEigenTrace@@YAMM@Z	float __cdecl AngleEigenTrace(float)	core.o
+0x004B96A0	0x008A8BA0	?QuatRatioEigenTrace@@YAMQAM0@Z	float __cdecl QuatRatioEigenTrace(float * const,float * const)	core.o
+0x004B97E0	0x008A8CE0	?ColorBytes3@@YA?BIMMM@Z	unsigned int const __cdecl ColorBytes3(float,float,float)	core.o
+0x004B9820	0x008A8D20	?ColorBytes4@@YA?BIMMMM@Z	unsigned int const __cdecl ColorBytes4(float,float,float,float)	core.o
+0x004B9870	0x008A8D70	?NormalizeColor@@YA?BMQBMQAM@Z	float const __cdecl NormalizeColor(float const * const,float * const)	core.o
+0x004B98F0	0x008A8DF0	?AngleMod@@YA?BMM@Z	float const __cdecl AngleMod(float)	core.o
+0x004B9920	0x008A8E20	?LerpAngle@@YA?BMMMM@Z	float const __cdecl LerpAngle(float,float,float)	core.o
+0x004B9990	0x008A8E90	?AngleSubtract@@YA?BMMM@Z	float const __cdecl AngleSubtract(float,float)	core.o
+0x004B99F0	0x008A8EF0	?AnglesSubtract@@YAXABVPosition3@math@@0AAV12@@Z	void __cdecl AnglesSubtract(class math::Position3 const &,class math::Position3 const &,class math::Position3 &)	core.o
+0x004B9B20	0x008A9020	?AnglesSubtract@@YAXQBM0QAM@Z	void __cdecl AnglesSubtract(float const * const,float const * const,float * const)	core.o
+0x004B9C50	0x008A9150	?AngleNormalize360@@YA?BMM@Z	float const __cdecl AngleNormalize360(float)	core.o
+0x004B9C80	0x008A9180	?AngleNormalize180@@YA?BMM@Z	float const __cdecl AngleNormalize180(float)	core.o
+0x004B9CD0	0x008A91D0	?AngleDelta@@YA?BMMM@Z	float const __cdecl AngleDelta(float,float)	core.o
+0x004B9D20	0x008A9220	?RadiusFromBounds@@YA?BMABVPosition3@math@@0@Z	float const __cdecl RadiusFromBounds(class math::Position3 const &,class math::Position3 const &)	core.o
+0x004B9E20	0x008A9320	?ClearBounds@@YAXQAM0@Z	void __cdecl ClearBounds(float * const,float * const)	core.o
+0x004B9E60	0x008A9360	?AxisClear@@YAXQAY02M@Z	void __cdecl AxisClear(float (* const)[3])	core.o
+0x004B9EA0	0x008A93A0	?AxisCopy@@YAXQAY02$$CBMQAY02M@Z	void __cdecl AxisCopy(float const (* const)[3],float (* const)[3])	core.o
+0x004B9EE0	0x008A93E0	?PlaneFromPoints@@YA?BHQAMQBM11@Z	int const __cdecl PlaneFromPoints(float * const,float const * const,float const * const,float const * const)	core.o
+0x004BA030	0x008A9530	?SetPlaneSignbits@@YAXPAUcplane_s@@@Z	void __cdecl SetPlaneSignbits(struct cplane_s *)	core.o
+0x004BA060	0x008A9560	?BoxDistSqrdExceeds@@YAHQBM00M@Z	int __cdecl BoxDistSqrdExceeds(float const * const,float const * const,float const * const,float)	core.o
+0x004BA130	0x008A9630	?Vec10Copy@@YAXPBMPAM@Z	void __cdecl Vec10Copy(float const *,float *)	core.o
+0x004BA180	0x008A9680	?Q_rint@@YA?BMM@Z	float const __cdecl Q_rint(float)	core.o
+0x004BA1B0	0x008A96B0	?ColorNormalize@@YA?BMQBMQAM@Z	float const __cdecl ColorNormalize(float const * const,float * const)	core.o
+0x004BA250	0x008A9750	?VectorSnap@@YAXQAM@Z	void __cdecl VectorSnap(float * const)	core.o
+0x004BA2C0	0x008A97C0	?_Vector5Add@@YAXQBM0QAM@Z	void __cdecl _Vector5Add(float const * const,float const * const,float * const)	core.o
+0x004BA320	0x008A9820	?_Vector5Scale@@YAXQBMMQAM@Z	void __cdecl _Vector5Scale(float const * const,float,float * const)	core.o
+0x004BA380	0x008A9880	?_Vector53Copy@@YAXQBMQAM@Z	void __cdecl _Vector53Copy(float const * const,float * const)	core.o
+0x004BA3A0	0x008A98A0	?RoundFloat@@YAMMH@Z	float __cdecl RoundFloat(float,int)	core.o
+0x004BA450	0x008A9950	?Rand_Init@@YAXH@Z	void __cdecl Rand_Init(int)	core.o
+0x004BA460	0x008A9960	?flrand@@YAMMM@Z	float __cdecl flrand(float,float)	core.o
+0x004BA4B0	0x008A99B0	?irand@@YAHHH@Z	int __cdecl irand(int,int)	core.o
+0x004BA4E0	0x008A99E0	?Q_SwayRand@@YAMMMM@Z	float __cdecl Q_SwayRand(float,float,float)	core.o
+0x004BA530	0x008A9A30	?nglMatrixCreateXYZ@@YAXPAVMat43@math@@PAVDir3@2@PAVPosition3@2@@Z	void __cdecl nglMatrixCreateXYZ(class math::Mat43 *,class math::Dir3 *,class math::Position3 *)	core.o
+0x004BA7B0	0x008A9CB0	?DiffTrack@@YAMMMMM@Z	float __cdecl DiffTrack(float,float,float,float)	core.o
+0x004BA820	0x008A9D20	?InterpolateAngles@@YAXAAVPosition3@math@@ABV12@1M@Z	void __cdecl InterpolateAngles(class math::Position3 &,class math::Position3 const &,class math::Position3 const &,float)	core.o
+0x004BA960	0x008A9E60	?InterpolateAnglesSmooth@@YAXQAMQBM1M@Z	void __cdecl InterpolateAnglesSmooth(float * const,float const * const,float const * const,float)	core.o
+0x004BAB70	0x008AA070	?InterpolatePositionSmooth@@YAXQAMQBM1M@Z	void __cdecl InterpolatePositionSmooth(float * const,float const * const,float const * const,float)	core.o
+0x004BAC00	0x008AA100	?Com_StringContains@@YAPADPAD0H@Z	char * __cdecl Com_StringContains(char *,char *,int)	core.o
+0x004BACC0	0x008AA1C0	?Com_Filter@@YAHPAD0H@Z	int __cdecl Com_Filter(char *,char *,int)	core.o
+0x004BAEC0	0x008AA3C0	?Com_FilterPath@@YAHPAD0H@Z	int __cdecl Com_FilterPath(char *,char *,int)	core.o
+0x004BAF50	0x008AA450	?Com_HashKey@@YAHPADH@Z	int __cdecl Com_HashKey(char *,int)	core.o
+0x004BAFA0	0x008AA4A0	?Com_RealTime@@YAHPAUqtime_s@@@Z	int __cdecl Com_RealTime(struct qtime_s *)	core.o
+0x004BB010	0x008AA510	_Z_FreeInternal	_Z_FreeInternal	core.o
+0x004BB020	0x008AA520	?Com_InitZoneMemory@@YAXXZ	void __cdecl Com_InitZoneMemory(void)	core.o
+0x004BB030	0x008AA530	?_copyDWord@@YAXPAIII@Z	void __cdecl _copyDWord(unsigned int *,unsigned int,unsigned int)	core.o
+0x004BB0C0	0x008AA5C0	?Com_Memset@@YAXPAXHI@Z	void __cdecl Com_Memset(void *,int,unsigned int)	core.o
+0x004BB170	0x008AA670	?Com_Memcmp@@YAHPBX0I@Z	int __cdecl Com_Memcmp(void const *,void const *,unsigned int)	core.o
+0x004BB210	0x008AA710	?Com_Prefetch@@YAXPBXIW4e_prefetch@@@Z	void __cdecl Com_Prefetch(void const *,unsigned int,enum e_prefetch)	core.o
+0x004BB310	0x008AA810	?Com_BeginRedirect@@YAXPADHP6AX0@Z@Z	void __cdecl Com_BeginRedirect(char *,int,void (__cdecl*)(char *))	core.o
+0x004BB340	0x008AA840	?Com_EndRedirect@@YAXXZ	void __cdecl Com_EndRedirect(void)	core.o
+0x004BB380	0x008AA880	?Com_PrintMessage@@YAXW4print_msg_type_t@@PBD@Z	void __cdecl Com_PrintMessage(enum print_msg_type_t,char const *)	core.o
+0x004BB420	0x008AA920	?Com_Printf@@YAXPBDZZ	void __cdecl Com_Printf(char const *,...)	core.o
+0x004BB4E0	0x008AA9E0	?Printf@@YAXIPBDZZ	void __cdecl Printf(unsigned int,char const *,...)	core.o
+0x004BB550	0x008AAA50	?Com_DPrintf@@YAXPBDZZ	void __cdecl Com_DPrintf(char const *,...)	core.o
+0x004BB5A0	0x008AAAA0	?jobqueue_init@@YAXXZ	void __cdecl jobqueue_init(void)	core.o
+0x004BB5B0	0x008AAAB0	?jobqueue_shutdown@@YAXXZ	void __cdecl jobqueue_shutdown(void)	core.o
+0x004BB5C0	0x008AAAC0	?jobqueue_restart@@YAXH@Z	void __cdecl jobqueue_restart(int)	core.o
+0x004BB650	0x008AAB50	?Com_ParseCommandLine@@YAXPAD@Z	void __cdecl Com_ParseCommandLine(char *)	core.o
+0x004BB6B0	0x008AABB0	?Com_SafeMode@@YAHXZ	int __cdecl Com_SafeMode(void)	core.o
+0x004BB730	0x008AAC30	?Com_ForceSafeMode@@YAXXZ	void __cdecl Com_ForceSafeMode(void)	core.o
+0x004BB740	0x008AAC40	?Com_AddStartupCommands@@YAHXZ	int __cdecl Com_AddStartupCommands(void)	core.o
+0x004BB7B0	0x008AACB0	?Info_Print@@YAXPBD@Z	void __cdecl Info_Print(char const *)	core.o
+0x004BB8A0	0x008AADA0	?Com_InitPushEvent@@YAXXZ	void __cdecl Com_InitPushEvent(void)	core.o
+0x004BB8C0	0x008AADC0	?Com_PushEvent@@YAXPAUsysEvent_t@@@Z	void __cdecl Com_PushEvent(struct sysEvent_t *)	core.o
+0x004BB9A0	0x008AAEA0	?Com_ShutdownEvents@@YAXXZ	void __cdecl Com_ShutdownEvents(void)	core.o
+0x004BBA10	0x008AAF10	?Com_RunAndTimeServerPacket@@YAXPAUnetadr_t@@PAUmsg_t@@@Z	void __cdecl Com_RunAndTimeServerPacket(struct netadr_t *,struct msg_t *)	core.o
+0x004BBAA0	0x008AAFA0	?Script_Init@@YAXXZ	void __cdecl Script_Init(void)	core.o
+0x004BBAB0	0x008AAFB0	?Com_ModifyMsec@@YAHH@Z	int __cdecl Com_ModifyMsec(int)	core.o
+0x004BBB70	0x008AB070	?SyncFrameBuffers@@YAXXZ	void __cdecl SyncFrameBuffers(void)	core.o
+0x004BBBE0	0x008AB0E0	?Com_GetScreenTimeDelta@@YAMXZ	float __cdecl Com_GetScreenTimeDelta(void)	core.o
+0x004BBC70	0x008AB170	?Com_ControllerTest@@YA_NH@Z	bool __cdecl Com_ControllerTest(int)	core.o
+0x004BBDE0	0x008AB2E0	?Com_AnyControllerConnected@@YA_NXZ	bool __cdecl Com_AnyControllerConnected(void)	core.o
+0x004BBE20	0x008AB320	?Com_ControllerTest@@YA_NXZ	bool __cdecl Com_ControllerTest(void)	core.o
+0x004BBEB0	0x008AB3B0	?Field_Clear@@YAXPAUfield_t@@@Z	void __cdecl Field_Clear(struct field_t *)	core.o
+0x004BBEE0	0x008AB3E0	?Com_InitDObj@@YAXXZ	void __cdecl Com_InitDObj(void)	core.o
+0x004BBEF0	0x008AB3F0	?Com_ShutdownDObj@@YAXXZ	void __cdecl Com_ShutdownDObj(void)	core.o
+0x004BBF10	0x008AB410	?Com_Restart@@YAXXZ	void __cdecl Com_Restart(void)	core.o
+0x004BBF40	0x008AB440	?Com_XAnimFreeTree@@YAXPAVXAnimTree@@@Z	void __cdecl Com_XAnimFreeTree(class XAnimTree *)	core.o
+0x004BBF50	0x008AB450	?MT_AllocAnimTree@@YAPAXH@Z	void * __cdecl MT_AllocAnimTree(int)	core.o
+0x004BBF80	0x008AB480	?Com_XAnimFreeSmallTree@@YAXPAVXAnimTree@@@Z	void __cdecl Com_XAnimFreeSmallTree(class XAnimTree *)	core.o
+0x004BBF90	0x008AB490	?Com_GetWeaponInfoMemory@@YAPAXHPAHH@Z	void * __cdecl Com_GetWeaponInfoMemory(int,int *,int)	core.o
+0x004BC100	0x008AB600	?Com_FreeWeaponInfoMemory@@YAXHH@Z	void __cdecl Com_FreeWeaponInfoMemory(int,int)	core.o
+0x004BC190	0x008AB690	?Com_SurfaceTypeToName@@YAPBDH@Z	char const * __cdecl Com_SurfaceTypeToName(int)	core.o
+0x004BC210	0x008AB710	?Com_ControllerValid@@YA_NH@Z	bool __cdecl Com_ControllerValid(int)	core.o
+0x004BC240	0x008AB740	?ShouldConnectPaths@@YA_NXZ	bool __cdecl ShouldConnectPaths(void)	core.o
+0x004BC250	0x008AB750	?toMatrix@@YAXABVquat_t@@AAVmat3_t@@@Z	void __cdecl toMatrix(class quat_t const &,class mat3_t &)	core.o
+0x004BC370	0x008AB870	?ProjectVector@mat3_t@@QBEXABVidVec3@@AAV2@@Z	public: void __thiscall mat3_t::ProjectVector(class idVec3 const &,class idVec3 &)const 	core.o
+0x004BC400	0x008AB900	?UnprojectVector@mat3_t@@QBEXABVidVec3@@AAV2@@Z	public: void __thiscall mat3_t::UnprojectVector(class idVec3 const &,class idVec3 &)const 	core.o
+0x004BC4B0	0x008AB9B0	?Transpose@mat3_t@@QAEXAAV1@@Z	public: void __thiscall mat3_t::Transpose(class mat3_t &)	core.o
+0x004BC540	0x008ABA40	?Transpose@mat3_t@@QAEXXZ	public: void __thiscall mat3_t::Transpose(void)	core.o
+0x004BC620	0x008ABB20	?Inverse@mat3_t@@QBE?AV1@XZ	public: class mat3_t __thiscall mat3_t::Inverse(void)const 	core.o
+0x004BC660	0x008ABB60	?Clear@mat3_t@@QAEXXZ	public: void __thiscall mat3_t::Clear(void)	core.o
+0x004BC6A0	0x008ABBA0	?toQuat@@YAXAAVidVec3@@AAVquat_t@@@Z	void __cdecl toQuat(class idVec3 &,class quat_t &)	core.o
+0x004BC6D0	0x008ABBD0	?toQuat@@YAXAAVmat3_t@@AAVquat_t@@@Z	void __cdecl toQuat(class mat3_t &,class quat_t &)	core.o
+0x004BC8C0	0x008ABDC0	?FS_PureServerSetLoadedPaks@@YAXPBD0@Z	void __cdecl FS_PureServerSetLoadedPaks(char const *,char const *)	core.o
+0x004BC8D0	0x008ABDD0	?FS_PureServerSetReferencedPaks@@YAXPBD0@Z	void __cdecl FS_PureServerSetReferencedPaks(char const *,char const *)	core.o
+0x004BC920	0x008ABE20	?Cvar_Shutdown@@YAXXZ	void __cdecl Cvar_Shutdown(void)	core.o
+0x004BCA10	0x008ABF10	?Cvar_CommandCompletion@@YAXP6AXPBD@Z@Z	void __cdecl Cvar_CommandCompletion(void (__cdecl*)(char const *))	core.o
+0x004BCA40	0x008ABF40	?Cvar_List_f@@YAXXZ	void __cdecl Cvar_List_f(void)	core.o
+0x004BCB80	0x008AC080	?Com_CvarDump@@YAXW4print_msg_type_t@@@Z	void __cdecl Com_CvarDump(enum print_msg_type_t)	core.o
+0x004BCCA0	0x008AC1A0	?Cvar_InfoString@@YAPADH@Z	char * __cdecl Cvar_InfoString(int)	core.o
+0x004BCCF0	0x008AC1F0	?Cvar_InfoString_Big@@YAPADH@Z	char * __cdecl Cvar_InfoString_Big(int)	core.o
+0x004BCD40	0x008AC240	?Cvar_InfoStringBuffer@@YAXHPADH@Z	void __cdecl Cvar_InfoStringBuffer(int,char *,int)	core.o
+0x004BCD70	0x008AC270	?Execute@DbQuery@@QAEXAAVDbQueryResults@@@Z	public: void __thiscall DbQuery::Execute(class DbQueryResults &)	core.o
+0x004BCD80	0x008AC280	??1DialogueManager@@UAE@XZ	public: virtual __thiscall DialogueManager::~DialogueManager(void)	core.o
+0x004BCD90	0x008AC290	?SendSpecificSoundNotify@EffectEventSys@@QAEXPAVEntity@@VHashString@@@Z	public: void __thiscall EffectEventSys::SendSpecificSoundNotify(class Entity *,class HashString)	core.o
+0x004BCDE0	0x008AC2E0	?SendSoundNotify@EffectEventSys@@QAEXPAVEntity@@@Z	public: void __thiscall EffectEventSys::SendSoundNotify(class Entity *)	core.o
+0x004BCE20	0x008AC320	?NumberOfVoicesUsed@EffectEventSys@@QAEHXZ	public: int __thiscall EffectEventSys::NumberOfVoicesUsed(void)	core.o
+0x004BCE60	0x008AC360	?TagNameIndexInfo@EffectEventSys@@QAEXH@Z	public: void __thiscall EffectEventSys::TagNameIndexInfo(int)	core.o
+0x004BCE80	0x008AC380	?SetEffectMatrix@EffectEventSys@@QAEXPAVMat43@math@@@Z	public: void __thiscall EffectEventSys::SetEffectMatrix(class math::Mat43 *)	core.o
+0x004BCEA0	0x008AC3A0	?SetScriptId@EffectEventSys@@QAEXVstring@Broc@@@Z	public: void __thiscall EffectEventSys::SetScriptId(class Broc::string)	core.o
+0x004BCF00	0x008AC400	?SetDialogNotify@EffectEventSys@@QAEXH@Z	public: void __thiscall EffectEventSys::SetDialogNotify(int)	core.o
+0x004BCF20	0x008AC420	?SetQueryType@EffectEventSys@@QAEXI@Z	public: void __thiscall EffectEventSys::SetQueryType(unsigned int)	core.o
+0x004BCF40	0x008AC440	?SoundCacheType@EffectEventSys@@QAEXH@Z	public: void __thiscall EffectEventSys::SoundCacheType(int)	core.o
+0x004BCF60	0x008AC460	??0InstanceHolder@RumbleManager@@QAE@XZ	public: __thiscall RumbleManager::InstanceHolder::InstanceHolder(void)	core.o
+0x004BCF70	0x008AC470	?interpolate@@YAMMMM@Z	float __cdecl interpolate(float,float,float)	core.o
+0x004BCF90	0x008AC490	?ComputeIntensity@@YAMMMM@Z	float __cdecl ComputeIntensity(float,float,float)	core.o
+0x004BD110	0x008AC610	?BumpHandle@RumbleManager@@AAE?AVRumbleEffectInstanceHandle@@XZ	private: class RumbleEffectInstanceHandle __thiscall RumbleManager::BumpHandle(void)	core.o
+0x004BD130	0x008AC630	?StopMotors@RumbleManager@@QAEXXZ	public: void __thiscall RumbleManager::StopMotors(void)	core.o
+0x004BD140	0x008AC640	?ConvertCharToIntensity@@YAMD@Z	float __cdecl ConvertCharToIntensity(char)	core.o
+0x004BD160	0x008AC660	??1AbstractEffect@@UAE@XZ	public: virtual __thiscall AbstractEffect::~AbstractEffect(void)	core.o
+0x004BD1C0	0x008AC6C0	?clamp_0_to_1@@YAMM@Z	float __cdecl clamp_0_to_1(float)	core.o
+0x004BD200	0x008AC700	?SetPoPtr@AbstractEffectParticle@@UAEXPAVMat43@math@@@Z	public: virtual void __thiscall AbstractEffectParticle::SetPoPtr(class math::Mat43 *)	core.o
+0x004BD220	0x008AC720	?IsLooping@AbstractEffectParticle@@UBE_NXZ	public: virtual bool __thiscall AbstractEffectParticle::IsLooping(void)const 	core.o
+0x004BD230	0x008AC730	?AdjustEffect_Scale@AbstractEffectParticle@@UAEXPBDM@Z	public: virtual void __thiscall AbstractEffectParticle::AdjustEffect_Scale(char const *,float)	core.o
+0x004BD280	0x008AC780	?FastForward@AbstractEffectParticle@@UAEXM@Z	public: virtual void __thiscall AbstractEffectParticle::FastForward(float)	core.o
+0x004BD2A0	0x008AC7A0	??1AbstractEffectLight@@UAE@XZ	public: virtual __thiscall AbstractEffectLight::~AbstractEffectLight(void)	core.o
+0x004BD300	0x008AC800	?GetDebugString@AbstractEffectLight@@UBE?AVstring@Broc@@XZ	public: virtual class Broc::string __thiscall AbstractEffectLight::GetDebugString(void)const 	core.o
+0x004BD370	0x008AC870	?GetDebugString@AbstractEffectShakeAndRumble@@UBE?AVstring@Broc@@XZ	public: virtual class Broc::string __thiscall AbstractEffectShakeAndRumble::GetDebugString(void)const 	core.o
+0x004BD3E0	0x008AC8E0	?LockTlAllocsToPakHeap@TlSystemCallbacks@@SA_N_N0@Z	public: static bool __cdecl TlSystemCallbacks::LockTlAllocsToPakHeap(bool,bool)	core.o
+0x004BD400	0x008AC900	?SetMemAllocCbfn@TlSystemCallbacks@@QAEP6APAXIII@ZP6APAXIII@Z@Z	public: void * (__cdecl*__thiscall TlSystemCallbacks::SetMemAllocCbfn(void * (__cdecl*)(unsigned int,unsigned int,unsigned int)))(unsigned int,unsigned int,unsigned int)	core.o
+0x004BD420	0x008AC920	?SetMemFreeCbfn@TlSystemCallbacks@@QAEP6AXPAX@ZP6AX0@Z@Z	public: void (__cdecl*__thiscall TlSystemCallbacks::SetMemFreeCbfn(void (__cdecl*)(void *)))(void *)	core.o
+0x004BD440	0x008AC940	?ReadFile@TlSystemCallbacks@@SA_NPBDPAUtlFileBuf@@II@Z	public: static bool __cdecl TlSystemCallbacks::ReadFile(char const *,struct tlFileBuf *,unsigned int,unsigned int)	core.o
+0x004BD450	0x008AC950	?ReleaseFile@TlSystemCallbacks@@SAXPAUtlFileBuf@@@Z	public: static void __cdecl TlSystemCallbacks::ReleaseFile(struct tlFileBuf *)	core.o
+0x004BD470	0x008AC970	?MemRealloc@TlSystemCallbacks@@SAPAXPAXIII@Z	public: static void * __cdecl TlSystemCallbacks::MemRealloc(void *,unsigned int,unsigned int,unsigned int)	core.o
+0x004BD490	0x008AC990	?MemAlloc@TlSystemCallbacks@@SAPAXIII@Z	public: static void * __cdecl TlSystemCallbacks::MemAlloc(unsigned int,unsigned int,unsigned int)	core.o
+0x004BD520	0x008ACA20	?MemFree@TlSystemCallbacks@@SAXPAX@Z	public: static void __cdecl TlSystemCallbacks::MemFree(void *)	core.o
+0x004BD560	0x008ACA60	?LinkFrame@TlSystemCallbacks@@SAXXZ	public: static void __cdecl TlSystemCallbacks::LinkFrame(void)	core.o
+0x004BD570	0x008ACA70	?LinkConnected@TlSystemCallbacks@@SA_NXZ	public: static bool __cdecl TlSystemCallbacks::LinkConnected(void)	core.o
+0x004BD580	0x008ACA80	?DebugPrint@TlSystemCallbacks@@SAXPBD@Z	public: static void __cdecl TlSystemCallbacks::DebugPrint(char const *)	core.o
+0x004BD610	0x008ACB10	??1AnimHeap@@UAE@XZ	public: virtual __thiscall AnimHeap::~AnimHeap(void)	core.o
+0x004BD660	0x008ACB60	?Allocate@AnimHeap@@UAEPAXH@Z	public: virtual void * __thiscall AnimHeap::Allocate(int)	core.o
+0x004BD690	0x008ACB90	?Free@AnimHeap@@UAEXPAXH@Z	public: virtual void __thiscall AnimHeap::Free(void *,int)	core.o
+0x004BD6B0	0x008ACBB0	?CalcHash@HashString@@SAIPBD@Z	public: static unsigned int __cdecl HashString::CalcHash(char const *)	core.o
+0x004BD6C0	0x008ACBC0	?GetLanguageName@@YAPBDW4ELanguage@@@Z	char const * __cdecl GetLanguageName(enum ELanguage)	core.o
+0x004BD6D0	0x008ACBD0	?GetLanguageId@@YAPBDW4ELanguage@@@Z	char const * __cdecl GetLanguageId(enum ELanguage)	core.o
+0x004BD6E0	0x008ACBE0	??0CtrlIcon@@QAE@XZ	public: __thiscall CtrlIcon::CtrlIcon(void)	core.o
+0x004BD6F0	0x008ACBF0	??1CtrlIcon@@QAE@XZ	public: __thiscall CtrlIcon::~CtrlIcon(void)	core.o
+0x004BD700	0x008ACC00	?ContainsIconTag@CtrlIcon@@QAE_NPBD@Z	public: bool __thiscall CtrlIcon::ContainsIconTag(char const *)	core.o
+0x004BD730	0x008ACC30	?TranslateIconTag@CtrlIcon@@QAEPBDPBD@Z	public: char const * __thiscall CtrlIcon::TranslateIconTag(char const *)	core.o
+0x004BD7A0	0x008ACCA0	?ExtractIconTag@CtrlIcon@@QAE_NPBDPADPAPAD2@Z	public: bool __thiscall CtrlIcon::ExtractIconTag(char const *,char *,char * *,char * *)	core.o
+0x004BD850	0x008ACD50	?SpinnerInit@@YAXXZ	void __cdecl SpinnerInit(void)	core.o
+0x004BD8F0	0x008ACDF0	?SpinnerReset@@YAXXZ	void __cdecl SpinnerReset(void)	core.o
+0x004BD900	0x008ACE00	?SpinnerDrawLoading@@YAXXZ	void __cdecl SpinnerDrawLoading(void)	core.o
+0x004BDA30	0x008ACF30	?SpinnerDraw@@YAXM@Z	void __cdecl SpinnerDraw(float)	core.o
+0x004BDAA0	0x008ACFA0	??0EntityNotify@@QAE@IV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PAVWaitTilOutput@@@Z	public: __thiscall EntityNotify::EntityNotify(unsigned int,class DbLinkedHandle<class EntityHandleDb,class Entity>,class WaitTilOutput *)	core.o
+0x004BDAD0	0x008ACFD0	?FS_CreatePath@@YAHPAD@Z	int __cdecl FS_CreatePath(char *)	core.o
+0x004BDB40	0x008AD040	?FS_FCloseFile@@YAXH@Z	void __cdecl FS_FCloseFile(int)	core.o
+0x004BDBD0	0x008AD0D0	?FS_Write@@YAHPBXHH@Z	int __cdecl FS_Write(void const *,int,int)	core.o
+0x004BDC70	0x008AD170	?FS_Printf@@YAXHPBDZZ	void __cdecl FS_Printf(int,char const *,...)	core.o
+0x004BDCD0	0x008AD1D0	?FS_FreeFileList@@YAXPAPAD@Z	void __cdecl FS_FreeFileList(char * *)	core.o
+0x004BDDB0	0x008AD2B0	?FS_ClearMemory@@YAXXZ	void __cdecl FS_ClearMemory(void)	core.o
+0x004BDDF0	0x008AD2F0	?FS_Shutdown@@YAXH@Z	void __cdecl FS_Shutdown(int)	core.o
+0x004BDF70	0x008AD470	?VectorNormalizeFast@@YAXQAM@Z	void __cdecl VectorNormalizeFast(float * const)	core.o
+0x004BE010	0x008AD510	?vectoyaw@@YA?BMQBM@Z	float const __cdecl vectoyaw(float const * const)	core.o
+0x004BE300	0x008AD800	?vectosignedyaw@@YA?BMQBM@Z	float const __cdecl vectosignedyaw(float const * const)	core.o
+0x004BE670	0x008ADB70	?vectopitch@@YA?BMQBM@Z	float const __cdecl vectopitch(float const * const)	core.o
+0x004BE9B0	0x008ADEB0	?vectosignedpitch@@YA?BMQBM@Z	float const __cdecl vectosignedpitch(float const * const)	core.o
+0x004BECE0	0x008AE1E0	?vectoangles@@YAXQBMQAM@Z	void __cdecl vectoangles(float const * const,float * const)	core.o
+0x004BF2C0	0x008AE7C0	?vectoangles@@YAXQBMAAVPosition3@math@@@Z	void __cdecl vectoangles(float const * const,class math::Position3 &)	core.o
+0x004BF300	0x008AE800	?vectosignedangles@@YAXQBMQAM@Z	void __cdecl vectosignedangles(float const * const,float * const)	core.o
+0x004BF8C0	0x008AEDC0	?MatrixInverseOrthogonal43@@YAXQAY02$$CBMQAY02M@Z	void __cdecl MatrixInverseOrthogonal43(float const (* const)[3],float (* const)[3])	core.o
+0x004BF990	0x008AEE90	?RotationToYaw@@YAMQBM@Z	float __cdecl RotationToYaw(float const * const)	core.o
+0x004BFCE0	0x008AF1E0	?AngleNormalize360Accurate@@YA?BMM@Z	float const __cdecl AngleNormalize360Accurate(float)	core.o
+0x004BFD90	0x008AF290	?AngleNormalize180Accurate@@YA?BMM@Z	float const __cdecl AngleNormalize180Accurate(float)	core.o
+0x004BFE60	0x008AF360	?ProjectPointOnPlane@@YAXQAMQBM1@Z	void __cdecl ProjectPointOnPlane(float * const,float const * const,float const * const)	core.o
+0x004BFFD0	0x008AF4D0	?NormalToLatLong@@YAXQBMQAE@Z	void __cdecl NormalToLatLong(float const * const,unsigned char * const)	core.o
+0x004C02F0	0x008AF7F0	_Z_MallocInternal	_Z_MallocInternal	core.o
+0x004C0330	0x008AF830	?CopyStringInternal@@YAPADPBD@Z	char * __cdecl CopyStringInternal(char const *)	core.o
+0x004C0390	0x008AF890	?Com_Memcpy@@YAXPAXPBXI@Z	void __cdecl Com_Memcpy(void *,void const *,unsigned int)	core.o
+0x004C0540	0x008AFA40	?Com_Close@@YAXXZ	void __cdecl Com_Close(void)	core.o
+0x004C05A0	0x008AFAA0	?toMatrix@@YAXABVangles_t@@AAVmat3_t@@@Z	void __cdecl toMatrix(class angles_t const &,class mat3_t &)	core.o
+0x004C0700	0x008AFC00	?toMatrix@@YAXABVidVec3@@AAVmat3_t@@@Z	void __cdecl toMatrix(class idVec3 const &,class mat3_t &)	core.o
+0x004C0740	0x008AFC40	?toQuat@@YAXAAVangles_t@@AAVquat_t@@@Z	void __cdecl toQuat(class angles_t &,class quat_t &)	core.o
+0x004C0770	0x008AFC70	?Cvar_WriteVariables@@YAXH@Z	void __cdecl Cvar_WriteVariables(int)	core.o
+0x004C07F0	0x008AFCF0	?Cvar_WriteDefaults@@YAXH@Z	void __cdecl Cvar_WriteDefaults(int)	core.o
+0x004C0870	0x008AFD70	?Cvar_Dump_f@@YAXXZ	void __cdecl Cvar_Dump_f(void)	core.o
+0x004C0880	0x008AFD80	?EnsureDataWritable@idStr@@IAEXXZ	protected: void __thiscall idStr::EnsureDataWritable(void)	core.o
+0x004C0960	0x008AFE60	?EnsureAlloced@idStr@@IAEXH_N@Z	protected: void __thiscall idStr::EnsureAlloced(int,bool)	core.o
+0x004C0A70	0x008AFF70	?GetRandomResult@DbQueryResults@@QAEPAVDbRow@@XZ	public: class DbRow * __thiscall DbQueryResults::GetRandomResult(void)	core.o
+0x004C0AA0	0x008AFFA0	?GetRandomResultSpecific@DbQueryResults@@QAEPAVDbRow@@XZ	public: class DbRow * __thiscall DbQueryResults::GetRandomResultSpecific(void)	core.o
+0x004C0AD0	0x008AFFD0	?GetResult@DbQueryResults@@QAEPAVDbRow@@I@Z	public: class DbRow * __thiscall DbQueryResults::GetResult(unsigned int)	core.o
+0x004C0B40	0x008B0040	??0DialogueManager@@QAE@XZ	public: __thiscall DialogueManager::DialogueManager(void)	core.o
+0x004C0BE0	0x008B00E0	?UnloadBank@DialogueManager@@UAEXW4TPakId@@@Z	public: virtual void __thiscall DialogueManager::UnloadBank(enum TPakId)	core.o
+0x004C0C00	0x008B0100	?AddEffect@ActiveEffectSet@@QAEXPAVAbstractEffect@@@Z	public: void __thiscall ActiveEffectSet::AddEffect(class AbstractEffect *)	core.o
+0x004C0C30	0x008B0130	?IsFinished@ActiveEffectSet@@QBE_NXZ	public: bool __thiscall ActiveEffectSet::IsFinished(void)const 	core.o
+0x004C0C50	0x008B0150	?IsQueued@ActiveEffectSet@@QBE_NXZ	public: bool __thiscall ActiveEffectSet::IsQueued(void)const 	core.o
+0x004C0CD0	0x008B01D0	?AdjustEffect_Scale@ActiveEffectSet@@QAEXPBDM@Z	public: void __thiscall ActiveEffectSet::AdjustEffect_Scale(char const *,float)	core.o
+0x004C0D50	0x008B0250	?FastForward@ActiveEffectSet@@QAEXM@Z	public: void __thiscall ActiveEffectSet::FastForward(float)	core.o
+0x004C0DD0	0x008B02D0	?PlayQueuedEffect@ActiveEffectSet@@QAEXXZ	public: void __thiscall ActiveEffectSet::PlayQueuedEffect(void)	core.o
+0x004C0E40	0x008B0340	?SetPoPtr@ActiveEffectSet@@QAEXPAVMat43@math@@@Z	public: void __thiscall ActiveEffectSet::SetPoPtr(class math::Mat43 *)	core.o
+0x004C0EC0	0x008B03C0	?StopLoopingEffects@ActiveEffectSet@@QAEXXZ	public: void __thiscall ActiveEffectSet::StopLoopingEffects(void)	core.o
+0x004C0ED0	0x008B03D0	?DoStopLoopingEffects@ActiveEffectSet@@AAEXXZ	private: void __thiscall ActiveEffectSet::DoStopLoopingEffects(void)	core.o
+0x004C0FE0	0x008B04E0	?FadeOutEffect@EffectEventSys@@QAEXPAVAbstractEffect@@M@Z	public: void __thiscall EffectEventSys::FadeOutEffect(class AbstractEffect *,float)	core.o
+0x004C1010	0x008B0510	?AdvanceFades@EffectEventSys@@AAEXM@Z	private: void __thiscall EffectEventSys::AdvanceFades(float)	core.o
+0x004C1120	0x008B0620	?SetSoundParams@EffectEventSys@@AAEXAAVSoundParams@@AAUPendingQuery@1@M@Z	private: void __thiscall EffectEventSys::SetSoundParams(class SoundParams &,struct EffectEventSys::PendingQuery &,float)	core.o
+0x004C11A0	0x008B06A0	?IsSoundToBeQueued@EffectEventSys@@QAEX_N@Z	public: void __thiscall EffectEventSys::IsSoundToBeQueued(bool)	core.o
+0x004C11C0	0x008B06C0	?SetQueryImportance@EffectEventSys@@QAEX_N@Z	public: void __thiscall EffectEventSys::SetQueryImportance(bool)	core.o
+0x004C11F0	0x008B06F0	?DirectionInfo@EffectEventSys@@QAEXQBM@Z	public: void __thiscall EffectEventSys::DirectionInfo(float const * const)	core.o
+0x004C1240	0x008B0740	??0AbstractEffect@@QAE@W4TPakId@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HM@Z	public: __thiscall AbstractEffect::AbstractEffect(enum TPakId,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,float)	core.o
+0x004C12A0	0x008B07A0	?StartFadeOut@AbstractEffectSound@@UAEXM@Z	public: virtual void __thiscall AbstractEffectSound::StartFadeOut(float)	core.o
+0x004C12C0	0x008B07C0	??1AbstractEffectParticle@@UAE@XZ	public: virtual __thiscall AbstractEffectParticle::~AbstractEffectParticle(void)	core.o
+0x004C1350	0x008B0850	?StartFadeOut@AbstractEffectParticle@@UAEXM@Z	public: virtual void __thiscall AbstractEffectParticle::StartFadeOut(float)	core.o
+0x004C1380	0x008B0880	??0AnimHeap@@QAE@XZ	public: __thiscall AnimHeap::AnimHeap(void)	core.o
+0x004C13F0	0x008B08F0	?LinkAnimHeap@AnimHeap@@SAXXZ	public: static void __cdecl AnimHeap::LinkAnimHeap(void)	core.o
+0x004C1440	0x008B0940	??1ConfigStringManager@@EAE@XZ	private: virtual __thiscall ConfigStringManager::~ConfigStringManager(void)	core.o
+0x004C1450	0x008B0950	??0HashString@@QAE@AAVstring@Broc@@@Z	public: __thiscall HashString::HashString(class Broc::string &)	core.o
+0x004C1490	0x008B0990	?SetGameLanguage@@YAXABV?$ae_fixed_string@$0EAA@G@@@Z	void __cdecl SetGameLanguage(class ae_fixed_string<1024,unsigned short> const &)	core.o
+0x004C14D0	0x008B09D0	??1STBManager@@EAE@XZ	private: virtual __thiscall STBManager::~STBManager(void)	core.o
+0x004C14E0	0x008B09E0	?SpinnerDrawFrame@@YAX_N@Z	void __cdecl SpinnerDrawFrame(bool)	core.o
+0x004C1690	0x008B0B90	?SpinnerDrawFrameWithLoading@@YAX_N@Z	void __cdecl SpinnerDrawFrameWithLoading(bool)	core.o
+0x004C1850	0x008B0D50	?LensFlareDraw@@YAXXZ	void __cdecl LensFlareDraw(void)	core.o
+0x004C1D80	0x008B1280	??0EntityNotifySet@@QAE@PAVEntity@@@Z	public: __thiscall EntityNotifySet::EntityNotifySet(class Entity *)	core.o
+0x004C1E50	0x008B1350	?AddNotify@EntityNotifySet@@QAEXABVHashString@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	public: void __thiscall EntityNotifySet::AddNotify(class HashString const &,class DbLinkedHandle<class EntityHandleDb,class Entity>)	core.o
+0x004C1F00	0x008B1400	?gunrandom@@YAXPAM0@Z	void __cdecl gunrandom(float *,float *)	core.o
+0x004C1F90	0x008B1490	?RotateAxisByAxis@@YAXQAY03MHM@Z	void __cdecl RotateAxisByAxis(float (* const)[4],int,float)	core.o
+0x004C20C0	0x008B15C0	?AngleVectors@@YAXQBMQAM11@Z	void __cdecl AngleVectors(float const * const,float * const,float * const,float * const)	core.o
+0x004C2260	0x008B1760	?AngleVectors@@YAXABVPosition3@math@@QAM11@Z	void __cdecl AngleVectors(class math::Position3 const &,float * const,float * const,float * const)	core.o
+0x004C2270	0x008B1770	?AngleVectors@@YAXABVPosition3@math@@AAV12@11@Z	void __cdecl AngleVectors(class math::Position3 const &,class math::Position3 &,class math::Position3 &,class math::Position3 &)	core.o
+0x004C23B0	0x008B18B0	?YawVectors@@YAXMQAM0@Z	void __cdecl YawVectors(float,float * const,float * const)	core.o
+0x004C2420	0x008B1920	?PerpendicularVector@@YAXQAMQBM@Z	void __cdecl PerpendicularVector(float * const,float const * const)	core.o
+0x004C25F0	0x008B1AF0	?VectorAngleMultiply@@YAXQAMM@Z	void __cdecl VectorAngleMultiply(float * const,float)	core.o
+0x004C2660	0x008B1B60	?PitchToQuaternion@@YAXMQAM@Z	void __cdecl PitchToQuaternion(float,float * const)	core.o
+0x004C26A0	0x008B1BA0	?YawToQuaternion@@YAXMQAM@Z	void __cdecl YawToQuaternion(float,float * const)	core.o
+0x004C26E0	0x008B1BE0	?RollToQuaternion@@YAXMQAM@Z	void __cdecl RollToQuaternion(float,float * const)	core.o
+0x004C2720	0x008B1C20	?AnglesToAxis@@YAXQBMQAY02M@Z	void __cdecl AnglesToAxis(float const * const,float (* const)[3])	core.o
+0x004C2770	0x008B1C70	?AnglesToAxis@@YAXABVPosition3@math@@QAY02M@Z	void __cdecl AnglesToAxis(class math::Position3 const &,float (* const)[3])	core.o
+0x004C27C0	0x008B1CC0	?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z	void __cdecl AnglesToAxis(class math::Position3 const &,class math::Position3 const &,class math::Mat43 &)	core.o
+0x004C29C0	0x008B1EC0	?AnglesToAxis@@YAXABVPosition3@math@@0AAVnalMatrix4x4@@@Z	void __cdecl AnglesToAxis(class math::Position3 const &,class math::Position3 const &,class nalMatrix4x4 &)	core.o
+0x004C2B70	0x008B2070	?YawToAxis@@YAXMQAY02M@Z	void __cdecl YawToAxis(float,float (* const)[3])	core.o
+0x004C2C00	0x008B2100	?AxisToAngles@@YAXQAY02$$CBMQAM@Z	void __cdecl AxisToAngles(float const (* const)[3],float * const)	core.o
+0x004C2D50	0x008B2250	?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z	void __cdecl Axis4ToAngles(float const (* const)[4],float * const)	core.o
+0x004C2EA0	0x008B23A0	?AxisToSignedAngles@@YAXQAY02$$CBMQAM@Z	void __cdecl AxisToSignedAngles(float const (* const)[3],float * const)	core.o
+0x004C2FF0	0x008B24F0	?VectorRotateAngles@@YAXQBM0QAM@Z	void __cdecl VectorRotateAngles(float const * const,float const * const,float * const)	core.o
+0x004C3170	0x008B2670	?VectorRotateAnglesAroundPoint@@YAXQBM00QAM@Z	void __cdecl VectorRotateAnglesAroundPoint(float const * const,float const * const,float const * const,float * const)	core.o
+0x004C31F0	0x008B26F0	?VectorPolar@@YAXQAMMMM@Z	void __cdecl VectorPolar(float * const,float,float,float)	core.o
+0x004C3260	0x008B2760	?PitchForYawOnNormal@@YAMMQBM@Z	float __cdecl PitchForYawOnNormal(float,float const * const)	core.o
+0x004C3340	0x008B2840	?make_rotate@@YAXAAVMat43@math@@HM@Z	void __cdecl make_rotate(class math::Mat43 &,int,float)	core.o
+0x004C35A0	0x008B2AA0	?Com_Error@@YAXW4errorParm_t@@PBDZZ	void __cdecl Com_Error(enum errorParm_t,char const *,...)	core.o
+0x004C3730	0x008B2C30	?Com_Quit_f@@YAXXZ	void __cdecl Com_Quit_f(void)	core.o
+0x004C37F0	0x008B2CF0	?Cvar_FindVar@@YAPAUcvar_t@@PBD@Z	struct cvar_t * __cdecl Cvar_FindVar(char const *)	core.o
+0x004C3840	0x008B2D40	?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z	struct cvar_t * __cdecl Cvar_Get(char const *,char const *,int)	core.o
+0x004C3AA0	0x008B2FA0	?Cvar_Set2@@YAPAUcvar_t@@PBD0H@Z	struct cvar_t * __cdecl Cvar_Set2(char const *,char const *,int)	core.o
+0x004C3DD0	0x008B32D0	?Cvar_Set@@YAXPBD0@Z	void __cdecl Cvar_Set(char const *,char const *)	core.o
+0x004C3DF0	0x008B32F0	?Cvar_SetLatched@@YAXPBD0@Z	void __cdecl Cvar_SetLatched(char const *,char const *)	core.o
+0x004C3E10	0x008B3310	?Cvar_SetValue@@YAXPBDM@Z	void __cdecl Cvar_SetValue(char const *,float)	core.o
+0x004C3E80	0x008B3380	?Cvar_Reset@@YAXPBD@Z	void __cdecl Cvar_Reset(char const *)	core.o
+0x004C3EA0	0x008B33A0	?Cvar_Update@@YAXPAUvmCvar_t@@@Z	void __cdecl Cvar_Update(struct vmCvar_t *)	core.o
+0x004C3F90	0x008B3490	?Cvar_VariableValue@@YAMPBD@Z	float __cdecl Cvar_VariableValue(char const *)	core.o
+0x004C3FB0	0x008B34B0	?Cvar_VariableIntegerValue@@YAHPBD@Z	int __cdecl Cvar_VariableIntegerValue(char const *)	core.o
+0x004C3FD0	0x008B34D0	?Cvar_VariableString@@YAPADPBD@Z	char * __cdecl Cvar_VariableString(char const *)	core.o
+0x004C3FF0	0x008B34F0	?Cvar_VariableStringBuffer@@YAXPBDPADH@Z	void __cdecl Cvar_VariableStringBuffer(char const *,char *,int)	core.o
+0x004C4020	0x008B3520	?Cvar_SetCheatState@@YAXXZ	void __cdecl Cvar_SetCheatState(void)	core.o
+0x004C4090	0x008B3590	?Cvar_Command@@YAHXZ	int __cdecl Cvar_Command(void)	core.o
+0x004C4110	0x008B3610	?Cvar_Toggle_f@@YAXXZ	void __cdecl Cvar_Toggle_f(void)	core.o
+0x004C4230	0x008B3730	?Cvar_Set_f@@YAXXZ	void __cdecl Cvar_Set_f(void)	core.o
+0x004C4330	0x008B3830	?Cvar_SetS_f@@YAXXZ	void __cdecl Cvar_SetS_f(void)	core.o
+0x004C4370	0x008B3870	?Cvar_SetA_f@@YAXXZ	void __cdecl Cvar_SetA_f(void)	core.o
+0x004C43B0	0x008B38B0	?Cvar_SetFromCvar_f@@YAXXZ	void __cdecl Cvar_SetFromCvar_f(void)	core.o
+0x004C4400	0x008B3900	?Cvar_Reset_f@@YAXXZ	void __cdecl Cvar_Reset_f(void)	core.o
+0x004C4430	0x008B3930	?Cvar_Restart_f@@YAXXZ	void __cdecl Cvar_Restart_f(void)	core.o
+0x004C44C0	0x008B39C0	?Cvar_AddCommands@@YAXXZ	void __cdecl Cvar_AddCommands(void)	core.o
+0x004C4550	0x008B3A50	?ResetConstraints@DbQuery@@AAEXXZ	private: void __thiscall DbQuery::ResetConstraints(void)	core.o
+0x004C4570	0x008B3A70	?AcceptMatchingLeaf@DbQuery@@IAEXPBVDbGraphNode@@AAVDbQueryResults@@@Z	protected: void __thiscall DbQuery::AcceptMatchingLeaf(class DbGraphNode const *,class DbQueryResults &)	core.o
+0x004C4640	0x008B3B40	?Reset@DbQuery@@QAEXXZ	public: void __thiscall DbQuery::Reset(void)	core.o
+0x004C4660	0x008B3B60	?CompareField@DbQuery@@IAEHHPBX@Z	protected: int __thiscall DbQuery::CompareField(int,void const *)	core.o
+0x004C48D0	0x008B3DD0	?TestField@DbQuery@@IAE_NHPBX@Z	protected: bool __thiscall DbQuery::TestField(int,void const *)	core.o
+0x004C4DD0	0x008B42D0	?FindMatches@DbQuery@@MAEXAAVDbQueryResults@@@Z	protected: virtual void __thiscall DbQuery::FindMatches(class DbQueryResults &)	core.o
+0x004C5500	0x008B4A00	?DecodeBank@DbTablesetMgr@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall DbTablesetMgr::DecodeBank(char const *,unsigned char *,int,enum TPakId)	core.o
+0x004C5530	0x008B4A30	?DecodeDialogueBank@DialogueManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall DialogueManager::DecodeDialogueBank(char const *,unsigned char *,int,enum TPakId)	core.o
+0x004C55B0	0x008B4AB0	?GetDialogue@DialogueManager@@QBEPBDI@Z	public: char const * __thiscall DialogueManager::GetDialogue(unsigned int)const 	core.o
+0x004C5690	0x008B4B90	?DecodeDialogueBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeDialogueBank(char const *,unsigned char *,int,enum TPakId,class PakFile *)	core.o
+0x004C56B0	0x008B4BB0	?GetActiveEffectSet@EffectEventSys@@QAEPAVActiveEffectSet@@VHandle@@@Z	public: class ActiveEffectSet * __thiscall EffectEventSys::GetActiveEffectSet(class Handle)	core.o
+0x004C56F0	0x008B4BF0	??0RumbleManager@@QAE@H@Z	public: __thiscall RumbleManager::RumbleManager(int)	core.o
+0x004C5750	0x008B4C50	?Play@RumbleManager@@QAE?AVRumbleEffectInstanceHandle@@ABVRumbleEffect@@M@Z	public: class RumbleEffectInstanceHandle __thiscall RumbleManager::Play(class RumbleEffect const &,float)	core.o
+0x004C5980	0x008B4E80	?Play@RumbleManager@@QAE?AVRumbleEffectInstanceHandle@@ABVRumbleEffect@@MMM@Z	public: class RumbleEffectInstanceHandle __thiscall RumbleManager::Play(class RumbleEffect const &,float,float,float)	core.o
+0x004C59C0	0x008B4EC0	?GetDebugString@AbstractEffectParticle@@UBE?AVstring@Broc@@XZ	public: virtual class Broc::string __thiscall AbstractEffectParticle::GetDebugString(void)const 	core.o
+0x004C5AA0	0x008B4FA0	?ParseTlAssertString@TlSystemCallbacks@@CA_NPBDAAV?$ae_fixed_string@$0BAA@G@@11AAH@Z	private: static bool __cdecl TlSystemCallbacks::ParseTlAssertString(char const *,class ae_fixed_string<256,unsigned short> &,class ae_fixed_string<256,unsigned short> &,class ae_fixed_string<256,unsigned short> &,int &)	core.o
+0x004C5C60	0x008B5160	??0ConfigStringManager@@AAE@XZ	private: __thiscall ConfigStringManager::ConfigStringManager(void)	core.o
+0x004C5C80	0x008B5180	?DecodeBank@ConfigStringManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall ConfigStringManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	core.o
+0x004C5CB0	0x008B51B0	?DecodeConfigStrings@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	void __cdecl DecodeConfigStrings(char const *,unsigned char *,int,enum TPakId,class PakFile *)	core.o
+0x004C5CE0	0x008B51E0	??0STBManager@@AAE@XZ	private: __thiscall STBManager::STBManager(void)	core.o
+0x004C5D00	0x008B5200	?GetSTBEntry@STBManager@@QAEPBVStringTableEntry@@W4TPakId@@I@Z	public: class StringTableEntry const * __thiscall STBManager::GetSTBEntry(enum TPakId,unsigned int)	core.o
+0x004C5D50	0x008B5250	?GetSTBEntry@STBManager@@QAEPBVStringTableEntry@@I@Z	public: class StringTableEntry const * __thiscall STBManager::GetSTBEntry(unsigned int)	core.o
+0x004C5E00	0x008B5300	?GetSTBEntry@STBManager@@QAEPBVStringTableEntry@@PBD@Z	public: class StringTableEntry const * __thiscall STBManager::GetSTBEntry(char const *)	core.o
+0x004C5E30	0x008B5330	?GetSTBString@STBManager@@QAEPBDPBD@Z	public: char const * __thiscall STBManager::GetSTBString(char const *)	core.o
+0x004C5EF0	0x008B53F0	?GetSTBString@STBManager@@QAEPBDI@Z	public: char const * __thiscall STBManager::GetSTBString(unsigned int)	core.o
+0x004C5F30	0x008B5430	?GetSTBString@STBManager@@QAEPBDW4TPakId@@I@Z	public: char const * __thiscall STBManager::GetSTBString(enum TPakId,unsigned int)	core.o
+0x004C5FA0	0x008B54A0	?GetSTBFlags@STBManager@@QAE?BIPBD@Z	public: unsigned int const __thiscall STBManager::GetSTBFlags(char const *)	core.o
+0x004C5FE0	0x008B54E0	?GetSTBFlags@STBManager@@QAE?BII@Z	public: unsigned int const __thiscall STBManager::GetSTBFlags(unsigned int)	core.o
+0x004C6010	0x008B5510	?GetSTBFlags@STBManager@@QAE?BIW4TPakId@@I@Z	public: unsigned int const __thiscall STBManager::GetSTBFlags(enum TPakId,unsigned int)	core.o
+0x004C6070	0x008B5570	?DecodeBank@STBManager@@QAEXPBDPAEHW4TPakId@@@Z	public: void __thiscall STBManager::DecodeBank(char const *,unsigned char *,int,enum TPakId)	core.o
+0x004C6450	0x008B5950	?GetNotify@EntityNotifySet@@QBEPAVEntityNotify@@ABVHashString@@@Z	public: class EntityNotify * __thiscall EntityNotifySet::GetNotify(class HashString const &)const 	core.o
+0x004C64D0	0x008B59D0	?AssignScriptVariable@EntityNotifySet@@QAE_NABVHashString@@PAVWaitTilOutput@@@Z	public: bool __thiscall EntityNotifySet::AssignScriptVariable(class HashString const &,class WaitTilOutput *)	core.o
+0x004C6500	0x008B5A00	?IsFinished@EntityNotifySet@@QAE_NXZ	public: bool __thiscall EntityNotifySet::IsFinished(void)	core.o
+0x004C6590	0x008B5A90	?KillEndOnThreads@EntityNotifySet@@QAEXXZ	public: void __thiscall EntityNotifySet::KillEndOnThreads(void)	core.o
+0x004C65D0	0x008B5AD0	?FS_HandleForFile@@YAHH@Z	int __cdecl FS_HandleForFile(int)	core.o
+0x004C6890	0x008B5D90	?FS_BuildOSPath@@YAXPBD00QAD@Z	void __cdecl FS_BuildOSPath(char const *,char const *,char const *,char * const)	core.o
+0x004C68B0	0x008B5DB0	?FS_CopyFile@@YAXPAD0@Z	void __cdecl FS_CopyFile(char *,char *)	core.o
+0x004C69B0	0x008B5EB0	?FS_FileExists@@YAHPBD@Z	int __cdecl FS_FileExists(char const *)	core.o
+0x004C6A10	0x008B5F10	?FS_FOpenFileWrite@@YAHPBD@Z	int __cdecl FS_FOpenFileWrite(char const *)	core.o
+0x004C6AE0	0x008B5FE0	?FS_FOpenTextFileWrite@@YAHPBD@Z	int __cdecl FS_FOpenTextFileWrite(char const *)	core.o
+0x004C6BD0	0x008B60D0	?FS_FOpenFileAppend@@YAHPBD@Z	int __cdecl FS_FOpenFileAppend(char const *)	core.o
+0x004C6CA0	0x008B61A0	?FS_FileCompare@@YAHPBD0@Z	int __cdecl FS_FileCompare(char const *,char const *)	core.o
+0x004C73B0	0x008B68B0	?FS_FOpenFileReadStream@@YAHPBDPAHH@Z	int __cdecl FS_FOpenFileReadStream(char const *,int *,int)	core.o
+0x004C73D0	0x008B68D0	?FS_FOpenFileRead@@YAHPBDPAHH@Z	int __cdecl FS_FOpenFileRead(char const *,int *,int)	core.o
+0x004C7400	0x008B6900	?FS_TouchFile@@YAHPBD@Z	int __cdecl FS_TouchFile(char const *)	core.o
+0x004C7440	0x008B6940	?FS_ShortOSFilePath@@YAPBDPBD@Z	char const * __cdecl FS_ShortOSFilePath(char const *)	core.o
+0x004C74F0	0x008B69F0	?FS_Read@@YAHPAXHH@Z	int __cdecl FS_Read(void *,int,int)	core.o
+0x004C75B0	0x008B6AB0	?FS_Seek@@YAHHJH@Z	int __cdecl FS_Seek(int,long,int)	core.o
+0x004C78A0	0x008B6DA0	?FS_ReadFile@@YAHPBDPAPAX@Z	int __cdecl FS_ReadFile(char const *,void * *)	core.o
+0x004C7B60	0x008B7060	?FS_FreeFile@@YAXPAX@Z	void __cdecl FS_FreeFile(void *)	core.o
+0x004C7BA0	0x008B70A0	?FS_ListFilteredFiles@@YAPAPADPBD0PADPAH@Z	char * * __cdecl FS_ListFilteredFiles(char const *,char const *,char *,int *)	core.o
+0x004C7DE0	0x008B72E0	?FS_ListFiles@@YAPAPADPBD0PAH@Z	char * * __cdecl FS_ListFiles(char const *,char const *,int *)	core.o
+0x004C8090	0x008B7590	?FS_Startup@@YAXPBD@Z	void __cdecl FS_Startup(char const *)	core.o
+0x004C8390	0x008B7890	?FS_Restart@@YAXH@Z	void __cdecl FS_Restart(int)	core.o
+0x004C84B0	0x008B79B0	?FS_FOpenFileByMode@@YAHPBDPAHW4fsMode_t@@@Z	int __cdecl FS_FOpenFileByMode(char const *,int *,enum fsMode_t)	core.o
+0x004C85C0	0x008B7AC0	?RotatePointAroundVector@@YAXQAMQBM1M@Z	void __cdecl RotatePointAroundVector(float * const,float const * const,float const * const,float)	core.o
+0x004C8BA0	0x008B80A0	?RotateAroundDirection@@YAXQAY02MM@Z	void __cdecl RotateAroundDirection(float (* const)[3],float)	core.o
+0x004C8C60	0x008B8160	?BoxOnPlaneSide@@YA?BHQBM0PBUcplane_s@@@Z	int const __cdecl BoxOnPlaneSide(float const * const,float const * const,struct cplane_s const *)	core.o
+0x004C9060	0x008B8560	?Com_VPrintf@@YAXPBDPAD@Z	void __cdecl Com_VPrintf(char const *,char *)	core.o
+0x004C91C0	0x008B86C0	?Com_StartupVariable@@YAXPBD@Z	void __cdecl Com_StartupVariable(char const *)	core.o
+0x004C92A0	0x008B87A0	?Com_InitJournaling@@YAXXZ	void __cdecl Com_InitJournaling(void)	core.o
+0x004C93A0	0x008B88A0	?Com_GetRealEvent@@YA?AUsysEvent_t@@XZ	struct sysEvent_t __cdecl Com_GetRealEvent(void)	core.o
+0x004C9500	0x008B8A00	?Com_GetEvent@@YA?AUsysEvent_t@@XZ	struct sysEvent_t __cdecl Com_GetEvent(void)	core.o
+0x004C9590	0x008B8A90	?Com_EventLoop@@YAHXZ	int __cdecl Com_EventLoop(void)	core.o
+0x004C9AC0	0x008B8FC0	?Com_Milliseconds@@YAHXZ	int __cdecl Com_Milliseconds(void)	core.o
+0x004C9B10	0x008B9010	?Com_PumpMessageLoop@@YAXXZ	void __cdecl Com_PumpMessageLoop(void)	core.o
+0x004C9D70	0x008B9270	?GlobalPakLoadCallback@@YAXM@Z	void __cdecl GlobalPakLoadCallback(float)	core.o
+0x004C9E40	0x008B9340	?Com_WriteConfigToFile@@YAXPBD@Z	void __cdecl Com_WriteConfigToFile(char const *)	core.o
+0x004C9EA0	0x008B93A0	?Com_WriteDefaultsToFile@@YAXPBD@Z	void __cdecl Com_WriteDefaultsToFile(char const *)	core.o
+0x004C9EF0	0x008B93F0	?Com_WriteConfiguration@@YAXXZ	void __cdecl Com_WriteConfiguration(void)	core.o
+0x004C9F30	0x008B9430	?Com_WriteConfig_f@@YAXXZ	void __cdecl Com_WriteConfig_f(void)	core.o
+0x004C9FA0	0x008B94A0	?Com_WriteDefaults_f@@YAXXZ	void __cdecl Com_WriteDefaults_f(void)	core.o
+0x004CA010	0x008B9510	?Com_ControllerWarningDialog@@YAX_NH@Z	void __cdecl Com_ControllerWarningDialog(bool,int)	core.o
+0x004CA120	0x008B9620	?Com_CheckControllerUnplugged@@YAX_NH@Z	void __cdecl Com_CheckControllerUnplugged(bool,int)	core.o
+0x004CA240	0x008B9740	?Com_SaveCvarsToBuffer@@YAHQAPBDHPADH@Z	int __cdecl Com_SaveCvarsToBuffer(char const * * const,int,char *,int)	core.o
+0x004CA2E0	0x008B97E0	?Com_LoadCvarsFromBuffer@@YAHQAPBDHPBD1@Z	int __cdecl Com_LoadCvarsFromBuffer(char const * * const,int,char const *,char const *)	core.o
+0x004CA470	0x008B9970	?FS_Dir_f@@YAXXZ	void __cdecl FS_Dir_f(void)	core.o
+0x004CA530	0x008B9A30	?FS_TouchFile_f@@YAXXZ	void __cdecl FS_TouchFile_f(void)	core.o
+0x004CA590	0x008B9A90	?Cvar_VMSet@@YAXPAUvmCvar_t@@PBD@Z	void __cdecl Cvar_VMSet(struct vmCvar_t *,char const *)	core.o
+0x004CA5C0	0x008B9AC0	?Cvar_Register@@YAXPAUvmCvar_t@@PBD1H@Z	void __cdecl Cvar_Register(struct vmCvar_t *,char const *,char const *,int)	core.o
+0x004CA610	0x008B9B10	?Cvar_Init@@YAXXZ	void __cdecl Cvar_Init(void)	core.o
+0x004CA630	0x008B9B30	?GetTableSet@DbTablesetMgr@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBD@Z	public: class IVPointer<class DbTableSet> __thiscall DbTablesetMgr::GetTableSet(enum TPakId,char const *)const 	core.o
+0x004CA660	0x008B9B60	?FrameAdvance@ActiveEffectSet@@QAEXM@Z	public: void __thiscall ActiveEffectSet::FrameAdvance(float)	core.o
+0x004CA820	0x008B9D20	?IsSoundAlreadyPlaying@EffectEventSys@@QAEHIPAVEntity@@H@Z	public: int __thiscall EffectEventSys::IsSoundAlreadyPlaying(unsigned int,class Entity *,int)	core.o
+0x004CABD0	0x008BA0D0	?AdjustEffect_Scale@EffectEventSys@@QAEXVHandle@@PBDM@Z	public: void __thiscall EffectEventSys::AdjustEffect_Scale(class Handle,char const *,float)	core.o
+0x004CAC10	0x008BA110	?FastForward@EffectEventSys@@QAEXVHandle@@M@Z	public: void __thiscall EffectEventSys::FastForward(class Handle,float)	core.o
+0x004CAC50	0x008BA150	?PlayQueuedEffect@EffectEventSys@@QAEXVHandle@@@Z	public: void __thiscall EffectEventSys::PlayQueuedEffect(class Handle)	core.o
+0x004CAC90	0x008BA190	?StopLoopingEffects@EffectEventSys@@QAEXVHandle@@@Z	public: void __thiscall EffectEventSys::StopLoopingEffects(class Handle)	core.o
+0x004CACD0	0x008BA1D0	?IsEffectActive@EffectEventSys@@QAE_NVHandle@@@Z	public: bool __thiscall EffectEventSys::IsEffectActive(class Handle)	core.o
+0x004CAD20	0x008BA220	?GetEffectTables@EffectEventSys@@AAEXW4TPakId@@PBD1AAV?$ae_sized_array@PBVDbTable@@$0BA@@@@Z	private: void __thiscall EffectEventSys::GetEffectTables(enum TPakId,char const *,char const *,class ae_sized_array<class DbTable const *,16> &)	core.o
+0x004CAE70	0x008BA370	?GetEffectTables@EffectEventSys@@AAEXW4TPakId@@PBD11AAV?$ae_sized_array@PBVDbTable@@$0BA@@@@Z	private: void __thiscall EffectEventSys::GetEffectTables(enum TPakId,char const *,char const *,char const *,class ae_sized_array<class DbTable const *,16> &)	core.o
+0x004CB840	0x008BAD40	?ReleaseHandle@EffectEventSys@@QAEXPAVActiveEffectSet@@@Z	public: void __thiscall EffectEventSys::ReleaseHandle(class ActiveEffectSet *)	core.o
+0x004CB870	0x008BAD70	?ReleaseHandle@EffectEventSys@@QAEXVHandle@@@Z	public: void __thiscall EffectEventSys::ReleaseHandle(class Handle)	core.o
+0x004CB890	0x008BAD90	?EffectEventIsPlaying@@YA_NVHandle@@@Z	bool __cdecl EffectEventIsPlaying(class Handle)	core.o
+0x004CB8E0	0x008BADE0	?EffectEventAdjustEffect_Scale@@YAXVHandle@@PBDM@Z	void __cdecl EffectEventAdjustEffect_Scale(class Handle,char const *,float)	core.o
+0x004CB930	0x008BAE30	?EffectEventFF@@YAXVHandle@@M@Z	void __cdecl EffectEventFF(class Handle,float)	core.o
+0x004CB980	0x008BAE80	?EffectEventPlayQueuedEffect@@YAXVHandle@@@Z	void __cdecl EffectEventPlayQueuedEffect(class Handle)	core.o
+0x004CB9C0	0x008BAEC0	?Remove@RumbleManager@@QAEXVRumbleEffectInstanceHandle@@@Z	public: void __thiscall RumbleManager::Remove(class RumbleEffectInstanceHandle)	core.o
+0x004CBAB0	0x008BAFB0	?IsPlaying@RumbleManager@@QBE_NVRumbleEffectInstanceHandle@@@Z	public: bool __thiscall RumbleManager::IsPlaying(class RumbleEffectInstanceHandle)const 	core.o
+0x004CBBA0	0x008BB0A0	?TimeLeft@RumbleManager@@QBEMVRumbleEffectInstanceHandle@@@Z	public: float __thiscall RumbleManager::TimeLeft(class RumbleEffectInstanceHandle)const 	core.o
+0x004CBCB0	0x008BB1B0	?SetIntensity@RumbleManager@@QAEXVRumbleEffectInstanceHandle@@M@Z	public: void __thiscall RumbleManager::SetIntensity(class RumbleEffectInstanceHandle,float)	core.o
+0x004CBDB0	0x008BB2B0	?SetDistance@RumbleManager@@QAEXVRumbleEffectInstanceHandle@@MMM@Z	public: void __thiscall RumbleManager::SetDistance(class RumbleEffectInstanceHandle,float,float,float)	core.o
+0x004CBDE0	0x008BB2E0	?FrameAdvance@RumbleManager@@QAEXM@Z	public: void __thiscall RumbleManager::FrameAdvance(float)	core.o
+0x004CC230	0x008BB730	?GetPosition@AbstractEffect@@QBE?AVPosition3@math@@XZ	public: class math::Position3 __thiscall AbstractEffect::GetPosition(void)const 	core.o
+0x004CC2F0	0x008BB7F0	?IsFinished@AbstractEffect@@UAE_NXZ	public: virtual bool __thiscall AbstractEffect::IsFinished(void)	core.o
+0x004CC330	0x008BB830	?GetEntityDebugString@AbstractEffect@@QBE?AVstring@Broc@@XZ	public: class Broc::string __thiscall AbstractEffect::GetEntityDebugString(void)const 	core.o
+0x004CC3F0	0x008BB8F0	??1AbstractEffectSound@@UAE@XZ	public: virtual __thiscall AbstractEffectSound::~AbstractEffectSound(void)	core.o
+0x004CC4B0	0x008BB9B0	?FrameAdvance@AbstractEffectSound@@UAEXM@Z	public: virtual void __thiscall AbstractEffectSound::FrameAdvance(float)	core.o
+0x004CD050	0x008BC550	?SetPoPtr@AbstractEffectSound@@UAEXPAVMat43@math@@@Z	public: virtual void __thiscall AbstractEffectSound::SetPoPtr(class math::Mat43 *)	core.o
+0x004CD0C0	0x008BC5C0	?IsQueued@AbstractEffectSound@@UBE_NXZ	public: virtual bool __thiscall AbstractEffectSound::IsQueued(void)const 	core.o
+0x004CD120	0x008BC620	?IsFinished@AbstractEffectSound@@UAE_NXZ	public: virtual bool __thiscall AbstractEffectSound::IsFinished(void)	core.o
+0x004CD1B0	0x008BC6B0	?IsLooping@AbstractEffectSound@@UBE_NXZ	public: virtual bool __thiscall AbstractEffectSound::IsLooping(void)const 	core.o
+0x004CD230	0x008BC730	?AdjustEffect_Scale@AbstractEffectSound@@UAEXPBDM@Z	public: virtual void __thiscall AbstractEffectSound::AdjustEffect_Scale(char const *,float)	core.o
+0x004CD350	0x008BC850	?PlayQueuedEffect@AbstractEffectSound@@UAEXXZ	public: virtual void __thiscall AbstractEffectSound::PlayQueuedEffect(void)	core.o
+0x004CD4C0	0x008BC9C0	?StopEffect@AbstractEffectSound@@UAEXXZ	public: virtual void __thiscall AbstractEffectSound::StopEffect(void)	core.o
+0x004CD580	0x008BCA80	?GetDebugString@AbstractEffectSound@@UBE?AVstring@Broc@@XZ	public: virtual class Broc::string __thiscall AbstractEffectSound::GetDebugString(void)const 	core.o
+0x004CD740	0x008BCC40	?FrameAdvance@AbstractEffectParticle@@UAEXM@Z	public: virtual void __thiscall AbstractEffectParticle::FrameAdvance(float)	core.o
+0x004CDC90	0x008BD190	?IsFinished@AbstractEffectParticle@@UAE_NXZ	public: virtual bool __thiscall AbstractEffectParticle::IsFinished(void)	core.o
+0x004CDD20	0x008BD220	??0AbstractEffectLight@@QAE@AAUParams@0@@Z	public: __thiscall AbstractEffectLight::AbstractEffectLight(struct AbstractEffectLight::Params &)	core.o
+0x004CDEF0	0x008BD3F0	?GetPositionOnEntity@AbstractEffectLight@@ABE?AVPosition3@math@@PAVEntity@@@Z	private: class math::Position3 __thiscall AbstractEffectLight::GetPositionOnEntity(class Entity *)const 	core.o
+0x004CDF50	0x008BD450	?FrameAdvance@AbstractEffectLight@@UAEXM@Z	public: virtual void __thiscall AbstractEffectLight::FrameAdvance(float)	core.o
+0x004CE060	0x008BD560	?IsFinished@AbstractEffectLight@@UAE_NXZ	public: virtual bool __thiscall AbstractEffectLight::IsFinished(void)	core.o
+0x004CE0B0	0x008BD5B0	?GetPositionOnEntity@AbstractEffectShakeAndRumble@@ABE?AVPosition3@math@@XZ	private: class math::Position3 __thiscall AbstractEffectShakeAndRumble::GetPositionOnEntity(void)const 	core.o
+0x004CE110	0x008BD610	?GetDistanceScale@AbstractEffectShakeAndRumble@@AAEMH@Z	private: float __thiscall AbstractEffectShakeAndRumble::GetDistanceScale(int)	core.o
+0x004CE230	0x008BD730	?FrameAdvance@AbstractEffectShakeAndRumble@@UAEXM@Z	public: virtual void __thiscall AbstractEffectShakeAndRumble::FrameAdvance(float)	core.o
+0x004CE720	0x008BDC20	?IsFinished@AbstractEffectShakeAndRumble@@UAE_NXZ	public: virtual bool __thiscall AbstractEffectShakeAndRumble::IsFinished(void)	core.o
+0x004CE780	0x008BDC80	?AdjustEffect_Scale@AbstractEffectShakeAndRumble@@UAEXPBDM@Z	public: virtual void __thiscall AbstractEffectShakeAndRumble::AdjustEffect_Scale(char const *,float)	core.o
+0x004CE7B0	0x008BDCB0	?StopEffect@AbstractEffectShakeAndRumble@@UAEXXZ	public: virtual void __thiscall AbstractEffectShakeAndRumble::StopEffect(void)	core.o
+0x004CE800	0x008BDD00	?IgnoreAssertion@TlSystemCallbacks@@CA_NPBDAAV?$ae_fixed_string@$0BAA@G@@11AAH@Z	private: static bool __cdecl TlSystemCallbacks::IgnoreAssertion(char const *,class ae_fixed_string<256,unsigned short> &,class ae_fixed_string<256,unsigned short> &,class ae_fixed_string<256,unsigned short> &,int &)	core.o
+0x004CE8D0	0x008BDDD0	?GetConfigString@ConfigStringManager@@QAE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PBD1@Z	public: class IVPointer<class ConfigString> __thiscall ConfigStringManager::GetConfigString(enum TPakId,char const *,char const *)	core.o
+0x004CE940	0x008BDE40	?CallbackSearch@ConfigStringManager@@QAEXW4TPakId@@PBDP6AX1PBVConfigString@@@Z@Z	public: void __thiscall ConfigStringManager::CallbackSearch(enum TPakId,char const *,void (__cdecl*)(char const *,class ConfigString const *))	core.o
+0x004CE990	0x008BDE90	?LensFlareInit@@YAXXZ	void __cdecl LensFlareInit(void)	core.o
+0x004CEAE0	0x008BDFE0	??1EntityNotifySet@@QAE@XZ	public: __thiscall EntityNotifySet::~EntityNotifySet(void)	core.o
+0x004CEB90	0x008BE090	?FS_InitFilesystem@@YAXXZ	void __cdecl FS_InitFilesystem(void)	core.o
+0x004CEC60	0x008BE160	??1ActiveEffectSet@@QAE@XZ	public: __thiscall ActiveEffectSet::~ActiveEffectSet(void)	core.o
+0x004CEDC0	0x008BE2C0	?StopAll@EffectEventSys@@QAEXXZ	public: void __thiscall EffectEventSys::StopAll(void)	core.o
+0x004CEF20	0x008BE420	?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z	public: void __thiscall EffectEventSys::StopEffect(class Handle,bool)	core.o
+0x004CF020	0x008BE520	?KillEffectsWithPakId@EffectEventSys@@QAEXW4TPakId@@@Z	public: void __thiscall EffectEventSys::KillEffectsWithPakId(enum TPakId)	core.o
+0x004CF1D0	0x008BE6D0	?CollisionInfo@EffectEventSys@@QAEXABUCollisionDesc@@_N@Z	public: void __thiscall EffectEventSys::CollisionInfo(struct CollisionDesc const &,bool)	core.o
+0x004CF290	0x008BE790	?AssignHandle@EffectEventSys@@QAE?AVHandle@@PAVActiveEffectSet@@@Z	public: class Handle __thiscall EffectEventSys::AssignHandle(class ActiveEffectSet *)	core.o
+0x004CF2D0	0x008BE7D0	?EffectEventStopEmitting@@YAXVHandle@@@Z	void __cdecl EffectEventStopEmitting(class Handle)	core.o
+0x004CF2F0	0x008BE7F0	?EffectEventKill@@YAXVHandle@@@Z	void __cdecl EffectEventKill(class Handle)	core.o
+0x004CF310	0x008BE810	??1RumbleManager@@QAE@XZ	public: __thiscall RumbleManager::~RumbleManager(void)	core.o
+0x004CF370	0x008BE870	?Reset@RumbleManager@@QAEXXZ	public: void __thiscall RumbleManager::Reset(void)	core.o
+0x004CF3E0	0x008BE8E0	??0AbstractEffectSound@@QAE@W4TPakId@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HMAAVSoundParams@@@Z	public: __thiscall AbstractEffectSound::AbstractEffectSound(enum TPakId,class DbLinkedHandle<class EntityHandleDb,class Entity>,int,float,class SoundParams &)	core.o
+0x004CF600	0x008BEB00	??0AbstractEffectParticle@@QAE@XZ	public: __thiscall AbstractEffectParticle::AbstractEffectParticle(void)	core.o
+0x004CF6F0	0x008BEBF0	??0AbstractEffectShakeAndRumble@@QAE@AAUParams@0@@Z	public: __thiscall AbstractEffectShakeAndRumble::AbstractEffectShakeAndRumble(struct AbstractEffectShakeAndRumble::Params &)	core.o
+0x004CF890	0x008BED90	??0AbstractEffectShakeAndRumble@@QAE@W4TPakId@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@MHMMMMMMMMMMM_N2W4EUserBoneId@@@Z	public: __thiscall AbstractEffectShakeAndRumble::AbstractEffectShakeAndRumble(enum TPakId,class DbLinkedHandle<class EntityHandleDb,class Entity>,float,int,float,float,float,float,float,float,float,float,float,float,float,bool,bool,enum EUserBoneId)	core.o
+0x004CF9D0	0x008BEED0	??1AbstractEffectShakeAndRumble@@UAE@XZ	public: virtual __thiscall AbstractEffectShakeAndRumble::~AbstractEffectShakeAndRumble(void)	core.o
+0x004CFA60	0x008BEF60	?CriticalError@TlSystemCallbacks@@SAXPBD@Z	public: static void __cdecl TlSystemCallbacks::CriticalError(char const *)	core.o
+0x004CFAF0	0x008BEFF0	?Warning@TlSystemCallbacks@@SAXPBD@Z	public: static void __cdecl TlSystemCallbacks::Warning(char const *)	core.o
+0x004CFBA0	0x008BF0A0	?UpdateList@EntityNotifySet@@SAXXZ	public: static void __cdecl EntityNotifySet::UpdateList(void)	core.o
+0x004CFC10	0x008BF110	?Com_Frame@@YAXXZ	void __cdecl Com_Frame(void)	core.o
+0x004D00E0	0x008BF5E0	??0ActiveEffectSet@@QAE@W4TPakId@@@Z	public: __thiscall ActiveEffectSet::ActiveEffectSet(enum TPakId)	core.o
+0x004D0130	0x008BF630	??0EffectEventSys@@QAE@XZ	public: __thiscall EffectEventSys::EffectEventSys(void)	core.o
+0x004D01E0	0x008BF6E0	??1EffectEventSys@@QAE@XZ	public: __thiscall EffectEventSys::~EffectEventSys(void)	core.o
+0x004D0330	0x008BF830	?QueryGDEvents@EffectEventSys@@AAEHPBDAAUPendingQuery@1@PAVActiveEffectSet@@M@Z	private: int __thiscall EffectEventSys::QueryGDEvents(char const *,struct EffectEventSys::PendingQuery &,class ActiveEffectSet *,float)	core.o
+0x004D0A20	0x008BFF20	??0TlSystemCallbacks@@QAE@XZ	public: __thiscall TlSystemCallbacks::TlSystemCallbacks(void)	core.o
+0x004D0A80	0x008BFF80	?Com_Init@@YAXPAD@Z	void __cdecl Com_Init(char *)	core.o
+0x004D11B0	0x008C06B0	?QueryEventTable@EffectEventSys@@AAEHAAUPendingQuery@1@PAVActiveEffectSet@@M@Z	private: int __thiscall EffectEventSys::QueryEventTable(struct EffectEventSys::PendingQuery &,class ActiveEffectSet *,float)	core.o
+0x004D13C0	0x008C08C0	?ExecPendingQuery@EffectEventSys@@AAEXAAUPendingQuery@1@@Z	private: void __thiscall EffectEventSys::ExecPendingQuery(struct EffectEventSys::PendingQuery &)	core.o
+0x004D1580	0x008C0A80	?Com_Shutdown@@YAXXZ	void __cdecl Com_Shutdown(void)	core.o
+0x004D1680	0x008C0B80	?ExecutePendingQueries@EffectEventSys@@AAEXXZ	private: void __thiscall EffectEventSys::ExecutePendingQueries(void)	core.o
+0x004D1720	0x008C0C20	?BeginEffectQuery@EffectEventSys@@QAEXPBVEntity@@W4TPakId@@@Z	public: void __thiscall EffectEventSys::BeginEffectQuery(class Entity const *,enum TPakId)	core.o
+0x004D1A60	0x008C0F60	?ExecEffectQuery@EffectEventSys@@QAE?AVHandle@@XZ	public: class Handle __thiscall EffectEventSys::ExecEffectQuery(void)	core.o
+0x004D1CB0	0x008C11B0	?TriggerNamedEffect@EffectEventSys@@QAE?AVHandle@@PBVEntity@@PBDW4TPakId@@@Z	public: class Handle __thiscall EffectEventSys::TriggerNamedEffect(class Entity const *,char const *,enum TPakId)	core.o
+0x004D1D80	0x008C1280	?PostEffectEventFootstep@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventFootstep(class Entity const *,enum EStanceType,struct CollisionDesc const &)	core.o
+0x004D1EC0	0x008C13C0	?PostEffectEventGearRattle@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventGearRattle(class Entity const *,enum EStanceType,struct CollisionDesc const &)	core.o
+0x004D1FD0	0x008C14D0	?PostEffectEventLanding@@YA?AVHandle@@PBVEntity@@ABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventLanding(class Entity const *,struct CollisionDesc const &)	core.o
+0x004D2080	0x008C1580	?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z	class Handle __cdecl PostEffectEventScriptCall(class Entity const *,char const *,struct Broc::vector const &,struct Broc::vector const &,bool,enum TPakId,bool)	core.o
+0x004D2340	0x008C1840	?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBD_NW4TPakId@@_N@Z	class Handle __cdecl PostEffectEventScriptCall(class Entity const *,char const *,bool,enum TPakId,bool)	core.o
+0x004D24C0	0x008C19C0	?PostEffectEventQueueDialog@@YA?AVHandle@@PBVEntity@@PBDH@Z	class Handle __cdecl PostEffectEventQueueDialog(class Entity const *,char const *,int)	core.o
+0x004D2630	0x008C1B30	?PostEffectEventScriptCall_Dir@@YA?AVHandle@@PBVEntity@@PBDQBM_N@Z	class Handle __cdecl PostEffectEventScriptCall_Dir(class Entity const *,char const *,float const * const,bool)	core.o
+0x004D2780	0x008C1C80	?PostEffectEventWeaponFire1st@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@HH@Z	class Handle __cdecl PostEffectEventWeaponFire1st(class Entity const *,char const *,enum EAction,int,int)	core.o
+0x004D28F0	0x008C1DF0	?PostEffectEventWeaponFire3rd@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@H@Z	class Handle __cdecl PostEffectEventWeaponFire3rd(class Entity const *,char const *,enum EAction,int)	core.o
+0x004D2A30	0x008C1F30	?PostEffectEventWeaponReload@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@_N@Z	class Handle __cdecl PostEffectEventWeaponReload(class Entity const *,char const *,enum EAction,bool)	core.o
+0x004D2B70	0x008C2070	?PostEffectEventWeapon@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@@Z	class Handle __cdecl PostEffectEventWeapon(class Entity const *,char const *,enum EAction)	core.o
+0x004D2C90	0x008C2190	?PostEffectEventBulletHit@@YA?AVHandle@@PBVEntity@@W4EWeaponClass@@ABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventBulletHit(class Entity const *,enum EWeaponClass,struct CollisionDesc const &)	core.o
+0x004D2DD0	0x008C22D0	?PostEffectEventGrenadeBounce@@YA?AVHandle@@PBVEntity@@PBDABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventGrenadeBounce(class Entity const *,char const *,struct CollisionDesc const &)	core.o
+0x004D2F20	0x008C2420	?PostEffectEventProjExplode@@YA?AVHandle@@PBVEntity@@PBDABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventProjExplode(class Entity const *,char const *,struct CollisionDesc const &)	core.o
+0x004D3070	0x008C2570	?PostEffectEventVehicle@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@@Z	class Handle __cdecl PostEffectEventVehicle(class Entity const *,char const *,enum EAction)	core.o
+0x004D3190	0x008C2690	?PostEffectEventVehicleExplosion@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@ABUCollisionDesc@@@Z	class Handle __cdecl PostEffectEventVehicleExplosion(class Entity const *,char const *,enum EAction,struct CollisionDesc const &)	core.o
+0x004D32D0	0x008C27D0	?PostEffectEventVehicleWheel@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@W4ECollisionMaterial@@I@Z	class Handle __cdecl PostEffectEventVehicleWheel(class Entity const *,char const *,enum EAction,enum ECollisionMaterial,unsigned int)	core.o
+0x004D3490	0x008C2990	?PostEffectEventPointLightFlash@@YA?AVHandle@@PBVEntity@@PBDW4EAction@@@Z	class Handle __cdecl PostEffectEventPointLightFlash(class Entity const *,char const *,enum EAction)	core.o
+0x004D3560	0x008C2A60	?PostEffectEventEIMelee@@YA?AVHandle@@PBVEntity@@W4EAction@@_N@Z	class Handle __cdecl PostEffectEventEIMelee(class Entity const *,enum EAction,bool)	core.o
+0x004D3620	0x008C2B20	?PostEffectEventPhysicsImpact@@YA?AVHandle@@PBVEntity@@W4ECollisionMaterial@@ABUCollisionDesc@@M@Z	class Handle __cdecl PostEffectEventPhysicsImpact(class Entity const *,enum ECollisionMaterial,struct CollisionDesc const &,float)	core.o
+0x004D3930	0x008C2E30	?FrameAdvance@EffectEventSys@@QAEXM@Z	public: void __thiscall EffectEventSys::FrameAdvance(float)	core.o
+0x004D3AD0	0x008C2FD0	?GetDebugFxList@ActiveEffectSet@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z	public: void __thiscall ActiveEffectSet::GetDebugFxList(class Entity *,class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > &)const 	core.o
+0x004D3C70	0x008C3170	?GetDebugFxList@EffectEventSys@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z	public: void __thiscall EffectEventSys::GetDebugFxList(class Entity *,class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > &)const 	core.o

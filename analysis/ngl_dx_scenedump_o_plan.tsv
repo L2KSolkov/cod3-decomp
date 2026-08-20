@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x008541A0	?nglHostPrintf@@YAXPAXPBDZZ	void __cdecl nglHostPrintf(void *,char const *,...)	
+0x00854210	?nglHostOpen@@YAPAXPBD@Z	void * __cdecl nglHostOpen(char const *)	
+0x008542B0	?nglHostClose@@YAXPAX@Z	void __cdecl nglHostClose(void *)	

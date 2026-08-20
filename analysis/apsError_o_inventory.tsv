@@ -1,0 +1,4 @@
+ida_ea	va	name	signature	family
+0x00804180	0x00BF3680	?AddError@apsError@@QAAXW4eErrorType@1@PBDZZ	public: void __cdecl apsError::AddError(enum apsError::eErrorType,char const *,...)	apsError.o
+0x008041C0	0x00BF36C0	??0apsError@@QAE@XZ	public: __thiscall apsError::apsError(void)	apsError.o
+0x00804290	0x00BF3790	??1apsError@@QAE@XZ	public: __thiscall apsError::~apsError(void)	apsError.o

@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007EA740	0x00BD9C40	_zlibVersion	_zlibVersion	zutil.o
+0x007EA750	0x00BD9C50	_zlibCompileFlags	_zlibCompileFlags	zutil.o
+0x007EA760	0x00BD9C60	_zError	_zError	zutil.o
+0x007EA780	0x00BD9C80	_zcalloc	_zcalloc	zutil.o
+0x007EA7A0	0x00BD9CA0	_zcfree	_zcfree	zutil.o

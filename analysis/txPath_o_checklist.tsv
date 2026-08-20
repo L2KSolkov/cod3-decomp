@@ -1,0 +1,12 @@
+index	status	map_line
+1	VERIFIED	0002:0042d0a0 _txPathFix 00C1C5A0 f txPath.o
+2	VERIFIED	0002:0042d170 _txPathFormat 00C1C670 f txPath.o
+3	VERIFIED	0002:0042d1e0 _txPathMake 00C1C6E0 f txPath.o
+4	VERIFIED	0002:0042d250 _txPathDirEnd 00C1C750 f txPath.o
+5	VERIFIED	0002:0042d270 _txPathFileStart 00C1C770 f txPath.o
+6	VERIFIED	0002:0042d290 _txPathExtStart 00C1C790 f txPath.o
+7	VERIFIED	0002:0042d2c0 _txPathFile 00C1C7C0 f txPath.o
+8	VERIFIED	0002:0042d320 _txPathExt 00C1C820 f txPath.o
+9	VERIFIED	0002:0042d390 _txPathDir 00C1C890 f txPath.o
+10	VERIFIED	0002:0042d3e0 _txPathName 00C1C8E0 f txPath.o
+11	VERIFIED	0002:0042d450 _txPathNormalize 00C1C950 f txPath.o

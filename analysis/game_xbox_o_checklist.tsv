@@ -1,0 +1,366 @@
+index	status	map_line
+1	VERIFIED	0002:0031ef50 ?CheckCommands@@YAXPBD@Z 00B0E450 f game_xbox.o
+2	VERIFIED	0002:0031eff0 ?Sys_Mkdir@@YAXPBD@Z 00B0E4F0 f game_xbox.o
+3	VERIFIED	0002:0031f000 ?Sys_Cwd@@YAPADXZ 00B0E500 f game_xbox.o
+4	VERIFIED	0002:0031f010 ?Sys_DefaultCDPath@@YAPADXZ 00B0E510 f game_xbox.o
+5	VERIFIED	0002:0031f020 ?Sys_DefaultBasePath@@YAPADXZ 00B0E520 f game_xbox.o
+6	VERIFIED	0002:0031f030 ?Sys_DefaultHomePath@@YAPADXZ 00B0E530 f game_xbox.o
+7	VERIFIED	0002:0031f040 ?Sys_DefaultInstallPath@@YAPADXZ 00B0E540 f game_xbox.o
+8	VERIFIED	0002:0031f050 ?Sys_ListFilteredFiles@@YAXPBDPAD1PAPADPAH@Z 00B0E550 f game_xbox.o
+9	PORTED	0002:0031f1e0 ?linelen@@YAHPBD@Z 00B0E6E0 f game_xbox.o
+10	VERIFIED	0002:0031f210 ?ReadLine@@YAHPBDPAD@Z 00B0E710 f game_xbox.o
+11	VERIFIED	0002:0031f260 ?Sys_ListFiles@@YAPAPADPBD0PADPAHH@Z 00B0E760 f game_xbox.o
+12	VERIFIED	0002:0031f420 ?Sys_FreeFileList@@YAXPAPAD@Z 00B0E920 f game_xbox.o
+13	VERIFIED	0002:0031f460 ?Sys_DirectoryHasContents@@YAHPBD@Z 00B0E960 f game_xbox.o
+14	VERIFIED	0002:0031f520 ?Sys_InitStreamThread@@YAXXZ 00B0EA20 f game_xbox.o
+15	VERIFIED	0002:0031f530 ?Sys_ShutdownStreamThread@@YAXXZ 00B0EA30 f game_xbox.o
+16	VERIFIED	0002:0031f540 ?Sys_BeginStreamedFile@@YAXHH@Z 00B0EA40 f game_xbox.o
+17	VERIFIED	0002:0031f550 ?Sys_EndStreamedFile@@YAXH@Z 00B0EA50 f game_xbox.o
+18	VERIFIED	0002:0031f560 ?Sys_StreamedRead@@YAHPAXHHH@Z 00B0EA60 f game_xbox.o
+19	VERIFIED	0002:0031f580 ?Sys_StreamSeek@@YAXHHH@Z 00B0EA80 f game_xbox.o
+20	VERIFIED	0002:0031f590 ?Sys_InitializeCriticalSection@@YAPAXXZ 00B0EA90 f game_xbox.o
+21	VERIFIED	0002:0031f5a0 ?Sys_EnterCriticalSection@@YAXPAX@Z 00B0EAA0 f game_xbox.o
+22	VERIFIED	0002:0031f5b0 ?Sys_LeaveCriticalSection@@YAXPAX@Z 00B0EAB0 f game_xbox.o
+23	VERIFIED	0002:0031f5c0 ?Sys_OutOfMemError@@YAXXZ 00B0EAC0 f game_xbox.o
+24	VERIFIED	0002:0031f5d0 ?Sys_ConfigureChecksumChanged@@YAHH@Z 00B0EAD0 f game_xbox.o
+25	PORTED	0002:0031f5e0 ?GLimp_SetGamma@@YAXQAE00@Z 00B0EAE0 f game_xbox.o
+26	VERIFIED	0002:0031f5f0 _time 00B0EAF0 f game_xbox.o
+27	VERIFIED	0002:0031f600 ?Sys_QueEvent@@YAXHW4sysEventType_t@@HHHPAX@Z 00B0EB00 f game_xbox.o
+28	VERIFIED	0002:0031f6c0 ?Sys_LoadingKeepAlive@@YAXXZ 00B0EBC0 f game_xbox.o
+29	VERIFIED	0002:0031f6d0 ?Sys_GetEvent@@YA?AUsysEvent_t@@XZ 00B0EBD0 f game_xbox.o
+30	VERIFIED	0002:0031f760 ?Sys_Init@@YAXXZ 00B0EC60 f game_xbox.o
+31	VERIFIED	0002:0031f790 ?Sys_ShowConsole@@YAXHH@Z 00B0EC90 f game_xbox.o
+32	VERIFIED	0002:0031f7a0 ??1LiveWrapper@@QAE@XZ 00B0ECA0 f game_xbox.o
+33	PORTED	0002:0031f840 ?GetLocalPlayer@LiveWrapper@@QAEPAVLivePlayer@@K@Z 00B0ED40 f game_xbox.o
+34	PORTED	0002:0031f870 ?SetNotificationFlag@LiveWrapper@@QAEXKK_N@Z 00B0ED70 f game_xbox.o
+35	PORTED	0002:0031f940 ?GetNotificationFlag@LiveWrapper@@QAE_NKK@Z 00B0EE40 f game_xbox.o
+36	PORTED	0002:0031f970 ?ToggleNotificationFlag@LiveWrapper@@QAEXKK@Z 00B0EE70 f game_xbox.o
+37	VERIFIED	0002:0031f9d0 ?SetSessionID@LiveWrapper@@QAEXABUXNKID@@@Z 00B0EED0 f game_xbox.o
+38	PORTED	0002:0031fa30 ?IsTalking@LiveWrapper@@QAE_NU_XUID@@K@Z 00B0EF30 f game_xbox.o
+39	PORTED	0002:0031faf0 ?LocalChatDataReady@LiveWrapper@@MAGJKKPAX@Z 00B0EFF0 f game_xbox.o
+40	PORTED	0002:0031fb10 ?VoiceMailDataReady@LiveWrapper@@MAGJKKK@Z 00B0F010 f game_xbox.o
+41	PORTED	0002:0031fb20 ?VoiceMailStopped@LiveWrapper@@MAGJK@Z 00B0F020 f game_xbox.o
+42	PORTED	0002:0031fb30 ?CalcVoicePriorities@LiveWrapper@@IAEXXZ 00B0F030 f game_xbox.o
+43	PORTED	0002:0031fdc0 ?RefreshMuteList@LiveWrapper@@IAEXK@Z 00B0F2C0 f game_xbox.o
+44	PORTED	0002:0031fe20 ?HandleError@LiveWrapper@@IAEJJ@Z 00B0F320 f game_xbox.o
+45	VERIFIED	0002:00320430 ?Create@CSession@@QAEJXZ 00B0F930 f game_xbox.o
+46	PORTED	0002:003204d0 ?Close@CSession@@AAEXXZ 00B0F9D0 f game_xbox.o
+47	VERIFIED	0002:00320500 ?SetupAttributes@CSession@@AAEXXZ 00B0FA00 f game_xbox.o
+48	VERIFIED	0002:00320570 ?Getgame_type@CSession@@QAE_KXZ 00B0FA70 f game_xbox.o
+49	VERIFIED	0002:00320580 ?Setgame_type@CSession@@QAEX_K@Z 00B0FA80 f game_xbox.o
+50	VERIFIED	0002:003205a0 ?Getgame_map@CSession@@QAE_KXZ 00B0FAA0 f game_xbox.o
+51	VERIFIED	0002:003205b0 ?Setgame_map@CSession@@QAEX_K@Z 00B0FAB0 f game_xbox.o
+52	VERIFIED	0002:003205d0 ?Getgame_version@CSession@@QAE_KXZ 00B0FAD0 f game_xbox.o
+53	VERIFIED	0002:003205e0 ?Setgame_version@CSession@@QAEX_K@Z 00B0FAE0 f game_xbox.o
+54	VERIFIED	0002:00320600 ?Getfriendly_fire@CSession@@QAE_KXZ 00B0FB00 f game_xbox.o
+55	VERIFIED	0002:00320610 ?Setfriendly_fire@CSession@@QAEX_K@Z 00B0FB10 f game_xbox.o
+56	VERIFIED	0002:00320630 ?Getteam_balancing@CSession@@QAE_KXZ 00B0FB30 f game_xbox.o
+57	VERIFIED	0002:00320640 ?Setteam_balancing@CSession@@QAEX_K@Z 00B0FB40 f game_xbox.o
+58	VERIFIED	0002:00320660 ?Getsub_type@CSession@@QAE_KXZ 00B0FB60 f game_xbox.o
+59	VERIFIED	0002:00320670 ?Setsub_type@CSession@@QAEX_K@Z 00B0FB70 f game_xbox.o
+60	VERIFIED	0002:00320690 ?Getnum_players@CSession@@QAE_KXZ 00B0FB90 f game_xbox.o
+61	VERIFIED	0002:003206a0 ?Setnum_players@CSession@@QAEX_K@Z 00B0FBA0 f game_xbox.o
+62	VERIFIED	0002:003206d0 ?Gethost_name@CSession@@QAEPBGXZ 00B0FBD0 f game_xbox.o
+63	VERIFIED	0002:003206e0 ?Sethost_name@CSession@@QAEXPBG@Z 00B0FBE0 f game_xbox.o
+64	VERIFIED	0002:00320710 ?Getmax_players@CSession@@QAE_KXZ 00B0FC10 f game_xbox.o
+65	VERIFIED	0002:00320720 ?Setmax_players@CSession@@QAEX_K@Z 00B0FC20 f game_xbox.o
+66	VERIFIED	0002:00320750 ??0CSessionQosQ@CSession@@QAE@XZ 00B0FC50 f game_xbox.o
+67	PORTED	0002:00320760 ?Add@CSessionQosQ@CSession@@QAEXAAUXNKID@@K@Z 00B0FC60 f game_xbox.o
+68	PORTED	0002:00320800 ?Remove@CSessionQosQ@CSession@@QAEXAAUXNKID@@@Z 00B0FD00 f game_xbox.o
+69	VERIFIED	0002:003208d0 ?Dequeue@CSessionQosQ@CSession@@QAEXXZ 00B0FDD0 f game_xbox.o
+70	PORTED	0002:00320950 ?Cancel@CFromIDQuery@@UAEXXZ 00B0FE50 f game_xbox.o
+71	PORTED	0002:003209f0 ?Clear@CFromIDQuery@@UAEXXZ 00B0FEF0 f game_xbox.o
+72	VERIFIED	0002:00320a20 ?Query@CFromIDQuery@@QAEJ_K@Z 00B0FF20 f game_xbox.o
+73	PORTED	0002:00320b00 ?Probe@CFromIDQuery@@UAEJXZ 00B10000 f game_xbox.o
+74	PORTED	0002:00320c50 ?Process@CFromIDQuery@@UAEJXZ 00B10150 f game_xbox.o
+75	VERIFIED	0002:00320f80 ??0CDefaultQuery@@QAE@XZ 00B10480 f game_xbox.o
+76	PORTED	0002:00320fb0 ?Cancel@CDefaultQuery@@UAEXXZ 00B104B0 f game_xbox.o
+77	PORTED	0002:00321050 ?Clear@CDefaultQuery@@UAEXXZ 00B10550 f game_xbox.o
+78	VERIFIED	0002:00321080 ?Query@CDefaultQuery@@QAEJ_K0000000@Z 00B10580 f game_xbox.o
+79	PORTED	0002:00321250 ?Probe@CDefaultQuery@@UAEJXZ 00B10750 f game_xbox.o
+80	PORTED	0002:003213a0 ?Process@CDefaultQuery@@UAEJXZ 00B108A0 f game_xbox.o
+81	PORTED	0002:003216d0 ?Reset@LivePlayer@@UAEXXZ 00B10BD0 f game_xbox.o
+82	PORTED	0002:00321710 ?IsTalking@LivePlayer@@UBGHXZ 00B10C10 f game_xbox.o
+83	PORTED	0002:00321750 ?CopyLivePlayer@LiveRemote@@QAEXABVLivePlayer@@@Z 00B10C50 f game_xbox.o
+84	PORTED	0002:003217a0 ?Reset@LiveRemote@@UAEXXZ 00B10CA0 f game_xbox.o
+85	PORTED	0002:003217e0 ?OnMutelist@LiveLocal@@QAE_NABU_XUID@@@Z 00B10CE0 f game_xbox.o
+86	PORTED	0002:00321830 ?Reset@LiveLocal@@UAEXXZ 00B10D30 f game_xbox.o
+87	PORTED	0002:00321870 ?CanHear@MPLiveEngine@@UAE_NABU_XUID@@0@Z 00B10D70 f game_xbox.o
+88	PORTED	0002:00321880 ?SubmitVoiceData@MPLiveEngine@@UAEXABU_XUID@@PAXK@Z 00B10D80 f game_xbox.o
+89	PORTED	0002:003218c0 ?GetVoiceDataSize@MPLiveEngine@@UAEKK@Z 00B10DC0 f game_xbox.o
+90	PORTED	0002:003218d0 ?GetVoiceData@MPLiveEngine@@UAEKKPAX@Z 00B10DD0 f game_xbox.o
+91	PORTED	0002:003218e0 ?JoinGame@MPLiveEngine@@UAEXPAU_XONLINE_FRIEND@@@Z 00B10DE0 f game_xbox.o
+92	PORTED	0002:00321920 ?RunQuery@MPLiveEngine@@QAEXPAVQueryInterface@@@Z 00B10E20 f game_xbox.o
+93	VERIFIED	0002:00321980 ?SetRemoteListeners@MPLiveEngine@@QAEXPBVMPPlayerSet@@@Z 00B10E80 f game_xbox.o
+94	VERIFIED	0002:003219d0 ?RegisterKey@MPLiveEngine@@QAEHPBUXNKID@@PBUXNKEY@@@Z 00B10ED0 f game_xbox.o
+95	VERIFIED	0002:00321aa0 ?ClearKeys@MPLiveEngine@@QAEXXZ 00B10FA0 f game_xbox.o
+96	PORTED	0002:00321b20 ?GetPortToLock@MPLiveEngine@@QAEKXZ 00B11020 f game_xbox.o
+97	VERIFIED	0002:00321b90 ?StartLiveSession@MPLiveEngine@@QAEXPAUsServerCreateParams@@EE@Z 00B11090 f game_xbox.o
+98	PORTED	0002:00321cd0 ?HandleSessionCreation@MPLiveEngine@@IAEXXZ 00B111D0 f game_xbox.o
+99	PORTED	0002:00321d70 ?LogoffCallBack@MPLiveEngine@@MAEXXZ 00B11270 f game_xbox.o
+100	VERIFIED	0002:00321da0 ?GetHandle@MPLiveEngine@@SAPAV1@XZ 00B112A0 f game_xbox.o
+101	VERIFIED	0002:00321db0 ?Init@XboxLiveOptionsMenu@@UAEXXZ 00B112B0 f game_xbox.o
+102	VERIFIED	0002:00321dc0 ?Draw@XboxLiveOptionsMenu@@UAEXXZ 00B112C0 f game_xbox.o
+103	VERIFIED	0002:00321e00 ?OnDeactivate@XboxLiveOptionsMenu@@UAEXPAVFEMenu@@@Z 00B11300 f game_xbox.o
+104	VERIFIED	0002:00321e10 ?Me@XboxLiveOptionsMenu@@SAPAV1@XZ 00B11310 f game_xbox.o
+105	PORTED	0002:00321e20 ?OnUp@XboxLiveOptionsMenu@@UAEXH@Z 00B11320 f game_xbox.o
+106	PORTED	0002:00321e80 ?OnDown@XboxLiveOptionsMenu@@UAEXH@Z 00B11380 f game_xbox.o
+107	VERIFIED	0002:00321ee0 ?OnLeft@XboxLiveOptionsMenu@@UAEXH@Z 00B113E0 f game_xbox.o
+108	VERIFIED	0002:00321ef0 ?OnRight@XboxLiveOptionsMenu@@UAEXH@Z 00B113F0 f game_xbox.o
+109	VERIFIED	0002:00321f00 ?OnL1@XboxLiveOptionsMenu@@UAEXH@Z 00B11400 f game_xbox.o
+110	VERIFIED	0002:00321f10 ?OnR1@XboxLiveOptionsMenu@@UAEXH@Z 00B11410 f game_xbox.o
+111	VERIFIED	0002:00321f20 ?OnTriangle@XboxLiveOptionsMenu@@UAEXH@Z 00B11420 f game_xbox.o
+112	VERIFIED	0002:00321f30 ?OnSquare@XboxLiveOptionsMenu@@UAEXH@Z 00B11430 f game_xbox.o
+113	VERIFIED	0002:00321f40 ?OnStart@XboxLiveOptionsMenu@@UAEXH@Z 00B11440 f game_xbox.o
+114	PORTED	0002:00321f50 ?ButtonHeldAction@XboxLiveOptionsMenu@@MAEXXZ 00B11450 f game_xbox.o
+115	VERIFIED	0002:00321f60 ?UpdateSplitScreen@XboxLiveOptionsMenu@@UAEXXZ 00B11460 f game_xbox.o
+116	PORTED	0002:00321fc0 ?UpdateWidescreen@XboxLiveOptionsMenu@@UAEX_N@Z 00B114C0 f game_xbox.o
+117	PORTED	0002:00322020 ?WireForSignedOut@XboxLiveOptionsMenu@@IAEXXZ 00B11520 f game_xbox.o
+118	VERIFIED	0002:00322080 ??0InGameLiveOptionsMenu@@QAE@PAVFEMenuSystem@@@Z 00B11580 f game_xbox.o
+119	VERIFIED	0002:003220c0 ??1InGameLiveOptionsMenu@@UAE@XZ 00B115C0 f game_xbox.o
+120	VERIFIED	0002:003220d0 ?OnActivate@InGameLiveOptionsMenu@@UAEXXZ 00B115D0 f game_xbox.o
+121	VERIFIED	0002:00322270 ?Draw@InGameLiveOptionsMenu@@UAEXXZ 00B11770 f game_xbox.o
+122	PORTED	0002:00322290 ?ResponseYesReboot@InGameLiveOptionsMenu@@KA_NH@Z 00B11790 f game_xbox.o
+123	PORTED	0002:003222b0 ?ResponseDoNothing@InGameLiveOptionsMenu@@KA_NH@Z 00B117B0 f game_xbox.o
+124	VERIFIED	0002:003222c0 ?OnTriangle@InGameLiveOptionsMenu@@UAEXH@Z 00B117C0 f game_xbox.o
+125	VERIFIED	0002:003222e0 ?SetPanelFile@InGameLiveOptionsMenu@@UAEXPAVPanelFile@@@Z 00B117E0 f game_xbox.o
+126	VERIFIED	0002:00322380 ?UpdateWidescreen@InGameLiveOptionsMenu@@UAEX_N@Z 00B11880 f game_xbox.o
+127	VERIFIED	0002:00322390 ?Me@InGameLiveOptionsMenu@@SAPAV1@XZ 00B11890 f game_xbox.o
+128	VERIFIED	0002:003223b0 ?Xbox_LaunchInfo@@YAPADPAD@Z 00B118B0 f game_xbox.o
+129	VERIFIED	0002:00322530 ??0LiveWrapper@@QAE@XZ 00B11A30 f game_xbox.o
+130	PORTED	0002:003226a0 ?SetupAsAware@LiveWrapper@@QAEXPAUD3DDevice@@PBDPAUITitleFontRenderer@@@Z 00B11BA0 f game_xbox.o
+131	PORTED	0002:00322780 ?SetupAsSession@LiveWrapper@@QAEXPAUD3DDevice@@PBDPAUITitleFontRenderer@@@Z 00B11C80 f game_xbox.o
+132	PORTED	0002:00322870 ?HandleInput@LiveWrapper@@UAE_NKABU_XINPUT_STATE@@@Z 00B11D70 f game_xbox.o
+133	PORTED	0002:003229a0 ?Render@LiveWrapper@@QAEXPAUD3DSurface@@@Z 00B11EA0 f game_xbox.o
+134	VERIFIED	0002:00322a20 ?Render@LiveWrapper@@QAEXXZ 00B11F20 f game_xbox.o
+135	PORTED	0002:00322aa0 ?GetIcon@LiveWrapper@@QAEKK@Z 00B11FA0 f game_xbox.o
+136	PORTED	0002:00322b10 ?SignInSilently@LiveWrapper@@QAEXK@Z 00B12010 f game_xbox.o
+137	PORTED	0002:00322bb0 ?SignInFromInvite@LiveWrapper@@QAEXPAU_XONLINE_ACCEPTED_GAMEINVITE@@K@Z 00B120B0 f game_xbox.o
+138	PORTED	0002:00322c90 ?ShowLoginScreen@LiveWrapper@@QAEXK@Z 00B12190 f game_xbox.o
+139	PORTED	0002:00322d70 ?ShowFriendsList@LiveWrapper@@QAEXK@Z 00B12270 f game_xbox.o
+140	PORTED	0002:00322e10 ?ShowPlayersList@LiveWrapper@@QAEXKK@Z 00B12310 f game_xbox.o
+141	PORTED	0002:00322f50 ?ToggleOfflineAppearance@LiveWrapper@@QAEXK@Z 00B12450 f game_xbox.o
+142	PORTED	0002:00322f80 ?RemoteMute@LiveWrapper@@QAEXKABU_XUID@@_N@Z 00B12480 f game_xbox.o
+143	PORTED	0002:00322ff0 ?SetRemoteVoiceComm@LiveWrapper@@QAEXABU_XUID@@W4_UIX_VOICE_STATUS_TYPE@@@Z 00B124F0 f game_xbox.o
+144	PORTED	0002:00323060 ?AddRemotePlayer@LiveWrapper@@QAEXABVLivePlayer@@@Z 00B12560 f game_xbox.o
+145	VERIFIED	0002:00323320 ?RemoveRemotePlayer@LiveWrapper@@QAEXABU_XUID@@@Z 00B12820 f game_xbox.o
+146	VERIFIED	0002:003233d0 ?ClearRemotePlayers@LiveWrapper@@QAEXXZ 00B128D0 f game_xbox.o
+147	PORTED	0002:00323400 ?SetVTS@LiveWrapper@@QAEXK_N@Z 00B12900 f game_xbox.o
+148	PORTED	0002:00323480 ?ToggleVTS@LiveWrapper@@QAEXK@Z 00B12980 f game_xbox.o
+149	PORTED	0002:003234d0 ?SaveLogonState@LiveWrapper@@QAE_NPAU_XONLINE_LOGON_STATE@@@Z 00B129D0 f game_xbox.o
+150	PORTED	0002:00323510 ?RetrieveLogonState@LiveWrapper@@QAEXPAU_XONLINE_LOGON_STATE@@K@Z 00B12A10 f game_xbox.o
+151	PORTED	0002:00323600 ?CommunicatorStatusUpdate@LiveWrapper@@MAGJKW4_XHV_VOICE_COMMUNICATOR_STATUS@@@Z 00B12B00 f game_xbox.o
+152	PORTED	0002:00323710 ?UpdateLocalPlayers@LiveWrapper@@IAEXXZ 00B12C10 f game_xbox.o
+153	PORTED	0002:003238c0 ?PostLogon@LiveWrapper@@IAEXXZ 00B12DC0 f game_xbox.o
+154	PORTED	0002:00323a70 ?PreLogoff@LiveWrapper@@IAEXXZ 00B12F70 f game_xbox.o
+155	PORTED	0002:00323b40 ?PostLogoff@LiveWrapper@@IAEXXZ 00B13040 f game_xbox.o
+156	PORTED	0002:00323b70 ?CheckMutingChanges@LiveWrapper@@IAEXK@Z 00B13070 f game_xbox.o
+157	VERIFIED	0002:00323cb0 ??0CSession@@QAE@XZ 00B131B0 f game_xbox.o
+158	VERIFIED	0002:00323d00 ?Update@CSession@@QAEJXZ 00B13200 f game_xbox.o
+159	VERIFIED	0002:00323e00 ?ProcessStateUpdateSession@CSession@@AAEJXZ 00B13300 f game_xbox.o
+160	VERIFIED	0002:00323e80 ?ProcessStateDeleteSession@CSession@@AAEJXZ 00B13380 f game_xbox.o
+161	VERIFIED	0002:00323ee0 ?ProcessStateActiveSession@CSession@@AAEJXZ 00B133E0 f game_xbox.o
+162	VERIFIED	0002:00323f40 ?PurgeSessionQHead@CSession@@AAEXXZ 00B13440 f game_xbox.o
+163	PORTED	0002:00324040 ?Listen@CSession@@QAEXHK@Z 00B13540 f game_xbox.o
+164	PORTED	0002:003241f0 ?SetQosResponse@CSession@@QAEXVCBlob@@@Z 00B136F0 f game_xbox.o
+165	VERIFIED	0002:00324280 ??0CFromIDQuery@@QAE@XZ 00B13780 f game_xbox.o
+166	VERIFIED	0002:003242b0 ??1CFromIDQuery@@QAE@XZ 00B137B0 f game_xbox.o
+167	VERIFIED	0002:003242c0 ??1CDefaultQuery@@QAE@XZ 00B137C0 f game_xbox.o
+168	PORTED	0002:003242d0 ?ShowNotificationIcon@@YAXAAKPAVPanelQuad@@1@Z 00B137D0 f game_xbox.o
+169	PORTED	0002:00324370 ?HandleOutgoingVoice@MPLiveEngine@@MAEXKKPAX@Z 00B13870 f game_xbox.o
+170	PORTED	0002:003244a0 ?SendMuteUpdate@MPLiveEngine@@MAEXABU_XUID@@0_N@Z 00B139A0 f game_xbox.o
+171	PORTED	0002:00324640 ?SendCommunicatorStatus@MPLiveEngine@@MAEXW4_UIX_VOICE_STATUS_TYPE@@@Z 00B13B40 f game_xbox.o
+172	VERIFIED	0002:00324760 ?OccupyPublicSlot@MPLiveEngine@@QAE_NXZ 00B13C60 f game_xbox.o
+173	VERIFIED	0002:003247c0 ?OccupyPrivateSlot@MPLiveEngine@@QAE_NXZ 00B13CC0 f game_xbox.o
+174	VERIFIED	0002:00324820 ?FreeSlot@MPLiveEngine@@QAEX_N@Z 00B13D20 f game_xbox.o
+175	PORTED	0002:00324970 ?HandleInput@MPLiveEngine@@UAE_NKABU_XINPUT_STATE@@@Z 00B13E70 f game_xbox.o
+176	PORTED	0002:003249a0 ?LogonCallBack@MPLiveEngine@@MAEXXZ 00B13EA0 f game_xbox.o
+177	VERIFIED	0002:003249e0 ?SetPanelFile@XboxLiveOptionsMenu@@UAEXPAVPanelFile@@@Z 00B13EE0 f game_xbox.o
+178	VERIFIED	0002:00325560 ?OnActivate@XboxLiveOptionsMenu@@UAEXXZ 00B14A60 f game_xbox.o
+179	VERIFIED	0002:003256a0 ?OnCross@XboxLiveOptionsMenu@@UAEXH@Z 00B14BA0 f game_xbox.o
+180	VERIFIED	0002:003257c0 ?OnCircle@XboxLiveOptionsMenu@@UAEXH@Z 00B14CC0 f game_xbox.o
+181	PORTED	0002:003257e0 ?UpdateDynamicText@XboxLiveOptionsMenu@@IAEXXZ 00B14CE0 f game_xbox.o
+182	PORTED	0002:003258c0 ?WireForSignedIn@XboxLiveOptionsMenu@@IAEXXZ 00B14DC0 f game_xbox.o
+183	PORTED	0002:003259d0 ?TryFriendJoin@InGameLiveOptionsMenu@@IAEXXZ 00B14ED0 f game_xbox.o
+184	VERIFIED	0002:00325ae0 ?RenderUIX@@YAXPAX@Z 00B14FE0 f game_xbox.o
+185	PORTED	0002:00325bf0 ?SetupAsAware@LiveWrapper@@QAEXPAUD3DDevice@@PBDPBG@Z 00B150F0 f game_xbox.o
+186	PORTED	0002:00325c40 ?SetupAsSession@LiveWrapper@@QAEXPAUD3DDevice@@PBDPBG@Z 00B15140 f game_xbox.o
+187	VERIFIED	0002:00325c90 ?LogOut@LiveWrapper@@QAEXXZ 00B15190 f game_xbox.o
+188	PORTED	0002:00325cd0 ?HandleFeatureExit@LiveWrapper@@IAEXXZ 00B151D0 f game_xbox.o
+189	VERIFIED	0002:00325dd0 ?Delete@CSession@@QAEJXZ 00B152D0 f game_xbox.o
+190	VERIFIED	0002:00325f10 ?ProcessStateCreateSession@CSession@@AAEJXZ 00B15410 f game_xbox.o
+191	VERIFIED	0002:00326090 ?PurgeSessionQ@CSession@@AAEXH@Z 00B15590 f game_xbox.o
+192	PORTED	0002:003260d0 ?GetQosResponse@CSession@@QAE?AVCBlob@@XZ 00B155D0 f game_xbox.o
+193	VERIFIED	0002:003260f0 ?LeaveLiveSession@MPLiveEngine@@QAEXXZ 00B155F0 f game_xbox.o
+194	VERIFIED	0002:003261b0 ?Update@XboxLiveOptionsMenu@@UAEXM@Z 00B156B0 f game_xbox.o
+195	PORTED	0002:00326400 ?ResponseNoReboot@InGameLiveOptionsMenu@@KA_NH@Z 00B15900 f game_xbox.o
+196	PORTED	0002:00326450 ?ResponseSignOut@InGameLiveOptionsMenu@@KA_NH@Z 00B15950 f game_xbox.o
+197	PORTED	0002:00326490 ?DoWork@LiveWrapper@@UAEXXZ 00B15990 f game_xbox.o
+198	VERIFIED	0002:003265c0 ?Reset@CSession@@QAEXXZ 00B15AC0 f game_xbox.o
+199	VERIFIED	0002:00326680 ?Process@CSession@@QAEJXZ 00B15B80 f game_xbox.o
+200	PORTED	0002:00326760 ?DoWork@MPLiveEngine@@UAEXXZ 00B15C60 f game_xbox.o
+201	PORTED	0002:00326830 ?TryReboot@InGameLiveOptionsMenu@@IAEXXZ 00B15D30 f game_xbox.o
+202	VERIFIED	0002:00326940 ?Update@InGameLiveOptionsMenu@@UAEXM@Z 00B15E40 f game_xbox.o
+203	PORTED	0002:00326ab0 ?Select@InGameLiveOptionsMenu@@UAEXH@Z 00B15FB0 f game_xbox.o
+204	VERIFIED	0002:00326da0 ??1CSession@@QAE@XZ 00B162A0 f game_xbox.o
+205	VERIFIED	0002:00326db0 ??0MPLiveEngine@@QAE@XZ 00B162B0 f game_xbox.o
+206	PORTED	0002:00326e40 ??1MPLiveEngine@@UAE@XZ 00B16340 f game_xbox.o
+207	VERIFIED	0002:00326ec0 ?PanelFileUnloaded@XboxLiveOptionsMenu@@UAEXPAVPanelFile@@@Z 00B163C0 f game_xbox.o
+208	VERIFIED	0002:00326f10 _main 00B16410 f game_xbox.o
+209	VERIFIED	0002:00327300 ??0XboxLiveOptionsMenu@@QAE@PAVFEMenuSystem@@@Z 00B16800 f game_xbox.o
+210	VERIFIED	0002:00327480 ??1XboxLiveOptionsMenu@@UAE@XZ 00B16980 f game_xbox.o
+211	PORTED	0002:003296f0 ?GetBackBuffer@D3DDevice@@SGJHKPAPAUD3DSurface@@@Z 00B18BF0 f i game_xbox.o
+212	PORTED	0002:00329710 ?SetVertexShader@D3DDevice@@SGJK@Z 00B18C10 f i game_xbox.o
+213	PORTED	0002:00329730 ?SetShaderConstantMode@D3DDevice@@SGJK@Z 00B18C30 f i game_xbox.o
+214	PORTED	0002:00329750 ?SetVertexShaderConstantFast@D3DDevice@@SGJHPBXK@Z 00B18C50 f i game_xbox.o
+215	PORTED	0002:00329790 ?SetIndices@D3DDevice@@SGJPAUD3DIndexBuffer@@I@Z 00B18C90 f i game_xbox.o
+216	PORTED	0002:003297b0 ?SetPixelShaderProgram@D3DDevice@@SGJPBU_D3DPixelShaderDef@@@Z 00B18CB0 f i game_xbox.o
+217	PORTED	0002:003297d0 ?SetVertexShaderInputDirect@D3DDevice@@SGJPAU_D3DVERTEXATTRIBUTEFORMAT@@IPBU_D3DSTREAM_INPUT@@@Z 00B18CD0 f i game_xbox.o
+218	PORTED	0002:003297f0 ?Release@D3DResource@@QAGKXZ 00B18CF0 f i game_xbox.o
+219	PORTED	0002:00329800 ?GetGameClient@ApsGameClient@@SAAAV1@XZ 00B18D00 f i game_xbox.o
+220	PORTED	0002:00329810 ??0CBlob@@QAE@XZ 00B18D10 f i game_xbox.o
+221	PORTED	0002:00329830 ?GetData@CBlob@@QBEQAXXZ 00B18D30 f i game_xbox.o
+222	PORTED	0002:00329840 ?GetLength@CBlob@@QBEGXZ 00B18D40 f i game_xbox.o
+223	PORTED	0002:00329850 ?Head@CSessionQosQ@CSession@@QBEPBUQosQEntry@2@XZ 00B18D50 f i game_xbox.o
+224	PORTED	0002:00329860 ?Tail@CSessionQosQ@CSession@@QBEPBUQosQEntry@2@XZ 00B18D60 f i game_xbox.o
+225	PORTED	0002:00329870 ??0CDefaultQueryResults@@QAE@XZ 00B18D70 f i game_xbox.o
+226	PORTED	0002:00329880 ?Size@CDefaultQueryResults@@QAEKXZ 00B18D80 f i game_xbox.o
+227	PORTED	0002:00329890 ??ACDefaultQueryResults@@QAEAAVCDefaultResult@@K@Z 00B18D90 f i game_xbox.o
+228	PORTED	0002:003298b0 ?Clear@CDefaultQueryResults@@AAEXXZ 00B18DB0 f i game_xbox.o
+229	PORTED	0002:003298c0 ?Remove@CDefaultQueryResults@@AAEXK@Z 00B18DC0 f i game_xbox.o
+230	PORTED	0002:00329980 ?SetSize@CDefaultQueryResults@@AAEXK@Z 00B18E80 f i game_xbox.o
+231	PORTED	0002:003299a0 ??0CFromIDQueryResults@@QAE@XZ 00B18EA0 f i game_xbox.o
+232	PORTED	0002:003299b0 ?Size@CFromIDQueryResults@@QAEKXZ 00B18EB0 f i game_xbox.o
+233	PORTED	0002:003299c0 ??ACFromIDQueryResults@@QAEAAVCDefaultResult@@K@Z 00B18EC0 f i game_xbox.o
+234	PORTED	0002:003299e0 ?Clear@CFromIDQueryResults@@AAEXXZ 00B18EE0 f i game_xbox.o
+235	PORTED	0002:003299f0 ?Remove@CFromIDQueryResults@@AAEXK@Z 00B18EF0 f i game_xbox.o
+236	PORTED	0002:00329ab0 ?SetSize@CFromIDQueryResults@@AAEXK@Z 00B18FB0 f i game_xbox.o
+237	PORTED	0002:00329ad0 ?Release@LiveEngine@@QAGKXZ 00B18FD0 f i game_xbox.o
+238	PORTED	0002:00329ae0 ?DoWork@LiveEngine@@QAGJPAK@Z 00B18FE0 f i game_xbox.o
+239	PORTED	0002:00329af0 ?SetUIPlugin@LiveEngine@@QAGJPAUITitleUIPlugin@@@Z 00B18FF0 f i game_xbox.o
+240	PORTED	0002:00329b00 ?EnableFeature@LiveEngine@@QAGJPAX@Z 00B19000 f i game_xbox.o
+241	PORTED	0002:00329b10 ?StartFeature@LiveEngine@@QAGJPAXPBX@Z 00B19010 f i game_xbox.o
+242	PORTED	0002:00329b20 ?Render@LiveEngine@@QAGJPAUD3DSurface@@@Z 00B19020 f i game_xbox.o
+243	PORTED	0002:00329b30 ?SetInput@LiveEngine@@QAGJKPBU_XINPUT_STATE@@@Z 00B19030 f i game_xbox.o
+244	PORTED	0002:00329b40 ?NotificationSetState@LiveEngine@@QAGJKKUXNKID@@KQAX@Z 00B19040 f i game_xbox.o
+245	PORTED	0002:00329b80 ?GetNotifications@LiveEngine@@QAGJKW4_UIX_NOTIFICATION_PURPOSE@@PAK@Z 00B19080 f i game_xbox.o
+246	PORTED	0002:00329b90 ?SetProperty@LiveEngine@@QAGJW4_UIX_PROPERTY_TYPE@@K@Z 00B19090 f i game_xbox.o
+247	PORTED	0002:00329ba0 ?GetExitInfo@LiveEngine@@QAGJPAU_UIX_EXIT_INFO@@@Z 00B190A0 f i game_xbox.o
+248	PORTED	0002:00329bb0 ?Reboot@LiveEngine@@QAGJK@Z 00B190B0 f i game_xbox.o
+249	PORTED	0002:00329bc0 ?LogOff@LiveEngine@@QAGJXZ 00B190C0 f i game_xbox.o
+250	PORTED	0002:00329bd0 ?GetFeatureInterface@LiveEngine@@QAGJPAXPBXPAPAX@Z 00B190D0 f i game_xbox.o
+251	PORTED	0002:00329be0 ?EndFeature@LiveEngine@@QAGJXZ 00B190E0 f i game_xbox.o
+252	PORTED	0002:00329bf0 ?UseVoiceMail@LiveEngine@@QAGJPAX@Z 00B190F0 f i game_xbox.o
+253	PORTED	0002:00329c00 ?Release@XHVEngine@@QAGKXZ 00B19100 f i game_xbox.o
+254	PORTED	0002:00329c10 ?EnableProcessingMode@XHVEngine@@QAGJPAX@Z 00B19110 f i game_xbox.o
+255	PORTED	0002:00329c20 ?SetCallbackInterface@XHVEngine@@QAGJPAUITitleXHV@@@Z 00B19120 f i game_xbox.o
+256	PORTED	0002:00329c30 ?DoWork@XHVEngine@@QAGJXZ 00B19130 f i game_xbox.o
+257	PORTED	0002:00329c40 ?RegisterLocalTalker@XHVEngine@@QAGJK@Z 00B19140 f i game_xbox.o
+258	PORTED	0002:00329c50 ?SetProcessingMode@XHVEngine@@QAGJKPAX@Z 00B19150 f i game_xbox.o
+259	PORTED	0002:00329c60 ?RegisterRemoteTalker@XHVEngine@@QAGJU_XUID@@@Z 00B19160 f i game_xbox.o
+260	PORTED	0002:00329c90 ?UnregisterRemoteTalker@XHVEngine@@QAGJU_XUID@@@Z 00B19190 f i game_xbox.o
+261	PORTED	0002:00329cc0 ?SubmitIncomingVoicePacket@XHVEngine@@QAGJU_XUID@@PAXK@Z 00B191C0 f i game_xbox.o
+262	PORTED	0002:00329d00 ?IsTalking@XHVEngine@@QAGHU_XUID@@@Z 00B19200 f i game_xbox.o
+263	PORTED	0002:00329d30 ?SetMixBinMapping@XHVEngine@@QAGJU_XUID@@KPBU_DSMIXBINS@@@Z 00B19230 f i game_xbox.o
+264	PORTED	0002:00329d70 ?SetPlaybackPriority@XHVEngine@@QAGJU_XUID@@KK@Z 00B19270 f i game_xbox.o
+265	PORTED	0002:00329db0 ??0ITitlePlayersListItem@@QAE@XZ 00B192B0 f i game_xbox.o
+266	PORTED	0002:00329dc0 ?Mute@LiveRemote@@QAEXK_N@Z 00B192C0 f i game_xbox.o
+267	PORTED	0002:00329e60 ?SetMuted@LiveRemote@@QAEXK_N@Z 00B19360 f i game_xbox.o
+268	PORTED	0002:00329f00 ?IsMuting@LiveRemote@@QAE_NK@Z 00B19400 f i game_xbox.o
+269	PORTED	0002:00329f80 ?IsMutedBy@LiveRemote@@QAE_NK@Z 00B19480 f i game_xbox.o
+270	PORTED	0002:0032a000 ??0LiveTask@@QAE@XZ 00B19500 f i game_xbox.o
+271	PORTED	0002:0032a010 ?PumpTask@LiveTask@@QAEJXZ 00B19510 f i game_xbox.o
+272	PORTED	0002:0032a030 ?CloseTask@LiveTask@@QAEXXZ 00B19530 f i game_xbox.o
+273	PORTED	0002:0032a050 ?GetNotification@LiveWrapper@@QAE?AW4ELiveNotification@@XZ 00B19550 f i game_xbox.o
+274	PORTED	0002:0032a060 ?ClearNotification@LiveWrapper@@QAEXXZ 00B19560 f i game_xbox.o
+275	PORTED	0002:0032a070 ?GetActiveController@LiveWrapper@@QAEKXZ 00B19570 f i game_xbox.o
+276	PORTED	0002:0032a080 ?SetLastLoginCode@LiveWrapper@@QAEXJ@Z 00B19580 f i game_xbox.o
+277	PORTED	0002:0032a0a0 ?SetLoginMethod@LiveWrapper@@QAEXW4_UIX_LOGON_TYPE@@@Z 00B195A0 f i game_xbox.o
+278	PORTED	0002:0032a0c0 ?SetConfirmationFlag@LiveWrapper@@QAEX_N@Z 00B195C0 f i game_xbox.o
+279	PORTED	0002:0032a0e0 ?BootToDash@LiveWrapper@@QAEXXZ 00B195E0 f i game_xbox.o
+280	PORTED	0002:0032a0f0 ?ContinueFriendJoin@LiveWrapper@@QAEXXZ 00B195F0 f i game_xbox.o
+281	PORTED	0002:0032a100 ?SetUIXRender@LiveWrapper@@QAEX_N@Z 00B19600 f i game_xbox.o
+282	PORTED	0002:0032a120 ?SetInvited@MPLiveEngine@@QAEX_N@Z 00B19620 f i game_xbox.o
+283	PORTED	0002:0032a140 ?CloseUIXMenu@MPLiveEngine@@QAEXXZ 00B19640 f i game_xbox.o
+284	PORTED	0002:0032a150 ?SetSelectedFlashing@UIListBox@@QAEX_N@Z 00B19650 f i game_xbox.o
+285	PORTED	0002:0032a160 ??0ITitleXHV@@QAE@XZ 00B19660 f i game_xbox.o
+286	PORTED	0002:0032a170 ?SpeechRecognized@ITitleXHV@@UAGJKPAU_XHV_SR_ITEM@@K@Z 00B19670 f i game_xbox.o
+287	PORTED	0002:0032a180 ?MicrophoneRawDataReady@ITitleXHV@@UAGJKKPAXPAH@Z 00B19680 f i game_xbox.o
+288	PORTED	0002:0032a190 ?LogonCallBack@LiveWrapper@@MAEXXZ 00B19690 f i game_xbox.o
+289	PORTED	0002:0032a1a0 ?LogoffCallBack@LiveWrapper@@MAEXXZ 00B196A0 f i game_xbox.o
+290	PORTED	0002:0032a1b0 ?OpenFont@CTitleFontRenderer@@QAGJPBG@Z 00B196B0 f i game_xbox.o
+291	PORTED	0002:0032a1e0 ??0ITitleFontRenderer@@QAE@XZ 00B196E0 f i game_xbox.o
+292	PORTED	0002:0032a1f0 ??0QueryInterface@@QAE@XZ 00B196F0 f i game_xbox.o
+293	PORTED	0002:0032a200 ?SetVertexShaderConstantF@gpuD3DDevice@@QAEJIPBMI@Z 00B19700 f i game_xbox.o
+294	PORTED	0002:0032a240 ?Done@CDefaultQuery@@UBEHXZ 00B19740 f i game_xbox.o
+295	PORTED	0002:0032a260 ?Succeeded@CDefaultQuery@@UBEHXZ 00B19760 f i game_xbox.o
+296	PORTED	0002:0032a280 ?IsRunning@CDefaultQuery@@UBEHXZ 00B19780 f i game_xbox.o
+297	PORTED	0002:0032a2a0 ?IsProbing@CDefaultQuery@@UBEHXZ 00B197A0 f i game_xbox.o
+298	PORTED	0002:0032a2c0 ?SetPixelShader@gpuD3DDevice@@QAEJPAK@Z 00B197C0 f i game_xbox.o
+299	PORTED	0002:0032a2e0 ?SetIndices@gpuD3DDevice@@QAEJPAUD3DIndexBuffer@@I@Z 00B197E0 f i game_xbox.o
+300	PORTED	0002:0032a300 ?gpuSetVertexConstant@@YAXHABVVector4@math@@@Z 00B19800 f i game_xbox.o
+301	PORTED	0002:0032a320 ?gpuClearVertexBuffer@@YAXXZ 00B19820 f i game_xbox.o
+302	PORTED	0002:0032a340 ?gpuClearIndexBuffer@@YAXXZ 00B19840 f i game_xbox.o
+303	VERIFIED	0002:0032a360 ?addRef@bdReferencable@@QAEHXZ 00B19860 f i game_xbox.o
+304	VERIFIED	0002:0032a370 ?releaseRef@bdReferencable@@QAEHXZ 00B19870 f i game_xbox.o
+305	VERIFIED	0002:0032a380 ?writeBool@bdBitBuffer@@QAE_N_N@Z 00B19880 f i game_xbox.o
+306	VERIFIED	0002:0032a3e0 ?nglDxUnbindVertexBuffer@@YAXXZ 00B198E0 f i game_xbox.o
+307	PORTED	0002:0032a420 ??2bdMessage@@SAPAXI@Z 00B19920 f i game_xbox.o
+308	PORTED	0002:0032a430 ??3bdMessage@@SAXPAX@Z 00B19930 f i game_xbox.o
+309	PORTED	0002:0032a440 ?GetXUID@MPPlayer@@QBE?AU_XUID@@XZ 00B19940 f i game_xbox.o
+310	VERIFIED	0002:0032a470 ??0MPPlayerSet@@QAE@XZ 00B19970 f i game_xbox.o
+311	PORTED	0002:0032a480 ?set@MPPlayerSet@@QAEXK@Z 00B19980 f i game_xbox.o
+312	VERIFIED	0002:0032a500 ??0MPPlayerSet@@QAE@ABV0@@Z 00B19A00 f i game_xbox.o
+313	VERIFIED	0002:0032a580 ?containsPlayer@MPPlayerSet@@QBEIK@Z 00B19A80 f i game_xbox.o
+314	PORTED	0002:0032a600 ?GetViewOnlineStatus@MPUIInterface@@SA_NXZ 00B19B00 f i game_xbox.o
+315	PORTED	0002:0032a610 ?FriendJoinInProgress@MPUIInterface@@SA_NXZ 00B19B10 f i game_xbox.o
+316	PORTED	0002:0032a640 ?SetAcceptMenu@OverlayMenuBase@@QAEXH@Z 00B19B40 f i game_xbox.o
+317	PORTED	0002:0032a650 ?SetBackMenu@OverlayMenuBase@@QAEXH@Z 00B19B50 f i game_xbox.o
+318	PORTED	0002:0032a660 ?SetGameListingNum@OverlayMenu@@QAEXH@Z 00B19B60 f i game_xbox.o
+319	PORTED	0002:0032a670 ?ResponseYesJoin@InGameLiveOptionsMenu@@KA_NH@Z 00B19B70 f i game_xbox.o
+320	PORTED	0002:0032a690 ?ResponseNoJoin@InGameLiveOptionsMenu@@KA_NH@Z 00B19B90 f i game_xbox.o
+321	PORTED	0002:0032a6a0 ?Init@InGameLiveOptionsMenu@@UAEXXZ 00B19BA0 f i game_xbox.o
+322	VERIFIED	0002:0032a6b0 ??A?$ae_array@PAVPanelQuad@@$02@@QAEAAPAVPanelQuad@@H@Z 00B19BB0 f i game_xbox.o
+323	VERIFIED	0002:0032a730 ??A?$ae_array@PAVFEText@@$04@@QAEAAPAVFEText@@H@Z 00B19C30 f i game_xbox.o
+324	VERIFIED	0002:0032a7b0 ??A?$ae_array@PAVPanelQuad@@$03@@QAEAAPAVPanelQuad@@H@Z 00B19CB0 f i game_xbox.o
+325	VERIFIED	0002:0032a830 ??A?$ae_array@Vcolor32@@$04@@QAEAAVcolor32@@H@Z 00B19D30 f i game_xbox.o
+326	PORTED	0002:0032a8b0 ??1?$bdReference@VbdBitBuffer@@@@QAE@XZ 00B19DB0 f i game_xbox.o
+327	PORTED	0002:0032a8e0 ??C?$bdReference@VbdBitBuffer@@@@QAEPAVbdBitBuffer@@XZ 00B19DE0 f i game_xbox.o
+328	PORTED	0002:0032a8f0 ??0?$bdReference@VbdMessage@@@@QAE@ABV0@@Z 00B19DF0 f i game_xbox.o
+329	VERIFIED	0002:0032a910 ??0?$bdReference@VbdMessage@@@@QAE@PAVbdMessage@@@Z 00B19E10 f i game_xbox.o
+330	PORTED	0002:0032a930 ??1?$bdReference@VbdMessage@@@@QAE@XZ 00B19E30 f i game_xbox.o
+331	PORTED	0002:0032a960 ??C?$bdReference@VbdMessage@@@@QAEPAVbdMessage@@XZ 00B19E60 f i game_xbox.o
+332	PORTED	0002:0032a970 ??$writeFull@U_XUID@@@bdBitBuffer@@QAEXABU_XUID@@@Z 00B19E70 f i game_xbox.o
+333	PORTED	0002:0032a9a0 ??$writeFull@W4_UIX_VOICE_STATUS_TYPE@@@bdBitBuffer@@QAEXABW4_UIX_VOICE_STATUS_TYPE@@@Z 00B19EA0 f i game_xbox.o
+334	VERIFIED	0002:0032a9d0 ?TimeGameAdvanceBegin@TimerRenderBars@@QAEXXZ 00B19ED0 f i game_xbox.o
+335	PORTED	0002:0032aa10 ??4CBlob@@QAEAAV0@ABV0@@Z 00B19F10 f i game_xbox.o
+336	PORTED	0002:0032aa30 ??0LivePlayer@@QAE@XZ 00B19F30 f i game_xbox.o
+337	PORTED	0002:0032aa80 ?Compare@ITitlePlayersListItem@@UBGHPBU1@@Z 00B19F80 f i game_xbox.o
+338	PORTED	0002:0032aa90 ?GetBitflags@LivePlayer@@UBGKXZ 00B19F90 f i game_xbox.o
+339	PORTED	0002:0032aaa0 ?GetName@LivePlayer@@UBGPBGXZ 00B19FA0 f i game_xbox.o
+340	PORTED	0002:0032aab0 ?GetVoiceStatus@LivePlayer@@UBG?AW4_UIX_VOICE_STATUS_TYPE@@XZ 00B19FB0 f i game_xbox.o
+341	PORTED	0002:0032aac0 ?GetXUID@LivePlayer@@UBGPBU_XUID@@XZ 00B19FC0 f i game_xbox.o
+342	PORTED	0002:0032aad0 ??0LiveRemote@@QAE@XZ 00B19FD0 f i game_xbox.o
+343	PORTED	0002:0032ab70 ??0LiveLocal@@QAE@XZ 00B1A070 f i game_xbox.o
+344	VERIFIED	0002:0032abd0 ?SetColumnSelectable@UIListBox@@QAEXH_N@Z 00B1A0D0 f i game_xbox.o
+345	PORTED	0002:0032ac60 ??0CTitleFontRenderer@@QAE@XZ 00B1A160 f i game_xbox.o
+346	PORTED	0002:0032ac80 ?DrawText@CTitleFontRenderer@@UAGJPBGKKK@Z 00B1A180 f i game_xbox.o
+347	PORTED	0002:0032acc0 ?GetTextSize@CTitleFontRenderer@@UAGJPBGPAK1@Z 00B1A1C0 f i game_xbox.o
+348	PORTED	0002:0032ad00 ?SetColor@CTitleFontRenderer@@UAGJK@Z 00B1A200 f i game_xbox.o
+349	PORTED	0002:0032ad20 ?SetHeight@CTitleFontRenderer@@UAGJK@Z 00B1A220 f i game_xbox.o
+350	PORTED	0002:0032ad40 ?Release@CTitleFontRenderer@@UAGKXZ 00B1A240 f i game_xbox.o
+351	PORTED	0002:0032ad80 ?Done@CFromIDQuery@@UBEHXZ 00B1A280 f i game_xbox.o
+352	PORTED	0002:0032ada0 ?Succeeded@CFromIDQuery@@UBEHXZ 00B1A2A0 f i game_xbox.o
+353	PORTED	0002:0032adc0 ?IsRunning@CFromIDQuery@@UBEHXZ 00B1A2C0 f i game_xbox.o
+354	PORTED	0002:0032ade0 ?IsProbing@CFromIDQuery@@UBEHXZ 00B1A2E0 f i game_xbox.o
+355	PORTED	0002:0032ae00 ??0MPPlayerSet@@QAE@K@Z 00B1A300 f i game_xbox.o
+356	VERIFIED	0002:0032ae20 ??0?$ae_array@Vcolor32@@$04@@QAE@XZ 00B1A320 f i game_xbox.o
+357	VERIFIED	0002:0032ae60 ??_GInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
+358	VERIFIED	0002:0032ae60 ??_EInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
+359	PORTED	0002:0032ae90 ??0CBlob@@QAE@ABV0@@Z 00B1A390 f i game_xbox.o
+360	PORTED	0002:0032aeb0 ?GetVoiceDataSize@MPLiveEngine@@UAEKABU_XUID@@@Z 00B1A3B0 f i game_xbox.o
+361	PORTED	0002:0032aec0 ?GetVoiceData@MPLiveEngine@@UAEKABU_XUID@@PAX@Z 00B1A3C0 f i game_xbox.o
+362	PORTED	0002:0032aed0 ??_EMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o
+363	PORTED	0002:0032aed0 ??_GMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o
+364	VERIFIED	0002:0032af00 ??_EXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o
+365	VERIFIED	0002:0032af00 ??_GXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o

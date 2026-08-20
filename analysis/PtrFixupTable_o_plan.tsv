@@ -1,0 +1,2 @@
+ida_ea	name	signature	source_cpp
+0x007E18D0	?Fixup@PtrFixupTable@@QAEXPBX@Z	public: void __thiscall PtrFixupTable::Fixup(void const *)	

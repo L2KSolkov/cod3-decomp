@@ -1,0 +1,11 @@
+ida_ea	name	signature	source_cpp
+0x00884DA0	?set_wheel_state_accelerating@rigid_body_constraint_wheel@@QAEXMM@Z	public: void __thiscall rigid_body_constraint_wheel::set_wheel_state_accelerating(float,float)	
+0x00884DD0	?set_wheel_state_braking@rigid_body_constraint_wheel@@QAEXM@Z	public: void __thiscall rigid_body_constraint_wheel::set_wheel_state_braking(float)	
+0x00884DF0	?set_no_collision@rigid_body_constraint_wheel@@QAEXXZ	public: void __thiscall rigid_body_constraint_wheel::set_no_collision(void)	
+0x00884E00	?set_collision@rigid_body_constraint_wheel@@QAEXQAVrigid_body@@ABVDir3@math@@1@Z	public: void __thiscall rigid_body_constraint_wheel::set_collision(class rigid_body * const,class math::Dir3 const &,class math::Dir3 const &)	
+0x00884E50	?lerp_float@@YAMMMMM@Z	float __cdecl lerp_float(float,float,float,float)	
+0x00884EC0	?set@rigid_body_constraint_wheel@@QAEXABVDir3@math@@00MMMMMMM@Z	public: void __thiscall rigid_body_constraint_wheel::set(class math::Dir3 const &,class math::Dir3 const &,class math::Dir3 const &,float,float,float,float,float,float,float)	
+0x00884FE0	?get_wheel_collide_segment@rigid_body_constraint_wheel@@QBEXABVMat43@math@@QAVDir3@3@1@Z	public: void __thiscall rigid_body_constraint_wheel::get_wheel_collide_segment(class math::Mat43 const &,class math::Dir3 * const,class math::Dir3 * const)const 	
+0x008850F0	?do_collision@rigid_body_constraint_wheel@@QAEXM@Z	public: void __thiscall rigid_body_constraint_wheel::do_collision(float)	
+0x00885200	?epilog_vel_constraint@rigid_body_constraint_wheel@@QAEXM@Z	public: void __thiscall rigid_body_constraint_wheel::epilog_vel_constraint(float)	
+0x008854D0	?setup_constraint@rigid_body_constraint_wheel@@QAEXPAVpulse_sum_constraint_solver@@M@Z	public: void __thiscall rigid_body_constraint_wheel::setup_constraint(class pulse_sum_constraint_solver *,float)	

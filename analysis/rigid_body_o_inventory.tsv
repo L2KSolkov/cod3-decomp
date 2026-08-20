@@ -1,0 +1,8 @@
+ida_ea	va	name	signature	family
+0x00886180	0x00C75680	?set_mass@rigid_body@@QAEXM@Z	public: void __thiscall rigid_body::set_mass(float)	rigid_body.o
+0x00886200	0x00C75700	?set@user_rigid_body@@QAEXQBVMat43@math@@@Z	public: void __thiscall user_rigid_body::set(class math::Mat43 const * const)	rigid_body.o
+0x008863B0	0x00C758B0	?set_inertia@rigid_body@@QAEXABVDir3@math@@@Z	public: void __thiscall rigid_body::set_inertia(class math::Dir3 const &)	rigid_body.o
+0x00886550	0x00C75A50	?set@rigid_body@@QAEXMABVDir3@math@@ABVMat43@3@00MH@Z	public: void __thiscall rigid_body::set(float,class math::Dir3 const &,class math::Mat43 const &,class math::Dir3 const &,class math::Dir3 const &,float,int)	rigid_body.o
+0x008869B0	0x00C75EB0	?update_col_mat@rigid_body@@QAEXXZ	public: void __thiscall rigid_body::update_col_mat(void)	rigid_body.o
+0x00886A00	0x00C75F00	?add_force@rigid_body@@QAEXABVDir3@math@@0M@Z	public: void __thiscall rigid_body::add_force(class math::Dir3 const &,class math::Dir3 const &,float)	rigid_body.o
+0x00886C00	0x00C76100	?set@environment_rigid_body@@QAEXXZ	public: void __thiscall environment_rigid_body::set(void)	rigid_body.o

@@ -1,0 +1,34 @@
+index	status	map_line
+1	PORTED	0002:004435d0 ?Max@math@@YAMMM@Z 00C32AD0 f i ngl_mesh.o
+2	PORTED	0002:00443600 ?Empty@nglShaderParamSet@@SAAAU1@XZ 00C32B00 f i ngl_mesh.o
+3	VERIFIED	0002:00443610 ?nglCanReleaseMesh@@YA_NPAUnglMesh@@@Z 00C32B10 f ngl_mesh.o
+4	VERIFIED	0002:00443630 ?nglProcessMaterial@@YAXPAUnglMaterial@@@Z 00C32B30 f ngl_mesh.o
+5	VERIFIED	0002:004436f0 ?nglProcessSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAVapkFileEntry@apk@@@Z 00C32BF0 f ngl_mesh.o
+6	VERIFIED	0002:00443780 ?nglProcessMesh@@YAXPAUnglMesh@@PAVapkFileEntry@apk@@@Z 00C32C80 f ngl_mesh.o
+7	VERIFIED	0002:004437e0 ?nglUnloadMesh@@YAXPAUnglMesh@@@Z 00C32CE0 f ngl_mesh.o
+8	VERIFIED	0002:00443830 ?nglGetLOD@@YAIPAUnglMesh@@ABVMat43@math@@PAUnglScene@@@Z 00C32D30 f ngl_mesh.o
+9	VERIFIED	0002:00443a20 ?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@PAM@Z 00C32F20 f ngl_mesh.o
+10	VERIFIED	0002:00443b90 ?nglListAddMesh_Sections@@YAPAVnglMeshNode@@PAUnglMesh@@PAV1@@Z 00C33090 f ngl_mesh.o
+11	VERIFIED	0002:00443c50 ?nglListAddMesh_Setup@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@P6AXPAV1@@Z@Z 00C33150 f ngl_mesh.o
+12	VERIFIED	0002:00444250 ?nglListAddMesh@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@P6AXPAV1@@Z@Z 00C33750 f ngl_mesh.o
+13	VERIFIED	0002:00444290 ?nglAPKMeshLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C33790 f ngl_mesh.o
+14	VERIFIED	0002:00444310 ?nglAPKMeshDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C33810 f ngl_mesh.o
+15	VERIFIED	0002:00444380 ?nglAPKMaterialLoadCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C33880 f ngl_mesh.o
+16	VERIFIED	0002:004443e0 ?nglAPKMaterialDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C338E0 f ngl_mesh.o
+17	VERIFIED	0002:00444420 ?nglMeshInit@@YAXXZ 00C33920 f ngl_mesh.o
+18	VERIFIED	0002:00444530 ?nglGetMesh@@YAPAUnglMesh@@ABVtlFixedString@@_N@Z 00C33A30 f ngl_mesh.o
+19	VERIFIED	0002:00444580 ?nglGetMaterial@@YAPAUnglMaterial@@ABVtlFixedString@@_N@Z 00C33A80 f ngl_mesh.o
+20	PORTED	0002:004445d0 ??0nglEmptyShader@@QAE@XZ 00C33AD0 f i ngl_mesh.o
+21	PORTED	0002:00444600 ?GetName@nglEmptyShader@@UAE?AVtlFixedString@@XZ 00C33B00 f i ngl_mesh.o
+22	PORTED	0002:00444620 ?AddNode@nglEmptyShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00C33B20 f i ngl_mesh.o
+23	PORTED	0002:00444630 ?Register@nglEmptyShader@@UAEXXZ 00C33B30 f i ngl_mesh.o
+24	PORTED	0002:00444650 ??1nglEmptyShader@@UAE@XZ 00C33B50 f i ngl_mesh.o
+25	PORTED	0002:00444660 ??_EnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o
+26	PORTED	0002:00444660 ??_GnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o
+27	PORTED	0002:00444690 ??4nglMeshParams@@QAEAAV0@ABV0@@Z 00C33B90 f i ngl_mesh.o
+28	VERIFIED	0002:004446c0 ??0?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33BC0 f i ngl_mesh.o
+29	VERIFIED	0002:004446e0 ??0?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33BE0 f i ngl_mesh.o
+30	PORTED	0002:00444700 ?NewNodeOfLevel@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C00 f i ngl_mesh.o
+31	PORTED	0002:00444730 ?NewNodeOfLevel@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C30 f i ngl_mesh.o
+32	PORTED	0002:00444760 ??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33C60 f i ngl_mesh.o
+33	PORTED	0002:00444770 ??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33C70 f i ngl_mesh.o

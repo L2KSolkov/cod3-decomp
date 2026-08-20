@@ -1,0 +1,1041 @@
+index	status	map_line
+1	PORTED	0002:000ea9a0 ?Center@apsSphere@@QAEAAUPacked@Dir3@math@@XZ 008D9EA0 f i game2.o
+2	VERIFIED	0002:000ea9b0 ?SetSplineCallback@apsCommon@@SAXP6APAMI@Z@Z 008D9EB0 f i game2.o
+3	PORTED	0002:000ea9c0 ?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ 008D9EC0 f i game2.o
+4	PORTED	0002:000ea9d0 ?get_dlist_node@Task@@QAEPAXXZ 008D9ED0 f i game2.o
+5	PORTED	0002:000ea9e0 ?get_dlist_node_offset@Task@@SAHXZ 008D9EE0 f i game2.o
+6	PORTED	0002:000ea9f0 ?GetId@Task@@QBE?AVFourCC@@XZ 008D9EF0 f i game2.o
+7	PORTED	0002:000eaa10 ?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D9F10 f i game2.o
+8	PORTED	0002:000eaa30 ?GetTaskHandle@Task@@QBE?AVHandle@@XZ 008D9F30 f i game2.o
+9	PORTED	0002:000eaa50 ?get_dlist_node_offset@AeThreadState@@SAHXZ 008D9F50 f i game2.o
+10	VERIFIED	0002:000eaa60 ?button_pressed_clear_all@controller@@QAEXH@Z 008D9F60 f i game2.o
+11	VERIFIED	0002:000eaa90 ?set_locked_port@controller@@QAEXH@Z 008D9F90 f i game2.o
+12	VERIFIED	0002:000eaab0 ?unlock_port@controller@@QAEXXZ 008D9FB0 f i game2.o
+13	PORTED	0002:000eaac0 ??0FourCC@@QAE@H@Z 008D9FC0 f i game2.o
+14	VERIFIED	0002:000eaae0 ??0tlFixedString@@QAE@ABV0@@Z 008D9FE0 f i game2.o
+15	VERIFIED	0002:000eab30 ??8tlFixedString@@QBE_NABV0@@Z 008DA030 f i game2.o
+16	PORTED	0002:000eab70 ??9tlFixedString@@QBE_NABV0@@Z 008DA070 f i game2.o
+17	PORTED	0002:000eabb0 ?c_str@tlFixedString@@QBEPBDXZ 008DA0B0 f i game2.o
+18	PORTED	0002:000eabc0 ?get_dlist_node_offset@AeThread@@SAHXZ 008DA0C0 f i game2.o
+19	PORTED	0002:000eabd0 ?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DA0D0 f i game2.o
+20	VERIFIED	0002:000eabf0 ?SetX@Dir3@math@@QAEXM@Z 008DA0F0 f i game2.o
+21	VERIFIED	0002:000eac30 ?SetY@Dir3@math@@QAEXM@Z 008DA130 f i game2.o
+22	PORTED	0002:000eac70 ??2ScriptEventHandler@@SAPAXI_NPBDH@Z 008DA170 f i game2.o
+23	PORTED	0002:000eac90 ??3ScriptEventHandler@@SAXPAX_NPBDH@Z 008DA190 f i game2.o
+24	PORTED	0002:000eacb0 ??3ScriptEventHandler@@SAXPAX@Z 008DA1B0 f i game2.o
+25	PORTED	0002:000eacd0 ?Set@Packed@Position3@math@@QAEXABV23@@Z 008DA1D0 f i game2.o
+26	PORTED	0002:000ead60 ?GetX@Packed@Position3@math@@QBEMXZ 008DA260 f i game2.o
+27	PORTED	0002:000ead70 ?GetY@Packed@Position3@math@@QBEMXZ 008DA270 f i game2.o
+28	PORTED	0002:000ead80 ?GetZ@Packed@Position3@math@@QBEMXZ 008DA280 f i game2.o
+29	PORTED	0002:000ead90 ??4Packed@Position3@math@@QAEABU012@ABV12@@Z 008DA290 f i game2.o
+30	PORTED	0002:000eae20 ??0Packed@Position3@math@@QAE@XZ 008DA320 f i game2.o
+31	VERIFIED	0002:000eae30 ?SetX@Vector4@math@@QAEXM@Z 008DA330 f i game2.o
+32	VERIFIED	0002:000eae70 ?SetY@Vector4@math@@QAEXM@Z 008DA370 f i game2.o
+33	VERIFIED	0002:000eaeb0 ?SetZ@Vector4@math@@QAEXM@Z 008DA3B0 f i game2.o
+34	VERIFIED	0002:000eaef0 ?SetW@Vector4@math@@QAEXM@Z 008DA3F0 f i game2.o
+35	PORTED	0002:000eaf30 ??AVector4@math@@QAEAAMI@Z 008DA430 f i game2.o
+36	PORTED	0002:000eaf40 ??AVector4@math@@QBEABMI@Z 008DA440 f i game2.o
+37	PORTED	0002:000eaf50 ??4Dir3@math@@QAEABV01@ABVVector4@1@@Z 008DA450 f i game2.o
+38	PORTED	0002:000eaf70 ??4Vector4@math@@QAEABV01@ABVDir3@1@@Z 008DA470 f i game2.o
+39	PORTED	0002:000eafb0 ?RepeatX@math@@YA?AVVector4@1@ABV21@@Z 008DA4B0 f i game2.o
+40	PORTED	0002:000eaff0 ?RepeatY@math@@YA?AVVector4@1@ABV21@@Z 008DA4F0 f i game2.o
+41	PORTED	0002:000eb030 ?RepeatZ@math@@YA?AVVector4@1@ABV21@@Z 008DA530 f i game2.o
+42	PORTED	0002:000eb070 ?RepeatW@math@@YA?AVVector4@1@ABV21@@Z 008DA570 f i game2.o
+43	PORTED	0002:000eb0b0 ??Hmath@@YA?AVDir3@0@ABV10@0@Z 008DA5B0 f i game2.o
+44	PORTED	0002:000eb0f0 ??Gmath@@YA?AVDir3@0@ABV10@0@Z 008DA5F0 f i game2.o
+45	PORTED	0002:000eb130 ?Dot@math@@YAMABVDir3@1@0@Z 008DA630 f i game2.o
+46	PORTED	0002:000eb190 ??YDir3@math@@QAEABV01@ABV01@@Z 008DA690 f i game2.o
+47	PORTED	0002:000eb1d0 ??XDir3@math@@QAEABV01@M@Z 008DA6D0 f i game2.o
+48	PORTED	0002:000eb210 ??YVector4@math@@QAEABV01@ABV01@@Z 008DA710 f i game2.o
+49	PORTED	0002:000eb250 ??XVector4@math@@QAEABV01@M@Z 008DA750 f i game2.o
+50	PORTED	0002:000eb290 ??_0Vector4@math@@QAEABV01@M@Z 008DA790 f i game2.o
+51	PORTED	0002:000eb2d0 ?Normalize@math@@YA?AVDir3@1@ABV21@@Z 008DA7D0 f i game2.o
+52	PORTED	0002:000eb350 ?Vector4_Zero@math@@YA?AVVector4@1@XZ 008DA850 f i game2.o
+53	PORTED	0002:000eb390 ?get_dlist_node@QuickTaskDeactivation@@QAEPAXXZ 008DA890 f i game2.o
+54	PORTED	0002:000eb3a0 ?get_dlist_node_offset@QuickTaskDeactivation@@SAHXZ 008DA8A0 f i game2.o
+55	PORTED	0002:000eb3b0 ?GetHandle@QuickTaskDeactivation@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DA8B0 f i game2.o
+56	PORTED	0002:000eb3d0 ?GetX@Mat33@math@@QAEAAVDir3@2@XZ 008DA8D0 f i game2.o
+57	PORTED	0002:000eb3e0 ?GetY@Mat33@math@@QAEAAVDir3@2@XZ 008DA8E0 f i game2.o
+58	PORTED	0002:000eb3f0 ?GetZ@Mat33@math@@QAEAAVDir3@2@XZ 008DA8F0 f i game2.o
+59	PORTED	0002:000eb400 ?GetId@TaskHandler@@QBE?AVFourCC@@XZ 008DA900 f i game2.o
+60	PORTED	0002:000eb420 ??AMat33@math@@QAEAAVDir3@1@I@Z 008DA920 f i game2.o
+61	PORTED	0002:000eb440 ?Init@ButtonEntry@@QAEXXZ 008DA940 f i game2.o
+62	PORTED	0002:000eb450 ?GetKeyInfoIndex@ButtonEntry@@QBEEXZ 008DA950 f i game2.o
+63	PORTED	0002:000eb460 ?IsActive@InspectorManager@@QAEHXZ 008DA960 f i game2.o
+64	PORTED	0002:000eb470 ?SetW@Mat44@math@@QAEXABVVector4@2@@Z 008DA970 f i game2.o
+65	PORTED	0002:000eb4a0 ??AMat44@math@@QAEAAVVector4@1@I@Z 008DA9A0 f i game2.o
+66	PORTED	0002:000eb4c0 ??AMat44@math@@QBEABVVector4@1@I@Z 008DA9C0 f i game2.o
+67	VERIFIED	0002:000eb4e0 ??0Mat44@math@@QAE@ABV01@@Z 008DA9E0 f i game2.o
+68	PORTED	0002:000eb580 ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat44@1@@Z 008DAA80 f i game2.o
+69	PORTED	0002:000eb5f0 ??Dmath@@YA?AVDir3@0@ABV10@ABVMat44@0@@Z 008DAAF0 f i game2.o
+70	PORTED	0002:000eb660 ?Mul@math@@YA?AVVector4@1@ABV21@ABVMat44@1@@Z 008DAB60 f i game2.o
+71	PORTED	0002:000eb6f0 ??Dmath@@YA?AVVector4@0@ABV10@ABVMat44@0@@Z 008DABF0 f i game2.o
+72	PORTED	0002:000eb780 ?GetMinValue@Sound@SoundDevice@@QAEMXZ 008DAC80 f i game2.o
+73	PORTED	0002:000eb790 ?GetMaxValue@Sound@SoundDevice@@QAEMXZ 008DAC90 f i game2.o
+74	PORTED	0002:000eb7a0 ?GetEntHdl@Sound@SoundDevice@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DACA0 f i game2.o
+75	PORTED	0002:000eb7c0 ?GetCurrentReverb@SoundDevice@@QAEPAUnslEffect@@XZ 008DACC0 f i game2.o
+76	PORTED	0002:000eb7d0 ?Mul@math@@YA?AVMat44@1@ABV21@0@Z 008DACD0 f i game2.o
+77	PORTED	0002:000eba00 ??Dmath@@YA?AVMat44@0@ABV10@0@Z 008DAF00 f i game2.o
+78	PORTED	0002:000ebc30 ??XMat44@math@@QAEABV01@ABV01@@Z 008DB130 f i game2.o
+79	PORTED	0002:000ebe10 ?LockPort@MPLiveEngine@@QAEXK@Z 008DB310 f i game2.o
+80	PORTED	0002:000ebe30 ?InGameMenusActive@FEManager@@QAE_NH@Z 008DB330 f i game2.o
+81	PORTED	0002:000ebe60 ?Controller_LockPort@@YAXH@Z 008DB360 f game2.o
+82	PORTED	0002:000ebea0 ?Controller_UnlockPort@@YAXXZ 008DB3A0 f game2.o
+83	VERIFIED	0002:000ebeb0 ?IN_Shutdown@@YAXXZ 008DB3B0 f game2.o
+84	VERIFIED	0002:000ebec0 ?RecalibrateInput@@YAHH@Z 008DB3C0 f game2.o
+85	VERIFIED	0002:000ebf20 ?EventAllKeysReleased@@YAXH@Z 008DB420 f game2.o
+86	VERIFIED	0002:000ebff0 ??1TestFPS@@QAE@XZ 008DB4F0 f game2.o
+87	PORTED	0002:000ec020 ?GetPath@TestFPS@@AAEXPAD@Z 008DB520 f game2.o
+88	PORTED	0002:000ec050 ?ResetKeys@InspectorManager@@AAEXXZ 008DB550 f game2.o
+89	PORTED	0002:000ec090 ?ReadKeys@InspectorManager@@AAEXXZ 008DB590 f game2.o
+90	VERIFIED	0002:000ec260 ?AddSubMenu@InspectorManager@@QAEPAU_INSPECTOR_MENU@@PAU2@PAD@Z 008DB760 f game2.o
+91	VERIFIED	0002:000ec3b0 ?AddItem@InspectorManager@@QAEPAU_INSPECTOR_MENU_ITEM@@PAU_INSPECTOR_MENU@@PADPAXH@Z 008DB8B0 f game2.o
+92	PORTED	0002:000ec490 ?FreeSubMenu@InspectorManager@@AAEXPAU_INSPECTOR_MENU@@@Z 008DB990 f game2.o
+93	VERIFIED	0002:000ec530 ?UpdateInput@InspectorManager@@QAEXXZ 008DBA30 f game2.o
+94	VERIFIED	0002:000ec550 ?ProfilerUpdate@InspectorManager@@QAEXXZ 008DBA50 f game2.o
+95	PORTED	0002:000ec560 ?RenderStart@InspectorManager@@AAEHXZ 008DBA60 f game2.o
+96	PORTED	0002:000ec570 ?RenderFinish@InspectorManager@@AAEXXZ 008DBA70 f game2.o
+97	VERIFIED	0002:000ec580 ?RenderSetStates@InspectorManager@@QAEXXZ 008DBA80 f game2.o
+98	VERIFIED	0002:000ec590 ?RenderRestoreStates@InspectorManager@@QAEXXZ 008DBA90 f game2.o
+99	VERIFIED	0002:000ec5a0 ?SetFontColor@InspectorManager@@QAEXMMMM@Z 008DBAA0 f game2.o
+100	VERIFIED	0002:000ec5d0 ?Print@InspectorManager@@QAEXPADHHM@Z 008DBAD0 f game2.o
+101	VERIFIED	0002:000ec690 ?GetTextSize@InspectorManager@@QAEXPADPAH1M@Z 008DBB90 f game2.o
+102	VERIFIED	0002:000ec6d0 ?TakeCubeMapShot@@YAXXZ 008DBBD0 f game2.o
+103	PORTED	0002:000ec6e0 ?PlayRumble@@YAXXZ 008DBBE0 f game2.o
+104	VERIFIED	0002:000ec720 ?AddRenderMenus@InspectorManager@@QAEXXZ 008DBC20 f game2.o
+105	VERIFIED	0002:000ec8a0 ?AddPhysicsMenus@InspectorManager@@QAEXXZ 008DBDA0 f game2.o
+106	VERIFIED	0002:000ec8d0 ?reticleCenterSize_Function@weaponFuncs@@YAHH@Z 008DBDD0 f game2.o
+107	VERIFIED	0002:000ec900 ?reticleSideSize_Function@weaponFuncs@@YAHH@Z 008DBE00 f game2.o
+108	VERIFIED	0002:000ec930 ?reticleMinOfs_Function@weaponFuncs@@YAHH@Z 008DBE30 f game2.o
+109	PORTED	0002:000ec960 ?duckedOfsF_Function@weaponFuncs@@YAMM@Z 008DBE60 f game2.o
+110	PORTED	0002:000ec9a0 ?duckedOfsR_Function@weaponFuncs@@YAMM@Z 008DBEA0 f game2.o
+111	PORTED	0002:000ec9e0 ?duckedOfsU_Function@weaponFuncs@@YAMM@Z 008DBEE0 f game2.o
+112	PORTED	0002:000eca20 ?proneOfsF_Function@weaponFuncs@@YAMM@Z 008DBF20 f game2.o
+113	PORTED	0002:000eca60 ?proneOfsR_Function@weaponFuncs@@YAMM@Z 008DBF60 f game2.o
+114	PORTED	0002:000ecaa0 ?proneOfsU_Function@weaponFuncs@@YAMM@Z 008DBFA0 f game2.o
+115	PORTED	0002:000ecae0 ?standMoveF_Function@weaponFuncs@@YAMM@Z 008DBFE0 f game2.o
+116	PORTED	0002:000ecb20 ?standMoveR_Function@weaponFuncs@@YAMM@Z 008DC020 f game2.o
+117	PORTED	0002:000ecb60 ?standMoveU_Function@weaponFuncs@@YAMM@Z 008DC060 f game2.o
+118	PORTED	0002:000ecba0 ?duckedMoveF_Function@weaponFuncs@@YAMM@Z 008DC0A0 f game2.o
+119	PORTED	0002:000ecbe0 ?duckedMoveR_Function@weaponFuncs@@YAMM@Z 008DC0E0 f game2.o
+120	PORTED	0002:000ecc20 ?duckedMoveU_Function@weaponFuncs@@YAMM@Z 008DC120 f game2.o
+121	PORTED	0002:000ecc60 ?proneMoveF_Function@weaponFuncs@@YAMM@Z 008DC160 f game2.o
+122	PORTED	0002:000ecca0 ?proneMoveR_Function@weaponFuncs@@YAMM@Z 008DC1A0 f game2.o
+123	PORTED	0002:000ecce0 ?proneMoveU_Function@weaponFuncs@@YAMM@Z 008DC1E0 f game2.o
+124	PORTED	0002:000ecd20 ?proneRotP_Function@weaponFuncs@@YAMM@Z 008DC220 f game2.o
+125	PORTED	0002:000ecd60 ?proneRotY_Function@weaponFuncs@@YAMM@Z 008DC260 f game2.o
+126	PORTED	0002:000ecda0 ?proneRotR_Function@weaponFuncs@@YAMM@Z 008DC2A0 f game2.o
+127	PORTED	0002:000ecde0 ?standMoveMinSpeed_Function@weaponFuncs@@YAMM@Z 008DC2E0 f game2.o
+128	PORTED	0002:000ece20 ?duckedMoveMinSpeed_Function@weaponFuncs@@YAMM@Z 008DC320 f game2.o
+129	PORTED	0002:000ece60 ?proneMoveMinSpeed_Function@weaponFuncs@@YAMM@Z 008DC360 f game2.o
+130	PORTED	0002:000ecea0 ?posProneRotRate_Function@weaponFuncs@@YAMM@Z 008DC3A0 f game2.o
+131	PORTED	0002:000ecee0 ?proneRotMinSpeed_Function@weaponFuncs@@YAMM@Z 008DC3E0 f game2.o
+132	VERIFIED	0002:000ecf20 ?damage_Function@weaponFuncs@@YAHH@Z 008DC420 f game2.o
+133	VERIFIED	0002:000ecf50 ?meleeDamage_Function@weaponFuncs@@YAHH@Z 008DC450 f game2.o
+134	PORTED	0002:000ecf80 ?sensitivityScale_Function@weaponFuncs@@YAMM@Z 008DC480 f game2.o
+135	VERIFIED	0002:000ecfc0 ?damageInnerRadius_Function@weaponFuncs@@YAHH@Z 008DC4C0 f game2.o
+136	VERIFIED	0002:000ecff0 ?damageOuterRadius_Function@weaponFuncs@@YAHH@Z 008DC4F0 f game2.o
+137	VERIFIED	0002:000ed020 ?minDamagePercent_Function@weaponFuncs@@YAHH@Z 008DC520 f game2.o
+138	VERIFIED	0002:000ed050 ?fireDelay_Function@weaponFuncs@@YAHH@Z 008DC550 f game2.o
+139	VERIFIED	0002:000ed080 ?meleeDelay_Function@weaponFuncs@@YAHH@Z 008DC580 f game2.o
+140	VERIFIED	0002:000ed0b0 ?fireTime_Function@weaponFuncs@@YAHH@Z 008DC5B0 f game2.o
+141	VERIFIED	0002:000ed0e0 ?rechamberTime_Function@weaponFuncs@@YAHH@Z 008DC5E0 f game2.o
+142	VERIFIED	0002:000ed110 ?rechamberBoltTime_Function@weaponFuncs@@YAHH@Z 008DC610 f game2.o
+143	VERIFIED	0002:000ed140 ?holdFireTime_Function@weaponFuncs@@YAHH@Z 008DC640 f game2.o
+144	VERIFIED	0002:000ed170 ?meleeTime_Function@weaponFuncs@@YAHH@Z 008DC670 f game2.o
+145	VERIFIED	0002:000ed1a0 ?reloadTime_Function@weaponFuncs@@YAHH@Z 008DC6A0 f game2.o
+146	VERIFIED	0002:000ed1d0 ?reloadEmptyTime_Function@weaponFuncs@@YAHH@Z 008DC6D0 f game2.o
+147	VERIFIED	0002:000ed200 ?reloadAddTime_Function@weaponFuncs@@YAHH@Z 008DC700 f game2.o
+148	VERIFIED	0002:000ed230 ?reloadStartTime_Function@weaponFuncs@@YAHH@Z 008DC730 f game2.o
+149	VERIFIED	0002:000ed260 ?reloadStartAddTime_Function@weaponFuncs@@YAHH@Z 008DC760 f game2.o
+150	VERIFIED	0002:000ed290 ?reloadEndTime_Function@weaponFuncs@@YAHH@Z 008DC790 f game2.o
+151	VERIFIED	0002:000ed2c0 ?dropTime_Function@weaponFuncs@@YAHH@Z 008DC7C0 f game2.o
+152	VERIFIED	0002:000ed2f0 ?raiseTime_Function@weaponFuncs@@YAHH@Z 008DC7F0 f game2.o
+153	VERIFIED	0002:000ed320 ?altDropTime_Function@weaponFuncs@@YAHH@Z 008DC820 f game2.o
+154	VERIFIED	0002:000ed350 ?altRaiseTime_Function@weaponFuncs@@YAHH@Z 008DC850 f game2.o
+155	VERIFIED	0002:000ed380 ?fuseTime_Function@weaponFuncs@@YAHH@Z 008DC880 f game2.o
+156	PORTED	0002:000ed3b0 ?moveSpeedScale_Function@weaponFuncs@@YAMM@Z 008DC8B0 f game2.o
+157	PORTED	0002:000ed3f0 ?gunMaxPitch_Function@weaponFuncs@@YAMM@Z 008DC8F0 f game2.o
+158	PORTED	0002:000ed430 ?gunMaxYaw_Function@weaponFuncs@@YAMM@Z 008DC930 f game2.o
+159	PORTED	0002:000ed470 ?swayMaxAngle_Function@weaponFuncs@@YAMM@Z 008DC970 f game2.o
+160	PORTED	0002:000ed4b0 ?swayLerpSpeed_Function@weaponFuncs@@YAMM@Z 008DC9B0 f game2.o
+161	PORTED	0002:000ed4f0 ?swayPitchScale_Function@weaponFuncs@@YAMM@Z 008DC9F0 f game2.o
+162	PORTED	0002:000ed530 ?swayYawScale_Function@weaponFuncs@@YAMM@Z 008DCA30 f game2.o
+163	PORTED	0002:000ed570 ?swayHorizScale_Function@weaponFuncs@@YAMM@Z 008DCA70 f game2.o
+164	PORTED	0002:000ed5b0 ?swayVertScale_Function@weaponFuncs@@YAMM@Z 008DCAB0 f game2.o
+165	PORTED	0002:000ed5f0 ?swayShellShockScale_Function@weaponFuncs@@YAMM@Z 008DCAF0 f game2.o
+166	PORTED	0002:000ed630 ?adsSwayMaxAngle_Function@weaponFuncs@@YAMM@Z 008DCB30 f game2.o
+167	PORTED	0002:000ed670 ?adsSwayLerpSpeed_Function@weaponFuncs@@YAMM@Z 008DCB70 f game2.o
+168	PORTED	0002:000ed6b0 ?adsSwayPitchScale_Function@weaponFuncs@@YAMM@Z 008DCBB0 f game2.o
+169	PORTED	0002:000ed6f0 ?adsSwayYawScale_Function@weaponFuncs@@YAMM@Z 008DCBF0 f game2.o
+170	PORTED	0002:000ed730 ?adsSwayHorizScale_Function@weaponFuncs@@YAMM@Z 008DCC30 f game2.o
+171	PORTED	0002:000ed770 ?adsSwayVertScale_Function@weaponFuncs@@YAMM@Z 008DCC70 f game2.o
+172	VERIFIED	0002:000ed7b0 ?takedamage_Function@weaponFuncs@@YAHH@Z 008DCCB0 f game2.o
+173	VERIFIED	0002:000ed7e0 ?explosionRadius_Function@weaponFuncs@@YAHH@Z 008DCCE0 f game2.o
+174	VERIFIED	0002:000ed810 ?explosionInnerDamage_Function@weaponFuncs@@YAHH@Z 008DCD10 f game2.o
+175	VERIFIED	0002:000ed840 ?explosionOuterDamage_Function@weaponFuncs@@YAHH@Z 008DCD40 f game2.o
+176	VERIFIED	0002:000ed870 ?projectileSpeed_Function@weaponFuncs@@YAHH@Z 008DCD70 f game2.o
+177	VERIFIED	0002:000ed8a0 ?projectileSpeedUp_Function@weaponFuncs@@YAHH@Z 008DCDA0 f game2.o
+178	VERIFIED	0002:000ed8d0 ?triggerRadius_Function@weaponFuncs@@YAHH@Z 008DCDD0 f game2.o
+179	VERIFIED	0002:000ed900 ?adsTransInTime_Function@weaponFuncs@@YAHH@Z 008DCE00 f game2.o
+180	VERIFIED	0002:000ed930 ?adsTransOutTime_Function@weaponFuncs@@YAHH@Z 008DCE30 f game2.o
+181	PORTED	0002:000ed960 ?adsIdleAmount_Function@weaponFuncs@@YAMM@Z 008DCE60 f game2.o
+182	PORTED	0002:000ed9a0 ?adsZoomFov_Function@weaponFuncs@@YAMM@Z 008DCEA0 f game2.o
+183	PORTED	0002:000ed9e0 ?adsSensitivityScale_Function@weaponFuncs@@YAMM@Z 008DCEE0 f game2.o
+184	PORTED	0002:000eda20 ?adsZoomInFrac_Function@weaponFuncs@@YAMM@Z 008DCF20 f game2.o
+185	PORTED	0002:000eda60 ?adsZoomOutFrac_Function@weaponFuncs@@YAMM@Z 008DCF60 f game2.o
+186	PORTED	0002:000edaa0 ?adsOverlayWidth_Function@weaponFuncs@@YAMM@Z 008DCFA0 f game2.o
+187	PORTED	0002:000edae0 ?adsOverlayHeight_Function@weaponFuncs@@YAMM@Z 008DCFE0 f game2.o
+188	PORTED	0002:000edb20 ?adsBobFactor_Function@weaponFuncs@@YAMM@Z 008DD020 f game2.o
+189	PORTED	0002:000edb60 ?adsViewBobMult_Function@weaponFuncs@@YAMM@Z 008DD060 f game2.o
+190	PORTED	0002:000edba0 ?adsAimPitch_Function@weaponFuncs@@YAMM@Z 008DD0A0 f game2.o
+191	PORTED	0002:000edbe0 ?adsCrosshairInFrac_Function@weaponFuncs@@YAMM@Z 008DD0E0 f game2.o
+192	PORTED	0002:000edc20 ?adsCrosshairOutFrac_Function@weaponFuncs@@YAMM@Z 008DD120 f game2.o
+193	VERIFIED	0002:000edc60 ?adsReloadTransTime_Function@weaponFuncs@@YAHH@Z 008DD160 f game2.o
+194	VERIFIED	0002:000edc90 ?adsTransBlendTime_Function@weaponFuncs@@YAHH@Z 008DD190 f game2.o
+195	PORTED	0002:000edcc0 ?adsGunKickPitchMin_Function@weaponFuncs@@YAMM@Z 008DD1C0 f game2.o
+196	PORTED	0002:000edd00 ?adsGunKickPitchMax_Function@weaponFuncs@@YAMM@Z 008DD200 f game2.o
+197	PORTED	0002:000edd40 ?adsGunKickYawMin_Function@weaponFuncs@@YAMM@Z 008DD240 f game2.o
+198	PORTED	0002:000edd80 ?adsGunKickYawMax_Function@weaponFuncs@@YAMM@Z 008DD280 f game2.o
+199	PORTED	0002:000eddc0 ?adsGunKickAccel_Function@weaponFuncs@@YAMM@Z 008DD2C0 f game2.o
+200	PORTED	0002:000ede00 ?adsGunKickSpeedMax_Function@weaponFuncs@@YAMM@Z 008DD300 f game2.o
+201	PORTED	0002:000ede40 ?adsGunKickSpeedDecay_Function@weaponFuncs@@YAMM@Z 008DD340 f game2.o
+202	PORTED	0002:000ede80 ?adsGunKickStaticDecay_Function@weaponFuncs@@YAMM@Z 008DD380 f game2.o
+203	PORTED	0002:000edec0 ?adsViewKickPitchMin_Function@weaponFuncs@@YAMM@Z 008DD3C0 f game2.o
+204	PORTED	0002:000edf00 ?adsViewKickPitchMax_Function@weaponFuncs@@YAMM@Z 008DD400 f game2.o
+205	PORTED	0002:000edf40 ?adsViewKickYawMin_Function@weaponFuncs@@YAMM@Z 008DD440 f game2.o
+206	PORTED	0002:000edf80 ?adsViewKickYawMax_Function@weaponFuncs@@YAMM@Z 008DD480 f game2.o
+207	PORTED	0002:000edfc0 ?adsViewKickCenterSpeed_Function@weaponFuncs@@YAMM@Z 008DD4C0 f game2.o
+208	PORTED	0002:000ee000 ?adsSpread_Function@weaponFuncs@@YAMM@Z 008DD500 f game2.o
+209	PORTED	0002:000ee040 ?adsSpreadDucked_Function@weaponFuncs@@YAMM@Z 008DD540 f game2.o
+210	PORTED	0002:000ee080 ?adsSpreadProne_Function@weaponFuncs@@YAMM@Z 008DD580 f game2.o
+211	PORTED	0002:000ee0c0 ?hipSpreadStandMin_Function@weaponFuncs@@YAMM@Z 008DD5C0 f game2.o
+212	PORTED	0002:000ee100 ?hipSpreadDuckedMin_Function@weaponFuncs@@YAMM@Z 008DD600 f game2.o
+213	PORTED	0002:000ee140 ?hipSpreadProneMin_Function@weaponFuncs@@YAMM@Z 008DD640 f game2.o
+214	PORTED	0002:000ee180 ?hipSpreadMax_Function@weaponFuncs@@YAMM@Z 008DD680 f game2.o
+215	PORTED	0002:000ee1c0 ?hipSpreadDecayRate_Function@weaponFuncs@@YAMM@Z 008DD6C0 f game2.o
+216	PORTED	0002:000ee200 ?hipSpreadFireAdd_Function@weaponFuncs@@YAMM@Z 008DD700 f game2.o
+217	PORTED	0002:000ee240 ?hipSpreadTurnAdd_Function@weaponFuncs@@YAMM@Z 008DD740 f game2.o
+218	PORTED	0002:000ee280 ?hipSpreadMoveAdd_Function@weaponFuncs@@YAMM@Z 008DD780 f game2.o
+219	PORTED	0002:000ee2c0 ?hipSpreadDuckedDecay_Function@weaponFuncs@@YAMM@Z 008DD7C0 f game2.o
+220	PORTED	0002:000ee300 ?hipSpreadProneDecay_Function@weaponFuncs@@YAMM@Z 008DD800 f game2.o
+221	PORTED	0002:000ee340 ?hipReticleSidePos_Function@weaponFuncs@@YAMM@Z 008DD840 f game2.o
+222	PORTED	0002:000ee380 ?hipIdleAmount_Function@weaponFuncs@@YAMM@Z 008DD880 f game2.o
+223	PORTED	0002:000ee3c0 ?hipGunKickPitchMin_Function@weaponFuncs@@YAMM@Z 008DD8C0 f game2.o
+224	PORTED	0002:000ee400 ?hipGunKickPitchMax_Function@weaponFuncs@@YAMM@Z 008DD900 f game2.o
+225	PORTED	0002:000ee440 ?hipGunKickYawMin_Function@weaponFuncs@@YAMM@Z 008DD940 f game2.o
+226	PORTED	0002:000ee480 ?hipGunKickYawMax_Function@weaponFuncs@@YAMM@Z 008DD980 f game2.o
+227	PORTED	0002:000ee4c0 ?hipGunKickAccel_Function@weaponFuncs@@YAMM@Z 008DD9C0 f game2.o
+228	PORTED	0002:000ee500 ?hipGunKickSpeedMax_Function@weaponFuncs@@YAMM@Z 008DDA00 f game2.o
+229	PORTED	0002:000ee540 ?hipGunKickSpeedDecay_Function@weaponFuncs@@YAMM@Z 008DDA40 f game2.o
+230	PORTED	0002:000ee580 ?hipGunKickStaticDecay_Function@weaponFuncs@@YAMM@Z 008DDA80 f game2.o
+231	PORTED	0002:000ee5c0 ?hipViewKickPitchMin_Function@weaponFuncs@@YAMM@Z 008DDAC0 f game2.o
+232	PORTED	0002:000ee600 ?hipViewKickPitchMax_Function@weaponFuncs@@YAMM@Z 008DDB00 f game2.o
+233	PORTED	0002:000ee640 ?hipViewKickYawMin_Function@weaponFuncs@@YAMM@Z 008DDB40 f game2.o
+234	PORTED	0002:000ee680 ?hipViewKickYawMax_Function@weaponFuncs@@YAMM@Z 008DDB80 f game2.o
+235	PORTED	0002:000ee6c0 ?hipViewKickCenterSpeed_Function@weaponFuncs@@YAMM@Z 008DDBC0 f game2.o
+236	PORTED	0002:000ee700 ?aiEffectiveRange_Function@weaponFuncs@@YAMM@Z 008DDC00 f game2.o
+237	PORTED	0002:000ee740 ?aiMissRange_Function@weaponFuncs@@YAMM@Z 008DDC40 f game2.o
+238	PORTED	0002:000ee780 ?aiDamageMod_Function@weaponFuncs@@YAMM@Z 008DDC80 f game2.o
+239	PORTED	0002:000ee7c0 ?bulletConeAngle_Function@weaponFuncs@@YAMM@Z 008DDCC0 f game2.o
+240	PORTED	0002:000ee800 ?adsBulletConeAngle_Function@weaponFuncs@@YAMM@Z 008DDD00 f game2.o
+241	PORTED	0002:000ee840 ?animIKOffsetTime_Function@weaponFuncs@@YAMM@Z 008DDD40 f game2.o
+242	PORTED	0002:000ee880 ?animIKOffsetForce_Function@weaponFuncs@@YAMM@Z 008DDD80 f game2.o
+243	PORTED	0002:000ee8c0 ?animIKOffsetDist_Function@weaponFuncs@@YAMM@Z 008DDDC0 f game2.o
+244	PORTED	0002:000ee900 ?animIKPitchTime_Function@weaponFuncs@@YAMM@Z 008DDE00 f game2.o
+245	PORTED	0002:000ee940 ?animIKPitchForce_Function@weaponFuncs@@YAMM@Z 008DDE40 f game2.o
+246	PORTED	0002:000ee980 ?animIKPitchAngle_Function@weaponFuncs@@YAMM@Z 008DDE80 f game2.o
+247	PORTED	0002:000ee9c0 ?animIKTorsoRecoilPitchTime_Function@weaponFuncs@@YAMM@Z 008DDEC0 f game2.o
+248	PORTED	0002:000eea00 ?animIKTorsoRecoilPitchForce_Function@weaponFuncs@@YAMM@Z 008DDF00 f game2.o
+249	PORTED	0002:000eea40 ?animIKTorsoRecoilPitchAngle_Function@weaponFuncs@@YAMM@Z 008DDF40 f game2.o
+250	VERIFIED	0002:000eea80 ?damageMP_Function@weaponFuncs@@YAHH@Z 008DDF80 f game2.o
+251	VERIFIED	0002:000eeab0 ?meleeDamageMP_Function@weaponFuncs@@YAHH@Z 008DDFB0 f game2.o
+252	VERIFIED	0002:000eeae0 ?damageInnerRadiusMP_Function@weaponFuncs@@YAHH@Z 008DDFE0 f game2.o
+253	VERIFIED	0002:000eeb10 ?damageOuterRadiusMP_Function@weaponFuncs@@YAHH@Z 008DE010 f game2.o
+254	VERIFIED	0002:000eeb40 ?minDamagePercentMP_Function@weaponFuncs@@YAHH@Z 008DE040 f game2.o
+255	VERIFIED	0002:000eeb70 ?fireDelayMP_Function@weaponFuncs@@YAHH@Z 008DE070 f game2.o
+256	VERIFIED	0002:000eeba0 ?meleeDelayMP_Function@weaponFuncs@@YAHH@Z 008DE0A0 f game2.o
+257	VERIFIED	0002:000eebd0 ?fireTimeMP_Function@weaponFuncs@@YAHH@Z 008DE0D0 f game2.o
+258	VERIFIED	0002:000eec00 ?meleeTimeMP_Function@weaponFuncs@@YAHH@Z 008DE100 f game2.o
+259	VERIFIED	0002:000eec30 ?explosionRadiusMP_Function@weaponFuncs@@YAHH@Z 008DE130 f game2.o
+260	VERIFIED	0002:000eec60 ?explosionInnerDamageMP_Function@weaponFuncs@@YAHH@Z 008DE160 f game2.o
+261	VERIFIED	0002:000eec90 ?explosionOuterDamageMP_Function@weaponFuncs@@YAHH@Z 008DE190 f game2.o
+262	VERIFIED	0002:000eecc0 ?maxAmmoMP_Function@weaponFuncs@@YAHH@Z 008DE1C0 f game2.o
+263	PORTED	0002:000eecf0 ?sensitivityScaleMP_Function@weaponFuncs@@YAMM@Z 008DE1F0 f game2.o
+264	PORTED	0002:000eed30 ?adsZoomFovMP_Function@weaponFuncs@@YAMM@Z 008DE230 f game2.o
+265	VERIFIED	0002:000eed70 ?adsTransInTimeMP_Function@weaponFuncs@@YAHH@Z 008DE270 f game2.o
+266	VERIFIED	0002:000eeda0 ?adsTransOutTimeMP_Function@weaponFuncs@@YAHH@Z 008DE2A0 f game2.o
+267	PORTED	0002:000eedd0 ?adsSensitivityScaleMP_Function@weaponFuncs@@YAMM@Z 008DE2D0 f game2.o
+268	PORTED	0002:000eee10 ?adsSpreadMP_Function@weaponFuncs@@YAMM@Z 008DE310 f game2.o
+269	PORTED	0002:000eee50 ?adsSpreadDuckedMP_Function@weaponFuncs@@YAMM@Z 008DE350 f game2.o
+270	PORTED	0002:000eee90 ?adsSpreadProneMP_Function@weaponFuncs@@YAMM@Z 008DE390 f game2.o
+271	PORTED	0002:000eeed0 ?hipSpreadStandMinMP_Function@weaponFuncs@@YAMM@Z 008DE3D0 f game2.o
+272	PORTED	0002:000eef10 ?hipSpreadDuckedMinMP_Function@weaponFuncs@@YAMM@Z 008DE410 f game2.o
+273	PORTED	0002:000eef50 ?hipSpreadProneMinMP_Function@weaponFuncs@@YAMM@Z 008DE450 f game2.o
+274	PORTED	0002:000eef90 ?hipSpreadMaxMP_Function@weaponFuncs@@YAMM@Z 008DE490 f game2.o
+275	PORTED	0002:000eefd0 ?hipSpreadDecayRateMP_Function@weaponFuncs@@YAMM@Z 008DE4D0 f game2.o
+276	PORTED	0002:000ef010 ?hipSpreadFireAddMP_Function@weaponFuncs@@YAMM@Z 008DE510 f game2.o
+277	PORTED	0002:000ef050 ?hipSpreadTurnAddMP_Function@weaponFuncs@@YAMM@Z 008DE550 f game2.o
+278	PORTED	0002:000ef090 ?hipSpreadMoveAddMP_Function@weaponFuncs@@YAMM@Z 008DE590 f game2.o
+279	PORTED	0002:000ef0d0 ?hipSpreadDuckedDecayMP_Function@weaponFuncs@@YAMM@Z 008DE5D0 f game2.o
+280	PORTED	0002:000ef110 ?hipSpreadProneDecayMP_Function@weaponFuncs@@YAMM@Z 008DE610 f game2.o
+281	PORTED	0002:000ef150 ?speed_max_Function@@YAMM@Z 008DE650 f game2.o
+282	PORTED	0002:000ef1b0 ?accel_max_Function@@YAMM@Z 008DE6B0 f game2.o
+283	PORTED	0002:000ef210 ?reverse_scale_Function@@YAMM@Z 008DE710 f game2.o
+284	PORTED	0002:000ef270 ?steer_angle_max_Function@@YAMM@Z 008DE770 f game2.o
+285	PORTED	0002:000ef2d0 ?steer_speed_Function@@YAMM@Z 008DE7D0 f game2.o
+286	PORTED	0002:000ef330 ?wheel_radius_Function@@YAMM@Z 008DE830 f game2.o
+287	PORTED	0002:000ef390 ?susp_spring_k_Function@@YAMM@Z 008DE890 f game2.o
+288	PORTED	0002:000ef3f0 ?susp_damp_k_Function@@YAMM@Z 008DE8F0 f game2.o
+289	PORTED	0002:000ef450 ?susp_adj_Function@@YAMM@Z 008DE950 f game2.o
+290	PORTED	0002:000ef4b0 ?susp_hard_limit_Function@@YAMM@Z 008DE9B0 f game2.o
+291	PORTED	0002:000ef510 ?tire_fric_fwd_Function@@YAMM@Z 008DEA10 f game2.o
+292	PORTED	0002:000ef570 ?tire_fric_side_Function@@YAMM@Z 008DEA70 f game2.o
+293	PORTED	0002:000ef5d0 ?tire_fric_brake_Function@@YAMM@Z 008DEAD0 f game2.o
+294	PORTED	0002:000ef630 ?tire_fric_hand_brake_Function@@YAMM@Z 008DEB30 f game2.o
+295	PORTED	0002:000ef690 ?body_mass_Function@@YAMM@Z 008DEB90 f game2.o
+296	PORTED	0002:000ef6f0 ?mass_center_delta_x_Function@@YAMM@Z 008DEBF0 f game2.o
+297	PORTED	0002:000ef750 ?mass_center_delta_y_Function@@YAMM@Z 008DEC50 f game2.o
+298	PORTED	0002:000ef7b0 ?mass_center_delta_z_Function@@YAMM@Z 008DECB0 f game2.o
+299	PORTED	0002:000ef810 ?roll_stability_Function@@YAMM@Z 008DED10 f game2.o
+300	PORTED	0002:000ef870 ?roll_resistance_Function@@YAMM@Z 008DED70 f game2.o
+301	PORTED	0002:000ef8d0 ?upright_strength_Function@@YAMM@Z 008DEDD0 f game2.o
+302	PORTED	0002:000ef930 ?tilt_fakey_Function@@YAMM@Z 008DEE30 f game2.o
+303	PORTED	0002:000ef990 ?peel_out_max_speed_Function@@YAMM@Z 008DEE90 f game2.o
+304	PORTED	0002:000ef9f0 ?inertia_scale_x_Function@@YAMM@Z 008DEEF0 f game2.o
+305	PORTED	0002:000efa50 ?tire_damp_coast_Function@@YAMM@Z 008DEF50 f game2.o
+306	PORTED	0002:000efab0 ?tire_damp_brake_Function@@YAMM@Z 008DEFB0 f game2.o
+307	PORTED	0002:000efb10 ?tire_damp_hand_Function@@YAMM@Z 008DF010 f game2.o
+308	PORTED	0002:000efb70 ?steerWheels_Function@vehicleFuncs@@YA_N_N@Z 008DF070 f game2.o
+309	PORTED	0002:000efb90 ?quadBarrel_Function@vehicleFuncs@@YA_N_N@Z 008DF090 f game2.o
+310	PORTED	0002:000efbb0 ?bulletDamage_Function@vehicleFuncs@@YAMM@Z 008DF0B0 f game2.o
+311	PORTED	0002:000efbf0 ?grenadeDamage_Function@vehicleFuncs@@YAMM@Z 008DF0F0 f game2.o
+312	PORTED	0002:000efc30 ?mineDamage_Function@vehicleFuncs@@YAMM@Z 008DF130 f game2.o
+313	PORTED	0002:000efc70 ?projectileDamage_Function@vehicleFuncs@@YAMM@Z 008DF170 f game2.o
+314	VERIFIED	0002:000efcb0 ?spClientSeat_Function@vehicleFuncs@@YAHH@Z 008DF1B0 f game2.o
+315	VERIFIED	0002:000efcd0 ?hudIndex_Function@vehicleFuncs@@YAHH@Z 008DF1D0 f game2.o
+316	VERIFIED	0002:000efcf0 ?numSeats_Function@vehicleFuncs@@YAHH@Z 008DF1F0 f game2.o
+317	VERIFIED	0002:000efd10 ?health_Function@vehicleFuncs@@YAHH@Z 008DF210 f game2.o
+318	PORTED	0002:000efd40 ?texureScroll_Function@vehicleFuncs@@YAMM@Z 008DF240 f game2.o
+319	PORTED	0002:000efd80 ?texureScrollScale_Function@vehicleFuncs@@YAMM@Z 008DF280 f game2.o
+320	PORTED	0002:000efdc0 ?engineSndSpeed_Function@vehicleFuncs@@YAMM@Z 008DF2C0 f game2.o
+321	PORTED	0002:000efe00 ?maxSpeed_Function@vehicleFuncs@@YAMM@Z 008DF300 f game2.o
+322	PORTED	0002:000efe40 ?accel_Function@vehicleFuncs@@YAMM@Z 008DF340 f game2.o
+323	PORTED	0002:000efe80 ?rotRate_Function@vehicleFuncs@@YAMM@Z 008DF380 f game2.o
+324	PORTED	0002:000efec0 ?rotAccel_Function@vehicleFuncs@@YAMM@Z 008DF3C0 f game2.o
+325	PORTED	0002:000eff00 ?collisionDamage_Function@vehicleFuncs@@YAMM@Z 008DF400 f game2.o
+326	PORTED	0002:000eff40 ?collisionSpeed_Function@vehicleFuncs@@YAMM@Z 008DF440 f game2.o
+327	PORTED	0002:000eff80 ?suspensionTravel_Function@vehicleFuncs@@YAMM@Z 008DF480 f game2.o
+328	PORTED	0002:000effc0 ?maxBodyPitch_Function@vehicleFuncs@@YAMM@Z 008DF4C0 f game2.o
+329	PORTED	0002:000f0000 ?maxBodyRoll_Function@vehicleFuncs@@YAMM@Z 008DF500 f game2.o
+330	PORTED	0002:000f0040 ?boundsRadius_Function@vehicleFuncs@@YAMM@Z 008DF540 f game2.o
+331	PORTED	0002:000f0080 ?boundsHeight_Function@vehicleFuncs@@YAMM@Z 008DF580 f game2.o
+332	PORTED	0002:000f00c0 ?boundsLength_Function@vehicleFuncs@@YAMM@Z 008DF5C0 f game2.o
+333	PORTED	0002:000f0100 ?turretHorizSpanLeft_Function@vehicleFuncs@@YAMM@Z 008DF600 f game2.o
+334	PORTED	0002:000f0140 ?turretHorizSpanRight_Function@vehicleFuncs@@YAMM@Z 008DF640 f game2.o
+335	PORTED	0002:000f0180 ?turretVertSpanUp_Function@vehicleFuncs@@YAMM@Z 008DF680 f game2.o
+336	PORTED	0002:000f01c0 ?turretVertSpanDown_Function@vehicleFuncs@@YAMM@Z 008DF6C0 f game2.o
+337	PORTED	0002:000f0200 ?turretRotRate_Function@vehicleFuncs@@YAMM@Z 008DF700 f game2.o
+338	PORTED	0002:000f0240 ?turretSwirlLerpRate_Function@vehicleFuncs@@YAMM@Z 008DF740 f game2.o
+339	PORTED	0002:000f0280 ?turretSwirlPitchFactor_Function@vehicleFuncs@@YAMM@Z 008DF780 f game2.o
+340	PORTED	0002:000f02c0 ?turretGunnerVertSpanUp_Function@vehicleFuncs@@YAMM@Z 008DF7C0 f game2.o
+341	PORTED	0002:000f0300 ?turretGunnerVertSpanDown_Function@vehicleFuncs@@YAMM@Z 008DF800 f game2.o
+342	PORTED	0002:000f0340 ?cameraZOffset_Function@vehicleFuncs@@YAMM@Z 008DF840 f game2.o
+343	PORTED	0002:000f0380 ?cameraFPHeightOffset_Function@vehicleFuncs@@YAMM@Z 008DF880 f game2.o
+344	PORTED	0002:000f03c0 ?cameraFPFwdOffset_Function@vehicleFuncs@@YAMM@Z 008DF8C0 f game2.o
+345	PORTED	0002:000f0400 ?cameraFPHeightLerp_Function@vehicleFuncs@@YAMM@Z 008DF900 f game2.o
+346	PORTED	0002:000f0440 ?cameraChaseOffsetX_Function@vehicleFuncs@@YAMM@Z 008DF940 f game2.o
+347	PORTED	0002:000f0480 ?cameraChaseOffsetY_Function@vehicleFuncs@@YAMM@Z 008DF980 f game2.o
+348	PORTED	0002:000f04c0 ?cameraChaseOffsetZ_Function@vehicleFuncs@@YAMM@Z 008DF9C0 f game2.o
+349	PORTED	0002:000f0500 ?cameraChaseRadiusInner_Function@vehicleFuncs@@YAMM@Z 008DFA00 f game2.o
+350	PORTED	0002:000f0540 ?cameraChaseRadiusOuter_Function@vehicleFuncs@@YAMM@Z 008DFA40 f game2.o
+351	PORTED	0002:000f0580 ?cameraVehViewRadius_Function@vehicleFuncs@@YAMM@Z 008DFA80 f game2.o
+352	PORTED	0002:000f05c0 ?cameraVehViewMaxPitch_Function@vehicleFuncs@@YAMM@Z 008DFAC0 f game2.o
+353	PORTED	0002:000f0600 ?cameraVehViewMaxPitchDistAdj_Function@vehicleFuncs@@YAMM@Z 008DFB00 f game2.o
+354	PORTED	0002:000f0640 ?cameraVehViewFwdBackRatio_Function@vehicleFuncs@@YAMM@Z 008DFB40 f game2.o
+355	PORTED	0002:000f0680 ?cameraVehViewMoveInPitch_Function@vehicleFuncs@@YAMM@Z 008DFB80 f game2.o
+356	PORTED	0002:000f06c0 ?camLinkedPitchFactor_Function@vehicleFuncs@@YAMM@Z 008DFBC0 f game2.o
+357	PORTED	0002:000f0700 ?pitchBasedCamOffsetX_Function@vehicleFuncs@@YAMM@Z 008DFC00 f game2.o
+358	PORTED	0002:000f0740 ?pitchBasedCamOffsetZ_Function@vehicleFuncs@@YAMM@Z 008DFC40 f game2.o
+359	VERIFIED	0002:000f0780 ?vehicleAnimMatrixColumn_Function@vehicleFuncs@@YAHH@Z 008DFC80 f game2.o
+360	PORTED	0002:000f07b0 ?hatchOpenAngleRight_Function@vehicleFuncs@@YAMM@Z 008DFCB0 f game2.o
+361	PORTED	0002:000f07f0 ?hatchOpenAngleLeft_Function@vehicleFuncs@@YAMM@Z 008DFCF0 f game2.o
+362	VERIFIED	0002:000f0830 ?inactiveBlowupSeconds_Function@vehicleFuncs@@YAHH@Z 008DFD30 f game2.o
+363	PORTED	0002:000f0860 ?SetVehicleInertiaBox@@YAM_NHM@Z 008DFD60 f game2.o
+364	PORTED	0002:000f0900 ?SetVehicleInertiaBoxMinX@@YAMM@Z 008DFE00 f game2.o
+365	PORTED	0002:000f0980 ?SetVehicleInertiaBoxMinY@@YAMM@Z 008DFE80 f game2.o
+366	PORTED	0002:000f0a00 ?SetVehicleInertiaBoxMinZ@@YAMM@Z 008DFF00 f game2.o
+367	PORTED	0002:000f0a80 ?SetVehicleInertiaBoxMaxX@@YAMM@Z 008DFF80 f game2.o
+368	PORTED	0002:000f0b00 ?SetVehicleInertiaBoxMaxY@@YAMM@Z 008E0000 f game2.o
+369	PORTED	0002:000f0b80 ?SetVehicleInertiaBoxMaxZ@@YAMM@Z 008E0080 f game2.o
+370	VERIFIED	0002:000f0c00 ?AddAimAssistMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z 008E0100 f game2.o
+371	VERIFIED	0002:000f0d40 ?AddCollisionMenus@InspectorManager@@QAEXXZ 008E0240 f game2.o
+372	PORTED	0002:000f0e10 ?RenderPlayerStats@@YAXXZ 008E0310 f game2.o
+373	VERIFIED	0002:000f41f0 ?FN_ControlConfigA@@YAXXZ 008E36F0 f game2.o
+374	VERIFIED	0002:000f4200 ?FN_ControlConfigB@@YAXXZ 008E3700 f game2.o
+375	VERIFIED	0002:000f4210 ?FN_ControlConfigC@@YAXXZ 008E3710 f game2.o
+376	VERIFIED	0002:000f4220 ?FN_ControlConfigD@@YAXXZ 008E3720 f game2.o
+377	PORTED	0002:000f4230 ?FN_ControlInvertAim@@YAXXZ 008E3730 f game2.o
+378	VERIFIED	0002:000f4240 ?FN_ControlSticksDefault@@YAXXZ 008E3740 f game2.o
+379	VERIFIED	0002:000f4250 ?FN_ControlSticksSouthPaw@@YAXXZ 008E3750 f game2.o
+380	VERIFIED	0002:000f4260 ?FN_ControlSticksLegacy@@YAXXZ 008E3760 f game2.o
+381	VERIFIED	0002:000f4270 ?FN_ControlSticksLegacySouthPaw@@YAXXZ 008E3770 f game2.o
+382	VERIFIED	0002:000f4280 ?FN_SelectGodMode@@YAXXZ 008E3780 f game2.o
+383	VERIFIED	0002:000f42a0 ?FN_ChangeEasyMaxHealth@@YAXXZ 008E37A0 f game2.o
+384	VERIFIED	0002:000f42b0 ?FN_ChangeMediumMaxHealth@@YAXXZ 008E37B0 f game2.o
+385	VERIFIED	0002:000f42c0 ?FN_ChangeHardMaxHealth@@YAXXZ 008E37C0 f game2.o
+386	VERIFIED	0002:000f42d0 ?FN_ApplyEasyDifficultyChanges@@YAXXZ 008E37D0 f game2.o
+387	VERIFIED	0002:000f42f0 ?FN_ApplyMediumDifficultyChanges@@YAXXZ 008E37F0 f game2.o
+388	VERIFIED	0002:000f4310 ?FN_ApplyHardDifficultyChanges@@YAXXZ 008E3810 f game2.o
+389	VERIFIED	0002:000f4330 ?FN_NoClip@@YAXXZ 008E3830 f game2.o
+390	VERIFIED	0002:000f4350 ?FN_PakRender@@YAXXZ 008E3850 f game2.o
+391	PORTED	0002:000f4360 ?FN_NGLStatDisplay@@YAXXZ 008E3860 f game2.o
+392	VERIFIED	0002:000f4370 ?FN_DefaultShellshockTestFunction@@YAXXZ 008E3870 f game2.o
+393	VERIFIED	0002:000f43f0 ?FN_PainShellshockTestFunction@@YAXXZ 008E38F0 f game2.o
+394	VERIFIED	0002:000f4470 ?FN_DeathShellshockTestFunction@@YAXXZ 008E3970 f game2.o
+395	VERIFIED	0002:000f44f0 ?FN_CurgenMotionBlur@@YAXXZ 008E39F0 f game2.o
+396	PORTED	0002:000f4510 ?FnReverseOptions@@YAXXZ 008E3A10 f game2.o
+397	PORTED	0002:000f4620 ?DisplayMessage@DebugThread@@QAEXPADHHMMMMM@Z 008E3B20 f game2.o
+398	VERIFIED	0002:000f46a0 ?Update@DebugThread@@QAEXXZ 008E3BA0 f game2.o
+399	VERIFIED	0002:000f46b0 ?FN_DebugThread_Select_EntityHandle@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008E3BB0 f game2.o
+400	VERIFIED	0002:000f46d0 ?FN_Multiplayer_MapRestart@@YAXXZ 008E3BD0 f game2.o
+401	PORTED	0002:000f46e0 ?FN_Multiplayer_Rank1@@YAXXZ 008E3BE0 f game2.o
+402	PORTED	0002:000f4740 ?FN_Multiplayer_Rank2@@YAXXZ 008E3C40 f game2.o
+403	PORTED	0002:000f47c0 ?FN_Multiplayer_Rank3@@YAXXZ 008E3CC0 f game2.o
+404	VERIFIED	0002:000f4810 ?FN_DumpThreadsForTarget@@YAXXZ 008E3D10 f game2.o
+405	VERIFIED	0002:000f4820 ?FN_DumpThreadsForAll@@YAXXZ 008E3D20 f game2.o
+406	PORTED	0002:000f4830 ?FN_DebugEntity_BBoxes@@YAXXZ 008E3D30 f game2.o
+407	VERIFIED	0002:000f4860 ?AddSoundMenus@@YAXPAVInspectorManager@@@Z 008E3D60 f game2.o
+408	VERIFIED	0002:000f4a40 ?SoundDebugRender@@YAXPAVInspectorManager@@@Z 008E3F40 f game2.o
+409	VERIFIED	0002:000f4db0 ?Initialise@CameraShake@@QAEXXZ 008E42B0 f game2.o
+410	PORTED	0002:000f4e20 ?GetNewShakeInstance@CameraShake@@AAEPAVCameraShakeInstance@@XZ 008E4320 f game2.o
+411	VERIFIED	0002:000f4ea0 ?SetFalloff@CameraShakeInstance@@QAEXPAVPosition3@math@@M@Z 008E43A0 f game2.o
+412	PORTED	0002:000f4f90 ?StopCameraShake@CameraShake@@QAEXPAVCameraShakeInstance@@@Z 008E4490 f game2.o
+413	PORTED	0002:000f4fb0 ?GetShakeType@CameraShake@@QAEPAVCameraShakeType@@H@Z 008E44B0 f game2.o
+414	VERIFIED	0002:000f5020 ?SetTime@CameraShakeInstance@@QAEXM@Z 008E4520 f game2.o
+415	VERIFIED	0002:000f5040 ?SetupInstance@CameraShakeInstance@@QAEXHM@Z 008E4540 f game2.o
+416	VERIFIED	0002:000f5110 ?OverrideSettings@CameraShakeInstance@@QAEXMM@Z 008E4610 f game2.o
+417	VERIFIED	0002:000f5150 ?SetTargetMagnitude@CameraShakeInstance@@QAEXM@Z 008E4650 f game2.o
+418	VERIFIED	0002:000f5190 ??0MsaQuat@@QAE@MMMM@Z 008E4690 f game2.o
+419	PORTED	0002:000f51c0 ??0MsaQuat@@QAE@ABV0@@Z 008E46C0 f game2.o
+420	PORTED	0002:000f51f0 ?Multiply@MsaQuat@@QAEXABV1@AAV1@@Z 008E46F0 f game2.o
+421	VERIFIED	0002:000f52e0 ?Normalise@MsaQuat@@QAEMXZ 008E47E0 f game2.o
+422	VERIFIED	0002:000f5360 ?QuaternionToMatrix@MsaQuat@@QAEXPAVPosition3@math@@PAVMat43@3@@Z 008E4860 f game2.o
+423	VERIFIED	0002:000f5570 ?Magnitude@MsaQuat@@QBEMXZ 008E4A70 f game2.o
+424	VERIFIED	0002:000f55a0 ?Init@NoiseManager@@QAEXXZ 008E4AA0 f game2.o
+425	VERIFIED	0002:000f56e0 ?Noise@NoiseManager@@QAEMM@Z 008E4BE0 f game2.o
+426	PORTED	0002:000f5770 ?Normalize2@NoiseManager@@AAEXQAM@Z 008E4C70 f game2.o
+427	PORTED	0002:000f57c0 ?Normalize3@NoiseManager@@AAEXQAM@Z 008E4CC0 f game2.o
+428	VERIFIED	0002:000f5820 ?GetElapsedTime@NoiseManager@@QAEMXZ 008E4D20 f game2.o
+429	VERIFIED	0002:000f5830 ?GetValue@NoiseFloat@@QAEMXZ 008E4D30 f game2.o
+430	VERIFIED	0002:000f59a0 ?EndOfSpline@SplineMgr@@SA_NQBM@Z 008E4EA0 f game2.o
+431	VERIFIED	0002:000f59d0 ??1ScriptEventHandler@@QAE@XZ 008E4ED0 f game2.o
+432	VERIFIED	0002:000f59f0 ?RemoveEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z 008E4EF0 f game2.o
+433	VERIFIED	0002:000f5a50 ?ExecEvents@ScriptEventHandler@@QAE_NPAVEntity@@VHashString@@PAVScriptEventParams@@@Z 008E4F50 f game2.o
+434	VERIFIED	0002:000f5ac0 ?SegmentSphereIntersection@@YA_NQBM00M@Z 008E4FC0 f game2.o
+435	VERIFIED	0002:000f5d10 ?SetNoteHandlerEntityHandle@nalPlayMethod@AnimationPlayer@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008E5210 f game2.o
+436	VERIFIED	0002:000f5d30 ?DebugDump@AnimationPlayer@@SAXPAVEntity@@@Z 008E5230 f game2.o
+437	PORTED	0002:000f5ed0 ?nalMatrix4x4_to_Axis4@@YAXAAVnalMatrix4x4@@QAY02M@Z 008E53D0 f game2.o
+438	VERIFIED	0002:000f5f10 ?Invoke@nalAnimCallback@AnimationPlayer@@UAE_NPAV2@@Z 008E5410 f game2.o
+439	VERIFIED	0002:000f5f20 ??0MetaNalBaseAnim@@QAE@XZ 008E5420 f game2.o
+440	PORTED	0002:000f5f50 ?Create@MetaNalBaseAnim@@QAEXPAVMetaAnimData@@@Z 008E5450 f game2.o
+441	PORTED	0002:000f5fe0 ?DelayCreate@MetaNalBaseAnim@@QAEXPAPAV?$nalAnimClass@VnalAnyPose@@@@H@Z 008E54E0 f game2.o
+442	VERIFIED	0002:000f6010 ?IsDelayCreate@MetaNalBaseAnim@@QAEHXZ 008E5510 f game2.o
+443	PORTED	0002:000f6020 ?CreateAnimInst@MetaNalBaseAnim@@QAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 008E5520 f game2.o
+444	PORTED	0002:000f6040 ?InitDefaultPak@@YAXXZ 008E5540 f game2.o
+445	VERIFIED	0002:000f6090 ?FiniDefaultPak@@YAXXZ 008E5590 f game2.o
+446	VERIFIED	0002:000f60a0 ??0AnimIK@@QAE@XZ 008E55A0 f game2.o
+447	VERIFIED	0002:000f60b0 ??1AnimIK@@QAE@XZ 008E55B0 f game2.o
+448	PORTED	0002:000f6270 ?GetGunAndHandMatrix@AnimIK@@AAEXPAVEntity@@AAVnalGenericBoneHandle@nalGeneric@@1AAVnalMatrix4x4@@2@Z 008E5770 f game2.o
+449	PORTED	0002:000f62a0 ?GetFootMatrices@AnimIK@@AAEXAAVnalMatrix4x4@@0@Z 008E57A0 f game2.o
+450	PORTED	0002:000f6340 ?WeaponRecoilTimeScale@AnimIK@@AAEMMMM@Z 008E5840 f game2.o
+451	PORTED	0002:000f64c0 ?ApplyLadderClimb@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z 008E59C0 f game2.o
+452	VERIFIED	0002:000f64d0 ?stat_support_Shutdown@@YAXXZ 008E59D0 f game2.o
+453	PORTED	0002:000f64e0 ?stat_CommitStatsToLevel@@YAXXZ 008E59E0 f game2.o
+454	VERIFIED	0002:000f6560 ?stat_ResetMissionStats@@YAX_N@Z 008E5A60 f game2.o
+455	VERIFIED	0002:000f65c0 ?stat_LoadMissionStatsFrom@@YAXPAU_xmission_data@@H@Z 008E5AC0 f game2.o
+456	VERIFIED	0002:000f6640 ?stat_ClearMissionStats@@YAXXZ 008E5B40 f game2.o
+457	PORTED	0002:000f6650 ?stat_GetLevelName@@YAPADXZ 008E5B50 f game2.o
+458	VERIFIED	0002:000f6660 ?stat_GetStat@@YAHW4eMissionStats@@_N1@Z 008E5B60 f game2.o
+459	VERIFIED	0002:000f6710 ?stat_SetStat@@YAXW4eMissionStats@@HPAU_xmission_data@@@Z 008E5C10 f game2.o
+460	VERIFIED	0002:000f6790 ?stat_IncStat@@YAXW4eMissionStats@@PAU_xmission_data@@@Z 008E5C90 f game2.o
+461	VERIFIED	0002:000f6800 ?stat_DecStat@@YAXW4eMissionStats@@PAU_xmission_data@@@Z 008E5D00 f game2.o
+462	PORTED	0002:000f6890 ?stat_GetAvgStat@@YAMW4eMissionStats@@@Z 008E5D90 f game2.o
+463	VERIFIED	0002:000f6950 ?stat_GetWeaponMasks@@YAXPAH00@Z 008E5E50 f game2.o
+464	VERIFIED	0002:000f69d0 ?stat_GetMissionCompletionTime@@YAHXZ 008E5ED0 f game2.o
+465	PORTED	0002:000f69f0 ?stat_UpdateMissionCompletionTime@@YAXXZ 008E5EF0 f game2.o
+466	PORTED	0002:000f6a70 ?stat_WasPlayerWeaponUsed@@YA_NHPAH@Z 008E5F70 f game2.o
+467	VERIFIED	0002:000f6b10 ?stat_FillMask@@YAXW4eWeaponCategory@@PAH11@Z 008E6010 f game2.o
+468	VERIFIED	0002:000f6b90 ?stat_WasPlayerWeaponCategoryUsed@@YA_NW4eWeaponCategory@@_N@Z 008E6090 f game2.o
+469	VERIFIED	0002:000f6c80 ?stat_SetPlayerWeaponUsed@@YAXH@Z 008E6180 f game2.o
+470	VERIFIED	0002:000f6cc0 ?SetCmdBinding@ButtonEntry@@QAEXXZ 008E61C0 f game2.o
+471	VERIFIED	0002:000f6d50 ?GetBoundCmdPress@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ 008E6250 f game2.o
+472	VERIFIED	0002:000f6d80 ?GetBoundCmdRelease@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ 008E6280 f game2.o
+473	PORTED	0002:000f6db0 ?GetCellBBox@@YA?AVBoundingBox@@HPBVStreamZone@@@Z 008E62B0 f game2.o
+474	PORTED	0002:000f6f70 ?GetFilename@TestFPS@@AAEXPAD@Z 008E6470 f game2.o
+475	PORTED	0002:000f6fc0 ?CheckForFloor@TestFPS@@AAE_NABVPosition3@math@@AAUtrace_t@@M@Z 008E64C0 f game2.o
+476	VERIFIED	0002:000f7100 ??0InspectorManager@@QAE@XZ 008E6600 f game2.o
+477	VERIFIED	0002:000f7180 ?FreeAll@InspectorManager@@QAEXXZ 008E6680 f game2.o
+478	VERIFIED	0002:000f71c0 ?Update@InspectorManager@@QAEXXZ 008E66C0 f game2.o
+479	VERIFIED	0002:000f7880 ?AddPlayerMenus@InspectorManager@@QAEXXZ 008E6D80 f game2.o
+480	VERIFIED	0002:000f78f0 ?AddDesignerMenus@InspectorManager@@QAEXXZ 008E6DF0 f game2.o
+481	VERIFIED	0002:000f79f0 ?AddFXMenus@InspectorManager@@QAEXXZ 008E6EF0 f game2.o
+482	VERIFIED	0002:000f7d10 ?SetVehicleDebugRender@@YAHH@Z 008E7210 f game2.o
+483	VERIFIED	0002:000f7d60 ?AddVehicleMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z 008E7260 f game2.o
+484	VERIFIED	0002:000f8570 ?AddMultiplayerMenus@InspectorManager@@QAEXXZ 008E7A70 f game2.o
+485	PORTED	0002:000f8ab0 ?DisplayEntitySound@DebugThread@@QAEXABVPosition3@math@@HHHM@Z 008E7FB0 f game2.o
+486	PORTED	0002:000f8f20 ?FN_DebugThread_Select_Player@@YAXXZ 008E8420 f game2.o
+487	PORTED	0002:000f8f50 ?FN_DebugThread_Select_Level@@YAXXZ 008E8450 f game2.o
+488	VERIFIED	0002:000f8f70 ??0CameraShake@@QAE@XZ 008E8470 f game2.o
+489	PORTED	0002:000f8fa0 ?StartCameraShake@CameraShake@@QAEPAVCameraShakeInstance@@HPAVPosition3@math@@MMM@Z 008E84A0 f game2.o
+490	PORTED	0002:000f9110 ?AngleToQuaternion@MsaQuat@@QAEXMAAY02$$CBM@Z 008E8610 f game2.o
+491	VERIFIED	0002:000f9210 ?AddNoise_2D_EM@CameraShakeInstance@@QAEXHPAVVector4@math@@@Z 008E8710 f game2.o
+492	VERIFIED	0002:000f9340 ?ExpMapToQuaternion@MsaQuat@@QAEXABVVector4@math@@@Z 008E8840 f game2.o
+493	VERIFIED	0002:000f94b0 ?MatrixToQuaternion@MsaQuat@@QAEHPAVMat43@math@@PAVPosition3@3@@Z 008E89B0 f game2.o
+494	PORTED	0002:000f9700 ?GetUnusedEntry@SplineMgr@@AAEPAUSplineEntry@1@XZ 008E8C00 f game2.o
+495	PORTED	0002:000f97c0 ?UnloadBank@SplineMgr@@EAEXW4TPakId@@@Z 008E8CC0 f game2.o
+496	VERIFIED	0002:000f9860 ??0ScriptEventHandler@@QAE@XZ 008E8D60 f game2.o
+497	VERIFIED	0002:000f98d0 ?AddEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z 008E8DD0 f game2.o
+498	PORTED	0002:000f9940 ??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@VFourCC@@@Z 008E8E40 f game2.o
+499	VERIFIED	0002:000f9970 ??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 008E8E70 f game2.o
+500	VERIFIED	0002:000f99a0 ??0HealthRegenTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@MM@Z 008E8EA0 f game2.o
+501	VERIFIED	0002:000f9ac0 ?Update@HealthRegenTask@@UAEXPAVEntity@@M@Z 008E8FC0 f game2.o
+502	VERIFIED	0002:000f9cc0 ?Update@SmokeGrenadeMgr@@QAEXM@Z 008E91C0 f game2.o
+503	PORTED	0002:000fa0e0 ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z 008E95E0 f game2.o
+504	VERIFIED	0002:000fa220 ?PointCanSeePoint@SmokeGrenadeMgr@@QAE_NQBM0M@Z 008E9720 f game2.o
+505	VERIFIED	0002:000fa400 ?EntityCanSeePoint@SmokeGrenadeMgr@@QAE_NPBVEntity@@QBMM@Z 008E9900 f game2.o
+506	VERIFIED	0002:000fa460 ?EntityCanSeeEntity@SmokeGrenadeMgr@@QAE_NPBVEntity@@0M@Z 008E9960 f game2.o
+507	VERIFIED	0002:000fa500 ??0nalPlayMethod@AnimationPlayer@@QAE@XZ 008E9A00 f game2.o
+508	VERIFIED	0002:000fa550 ?Advance@AnimationPlayer@@QAEXM@Z 008E9A50 f game2.o
+509	VERIFIED	0002:000fa690 ?GetPose@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@PAVnalGenericSkeleton@3@QAY02M@Z 008E9B90 f game2.o
+510	PORTED	0002:000fae20 ?DelayCreate@MetaNalBaseAnim@@QAEXPAV?$nalAnimClass@VnalAnyPose@@@@@Z 008EA320 f game2.o
+511	PORTED	0002:000fae50 ?Initialize@AnimIK@@AAEXXZ 008EA350 f game2.o
+512	PORTED	0002:000fb150 ?UpdateGunMatrix@AnimIK@@AAEXVnalGenericBoneHandle@nalGeneric@@0AAVnalMatrix4x4@@1@Z 008EA650 f game2.o
+513	PORTED	0002:000fb510 ?ApplyFootIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z 008EAA10 f game2.o
+514	PORTED	0002:000fbd10 ?ApplyHandIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z 008EB210 f game2.o
+515	PORTED	0002:000fc5b0 ?RotateBone@AnimIK@@AAEXHABVDir3@math@@@Z 008EBAB0 f game2.o
+516	PORTED	0002:000fca40 ?ApplyPainFlinch@AnimIK@@AAEXPAVEntity@@@Z 008EBF40 f game2.o
+517	PORTED	0002:000fddc0 ?ApplyTorsoRotations@AnimIK@@AAEXPAVEntity@@@Z 008ED2C0 f game2.o
+518	PORTED	0002:000fe870 ?stat_support_Initialize@@YAXXZ 008EDD70 f game2.o
+519	PORTED	0002:000fe8d0 ?stat_SetMissionToTrack@@YA_NPBD_N@Z 008EDDD0 f game2.o
+520	VERIFIED	0002:000fe9a0 ?UpdateBinding@ButtonMgr@@SAXEH@Z 008EDEA0 f game2.o
+521	VERIFIED	0002:000feaa0 ?SetKeyBinding@ButtonEntry@@QAEXE@Z 008EDFA0 f game2.o
+522	VERIFIED	0002:000fead0 ?Press@ButtonEntry@@QAEX_N@Z 008EDFD0 f game2.o
+523	VERIFIED	0002:000feb60 ?Release@ButtonEntry@@QAEX_N@Z 008EE060 f game2.o
+524	VERIFIED	0002:000fec20 ??0TestFPS@@QAE@XZ 008EE120 f game2.o
+525	PORTED	0002:000fec80 ?OutputStats@TestFPS@@AAEXXZ 008EE180 f game2.o
+526	PORTED	0002:000fef40 ?FN_ShakeTestFunction@@YAXXZ 008EE440 f game2.o
+527	PORTED	0002:000fefb0 ?DisplayPoolTotals@@YAXAAVPoolAllocator@@@Z 008EE4B0 f game2.o
+528	VERIFIED	0002:000ff130 ?CreateCameraShakeMatrix@CameraShake@@QAEPAVMat43@math@@PAV23@@Z 008EE630 f game2.o
+529	VERIFIED	0002:000ff360 ?Rumble@CameraShake@@QAEXMM@Z 008EE860 f game2.o
+530	PORTED	0002:000ff5b0 ?AddSplineGroupFile@SplineMgr@@QAEXPAEW4TPakId@@@Z 008EEAB0 f game2.o
+531	PORTED	0002:000ff5d0 ?GetSplinePathData@SplineMgr@@QAEPAVSplinePathData@@IAAW4TPakId@@@Z 008EEAD0 f game2.o
+532	PORTED	0002:000ff660 ?GetSplinePathGroup@SplineMgr@@QAEPAVSplineGroup@@IAAW4TPakId@@@Z 008EEB60 f game2.o
+533	VERIFIED	0002:000ff6f0 ?GetSpline@SplineMgr@@QAEXIPAUSplinePath@@@Z 008EEBF0 f game2.o
+534	VERIFIED	0002:000ff780 ?AddEvent@ScriptEventHandler@@QAE_NVHashString@@PBD@Z 008EEC80 f game2.o
+535	VERIFIED	0002:000ff800 ?InsertDroneSlave@@YAHPAVEntity@@I@Z 008EED00 f game2.o
+536	VERIFIED	0002:000ff880 ?InsertDroneMaster@@YAHPAVEntity@@I@Z 008EED80 f game2.o
+537	VERIFIED	0002:000ff910 ?RemoveDrone@@YAHPAVEntity@@I@Z 008EEE10 f game2.o
+538	PORTED	0002:000ff990 ?LookupHandler@TaskSys@@QBEPAVTaskHandler@@VFourCC@@@Z 008EEE90 f game2.o
+539	PORTED	0002:000ff9d0 ?DeliverTasks@TaskSys@@QAEXXZ 008EEED0 f game2.o
+540	VERIFIED	0002:000ffa80 ?PostTask@TaskSys@@QAEXPAVTask@@@Z 008EEF80 f game2.o
+541	PORTED	0002:000ffae0 ?SendTask@TaskSys@@QAEXPAVTask@@@Z 008EEFE0 f game2.o
+542	PORTED	0002:000ffb20 ??0TaskHandler@@QAE@VFourCC@@V?$Bitmask@I@@@Z 008EF020 f game2.o
+543	PORTED	0002:000ffb80 ?QuickDeactivation@TaskHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008EF080 f game2.o
+544	PORTED	0002:000ffbd0 ?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z 008EF0D0 f game2.o
+545	PORTED	0002:000ffc30 ?ApplyFire@AnimIK@@AAEXPAVEntity@@@Z 008EF130 f game2.o
+546	VERIFIED	0002:00101000 ?IN_Frame@@YAXXZ 008F0500 f game2.o
+547	VERIFIED	0002:00101590 ?InitKeyBindings@ButtonMgr@@SAXH@Z 008F0A90 f game2.o
+548	VERIFIED	0002:001016f0 ?ClearBinding@ButtonMgr@@SAXPBVBaseCmdFuncInfo@@H@Z 008F0BF0 f game2.o
+549	PORTED	0002:001017c0 ?ClearAllBindings@ButtonMgr@@SAXXZ 008F0CC0 f game2.o
+550	VERIFIED	0002:001018c0 ?StopTest@TestFPS@@QAEXXZ 008F0DC0 f game2.o
+551	VERIFIED	0002:00101990 ?GatherMetrics@TestFPS@@QAEXXZ 008F0E90 f game2.o
+552	PORTED	0002:00101a60 ?NextPosition@TestFPS@@AAEXXZ 008F0F60 f game2.o
+553	PORTED	0002:00102150 ?IM_RenderGameEntityStats@@YAXXZ 008F1650 f game2.o
+554	VERIFIED	0002:00103780 ?FN_DebugThread_Select_EntityName@@YAXPAD0@Z 008F2C80 f game2.o
+555	VERIFIED	0002:00103840 ?FN_DebugThread_Select_Nearest@@YAXXZ 008F2D40 f game2.o
+556	VERIFIED	0002:001039e0 ?FN_DebugThread_Select_Nearest_Vehicle@@YAXXZ 008F2EE0 f game2.o
+557	VERIFIED	0002:00103b70 ?FN_DebugThread_Select_Nearest_Trigger@@YAXXZ 008F3070 f game2.o
+558	VERIFIED	0002:00103d20 ?FN_DebugThread_Select_UniqueIndex@@YAXXZ 008F3220 f game2.o
+559	VERIFIED	0002:00103e30 ?_Return_MF_UnderCrossHair@@YAPAVEntity@@XZ 008F3330 f game2.o
+560	VERIFIED	0002:00103fd0 ?RenderUniqueIndex@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008F34D0 f game2.o
+561	PORTED	0002:00104560 ?DecodeSplineGroup@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 008F3A60 f game2.o
+562	VERIFIED	0002:00104580 ??0SplineMgr@@QAE@XZ 008F3A80 f game2.o
+563	VERIFIED	0002:001045c0 ?GetSpline@SplineMgr@@QAEXPBDPAUSplinePath@@@Z 008F3AC0 f game2.o
+564	PORTED	0002:001045f0 ?ReverseEndianSplinePath@SplineMgr@@AAEXAAUSplinePath@@@Z 008F3AF0 f game2.o
+565	PORTED	0002:001046c0 ?ReverseEndianSplineGroupFile@SplineMgr@@AAEXAAVHashGroupFile@@@Z 008F3BC0 f game2.o
+566	VERIFIED	0002:001048c0 ?UpdateDroneAEMap@@YAHPAVEntity@@I@Z 008F3DC0 f game2.o
+567	PORTED	0002:00104970 ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z 008F3E70 f game2.o
+568	PORTED	0002:00104990 ?Update@TaskHandler@@QAEXMPAVTaskFunctor@@@Z 008F3E90 f game2.o
+569	PORTED	0002:00104b80 ?DeactivateAll@TaskHandler@@QAEXXZ 008F4080 f game2.o
+570	PORTED	0002:00104bc0 ?GetTaskForEntity@TaskHandler@@QBEPAVTask@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008F40C0 f game2.o
+571	VERIFIED	0002:00104c50 ?ReInitialize@SmokeGrenadeMgr@@QAEXXZ 008F4150 f game2.o
+572	PORTED	0002:00104c60 ?CreateInstance@nalPlayMethod@AnimationPlayer@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalGenericAnim@nalGeneric@@PAVnalGenericSkeleton@6@@Z 008F4160 f game2.o
+573	PORTED	0002:00104c90 ?ApplyVehicleSteering@AnimIK@@AAEXPAVEntity@@@Z 008F4190 f game2.o
+574	PORTED	0002:001068f0 ?ApplyADS@AnimIK@@AAEXPAVEntity@@@Z 008F5DF0 f game2.o
+575	PORTED	0002:00107ec0 ?ApplyTerrainMapping@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z 008F73C0 f game2.o
+576	PORTED	0002:00109460 ?stat_StatDamageEvent@@YAXPAVEntity@@00HW4hitLocation_t@@@Z 008F8960 f game2.o
+577	VERIFIED	0002:00109610 ?InitKeyBindings@ButtonMgr@@SAXXZ 008F8B10 f game2.o
+578	VERIFIED	0002:00109620 ?Test@TestFPS@@QAEXXZ 008F8B20 f game2.o
+579	PORTED	0002:00109b50 ?PositionCamera@TestFPS@@QAEXAAUpmove_t@@@Z 008F9050 f game2.o
+580	PORTED	0002:00109ca0 ?UserRenderHook@InspectorManager@@AAEXXZ 008F91A0 f game2.o
+581	VERIFIED	0002:0010a050 ?Render@DebugThread@@QAEXXZ 008F9550 f game2.o
+582	VERIFIED	0002:0010b690 ?FN_DebugThread_Select_Target@@YAXXZ 008FAB90 f game2.o
+583	VERIFIED	0002:0010b6f0 ?FN_DebugAnims_Select_Target@@YAXXZ 008FABF0 f game2.o
+584	VERIFIED	0002:0010b730 ?CheckAEMapValidation@@YAXXZ 008FAC30 f game2.o
+585	PORTED	0002:0010b8e0 ?Update@TaskSys@@QAEXM@Z 008FADE0 f game2.o
+586	PORTED	0002:0010b920 ?ShutDown@TaskSys@@QAEXXZ 008FAE20 f game2.o
+587	PORTED	0002:0010b9c0 ?DeactivateTask@TaskSys@@QBEXVHandle@@@Z 008FAEC0 f game2.o
+588	PORTED	0002:0010ba00 ?CreateTaskHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z 008FAF00 f game2.o
+589	PORTED	0002:0010ba90 ?GetTaskForEntity@TaskSys@@QBEPAVTask@@VFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008FAF90 f game2.o
+590	PORTED	0002:0010bac0 ??1TaskHandler@@QAE@XZ 008FAFC0 f game2.o
+591	VERIFIED	0002:0010bb30 ??1nalPlayMethod@AnimationPlayer@@QAE@XZ 008FB030 f game2.o
+592	PORTED	0002:0010bb80 ?Advance@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@M@Z 008FB080 f game2.o
+593	VERIFIED	0002:0010bbc0 ?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@nalGeneric@@PAVnalGenericPose@4@@Z 008FB0C0 f game2.o
+594	VERIFIED	0002:0010bdf0 ?IN_Init@@YAXXZ 008FB2F0 f game2.o
+595	VERIFIED	0002:0010bed0 ?Render@InspectorManager@@QAEXXZ 008FB3D0 f game2.o
+596	VERIFIED	0002:0010c420 ?AddDebuggingMenus@InspectorManager@@QAEXXZ 008FB920 f game2.o
+597	VERIFIED	0002:0010c790 ?AddWeaponMenus@InspectorManager@@QAEXPAU_INSPECTOR_MENU@@@Z 008FBC90 f game2.o
+598	PORTED	0002:0010d810 ?PostTaskAndAllocateHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z 008FCD10 f game2.o
+599	VERIFIED	0002:0010d840 ?AddSettingsMenus@InspectorManager@@QAEXXZ 008FCD40 f game2.o
+600	VERIFIED	0002:0010e1b0 ?SetupUserMenus@InspectorManager@@QAEXXZ 008FD6B0 f game2.o
+601	VERIFIED	0002:0010e250 ?Initialise@InspectorManager@@QAEXXZ 008FD750 f game2.o
+602	PORTED	0002:00116b70 ??0Vector4@math@@QAE@ABVQuaternion@1@@Z 00906070 f i game2.o
+603	PORTED	0002:00116b90 ?Stop@nalAnimState@AnimationPlayer@@QAEXXZ 00906090 f i game2.o
+604	PORTED	0002:00116bc0 ?Release@nalAnimState@AnimationPlayer@@QAEXXZ 009060C0 f i game2.o
+605	PORTED	0002:00116c00 ?Dot@math@@YAMABVQuaternion@1@0@Z 00906100 f i game2.o
+606	PORTED	0002:00116c70 ?Kill@nalPartialAnimState@AnimationPlayer@@QAEXXZ 00906170 f i game2.o
+607	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o
+608	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o
+609	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o
+610	PORTED	0002:00117180 ?GetZone@NodeHandle@PathNodes@@QBEGXZ 00906680 f i game2.o
+611	PORTED	0002:00117190 ?GetValue@NodeHandle@PathNodes@@QBEGXZ 00906690 f i game2.o
+612	PORTED	0002:001171a0 ?ClearStats@clientPersistent_t@@QAEXXZ 009066A0 f i game2.o
+613	PORTED	0002:001171d0 ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ 009066D0 f i game2.o
+614	PORTED	0002:001171e0 ?GetTaskId@EntityDeathTask@@SA?AVFourCC@@XZ 009066E0 f i game2.o
+615	VERIFIED	0002:00117200 ??0BoundingBox@@QAE@XZ 00906700 f i game2.o
+616	PORTED	0002:00117290 ??1BoundingBox@@QAE@XZ 00906790 f i game2.o
+617	PORTED	0002:001172a0 ?center@BoundingBox@@QBE?AVPosition3@math@@XZ 009067A0 f i game2.o
+618	PORTED	0002:001172f0 ?width@BoundingBox@@QBEMXZ 009067F0 f i game2.o
+619	PORTED	0002:00117320 ?height@BoundingBox@@QBEMXZ 00906820 f i game2.o
+620	PORTED	0002:00117380 ?GetCellId@ZoneCellDesc@@QBEIXZ 00906880 f i game2.o
+621	PORTED	0002:00117390 ?GetBounds@ZoneCellDesc@@QBEABVBoundingBox@@XZ 00906890 f i game2.o
+622	PORTED	0002:001173a0 ?GetPakInfo@StreamZone@@QBEPBUPakInfoNode@@XZ 009068A0 f i game2.o
+623	PORTED	0002:001173b0 ??0PerformanceStats@TestFPS@@QAE@XZ 009068B0 f i game2.o
+624	PORTED	0002:001173c0 ?IsActive@DebugThread@@QAEHXZ 009068C0 f i game2.o
+625	PORTED	0002:001173d0 ?SetActive@DebugThread@@QAEXH@Z 009068D0 f i game2.o
+626	PORTED	0002:001173e0 ??1nalVirtual@@MAE@XZ 009068E0 f i game2.o
+627	PORTED	0002:001173f0 ?Dummy@nalVirtual@@MAEXXZ 009068F0 f i game2.o
+628	PORTED	0002:00117400 ?get_vtbl_ptr@nalVirtual@@QBEPAXXZ 00906900 f i game2.o
+629	PORTED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o
+630	PORTED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o
+631	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o
+632	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o
+633	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o
+634	PORTED	0002:00117890 ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z 00906D90 f i game2.o
+635	PORTED	0002:00117ac0 ?Translate@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00906FC0 f i game2.o
+636	PORTED	0002:00117b40 ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z 00907040 f i game2.o
+637	PORTED	0002:00117d10 ?Cofactor@nalMatrix4x4@@QBEMHH@Z 00907210 f i game2.o
+638	PORTED	0002:00117e00 ?Determinant@nalMatrix4x4@@QBEMXZ 00907300 f i game2.o
+639	VERIFIED	0002:00117e50 ??0nalMatrix4x4@@QAE@ABV0@@Z 00907350 f i game2.o
+640	VERIFIED	0002:00117ef0 ??0nalPositionOrientation@@QAE@XZ 009073F0 f i game2.o
+641	VERIFIED	0002:00117f00 ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z 00907400 f i game2.o
+642	PORTED	0002:00118160 ?nalBlend@@YAXAAVnalPositionOrientation@@ABV1@1MM@Z 00907660 f i game2.o
+643	PORTED	0002:00118220 ?GetDefaultPose@nalBaseSkeleton@@QBEABVnalBasePose@@XZ 00907720 f i game2.o
+644	PORTED	0002:00118230 ??0nalVirtual@@QAE@XZ 00907730 f i game2.o
+645	VERIFIED	0002:00118240 ?GetSkeleton@nalBasePose@@QBEPBVnalBaseSkeleton@@XZ 00907740 f i game2.o
+646	PORTED	0002:00118250 ??0?$nalAnimClass@VnalAnyPose@@@@QAE@XZ 00907750 f i game2.o
+647	PORTED	0002:00118280 ?GetName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00907780 f i game2.o
+648	VERIFIED	0002:00118290 ?Process@?$nalAnimClass@VnalAnyPose@@@@UAEXXZ 00907790 f i game2.o
+649	VERIFIED	0002:001182a0 ?Release@?$nalAnimClass@VnalAnyPose@@@@UAEXXZ 009077A0 f i game2.o
+650	PORTED	0002:001182b0 ?IsLooping@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ 009077B0 f i game2.o
+651	PORTED	0002:001182c0 ?CheckVersion@?$nalAnimClass@VnalAnyPose@@@@UBE_NXZ 009077C0 f i game2.o
+652	VERIFIED	0002:001182d0 ??2nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z 009077D0 f i game2.o
+653	VERIFIED	0002:001182f0 ??3nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@SAXPAX@Z 009077F0 f i game2.o
+654	VERIFIED	0002:00118300 ?GetAnim@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEPAV2@XZ 00907800 f i game2.o
+655	VERIFIED	0002:00118310 ?GetSkeleton@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ 00907810 f i game2.o
+656	PORTED	0002:00118320 ?GetInverseDuration@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ 00907820 f i game2.o
+657	VERIFIED	0002:00118330 ??1?$nalAnimClass@VnalAnyPose@@@@UAE@XZ 00907830 f i game2.o
+658	PORTED	0002:00118340 ?GetDefaultPose@nalGenericSkeleton@nalGeneric@@QBEABVnalGenericPose@2@XZ 00907840 f i game2.o
+659	PORTED	0002:00118350 ??0nalGenericBoneHandle@nalGeneric@@QAE@XZ 00907850 f i game2.o
+660	PORTED	0002:00118360 ?IsValid@nalGenericBoneHandle@nalGeneric@@QBE_NXZ 00907860 f i game2.o
+661	PORTED	0002:00118370 ??0nalGenericBoneHandle@nalGeneric@@IAE@PBVnalGenericSkeleton@1@H@Z 00907870 f i game2.o
+662	PORTED	0002:00118390 ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z 00907890 f i game2.o
+663	VERIFIED	0002:00118420 ?GetFrameCount@nalGenericAnim@nalGeneric@@QBEHXZ 00907920 f i game2.o
+664	VERIFIED	0002:00118430 ?CreateInstance@nalGenericAnim@nalGeneric@@QAEPAVnalGenericInstance@2@PAVnalGenericSkeleton@2@@Z 00907930 f i game2.o
+665	PORTED	0002:001184c0 ??0NoiseFloat@@QAE@XZ 009079C0 f i game2.o
+666	PORTED	0002:00118510 ??1NoiseFloat@@QAE@XZ 00907A10 f i game2.o
+667	PORTED	0002:00118520 ?Init@NoiseFloat@@QAEXKMM@Z 00907A20 f i game2.o
+668	PORTED	0002:00118570 ?SetFrequency@NoiseFloat@@QAEXM@Z 00907A70 f i game2.o
+669	PORTED	0002:00118590 ?SetRange@NoiseFloat@@QAEXM@Z 00907A90 f i game2.o
+670	VERIFIED	0002:001185b0 ??0MsaQuat@@QAE@XZ 00907AB0 f i game2.o
+671	PORTED	0002:001185c0 ?Set3DScale@CameraShake@@QAEXM@Z 00907AC0 f i game2.o
+672	PORTED	0002:001185e0 ?Get3DScale@CameraShake@@QAEMXZ 00907AE0 f i game2.o
+673	PORTED	0002:001185f0 ?SetScaleCOD@CameraShake@@QAEXMH@Z 00907AF0 f i game2.o
+674	PORTED	0002:00118610 ?GetScaleCOD@CameraShake@@QAEMXZ 00907B10 f i game2.o
+675	PORTED	0002:00118620 ?IsZoneValid@PathNodeMgr@@QAE_NH@Z 00907B20 f i game2.o
+676	PORTED	0002:00118630 ?GetTOC@PathNodeMgr@@QAEPAUTOC1@PathNodes@@XZ 00907B30 f i game2.o
+677	PORTED	0002:00118640 ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@X@1@I@Z 00907B40 f i game2.o
+678	PORTED	0002:00118650 ?IsVisible@apsEffect@@QAEHXZ 00907B50 f i game2.o
+679	PORTED	0002:00118660 ??1CameraShakeInstance@@QAE@XZ 00907B60 f i game2.o
+680	PORTED	0002:00118680 ??0CameraShakeInstance@@QAE@XZ 00907B80 f i game2.o
+681	PORTED	0002:001186b0 ?Inst@SplineMgr@@SAPAV1@XZ 00907BB0 f i game2.o
+682	PORTED	0002:001186c0 ??0SplineEntry@SplineMgr@@QAE@XZ 00907BC0 f i game2.o
+683	PORTED	0002:001186e0 ?Unload@SplineEntry@SplineMgr@@QAEXXZ 00907BE0 f i game2.o
+684	PORTED	0002:00118700 ?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ 00907C00 f i game2.o
+685	PORTED	0002:00118710 ??0?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QAE@XZ 00907C10 f i game2.o
+686	PORTED	0002:00118740 ??0ScriptEvent@ScriptEventHandler@@QAE@XZ 00907C40 f i game2.o
+687	VERIFIED	0002:00118760 ??_GScriptEventHandler@@QAEPAXI@Z 00907C60 f i game2.o
+688	PORTED	0002:001187a0 ?GetHandler@HealthRegenTask@@SAPAVTaskHandler@@XZ 00907CA0 f i game2.o
+689	PORTED	0002:001187b0 ?GetTaskId@HealthRegenTask@@SA?AVFourCC@@XZ 00907CB0 f i game2.o
+690	PORTED	0002:001187d0 ?GetHandler@AnimNotifyTask@@SAPAVTaskHandler@@XZ 00907CD0 f i game2.o
+691	PORTED	0002:001187e0 ?GetTaskId@AnimNotifyTask@@SA?AVFourCC@@XZ 00907CE0 f i game2.o
+692	PORTED	0002:00118800 ??1ParticleIterator@apsRenderSort@@UAE@XZ 00907D00 f i game2.o
+693	PORTED	0002:00118810 ??_EParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o
+694	PORTED	0002:00118810 ??_GParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o
+695	PORTED	0002:00118840 ??1SortedParticleIterator@apsRenderSort@@UAE@XZ 00907D40 f i game2.o
+696	PORTED	0002:00118850 ??1UnsortedParticleIterator@apsRenderSort@@UAE@XZ 00907D50 f i game2.o
+697	PORTED	0002:00118860 ??0ParticleIterator@apsRenderSort@@QAE@XZ 00907D60 f i game2.o
+698	PORTED	0002:00118870 ??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ 00907D70 f i game2.o
+699	PORTED	0002:00118880 ?GetNextParticle@UnsortedParticleIterator@apsRenderSort@@UAEPAEXZ 00907D80 f i game2.o
+700	PORTED	0002:001188a0 ??_GUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o
+701	PORTED	0002:001188a0 ??_EUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o
+702	PORTED	0002:001188d0 ?GetBounds@apsGroup@@QBEABUapsBounds@@XZ 00907DD0 f i game2.o
+703	PORTED	0002:001188e0 ?SetEntityHandle@AnimNoteHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00907DE0 f i game2.o
+704	PORTED	0002:001188f0 ?GetNextNotifyIndex@AnimNoteHandler@@IAEHM@Z 00907DF0 f i game2.o
+705	PORTED	0002:00118b40 ??0NotifyInfo@AnimNoteHandler@@QAE@XZ 00908040 f i game2.o
+706	PORTED	0002:00118b60 ??1NotifyInfo@AnimNoteHandler@@QAE@XZ 00908060 f i game2.o
+707	PORTED	0002:00118b70 ??0MetaNalBaseAnim@@QAE@W4nalRegisterKey@@@Z 00908070 f i game2.o
+708	PORTED	0002:00118ba0 ?VirtualCreateInstance@MetaNalBaseAnim@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 009080A0 f i game2.o
+709	PORTED	0002:00118c00 ??1MetaNalBaseAnim@@UAE@XZ 00908100 f i game2.o
+710	PORTED	0002:00118c10 ??0angles_t@@QAE@XZ 00908110 f i game2.o
+711	PORTED	0002:00118c20 ??Aangles_t@@QAEAAMH@Z 00908120 f i game2.o
+712	PORTED	0002:00118ca0 ?Zero@angles_t@@QAEAAV1@XZ 009081A0 f i game2.o
+713	PORTED	0002:00118cc0 ??0mpAnimJointPosOrientations_t@@QAE@XZ 009081C0 f i game2.o
+714	PORTED	0002:00118cd0 ??0mpAnimJointBoneHandles_t@@QAE@XZ 009081D0 f i game2.o
+715	VERIFIED	0002:00118ce0 ?GetSkeleton@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081E0 f i game2.o
+716	VERIFIED	0002:00118cf0 ?GetSkeleton@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081F0 f i game2.o
+717	VERIFIED	0002:00118d00 ??0?$ae_fixed_string@$0EA@E@@QAE@XZ 00908200 f i game2.o
+718	PORTED	0002:00118d10 ??A?$InplaceVector@E@@QBEABEI@Z 00908210 f i game2.o
+719	PORTED	0002:00118d90 ??A?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@QAEAAV?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@H@Z 00908290 f i game2.o
+720	PORTED	0002:00118e10 ??A?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@QAEAAVKeyInfoEntry@@H@Z 00908310 f i game2.o
+721	PORTED	0002:00118e90 ?empty@?$reserved_dlist@VTask@@@@QBE_NXZ 00908390 f i game2.o
+722	PORTED	0002:00118eb0 ??0dlist_node@?$reserved_dlist@VTask@@@@QAE@PAU01@0@Z 009083B0 f i game2.o
+723	PORTED	0002:00118ed0 ?size@?$InplaceVector@VBspCell@@@@QBEIXZ 009083D0 f i game2.o
+724	PORTED	0002:00118ee0 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009083E0 f i game2.o
+725	PORTED	0002:00118f00 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAE?AV01@H@Z 00908400 f i game2.o
+726	PORTED	0002:00118f30 ??0dlist_node@?$reserved_dlist@VScriptEventHandler@@@@QAE@PAU01@0@Z 00908430 f i game2.o
+727	PORTED	0002:00118f50 ?empty@?$reserved_dlist@VQuickTaskDeactivation@@@@QBE_NXZ 00908450 f i game2.o
+728	PORTED	0002:00118f70 ??0dlist_node@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@PAU01@0@Z 00908470 f i game2.o
+729	PORTED	0002:00118f90 ??0dlist_node@?$reserved_dlist@VTaskHandler@@@@QAE@PAU01@0@Z 00908490 f i game2.o
+730	PORTED	0002:00118fb0 ??0?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE@XZ 009084B0 f i game2.o
+731	PORTED	0002:00118fc0 ?push_back@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEXABQAVTaskHandler@@@Z 009084C0 f i game2.o
+732	PORTED	0002:00119050 ??A?$ae_sized_array@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAEAAV?$ae_sized_array@VButtonEntry@@$0BA@@@H@Z 00908550 f i game2.o
+733	PORTED	0002:001190d0 ??A?$ae_sized_array@VButtonEntry@@$0BA@@@QAEAAVButtonEntry@@H@Z 009085D0 f i game2.o
+734	VERIFIED	0002:00119150 ?size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908650 f i game2.o
+735	PORTED	0002:00119160 ?capacity@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908660 f i game2.o
+736	VERIFIED	0002:00119170 ?begin@?$ae_vector@PAVParticleEffect@@@@QAEPAPAVParticleEffect@@XZ 00908670 f i game2.o
+737	VERIFIED	0002:00119180 ?end@?$ae_vector@PAVParticleEffect@@@@QAEPAPAVParticleEffect@@XZ 00908680 f i game2.o
+738	PORTED	0002:00119190 ?size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEHXZ 00908690 f i game2.o
+739	PORTED	0002:001191a0 ?empty@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NXZ 009086A0 f i game2.o
+740	PORTED	0002:001191c0 ?push_back@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXABUPerformanceStats@TestFPS@@@Z 009086C0 f i game2.o
+741	PORTED	0002:00119270 ??0?$ae_sized_array@_N$0GE@@@QAE@XZ 00908770 f i game2.o
+742	PORTED	0002:00119280 ??A?$ae_sized_array@_N$0GE@@@QAEAA_NH@Z 00908780 f i game2.o
+743	VERIFIED	0002:00119300 ??0?$DbLinkedHandle@VTaskSys@@VTask@@@@QAE@VHandle@@@Z 00908800 f i game2.o
+744	PORTED	0002:00119320 ??A?$InplaceVector@M@@QBEABMI@Z 00908820 f i game2.o
+745	PORTED	0002:001193a0 ?size@?$InplaceVector@PBVZoneCellDesc@@@@QBEIXZ 009088A0 f i game2.o
+746	PORTED	0002:001193b0 ??A?$InplaceVector@PBVZoneCellDesc@@@@QBEABQBVZoneCellDesc@@I@Z 009088B0 f i game2.o
+747	PORTED	0002:00119430 ??Diterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEAAUPerformanceStats@TestFPS@@XZ 00908930 f i game2.o
+748	PORTED	0002:00119440 ??Eiterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEAAV01@XZ 00908940 f i game2.o
+749	PORTED	0002:00119450 ??9iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NV01@@Z 00908950 f i game2.o
+750	PORTED	0002:00119470 ?size@?$apsBlockArray@PAVapsGroup@@@@QBEHXZ 00908970 f i game2.o
+751	PORTED	0002:00119480 ??A?$apsBlockArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z 00908980 f i game2.o
+752	PORTED	0002:001194e0 ??Diterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBEAAV?$ae_fixed_string@$0EA@E@@XZ 009089E0 f i game2.o
+753	PORTED	0002:001194f0 ??Eiterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEAAV01@XZ 009089F0 f i game2.o
+754	PORTED	0002:00119500 ??9iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBE_NV01@@Z 00908A00 f i game2.o
+755	PORTED	0002:00119520 ?size@?$InplaceVector@VSplinePathData@@@@QBEIXZ 00908A20 f i game2.o
+756	PORTED	0002:00119530 ??A?$InplaceVector@VSplinePathData@@@@QAEAAVSplinePathData@@I@Z 00908A30 f i game2.o
+757	PORTED	0002:001195b0 ?capacity@?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QBEHXZ 00908AB0 f i game2.o
+758	PORTED	0002:001195c0 ??A?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QAEAAUSplineEntry@SplineMgr@@H@Z 00908AC0 f i game2.o
+759	PORTED	0002:00119640 ??0?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAE@XZ 00908B40 f i game2.o
+760	PORTED	0002:00119650 ?push_back@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXABQAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@@Z 00908B50 f i game2.o
+761	PORTED	0002:001196d0 ??Diterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBEAAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@XZ 00908BD0 f i game2.o
+762	PORTED	0002:001196e0 ??Eiterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEAAV01@XZ 00908BE0 f i game2.o
+763	PORTED	0002:001196f0 ??9iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBE_NV01@@Z 00908BF0 f i game2.o
+764	PORTED	0002:00119710 ??0?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@QAE@ABIABQAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@Z 00908C10 f i game2.o
+765	PORTED	0002:00119730 ?erase@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEXPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908C30 f i game2.o
+766	PORTED	0002:001197d0 ?find@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABV2@@Z 00908CD0 f i game2.o
+767	PORTED	0002:00119800 ??Dconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D00 f i game2.o
+768	PORTED	0002:00119810 ??Cconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D10 f i game2.o
+769	PORTED	0002:00119820 ??Econst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D20 f i game2.o
+770	PORTED	0002:00119830 ??9const_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D30 f i game2.o
+771	PORTED	0002:00119850 ??Citerator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEAAPAVTaskHandler@@XZ 00908D50 f i game2.o
+772	PORTED	0002:00119860 ??Eiterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D60 f i game2.o
+773	PORTED	0002:00119870 ??9iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D70 f i game2.o
+774	PORTED	0002:00119890 ??Eiterator@?$reserved_dlist@VTask@@@@QAEAAV01@XZ 00908D90 f i game2.o
+775	PORTED	0002:001198b0 ??Eiterator@?$reserved_dlist@VTask@@@@QAE?AV01@H@Z 00908DB0 f i game2.o
+776	PORTED	0002:001198e0 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908DE0 f i game2.o
+777	PORTED	0002:00119980 ??0?$ae_sized_array@PAVTask@@$0IA@@@QAE@XZ 00908E80 f i game2.o
+778	PORTED	0002:00119990 ?push_back@?$ae_sized_array@PAVTask@@$0IA@@@QAEXABQAVTask@@@Z 00908E90 f i game2.o
+779	PORTED	0002:00119a30 ??Diterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QBEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00908F30 f i game2.o
+780	PORTED	0002:00119a40 ??Eiterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAEAAV01@XZ 00908F40 f i game2.o
+781	PORTED	0002:00119a50 ??9iterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QBE_NV01@@Z 00908F50 f i game2.o
+782	PORTED	0002:00119a70 ??Diterator@?$ae_sized_array@PAVTask@@$0IA@@@QBEAAPAVTask@@XZ 00908F70 f i game2.o
+783	PORTED	0002:00119a80 ??Eiterator@?$ae_sized_array@PAVTask@@$0IA@@@QAEAAV01@XZ 00908F80 f i game2.o
+784	PORTED	0002:00119a90 ??9iterator@?$ae_sized_array@PAVTask@@$0IA@@@QBE_NV01@@Z 00908F90 f i game2.o
+785	PORTED	0002:00119ab0 ??Econst_iterator@?$reserved_dlist@VTask@@@@QAEAAV01@XZ 00908FB0 f i game2.o
+786	PORTED	0002:00119b30 ?size@?$ae_vector@USmokeGrenadeInfo@@@@QBEHXZ 00909030 f i game2.o
+787	PORTED	0002:00119b40 ??A?$ae_vector@USmokeGrenadeInfo@@@@QAEAAUSmokeGrenadeInfo@@H@Z 00909040 f i game2.o
+788	PORTED	0002:00119bc0 ?end@?$ae_vector@USmokeGrenadeInfo@@@@QAEPAUSmokeGrenadeInfo@@XZ 009090C0 f i game2.o
+789	PORTED	0002:00119bd0 ?erase@?$ae_vector@USmokeGrenadeInfo@@@@QAEXH@Z 009090D0 f i game2.o
+790	VERIFIED	0002:00119ce0 ??0?$nalGenericComponentHandle@X@nalGeneric@@QAE@XZ 009091E0 f i game2.o
+791	PORTED	0002:00119cf0 ?IsValid@?$nalGenericComponentHandle@X@nalGeneric@@QBE_NXZ 009091F0 f i game2.o
+792	PORTED	0002:00119d00 ??0?$ae_sized_array_base@UPerformanceStats@TestFPS@@$0DOI@@@QAE@XZ 00909200 f i game2.o
+793	PORTED	0002:00119d10 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 00909210 f i game2.o
+794	PORTED	0002:00119d70 ?node_to_object@?$reserved_dlist@VTask@@@@SAPAVTask@@PAUdlist_node@1@@Z 00909270 f i game2.o
+795	PORTED	0002:00119d80 ?node_to_object@?$reserved_dlist@VTask@@@@SAPBVTask@@PBUdlist_node@1@@Z 00909280 f i game2.o
+796	PORTED	0002:00119d90 ?clear@?$reserved_dlist@VTask@@@@QAEXXZ 00909290 f i game2.o
+797	PORTED	0002:00119db0 ?validate@?$reserved_dlist@VTask@@@@QBEXXZ 009092B0 f i game2.o
+798	PORTED	0002:00119dc0 ?pop@dlist_node@?$reserved_dlist@VTask@@@@QAEXXZ 009092C0 f i game2.o
+799	PORTED	0002:00119de0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPAVAeThreadState@@PAUdlist_node@1@@Z 009092E0 f i game2.o
+800	PORTED	0002:00119df0 ?validate@?$reserved_dlist@VAeThreadState@@@@QBEXXZ 009092F0 f i game2.o
+801	PORTED	0002:00119e00 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPAVAeThread@@PAUdlist_node@1@@Z 00909300 f i game2.o
+802	PORTED	0002:00119e10 ?validate@?$reserved_dlist@VAeThread@@@@QBEXXZ 00909310 f i game2.o
+803	PORTED	0002:00119e20 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAUdlist_node@1@0@Z 00909320 f i game2.o
+804	PORTED	0002:00119e40 ?compare@iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 00909340 f i game2.o
+805	PORTED	0002:00119e60 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAUdlist_node@1@0@Z 00909360 f i game2.o
+806	PORTED	0002:00119e80 ?compare@iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 00909380 f i game2.o
+807	PORTED	0002:00119ea0 ?node_to_object@?$reserved_dlist@VQuickTaskDeactivation@@@@SAPAVQuickTaskDeactivation@@PAUdlist_node@1@@Z 009093A0 f i game2.o
+808	PORTED	0002:00119eb0 ?clear@?$reserved_dlist@VQuickTaskDeactivation@@@@QAEXXZ 009093B0 f i game2.o
+809	PORTED	0002:00119ed0 ?validate@?$reserved_dlist@VQuickTaskDeactivation@@@@QBEXXZ 009093D0 f i game2.o
+810	PORTED	0002:00119ee0 ??0DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAE@XZ 009093E0 f i game2.o
+811	PORTED	0002:00119f00 ?GetObject@DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QBEPAVTask@@XZ 00909400 f i game2.o
+812	PORTED	0002:00119f10 ?SetObject@DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXPAVTask@@@Z 00909410 f i game2.o
+813	PORTED	0002:00119f20 ?GetKey@DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QBEHXZ 00909420 f i game2.o
+814	PORTED	0002:00119f30 ?Release@DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXXZ 00909430 f i game2.o
+815	PORTED	0002:00119f40 ?set_size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXH@Z 00909440 f i game2.o
+816	PORTED	0002:00119f60 ??0iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@AAE@PAUPerformanceStats@TestFPS@@@Z 00909460 f i game2.o
+817	PORTED	0002:00119f80 ??0iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@AAE@PAV?$ae_fixed_string@$0EA@E@@@Z 00909480 f i game2.o
+818	PORTED	0002:00119fa0 ?size@?$InplaceVector@PBV?$InplaceVector@E@@@@QBEIXZ 009094A0 f i game2.o
+819	PORTED	0002:00119fb0 ??A?$InplaceVector@PBV?$InplaceVector@E@@@@QAEAAPBV?$InplaceVector@E@@I@Z 009094B0 f i game2.o
+820	PORTED	0002:0011a030 ??0iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@AAE@PAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@@Z 00909530 f i game2.o
+821	PORTED	0002:0011a050 ??0const_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@AAE@PBQAVTaskHandler@@@Z 00909550 f i game2.o
+822	PORTED	0002:0011a070 ??0iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@AAE@PAPAVTaskHandler@@@Z 00909570 f i game2.o
+823	PORTED	0002:0011a090 ??0?$SizedHandle@$0N@$0BD@@@QAE@HH@Z 00909590 f i game2.o
+824	PORTED	0002:0011a190 ??0?$SizedHandle@$0N@$0BD@@@QAE@VHandle@@@Z 00909690 f i game2.o
+825	PORTED	0002:0011a1b0 ?GetIndex@?$SizedHandle@$0N@$0BD@@@QBEHXZ 009096B0 f i game2.o
+826	PORTED	0002:0011a1c0 ?GetKey@?$SizedHandle@$0N@$0BD@@@QBEHXZ 009096C0 f i game2.o
+827	PORTED	0002:0011a1d0 ??0iterator@?$reserved_dlist@VTask@@@@QAE@PAUdlist_node@1@0@Z 009096D0 f i game2.o
+828	PORTED	0002:0011a1f0 ?compare@iterator@?$reserved_dlist@VTask@@@@QBE_NABV12@@Z 009096F0 f i game2.o
+829	PORTED	0002:0011a210 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAE@XZ 00909710 f i game2.o
+830	PORTED	0002:0011a220 ??0iterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@AAE@PAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00909720 f i game2.o
+831	PORTED	0002:0011a240 ??0iterator@?$ae_sized_array@PAVTask@@$0IA@@@AAE@PAPAVTask@@@Z 00909740 f i game2.o
+832	PORTED	0002:0011a260 ??0const_iterator@?$reserved_dlist@VTask@@@@QAE@PBUdlist_node@1@0@Z 00909760 f i game2.o
+833	PORTED	0002:0011a280 ?compare@const_iterator@?$reserved_dlist@VTask@@@@QBE_NABV12@@Z 00909780 f i game2.o
+834	PORTED	0002:0011a2a0 ?construct_array@?$ae_vector@USmokeGrenadeInfo@@@@AAEPAUSmokeGrenadeInfo@@HH@Z 009097A0 f i game2.o
+835	PORTED	0002:0011a310 ??Diterator@?$BitSet@$0CA@@@QBEHXZ 00909810 f i game2.o
+836	PORTED	0002:0011a320 ?get_head@?$reserved_dlist@VTask@@@@QAEPAUdlist_node@1@XZ 00909820 f i game2.o
+837	PORTED	0002:0011a330 ?get_head@?$reserved_dlist@VTask@@@@QBEPBUdlist_node@1@XZ 00909830 f i game2.o
+838	PORTED	0002:0011a340 ?get_head@?$reserved_dlist@VAeThreadState@@@@QAEPAUdlist_node@1@XZ 00909840 f i game2.o
+839	PORTED	0002:0011a350 ?empty@?$reserved_dlist@VAeThreadState@@@@QBE_NXZ 00909850 f i game2.o
+840	PORTED	0002:0011a370 ?get_head@?$reserved_dlist@VAeThread@@@@QAEPAUdlist_node@1@XZ 00909870 f i game2.o
+841	PORTED	0002:0011a380 ?empty@?$reserved_dlist@VAeThread@@@@QBE_NXZ 00909880 f i game2.o
+842	PORTED	0002:0011a3a0 ?GetWord@?$BitSet@$0CA@@@QBEIH@Z 009098A0 f i game2.o
+843	PORTED	0002:0011a3b0 ?GetNumWords@?$BitSet@$0CA@@@SAHXZ 009098B0 f i game2.o
+844	PORTED	0002:0011a3c0 ?size@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBEHXZ 009098C0 f i game2.o
+845	PORTED	0002:0011a3d0 ?pop_back@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEAAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@XZ 009098D0 f i game2.o
+846	PORTED	0002:0011a3f0 ??0iterator@?$reserved_dlist@VTask@@@@QAE@PAVTask@@@Z 009098F0 f i game2.o
+847	PORTED	0002:0011a410 ?construct_array@?$ae_vector@USmokeGrenadeInfo@@@@AAEPAUSmokeGrenadeInfo@@H@Z 00909910 f i game2.o
+848	PORTED	0002:0011a470 ??Eiterator@?$BitSet@$0CA@@@QAEXXZ 00909970 f i game2.o
+849	PORTED	0002:0011a510 ??0?$BitSet@$0CA@@@QAE@W4EInitializer@0@@Z 00909A10 f i game2.o
+850	PORTED	0002:0011a520 ??0iterator@?$BitSet@$0CA@@@QAE@XZ 00909A20 f i game2.o
+851	PORTED	0002:0011a540 ?compare@iterator@?$BitSet@$0CA@@@QAE_NABV12@@Z 00909A40 f i game2.o
+852	PORTED	0002:0011a570 ??$nalMax@M@@YAMMM@Z 00909A70 f i game2.o
+853	SKIPPED	0002:0011a5a0 ??$swap@E@std@@YAXAAE0@Z 00909AA0 f i game2.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+854	VERIFIED	0002:0011a5c0 ??$GetPose@VnalGenericPose@nalGeneric@@V12@@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAEXMMAAVnalGenericPose@nalGeneric@@ABV23@H@Z 00909AC0 f i game2.o
+855	VERIFIED	0002:0011a630 ??$ClampRange@M@@YAMABM00@Z 00909B30 f i game2.o
+856	PORTED	0002:0011a6f0 ??A?$InplaceVector@PBVSplineGroup@@@@QBEABQBVSplineGroup@@I@Z 00909BF0 f i game2.o
+857	PORTED	0002:0011a770 ??0?$nalGenericComponentHandle@X@nalGeneric@@IAE@PBVnalGenericSkeleton@1@PBUnalComponentInfo@1@H@Z 00909C70 f i game2.o
+858	PORTED	0002:0011a790 ??0iterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@PAUdlist_node@1@0@Z 00909C90 f i game2.o
+859	PORTED	0002:0011a7b0 ?get_head@?$reserved_dlist@VQuickTaskDeactivation@@@@QAEPAUdlist_node@1@XZ 00909CB0 f i game2.o
+860	PORTED	0002:0011a7c0 ??Eiterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE?AV01@H@Z 00909CC0 f i game2.o
+861	PORTED	0002:0011a7f0 ??Diterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QAEPAVQuickTaskDeactivation@@XZ 00909CF0 f i game2.o
+862	PORTED	0002:0011a800 ??R?$DelFunctor@VQuickTaskDeactivation@@@@QAEXPAVQuickTaskDeactivation@@@Z 00909D00 f i game2.o
+863	PORTED	0002:0011a820 ??R?$DelFunctor@VTask@@@@QAEXPAVTask@@@Z 00909D20 f i game2.o
+864	PORTED	0002:0011a840 ?compare@iterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QBE_NABV12@@Z 00909D40 f i game2.o
+865	PORTED	0002:0011a860 ?do_it@?$endian_reverser_t@$01@@SAXPAE@Z 00909D60 f i game2.o
+866	PORTED	0002:0011a880 ?Set@apsSphere@@QAEXABVDir3@math@@M@Z 00909D80 f i game2.o
+867	PORTED	0002:0011a930 ??0apsSphere@@QAE@ABVDir3@math@@M@Z 00909E30 f i game2.o
+868	PORTED	0002:0011a960 ?Radius@apsSphere@@QAEAAMXZ 00909E60 f i game2.o
+869	VERIFIED	0002:0011a970 ?Init@apsBounds@@QAEXXZ 00909E70 f i game2.o
+870	VERIFIED	0002:0011aa00 ??0apsBounds@@QAE@XZ 00909F00 f i game2.o
+871	PORTED	0002:0011aa10 ?Center@apsBounds@@QBE?AVDir3@math@@XZ 00909F10 f i game2.o
+872	VERIFIED	0002:0011aa60 ?Radius@apsBounds@@QBEMXZ 00909F60 f i game2.o
+873	VERIFIED	0002:0011aad0 ?Sphere@apsBounds@@QBE?AUapsSphere@@XZ 00909FD0 f i game2.o
+874	PORTED	0002:0011ab80 ?GetBoundCmdName@KeyInfo@@SAPADHH@Z 0090A080 f i game2.o
+875	PORTED	0002:0011abb0 ?SetTaskHandle@Task@@QAEXVHandle@@@Z 0090A0B0 f i game2.o
+876	PORTED	0002:0011ac40 ?Deactivate@Task@@QAEXXZ 0090A140 f i game2.o
+877	PORTED	0002:0011ac50 ?EndFirstPass@Task@@QAEXXZ 0090A150 f i game2.o
+878	PORTED	0002:0011ac60 ?GetTaskId@XAnimUpdateTask@@SA?AVFourCC@@XZ 0090A160 f i game2.o
+879	PORTED	0002:0011ac80 ?GetTaskId@AnimationUpdateTask@@SA?AVFourCC@@XZ 0090A180 f i game2.o
+880	PORTED	0002:0011aca0 ?GetNumCells@BspTree@@QBEHXZ 0090A1A0 f i game2.o
+881	PORTED	0002:0011acb0 ?IsAsleep@AeThread@@QBE_NXZ 0090A1B0 f i game2.o
+882	PORTED	0002:0011acc0 ??0QuickTaskDeactivation@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 0090A1C0 f i game2.o
+883	PORTED	0002:0011acf0 ?IsSingleton@TaskHandler@@QBE_NXZ 0090A1F0 f i game2.o
+884	PORTED	0002:0011ad00 ?IsActive@TaskHandler@@QBE_NXZ 0090A200 f i game2.o
+885	PORTED	0002:0011ad10 ?Deactivate@TaskHandler@@QAEXXZ 0090A210 f i game2.o
+886	PORTED	0002:0011ad20 ?RegisterHandler@TaskSys@@QAEXPAVTaskHandler@@@Z 0090A220 f i game2.o
+887	PORTED	0002:0011ad40 ??0ButtonEntry@@QAE@XZ 0090A240 f i game2.o
+888	PORTED	0002:0011ad60 ?BaseAdvance@nalAnimState@AnimationPlayer@@QAEXM@Z 0090A260 f i game2.o
+889	VERIFIED	0002:0011ad90 ?Update@nalAnimState@AnimationPlayer@@QAE_NPAV2@M@Z 0090A290 f i game2.o
+890	PORTED	0002:0011ae90 ?BasePartialCompose@nalAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0ABV34@@Z 0090A390 f i game2.o
+891	PORTED	0002:0011af40 ?BasePartialComposeTorso@nalAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0ABV34@@Z 0090A440 f i game2.o
+892	VERIFIED	0002:0011aff0 ?Compose@nalAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0@Z 0090A4F0 f i game2.o
+893	VERIFIED	0002:0011b0b0 ?Update@nalPartialAnimState@AnimationPlayer@@QAE_NPAV2@M@Z 0090A5B0 f i game2.o
+894	PORTED	0002:0011b2b0 ?Compose@nalPartialAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0@Z 0090A7B0 f i game2.o
+895	PORTED	0002:0011b350 ?GetNumCells@StreamZone@@QBEIXZ 0090A850 f i game2.o
+896	PORTED	0002:0011b360 ?GetCell@StreamZone@@QBEPBVZoneCellDesc@@I@Z 0090A860 f i game2.o
+897	VERIFIED	0002:0011b380 ??0DebugThread@@QAE@XZ 0090A880 f i game2.o
+898	PORTED	0002:0011b3b0 ??0nalMatrix4x4@@QAE@ABVQuaternion@math@@@Z 0090A8B0 f i game2.o
+899	PORTED	0002:0011b630 ??KnalMatrix4x4@@QAE?AV0@M@Z 0090AB30 f i game2.o
+900	PORTED	0002:0011b6c0 ??_0nalMatrix4x4@@QAE?AV0@M@Z 0090ABC0 f i game2.o
+901	PORTED	0002:0011b720 ?Transpose@nalMatrix4x4@@QBE?AV1@XZ 0090AC20 f i game2.o
+902	PORTED	0002:0011b7a0 ?Adjugate@nalMatrix4x4@@QBE?AV1@XZ 0090ACA0 f i game2.o
+903	VERIFIED	0002:0011b830 ?Inverse@nalMatrix4x4@@QBE?AV1@XZ 0090AD30 f i game2.o
+904	VERIFIED	0002:0011b8d0 ??_E?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o
+905	VERIFIED	0002:0011b8d0 ??_G?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o
+906	PORTED	0002:0011b900 ?HasTrack@nalGenericAnim@nalGeneric@@QBE_NH@Z 0090AE00 f i game2.o
+907	PORTED	0002:0011b980 ?set_debug_render@rb_vehicle@@QAEX_N@Z 0090AE80 f i game2.o
+908	PORTED	0002:0011b9c0 ?get_debug_render@rb_vehicle@@QAE_NXZ 0090AEC0 f i game2.o
+909	PORTED	0002:0011b9d0 ?GetNumGroups@apsEffect@@QBEHXZ 0090AED0 f i game2.o
+910	PORTED	0002:0011b9e0 ?GetGroup@apsEffect@@QAEPAVapsGroup@@H@Z 0090AEE0 f i game2.o
+911	PORTED	0002:0011ba60 ??1CameraShake@@QAE@XZ 0090AF60 f i game2.o
+912	PORTED	0002:0011ba80 ?GetPath@SplineGroup@@QAEPAVSplinePathData@@XZ 0090AF80 f i game2.o
+913	VERIFIED	0002:0011baf0 ??_EHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o
+914	VERIFIED	0002:0011baf0 ??_GHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o
+915	VERIFIED	0002:0011bb20 ??1HealthRegenTask@@UAE@XZ 0090B020 f i game2.o
+916	PORTED	0002:0011bb30 ??0SortedParticleIterator@apsRenderSort@@QAE@XZ 0090B030 f i game2.o
+917	PORTED	0002:0011bb40 ?GetNextParticle@SortedParticleIterator@apsRenderSort@@UAEPAEXZ 0090B040 f i game2.o
+918	PORTED	0002:0011bb60 ??_ESortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o
+919	PORTED	0002:0011bb60 ??_GSortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o
+920	PORTED	0002:0011bb90 ??0AnimNoteHandler@@QAE@XZ 0090B090 f i game2.o
+921	PORTED	0002:0011bbb0 ??_ENotifyInfo@AnimNoteHandler@@QAEPAXI@Z 0090B0B0 f i game2.o
+922	PORTED	0002:0011bc20 ?Reference@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@@Z 0090B120 f i game2.o
+923	PORTED	0002:0011bc30 ?Release@nalPlayMethod@AnimationPlayer@@UAEXXZ 0090B130 f i game2.o
+924	PORTED	0002:0011bc40 ??_EMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o
+925	PORTED	0002:0011bc40 ??_GMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o
+926	PORTED	0002:0011bc70 ??0weaponFileInfo_t@@QAE@XZ 0090B170 f i game2.o
+927	PORTED	0002:0011bca0 ??0?$reserved_dlist@VTask@@@@QAE@XZ 0090B1A0 f i game2.o
+928	PORTED	0002:0011bcc0 ?push_back@?$reserved_dlist@VTask@@@@QAEXPAVTask@@@Z 0090B1C0 f i game2.o
+929	PORTED	0002:0011bcf0 ?pop_front@?$reserved_dlist@VTask@@@@QAEPAVTask@@XZ 0090B1F0 f i game2.o
+930	PORTED	0002:0011bd20 ?end@?$reserved_dlist@VTask@@@@QAE?AViterator@1@XZ 0090B220 f i game2.o
+931	PORTED	0002:0011bd40 ?end@?$reserved_dlist@VTask@@@@QBE?AVconst_iterator@1@XZ 0090B240 f i game2.o
+932	PORTED	0002:0011bd60 ?end@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@XZ 0090B260 f i game2.o
+933	PORTED	0002:0011bd80 ?end@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@XZ 0090B280 f i game2.o
+934	PORTED	0002:0011bda0 ??Citerator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 0090B2A0 f i game2.o
+935	PORTED	0002:0011bdb0 ??9iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 0090B2B0 f i game2.o
+936	PORTED	0002:0011bde0 ??Diterator@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 0090B2E0 f i game2.o
+937	PORTED	0002:0011bdf0 ??9iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 0090B2F0 f i game2.o
+938	PORTED	0002:0011be20 ??0?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@XZ 0090B320 f i game2.o
+939	PORTED	0002:0011be40 ?push_back@?$reserved_dlist@VQuickTaskDeactivation@@@@QAEXPAVQuickTaskDeactivation@@@Z 0090B340 f i game2.o
+940	PORTED	0002:0011be70 ?pop_front@?$reserved_dlist@VQuickTaskDeactivation@@@@QAEPAVQuickTaskDeactivation@@XZ 0090B370 f i game2.o
+941	PORTED	0002:0011bea0 ?BindObjectToHandle@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXVHandle@@PAVTask@@@Z 0090B3A0 f i game2.o
+942	PORTED	0002:0011bf30 ?DereferenceHandle@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QBEPAVTask@@VHandle@@@Z 0090B430 f i game2.o
+943	PORTED	0002:0011bf70 ?begin@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE?AViterator@1@XZ 0090B470 f i game2.o
+944	PORTED	0002:0011bf80 ?end@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE?AViterator@1@XZ 0090B480 f i game2.o
+945	PORTED	0002:0011bfa0 ?begin@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE?AVconst_iterator@1@XZ 0090B4A0 f i game2.o
+946	PORTED	0002:0011bfb0 ?end@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE?AVconst_iterator@1@XZ 0090B4B0 f i game2.o
+947	PORTED	0002:0011bfd0 ??0?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAE@XZ 0090B4D0 f i game2.o
+948	PORTED	0002:0011bfe0 ?clear@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXXZ 0090B4E0 f i game2.o
+949	PORTED	0002:0011bff0 ?begin@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAE?AViterator@1@XZ 0090B4F0 f i game2.o
+950	PORTED	0002:0011c000 ?end@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAE?AViterator@1@XZ 0090B500 f i game2.o
+951	VERIFIED	0002:0011c020 ??0?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 0090B520 f i game2.o
+952	PORTED	0002:0011c080 ?begin@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B580 f i game2.o
+953	PORTED	0002:0011c090 ?end@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B590 f i game2.o
+954	PORTED	0002:0011c0b0 ?Fixup@?$InplaceAssetBank@VSplineGroup@@V?$InplaceTree@II@@@@QAEXXZ 0090B5B0 f i game2.o
+955	PORTED	0002:0011c130 ?Size@?$InplaceAssetBank@V?$InplaceVector@E@@V?$InplaceTree@II@@@@QBEIXZ 0090B630 f i game2.o
+956	PORTED	0002:0011c140 ??A?$InplaceAssetBank@V?$InplaceVector@E@@V?$InplaceTree@II@@@@QAEPAV?$InplaceVector@E@@I@Z 0090B640 f i game2.o
+957	PORTED	0002:0011c1c0 ?begin@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAE?AViterator@1@XZ 0090B6C0 f i game2.o
+958	PORTED	0002:0011c1d0 ?end@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAE?AViterator@1@XZ 0090B6D0 f i game2.o
+959	PORTED	0002:0011c1f0 ??Diterator@?$reserved_dlist@VTask@@@@QAEPAVTask@@XZ 0090B6F0 f i game2.o
+960	PORTED	0002:0011c200 ??Citerator@?$reserved_dlist@VTask@@@@QAEPAVTask@@XZ 0090B700 f i game2.o
+961	PORTED	0002:0011c210 ??9iterator@?$reserved_dlist@VTask@@@@QBE_NABV01@@Z 0090B710 f i game2.o
+962	PORTED	0002:0011c240 ??0?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAE@XZ 0090B740 f i game2.o
+963	PORTED	0002:0011c260 ?begin@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAE?AViterator@1@XZ 0090B760 f i game2.o
+964	PORTED	0002:0011c280 ?end@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAE?AViterator@1@XZ 0090B780 f i game2.o
+965	PORTED	0002:0011c2a0 ?begin@?$ae_sized_array@PAVTask@@$0IA@@@QAE?AViterator@1@XZ 0090B7A0 f i game2.o
+966	PORTED	0002:0011c2b0 ?end@?$ae_sized_array@PAVTask@@$0IA@@@QAE?AViterator@1@XZ 0090B7B0 f i game2.o
+967	PORTED	0002:0011c2d0 ??Dconst_iterator@?$reserved_dlist@VTask@@@@QBEPBVTask@@XZ 0090B7D0 f i game2.o
+968	PORTED	0002:0011c2e0 ??Cconst_iterator@?$reserved_dlist@VTask@@@@QBEPBVTask@@XZ 0090B7E0 f i game2.o
+969	PORTED	0002:0011c2f0 ??9const_iterator@?$reserved_dlist@VTask@@@@QBE_NABV01@@Z 0090B7F0 f i game2.o
+970	PORTED	0002:0011c320 ?push_back@?$ae_vector@USmokeGrenadeInfo@@@@QAEXABUSmokeGrenadeInfo@@@Z 0090B820 f i game2.o
+971	PORTED	0002:0011c460 ?find@?$reserved_dlist@VTask@@@@QAE?AViterator@1@PAVTask@@@Z 0090B960 f i game2.o
+972	PORTED	0002:0011c4c0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@AAV1@@Z 0090B9C0 f i game2.o
+973	PORTED	0002:0011c510 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@AAV1@@Z 0090BA10 f i game2.o
+974	PORTED	0002:0011c560 ?Add@?$BitSet@$0CA@@@QAEXH@Z 0090BA60 f i game2.o
+975	PORTED	0002:0011c5f0 ?Rmv@?$BitSet@$0CA@@@QAEXH@Z 0090BAF0 f i game2.o
+976	PORTED	0002:0011c680 ??0iterator@?$reserved_dlist@VTask@@@@QAE@AAV1@@Z 0090BB80 f i game2.o
+977	PORTED	0002:0011c6d0 ??0const_iterator@?$reserved_dlist@VTask@@@@QAE@ABV1@@Z 0090BBD0 f i game2.o
+978	PORTED	0002:0011c720 ?resize@?$ae_vector@USmokeGrenadeInfo@@@@QAEXH@Z 0090BC20 f i game2.o
+979	PORTED	0002:0011c840 ??0iterator@?$BitSet@$0CA@@@QAE@ABV1@@Z 0090BD40 f i game2.o
+980	PORTED	0002:0011c880 ??0?$ae_sized_array_base@VButtonEntry@@$0BA@@@QAE@XZ 0090BD80 f i game2.o
+981	PORTED	0002:0011c8c0 ?Clear@?$BitSet@$0CA@@@QAEXXZ 0090BDC0 f i game2.o
+982	PORTED	0002:0011c8d0 ??S?$BitSet@$0CA@@@QBE?AV0@XZ 0090BDD0 f i game2.o
+983	PORTED	0002:0011c8f0 ?begin@?$BitSet@$0CA@@@QBE?AViterator@1@XZ 0090BDF0 f i game2.o
+984	PORTED	0002:0011c930 ?end@?$BitSet@$0CA@@@QBE?AViterator@1@XZ 0090BE30 f i game2.o
+985	PORTED	0002:0011c950 ?back@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEAAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@XZ 0090BE50 f i game2.o
+986	PORTED	0002:0011c970 ??9iterator@?$BitSet@$0CA@@@QAE_NABV01@@Z 0090BE70 f i game2.o
+987	PORTED	0002:0011c9c0 ??$Find@I@?$InplaceAssetBank@VSplineGroup@@V?$InplaceTree@II@@@@QBEPBVSplineGroup@@ABI@Z 0090BEC0 f i game2.o
+988	VERIFIED	0002:0011ca00 ??$GetComponentHandle@X@nalGenericSkeleton@nalGeneric@@QBEXAAV?$nalGenericComponentHandle@X@1@ABVtlFixedString@@1@Z 0090BF00 f i game2.o
+989	VERIFIED	0002:0011cb60 ??$GetComponentPrivateData@X@nalGenericAnim@nalGeneric@@QBEPBXABV?$nalGenericComponentHandle@X@1@@Z 0090C060 f i game2.o
+990	PORTED	0002:0011ccc0 ?end@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE?AViterator@1@XZ 0090C1C0 f i game2.o
+991	PORTED	0002:0011cce0 ?do_it@?$endian_reverser_t@$03@@SAXPAE@Z 0090C1E0 f i game2.o
+992	PORTED	0002:0011cd10 ??0iterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@AAV1@@Z 0090C210 f i game2.o
+993	PORTED	0002:0011cd60 ??$safe_for_each@Viterator@?$reserved_dlist@VTask@@@@V?$DelFunctor@VTask@@@@@@YAXViterator@?$reserved_dlist@VTask@@@@0V?$DelFunctor@VTask@@@@@Z 0090C260 f i game2.o
+994	PORTED	0002:0011cdb0 ??9iterator@?$reserved_dlist@VQuickTaskDeactivation@@@@QBE_NABV01@@Z 0090C2B0 f i game2.o
+995	PORTED	0002:0011cde0 ?GetActiveEndThread@AeThreadManager@@QAE?AViterator@?$reserved_dlist@VAeThread@@@@XZ 0090C2E0 f i game2.o
+996	PORTED	0002:0011ce00 ?PushTask@TaskHandler@@QAEXPAVTask@@@Z 0090C300 f i game2.o
+997	PORTED	0002:0011ce30 ?GetTaskFromHandle@TaskSys@@QBEPAVTask@@VHandle@@@Z 0090C330 f i game2.o
+998	PORTED	0002:0011ce70 ?Compose@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@AAVnalGenericPose@nalGeneric@@1ABV45@@Z 0090C370 f i game2.o
+999	PORTED	0002:0011cea0 ?DeleteNotifies@AnimNoteHandler@@IAEXXZ 0090C3A0 f i game2.o
+1000	PORTED	0002:0011cee0 ?begin@?$reserved_dlist@VTask@@@@QAE?AViterator@1@XZ 0090C3E0 f i game2.o
+1001	PORTED	0002:0011cf30 ?erase@?$reserved_dlist@VTask@@@@QAEXPAVTask@@@Z 0090C430 f i game2.o
+1002	PORTED	0002:0011cfd0 ?begin@?$reserved_dlist@VTask@@@@QBE?AVconst_iterator@1@XZ 0090C4D0 f i game2.o
+1003	PORTED	0002:0011d020 ?begin@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@XZ 0090C520 f i game2.o
+1004	PORTED	0002:0011d070 ?begin@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@XZ 0090C570 f i game2.o
+1005	PORTED	0002:0011d0c0 ?ReleaseHandle@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXVHandle@@@Z 0090C5C0 f i game2.o
+1006	PORTED	0002:0011d1c0 ?clear@?$ae_vector@USmokeGrenadeInfo@@@@QAEXXZ 0090C6C0 f i game2.o
+1007	PORTED	0002:0011d1d0 ?Dump@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXXZ 0090C6D0 f i game2.o
+1008	PORTED	0002:0011d2a0 ??0?$BitSet@$0CA@@@QAE@XZ 0090C7A0 f i game2.o
+1009	PORTED	0002:0011d2b0 ??0?$ae_sized_array@VButtonEntry@@$0BA@@@QAE@XZ 0090C7B0 f i game2.o
+1010	PORTED	0002:0011d2f0 ?erase@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXH@Z 0090C7F0 f i game2.o
+1011	PORTED	0002:0011d340 ??$ReverseEndian@M@@YAXAAMH@Z 0090C840 f i game2.o
+1012	PORTED	0002:0011d370 ??$ReverseEndian@I@@YAXAAIH@Z 0090C870 f i game2.o
+1013	PORTED	0002:0011d3a0 ??$delete_container_elements@V?$reserved_dlist@VTask@@@@@@YAXAAV?$reserved_dlist@VTask@@@@@Z 0090C8A0 f i game2.o
+1014	PORTED	0002:0011d3f0 ??$DereferenceHandle@VTaskSys@@VTask@@@TaskSys@@QBEPAVTask@@V?$DbLinkedHandle@VTaskSys@@VTask@@@@@Z 0090C8F0 f i game2.o
+1015	PORTED	0002:0011d430 ?begin@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE?AViterator@1@XZ 0090C930 f i game2.o
+1016	PORTED	0002:0011d480 ??$safe_for_each@Viterator@?$reserved_dlist@VQuickTaskDeactivation@@@@V?$DelFunctor@VQuickTaskDeactivation@@@@@@YAXViterator@?$reserved_dlist@VQuickTaskDeactivation@@@@0V?$DelFunctor@VQuickTaskDeactivation@@@@@Z 0090C980 f i game2.o
+1017	VERIFIED	0002:0011d4d0 ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z 0090C9D0 f i game2.o
+1018	PORTED	0002:0011d520 ?GetActiveBeginThread@AeThreadManager@@QAE?AViterator@?$reserved_dlist@VAeThread@@@@XZ 0090CA20 f i game2.o
+1019	PORTED	0002:0011d570 ?SetKeyBinding@ButtonMgr@@SAXHHE@Z 0090CA70 f i game2.o
+1020	PORTED	0002:0011d5c0 ?Press@ButtonMgr@@SAXHH_N@Z 0090CAC0 f i game2.o
+1021	PORTED	0002:0011d600 ?Release@ButtonMgr@@SAXHH_N@Z 0090CB00 f i game2.o
+1022	VERIFIED	0002:0011d640 ??_ESplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o
+1023	VERIFIED	0002:0011d640 ??_GSplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o
+1024	VERIFIED	0002:0011d670 ??1SplineMgr@@UAE@XZ 0090CB70 f i game2.o
+1025	PORTED	0002:0011d680 ??1AnimNoteHandler@@QAE@XZ 0090CB80 f i game2.o
+1026	PORTED	0002:0011d6c0 ?ParseNoteTracks@AnimNoteHandler@@QAEXPAVnalGenericAnim@nalGeneric@@@Z 0090CBC0 f i game2.o
+1027	PORTED	0002:0011dac0 ?AddEntityNotify@AnimNoteHandler@@IAEXABI@Z 0090CFC0 f i game2.o
+1028	PORTED	0002:0011db20 ??_GAnimNoteHandler@@QAEPAXI@Z 0090D020 f i game2.o
+1029	PORTED	0002:0011db80 ??0?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAE@XZ 0090D080 f i game2.o
+1030	PORTED	0002:0011dbd0 ?AllocateHandle@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAE?AV?$SizedHandle@$0N@$0BD@@@XZ 0090D0D0 f i game2.o
+1031	PORTED	0002:0011dca0 ??D?$DbLinkedHandle@VTaskSys@@VTask@@@@QBEPAVTask@@XZ 0090D1A0 f i game2.o
+1032	PORTED	0002:0011dce0 ?erase@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXViterator@1@@Z 0090D1E0 f i game2.o
+1033	PORTED	0002:0011dd30 ??0?$ae_sized_array_base@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAE@XZ 0090D230 f i game2.o
+1034	PORTED	0002:0011dd60 ??$delete_container_elements@V?$reserved_dlist@VQuickTaskDeactivation@@@@@@YAXAAV?$reserved_dlist@VQuickTaskDeactivation@@@@@Z 0090D260 f i game2.o
+1035	PORTED	0002:0011ddb0 ??0TaskSys@@QAE@XZ 0090D2B0 f i game2.o
+1036	PORTED	0002:0011de60 ?Advance@AnimNoteHandler@@QAEXM@Z 0090D360 f i game2.o
+1037	PORTED	0002:0011df80 ??0MetaAnimPlayMethod@@QAE@XZ 0090D480 f i game2.o
+1038	PORTED	0002:0011dff0 ?CreateInstance@MetaAnimPlayMethod@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalGenericAnim@nalGeneric@@PAVnalGenericSkeleton@5@@Z 0090D4F0 f i game2.o
+1039	PORTED	0002:0011e010 ??1MetaAnimPlayMethod@@QAE@XZ 0090D510 f i game2.o
+1040	PORTED	0002:0011e070 ??0?$ae_sized_array@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAE@XZ 0090D570 f i game2.o

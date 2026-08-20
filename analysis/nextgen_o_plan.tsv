@@ -1,0 +1,9 @@
+ida_ea	name	signature	source_cpp
+0x006F0790	?Begin@CG_MotionBlur@@YAXMMM@Z	void __cdecl CG_MotionBlur::Begin(float,float,float)	
+0x006F07D0	?End@CG_MotionBlur@@YAXXZ	void __cdecl CG_MotionBlur::End(void)	
+0x006F07E0	?Callback@CG_MotionBlur@@YAXPAX@Z	void __cdecl CG_MotionBlur::Callback(void *)	
+0x006F0880	?AddPostCallback@CG_MotionBlur@@YAXXZ	void __cdecl CG_MotionBlur::AddPostCallback(void)	
+0x006F0920	?blurCallBack@CG_SceneBlur@@YAXPAX@Z	void __cdecl CG_SceneBlur::blurCallBack(void *)	
+0x006F0960	?Set@CG_SceneBlur@@YAXHM@Z	void __cdecl CG_SceneBlur::Set(int,float)	
+0x006F0980	?End@CG_SceneBlur@@YAXXZ	void __cdecl CG_SceneBlur::End(void)	
+0x006F0990	?AddPostCallback@CG_SceneBlur@@YAXXZ	void __cdecl CG_SceneBlur::AddPostCallback(void)	

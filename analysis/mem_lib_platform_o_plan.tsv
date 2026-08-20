@@ -1,0 +1,12 @@
+ida_ea	name	signature	source_cpp
+0x007BC0D0	?mem_get_arena_hi@@YAPAXXZ	void * __cdecl mem_get_arena_hi(void)	
+0x007BC0F0	?mem_get_arena_lo@@YAPAXXZ	void * __cdecl mem_get_arena_lo(void)	
+0x007BC110	?mem_get_debug_arena_hi@@YAPAXXZ	void * __cdecl mem_get_debug_arena_hi(void)	
+0x007BC130	?mem_get_debug_arena_lo@@YAPAXXZ	void * __cdecl mem_get_debug_arena_lo(void)	
+0x007BC150	?mem_get_combine_arena_hi@@YAPAXXZ	void * __cdecl mem_get_combine_arena_hi(void)	
+0x007BC170	?mem_get_combine_arena_lo@@YAPAXXZ	void * __cdecl mem_get_combine_arena_lo(void)	
+0x007BC190	?mem_get_stack@@YAXPAIH@Z	void __cdecl mem_get_stack(unsigned int *,int)	
+0x007BC1A0	?mem_host_fopen@@YAIPBD0@Z	unsigned int __cdecl mem_host_fopen(char const *,char const *)	
+0x007BC1B0	?mem_host_fclose@@YAHI@Z	int __cdecl mem_host_fclose(unsigned int)	
+0x007BC1D0	?mem_host_fwrite@@YAHPBXHI@Z	int __cdecl mem_host_fwrite(void const *,int,unsigned int)	
+0x007BC1F0	?mem_host_fprintf@@YAHIPBDZZ	int __cdecl mem_host_fprintf(unsigned int,char const *,...)	

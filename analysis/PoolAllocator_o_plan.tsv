@@ -1,0 +1,18 @@
+ida_ea	name	signature	source_cpp
+0x007BD420	??1BlockPool@PoolAllocator@@QAE@XZ	public: __thiscall PoolAllocator::BlockPool::~BlockPool(void)	
+0x007BD440	?ReportAllocations@BlockPool@PoolAllocator@@QBEXXZ	public: void __thiscall PoolAllocator::BlockPool::ReportAllocations(void)const 	
+0x007BD470	?IsEmpty@PoolAllocator@@QBE_NXZ	public: bool __thiscall PoolAllocator::IsEmpty(void)const 	
+0x007BD4F0	??0Header@BlockPool@PoolAllocator@@QAE@F@Z	public: __thiscall PoolAllocator::BlockPool::Header::Header(short)	
+0x007BD510	??0BlockPool@PoolAllocator@@QAE@IIIIPAX@Z	public: __thiscall PoolAllocator::BlockPool::BlockPool(unsigned int,unsigned int,unsigned int,unsigned int,void *)	
+0x007BD610	?GetMemSize@PoolAllocator@@QBEHXZ	public: int __thiscall PoolAllocator::GetMemSize(void)const 	
+0x007BD640	?GetMemRemaining@PoolAllocator@@QBEHXZ	public: int __thiscall PoolAllocator::GetMemRemaining(void)const 	
+0x007BD670	?Pop@BlockPool@PoolAllocator@@QAEPAXXZ	public: void * __thiscall PoolAllocator::BlockPool::Pop(void)	
+0x007BD700	?Push@BlockPool@PoolAllocator@@QAEXPAX@Z	public: void __thiscall PoolAllocator::BlockPool::Push(void *)	
+0x007BD7F0	?ReportTotals@BlockPool@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z	public: void __thiscall PoolAllocator::BlockPool::ReportTotals(class ae_sized_array<class ae_fixed_string<64,unsigned char>,8> &)	
+0x007BD830	??0PoolAllocator@@QAE@ABV?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@I@Z	public: __thiscall PoolAllocator::PoolAllocator(class ae_sized_array<struct PoolAllocator::PoolConfig,16> const &,unsigned int)	
+0x007BD9F0	??1PoolAllocator@@QAE@XZ	public: __thiscall PoolAllocator::~PoolAllocator(void)	
+0x007BDA70	?Allocate@PoolAllocator@@QAEPAXI_N@Z	public: void * __thiscall PoolAllocator::Allocate(unsigned int,bool)	
+0x007BDB90	?Release@PoolAllocator@@QAEXPAX@Z	public: void __thiscall PoolAllocator::Release(void *)	
+0x007BDBE0	?InPool@PoolAllocator@@QBE_NPAX@Z	public: bool __thiscall PoolAllocator::InPool(void *)const 	
+0x007BDC20	?ReportTotals@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z	public: void __thiscall PoolAllocator::ReportTotals(class ae_sized_array<class ae_fixed_string<64,unsigned char>,8> &)	
+0x007BDC90	?ReportAllocations@PoolAllocator@@QAEXXZ	public: void __thiscall PoolAllocator::ReportAllocations(void)	

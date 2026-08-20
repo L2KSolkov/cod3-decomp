@@ -1,0 +1,211 @@
+ida_ea	va	name	signature	family
+0x0071EF50	0x00B0E450	?CheckCommands@@YAXPBD@Z	void __cdecl CheckCommands(char const *)	game_xbox.o
+0x0071EFF0	0x00B0E4F0	?Sys_Mkdir@@YAXPBD@Z	void __cdecl Sys_Mkdir(char const *)	game_xbox.o
+0x0071F000	0x00B0E500	?Sys_Cwd@@YAPADXZ	char * __cdecl Sys_Cwd(void)	game_xbox.o
+0x0071F010	0x00B0E510	?Sys_DefaultCDPath@@YAPADXZ	char * __cdecl Sys_DefaultCDPath(void)	game_xbox.o
+0x0071F020	0x00B0E520	?Sys_DefaultBasePath@@YAPADXZ	char * __cdecl Sys_DefaultBasePath(void)	game_xbox.o
+0x0071F030	0x00B0E530	?Sys_DefaultHomePath@@YAPADXZ	char * __cdecl Sys_DefaultHomePath(void)	game_xbox.o
+0x0071F040	0x00B0E540	?Sys_DefaultInstallPath@@YAPADXZ	char * __cdecl Sys_DefaultInstallPath(void)	game_xbox.o
+0x0071F050	0x00B0E550	?Sys_ListFilteredFiles@@YAXPBDPAD1PAPADPAH@Z	void __cdecl Sys_ListFilteredFiles(char const *,char *,char *,char * *,int *)	game_xbox.o
+0x0071F1E0	0x00B0E6E0	?linelen@@YAHPBD@Z	int __cdecl linelen(char const *)	game_xbox.o
+0x0071F210	0x00B0E710	?ReadLine@@YAHPBDPAD@Z	int __cdecl ReadLine(char const *,char *)	game_xbox.o
+0x0071F260	0x00B0E760	?Sys_ListFiles@@YAPAPADPBD0PADPAHH@Z	char * * __cdecl Sys_ListFiles(char const *,char const *,char *,int *,int)	game_xbox.o
+0x0071F420	0x00B0E920	?Sys_FreeFileList@@YAXPAPAD@Z	void __cdecl Sys_FreeFileList(char * *)	game_xbox.o
+0x0071F460	0x00B0E960	?Sys_DirectoryHasContents@@YAHPBD@Z	int __cdecl Sys_DirectoryHasContents(char const *)	game_xbox.o
+0x0071F520	0x00B0EA20	?Sys_InitStreamThread@@YAXXZ	void __cdecl Sys_InitStreamThread(void)	game_xbox.o
+0x0071F530	0x00B0EA30	?Sys_ShutdownStreamThread@@YAXXZ	void __cdecl Sys_ShutdownStreamThread(void)	game_xbox.o
+0x0071F540	0x00B0EA40	?Sys_BeginStreamedFile@@YAXHH@Z	void __cdecl Sys_BeginStreamedFile(int,int)	game_xbox.o
+0x0071F550	0x00B0EA50	?Sys_EndStreamedFile@@YAXH@Z	void __cdecl Sys_EndStreamedFile(int)	game_xbox.o
+0x0071F560	0x00B0EA60	?Sys_StreamedRead@@YAHPAXHHH@Z	int __cdecl Sys_StreamedRead(void *,int,int,int)	game_xbox.o
+0x0071F580	0x00B0EA80	?Sys_StreamSeek@@YAXHHH@Z	void __cdecl Sys_StreamSeek(int,int,int)	game_xbox.o
+0x0071F590	0x00B0EA90	?Sys_InitializeCriticalSection@@YAPAXXZ	void * __cdecl Sys_InitializeCriticalSection(void)	game_xbox.o
+0x0071F5A0	0x00B0EAA0	?Sys_EnterCriticalSection@@YAXPAX@Z	void __cdecl Sys_EnterCriticalSection(void *)	game_xbox.o
+0x0071F5B0	0x00B0EAB0	?Sys_LeaveCriticalSection@@YAXPAX@Z	void __cdecl Sys_LeaveCriticalSection(void *)	game_xbox.o
+0x0071F5C0	0x00B0EAC0	?Sys_OutOfMemError@@YAXXZ	void __cdecl Sys_OutOfMemError(void)	game_xbox.o
+0x0071F5D0	0x00B0EAD0	?Sys_ConfigureChecksumChanged@@YAHH@Z	int __cdecl Sys_ConfigureChecksumChanged(int)	game_xbox.o
+0x0071F5E0	0x00B0EAE0	?GLimp_SetGamma@@YAXQAE00@Z	void __cdecl GLimp_SetGamma(unsigned char * const,unsigned char * const,unsigned char * const)	game_xbox.o
+0x0071F5F0	0x00B0EAF0	_time	_time	game_xbox.o
+0x0071F600	0x00B0EB00	?Sys_QueEvent@@YAXHW4sysEventType_t@@HHHPAX@Z	void __cdecl Sys_QueEvent(int,enum sysEventType_t,int,int,int,void *)	game_xbox.o
+0x0071F6C0	0x00B0EBC0	?Sys_LoadingKeepAlive@@YAXXZ	void __cdecl Sys_LoadingKeepAlive(void)	game_xbox.o
+0x0071F6D0	0x00B0EBD0	?Sys_GetEvent@@YA?AUsysEvent_t@@XZ	struct sysEvent_t __cdecl Sys_GetEvent(void)	game_xbox.o
+0x0071F760	0x00B0EC60	?Sys_Init@@YAXXZ	void __cdecl Sys_Init(void)	game_xbox.o
+0x0071F790	0x00B0EC90	?Sys_ShowConsole@@YAXHH@Z	void __cdecl Sys_ShowConsole(int,int)	game_xbox.o
+0x0071F7A0	0x00B0ECA0	??1LiveWrapper@@QAE@XZ	public: __thiscall LiveWrapper::~LiveWrapper(void)	game_xbox.o
+0x0071F840	0x00B0ED40	?GetLocalPlayer@LiveWrapper@@QAEPAVLivePlayer@@K@Z	public: class LivePlayer * __thiscall LiveWrapper::GetLocalPlayer(unsigned long)	game_xbox.o
+0x0071F870	0x00B0ED70	?SetNotificationFlag@LiveWrapper@@QAEXKK_N@Z	public: void __thiscall LiveWrapper::SetNotificationFlag(unsigned long,unsigned long,bool)	game_xbox.o
+0x0071F940	0x00B0EE40	?GetNotificationFlag@LiveWrapper@@QAE_NKK@Z	public: bool __thiscall LiveWrapper::GetNotificationFlag(unsigned long,unsigned long)	game_xbox.o
+0x0071F970	0x00B0EE70	?ToggleNotificationFlag@LiveWrapper@@QAEXKK@Z	public: void __thiscall LiveWrapper::ToggleNotificationFlag(unsigned long,unsigned long)	game_xbox.o
+0x0071F9D0	0x00B0EED0	?SetSessionID@LiveWrapper@@QAEXABUXNKID@@@Z	public: void __thiscall LiveWrapper::SetSessionID(struct XNKID const &)	game_xbox.o
+0x0071FA30	0x00B0EF30	?IsTalking@LiveWrapper@@QAE_NU_XUID@@K@Z	public: bool __thiscall LiveWrapper::IsTalking(struct _XUID,unsigned long)	game_xbox.o
+0x0071FAF0	0x00B0EFF0	?LocalChatDataReady@LiveWrapper@@MAGJKKPAX@Z	protected: virtual long __stdcall LiveWrapper::LocalChatDataReady(unsigned long,unsigned long,void *)	game_xbox.o
+0x0071FB10	0x00B0F010	?VoiceMailDataReady@LiveWrapper@@MAGJKKK@Z	protected: virtual long __stdcall LiveWrapper::VoiceMailDataReady(unsigned long,unsigned long,unsigned long)	game_xbox.o
+0x0071FB20	0x00B0F020	?VoiceMailStopped@LiveWrapper@@MAGJK@Z	protected: virtual long __stdcall LiveWrapper::VoiceMailStopped(unsigned long)	game_xbox.o
+0x0071FB30	0x00B0F030	?CalcVoicePriorities@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::CalcVoicePriorities(void)	game_xbox.o
+0x0071FDC0	0x00B0F2C0	?RefreshMuteList@LiveWrapper@@IAEXK@Z	protected: void __thiscall LiveWrapper::RefreshMuteList(unsigned long)	game_xbox.o
+0x0071FE20	0x00B0F320	?HandleError@LiveWrapper@@IAEJJ@Z	protected: long __thiscall LiveWrapper::HandleError(long)	game_xbox.o
+0x00720430	0x00B0F930	?Create@CSession@@QAEJXZ	public: long __thiscall CSession::Create(void)	game_xbox.o
+0x007204D0	0x00B0F9D0	?Close@CSession@@AAEXXZ	private: void __thiscall CSession::Close(void)	game_xbox.o
+0x00720500	0x00B0FA00	?SetupAttributes@CSession@@AAEXXZ	private: void __thiscall CSession::SetupAttributes(void)	game_xbox.o
+0x00720570	0x00B0FA70	?Getgame_type@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getgame_type(void)	game_xbox.o
+0x00720580	0x00B0FA80	?Setgame_type@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setgame_type(unsigned __int64)	game_xbox.o
+0x007205A0	0x00B0FAA0	?Getgame_map@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getgame_map(void)	game_xbox.o
+0x007205B0	0x00B0FAB0	?Setgame_map@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setgame_map(unsigned __int64)	game_xbox.o
+0x007205D0	0x00B0FAD0	?Getgame_version@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getgame_version(void)	game_xbox.o
+0x007205E0	0x00B0FAE0	?Setgame_version@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setgame_version(unsigned __int64)	game_xbox.o
+0x00720600	0x00B0FB00	?Getfriendly_fire@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getfriendly_fire(void)	game_xbox.o
+0x00720610	0x00B0FB10	?Setfriendly_fire@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setfriendly_fire(unsigned __int64)	game_xbox.o
+0x00720630	0x00B0FB30	?Getteam_balancing@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getteam_balancing(void)	game_xbox.o
+0x00720640	0x00B0FB40	?Setteam_balancing@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setteam_balancing(unsigned __int64)	game_xbox.o
+0x00720660	0x00B0FB60	?Getsub_type@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getsub_type(void)	game_xbox.o
+0x00720670	0x00B0FB70	?Setsub_type@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setsub_type(unsigned __int64)	game_xbox.o
+0x00720690	0x00B0FB90	?Getnum_players@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getnum_players(void)	game_xbox.o
+0x007206A0	0x00B0FBA0	?Setnum_players@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setnum_players(unsigned __int64)	game_xbox.o
+0x007206D0	0x00B0FBD0	?Gethost_name@CSession@@QAEPBGXZ	public: unsigned short const * __thiscall CSession::Gethost_name(void)	game_xbox.o
+0x007206E0	0x00B0FBE0	?Sethost_name@CSession@@QAEXPBG@Z	public: void __thiscall CSession::Sethost_name(unsigned short const *)	game_xbox.o
+0x00720710	0x00B0FC10	?Getmax_players@CSession@@QAE_KXZ	public: unsigned __int64 __thiscall CSession::Getmax_players(void)	game_xbox.o
+0x00720720	0x00B0FC20	?Setmax_players@CSession@@QAEX_K@Z	public: void __thiscall CSession::Setmax_players(unsigned __int64)	game_xbox.o
+0x00720750	0x00B0FC50	??0CSessionQosQ@CSession@@QAE@XZ	public: __thiscall CSession::CSessionQosQ::CSessionQosQ(void)	game_xbox.o
+0x00720760	0x00B0FC60	?Add@CSessionQosQ@CSession@@QAEXAAUXNKID@@K@Z	public: void __thiscall CSession::CSessionQosQ::Add(struct XNKID &,unsigned long)	game_xbox.o
+0x00720800	0x00B0FD00	?Remove@CSessionQosQ@CSession@@QAEXAAUXNKID@@@Z	public: void __thiscall CSession::CSessionQosQ::Remove(struct XNKID &)	game_xbox.o
+0x007208D0	0x00B0FDD0	?Dequeue@CSessionQosQ@CSession@@QAEXXZ	public: void __thiscall CSession::CSessionQosQ::Dequeue(void)	game_xbox.o
+0x00720950	0x00B0FE50	?Cancel@CFromIDQuery@@UAEXXZ	public: virtual void __thiscall CFromIDQuery::Cancel(void)	game_xbox.o
+0x007209F0	0x00B0FEF0	?Clear@CFromIDQuery@@UAEXXZ	public: virtual void __thiscall CFromIDQuery::Clear(void)	game_xbox.o
+0x00720A20	0x00B0FF20	?Query@CFromIDQuery@@QAEJ_K@Z	public: long __thiscall CFromIDQuery::Query(unsigned __int64)	game_xbox.o
+0x00720B00	0x00B10000	?Probe@CFromIDQuery@@UAEJXZ	public: virtual long __thiscall CFromIDQuery::Probe(void)	game_xbox.o
+0x00720C50	0x00B10150	?Process@CFromIDQuery@@UAEJXZ	public: virtual long __thiscall CFromIDQuery::Process(void)	game_xbox.o
+0x00720F80	0x00B10480	??0CDefaultQuery@@QAE@XZ	public: __thiscall CDefaultQuery::CDefaultQuery(void)	game_xbox.o
+0x00720FB0	0x00B104B0	?Cancel@CDefaultQuery@@UAEXXZ	public: virtual void __thiscall CDefaultQuery::Cancel(void)	game_xbox.o
+0x00721050	0x00B10550	?Clear@CDefaultQuery@@UAEXXZ	public: virtual void __thiscall CDefaultQuery::Clear(void)	game_xbox.o
+0x00721080	0x00B10580	?Query@CDefaultQuery@@QAEJ_K0000000@Z	public: long __thiscall CDefaultQuery::Query(unsigned __int64,unsigned __int64,unsigned __int64,unsigned __int64,unsigned __int64,unsigned __int64,unsigned __int64,unsigned __int64)	game_xbox.o
+0x00721250	0x00B10750	?Probe@CDefaultQuery@@UAEJXZ	public: virtual long __thiscall CDefaultQuery::Probe(void)	game_xbox.o
+0x007213A0	0x00B108A0	?Process@CDefaultQuery@@UAEJXZ	public: virtual long __thiscall CDefaultQuery::Process(void)	game_xbox.o
+0x007216D0	0x00B10BD0	?Reset@LivePlayer@@UAEXXZ	public: virtual void __thiscall LivePlayer::Reset(void)	game_xbox.o
+0x00721710	0x00B10C10	?IsTalking@LivePlayer@@UBGHXZ	public: virtual int __stdcall LivePlayer::IsTalking(void)const 	game_xbox.o
+0x00721750	0x00B10C50	?CopyLivePlayer@LiveRemote@@QAEXABVLivePlayer@@@Z	public: void __thiscall LiveRemote::CopyLivePlayer(class LivePlayer const &)	game_xbox.o
+0x007217A0	0x00B10CA0	?Reset@LiveRemote@@UAEXXZ	public: virtual void __thiscall LiveRemote::Reset(void)	game_xbox.o
+0x007217E0	0x00B10CE0	?OnMutelist@LiveLocal@@QAE_NABU_XUID@@@Z	public: bool __thiscall LiveLocal::OnMutelist(struct _XUID const &)	game_xbox.o
+0x00721830	0x00B10D30	?Reset@LiveLocal@@UAEXXZ	public: virtual void __thiscall LiveLocal::Reset(void)	game_xbox.o
+0x00721870	0x00B10D70	?CanHear@MPLiveEngine@@UAE_NABU_XUID@@0@Z	public: virtual bool __thiscall MPLiveEngine::CanHear(struct _XUID const &,struct _XUID const &)	game_xbox.o
+0x00721880	0x00B10D80	?SubmitVoiceData@MPLiveEngine@@UAEXABU_XUID@@PAXK@Z	public: virtual void __thiscall MPLiveEngine::SubmitVoiceData(struct _XUID const &,void *,unsigned long)	game_xbox.o
+0x007218C0	0x00B10DC0	?GetVoiceDataSize@MPLiveEngine@@UAEKK@Z	public: virtual unsigned long __thiscall MPLiveEngine::GetVoiceDataSize(unsigned long)	game_xbox.o
+0x007218D0	0x00B10DD0	?GetVoiceData@MPLiveEngine@@UAEKKPAX@Z	public: virtual unsigned long __thiscall MPLiveEngine::GetVoiceData(unsigned long,void *)	game_xbox.o
+0x007218E0	0x00B10DE0	?JoinGame@MPLiveEngine@@UAEXPAU_XONLINE_FRIEND@@@Z	public: virtual void __thiscall MPLiveEngine::JoinGame(struct _XONLINE_FRIEND *)	game_xbox.o
+0x00721920	0x00B10E20	?RunQuery@MPLiveEngine@@QAEXPAVQueryInterface@@@Z	public: void __thiscall MPLiveEngine::RunQuery(class QueryInterface *)	game_xbox.o
+0x00721980	0x00B10E80	?SetRemoteListeners@MPLiveEngine@@QAEXPBVMPPlayerSet@@@Z	public: void __thiscall MPLiveEngine::SetRemoteListeners(class MPPlayerSet const *)	game_xbox.o
+0x007219D0	0x00B10ED0	?RegisterKey@MPLiveEngine@@QAEHPBUXNKID@@PBUXNKEY@@@Z	public: int __thiscall MPLiveEngine::RegisterKey(struct XNKID const *,struct XNKEY const *)	game_xbox.o
+0x00721AA0	0x00B10FA0	?ClearKeys@MPLiveEngine@@QAEXXZ	public: void __thiscall MPLiveEngine::ClearKeys(void)	game_xbox.o
+0x00721B20	0x00B11020	?GetPortToLock@MPLiveEngine@@QAEKXZ	public: unsigned long __thiscall MPLiveEngine::GetPortToLock(void)	game_xbox.o
+0x00721B90	0x00B11090	?StartLiveSession@MPLiveEngine@@QAEXPAUsServerCreateParams@@EE@Z	public: void __thiscall MPLiveEngine::StartLiveSession(struct sServerCreateParams *,unsigned char,unsigned char)	game_xbox.o
+0x00721CD0	0x00B111D0	?HandleSessionCreation@MPLiveEngine@@IAEXXZ	protected: void __thiscall MPLiveEngine::HandleSessionCreation(void)	game_xbox.o
+0x00721D70	0x00B11270	?LogoffCallBack@MPLiveEngine@@MAEXXZ	protected: virtual void __thiscall MPLiveEngine::LogoffCallBack(void)	game_xbox.o
+0x00721DA0	0x00B112A0	?GetHandle@MPLiveEngine@@SAPAV1@XZ	public: static class MPLiveEngine * __cdecl MPLiveEngine::GetHandle(void)	game_xbox.o
+0x00721DB0	0x00B112B0	?Init@XboxLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall XboxLiveOptionsMenu::Init(void)	game_xbox.o
+0x00721DC0	0x00B112C0	?Draw@XboxLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall XboxLiveOptionsMenu::Draw(void)	game_xbox.o
+0x00721E00	0x00B11300	?OnDeactivate@XboxLiveOptionsMenu@@UAEXPAVFEMenu@@@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnDeactivate(class FEMenu *)	game_xbox.o
+0x00721E10	0x00B11310	?Me@XboxLiveOptionsMenu@@SAPAV1@XZ	public: static class XboxLiveOptionsMenu * __cdecl XboxLiveOptionsMenu::Me(void)	game_xbox.o
+0x00721E20	0x00B11320	?OnUp@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnUp(int)	game_xbox.o
+0x00721E80	0x00B11380	?OnDown@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnDown(int)	game_xbox.o
+0x00721EE0	0x00B113E0	?OnLeft@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnLeft(int)	game_xbox.o
+0x00721EF0	0x00B113F0	?OnRight@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnRight(int)	game_xbox.o
+0x00721F00	0x00B11400	?OnL1@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnL1(int)	game_xbox.o
+0x00721F10	0x00B11410	?OnR1@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnR1(int)	game_xbox.o
+0x00721F20	0x00B11420	?OnTriangle@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnTriangle(int)	game_xbox.o
+0x00721F30	0x00B11430	?OnSquare@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnSquare(int)	game_xbox.o
+0x00721F40	0x00B11440	?OnStart@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnStart(int)	game_xbox.o
+0x00721F50	0x00B11450	?ButtonHeldAction@XboxLiveOptionsMenu@@MAEXXZ	protected: virtual void __thiscall XboxLiveOptionsMenu::ButtonHeldAction(void)	game_xbox.o
+0x00721F60	0x00B11460	?UpdateSplitScreen@XboxLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall XboxLiveOptionsMenu::UpdateSplitScreen(void)	game_xbox.o
+0x00721FC0	0x00B114C0	?UpdateWidescreen@XboxLiveOptionsMenu@@UAEX_N@Z	public: virtual void __thiscall XboxLiveOptionsMenu::UpdateWidescreen(bool)	game_xbox.o
+0x00722020	0x00B11520	?WireForSignedOut@XboxLiveOptionsMenu@@IAEXXZ	protected: void __thiscall XboxLiveOptionsMenu::WireForSignedOut(void)	game_xbox.o
+0x00722080	0x00B11580	??0InGameLiveOptionsMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall InGameLiveOptionsMenu::InGameLiveOptionsMenu(class FEMenuSystem *)	game_xbox.o
+0x007220C0	0x00B115C0	??1InGameLiveOptionsMenu@@UAE@XZ	public: virtual __thiscall InGameLiveOptionsMenu::~InGameLiveOptionsMenu(void)	game_xbox.o
+0x007220D0	0x00B115D0	?OnActivate@InGameLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall InGameLiveOptionsMenu::OnActivate(void)	game_xbox.o
+0x00722270	0x00B11770	?Draw@InGameLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall InGameLiveOptionsMenu::Draw(void)	game_xbox.o
+0x00722290	0x00B11790	?ResponseYesReboot@InGameLiveOptionsMenu@@KA_NH@Z	protected: static bool __cdecl InGameLiveOptionsMenu::ResponseYesReboot(int)	game_xbox.o
+0x007222B0	0x00B117B0	?ResponseDoNothing@InGameLiveOptionsMenu@@KA_NH@Z	protected: static bool __cdecl InGameLiveOptionsMenu::ResponseDoNothing(int)	game_xbox.o
+0x007222C0	0x00B117C0	?OnTriangle@InGameLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall InGameLiveOptionsMenu::OnTriangle(int)	game_xbox.o
+0x007222E0	0x00B117E0	?SetPanelFile@InGameLiveOptionsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall InGameLiveOptionsMenu::SetPanelFile(class PanelFile *)	game_xbox.o
+0x00722380	0x00B11880	?UpdateWidescreen@InGameLiveOptionsMenu@@UAEX_N@Z	public: virtual void __thiscall InGameLiveOptionsMenu::UpdateWidescreen(bool)	game_xbox.o
+0x00722390	0x00B11890	?Me@InGameLiveOptionsMenu@@SAPAV1@XZ	public: static class InGameLiveOptionsMenu * __cdecl InGameLiveOptionsMenu::Me(void)	game_xbox.o
+0x007223B0	0x00B118B0	?Xbox_LaunchInfo@@YAPADPAD@Z	char * __cdecl Xbox_LaunchInfo(char *)	game_xbox.o
+0x00722530	0x00B11A30	??0LiveWrapper@@QAE@XZ	public: __thiscall LiveWrapper::LiveWrapper(void)	game_xbox.o
+0x007226A0	0x00B11BA0	?SetupAsAware@LiveWrapper@@QAEXPAUD3DDevice@@PBDPAUITitleFontRenderer@@@Z	public: void __thiscall LiveWrapper::SetupAsAware(struct D3DDevice *,char const *,struct ITitleFontRenderer *)	game_xbox.o
+0x00722780	0x00B11C80	?SetupAsSession@LiveWrapper@@QAEXPAUD3DDevice@@PBDPAUITitleFontRenderer@@@Z	public: void __thiscall LiveWrapper::SetupAsSession(struct D3DDevice *,char const *,struct ITitleFontRenderer *)	game_xbox.o
+0x00722870	0x00B11D70	?HandleInput@LiveWrapper@@UAE_NKABU_XINPUT_STATE@@@Z	public: virtual bool __thiscall LiveWrapper::HandleInput(unsigned long,struct _XINPUT_STATE const &)	game_xbox.o
+0x007229A0	0x00B11EA0	?Render@LiveWrapper@@QAEXPAUD3DSurface@@@Z	public: void __thiscall LiveWrapper::Render(struct D3DSurface *)	game_xbox.o
+0x00722A20	0x00B11F20	?Render@LiveWrapper@@QAEXXZ	public: void __thiscall LiveWrapper::Render(void)	game_xbox.o
+0x00722AA0	0x00B11FA0	?GetIcon@LiveWrapper@@QAEKK@Z	public: unsigned long __thiscall LiveWrapper::GetIcon(unsigned long)	game_xbox.o
+0x00722B10	0x00B12010	?SignInSilently@LiveWrapper@@QAEXK@Z	public: void __thiscall LiveWrapper::SignInSilently(unsigned long)	game_xbox.o
+0x00722BB0	0x00B120B0	?SignInFromInvite@LiveWrapper@@QAEXPAU_XONLINE_ACCEPTED_GAMEINVITE@@K@Z	public: void __thiscall LiveWrapper::SignInFromInvite(struct _XONLINE_ACCEPTED_GAMEINVITE *,unsigned long)	game_xbox.o
+0x00722C90	0x00B12190	?ShowLoginScreen@LiveWrapper@@QAEXK@Z	public: void __thiscall LiveWrapper::ShowLoginScreen(unsigned long)	game_xbox.o
+0x00722D70	0x00B12270	?ShowFriendsList@LiveWrapper@@QAEXK@Z	public: void __thiscall LiveWrapper::ShowFriendsList(unsigned long)	game_xbox.o
+0x00722E10	0x00B12310	?ShowPlayersList@LiveWrapper@@QAEXKK@Z	public: void __thiscall LiveWrapper::ShowPlayersList(unsigned long,unsigned long)	game_xbox.o
+0x00722F50	0x00B12450	?ToggleOfflineAppearance@LiveWrapper@@QAEXK@Z	public: void __thiscall LiveWrapper::ToggleOfflineAppearance(unsigned long)	game_xbox.o
+0x00722F80	0x00B12480	?RemoteMute@LiveWrapper@@QAEXKABU_XUID@@_N@Z	public: void __thiscall LiveWrapper::RemoteMute(unsigned long,struct _XUID const &,bool)	game_xbox.o
+0x00722FF0	0x00B124F0	?SetRemoteVoiceComm@LiveWrapper@@QAEXABU_XUID@@W4_UIX_VOICE_STATUS_TYPE@@@Z	public: void __thiscall LiveWrapper::SetRemoteVoiceComm(struct _XUID const &,enum _UIX_VOICE_STATUS_TYPE)	game_xbox.o
+0x00723060	0x00B12560	?AddRemotePlayer@LiveWrapper@@QAEXABVLivePlayer@@@Z	public: void __thiscall LiveWrapper::AddRemotePlayer(class LivePlayer const &)	game_xbox.o
+0x00723320	0x00B12820	?RemoveRemotePlayer@LiveWrapper@@QAEXABU_XUID@@@Z	public: void __thiscall LiveWrapper::RemoveRemotePlayer(struct _XUID const &)	game_xbox.o
+0x007233D0	0x00B128D0	?ClearRemotePlayers@LiveWrapper@@QAEXXZ	public: void __thiscall LiveWrapper::ClearRemotePlayers(void)	game_xbox.o
+0x00723400	0x00B12900	?SetVTS@LiveWrapper@@QAEXK_N@Z	public: void __thiscall LiveWrapper::SetVTS(unsigned long,bool)	game_xbox.o
+0x00723480	0x00B12980	?ToggleVTS@LiveWrapper@@QAEXK@Z	public: void __thiscall LiveWrapper::ToggleVTS(unsigned long)	game_xbox.o
+0x007234D0	0x00B129D0	?SaveLogonState@LiveWrapper@@QAE_NPAU_XONLINE_LOGON_STATE@@@Z	public: bool __thiscall LiveWrapper::SaveLogonState(struct _XONLINE_LOGON_STATE *)	game_xbox.o
+0x00723510	0x00B12A10	?RetrieveLogonState@LiveWrapper@@QAEXPAU_XONLINE_LOGON_STATE@@K@Z	public: void __thiscall LiveWrapper::RetrieveLogonState(struct _XONLINE_LOGON_STATE *,unsigned long)	game_xbox.o
+0x00723600	0x00B12B00	?CommunicatorStatusUpdate@LiveWrapper@@MAGJKW4_XHV_VOICE_COMMUNICATOR_STATUS@@@Z	protected: virtual long __stdcall LiveWrapper::CommunicatorStatusUpdate(unsigned long,enum _XHV_VOICE_COMMUNICATOR_STATUS)	game_xbox.o
+0x00723710	0x00B12C10	?UpdateLocalPlayers@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::UpdateLocalPlayers(void)	game_xbox.o
+0x007238C0	0x00B12DC0	?PostLogon@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::PostLogon(void)	game_xbox.o
+0x00723A70	0x00B12F70	?PreLogoff@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::PreLogoff(void)	game_xbox.o
+0x00723B40	0x00B13040	?PostLogoff@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::PostLogoff(void)	game_xbox.o
+0x00723B70	0x00B13070	?CheckMutingChanges@LiveWrapper@@IAEXK@Z	protected: void __thiscall LiveWrapper::CheckMutingChanges(unsigned long)	game_xbox.o
+0x00723CB0	0x00B131B0	??0CSession@@QAE@XZ	public: __thiscall CSession::CSession(void)	game_xbox.o
+0x00723D00	0x00B13200	?Update@CSession@@QAEJXZ	public: long __thiscall CSession::Update(void)	game_xbox.o
+0x00723E00	0x00B13300	?ProcessStateUpdateSession@CSession@@AAEJXZ	private: long __thiscall CSession::ProcessStateUpdateSession(void)	game_xbox.o
+0x00723E80	0x00B13380	?ProcessStateDeleteSession@CSession@@AAEJXZ	private: long __thiscall CSession::ProcessStateDeleteSession(void)	game_xbox.o
+0x00723EE0	0x00B133E0	?ProcessStateActiveSession@CSession@@AAEJXZ	private: long __thiscall CSession::ProcessStateActiveSession(void)	game_xbox.o
+0x00723F40	0x00B13440	?PurgeSessionQHead@CSession@@AAEXXZ	private: void __thiscall CSession::PurgeSessionQHead(void)	game_xbox.o
+0x00724040	0x00B13540	?Listen@CSession@@QAEXHK@Z	public: void __thiscall CSession::Listen(int,unsigned long)	game_xbox.o
+0x007241F0	0x00B136F0	?SetQosResponse@CSession@@QAEXVCBlob@@@Z	public: void __thiscall CSession::SetQosResponse(class CBlob)	game_xbox.o
+0x00724280	0x00B13780	??0CFromIDQuery@@QAE@XZ	public: __thiscall CFromIDQuery::CFromIDQuery(void)	game_xbox.o
+0x007242B0	0x00B137B0	??1CFromIDQuery@@QAE@XZ	public: __thiscall CFromIDQuery::~CFromIDQuery(void)	game_xbox.o
+0x007242C0	0x00B137C0	??1CDefaultQuery@@QAE@XZ	public: __thiscall CDefaultQuery::~CDefaultQuery(void)	game_xbox.o
+0x007242D0	0x00B137D0	?ShowNotificationIcon@@YAXAAKPAVPanelQuad@@1@Z	void __cdecl ShowNotificationIcon(unsigned long &,class PanelQuad *,class PanelQuad *)	game_xbox.o
+0x00724370	0x00B13870	?HandleOutgoingVoice@MPLiveEngine@@MAEXKKPAX@Z	protected: virtual void __thiscall MPLiveEngine::HandleOutgoingVoice(unsigned long,unsigned long,void *)	game_xbox.o
+0x007244A0	0x00B139A0	?SendMuteUpdate@MPLiveEngine@@MAEXABU_XUID@@0_N@Z	protected: virtual void __thiscall MPLiveEngine::SendMuteUpdate(struct _XUID const &,struct _XUID const &,bool)	game_xbox.o
+0x00724640	0x00B13B40	?SendCommunicatorStatus@MPLiveEngine@@MAEXW4_UIX_VOICE_STATUS_TYPE@@@Z	protected: virtual void __thiscall MPLiveEngine::SendCommunicatorStatus(enum _UIX_VOICE_STATUS_TYPE)	game_xbox.o
+0x00724760	0x00B13C60	?OccupyPublicSlot@MPLiveEngine@@QAE_NXZ	public: bool __thiscall MPLiveEngine::OccupyPublicSlot(void)	game_xbox.o
+0x007247C0	0x00B13CC0	?OccupyPrivateSlot@MPLiveEngine@@QAE_NXZ	public: bool __thiscall MPLiveEngine::OccupyPrivateSlot(void)	game_xbox.o
+0x00724820	0x00B13D20	?FreeSlot@MPLiveEngine@@QAEX_N@Z	public: void __thiscall MPLiveEngine::FreeSlot(bool)	game_xbox.o
+0x00724970	0x00B13E70	?HandleInput@MPLiveEngine@@UAE_NKABU_XINPUT_STATE@@@Z	public: virtual bool __thiscall MPLiveEngine::HandleInput(unsigned long,struct _XINPUT_STATE const &)	game_xbox.o
+0x007249A0	0x00B13EA0	?LogonCallBack@MPLiveEngine@@MAEXXZ	protected: virtual void __thiscall MPLiveEngine::LogonCallBack(void)	game_xbox.o
+0x007249E0	0x00B13EE0	?SetPanelFile@XboxLiveOptionsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall XboxLiveOptionsMenu::SetPanelFile(class PanelFile *)	game_xbox.o
+0x00725560	0x00B14A60	?OnActivate@XboxLiveOptionsMenu@@UAEXXZ	public: virtual void __thiscall XboxLiveOptionsMenu::OnActivate(void)	game_xbox.o
+0x007256A0	0x00B14BA0	?OnCross@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnCross(int)	game_xbox.o
+0x007257C0	0x00B14CC0	?OnCircle@XboxLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall XboxLiveOptionsMenu::OnCircle(int)	game_xbox.o
+0x007257E0	0x00B14CE0	?UpdateDynamicText@XboxLiveOptionsMenu@@IAEXXZ	protected: void __thiscall XboxLiveOptionsMenu::UpdateDynamicText(void)	game_xbox.o
+0x007258C0	0x00B14DC0	?WireForSignedIn@XboxLiveOptionsMenu@@IAEXXZ	protected: void __thiscall XboxLiveOptionsMenu::WireForSignedIn(void)	game_xbox.o
+0x007259D0	0x00B14ED0	?TryFriendJoin@InGameLiveOptionsMenu@@IAEXXZ	protected: void __thiscall InGameLiveOptionsMenu::TryFriendJoin(void)	game_xbox.o
+0x00725AE0	0x00B14FE0	?RenderUIX@@YAXPAX@Z	void __cdecl RenderUIX(void *)	game_xbox.o
+0x00725BF0	0x00B150F0	?SetupAsAware@LiveWrapper@@QAEXPAUD3DDevice@@PBDPBG@Z	public: void __thiscall LiveWrapper::SetupAsAware(struct D3DDevice *,char const *,unsigned short const *)	game_xbox.o
+0x00725C40	0x00B15140	?SetupAsSession@LiveWrapper@@QAEXPAUD3DDevice@@PBDPBG@Z	public: void __thiscall LiveWrapper::SetupAsSession(struct D3DDevice *,char const *,unsigned short const *)	game_xbox.o
+0x00725C90	0x00B15190	?LogOut@LiveWrapper@@QAEXXZ	public: void __thiscall LiveWrapper::LogOut(void)	game_xbox.o
+0x00725CD0	0x00B151D0	?HandleFeatureExit@LiveWrapper@@IAEXXZ	protected: void __thiscall LiveWrapper::HandleFeatureExit(void)	game_xbox.o
+0x00725DD0	0x00B152D0	?Delete@CSession@@QAEJXZ	public: long __thiscall CSession::Delete(void)	game_xbox.o
+0x00725F10	0x00B15410	?ProcessStateCreateSession@CSession@@AAEJXZ	private: long __thiscall CSession::ProcessStateCreateSession(void)	game_xbox.o
+0x00726090	0x00B15590	?PurgeSessionQ@CSession@@AAEXH@Z	private: void __thiscall CSession::PurgeSessionQ(int)	game_xbox.o
+0x007260D0	0x00B155D0	?GetQosResponse@CSession@@QAE?AVCBlob@@XZ	public: class CBlob __thiscall CSession::GetQosResponse(void)	game_xbox.o
+0x007260F0	0x00B155F0	?LeaveLiveSession@MPLiveEngine@@QAEXXZ	public: void __thiscall MPLiveEngine::LeaveLiveSession(void)	game_xbox.o
+0x007261B0	0x00B156B0	?Update@XboxLiveOptionsMenu@@UAEXM@Z	public: virtual void __thiscall XboxLiveOptionsMenu::Update(float)	game_xbox.o
+0x00726400	0x00B15900	?ResponseNoReboot@InGameLiveOptionsMenu@@KA_NH@Z	protected: static bool __cdecl InGameLiveOptionsMenu::ResponseNoReboot(int)	game_xbox.o
+0x00726450	0x00B15950	?ResponseSignOut@InGameLiveOptionsMenu@@KA_NH@Z	protected: static bool __cdecl InGameLiveOptionsMenu::ResponseSignOut(int)	game_xbox.o
+0x00726490	0x00B15990	?DoWork@LiveWrapper@@UAEXXZ	public: virtual void __thiscall LiveWrapper::DoWork(void)	game_xbox.o
+0x007265C0	0x00B15AC0	?Reset@CSession@@QAEXXZ	public: void __thiscall CSession::Reset(void)	game_xbox.o
+0x00726680	0x00B15B80	?Process@CSession@@QAEJXZ	public: long __thiscall CSession::Process(void)	game_xbox.o
+0x00726760	0x00B15C60	?DoWork@MPLiveEngine@@UAEXXZ	public: virtual void __thiscall MPLiveEngine::DoWork(void)	game_xbox.o
+0x00726830	0x00B15D30	?TryReboot@InGameLiveOptionsMenu@@IAEXXZ	protected: void __thiscall InGameLiveOptionsMenu::TryReboot(void)	game_xbox.o
+0x00726940	0x00B15E40	?Update@InGameLiveOptionsMenu@@UAEXM@Z	public: virtual void __thiscall InGameLiveOptionsMenu::Update(float)	game_xbox.o
+0x00726AB0	0x00B15FB0	?Select@InGameLiveOptionsMenu@@UAEXH@Z	public: virtual void __thiscall InGameLiveOptionsMenu::Select(int)	game_xbox.o
+0x00726DA0	0x00B162A0	??1CSession@@QAE@XZ	public: __thiscall CSession::~CSession(void)	game_xbox.o
+0x00726DB0	0x00B162B0	??0MPLiveEngine@@QAE@XZ	public: __thiscall MPLiveEngine::MPLiveEngine(void)	game_xbox.o
+0x00726E40	0x00B16340	??1MPLiveEngine@@UAE@XZ	public: virtual __thiscall MPLiveEngine::~MPLiveEngine(void)	game_xbox.o
+0x00726EC0	0x00B163C0	?PanelFileUnloaded@XboxLiveOptionsMenu@@UAEXPAVPanelFile@@@Z	public: virtual void __thiscall XboxLiveOptionsMenu::PanelFileUnloaded(class PanelFile *)	game_xbox.o
+0x00726F10	0x00B16410	_main	_main	game_xbox.o
+0x00727300	0x00B16800	??0XboxLiveOptionsMenu@@QAE@PAVFEMenuSystem@@@Z	public: __thiscall XboxLiveOptionsMenu::XboxLiveOptionsMenu(class FEMenuSystem *)	game_xbox.o
+0x00727480	0x00B16980	??1XboxLiveOptionsMenu@@UAE@XZ	public: virtual __thiscall XboxLiveOptionsMenu::~XboxLiveOptionsMenu(void)	game_xbox.o

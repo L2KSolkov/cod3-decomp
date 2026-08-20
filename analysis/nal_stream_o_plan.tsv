@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x00873580	?nalStreamAnimQueueInstance@@YAPAVnalSceneAnimInstance@@IHHHP6APAVnalClientSceneAnim@@PBVnalSceneAnim@@ABVtlFixedString@@PAX@Z2@Z	class nalSceneAnimInstance * __cdecl nalStreamAnimQueueInstance(unsigned int,int,int,int,class nalClientSceneAnim * (__cdecl*)(class nalSceneAnim const *,class tlFixedString const &,void *),void *)	
+0x00873600	?IsReady@nalStreamInstance@@UBE_NXZ	public: virtual bool __thiscall nalStreamInstance::IsReady(void)const 	
+0x00873610	?Play@nalStreamInstance@@UAEXXZ	public: virtual void __thiscall nalStreamInstance::Play(void)	
+0x008737C0	?AdvanceStream@nalStreamInstance@@IAEXXZ	protected: void __thiscall nalStreamInstance::AdvanceStream(void)	
+0x00873980	?Advance@nalStreamInstance@@UAEXM@Z	public: virtual void __thiscall nalStreamInstance::Advance(float)	

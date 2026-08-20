@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x007D2130	0x00BC1630	?InitCDCharSpecularShader@@YAXXZ	void __cdecl InitCDCharSpecularShader(void)	cdCharSpecularShader.o
+0x007D2180	0x00BC1680	?ToggleCDCharSpecularShader@@YAXXZ	void __cdecl ToggleCDCharSpecularShader(void)	cdCharSpecularShader.o
+0x007D21A0	0x00BC16A0	?Register@cdCharSpecularShader@@UAEXXZ	public: virtual void __thiscall cdCharSpecularShader::Register(void)	cdCharSpecularShader.o
+0x007D21F0	0x00BC16F0	?AddNode@cdCharSpecularShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z	public: virtual void __thiscall cdCharSpecularShader::AddNode(class nglMeshNode *,struct nglMeshSection *,struct nglMaterial *)	cdCharSpecularShader.o
+0x007D2260	0x00BC1760	?Render@cdCharSpecularShaderNode@@UAEXXZ	public: virtual void __thiscall cdCharSpecularShaderNode::Render(void)	cdCharSpecularShader.o

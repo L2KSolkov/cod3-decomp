@@ -1,0 +1,13 @@
+ida_ea	name	signature	source_cpp
+0x0082D600	?nfsMessage@@YAXPBDZZ	void __cdecl nfsMessage(char const *,...)	
+0x0082D620	?nfsWarning@@YAXPBDZZ	void __cdecl nfsWarning(char const *,...)	
+0x0082D640	?nfsError@@YAXPBDZZ	void __cdecl nfsError(char const *,...)	
+0x0082D660	?nfsRequestStateText@@YAPBDW4nfsRequestState@@@Z	char const * __cdecl nfsRequestStateText(enum nfsRequestState)	
+0x0082D6E0	?nfsFileTypeText@@YAPBDW4nfsFileType@@@Z	char const * __cdecl nfsFileTypeText(enum nfsFileType)	
+0x0082D710	?nfsRequestStateText@@YAPBDW4nflRequestState@@@Z	char const * __cdecl nfsRequestStateText(enum nflRequestState)	
+0x0082D770	?nfsMediaIDText@@YAPBDW4nflMediaID@@@Z	char const * __cdecl nfsMediaIDText(enum nflMediaID)	
+0x0082D800	?nfsBufferModeText@@YAPBDW4nflBufferMode@@@Z	char const * __cdecl nfsBufferModeText(enum nflBufferMode)	
+0x0082D850	?nfdErrorText@@YAPBDW4nfdError@@@Z	char const * __cdecl nfdErrorText(enum nfdError)	
+0x0082D8C0	?nfdFileFlagsText@@YAPBDW4nfdFileFlags@@@Z	char const * __cdecl nfdFileFlagsText(enum nfdFileFlags)	
+0x0082D9C0	?nfdMediaStateText@@YAPBDW4nfdMediaState@@@Z	char const * __cdecl nfdMediaStateText(enum nfdMediaState)	
+0x0082DA10	?nfdIoStateText@@YAPBDW4nfdIoState@@@Z	char const * __cdecl nfdIoStateText(enum nfdIoState)	

@@ -1,0 +1,22 @@
+ida_ea	va	name	signature	family
+0x00820290	0x00C0F790	?nslVoiceGet@@YAPAUnslVoice@@H@Z	struct nslVoice * __cdecl nslVoiceGet(int)	nslCompat.o
+0x008202A0	0x00C0F7A0	?nslGetGroup@@YAPAUnslGroup@@PBD@Z	struct nslGroup * __cdecl nslGetGroup(char const *)	nslCompat.o
+0x008202B0	0x00C0F7B0	?nslGetListenerGroup@@YAPAUnslGroup@@XZ	struct nslGroup * __cdecl nslGetListenerGroup(void)	nslCompat.o
+0x008202C0	0x00C0F7C0	?nslGetMasterGroup@@YAPAUnslGroup@@XZ	struct nslGroup * __cdecl nslGetMasterGroup(void)	nslCompat.o
+0x008202D0	0x00C0F7D0	?nslFreeBank@@YAXW4nslBankID@@@Z	void __cdecl nslFreeBank(enum nslBankID)	nslCompat.o
+0x008202E0	0x00C0F7E0	?nslGetBankState@@YAHW4nslBankID@@@Z	int __cdecl nslGetBankState(enum nslBankID)	nslCompat.o
+0x008202F0	0x00C0F7F0	?nslLoadBank@@YA?AW4nslBankID@@III@Z	enum nslBankID __cdecl nslLoadBank(unsigned int,unsigned int,unsigned int)	nslCompat.o
+0x00820310	0x00C0F810	?nslGetWave@@YA?AW4nslWaveID@@PBD@Z	enum nslWaveID __cdecl nslGetWave(char const *)	nslCompat.o
+0x00820320	0x00C0F820	?nslGetWaveLength@@YAHW4nslWaveID@@@Z	int __cdecl nslGetWaveLength(enum nslWaveID)	nslCompat.o
+0x00820330	0x00C0F830	?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z	float __cdecl nslGetWaveParam(enum nslWaveID,int,float)	nslCompat.o
+0x00820340	0x00C0F840	?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z	char const * __cdecl nslGetWaveGroup(enum nslWaveID)	nslCompat.o
+0x00820350	0x00C0F850	?nslGetWaveName@@YAPBDW4nslWaveID@@@Z	char const * __cdecl nslGetWaveName(enum nslWaveID)	nslCompat.o
+0x00820360	0x00C0F860	?nslIsWaveLooped@@YAHW4nslWaveID@@@Z	int __cdecl nslIsWaveLooped(enum nslWaveID)	nslCompat.o
+0x00820370	0x00C0F870	?nslSetListenerOrientation@@YAXQBM0@Z	void __cdecl nslSetListenerOrientation(float const * const,float const * const)	nslCompat.o
+0x00820390	0x00C0F890	?nslSetListenerPosition@@YAXQBM@Z	void __cdecl nslSetListenerPosition(float const * const)	nslCompat.o
+0x008203B0	0x00C0F8B0	?nslNumBanksInUse@@YAHXZ	int __cdecl nslNumBanksInUse(void)	nslCompat.o
+0x008203C0	0x00C0F8C0	?nslAreAllBanksLoaded@@YAHXZ	int __cdecl nslAreAllBanksLoaded(void)	nslCompat.o
+0x008203D0	0x00C0F8D0	?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z	int __cdecl nslIsWaveStreamed(enum nslWaveID)	nslCompat.o
+0x008203E0	0x00C0F8E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	struct nslVoice * __cdecl nslGetVoice(unsigned int)	nslCompat.o
+0x008203F0	0x00C0F8F0	?nslGetNumVoices@@YAIXZ	unsigned int __cdecl nslGetNumVoices(void)	nslCompat.o
+0x00820400	0x00C0F900	?nslGetMaxNumVoices@@YAIXZ	unsigned int __cdecl nslGetMaxNumVoices(void)	nslCompat.o

@@ -1,0 +1,4 @@
+index	status	map_line
+1	VERIFIED	0002:00432260 ?MacroBlockIdct@@YAXPAF@Z 00C21760 f afmv_dx_idct.o
+2	VERIFIED	0002:00432a10 ?MacroBlockIdctCopy@@YAXPAFPAEH@Z 00C21F10 f afmv_dx_idct.o
+3	VERIFIED	0002:00432a90 ?MacroBlockIdctAdd@@YAXHPAFPAEH@Z 00C21F90 f afmv_dx_idct.o

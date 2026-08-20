@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x0081E600	0x00C0DB00	?compute_det@@YAXXZ	void __cdecl compute_det(void)	cdl_gjk.o
+0x0081EA70	0x00C0DF70	?gjk@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@M_NIIII@Z	int __cdecl gjk(class cdlConvex const &,class math::Mat43 const &,class cdlConvex const &,struct cdl_cinfo2 &,float,bool,unsigned int,unsigned int,unsigned int,unsigned int)	cdl_gjk.o
+0x0081F2F0	0x00C0E7F0	?collide_partial@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	int __cdecl collide_partial(class cdlConvex const &,class math::Mat43 const &,class cdlConvex const &,struct cdl_cinfo2 &)	cdl_gjk.o
+0x0081F3D0	0x00C0E8D0	?collide_full@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	bool __cdecl collide_full(class cdlConvex const &,class math::Mat43 const &,class cdlConvex const &,struct cdl_cinfo2 &)	cdl_gjk.o
+0x0081F6B0	0x00C0EBB0	?collide@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@IIII@Z	bool __cdecl collide(class cdlConvex const &,class math::Mat43 const &,class cdlConvex const &,struct cdl_cinfo2 &,unsigned int,unsigned int,unsigned int,unsigned int)	cdl_gjk.o

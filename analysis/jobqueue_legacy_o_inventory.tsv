@@ -1,0 +1,12 @@
+ida_ea	va	name	signature	family
+0x00835470	0x00C24970	?jqValidate@@YAXXZ	void __cdecl jqValidate(void)	jobqueue_legacy.o
+0x00835480	0x00C24980	?jqStart@@YAXI@Z	void __cdecl jqStart(unsigned int)	jobqueue_legacy.o
+0x00835490	0x00C24990	?jqSetBatchPoolSize@@YAXI@Z	void __cdecl jqSetBatchPoolSize(unsigned int)	jobqueue_legacy.o
+0x008354A0	0x00C249A0	?_jqAddBatch@@YAXPAUjqBatch@@@Z	void __cdecl _jqAddBatch(struct jqBatch *)	jobqueue_legacy.o
+0x008354C0	0x00C249C0	?jqRemoveBatch@@YA_NH@Z	bool __cdecl jqRemoveBatch(int)	jobqueue_legacy.o
+0x008354D0	0x00C249D0	?jqFlush@@YAXH@Z	void __cdecl jqFlush(int)	jobqueue_legacy.o
+0x008354E0	0x00C249E0	?jqSetBatchGroupPoolSize@@YAXI@Z	void __cdecl jqSetBatchGroupPoolSize(unsigned int)	jobqueue_legacy.o
+0x008354F0	0x00C249F0	?_jqInit@@YAXXZ	void __cdecl _jqInit(void)	jobqueue_legacy.o
+0x00835500	0x00C24A00	?_jqShutdown@@YAXXZ	void __cdecl _jqShutdown(void)	jobqueue_legacy.o
+0x00835510	0x00C24A10	?_jqStart@@YAXH@Z	void __cdecl _jqStart(int)	jobqueue_legacy.o
+0x00835520	0x00C24A20	?_jqStop@@YAXXZ	void __cdecl _jqStop(void)	jobqueue_legacy.o

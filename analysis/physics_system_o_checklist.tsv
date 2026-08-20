@@ -1,0 +1,314 @@
+index	status	map_line
+1	VERIFIED	0002:0047e8c0 ??0outer_time@@QAE@XZ 00C6DDC0 f i physics_system.o
+2	PORTED	0002:0047e8d0 ?is_user_rigid_body@rigid_body@@QBE?BIXZ 00C6DDD0 f i physics_system.o
+3	PORTED	0002:0047e8e0 ?get_constraint_count@rigid_body@@QBE?BHXZ 00C6DDE0 f i physics_system.o
+4	PORTED	0002:0047e8f0 ?set_avl_key@rigid_body_constraint_contact@@QAEXABVrigid_body_pair_key@@@Z 00C6DDF0 f i physics_system.o
+5	PORTED	0002:0047e910 ??0rigid_body_constraint_point@@QAE@XZ 00C6DE10 f i physics_system.o
+6	PORTED	0002:0047e940 ??0ragdoll_joint_limit_info@@QAE@XZ 00C6DE40 f i physics_system.o
+7	PORTED	0002:0047e950 ??0rigid_body_constraint_custom_orientation@@QAE@XZ 00C6DE50 f i physics_system.o
+8	PORTED	0002:0047e9a0 ?get_dictator@rbint@@SAPBVMat43@math@@PBVuser_rigid_body@@@Z 00C6DEA0 f i physics_system.o
+9	PORTED	0002:0047e9e0 ?constraint_info_reset@rbint@@SAXPAVrigid_body@@@Z 00C6DEE0 f i physics_system.o
+10	PORTED	0002:0047ea00 ?increment_constraint_count@rbint@@SAXPAVrigid_body@@@Z 00C6DF00 f i physics_system.o
+11	PORTED	0002:0047ea10 ?increment_contact_count@rbint@@SAXPAVrigid_body@@H@Z 00C6DF10 f i physics_system.o
+12	VERIFIED	0002:0047ea30 ?solver_memory_buffer_set@physics_system@@QAEXPAXH@Z 00C6DF30 f i physics_system.o
+13	VERIFIED	0002:0047ea50 ?solver_memory_buffer_nullify@physics_system@@QAEXXZ 00C6DF50 f i physics_system.o
+14	PORTED	0002:0047ea70 ?process_constraint_info@rbcint@@SAXPAVrigid_body_constraint@@@Z 00C6DF70 f i physics_system.o
+15	PORTED	0002:0047eaa0 ?process_constraint_info@rbcint@@SAXPAVrigid_body_constraint_wheel@@@Z 00C6DFA0 f i physics_system.o
+16	PORTED	0002:0047eaf0 ?set@rbcint@@SAXPAVrigid_body_constraint@@QAVrigid_body@@1@Z 00C6DFF0 f i physics_system.o
+17	VERIFIED	0002:0047eb10 ??0phys_mem_info@@QAE@XZ 00C6E010 f physics_system.o
+18	PORTED	0002:0047eb40 ?get_environment_rigid_body@phys_sys@@SAPAVenvironment_rigid_body@@XZ 00C6E040 f physics_system.o
+19	PORTED	0002:0047eb50 ?set_max_delta_t@phys_sys@@SAXM@Z 00C6E050 f physics_system.o
+20	PORTED	0002:0047eb70 ?get_max_delta_t@phys_sys@@SAMXZ 00C6E070 f physics_system.o
+21	PORTED	0002:0047eb80 ?set_v_tol@phys_sys@@SAXHH@Z 00C6E080 f physics_system.o
+22	PORTED	0002:0047eba0 ?get_v_tol@phys_sys@@SAXPAH0@Z 00C6E0A0 f physics_system.o
+23	PORTED	0002:0047ebc0 ?set_vp_tol@phys_sys@@SAXHH@Z 00C6E0C0 f physics_system.o
+24	PORTED	0002:0047ebe0 ?get_vp_tol@phys_sys@@SAXPAH0@Z 00C6E0E0 f physics_system.o
+25	PORTED	0002:0047ec00 ?set_collision_callback@phys_sys@@SAXP6AXXZ@Z 00C6E100 f physics_system.o
+26	PORTED	0002:0047ec20 ?phys_frame_advance@phys_sys@@SAXM@Z 00C6E120 f physics_system.o
+27	PORTED	0002:0047ec40 ?phys_init@phys_sys@@SAXAAVphys_mem_info@@@Z 00C6E140 f physics_system.o
+28	PORTED	0002:0047ec50 ?phys_shutdown@phys_sys@@SAXXZ 00C6E150 f physics_system.o
+29	PORTED	0002:0047ec60 ?solver_memory_buffer_set@phys_sys@@SAXPAXH@Z 00C6E160 f physics_system.o
+30	PORTED	0002:0047ec80 ?solver_memory_buffer_nullify@phys_sys@@SAXXZ 00C6E180 f physics_system.o
+31	PORTED	0002:0047eca0 ?set_phys_proftimer_callbacks@phys_sys@@SAXABVphys_proftimer_callbacks@@@Z 00C6E1A0 f physics_system.o
+32	PORTED	0002:0047ecc0 ?get_rbc_contact@phys_sys@@SAPAVrigid_body_constraint_contact@@QAVrigid_body@@0@Z 00C6E1C0 f physics_system.o
+33	PORTED	0002:0047ed50 ?max_slots_rigid_body@phys_sys@@SAHXZ 00C6E250 f physics_system.o
+34	PORTED	0002:0047ed60 ?max_slots_user_rigid_body@phys_sys@@SAHXZ 00C6E260 f physics_system.o
+35	PORTED	0002:0047ed70 ?max_slots_rbc_point@phys_sys@@SAHXZ 00C6E270 f physics_system.o
+36	PORTED	0002:0047ed80 ?max_slots_rbc_hinge@phys_sys@@SAHXZ 00C6E280 f physics_system.o
+37	PORTED	0002:0047ed90 ?max_slots_rbc_dist@phys_sys@@SAHXZ 00C6E290 f physics_system.o
+38	PORTED	0002:0047eda0 ?max_slots_rbc_ragdoll@phys_sys@@SAHXZ 00C6E2A0 f physics_system.o
+39	PORTED	0002:0047edb0 ?max_slots_rbc_wheel@phys_sys@@SAHXZ 00C6E2B0 f physics_system.o
+40	PORTED	0002:0047edc0 ?max_slots_rbc_angular_actuator@phys_sys@@SAHXZ 00C6E2C0 f physics_system.o
+41	PORTED	0002:0047edd0 ?max_slots_rbc_custom_orientation@phys_sys@@SAHXZ 00C6E2D0 f physics_system.o
+42	PORTED	0002:0047ede0 ?max_slots_rbc_custom_path@phys_sys@@SAHXZ 00C6E2E0 f physics_system.o
+43	PORTED	0002:0047edf0 ?max_slots_rbc_contact@phys_sys@@SAHXZ 00C6E2F0 f physics_system.o
+44	PORTED	0002:0047ee00 ?available_slots_rigid_body@phys_sys@@SAHXZ 00C6E300 f physics_system.o
+45	PORTED	0002:0047ee20 ?available_slots_user_rigid_body@phys_sys@@SAHXZ 00C6E320 f physics_system.o
+46	PORTED	0002:0047ee40 ?available_slots_rbc_point@phys_sys@@SAHXZ 00C6E340 f physics_system.o
+47	PORTED	0002:0047ee60 ?available_slots_rbc_hinge@phys_sys@@SAHXZ 00C6E360 f physics_system.o
+48	PORTED	0002:0047ee80 ?available_slots_rbc_dist@phys_sys@@SAHXZ 00C6E380 f physics_system.o
+49	PORTED	0002:0047eea0 ?available_slots_rbc_ragdoll@phys_sys@@SAHXZ 00C6E3A0 f physics_system.o
+50	PORTED	0002:0047eec0 ?available_slots_rbc_wheel@phys_sys@@SAHXZ 00C6E3C0 f physics_system.o
+51	PORTED	0002:0047eee0 ?available_slots_rbc_angular_actuator@phys_sys@@SAHXZ 00C6E3E0 f physics_system.o
+52	PORTED	0002:0047ef00 ?available_slots_rbc_custom_orientation@phys_sys@@SAHXZ 00C6E400 f physics_system.o
+53	PORTED	0002:0047ef20 ?available_slots_rbc_custom_path@phys_sys@@SAHXZ 00C6E420 f physics_system.o
+54	PORTED	0002:0047ef40 ?available_slots_rbc_contact@phys_sys@@SAHXZ 00C6E440 f physics_system.o
+55	PORTED	0002:0047ef60 ?used_slots_rigid_body@phys_sys@@SAHXZ 00C6E460 f physics_system.o
+56	PORTED	0002:0047ef70 ?used_slots_user_rigid_body@phys_sys@@SAHXZ 00C6E470 f physics_system.o
+57	PORTED	0002:0047ef80 ?used_slots_rbc_point@phys_sys@@SAHXZ 00C6E480 f physics_system.o
+58	PORTED	0002:0047ef90 ?used_slots_rbc_hinge@phys_sys@@SAHXZ 00C6E490 f physics_system.o
+59	PORTED	0002:0047efa0 ?used_slots_rbc_dist@phys_sys@@SAHXZ 00C6E4A0 f physics_system.o
+60	PORTED	0002:0047efb0 ?used_slots_rbc_ragdoll@phys_sys@@SAHXZ 00C6E4B0 f physics_system.o
+61	PORTED	0002:0047efc0 ?used_slots_rbc_wheel@phys_sys@@SAHXZ 00C6E4C0 f physics_system.o
+62	PORTED	0002:0047efd0 ?used_slots_rbc_angular_actuator@phys_sys@@SAHXZ 00C6E4D0 f physics_system.o
+63	PORTED	0002:0047efe0 ?used_slots_rbc_custom_orientation@phys_sys@@SAHXZ 00C6E4E0 f physics_system.o
+64	PORTED	0002:0047eff0 ?used_slots_rbc_custom_path@phys_sys@@SAHXZ 00C6E4F0 f physics_system.o
+65	PORTED	0002:0047f000 ?used_slots_rbc_contact@phys_sys@@SAHXZ 00C6E500 f physics_system.o
+66	PORTED	0002:0047f010 ?create_rigid_body@phys_sys@@SAPAVrigid_body@@_N@Z 00C6E510 f physics_system.o
+67	PORTED	0002:0047f060 ?create_rbc_point@phys_sys@@SAPAVrigid_body_constraint_point@@QAVrigid_body@@0_N@Z 00C6E560 f physics_system.o
+68	PORTED	0002:0047f090 ?create_rbc_custom_orientation@phys_sys@@SAPAVrigid_body_constraint_custom_orientation@@QAVrigid_body@@0_N@Z 00C6E590 f physics_system.o
+69	PORTED	0002:0047f0c0 ?get_user_rigid_body@phys_sys@@SAPAVuser_rigid_body@@QBVMat43@math@@@Z 00C6E5C0 f physics_system.o
+70	PORTED	0002:0047f130 ?update_constraint_infos@phys_sys@@SAXXZ 00C6E630 f physics_system.o
+71	PORTED	0002:0047f440 ?create_user_rigid_body@phys_sys@@SAPAVuser_rigid_body@@_N@Z 00C6E940 f physics_system.o
+72	PORTED	0002:0047f490 ?create_rbc_hinge@phys_sys@@SAPAVrigid_body_constraint_hinge@@QAVrigid_body@@0_N@Z 00C6E990 f physics_system.o
+73	PORTED	0002:0047f4c0 ?create_rbc_dist@phys_sys@@SAPAVrigid_body_constraint_distance@@QAVrigid_body@@0_N@Z 00C6E9C0 f physics_system.o
+74	PORTED	0002:0047f4f0 ?create_rbc_ragdoll@phys_sys@@SAPAVrigid_body_constraint_ragdoll@@QAVrigid_body@@0_N@Z 00C6E9F0 f physics_system.o
+75	PORTED	0002:0047f520 ?create_rbc_wheel@phys_sys@@SAPAVrigid_body_constraint_wheel@@QAVrigid_body@@0_N@Z 00C6EA20 f physics_system.o
+76	PORTED	0002:0047f550 ?create_rbc_angular_actuator@phys_sys@@SAPAVrigid_body_constraint_angular_actuator@@QAVrigid_body@@0_N@Z 00C6EA50 f physics_system.o
+77	PORTED	0002:0047f580 ?create_rbc_custom_path@phys_sys@@SAPAVrigid_body_constraint_custom_path@@QAVrigid_body@@0_N@Z 00C6EA80 f physics_system.o
+78	PORTED	0002:0047f5b0 ?create_rbc_contact@phys_sys@@SAPAVrigid_body_constraint_contact@@QAVrigid_body@@0_N@Z 00C6EAB0 f physics_system.o
+79	PORTED	0002:0047f5e0 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_point@@@Z 00C6EAE0 f physics_system.o
+80	PORTED	0002:0047f600 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_hinge@@@Z 00C6EB00 f physics_system.o
+81	PORTED	0002:0047f620 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_distance@@@Z 00C6EB20 f physics_system.o
+82	PORTED	0002:0047f640 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_ragdoll@@@Z 00C6EB40 f physics_system.o
+83	PORTED	0002:0047f660 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_wheel@@@Z 00C6EB60 f physics_system.o
+84	PORTED	0002:0047f680 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_angular_actuator@@@Z 00C6EB80 f physics_system.o
+85	PORTED	0002:0047f6a0 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_custom_orientation@@@Z 00C6EBA0 f physics_system.o
+86	PORTED	0002:0047f6c0 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_custom_path@@@Z 00C6EBC0 f physics_system.o
+87	PORTED	0002:0047f6e0 ?destroy@phys_sys@@SAXQAVrigid_body_constraint_contact@@@Z 00C6EBE0 f physics_system.o
+88	PORTED	0002:0047f700 ?destroy_all_rigid_body@phys_sys@@SAXXZ 00C6EC00 f physics_system.o
+89	PORTED	0002:0047f7b0 ?destroy_all_user_rigid_body@phys_sys@@SAXXZ 00C6ECB0 f physics_system.o
+90	PORTED	0002:0047fb80 ?destroy_all_rbc_point@phys_sys@@SAXXZ 00C6F080 f physics_system.o
+91	PORTED	0002:0047fba0 ?destroy_all_rbc_hinge@phys_sys@@SAXXZ 00C6F0A0 f physics_system.o
+92	PORTED	0002:0047fbc0 ?destroy_all_rbc_dist@phys_sys@@SAXXZ 00C6F0C0 f physics_system.o
+93	PORTED	0002:0047fbe0 ?destroy_all_rbc_ragdoll@phys_sys@@SAXXZ 00C6F0E0 f physics_system.o
+94	PORTED	0002:0047fc00 ?destroy_all_rbc_wheel@phys_sys@@SAXXZ 00C6F100 f physics_system.o
+95	PORTED	0002:0047fc20 ?destroy_all_rbc_angular_actuator@phys_sys@@SAXXZ 00C6F120 f physics_system.o
+96	PORTED	0002:0047fc40 ?destroy_all_rbc_custom_orientation@phys_sys@@SAXXZ 00C6F140 f physics_system.o
+97	PORTED	0002:0047fc60 ?destroy_all_rbc_custom_path@phys_sys@@SAXXZ 00C6F160 f physics_system.o
+98	PORTED	0002:0047fc80 ?destroy_all_rbc_contact@phys_sys@@SAXXZ 00C6F180 f physics_system.o
+99	PORTED	0002:0047fca0 ?destroy_all_constraint@phys_sys@@SAXQAVrigid_body@@@Z 00C6F1A0 f physics_system.o
+100	PORTED	0002:00480020 ?destroy_all_constraint_with_user_rigid_body@phys_sys@@SAXQAVrigid_body@@@Z 00C6F520 f physics_system.o
+101	PORTED	0002:004804b0 ?destroy_all_unused_user_rigid_body@phys_sys@@SAXXZ 00C6F9B0 f physics_system.o
+102	PORTED	0002:00480510 ?destroy@phys_sys@@SAXQAVrigid_body@@@Z 00C6FA10 f physics_system.o
+103	PORTED	0002:00480540 ?destroy@phys_sys@@SAXQAVuser_rigid_body@@@Z 00C6FA40 f physics_system.o
+104	PORTED	0002:00480570 ??0phys_list_condition_functor_has_rigid_body@@QAE@QAVrigid_body@@@Z 00C6FA70 f i physics_system.o
+105	PORTED	0002:00480580 ?test@phys_list_condition_functor_has_rigid_body@@QAE_NABVrigid_body_constraint@@@Z 00C6FA80 f i physics_system.o
+106	PORTED	0002:004805b0 ?test@phys_list_condition_functor_has_user_rigid_body@@QAE_NABVrigid_body_constraint@@@Z 00C6FAB0 f i physics_system.o
+107	PORTED	0002:004805f0 ??0phys_list_condition_functor_has_rigid_body_and_user_rigid_body@@QAE@QAVrigid_body@@@Z 00C6FAF0 f i physics_system.o
+108	PORTED	0002:00480600 ?test@phys_list_condition_functor_has_rigid_body_and_user_rigid_body@@QAE_NABVrigid_body_constraint@@@Z 00C6FB00 f i physics_system.o
+109	PORTED	0002:00480640 ?test@phys_list_condition_functor_has_no_constraints@@QAE_NABVrigid_body@@@Z 00C6FB40 f i physics_system.o
+110	PORTED	0002:00480660 ??0?$phys_simple_link_list@Vcontact_point_info@@@@QAE@XZ 00C6FB60 f i physics_system.o
+111	PORTED	0002:00480670 ?is_member@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QBE_NPBVuser_rigid_body@@@Z 00C6FB70 f i physics_system.o
+112	PORTED	0002:004806d0 ?get_max_slots@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QBE?BHXZ 00C6FBD0 f i physics_system.o
+113	PORTED	0002:004806e0 ?get_available_slots@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QBE?BHXZ 00C6FBE0 f i physics_system.o
+114	PORTED	0002:004806f0 ?get_used_slots@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QBE?BHXZ 00C6FBF0 f i physics_system.o
+115	VERIFIED	0002:00480700 ?is_member@?$phys_heap_memory_pool@Vrigid_body@@@@QBE_NPBVrigid_body@@@Z 00C6FC00 f i physics_system.o
+116	PORTED	0002:00480760 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body@@@@QBE?BHXZ 00C6FC60 f i physics_system.o
+117	PORTED	0002:00480770 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body@@@@QBE?BHXZ 00C6FC70 f i physics_system.o
+118	PORTED	0002:00480780 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body@@@@QBE?BHXZ 00C6FC80 f i physics_system.o
+119	PORTED	0002:00480790 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QBE_NPBVrigid_body_constraint_contact@@@Z 00C6FC90 f i physics_system.o
+120	PORTED	0002:004807f0 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QBE?BHXZ 00C6FCF0 f i physics_system.o
+121	PORTED	0002:00480800 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QBE?BHXZ 00C6FD00 f i physics_system.o
+122	PORTED	0002:00480810 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QBE?BHXZ 00C6FD10 f i physics_system.o
+123	PORTED	0002:00480820 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QBE?BHXZ 00C6FD20 f i physics_system.o
+124	PORTED	0002:00480830 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QBE?BHXZ 00C6FD30 f i physics_system.o
+125	PORTED	0002:00480840 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QBE?BHXZ 00C6FD40 f i physics_system.o
+126	PORTED	0002:00480850 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QBE?BHXZ 00C6FD50 f i physics_system.o
+127	PORTED	0002:00480860 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QBE?BHXZ 00C6FD60 f i physics_system.o
+128	PORTED	0002:00480870 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QBE?BHXZ 00C6FD70 f i physics_system.o
+129	PORTED	0002:00480880 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QBE?BHXZ 00C6FD80 f i physics_system.o
+130	PORTED	0002:00480890 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QBE?BHXZ 00C6FD90 f i physics_system.o
+131	PORTED	0002:004808a0 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QBE?BHXZ 00C6FDA0 f i physics_system.o
+132	PORTED	0002:004808b0 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QBE?BHXZ 00C6FDB0 f i physics_system.o
+133	PORTED	0002:004808c0 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QBE?BHXZ 00C6FDC0 f i physics_system.o
+134	PORTED	0002:004808d0 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QBE?BHXZ 00C6FDD0 f i physics_system.o
+135	PORTED	0002:004808e0 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QBE?BHXZ 00C6FDE0 f i physics_system.o
+136	PORTED	0002:004808f0 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QBE?BHXZ 00C6FDF0 f i physics_system.o
+137	PORTED	0002:00480900 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QBE?BHXZ 00C6FE00 f i physics_system.o
+138	PORTED	0002:00480910 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QBE?BHXZ 00C6FE10 f i physics_system.o
+139	PORTED	0002:00480920 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QBE?BHXZ 00C6FE20 f i physics_system.o
+140	PORTED	0002:00480930 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QBE?BHXZ 00C6FE30 f i physics_system.o
+141	PORTED	0002:00480940 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QBE?BHXZ 00C6FE40 f i physics_system.o
+142	PORTED	0002:00480950 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QBE?BHXZ 00C6FE50 f i physics_system.o
+143	PORTED	0002:00480960 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QBE?BHXZ 00C6FE60 f i physics_system.o
+144	PORTED	0002:00480970 ?get_max_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QBE?BHXZ 00C6FE70 f i physics_system.o
+145	PORTED	0002:00480980 ?get_available_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QBE?BHXZ 00C6FE80 f i physics_system.o
+146	PORTED	0002:00480990 ?get_used_slots@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QBE?BHXZ 00C6FE90 f i physics_system.o
+147	PORTED	0002:004809a0 ??Eiterator@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAEXH@Z 00C6FEA0 f i physics_system.o
+148	PORTED	0002:004809b0 ??9iterator@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAE_NABV01@@Z 00C6FEB0 f i physics_system.o
+149	PORTED	0002:004809d0 ??Diterator@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAEAAVuser_rigid_body@@XZ 00C6FED0 f i physics_system.o
+150	PORTED	0002:004809e0 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAEXH@Z 00C6FEE0 f i physics_system.o
+151	PORTED	0002:004809f0 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAE_NABV01@@Z 00C6FEF0 f i physics_system.o
+152	PORTED	0002:00480a10 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAEAAVrigid_body_constraint_point@@XZ 00C6FF10 f i physics_system.o
+153	PORTED	0002:00480a20 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAEXH@Z 00C6FF20 f i physics_system.o
+154	PORTED	0002:00480a30 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAE_NABV01@@Z 00C6FF30 f i physics_system.o
+155	PORTED	0002:00480a50 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAEAAVrigid_body_constraint_hinge@@XZ 00C6FF50 f i physics_system.o
+156	PORTED	0002:00480a60 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAEXH@Z 00C6FF60 f i physics_system.o
+157	PORTED	0002:00480a70 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAE_NABV01@@Z 00C6FF70 f i physics_system.o
+158	PORTED	0002:00480a90 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAEAAVrigid_body_constraint_distance@@XZ 00C6FF90 f i physics_system.o
+159	PORTED	0002:00480aa0 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAEXH@Z 00C6FFA0 f i physics_system.o
+160	PORTED	0002:00480ab0 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAE_NABV01@@Z 00C6FFB0 f i physics_system.o
+161	PORTED	0002:00480ad0 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAEAAVrigid_body_constraint_ragdoll@@XZ 00C6FFD0 f i physics_system.o
+162	PORTED	0002:00480ae0 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAEXH@Z 00C6FFE0 f i physics_system.o
+163	PORTED	0002:00480af0 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAE_NABV01@@Z 00C6FFF0 f i physics_system.o
+164	PORTED	0002:00480b10 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAEAAVrigid_body_constraint_wheel@@XZ 00C70010 f i physics_system.o
+165	PORTED	0002:00480b20 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEXH@Z 00C70020 f i physics_system.o
+166	PORTED	0002:00480b30 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE_NABV01@@Z 00C70030 f i physics_system.o
+167	PORTED	0002:00480b50 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEAAVrigid_body_constraint_angular_actuator@@XZ 00C70050 f i physics_system.o
+168	PORTED	0002:00480b60 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAEXH@Z 00C70060 f i physics_system.o
+169	PORTED	0002:00480b70 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAE_NABV01@@Z 00C70070 f i physics_system.o
+170	PORTED	0002:00480b90 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAEAAVrigid_body_constraint_custom_orientation@@XZ 00C70090 f i physics_system.o
+171	PORTED	0002:00480ba0 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAEXH@Z 00C700A0 f i physics_system.o
+172	PORTED	0002:00480bb0 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAE_NABV01@@Z 00C700B0 f i physics_system.o
+173	PORTED	0002:00480bd0 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAEAAVrigid_body_constraint_custom_path@@XZ 00C700D0 f i physics_system.o
+174	PORTED	0002:00480be0 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAEXH@Z 00C700E0 f i physics_system.o
+175	PORTED	0002:00480bf0 ??9iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAE_NABV01@@Z 00C700F0 f i physics_system.o
+176	PORTED	0002:00480c10 ??Diterator@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAEAAVrigid_body_constraint_contact@@XZ 00C70110 f i physics_system.o
+177	PORTED	0002:00480c20 ??Eiterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAEXH@Z 00C70120 f i physics_system.o
+178	PORTED	0002:00480c30 ??9iterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAE_NABV01@@Z 00C70130 f i physics_system.o
+179	PORTED	0002:00480c50 ??Diterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAEAAVrigid_body@@XZ 00C70150 f i physics_system.o
+180	VERIFIED	0002:00480c60 ??0rigid_body@@QAE@XZ 00C70160 f i physics_system.o
+181	VERIFIED	0002:00480c70 ??_Grigid_body_constraint_contact@@QAEPAXI@Z 00C70170 f i physics_system.o
+182	PORTED	0002:00480ca0 ?init@?$phys_inplace_avl_tree_node@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAEXXZ 00C701A0 f i physics_system.o
+183	PORTED	0002:00480cb0 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QBE_NPBVrigid_body_constraint_point@@@Z 00C701B0 f i physics_system.o
+184	PORTED	0002:00480d10 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QBE_NPBVrigid_body_constraint_hinge@@@Z 00C70210 f i physics_system.o
+185	PORTED	0002:00480d70 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QBE_NPBVrigid_body_constraint_distance@@@Z 00C70270 f i physics_system.o
+186	PORTED	0002:00480dd0 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QBE_NPBVrigid_body_constraint_custom_orientation@@@Z 00C702D0 f i physics_system.o
+187	VERIFIED	0002:00480e30 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QBE_NPBVrigid_body_constraint_custom_path@@@Z 00C70330 f i physics_system.o
+188	VERIFIED	0002:00480e70 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QBE_NPBVrigid_body_constraint_ragdoll@@@Z 00C70370 f i physics_system.o
+189	VERIFIED	0002:00480ed0 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QBE_NPBVrigid_body_constraint_wheel@@@Z 00C703D0 f i physics_system.o
+190	PORTED	0002:00480f30 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QBE_NPBVrigid_body_constraint_angular_actuator@@@Z 00C70430 f i physics_system.o
+191	PORTED	0002:00480f90 ??0iterator@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAE@PAPAVuser_rigid_body@@@Z 00C70490 f i physics_system.o
+192	PORTED	0002:00480fa0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAE@PAPAVrigid_body_constraint_point@@@Z 00C704A0 f i physics_system.o
+193	PORTED	0002:00480fb0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAE@PAPAVrigid_body_constraint_hinge@@@Z 00C704B0 f i physics_system.o
+194	PORTED	0002:00480fc0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAE@PAPAVrigid_body_constraint_distance@@@Z 00C704C0 f i physics_system.o
+195	PORTED	0002:00480fd0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAE@PAPAVrigid_body_constraint_ragdoll@@@Z 00C704D0 f i physics_system.o
+196	PORTED	0002:00480fe0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAE@PAPAVrigid_body_constraint_wheel@@@Z 00C704E0 f i physics_system.o
+197	PORTED	0002:00480ff0 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE@PAPAVrigid_body_constraint_angular_actuator@@@Z 00C704F0 f i physics_system.o
+198	PORTED	0002:00481000 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAE@PAPAVrigid_body_constraint_custom_orientation@@@Z 00C70500 f i physics_system.o
+199	PORTED	0002:00481010 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAE@PAPAVrigid_body_constraint_custom_path@@@Z 00C70510 f i physics_system.o
+200	PORTED	0002:00481020 ??0iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAE@PAPAVrigid_body_constraint_contact@@@Z 00C70520 f i physics_system.o
+201	PORTED	0002:00481030 ??0iterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAE@PAPAVrigid_body@@@Z 00C70530 f i physics_system.o
+202	PORTED	0002:00481040 ?avl_max@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@AAEHHH@Z 00C70540 f i physics_system.o
+203	PORTED	0002:00481060 ?call_destructors@?$phys_heap_memory_pool@Vuser_rigid_body@@@@AAEXXZ 00C70560 f i physics_system.o
+204	PORTED	0002:00481070 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body@@@@AAEXXZ 00C70570 f i physics_system.o
+205	PORTED	0002:00481080 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@AAEXXZ 00C70580 f i physics_system.o
+206	PORTED	0002:004810b0 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@AAEXXZ 00C705B0 f i physics_system.o
+207	PORTED	0002:004810c0 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@AAEXXZ 00C705C0 f i physics_system.o
+208	PORTED	0002:004810d0 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@AAEXXZ 00C705D0 f i physics_system.o
+209	PORTED	0002:004810e0 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@AAEXXZ 00C705E0 f i physics_system.o
+210	PORTED	0002:004810f0 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@AAEXXZ 00C705F0 f i physics_system.o
+211	PORTED	0002:00481100 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@AAEXXZ 00C70600 f i physics_system.o
+212	PORTED	0002:00481110 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@AAEXXZ 00C70610 f i physics_system.o
+213	PORTED	0002:00481120 ?call_destructors@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@AAEXXZ 00C70620 f i physics_system.o
+214	PORTED	0002:00481130 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAEPAVrigid_body_constraint_point@@_NPBD@Z 00C70630 f i physics_system.o
+215	PORTED	0002:00481190 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAEPAVrigid_body_constraint_custom_orientation@@_NPBD@Z 00C70690 f i physics_system.o
+216	PORTED	0002:00481210 ??0rigid_body_constraint_hinge@@QAE@XZ 00C70710 f i physics_system.o
+217	PORTED	0002:00481270 ??0rigid_body_constraint_distance@@QAE@XZ 00C70770 f i physics_system.o
+218	PORTED	0002:00481290 ??0rigid_body_constraint_custom_path@@QAE@XZ 00C70790 f i physics_system.o
+219	PORTED	0002:004812b0 ??0rigid_body_constraint_wheel@@QAE@XZ 00C707B0 f i physics_system.o
+220	PORTED	0002:004812e0 ??0rigid_body_constraint_angular_actuator@@QAE@XZ 00C707E0 f i physics_system.o
+221	PORTED	0002:00481300 ??0rigid_body_constraint_contact@@QAE@XZ 00C70800 f i physics_system.o
+222	PORTED	0002:00481310 ??0rigid_body_constraint_ragdoll@@QAE@XZ 00C70810 f i physics_system.o
+223	PORTED	0002:00481380 ?is_member@physics_system@@QBE?BIPBVrigid_body@@@Z 00C70880 f i physics_system.o
+224	PORTED	0002:004813e0 ?begin@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAE?AViterator@1@XZ 00C708E0 f i physics_system.o
+225	PORTED	0002:004813f0 ?end@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAE?AViterator@1@XZ 00C708F0 f i physics_system.o
+226	PORTED	0002:00481410 ?add@?$phys_heap_memory_pool@Vrigid_body@@@@QAEPAVrigid_body@@_NPBD@Z 00C70910 f i physics_system.o
+227	PORTED	0002:00481450 ?begin@?$phys_heap_memory_pool@Vrigid_body@@@@QAE?AViterator@1@XZ 00C70950 f i physics_system.o
+228	PORTED	0002:00481460 ?end@?$phys_heap_memory_pool@Vrigid_body@@@@QAE?AViterator@1@XZ 00C70960 f i physics_system.o
+229	PORTED	0002:00481480 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAEPAVrigid_body_constraint_contact@@_NPBD@Z 00C70980 f i physics_system.o
+230	PORTED	0002:004814d0 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAE?AViterator@1@XZ 00C709D0 f i physics_system.o
+231	PORTED	0002:004814e0 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAE?AViterator@1@XZ 00C709E0 f i physics_system.o
+232	PORTED	0002:00481500 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAE?AViterator@1@XZ 00C70A00 f i physics_system.o
+233	PORTED	0002:00481510 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAE?AViterator@1@XZ 00C70A10 f i physics_system.o
+234	PORTED	0002:00481530 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAE?AViterator@1@XZ 00C70A30 f i physics_system.o
+235	PORTED	0002:00481540 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAE?AViterator@1@XZ 00C70A40 f i physics_system.o
+236	PORTED	0002:00481560 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAE?AViterator@1@XZ 00C70A60 f i physics_system.o
+237	PORTED	0002:00481570 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAE?AViterator@1@XZ 00C70A70 f i physics_system.o
+238	PORTED	0002:00481590 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAE?AViterator@1@XZ 00C70A90 f i physics_system.o
+239	PORTED	0002:004815a0 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAE?AViterator@1@XZ 00C70AA0 f i physics_system.o
+240	PORTED	0002:004815c0 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAE?AViterator@1@XZ 00C70AC0 f i physics_system.o
+241	PORTED	0002:004815d0 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAE?AViterator@1@XZ 00C70AD0 f i physics_system.o
+242	PORTED	0002:004815f0 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAE?AViterator@1@XZ 00C70AF0 f i physics_system.o
+243	PORTED	0002:00481600 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAE?AViterator@1@XZ 00C70B00 f i physics_system.o
+244	PORTED	0002:00481620 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAE?AViterator@1@XZ 00C70B20 f i physics_system.o
+245	PORTED	0002:00481630 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAE?AViterator@1@XZ 00C70B30 f i physics_system.o
+246	PORTED	0002:00481650 ?begin@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE?AViterator@1@XZ 00C70B50 f i physics_system.o
+247	PORTED	0002:00481660 ?end@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE?AViterator@1@XZ 00C70B60 f i physics_system.o
+248	PORTED	0002:00481680 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAE?AV12@XZ 00C70B80 f i physics_system.o
+249	PORTED	0002:00481690 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAE?AV12@XZ 00C70B90 f i physics_system.o
+250	PORTED	0002:004816a0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAE?AV12@XZ 00C70BA0 f i physics_system.o
+251	PORTED	0002:004816b0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAE?AV12@XZ 00C70BB0 f i physics_system.o
+252	PORTED	0002:004816c0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAE?AV12@XZ 00C70BC0 f i physics_system.o
+253	PORTED	0002:004816d0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAE?AV12@XZ 00C70BD0 f i physics_system.o
+254	PORTED	0002:004816e0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE?AV12@XZ 00C70BE0 f i physics_system.o
+255	PORTED	0002:004816f0 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAE?AV12@XZ 00C70BF0 f i physics_system.o
+256	PORTED	0002:00481700 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAE?AV12@XZ 00C70C00 f i physics_system.o
+257	PORTED	0002:00481710 ?next_after_remove@iterator@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAE?AV12@XZ 00C70C10 f i physics_system.o
+258	VERIFIED	0002:00481720 ??0user_rigid_body@@QAE@XZ 00C70C20 f i physics_system.o
+259	PORTED	0002:00481730 ?rotate_right@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@AAEXAAPAVrigid_body_constraint_contact@@@Z 00C70C30 f i physics_system.o
+260	PORTED	0002:00481790 ?rotate_left@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@AAEXAAPAVrigid_body_constraint_contact@@@Z 00C70C90 f i physics_system.o
+261	PORTED	0002:004817e0 ?reset_buffer@?$phys_heap_memory_pool@Vuser_rigid_body@@@@AAEXXZ 00C70CE0 f i physics_system.o
+262	PORTED	0002:00481820 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body@@@@AAEXXZ 00C70D20 f i physics_system.o
+263	PORTED	0002:00481860 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@AAEXXZ 00C70D60 f i physics_system.o
+264	PORTED	0002:004818c0 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@AAEXXZ 00C70DC0 f i physics_system.o
+265	PORTED	0002:00481900 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@AAEXXZ 00C70E00 f i physics_system.o
+266	PORTED	0002:00481940 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@AAEXXZ 00C70E40 f i physics_system.o
+267	PORTED	0002:00481980 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@AAEXXZ 00C70E80 f i physics_system.o
+268	PORTED	0002:004819c0 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@AAEXXZ 00C70EC0 f i physics_system.o
+269	PORTED	0002:00481a00 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@AAEXXZ 00C70F00 f i physics_system.o
+270	PORTED	0002:00481a40 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@AAEXXZ 00C70F40 f i physics_system.o
+271	PORTED	0002:00481a80 ?reset_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@AAEXXZ 00C70F80 f i physics_system.o
+272	PORTED	0002:00481ac0 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@Vrigid_body_constraint_point@@@@YAPAVrigid_body_constraint_point@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C70FC0 f i physics_system.o
+273	PORTED	0002:00481b50 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@Vrigid_body_constraint_custom_orientation@@@@YAPAVrigid_body_constraint_custom_orientation@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C71050 f i physics_system.o
+274	PORTED	0002:00481be0 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAEPAVrigid_body_constraint_hinge@@_NPBD@Z 00C710E0 f i physics_system.o
+275	PORTED	0002:00481c30 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAEPAVrigid_body_constraint_distance@@_NPBD@Z 00C71130 f i physics_system.o
+276	VERIFIED	0002:00481c80 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAEPAVrigid_body_constraint_custom_path@@_NPBD@Z 00C71180 f i physics_system.o
+277	VERIFIED	0002:00481cd0 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAEPAVrigid_body_constraint_ragdoll@@_NPBD@Z 00C711D0 f i physics_system.o
+278	VERIFIED	0002:00481d20 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAEPAVrigid_body_constraint_wheel@@_NPBD@Z 00C71220 f i physics_system.o
+279	PORTED	0002:00481d80 ?add@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEPAVrigid_body_constraint_angular_actuator@@_NPBD@Z 00C71280 f i physics_system.o
+280	PORTED	0002:00481de0 ?get_cached_point_count@rigid_body_constraint_contact@@QAE?BHXZ 00C712E0 f i physics_system.o
+281	PORTED	0002:00481e00 ?get_point_count@rigid_body_constraint_contact@@QAE?BHXZ 00C71300 f i physics_system.o
+282	PORTED	0002:00481e20 ?process_constraint_info@rbcint@@SAXPAVrigid_body_constraint_contact@@@Z 00C71320 f i physics_system.o
+283	PORTED	0002:00481e80 ?add@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAEXABVrigid_body_pair_key@@PAVrigid_body_constraint_contact@@@Z 00C71380 f i physics_system.o
+284	PORTED	0002:004821b0 ?add@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAEPAVuser_rigid_body@@_NPBD@Z 00C716B0 f i physics_system.o
+285	PORTED	0002:004821f0 ?remove@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAEXPAVuser_rigid_body@@@Z 00C716F0 f i physics_system.o
+286	PORTED	0002:00482330 ?remove_all@?$phys_heap_memory_pool@Vuser_rigid_body@@@@QAEXXZ 00C71830 f i physics_system.o
+287	VERIFIED	0002:00482340 ?remove@?$phys_heap_memory_pool@Vrigid_body@@@@QAEXPAVrigid_body@@@Z 00C71840 f i physics_system.o
+288	PORTED	0002:00482470 ?remove_all@?$phys_heap_memory_pool@Vrigid_body@@@@QAEXXZ 00C71970 f i physics_system.o
+289	PORTED	0002:00482480 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAEXPAVrigid_body_constraint_contact@@@Z 00C71980 f i physics_system.o
+290	PORTED	0002:004825c0 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@QAEXXZ 00C71AC0 f i physics_system.o
+291	PORTED	0002:004825d0 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAEXPAVrigid_body_constraint_point@@@Z 00C71AD0 f i physics_system.o
+292	PORTED	0002:00482700 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QAEXXZ 00C71C00 f i physics_system.o
+293	PORTED	0002:00482710 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAEXPAVrigid_body_constraint_hinge@@@Z 00C71C10 f i physics_system.o
+294	PORTED	0002:00482850 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QAEXXZ 00C71D50 f i physics_system.o
+295	PORTED	0002:00482860 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAEXPAVrigid_body_constraint_distance@@@Z 00C71D60 f i physics_system.o
+296	PORTED	0002:00482990 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@QAEXXZ 00C71E90 f i physics_system.o
+297	PORTED	0002:004829a0 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAEXPAVrigid_body_constraint_custom_orientation@@@Z 00C71EA0 f i physics_system.o
+298	PORTED	0002:00482ae0 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_orientation@@@@QAEXXZ 00C71FE0 f i physics_system.o
+299	VERIFIED	0002:00482af0 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAEXPAVrigid_body_constraint_custom_path@@@Z 00C71FF0 f i physics_system.o
+300	PORTED	0002:00482c30 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@QAEXXZ 00C72130 f i physics_system.o
+301	VERIFIED	0002:00482c40 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAEXPAVrigid_body_constraint_ragdoll@@@Z 00C72140 f i physics_system.o
+302	PORTED	0002:00482d70 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@QAEXXZ 00C72270 f i physics_system.o
+303	VERIFIED	0002:00482d80 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAEXPAVrigid_body_constraint_wheel@@@Z 00C72280 f i physics_system.o
+304	PORTED	0002:00482ec0 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@QAEXXZ 00C723C0 f i physics_system.o
+305	PORTED	0002:00482ed0 ?remove@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEXPAVrigid_body_constraint_angular_actuator@@@Z 00C723D0 f i physics_system.o
+306	PORTED	0002:00483000 ?remove_all@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEXXZ 00C72500 f i physics_system.o
+307	PORTED	0002:00483010 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@Vrigid_body_constraint_hinge@@@@YAPAVrigid_body_constraint_hinge@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C72510 f i physics_system.o
+308	PORTED	0002:004830d0 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@Vrigid_body_constraint_distance@@@@YAPAVrigid_body_constraint_distance@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_distance@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C725D0 f i physics_system.o
+309	PORTED	0002:00483190 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@Vrigid_body_constraint_ragdoll@@@@YAPAVrigid_body_constraint_ragdoll@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_ragdoll@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C72690 f i physics_system.o
+310	PORTED	0002:00483250 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@Vrigid_body_constraint_wheel@@@@YAPAVrigid_body_constraint_wheel@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_wheel@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C72750 f i physics_system.o
+311	PORTED	0002:004832e0 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@Vrigid_body_constraint_angular_actuator@@@@YAPAVrigid_body_constraint_angular_actuator@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C727E0 f i physics_system.o
+312	PORTED	0002:00483370 ??$create@V?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@Vrigid_body_constraint_custom_path@@@@YAPAVrigid_body_constraint_custom_path@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_custom_path@@@@PAV0@QAVrigid_body@@2_NPBD@Z 00C72870 f i physics_system.o
+313	PORTED	0002:00483430 ?create@@YAPAVrigid_body_constraint_contact@@AAV?$phys_heap_memory_pool@Vrigid_body_constraint_contact@@@@PAV1@QAVrigid_body@@2_NPBD@Z 00C72930 f i physics_system.o

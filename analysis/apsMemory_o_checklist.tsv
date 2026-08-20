@@ -1,0 +1,95 @@
+index	status	map_line
+1	VERIFIED	0002:003ebb40 ??0PoolBlock@Pool@apsMemory@@QAE@XZ 00BDB040 f i apsMemory.o
+2	PENDING	0002:003ebb60 ?PtrToIndex@Pool@apsMemory@@QAEHPAX@Z 00BDB060 f i apsMemory.o
+3	PENDING	0002:003ebb80 ?IndexToPtr@Pool@apsMemory@@QAEPAEH@Z 00BDB080 f i apsMemory.o
+4	PENDING	0002:003ebba0 ?NumBlocks@Pool@apsMemory@@QBEHXZ 00BDB0A0 f i apsMemory.o
+5	PENDING	0002:003ebbb0 ?BlockSize@Pool@apsMemory@@QBEHXZ 00BDB0B0 f i apsMemory.o
+6	PENDING	0002:003ebbc0 ?NumBlocksUsed@Pool@apsMemory@@QBEHXZ 00BDB0C0 f i apsMemory.o
+7	PENDING	0002:003ebbd0 ?NumBlocksFree@Pool@apsMemory@@QBEHXZ 00BDB0D0 f i apsMemory.o
+8	PENDING	0002:003ebbe0 ?IsEmpty@Pool@apsMemory@@QBEIXZ 00BDB0E0 f i apsMemory.o
+9	VERIFIED	0002:003ebbf0 ?SetDefaults@Config@apsMemory@@QAEXXZ 00BDB0F0 f i apsMemory.o
+10	VERIFIED	0002:003ebc10 ??0Config@apsMemory@@QAE@XZ 00BDB110 f i apsMemory.o
+11	VERIFIED	0002:003ebc30 ?SetBufferSize@apsMemory@@YAXH@Z 00BDB130 f apsMemory.o
+12	VERIFIED	0002:003ebc40 ?SetMaxGroups@apsMemory@@YAXH@Z 00BDB140 f apsMemory.o
+13	VERIFIED	0002:003ebc50 ?SetMaxEffects@apsMemory@@YAXH@Z 00BDB150 f apsMemory.o
+14	VERIFIED	0002:003ebc60 ?SetMaxModifiers@apsMemory@@YAXH@Z 00BDB160 f apsMemory.o
+15	VERIFIED	0002:003ebc70 ?CalcClassOverhead@Pool@apsMemory@@SAHHH@Z 00BDB170 f apsMemory.o
+16	VERIFIED	0002:003ebc90 ?CalcDataOverhead@Pool@apsMemory@@SAHHH@Z 00BDB190 f apsMemory.o
+17	VERIFIED	0002:003ebcb0 ??0Pool@apsMemory@@QAE@PAUPoolBlock@01@@Z 00BDB1B0 f apsMemory.o
+18	VERIFIED	0002:003ebce0 ?Resize@Pool@apsMemory@@QAEPAXPAXH@Z 00BDB1E0 f apsMemory.o
+19	VERIFIED	0002:003ebde0 ?Free@Pool@apsMemory@@QAEXPAX@Z 00BDB2E0 f apsMemory.o
+20	VERIFIED	0002:003ebea0 ?Contains@Pool@apsMemory@@QAEIPAX@Z 00BDB3A0 f apsMemory.o
+21	VERIFIED	0002:003ebee0 ?Verify@Pool@apsMemory@@QAEXXZ 00BDB3E0 f apsMemory.o
+22	VERIFIED	0002:003ebf60 ?GetActiveBlock@Pool@apsMemory@@QAEPAXH@Z 00BDB460 f apsMemory.o
+23	VERIFIED	0002:003ebfc0 ?GetStats@Pool@apsMemory@@QAEXAAUStats@12@@Z 00BDB4C0 f apsMemory.o
+24	VERIFIED	0002:003ec0e0 ?Report@Pool@apsMemory@@QAEXXZ 00BDB5E0 f apsMemory.o
+25	VERIFIED	0002:003ec180 ?AllocBlock@BlockManager@apsMemory@@QAEPAXHH@Z 00BDB680 f apsMemory.o
+26	VERIFIED	0002:003ec190 ?FreeBlock@BlockManager@apsMemory@@QAEXPAX@Z 00BDB690 f apsMemory.o
+27	VERIFIED	0002:003ec1b0 ?AddParticlePool@apsMemory@@YAIHH@Z 00BDB6B0 f apsMemory.o
+28	VERIFIED	0002:003ec1c0 ?AddPools@apsMemory@@YAXXZ 00BDB6C0 f apsMemory.o
+29	VERIFIED	0002:003ec1d0 ?ClearBlockAllocator@apsMemory@@YAXXZ 00BDB6D0 f apsMemory.o
+30	VERIFIED	0002:003ec1e0 ?Init@Pool@apsMemory@@QAEXHHPAE@Z 00BDB6E0 f apsMemory.o
+31	VERIFIED	0002:003ec2a0 ?Term@Pool@apsMemory@@QAEXXZ 00BDB7A0 f apsMemory.o
+32	VERIFIED	0002:003ec300 ?Alloc@Pool@apsMemory@@QAEPAXH@Z 00BDB800 f apsMemory.o
+33	VERIFIED	0002:003ec420 ?TestAlloc@BlockManager@apsMemory@@QAEIH@Z 00BDB920 f apsMemory.o
+34	VERIFIED	0002:003ec490 ?Alloc@BlockManager@apsMemory@@QAEPAXHH@Z 00BDB990 f apsMemory.o
+35	VERIFIED	0002:003ec540 ?Free@BlockManager@apsMemory@@QAEIPAX@Z 00BDBA40 f apsMemory.o
+36	VERIFIED	0002:003ec5b0 ?Resize@BlockManager@apsMemory@@QAEPAXPAXH@Z 00BDBAB0 f apsMemory.o
+37	VERIFIED	0002:003ec610 ?Report@BlockManager@apsMemory@@QAEXXZ 00BDBB10 f apsMemory.o
+38	VERIFIED	0002:003ec660 ?Report@apsMemory@@YAXXZ 00BDBB60 f apsMemory.o
+39	VERIFIED	0002:003ec6a0 ?GetPoolInfo@apsMemory@@YAIHAAH000@Z 00BDBBA0 f apsMemory.o
+40	VERIFIED	0002:003ec730 ?GetMaxRequestedBlockSize@apsMemory@@YAHXZ 00BDBC30 f apsMemory.o
+41	VERIFIED	0002:003ec770 ?TestAlloc@apsMemory@@YAIH@Z 00BDBC70 f apsMemory.o
+42	VERIFIED	0002:003ec7b0 ?Alloc@apsMemory@@YAPAXHH@Z 00BDBCB0 f apsMemory.o
+43	VERIFIED	0002:003ec7f0 ?Free@apsMemory@@YAXPAX@Z 00BDBCF0 f apsMemory.o
+44	VERIFIED	0002:003ec840 ?TestAllocFromPools@apsMemory@@YAIH@Z 00BDBD40 f apsMemory.o
+45	VERIFIED	0002:003ec880 ?AllocFromPools@apsMemory@@YAPAXHH@Z 00BDBD80 f apsMemory.o
+46	VERIFIED	0002:003ec8c0 ?FreeFromPools@apsMemory@@YAIPAX@Z 00BDBDC0 f apsMemory.o
+47	VERIFIED	0002:003ec900 ?SetBlockAllocator@apsMemory@@YAXXZ 00BDBE00 f apsMemory.o
+48	VERIFIED	0002:003ec910 ?GetBlockAllocatorDirect@apsMemory@@YAPAVapsAllocator@@XZ 00BDBE10 f apsMemory.o
+49	VERIFIED	0002:003ec920 ??1Pool@apsMemory@@QAE@XZ 00BDBE20 f apsMemory.o
+50	VERIFIED	0002:003ec930 ??0BlockManager@apsMemory@@QAE@HH@Z 00BDBE30 f apsMemory.o
+51	VERIFIED	0002:003ec9a0 ?AddPool@BlockManager@apsMemory@@QAEIHH@Z 00BDBEA0 f apsMemory.o
+52	VERIFIED	0002:003eca70 ?DestroyPools@BlockManager@apsMemory@@QAEXXZ 00BDBF70 f apsMemory.o
+53	VERIFIED	0002:003ecb10 ?AddPool@apsMemory@@YAIHH@Z 00BDC010 f apsMemory.o
+54	VERIFIED	0002:003ecb50 ?Init@apsMemory@@YAXXZ 00BDC050 f apsMemory.o
+55	VERIFIED	0002:003ecc30 ??1BlockManager@apsMemory@@QAE@XZ 00BDC130 f apsMemory.o
+56	VERIFIED	0002:003eccb0 ?Reset@BlockManager@apsMemory@@QAEXXZ 00BDC1B0 f apsMemory.o
+57	VERIFIED	0002:003eccc0 ?Reset@apsMemory@@YAXXZ 00BDC1C0 f apsMemory.o
+58	VERIFIED	0002:003ecd00 ?Term@apsMemory@@YAXXZ 00BDC200 f apsMemory.o
+59	PENDING	0002:003ecd80 ?Save@BlockManager@apsMemory@@QAEXXZ 00BDC280 f i apsMemory.o
+60	PENDING	0002:003ecd90 ?Restore@BlockManager@apsMemory@@QAEXXZ 00BDC290 f i apsMemory.o
+61	PENDING	0002:003ecda0 ?ResetReportCounters@BlockManager@apsMemory@@QAEXXZ 00BDC2A0 f i apsMemory.o
+62	VERIFIED	0002:003ecdb0 ?InstancePtr@?$apsSingleton@VapsGroupManager@@@@SAPAVapsGroupManager@@XZ 00BDC2B0 f i apsMemory.o
+63	PENDING	0002:003ecdc0 ??0?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ 00BDC2C0 f i apsMemory.o
+64	PENDING	0002:003ece00 ??1?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ 00BDC300 f i apsMemory.o
+65	VERIFIED	0002:003ece40 ?InstancePtr@?$apsSingleton@VBlockManager@apsMemory@@@@SAPAVBlockManager@apsMemory@@XZ 00BDC340 f i apsMemory.o
+66	VERIFIED	0002:003ece50 ?Instance@?$apsSingleton@VBlockManager@apsMemory@@@@SAAAVBlockManager@apsMemory@@XZ 00BDC350 f i apsMemory.o
+67	PENDING	0002:003ece80 ??0?$apsArray@PAVPool@apsMemory@@@@QAE@XZ 00BDC380 f i apsMemory.o
+68	PENDING	0002:003ece90 ?size@?$apsArray@PAVPool@apsMemory@@@@QBEHXZ 00BDC390 f i apsMemory.o
+69	PENDING	0002:003ecea0 ??A?$apsArray@PAVPool@apsMemory@@@@QAEAAPAVPool@apsMemory@@H@Z 00BDC3A0 f i apsMemory.o
+70	PENDING	0002:003ecef0 ?begin@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ 00BDC3F0 f i apsMemory.o
+71	PENDING	0002:003ecf00 ?end@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ 00BDC400 f i apsMemory.o
+72	PENDING	0002:003ecf10 ??0?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ 00BDC410 f i apsMemory.o
+73	PENDING	0002:003ecf50 ??1?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ 00BDC450 f i apsMemory.o
+74	VERIFIED	0002:003ecf90 ?InstancePtr@?$apsSingleton@VBlockAllocator@apsMemory@@@@SAPAVBlockAllocator@apsMemory@@XZ 00BDC490 f i apsMemory.o
+75	PENDING	0002:003ecfa0 ?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@H@Z 00BDC4A0 f i apsMemory.o
+76	PENDING	0002:003ecfe0 ?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@HH@Z 00BDC4E0 f i apsMemory.o
+77	PENDING	0002:003ed020 ?destroy_all@?$apsArray@PAVPool@apsMemory@@@@QAEXXZ 00BDC520 f i apsMemory.o
+78	VERIFIED	0002:003ed070 ??$AEPS_VECTOR_NEW@UPoolBlock@Pool@apsMemory@@@@YAPAUPoolBlock@Pool@apsMemory@@HH@Z 00BDC570 f i apsMemory.o
+79	PENDING	0002:003ed0d0 ??$AEPS_VECTOR_DELETE@UPoolBlock@Pool@apsMemory@@@@YAXHPAUPoolBlock@Pool@apsMemory@@@Z 00BDC5D0 f i apsMemory.o
+80	VERIFIED	0002:003ed0f0 ??$apsDestroy@VBlockAllocator@apsMemory@@@@YAXPAVBlockAllocator@apsMemory@@@Z 00BDC5F0 f i apsMemory.o
+81	VERIFIED	0002:003ed100 ??_GapsGroupManager@@QAEPAXI@Z 00BDC600 f i apsMemory.o
+82	VERIFIED	0002:003ed130 ??0BlockAllocator@apsMemory@@QAE@XZ 00BDC630 f i apsMemory.o
+83	VERIFIED	0002:003ed170 ??_EBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o
+84	VERIFIED	0002:003ed170 ??_GBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o
+85	PENDING	0002:003ed1a0 ??1?$apsArray@PAVPool@apsMemory@@@@QAE@XZ 00BDC6A0 f i apsMemory.o
+86	PENDING	0002:003ed1f0 ?reserve@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z 00BDC6F0 f i apsMemory.o
+87	PENDING	0002:003ed2c0 ?resize@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z 00BDC7C0 f i apsMemory.o
+88	PENDING	0002:003ed390 ?push_back@?$apsArray@PAVPool@apsMemory@@@@QAEIABQAVPool@apsMemory@@@Z 00BDC890 f i apsMemory.o
+89	PENDING	0002:003ed490 ??$apsDestroy@VapsGroupManager@@@@YAXPAVapsGroupManager@@@Z 00BDC990 f i apsMemory.o
+90	PENDING	0002:003ed4a0 ?MemAlign@BlockAllocator@apsMemory@@UBEPAXII@Z 00BDC9A0 f i apsMemory.o
+91	PENDING	0002:003ed4f0 ?MemFree@BlockAllocator@apsMemory@@UBEXPAX@Z 00BDC9F0 f i apsMemory.o
+92	PENDING	0002:003ed530 ?MemResize@BlockAllocator@apsMemory@@UBEPAXPAXII@Z 00BDCA30 f i apsMemory.o
+93	VERIFIED	0002:003ed580 ??_GBlockManager@apsMemory@@QAEPAXI@Z 00BDCA80 f i apsMemory.o
+94	VERIFIED	0002:003ed5b0 ??$apsDestroy@VBlockManager@apsMemory@@@@YAXPAVBlockManager@apsMemory@@@Z 00BDCAB0 f i apsMemory.o

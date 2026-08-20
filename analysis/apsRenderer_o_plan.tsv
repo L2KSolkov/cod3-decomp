@@ -1,0 +1,4 @@
+ida_ea	name	signature	source_cpp
+0x008120E0	?AddNode@apsRenderer@@QAEXPAVapsRenderNode@@M@Z	public: void __thiscall apsRenderer::AddNode(class apsRenderNode *,float)	
+0x00812160	?SphereIsVisible@apsRenderer@@QAEIABUapsSphere@@PAUnglScene@@@Z	public: unsigned int __thiscall apsRenderer::SphereIsVisible(struct apsSphere const &,struct nglScene *)	
+0x008121F0	?Fixup@apsRenderer@@QAEXABUapsFixupParams@@@Z	public: void __thiscall apsRenderer::Fixup(struct apsFixupParams const &)	

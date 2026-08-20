@@ -1,0 +1,13 @@
+ida_ea	va	name	signature	family
+0x007E4490	0x00BD3990	_deflateSetDictionary	_deflateSetDictionary	deflate.o
+0x007E45B0	0x00BD3AB0	_deflateSetHeader	_deflateSetHeader	deflate.o
+0x007E45E0	0x00BD3AE0	_deflatePrime	_deflatePrime	deflate.o
+0x007E4620	0x00BD3B20	_deflateTune	_deflateTune	deflate.o
+0x007E4660	0x00BD3B60	_deflateBound	_deflateBound	deflate.o
+0x007E4740	0x00BD3C40	_deflate	_deflate	deflate.o
+0x007E4FE0	0x00BD44E0	_deflateEnd	_deflateEnd	deflate.o
+0x007E50B0	0x00BD45B0	_deflateCopy	_deflateCopy	deflate.o
+0x007E60B0	0x00BD55B0	_deflateReset	_deflateReset	deflate.o
+0x007E6150	0x00BD5650	_deflateParams	_deflateParams	deflate.o
+0x007E6250	0x00BD5750	_deflateInit2_	_deflateInit2_	deflate.o
+0x007E64A0	0x00BD59A0	_deflateInit_	_deflateInit_	deflate.o

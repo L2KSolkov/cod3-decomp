@@ -1,0 +1,22 @@
+ida_ea	va	name	signature	family
+0x007BF3D0	0x00BAE8D0	?ToggleParticles@@YAXXZ	void __cdecl ToggleParticles(void)	ShaderCommon.o
+0x007BF3F0	0x00BAE8F0	?ToggleFog@@YAXXZ	void __cdecl ToggleFog(void)	ShaderCommon.o
+0x007BF410	0x00BAE910	?SetDebugRenderMode@ShaderCommon@@YAXW4EDebugRenderMode@1@@Z	void __cdecl ShaderCommon::SetDebugRenderMode(enum ShaderCommon::EDebugRenderMode)	ShaderCommon.o
+0x007BF420	0x00BAE920	?GetDebugRenderMode@ShaderCommon@@YA?AW4EDebugRenderMode@1@XZ	enum ShaderCommon::EDebugRenderMode __cdecl ShaderCommon::GetDebugRenderMode(void)	ShaderCommon.o
+0x007BF430	0x00BAE930	?SetTextureSizeMipLevel@ShaderCommon@@YAXH@Z	void __cdecl ShaderCommon::SetTextureSizeMipLevel(int)	ShaderCommon.o
+0x007BF440	0x00BAE940	?FinishShotPerfTest@ShaderCommon@@YAXPAX@Z	void __cdecl ShaderCommon::FinishShotPerfTest(void *)	ShaderCommon.o
+0x007BF450	0x00BAE950	?InitShaders@ShaderCommon@@YAXXZ	void __cdecl ShaderCommon::InitShaders(void)	ShaderCommon.o
+0x007BF500	0x00BAEA00	?RegisterShaders@ShaderCommon@@YAXXZ	void __cdecl ShaderCommon::RegisterShaders(void)	ShaderCommon.o
+0x007BF510	0x00BAEA10	?SetupFrame@ShaderCommon@@YAXM@Z	void __cdecl ShaderCommon::SetupFrame(float)	ShaderCommon.o
+0x007BF540	0x00BAEA40	?SetupSceneCallback@ShaderCommon@@YAXPAX@Z	void __cdecl ShaderCommon::SetupSceneCallback(void *)	ShaderCommon.o
+0x007BF550	0x00BAEA50	?ShaderGetTexture@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z	struct nglTexture * __cdecl ShaderCommon::ShaderGetTexture(class tlFixedString const &)	ShaderCommon.o
+0x007BF5A0	0x00BAEAA0	?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z	struct nglTexture * __cdecl ShaderCommon::ShaderGetTextureNoDefault(class tlFixedString const &)	ShaderCommon.o
+0x007BF5D0	0x00BAEAD0	?GetFarFogColor@ShaderCommon@@YA?AVVector4@math@@XZ	class math::Vector4 __cdecl ShaderCommon::GetFarFogColor(void)	ShaderCommon.o
+0x007BF630	0x00BAEB30	?GlowInit@ShaderCommon@@YAXXZ	void __cdecl ShaderCommon::GlowInit(void)	ShaderCommon.o
+0x007BF640	0x00BAEB40	?GlowRender@ShaderCommon@@YAXXZ	void __cdecl ShaderCommon::GlowRender(void)	ShaderCommon.o
+0x007BF690	0x00BAEB90	?HeatHazeInit@ShaderCommon@@YAXXZ	void __cdecl ShaderCommon::HeatHazeInit(void)	ShaderCommon.o
+0x007BF6A0	0x00BAEBA0	?HeatHazeCallback@ShaderCommon@@YAXPAX@Z	void __cdecl ShaderCommon::HeatHazeCallback(void *)	ShaderCommon.o
+0x007BF6B0	0x00BAEBB0	?StartShotPerfTest@ShaderCommon@@YAPAXXZ	void * __cdecl ShaderCommon::StartShotPerfTest(void)	ShaderCommon.o
+0x007BF6D0	0x00BAEBD0	?ToggleShader@ShaderCommon@@YAXPBD@Z	void __cdecl ShaderCommon::ToggleShader(char const *)	ShaderCommon.o
+0x007BF820	0x00BAED20	?UpdateShotPerfTest@ShaderCommon@@YA_NPAXM@Z	bool __cdecl ShaderCommon::UpdateShotPerfTest(void *,float)	ShaderCommon.o
+0x007BF840	0x00BAED40	?GetShotPerfResults@ShaderCommon@@YAXPAXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z	void __cdecl ShaderCommon::GetShotPerfResults(void *,class ae_sized_array<class ae_fixed_string<512,unsigned short>,64> &)	ShaderCommon.o

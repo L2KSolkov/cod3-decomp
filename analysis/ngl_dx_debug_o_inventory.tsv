@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x00851120	0x00C40620	?ngliGetDebugFlagPtr@@YAPAEPBD@Z	unsigned char * __cdecl ngliGetDebugFlagPtr(char const *)	ngl_dx_debug.o
+0x00851130	0x00C40630	?PrintHeader@ngliShaderProfile@@SAXXZ	public: static void __cdecl ngliShaderProfile::PrintHeader(void)	ngl_dx_debug.o
+0x00851140	0x00C40640	?Print@ngliShaderProfile@@QAEXXZ	public: void __thiscall ngliShaderProfile::Print(void)	ngl_dx_debug.o
+0x00851170	0x00C40670	?Record@ngliShaderProfile@@QAEXXZ	public: void __thiscall ngliShaderProfile::Record(void)	ngl_dx_debug.o
+0x008511B0	0x00C406B0	?Compare@ngliShaderProfile@@QAEXPAU1@@Z	public: void __thiscall ngliShaderProfile::Compare(struct ngliShaderProfile *)	ngl_dx_debug.o

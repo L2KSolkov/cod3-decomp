@@ -1,0 +1,162 @@
+index	status	map_line
+1	VERIFIED	0002:00526420 ?IsAlpha@Broc@@YA_ND@Z 00D15920 f Broc.o
+2	VERIFIED	0002:00526470 ?ToLower@Broc@@YADD@Z 00D15970 f Broc.o
+3	VERIFIED	0002:005264b0 ?length@Broc@@YAIPBD@Z 00D159B0 f Broc.o
+4	PORTED	0002:00526510 ??0Block@string@Broc@@QAE@HIPBD@Z 00D15A10 f Broc.o
+5	PORTED	0002:00526630 ?Append@Block@string@Broc@@QAEXPBDI@Z 00D15B30 f Broc.o
+6	VERIFIED	0002:00526730 ?DecrementCount@Block@string@Broc@@QAEXXZ 00D15C30 f Broc.o
+7	VERIFIED	0002:00526790 ??0string@Broc@@QAE@W4EUndefined@1@@Z 00D15C90 f Broc.o
+8	PORTED	0002:005267c0 ??0string@Broc@@QAE@PAVBlock@01@@Z 00D15CC0 f Broc.o
+9	PORTED	0002:00526920 ??0?$BrocDtor@Vstring@Broc@@@@QAE@XZ 00D15E20 f i Broc.o
+10	VERIFIED	0002:00526950 ??0string@Broc@@QAE@PBD@Z 00D15E50 f Broc.o
+11	VERIFIED	0002:005269c0 ??0string@Broc@@QAE@PBDH@Z 00D15EC0 f Broc.o
+12	VERIFIED	0002:00526a10 ??0string@Broc@@QAE@ABV01@@Z 00D15F10 f Broc.o
+13	VERIFIED	0002:00526b90 ?IncrementCount@Block@string@Broc@@QAEXXZ 00D16090 f i Broc.o
+14	VERIFIED	0002:00526bc0 ??0string@Broc@@QAE@ABV01@H@Z 00D160C0 f Broc.o
+15	PORTED	0002:00526d20 ?AllocBlock@string@Broc@@SA?AV?$ae_pair@PAXH@@H@Z 00D16220 f Broc.o
+16	VERIFIED	0002:00526da0 ?GetBlockSize@string@Broc@@SAHH@Z 00D162A0 f i Broc.o
+17	PORTED	0002:00526dc0 ?AllocBlock@string@Broc@@SAPAVBlock@12@PBDII@Z 00D162C0 f Broc.o
+18	VERIFIED	0002:00526ea0 ??Ystring@Broc@@QAEAAV01@D@Z 00D163A0 f Broc.o
+19	VERIFIED	0002:00526ee0 ??Ystring@Broc@@QAEAAV01@PBD@Z 00D163E0 f Broc.o
+20	VERIFIED	0002:00526f20 ??Ystring@Broc@@QAEAAV01@ABV01@@Z 00D16420 f Broc.o
+21	VERIFIED	0002:00526f60 ??4string@Broc@@QAEAAV01@ABV01@@Z 00D16460 f Broc.o
+22	VERIFIED	0002:005270c0 ??4string@Broc@@QAEAAV01@PBD@Z 00D165C0 f Broc.o
+23	PORTED	0002:00527250 ?GetRefCount@Block@string@Broc@@QBEHXZ 00D16750 f i Broc.o
+24	VERIFIED	0002:00527270 ??4string@Broc@@QAEAAV01@D@Z 00D16770 f Broc.o
+25	VERIFIED	0002:00527320 ??0string@Broc@@QAE@I@Z 00D16820 f Broc.o
+26	VERIFIED	0002:005273b0 ??0string@Broc@@QAE@H@Z 00D168B0 f Broc.o
+27	VERIFIED	0002:00527440 ??0string@Broc@@QAE@M@Z 00D16940 f Broc.o
+28	PORTED	0002:005274f0 ??0string@Broc@@QAE@Ubint@@@Z 00D169F0 f Broc.o
+29	PORTED	0002:00527590 ??0string@Broc@@QAE@Ubfloat@@@Z 00D16A90 f Broc.o
+30	PORTED	0002:00527640 ??0string@Broc@@QAE@Ubunsigned@@@Z 00D16B40 f Broc.o
+31	PORTED	0002:005276e0 ??Bbunsigned@@QBE?BIXZ 00D16BE0 f i Broc.o
+32	PORTED	0002:00527700 ??0string@Broc@@QAE@Ubbool@@@Z 00D16C00 f Broc.o
+33	PORTED	0002:005277a0 ??Bbbool@@QBE?B_NXZ 00D16CA0 f i Broc.o
+34	VERIFIED	0002:005277c0 ??1string@Broc@@QAE@XZ 00D16CC0 f Broc.o
+35	VERIFIED	0002:00527820 ??4string@Broc@@QAEAAV01@H@Z 00D16D20 f Broc.o
+36	VERIFIED	0002:00527870 ??4string@Broc@@QAEAAV01@M@Z 00D16D70 f Broc.o
+37	VERIFIED	0002:005278c0 ??4string@Broc@@QAEAAV01@ABUvector@1@@Z 00D16DC0 f Broc.o
+38	VERIFIED	0002:00527940 ??Ystring@Broc@@QAEAAV01@H@Z 00D16E40 f Broc.o
+39	VERIFIED	0002:005279a0 ??Ystring@Broc@@QAEAAV01@I@Z 00D16EA0 f Broc.o
+40	VERIFIED	0002:00527a00 ??Ystring@Broc@@QAEAAV01@M@Z 00D16F00 f Broc.o
+41	VERIFIED	0002:00527a70 ?clear@string@Broc@@QAEXXZ 00D16F70 f Broc.o
+42	VERIFIED	0002:00527ae0 ?find@string@Broc@@QBEHPBDI@Z 00D16FE0 f Broc.o
+43	VERIFIED	0002:00527c00 ?find@string@Broc@@QBEHID@Z 00D17100 f Broc.o
+44	VERIFIED	0002:00527c70 ?rfind@string@Broc@@QBEHPBD@Z 00D17170 f Broc.o
+45	VERIFIED	0002:00527d40 ?remove_leading@string@Broc@@QAEAAV12@PBD@Z 00D17240 f Broc.o
+46	VERIFIED	0002:00527e30 ?remove_trailing@string@Broc@@QAEAAV12@PBD@Z 00D17330 f Broc.o
+47	VERIFIED	0002:00527f20 ?set_char@string@Broc@@QAEXID@Z 00D17420 f Broc.o
+48	VERIFIED	0002:00527f70 ?Append@string@Broc@@AAEXPBDI@Z 00D17470 f Broc.o
+49	VERIFIED	0002:005280e0 ?substr@string@Broc@@QBE?AV12@II@Z 00D175E0 f Broc.o
+50	VERIFIED	0002:00528260 ??8Broc@@YA_NABVstring@0@PBD@Z 00D17760 f Broc.o
+51	VERIFIED	0002:00528390 ??8Broc@@YA_NABVstring@0@0@Z 00D17890 f Broc.o
+52	VERIFIED	0002:005284c0 ??HBroc@@YA?AVstring@0@ABV10@0@Z 00D179C0 f Broc.o
+53	VERIFIED	0002:005285c0 ??HBroc@@YA?AVstring@0@ABV10@PBD@Z 00D17AC0 f Broc.o
+54	VERIFIED	0002:00528710 ?string_hash@Broc@@YA?AUHashStr@@PBD@Z 00D17C10 f Broc.o
+55	PORTED	0002:00528750 ??0HashStr@@QAE@I@Z 00D17C50 f i Broc.o
+56	VERIFIED	0002:00528780 ?string_hash@Broc@@YA?AUHashStr@@ABVstring@1@@Z 00D17C80 f Broc.o
+57	VERIFIED	0002:005287c0 ?strcmp@Broc@@YAHPBD0@Z 00D17CC0 f Broc.o
+58	VERIFIED	0002:00528860 ??8Broc@@YA_NUHashStr@@ABVstring@0@@Z 00D17D60 f Broc.o
+59	VERIFIED	0002:005288a0 ??8Broc@@YA_NABVstring@0@UHashStr@@@Z 00D17DA0 f Broc.o
+60	VERIFIED	0002:005288e0 ??9Broc@@YA_NUHashStr@@ABVstring@0@@Z 00D17DE0 f Broc.o
+61	VERIFIED	0002:00528920 ??9Broc@@YA_NABVstring@0@UHashStr@@@Z 00D17E20 f Broc.o
+62	VERIFIED	0002:00528960 ?IS_NAN@@YA_NM@Z 00D17E60 f Broc.o
+63	VERIFIED	0002:005289a0 ?ThreadExecute@Broc@@YAXPAVAeThreadFunctor@@@Z 00D17EA0 f Broc.o
+64	VERIFIED	0002:005289d0 ?wait_accurate@Broc@@YAXM@Z 00D17ED0 f Broc.o
+65	VERIFIED	0002:00528a70 ?wait@Broc@@YAXM@Z 00D17F70 f Broc.o
+66	PORTED	0002:00528b40 ?RandomFloatRange@@YAMMM@Z 00D18040 f i Broc.o
+67	VERIFIED	0002:00528b70 ?wait_frame@Broc@@YAXH@Z 00D18070 f Broc.o
+68	VERIFIED	0002:00528bc0 ?waittill@Broc@@YAXVentity@1@UHashStr@@@Z 00D180C0 f Broc.o
+69	VERIFIED	0002:00528cf0 ?waittill_timeout@Broc@@YAXVentity@1@UHashStr@@M@Z 00D181F0 f Broc.o
+70	VERIFIED	0002:00528e20 ?waittillmatch@Broc@@YAXVentity@1@UHashStr@@111@Z 00D18320 f Broc.o
+71	VERIFIED	0002:00528f10 ?waittillor@Broc@@YAXVentity@1@UHashStr@@111@Z 00D18410 f Broc.o
+72	VERIFIED	0002:00529000 ?waittill@Broc@@YAXVentity@1@PBD@Z 00D18500 f Broc.o
+73	VERIFIED	0002:00529060 ?RegisterHashString@@YAXHPBD@Z 00D18560 f i Broc.o
+74	VERIFIED	0002:00529090 ?waittill_loaded@Broc@@YAXW4TPakInfo@@@Z 00D18590 f Broc.o
+75	VERIFIED	0002:005290e0 ?waittill_unloaded@Broc@@YAXW4TPakInfo@@@Z 00D185E0 f Broc.o
+76	VERIFIED	0002:00529130 ?endon@Broc@@YAXVentity@1@PBD@Z 00D18630 f Broc.o
+77	VERIFIED	0002:005291a0 ?thread_sleep_time@Broc@@YAXXZ 00D186A0 f Broc.o
+78	VERIFIED	0002:005291f0 ?thread_sleep_frames@Broc@@YAXXZ 00D186F0 f Broc.o
+79	VERIFIED	0002:00529240 ?thread_sleep_until_notify@Broc@@YAXXZ 00D18740 f Broc.o
+80	VERIFIED	0002:005292d0 ?thread_debug_wait_msg@Broc@@YAXH@Z 00D187D0 f Broc.o
+81	VERIFIED	0002:00529320 ?thread_debug_wait_msg@Broc@@YAXM@Z 00D18820 f Broc.o
+82	VERIFIED	0002:00529370 ?thread_debug_wait_until@Broc@@YAXUHashStr@@000@Z 00D18870 f Broc.o
+83	PORTED	0002:00529570 ?ToStr@@YAPBDI@Z 00D18A70 f i Broc.o
+84	VERIFIED	0002:005295a0 ??$Initialize@M@EEHelper@Broc@@YAIPBD@Z 00D18AA0 f Broc.o
+85	VERIFIED	0002:005295e0 ??$Initialize@H@EEHelper@Broc@@YAIPBD@Z 00D18AE0 f Broc.o
+86	VERIFIED	0002:00529620 ??$Initialize@Vstring@Broc@@@EEHelper@Broc@@YAIPBD@Z 00D18B20 f Broc.o
+87	VERIFIED	0002:005296c0 ??$Equals@H@EEHelper@Broc@@YA_NIPBD@Z 00D18BC0 f Broc.o
+88	PORTED	0002:00529700 ??$Equals@M@EEHelper@Broc@@YA_NIPBD@Z 00D18C00 f Broc.o
+89	VERIFIED	0002:00529760 ??$Equals@Vstring@Broc@@@EEHelper@Broc@@YA_NIPBD@Z 00D18C60 f Broc.o
+90	VERIFIED	0002:00529790 ??$Copy@Vstring@Broc@@@EEHelper@Broc@@YAII@Z 00D18C90 f Broc.o
+91	VERIFIED	0002:00529840 ?Initialize@EEDefault@Broc@@YAIPBD@Z 00D18D40 f Broc.o
+92	VERIFIED	0002:00529890 ?Copy@EEDefault@Broc@@YAII@Z 00D18D90 f Broc.o
+93	VERIFIED	0002:005298e0 ?Destruct@EEDefault@Broc@@YAXAAI@Z 00D18DE0 f Broc.o
+94	VERIFIED	0002:00529930 ?Equals@EEDefault@Broc@@YA_NIPBD@Z 00D18E30 f Broc.o
+95	PORTED	0002:00529980 ?GetExtendedEntity@ExtendedEntity@Broc@@SAPAV12@I@Z 00D18E80 f Broc.o
+96	PORTED	0002:00529ac0 ?CreateExtendedEntity@ExtendedEntity@Broc@@CAPAXQAPBDH@Z 00D18FC0 f Broc.o
+97	PORTED	0002:00529db0 ?DeleteExtendedEntity@ExtendedEntity@Broc@@CAXPAX@Z 00D192B0 f Broc.o
+98	VERIFIED	0002:00529f10 ??_GExtendedEntity@Broc@@QAEPAXI@Z 00D19410 f i Broc.o
+99	PORTED	0002:00529f60 ?MatchExtendedEntityKey@ExtendedEntity@Broc@@CA_NPAXHPBD@Z 00D19460 f Broc.o
+100	PORTED	0002:0052a140 ?CopyExtendedEntity@ExtendedEntity@Broc@@CAPAXPBX@Z 00D19640 f Broc.o
+101	PORTED	0002:0052a2f0 ?InitScript@ExtendedEntity@Broc@@SAXAAUBrocExports@@@Z 00D197F0 f Broc.o
+102	VERIFIED	0002:0052a340 ??0ExtendedEntity@Broc@@QAE@XZ 00D19840 f Broc.o
+103	PORTED	0002:0052a380 ??0ExtendedEntity@Broc@@AAE@ABV01@@Z 00D19880 f Broc.o
+104	VERIFIED	0002:0052a5d0 ??1ExtendedEntity@Broc@@QAE@XZ 00D19AD0 f Broc.o
+105	VERIFIED	0002:0052a7a0 ?IsDefined@ExtendedEntity@Broc@@QBE_NI@Z 00D19CA0 f Broc.o
+106	VERIFIED	0002:0052a990 ?SetUndefined@ExtendedEntity@Broc@@QAEXI@Z 00D19E90 f Broc.o
+107	VERIFIED	0002:0052ac40 ?SetVal@ExtendedEntity@Broc@@QAEPAIIABVstring@2@@Z 00D1A140 f Broc.o
+108	PORTED	0002:0052acf0 ?InternalSet@ExtendedEntity@Broc@@AAEPAIII@Z 00D1A1F0 f Broc.o
+109	PORTED	0002:0052b0e0 ?InternalGet@ExtendedEntity@Broc@@ABEPAII@Z 00D1A5E0 f Broc.o
+110	PORTED	0002:0052b2e0 ?GetInit@ExtendedEntity@Broc@@CAP6AIPBD@ZI@Z 00D1A7E0 f Broc.o
+111	PORTED	0002:0052b4c0 ?GetCopier@ExtendedEntity@Broc@@CAP6AII@ZI@Z 00D1A9C0 f Broc.o
+112	PORTED	0002:0052b6a0 ?GetEquals@ExtendedEntity@Broc@@CAP6A_NIPBD@ZI@Z 00D1ABA0 f Broc.o
+113	PORTED	0002:0052b880 ?GetDestructor@ExtendedEntity@Broc@@CAP6AXAAI@ZI@Z 00D1AD80 f Broc.o
+114	VERIFIED	0002:0052ba60 ?UndefineEEField@entity@Broc@@QAEXI@Z 00D1AF60 f Broc.o
+115	PORTED	0002:0052bab0 ?GetNodeArray@Broc@@YAXABVstring@1@0AAV?$dyn_array@Vpathnode@Broc@@@1@@Z 00D1AFB0 f Broc.o
+116	VERIFIED	0002:0052bbd0 ??0pathnode@Broc@@QAE@H@Z 00D1B0D0 f i Broc.o
+117	PORTED	0002:0052bc10 ?GetAllNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z 00D1B110 f Broc.o
+118	PORTED	0002:0052bd90 ?GetVehicleNodeArray@Broc@@YAXABVstring@1@0AAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z 00D1B290 f Broc.o
+119	VERIFIED	0002:0052beb0 ??0vehiclenode@Broc@@QAE@H@Z 00D1B3B0 f i Broc.o
+120	PORTED	0002:0052bee0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z 00D1B3E0 f Broc.o
+121	PORTED	0002:0052c0b0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z 00D1B5B0 f Broc.o
+122	PORTED	0002:0052c290 ?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z 00D1B790 f Broc.o
+123	PORTED	0002:0052c3b0 ?GetAllDronesWithinDistance@Broc@@YAXABUvector@1@MAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B8B0 f Broc.o
+124	PORTED	0002:0052c4d0 ?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B9D0 f Broc.o
+125	PORTED	0002:0052c5d0 ?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1BAD0 f Broc.o
+126	PORTED	0002:0052c6d0 ?size@?$dyn_array@Ventity@Broc@@@Broc@@QBEHXZ 00D1BBD0 f i Broc.o
+127	PORTED	0002:0052c6f0 ?Destroy@?$BrocDtor@Vstring@Broc@@@@UAEXPAX@Z 00D1BBF0 f i Broc.o
+128	PORTED	0002:0052c720 ??0?$ae_pair@PAXH@@QAE@ABQAXABH@Z 00D1BC20 f i Broc.o
+129	PORTED	0002:0052c760 ?size@?$dyn_array@Vpathnode@Broc@@@Broc@@QBEHXZ 00D1BC60 f i Broc.o
+130	VERIFIED	0002:0052c780 ?clear@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEXXZ 00D1BC80 f i Broc.o
+131	PORTED	0002:0052c7b0 ?size@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QBEHXZ 00D1BCB0 f i Broc.o
+132	VERIFIED	0002:0052c7d0 ?clear@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEXXZ 00D1BCD0 f i Broc.o
+133	PORTED	0002:0052c800 ?resize@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEXI@Z 00D1BD00 f i Broc.o
+134	PORTED	0002:0052c830 ?resize@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEXI@Z 00D1BD30 f i Broc.o
+135	PORTED	0002:0052c860 ??$?8UHashStr@@@HashStr@@QBE_NABU0@@Z 00D1BD60 f i Broc.o
+136	PORTED	0002:0052c8a0 ??$?9UHashStr@@@HashStr@@QBE_NABU0@@Z 00D1BDA0 f i Broc.o
+137	PORTED	0002:0052c8e0 ??$?8H@HashStr@@QBE_NABH@Z 00D1BDE0 f i Broc.o
+138	VERIFIED	0002:0052c910 ?reserve@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEXI@Z 00D1BE10 f i Broc.o
+139	VERIFIED	0002:0052cad0 ?resize@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEXII@Z 00D1BFD0 f i Broc.o
+140	VERIFIED	0002:0052cdc0 ?push_back@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEXABVpathnode@2@@Z 00D1C2C0 f i Broc.o
+141	VERIFIED	0002:0052cfc0 ?reserve@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEXI@Z 00D1C4C0 f i Broc.o
+142	VERIFIED	0002:0052d180 ?resize@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEXII@Z 00D1C680 f i Broc.o
+143	VERIFIED	0002:0052d470 ?push_back@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEXABVvehiclenode@2@@Z 00D1C970 f i Broc.o
+144	PORTED	0002:0052d670 ?begin@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEPAVpathnode@2@XZ 00D1CB70 f i Broc.o
+145	PORTED	0002:0052d690 ?end@?$dyn_array@Vpathnode@Broc@@@Broc@@QAEPAVpathnode@2@XZ 00D1CB90 f i Broc.o
+146	PORTED	0002:0052d6c0 ?begin@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEPAVvehiclenode@2@XZ 00D1CBC0 f i Broc.o
+147	PORTED	0002:0052d6e0 ?end@?$dyn_array@Vvehiclenode@Broc@@@Broc@@QAEPAVvehiclenode@2@XZ 00D1CBE0 f i Broc.o
+148	PORTED	0002:0052d710 ?construct_array@?$dyn_array@Vpathnode@Broc@@@Broc@@AAEPAVpathnode@2@II@Z 00D1CC10 f i Broc.o
+149	PORTED	0002:0052d900 ?construct_array@?$dyn_array@Vpathnode@Broc@@@Broc@@AAEPAVpathnode@2@I@Z 00D1CE00 f i Broc.o
+150	PORTED	0002:0052daf0 ?destroy_all@?$dyn_array@Vpathnode@Broc@@@Broc@@AAEXXZ 00D1CFF0 f i Broc.o
+151	PORTED	0002:0052dc70 ?construct_array@?$dyn_array@Vvehiclenode@Broc@@@Broc@@AAEPAVvehiclenode@2@II@Z 00D1D170 f i Broc.o
+152	PORTED	0002:0052de60 ?construct_array@?$dyn_array@Vvehiclenode@Broc@@@Broc@@AAEPAVvehiclenode@2@I@Z 00D1D360 f i Broc.o
+153	PORTED	0002:0052e050 ?destroy_all@?$dyn_array@Vvehiclenode@Broc@@@Broc@@AAEXXZ 00D1D550 f i Broc.o
+154	PORTED	0002:0052e1d0 ?GetNaN@@YAMXZ 00D1D6D0 f i Broc.o
+155	PORTED	0002:0052e220 ??$GetUninitialized@H@@YAHXZ 00D1D720 f i Broc.o
+156	PORTED	0002:0052e240 ??$GetUninitialized@I@@YAIXZ 00D1D740 f i Broc.o
+157	PORTED	0002:0052e260 ??$GetUninitialized@M@@YAMXZ 00D1D760 f i Broc.o
+158	PORTED	0002:0052e280 ??$GetUninitialized@_N@@YA_NXZ 00D1D780 f i Broc.o
+159	VERIFIED	0002:0052e2a0 ??0BroAnim@@QAE@XZ 00D1D7A0 f i Broc.o
+160	PORTED	0002:0052e2d0 ?GetUninitialized@BroAnim@@QAEIXZ 00D1D7D0 f i Broc.o
+161	PORTED	0002:0052e2f0 ??0HashStr@@QAE@XZ 00D1D7F0 f i Broc.o

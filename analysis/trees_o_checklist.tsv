@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:003e97a0 __tr_tally 00BD8CA0 f trees.o
+2	VERIFIED	0002:003e9f20 __tr_init 00BD9420 f trees.o
+3	VERIFIED	0002:003ea280 __tr_stored_block 00BD9780 f trees.o
+4	VERIFIED	0002:003ea330 __tr_align 00BD9830 f trees.o
+5	VERIFIED	0002:003ea530 __tr_flush_block 00BD9A30 f trees.o

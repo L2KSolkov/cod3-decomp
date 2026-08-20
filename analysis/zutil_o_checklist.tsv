@@ -1,0 +1,6 @@
+index	status	map_line
+1	VERIFIED	0002:003ea740 _zlibVersion 00BD9C40 f zutil.o
+2	VERIFIED	0002:003ea750 _zlibCompileFlags 00BD9C50 f zutil.o
+3	VERIFIED	0002:003ea760 _zError 00BD9C60 f zutil.o
+4	VERIFIED	0002:003ea780 _zcalloc 00BD9C80 f zutil.o
+5	VERIFIED	0002:003ea7a0 _zcfree 00BD9CA0 f zutil.o

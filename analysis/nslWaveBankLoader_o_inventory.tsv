@@ -1,0 +1,6 @@
+ida_ea	va	name	signature	family
+0x00829240	0x00C18740	?nslWaveBankLoaderInit@@YAXPAUnslWaveBankLoader@@IW4nflFileID@@I@Z	void __cdecl nslWaveBankLoaderInit(struct nslWaveBankLoader *,unsigned int,enum nflFileID,unsigned int)	nslWaveBankLoader.o
+0x00829280	0x00C18780	?nslWaveBankLoaderUpdate@@YA?AW4nslWaveBankLoaderState@@PAUnslWaveBankLoader@@@Z	enum nslWaveBankLoaderState __cdecl nslWaveBankLoaderUpdate(struct nslWaveBankLoader *)	nslWaveBankLoader.o
+0x008295E0	0x00C18AE0	?nslWaveBankLoaderCancel@@YAXPAUnslWaveBankLoader@@@Z	void __cdecl nslWaveBankLoaderCancel(struct nslWaveBankLoader *)	nslWaveBankLoader.o
+0x00829610	0x00C18B10	?nslWaveBankRestoreNames_HNCompare@@YAHPBX0@Z	int __cdecl nslWaveBankRestoreNames_HNCompare(void const *,void const *)	nslWaveBankLoader.o
+0x00829630	0x00C18B30	?nslWaveBankRestoreNames@@YAXPAUnslWaveBank@@@Z	void __cdecl nslWaveBankRestoreNames(struct nslWaveBank *)	nslWaveBankLoader.o

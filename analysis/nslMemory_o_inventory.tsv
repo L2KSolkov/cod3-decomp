@@ -1,0 +1,3 @@
+ida_ea	va	name	signature	family
+0x00829210	0x00C18710	?nslMemoryAlloc@@YAPAXI@Z	void * __cdecl nslMemoryAlloc(unsigned int)	nslMemory.o
+0x00829230	0x00C18730	?nslMemoryFree@@YAXPAX@Z	void __cdecl nslMemoryFree(void *)	nslMemory.o

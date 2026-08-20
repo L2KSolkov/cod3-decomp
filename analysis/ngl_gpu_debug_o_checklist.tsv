@@ -1,0 +1,5 @@
+index	status	map_line
+1	VERIFIED	0002:00451460 ?Render@nglDebugLineNode@@UAEXXZ 00C40960 f ngl_gpu_debug.o
+2	VERIFIED	0002:00451620 ?Render@nglDebugTriNode@@UAEXXZ 00C40B20 f ngl_gpu_debug.o
+3	PORTED	0002:004517f0 ?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40CF0 f i ngl_gpu_debug.o
+4	PORTED	0002:00451800 ?gpuDisableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40D00 f i ngl_gpu_debug.o

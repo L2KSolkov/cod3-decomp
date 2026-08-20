@@ -1,0 +1,2 @@
+ida_ea	va	name	signature	family
+0x007E1800	0x00BD0D00	?GetNullBuffer@@YAPADH@Z	char * __cdecl GetNullBuffer(int)	InplaceTree.o

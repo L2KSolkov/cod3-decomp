@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x00853F50	?nglGetVertexDeclaration@@YAPAU_D3DVERTEXATTRIBUTEFORMAT@@PAU1@@Z	struct _D3DVERTEXATTRIBUTEFORMAT * __cdecl nglGetVertexDeclaration(struct _D3DVERTEXATTRIBUTEFORMAT *)	
+0x00854000	?ngliProcessSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAVapkFileEntry@apk@@@Z	void __cdecl ngliProcessSection(struct nglMesh *,struct nglMeshSection *,class apk::apkFileEntry *)	
+0x00854050	?ngliReleaseSection@@YAXPAUnglMeshSection@@@Z	void __cdecl ngliReleaseSection(struct nglMeshSection *)	
+0x00854060	?ngliListAddMesh_GetClipResult@@YAHABVPosition3@math@@MH@Z	int __cdecl ngliListAddMesh_GetClipResult(class math::Position3 const &,float,int)	

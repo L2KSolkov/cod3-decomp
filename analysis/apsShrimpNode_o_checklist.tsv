@@ -1,0 +1,25 @@
+index	status	map_line
+1	VERIFIED	0002:00412d90 ?Render@apsShrimpNode@@UAEXXZ 00C02290 f apsShrimpNode.o
+2	PORTED	0002:00413530 ??$Limit@VVector4@math@@M@apsMath@@YA?AVVector4@math@@ABV12@ABM1@Z 00C02A30 f i apsShrimpNode.o
+3	VERIFIED	0002:004135b0 ?ACos@apsMath@@YAMM@Z 00C02AB0 f i apsShrimpNode.o
+4	VERIFIED	0002:004136b0 ?ClampToColor32@apsInternal@@YAIABVVector4@math@@0@Z 00C02BB0 f i apsShrimpNode.o
+5	PORTED	0002:004137c0 ?BlendColor@apsRenderNode@@QBEABVVector4@math@@XZ 00C02CC0 f i apsShrimpNode.o
+6	PORTED	0002:004137d0 ?Texture@apsShrimpRenderer@@QBEPAUnglTexture@@XZ 00C02CD0 f i apsShrimpNode.o
+7	PORTED	0002:004137e0 ?BlendMode@apsShrimpRenderer@@QBE?BW4apsEBlendMode@@XZ 00C02CE0 f i apsShrimpNode.o
+8	PORTED	0002:004137f0 ?NumFrames@apsShrimpRenderer@@QBEHXZ 00C02CF0 f i apsShrimpNode.o
+9	PORTED	0002:00413800 ?NumRows@apsShrimpRenderer@@QBEHXZ 00C02D00 f i apsShrimpNode.o
+10	PORTED	0002:00413810 ?NumRotations@apsShrimpRenderer@@QBEHXZ 00C02D10 f i apsShrimpNode.o
+11	PORTED	0002:00413820 ?SpriteWidth@apsShrimpRenderer@@QBEHXZ 00C02D20 f i apsShrimpNode.o
+12	PORTED	0002:00413830 ?SpriteHeight@apsShrimpRenderer@@QBEHXZ 00C02D30 f i apsShrimpNode.o
+13	PORTED	0002:00413840 ?TextureWidth@apsShrimpRenderer@@QBEHXZ 00C02D40 f i apsShrimpNode.o
+14	PORTED	0002:00413850 ?TextureHeight@apsShrimpRenderer@@QBEHXZ 00C02D50 f i apsShrimpNode.o
+15	PORTED	0002:00413860 ?Renderer@apsShrimpNode@@QAEAAVapsShrimpRenderer@@XZ 00C02D60 f i apsShrimpNode.o
+16	PORTED	0002:004138a0 ?GetPos@ShrimpParticle@@QAEAAUPacked@Dir3@math@@XZ 00C02DA0 f i apsShrimpNode.o
+17	PORTED	0002:004138b0 ?GetWidth@ShrimpParticle@@QAEMXZ 00C02DB0 f i apsShrimpNode.o
+18	PORTED	0002:004138c0 ?GetHeight@ShrimpParticle@@QAEMXZ 00C02DC0 f i apsShrimpNode.o
+19	PORTED	0002:004138d0 ?GetColor@ShrimpParticle@@QAE?AVVector4@math@@XZ 00C02DD0 f i apsShrimpNode.o
+20	PORTED	0002:00413920 ?GetFrame@ShrimpParticle@@QAEMXZ 00C02E20 f i apsShrimpNode.o
+21	PORTED	0002:00413930 ?GetAngle@ShrimpParticle@@QAEMXZ 00C02E30 f i apsShrimpNode.o
+22	VERIFIED	0002:00413940 ?Set@SpriteVertex@apsVertexBuffer@@QAEXABVDir3@math@@IMM@Z 00C02E40 f i apsShrimpNode.o
+23	PORTED	0002:004139d0 ?GetVShader@apsShrimpRender@@YAKXZ 00C02ED0 f i apsShrimpNode.o
+24	PORTED	0002:004139e0 ?GetPShader@apsShrimpRenderPixel@@YAPAKXZ 00C02EE0 f i apsShrimpNode.o

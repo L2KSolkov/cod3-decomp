@@ -1,0 +1,6 @@
+ida_ea	name	signature	source_cpp
+0x008285E0	?nslVoicePtr@@YAPAUnslVoice@@H@Z	struct nslVoice * __cdecl nslVoicePtr(int)	
+0x00828610	?nslVoiceCount@@YAIXZ	unsigned int __cdecl nslVoiceCount(void)	
+0x00828620	?nslVoiceAlloc@@YAHW4nslWaveID@@W4nslSourceID@@H@Z	int __cdecl nslVoiceAlloc(enum nslWaveID,enum nslSourceID,int)	
+0x00828700	?nslVoiceFree@@YAXH@Z	void __cdecl nslVoiceFree(int)	
+0x00828750	?nslVoiceRender@@YAXPAUnslVoice@@@Z	void __cdecl nslVoiceRender(struct nslVoice *)	

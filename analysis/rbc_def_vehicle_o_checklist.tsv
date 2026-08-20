@@ -1,0 +1,47 @@
+index	status	map_line
+1	PORTED	0002:00484a20 ?get_pulse_sum@pulse_sum_cache@@QBE?BMXZ 00C73F20 f i rbc_def_vehicle.o
+2	PORTED	0002:00484a30 ?set_wheel_flag@rigid_body_constraint_wheel@@AAEXW4internal_wheel_flags_e@1@I@Z 00C73F30 f i rbc_def_vehicle.o
+3	PORTED	0002:00484a70 ?set_flag@pulse_sum_normal@@AAEXI_N@Z 00C73F70 f i rbc_def_vehicle.o
+4	PORTED	0002:00484ab0 ?get_flag@pulse_sum_normal@@ABE?BII@Z 00C73FB0 f i rbc_def_vehicle.o
+5	PORTED	0002:00484ac0 ?setup_vel_simple@pulse_sum_normal@@QAEXXZ 00C73FC0 f i rbc_def_vehicle.o
+6	PORTED	0002:00484ae0 ?setup_vel_custom@pulse_sum_normal@@QAEXMMM@Z 00C73FE0 f i rbc_def_vehicle.o
+7	PORTED	0002:00484b20 ?setup_vel_custom_right_side@pulse_sum_normal@@QAEXMM@Z 00C74020 f i rbc_def_vehicle.o
+8	PORTED	0002:00484b60 ?set_pulse_sum_limits_unbounded@pulse_sum_normal@@QAEXXZ 00C74060 f i rbc_def_vehicle.o
+9	PORTED	0002:00484b80 ?set_pulse_sum_limits_cone@pulse_sum_normal@@QAEXM@Z 00C74080 f i rbc_def_vehicle.o
+10	PORTED	0002:00484ba0 ?set_pulse_sum_limits_positive@pulse_sum_normal@@QAEXXZ 00C740A0 f i rbc_def_vehicle.o
+11	PORTED	0002:00484bc0 ?set_pulse_sum_limits_negative@pulse_sum_normal@@QAEXXZ 00C740C0 f i rbc_def_vehicle.o
+12	PORTED	0002:00484be0 ?set_pulse_sum_limits_parent_ratio@pulse_sum_normal@@QAEXMQAV1@@Z 00C740E0 f i rbc_def_vehicle.o
+13	PORTED	0002:00484c70 ?calc_spring_params@pulse_sum_normal@@SAXMMMPAM0@Z 00C74170 f i rbc_def_vehicle.o
+14	PORTED	0002:00484cc0 ?is_pulse_limit_reached@pulse_sum_normal@@QAEIXZ 00C741C0 f i rbc_def_vehicle.o
+15	PORTED	0002:00484cd0 ?is_pulse_chain_limit_reached@pulse_sum_normal@@QAEIXZ 00C741D0 f i rbc_def_vehicle.o
+16	PORTED	0002:00484ce0 ?get_std_active_limit_distance_eps@pulse_sum_normal@@SA?BMXZ 00C741E0 f i rbc_def_vehicle.o
+17	PORTED	0002:00484cf0 ?get_std_max_penalty_restitution_vel@pulse_sum_normal@@SA?BMXZ 00C741F0 f i rbc_def_vehicle.o
+18	PORTED	0002:00484d00 ?set@pulse_sum_wheel@@QAEXXZ 00C74200 f i rbc_def_vehicle.o
+19	VERIFIED	0002:00484d10 ?set_side_fwd_ratios@pulse_sum_wheel@@QAEXMM@Z 00C74210 f i rbc_def_vehicle.o
+20	PORTED	0002:00484d70 ?get_suspension@pulse_sum_wheel@@QAEPAVpulse_sum_normal@@XZ 00C74270 f i rbc_def_vehicle.o
+21	PORTED	0002:00484d80 ??0pulse_sum_normal@@QAE@XZ 00C74280 f i rbc_def_vehicle.o
+22	PORTED	0002:00484d90 ??0pulse_sum_wheel@@QAE@XZ 00C74290 f i rbc_def_vehicle.o
+23	VERIFIED	0002:00484da0 ?set_wheel_state_accelerating@rigid_body_constraint_wheel@@QAEXMM@Z 00C742A0 f rbc_def_vehicle.o
+24	VERIFIED	0002:00484dd0 ?set_wheel_state_braking@rigid_body_constraint_wheel@@QAEXM@Z 00C742D0 f rbc_def_vehicle.o
+25	VERIFIED	0002:00484df0 ?set_no_collision@rigid_body_constraint_wheel@@QAEXXZ 00C742F0 f rbc_def_vehicle.o
+26	PORTED	0002:00484e00 ?set_collision@rigid_body_constraint_wheel@@QAEXQAVrigid_body@@ABVDir3@math@@1@Z 00C74300 f rbc_def_vehicle.o
+27	PORTED	0002:00484e50 ?lerp_float@@YAMMMMM@Z 00C74350 f rbc_def_vehicle.o
+28	PORTED	0002:00484ec0 ?set@rigid_body_constraint_wheel@@QAEXABVDir3@math@@00MMMMMMM@Z 00C743C0 f rbc_def_vehicle.o
+29	VERIFIED	0002:00484fe0 ?get_wheel_collide_segment@rigid_body_constraint_wheel@@QBEXABVMat43@math@@QAVDir3@3@1@Z 00C744E0 f rbc_def_vehicle.o
+30	VERIFIED	0002:004850f0 ?do_collision@rigid_body_constraint_wheel@@QAEXM@Z 00C745F0 f rbc_def_vehicle.o
+31	VERIFIED	0002:00485200 ?epilog_vel_constraint@rigid_body_constraint_wheel@@QAEXM@Z 00C74700 f rbc_def_vehicle.o
+32	VERIFIED	0002:004854d0 ?setup_constraint@rigid_body_constraint_wheel@@QAEXPAVpulse_sum_constraint_solver@@M@Z 00C749D0 f rbc_def_vehicle.o
+33	PORTED	0002:00485b80 ?set_next_link@?$phys_link_list_base@Vpulse_sum_normal@@@@QAEXQAVpulse_sum_normal@@@Z 00C75080 f i rbc_def_vehicle.o
+34	PORTED	0002:00485b90 ?set_next_link@?$phys_link_list_base@Vpulse_sum_wheel@@@@QAEXQAVpulse_sum_wheel@@@Z 00C75090 f i rbc_def_vehicle.o
+35	VERIFIED	0002:00485ba0 ?PHYS_ASSERT_ORTHOGONAL@@YAXABVDir3@math@@0@Z 00C750A0 f i rbc_def_vehicle.o
+36	VERIFIED	0002:00485c20 ?setup_vel_uni_standard@pulse_sum_normal@@QAEXMM@Z 00C75120 f i rbc_def_vehicle.o
+37	PORTED	0002:00485cc0 ?create_pulse_sum_wheel_side@pulse_sum_constraint_solver@@QAEPAVpulse_sum_normal@@PAVpulse_sum_wheel@@@Z 00C751C0 f i rbc_def_vehicle.o
+38	PORTED	0002:00485d30 ?create_pulse_sum_wheel_fwd@pulse_sum_constraint_solver@@QAEPAVpulse_sum_normal@@PAVpulse_sum_wheel@@@Z 00C75230 f i rbc_def_vehicle.o
+39	PORTED	0002:00485dd0 ?multiply@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C752D0 f i rbc_def_vehicle.o
+40	PORTED	0002:00485e60 ?add_pos@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C75360 f i rbc_def_vehicle.o
+41	PORTED	0002:00485ed0 ?collide_multiply@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C753D0 f i rbc_def_vehicle.o
+42	PORTED	0002:00485f60 ?collide_add_pos@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C75460 f i rbc_def_vehicle.o
+43	PORTED	0002:00485fd0 ?add@?$phys_link_list@Vpulse_sum_normal@@@@QAEXPAVpulse_sum_normal@@@Z 00C754D0 f i rbc_def_vehicle.o
+44	PORTED	0002:00486000 ?add@?$phys_link_list@Vpulse_sum_wheel@@@@QAEXPAVpulse_sum_wheel@@@Z 00C75500 f i rbc_def_vehicle.o
+45	PORTED	0002:00486030 ?create_pulse_sum_normal@pulse_sum_constraint_solver@@QAEPAVpulse_sum_normal@@XZ 00C75530 f i rbc_def_vehicle.o
+46	PORTED	0002:004860b0 ?create_pulse_sum_wheel@pulse_sum_constraint_solver@@QAEPAVpulse_sum_wheel@@XZ 00C755B0 f i rbc_def_vehicle.o

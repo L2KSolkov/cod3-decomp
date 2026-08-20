@@ -1,0 +1,5 @@
+ida_ea	name	signature	source_cpp
+0x00802CD0	?Init@apsVertexBuffer@@YAXI@Z	void __cdecl apsVertexBuffer::Init(unsigned int)	
+0x00802D90	?GetBufferPtr@apsVertexBuffer@@YAPAUSpriteVertex@1@I@Z	struct apsVertexBuffer::SpriteVertex * __cdecl apsVertexBuffer::GetBufferPtr(unsigned int)	
+0x00802DD0	?ReleaseAndDraw@apsVertexBuffer@@YAXXZ	void __cdecl apsVertexBuffer::ReleaseAndDraw(void)	
+0x00802E50	?Swap@apsVertexBuffer@@YAXXZ	void __cdecl apsVertexBuffer::Swap(void)	

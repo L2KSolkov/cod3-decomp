@@ -1,0 +1,3 @@
+ida_ea	name	signature	source_cpp
+0x00829210	?nslMemoryAlloc@@YAPAXI@Z	void * __cdecl nslMemoryAlloc(unsigned int)	
+0x00829230	?nslMemoryFree@@YAXPAX@Z	void __cdecl nslMemoryFree(void *)	
