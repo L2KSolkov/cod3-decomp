@@ -32,26 +32,26 @@ index	status	map_line
 31	VERIFIED	0002:00159ca0       ?get_screensafe_top@@YAMXZ 009551a0 f   shell.o
 32	VERIFIED	0002:00159cb0       ?get_screensafe_bottom@@YAMXZ 009551b0 f   shell.o
 33	FIXED	0002:00159cc0       ??0IGOStanceWidget@@QAE@H@Z 009551c0 f   shell.o
-34	PENDING	0002:00159d00       ?Update@IGOStanceWidget@@UAEXM@Z 00955200 f   shell.o
+34	VERIFIED	0002:00159d00       ?Update@IGOStanceWidget@@UAEXM@Z 00955200 f   shell.o
 35	FIXED	0002:00159ea0       ??0IGOHealthWidget@@QAE@H@Z 009553a0 f   shell.o
-36	PENDING	0002:00159ee0       ?Draw@IGOHealthWidget@@UAEXXZ 009553e0 f   shell.o
+36	VERIFIED	0002:00159ee0       ?Draw@IGOHealthWidget@@UAEXXZ 009553e0 f   shell.o
 37	VERIFIED	0002:00159f50       ??0IGOHQProgressBarWidget@@QAE@H@Z 00955450 f   shell.o
 38	VERIFIED	0002:00159f90       ??1IGOHQProgressBarWidget@@UAE@XZ 00955490 f   shell.o
-39	PENDING	0002:0015a020       ?Draw@IGOHQProgressBarWidget@@UAEXXZ 00955520 f   shell.o
+39	VERIFIED	0002:0015a020       ?Draw@IGOHQProgressBarWidget@@UAEXXZ 00955520 f   shell.o
 40	VERIFIED	0002:0015a070       ??0IGORaiseFlagWidget@@QAE@H@Z 00955570 f   shell.o
 41	VERIFIED	0002:0015a0a0       ??1IGORaiseFlagWidget@@UAE@XZ 009555a0 f   shell.o
-42	PENDING	0002:0015a100       ?Update@IGORaiseFlagWidget@@UAEXM@Z 00955600 f   shell.o
-43	PENDING	0002:0015a1d0       ?Draw@IGORaiseFlagWidget@@UAEXXZ 009556d0 f   shell.o
+42	VERIFIED	0002:0015a100       ?Update@IGORaiseFlagWidget@@UAEXM@Z 00955600 f   shell.o
+43	VERIFIED	0002:0015a1d0       ?Draw@IGORaiseFlagWidget@@UAEXXZ 009556d0 f   shell.o
 44	VERIFIED	0002:0015a1f0       ??0IGOTimerWidget@@QAE@H@Z 009556f0 f   shell.o
 45	VERIFIED	0002:0015a230       ??1IGOTimerWidget@@UAE@XZ  00955730 f   shell.o
-46	PENDING	0002:0015a280       ?Draw@IGOTimerWidget@@UAEXXZ 00955780 f   shell.o
-47	PENDING	0002:0015a2a0       ?UpdateWidescreen@IGOTimerWidget@@UAEX_NM@Z 009557a0 f   shell.o
-48	PENDING	0002:0015a2c0       ?UpdateSplitScreen@IGOTimerWidget@@UAEXHH@Z 009557c0 f   shell.o
-49	PENDING	0002:0015a2f0       ?setTimerValues@IGOTimerWidget@@AAEXXZ 009557f0 f   shell.o
+46	VERIFIED	0002:0015a280       ?Draw@IGOTimerWidget@@UAEXXZ 00955780 f   shell.o
+47	VERIFIED	0002:0015a2a0       ?UpdateWidescreen@IGOTimerWidget@@UAEX_NM@Z 009557a0 f   shell.o
+48	VERIFIED	0002:0015a2c0       ?UpdateSplitScreen@IGOTimerWidget@@UAEXHH@Z 009557c0 f   shell.o
+49	FIXED	0002:0015a2f0       ?setTimerValues@IGOTimerWidget@@AAEXXZ 009557f0 f   shell.o
 50	VERIFIED	0002:0015a340       ??0IGOInGameScoreWidget@@QAE@H@Z 00955840 f   shell.o
 51	VERIFIED	0002:0015a380       ??1IGOInGameScoreWidget@@UAE@XZ 00955880 f   shell.o
-52	PENDING	0002:0015a400       ?Update@IGOInGameScoreWidget@@UAEXM@Z 00955900 f   shell.o
-53	PENDING	0002:0015a4f0       ?Draw@IGOInGameScoreWidget@@UAEXXZ 009559f0 f   shell.o
+52	VERIFIED	0002:0015a400       ?Update@IGOInGameScoreWidget@@UAEXM@Z 00955900 f   shell.o
+53	VERIFIED	0002:0015a4f0       ?Draw@IGOInGameScoreWidget@@UAEXXZ 009559f0 f   shell.o
 54	FIXED	0002:0015a530       ??0IGOAmmoWidget@@QAE@H@Z  00955a30 f   shell.o
 55	FIXED	0002:0015a560       ?Draw@IGOAmmoWidget@@UAEXXZ 00955a60 f   shell.o
 56	VERIFIED	0002:0015a590       ??0IGOGrenadeWidget@@QAE@H@Z 00955a90 f   shell.o
@@ -1405,7 +1405,7 @@ index	status	map_line
 1404	FIXED	0002:001a2f50       ?SetCreateOk@ProfileManager@@AAEXXZ 0099e450 f i shell.o
 1405	VERIFIED	0002:001a2f60       ?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ 0099e460 f i shell.o
 1406	VERIFIED	0002:001a2fb0       ?IsPlayerSpotted@@YA_NPAVEntity@@@Z 0099e4b0 f i shell.o
-1407	PENDING	0002:001a3000       ?ValidPlayerState@@YA_NH@Z 0099e500 f i shell.o
+1407	FIXED	0002:001a3000       ?ValidPlayerState@@YA_NH@Z 0099e500 f i shell.o
 1408	FIXED	0002:001a3040       ??0sTime@knet@kuju@@QAE@J@Z 0099e540 f i shell.o
 1409	FIXED	0002:001a3060       ??GsTime@knet@kuju@@QBE?AV012@ABV012@@Z 0099e560 f i shell.o
 1410	FIXED	0002:001a3080       ?getSeconds@sTime@knet@kuju@@QBEMXZ 0099e580 f i shell.o

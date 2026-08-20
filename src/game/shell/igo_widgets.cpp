@@ -38,6 +38,13 @@ vmCvar_t g_stanceSolidTime = {};
 extern float unk_F6A284[];          // @ 0xF6A284 (per-client viewport block)
 extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
 
+// ea: 0x005AF000
+bool ValidPlayerState(int idx)
+{
+    Entity* player = GetPlayer(idx);
+    return player != nullptr && player->client != nullptr;
+}
+
 // Global-scope twin of BrocAPI (broc_types.h's lives in namespace Broc);
 // only the HQ callbacks used here are declared. Offsets verified against IDA.
 struct BrocAPI {
@@ -2034,7 +2041,7 @@ void IGOTimerWidget::setTimerValues()
 {
     float v1 = m_DeltaTime * 0.001f;
     int v2 = (int)(m_TimeLimit - v1);
-    unsigned int v3 = (unsigned int)v2 / 3600;
+    unsigned int v3 = v2 / 3600;
     if (v2 / 3600 != 0)
         v2 = (int)(m_TimeLimit - v1) % 3600;
     m_hour = v3;
