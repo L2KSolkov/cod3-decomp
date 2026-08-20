@@ -332,7 +332,8 @@ void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
 
 void bdBitBuffer::writeDataType(bdBitBufferDataType type)
 {
-    (void)type;
+    if (m_typeChecked)
+        writeRangedUInt32((unsigned int)type, 0, 0x1Fu, false);
 }
 
 // bdBitBuffer::writeRangedInt32 - ea: 0x89C1F0
@@ -461,46 +462,63 @@ bool bdBitBuffer::readInt32(int& value)
 
 bool bdBitBuffer::readInt16(short& value)
 {
-    (void)value;
+    short decoded;
+    if (!readDataType(BD_BB_SIGNED_INTEGER16_TYPE) ||
+        !readBits(&decoded, 0x10u))
+        return false;
+    value = decoded;
     return true;
 }
 
 bool bdBitBuffer::readUInt32(unsigned int& value)
 {
-    (void)value;
+    unsigned int decoded;
+    if (!readDataType(BD_BB_UNSIGNED_INTEGER32_TYPE) ||
+        !readBits(&decoded, 0x20u))
+        return false;
+    value = decoded;
     return true;
 }
 
 bool bdBitBuffer::readUChar8(unsigned char& value)
 {
-    (void)value;
-    return true;
+    return readDataType(BD_BB_UNSIGNED_CHAR8_TYPE) &&
+           readBits(&value, 8u);
 }
 
 void bdBitBuffer::writeInt16(short value)
 {
-    (void)value;
+    int encoded = value;
+    writeDataType(BD_BB_SIGNED_INTEGER16_TYPE);
+    writeBits(&encoded, 0x10u);
 }
 
 void bdBitBuffer::writeUInt32(unsigned int value)
 {
-    (void)value;
+    unsigned int encoded = value;
+    writeDataType(BD_BB_UNSIGNED_INTEGER32_TYPE);
+    writeBits(&encoded, 0x20u);
 }
 
 void bdBitBuffer::writeChar8(char value)
 {
-    (void)value;
+    writeDataType(BD_BB_SIGNED_CHAR8_TYPE);
+    writeBits(&value, 8u);
 }
 
 void bdBitBuffer::writeUChar8(unsigned char value)
 {
-    (void)value;
+    writeDataType(BD_BB_UNSIGNED_CHAR8_TYPE);
+    writeBits(&value, 8u);
 }
 
 void bdBitBuffer::writeBlob(const void* blob, unsigned int length)
 {
-    (void)blob;
-    (void)length;
+    writeDataType(BD_BB_BLOB_TYPE);
+    writeDataType(BD_BB_UNSIGNED_INTEGER32_TYPE);
+    unsigned int encodedLength = length;
+    writeBits(&encodedLength, 0x20u);
+    writeBits(blob, 8 * length);
 }
 
 bool bdBitBuffer::readUInt16(unsigned short& value)
@@ -511,8 +529,8 @@ bool bdBitBuffer::readUInt16(unsigned short& value)
 
 bool bdBitBuffer::readChar8(char& value)
 {
-    (void)value;
-    return true;
+    return readDataType(BD_BB_SIGNED_CHAR8_TYPE) &&
+           readBits(&value, 8u);
 }
 
 bool bdBitBuffer::readFloat32(float& value)
