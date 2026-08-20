@@ -13887,6 +13887,18 @@ template void FastCycleTrajectory<
     CODNoteData::AnimComponentData>(nalComponentEnum&, void*, void*, int, bool,
                                     const int*);
 
+// ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
+// (nal_init.o 0x857520)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 3u) & ~uintptr_t(3u));
+    ptr = (char*)ptr + 4 * componentInfo->Count;
+}
+
 // ??$FastCycleTrajectory@VnalComponentEntropyFloat1@@MUSkeletonData@nalComponentData@@UAnimData@nalComponentEntropyFloat1Data@@USkeletonComponentData@5@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 // (nal_init.o 0x865120)
 template <>
