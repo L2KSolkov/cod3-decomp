@@ -587,7 +587,11 @@ bool bdBitBuffer::readString(char* s, unsigned int maxLen)
 
 bool bdBitBuffer::testBool()
 {
-    return true;
+    char value = 0;
+    if (readDataType(BD_BB_BOOL_TYPE) &&
+        readBits(&value, 1u) && value != 0)
+        return true;
+    return false;
 }
 
 bool bdByteBuffer::read(void* data, unsigned int size)
