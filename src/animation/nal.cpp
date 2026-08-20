@@ -8910,6 +8910,37 @@ void nalComponent<nalComponentFloat1Base,
     }
 }
 
+// ?Skip@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z
+// (nal_init.o 0x857a50)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const void** skeletonData = customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u)
+                                & ~uintptr_t(3u));
+            src = (const char*)src + quantity;
+            dst = (char*)dst + 1;
+        }
+        *skeletonData = (const char*)*skeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
 // (nal_init.o 0x857dd0)
 template <>
