@@ -1,5 +1,5 @@
 index	status	map_line
-1	PENDING	0002:0042e3f0 ?GetVersion@nvlMovieBase@@SAIXZ 00C1D8F0 f nvl_base.o
+1	VERIFIED	0002:0042e3f0 ?GetVersion@nvlMovieBase@@SAIXZ 00C1D8F0 f nvl_base.o
 2	VERIFIED	0002:0042e400 ?GetFileID@nvlMovieBase@@QAE?AW4nflFileID@@XZ 00C1D900 f nvl_base.o
 3	VERIFIED	0002:0042e410 ?ReleaseMovie@nvlMovieBase@@QAE?AW4nflFileID@@XZ 00C1D910 f nvl_base.o
 4	VERIFIED	0002:0042e4c0 ?SetMovieState@nvlMovieBase@@QAE?AW4nvlMovieState@@W42@@Z 00C1D9C0 f nvl_base.o
