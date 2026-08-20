@@ -109,6 +109,48 @@ void Actor_SetSubState(actor_s* pSelf, ai_substate_e eSubState)
     pSelf->changeYawTime = level.time + 501;
 }
 
+// ea: 0x007820F0
+void PathNodeMgr::SetCoverNodeStatus(const Broc::string& name, int inValid)
+{
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC == nullptr)
+        return;
+
+    for (int i = 0; i < levelTOC->mNodeCount; ++i)
+    {
+        PathNodes::PathNode* node = &levelTOC->mNodes[i];
+        if (node->mConstant.mTargetName.mBlock == nullptr
+            || !Broc::operator==(name, node->mConstant.mTargetName))
+            continue;
+
+        node->mDynamic.mSafeTime[0] = 0;
+        node->mDynamic.mFlags = (char)inValid;
+        node->mDynamic.mValidTime[2] = 0;
+        sentient_s* owner = node->mDynamic.mOwner;
+        node->mDynamic.mValidTime[1] = 0;
+        node->mDynamic.mValidTime[0] = 0;
+        node->mDynamic.mSafeTime[2] = 0;
+        node->mDynamic.mSafeTime[1] = 0;
+
+        if (owner == nullptr || owner->pEnt == nullptr)
+            continue;
+
+        actor_s* actor = owner->pEnt->actor;
+        if (actor == nullptr)
+            continue;
+
+        Actor_SetSubState(actor, (ai_substate_e)0x66);
+        if (owner->mClaimedNode)
+        {
+            PathNodes::PathNode* claimedNode =
+                PathNodeMgr::sInst->GetNode(owner->mClaimedNode);
+            Path_RelinquishNodePermanently(claimedNode, owner);
+            owner->mClaimedNode.mValue = 0;
+        }
+        PathNodeMgr::sInst->DissociateSentient(owner);
+    }
+}
+
 // ea: 0x0077F340
 PathNodeMgr::PathNodeMgr()
     : AssetBankSet()
