@@ -17,7 +17,7 @@ struct XINPUT_STATE { DWORD dwPacketNumber; XINPUT_GAMEPAD Gamepad; };
 #endif
 
 namespace {
-static void* s_handleForAssert = nullptr;
+static int s_handleForAssert = 0;
 static XINPUT_STATE xiCurrState = {};
 static XINPUT_STATE xiPrevState = {};
 static bool bPrevState = false;
@@ -27,7 +27,7 @@ using GetStateFn = DWORD (WINAPI*)(DWORD, XINPUT_STATE*);
 static HMODULE s_xinput = nullptr;
 static GetStateFn s_get_state = nullptr;
 
-static DWORD get_state(void* handle, XINPUT_STATE* state)
+static DWORD get_state(int handle, XINPUT_STATE* state)
 {
     if (s_get_state == nullptr && s_xinput == nullptr) {
         const char* modules[] = {"xinput1_4.dll", "xinput1_3.dll", "xinput9_1_0.dll"};
@@ -41,25 +41,24 @@ static DWORD get_state(void* handle, XINPUT_STATE* state)
     }
     if (s_get_state == nullptr)
         return ERROR_DEVICE_NOT_CONNECTED;
-    const unsigned int port = handle == nullptr
-        ? 0u : static_cast<unsigned int>(reinterpret_cast<uintptr_t>(handle) - 1u);
+    const unsigned int port = static_cast<unsigned int>(handle);
     return s_get_state(port, state);
 }
 #else
-static DWORD get_state(void*, XINPUT_STATE*) { return 1167; }
+static DWORD get_state(int, XINPUT_STATE*) { return 1167; }
 #endif
 }
 
-void InitController(void* handle)
+void InitController(int handle)
 {
     s_handleForAssert = handle;
 }
 
-DWORD PollController(char whichButtons, int* whichButtonHit)
+int PollController(char whichButtons, int* whichButtonHit)
 {
     controller* pad = controller::inst();
     pad->stop_all_rumble();
-    if (s_handleForAssert == nullptr) {
+    if (s_handleForAssert == 0) {
         pad->poll();
         return 2;
     }
