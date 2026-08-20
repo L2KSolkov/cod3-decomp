@@ -2119,7 +2119,7 @@ PanelQuad* FEManager::GetDefaultPQ()
         };
         color32 col[7];
         for (int i = 0; i < 7; ++i)
-            col[i].i = 0xFF808080u;
+            col[i].i = 0xFF80FF80u;
         default_pq = v3;
         v3->Init((Broc::vector*)xy, col, PANEL_LAYER_BACKGROUND, 0.0f,
                  defaultFileName);
