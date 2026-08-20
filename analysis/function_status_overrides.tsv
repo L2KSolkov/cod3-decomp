@@ -4,6 +4,7 @@ AeAssert.o	??0InfiniteRecursionStopper@AeAssert@@QAE@AA_N@Z	PORTED
 AeAssert.o	??1InfiniteRecursionStopper@AeAssert@@QAE@XZ	PORTED
 apk.o	?ApplyReferences@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	FIXED
 PtrFixupTable.o	??$FixupPointer@I@@YAXAAPAIPBX@Z	PORTED
+ae_controller.o	?PollController@@YAHHPAH@Z	FIXED
 ae_fixed_string.o	?ae_stricmpn@@YAHPBD0H@Z	FIXED
 ae_fixed_string.o	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED

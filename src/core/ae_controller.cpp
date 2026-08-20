@@ -17,10 +17,14 @@ struct XINPUT_STATE { DWORD dwPacketNumber; XINPUT_GAMEPAD Gamepad; };
 #endif
 
 namespace {
-static int s_handleForAssert = 0;
+static void* s_handleForAssert = nullptr;
 static XINPUT_STATE xiCurrState = {};
 static XINPUT_STATE xiPrevState = {};
 static bool bPrevState = false;
+static int dword_10DDAE4 = 0;
+static int16_t word_10DDAE8 = 0;
+static int dword_10DDAFC = 0;
+static int16_t word_10DDB00 = 0;
 
 #ifdef _WIN32
 using GetStateFn = DWORD (WINAPI*)(DWORD, XINPUT_STATE*);
@@ -51,10 +55,10 @@ static DWORD get_state(int, XINPUT_STATE*) { return 1167; }
 
 void InitController(int handle)
 {
-    s_handleForAssert = handle;
+    s_handleForAssert = reinterpret_cast<void*>(static_cast<uintptr_t>(handle));
 }
 
-int PollController(char whichButtons, int* whichButtonHit)
+int PollController(int whichButtons, int* whichButtonHit)
 {
     controller* pad = controller::inst();
     pad->stop_all_rumble();
@@ -63,39 +67,50 @@ int PollController(char whichButtons, int* whichButtonHit)
         return 2;
     }
 
-    const DWORD result = get_state(s_handleForAssert, &xiCurrState);
+    const DWORD result = get_state(static_cast<int>(reinterpret_cast<uintptr_t>(s_handleForAssert)),
+                                   &xiCurrState);
     if (result != 0)
         return result;
     if (bPrevState) {
-        const BYTE* current = reinterpret_cast<const BYTE*>(&xiCurrState.Gamepad);
-        const BYTE* previous = reinterpret_cast<const BYTE*>(&xiPrevState.Gamepad);
-        if ((whichButtons & 4) != 0 && current[0x00 + 2] > 0x1E && previous[0x00 + 2] < 0x1E) {
+        if ((whichButtons & 4) != 0
+            && xiCurrState.Gamepad.bLeftTrigger > 0x1E
+            && xiPrevState.Gamepad.bLeftTrigger < 0x1E) {
             *whichButtonHit = 4;
             bPrevState = false;
             return 1;
         }
-        if ((whichButtons & 1) != 0 && current[4] > 0x1E && previous[4] < 0x1E) {
+        if ((whichButtons & 1) != 0
+            && static_cast<BYTE>(xiCurrState.Gamepad.sThumbLX) > 0x1E
+            && static_cast<BYTE>(xiPrevState.Gamepad.sThumbLX) < 0x1E) {
             bPrevState = false;
             *whichButtonHit = 1;
             return 1;
         }
-        if ((whichButtons & 2) != 0 && current[3] > 0x1E && previous[3] < 0x1E) {
+        if ((whichButtons & 2) != 0
+            && xiCurrState.Gamepad.bRightTrigger > 0x1E
+            && xiPrevState.Gamepad.bRightTrigger < 0x1E) {
             bPrevState = false;
             *whichButtonHit = 2;
             return 1;
         }
-        if ((whichButtons & 8) != 0 && current[5] > 0x1E && previous[5] < 0x1E) {
+        if ((whichButtons & 8) != 0
+            && static_cast<BYTE>(xiCurrState.Gamepad.sThumbLX >> 8) > 0x1E
+            && static_cast<BYTE>(xiPrevState.Gamepad.sThumbLX >> 8) < 0x1E) {
             *whichButtonHit = 8;
             bPrevState = false;
             return 1;
         }
-        if ((whichButtons & 0x10) != 0 && current[7] > 0x1E && previous[7] < 0x1E) {
+        if ((whichButtons & 0x10) != 0
+            && static_cast<BYTE>(xiCurrState.Gamepad.sThumbLY >> 8) > 0x1E
+            && static_cast<BYTE>(xiPrevState.Gamepad.sThumbLY >> 8) < 0x1E) {
             bPrevState = false;
             *whichButtonHit = 16;
             return 1;
         }
     }
     xiPrevState = xiCurrState;
+    dword_10DDAE4 = dword_10DDAFC;
+    word_10DDAE8 = word_10DDB00;
     bPrevState = true;
     return 2;
 }
