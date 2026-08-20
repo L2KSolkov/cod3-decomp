@@ -1495,9 +1495,9 @@ index	status	map_line
 1494	VERIFIED	0002:001a3b30       ??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ 0099f030 f i shell.o
 1495	VERIFIED	0002:001a3b40       ??0Observer@MemoryUnitManager@@QAE@XZ 0099f040 f i shell.o
 1496	FIXED	0002:001a3b50       ?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ 0099f050 f i shell.o
-1497	PENDING	0002:001a3b60       ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099f060 f i shell.o
-1498	PENDING	0002:001a3b80       ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099f080 f i shell.o
-1499	PENDING	0002:001a3b90       ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099f090 f i shell.o
+1497	VERIFIED	0002:001a3b60       ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099f060 f i shell.o
+1498	VERIFIED	0002:001a3b80       ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099f080 f i shell.o
+1499	VERIFIED	0002:001a3b90       ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099f090 f i shell.o
 1500	PENDING	0002:001a3ba0       ?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ 0099f0a0 f i shell.o
 1501	PENDING	0002:001a3bb0       ??A?$ae_vector@PAVPanelQuadSection@@@@QBEABQAVPanelQuadSection@@H@Z 0099f0b0 f i shell.o
 1502	PENDING	0002:001a3c30       ??A?$ae_vector@PAVPanelQuadSection@@@@QAEAAPAVPanelQuadSection@@H@Z 0099f130 f i shell.o
