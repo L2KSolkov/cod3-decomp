@@ -1072,7 +1072,8 @@ void phys_heap_memory_pool<T>::allocate_buffer(int size, phys_memory_heap* alloc
         __debugbreak();
     if (size > 0) {
         m_slot_array_size = size;
-        T* slot = (T*)allocater->allocate_no_error((int)sizeof(T) * size, 16);
+        T* slot = (T*)allocater->allocate_no_error(
+            (int)sizeof(T) * size, get_alignment());
         if (slot == NULL &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 89,
                       "addr", "phys_memory_heap overflow."))
@@ -1117,16 +1118,16 @@ void phys_heap_memory_pool<T>::swap_adjacent_fast(iterator* i, iterator* i_next)
 template <typename T>
 void phys_heap_memory_pool<T>::destroy() {
     // ea: 0x88F060 (per-instantiation COMDAT)
-    for (int i = 0; i < m_alloc_count; ++i)
-        m_alloc_list[i]->~T();
     if (m_slot_array != NULL) {
         if (m_alloc_list != (T**)&m_slot_array[m_slot_array_size] &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 236,
-                      "m_alloc_list == (T**)(m_slot_array + m_slot_array_size)", ""))
+                      "m_alloc_list == (T**)(m_slot_array + m_slot_array_size)",
+                      defaultFileName))
             __debugbreak();
         if (m_index_array != (int*)&m_alloc_list[m_slot_array_size] &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 237,
-                      "m_index_array == (int*)(m_alloc_list + m_slot_array_size)", ""))
+                      "m_index_array == (int*)(m_alloc_list + m_slot_array_size)",
+                      defaultFileName))
             __debugbreak();
     }
     m_index_array = NULL;
