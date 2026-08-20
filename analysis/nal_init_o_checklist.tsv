@@ -287,7 +287,7 @@ index	status	map_line
 286	PORTED	0002:004581e0 ?Decode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C476E0 f i nal_init.o
 287	PORTED	0002:004582d0 ?Skip@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C477D0 f i nal_init.o
 288	PORTED	0002:00458390 ?Convert@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47890 f i nal_init.o
-289	PENDING	0002:00458500 ?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47A00 f i nal_init.o
+289	PORTED	0002:00458500 ?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47A00 f i nal_init.o
 290	PORTED	0002:004585b0 ?GetTrajectory@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C47AB0 f i nal_init.o
 291	PORTED	0002:00458650 ?Construct@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C47B50 f i nal_init.o
 292	PORTED	0002:00458680 ?Delete@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C47B80 f i nal_init.o
