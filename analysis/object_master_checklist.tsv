@@ -538,7 +538,7 @@ nal_cache.o	analysis/nal_cache_o_checklist.tsv	analysis/nal_cache_o_inventory.ts
 nal_generic.o	analysis/nal_generic_o_checklist.tsv	analysis/nal_generic_o_inventory.tsv	analysis/nal_generic_o_plan.tsv	68	24	44	0	0	0	0
 nal_generic_component.o	analysis/nal_generic_component_o_checklist.tsv	analysis/nal_generic_component_o_inventory.tsv	analysis/nal_generic_component_o_plan.tsv	36	9	27	0	0	0	0
 nal_ik.o	analysis/nal_ik_o_checklist.tsv	analysis/nal_ik_o_inventory.tsv	analysis/nal_ik_o_plan.tsv	2	2	0	0	0	0	0
-nal_init.o	analysis/nal_init_o_checklist.tsv	analysis/nal_init_o_inventory.tsv	analysis/nal_init_o_plan.tsv	899	184	688	0	0	27	0
+nal_init.o	analysis/nal_init_o_checklist.tsv	analysis/nal_init_o_inventory.tsv	analysis/nal_init_o_plan.tsv	899	185	687	0	0	27	0
 nal_initlist.o	analysis/nal_initlist_o_checklist.tsv	analysis/nal_initlist_o_inventory.tsv	analysis/nal_initlist_o_plan.tsv	1	1	0	0	0	0	0
 nal_math.o	analysis/nal_math_o_checklist.tsv	analysis/nal_math_o_inventory.tsv	analysis/nal_math_o_plan.tsv	1	1	0	0	0	0	0
 nal_sceneanim.o	analysis/nal_sceneanim_o_checklist.tsv	analysis/nal_sceneanim_o_inventory.tsv	analysis/nal_sceneanim_o_plan.tsv	10	0	10	0	0	0	0
