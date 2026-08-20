@@ -14777,6 +14777,55 @@ void nalComponent<nalComponentIKSpinBase,
     }
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x864c40)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    nalComponentPacked16EntropyIKSpinData::AnimData* animData =
+        (nalComponentPacked16EntropyIKSpinData::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const char*)animData + sizeof(*animData);
+    const void* skeletonData = *customSkeletonData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    nalComponentPacked16EntropyIKSpinData::CacheType* current =
+        (nalComponentPacked16EntropyIKSpinData::CacheType*)src;
+    nalComponentPacked16EntropyIKSpinData::SkeletonComponentData*
+        currentSkeleton =
+            (nalComponentPacked16EntropyIKSpinData::SkeletonComponentData*)
+                *customSkeletonData;
+    nalComponentPacked16EntropyIKSpinData::AnimComponentData* currentAnim =
+        (nalComponentPacked16EntropyIKSpinData::AnimComponentData*)
+            *customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        nalComponentPacked16EntropyIKSpin::ComponentConvert(
+            (nalIKSpin*)((char*)dst + offsetTable[track]), current,
+            (nalComponentData::SkeletonData*)skeletonData, animData,
+            currentSkeleton, currentAnim);
+        ++current;
+        ++currentSkeleton;
+        ++currentAnim;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = current;
+    *customSkeletonData = currentSkeleton;
+    *customAnimData = currentAnim;
+}
+
 // ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 // (nal_init.o 0x864FD0)
 template <>
