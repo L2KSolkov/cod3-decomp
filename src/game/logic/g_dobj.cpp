@@ -875,7 +875,7 @@ int G_DObjSetLocalBoneIndex(Entity* ent, int* const /*partBits*/, int boneIndex,
 }
 
 // ea: 0x00473610
-int G_DObjSetLocalBoneIndex(Entity* ent, int* /*partBits*/, int boneIndex,
+int G_DObjSetLocalBoneIndex(Entity* ent, int* const /*partBits*/, int boneIndex,
                             const math::Position3& trans, const math::Mat33& angles,
                             bool bRelative)
 {
