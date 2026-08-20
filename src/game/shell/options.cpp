@@ -1443,6 +1443,20 @@ OptionsGameplayMenu* OptionsGameplayMenu::Me()
     return (OptionsGameplayMenu*)g_femanager.fems->menus[19];
 }
 
+// ea: 0x005B7930
+void OptionsGameplayMenu::OnLeft(int c)
+{
+    (void)c;
+    AdjustOptions(false);
+}
+
+// ea: 0x005B79E0
+void OptionsGameplayMenu::OnRight(int c)
+{
+    (void)c;
+    AdjustOptions(true);
+}
+
 // ea: 0x005734B0
 void OptionsGameplayMenu::AdjustOptions(bool up)
 {

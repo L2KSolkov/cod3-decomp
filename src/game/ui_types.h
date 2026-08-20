@@ -2064,6 +2064,8 @@ public:
     static OptionsGameplayMenu* Me();      // 0x5734A0
     virtual void OnUp(int c);              // 0x573580
     virtual void OnDown(int c);            // 0x5735F0
+    virtual void OnLeft(int c);            // 0x5B7930
+    virtual void OnRight(int c);           // 0x5B79E0
     virtual void Update(float time_inc);   // 0x573720
     virtual void ButtonHeldAction();       // 0x5737A0
     virtual void OnActivate();             // 0x57F6C0

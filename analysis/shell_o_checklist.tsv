@@ -2024,8 +2024,8 @@ index	status	map_line
 2022	PORTED	0002:001ab8b0       ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009a6db0 f i shell.o
 2023	PENDING	0002:001ab910       ?Init@MemCardCheckMenu@@UAEXXZ 009a6e10 f i shell.o
 2024	PENDING	0002:001ab920       ?Init@OptionsGameplayMenu@@UAEXXZ 009a6e20 f i shell.o
-2025	PENDING	0002:001ab930       ?OnLeft@OptionsGameplayMenu@@UAEXH@Z 009a6e30 f i shell.o
-2026	PENDING	0002:001ab9e0       ?OnRight@OptionsGameplayMenu@@UAEXH@Z 009a6ee0 f i shell.o
+2025	PORTED	0002:001ab930       ?OnLeft@OptionsGameplayMenu@@UAEXH@Z 009a6e30 f i shell.o
+2026	PORTED	0002:001ab9e0       ?OnRight@OptionsGameplayMenu@@UAEXH@Z 009a6ee0 f i shell.o
 2027	PENDING	0002:001aba90       ?Init@OptionsControlsMenu@@UAEXXZ 009a6f90 f i shell.o
 2028	PENDING	0002:001abaa0       ?OnLeft@OptionsControlsMenu@@UAEXH@Z 009a6fa0 f i shell.o
 2029	PENDING	0002:001abab0       ?OnRight@OptionsControlsMenu@@UAEXH@Z 009a6fb0 f i shell.o
