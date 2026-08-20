@@ -867,8 +867,8 @@ int G_EntDetach(Entity* ent, const char* modelName, const char* tagName)
 // ============================================================================
 
 // ea: 0x004735E0
-int G_DObjSetLocalBoneIndex(Entity* ent, int* /*partBits*/, int boneIndex,
-                            const float* trans, const float* angles, bool bRelative)
+int G_DObjSetLocalBoneIndex(Entity* ent, int* const /*partBits*/, int boneIndex,
+                            const float* const trans, const float* const angles, bool bRelative)
 {
     G_DObjSetLocalTagInternal_0(trans, angles, boneIndex, ent, bRelative);
     return 1;
