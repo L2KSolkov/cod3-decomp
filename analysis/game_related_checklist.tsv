@@ -20406,7 +20406,7 @@ index	status	map_line
 20405	PORTED	0002:00457870 ?PartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C46D70 f i nal_init.o
 20406	PORTED	0002:00457960 ?Decode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C46E60 f i nal_init.o
 20407	PORTED	0002:00457a50 ?Skip@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C46F50 f i nal_init.o
-20408	PENDING	0002:00457b10 ?Convert@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47010 f i nal_init.o
+20408	PORTED	0002:00457b10 ?Convert@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47010 f i nal_init.o
 20409	PENDING	0002:00457c80 ?ConvertPerfect@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C47180 f i nal_init.o
 20410	PORTED	0002:00457d20 ?GetTrajectory@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C47220 f i nal_init.o
 20411	PORTED	0002:00457dd0 ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C472D0 f i nal_init.o
