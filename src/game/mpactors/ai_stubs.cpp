@@ -908,7 +908,7 @@
 }
 
 // ea: 0x0077C8B0  (?EdgesCrissCross2D@@YA?BHQBM000@Z)
-    int EdgesCrissCross2D(const float* const, const float* const, const float* const, const float* const)
+    const int EdgesCrissCross2D(const float* const, const float* const, const float* const, const float* const)
 {
     return 0;
 }

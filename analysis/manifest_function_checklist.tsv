@@ -14770,7 +14770,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14769	0x0077C880	0x00B6BD80	?Path_MayFaceEnemy@@YIHPAUpath_t@@QAM1@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14770	0x0077C890	0x00B6BD90	?Path_PredictionTrace@@YIHQBM0V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@1HQAM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14771	0x0077C8A0	0x00B6BDA0	?Path_ContainsBadPlaceLink@@YIHPAUpath_t@@W4team_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-14772	0x0077C8B0	0x00B6BDB0	?EdgesCrissCross2D@@YA?BHQBM000@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14772	0x0077C8B0	0x00B6BDB0	?EdgesCrissCross2D@@YA?BHQBM000@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14773	0x0077C8C0	0x00B6BDC0	?Actor_SetDesiredLookAngles@@YIXPAUai_orient_t@@MM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14774	0x0077C8D0	0x00B6BDD0	?Actor_SetDesiredAngles@@YIXPAUai_orient_t@@MM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14775	0x0077C8E0	0x00B6BDE0	?Actor_SetLookAngles@@YIXPAUactor_s@@MM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
