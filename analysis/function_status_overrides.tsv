@@ -566,3 +566,5 @@ nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentU8Base@@VnalCompo
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?Process@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
 nal_init.o	?Process@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
+nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED

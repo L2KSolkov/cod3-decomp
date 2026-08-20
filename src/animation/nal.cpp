@@ -8072,6 +8072,89 @@ void nalComponent<nalComponentU8Base,
         pose = (char*)pose + 1;
 }
 
+static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
+                                     int track)
+{
+    const nalGeneric::nalGenericAnim* anim =
+        (const nalGeneric::nalGenericAnim*)componentEnum->Anim;
+    if (track >= anim->Skeleton->PoseTrackCount
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+               621, "track < GetSkeleton()->PoseTrackCount",
+               "attempt to access an invalid track"))
+    {
+        __debugbreak();
+    }
+    return (anim->TrackBitMask[track / 32]
+            & (1u << (track & 0x1F))) != 0;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    (void)quantity;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        void* stateBlock = state;
+        const unsigned int size = *(const unsigned int*)aligned;
+        const void* next = aligned + 4;
+        src = next;
+        if (stateBlock != nullptr)
+        {
+            *(const void**)stateBlock = next;
+            *(int*)((char*)stateBlock + 4) = 0;
+        }
+        src = (const char*)src + size;
+        state = (char*)state + 8;
+        *animData = (const char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    (void)quantity;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = i + componentInfo->StartIndex;
+        if (!nalComponentTrackPresent(&componentEnum, track))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        void* stateBlock = state;
+        const unsigned int size = *(const unsigned int*)aligned;
+        const void* next = aligned + 4;
+        src = next;
+        if (stateBlock != nullptr)
+        {
+            *(const void**)stateBlock = next;
+            *(int*)((char*)stateBlock + 4) = 0;
+        }
+        src = (const char*)src + size;
+        state = (char*)state + 8;
+    }
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
