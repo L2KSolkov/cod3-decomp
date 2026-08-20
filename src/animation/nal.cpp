@@ -15724,6 +15724,54 @@ void nalComponent<nalComponentPOBase,
     }
 }
 
+// ea: 0x00863D90
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyTrajectoryPOData,
+                  nalComponentEntropyTrajectoryPO>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 3u)
+                                    & ~uintptr_t(3u));
+    *customAnimData = (const char*)*customAnimData + 4;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 15u)
+                                    & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset >= 0)
+        {
+            unsigned char* target = (unsigned char*)dst + offset;
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                std::memcpy(target, src, sizeof(nalPositionOrientation));
+                src = (const char*)src + sizeof(nalPositionOrientation);
+                *customAnimData = (const char*)*customAnimData + 32;
+            }
+            else
+            {
+                std::memcpy(target, (const unsigned char*)def + offset,
+                            sizeof(nalPositionOrientation));
+            }
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const char*)src + sizeof(nalPositionOrientation);
+            *customAnimData = (const char*)*customAnimData + 32;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+    }
+}
+
 // ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
 // (nal_init.o 0x863f20)
 template <>
