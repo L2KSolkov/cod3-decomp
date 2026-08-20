@@ -605,7 +605,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 604	0x00472C70	0x00862170	?G_EntDetachAll@@YAXPAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 605	0x004735E0	0x00862AE0	?G_DObjSetLocalBoneIndex@@YAHPAVEntity@@QAHHQBM2_N@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 606	0x00473610	0x00862B10	?G_DObjSetLocalBoneIndex@@YAHPAVEntity@@QAHHABVPosition3@math@@ABVMat33@3@_N@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-607	0x00473640	0x00862B40	?G_DObjSetLocalTag@@YAHPAVEntity@@QAHIQBM2_N@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+607	0x00473640	0x00862B40	?G_DObjSetLocalTag@@YAHPAVEntity@@QAHIQBM2_N@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 608	0x00473680	0x00862B80	?G_DObjSetControlTagAngles@@YAHPAVEntity@@QAHIQAM@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 609	0x004736C0	0x00862BC0	?G_FreeEntityRefs@@YAXPAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 610	0x004737E0	0x00862CE0	?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

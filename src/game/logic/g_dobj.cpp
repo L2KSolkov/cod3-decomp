@@ -887,8 +887,8 @@ int G_DObjSetLocalBoneIndex(Entity* ent, int* const /*partBits*/, int boneIndex,
 }
 
 // ea: 0x00473640
-int G_DObjSetLocalTag(Entity* ent, int* /*partBits*/, unsigned int tag_name_hash,
-                      const float* trans, const float* angles, bool bRelative)
+int G_DObjSetLocalTag(Entity* ent, int* const /*partBits*/, unsigned int tag_name_hash,
+                      const float* const trans, const float* const angles, bool bRelative)
 {
     int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
     if (BoneIndex < 0)

@@ -378,7 +378,7 @@ fsglue.obj	81	0	0	81	0	0	0
 ftell.obj	2	0	0	2	0	0	0
 ftol2.obj	1	0	0	1	0	0	0
 fwrite.obj	2	0	0	2	0	0	0
-g.o	1470	1464	6	0	0	0	0
+g.o	1470	1465	5	0	0	0	0
 game.o	1158	744	414	0	0	0	0
 game2.o	1040	276	764	0	0	0	0
 game_xbox.o	365	137	228	0	0	0	0

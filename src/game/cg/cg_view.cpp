@@ -2714,9 +2714,9 @@ extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
 extern void Com_DPrintf(const char* fmt, ...);
-extern int G_DObjSetLocalTag(Entity* ent, int* partBits,
+extern int G_DObjSetLocalTag(Entity* ent, int* const partBits,
                              unsigned int tag_name_hash,
-                             const float* trans, const float* angles,
+                             const float* const trans, const float* const angles,
                              bool relative);
 extern float flrand(float min, float max);
 extern void CG_CalcCubemapViewValues();
