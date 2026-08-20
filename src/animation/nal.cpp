@@ -13527,6 +13527,188 @@ template void FastCycleTrajectory<
     CODNoteData::AnimComponentData>(nalComponentEnum&, void*, void*, int, bool,
                                     const int*);
 
+template <typename TRACK, typename X, typename SKELETON_DATA,
+          typename ANIM_DATA, typename SKELETON_COMPONENT_DATA,
+          typename ANIM_COMPONENT_DATA>
+void SlowCycleTrajectory(nalComponentEnum& componentEnum, void* ptr,
+                         void* prev, int cycle, bool trajabs,
+                         const int* offsetTable);
+
+// ??$SlowCycleTrajectory@VnalComponentTrajectoryPO@@VnalPositionOrientation@@USkeletonData@nalComponentData@@UAnimData@4@USkeletonComponentData@4@UAnimComponentData@nalComponentTrajectoryPOData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
+// (nal_init.o 0x8633B0)
+template <>
+void SlowCycleTrajectory<
+    nalComponentTrajectoryPO, nalPositionOrientation,
+    nalComponentData::SkeletonData, nalComponentData::AnimData,
+    nalComponentData::SkeletonComponentData,
+    nalComponentTrajectoryPOData::AnimComponentData>(
+    nalComponentEnum& componentEnum, void* ptr, void* prev, int cycle,
+    bool trajabs, const int* offsetTable)
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    nalComponentData::SkeletonData* skeletonData =
+        (nalComponentData::SkeletonData*)*customSkeletonData;
+    nalComponentData::AnimData* animData =
+        (nalComponentData::AnimData*)*customAnimData;
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 15u)
+                                    & ~uintptr_t(15u));
+    nalComponentTrajectoryPOData::AnimComponentData** animComponentData =
+        (nalComponentTrajectoryPOData::AnimComponentData**)customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+        {
+            if (track >= *(int*)((char*)*(void**)((char*)componentEnum.Anim
+                                                   + 0x30)
+                                          + 0x7C)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                       621, "track < GetSkeleton()->PoseTrackCount",
+                       "attempt to access an invalid track"))
+            {
+                __debugbreak();
+            }
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                const int offset = offsetTable[track];
+                nalComponentTrajectoryPO::ComponentCycleTrajectory(
+                    (nalPositionOrientation*)((char*)ptr + offset),
+                    (nalPositionOrientation*)((char*)prev + offset), cycle,
+                    skeletonData, animData,
+                    (nalComponentData::SkeletonComponentData*)skeletonData,
+                    *animComponentData,
+                    trajabs);
+            }
+        }
+
+        if (track >= *(int*)((char*)*(void**)((char*)componentEnum.Anim
+                                               + 0x30)
+                                      + 0x7C)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                   621, "track < GetSkeleton()->PoseTrackCount",
+                   "attempt to access an invalid track"))
+        {
+            __debugbreak();
+        }
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ++*animComponentData;
+    }
+}
+
+// ??$SlowCycleTrajectory@VnalComponentEntropyTrajectoryPO@@VnalPositionOrientation@@USkeletonData@nalComponentData@@UAnimData@nalComponentEntropyTrajectoryPOData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
+// (nal_init.o 0x8642F0)
+template <>
+void SlowCycleTrajectory<
+    nalComponentEntropyTrajectoryPO, nalPositionOrientation,
+    nalComponentData::SkeletonData,
+    nalComponentEntropyTrajectoryPOData::AnimData,
+    nalComponentEntropyTrajectoryPOData::SkeletonComponentData,
+    nalComponentEntropyTrajectoryPOData::AnimComponentData>(
+    nalComponentEnum& componentEnum, void* ptr, void* prev, int cycle,
+    bool trajabs, const int* offsetTable)
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    nalComponentEntropyTrajectoryPOData::AnimData* animData =
+        (nalComponentEntropyTrajectoryPOData::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const char*)animData + 4;
+    nalComponentData::SkeletonData* skeletonData =
+        (nalComponentData::SkeletonData*)*customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    nalComponentEntropyTrajectoryPOData::AnimComponentData** animComponentData =
+        (nalComponentEntropyTrajectoryPOData::AnimComponentData**)
+            customAnimData;
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 15u)
+                                    & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+        {
+            if (track >= *(int*)((char*)*(void**)((char*)componentEnum.Anim
+                                                   + 0x30)
+                                          + 0x7C)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                       621, "track < GetSkeleton()->PoseTrackCount",
+                       "attempt to access an invalid track"))
+            {
+                __debugbreak();
+            }
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                const int offset = offsetTable[track];
+                nalComponentEntropyTrajectoryPO::ComponentCycleTrajectory(
+                    (nalPositionOrientation*)((char*)ptr + offset),
+                    (nalPositionOrientation*)((char*)prev + offset), cycle,
+                    skeletonData, animData,
+                    (nalComponentEntropyTrajectoryPOData::SkeletonComponentData*)
+                        *customSkeletonData,
+                    *animComponentData, trajabs);
+            }
+        }
+
+        if (track >= *(int*)((char*)*(void**)((char*)componentEnum.Anim
+                                               + 0x30)
+                                      + 0x7C)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                   621, "track < GetSkeleton()->PoseTrackCount",
+                   "attempt to access an invalid track"))
+        {
+            __debugbreak();
+        }
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ++*animComponentData;
+        *customSkeletonData = (const char*)*customSkeletonData
+                              + sizeof(nalComponentEntropyTrajectoryPOData::SkeletonComponentData);
+    }
+}
+
+// ?CycleTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z
+// (nal_init.o 0x863380)
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::CycleTrajectory(
+    nalComponentEnum& componentEnum, void* ptr, void* prev, int cycle,
+    bool trajabs, const int* offsetTable) const
+{
+    SlowCycleTrajectory<
+        nalComponentTrajectoryPO, nalPositionOrientation,
+        nalComponentData::SkeletonData, nalComponentData::AnimData,
+        nalComponentData::SkeletonComponentData,
+        nalComponentTrajectoryPOData::AnimComponentData>(
+        componentEnum, ptr, prev, cycle, trajabs, offsetTable);
+}
+
+// ?CycleTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z
+// (nal_init.o 0x8642C0)
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyTrajectoryPOData,
+                  nalComponentEntropyTrajectoryPO>::CycleTrajectory(
+    nalComponentEnum& componentEnum, void* ptr, void* prev, int cycle,
+    bool trajabs, const int* offsetTable) const
+{
+    SlowCycleTrajectory<
+        nalComponentEntropyTrajectoryPO, nalPositionOrientation,
+        nalComponentData::SkeletonData,
+        nalComponentEntropyTrajectoryPOData::AnimData,
+        nalComponentEntropyTrajectoryPOData::SkeletonComponentData,
+        nalComponentEntropyTrajectoryPOData::AnimComponentData>(
+        componentEnum, ptr, prev, cycle, trajabs, offsetTable);
+}
+
 // ============================================================================
 // xanim.cpp leaf batch (anim.o) - simple/empty/wrapper functions
 // ============================================================================
