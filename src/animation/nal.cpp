@@ -13916,6 +13916,51 @@ void nalComponent<nalComponentQuatBase,
         pose = (char*)pose + 16;
 }
 
+// ea: 0x0085FF70
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* compressed =
+                (const unsigned char*)src + 1;
+            const unsigned char blockSize = *(const unsigned char*)src;
+            const float scale = *(const float*)*customSkeletonData
+                                * *animData;
+            alignas(16) unsigned char quaternionStorage[
+                sizeof(nalEntropyDecoder::nalQuatDecoder)];
+            nalEntropyDecoder::QuatDecoderBase* quaternionBase =
+                new (quaternionStorage) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity, scale, compressed, 0);
+            reinterpret_cast<nalEntropyDecoder::nalQuatDecoder*>(quaternionBase)
+                ->Decode((math::Quaternion*)dst, (unsigned int)stride,
+                         (unsigned int)quantity, scale);
+            src = compressed + blockSize;
+            dst = (char*)dst + sizeof(math::Quaternion);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ea: 0x0085F590
 template <>
 void nalComponent<nalComponentQuatBase,
