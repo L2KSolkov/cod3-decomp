@@ -2016,6 +2016,7 @@ void ProfileEditMenu::SetPanelFile(PanelFile* pf)
     {
         color32 col;
         int v17 = TextPointer->GetColor().i;
+        col.i = (unsigned int)v17;
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v14 = TextPointer->GetX();
