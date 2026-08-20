@@ -1164,7 +1164,13 @@ void nfsAddRequestToCallList(nfsRequest* request, int shouldDie);
 void nflUpdate()
 {
     if (!s_started) return;
+    const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+    if (s_callRequestsCount != 0)
+        txAssertFailed(nullptr, "nfs_callRequestsCount==0", "nflUpdate",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1158);
     s_callRequestsCount = 0;
+    if (multiThreaded)
+        nfsLock();
     for (txSlot requestSlot = txSlotFirst(&s_requestPool); requestSlot != TX_SLOT_INVALID;) {
         const txSlot nextSlot = txSlotNext(&s_requestPool, requestSlot);
         nfsRequest* requestPtr = nfsGetRequest((nflRequestID)requestSlot);
@@ -1188,21 +1194,24 @@ void nflUpdate()
         requestSlot = nextSlot;
     }
     if (s_callRequestsCount != 0) {
-        nfsUnlock();
+        if (multiThreaded)
+            nfsUnlock();
         for (unsigned i = 0; i < s_callRequestsCount; ++i) {
             if (s_callRequests[i].callback != nullptr)
                 s_callRequests[i].callback(s_callRequests[i].state,
                                            s_callRequests[i].requestID,
                                            s_callRequests[i].callbackData);
         }
-        nfsLock();
+        if (multiThreaded)
+            nfsLock();
     }
     for (unsigned i = 0; i < s_callRequestsCount; ++i) {
         if (s_callRequests[i].shouldDie)
             txSlotFree(&s_requestPool, (txSlot)s_callRequests[i].requestID);
     }
     s_callRequestsCount = 0;
-    nfsUnlock();
+    if (multiThreaded)
+        nfsUnlock();
     if (s_initParams.threadMode == NFL_THREAD_MODE_SINGLE)
         nfsUpdate();
 }
