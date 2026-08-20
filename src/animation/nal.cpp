@@ -8997,6 +8997,15 @@ class nalComponentEntropyTrajectoryPO
 public:
     nalComponentEntropyTrajectoryPO(nalRegisterKey key);
     virtual ~nalComponentEntropyTrajectoryPO();
+    static void ComponentSetupPartialDecode(
+        nalComponentEntropyTrajectoryPOData::StateType* statePtr,
+        const unsigned char** srcPtr, unsigned int quantity,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyTrajectoryPOData::AnimData* animData,
+        nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentEntropyTrajectoryPOData::AnimComponentData*
+            animComponentData);
     static void ComponentCycleTrajectory(
         nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
         nalComponentData::SkeletonData* skeletonData,
@@ -16296,6 +16305,113 @@ void nalComponent<nalComponentPOBase,
     pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
     for (int i = 0; i < componentInfo->Count; ++i)
         pose = (char*)pose + 32;
+}
+
+// ea: 0x00863630
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyTrajectoryPOData,
+                  nalComponentEntropyTrajectoryPO>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    nalComponentEntropyTrajectoryPOData::AnimData* animData =
+        (nalComponentEntropyTrajectoryPOData::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = animData;
+    nalComponentData::SkeletonData* skeletonData =
+        (nalComponentData::SkeletonData*)*customSkeletonData;
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    nalComponentEntropyTrajectoryPOData::AnimComponentData** animComponentData =
+        (nalComponentEntropyTrajectoryPOData::AnimComponentData**)
+            customAnimData;
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 15u)
+                                    & ~uintptr_t(15u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentEntropyTrajectoryPO::ComponentSetupPartialDecode(
+                (nalComponentEntropyTrajectoryPOData::StateType*)state,
+                (const unsigned char**)&src, (unsigned int)quantity,
+                skeletonData, animData,
+                (nalComponentEntropyTrajectoryPOData::SkeletonComponentData*)
+                    *customSkeletonData,
+                *animComponentData);
+            state = (char*)state + sizeof(
+                nalComponentEntropyTrajectoryPOData::StateType);
+            ++*animComponentData;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ea: 0x00863740
+void nalComponentEntropyTrajectoryPO::ComponentSetupPartialDecode(
+    nalComponentEntropyTrajectoryPOData::StateType* statePtr,
+    const unsigned char** srcPtr, unsigned int quantity,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyTrajectoryPOData::AnimData* animData,
+    nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentEntropyTrajectoryPOData::AnimComponentData* animComponentData)
+{
+    (void)skeletonData;
+    (void)animComponentData;
+    unsigned char length = **srcPtr;
+    const unsigned char* cursor = *srcPtr + 1;
+    if (statePtr != nullptr)
+    {
+        statePtr->FloatDecoder[0].channel.ptr = cursor;
+        statePtr->FloatDecoder[0].channel.bitpos = 0;
+        statePtr->FloatDecoder[0].channel.decoder = 0xFF;
+        statePtr->FloatDecoder[0].channel.zeroes = 0;
+    }
+    cursor += length;
+
+    length = *cursor;
+    ++cursor;
+    if (statePtr != nullptr)
+    {
+        statePtr->FloatDecoder[1].channel.ptr = cursor;
+        statePtr->FloatDecoder[1].channel.bitpos = 0;
+        statePtr->FloatDecoder[1].channel.decoder = 0xFF;
+        statePtr->FloatDecoder[1].channel.zeroes = 0;
+    }
+    cursor += length;
+
+    length = *cursor;
+    ++cursor;
+    if (statePtr != nullptr)
+    {
+        statePtr->FloatDecoder[2].channel.ptr = cursor;
+        statePtr->FloatDecoder[2].channel.bitpos = 0;
+        statePtr->FloatDecoder[2].channel.decoder = 0xFF;
+        statePtr->FloatDecoder[2].channel.zeroes = 0;
+    }
+    cursor += length;
+
+    length = *cursor;
+    ++cursor;
+    if (statePtr != nullptr)
+    {
+        new (&statePtr->QuatDecoder) nalEntropyDecoder::QuatDecoderBase(
+            quantity,
+            skeletonComponentData->OrientationQuantization
+                * animData->QuantizationScale,
+            cursor, 0);
+    }
+    *srcPtr = cursor + length;
 }
 
 // ea: 0x00863D60
