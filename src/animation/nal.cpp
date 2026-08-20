@@ -8089,6 +8089,44 @@ static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
             & (1u << (track & 0x1F))) != 0;
 }
 
+template <typename T>
+struct nalRLEDecoder {
+    const unsigned char* Ptr;
+    unsigned char Count;
+    T Value;
+
+    void Decode(T* dst, unsigned int stride, unsigned int qty)
+    {
+        if (qty == 0)
+            return;
+        do
+        {
+            if (Count == 0)
+            {
+                const unsigned char count = *Ptr++;
+                Count = count;
+                Value = (T)*Ptr++;
+                if (count == 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\nal\\include\\common\\nal_rle_decoder.h",
+                           17, "Count != 0",
+                           "shouldn't have any empty counts"))
+                {
+                    __debugbreak();
+                }
+            }
+            *dst = Value;
+            dst = (T*)((char*)dst + stride);
+            --Count;
+            --qty;
+        }
+        while (qty != 0);
+    }
+};
+
+static_assert(sizeof(nalRLEDecoder<unsigned char>) == 8,
+              "nalRLEDecoder layout mismatch");
+
 template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
@@ -8152,6 +8190,116 @@ void nalComponent<nalComponentU8Base,
         }
         src = (const char*)src + size;
         state = (char*)state + 8;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        nalRLEDecoder<unsigned char>* decoder =
+            (nalRLEDecoder<unsigned char>*)state;
+        decoder->Decode((unsigned char*)dst, (unsigned)stride,
+                        (unsigned)quantity);
+        state = (char*)state + 8;
+        dst = (char*)dst + 1;
+        *animData = (const char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        nalRLEDecoder<unsigned char>* decoder =
+            (nalRLEDecoder<unsigned char>*)state;
+        decoder->Decode((unsigned char*)dst, (unsigned)stride,
+                        (unsigned)quantity);
+        state = (char*)state + 8;
+        dst = (char*)dst + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        const unsigned int size = *(const unsigned int*)aligned;
+        nalRLEDecoder<unsigned char> decoder;
+        decoder.Ptr = aligned + 4;
+        decoder.Count = 0;
+        decoder.Decode((unsigned char*)dst, (unsigned)stride,
+                       (unsigned)quantity);
+        src = aligned + 4 + size;
+        dst = (char*)dst + 1;
+        *animData = (const char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        const unsigned int size = *(const unsigned int*)aligned;
+        nalRLEDecoder<unsigned char> decoder;
+        decoder.Ptr = aligned + 4;
+        decoder.Count = 0;
+        decoder.Decode((unsigned char*)dst, (unsigned)stride,
+                       (unsigned)quantity);
+        src = aligned + 4 + size;
+        dst = (char*)dst + 1;
     }
 }
 
