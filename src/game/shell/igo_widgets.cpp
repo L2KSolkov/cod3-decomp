@@ -6318,6 +6318,7 @@ void IGOCompassWidget::DrawFriendlies()
         if (f.draw)
         {
             PanelQuad* v3 = objectiveIcons[(f.flags & 0x20) != 0 ? 8 : 1];
+            v3->SetZvalueAbs(15.0f);
             v3->ResetToInitialXY();
             float yaw = AngleNormalize360(dword_F63CB4[1580 * currCl]
                                           - f.last_yaw);
@@ -6341,6 +6342,7 @@ void IGOCompassWidget::DrawTanks()
             int v3 = (t.flags & 2) != 0 ? 2 : 3;
             float yaw = AngleNormalize360(dword_F63CB4[1580 * currCl]
                                           - t.last_yaw);
+            objectiveIcons[v3]->SetZvalueAbs(15.0f);
             objectiveIcons[v3]->ResetToInitialXY();
             objectiveIcons[v3]->SetCenterPos(t.x, t.y);
             objectiveIcons[v3]->Rotate(yaw * 3.1415927f * 0.0055555557f,
@@ -6371,6 +6373,7 @@ void IGOCompassWidget::DrawObjectives()
             v4->SetCenterPos(o.x, o.y);
             v4->SetAlpha(o.alpha * global_alpha);
             v4->Draw();
+            v4->SetZvalueAbs(30.0f);
         }
         if (o.draw_ring)
         {
@@ -6378,6 +6381,7 @@ void IGOCompassWidget::DrawObjectives()
             objectiveIcons[4]->SetAlpha(o.ring_alpha * global_alpha);
             objectiveIcons[4]->SetCenterPos(o.x, o.y);
             objectiveIcons[4]->Scale(o.ring_scale, true);
+            objectiveIcons[4]->SetZvalueAbs(0.0f);
             objectiveIcons[4]->Draw();
         }
     }
