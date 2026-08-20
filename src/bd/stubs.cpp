@@ -465,14 +465,99 @@ void bdBitBuffer::writeRangedFloat32(float value, float min, float max,
 
 bool bdBitBuffer::readRangedInt32(int& value, int min, int max)
 {
-    (void)value; (void)min; (void)max;
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedInt32(int &,const int,const int)",
+                                 0x140u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedInt32, end of range is less than the begining");
+        }
+    } while (g_assertFalse);
+
+    bool result = readDataType(BD_BB_RANGED_SIGNED_INTEGER32_TYPE);
+    if (m_typeChecked)
+    {
+        if (!result ||
+            !readDataType(BD_BB_SIGNED_INTEGER32_TYPE) ||
+            !readBits(&max, 0x20u) ||
+            !readDataType(BD_BB_SIGNED_INTEGER32_TYPE) ||
+            !readBits(&min, 0x20u))
+            return false;
+    }
+    else if (!result)
+    {
+        return false;
+    }
+
+    unsigned int bitCount = 0;
+    if (max != min)
+        bitCount = bdHighBitNumber((unsigned int)(max - min)) + 1;
+    unsigned int encoded = 0;
+    if (!readBits(&encoded, bitCount))
+        return false;
+    value = min + (int)encoded;
+    if (value < min)
+        value = min;
+    else if (value > max)
+        value = max;
     return true;
 }
 
 bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
                                    unsigned int max, bool typeChecked)
 {
-    (void)value; (void)min; (void)max; (void)typeChecked;
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedUInt32(unsigned int &,const unsigned int,const unsigned int,const bool)",
+                                 0x10Cu, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedUInt, end of range is less than the begining");
+        }
+    } while (g_assertFalse);
+
+    bool result = true;
+    if (typeChecked)
+    {
+        result = readDataType(BD_BB_RANGED_UNSIGNED_INTEGER32_TYPE);
+        if (m_typeChecked)
+        {
+            unsigned int encodedMin = 0;
+            unsigned int encodedMax = 0;
+            if (!result || !readUInt32(encodedMin) || !readUInt32(encodedMax))
+                return false;
+            if (encodedMin != min || encodedMax != max)
+            {
+                bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                     "bool __thiscall bdBitBuffer::readRangedUInt32(unsigned int &,const unsigned int,const unsigned int,const bool)",
+                                     0x11Fu, "dw/err/");
+                proxy.log("bdCore/bitBuffer",
+                          "Range error. Expected: (%u,%u), read: (%u,%u)",
+                          min, max, encodedMin, encodedMax);
+            }
+        }
+        else if (!result)
+        {
+            return false;
+        }
+    }
+
+    unsigned int bitCount = 0;
+    if (max != min)
+        bitCount = bdHighBitNumber(max - min) + 1;
+    unsigned int encoded = 0;
+    if (!readBits(&encoded, bitCount))
+        return false;
+    value = min + encoded;
+    if (value < min)
+        value = min;
+    else if (value > max)
+        value = max;
     return true;
 }
 
@@ -675,8 +760,13 @@ bool bdByteBuffer::read(void* data, unsigned int size)
 
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)
 {
-    (void)type;
-    return true;
+    if (!m_typeChecked)
+        return true;
+
+    unsigned int actual = 0;
+    if (!readRangedUInt32(actual, 0, 0x1Fu, false))
+        return false;
+    return actual == (unsigned int)type;
 }
 
 bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
