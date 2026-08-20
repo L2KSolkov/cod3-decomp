@@ -1,17 +1,17 @@
 index	status	map_line
-1	PENDING	0002:00157f00       ?compare@?$char_traits@D@std@@SAHPBD0I@Z 00953400 f i shell.o
-2	PENDING	0002:00157f30       ?find@?$char_traits@D@std@@SAPBDPBDIABD@Z 00953430 f i shell.o
-3	PENDING	0002:00157f60       ?assign@?$char_traits@D@std@@SAPADPADID@Z 00953460 f i shell.o
-4	PENDING	0002:00157fe0       ?Init@StubData@@QAEXXZ     009534e0 f   shell.o
-5	PENDING	0002:001581e0       ?LoadData@StubData@@QAEXPAU1@@Z 009536e0 f   shell.o
-6	PENDING	0002:00158400       ?LoadDataLastMinFix@StubData@@QAEXPAU1@@Z 00953900 f   shell.o
-7	PENDING	0002:00158610       ?ApplyDifficulty@StubData@@QAEXXZ 00953b10 f   shell.o
-8	PENDING	0002:00158620       ?set@MPsharedStubData@@QAEXPAUStubData@@@Z 00953b20 f   shell.o
-9	PENDING	0002:001588c0       ?get@MPsharedStubData@@QBEXPAUStubData@@@Z 00953dc0 f   shell.o
-10	PENDING	0002:00158bb0       ?ApplyControllerButtonConfig@@YAXH@Z 009540b0 f   shell.o
-11	PENDING	0002:00158c70       ?Init@SaveGameData@@QAEXXZ 00954170 f   shell.o
-12	PENDING	0002:00158d30       ?LoadData@SaveGameData@@QAEXPAU1@@Z 00954230 f   shell.o
-13	PENDING	0002:00158f10       ?ApplyControllerStickConfig@@YAXH@Z 00954410 f   shell.o
+1	VERIFIED_LIBRARY	0002:00157f00       ?compare@?$char_traits@D@std@@SAHPBD0I@Z 00953400 f i shell.o
+2	VERIFIED_LIBRARY	0002:00157f30       ?find@?$char_traits@D@std@@SAPBDPBDIABD@Z 00953430 f i shell.o
+3	VERIFIED_LIBRARY	0002:00157f60       ?assign@?$char_traits@D@std@@SAPADPADID@Z 00953460 f i shell.o
+4	VERIFIED	0002:00157fe0       ?Init@StubData@@QAEXXZ     009534e0 f   shell.o
+5	VERIFIED	0002:001581e0       ?LoadData@StubData@@QAEXPAU1@@Z 009536e0 f   shell.o
+6	VERIFIED	0002:00158400       ?LoadDataLastMinFix@StubData@@QAEXPAU1@@Z 00953900 f   shell.o
+7	VERIFIED	0002:00158610       ?ApplyDifficulty@StubData@@QAEXXZ 00953b10 f   shell.o
+8	VERIFIED	0002:00158620       ?set@MPsharedStubData@@QAEXPAUStubData@@@Z 00953b20 f   shell.o
+9	VERIFIED	0002:001588c0       ?get@MPsharedStubData@@QBEXPAUStubData@@@Z 00953dc0 f   shell.o
+10	VERIFIED	0002:00158bb0       ?ApplyControllerButtonConfig@@YAXH@Z 009540b0 f   shell.o
+11	FIXED	0002:00158c70       ?Init@SaveGameData@@QAEXXZ 00954170 f   shell.o
+12	VERIFIED	0002:00158d30       ?LoadData@SaveGameData@@QAEXPAU1@@Z 00954230 f   shell.o
+13	VERIFIED	0002:00158f10       ?ApplyControllerStickConfig@@YAXH@Z 00954410 f   shell.o
 14	PENDING	0002:00158f70       ??1IGOFrontEnd@@UAE@XZ     00954470 f   shell.o
 15	PENDING	0002:00159110       ?PanelFileUnloaded@IGOFrontEnd@@UAEXPAVPanelFile@@@Z 00954610 f   shell.o
 16	PENDING	0002:00159140       ?UpdateInScene@IGOFrontEnd@@UAEXM@Z 00954640 f   shell.o
