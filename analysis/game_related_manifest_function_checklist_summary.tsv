@@ -174,7 +174,7 @@ cdWorldVertexLitShader.o	25	12	13	0	0	0	0
 cdl_base.o	2	2	0	0	0	0	0
 cdl_common.o	16	5	11	0	0	0	0
 cdl_gjk.o	10	0	10	0	0	0	0
-cg.o	405	285	120	0	0	0	0
+cg.o	405	287	118	0	0	0	0
 cl.o	341	268	73	0	0	0	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	10	1	0	0	0	0

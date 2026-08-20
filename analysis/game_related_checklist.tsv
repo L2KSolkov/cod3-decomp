@@ -11187,8 +11187,8 @@ index	status	map_line
 11186	PORTED	0002:002bb690 ?InterpolateAnglesSmooth@@YAXAAVPosition3@math@@00M@Z 00AAAB90 f i cg.o
 11187	PORTED	0002:002bb6a0 ?InterpolatePositionSmooth@@YAXAAVPosition3@math@@00M@Z 00AAABA0 f i cg.o
 11188	PORTED	0002:002bb6b0 ?CanRunWeaponAnims@PlayerAnimMgr@@QBEHXZ 00AAABB0 f i cg.o
-11189	PORTED	0002:002bb6c0 ?GetHandsAngles@InteractionController@@QBEAAY02$$CBMXZ 00AAABC0 f i cg.o
-11190	PORTED	0002:002bb730 ?GetHandsOrigin@InteractionController@@QBEAAY02$$CBMXZ 00AAAC30 f i cg.o
+11189	VERIFIED	0002:002bb6c0 ?GetHandsAngles@InteractionController@@QBEAAY02$$CBMXZ 00AAABC0 f i cg.o
+11190	VERIFIED	0002:002bb730 ?GetHandsOrigin@InteractionController@@QBEAAY02$$CBMXZ 00AAAC30 f i cg.o
 11191	PORTED	0002:002bb7a0 ??0ADSMetaAnimPlayer@@QAE@XZ 00AAACA0 f i cg.o
 11192	PORTED	0002:002bb7c0 ??0ADSMetaAnimInstance@@QAE@PAV?$nalAnimClass@VnalAnyPose@@@@0PAVnalBaseSkeleton@@AAM@Z 00AAACC0 f i cg.o
 11193	VERIFIED	0002:002bb910 ??_GADSMetaAnimInstance@@UAEPAXI@Z 00AAAE10 f i cg.o
