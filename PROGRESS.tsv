@@ -504,7 +504,7 @@ aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRe
 
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	VERIFIED	Phase 3: nslWaveBankSortSwap, nslWaveBankSortRecursive, and nslWaveBankSort ported from IDA; nslWaveName corrected to the IDA union type and all three release symbols match; canonical build passed
 
-nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	IDA fixed-point IDCT tables, lane-equivalent transform, copy/add/DC helpers integrated into the AFMV decoder
+nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	VERIFIED	Compared all three release symbols against codmp_xboxr.xbe.c and IDA; fixed-point IDCT table/lane transforms, copy/add saturation, DC path, and block clearing match.
 
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx_scenedump.cpp: nglHostOpen/Printf/Close (host file I/O)
 
