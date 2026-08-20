@@ -524,10 +524,11 @@ public:
     unsigned int getDataSize() const { return m_data.m_size; }
     const unsigned char* getData() const { return m_data.m_data; }
     void resetReadPosition() { m_readPosition = 1; }  // COD3: header is 1 bit (ea: 0x8A410A writes 1)
-    void writeBool(bool value) {
+    bool writeBool(bool value) {
         writeDataType(BD_BB_BOOL_TYPE);
         unsigned char byte = value ? 0xFF : 0x00;
         writeBits(&byte, 1);
+        return value;
     }
     bool readBool(bool& value) {
         bool ok = readDataType(BD_BB_BOOL_TYPE);

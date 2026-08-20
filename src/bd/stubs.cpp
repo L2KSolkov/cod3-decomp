@@ -580,9 +580,23 @@ bool bdBitBuffer::readString(bdString& s)
 
 bool bdBitBuffer::readString(char* s, unsigned int maxLen)
 {
-    (void)s;
-    (void)maxLen;
-    return true;
+    bool result = readDataType(BD_BB_SIGNED_CHAR8_STRING_TYPE);
+    if (!result)
+        return false;
+
+    unsigned int index = 0;
+    char value = 0;
+    do
+    {
+        result = readBits(&value, 8u);
+        if (index < maxLen)
+            s[index++] = value;
+    }
+    while (result && value != 0);
+
+    if (maxLen != 0)
+        s[maxLen - 1] = 0;
+    return result;
 }
 
 bool bdBitBuffer::testBool()
