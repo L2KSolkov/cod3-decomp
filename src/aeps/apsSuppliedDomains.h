@@ -27,6 +27,10 @@
 
 #include "apsRetrieveVtable.h"
 
+namespace apsMath {
+float FloatRand();
+}
+
 // apsSuppliedDomains.o data (global namespace per map mangling @@3HA):
 extern int gHiHat_SphereDomain;         // ?gHiHat_SphereDomain@@3HA
 extern int gHiHat_YHemisphereDomain;    // ?gHiHat_YHemisphereDomain@@3HA

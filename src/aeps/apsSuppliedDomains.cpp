@@ -13,6 +13,12 @@
 
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+// ?FloatRand@apsMath@@YAMXZ (ea: 0x810730)
+float apsMath::FloatRand()
+{
+    return apsMath::gDefaultRandomNumberGenerator.GetFloat();
+}
+
 // apsSuppliedDomains.o data (4 gHiHat statics, global namespace).
 int gHiHat_SphereDomain;        // ?gHiHat_SphereDomain@@3HA @0x10E0A58
 int gHiHat_YHemisphereDomain;   // ?gHiHat_YHemisphereDomain@@3HA @0x10E0A5C

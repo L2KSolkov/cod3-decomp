@@ -10,6 +10,7 @@ ae_fixed_string.o	?ae_stricmpn@@YAHPBD0H@Z	FIXED
 nal_ik.o	?nalIKSolve2D@@YAXABVnalMatrix4x4@@ABVDir3@math@@1MMMMAAV23@2AAM333@Z	FIXED
 nal_ik.o	?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z	PORTED
 apsPFD.o	?RecomputeOffsets@apsPFD@@AAEXXZ	VERIFIED
+apsSuppliedDomains.o	?FloatRand@apsMath@@YAMXZ	PORTED
 ae_fixed_string.o	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z	FIXED

@@ -18637,7 +18637,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18636	0x00810660	0x00BFFB60	?AtEnd@?$apsParameter@UPacked@Dir3@math@@@@QBEIPAE@Z	aeps_xboxr	apsSuppliedActions.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18637	0x00810680	0x00BFFB80	?GetParamAddr@apsAction@@QBEPAXH@Z	aeps_xboxr	apsSuppliedActions.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18638	0x008106D0	0x00BFFBD0	?GetDomain@apsAction@@QAEPAVapsDomain@@H@Z	aeps_xboxr	apsSuppliedActions.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18639	0x00810730	0x00BFFC30	?FloatRand@apsMath@@YAMXZ	aeps_xboxr	apsSuppliedDomains.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18639	0x00810730	0x00BFFC30	?FloatRand@apsMath@@YAMXZ	aeps_xboxr	apsSuppliedDomains.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 18640	0x00810770	0x00BFFC70	?Fixup@apsDomain@@QAEXABUapsFixupParams@@@Z	aeps_xboxr	apsSuppliedDomains.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18641	0x008107C0	0x00BFFCC0	?GetValue@apsSphereDomain@@UBEXHPAM@Z	aeps_xboxr	apsSuppliedDomains.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18642	0x00810A10	0x00BFFF10	?TestValue@apsSphereDomain@@UBEIHPAM@Z	aeps_xboxr	apsSuppliedDomains.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
