@@ -2948,6 +2948,7 @@ public:
         void SetEnabled(bool enabled); // 0x5AED00
         void ClearItem();    // 0x5B2DB0
         void SetColumnCount(int columns);  // 0x5B6180
+        int GetItemState(int column);  // 0x5B2BD0
         void SetItemState(int column, int state);  // 0x5B2BF0
         void SetText(int column, const char* text);  // 0x5B2C80
         const char* GetText(int column);  // 0x5B2D10
@@ -2979,6 +2980,8 @@ public:
         void ClearText();               // 0x5B4EC0
         void ClearItem();               // 0x5B4FC0
         void RemoveItems();             // 0x5B2070
+        void Draw();                    // 0x5B2110
+        void Update(float time_delta);  // 0x5B2150
         color32 GetColor();             // 0x5B22B0
         color32 GetUnselectedColor();   // 0x5B23D0
         float GetY();                   // 0x5B21A0

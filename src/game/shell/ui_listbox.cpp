@@ -113,6 +113,15 @@ void UIListBox::UIListBoxDataRow::ClearItem()
 {
     for (int i = 0; i < mColumnCount; ++i)
     {
+        if (i < 0 || i >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         UIListBoxData* v3 = &mColumns.mElements[i];
         v3->mText = defaultFileName;
         if (v3->mState < 0)
@@ -152,6 +161,21 @@ void UIListBox::UIListBoxDataRow::SetColumnCount(int columns)
         new (&mColumns.mElements[i]) UIListBoxData();
 }
 
+// ea: 0x5B2BD0
+int UIListBox::UIListBoxDataRow::GetItemState(int column)
+{
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return mColumns.mElements[column].mState;
+}
+
 // ea: 0x5B2BF0
 void UIListBox::UIListBoxDataRow::SetItemState(int column, int state)
 {
@@ -163,6 +187,15 @@ void UIListBox::UIListBoxDataRow::SetItemState(int column, int state)
         AeAssert::gCurrentExpr = "column >= 0 && column < mColumnCount";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
+            __debugbreak();
+    }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
             __debugbreak();
     }
     mColumns.mElements[column].SetState(state);
@@ -181,6 +214,15 @@ void UIListBox::UIListBoxDataRow::SetText(int column, const char* text)
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
             __debugbreak();
     }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     mColumns.mElements[column].mText = text;
 }
 
@@ -195,6 +237,15 @@ const char* UIListBox::UIListBoxDataRow::GetText(int column)
         AeAssert::gCurrentExpr = "column >= 0 && column < mColumnCount";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
+            __debugbreak();
+    }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
             __debugbreak();
     }
     return mColumns.mElements[column].GetText();
@@ -251,11 +302,51 @@ void UIListBox::UIListBoxItem::SetState(int state)
     this->mState = state;
     for (int v4 = 0; v4 < this->mStateCount; ++v4)
     {
+        if (v4 < 0 || v4 >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         if (mObjects.mElements[v4] != nullptr)
+        {
+            if (v4 < 0 || v4 >= mObjects.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             mObjects.mElements[v4]->SetShown(false);
+        }
+    }
+    if (state < 0 || state >= mObjects.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
     }
     if (mObjects.mElements[state] != nullptr)
+    {
+        if (state < 0 || state >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         mObjects.mElements[state]->SetShown(true);
+    }
 }
 
 // ea: 0x5B4DC0
@@ -438,11 +529,76 @@ void UIListBox::UIListBoxItem::ClearItem()
     SetState(0);
 }
 
+// ea: 0x5B2110
+void UIListBox::UIListBoxItem::Draw()
+{
+    if (mState < 0 || mState >= mObjects.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    if (mObjects.mElements[mState] != nullptr)
+    {
+        if (mState < 0 || mState >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mObjects.mElements[mState]->Draw();
+    }
+}
+
+// ea: 0x5B2150
+void UIListBox::UIListBoxItem::Update(float time_delta)
+{
+    if (mState < 0 || mState >= mObjects.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    if (mObjects.mElements[mState] != nullptr)
+    {
+        if (mState < 0 || mState >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mObjects.mElements[mState]->Update(time_delta);
+    }
+}
+
 // ea: 0x5B2070
 void UIListBox::UIListBoxItem::RemoveItems()
 {
     for (int i = 0; i < mStateCount; ++i)
+    {
+        if (i < 0 || i >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         mObjects.mElements[i] = nullptr;
+    }
     mType = kTypeNone;
 }
 
@@ -455,8 +611,28 @@ color32 UIListBox::UIListBoxItem::GetColor()
     {
         for (int v3 = 0; v3 < mStateCount; ++v3)
         {
+            if (v3 < 0 || v3 >= mObjects.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             if (mObjects.mElements[v3] != nullptr)
+            {
+                if (v3 < 0 || v3 >= mObjects.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                    AeAssert::gCurrentLine = 167;
+                    AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
                 return mObjects.mElements[v3]->GetColor();
+            }
         }
     }
     return result;
@@ -465,11 +641,30 @@ color32 UIListBox::UIListBoxItem::GetColor()
 // ea: 0x5B23D0
 color32 UIListBox::UIListBoxItem::GetUnselectedColor()
 {
+    if (mObjects.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    if (mObjects.mElements[0] != nullptr && mType == kTypeText)
+    {
+        if (mObjects.mSize <= 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return ((FEText*)mObjects.mElements[0])->GetUnselectedColor();
+    }
     color32 result;
     result.i = 0x80808080u;
-    if (mObjects.mSize > 0 && mObjects.mElements[0] != nullptr
-        && mType == kTypeText)
-        return ((FEText*)mObjects.mElements[0])->GetUnselectedColor();
     return result;
 }
 
@@ -478,8 +673,28 @@ float UIListBox::UIListBoxItem::GetY()
 {
     for (int v2 = 0; v2 < mStateCount; ++v2)
     {
+        if (v2 < 0 || v2 >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         if (mObjects.mElements[v2] != nullptr)
+        {
+            if (v2 < 0 || v2 >= mObjects.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             return mObjects.mElements[v2]->GetY();
+        }
     }
     return 0.0f;
 }
@@ -495,6 +710,15 @@ void UIListBox::UIListBoxItem::SetObject(PanelAnimObject* object, int state)
         AeAssert::gCurrentExpr = "state >= 0 && state < mStateCount";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("UIListBoxItem: State index invalid"))
+            __debugbreak();
+    }
+    if (state < 0 || state >= mObjects.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
             __debugbreak();
     }
     mObjects.mElements[state] = object;
@@ -529,7 +753,18 @@ void UIListBox::UIListBoxRow::ClearItem()
 void UIListBox::UIListBoxRow::RemoveItems()
 {
     for (int v2 = 0; v2 < mColumnCount; ++v2)
+    {
+        if (v2 < 0 || v2 >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         mColumns.mElements[v2].RemoveItems();
+    }
 }
 
 // ea: 0x5B26D0
@@ -537,10 +772,39 @@ void UIListBox::UIListBoxRow::Draw()
 {
     for (int i = 0; i < mColumnCount; ++i)
     {
+        if (i < 0 || i >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         UIListBoxItem* v3 = &mColumns.mElements[i];
         int v4 = v3->mState;
+        if (v4 < 0 || v4 >= v3->mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         if (v3->mObjects.mElements[v4] != nullptr)
+        {
+            if (v4 < 0 || v4 >= v3->mObjects.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             v3->mObjects.mElements[v4]->Draw();
+        }
     }
 }
 
@@ -549,10 +813,39 @@ void UIListBox::UIListBoxRow::Update(float time_delta)
 {
     for (int i = 0; i < mColumnCount; ++i)
     {
+        if (i < 0 || i >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         UIListBoxItem* v4 = &mColumns.mElements[i];
         int v5 = v4->mState;
+        if (v5 < 0 || v5 >= v4->mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         if (v4->mObjects.mElements[v5] != nullptr)
+        {
+            if (v5 < 0 || v5 >= v4->mObjects.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             v4->mObjects.mElements[v5]->Update(time_delta);
+        }
     }
 }
 
@@ -717,6 +1010,15 @@ float UIListBox::UIListBoxRow::GetY(int column)
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
             __debugbreak();
     }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     return mColumns.mElements[column].GetY();
 }
 
@@ -731,6 +1033,15 @@ color32 UIListBox::UIListBoxRow::GetColumnSelectedColor(int column)
         AeAssert::gCurrentExpr = "column >= 0 && column < mColumnCount";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
+            __debugbreak();
+    }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
             __debugbreak();
     }
     return mColumns.mElements[column].GetColor();
@@ -749,8 +1060,18 @@ color32 UIListBox::UIListBoxRow::GetColumnUnselectedColor(int column)
             && AeAssert::Assert("UIListBoxRow: Column index invalid"))
             __debugbreak();
     }
+    if (column < 0 || column >= mColumns.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     return mColumns.mElements[column].GetUnselectedColor();
 }
+
 
 // ============================================================================
 // UIListBox
