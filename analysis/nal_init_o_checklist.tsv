@@ -74,8 +74,8 @@ index	status	map_line
 73	VERIFIED	0002:00454c30 ?VirtualCreateInstance@nalGenericAnim@nalGeneric@@MAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 00C44130 f i nal_init.o
 74	SKIPPED	0002:00454c40 ??_EnalGenericAnim@nalGeneric@@UAEPAXI@Z 00C44140 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 75	SKIPPED	0002:00454c40 ??_GnalGenericAnim@nalGeneric@@UAEPAXI@Z 00C44140 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-76	PENDING	0002:00454c70 ??1nalComponentSignalCounter@@UAE@XZ 00C44170 f i nal_init.o
-77	PENDING	0002:00454c80 ??1nalComponentRLE8Int1@@UAE@XZ 00C44180 f i nal_init.o
+76	PORTED	0002:00454c70 ??1nalComponentSignalCounter@@UAE@XZ 00C44170 f i nal_init.o
+77	PORTED	0002:00454c80 ??1nalComponentRLE8Int1@@UAE@XZ 00C44180 f i nal_init.o
 78	VERIFIED	0002:00454c90 ??0nalAnimHeap@@QAE@XZ 00C44190 f i nal_init.o
 79	VERIFIED	0002:00454ca0 ?Allocate@nalAnimHeap@@UAEPAXH@Z 00C441A0 f i nal_init.o
 80	VERIFIED	0002:00454cd0 ?Free@nalAnimHeap@@UAEXPAXH@Z 00C441D0 f i nal_init.o
@@ -171,8 +171,8 @@ index	status	map_line
 170	PENDING	0002:00455880 ??1nalComponentTrajectoryPO@@UAE@XZ 00C44D80 f i nal_init.o
 171	PENDING	0002:00455890 ??1nalComponentEntropyTrajectoryPO@@UAE@XZ 00C44D90 f i nal_init.o
 172	PENDING	0002:004558a0 ??1nalComponentPacked16EntropyIKSpin@@UAE@XZ 00C44DA0 f i nal_init.o
-173	PENDING	0002:004558b0 ??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ 00C44DB0 f i nal_init.o
-174	PENDING	0002:004558c0 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z 00C44DC0 f i nal_init.o
+173	VERIFIED	0002:004558b0 ??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ 00C44DB0 f i nal_init.o
+174	PORTED	0002:004558c0 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z 00C44DC0 f i nal_init.o
 175	SKIPPED	0002:004558d0 ??_G?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAEPAXI@Z 00C44DD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 176	SKIPPED	0002:004558d0 ??_E?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAEPAXI@Z 00C44DD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 177	PENDING	0002:00455900 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z 00C44E00 f i nal_init.o
@@ -196,7 +196,7 @@ index	status	map_line
 195	PENDING	0002:00456070 ?Copy@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C45570 f i nal_init.o
 196	PENDING	0002:00456090 ??$FastCopy@VnalComponentSignalCounter@@E@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C45590 f i nal_init.o
 197	PENDING	0002:004560d0 ?ReleaseCache@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C455D0 f i nal_init.o
-198	PENDING	0002:00456160 ??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ 00C45660 f i nal_init.o
+198	VERIFIED	0002:00456160 ??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ 00C45660 f i nal_init.o
 199	SKIPPED	0002:00456170 ??_G?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAEPAXI@Z 00C45670 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 200	SKIPPED	0002:00456170 ??_E?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAEPAXI@Z 00C45670 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 201	PENDING	0002:004561a0 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C456A0 f i nal_init.o
@@ -206,7 +206,7 @@ index	status	map_line
 205	PENDING	0002:004561e0 ?VirtualAlignAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C456E0 f i nal_init.o
 206	PENDING	0002:004561f0 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C456F0 f i nal_init.o
 207	PENDING	0002:00456200 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C45700 f i nal_init.o
-208	PENDING	0002:00456210 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C45710 f i nal_init.o
+208	PORTED	0002:00456210 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z 00C45710 f i nal_init.o
 209	PENDING	0002:00456220 ?Process@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C45720 f i nal_init.o
 210	PENDING	0002:00456250 ?SetupPartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C45750 f i nal_init.o
 211	PENDING	0002:00456320 ?PartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C45820 f i nal_init.o
@@ -763,10 +763,10 @@ index	status	map_line
 762	PENDING	0002:00466ce0 ?CycleTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C561E0 f i nal_init.o
 763	PENDING	0002:00466d10 ??$FastCycleTrajectory@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked16EntropyIKSpinData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C56210 f i nal_init.o
 764	PENDING	0002:00466dd0 ?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C562D0 f i nal_init.o
-765	PENDING	0002:00466e00 ??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z 00C56300 f i nal_init.o
+765	PORTED	0002:00466e00 ??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z 00C56300 f i nal_init.o
 766	SKIPPED	0002:00466e50 ??_GnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 767	SKIPPED	0002:00466e50 ??_EnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-768	PENDING	0002:00466e80 ??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z 00C56380 f i nal_init.o
+768	PORTED	0002:00466e80 ??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z 00C56380 f i nal_init.o
 769	SKIPPED	0002:00466ed0 ??_EnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 770	SKIPPED	0002:00466ed0 ??_GnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 771	PENDING	0002:00466f00 ??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z 00C56400 f i nal_init.o

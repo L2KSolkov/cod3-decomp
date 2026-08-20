@@ -204,9 +204,9 @@ mp_xbox.o	77	62	15	0	0	0	0
 nal_anim.o	29	12	17	0	0	0	0
 nal_cache.o	7	3	4	0	0	0	0
 nal_generic.o	68	24	44	0	0	0	0
-nal_generic_component.o	36	1	35	0	0	0	0
+nal_generic_component.o	36	5	31	0	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
-nal_init.o	899	42	825	0	0	32	0
+nal_init.o	899	57	811	0	0	31	0
 nal_initlist.o	1	1	0	0	0	0	0
 nal_math.o	1	1	0	0	0	0	0
 nal_sceneanim.o	10	0	10	0	0	0	0

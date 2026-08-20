@@ -7503,11 +7503,17 @@ public:
     };
 };
 
-namespace nalComponentData {
-struct SkeletonData {};
-struct AnimData {};
-struct SkeletonComponentData {};
-}
+struct nalComponentData {
+    struct SkeletonData {};
+    struct AnimData {};
+    struct SkeletonComponentData {};
+};
+struct nalComponentSignalCounterData : nalComponentData {
+    struct AnimComponentData {
+        unsigned char Trajectory;
+    };
+};
+struct nalComponentRLE8Int1Data : nalComponentData {};
 
 // class tag to match binary V-mangled FastCycleTrajectory/nalComponent args
 class nalComponentEnum {
@@ -7796,6 +7802,176 @@ void nalComponent<BASE, DATA, TRACK>::TrackLoop(
 
 // Force emission of the anim.o instantiation.
 template class nalComponent<nalComponentBase, CODNoteData, CODNoteTrack>;
+
+// Concrete one-byte component types.  Their layout and register-key guards
+// match nal_generic_component.h (IDA: 0x866E00 and 0x866E80).
+class nalComponentSignalCounter
+    : public nalComponent<nalComponentU8Base,
+                          nalComponentSignalCounterData,
+                          nalComponentSignalCounter> {
+public:
+    nalComponentSignalCounter(nalRegisterKey key);
+    virtual ~nalComponentSignalCounter();
+
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
+    virtual void VirtualAdvanceAnimComponentData(
+        const void*& animComponentData) const;
+};
+
+class nalComponentRLE8Int1
+    : public nalComponent<nalComponentU8Base,
+                          nalComponentRLE8Int1Data,
+                          nalComponentRLE8Int1> {
+public:
+    nalComponentRLE8Int1(nalRegisterKey key);
+    virtual ~nalComponentRLE8Int1();
+
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
+    virtual void VirtualAdvanceAnimComponentData(
+        const void*& animComponentData) const;
+};
+
+static_assert(sizeof(nalComponentSignalCounter) == 4,
+              "nalComponentSignalCounter layout mismatch");
+static_assert(sizeof(nalComponentRLE8Int1) == 4,
+              "nalComponentRLE8Int1 layout mismatch");
+
+nalComponentSignalCounter::nalComponentSignalCounter(nalRegisterKey key)
+    : nalComponent<nalComponentU8Base,
+                   nalComponentSignalCounterData,
+                   nalComponentSignalCounter>()
+{
+    if (key == NAL_REGISTER_KEY)
+        return;
+    if (_tlAssert(
+            "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic_component.h",
+            860, "key == NAL_REGISTER_KEY",
+            "this function is for internal use only"))
+    {
+        __debugbreak();
+    }
+}
+
+nalComponentSignalCounter::~nalComponentSignalCounter()
+{
+}
+
+void nalComponentSignalCounter::Blend(int count, void* dst,
+                                      const void* srcA, const void* srcB,
+                                      float blend) const
+{
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* a = (const unsigned char*)srcA;
+    const unsigned char* b = (const unsigned char*)srcB;
+    const bool useB = blend >= 0.5f;
+    if (count > 0)
+    {
+        do
+        {
+            *out++ = useB ? *b++ : *a++;
+            --count;
+        }
+        while (count != 0);
+    }
+}
+
+void nalComponentSignalCounter::BlendArray(
+    int count, void* dst, const void* srcA, const void* srcB,
+    const float*& blendArray) const
+{
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* a = (const unsigned char*)srcA;
+    const unsigned char* b = (const unsigned char*)srcB;
+    if (count > 0)
+    {
+        do
+        {
+            *out++ = (*blendArray++ >= 0.5f) ? *b++ : *a++;
+            --count;
+        }
+        while (count != 0);
+    }
+}
+
+void nalComponentSignalCounter::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    const char* cur = (const char*)animComponentData;
+    animComponentData = cur + 1;
+}
+
+nalComponentRLE8Int1::nalComponentRLE8Int1(nalRegisterKey key)
+    : nalComponent<nalComponentU8Base,
+                   nalComponentRLE8Int1Data,
+                   nalComponentRLE8Int1>()
+{
+    if (key == NAL_REGISTER_KEY)
+        return;
+    if (_tlAssert(
+            "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic_component.h",
+            930, "key == NAL_REGISTER_KEY",
+            "this function is for internal use only"))
+    {
+        __debugbreak();
+    }
+}
+
+nalComponentRLE8Int1::~nalComponentRLE8Int1()
+{
+}
+
+void nalComponentRLE8Int1::Blend(int count, void* dst,
+                                 const void* srcA, const void* srcB,
+                                 float blend) const
+{
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* a = (const unsigned char*)srcA;
+    const unsigned char* b = (const unsigned char*)srcB;
+    if (count > 0)
+    {
+        do
+        {
+            *out++ = (unsigned char)(*a++ * (1.0f - blend)
+                                     + *b++ * blend + 0.5f);
+            --count;
+        }
+        while (count != 0);
+    }
+}
+
+void nalComponentRLE8Int1::BlendArray(
+    int count, void* dst, const void* srcA, const void* srcB,
+    const float*& blendArray) const
+{
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* a = (const unsigned char*)srcA;
+    const unsigned char* b = (const unsigned char*)srcB;
+    if (count > 0)
+    {
+        do
+        {
+            const float t = *blendArray++;
+            *out++ = (unsigned char)(*a++ * (1.0f - t)
+                                     + *b++ * t + 0.5f);
+            --count;
+        }
+        while (count != 0);
+    }
+}
+
+void nalComponentRLE8Int1::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
 
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>

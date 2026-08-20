@@ -515,3 +515,11 @@ nal_init.o	??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@
 nal_init.o	??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ	FIXED
 nal_init.o	??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ	FIXED
 nal_init.o	??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z	PORTED
+nal_init.o	??1nalComponentSignalCounter@@UAE@XZ	PORTED
+nal_init.o	??1nalComponentRLE8Int1@@UAE@XZ	PORTED
+nal_init.o	??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z	PORTED
+nal_init.o	??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	PORTED

@@ -20157,7 +20157,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20156	0x00854430	0x00C43930	??1nalGenericAnim@nalGeneric@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20157	0x00854440	0x00C43940	??_G?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20158	0x00854440	0x00C43940	??_E?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-20159	0x00854470	0x00C43970	??1nalComponentU8Base@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
+20159	0x00854470	0x00C43970	??1nalComponentU8Base@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 20160	0x00854480	0x00C43980	??1nalAnimHeap@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20161	0x00854490	0x00C43990	?nalSetAnimPath@@YAXPBD@Z	nal_xboxr	nal_init.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20162	0x008544C0	0x00C439C0	?nalGetAnimPath@@YAPBDXZ	nal_xboxr	nal_init.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -20218,8 +20218,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20217	0x00854C30	0x00C44130	?VirtualCreateInstance@nalGenericAnim@nalGeneric@@MAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20218	0x00854C40	0x00C44140	??_EnalGenericAnim@nalGeneric@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20219	0x00854C40	0x00C44140	??_GnalGenericAnim@nalGeneric@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-20220	0x00854C70	0x00C44170	??1nalComponentSignalCounter@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20221	0x00854C80	0x00C44180	??1nalComponentRLE8Int1@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20220	0x00854C70	0x00C44170	??1nalComponentSignalCounter@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20221	0x00854C80	0x00C44180	??1nalComponentRLE8Int1@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20222	0x00854C90	0x00C44190	??0nalAnimHeap@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20223	0x00854CA0	0x00C441A0	?Allocate@nalAnimHeap@@UAEPAXH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20224	0x00854CD0	0x00C441D0	?Free@nalAnimHeap@@UAEXPAXH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -20246,12 +20246,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20245	0x00854E40	0x00C44340	??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
 20246	0x00854E50	0x00C44350	??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
 20247	0x00854E60	0x00C44360	??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
-20248	0x00854E70	0x00C44370	??0nalComponentU8Base@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20249	0x00854E80	0x00C44380	?GetType@nalComponentU8Base@@UBEIXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20250	0x00854E90	0x00C44390	?GetPoseSize@nalComponentU8Base@@UBEHXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20251	0x00854EA0	0x00C443A0	??_GnalComponentU8Base@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20252	0x00854EA0	0x00C443A0	??_EnalComponentU8Base@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20253	0x00854ED0	0x00C443D0	?GetPoseAlignment@nalComponentU8Base@@UBEHXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+20248	0x00854E70	0x00C44370	??0nalComponentU8Base@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20249	0x00854E80	0x00C44380	?GetType@nalComponentU8Base@@UBEIXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20250	0x00854E90	0x00C44390	?GetPoseSize@nalComponentU8Base@@UBEHXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20251	0x00854EA0	0x00C443A0	??_GnalComponentU8Base@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20252	0x00854EA0	0x00C443A0	??_EnalComponentU8Base@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20253	0x00854ED0	0x00C443D0	?GetPoseAlignment@nalComponentU8Base@@UBEHXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20254	0x00854EE0	0x00C443E0	??0nalComponentFloat1Base@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20255	0x00854EF0	0x00C443F0	?GetType@nalComponentFloat1Base@@UBEIXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20256	0x00854F00	0x00C44400	?GetPoseSize@nalComponentFloat1Base@@UBEHXZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
@@ -20315,8 +20315,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20314	0x00855880	0x00C44D80	??1nalComponentTrajectoryPO@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20315	0x00855890	0x00C44D90	??1nalComponentEntropyTrajectoryPO@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20316	0x008558A0	0x00C44DA0	??1nalComponentPacked16EntropyIKSpin@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20317	0x008558B0	0x00C44DB0	??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20318	0x008558C0	0x00C44DC0	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20317	0x008558B0	0x00C44DB0	??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+20318	0x008558C0	0x00C44DC0	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20319	0x008558D0	0x00C44DD0	??_G?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20320	0x008558D0	0x00C44DD0	??_E?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20321	0x00855900	0x00C44E00	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -20340,7 +20340,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20339	0x00856070	0x00C45570	?Copy@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20340	0x00856090	0x00C45590	??$FastCopy@VnalComponentSignalCounter@@E@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20341	0x008560D0	0x00C455D0	?ReleaseCache@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20342	0x00856160	0x00C45660	??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20342	0x00856160	0x00C45660	??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20343	0x00856170	0x00C45670	??_G?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20344	0x00856170	0x00C45670	??_E?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20345	0x008561A0	0x00C456A0	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -20350,7 +20350,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20349	0x008561E0	0x00C456E0	?VirtualAlignAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20350	0x008561F0	0x00C456F0	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20351	0x00856200	0x00C45700	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20352	0x00856210	0x00C45710	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20352	0x00856210	0x00C45710	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20353	0x00856220	0x00C45720	?Process@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20354	0x00856250	0x00C45750	?SetupPartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20355	0x00856320	0x00C45820	?PartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -20907,12 +20907,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20906	0x00866CE0	0x00C561E0	?CycleTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20907	0x00866D10	0x00C56210	??$FastCycleTrajectory@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked16EntropyIKSpinData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20908	0x00866DD0	0x00C562D0	?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20909	0x00866E00	0x00C56300	??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20910	0x00866E50	0x00C56350	??_GnalComponentSignalCounter@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20911	0x00866E50	0x00C56350	??_EnalComponentSignalCounter@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20912	0x00866E80	0x00C56380	??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20913	0x00866ED0	0x00C563D0	??_EnalComponentRLE8Int1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20914	0x00866ED0	0x00C563D0	??_GnalComponentRLE8Int1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20909	0x00866E00	0x00C56300	??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20910	0x00866E50	0x00C56350	??_GnalComponentSignalCounter@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20911	0x00866E50	0x00C56350	??_EnalComponentSignalCounter@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20912	0x00866E80	0x00C56380	??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20913	0x00866ED0	0x00C563D0	??_EnalComponentRLE8Int1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20914	0x00866ED0	0x00C563D0	??_GnalComponentRLE8Int1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20915	0x00866F00	0x00C56400	??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20916	0x00866F50	0x00C56450	??_EnalComponentEntropyFloat1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20917	0x00866F50	0x00C56450	??_GnalComponentEntropyFloat1@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -21162,10 +21162,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 21161	0x008712E0	0x00C607E0	?Register@nalComponentInitList@@UAEXXZ	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 21162	0x00871310	0x00C60810	?Blend@nalComponentU8Base@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21163	0x00871380	0x00C60880	?BlendArray@nalComponentU8Base@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21164	0x00871400	0x00C60900	?Blend@nalComponentSignalCounter@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21165	0x00871470	0x00C60970	?BlendArray@nalComponentSignalCounter@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21166	0x00871560	0x00C60A60	?Blend@nalComponentRLE8Int1@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21167	0x008715D0	0x00C60AD0	?BlendArray@nalComponentRLE8Int1@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21164	0x00871400	0x00C60900	?Blend@nalComponentSignalCounter@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+21165	0x00871470	0x00C60970	?BlendArray@nalComponentSignalCounter@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+21166	0x00871560	0x00C60A60	?Blend@nalComponentRLE8Int1@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+21167	0x008715D0	0x00C60AD0	?BlendArray@nalComponentRLE8Int1@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 21168	0x00871650	0x00C60B50	?Blend@nalComponentFloat1Base@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21169	0x00871770	0x00C60C70	?BlendArray@nalComponentFloat1Base@@UBEXHPAXPBX1AAPBM@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21170	0x008718D0	0x00C60DD0	?Blend@nalComponentFloat3Base@@UBEXHPAXPBX1M@Z	nal_xboxr	nal_generic_component.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
