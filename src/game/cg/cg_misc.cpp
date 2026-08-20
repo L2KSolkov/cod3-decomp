@@ -71,10 +71,28 @@ inline math::Dir3 rb_vehicle_get_velocity(void* self)
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
-// Minimal view of InteractionController (full class in g_local.h).
+// Minimal view of InteractionController (full class in animation/nal.cpp).
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+    unsigned int mFlags;       // +0x00
+    void* mCurState;           // +0x04
+    void* mInitialState;       // +0x08
+    unsigned int mInteractableH; // +0x0C
+    void* mDObj;               // +0x10
+    int mSelectedInteractWeaponIndex; // +0x14
+    int mPendingWeaponIndex;    // +0x18
+    int mRestoreWeaponIndex;    // +0x1C
+    int mLastStateWeaponIndex;  // +0x20
+    int mClient;                // +0x24
+    float mHandsAngles[3];      // +0x28
+    float mHandsOrigin[3];      // +0x34
+    const float (&GetHandsAngles() const)[3];
+    const float (&GetHandsOrigin() const)[3];
+    int GetCameraMode() const;
+    float GetRotation() const;
+    int StartInteraction(Entity* interactable, const char* name, TPakId curPakId);
+    void EndInteraction(int wasInteracting);
 };
 
 
@@ -4107,41 +4125,65 @@ cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8
 extern void* cg_items;
 extern weaponInfo_s cg_weapons[1];
 extern vmCvar_t fs_debug_vm;
-// InteractionController member artifacts (real members are GetHandsOrigin/
-// GetHandsAngles; IC instance not ported yet - return zero vectors)
+// ea: 0x006BB6C0
+const float (&InteractionController::GetHandsAngles() const)[3]
+{
+    if ((mFlags & 1) == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 138;
+        AeAssert::gCurrentExpr = "IsFlagged(kHandsSet)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Hands angles not set"))
+            __debugbreak();
+    }
+    return mHandsAngles;
+}
+
+// ea: 0x006BB730
+const float (&InteractionController::GetHandsOrigin() const)[3]
+{
+    if ((mFlags & 1) == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 139;
+        AeAssert::gCurrentExpr = "IsFlagged(kHandsSet)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Hands origin not set"))
+            __debugbreak();
+    }
+    return mHandsOrigin;
+}
+
+// InteractionController member wrappers (the full implementations live in
+// animation/nal.cpp; these retain the CG object-file entry points).
 const float* InteractionController_GetHandsOrigin(void* self)
 {
-    (void)self;
-    static const float zero[3] = { 0.0f, 0.0f, 0.0f };
-    return zero;
+    return static_cast<InteractionController*>(self)->GetHandsOrigin();
 }
 const float* InteractionController_GetHandsAngles(void* self)
 {
-    (void)self;
-    static const float zero[3] = { 0.0f, 0.0f, 0.0f };
-    return zero;
+    return static_cast<InteractionController*>(self)->GetHandsAngles();
 }
-// InteractionController free-function artifacts (real members in game/o;
-// instance surface not ported yet)
 int InteractionController_GetCameraMode(void* self)
 {
-    (void)self;
-    return 0;
+    return static_cast<InteractionController*>(self)->GetCameraMode();
 }
 void InteractionController_EndInteraction(void* self, int wasInteracting)
 {
-    (void)self; (void)wasInteracting;
+    static_cast<InteractionController*>(self)->EndInteraction(wasInteracting);
 }
 int InteractionController_StartInteraction(void* self, Entity* interactable,
                                            const char* name, int curPakId)
 {
-    (void)self; (void)interactable; (void)name; (void)curPakId;
-    return 0;
+    return static_cast<InteractionController*>(self)->StartInteraction(
+        interactable, name, (TPakId)curPakId);
 }
 float InteractionController_GetRotation(void* self)
 {
-    (void)self;
-    return 0.0f;
+    return static_cast<InteractionController*>(self)->GetRotation();
 }
 bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
