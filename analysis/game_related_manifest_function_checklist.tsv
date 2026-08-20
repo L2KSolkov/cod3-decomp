@@ -15922,9 +15922,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 15921	0x007BBE20	0x00BAB320	??1ae_heap_base@@UAE@XZ	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15922	0x007BBE30	0x00BAB330	??0ae_heap@@QAE@I@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15923	0x007BBE90	0x00BAB390	??1ae_heap@@UAE@XZ	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-15924	0x007BBEE0	0x00BAB3E0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15925	0x007BBF20	0x00BAB420	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15926	0x007BBF40	0x00BAB440	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+15924	0x007BBEE0	0x00BAB3E0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+15925	0x007BBF20	0x00BAB420	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+15926	0x007BBF40	0x00BAB440	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15927	0x007BBF70	0x00BAB470	?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 15928	0x007BBF80	0x00BAB480	?Malloc@ae_heap@@UAEPAXII@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 15929	0x007BBFC0	0x00BAB4C0	?Free@ae_heap@@UAEXPAX@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

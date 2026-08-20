@@ -15922,9 +15922,9 @@ index	status	map_line
 15921	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 15922	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
 15923	VERIFIED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
-15924	PORTED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
-15925	PORTED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
-15926	PORTED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
+15924	VERIFIED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
+15925	VERIFIED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
+15926	VERIFIED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
 15927	PORTED	0002:003bbf70 ?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ 00BAB470 f i ae_heap.o
 15928	PORTED	0002:003bbf80 ?Malloc@ae_heap@@UAEPAXII@Z 00BAB480 f i ae_heap.o
 15929	PORTED	0002:003bbfc0 ?Free@ae_heap@@UAEXPAX@Z 00BAB4C0 f i ae_heap.o

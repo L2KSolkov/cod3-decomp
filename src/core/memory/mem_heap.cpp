@@ -422,6 +422,7 @@ int mem_host_fprintf(unsigned handle, const char* fmt, ...) {
 class ae_heap_base {
 public:
     virtual ~ae_heap_base();
+protected:
     void* MemAlloc(unsigned size, unsigned align, mem_heap* heap);
     void  MemFree(void* ptr, mem_heap* heap);
     bool  MemCheckFree(void* ptr, mem_heap* heap);
@@ -441,8 +442,9 @@ ae_heap::~ae_heap() {
 }
 
 void* ae_heap_base::MemAlloc(unsigned size, unsigned align, mem_heap* heap) {
-    if (!heap) heap = &s_heap_default;
-    return mem_heap_malloc(heap, size, 0);
+    if (size + heap->used_byte <= heap->size)
+        return mem_heap_malloc(heap, static_cast<int>(align), size);
+    return nullptr;
 }
 
 void ae_heap_base::MemFree(void* ptr, mem_heap* heap) {

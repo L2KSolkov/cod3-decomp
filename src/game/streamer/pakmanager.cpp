@@ -13780,7 +13780,10 @@ static void* s_ae_heap_wrapper_vftable[5] = {
 // ea: 0x684DD0
 bool ae_heap_wrapper::CheckFree(void* ptr)
 {
-    return ae_heap_base::MemCheckFree(ptr, mHeap);
+    if (ptr < mHeap->start || ptr >= mHeap->end)
+        return false;
+    mem_heap_free(mHeap, ptr);
+    return true;
 }
 
 // ea: 0x66E930
