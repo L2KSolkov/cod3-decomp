@@ -2117,6 +2117,8 @@ public:
     virtual void ButtonHeldAction();       // 0x573860
     virtual void OnUp(int c);              // 0x5738D0
     virtual void OnDown(int c);            // 0x5739D0
+    virtual void OnLeft(int c);            // 0x5B7AA0
+    virtual void OnRight(int c);           // 0x5B7AB0
     virtual void Select(int entry);        // 0x573AD0
     virtual void Draw();                   // 0x57F900
     virtual void UpdateWidescreen(bool ws);// 0x57F930
@@ -2159,6 +2161,8 @@ public:
     virtual void Update(float time_inc);   // 0x573B90
     virtual void OnUp(int c);              // 0x573BF0
     virtual void OnDown(int c);            // 0x573C80
+    virtual void OnLeft(int c);            // 0x5B7AD0
+    virtual void OnRight(int c);           // 0x5B7AE0
     virtual void ButtonHeldAction();       // 0x573D10
     virtual void Draw();                   // 0x57FA90
     virtual void UpdateWidescreen(bool ws);// 0x57FAC0
@@ -2199,6 +2203,8 @@ public:
     OptionsStickMenu(FEMenuSystem* s);  // 0x592C10
     virtual ~OptionsStickMenu();        // 0x592C70
     static OptionsStickMenu* Me();      // 0x573D80
+    virtual void OnLeft(int c);         // 0x5B7B20
+    virtual void OnRight(int c);        // 0x5B7B30
     virtual void Update(float time_inc);   // 0x573D90
     virtual void ButtonHeldAction();       // 0x574030
     virtual void OnActivate();             // 0x57FB80
@@ -2238,6 +2244,8 @@ public:
     OptionsButtonMenu(FEMenuSystem* s);  // 0x592CE0
     virtual ~OptionsButtonMenu();        // 0x592D40
     static OptionsButtonMenu* Me();      // 0x574060
+    virtual void OnLeft(int c);           // 0x5B7B70
+    virtual void OnRight(int c);          // 0x5B7B80
     virtual void Update(float time_inc);   // 0x574070
     virtual void ButtonHeldAction();       // 0x574270
     virtual void Draw();                   // 0x57FD40

@@ -1799,6 +1799,20 @@ OptionsControlsMenu* OptionsControlsMenu::Me()
     return (OptionsControlsMenu*)g_femanager.fems->menus[20];
 }
 
+// ea: 0x005B7AA0
+void OptionsControlsMenu::OnLeft(int c)
+{
+    (void)c;
+    AdjustOptions(false);
+}
+
+// ea: 0x005B7AB0
+void OptionsControlsMenu::OnRight(int c)
+{
+    (void)c;
+    AdjustOptions(true);
+}
+
 // ea: 0x005737E0
 void OptionsControlsMenu::Update(float time_inc)
 {
@@ -2229,6 +2243,20 @@ OptionsSoundMenu* OptionsSoundMenu::Me()
     return (OptionsSoundMenu*)g_femanager.fems->menus[22];
 }
 
+// ea: 0x005B7AD0
+void OptionsSoundMenu::OnLeft(int c)
+{
+    (void)c;
+    AdjustOptions(false);
+}
+
+// ea: 0x005B7AE0
+void OptionsSoundMenu::OnRight(int c)
+{
+    (void)c;
+    AdjustOptions(true);
+}
+
 // ea: 0x00573B90
 void OptionsSoundMenu::Update(float time_inc)
 {
@@ -2553,6 +2581,20 @@ OptionsStickMenu* OptionsStickMenu::Me()
     return (OptionsStickMenu*)g_femanager.fems->menus[24];
 }
 
+// ea: 0x005B7B20
+void OptionsStickMenu::OnLeft(int c)
+{
+    (void)c;
+    AdjustOptions(false);
+}
+
+// ea: 0x005B7B30
+void OptionsStickMenu::OnRight(int c)
+{
+    (void)c;
+    AdjustOptions(true);
+}
+
 // ea: 0x00573D90
 void OptionsStickMenu::Update(float time_inc)
 {
@@ -2856,6 +2898,20 @@ OptionsButtonMenu::~OptionsButtonMenu()
 OptionsButtonMenu* OptionsButtonMenu::Me()
 {
     return (OptionsButtonMenu*)g_femanager.fems->menus[25];
+}
+
+// ea: 0x005B7B70
+void OptionsButtonMenu::OnLeft(int c)
+{
+    (void)c;
+    AdjustOptions(false);
+}
+
+// ea: 0x005B7B80
+void OptionsButtonMenu::OnRight(int c)
+{
+    (void)c;
+    AdjustOptions(true);
 }
 
 // ea: 0x00574070
