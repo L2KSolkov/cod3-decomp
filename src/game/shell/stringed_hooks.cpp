@@ -1058,7 +1058,6 @@ const char* SE_LoadLanguage(const char* psLanguage, int bLoadDebug)
                 ++src;
             }
             while (v12 != 0);
-            *dst = 0;
             if (_stricmp(psLanguage, sString_1) == 0)
                 psErrorMessage = SE_Load(FoundFile, bLoadDebug);
             FoundFile = SE_GetFoundFile(strResults);
