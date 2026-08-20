@@ -538,6 +538,15 @@ static_assert(sizeof(PanelQuad) == 0x48, "PanelQuad size mismatch");
 static_assert(offsetof(PanelQuad, center_point) == 0x14, "PanelQuad::center_point offset mismatch");
 static_assert(offsetof(PanelQuad, pqs) == 0x20, "PanelQuad::pqs offset mismatch");
 
+// DefaultPanelQuad - default front-end quad specialization (0x48 bytes)
+class DefaultPanelQuad : public PanelQuad {
+public:
+    DefaultPanelQuad(char* name);       // 0x5B8190
+    virtual void Draw();                // 0x5B81C0 (empty)
+};
+static_assert(sizeof(DefaultPanelQuad) == 0x48,
+              "DefaultPanelQuad size mismatch");
+
 // ============================================================================
 // PanelMaterial â€” per-quad material (16 bytes) â€” verified against IDA
 // (ReadPanelMaterial 0x57BEE0: texture +0, filename +4, color +8, hasmap +0xC)
@@ -1877,6 +1886,7 @@ public:
                                int* p_controller);     // 0x572B00
     virtual int GetStickValueY(int stick,
                                int* p_controller);     // 0x572B70
+    virtual bool IsSystemActive();                     // 0x5B83A0
 
     void GeneralBringUpStuff(bool layer1);   // 0x5726B0
     void SetText(const char* t);             // 0x572770
@@ -2312,6 +2322,7 @@ public:
     virtual void OnActivate();                 // slot 28 0x574480
     virtual void Init();                       // 0x5B7BD0
     virtual void UpdateWidescreen(bool ws);    // 0x5B7BE0
+    virtual ~ControllerDisconnectedMenu();     // 0x5B8210
 
     ControllerDisconnectedMenu();              // 0x5931C0
     void SetErrorMessage();                    // 0x574490

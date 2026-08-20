@@ -227,6 +227,17 @@ PanelQuad::PanelQuad(char* n)
     quadMapFlags = 193;
 }
 
+// ea: 0x005B8190
+DefaultPanelQuad::DefaultPanelQuad(char* n)
+    : PanelQuad(n)
+{
+}
+
+// ea: 0x005B81C0
+void DefaultPanelQuad::Draw()
+{
+}
+
 // ea: 0x00590F70
 PanelQuad::~PanelQuad()
 {

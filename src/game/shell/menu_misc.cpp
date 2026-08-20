@@ -69,6 +69,14 @@ ControllerDisconnectedMenu::ControllerDisconnectedMenu()
     text = nullptr;
 }
 
+// ea: 0x005B8210
+ControllerDisconnectedMenu::~ControllerDisconnectedMenu()
+{
+    if (text != nullptr)
+        delete text;
+    FEMenu::~FEMenu();
+}
+
 // ea: 0x005B7BD0
 void ControllerDisconnectedMenu::Init()
 {

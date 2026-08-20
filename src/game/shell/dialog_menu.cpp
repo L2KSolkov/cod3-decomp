@@ -724,6 +724,12 @@ bool DialogMenuSystem::GetFlag(int f)
     return (flags & f) != 0;
 }
 
+// ea: 0x005B83A0
+bool DialogMenuSystem::IsSystemActive()
+{
+    return m_active >= 0;
+}
+
 // ea: 0x005AEE50
 void DialogMenuSystem::SetFlag(char f, bool b)
 {
