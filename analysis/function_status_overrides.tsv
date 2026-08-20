@@ -721,3 +721,12 @@ nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat4Ba
 nal_init.o	?Process@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
 nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
 nal_init.o	?ComponentSetupPartialDecode@nalComponentEntropyFloat4@@SAXPAUStateType@nalComponentEntropyFloat4Data@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@5@@Z	PORTED
+nal_init.o	?Skip@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?ComponentSkip@nalComponentEntropyFloat4@@SAXAAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyFloat4Data@@PAUSkeletonComponentData@5@PAUAnimComponentData@3@@Z	PORTED
+nal_init.o	?Convert@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?GetTrajectory@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z	PORTED
+nal_init.o	?Construct@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Delete@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Copy@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	??$FastCopy@VnalComponentEntropyFloat4@@VVector4@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
