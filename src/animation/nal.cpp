@@ -11314,6 +11314,123 @@ void nalComponentEntropyFloat4::ComponentSetupPartialDecode(
     *srcPtr = cursor;
 }
 
+// ?PartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z
+// (nal_init.o 0x85beb0)
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::nalFloatDecoder* decoder =
+                (nalEntropyDecoder::nalFloatDecoder*)state;
+            float* out = (float*)dst;
+            const float scale = *(const float*)*customSkeletonData * *animData;
+            decoder[0].Decode(out, (unsigned int)stride,
+                              (unsigned int)quantity, scale);
+            decoder[1].Decode(out + 1, (unsigned int)stride,
+                              (unsigned int)quantity, scale);
+            decoder[2].Decode(out + 2, (unsigned int)stride,
+                              (unsigned int)quantity, scale);
+            decoder[3].Decode(out + 3, (unsigned int)stride,
+                              (unsigned int)quantity, scale);
+            state = (char*)state + 64;
+            dst = (char*)dst + 16;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ?Decode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z
+// (nal_init.o 0x85c040)
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    nalComponentEntropyFloat4Data::AnimData* animData =
+        (nalComponentEntropyFloat4Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (char*)animData + 4;
+    void* skeletonData = (void*)*customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentEntropyFloat4::ComponentDecode(
+                (math::Vector4*)dst, (const unsigned char**)&src,
+                (unsigned int)quantity, (unsigned int)stride,
+                (nalComponentData::SkeletonData*)skeletonData, animData,
+                (nalComponentEntropyFloat4Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            dst = (char*)dst + 16;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// (nal_init.o 0x85c150)
+void nalComponentEntropyFloat4::ComponentDecode(
+    math::Vector4* dstPtr, const unsigned char** srcPtr,
+    unsigned int quantity, unsigned int stride,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyFloat4Data::AnimData* animData,
+    nalComponentEntropyFloat4Data::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)skeletonData;
+    (void)animComponentData;
+    const float scale = animData->QuantizationScale
+                        * skeletonComponentData->Quantization;
+    nalComponentEntropyFloat4Data::StateType state{};
+    const unsigned char* cursor = *srcPtr;
+    for (int channel = 0; channel < 4; ++channel)
+    {
+        const unsigned char channelSize = *cursor++;
+        state.Decoder[channel].channel.ptr = cursor;
+        state.Decoder[channel].channel.bitpos = 0;
+        state.Decoder[channel].channel.decoder = static_cast<unsigned char>(-1);
+        state.Decoder[channel].channel.zeroes = 0;
+        state.Decoder[channel].Decode(&dstPtr->v.m128_f32[channel],
+                                      stride, quantity, scale);
+        cursor += channelSize;
+    }
+    *srcPtr = cursor;
+}
+
 // ea: 0x0085C2A0
 template <>
 void nalComponent<nalComponentFloat4Base,
