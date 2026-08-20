@@ -1037,3 +1037,5 @@ nal_init.o	?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
 nal_init.o	?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	??$FastCopy@VnalComponentEntropyFloat1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
