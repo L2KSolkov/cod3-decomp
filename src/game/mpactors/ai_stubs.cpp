@@ -797,7 +797,7 @@
 }
 
 // ea: 0x0077C770  (?Path_UsesObstacleNegotiation@@YI?BHPBUpath_t@@@Z)
-    int __fastcall Path_UsesObstacleNegotiation(const path_t*)
+    const int __fastcall Path_UsesObstacleNegotiation(const path_t*)
 {
     return 0;
 }
