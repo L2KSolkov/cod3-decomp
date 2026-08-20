@@ -178,4 +178,16 @@ public:
     tlSkipList<T, tlFixedString>* skiplist;
 };
 
+// tlInstanceBankResourceDirectory<T> stores its own skip list inline.  The
+// nalAnimFile constructor at 0x867880 only initializes the base vtable and
+// this member; Init() establishes the skip-list level when the first item is
+// added.
+template <typename T>
+class tlInstanceBankResourceDirectory : public tlResourceDirectory<T> {
+public:
+    tlInstanceBankResourceDirectory() : tlResourceDirectory<T>(), skiplist() {}
+
+    tlSkipList<T, tlFixedString> skiplist;
+};
+
 #endif // COD3_CORE_TL_RESOURCE_DIRECTORY_H

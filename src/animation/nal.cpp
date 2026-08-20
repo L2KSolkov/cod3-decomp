@@ -561,6 +561,10 @@ struct nalAnimFile {
     nalAnimFileHeader Header;
 };
 static_assert(sizeof(nalAnimFile) == 72, "NAL animation file layout mismatch");
+
+// ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ (0x867880)
+template tlInstanceBankResourceDirectory<nalAnimFile>::tlInstanceBankResourceDirectory();
+
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
 public:
     nalClientSceneAnim();  // ??0nalClientSceneAnim@@QAE@XZ (0x55EA20)
