@@ -640,6 +640,7 @@ public:
     int mAcceptMenu;   // +0x50
     int mBackMenu;     // +0x54
     OverlayMenuBase(FEMenuSystem* s, int numEntries);  // ??0OverlayMenuBase@@QAE@PAVFEMenuSystem@@H@Z
+    virtual void Init();                 // 0x5B8BC0
     virtual void OnActivate();          // ?OnActivate@OverlayMenuBase@@UAEXXZ
     virtual void Draw();                // ?Draw@OverlayMenuBase@@UAEXXZ
     virtual void Update(float time_inc);// ?Update@OverlayMenuBase@@UAEXM@Z

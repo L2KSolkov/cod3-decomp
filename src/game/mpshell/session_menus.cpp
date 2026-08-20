@@ -8162,6 +8162,11 @@ OverlayMenuBase::OverlayMenuBase(FEMenuSystem* s, int numEntries)
     panel = nullptr;
 }
 
+// ea: 0x005B8BC0
+void OverlayMenuBase::Init()
+{
+}
+
 // ea: 0x00793030
 char MI_GetMapIndexbyID(char ID)
 {
