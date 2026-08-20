@@ -20198,7 +20198,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20197	0x008549A0	0x00C43EA0	??_GnalInitListAnimType@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20198	0x008549A0	0x00C43EA0	??_EnalInitListAnimType@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20199	0x008549D0	0x00C43ED0	??0nalGenericPose@nalGeneric@@IAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20200	0x008549E0	0x00C43EE0	??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20200	0x008549E0	0x00C43EE0	??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20201	0x00854A70	0x00C43F70	?CheckVersion@nalGenericSkeleton@nalGeneric@@MBE_NXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20202	0x00854A80	0x00C43F80	?VirtualGetLODCount@nalGenericSkeleton@nalGeneric@@MBEIXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20203	0x00854A90	0x00C43F90	?VirtualGetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@MBEIH@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY

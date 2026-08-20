@@ -1520,6 +1520,9 @@ static_assert(sizeof(nalBoneInfo) == 48, "nalBoneInfo layout mismatch");
 
 class nalGenericSkeleton {
 public:
+    // ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z
+    nalGenericSkeleton(nalRegisterKey key);
+
     virtual ~nalGenericSkeleton() {}
     virtual void Process() {}
     virtual void Release();
@@ -1574,7 +1577,13 @@ public:
     template <typename T>
     const float& operator[](const nalGenericConstComponentHandle<T>& handle) const;
 
-    unsigned char _pad[0x60 - 0x04];
+    unsigned Version;            // +0x04
+    tlFixedString Name;          // +0x08
+    tlFixedString AnimTypeName;  // +0x28
+    int RefCount;                 // +0x48
+    unsigned Flags;              // +0x4C
+    nalFileBuf FileBuf;           // +0x50
+    unsigned CRC32;               // +0x5C
     unsigned int LODCount;  // +0x60
     nalLODInfo* LODInfo;  // +0x64
     unsigned char* MatrixByteCode; // +0x68
@@ -1607,6 +1616,18 @@ public:
 };
 static_assert(sizeof(nalGenericSkeleton) == 224,
               "nalGenericSkeleton layout mismatch");
+
+// ea: 0x008549E0
+nalGenericSkeleton::nalGenericSkeleton(nalRegisterKey key)
+{
+    if (key != NAL_REGISTER_KEY
+        && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                     235, "key == NAL_REGISTER_KEY",
+                     "this function is for internal use only"))
+    {
+        __debugbreak();
+    }
+}
 
 // ea: 0x00868CC0
 void nalGenericSkeleton::Release()
@@ -2525,7 +2546,7 @@ void nalInit(class nalHeap*)
     // running the exact init-list registration pass.
     static tlFixedString genericName("generic");
     static nalGenericAnim genericAnimProbe(NAL_REGISTER_KEY);
-    static nalGenericSkeleton genericSkeletonProbe;
+    static nalGenericSkeleton genericSkeletonProbe(NAL_REGISTER_KEY);
     static nalInitListAnimType genericType(
         &genericName,
         *reinterpret_cast<void**>(&genericAnimProbe),

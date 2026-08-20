@@ -514,3 +514,4 @@ nal_init.o	??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@Vn
 nal_init.o	??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ	FIXED
 nal_init.o	??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ	FIXED
 nal_init.o	??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ	FIXED
+nal_init.o	??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z	PORTED

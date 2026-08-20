@@ -54,7 +54,7 @@ index	status	map_line
 53	SKIPPED	0002:004549a0 ??_GnalInitListAnimType@@UAEPAXI@Z 00C43EA0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 54	SKIPPED	0002:004549a0 ??_EnalInitListAnimType@@UAEPAXI@Z 00C43EA0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 55	VERIFIED	0002:004549d0 ??0nalGenericPose@nalGeneric@@IAE@XZ 00C43ED0 f i nal_init.o
-56	PENDING	0002:004549e0 ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z 00C43EE0 f i nal_init.o
+56	PORTED	0002:004549e0 ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z 00C43EE0 f i nal_init.o
 57	VERIFIED	0002:00454a70 ?CheckVersion@nalGenericSkeleton@nalGeneric@@MBE_NXZ 00C43F70 f i nal_init.o
 58	VERIFIED	0002:00454a80 ?VirtualGetLODCount@nalGenericSkeleton@nalGeneric@@MBEIXZ 00C43F80 f i nal_init.o
 59	VERIFIED	0002:00454a90 ?VirtualGetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@MBEIH@Z 00C43F90 f i nal_init.o
