@@ -1015,16 +1015,19 @@ void PanelQuad::Init(Broc::vector* xy, color32* col, panel_layer lay,
                      float z, const char* filename)
 {
     SetZvalue(z, lay);
-    Broc::vector uv[3];
-    memset(uv, 0, sizeof(uv));
-    float uv_uv[9] = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f };
+    Broc::vector uv[4] = {
+        Broc::vector(0.0f, 0.0f, 0.0f),
+        Broc::vector(1.0f, 0.0f, 0.0f),
+        Broc::vector(0.0f, 1.0f, 0.0f),
+        Broc::vector(1.0f, 1.0f, 0.0f),
+    };
     PanelQuadSection* v7 = (PanelQuadSection*)mem_heap_malloc(0x68u);
     if (v7 != nullptr)
         v7->quad.Z = 0.0f;
     else
         v7 = nullptr;
     PanelQuadSection* lay2 = v7;
-    v7->AddPQSection(xy, (Broc::vector*)uv_uv, col, z_value);
+    v7->AddPQSection(xy, uv, col, z_value);
     VectorPushBack(pqs, lay2);
     if (filename != nullptr && *filename != 0)
         SetTexture(LocalizedGetTexture(filename));
@@ -1943,10 +1946,26 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
             __debugbreak();
     }
     math::Mat43 matcopy = *parent_matrix;
-    Broc::vector tmp_initial[4];
-    Broc::vector tmp_wed[4];
-    int wedge_indices[4];
+    // IDA's frame has these two four-vector regions back-to-back.  The
+    // fourth tmp_initial entry is followed by tmp_wed[0..2] when the quad
+    // section consumes four vertices.
+    Broc::vector panel_scratch[8];
+    Broc::vector* tmp_initial = &panel_scratch[0];
+    Broc::vector* tmp_wed = &panel_scratch[4];
+    int* wedge_indices = reinterpret_cast<int*>(&tmp_wed[3]);
     Broc::vector uv_out[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        tmp_initial[i].x = sNaN;
+        tmp_initial[i].y = sNaN;
+        tmp_initial[i].z = sNaN;
+        if (i < 3)
+        {
+            tmp_wed[i].x = sNaN;
+            tmp_wed[i].y = sNaN;
+            tmp_wed[i].z = sNaN;
+        }
+    }
     float v93 = 0.0f;
     int num_tri = v37 / 3;
     int tri1 = 0;

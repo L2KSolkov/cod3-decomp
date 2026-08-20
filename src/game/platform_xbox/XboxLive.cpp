@@ -181,6 +181,17 @@ void LiveLocal::Reset()
 
 LiveWrapper* LiveWrapper::theWrapper;
 
+// Controller input bridge: keeps the Xbox-layout XINPUT_STATE local to this
+// translation unit while the Win32 controller adapter owns device polling.
+bool Controller_HandleUIXInput(unsigned int port, void* controller_input)
+{
+    if (LiveWrapper::theWrapper == nullptr
+        || !LiveWrapper::theWrapper->renderingEnabled)
+        return false;
+    return LiveWrapper::theWrapper->HandleInput(
+        port, static_cast<const XINPUT_STATE*>(controller_input));
+}
+
 // ea: 0x51E160
 ELiveState LiveWrapper::GetState()
 {

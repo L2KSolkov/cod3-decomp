@@ -283,9 +283,9 @@ int FirstLocalClientIndex() { return LocalClient_FirstLocalClientIndex(); }
 int LastLocalClientIndex() { return LocalClient_LastLocalClientIndex(); }
 }
 
-// PadAliasMgr controller button helper (controller layer; stub)
+// PadAliasMgr controller button helper (implemented by PadAliasMgr::Context).
 extern void* PadAliasMgr_sInst;  // @ 0x00F4F458
-int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias);  // cg_misc.cpp
+int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias);  // g_cmd.cpp
 
 // cg/cl state views for MPPlayerManager::SwapPlayers (cg.o/cl.o data; the
 // binary stores cg/cgs as 2-element arrays of these sizes)

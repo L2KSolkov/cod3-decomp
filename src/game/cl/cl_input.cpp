@@ -11,6 +11,7 @@
 
 #include "game/cvar_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
+#include "input/controller.h"
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
@@ -34,21 +35,6 @@ enum sysEventType_t {
 };
 extern void Sys_QueEvent(int time, sysEventType_t type, int value, int value2,
                          int ptrLength, void* ptr);
-
-// Minimal controller view (full implementation in input/controller.cpp).
-class controller { public:
-public:
-    int locked_port;
-    bool is_locked;
-    enum ButtonIndex {
-        LEFTBUTTON = 0,
-        DOWNBUTTON = 1,
-        RIGHTBUTTON = 2,
-        UPBUTTON = 3,
-    };
-    static controller* inst();
-    bool button_pressed_clear(int index, ButtonIndex btn);
-};
 
 // ============================================================================
 // IN_Shutdown - shut down the client input system (no-op on the Xbox target)
@@ -80,7 +66,7 @@ int RecalibrateInput(int val)
 controller* Controller_UnlockPort()
 {
     controller* result = controller::inst();
-    result->is_locked = false;
+    result->unlock_port();
     return result;
 }
 
@@ -91,8 +77,7 @@ controller* Controller_UnlockPort()
 void Controller_LockPort(unsigned int port)
 {
     controller* v1 = controller::inst();
-    v1->locked_port = port;
-    v1->is_locked = true;
+    v1->set_locked_port(static_cast<int>(port));
     dword_F6A28C[802 * currCl] = port;
     gSaveGameData[port].mControllerPort = port;
     MPLiveEngine::GetHandle()->actualPort = port;

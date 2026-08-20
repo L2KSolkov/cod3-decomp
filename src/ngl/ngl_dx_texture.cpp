@@ -180,7 +180,17 @@ void ngliGenMipmaps(nglTexture* Tex) {
         D3DDevice_SetPixelShaderProgram((const _D3DPixelShaderDef*)nglGpuTexPixelShader::Shader);
     }
 
-    struct PCUVVert { float x, y, z, color, u, v; };
+    // IDA's nglGpuPCUVVertexFmt is a 0x18-byte stream: XYZ float3,
+    // packed color dword, then UV float2.
+    struct PCUVVert {
+        float x;
+        float y;
+        float z;
+        unsigned int color;
+        float u;
+        float v;
+    };
+    static_assert(sizeof(PCUVVert) == 0x18, "ngl mipmap PCUV layout");
     PCUVVert Verts[4];
     memset(Verts, 0, sizeof(Verts));
     unsigned int w = Tex->Width;
@@ -197,14 +207,18 @@ void ngliGenMipmaps(nglTexture* Tex) {
         float fh = (float)(h >> i);
         gpuHashVertexBuffer = 0;
         gpuHashVertexFormat = 0;
-        Verts[0].v = fw;
-        Verts[1].x = nglFSAAParams.v.m128_f32[0];
-        Verts[1].v = fh;
-        Verts[2].x = nglFSAAParams.v.m128_f32[1];
-        Verts[2].u = fw;
-        Verts[2].v = fh;
-        Verts[3].x = nglFSAAParams.v.m128_f32[0];
-        Verts[3].y = nglFSAAParams.v.m128_f32[1];
+        Verts[0].u = 0.0f;
+        Verts[0].v = 0.0f;
+        Verts[1].x = fw;
+        Verts[1].u = nglFSAAParams.v.m128_f32[0];
+        Verts[1].v = 0.0f;
+        Verts[2].x = fw;
+        Verts[2].y = fh;
+        Verts[2].u = nglFSAAParams.v.m128_f32[0];
+        Verts[2].v = nglFSAAParams.v.m128_f32[1];
+        Verts[3].y = fh;
+        Verts[3].u = 0.0f;
+        Verts[3].v = nglFSAAParams.v.m128_f32[1];
         D3DDevice_SelectVertexShaderDirect(nglGpuPCUVVertexFmt.VertexDeclaration, 0);
         D3DDevice_DrawVerticesUP(D3DPT_TRIANGLESTRIP, 4, Verts,
                                  (unsigned int)nglGpuPCUVVertexFmt.VertexSize);

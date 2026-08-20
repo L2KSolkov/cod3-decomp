@@ -372,7 +372,8 @@ bool LightEffect::IsLightFinished()
 int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
 PoolAllocator* gCommonPoolAllocator = nullptr;
-float sNaN = 0.0f;
+// ea: 0x00A6C780 calls GetNaN (0x0092E1D0), which returns 1.0f / 0.0f.
+float sNaN = 1.0f / 0.0f;
 Broc::string gNULLString;
 unsigned int s_ImpactMessage = 0;
 

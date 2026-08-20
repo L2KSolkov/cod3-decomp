@@ -6,6 +6,7 @@
 #include "game/game_types.h"
 #include "game/trace_types.h"
 #include "ngl/nglRenderNode.h"
+#include "input/controller.h"
 
 #include <math.h>
 #include <new>
@@ -77,12 +78,6 @@ public:
 };
 
 
-// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
-class controller { public:
-    int locked_port;
-    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
-};
-
 
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
@@ -111,11 +106,12 @@ extern void ByteToDir(int b, float* const dir);
 extern void PerpendicularVector(float* const dst, const float* const src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
-// controller_button_value artifact (controller_xboxr; stub)
 int controller_button_value(void* self, int i_controller_num, int i_button)
 {
-    (void)self; (void)i_controller_num; (void)i_button;
-    return 0;
+    controller* pad = self != nullptr ? static_cast<controller*>(self)
+                                       : controller::inst();
+    return pad->button_value(i_controller_num,
+                             static_cast<controller::ButtonIndex>(i_button));
 }
 extern int controller_button_pressed(void* self, int i_controller_num,
                                      int i_button);
@@ -4015,12 +4011,8 @@ extern void MatrixMultiply(const float (*const in1)[3],
                              const float (*const in2)[3],
                            float (*const out)[3]);
 extern const float AngleNormalize360(float angle);
-// PadAliasMgr_GetButtonValue artifact (controller layer; stub)
-int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias)
-{
-    (void)self; (void)ctrlNum; (void)buttonAlias;
-    return 0;
-}
+extern int PadAliasMgr_GetButtonValue(void* self, int ctrlNum,
+                                      int buttonAlias);
 extern void* PadAliasMgr_sInst;  // 0x00F4F458
 extern int g_vehicle_button_threshold;  // 0x00E01F04
 extern vmCvar_t g_vehControlMode;       // 0x00EADD48

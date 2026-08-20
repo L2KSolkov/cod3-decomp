@@ -74,9 +74,16 @@ static nullD3DTexture* gNullBackBuffer = NULL;
 static nullD3DSurface* gNullDepthBuffer = NULL;
 static IDirect3D9* gD3D9 = NULL;
 static IDirect3DDevice9* gD3D9Device = NULL;
+static bool gD3D9SceneActive = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
 static IDirect3DVertexDeclaration9* gD3D9VertexDeclaration = NULL;
+static IDirect3DVertexDeclaration9* gD3D9PCUVDeclaration = NULL;
+static IDirect3DVertexDeclaration9* gD3D9PUVDeclaration = NULL;
+static _D3DVERTEXATTRIBUTEFORMAT gD3D9SelectedVertexFormat = {};
+static bool gD3D9SelectedVertexFormatValid = false;
+static _D3DVERTEXATTRIBUTEFORMAT gD3D9BuiltVertexFormat = {};
+static bool gD3D9BuiltVertexFormatValid = false;
 static IDirect3DIndexBuffer9* gD3D9IndexBuffer = NULL;
 static nullD3DInfo* gD3D9IndexInfo = NULL;
 static IDirect3DVertexBuffer9* gD3D9VertexBuffers[4] = {};
@@ -154,6 +161,14 @@ static DWORD nullD3DCompareFunc(unsigned int Value) {
     }
 }
 
+static DWORD nullD3DColorWriteMask(unsigned int Value) {
+    // Xbox stores one byte per channel; D3D9 uses a four-bit mask.
+    return ((Value & 0x00010000u) != 0 ? 0x1u : 0u) |
+           ((Value & 0x00000100u) != 0 ? 0x2u : 0u) |
+           ((Value & 0x00000001u) != 0 ? 0x4u : 0u) |
+           ((Value & 0x01000000u) != 0 ? 0x8u : 0u);
+}
+
 static DWORD nullD3DCullMode(unsigned int Value) {
     // The NGL paths use 0 for no culling and 0x900 for the Xbox back-face
     // selector.  Accept the native D3D8 numeric selectors as well.
@@ -199,6 +214,9 @@ static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int V
 static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     if (gD3D9Device == NULL || Format == NULL)
         return false;
+    if (gD3D9VertexDeclaration != NULL && gD3D9BuiltVertexFormatValid &&
+        memcmp(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat)) == 0)
+        return true;
     D3DVERTEXELEMENT9 Elements[17] = {};
     unsigned int Count = 0;
     for (unsigned int i = 0; i < 16 && Format->Input[i].Format != 2; ++i) {
@@ -230,6 +248,8 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     if (gD3D9VertexDeclaration != NULL)
         gD3D9VertexDeclaration->Release();
     gD3D9VertexDeclaration = Declaration;
+    memcpy(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat));
+    gD3D9BuiltVertexFormatValid = true;
     return true;
 }
 
@@ -407,6 +427,18 @@ static unsigned int nullD3DFormatBytesPerPixel(unsigned int Format) {
     }
 }
 
+static unsigned int nullD3DFormatBlockBytes(unsigned int Format) {
+    switch (Format) {
+    case D3DFMT_DXT1:
+        return 8;
+    case D3DFMT_DXT3:
+    case D3DFMT_DXT5:
+        return 16;
+    default:
+        return 0;
+    }
+}
+
 static unsigned int nullD3DLog2(unsigned int Value) {
     unsigned int Result = 0;
     while (Value > 1) {
@@ -545,6 +577,27 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
                                          D3DPalette* Palette) {
     if (Info == NULL || Info->NativeTexture == NULL || Info->Bits == NULL)
         return;
+    unsigned int BlockBytes = nullD3DFormatBlockBytes(Info->Format);
+    if (BlockBytes != 0) {
+        COD3_D3D9_LOCKED_RECT Locked = {};
+        if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
+            return;
+        unsigned int BlocksWide = (Info->Width + 3u) / 4u;
+        unsigned int BlocksHigh = (Info->Height + 3u) / 4u;
+        unsigned int RowBytes = BlocksWide * BlockBytes;
+        unsigned int SourcePitch = RowBytes;
+        if (Size != 0) {
+            unsigned int EncodedPitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
+            if (EncodedPitch >= RowBytes)
+                SourcePitch = EncodedPitch;
+        }
+        const unsigned char* Source = Info->Bits;
+        unsigned char* Destination = (unsigned char*)Locked.pBits;
+        for (unsigned int y = 0; y < BlocksHigh; ++y)
+            memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
+        Info->NativeTexture->UnlockRect(0);
+        return;
+    }
     unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Info->Format);
     if (BytesPerPixel == 0)
         return;
@@ -628,7 +681,8 @@ static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
         return;
     if ((PackedFormat & 0x40u) != 0)
         return;
-    if (nullD3DFormatBytesPerPixel(Info->Format) == 0)
+    if (nullD3DFormatBytesPerPixel(Info->Format) == 0 &&
+        nullD3DFormatBlockBytes(Info->Format) == 0)
         return;
     if (FAILED(gD3D9Device->CreateTexture(Info->Width, Info->Height, Info->Levels, 0,
                                           nullD3DNativeFormat(Info->Format), D3DPOOL_MANAGED,
@@ -981,6 +1035,7 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
         NativeValue = nullD3DCompareFunc(Value);
     } else if (Method == dword_40358) {
         NativeState = COD3_D3D9_RS_COLORWRITEENABLE;
+        NativeValue = nullD3DColorWriteMask(Value);
     } else if (Method == dword_4035C) {
         NativeState = COD3_D3D9_RS_ZWRITEENABLE;
     } else {
@@ -1032,20 +1087,21 @@ unsigned int* __stdcall D3DDevice_BeginPush(unsigned int Count) {
 }
 void __stdcall D3DDevice_BlockOnFence(unsigned int) {}
 void __stdcall D3DDevice_BlockUntilIdle(void) {}
-void __stdcall D3DDevice_Clear(unsigned int Count, unsigned int ClearFlags,
-                               unsigned int Color, unsigned int Stencil, float Z,
-                               unsigned int) {
+void __stdcall D3DDevice_Clear(unsigned int Count, const _D3DRECT* pRects,
+                               unsigned int ClearFlags, unsigned int Color,
+                               float Z, unsigned int Stencil) {
     if (gD3D9Device == NULL)
         return;
     DWORD Flags = 0;
-    if ((ClearFlags & 1u) != 0 && gD3D9RenderTarget != NULL)
+    // Xbox D3DCLEAR_TARGET is 0xF0; ZBUFFER and STENCIL retain bits 0 and 1.
+    if ((ClearFlags & 0xF0u) != 0 && gD3D9RenderTarget != NULL)
         Flags |= D3DCLEAR_TARGET;
-    if ((ClearFlags & 2u) != 0 && gD3D9DepthStencil != NULL)
+    if ((ClearFlags & 1u) != 0 && gD3D9DepthStencil != NULL)
         Flags |= D3DCLEAR_ZBUFFER;
-    if ((ClearFlags & 4u) != 0 && gD3D9DepthStencil != NULL)
+    if ((ClearFlags & 2u) != 0 && gD3D9DepthStencil != NULL)
         Flags |= D3DCLEAR_STENCIL;
     if (Flags != 0)
-        gD3D9Device->Clear(Count, NULL, Flags, Color, Z, Stencil);
+        gD3D9Device->Clear(Count, pRects, Flags, Color, Z, Stencil);
 }
 D3DIndexBuffer* __stdcall D3DDevice_CreateIndexBuffer2(unsigned int Bytes) {
     return (D3DIndexBuffer*)nullD3DCreateBuffer(Bytes, true);
@@ -1066,6 +1122,8 @@ D3DVertexBuffer* __stdcall D3DDevice_CreateVertexBuffer2(unsigned int Bytes) {
 void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
                                               unsigned int VertexCount,
                                               const unsigned short* IndexData) {
+    if (gD3D9SelectedVertexFormatValid)
+        nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL ||
         gD3D9IndexBuffer == NULL || IndexData == NULL)
         return;
@@ -1099,6 +1157,8 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
 void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
                                        unsigned int StartVertex,
                                        unsigned int VertexCount) {
+    if (gD3D9SelectedVertexFormatValid)
+        nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL ||
         gD3D9VertexBuffers[0] == NULL || gD3D9VertexInfos[0] == NULL)
         return;
@@ -1116,6 +1176,8 @@ void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
                                          unsigned int VertexCount,
                                          const void* VertexData,
                                          unsigned int VertexStride) {
+    if (gD3D9SelectedVertexFormatValid)
+        nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL || VertexData == NULL)
         return;
     COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
@@ -1173,14 +1235,68 @@ static bool nullD3DNormalizeTexelCoordinates(unsigned int* Vertices,
     return true;
 }
 
+static void nullD3DNormalizeScreenDepth(unsigned int* Vertices,
+                                        unsigned int VertexCount,
+                                        unsigned int StrideDwords) {
+    // nglDxViewToScreenZ produces the Xbox 24-bit screen-depth range.  The
+    // Xbox vertex shader applies the 16777215 scale before rasterization;
+    // the fixed-function D3D9 fallback needs the equivalent normalized Z.
+    const float XboxDepthMax = 16777215.0f;
+    for (unsigned int i = 0; i < VertexCount; ++i) {
+        float* Z = reinterpret_cast<float*>(&Vertices[i * StrideDwords + 2]);
+        if (*Z <= 0.0f)
+            *Z = 0.0f;
+        else if (*Z >= XboxDepthMax)
+            *Z = 1.0f;
+        else
+            *Z /= XboxDepthMax;
+    }
+}
+
 static void nullD3DSetFixedFunctionFVF(DWORD FVF) {
-    // Push-buffer font/filter packets are translated through D3D9's fixed
-    // function path. Clear the programmable declaration first; D3D9 rejects
-    // DrawPrimitiveUP when the previous declaration and FVF state disagree.
+    // Push-buffer packets use the native D3D9 fixed-function declaration.
+    // Clear both programmable stages before selecting the FVF so DrawPrimitiveUP
+    // cannot retain an Xbox shader handle from the preceding NGL node.
     gD3D9Device->SetVertexShader(NULL);
     gD3D9Device->SetPixelShader(NULL);
+    gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+    gD3D9BuiltVertexFormatValid = false;
     gD3D9Device->SetVertexDeclaration(NULL);
     gD3D9Device->SetFVF(FVF);
+
+    // The Xbox quad path selects either nglGpuTexColPixelShader or
+    // nglGpuColPixelShader immediately before emitting this packet.  The
+    // D3D9 fallback has no Xbox shader microcode, so reproduce that choice
+    // with the equivalent fixed-function texture-stage operations.
+    const bool HasTexture = gNullBoundTextures[0] != NULL;
+    nullD3DInfo* TextureInfo = HasTexture
+        ? nullD3DTextureInfo(gNullBoundTextures[0]) : NULL;
+    // NGL fonts use an A8 glyph mask.  The Xbox font pixel shader preserves
+    // the vertex RGB and uses the sampled alpha for coverage; multiplying the
+    // vertex RGB by an A8 texture's undefined/zero RGB channels makes text
+    // disappear in the D3D9 fixed-function fallback.
+    const bool AlphaMask = TextureInfo != NULL && TextureInfo->Format == D3DFMT_A8;
+    const bool TexturedPCUV = FVF == (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    const DWORD ColorOp = TexturedPCUV
+        ? (HasTexture && !AlphaMask ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
+        : D3DTOP_SELECTARG1;
+    const DWORD AlphaOp = TexturedPCUV
+        ? (HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
+        : D3DTOP_SELECTARG1;
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLOROP, ColorOp);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAOP, AlphaOp);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLORARG1,
+                                       HasTexture ? D3DTA_TEXTURE : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLORARG2, D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG1,
+                                       HasTexture ? D3DTA_TEXTURE : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG2, D3DTA_DIFFUSE);
+    for (unsigned int Stage = 1; Stage < 4; ++Stage) {
+        gD3D9Device->SetTextureStageState(Stage, COD3_D3D9_TSS_COLOROP,
+                                           D3DTOP_DISABLE);
+        gD3D9Device->SetTextureStageState(Stage, COD3_D3D9_TSS_ALPHAOP,
+                                           D3DTOP_DISABLE);
+    }
 }
 
 static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
@@ -1199,9 +1315,10 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
         if (Vertices + 24 <= End) {
             unsigned int NormalizedVertices[24];
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
+            nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 6);
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
             nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
                                          NormalizedVertices, 24);
         }
         return;
@@ -1214,9 +1331,10 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
         if (Vertices + 20 <= End) {
             unsigned int NormalizedVertices[20];
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
+            nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 5);
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 5, 3);
             nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
                                          NormalizedVertices, 20);
         }
         return;
@@ -1239,9 +1357,14 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
         unsigned int DwordCount = (Command - 0x40001818u) >> 18;
         if (DwordCount == 0 || (DwordCount % 24u) != 0 || Cursor + DwordCount > End)
             return;
-        for (unsigned int Offset = 0; Offset < DwordCount; Offset += 24)
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
-                                         Cursor + Offset, 24);
+        for (unsigned int Offset = 0; Offset < DwordCount; Offset += 24) {
+            unsigned int NormalizedVertices[24];
+            memcpy(NormalizedVertices, Cursor + Offset, sizeof(NormalizedVertices));
+            nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 6);
+            nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                         NormalizedVertices, 24);
+        }
         Cursor += DwordCount;
     }
 }
@@ -1274,7 +1397,13 @@ int __stdcall D3DDevice_GetDeviceCaps(_D3DCAPS8* Caps) {
 }
 void __stdcall D3DDevice_InsertCallback(_D3DCALLBACKTYPE, void (*)(unsigned int), unsigned int) {}
 unsigned int __stdcall D3DDevice_InsertFence(void) { return ++gNullFence; }
-void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int*, unsigned int) {}
+void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int*, unsigned int) {
+    // The Win32 port does not have the Xbox microcode payloads. Keep the
+    // D3D9 device in the fixed-function path instead of leaving a stale
+    // programmable shader bound across draws.
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetVertexShader(NULL);
+}
 void __stdcall D3DDevice_PersistDisplay(void) {}
 int __stdcall D3DDevice_Reset(_D3DPRESENT_PARAMETERS_* Params) {
     if (Params != NULL) {
@@ -1389,8 +1518,28 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
                                           NativeValue);
     return 0;
 }
-void __stdcall D3DDevice_SetVertexShader(unsigned int) {}
+void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
+    if (gD3D9Device == NULL)
+        return;
+    // Handle zero is the Xbox API's fixed-function selection. Non-zero
+    // handles are Xbox microcode addresses unavailable to the Win32 backend;
+    // keep the same fixed-function fallback used by push-buffer draws.
+    (void)Handle;
+    gD3D9Device->SetVertexShader(NULL);
+}
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
+void __stdcall D3DDevice_BeginScene(void) {
+    if (gD3D9Device == NULL || gD3D9SceneActive)
+        return;
+    if (SUCCEEDED(gD3D9Device->BeginScene()))
+        gD3D9SceneActive = true;
+}
+void __stdcall D3DDevice_EndScene(void) {
+    if (gD3D9Device == NULL || !gD3D9SceneActive)
+        return;
+    gD3D9Device->EndScene();
+    gD3D9SceneActive = false;
+}
 void __stdcall D3DDevice_SetViewport(const void* ViewportData) {
     if (gD3D9Device == NULL || ViewportData == NULL)
         return;
@@ -1629,24 +1778,37 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
         gD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
         if (gD3D9 != NULL) {
         COD3_D3D9_PRESENT_PARAMETERS NativeParams = {};
-            NativeParams.BackBufferWidth = gNullWidth;
-            NativeParams.BackBufferHeight = gNullHeight;
-            NativeParams.BackBufferFormat = COD3_D3D9_FMT_X8R8G8B8;
+            // In a windowed D3D9 swap chain, zero lets the runtime derive the
+            // back-buffer size from the client area.
+            NativeParams.BackBufferWidth = 0;
+            NativeParams.BackBufferHeight = 0;
+            // D3D9 requires UNKNOWN for a windowed swap chain so it can use
+            // the desktop format; the Xbox presentation format is not a
+            // valid Win32 windowed CreateDevice contract.
+            NativeParams.BackBufferFormat = COD3_D3D9_FMT_UNKNOWN;
             NativeParams.BackBufferCount = 1;
             NativeParams.SwapEffect = COD3_D3D9_SWP_DISCARD;
             NativeParams.hDeviceWindow = nullD3DCreateWindow();
             NativeParams.Windowed = TRUE;
-            NativeParams.EnableAutoDepthStencil = TRUE;
-            NativeParams.AutoDepthStencilFormat = COD3_D3D9_FMT_D24S8;
-            NativeParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+            NativeParams.EnableAutoDepthStencil = FALSE;
+            NativeParams.AutoDepthStencilFormat = COD3_D3D9_FMT_UNKNOWN;
+            NativeParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
             HRESULT Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_HAL,
                                                   NativeParams.hDeviceWindow,
-                                                  D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                                  D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                                   &NativeParams, &gD3D9Device);
+            if (FAILED(Result)) {
+                Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_HAL,
+                                             NativeParams.hDeviceWindow,
+                                             D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                             &NativeParams, &gD3D9Device);
+            }
             if (FAILED(Result)) {
                 gD3D9->Release();
                 gD3D9 = NULL;
             }
+            if (gD3D9Device != NULL)
+                gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
         }
     }
     nullD3DInitDeviceResources();
@@ -1786,11 +1948,16 @@ void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* For
                                                    unsigned int) {
     if (gD3D9Device == NULL || Format == NULL)
         return;
-    nullD3DBuildVertexDeclaration(Format);
-    if (gD3D9VertexDeclaration != NULL)
-        gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+    memcpy(&gD3D9SelectedVertexFormat, Format, sizeof(gD3D9SelectedVertexFormat));
+    gD3D9SelectedVertexFormatValid = true;
 }
-void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {}
+void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {
+    // Xbox pixel-shader microcode is not present in the Win32 reconstruction.
+    // Explicitly clear any native shader so fixed-function texture stages are
+    // used consistently for the translated draw paths.
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetPixelShader(NULL);
+}
 void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
     if (gD3D9Device != NULL)
         gD3D9Device->SetRenderState(COD3_D3D9_RS_CULLMODE,
@@ -1824,7 +1991,10 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     case D3DRS_BLENDCOLOR: NativeState = D3DRS_BLENDFACTOR; break;
     case D3DRS_FOGCOLOR: NativeState = COD3_D3D9_RS_FOGCOLOR; break;
     case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
-    case D3DRS_COLORWRITEENABLE: NativeState = COD3_D3D9_RS_COLORWRITEENABLE; break;
+    case D3DRS_COLORWRITEENABLE:
+        NativeState = COD3_D3D9_RS_COLORWRITEENABLE;
+        NativeValue = nullD3DColorWriteMask(Value);
+        break;
     case D3DRS_SPECULARENABLE: NativeState = COD3_D3D9_RS_SPECULARENABLE; break;
     case D3DRS_CULLMODE:
         NativeState = COD3_D3D9_RS_CULLMODE;
@@ -1848,8 +2018,11 @@ void __stdcall D3DDevice_SetVertexShaderInputDirect(void* VertexFormat,
                                                      const _D3DSTREAM_INPUT* StreamInputs) {
     if (gD3D9Device == NULL)
         return;
-    if (VertexFormat != NULL)
-        nullD3DBuildVertexDeclaration((_D3DVERTEXATTRIBUTEFORMAT*)VertexFormat);
+    if (VertexFormat != NULL) {
+        memcpy(&gD3D9SelectedVertexFormat, VertexFormat, sizeof(gD3D9SelectedVertexFormat));
+        gD3D9SelectedVertexFormatValid = true;
+        nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
+    }
     for (unsigned int i = 0; i < 4; ++i) {
         if (i >= StreamCount || StreamInputs == NULL) {
             gD3D9VertexBuffers[i] = NULL;

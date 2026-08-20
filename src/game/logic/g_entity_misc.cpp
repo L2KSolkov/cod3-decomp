@@ -10,6 +10,7 @@
 #include "game/logic/g_local.h"
 #include "core/mem_heap.h"
 #include "core/tlFixedString.h"
+#include "input/controller.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -1743,8 +1744,10 @@ float random()
 }
 int controller_button_pressed(void* self, int i_controller_num, int i_button)
 {
-    (void)self; (void)i_controller_num; (void)i_button;
-    return 0;
+    controller* pad = self != nullptr ? static_cast<controller*>(self)
+                                       : controller::inst();
+    return pad->button_pressed(i_controller_num,
+                               static_cast<controller::ButtonIndex>(i_button));
 }
 int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
                                        Entity* targEnt, float visThreshold)
@@ -1753,19 +1756,30 @@ int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
     return 0;
 }
 
-// LocalClient namespace (cl.o; stubs, port later)
-extern int LocalClient_PortToValidClient(int port);  // cl.o C bridge
+// LocalClient namespace (canonical implementations live in cl_localclient.cpp).
+extern int LocalClient_PortToValidClient(int port);
+extern void LocalClient_SetFirstLocalClientIndex(int index);
+extern void LocalClient_SetLastLocalClientIndex(int index);
+extern void LocalClient_InitializeClientControllers();
 namespace LocalClient {
 int FirstLocalClientIndex();
 int ClientToPort(int client);
-// ?PortToValidClient@LocalClient@@YAHH@Z (cl.o)
 int PortToValidClient(int port)
 {
     return LocalClient_PortToValidClient(port);
 }
-void SetFirstLocalClientIndex(int index) { (void)index; }
-void SetLastLocalClientIndex(int index) { (void)index; }
-void InitializeClientControllers() {}
+void SetFirstLocalClientIndex(int index)
+{
+    LocalClient_SetFirstLocalClientIndex(index);
+}
+void SetLastLocalClientIndex(int index)
+{
+    LocalClient_SetLastLocalClientIndex(index);
+}
+void InitializeClientControllers()
+{
+    LocalClient_InitializeClientControllers();
+}
 }
 
 // ea: 0x4A6B70 (g.o inline COMDAT)
@@ -2551,13 +2565,22 @@ void Con_UpdateMessageWindowLine(messagewindow_t* w, int a, int b, int c)
 }
 void controller_rumble(void* self, int a, int b, float c)
 {
-    (void)self; (void)a; (void)b; (void)c;
+    controller* pad = self != nullptr ? static_cast<controller*>(self)
+                                       : controller::inst();
+    pad->rumble(a, static_cast<controller::RumbleIndex>(b), c);
 }
 void controller_stick_value(void* self, int a, int b, int* c, int* d)
 {
-    (void)self; (void)a; (void)b; (void)c; (void)d;
+    controller* pad = self != nullptr ? static_cast<controller*>(self)
+                                       : controller::inst();
+    pad->stick_value(a, static_cast<controller::StickIndex>(b), c, d);
 }
-void controller_stop_all_rumble(void* self) { (void)self; }
+void controller_stop_all_rumble(void* self)
+{
+    controller* pad = self != nullptr ? static_cast<controller*>(self)
+                                       : controller::inst();
+    pad->stop_all_rumble();
+}
 void CurveManager_PostEvent(void* self, unsigned int a, unsigned int b, float c)
 {
     (void)self; (void)a; (void)b; (void)c;
@@ -5140,6 +5163,7 @@ enum {
     kLanguageSpanish = 3,
     kLanguageItalian = 4,
     kLanguageUnlocalized = 5,
+    kLanguageCount = 6,
 };
 
 ELanguage gLanguage;                      // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4

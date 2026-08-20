@@ -2130,6 +2130,7 @@ public:
 static_assert(sizeof(PadAliasMgr::Context) == 0x148, "PadAliasMgr::Context size mismatch");
 static_assert(sizeof(PadAliasMgr) == 0x3D8, "PadAliasMgr size mismatch");
 PadAliasMgr* PadAliasMgr::sInst = nullptr;
+extern void* PadAliasMgr_sInst;
 PadAliasMgr* PadAliasMgr::Inst()
 {
     return PadAliasMgr::sInst;
@@ -2154,6 +2155,7 @@ PadAliasMgr* PadAliasMgr::CreateInst()
         sInst = new (memory) PadAliasMgr();
     else
         sInst = nullptr;
+    PadAliasMgr_sInst = sInst;
     return sInst;
 }
 PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
@@ -2341,6 +2343,14 @@ int PadAliasMgr::Context::GetButtonValue(int ctrlNum,
         if (++v4 >= 16)
             return 0;
     }
+}
+
+// C-style bridge used by CG/MP callers that pass a Context pointer at the
+// selected context offset (the original call is Context::GetButtonValue).
+int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias)
+{
+    return static_cast<PadAliasMgr::Context*>(self)->GetButtonValue(
+        ctrlNum, static_cast<EPadAliasButton>(buttonAlias));
 }
 
 // ea: 0x006212A0

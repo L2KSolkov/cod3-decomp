@@ -26,6 +26,7 @@
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
+#include "input/controller.h"
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
@@ -387,17 +388,15 @@ T& ae_array_get(ae_array<T, N>& a, int idx)
 }
 
 // shell.o / render.o C-bridge stubs for MyRenderText
-typedef int font_index;
+enum font_index : int;
 extern font_index FEManager_FindFont(void* fe, const char* name, bool check);
+extern nglFont* FEManager_GetFont(void* fe, font_index f);
 extern nglFont* FEManager_GetFont(void* fe, font_index f, float scale);
+extern nglFont* FEManager_GetFont(void* fe, int f, float scale);
 extern unsigned int extract_color(const Color& col);
 extern void* g_femanager_ptr;
 
 // Cross-object stubs (shell.o / render.o)
-font_index FEManager_FindFont(void* fe, const char* name, bool check)
-{ (void)fe; (void)name; (void)check; return -1; }
-nglFont* FEManager_GetFont(void* fe, font_index f, float scale)
-{ (void)fe; (void)f; (void)scale; return nullptr; }
 unsigned int extract_color(const Color& col)
 {
     unsigned int r = (unsigned int)(col.r * 255.0f);
@@ -930,13 +929,7 @@ AssetBankSet::~AssetBankSet()
     AssetBankSetRemoveSelf(this);
 }
 
-// controller / MultiplayerMgr / nglDebug bridges (cross-object; stubs)
-namespace controller {
-void* inst();
-void poll(void* self);
-}
-void* controller::inst() { return nullptr; }
-void controller::poll(void* self) { (void)self; }
+// controller / MultiplayerMgr / nglDebug bridges (cross-object)
 
 struct MultiplayerMgr;
 MultiplayerMgr* MultiplayerMgr_sInst = nullptr;
@@ -1043,11 +1036,38 @@ void ThroughputMeasurer::reset()
 // FEManager (shell.o; DrawDiscError + UnloadBank stubs)
 struct FEManager {
 public:
+    font_index FindFont(const char* font_filename, bool checkfileext);
+    nglFont* GetFont(font_index f);
+    nglFont* GetFont(font_index f, float scale);
     void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
     void UnloadBank(TPakId pakId);  // ?UnloadBank@FEManager@@QAEXW4TPakId@@@Z (shell.o; stub)
     void UpdateButtonFontForLanguage();  // ?UpdateButtonFontForLanguage@FEManager@@QAEXXZ
 };
 extern FEManager g_femanager;
+
+// ea: 0x665470 callers use these C bridges; dispatch to the original
+// FEManager methods rather than manufacturing a missing-font result.
+font_index FEManager_FindFont(void* fe, const char* name, bool check)
+{
+    return static_cast<FEManager*>(fe)->FindFont(name, check);
+}
+
+nglFont* FEManager_GetFont(void* fe, font_index f, float scale)
+{
+    return static_cast<FEManager*>(fe)->GetFont(f, scale);
+}
+
+nglFont* FEManager_GetFont(void* fe, font_index f)
+{
+    return static_cast<FEManager*>(fe)->GetFont(f);
+}
+
+nglFont* FEManager_GetFont(void* fe, int f, float scale)
+{
+    return static_cast<FEManager*>(fe)->GetFont(
+        static_cast<font_index>(f), scale);
+}
+
 void FEManager::UnloadBank(TPakId pakId)
 {
     (void)pakId;
@@ -2784,6 +2804,7 @@ public:
     uint8_t _pad20[0x24 - 0x20];
     InplaceVector<const ZdNode*> mZdNodes;   // +0x24
     const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ
+    const ZdNode* GetZdNode(const math::Position3& position);
 };
 
 // StreamZone (streamer.o view; mName +0x20, mPakInfo +0x24)
@@ -2810,7 +2831,7 @@ public:
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
     bool BoundsIntersect(const math::Position3& p) const;  // stub (BoundingBox::intersect)
     const ZdNode* GetZdNode(const math::Position3& position,
-                            bool force) const;  // ?GetZdNode@ZoneCellDesc@@QBEPBVZdNode@@ABVPosition3@math@@_N@Z (stub)
+                            bool force);  // ?GetZdNode@ZoneCellDesc@@QAEPBVZdNode@@ABVPosition3@math@@_N@Z
 };
 
 // StreamZoneManager (streamer.o; verified IDA: anonymous 0x190-byte head
@@ -7312,13 +7333,13 @@ void MyRenderText(const char* str, int x, int y, const Color& col,
                   float depth, float size)
 {
     static int S12_3_guard = 0;
-    static font_index font = -1;
+    static font_index font = static_cast<font_index>(-1);
     static nglFont* cached_font = nullptr;
     if ((S12_3_guard & 1) == 0)
     {
         S12_3_guard |= 1;
         font = FEManager_FindFont(&g_femanager, "i_helvetica_bold", false);
-        cached_font = FEManager_GetFont(&g_femanager, font, 1.0f);
+        cached_font = FEManager_GetFont(&g_femanager, font);
     }
     nglFont* Font = cached_font;
     if (nglSysFont != nullptr)
@@ -7695,6 +7716,7 @@ enum ELanguage : int {
     kLanguageSpanish = 3,
     kLanguageItalian = 4,
     kLanguageUnlocalized = 5,
+    kLanguageCount = 6,
 };
 extern ELanguage gLanguage;  // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
 bool gCE = false;            // ?gCE@@3_NA @ 0xF91714
@@ -8138,7 +8160,7 @@ TPakId PakManager::SyncLoadPak(EPakType pak_type, const char* path,
     }
     do
     {
-        controller::poll(controller::inst());
+        controller::inst()->poll();
         Update(false);
     } while (mState == STATE_LOADING);
     return Pak;
@@ -8166,7 +8188,7 @@ TPakId PakManager::SyncLoadPak(const PakInfoNode* cpak)
             do
             {
                 Update(false);
-                controller::poll(controller::inst());
+                controller::inst()->poll();
             } while (mState == STATE_LOADING);
         }
         return cpak->pakId;
@@ -8183,7 +8205,7 @@ void PakManager::FillBanks()
     do
     {
         Update(false);
-        controller::poll(controller::inst());
+        controller::inst()->poll();
         MultiplayerMgr_Step(MultiplayerMgr_sInst, 0, !gMPLoadingUnthreaded,
                             true);
     } while (!mFilled);
@@ -8883,7 +8905,7 @@ void cdLoadFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
     nglFont* Data = (nglFont*)Entry->GetData(File, SectionIndex, true);
     if (Data != nullptr)
     {
-        int* p_Width = (int*)Data->Texture;
+        int* p_Width = &Data->Texture->Width;
         Data->MapFlags = 1;
         Data->BlendMode = 0x64CF8600;
         float invW = 1.0f / (float)p_Width[0];
@@ -11724,20 +11746,47 @@ const ZdNode* ZoneBoundaryBank::GetZdNode(int cellId,
             && AeAssert::Assert("bad bounding box on cell?"))
             __debugbreak();
     }
-    return v4->GetZdNode(*position, false);
+    return const_cast<ZoneCellDesc*>(v4)->GetZdNode(*position, false);
 }
 
 bool ZoneCellDesc::BoundsIntersect(const math::Position3& p) const
 {
-    (void)p;
-    return true;  // stub: BoundingBox::intersect (game.o)
+    return mAabb.intersect(p);
+}
+
+const ZdNode* ZoneCellBox::GetZdNode(const math::Position3& position)
+{
+    const ZdNode* nearest = nullptr;
+    float nearestDistance = 3.4028235e38f;
+    for (unsigned int i = 0; i < mZdNodes.mSize; ++i)
+    {
+        const ZdNode* node = mZdNodes.mList[i];
+        __m128 delta = _mm_sub_ps(node->mPosition.v, position.v);
+        __m128 squared = _mm_mul_ps(delta, delta);
+        float distance = squared.m128_f32[0]
+                       + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+                       + _mm_shuffle_ps(squared, squared, 170).m128_f32[0];
+        if (nearestDistance > distance)
+        {
+            nearestDistance = distance;
+            nearest = node;
+        }
+    }
+    return nearest;
 }
 
 const ZdNode* ZoneCellDesc::GetZdNode(const math::Position3& position,
-                                      bool force) const
+                                      bool force)
 {
-    (void)position; (void)force;
-    return nullptr;  // stub: game.o
+    (void)force;
+    const ZdNode* result = nullptr;
+    for (unsigned int i = 0; i < mCellBoxes.mSize; ++i)
+    {
+        ZoneCellBox* box = const_cast<ZoneCellBox*>(mCellBoxes.mList[i]);
+        if (box->mAabb.intersect(position))
+            result = box->GetZdNode(position);
+    }
+    return result;
 }
 
 // ea: 0x00686B20
@@ -14772,7 +14821,8 @@ void DecodeAnimMatrix(const char* name, unsigned char* data, unsigned int size,
 void DecodeFont(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    // ea: 0x677840
+    cdLoadApkInplace(name, data, (int)size, pakId, pak);
 }
 // ea: 0x66F590
 void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
@@ -14836,7 +14886,8 @@ void DecodeConfigStrings(const char* name, unsigned char* data, unsigned int siz
 void DecodeTexture(const char* name, unsigned char* data, unsigned int size,
                    TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    // ea: 0x677830
+    cdLoadApkInplace(name, data, (int)size, pakId, pak);
 }
 
 // ea: 0x665350

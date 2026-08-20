@@ -17,7 +17,7 @@ struct LanguageName {
 LanguageName sLanguageNames[6] = {
     {"English", kLanguageEnglish}, {"German", kLanguageGerman},
     {"French", kLanguageFrench}, {"Spanish", kLanguageSpanish},
-    {"Italian", kLanguageItalian}, {"Unlocalized", kLanguageJapanese},
+    {"Italian", kLanguageItalian}, {"Unlocalized", kLanguageUnlocalized},
 };
 const char* sLanguageIds[6] = {"en", "de", "fr", "sp", "it", "un"};
 // IDA's dword_DD8B74 symbol aliases the enum members in sLanguageNames;

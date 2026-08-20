@@ -600,8 +600,10 @@ void nglListSendBatch(jqBatch* Batch) {
     D3DDevice_InsertCallback(
         D3DCALLBACK_WRITE,
         reinterpret_cast<void (*)(unsigned int)>(nglRenderStartCallback), 0);
+    D3DDevice_BeginScene();
     nglRenderScene();
     nglPostProcessFiltersTex();
+    D3DDevice_EndScene();
     gpuHashVertexBuffer = 0;
     gpuHashVertexFormat = 0;
     D3DDevice_SetVertexShaderInputDirect(NULL, 0, NULL);

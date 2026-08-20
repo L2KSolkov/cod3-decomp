@@ -28,6 +28,97 @@ unsigned minUnsigned(unsigned left, unsigned right) {
     return left < right ? left : right;
 }
 
+static const int kImaIndexTable[16] = {
+    -1, -1, -1, -1, 2, 4, 6, 8,
+    -1, -1, -1, -1, 2, 4, 6, 8
+};
+static const int kImaStepTable[89] = {
+    7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
+    19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
+    50, 55, 60, 66, 73, 80, 88, 97, 107, 118,
+    130, 143, 157, 173, 190, 209, 230, 253, 279, 307,
+    337, 371, 408, 449, 494, 544, 598, 658, 724, 796,
+    876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066,
+    2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358,
+    5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
+    15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
+};
+
+static int clampSample(int value) {
+    return value < -32768 ? -32768 : (value > 32767 ? 32767 : value);
+}
+
+static int xboxAdpcmDelta(int step, unsigned nibble) {
+    int delta = step >> 3;
+    if ((nibble & 1u) != 0)
+        delta += step >> 2;
+    if ((nibble & 2u) != 0)
+        delta += step >> 1;
+    if ((nibble & 4u) != 0)
+        delta += step;
+    return (nibble & 8u) != 0 ? -delta : delta;
+}
+
+// Xbox ADPCM uses the IMA predictor/index tables with 36 bytes per channel
+// block: a four-byte channel header followed by eight four-byte nibble chunks.
+// Stereo blocks interleave one chunk for each channel after both headers.
+static bool decodeXboxAdpcm(const unsigned char* input, unsigned size,
+                            unsigned channels, unsigned blockAlign,
+                            std::vector<unsigned char>& output) {
+    if (input == nullptr || channels == 0 || channels > 2 ||
+        blockAlign != 36u * channels || size == 0 || size % blockAlign != 0)
+        return false;
+
+    constexpr unsigned kSamplesPerBlock = 65;
+    constexpr unsigned kChunksPerBlock = 8;
+    constexpr unsigned kSamplesPerChunk = 8;
+    const unsigned blockCount = size / blockAlign;
+    output.clear();
+    output.reserve(static_cast<size_t>(blockCount) * kSamplesPerBlock *
+                   channels * sizeof(short));
+    for (unsigned block = 0; block < blockCount; ++block) {
+        const unsigned char* bytes = input + block * blockAlign;
+        int samples[2][kSamplesPerBlock] = {};
+        int indices[2] = {};
+        unsigned cursor = 0;
+        for (unsigned channel = 0; channel < channels; ++channel) {
+            samples[channel][0] = static_cast<short>(
+                static_cast<unsigned short>(bytes[cursor]) |
+                (static_cast<unsigned short>(bytes[cursor + 1]) << 8));
+            indices[channel] = std::min<unsigned>(bytes[cursor + 2], 88u);
+            cursor += 4;
+        }
+        for (unsigned chunk = 0; chunk < kChunksPerBlock; ++chunk) {
+            for (unsigned channel = 0; channel < channels; ++channel) {
+                unsigned packed = static_cast<unsigned>(bytes[cursor]) |
+                    (static_cast<unsigned>(bytes[cursor + 1]) << 8) |
+                    (static_cast<unsigned>(bytes[cursor + 2]) << 16) |
+                    (static_cast<unsigned>(bytes[cursor + 3]) << 24);
+                cursor += 4;
+                for (unsigned sample = 0; sample < kSamplesPerChunk; ++sample) {
+                    const unsigned nibble = packed & 0xFu;
+                    const int step = kImaStepTable[indices[channel]];
+                    samples[channel][1 + chunk * kSamplesPerChunk + sample] =
+                        clampSample(samples[channel][chunk * kSamplesPerChunk + sample] +
+                                    xboxAdpcmDelta(step, nibble));
+                    indices[channel] = clampInt(
+                        indices[channel] + kImaIndexTable[nibble], 0, 88);
+                    packed >>= 4;
+                }
+            }
+        }
+        for (unsigned sample = 0; sample < kSamplesPerBlock; ++sample) {
+            for (unsigned channel = 0; channel < channels; ++channel) {
+                const short value = static_cast<short>(samples[channel][sample]);
+                const unsigned char* raw = reinterpret_cast<const unsigned char*>(&value);
+                output.push_back(raw[0]);
+                output.push_back(raw[1]);
+            }
+        }
+    }
+    return true;
+}
+
 struct HostWaveBlock {
     WAVEHDR header{};
     std::vector<unsigned char> bytes;
@@ -42,6 +133,16 @@ public:
         if (std::memcmp(&m_format, &format, sizeof(format)) != 0) {
             reset();
             m_format = format;
+            m_outputFormat = format;
+            if (format.wFormatTag == 105u) {
+                m_outputFormat.wFormatTag = WAVE_FORMAT_PCM;
+                m_outputFormat.wBitsPerSample = 16;
+                m_outputFormat.nBlockAlign = static_cast<unsigned short>(
+                    format.nChannels * sizeof(short));
+                m_outputFormat.nAvgBytesPerSec =
+                    format.nSamplesPerSec * m_outputFormat.nBlockAlign;
+                m_outputFormat.cbSize = 0;
+            }
         }
     }
     void setVolume(int volumeDb) { m_volumeDb = volumeDb; }
@@ -51,15 +152,27 @@ public:
             m_format.nSamplesPerSec = frequency;
             m_format.nAvgBytesPerSec =
                 frequency * static_cast<unsigned>(m_format.nBlockAlign);
+            m_outputFormat.nSamplesPerSec = frequency;
+            m_outputFormat.nAvgBytesPerSec =
+                frequency * static_cast<unsigned>(m_outputFormat.nBlockAlign);
         }
     }
     bool submit(const void* data, unsigned size) {
         reap();
-        if (data == nullptr || size == 0 || !open())
+        std::vector<unsigned char> decoded;
+        const unsigned char* source = static_cast<const unsigned char*>(data);
+        if (m_format.wFormatTag == 105u) {
+            if (!decodeXboxAdpcm(source, size, m_format.nChannels,
+                                 m_format.nBlockAlign, decoded))
+                return false;
+            source = decoded.data();
+            size = static_cast<unsigned>(decoded.size());
+        }
+        if (source == nullptr || size == 0 || !open())
             return false;
         auto* block = new HostWaveBlock();
         block->bytes.resize(size);
-        std::memcpy(block->bytes.data(), data, size);
+        std::memcpy(block->bytes.data(), source, size);
         applyVolume(block->bytes.data(), size);
         block->header.lpData = reinterpret_cast<LPSTR>(block->bytes.data());
         block->header.dwBufferLength = size;
@@ -113,14 +226,15 @@ private:
     bool open() {
         if (m_device != nullptr)
             return true;
-        if (m_format.wFormatTag != WAVE_FORMAT_PCM ||
-            m_format.nChannels == 0 || m_format.nSamplesPerSec == 0 ||
-            (m_format.wBitsPerSample != 8 && m_format.wBitsPerSample != 16))
+        if (m_outputFormat.wFormatTag != WAVE_FORMAT_PCM ||
+            m_outputFormat.nChannels == 0 || m_outputFormat.nSamplesPerSec == 0 ||
+            (m_outputFormat.wBitsPerSample != 8 &&
+             m_outputFormat.wBitsPerSample != 16))
             return false;
         WAVEFORMATEX format{};
         static_assert(sizeof(format) == sizeof(tWAVEFORMATEX),
                       "Win32 and IDA WAVEFORMATEX layouts differ");
-        std::memcpy(&format, &m_format, sizeof(format));
+        std::memcpy(&format, &m_outputFormat, sizeof(format));
         const MMRESULT result = waveOutOpen(
             &m_device, WAVE_MAPPER, &format,
             reinterpret_cast<DWORD_PTR>(&waveCallback),
@@ -145,14 +259,14 @@ private:
             return;
         const float gain = std::exp2(
             static_cast<float>(m_volumeDb) * 0.0016609640474436812f);
-        if (m_format.wBitsPerSample == 16) {
+        if (m_outputFormat.wBitsPerSample == 16) {
             auto* samples = reinterpret_cast<short*>(data);
             const unsigned count = size / sizeof(short);
             for (unsigned i = 0; i < count; ++i) {
                 const int value = static_cast<int>(std::lround(samples[i] * gain));
                 samples[i] = static_cast<short>(clampInt(value, -32768, 32767));
             }
-        } else if (m_format.wBitsPerSample == 8) {
+        } else if (m_outputFormat.wBitsPerSample == 8) {
             for (unsigned i = 0; i < size; ++i) {
                 const int value = static_cast<int>(std::lround(
                     (static_cast<int>(data[i]) - 128) * gain)) + 128;
@@ -162,6 +276,7 @@ private:
     }
     HWAVEOUT m_device = nullptr;
     tWAVEFORMATEX m_format{};
+    tWAVEFORMATEX m_outputFormat{};
     int m_volumeDb = 0;
     std::mutex m_mutex;
     std::vector<HostWaveBlock*> m_blocks;

@@ -13,6 +13,7 @@
 extern unsigned int dword_BC2CFC;
 extern unsigned int dword_BC2D80;
 extern unsigned int dword_40304;
+extern unsigned int dword_417FC;
 
 // d3d8d data (owned by d3d8d:state.obj)
 extern unsigned int D3D__DirtyFlags;
@@ -98,6 +99,15 @@ void nglRenderQuad(nglQuad* Quad) {
         }
         pixelShader = nglGpuTexColPixelShader::Shader;
     } else {
+        // The Xbox color-only shader ignores any texture left bound by the
+        // previous draw.  The D3D9 fixed-function fallback must make that
+        // implicit shader input explicit before translating the packet.
+        // Keep the NGL cache in sync with the native stage. Otherwise the
+        // next quad using the same texture can be incorrectly skipped by
+        // nglDxSetTexture after this untextured draw.
+        nglDxTexCache.Prev[0].Tex = NULL;
+        nglDxTexCache.Prev[0].TexHash = (unsigned int)-1;
+        D3DDevice_SetTexture(0, NULL);
         nglDxInitShaders(false);
         if (nglGpuQuadPCVertexShader::Shader != gpuHashVertexShader) {
             gpuHashVertexShader = nglGpuQuadPCVertexShader::Shader;
@@ -131,7 +141,7 @@ void nglRenderQuad(nglQuad* Quad) {
     D3DDevice_SetIndices(NULL, 0);
 
     nglXbPushQuad.PB = D3DDevice_BeginPush(0x1D);
-    *nglXbPushQuad.PB = 0xFFFFFFFF;  // NOP
+    *nglXbPushQuad.PB = dword_417FC;
     nglXbPushQuad.PB[1] = 8;
     nglXbPushQuad.PB[2] = 1080039448;
     nglXbPushQuad.PB += 3;
@@ -148,7 +158,7 @@ void nglRenderQuad(nglQuad* Quad) {
         *nglXbPushQuad.PB++ = *(unsigned int*)&v.V;
     }
 
-    *nglXbPushQuad.PB = 0xFFFFFFFF;  // NOP
+    *nglXbPushQuad.PB = dword_417FC;
     nglXbPushQuad.PB[1] = 0;
     nglXbPushQuad.PB += 2;
     D3DDevice_EndPush(nglXbPushQuad.PB);

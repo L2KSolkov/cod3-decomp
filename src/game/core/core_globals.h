@@ -24,8 +24,8 @@ enum ELanguage {
     kLanguageFrench = 2,
     kLanguageSpanish = 3,
     kLanguageItalian = 4,
-    kLanguageJapanese = 5,
-    kLanguageUnlocalized = 6,
+    kLanguageUnlocalized = 5,
+    kLanguageCount = 6,
 };
 class ae_heap;
 

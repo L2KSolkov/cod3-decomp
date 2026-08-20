@@ -34,33 +34,8 @@ struct AnimBank;
 class AnimBankManager {
 public:
     static AnimBankManager* CreateInst();
-    AnimBank* GetBank(TPakId pak_id);
-    void UnloadAll();
 };
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
-
-AnimBank* AnimBankManager::GetBank(TPakId pak_id)
-{
-    (void)pak_id;
-    return nullptr;
-}
-extern void* AnimBankManager_sInst;
-void* AnimBankManager_GetBank(void* self, TPakId pak_id)
-{
-    return ((AnimBankManager*)self)->GetBank(pak_id);
-}
-void* AnimBankManager_GetBank(void* self, int pak_id)
-{
-    return ((AnimBankManager*)self)->GetBank((TPakId)pak_id);
-}
-void AnimBankManager_UnloadAll(void* self)
-{
-    (void)self;
-}
-void AnimBankManager_UnloadAll()
-{
-    (void)AnimBankManager_sInst;
-}
 
 // j_nullsub_N no-op stubs. IDA-invented names for linker thunks that jump to
 // nullsubs (do-nothing functions); binary semantics are exactly no-ops.

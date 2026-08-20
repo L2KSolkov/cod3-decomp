@@ -36,6 +36,20 @@ extern unsigned int dword_417FC;
 extern unsigned int dword_BC2D80;
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+// IDA's Render disassembly stores the PCUV vertex fields with MOVSS at
+// offsets 0, 4, 8, 16, and 20, with the packed color dword at offset 12.
+// Keep the command stream as dwords, but use the actual vertex field types
+// when writing the inline array.
+struct nglFontPCUVVertex {
+    float X;
+    float Y;
+    float Z;
+    unsigned int Color;
+    float U;
+    float V;
+};
+static_assert(sizeof(nglFontPCUVVertex) == 0x18, "ngl font PCUV layout");
+
 // ============================================================================
 // nglStringNode::Render - ea: 0x853A70
 // ============================================================================
@@ -101,6 +115,7 @@ void nglStringNode::Render() {
                 }
                 v9[0] = (PBArraySize << 18) + 1073747992;
                 ++v9;
+                nglFontPCUVVertex* Vertex = reinterpret_cast<nglFontPCUVVertex*>(v9);
                 if (v10->Length != 0) {
                     // SetMeasures writes both components of each output pair.
                     // Keep those pairs explicit; the release passes adjacent
@@ -122,31 +137,36 @@ void nglStringNode::Render() {
                         float y2 = size[1] + y1;
                         float u2 = uvsize[0] + u1;
                         float v2f = uvsize[1] + v1;
-                        v9[0] = x1;
-                        v9[1] = y1;
-                        v9[2] = Z;
-                        v9[3] = Color;
-                        v9[4] = u1;
-                        v9[5] = v2f;
-                        v9[6] = x2;
-                        v9[7] = y1;
-                        v9[8] = Z;
-                        v9[9] = Color;
-                        v9[10] = u2;
-                        v9[11] = v2f;
-                        v9[12] = x2;
-                        v9[13] = y2;
-                        v9[14] = Z;
-                        v9[15] = Color;
-                        v9[16] = u2;
-                        v9[17] = y2;
-                        v9[18] = x1;
-                        v9[19] = y2;
-                        v9[20] = Z;
-                        v9[21] = Color;
-                        v9[22] = u1;
-                        v9[23] = y2;
-                        v9 += 24;
+                        Vertex[0].X = x1;
+                        Vertex[0].Y = y1;
+                        Vertex[0].Z = Z;
+                        Vertex[0].Color = Color;
+                        Vertex[0].U = u1;
+                        Vertex[0].V = v1;
+                        Vertex[1].X = x2;
+                        Vertex[1].Y = y1;
+                        Vertex[1].Z = Z;
+                        Vertex[1].Color = Color;
+                        Vertex[1].U = u2;
+                        Vertex[1].V = v1;
+                        Vertex[2].X = x2;
+                        Vertex[2].Y = y2;
+                        Vertex[2].Z = Z;
+                        Vertex[2].Color = Color;
+                        Vertex[2].U = u2;
+                        Vertex[2].V = v2f;
+                        Vertex[3].X = x1;
+                        Vertex[3].Y = y2;
+                        Vertex[3].Z = Z;
+                        Vertex[3].Color = Color;
+                        Vertex[3].U = u1;
+                        Vertex[3].V = v2f;
+                        // Advance the inline vertex stream for this glyph.
+                        // The push header reserves 24 dwords per character;
+                        // keeping Vertex fixed would overwrite glyph zero and
+                        // leave the packet shorter than its declared count.
+                        Vertex += 4;
+                        v9 = reinterpret_cast<unsigned int*>(Vertex);
                         Position = (float)this->Font->GetCellWidth(c) * Scale + Position;
                         ++this->Section->Text;
                     }

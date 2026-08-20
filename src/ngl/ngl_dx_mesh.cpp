@@ -41,9 +41,8 @@ _D3DVERTEXATTRIBUTEFORMAT* nglGetVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Sr
         while (1) {
             _D3DVERTEXATTRIBUTEFORMAT* VertexDeclaration = Entry->VertexDeclaration;
             unsigned int v3 = 0;
-            const char* v4 = (const char*)(Src - VertexDeclaration);
-            for (const char* i = v4; ; v4 = i) {
-                const char* v5 = (const char*)VertexDeclaration + (size_t)v4;
+            for (;;) {
+                const char* v5 = (const char*)Src + (v3 * 16);
                 const unsigned short* v7 = (const unsigned short*)VertexDeclaration;
                 bool v8 = true;
                 for (int v6 = 7; v6 != 0; --v6) {

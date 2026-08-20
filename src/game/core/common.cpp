@@ -6,6 +6,7 @@
 #include "game/core/core_types.h"
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
+#include "input/controller.h"
 
 // ?gSoundOptions@@3VSoundOptions@@A (core.o @ 0xF00EF0)
 SoundOptions gSoundOptions;
@@ -362,21 +363,9 @@ struct parseInfo_t {
 extern const char* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
 extern void Com_EndParseSession();
-class controller {
-public:
-    enum ButtonIndex {
-        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
-        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7, R1 = 8, L1 = 9,
-        R2 = 10, L2 = 11, R3 = 12, L3 = 13, START = 14, SELECT = 15,
-    };
-    static controller* inst();
-    bool controller_is_connected(int index);
-    bool button_pressed_clear(int index, ButtonIndex btn);
-};
-// controller_num_controllers artifact (controller_xboxr; stub)
 int controller_num_controllers()
 {
-    return 4;
+    return controller::inst()->get_num_controllers();
 }
 namespace LocalClient { extern int ClientToPort(int client); }
 extern void* STBManager_sInst;

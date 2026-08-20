@@ -43,6 +43,19 @@ struct _D3DVIEWPORT8 {
 static_assert(sizeof(_D3DVIEWPORT8) == 0x18, "_D3DVIEWPORT8 size mismatch");
 typedef _D3DVIEWPORT8 D3DVIEWPORT8;
 
+// Xbox D3D8 clear-rectangle type (from the IDA local type database).  The
+// native D3D9 headers provide the same layout when they are included first.
+#ifndef D3DRECT_DEFINED
+struct _D3DRECT {
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+};
+typedef _D3DRECT D3DRECT;
+#define D3DRECT_DEFINED
+#endif
+
 // ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
 enum _D3DCUBEMAP_FACES {
     D3DCUBEMAP_FACE_POSITIVE_X = 0,
@@ -526,7 +539,7 @@ void         __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int Value);
 void         __stdcall D3DDevice_SetViewport(const void* pViewport);
-void         __stdcall D3DDevice_Clear(unsigned int a1, unsigned int a2,
+void         __stdcall D3DDevice_Clear(unsigned int Count, const _D3DRECT* pRects,
                                        unsigned int Flags, unsigned int Color,
                                        float Z, unsigned int Stencil);
 void         __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned int Value);
@@ -538,6 +551,8 @@ int          __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Sta
                                                                 unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_YuvEnable(unsigned int Value);
 void         __stdcall D3DDevice_Swap(unsigned int Flags);
+void         __stdcall D3DDevice_BeginScene(void);
+void         __stdcall D3DDevice_EndScene(void);
 void         __stdcall D3DDevice_BlockUntilIdle(void);
 unsigned int __stdcall D3DDevice_InsertFence(void);
 void         __stdcall D3DDevice_BlockOnFence(unsigned int Time);

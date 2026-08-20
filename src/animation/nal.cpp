@@ -19941,6 +19941,29 @@ void AnimBankManager::UnloadAll()
         mBankArray[i] = nullptr;
 }
 
+// Win32 call-site bridges use the existing release-compatible helper names,
+// while the implementation must dispatch through the real AnimBankManager
+// layout above rather than the old linker-only placeholder.
+void* AnimBankManager_GetBank(void* self, TPakId pakId)
+{
+    return ((AnimBankManager*)self)->GetBank(pakId);
+}
+
+void* AnimBankManager_GetBank(void* self, int pakId)
+{
+    return ((AnimBankManager*)self)->GetBank((TPakId)pakId);
+}
+
+void AnimBankManager_UnloadAll(void* self)
+{
+    ((AnimBankManager*)self)->UnloadAll();
+}
+
+void AnimBankManager_UnloadAll()
+{
+    ((AnimBankManager*)AnimBankManager_sInst)->UnloadAll();
+}
+
 // ea: 0x0054B980
 void AnimBankManager::DecodeAnimBank(const char* name, unsigned char* data,
                                      int size, TPakId pakId)

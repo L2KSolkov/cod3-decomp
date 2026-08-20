@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 #include "game/platform_xbox/MemoryUnitManager.h"
+#include "input/controller.h"
 
 extern const char defaultFileName[];  // 0xCD67AE
 
@@ -29,45 +30,6 @@ struct nglTexture;
 class nglFont;
 class PanelMaterial;
 
-// Minimal controller view (full impl in input/controller.cpp; manglings match)
-class controller {
-public:
-    enum ButtonIndex {
-        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
-        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7, R1 = 8, L1 = 9,
-        R2 = 10, L2 = 11, R3 = 12, L3 = 13, START = 14, SELECT = 15,
-    };
-    enum StickIndex {
-        LEFTSTICK = 0,
-        RIGHTSTICK = 1,
-    };
-    static controller* inst();          // ?inst@controller@@SAPAV1@XZ
-    static int num_controllers;         // ?num_controllers@controller@@2HA
-    void poll();                        // ?poll@controller@@QAEXXZ
-    bool any_button_pressed(int* p_controller);  // ?any_button_pressed@controller@@QAE_NPAH@Z
-    void button_pressed_clear_all();    // ?button_pressed_clear_all@controller@@QAEXXZ
-    bool button_pressed_clear(int index, ButtonIndex btn);  // controller.o
-    bool button_released_clear(int index, ButtonIndex btn); // controller.o
-    bool button_pressed(ButtonIndex btn, int* p_controller);  // controller.o
-    bool button_pressed(int controller, ButtonIndex btn);     // ?button_pressed@controller@@QAE_NHW4ButtonIndex@1@@Z
-    int  button_value(int controller, ButtonIndex btn);       // ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z (controller.o)
-    bool button_released(ButtonIndex btn, int* p_controller); // controller.o
-    int  stick_value_x(StickIndex stick, int* p_controller);  // controller.o
-    int  stick_value_x(int controller, StickIndex stick);     // ?stick_value_x@controller@@QAEHHW4StickIndex@1@@Z
-    int  stick_value_y(StickIndex stick, int* p_controller);  // controller.o
-    int  stick_value_y(int controller, StickIndex stick);     // ?stick_value_y@controller@@QAEHHW4StickIndex@1@@Z
-    void stick_value(int controller, StickIndex stick, int& x,
-                     int& y);                                 // ?stick_value@controller@@QAEXHW4StickIndex@1@AAH1@Z
-    void (*button_value_fn)(int*);
-    void (*button_released_fn)(int*);
-    void (*button_released_clear_fn)(int*);
-    void (*button_pressed_fn)(int*);
-    void (*button_pressed_clear_fn)(int*);
-    void (*stick_value_fn)(int*, int*);
-    int  locked_port;
-    bool is_locked;
-    bool accepting_input_from_controller[4];
-};
 
 // ============================================================================
 // color32 â€” 32-bit RGBA color (4 bytes) â€” verified against IDA

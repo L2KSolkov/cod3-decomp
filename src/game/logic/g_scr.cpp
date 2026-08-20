@@ -973,7 +973,8 @@ void UpdateEntityHash(Entity* ent)
 // ============================================================================
 // AnimBankManager / AnimBank
 // ============================================================================
-struct AnimBank {
+class AnimBank {
+public:
     InplaceVector<AnimTree> anims;  // +0x00
     void* mPtrFixupTable;           // +0x08
 };
