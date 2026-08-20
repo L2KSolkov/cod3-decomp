@@ -420,7 +420,7 @@
 }
 
 // ea: 0x0077C300  (?Actor_Cover_PickAttackScript@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@@Z)
-    int __fastcall Actor_Cover_PickAttackScript(actor_s*, PathNodes::PathNode*, sentient_s*)
+    const int __fastcall Actor_Cover_PickAttackScript(actor_s*, PathNodes::PathNode*, sentient_s*)
 {
     return 0;
 }

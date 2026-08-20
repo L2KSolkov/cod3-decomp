@@ -14680,7 +14680,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14679	0x0077C2D0	0x00B6B7D0	?Actor_CanShootEnemy@@YIHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14680	0x0077C2E0	0x00B6B7E0	?Actor_CanHear@@YIHPAUactor_s@@QBMMM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14681	0x0077C2F0	0x00B6B7F0	?Actor_UpdateSight@@YIXPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-14682	0x0077C300	0x00B6B800	?Actor_Cover_PickAttackScript@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14682	0x0077C300	0x00B6B800	?Actor_Cover_PickAttackScript@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14683	0x0077C310	0x00B6B810	?Actor_Cover_CanAttack@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@PAPAUscr_animscript_t@@_N@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14684	0x0077C320	0x00B6B820	?Actor_Cover_FindCoverNearSelf@@YI?BHPAUactor_s@@H@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14685	0x0077C330	0x00B6B830	?Actor_Cover_FindCoverNearPoint@@YI?BHPAUactor_s@@QBM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
