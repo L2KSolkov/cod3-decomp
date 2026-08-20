@@ -1,5 +1,5 @@
 index	status	map_line
-1	PORTED	0002:0037bcf0 ?do_it@?$endian_reverser_t@$00@@SAXPAE@Z 00B6B1F0 f i mp_actors.o
+1	SKIPPED	0002:0037bcf0 ?do_it@?$endian_reverser_t@$00@@SAXPAE@Z 00B6B1F0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 2	PORTED	0002:0037bd00 ??9NodeHandle@PathNodes@@QBE_NABV01@@Z 00B6B200 f i mp_actors.o
 3	VERIFIED	0002:0037bd20 ?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z 00B6B220 f i mp_actors.o
 4	VERIFIED	0002:0037bdb0 ?Spawner@AIType@@QAEXPAVEntity@@@Z 00B6B2B0 f mp_actors.o
@@ -367,7 +367,7 @@ index	status	map_line
 366	VERIFIED	0002:003859c0 ?ChooseDesperationChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z 00B74EC0 f mp_actors.o
 367	VERIFIED	0002:00385ca0 ?InitEnt@AIType@@QAEXPAVEntity@@@Z 00B751A0 f mp_actors.o
 368	VERIFIED	0002:00385e90 ?InitActor@AIType@@QAEXPAUactor_s@@@Z 00B75390 f mp_actors.o
-369	VERIFIED	0002:00386170 ?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z 00B75670 f mp_actors.o
+369	SKIPPED	0002:00386170 ?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z 00B75670 f mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 370	VERIFIED	0002:003861b0 ?G_TouchTriggersAndVehicles@@YAXPAVEntity@@ABVPosition3@math@@ABUcollision_context_t@@@Z 00B756B0 f mp_actors.o
 371	VERIFIED	0002:00386340 ?Sentient_SetDesiredChainNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z 00B75840 f mp_actors.o
 372	VERIFIED	0002:003864a0 ?Sentient_ClaimChainNode@@YIXPAUsentient_s@@@Z 00B759A0 f mp_actors.o
@@ -385,51 +385,51 @@ index	status	map_line
 384	VERIFIED	0002:0038a850 ?GetNode@PathNodeMgr@@QBEPBUPathNode@PathNodes@@ABVNodeHandle@3@@Z 00B79D50 f i mp_actors.o
 385	PORTED	0002:0038a910 ?IsEmpty@PathNodeMgr@@QBE_NXZ 00B79E10 f i mp_actors.o
 386	PORTED	0002:0038a930 ??0PathLink@PathNodes@@QAE@XZ 00B79E30 f i mp_actors.o
-387	PORTED	0002:0038a940 ?size@?$InplaceVector@VCharacterType@@@@QBEIXZ 00B79E40 f i mp_actors.o
-388	PORTED	0002:0038a950 ??A?$InplaceVector@VCharacterType@@@@QAEAAVCharacterType@@I@Z 00B79E50 f i mp_actors.o
-389	PORTED	0002:0038a9d0 ??1?$InplaceAssetBankSet@VAITypeBank@@@@UAE@XZ 00B79ED0 f i mp_actors.o
-390	PORTED	0002:0038a9e0 ?OnBankUnloaded@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXAAVAITypeBank@@@Z 00B79EE0 f i mp_actors.o
-391	PORTED	0002:0038a9f0 ?capacity@?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QBEHXZ 00B79EF0 f i mp_actors.o
-392	PORTED	0002:0038aa00 ??A?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QAEAAPAUPathNode@PathNodes@@H@Z 00B79F00 f i mp_actors.o
-393	PORTED	0002:0038aa80 ??_G?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o
-394	PORTED	0002:0038aa80 ??_E?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o
-395	PORTED	0002:0038aab0 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QAEAAPAVAITypeBank@@H@Z 00B79FB0 f i mp_actors.o
-396	PORTED	0002:0038ab30 ??$ReverseEndian@D@@YAXAADH@Z 00B7A030 f i mp_actors.o
-397	PORTED	0002:0038ab40 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QBEABQAVAITypeBank@@H@Z 00B7A040 f i mp_actors.o
-398	PORTED	0002:0038abc0 ??0?$IVPointer@VAIType@@@@QAE@W4TPakId@@PAVAIType@@@Z 00B7A0C0 f i mp_actors.o
-399	VERIFIED	0002:0038abe0 ??0?$IVPointer@VAIType@@@@QAE@XZ 00B7A0E0 f i mp_actors.o
-400	PORTED	0002:0038ac00 ?size@?$InplaceVector@PBVAIType@@@@QBEIXZ 00B7A100 f i mp_actors.o
-401	PORTED	0002:0038ac10 ??A?$InplaceVector@PBVAIType@@@@QAEAAPBVAIType@@I@Z 00B7A110 f i mp_actors.o
+387	SKIPPED	0002:0038a940 ?size@?$InplaceVector@VCharacterType@@@@QBEIXZ 00B79E40 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+388	SKIPPED	0002:0038a950 ??A?$InplaceVector@VCharacterType@@@@QAEAAVCharacterType@@I@Z 00B79E50 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+389	SKIPPED	0002:0038a9d0 ??1?$InplaceAssetBankSet@VAITypeBank@@@@UAE@XZ 00B79ED0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+390	SKIPPED	0002:0038a9e0 ?OnBankUnloaded@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXAAVAITypeBank@@@Z 00B79EE0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+391	SKIPPED	0002:0038a9f0 ?capacity@?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QBEHXZ 00B79EF0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+392	SKIPPED	0002:0038aa00 ??A?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QAEAAPAUPathNode@PathNodes@@H@Z 00B79F00 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+393	SKIPPED	0002:0038aa80 ??_G?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+394	SKIPPED	0002:0038aa80 ??_E?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+395	SKIPPED	0002:0038aab0 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QAEAAPAVAITypeBank@@H@Z 00B79FB0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+396	SKIPPED	0002:0038ab30 ??$ReverseEndian@D@@YAXAADH@Z 00B7A030 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+397	SKIPPED	0002:0038ab40 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QBEABQAVAITypeBank@@H@Z 00B7A040 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+398	SKIPPED	0002:0038abc0 ??0?$IVPointer@VAIType@@@@QAE@W4TPakId@@PAVAIType@@@Z 00B7A0C0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+399	SKIPPED	0002:0038abe0 ??0?$IVPointer@VAIType@@@@QAE@XZ 00B7A0E0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+400	SKIPPED	0002:0038ac00 ?size@?$InplaceVector@PBVAIType@@@@QBEIXZ 00B7A100 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+401	SKIPPED	0002:0038ac10 ??A?$InplaceVector@PBVAIType@@@@QAEAAPBVAIType@@I@Z 00B7A110 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 402	PORTED	0002:0038ac90 ??0ai_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00B7A190 f i mp_actors.o
 403	PORTED	0002:0038acd0 ??0BadPathManager@@QAE@XZ 00B7A1D0 f i mp_actors.o
 404	VERIFIED	0002:0038ace0 ??_GPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
 405	VERIFIED	0002:0038ace0 ??_EPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
 406	VERIFIED	0002:0038ad10 ??1PathNodeMgr@@UAE@XZ 00B7A210 f i mp_actors.o
-407	PORTED	0002:0038ad20 ?Fixup@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B7A220 f i mp_actors.o
-408	PORTED	0002:0038ada0 ??0?$InplaceAssetBankSet@VAITypeBank@@@@QAE@XZ 00B7A2A0 f i mp_actors.o
-409	PORTED	0002:0038ae70 ?AddBank@?$InplaceAssetBankSet@VAITypeBank@@@@QAEXW4TPakId@@PAVAITypeBank@@@Z 00B7A370 f i mp_actors.o
-410	PORTED	0002:0038af00 ?UnloadBank@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXW4TPakId@@@Z 00B7A400 f i mp_actors.o
-411	PORTED	0002:0038af60 ??$ReverseEndian@G@@YAXAAGH@Z 00B7A460 f i mp_actors.o
-412	PORTED	0002:0038af80 ??$ReverseEndian@VNodeHandle@PathNodes@@@@YAXAAVNodeHandle@PathNodes@@H@Z 00B7A480 f i mp_actors.o
-413	PORTED	0002:0038afa0 ??$ReverseEndian@F@@YAXAAFH@Z 00B7A4A0 f i mp_actors.o
-414	PORTED	0002:0038afc0 ??A?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVAIType@@I@Z 00B7A4C0 f i mp_actors.o
-415	PORTED	0002:0038b040 ??$FindIndex@PBD@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00B7A540 f i mp_actors.o
+407	SKIPPED	0002:0038ad20 ?Fixup@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B7A220 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+408	SKIPPED	0002:0038ada0 ??0?$InplaceAssetBankSet@VAITypeBank@@@@QAE@XZ 00B7A2A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+409	SKIPPED	0002:0038ae70 ?AddBank@?$InplaceAssetBankSet@VAITypeBank@@@@QAEXW4TPakId@@PAVAITypeBank@@@Z 00B7A370 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+410	SKIPPED	0002:0038af00 ?UnloadBank@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXW4TPakId@@@Z 00B7A400 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+411	SKIPPED	0002:0038af60 ??$ReverseEndian@G@@YAXAAGH@Z 00B7A460 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+412	SKIPPED	0002:0038af80 ??$ReverseEndian@VNodeHandle@PathNodes@@@@YAXAAVNodeHandle@PathNodes@@H@Z 00B7A480 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+413	SKIPPED	0002:0038afa0 ??$ReverseEndian@F@@YAXAAFH@Z 00B7A4A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+414	SKIPPED	0002:0038afc0 ??A?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVAIType@@I@Z 00B7A4C0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+415	SKIPPED	0002:0038b040 ??$FindIndex@PBD@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00B7A540 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 416	VERIFIED	0002:0038b070 ??_GAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
 417	VERIFIED	0002:0038b070 ??_EAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
-418	PORTED	0002:0038b0a0 ??$ReverseEndian@W4ENodeType@PathNodes@@@@YAXAAW4ENodeType@PathNodes@@H@Z 00B7A5A0 f i mp_actors.o
-419	PORTED	0002:0038b0d0 ??$ReverseEndian@Vstring@Broc@@@@YAXAAVstring@Broc@@H@Z 00B7A5D0 f i mp_actors.o
-420	PORTED	0002:0038b100 ??$ReverseEndian@PAUPathLink@PathNodes@@@@YAXAAPAUPathLink@PathNodes@@H@Z 00B7A600 f i mp_actors.o
-421	PORTED	0002:0038b130 ??$ReverseEndian@H@@YAXAAHH@Z 00B7A630 f i mp_actors.o
-422	PORTED	0002:0038b160 ??$ReverseEndian@PAUPathNode@PathNodes@@@@YAXAAPAUPathNode@PathNodes@@H@Z 00B7A660 f i mp_actors.o
-423	PORTED	0002:0038b190 ??$ReverseEndian@PAUsentient_s@@@@YAXAAPAUsentient_s@@H@Z 00B7A690 f i mp_actors.o
-424	PORTED	0002:0038b1c0 ??$ReverseEndian@PAVNodeHandle@PathNodes@@@@YAXAAPAVNodeHandle@PathNodes@@H@Z 00B7A6C0 f i mp_actors.o
-425	PORTED	0002:0038b1f0 ??$ReverseEndian@PAUNodeVariableSaver@PathNodes@@@@YAXAAPAUNodeVariableSaver@PathNodes@@H@Z 00B7A6F0 f i mp_actors.o
-426	PORTED	0002:0038b220 ??$ReverseEndian@PAUPathLinkInfo@PathNodes@@@@YAXAAPAUPathLinkInfo@PathNodes@@H@Z 00B7A720 f i mp_actors.o
-427	PORTED	0002:0038b250 ??$ReverseEndian@PAUPathNodeTree@PathNodes@@@@YAXAAPAUPathNodeTree@PathNodes@@H@Z 00B7A750 f i mp_actors.o
-428	PORTED	0002:0038b280 ??$ReverseEndian@PAD@@YAXAAPADH@Z 00B7A780 f i mp_actors.o
-429	PORTED	0002:0038b2b0 ??$ReverseEndian@PAPAUPathNode@PathNodes@@@@YAXAAPAPAUPathNode@PathNodes@@H@Z 00B7A7B0 f i mp_actors.o
-430	PORTED	0002:0038b2e0 ??$ReverseEndian@PAE@@YAXAAPAEH@Z 00B7A7E0 f i mp_actors.o
-431	PORTED	0002:0038b310 ??$Find@PBDV?$IVPointer@VAIType@@@@@?$InplaceAssetBankSet@VAITypeBank@@@@QBE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VAIType@@@@@@PAW42@@Z 00B7A810 f i mp_actors.o
+418	SKIPPED	0002:0038b0a0 ??$ReverseEndian@W4ENodeType@PathNodes@@@@YAXAAW4ENodeType@PathNodes@@H@Z 00B7A5A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+419	SKIPPED	0002:0038b0d0 ??$ReverseEndian@Vstring@Broc@@@@YAXAAVstring@Broc@@H@Z 00B7A5D0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+420	SKIPPED	0002:0038b100 ??$ReverseEndian@PAUPathLink@PathNodes@@@@YAXAAPAUPathLink@PathNodes@@H@Z 00B7A600 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+421	SKIPPED	0002:0038b130 ??$ReverseEndian@H@@YAXAAHH@Z 00B7A630 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+422	SKIPPED	0002:0038b160 ??$ReverseEndian@PAUPathNode@PathNodes@@@@YAXAAPAUPathNode@PathNodes@@H@Z 00B7A660 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+423	SKIPPED	0002:0038b190 ??$ReverseEndian@PAUsentient_s@@@@YAXAAPAUsentient_s@@H@Z 00B7A690 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+424	SKIPPED	0002:0038b1c0 ??$ReverseEndian@PAVNodeHandle@PathNodes@@@@YAXAAPAVNodeHandle@PathNodes@@H@Z 00B7A6C0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+425	SKIPPED	0002:0038b1f0 ??$ReverseEndian@PAUNodeVariableSaver@PathNodes@@@@YAXAAPAUNodeVariableSaver@PathNodes@@H@Z 00B7A6F0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+426	SKIPPED	0002:0038b220 ??$ReverseEndian@PAUPathLinkInfo@PathNodes@@@@YAXAAPAUPathLinkInfo@PathNodes@@H@Z 00B7A720 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+427	SKIPPED	0002:0038b250 ??$ReverseEndian@PAUPathNodeTree@PathNodes@@@@YAXAAPAUPathNodeTree@PathNodes@@H@Z 00B7A750 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+428	SKIPPED	0002:0038b280 ??$ReverseEndian@PAD@@YAXAAPADH@Z 00B7A780 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+429	SKIPPED	0002:0038b2b0 ??$ReverseEndian@PAPAUPathNode@PathNodes@@@@YAXAAPAPAUPathNode@PathNodes@@H@Z 00B7A7B0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+430	SKIPPED	0002:0038b2e0 ??$ReverseEndian@PAE@@YAXAAPAEH@Z 00B7A7E0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+431	SKIPPED	0002:0038b310 ??$Find@PBDV?$IVPointer@VAIType@@@@@?$InplaceAssetBankSet@VAITypeBank@@@@QBE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VAIType@@@@@@PAW42@@Z 00B7A810 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 432	PORTED	0002:0038b4c0 ?Prepare@PathNodeConstant@PathNodes@@QAEIH@Z 00B7A9C0 f i mp_actors.o
 433	PORTED	0002:0038b6d0 ?Prepare@PathNodeTransient@PathNodes@@QAEIH@Z 00B7ABD0 f i mp_actors.o
 434	PORTED	0002:0038b780 ?Prepare@PathNodeDynamic@PathNodes@@QAEIH@Z 00B7AC80 f i mp_actors.o

@@ -540,7 +540,7 @@ index	status	map_line
 539	VERIFIED	0002:000ca590 ?Cvar_VMSet@@YAXPAUvmCvar_t@@PBD@Z 008B9A90 f core.o
 540	VERIFIED	0002:000ca5c0 ?Cvar_Register@@YAXPAUvmCvar_t@@PBD1H@Z 008B9AC0 f core.o
 541	VERIFIED	0002:000ca610 ?Cvar_Init@@YAXXZ 008B9B10 f core.o
-542	VERIFIED	0002:000ca630 ?GetTableSet@DbTablesetMgr@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBD@Z 008B9B30 f core.o
+542	SKIPPED	0002:000ca630 ?GetTableSet@DbTablesetMgr@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBD@Z 008B9B30 f core.o  SKIPPED: inline template/container helper; supplied by its template definition
 543	VERIFIED	0002:000ca660 ?FrameAdvance@ActiveEffectSet@@QAEXM@Z 008B9B60 f core.o
 544	VERIFIED	0002:000ca820 ?IsSoundAlreadyPlaying@EffectEventSys@@QAEHIPAVEntity@@H@Z 008B9D20 f core.o
 545	VERIFIED	0002:000cabd0 ?AdjustEffect_Scale@EffectEventSys@@QAEXVHandle@@PBDM@Z 008BA0D0 f core.o
@@ -588,7 +588,7 @@ index	status	map_line
 587	VERIFIED	0002:000ce780 ?AdjustEffect_Scale@AbstractEffectShakeAndRumble@@UAEXPBDM@Z 008BDC80 f core.o
 588	VERIFIED	0002:000ce7b0 ?StopEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008BDCB0 f core.o
 589	VERIFIED	0002:000ce800 ?IgnoreAssertion@TlSystemCallbacks@@CA_NPBDAAV?$ae_fixed_string@$0BAA@G@@11AAH@Z 008BDD00 f core.o
-590	VERIFIED	0002:000ce8d0 ?GetConfigString@ConfigStringManager@@QAE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PBD1@Z 008BDDD0 f core.o
+590	SKIPPED	0002:000ce8d0 ?GetConfigString@ConfigStringManager@@QAE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PBD1@Z 008BDDD0 f core.o  SKIPPED: inline template/container helper; supplied by its template definition
 591	VERIFIED	0002:000ce940 ?CallbackSearch@ConfigStringManager@@QAEXW4TPakId@@PBDP6AX1PBVConfigString@@@Z@Z 008BDE40 f core.o
 592	VERIFIED	0002:000ce990 ?LensFlareInit@@YAXXZ 008BDE90 f core.o
 593	VERIFIED	0002:000ceae0 ??1EntityNotifySet@@QAE@XZ 008BDFE0 f core.o
@@ -872,9 +872,9 @@ index	status	map_line
 871	PORTED	0002:000df780 ?empty@?$reserved_dlist@VEntityNotify@@@@QBE_NXZ 008CEC80 f i core.o
 872	VERIFIED	0002:000df7a0 ??0dlist_node@?$reserved_dlist@VEntityNotify@@@@QAE@PAU01@0@Z 008CECA0 f i core.o
 873	PORTED	0002:000df7c0 ??0dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAU01@0@Z 008CECC0 f i core.o
-874	PORTED	0002:000df7e0 ?size@?$InplaceVector@VInplaceString@@@@QBEIXZ 008CECE0 f i core.o
-875	PORTED	0002:000df7f0 ??A?$InplaceVector@VInplaceString@@@@QAEAAVInplaceString@@I@Z 008CECF0 f i core.o
-876	PORTED	0002:000df870 ?empty@?$InplaceVector@VInplaceString@@@@QBE_NXZ 008CED70 f i core.o
+874	SKIPPED	0002:000df7e0 ?size@?$InplaceVector@VInplaceString@@@@QBEIXZ 008CECE0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+875	SKIPPED	0002:000df7f0 ??A?$InplaceVector@VInplaceString@@@@QAEAAVInplaceString@@I@Z 008CECF0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+876	SKIPPED	0002:000df870 ?empty@?$InplaceVector@VInplaceString@@@@QBE_NXZ 008CED70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 877	VERIFIED	0002:000df880 ??0?$ae_sized_array@PAVDbRow@@$0EA@@@QAE@XZ 008CED80 f i core.o
 878	PORTED	0002:000df890 ??A?$ae_sized_array@PAVDbRow@@$0EA@@@QBEABQAVDbRow@@H@Z 008CED90 f i core.o
 879	VERIFIED	0002:000df910 ??A?$ae_sized_array@PAVDbRow@@$0EA@@@QAEAAPAVDbRow@@H@Z 008CEE10 f i core.o
@@ -883,8 +883,8 @@ index	status	map_line
 882	VERIFIED	0002:000df9c0 ?push_back@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXABQAVDbRow@@@Z 008CEEC0 f i core.o
 883	PORTED	0002:000dfa50 ?Set@?$Bitmask@I@@QAEXH_N@Z 008CEF50 f i core.o
 884	VERIFIED	0002:000dfa80 ??0?$ae_fixed_string@$0CA@E@@QAE@XZ 008CEF80 f i core.o
-885	VERIFIED	0002:000dfa90 ??1?$InplaceAssetBankSet@VDestructibleBank@@@@UAE@XZ 008CEF90 f i core.o
-886	PORTED	0002:000dfaa0 ?OnBankUnloaded@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXAAVDestructibleBank@@@Z 008CEFA0 f i core.o
+885	SKIPPED	0002:000dfa90 ??1?$InplaceAssetBankSet@VDestructibleBank@@@@UAE@XZ 008CEF90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+886	SKIPPED	0002:000dfaa0 ?OnBankUnloaded@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXAAVDestructibleBank@@@Z 008CEFA0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 887	PORTED	0002:000dfab0 ??Eiterator@?$reserved_dlist@VEntityNotifySet@@@@QAE?AV01@H@Z 008CEFB0 f i core.o
 888	PORTED	0002:000dfae0 ??Econst_iterator@?$reserved_dlist@VEntityNotify@@@@QAEAAV01@XZ 008CEFE0 f i core.o
 889	PORTED	0002:000dfb60 ??Eiterator@?$reserved_dlist@VEntityNotify@@@@QAE?AV01@H@Z 008CF060 f i core.o
@@ -910,20 +910,20 @@ index	status	map_line
 909	PORTED	0002:000e0150 ?size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QBEHXZ 008CF650 f i core.o
 910	PORTED	0002:000e0160 ?pop_back@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF660 f i core.o
 911	PORTED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o
-912	VERIFIED	0002:000e0220 ??1?$InplaceAssetBankSet@VPhysDataBank@@@@UAE@XZ 008CF720 f i core.o
-913	PORTED	0002:000e0230 ?OnBankUnloaded@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXAAVPhysDataBank@@@Z 008CF730 f i core.o
+912	SKIPPED	0002:000e0220 ??1?$InplaceAssetBankSet@VPhysDataBank@@@@UAE@XZ 008CF720 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+913	SKIPPED	0002:000e0230 ?OnBankUnloaded@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXAAVPhysDataBank@@@Z 008CF730 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 914	PORTED	0002:000e0240 ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@VHandle@@@Z 008CF740 f i core.o
 915	PORTED	0002:000e0260 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@H@Z 008CF760 f i core.o
-916	PORTED	0002:000e0280 ??1?$InplaceAssetBankSet@VStringTableBank@@@@UAE@XZ 008CF780 f i core.o
-917	PORTED	0002:000e0290 ?OnBankUnloaded@?$InplaceAssetBankSet@VStringTableBank@@@@MAEXAAVStringTableBank@@@Z 008CF790 f i core.o
-918	PORTED	0002:000e02a0 ??A?$ae_array@PAVStringTableBank@@$0GD@@@QAEAAPAVStringTableBank@@H@Z 008CF7A0 f i core.o
-919	PORTED	0002:000e0320 ??A?$ae_array@PAVDialogueBank@@$0GD@@@QBEABQAVDialogueBank@@H@Z 008CF820 f i core.o
-920	PORTED	0002:000e03a0 ??A?$ae_array@PAVDialogueBank@@$0GD@@@QAEAAPAVDialogueBank@@H@Z 008CF8A0 f i core.o
-921	VERIFIED	0002:000e0420 ??1?$InplaceAssetBankSet@VDbTablesetBank@@@@UAE@XZ 008CF920 f i core.o
-922	PORTED	0002:000e0430 ?OnBankUnloaded@?$InplaceAssetBankSet@VDbTablesetBank@@@@MAEXAAVDbTablesetBank@@@Z 008CF930 f i core.o
-923	PORTED	0002:000e0440 ??1?$InplaceAssetBankSet@VConfigStringBank@@@@UAE@XZ 008CF940 f i core.o
-924	PORTED	0002:000e0450 ?OnBankUnloaded@?$InplaceAssetBankSet@VConfigStringBank@@@@MAEXAAVConfigStringBank@@@Z 008CF950 f i core.o
-925	PORTED	0002:000e0460 ??A?$InplaceVector@TValue@GdbFileSet@@@@QAEAATValue@GdbFileSet@@I@Z 008CF960 f i core.o
+916	SKIPPED	0002:000e0280 ??1?$InplaceAssetBankSet@VStringTableBank@@@@UAE@XZ 008CF780 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+917	SKIPPED	0002:000e0290 ?OnBankUnloaded@?$InplaceAssetBankSet@VStringTableBank@@@@MAEXAAVStringTableBank@@@Z 008CF790 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+918	SKIPPED	0002:000e02a0 ??A?$ae_array@PAVStringTableBank@@$0GD@@@QAEAAPAVStringTableBank@@H@Z 008CF7A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+919	SKIPPED	0002:000e0320 ??A?$ae_array@PAVDialogueBank@@$0GD@@@QBEABQAVDialogueBank@@H@Z 008CF820 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+920	SKIPPED	0002:000e03a0 ??A?$ae_array@PAVDialogueBank@@$0GD@@@QAEAAPAVDialogueBank@@H@Z 008CF8A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+921	SKIPPED	0002:000e0420 ??1?$InplaceAssetBankSet@VDbTablesetBank@@@@UAE@XZ 008CF920 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+922	SKIPPED	0002:000e0430 ?OnBankUnloaded@?$InplaceAssetBankSet@VDbTablesetBank@@@@MAEXAAVDbTablesetBank@@@Z 008CF930 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+923	SKIPPED	0002:000e0440 ??1?$InplaceAssetBankSet@VConfigStringBank@@@@UAE@XZ 008CF940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+924	SKIPPED	0002:000e0450 ?OnBankUnloaded@?$InplaceAssetBankSet@VConfigStringBank@@@@MAEXAAVConfigStringBank@@@Z 008CF950 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+925	SKIPPED	0002:000e0460 ??A?$InplaceVector@TValue@GdbFileSet@@@@QAEAATValue@GdbFileSet@@I@Z 008CF960 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 926	PORTED	0002:000e04e0 ??0dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAU01@0@Z 008CF9E0 f i core.o
 927	PORTED	0002:000e0500 ??0?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008CFA00 f i core.o
 928	VERIFIED	0002:000e0510 ?push_back@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAEXABUPoolConfig@PoolAllocator@@@Z 008CFA10 f i core.o
@@ -937,7 +937,7 @@ index	status	map_line
 936	PORTED	0002:000e0640 ?empty@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBE_NXZ 008CFB40 f i core.o
 937	PORTED	0002:000e0660 ?push_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEXABQBVDbGraphNode@@@Z 008CFB60 f i core.o
 938	PORTED	0002:000e0700 ?pop_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEAAPBVDbGraphNode@@XZ 008CFC00 f i core.o
-939	PORTED	0002:000e0730 ??9?$IVPointer@VDbTableSet@@@@QBE_NABV0@@Z 008CFC30 f i core.o
+939	SKIPPED	0002:000e0730 ??9?$IVPointer@VDbTableSet@@@@QBE_NABV0@@Z 008CFC30 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 940	VERIFIED	0002:000e0750 ??0?$ae_sized_array@PBVDbTable@@$0BA@@@QAE@XZ 008CFC50 f i core.o
 941	VERIFIED	0002:000e0760 ?push_back@?$ae_sized_array@PBVDbTable@@$0BA@@@QAEXABQBVDbTable@@@Z 008CFC60 f i core.o
 942	VERIFIED	0002:000e07e0 ??0?$ae_formatted_string@$0CA@E@@QAA@PBDZZ 008CFCE0 f i core.o
@@ -956,18 +956,18 @@ index	status	map_line
 955	VERIFIED	0002:000e0ab0 ?length@?$ae_fixed_string@$0BAA@G@@QBEHXZ 008CFFB0 f i core.o
 956	VERIFIED	0002:000e0ac0 ?find@?$ae_fixed_string@$0BAA@G@@QBEHDH@Z 008CFFC0 f i core.o
 957	PORTED	0002:000e0af0 ??0?$ae_pair@PBDW4ELanguage@@@@QAE@ABQBDABW4ELanguage@@@Z 008CFFF0 f i core.o
-958	VERIFIED	0002:000e0b10 ??_G?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o
-959	VERIFIED	0002:000e0b10 ??_E?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o
+958	SKIPPED	0002:000e0b10 ??_G?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+959	SKIPPED	0002:000e0b10 ??_E?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 960	VERIFIED	0002:000e0b40 ??4PendingQuery@EffectEventSys@@QAEAAU01@ABU01@@Z 008D0040 f i core.o
 961	PORTED	0002:000e0c30 ??0?$ae_sized_array_base@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D0130 f i core.o
-962	VERIFIED	0002:000e0c60 ??_E?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o
-963	VERIFIED	0002:000e0c60 ??_G?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o
-964	PORTED	0002:000e0c90 ??_G?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o
-965	PORTED	0002:000e0c90 ??_E?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o
-966	VERIFIED	0002:000e0cc0 ??_G?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o
-967	VERIFIED	0002:000e0cc0 ??_E?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o
-968	PORTED	0002:000e0cf0 ??_G?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o
-969	PORTED	0002:000e0cf0 ??_E?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o
+962	SKIPPED	0002:000e0c60 ??_E?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+963	SKIPPED	0002:000e0c60 ??_G?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+964	SKIPPED	0002:000e0c90 ??_G?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+965	SKIPPED	0002:000e0c90 ??_E?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+966	SKIPPED	0002:000e0cc0 ??_G?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+967	SKIPPED	0002:000e0cc0 ??_E?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+968	SKIPPED	0002:000e0cf0 ??_G?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+969	SKIPPED	0002:000e0cf0 ??_E?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 970	PORTED	0002:000e0d20 ??_FPoolConfig@PoolAllocator@@QAEXXZ 008D0220 f i core.o
 971	SKIPPED	0002:000e0d40 ?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ 008D0240 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 972	SKIPPED	0002:000e0d60 ??0?$allocator@D@std@@QAE@XZ 008D0260 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -986,7 +986,7 @@ index	status	map_line
 985	PORTED	0002:000e0e80 ?GetNumWords@?$BitSet@$0EA@@@SAHXZ 008D0380 f i core.o
 986	PORTED	0002:000e0e90 ?GetNumWords@?$BitSet@$0PP@@@SAHXZ 008D0390 f i core.o
 987	PORTED	0002:000e0ea0 ?set_size@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXH@Z 008D03A0 f i core.o
-988	PORTED	0002:000e0ec0 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QAEAAPAVDestructibleBank@@H@Z 008D03C0 f i core.o
+988	SKIPPED	0002:000e0ec0 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QAEAAPAVDestructibleBank@@H@Z 008D03C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 989	PORTED	0002:000e0f40 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAUdlist_node@1@0@Z 008D0440 f i core.o
 990	PORTED	0002:000e0f60 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAVEntityNotifySet@@@Z 008D0460 f i core.o
 991	PORTED	0002:000e0f80 ?compare@iterator@?$reserved_dlist@VEntityNotifySet@@@@QBE_NABV12@@Z 008D0480 f i core.o
@@ -1008,18 +1008,18 @@ index	status	map_line
 1007	PORTED	0002:000e1210 ?SetObject@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXPAVActiveEffectSet@@@Z 008D0710 f i core.o
 1008	PORTED	0002:000e1220 ?GetKey@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEHXZ 008D0720 f i core.o
 1009	PORTED	0002:000e1230 ?Release@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D0730 f i core.o
-1010	PORTED	0002:000e1240 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QAEAAPAVPhysDataBank@@H@Z 008D0740 f i core.o
-1011	PORTED	0002:000e12c0 ?size@?$InplaceVector@PBVStringTableEntry@@@@QBEIXZ 008D07C0 f i core.o
-1012	PORTED	0002:000e12d0 ??A?$InplaceVector@PBVStringTableEntry@@@@QAEAAPBVStringTableEntry@@I@Z 008D07D0 f i core.o
-1013	PORTED	0002:000e1350 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QAEAAPAVDbTablesetBank@@H@Z 008D0850 f i core.o
-1014	PORTED	0002:000e13d0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QAEAAPAVConfigStringBank@@H@Z 008D08D0 f i core.o
+1010	SKIPPED	0002:000e1240 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QAEAAPAVPhysDataBank@@H@Z 008D0740 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1011	SKIPPED	0002:000e12c0 ?size@?$InplaceVector@PBVStringTableEntry@@@@QBEIXZ 008D07C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1012	SKIPPED	0002:000e12d0 ??A?$InplaceVector@PBVStringTableEntry@@@@QAEAAPBVStringTableEntry@@I@Z 008D07D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1013	SKIPPED	0002:000e1350 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QAEAAPAVDbTablesetBank@@H@Z 008D0850 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1014	SKIPPED	0002:000e13d0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QAEAAPAVConfigStringBank@@H@Z 008D08D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1015	PORTED	0002:000e1450 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPAVRumbleEffectInstance@@PAUdlist_node@1@@Z 008D0950 f i core.o
 1016	PORTED	0002:000e1460 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPBVRumbleEffectInstance@@PBUdlist_node@1@@Z 008D0960 f i core.o
 1017	PORTED	0002:000e1470 ?clear@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D0970 f i core.o
 1018	PORTED	0002:000e1490 ?validate@?$reserved_dlist@VRumbleEffectInstance@@@@QBEXXZ 008D0990 f i core.o
 1019	PORTED	0002:000e14a0 ?pop@dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D09A0 f i core.o
 1020	PORTED	0002:000e14c0 ?size@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBEHXZ 008D09C0 f i core.o
-1021	PORTED	0002:000e14d0 ?Deref@?$IVPointer@VDbTableSet@@@@ABEPAVDbTableSet@@XZ 008D09D0 f i core.o
+1021	SKIPPED	0002:000e14d0 ?Deref@?$IVPointer@VDbTableSet@@@@ABEPAVDbTableSet@@XZ 008D09D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1022	PORTED	0002:000e14f0 ??0iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@AAE@PAPBVDbTable@@@Z 008D09F0 f i core.o
 1023	VERIFIED	0002:000e1510 ?capacity@?$ae_fixed_string@$0IA@E@@SAHXZ 008D0A10 f i core.o
 1024	SKIPPED	0002:000e1520 ?capacity@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008D0A20 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1068,30 +1068,30 @@ index	status	map_line
 1067	PORTED	0002:000e1a00 ??$?4VEntityHandleDb@@VEntity@@@?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAEAAV0@ABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008D0F00 f i core.o
 1068	SKIPPED	0002:000e1a20 ??$_Allocate@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@YAPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@IPAV10@@Z 008D0F20 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1069	SKIPPED	0002:000e1a40 ??$_Allocate@D@std@@YAPADIPAD@Z 008D0F40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1070	PORTED	0002:000e1a60 ?IsUsed@?$InplaceTree@VInplaceString@@I@@ABE_NI@Z 008D0F60 f i core.o
+1070	SKIPPED	0002:000e1a60 ?IsUsed@?$InplaceTree@VInplaceString@@I@@ABE_NI@Z 008D0F60 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1071	PORTED	0002:000e1b00 ?IsUsed@?$InplaceTree@II@@ABE_NI@Z 008D1000 f i core.o
-1072	PORTED	0002:000e1ba0 ??A?$InplaceVector@PBVDialogueInstance@@@@QBEABQBVDialogueInstance@@I@Z 008D10A0 f i core.o
-1073	PORTED	0002:000e1c20 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QBEABQAVDbTablesetBank@@H@Z 008D1120 f i core.o
-1074	PORTED	0002:000e1ca0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QBEABQAVConfigStringBank@@H@Z 008D11A0 f i core.o
+1072	SKIPPED	0002:000e1ba0 ??A?$InplaceVector@PBVDialogueInstance@@@@QBEABQBVDialogueInstance@@I@Z 008D10A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1073	SKIPPED	0002:000e1c20 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QBEABQAVDbTablesetBank@@H@Z 008D1120 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1074	SKIPPED	0002:000e1ca0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QBEABQAVConfigStringBank@@H@Z 008D11A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1075	PORTED	0002:000e1d20 ??0?$DbFieldType@H@@QAE@GABHW4EDbColumnType@@W4EDbMatchType@@@Z 008D1220 f i core.o
 1076	PORTED	0002:000e1d60 ??0?$DbFieldType@M@@QAE@GABMW4EDbColumnType@@W4EDbMatchType@@@Z 008D1260 f i core.o
 1077	PORTED	0002:000e1da0 ??0?$DbFieldType@VDbQueryString@@@@QAE@GABVDbQueryString@@W4EDbColumnType@@W4EDbMatchType@@@Z 008D12A0 f i core.o
-1078	PORTED	0002:000e1de0 ??0?$IVPointer@VDbTableSet@@@@QAE@W4TPakId@@PAVDbTableSet@@@Z 008D12E0 f i core.o
-1079	VERIFIED	0002:000e1e00 ??0?$IVPointer@VDbTableSet@@@@QAE@XZ 008D1300 f i core.o
-1080	PORTED	0002:000e1e20 ??0?$IVPointer@VConfigString@@@@QAE@W4TPakId@@PAVConfigString@@@Z 008D1320 f i core.o
-1081	VERIFIED	0002:000e1e40 ??0?$IVPointer@VConfigString@@@@QAE@XZ 008D1340 f i core.o
+1078	SKIPPED	0002:000e1de0 ??0?$IVPointer@VDbTableSet@@@@QAE@W4TPakId@@PAVDbTableSet@@@Z 008D12E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1079	SKIPPED	0002:000e1e00 ??0?$IVPointer@VDbTableSet@@@@QAE@XZ 008D1300 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1080	SKIPPED	0002:000e1e20 ??0?$IVPointer@VConfigString@@@@QAE@W4TPakId@@PAVConfigString@@@Z 008D1320 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1081	SKIPPED	0002:000e1e40 ??0?$IVPointer@VConfigString@@@@QAE@XZ 008D1340 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1082	PORTED	0002:000e1e60 ??R?$DelFunctor@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D1360 f i core.o
-1083	PORTED	0002:000e1ea0 ??A?$DbColumnType@VInplaceString@@@@QBEABVInplaceString@@G@Z 008D13A0 f i core.o
+1083	SKIPPED	0002:000e1ea0 ??A?$DbColumnType@VInplaceString@@@@QBEABVInplaceString@@G@Z 008D13A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1084	VERIFIED	0002:000e1f20 ??0?$ae_sized_array@W4TPakId@@$0CA@@@QAE@XZ 008D1420 f i core.o
 1085	VERIFIED	0002:000e1f30 ??A?$ae_sized_array@W4TPakId@@$0CA@@@QAEAAW4TPakId@@H@Z 008D1430 f i core.o
 1086	PORTED	0002:000e1fb0 ?size@?$ae_sized_array@W4TPakId@@$0CA@@@QBEHXZ 008D14B0 f i core.o
-1087	PORTED	0002:000e1fc0 ?size@?$InplaceVector@PBVDbTableSet@@@@QBEIXZ 008D14C0 f i core.o
-1088	PORTED	0002:000e1fd0 ??A?$InplaceVector@PBVDbTableSet@@@@QAEAAPBVDbTableSet@@I@Z 008D14D0 f i core.o
-1089	PORTED	0002:000e2050 ?size@?$InplaceVector@PBVConfigString@@@@QBEIXZ 008D1550 f i core.o
-1090	PORTED	0002:000e2060 ??A?$InplaceVector@PBVConfigString@@@@QAEAAPBVConfigString@@I@Z 008D1560 f i core.o
+1087	SKIPPED	0002:000e1fc0 ?size@?$InplaceVector@PBVDbTableSet@@@@QBEIXZ 008D14C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1088	SKIPPED	0002:000e1fd0 ??A?$InplaceVector@PBVDbTableSet@@@@QAEAAPBVDbTableSet@@I@Z 008D14D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1089	SKIPPED	0002:000e2050 ?size@?$InplaceVector@PBVConfigString@@@@QBEIXZ 008D1550 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1090	SKIPPED	0002:000e2060 ??A?$InplaceVector@PBVConfigString@@@@QAEAAPBVConfigString@@I@Z 008D1560 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1091	SKIPPED	0002:000e20e0 ??$_Ptr_cat@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAV12@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@0@Z 008D15E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1092	PORTED	0002:000e20f0 ??A?$DbColumnType@M@@QBEABMG@Z 008D15F0 f i core.o
-1093	VERIFIED	0002:000e2170 ??$Find@PAD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQAD@Z 008D1670 f i core.o
+1093	SKIPPED	0002:000e2170 ??$Find@PAD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQAD@Z 008D1670 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1094	PORTED	0002:000e2280 ??_GBankManager@@AAEPAXI@Z 008D1780 f i core.o
 1095	VERIFIED	0002:000e22b0 ??_GPakManager@@QAEPAXI@Z 008D17B0 f i core.o
 1096	PORTED	0002:000e22e0 ?GetColumnById@DbTable@@QBEABVDbColumn@@G@Z 008D17E0 f i core.o
@@ -1173,10 +1173,10 @@ index	status	map_line
 1172	PORTED	0002:000e36d0 ?Rmv@?$BitSet@$0PP@@@QAEXH@Z 008D2BD0 f i core.o
 1173	PORTED	0002:000e3760 ?Test@?$BitSet@$0PP@@@QBE_NH@Z 008D2C60 f i core.o
 1174	PORTED	0002:000e37f0 ?Set@?$BitSet@$0PP@@@QAEXH_N@Z 008D2CF0 f i core.o
-1175	PORTED	0002:000e3820 ?Fixup@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 008D2D20 f i core.o
+1175	SKIPPED	0002:000e3820 ?Fixup@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 008D2D20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1176	PORTED	0002:000e38a0 ?clear@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXXZ 008D2DA0 f i core.o
-1177	VERIFIED	0002:000e38b0 ??0?$InplaceAssetBankSet@VDestructibleBank@@@@QAE@XZ 008D2DB0 f i core.o
-1178	PORTED	0002:000e3980 ?UnloadBank@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXW4TPakId@@@Z 008D2E80 f i core.o
+1177	SKIPPED	0002:000e38b0 ??0?$InplaceAssetBankSet@VDestructibleBank@@@@QAE@XZ 008D2DB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1178	SKIPPED	0002:000e3980 ?UnloadBank@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXW4TPakId@@@Z 008D2E80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1179	PORTED	0002:000e39e0 ??Diterator@?$reserved_dlist@VEntityNotifySet@@@@QAEPAVEntityNotifySet@@XZ 008D2EE0 f i core.o
 1180	PORTED	0002:000e39f0 ??8iterator@?$reserved_dlist@VEntityNotifySet@@@@QBE_NABV01@@Z 008D2EF0 f i core.o
 1181	PORTED	0002:000e3a10 ??9iterator@?$reserved_dlist@VEntityNotifySet@@@@QBE_NABV01@@Z 008D2F10 f i core.o
@@ -1186,7 +1186,7 @@ index	status	map_line
 1185	PORTED	0002:000e3a90 ??9iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV01@@Z 008D2F90 f i core.o
 1186	PORTED	0002:000e3ac0 ??Citerator@?$reserved_dlist@VEndOnScriptNode@@@@QAEPAVEndOnScriptNode@@XZ 008D2FC0 f i core.o
 1187	PORTED	0002:000e3ad0 ??9iterator@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NABV01@@Z 008D2FD0 f i core.o
-1188	PORTED	0002:000e3b00 ?Fixup@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QAEXXZ 008D3000 f i core.o
+1188	SKIPPED	0002:000e3b00 ?Fixup@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QAEXXZ 008D3000 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1189	PORTED	0002:000e3b80 ?Clear@?$BitSet@$0DB@@@QAEXXZ 008D3080 f i core.o
 1190	PORTED	0002:000e3ba0 ?Add@?$BitSet@$0DB@@@QAEXH@Z 008D30A0 f i core.o
 1191	PORTED	0002:000e3c30 ?Test@?$BitSet@$0DB@@@QBE_NH@Z 008D3130 f i core.o
@@ -1197,26 +1197,26 @@ index	status	map_line
 1196	VERIFIED	0002:000e3d80 ??0?$ae_sized_array@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D3280 f i core.o
 1197	PORTED	0002:000e3db0 ?BindObjectToHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@PAVActiveEffectSet@@@Z 008D32B0 f i core.o
 1198	PORTED	0002:000e3e50 ?DereferenceHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D3350 f i core.o
-1199	VERIFIED	0002:000e3e90 ??0?$InplaceAssetBankSet@VPhysDataBank@@@@QAE@XZ 008D3390 f i core.o
-1200	PORTED	0002:000e3f60 ?UnloadBank@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXW4TPakId@@@Z 008D3460 f i core.o
-1201	PORTED	0002:000e3fc0 ?Fixup@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QAEXXZ 008D34C0 f i core.o
-1202	PORTED	0002:000e4040 ??A?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QAEPAVStringTableEntry@@I@Z 008D3540 f i core.o
-1203	PORTED	0002:000e40c0 ??0?$InplaceAssetBankSet@VStringTableBank@@@@QAE@XZ 008D35C0 f i core.o
-1204	PORTED	0002:000e4190 ?AddBank@?$InplaceAssetBankSet@VStringTableBank@@@@QAEXW4TPakId@@PAVStringTableBank@@@Z 008D3690 f i core.o
-1205	PORTED	0002:000e4220 ?UnloadBank@?$InplaceAssetBankSet@VStringTableBank@@@@MAEXW4TPakId@@@Z 008D3720 f i core.o
-1206	VERIFIED	0002:000e4280 ??0?$InplaceAssetBankSet@VDbTablesetBank@@@@QAE@XZ 008D3780 f i core.o
-1207	PORTED	0002:000e4350 ?AddBank@?$InplaceAssetBankSet@VDbTablesetBank@@@@QAEXW4TPakId@@PAVDbTablesetBank@@@Z 008D3850 f i core.o
-1208	PORTED	0002:000e43e0 ?UnloadBank@?$InplaceAssetBankSet@VDbTablesetBank@@@@MAEXW4TPakId@@@Z 008D38E0 f i core.o
-1209	PORTED	0002:000e4440 ?Fixup@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 008D3940 f i core.o
-1210	PORTED	0002:000e44c0 ??0?$InplaceAssetBankSet@VConfigStringBank@@@@QAE@XZ 008D39C0 f i core.o
-1211	PORTED	0002:000e4590 ?AddBank@?$InplaceAssetBankSet@VConfigStringBank@@@@QAEXW4TPakId@@PAVConfigStringBank@@@Z 008D3A90 f i core.o
-1212	PORTED	0002:000e4620 ?UnloadBank@?$InplaceAssetBankSet@VConfigStringBank@@@@MAEXW4TPakId@@@Z 008D3B20 f i core.o
+1199	SKIPPED	0002:000e3e90 ??0?$InplaceAssetBankSet@VPhysDataBank@@@@QAE@XZ 008D3390 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1200	SKIPPED	0002:000e3f60 ?UnloadBank@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXW4TPakId@@@Z 008D3460 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1201	SKIPPED	0002:000e3fc0 ?Fixup@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QAEXXZ 008D34C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1202	SKIPPED	0002:000e4040 ??A?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QAEPAVStringTableEntry@@I@Z 008D3540 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1203	SKIPPED	0002:000e40c0 ??0?$InplaceAssetBankSet@VStringTableBank@@@@QAE@XZ 008D35C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1204	SKIPPED	0002:000e4190 ?AddBank@?$InplaceAssetBankSet@VStringTableBank@@@@QAEXW4TPakId@@PAVStringTableBank@@@Z 008D3690 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1205	SKIPPED	0002:000e4220 ?UnloadBank@?$InplaceAssetBankSet@VStringTableBank@@@@MAEXW4TPakId@@@Z 008D3720 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1206	SKIPPED	0002:000e4280 ??0?$InplaceAssetBankSet@VDbTablesetBank@@@@QAE@XZ 008D3780 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1207	SKIPPED	0002:000e4350 ?AddBank@?$InplaceAssetBankSet@VDbTablesetBank@@@@QAEXW4TPakId@@PAVDbTablesetBank@@@Z 008D3850 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1208	SKIPPED	0002:000e43e0 ?UnloadBank@?$InplaceAssetBankSet@VDbTablesetBank@@@@MAEXW4TPakId@@@Z 008D38E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1209	SKIPPED	0002:000e4440 ?Fixup@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 008D3940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1210	SKIPPED	0002:000e44c0 ??0?$InplaceAssetBankSet@VConfigStringBank@@@@QAE@XZ 008D39C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1211	SKIPPED	0002:000e4590 ?AddBank@?$InplaceAssetBankSet@VConfigStringBank@@@@QAEXW4TPakId@@PAVConfigStringBank@@@Z 008D3A90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1212	SKIPPED	0002:000e4620 ?UnloadBank@?$InplaceAssetBankSet@VConfigStringBank@@@@MAEXW4TPakId@@@Z 008D3B20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1213	PORTED	0002:000e4680 ??0?$reserved_dlist@VRumbleEffectInstance@@@@QAE@XZ 008D3B80 f i core.o
 1214	PORTED	0002:000e46a0 ?push_back@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D3BA0 f i core.o
 1215	PORTED	0002:000e46d0 ?end@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D3BD0 f i core.o
 1216	PORTED	0002:000e46f0 ?end@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D3BF0 f i core.o
 1217	PORTED	0002:000e4710 ?back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEAAPBVDbGraphNode@@XZ 008D3C10 f i core.o
-1218	PORTED	0002:000e4730 ??C?$IVPointer@VDbTableSet@@@@QAEPAVDbTableSet@@XZ 008D3C30 f i core.o
+1218	SKIPPED	0002:000e4730 ??C?$IVPointer@VDbTableSet@@@@QAEPAVDbTableSet@@XZ 008D3C30 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1219	PORTED	0002:000e4750 ?begin@?$ae_sized_array@PBVDbTable@@$0BA@@@QAE?AViterator@1@XZ 008D3C50 f i core.o
 1220	PORTED	0002:000e4760 ?end@?$ae_sized_array@PBVDbTable@@$0BA@@@QAE?AViterator@1@XZ 008D3C60 f i core.o
 1221	VERIFIED	0002:000e4780 ??0?$ae_fixed_string@$0IA@E@@QAE@PBD@Z 008D3C80 f i core.o
@@ -1240,7 +1240,7 @@ index	status	map_line
 1239	PORTED	0002:000e4cb0 ?DereferenceHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVSound@SoundDevice@@VHandle@@@Z 008D41B0 f i core.o
 1240	PORTED	0002:000e4cf0 ?find@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@PAVRumbleEffectInstance@@@Z 008D41F0 f i core.o
 1241	PORTED	0002:000e4d40 ?destroy_all@?$ae_vector@USmokeGrenadeInfo@@@@AAEXXZ 008D4240 f i core.o
-1242	PORTED	0002:000e4d70 ??C?$IVPointer@VDbTableSet@@@@QBEPBVDbTableSet@@XZ 008D4270 f i core.o
+1242	SKIPPED	0002:000e4d70 ??C?$IVPointer@VDbTableSet@@@@QBEPBVDbTableSet@@XZ 008D4270 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1243	PORTED	0002:000e4d90 ??0?$ae_fixed_string@$0IA@E@@QAE@ABV0@@Z 008D4290 f i core.o
 1244	SKIPPED	0002:000e4dd0 ??0?$_Vector_val@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@IAE@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 008D42D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1245	PORTED	0002:000e4de0 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@AAV1@@Z 008D42E0 f i core.o
@@ -1260,19 +1260,19 @@ index	status	map_line
 1259	SKIPPED	0002:000e5090 ??Giterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEHABVconst_iterator@12@@Z 008D4590 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1260	SKIPPED	0002:000e50c0 ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008D45C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1261	SKIPPED	0002:000e50d0 ?allocate@?$allocator@D@std@@QAEPADI@Z 008D45D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1262	VERIFIED	0002:000e50f0 ??$Find@PBD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQBD@Z 008D45F0 f i core.o
-1263	PORTED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o
+1262	SKIPPED	0002:000e50f0 ??$Find@PBD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQBD@Z 008D45F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1263	SKIPPED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1264	PORTED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o
-1265	PORTED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o
-1266	PORTED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o
+1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1267	PORTED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o
-1268	PORTED	0002:000e54e0 ??A?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDbTableSet@@I@Z 008D49E0 f i core.o
-1269	PORTED	0002:000e5560 ?Size@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 008D4A60 f i core.o
-1270	PORTED	0002:000e5570 ??A?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVConfigString@@I@Z 008D4A70 f i core.o
+1268	SKIPPED	0002:000e54e0 ??A?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDbTableSet@@I@Z 008D49E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1269	SKIPPED	0002:000e5560 ?Size@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 008D4A60 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1270	SKIPPED	0002:000e5570 ??A?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVConfigString@@I@Z 008D4A70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1271	PORTED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o
-1272	PORTED	0002:000e5620 ??$FindIndex@PBD@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 008D4B20 f i core.o
+1272	SKIPPED	0002:000e5620 ??$FindIndex@PBD@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 008D4B20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1273	PORTED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o
-1274	PORTED	0002:000e5780 ??$FindIndex@PAD@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 008D4C80 f i core.o
+1274	SKIPPED	0002:000e5780 ??$FindIndex@PAD@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 008D4C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1275	VERIFIED	0002:000e57b0 ?DeleteInst@BankManager@@SAXXZ 008D4CB0 f i core.o
 1276	VERIFIED	0002:000e5840 ?DeleteInst@PakManager@@SAXXZ 008D4D40 f i core.o
 1277	PORTED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o
@@ -1323,7 +1323,7 @@ index	status	map_line
 1322	PORTED	0002:000e66f0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D5BF0 f i core.o
 1323	PORTED	0002:000e6740 ??1?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008D5C40 f i core.o
 1324	VERIFIED	0002:000e6770 ??0?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAE@XZ 008D5C70 f i core.o
-1325	PORTED	0002:000e67b0 ??B?$IVPointer@VDbTableSet@@@@QBE_NXZ 008D5CB0 f i core.o
+1325	SKIPPED	0002:000e67b0 ??B?$IVPointer@VDbTableSet@@@@QBE_NXZ 008D5CB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1326	VERIFIED	0002:000e67d0 ?get_file_name@?$ae_fixed_string@$0IA@E@@QBE?AV1@_N@Z 008D5CD0 f i core.o
 1327	SKIPPED	0002:000e6840 ?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z 008D5D40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1328	PORTED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o
@@ -1335,10 +1335,10 @@ index	status	map_line
 1334	PORTED	0002:000e6c40 ??$Where@VDbQueryString@@@DbQuery@@QAEXHABVDbQueryString@@_N@Z 008D6140 f i core.o
 1335	PORTED	0002:000e7010 ??$Where@H@DbQuery@@QAEXHABH_N@Z 008D6510 f i core.o
 1336	PORTED	0002:000e73f0 ??$Where@M@DbQuery@@QAEXHABM_N@Z 008D68F0 f i core.o
-1337	PORTED	0002:000e77d0 ??$Find@PBDV?$IVPointer@VDbTableSet@@@@@?$InplaceAssetBankSet@VDbTablesetBank@@@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VDbTableSet@@@@@@PAW42@@Z 008D6CD0 f i core.o
+1337	SKIPPED	0002:000e77d0 ??$Find@PBDV?$IVPointer@VDbTableSet@@@@@?$InplaceAssetBankSet@VDbTablesetBank@@@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VDbTableSet@@@@@@PAW42@@Z 008D6CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o
-1339	PORTED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o
-1340	PORTED	0002:000e7b70 ??$PredicateSearch@VTypeCallbackSearch@@V?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@VTypeCallbackSearch@@V?$AeType@V?$IVPointer@VConfigString@@@@@@@Z 008D7070 f i core.o
+1339	SKIPPED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1340	SKIPPED	0002:000e7b70 ??$PredicateSearch@VTypeCallbackSearch@@V?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@VTypeCallbackSearch@@V?$AeType@V?$IVPointer@VConfigString@@@@@@@Z 008D7070 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o
 1342	VERIFIED	0002:000e7e40 ??0DbFieldSet@@QAE@XZ 008D7340 f i core.o
 1343	VERIFIED	0002:000e7ee0 ??1DbFieldSet@@UAE@XZ 008D73E0 f i core.o

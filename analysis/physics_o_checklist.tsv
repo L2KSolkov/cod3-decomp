@@ -323,9 +323,9 @@ index	status	map_line
 322	VERIFIED	0002:00302c80 ?DecodeBank@DestructibleBankManager@@QAEXPBDPAEHW4TPakId@@@Z 00AF2180 f physics.o
 323	VERIFIED	0002:00302cb0 ?collision_memory_prolog@@YAXXZ 00AF21B0 f physics.o
 324	VERIFIED	0002:00302ea0 ?CalculatePhysData@@YAXPAVEntity@@AAM11@Z 00AF23A0 f physics.o
-325	VERIFIED	0002:003030b0 ?CalculatePhysData@@YAXPAVEntity@@V?$IVPointer@VPhysData@@@@@Z 00AF25B0 f physics.o
+325	SKIPPED	0002:003030b0 ?CalculatePhysData@@YAXPAVEntity@@V?$IVPointer@VPhysData@@@@@Z 00AF25B0 f physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 326	VERIFIED	0002:003031b0 ?DecodePhysData@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00AF26B0 f physics.o
-327	VERIFIED	0002:003031e0 ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z 00AF26E0 f physics.o
+327	SKIPPED	0002:003031e0 ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z 00AF26E0 f physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 328	VERIFIED	0002:003032b0 ?frame_advance@rb_prop_system@@YAXM@Z 00AF27B0 f physics.o
 329	VERIFIED	0002:003035b0 ?SetupConstraints@@YAXPAVrb_extra_info@@@Z 00AF2AB0 f physics.o
 330	VERIFIED	0002:00303db0 ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z 00AF32B0 f physics.o
@@ -350,7 +350,7 @@ index	status	map_line
 349	VERIFIED	0002:00305070 ?_update_wheel_effects@rb_vehicle@@AAEXM@Z 00AF4570 f physics.o
 350	VERIFIED	0002:003057a0 ?AddPiece@Destructible@@QAEXPAVEntity@@PBD@Z 00AF4CA0 f physics.o
 351	VERIFIED	0002:00305ca0 ?DecodeDestructible@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00AF51A0 f physics.o
-352	VERIFIED	0002:00305cd0 ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z 00AF51D0 f physics.o
+352	SKIPPED	0002:00305cd0 ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z 00AF51D0 f physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 353	VERIFIED	0002:00305da0 ?FindInitialVel@@YA_NPAVEntity@@AAVDir3@math@@1@Z 00AF52A0 f physics.o
 354	VERIFIED	0002:00305f90 ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ 00AF5490 f physics.o
 355	VERIFIED	0002:003060e0 ?collision_prolog@rb_extra_info@@QAEXXZ 00AF55E0 f physics.o
@@ -424,9 +424,9 @@ index	status	map_line
 423	PORTED	0002:00316950 ??_FHandle@@QAEXXZ 00B05E50 f i physics.o
 424	VERIFIED	0002:00316960 ??0RBVehicleController@@QAE@XZ 00B05E60 f i physics.o
 425	PORTED	0002:00316970 ??0wheel_collision_info@@QAE@XZ 00B05E70 f i physics.o
-426	PORTED	0002:00316980 ?size@?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QBEIXZ 00B05E80 f i physics.o
-427	PORTED	0002:00316990 ??A?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@I@Z 00B05E90 f i physics.o
-428	PORTED	0002:00316a10 ??A?$InplaceVector@UPacked@Position3@math@@@@QAEAAUPacked@Position3@math@@I@Z 00B05F10 f i physics.o
+426	SKIPPED	0002:00316980 ?size@?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QBEIXZ 00B05E80 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+427	SKIPPED	0002:00316990 ??A?$InplaceVector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@I@Z 00B05E90 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+428	SKIPPED	0002:00316a10 ??A?$InplaceVector@UPacked@Position3@math@@@@QAEAAUPacked@Position3@math@@I@Z 00B05F10 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 429	VERIFIED	0002:00316a90 ??0?$phys_static_array@PAVrigid_body@@$09@@QAE@XZ 00B05F90 f i physics.o
 430	VERIFIED	0002:00316aa0 ??A?$phys_static_array@PAVrigid_body@@$09@@QAEAAPAVrigid_body@@H@Z 00B05FA0 f i physics.o
 431	VERIFIED	0002:00316af0 ??0?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE@XZ 00B05FF0 f i physics.o
@@ -460,8 +460,8 @@ index	status	map_line
 459	PORTED	0002:00316fa0 ?add@?$phys_static_array@VPosition3@math@@$0FK@@@QAEPAVPosition3@math@@_NPBD@Z 00B064A0 f i physics.o
 460	PORTED	0002:00317000 ??A?$phys_static_array@VPosition3@math@@$0FK@@@QAEAAVPosition3@math@@H@Z 00B06500 f i physics.o
 461	PORTED	0002:00317060 ??A?$phys_safe_array@Vclient_bone_info@@$09@@QAEAAVclient_bone_info@@H@Z 00B06560 f i physics.o
-462	PORTED	0002:003170c0 ?size@?$InplaceVector@VPhysConstraint@@@@QBEIXZ 00B065C0 f i physics.o
-463	PORTED	0002:003170d0 ??A?$InplaceVector@VPhysConstraint@@@@QAEAAVPhysConstraint@@I@Z 00B065D0 f i physics.o
+462	SKIPPED	0002:003170c0 ?size@?$InplaceVector@VPhysConstraint@@@@QBEIXZ 00B065C0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+463	SKIPPED	0002:003170d0 ??A?$InplaceVector@VPhysConstraint@@@@QAEAAVPhysConstraint@@I@Z 00B065D0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 464	PORTED	0002:00317150 ?remove_all@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEXXZ 00B06650 f i physics.o
 465	PORTED	0002:00317160 ?find@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEPAVprop_collide_callback@@ABVrigid_body_pair_key@@@Z 00B06660 f i physics.o
 466	PORTED	0002:003171c0 ?add_nc@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEPAVbiped_system@@_NPBD@Z 00B066C0 f i physics.o
@@ -552,14 +552,14 @@ index	status	map_line
 551	PORTED	0002:00318200 ??$toDiagMat33@VDir3@math@@@@YAABVDiagMat33@math@@ABVDir3@1@@Z 00B07700 f i physics.o
 552	PORTED	0002:00318210 ??$toPosition3@VPosition3@math@@@@YAABVPosition3@math@@ABV01@@Z 00B07710 f i physics.o
 553	PORTED	0002:00318220 ??$get_active_eps_aabb@Vphys_gjk_geom_list@@@@YAXPAVphys_gjk_geom_list@@PAVDir3@math@@1@Z 00B07720 f i physics.o
-554	PORTED	0002:00318310 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QBEABQAVDestructibleBank@@H@Z 00B07810 f i physics.o
-555	PORTED	0002:00318390 ??0?$IVPointer@VDestructible@@@@QAE@W4TPakId@@PAVDestructible@@@Z 00B07890 f i physics.o
-556	PORTED	0002:003183b0 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QBEABQAVPhysDataBank@@H@Z 00B078B0 f i physics.o
-557	PORTED	0002:00318430 ??0?$IVPointer@VPhysData@@@@QAE@W4TPakId@@PAVPhysData@@@Z 00B07930 f i physics.o
-558	PORTED	0002:00318450 ?size@?$InplaceVector@PBVDestructible@@@@QBEIXZ 00B07950 f i physics.o
-559	PORTED	0002:00318460 ??A?$InplaceVector@PBVDestructible@@@@QAEAAPBVDestructible@@I@Z 00B07960 f i physics.o
-560	PORTED	0002:003184e0 ?size@?$InplaceVector@PBVPhysData@@@@QBEIXZ 00B079E0 f i physics.o
-561	PORTED	0002:003184f0 ??A?$InplaceVector@PBVPhysData@@@@QAEAAPBVPhysData@@I@Z 00B079F0 f i physics.o
+554	SKIPPED	0002:00318310 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QBEABQAVDestructibleBank@@H@Z 00B07810 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+555	SKIPPED	0002:00318390 ??0?$IVPointer@VDestructible@@@@QAE@W4TPakId@@PAVDestructible@@@Z 00B07890 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+556	SKIPPED	0002:003183b0 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QBEABQAVPhysDataBank@@H@Z 00B078B0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+557	SKIPPED	0002:00318430 ??0?$IVPointer@VPhysData@@@@QAE@W4TPakId@@PAVPhysData@@@Z 00B07930 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+558	SKIPPED	0002:00318450 ?size@?$InplaceVector@PBVDestructible@@@@QBEIXZ 00B07950 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+559	SKIPPED	0002:00318460 ??A?$InplaceVector@PBVDestructible@@@@QAEAAPBVDestructible@@I@Z 00B07960 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+560	SKIPPED	0002:003184e0 ?size@?$InplaceVector@PBVPhysData@@@@QBEIXZ 00B079E0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+561	SKIPPED	0002:003184f0 ??A?$InplaceVector@PBVPhysData@@@@QAEAAPBVPhysData@@I@Z 00B079F0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 562	VERIFIED	0002:00318570 ?get_type@DCGSet@@QBEHI@Z 00B07A70 f i physics.o
 563	VERIFIED	0002:003185f0 ?phys_full_multiply_mat@@YAXAAVMat43@math@@ABV12@1@Z 00B07AF0 f i physics.o
 564	VERIFIED	0002:003187c0 ?phys_full_inv_multiply_mat@@YAXAAVMat43@math@@ABV12@1@Z 00B07CC0 f i physics.o
@@ -617,8 +617,8 @@ index	status	map_line
 616	VERIFIED	0002:0031a240 ?full_inverse@@YAXAAVMat43@math@@ABV12@@Z 00B09740 f i physics.o
 617	VERIFIED	0002:0031a430 ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ 00B09930 f i physics.o
 618	PORTED	0002:0031a580 ??A?$cdl_array@Ucdl_vinfo_t@@@@QAEAAUcdl_vinfo_t@@I@Z 00B09A80 f i physics.o
-619	PORTED	0002:0031a5d0 ?Fixup@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09AD0 f i physics.o
-620	PORTED	0002:0031a650 ?AddBank@?$InplaceAssetBankSet@VDestructibleBank@@@@QAEXW4TPakId@@PAVDestructibleBank@@@Z 00B09B50 f i physics.o
+619	SKIPPED	0002:0031a5d0 ?Fixup@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09AD0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+620	SKIPPED	0002:0031a650 ?AddBank@?$InplaceAssetBankSet@VDestructibleBank@@@@QAEXW4TPakId@@PAVDestructibleBank@@@Z 00B09B50 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 621	PORTED	0002:0031a6e0 ??1?$phys_static_array@PAVrigid_body@@$09@@QAE@XZ 00B09BE0 f i physics.o
 622	PORTED	0002:0031a6f0 ??1?$phys_static_array@PAVrigid_body_constraint_ragdoll@@$09@@QAE@XZ 00B09BF0 f i physics.o
 623	PORTED	0002:0031a700 ??1?$phys_static_array@PAVrigid_body_constraint_angular_actuator@@$09@@QAE@XZ 00B09C00 f i physics.o
@@ -643,8 +643,8 @@ index	status	map_line
 642	PORTED	0002:0031aaa0 ?remove_all@?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAEXXZ 00B09FA0 f i physics.o
 643	PORTED	0002:0031aab0 ??1?$phys_static_array@VQuaternion@math@@$0FK@@@QAE@XZ 00B09FB0 f i physics.o
 644	PORTED	0002:0031aac0 ??1?$phys_static_array@VPosition3@math@@$0FK@@@QAE@XZ 00B09FC0 f i physics.o
-645	PORTED	0002:0031aad0 ?Fixup@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09FD0 f i physics.o
-646	PORTED	0002:0031ab50 ?AddBank@?$InplaceAssetBankSet@VPhysDataBank@@@@QAEXW4TPakId@@PAVPhysDataBank@@@Z 00B0A050 f i physics.o
+645	SKIPPED	0002:0031aad0 ?Fixup@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09FD0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+646	SKIPPED	0002:0031ab50 ?AddBank@?$InplaceAssetBankSet@VPhysDataBank@@@@QAEXW4TPakId@@PAVPhysDataBank@@@Z 00B0A050 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 647	PORTED	0002:0031abe0 ??0?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAE@XZ 00B0A0E0 f i physics.o
 648	VERIFIED	0002:0031abf0 ?add@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAEPAVbiped_phys_info@@_NPBD@Z 00B0A0F0 f i physics.o
 649	PORTED	0002:0031ac50 ?begin@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE?AViterator@1@XZ 00B0A150 f i physics.o
@@ -684,10 +684,10 @@ index	status	map_line
 683	PORTED	0002:0031b7c0 ?rotate_left@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@AAEXAAPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0ACC0 f i physics.o
 684	PORTED	0002:0031b850 ??$are_potentially_colliding@Vphys_gjk_geom_cod_base@@V1@@@YA?B_NPAVphys_gjk_geom_cod_base@@0@Z 00B0AD50 f i physics.o
 685	PORTED	0002:0031b880 ??$are_potentially_colliding@Vphys_gjk_geom_list@@V1@@@YA?B_NPAVphys_gjk_geom_list@@0@Z 00B0AD80 f i physics.o
-686	PORTED	0002:0031b8b0 ??A?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDestructible@@I@Z 00B0ADB0 f i physics.o
-687	PORTED	0002:0031b930 ??A?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVPhysData@@I@Z 00B0AE30 f i physics.o
-688	PORTED	0002:0031b9b0 ??$FindIndex@PAD@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEB0 f i physics.o
-689	PORTED	0002:0031b9e0 ??$FindIndex@PAD@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEE0 f i physics.o
+686	SKIPPED	0002:0031b8b0 ??A?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDestructible@@I@Z 00B0ADB0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+687	SKIPPED	0002:0031b930 ??A?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVPhysData@@I@Z 00B0AE30 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+688	SKIPPED	0002:0031b9b0 ??$FindIndex@PAD@?$InplaceAssetBank@VPhysData@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEB0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+689	SKIPPED	0002:0031b9e0 ??$FindIndex@PAD@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00B0AEE0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 690	VERIFIED	0002:0031ba10 ??0rb_ragdoll_model@@QAE@XZ 00B0AF10 f i physics.o
 691	VERIFIED	0002:0031ba70 ?set_closest_cached_psc@contact_point_info@@SAXPBV1@ABVDir3@math@@11PAUpulse_sum_cache_info@1@@Z 00B0AF70 f i physics.o
 692	PORTED	0002:0031bb10 ?add_point_list@rigid_body_constraint_contact@@QAEXQAVrigid_body@@0PBVDir3@math@@1HABV34@MMM_N@Z 00B0B010 f i physics.o
@@ -717,8 +717,8 @@ index	status	map_line
 716	PORTED	0002:0031ce20 ?add@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@_NPBD@Z 00B0C320 f i physics.o
 717	PORTED	0002:0031ce70 ?add@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@PAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0C370 f i physics.o
 718	PORTED	0002:0031d2f0 ?remove@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@@Z 00B0C7F0 f i physics.o
-719	VERIFIED	0002:0031d800 ??$Find@PADV?$IVPointer@VPhysData@@@@@?$InplaceAssetBankSet@VPhysDataBank@@@@QBE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VPhysData@@@@@@PAW42@@Z 00B0CD00 f i physics.o
-720	VERIFIED	0002:0031d9b0 ??$Find@PADV?$IVPointer@VDestructible@@@@@?$InplaceAssetBankSet@VDestructibleBank@@@@QBE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VDestructible@@@@@@PAW42@@Z 00B0CEB0 f i physics.o
+719	SKIPPED	0002:0031d800 ??$Find@PADV?$IVPointer@VPhysData@@@@@?$InplaceAssetBankSet@VPhysDataBank@@@@QBE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VPhysData@@@@@@PAW42@@Z 00B0CD00 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
+720	SKIPPED	0002:0031d9b0 ??$Find@PADV?$IVPointer@VDestructible@@@@@?$InplaceAssetBankSet@VDestructibleBank@@@@QBE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VDestructible@@@@@@PAW42@@Z 00B0CEB0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 721	VERIFIED	0002:0031db60 ?create_prop_collide_callback@@YAXPAVrb_extra_info@@HPAVrigid_body@@1@Z 00B0D060 f i physics.o
 722	VERIFIED	0002:0031dbf0 ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z 00B0D0F0 f i physics.o
 723	PORTED	0002:0031de70 ??0?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAE@XZ 00B0D370 f i physics.o

@@ -24,8 +24,8 @@ index	status	map_line
 23	VERIFIED	0002:002bd2d0 ?RenderText@DebugRender@@SAXPBDHHABVColor@@MM@Z 00AAC7D0 f render.o
 24	VERIFIED	0002:002bd390 ?XModelEnforceExist@@YAXH@Z 00AAC890 f render.o
 25	VERIFIED	0002:002bd3a0 ?XModelSetOptimize@@YAXH@Z 00AAC8A0 f render.o
-26	VERIFIED	0002:002bd3b0 ?XModelGetSurfaces@@YAHV?$IVPointer@VXModel@@@@PAPAPAVXSurface@@H@Z 00AAC8B0 f render.o
-27	VERIFIED	0002:002bd3c0 ?XModelGetSurfaceName@@YAPBDV?$IVPointer@VXModel@@@@HH@Z 00AAC8C0 f render.o
+26	SKIPPED	0002:002bd3b0 ?XModelGetSurfaces@@YAHV?$IVPointer@VXModel@@@@PAPAPAVXSurface@@H@Z 00AAC8B0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+27	SKIPPED	0002:002bd3c0 ?XModelGetSurfaceName@@YAPBDV?$IVPointer@VXModel@@@@HH@Z 00AAC8C0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
 28	VERIFIED	0002:002bd3d0 ?XSurfaceCloneSurface@@YAPAVXSurface@@PAV1@@Z 00AAC8D0 f render.o
 29	VERIFIED	0002:002bd440 ?XSurfaceGetNumVerts@@YAHPAVXSurface@@@Z 00AAC940 f render.o
 30	VERIFIED	0002:002bd450 ?XSurfaceGetNumTris@@YAHPAVXSurface@@@Z 00AAC950 f render.o
@@ -148,7 +148,7 @@ index	status	map_line
 147	VERIFIED	0002:002c23f0 ?cdProjShadow_CleanUp@@YAXXZ 00AB18F0 f render.o
 148	VERIFIED	0002:002c2420 ?cdProjShadow_Begin@@YAXXZ 00AB1920 f render.o
 149	VERIFIED	0002:002c28c0 ?R_GetXModelBounds@@YAXPAVXModel@@QAY02MAAVBoundingBox@@@Z 00AB1DC0 f render.o
-150	VERIFIED	0002:002c2970 ?R_ModelBounds@@YAXV?$IVPointer@VXModel@@@@W4TPakId@@QAM2@Z 00AB1E70 f render.o
+150	SKIPPED	0002:002c2970 ?R_ModelBounds@@YAXV?$IVPointer@VXModel@@@@W4TPakId@@QAM2@Z 00AB1E70 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
 151	VERIFIED	0002:002c29a0 ?RE_ClearScene@@YAXXZ 00AB1EA0 f render.o
 152	VERIFIED	0002:002c29d0 ?RE_AddPolyToScene@@YAXHHPBUpolyVert_t@@@Z 00AB1ED0 f render.o
 153	VERIFIED	0002:002c29e0 ?RE_SetViewModelInfoIndex@@YAXH@Z 00AB1EE0 f render.o
@@ -290,17 +290,17 @@ index	status	map_line
 289	VERIFIED	0002:002c9e20 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVMat44@5@2@Z 00AB9320 f render.o
 290	VERIFIED	0002:002ca2a0 ?setup_color@@YAXABVColor@@AAUnglShaderParamSet@@@Z 00AB97A0 f render.o
 291	VERIFIED	0002:002ca350 ?RenderTexturedQuad2D@DebugRender@@SAXMMMMMABVColor@@PAUnglTexture@@@Z 00AB9850 f render.o
-292	VERIFIED	0002:002ca460 ?XModelBad@@YAHV?$IVPointer@VXModel@@@@@Z 00AB9960 f render.o
-293	VERIFIED	0002:002ca4c0 ?XModelGetName@@YAPBDV?$IVPointer@VXModel@@@@@Z 00AB99C0 f render.o
-294	VERIFIED	0002:002ca4e0 ?XModelGetContents@@YAHV?$IVPointer@VXModel@@@@@Z 00AB99E0 f render.o
-295	VERIFIED	0002:002ca550 ?XModelGetNumLods@@YAHV?$IVPointer@VXModel@@@@@Z 00AB9A50 f render.o
-296	VERIFIED	0002:002ca570 ?XModelGetLodForDist@@YAHV?$IVPointer@VXModel@@@@M@Z 00AB9A70 f render.o
-297	VERIFIED	0002:002ca5f0 ?XModelTransform@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z 00AB9AF0 f render.o
-298	VERIFIED	0002:002ca670 ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z 00AB9B70 f render.o
-299	VERIFIED	0002:002cad70 ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAVMat43@math@@@Z 00ABA270 f render.o
-300	VERIFIED	0002:002cb0a0 ?XModelUpdateChildren@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@H@Z 00ABA5A0 f render.o
-301	VERIFIED	0002:002cb470 ?XModelTraceLine@@YAHV?$IVPointer@VXModel@@@@PAUtrace_t@@PAUDObjSkelMat@@QBM3H@Z 00ABA970 f render.o
-302	VERIFIED	0002:002cbba0 ?XModelGetStaticBounds@@YAHV?$IVPointer@VXModel@@@@QAY02MAAVPosition3@math@@2PBVMat43@3@H@Z 00ABB0A0 f render.o
+292	SKIPPED	0002:002ca460 ?XModelBad@@YAHV?$IVPointer@VXModel@@@@@Z 00AB9960 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+293	SKIPPED	0002:002ca4c0 ?XModelGetName@@YAPBDV?$IVPointer@VXModel@@@@@Z 00AB99C0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+294	SKIPPED	0002:002ca4e0 ?XModelGetContents@@YAHV?$IVPointer@VXModel@@@@@Z 00AB99E0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+295	SKIPPED	0002:002ca550 ?XModelGetNumLods@@YAHV?$IVPointer@VXModel@@@@@Z 00AB9A50 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+296	SKIPPED	0002:002ca570 ?XModelGetLodForDist@@YAHV?$IVPointer@VXModel@@@@M@Z 00AB9A70 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+297	SKIPPED	0002:002ca5f0 ?XModelTransform@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z 00AB9AF0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+298	SKIPPED	0002:002ca670 ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z 00AB9B70 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+299	SKIPPED	0002:002cad70 ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAVMat43@math@@@Z 00ABA270 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+300	SKIPPED	0002:002cb0a0 ?XModelUpdateChildren@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@H@Z 00ABA5A0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+301	SKIPPED	0002:002cb470 ?XModelTraceLine@@YAHV?$IVPointer@VXModel@@@@PAUtrace_t@@PAUDObjSkelMat@@QBM3H@Z 00ABA970 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+302	SKIPPED	0002:002cbba0 ?XModelGetStaticBounds@@YAHV?$IVPointer@VXModel@@@@QAY02MAAVPosition3@math@@2PBVMat43@3@H@Z 00ABB0A0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
 303	VERIFIED	0002:002cbdd0 ??0XModelManager@@AAE@XZ 00ABB2D0 f render.o
 304	VERIFIED	0002:002cbdf0 ??0XModelPartsManager@@AAE@XZ 00ABB2F0 f render.o
 305	VERIFIED	0002:002cbe10 ?PostProcess@XModelPartsManager@@AAEXPAVXModelPartsBank@@W4TPakId@@@Z 00ABB310 f render.o
@@ -367,8 +367,8 @@ index	status	map_line
 366	VERIFIED	0002:002d5560 ?RenderBox@DebugRender@@SAXABVPosition3@math@@0ABVColor@@@Z 00AC4A60 f render.o
 367	VERIFIED	0002:002d5a70 ?RenderQuad@DebugRender@@SAXABVPosition3@math@@000ABVColor@@111_N@Z 00AC4F70 f render.o
 368	VERIFIED	0002:002d5cc0 ?RenderCone@DebugRender@@SAXABVPosition3@math@@ABVDir3@3@MMABVColor@@@Z 00AC51C0 f render.o
-369	VERIFIED	0002:002d5fd0 ?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z 00AC54D0 f render.o
-370	VERIFIED	0002:002d60f0 ?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z 00AC55F0 f render.o
+369	SKIPPED	0002:002d5fd0 ?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z 00AC54D0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
+370	SKIPPED	0002:002d60f0 ?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z 00AC55F0 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
 371	VERIFIED	0002:002d6120 ?DecodeBank@XModelPartsManager@@QAEXPBDPAEHW4TPakId@@@Z 00AC5620 f render.o
 372	VERIFIED	0002:002d6150 ??1DObj@@QAE@XZ 00AC5650 f render.o
 373	VERIFIED	0002:002d6210 ?DObjDumpInfo@@YAXPAVDObj@@@Z 00AC5710 f render.o
@@ -376,7 +376,7 @@ index	status	map_line
 375	VERIFIED	0002:002d69f0 ?DObjGetBoneIndex@@YAHPBVDObj@@I@Z 00AC5EF0 f render.o
 376	VERIFIED	0002:002d7030 ?R_AddEntitySurfaces@@YAXXZ 00AC6530 f render.o
 377	VERIFIED	0002:002d7430 ?R_RenderViewModels@@YAXPAUviewParms_t@@@Z 00AC6930 f render.o
-378	VERIFIED	0002:002d7680 ?RE_RegisterModel@@YA?AV?$IVPointer@VXModel@@@@PBDW4TPakId@@H@Z 00AC6B80 f render.o
+378	SKIPPED	0002:002d7680 ?RE_RegisterModel@@YA?AV?$IVPointer@VXModel@@@@PBDW4TPakId@@H@Z 00AC6B80 f render.o  SKIPPED: inline template/container helper; supplied by its template definition
 379	VERIFIED	0002:002d76a0 ?CreateSpawnedEffectImmediate@ApsGameClient@@UAEPAVapsEffect@@HPBVapsEffectTemplate@@M@Z 00AC6BA0 f render.o
 380	VERIFIED	0002:002d7710 ?FX_BuildSortedParticleEffectList@@YAXXZ 00AC6C10 f render.o
 381	VERIFIED	0002:002d77b0 ?FX_ClearFX@@YAXXZ 00AC6CB0 f render.o
@@ -612,18 +612,18 @@ index	status	map_line
 611	VERIFIED	0002:002e8900 ??0?$jqPtr@X@@QAE@XZ 00AD7E00 f i render.o
 612	VERIFIED	0002:002e8910 ??0?$ae_sized_array@P6AXXZ$0CA@@@QAE@XZ 00AD7E10 f i render.o
 613	VERIFIED	0002:002e8920 ?push_back@?$ae_sized_array@P6AXXZ$0CA@@@QAEXABQ6AXXZ@Z 00AD7E20 f i render.o
-614	VERIFIED	0002:002e89b0 ??A?$InplaceVector@VXBoneInfo@@@@QAEAAVXBoneInfo@@I@Z 00AD7EB0 f i render.o
-615	VERIFIED	0002:002e8a30 ??A?$InplaceVector@VXBoneInfo@@@@QBEABVXBoneInfo@@I@Z 00AD7F30 f i render.o
-616	VERIFIED	0002:002e8ab0 ?size@?$InplaceVector@PAUnglMesh@@@@QBEIXZ 00AD7FB0 f i render.o
-617	VERIFIED	0002:002e8ac0 ?size@?$InplaceVector@PBVXModelCollTri@@@@QBEIXZ 00AD7FC0 f i render.o
-618	VERIFIED	0002:002e8ad0 ??A?$InplaceVector@PBVXModelCollTri@@@@QBEABQBVXModelCollTri@@I@Z 00AD7FD0 f i render.o
-619	VERIFIED	0002:002e8b50 ?size@?$InplaceVector@PBVXModelCollSurf@@@@QBEIXZ 00AD8050 f i render.o
-620	VERIFIED	0002:002e8b60 ??A?$InplaceVector@PBVXModelCollSurf@@@@QAEAAPBVXModelCollSurf@@I@Z 00AD8060 f i render.o
-621	VERIFIED	0002:002e8be0 ??1?$InplaceAssetBankSet@VXModelBank@@@@UAE@XZ 00AD80E0 f i render.o
-622	VERIFIED	0002:002e8bf0 ?OnBankUnloaded@?$InplaceAssetBankSet@VXModelBank@@@@MAEXAAVXModelBank@@@Z 00AD80F0 f i render.o
-623	VERIFIED	0002:002e8c00 ??1?$InplaceAssetBankSet@VXModelPartsBank@@@@UAE@XZ 00AD8100 f i render.o
-624	VERIFIED	0002:002e8c10 ?OnBankUnloaded@?$InplaceAssetBankSet@VXModelPartsBank@@@@MAEXAAVXModelPartsBank@@@Z 00AD8110 f i render.o
-625	VERIFIED	0002:002e8c20 ??A?$ae_array@PAUTOC@LightGrid@@$0GD@@@QAEAAPAUTOC@LightGrid@@H@Z 00AD8120 f i render.o
+614	SKIPPED	0002:002e89b0 ??A?$InplaceVector@VXBoneInfo@@@@QAEAAVXBoneInfo@@I@Z 00AD7EB0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+615	SKIPPED	0002:002e8a30 ??A?$InplaceVector@VXBoneInfo@@@@QBEABVXBoneInfo@@I@Z 00AD7F30 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+616	SKIPPED	0002:002e8ab0 ?size@?$InplaceVector@PAUnglMesh@@@@QBEIXZ 00AD7FB0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+617	SKIPPED	0002:002e8ac0 ?size@?$InplaceVector@PBVXModelCollTri@@@@QBEIXZ 00AD7FC0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+618	SKIPPED	0002:002e8ad0 ??A?$InplaceVector@PBVXModelCollTri@@@@QBEABQBVXModelCollTri@@I@Z 00AD7FD0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+619	SKIPPED	0002:002e8b50 ?size@?$InplaceVector@PBVXModelCollSurf@@@@QBEIXZ 00AD8050 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+620	SKIPPED	0002:002e8b60 ??A?$InplaceVector@PBVXModelCollSurf@@@@QAEAAPBVXModelCollSurf@@I@Z 00AD8060 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+621	SKIPPED	0002:002e8be0 ??1?$InplaceAssetBankSet@VXModelBank@@@@UAE@XZ 00AD80E0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+622	SKIPPED	0002:002e8bf0 ?OnBankUnloaded@?$InplaceAssetBankSet@VXModelBank@@@@MAEXAAVXModelBank@@@Z 00AD80F0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+623	SKIPPED	0002:002e8c00 ??1?$InplaceAssetBankSet@VXModelPartsBank@@@@UAE@XZ 00AD8100 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+624	SKIPPED	0002:002e8c10 ?OnBankUnloaded@?$InplaceAssetBankSet@VXModelPartsBank@@@@MAEXAAVXModelPartsBank@@@Z 00AD8110 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+625	SKIPPED	0002:002e8c20 ??A?$ae_array@PAUTOC@LightGrid@@$0GD@@@QAEAAPAUTOC@LightGrid@@H@Z 00AD8120 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 626	VERIFIED	0002:002e8ca0 ?clear@?$reserved_dlist@VtrRefEntity@@@@QAEXXZ 00AD81A0 f i render.o
 627	VERIFIED	0002:002e8cc0 ??0?$phys_static_array@VVector4@math@@$0BE@@@QAE@XZ 00AD81C0 f i render.o
 628	VERIFIED	0002:002e8ce0 ?add@?$phys_static_array@VVector4@math@@$0BE@@@QAEPAVVector4@math@@_NPBD@Z 00AD81E0 f i render.o
@@ -697,22 +697,22 @@ index	status	map_line
 696	SKIPPED	0002:002e9ce0 ??Eiterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAEAAV012@XZ 00AD91E0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 697	SKIPPED	0002:002e9cf0 ??8const_iterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBE_NABV012@@Z 00AD91F0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 698	SKIPPED	0002:002e9d10 ??9const_iterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBE_NABV012@@Z 00AD9210 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-699	VERIFIED	0002:002e9d30 ??_E?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o
-700	VERIFIED	0002:002e9d30 ??_G?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o
-701	VERIFIED	0002:002e9d60 ??_E?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o
-702	VERIFIED	0002:002e9d60 ??_G?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o
+699	SKIPPED	0002:002e9d30 ??_E?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+700	SKIPPED	0002:002e9d30 ??_G?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+701	SKIPPED	0002:002e9d60 ??_E?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+702	SKIPPED	0002:002e9d60 ??_G?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 703	VERIFIED	0002:002e9d90 ??0?$ae_sized_array_base@V?$ae_pair@FF@@$0BAA@@@QAE@XZ 00AD9290 f i render.o
 704	VERIFIED	0002:002e9da0 ??4DebugLine@@QAEAAV0@ABV0@@Z 00AD92A0 f i render.o
 705	VERIFIED	0002:002e9e10 ??4DebugSphere@@QAEAAV0@ABV0@@Z 00AD9310 f i render.o
 706	VERIFIED	0002:002e9e70 ??4DebugTri@@QAEAAV0@ABV0@@Z 00AD9370 f i render.o
 707	VERIFIED	0002:002e9f00 ??4DebugTexturedQuad2D@@QAEAAV0@ABV0@@Z 00AD9400 f i render.o
 708	VERIFIED	0002:002e9f60 ?Ptr@?$jqPtr@X@@QAEAAPAXXZ 00AD9460 f i render.o
-709	VERIFIED	0002:002e9f70 ?size@?$InplaceVector@PBVXModelParts@@@@QBEIXZ 00AD9470 f i render.o
-710	VERIFIED	0002:002e9f80 ??A?$InplaceVector@PBVXModelParts@@@@QAEAAPBVXModelParts@@I@Z 00AD9480 f i render.o
-711	VERIFIED	0002:002ea000 ?size@?$InplaceVector@PBVXModel@@@@QBEIXZ 00AD9500 f i render.o
-712	VERIFIED	0002:002ea010 ??A?$InplaceVector@PBVXModel@@@@QAEAAPBVXModel@@I@Z 00AD9510 f i render.o
-713	VERIFIED	0002:002ea090 ??A?$ae_array@PAVXModelBank@@$0GD@@@QAEAAPAVXModelBank@@H@Z 00AD9590 f i render.o
-714	VERIFIED	0002:002ea110 ??A?$ae_array@PAVXModelPartsBank@@$0GD@@@QAEAAPAVXModelPartsBank@@H@Z 00AD9610 f i render.o
+709	SKIPPED	0002:002e9f70 ?size@?$InplaceVector@PBVXModelParts@@@@QBEIXZ 00AD9470 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+710	SKIPPED	0002:002e9f80 ??A?$InplaceVector@PBVXModelParts@@@@QAEAAPBVXModelParts@@I@Z 00AD9480 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+711	SKIPPED	0002:002ea000 ?size@?$InplaceVector@PBVXModel@@@@QBEIXZ 00AD9500 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+712	SKIPPED	0002:002ea010 ??A?$InplaceVector@PBVXModel@@@@QAEAAPBVXModel@@I@Z 00AD9510 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+713	SKIPPED	0002:002ea090 ??A?$ae_array@PAVXModelBank@@$0GD@@@QAEAAPAVXModelBank@@H@Z 00AD9590 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+714	SKIPPED	0002:002ea110 ??A?$ae_array@PAVXModelPartsBank@@$0GD@@@QAEAAPAVXModelPartsBank@@H@Z 00AD9610 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 715	VERIFIED	0002:002ea190 ?node_to_object@?$reserved_dlist@VtrRefEntity@@@@SAPAVtrRefEntity@@PAUdlist_node@1@@Z 00AD9690 f i render.o
 716	VERIFIED	0002:002ea1a0 ?validate@?$reserved_dlist@VtrRefEntity@@@@QBEXXZ 00AD96A0 f i render.o
 717	VERIFIED	0002:002ea1b0 ?call_destructors@?$phys_static_array@VVector4@math@@$0BE@@@AAEXXZ 00AD96B0 f i render.o
@@ -733,7 +733,7 @@ index	status	map_line
 732	VERIFIED	0002:002ea3c0 ?construct_array@?$ae_vector@VDebugTexturedQuad2D@@@@AAEPAVDebugTexturedQuad2D@@HH@Z 00AD98C0 f i render.o
 733	VERIFIED	0002:002ea3f0 ?destroy_all@?$ae_vector@VDebugTexturedQuad2D@@@@AAEXXZ 00AD98F0 f i render.o
 734	VERIFIED	0002:002ea420 ??0iterator@?$ae_sized_array@P6AXXZ$0CA@@@AAE@PAP6AXXZ@Z 00AD9920 f i render.o
-735	VERIFIED	0002:002ea440 ?Deref@?$IVPointer@VXModelParts@@@@ABEPAVXModelParts@@XZ 00AD9940 f i render.o
+735	SKIPPED	0002:002ea440 ?Deref@?$IVPointer@VXModelParts@@@@ABEPAVXModelParts@@XZ 00AD9940 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 736	VERIFIED	0002:002ea460 ?call_destructors@?$phys_static_array@PAVtrRefEntity@@$0EA@@@AAEXXZ 00AD9960 f i render.o
 737	VERIFIED	0002:002ea470 ?reset_buffer@?$phys_static_array@PAVtrRefEntity@@$0EA@@@AAEXXZ 00AD9970 f i render.o
 738	VERIFIED	0002:002ea480 ??0iterator@?$reserved_dlist@VtrRefEntity@@@@QAE@PAUdlist_node@1@0@Z 00AD9980 f i render.o
@@ -790,10 +790,10 @@ index	status	map_line
 789	SKIPPED	0002:002eaa90 ??$_Allocate@UApsDebugSphere@ApsGameClient@@@std@@YAPAUApsDebugSphere@ApsGameClient@@IPAU12@@Z 00AD9F90 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 790	SKIPPED	0002:002eaab0 ??$fill@PAUApsDebugLine@ApsGameClient@@U12@@std@@YAXPAUApsDebugLine@ApsGameClient@@0ABU12@@Z 00AD9FB0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 791	SKIPPED	0002:002eaaf0 ??$_Allocate@UApsDebugLine@ApsGameClient@@@std@@YAPAUApsDebugLine@ApsGameClient@@IPAU12@@Z 00AD9FF0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-792	VERIFIED	0002:002eab10 ??A?$ae_array@PAVXModelBank@@$0GD@@@QBEABQAVXModelBank@@H@Z 00ADA010 f i render.o
-793	VERIFIED	0002:002eab90 ??A?$ae_array@PAVXModelPartsBank@@$0GD@@@QBEABQAVXModelPartsBank@@H@Z 00ADA090 f i render.o
-794	VERIFIED	0002:002eac10 ??0?$IVPointer@VXModelParts@@@@QAE@W4TPakId@@PAVXModelParts@@@Z 00ADA110 f i render.o
-795	VERIFIED	0002:002eac30 ??0?$IVPointer@VXModelParts@@@@QAE@XZ 00ADA130 f i render.o
+792	SKIPPED	0002:002eab10 ??A?$ae_array@PAVXModelBank@@$0GD@@@QBEABQAVXModelBank@@H@Z 00ADA010 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+793	SKIPPED	0002:002eab90 ??A?$ae_array@PAVXModelPartsBank@@$0GD@@@QBEABQAVXModelPartsBank@@H@Z 00ADA090 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+794	SKIPPED	0002:002eac10 ??0?$IVPointer@VXModelParts@@@@QAE@W4TPakId@@PAVXModelParts@@@Z 00ADA110 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+795	SKIPPED	0002:002eac30 ??0?$IVPointer@VXModelParts@@@@QAE@XZ 00ADA130 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 796	SKIPPED	0002:002eac50 ??$find_if@PAPAVParticleEffect@@VParticleEraserPred@@@std@@YAPAPAVParticleEffect@@PAPAV1@0VParticleEraserPred@@@Z 00ADA150 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 797	SKIPPED	0002:002eac80 ??$remove_copy_if@PAPAVParticleEffect@@PAPAV1@VParticleEraserPred@@@std@@YAPAPAVParticleEffect@@PAPAV1@00VParticleEraserPred@@@Z 00ADA180 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 798	SKIPPED	0002:002eacb0 ??$find_if@PAPAVLightEffect@@VLightEraserPred@@@std@@YAPAPAVLightEffect@@PAPAV1@0VLightEraserPred@@@Z 00ADA1B0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -848,18 +848,18 @@ index	status	map_line
 847	VERIFIED	0002:002ebf90 ??B?$jqPtr@X@@QAEPAXXZ 00ADB490 f i render.o
 848	VERIFIED	0002:002ebfa0 ?begin@?$ae_sized_array@P6AXXZ$0CA@@@QAE?AViterator@1@XZ 00ADB4A0 f i render.o
 849	VERIFIED	0002:002ebfb0 ?end@?$ae_sized_array@P6AXXZ$0CA@@@QAE?AViterator@1@XZ 00ADB4B0 f i render.o
-850	VERIFIED	0002:002ebfd0 ?Fixup@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00ADB4D0 f i render.o
-851	VERIFIED	0002:002ec050 ?Size@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 00ADB550 f i render.o
-852	VERIFIED	0002:002ec060 ??A?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVXModelParts@@I@Z 00ADB560 f i render.o
-853	VERIFIED	0002:002ec0e0 ?Fixup@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00ADB5E0 f i render.o
-854	VERIFIED	0002:002ec160 ?Size@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 00ADB660 f i render.o
-855	VERIFIED	0002:002ec170 ??A?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVXModel@@I@Z 00ADB670 f i render.o
-856	VERIFIED	0002:002ec1f0 ??0?$InplaceAssetBankSet@VXModelBank@@@@QAE@XZ 00ADB6F0 f i render.o
-857	VERIFIED	0002:002ec2c0 ?AddBank@?$InplaceAssetBankSet@VXModelBank@@@@QAEXW4TPakId@@PAVXModelBank@@@Z 00ADB7C0 f i render.o
-858	VERIFIED	0002:002ec350 ?UnloadBank@?$InplaceAssetBankSet@VXModelBank@@@@MAEXW4TPakId@@@Z 00ADB850 f i render.o
-859	VERIFIED	0002:002ec3b0 ??0?$InplaceAssetBankSet@VXModelPartsBank@@@@QAE@XZ 00ADB8B0 f i render.o
-860	VERIFIED	0002:002ec480 ?AddBank@?$InplaceAssetBankSet@VXModelPartsBank@@@@QAEXW4TPakId@@PAVXModelPartsBank@@@Z 00ADB980 f i render.o
-861	VERIFIED	0002:002ec510 ?UnloadBank@?$InplaceAssetBankSet@VXModelPartsBank@@@@MAEXW4TPakId@@@Z 00ADBA10 f i render.o
+850	SKIPPED	0002:002ebfd0 ?Fixup@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00ADB4D0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+851	SKIPPED	0002:002ec050 ?Size@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 00ADB550 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+852	SKIPPED	0002:002ec060 ??A?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVXModelParts@@I@Z 00ADB560 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+853	SKIPPED	0002:002ec0e0 ?Fixup@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00ADB5E0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+854	SKIPPED	0002:002ec160 ?Size@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 00ADB660 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+855	SKIPPED	0002:002ec170 ??A?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVXModel@@I@Z 00ADB670 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+856	SKIPPED	0002:002ec1f0 ??0?$InplaceAssetBankSet@VXModelBank@@@@QAE@XZ 00ADB6F0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+857	SKIPPED	0002:002ec2c0 ?AddBank@?$InplaceAssetBankSet@VXModelBank@@@@QAEXW4TPakId@@PAVXModelBank@@@Z 00ADB7C0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+858	SKIPPED	0002:002ec350 ?UnloadBank@?$InplaceAssetBankSet@VXModelBank@@@@MAEXW4TPakId@@@Z 00ADB850 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+859	SKIPPED	0002:002ec3b0 ??0?$InplaceAssetBankSet@VXModelPartsBank@@@@QAE@XZ 00ADB8B0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+860	SKIPPED	0002:002ec480 ?AddBank@?$InplaceAssetBankSet@VXModelPartsBank@@@@QAEXW4TPakId@@PAVXModelPartsBank@@@Z 00ADB980 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+861	SKIPPED	0002:002ec510 ?UnloadBank@?$InplaceAssetBankSet@VXModelPartsBank@@@@MAEXW4TPakId@@@Z 00ADBA10 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 862	VERIFIED	0002:002ec570 ??0?$reserved_dlist@VtrRefEntity@@@@QAE@XZ 00ADBA70 f i render.o
 863	VERIFIED	0002:002ec590 ?push_back@?$reserved_dlist@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z 00ADBA90 f i render.o
 864	VERIFIED	0002:002ec5c0 ?end@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ 00ADBAC0 f i render.o
@@ -881,7 +881,7 @@ index	status	map_line
 880	VERIFIED	0002:002eccc0 ?push_back@?$ae_vector@VDebugTri@@@@QAEXABVDebugTri@@@Z 00ADC1C0 f i render.o
 881	VERIFIED	0002:002ece90 ??1?$ae_vector@VDebugTexturedQuad2D@@@@QAE@XZ 00ADC390 f i render.o
 882	VERIFIED	0002:002ecec0 ?push_back@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXABVDebugTexturedQuad2D@@@Z 00ADC3C0 f i render.o
-883	VERIFIED	0002:002ed020 ??D?$IVPointer@VXModelParts@@@@QAEPAVXModelParts@@XZ 00ADC520 f i render.o
+883	SKIPPED	0002:002ed020 ??D?$IVPointer@VXModelParts@@@@QAEPAVXModelParts@@XZ 00ADC520 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 884	VERIFIED	0002:002ed040 ??1?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAE@XZ 00ADC540 f i render.o
 885	VERIFIED	0002:002ed050 ?remove_all@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEXXZ 00ADC550 f i render.o
 886	VERIFIED	0002:002ed060 ??Diterator@?$reserved_dlist@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00ADC560 f i render.o
@@ -935,9 +935,9 @@ index	status	map_line
 934	SKIPPED	0002:002ede80 ??$copy_backward@PAUDecalSet@DynamicDecalMgr@@PAU12@@std@@YAPAUDecalSet@DynamicDecalMgr@@PAU12@00@Z 00ADD380 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 935	SKIPPED	0002:002edec0 ??$copy_backward@PAUApsDebugSphere@ApsGameClient@@PAU12@@std@@YAPAUApsDebugSphere@ApsGameClient@@PAU12@00@Z 00ADD3C0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 936	SKIPPED	0002:002edf00 ??$copy_backward@PAUApsDebugLine@ApsGameClient@@PAU12@@std@@YAPAUApsDebugLine@ApsGameClient@@PAU12@00@Z 00ADD400 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-937	VERIFIED	0002:002edf40 ??$FindIndex@PAD@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00ADD440 f i render.o
-938	VERIFIED	0002:002edf70 ??$FindIndex@PBD@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00ADD470 f i render.o
-939	VERIFIED	0002:002edfa0 ??$FindIndex@PBD@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00ADD4A0 f i render.o
+937	SKIPPED	0002:002edf40 ??$FindIndex@PAD@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 00ADD440 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+938	SKIPPED	0002:002edf70 ??$FindIndex@PBD@?$InplaceAssetBank@VXModel@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00ADD470 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+939	SKIPPED	0002:002edfa0 ??$FindIndex@PBD@?$InplaceAssetBank@VXModelParts@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00ADD4A0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 940	SKIPPED	0002:002edfd0 ?construct@?$allocator@UDecalSet@DynamicDecalMgr@@@std@@QAEXPAUDecalSet@DynamicDecalMgr@@ABU34@@Z 00ADD4D0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 941	SKIPPED	0002:002ee000 ?destroy@?$allocator@UDecalSet@DynamicDecalMgr@@@std@@QAEXPAUDecalSet@DynamicDecalMgr@@@Z 00ADD500 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 942	SKIPPED	0002:002ee010 ?construct@?$allocator@UApsDebugSphere@ApsGameClient@@@std@@QAEXPAUApsDebugSphere@ApsGameClient@@ABU34@@Z 00ADD510 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -974,9 +974,9 @@ index	status	map_line
 973	VERIFIED	0002:002ee890 ?call_destructors@?$phys_static_array@V?$phys_static_array@VVector4@math@@$0BE@@@$0EA@@@AAEXXZ 00ADDD90 f i render.o
 974	VERIFIED	0002:002ee8a0 ?reset_buffer@?$phys_static_array@V?$phys_static_array@VVector4@math@@$0BE@@@$0EA@@@AAEXXZ 00ADDDA0 f i render.o
 975	VERIFIED	0002:002ee8b0 ?Dump@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00ADDDB0 f i render.o
-976	VERIFIED	0002:002ee9a0 ??$Find@PADV?$IVPointer@VXModel@@@@@?$InplaceAssetBankSet@VXModelBank@@@@QBE?AV?$IVPointer@VXModel@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VXModel@@@@@@PAW42@@Z 00ADDEA0 f i render.o
-977	VERIFIED	0002:002eeb50 ??$Find@PBDV?$IVPointer@VXModel@@@@@?$InplaceAssetBankSet@VXModelBank@@@@QBE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VXModel@@@@@@PAW42@@Z 00ADE050 f i render.o
-978	VERIFIED	0002:002eed00 ??$Find@PBDV?$IVPointer@VXModelParts@@@@@?$InplaceAssetBankSet@VXModelPartsBank@@@@QBE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VXModelParts@@@@@@PAW42@@Z 00ADE200 f i render.o
+976	SKIPPED	0002:002ee9a0 ??$Find@PADV?$IVPointer@VXModel@@@@@?$InplaceAssetBankSet@VXModelBank@@@@QBE?AV?$IVPointer@VXModel@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VXModel@@@@@@PAW42@@Z 00ADDEA0 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+977	SKIPPED	0002:002eeb50 ??$Find@PBDV?$IVPointer@VXModel@@@@@?$InplaceAssetBankSet@VXModelBank@@@@QBE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VXModel@@@@@@PAW42@@Z 00ADE050 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+978	SKIPPED	0002:002eed00 ??$Find@PBDV?$IVPointer@VXModelParts@@@@@?$InplaceAssetBankSet@VXModelPartsBank@@@@QBE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VXModelParts@@@@@@PAW42@@Z 00ADE200 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 979	SKIPPED	0002:002eeeb0 ??$_Destroy_range@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@YAXPAUApsDebugSphere@ApsGameClient@@0AAV?$allocator@UApsDebugSphere@ApsGameClient@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00ADE3B0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 980	SKIPPED	0002:002eeec0 ??$_Uninit_fill_n@PAUApsDebugSphere@ApsGameClient@@IU12@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@YAXPAUApsDebugSphere@ApsGameClient@@IABU12@AAV?$allocator@UApsDebugSphere@ApsGameClient@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00ADE3C0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 981	SKIPPED	0002:002eef00 ??$_Destroy_range@UApsDebugLine@ApsGameClient@@V?$allocator@UApsDebugLine@ApsGameClient@@@std@@@std@@YAXPAUApsDebugLine@ApsGameClient@@0AAV?$allocator@UApsDebugLine@ApsGameClient@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00ADE400 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

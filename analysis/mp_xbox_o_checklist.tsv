@@ -62,10 +62,10 @@ index	status	map_line
 61	VERIFIED	0002:0037af10 ??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z 00B6A410 f mp_xbox.o
 62	VERIFIED	0002:0037af70 ??1AARXBoxLiveIngameOptions@@UAE@XZ 00B6A470 f mp_xbox.o
 63	PORTED	0002:0037ba00 ?Init@JoinGameMenu@@UAEXXZ 00B6AF00 f i mp_xbox.o
-64	VERIFIED	0002:0037ba10 ??A?$ae_array@PAVPanelQuad@@$0M@@@QAEAAPAVPanelQuad@@H@Z 00B6AF10 f i mp_xbox.o
-65	VERIFIED	0002:0037ba90 ??A?$ae_array@PAVFEText@@$02@@QAEAAPAVFEText@@H@Z 00B6AF90 f i mp_xbox.o
-66	VERIFIED	0002:0037bb10 ??A?$ae_array@PAVFEText@@$03@@QAEAAPAVFEText@@H@Z 00B6B010 f i mp_xbox.o
-67	VERIFIED	0002:0037bb90 ??A?$ae_array@PAVPanelQuad@@$05@@QAEAAPAVPanelQuad@@H@Z 00B6B090 f i mp_xbox.o
+64	SKIPPED	0002:0037ba10 ??A?$ae_array@PAVPanelQuad@@$0M@@@QAEAAPAVPanelQuad@@H@Z 00B6AF10 f i mp_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+65	SKIPPED	0002:0037ba90 ??A?$ae_array@PAVFEText@@$02@@QAEAAPAVFEText@@H@Z 00B6AF90 f i mp_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+66	SKIPPED	0002:0037bb10 ??A?$ae_array@PAVFEText@@$03@@QAEAAPAVFEText@@H@Z 00B6B010 f i mp_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+67	SKIPPED	0002:0037bb90 ??A?$ae_array@PAVPanelQuad@@$05@@QAEAAPAVPanelQuad@@H@Z 00B6B090 f i mp_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
 68	VERIFIED	0002:0037bc10 ??_GJoinGameMenu@@UAEPAXI@Z 00B6B110 f i mp_xbox.o
 69	VERIFIED	0002:0037bc10 ??_EJoinGameMenu@@UAEPAXI@Z 00B6B110 f i mp_xbox.o
 70	VERIFIED	0002:0037bc40 ??1JoinGameMenu@@UAE@XZ 00B6B140 f i mp_xbox.o

@@ -1,5 +1,5 @@
 index	status	map_line
-1	VERIFIED	0002:002631d0 ?empty@InplaceString@@QBE_NXZ 00A526D0 f i streamer.o
+1	SKIPPED	0002:002631d0 ?empty@InplaceString@@QBE_NXZ 00A526D0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 2	VERIFIED	0002:002631e0 ??0mem_info@@QAE@PAEH@Z 00A526E0 f i streamer.o
 3	PORTED	0002:00263200 ??0Color32@@QAE@I@Z 00A52700 f i streamer.o
 4	PORTED	0002:00263220 ?to_ulong@Color32@@QBEIXZ 00A52720 f i streamer.o
@@ -33,14 +33,14 @@ index	status	map_line
 32	VERIFIED	0002:00263650 ?GetPosition@ZdNode@@QBEABVPosition3@math@@XZ 00A52B50 f i streamer.o
 33	VERIFIED	0002:00263660 ?GetStreamZone@ZdNode@@QBEPBVStreamZone@@XZ 00A52B60 f i streamer.o
 34	PORTED	0002:00263670 ?GetZoneBitset@ZdNode@@QBEABV?$BitSet@$0EA@@@XZ 00A52B70 f i streamer.o
-35	VERIFIED	0002:00263680 ?GetZoneDistances@ZdNode@@QBEABV?$InplaceVector@M@@XZ 00A52B80 f i streamer.o
+35	SKIPPED	0002:00263680 ?GetZoneDistances@ZdNode@@QBEABV?$InplaceVector@M@@XZ 00A52B80 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 36	PORTED	0002:00263690 ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ 00A52B90 f i streamer.o
 37	VERIFIED	0002:002636a0 ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ 00A52BA0 f i streamer.o
 38	VERIFIED	0002:002636b0 ?GetName@StreamZone@@QBEPBDXZ 00A52BB0 f i streamer.o
 39	PORTED	0002:002636c0 ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z 00A52BC0 f i streamer.o
 40	PORTED	0002:002636d0 ?GetZoneBitset@ZoneOverrideBrushSet@@QBEABV?$BitSet@$0EA@@@XZ 00A52BD0 f i streamer.o
-41	VERIFIED	0002:002636e0 ?GetZoneDistances@ZoneOverrideBrushSet@@QBEABV?$InplaceVector@M@@XZ 00A52BE0 f i streamer.o
-42	PORTED	0002:002636f0 ?GetNonZoneDistances@ZoneOverrideBrushSet@@QAEAAV?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@XZ 00A52BF0 f i streamer.o
+41	SKIPPED	0002:002636e0 ?GetZoneDistances@ZoneOverrideBrushSet@@QBEABV?$InplaceVector@M@@XZ 00A52BE0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+42	SKIPPED	0002:002636f0 ?GetNonZoneDistances@ZoneOverrideBrushSet@@QAEAAV?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@XZ 00A52BF0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 43	VERIFIED	0002:00263700 ?WasInside@ZoneOverrideBrushSet@@QBE_NXZ 00A52C00 f i streamer.o
 44	VERIFIED	0002:00263710 ?SetInside@ZoneOverrideBrushSet@@QAEX_N@Z 00A52C10 f i streamer.o
 45	VERIFIED	0002:00263720 ?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z 00A52C20 f i streamer.o
@@ -224,7 +224,7 @@ index	status	map_line
 223	VERIFIED	0002:0026cb60 ?GetTopContext@PakManager@@QBE?AW4TPakId@@XZ 00A5C060 f streamer.o
 224	VERIFIED	0002:0026cb90 ?PopContext@PakManager@@QAE?AW4TPakId@@XZ 00A5C090 f streamer.o
 225	PORTED	0002:0026cbc0 ?UnloadBank@StreamZoneManager@@UAEXW4TPakId@@@Z 00A5C0C0 f streamer.o
-226	PORTED	0002:0026ccd0 ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@V?$BitSet@$0EA@@@ABV?$InplaceVector@M@@_N@Z 00A5C1D0 f streamer.o
+226	SKIPPED	0002:0026ccd0 ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@V?$BitSet@$0EA@@@ABV?$InplaceVector@M@@_N@Z 00A5C1D0 f streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 227	VERIFIED	0002:0026cd60 ?DebugRender@StreamZoneManager@@QAEXXZ 00A5C260 f streamer.o
 228	VERIFIED	0002:0026cef0 ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@PBD@Z 00A5C3F0 f streamer.o
 229	PORTED	0002:0026cfa0 ?RenderGlowBeam@@YAXAAVPosition3@math@@0MI@Z 00A5C4A0 f streamer.o
@@ -378,9 +378,9 @@ index	status	map_line
 377	VERIFIED	0002:002819c0 ?Release@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEHPAVnalBaseSkeleton@@H_N@Z 00A70EC0 f i streamer.o
 378	PORTED	0002:002819d0 ??0?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE@XZ 00A70ED0 f i streamer.o
 379	PORTED	0002:002819e0 ?push_back@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXABQAVAssetBankSet@@@Z 00A70EE0 f i streamer.o
-380	PORTED	0002:00281a60 ?size@?$InplaceVector@PBUPakInfoNode@@@@QBEIXZ 00A70F60 f i streamer.o
-381	PORTED	0002:00281a70 ??A?$InplaceVector@PBUPakInfoNode@@@@QAEAAPBUPakInfoNode@@I@Z 00A70F70 f i streamer.o
-382	PORTED	0002:00281af0 ??A?$InplaceVector@PBUPakInfoNode@@@@QBEABQBUPakInfoNode@@I@Z 00A70FF0 f i streamer.o
+380	SKIPPED	0002:00281a60 ?size@?$InplaceVector@PBUPakInfoNode@@@@QBEIXZ 00A70F60 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+381	SKIPPED	0002:00281a70 ??A?$InplaceVector@PBUPakInfoNode@@@@QAEAAPBUPakInfoNode@@I@Z 00A70F70 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+382	SKIPPED	0002:00281af0 ??A?$InplaceVector@PBUPakInfoNode@@@@QBEABQBUPakInfoNode@@I@Z 00A70FF0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 383	PORTED	0002:00281b70 ?GetCapacity@?$BitSet@$0EA@@@SAHXZ 00A71070 f i streamer.o
 384	PORTED	0002:00281b80 ?size@?$reserved_dlist@VPakFile@@@@QBEHXZ 00A71080 f i streamer.o
 385	PORTED	0002:00281b90 ??0dlist_node@?$reserved_dlist@VPakFile@@@@QAE@PAU01@0@Z 00A71090 f i streamer.o
@@ -409,28 +409,28 @@ index	status	map_line
 408	PORTED	0002:00282050 ?pop_back@?$ae_sized_array@W4TPakId@@$0IA@@@QAEAAW4TPakId@@XZ 00A71550 f i streamer.o
 409	PORTED	0002:00282080 ??0?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAE@XZ 00A71580 f i streamer.o
 410	PORTED	0002:00282090 ??0?$ae_vector@UTStbData@PakManager@@@@QAE@XZ 00A71590 f i streamer.o
-411	PORTED	0002:002820a0 ?size@?$InplaceVector@PBVZdNode@@@@QBEIXZ 00A715A0 f i streamer.o
-412	PORTED	0002:002820b0 ??A?$InplaceVector@PBVZdNode@@@@QBEABQBVZdNode@@I@Z 00A715B0 f i streamer.o
-413	PORTED	0002:00282130 ?size@?$InplaceVector@PBVZoneCellBox@@@@QBEIXZ 00A71630 f i streamer.o
-414	PORTED	0002:00282140 ??A?$InplaceVector@PBVZoneCellBox@@@@QBEABQBVZoneCellBox@@I@Z 00A71640 f i streamer.o
-415	PORTED	0002:002821c0 ?size@?$InplaceVector@PBVStreamZone@@@@QBEIXZ 00A716C0 f i streamer.o
-416	PORTED	0002:002821d0 ??A?$InplaceVector@PBVStreamZone@@@@QBEABQBVStreamZone@@I@Z 00A716D0 f i streamer.o
-417	PORTED	0002:00282250 ??A?$InplaceVector@PBVZoneCellDesc@@@@QAEAAPBVZoneCellDesc@@I@Z 00A71750 f i streamer.o
-418	PORTED	0002:002822d0 ?size@?$InplaceVector@VVector4@math@@@@QBEIXZ 00A717D0 f i streamer.o
-419	PORTED	0002:002822e0 ??A?$InplaceVector@VVector4@math@@@@QBEABVVector4@math@@I@Z 00A717E0 f i streamer.o
-420	PORTED	0002:00282360 ?size@?$InplaceVector@VZoneOverrideBrush@@@@QBEIXZ 00A71860 f i streamer.o
-421	PORTED	0002:00282370 ??A?$InplaceVector@VZoneOverrideBrush@@@@QBEABVZoneOverrideBrush@@I@Z 00A71870 f i streamer.o
-422	PORTED	0002:002823f0 ?size@?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QBEIXZ 00A718F0 f i streamer.o
-423	PORTED	0002:00282400 ??A?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QAEAAV?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@I@Z 00A71900 f i streamer.o
-424	PORTED	0002:00282480 ?size@?$InplaceVector@PBVZoneOverrideBrushSet@@@@QBEIXZ 00A71980 f i streamer.o
-425	PORTED	0002:00282490 ??A?$InplaceVector@PBVZoneOverrideBrushSet@@@@QAEAAPBVZoneOverrideBrushSet@@I@Z 00A71990 f i streamer.o
-426	PORTED	0002:00282510 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QBEABQAVZoneBoundaryBank@@H@Z 00A71A10 f i streamer.o
-427	PORTED	0002:00282590 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QAEAAPAVZoneBoundaryBank@@H@Z 00A71A90 f i streamer.o
-428	PORTED	0002:00282610 ?size@?$InplaceVector@VIbEntry@InstanceBank@@@@QBEIXZ 00A71B10 f i streamer.o
-429	PORTED	0002:00282620 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QAEAAVIbEntry@InstanceBank@@I@Z 00A71B20 f i streamer.o
-430	PORTED	0002:002826a0 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QBEABVIbEntry@InstanceBank@@I@Z 00A71BA0 f i streamer.o
-431	PORTED	0002:00282720 ?size@?$InplaceVector@VInstanceBank@@@@QBEIXZ 00A71C20 f i streamer.o
-432	PORTED	0002:00282730 ??A?$InplaceVector@VInstanceBank@@@@QAEAAVInstanceBank@@I@Z 00A71C30 f i streamer.o
+411	SKIPPED	0002:002820a0 ?size@?$InplaceVector@PBVZdNode@@@@QBEIXZ 00A715A0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+412	SKIPPED	0002:002820b0 ??A?$InplaceVector@PBVZdNode@@@@QBEABQBVZdNode@@I@Z 00A715B0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+413	SKIPPED	0002:00282130 ?size@?$InplaceVector@PBVZoneCellBox@@@@QBEIXZ 00A71630 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+414	SKIPPED	0002:00282140 ??A?$InplaceVector@PBVZoneCellBox@@@@QBEABQBVZoneCellBox@@I@Z 00A71640 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+415	SKIPPED	0002:002821c0 ?size@?$InplaceVector@PBVStreamZone@@@@QBEIXZ 00A716C0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+416	SKIPPED	0002:002821d0 ??A?$InplaceVector@PBVStreamZone@@@@QBEABQBVStreamZone@@I@Z 00A716D0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+417	SKIPPED	0002:00282250 ??A?$InplaceVector@PBVZoneCellDesc@@@@QAEAAPBVZoneCellDesc@@I@Z 00A71750 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+418	SKIPPED	0002:002822d0 ?size@?$InplaceVector@VVector4@math@@@@QBEIXZ 00A717D0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+419	SKIPPED	0002:002822e0 ??A?$InplaceVector@VVector4@math@@@@QBEABVVector4@math@@I@Z 00A717E0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+420	SKIPPED	0002:00282360 ?size@?$InplaceVector@VZoneOverrideBrush@@@@QBEIXZ 00A71860 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+421	SKIPPED	0002:00282370 ??A?$InplaceVector@VZoneOverrideBrush@@@@QBEABVZoneOverrideBrush@@I@Z 00A71870 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+422	SKIPPED	0002:002823f0 ?size@?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QBEIXZ 00A718F0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+423	SKIPPED	0002:00282400 ??A?$InplaceVector@V?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@@@QAEAAV?$InplaceTriple@VInplaceString@@PBUPakInfoNode@@M@@I@Z 00A71900 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+424	SKIPPED	0002:00282480 ?size@?$InplaceVector@PBVZoneOverrideBrushSet@@@@QBEIXZ 00A71980 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+425	SKIPPED	0002:00282490 ??A?$InplaceVector@PBVZoneOverrideBrushSet@@@@QAEAAPBVZoneOverrideBrushSet@@I@Z 00A71990 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+426	SKIPPED	0002:00282510 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QBEABQAVZoneBoundaryBank@@H@Z 00A71A10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+427	SKIPPED	0002:00282590 ??A?$ae_array@PAVZoneBoundaryBank@@$0GD@@@QAEAAPAVZoneBoundaryBank@@H@Z 00A71A90 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+428	SKIPPED	0002:00282610 ?size@?$InplaceVector@VIbEntry@InstanceBank@@@@QBEIXZ 00A71B10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+429	SKIPPED	0002:00282620 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QAEAAVIbEntry@InstanceBank@@I@Z 00A71B20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+430	SKIPPED	0002:002826a0 ??A?$InplaceVector@VIbEntry@InstanceBank@@@@QBEABVIbEntry@InstanceBank@@I@Z 00A71BA0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+431	SKIPPED	0002:00282720 ?size@?$InplaceVector@VInstanceBank@@@@QBEIXZ 00A71C20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+432	SKIPPED	0002:00282730 ??A?$InplaceVector@VInstanceBank@@@@QAEAAVInstanceBank@@I@Z 00A71C30 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 433	PORTED	0002:002827b0 ?EnableRelease@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAEX_N@Z 00A71CB0 f i streamer.o
 434	VERIFIED	0002:002827c0 ??1?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE@XZ 00A71CC0 f i streamer.o
 435	VERIFIED	0002:002827d0 ?DirectoryName@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPBDXZ 00A71CD0 f i streamer.o
@@ -465,25 +465,25 @@ index	status	map_line
 464	PORTED	0002:00282fc0 ??Diterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QBEAAPAVAssetBankSet@@XZ 00A724C0 f i streamer.o
 465	PORTED	0002:00282fd0 ??Eiterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEAAV01@XZ 00A724D0 f i streamer.o
 466	PORTED	0002:00282fe0 ??9iterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QBE_NV01@@Z 00A724E0 f i streamer.o
-467	PORTED	0002:00283000 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QAEAAV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 00A72500 f i streamer.o
-468	VERIFIED	0002:00283080 ??A?$InplaceVector@V?$InplaceTreeElement@IVInplaceString@@@@@@QAEAAV?$InplaceTreeElement@IVInplaceString@@@@I@Z 00A72580 f i streamer.o
-469	PORTED	0002:00283100 ?size@?$InplaceVector@VInstanceData@@@@QBEIXZ 00A72600 f i streamer.o
-470	PORTED	0002:00283110 ??A?$InplaceVector@VInstanceData@@@@QAEAAVInstanceData@@I@Z 00A72610 f i streamer.o
-471	PORTED	0002:00283190 ?size@?$InplaceVector@PAVSceneEntity@@@@QBEIXZ 00A72690 f i streamer.o
-472	PORTED	0002:002831a0 ??A?$InplaceVector@PAVSceneEntity@@@@QAEAAPAVSceneEntity@@I@Z 00A726A0 f i streamer.o
-473	PORTED	0002:00283220 ?size@?$InplaceVector@VStaticModel@@@@QBEIXZ 00A72720 f i streamer.o
-474	PORTED	0002:00283230 ??A?$InplaceVector@VStaticModel@@@@QAEAAVStaticModel@@I@Z 00A72730 f i streamer.o
-475	PORTED	0002:002832c0 ?size@?$InplaceVector@VInstanceGroup@@@@QBEIXZ 00A727C0 f i streamer.o
-476	PORTED	0002:002832d0 ??A?$InplaceVector@VInstanceGroup@@@@QAEAAVInstanceGroup@@I@Z 00A727D0 f i streamer.o
-477	PORTED	0002:00283350 ?size@?$InplaceVector@VVehicleNode@@@@QBEIXZ 00A72850 f i streamer.o
-478	PORTED	0002:00283360 ??A?$InplaceVector@VVehicleNode@@@@QAEAAVVehicleNode@@I@Z 00A72860 f i streamer.o
-479	PORTED	0002:002833e0 ?size@?$InplaceVector@VSceneEffect@@@@QBEIXZ 00A728E0 f i streamer.o
-480	PORTED	0002:002833f0 ??A?$InplaceVector@VSceneEffect@@@@QAEAAVSceneEffect@@I@Z 00A728F0 f i streamer.o
-481	PORTED	0002:00283480 ?size@?$InplaceVector@VSceneEffectGroup@@@@QBEIXZ 00A72980 f i streamer.o
-482	PORTED	0002:00283490 ??A?$InplaceVector@VSceneEffectGroup@@@@QAEAAVSceneEffectGroup@@I@Z 00A72990 f i streamer.o
-483	PORTED	0002:00283510 ?size@?$InplaceVector@VSceneLight@@@@QBEIXZ 00A72A10 f i streamer.o
-484	PORTED	0002:00283520 ??A?$InplaceVector@VSceneLight@@@@QAEAAVSceneLight@@I@Z 00A72A20 f i streamer.o
-485	PORTED	0002:002835b0 ??A?$ae_array@PAVSceneBank@@$0GD@@@QAEAAPAVSceneBank@@H@Z 00A72AB0 f i streamer.o
+467	SKIPPED	0002:00283000 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QAEAAV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 00A72500 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+468	SKIPPED	0002:00283080 ??A?$InplaceVector@V?$InplaceTreeElement@IVInplaceString@@@@@@QAEAAV?$InplaceTreeElement@IVInplaceString@@@@I@Z 00A72580 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+469	SKIPPED	0002:00283100 ?size@?$InplaceVector@VInstanceData@@@@QBEIXZ 00A72600 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+470	SKIPPED	0002:00283110 ??A?$InplaceVector@VInstanceData@@@@QAEAAVInstanceData@@I@Z 00A72610 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+471	SKIPPED	0002:00283190 ?size@?$InplaceVector@PAVSceneEntity@@@@QBEIXZ 00A72690 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+472	SKIPPED	0002:002831a0 ??A?$InplaceVector@PAVSceneEntity@@@@QAEAAPAVSceneEntity@@I@Z 00A726A0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+473	SKIPPED	0002:00283220 ?size@?$InplaceVector@VStaticModel@@@@QBEIXZ 00A72720 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+474	SKIPPED	0002:00283230 ??A?$InplaceVector@VStaticModel@@@@QAEAAVStaticModel@@I@Z 00A72730 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+475	SKIPPED	0002:002832c0 ?size@?$InplaceVector@VInstanceGroup@@@@QBEIXZ 00A727C0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+476	SKIPPED	0002:002832d0 ??A?$InplaceVector@VInstanceGroup@@@@QAEAAVInstanceGroup@@I@Z 00A727D0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+477	SKIPPED	0002:00283350 ?size@?$InplaceVector@VVehicleNode@@@@QBEIXZ 00A72850 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+478	SKIPPED	0002:00283360 ??A?$InplaceVector@VVehicleNode@@@@QAEAAVVehicleNode@@I@Z 00A72860 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+479	SKIPPED	0002:002833e0 ?size@?$InplaceVector@VSceneEffect@@@@QBEIXZ 00A728E0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+480	SKIPPED	0002:002833f0 ??A?$InplaceVector@VSceneEffect@@@@QAEAAVSceneEffect@@I@Z 00A728F0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+481	SKIPPED	0002:00283480 ?size@?$InplaceVector@VSceneEffectGroup@@@@QBEIXZ 00A72980 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+482	SKIPPED	0002:00283490 ??A?$InplaceVector@VSceneEffectGroup@@@@QAEAAVSceneEffectGroup@@I@Z 00A72990 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+483	SKIPPED	0002:00283510 ?size@?$InplaceVector@VSceneLight@@@@QBEIXZ 00A72A10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+484	SKIPPED	0002:00283520 ??A?$InplaceVector@VSceneLight@@@@QAEAAVSceneLight@@I@Z 00A72A20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+485	SKIPPED	0002:002835b0 ??A?$ae_array@PAVSceneBank@@$0GD@@@QAEAAPAVSceneBank@@H@Z 00A72AB0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 486	VERIFIED	0002:00283630 ?push_back@?$ae_sized_array@W4TPakId@@$0CA@@@QAEXABW4TPakId@@@Z 00A72B30 f i streamer.o
 487	PORTED	0002:002836c0 ??A?$phys_static_array@VVector4@math@@$0BE@@@QBEABVVector4@math@@H@Z 00A72BC0 f i streamer.o
 488	PORTED	0002:00283720 ?get_count@?$phys_static_array@VVector4@math@@$0BE@@@QBE?BHXZ 00A72C20 f i streamer.o
@@ -558,7 +558,7 @@ index	status	map_line
 557	PORTED	0002:00284190 ?end@?$ae_vector@UGlowBeam@@@@QAEPAUGlowBeam@@XZ 00A73690 f i streamer.o
 558	PORTED	0002:002841a0 ?construct_array@?$ae_vector@UGlowBeam@@@@AAEPAUGlowBeam@@H@Z 00A736A0 f i streamer.o
 559	VERIFIED	0002:002841c0 ??$SinCos@$02$0A@$0A@$0A@@math@@YA?AVVector4@0@ABV10@@Z 00A736C0 f i streamer.o
-560	PORTED	0002:00284300 ?IsUsed@?$InplaceTree@VInplaceString@@M@@ABE_NI@Z 00A73800 f i streamer.o
+560	SKIPPED	0002:00284300 ?IsUsed@?$InplaceTree@VInplaceString@@M@@ABE_NI@Z 00A73800 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 561	PORTED	0002:002843a0 ?WritePosition@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXMMM@Z 00A738A0 f i streamer.o
 562	PORTED	0002:002843e0 ?WriteColor@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXI@Z 00A738E0 f i streamer.o
 563	PORTED	0002:00284400 ?WriteTexCoord@?$nglMeshIterator@Ucdscratch_vertex@@G@@QAEXMM@Z 00A73900 f i streamer.o
@@ -598,7 +598,7 @@ index	status	map_line
 597	PORTED	0002:00285570 ?Find@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAVnglFont@@ABVtlFixedString@@@Z 00A74A70 f i streamer.o
 598	PORTED	0002:00285650 ?begin@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE?AViterator@1@XZ 00A74B50 f i streamer.o
 599	PORTED	0002:00285660 ?end@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAE?AViterator@1@XZ 00A74B60 f i streamer.o
-600	PORTED	0002:00285680 ?Fixup@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74B80 f i streamer.o
+600	SKIPPED	0002:00285680 ?Fixup@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74B80 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 601	VERIFIED	0002:00285700 ?IsEmpty@?$BitSet@$0EA@@@QBE_NXZ 00A74C00 f i streamer.o
 602	PORTED	0002:00285720 ??0?$reserved_dlist@VPakFile@@@@QAE@XZ 00A74C20 f i streamer.o
 603	PORTED	0002:00285740 ?push_back@?$reserved_dlist@VPakFile@@@@QAEXPAVPakFile@@@Z 00A74C40 f i streamer.o
@@ -612,10 +612,10 @@ index	status	map_line
 611	PORTED	0002:002858d0 ??1?$ae_vector@PAX@@QAE@XZ 00A74DD0 f i streamer.o
 612	PORTED	0002:00285900 ?back@?$ae_sized_array@W4TPakId@@$0IA@@@QAEAAW4TPakId@@XZ 00A74E00 f i streamer.o
 613	PORTED	0002:00285920 ?Clear@?$BitSet@$03@@QAEXXZ 00A74E20 f i streamer.o
-614	PORTED	0002:00285930 ?Fixup@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74E30 f i streamer.o
-615	PORTED	0002:002859b0 ?AddBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAEXW4TPakId@@PAVZoneBoundaryBank@@@Z 00A74EB0 f i streamer.o
-616	PORTED	0002:00285a40 ?UnloadBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXW4TPakId@@@Z 00A74F40 f i streamer.o
-617	PORTED	0002:00285aa0 ?GetRawPtr@?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ 00A74FA0 f i streamer.o
+614	SKIPPED	0002:00285930 ?Fixup@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A74E30 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+615	SKIPPED	0002:002859b0 ?AddBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAEXW4TPakId@@PAVZoneBoundaryBank@@@Z 00A74EB0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+616	SKIPPED	0002:00285a40 ?UnloadBank@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXW4TPakId@@@Z 00A74F40 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+617	SKIPPED	0002:00285aa0 ?GetRawPtr@?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ 00A74FA0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 618	VERIFIED	0002:00285ac0 ??0?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00A74FC0 f i streamer.o
 619	VERIFIED	0002:00285af0 ?DirectoryName@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPBDXZ 00A74FF0 f i streamer.o
 620	VERIFIED	0002:00285b00 ?Del@?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE_NQAV?$nalAnimClass@VnalAnyPose@@@@@Z 00A75000 f i streamer.o
@@ -676,11 +676,11 @@ index	status	map_line
 675	PORTED	0002:00286750 ?destroy_all@?$ae_vector@UGlowSprites@@@@AAEXXZ 00A75C50 f i streamer.o
 676	PORTED	0002:00286780 ?destroy_all@?$ae_vector@UGlowBeam@@@@AAEXXZ 00A75C80 f i streamer.o
 677	PORTED	0002:002867b0 ?back@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEAAPAVAssetBankSet@@XZ 00A75CB0 f i streamer.o
-678	PORTED	0002:002867d0 ??$Find@PBD@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBUPakInfoNode@@ABQBD@Z 00A75CD0 f i streamer.o
-679	PORTED	0002:00286810 ??$Find@PBD@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBVStreamZone@@ABQBD@Z 00A75D10 f i streamer.o
+678	SKIPPED	0002:002867d0 ??$Find@PBD@?$InplaceAssetBank@UPakInfoNode@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBUPakInfoNode@@ABQBD@Z 00A75CD0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+679	SKIPPED	0002:00286810 ??$Find@PBD@?$InplaceAssetBank@VStreamZone@@V?$InplaceTree@VInplaceString@@I@@@@QBEPBVStreamZone@@ABQBD@Z 00A75D10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 680	PORTED	0002:00286850 ??$PakDelete@V?$BitSet@$0GD@@@@@YAXW4TPakId@@PAV?$BitSet@$0GD@@@_N@Z 00A75D50 f i streamer.o
 681	PORTED	0002:00286880 ??$PakDelete@UAnimOffset@@@@YAXW4TPakId@@PAUAnimOffset@@_N@Z 00A75D80 f i streamer.o
-682	PORTED	0002:002868b0 ??$Find@PBD@?$InplaceTree@VInplaceString@@M@@QBEPAMABQBD@Z 00A75DB0 f i streamer.o
+682	SKIPPED	0002:002868b0 ??$Find@PBD@?$InplaceTree@VInplaceString@@M@@QBEPAMABQBD@Z 00A75DB0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 683	PORTED	0002:002869c0 ??$?0$0BAA@G@?$ae_fixed_string@$0CA@E@@QAE@ABV?$ae_fixed_string@$0BAA@G@@@Z 00A75EC0 f i streamer.o
 684	PORTED	0002:00286a00 ??$WriteVertex@G@@YAXAAV?$nglMeshIterator@Ucdscratch_vertex@@G@@MMMIMM@Z 00A75F00 f i streamer.o
 685	PORTED	0002:00286a70 ??APakInfoBank@@QBEPBUPakInfoNode@@PBD@Z 00A75F70 f i streamer.o
@@ -716,11 +716,11 @@ index	status	map_line
 715	PORTED	0002:002876b0 ?clear@?$ae_vector@UGlowBeam@@@@QAEXXZ 00A76BB0 f i streamer.o
 716	PORTED	0002:002876c0 ??$PakDelete@VInstanceListNode@@@@YAXW4TPakId@@PAVInstanceListNode@@_N@Z 00A76BC0 f i streamer.o
 717	VERIFIED	0002:00287700 ?SingletonDebugRender@PakManager@@SAXXZ 00A76C00 f i streamer.o
-718	PORTED	0002:00287710 ??0?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAE@XZ 00A76C10 f i streamer.o
-719	PORTED	0002:00287800 ?OnBankUnloaded@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXAAVZoneBoundaryBank@@@Z 00A76D00 f i streamer.o
-720	PORTED	0002:00287810 ??1?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAE@XZ 00A76D10 f i streamer.o
-721	PORTED	0002:00287820 ??_E?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o
-722	PORTED	0002:00287820 ??_G?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o
+718	SKIPPED	0002:00287710 ??0?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAE@XZ 00A76C10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+719	SKIPPED	0002:00287800 ?OnBankUnloaded@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXAAVZoneBoundaryBank@@@Z 00A76D00 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+720	SKIPPED	0002:00287810 ??1?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAE@XZ 00A76D10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+721	SKIPPED	0002:00287820 ??_E?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+722	SKIPPED	0002:00287820 ??_G?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 723	VERIFIED	0002:00287850 ??_GAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
 724	VERIFIED	0002:00287850 ??_EAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
 725	VERIFIED	0002:00287880 ?SingletonDebugRender@SceneManager@@SAXXZ 00A76D80 f i streamer.o

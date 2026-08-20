@@ -1511,7 +1511,7 @@ index	status	map_line
 1510	PORTED	0002:001afd90 ??A?$ae_vector@PAVFEText@@@@QAEAAPAVFEText@@H@Z 0099F290 f i shell.o
 1511	PORTED	0002:001afe10 ?begin@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F310 f i shell.o
 1512	PORTED	0002:001afe20 ?end@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F320 f i shell.o
-1513	VERIFIED	0002:001afe30 ??A?$ae_array@PAVPanelQuad@@$04@@QAEAAPAVPanelQuad@@H@Z 0099F330 f i shell.o
+1513	SKIPPED	0002:001afe30 ??A?$ae_array@PAVPanelQuad@@$04@@QAEAAPAVPanelQuad@@H@Z 0099F330 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 1514	VERIFIED	0002:001afeb0 ??0?$ae_vector@PAVPanelAnimObject@@@@QAE@XZ 0099F3B0 f i shell.o
 1515	PORTED	0002:001afec0 ??A?$ae_vector@PAVPanelAnimObject@@@@QBEABQAVPanelAnimObject@@H@Z 0099F3C0 f i shell.o
 1516	PORTED	0002:001aff40 ??A?$ae_vector@PAVPanelAnimObject@@@@QAEAAPAVPanelAnimObject@@H@Z 0099F440 f i shell.o
@@ -1531,9 +1531,9 @@ index	status	map_line
 1530	PORTED	0002:001b04c0 ?size@?$ae_vector@PAVFEMenuListBoxItem@@@@QBEHXZ 0099F9C0 f i shell.o
 1531	PORTED	0002:001b04d0 ??A?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@H@Z 0099F9D0 f i shell.o
 1532	PORTED	0002:001b0550 ??0?$ae_pair@VHashString@@H@@QAE@ABVHashString@@ABH@Z 0099FA50 f i shell.o
-1533	VERIFIED	0002:001b0570 ??A?$ae_array@PAVPanelQuad@@$08@@QAEAAPAVPanelQuad@@H@Z 0099FA70 f i shell.o
-1534	VERIFIED	0002:001b05f0 ??A?$ae_array@PAVFEText@@$01@@QAEAAPAVFEText@@H@Z 0099FAF0 f i shell.o
-1535	PORTED	0002:001b0670 ??A?$ae_array@PAVFEText@@$00@@QAEAAPAVFEText@@H@Z 0099FB70 f i shell.o
+1533	SKIPPED	0002:001b0570 ??A?$ae_array@PAVPanelQuad@@$08@@QAEAAPAVPanelQuad@@H@Z 0099FA70 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1534	SKIPPED	0002:001b05f0 ??A?$ae_array@PAVFEText@@$01@@QAEAAPAVFEText@@H@Z 0099FAF0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1535	SKIPPED	0002:001b0670 ??A?$ae_array@PAVFEText@@$00@@QAEAAPAVFEText@@H@Z 0099FB70 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 1536	VERIFIED	0002:001b06f0 ??0?$ae_vector@H@@QAE@XZ 0099FBF0 f i shell.o
 1537	PORTED	0002:001b0700 ??A?$ae_vector@H@@QAEAAHH@Z 0099FC00 f i shell.o
 1538	VERIFIED	0002:001b0780 ??0?$ae_vector@U_XUID@@@@QAE@XZ 0099FC80 f i shell.o

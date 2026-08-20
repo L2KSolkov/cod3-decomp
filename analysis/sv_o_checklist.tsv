@@ -38,7 +38,7 @@ index	status	map_line
 37	VERIFIED	0002:0011eb70 ?SV_GetUsercmd@@YAXHPAUusercmd_s@@@Z 0090E070 f sv.o
 38	VERIFIED	0002:0011ebb0 ?SV_SetUsercmdButtonsWeapons@@YAXHH@Z 0090E0B0 f sv.o
 39	VERIFIED	0002:0011ebc0 ?SV_SaveWrite@@YAPAXPBXH@Z 0090E0C0 f sv.o
-40	VERIFIED	0002:0011ec00 ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z 0090E100 f sv.o
+40	SKIPPED	0002:0011ec00 ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z 0090E100 f sv.o  SKIPPED: inline template/container helper; supplied by its template definition
 41	VERIFIED	0002:0011ec30 ?SV_DObjDumpInfo@@YAXPAVEntity@@@Z 0090E130 f sv.o
 42	VERIFIED	0002:0011ec70 ?SV_DObjCreateSkelForBone@@YA_NPAVEntity@@H@Z 0090E170 f sv.o
 43	VERIFIED	0002:0011ed10 ?SV_DObjCreateSkelForBones@@YA_NPAVEntity@@@Z 0090E210 f sv.o

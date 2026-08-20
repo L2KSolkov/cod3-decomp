@@ -765,8 +765,8 @@ index	status	map_line
 764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o
 765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o
 766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o
-767	PORTED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o
-768	PORTED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o
+767	SKIPPED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+768	SKIPPED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o
 770	PORTED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o
 771	PORTED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o
@@ -788,15 +788,15 @@ index	status	map_line
 787	PORTED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o
 788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o
 789	PORTED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o
-790	PORTED	0002:0025cfa0 ?size@?$InplaceVector@E@@QBEIXZ 00A4C4A0 f i game.o
-791	VERIFIED	0002:0025cfb0 ??0?$IVPointer@VXModel@@@@QAE@W4TPakId@@PAVXModel@@@Z 00A4C4B0 f i game.o
-792	PORTED	0002:0025cfd0 ?size@?$InplaceVector@VBspNode@@@@QBEIXZ 00A4C4D0 f i game.o
-793	PORTED	0002:0025cfe0 ??A?$InplaceVector@VBspNode@@@@QAEAAVBspNode@@I@Z 00A4C4E0 f i game.o
-794	PORTED	0002:0025d060 ?size@?$InplaceVector@VBspPlane@@@@QBEIXZ 00A4C560 f i game.o
-795	PORTED	0002:0025d070 ??A?$InplaceVector@VBspPlane@@@@QAEAAVBspPlane@@I@Z 00A4C570 f i game.o
-796	PORTED	0002:0025d0f0 ?size@?$InplaceVector@VBspArea@@@@QBEIXZ 00A4C5F0 f i game.o
-797	PORTED	0002:0025d100 ??A?$InplaceVector@VBspArea@@@@QAEAAVBspArea@@I@Z 00A4C600 f i game.o
-798	PORTED	0002:0025d180 ??A?$InplaceVector@H@@QAEAAHI@Z 00A4C680 f i game.o
+790	SKIPPED	0002:0025cfa0 ?size@?$InplaceVector@E@@QBEIXZ 00A4C4A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+791	SKIPPED	0002:0025cfb0 ??0?$IVPointer@VXModel@@@@QAE@W4TPakId@@PAVXModel@@@Z 00A4C4B0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+792	SKIPPED	0002:0025cfd0 ?size@?$InplaceVector@VBspNode@@@@QBEIXZ 00A4C4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+793	SKIPPED	0002:0025cfe0 ??A?$InplaceVector@VBspNode@@@@QAEAAVBspNode@@I@Z 00A4C4E0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+794	SKIPPED	0002:0025d060 ?size@?$InplaceVector@VBspPlane@@@@QBEIXZ 00A4C560 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+795	SKIPPED	0002:0025d070 ??A?$InplaceVector@VBspPlane@@@@QAEAAVBspPlane@@I@Z 00A4C570 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+796	SKIPPED	0002:0025d0f0 ?size@?$InplaceVector@VBspArea@@@@QBEIXZ 00A4C5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+797	SKIPPED	0002:0025d100 ??A?$InplaceVector@VBspArea@@@@QAEAAVBspArea@@I@Z 00A4C600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+798	SKIPPED	0002:0025d180 ??A?$InplaceVector@H@@QAEAAHI@Z 00A4C680 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o
 800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o
 801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o
@@ -810,8 +810,8 @@ index	status	map_line
 809	VERIFIED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o
 810	VERIFIED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o
 811	VERIFIED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o
-812	PORTED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o
-813	PORTED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o
+812	SKIPPED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+813	SKIPPED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o
 815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o
 816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o
@@ -870,8 +870,8 @@ index	status	map_line
 869	VERIFIED	0002:0025e3d0 ??A?$ae_sized_array@W4EPadAliasStick@@$01@@QAEAAW4EPadAliasStick@@H@Z 00A4D8D0 f i game.o
 870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o
 871	VERIFIED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o
-872	PORTED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o
-873	PORTED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o
+872	SKIPPED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
 875	PORTED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
 876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o
@@ -888,7 +888,7 @@ index	status	map_line
 887	PORTED	0002:0025e890 ??0DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A4DD90 f i game.o
 888	PORTED	0002:0025e8b0 ?SetObject@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXPAVSound@SoundDevice@@@Z 00A4DDB0 f i game.o
 889	PORTED	0002:0025e8c0 ?Release@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A4DDC0 f i game.o
-890	PORTED	0002:0025e8d0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QAEAAPAVGdbFileBank@@H@Z 00A4DDD0 f i game.o
+890	SKIPPED	0002:0025e8d0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QAEAAPAVGdbFileBank@@H@Z 00A4DDD0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 891	PORTED	0002:0025e950 ?set_size@?$ae_sized_array@G$0BAA@@@QAEXH@Z 00A4DE50 f i game.o
 892	PORTED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o
 893	PORTED	0002:0025e9d0 ?destroy_all@?$ae_vector@USCheckpointGameVar@@@@AAEXXZ 00A4DED0 f i game.o
@@ -910,7 +910,7 @@ index	status	map_line
 909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o
 910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o
 911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o
-912	PORTED	0002:0025ebe0 ?Deref@?$IVPointer@VGdbFileSet@@@@ABEPAVGdbFileSet@@XZ 00A4E0E0 f i game.o
+912	SKIPPED	0002:0025ebe0 ?Deref@?$IVPointer@VGdbFileSet@@@@ABEPAVGdbFileSet@@XZ 00A4E0E0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	PORTED	0002:0025ec00 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@HH@Z 00A4E100 f i game.o
 914	PORTED	0002:0025ec30 ?set_size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXH@Z 00A4E130 f i game.o
 915	SKIPPED	0002:0025ec50 ??0?$pair@HH@std@@QAE@XZ 00A4E150 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -949,14 +949,14 @@ index	status	map_line
 948	SKIPPED	0002:0025eff0 ??$fill@PAU?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@0ABU10@@Z 00A4E4F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 949	SKIPPED	0002:0025f020 ??$_Allocate@U?$pair@HH@std@@@std@@YAPAU?$pair@HH@0@IPAU10@@Z 00A4E520 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 950	VERIFIED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o
-951	PORTED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o
-952	PORTED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o
+951	SKIPPED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+952	SKIPPED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 953	PORTED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o
-954	PORTED	0002:0025f1a0 ??0?$IVPointer@VGdbFileSet@@@@QAE@W4TPakId@@PAVGdbFileSet@@@Z 00A4E6A0 f i game.o
-955	PORTED	0002:0025f1c0 ??0?$IVPointer@VGdbFileSet@@@@QAE@XZ 00A4E6C0 f i game.o
+954	SKIPPED	0002:0025f1a0 ??0?$IVPointer@VGdbFileSet@@@@QAE@W4TPakId@@PAVGdbFileSet@@@Z 00A4E6A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+955	SKIPPED	0002:0025f1c0 ??0?$IVPointer@VGdbFileSet@@@@QAE@XZ 00A4E6C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	PORTED	0002:0025f1e0 ??R?$DelFunctor@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A4E6E0 f i game.o
-957	PORTED	0002:0025f200 ?size@?$InplaceVector@PBVGdbFileSet@@@@QBEIXZ 00A4E700 f i game.o
-958	PORTED	0002:0025f210 ??A?$InplaceVector@PBVGdbFileSet@@@@QAEAAPBVGdbFileSet@@I@Z 00A4E710 f i game.o
+957	SKIPPED	0002:0025f200 ?size@?$InplaceVector@PBVGdbFileSet@@@@QBEIXZ 00A4E700 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+958	SKIPPED	0002:0025f210 ??A?$InplaceVector@PBVGdbFileSet@@@@QAEAAPBVGdbFileSet@@I@Z 00A4E710 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 959	SKIPPED	0002:0025f290 ??$_Ptr_cat@PAU?$pair@HH@std@@PAU12@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAU?$pair@HH@0@0@Z 00A4E790 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 960	SKIPPED	0002:0025f2a0 ??$_Copy_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 961	SKIPPED	0002:0025f2e0 ??$_Copy_backward_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1020,10 +1020,10 @@ index	status	map_line
 1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o
 1020	PORTED	0002:00260710 ?BindObjectToHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVSound@SoundDevice@@@Z 00A4FC10 f i game.o
 1021	VERIFIED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o
-1022	PORTED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o
-1023	PORTED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o
-1024	PORTED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o
-1025	PORTED	0002:002609d0 ?UnloadBank@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXW4TPakId@@@Z 00A4FED0 f i game.o
+1022	SKIPPED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+1023	SKIPPED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+1024	SKIPPED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+1025	SKIPPED	0002:002609d0 ?UnloadBank@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXW4TPakId@@@Z 00A4FED0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1026	PORTED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o
 1027	PORTED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o
 1028	PORTED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o
@@ -1045,7 +1045,7 @@ index	status	map_line
 1044	PORTED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o
 1045	PORTED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o
 1046	PORTED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o
-1047	PORTED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o
+1047	SKIPPED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1048	VERIFIED	0002:00260de0 ??0?$ae_sized_array@VPosition3@math@@$0BAA@@@QAE@XZ 00A502E0 f i game.o
 1049	PORTED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o
 1050	PORTED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o
@@ -1067,7 +1067,7 @@ index	status	map_line
 1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o
 1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o
 1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o
-1069	PORTED	0002:00261420 ??C?$IVPointer@VGdbFileSet@@@@QBEPBVGdbFileSet@@XZ 00A50920 f i game.o
+1069	SKIPPED	0002:00261420 ??C?$IVPointer@VGdbFileSet@@@@QBEPBVGdbFileSet@@XZ 00A50920 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1070	VERIFIED	0002:00261440 ?destroy_all@?$ae_vector@Udebug_brush@@@@AAEXXZ 00A50940 f i game.o
 1071	SKIPPED	0002:00261470 ??0?$_Vector_val@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE@V?$allocator@U?$pair@HH@std@@@1@@Z 00A50970 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1072	SKIPPED	0002:00261480 ??Diterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEAAU?$pair@HH@2@XZ 00A50980 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1077,12 +1077,12 @@ index	status	map_line
 1076	SKIPPED	0002:002614e0 ??0iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A509E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1077	SKIPPED	0002:00261500 ??9const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A50A00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1078	PORTED	0002:00261520 ??$?0$0EAA@G@?$ae_fixed_string@$0IA@E@@QAE@ABV?$ae_fixed_string@$0EAA@G@@@Z 00A50A20 f i game.o
-1079	PORTED	0002:00261560 ??$Find@PBD@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@QBEPAPBV?$InplaceVector@TValue@GdbFileSet@@@@ABQBD@Z 00A50A60 f i game.o
+1079	SKIPPED	0002:00261560 ??$Find@PBD@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@QBEPAPBV?$InplaceVector@TValue@GdbFileSet@@@@ABQBD@Z 00A50A60 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1080	PORTED	0002:00261670 ??$safe_for_each@Viterator@?$reserved_dlist@VCurveEffectListElem@@@@V?$DelFunctor@VCurveEffectListElem@@@@@@YAXViterator@?$reserved_dlist@VCurveEffectListElem@@@@0V?$DelFunctor@VCurveEffectListElem@@@@@Z 00A50B70 f i game.o
 1081	SKIPPED	0002:002616c0 ??$copy@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00@Z 00A50BC0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1082	SKIPPED	0002:00261700 ??$copy_backward@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00@Z 00A50C00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1083	PORTED	0002:00261740 ??A?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVGdbFileSet@@I@Z 00A50C40 f i game.o
-1084	PORTED	0002:002617c0 ??$FindIndex@PBD@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00A50CC0 f i game.o
+1083	SKIPPED	0002:00261740 ??A?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVGdbFileSet@@I@Z 00A50C40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+1084	SKIPPED	0002:002617c0 ??$FindIndex@PBD@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00A50CC0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1085	SKIPPED	0002:002617f0 ?construct@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@ABU32@@Z 00A50CF0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1086	SKIPPED	0002:00261820 ?destroy@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@@Z 00A50D20 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1087	SKIPPED	0002:00261830 ??$_Uninit_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A50D30 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1111,7 +1111,7 @@ index	status	map_line
 1110	PORTED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o
 1111	PORTED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o
 1112	PORTED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o
-1113	PORTED	0002:00262100 ??B?$IVPointer@VGdbFileSet@@@@QBE_NXZ 00A51600 f i game.o
+1113	SKIPPED	0002:00262100 ??B?$IVPointer@VGdbFileSet@@@@QBE_NXZ 00A51600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1114	VERIFIED	0002:00262120 ??1?$ae_vector@Udebug_brush@@@@QAE@XZ 00A51620 f i game.o
 1115	PORTED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o
 1116	VERIFIED	0002:00262230 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A51730 f i game.o
@@ -1120,7 +1120,7 @@ index	status	map_line
 1119	PORTED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o
 1120	SKIPPED	0002:00262420 ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51920 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00262440 ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51940 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1122	PORTED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o
+1122	SKIPPED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1123	PORTED	0002:00262610 ??_Gproximity_data_t@@QAEPAXI@Z 00A51B10 f i game.o
 1124	SKIPPED	0002:00262640 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A51B40 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1125	SKIPPED	0002:00262650 ??$_Uninitialized_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51B50 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

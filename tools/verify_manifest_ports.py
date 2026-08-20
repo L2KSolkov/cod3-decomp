@@ -243,6 +243,19 @@ def shell_skip_note(row: dict[str, str]) -> str:
         or name.startswith("??3@")
     ):
         return "SKIPPED: STL/compiler helper; supplied by the toolchain/library"
+    if any(
+        marker in name
+        for marker in (
+            "endian_reverser_t",
+            "ReverseEndian",
+            "InplaceVector",
+            "InplaceAssetBank",
+            "InplaceString",
+            "ae_array",
+            "IVPointer",
+        )
+    ):
+        return "SKIPPED: inline template/container helper; supplied by its template definition"
     return ""
 
 

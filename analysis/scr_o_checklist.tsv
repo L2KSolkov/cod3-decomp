@@ -394,7 +394,7 @@ index	status	map_line
 393	VERIFIED	0002:001c5510 ?ScaleOverTime@BrocSys@@YAXABVhudelem@Broc@@MHH@Z 009B4A10 f scr.o
 394	VERIFIED	0002:001c5650 ?MoveOverTime@BrocSys@@YAXABVhudelem@Broc@@M@Z 009B4B50 f scr.o
 395	VERIFIED	0002:001c5780 ?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z 009B4C80 f scr.o
-396	VERIFIED	0002:001c5790 ?BrocInitEntity@@YAXPAVEntity@@ABV?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@@Z 009B4C90 f scr.o
+396	SKIPPED	0002:001c5790 ?BrocInitEntity@@YAXPAVEntity@@ABV?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@@Z 009B4C90 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 397	VERIFIED	0002:001c57e0 ?Scr_SetOrigin@BrocSys@@YAXPAVEntity@@HPAUvector@Broc@@@Z 009B4CE0 f scr.o
 398	VERIFIED	0002:001c5990 ?Scr_SetHealth@BrocSys@@YAXPAVEntity@@HPAH@Z 009B4E90 f scr.o
 399	VERIFIED	0002:001c5a70 ?CreateAnimNotifyTask@BrocSys@@YAXABVentity@Broc@@II@Z 009B4F70 f scr.o
@@ -928,8 +928,8 @@ index	status	map_line
 927	PORTED	0002:001ea000 ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z 009D9500 f i scr.o
 928	PORTED	0002:001ea030 ??0dlist_node@?$reserved_dlist@VAeThreadState@@@@QAE@PAU01@0@Z 009D9530 f i scr.o
 929	PORTED	0002:001ea050 ??0dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAU01@0@Z 009D9550 f i scr.o
-930	PORTED	0002:001ea070 ?capacity@?$ae_array@VHashString@@$03@@QBEHXZ 009D9570 f i scr.o
-931	VERIFIED	0002:001ea080 ??A?$ae_array@VHashString@@$03@@QAEAAVHashString@@H@Z 009D9580 f i scr.o
+930	SKIPPED	0002:001ea070 ?capacity@?$ae_array@VHashString@@$03@@QBEHXZ 009D9570 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+931	SKIPPED	0002:001ea080 ??A?$ae_array@VHashString@@$03@@QAEAAVHashString@@H@Z 009D9580 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 932	PORTED	0002:001ea100 ??0dlist_node@?$reserved_dlist@VAeThread@@@@QAE@PAU01@0@Z 009D9600 f i scr.o
 933	PORTED	0002:001ea120 ??A?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@H@Z 009D9620 f i scr.o
 934	PORTED	0002:001ea1a0 ?size@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D96A0 f i scr.o
@@ -937,8 +937,8 @@ index	status	map_line
 936	VERIFIED	0002:001ea240 ??0?$ae_pair@PAXI@@QAE@ABQAXABI@Z 009D9740 f i scr.o
 937	PORTED	0002:001ea260 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAE?AV01@H@Z 009D9760 f i scr.o
 938	PORTED	0002:001ea290 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9790 f i scr.o
-939	PORTED	0002:001ea2b0 ??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z 009D97B0 f i scr.o
-940	VERIFIED	0002:001ea340 ??0?$IVPointer@VDestructible@@@@QAE@XZ 009D9840 f i scr.o
+939	SKIPPED	0002:001ea2b0 ??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z 009D97B0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+940	SKIPPED	0002:001ea340 ??0?$IVPointer@VDestructible@@@@QAE@XZ 009D9840 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 941	PORTED	0002:001ea360 ??Econst_iterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009D9860 f i scr.o
 942	PORTED	0002:001ea3e0 ??0const_iterator@?$reserved_dlist@VAeThread@@@@QAE@ABViterator@1@@Z 009D98E0 f i scr.o
 943	PORTED	0002:001ea400 ??Econst_iterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9900 f i scr.o
@@ -948,17 +948,17 @@ index	status	map_line
 947	PORTED	0002:001ea540 ?pop_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009D9A40 f i scr.o
 948	PORTED	0002:001ea570 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@H@Z 009D9A70 f i scr.o
 949	PORTED	0002:001ea590 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@VHandle@@@Z 009D9A90 f i scr.o
-950	PORTED	0002:001ea5b0 ??0?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AB0 f i scr.o
-951	PORTED	0002:001ea5d0 ??1?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AD0 f i scr.o
-952	PORTED	0002:001ea5e0 ?push_back@?$ae_array_dynamic@PAVAnimBroRef@@@@QAEXABQAVAnimBroRef@@@Z 009D9AE0 f i scr.o
+950	SKIPPED	0002:001ea5b0 ??0?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AB0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+951	SKIPPED	0002:001ea5d0 ??1?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AD0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+952	SKIPPED	0002:001ea5e0 ?push_back@?$ae_array_dynamic@PAVAnimBroRef@@@@QAEXABQAVAnimBroRef@@@Z 009D9AE0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 953	PORTED	0002:001ea680 ?size@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEHXZ 009D9B80 f i scr.o
 954	VERIFIED	0002:001ea690 ?push_back@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEXABVentity@Broc@@@Z 009D9B90 f i scr.o
 955	PORTED	0002:001ea730 ??Dconst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEABVentity@Broc@@XZ 009D9C30 f i scr.o
 956	PORTED	0002:001ea740 ??Econst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEAAV01@XZ 009D9C40 f i scr.o
 957	PORTED	0002:001ea750 ??9const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE_NV01@@Z 009D9C50 f i scr.o
 958	PORTED	0002:001ea770 ??0?$ae_pair@HPAX@@QAE@ABHABQAX@Z 009D9C70 f i scr.o
-959	PORTED	0002:001ea790 ?size@?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEIXZ 009D9C90 f i scr.o
-960	PORTED	0002:001ea7a0 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEABV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 009D9CA0 f i scr.o
+959	SKIPPED	0002:001ea790 ?size@?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEIXZ 009D9C90 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+960	SKIPPED	0002:001ea7a0 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEABV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 009D9CA0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 961	PORTED	0002:001ea820 ??A?$ae_sized_array@G$0BAA@@@QAEAAGH@Z 009D9D20 f i scr.o
 962	PORTED	0002:001ea8a0 ?size@?$ae_sized_array@F$07@@QBEHXZ 009D9DA0 f i scr.o
 963	PORTED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o
@@ -993,7 +993,7 @@ index	status	map_line
 992	SKIPPED	0002:001eac50 ??0?$pair@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@_N@std@@QAE@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@AB_N@Z 009DA150 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 993	PORTED	0002:001eac70 ??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ 009DA170 f i scr.o
 994	PORTED	0002:001eac80 ??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z 009DA180 f i scr.o
-995	PORTED	0002:001eaca0 ?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ 009DA1A0 f i scr.o
+995	SKIPPED	0002:001eaca0 ?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ 009DA1A0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 996	PORTED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o
 997	PORTED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o
 998	PORTED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o
@@ -1132,7 +1132,7 @@ index	status	map_line
 1131	VERIFIED	0002:001ee400 ??_GAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
 1132	VERIFIED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
 1133	VERIFIED	0002:001ee430 ??1AeThreadWaitFramesState@@UAE@XZ 009DD930 f i scr.o
-1134	VERIFIED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o
+1134	SKIPPED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o
 1136	PORTED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o
 1137	PORTED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o
@@ -1163,7 +1163,7 @@ index	status	map_line
 1162	PORTED	0002:001eeb40 ?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE040 f i scr.o
 1163	PORTED	0002:001eeb60 ?end@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE060 f i scr.o
 1164	VERIFIED	0002:001eeb80 ??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z 009DE080 f i scr.o
-1165	PORTED	0002:001eebd0 ??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ 009DE0D0 f i scr.o
+1165	SKIPPED	0002:001eebd0 ??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ 009DE0D0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1166	PORTED	0002:001eebf0 ??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DE0F0 f i scr.o
 1167	PORTED	0002:001eec00 ?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z 009DE100 f i scr.o
 1168	PORTED	0002:001eec60 ?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z 009DE160 f i scr.o
@@ -1181,7 +1181,7 @@ index	status	map_line
 1180	SKIPPED	0002:001eef40 ??Diterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEAAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DE440 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1181	SKIPPED	0002:001eef50 ??Eiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DE450 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1182	SKIPPED	0002:001eef60 ??Fiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DE460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1183	PORTED	0002:001eef70 ??C?$IVPointer@VAIType@@@@QBEPBVAIType@@XZ 009DE470 f i scr.o
+1183	SKIPPED	0002:001eef70 ??C?$IVPointer@VAIType@@@@QBEPBVAIType@@XZ 009DE470 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1184	PORTED	0002:001eef90 ??0iterator@?$BitSet@$0BAA@@@QAE@ABV1@@Z 009DE490 f i scr.o
 1185	PORTED	0002:001eefd0 ?Clear@?$BitSet@$0BAA@@@QAEXXZ 009DE4D0 f i scr.o
 1186	PORTED	0002:001eeff0 ??S?$BitSet@$0BAA@@@QBE?AV0@XZ 009DE4F0 f i scr.o
@@ -1249,7 +1249,7 @@ index	status	map_line
 1248	PORTED	0002:001efdf0 ??_G?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
 1249	PORTED	0002:001efdf0 ??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
 1250	PORTED	0002:001efe20 ??1?$WaitTilOutputInst2@MI@@UAE@XZ 009DF320 f i scr.o
-1251	PORTED	0002:001efe30 ??B?$IVPointer@VAIType@@@@QBE_NXZ 009DF330 f i scr.o
+1251	SKIPPED	0002:001efe30 ??B?$IVPointer@VAIType@@@@QBE_NXZ 009DF330 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1252	PORTED	0002:001efe50 ?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DF350 f i scr.o
 1253	PORTED	0002:001eff30 ??0?$BitSet@$0BAA@@@QAE@XZ 009DF430 f i scr.o
 1254	SKIPPED	0002:001eff60 ?_Hashval@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@IBEIABH@Z 009DF460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

@@ -563,9 +563,9 @@ index	status	map_line
 562	VERIFIED	0002:0015eb30 ??0?$ae_vector@PAVInteractState@@@@QAE@XZ 0094E030 f i anim.o
 563	VERIFIED	0002:0015eb40 ?begin@?$ae_vector@PAVInteractState@@@@QAEPAPAVInteractState@@XZ 0094E040 f i anim.o
 564	VERIFIED	0002:0015eb50 ?end@?$ae_vector@PAVInteractState@@@@QAEPAPAVInteractState@@XZ 0094E050 f i anim.o
-565	VERIFIED	0002:0015eb60 ??A?$InplaceVector@UXAnimEntry@@@@QAEAAUXAnimEntry@@I@Z 0094E060 f i anim.o
-566	VERIFIED	0002:0015ebe0 ??A?$InplaceVector@VAnimTree@@@@QAEAAVAnimTree@@I@Z 0094E0E0 f i anim.o
-567	VERIFIED	0002:0015ec60 ??A?$ae_array@PAVAnimBank@@$0GD@@@QAEAAPAVAnimBank@@H@Z 0094E160 f i anim.o
+565	SKIPPED	0002:0015eb60 ??A?$InplaceVector@UXAnimEntry@@@@QAEAAUXAnimEntry@@I@Z 0094E060 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
+566	SKIPPED	0002:0015ebe0 ??A?$InplaceVector@VAnimTree@@@@QAEAAVAnimTree@@I@Z 0094E0E0 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
+567	SKIPPED	0002:0015ec60 ??A?$ae_array@PAVAnimBank@@$0GD@@@QAEAAPAVAnimBank@@H@Z 0094E160 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
 568	VERIFIED	0002:0015ece0 ??1?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@MAE@XZ 0094E1E0 f i anim.o
 569	VERIFIED	0002:0015ecf0 ??Eiterator@?$reserved_dlist@VXAnimTree@@@@QAEAAV01@XZ 0094E1F0 f i anim.o
 570	VERIFIED	0002:0015ed10 ??0?$nalGenericComponentHandle@VnalPositionOrientation@@@nalGeneric@@QAE@XZ 0094E210 f i anim.o

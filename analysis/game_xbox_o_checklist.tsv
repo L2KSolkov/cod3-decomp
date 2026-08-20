@@ -320,10 +320,10 @@ index	status	map_line
 319	PORTED	0002:0032a670 ?ResponseYesJoin@InGameLiveOptionsMenu@@KA_NH@Z 00B19B70 f i game_xbox.o
 320	PORTED	0002:0032a690 ?ResponseNoJoin@InGameLiveOptionsMenu@@KA_NH@Z 00B19B90 f i game_xbox.o
 321	PORTED	0002:0032a6a0 ?Init@InGameLiveOptionsMenu@@UAEXXZ 00B19BA0 f i game_xbox.o
-322	VERIFIED	0002:0032a6b0 ??A?$ae_array@PAVPanelQuad@@$02@@QAEAAPAVPanelQuad@@H@Z 00B19BB0 f i game_xbox.o
-323	VERIFIED	0002:0032a730 ??A?$ae_array@PAVFEText@@$04@@QAEAAPAVFEText@@H@Z 00B19C30 f i game_xbox.o
-324	VERIFIED	0002:0032a7b0 ??A?$ae_array@PAVPanelQuad@@$03@@QAEAAPAVPanelQuad@@H@Z 00B19CB0 f i game_xbox.o
-325	VERIFIED	0002:0032a830 ??A?$ae_array@Vcolor32@@$04@@QAEAAVcolor32@@H@Z 00B19D30 f i game_xbox.o
+322	SKIPPED	0002:0032a6b0 ??A?$ae_array@PAVPanelQuad@@$02@@QAEAAPAVPanelQuad@@H@Z 00B19BB0 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+323	SKIPPED	0002:0032a730 ??A?$ae_array@PAVFEText@@$04@@QAEAAPAVFEText@@H@Z 00B19C30 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+324	SKIPPED	0002:0032a7b0 ??A?$ae_array@PAVPanelQuad@@$03@@QAEAAPAVPanelQuad@@H@Z 00B19CB0 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
+325	SKIPPED	0002:0032a830 ??A?$ae_array@Vcolor32@@$04@@QAEAAVcolor32@@H@Z 00B19D30 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
 326	PORTED	0002:0032a8b0 ??1?$bdReference@VbdBitBuffer@@@@QAE@XZ 00B19DB0 f i game_xbox.o
 327	PORTED	0002:0032a8e0 ??C?$bdReference@VbdBitBuffer@@@@QAEPAVbdBitBuffer@@XZ 00B19DE0 f i game_xbox.o
 328	PORTED	0002:0032a8f0 ??0?$bdReference@VbdMessage@@@@QAE@ABV0@@Z 00B19DF0 f i game_xbox.o
@@ -354,7 +354,7 @@ index	status	map_line
 353	PORTED	0002:0032adc0 ?IsRunning@CFromIDQuery@@UBEHXZ 00B1A2C0 f i game_xbox.o
 354	PORTED	0002:0032ade0 ?IsProbing@CFromIDQuery@@UBEHXZ 00B1A2E0 f i game_xbox.o
 355	PORTED	0002:0032ae00 ??0MPPlayerSet@@QAE@K@Z 00B1A300 f i game_xbox.o
-356	VERIFIED	0002:0032ae20 ??0?$ae_array@Vcolor32@@$04@@QAE@XZ 00B1A320 f i game_xbox.o
+356	SKIPPED	0002:0032ae20 ??0?$ae_array@Vcolor32@@$04@@QAE@XZ 00B1A320 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
 357	VERIFIED	0002:0032ae60 ??_GInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
 358	VERIFIED	0002:0032ae60 ??_EInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
 359	PORTED	0002:0032ae90 ??0CBlob@@QAE@ABV0@@Z 00B1A390 f i game_xbox.o

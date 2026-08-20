@@ -723,25 +723,25 @@ index	status	map_line
 722	VERIFIED	0002:003b9b60 ??_GHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o
 723	VERIFIED	0002:003b9b90 ??1HotJoinMenu@@UAE@XZ 00BA9090 f i mp_shell.o
 724	PORTED	0002:003b9ba0 ?Init@SpectateMenu@@UAEXXZ 00BA90A0 f i mp_shell.o
-725	VERIFIED	0002:003b9bb0 ??A?$ae_array@PAVFEText@@$07@@QAEAAPAVFEText@@H@Z 00BA90B0 f i mp_shell.o
-726	VERIFIED	0002:003b9c30 ??A?$ae_array@PAVPanelQuad@@$07@@QAEAAPAVPanelQuad@@H@Z 00BA9130 f i mp_shell.o
-727	VERIFIED	0002:003b9cb0 ??A?$ae_array@PAVPanelQuad@@$00@@QAEAAPAVPanelQuad@@H@Z 00BA91B0 f i mp_shell.o
-728	VERIFIED	0002:003b9d30 ??A?$ae_array@PAVFEText@@$05@@QAEAAPAVFEText@@H@Z 00BA9230 f i mp_shell.o
-729	VERIFIED	0002:003b9db0 ??A?$ae_array@PAVFEText@@$0M@@@QAEAAPAVFEText@@H@Z 00BA92B0 f i mp_shell.o
-730	VERIFIED	0002:003b9e30 ??A?$ae_array@PAVFEText@@$09@@QAEAAPAVFEText@@H@Z 00BA9330 f i mp_shell.o
-731	PORTED	0002:003b9eb0 ??0?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93B0 f i mp_shell.o
-732	PORTED	0002:003b9ed0 ??1?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93D0 f i mp_shell.o
-733	PORTED	0002:003b9ee0 ?size@?$ae_array_dynamic@PAVFEMenuEntry@@@@QBEHXZ 00BA93E0 f i mp_shell.o
-734	VERIFIED	0002:003b9ef0 ??A?$ae_array_dynamic@PAVFEMenuEntry@@@@QAEAAPAVFEMenuEntry@@H@Z 00BA93F0 f i mp_shell.o
-735	VERIFIED	0002:003b9f70 ??A?$ae_array@PAVPanelQuad@@$06@@QAEAAPAVPanelQuad@@H@Z 00BA9470 f i mp_shell.o
-736	PORTED	0002:003b9ff0 ??A?$ae_array@UsScoreboardPlayerSlot@InGameScoreBoard@@$0BA@@@QAEAAUsScoreboardPlayerSlot@InGameScoreBoard@@H@Z 00BA94F0 f i mp_shell.o
-737	PORTED	0002:003ba070 ??A?$ae_array@PAVPanelQuad@@$0P@@@QAEAAPAVPanelQuad@@H@Z 00BA9570 f i mp_shell.o
-738	VERIFIED	0002:003ba0f0 ??A?$ae_array@PAVFEText@@$0N@@@QAEAAPAVFEText@@H@Z 00BA95F0 f i mp_shell.o
-739	PORTED	0002:003ba170 ??A?$ae_array@UsScoreboardPlayerSlot@AARScoreboardBase@@$0BA@@@QAEAAUsScoreboardPlayerSlot@AARScoreboardBase@@H@Z 00BA9670 f i mp_shell.o
-740	VERIFIED	0002:003ba1f0 ??A?$ae_array@PAVPanelQuad@@$01@@QAEAAPAVPanelQuad@@H@Z 00BA96F0 f i mp_shell.o
-741	VERIFIED	0002:003ba270 ??A?$ae_array@PAVFEText@@$0O@@@QAEAAPAVFEText@@H@Z 00BA9770 f i mp_shell.o
-742	VERIFIED	0002:003ba2f0 ??A?$ae_array@PAVPanelQuad@@$09@@QAEAAPAVPanelQuad@@H@Z 00BA97F0 f i mp_shell.o
-743	PORTED	0002:003ba370 ??A?$ae_array@H$06@@QAEAAHH@Z 00BA9870 f i mp_shell.o
+725	SKIPPED	0002:003b9bb0 ??A?$ae_array@PAVFEText@@$07@@QAEAAPAVFEText@@H@Z 00BA90B0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+726	SKIPPED	0002:003b9c30 ??A?$ae_array@PAVPanelQuad@@$07@@QAEAAPAVPanelQuad@@H@Z 00BA9130 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+727	SKIPPED	0002:003b9cb0 ??A?$ae_array@PAVPanelQuad@@$00@@QAEAAPAVPanelQuad@@H@Z 00BA91B0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+728	SKIPPED	0002:003b9d30 ??A?$ae_array@PAVFEText@@$05@@QAEAAPAVFEText@@H@Z 00BA9230 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+729	SKIPPED	0002:003b9db0 ??A?$ae_array@PAVFEText@@$0M@@@QAEAAPAVFEText@@H@Z 00BA92B0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+730	SKIPPED	0002:003b9e30 ??A?$ae_array@PAVFEText@@$09@@QAEAAPAVFEText@@H@Z 00BA9330 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+731	SKIPPED	0002:003b9eb0 ??0?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93B0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+732	SKIPPED	0002:003b9ed0 ??1?$ae_array_dynamic@PAVFEMenuEntry@@@@QAE@XZ 00BA93D0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+733	SKIPPED	0002:003b9ee0 ?size@?$ae_array_dynamic@PAVFEMenuEntry@@@@QBEHXZ 00BA93E0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+734	SKIPPED	0002:003b9ef0 ??A?$ae_array_dynamic@PAVFEMenuEntry@@@@QAEAAPAVFEMenuEntry@@H@Z 00BA93F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+735	SKIPPED	0002:003b9f70 ??A?$ae_array@PAVPanelQuad@@$06@@QAEAAPAVPanelQuad@@H@Z 00BA9470 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+736	SKIPPED	0002:003b9ff0 ??A?$ae_array@UsScoreboardPlayerSlot@InGameScoreBoard@@$0BA@@@QAEAAUsScoreboardPlayerSlot@InGameScoreBoard@@H@Z 00BA94F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+737	SKIPPED	0002:003ba070 ??A?$ae_array@PAVPanelQuad@@$0P@@@QAEAAPAVPanelQuad@@H@Z 00BA9570 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+738	SKIPPED	0002:003ba0f0 ??A?$ae_array@PAVFEText@@$0N@@@QAEAAPAVFEText@@H@Z 00BA95F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+739	SKIPPED	0002:003ba170 ??A?$ae_array@UsScoreboardPlayerSlot@AARScoreboardBase@@$0BA@@@QAEAAUsScoreboardPlayerSlot@AARScoreboardBase@@H@Z 00BA9670 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+740	SKIPPED	0002:003ba1f0 ??A?$ae_array@PAVPanelQuad@@$01@@QAEAAPAVPanelQuad@@H@Z 00BA96F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+741	SKIPPED	0002:003ba270 ??A?$ae_array@PAVFEText@@$0O@@@QAEAAPAVFEText@@H@Z 00BA9770 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+742	SKIPPED	0002:003ba2f0 ??A?$ae_array@PAVPanelQuad@@$09@@QAEAAPAVPanelQuad@@H@Z 00BA97F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+743	SKIPPED	0002:003ba370 ??A?$ae_array@H$06@@QAEAAHH@Z 00BA9870 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 744	VERIFIED	0002:003ba3f0 ??_ECreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
 745	VERIFIED	0002:003ba3f0 ??_GCreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
 746	VERIFIED	0002:003ba420 ??_GCreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o
