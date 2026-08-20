@@ -2723,8 +2723,6 @@ IGOHeadIcons::IGOHeadIcons(int client)
     is_shown = true;
     force_appear = false;
     mClient = client;
-    memset(mHeadIcons, 0, sizeof(mHeadIcons));
-    memset(mPlayers, 0, sizeof(mPlayers));
 }
 
 // ea: 0x00568F90
@@ -3076,7 +3074,6 @@ IGOItemIcons::IGOItemIcons(int client)
     is_shown = true;
     force_appear = false;
     mClient = client;
-    memset(mItemIcons, 0, sizeof(mItemIcons));
 }
 
 // ea: 0x005691D0
@@ -4732,13 +4729,25 @@ IGOGrenadeIndicator::IGOGrenadeIndicator(int client)
 IGOGrenadeIndicator::~IGOGrenadeIndicator()
 {
     if (mMineIcon != nullptr)
+    {
         delete mMineIcon;
+        mMineIcon = nullptr;
+    }
     if (mGrenadeIcon != nullptr)
+    {
         delete mGrenadeIcon;
+        mGrenadeIcon = nullptr;
+    }
     if (mGrenadeArrow != nullptr)
+    {
         delete mGrenadeArrow;
+        mGrenadeArrow = nullptr;
+    }
     if (mGrenadeHold != nullptr)
+    {
         delete mGrenadeHold;
+        mGrenadeHold = nullptr;
+    }
 }
 
 // ea: 0x0059A780
