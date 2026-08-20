@@ -886,7 +886,10 @@ void PanelQuad::SetAlpha(int pqsIdx, int vertIdx, float alpha)
 {
     unsigned int c = pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color;
     pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color =
-        (c & 0xFFFFFF) | ((unsigned int)(alpha * 255.0f) << 24);
+        c | (((c >> 8) & 0xFFu)
+             | ((((c >> 16) & 0xFFu)
+                 | ((unsigned int)(alpha * 255.0f) << 8)) << 8)
+             << 8);
 }
 
 // ea: 0x005B64D0 (inline COMDAT)
