@@ -8048,6 +8048,30 @@ nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
 
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 1;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 1;
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
