@@ -1821,7 +1821,7 @@ index	status	map_line
 1820	PENDING	0002:001a81f0       ?destroy_all@?$ae_vector@PAVPanelQuadSection@@@@AAEXXZ 009a36f0 f i shell.o
 1821	PENDING	0002:001a8220       ?resize@?$ae_vector@PAVPanelQuad@@@@QAEXH@Z 009a3720 f i shell.o
 1822	PENDING	0002:001a82c0       ?resize@?$ae_vector@PAVFEText@@@@QAEXH@Z 009a37c0 f i shell.o
-1823	PENDING	0002:001a8360       ?destroy_all@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEXXZ 009a3860 f i shell.o
+1823	VERIFIED	0002:001a8360       ?destroy_all@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEXXZ 009a3860 f i shell.o
 1824	PENDING	0002:001a83b0       ?destroy_all@?$ae_vector@Vcolor32@@@@AAEXXZ 009a38b0 f i shell.o
 1825	PENDING	0002:001a83e0       ?destroy_all@?$ae_vector@_N@@AAEXXZ 009a38e0 f i shell.o
 1826	PENDING	0002:001a8410       ?destroy_all@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEXXZ 009a3910 f i shell.o
@@ -1924,7 +1924,7 @@ index	status	map_line
 1922	PENDING	0002:001a9c90       ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@QAE@XZ 009a5190 f i shell.o
 1923	PENDING	0002:001a9cc0       ?resize@?$ae_vector@PAVPanelQuadSection@@@@QAEXH@Z 009a51c0 f i shell.o
 1924	PENDING	0002:001a9d60       ?construct_array@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEPAVUIListBoxItem@UIListBox@@H@Z 009a5260 f i shell.o
-1925	PENDING	0002:001a9e20       ?destroy_all@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEXXZ 009a5320 f i shell.o
+1925	VERIFIED	0002:001a9e20       ?destroy_all@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEXXZ 009a5320 f i shell.o
 1926	PENDING	0002:001a9e80       ?begin@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009a5380 f i shell.o
 1927	FIXED	0002:001a9ea0       ??1UIListBoxDataRow@UIListBox@@QAE@XZ 009a53a0 f i shell.o
 1928	PENDING	0002:001a9eb0       ??1?$ae_vector@VUIListBoxItem@UIListBox@@@@QAE@XZ 009a53b0 f i shell.o
@@ -2057,7 +2057,7 @@ index	status	map_line
 2055	PENDING	0002:001abc70       ??0?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@H@Z 009a7170 f i shell.o
 2056	PENDING	0002:001abca0       ?append@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ID@Z 009a71a0 f i shell.o
 2057	PENDING	0002:001abdc0       ?construct_array@?$ae_vector@VUIListBoxRow@UIListBox@@@@AAEPAVUIListBoxRow@UIListBox@@H@Z 009a72c0 f i shell.o
-2058	PENDING	0002:001abe10       ?destroy_all@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEXXZ 009a7310 f i shell.o
+2058	VERIFIED	0002:001abe10       ?destroy_all@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEXXZ 009a7310 f i shell.o
 2059	PENDING	0002:001abe70       ??0?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@1@@Z 009a7370 f i shell.o
 2060	PENDING	0002:001abeb0       ?lower_bound@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009a73b0 f i shell.o
 2061	PENDING	0002:001abed0       ??0?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@1@@Z 009a73d0 f i shell.o
