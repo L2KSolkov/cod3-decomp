@@ -20906,7 +20906,7 @@ index	status	map_line
 20905	PENDING	0002:00466b30 ?ComponentSetupPartialDecode@nalComponentPacked16EntropyIKSpin@@SAXPAUStateType@nalComponentPacked16EntropyIKSpinData@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@3@@Z 00C56030 f i nal_init.o
 20906	PORTED	0002:00466ce0 ?CycleTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C561E0 f i nal_init.o
 20907	PORTED	0002:00466d10 ??$FastCycleTrajectory@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked16EntropyIKSpinData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C56210 f i nal_init.o
-20908	PENDING	0002:00466dd0 ?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C562D0 f i nal_init.o
+20908	PORTED	0002:00466dd0 ?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C562D0 f i nal_init.o
 20909	PORTED	0002:00466e00 ??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z 00C56300 f i nal_init.o
 20910	SKIPPED	0002:00466e50 ??_GnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20911	SKIPPED	0002:00466e50 ??_EnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
