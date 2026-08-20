@@ -621,7 +621,7 @@ index	status	map_line
 620	PENDING	0002:004621d0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C516D0 f i nal_init.o
 621	PENDING	0002:004622e0 ?ComponentDecode@nalComponentEntropyPO@@SAXPAVnalPositionOrientation@@AAPBEHHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyPOData@@PAUSkeletonComponentData@6@PAUAnimComponentData@4@@Z 00C517E0 f i nal_init.o
 622	PORTED	0002:00462450 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C51950 f i nal_init.o
-623	PENDING	0002:00462560 ?ComponentSkip@nalComponentEntropyPO@@SAXAAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyPOData@@PAUSkeletonComponentData@5@PAUAnimComponentData@3@@Z 00C51A60 f i nal_init.o
+623	PORTED	0002:00462560 ?ComponentSkip@nalComponentEntropyPO@@SAXAAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyPOData@@PAUSkeletonComponentData@5@PAUAnimComponentData@3@@Z 00C51A60 f i nal_init.o
 624	PORTED	0002:00462590 ?Convert@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C51A90 f i nal_init.o
 625	PORTED	0002:00462700 ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C51C00 f i nal_init.o
 626	PORTED	0002:004627c0 ?GetTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C51CC0 f i nal_init.o
@@ -674,7 +674,7 @@ index	status	map_line
 673	PENDING	0002:004639b0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C52EB0 f i nal_init.o
 674	PENDING	0002:00463ad0 ?ComponentDecode@nalComponentEntropyTrajectoryPO@@SAXPAVnalPositionOrientation@@AAPBEHHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyTrajectoryPOData@@PAUSkeletonComponentData@6@PAUAnimComponentData@6@@Z 00C52FD0 f i nal_init.o
 675	PORTED	0002:00463c40 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C53140 f i nal_init.o
-676	PENDING	0002:00463d60 ?ComponentSkip@nalComponentEntropyTrajectoryPO@@SAXAAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyTrajectoryPOData@@PAUSkeletonComponentData@5@PAUAnimComponentData@5@@Z 00C53260 f i nal_init.o
+676	PORTED	0002:00463d60 ?ComponentSkip@nalComponentEntropyTrajectoryPO@@SAXAAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyTrajectoryPOData@@PAUSkeletonComponentData@5@PAUAnimComponentData@5@@Z 00C53260 f i nal_init.o
 677	PORTED	0002:00463d90 ?Convert@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C53290 f i nal_init.o
 678	PORTED	0002:00463f20 ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C53420 f i nal_init.o
 679	PORTED	0002:00463ff0 ?GetTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C534F0 f i nal_init.o
