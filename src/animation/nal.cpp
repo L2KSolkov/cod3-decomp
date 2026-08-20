@@ -14639,6 +14639,39 @@ void nalComponent<nalComponentIKSpinBase,
     }
 }
 
+// ?GetTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z
+// (nal_init.o 0x864d20)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** animData = componentEnum.CustomAnimData;
+    *animData = (const void*)((((uintptr_t)*animData + 3u)
+                               & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const void** skeletonData = customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        if (nalComponentTrackPresent(&componentEnum, track))
+            *animData = (const char*)*animData + 1;
+        *skeletonData = (const char*)*skeletonData + 20;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 // (nal_init.o 0x864FD0)
 template <>
