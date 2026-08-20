@@ -144,7 +144,9 @@ void PanelAnimObject::SetWidescreenAlign(short wa)
 void PanelAnimObject::SetZvalue(float orig_z, panel_layer layer)
 {
     float v4 = orig_z;
-    if (orig_z < 0.0f || orig_z > 1000.0f)
+    if (orig_z < 0.0f)
+        v4 = 0.0f;
+    else if (orig_z > 1000.0f)
         v4 = 1000.0f;
     SetZvalueAbs((float)((1000 * layer) + v4) * 0.11111111f);
 }
@@ -173,7 +175,7 @@ void PanelAnimObject::StartFade(bool start, bool fade_in, float time)
     }
     else
     {
-        flags = (char)(flags & 0xCF);
+        this->flags &= 0xCFu;
     }
 }
 
