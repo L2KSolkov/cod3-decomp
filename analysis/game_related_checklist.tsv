@@ -20970,7 +20970,7 @@ index	status	map_line
 20969	PORTED	0002:00467800 ??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z 00C56D00 f i nal_init.o
 20970	SKIPPED	0002:00467850 ??_EnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20971	SKIPPED	0002:00467850 ??_GnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20972	PENDING	0002:00467880 ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ 00C56D80 f i nal_init.o
+20972	PORTED	0002:00467880 ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ 00C56D80 f i nal_init.o
 20973	PENDING	0002:004678b0 ?Find@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DB0 f i nal_init.o
 20974	PENDING	0002:004678c0 ?Find@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DC0 f i nal_init.o
 20975	PENDING	0002:00467980 ?Del@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z 00C56E80 f i nal_init.o

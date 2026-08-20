@@ -20970,7 +20970,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20969	0x00867800	0x00C56D00	??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20970	0x00867850	0x00C56D50	??_EnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20971	0x00867850	0x00C56D50	??_GnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-20972	0x00867880	0x00C56D80	??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20972	0x00867880	0x00C56D80	??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20973	0x008678B0	0x00C56DB0	?Find@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20974	0x008678C0	0x00C56DC0	?Find@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20975	0x00867980	0x00C56E80	?Del@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
