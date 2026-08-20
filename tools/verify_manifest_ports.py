@@ -25,6 +25,7 @@ OUT = ROOT / "analysis" / "manifest_function_checklist.tsv"
 SUMMARY = ROOT / "analysis" / "manifest_function_checklist_summary.tsv"
 GAME_OUT = ROOT / "analysis" / "game_related_manifest_function_checklist.tsv"
 GAME_SUMMARY = ROOT / "analysis" / "game_related_manifest_function_checklist_summary.tsv"
+MASTER_CHECKLIST = ROOT / "analysis" / "object_master_checklist.tsv"
 SHELL_FORMAT_INVENTORY = ROOT / "analysis" / "game_related_inventory.tsv"
 SHELL_FORMAT_PLAN = ROOT / "analysis" / "game_related_plan.tsv"
 SHELL_FORMAT_CHECKLIST = ROOT / "analysis" / "game_related_checklist.tsv"
@@ -200,6 +201,8 @@ def main() -> None:
     with GAME_SUMMARY.open("w", encoding="utf-8", newline="") as stream:
         write_summary(stream, game_counts)
 
+    write_master_checklist(by_obj_counts)
+
     write_shell_format_tables(game_rows, rows)
 
     print(f"manifest rows: {len(rows)}")
@@ -211,6 +214,7 @@ def main() -> None:
     print(f"game-related rows: {len(game_rows)}")
     print(f"wrote {GAME_OUT}")
     print(f"wrote {GAME_SUMMARY}")
+    print(f"wrote {MASTER_CHECKLIST}")
     print(f"wrote {SHELL_FORMAT_INVENTORY}")
     print(f"wrote {SHELL_FORMAT_PLAN}")
     print(f"wrote {SHELL_FORMAT_CHECKLIST}")
@@ -409,6 +413,44 @@ def write_summary(stream, by_obj_counts: defaultdict[str, Counter[str]]) -> None
                 counts["UNTRACKED"],
             ]
         )
+
+
+def write_master_checklist(by_obj_counts: defaultdict[str, Counter[str]]) -> None:
+    """Index every manifest object and its shell-format progress files."""
+    fields = [
+        "object",
+        "checklist_file",
+        "inventory_file",
+        "plan_file",
+        "manifest_rows",
+        "verified",
+        "port_status_only",
+        "external",
+        "in_progress",
+        "unresolved_engine",
+        "untracked",
+    ]
+    with MASTER_CHECKLIST.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields, delimiter="\t", lineterminator="\n")
+        writer.writeheader()
+        for obj in sorted(by_obj_counts):
+            stem = obj.replace(".", "_")
+            counts = by_obj_counts[obj]
+            writer.writerow(
+                {
+                    "object": obj,
+                    "checklist_file": f"analysis/{stem}_checklist.tsv",
+                    "inventory_file": f"analysis/{stem}_inventory.tsv",
+                    "plan_file": f"analysis/{stem}_plan.tsv",
+                    "manifest_rows": sum(counts.values()),
+                    "verified": counts["VERIFIED"],
+                    "port_status_only": counts["PORT_STATUS_ONLY"],
+                    "external": counts["EXTERNAL"],
+                    "in_progress": counts["IN_PROGRESS"],
+                    "unresolved_engine": counts["UNRESOLVED_ENGINE"],
+                    "untracked": counts["UNTRACKED"],
+                }
+            )
 
 
 if __name__ == "__main__":
