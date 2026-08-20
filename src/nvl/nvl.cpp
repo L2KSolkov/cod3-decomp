@@ -2700,7 +2700,6 @@ nvlMovie::~nvlMovie() {
         if ((status & 1u) != 0)
             j_IDirectSoundBuffer_Stop(mAudioBuffer);
     }
-    nvlAFMVMovie::~nvlAFMVMovie();
 }
 
 // ea: 0x00C1D770

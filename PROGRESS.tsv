@@ -352,7 +352,7 @@ aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	PORTED	apsRegister.cp
 
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	PORTED	apsBillboardRenderer.h/.cpp (billboard renderer + node + DefaultRender template + apsLight::LightInfo)
 
-nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	11	PORTED	IDA-backed NVL audio lifecycle ported; exact Xbox DirectSound ABI is owned by the Win32 shim, with XAudio2 backend still pending
+nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	11	VERIFIED	Compared ProcessAudioChunk, Start/StopAudioPlayback, nvlInit/nvlShutdown, and nvlMovie destruction against codmp_xboxr.xbe.c and IDA; removed the duplicate explicit base-destructor call. Exact Xbox DirectSound ABI remains owned by the Win32 shim.
 
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	bdSecurityKeyMap.cpp: XNet key registry (6 funcs) from IDAverified against COD3 decompilation
 
