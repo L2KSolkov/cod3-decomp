@@ -690,7 +690,6 @@ UIListBox::UIListBox(int visibleRows, int visibleColumns, int maxDataRows,
     mScrollBarYInc = 0.0f;
     mIsWrapping = bIsWrapping;
     mBlockRefresh = false;
-    mIncrementBy = 0;
     mScrollBarUpFader.mQuad = nullptr;
     mScrollBarUpFader.mAlphaTo = 1.0f;
     mScrollBarUpFader.mTime = 0.0f;
