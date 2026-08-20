@@ -26,6 +26,9 @@ analysis/*.md
 !analysis/manifest_function_checklist_summary.tsv
 !analysis/game_related_manifest_function_checklist.tsv
 !analysis/game_related_manifest_function_checklist_summary.tsv
+!analysis/game_related_inventory.tsv
+!analysis/game_related_plan.tsv
+!analysis/game_related_checklist.tsv
 
 # Keep the plan
 !analysis/FOLDER_TREE.md

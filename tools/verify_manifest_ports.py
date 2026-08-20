@@ -11,6 +11,7 @@ from __future__ import annotations
 import csv
 import os
 import re
+import shutil
 import subprocess
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -24,6 +25,9 @@ OUT = ROOT / "analysis" / "manifest_function_checklist.tsv"
 SUMMARY = ROOT / "analysis" / "manifest_function_checklist_summary.tsv"
 GAME_OUT = ROOT / "analysis" / "game_related_manifest_function_checklist.tsv"
 GAME_SUMMARY = ROOT / "analysis" / "game_related_manifest_function_checklist_summary.tsv"
+SHELL_FORMAT_INVENTORY = ROOT / "analysis" / "game_related_inventory.tsv"
+SHELL_FORMAT_PLAN = ROOT / "analysis" / "game_related_plan.tsv"
+SHELL_FORMAT_CHECKLIST = ROOT / "analysis" / "game_related_checklist.tsv"
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -195,6 +199,8 @@ def main() -> None:
     with GAME_SUMMARY.open("w", encoding="utf-8", newline="") as stream:
         write_summary(stream, game_counts)
 
+    write_shell_format_tables(game_rows)
+
     print(f"manifest rows: {len(rows)}")
     print(f"debug libraries: {len(list(BUILD.glob('*.lib')))}")
     for verification, count in Counter(row["verification"] for row in rows).most_common():
@@ -204,6 +210,130 @@ def main() -> None:
     print(f"game-related rows: {len(game_rows)}")
     print(f"wrote {GAME_OUT}")
     print(f"wrote {GAME_SUMMARY}")
+    print(f"wrote {SHELL_FORMAT_INVENTORY}")
+    print(f"wrote {SHELL_FORMAT_PLAN}")
+    print(f"wrote {SHELL_FORMAT_CHECKLIST}")
+
+
+def shell_status(row: dict[str, str]) -> str:
+    """Map the detailed audit result to the shell.o checklist vocabulary."""
+    if row["verification"] == "VERIFIED":
+        return "VERIFIED"
+    if row["aggregate_status"] in {"PORTED", "COMPLETE", "VALIDATED"}:
+        return "PORTED"
+    if row["aggregate_status"] == "IN_PROGRESS":
+        return "PENDING"
+    return "PENDING"
+
+
+def shell_map_line(row: dict[str, str]) -> str:
+    ida_ea = int(row["ida_ea"], 16)
+    segment = 9 if ida_ea >= 0x00C00000 else 2
+    # Segment 2 is the XBE text image at 0x400000; segment 9's manifest
+    # offset zero is the first MP_LELCS entry at 0xC8F720.
+    offset = ida_ea - (0x00C8F720 if segment == 9 else 0x00400000)
+    return (
+        f"{segment:04x}:{offset:08x} {row['name']} "
+        f"{row['va'].removeprefix('0x')} {row['flags']} {row['obj']}"
+    )
+
+
+def demangle_names(names: list[str]) -> dict[str, str]:
+    """Use the installed MSVC undecorator for shell-format signatures."""
+    tool = shutil.which("undname")
+    if tool is None:
+        candidates = sorted(
+            Path(r"C:\Program Files\Microsoft Visual Studio").glob(
+                r"**\VC\Tools\MSVC\*\bin\Hostx64\x64\undname.exe"
+            )
+        )
+        tool = str(candidates[-1]) if candidates else ""
+    if not tool:
+        return {name: name for name in names}
+
+    result: dict[str, str] = {}
+    unique = list(dict.fromkeys(names))
+    for start in range(0, len(unique), 100):
+        batch = unique[start : start + 100]
+        try:
+            output = subprocess.check_output(
+                [tool, *batch], text=True, errors="replace"
+            )
+        except (OSError, subprocess.CalledProcessError):
+            return {name: result.get(name, name) for name in unique}
+        current = ""
+        for line in output.splitlines():
+            if line.startswith("Undecoration of :- \""):
+                current = line[len("Undecoration of :- \"") : -1]
+            elif line.startswith("is :- \"") and current:
+                result[current] = line[len("is :- \"") : -1]
+                current = ""
+    return {name: result.get(name, name) for name in unique}
+
+
+def write_shell_format_tables(game_rows: list[dict[str, str]]) -> None:
+    """Emit the shell.o inventory/plan/checklist layout for all target objects.
+
+    The shell.o tables intentionally omit inline functions from inventory/plan,
+    while the checklist retains every manifest row.  The manifest map identity
+    is retained in each checklist line so rows remain attributable when the
+    combined game/engine table is reviewed.
+    """
+    non_inline = [row for row in game_rows if row["is_inline"] != "1"]
+    signatures = demangle_names([row["name"] for row in non_inline])
+    with SHELL_FORMAT_INVENTORY.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(
+            stream,
+            fieldnames=["ida_ea", "va", "name", "signature", "family"],
+            delimiter="\t",
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        for row in non_inline:
+            writer.writerow(
+                {
+                    "ida_ea": row["ida_ea"],
+                    "va": row["va"],
+                    "name": row["name"],
+                    "signature": signatures[row["name"]],
+                    "family": row["source_cpp"] or row["obj"],
+                }
+            )
+
+    with SHELL_FORMAT_PLAN.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(
+            stream,
+            fieldnames=["ida_ea", "name", "signature", "source_cpp"],
+            delimiter="\t",
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        for row in non_inline:
+            writer.writerow(
+                {
+                    "ida_ea": row["ida_ea"],
+                    "name": row["name"],
+                    "signature": signatures[row["name"]],
+                    "source_cpp": row["source_cpp"],
+                }
+            )
+
+    with SHELL_FORMAT_CHECKLIST.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(
+            stream,
+            fieldnames=["index", "status", "map_line"],
+            delimiter="\t",
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        for index, row in enumerate(game_rows, 1):
+            writer.writerow(
+                {
+                    "index": index,
+                    "status": shell_status(row),
+                    "map_line": shell_map_line(row),
+                }
+            )
 
 
 def write_summary(stream, by_obj_counts: defaultdict[str, Counter[str]]) -> None:
