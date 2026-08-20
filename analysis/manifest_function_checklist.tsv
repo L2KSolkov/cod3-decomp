@@ -16593,7 +16593,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 16592	0x007CD400	0x00BBC900	??_GcdDynamicDecalShader@@UAEPAXI@Z	render_xboxr	cdDynamicDecalShader.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16593	0x007CD430	0x00BBC930	??1cdDynamicDecalShader@@UAE@XZ	render_xboxr	cdDynamicDecalShader.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16594	0x007CD440	0x00BBC940	?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z	render_xboxr	cdDynamicDecalVertexDef.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-16595	0x007CD460	0x00BBC960	?InitCDDynamicDecalVertexDefBuilder@@YAXXZ	render_xboxr	cdDynamicDecalVertexDef.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+16595	0x007CD460	0x00BBC960	?InitCDDynamicDecalVertexDefBuilder@@YAXXZ	render_xboxr	cdDynamicDecalVertexDef.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 16596	0x007CD770	0x00BBCC70	??0cdGunSightSpecularShaderMat@@QAE@PAUnglTexture@@0@Z	render_xboxr	cdGunSightSpecularShader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16597	0x007CD800	0x00BBCD00	?InitCDGunSightSpecularShader@@YAXXZ	render_xboxr	cdGunSightSpecularShader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16598	0x007CD850	0x00BBCD50	?ToggleCDGunSightSpecularShader@@YAXXZ	render_xboxr	cdGunSightSpecularShader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

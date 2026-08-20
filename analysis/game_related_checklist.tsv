@@ -16593,7 +16593,7 @@ index	status	map_line
 16592	VERIFIED	0002:003cd400 ??_GcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o
 16593	VERIFIED	0002:003cd430 ??1cdDynamicDecalShader@@UAE@XZ 00BBC930 f i cdDynamicDecalShader.o
 16594	VERIFIED	0002:003cd440 ?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z 00BBC940 f cdDynamicDecalVertexDef.o
-16595	PORTED	0002:003cd460 ?InitCDDynamicDecalVertexDefBuilder@@YAXXZ 00BBC960 f cdDynamicDecalVertexDef.o
+16595	VERIFIED	0002:003cd460 ?InitCDDynamicDecalVertexDefBuilder@@YAXXZ 00BBC960 f cdDynamicDecalVertexDef.o
 16596	VERIFIED	0002:003cd770 ??0cdGunSightSpecularShaderMat@@QAE@PAUnglTexture@@0@Z 00BBCC70 f cdGunSightSpecularShader.o
 16597	VERIFIED	0002:003cd800 ?InitCDGunSightSpecularShader@@YAXXZ 00BBCD00 f cdGunSightSpecularShader.o
 16598	VERIFIED	0002:003cd850 ?ToggleCDGunSightSpecularShader@@YAXXZ 00BBCD50 f cdGunSightSpecularShader.o
