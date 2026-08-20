@@ -1381,6 +1381,11 @@ ProfileMainMenu* ProfileMainMenu::Me()
     return (ProfileMainMenu*)g_femanager.fems->menus[27];
 }
 
+// ea: 0x005B7BF0
+void ProfileMainMenu::Init()
+{
+}
+
 // ea: 0x00574EC0
 void ProfileMainMenu::ClearEntries()
 {
@@ -1864,6 +1869,23 @@ ProfileMainMenu::~ProfileMainMenu()
 ProfileEditMenu* ProfileEditMenu::Me()
 {
     return (ProfileEditMenu*)g_femanager.fems->menus[29];
+}
+
+// ea: 0x005B7C40
+void ProfileEditMenu::Init()
+{
+}
+
+// ea: 0x005B7C50
+void ProfileEditMenu::OnLeft(int c)
+{
+    (void)c;
+}
+
+// ea: 0x005B7C60
+void ProfileEditMenu::OnRight(int c)
+{
+    (void)c;
 }
 
 SaveGameData** ProfileMainMenu::GetSaveSlots()

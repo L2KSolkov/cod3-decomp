@@ -3131,6 +3131,23 @@ GammaScreenMenu* GammaScreenMenu::Me()
     return (GammaScreenMenu*)g_femanager.fems->menus[26];
 }
 
+// ea: 0x005B7B90
+void GammaScreenMenu::Init()
+{
+}
+
+// ea: 0x005B7BA0
+void GammaScreenMenu::OnUp(int c)
+{
+    (void)c;
+}
+
+// ea: 0x005B7BB0
+void GammaScreenMenu::OnDown(int c)
+{
+    (void)c;
+}
+
 // ea: 0x005742B0
 void GammaScreenMenu::Update(float time_inc)
 {

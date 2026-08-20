@@ -159,6 +159,7 @@ public:
     virtual ~ProfileMainMenu();           // 0x5932C0
     static ProfileMainMenu* Me();         // 0x574EB0
     SaveGameData** GetSaveSlots();
+    virtual void Init();                  // 0x5B7BF0
     void ClearEntries();                  // 0x574EC0
     virtual void Update(float time_inc);  // 0x574F00
     void CreateProfile();                 // 0x574F10
@@ -214,8 +215,11 @@ public:
     static ProfileEditMenu* Me();         // 0x574FA0
     void NeedWrite();
     virtual void Update(float time_inc);  // 0x574FB0
+    virtual void Init();                  // 0x5B7C40
     virtual void OnUp(int c);             // 0x574FC0
     virtual void OnDown(int c);           // 0x575020
+    virtual void OnLeft(int c);           // 0x5B7C50
+    virtual void OnRight(int c);          // 0x5B7C60
     virtual void Select(int entry_num);   // 0x575080
     virtual void ButtonHeldAction();      // 0x5750E0
     static void ExitMenu(int);            // 0x5751A0

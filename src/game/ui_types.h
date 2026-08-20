@@ -1667,6 +1667,7 @@ public:
     virtual void OnActivate();                       // slot 28 0x596FB0
     virtual void OnDeactivate(FEMenu* m);            // slot 29 0x5743F0
     virtual void OnCross(int c);                     // slot 36 0x574420
+    virtual void Init();                              // 0x5B7BC0
 
     LoadingMenu(FEMenuSystem* s);                    // 0x592E90
     static LoadingMenu* Me();                        // ?Me@LoadingMenu@@SAPAV1@XZ 0x574430
@@ -2278,7 +2279,10 @@ public:
     GammaScreenMenu(FEMenuSystem* s);  // 0x592DB0
     virtual ~GammaScreenMenu();        // 0x592E20
     static GammaScreenMenu* Me();      // 0x5742A0
+    virtual void Init();                   // 0x5B7B90
     virtual void Update(float time_inc);   // 0x5742B0
+    virtual void OnUp(int c);              // 0x5B7BA0
+    virtual void OnDown(int c);            // 0x5B7BB0
     virtual void OnTriangle(int c);        // 0x574310
     virtual void OnLeft(int c);            // 0x574320
     virtual void OnRight(int c);           // 0x574360
@@ -2306,6 +2310,8 @@ public:
     virtual void SetPanelFile(PanelFile* pf);  // slot 0 0x586D20
     virtual void Draw();                       // slot 20 0x580290
     virtual void OnActivate();                 // slot 28 0x574480
+    virtual void Init();                       // 0x5B7BD0
+    virtual void UpdateWidescreen(bool ws);    // 0x5B7BE0
 
     ControllerDisconnectedMenu();              // 0x5931C0
     void SetErrorMessage();                    // 0x574490

@@ -279,6 +279,11 @@ LoadingMenu* LoadingMenu::Me()
         ->menus[4];
 }
 
+// ea: 0x005B7BC0
+void LoadingMenu::Init()
+{
+}
+
 // ea: 0x00574450
 void LoadingMenu::Update(float time_inc)
 {

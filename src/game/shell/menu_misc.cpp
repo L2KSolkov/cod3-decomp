@@ -69,6 +69,17 @@ ControllerDisconnectedMenu::ControllerDisconnectedMenu()
     text = nullptr;
 }
 
+// ea: 0x005B7BD0
+void ControllerDisconnectedMenu::Init()
+{
+}
+
+// ea: 0x005B7BE0
+void ControllerDisconnectedMenu::UpdateWidescreen(bool ws)
+{
+    (void)ws;
+}
+
 // ea: 0x00574480
 void ControllerDisconnectedMenu::OnActivate()
 {
