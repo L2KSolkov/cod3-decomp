@@ -13826,6 +13826,50 @@ void nalComponent<nalComponentQuatBase,
         pose = (char*)pose + 16;
 }
 
+// (nal_init.o 0x860FC0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked16EntropyQuatData,
+                  nalComponentPacked16EntropyQuat>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    *customAnimData = (const void*)((((uintptr_t)*customAnimData + 3u)
+                                     & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 8;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const math::Quaternion value =
+                (math::Quaternion)*(const nalEntropyDecoder::nalQuaternion16*)src;
+            std::memcpy((char*)dst + offset, &value,
+                        sizeof(math::Quaternion));
+            src = (const char*)src + 8;
+        }
+        else
+        {
+            std::memcpy((char*)dst + offset,
+                        (const char*)def + offset,
+                        sizeof(math::Quaternion));
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
 // ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
 // (nal_init.o 0x8611f0)
 template <>
@@ -13879,6 +13923,143 @@ void nalComponent<nalComponentQuatBase,
     pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
     for (int i = 0; i < componentInfo->Count; ++i)
         pose = (char*)pose + 16;
+}
+
+// (nal_init.o 0x860850)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customAnimData = (const void*)((((uintptr_t)*customAnimData + 3u)
+                                     & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 3;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const math::Quaternion value =
+                (math::Quaternion)*(const nalEntropyDecoder::nalQuaternion8*)src;
+            std::memcpy((char*)dst + offset, &value,
+                        sizeof(math::Quaternion));
+            src = (const char*)src + 3;
+        }
+        else
+        {
+            std::memcpy((char*)dst + offset,
+                        (const char*)def + offset,
+                        sizeof(math::Quaternion));
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
+// (nal_init.o 0x860BB0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *componentEnum.CustomAnimData =
+        (const char*)(((uintptr_t)*componentEnum.CustomAnimData + 3u)
+                      & ~uintptr_t(3u)) + 4;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
+// (nal_init.o 0x860C70)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 16 * componentInfo->Count;
+}
+
+// (nal_init.o 0x860CA0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 16;
+}
+
+// (nal_init.o 0x860CF0)
+template <>
+void FastCopy<nalComponentPacked8EntropyQuat, math::Quaternion>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 16u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// (nal_init.o 0x860CD0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentPacked8EntropyQuat, math::Quaternion>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// (nal_init.o 0x860D40)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 3;
+    }
 }
 
 // ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
