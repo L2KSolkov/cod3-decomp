@@ -1101,7 +1101,7 @@
 }
 
 // ea: 0x0077CAE0  (?Path_FindPathFromTo@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM23H@Z)
-    int __fastcall Path_FindPathFromTo(path_t*, team_t, PathNodes::PathNode*, const float* const, PathNodes::PathNode*, const float* const, int)
+    const int __fastcall Path_FindPathFromTo(path_t*, team_t, PathNodes::PathNode*, const float* const, PathNodes::PathNode*, const float* const, int)
 {
     return 0;
 }
