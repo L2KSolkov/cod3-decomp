@@ -15921,7 +15921,7 @@ index	status	map_line
 15920	PORTED	0002:003bbe10 ??1mem_heap_context@@QAE@XZ 00BAB310 f i mem_lib.o
 15921	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 15922	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
-15923	PORTED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
+15923	VERIFIED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
 15924	PORTED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
 15925	PORTED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
 15926	PORTED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
@@ -15929,8 +15929,8 @@ index	status	map_line
 15928	PORTED	0002:003bbf80 ?Malloc@ae_heap@@UAEPAXII@Z 00BAB480 f i ae_heap.o
 15929	PORTED	0002:003bbfc0 ?Free@ae_heap@@UAEXPAX@Z 00BAB4C0 f i ae_heap.o
 15930	PORTED	0002:003bbfe0 ?CheckFree@ae_heap@@UAE_NPAX@Z 00BAB4E0 f i ae_heap.o
-15931	PORTED	0002:003bc020 ??_Eae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
-15932	PORTED	0002:003bc020 ??_Gae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
+15931	VERIFIED	0002:003bc020 ??_Eae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
+15932	VERIFIED	0002:003bc020 ??_Gae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
 15933	VERIFIED	0002:003bc0d0 ?mem_get_arena_hi@@YAPAXXZ 00BAB5D0 f mem_lib_platform.o
 15934	VERIFIED	0002:003bc0f0 ?mem_get_arena_lo@@YAPAXXZ 00BAB5F0 f mem_lib_platform.o
 15935	VERIFIED	0002:003bc110 ?mem_get_debug_arena_hi@@YAPAXXZ 00BAB610 f mem_lib_platform.o

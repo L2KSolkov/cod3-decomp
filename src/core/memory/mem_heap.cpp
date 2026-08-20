@@ -433,8 +433,12 @@ class ae_heap : public ae_heap_base {
     mem_heap mHeap;
 public:
     ae_heap(unsigned size) { memset(&mHeap, 0, sizeof(mHeap)); }
-    ~ae_heap() {}
+    ~ae_heap();
 };
+
+ae_heap::~ae_heap() {
+    mem_heap_free(mHeap.start);
+}
 
 void* ae_heap_base::MemAlloc(unsigned size, unsigned align, mem_heap* heap) {
     if (!heap) heap = &s_heap_default;
