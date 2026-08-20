@@ -20413,7 +20413,7 @@ index	status	map_line
 20412	PORTED	0002:00457df0 ?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C472F0 f i nal_init.o
 20413	PORTED	0002:00457e20 ?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C47320 f i nal_init.o
 20414	PORTED	0002:00457e40 ??$FastCopy@VnalComponentPacked8Float1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C47340 f i nal_init.o
-20415	PENDING	0002:00457e90 ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C47390 f i nal_init.o
+20415	PORTED	0002:00457e90 ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C47390 f i nal_init.o
 20416	VERIFIED	0002:00457f20 ??0?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@IAE@XZ 00C47420 f i nal_init.o
 20417	VERIFIED	0002:00457f30 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47430 f i nal_init.o
 20418	VERIFIED	0002:00457f40 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47440 f i nal_init.o

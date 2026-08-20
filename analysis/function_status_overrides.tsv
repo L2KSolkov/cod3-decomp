@@ -1046,3 +1046,4 @@ nal_init.o	?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacke
 nal_init.o	?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
 nal_init.o	?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentPacked8Float1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
