@@ -107,6 +107,35 @@ bdString::~bdString()
         bdMemory::deallocate(referenceCount);
 }
 
+bdString& bdString::operator=(const char* value)
+{
+    const unsigned int length = (unsigned int)strlen(value);
+    bdStringData* data = (bdStringData*)m_string - 1;
+    if (data->m_referenceCount > 1 || data->m_capacity < length + 1)
+    {
+        if (--data->m_referenceCount == 0)
+            bdMemory::deallocate(data);
+
+        unsigned int capacity = (length + 1) >> 6;
+        if ((length + 1) & 0x3Fu)
+            ++capacity;
+        capacity <<= 6;
+
+        data = (bdStringData*)bdMemory::allocate(capacity + sizeof(bdStringData));
+        data->m_referenceCount = 1;
+        data->m_length = length;
+        data->m_capacity = capacity;
+        m_string = (char*)(data + 1);
+    }
+    else
+    {
+        data->m_length = length;
+    }
+
+    memcpy(m_string, value, length + 1);
+    return *this;
+}
+
 // ea: 0x0089CA50
 const char* bdString::getBuffer() const
 {
@@ -574,8 +603,37 @@ bool bdBitBuffer::readChar8(char& value)
 
 bool bdBitBuffer::readString(bdString& s)
 {
-    (void)s;
-    return true;
+    bool result = readDataType(BD_BB_SIGNED_CHAR8_STRING_TYPE);
+    if (!result)
+        return false;
+
+    unsigned int capacity = 32;
+    unsigned int length = 0;
+    char* buffer = (char*)bdMemory::allocate(capacity);
+    do
+    {
+        char value = 0;
+        bool ok = readBits(&value, 8u);
+        if (length == capacity)
+        {
+            unsigned int newCapacity = capacity ? capacity + capacity : 1;
+            char* newBuffer = (char*)bdMemory::allocate(newCapacity);
+            if (length != 0)
+                memcpy(newBuffer, buffer, length);
+            bdMemory::deallocate(buffer);
+            buffer = newBuffer;
+            capacity = newCapacity;
+        }
+        buffer[length++] = value;
+        result = ok;
+        if (!ok || value == 0)
+            break;
+    }
+    while (true);
+
+    s = buffer;
+    bdMemory::deallocate(buffer);
+    return result;
 }
 
 bool bdBitBuffer::readString(char* s, unsigned int maxLen)

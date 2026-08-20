@@ -42,6 +42,7 @@ public:
     bdString(const char* value);
     bdString(const bdString& value);
     ~bdString();
+    bdString& operator=(const char* value);
     unsigned int getLength() const;
     const char* getBuffer() const;
 };
