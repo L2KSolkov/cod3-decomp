@@ -1507,6 +1507,29 @@ UIHighlightListBox::UIHighlightListBox(int visibleRows, int visibleColumns,
     mHighlightedRow = -1;
 }
 
+// ea: 0x005B9D50
+UIHighlightListBox::~UIHighlightListBox()
+{
+    if (mHighlightedRowOriginalUnselectedColor.mElements != nullptr)
+    {
+        tlMemFree(mHighlightedRowOriginalUnselectedColor.mElements);
+        mHighlightedRowOriginalUnselectedColor.mElements = nullptr;
+        mHighlightedRowOriginalUnselectedColor.mCapacity = 0;
+    }
+    if (mHighlightedRowOriginalSelectedColor.mElements != nullptr)
+    {
+        tlMemFree(mHighlightedRowOriginalSelectedColor.mElements);
+        mHighlightedRowOriginalSelectedColor.mElements = nullptr;
+        mHighlightedRowOriginalSelectedColor.mCapacity = 0;
+    }
+    if (mHighlights.mElements != nullptr)
+    {
+        tlMemFree(mHighlights.mElements);
+        mHighlights.mElements = nullptr;
+        mHighlights.mCapacity = 0;
+    }
+}
+
 // ea: 0x00581DC0
 void UIHighlightListBox::ClearHighlights()
 {
@@ -1752,6 +1775,23 @@ UIPlayerListBox::UIPlayerListBox(int visibleRows, int visibleColumns,
     mPlayerXUIDs.mSize = maxDataRows;
     for (int i = 0; i < maxDataRows; ++i)
         mPlayerXUIDs.mElements[i] = initializer;
+}
+
+// ea: 0x005BA420
+UIPlayerListBox::~UIPlayerListBox()
+{
+    if (mPlayerXUIDs.mElements != nullptr)
+    {
+        tlMemFree(mPlayerXUIDs.mElements);
+        mPlayerXUIDs.mElements = nullptr;
+        mPlayerXUIDs.mCapacity = 0;
+    }
+    if (mPlayerIDs.mElements != nullptr)
+    {
+        tlMemFree(mPlayerIDs.mElements);
+        mPlayerIDs.mElements = nullptr;
+        mPlayerIDs.mCapacity = 0;
+    }
 }
 
 // ea: 0x005820C0

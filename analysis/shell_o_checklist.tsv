@@ -2173,7 +2173,7 @@ index	status	map_line
 2171	PENDING	0002:001adcd0       ??_GMultilineIngameOverlayMenu@@UAEPAXI@Z 009a91d0 f i shell.o
 2172	PENDING	0002:001add00       ??1MultilineIngameOverlayMenu@@UAE@XZ 009a9200 f i shell.o
 2173	PENDING	0002:001add10       ??4SE_Entry_s@@QAEAAU0@ABU0@@Z 009a9210 f i shell.o
-2174	PENDING	0002:001add50       ??1UIHighlightListBox@@UAE@XZ 009a9250 f i shell.o
+2174	PORTED	0002:001add50       ??1UIHighlightListBox@@UAE@XZ 009a9250 f i shell.o
 2175	PENDING	0002:001ade30       ?clear@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEXXZ 009a9330 f i shell.o
 2176	PENDING	0002:001ade70       ?_Erase@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEXPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@@Z 009a9370 f i shell.o
 2177	PENDING	0002:001aded0       ?_Insert@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@IAE?AViterator@12@_NPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009a93d0 f i shell.o
@@ -2183,11 +2183,11 @@ index	status	map_line
 2181	PENDING	0002:001ae350       ?clear@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEXXZ 009a9850 f i shell.o
 2182	PENDING	0002:001ae390       ??_GIGOVoipList@@UAEPAXI@Z 009a9890 f i shell.o
 2183	PENDING	0002:001ae390       ??_EIGOVoipList@@UAEPAXI@Z 009a9890 f i shell.o
-2184	PENDING	0002:001ae3c0       ??_GUIHighlightListBox@@UAEPAXI@Z 009a98c0 f i shell.o
-2185	PENDING	0002:001ae3c0       ??_EUIHighlightListBox@@UAEPAXI@Z 009a98c0 f i shell.o
-2186	PENDING	0002:001ae3f0       ??_EUIPlayerListBox@@UAEPAXI@Z 009a98f0 f i shell.o
-2187	PENDING	0002:001ae3f0       ??_GUIPlayerListBox@@UAEPAXI@Z 009a98f0 f i shell.o
-2188	PENDING	0002:001ae420       ??1UIPlayerListBox@@UAE@XZ 009a9920 f i shell.o
+2184	PORTED	0002:001ae3c0       ??_GUIHighlightListBox@@UAEPAXI@Z 009a98c0 f i shell.o
+2185	PORTED	0002:001ae3c0       ??_EUIHighlightListBox@@UAEPAXI@Z 009a98c0 f i shell.o
+2186	PORTED	0002:001ae3f0       ??_EUIPlayerListBox@@UAEPAXI@Z 009a98f0 f i shell.o
+2187	PORTED	0002:001ae3f0       ??_GUIPlayerListBox@@UAEPAXI@Z 009a98f0 f i shell.o
+2188	PORTED	0002:001ae420       ??1UIPlayerListBox@@UAE@XZ 009a9920 f i shell.o
 2189	PENDING	0002:001ae4d0       ?clear@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAEXXZ 009a99d0 f i shell.o
 2190	PENDING	0002:001ae510       ?insert@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AU?$pair@Viterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@_N@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009a9a10 f i shell.o
 2191	PENDING	0002:001ae6c0       ?_Tidy@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@IAEXXZ 009a9bc0 f i shell.o

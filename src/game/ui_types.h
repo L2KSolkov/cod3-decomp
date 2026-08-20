@@ -3228,6 +3228,7 @@ public:
     UIHighlightListBox() {}  // placeholder for member construction (never binary-emitted alone)
     UIHighlightListBox(int visibleRows, int visibleColumns,
                        int maxDataRows, bool bIsWrapping);  // 0x59BF60
+    virtual ~UIHighlightListBox();  // 0x5B9D50
     virtual void Clear();             // 0x5909B0
     virtual void Refresh();           // 0x5909D0
 
@@ -3257,6 +3258,7 @@ public:
     UIPlayerListBox(int visibleRows, int visibleColumns,
                     int maxDataRows, bool bIsWrapping);  // 0x59C020
     UIPlayerListBox() {}  // placeholder for member construction (never binary-emitted alone)
+    virtual ~UIPlayerListBox();  // 0x5BA420
     virtual void Clear();        // 0x590A00
     virtual void ClearRow(int row);  // 0x590AB0
 
