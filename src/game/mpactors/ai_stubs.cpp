@@ -438,7 +438,7 @@
 }
 
 // ea: 0x0077C330  (?Actor_Cover_FindCoverNearPoint@@YI?BHPAUactor_s@@QBM@Z)
-    int __fastcall Actor_Cover_FindCoverNearPoint(actor_s*, const float* const)
+    const int __fastcall Actor_Cover_FindCoverNearPoint(actor_s*, const float* const)
 {
     return 0;
 }
