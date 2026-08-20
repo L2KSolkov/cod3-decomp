@@ -303,6 +303,9 @@ struct SE_Entry_s {
 class CStringEdPackage {
     friend int ::SE_GetFlagMask(const char* psFlagName);
 public:
+    CStringEdPackage();
+    ~CStringEdPackage();
+
     int         m_bEndMarkerFound_ParseOnly;        // +0x00
     int EndMarkerFoundDuringParse();
     std::string m_strCurrentEntryRef_ParseOnly;     // +0x04

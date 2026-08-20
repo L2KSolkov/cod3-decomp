@@ -2212,8 +2212,8 @@ index	status	map_line
 2210	PENDING	0002:001af700       ??A?$map@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@@std@@QAEAAUSE_Entry_s@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 009aac00 f i shell.o
 2211	PENDING	0002:001af810       ??A?$map@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@@std@@QAEAAHABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 009aad10 f i shell.o
 2212	PENDING	0002:001af900       ??0?$set@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE@XZ 009aae00 f i shell.o
-2213	PENDING	0002:001af940       ??0CStringEdPackage@@QAE@XZ 009aae40 f i shell.o
-2214	PENDING	0002:001afa50       ??1CStringEdPackage@@QAE@XZ 009aaf50 f i shell.o
+2213	PORTED	0002:001af940       ??0CStringEdPackage@@QAE@XZ 009aae40 f i shell.o
+2214	PORTED	0002:001afa50       ??1CStringEdPackage@@QAE@XZ 009aaf50 f i shell.o
 2215	PENDING	000b:0001b414       ??_C@_0BB@NFBMELPN@scroll_detail_02?$AA@ 010de5f4     shell.o
 2216	PENDING	000b:0001b428       ??_C@_0BB@PODBBIDO@scroll_detail_01?$AA@ 010de608     shell.o
 2217	PENDING	000b:0001b43c       ??_C@_0BL@HFCJIOFN@scroll_indicator_reference?$AA@ 010de61c     shell.o

@@ -958,4 +958,5 @@ shell.o	src/game/ui_types.h/src/game/shell/vk_menu.cpp	VKMenu Init override	shel
 shell.o	src/game/mpshell/session_menus.h/src/game/mpshell/session_menus.cpp	OverlayMenuBase Init override	shell	1	PORTED	Added the IDA-confirmed no-op OverlayMenuBase::Init override
 shell.o	src/game/mpshell/session_menus.h/src/game/mpshell/session_menus.cpp	Multiline overlay constructors and frontend deactivation	shell	3	PORTED	Added the exact IDA-backed constructors and frontend state reset handler
 shell.o	analysis/shell_o_checklist.tsv	Menu-system and multiline wrapper verification	shell	15	VERIFIED	Verified explicit menu-system/VK destructors plus compiler-generated multiline overlay destructors and SE_Entry assignment coverage
+shell.o	src/game/shell/shell_types.h/src/game/shell/string_ed.cpp	CStringEdPackage constructor/destructor	shell	2	PORTED	Added IDA-backed container initialization and Clear(0) lifecycle calls
 shell.o	analysis/shell_o_checklist.tsv	Shell inherited destructor verification	shell	12	VERIFIED	Verified compiler-generated destructor and deleting-wrapper coverage for DefaultPanelQuad, FloatingPQ, FEMultiMenu, and MultilineOverlayMenu

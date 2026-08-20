@@ -23,6 +23,28 @@ int CStringEdPackage::EndMarkerFoundDuringParse()
     return m_bEndMarkerFound_ParseOnly;
 }
 
+// ea: 0x005BB940
+CStringEdPackage::CStringEdPackage()
+    : m_bEndMarkerFound_ParseOnly(0),
+      m_strCurrentEntryRef_ParseOnly(),
+      m_strCurrentEntryEnglish_ParseOnly(),
+      m_strCurrentFileRef_ParseOnly(),
+      m_strLoadingLanguage_ParseOnly(),
+      m_bLoadingEnglish_ParseOnly(0),
+      m_StringEntries(),
+      m_bLoadDebug(0),
+      m_vstrFlagNames(),
+      m_mapFlagMasks()
+{
+    Clear(0);
+}
+
+// ea: 0x005BBA50
+CStringEdPackage::~CStringEdPackage()
+{
+    Clear(0);
+}
+
 // ea: 0x00576BD0
 char* CStringEdPackage::Filename_PathOnly(const char* psFilename)
 {
