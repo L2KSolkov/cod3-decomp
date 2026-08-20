@@ -1690,7 +1690,9 @@ const char* nflGetStateText(nflState state)
 // ea: 0x00420520
 void nflRetry()
 {
-    nfsLock();
+    const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+    if (multiThreaded)
+        nfsLock();
     for (int index = 0; index < s_nfsDriversCount; ++index) {
         nfdDriver* driver = s_nfsDrivers[index];
         if (driver == nullptr || driver->work.ioState != NFD_IO_STATE_ERROR) continue;
@@ -1701,10 +1703,11 @@ void nflRetry()
             request->state = NFS_REQUEST_STATE_WAITING;
         driver->work.ioState = NFD_IO_STATE_IDLE;
 #ifdef _WIN32
-        if (s_nfsEvent != nullptr) SetEvent(s_nfsEvent);
+        if (multiThreaded && s_nfsEvent != nullptr) SetEvent(s_nfsEvent);
 #endif
     }
-    nfsUnlock();
+    if (multiThreaded)
+        nfsUnlock();
 }
 // ea: 0x0041EF30
 nflMediaAlignments* nflGetMediaAlignments(nflMediaID media, nflMediaAlignments* alignments)
