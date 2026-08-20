@@ -2281,11 +2281,12 @@ void nvlAFMVMovie::DoMotionDualP(
 
     const int secondX = dmvX + ((motionXPositive + motionX) >> 1);
     int secondXAbs = baseX + secondX;
+    int secondXAdjusted = secondX;
     int secondY = ((motionY + motionYPositive) >> 1) + dmvY + 1 + mVertOffset;
     int secondOffset = secondY - mVertOffset;
     if (secondXAbs > mLimitX) {
         secondXAbs = secondXAbs < 0 ? 0 : mLimitX;
-        otherX = secondXAbs;
+        secondXAdjusted = secondXAbs - baseX;
     }
     if (secondY > mLimitY) {
         secondY = secondY < 0 ? 0 : mLimitY;
@@ -2293,10 +2294,10 @@ void nvlAFMVMovie::DoMotionDualP(
     }
     afmv_mc.put[secondXAbs & 1 | (2 * (secondY & 1))](
         &mDest[0][mHorzOffset + mStride],
-        &motion->ref[0][0][(otherX >> 1) + mStride * (secondY & 0xFFFFFFFE)],
+        &motion->ref[0][0][(secondXAbs >> 1) + mStride * (secondY & 0xFFFFFFFE)],
         2 * mStride, 8);
-    const int secondUvMode = (secondX / 2) & 1 | (2 * ((secondOffset / 2) & 1));
-    const int secondUvOffset = ((mHorzOffset + secondX / 2) >> 1) +
+    const int secondUvMode = (secondXAdjusted / 2) & 1 | (2 * ((secondOffset / 2) & 1));
+    const int secondUvOffset = ((mHorzOffset + secondXAdjusted / 2) >> 1) +
         mUVStride * ((secondOffset / 2 & 0xFFFFFFFE) + (mVertOffset >> 1));
     afmv_mc.avg[secondUvMode - 4](
         &mDest[1][mUVStride + (mHorzOffset >> 1)],
