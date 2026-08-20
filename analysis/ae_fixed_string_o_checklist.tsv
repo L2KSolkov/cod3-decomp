@@ -1,5 +1,5 @@
 index	status	map_line
-1	PORTED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
+1	VERIFIED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
 2	VERIFIED	0002:003bedf0 ?StrStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE2F0 f ae_fixed_string.o
 3	VERIFIED	0002:003bef00 ?StrCStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE400 f ae_fixed_string.o
 4	PORTED	0002:003bef50 ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE450 f ae_fixed_string.o

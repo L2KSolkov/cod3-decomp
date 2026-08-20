@@ -16033,7 +16033,7 @@ index	status	map_line
 16032	PORTED	0002:003bed50 ??1InfiniteRecursionStopper@AeAssert@@QAE@XZ 00BAE250 f i AeAssert.o
 16033	PORTED	0002:003bed60 ??0?$ae_fixed_string@$0BAAA@G@@QAE@XZ 00BAE260 f i AeAssert.o
 16034	PORTED	0002:003bed70 ??$tl_max@HH@@YAHABH0@Z 00BAE270 f i AeAssert.o
-16035	PORTED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
+16035	VERIFIED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
 16036	VERIFIED	0002:003bedf0 ?StrStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE2F0 f ae_fixed_string.o
 16037	VERIFIED	0002:003bef00 ?StrCStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE400 f ae_fixed_string.o
 16038	PORTED	0002:003bef50 ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE450 f ae_fixed_string.o

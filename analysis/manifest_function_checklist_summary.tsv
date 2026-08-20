@@ -44,7 +44,7 @@ acos.obj	1	0	0	1	0	0	0
 adler32.o	2	2	0	0	0	0	0
 advnotif.obj	21	0	0	21	0	0	0
 ae_controller.o	2	1	1	0	0	0	0
-ae_fixed_string.o	9	2	7	0	0	0	0
+ae_fixed_string.o	9	3	6	0	0	0	0
 ae_heap.o	12	1	11	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0

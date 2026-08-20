@@ -11,7 +11,7 @@
 static char value1[2][8192];
 static int valueindex;
 
-extern int AeStringSupport::ae_stricmpn(const char* s1, const char* s2, int n);
+extern int ae_stricmpn(const char* s1, const char* s2, int n);
 
 // ============================================================================
 // Info_ValueForKey - ea: 0x610DD0
@@ -53,7 +53,7 @@ char* Info_ValueForKey(const char* s, const char* key)
                 ++v8;
             }
             *v8 = 0;
-            if (AeStringSupport::ae_stricmpn(key, pkey, 0x7FFFFFFF) == 0)
+            if (ae_stricmpn(key, pkey, 0x7FFFFFFF) == 0)
                 return value1[valueindex];
             if (*v2 == 0)
                 return const_cast<char*>(defaultFileName);

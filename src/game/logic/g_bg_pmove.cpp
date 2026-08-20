@@ -8263,17 +8263,17 @@ const gitem_s* BG_FindItem(const char* pickupName)
             char* szInternalName =
                 BG_GetInfoForWeapon(v1)->szInternalName;
             if (pickupName != nullptr && szInternalName != nullptr
-                && AeStringSupport::ae_stricmpn(pickupName, szInternalName, 0x7FFFFFFF) == 0)
+                && ae_stricmpn(pickupName, szInternalName, 0x7FFFFFFF) == 0)
                 return &bg_itemlist[v1];
         }
         else
         {
             const char* v5 = p_classname[6];
             if (v5 != nullptr && pickupName != nullptr
-                && AeStringSupport::ae_stricmpn(v5, pickupName, 0x7FFFFFFF) == 0)
+                && ae_stricmpn(v5, pickupName, 0x7FFFFFFF) == 0)
                 break;
             if (*p_classname != nullptr && pickupName != nullptr
-                && AeStringSupport::ae_stricmpn(*p_classname, pickupName, 0x7FFFFFFF) == 0)
+                && ae_stricmpn(*p_classname, pickupName, 0x7FFFFFFF) == 0)
                 break;
             v1 = iIndex;
         }
@@ -8565,7 +8565,7 @@ void BG_FillInWeaponItems()
                     while (1)
                     {
                         v7 = bg_weaponInfo[j];
-                        if (AeStringSupport::ae_stricmpn((const char*)*(p_giTag - 3), v7->szInternalName,
+                        if (ae_stricmpn((const char*)*(p_giTag - 3), v7->szInternalName,
                                         (int)strlen(v7->szInternalName)) == 0)
                             break;
                         if (++j > bg_iNumWeapons)
@@ -8625,7 +8625,7 @@ void BG_SetupAmmoIndexes()
                     const char* v5 = bg_szWeapAmmoNames[v4];
                     const char* v6 = v1->szAmmoName;
                     if (v5 != nullptr && v6 != nullptr
-                        && AeStringSupport::ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
                         break;
                     if (++v4 >= bg_iNumAmmoTypes)
                         goto LABEL_23;
@@ -8644,7 +8644,7 @@ void BG_SetupAmmoIndexes()
                             weaponFileInfo_t* v10 = bg_weaponInfo[v8];
                             const char* v11 = v10->szAmmoName;
                             if (v9 != nullptr && v11 != nullptr
-                                && AeStringSupport::ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
                                 && v10->iMaxAmmo == bg_iWeapAmmoMaxs[iIndex])
                             {
                                 AeAssert::gCurrentAuthor = AeAssert::JRS;
@@ -8744,7 +8744,7 @@ void BG_SetupClipIndexes()
                     const char* v5 = bg_szWeapClipNames[v4];
                     const char* v6 = v1->szClipName;
                     if (v5 != nullptr && v6 != nullptr
-                        && AeStringSupport::ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
                         break;
                     if (++v4 >= bg_iNumWeapClips)
                         goto LABEL_23;
@@ -8763,7 +8763,7 @@ void BG_SetupClipIndexes()
                             weaponFileInfo_t* v10 = bg_weaponInfo[v8];
                             const char* v11 = v10->szClipName;
                             if (v9 != nullptr && v11 != nullptr
-                                && AeStringSupport::ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
                                 && v10->iClipSize == bg_iWeapClipSizes[iIndex])
                             {
                                 AeAssert::gCurrentAuthor = AeAssert::JRS;
@@ -8809,7 +8809,7 @@ int compare_weaponfile_names(const void* pe1, const void* pe2)
 {
     const char* v2 = *(const char**)pe2;
     if (*(const char**)pe1 != nullptr && v2 != nullptr)
-        return AeStringSupport::ae_stricmpn(*(const char**)pe1, v2, 0x7FFFFFFF);
+        return ae_stricmpn(*(const char**)pe1, v2, 0x7FFFFFFF);
     return -1;
 }
 
@@ -8875,7 +8875,7 @@ int BG_GetAmmoTypeForName(const char* pszName)
     {
         const char* v2 = bg_szWeapAmmoNames[v1];
         if (v2 != nullptr && pszName != nullptr
-            && AeStringSupport::ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
             return v1;
         if (++v1 >= bg_iNumAmmoTypes)
             goto LABEL_6;
@@ -8896,7 +8896,7 @@ int BG_GetAmmoClipForName(const char* pszName)
     {
         const char* v2 = bg_szWeapClipNames[v1];
         if (v2 != nullptr && pszName != nullptr
-            && AeStringSupport::ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
             return v1;
         if (++v1 >= bg_iNumWeapClips)
             goto LABEL_6;

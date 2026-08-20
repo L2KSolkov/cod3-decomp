@@ -16033,7 +16033,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 16032	0x007BED50	0x00BAE250	??1InfiniteRecursionStopper@AeAssert@@QAE@XZ	core_xboxr	AeAssert.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 16033	0x007BED60	0x00BAE260	??0?$ae_fixed_string@$0BAAA@G@@QAE@XZ	core_xboxr	AeAssert.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 16034	0x007BED70	0x00BAE270	??$tl_max@HH@@YAHABH0@Z	core_xboxr	AeAssert.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-16035	0x007BED90	0x00BAE290	?ae_stricmpn@@YAHPBD0H@Z	core_xboxr	ae_fixed_string.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+16035	0x007BED90	0x00BAE290	?ae_stricmpn@@YAHPBD0H@Z	core_xboxr	ae_fixed_string.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16036	0x007BEDF0	0x00BAE2F0	?StrStrEqu@AeStringSupport@@YA_NPBDH0H@Z	core_xboxr	ae_fixed_string.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16037	0x007BEF00	0x00BAE400	?StrCStrEqu@AeStringSupport@@YA_NPBDH0H@Z	core_xboxr	ae_fixed_string.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 16038	0x007BEF50	0x00BAE450	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	core_xboxr	ae_fixed_string.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

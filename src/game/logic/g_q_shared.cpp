@@ -102,7 +102,7 @@ void Q_strncpyz(char* dest, const char* src, int destsize)
 // ea: 0x00610A30
 int Q_stricmpn(const char* s1, const char* s2, int n)
 {
-    return AeStringSupport::ae_stricmpn(s1, s2, n);
+    return ae_stricmpn(s1, s2, n);
 }
 
 // ea: 0x00610A40
@@ -130,7 +130,7 @@ int Q_strncmp(const char* s1, const char* s2, int n)
 int Q_stricmp(const char* s1, const char* s2)
 {
     if (s1 != nullptr && s2 != nullptr)
-        return AeStringSupport::ae_stricmpn(s1, s2, 0x7FFFFFFF);
+        return ae_stricmpn(s1, s2, 0x7FFFFFFF);
     return -1;
 }
 

@@ -4524,9 +4524,7 @@ void  SpinnerReset(void);                          // cg.o
 void  CG_FreeWeapons(void);                        // cg.o
 void  BG_FreeWeaponInfo(void);                     // game.o
 void  G_FreeInteractionInfo(void);                 // g.o
-namespace AeStringSupport {
 int   ae_stricmpn(const char* s1, const char* s2, int n);  // core.o ae_string_support.cpp
-}
 void  G_RunFrame(int msec);                       // g.o 0x492600
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
 void  Player_UpdateActivate(Entity* ent);         // g.o 0x473C40

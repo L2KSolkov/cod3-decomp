@@ -25,8 +25,6 @@ namespace AeAssert {
     bool Assert(const char* msg, ...);
 }
 
-namespace AeStringSupport {
-
 // ============================================================================
 // ae_stricmpn — case-insensitive string compare (max n chars)
 // ea: 0x7BED90
@@ -45,6 +43,8 @@ int ae_stricmpn(const char* s1, const char* s2, int n) {
     }
     return 0;
 }
+
+namespace AeStringSupport {
 
 // ============================================================================
 // StrStrEqu — compare two length-prefixed strings (requires 4-byte alignment)
