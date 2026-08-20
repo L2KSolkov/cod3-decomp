@@ -769,61 +769,61 @@ index	status	map_line
 768	PORTED	0002:00466e80 ??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z 00C56380 f i nal_init.o
 769	SKIPPED	0002:00466ed0 ??_EnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 770	SKIPPED	0002:00466ed0 ??_GnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-771	PENDING	0002:00466f00 ??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z 00C56400 f i nal_init.o
+771	PORTED	0002:00466f00 ??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z 00C56400 f i nal_init.o
 772	SKIPPED	0002:00466f50 ??_EnalComponentEntropyFloat1@@UAEPAXI@Z 00C56450 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 773	SKIPPED	0002:00466f50 ??_GnalComponentEntropyFloat1@@UAEPAXI@Z 00C56450 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-774	PENDING	0002:00466f80 ??0nalComponentPacked8Float1@@QAE@W4nalRegisterKey@@@Z 00C56480 f i nal_init.o
+774	PORTED	0002:00466f80 ??0nalComponentPacked8Float1@@QAE@W4nalRegisterKey@@@Z 00C56480 f i nal_init.o
 775	SKIPPED	0002:00466fd0 ??_GnalComponentPacked8Float1@@UAEPAXI@Z 00C564D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 776	SKIPPED	0002:00466fd0 ??_EnalComponentPacked8Float1@@UAEPAXI@Z 00C564D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-777	PENDING	0002:00467000 ??0nalComponentFloat3@@QAE@W4nalRegisterKey@@@Z 00C56500 f i nal_init.o
+777	PORTED	0002:00467000 ??0nalComponentFloat3@@QAE@W4nalRegisterKey@@@Z 00C56500 f i nal_init.o
 778	SKIPPED	0002:00467050 ??_GnalComponentFloat3@@UAEPAXI@Z 00C56550 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 779	SKIPPED	0002:00467050 ??_EnalComponentFloat3@@UAEPAXI@Z 00C56550 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-780	PENDING	0002:00467080 ??0nalComponentEntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56580 f i nal_init.o
+780	PORTED	0002:00467080 ??0nalComponentEntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56580 f i nal_init.o
 781	SKIPPED	0002:004670d0 ??_EnalComponentEntropyFloat3@@UAEPAXI@Z 00C565D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 782	SKIPPED	0002:004670d0 ??_GnalComponentEntropyFloat3@@UAEPAXI@Z 00C565D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-783	PENDING	0002:00467100 ??0nalComponentPacked8EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56600 f i nal_init.o
+783	PORTED	0002:00467100 ??0nalComponentPacked8EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56600 f i nal_init.o
 784	SKIPPED	0002:00467150 ??_EnalComponentPacked8EntropyFloat3@@UAEPAXI@Z 00C56650 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 785	SKIPPED	0002:00467150 ??_GnalComponentPacked8EntropyFloat3@@UAEPAXI@Z 00C56650 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-786	PENDING	0002:00467180 ??0nalComponentPacked16EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56680 f i nal_init.o
+786	PORTED	0002:00467180 ??0nalComponentPacked16EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56680 f i nal_init.o
 787	SKIPPED	0002:004671d0 ??_EnalComponentPacked16EntropyFloat3@@UAEPAXI@Z 00C566D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 788	SKIPPED	0002:004671d0 ??_GnalComponentPacked16EntropyFloat3@@UAEPAXI@Z 00C566D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-789	PENDING	0002:00467200 ??0nalComponentFloat4@@QAE@W4nalRegisterKey@@@Z 00C56700 f i nal_init.o
+789	PORTED	0002:00467200 ??0nalComponentFloat4@@QAE@W4nalRegisterKey@@@Z 00C56700 f i nal_init.o
 790	SKIPPED	0002:00467250 ??_GnalComponentFloat4@@UAEPAXI@Z 00C56750 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 791	SKIPPED	0002:00467250 ??_EnalComponentFloat4@@UAEPAXI@Z 00C56750 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-792	PENDING	0002:00467280 ??0nalComponentEntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56780 f i nal_init.o
+792	PORTED	0002:00467280 ??0nalComponentEntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56780 f i nal_init.o
 793	SKIPPED	0002:004672d0 ??_GnalComponentEntropyFloat4@@UAEPAXI@Z 00C567D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 794	SKIPPED	0002:004672d0 ??_EnalComponentEntropyFloat4@@UAEPAXI@Z 00C567D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-795	PENDING	0002:00467300 ??0nalComponentPacked8EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56800 f i nal_init.o
+795	PORTED	0002:00467300 ??0nalComponentPacked8EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56800 f i nal_init.o
 796	SKIPPED	0002:00467350 ??_EnalComponentPacked8EntropyFloat4@@UAEPAXI@Z 00C56850 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 797	SKIPPED	0002:00467350 ??_GnalComponentPacked8EntropyFloat4@@UAEPAXI@Z 00C56850 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-798	PENDING	0002:00467380 ??0nalComponentPacked16EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56880 f i nal_init.o
+798	PORTED	0002:00467380 ??0nalComponentPacked16EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56880 f i nal_init.o
 799	SKIPPED	0002:004673d0 ??_GnalComponentPacked16EntropyFloat4@@UAEPAXI@Z 00C568D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 800	SKIPPED	0002:004673d0 ??_EnalComponentPacked16EntropyFloat4@@UAEPAXI@Z 00C568D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-801	PENDING	0002:00467400 ??0nalComponentQuat@@QAE@W4nalRegisterKey@@@Z 00C56900 f i nal_init.o
+801	PORTED	0002:00467400 ??0nalComponentQuat@@QAE@W4nalRegisterKey@@@Z 00C56900 f i nal_init.o
 802	SKIPPED	0002:00467450 ??_EnalComponentQuat@@UAEPAXI@Z 00C56950 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 803	SKIPPED	0002:00467450 ??_GnalComponentQuat@@UAEPAXI@Z 00C56950 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-804	PENDING	0002:00467480 ??0nalComponentEntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56980 f i nal_init.o
+804	PORTED	0002:00467480 ??0nalComponentEntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56980 f i nal_init.o
 805	SKIPPED	0002:004674d0 ??_GnalComponentEntropyQuat@@UAEPAXI@Z 00C569D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 806	SKIPPED	0002:004674d0 ??_EnalComponentEntropyQuat@@UAEPAXI@Z 00C569D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-807	PENDING	0002:00467500 ??0nalComponentPacked8EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A00 f i nal_init.o
+807	PORTED	0002:00467500 ??0nalComponentPacked8EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A00 f i nal_init.o
 808	SKIPPED	0002:00467550 ??_GnalComponentPacked8EntropyQuat@@UAEPAXI@Z 00C56A50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 809	SKIPPED	0002:00467550 ??_EnalComponentPacked8EntropyQuat@@UAEPAXI@Z 00C56A50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-810	PENDING	0002:00467580 ??0nalComponentPacked16EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A80 f i nal_init.o
+810	PORTED	0002:00467580 ??0nalComponentPacked16EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A80 f i nal_init.o
 811	SKIPPED	0002:004675d0 ??_EnalComponentPacked16EntropyQuat@@UAEPAXI@Z 00C56AD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 812	SKIPPED	0002:004675d0 ??_GnalComponentPacked16EntropyQuat@@UAEPAXI@Z 00C56AD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-813	PENDING	0002:00467600 ??0nalComponentPO@@QAE@W4nalRegisterKey@@@Z 00C56B00 f i nal_init.o
+813	PORTED	0002:00467600 ??0nalComponentPO@@QAE@W4nalRegisterKey@@@Z 00C56B00 f i nal_init.o
 814	SKIPPED	0002:00467650 ??_EnalComponentPO@@UAEPAXI@Z 00C56B50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 815	SKIPPED	0002:00467650 ??_GnalComponentPO@@UAEPAXI@Z 00C56B50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-816	PENDING	0002:00467680 ??0nalComponentEntropyPO@@QAE@W4nalRegisterKey@@@Z 00C56B80 f i nal_init.o
+816	PORTED	0002:00467680 ??0nalComponentEntropyPO@@QAE@W4nalRegisterKey@@@Z 00C56B80 f i nal_init.o
 817	SKIPPED	0002:004676d0 ??_EnalComponentEntropyPO@@UAEPAXI@Z 00C56BD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 818	SKIPPED	0002:004676d0 ??_GnalComponentEntropyPO@@UAEPAXI@Z 00C56BD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-819	PENDING	0002:00467700 ??0nalComponentTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C00 f i nal_init.o
+819	PORTED	0002:00467700 ??0nalComponentTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C00 f i nal_init.o
 820	SKIPPED	0002:00467750 ??_EnalComponentTrajectoryPO@@UAEPAXI@Z 00C56C50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 821	SKIPPED	0002:00467750 ??_GnalComponentTrajectoryPO@@UAEPAXI@Z 00C56C50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-822	PENDING	0002:00467780 ??0nalComponentEntropyTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C80 f i nal_init.o
+822	PORTED	0002:00467780 ??0nalComponentEntropyTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C80 f i nal_init.o
 823	SKIPPED	0002:004677d0 ??_EnalComponentEntropyTrajectoryPO@@UAEPAXI@Z 00C56CD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 824	SKIPPED	0002:004677d0 ??_GnalComponentEntropyTrajectoryPO@@UAEPAXI@Z 00C56CD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-825	PENDING	0002:00467800 ??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z 00C56D00 f i nal_init.o
+825	PORTED	0002:00467800 ??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z 00C56D00 f i nal_init.o
 826	SKIPPED	0002:00467850 ??_EnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 827	SKIPPED	0002:00467850 ??_GnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 828	PENDING	0002:00467880 ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ 00C56D80 f i nal_init.o
