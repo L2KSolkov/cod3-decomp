@@ -8746,6 +8746,66 @@ void nalComponent<nalComponentIKSpinBase,
     }
 }
 
+// ?Convert@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x8648a0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    nalComponentPacked16EntropyIKSpinData::AnimData* animData =
+        (nalComponentPacked16EntropyIKSpinData::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const char*)animData + sizeof(*animData);
+    const void* skeletonData = *customSkeletonData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    const unsigned char* source = (const unsigned char*)src;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                source += sizeof(nalComponentPacked16EntropyIKSpinData::CacheType);
+                *customAnimData = (const char*)*customAnimData + 1;
+            }
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked16EntropyIKSpin::ComponentConvert(
+                (nalIKSpin*)((char*)dst + offset),
+                (const nalComponentPacked16EntropyIKSpinData::CacheType*)
+                    source,
+                (nalComponentData::SkeletonData*)skeletonData, animData,
+                (nalComponentPacked16EntropyIKSpinData::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentPacked16EntropyIKSpinData::AnimComponentData*)
+                    *customAnimData);
+            source += sizeof(nalComponentPacked16EntropyIKSpinData::CacheType);
+            *customAnimData = (const char*)*customAnimData + 1;
+        }
+        else
+        {
+            std::memcpy((char*)dst + offset, (const char*)def + offset,
+                        sizeof(nalIKSpin));
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 20;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = source;
+}
+
 // ?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z
 // (nal_init.o 0x864a50)
 void nalComponentPacked16EntropyIKSpin::ComponentConvert(
