@@ -8042,16 +8042,24 @@ void nalComponentRLE8Int1::VirtualAlignAnimComponentData(
 
 namespace nalEntropyDecoder {
 struct nalChannelDecoder {
+    using DecoderFunction = unsigned int (*)(nalChannelDecoder*, int*,
+                                             unsigned int, unsigned int);
+
     const unsigned char* ptr;
     unsigned char bitpos;
     unsigned char decoder;
     unsigned short zeroes;
+
+    static DecoderFunction DecoderTable[64];
+    void Decode(int* dst, unsigned int stride, unsigned int qty);
 };
 
 struct nalFloatDecoder {
     nalChannelDecoder channel;
     int val_2;
     int val_1;
+
+    void Decode(float* dst, unsigned int stride, unsigned int qty, float scale);
 };
 
 struct QuatDecoderBase {
@@ -29302,4 +29310,5408 @@ void animDeleteShimAnchor()
                  CODNoteTrack>::DeleteArrayShim(nullptr);
     nalBasePoseBlender::DeleteArrayShim(nullptr);
     nalComponentInitList::DeleteArrayShim(nullptr);
+}
+using _DWORD = unsigned int;
+#ifndef LOBYTE
+#define LOBYTE(x) (*reinterpret_cast<unsigned char*>(&(x)))
+#endif
+#ifndef LOWORD
+#define LOWORD(x) (*reinterpret_cast<unsigned short*>(&(x)))
+#endif
+unsigned int __cdecl ChannelDecoder_0(
+        nalEntropyDecoder::nalChannelDecoder *__formal,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  unsigned int i; // ecx
+
+  for ( i = qty; i != 0; --i )
+  {
+    *dst = 0;
+    dst = (dst + stride);
+  }
+  return 0;
+}
+
+//----- (00874200) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // edi
+  unsigned int *v11; // esi
+  int v12; // ebx
+  int v13; // ebx
+  unsigned int v14; // eax
+  unsigned int v15; // eax
+  bool v16; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = *v5;
+  v11 = v5 + 1;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 2 )
+        v12 = v8 | (v10 << v9);
+      else
+        LOBYTE(v12) = v8;
+      v13 = v12 & 3;
+      if ( (v13 & 1) != 0 )
+      {
+        if ( v9 < 2 )
+        {
+          v15 = v10;
+          v10 = *v11;
+          v8 = v15 >> (2 - v9);
+          ++v11;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+        *dst = v13 - 2;
+      }
+      else
+      {
+        if ( v9 != 0 )
+        {
+          v8 >>= 1;
+          --v9;
+        }
+        else
+        {
+          v14 = v10;
+          v10 = *v11;
+          v8 = v14 >> 1;
+          ++v11;
+          v9 = 31;
+        }
+        *dst = 0;
+      }
+      v16 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v16 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (008742F0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int v10; // ecx
+  unsigned int *v11; // edi
+  int v12; // edx
+  int v13; // edx
+  unsigned int v14; // esi
+  int v15; // edx
+  unsigned int v16; // esi
+  int v17; // edx
+  int *v18; // ecx
+  unsigned int v19; // esi
+  unsigned int v20; // esi
+  int v22; // [esp+Ch] [ebp-4h]
+  int v23; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_39:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 4 )
+    {
+      v10 = qty;
+      v12 = v8 | (v6 << v9);
+    }
+    else
+    {
+      LOBYTE(v12) = v8;
+    }
+    v13 = v12 & 0xF;
+    if ( (v13 & 1) != 0 )
+      break;
+    if ( v9 != 0 )
+    {
+      v8 >>= 1;
+      --v9;
+    }
+    else
+    {
+      v14 = v6;
+      v6 = *v11;
+      v8 = v14 >> 1;
+      v10 = qty;
+      ++v11;
+      v9 = 31;
+    }
+    v15 = 7;
+    if ( v10 >= 7 || (v15 = v10, v10 != 0) )
+    {
+      v22 = v15;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v22;
+      }
+      while ( v22 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 7 )
+    {
+      decoder->bitpos = -v9 & 7;
+      decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+      return 7 - v10;
+    }
+    v10 -= 7;
+    qty = v10;
+LABEL_37:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_39;
+    }
+  }
+  if ( (v13 & 2) != 0 )
+  {
+    if ( (v13 & 4) != 0 )
+    {
+      if ( v9 < 4 )
+      {
+        v20 = v6;
+        v6 = *v11;
+        v8 = v20 >> (4 - v9);
+        ++v11;
+        v9 += 28;
+      }
+      else
+      {
+        v8 >>= 4;
+        v9 -= 4;
+      }
+      v18 = dst;
+      *dst = (v13 >> 2) - 2;
+    }
+    else
+    {
+      if ( v9 < 3 )
+      {
+        v19 = v6;
+        v6 = *v11;
+        v8 = v19 >> (3 - v9);
+        v18 = dst;
+        ++v11;
+        v9 += 29;
+      }
+      else
+      {
+        v18 = dst;
+        v8 >>= 3;
+        v9 -= 3;
+      }
+      *dst = 0;
+    }
+    dst = (v18 + stride);
+    v10 = --qty;
+    goto LABEL_37;
+  }
+  if ( v9 < 2 )
+  {
+    v16 = v6;
+    v6 = *v11;
+    v8 = v16 >> (2 - v9);
+    v10 = qty;
+    ++v11;
+    v9 += 30;
+  }
+  else
+  {
+    v8 >>= 2;
+    v9 -= 2;
+  }
+  v17 = 2;
+  if ( v10 >= 2 || (v17 = v10, v10 != 0) )
+  {
+    v23 = v17;
+    do
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --v23;
+    }
+    while ( v23 != 0 );
+    v10 = qty;
+  }
+  if ( v10 >= 2 )
+  {
+    v10 -= 2;
+    qty = v10;
+    goto LABEL_37;
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 2 - v10;
+}
+
+//----- (00874510) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1c(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int v11; // edi
+  unsigned int *v12; // esi
+  int v13; // ebx
+  int v14; // ebx
+  unsigned int v15; // eax
+  int v16; // ebx
+  int *v17; // ecx
+  unsigned int v18; // eax
+  unsigned int v19; // eax
+  int v21; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = qty;
+  v11 = *v5;
+  v12 = v5 + 1;
+  if ( qty == 0 )
+  {
+LABEL_28:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 3 )
+    {
+      v10 = qty;
+      v13 = v8 | (v11 << v9);
+    }
+    else
+    {
+      LOBYTE(v13) = v8;
+    }
+    v14 = v13 & 7;
+    if ( (v14 & 1) != 0 )
+    {
+      if ( (v14 & 2) != 0 )
+      {
+        if ( v9 < 3 )
+        {
+          v19 = v11;
+          v11 = *v12;
+          v8 = v19 >> (3 - v9);
+          ++v12;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+        v17 = dst;
+        *dst = (v14 >> 1) - 2;
+      }
+      else
+      {
+        if ( v9 < 2 )
+        {
+          v18 = v11;
+          v11 = *v12;
+          v8 = v18 >> (2 - v9);
+          v17 = dst;
+          ++v12;
+          v9 += 30;
+        }
+        else
+        {
+          v17 = dst;
+          v8 >>= 2;
+          v9 -= 2;
+        }
+        *dst = 0;
+      }
+      dst = (v17 + stride);
+      v10 = --qty;
+      goto LABEL_26;
+    }
+    if ( v9 != 0 )
+    {
+      v8 >>= 1;
+      --v9;
+    }
+    else
+    {
+      v15 = v11;
+      v11 = *v12;
+      v8 = v15 >> 1;
+      v10 = qty;
+      ++v12;
+      v9 = 31;
+    }
+    v16 = 3;
+    if ( v10 >= 3 || (v16 = v10, v10 != 0) )
+    {
+      v21 = v16;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v21;
+      }
+      while ( v21 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 3 )
+      break;
+    v10 -= 3;
+    qty = v10;
+LABEL_26:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_28;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+  return 3 - v10;
+}
+
+//----- (008746A0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1d(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int v11; // edi
+  unsigned int *v12; // esi
+  int v13; // ebx
+  int v14; // ebx
+  unsigned int v15; // eax
+  int v16; // ebx
+  unsigned int v17; // eax
+  int v18; // ebx
+  int *v19; // ecx
+  unsigned int v20; // eax
+  unsigned int v21; // eax
+  int v23; // [esp+Ch] [ebp-4h]
+  int v24; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = qty;
+  v11 = *v5;
+  v12 = v5 + 1;
+  if ( qty == 0 )
+  {
+LABEL_39:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 4 )
+    {
+      v10 = qty;
+      v13 = v8 | (v11 << v9);
+    }
+    else
+    {
+      LOBYTE(v13) = v8;
+    }
+    v14 = v13 & 0xF;
+    if ( (v14 & 1) != 0 )
+      break;
+    if ( v9 != 0 )
+    {
+      v8 >>= 1;
+      --v9;
+    }
+    else
+    {
+      v15 = v11;
+      v11 = *v12;
+      v8 = v15 >> 1;
+      v10 = qty;
+      ++v12;
+      v9 = 31;
+    }
+    v16 = 4;
+    if ( v10 >= 4 || (v16 = v10, v10 != 0) )
+    {
+      v23 = v16;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v23;
+      }
+      while ( v23 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 4 )
+    {
+      decoder->bitpos = -v9 & 7;
+      decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+      return 4 - v10;
+    }
+    v10 -= 4;
+    qty = v10;
+LABEL_37:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_39;
+    }
+  }
+  if ( (v14 & 2) != 0 )
+  {
+    if ( (v14 & 4) != 0 )
+    {
+      if ( v9 < 4 )
+      {
+        v21 = v11;
+        v11 = *v12;
+        v8 = v21 >> (4 - v9);
+        ++v12;
+        v9 += 28;
+      }
+      else
+      {
+        v8 >>= 4;
+        v9 -= 4;
+      }
+      v19 = dst;
+      *dst = (v14 >> 2) - 2;
+    }
+    else
+    {
+      if ( v9 < 3 )
+      {
+        v20 = v11;
+        v11 = *v12;
+        v8 = v20 >> (3 - v9);
+        v19 = dst;
+        ++v12;
+        v9 += 29;
+      }
+      else
+      {
+        v19 = dst;
+        v8 >>= 3;
+        v9 -= 3;
+      }
+      *dst = 0;
+    }
+    dst = (v19 + stride);
+    v10 = --qty;
+    goto LABEL_37;
+  }
+  if ( v9 < 2 )
+  {
+    v17 = v11;
+    v11 = *v12;
+    v8 = v17 >> (2 - v9);
+    v10 = qty;
+    ++v12;
+    v9 += 30;
+  }
+  else
+  {
+    v8 >>= 2;
+    v9 -= 2;
+  }
+  v18 = 2;
+  if ( v10 >= 2 || (v18 = v10, v10 != 0) )
+  {
+    v24 = v18;
+    do
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --v24;
+    }
+    while ( v24 != 0 );
+    v10 = qty;
+  }
+  if ( v10 >= 2 )
+  {
+    v10 -= 2;
+    qty = v10;
+    goto LABEL_37;
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+  return 2 - v10;
+}
+
+//----- (008748C0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1e(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 2 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 3;
+      v8 = v6 >> (2 - v9);
+      v6 = *v11++;
+      v9 += 30;
+    }
+    else
+    {
+      v12 = v8 & 3;
+      v8 >>= 2;
+      v9 -= 2;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 2;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 6;
+    if ( v10 >= 6 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 6 )
+      break;
+    v10 -= 6;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 6 - v10;
+}
+
+//----- (008749F0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_2a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // edi
+  unsigned int *v11; // esi
+  int v12; // ebx
+  int v13; // ebx
+  unsigned int v14; // eax
+  unsigned int v15; // eax
+  bool v16; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = *v5;
+  v11 = v5 + 1;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 3 )
+        v12 = v8 | (v10 << v9);
+      else
+        LOBYTE(v12) = v8;
+      v13 = v12 & 7;
+      if ( (v13 & 1) != 0 )
+      {
+        if ( v9 < 3 )
+        {
+          v15 = v10;
+          v10 = *v11;
+          v8 = v15 >> (3 - v9);
+          ++v11;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+        *dst = (v13 >> 2) + (v13 >> 1) - 2;
+      }
+      else
+      {
+        if ( v9 != 0 )
+        {
+          v8 >>= 1;
+          --v9;
+        }
+        else
+        {
+          v14 = v10;
+          v10 = *v11;
+          v8 = v14 >> 1;
+          ++v11;
+          v9 = 31;
+        }
+        *dst = 0;
+      }
+      v16 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v16 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00874AF0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_2b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edi
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int *v10; // esi
+  int v11; // edi
+  int v12; // edi
+  unsigned int v13; // eax
+  unsigned int v14; // eax
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 3 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 7;
+      if ( (v12 & 3) != 0 )
+      {
+        v12 &= 3u;
+        if ( v9 < 2 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (2 - v9);
+          ++v10;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+      }
+      else if ( v9 < 3 )
+      {
+        v14 = v6;
+        v6 = *v10;
+        v8 = v14 >> (3 - v9);
+        ++v10;
+        v9 += 29;
+      }
+      else
+      {
+        v8 >>= 3;
+        v9 -= 3;
+      }
+      *dst = v12 - 2;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( qty != 0 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00874BC0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_2c(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int v11; // edi
+  unsigned int *v12; // esi
+  int v13; // ebx
+  int v14; // ebx
+  unsigned int v15; // eax
+  int v16; // ebx
+  unsigned int v17; // eax
+  int v18; // ebx
+  int *v19; // ecx
+  unsigned int v20; // eax
+  unsigned int v21; // eax
+  int v23; // [esp+Ch] [ebp-4h]
+  int v24; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = qty;
+  v11 = *v5;
+  v12 = v5 + 1;
+  if ( qty == 0 )
+  {
+LABEL_39:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 5 )
+    {
+      v10 = qty;
+      v13 = v8 | (v11 << v9);
+    }
+    else
+    {
+      LOBYTE(v13) = v8;
+    }
+    v14 = v13 & 0x1F;
+    if ( (v14 & 1) != 0 )
+      break;
+    if ( v9 != 0 )
+    {
+      v8 >>= 1;
+      --v9;
+    }
+    else
+    {
+      v15 = v11;
+      v11 = *v12;
+      v8 = v15 >> 1;
+      v10 = qty;
+      ++v12;
+      v9 = 31;
+    }
+    v16 = 4;
+    if ( v10 >= 4 || (v16 = v10, v10 != 0) )
+    {
+      v23 = v16;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v23;
+      }
+      while ( v23 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 4 )
+    {
+      decoder->bitpos = -v9 & 7;
+      decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+      return 4 - v10;
+    }
+    v10 -= 4;
+    qty = v10;
+LABEL_37:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_39;
+    }
+  }
+  if ( (v14 & 2) != 0 )
+  {
+    if ( (v14 & 4) != 0 )
+    {
+      if ( v9 < 5 )
+      {
+        v21 = v11;
+        v11 = *v12;
+        v8 = v21 >> (5 - v9);
+        ++v12;
+        v9 += 27;
+      }
+      else
+      {
+        v8 >>= 5;
+        v9 -= 5;
+      }
+      v19 = dst;
+      *dst = (v14 >> 4) + (v14 >> 3) - 2;
+    }
+    else
+    {
+      if ( v9 < 3 )
+      {
+        v20 = v11;
+        v11 = *v12;
+        v8 = v20 >> (3 - v9);
+        v19 = dst;
+        ++v12;
+        v9 += 29;
+      }
+      else
+      {
+        v19 = dst;
+        v8 >>= 3;
+        v9 -= 3;
+      }
+      *dst = 0;
+    }
+    dst = (v19 + stride);
+    v10 = --qty;
+    goto LABEL_37;
+  }
+  if ( v9 < 2 )
+  {
+    v17 = v11;
+    v11 = *v12;
+    v8 = v17 >> (2 - v9);
+    v10 = qty;
+    ++v12;
+    v9 += 30;
+  }
+  else
+  {
+    v8 >>= 2;
+    v9 -= 2;
+  }
+  v18 = 2;
+  if ( v10 >= 2 || (v18 = v10, v10 != 0) )
+  {
+    v24 = v18;
+    do
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --v24;
+    }
+    while ( v24 != 0 );
+    v10 = qty;
+  }
+  if ( v10 >= 2 )
+  {
+    v10 -= 2;
+    qty = v10;
+    goto LABEL_37;
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+  return 2 - v10;
+}
+
+//----- (00874DF0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_3a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int *v10; // edi
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // esi
+  int v14; // edx
+  unsigned int v15; // esi
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 4 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0xF;
+      if ( (v12 & 3) != 0 )
+      {
+        *dst = (v12 & 3) - 2;
+        if ( v9 < 2 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (2 - v9);
+          ++v10;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+      }
+      else
+      {
+        v14 = v12 >> 2;
+        if ( (v14 & 2) == 0 )
+          v14 -= 3;
+        *dst = v14;
+        if ( v9 < 4 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (4 - v9);
+          ++v10;
+          v9 += 28;
+        }
+        else
+        {
+          v8 >>= 4;
+          v9 -= 4;
+        }
+      }
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( qty != 0 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00874EE0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_3b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 3 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 7;
+      v8 = v6 >> (3 - v9);
+      v6 = *v11++;
+      v9 += 29;
+    }
+    else
+    {
+      v12 = v8 & 7;
+      v8 >>= 3;
+      v9 -= 3;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 4;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 3;
+    if ( v10 >= 3 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 3 )
+      break;
+    v10 -= 3;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 3 - v10;
+}
+
+//----- (00875010) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_5a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int *v10; // edi
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // esi
+  int v14; // edx
+  int v15; // ecx
+  unsigned int v16; // esi
+  bool v17; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 5 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0x1F;
+      if ( (v12 & 3) != 0 )
+      {
+        *dst = (v12 & 3) - 2;
+        if ( v9 < 2 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (2 - v9);
+          ++v10;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+      }
+      else
+      {
+        v14 = v12 >> 2;
+        v15 = v14 - 2;
+        if ( (v14 & 4) == 0 )
+          v15 = v14 - 5;
+        *dst = v15;
+        if ( v9 < 5 )
+        {
+          v16 = v6;
+          v6 = *v10;
+          v8 = v16 >> (5 - v9);
+          ++v10;
+          v9 += 27;
+        }
+        else
+        {
+          v8 >>= 5;
+          v9 -= 5;
+        }
+      }
+      v17 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v17 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00875110) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_7a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  unsigned int v5; // ebx
+  _DWORD *v6; // esi
+  int v7; // ecx
+  unsigned int v8; // edi
+  _DWORD *v9; // esi
+  unsigned int v10; // edx
+  int v11; // eax
+  char v12; // al
+  int v13; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+  unsigned int qtya; // [esp+24h] [ebp+14h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_15:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 4 )
+    {
+      ++v9;
+      v12 = v8 | (BITREAD_bits2 << v10);
+      v8 = BITREAD_bits2 >> (4 - v10);
+      v11 = v12 & 0xF;
+      BITREAD_bits2 = *(v9 - 1);
+      v10 += 28;
+    }
+    else
+    {
+      v11 = v8 & 0xF;
+      v8 >>= 4;
+      v10 -= 4;
+    }
+    if ( v11 == 0 )
+      break;
+    *dst = v11 - 8;
+    dst = (dst + stride);
+    --v5;
+LABEL_13:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_15;
+    }
+  }
+  v13 = 4;
+  if ( v5 >= 4 || (v13 = v5, v5 != 0) )
+  {
+    qtya = v13;
+    do
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --qtya;
+    }
+    while ( qtya != 0 );
+  }
+  if ( v5 >= 4 )
+  {
+    v5 -= 4;
+    goto LABEL_13;
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 4 - v5;
+}
+
+//----- (00875230) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_7b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // ecx
+  unsigned int v14; // esi
+  unsigned int v15; // esi
+  unsigned int v16; // esi
+  bool v17; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 5 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0x1F;
+      v13 = v12 & 7;
+      if ( v13 < 3 )
+      {
+        if ( v13 == 2 )
+        {
+          *dst = (v12 & 8) != 0 ? 3 : -3;
+          if ( v9 < 4 )
+          {
+            v15 = v6;
+            v6 = *v10;
+            v8 = v15 >> (4 - v9);
+            ++v10;
+            v9 += 28;
+          }
+          else
+          {
+            v8 >>= 4;
+            v9 -= 4;
+          }
+        }
+        else
+        {
+          if ( (v12 & 1) != 0 )
+            *dst = -4 - (v12 >> 3);
+          else
+            *dst = (v12 >> 3) + 4;
+          if ( v9 < 5 )
+          {
+            v16 = v6;
+            v6 = *v10;
+            v8 = v16 >> (5 - v9);
+            ++v10;
+            v9 += 27;
+          }
+          else
+          {
+            v8 >>= 5;
+            v9 -= 5;
+          }
+        }
+      }
+      else
+      {
+        *dst = v13 - 5;
+        if ( v9 < 3 )
+        {
+          v14 = v6;
+          v6 = *v10;
+          v8 = v14 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      v17 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v17 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00875370) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_7c(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // edi
+  unsigned int *v11; // esi
+  int v12; // ebx
+  int v13; // ebx
+  unsigned int v14; // eax
+  int v15; // ebx
+  unsigned int v16; // eax
+  int v17; // ebx
+  unsigned int v18; // eax
+  bool v19; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = *v5;
+  v11 = v5 + 1;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 6 )
+        v12 = v8 | (v10 << v9);
+      else
+        LOBYTE(v12) = v8;
+      v13 = v12 & 0x3F;
+      if ( (v13 & 3) != 0 )
+      {
+        *dst = (v13 & 3) - 2;
+        if ( v9 < 2 )
+        {
+          v14 = v10;
+          v10 = *v11;
+          v8 = v14 >> (2 - v9);
+          ++v11;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+      }
+      else if ( (v13 & 4) != 0 )
+      {
+        v17 = v13 >> 3;
+        if ( (v17 & 4) == 0 )
+          v17 -= 7;
+        *dst = v17;
+        if ( v9 < 6 )
+        {
+          v18 = v10;
+          v10 = *v11;
+          v8 = v18 >> (6 - v9);
+          ++v11;
+          v9 += 26;
+        }
+        else
+        {
+          v8 >>= 6;
+          v9 -= 6;
+        }
+      }
+      else
+      {
+        v15 = (v13 >> 3) & 3;
+        if ( (v15 & 2) == 0 )
+          v15 -= 3;
+        *dst = v15;
+        if ( v9 < 5 )
+        {
+          v16 = v10;
+          v10 = *v11;
+          v8 = v16 >> (5 - v9);
+          ++v11;
+          v9 += 27;
+        }
+        else
+        {
+          v8 >>= 5;
+          v9 -= 5;
+        }
+      }
+      v19 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v19 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (008754A0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f15a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  int v6; // ecx
+  unsigned int v7; // esi
+  unsigned int v8; // edx
+  unsigned int v9; // ecx
+  unsigned int *v10; // edi
+  int v12; // eax
+  int v13; // eax
+  int v14; // eax
+  int v15; // eax
+  int v16; // ecx
+  int v17; // eax
+  char v18; // cl
+  unsigned int v19; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = qty;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_24:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 5 )
+    {
+      v9 = qty;
+      v12 = v7 | (BITREAD_bits2 << v8);
+    }
+    else
+    {
+      LOBYTE(v12) = v7;
+    }
+    v13 = v12 & 0x1F;
+    if ( (v13 & 1) != 0 )
+    {
+      v16 = v13 >> 1;
+      v17 = v13 >> 2;
+      v18 = v16 & 1;
+      if ( (v17 & 4) == 0 )
+        v17 -= 7;
+      *dst = v17 << v18;
+      dst = (dst + stride);
+      --qty;
+      if ( v8 < 5 )
+      {
+        v19 = *v10;
+        v7 = BITREAD_bits2 >> (5 - v8);
+        ++v10;
+        BITREAD_bits2 = v19;
+        v8 += 27;
+      }
+      else
+      {
+        v7 >>= 5;
+        v8 -= 5;
+      }
+      v9 = qty;
+      goto LABEL_22;
+    }
+    if ( v8 < 4 )
+    {
+      v7 = BITREAD_bits2 >> (4 - v8);
+      BITREAD_bits2 = *v10;
+      v9 = qty;
+      ++v10;
+      v8 += 28;
+    }
+    else
+    {
+      v7 >>= 4;
+      v8 -= 4;
+    }
+    v14 = v13 & 0xF;
+    if ( v14 != 0 )
+    {
+      *dst = (v14 >> 1) - 4;
+      dst = (dst + stride);
+      qty = --v9;
+      goto LABEL_22;
+    }
+    v15 = 4;
+    if ( v9 >= 4 || (v15 = v9, v9 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+    }
+    if ( v9 < 4 )
+      break;
+    v9 -= 4;
+    qty = v9;
+LABEL_22:
+    if ( v9 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_24;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+  return 4 - v9;
+}
+
+//----- (00875610) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f15b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int *v10; // edi
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // esi
+  int v14; // edx
+  unsigned int v15; // esi
+  int v16; // ecx
+  int v17; // edx
+  char v18; // cl
+  unsigned int v19; // esi
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 7 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0x7F;
+      if ( (v12 & 3) != 0 )
+      {
+        *dst = (v12 & 3) - 2;
+        if ( v9 < 2 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (2 - v9);
+          ++v10;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+      }
+      else if ( (v12 & 4) != 0 )
+      {
+        v16 = v12 >> 3;
+        v17 = v12 >> 4;
+        v18 = v16 & 1;
+        if ( (v17 & 4) == 0 )
+          v17 -= 7;
+        *dst = v17 << v18;
+        if ( v9 < 7 )
+        {
+          v19 = v6;
+          v6 = *v10;
+          v8 = v19 >> (7 - v9);
+          ++v10;
+          v9 += 25;
+        }
+        else
+        {
+          v8 >>= 7;
+          v9 -= 7;
+        }
+      }
+      else
+      {
+        v14 = (v12 >> 3) & 3;
+        if ( (v14 & 2) == 0 )
+          v14 -= 3;
+        *dst = v14;
+        if ( v9 < 5 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (5 - v9);
+          ++v10;
+          v9 += 27;
+        }
+        else
+        {
+          v8 >>= 5;
+          v9 -= 5;
+        }
+      }
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( qty != 0 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00875750) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f15c(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // esi
+  unsigned int v14; // eax
+  unsigned int v15; // esi
+  int v16; // eax
+  int v17; // ecx
+  unsigned int v18; // esi
+  int v19; // ecx
+  int v20; // eax
+  char v21; // cl
+  unsigned int v22; // esi
+  unsigned int i; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_34:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 7 )
+      v11 = v8 | (v6 << v9);
+    else
+      LOBYTE(v11) = v8;
+    v12 = v11 & 0x7F;
+    if ( (v12 & 1) != 0 )
+    {
+      if ( (v12 & 2) != 0 )
+      {
+        if ( (v12 & 4) != 0 )
+        {
+          v19 = v12 >> 3;
+          v20 = v12 >> 4;
+          v21 = v19 & 1;
+          if ( (v20 & 4) == 0 )
+            v20 -= 7;
+          *dst = v20 << v21;
+          dst = (dst + stride);
+          --qty;
+          if ( v9 < 7 )
+          {
+            v22 = v6;
+            v6 = *v10;
+            v8 = v22 >> (7 - v9);
+            ++v10;
+            v9 += 25;
+          }
+          else
+          {
+            v8 >>= 7;
+            v9 -= 7;
+          }
+        }
+        else
+        {
+          v16 = (v12 >> 3) & 3;
+          v17 = v16;
+          if ( (v16 & 2) == 0 )
+            v17 = v16 - 3;
+          *dst = v17;
+          dst = (dst + stride);
+          --qty;
+          if ( v9 < 5 )
+          {
+            v18 = v6;
+            v6 = *v10;
+            v8 = v18 >> (5 - v9);
+            ++v10;
+            v9 += 27;
+          }
+          else
+          {
+            v8 >>= 5;
+            v9 -= 5;
+          }
+        }
+      }
+      else
+      {
+        *dst = ((v12 >> 1) & 2) - 1;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 3 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      goto LABEL_32;
+    }
+    if ( v9 < 2 )
+    {
+      v13 = v6;
+      v6 = *v10;
+      v8 = v13 >> (2 - v9);
+      ++v10;
+      v9 += 30;
+    }
+    else
+    {
+      v8 >>= 2;
+      v9 -= 2;
+    }
+    if ( (v12 & 2) != 0 )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --qty;
+      goto LABEL_32;
+    }
+    v14 = 8;
+    if ( qty < 8 )
+      v14 = qty;
+    for ( i = v14; i != 0; --i )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+    }
+    if ( qty < 8 )
+      break;
+    qty -= 8;
+LABEL_32:
+    if ( qty == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_34;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 8 - qty;
+}
+// 8757DC: conditional instruction was optimized away because %qty.4 is in (1..7)
+
+//----- (00875960) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f31a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // edi
+  unsigned int v8; // edx
+  unsigned int v9; // ecx
+  _DWORD *v10; // esi
+  int v12; // eax
+  char v13; // al
+  int v14; // eax
+  char v15; // cl
+  int v16; // eax
+  int v17; // ecx
+  int v18; // eax
+  char v19; // cl
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = qty;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_19:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 5 )
+    {
+      ++v10;
+      v13 = v7 | (BITREAD_bits2 << v8);
+      v7 = BITREAD_bits2 >> (5 - v8);
+      v12 = v13 & 0x1F;
+      BITREAD_bits2 = *(v10 - 1);
+      v9 = qty;
+      v8 += 27;
+    }
+    else
+    {
+      v12 = v7 & 0x1F;
+      v7 >>= 5;
+      v8 -= 5;
+    }
+    if ( v12 != 0 )
+    {
+      v15 = v12;
+      v16 = v12 >> 2;
+      v17 = v15 & 3;
+      if ( v17 != 0 )
+      {
+        v19 = v17 - 1;
+        if ( (v16 & 4) == 0 )
+          v16 -= 7;
+        v18 = v16 << v19;
+      }
+      else
+      {
+        v18 = v16 - 4;
+      }
+      *dst = v18;
+      dst = (dst + stride);
+      v9 = --qty;
+      goto LABEL_17;
+    }
+    v14 = 5;
+    if ( v9 >= 5 || (v14 = v9, v9 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v14;
+      }
+      while ( v14 != 0 );
+    }
+    if ( v9 < 5 )
+      break;
+    v9 -= 5;
+    qty = v9;
+LABEL_17:
+    if ( v9 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_19;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+  return 5 - v9;
+}
+
+//----- (00875A90) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f31b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  unsigned int v5; // ebx
+  _DWORD *v6; // edi
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int *v9; // edi
+  unsigned int v10; // edx
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // ecx
+  int v14; // eax
+  int v15; // ecx
+  int *v16; // ecx
+  int v17; // ebx
+  int v18; // eax
+  unsigned int v19; // ecx
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_30:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 6 )
+      v11 = v8 | (BITREAD_bits2 << v10);
+    else
+      LOBYTE(v11) = v8;
+    v12 = v11 & 0x3F;
+    if ( (v12 & 1) != 0 )
+    {
+      if ( (v12 & 2) != 0 )
+      {
+        v17 = ((v12 >> 2) & 1) + 1;
+        v18 = v12 >> 3;
+        if ( v10 >= 6 )
+        {
+          v8 >>= 6;
+          v10 -= 6;
+          goto LABEL_24;
+        }
+        v8 = BITREAD_bits2 >> (6 - v10);
+        v19 = *v9++;
+        v10 += 26;
+      }
+      else
+      {
+        LOBYTE(v17) = 0;
+        v18 = (v12 >> 2) & 7;
+        if ( v10 >= 5 )
+        {
+          v8 >>= 5;
+          v10 -= 5;
+LABEL_24:
+          if ( (v18 & 4) == 0 )
+            v18 -= 7;
+          *dst = v18 << v17;
+          v16 = (dst + stride);
+          v5 = --qty;
+          goto LABEL_27;
+        }
+        v8 = BITREAD_bits2 >> (5 - v10);
+        v19 = *v9++;
+        v10 += 27;
+      }
+      BITREAD_bits2 = v19;
+      goto LABEL_24;
+    }
+    if ( v10 < 4 )
+    {
+      v8 = BITREAD_bits2 >> (4 - v10);
+      v13 = *v9++;
+      BITREAD_bits2 = v13;
+      v10 += 28;
+    }
+    else
+    {
+      v8 >>= 4;
+      v10 -= 4;
+    }
+    v14 = v12 & 0xF;
+    if ( v14 != 0 )
+    {
+      *dst = (v14 >> 1) - 4;
+      v16 = (dst + stride);
+      qty = --v5;
+LABEL_27:
+      dst = v16;
+      goto LABEL_28;
+    }
+    v15 = 4;
+    if ( v5 >= 4 || (v15 = v5, v5 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        --v15;
+        dst = (dst + stride);
+      }
+      while ( v15 != 0 );
+    }
+    if ( v5 < 4 )
+      break;
+    v5 -= 4;
+    qty = v5;
+LABEL_28:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_30;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 4 - v5;
+}
+
+//----- (00875C40) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f31c(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // ecx
+  unsigned int v14; // esi
+  unsigned int v15; // esi
+  int v16; // eax
+  unsigned int v17; // esi
+  int v18; // ecx
+  unsigned int v19; // esi
+  bool v20; // zf
+  unsigned int v22; // [esp+Ch] [ebp-4h]
+  char shift; // [esp+24h] [ebp+14h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    v22 = qty;
+    do
+    {
+      if ( v9 < 7 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0x7F;
+      v13 = v12 & 7;
+      if ( v13 < 3 )
+      {
+        if ( (v12 & 7) != 0 )
+        {
+          if ( v13 == 1 )
+          {
+            v16 = (v12 >> 3) & 7;
+            shift = 0;
+            if ( v9 < 6 )
+            {
+              v17 = v6;
+              v6 = *v10;
+              v8 = v17 >> (6 - v9);
+              ++v10;
+              v9 += 26;
+            }
+            else
+            {
+              v8 >>= 6;
+              v9 -= 6;
+            }
+          }
+          else
+          {
+            v18 = ((v12 >> 3) & 1) + 1;
+            v16 = v12 >> 4;
+            shift = v18;
+            if ( v9 < 7 )
+            {
+              v19 = v6;
+              v6 = *v10;
+              v8 = v19 >> (7 - v9);
+              ++v10;
+              v9 += 25;
+            }
+            else
+            {
+              v8 >>= 7;
+              v9 -= 7;
+            }
+          }
+          if ( (v16 & 4) == 0 )
+            v16 -= 7;
+          *dst = v16 << shift;
+        }
+        else
+        {
+          *dst = (v12 & 8) != 0 ? 3 : -3;
+          if ( v9 < 4 )
+          {
+            v15 = v6;
+            v6 = *v10;
+            v8 = v15 >> (4 - v9);
+            ++v10;
+            v9 += 28;
+          }
+          else
+          {
+            v8 >>= 4;
+            v9 -= 4;
+          }
+        }
+      }
+      else
+      {
+        *dst = v13 - 5;
+        if ( v9 < 3 )
+        {
+          v14 = v6;
+          v6 = *v10;
+          v8 = v14 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      v20 = v22 == 1;
+      dst = (dst + stride);
+      --v22;
+    }
+    while ( !v20 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00875DC0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f31d(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // esi
+  unsigned int v14; // eax
+  unsigned int v15; // esi
+  int v16; // eax
+  int v17; // ecx
+  unsigned int v18; // esi
+  int v19; // ecx
+  int v20; // eax
+  char v21; // cl
+  unsigned int v22; // esi
+  unsigned int i; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_34:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 7 )
+      v11 = v8 | (v6 << v9);
+    else
+      LOBYTE(v11) = v8;
+    v12 = v11 & 0x7F;
+    if ( (v12 & 1) != 0 )
+    {
+      if ( (v12 & 2) != 0 )
+      {
+        if ( (v12 & 0xC) != 0 )
+        {
+          v19 = (v12 >> 2) & 3;
+          v20 = v12 >> 4;
+          v21 = v19 - 1;
+          if ( (v20 & 4) == 0 )
+            v20 -= 7;
+          *dst = v20 << v21;
+          dst = (dst + stride);
+          --qty;
+          if ( v9 < 7 )
+          {
+            v22 = v6;
+            v6 = *v10;
+            v8 = v22 >> (7 - v9);
+            ++v10;
+            v9 += 25;
+          }
+          else
+          {
+            v8 >>= 7;
+            v9 -= 7;
+          }
+        }
+        else
+        {
+          v16 = (v12 >> 4) & 3;
+          v17 = v16;
+          if ( (v16 & 2) == 0 )
+            v17 = v16 - 3;
+          *dst = v17;
+          dst = (dst + stride);
+          --qty;
+          if ( v9 < 6 )
+          {
+            v18 = v6;
+            v6 = *v10;
+            v8 = v18 >> (6 - v9);
+            ++v10;
+            v9 += 26;
+          }
+          else
+          {
+            v8 >>= 6;
+            v9 -= 6;
+          }
+        }
+      }
+      else
+      {
+        *dst = ((v12 >> 1) & 2) - 1;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 3 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      goto LABEL_32;
+    }
+    if ( v9 < 2 )
+    {
+      v13 = v6;
+      v6 = *v10;
+      v8 = v13 >> (2 - v9);
+      ++v10;
+      v9 += 30;
+    }
+    else
+    {
+      v8 >>= 2;
+      v9 -= 2;
+    }
+    if ( (v12 & 2) != 0 )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --qty;
+      goto LABEL_32;
+    }
+    v14 = 8;
+    if ( qty < 8 )
+      v14 = qty;
+    for ( i = v14; i != 0; --i )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+    }
+    if ( qty < 8 )
+      break;
+    qty -= 8;
+LABEL_32:
+    if ( qty == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_34;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 8 - qty;
+}
+// 875E4C: conditional instruction was optimized away because %qty.4 is in (1..7)
+
+//----- (00875FD0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f63a(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  int v6; // ecx
+  unsigned int v7; // esi
+  unsigned int v8; // edx
+  unsigned int v9; // ecx
+  unsigned int *v10; // edi
+  int v12; // eax
+  int v13; // eax
+  int v14; // eax
+  int v15; // eax
+  int v16; // ecx
+  int v17; // eax
+  char v18; // cl
+  unsigned int v19; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = qty;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_24:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 6 )
+    {
+      v9 = qty;
+      v12 = v7 | (BITREAD_bits2 << v8);
+    }
+    else
+    {
+      LOBYTE(v12) = v7;
+    }
+    v13 = v12 & 0x3F;
+    if ( (v13 & 1) != 0 )
+    {
+      v16 = v13 >> 1;
+      v17 = v13 >> 3;
+      v18 = v16 & 3;
+      if ( (v17 & 4) == 0 )
+        v17 -= 7;
+      *dst = v17 << v18;
+      dst = (dst + stride);
+      --qty;
+      if ( v8 < 6 )
+      {
+        v19 = *v10;
+        v7 = BITREAD_bits2 >> (6 - v8);
+        ++v10;
+        BITREAD_bits2 = v19;
+        v8 += 26;
+      }
+      else
+      {
+        v7 >>= 6;
+        v8 -= 6;
+      }
+      v9 = qty;
+      goto LABEL_22;
+    }
+    if ( v8 < 4 )
+    {
+      v7 = BITREAD_bits2 >> (4 - v8);
+      BITREAD_bits2 = *v10;
+      v9 = qty;
+      ++v10;
+      v8 += 28;
+    }
+    else
+    {
+      v7 >>= 4;
+      v8 -= 4;
+    }
+    v14 = v13 & 0xF;
+    if ( v14 != 0 )
+    {
+      *dst = (v14 >> 1) - 4;
+      dst = (dst + stride);
+      qty = --v9;
+      goto LABEL_22;
+    }
+    v15 = 4;
+    if ( v9 >= 4 || (v15 = v9, v9 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+    }
+    if ( v9 < 4 )
+      break;
+    v9 -= 4;
+    qty = v9;
+LABEL_22:
+    if ( v9 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_24;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+  return 4 - v9;
+}
+
+//----- (00876140) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f63b(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  unsigned int v5; // ebx
+  _DWORD *v6; // edi
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int *v9; // edi
+  unsigned int v10; // eax
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // ecx
+  int v14; // edx
+  int v15; // edx
+  int v16; // edx
+  int v17; // ebx
+  unsigned int v18; // ecx
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_29:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 6 )
+      v11 = v8 | (BITREAD_bits2 << v10);
+    else
+      LOBYTE(v11) = v8;
+    v12 = v11 & 0x3F;
+    if ( (v12 & 1) != 0 )
+    {
+      if ( (v12 & 2) != 0 )
+      {
+        v17 = ((v12 >> 2) & 1) + 2;
+        v16 = v12 >> 3;
+        if ( v10 >= 6 )
+        {
+          v8 >>= 6;
+          v10 -= 6;
+          goto LABEL_24;
+        }
+        v8 = BITREAD_bits2 >> (6 - v10);
+        v18 = *v9++;
+        v10 += 26;
+      }
+      else
+      {
+        v16 = (v12 >> 2) & 7;
+        LOBYTE(v17) = 1;
+        if ( v10 >= 5 )
+        {
+          v8 >>= 5;
+          v10 -= 5;
+LABEL_24:
+          if ( (v16 & 4) == 0 )
+            v16 -= 7;
+          *dst = v16 << v17;
+          dst = (dst + stride);
+          v5 = --qty;
+          goto LABEL_27;
+        }
+        v8 = BITREAD_bits2 >> (5 - v10);
+        v18 = *v9++;
+        v10 += 27;
+      }
+      BITREAD_bits2 = v18;
+      goto LABEL_24;
+    }
+    if ( v10 < 5 )
+    {
+      v8 = BITREAD_bits2 >> (5 - v10);
+      v13 = *v9++;
+      BITREAD_bits2 = v13;
+      v10 += 27;
+    }
+    else
+    {
+      v8 >>= 5;
+      v10 -= 5;
+    }
+    v14 = v12 & 0x1F;
+    if ( v14 != 0 )
+    {
+      *dst = (v14 >> 1) - 8;
+      --v5;
+      dst = (dst + stride);
+      qty = v5;
+      goto LABEL_27;
+    }
+    v15 = 5;
+    if ( v5 >= 5 || (v15 = v5, v5 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        --v15;
+        dst = (dst + stride);
+      }
+      while ( v15 != 0 );
+    }
+    if ( v5 < 5 )
+      break;
+    v5 -= 5;
+    qty = v5;
+LABEL_27:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_29;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 5 - v5;
+}
+
+//----- (008762F0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f127(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  int v6; // ecx
+  unsigned int v7; // esi
+  unsigned int v8; // edx
+  unsigned int v9; // ecx
+  unsigned int *v10; // edi
+  int v12; // eax
+  int v13; // eax
+  int v14; // eax
+  int v15; // eax
+  int v16; // ecx
+  int v17; // eax
+  char v18; // cl
+  unsigned int v19; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = qty;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_24:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 6 )
+    {
+      v9 = qty;
+      v12 = v7 | (BITREAD_bits2 << v8);
+    }
+    else
+    {
+      LOBYTE(v12) = v7;
+    }
+    v13 = v12 & 0x3F;
+    if ( (v13 & 1) != 0 )
+    {
+      v16 = (v13 >> 1) & 3;
+      v17 = v13 >> 3;
+      v18 = v16 + 1;
+      if ( (v17 & 4) == 0 )
+        v17 -= 7;
+      *dst = v17 << v18;
+      dst = (dst + stride);
+      --qty;
+      if ( v8 < 6 )
+      {
+        v19 = *v10;
+        v7 = BITREAD_bits2 >> (6 - v8);
+        ++v10;
+        BITREAD_bits2 = v19;
+        v8 += 26;
+      }
+      else
+      {
+        v7 >>= 6;
+        v8 -= 6;
+      }
+      v9 = qty;
+      goto LABEL_22;
+    }
+    if ( v8 < 5 )
+    {
+      v7 = BITREAD_bits2 >> (5 - v8);
+      BITREAD_bits2 = *v10;
+      v9 = qty;
+      ++v10;
+      v8 += 27;
+    }
+    else
+    {
+      v7 >>= 5;
+      v8 -= 5;
+    }
+    v14 = v13 & 0x1F;
+    if ( v14 != 0 )
+    {
+      *dst = (v14 >> 1) - 8;
+      dst = (dst + stride);
+      qty = --v9;
+      goto LABEL_22;
+    }
+    v15 = 5;
+    if ( v9 >= 5 || (v15 = v9, v9 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+    }
+    if ( v9 < 5 )
+      break;
+    v9 -= 5;
+    qty = v9;
+LABEL_22:
+    if ( v9 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_24;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+  return 5 - v9;
+}
+
+//----- (00876460) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f255(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  int v6; // ecx
+  unsigned int v7; // esi
+  unsigned int v8; // edx
+  unsigned int *v9; // edi
+  int v11; // eax
+  int v12; // eax
+  unsigned int v13; // ecx
+  unsigned int v14; // ecx
+  int v15; // eax
+  unsigned int v16; // eax
+  unsigned int v17; // ecx
+  int v18; // eax
+  char v19; // cl
+  unsigned int v20; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_27:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 6 )
+      v11 = v7 | (BITREAD_bits2 << v8);
+    else
+      LOBYTE(v11) = v7;
+    v12 = v11 & 0x3F;
+    v13 = v12 & 7;
+    if ( v13 >= 2 )
+    {
+      v18 = v12 >> 3;
+      v19 = v13 - 2;
+      if ( (v18 & 4) == 0 )
+        v18 -= 7;
+      *dst = v18 << v19;
+      dst = (dst + stride);
+      --qty;
+      if ( v8 < 6 )
+      {
+        v20 = *v9;
+        v7 = BITREAD_bits2 >> (6 - v8);
+        ++v9;
+        BITREAD_bits2 = v20;
+        v8 += 26;
+      }
+      else
+      {
+        v7 >>= 6;
+        v8 -= 6;
+      }
+      goto LABEL_24;
+    }
+    if ( v8 < 5 )
+    {
+      v7 = BITREAD_bits2 >> (5 - v8);
+      v14 = *v9++;
+      BITREAD_bits2 = v14;
+      v8 += 27;
+    }
+    else
+    {
+      v7 >>= 5;
+      v8 -= 5;
+    }
+    v15 = v12 & 0x1F;
+    if ( v15 != 0 )
+    {
+      if ( (v15 & 1) != 0 )
+        *dst = v15 >> 3;
+      else
+        *dst = -(v15 >> 3);
+      dst = (dst + stride);
+      --qty;
+LABEL_24:
+      v17 = qty;
+      goto LABEL_25;
+    }
+    v16 = 5;
+    if ( qty >= 5 || (v16 = qty, qty != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v16;
+      }
+      while ( v16 != 0 );
+    }
+    if ( qty < 5 )
+      break;
+    v17 = qty - 5;
+    qty -= 5;
+LABEL_25:
+    if ( v17 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_27;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v8) >> 3) - 8);
+  return 5 - qty;
+}
+
+//----- (008765F0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f2047(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  int v6; // ecx
+  unsigned int v7; // esi
+  unsigned int v8; // edx
+  unsigned int v9; // ecx
+  unsigned int *v10; // edi
+  int v12; // eax
+  int v13; // eax
+  int v14; // eax
+  int v15; // eax
+  int v16; // ecx
+  int v17; // eax
+  char v18; // cl
+  unsigned int v19; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v5[1];
+  v7 = *v5 >> v6;
+  v8 = 32 - v6;
+  v9 = qty;
+  v10 = v5 + 2;
+  if ( !qty )
+  {
+LABEL_24:
+    v4->bitpos = -v8 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v8 < 7 )
+    {
+      v9 = qty;
+      v12 = v7 | (BITREAD_bits2 << v8);
+    }
+    else
+    {
+      LOBYTE(v12) = v7;
+    }
+    v13 = v12 & 0x7F;
+    if ( (v13 & 1) != 0 )
+    {
+      v16 = (v13 >> 1) & 7;
+      v17 = v13 >> 4;
+      v18 = v16 + 1;
+      if ( (v17 & 4) == 0 )
+        v17 -= 7;
+      *dst = v17 << v18;
+      dst = (dst + stride);
+      --qty;
+      if ( v8 < 7 )
+      {
+        v19 = *v10;
+        v7 = BITREAD_bits2 >> (7 - v8);
+        ++v10;
+        BITREAD_bits2 = v19;
+        v8 += 25;
+      }
+      else
+      {
+        v7 >>= 7;
+        v8 -= 7;
+      }
+      v9 = qty;
+      goto LABEL_22;
+    }
+    if ( v8 < 5 )
+    {
+      v7 = BITREAD_bits2 >> (5 - v8);
+      BITREAD_bits2 = *v10;
+      v9 = qty;
+      ++v10;
+      v8 += 27;
+    }
+    else
+    {
+      v7 >>= 5;
+      v8 -= 5;
+    }
+    v14 = v13 & 0x1F;
+    if ( v14 )
+    {
+      *dst = (v14 >> 1) - 8;
+      dst = (dst + stride);
+      qty = --v9;
+      goto LABEL_22;
+    }
+    v15 = 5;
+    if ( v9 >= 5 || (v15 = v9) != 0 )
+    {
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 );
+    }
+    if ( v9 < 5 )
+      break;
+    v9 -= 5;
+    qty = v9;
+LABEL_22:
+    if ( !v9 )
+    {
+      v4 = decoder;
+      goto LABEL_24;
+    }
+  }
+  decoder->bitpos = -v8 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v8) >> 3) - 8);
+  return 5 - v9;
+}
+
+//----- (00876760) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f15bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  unsigned int v5; // ebx
+  _DWORD *v6; // edi
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int *v9; // edi
+  unsigned int v10; // eax
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // ecx
+  unsigned int v14; // ecx
+  int v15; // edx
+  int v16; // edx
+  int v17; // edx
+  int v18; // edx
+  int v19; // ebx
+  unsigned int v20; // ecx
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_32:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 9 )
+      v11 = v8 | (BITREAD_bits2 << v10);
+    else
+      LOWORD(v11) = v8;
+    v12 = v11 & 0x1FF;
+    v13 = v12 & 7;
+    if ( v13 >= 2 )
+    {
+      if ( v13 == 7 )
+      {
+        v19 = ((v12 >> 3) & 7) + 5;
+        v18 = v12 >> 6;
+        if ( v10 >= 9 )
+        {
+          v8 >>= 9;
+          v10 -= 9;
+          goto LABEL_27;
+        }
+        v8 = BITREAD_bits2 >> (9 - v10);
+        v20 = *v9++;
+        v10 += 23;
+      }
+      else
+      {
+        v18 = (v12 >> 3) & 7;
+        LOBYTE(v19) = v13 - 2;
+        if ( v10 >= 6 )
+        {
+          v8 >>= 6;
+          v10 -= 6;
+LABEL_27:
+          if ( (v18 & 4) == 0 )
+            v18 -= 7;
+          *dst = v18 << v19;
+          dst = (dst + stride);
+          v5 = --qty;
+          goto LABEL_30;
+        }
+        v8 = BITREAD_bits2 >> (6 - v10);
+        v20 = *v9++;
+        v10 += 26;
+      }
+      BITREAD_bits2 = v20;
+      goto LABEL_27;
+    }
+    if ( v10 < 5 )
+    {
+      v8 = BITREAD_bits2 >> (5 - v10);
+      v14 = *v9++;
+      BITREAD_bits2 = v14;
+      v10 += 27;
+    }
+    else
+    {
+      v8 >>= 5;
+      v10 -= 5;
+    }
+    v15 = v12 & 0x1F;
+    if ( v15 != 0 )
+    {
+      if ( (v15 & 1) != 0 )
+        v17 = v15 >> 3;
+      else
+        v17 = -(v15 >> 3);
+      *dst = v17;
+      --v5;
+      dst = (dst + stride);
+      qty = v5;
+      goto LABEL_30;
+    }
+    v16 = 5;
+    if ( v5 >= 5 || (v16 = v5, v5 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        --v16;
+        dst = (dst + stride);
+      }
+      while ( v16 != 0 );
+    }
+    if ( v5 < 5 )
+      break;
+    v5 -= 5;
+    qty = v5;
+LABEL_30:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_32;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 5 - v5;
+}
+
+//----- (00876930) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f23bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  unsigned int v5; // ebx
+  _DWORD *v6; // edi
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int *v9; // edi
+  unsigned int v10; // eax
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // ecx
+  unsigned int v14; // ecx
+  int v15; // edx
+  int v16; // edx
+  int v17; // edx
+  int v18; // edx
+  int v19; // ebx
+  unsigned int v20; // ecx
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_32:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 0xA )
+      v11 = v8 | (BITREAD_bits2 << v10);
+    else
+      LOWORD(v11) = v8;
+    v12 = v11 & 0x3FF;
+    v13 = v12 & 7;
+    if ( v13 >= 2 )
+    {
+      if ( v13 == 7 )
+      {
+        v19 = ((v12 >> 3) & 0xF) + 5;
+        v18 = v12 >> 7;
+        if ( v10 >= 0xA )
+        {
+          v8 >>= 10;
+          v10 -= 10;
+          goto LABEL_27;
+        }
+        v8 = BITREAD_bits2 >> (10 - v10);
+        v20 = *v9++;
+        v10 += 22;
+      }
+      else
+      {
+        v18 = (v12 >> 3) & 7;
+        LOBYTE(v19) = v13 - 2;
+        if ( v10 >= 6 )
+        {
+          v8 >>= 6;
+          v10 -= 6;
+LABEL_27:
+          if ( (v18 & 4) == 0 )
+            v18 -= 7;
+          *dst = v18 << v19;
+          dst = (dst + stride);
+          v5 = --qty;
+          goto LABEL_30;
+        }
+        v8 = BITREAD_bits2 >> (6 - v10);
+        v20 = *v9++;
+        v10 += 26;
+      }
+      BITREAD_bits2 = v20;
+      goto LABEL_27;
+    }
+    if ( v10 < 5 )
+    {
+      v8 = BITREAD_bits2 >> (5 - v10);
+      v14 = *v9++;
+      BITREAD_bits2 = v14;
+      v10 += 27;
+    }
+    else
+    {
+      v8 >>= 5;
+      v10 -= 5;
+    }
+    v15 = v12 & 0x1F;
+    if ( v15 != 0 )
+    {
+      if ( (v15 & 1) != 0 )
+        v17 = v15 >> 3;
+      else
+        v17 = -(v15 >> 3);
+      *dst = v17;
+      --v5;
+      dst = (dst + stride);
+      qty = v5;
+      goto LABEL_30;
+    }
+    v16 = 5;
+    if ( v5 >= 5 || (v16 = v5, v5 != 0) )
+    {
+      do
+      {
+        *dst = 0;
+        --v16;
+        dst = (dst + stride);
+      }
+      while ( v16 != 0 );
+    }
+    if ( v5 < 5 )
+      break;
+    v5 -= 5;
+    qty = v5;
+LABEL_30:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_32;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 5 - v5;
+}
+
+//----- (00876B00) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_f31bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int *v10; // edi
+  int v11; // edx
+  unsigned int v12; // ecx
+  unsigned int v13; // esi
+  int v14; // ecx
+  unsigned int v15; // esi
+  int v16; // edx
+  char v17; // cl
+  unsigned int v18; // esi
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 8 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 0x1F;
+      if ( v12 == 2 )
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 5 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (5 - v9);
+          ++v10;
+          v9 += 27;
+        }
+        else
+        {
+          v8 >>= 5;
+          v9 -= 5;
+        }
+      }
+      else if ( v12 >= 2 )
+      {
+        v16 = v11 >> 5;
+        v17 = v12 - 3;
+        if ( (v16 & 4) == 0 )
+          v16 -= 7;
+        *dst = v16 << v17;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 8 )
+        {
+          v18 = v6;
+          v6 = *v10;
+          v8 = v18 >> (8 - v9);
+          ++v10;
+          v9 += 24;
+        }
+        else
+        {
+          v8 >>= 8;
+          v9 -= 8;
+        }
+      }
+      else
+      {
+        if ( (v11 & 1) != 0 )
+          v14 = ((v11 >> 5) & 3) + 1;
+        else
+          v14 = -1 - ((v11 >> 5) & 3);
+        *dst = v14;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 7 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (7 - v9);
+          ++v10;
+          v9 += 25;
+        }
+        else
+        {
+          v8 >>= 7;
+          v9 -= 7;
+        }
+      }
+    }
+    while ( qty != 0 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00876C70) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_15(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 5 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x1F;
+      v8 = v6 >> (5 - v9);
+      v6 = *v11++;
+      v9 += 27;
+    }
+    else
+    {
+      v12 = v8 & 0x1F;
+      v8 >>= 5;
+      v9 -= 5;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 16;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 5;
+    if ( v10 >= 5 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 5 )
+      break;
+    v10 -= 5;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 5 - v10;
+}
+
+//----- (00876DA0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_0_16(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int v11; // edi
+  unsigned int *v12; // esi
+  int v13; // ebx
+  int v14; // ebx
+  unsigned int v15; // eax
+  int v16; // ebx
+  int *v17; // ecx
+  unsigned int v18; // eax
+  unsigned int v19; // eax
+  int v21; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = qty;
+  v11 = *v5;
+  v12 = v5 + 1;
+  if ( qty == 0 )
+  {
+LABEL_28:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 7 )
+    {
+      v10 = qty;
+      v13 = v8 | (v11 << v9);
+    }
+    else
+    {
+      LOBYTE(v13) = v8;
+    }
+    v14 = v13 & 0x7F;
+    if ( (v14 & 1) != 0 )
+    {
+      if ( (v14 & 2) != 0 )
+      {
+        if ( v9 < 7 )
+        {
+          v19 = v11;
+          v11 = *v12;
+          v8 = v19 >> (7 - v9);
+          ++v12;
+          v9 += 25;
+        }
+        else
+        {
+          v8 >>= 7;
+          v9 -= 7;
+        }
+        v17 = dst;
+        *dst = (v14 >> 6) + (v14 >> 2) - 16;
+      }
+      else
+      {
+        if ( v9 < 2 )
+        {
+          v18 = v11;
+          v11 = *v12;
+          v8 = v18 >> (2 - v9);
+          v17 = dst;
+          ++v12;
+          v9 += 30;
+        }
+        else
+        {
+          v17 = dst;
+          v8 >>= 2;
+          v9 -= 2;
+        }
+        *dst = 0;
+      }
+      dst = (v17 + stride);
+      v10 = --qty;
+      goto LABEL_26;
+    }
+    if ( v9 != 0 )
+    {
+      v8 >>= 1;
+      --v9;
+    }
+    else
+    {
+      v15 = v11;
+      v11 = *v12;
+      v8 = v15 >> 1;
+      v10 = qty;
+      ++v12;
+      v9 = 31;
+    }
+    v16 = 4;
+    if ( v10 >= 4 || (v16 = v10, v10 != 0) )
+    {
+      v21 = v16;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v21;
+      }
+      while ( v21 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 4 )
+      break;
+    v10 -= 4;
+    qty = v10;
+LABEL_26:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_28;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v12 + ((32 - v9) >> 3) - 8);
+  return 4 - v10;
+}
+
+//----- (00876F30) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_0_1_17(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // edx
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // eax
+  unsigned int *v10; // edi
+  int v11; // edx
+  int v12; // edx
+  unsigned int v13; // esi
+  unsigned int v14; // ecx
+  unsigned int v15; // esi
+  int v16; // edx
+  int v17; // edx
+  unsigned int v18; // esi
+  unsigned int i; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_29:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 7 )
+      v11 = v8 | (v6 << v9);
+    else
+      LOBYTE(v11) = v8;
+    v12 = v11 & 0x7F;
+    if ( (v12 & 1) != 0 )
+    {
+      if ( (v12 & 2) != 0 )
+      {
+        v16 = v12 >> 2;
+        if ( (v16 & 0x10) != 0 )
+          v17 = v16 - 14;
+        else
+          v17 = v16 - 17;
+        *dst = v17;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 7 )
+        {
+          v18 = v6;
+          v6 = *v10;
+          v8 = v18 >> (7 - v9);
+          ++v10;
+          v9 += 25;
+        }
+        else
+        {
+          v8 >>= 7;
+          v9 -= 7;
+        }
+      }
+      else
+      {
+        *dst = ((v12 >> 1) & 2) - 1;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 3 )
+        {
+          v15 = v6;
+          v6 = *v10;
+          v8 = v15 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      goto LABEL_27;
+    }
+    if ( v9 < 2 )
+    {
+      v13 = v6;
+      v6 = *v10;
+      v8 = v13 >> (2 - v9);
+      ++v10;
+      v9 += 30;
+    }
+    else
+    {
+      v8 >>= 2;
+      v9 -= 2;
+    }
+    if ( (v12 & 2) != 0 )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --qty;
+      goto LABEL_27;
+    }
+    v14 = 8;
+    if ( qty < 8 )
+      v14 = qty;
+    for ( i = v14; i != 0; --i )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+    }
+    if ( qty < 8 )
+      break;
+    qty -= 8;
+LABEL_27:
+    if ( qty == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_29;
+    }
+  }
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  decoder->bitpos = -v9 & 7;
+  return 8 - qty;
+}
+// 876FC2: conditional instruction was optimized away because %qty.4 is in (1..7)
+
+//----- (00877100) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1_17(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // ebx
+  unsigned int *v5; // esi
+  int v6; // ecx
+  unsigned int v7; // eax
+  unsigned int v8; // eax
+  unsigned int v9; // edx
+  unsigned int v10; // edi
+  unsigned int *v11; // esi
+  int v12; // ebx
+  int v13; // ebx
+  int v14; // ecx
+  unsigned int v15; // eax
+  unsigned int v16; // eax
+  int v17; // ebx
+  bool v18; // zf
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v7 = *v5++;
+  v8 = v7 >> v6;
+  v9 = 32 - v6;
+  v10 = *v5;
+  v11 = v5 + 1;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 7 )
+        v12 = v8 | (v10 << v9);
+      else
+        LOBYTE(v12) = v8;
+      v13 = v12 & 0x7F;
+      if ( (v13 & 3) != 0 )
+      {
+        if ( v9 < 2 )
+        {
+          v15 = v10;
+          v10 = *v11;
+          v8 = v15 >> (2 - v9);
+          ++v11;
+          v9 += 30;
+        }
+        else
+        {
+          v8 >>= 2;
+          v9 -= 2;
+        }
+        v14 = (v13 & 3) - 2;
+      }
+      else
+      {
+        if ( v9 < 7 )
+        {
+          v16 = v10;
+          v10 = *v11;
+          v8 = v16 >> (7 - v9);
+          ++v11;
+          v9 += 25;
+        }
+        else
+        {
+          v8 >>= 7;
+          v9 -= 7;
+        }
+        v17 = v13 >> 2;
+        v14 = v17 - 14;
+        if ( (v17 & 0x10) == 0 )
+          v14 = v17 - 17;
+      }
+      *dst = v14;
+      v18 = qty == 1;
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( !v18 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00877200) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_31(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 6 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x3F;
+      v8 = v6 >> (6 - v9);
+      v6 = *v11++;
+      v9 += 26;
+    }
+    else
+    {
+      v12 = v8 & 0x3F;
+      v8 >>= 6;
+      v9 -= 6;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 32;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 6;
+    if ( v10 >= 6 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 6 )
+      break;
+    v10 -= 6;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 6 - v10;
+}
+
+//----- (00877330) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_0_1_33(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  unsigned int v12; // esi
+  unsigned int v13; // eax
+  unsigned int v14; // esi
+  int v15; // eax
+  int v16; // ecx
+  unsigned int v17; // esi
+  unsigned int i; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_28:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 8 )
+      v11 = v8 | (v6 << v9);
+    else
+      LOBYTE(v11) = v8;
+    if ( (v11 & 1) != 0 )
+    {
+      if ( (v11 & 2) != 0 )
+      {
+        v15 = v11 >> 2;
+        v16 = v15 - 30;
+        if ( (v15 & 0x20) == 0 )
+          v16 = v15 - 33;
+        *dst = v16;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 8 )
+        {
+          v17 = v6;
+          v6 = *v10;
+          v8 = v17 >> (8 - v9);
+          ++v10;
+          v9 += 24;
+        }
+        else
+        {
+          v8 >>= 8;
+          v9 -= 8;
+        }
+      }
+      else
+      {
+        *dst = ((v11 >> 1) & 2) - 1;
+        dst = (dst + stride);
+        --qty;
+        if ( v9 < 3 )
+        {
+          v14 = v6;
+          v6 = *v10;
+          v8 = v14 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      goto LABEL_26;
+    }
+    if ( v9 < 2 )
+    {
+      v12 = v6;
+      v6 = *v10;
+      v8 = v12 >> (2 - v9);
+      ++v10;
+      v9 += 30;
+    }
+    else
+    {
+      v8 >>= 2;
+      v9 -= 2;
+    }
+    if ( (v11 & 2) != 0 )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+      --qty;
+      goto LABEL_26;
+    }
+    v13 = 8;
+    if ( qty < 8 )
+      v13 = qty;
+    for ( i = v13; i != 0; --i )
+    {
+      *dst = 0;
+      dst = (dst + stride);
+    }
+    if ( qty < 8 )
+      break;
+    qty -= 8;
+LABEL_26:
+    if ( qty == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_28;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 8 - qty;
+}
+// 8773BE: conditional instruction was optimized away because %qty.4 is in (1..7)
+
+//----- (008774E0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_3_35(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // edi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // esi
+  unsigned int v9; // edx
+  unsigned int *v10; // edi
+  int v11; // eax
+  unsigned int v12; // ecx
+  unsigned int v13; // esi
+  unsigned int v14; // esi
+  unsigned int v15; // esi
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = v5 + 2;
+  if ( qty != 0 )
+  {
+    do
+    {
+      if ( v9 < 8 )
+        v11 = v8 | (v6 << v9);
+      else
+        LOBYTE(v11) = v8;
+      v12 = v11 & 7;
+      if ( v12 < 3 )
+      {
+        if ( (v11 & 2) != 0 )
+        {
+          *dst = (v11 & 8) != 0 ? 3 : -3;
+          if ( v9 < 4 )
+          {
+            v14 = v6;
+            v6 = *v10;
+            v8 = v14 >> (4 - v9);
+            ++v10;
+            v9 += 28;
+          }
+          else
+          {
+            v8 >>= 4;
+            v9 -= 4;
+          }
+        }
+        else
+        {
+          if ( (v11 & 1) != 0 )
+            *dst = (v11 >> 3) + 4;
+          else
+            *dst = -4 - (v11 >> 3);
+          if ( v9 < 8 )
+          {
+            v15 = v6;
+            v6 = *v10;
+            v8 = v15 >> (8 - v9);
+            ++v10;
+            v9 += 24;
+          }
+          else
+          {
+            v8 >>= 8;
+            v9 -= 8;
+          }
+        }
+      }
+      else
+      {
+        *dst = v12 - 5;
+        if ( v9 < 3 )
+        {
+          v13 = v6;
+          v6 = *v10;
+          v8 = v13 >> (3 - v9);
+          ++v10;
+          v9 += 29;
+        }
+        else
+        {
+          v8 >>= 3;
+          v9 -= 3;
+        }
+      }
+      dst = (dst + stride);
+      --qty;
+    }
+    while ( qty != 0 );
+    v4 = decoder;
+  }
+  v4->bitpos = -v9 & 7;
+  v4->ptr = reinterpret_cast<const unsigned char*>(v10 + ((32 - v9) >> 3) - 8);
+  return 0;
+}
+
+//----- (00877620) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_63(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 7 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x7F;
+      v8 = v6 >> (7 - v9);
+      v6 = *v11++;
+      v9 += 25;
+    }
+    else
+    {
+      v12 = v8 & 0x7F;
+      v8 >>= 7;
+      v9 -= 7;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 64;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 7;
+    if ( v10 >= 7 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 7 )
+      break;
+    v10 -= 7;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 7 - v10;
+}
+
+//----- (00877750) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_127(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 8 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9));
+      v8 = v6 >> (8 - v9);
+      v6 = *v11++;
+      v9 += 24;
+    }
+    else
+    {
+      v12 = v8;
+      v8 >>= 8;
+      v9 -= 8;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 128;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 8;
+    if ( v10 >= 8 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 8 )
+      break;
+    v10 -= 8;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 8 - v10;
+}
+
+//----- (00877880) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_255(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 9 )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x1FF;
+      v8 = v6 >> (9 - v9);
+      v6 = *v11++;
+      v9 += 23;
+    }
+    else
+    {
+      v12 = v8 & 0x1FF;
+      v8 >>= 9;
+      v9 -= 9;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 256;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 8;
+    if ( v10 >= 8 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 8 )
+      break;
+    v10 -= 8;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 8 - v10;
+}
+
+//----- (008779B0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_511(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 0xA )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x3FF;
+      v8 = v6 >> (10 - v9);
+      v6 = *v11++;
+      v9 += 22;
+    }
+    else
+    {
+      v12 = v8 & 0x3FF;
+      v8 >>= 10;
+      v9 -= 10;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 512;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 8;
+    if ( v10 >= 8 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 8 )
+      break;
+    v10 -= 8;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 8 - v10;
+}
+
+//----- (00877AE0) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_1023(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 0xB )
+    {
+      v10 = qty;
+      v12 = (v8 | (v6 << v9)) & 0x7FF;
+      v8 = v6 >> (11 - v9);
+      v6 = *v11++;
+      v9 += 21;
+    }
+    else
+    {
+      v12 = v8 & 0x7FF;
+      v8 >>= 11;
+      v9 -= 11;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 1024;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 8;
+    if ( v10 >= 8 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 8 )
+      break;
+    v10 -= 8;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 8 - v10;
+}
+
+//----- (00877C10) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_15bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  unsigned int v5; // ebx
+  _DWORD *v6; // esi
+  int v7; // ecx
+  unsigned int v8; // edi
+  _DWORD *v9; // esi
+  unsigned int v10; // edx
+  int v11; // eax
+  int v12; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+  unsigned int qtya; // [esp+24h] [ebp+14h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_15:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 < 0x10 )
+    {
+      ++v9;
+      LOWORD(v11) = v8 | (BITREAD_bits2 << v10);
+      v8 = BITREAD_bits2 >> (16 - v10);
+      v11 = v11;
+      BITREAD_bits2 = *(v9 - 1);
+      v10 += 16;
+    }
+    else
+    {
+      v11 = v8;
+      v8 >>= 16;
+      v10 -= 16;
+    }
+    if ( v11 != 0 )
+    {
+      *dst = v11 - 0x8000;
+      dst = (dst + stride);
+      --v5;
+      goto LABEL_13;
+    }
+    v12 = 8;
+    if ( v5 >= 8 || (v12 = v5, v5 != 0) )
+    {
+      qtya = v12;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --qtya;
+      }
+      while ( qtya != 0 );
+    }
+    if ( v5 < 8 )
+      break;
+    v5 -= 8;
+LABEL_13:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_15;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 8 - v5;
+}
+
+//----- (00877D30) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_23bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  _DWORD *v5; // esi
+  unsigned int v6; // ebx
+  int v7; // ecx
+  unsigned int v8; // edi
+  unsigned int v9; // edx
+  unsigned int v10; // ecx
+  unsigned int *v11; // esi
+  unsigned int v12; // eax
+  int v13; // eax
+  int v15; // [esp+Ch] [ebp-4h]
+
+  v4 = decoder;
+  v5 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v6 = v5[1];
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  v8 = *v5 >> v7;
+  v9 = 32 - v7;
+  v10 = qty;
+  v11 = v5 + 2;
+  if ( qty == 0 )
+  {
+LABEL_16:
+    v4->bitpos = -v9 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v9 < 0x18 )
+    {
+      v10 = qty;
+      v12 = 0xFFFFFFu & (v8 | (v6 << v9));
+      v8 = v6 >> (24 - v9);
+      v6 = *v11++;
+      v9 += 8;
+    }
+    else
+    {
+      v12 = 0xFFFFFFu & v8;
+      v8 >>= 24;
+      v9 -= 24;
+    }
+    if ( v12 != 0 )
+    {
+      *dst = v12 - 0x800000;
+      dst = (dst + stride);
+      v10 = --qty;
+      goto LABEL_14;
+    }
+    v13 = 8;
+    if ( v10 >= 8 || (v13 = v10, v10 != 0) )
+    {
+      v15 = v13;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --v15;
+      }
+      while ( v15 != 0 );
+      v10 = qty;
+    }
+    if ( v10 < 8 )
+      break;
+    v10 -= 8;
+    qty = v10;
+LABEL_14:
+    if ( v10 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_16;
+    }
+  }
+  decoder->bitpos = -v9 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v11 + ((32 - v9) >> 3) - 8);
+  return 8 - v10;
+}
+
+//----- (00877E60) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_31bit(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  nalEntropyDecoder::nalChannelDecoder *v4; // eax
+  unsigned int v5; // ebx
+  _DWORD *v6; // esi
+  int v7; // ecx
+  int v8; // edi
+  unsigned int *v9; // esi
+  int v10; // edx
+  int v11; // eax
+  int v12; // eax
+  unsigned int BITREAD_bits2; // [esp+Ch] [ebp-4h]
+  unsigned int qtya; // [esp+24h] [ebp+14h]
+
+  v4 = decoder;
+  v5 = qty;
+  v6 = ((reinterpret_cast<unsigned int*>((uintptr_t)decoder->ptr & ~uintptr_t(3))));
+  v7 = decoder->bitpos + 8 * (((uintptr_t)decoder->ptr & 3u));
+  BITREAD_bits2 = v6[1];
+  v8 = *v6 >> v7;
+  v9 = v6 + 2;
+  v10 = 32 - v7;
+  if ( qty == 0 )
+  {
+LABEL_15:
+    v4->bitpos = -v10 & 7;
+    v4->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+    return 0;
+  }
+  while ( 1 )
+  {
+    if ( v10 == 32 )
+    {
+      v11 = v8;
+      v8 = 0;
+      v10 = 0;
+    }
+    else
+    {
+      v11 = v8 | (BITREAD_bits2 << v10);
+      v8 = BITREAD_bits2 >> 1 >> (31 - v10);
+      BITREAD_bits2 = *v9++;
+    }
+    if ( v11 != 0x80000000 )
+    {
+      *dst = v11;
+      dst = (dst + stride);
+      --v5;
+      goto LABEL_13;
+    }
+    v12 = 8;
+    if ( v5 >= 8 || (v12 = v5, v5 != 0) )
+    {
+      qtya = v12;
+      do
+      {
+        *dst = 0;
+        dst = (dst + stride);
+        --qtya;
+      }
+      while ( qtya != 0 );
+    }
+    if ( v5 < 8 )
+      break;
+    v5 -= 8;
+LABEL_13:
+    if ( v5 == 0 )
+    {
+      v4 = decoder;
+      goto LABEL_15;
+    }
+  }
+  decoder->bitpos = -v10 & 7;
+  decoder->ptr = reinterpret_cast<const unsigned char*>(v9 + ((32 - v10) >> 3) - 8);
+  return 8 - v5;
+}
+
+//----- (00877F70) --------------------------------------------------------
+unsigned int __cdecl ChannelDecoder_err(
+        nalEntropyDecoder::nalChannelDecoder *decoder,
+        int *dst,
+        unsigned int stride,
+        unsigned int qty)
+{
+  unsigned int i; // ecx
+
+  for ( i = qty; i != 0; --i )
+  {
+    *dst = 0;
+    dst = (dst + stride);
+  }
+  return 0;
+}
+#undef LOWORD
+#undef LOBYTE
+
+nalEntropyDecoder::nalChannelDecoder::DecoderFunction
+nalEntropyDecoder::nalChannelDecoder::DecoderTable[64] =
+{
+    &ChannelDecoder_0,
+    &ChannelDecoder_1a,
+    &ChannelDecoder_1b,
+    &ChannelDecoder_1c,
+    &ChannelDecoder_1d,
+    &ChannelDecoder_1e,
+    &ChannelDecoder_2a,
+    &ChannelDecoder_2b,
+    &ChannelDecoder_2c,
+    &ChannelDecoder_3a,
+    &ChannelDecoder_3b,
+    &ChannelDecoder_5a,
+    &ChannelDecoder_7a,
+    &ChannelDecoder_7b,
+    &ChannelDecoder_7c,
+    &ChannelDecoder_f15a,
+    &ChannelDecoder_f15b,
+    &ChannelDecoder_f15c,
+    &ChannelDecoder_f31a,
+    &ChannelDecoder_f31b,
+    &ChannelDecoder_f31c,
+    &ChannelDecoder_f31d,
+    &ChannelDecoder_f63a,
+    &ChannelDecoder_f63b,
+    &ChannelDecoder_f127,
+    &ChannelDecoder_f255,
+    &ChannelDecoder_f2047,
+    &ChannelDecoder_f15bit,
+    &ChannelDecoder_f23bit,
+    &ChannelDecoder_f31bit,
+    &ChannelDecoder_err,
+    &ChannelDecoder_err,
+    &ChannelDecoder_0,
+    &ChannelDecoder_1a,
+    &ChannelDecoder_1b,
+    &ChannelDecoder_1c,
+    &ChannelDecoder_1d,
+    &ChannelDecoder_1e,
+    &ChannelDecoder_2a,
+    &ChannelDecoder_2b,
+    &ChannelDecoder_2c,
+    &ChannelDecoder_3a,
+    &ChannelDecoder_3b,
+    &ChannelDecoder_5a,
+    &ChannelDecoder_7a,
+    &ChannelDecoder_7b,
+    &ChannelDecoder_7c,
+    &ChannelDecoder_15,
+    &ChannelDecoder_0_16,
+    &ChannelDecoder_0_1_17,
+    &ChannelDecoder_1_17,
+    &ChannelDecoder_31,
+    &ChannelDecoder_0_1_33,
+    &ChannelDecoder_3_35,
+    &ChannelDecoder_63,
+    &ChannelDecoder_127,
+    &ChannelDecoder_255,
+    &ChannelDecoder_511,
+    &ChannelDecoder_1023,
+    &ChannelDecoder_15bit,
+    &ChannelDecoder_23bit,
+    &ChannelDecoder_31bit,
+    &ChannelDecoder_err,
+    &ChannelDecoder_err
+};
+
+void nalEntropyDecoder::nalChannelDecoder::Decode(
+    int* dst, unsigned int stride, unsigned int qty)
+{
+    unsigned int remaining = qty;
+    nalChannelDecoder* decoderState = this;
+    const unsigned short zeroesCount = zeroes;
+    if (zeroesCount != 0)
+    {
+        unsigned short zeroesToWrite = zeroesCount;
+        if (qty >= zeroesToWrite)
+        {
+            remaining = qty - zeroesToWrite;
+            decoderState->zeroes = 0;
+        }
+        else
+        {
+            zeroesToWrite = static_cast<unsigned short>(qty);
+            remaining = 0;
+            decoderState->zeroes =
+                static_cast<unsigned short>(zeroesCount - qty);
+        }
+        for (unsigned short i = 0; i < zeroesToWrite; ++i)
+        {
+            *dst = 0;
+            dst += stride;
+        }
+    }
+    if (remaining != 0)
+        decoderState->zeroes = DecoderTable[decoderState->decoder](
+            decoderState, dst, stride, remaining);
+}
+
+void nalEntropyDecoder::nalFloatDecoder::Decode(
+    float* dst, unsigned int stride, unsigned int qty, float scale)
+{
+    unsigned int remaining = qty;
+    nalFloatDecoder* decoderState = this;
+    float* current = dst;
+    if (qty == 0)
+        return;
+
+    const signed char decoder = static_cast<signed char>(channel.decoder);
+    if (decoder >= 0)
+    {
+        if (scale < 0.0f)
+            scale = -scale;
+        goto decode_delta;
+    }
+
+    if (decoder == -1)
+    {
+        const std::uint32_t* words = reinterpret_cast<const std::uint32_t*>(
+            reinterpret_cast<std::uintptr_t>(channel.ptr) & ~std::uintptr_t(3));
+        std::uint32_t nextWord = words[1];
+        int bitsAvailable = channel.bitpos
+                            + 8 * static_cast<int>(
+                                reinterpret_cast<std::uintptr_t>(channel.ptr) & 3);
+        int bitsInWord = 32 - bitsAvailable;
+        std::uint32_t bits = words[0] >> bitsAvailable;
+        const std::uint32_t* cursor = words + 2;
+        unsigned char code;
+        std::uint32_t valueBits;
+        int bitCount;
+
+        if (bitsInWord < 5)
+        {
+            code = static_cast<unsigned char>((bits | (nextWord << bitsInWord))
+                                               & 0x1Fu);
+            ++cursor;
+            valueBits = nextWord >> (5 - bitsInWord);
+            nextWord = *(cursor - 1);
+            bitCount = bitsInWord + 27;
+        }
+        else
+        {
+            code = static_cast<unsigned char>(bits & 0x1Fu);
+            valueBits = bits >> 5;
+            bitCount = bitsInWord - 5;
+        }
+
+        float firstScale = scale;
+        channel.decoder = code;
+        if (scale < 0.0f)
+        {
+            channel.decoder = static_cast<unsigned char>(code + 32);
+            scale = -scale;
+            firstScale = -firstScale;
+        }
+
+        int sign;
+        std::uint32_t magnitude;
+        int valueBitCount;
+        if (bitCount != 0)
+        {
+            sign = static_cast<int>(valueBits & 1);
+            magnitude = valueBits >> 1;
+            valueBitCount = bitCount - 1;
+        }
+        else
+        {
+            sign = static_cast<int>((valueBits | nextWord) & 1);
+            ++cursor;
+            magnitude = nextWord >> 1;
+            nextWord = *(cursor - 1);
+            valueBitCount = 31;
+        }
+
+        int firstValue;
+        std::uint32_t remainderBits;
+        if (sign != 0)
+        {
+            if (valueBitCount == 32)
+            {
+                firstValue = static_cast<int>(magnitude);
+                remainderBits = 0;
+                valueBitCount = 0;
+            }
+            else
+            {
+                firstValue = static_cast<int>(magnitude | (nextWord << valueBitCount));
+                ++cursor;
+                remainderBits = nextWord >> 1 >> (31 - valueBitCount);
+                nextWord = *(cursor - 1);
+            }
+        }
+        else
+        {
+            if (valueBitCount < 16)
+            {
+                firstValue = static_cast<int>(magnitude | (nextWord << valueBitCount));
+                ++cursor;
+                remainderBits = nextWord >> (16 - valueBitCount);
+                nextWord = *(cursor - 1);
+                valueBitCount += 16;
+            }
+            else
+            {
+                firstValue = static_cast<int>(magnitude);
+                remainderBits = magnitude >> 16;
+                valueBitCount -= 16;
+            }
+            firstValue -= 0x8000;
+        }
+
+        val_2 = firstValue;
+        int secondValue;
+        int secondBitCount;
+        if ((channel.decoder & 0x20u) != 0)
+        {
+            int secondSign;
+            std::uint32_t secondMagnitude;
+            if (valueBitCount != 0)
+            {
+                secondSign = static_cast<int>(remainderBits & 1);
+                secondMagnitude = remainderBits >> 1;
+                secondBitCount = valueBitCount - 1;
+            }
+            else
+            {
+                secondSign = static_cast<int>((remainderBits | nextWord) & 1);
+                ++cursor;
+                secondMagnitude = nextWord >> 1;
+                nextWord = *(cursor - 1);
+                secondBitCount = 31;
+            }
+            if (secondSign != 0)
+            {
+                if (secondBitCount == 32)
+                {
+                    secondValue = static_cast<int>(secondMagnitude);
+                    secondBitCount = 0;
+                }
+                else
+                {
+                    secondValue = static_cast<int>(secondMagnitude
+                                                   | (nextWord << secondBitCount));
+                    ++cursor;
+                }
+            }
+            else if (secondBitCount < 16)
+            {
+                const std::uint32_t shifted = nextWord << secondBitCount;
+                ++cursor;
+                secondBitCount += 16;
+                secondValue = static_cast<int>(secondMagnitude | shifted) - 0x8000;
+            }
+            else
+            {
+                secondBitCount -= 16;
+                secondValue = static_cast<int>(secondMagnitude) - 0x8000;
+            }
+        }
+        else
+        {
+            const int packed = valueBitCount < 12
+                ? static_cast<int>((remainderBits | (nextWord << valueBitCount))
+                                   & 0xFFFu)
+                : static_cast<int>(remainderBits & 0xFFFu);
+            if ((packed & 0x1F) != 0)
+            {
+                if ((packed & 1) != 0)
+                {
+                    const int offset = packed >> 1;
+                    const int shiftCode = (packed >> 5) & 7;
+                    const int shift = (offset & 0xF) + 1;
+                    int signedCode = shiftCode;
+                    if ((shiftCode & 4) == 0)
+                        signedCode = shiftCode - 7;
+                    secondValue = signedCode << shift;
+                    if (valueBitCount < 8)
+                    {
+                        ++cursor;
+                        secondBitCount = valueBitCount + 24;
+                    }
+                    else
+                        secondBitCount = valueBitCount - 8;
+                }
+                else
+                {
+                    secondValue = ((packed >> 1) & 0xF) - 8;
+                    if (valueBitCount < 5)
+                    {
+                        ++cursor;
+                        secondBitCount = valueBitCount + 27;
+                    }
+                    else
+                        secondBitCount = valueBitCount - 5;
+                }
+            }
+            else
+            {
+                const int shiftCode = (packed >> 5) & 0xF;
+                const int valueCode = packed >> 9;
+                const int shift = shiftCode + 17;
+                int signedCode = valueCode;
+                if ((valueCode & 4) == 0)
+                    signedCode = valueCode - 7;
+                secondValue = signedCode << shift;
+                if (valueBitCount < 12)
+                {
+                    ++cursor;
+                    secondBitCount = valueBitCount + 20;
+                }
+                else
+                    secondBitCount = valueBitCount - 12;
+            }
+        }
+
+        val_1 = val_2 + secondValue;
+        channel.bitpos = static_cast<unsigned char>(-secondBitCount & 7);
+        channel.ptr = reinterpret_cast<const unsigned char*>(
+            cursor + ((32 - secondBitCount) >> 3) - 8);
+        *dst = val_2 * firstScale;
+        if (qty == 1)
+        {
+            channel.decoder = static_cast<unsigned char>(channel.decoder | 0x80u);
+            return;
+        }
+        *(dst + stride) = val_1 * firstScale;
+        current = dst + stride + stride;
+        remaining = qty - 2;
+        if (qty == 2)
+            return;
+
+    decode_delta:
+        channel.Decode(reinterpret_cast<int*>(current), stride, remaining);
+        int previous = val_2;
+        int currentValue = val_1;
+        for (unsigned int i = remaining; i != 0; --i)
+        {
+            const int decoded = *reinterpret_cast<int*>(current)
+                                + 2 * currentValue - previous;
+            previous = currentValue;
+            currentValue = decoded;
+            *current = decoded * scale;
+            current += stride;
+        }
+        val_2 = previous;
+        val_1 = currentValue;
+        return;
+    }
+
+    float continuationScale = scale;
+    if (scale < 0.0f)
+    {
+        scale = -scale;
+        continuationScale = -continuationScale;
+    }
+    *dst = val_1 * continuationScale;
+    current = dst + stride;
+    remaining = qty - 1;
+    channel.decoder = static_cast<unsigned char>(channel.decoder & ~0x80u);
+    if (qty != 1)
+        goto decode_delta;
 }
