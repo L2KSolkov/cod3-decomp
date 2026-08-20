@@ -9,6 +9,19 @@
 extern float sNaN;  // ?sNaN@@3MA @ 0x10F19D0
 extern const char defaultFileName[];  // 0xCD67AE
 
+// ea: 0x005ADFE0
+LightPanelQuad::LightPanelQuad()
+{
+    Z = 0.0f;
+}
+
+// ea: 0x005ADFB0
+PanelMaterial::PanelMaterial()
+{
+    color.i = 0;
+    texture = nullptr;
+}
+
 // ============================================================================
 // PanelQuadSection bounds
 // ============================================================================
@@ -67,6 +80,96 @@ void PanelQuadSection::AddPQSection(Broc::vector* xy, Broc::vector* uv,
     quad.Z = z;
 }
 
+// ea: 0x005AE000
+void PanelQuadSection::SetX(int index, float x)
+{
+    quad.Verts[index].X = x;
+}
+
+// ea: 0x005AE020
+void PanelQuadSection::SetY(int index, float y)
+{
+    quad.Verts[index].Y = y;
+}
+
+// ea: 0x005AE040
+void PanelQuadSection::SetU(int index, float u)
+{
+    quad.Verts[index].U = u;
+}
+
+// ea: 0x005AE060
+void PanelQuadSection::SetV(int index, float v)
+{
+    quad.Verts[index].V = v;
+}
+
+// ea: 0x005AE080
+void PanelQuadSection::SetCol(int index, unsigned int c)
+{
+    quad.Verts[index].Color = c;
+}
+
+// ea: 0x005AE0A0
+void PanelQuadSection::SetTex(nglTexture* t)
+{
+    quad.Tex = t;
+}
+
+// ea: 0x005AE0B0
+void PanelQuadSection::SetTexture(nglTexture* tex)
+{
+    quad.Tex = tex;
+}
+
+// ea: 0x005AE0C0
+void PanelQuadSection::SetZ(float z)
+{
+    quad.Z = z;
+}
+
+// ea: 0x005AE0E0
+nglTexture* PanelQuadSection::GetTexture()
+{
+    return quad.Tex;
+}
+
+// ea: 0x005AE0F0
+float PanelQuadSection::GetX(int index)
+{
+    return quad.Verts[index].X;
+}
+
+// ea: 0x005AE110
+float PanelQuadSection::GetY(int index)
+{
+    return quad.Verts[index].Y;
+}
+
+// ea: 0x005AE130
+float PanelQuadSection::GetU(int index)
+{
+    return quad.Verts[index].U;
+}
+
+// ea: 0x005AE150
+float PanelQuadSection::GetV(int index)
+{
+    return quad.Verts[index].V;
+}
+
+// ea: 0x005AE170
+float PanelQuadSection::GetZ()
+{
+    return quad.Z;
+}
+
+// ea: 0x005AE180
+unsigned int PanelQuadSection::GetCol(int index)
+{
+    return quad.Verts[index].Color;
+}
+
 // ea: 0x00569AB0
 void PanelQuadSection::SetColorVert(int i, color32 c)
 {
@@ -87,6 +190,98 @@ color32 PanelQuadSection::GetColor(int index)
     color32 result;
     result.i = quad.Verts[index].Color;
     return result;
+}
+
+// ea: 0x005AE1A0
+float PanelQuad::Maximum(float a, float b)
+{
+    return a <= b ? b : a;
+}
+
+// ea: 0x005AE1D0
+float PanelQuad::Minimum(float a, float b)
+{
+    return b <= a ? b : a;
+}
+
+// ea: 0x005AE200
+float PanelQuad::Maximum(float a, float b, float c, float d)
+{
+    float cd = c > d ? c : d;
+    float ab = a <= b ? b : a;
+    return ab <= cd ? cd : ab;
+}
+
+// ea: 0x005AE250
+float PanelQuad::Minimum(float a, float b, float c, float d)
+{
+    float cd = d <= c ? d : c;
+    float ab = b > a ? a : b;
+    return cd <= ab ? cd : ab;
+}
+
+// ea: 0x005AE2A0
+PanelQuadFader::PanelQuadFader()
+    : mQuad(nullptr), mAlphaTo(1.0f), mTime(0.0f), mAlphaDelta(0.0f),
+      mAlpha(0.0f), mFading(false)
+{
+}
+
+// ea: 0x005AE2E0
+void PanelQuadFader::SetQuad(PanelQuad* quad)
+{
+    mQuad = quad;
+}
+
+// ea: 0x005AE2F0
+void PanelQuadFader::Fade(float from, float to, float time)
+{
+    if (mQuad != nullptr)
+    {
+        mAlpha = from;
+        mAlphaTo = to;
+        mFading = true;
+        mTime = time;
+        mAlphaDelta = fabsf(from - to);
+        mQuad->SetAlpha(from);
+    }
+    else
+    {
+        mFading = false;
+    }
+}
+
+// ea: 0x005AE360
+void PanelQuadFader::Update(float time_delta)
+{
+    if (mQuad == nullptr || !mFading)
+        return;
+
+    float next_alpha;
+    bool moving_toward_target;
+    if (mAlphaTo <= mAlpha)
+    {
+        if (mAlpha <= mAlphaTo)
+        {
+            mQuad->SetAlpha(mAlpha);
+            return;
+        }
+        next_alpha = mAlpha - ((time_delta / mTime) * mAlphaDelta);
+        moving_toward_target = mAlphaTo < next_alpha;
+    }
+    else
+    {
+        next_alpha = ((time_delta / mTime) * mAlphaDelta) + mAlpha;
+        moving_toward_target = next_alpha < mAlphaTo;
+    }
+
+    mAlpha = next_alpha;
+    if (!moving_toward_target)
+    {
+        mAlpha = mAlphaTo;
+        mFading = false;
+    }
+    mQuad->SetAlpha(mAlpha);
 }
 
 // ea: 0x00569C60

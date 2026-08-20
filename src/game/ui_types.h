@@ -280,6 +280,26 @@ static_assert(offsetof(PanelAnimObject, visibility) == 0x04, "PanelAnimObject::v
 // ============================================================================
 class PanelQuadSection;
 
+struct LightPanelQuad {
+    struct Vertex {
+        float X;
+        float Y;
+        float U;
+        float V;
+        unsigned int Color;
+    };
+
+    Vertex Verts[4];
+    float Z;
+    nglTexture* Tex;
+
+    LightPanelQuad();
+};
+static_assert(sizeof(LightPanelQuad::Vertex) == 20,
+              "LightPanelQuad::Vertex size mismatch");
+static_assert(sizeof(LightPanelQuad) == 88,
+              "LightPanelQuad size mismatch");
+
 // ============================================================================
 // PQArcMaskingInfo - quad arc-mask data (52 bytes) - verified against IDA
 // ============================================================================
@@ -410,6 +430,10 @@ public:
     virtual void SetXYInitialToCurrentPos();       // slot 54 0x57A8A0
 
     static PanelQuad* Clone(PanelQuad* pPQ);  // ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0x58C450
+    static float Maximum(float a, float b);
+    static float Minimum(float a, float b);
+    static float Maximum(float a, float b, float c, float d);
+    static float Minimum(float a, float b, float c, float d);
     void Mask(float percent, mask_type maskType,
               float uv_width);  // ?Mask@PanelQuad@@QAEXMW4mask_type@@M@Z 0x579C40
     void SetBlend(unsigned int type);          // 0x56AB80
@@ -444,11 +468,7 @@ public:
     bool        wrapu;           // +0x0E
     bool        wrapv;           // +0x0F
 
-    PanelMaterial() : texture(nullptr), filename(nullptr), hasmap(false),
-                      bilinearfilter(false), wrapu(false), wrapv(false)
-    {
-        color.i = 0;
-    }
+    PanelMaterial();  // shell.o 0x5ADFB0
 };
 static_assert(sizeof(PanelMaterial) == 0x10, "PanelMaterial size mismatch");
 
@@ -457,18 +477,8 @@ static_assert(sizeof(PanelMaterial) == 0x10, "PanelMaterial size mismatch");
 // ============================================================================
 class PanelQuadSection {
 public:
-    struct PQVert {
-        float        X;      // +0x00
-        float        Y;      // +0x04
-        float        U;      // +0x08
-        float        V;      // +0x0C
-        unsigned int Color;  // +0x10
-    };
-    struct QuadData {
-        PQVert Verts[4];  // +0x00 (80 bytes)
-        float  Z;         // +0x50
-        nglTexture* Tex;  // +0x54
-    };
+    using PQVert = LightPanelQuad::Vertex;
+    using QuadData = LightPanelQuad;
 
     short    x_initial[4];  // +0x00
     short    y_initial[4];  // +0x08
@@ -500,6 +510,21 @@ public:
     void Fatten(float fatten_width);               // shell.o 0x579930
     void AddPQSection(Broc::vector* xy, Broc::vector* uv, color32* col,
                       float z);                    // shell.o 0x579550
+    void SetX(int index, float x);                  // shell.o 0x5AE000
+    void SetY(int index, float y);                  // shell.o 0x5AE020
+    void SetU(int index, float u);                  // shell.o 0x5AE040
+    void SetV(int index, float v);                  // shell.o 0x5AE060
+    void SetCol(int index, unsigned int c);         // shell.o 0x5AE080
+    void SetTex(nglTexture* t);                     // shell.o 0x5AE0A0
+    void SetTexture(nglTexture* tex);               // shell.o 0x5AE0B0
+    void SetZ(float z);                             // shell.o 0x5AE0C0
+    nglTexture* GetTexture();                       // shell.o 0x5AE0E0
+    float GetX(int index);                          // shell.o 0x5AE0F0
+    float GetY(int index);                          // shell.o 0x5AE110
+    float GetU(int index);                          // shell.o 0x5AE130
+    float GetV(int index);                          // shell.o 0x5AE150
+    float GetZ();                                   // shell.o 0x5AE170
+    unsigned int GetCol(int index);                 // shell.o 0x5AE180
     void SetColorVert(int i, color32 c);           // shell.o 0x569AB0
     void SetColorNAVert(int i, color32 c);         // shell.o 0x579800
     void SetAlphaVert(int i, float alpha);         // shell.o 0x579840
@@ -1794,6 +1819,11 @@ struct PanelQuadFader {
     float      mAlpha;       // +0x10
     bool       mFading;      // +0x14
     uint8_t    _pad15[3];    // +0x15
+
+    PanelQuadFader();
+    void SetQuad(PanelQuad* quad);
+    void Fade(float from, float to, float time);
+    void Update(float time_delta);
 };
 static_assert(sizeof(PanelQuadFader) == 0x18,
               "PanelQuadFader size mismatch");
