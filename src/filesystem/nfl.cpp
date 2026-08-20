@@ -825,12 +825,14 @@ unsigned nflInit(const nflInitParams* params)
     if (params != nullptr) s_initParams = *params;
     for (int index = 0; index < s_nfsDriversCount; ++index) {
         nfdDriver* driver = s_nfsDrivers[index];
-        if (driver == nullptr || driver->init == nullptr) continue;
+        if (driver == nullptr || driver->init == nullptr)
+            txAssertFailed(nullptr, "driver&&driver->init", "nflInit",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 349);
         if (s_initParams.bufferMode != (nflBufferMode)-1)
             driver->init->bufferMode = s_initParams.bufferMode;
         if (driver->init->fnInit != nullptr) {
             nfsMessage("nflInit: Initializing driver #%d: %s", index,
-                       driver->name != nullptr ? driver->name : "");
+                       driver->name);
             driver->init->fnInit(driver);
         }
     }
@@ -855,7 +857,8 @@ unsigned nflInit(const nflInitParams* params)
 void nflStart(void* work)
 {
     if (work == nullptr) {
-        nfsError("nflStart: work is required");
+        txAssertFailed(nullptr, "work", "nflStart",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1269);
         return;
     }
     if (s_started) return;
@@ -866,9 +869,11 @@ void nflStart(void* work)
                    (int)s_initParams.maxStreams, sizeof(nfsStream));
     txSlotPoolInit(&s_filePool, &s_files[0].slotEntry,
                    (int)s_initParams.maxFiles, sizeof(nfsFile));
-    s_defaultStreamID = AllocateStream();
-    nfsStream* defaultStream = nfsGetStream(s_defaultStreamID);
-    if (defaultStream != nullptr) defaultStream->priority = NFL_PRIORITY_NORMAL;
+    s_defaultStreamID = (nflStreamID)txSlotNew(&s_streamPool);
+    nflSetStreamPriority(s_defaultStreamID, NFL_PRIORITY_NORMAL);
+    if (s_defaultStreamID == NFL_STREAM_ID_INVALID)
+        txAssertFailed(nullptr, "nfs_defaultStreamID!=NFL_STREAM_ID_INVALID",
+                       "nflStart", "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1311);
 #ifdef _WIN32
     if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI) {
         if (s_nfsMutex == nullptr) s_nfsMutex = CreateMutexA(nullptr, FALSE, nullptr);
