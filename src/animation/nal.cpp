@@ -9832,6 +9832,137 @@ void nalComponentPacked8EntropyFloat3::ComponentConvert(
         (float)srcPtr->x * scale + bias);
 }
 
+// ?PartialDecode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked8EntropyFloat3Data@@VnalComponentPacked8EntropyFloat3@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z
+// (nal_init.o 0x859620)
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked8EntropyFloat3Data,
+                  nalComponentPacked8EntropyFloat3>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    nalComponentPacked8EntropyFloat3Data::AnimData* animData =
+        (nalComponentPacked8EntropyFloat3Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (char*)animData + 4;
+    void* skeletonData = (void*)*customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked8EntropyFloat3::ComponentPartialDecode(
+                (nalComponentPacked8EntropyFloat3Data::StateType*)state,
+                (nalComponentPacked8EntropyFloat3Data::CacheType*)dst,
+                (float*)work, offset, (unsigned int)quantity, stride,
+                (nalComponentData::SkeletonData*)skeletonData, animData,
+                (nalComponentPacked8EntropyFloat3Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            state = (char*)state + 48;
+            dst = (char*)dst + 3;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 12;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ?Decode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked8EntropyFloat3Data@@VnalComponentPacked8EntropyFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z
+// (nal_init.o 0x859930)
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked8EntropyFloat3Data,
+                  nalComponentPacked8EntropyFloat3>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    nalComponentPacked8EntropyFloat3Data::AnimData* animData =
+        (nalComponentPacked8EntropyFloat3Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (char*)animData + 4;
+    void* skeletonData = (void*)*customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked8EntropyFloat3::ComponentDecode(
+                (nalComponentPacked8EntropyFloat3Data::CacheType*)dst,
+                (const unsigned char**)&src, (unsigned int)quantity, stride,
+                (nalComponentData::SkeletonData*)skeletonData, animData,
+                (nalComponentPacked8EntropyFloat3Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            dst = (char*)dst + 3;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 12;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ?Convert@?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked8EntropyFloat3Data@@VnalComponentPacked8EntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x859dd0)
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked8EntropyFloat3Data,
+                  nalComponentPacked8EntropyFloat3>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    nalComponentPacked8EntropyFloat3Data::AnimData* animData =
+        (nalComponentPacked8EntropyFloat3Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (char*)animData + 4;
+    void* skeletonData = (void*)*customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int outputOffset = offsetTable[track];
+        if (outputOffset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 3;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked8EntropyFloat3::ComponentConvert(
+                (math::Dir3*)((char*)dst + outputOffset),
+                (const nalComponentPacked8EntropyFloat3Data::CacheType*)src,
+                (nalComponentData::SkeletonData*)skeletonData, animData,
+                (nalComponentPacked8EntropyFloat3Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            src = (const char*)src + 3;
+        }
+        else
+        {
+            *(math::Dir3*)((char*)dst + outputOffset) =
+                *(const math::Dir3*)((const char*)def + outputOffset);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 12;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ?PartialDecode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z
 // (nal_init.o 0x858a60)
 template <>
