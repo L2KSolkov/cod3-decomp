@@ -1035,6 +1035,8 @@ public:
     static nalPositionOrientation Identity;
 
     void operator*=(const nalPositionOrientation& rhs);  // ??XnalPositionOrientation@@QAEXABV0@@Z (0x560010)
+    // ?Inverse@nalPositionOrientation@@QBE?AV1@XZ (nal_generic_component.o 0x872F50)
+    nalPositionOrientation Inverse() const;
 };
 
 static nalPositionOrientation nalMakeIdentityPositionOrientation()
@@ -14369,6 +14371,34 @@ nalMatrix4x4::nalMatrix4x4(const nalPositionOrientation& po)
     w.v.m128_f32[3] = 1.0f;
 }
 
+// ?Inverse@nalPositionOrientation@@QBE?AV1@XZ (nal_generic_component.o 0x872F50)
+nalPositionOrientation nalPositionOrientation::Inverse() const
+{
+    // The reference conjugates the quaternion, then applies its rotation to
+    // the negated position.
+    math::Quaternion inverseOrient;
+    inverseOrient.x = -orient.x;
+    inverseOrient.y = -orient.y;
+    inverseOrient.z = -orient.z;
+    inverseOrient.w = orient.w;
+
+    nalMatrix4x4Local rotation;
+    rotation.FromQuaternion(inverseOrient);
+
+    const __m128 negPosition = _mm_xor_ps(_mm_set1_ps(-0.0f), pos.v);
+    const __m128 z = _mm_mul_ps(
+        _mm_shuffle_ps(negPosition, negPosition, 170), rotation.z.v);
+    const __m128 y = _mm_mul_ps(
+        _mm_shuffle_ps(negPosition, negPosition, 85), rotation.y.v);
+    const __m128 x = _mm_mul_ps(
+        _mm_shuffle_ps(negPosition, negPosition, 0), rotation.x.v);
+
+    nalPositionOrientation result;
+    result.orient = inverseOrient;
+    result.pos.v = _mm_add_ps(_mm_add_ps(x, y), z);
+    return result;
+}
+
 static nalMatrix4x4 nalMakeIdentity4x4()
 {
     nalMatrix4x4 m;
@@ -14476,6 +14506,27 @@ nalPositionOrientation operator*(const nalPositionOrientation& a,
 void nalPositionOrientation::operator*=(const nalPositionOrientation& rhs)
 {
     *this = operator*(*this, rhs);
+}
+
+template <typename T>
+T IntegerPower(const T& value, int power);
+
+// ??$IntegerPower@VnalPositionOrientation@@@@YA?AVnalPositionOrientation@@ABV0@H@Z
+// (nal_generic_component.o 0x873010)
+template <>
+nalPositionOrientation IntegerPower<nalPositionOrientation>(
+    const nalPositionOrientation& value, int power)
+{
+    nalPositionOrientation current = value;
+    nalPositionOrientation accumulated = nalPositionOrientation::Identity;
+    while (power != 0)
+    {
+        if ((power & 1) != 0)
+            accumulated = operator*(accumulated, current);
+        power >>= 1;
+        current = operator*(current, current);
+    }
+    return accumulated;
 }
 
 // ea: 0x005483C0
