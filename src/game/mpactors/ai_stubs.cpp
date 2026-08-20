@@ -779,7 +779,7 @@
 }
 
 // ea: 0x0077C740  (?Path_Exists@@YI?BHPBUpath_t@@@Z)
-    int __fastcall Path_Exists(const path_t*)
+    const int __fastcall Path_Exists(const path_t*)
 {
     return 0;
 }
