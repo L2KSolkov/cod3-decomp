@@ -18143,7 +18143,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18142	0x007FFFD0	0x00BEF4D0	??$Max@M@apsMath@@YAMABM0@Z	aeps_xboxr	apsGroup.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18143	0x007FFFF0	0x00BEF4F0	??$Min@M@apsMath@@YAMABM0@Z	aeps_xboxr	apsGroup.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18144	0x00800010	0x00BEF510	??$Limit@MM@apsMath@@YAMABM00@Z	aeps_xboxr	apsGroup.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18145	0x00800050	0x00BEF550	?Enabled@apsDebug@@SAIXZ	aeps_xboxr	apsDebug.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18145	0x00800050	0x00BEF550	?Enabled@apsDebug@@SAIXZ	aeps_xboxr	apsDebug.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 18146	0x00800060	0x00BEF560	?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ	aeps_xboxr	apsDebug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18147	0x008000C0	0x00BEF5C0	?Print@apsDebug@@SAXPBDZZ	aeps_xboxr	apsDebug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18148	0x00800100	0x00BEF600	?apsGetFields@@YAIW4apsEPFDField@@0@Z	aeps_xboxr	apsEffectTemplate.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

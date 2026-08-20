@@ -18143,7 +18143,7 @@ index	status	map_line
 18142	PORTED	0002:003fffd0 ??$Max@M@apsMath@@YAMABM0@Z 00BEF4D0 f i apsGroup.o
 18143	PORTED	0002:003ffff0 ??$Min@M@apsMath@@YAMABM0@Z 00BEF4F0 f i apsGroup.o
 18144	PORTED	0002:00400010 ??$Limit@MM@apsMath@@YAMABM00@Z 00BEF510 f i apsGroup.o
-18145	PORTED	0002:00400050 ?Enabled@apsDebug@@SAIXZ 00BEF550 f i apsDebug.o
+18145	VERIFIED	0002:00400050 ?Enabled@apsDebug@@SAIXZ 00BEF550 f i apsDebug.o
 18146	VERIFIED	0002:00400060 ?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ 00BEF560 f apsDebug.o
 18147	VERIFIED	0002:004000c0 ?Print@apsDebug@@SAXPBDZZ 00BEF5C0 f apsDebug.o
 18148	PORTED	0002:00400100 ?apsGetFields@@YAIW4apsEPFDField@@0@Z 00BEF600 f i apsEffectTemplate.o
