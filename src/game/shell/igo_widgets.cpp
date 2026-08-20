@@ -5221,7 +5221,6 @@ IGOFrontEnd::IGOFrontEnd()
     panel = nullptr;
     iconsPanel = nullptr;
     mpPanel = nullptr;
-    spJeepMapPanel = nullptr;
     activate_key = (char*)mem_heap_malloc(8u);
     activate_key[0] = 0;
     run_key = (char*)mem_heap_malloc(8u);
