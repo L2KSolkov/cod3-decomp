@@ -10435,6 +10435,194 @@ void nalComponent<nalComponentFloat4Base,
     }
 }
 
+// ea: 0x0085EBF0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085EC00
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085EC10
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x0085EC20
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x0085EC30
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x0085EC40
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x0085EC50
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085EC60
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085ECA0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
+}
+
+// ea: 0x0085ECD0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+            const void* next = src;
+            void* stateBlock = state;
+            if (stateBlock != nullptr)
+                *(const void**)stateBlock = next;
+            src = (const char*)src + 16 * quantity;
+            state = (char*)state + 4;
+        }
+    }
+}
+
+// ea: 0x0085F310
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 16 * componentInfo->Count;
+}
+
+// ea: 0x0085F340
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 16;
+}
+
+// ea: 0x0085F390
+template <>
+void FastCopy<nalComponentQuat, math::Quaternion>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 16u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// ea: 0x0085F370
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentQuat, math::Quaternion>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// ea: 0x0085F3E0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 16;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
