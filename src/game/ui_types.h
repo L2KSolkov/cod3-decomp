@@ -2960,6 +2960,7 @@ public:
         void SetEnabled(bool enabled); // 0x5AED00
         void ClearItem();    // 0x5B2DB0
         void SetColumnCount(int columns);  // 0x5B6180
+        void operator=(const UIListBoxDataRow& rhs);  // 0x5B6200
         int GetItemState(int column);  // 0x5B2BD0
         void SetItemState(int column, int state);  // 0x5B2BF0
         void SetText(int column, const char* text);  // 0x5B2C80

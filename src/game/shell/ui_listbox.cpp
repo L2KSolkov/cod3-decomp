@@ -86,6 +86,50 @@ const char* UIListBox::UIListBoxData::GetText()
 // UIListBoxDataRow
 // ============================================================================
 
+// Generated ae_vector<UIListBoxData>::resize body at 0x5B5910.
+static void ResizeUIListBoxDataVector(
+    ae_vector<UIListBox::UIListBoxData>* vector, int newSize)
+{
+    if (newSize <= vector->mCapacity)
+    {
+        if (newSize <= vector->mSize)
+        {
+            for (int i = newSize; i < vector->mSize; ++i)
+                vector->mElements[i].mText.~string();
+        }
+        else
+        {
+            for (int i = vector->mSize; i < newSize; ++i)
+            {
+                vector->mElements[i].mState = 0;
+                new (&vector->mElements[i].mText)
+                    Broc::string((Broc::string::Block*)nullptr);
+            }
+        }
+        vector->mSize = newSize;
+        return;
+    }
+
+    UIListBox::UIListBoxData* elements =
+        (UIListBox::UIListBoxData*)tlMemAlloc(8 * newSize, 8u, 0);
+    for (int i = 0; i < newSize; ++i)
+        new (&elements[i]) UIListBox::UIListBoxData();
+    for (int i = 0; i < vector->mSize; ++i)
+    {
+        elements[i].mState = vector->mElements[i].mState;
+        elements[i].mText = vector->mElements[i].mText;
+    }
+    if (vector->mElements != nullptr)
+    {
+        for (int i = 0; i < vector->mSize; ++i)
+            vector->mElements[i].mText.~string();
+        tlMemFree(vector->mElements);
+    }
+    vector->mElements = elements;
+    vector->mSize = newSize;
+    vector->mCapacity = newSize;
+}
+
 // ea: 0x5B6160
 UIListBox::UIListBoxDataRow::UIListBoxDataRow()
 {
@@ -153,12 +197,38 @@ void UIListBox::UIListBoxDataRow::SetColumnCount(int columns)
             __debugbreak();
     }
     mColumnCount = columns;
-    mColumns.mCapacity = columns;
-    mColumns.mSize = columns;
-    mColumns.mElements =
-        (UIListBoxData*)tlMemAlloc(8 * columns, 8u, 0);
-    for (int i = 0; i < columns; ++i)
-        new (&mColumns.mElements[i]) UIListBoxData();
+    ResizeUIListBoxDataVector(&mColumns, columns);
+}
+
+// ea: 0x5B6200
+void UIListBox::UIListBoxDataRow::operator=(const UIListBoxDataRow& rhs)
+{
+    mEnabled = rhs.mEnabled;
+    mColumnCount = rhs.mColumnCount;
+    ResizeUIListBoxDataVector(&mColumns, mColumnCount);
+    for (int i = 0; i < mColumnCount; ++i)
+    {
+        if (i < 0 || i >= rhs.mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 161;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        if (i < 0 || i >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mColumns.mElements[i].mState = rhs.mColumns.mElements[i].mState;
+        mColumns.mElements[i].mText = rhs.mColumns.mElements[i].mText;
+    }
 }
 
 // ea: 0x5B2BD0

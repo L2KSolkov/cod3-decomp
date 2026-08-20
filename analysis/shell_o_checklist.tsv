@@ -1946,9 +1946,9 @@ index	status	map_line
 1944	PENDING	0002:001aa0c0       ??$?MDU?$char_traits@D@std@@V?$allocator@D@1@@std@@YA_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@0@Z 009a55c0 f i shell.o
 1945	PENDING	0002:001aa100       ??1_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@XZ 009a5600 f i shell.o
 1946	PENDING	0002:001aa130       ??1_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE@XZ 009a5630 f i shell.o
-1947	PENDING	0002:001aa160       ??0UIListBoxDataRow@UIListBox@@QAE@XZ 009a5660 f i shell.o
-1948	PENDING	0002:001aa180       ?SetColumnCount@UIListBoxDataRow@UIListBox@@QAEXH@Z 009a5680 f i shell.o
-1949	PENDING	0002:001aa200       ??4UIListBoxDataRow@UIListBox@@QAEXABV01@@Z 009a5700 f i shell.o
+1947	VERIFIED	0002:001aa160       ??0UIListBoxDataRow@UIListBox@@QAE@XZ 009a5660 f i shell.o
+1948	FIXED	0002:001aa180       ?SetColumnCount@UIListBoxDataRow@UIListBox@@QAEXH@Z 009a5680 f i shell.o
+1949	FIXED	0002:001aa200       ??4UIListBoxDataRow@UIListBox@@QAEXABV01@@Z 009a5700 f i shell.o
 1950	VERIFIED	0002:001aa350       ?Rotate@PanelQuad@@UAEXM_N@Z 009a5850 f i shell.o
 1951	VERIFIED	0002:001aa380       ?Scale@PanelQuad@@UAEXM_N@Z 009a5880 f i shell.o
 1952	VERIFIED	0002:001aa3b0       ?Scale@PanelQuad@@UAEXMM_N@Z 009a58b0 f i shell.o
