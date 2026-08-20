@@ -14569,6 +14569,50 @@ void nalComponent<nalComponentPOBase,
     }
 }
 
+// ea: 0x00862590
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyPOData,
+                  nalComponentEntropyPO>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 3u)
+                                    & ~uintptr_t(3u));
+    *customAnimData = (const char*)*customAnimData + 4;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset >= 0)
+        {
+            unsigned char* target = (unsigned char*)dst + offset;
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                std::memcpy(target, src, sizeof(nalPositionOrientation));
+                src = (const char*)src + sizeof(nalPositionOrientation);
+            }
+            else
+            {
+                std::memcpy(target, (const unsigned char*)def + offset,
+                            sizeof(nalPositionOrientation));
+            }
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const char*)src + sizeof(nalPositionOrientation);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+    }
+}
+
 // ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
 // (nal_init.o 0x862700)
 template <>
