@@ -395,11 +395,11 @@ void DialogMenuDisplay::SetPanelFileSplitScreen(PanelFile* pf)
     mSplitScreenDialogText =
         (FEMultiLineText*)pf->GetTextPointer("text_body");
     mSplitScreenDialogTitle = mSplitScreenMenu->GetTextPointer("text_title");
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = kMenuOptionGeoms; p < kMenuLineGeoms; ++p)
     {
         FEText* v7 = mSplitScreenMenu->GetTextPointer(
-            kMenuOptionGeoms[i]);
-        mSplitScreenMenuOptions[i] = v7;
+            *p);
+        mSplitScreenMenuOptions[p - kMenuOptionGeoms] = v7;
         if (v7 != nullptr)
             v7->AddedToMenu(true);
     }
