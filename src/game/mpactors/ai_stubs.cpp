@@ -1149,7 +1149,7 @@
 }
 
 // ea: 0x0077CB60  (?Path_FindPathNear@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z)
-    int __fastcall Path_FindPathNear(path_t*, team_t, const float* const, const float* const, float, int)
+    const int __fastcall Path_FindPathNear(path_t*, team_t, const float* const, const float* const, float, int)
 {
     return 0;
 }

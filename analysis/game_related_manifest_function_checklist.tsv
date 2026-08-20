@@ -14813,7 +14813,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14812	0x0077CB30	0x00B6C030	?Path_FindPathFromAway@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14813	0x0077CB40	0x00B6C040	?Path_FindPathAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	YES	VERIFIED
 14814	0x0077CB50	0x00B6C050	?Path_FindPathFromAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MQAY01MQAMHH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	YES	VERIFIED
-14815	0x0077CB60	0x00B6C060	?Path_FindPathNear@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14815	0x0077CB60	0x00B6C060	?Path_FindPathNear@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14816	0x0077CB70	0x00B6C070	?Path_FindPathNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM2MQAY01MQAMHH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14817	0x0077CB80	0x00B6C080	?Path_FindPathInCylinderNear@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14818	0x0077CB90	0x00B6C090	?Path_FindPathInCylinderNearNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMQAY01MQAMHH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
