@@ -13095,6 +13095,155 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// (nal_init.o 0x85EDA0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* current =
+                *(const unsigned char**)state;
+            math::Quaternion* out = (math::Quaternion*)dst;
+            for (int j = 0; j < quantity; ++j)
+            {
+                std::memcpy(out, current, sizeof(math::Quaternion));
+                current += sizeof(math::Quaternion);
+                out = (math::Quaternion*)((char*)out + stride * 16);
+            }
+            state = (char*)state + 4;
+            dst = (char*)dst + 16;
+        }
+    }
+}
+
+// (nal_init.o 0x85EEA0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u)
+                                & ~uintptr_t(3u));
+            const unsigned char* current =
+                (const unsigned char*)src;
+            math::Quaternion* out = (math::Quaternion*)dst;
+            for (int j = 0; j < quantity; ++j)
+            {
+                std::memcpy(out, current, sizeof(math::Quaternion));
+                current += sizeof(math::Quaternion);
+                out = (math::Quaternion*)((char*)out + stride * 16);
+            }
+            src = current;
+            dst = (char*)dst + 16;
+        }
+    }
+}
+
+// (nal_init.o 0x85EF90)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u)
+                                & ~uintptr_t(3u));
+            src = (const char*)src + quantity * 16;
+            dst = (char*)dst + 16;
+        }
+    }
+}
+
+// (nal_init.o 0x85F050)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + sizeof(math::Quaternion);
+            continue;
+        }
+        math::Quaternion* out =
+            (math::Quaternion*)((char*)dst + offset);
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            std::memcpy(out, src, sizeof(math::Quaternion));
+            src = (const char*)src + sizeof(math::Quaternion);
+        }
+        else
+        {
+            const math::Quaternion* defaultValue =
+                (const math::Quaternion*)((const char*)def + offset);
+            std::memcpy(out, defaultValue, sizeof(math::Quaternion));
+        }
+    }
+}
+
+// (nal_init.o 0x85F270)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentQuatData,
+                  nalComponentQuat>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+    }
+}
+
 // ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
 // (nal_init.o 0x85f1c0)
 template <>
