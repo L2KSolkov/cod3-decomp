@@ -392,6 +392,8 @@ public:
                                 TPakId pakId);  // ?HandlePanelFilePointer@FEManager@@QAEXPBDPAVPanelFile@@W4TPakId@@@Z (shell.o 0x58DE00)
     static ae_fixed_string<32, unsigned char>
         font_name_array[4];  // ?font_name_array@FEManager@@0PAV?$ae_fixed_string@$0CA@E@@A @ 0xF382C0
+    static ae_fixed_string<32, unsigned char>*
+        GetFontName(font_index index);  // shell.o 0x5B2EC0
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
     InGameMenuSystem* GetIGMS(int client);   // ?GetIGMS@FEManager@@QAEPAVInGameMenuSystem@@H@Z (shell.o 0x57F410)

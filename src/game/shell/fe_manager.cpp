@@ -216,6 +216,12 @@ void FEManager::ReleaseFont(font_index f)
     (void)f;
 }
 
+// ea: 0x005B2EC0
+ae_fixed_string<32, unsigned char>* FEManager::GetFontName(font_index index)
+{
+    return &font_name_array[index];
+}
+
 // ea: 0x0057D720
 void FEManager::LoadFont(font_index i)
 {

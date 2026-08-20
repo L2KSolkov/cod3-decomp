@@ -1718,10 +1718,10 @@ index	status	map_line
 1717	FIXED	0002:001a6c80       ?SetText@UIListBoxDataRow@UIListBox@@QAEXHPBD@Z 009a2180 f i shell.o
 1718	FIXED	0002:001a6d10       ?GetText@UIListBoxDataRow@UIListBox@@QAEPBDH@Z 009a2210 f i shell.o
 1719	FIXED	0002:001a6db0       ?ClearItem@UIListBoxDataRow@UIListBox@@QAEXXZ 009a22b0 f i shell.o
-1720	PENDING	0002:001a6ec0       ?GetFontName@FEManager@@SAPBDW4font_index@@@Z 009a23c0 f i shell.o
+1720	FIXED	0002:001a6ec0       ?GetFontName@FEManager@@SAPBDW4font_index@@@Z 009a23c0 f i shell.o
 1721	PENDING	0002:001a6ee0       ??_EIGOFrontEnd@@UAEPAXI@Z 009a23e0 f i shell.o
 1722	PENDING	0002:001a6ee0       ??_GIGOFrontEnd@@UAEPAXI@Z 009a23e0 f i shell.o
-1723	PENDING	0002:001a6f10       ?GetGlyphInfo@nglFont@@QAEABUnglGlyphInfo@@E@Z 009a2410 f i shell.o
+1723	VERIFIED	0002:001a6f10       ?GetGlyphInfo@nglFont@@QAEABUnglGlyphInfo@@E@Z 009a2410 f i shell.o
 1724	PENDING	0002:001a6f60       ??_EIGOStanceWidget@@UAEPAXI@Z 009a2460 f i shell.o
 1725	PENDING	0002:001a6f60       ??_GIGOStanceWidget@@UAEPAXI@Z 009a2460 f i shell.o
 1726	PENDING	0002:001a6f90       ??1IGOStanceWidget@@UAE@XZ 009a2490 f i shell.o
