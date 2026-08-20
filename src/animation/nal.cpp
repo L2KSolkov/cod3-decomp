@@ -10144,6 +10144,40 @@ void nalComponent<nalComponentFloat4Base,
     }
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x85b920)
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentFloat4Data,
+                  nalComponentFloat4>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    nalComponentEnum* current =
+        (nalComponentEnum*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    src = current;
+    nalComponentEnum* skeletonData =
+        (nalComponentEnum*)*customSkeletonData;
+    unsigned char* animData = (unsigned char*)*customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        std::memcpy((char*)dst + offsetTable[track], current,
+                    sizeof(nalComponentEnum));
+        ++current;
+        ++skeletonData;
+        ++animData;
+    }
+    src = current;
+    *customSkeletonData = skeletonData;
+    *customAnimData = animData;
+}
+
 // ea: 0x0085B9D0
 template <>
 void nalComponent<nalComponentFloat4Base,
