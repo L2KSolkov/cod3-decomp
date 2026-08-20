@@ -1248,13 +1248,30 @@ nfdError nfsExecuteRequest(nfdDriver* driver, nflRequestID requestID)
         nfsWarning("nfdIoExecute: called a busy state %s", nfdIoStateText(driver->work.ioState));
         return NFD_ERROR_INVALID_STATE;
     }
-    if (!ValidRequest(requestID)) return NFD_ERROR_INVALID_ARGUMENTS;
+    if (!ValidRequest(requestID)) {
+        txAssertFailed(nullptr, "request", "nfsExecuteRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1010);
+        return NFD_ERROR_INVALID_ARGUMENTS;
+    }
     nfsRequest* requestPtr = nfsGetRequest(requestID);
-    if (requestPtr == nullptr) return NFD_ERROR_INVALID_ARGUMENTS;
+    if (requestPtr == nullptr) {
+        txAssertFailed(nullptr, "request", "nfsExecuteRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1010);
+        return NFD_ERROR_INVALID_ARGUMENTS;
+    }
     nfsRequest& request = *requestPtr;
     nfsFile* file = nfsGetFile((nflFileID)request.fileID);
-    if (file == nullptr || request.bytesCompleted > request.bufferSize)
+    if (file == nullptr) {
+        txAssertFailed(nullptr, "file", "nfsExecuteRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1011);
         return NFD_ERROR_INVALID_ARGUMENTS;
+    }
+    if (request.bytesCompleted > request.bufferSize) {
+        txAssertFailed(nullptr, "bytesCompleted<=request->bufferSize",
+                       "nfsExecuteRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1012);
+        return NFD_ERROR_INVALID_ARGUMENTS;
+    }
 
     const unsigned bytesCompleted = request.bytesCompleted;
     nfdIoCommand command = {};
@@ -1266,14 +1283,22 @@ nfdError nfsExecuteRequest(nfdDriver* driver, nflRequestID requestID)
     const nflFileID nativeID = nfsGetNativeFileID((nflFileID)request.fileID);
     const int nativeIndex = FileIndex(nativeID);
     command.fileHandle = nativeIndex >= 0 ? &s_fileHandles[nativeIndex] : nullptr;
-    if (command.fileHandle == nullptr) return NFD_ERROR_INVALID_ARGUMENTS;
+    if (command.fileHandle == nullptr) {
+        txAssertFailed(nullptr, "ioCommand.fileHandle", "nfsExecuteRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1018);
+        return NFD_ERROR_INVALID_ARGUMENTS;
+    }
     command.fileSize = file->size;
 
     if (file->fileType == NFS_FILE_TYPE_SUBFILE) {
         const nflFileID parentID = (nflFileID)file->as.subfile.parent;
         nfsFile* parent = nfsGetFile(parentID);
-        if (parent == nullptr || parent->as.native.driver != driver)
+        if (parent == nullptr || parent->as.native.driver != driver) {
+            txAssertFailed(nullptr, "parentFile && parentFile->as.native.driver==driver",
+                           "nfsExecuteRequest",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1028);
             return NFD_ERROR_INVALID_ARGUMENTS;
+        }
         unsigned chunkSize = file->as.subfile.chunkSize;
         unsigned strideSize = file->as.subfile.strideSize;
         if (chunkSize == 0 && strideSize == 0) {
@@ -1291,9 +1316,12 @@ nfdError nfsExecuteRequest(nfdDriver* driver, nflRequestID requestID)
     }
 
     request.state = NFS_REQUEST_STATE_WORKING;
-    nfsUnlock();
+    const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+    if (multiThreaded)
+        nfsUnlock();
     const nfdError result = nfdIoExecute(driver, &command);
-    nfsLock();
+    if (multiThreaded)
+        nfsLock();
     nfsRequest* current = nfsGetRequest(requestID);
     if (current != nullptr && current->state == NFS_REQUEST_STATE_WORKING
         && result != NFD_ERROR_NOERROR)
