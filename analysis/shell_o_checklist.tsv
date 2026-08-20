@@ -1565,7 +1565,7 @@ index	status	map_line
 1564	PENDING	0002:001a4cb0       ?construct_and_initialize_array@?$ae_vector@Vcolor32@@@@AAEPAVcolor32@@HABV2@@Z 009a01b0 f i shell.o
 1565	PENDING	0002:001a4d00       ?construct_and_initialize_array@?$ae_vector@_N@@AAEPA_NHAB_N@Z 009a0200 f i shell.o
 1566	PORTED	0002:001a4d40       ?end@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEPAPAVFEMenuListBoxItem@@XZ 009a0240 f i shell.o
-1567	PENDING	0002:001a4d50       ?construct_array@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEPAPAVFEMenuListBoxItem@@HH@Z 009a0250 f i shell.o
+1567	PORTED	0002:001a4d50       ?construct_array@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEPAPAVFEMenuListBoxItem@@HH@Z 009a0250 f i shell.o
 1568	PORTED	0002:001a4d80       ?begin@?$ae_vector@H@@QAEPAHXZ 009a0280 f i shell.o
 1569	PORTED	0002:001a4d90       ?end@?$ae_vector@H@@QAEPAHXZ 009a0290 f i shell.o
 1570	PENDING	0002:001a4da0       ?construct_and_initialize_array@?$ae_vector@H@@AAEPAHHABH@Z 009a02a0 f i shell.o

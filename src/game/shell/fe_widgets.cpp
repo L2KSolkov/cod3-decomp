@@ -14,6 +14,8 @@ extern float sNaN;                       // ?sNaN@@3MA @ 0x10F19D0
 extern const char defaultFileName[];  // 0xCD67AE
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);            // core.o
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);     // core.o
 extern void tlMemFree(void* ptr);                // core.o
 
 extern FEManager g_femanager;
@@ -811,11 +813,11 @@ const unsigned int FEMenuListBox::AddItem(const Broc::string& itemText,
         if (mItems.mSize <= 3)
             v4 = mItems.mSize + 1;
         FEMenuListBoxItem** v7 =
-            (FEMenuListBoxItem**)mem_heap_malloc(4 * v4);
+            (FEMenuListBoxItem**)tlMemAlloc(4 * v4, 8u, 0);
         for (int i = 0; i < mItems.mSize; ++i)
             v7[i] = mItems.mElements[i];
         if (mItems.mElements != nullptr)
-            mem_heap_free(mItems.mElements);
+            tlMemFree(mItems.mElements);
         mItems.mElements = v7;
         mItems.mCapacity = v4;
     }
