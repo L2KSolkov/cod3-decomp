@@ -18,7 +18,6 @@ void __cod3_stub_aeps(void) {
 #include "apsGroup.h"
 #include "apsSimpleMeshRenderer.h"
 #include "apsInternal.h"
-void apsRenderNode::Render() {}
 apsClient::~apsClient() {}
 
 // apsEffect / apsCommon free artifacts (render.o; stubs, port later)

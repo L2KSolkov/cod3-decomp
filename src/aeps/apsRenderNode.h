@@ -51,7 +51,7 @@ public:
 
     apsRenderNode() { mFlags = 0; }                       // ea: 0x802B60
     virtual ~apsRenderNode();                             // ea: 0x802C20
-    virtual void Render();                                // ea: per-node (aps*Node.o)
+    virtual void Render() = 0;                            // pure slot in apsRenderNode_vtbl
 
     void SetFlags(unsigned int flag) { mFlags |= flag; }  // ea: 0x8026E0
     void SetMatrix(const math::Mat43* matrix);            // ea: 0x802700
