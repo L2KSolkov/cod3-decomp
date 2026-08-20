@@ -11,3 +11,7 @@ ae_heap.o	??1ae_heap@@UAE@XZ	FIXED
 ae_heap.o	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	FIXED
 ae_heap.o	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	FIXED
 ae_heap.o	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	FIXED
+ae_heap.o	?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ	VERIFIED
+ae_heap.o	?Malloc@ae_heap@@UAEPAXII@Z	VERIFIED
+ae_heap.o	?Free@ae_heap@@UAEXPAX@Z	VERIFIED
+ae_heap.o	?CheckFree@ae_heap@@UAE_NPAX@Z	VERIFIED

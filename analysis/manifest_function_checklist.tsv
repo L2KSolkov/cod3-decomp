@@ -15925,10 +15925,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 15924	0x007BBEE0	0x00BAB3E0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
 15925	0x007BBF20	0x00BAB420	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
 15926	0x007BBF40	0x00BAB440	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
-15927	0x007BBF70	0x00BAB470	?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15928	0x007BBF80	0x00BAB480	?Malloc@ae_heap@@UAEPAXII@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15929	0x007BBFC0	0x00BAB4C0	?Free@ae_heap@@UAEXPAX@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15930	0x007BBFE0	0x00BAB4E0	?CheckFree@ae_heap@@UAE_NPAX@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+15927	0x007BBF70	0x00BAB470	?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ	mem_mp_xboxr	ae_heap.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+15928	0x007BBF80	0x00BAB480	?Malloc@ae_heap@@UAEPAXII@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+15929	0x007BBFC0	0x00BAB4C0	?Free@ae_heap@@UAEXPAX@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+15930	0x007BBFE0	0x00BAB4E0	?CheckFree@ae_heap@@UAE_NPAX@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 15931	0x007BC020	0x00BAB520	??_Eae_heap@@UAEPAXI@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15932	0x007BC020	0x00BAB520	??_Gae_heap@@UAEPAXI@Z	mem_mp_xboxr	ae_heap.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15933	0x007BC0D0	0x00BAB5D0	?mem_get_arena_hi@@YAPAXXZ	mem_mp_xboxr	mem_lib_platform.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

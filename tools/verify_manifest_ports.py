@@ -259,6 +259,8 @@ def shell_status(row: dict[str, str]) -> str:
         return "SKIPPED"
     if row["aggregate_status"] == "FIXED":
         return "FIXED"
+    if row["aggregate_status"] == "VERIFIED":
+        return "VERIFIED"
     if row["verification"] == "VERIFIED":
         return "VERIFIED"
     if row["aggregate_status"] in {"PORTED", "COMPLETE", "VALIDATED"}:
