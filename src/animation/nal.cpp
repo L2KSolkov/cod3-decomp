@@ -11451,6 +11451,51 @@ void nalComponent<nalComponentFloat4Base,
     }
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x85e890)
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    *customAnimData =
+        (const void*)((((uintptr_t)*customAnimData + 3u)
+                       & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const short* current = (const short*)src;
+    float* skeletonComponentData = (float*)*customSkeletonData;
+    unsigned char* animComponentData = (unsigned char*)*customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        math::Vector4* out =
+            (math::Vector4*)((char*)dst + offsetTable[track]);
+        const __m128 packed =
+            _mm_set_ps((float)current[3], (float)current[2],
+                       (float)current[1], (float)current[0]);
+        out->v = _mm_add_ps(
+            _mm_mul_ps(packed, _mm_set1_ps(skeletonComponentData[2])),
+            _mm_set1_ps(skeletonComponentData[1]));
+        current += 4;
+        ++animComponentData;
+        skeletonComponentData += 3;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = current;
+    *customSkeletonData = skeletonComponentData;
+    *customAnimData = animComponentData;
+}
+
 // ea: 0x0085E9C0
 template <>
 void nalComponent<nalComponentFloat4Base,
