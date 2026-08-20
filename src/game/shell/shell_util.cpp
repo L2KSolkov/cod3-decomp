@@ -27,6 +27,25 @@ FloatingPQ::FloatingPQ(char* n) : PanelQuad(n)
     location_3d.z = 0.0f;
 }
 
+// ea: 0x005B76B0
+void FloatingPQ::SetLocation3D(Broc::vector l)
+{
+    location_3d = l;
+}
+
+// ea: 0x005B76E0
+Broc::vector FloatingPQ::GetLocation3D()
+{
+    return location_3d;
+}
+
+// ea: 0x005B7710
+void FloatingPQ::CopyFrom(const FloatingPQ* pq)
+{
+    PanelQuad::CopyFrom(pq);
+    location_3d = pq->location_3d;
+}
+
 // ea: 0x0056AD40
 void FloatingPQ::UpdateInScene()
 {

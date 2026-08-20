@@ -637,6 +637,9 @@ struct FloatingPQ : PanelQuad {
     Broc::vector location_3d;  // +0x48
 
     FloatingPQ(char* n);          // shell.o 0x591070
+    virtual void SetLocation3D(Broc::vector l); // 0x5B76B0
+    virtual Broc::vector GetLocation3D();       // 0x5B76E0
+    virtual void CopyFrom(const FloatingPQ* pq); // 0x5B7710
     virtual void UpdateInScene(); // shell.o 0x56AD40
 };
 static_assert(sizeof(FloatingPQ) == 84, "FloatingPQ size mismatch");
@@ -2479,6 +2482,7 @@ public:
     bool       dont_draw;         // +0x18
 
     IGOWeaponNameWidget(int client);  // 0x590B00
+    virtual ~IGOWeaponNameWidget();   // 0x5B7630
     virtual void Init(PanelFile* panel);              // 0x566F90
     virtual void Update(float time_inc);              // 0x567040
     virtual void Draw();                              // 0x5672E0

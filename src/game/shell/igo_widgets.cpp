@@ -1102,6 +1102,15 @@ IGOWeaponNameWidget::IGOWeaponNameWidget(int client)
         background = nullptr;
 }
 
+// ea: 0x005B7630
+IGOWeaponNameWidget::~IGOWeaponNameWidget()
+{
+    if (name != nullptr)
+        delete name;
+    if (background != nullptr)
+        delete background;
+}
+
 // ea: 0x00566F90
 void IGOWeaponNameWidget::Init(PanelFile* panel)
 {
