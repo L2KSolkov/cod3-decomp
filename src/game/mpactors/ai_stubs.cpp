@@ -426,7 +426,7 @@
 }
 
 // ea: 0x0077C310  (?Actor_Cover_CanAttack@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@PAUsentient_s@@PAPAUscr_animscript_t@@_N@Z)
-    int __fastcall Actor_Cover_CanAttack(actor_s*, PathNodes::PathNode*, sentient_s*, scr_animscript_t**, bool)
+    const int __fastcall Actor_Cover_CanAttack(actor_s*, PathNodes::PathNode*, sentient_s*, scr_animscript_t**, bool)
 {
     return 0;
 }
