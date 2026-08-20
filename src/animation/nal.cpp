@@ -968,6 +968,23 @@ nalAnimClass<T>::VirtualCreateInstance(nalAnimClass<T>* a,
 template class nalAnimClass<nalAnyPose>;
 template class nalAnimClass<nalGeneric::nalGenericPose>;
 
+template <>
+const tlFixedString* tlSkipList<nalAnimClass<nalAnyPose>, tlFixedString>::GetKeyOf(
+    const nalAnimClass<nalAnyPose>* anim)
+{
+    return &anim->Name;
+}
+
+template <>
+const tlFixedString* tlSkipList<nalBaseSkeleton, tlFixedString>::GetKeyOf(
+    const nalBaseSkeleton* skeleton)
+{
+    return &skeleton->Name;
+}
+
+template class tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>>;
+template class tlInstanceBankResourceDirectory<nalBaseSkeleton>;
+
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* ptr);
@@ -2336,6 +2353,16 @@ bool nalSceneAnim::IsLooping() const
 {
     return (*(unsigned int*)((char*)this + 0x38) & 2) != 0;
 }
+
+template <>
+const tlFixedString* tlSkipList<nalSceneAnim, tlFixedString>::GetKeyOf(
+    const nalSceneAnim* scene)
+{
+    return reinterpret_cast<const tlFixedString*>(
+        reinterpret_cast<const char*>(scene) + 0x10);
+}
+
+template class tlInstanceBankResourceDirectory<nalSceneAnim>;
 
 // ============================================================================
 // nalSceneAnimInstance Ã¢â‚¬â€ runtime scene animation
