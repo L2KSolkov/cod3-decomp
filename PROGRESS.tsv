@@ -56,7 +56,7 @@ mp_xbox.o		mp_xbox.o	game	61	PORTED	MPMainMenuXBox.cpp (61/61): JoinGameMenu + M
 
 nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (IDA-typed file/request/stream layer; txSlot ABI, driver scheduling, callbacks, workspace preallocation, and Win32 lifecycle aligned)
 
-aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
+aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	VERIFIED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr; IDA-verified AddParticlePool/AddPools no-ops)
 
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	VERIFIED	All 48 release symbols are present; signed wave/index and param ABI, enum state return, pointer free, and blocking load match IDA; canonical build passes
 
