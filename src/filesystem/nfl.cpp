@@ -1538,13 +1538,13 @@ float nflGetRequestProgress(nflRequestID requestID)
 }
 
 // ea: 0x004205D0
+void nflSetStreamPriority(nflStreamID streamID, nflPriority priority);
+
 nflStreamID nflCreateStream(const nflStreamParams* params)
 {
-    nflStreamID id = AllocateStream(); if (id == NFL_STREAM_ID_INVALID) return id;
-    nfsStream* stream = nfsGetStream(id);
-    if (stream == nullptr) return NFL_STREAM_ID_INVALID;
-    ClearSlotObject(stream);
-    stream->priority = params ? params->streamPriority : NFL_PRIORITY_NORMAL; return id;
+    const nflStreamID id = (nflStreamID)txSlotNew(&s_streamPool);
+    nflSetStreamPriority(id, params->streamPriority);
+    return id;
 }
 // ea: 0x0041EF80
 void nflSetStreamPriority(nflStreamID streamID, nflPriority priority)
