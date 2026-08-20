@@ -3782,7 +3782,7 @@ extern const char* nslGetSourceName(nslSourceID sid);  // nslSource.o
 extern int nslIsWaveStreamed(nslWaveID a);             // nslCompat.o
 extern int g_useOnScreenSoundDebugging;   // ?g_useOnScreenSoundDebugging@@3HA
 namespace AeStringSupport {
-extern void AeStrCopy(char* dst, int* dstLen, int dstCapacity,
+extern void AeStrCopy(char* dst, int* const dstLen, int dstCapacity,
                       const char* src, int srcLen);  // ae_string_support.cpp
 }
 

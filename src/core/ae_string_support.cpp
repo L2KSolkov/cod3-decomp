@@ -164,7 +164,7 @@ void Concat(char* dst, int* const dstLen, int dstCapacity, const char* src) {
 // AeStrCopy — copy string with length tracking
 // ea: 0x7BEFE0
 // ============================================================================
-void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src, int srcLen) {
+void AeStrCopy(char* dst, int* const dstLen, int dstCapacity, const char* src, int srcLen) {
     int copyLen = srcLen;
     if (dstCapacity < copyLen) copyLen = dstCapacity;
 

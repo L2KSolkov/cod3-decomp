@@ -12076,7 +12076,7 @@ namespace AeStringSupport {
 void CStrToAeStr(char* dst, int* const dstLen, int capacity, const char* src);
 void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
                  bool includeExt);
-void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
+void AeStrCopy(char* dst, int* const dstLen, int dstCapacity, const char* src,
                int srcLen);
 }
 

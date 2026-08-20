@@ -438,7 +438,7 @@ void CStrToAeStr(char* dst, int* const len, int capacity,
                  const char* src);  // ?CStrToAeStr@AeStringSupport@@YAXPADPAHHPBD@Z
 void GetFileName(char* dst, int* len, const char* src, int a4,
                  bool truncExt);  // ?GetFileName@AeStringSupport@@YAXPADPAHPBDH_N@Z
-void AeStrCopy(char* dst, int* len, int capacity, const char* src,
+void AeStrCopy(char* dst, int* const len, int capacity, const char* src,
                int a5);  // ?AeStrCopy@AeStringSupport@@YAXPADPAHHPBDH@Z
 }
 
