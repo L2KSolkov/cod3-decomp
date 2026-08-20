@@ -827,21 +827,21 @@ index	status	map_line
 826	SKIPPED	0002:00467850 ??_EnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 827	SKIPPED	0002:00467850 ??_GnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 828	PORTED	0002:00467880 ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ 00C56D80 f i nal_init.o
-829	PENDING	0002:004678b0 ?Find@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DB0 f i nal_init.o
-830	PENDING	0002:004678c0 ?Find@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DC0 f i nal_init.o
-831	PENDING	0002:00467980 ?Del@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z 00C56E80 f i nal_init.o
-832	PENDING	0002:00467990 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVIterator@?$tlResourceDirectory@VnalAnimFile@@@@XZ 00C56E90 f i nal_init.o
-833	PENDING	0002:004679d0 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ 00C56ED0 f i nal_init.o
-834	PENDING	0002:004679f0 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBE_NXZ 00C56EF0 f i nal_init.o
-835	PENDING	0002:00467a00 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ 00C56F00 f i nal_init.o
-836	PENDING	0002:00467a10 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBEPAVnalAnimFile@@XZ 00C56F10 f i nal_init.o
+829	PORTED	0002:004678b0 ?Find@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DB0 f i nal_init.o
+830	VERIFIED	0002:004678c0 ?Find@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z 00C56DC0 f i nal_init.o
+831	PORTED	0002:00467980 ?Del@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z 00C56E80 f i nal_init.o
+832	PORTED	0002:00467990 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVIterator@?$tlResourceDirectory@VnalAnimFile@@@@XZ 00C56E90 f i nal_init.o
+833	PORTED	0002:004679d0 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ 00C56ED0 f i nal_init.o
+834	PORTED	0002:004679f0 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBE_NXZ 00C56EF0 f i nal_init.o
+835	PORTED	0002:00467a00 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ 00C56F00 f i nal_init.o
+836	PORTED	0002:00467a10 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBEPAVnalAnimFile@@XZ 00C56F10 f i nal_init.o
 837	SKIPPED	0002:00467a20 ??_ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F20 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 838	SKIPPED	0002:00467a20 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F20 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 839	SKIPPED	0002:00467a50 ??_GIterator@?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 840	SKIPPED	0002:00467a50 ??_EIterator@?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-841	PENDING	0002:00467a80 ?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00C56F80 f i nal_init.o
-842	PENDING	0002:00467a90 ?Add@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@PAV2@@Z 00C56F90 f i nal_init.o
-843	PENDING	0002:00467bb0 ?Init@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C570B0 f i nal_init.o
+841	PORTED	0002:00467a80 ?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00C56F80 f i nal_init.o
+842	VERIFIED	0002:00467a90 ?Add@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@PAV2@@Z 00C56F90 f i nal_init.o
+843	VERIFIED	0002:00467bb0 ?Init@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C570B0 f i nal_init.o
 844	PENDING	0002:00467bf0 ??0?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00C570F0 f i nal_init.o
 845	PENDING	0002:00467c20 ?Find@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57120 f i nal_init.o
 846	PENDING	0002:00467c30 ?Find@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57130 f i nal_init.o

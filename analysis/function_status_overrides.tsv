@@ -442,6 +442,17 @@ nal_init.o	??0?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@
 nal_init.o	??0?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	FIXED
 nal_init.o	??0?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	FIXED
 nal_init.o	??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ	PORTED
+nal_init.o	?Find@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@ABVtlFixedString@@@Z	PORTED
+nal_init.o	?Del@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAE_NQAVnalAnimFile@@@Z	PORTED
+nal_init.o	?Enumerate@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVIterator@?$tlResourceDirectory@VnalAnimFile@@@@XZ	PORTED
+nal_init.o	?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ	PORTED
+nal_init.o	??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBE_NXZ	PORTED
+nal_init.o	??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEXXZ	PORTED
+nal_init.o	??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UBEPAVnalAnimFile@@XZ	PORTED
+nal_init.o	?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z	PORTED
+nal_init.o	?Find@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@ABVtlFixedString@@@Z	VERIFIED
+nal_init.o	?Add@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@PAV2@@Z	VERIFIED
+nal_init.o	?Init@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ	VERIFIED
 nal_init.o	?Key@Instance@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
 nal_init.o	?Key@Instance@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
 nal_init.o	?Key@Instance@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
