@@ -1099,6 +1099,25 @@ public:
     static nalMatrix4x4 Identity;
 };
 
+// nal_xboxr:nal_math.o 0x0086FC30
+// The release constructor copies the three Dir3 SIMD rows directly into the
+// Mat33 base; this matches the generated C body and the release inheritance.
+class nalMatrix3x3 : public math::Mat33 {
+public:
+    nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
+                 const math::Dir3& z);
+};
+
+static_assert(sizeof(nalMatrix3x3) == 0x30, "nalMatrix3x3 layout mismatch");
+
+nalMatrix3x3::nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
+                           const math::Dir3& z)
+{
+    this->x.v = x.v;
+    this->y.v = y.v;
+    this->z.v = z.v;
+}
+
 // ea: 0x00868AC0
 void nalMatrix4x4::Scale(const math::Dir3& scale)
 {

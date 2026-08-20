@@ -22,6 +22,10 @@ GameData/
 analysis/*.tsv
 analysis/*.json
 analysis/*.md
+!analysis/manifest_function_checklist.tsv
+!analysis/manifest_function_checklist_summary.tsv
+!analysis/game_related_manifest_function_checklist.tsv
+!analysis/game_related_manifest_function_checklist_summary.tsv
 
 # Keep the plan
 !analysis/FOLDER_TREE.md
