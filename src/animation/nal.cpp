@@ -11344,6 +11344,94 @@ void nalComponent<nalComponentPOBase,
     }
 }
 
+// ea: 0x00861B50
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+    }
+}
+
+// ea: 0x00861BF0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 32 * componentInfo->Count;
+}
+
+// ea: 0x00861C20
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 32;
+}
+
+// ea: 0x00861C70
+template <>
+void FastCopy<nalComponentPO, nalPositionOrientation>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 32u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// ea: 0x00861C50
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentPO, nalPositionOrientation>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// ea: 0x00861CC0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 32;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
