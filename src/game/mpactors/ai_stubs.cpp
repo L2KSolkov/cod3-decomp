@@ -1143,7 +1143,7 @@
 }
 
 // ea: 0x0077CB50  (?Path_FindPathFromAwayNotCrossPlanes@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MQAY01MQAMHH@Z)
-    int __fastcall Path_FindPathFromAwayNotCrossPlanes(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, float, float (*)[2], float* const, int, int)
+    const int __fastcall Path_FindPathFromAwayNotCrossPlanes(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, float, float (*)[2], float* const, int, int)
 {
     return 0;
 }
