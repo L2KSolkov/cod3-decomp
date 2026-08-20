@@ -13574,6 +13574,46 @@ void nalComponent<nalComponentQuatBase,
         pose = (char*)pose + 16;
 }
 
+// ea: 0x0085FB30
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const float* animData = (const float*)(((uintptr_t)*customAnimData + 3u)
+                                           & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::nalQuatDecoder* decoder =
+                (nalEntropyDecoder::nalQuatDecoder*)state;
+            math::Quaternion* out = (math::Quaternion*)dst;
+            decoder->Decode(out, (unsigned int)stride,
+                            (unsigned int)quantity,
+                            *(const float*)*customSkeletonData * *animData);
+            state = (char*)state + 64;
+            dst = (char*)dst + 16;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // (nal_init.o 0x8600D0)
 template <>
 void nalComponent<nalComponentQuatBase,
