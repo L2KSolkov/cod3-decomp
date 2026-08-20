@@ -22,6 +22,19 @@ extern FEManager g_femanager;
 static color32 lUIHighlightListBoxDefaultSelectedColor(0xFFFFFFFF);
 static color32 lUIHighlightListBoxDefaultUnselectedColor(0x80808080);
 
+static void DestroyUIListBoxDataVector(
+    ae_vector<UIListBox::UIListBoxData>* vector)
+{
+    if (vector->mElements != nullptr)
+    {
+        for (int i = 0; i < vector->mSize; ++i)
+            vector->mElements[i].mText.~string();
+        tlMemFree(vector->mElements);
+        vector->mElements = nullptr;
+        vector->mCapacity = 0;
+    }
+}
+
 // ============================================================================
 // UIListBoxData
 // ============================================================================
@@ -181,6 +194,19 @@ static void ResizeUIListBoxItemVector(
     vector->mSize = newSize;
 }
 
+static void DestroyUIListBoxItemVector(
+    ae_vector<UIListBox::UIListBoxItem>* vector)
+{
+    if (vector->mElements != nullptr)
+    {
+        for (int i = 0; i < vector->mSize; ++i)
+            vector->mElements[i].~UIListBoxItem();
+        tlMemFree(vector->mElements);
+        vector->mElements = nullptr;
+        vector->mCapacity = 0;
+    }
+}
+
 // ea: 0x5B6160
 UIListBox::UIListBoxDataRow::UIListBoxDataRow()
 {
@@ -189,6 +215,11 @@ UIListBox::UIListBoxDataRow::UIListBoxDataRow()
     mColumns.mSize = 0;
     mColumnCount = 0;
     mEnabled = true;
+}
+
+UIListBox::UIListBoxDataRow::~UIListBoxDataRow()
+{
+    DestroyUIListBoxDataVector(&mColumns);
 }
 
 // ea: 0x5AECF0
@@ -405,6 +436,17 @@ UIListBox::UIListBoxItem::UIListBoxItem()
         mObjects.mCapacity = v4;
     }
     mObjects.mElements[mObjects.mSize++] = iElement[0];
+}
+
+// ea: 0x005B40C0
+UIListBox::UIListBoxItem::~UIListBoxItem()
+{
+    if (mObjects.mElements != nullptr)
+    {
+        tlMemFree(mObjects.mElements);
+        mObjects.mElements = nullptr;
+        mObjects.mCapacity = 0;
+    }
 }
 
 // ea: 0x5B1E30
@@ -857,6 +899,11 @@ UIListBox::UIListBoxRow::UIListBoxRow()
     mColumns.mElements = nullptr;
     mColumns.mCapacity = 0;
     mColumns.mSize = 0;
+}
+
+UIListBox::UIListBoxRow::~UIListBoxRow()
+{
+    DestroyUIListBoxItemVector(&mColumns);
 }
 
 // ea: 0x5B5390

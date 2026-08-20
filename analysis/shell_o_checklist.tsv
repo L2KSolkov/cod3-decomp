@@ -1816,7 +1816,7 @@ index	status	map_line
 1815	PENDING	0002:001a7f60       ?resize@?$ae_vector@U_XUID@@@@QAEXHABU_XUID@@@Z 009a3460 f i shell.o
 1816	PENDING	0002:001a8070       ??9const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 009a3570 f i shell.o
 1817	PENDING	0002:001a8090       ??_GUIListBoxData@UIListBox@@QAEPAXI@Z 009a3590 f i shell.o
-1818	PENDING	0002:001a80c0       ??1UIListBoxItem@UIListBox@@QAE@XZ 009a35c0 f i shell.o
+1818	FIXED	0002:001a80c0       ??1UIListBoxItem@UIListBox@@QAE@XZ 009a35c0 f i shell.o
 1819	PENDING	0002:001a80f0       ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDII@Z 009a35f0 f i shell.o
 1820	PENDING	0002:001a81f0       ?destroy_all@?$ae_vector@PAVPanelQuadSection@@@@AAEXXZ 009a36f0 f i shell.o
 1821	PENDING	0002:001a8220       ?resize@?$ae_vector@PAVPanelQuad@@@@QAEXH@Z 009a3720 f i shell.o
@@ -1926,7 +1926,7 @@ index	status	map_line
 1924	PENDING	0002:001a9d60       ?construct_array@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEPAVUIListBoxItem@UIListBox@@H@Z 009a5260 f i shell.o
 1925	PENDING	0002:001a9e20       ?destroy_all@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEXXZ 009a5320 f i shell.o
 1926	PENDING	0002:001a9e80       ?begin@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009a5380 f i shell.o
-1927	PENDING	0002:001a9ea0       ??1UIListBoxDataRow@UIListBox@@QAE@XZ 009a53a0 f i shell.o
+1927	FIXED	0002:001a9ea0       ??1UIListBoxDataRow@UIListBox@@QAE@XZ 009a53a0 f i shell.o
 1928	PENDING	0002:001a9eb0       ??1?$ae_vector@VUIListBoxItem@UIListBox@@@@QAE@XZ 009a53b0 f i shell.o
 1929	PENDING	0002:001a9ec0       ??Eiterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009a53c0 f i shell.o
 1930	PENDING	0002:001a9ed0       ??Fiterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009a53d0 f i shell.o
@@ -1984,7 +1984,7 @@ index	status	map_line
 1982	PENDING	0002:001aae20       ??Fiterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009a6320 f i shell.o
 1983	PENDING	0002:001aae30       ??0UIListBoxRow@UIListBox@@QAE@XZ 009a6330 f i shell.o
 1984	PENDING	0002:001aae40       ??_GUIListBoxDataRow@UIListBox@@QAEPAXI@Z 009a6340 f i shell.o
-1985	PENDING	0002:001aae70       ??1UIListBoxRow@UIListBox@@QAE@XZ 009a6370 f i shell.o
+1985	FIXED	0002:001aae70       ??1UIListBoxRow@UIListBox@@QAE@XZ 009a6370 f i shell.o
 1986	PENDING	0002:001aae80       ?_Init@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEXXZ 009a6380 f i shell.o
 1987	PENDING	0002:001aaec0       ?_Lbound@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IBEPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009a63c0 f i shell.o
 1988	PENDING	0002:001aafb0       ??0?$_Tree_val@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@1@@Z 009a64b0 f i shell.o

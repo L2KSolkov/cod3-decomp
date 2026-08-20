@@ -2956,6 +2956,7 @@ public:
         bool mEnabled;                      // +0x10
 
         UIListBoxDataRow();  // 0x5B6160
+        ~UIListBoxDataRow(); // generated vector cleanup
         bool IsEnabled();    // 0x5AECF0
         void SetEnabled(bool enabled); // 0x5AED00
         void ClearItem();    // 0x5B2DB0
@@ -2980,6 +2981,7 @@ public:
         ae_vector<PanelAnimObject*> mObjects;  // +0x0C (12 bytes)
 
         UIListBoxItem();  // 0x5B4D50
+        ~UIListBoxItem(); // 0x5B40C0
         void SetState(int state);       // 0x5B1E30
         void SetStateCount(int count);  // 0x5B4DC0
         void SetItem(FEText* text, int state);       // 0x5B4E60
@@ -3009,6 +3011,7 @@ public:
         int  mColumnCount;                  // +0x0C
 
         UIListBoxRow();  // 0x5B6E30
+        ~UIListBoxRow(); // generated vector cleanup
         void ClearItem();                    // 0x5B5390
         void RemoveItems();                  // 0x5B2630
         void Draw();                         // 0x5B26D0
