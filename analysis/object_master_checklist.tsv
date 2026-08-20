@@ -17,7 +17,7 @@ InplaceFileBuilder.o	analysis/InplaceFileBuilder_o_checklist.tsv	analysis/Inplac
 InplaceTree.o	analysis/InplaceTree_o_checklist.tsv	analysis/InplaceTree_o_inventory.tsv	analysis/InplaceTree_o_plan.tsv	1	1	0	0	0	0	0
 MemoryUnit.o	analysis/MemoryUnit_o_checklist.tsv	analysis/MemoryUnit_o_inventory.tsv	analysis/MemoryUnit_o_plan.tsv	35	23	12	0	0	0	0
 PoolAllocator.o	analysis/PoolAllocator_o_checklist.tsv	analysis/PoolAllocator_o_inventory.tsv	analysis/PoolAllocator_o_plan.tsv	64	17	47	0	0	0	0
-PtrFixupTable.o	analysis/PtrFixupTable_o_checklist.tsv	analysis/PtrFixupTable_o_inventory.tsv	analysis/PtrFixupTable_o_plan.tsv	2	1	1	0	0	0	0
+PtrFixupTable.o	analysis/PtrFixupTable_o_checklist.tsv	analysis/PtrFixupTable_o_inventory.tsv	analysis/PtrFixupTable_o_plan.tsv	2	2	0	0	0	0	0
 SearchGraph.obj	analysis/SearchGraph_obj_checklist.tsv	analysis/SearchGraph_obj_inventory.tsv	analysis/SearchGraph_obj_plan.tsv	18	0	0	18	0	0	0
 ShaderCommon.o	analysis/ShaderCommon_o_checklist.tsv	analysis/ShaderCommon_o_inventory.tsv	analysis/ShaderCommon_o_plan.tsv	33	18	15	0	0	0	0
 UnpackVoice.obj	analysis/UnpackVoice_obj_checklist.tsv	analysis/UnpackVoice_obj_inventory.tsv	analysis/UnpackVoice_obj_plan.tsv	9	0	0	9	0	0	0
@@ -51,7 +51,7 @@ afmv_dx_rgb.o	analysis/afmv_dx_rgb_o_checklist.tsv	analysis/afmv_dx_rgb_o_invent
 allocate.obj	analysis/allocate_obj_checklist.tsv	analysis/allocate_obj_inventory.tsv	analysis/allocate_obj_plan.tsv	18	0	0	18	0	0	0
 anim.o	analysis/anim_o_checklist.tsv	analysis/anim_o_inventory.tsv	analysis/anim_o_plan.tsv	741	728	13	0	0	0	0
 api.obj	analysis/api_obj_checklist.tsv	analysis/api_obj_inventory.tsv	analysis/api_obj_plan.tsv	259	0	0	259	0	0	0
-apk.o	analysis/apk_o_checklist.tsv	analysis/apk_o_inventory.tsv	analysis/apk_o_plan.tsv	24	21	3	0	0	0	0
+apk.o	analysis/apk_o_checklist.tsv	analysis/apk_o_inventory.tsv	analysis/apk_o_plan.tsv	24	23	1	0	0	0	0
 apsAction.o	analysis/apsAction_o_checklist.tsv	analysis/apsAction_o_inventory.tsv	analysis/apsAction_o_plan.tsv	19	11	8	0	0	0	0
 apsActionList.o	analysis/apsActionList_o_checklist.tsv	analysis/apsActionList_o_inventory.tsv	analysis/apsActionList_o_plan.tsv	26	15	11	0	0	0	0
 apsBillboardNode.o	analysis/apsBillboardNode_o_checklist.tsv	analysis/apsBillboardNode_o_inventory.tsv	analysis/apsBillboardNode_o_plan.tsv	33	2	31	0	0	0	0

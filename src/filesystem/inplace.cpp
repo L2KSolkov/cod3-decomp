@@ -30,6 +30,16 @@ public:
     void Fixup(const void* basePtr);
 };
 
+template <typename T>
+void FixupPointer(T** ptr, const void* base)
+{
+    *ptr = reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(*ptr)
+                                + reinterpret_cast<uintptr_t>(base));
+}
+
+template void FixupPointer<unsigned int>(unsigned int** ptr,
+                                         const void* base);
+
 // ============================================================================
 // ExtractNode — unpack a packed node entry into offset + next pointer
 // ea: 0x7E1A10

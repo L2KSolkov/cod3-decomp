@@ -17208,7 +17208,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 17207	0x007E17F0	0x00BD0CF0	??1cdSkyShaderNode@@UAE@XZ	render_xboxr	cdSkyShader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17208	0x007E1800	0x00BD0D00	?GetNullBuffer@@YAPADH@Z	inplace_xboxr	InplaceTree.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 17209	0x007E18D0	0x00BD0DD0	?Fixup@PtrFixupTable@@QAEXPBX@Z	inplace_xboxr	PtrFixupTable.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-17210	0x007E19F0	0x00BD0EF0	??$FixupPointer@I@@YAXAAPAIPBX@Z	inplace_xboxr	PtrFixupTable.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17210	0x007E19F0	0x00BD0EF0	??$FixupPointer@I@@YAXAAPAIPBX@Z	inplace_xboxr	PtrFixupTable.o	engine		f i	1	PORTED	FUNCTION status override	NO	YES	VERIFIED
 17211	0x007E1A10	0x00BD0F10	?ExtractNode@@YAXIHPAHPAI@Z	inplace_xboxr	InplaceFileBuilder.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17212	0x007E1A80	0x00BD0F80	?GetUIXRender@LiveWrapper@@QAE_NXZ	controller_xboxr	controller_xbox.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17213	0x007E1A90	0x00BD0F90	??0motor_info@?A0x259e6277@@QAE@XZ	controller_xboxr	controller_xbox.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -19411,8 +19411,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19410	0x00834470	0x00C23970	?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@I@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19411	0x008344D0	0x00C239D0	?GetFile@apkFile@apk@@QAEPAVapkFileEntry@2@ABVtlFixedString@@I@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19412	0x00834570	0x00C23A70	?GetSectionIndex@apkFile@apk@@QAEHABVtlFixedString@@@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-19413	0x008345C0	0x00C23AC0	?ApplyFixups@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19414	0x00834630	0x00C23B30	?ApplyReferences@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19413	0x008345C0	0x00C23AC0	?ApplyFixups@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	YES	VERIFIED
+19414	0x00834630	0x00C23B30	?ApplyReferences@apkFile@apk@@QAEXAAPAIPAVtlFixedString@@@Z	apk_xboxr	apk.o	engine		f	0	FIXED	FUNCTION status override	NO	YES	VERIFIED
 19415	0x008346B0	0x00C23BB0	?InvokeLoadCallbacks@apkFile@apk@@QAEX_N@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19416	0x008347D0	0x00C23CD0	?InvokeFileLoadCallback@apkFile@apk@@QAE_NPAUapkFileTypeEntry@2@PAVapkFileEntry@2@@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19417	0x00834820	0x00C23D20	?InvokeDeleteCallbacks@apkFile@apk@@QAEXXZ	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

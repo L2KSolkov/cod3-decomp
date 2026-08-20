@@ -327,12 +327,12 @@ void apkFile::ApplyReferences(uint32_t** refData, tlFixedString* stringTable) {
         uint32_t idx = val & 0x3FFFFFF;
         uint32_t* ptr = (uint32_t*)((uint8_t*)Sections[secIdx].Data + 4 * idx);
 
+        uint32_t type = *(*refData)++;
         uint32_t stringIndex = *(*refData)++;
-        (*refData)++; // skip second word
 
-        const tlFixedString* name = (const tlFixedString*)((uint8_t*)stringTable + stringIndex);
+        const tlFixedString* name = stringTable + stringIndex;
         if (apkResourceLocatorCallback)
-            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(*name, 0);
+            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(*name, type);
         else
             *ptr = 0;
     }

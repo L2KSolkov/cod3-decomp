@@ -5,7 +5,7 @@ obj	manifest_rows	verified	port_status_only	external	in_progress	unresolved_engi
 87disp.obj	2	0	0	2	0	0	0
 87except.obj	1	0	0	1	0	0	0
 87fmod.obj	2	0	0	2	0	0	0
-AeAssert.o	12	6	6	0	0	0	0
+AeAssert.o	12	8	4	0	0	0	0
 AeHash.o	1	1	0	0	0	0	0
 Broc.o	161	95	66	0	0	0	0
 ByteOrder.obj	5	0	0	5	0	0	0
@@ -17,7 +17,7 @@ InplaceFileBuilder.o	1	1	0	0	0	0	0
 InplaceTree.o	1	1	0	0	0	0	0
 MemoryUnit.o	35	23	12	0	0	0	0
 PoolAllocator.o	64	17	47	0	0	0	0
-PtrFixupTable.o	2	1	1	0	0	0	0
+PtrFixupTable.o	2	2	0	0	0	0	0
 SearchGraph.obj	18	0	0	18	0	0	0
 ShaderCommon.o	33	18	15	0	0	0	0
 UnpackVoice.obj	9	0	0	9	0	0	0
@@ -51,7 +51,7 @@ afmv_dx_rgb.o	2	2	0	0	0	0	0
 allocate.obj	18	0	0	18	0	0	0
 anim.o	741	728	13	0	0	0	0
 api.obj	259	0	0	259	0	0	0
-apk.o	24	21	3	0	0	0	0
+apk.o	24	23	1	0	0	0	0
 apsAction.o	19	11	8	0	0	0	0
 apsActionList.o	26	15	11	0	0	0	0
 apsBillboardNode.o	33	2	31	0	0	0	0

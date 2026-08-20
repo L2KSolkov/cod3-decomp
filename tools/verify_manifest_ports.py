@@ -108,7 +108,8 @@ def symbol_compat_variants(name: str) -> set[str]:
     # VC7.1's map encoded pointer qualifiers as QAM/QBM/QAY/QBY in several
     # release signatures; current MSVC emits the corresponding P* forms.
     for old, modern in (("QAM", "PAM"), ("QBM", "PBM"),
-                        ("QAY", "PAY"), ("QBY", "PBY")):
+                        ("QAY", "PAY"), ("QBY", "PBY"),
+                        ("AAPA", "PAPA")):
         for value in tuple(variants):
             if old in value:
                 variants.add(value.replace(old, modern))
