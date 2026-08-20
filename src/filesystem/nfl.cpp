@@ -1768,8 +1768,14 @@ void* nflGetFileHandle(nflFileID fileID, unsigned* handleSize, unsigned* fileSta
         stride = file.as.subfile.strideSize;
         native = (nflFileID)file.as.subfile.parent;
     }
+    if (nfsGetFile(native) == nullptr) {
+        txAssertFailed(nullptr, "f", "nflGetFileHandle",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1245);
+        return nullptr;
+    }
+    const nflFileID nativeID = nfsGetNativeFileID(native);
     nfsFile* nativeFile = nfsGetNativeFile(native);
-    const int nativeIndex = FileIndex(native);
+    const int nativeIndex = FileIndex(nativeID);
     if (nativeFile == nullptr || nativeIndex < 0 || nativeFile->as.native.driver == nullptr)
         return nullptr;
     nfdDriver* driver = nativeFile->as.native.driver;
