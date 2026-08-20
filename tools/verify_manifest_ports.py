@@ -280,6 +280,8 @@ def shell_skip_note(row: dict[str, str]) -> str:
     name = row.get("name", "")
     if "IDirectSound" in name:
         return "SKIPPED: external DirectSound interface wrapper; supplied by the platform shim"
+    if "D3DTexture@@" in name:
+        return "SKIPPED: external D3D texture interface wrapper; supplied by the platform shim"
     if name.startswith("??_E") or name.startswith("??_G"):
         return "SKIPPED: compiler-generated deleting destructor; supplied by the compiler"
     if (

@@ -38,6 +38,17 @@ jobqueue.o	??B?$jqPtr@UjqBatch@@@@QAEPAUjqBatch@@XZ	PORTED
 jobqueue.o	??0?$jqPtr@UjqBatchGroup@@@@QAE@PAUjqBatchGroup@@@Z	PORTED
 jobqueue.o	??4?$jqPtr@UjqBatchGroup@@@@QAEABV0@PAUjqBatchGroup@@@Z	PORTED
 jobqueue.o	??B?$jqPtr@UjqBatchGroup@@@@QAEPAUjqBatchGroup@@XZ	PORTED
+nvl_afmv.o	?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z	VERIFIED
+nvl_afmv.o	?GetMBModes@nvlAFMVMovie@@IAEHXZ	VERIFIED
+nvl_afmv.o	?GetQuantScale@nvlAFMVMovie@@IAEXXZ	VERIFIED
+nvl_afmv.o	?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z	VERIFIED
+nvl_afmv.o	?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z	VERIFIED
+nvl_afmv.o	?GetDMV@nvlAFMVMovie@@IAEHXZ	VERIFIED
+nvl_afmv.o	?GetCBP@nvlAFMVMovie@@IAEHXZ	VERIFIED
+nvl_afmv.o	?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ	VERIFIED
+nvl_afmv.o	?GetChromaDiff@nvlAFMVMovie@@IAEHXZ	VERIFIED
+nvl_afmv.o	?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z	VERIFIED
+nvl_afmv.o	?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z	VERIFIED
 apsRectangleRenderer.o	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	FIXED
 apsRectangleRenderer.o	?Init@apsRectangleRenderer@@SAXXZ	FIXED
 apsRectangleRenderer.o	?RegisterVShader@apsRectangleRender@@YAXXZ	PORTED

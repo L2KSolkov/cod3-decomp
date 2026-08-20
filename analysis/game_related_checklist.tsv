@@ -19341,21 +19341,21 @@ index	status	map_line
 19340	VERIFIED	0002:00430580 ?DoMotionCopy@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1FA80 f nvl_afmv.o
 19341	VERIFIED	0002:00430630 ?DecodeSlice@nvlAFMVMovie@@IAEHXZ 00C1FB30 f nvl_afmv.o
 19342	VERIFIED	0002:00430ff0 ?DecodeFrame@nvlAFMVMovie@@UAE?AW4nvlFrameState@@XZ 00C204F0 f nvl_afmv.o
-19343	PENDING	0002:00431610 ?LockRect@D3DTexture@@QAGJIPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z 00C20B10 f i nvl_afmv.o
-19344	PENDING	0002:00431640 ?UnlockRect@D3DTexture@@QAGJI@Z 00C20B40 f i nvl_afmv.o
+19343	SKIPPED	0002:00431610 ?LockRect@D3DTexture@@QAGJIPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z 00C20B10 f i nvl_afmv.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
+19344	SKIPPED	0002:00431640 ?UnlockRect@D3DTexture@@QAGJI@Z 00C20B40 f i nvl_afmv.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 19345	VERIFIED	0002:00431650 ?nvlLockTexture@@YAPAEPAUnglTexture@@_N@Z 00C20B50 f i nvl_afmv.o
 19346	VERIFIED	0002:00431690 ?nvlUnlockTexture@@YAXPAUnglTexture@@_N@Z 00C20B90 f i nvl_afmv.o
-19347	PENDING	0002:004316a0 ?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z 00C20BA0 f i nvl_afmv.o
-19348	PENDING	0002:00431730 ?GetMBModes@nvlAFMVMovie@@IAEHXZ 00C20C30 f i nvl_afmv.o
-19349	PENDING	0002:004318e0 ?GetQuantScale@nvlAFMVMovie@@IAEXXZ 00C20DE0 f i nvl_afmv.o
-19350	PENDING	0002:00431920 ?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z 00C20E20 f i nvl_afmv.o
-19351	PENDING	0002:00431a90 ?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z 00C20F90 f i nvl_afmv.o
-19352	PENDING	0002:00431ab0 ?GetDMV@nvlAFMVMovie@@IAEHXZ 00C20FB0 f i nvl_afmv.o
-19353	PENDING	0002:00431af0 ?GetCBP@nvlAFMVMovie@@IAEHXZ 00C20FF0 f i nvl_afmv.o
-19354	PENDING	0002:00431b80 ?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ 00C21080 f i nvl_afmv.o
-19355	PENDING	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
-19356	PENDING	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
-19357	PENDING	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
+19347	VERIFIED	0002:004316a0 ?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z 00C20BA0 f i nvl_afmv.o
+19348	VERIFIED	0002:00431730 ?GetMBModes@nvlAFMVMovie@@IAEHXZ 00C20C30 f i nvl_afmv.o
+19349	VERIFIED	0002:004318e0 ?GetQuantScale@nvlAFMVMovie@@IAEXXZ 00C20DE0 f i nvl_afmv.o
+19350	VERIFIED	0002:00431920 ?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z 00C20E20 f i nvl_afmv.o
+19351	VERIFIED	0002:00431a90 ?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z 00C20F90 f i nvl_afmv.o
+19352	VERIFIED	0002:00431ab0 ?GetDMV@nvlAFMVMovie@@IAEHXZ 00C20FB0 f i nvl_afmv.o
+19353	VERIFIED	0002:00431af0 ?GetCBP@nvlAFMVMovie@@IAEHXZ 00C20FF0 f i nvl_afmv.o
+19354	VERIFIED	0002:00431b80 ?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ 00C21080 f i nvl_afmv.o
+19355	VERIFIED	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
+19356	VERIFIED	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
+19357	VERIFIED	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
 19358	SKIPPED	0002:00431f20 ??_GnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19359	SKIPPED	0002:00431f20 ??_EnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19360	VERIFIED	0002:00432260 ?MacroBlockIdct@@YAXPAF@Z 00C21760 f afmv_dx_idct.o
@@ -19946,7 +19946,7 @@ index	status	map_line
 19945	VERIFIED	0002:00449610 ?RenderBlur@nglDxFilters@@YAXPAUnglTexture@@0@Z 00C38B10 f ngl_dx_filters.o
 19946	VERIFIED	0002:00449f80 ?nglBlurCallBack@@YAXPAX@Z 00C39480 f ngl_dx_filters.o
 19947	VERIFIED	0002:00449fa0 ?nglDepthOfFieldCallBack@@YAXPAX@Z 00C394A0 f ngl_dx_filters.o
-19948	PORTED	0002:0044a4e0 ?GetLevelDesc@D3DTexture@@QAGJIPAU_D3DSURFACE_DESC@@@Z 00C399E0 f i ngl_dx_filters.o
+19948	SKIPPED	0002:0044a4e0 ?GetLevelDesc@D3DTexture@@QAGJIPAU_D3DSURFACE_DESC@@@Z 00C399E0 f i ngl_dx_filters.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 19949	PORTED	0002:0044a500 ??0D3DXCOLOR@@QAE@MMMM@Z 00C39A00 f i ngl_dx_filters.o
 19950	PORTED	0002:0044a530 ??BD3DXCOLOR@@QBEKXZ 00C39A30 f i ngl_dx_filters.o
 19951	PORTED	0002:0044a640 ?SetStencil@nglDxRenderState@@QAEX_N@Z 00C39B40 f i ngl_dx_filters.o
@@ -19956,13 +19956,13 @@ index	status	map_line
 19955	PORTED	0002:0044a730 ?SetAlphaKill@nglDxRenderState@@QAEHHW4_D3DTEXTUREALPHAKILL@@@Z 00C39C30 f i ngl_dx_filters.o
 19956	PORTED	0002:0044a770 ?nglGetFSAAScaleX@@YAMXZ 00C39C70 f i ngl_dx_filters.o
 19957	PORTED	0002:0044a780 ?nglGetFSAAScaleY@@YAMXZ 00C39C80 f i ngl_dx_filters.o
-19958	PORTED	0002:0044a790 ?CreateTexture@D3DDevice@@SGJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@@Z 00C39C90 f i ngl_gpu_texture.o
+19958	SKIPPED	0002:0044a790 ?CreateTexture@D3DDevice@@SGJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@@Z 00C39C90 f i ngl_gpu_texture.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 19959	PORTED	0002:0044a7d0 ?CreateVolumeTexture@D3DDevice@@SGJIIIIKW4_D3DFORMAT@@KPAPAUD3DVolumeTexture@@@Z 00C39CD0 f i ngl_gpu_texture.o
 19960	PORTED	0002:0044a810 ?CreateCubeTexture@D3DDevice@@SGJIIKW4_D3DFORMAT@@KPAPAUD3DCubeTexture@@@Z 00C39D10 f i ngl_gpu_texture.o
 19961	PORTED	0002:0044a850 ?CreateRenderTarget@D3DDevice@@SGJIIW4_D3DFORMAT@@KHPAPAUD3DSurface@@@Z 00C39D50 f i ngl_gpu_texture.o
 19962	PORTED	0002:0044a880 ?CreateDepthStencilSurface@D3DDevice@@SGJIIW4_D3DFORMAT@@KPAPAUD3DSurface@@@Z 00C39D80 f i ngl_gpu_texture.o
 19963	PORTED	0002:0044a8b0 ?XGIsTiledFormat@@YAHW4_D3DFORMAT@@@Z 00C39DB0 f i ngl_gpu_texture.o
-19964	PORTED	0002:0044a8c0 ?CreateTexture@gpuD3DDevice@@QAEJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@PAPAX@Z 00C39DC0 f i ngl_gpu_texture.o
+19964	SKIPPED	0002:0044a8c0 ?CreateTexture@gpuD3DDevice@@QAEJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@PAPAX@Z 00C39DC0 f i ngl_gpu_texture.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 19965	PORTED	0002:0044a900 ?CreateCubeTexture@gpuD3DDevice@@QAEJIIKW4_D3DFORMAT@@KPAPAUD3DCubeTexture@@PAPAX@Z 00C39E00 f i ngl_gpu_texture.o
 19966	PORTED	0002:0044a940 ?CreateVolumeTexture@gpuD3DDevice@@QAEJIIIIKW4_D3DFORMAT@@KPAPAUD3DVolumeTexture@@PAPAX@Z 00C39E40 f i ngl_gpu_texture.o
 19967	PORTED	0002:0044a980 ?CreateRenderTarget@gpuD3DDevice@@QAEJIIW4_D3DFORMAT@@KKHPAPAUD3DSurface@@PAPAX@Z 00C39E80 f i ngl_gpu_texture.o
@@ -19974,7 +19974,7 @@ index	status	map_line
 19973	PORTED	0002:0044aad0 ?gpuCreateDepthStencilSurface@@YAPAUD3DSurface@@IIW4gpuTextureFormat@@W4gpuMultiSampleType@@@Z 00C39FD0 f i ngl_gpu_texture.o
 19974	PORTED	0002:0044ab00 ?nglCreateTexture@@YAPAUnglTexture@@IIHHHH@Z 00C3A000 f ngl_gpu_texture.o
 19975	PORTED	0002:0044ac70 ?GetDepthStencilSurface@D3DDevice@@SGJPAPAUD3DSurface@@@Z 00C3A170 f i ngl_dx_tex_create.o
-19976	PORTED	0002:0044aca0 ?GetSurfaceLevel@D3DTexture@@QAGJIPAPAUD3DSurface@@@Z 00C3A1A0 f i ngl_dx_tex_create.o
+19976	SKIPPED	0002:0044aca0 ?GetSurfaceLevel@D3DTexture@@QAGJIPAPAUD3DSurface@@@Z 00C3A1A0 f i ngl_dx_tex_create.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 19977	PORTED	0002:0044acd0 ?GetCubeMapSurface@D3DCubeTexture@@QAGJW4_D3DCUBEMAP_FACES@@IPAPAUD3DSurface@@@Z 00C3A1D0 f i ngl_dx_tex_create.o
 19978	VERIFIED	0002:0044ad10 ?nglSaveTexture@@YAXPAUnglTexture@@PBD@Z 00C3A210 f ngl_dx_tex_create.o
 19979	VERIFIED	0002:0044adb0 ?nglCreateTextureFromFile@@YAPAUnglTexture@@PAXH@Z 00C3A2B0 f ngl_dx_tex_create.o

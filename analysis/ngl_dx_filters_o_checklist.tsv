@@ -17,7 +17,7 @@ index	status	map_line
 16	VERIFIED	0002:00449610 ?RenderBlur@nglDxFilters@@YAXPAUnglTexture@@0@Z 00C38B10 f ngl_dx_filters.o
 17	VERIFIED	0002:00449f80 ?nglBlurCallBack@@YAXPAX@Z 00C39480 f ngl_dx_filters.o
 18	VERIFIED	0002:00449fa0 ?nglDepthOfFieldCallBack@@YAXPAX@Z 00C394A0 f ngl_dx_filters.o
-19	PORTED	0002:0044a4e0 ?GetLevelDesc@D3DTexture@@QAGJIPAU_D3DSURFACE_DESC@@@Z 00C399E0 f i ngl_dx_filters.o
+19	SKIPPED	0002:0044a4e0 ?GetLevelDesc@D3DTexture@@QAGJIPAU_D3DSURFACE_DESC@@@Z 00C399E0 f i ngl_dx_filters.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 20	PORTED	0002:0044a500 ??0D3DXCOLOR@@QAE@MMMM@Z 00C39A00 f i ngl_dx_filters.o
 21	PORTED	0002:0044a530 ??BD3DXCOLOR@@QBEKXZ 00C39A30 f i ngl_dx_filters.o
 22	PORTED	0002:0044a640 ?SetStencil@nglDxRenderState@@QAEX_N@Z 00C39B40 f i ngl_dx_filters.o

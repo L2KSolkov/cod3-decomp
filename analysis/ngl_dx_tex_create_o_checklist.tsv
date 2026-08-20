@@ -1,6 +1,6 @@
 index	status	map_line
 1	PORTED	0002:0044ac70 ?GetDepthStencilSurface@D3DDevice@@SGJPAPAUD3DSurface@@@Z 00C3A170 f i ngl_dx_tex_create.o
-2	PORTED	0002:0044aca0 ?GetSurfaceLevel@D3DTexture@@QAGJIPAPAUD3DSurface@@@Z 00C3A1A0 f i ngl_dx_tex_create.o
+2	SKIPPED	0002:0044aca0 ?GetSurfaceLevel@D3DTexture@@QAGJIPAPAUD3DSurface@@@Z 00C3A1A0 f i ngl_dx_tex_create.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 3	PORTED	0002:0044acd0 ?GetCubeMapSurface@D3DCubeTexture@@QAGJW4_D3DCUBEMAP_FACES@@IPAPAUD3DSurface@@@Z 00C3A1D0 f i ngl_dx_tex_create.o
 4	VERIFIED	0002:0044ad10 ?nglSaveTexture@@YAXPAUnglTexture@@PBD@Z 00C3A210 f ngl_dx_tex_create.o
 5	VERIFIED	0002:0044adb0 ?nglCreateTextureFromFile@@YAPAUnglTexture@@PAXH@Z 00C3A2B0 f ngl_dx_tex_create.o

@@ -14,20 +14,20 @@ index	status	map_line
 13	VERIFIED	0002:00430580 ?DoMotionCopy@nvlAFMVMovie@@IAEXQAUafmv_motion_t@@QBQ6AXPAEPBEHH@Z@Z 00C1FA80 f nvl_afmv.o
 14	VERIFIED	0002:00430630 ?DecodeSlice@nvlAFMVMovie@@IAEHXZ 00C1FB30 f nvl_afmv.o
 15	VERIFIED	0002:00430ff0 ?DecodeFrame@nvlAFMVMovie@@UAE?AW4nvlFrameState@@XZ 00C204F0 f nvl_afmv.o
-16	PENDING	0002:00431610 ?LockRect@D3DTexture@@QAGJIPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z 00C20B10 f i nvl_afmv.o
-17	PENDING	0002:00431640 ?UnlockRect@D3DTexture@@QAGJI@Z 00C20B40 f i nvl_afmv.o
+16	SKIPPED	0002:00431610 ?LockRect@D3DTexture@@QAGJIPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z 00C20B10 f i nvl_afmv.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
+17	SKIPPED	0002:00431640 ?UnlockRect@D3DTexture@@QAGJI@Z 00C20B40 f i nvl_afmv.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 18	VERIFIED	0002:00431650 ?nvlLockTexture@@YAPAEPAUnglTexture@@_N@Z 00C20B50 f i nvl_afmv.o
 19	VERIFIED	0002:00431690 ?nvlUnlockTexture@@YAXPAUnglTexture@@_N@Z 00C20B90 f i nvl_afmv.o
-20	PENDING	0002:004316a0 ?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z 00C20BA0 f i nvl_afmv.o
-21	PENDING	0002:00431730 ?GetMBModes@nvlAFMVMovie@@IAEHXZ 00C20C30 f i nvl_afmv.o
-22	PENDING	0002:004318e0 ?GetQuantScale@nvlAFMVMovie@@IAEXXZ 00C20DE0 f i nvl_afmv.o
-23	PENDING	0002:00431920 ?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z 00C20E20 f i nvl_afmv.o
-24	PENDING	0002:00431a90 ?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z 00C20F90 f i nvl_afmv.o
-25	PENDING	0002:00431ab0 ?GetDMV@nvlAFMVMovie@@IAEHXZ 00C20FB0 f i nvl_afmv.o
-26	PENDING	0002:00431af0 ?GetCBP@nvlAFMVMovie@@IAEHXZ 00C20FF0 f i nvl_afmv.o
-27	PENDING	0002:00431b80 ?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ 00C21080 f i nvl_afmv.o
-28	PENDING	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
-29	PENDING	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
-30	PENDING	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
+20	VERIFIED	0002:004316a0 ?PrecalcScaler@nvlAFMVMovie@@IAEXH@Z 00C20BA0 f i nvl_afmv.o
+21	VERIFIED	0002:00431730 ?GetMBModes@nvlAFMVMovie@@IAEHXZ 00C20C30 f i nvl_afmv.o
+22	VERIFIED	0002:004318e0 ?GetQuantScale@nvlAFMVMovie@@IAEXXZ 00C20DE0 f i nvl_afmv.o
+23	VERIFIED	0002:00431920 ?GetMotionDiff@nvlAFMVMovie@@IAEHH@Z 00C20E20 f i nvl_afmv.o
+24	VERIFIED	0002:00431a90 ?SignExtendVector@nvlAFMVMovie@@IAEHHH@Z 00C20F90 f i nvl_afmv.o
+25	VERIFIED	0002:00431ab0 ?GetDMV@nvlAFMVMovie@@IAEHXZ 00C20FB0 f i nvl_afmv.o
+26	VERIFIED	0002:00431af0 ?GetCBP@nvlAFMVMovie@@IAEHXZ 00C20FF0 f i nvl_afmv.o
+27	VERIFIED	0002:00431b80 ?GetLuminanceDiff@nvlAFMVMovie@@IAEHXZ 00C21080 f i nvl_afmv.o
+28	VERIFIED	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
+29	VERIFIED	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
+30	VERIFIED	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
 31	SKIPPED	0002:00431f20 ??_GnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 32	SKIPPED	0002:00431f20 ??_EnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

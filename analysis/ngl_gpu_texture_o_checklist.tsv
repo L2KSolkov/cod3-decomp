@@ -1,11 +1,11 @@
 index	status	map_line
-1	PORTED	0002:0044a790 ?CreateTexture@D3DDevice@@SGJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@@Z 00C39C90 f i ngl_gpu_texture.o
+1	SKIPPED	0002:0044a790 ?CreateTexture@D3DDevice@@SGJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@@Z 00C39C90 f i ngl_gpu_texture.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 2	PORTED	0002:0044a7d0 ?CreateVolumeTexture@D3DDevice@@SGJIIIIKW4_D3DFORMAT@@KPAPAUD3DVolumeTexture@@@Z 00C39CD0 f i ngl_gpu_texture.o
 3	PORTED	0002:0044a810 ?CreateCubeTexture@D3DDevice@@SGJIIKW4_D3DFORMAT@@KPAPAUD3DCubeTexture@@@Z 00C39D10 f i ngl_gpu_texture.o
 4	PORTED	0002:0044a850 ?CreateRenderTarget@D3DDevice@@SGJIIW4_D3DFORMAT@@KHPAPAUD3DSurface@@@Z 00C39D50 f i ngl_gpu_texture.o
 5	PORTED	0002:0044a880 ?CreateDepthStencilSurface@D3DDevice@@SGJIIW4_D3DFORMAT@@KPAPAUD3DSurface@@@Z 00C39D80 f i ngl_gpu_texture.o
 6	PORTED	0002:0044a8b0 ?XGIsTiledFormat@@YAHW4_D3DFORMAT@@@Z 00C39DB0 f i ngl_gpu_texture.o
-7	PORTED	0002:0044a8c0 ?CreateTexture@gpuD3DDevice@@QAEJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@PAPAX@Z 00C39DC0 f i ngl_gpu_texture.o
+7	SKIPPED	0002:0044a8c0 ?CreateTexture@gpuD3DDevice@@QAEJIIIKW4_D3DFORMAT@@KPAPAUD3DTexture@@PAPAX@Z 00C39DC0 f i ngl_gpu_texture.o  SKIPPED: external D3D texture interface wrapper; supplied by the platform shim
 8	PORTED	0002:0044a900 ?CreateCubeTexture@gpuD3DDevice@@QAEJIIKW4_D3DFORMAT@@KPAPAUD3DCubeTexture@@PAPAX@Z 00C39E00 f i ngl_gpu_texture.o
 9	PORTED	0002:0044a940 ?CreateVolumeTexture@gpuD3DDevice@@QAEJIIIIKW4_D3DFORMAT@@KPAPAUD3DVolumeTexture@@PAPAX@Z 00C39E40 f i ngl_gpu_texture.o
 10	PORTED	0002:0044a980 ?CreateRenderTarget@gpuD3DDevice@@QAEJIIW4_D3DFORMAT@@KKHPAPAUD3DSurface@@PAPAX@Z 00C39E80 f i ngl_gpu_texture.o
