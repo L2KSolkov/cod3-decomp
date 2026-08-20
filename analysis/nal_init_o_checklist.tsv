@@ -13,7 +13,7 @@ index	status	map_line
 12	VERIFIED	0002:00454430 ??1nalGenericAnim@nalGeneric@@UAE@XZ 00C43930 f i nal_init.o
 13	SKIPPED	0002:00454440 ??_G?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C43940 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 14	SKIPPED	0002:00454440 ??_E?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C43940 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-15	PENDING	0002:00454470 ??1nalComponentU8Base@@UAE@XZ 00C43970 f i nal_init.o
+15	FIXED	0002:00454470 ??1nalComponentU8Base@@UAE@XZ 00C43970 f i nal_init.o
 16	VERIFIED	0002:00454480 ??1nalAnimHeap@@UAE@XZ 00C43980 f i nal_init.o
 17	VERIFIED	0002:00454490 ?nalSetAnimPath@@YAXPBD@Z 00C43990 f nal_init.o
 18	VERIFIED	0002:004544c0 ?nalGetAnimPath@@YAPBDXZ 00C439C0 f nal_init.o
@@ -34,12 +34,12 @@ index	status	map_line
 33	PORTED	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
 34	PORTED	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
 35	PORTED	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
-36	PENDING	0002:00454810 ??1nalComponentFloat1Base@@UAE@XZ 00C43D10 f i nal_init.o
-37	PENDING	0002:00454820 ??1nalComponentFloat3Base@@UAE@XZ 00C43D20 f i nal_init.o
-38	PENDING	0002:00454830 ??1nalComponentFloat4Base@@UAE@XZ 00C43D30 f i nal_init.o
-39	PENDING	0002:00454840 ??1nalComponentQuatBase@@UAE@XZ 00C43D40 f i nal_init.o
-40	PENDING	0002:00454850 ??1nalComponentPOBase@@UAE@XZ 00C43D50 f i nal_init.o
-41	PENDING	0002:00454860 ??1nalComponentIKSpinBase@@UAE@XZ 00C43D60 f i nal_init.o
+36	FIXED	0002:00454810 ??1nalComponentFloat1Base@@UAE@XZ 00C43D10 f i nal_init.o
+37	FIXED	0002:00454820 ??1nalComponentFloat3Base@@UAE@XZ 00C43D20 f i nal_init.o
+38	FIXED	0002:00454830 ??1nalComponentFloat4Base@@UAE@XZ 00C43D30 f i nal_init.o
+39	FIXED	0002:00454840 ??1nalComponentQuatBase@@UAE@XZ 00C43D40 f i nal_init.o
+40	FIXED	0002:00454850 ??1nalComponentPOBase@@UAE@XZ 00C43D50 f i nal_init.o
+41	FIXED	0002:00454860 ??1nalComponentIKSpinBase@@UAE@XZ 00C43D60 f i nal_init.o
 42	FIXED	0002:00454870 ??0?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C43D70 f i nal_init.o
 43	FIXED	0002:00454890 ??0?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C43D90 f i nal_init.o
 44	FIXED	0002:004548b0 ??0?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C43DB0 f i nal_init.o
@@ -102,48 +102,48 @@ index	status	map_line
 101	PENDING	0002:00454e40 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ 00C44340 f i nal_init.o
 102	PENDING	0002:00454e50 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ 00C44350 f i nal_init.o
 103	PENDING	0002:00454e60 ??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ 00C44360 f i nal_init.o
-104	PENDING	0002:00454e70 ??0nalComponentU8Base@@QAE@XZ 00C44370 f i nal_init.o
-105	PENDING	0002:00454e80 ?GetType@nalComponentU8Base@@UBEIXZ 00C44380 f i nal_init.o
-106	PENDING	0002:00454e90 ?GetPoseSize@nalComponentU8Base@@UBEHXZ 00C44390 f i nal_init.o
+104	PORTED	0002:00454e70 ??0nalComponentU8Base@@QAE@XZ 00C44370 f i nal_init.o
+105	PORTED	0002:00454e80 ?GetType@nalComponentU8Base@@UBEIXZ 00C44380 f i nal_init.o
+106	PORTED	0002:00454e90 ?GetPoseSize@nalComponentU8Base@@UBEHXZ 00C44390 f i nal_init.o
 107	SKIPPED	0002:00454ea0 ??_GnalComponentU8Base@@UAEPAXI@Z 00C443A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 108	SKIPPED	0002:00454ea0 ??_EnalComponentU8Base@@UAEPAXI@Z 00C443A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-109	PENDING	0002:00454ed0 ?GetPoseAlignment@nalComponentU8Base@@UBEHXZ 00C443D0 f i nal_init.o
-110	PENDING	0002:00454ee0 ??0nalComponentFloat1Base@@QAE@XZ 00C443E0 f i nal_init.o
-111	PENDING	0002:00454ef0 ?GetType@nalComponentFloat1Base@@UBEIXZ 00C443F0 f i nal_init.o
-112	PENDING	0002:00454f00 ?GetPoseSize@nalComponentFloat1Base@@UBEHXZ 00C44400 f i nal_init.o
+109	PORTED	0002:00454ed0 ?GetPoseAlignment@nalComponentU8Base@@UBEHXZ 00C443D0 f i nal_init.o
+110	PORTED	0002:00454ee0 ??0nalComponentFloat1Base@@QAE@XZ 00C443E0 f i nal_init.o
+111	PORTED	0002:00454ef0 ?GetType@nalComponentFloat1Base@@UBEIXZ 00C443F0 f i nal_init.o
+112	PORTED	0002:00454f00 ?GetPoseSize@nalComponentFloat1Base@@UBEHXZ 00C44400 f i nal_init.o
 113	SKIPPED	0002:00454f10 ??_EnalComponentFloat1Base@@UAEPAXI@Z 00C44410 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 114	SKIPPED	0002:00454f10 ??_GnalComponentFloat1Base@@UAEPAXI@Z 00C44410 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-115	PENDING	0002:00454f40 ?GetPoseAlignment@nalComponentFloat1Base@@UBEHXZ 00C44440 f i nal_init.o
-116	PENDING	0002:00454f50 ??0nalComponentFloat3Base@@QAE@XZ 00C44450 f i nal_init.o
-117	PENDING	0002:00454f60 ?GetType@nalComponentFloat3Base@@UBEIXZ 00C44460 f i nal_init.o
-118	PENDING	0002:00454f70 ?GetPoseSize@nalComponentFloat3Base@@UBEHXZ 00C44470 f i nal_init.o
+115	PORTED	0002:00454f40 ?GetPoseAlignment@nalComponentFloat1Base@@UBEHXZ 00C44440 f i nal_init.o
+116	PORTED	0002:00454f50 ??0nalComponentFloat3Base@@QAE@XZ 00C44450 f i nal_init.o
+117	PORTED	0002:00454f60 ?GetType@nalComponentFloat3Base@@UBEIXZ 00C44460 f i nal_init.o
+118	PORTED	0002:00454f70 ?GetPoseSize@nalComponentFloat3Base@@UBEHXZ 00C44470 f i nal_init.o
 119	SKIPPED	0002:00454f80 ??_GnalComponentFloat3Base@@UAEPAXI@Z 00C44480 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 120	SKIPPED	0002:00454f80 ??_EnalComponentFloat3Base@@UAEPAXI@Z 00C44480 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-121	PENDING	0002:00454fb0 ?GetPoseAlignment@nalComponentFloat3Base@@UBEHXZ 00C444B0 f i nal_init.o
-122	PENDING	0002:00454fc0 ??0nalComponentFloat4Base@@QAE@XZ 00C444C0 f i nal_init.o
-123	PENDING	0002:00454fd0 ?GetType@nalComponentFloat4Base@@UBEIXZ 00C444D0 f i nal_init.o
-124	PENDING	0002:00454fe0 ?GetPoseSize@nalComponentFloat4Base@@UBEHXZ 00C444E0 f i nal_init.o
+121	PORTED	0002:00454fb0 ?GetPoseAlignment@nalComponentFloat3Base@@UBEHXZ 00C444B0 f i nal_init.o
+122	PORTED	0002:00454fc0 ??0nalComponentFloat4Base@@QAE@XZ 00C444C0 f i nal_init.o
+123	PORTED	0002:00454fd0 ?GetType@nalComponentFloat4Base@@UBEIXZ 00C444D0 f i nal_init.o
+124	PORTED	0002:00454fe0 ?GetPoseSize@nalComponentFloat4Base@@UBEHXZ 00C444E0 f i nal_init.o
 125	SKIPPED	0002:00454ff0 ??_GnalComponentFloat4Base@@UAEPAXI@Z 00C444F0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 126	SKIPPED	0002:00454ff0 ??_EnalComponentFloat4Base@@UAEPAXI@Z 00C444F0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-127	PENDING	0002:00455020 ?GetPoseAlignment@nalComponentFloat4Base@@UBEHXZ 00C44520 f i nal_init.o
-128	PENDING	0002:00455030 ??0nalComponentQuatBase@@QAE@XZ 00C44530 f i nal_init.o
-129	PENDING	0002:00455040 ?GetType@nalComponentQuatBase@@UBEIXZ 00C44540 f i nal_init.o
-130	PENDING	0002:00455050 ?GetPoseSize@nalComponentQuatBase@@UBEHXZ 00C44550 f i nal_init.o
+127	PORTED	0002:00455020 ?GetPoseAlignment@nalComponentFloat4Base@@UBEHXZ 00C44520 f i nal_init.o
+128	PORTED	0002:00455030 ??0nalComponentQuatBase@@QAE@XZ 00C44530 f i nal_init.o
+129	PORTED	0002:00455040 ?GetType@nalComponentQuatBase@@UBEIXZ 00C44540 f i nal_init.o
+130	PORTED	0002:00455050 ?GetPoseSize@nalComponentQuatBase@@UBEHXZ 00C44550 f i nal_init.o
 131	SKIPPED	0002:00455060 ??_EnalComponentQuatBase@@UAEPAXI@Z 00C44560 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 132	SKIPPED	0002:00455060 ??_GnalComponentQuatBase@@UAEPAXI@Z 00C44560 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-133	PENDING	0002:00455090 ?GetPoseAlignment@nalComponentQuatBase@@UBEHXZ 00C44590 f i nal_init.o
-134	PENDING	0002:004550a0 ??0nalComponentPOBase@@QAE@XZ 00C445A0 f i nal_init.o
-135	PENDING	0002:004550b0 ?GetType@nalComponentPOBase@@UBEIXZ 00C445B0 f i nal_init.o
-136	PENDING	0002:004550c0 ?GetPoseSize@nalComponentPOBase@@UBEHXZ 00C445C0 f i nal_init.o
+133	PORTED	0002:00455090 ?GetPoseAlignment@nalComponentQuatBase@@UBEHXZ 00C44590 f i nal_init.o
+134	PORTED	0002:004550a0 ??0nalComponentPOBase@@QAE@XZ 00C445A0 f i nal_init.o
+135	PORTED	0002:004550b0 ?GetType@nalComponentPOBase@@UBEIXZ 00C445B0 f i nal_init.o
+136	PORTED	0002:004550c0 ?GetPoseSize@nalComponentPOBase@@UBEHXZ 00C445C0 f i nal_init.o
 137	SKIPPED	0002:004550d0 ??_GnalComponentPOBase@@UAEPAXI@Z 00C445D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 138	SKIPPED	0002:004550d0 ??_EnalComponentPOBase@@UAEPAXI@Z 00C445D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-139	PENDING	0002:00455100 ?GetPoseAlignment@nalComponentPOBase@@UBEHXZ 00C44600 f i nal_init.o
-140	PENDING	0002:00455110 ??0nalComponentIKSpinBase@@QAE@XZ 00C44610 f i nal_init.o
-141	PENDING	0002:00455120 ?GetType@nalComponentIKSpinBase@@UBEIXZ 00C44620 f i nal_init.o
-142	PENDING	0002:00455130 ?GetPoseSize@nalComponentIKSpinBase@@UBEHXZ 00C44630 f i nal_init.o
+139	PORTED	0002:00455100 ?GetPoseAlignment@nalComponentPOBase@@UBEHXZ 00C44600 f i nal_init.o
+140	PORTED	0002:00455110 ??0nalComponentIKSpinBase@@QAE@XZ 00C44610 f i nal_init.o
+141	PORTED	0002:00455120 ?GetType@nalComponentIKSpinBase@@UBEIXZ 00C44620 f i nal_init.o
+142	PORTED	0002:00455130 ?GetPoseSize@nalComponentIKSpinBase@@UBEHXZ 00C44630 f i nal_init.o
 143	SKIPPED	0002:00455140 ??_GnalComponentIKSpinBase@@UAEPAXI@Z 00C44640 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 144	SKIPPED	0002:00455140 ??_EnalComponentIKSpinBase@@UAEPAXI@Z 00C44640 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-145	PENDING	0002:00455170 ?GetPoseAlignment@nalComponentIKSpinBase@@UBEHXZ 00C44670 f i nal_init.o
+145	PORTED	0002:00455170 ?GetPoseAlignment@nalComponentIKSpinBase@@UBEHXZ 00C44670 f i nal_init.o
 146	PENDING	0002:00455180 ?Del@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE_NPBVnalAnimFile@@@Z 00C44680 f i nal_init.o
 147	PENDING	0002:004552c0 ?Del@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE_NPBV?$nalAnimClass@VnalAnyPose@@@@@Z 00C447C0 f i nal_init.o
 148	PENDING	0002:00455400 ?Del@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE_NPBVnalSceneAnim@@@Z 00C44900 f i nal_init.o

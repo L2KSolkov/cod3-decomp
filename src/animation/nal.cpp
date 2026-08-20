@@ -2255,21 +2255,17 @@ nalComponentInitList::nalComponentInitList(const char* name,
     Name = name;
     Component = &component;
 }
-class nalComponentU8Base            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentSignalCounter     { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentRLE8Int1          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentFloat1Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
-class nalComponentFloat3Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
-class nalComponentFloat4Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentQuatBase          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} virtual void BlendIntra(int,void*,const void*,const void*,float){} };
-class nalComponentPOBase            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
-class nalComponentIKSpinBase        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentTrajectoryPO      { public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
-class nalComponentEntropyTrajectoryPO{ public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
-
-unsigned char nalComponentFloat1Base::TypeID = 0;
-unsigned char nalComponentFloat3Base::TypeID = 0;
-unsigned char nalComponentPOBase::TypeID = 0;
+class nalComponentU8Base;
+class nalComponentSignalCounter;
+class nalComponentRLE8Int1;
+class nalComponentFloat1Base;
+class nalComponentFloat3Base;
+class nalComponentFloat4Base;
+class nalComponentQuatBase;
+class nalComponentPOBase;
+class nalComponentIKSpinBase;
+class nalComponentTrajectoryPO;
+class nalComponentEntropyTrajectoryPO;
 
 // ============================================================================
 // nalStreamInstance Ã¢â‚¬â€ streaming animation instance
@@ -4974,6 +4970,10 @@ public:
     // ?BlendIntra@nalComponentBase@@UBEXHPAXPBX1M@Z (0x55E830)
     virtual void BlendIntra(int count, void* dst, const void* srcA,
                             const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const = 0;
+    virtual int GetPoseAlignment() const = 0;
 };
 
 // ea: 0x0055E830
@@ -4985,6 +4985,102 @@ void nalComponentBase::BlendIntra(int count, void* dst, const void* srcA,
     ((BlendFn)((void**)*(void**)this)[3])((void*)this, count, dst, srcA,
                                           srcB, blend);
 }
+
+// nal_init.o component base classes.  IDA shows each as a direct
+// nalComponentBase extension with only type/size/alignment supplied here;
+// the shared decode slots remain abstract and are implemented by the
+// concrete nalComponent specializations below.
+class nalComponentU8Base : public nalComponentBase {
+public:
+    nalComponentU8Base() {}
+    virtual ~nalComponentU8Base() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 1; }
+    virtual int GetPoseAlignment() const { return 1; }
+    static unsigned char TypeID;
+};
+
+class nalComponentFloat1Base : public nalComponentBase {
+public:
+    nalComponentFloat1Base() {}
+    virtual ~nalComponentFloat1Base() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 4; }
+    virtual int GetPoseAlignment() const { return 4; }
+    static unsigned char TypeID;
+};
+
+class nalComponentFloat3Base : public nalComponentBase {
+public:
+    nalComponentFloat3Base() {}
+    virtual ~nalComponentFloat3Base() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 16; }
+    virtual int GetPoseAlignment() const { return 16; }
+    static unsigned char TypeID;
+};
+
+class nalComponentFloat4Base : public nalComponentBase {
+public:
+    nalComponentFloat4Base() {}
+    virtual ~nalComponentFloat4Base() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 16; }
+    virtual int GetPoseAlignment() const { return 16; }
+    static unsigned char TypeID;
+};
+
+class nalComponentQuatBase : public nalComponentBase {
+public:
+    nalComponentQuatBase() {}
+    virtual ~nalComponentQuatBase() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 16; }
+    virtual int GetPoseAlignment() const { return 16; }
+    static unsigned char TypeID;
+};
+
+class nalComponentPOBase : public nalComponentBase {
+public:
+    nalComponentPOBase() {}
+    virtual ~nalComponentPOBase() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 32; }
+    virtual int GetPoseAlignment() const { return 16; }
+    static unsigned char TypeID;
+};
+
+class nalComponentIKSpinBase : public nalComponentBase {
+public:
+    nalComponentIKSpinBase() {}
+    virtual ~nalComponentIKSpinBase() {}
+    virtual unsigned int GetType() const {
+        return (unsigned int)(uintptr_t)&TypeID;
+    }
+    virtual int GetPoseSize() const { return 96; }
+    virtual int GetPoseAlignment() const { return 16; }
+    static unsigned char TypeID;
+};
+
+unsigned char nalComponentU8Base::TypeID = 0;
+unsigned char nalComponentFloat1Base::TypeID = 0;
+unsigned char nalComponentFloat3Base::TypeID = 0;
+unsigned char nalComponentFloat4Base::TypeID = 0;
+unsigned char nalComponentQuatBase::TypeID = 0;
+unsigned char nalComponentPOBase::TypeID = 0;
+unsigned char nalComponentIKSpinBase::TypeID = 0;
 
 // nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
 namespace nalGeneric {
