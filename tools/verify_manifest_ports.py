@@ -26,6 +26,7 @@ SUMMARY = ROOT / "analysis" / "manifest_function_checklist_summary.tsv"
 GAME_OUT = ROOT / "analysis" / "game_related_manifest_function_checklist.tsv"
 GAME_SUMMARY = ROOT / "analysis" / "game_related_manifest_function_checklist_summary.tsv"
 MASTER_CHECKLIST = ROOT / "analysis" / "object_master_checklist.tsv"
+FUNCTION_OVERRIDES = ROOT / "analysis" / "function_status_overrides.tsv"
 SHELL_FORMAT_INVENTORY = ROOT / "analysis" / "game_related_inventory.tsv"
 SHELL_FORMAT_PLAN = ROOT / "analysis" / "game_related_plan.tsv"
 SHELL_FORMAT_CHECKLIST = ROOT / "analysis" / "game_related_checklist.tsv"
@@ -39,6 +40,7 @@ def read_tsv(path: Path) -> list[dict[str, str]]:
 
 def status_rank(status: str) -> int:
     return {
+        "FIXED": 5,
         "PORTED": 4,
         "COMPLETE": 4,
         "VERIFIED": 3,
@@ -62,7 +64,7 @@ def aggregate_statuses(rows: list[dict[str, str]]) -> dict[tuple[str, str], str]
             if not candidate:
                 continue
             token = candidate.split(" ", 1)[0]
-            if token in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED", "IN_PROGRESS"}:
+            if token in {"FIXED", "PORTED", "COMPLETE", "VERIFIED", "VALIDATED", "IN_PROGRESS"}:
                 status = token
                 break
         if not source or not obj or not status:
@@ -122,6 +124,25 @@ def symbol_compat_variants(name: str) -> set[str]:
     return variants
 
 
+def function_overrides() -> dict[tuple[str, str], str]:
+    """Return explicit per-function audit statuses.
+
+    PROGRESS.tsv is object-level history; this table records the narrower
+    distinction between an unchanged VERIFIED port and a source FIXED/PORTED
+    during function-by-function review.
+    """
+    if not FUNCTION_OVERRIDES.exists():
+        return {}
+    result: dict[tuple[str, str], str] = {}
+    for row in read_tsv(FUNCTION_OVERRIDES):
+        obj = row.get("obj", "")
+        name = row.get("name", "")
+        status = row.get("status", "")
+        if obj and name and status in {"FIXED", "PORTED", "VERIFIED", "SKIPPED"}:
+            result[(obj, name)] = status
+    return result
+
+
 def source_status(
     row: dict[str, str], exact: dict[tuple[str, str], str], by_obj: dict[str, str]
 ) -> tuple[str, str]:
@@ -138,6 +159,7 @@ def main() -> None:
     manifest = read_tsv(MANIFEST)
     progress = read_tsv(PROGRESS)
     exact = aggregate_statuses(progress)
+    overrides = function_overrides()
     by_obj: dict[str, str] = {}
     for (source, obj), status in exact.items():
         if status_rank(status) > status_rank(by_obj.get(obj, "")):
@@ -146,7 +168,11 @@ def main() -> None:
     symbols = dumpbin_symbols()
     rows: list[dict[str, str]] = []
     for index, row in enumerate(manifest, 1):
-        status, basis = source_status(row, exact, by_obj)
+        override = overrides.get((row.get("obj", ""), row.get("name", "")))
+        if override:
+            status, basis = override, "FUNCTION status override"
+        else:
+            status, basis = source_status(row, exact, by_obj)
         name = row.get("name", "")
         symbol = "YES" if name in symbols else "NO"
         symbol_compat = "YES" if symbol == "YES" or any(
@@ -155,7 +181,7 @@ def main() -> None:
         row_class = row.get("class", "")
         if row_class in {"xdk", "crt"}:
             verification = "EXTERNAL"
-        elif status in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED"} and symbol_compat == "YES":
+        elif status in {"FIXED", "PORTED", "COMPLETE", "VERIFIED", "VALIDATED"} and symbol_compat == "YES":
             verification = "VERIFIED"
         elif status in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED"}:
             verification = "PORT_STATUS_ONLY"
@@ -231,6 +257,8 @@ def shell_status(row: dict[str, str]) -> str:
     """Map the detailed audit result to the shell.o checklist vocabulary."""
     if shell_skip_note(row):
         return "SKIPPED"
+    if row["aggregate_status"] == "FIXED":
+        return "FIXED"
     if row["verification"] == "VERIFIED":
         return "VERIFIED"
     if row["aggregate_status"] in {"PORTED", "COMPLETE", "VALIDATED"}:

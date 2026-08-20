@@ -1,10 +1,10 @@
 index	status	map_line
-1	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
+1	FIXED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 2	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
-3	VERIFIED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
-4	VERIFIED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
-5	VERIFIED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
-6	VERIFIED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
+3	FIXED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
+4	FIXED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
+5	FIXED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
+6	FIXED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
 7	PORTED	0002:003bbf70 ?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ 00BAB470 f i ae_heap.o
 8	PORTED	0002:003bbf80 ?Malloc@ae_heap@@UAEPAXII@Z 00BAB480 f i ae_heap.o
 9	PORTED	0002:003bbfc0 ?Free@ae_heap@@UAEXPAX@Z 00BAB4C0 f i ae_heap.o

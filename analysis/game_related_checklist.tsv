@@ -15919,12 +15919,12 @@ index	status	map_line
 15918	VERIFIED	0002:003bbde0 ??0?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAE@XZ 00BAB2E0 f i mem_lib.o
 15919	PORTED	0002:003bbdf0 ??0mem_heap_context@@QAE@PAUmem_heap@@@Z 00BAB2F0 f i mem_lib.o
 15920	PORTED	0002:003bbe10 ??1mem_heap_context@@QAE@XZ 00BAB310 f i mem_lib.o
-15921	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
+15921	FIXED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 15922	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
-15923	VERIFIED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
-15924	VERIFIED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
-15925	VERIFIED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
-15926	VERIFIED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
+15923	FIXED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
+15924	FIXED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
+15925	FIXED	0002:003bbf20 ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z 00BAB420 f ae_heap.o
+15926	FIXED	0002:003bbf40 ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z 00BAB440 f ae_heap.o
 15927	PORTED	0002:003bbf70 ?GetHeapPointer@ae_heap@@UAEPAUmem_heap@@XZ 00BAB470 f i ae_heap.o
 15928	PORTED	0002:003bbf80 ?Malloc@ae_heap@@UAEPAXII@Z 00BAB480 f i ae_heap.o
 15929	PORTED	0002:003bbfc0 ?Free@ae_heap@@UAEXPAX@Z 00BAB4C0 f i ae_heap.o
@@ -16033,15 +16033,15 @@ index	status	map_line
 16032	PORTED	0002:003bed50 ??1InfiniteRecursionStopper@AeAssert@@QAE@XZ 00BAE250 f i AeAssert.o
 16033	PORTED	0002:003bed60 ??0?$ae_fixed_string@$0BAAA@G@@QAE@XZ 00BAE260 f i AeAssert.o
 16034	PORTED	0002:003bed70 ??$tl_max@HH@@YAHABH0@Z 00BAE270 f i AeAssert.o
-16035	VERIFIED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
+16035	FIXED	0002:003bed90 ?ae_stricmpn@@YAHPBD0H@Z 00BAE290 f ae_fixed_string.o
 16036	VERIFIED	0002:003bedf0 ?StrStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE2F0 f ae_fixed_string.o
 16037	VERIFIED	0002:003bef00 ?StrCStrEqu@AeStringSupport@@YA_NPBDH0H@Z 00BAE400 f ae_fixed_string.o
-16038	VERIFIED	0002:003bef50 ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE450 f ae_fixed_string.o
-16039	VERIFIED	0002:003befa0 ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE4A0 f ae_fixed_string.o
-16040	VERIFIED	0002:003befe0 ?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z 00BAE4E0 f ae_fixed_string.o
-16041	VERIFIED	0002:003bf040 ?SubStr@AeStringSupport@@YAXPADAAHPBDHHH@Z 00BAE540 f ae_fixed_string.o
-16042	VERIFIED	0002:003bf0a0 ?Split@AeStringSupport@@YAXPADAAH01DH@Z 00BAE5A0 f ae_fixed_string.o
-16043	VERIFIED	0002:003bf160 ?GetFileName@AeStringSupport@@YAXPADAAHPBDH_N@Z 00BAE660 f ae_fixed_string.o
+16038	FIXED	0002:003bef50 ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE450 f ae_fixed_string.o
+16039	FIXED	0002:003befa0 ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE4A0 f ae_fixed_string.o
+16040	FIXED	0002:003befe0 ?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z 00BAE4E0 f ae_fixed_string.o
+16041	FIXED	0002:003bf040 ?SubStr@AeStringSupport@@YAXPADAAHPBDHHH@Z 00BAE540 f ae_fixed_string.o
+16042	FIXED	0002:003bf0a0 ?Split@AeStringSupport@@YAXPADAAH01DH@Z 00BAE5A0 f ae_fixed_string.o
+16043	FIXED	0002:003bf160 ?GetFileName@AeStringSupport@@YAXPADAAHPBDH_N@Z 00BAE660 f ae_fixed_string.o
 16044	VERIFIED	0002:003bf220 _AeHash 00BAE720 f AeHash.o
 16045	VERIFIED	0002:003bf240 ?InitController@@YAXH@Z 00BAE740 f ae_controller.o
 16046	PORTED	0002:003bf250 ?PollController@@YAHHPAH@Z 00BAE750 f ae_controller.o

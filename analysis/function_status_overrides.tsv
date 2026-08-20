@@ -1,0 +1,13 @@
+obj	name	status
+ae_fixed_string.o	?ae_stricmpn@@YAHPBD0H@Z	FIXED
+ae_fixed_string.o	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
+ae_fixed_string.o	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
+ae_fixed_string.o	?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z	FIXED
+ae_fixed_string.o	?SubStr@AeStringSupport@@YAXPADAAHPBDHHH@Z	FIXED
+ae_fixed_string.o	?Split@AeStringSupport@@YAXPADAAH01DH@Z	FIXED
+ae_fixed_string.o	?GetFileName@AeStringSupport@@YAXPADAAHPBDH_N@Z	FIXED
+ae_heap.o	??1ae_heap_base@@UAE@XZ	FIXED
+ae_heap.o	??1ae_heap@@UAE@XZ	FIXED
+ae_heap.o	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	FIXED
+ae_heap.o	?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z	FIXED
+ae_heap.o	?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z	FIXED
