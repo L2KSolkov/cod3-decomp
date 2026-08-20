@@ -37,13 +37,14 @@ extern void CL_DeathMessagePrint(print_msg_type_t type,
                                  int iDuration);
 extern void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor);
 extern bool Entity_IsLocalPlayer(const Entity* ent);
-// ?MultiplayerMgr_GetPlayerName@@YAPBDPAXPBVEntity@@@Z artifact (real member
-// MultiplayerMgr::GetPlayerName, mp.o 0x7401E0; MPPeer lookup not ported yet)
+class MultiplayerMgr {
+public:
+    const char* GetPlayerName(const Entity* player) const;
+};
+// ea: 0x007401E0
 const char* MultiplayerMgr_GetPlayerName(void* mgr, const Entity* player)
 {
-    (void)mgr; (void)player;
-    extern const char defaultFileName[];
-    return defaultFileName;
+    return static_cast<const MultiplayerMgr*>(mgr)->GetPlayerName(player);
 }
 extern void* MultiplayerMgr_sInst;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
