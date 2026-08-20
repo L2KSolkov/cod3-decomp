@@ -762,3 +762,5 @@ nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalCom
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?Process@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
+nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?ComponentSetupPartialDecode@nalComponentPacked16EntropyFloat4@@SAXPAUStateType@nalComponentPacked16EntropyFloat4Data@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@5@@Z	PORTED
