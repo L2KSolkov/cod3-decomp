@@ -14602,7 +14602,7 @@ index	status	map_line
 14601	VERIFIED	0002:0037bcc0 ??_EAARXBoxLiveIngameOptions@@UAEPAXI@Z 00B6B1C0 f i mp_xbox.o
 14602	PORTED	0002:0037bcf0 ?do_it@?$endian_reverser_t@$00@@SAXPAE@Z 00B6B1F0 f i mp_actors.o
 14603	PORTED	0002:0037bd00 ??9NodeHandle@PathNodes@@QBE_NABV01@@Z 00B6B200 f i mp_actors.o
-14604	PORTED	0002:0037bd20 ?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z 00B6B220 f i mp_actors.o
+14604	VERIFIED	0002:0037bd20 ?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z 00B6B220 f i mp_actors.o
 14605	VERIFIED	0002:0037bdb0 ?Spawner@AIType@@QAEXPAVEntity@@@Z 00B6B2B0 f mp_actors.o
 14606	VERIFIED	0002:0037be40 ??Asentient_info_array@@QAEAAUsentient_info_t@@H@Z 00B6B340 f mp_actors.o
 14607	VERIFIED	0002:0037be50 ?FreeIndex@sentient_info_array@@QAEXH@Z 00B6B350 f mp_actors.o

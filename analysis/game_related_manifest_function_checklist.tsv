@@ -14602,7 +14602,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14601	0x0077BCC0	0x00B6B1C0	??_EAARXBoxLiveIngameOptions@@UAEPAXI@Z		mp_xbox.o	game		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 14602	0x0077BCF0	0x00B6B1F0	?do_it@?$endian_reverser_t@$00@@SAXPAE@Z		mp_actors.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14603	0x0077BD00	0x00B6B200	??9NodeHandle@PathNodes@@QBE_NABV01@@Z		mp_actors.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-14604	0x0077BD20	0x00B6B220	?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z		mp_actors.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14604	0x0077BD20	0x00B6B220	?Actor_SetSubState@@YAXPAUactor_s@@W4ai_substate_e@@@Z		mp_actors.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14605	0x0077BDB0	0x00B6B2B0	?Spawner@AIType@@QAEXPAVEntity@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14606	0x0077BE40	0x00B6B340	??Asentient_info_array@@QAEAAUsentient_info_t@@H@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14607	0x0077BE50	0x00B6B350	?FreeIndex@sentient_info_array@@QAEXH@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
