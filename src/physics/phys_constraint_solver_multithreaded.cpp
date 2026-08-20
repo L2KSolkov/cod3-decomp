@@ -2096,8 +2096,6 @@ pulse_sum_node* pulse_sum_constraint_solver::create_pulse_sum_node() {
     if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
                   SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
         __debugbreak();
-    if (v4 == NULL)
-        return NULL;
 alloc_ok:
     pulse_sum_node* result = ::new ((void*)v4) pulse_sum_node();
     pulse_sum_node* m_last = m_list_pulse_sum_node.m_last;
@@ -2291,6 +2289,12 @@ void pulse_sum_constraint_solver::execute_constraint_solver(rigid_body* head) {
     if (m_psys_psc_visit_counter >= m_psys_next_psc_visit_counter &&
         _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 199,
                   "m_psys_psc_visit_counter < m_psys_next_psc_visit_counter", ""))
+        __debugbreak();
+    if (m_psys_psc_visit_counter + head->m_partition_node.m_sub_steps >
+            m_psys_next_psc_visit_counter &&
+        _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 200,
+                  "m_psys_psc_visit_counter + GIPN(head)->m_sub_steps <= m_psys_next_psc_visit_counter",
+                  defaultFileName))
         __debugbreak();
 
     rigid_body* v3 = head;
@@ -2487,11 +2491,19 @@ void rbint::euler_integrate_pos(rigid_body* const rb, float delta_t) {
 
 void rbint::setup_constraint(rigid_body* rb, pulse_sum_node* psn) {
     // ea: 0x897870 - attach node to body, cache velocity state.
-    if (psn != NULL) {
-        rb->m_node = psn;
-        psn->m_rb = rb;
-        psn->m_inv_mass = rb->m_inv_mass;
-    }
+    if (rb == NULL &&
+        _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 159,
+                  "rb", defaultFileName))
+        __debugbreak();
+    if (rb->m_inv_mass <= 0.0000099999997f &&
+        _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 160,
+                  "rb->get_inv_mass() > 0.00001f", defaultFileName))
+        __debugbreak();
+    nuge::tensor_transform_principle(&rb->m_inv_inertia, &rb->m_mat,
+                                     &rb->m_world_inv_inertia);
+    rb->m_node = psn;
+    psn->m_rb = rb;
+    psn->m_inv_mass = rb->m_inv_mass;
 }
 
 void rbint::substep(user_rigid_body* rb, float delta_t) {

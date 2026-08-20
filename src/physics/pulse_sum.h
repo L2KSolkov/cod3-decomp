@@ -315,7 +315,7 @@ struct phys_link_list {
         iterator(T* ptr) : m_ptr(ptr) {}  // ea: 0x894C90
         T& operator*() const { return *m_ptr; }       // ea: 0x894B20
         bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }  // ea: 0x894B00
-        iterator& operator++() { m_ptr = m_ptr->m_next_link; return *this; }  // ea: 0x8979F0
+        void operator++(int) { m_ptr = m_ptr->m_next_link; }  // ea: 0x8979F0
     };
 
     iterator begin() { return iterator(m_first); }  // ea: 0x897930
