@@ -14571,6 +14571,17 @@ void nalComponent<nalComponentIKSpinBase,
         nalComponentPacked16EntropyIKSpinData::AnimComponentData>(componentEnum, ptr, prev, cycle, trajabs, offsetTable);
 }
 
+// ea: 0x00866DD0
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 96 * componentInfo->Count;
+}
+
 // ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 // (nal_init.o 0x864FD0)
 template <>
