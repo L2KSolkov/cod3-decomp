@@ -11,6 +11,7 @@
 
 extern const char defaultFileName[];  // 0xCD67AE
 extern void mem_heap_free(void* ptr);      // core.o
+extern char* va(const char* fmt, ...);     // core.o
 
 // File-scope scratch buffers (shell.o data; shared with stringed_hooks.cpp)
 char sString[128];
@@ -345,12 +346,7 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
     {
         int v4 = atoi(InsideQuotes(linePos));
         if (v4 != 1)
-        {
-            static char errbuf[256];
-            _snprintf(errbuf, sizeof(errbuf),
-                      "Unexpected version number %d, expecting %d!\n", v4, 1);
-            return errbuf;
-        }
+            return va("Unexpected version number %d, expecting %d!\n", v4, 1);
         return psErrorMessage;
     }
     if (CheckLineForKeyword("CONFIG", linePos) != 0
@@ -389,12 +385,7 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
         return psErrorMessage;
     }
     if (_strnicmp("LANG_", linePos, 5) != 0)
-    {
-        static char unknownbuf[256];
-        _snprintf(unknownbuf, sizeof(unknownbuf),
-                  "Unknown keyword at linestart: \"%s\"\n", linePos);
-        return unknownbuf;
-    }
+        return va("Unknown keyword at linestart: \"%s\"\n", linePos);
     if (m_strCurrentEntryRef_ParseOnly.empty())
         return "Error parsing file: Unexpected \"LANG_\"\n";
     const char* v11 = &linePos[5];
