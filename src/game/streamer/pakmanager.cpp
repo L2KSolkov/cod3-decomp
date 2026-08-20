@@ -805,6 +805,8 @@ struct TBankAlloc {
     BitSet<64> mram_alloc1;  // +0x00
     BitSet<64> mram_alloc2;  // +0x08
 
+    TBankAlloc() : mram_alloc1(), mram_alloc2() {}  // 0x5B6810
+
     bool IsEmpty() const;   // ?IsEmpty@TBankAlloc@@QBE_NXZ
     void Clear();           // ?Clear@TBankAlloc@@QAEXXZ
     float ToFloat() const;  // ?ToFloat@TBankAlloc@@QBEMXZ

@@ -1969,7 +1969,7 @@ index	status	map_line
 1967	VERIFIED	0002:001aa750       ?GetInitialWidth@PanelQuad@@UAEMXZ 009a5c50 f i shell.o
 1968	VERIFIED	0002:001aa790       ?GetHeight@PanelQuad@@UAEMXZ 009a5c90 f i shell.o
 1969	VERIFIED	0002:001aa7d0       ?GetInitialHeight@PanelQuad@@UAEMXZ 009a5cd0 f i shell.o
-1970	PENDING	0002:001aa810       ??0TBankAlloc@@QAE@XZ      009a5d10 f i shell.o
+1970	FIXED	0002:001aa810       ??0TBankAlloc@@QAE@XZ      009a5d10 f i shell.o
 1971	VERIFIED	0002:001aa830       ??0FEMenuListBox@@QAE@PAVFEText@@PAVFEMenu@@H@Z 009a5d30 f i shell.o
 1972	PENDING	0002:001aa920       ??_EFEMenuListBox@@UAEPAXI@Z 009a5e20 f i shell.o
 1973	PENDING	0002:001aa920       ??_GFEMenuListBox@@UAEPAXI@Z 009a5e20 f i shell.o

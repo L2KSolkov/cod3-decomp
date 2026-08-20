@@ -1117,6 +1117,8 @@ static_assert(sizeof(DbTableSet) == 0x28, "DbTableSet size mismatch");
 struct TBankAlloc {
     BitSet<64> mram_alloc1;  // +0x00
     BitSet<64> mram_alloc2;  // +0x08
+
+    TBankAlloc() : mram_alloc1(), mram_alloc2() {}  // 0x5B6810
 };
 static_assert(sizeof(TBankAlloc) == 0x10, "TBankAlloc size mismatch");
 
