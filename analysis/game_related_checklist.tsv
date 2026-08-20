@@ -21119,7 +21119,7 @@ index	status	map_line
 21118	PORTED	0002:0046fc00 ?VirtualGetPose@nalGenericInstance@nalGeneric@@MAEXMMAAVnalBasePose@@ABV3@H@Z 00C5F100 f i nal_generic.o
 21119	VERIFIED	0002:0046fc30 ??0nalMatrix3x3@@QAE@ABVDir3@math@@00@Z 00C5F130 f i nal_math.o
 21120	PORTED	0002:0046fc90 ?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z 00C5F190 f nal_ik.o
-21121	PORTED	0002:00470330 ?nalIKSolve2D@@YAXABVnalMatrix4x4@@ABVDir3@math@@1MMMMAAV23@2AAM333@Z 00C5F830 f nal_ik.o
+21121	FIXED	0002:00470330 ?nalIKSolve2D@@YAXABVnalMatrix4x4@@ABVDir3@math@@1MMMMAAV23@2AAM333@Z 00C5F830 f nal_ik.o
 21122	PORTED	0002:00470460 ?set_vtbl_ptr@nalVirtual@@QAEXPAX@Z 00C5F960 f i nal_anim.o
 21123	VERIFIED	0002:00470470 ?GetAnimTypeName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ 00C5F970 f i nal_anim.o
 21124	PORTED	0002:00470480 ?GetAnimTypeName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00C5F980 f i nal_anim.o

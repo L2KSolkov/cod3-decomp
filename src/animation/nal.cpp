@@ -2363,8 +2363,36 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
                     float a8, float a9, nalMatrix4x4& m1, nalMatrix4x4& m2) {}
 void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1, const math::Dir3& d2,
                   float a1, float a2, float a3, float a4,
-                  nalMatrix4x4& out1, nalMatrix4x4& out2,
-                  float& outA, float& outB, float& outC, float& outD) {}
+                  math::Dir3& out1, math::Dir3& out2,
+                  float& outA, float& outB, float& outC, float& outD)
+{
+    (void)m1;
+    out1.v = d1.v;
+    const __m128 delta = _mm_sub_ps(d2.v, out1.v);
+    const __m128 squared = _mm_mul_ps(delta, delta);
+    const float length = sqrtf(squared.m128_f32[0]
+                               + squared.m128_f32[1]
+                               + squared.m128_f32[2]
+                               + squared.m128_f32[3]);
+    const float inverseLength = 1.0f / length;
+    out2.v = _mm_mul_ps(delta, _mm_set1_ps(inverseLength));
+
+    outB = length * a1 + inverseLength * a3;
+    outD = length * a2 + inverseLength * a4;
+
+    if (outB > 1.0f)
+        outB = 1.0f;
+    else if (outB < -1.0f)
+        outB = -1.0f;
+
+    if (outD > 1.0f)
+        outD = 1.0f;
+    else if (outD < -1.0f)
+        outD = -1.0f;
+
+    outA = sqrtf(1.0f - outB * outB);
+    outC = sqrtf(1.0f - outD * outD);
+}
 
 // ============================================================================
 // nalInit / nalExit
