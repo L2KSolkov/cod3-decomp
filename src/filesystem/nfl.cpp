@@ -2164,10 +2164,16 @@ nfdError nfd_xbox_MediaBind(nflMediaID media, const char* src, char* dst, int ds
 
 // Transaction and path helpers from tx.o / txPath.o.
 extern "C" {
+unsigned int tx_time = 0;
 // ea: 0x00420E40
 void txInit() {}
 // ea: 0x00420D70
-unsigned long long txTime() { return (unsigned long long)Now(); }
+unsigned long long txTime()
+{
+    const unsigned long long result = static_cast<unsigned long long>(Now());
+    tx_time = static_cast<unsigned int>(result);
+    return result;
+}
 // ea: 0x00420DA0
 int txMatch(const char* value, const char* pattern)
 {
@@ -2314,8 +2320,7 @@ txSlot txSlotPrev(const txSlotPool* pool, txSlot slot)
 void txPrintf(const char* channel, int level, const char* fmt, ...)
 {
     va_list args; va_start(args, fmt);
-    if (channel != nullptr) std::fprintf(stdout, "%s:%d: ", channel, level);
-    vfprintf(stdout, fmt, args);
+    txPrintv(channel, level, fmt, reinterpret_cast<char*>(args));
     va_end(args);
 }
 // ea: 0x00421450
