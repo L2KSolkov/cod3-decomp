@@ -643,9 +643,9 @@ index	status	map_line
 642	SKIPPED	0002:00462a90 ??_G?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAEPAXI@Z 00C51F90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 643	PORTED	0002:00462ac0 ?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C51FC0 f i nal_init.o
 644	PORTED	0002:00462af0 ?SetupPartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C51FF0 f i nal_init.o
-645	PENDING	0002:00462be0 ?PartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C520E0 f i nal_init.o
-646	PENDING	0002:00462cf0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C521F0 f i nal_init.o
-647	PENDING	0002:00462df0 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C522F0 f i nal_init.o
+645	PORTED	0002:00462be0 ?PartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C520E0 f i nal_init.o
+646	PORTED	0002:00462cf0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C521F0 f i nal_init.o
+647	PORTED	0002:00462df0 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C522F0 f i nal_init.o
 648	PENDING	0002:00462ed0 ?Convert@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C523D0 f i nal_init.o
 649	PENDING	0002:00463030 ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C52530 f i nal_init.o
 650	PENDING	0002:004630e0 ?GetTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C525E0 f i nal_init.o
