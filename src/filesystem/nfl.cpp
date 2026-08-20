@@ -820,6 +820,8 @@ const char* nfdMediaStateText(nfdMediaState state)
 const char* nfdIoStateText(nfdIoState state) { return state == NFD_IO_STATE_IDLE ? "NFD_IO_STATE_IDLE" : "NFD_IO_STATE_???"; }
 
 // ea: 0x0041EE20
+void nflSetStreamPriority(nflStreamID streamID, nflPriority priority);
+
 unsigned nflInit(const nflInitParams* params)
 {
     if (params != nullptr) s_initParams = *params;
@@ -1553,8 +1555,6 @@ float nflGetRequestProgress(nflRequestID requestID)
 }
 
 // ea: 0x004205D0
-void nflSetStreamPriority(nflStreamID streamID, nflPriority priority);
-
 nflStreamID nflCreateStream(const nflStreamParams* params)
 {
     const nflStreamID id = (nflStreamID)txSlotNew(&s_streamPool);
