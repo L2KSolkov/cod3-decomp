@@ -259,7 +259,8 @@ def shell_status(row: dict[str, str]) -> str:
         return "SKIPPED"
     if row["aggregate_status"] == "FIXED":
         return "FIXED"
-    if row["aggregate_status"] == "VERIFIED":
+    if (row["aggregate_status"] == "VERIFIED"
+            and row["status_basis"] == "FUNCTION status override"):
         return "VERIFIED"
     if row["verification"] == "VERIFIED":
         return "VERIFIED"
