@@ -1125,7 +1125,7 @@
 }
 
 // ea: 0x0077CB20  (?Path_FindPathAway@@YI?BHPAUpath_t@@W4team_t@@QBM2MH@Z)
-    int __fastcall Path_FindPathAway(path_t*, team_t, const float* const, const float* const, float, int)
+    const int __fastcall Path_FindPathAway(path_t*, team_t, const float* const, const float* const, float, int)
 {
     return 0;
 }
