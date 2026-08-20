@@ -8800,6 +8800,40 @@ void nalComponent<nalComponentFloat1Base,
         pose = (char*)pose + 4;
 }
 
+// ?SetupPartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z
+// (nal_init.o 0x857780)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state, const void*& src,
+    int quantity) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const void** skeletonData = customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u)
+                                & ~uintptr_t(3u));
+            if (state != nullptr)
+                *(const void**)state = src;
+            src = (const char*)src + quantity;
+            state = (char*)state + 4;
+        }
+        *skeletonData = (const char*)*skeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
 // (nal_init.o 0x857dd0)
 template <>
