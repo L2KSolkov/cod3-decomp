@@ -313,7 +313,7 @@ index	status	map_line
 312	PENDING	0002:00458ce0 ?ComponentDecode@nalComponentEntropyFloat3@@SAXPAVDir3@math@@AAPBEHHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyFloat3Data@@PAUSkeletonComponentData@7@PAUAnimComponentData@5@@Z 00C481E0 f i nal_init.o
 313	PENDING	0002:00458de0 ?Skip@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C482E0 f i nal_init.o
 314	PENDING	0002:00458ee0 ?Convert@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C483E0 f i nal_init.o
-315	PENDING	0002:00459080 ?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C48580 f i nal_init.o
+315	PORTED	0002:00459080 ?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C48580 f i nal_init.o
 316	PORTED	0002:00459150 ?GetTrajectory@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C48650 f i nal_init.o
 317	PORTED	0002:00459210 ?Construct@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C48710 f i nal_init.o
 318	PORTED	0002:00459240 ?Delete@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C48740 f i nal_init.o

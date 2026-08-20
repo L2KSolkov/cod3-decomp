@@ -1069,3 +1069,4 @@ nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentIKSpinBase
 nal_init.o	?Process@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
 nal_init.o	?Skip@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
 nal_init.o	?Convert@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
