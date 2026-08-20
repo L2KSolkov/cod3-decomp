@@ -8941,6 +8941,53 @@ void nalComponent<nalComponentFloat1Base,
     }
 }
 
+// ?Convert@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x857b10)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalComponentPacked8Float1Data::SkeletonComponentData*
+        skeletonData =
+            (const nalComponentPacked8Float1Data::SkeletonComponentData*)
+                *customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    float* out = (float*)dst;
+    const float* defaults = (const float*)def;
+    const unsigned char* in = (const unsigned char*)src;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                ++in;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            out[offset] = (float)*in * skeletonData->Scale
+                          + skeletonData->Bias;
+            ++in;
+        }
+        else
+        {
+            out[offset] = defaults[offset];
+        }
+        ++skeletonData;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = in;
+}
+
 // ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
 // (nal_init.o 0x857dd0)
 template <>
