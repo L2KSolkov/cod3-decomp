@@ -735,6 +735,14 @@ public:
     }
     virtual void SetNoFlash(color32 c);                  // +0xA8
     virtual void SetFlash(color32 c1, color32 c2, float period); // +0xAC
+    void ResetFlash()                                     // shell.o 0x5B1B40
+    {
+        if (flash_info != nullptr)
+        {
+            flash_info->flash_timer = 0.0f;
+            flash_info->flash_intensity = 0.0f;
+        }
+    }
     virtual void SetColorMenuItem(color32 normal, color32 selected) // +0xB0
     {
         color1 = normal;
@@ -1440,6 +1448,10 @@ public:
     virtual int GetLineNum() { return line_num; }                      // +0xE8
     virtual void SetText(const char* s);                               // +0x84
     virtual void SetLineSpacing(int new_spacing);                      // +0x104
+    virtual void ResetLineSpacing()                                    // +0x108
+    {
+        SetLineSpacing(-1);
+    }
     virtual void Draw(bool selected);                                  // +0x4C
     virtual void SetFont(font_index f);                                // +0x64
     virtual void Shift(float x_shift, float y_shift);                  // +0x88
