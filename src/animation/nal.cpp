@@ -13941,6 +13941,26 @@ void nalComponent<nalComponentFloat1Base,
         ptr = (char*)ptr + 4;
 }
 
+// ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z
+// (nal_init.o 0x8575e0)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (nalComponentTrackPresent(
+                &componentEnum, componentInfo->StartIndex + i))
+            ptr = (char*)ptr + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ??$FastCycleTrajectory@VnalComponentEntropyFloat1@@MUSkeletonData@nalComponentData@@UAnimData@nalComponentEntropyFloat1Data@@USkeletonComponentData@5@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 // (nal_init.o 0x865120)
 template <>
