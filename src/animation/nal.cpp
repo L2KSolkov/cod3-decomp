@@ -13887,6 +13887,50 @@ void nalComponent<nalComponentQuatBase,
         pose = (char*)pose + 16;
 }
 
+// ea: 0x0085F590
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::QuatDecoderBase* decoder =
+                (nalEntropyDecoder::QuatDecoderBase*)state;
+            const float* skeletonData = (const float*)*customSkeletonData;
+            const unsigned char* compressed =
+                (const unsigned char*)src + 1;
+            const unsigned char blockSize = *(const unsigned char*)src;
+            if (decoder != nullptr)
+            {
+                new (decoder) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity,
+                    *skeletonData * *animData,
+                    compressed, 0);
+            }
+            src = compressed + blockSize;
+            state = (char*)state + sizeof(*decoder);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
 // ea: 0x0085FB30
 template <>
 void nalComponent<nalComponentQuatBase,
