@@ -291,6 +291,7 @@ struct nfdDriver {
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void tlMemFree(void* memory);
+extern void tlPrintf(const char* format, ...);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* message);
 extern "C" void txAssertFailed(unsigned char* ignore, const char* message,
                                 const char* function, const char* source, int line);
@@ -2164,6 +2165,7 @@ nfdError nfd_xbox_MediaBind(nflMediaID media, const char* src, char* dst, int ds
 
 // Transaction and path helpers from tx.o / txPath.o.
 extern "C" {
+int tx_printLevel = 3;
 unsigned int tx_time = 0;
 // ea: 0x00420E40
 void txInit() {}
@@ -2388,9 +2390,7 @@ void txAssertFailed(unsigned char* ignore, const char* message, const char* func
         ++*ignore;
         return;
     }
-    if (_tlAssert(source != nullptr ? source : "", line,
-                  function != nullptr ? function : "",
-                  message != nullptr ? message : "assertion failed"))
+    if (_tlAssert(source, line, function, message))
         txBreak();
 }
 // ea: 0x00420F90
@@ -2415,7 +2415,6 @@ void* txMemRealloc() { txBreak(); return nullptr; }
 // ea: 0x00421010
 void* txMemReallocAdHoc(void* ptr, int size, int oldSize)
 {
-    if (size < 0) return nullptr;
     void* result = tlMemAlloc((unsigned)size, 8u, 0);
     if (result == nullptr) return nullptr;
     if (ptr != nullptr && oldSize > 0)
@@ -2426,8 +2425,17 @@ void* txMemReallocAdHoc(void* ptr, int size, int oldSize)
 // ea: 0x00420EC0
 void txPrintv(const char* channel, int level, const char* fmt, char* list)
 {
-    if (channel != nullptr) std::fprintf(stdout, "%s:%d: ", channel, level);
-    if (list != nullptr) vfprintf(stdout, fmt, reinterpret_cast<va_list>(list));
+    char buffer[2048];
+    std::memset(buffer, 0, sizeof(buffer));
+    if (level <= tx_printLevel) {
+        if (channel != nullptr)
+            std::snprintf(buffer + std::strlen(buffer), sizeof(buffer), "%s:%d: ", channel, level);
+        const size_t used = std::strlen(buffer);
+        if (list != nullptr && used < sizeof(buffer))
+            std::vsnprintf(buffer + used, sizeof(buffer) - used, fmt,
+                           reinterpret_cast<va_list>(list));
+        tlPrintf("%s", buffer);
+    }
 }
 
 // ea: 0x004210A0

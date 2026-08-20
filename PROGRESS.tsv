@@ -264,7 +264,7 @@ aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math hel
 
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nslGroupGet x2, parameter/volume queries, and master-volume functions matched to IDA; nslGroupSetVolume unused float ABI parameter restored
 
-nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (transaction memory/logging helpers)
+nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	VERIFIED	Compared all eight release symbols against codmp_xboxr.xbe.c and IDA; restored tx_printLevel filtering, 2048-byte txPrintv routing, assert forwarding, and signed realloc behavior.
 
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	PORTED	ngl_texture.cpp: texture dir globals + apk callbacks; tlSkipList.h/tlFixedString.h rewritten binary-exact; apk.h/cpp field layouts fixed (apkFile at +8)
 
