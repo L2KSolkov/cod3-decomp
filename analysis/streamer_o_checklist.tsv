@@ -531,7 +531,7 @@ index	status	map_line
 530	PORTED	0002:00283f10 ?set_size@?$ae_sized_array@Vmem_info@@$0CA@@@QAEXH@Z 00A73410 f i streamer.o
 531	PORTED	0002:00283f30 ??0iterator@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@AAE@PAPAVAssetBankSet@@@Z 00A73430 f i streamer.o
 532	PORTED	0002:00283f50 ?GetNumWords@?$BitSet@$0BN@@@SAHXZ 00A73450 f i streamer.o
-533	PORTED	0002:00283f60 ?capacity@?$ae_fixed_string@$0CAA@G@@SAHXZ 00A73460 f i streamer.o
+533	SKIPPED	0002:00283f60 ?capacity@?$ae_fixed_string@$0CAA@G@@SAHXZ 00A73460 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 534	VERIFIED	0002:00283f70 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@PAUdlist_node@1@0@Z 00A73470 f i streamer.o
 535	VERIFIED	0002:00283f90 ?compare@iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV12@@Z 00A73490 f i streamer.o
 536	PORTED	0002:00283fb0 ?GetNumWords@?$BitSet@$0GD@@@SAHXZ 00A734B0 f i streamer.o
@@ -546,10 +546,10 @@ index	status	map_line
 545	VERIFIED	0002:002840a0 ?get_head@?$reserved_dlist@VPakFile@@@@QAEPAUdlist_node@1@XZ 00A735A0 f i streamer.o
 546	PORTED	0002:002840b0 ?begin@?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAEPAV?$ae_pair@VtlFixedString@@_N@@XZ 00A735B0 f i streamer.o
 547	PORTED	0002:002840c0 ?begin@?$ae_vector@UTStbData@PakManager@@@@QAEPAUTStbData@PakManager@@XZ 00A735C0 f i streamer.o
-548	PORTED	0002:002840d0 ?c_str@?$ae_fixed_string@$0CAA@G@@QBEPBDXZ 00A735D0 f i streamer.o
-549	PORTED	0002:002840e0 ?length@?$ae_fixed_string@$0CAA@G@@QBEHXZ 00A735E0 f i streamer.o
+548	SKIPPED	0002:002840d0 ?c_str@?$ae_fixed_string@$0CAA@G@@QBEPBDXZ 00A735D0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
+549	SKIPPED	0002:002840e0 ?length@?$ae_fixed_string@$0CAA@G@@QBEHXZ 00A735E0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 550	VERIFIED	0002:002840f0 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@PAVPakFile@@@Z 00A735F0 f i streamer.o
-551	VERIFIED	0002:00284110 ?c_str@?$ae_fixed_string@$0BAA@G@@QBEPBDXZ 00A73610 f i streamer.o
+551	SKIPPED	0002:00284110 ?c_str@?$ae_fixed_string@$0BAA@G@@QBEPBDXZ 00A73610 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 552	PORTED	0002:00284120 ?begin@?$ae_vector@W4TPakId@@@@QAEPAW4TPakId@@XZ 00A73620 f i streamer.o
 553	PORTED	0002:00284130 ?begin@?$ae_vector@UGlowSprites@@@@QAEPAUGlowSprites@@XZ 00A73630 f i streamer.o
 554	PORTED	0002:00284140 ?end@?$ae_vector@UGlowSprites@@@@QAEPAUGlowSprites@@XZ 00A73640 f i streamer.o
@@ -640,7 +640,7 @@ index	status	map_line
 639	VERIFIED	0002:002860f0 ??0?$cdResourceDirectory@VnalBaseSkeleton@@@@QAE@XZ 00A755F0 f i streamer.o
 640	PORTED	0002:00286120 ?clear@?$ae_sized_array@Vmem_info@@$0CA@@@QAEXXZ 00A75620 f i streamer.o
 641	VERIFIED	0002:00286130 ?Test@?$BitSet@$0BN@@@QBE_NH@Z 00A75630 f i streamer.o
-642	PORTED	0002:002861c0 ??0?$ae_fixed_string@$0CAA@G@@QAE@PBD@Z 00A756C0 f i streamer.o
+642	SKIPPED	0002:002861c0 ??0?$ae_fixed_string@$0CAA@G@@QAE@PBD@Z 00A756C0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 643	VERIFIED	0002:00286200 ??Dconst_iterator@?$reserved_dlist@VPakFile@@@@QBEPBVPakFile@@XZ 00A75700 f i streamer.o
 644	VERIFIED	0002:00286210 ??Diterator@?$reserved_dlist@VPakFile@@@@QAEPAVPakFile@@XZ 00A75710 f i streamer.o
 645	PORTED	0002:00286220 ??9iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV01@@Z 00A75720 f i streamer.o
@@ -668,10 +668,10 @@ index	status	map_line
 667	PORTED	0002:00286560 ?find@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@PAVPakFile@@@Z 00A75A60 f i streamer.o
 668	PORTED	0002:002865b0 ?destroy_all@?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@AAEXXZ 00A75AB0 f i streamer.o
 669	PORTED	0002:002865e0 ?destroy_all@?$ae_vector@UTStbData@PakManager@@@@AAEXXZ 00A75AE0 f i streamer.o
-670	PORTED	0002:00286610 ??0?$ae_fixed_string@$0CAA@G@@QAE@ABV0@@Z 00A75B10 f i streamer.o
+670	SKIPPED	0002:00286610 ??0?$ae_fixed_string@$0CAA@G@@QAE@ABV0@@Z 00A75B10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 671	PORTED	0002:00286660 ??0iterator@?$reserved_dlist@VPakFile@@@@QAE@AAV1@@Z 00A75B60 f i streamer.o
 672	PORTED	0002:002866b0 ?Clear@?$BitSet@$0GD@@@QAEXXZ 00A75BB0 f i streamer.o
-673	PORTED	0002:002866d0 ??0?$ae_fixed_string@$0BAA@G@@QAE@ABV0@@Z 00A75BD0 f i streamer.o
+673	SKIPPED	0002:002866d0 ??0?$ae_fixed_string@$0BAA@G@@QAE@ABV0@@Z 00A75BD0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 674	PORTED	0002:00286720 ?destroy_all@?$ae_vector@W4TPakId@@@@AAEXXZ 00A75C20 f i streamer.o
 675	PORTED	0002:00286750 ?destroy_all@?$ae_vector@UGlowSprites@@@@AAEXXZ 00A75C50 f i streamer.o
 676	PORTED	0002:00286780 ?destroy_all@?$ae_vector@UGlowBeam@@@@AAEXXZ 00A75C80 f i streamer.o
@@ -681,7 +681,7 @@ index	status	map_line
 680	PORTED	0002:00286850 ??$PakDelete@V?$BitSet@$0GD@@@@@YAXW4TPakId@@PAV?$BitSet@$0GD@@@_N@Z 00A75D50 f i streamer.o
 681	PORTED	0002:00286880 ??$PakDelete@UAnimOffset@@@@YAXW4TPakId@@PAUAnimOffset@@_N@Z 00A75D80 f i streamer.o
 682	SKIPPED	0002:002868b0 ??$Find@PBD@?$InplaceTree@VInplaceString@@M@@QBEPAMABQBD@Z 00A75DB0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
-683	PORTED	0002:002869c0 ??$?0$0BAA@G@?$ae_fixed_string@$0CA@E@@QAE@ABV?$ae_fixed_string@$0BAA@G@@@Z 00A75EC0 f i streamer.o
+683	SKIPPED	0002:002869c0 ??$?0$0BAA@G@?$ae_fixed_string@$0CA@E@@QAE@ABV?$ae_fixed_string@$0BAA@G@@@Z 00A75EC0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 684	PORTED	0002:00286a00 ??$WriteVertex@G@@YAXAAV?$nglMeshIterator@Ucdscratch_vertex@@G@@MMMIMM@Z 00A75F00 f i streamer.o
 685	PORTED	0002:00286a70 ??APakInfoBank@@QBEPBUPakInfoNode@@PBD@Z 00A75F70 f i streamer.o
 686	PORTED	0002:00286ab0 ?IsInside@ZoneOverrideBrush@@QBE_NABVPosition3@math@@@Z 00A75FB0 f i streamer.o
@@ -698,9 +698,9 @@ index	status	map_line
 697	PORTED	0002:00286f60 ??1?$ae_vector@V?$ae_pair@VtlFixedString@@_N@@@@QAE@XZ 00A76460 f i streamer.o
 698	PORTED	0002:00286f90 ??1?$ae_vector@UTStbData@PakManager@@@@QAE@XZ 00A76490 f i streamer.o
 699	PORTED	0002:00286fc0 ??0?$ae_sized_array@Vmem_info@@$0CA@@@QAE@XZ 00A764C0 f i streamer.o
-700	VERIFIED	0002:00286ff0 ?get_file_name@?$ae_fixed_string@$0CAA@G@@QBE?AV1@_N@Z 00A764F0 f i streamer.o
+700	SKIPPED	0002:00286ff0 ?get_file_name@?$ae_fixed_string@$0CAA@G@@QBE?AV1@_N@Z 00A764F0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 701	PORTED	0002:00287080 ??0?$BitSet@$0GD@@@QAE@XZ 00A76580 f i streamer.o
-702	VERIFIED	0002:002870a0 ?get_file_name@?$ae_fixed_string@$0BAA@G@@QBE?AV1@_N@Z 00A765A0 f i streamer.o
+702	SKIPPED	0002:002870a0 ?get_file_name@?$ae_fixed_string@$0BAA@G@@QBE?AV1@_N@Z 00A765A0 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 703	VERIFIED	0002:00287130 ?push_back@?$ae_vector@W4TPakId@@@@QAEXABW4TPakId@@@Z 00A76630 f i streamer.o
 704	PORTED	0002:002871e0 ??1?$ae_vector@UGlowSprites@@@@QAE@XZ 00A766E0 f i streamer.o
 705	VERIFIED	0002:00287210 ?push_back@?$ae_vector@UGlowSprites@@@@QAEXABUGlowSprites@@@Z 00A76710 f i streamer.o

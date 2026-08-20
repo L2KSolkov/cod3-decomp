@@ -259,6 +259,9 @@ def shell_status(row: dict[str, str]) -> str:
         return "SKIPPED"
     if row["aggregate_status"] == "FIXED":
         return "FIXED"
+    if (row["aggregate_status"] == "PORTED"
+            and row["status_basis"] == "FUNCTION status override"):
+        return "PORTED"
     if (row["aggregate_status"] == "VERIFIED"
             and row["status_basis"] == "FUNCTION status override"):
         return "VERIFIED"
@@ -295,6 +298,8 @@ def shell_skip_note(row: dict[str, str]) -> str:
             "InplaceString",
             "ae_array",
             "IVPointer",
+            "ae_fixed_string",
+            "tl_max",
         )
     ):
         return "SKIPPED: inline template/container helper; supplied by its template definition"

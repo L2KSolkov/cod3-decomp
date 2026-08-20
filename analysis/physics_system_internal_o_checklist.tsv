@@ -91,7 +91,7 @@ index	status	map_line
 90	PENDING	0002:0048e800 ??$IPN_add@Vrigid_body_constraint_custom_orientation@@@@YAXPAVrigid_body@@PAPAVrigid_body_constraint_custom_orientation@@PAV1@@Z 00C7DD00 f i physics_system_internal.o
 91	PENDING	0002:0048e840 ??$IPN_add@Vrigid_body_constraint_custom_path@@@@YAXPAVrigid_body@@PAPAVrigid_body_constraint_custom_path@@PAV1@@Z 00C7DD40 f i physics_system_internal.o
 92	PENDING	0002:0048e880 ??$IPN_add@Vrigid_body_constraint_contact@@@@YAXPAVrigid_body@@PAPAVrigid_body_constraint_contact@@PAV1@@Z 00C7DD80 f i physics_system_internal.o
-93	PENDING	0002:0048e8c0 ??$tl_max@HI@@YAHABHABI@Z 00C7DDC0 f i physics_system_internal.o
+93	SKIPPED	0002:0048e8c0 ??$tl_max@HI@@YAHABHABI@Z 00C7DDC0 f i physics_system_internal.o  SKIPPED: inline template/container helper; supplied by its template definition
 94	PENDING	0002:0048e8e0 ?epilog_cache@rigid_body_constraint_contact@@QAEXXZ 00C7DDE0 f i physics_system_internal.o
 95	PENDING	0002:0048e8f0 ?mul_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C7DDF0 f i physics_system_internal.o
 96	PENDING	0002:0048e9f0 ?calc_col_mat@rbint@@SAXPAVuser_rigid_body@@ABVouter_time@@@Z 00C7DEF0 f i physics_system_internal.o

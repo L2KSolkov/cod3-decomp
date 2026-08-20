@@ -557,7 +557,7 @@ index	status	map_line
 556	VERIFIED	0002:0015eaa0 ?GetSkeleton@nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 0094DFA0 f i anim.o
 557	VERIFIED	0002:0015eab0 ??0?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@QAE@PBVnalGenericSkeleton@nalGeneric@@@Z 0094DFB0 f i anim.o
 558	VERIFIED	0002:0015ead0 ?GetSkeleton@?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 0094DFD0 f i anim.o
-559	VERIFIED	0002:0015eae0 ?c_str@?$ae_fixed_string@$0EA@E@@QBEPBDXZ 0094DFE0 f i anim.o
+559	SKIPPED	0002:0015eae0 ?c_str@?$ae_fixed_string@$0EA@E@@QBEPBDXZ 0094DFE0 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
 560	VERIFIED	0002:0015eaf0 ?empty@?$reserved_dlist@VSceneAnimInfo@@@@QBE_NXZ 0094DFF0 f i anim.o
 561	VERIFIED	0002:0015eb10 ??0dlist_node@?$reserved_dlist@VSceneAnimInfo@@@@QAE@PAU01@0@Z 0094E010 f i anim.o
 562	VERIFIED	0002:0015eb30 ??0?$ae_vector@PAVInteractState@@@@QAE@XZ 0094E030 f i anim.o
@@ -603,8 +603,8 @@ index	status	map_line
 602	VERIFIED	0002:0015f080 ??$PakDelete@VInteractState@@@@YAXW4TPakId@@PAVInteractState@@_N@Z 0094E580 f i anim.o
 603	VERIFIED	0002:0015f0b0 ??$lerp@M@@YAMABM0M@Z 0094E5B0 f i anim.o
 604	VERIFIED	0002:0015f0d0 ??$PakDelete@VInteractInputRcvr@@@@YAXW4TPakId@@PAVInteractInputRcvr@@_N@Z 0094E5D0 f i anim.o
-605	VERIFIED	0002:0015f100 ?c_str@?$ae_fixed_string@$0CA@E@@QBEPBDXZ 0094E600 f i anim.o
-606	VERIFIED	0002:0015f110 ?length@?$ae_fixed_string@$0CA@E@@QBEHXZ 0094E610 f i anim.o
+605	SKIPPED	0002:0015f100 ?c_str@?$ae_fixed_string@$0CA@E@@QBEPBDXZ 0094E600 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
+606	SKIPPED	0002:0015f110 ?length@?$ae_fixed_string@$0CA@E@@QBEHXZ 0094E610 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
 607	VERIFIED	0002:0015f120 ??0?$nalGenericComponentHandle@VnalPositionOrientation@@@nalGeneric@@IAE@PBVnalGenericSkeleton@1@PBUnalComponentInfo@1@H@Z 0094E620 f i anim.o
 608	VERIFIED	0002:0015f140 ??0?$nalGenericComponentHandle@VDir3@math@@@nalGeneric@@IAE@PBVnalGenericSkeleton@1@PBUnalComponentInfo@1@H@Z 0094E640 f i anim.o
 609	VERIFIED	0002:0015f160 ??$nalDynamicPtrCast@VnalGenericSkeleton@nalGeneric@@@@YAPAVnalGenericSkeleton@nalGeneric@@PAVnalVirtual@@@Z 0094E660 f i anim.o
@@ -696,7 +696,7 @@ index	status	map_line
 695	VERIFIED	0002:00160f40 ??$nalSkeletonPtrCast@VnalGenericSkeleton@nalGeneric@@@@YAPBVnalGenericSkeleton@nalGeneric@@PBVnalBaseSkeleton@@@Z 00950440 f i anim.o
 696	VERIFIED	0002:00160f60 ??$GetComponentHandle@VnalPositionOrientation@@@nalGenericSkeleton@nalGeneric@@QBEXAAV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@ABVtlFixedString@@1@Z 00950460 f i anim.o
 697	VERIFIED	0002:001610f0 ??$GetComponentHandle@VDir3@math@@@nalGenericSkeleton@nalGeneric@@QBEXAAV?$nalGenericComponentHandle@VDir3@math@@@1@ABVtlFixedString@@1@Z 009505F0 f i anim.o
-698	VERIFIED	0002:00161280 ??$?8$0CA@E@@YA_NABV?$ae_fixed_string@$0CA@E@@PBD@Z 00950780 f i anim.o
+698	SKIPPED	0002:00161280 ??$?8$0CA@E@@YA_NABV?$ae_fixed_string@$0CA@E@@PBD@Z 00950780 f i anim.o  SKIPPED: inline template/container helper; supplied by its template definition
 699	VERIFIED	0002:001612b0 ??$nalPosePtrCast@VnalGenericPose@nalGeneric@@@@YAPAVnalGenericPose@nalGeneric@@PAVnalBasePose@@@Z 009507B0 f i anim.o
 700	VERIFIED	0002:001612e0 ?SetLODOverride@DObj@@QAEXH@Z 009507E0 f i anim.o
 701	VERIFIED	0002:00161450 ??0LerpInfo@InteractState@@QAE@XZ 00950950 f i anim.o

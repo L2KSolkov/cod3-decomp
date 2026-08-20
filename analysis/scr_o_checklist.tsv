@@ -324,9 +324,9 @@ index	status	map_line
 323	VERIFIED	0002:001c1f40 ??0AeThreadEntityNotifyTimeoutState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IMW4EAction@AeThreadState@@@Z 009B1440 f scr.o
 324	VERIFIED	0002:001c1f80 ??0AeThreadPakNotifyState@@QAE@PBUPakInfoNode@@W4ePakState@0@@Z 009B1480 f scr.o
 325	VERIFIED	0002:001c1fb0 ??0AeThreadWaitState@@QAE@M@Z 009B14B0 f scr.o
-326	VERIFIED	0002:001c1fe0 ?GetCondText@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B14E0 f scr.o
+326	SKIPPED	0002:001c1fe0 ?GetCondText@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B14E0 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 327	VERIFIED	0002:001c2030 ??0AeThreadWaitFramesState@@QAE@H@Z 009B1530 f scr.o
-328	VERIFIED	0002:001c2060 ?GetCondText@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B1560 f scr.o
+328	SKIPPED	0002:001c2060 ?GetCondText@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B1560 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 329	VERIFIED	0002:001c20a0 ?GetWeaponIndex@BrocSys@@YAHABVstring@Broc@@@Z 009B15A0 f scr.o
 330	VERIFIED	0002:001c20d0 ?SetupLevelSpecificVariables@BrocSys@@YAXXZ 009B15D0 f scr.o
 331	VERIFIED	0002:001c2190 ?MakeGameMessage@BrocSys@@YAXPBD0@Z 009B1690 f scr.o
@@ -439,10 +439,10 @@ index	status	map_line
 438	VERIFIED	0002:001c7940 ?VM_Restart@@YAPAUvm_s@@PAU1@@Z 009B6E40 f scr.o
 439	VERIFIED	0002:001c79d0 ??0AeThread@@QAE@PBDH0IPAVAeThreadFunctor@@_N@Z 009B6ED0 f scr.o
 440	VERIFIED	0002:001c7ac0 ?Sleep@AeThread@@QAEXPAVAeThreadState@@@Z 009B6FC0 f scr.o
-441	VERIFIED	0002:001c7b00 ?GetCondText@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7000 f scr.o
-442	VERIFIED	0002:001c7b50 ?GetDebugTxt@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7050 f scr.o
-443	VERIFIED	0002:001c7bb0 ?GetDebugTxt@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70B0 f scr.o
-444	VERIFIED	0002:001c7be0 ?GetDebugTxt@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70E0 f scr.o
+441	SKIPPED	0002:001c7b00 ?GetCondText@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7000 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+442	SKIPPED	0002:001c7b50 ?GetDebugTxt@AeThreadPakNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B7050 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+443	SKIPPED	0002:001c7bb0 ?GetDebugTxt@AeThreadWaitState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70B0 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+444	SKIPPED	0002:001c7be0 ?GetDebugTxt@AeThreadWaitFramesState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009B70E0 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 445	VERIFIED	0002:001c7c10 ??0AeThreadEntityNotifyMatchState@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@IIIIW4EAction@AeThreadState@@_N@Z 009B7110 f scr.o
 446	VERIFIED	0002:001c7d30 ?MemAlloc@BrocSys@@YAPAXII@Z 009B7230 f scr.o
 447	VERIFIED	0002:001c7d90 ?ThreadGetDebugInfo@BrocSys@@YAXAAVstring@Broc@@00@Z 009B7290 f scr.o
@@ -834,12 +834,12 @@ index	status	map_line
 833	VERIFIED	0002:001dd000 ?GetEntGroup@BrocSys@@YAIIPAIH@Z 009CC500 f scr.o
 834	VERIFIED	0002:001dd020 ?GetEnt@BrocSys@@YAIABVstring@Broc@@HPAIHH@Z 009CC520 f scr.o
 835	VERIFIED	0002:001dd690 ?InitEntity@BrocSys@@YAXXZ 009CCB90 f scr.o
-836	VERIFIED	0002:001df580 ?GetCondText@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEA80 f scr.o
-837	VERIFIED	0002:001df680 ?GetDebugTxt@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEB80 f scr.o
-838	VERIFIED	0002:001df780 ?GetCondText@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEC80 f scr.o
-839	VERIFIED	0002:001df8b0 ?GetDebugTxt@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEDB0 f scr.o
-840	VERIFIED	0002:001df9e0 ?GetCondText@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEEE0 f scr.o
-841	VERIFIED	0002:001dfb40 ?GetDebugTxt@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CF040 f scr.o
+836	SKIPPED	0002:001df580 ?GetCondText@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEA80 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+837	SKIPPED	0002:001df680 ?GetDebugTxt@AeThreadEntityNotifyState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEB80 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+838	SKIPPED	0002:001df780 ?GetCondText@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEC80 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+839	SKIPPED	0002:001df8b0 ?GetDebugTxt@AeThreadEntityNotifyTimeoutState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEDB0 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+840	SKIPPED	0002:001df9e0 ?GetCondText@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CEEE0 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
+841	SKIPPED	0002:001dfb40 ?GetDebugTxt@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z 009CF040 f scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 842	VERIFIED	0002:001dfc50 ?RegisterHashString@BrocSys@@YAXHPBD@Z 009CF150 f scr.o
 843	PORTED	0002:001dfd30 ?RegisterHashString@BrocSys@@YAHPBD@Z 009CF230 f scr.o
 844	VERIFIED	0002:001dfd70 ?CalcStringHash@BrocSys@@YAIPBD@Z 009CF270 f scr.o
@@ -1027,7 +1027,7 @@ index	status	map_line
 1026	SKIPPED	0002:001eb000 ?max_size@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QBEIXZ 009DA500 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1027	SKIPPED	0002:001eb010 ??0const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DA510 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1028	SKIPPED	0002:001eb030 ??8const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE_NABV012@@Z 009DA530 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1029	PORTED	0002:001eb050 ??$?Y$0EA@E@?$ae_fixed_string@$0EA@E@@QAEAAV0@ABV0@@Z 009DA550 f i scr.o
+1029	SKIPPED	0002:001eb050 ??$?Y$0EA@E@?$ae_fixed_string@$0EA@E@@QAEAAV0@ABV0@@Z 009DA550 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1030	PORTED	0002:001eb090 ??$hud_set_field@H$03@BrocSys@@YAXHH@Z 009DA590 f i scr.o
 1031	PORTED	0002:001eb110 ??$hud_get_field@H$03@BrocSys@@YAHH@Z 009DA610 f i scr.o
 1032	PORTED	0002:001eb190 ??$hud_set_field@H$07@BrocSys@@YAXHH@Z 009DA690 f i scr.o
@@ -1140,7 +1140,7 @@ index	status	map_line
 1139	PORTED	0002:001ee750 ??0weaponInfo_s@@QAE@XZ 009DDC50 f i scr.o
 1140	VERIFIED	0002:001ee790 ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z 009DDC90 f i scr.o
 1141	PORTED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o
-1142	VERIFIED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o
+1142	SKIPPED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1143	PORTED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o
 1144	PORTED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o
 1145	PORTED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o
@@ -1162,7 +1162,7 @@ index	status	map_line
 1161	VERIFIED	0002:001eeb20 ??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ 009DE020 f i scr.o
 1162	PORTED	0002:001eeb40 ?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE040 f i scr.o
 1163	PORTED	0002:001eeb60 ?end@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE060 f i scr.o
-1164	VERIFIED	0002:001eeb80 ??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z 009DE080 f i scr.o
+1164	SKIPPED	0002:001eeb80 ??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z 009DE080 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1165	SKIPPED	0002:001eebd0 ??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ 009DE0D0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1166	PORTED	0002:001eebf0 ??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DE0F0 f i scr.o
 1167	PORTED	0002:001eec00 ?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z 009DE100 f i scr.o
@@ -1171,7 +1171,7 @@ index	status	map_line
 1170	PORTED	0002:001eed00 ?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009DE200 f i scr.o
 1171	PORTED	0002:001eed20 ?Add@?$BitSet@$0BAA@@@QAEXH@Z 009DE220 f i scr.o
 1172	PORTED	0002:001eedb0 ?Rmv@?$BitSet@$0BAA@@@QAEXH@Z 009DE2B0 f i scr.o
-1173	PORTED	0002:001eee40 ??0?$ae_fixed_string@$0CA@E@@QAE@ABV0@@Z 009DE340 f i scr.o
+1173	SKIPPED	0002:001eee40 ??0?$ae_fixed_string@$0CA@E@@QAE@ABV0@@Z 009DE340 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1174	PORTED	0002:001eee80 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z 009DE380 f i scr.o
 1175	SKIPPED	0002:001eeed0 ?size@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QBEIXZ 009DE3D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1176	SKIPPED	0002:001eeee0 ??R?$hash_compare@HU?$less@H@std@@@stdext@@QBEIABH@Z 009DE3E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

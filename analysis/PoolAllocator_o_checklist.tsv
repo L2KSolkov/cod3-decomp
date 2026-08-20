@@ -16,13 +16,13 @@ index	status	map_line
 15	VERIFIED	0002:003bd640 ?GetMemRemaining@PoolAllocator@@QBEHXZ 00BACB40 f PoolAllocator.o
 16	PORTED	0002:003bd670 ?Pop@BlockPool@PoolAllocator@@QAEPAXXZ 00BACB70 f PoolAllocator.o
 17	PORTED	0002:003bd700 ?Push@BlockPool@PoolAllocator@@QAEXPAX@Z 00BACC00 f PoolAllocator.o
-18	PORTED	0002:003bd7f0 ?ReportTotals@BlockPool@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z 00BACCF0 f PoolAllocator.o
+18	SKIPPED	0002:003bd7f0 ?ReportTotals@BlockPool@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z 00BACCF0 f PoolAllocator.o  SKIPPED: inline template/container helper; supplied by its template definition
 19	VERIFIED	0002:003bd830 ??0PoolAllocator@@QAE@ABV?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@I@Z 00BACD30 f PoolAllocator.o
 20	VERIFIED	0002:003bd9f0 ??1PoolAllocator@@QAE@XZ 00BACEF0 f PoolAllocator.o
 21	VERIFIED	0002:003bda70 ?Allocate@PoolAllocator@@QAEPAXI_N@Z 00BACF70 f PoolAllocator.o
 22	VERIFIED	0002:003bdb90 ?Release@PoolAllocator@@QAEXPAX@Z 00BAD090 f PoolAllocator.o
 23	VERIFIED	0002:003bdbe0 ?InPool@PoolAllocator@@QBE_NPAX@Z 00BAD0E0 f PoolAllocator.o
-24	PORTED	0002:003bdc20 ?ReportTotals@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z 00BAD120 f PoolAllocator.o
+24	SKIPPED	0002:003bdc20 ?ReportTotals@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z 00BAD120 f PoolAllocator.o  SKIPPED: inline template/container helper; supplied by its template definition
 25	VERIFIED	0002:003bdc90 ?ReportAllocations@PoolAllocator@@QAEXXZ 00BAD190 f PoolAllocator.o
 26	VERIFIED	0002:003bdce0 ??_GBlockPool@PoolAllocator@@QAEPAXI@Z 00BAD1E0 f i PoolAllocator.o
 27	VERIFIED	0002:003bdd10 ??0?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QAE@XZ 00BAD210 f i PoolAllocator.o
@@ -40,7 +40,7 @@ index	status	map_line
 39	PORTED	0002:003bdf80 ??Cconst_iterator@?$ae_sized_array@PAVBlockPool@PoolAllocator@@$07@@QBEABQAVBlockPool@PoolAllocator@@XZ 00BAD480 f i PoolAllocator.o
 40	PORTED	0002:003bdf90 ??Econst_iterator@?$ae_sized_array@PAVBlockPool@PoolAllocator@@$07@@QAEAAV01@XZ 00BAD490 f i PoolAllocator.o
 41	PORTED	0002:003bdfa0 ??9const_iterator@?$ae_sized_array@PAVBlockPool@PoolAllocator@@$07@@QBE_NV01@@Z 00BAD4A0 f i PoolAllocator.o
-42	VERIFIED	0002:003bdfc0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEXABV?$ae_fixed_string@$0EA@E@@@Z 00BAD4C0 f i PoolAllocator.o
+42	SKIPPED	0002:003bdfc0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEXABV?$ae_fixed_string@$0EA@E@@@Z 00BAD4C0 f i PoolAllocator.o  SKIPPED: inline template/container helper; supplied by its template definition
 43	PORTED	0002:003be040 ??Dconst_iterator@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QBEABUPoolConfig@PoolAllocator@@XZ 00BAD540 f i PoolAllocator.o
 44	PORTED	0002:003be050 ??Econst_iterator@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAEAAV01@XZ 00BAD550 f i PoolAllocator.o
 45	PORTED	0002:003be060 ??9const_iterator@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QBE_NV01@@Z 00BAD560 f i PoolAllocator.o

@@ -9,5 +9,5 @@ index	status	map_line
 8	VERIFIED	0002:003becf0 ?Warning@AeAssert@@YA_NPBDZZ 00BAE1F0 f AeAssert.o
 9	PORTED	0002:003bed30 ??0InfiniteRecursionStopper@AeAssert@@QAE@AA_N@Z 00BAE230 f i AeAssert.o
 10	PORTED	0002:003bed50 ??1InfiniteRecursionStopper@AeAssert@@QAE@XZ 00BAE250 f i AeAssert.o
-11	PORTED	0002:003bed60 ??0?$ae_fixed_string@$0BAAA@G@@QAE@XZ 00BAE260 f i AeAssert.o
-12	PORTED	0002:003bed70 ??$tl_max@HH@@YAHABH0@Z 00BAE270 f i AeAssert.o
+11	SKIPPED	0002:003bed60 ??0?$ae_fixed_string@$0BAAA@G@@QAE@XZ 00BAE260 f i AeAssert.o  SKIPPED: inline template/container helper; supplied by its template definition
+12	SKIPPED	0002:003bed70 ??$tl_max@HH@@YAHABH0@Z 00BAE270 f i AeAssert.o  SKIPPED: inline template/container helper; supplied by its template definition

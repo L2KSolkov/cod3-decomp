@@ -376,7 +376,7 @@ index	status	map_line
 375	VERIFIED	0002:002bb910 ??_EADSMetaAnimInstance@@UAEPAXI@Z 00AAAE10 f i cg.o
 376	VERIFIED	0002:002bb940 ??1ADSMetaAnimInstance@@UAE@XZ 00AAAE40 f i cg.o
 377	PORTED	0002:002bb9c0 ??$tl_min@MM@@YAMABM0@Z 00AAAEC0 f i cg.o
-378	PORTED	0002:002bba00 ??$tl_max@MM@@YAMABM0@Z 00AAAF00 f i cg.o
+378	SKIPPED	0002:002bba00 ??$tl_max@MM@@YAMABM0@Z 00AAAF00 f i cg.o  SKIPPED: inline template/container helper; supplied by its template definition
 379	VERIFIED	0002:002bba40 ?GetBoneName@XModelParts@@QBEPBDI@Z 00AAAF40 f i cg.o
 380	VERIFIED	0002:002bbac0 ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z 00AAAFC0 f i cg.o
 381	PORTED	0002:002bbbd0 ??0localEntity_t@@QAE@XZ 00AAB0D0 f i cg.o

@@ -1496,7 +1496,7 @@ index	status	map_line
 1495	VERIFIED	0002:001afb40 ??0Observer@MemoryUnitManager@@QAE@XZ 0099F040 f i shell.o
 1496	VERIFIED	0002:001afb50 ?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ 0099F050 f i shell.o
 1497	PORTED	0002:001afb60 ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099F060 f i shell.o
-1498	PORTED	0002:001afb80 ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099F080 f i shell.o
+1498	SKIPPED	0002:001afb80 ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099F080 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 1499	VERIFIED	0002:001afb90 ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099F090 f i shell.o
 1500	PORTED	0002:001afba0 ?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ 0099F0A0 f i shell.o
 1501	PORTED	0002:001afbb0 ??A?$ae_vector@PAVPanelQuadSection@@@@QBEABQAVPanelQuadSection@@H@Z 0099F0B0 f i shell.o
@@ -1792,11 +1792,11 @@ index	status	map_line
 1791	VERIFIED	0002:001b3730 ??_EGameSettings@@UAEPAXI@Z 009A2C30 f i shell.o
 1792	SKIPPED	0002:001b3770 ??A?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAADI@Z 009A2C70 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1793	SKIPPED	0002:001b37a0 ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ 009A2CA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1794	VERIFIED	0002:001b37c0 ?find@?$ae_fixed_string@$0CA@E@@QBEHDH@Z 009A2CC0 f i shell.o
-1795	VERIFIED	0002:001b37f0 ?substr@?$ae_fixed_string@$0CA@E@@QBEAAV1@AAV1@HH@Z 009A2CF0 f i shell.o
-1796	PORTED	0002:001b3830 ??A?$ae_fixed_string@$0CA@E@@QAEAADH@Z 009A2D30 f i shell.o
-1797	VERIFIED	0002:001b38b0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@PBD@Z 009A2DB0 f i shell.o
-1798	PORTED	0002:001b38f0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@D@Z 009A2DF0 f i shell.o
+1794	SKIPPED	0002:001b37c0 ?find@?$ae_fixed_string@$0CA@E@@QBEHDH@Z 009A2CC0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1795	SKIPPED	0002:001b37f0 ?substr@?$ae_fixed_string@$0CA@E@@QBEAAV1@AAV1@HH@Z 009A2CF0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1796	SKIPPED	0002:001b3830 ??A?$ae_fixed_string@$0CA@E@@QAEAADH@Z 009A2D30 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1797	SKIPPED	0002:001b38b0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@PBD@Z 009A2DB0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
+1798	SKIPPED	0002:001b38f0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@D@Z 009A2DF0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 1799	PORTED	0002:001b3930 ??1?$ae_vector@PAVPanelQuad@@@@QAE@XZ 009A2E30 f i shell.o
 1800	PORTED	0002:001b3960 ?push_back@?$ae_vector@PAVPanelQuad@@@@QAEXABQAVPanelQuad@@@Z 009A2E60 f i shell.o
 1801	PORTED	0002:001b3a10 ??1?$ae_vector@PAVFEText@@@@QAE@XZ 009A2F10 f i shell.o
@@ -1872,7 +1872,7 @@ index	status	map_line
 1871	SKIPPED	0002:001b4a90 ??0?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@IAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 009A3F90 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1872	SKIPPED	0002:001b4aa0 ?construct@?$allocator@PAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@@std@@QAEXPAPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@2@ABQAU342@@Z 009A3FA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1873	SKIPPED	0002:001b4ac0 ??Econst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A3FC0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1874	PORTED	0002:001b4ad0 ??$?8$0EA@E@@YA_NABV?$ae_fixed_string@$0EA@E@@PBD@Z 009A3FD0 f i shell.o
+1874	SKIPPED	0002:001b4ad0 ??$?8$0EA@E@@YA_NABV?$ae_fixed_string@$0EA@E@@PBD@Z 009A3FD0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 1875	SKIPPED	0002:001b4b00 ?compare@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEHABV12@@Z 009A4000 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1876	SKIPPED	0002:001b4b50 ??$_Distance2@Vconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@I@std@@YAXVconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@0AAIUbidirectional_iterator_tag@0@@Z 009A4050 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1877	VERIFIED	0002:001b4b80 ?SetHJustify@FEMultiLineText@@UAEXH@Z 009A4080 f i shell.o

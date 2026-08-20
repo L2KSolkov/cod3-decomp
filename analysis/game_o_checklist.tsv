@@ -507,7 +507,7 @@ index	status	map_line
 506	VERIFIED	0002:00221470 ?RegisterWbk@AudioBankMgr@@QAEXABVtlFixedString@@PBDW4ELanguage@@W4TPakId@@@Z 00A10970 f game.o
 507	VERIFIED	0002:00221670 ?GetSoundForHandle@SoundDevice@@QAEPAVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z 00A10B70 f game.o
 508	VERIFIED	0002:002216b0 ?GetSoundForHandle@SoundDevice@@QBEPBVSound@1@V?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z 00A10BB0 f game.o
-509	VERIFIED	0002:002216f0 ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ 00A10BF0 f game.o
+509	SKIPPED	0002:002216f0 ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ 00A10BF0 f game.o  SKIPPED: inline template/container helper; supplied by its template definition
 510	VERIFIED	0002:002217f0 ?IsMusicPlaying@MusicMgr@@QAE_NXZ 00A10CF0 f game.o
 511	VERIFIED	0002:00221820 ?BG_PlayerTouchesItem@@YA_NPAVPlayerState@@PAVEntityState@@H@Z 00A10D20 f game.o
 512	VERIFIED	0002:002218c0 ?BG_CanItemBeGrabbed@@YAHPBVEntityState@@PBVPlayerState@@H@Z 00A10DC0 f game.o
@@ -807,9 +807,9 @@ index	status	map_line
 806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o
 807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o
 808	VERIFIED	0002:0025d3f0 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@VHandle@@@Z 00A4C8F0 f i game.o
-809	VERIFIED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o
-810	VERIFIED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o
-811	VERIFIED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o
+809	SKIPPED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+810	SKIPPED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+811	SKIPPED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 812	SKIPPED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 813	SKIPPED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o
@@ -945,10 +945,10 @@ index	status	map_line
 944	SKIPPED	0002:0025ef70 ??8const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A4E470 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 945	PORTED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o
 946	PORTED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o
-947	PORTED	0002:0025efd0 ??$tl_max@IH@@YAIABIABH@Z 00A4E4D0 f i game.o
+947	SKIPPED	0002:0025efd0 ??$tl_max@IH@@YAIABIABH@Z 00A4E4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 948	SKIPPED	0002:0025eff0 ??$fill@PAU?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@0ABU10@@Z 00A4E4F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 949	SKIPPED	0002:0025f020 ??$_Allocate@U?$pair@HH@std@@@std@@YAPAU?$pair@HH@0@IPAU10@@Z 00A4E520 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-950	VERIFIED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o
+950	SKIPPED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 951	SKIPPED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 952	SKIPPED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 953	PORTED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o
@@ -1019,7 +1019,7 @@ index	status	map_line
 1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o
 1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o
 1020	PORTED	0002:00260710 ?BindObjectToHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVSound@SoundDevice@@@Z 00A4FC10 f i game.o
-1021	VERIFIED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o
+1021	SKIPPED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1022	SKIPPED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1023	SKIPPED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1024	SKIPPED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1055,7 +1055,7 @@ index	status	map_line
 1054	PORTED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o
 1055	PORTED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o
 1056	VERIFIED	0002:00261020 ??0?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A50520 f i game.o
-1057	PORTED	0002:00261040 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A50540 f i game.o
+1057	SKIPPED	0002:00261040 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A50540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1058	PORTED	0002:00261070 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A50570 f i game.o
 1059	PORTED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
 1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o
@@ -1076,7 +1076,7 @@ index	status	map_line
 1075	SKIPPED	0002:002614c0 ?allocate@?$allocator@U?$pair@HH@std@@@std@@QAEPAU?$pair@HH@2@I@Z 00A509C0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1076	SKIPPED	0002:002614e0 ??0iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A509E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1077	SKIPPED	0002:00261500 ??9const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A50A00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1078	PORTED	0002:00261520 ??$?0$0EAA@G@?$ae_fixed_string@$0IA@E@@QAE@ABV?$ae_fixed_string@$0EAA@G@@@Z 00A50A20 f i game.o
+1078	SKIPPED	0002:00261520 ??$?0$0EAA@G@?$ae_fixed_string@$0IA@E@@QAE@ABV?$ae_fixed_string@$0EAA@G@@@Z 00A50A20 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1079	SKIPPED	0002:00261560 ??$Find@PBD@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@QBEPAPBV?$InplaceVector@TValue@GdbFileSet@@@@ABQBD@Z 00A50A60 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1080	PORTED	0002:00261670 ??$safe_for_each@Viterator@?$reserved_dlist@VCurveEffectListElem@@@@V?$DelFunctor@VCurveEffectListElem@@@@@@YAXViterator@?$reserved_dlist@VCurveEffectListElem@@@@0V?$DelFunctor@VCurveEffectListElem@@@@@Z 00A50B70 f i game.o
 1081	SKIPPED	0002:002616c0 ??$copy@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00@Z 00A50BC0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1104,7 +1104,7 @@ index	status	map_line
 1103	PORTED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o
 1104	PORTED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o
 1105	PORTED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o
-1106	VERIFIED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o
+1106	SKIPPED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1107	PORTED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o
 1108	PORTED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o
 1109	PORTED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o

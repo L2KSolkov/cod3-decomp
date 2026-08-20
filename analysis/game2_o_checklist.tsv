@@ -715,7 +715,7 @@ index	status	map_line
 714	PORTED	0002:00118cd0 ??0mpAnimJointBoneHandles_t@@QAE@XZ 009081D0 f i game2.o
 715	VERIFIED	0002:00118ce0 ?GetSkeleton@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081E0 f i game2.o
 716	VERIFIED	0002:00118cf0 ?GetSkeleton@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081F0 f i game2.o
-717	VERIFIED	0002:00118d00 ??0?$ae_fixed_string@$0EA@E@@QAE@XZ 00908200 f i game2.o
+717	SKIPPED	0002:00118d00 ??0?$ae_fixed_string@$0EA@E@@QAE@XZ 00908200 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 718	SKIPPED	0002:00118d10 ??A?$InplaceVector@E@@QBEABEI@Z 00908210 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 719	PORTED	0002:00118d90 ??A?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@QAEAAV?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@H@Z 00908290 f i game2.o
 720	PORTED	0002:00118e10 ??A?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@QAEAAVKeyInfoEntry@@H@Z 00908310 f i game2.o
@@ -750,9 +750,9 @@ index	status	map_line
 749	PORTED	0002:00119450 ??9iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NV01@@Z 00908950 f i game2.o
 750	PORTED	0002:00119470 ?size@?$apsBlockArray@PAVapsGroup@@@@QBEHXZ 00908970 f i game2.o
 751	PORTED	0002:00119480 ??A?$apsBlockArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z 00908980 f i game2.o
-752	PORTED	0002:001194e0 ??Diterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBEAAV?$ae_fixed_string@$0EA@E@@XZ 009089E0 f i game2.o
-753	PORTED	0002:001194f0 ??Eiterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEAAV01@XZ 009089F0 f i game2.o
-754	PORTED	0002:00119500 ??9iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBE_NV01@@Z 00908A00 f i game2.o
+752	SKIPPED	0002:001194e0 ??Diterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBEAAV?$ae_fixed_string@$0EA@E@@XZ 009089E0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
+753	SKIPPED	0002:001194f0 ??Eiterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEAAV01@XZ 009089F0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
+754	SKIPPED	0002:00119500 ??9iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBE_NV01@@Z 00908A00 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 755	SKIPPED	0002:00119520 ?size@?$InplaceVector@VSplinePathData@@@@QBEIXZ 00908A20 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 756	SKIPPED	0002:00119530 ??A?$InplaceVector@VSplinePathData@@@@QAEAAVSplinePathData@@I@Z 00908A30 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 757	SKIPPED	0002:001195b0 ?capacity@?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QBEHXZ 00908AB0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -791,7 +791,7 @@ index	status	map_line
 790	VERIFIED	0002:00119ce0 ??0?$nalGenericComponentHandle@X@nalGeneric@@QAE@XZ 009091E0 f i game2.o
 791	PORTED	0002:00119cf0 ?IsValid@?$nalGenericComponentHandle@X@nalGeneric@@QBE_NXZ 009091F0 f i game2.o
 792	PORTED	0002:00119d00 ??0?$ae_sized_array_base@UPerformanceStats@TestFPS@@$0DOI@@@QAE@XZ 00909200 f i game2.o
-793	PORTED	0002:00119d10 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 00909210 f i game2.o
+793	SKIPPED	0002:00119d10 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 00909210 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 794	PORTED	0002:00119d70 ?node_to_object@?$reserved_dlist@VTask@@@@SAPAVTask@@PAUdlist_node@1@@Z 00909270 f i game2.o
 795	PORTED	0002:00119d80 ?node_to_object@?$reserved_dlist@VTask@@@@SAPBVTask@@PBUdlist_node@1@@Z 00909280 f i game2.o
 796	PORTED	0002:00119d90 ?clear@?$reserved_dlist@VTask@@@@QAEXXZ 00909290 f i game2.o
@@ -815,7 +815,7 @@ index	status	map_line
 814	PORTED	0002:00119f30 ?Release@DbElement@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAEXXZ 00909430 f i game2.o
 815	PORTED	0002:00119f40 ?set_size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXH@Z 00909440 f i game2.o
 816	PORTED	0002:00119f60 ??0iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@AAE@PAUPerformanceStats@TestFPS@@@Z 00909460 f i game2.o
-817	PORTED	0002:00119f80 ??0iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@AAE@PAV?$ae_fixed_string@$0EA@E@@@Z 00909480 f i game2.o
+817	SKIPPED	0002:00119f80 ??0iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@AAE@PAV?$ae_fixed_string@$0EA@E@@@Z 00909480 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 818	SKIPPED	0002:00119fa0 ?size@?$InplaceVector@PBV?$InplaceVector@E@@@@QBEIXZ 009094A0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 819	SKIPPED	0002:00119fb0 ??A?$InplaceVector@PBV?$InplaceVector@E@@@@QAEAAPBV?$InplaceVector@E@@I@Z 009094B0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 820	PORTED	0002:0011a030 ??0iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@AAE@PAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@@Z 00909530 f i game2.o
@@ -949,9 +949,9 @@ index	status	map_line
 948	PORTED	0002:0011bfe0 ?clear@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXXZ 0090B4E0 f i game2.o
 949	PORTED	0002:0011bff0 ?begin@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAE?AViterator@1@XZ 0090B4F0 f i game2.o
 950	PORTED	0002:0011c000 ?end@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAE?AViterator@1@XZ 0090B500 f i game2.o
-951	VERIFIED	0002:0011c020 ??0?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 0090B520 f i game2.o
-952	PORTED	0002:0011c080 ?begin@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B580 f i game2.o
-953	PORTED	0002:0011c090 ?end@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B590 f i game2.o
+951	SKIPPED	0002:0011c020 ??0?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE@XZ 0090B520 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
+952	SKIPPED	0002:0011c080 ?begin@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B580 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
+953	SKIPPED	0002:0011c090 ?end@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAE?AViterator@1@XZ 0090B590 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 954	SKIPPED	0002:0011c0b0 ?Fixup@?$InplaceAssetBank@VSplineGroup@@V?$InplaceTree@II@@@@QAEXXZ 0090B5B0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 955	SKIPPED	0002:0011c130 ?Size@?$InplaceAssetBank@V?$InplaceVector@E@@V?$InplaceTree@II@@@@QBEIXZ 0090B630 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	SKIPPED	0002:0011c140 ??A?$InplaceAssetBank@V?$InplaceVector@E@@V?$InplaceTree@II@@@@QAEPAV?$InplaceVector@E@@I@Z 0090B640 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1015,7 +1015,7 @@ index	status	map_line
 1014	PORTED	0002:0011d3f0 ??$DereferenceHandle@VTaskSys@@VTask@@@TaskSys@@QBEPAVTask@@V?$DbLinkedHandle@VTaskSys@@VTask@@@@@Z 0090C8F0 f i game2.o
 1015	PORTED	0002:0011d430 ?begin@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE?AViterator@1@XZ 0090C930 f i game2.o
 1016	PORTED	0002:0011d480 ??$safe_for_each@Viterator@?$reserved_dlist@VQuickTaskDeactivation@@@@V?$DelFunctor@VQuickTaskDeactivation@@@@@@YAXViterator@?$reserved_dlist@VQuickTaskDeactivation@@@@0V?$DelFunctor@VQuickTaskDeactivation@@@@@Z 0090C980 f i game2.o
-1017	VERIFIED	0002:0011d4d0 ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z 0090C9D0 f i game2.o
+1017	SKIPPED	0002:0011d4d0 ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z 0090C9D0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 1018	PORTED	0002:0011d520 ?GetActiveBeginThread@AeThreadManager@@QAE?AViterator@?$reserved_dlist@VAeThread@@@@XZ 0090CA20 f i game2.o
 1019	PORTED	0002:0011d570 ?SetKeyBinding@ButtonMgr@@SAXHHE@Z 0090CA70 f i game2.o
 1020	PORTED	0002:0011d5c0 ?Press@ButtonMgr@@SAXHH_N@Z 0090CAC0 f i game2.o

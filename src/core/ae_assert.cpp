@@ -42,11 +42,32 @@ bool gAssertsEnabled = true;   // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr:Ae
 // Ignored assert table — matches by file + line + optional expression
 struct IgnoredAssert {
     int         line;
-    const char* file;
-    const char* expr;
+    char        file[256];
+    char        expr[1024];
+    IgnoredAssert();
 };
-#define MAX_IGNORED 64
+#define MAX_IGNORED 500
 static IgnoredAssert s_ignored[MAX_IGNORED];
+
+IgnoredAssert::IgnoredAssert() {
+    file[0] = 0;
+    expr[0] = 0;
+}
+
+struct InfiniteRecursionStopper {
+    bool* mRecursing;
+    explicit InfiniteRecursionStopper(bool* ref);
+    ~InfiniteRecursionStopper();
+};
+
+InfiniteRecursionStopper::InfiniteRecursionStopper(bool* ref)
+    : mRecursing(ref) {
+    *ref = true;
+}
+
+InfiniteRecursionStopper::~InfiniteRecursionStopper() {
+    *mRecursing = false;
+}
 
 enum ONSCREEN_MESSAGE_TYPE {
     ONSCREEN_MESSAGE_ASSERT = 0,
