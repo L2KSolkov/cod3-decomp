@@ -828,3 +828,5 @@ nal_init.o	?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16E
 nal_init.o	?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
 nal_init.o	?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
 nal_init.o	?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	??BnalQuaternion8@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ	PORTED
+nal_init.o	??BnalQuaternion16@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ	PORTED
