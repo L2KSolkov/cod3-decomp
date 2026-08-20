@@ -1173,7 +1173,7 @@
 }
 
 // ea: 0x0077CBA0  (?Path_FindPathFromInCylinder@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM33MMH@Z)
-    int __fastcall Path_FindPathFromInCylinder(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, const float* const, float, float, int)
+    const int __fastcall Path_FindPathFromInCylinder(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, const float* const, float, float, int)
 {
     return 0;
 }
