@@ -896,9 +896,33 @@ bool bdBitBuffer::testBool()
 
 bool bdByteBuffer::read(void* data, unsigned int size)
 {
-    (void)data;
-    (void)size;
-    return true;
+    const unsigned int available = (unsigned int)((m_data + m_size) - m_readPtr);
+    if (size > available)
+    {
+        bdMessageProxy proxy(".\\bdContainers\\bdByteBuffer.cpp",
+                             "bool __thiscall bdByteBuffer::read(void *,unsigned int)",
+                             0x32u, "dw/err/");
+        proxy.log("err", "Could not read data from buffer. Insufficient data available.\n");
+        do
+        {
+            if (!g_assertFalse)
+                break;
+            bdMessageProxy retry(".\\bdContainers\\bdByteBuffer.cpp",
+                                 "bool __thiscall bdByteBuffer::read(void *,unsigned int)",
+                                 0x33u, "dw/err");
+            retry.log(defaultFileName,
+                      "Could not read data from buffer. Insufficient data available.\n");
+        }
+        while (g_assertFalse);
+        return false;
+    }
+
+    unsigned int newSize = size;
+    const bool result = bdBytePacker::removeBuffer(m_readPtr, available, 0,
+                                                   &newSize,
+                                                   (unsigned char*)data, size);
+    m_readPtr += size;
+    return result;
 }
 
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)

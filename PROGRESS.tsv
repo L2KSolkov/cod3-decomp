@@ -510,7 +510,7 @@ ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx
 
 bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 
-bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation; restored dump-backed bounds-checked read and pointer advancement; canonical Debug build passed
 
 bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 3: bdCore init/quit and singleton reverse cleanup ported from IDA 0x89E900-0x89EA83
 
