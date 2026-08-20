@@ -19422,10 +19422,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19421	0x00834B40	0x00C24040	?apkLoadFileInPlace@apk@@YAPAVapkFile@1@PAX_N@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19422	0x00834D70	0x00C24270	?apkLoadFile@apk@@YAPAVapkFile@1@PBD@Z	apk_xboxr	apk.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19423	0x00834E20	0x00C24320	??$tl_align@PAE@@YAPAEPAEI@Z	apk_xboxr	apk.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19424	0x00834E40	0x00C24340	?jqCreateMutex@@YAHH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19425	0x00834E50	0x00C24350	?jqDestroyMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19426	0x00834E60	0x00C24360	?jqLockMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19427	0x00834E70	0x00C24370	?jqUnlockMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19424	0x00834E40	0x00C24340	?jqCreateMutex@@YAHH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19425	0x00834E50	0x00C24350	?jqDestroyMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19426	0x00834E60	0x00C24360	?jqLockMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19427	0x00834E70	0x00C24370	?jqUnlockMutex@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 19428	0x00834E80	0x00C24380	?jqInit@@YAXXZ	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19429	0x00834E90	0x00C24390	?jqGetMaxWorkers@@YAHXZ	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19430	0x00834EA0	0x00C243A0	?jqStop@@YAXXZ	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -19440,14 +19440,14 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19439	0x00835320	0x00C24820	?jqCreateBatchGroup@@YAHXZ	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19440	0x00835390	0x00C24890	?jqDestroyBatchGroup@@YAXH@Z	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19441	0x008353D0	0x00C248D0	?jqShutdown@@YAXXZ	jobqueue_xboxr	jobqueue.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-19442	0x008353F0	0x00C248F0	?Ptr@?$jqPtr@UjqBatch@@@@QAEAAPAUjqBatch@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19443	0x00835400	0x00C24900	?Ptr@?$jqPtr@UjqBatchGroup@@@@QAEAAPAUjqBatchGroup@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19444	0x00835410	0x00C24910	??0?$jqPtr@UjqBatch@@@@QAE@PAUjqBatch@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19445	0x00835420	0x00C24920	??4?$jqPtr@UjqBatch@@@@QAEABV0@PAUjqBatch@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19446	0x00835430	0x00C24930	??B?$jqPtr@UjqBatch@@@@QAEPAUjqBatch@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19447	0x00835440	0x00C24940	??0?$jqPtr@UjqBatchGroup@@@@QAE@PAUjqBatchGroup@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19448	0x00835450	0x00C24950	??4?$jqPtr@UjqBatchGroup@@@@QAEABV0@PAUjqBatchGroup@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19449	0x00835460	0x00C24960	??B?$jqPtr@UjqBatchGroup@@@@QAEPAUjqBatchGroup@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19442	0x008353F0	0x00C248F0	?Ptr@?$jqPtr@UjqBatch@@@@QAEAAPAUjqBatch@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19443	0x00835400	0x00C24900	?Ptr@?$jqPtr@UjqBatchGroup@@@@QAEAAPAUjqBatchGroup@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19444	0x00835410	0x00C24910	??0?$jqPtr@UjqBatch@@@@QAE@PAUjqBatch@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19445	0x00835420	0x00C24920	??4?$jqPtr@UjqBatch@@@@QAEABV0@PAUjqBatch@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19446	0x00835430	0x00C24930	??B?$jqPtr@UjqBatch@@@@QAEPAUjqBatch@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19447	0x00835440	0x00C24940	??0?$jqPtr@UjqBatchGroup@@@@QAE@PAUjqBatchGroup@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19448	0x00835450	0x00C24950	??4?$jqPtr@UjqBatchGroup@@@@QAEABV0@PAUjqBatchGroup@@@Z	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19449	0x00835460	0x00C24960	??B?$jqPtr@UjqBatchGroup@@@@QAEPAUjqBatchGroup@@XZ	jobqueue_xboxr	jobqueue.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 19450	0x00835470	0x00C24970	?jqValidate@@YAXXZ	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19451	0x00835480	0x00C24980	?jqStart@@YAXI@Z	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19452	0x00835490	0x00C24990	?jqSetBatchPoolSize@@YAXI@Z	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

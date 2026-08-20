@@ -78,6 +78,44 @@ static jqWorker*   jqWorkers = nullptr;
 static int         jqNWorkers = 0;
 static int         jqBatchPoolMutex = 0;
 
+// ea: 0x00834E40
+int jqCreateMutex(int /*spincount*/) {
+    return 0;
+}
+
+// ea: 0x00834E50
+void jqDestroyMutex(int /*mutex*/) {}
+
+// ea: 0x00834E60
+void jqLockMutex(int /*mutex*/) {}
+
+// ea: 0x00834E70
+void jqUnlockMutex(int /*mutex*/) {}
+
+template <class T>
+class jqPtr {
+public:
+    T* Value;
+
+    // ea: 0x00835410 / 0x00835440
+    explicit jqPtr(T* value) : Value(value) {}
+
+    // ea: 0x008353F0 / 0x00835400
+    T*& Ptr() { return Value; }
+
+    // ea: 0x00835420 / 0x00835450
+    const jqPtr<T>& operator=(T* value) {
+        Value = value;
+        return *this;
+    }
+
+    // ea: 0x00835430 / 0x00835460
+    operator T*() { return Value; }
+};
+
+template class jqPtr<jqBatch>;
+template class jqPtr<jqBatchGroup>;
+
 // ============================================================================
 // Init / Shutdown
 // ============================================================================

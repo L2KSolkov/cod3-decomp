@@ -448,7 +448,7 @@ jidctred.obj	analysis/jidctred_obj_checklist.tsv	analysis/jidctred_obj_inventory
 jitter.obj	analysis/jitter_obj_checklist.tsv	analysis/jitter_obj_inventory.tsv	analysis/jitter_obj_plan.tsv	1	0	0	1	0	0	0
 jmemmgr.obj	analysis/jmemmgr_obj_checklist.tsv	analysis/jmemmgr_obj_inventory.tsv	analysis/jmemmgr_obj_plan.tsv	1	0	0	1	0	0	0
 jmemnobs.obj	analysis/jmemnobs_obj_checklist.tsv	analysis/jmemnobs_obj_inventory.tsv	analysis/jmemnobs_obj_plan.tsv	8	0	0	8	0	0	0
-jobqueue.o	analysis/jobqueue_o_checklist.tsv	analysis/jobqueue_o_inventory.tsv	analysis/jobqueue_o_plan.tsv	26	14	12	0	0	0	0
+jobqueue.o	analysis/jobqueue_o_checklist.tsv	analysis/jobqueue_o_inventory.tsv	analysis/jobqueue_o_plan.tsv	26	26	0	0	0	0	0
 jobqueue_legacy.o	analysis/jobqueue_legacy_o_checklist.tsv	analysis/jobqueue_legacy_o_inventory.tsv	analysis/jobqueue_legacy_o_plan.tsv	11	8	3	0	0	0	0
 jquant1.obj	analysis/jquant1_obj_checklist.tsv	analysis/jquant1_obj_inventory.tsv	analysis/jquant1_obj_plan.tsv	1	0	0	1	0	0	0
 jquant2.obj	analysis/jquant2_obj_checklist.tsv	analysis/jquant2_obj_inventory.tsv	analysis/jquant2_obj_plan.tsv	1	0	0	1	0	0	0

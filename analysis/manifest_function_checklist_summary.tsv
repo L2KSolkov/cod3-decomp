@@ -448,7 +448,7 @@ jidctred.obj	3	0	0	3	0	0	0
 jitter.obj	1	0	0	1	0	0	0
 jmemmgr.obj	1	0	0	1	0	0	0
 jmemnobs.obj	8	0	0	8	0	0	0
-jobqueue.o	26	14	12	0	0	0	0
+jobqueue.o	26	26	0	0	0	0	0
 jobqueue_legacy.o	11	8	3	0	0	0	0
 jquant1.obj	1	0	0	1	0	0	0
 jquant2.obj	1	0	0	1	0	0	0
