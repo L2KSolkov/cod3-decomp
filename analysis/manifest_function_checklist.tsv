@@ -20046,7 +20046,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20045	0x0084FEE0	0x00C3F3E0	?Init@nglDxRenderState@@QAEXXZ	ngl_xboxr	ngl_dx_state.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20046	0x00850000	0x00C3F500	?SetBlendColor@nglDxRenderState@@QAEXI@Z	ngl_xboxr	ngl_dx_state.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20047	0x00850240	0x00C3F740	?nglDxSetFSAA@@YA_NW4nglFSAAMode@@@Z	ngl_xboxr	ngl_dx_fsaa.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20048	0x008504F0	0x00C3F9F0	?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z	ngl_xboxr	ngl_dx_fsaa.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20048	0x008504F0	0x00C3F9F0	?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z	ngl_xboxr	ngl_dx_fsaa.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20049	0x00850520	0x00C3FA20	?nglGetUnusedWorkBuffer@@YAXPAPAXPAI@Z	ngl_xboxr	ngl_dx_buf.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20050	0x00850550	0x00C3FA50	?nglXbSetPushBufferSize@@YAXII@Z	ngl_xboxr	ngl_dx_buf.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20051	0x00850570	0x00C3FA70	?nglSetBufferSize@@YAXW4nglBufferType@@I_N@Z	ngl_xboxr	ngl_dx_buf.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

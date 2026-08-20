@@ -20046,7 +20046,7 @@ index	status	map_line
 20045	VERIFIED	0002:0044fee0 ?Init@nglDxRenderState@@QAEXXZ 00C3F3E0 f ngl_dx_state.o
 20046	VERIFIED	0002:00450000 ?SetBlendColor@nglDxRenderState@@QAEXI@Z 00C3F500 f i ngl_dx_state.o
 20047	VERIFIED	0002:00450240 ?nglDxSetFSAA@@YA_NW4nglFSAAMode@@@Z 00C3F740 f ngl_dx_fsaa.o
-20048	PORTED	0002:004504f0 ?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z 00C3F9F0 f i ngl_dx_fsaa.o
+20048	VERIFIED	0002:004504f0 ?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z 00C3F9F0 f i ngl_dx_fsaa.o
 20049	VERIFIED	0002:00450520 ?nglGetUnusedWorkBuffer@@YAXPAPAXPAI@Z 00C3FA20 f ngl_dx_buf.o
 20050	VERIFIED	0002:00450550 ?nglXbSetPushBufferSize@@YAXII@Z 00C3FA50 f ngl_dx_buf.o
 20051	VERIFIED	0002:00450570 ?nglSetBufferSize@@YAXW4nglBufferType@@I_N@Z 00C3FA70 f ngl_dx_buf.o
