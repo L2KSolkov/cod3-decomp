@@ -8349,6 +8349,75 @@ void nalComponent<nalComponentU8Base,
     }
 }
 
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* defaults = (const unsigned char*)def;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        const bool present = nalComponentTrackPresent(&componentEnum, track);
+        if (offset < 0)
+        {
+            if (present)
+            {
+                src = (const unsigned char*)src + 1;
+                *animData = (const unsigned char*)*animData + 1;
+            }
+            continue;
+        }
+        if (!present)
+        {
+            out[offset] = defaults[offset];
+            continue;
+        }
+        out[offset] = *(const unsigned char*)src;
+        src = (const unsigned char*)src + 1;
+        *animData = (const unsigned char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* defaults = (const unsigned char*)def;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        const bool present = nalComponentTrackPresent(&componentEnum, track);
+        if (offset < 0)
+        {
+            if (present)
+                src = (const unsigned char*)src + 1;
+            continue;
+        }
+        if (!present)
+        {
+            out[offset] = defaults[offset];
+            continue;
+        }
+        out[offset] = *(const unsigned char*)src;
+        src = (const unsigned char*)src + 1;
+    }
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,

@@ -575,3 +575,5 @@ nal_init.o	?PartialDecode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8I
 nal_init.o	?Decode@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z	PORTED
 nal_init.o	?Skip@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
 nal_init.o	?Skip@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?Convert@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?Convert@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
