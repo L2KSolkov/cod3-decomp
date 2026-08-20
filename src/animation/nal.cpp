@@ -8596,6 +8596,9 @@ nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
 
+static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
+                                     int track);
+
 // ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
 // (nal_init.o 0x864470)
 template <>
@@ -8700,6 +8703,47 @@ void nalComponent<nalComponentIKSpinBase,
     pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
     for (int i = 0; i < componentInfo->Count; ++i)
         pose = (char*)pose + 96;
+}
+
+// ?Skip@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z
+// (nal_init.o 0x8647a0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    (void)src;
+    (void)quantity;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    dst = (void*)(((uintptr_t)dst + 1u) & ~uintptr_t(1u));
+    *customAnimData =
+        (const void*)((((uintptr_t)*customAnimData + 3u)
+                       & ~uintptr_t(3u)) + 4u);
+    const void** animData = customAnimData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const void** skeletonData = customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            if (_tlAssert(
+                    "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic_component.h",
+                    2888, "0", "unimplemented"))
+                __debugbreak();
+            dst = (char*)dst + 26;
+            *animData = (const char*)*animData + 1;
+        }
+        *skeletonData = (const char*)*skeletonData + 20;
+        componentInfo = componentEnum.ComponentInfo;
+    }
 }
 
 // ?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z
