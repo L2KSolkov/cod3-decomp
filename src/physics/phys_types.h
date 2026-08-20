@@ -141,7 +141,7 @@ struct pulse_sum_normal {
     double get_vel();
     double get_last_vel();
     double get_pos();
-    float get_objective();
+    double get_objective();
     double clamp_pulse_sum(float ps);
     void  apply(const float* s_);
     void  calc_abs(const math::Dir3* b1_r_displace);

@@ -838,7 +838,7 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
 // ============================================================================
 // pulse_sum_normal inline row methods (COMDATs in this unit).
 // ============================================================================
-float pulse_sum_normal::get_objective() {
+double pulse_sum_normal::get_objective() {
     pulse_sum_node* m_b1 = this->m_b1;
     __m128 a_vel = m_b1->a_vel.v;
     math::Dir3 v3;
@@ -970,6 +970,14 @@ void pulse_sum_normal::SOLVER_apply_relaxation(float* error_sq, bool add_error) 
     float m_last_pulse_sum = m_pulse_sum;
     float s_ = m_last_pulse_sum - (get_objective() + m_last_pulse_sum * m_cfm - m_right_side) / m_denom;
     s_ = clamp_pulse_sum(s_);
+    m_pulse_sum = s_;
+    if ((s_ < m_pulse_sum_min - 0.000099999997f ||
+         s_ > m_pulse_sum_max + 0.000099999997f) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 119,
+                  "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)",
+                  defaultFileName))
+        __debugbreak();
+    s_ = m_pulse_sum - m_last_pulse_sum;
     apply(&s_);
     float d = (m_pulse_sum - m_last_pulse_sum) * m_denom;
     if (add_error && d * d > *error_sq)
@@ -983,8 +991,12 @@ void pulse_sum_normal::SOLVER_solver_intermediate(int iter, float delta_t) {
 }
 
 void pulse_sum_normal::SOLVER_solver_prolog(int iter, float delta_t) {
-    (void)iter;
-    (void)delta_t;
+    m_right_side = m_right_side - get_vel();
+    if (m_pulse_sum_cache->m_visit_key != iter)
+        m_pulse_sum_cache->m_pulse_sum = 0.0f;
+    float pulse_sum_cache_visit_countera = m_pulse_sum_cache->m_pulse_sum * delta_t;
+    m_pulse_sum = clamp_pulse_sum(pulse_sum_cache_visit_countera);
+    apply(&m_pulse_sum);
 }
 
 void pulse_sum_normal::project() {
@@ -1250,13 +1262,14 @@ void pulse_sum_point::SOLVER_apply_relaxation(float* error_sq) {
     math::Dir3 objective;
     get_objective(&objective);
     math::Dir3 s_ = m_pulse_sum;
+    __m128 objective_delta = _mm_sub_ps(objective.v, m_right_side.v);
     s_.v = _mm_sub_ps(
         m_pulse_sum.v,
         _mm_add_ps(
             _mm_add_ps(
-                _mm_mul_ps(m_cr12.v, _mm_shuffle_ps(_mm_set_ss(objective.v.m128_f32[0] - m_right_side.v.m128_f32[0]), _mm_set_ss(0.0f), 0)),
-                _mm_mul_ps(m_cr23.v, _mm_shuffle_ps(_mm_set_ss(objective.v.m128_f32[1] - m_right_side.v.m128_f32[1]), _mm_set_ss(0.0f), 0))),
-            _mm_mul_ps(m_cr31.v, _mm_shuffle_ps(_mm_set_ss(objective.v.m128_f32[2] - m_right_side.v.m128_f32[2]), _mm_set_ss(0.0f), 0))));
+                _mm_mul_ps(m_cr23.v, _mm_set1_ps(objective_delta.m128_f32[0])),
+                _mm_mul_ps(m_cr31.v, _mm_set1_ps(objective_delta.m128_f32[1]))),
+            _mm_mul_ps(m_cr12.v, _mm_set1_ps(objective_delta.m128_f32[2]))));
     math::Dir3 delta = m_pulse_sum;
     m_pulse_sum = s_;
     delta.v = _mm_sub_ps(m_pulse_sum.v, delta.v);
@@ -1272,6 +1285,24 @@ void pulse_sum_point::SOLVER_apply_relaxation(float* error_sq) {
 
 void pulse_sum_point::SOLVER_solver_prolog(int iter, float delta_t) {
     // ea: 0x896190 - right_side -= vel; pulse_sum from cache*delta_t; apply.
+    if (m_pulse_sum_cache[0].m_visit_key != -1 &&
+        m_pulse_sum_cache[0].m_visit_key != iter &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 97,
+                  "pulse_sum_constraint_solver::psc_is_persistant(m_pulse_sum_cache+0,pulse_sum_cache_visit_counter)",
+                  defaultFileName))
+        __debugbreak();
+    if (m_pulse_sum_cache[1].m_visit_key != -1 &&
+        m_pulse_sum_cache[1].m_visit_key != iter &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 98,
+                  "pulse_sum_constraint_solver::psc_is_persistant(m_pulse_sum_cache+1,pulse_sum_cache_visit_counter)",
+                  defaultFileName))
+        __debugbreak();
+    if (m_pulse_sum_cache[2].m_visit_key != -1 &&
+        m_pulse_sum_cache[2].m_visit_key != iter &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 99,
+                  "pulse_sum_constraint_solver::psc_is_persistant(m_pulse_sum_cache+2,pulse_sum_cache_visit_counter)",
+                  defaultFileName))
+        __debugbreak();
     math::Dir3 vel;
     get_vel(&vel);
     m_right_side.v = _mm_sub_ps(m_right_side.v, vel.v);
@@ -1311,28 +1342,11 @@ void pulse_sum_point::set_object_col_pt(const math::Dir3* object_col_pt) {
 // ============================================================================
 // pulse_sum_angular row methods
 // ============================================================================
-float pulse_sum_angular::get_objective() {
-    // ea: 0x896580
-    pulse_sum_node* m_b1 = this->m_b1;
-    __m128 a_vel = m_b1->a_vel.v;
-    math::Dir3 v3;
-    v3.v = m_b1_r.v;
-    __m128 v4 = _mm_mul_ps(_mm_shuffle_ps(a_vel, a_vel, 18), _mm_shuffle_ps(v3.v, v3.v, 9));
-    __m128 v5 = _mm_shuffle_ps(v3.v, v3.v, 18);
-    __m128 t_vel = m_b1->t_vel.v;
-    pulse_sum_node* m_b2 = this->m_b2;
-    __m128 v8 = _mm_add_ps(t_vel, _mm_sub_ps(_mm_mul_ps(_mm_shuffle_ps(a_vel, a_vel, 9), v5), v4));
-    if (m_b2 != NULL)
-        v8 = _mm_sub_ps(
-            v8,
-            _mm_add_ps(
-                m_b2->t_vel.v,
-                _mm_sub_ps(
-                    _mm_mul_ps(_mm_shuffle_ps(m_b2->a_vel.v, m_b2->a_vel.v, 9),
-                               _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18)),
-                    _mm_mul_ps(_mm_shuffle_ps(m_b2->a_vel.v, m_b2->a_vel.v, 18),
-                               _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9)))));
-    __m128 v9 = _mm_mul_ps(v8, m_ud.v);
+double pulse_sum_angular::get_objective() {
+    __m128 v = this->m_b1->a_vel.v;
+    if (this->m_b2 != NULL)
+        v = _mm_sub_ps(this->m_b1->a_vel.v, this->m_b2->a_vel.v);
+    __m128 v9 = _mm_mul_ps(v, m_ud.v);
     return v9.m128_f32[0] + _mm_shuffle_ps(v9, v9, 85).m128_f32[0] +
            _mm_shuffle_ps(v9, v9, 170).m128_f32[0];
 }
@@ -1398,6 +1412,10 @@ void pulse_sum_angular::project() {
 void pulse_sum_angular::SOLVER_apply_relaxation(float* error_sq) {
     float m_last_pulse_sum = m_pulse_sum;
     float s_ = m_last_pulse_sum - (get_objective() + m_last_pulse_sum * m_cfm - m_right_side) / m_denom;
+    if (m_pulse_sum_max < m_pulse_sum_min &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 60,
+                  "m_pulse_sum_min <= m_pulse_sum_max", defaultFileName))
+        __debugbreak();
     if (m_pulse_sum_min <= s_) {
         if (s_ > m_pulse_sum_max)
             s_ = m_pulse_sum_max;
@@ -1405,6 +1423,12 @@ void pulse_sum_angular::SOLVER_apply_relaxation(float* error_sq) {
         s_ = m_pulse_sum_min;
     }
     m_pulse_sum = s_;
+    if ((s_ < m_pulse_sum_min - 0.000099999997f ||
+         s_ > m_pulse_sum_max + 0.000099999997f) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 90,
+                  "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)",
+                  defaultFileName))
+        __debugbreak();
     float delta = m_pulse_sum - m_last_pulse_sum;
     apply(&delta);
     float v7 = delta * m_denom;
@@ -1417,13 +1441,7 @@ void pulse_sum_angular::SOLVER_solver_prolog(int iter, float delta_t) {
     if (m_pulse_sum_cache->m_visit_key != iter)
         m_pulse_sum_cache->m_pulse_sum = 0.0f;
     m_pulse_sum = m_pulse_sum_cache->m_pulse_sum * delta_t;
-    if (m_pulse_sum_min <= m_pulse_sum) {
-        if (m_pulse_sum > m_pulse_sum_max)
-            m_pulse_sum = m_pulse_sum_max;
-    } else {
-        m_pulse_sum = m_pulse_sum_min;
-    }
-    apply(&m_pulse_sum);
+    project();
 }
 
 void pulse_sum_angular::SOLVER_solver_intermediate(int iter, float delta_t) {
@@ -1512,18 +1530,20 @@ void pulse_sum_wheel::SOLVER_apply_relaxation(float* error_sq) {
     if (d * d > *error_sq)
         *error_sq = d * d;
     if (m_side != NULL) {
+        float m_side_last_pulse_sum = m_side->m_pulse_sum;
         m_side->SOLVER_apply_relaxation(error_sq, m_fwd == NULL);
         if (m_fwd != NULL) {
+            float m_fwd_last_pulse_sum = m_fwd->m_pulse_sum;
             float v46 = m_fwd->m_pulse_sum;
             float psb = v46 - (m_fwd->get_objective() + m_fwd->m_cfm * v46 - m_fwd->m_right_side) / m_fwd->m_denom;
             m_fwd->m_pulse_sum = m_fwd->clamp_pulse_sum(psb);
             float v45 = m_fwd->m_pulse_sum - v46;
             m_fwd->apply(&v45);
             addp_pulse_chain();
-            float ds = (m_side->m_pulse_sum - 0.0f) * m_side->m_denom;
+            float ds = (m_side->m_pulse_sum - m_side_last_pulse_sum) * m_side->m_denom;
             if (ds * ds > *error_sq)
                 *error_sq = ds * ds;
-            float df = (m_fwd->m_pulse_sum - 0.0f) * m_fwd->m_denom;
+            float df = (m_fwd->m_pulse_sum - m_fwd_last_pulse_sum) * m_fwd->m_denom;
             if (df * df > *error_sq)
                 *error_sq = df * df;
         }
@@ -1543,13 +1563,10 @@ void pulse_sum_wheel::SOLVER_solver_prolog(int iter, float delta_t) {
         m_side->m_pulse_sum = m_side->m_pulse_sum_cache->m_pulse_sum * delta_t;
         m_side->m_pulse_sum = m_side->clamp_pulse_sum(m_side->m_pulse_sum);
         m_side->apply(&m_side->m_pulse_sum);
-    }
-    if (m_fwd != NULL) {
-        if (m_fwd->m_pulse_sum_cache->m_visit_key != iter)
-            m_fwd->m_pulse_sum_cache->m_pulse_sum = 0.0f;
-        m_fwd->m_pulse_sum = m_fwd->m_pulse_sum_cache->m_pulse_sum * delta_t;
-        m_fwd->m_pulse_sum = m_fwd->clamp_pulse_sum(m_fwd->m_pulse_sum);
-        m_fwd->apply(&m_fwd->m_pulse_sum);
+        if (m_fwd != NULL) {
+            m_fwd->SOLVER_solver_prolog(iter, delta_t);
+            addp_pulse_chain();
+        }
     }
 }
 

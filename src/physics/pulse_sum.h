@@ -132,7 +132,7 @@ struct pulse_sum_angular {
     const math::Dir3* object_col_pt_();
     double get_vel();
     double get_pos();
-    float get_objective();
+    double get_objective();
     double clamp_pulse_sum(float ps);
     void  apply(const float* s_);
     void  calc_abs();

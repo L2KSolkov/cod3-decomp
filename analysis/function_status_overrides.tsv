@@ -368,3 +368,17 @@ phys_constraint_solver_multithreaded.o	??0iterator@?$phys_link_list@Vpulse_sum_a
 phys_constraint_solver_multithreaded.o	??0iterator@?$phys_link_list@Vpulse_sum_wheel@@@@QAE@PAVpulse_sum_wheel@@@Z	VERIFIED
 phys_constraint_solver_multithreaded.o	??0iterator@?$phys_link_list@Vpulse_sum_contact@@@@QAE@PAVpulse_sum_contact@@@Z	VERIFIED
 phys_constraint_solver_multithreaded.o	??0iterator@?$phys_link_list@Vpulse_sum_node@@@@QAE@PAVpulse_sum_node@@@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?calc_abs@pulse_sum_normal@@AAEXABVDir3@math@@@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?get_objective@pulse_sum_normal@@AAE?BMXZ	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_normal@@AAEXAAM_N@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_normal@@AAEXHM@Z	PORTED
+phys_constraint_solver_multithreaded.o	?calc_abs@pulse_sum_point@@AAEXXZ	VERIFIED
+phys_constraint_solver_multithreaded.o	?get_objective@pulse_sum_point@@AAE?BVDir3@math@@XZ	VERIFIED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_point@@AAEXHM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_point@@AAEXAAM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?calc_abs@pulse_sum_angular@@AAEXXZ	VERIFIED
+phys_constraint_solver_multithreaded.o	?get_objective@pulse_sum_angular@@AAE?BMXZ	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_angular@@AAEXAAM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_angular@@AAEXHM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_wheel@@AAEXAAM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_wheel@@AAEXHM@Z	FIXED
