@@ -4246,7 +4246,7 @@ void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
 }
 
 // ea: 0x00480970
-void Scr_Vehicle_Controller(Entity* pSelf, int* /*unused*/)
+void Scr_Vehicle_Controller(Entity* pSelf, int* const /*unused*/)
 {
     if (pSelf == nullptr)
     {

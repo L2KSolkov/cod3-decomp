@@ -664,7 +664,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 663	0x004807D0	0x0086FCD0	?VEH_UnlinkPlayerDropped@@YAXPAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 664	0x00480860	0x0086FD60	?VEH_PlayerInteractionExit@@YAXXZ		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 665	0x00480880	0x0086FD80	?G_IsVehicleUsable@@YAHPAVEntity@@0_N@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-666	0x00480970	0x0086FE70	?Scr_Vehicle_Controller@@YAXPAVEntity@@QAH@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+666	0x00480970	0x0086FE70	?Scr_Vehicle_Controller@@YAXPAVEntity@@QAH@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 667	0x00480AC0	0x0086FFC0	?Scr_Vehicle_Init@@YAXPAVEntity@@H@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 668	0x00480CF0	0x008701F0	?VEH_RotateWheels@@YAXPAVEntity@@PAUvehicle_info_t@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 669	0x00480DA0	0x008702A0	?Scr_Vehicle_Use@@YAXPAVEntity@@00@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

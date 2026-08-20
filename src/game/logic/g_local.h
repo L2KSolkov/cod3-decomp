@@ -4532,7 +4532,7 @@ void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
 void  Player_UpdateActivate(Entity* ent);         // g.o 0x473C40
 void  VP_SetScriptVariable(const char* a1, const char* a2, vehicle_node_t* a3);  // g.o 0x451800
 bool  VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item);  // g.o 0x44FB90
-void  Scr_Vehicle_Controller(Entity* pSelf, int* unused);      // g.o 0x480970
+void  Scr_Vehicle_Controller(Entity* pSelf, int* const unused);      // g.o 0x480970
 void  HealthRegen(Entity* e, float deltaT);       // g.o 0x455380
 void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
