@@ -253,6 +253,8 @@ char* ProfileManager::TimeToString(StubData& data)
 void ProfileManager::SplitTime(int time, int& sec, int& min, int& hour,
                                int& day)
 {
+    if (time > 0x57E3F)
+        time = 0x57E3F;
     day = (time - time % 86400) / 86400;
     int v6 = time % 86400;
     int v7 = v6 % 3600;
