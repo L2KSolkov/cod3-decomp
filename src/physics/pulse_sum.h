@@ -415,7 +415,7 @@ public:
                            int psys_max_vel_iters, int psys_max_vel_pos_iters);  // ea: 0x893290
     static int psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x892140
     static void set_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter, float pulse_sum);  // ea: 0x8926A0
-    static float get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x8926C0
+    static double get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x8926C0
     void solve_iterative(int max_iters, float max_error_sq);  // ea: 0x8945B0
 
     struct temp_user_rigid_body : public user_rigid_body {
@@ -1568,6 +1568,7 @@ static const math::Dir3 sub_pos(rigid_body* b, const math::Dir3& p) {
 // ============================================================================
 namespace rbcint {
 const outer_time* get_time_scale(rigid_body_constraint* rbc);
+rigid_body** get_urb(user_rigid_body** rbc);  // ea: 0x892670
 
 template <typename Constraint>
 inline Constraint* get_next(const Constraint* rbc) {

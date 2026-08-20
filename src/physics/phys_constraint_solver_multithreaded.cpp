@@ -2404,10 +2404,23 @@ void pulse_sum_constraint_solver::set_pulse_sum(pulse_sum_cache* ps_cache, int v
     ps_cache->m_visit_key = visit_counter;
 }
 
-float pulse_sum_constraint_solver::get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter) {
+double pulse_sum_constraint_solver::get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter) {
     if (ps_cache->m_visit_key != visit_counter)
-        return 0.0f;
+        ps_cache->m_pulse_sum = 0.0f;
     return ps_cache->m_pulse_sum;
+}
+
+// rbcint::get_urb - ea: 0x892670
+rigid_body** rbcint::get_urb(user_rigid_body** rbc) {
+    rigid_body** result = reinterpret_cast<rigid_body**>(rbc);
+    rigid_body* candidate = *result;
+    if (candidate == NULL || (candidate->m_flags & 0x20) == 0) {
+        candidate = result[1];
+        result = result + 1;
+        if (candidate == NULL || (candidate->m_flags & 0x20) == 0)
+            return NULL;
+    }
+    return result;
 }
 
 // ============================================================================
