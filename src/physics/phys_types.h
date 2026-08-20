@@ -26,7 +26,7 @@ struct outer_time {
 static_assert(sizeof(outer_time) == 4, "outer_time size mismatch");
 
 // time_sub - ea: 0x88B0A0 (inline COMDAT)
-inline float time_sub(const outer_time* t1, const outer_time* t2) {
+inline double time_sub(const outer_time* t1, const outer_time* t2) {
     return t1->m_time - t2->m_time;
 }
 
@@ -351,7 +351,7 @@ public:
 
     // get_time_scale / get_max_delta_t - ea: 0x88B0B0 / 0x88B0C0
     const outer_time* get_time_scale() const { return &m_time_scale; }
-    float get_max_delta_t() const { return m_max_delta_t; }
+    double get_max_delta_t() const { return m_max_delta_t; }
 };
 static_assert(sizeof(rigid_body) == 0x1B0, "rigid_body size mismatch");
 static_assert(offsetof(rigid_body, m_mat) == 0x000, "rigid_body::m_mat offset mismatch");

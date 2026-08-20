@@ -25,6 +25,13 @@ struct phys_proftimer_callbacks {
 };
 extern phys_proftimer_callbacks g_phys_proftimer_callbacks;
 
+void PHYS_START_PROF_TIMER(phys_proftimer_e p);
+void PHYS_STOP_PROF_TIMER(phys_proftimer_e p);
+
+void IPN_init(rigid_body* rb_partition_head);
+double IPN_get_max_delta_t(rigid_body* rb_partition_head);
+void IPN_reset_rbc_lists(rigid_body* rb_partition_head);
+
 extern int g_physics_system_size;
 extern int g_physics_system_alignment;
 

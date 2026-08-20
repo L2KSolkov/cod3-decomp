@@ -34,6 +34,16 @@ phys_proftimer_callbacks g_phys_proftimer_callbacks;  // ?g_phys_proftimer_callb
 const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG =
     "Solver memory allocater error";  // ?SOLVER_MEMORY_ALLOCATER_ERROR_MSG@@3PBDB (physics_system_internal.o)
 
+void PHYS_START_PROF_TIMER(phys_proftimer_e p) {
+    if (g_phys_proftimer_callbacks.proftimer_start != nullptr)
+        g_phys_proftimer_callbacks.proftimer_start(p);
+}
+
+void PHYS_STOP_PROF_TIMER(phys_proftimer_e p) {
+    if (g_phys_proftimer_callbacks.proftimer_stop != nullptr)
+        g_phys_proftimer_callbacks.proftimer_stop(p);
+}
+
 // phys_constraint_solver_multithreaded.o (list_constraint_solver::process)
 extern void list_constraint_solver_process(
     phys_constraint_solver_multithreaded_list_constraint_solver* lcs,
@@ -105,13 +115,15 @@ void verify_time_scale(rigid_body_constraint* rbc, const outer_time* time_scale)
     if (b1 != NULL && (b1->m_flags & 0x10) == 0 &&
         fabs(b1->m_time_scale.m_time - time_scale->m_time) >= 0.001 &&
         _tlAssert("source/physics_system_internal.cpp", 199,
-                  "fabsf(time_sub(rbc->get_b1()->get_time_scale(),time_scale)) < 0.001f", ""))
+                  "fabsf(time_sub(rbc->get_b1()->get_time_scale(),time_scale)) < 0.001f",
+                  defaultFileName))
         __debugbreak();
     rigid_body* b2 = rbc->b2;
     if (b2 != NULL && (b2->m_flags & 0x10) == 0 &&
         fabs(b2->m_time_scale.m_time - time_scale->m_time) >= 0.001 &&
         _tlAssert("source/physics_system_internal.cpp", 203,
-                  "fabsf(time_sub(rbc->get_b2()->get_time_scale(),time_scale)) < 0.001f", ""))
+                  "fabsf(time_sub(rbc->get_b2()->get_time_scale(),time_scale)) < 0.001f",
+                  defaultFileName))
         __debugbreak();
 }
 
@@ -147,7 +159,7 @@ void IPN_merge(rigid_body* dest, rigid_body* source) {
 }
 
 // IPN_get_max_delta_t - ea: 0x88B4C0
-float IPN_get_max_delta_t(rigid_body* rb_partition_head) {
+double IPN_get_max_delta_t(rigid_body* rb_partition_head) {
     if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
         _tlAssert("source/physics_system_internal.cpp", 140,
                   "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
@@ -161,6 +173,31 @@ float IPN_get_max_delta_t(rigid_body* rb_partition_head) {
             max_delta_t = rb->m_max_delta_t;
     }
     return max_delta_t;
+}
+
+void IPN_init(rigid_body* rb_partition_head) {
+    rb_partition_head->m_partition_node.m_partition_head = rb_partition_head;
+    rb_partition_head->m_partition_node.m_partition_tail = rb_partition_head;
+    rb_partition_head->m_partition_node.m_next_node = nullptr;
+    rb_partition_head->m_partition_node.m_partition_size = 1;
+}
+
+void IPN_reset_rbc_lists(rigid_body* rb_partition_head) {
+    if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
+        _tlAssert("source/physics_system_internal.cpp", 153,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+
+    rb_partition_head->m_partition_node.m_rbc_point_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_hinge_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_dist_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_ragdoll_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_wheel_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_angular_actuator_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_custom_orientation_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_custom_path_first = nullptr;
+    rb_partition_head->m_partition_node.m_rbc_contact_first = nullptr;
 }
 
 // ============================================================================
