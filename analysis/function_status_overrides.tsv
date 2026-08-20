@@ -906,3 +906,5 @@ nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalCompone
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
+nal_generic_component.o	?Inverse@nalPositionOrientation@@QBE?AV1@XZ	PORTED
+nal_generic_component.o	??$IntegerPower@VnalPositionOrientation@@@@YA?AVnalPositionOrientation@@ABV0@H@Z	PORTED
