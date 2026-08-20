@@ -34,6 +34,8 @@ phys_proftimer_callbacks g_phys_proftimer_callbacks;  // ?g_phys_proftimer_callb
 const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG =
     "Solver memory allocater error";  // ?SOLVER_MEMORY_ALLOCATER_ERROR_MSG@@3PBDB (physics_system_internal.o)
 
+template struct phys_memory_heap_template<char>;
+
 void PHYS_START_PROF_TIMER(phys_proftimer_e p) {
     if (g_phys_proftimer_callbacks.proftimer_start != nullptr)
         g_phys_proftimer_callbacks.proftimer_start(p);

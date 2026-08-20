@@ -794,6 +794,10 @@ struct phys_heap_memory_pool {
     int  m_slot_array_size; // +0x0C
     int  m_alloc_count;     // +0x10
 
+    phys_heap_memory_pool()
+        : m_slot_array(NULL), m_alloc_list(NULL), m_index_array(NULL),
+          m_slot_array_size(0), m_alloc_count(0) {}
+
     struct iterator {
         T** m_ptr;  // +0x00
 
@@ -1086,17 +1090,19 @@ template <typename T>
 void phys_heap_memory_pool<T>::swap_adjacent_fast(iterator* i, iterator* i_next) {
     if ((i == NULL || i_next == NULL) &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 224,
-                  "i && i_next", ""))
+                  "i && i_next", defaultFileName))
         __debugbreak();
     T** m_alloc_list = this->m_alloc_list;
     if ((i->m_ptr < m_alloc_list || i->m_ptr >= &m_alloc_list[m_alloc_count]) &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 225,
-                  "i->m_ptr >= m_alloc_list && i->m_ptr < m_alloc_list + m_alloc_count", ""))
+                  "i->m_ptr >= m_alloc_list && i->m_ptr < m_alloc_list + m_alloc_count",
+                  defaultFileName))
         __debugbreak();
     T** v5 = this->m_alloc_list;
     if ((i_next->m_ptr < v5 || i_next->m_ptr >= &v5[m_alloc_count]) &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 226,
-                  "i_next->m_ptr >= m_alloc_list && i_next->m_ptr < m_alloc_list + m_alloc_count", ""))
+                  "i_next->m_ptr >= m_alloc_list && i_next->m_ptr < m_alloc_list + m_alloc_count",
+                  defaultFileName))
         __debugbreak();
     T* v6 = *i->m_ptr;
     *i->m_ptr = *i_next->m_ptr;

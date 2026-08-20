@@ -223,6 +223,30 @@ struct phys_memory_heap {
 };
 static_assert(sizeof(phys_memory_heap) == 0x10, "phys_memory_heap size mismatch");
 
+template <typename T>
+struct phys_memory_heap_template : phys_memory_heap {
+    phys_memory_heap_template() {
+        m_buffer_start = NULL;
+        m_buffer_end = NULL;
+        m_buffer_cur = NULL;
+        m_user_start = NULL;
+    }
+
+    static int get_buffer_size(int size) { return (int)(sizeof(T) * size); }
+    static int get_alignment() { return (int)alignof(T); }
+
+    void allocate_buffer(int size, phys_memory_heap* allocater) {
+        char* start = allocater->allocate_no_error(size, get_alignment());
+        if (start == NULL &&
+            _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 89,
+                      "addr", "phys_memory_heap overflow."))
+            __debugbreak();
+        set_buffer(start, size, get_alignment());
+    }
+};
+static_assert(sizeof(phys_memory_heap_template<char>) == sizeof(phys_memory_heap),
+              "phys_memory_heap_template layout mismatch");
+
 // ============================================================================
 // rb_inplace_partition_node — spatial partition node (64 bytes, IDA ordinal 4806).
 // ============================================================================
