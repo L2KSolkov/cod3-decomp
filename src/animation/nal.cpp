@@ -8083,6 +8083,14 @@ struct nalQuaternion16 {
 };
 }
 
+struct nalPosition16 {
+    short x;
+    short y;
+    short z;
+};
+
+static_assert(sizeof(nalPosition16) == 6, "nalPosition16 layout mismatch");
+
 static float nalFloatFromBits(std::uint32_t bits)
 {
     float value;
@@ -8440,8 +8448,56 @@ public:
             animComponentData,
         bool trajabs);
 };
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyIKSpin,
-                            nalComponentIKSpinBase);
+struct nalComponentPacked16EntropyIKSpinData : nalComponentData {
+    struct SkeletonComponentData {
+        float PositionQuantization;
+        float PositionBias;
+        float PositionScale;
+        float SpinQuantization;
+        float OrientationQuantization;
+    };
+    struct AnimData {
+        float QuantizationScale;
+    };
+    struct AnimComponentData {
+        unsigned char IKActive;
+    };
+    struct CacheType {
+        nalEntropyDecoder::nalQuaternion16 UpperOrientation;
+        nalEntropyDecoder::nalQuaternion16 TargetOrientation;
+        nalPosition16 TargetPosition;
+        short Angle;
+        unsigned char IKActive;
+        unsigned char Pad;
+    };
+};
+
+static_assert(sizeof(nalComponentPacked16EntropyIKSpinData::SkeletonComponentData) == 20,
+              "nalComponentPacked16EntropyIKSpinData skeleton layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyIKSpinData::AnimData) == 4,
+              "nalComponentPacked16EntropyIKSpinData anim layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyIKSpinData::AnimComponentData) == 1,
+              "nalComponentPacked16EntropyIKSpinData anim component layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyIKSpinData::CacheType) == 26,
+              "nalComponentPacked16EntropyIKSpinData cache layout mismatch");
+
+class nalComponentPacked16EntropyIKSpin
+    : public nalComponent<nalComponentIKSpinBase,
+                           nalComponentPacked16EntropyIKSpinData,
+                           nalComponentPacked16EntropyIKSpin> {
+public:
+    nalComponentPacked16EntropyIKSpin(nalRegisterKey key);
+    virtual ~nalComponentPacked16EntropyIKSpin();
+    static void ComponentConvert(
+        nalIKSpin* dstPtr,
+        const nalComponentPacked16EntropyIKSpinData::CacheType* srcPtr,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentPacked16EntropyIKSpinData::AnimData* animData,
+        nalComponentPacked16EntropyIKSpinData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentPacked16EntropyIKSpinData::AnimComponentData*
+            animComponentData);
+};
 
 #undef NAL_DECLARE_EMPTY_COMPONENT
 
