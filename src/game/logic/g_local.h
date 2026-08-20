@@ -4817,7 +4817,7 @@ void  G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
                         TouchEntityData* tData, const collision_context_t& context);  // g.o 0x474C90
 void  G_TouchVehicles(Entity* ent, const math::Position3& origin,
                       TouchEntityData* tData, const collision_context_t& context);  // g.o 0x4748A0
-int   Player_GetActivateEnt(Entity* pEnt, useList_t* useList);  // g.o 0x473D90
+int   Player_GetActivateEnt(Entity* pEnt, useList_t* const useList);  // g.o 0x473D90
 void  Player_UpdateCursorHints(Entity* ent);                    // g.o 0x482C10
 extern bool gGrenadeCanBePickedUp;  // g.o
 void  SP_script_model(Entity* pSelf);      // g.o 0x47BD80

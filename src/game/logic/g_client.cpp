@@ -22,7 +22,7 @@ static int compare_use(const void* a, const void* b)
 }
 
 // ea: 0x00473D90
-int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
+int Player_GetActivateEnt(Entity* pEnt, useList_t* const useList)
 {
     Client* client = pEnt->client;
     if ((sS14_6 & 1) == 0)
