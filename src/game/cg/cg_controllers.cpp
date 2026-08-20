@@ -13,9 +13,9 @@ extern int dword_F6A28C[4 * 802];
 extern int dword_F6A290[4 * 802];
 extern int SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
 extern DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
-extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
+extern int G_DObjSetControlTagAngles(Entity* ent, int* const partBits,
                                      unsigned int tag_name_hash,
-                                     float* angles);
+                                     float* const angles);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 class Handle;
 extern void EffectEventStopEmitting(Handle handle);

@@ -898,8 +898,8 @@ int G_DObjSetLocalTag(Entity* ent, int* const /*partBits*/, unsigned int tag_nam
 }
 
 // ea: 0x00473680
-int G_DObjSetControlTagAngles(Entity* ent, int* /*partBits*/, unsigned int tag_name_hash,
-                              float* angles)
+int G_DObjSetControlTagAngles(Entity* ent, int* const /*partBits*/, unsigned int tag_name_hash,
+                              float* const angles)
 {
     int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
     if (BoneIndex < 0)
