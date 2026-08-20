@@ -524,7 +524,7 @@ index	status	map_line
 523	PENDING	0002:0045f590 ?SetupPartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4EA90 f i nal_init.o
 524	PENDING	0002:0045f6b0 ??0QuatDecoderBase@nalEntropyDecoder@@IAE@IMPBEE@Z 00C4EBB0 f i nal_init.o
 525	PENDING	0002:0045fb30 ?PartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C4F030 f i nal_init.o
-526	PENDING	0002:0045fc50 ?Decode@nalQuatDecoder@nalEntropyDecoder@@QAEXPAVQuaternion@math@@IIM@Z 00C4F150 f i nal_init.o
+526	PORTED	0002:0045fc50 ?Decode@nalQuatDecoder@nalEntropyDecoder@@QAEXPAVQuaternion@math@@IIM@Z 00C4F150 f i nal_init.o
 527	PENDING	0002:0045ff70 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C4F470 f i nal_init.o
 528	PORTED	0002:004600d0 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4F5D0 f i nal_init.o
 529	PORTED	0002:004601c0 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4F6C0 f i nal_init.o
