@@ -9,6 +9,7 @@
 #include "apsMath.h"
 
 struct MeshParticleContext {
+    MeshParticleContext();
     math::Mat43 mLToS;          // +0x00
     math::Mat43 mLightDir;      // +0x40
     math::Mat43 mLightColor;    // +0x80

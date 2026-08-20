@@ -18672,15 +18672,15 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18671	0x00812160	0x00C01660	?SphereIsVisible@apsRenderer@@QAEIABUapsSphere@@PAUnglScene@@@Z	aeps_xboxr	apsRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18672	0x008121F0	0x00C016F0	?Fixup@apsRenderer@@QAEXABUapsFixupParams@@@Z	aeps_xboxr	apsRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18673	0x00812530	0x00C01A30	?Render@apsSimpleMeshNode@@UAEXXZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18674	0x00812C50	0x00C02150	?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18675	0x00812CB0	0x00C021B0	??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18676	0x00812CD0	0x00C021D0	?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18677	0x00812CE0	0x00C021E0	?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18678	0x00812D20	0x00C02220	?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18679	0x00812D30	0x00C02230	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18680	0x00812D40	0x00C02240	?GetVShader@apsSimpleMeshRender@@YAKXZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18681	0x00812D50	0x00C02250	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18682	0x00812D60	0x00C02260	??0MeshParticleContext@@QAE@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18674	0x00812C50	0x00C02150	?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18675	0x00812CB0	0x00C021B0	??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18676	0x00812CD0	0x00C021D0	?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18677	0x00812CE0	0x00C021E0	?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18678	0x00812D20	0x00C02220	?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18679	0x00812D30	0x00C02230	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18680	0x00812D40	0x00C02240	?GetVShader@apsSimpleMeshRender@@YAKXZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18681	0x00812D50	0x00C02250	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18682	0x00812D60	0x00C02260	??0MeshParticleContext@@QAE@XZ	aeps_xboxr	apsSimpleMeshNode.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 18683	0x00812D90	0x00C02290	?Render@apsShrimpNode@@UAEXXZ	aeps_xboxr	apsShrimpNode.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18684	0x00813530	0x00C02A30	??$Limit@VVector4@math@@M@apsMath@@YA?AVVector4@math@@ABV12@ABM1@Z	aeps_xboxr	apsShrimpNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18685	0x008135B0	0x00C02AB0	?ACos@apsMath@@YAMM@Z	aeps_xboxr	apsShrimpNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

@@ -8,4 +8,4 @@ index	status	map_line
 7	PORTED	0002:00412d30 ?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ 00C02230 f i apsSimpleMeshNode.o
 8	PORTED	0002:00412d40 ?GetVShader@apsSimpleMeshRender@@YAKXZ 00C02240 f i apsSimpleMeshNode.o
 9	PORTED	0002:00412d50 ?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ 00C02250 f i apsSimpleMeshNode.o
-10	VERIFIED	0002:00412d60 ??0MeshParticleContext@@QAE@XZ 00C02260 f i apsSimpleMeshNode.o
+10	PORTED	0002:00412d60 ??0MeshParticleContext@@QAE@XZ 00C02260 f i apsSimpleMeshNode.o

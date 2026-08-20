@@ -43,6 +43,7 @@ public:
     int                    mZBuffer;       // +0xB8
     void SetRenderer(apsSimpleMeshRenderer* r) { mRenderer = r; }       // ea: 0x8028C0
     void SetLightContext(nglLightContext* lc) { mLightContext = lc; }   // ea: 0x8028D0
+    apsSimpleMeshRenderer& Renderer();                                  // ea: 0x812CE0
     virtual void GetDesc(char* buf);                                    // ea: 0x8028E0
     virtual void Render() override;                                     // ea: 0x812530 (apsSimpleMeshNode.o)
 };
@@ -61,6 +62,8 @@ public:
 
     nglMesh*    mMesh;      // +0x10
     nglTexture* mTexture;   // +0x14
+    nglTexture* Texture() const;                                         // ea: 0x812D20
+    nglMesh* Mesh() const;                                                // ea: 0x812D30
     apsSimpleMeshRenderer(const cArgs* args);          // @0x802990
     virtual ~apsSimpleMeshRenderer();                  // @0x8029A0 (vtable)
     static void Init();                                // @0x802920
@@ -87,16 +90,18 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 // Shader microcode registration structs (inline COMDATs + data in
 // apsSimpleMeshRendererVertex.o)
 // ============================================================================
-struct apsSimpleMeshRender {
-    static unsigned int* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x8028F0
-};
-struct apsSimpleMeshRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x802910
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8029A0
-};
+namespace apsSimpleMeshRender {
+    extern unsigned long* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
+    extern const unsigned long** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
+    unsigned long GetVShader();                // ea: 0x812D40
+    inline void RegisterVShader() { nglDxRegisterVShader(VS, reinterpret_cast<const unsigned int*>(VShaderTable[0])); }   // ea: 0x8028F0
+}
+namespace apsSimpleMeshRenderPixel {
+    extern unsigned long** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
+    extern const unsigned long** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
+    unsigned long* GetPShader();               // ea: 0x812D50
+    inline void RegisterPShader() { nglDxRegisterPShader(PS, reinterpret_cast<const unsigned int*>(PShaderTable[0])); }   // ea: 0x802910
+    inline void InitPShader() { nglDxInitPShader(reinterpret_cast<const unsigned int*>(PShaderTable[0])); }                // ea: 0x8029A0
+}
 
 #endif // COD3_AEPS_APSSIMPLEMESHRENDERER_H

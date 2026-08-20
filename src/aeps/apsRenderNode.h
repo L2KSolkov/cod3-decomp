@@ -22,6 +22,10 @@ class apsRenderNode;
 // ============================================================================
 struct apsSphere {
     math::Vector4 mSphere;
+
+    apsSphere();
+    apsSphere(const math::Dir3::Packed& center, float radius);
+    void Set(const math::Dir3::Packed& center, float radius);
 };
 
 // ============================================================================
@@ -55,6 +59,7 @@ public:
 
     void SetFlags(unsigned int flag) { mFlags |= flag; }  // ea: 0x8026E0
     void SetMatrix(const math::Mat43* matrix);            // ea: 0x802700
+    const math::Mat43& Matrix() const;                     // ea: 0x812CD0
     void SetSphere(const apsSphere* s) { mSphere.mSphere = s->mSphere; }  // ea: 0x8027A0
     void SetParticles(int num, unsigned char* ref, int stride);   // ea: 0x8027D0
     float GetDist(nglScene* Scene);                       // ea: 0x802630

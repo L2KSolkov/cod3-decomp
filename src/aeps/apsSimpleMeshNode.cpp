@@ -11,6 +11,57 @@
 
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+// apsSimpleMeshNode.o inline/COMDAT entries, matched to the IDA C dump.
+apsSphere::apsSphere() = default;
+
+void apsSphere::Set(const math::Dir3::Packed& center, float radius)
+{
+    mSphere.v = _mm_setr_ps(center.x, center.y, center.z, radius);
+}
+
+apsSphere::apsSphere(const math::Dir3::Packed& center, float radius)
+{
+    Set(center, radius);
+}
+
+const math::Mat43& apsRenderNode::Matrix() const
+{
+    return mLocalToWorld;
+}
+
+apsSimpleMeshRenderer& apsSimpleMeshNode::Renderer()
+{
+    if (mRenderer == nullptr &&
+        _tlAssert("c:/cod/code/tl/aeps/include\\apsSimpleMeshNode.h", 16,
+                  "mRenderer", "null renderer"))
+        __debugbreak();
+    return *mRenderer;
+}
+
+nglTexture* apsSimpleMeshRenderer::Texture() const
+{
+    return mTexture;
+}
+
+nglMesh* apsSimpleMeshRenderer::Mesh() const
+{
+    return mMesh;
+}
+
+unsigned long apsSimpleMeshRender::GetVShader()
+{
+    return VS[0];
+}
+
+unsigned long* apsSimpleMeshRenderPixel::GetPShader()
+{
+    return PS[0];
+}
+
+MeshParticleContext::MeshParticleContext()
+{
+}
+
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;
@@ -115,12 +166,14 @@ void apsSimpleMeshNode::Render() {
         const unsigned int vertexShader = apsSimpleMeshRender::VS[0];
         if (vertexShader != gpuHashVertexShader) {
             gpuHashVertexShader = vertexShader;
-            D3DDevice_LoadVertexShaderProgram(apsSimpleMeshRender::VS, 0);
+            D3DDevice_LoadVertexShaderProgram(
+                reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VS), 0);
             D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
         }
     }
     if (apsSimpleMeshRenderPixel::PS != nullptr) {
-        const unsigned int* pixelShader = apsSimpleMeshRenderPixel::PS[0];
+        const unsigned int* pixelShader = reinterpret_cast<const unsigned int*>(
+            apsSimpleMeshRenderPixel::PS[0]);
         const unsigned int pixelShaderHash =
             static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
         if (pixelShaderHash != gpuHashPixelShader) {

@@ -12,6 +12,15 @@ nal_ik.o	?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z	PORTED
 apsPFD.o	?RecomputeOffsets@apsPFD@@AAEXXZ	VERIFIED
 apsSuppliedDomains.o	?FloatRand@apsMath@@YAMXZ	PORTED
 apsDebug.o	?Enabled@apsDebug@@SAIXZ	VERIFIED
+apsSimpleMeshNode.o	?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z	PORTED
+apsSimpleMeshNode.o	??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z	PORTED
+apsSimpleMeshNode.o	?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ	PORTED
+apsSimpleMeshNode.o	?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ	PORTED
+apsSimpleMeshNode.o	?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ	PORTED
+apsSimpleMeshNode.o	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	PORTED
+apsSimpleMeshNode.o	?GetVShader@apsSimpleMeshRender@@YAKXZ	PORTED
+apsSimpleMeshNode.o	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	PORTED
+apsSimpleMeshNode.o	??0MeshParticleContext@@QAE@XZ	PORTED
 ae_fixed_string.o	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z	FIXED

@@ -18680,7 +18680,7 @@ index	status	map_line
 18679	PORTED	0002:00412d30 ?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ 00C02230 f i apsSimpleMeshNode.o
 18680	PORTED	0002:00412d40 ?GetVShader@apsSimpleMeshRender@@YAKXZ 00C02240 f i apsSimpleMeshNode.o
 18681	PORTED	0002:00412d50 ?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ 00C02250 f i apsSimpleMeshNode.o
-18682	VERIFIED	0002:00412d60 ??0MeshParticleContext@@QAE@XZ 00C02260 f i apsSimpleMeshNode.o
+18682	PORTED	0002:00412d60 ??0MeshParticleContext@@QAE@XZ 00C02260 f i apsSimpleMeshNode.o
 18683	VERIFIED	0002:00412d90 ?Render@apsShrimpNode@@UAEXXZ 00C02290 f apsShrimpNode.o
 18684	PORTED	0002:00413530 ??$Limit@VVector4@math@@M@apsMath@@YA?AVVector4@math@@ABV12@ABM1@Z 00C02A30 f i apsShrimpNode.o
 18685	VERIFIED	0002:004135b0 ?ACos@apsMath@@YAMM@Z 00C02AB0 f i apsShrimpNode.o

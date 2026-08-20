@@ -13,10 +13,10 @@
 #include <new>
 
 // APS shader static data definitions (aeps_xboxr)
-unsigned int* apsSimpleMeshRender::VS = nullptr;
-const unsigned int** apsSimpleMeshRender::VShaderTable = nullptr;
-unsigned int** apsSimpleMeshRenderPixel::PS = nullptr;
-const unsigned int** apsSimpleMeshRenderPixel::PShaderTable = nullptr;
+unsigned long* apsSimpleMeshRender::VS = nullptr;
+const unsigned long** apsSimpleMeshRender::VShaderTable = nullptr;
+unsigned long** apsSimpleMeshRenderPixel::PS = nullptr;
+const unsigned long** apsSimpleMeshRenderPixel::PShaderTable = nullptr;
 
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
@@ -28,9 +28,11 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ============================================================================
 void apsSimpleMeshRenderer::Init() {
     if (apsSimpleMeshRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsSimpleMeshRender::VS), apsSimpleMeshRender::VShaderTable[0]);
+        nglDxRegisterVShader(apsSimpleMeshRender::VS,
+                             reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VShaderTable[0]));
     if (apsSimpleMeshRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsSimpleMeshRenderPixel::PS), apsSimpleMeshRenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(apsSimpleMeshRenderPixel::PS,
+                             reinterpret_cast<const unsigned int*>(apsSimpleMeshRenderPixel::PShaderTable[0]));
 }
 
 // ============================================================================
