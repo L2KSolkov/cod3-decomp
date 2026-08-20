@@ -20672,7 +20672,7 @@ index	status	map_line
 20671	PENDING	0002:0045ff70 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C4F470 f i nal_init.o
 20672	PENDING	0002:004600d0 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4F5D0 f i nal_init.o
 20673	PENDING	0002:004601c0 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4F6C0 f i nal_init.o
-20674	PENDING	0002:00460360 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4F860 f i nal_init.o
+20674	PORTED	0002:00460360 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4F860 f i nal_init.o
 20675	PORTED	0002:00460430 ?GetTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C4F930 f i nal_init.o
 20676	PORTED	0002:004604f0 ?Construct@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4F9F0 f i nal_init.o
 20677	PORTED	0002:00460520 ?Delete@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4FA20 f i nal_init.o
