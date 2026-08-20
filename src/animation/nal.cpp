@@ -8988,6 +8988,42 @@ void nalComponent<nalComponentFloat1Base,
     src = in;
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x857c80)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalComponentPacked8Float1Data::SkeletonComponentData* skeletonData =
+        (const nalComponentPacked8Float1Data::SkeletonComponentData*)
+            *customSkeletonData;
+    const unsigned char* in = (const unsigned char*)src;
+    unsigned char* animData = (unsigned char*)*customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    float* out = (float*)dst;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        out[offsetTable[track]] = (float)*in++ * skeletonData->Scale
+                                  + skeletonData->Bias;
+        ++animData;
+        ++skeletonData;
+    }
+    src = in;
+    *customSkeletonData = skeletonData;
+    *customAnimData = animData;
+}
+
 // ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
 // (nal_init.o 0x857dd0)
 template <>
