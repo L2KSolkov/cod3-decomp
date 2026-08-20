@@ -521,7 +521,7 @@ index	status	map_line
 520	SKIPPED	0002:0045f530 ??_G?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@MAEPAXI@Z 00C4EA30 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 521	SKIPPED	0002:0045f530 ??_E?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@MAEPAXI@Z 00C4EA30 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 522	PORTED	0002:0045f560 ?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4EA60 f i nal_init.o
-523	PENDING	0002:0045f590 ?SetupPartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4EA90 f i nal_init.o
+523	PORTED	0002:0045f590 ?SetupPartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4EA90 f i nal_init.o
 524	PORTED	0002:0045f6b0 ??0QuatDecoderBase@nalEntropyDecoder@@IAE@IMPBEE@Z 00C4EBB0 f i nal_init.o
 525	PORTED	0002:0045fb30 ?PartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C4F030 f i nal_init.o
 526	PORTED	0002:0045fc50 ?Decode@nalQuatDecoder@nalEntropyDecoder@@QAEXPAVQuaternion@math@@IIM@Z 00C4F150 f i nal_init.o
