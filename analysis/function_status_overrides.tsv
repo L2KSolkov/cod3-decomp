@@ -1033,3 +1033,4 @@ nal_init.o	??0nalComponentTrajectoryPO@@QAE@W4nalRegisterKey@@@Z	PORTED
 nal_init.o	??0nalComponentEntropyTrajectoryPO@@QAE@W4nalRegisterKey@@@Z	PORTED
 nal_init.o	??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z	PORTED
 nal_init.o	?GetTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z	PORTED
+nal_init.o	?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z	PORTED
