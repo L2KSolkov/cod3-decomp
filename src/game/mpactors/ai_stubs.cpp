@@ -1161,7 +1161,7 @@
 }
 
 // ea: 0x0077CB80  (?Path_FindPathInCylinderNear@@YI?BHPAUpath_t@@W4team_t@@QBM22MMMH@Z)
-    int __fastcall Path_FindPathInCylinderNear(path_t*, team_t, const float* const, const float* const, const float* const, float, float, float, int)
+    const int __fastcall Path_FindPathInCylinderNear(path_t*, team_t, const float* const, const float* const, const float* const, float, float, float, int)
 {
     return 0;
 }
