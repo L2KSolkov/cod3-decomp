@@ -983,7 +983,6 @@ MultiLineString::MultiLineString()
     font = FONT_NORMAL;
     button_array = nullptr;
     button_array_size = 0;
-    total_width = 0.0f;
 }
 
 // ea: 0x0056CD00
