@@ -232,7 +232,7 @@ core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 
 
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	9/9 non-inline functions ported from IDA; build-verified
 
-nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	VERIFIED	Compared all nine nslAram.o functions against codmp_xboxr.xbe.c: aligned base/size/free accessors, stack allocator alignment and reclamation, top/bottom accounting, and invalid-free diagnostics match the release bodies
 
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	VERIFIED	nflGetVersion at 0x82A760 now matches the IDA release decoration ?nflGetVersion@@YAIXZ while returning the original D3DX string address; canonical Win32 build succeeds and cod3_filesystem.lib exports the exact symbol
 
