@@ -13889,6 +13889,54 @@ void nalComponent<nalComponentFloat3Base,
     }
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked16EntropyFloat3Data@@VnalComponentPacked16EntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x85aff0)
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    *customAnimData =
+        (const void*)((((uintptr_t)*customAnimData + 3u)
+                       & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const short* current = (const short*)src;
+    float* skeletonComponentData = (float*)*customSkeletonData;
+    unsigned char* animComponentData = (unsigned char*)*customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        math::Dir3* out =
+            (math::Dir3*)((char*)dst + offsetTable[track]);
+        const __m128 packed =
+            _mm_set_ps(0.0f, (float)current[2],
+                       (float)current[1], (float)current[0]);
+        const __m128 bias =
+            _mm_set_ps(0.0f, skeletonComponentData[1],
+                       skeletonComponentData[1], skeletonComponentData[1]);
+        out->v = _mm_add_ps(
+            _mm_mul_ps(packed, _mm_set1_ps(skeletonComponentData[2])),
+            bias);
+        current += 3;
+        ++animComponentData;
+        skeletonComponentData += 3;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = current;
+    *customSkeletonData = skeletonComponentData;
+    *customAnimData = animComponentData;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentPacked16EntropyFloat3Data,
