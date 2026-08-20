@@ -7507,6 +7507,7 @@ struct nalComponentData {
     struct SkeletonData {};
     struct AnimData {};
     struct SkeletonComponentData {};
+    struct AnimComponentData {};
 };
 struct nalComponentSignalCounterData : nalComponentData {
     struct AnimComponentData {
@@ -8097,7 +8098,47 @@ public:
         const unsigned char** srcPtr);
 };
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentFloat4, nalComponentFloat4Base);
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat4, nalComponentFloat4Base);
+struct nalComponentEntropyFloat4Data : nalComponentData {
+    struct SkeletonComponentData {
+        float Quantization;
+    };
+    struct AnimData {
+        float QuantizationScale;
+    };
+    struct StateType {
+        nalEntropyDecoder::nalFloatDecoder Decoder[4];
+    };
+};
+class nalComponentEntropyFloat4
+    : public nalComponent<nalComponentFloat4Base,
+                           nalComponentEntropyFloat4Data,
+                           nalComponentEntropyFloat4> {
+public:
+    virtual ~nalComponentEntropyFloat4();
+    static void ComponentSetupPartialDecode(
+        nalComponentEntropyFloat4Data::StateType* statePtr,
+        const unsigned char** srcPtr, int quantity,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyFloat4Data::AnimData* animData,
+        nalComponentEntropyFloat4Data::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentData::AnimComponentData* animComponentData);
+    static void ComponentDecode(
+        math::Vector4* dstPtr, const unsigned char** srcPtr,
+        unsigned int quantity, unsigned int stride,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyFloat4Data::AnimData* animData,
+        nalComponentEntropyFloat4Data::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentData::AnimComponentData* animComponentData);
+    static void ComponentSkip(
+        const unsigned char** srcPtr, int quantity,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyFloat4Data::AnimData* animData,
+        nalComponentEntropyFloat4Data::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentData::AnimComponentData* animComponentData);
+};
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyFloat4,
                             nalComponentFloat4Base);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyFloat4,
@@ -9061,6 +9102,174 @@ void nalComponent<nalComponentFloat4Base,
                 &componentEnum, i + componentInfo->StartIndex))
             ptr = (char*)ptr + 16;
     }
+}
+
+// ea: 0x0085BBF0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 4;
+}
+
+// ea: 0x0085BC00
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+// ea: 0x0085BC10
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085BC20
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085BC30
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                                           & ~uintptr_t(3u));
+}
+
+// ea: 0x0085BC50
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    animData = (const void*)(((uintptr_t)animData + 3u)
+                             & ~uintptr_t(3u));
+}
+
+// ea: 0x0085BC70
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085BC80
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085BCC0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
+}
+
+// ea: 0x0085BCF0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentEntropyFloat4Data,
+                  nalComponentEntropyFloat4>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+
+    const void* skeletonDataValue = *customSkeletonData;
+    const void* alignedAnimData = (const void*)(((uintptr_t)*customAnimData + 3u)
+                                                & ~uintptr_t(3u));
+    *customAnimData = (const char*)alignedAnimData + 4;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentEntropyFloat4::ComponentSetupPartialDecode(
+                (nalComponentEntropyFloat4Data::StateType*)state,
+                (const unsigned char**)&src, quantity,
+                (nalComponentData::SkeletonData*)skeletonDataValue,
+                (nalComponentEntropyFloat4Data::AnimData*)alignedAnimData,
+                (nalComponentEntropyFloat4Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            state = (char*)state + sizeof(nalComponentEntropyFloat4Data::StateType);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData +
+            sizeof(nalComponentEntropyFloat4Data::SkeletonComponentData);
+    }
+}
+
+// ea: 0x0085BDF0
+void nalComponentEntropyFloat4::ComponentSetupPartialDecode(
+    nalComponentEntropyFloat4Data::StateType* statePtr,
+    const unsigned char** srcPtr, int quantity,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyFloat4Data::AnimData* animData,
+    nalComponentEntropyFloat4Data::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)quantity;
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    (void)animComponentData;
+    const unsigned char* cursor = *srcPtr;
+    for (int channel = 0; channel < 4; ++channel)
+    {
+        const unsigned char channelSize = *cursor++;
+        if (statePtr != nullptr)
+        {
+            statePtr->Decoder[channel].channel.ptr = cursor;
+            statePtr->Decoder[channel].channel.bitpos = 0;
+            statePtr->Decoder[channel].channel.decoder = 0xFF;
+            statePtr->Decoder[channel].channel.zeroes = 0;
+        }
+        cursor += channelSize;
+    }
+    *srcPtr = cursor;
 }
 
 template <>

@@ -400,20 +400,20 @@ index	status	map_line
 399	PORTED	0002:0045bad0 ?Copy@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C4AFD0 f i nal_init.o
 400	PORTED	0002:0045baf0 ??$FastCopy@VnalComponentFloat4@@VVector4@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C4AFF0 f i nal_init.o
 401	PORTED	0002:0045bb40 ?ReleaseCache@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C4B040 f i nal_init.o
-402	PENDING	0002:0045bbe0 ??0?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@IAE@XZ 00C4B0E0 f i nal_init.o
-403	PENDING	0002:0045bbf0 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B0F0 f i nal_init.o
-404	PENDING	0002:0045bc00 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B100 f i nal_init.o
-405	PENDING	0002:0045bc10 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B110 f i nal_init.o
-406	PENDING	0002:0045bc20 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B120 f i nal_init.o
-407	PENDING	0002:0045bc30 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B130 f i nal_init.o
-408	PENDING	0002:0045bc50 ?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B150 f i nal_init.o
-409	PENDING	0002:0045bc70 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B170 f i nal_init.o
-410	PENDING	0002:0045bc80 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B180 f i nal_init.o
+402	VERIFIED	0002:0045bbe0 ??0?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@IAE@XZ 00C4B0E0 f i nal_init.o
+403	PORTED	0002:0045bbf0 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B0F0 f i nal_init.o
+404	PORTED	0002:0045bc00 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B100 f i nal_init.o
+405	PORTED	0002:0045bc10 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B110 f i nal_init.o
+406	PORTED	0002:0045bc20 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B120 f i nal_init.o
+407	PORTED	0002:0045bc30 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B130 f i nal_init.o
+408	PORTED	0002:0045bc50 ?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B150 f i nal_init.o
+409	PORTED	0002:0045bc70 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B170 f i nal_init.o
+410	PORTED	0002:0045bc80 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z 00C4B180 f i nal_init.o
 411	SKIPPED	0002:0045bc90 ??_E?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@MAEPAXI@Z 00C4B190 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 412	SKIPPED	0002:0045bc90 ??_G?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@MAEPAXI@Z 00C4B190 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-413	PENDING	0002:0045bcc0 ?Process@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4B1C0 f i nal_init.o
-414	PENDING	0002:0045bcf0 ?SetupPartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4B1F0 f i nal_init.o
-415	PENDING	0002:0045bdf0 ?ComponentSetupPartialDecode@nalComponentEntropyFloat4@@SAXPAUStateType@nalComponentEntropyFloat4Data@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@5@@Z 00C4B2F0 f i nal_init.o
+413	PORTED	0002:0045bcc0 ?Process@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4B1C0 f i nal_init.o
+414	PORTED	0002:0045bcf0 ?SetupPartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4B1F0 f i nal_init.o
+415	PORTED	0002:0045bdf0 ?ComponentSetupPartialDecode@nalComponentEntropyFloat4@@SAXPAUStateType@nalComponentEntropyFloat4Data@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@5@@Z 00C4B2F0 f i nal_init.o
 416	PENDING	0002:0045beb0 ?PartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C4B3B0 f i nal_init.o
 417	PENDING	0002:0045c040 ?Decode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C4B540 f i nal_init.o
 418	PENDING	0002:0045c150 ?ComponentDecode@nalComponentEntropyFloat4@@SAXPAVVector4@math@@AAPBEHHPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyFloat4Data@@PAUSkeletonComponentData@7@PAUAnimComponentData@5@@Z 00C4B650 f i nal_init.o

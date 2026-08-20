@@ -709,3 +709,15 @@ nal_init.o	?Delete@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Da
 nal_init.o	?Copy@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentFloat4@@VVector4@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?Process@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
+nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?ComponentSetupPartialDecode@nalComponentEntropyFloat4@@SAXPAUStateType@nalComponentEntropyFloat4Data@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@5@@Z	PORTED
