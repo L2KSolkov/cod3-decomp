@@ -64,6 +64,8 @@ public:
         // Head; Level is established by Init().
     }
 
+    ~tlSkipList() { Destroy(); }
+
     // GetKeyOf: free ::GetKey(T*) accessor (per-instantiation).
     static const tlFixedString* GetKeyOf(const T* t) { return ::GetKey(t); }
 
