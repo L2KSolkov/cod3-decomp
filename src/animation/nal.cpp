@@ -8067,12 +8067,14 @@ struct QuatDecoderBase {
     nalChannelDecoder channels[3];
     int delta[3];
 
-    QuatDecoderBase(unsigned int quantity, const unsigned char* src, unsigned char decoder);
+    QuatDecoderBase(unsigned int quantity, float scale,
+                    const unsigned char* src, unsigned char bitpos);
     static unsigned int FirstValBits[4];
 };
 
 struct nalQuatDecoder : QuatDecoderBase {
-    void Decode(math::Quaternion* dst, unsigned int stride, unsigned int qty);
+    void Decode(math::Quaternion* dst, unsigned int stride, unsigned int qty,
+                float scale);
 };
 
 template <typename T>
@@ -8114,6 +8116,105 @@ static float nalFloatFromBits(std::uint32_t bits)
 }
 
 unsigned int nalEntropyDecoder::QuatDecoderBase::FirstValBits[4] = {3u, 5u, 8u, 21u};
+
+// ea: 0x0085FC50
+void nalEntropyDecoder::nalQuatDecoder::Decode(
+    math::Quaternion* dst, unsigned int stride, unsigned int qty, float scale)
+{
+    if (qty == 0)
+        return;
+
+    float step = scale;
+    if (step < 0.0f)
+        step = -step;
+
+    const __m128 signMaskW = _mm_setr_ps(0.0f, 0.0f, 0.0f, -0.0f);
+    if ((channels[0].decoder & 0xC0u) != 0)
+    {
+        while (true)
+        {
+            if ((channels[0].decoder & 0x40u) != 0)
+            {
+                const __m128 delta = _mm_setr_ps(
+                    (float)this->delta[0], (float)this->delta[1],
+                    (float)this->delta[2], 0.0f);
+                const __m128 scaled = _mm_mul_ps(delta, _mm_set1_ps(step));
+                const __m128 squared = _mm_mul_ps(scaled, scaled);
+                const float w = sqrtf(fabsf(
+                    1.0f - (squared.m128_f32[0]
+                             + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+                             + _mm_shuffle_ps(squared, squared, 170).m128_f32[0])));
+                const __m128 v = _mm_shuffle_ps(
+                    scaled, _mm_shuffle_ps(_mm_set1_ps(w), scaled, 160), 52);
+                const __m128 q = _mm_loadu_ps(&qval.x);
+                const __m128 rotated = _mm_xor_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 36),
+                                   _mm_shuffle_ps(q, q, 63)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(v, v, 73),
+                                       _mm_shuffle_ps(q, q, 82)),
+                            _mm_sub_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(v, v, 191),
+                                           _mm_shuffle_ps(q, q, 164)),
+                                _mm_mul_ps(_mm_shuffle_ps(v, v, 210),
+                                           _mm_shuffle_ps(q, q, 201))))),
+                    signMaskW);
+                _mm_storeu_ps(&qval.x, rotated);
+            }
+            *dst = qval;
+            dst += stride;
+            channels[0].decoder = (unsigned char)(channels[0].decoder - 64u);
+            --qty;
+            if (qty == 0 || (channels[0].decoder & 0xC0u) == 0)
+                break;
+        }
+        if (qty == 0)
+            return;
+    }
+
+    int* samples = reinterpret_cast<int*>(dst);
+    channels[0].Decode(samples, stride, qty);
+    channels[1].Decode(samples + 1, stride, qty);
+    channels[2].Decode(samples + 2, stride, qty);
+
+    int x = delta[0];
+    int y = delta[1];
+    int z = delta[2];
+    __m128 q = _mm_loadu_ps(&qval.x);
+    for (unsigned int i = 0; i < qty; ++i)
+    {
+        x += samples[0];
+        y += samples[1];
+        z += samples[2];
+        const __m128 value = _mm_setr_ps((float)x, (float)y, (float)z, 0.0f);
+        const __m128 scaled = _mm_mul_ps(value, _mm_set1_ps(step));
+        const __m128 squared = _mm_mul_ps(scaled, scaled);
+        const float w = sqrtf(fabsf(
+            1.0f - (squared.m128_f32[0]
+                     + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+                     + _mm_shuffle_ps(squared, squared, 170).m128_f32[0])));
+        const __m128 v = _mm_shuffle_ps(
+            scaled, _mm_shuffle_ps(_mm_set1_ps(w), scaled, 160), 52);
+        q = _mm_xor_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 36), _mm_shuffle_ps(q, q, 63)),
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v, v, 73), _mm_shuffle_ps(q, q, 82)),
+                    _mm_sub_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 191),
+                                   _mm_shuffle_ps(q, q, 164)),
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 210),
+                                   _mm_shuffle_ps(q, q, 201))))),
+            signMaskW);
+        _mm_storeu_ps(reinterpret_cast<float*>(samples), q);
+        samples += stride;
+    }
+    delta[0] = x;
+    delta[1] = y;
+    delta[2] = z;
+    _mm_storeu_ps(&qval.x, q);
+}
 
 // ea: 0x00865E40
 nalEntropyDecoder::nalQuaternion8::nalQuaternion8(const math::Quaternion* q)
