@@ -4484,6 +4484,57 @@ void AeThreadManager::ProcessScriptNotifys()
     }
 }
 
+// ea: 0x005DB1A0
+void AeThreadManager::KillAllThreads()
+{
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    AeThread* head = (AeThread*)L->mThreads.m_head;
+    AeThread* next = head != nullptr
+        ? (AeThread*)head->m_dlist_node.mNext
+        : nullptr;
+    if (head != (AeThread*)&L->mThreads.m_end && next != nullptr)
+    {
+        do
+        {
+            AeThread* thread = head;
+            head = next;
+            next = (AeThread*)next->m_dlist_node.mNext;
+            uintptr_t tail = (uintptr_t)thread->mStateControllers.m_tail;
+            thread->mStateControllers.m_tail =
+                (AeDListNode*)(tail | 0x40u);
+            thread->mStateControllers.m_tail =
+                (AeDListNode*)((uintptr_t)thread->mStateControllers.m_tail
+                               | 8u);
+        }
+        while (next != nullptr);
+    }
+
+    EntityNotifyLocal* notify =
+        (EntityNotifyLocal*)L->mPendingNotifys.m_head;
+    AeDListNode** pendingHead = &L->mPendingNotifys.m_head;
+    AeDListNode** pendingEnd = &L->mPendingNotifys.m_end;
+    AeDListNode* notifyNext = notify != nullptr
+        ? notify->m_dlist_node.mNext
+        : nullptr;
+    if ((AeDListNode*)notify == (AeDListNode*)pendingEnd)
+    {
+        notifyNext = nullptr;
+        notify = nullptr;
+    }
+    while (notify != nullptr
+           && (AeDListNode*)notify != (AeDListNode*)pendingEnd)
+    {
+        EntityNotifyLocal* current = notify;
+        notify = (EntityNotifyLocal*)notifyNext;
+        notifyNext = notify != nullptr ? notify->m_dlist_node.mNext : nullptr;
+        current->~EntityNotifyLocal();
+        EntityNotifyLocal::sAllocator->Release(current);
+    }
+    L->mPendingNotifys.m_head = (AeDListNode*)pendingEnd;
+    L->mPendingNotifys.m_tail = (AeDListNode*)pendingHead;
+    L->mPendingNotifys.m_size = 0;
+}
+
 // ea: 0x005DB100
 AeThreadManager::AeThreadManager()
 {

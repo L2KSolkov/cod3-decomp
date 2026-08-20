@@ -167,19 +167,15 @@ void PathNodeMgr::AttachSentientToChainNode(sentient_s* pSentient,
     (void)pSentient; (void)targetname;
 }
 
-// AeThreadManager (core.o; stubs, port later)
+// ============================================================================
+// Cross-object externs
+// ============================================================================
+// AeThreadManager::Execute remains the separate scr.o port target.
 void AeThreadManager::Execute(float deltaT)
 {
     (void)deltaT;
 }
-void AeThreadManager::KillAllThreads()
-{
-    // stub
-}
 
-// ============================================================================
-// Cross-object externs
-// ============================================================================
 enum errorParm_t;
 extern void  Com_Error(errorParm_t code, const char* fmt, ...);
 extern int   Com_Milliseconds(void);
