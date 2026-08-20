@@ -13685,6 +13685,53 @@ void nalComponent<nalComponentPOBase,
         pose = (char*)pose + 32;
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x863f20)
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyTrajectoryPOData,
+                  nalComponentEntropyTrajectoryPO>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    *customAnimData =
+        (const void*)((((uintptr_t)*customAnimData + 3u)
+                       & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    *customAnimData =
+        (const void*)(((uintptr_t)*customAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalComponentEntropyTrajectoryPOData::AnimComponentData* current =
+        (const nalComponentEntropyTrajectoryPOData::AnimComponentData*)src;
+    const nalComponentEntropyTrajectoryPOData::AnimComponentData*
+        animComponentData =
+            (const nalComponentEntropyTrajectoryPOData::AnimComponentData*)
+                *customAnimData;
+    unsigned char* skeletonData = (unsigned char*)*customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        std::memcpy((char*)dst + offsetTable[track], &current->Trajectory,
+                    sizeof(nalPositionOrientation));
+        ++current;
+        ++animComponentData;
+        skeletonData +=
+            sizeof(nalComponentEntropyTrajectoryPOData::SkeletonComponentData);
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = current;
+    *customSkeletonData = skeletonData;
+    *customAnimData = animComponentData;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
