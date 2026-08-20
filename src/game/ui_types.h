@@ -193,6 +193,7 @@ struct ae_array_dynamic {
 // ============================================================================
 class PanelFileUser {
 public:
+    PanelFileUser();                              // 0x5AEA00
     virtual void SetPanelFile(PanelFile* pf) {}        // slot 0 0x5AEA10
     virtual void PanelFileUnloaded(PanelFile* pf) {}   // slot 1 0x5AEA20
     virtual void UpdateWidescreen(bool widescreen) {}  // slot 2 0x5AEA30
@@ -1109,6 +1110,8 @@ public:
     FEMenuSystem(int s, font_index f);  // ?FEMenuSystem@@QAE@HW4font_index@@@Z 0x57DD70
     int CurrentOverlay();                           // ?CurrentOverlay@FEMenuSystem@@QAEHXZ 0x570DC0
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
+    bool GetBDFlag(int f, int controller);          // shell.o 0x5AE9A0
+    void SetBDFlag(int f, bool b, int controller);  // shell.o 0x5AE9C0
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch");
 static_assert(offsetof(FEMenuSystem, menus) == 0x04, "FEMenuSystem::menus offset mismatch");
@@ -1337,6 +1340,10 @@ protected:
     virtual void Right();                           // slot 61 0x5701E0
     virtual void ButtonHeldAction();                // slot 62 0x570890
 public:
+    static void* operator new(size_t size);         // shell.o 0x5AE8C0
+    static void* operator new(size_t, void* place) { return place; }
+    int GetReturnMenu();                            // shell.o 0x5AE8E0
+    void SetReturnMenu(int return_menu);            // shell.o 0x5AE8F0
     FEMenu();                                       // 0x57DA80
     FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
            int flg);                                // 0x57DAE0 ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z
@@ -2161,6 +2168,9 @@ public:
     bool is_shown;      // +0x04
     bool force_appear;  // +0x05
     int  mClient;       // +0x08
+
+    IGOWidget() : is_shown(true), force_appear(false), mClient(0) {}
+    IGOWidget(int client);                          // 0x5AEA40
 
     virtual ~IGOWidget() {}                        // inline COMDAT
     virtual void Init(PanelFile* panel) = 0;
@@ -3290,6 +3300,8 @@ public:
     float y;      // +0x04
     float alpha;  // +0x08
     bool  draw;   // +0x0C
+
+    IGOMapObject();                                // 0x5AEB30
 };
 static_assert(sizeof(IGOMapObject) == 0x10, "IGOMapObject size mismatch");
 
@@ -3321,6 +3333,8 @@ public:
         bool  down;       // +0x1A
         int   state;      // +0x1C
         int   worldState; // +0x20
+
+        IGOObjective();                             // 0x5AEB40
     };
 
     int16_t  m_hideCompassStarActive;   // +0x0C
@@ -3356,6 +3370,8 @@ public:
     virtual void Draw();                              // 0x58B100
     virtual void UpdateWidescreen(bool widescreen,
                                   float about_x);     // 0x5840B0
+    void SetObjectivesOnly(bool enable);              // 0x5AEB60
+    float GetInitialWidth();                          // 0x5AEB80
     virtual void UpdateSplitScreen(int viewport,
                                    int old_viewport); // 0x58A050
     void Draw3DObjective(int index);                  // 0x567D00

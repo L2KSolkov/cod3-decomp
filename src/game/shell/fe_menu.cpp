@@ -11,6 +11,7 @@
 extern float sNaN;                       // ?sNaN@@3MA @ 0x10F19D0
 extern const char defaultFileName[];  // 0xCD67AE
 extern void* mem_heap_malloc(unsigned int size);  // core.o
+extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);            // core.o
 
 extern FEManager g_femanager;
@@ -21,6 +22,11 @@ extern int dword_F6A28C[];               // @ 0xF6A28C
 // ============================================================================
 // FEMenuEntry
 // ============================================================================
+
+// ea: 0x005AEA00
+PanelFileUser::PanelFileUser()
+{
+}
 
 // ea: 0x0056FBC0
 void FEMenuEntry::CommonConstructor(FEText* t, FEMenu* m)
@@ -212,6 +218,39 @@ void FEMenuEntry::MoveForSplitScreen(int viewport, int old_viewport)
 // ============================================================================
 // FEMenu
 // ============================================================================
+
+// ea: 0x005AE8C0
+void* FEMenu::operator new(size_t size)
+{
+    return mem_heap_malloc(16, (unsigned int)size);
+}
+
+// ea: 0x005AE8E0
+int FEMenu::GetReturnMenu()
+{
+    return mReturnMenu;
+}
+
+// ea: 0x005AE8F0
+void FEMenu::SetReturnMenu(int return_menu)
+{
+    mReturnMenu = return_menu;
+}
+
+// ea: 0x005AE9A0
+bool FEMenuSystem::GetBDFlag(int f, int controller)
+{
+    return (button_down_flags[controller] & f) != 0;
+}
+
+// ea: 0x005AE9C0
+void FEMenuSystem::SetBDFlag(int f, bool b, int controller)
+{
+    if (b)
+        button_down_flags[controller] |= (int16_t)f;
+    else
+        button_down_flags[controller] &= (int16_t)~f;
+}
 
 // ea: 0x0057DA80
 FEMenu::FEMenu()

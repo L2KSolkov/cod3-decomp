@@ -9,6 +9,41 @@
 extern float sNaN;  // ?sNaN@@3MA @ 0x10F19D0
 extern const char defaultFileName[];  // 0xCD67AE
 
+// ea: 0x005AEA40
+IGOWidget::IGOWidget(int client)
+    : is_shown(true), force_appear(false), mClient(client)
+{
+}
+
+// ea: 0x005AEB30
+IGOMapObject::IGOMapObject()
+    : draw(false)
+{
+}
+
+// ea: 0x005AEB40
+IGOCompassWidget::IGOObjective::IGOObjective()
+    : IGOMapObject()
+{
+    draw = false;
+    state = 0;
+    worldState = 0;
+}
+
+// ea: 0x005AEB60
+void IGOCompassWidget::SetObjectivesOnly(bool enable)
+{
+    DrawObjectivesOnly = enable;
+}
+
+// ea: 0x005AEB80
+float IGOCompassWidget::GetInitialWidth()
+{
+    if (compass != nullptr)
+        return compass->GetInitialWidth();
+    return 0.0f;
+}
+
 // ea: 0x005ADFE0
 LightPanelQuad::LightPanelQuad()
 {
