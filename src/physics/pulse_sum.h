@@ -275,11 +275,12 @@ struct pulse_sum_contact::psc_cpi {
     const math::Dir3* object_col_pt_();
     void set_object_vel(pulse_sum_contact* psc, const math::Dir3* object_vel);
     void set_object_col_pt(pulse_sum_contact* psc, const math::Dir3* object_col_pt);
-    math::Dir3 get_relative_velocity_change_dir(pulse_sum_contact* psc);
-    math::Dir3 get_relative_velocity(pulse_sum_contact* psc);
-    math::Dir3 get_last_relative_velocity(pulse_sum_contact* psc);
-    float get_impact_vel(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
-    float get_impact_dist(pulse_sum_contact* psc);
+    const math::Dir3* get_relative_velocity_change_dir(math::Dir3* result,
+                                                       pulse_sum_contact* psc);
+    const math::Dir3* get_relative_velocity(math::Dir3* result, pulse_sum_contact* psc);
+    const math::Dir3* get_last_relative_velocity(math::Dir3* result, pulse_sum_contact* psc);
+    double get_impact_vel(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
+    double get_impact_dist(pulse_sum_contact* psc);
     void  setup_vel_uni_restitution(pulse_sum_contact* psc, const math::Dir3* relative_velocity,
                                     float restitution_k, float max_restitution_v,
                                     float delta_t, float max_penalty_restitution_vel);
@@ -293,8 +294,8 @@ struct pulse_sum_contact::psc_cpi {
     void  SOLVER_solver_prolog(pulse_sum_contact* psc, int iter, float delta_t);
     void  SOLVER_apply_relaxation(pulse_sum_contact* psc, float* error_sq);
     void  set_pulse_sum_cache(pulse_sum_contact* psc, pulse_sum_cache* cache);
-    const vec2* get_vel(psc_cpi* self, vec2* result);
-    const vec2* get_objective(psc_cpi* self, vec2* result);
+    const vec2* get_vel(vec2* result, pulse_sum_contact* psc);
+    const vec2* get_objective(vec2* result, pulse_sum_contact* psc);
 };
 static_assert(sizeof(pulse_sum_contact::psc_cpi) == 0xA0, "psc_cpi size mismatch");
 

@@ -679,7 +679,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
                     float v40 = y;
                     pulse_sum_contact::vec2 obj_buf;
                     const pulse_sum_contact::vec2* v26 =
-                        m_list_cpi->get_objective(m_list_cpi, &obj_buf);
+                        m_list_cpi->get_objective(&obj_buf, m_next_link);
                     float v27 = v26->y - m_list_cpi->m_right_side.y;
                     float v28 = m_list_cpi->m_pulse_sum.x - ((v26->x - m_list_cpi->m_right_side.x) / m_list_cpi->m_denom_xx);
                     m_list_cpi->m_pulse_sum.x = v28;
@@ -821,7 +821,8 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
                     __debugbreak();
                 v12->m_b2_ap_n.v = relative_velocity_4.v;
             }
-            math::Dir3 v27 = v12->get_relative_velocity(this);
+            math::Dir3 v27;
+            v12->get_relative_velocity(&v27, this);
             v12->calc_abs_and_fric_dir(this, &v27);
             v12->m_pulse_sum_cache = (pulse_sum_cache*)&cpi->m_list_pulse_sum_cache_info[pp_i / 0x10u];
             v12->setup_vel_uni_restitution(this, &v27, cpi->m_bounce_coef,
@@ -1594,7 +1595,7 @@ void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(pulse_sum_contact* psc,
     // ea: 0x897200
     vec2 m_last_pulse_sum = m_pulse_sum;
     vec2 objective;
-    get_objective(this, &objective);
+    get_objective(&objective, psc);
     float v6 = m_pulse_sum.x - ((objective.x - m_right_side.x) / m_denom_xx);
     m_pulse_sum.x = v6;
     if (v6 > 0.0f)
@@ -1624,7 +1625,7 @@ void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(pulse_sum_contact* psc,
 void pulse_sum_contact::psc_cpi::SOLVER_solver_prolog(pulse_sum_contact* psc, int iter, float delta_t) {
     // ea: 0x897160
     vec2 vel;
-    get_vel(this, &vel);
+    get_vel(&vel, psc);
     m_right_side.x -= vel.x;
     m_right_side.y -= vel.y;
     if (m_pulse_sum_cache->m_visit_key != iter)
@@ -1709,9 +1710,9 @@ void pulse_sum_contact::SOLVER_solver_intermediate(int iter, float delta_t) {
     }
 }
 
-const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_vel(psc_cpi* self, vec2* result) {
+const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_vel(
+    vec2* result, pulse_sum_contact* psc) {
     // ea: 0x896F00
-    pulse_sum_contact* psc = (pulse_sum_contact*)self;
     pulse_sum_node* m_b2 = psc->m_b2;
     math::Dir3 b2_vel;
     if (m_b2 != NULL) {
@@ -1740,9 +1741,9 @@ const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_vel(psc_cpi* self
     return result;
 }
 
-const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_objective(psc_cpi* self, vec2* result) {
+const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_objective(
+    vec2* result, pulse_sum_contact* psc) {
     // ea: 0x897020
-    pulse_sum_contact* psc = (pulse_sum_contact*)self;
     pulse_sum_node* m_b1 = psc->m_b1;
     __m128 a_vel = m_b1->a_vel.v;
     __m128 t_vel = m_b1->t_vel.v;
@@ -1783,8 +1784,8 @@ void pulse_sum_contact::psc_cpi::apply(pulse_sum_contact* psc, const vec2* s_) {
     }
 }
 
-math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity_change_dir(
-    pulse_sum_contact* psc) {
+const math::Dir3* pulse_sum_contact::psc_cpi::get_relative_velocity_change_dir(
+    math::Dir3* result, pulse_sum_contact* psc) {
     math::Dir3 v3;
     v3.v = psc->m_ud_n.v;
     pulse_sum_node* m_b2 = psc->m_b2;
@@ -1795,10 +1796,9 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity_change_dir(
                        _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18)),
             _mm_mul_ps(_mm_shuffle_ps(m_b1_ap_n.v, m_b1_ap_n.v, 18),
                        _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9))));
-    math::Dir3 result;
-    result.v = v5;
+    result->v = v5;
     if (m_b2 != NULL) {
-        result.v = _mm_add_ps(
+        result->v = _mm_add_ps(
             v5,
             _mm_add_ps(
                 _mm_mul_ps(v3.v, _mm_set1_ps(m_b2->m_inv_mass)),
@@ -1811,8 +1811,8 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity_change_dir(
     return result;
 }
 
-math::Dir3 pulse_sum_contact::psc_cpi::get_last_relative_velocity(
-    pulse_sum_contact* psc) {
+const math::Dir3* pulse_sum_contact::psc_cpi::get_last_relative_velocity(
+    math::Dir3* result, pulse_sum_contact* psc) {
     pulse_sum_node* m_b2 = psc->m_b2;
     math::Dir3 b2_ap_n;
     if (m_b2 != NULL) {
@@ -1828,8 +1828,7 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_last_relative_velocity(
         b2_ap_n.v = m_b2_ap_n.v;
     }
     rigid_body* rb = psc->m_b1->m_rb;
-    math::Dir3 result;
-    result.v = _mm_sub_ps(
+    result->v = _mm_sub_ps(
         _mm_add_ps(
             rb->m_last_t_vel.v,
             _mm_sub_ps(
@@ -1841,8 +1840,8 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_last_relative_velocity(
     return result;
 }
 
-math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity(
-    pulse_sum_contact* psc) {
+const math::Dir3* pulse_sum_contact::psc_cpi::get_relative_velocity(
+    math::Dir3* result, pulse_sum_contact* psc) {
     pulse_sum_node* m_b2 = psc->m_b2;
     math::Dir3 b2_ap_n;
     if (m_b2 != NULL) {
@@ -1858,8 +1857,7 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity(
         b2_ap_n.v = m_b2_ap_n.v;
     }
     rigid_body* rb = psc->m_b1->m_rb;
-    math::Dir3 result;
-    result.v = _mm_sub_ps(
+    result->v = _mm_sub_ps(
         _mm_add_ps(
             rb->m_t_vel.v,
             _mm_sub_ps(
@@ -1871,9 +1869,10 @@ math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity(
     return result;
 }
 
-float pulse_sum_contact::psc_cpi::get_impact_vel(
+double pulse_sum_contact::psc_cpi::get_impact_vel(
     pulse_sum_contact* psc, const math::Dir3* relative_velocity) {
-    math::Dir3 last = get_last_relative_velocity(psc);
+    math::Dir3 last;
+    get_last_relative_velocity(&last, psc);
     __m128 n = psc->m_ud_n.v;
     __m128 v6 = _mm_mul_ps(last.v, n);
     float last_vel = v6.m128_f32[0]
@@ -1886,7 +1885,7 @@ float pulse_sum_contact::psc_cpi::get_impact_vel(
     return vel <= last_vel ? last_vel : vel;
 }
 
-float pulse_sum_contact::psc_cpi::get_impact_dist(pulse_sum_contact* psc) {
+double pulse_sum_contact::psc_cpi::get_impact_dist(pulse_sum_contact* psc) {
     pulse_sum_node* m_b2 = psc->m_b2;
     math::Dir3 b2_r;
     const math::Dir3* p_m_b2_r;
@@ -1929,7 +1928,9 @@ void pulse_sum_contact::psc_cpi::calc_fric_dir(
                      + _mm_shuffle_ps(v8, v8, 85).m128_f32[0]
                      + _mm_shuffle_ps(v8, v8, 170).m128_f32[0]);
     if (len < 0.000099999997f) {
-        m_ud_f1 = get_relative_velocity_change_dir(psc);
+        math::Dir3 fallback;
+        get_relative_velocity_change_dir(&fallback, psc);
+        m_ud_f1 = fallback;
         __m128 v11 = _mm_mul_ps(m_ud_f1.v, ud_n.v);
         float dot = v11.m128_f32[0]
                   + _mm_shuffle_ps(v11, v11, 85).m128_f32[0]

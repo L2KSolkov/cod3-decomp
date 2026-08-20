@@ -390,3 +390,17 @@ phys_constraint_solver_multithreaded.o	?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_bo
 phys_constraint_solver_multithreaded.o	?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@M@Z	FIXED
 phys_constraint_solver_multithreaded.o	?mul_inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z	FIXED
 phys_constraint_solver_multithreaded.o	?substep@rbint@@SAXPAVuser_rigid_body@@M@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_relative_velocity_change_dir@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?calc_fric_dir@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?calc_abs_and_fric_dir@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?get_vel@psc_cpi@pulse_sum_contact@@QAE?BUvec2@2@PAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_objective@psc_cpi@pulse_sum_contact@@QAE?BUvec2@2@PAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@psc_cpi@pulse_sum_contact@@QAEXPAV2@AAM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_last_relative_velocity@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_relative_velocity@psc_cpi@pulse_sum_contact@@QAE?BVDir3@math@@PAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_impact_vel@psc_cpi@pulse_sum_contact@@QAE?BMPAV2@ABVDir3@math@@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?get_impact_dist@psc_cpi@pulse_sum_contact@@QAE?BMPAV2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?setup_vel_uni_restitution@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABVDir3@math@@MMMM@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_contact@@AAEXAAM@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_contact@@AAEXHM@Z	VERIFIED
