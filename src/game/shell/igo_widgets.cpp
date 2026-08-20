@@ -2342,7 +2342,6 @@ IGOSpecialWeaponWidget::IGOSpecialWeaponWidget(int client)
     artillery = nullptr;
     health = nullptr;
     ammo = nullptr;
-    percent = 0.0f;
     hadAmmo = false;
     timeForNormalSize = 0;
     scale = 1.0f;
@@ -2577,10 +2576,6 @@ IGOTankReticleWidget::IGOTankReticleWidget(int client)
     tic[0] = nullptr;
     tic[1] = nullptr;
     tic[2] = nullptr;
-    tic[3] = nullptr;
-    ticCount = 0;
-    currentTic = 0;
-    currentAlpha = 0.0f;
 }
 
 // ea: 0x00598B50
@@ -3966,14 +3961,8 @@ IGOWarStatusWidget::IGOWarStatusWidget(int client)
         m_pIconGerman.m_elements[i] = nullptr;
         m_pIconUS.m_elements[i] = nullptr;
     }
-    iconWidth = 0.0f;
-    iconHeight = 0.0f;
-    neutralWidth = 0.0f;
-    neutralHeight = 0.0f;
-    centerX = 0.0f;
-    centerY = 0.0f;
     zoomPct = 0.0f;
-    lastFlag = 0;
+    lastFlag = -1;
 }
 
 // ea: 0x00577B90
