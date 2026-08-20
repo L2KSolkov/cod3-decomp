@@ -8959,6 +8959,14 @@ public:
         nalComponentEntropyPOData::SkeletonComponentData*
             skeletonComponentData,
         nalComponentData::AnimComponentData* animComponentData);
+    static void ComponentDecode(
+        nalPositionOrientation* dstPtr, const unsigned char** srcPtr,
+        unsigned int quantity, unsigned int stride,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyPOData::AnimData* animData,
+        nalComponentEntropyPOData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentData::AnimComponentData* animComponentData);
     static void ComponentSkip(
         const unsigned char** srcPtr, int quantity,
         nalComponentData::SkeletonData* skeletonData,
@@ -15054,6 +15062,69 @@ void nalComponent<nalComponentPOBase,
         *customSkeletonData = (const char*)*customSkeletonData + 8;
         componentInfo = componentEnum.ComponentInfo;
     }
+}
+
+// ea: 0x008622E0
+void nalComponentEntropyPO::ComponentDecode(
+    nalPositionOrientation* dstPtr, const unsigned char** srcPtr,
+    unsigned int quantity, unsigned int stride,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyPOData::AnimData* animData,
+    nalComponentEntropyPOData::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)skeletonData;
+    (void)animComponentData;
+    const float positionScale = animData->QuantizationScale
+                                * skeletonComponentData->PositionQuantization;
+    nalEntropyDecoder::nalFloatDecoder positionDecoder0{};
+    nalEntropyDecoder::nalFloatDecoder positionDecoder1{};
+    nalEntropyDecoder::nalFloatDecoder positionDecoder2{};
+
+    unsigned char channelSize = **srcPtr;
+    const unsigned char* cursor = *srcPtr + 1;
+    positionDecoder0.channel.ptr = cursor;
+    positionDecoder0.channel.bitpos = 0;
+    positionDecoder0.channel.decoder = static_cast<unsigned char>(-1);
+    positionDecoder0.channel.zeroes = 0;
+    positionDecoder0.val_2 = 0xFF00;
+    positionDecoder0.Decode(dstPtr->pos.v.m128_f32,
+                            stride, quantity, positionScale);
+    cursor += channelSize;
+
+    channelSize = *cursor++;
+    positionDecoder1.channel.ptr = cursor;
+    positionDecoder1.channel.bitpos = 0;
+    positionDecoder1.channel.decoder = static_cast<unsigned char>(-1);
+    positionDecoder1.channel.zeroes = 0;
+    positionDecoder1.val_2 = 0xFF00;
+    positionDecoder1.Decode(&dstPtr->pos.v.m128_f32[1],
+                            stride, quantity, positionScale);
+    cursor += channelSize;
+
+    channelSize = *cursor++;
+    positionDecoder2.channel.ptr = cursor;
+    positionDecoder2.channel.bitpos = 0;
+    positionDecoder2.channel.decoder = static_cast<unsigned char>(-1);
+    positionDecoder2.channel.zeroes = 0;
+    positionDecoder2.val_2 = 0xFF00;
+    positionDecoder2.Decode(&dstPtr->pos.v.m128_f32[2],
+                            stride, quantity, positionScale);
+    cursor += channelSize;
+
+    channelSize = *cursor++;
+    const float orientationScale =
+        skeletonComponentData->OrientationQuantization
+        * animData->QuantizationScale;
+    alignas(16) unsigned char quaternionStorage[
+        sizeof(nalEntropyDecoder::nalQuatDecoder)];
+    nalEntropyDecoder::QuatDecoderBase* quaternionBase =
+        new (quaternionStorage) nalEntropyDecoder::QuatDecoderBase(
+            quantity, orientationScale, cursor, 0);
+    reinterpret_cast<nalEntropyDecoder::nalQuatDecoder*>(quaternionBase)
+        ->Decode(&dstPtr->orient, stride, quantity, orientationScale);
+    *srcPtr = cursor + channelSize;
 }
 
 // ea: 0x00862560
