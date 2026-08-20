@@ -4999,7 +4999,7 @@ void RenderResources();  // ?RenderResources@MemGraph@@YAXXZ
 }
 
 namespace AeStringSupport {
-extern void CStrToAeStr(char* oBuff, int* oLen, int capacity,
+extern void CStrToAeStr(char* oBuff, int* const oLen, int capacity,
                         const char* src);
 extern void GetFileName(char* dstBuff, int* dstLen, const char* srcBuff,
                         int srcLen, bool truncExt);  // ?GetFileName@AeStringSupport@@YAXPADPAHPBDH_N@Z

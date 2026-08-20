@@ -112,6 +112,13 @@ def symbol_compat_variants(name: str) -> set[str]:
                 variants.add(value.replace(old, modern))
             if modern in value:
                 variants.add(value.replace(modern, old))
+    # VC7.1's map uses AAH for top-level const int-pointer parameters;
+    # modern MSVC emits the equivalent QAH decoration.
+    for value in tuple(variants):
+        if "AAH" in value:
+            variants.add(value.replace("AAH", "QAH"))
+        if "QAH" in value:
+            variants.add(value.replace("QAH", "AAH"))
     return variants
 
 

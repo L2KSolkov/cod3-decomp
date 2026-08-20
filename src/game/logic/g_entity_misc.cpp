@@ -972,7 +972,7 @@ trRefEntity& Entity::GetRenderEntity()
 // Entity::SetAnimDebug - ea: 0x62AFB0
 // ============================================================================
 extern void* mem_heap_malloc(unsigned int size);  // mem_lib
-extern void AeStringSupport::CStrToAeStr(char* oBuff, int* oLen,
+extern void AeStringSupport::CStrToAeStr(char* oBuff, int* const oLen,
                                          int capacity,
                                          const char* src);
     // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z

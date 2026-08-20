@@ -89,7 +89,7 @@ bool Warning(const char* fmt, ...);
 }
 
 namespace AeStringSupport {
-extern void CStrToAeStr(char* oBuff, int* oLen, int capacity,
+extern void CStrToAeStr(char* oBuff, int* const oLen, int capacity,
                         const char* src);
 extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
                    int len, int srcCapacity);

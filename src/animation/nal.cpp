@@ -10116,7 +10116,7 @@ extern void* nalStreamAnimQueueInstance_6(
 namespace AeStringSupport {
 bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
                 int rhsLen);
-void CStrToAeStr(char* dst, int* dstLen, int dstCapacity, const char* src);
+void CStrToAeStr(char* dst, int* const dstLen, int dstCapacity, const char* src);
 }
 
 #define PAK_ID_MIN ((TPakId)0)

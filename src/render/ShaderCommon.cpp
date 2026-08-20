@@ -110,7 +110,7 @@ extern nglTexture* nglGetTexture(const tlFixedString& FileName);
 extern void tlPrintf(const char* Format, ...);
 
 namespace AeStringSupport {
-void CStrToAeStr(char* dst, int* dstLen, int dstCapacity, const char* src);
+void CStrToAeStr(char* dst, int* const dstLen, int dstCapacity, const char* src);
 bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen);
 void SubStr(char* dst, int* dstLen, const char* src, int begin, int count, int srcLen);
 }

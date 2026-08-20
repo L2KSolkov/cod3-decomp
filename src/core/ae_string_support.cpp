@@ -120,7 +120,7 @@ bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen
 // Output: *dstLen = length, dst[0..len] = copied chars (null-terminated)
 // ea: 0x7BEF50
 // ============================================================================
-void CStrToAeStr(char* dst, int* dstLen, int dstCapacity, const char* src) {
+void CStrToAeStr(char* dst, int* const dstLen, int dstCapacity, const char* src) {
     if (!src || !*src) {
         *dst = 0;
         *dstLen = 0;

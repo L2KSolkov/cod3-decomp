@@ -434,7 +434,7 @@ public:
 };
 
 namespace AeStringSupport {
-void CStrToAeStr(char* dst, int* len, int capacity,
+void CStrToAeStr(char* dst, int* const len, int capacity,
                  const char* src);  // ?CStrToAeStr@AeStringSupport@@YAXPADPAHHPBD@Z
 void GetFileName(char* dst, int* len, const char* src, int a4,
                  bool truncExt);  // ?GetFileName@AeStringSupport@@YAXPADPAHPBDH_N@Z
