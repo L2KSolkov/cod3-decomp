@@ -39,6 +39,13 @@ public:
 template <typename T>
 class tlResourceDirectory {
 public:
+    // ??2tlResourceDirectory@@SAPAXI@Z (nal_init.o / ngl_aux.o)
+    // The Xbox template routes directory allocations through tlMemAlloc with
+    // the library's standard 8-byte alignment and no special flags.
+    static void* operator new(unsigned int size) {
+        return tlMemAlloc(size, 8u, 0u);
+    }
+
     virtual ~tlResourceDirectory() {}
 
     virtual const char* DirectoryName() { return "<Unnamed>"; }

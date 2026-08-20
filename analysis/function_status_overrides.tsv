@@ -428,3 +428,12 @@ phys_constraint_solver_multithreaded.o	?set@temp_user_rigid_body@pulse_sum_const
 phys_constraint_solver_multithreaded.o	?create_pulse_sum_node@pulse_sum_constraint_solver@@QAEPAVpulse_sum_node@@XZ	FIXED
 phys_constraint_solver_multithreaded.o	?add_urb@pulse_sum_constraint_solver@@QAEXPAPAVtemp_user_rigid_body@1@PAPAVuser_rigid_body_restore_info@1@PAVrigid_body_constraint@@@Z	VERIFIED
 phys_constraint_solver_multithreaded.o	?execute_constraint_solver@pulse_sum_constraint_solver@@QAEXQAVrigid_body@@@Z	FIXED
+nal_init.o	??0nalBasePose@@IAE@XZ	VERIFIED
+nal_init.o	??0nalInitListAnimType@@QAE@ABVtlFixedString@@PAX1@Z	VERIFIED
+nal_init.o	?Init@nalAnimCache@@QAEXAAVnalHeap@@@Z	VERIFIED
+nal_init.o	??0?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@XZ	VERIFIED
+nal_init.o	??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z	PORTED
+nal_init.o	??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ	PORTED
+nal_init.o	??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z	PORTED
+nal_init.o	??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z	PORTED
+nal_init.o	??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z	PORTED

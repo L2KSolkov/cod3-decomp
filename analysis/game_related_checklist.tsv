@@ -20144,15 +20144,15 @@ index	status	map_line
 20143	VERIFIED	0002:00454210 ?nglHostOpen@@YAPAXPBD@Z 00C43710 f ngl_dx_scenedump.o
 20144	VERIFIED	0002:004542b0 ?nglHostClose@@YAXPAX@Z 00C437B0 f ngl_dx_scenedump.o
 20145	VERIFIED	0002:004542c0 ??1nalBaseSkeleton@@UAE@XZ 00C437C0 f i nal_init.o
-20146	PENDING	0002:004542d0 ??0nalBasePose@@IAE@XZ 00C437D0 f i nal_init.o
-20147	PENDING	0002:004542e0 ??0nalInitListAnimType@@QAE@ABVtlFixedString@@PAX1@Z 00C437E0 f i nal_init.o
+20146	VERIFIED	0002:004542d0 ??0nalBasePose@@IAE@XZ 00C437D0 f i nal_init.o
+20147	VERIFIED	0002:004542e0 ??0nalInitListAnimType@@QAE@ABVtlFixedString@@PAX1@Z 00C437E0 f i nal_init.o
 20148	VERIFIED	0002:00454350 ?Register@nalInitListAnimType@@UAEXXZ 00C43850 f i nal_init.o
 20149	VERIFIED	0002:00454360 ??1nalInitListAnimType@@UAE@XZ 00C43860 f i nal_init.o
 20150	VERIFIED	0002:00454370 ?Init@nalAnimHeap@@QAEXH@Z 00C43870 f i nal_init.o
 20151	VERIFIED	0002:00454390 ??0nalAnimCache@@QAE@XZ 00C43890 f i nal_init.o
-20152	PENDING	0002:004543b0 ?Init@nalAnimCache@@QAEXAAVnalHeap@@@Z 00C438B0 f i nal_init.o
+20152	VERIFIED	0002:004543b0 ?Init@nalAnimCache@@QAEXAAVnalHeap@@@Z 00C438B0 f i nal_init.o
 20153	VERIFIED	0002:004543d0 ??1nalGenericSkeleton@nalGeneric@@UAE@XZ 00C438D0 f i nal_init.o
-20154	PENDING	0002:004543f0 ??0?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@XZ 00C438F0 f i nal_init.o
+20154	VERIFIED	0002:004543f0 ??0?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@XZ 00C438F0 f i nal_init.o
 20155	VERIFIED	0002:00454420 ??1?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAE@XZ 00C43920 f i nal_init.o
 20156	VERIFIED	0002:00454430 ??1nalGenericAnim@nalGeneric@@UAE@XZ 00C43930 f i nal_init.o
 20157	SKIPPED	0002:00454440 ??_G?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C43940 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -20171,13 +20171,13 @@ index	status	map_line
 20170	VERIFIED	0002:00454560 ?nalExit@@YAXXZ 00C43A60 f nal_init.o
 20171	VERIFIED	0002:004545e0 ?nalInit@@YAXPAVnalHeap@@@Z 00C43AE0 f nal_init.o
 20172	SKIPPED	0002:00454730 ??_GtlInstanceBank@@QAEPAXI@Z 00C43C30 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20173	PENDING	0002:00454760 ??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z 00C43C60 f i nal_init.o
-20174	PENDING	0002:00454780 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ 00C43C80 f i nal_init.o
+20173	PORTED	0002:00454760 ??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z 00C43C60 f i nal_init.o
+20174	PORTED	0002:00454780 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ 00C43C80 f i nal_init.o
 20175	PENDING	0002:00454790 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAE@XZ 00C43C90 f i nal_init.o
 20176	PENDING	0002:004547a0 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAE@XZ 00C43CA0 f i nal_init.o
-20177	PENDING	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
-20178	PENDING	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
-20179	PENDING	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
+20177	PORTED	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
+20178	PORTED	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
+20179	PORTED	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
 20180	PENDING	0002:00454810 ??1nalComponentFloat1Base@@UAE@XZ 00C43D10 f i nal_init.o
 20181	PENDING	0002:00454820 ??1nalComponentFloat3Base@@UAE@XZ 00C43D20 f i nal_init.o
 20182	PENDING	0002:00454830 ??1nalComponentFloat4Base@@UAE@XZ 00C43D30 f i nal_init.o

@@ -1,14 +1,14 @@
 index	status	map_line
 1	VERIFIED	0002:004542c0 ??1nalBaseSkeleton@@UAE@XZ 00C437C0 f i nal_init.o
-2	PENDING	0002:004542d0 ??0nalBasePose@@IAE@XZ 00C437D0 f i nal_init.o
-3	PENDING	0002:004542e0 ??0nalInitListAnimType@@QAE@ABVtlFixedString@@PAX1@Z 00C437E0 f i nal_init.o
+2	VERIFIED	0002:004542d0 ??0nalBasePose@@IAE@XZ 00C437D0 f i nal_init.o
+3	VERIFIED	0002:004542e0 ??0nalInitListAnimType@@QAE@ABVtlFixedString@@PAX1@Z 00C437E0 f i nal_init.o
 4	VERIFIED	0002:00454350 ?Register@nalInitListAnimType@@UAEXXZ 00C43850 f i nal_init.o
 5	VERIFIED	0002:00454360 ??1nalInitListAnimType@@UAE@XZ 00C43860 f i nal_init.o
 6	VERIFIED	0002:00454370 ?Init@nalAnimHeap@@QAEXH@Z 00C43870 f i nal_init.o
 7	VERIFIED	0002:00454390 ??0nalAnimCache@@QAE@XZ 00C43890 f i nal_init.o
-8	PENDING	0002:004543b0 ?Init@nalAnimCache@@QAEXAAVnalHeap@@@Z 00C438B0 f i nal_init.o
+8	VERIFIED	0002:004543b0 ?Init@nalAnimCache@@QAEXAAVnalHeap@@@Z 00C438B0 f i nal_init.o
 9	VERIFIED	0002:004543d0 ??1nalGenericSkeleton@nalGeneric@@UAE@XZ 00C438D0 f i nal_init.o
-10	PENDING	0002:004543f0 ??0?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@XZ 00C438F0 f i nal_init.o
+10	VERIFIED	0002:004543f0 ??0?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@XZ 00C438F0 f i nal_init.o
 11	VERIFIED	0002:00454420 ??1?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAE@XZ 00C43920 f i nal_init.o
 12	VERIFIED	0002:00454430 ??1nalGenericAnim@nalGeneric@@UAE@XZ 00C43930 f i nal_init.o
 13	SKIPPED	0002:00454440 ??_G?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C43940 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -27,13 +27,13 @@ index	status	map_line
 26	VERIFIED	0002:00454560 ?nalExit@@YAXXZ 00C43A60 f nal_init.o
 27	VERIFIED	0002:004545e0 ?nalInit@@YAXPAVnalHeap@@@Z 00C43AE0 f nal_init.o
 28	SKIPPED	0002:00454730 ??_GtlInstanceBank@@QAEPAXI@Z 00C43C30 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-29	PENDING	0002:00454760 ??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z 00C43C60 f i nal_init.o
-30	PENDING	0002:00454780 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ 00C43C80 f i nal_init.o
+29	PORTED	0002:00454760 ??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z 00C43C60 f i nal_init.o
+30	PORTED	0002:00454780 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ 00C43C80 f i nal_init.o
 31	PENDING	0002:00454790 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAE@XZ 00C43C90 f i nal_init.o
 32	PENDING	0002:004547a0 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAE@XZ 00C43CA0 f i nal_init.o
-33	PENDING	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
-34	PENDING	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
-35	PENDING	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
+33	PORTED	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
+34	PORTED	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
+35	PORTED	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
 36	PENDING	0002:00454810 ??1nalComponentFloat1Base@@UAE@XZ 00C43D10 f i nal_init.o
 37	PENDING	0002:00454820 ??1nalComponentFloat3Base@@UAE@XZ 00C43D20 f i nal_init.o
 38	PENDING	0002:00454830 ??1nalComponentFloat4Base@@UAE@XZ 00C43D30 f i nal_init.o

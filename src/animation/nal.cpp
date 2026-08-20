@@ -4911,6 +4911,12 @@ template class nalPoseBlenderClass<nalGeneric::nalGenericPose>;
 template <typename SKELETON, typename POSE>
 class nalPoseClass {
 public:
+    // ??0nalPoseClass@...@@@IAE@XZ (nal_init.o 0x854780)
+    nalPoseClass()
+        : Skeleton(nullptr), LOD(0)
+    {
+    }
+
     // ea: 0x00518CE0
     const SKELETON* GetSkeleton() const
     {
