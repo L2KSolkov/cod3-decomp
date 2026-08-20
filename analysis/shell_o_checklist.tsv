@@ -1960,11 +1960,11 @@ index	status	map_line
 1958	PENDING	0002:001aa4a0       ?GetCenterY@PanelQuad@@UAEMXZ 009a59a0 f i shell.o
 1959	PENDING	0002:001aa4b0       ?GetY@PanelQuad@@UAEMXZ    009a59b0 f i shell.o
 1960	PENDING	0002:001aa4c0       ?GetRotation@PanelQuad@@UBEMXZ 009a59c0 f i shell.o
-1961	PENDING	0002:001aa4d0       ?SetSectionUV@PanelQuad@@UAEXHQAM0@Z 009a59d0 f i shell.o
+1961	FIXED	0002:001aa4d0       ?SetSectionUV@PanelQuad@@UAEXHQAM0@Z 009a59d0 f i shell.o
 1962	PENDING	0002:001aa530       ?GetTexture@PanelQuad@@UAEPAUnglTexture@@XZ 009a5a30 f i shell.o
 1963	FIXED	0002:001aa5a0       ?SetAlpha@PanelQuad@@UAEXHHM@Z 009a5aa0 f i shell.o
 1964	PENDING	0002:001aa620       ?GetColor@PanelQuad@@UAE?AVcolor32@@XZ 009a5b20 f i shell.o
-1965	PENDING	0002:001aa6c0       ?GetColor@PanelQuad@@UAE?AVcolor32@@HH@Z 009a5bc0 f i shell.o
+1965	FIXED	0002:001aa6c0       ?GetColor@PanelQuad@@UAE?AVcolor32@@HH@Z 009a5bc0 f i shell.o
 1966	PENDING	0002:001aa710       ?GetWidth@PanelQuad@@UAEMXZ 009a5c10 f i shell.o
 1967	PENDING	0002:001aa750       ?GetInitialWidth@PanelQuad@@UAEMXZ 009a5c50 f i shell.o
 1968	PENDING	0002:001aa790       ?GetHeight@PanelQuad@@UAEMXZ 009a5c90 f i shell.o

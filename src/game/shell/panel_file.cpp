@@ -884,6 +884,15 @@ void PanelQuadSection::SetAlphaVert(int i, float alpha)
 // ea: 0x005B65A0 (inline COMDAT)
 void PanelQuad::SetAlpha(int pqsIdx, int vertIdx, float alpha)
 {
+    if (pqsIdx < 0 || pqsIdx >= pqs.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     unsigned int c = pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color;
     pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color =
         c | (((c >> 8) & 0xFFu)
@@ -895,6 +904,15 @@ void PanelQuad::SetAlpha(int pqsIdx, int vertIdx, float alpha)
 // ea: 0x005B64D0 (inline COMDAT)
 void PanelQuad::SetSectionUV(int index, float* u, float* v)
 {
+    if (index < 0 || index >= pqs.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     PanelQuadSection* s = pqs.mElements[index];
     for (int i = 0; i < 4; ++i)
     {
@@ -921,6 +939,15 @@ nglTexture* PanelQuad::GetTexture()
 // ea: 0x005B66C0 (inline COMDAT)
 color32 PanelQuad::GetColor(int pqsIdx, int vertIdx)
 {
+    if (pqsIdx < 0 || pqsIdx >= pqs.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
     color32 result;
     result.i = pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color;
     return result;
