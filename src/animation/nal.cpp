@@ -11904,6 +11904,107 @@ void nalComponent<nalComponentPOBase,
     }
 }
 
+// ea: 0x00862BE0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        const void** sourceSlot = (const void**)state;
+        const unsigned char* source = (const unsigned char*)*sourceSlot;
+        unsigned char* out = (unsigned char*)dst;
+        for (int sample = 0; sample < quantity; ++sample)
+        {
+            std::memcpy(out, source, 32);
+            out += stride;
+            source += 32;
+        }
+        *sourceSlot = source;
+        state = (char*)state + 4;
+        dst = (char*)dst + 32;
+        *componentEnum.CustomAnimData =
+            (const char*)*componentEnum.CustomAnimData + 32;
+    }
+}
+
+// ea: 0x00862CF0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+        unsigned char* out = (unsigned char*)dst;
+        const unsigned char* source = (const unsigned char*)src;
+        for (int sample = 0; sample < quantity; ++sample)
+        {
+            std::memcpy(out, source, 32);
+            out += stride;
+            source += 32;
+        }
+        src = source;
+        dst = (char*)dst + 32;
+        *componentEnum.CustomAnimData =
+            (const char*)*componentEnum.CustomAnimData + 32;
+    }
+}
+
+// ea: 0x00862DF0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+        src = (const char*)src + 32 * quantity;
+        dst = (char*)dst + 32;
+        *componentEnum.CustomAnimData =
+            (const char*)*componentEnum.CustomAnimData + 32;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
