@@ -8048,6 +8048,9 @@ nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
 
+static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
+                                     int track);
+
 template <>
 void nalComponent<nalComponentFloat1Base,
                   nalComponentEntropyFloat1Data,
@@ -8092,6 +8095,61 @@ void nalComponent<nalComponentFloat1Base,
     const void*& animComponentData) const
 {
     (void)animComponentData;
+}
+
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 3u) & ~uintptr_t(3u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 4;
+}
+
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    (void)quantity;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const void** skeletonData = componentEnum.CustomSkeletonData;
+    const void** animData = componentEnum.CustomAnimData;
+    *animData = (const void*)(((uintptr_t)*animData + 3u)
+                              & ~uintptr_t(3u));
+    *animData = (const char*)*animData + 4;
+    *skeletonData = (const void*)(((uintptr_t)*skeletonData + 3u)
+                                  & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* next = (const unsigned char*)src + 1;
+            const unsigned char quantityBytes =
+                *(const unsigned char*)src;
+            void* stateBlock = state;
+            src = next;
+            if (stateBlock != nullptr)
+            {
+                *(const void**)stateBlock = next;
+                *(unsigned char*)((char*)stateBlock + 4) = 0;
+                *(signed char*)((char*)stateBlock + 5) = -1;
+                *(unsigned char*)((char*)stateBlock + 6) = 0;
+            }
+            src = (const char*)src + quantityBytes;
+            state = (char*)state + 16;
+        }
+        *skeletonData = (const char*)*skeletonData + 4;
+    }
 }
 
 template <>
