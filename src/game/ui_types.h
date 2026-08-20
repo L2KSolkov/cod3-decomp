@@ -1036,6 +1036,10 @@ struct FEMenuColorScheme {
     bool    flash;     // +0x0C
     uint8_t _pad0D[3]; // +0x0D
 
+    FEMenuColorScheme(color32 u, color32 h1);       // shell.o 0x5AE400
+    FEMenuColorScheme(color32 u, color32 h1,
+                      color32 h2);                 // shell.o 0x5AE430
+
     static bool GetInfo(char index, color32& un, color32& h1,
                         color32& h2);   // shell.o 0x56FB10
     static bool GetInfo(char index, color32& un,

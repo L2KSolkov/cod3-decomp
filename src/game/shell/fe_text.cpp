@@ -1377,6 +1377,28 @@ float MultiLineString::GetTotalWidth()
     return total_width;
 }
 
+// ea: 0x005AE400
+FEMenuColorScheme::FEMenuColorScheme(color32 u, color32 h1)
+{
+    high1.i = 0;
+    high2.i = 0;
+    flash = false;
+    unselect = u;
+    high1 = h1;
+    high2 = h1;
+}
+
+// ea: 0x005AE430
+FEMenuColorScheme::FEMenuColorScheme(color32 u, color32 h1, color32 h2)
+{
+    high1.i = 0;
+    high2.i = 0;
+    unselect = u;
+    flash = true;
+    high1 = h1;
+    high2 = h2;
+}
+
 // ea: 0x00584DA0
 FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, int z1,
                                  panel_layer layer, float s, int horizJust,
