@@ -8418,6 +8418,64 @@ void nalComponent<nalComponentU8Base,
     }
 }
 
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** skeletonData = componentEnum.CustomSkeletonData;
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* source = (const unsigned char*)src;
+    const unsigned char* currentSkeleton =
+        (const unsigned char*)*skeletonData;
+    const unsigned char* currentAnim = (const unsigned char*)*animData;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        out[offsetTable[track]] = *source++;
+        ++currentSkeleton;
+        ++currentAnim;
+    }
+    src = source;
+    *skeletonData = currentSkeleton;
+    *animData = currentAnim;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** skeletonData = componentEnum.CustomSkeletonData;
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* source = (const unsigned char*)src;
+    const unsigned char* currentSkeleton =
+        (const unsigned char*)*skeletonData;
+    const unsigned char* currentAnim = (const unsigned char*)*animData;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        out[offsetTable[track]] = *source++;
+        ++currentSkeleton;
+        ++currentAnim;
+    }
+    src = source;
+    *skeletonData = currentSkeleton;
+    *animData = currentAnim;
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
