@@ -8303,6 +8303,52 @@ void nalComponent<nalComponentU8Base,
     }
 }
 
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    (void)quantity;
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        src = aligned + *(const unsigned int*)aligned + 4;
+        dst = (char*)dst + 1;
+        *animData = (const char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    (void)quantity;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        const unsigned char* aligned = (const unsigned char*)src;
+        src = aligned + *(const unsigned int*)aligned + 4;
+        dst = (char*)dst + 1;
+    }
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
