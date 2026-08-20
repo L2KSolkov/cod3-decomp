@@ -502,7 +502,7 @@ index	status	map_line
 501	PENDING	0002:0045eea0 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C4E3A0 f i nal_init.o
 502	PENDING	0002:0045ef90 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4E490 f i nal_init.o
 503	PENDING	0002:0045f050 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4E550 f i nal_init.o
-504	PENDING	0002:0045f1c0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4E6C0 f i nal_init.o
+504	PORTED	0002:0045f1c0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4E6C0 f i nal_init.o
 505	PENDING	0002:0045f270 ?GetTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C4E770 f i nal_init.o
 506	PORTED	0002:0045f310 ?Construct@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4E810 f i nal_init.o
 507	PORTED	0002:0045f340 ?Delete@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4E840 f i nal_init.o
