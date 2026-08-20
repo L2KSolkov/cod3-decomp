@@ -19790,7 +19790,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19789	0x008422F0	0x00C317F0	?nglAPKTextureDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z	ngl_xboxr	ngl_texture.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19790	0x00842370	0x00C31870	?nglTextureInit@@YAXXZ	ngl_xboxr	ngl_texture.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19791	0x008423D0	0x00C318D0	??0?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-19792	0x008423F0	0x00C318F0	??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19792	0x008423F0	0x00C318F0	??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19793	0x00842400	0x00C31900	?nglGetFont@@YAPAVnglFont@@ABVtlFixedString@@@Z	ngl_xboxr	ngl_font.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19794	0x00842420	0x00C31920	?nglFontParseToken@@YAXAAPAEPAI@Z	ngl_xboxr	ngl_font.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19795	0x008424A0	0x00C319A0	?nglFontParseToken@@YAXAAPAEPAM@Z	ngl_xboxr	ngl_font.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -19817,7 +19817,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19816	0x00843090	0x00C32590	?GetDesc@nglStringNode@@UAEXPAD@Z	ngl_xboxr	ngl_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19817	0x008430A0	0x00C325A0	??_GnglStringNode@@UAEPAXI@Z	ngl_xboxr	ngl_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19818	0x008430A0	0x00C325A0	??_EnglStringNode@@UAEPAXI@Z	ngl_xboxr	ngl_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-19819	0x008430D0	0x00C325D0	??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19819	0x008430D0	0x00C325D0	??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19820	0x00843110	0x00C32610	?nglScratchIndexAlloc@@YAHH@Z	ngl_xboxr	ngl_gpu_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19821	0x00843160	0x00C32660	?nglScratchVertexAlloc@@YAHHH@Z	ngl_xboxr	ngl_gpu_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19822	0x008431D0	0x00C326D0	?nglCreateSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z	ngl_xboxr	ngl_gpu_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -19863,8 +19863,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19862	0x008446E0	0x00C33BE0	??0?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19863	0x00844700	0x00C33C00	?NewNodeOfLevel@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19864	0x00844730	0x00C33C30	?NewNodeOfLevel@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19865	0x00844760	0x00C33C60	??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19866	0x00844770	0x00C33C70	??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19865	0x00844760	0x00C33C60	??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+19866	0x00844770	0x00C33C70	??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_mesh.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19867	0x00844780	0x00C33C80	?nglSetMeshSphere@@YAXPAUnglMesh@@ABVPosition3@math@@M@Z	ngl_xboxr	ngl_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19868	0x00844820	0x00C33D20	?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z	ngl_xboxr	ngl_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19869	0x00844890	0x00C33D90	?nglDestroyMesh@@YAXPAUnglMesh@@@Z	ngl_xboxr	ngl_meshedit.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -20131,7 +20131,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20130	0x00853620	0x00C42B20	?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20131	0x00853650	0x00C42B50	?Init@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20132	0x00853690	0x00C42B90	?Add@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@PAU2@@Z	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20133	0x008537B0	0x00C42CB0	??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20133	0x008537B0	0x00C42CB0	??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20134	0x00853A70	0x00C42F70	?Render@nglStringNode@@UAEXXZ	ngl_xboxr	ngl_dx_font.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20135	0x00853E80	0x00C43380	?SetMeasures@nglFont@@QAEXEPAM000MM@Z	ngl_xboxr	ngl_dx_font.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20136	0x00853F50	0x00C43450	?nglGetVertexDeclaration@@YAPAU_D3DVERTEXATTRIBUTEFORMAT@@PAU1@@Z	ngl_xboxr	ngl_dx_mesh.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -20293,9 +20293,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20292	0x00855400	0x00C44900	?Del@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE_NPBVnalSceneAnim@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
 20293	0x00855540	0x00C44A40	?Del@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE_NPBVnalBaseSkeleton@@@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
 20294	0x00855680	0x00C44B80	?Destroy@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20295	0x008556C0	0x00C44BC0	?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20296	0x00855700	0x00C44C00	?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-20297	0x00855740	0x00C44C40	?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+20295	0x008556C0	0x00C44BC0	?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+20296	0x00855700	0x00C44C00	?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+20297	0x00855740	0x00C44C40	?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
 20298	0x00855780	0x00C44C80	??1nalComponentEntropyFloat1@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20299	0x00855790	0x00C44C90	??1nalComponentPacked8Float1@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20300	0x008557A0	0x00C44CA0	??1nalComponentFloat3@@UAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
@@ -20853,9 +20853,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20852	0x00864E70	0x00C54370	??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20853	0x00864ED0	0x00C543D0	?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20854	0x00864F60	0x00C54460	??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20855	0x00864F70	0x00C54470	??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20856	0x00864F80	0x00C54480	??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20857	0x00864F90	0x00C54490	??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20855	0x00864F70	0x00C54470	??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20856	0x00864F80	0x00C54480	??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+20857	0x00864F90	0x00C54490	??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20858	0x00864FA0	0x00C544A0	?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20859	0x00864FD0	0x00C544D0	??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20860	0x00865060	0x00C54560	?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY

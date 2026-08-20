@@ -19790,7 +19790,7 @@ index	status	map_line
 19789	VERIFIED	0002:004422f0 ?nglAPKTextureDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C317F0 f ngl_texture.o
 19790	VERIFIED	0002:00442370 ?nglTextureInit@@YAXXZ 00C31870 f ngl_texture.o
 19791	VERIFIED	0002:004423d0 ??0?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318D0 f i ngl_texture.o
-19792	PORTED	0002:004423f0 ??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318F0 f i ngl_texture.o
+19792	VERIFIED	0002:004423f0 ??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318F0 f i ngl_texture.o
 19793	VERIFIED	0002:00442400 ?nglGetFont@@YAPAVnglFont@@ABVtlFixedString@@@Z 00C31900 f ngl_font.o
 19794	VERIFIED	0002:00442420 ?nglFontParseToken@@YAXAAPAEPAI@Z 00C31920 f ngl_font.o
 19795	VERIFIED	0002:004424a0 ?nglFontParseToken@@YAXAAPAEPAM@Z 00C319A0 f ngl_font.o
@@ -19817,7 +19817,7 @@ index	status	map_line
 19816	VERIFIED	0002:00443090 ?GetDesc@nglStringNode@@UAEXPAD@Z 00C32590 f i ngl_font.o
 19817	SKIPPED	0002:004430a0 ??_GnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19818	SKIPPED	0002:004430a0 ??_EnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-19819	PORTED	0002:004430d0 ??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C325D0 f i ngl_font.o
+19819	VERIFIED	0002:004430d0 ??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C325D0 f i ngl_font.o
 19820	VERIFIED	0002:00443110 ?nglScratchIndexAlloc@@YAHH@Z 00C32610 f ngl_gpu_meshedit.o
 19821	VERIFIED	0002:00443160 ?nglScratchVertexAlloc@@YAHHH@Z 00C32660 f ngl_gpu_meshedit.o
 19822	VERIFIED	0002:004431d0 ?nglCreateSection@@YAPAUnglMeshSection@@HHHPAUgpuVertexFormat@@@Z 00C326D0 f ngl_gpu_meshedit.o
@@ -19863,8 +19863,8 @@ index	status	map_line
 19862	VERIFIED	0002:004446e0 ??0?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33BE0 f i ngl_mesh.o
 19863	PORTED	0002:00444700 ?NewNodeOfLevel@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C00 f i ngl_mesh.o
 19864	PORTED	0002:00444730 ?NewNodeOfLevel@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C30 f i ngl_mesh.o
-19865	PORTED	0002:00444760 ??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33C60 f i ngl_mesh.o
-19866	PORTED	0002:00444770 ??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33C70 f i ngl_mesh.o
+19865	VERIFIED	0002:00444760 ??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33C60 f i ngl_mesh.o
+19866	VERIFIED	0002:00444770 ??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33C70 f i ngl_mesh.o
 19867	VERIFIED	0002:00444780 ?nglSetMeshSphere@@YAXPAUnglMesh@@ABVPosition3@math@@M@Z 00C33C80 f ngl_meshedit.o
 19868	VERIFIED	0002:00444820 ?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z 00C33D20 f ngl_meshedit.o
 19869	VERIFIED	0002:00444890 ?nglDestroyMesh@@YAXPAUnglMesh@@@Z 00C33D90 f ngl_meshedit.o
@@ -20131,7 +20131,7 @@ index	status	map_line
 20130	PORTED	0002:00453620 ?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C42B20 f i ngl_morph.o
 20131	VERIFIED	0002:00453650 ?Init@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ 00C42B50 f i ngl_morph.o
 20132	VERIFIED	0002:00453690 ?Add@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@PAU2@@Z 00C42B90 f i ngl_morph.o
-20133	PORTED	0002:004537b0 ??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42CB0 f i ngl_morph.o
+20133	VERIFIED	0002:004537b0 ??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42CB0 f i ngl_morph.o
 20134	VERIFIED	0002:00453a70 ?Render@nglStringNode@@UAEXXZ 00C42F70 f ngl_dx_font.o
 20135	VERIFIED	0002:00453e80 ?SetMeasures@nglFont@@QAEXEPAM000MM@Z 00C43380 f i ngl_dx_font.o
 20136	VERIFIED	0002:00453f50 ?nglGetVertexDeclaration@@YAPAU_D3DVERTEXATTRIBUTEFORMAT@@PAU1@@Z 00C43450 f ngl_dx_mesh.o
@@ -20853,9 +20853,9 @@ index	status	map_line
 20852	PENDING	0002:00464e70 ??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54370 f i nal_init.o
 20853	PENDING	0002:00464ed0 ?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C543D0 f i nal_init.o
 20854	PENDING	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o
-20855	PENDING	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
-20856	PENDING	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
-20857	PENDING	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o
+20855	PORTED	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
+20856	PORTED	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
+20857	PORTED	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o
 20858	PORTED	0002:00464fa0 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544A0 f i nal_init.o
 20859	PORTED	0002:00464fd0 ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544D0 f i nal_init.o
 20860	PORTED	0002:00465060 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54560 f i nal_init.o
