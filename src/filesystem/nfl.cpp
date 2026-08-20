@@ -1224,7 +1224,12 @@ nflRequestID nfsScheduleRequest(nfdDriver* driver)
     for (txSlot requestSlot = txSlotFirst(&s_requestPool); requestSlot != TX_SLOT_INVALID;
          requestSlot = txSlotNext(&s_requestPool, requestSlot)) {
         nfsRequest* request = nfsGetRequest((nflRequestID)requestSlot);
-        if (request == nullptr || request->state != NFS_REQUEST_STATE_WAITING) continue;
+        if (request == nullptr) {
+            txAssertFailed(nullptr, "request", "nfsScheduleRequest",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 972);
+            continue;
+        }
+        if (request->state != NFS_REQUEST_STATE_WAITING) continue;
         if (driver != nullptr && nfsGetFileDriver((nflFileID)request->fileID) != driver) continue;
         const unsigned priority = request->priority;
         if (best == NFL_REQUEST_ID_INVALID || priority > bestPriority
@@ -1326,6 +1331,10 @@ int nfsUpdateDriver(nfdDriver* driver)
                 request->bytesCompleted = total;
                 request->state = total < request->bufferSize
                     ? NFS_REQUEST_STATE_WAITING : NFS_REQUEST_STATE_WORKDONE;
+                if (request->bytesCompleted > request->bufferSize)
+                    txAssertFailed(nullptr, "request->bytesCompleted<=request->bufferSize",
+                                   "nfsUpdateDriver",
+                                   "c:/cod/code/tl/nfl/src/nfl_system.cpp", 907);
             } else {
                 request->state = NFS_REQUEST_STATE_WORKDONE;
             }
@@ -1340,8 +1349,8 @@ int nfsUpdateDriver(nfdDriver* driver)
         return 1;
     case NFD_IO_STATE_WORKING:
         if (request->state == NFS_REQUEST_STATE_CANCELING) {
-            if (driver->io->fnCancel != nullptr
-                && driver->io->fnCancel(driver->work.ioCommand.fileHandle) == NFD_ERROR_NOERROR)
+            if (driver->io->fnCancel == nullptr
+                || driver->io->fnCancel(driver->work.ioCommand.fileHandle) == NFD_ERROR_NOERROR)
                 driver->work.ioState = NFD_IO_STATE_CANCELING;
             return 0;
         }
