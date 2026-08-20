@@ -111,8 +111,10 @@ FEText::FEText(font_index f, const char* t, float x1, float y1, int z1,
     }
     else
     {
-        if (v14 < 0.0f || v14 > 1000.0f)
-            v14 = 1148846080.0f;
+        if (v14 < 0.0f)
+            v14 = 0.0f;
+        else if (v14 > 1000.0f)
+            v14 = 1000.0f;
         SetZvalueAbs((float)((1000 * layer) + v14) * 0.11111111f);
     }
     scale.x = s;
