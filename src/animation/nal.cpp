@@ -8825,6 +8825,25 @@ void nalComponent<nalComponentFloat1Base,
         ptr = (char*)ptr + 4;
 }
 
+// ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z
+// (nal_init.o 0x857e90)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (nalComponentTrackPresent(
+                &componentEnum, componentInfo->StartIndex + i))
+            ptr = (char*)ptr + 1;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentFloat3Data,
