@@ -1296,9 +1296,11 @@ unsigned nvlAFMVMovie::GetMBModes() {
         result = tab.modes;
         if (mFramePredFrameDct != 0)
             return result | 0x80;
-        result |= (mShifter >> 24) & 0xC0;
-        mShifter <<= 2;
-        mBitCount += 2;
+        if ((result & 1) == 0) {
+            result |= (mShifter >> 24) & 0xC0;
+            mShifter <<= 2;
+            mBitCount += 2;
+        }
         if ((result & 3) != 0) {
             const unsigned old = mShifter;
             mShifter <<= 1;
