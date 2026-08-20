@@ -10623,6 +10623,102 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// ea: 0x0085F490
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 4;
+}
+
+// ea: 0x0085F4A0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+// ea: 0x0085F4B0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085F4C0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x0085F4D0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                                           & ~uintptr_t(3u));
+}
+
+// ea: 0x0085F4F0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    animData = (const void*)(((uintptr_t)animData + 3u)
+                             & ~uintptr_t(3u));
+}
+
+// ea: 0x0085F510
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085F520
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x0085F560
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
