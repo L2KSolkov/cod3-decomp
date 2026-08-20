@@ -11223,6 +11223,127 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// ea: 0x00861510
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x00861520
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x00861530
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x00861540
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x00861550
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x00861560
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x00861570
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x00861580
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x008615C0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 32;
+}
+
+// ea: 0x008615F0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentPOData,
+                  nalComponentPO>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 15u)
+                                & ~uintptr_t(15u));
+            const void* next = src;
+            if (state != nullptr)
+                *(const void**)state = next;
+            src = (const char*)src + 32 * quantity;
+            state = (char*)state + 4;
+        }
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
