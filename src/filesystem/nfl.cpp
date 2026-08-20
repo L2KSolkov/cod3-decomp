@@ -519,9 +519,19 @@ nflFileID nfsGetNativeFileID(nflFileID fileID)
 {
     nfsFile* file = nfsGetFile(fileID);
     if (file == nullptr) return NFL_FILE_ID_INVALID;
-    return file->fileType == NFS_FILE_TYPE_SUBFILE
-               ? (nflFileID)file->as.subfile.parent
-               : (nflFileID)fileID;
+    if (file->fileType != NFS_FILE_TYPE_SUBFILE) return (nflFileID)fileID;
+    const nflFileID parentID = (nflFileID)file->as.subfile.parent;
+    nfsFile* parent = nfsGetFile(parentID);
+    if (parent == nullptr)
+        txAssertFailed(nullptr, "nfsGetFile(file->as.subfile.parent)",
+                       "nfsGetNativeFileID",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 106);
+    if (parent->fileType != NFS_FILE_TYPE_NATIVE)
+        txAssertFailed(nullptr,
+                       "nfsGetFile(file->as.subfile.parent)->fileType==NFS_FILE_TYPE_NATIVE",
+                       "nfsGetNativeFileID",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 107);
+    return parentID;
 }
 // ea: 0x0041E950
 nfsFile* nfsGetNativeFile(nflFileID fileID)
