@@ -8450,6 +8450,41 @@ void nalComponent<nalComponentFloat3Base,
 }
 
 template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* defaults = (const unsigned char*)def;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 16;
+            continue;
+        }
+        unsigned char* target = out + offset;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            std::memcpy(target, src, 16);
+            src = (const char*)src + 16;
+        }
+        else
+        {
+            std::memcpy(target, defaults + offset, 16);
+        }
+    }
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Process(

@@ -640,3 +640,4 @@ nal_init.o	?Delete@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Da
 nal_init.o	?Copy@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentFloat3@@VDir3@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	?Convert@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
