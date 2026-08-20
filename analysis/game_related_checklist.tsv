@@ -12987,7 +12987,7 @@ index	status	map_line
 12986	PORTED	0002:0031ce20 ?add@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@_NPBD@Z 00B0C320 f i physics.o
 12987	PORTED	0002:0031ce70 ?add@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@PAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@Z 00B0C370 f i physics.o
 12988	PORTED	0002:0031d2f0 ?remove@?$phys_inplace_avl_tree@Vphys_gjk_geom_id_pair_key@@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@@@QAEXABVphys_gjk_geom_id_pair_key@@@Z 00B0C7F0 f i physics.o
-12989	PORTED	0002:0031d800 ??$Find@PADV?$IVPointer@VPhysData@@@@@?$InplaceAssetBankSet@VPhysDataBank@@@@QBE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VPhysData@@@@@@PAW42@@Z 00B0CD00 f i physics.o
+12989	VERIFIED	0002:0031d800 ??$Find@PADV?$IVPointer@VPhysData@@@@@?$InplaceAssetBankSet@VPhysDataBank@@@@QBE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VPhysData@@@@@@PAW42@@Z 00B0CD00 f i physics.o
 12990	VERIFIED	0002:0031d9b0 ??$Find@PADV?$IVPointer@VDestructible@@@@@?$InplaceAssetBankSet@VDestructibleBank@@@@QBE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VDestructible@@@@@@PAW42@@Z 00B0CEB0 f i physics.o
 12991	VERIFIED	0002:0031db60 ?create_prop_collide_callback@@YAXPAVrb_extra_info@@HPAVrigid_body@@1@Z 00B0D060 f i physics.o
 12992	VERIFIED	0002:0031dbf0 ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z 00B0D0F0 f i physics.o

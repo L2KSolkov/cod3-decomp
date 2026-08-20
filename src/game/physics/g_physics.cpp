@@ -12299,6 +12299,11 @@ class DestructibleBank
                               InplaceTree<InplaceString, unsigned int>> {
 };
 
+class PhysDataBank
+    : public InplaceAssetBank<PhysData,
+                              InplaceTree<InplaceString, unsigned int>> {
+};
+
 class PhysDataBank;
 class DestructibleLocal;
 class PhysDataBankManager : public InplaceAssetBankSet<PhysDataBank> {
@@ -12406,6 +12411,28 @@ DestructibleBankManager::DestructibleBankManager()
 // ea: 0x004E5D40
 DestructibleBankManager::~DestructibleBankManager()
 {
+}
+
+// ea: 0x007031E0
+IVPointer<PhysData> PhysDataBankManager::GetPhysData(
+    TPakId pak_id, const char* name)
+{
+    char oBuff[128];
+    char nm[128];
+    char dstBuff[127];
+    int nameLen = 0;
+    int outLen = 0;
+
+    AeStringSupport::CStrToAeStr(nm, &nameLen, 127, name);
+    nm[127] = 0;
+    dstBuff[0] = 0;
+    AeStringSupport::GetFileName(dstBuff, &nameLen, nm, nameLen, true);
+    AeStringSupport::AeStrCopy(oBuff, &outLen, 127, dstBuff, nameLen);
+    oBuff[127] = 0;
+    memcpy(nm, oBuff, sizeof(nm));
+
+    return Find<char*, IVPointer<PhysData>>(
+        pak_id, nm, AeType<IVPointer<PhysData>>(), nullptr);
 }
 
 // ea: 0x00705CD0
