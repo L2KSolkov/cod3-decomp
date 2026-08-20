@@ -437,3 +437,11 @@ nal_init.o	??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@
 nal_init.o	??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z	PORTED
 nal_init.o	??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z	PORTED
 nal_init.o	??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z	PORTED
+nal_init.o	??0?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ	FIXED
+nal_init.o	??0?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ	FIXED
+nal_init.o	??0?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	FIXED
+nal_init.o	??0?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	FIXED
+nal_init.o	?Key@Instance@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
+nal_init.o	?Key@Instance@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
+nal_init.o	?Key@Instance@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
+nal_init.o	?Key@Instance@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED

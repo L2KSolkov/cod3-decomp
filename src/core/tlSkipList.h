@@ -60,7 +60,8 @@ public:
         RandomBits = (unsigned int)rand();
         RandomsLeft = 7;
         Head = NULL;
-        Level = 0;
+        // IDA constructors in nal_init.o initialize only the random state and
+        // Head; Level is established by Init().
     }
 
     // GetKeyOf: free ::GetKey(T*) accessor (per-instantiation).

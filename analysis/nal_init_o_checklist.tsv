@@ -40,14 +40,14 @@ index	status	map_line
 39	PENDING	0002:00454840 ??1nalComponentQuatBase@@UAE@XZ 00C43D40 f i nal_init.o
 40	PENDING	0002:00454850 ??1nalComponentPOBase@@UAE@XZ 00C43D50 f i nal_init.o
 41	PENDING	0002:00454860 ??1nalComponentIKSpinBase@@UAE@XZ 00C43D60 f i nal_init.o
-42	PENDING	0002:00454870 ??0?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C43D70 f i nal_init.o
-43	PENDING	0002:00454890 ??0?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C43D90 f i nal_init.o
-44	PENDING	0002:004548b0 ??0?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C43DB0 f i nal_init.o
-45	PENDING	0002:004548d0 ??0?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C43DD0 f i nal_init.o
-46	PENDING	0002:004548f0 ?Key@Instance@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43DF0 f i nal_init.o
-47	PENDING	0002:00454900 ?Key@Instance@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E00 f i nal_init.o
-48	PENDING	0002:00454910 ?Key@Instance@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E10 f i nal_init.o
-49	PENDING	0002:00454920 ?Key@Instance@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E20 f i nal_init.o
+42	FIXED	0002:00454870 ??0?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C43D70 f i nal_init.o
+43	FIXED	0002:00454890 ??0?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C43D90 f i nal_init.o
+44	FIXED	0002:004548b0 ??0?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C43DB0 f i nal_init.o
+45	FIXED	0002:004548d0 ??0?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C43DD0 f i nal_init.o
+46	VERIFIED	0002:004548f0 ?Key@Instance@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43DF0 f i nal_init.o
+47	VERIFIED	0002:00454900 ?Key@Instance@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E00 f i nal_init.o
+48	VERIFIED	0002:00454910 ?Key@Instance@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E10 f i nal_init.o
+49	VERIFIED	0002:00454920 ?Key@Instance@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QBEABVtlFixedString@@XZ 00C43E20 f i nal_init.o
 50	VERIFIED	0002:00454930 ??0nalBaseSkeleton@@QAE@XZ 00C43E30 f i nal_init.o
 51	SKIPPED	0002:00454970 ??_GnalBaseSkeleton@@UAEPAXI@Z 00C43E70 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 52	SKIPPED	0002:00454970 ??_EnalBaseSkeleton@@UAEPAXI@Z 00C43E70 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

@@ -206,7 +206,7 @@ nal_cache.o	7	3	4	0	0	0	0
 nal_generic.o	68	24	44	0	0	0	0
 nal_generic_component.o	36	1	35	0	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
-nal_init.o	899	41	858	0	0	0	0
+nal_init.o	899	41	854	0	0	4	0
 nal_initlist.o	1	1	0	0	0	0	0
 nal_math.o	1	1	0	0	0	0	0
 nal_sceneanim.o	10	0	10	0	0	0	0
