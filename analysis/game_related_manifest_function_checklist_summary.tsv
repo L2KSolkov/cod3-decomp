@@ -220,7 +220,7 @@ nfl_system.o	53	51	2	0	0	0	0
 nfl_win32_driver.o	9	9	0	0	0	0	0
 nfl_xbox_driver.o	1	1	0	0	0	0	0
 ngl_aux.o	164	40	124	0	0	0	0
-ngl_debug.o	62	46	16	0	0	0	0
+ngl_debug.o	62	61	1	0	0	0	0
 ngl_debugdraw.o	11	11	0	0	0	0	0
 ngl_dx_buf.o	4	4	0	0	0	0	0
 ngl_dx_core.o	43	25	18	0	0	0	0

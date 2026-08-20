@@ -19459,19 +19459,19 @@ index	status	map_line
 19458	VERIFIED	0002:00435500 ?_jqShutdown@@YAXXZ 00C24A00 f jobqueue_legacy.o
 19459	VERIFIED	0002:00435510 ?_jqStart@@YAXH@Z 00C24A10 f jobqueue_legacy.o
 19460	VERIFIED	0002:00435520 ?_jqStop@@YAXXZ 00C24A20 f jobqueue_legacy.o
-19461	PENDING	0002:00435530 ?tlFTOI@@YAHM@Z 00C24A30 f i ngl_debug.o
-19462	PENDING	0002:00435540 ?Min@math@@YAMMM@Z 00C24A40 f i ngl_debug.o
-19463	PENDING	0002:00435570 ?Vector4_Half@math@@YA?AVVector4@1@XZ 00C24A70 f i ngl_debug.o
-19464	PENDING	0002:004355a0 ?SetX@Mat33@math@@QAEXABVDir3@2@@Z 00C24AA0 f i ngl_debug.o
-19465	PENDING	0002:004355c0 ?SetY@Mat33@math@@QAEXABVDir3@2@@Z 00C24AC0 f i ngl_debug.o
-19466	PENDING	0002:004355f0 ?SetZ@Mat33@math@@QAEXABVDir3@2@@Z 00C24AF0 f i ngl_debug.o
-19467	PENDING	0002:00435620 ??0TranMat43@math@@QAE@ABVPosition3@1@@Z 00C24B20 f i ngl_debug.o
-19468	PENDING	0002:00435640 ?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ 00C24B40 f i ngl_debug.o
-19469	PENDING	0002:00435670 ??0Mat43@math@@QAE@ABVTranMat43@1@@Z 00C24B70 f i ngl_debug.o
-19470	PENDING	0002:004356c0 ?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z 00C24BC0 f i ngl_debug.o
-19471	PENDING	0002:004356f0 ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z 00C24BF0 f i ngl_debug.o
-19472	PENDING	0002:00435720 ?Sin@math@@YA?AVVector4@1@ABV21@@Z 00C24C20 f i ngl_debug.o
-19473	PENDING	0002:00435800 ?Sin@math@@YAMM@Z 00C24D00 f i ngl_debug.o
+19461	PORTED	0002:00435530 ?tlFTOI@@YAHM@Z 00C24A30 f i ngl_debug.o
+19462	PORTED	0002:00435540 ?Min@math@@YAMMM@Z 00C24A40 f i ngl_debug.o
+19463	PORTED	0002:00435570 ?Vector4_Half@math@@YA?AVVector4@1@XZ 00C24A70 f i ngl_debug.o
+19464	PORTED	0002:004355a0 ?SetX@Mat33@math@@QAEXABVDir3@2@@Z 00C24AA0 f i ngl_debug.o
+19465	PORTED	0002:004355c0 ?SetY@Mat33@math@@QAEXABVDir3@2@@Z 00C24AC0 f i ngl_debug.o
+19466	PORTED	0002:004355f0 ?SetZ@Mat33@math@@QAEXABVDir3@2@@Z 00C24AF0 f i ngl_debug.o
+19467	PORTED	0002:00435620 ??0TranMat43@math@@QAE@ABVPosition3@1@@Z 00C24B20 f i ngl_debug.o
+19468	PORTED	0002:00435640 ?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ 00C24B40 f i ngl_debug.o
+19469	PORTED	0002:00435670 ??0Mat43@math@@QAE@ABVTranMat43@1@@Z 00C24B70 f i ngl_debug.o
+19470	PORTED	0002:004356c0 ?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z 00C24BC0 f i ngl_debug.o
+19471	PORTED	0002:004356f0 ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z 00C24BF0 f i ngl_debug.o
+19472	PORTED	0002:00435720 ?Sin@math@@YA?AVVector4@1@ABV21@@Z 00C24C20 f i ngl_debug.o
+19473	PORTED	0002:00435800 ?Sin@math@@YAMM@Z 00C24D00 f i ngl_debug.o
 19474	VERIFIED	0002:00435910 ?nglGetDebugFlagPtr@@YAPAEPBD@Z 00C24E10 f ngl_debug.o
 19475	VERIFIED	0002:00435a90 ?nglSetDebugFlag@@YAXPBDH@Z 00C24F90 f ngl_debug.o
 19476	VERIFIED	0002:00435af0 ?nglGetDebugFlag@@YAHPBD@Z 00C24FF0 f ngl_debug.o
@@ -19510,12 +19510,12 @@ index	status	map_line
 19509	VERIFIED	0002:00439020 ?nglDebugAddSphereSolid@@YAXABVPosition3@math@@MI@Z 00C28520 f ngl_debug.o
 19510	VERIFIED	0002:004390b0 ??0nglShaderProfiler@@QAE@XZ 00C285B0 f i ngl_debug.o
 19511	VERIFIED	0002:00439110 ?Destroy@nglShaderProfiler@@QAEXXZ 00C28610 f i ngl_debug.o
-19512	PENDING	0002:00439130 ??1nglShaderProfiler@@QAE@XZ 00C28630 f i ngl_debug.o
+19512	PORTED	0002:00439130 ??1nglShaderProfiler@@QAE@XZ 00C28630 f i ngl_debug.o
 19513	VERIFIED	0002:00439150 ?PrintResults@nglShaderProfiler@@QAEXXZ 00C28650 f i ngl_debug.o
 19514	SKIPPED	0002:004391a0 ??_GnglShaderProfiler@@QAEPAXI@Z 00C286A0 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19515	VERIFIED	0002:004391e0 ??1nglDebugLineNode@@UAE@XZ 00C286E0 f i ngl_debug.o
-19516	PENDING	0002:004391f0 ??$tl_clamp@IHH@@YAIABIABH1@Z 00C286F0 f i ngl_debug.o
-19517	VERIFIED	0002:00439210 ?ProfileFrame@nglShaderProfiler@@QAEXXZ 00C28710 f i ngl_debug.o
+19516	PORTED	0002:004391f0 ??$tl_clamp@IHH@@YAIABIABH1@Z 00C286F0 f i ngl_debug.o
+19517	FIXED	0002:00439210 ?ProfileFrame@nglShaderProfiler@@QAEXXZ 00C28710 f i ngl_debug.o
 19518	SKIPPED	0002:00439390 ??_EnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19519	SKIPPED	0002:00439390 ??_GnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19520	VERIFIED	0002:004393c0 ??0nglDebugTriNode@@QAE@XZ 00C288C0 f i ngl_debug.o

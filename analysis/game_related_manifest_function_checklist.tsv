@@ -19459,19 +19459,19 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19458	0x00835500	0x00C24A00	?_jqShutdown@@YAXXZ	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19459	0x00835510	0x00C24A10	?_jqStart@@YAXH@Z	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19460	0x00835520	0x00C24A20	?_jqStop@@YAXXZ	jobqueue_xboxr	jobqueue_legacy.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-19461	0x00835530	0x00C24A30	?tlFTOI@@YAHM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19462	0x00835540	0x00C24A40	?Min@math@@YAMMM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19463	0x00835570	0x00C24A70	?Vector4_Half@math@@YA?AVVector4@1@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19464	0x008355A0	0x00C24AA0	?SetX@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19465	0x008355C0	0x00C24AC0	?SetY@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19466	0x008355F0	0x00C24AF0	?SetZ@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19467	0x00835620	0x00C24B20	??0TranMat43@math@@QAE@ABVPosition3@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19468	0x00835640	0x00C24B40	?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19469	0x00835670	0x00C24B70	??0Mat43@math@@QAE@ABVTranMat43@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19470	0x008356C0	0x00C24BC0	?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19471	0x008356F0	0x00C24BF0	??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19472	0x00835720	0x00C24C20	?Sin@math@@YA?AVVector4@1@ABV21@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19473	0x00835800	0x00C24D00	?Sin@math@@YAMM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19461	0x00835530	0x00C24A30	?tlFTOI@@YAHM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19462	0x00835540	0x00C24A40	?Min@math@@YAMMM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19463	0x00835570	0x00C24A70	?Vector4_Half@math@@YA?AVVector4@1@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19464	0x008355A0	0x00C24AA0	?SetX@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19465	0x008355C0	0x00C24AC0	?SetY@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19466	0x008355F0	0x00C24AF0	?SetZ@Mat33@math@@QAEXABVDir3@2@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19467	0x00835620	0x00C24B20	??0TranMat43@math@@QAE@ABVPosition3@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19468	0x00835640	0x00C24B40	?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19469	0x00835670	0x00C24B70	??0Mat43@math@@QAE@ABVTranMat43@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19470	0x008356C0	0x00C24BC0	?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19471	0x008356F0	0x00C24BF0	??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19472	0x00835720	0x00C24C20	?Sin@math@@YA?AVVector4@1@ABV21@@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19473	0x00835800	0x00C24D00	?Sin@math@@YAMM@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 19474	0x00835910	0x00C24E10	?nglGetDebugFlagPtr@@YAPAEPBD@Z	ngl_xboxr	ngl_debug.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19475	0x00835A90	0x00C24F90	?nglSetDebugFlag@@YAXPBDH@Z	ngl_xboxr	ngl_debug.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19476	0x00835AF0	0x00C24FF0	?nglGetDebugFlag@@YAHPBD@Z	ngl_xboxr	ngl_debug.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -19510,12 +19510,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19509	0x00839020	0x00C28520	?nglDebugAddSphereSolid@@YAXABVPosition3@math@@MI@Z	ngl_xboxr	ngl_debug.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19510	0x008390B0	0x00C285B0	??0nglShaderProfiler@@QAE@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19511	0x00839110	0x00C28610	?Destroy@nglShaderProfiler@@QAEXXZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-19512	0x00839130	0x00C28630	??1nglShaderProfiler@@QAE@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19512	0x00839130	0x00C28630	??1nglShaderProfiler@@QAE@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 19513	0x00839150	0x00C28650	?PrintResults@nglShaderProfiler@@QAEXXZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19514	0x008391A0	0x00C286A0	??_GnglShaderProfiler@@QAEPAXI@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19515	0x008391E0	0x00C286E0	??1nglDebugLineNode@@UAE@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-19516	0x008391F0	0x00C286F0	??$tl_clamp@IHH@@YAIABIABH1@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19517	0x00839210	0x00C28710	?ProfileFrame@nglShaderProfiler@@QAEXXZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+19516	0x008391F0	0x00C286F0	??$tl_clamp@IHH@@YAIABIABH1@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+19517	0x00839210	0x00C28710	?ProfileFrame@nglShaderProfiler@@QAEXXZ	ngl_xboxr	ngl_debug.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 19518	0x00839390	0x00C28890	??_EnglDebugLineNode@@UAEPAXI@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19519	0x00839390	0x00C28890	??_GnglDebugLineNode@@UAEPAXI@Z	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19520	0x008393C0	0x00C288C0	??0nglDebugTriNode@@QAE@XZ	ngl_xboxr	ngl_debug.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED

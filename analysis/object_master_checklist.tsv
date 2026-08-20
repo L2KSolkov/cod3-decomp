@@ -559,7 +559,7 @@ nfl_system.o	analysis/nfl_system_o_checklist.tsv	analysis/nfl_system_o_inventory
 nfl_win32_driver.o	analysis/nfl_win32_driver_o_checklist.tsv	analysis/nfl_win32_driver_o_inventory.tsv	analysis/nfl_win32_driver_o_plan.tsv	9	9	0	0	0	0	0
 nfl_xbox_driver.o	analysis/nfl_xbox_driver_o_checklist.tsv	analysis/nfl_xbox_driver_o_inventory.tsv	analysis/nfl_xbox_driver_o_plan.tsv	1	1	0	0	0	0	0
 ngl_aux.o	analysis/ngl_aux_o_checklist.tsv	analysis/ngl_aux_o_inventory.tsv	analysis/ngl_aux_o_plan.tsv	164	40	124	0	0	0	0
-ngl_debug.o	analysis/ngl_debug_o_checklist.tsv	analysis/ngl_debug_o_inventory.tsv	analysis/ngl_debug_o_plan.tsv	62	46	16	0	0	0	0
+ngl_debug.o	analysis/ngl_debug_o_checklist.tsv	analysis/ngl_debug_o_inventory.tsv	analysis/ngl_debug_o_plan.tsv	62	61	1	0	0	0	0
 ngl_debugdraw.o	analysis/ngl_debugdraw_o_checklist.tsv	analysis/ngl_debugdraw_o_inventory.tsv	analysis/ngl_debugdraw_o_plan.tsv	11	11	0	0	0	0	0
 ngl_dx_buf.o	analysis/ngl_dx_buf_o_checklist.tsv	analysis/ngl_dx_buf_o_inventory.tsv	analysis/ngl_dx_buf_o_plan.tsv	4	4	0	0	0	0	0
 ngl_dx_core.o	analysis/ngl_dx_core_o_checklist.tsv	analysis/ngl_dx_core_o_inventory.tsv	analysis/ngl_dx_core_o_plan.tsv	43	25	18	0	0	0	0

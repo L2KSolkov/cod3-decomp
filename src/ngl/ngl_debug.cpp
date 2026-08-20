@@ -107,6 +107,127 @@ static float FastCos(float radians) {
           + (v2 * 6.283185f));
 }
 
+// ea: 0x835530
+int tlFTOI(float f) {
+    return (int)f;
+}
+
+namespace math {
+
+// ea: 0x835540
+float Min(float a, float b) {
+    return b <= a ? b : a;
+}
+
+// ea: 0x835570
+Vector4 Vector4_Half() {
+    Vector4 result;
+    result.v = _mm_set1_ps(0.5f);
+    return result;
+}
+
+// ea: 0x8355A0
+void Mat33::SetX(const Dir3& _x) {
+    x.v = _x.v;
+}
+
+// ea: 0x8355C0
+void Mat33::SetY(const Dir3& _y) {
+    y.v = _y.v;
+}
+
+// ea: 0x8355F0
+void Mat33::SetZ(const Dir3& _z) {
+    z.v = _z.v;
+}
+
+// ea: 0x835620
+TranMat43::TranMat43(const Position3& _p) {
+    v = _p.v;
+}
+
+// ea: 0x835640
+Position3 TranMat43::GetW() const {
+    Position3 result;
+    result.v = v;
+    return result;
+}
+
+// ea: 0x835670
+Mat43::Mat43(const TranMat43& _m) {
+    x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    w.v = _m.v;
+}
+
+// ea: 0x8356C0
+Position3 Mul(const Position3& _v, const DiagMat33& _m) {
+    Position3 result;
+    result.v = _mm_mul_ps(_v.v, _m.v);
+    return result;
+}
+
+// ea: 0x8356F0
+Position3 operator*(const Position3& _v, const DiagMat33& _m) {
+    return Mul(_v, _m);
+}
+
+// ea: 0x835720
+Vector4 Sin(const Vector4& radians) {
+    const __m128 kK1 = _mm_set1_ps(6.283185f);
+    const __m128 kK3 = _mm_set1_ps(-41.341675f);
+    const __m128 kK5 = _mm_set1_ps(81.602226f);
+    const __m128 kK7 = _mm_set1_ps(-76.574959f);
+    const __m128 kK9 = _mm_set1_ps(39.710659f);
+    __m128 v2 = _mm_mul_ps(
+        _mm_xor_ps(kSignMask,
+                   _mm_andnot_ps(kSignMask, _mm_add_ps(radians.v, kSin3PiOver2))),
+        kInv2PI);
+    __m128 v4 = _mm_sub_ps(
+        _mm_andnot_ps(
+            kSignMask,
+            _mm_sub_ps(
+                _mm_sub_ps(_mm_add_ps(_mm_sub_ps(v2, kFloorMagic), kFloorMagic), v2),
+                kHalf)),
+        kQuarter);
+    __m128 v5 = _mm_mul_ps(v4, v4);
+    __m128 v6 = _mm_mul_ps(v5, v5);
+    __m128 v7 = _mm_mul_ps(v4, v5);
+    __m128 v8 = _mm_mul_ps(v4, v6);
+    Vector4 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(_mm_mul_ps(v8, v6), kK9),
+                           _mm_mul_ps(_mm_mul_ps(v7, v6), kK7)),
+                _mm_mul_ps(v8, kK5)),
+            _mm_mul_ps(v7, kK3)),
+        _mm_mul_ps(v4, kK1));
+    return result;
+}
+
+// ea: 0x835800
+float Sin(float radians) {
+    return FastSin(radians);
+}
+
+} // namespace math
+
+template <typename T, typename U, typename V>
+T tl_clamp(const T& v, const U& mn, const V& mx) {
+    T result = (T)mn;
+    if (v >= mn) {
+        result = (T)mx;
+        if (v <= mx)
+            return v;
+    }
+    return result;
+}
+
+template unsigned int tl_clamp<unsigned int, int, int>(
+    const unsigned int&, const int&, const int&);
+
 // ============================================================================
 // Debug flag API
 // ============================================================================
@@ -216,6 +337,7 @@ struct nglShaderProfiler {
 
     nglShaderProfiler();        // ea: 0x8390B0 (inline COMDAT)
     void Destroy();             // ea: 0x839110 (inline COMDAT)
+    ~nglShaderProfiler();       // ea: 0x839130 (inline COMDAT)
     void PrintResults();        // ea: 0x839150 (inline COMDAT)
     void ProfileFrame();        // ea: 0x839210 (inline COMDAT)
 
@@ -250,6 +372,12 @@ nglShaderProfiler::nglShaderProfiler() {
 }
 
 void nglShaderProfiler::Destroy() {
+    tlMemFree(ProfileData);
+    ShaderProfiler = NULL;
+}
+
+// ea: 0x839130
+nglShaderProfiler::~nglShaderProfiler() {
     tlMemFree(ProfileData);
     ShaderProfiler = NULL;
 }
@@ -290,7 +418,7 @@ void nglShaderProfiler::ProfileFrame() {
             PrintResults();
             tlMemFree(ProfileData);
             ShaderProfiler = NULL;
-            delete this;
+            ::operator delete(this);
         } else {
             CurrentShader = NULL;
             int v12 = 0;

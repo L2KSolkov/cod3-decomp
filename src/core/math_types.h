@@ -150,6 +150,8 @@ inline const math::Dir3& Dir3::operator-=(const math::Position3& v)
 }
 
 float Cos(float radians);  // ?Cos@math@@YAMM@Z (render.o 0x6E7120)
+float Min(float a, float b);  // ?Min@math@@YAMMM@Z (ngl_debug.o 0x835540)
+float Sin(float radians);  // ?Sin@math@@YAMM@Z (ngl_debug.o 0x835800)
 
 // g.o free-function vector math (0x4A5FB0-0x4A65E0)
 Dir3 operator-(const Dir3& _v);  // ??Gmath@@YA?AVDir3@0@ABV10@@Z
@@ -180,6 +182,8 @@ float operator*(const Dir3& _a, const Dir3& _b);                // ??Dmath@@YAMA
 float operator*(const Dir3& _a, const Position3& _b);           // ??Dmath@@YAMABVDir3@0@ABVPosition3@0@@Z (g.o 0x4A6A00)
 float operator*(const Position3& _a, const Dir3& _b);           // ??Dmath@@YAMABVPosition3@0@ABVDir3@0@@Z (g.o 0x4A6B10)
 Vector4 Mul(const Vector4& _a, const Vector4& _b);              // ?Mul@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A6BC0)
+Vector4 Vector4_Half();                                         // ?Vector4_Half@math@@YA?AVVector4@1@XZ (ngl_debug.o 0x835570)
+Vector4 Sin(const Vector4& radians);                            // ?Sin@math@@YA?AVVector4@1@ABV21@@Z (ngl_debug.o 0x835720)
 Dir3 Cross(const Dir3& _a, const Dir3& _b);                     // ?Cross@math@@YA?AVDir3@1@ABV21@0@Z (g.o 0x4A6C00)
 Position3 Min(const Position3& _a, const Position3& _b);        // ?Min@math@@YA?AVPosition3@1@ABV21@0@Z (g.o 0x4A6C70)
 Position3 Max(const Position3& _a, const Position3& _b);        // ?Max@math@@YA?AVPosition3@1@ABV21@0@Z (g.o 0x4A6CB0)
@@ -254,6 +258,7 @@ public:
 
     // ??0Mat43@math@@QAE@ABVDiagMat33@1@@Z (anim.o 0x539FC0)
     Mat43(const DiagMat33& m);
+    Mat43(const TranMat43& m);  // ??0Mat43@math@@QAE@ABVTranMat43@1@@Z (ngl_debug.o 0x835670)
 
     // ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o; defined in nal.cpp)
     const Mat43& operator=(const DiagMat33& m);
@@ -307,12 +312,17 @@ public:
     const Dir3& GetX() const;  // ?GetX@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7030)
     const Dir3& GetY() const;  // ?GetY@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7040)
     const Dir3& GetZ() const;  // ?GetZ@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7050)
+    void SetX(const Dir3& _x);  // ?SetX@Mat33@math@@QAEXABVDir3@2@@Z (ngl_debug.o 0x8355A0)
+    void SetY(const Dir3& _y);  // ?SetY@Mat33@math@@QAEXABVDir3@2@@Z (ngl_debug.o 0x8355C0)
+    void SetZ(const Dir3& _z);  // ?SetZ@Mat33@math@@QAEXABVDir3@2@@Z (ngl_debug.o 0x8355F0)
 };
 static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 
 // g.o matrix free functions (0x4A75B0-0x4A82C0)
 Position3 Mul(const Position3& _v, const Mat43& _m);  // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat43@1@@Z (g.o 0x4A75B0)
 Position3 operator*(const Position3& _v, const Mat43& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A76E0)
+Position3 Mul(const Position3& _v, const DiagMat33& _m);  // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z (ngl_debug.o 0x8356C0)
+Position3 operator*(const Position3& _v, const DiagMat33& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z (ngl_debug.o 0x8356F0)
 Position3 operator/(const Position3& _v, const Mat43& _m);  // ??Kmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A82C0)
 Mat33 Mul(const Mat33& _a, const Mat33& _b);  // ?Mul@math@@YA?AVMat33@1@ABV21@0@Z (g.o 0x4A77C0)
 Mat43 Mul(const Mat43& _a, const Mat43& _b);  // ?Mul@math@@YA?AVMat43@1@ABV21@0@Z (g.o 0x4A7BC0)
@@ -383,6 +393,8 @@ public:
     __m128 v;
     TranMat43() {}
     TranMat43(float _x, float _y, float _z);  // ??0TranMat43@math@@QAE@MMM@Z (render.o 0x6E6580)
+    TranMat43(const Position3& _p);            // ??0TranMat43@math@@QAE@ABVPosition3@1@@Z (ngl_debug.o 0x835620)
+    Position3 GetW() const;                    // ?GetW@TranMat43@math@@QBE?AVPosition3@2@XZ (ngl_debug.o 0x835640)
 };
 static_assert(sizeof(TranMat43) == 0x10, "TranMat43 size mismatch");
 
