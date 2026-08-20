@@ -8596,6 +8596,97 @@ nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
 
+// ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x864470)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 20;
+}
+
+// ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x864480)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+// ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x864490)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    animComponentData = (const char*)animComponentData + 1;
+}
+
+// ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x8644a0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x8644b0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x8644c0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData =
+        (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                      & ~uintptr_t(3u));
+}
+
+// ?VirtualAlignAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x8644e0)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    animData = (const void*)(((uintptr_t)animData + 3u)
+                             & ~uintptr_t(3u));
+}
+
+// ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z
+// (nal_init.o 0x864500)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
 // ?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z
 // (nal_init.o 0x864a50)
 void nalComponentPacked16EntropyIKSpin::ComponentConvert(
