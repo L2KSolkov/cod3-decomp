@@ -1092,31 +1092,69 @@ unsigned nflFileExists(nflMediaID media, const char* name)
 nflFileID nflOpenSubFile(nflFileID parentID, unsigned parentOffset,
                          unsigned fileSize, unsigned chunkSize, unsigned strideSize)
 {
-    if (fileSize == 0
-        || (strideSize != 0 && (chunkSize == 0 || strideSize < chunkSize))
-        || (strideSize == 0 && chunkSize != 0)) return NFL_FILE_ID_INVALID;
-    if (!ValidFile(parentID)) return NFL_FILE_ID_INVALID;
+    if (fileSize == 0) {
+        nfsError("nflOpenSubFile: invalid fileSize %d", 0);
+        return NFL_FILE_ID_INVALID;
+    }
+    if (strideSize != 0) {
+        if (chunkSize == 0) {
+            nfsError("nflOpenSubFile: invalid chunkSize %d", 0);
+            return NFL_FILE_ID_INVALID;
+        }
+        if (strideSize < chunkSize) {
+            nfsError("nflOpenSubFile: invalid strideSize %d < chunkSize %d",
+                     strideSize, chunkSize);
+            return NFL_FILE_ID_INVALID;
+        }
+    } else if (chunkSize != 0) {
+        nfsError("nflOpenSubFile: invalid strideSize %d", chunkSize);
+        return NFL_FILE_ID_INVALID;
+    }
     nfsFile* parent = nfsGetFile(parentID);
-    if (parent == nullptr) return NFL_FILE_ID_INVALID;
-    nfsFile* nativeParent = parent;
+    if (parent == nullptr) {
+        nfsMessage("nflOpenSubFile: Invalid or dead parent file %p", parentID);
+        return NFL_FILE_ID_INVALID;
+    }
+    nfsFile* parentForChild = parent;
     unsigned offset = parentOffset;
     if (parent->fileType == NFS_FILE_TYPE_SUBFILE) {
-        if (strideSize != 0 || chunkSize != 0) return NFL_FILE_ID_INVALID;
+        if (strideSize != 0 || chunkSize != 0) {
+            nfsError("nflOpenSubFile: Sparse subfile cannot be parent to any other file");
+            return NFL_FILE_ID_INVALID;
+        }
         offset += parent->as.subfile.offset;
-        nativeParent = nfsGetNativeFile(parentID);
-        if (nativeParent == nullptr) return NFL_FILE_ID_INVALID;
+        parentForChild = nfsGetFile(parentID);
+        if (parentForChild == nullptr) {
+            nfsError("nflOpenSubFile: Invalid or dead parent file %p", parentID);
+            return NFL_FILE_ID_INVALID;
+        }
     }
-    if (offset > nativeParent->size) return NFL_FILE_ID_INVALID;
-    if (fileSize > nativeParent->size - offset) fileSize = nativeParent->size - offset;
-    if (fileSize == 0) return NFL_FILE_ID_INVALID;
-    nflFileID id = AllocateFile(); if (id == NFL_FILE_ID_INVALID) return id;
-    const int index = FileIndex(id);
-    if (index < 0) return NFL_FILE_ID_INVALID;
-    nfsFile& file = s_files[index]; ClearSlotObject(&file);
+    if (offset + fileSize > parentForChild->size) {
+        nfsMessage("nflOpenSubFile: clamping fileSize: from %d to %d", fileSize,
+                   parentForChild->size - offset);
+        fileSize = parentForChild->size - offset;
+    }
+    if (fileSize == 0) {
+        nfsMessage("nflOpenSubFile: invalid fileSize %d ", 0);
+        return NFL_FILE_ID_INVALID;
+    }
+    nflFileID id = AllocateFile();
+    if (id == NFL_FILE_ID_INVALID) {
+        nfsWarning("nflOpenSubFile: Out of file handles");
+        return id;
+    }
+    nfsFile* filePtr = nfsGetFile(id);
+    if (filePtr == nullptr) {
+        txAssertFailed(nullptr, "file", "nflOpenSubFile",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 636);
+        return NFL_FILE_ID_INVALID;
+    }
+    nfsFile& file = *filePtr;
+    ClearSlotObject(&file);
     file.size = fileSize; file.fileType = NFS_FILE_TYPE_SUBFILE;
-    file.as.subfile.offset = offset; file.as.subfile.parent = nfsGetNativeFileID(parentID);
+    file.as.subfile.offset = offset; file.as.subfile.parent = parentID;
     file.as.subfile.chunkSize = chunkSize; file.as.subfile.strideSize = strideSize;
-    ++nativeParent->as.native.childCount; return id;
+    ++parentForChild->as.native.childCount; return id;
 }
 
 // ea: 0x0041F760
