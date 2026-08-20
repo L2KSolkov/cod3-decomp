@@ -7820,6 +7820,8 @@ public:
                             const float*& blendArray) const;
     virtual void VirtualAdvanceAnimComponentData(
         const void*& animComponentData) const;
+    virtual void VirtualAlignAnimComponentData(
+        const void*& animComponentData) const;
 };
 
 class nalComponentRLE8Int1
@@ -7836,6 +7838,8 @@ public:
                             const void* srcB,
                             const float*& blendArray) const;
     virtual void VirtualAdvanceAnimComponentData(
+        const void*& animComponentData) const;
+    virtual void VirtualAlignAnimComponentData(
         const void*& animComponentData) const;
 };
 
@@ -7908,6 +7912,12 @@ void nalComponentSignalCounter::VirtualAdvanceAnimComponentData(
     animComponentData = cur + 1;
 }
 
+void nalComponentSignalCounter::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
 nalComponentRLE8Int1::nalComponentRLE8Int1(nalRegisterKey key)
     : nalComponent<nalComponentU8Base,
                    nalComponentRLE8Int1Data,
@@ -7968,6 +7978,12 @@ void nalComponentRLE8Int1::BlendArray(
 }
 
 void nalComponentRLE8Int1::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+void nalComponentRLE8Int1::VirtualAlignAnimComponentData(
     const void*& animComponentData) const
 {
     (void)animComponentData;

@@ -550,3 +550,17 @@ nal_init.o	??1nalComponentEntropyPO@@UAE@XZ	PORTED
 nal_init.o	??1nalComponentTrajectoryPO@@UAE@XZ	PORTED
 nal_init.o	??1nalComponentEntropyTrajectoryPO@@UAE@XZ	PORTED
 nal_init.o	??1nalComponentPacked16EntropyIKSpin@@UAE@XZ	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	PORTED
