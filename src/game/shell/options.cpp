@@ -677,6 +677,7 @@ down_fader:
                     goto helpbar_toggle;
                 }
                 mScrollBarDownFader.mAlpha = mScrollBarDownFader.mAlphaTo;
+                mScrollBarDownFader.mFading = false;
             }
         }
         else
