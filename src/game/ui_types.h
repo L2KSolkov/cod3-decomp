@@ -771,6 +771,7 @@ public:
     virtual ~FEText();                      // shell.o 0x56BCE0
     virtual FEText* Clone();                // shell.o 0x56BD50
     static void CreateNGLColorCode(color32 c, char* dest);  // shell.o 0x56C9E0
+    static int ConvertColor(color32 c);     // shell.o 0x5ADE90
 protected:
     virtual void Animate(math::Mat43* m, float time);  // shell.o 0x56CA30
     virtual void AdjustForJustification(float& x, float& y, float z);

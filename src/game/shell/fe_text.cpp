@@ -164,6 +164,12 @@ FEText* FEText::Clone()
     return v3;
 }
 
+// ea: 0x005ADE90
+int FEText::ConvertColor(color32 c)
+{
+    return c.c.b | ((c.c.g | (c.c.r << 8)) << 8);
+}
+
 // ea: 0x0056BDC0
 void FEText::CopyFrom(FEText* fet)
 {
@@ -935,6 +941,9 @@ const char* const FEMenuColorSchemeText[17] = {
 struct MultiLineButtons {
     short text_start_index;  // +0x00
     short x_offset;          // +0x02
+
+    MultiLineButtons();
+    void CopyFrom(MultiLineButtons* fet);
 };
 
 class MultiLineString {
@@ -949,6 +958,9 @@ public:
     MultiLineString();               // shell.o 0x56CC40
     ~MultiLineString();              // shell.o 0x56CD00
     void CopyFrom(MultiLineString* fet);  // shell.o 0x56CD30
+    void SetPos(float xp, float yp);  // shell.o 0x5ADF10
+    void Shift(float x, float y);    // shell.o 0x5ADF60
+    float GetTotalWidth();            // shell.o 0x5ADFA0
     void AdjustForScale(float scale_factor);  // shell.o 0x56CDE0
     static int ConvertStringToButtonCode(const char* text,
                                          const char** buttonCode,
@@ -968,6 +980,19 @@ private:
 };
 static_assert(sizeof(MultiLineString) == 32, "MultiLineString size mismatch");
 static_assert(sizeof(MultiLineButtons) == 4, "MultiLineButtons size mismatch");
+
+// ea: 0x005ADED0
+MultiLineButtons::MultiLineButtons()
+{
+    text_start_index = 0;
+    x_offset = 0;
+}
+
+// ea: 0x005ADEF0
+void MultiLineButtons::CopyFrom(MultiLineButtons* fet)
+{
+    *this = *fet;
+}
 
 // ea: 0x0056CC40
 MultiLineString::MultiLineString()
@@ -1327,6 +1352,29 @@ FEMultiLineText::FEMultiLineText()
     : FEText()
 {
     button_color.i = 0;
+}
+
+// ea: 0x005ADF10
+void MultiLineString::SetPos(float xp, float yp)
+{
+    xy.x = xp;
+    xy.y = yp;
+    xy.z = 0.0f;
+}
+
+// ea: 0x005ADF60
+void MultiLineString::Shift(float x, float y)
+{
+    const float z = xy.z;
+    xy.x += x;
+    xy.y += y;
+    xy.z = z;
+}
+
+// ea: 0x005ADFA0
+float MultiLineString::GetTotalWidth()
+{
+    return total_width;
 }
 
 // ea: 0x00584DA0
