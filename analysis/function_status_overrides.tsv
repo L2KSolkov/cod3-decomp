@@ -1066,3 +1066,4 @@ nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentIKSpinBase@@V
 nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?Process@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
