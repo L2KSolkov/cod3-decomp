@@ -1469,6 +1469,22 @@ void ProfileMainMenu::OnTriangle(int c)
         system->MakeActive(8);
 }
 
+// ea: 0x005B7C00
+void ProfileMainMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    OnSelectionChange();
+}
+
+// ea: 0x005B7C20
+void ProfileMainMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    OnSelectionChange();
+}
+
 // ea: 0x005807F0
 void ProfileMainMenu::OnSelectionChange()
 {

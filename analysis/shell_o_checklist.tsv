@@ -2049,8 +2049,8 @@ index	status	map_line
 2047	PENDING	0002:001abbd0       ?Init@ControllerDisconnectedMenu@@UAEXXZ 009a70d0 f i shell.o
 2048	PENDING	0002:001abbe0       ?UpdateWidescreen@ControllerDisconnectedMenu@@UAEX_N@Z 009a70e0 f i shell.o
 2049	PENDING	0002:001abbf0       ?Init@ProfileMainMenu@@UAEXXZ 009a70f0 f i shell.o
-2050	PENDING	0002:001abc00       ?OnUp@ProfileMainMenu@@UAEXH@Z 009a7100 f i shell.o
-2051	PENDING	0002:001abc20       ?OnDown@ProfileMainMenu@@UAEXH@Z 009a7120 f i shell.o
+2050	PORTED	0002:001abc00       ?OnUp@ProfileMainMenu@@UAEXH@Z 009a7100 f i shell.o
+2051	PORTED	0002:001abc20       ?OnDown@ProfileMainMenu@@UAEXH@Z 009a7120 f i shell.o
 2052	PENDING	0002:001abc40       ?Init@ProfileEditMenu@@UAEXXZ 009a7140 f i shell.o
 2053	PENDING	0002:001abc50       ?OnLeft@ProfileEditMenu@@UAEXH@Z 009a7150 f i shell.o
 2054	PENDING	0002:001abc60       ?OnRight@ProfileEditMenu@@UAEXH@Z 009a7160 f i shell.o

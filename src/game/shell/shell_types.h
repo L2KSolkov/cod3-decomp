@@ -169,6 +169,8 @@ public:
     virtual void Draw();                  // 0x580730
     virtual void UpdateWidescreen(bool ws);  // 0x580760
     virtual void OnTriangle(int c);       // 0x5807D0
+    virtual void OnUp(int c);             // 0x5B7C00
+    virtual void OnDown(int c);           // 0x5B7C20
     virtual void OnActivate(int previous);// 0x586E20
     void LoadProfilesDone();              // 0x586E50
     virtual void SetPanelFile(PanelFile* pf);  // 0x597960
