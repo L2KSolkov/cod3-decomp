@@ -8015,6 +8015,14 @@ struct nalFloatDecoder {
     int val_1;
 };
 
+struct QuatDecoderBase {
+    math::Quaternion qval;
+    nalChannelDecoder channels[3];
+    int delta[3];
+};
+
+struct nalQuatDecoder : QuatDecoderBase {};
+
 template <typename T>
 struct nalPackedFloatDecoder : nalFloatDecoder {};
 
@@ -8074,6 +8082,29 @@ nalEntropyDecoder::nalQuaternion16::operator math::Quaternion() const
     _mm_storeu_ps(&out.x, result);
     return out;
 }
+
+struct nalComponentTrajectoryPOData : nalComponentData {
+    struct AnimComponentData {
+        nalPositionOrientation Trajectory;
+    };
+};
+
+struct nalComponentEntropyTrajectoryPOData : nalComponentData {
+    struct StateType {
+        nalEntropyDecoder::nalQuatDecoder QuatDecoder;
+        nalEntropyDecoder::nalFloatDecoder FloatDecoder[3];
+    };
+    struct AnimData {
+        float QuantizationScale;
+    };
+    struct SkeletonComponentData {
+        float PositionQuantization;
+        float OrientationQuantization;
+    };
+    struct AnimComponentData {
+        nalPositionOrientation Trajectory;
+    };
+};
 
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat1, nalComponentFloat1Base);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8Float1, nalComponentFloat1Base);
@@ -8303,9 +8334,36 @@ NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyQuat,
                             nalComponentQuatBase);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPO, nalComponentPOBase);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyPO, nalComponentPOBase);
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentTrajectoryPO, nalComponentPOBase);
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyTrajectoryPO,
-                            nalComponentPOBase);
+class nalComponentTrajectoryPO
+    : public nalComponent<nalComponentPOBase,
+                           nalComponentTrajectoryPOData,
+                           nalComponentTrajectoryPO> {
+public:
+    virtual ~nalComponentTrajectoryPO();
+    static void ComponentCycleTrajectory(
+        nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentData::AnimData* animData,
+        nalComponentData::SkeletonComponentData* skeletonComponentData,
+        nalComponentTrajectoryPOData::AnimComponentData* animComponentData,
+        bool trajabs);
+};
+class nalComponentEntropyTrajectoryPO
+    : public nalComponent<nalComponentPOBase,
+                           nalComponentEntropyTrajectoryPOData,
+                           nalComponentEntropyTrajectoryPO> {
+public:
+    virtual ~nalComponentEntropyTrajectoryPO();
+    static void ComponentCycleTrajectory(
+        nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyTrajectoryPOData::AnimData* animData,
+        nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentEntropyTrajectoryPOData::AnimComponentData*
+            animComponentData,
+        bool trajabs);
+};
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyIKSpin,
                             nalComponentIKSpinBase);
 
@@ -14527,6 +14585,89 @@ nalPositionOrientation IntegerPower<nalPositionOrientation>(
         current = operator*(current, current);
     }
     return accumulated;
+}
+
+// ?ComponentCycleTrajectory@nalComponentTrajectoryPO@@SAXPAVnalPositionOrientation@@0HPAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@nalComponentTrajectoryPOData@@_N@Z
+// (nal_generic_component.o 0x872C40)
+void nalComponentTrajectoryPO::ComponentCycleTrajectory(
+    nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentData::AnimData* animData,
+    nalComponentData::SkeletonComponentData* skeletonComponentData,
+    nalComponentTrajectoryPOData::AnimComponentData* animComponentData,
+    bool trajabs)
+{
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    if (trajabs)
+        return;
+
+    const nalPositionOrientation previousInverse = prev->Inverse();
+    nalPositionOrientation result;
+    if (cycle == 1)
+    {
+        result = operator*(*ptr, animComponentData->Trajectory);
+        result = operator*(result, previousInverse);
+    }
+    else if (cycle <= 0)
+    {
+        const nalPositionOrientation power = IntegerPower<nalPositionOrientation>(
+            animComponentData->Trajectory, -cycle);
+        const nalPositionOrientation inversePower = power.Inverse();
+        result = operator*(*ptr, inversePower);
+        result = operator*(result, previousInverse);
+    }
+    else
+    {
+        const nalPositionOrientation power = IntegerPower<nalPositionOrientation>(
+            animComponentData->Trajectory, cycle);
+        result = operator*(*ptr, power);
+        result = operator*(result, previousInverse);
+    }
+    *ptr = result;
+}
+
+// ?ComponentCycleTrajectory@nalComponentEntropyTrajectoryPO@@SAXPAVnalPositionOrientation@@0HPAUSkeletonData@nalComponentData@@PAUAnimData@nalComponentEntropyTrajectoryPOData@@PAUSkeletonComponentData@6@PAUAnimComponentData@6@_N@Z
+// (nal_generic_component.o 0x872D70)
+void nalComponentEntropyTrajectoryPO::ComponentCycleTrajectory(
+    nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyTrajectoryPOData::AnimData* animData,
+    nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentEntropyTrajectoryPOData::AnimComponentData* animComponentData,
+    bool trajabs)
+{
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    if (trajabs)
+        return;
+
+    const nalPositionOrientation previousInverse = prev->Inverse();
+    nalPositionOrientation result;
+    if (cycle == 1)
+    {
+        result = operator*(*ptr, animComponentData->Trajectory);
+        result = operator*(result, previousInverse);
+    }
+    else if (cycle <= 0)
+    {
+        const nalPositionOrientation power = IntegerPower<nalPositionOrientation>(
+            animComponentData->Trajectory, -cycle);
+        const nalPositionOrientation inversePower = power.Inverse();
+        result = operator*(*ptr, inversePower);
+        result = operator*(result, previousInverse);
+    }
+    else
+    {
+        const nalPositionOrientation power = IntegerPower<nalPositionOrientation>(
+            animComponentData->Trajectory, cycle);
+        result = operator*(*ptr, power);
+        result = operator*(result, previousInverse);
+    }
+    *ptr = result;
 }
 
 // ea: 0x005483C0
