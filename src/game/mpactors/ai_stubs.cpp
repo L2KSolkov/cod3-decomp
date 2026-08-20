@@ -1131,7 +1131,7 @@
 }
 
 // ea: 0x0077CB30  (?Path_FindPathFromAway@@YI?BHPAUpath_t@@W4team_t@@PAUPathNode@PathNodes@@QBM3MH@Z)
-    int __fastcall Path_FindPathFromAway(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, float, int)
+    const int __fastcall Path_FindPathFromAway(path_t*, team_t, PathNodes::PathNode*, const float* const, const float* const, float, int)
 {
     return 0;
 }
