@@ -13748,6 +13748,22 @@ void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
 template void FastCopy<CODNoteTrack, void>(
     const nalGeneric::nalComponentInfo*, void**, const void**);
 
+// ??$FastCopy@VnalComponentEntropyFloat1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
+// (nal_init.o 0x857590)
+template <>
+void FastCopy<nalComponentEntropyFloat1, float>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    *dstPtr = (void*)(((uintptr_t)*dstPtr + 3u) & ~uintptr_t(3u));
+    *srcPtr = (const void*)(((uintptr_t)*srcPtr + 3u)
+                            & ~uintptr_t(3u));
+    const unsigned int size = 4u * componentInfo->Count;
+    std::memcpy(*dstPtr, *srcPtr, size);
+    *dstPtr = (char*)*dstPtr + size;
+    *srcPtr = (const char*)*srcPtr + size;
+}
+
 template <>
 void FastCopy<nalComponentSignalCounter, unsigned char>(
     const nalGeneric::nalComponentInfo* componentInfo,
