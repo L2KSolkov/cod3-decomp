@@ -2660,7 +2660,7 @@ void TossClientItems(Entity* self)
 }
 
 // ea: 0x00474710
-void G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents)
+void G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* const touchents)
 {
     for (int i = 0; i < numtouch; ++i)
     {

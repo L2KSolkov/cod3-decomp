@@ -4612,7 +4612,7 @@ void  TossClientItems(Entity* self);              // g.o 0x4835F0
 void  G_VehInitPathPos(vehicle_pathpos_t* vpp);   // g.o 0x4526D0
 void  G_DebugCircleEx(const float* center, float radius, const float* dir,
                       const float* color, int depthTest, int duration);  // g.o 0x457170
-void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents);  // g.o 0x474710
+void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* const touchents);  // g.o 0x474710
 const float VectorNormalize2(const float* const v, float* const out);  // core.o
 void  PerpendicularVector(float* const dst, const float* const src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o

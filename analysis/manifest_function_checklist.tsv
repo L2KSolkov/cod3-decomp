@@ -611,7 +611,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 610	0x004737E0	0x00862CE0	?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 611	0x00473C40	0x00863140	?Player_UpdateActivate@@YAXPAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 612	0x00473D90	0x00863290	?Player_GetActivateEnt@@YAHPAVEntity@@QAUuseList_t@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-613	0x00474710	0x00863C10	?G_TouchEnts@@YAXPAVEntity@@HQAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+613	0x00474710	0x00863C10	?G_TouchEnts@@YAXPAVEntity@@HQAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 614	0x004748A0	0x00863DA0	?G_TouchVehicles@@YAXPAVEntity@@ABVPosition3@math@@PAVTouchEntityData@@ABUcollision_context_t@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 615	0x00474C90	0x00864190	?G_DoTouchTriggers@@YAXPAVEntity@@ABVPosition3@math@@PAVTouchEntityData@@ABUcollision_context_t@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 616	0x00474FE0	0x008644E0	?player_die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	YES	VERIFIED
