@@ -579,3 +579,15 @@ nal_init.o	?Convert@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCount
 nal_init.o	?Convert@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?GetTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z	PORTED
+nal_init.o	?Construct@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Delete@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Copy@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	??$FastCopy@VnalComponentSignalCounter@@E@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	?GetTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z	PORTED
+nal_init.o	?Construct@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Delete@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Copy@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	??$FastCopy@VnalComponentRLE8Int1@@E@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED

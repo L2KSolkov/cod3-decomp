@@ -8476,6 +8476,124 @@ void nalComponent<nalComponentU8Base,
     *animData = currentAnim;
 }
 
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)trajabs;
+    unsigned char* out = (unsigned char*)dst;
+    const void** animData = componentEnum.CustomAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset >= 0
+            && nalComponentTrackPresent(&componentEnum, track))
+            out[offset] = *(const unsigned char*)*animData;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            *animData = (const unsigned char*)*animData + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    ptr = (char*)ptr + componentInfo->Count;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    ptr = (char*)ptr + componentInfo->Count;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 1;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 1;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            ptr = (char*)ptr + 1;
+    }
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            ptr = (char*)ptr + 1;
+    }
+}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
@@ -8485,6 +8603,50 @@ void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
 }
 template void FastCopy<CODNoteTrack, void>(
     const nalGeneric::nalComponentInfo*, void**, const void**);
+
+template <>
+void FastCopy<nalComponentSignalCounter, unsigned char>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    const unsigned int count = componentInfo->Count;
+    std::memcpy(*dstPtr, *srcPtr, count);
+    *dstPtr = (char*)*dstPtr + count;
+    *srcPtr = (const char*)*srcPtr + count;
+}
+
+template <>
+void FastCopy<nalComponentRLE8Int1, unsigned char>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    const unsigned int count = componentInfo->Count;
+    std::memcpy(*dstPtr, *srcPtr, count);
+    *dstPtr = (char*)*dstPtr + count;
+    *srcPtr = (const char*)*srcPtr + count;
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentSignalCounterData,
+                  nalComponentSignalCounter>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentSignalCounter, unsigned char>(
+        componentInfo, &dstPtr, &srcPtr);
+}
+
+template <>
+void nalComponent<nalComponentU8Base,
+                  nalComponentRLE8Int1Data,
+                  nalComponentRLE8Int1>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentRLE8Int1, unsigned char>(
+        componentInfo, &dstPtr, &srcPtr);
+}
 
 // ??$FastCycleTrajectory@...@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z
 template <typename TRACK, typename X, typename SKELETON_DATA,
