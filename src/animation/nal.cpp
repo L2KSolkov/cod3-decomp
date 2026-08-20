@@ -8749,6 +8749,42 @@ void nalComponent<nalComponentFloat1Base,
     }
 }
 
+// ?Skip@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z
+// (nal_init.o 0x857150)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    (void)quantity;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    dst = (void*)(((uintptr_t)dst + 3u) & ~uintptr_t(3u));
+    *customAnimData =
+        (const void*)(((uintptr_t)*customAnimData + 3u)
+                      & ~uintptr_t(3u));
+    *customAnimData = (const char*)*customAnimData + 4;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* encoded = (const unsigned char*)src;
+            src = encoded + encoded[0] + 1;
+            dst = (char*)dst + 4;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat1Base,
                   nalComponentPacked8Float1Data,
