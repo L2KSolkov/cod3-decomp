@@ -148,14 +148,18 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
                             (CAPACITY - 1) / sizeof(CHAR),
                             (const wchar_t*)fmt, args);
         } else {
-            l = vsnprintf((char*)this->mBuff, this->capacity(),
-                          (const char*)fmt, args);
+            this->mLength = 0;
+            this->mBuff[0] = 0;
+            vsprintf((char*)this->mBuff, (const char*)fmt, args);
+            l = (int)strlen((const char*)this->mBuff);
         }
         va_end(args);
-        if (l < 0)
-            l = 0;
-        if (l > (CAPACITY - 1) / sizeof(CHAR))
-            l = (CAPACITY - 1) / sizeof(CHAR);
+        if (sizeof(CHAR) == 2) {
+            if (l < 0)
+                l = 0;
+            if (l > (CAPACITY - 1) / sizeof(CHAR))
+                l = (CAPACITY - 1) / sizeof(CHAR);
+        }
         this->mLength = (unsigned char)l;
     }
 

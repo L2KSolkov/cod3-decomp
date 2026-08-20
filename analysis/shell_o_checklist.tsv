@@ -1526,7 +1526,7 @@ index	status	map_line
 1525	PORTED	0002:001a4350       ??0?$ae_sized_array@UProfile@ProfileManager@@$05@@QAE@XZ 0099f850 f i shell.o
 1526	PORTED	0002:001a4360       ??A?$ae_sized_array@UProfile@ProfileManager@@$05@@QBEABUProfile@ProfileManager@@H@Z 0099f860 f i shell.o
 1527	PORTED	0002:001a43e0       ??A?$ae_sized_array@UProfile@ProfileManager@@$05@@QAEAAUProfile@ProfileManager@@H@Z 0099f8e0 f i shell.o
-1528	PENDING	0002:001a4460       ??0?$ae_formatted_string@$0EA@E@@QAA@PBDZZ 0099f960 f i shell.o
+1528	PORTED	0002:001a4460       ??0?$ae_formatted_string@$0EA@E@@QAA@PBDZZ 0099f960 f i shell.o
 1529	PORTED	0002:001a44b0       ??0?$ae_vector@PAVFEMenuListBoxItem@@@@QAE@XZ 0099f9b0 f i shell.o
 1530	PORTED	0002:001a44c0       ?size@?$ae_vector@PAVFEMenuListBoxItem@@@@QBEHXZ 0099f9c0 f i shell.o
 1531	PORTED	0002:001a44d0       ??A?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@H@Z 0099f9d0 f i shell.o
