@@ -7973,6 +7973,65 @@ void nalComponentRLE8Int1::VirtualAdvanceAnimComponentData(
     (void)animComponentData;
 }
 
+// The remaining component tags are one-byte nalComponentData derivatives;
+// IDA shows each concrete wrapper's destructor only restoring nalComponentBase.
+#define NAL_DECLARE_EMPTY_COMPONENT(NAME, BASE) \
+    struct NAME##Data : nalComponentData {}; \
+    class NAME : public nalComponent<BASE, NAME##Data, NAME> { \
+    public: \
+        virtual ~NAME(); \
+    }
+
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat1, nalComponentFloat1Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8Float1, nalComponentFloat1Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentFloat3, nalComponentFloat3Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat3, nalComponentFloat3Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyFloat3,
+                            nalComponentFloat3Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyFloat3,
+                            nalComponentFloat3Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentFloat4, nalComponentFloat4Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat4, nalComponentFloat4Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyFloat4,
+                            nalComponentFloat4Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyFloat4,
+                            nalComponentFloat4Base);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentQuat, nalComponentQuatBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyQuat, nalComponentQuatBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyQuat,
+                            nalComponentQuatBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyQuat,
+                            nalComponentQuatBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPO, nalComponentPOBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyPO, nalComponentPOBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentTrajectoryPO, nalComponentPOBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyTrajectoryPO,
+                            nalComponentPOBase);
+NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyIKSpin,
+                            nalComponentIKSpinBase);
+
+#undef NAL_DECLARE_EMPTY_COMPONENT
+
+nalComponentEntropyFloat1::~nalComponentEntropyFloat1() {}
+nalComponentPacked8Float1::~nalComponentPacked8Float1() {}
+nalComponentFloat3::~nalComponentFloat3() {}
+nalComponentEntropyFloat3::~nalComponentEntropyFloat3() {}
+nalComponentPacked8EntropyFloat3::~nalComponentPacked8EntropyFloat3() {}
+nalComponentPacked16EntropyFloat3::~nalComponentPacked16EntropyFloat3() {}
+nalComponentFloat4::~nalComponentFloat4() {}
+nalComponentEntropyFloat4::~nalComponentEntropyFloat4() {}
+nalComponentPacked8EntropyFloat4::~nalComponentPacked8EntropyFloat4() {}
+nalComponentPacked16EntropyFloat4::~nalComponentPacked16EntropyFloat4() {}
+nalComponentQuat::~nalComponentQuat() {}
+nalComponentEntropyQuat::~nalComponentEntropyQuat() {}
+nalComponentPacked8EntropyQuat::~nalComponentPacked8EntropyQuat() {}
+nalComponentPacked16EntropyQuat::~nalComponentPacked16EntropyQuat() {}
+nalComponentPO::~nalComponentPO() {}
+nalComponentEntropyPO::~nalComponentEntropyPO() {}
+nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
+nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
+nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
+
 // ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 template <typename TRACK, typename X>
 void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
