@@ -30,9 +30,9 @@ index	status	map_line
 29	PORTED	0002:003cd360 ??0nglPointLightInfo@@QAE@XZ 00BBC860 f i cdDynamicDecalShader.o
 30	PORTED	0002:003cd370 ??$SetConstants@UcdDynamicDecalParams@cdDynamicDecalRender@@@cdDynamicDecalRender@@YAXABUcdDynamicDecalParams@0@@Z 00BBC870 f i cdDynamicDecalShader.o
 31	PORTED	0002:003cd390 ??0cdDynamicDecalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDynamicDecalShaderMat@@@Z 00BBC890 f i cdDynamicDecalShader.o
-32	PORTED	0002:003cd3c0 ??_GcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o
-33	PORTED	0002:003cd3c0 ??_EcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o
+32	SKIPPED	0002:003cd3c0 ??_GcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+33	SKIPPED	0002:003cd3c0 ??_EcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 34	PORTED	0002:003cd3f0 ??1cdDynamicDecalShaderNode@@UAE@XZ 00BBC8F0 f i cdDynamicDecalShader.o
-35	VERIFIED	0002:003cd400 ??_EcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o
-36	VERIFIED	0002:003cd400 ??_GcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o
+35	SKIPPED	0002:003cd400 ??_EcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+36	SKIPPED	0002:003cd400 ??_GcdDynamicDecalShader@@UAEPAXI@Z 00BBC900 f i cdDynamicDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 37	VERIFIED	0002:003cd430 ??1cdDynamicDecalShader@@UAE@XZ 00BBC930 f i cdDynamicDecalShader.o

@@ -17,9 +17,9 @@ index	status	map_line
 16	PORTED	0002:003e0ae0 ?RegisterPShader@cdBackgroundFullbrightPixel@@YAXXZ 00BCFFE0 f i cdBackgroundShader.o
 17	PORTED	0002:003e0b00 ?GetPShader@cdBackgroundFullbrightPixel@@YAPAKXZ 00BD0000 f i cdBackgroundShader.o
 18	PORTED	0002:003e0b10 ??0cdBackgroundShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdBackgroundShaderMat@@@Z 00BD0010 f i cdBackgroundShader.o
-19	PORTED	0002:003e0b40 ??_GcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o
-20	PORTED	0002:003e0b40 ??_EcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o
+19	SKIPPED	0002:003e0b40 ??_GcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003e0b40 ??_EcdBackgroundShaderNode@@UAEPAXI@Z 00BD0040 f i cdBackgroundShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	PORTED	0002:003e0b70 ??1cdBackgroundShaderNode@@UAE@XZ 00BD0070 f i cdBackgroundShader.o
-22	VERIFIED	0002:003e0b80 ??_GcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o
-23	VERIFIED	0002:003e0b80 ??_EcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o
+22	SKIPPED	0002:003e0b80 ??_GcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+23	SKIPPED	0002:003e0b80 ??_EcdBackgroundShader@@UAEPAXI@Z 00BD0080 f i cdBackgroundShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 24	VERIFIED	0002:003e0bb0 ??1cdBackgroundShader@@UAE@XZ 00BD00B0 f i cdBackgroundShader.o

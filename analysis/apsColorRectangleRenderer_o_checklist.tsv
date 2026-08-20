@@ -10,13 +10,13 @@ index	status	map_line
 9	PORTED	0002:004049b0 ?RegisterVShader@apsColorRectangleRender@@YAXXZ 00BF3EB0 f i apsColorRectangleRenderer.o
 10	PORTED	0002:004049d0 ?RegisterPShader@apsColorRectangleRenderPixel@@YAXXZ 00BF3ED0 f i apsColorRectangleRenderer.o
 11	PORTED	0002:004049f0 ?InitPShader@apsColorRectangleRenderPixel@@YAXXZ 00BF3EF0 f i apsColorRectangleRenderer.o
-12	PORTED	0002:00404a10 ??1apsBillboardNode@@UAE@XZ 00BF3F10 f i apsColorRectangleRenderer.o
-13	PORTED	0002:00404a20 ??0apsBillboardNode@@QAE@XZ 00BF3F20 f i apsColorRectangleRenderer.o
+12	VERIFIED	0002:00404a10 ??1apsBillboardNode@@UAE@XZ 00BF3F10 f i apsColorRectangleRenderer.o
+13	VERIFIED	0002:00404a20 ??0apsBillboardNode@@QAE@XZ 00BF3F20 f i apsColorRectangleRenderer.o
 14	VERIFIED	0002:00404a30 ?GetDesc@apsBillboardNode@@UAEXPAD@Z 00BF3F30 f i apsColorRectangleRenderer.o
-15	PORTED	0002:00404a70 ??_EapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o
-16	PORTED	0002:00404a70 ??_GapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o
+15	SKIPPED	0002:00404a70 ??_EapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+16	SKIPPED	0002:00404a70 ??_GapsBillboardNode@@UAEPAXI@Z 00BF3F70 f i apsColorRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	PORTED	0002:00404aa0 ??0apsColorRectangleNode@@QAE@XZ 00BF3FA0 f i apsColorRectangleRenderer.o
 18	VERIFIED	0002:00404ab0 ?GetDesc@apsColorRectangleNode@@UAEXPAD@Z 00BF3FB0 f i apsColorRectangleRenderer.o
-19	PORTED	0002:00404b00 ??_EapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o
-20	PORTED	0002:00404b00 ??_GapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o
+19	SKIPPED	0002:00404b00 ??_EapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:00404b00 ??_GapsColorRectangleNode@@UAEPAXI@Z 00BF4000 f i apsColorRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	PORTED	0002:00404b30 ??$DefaultRender@VapsColorRectangleRenderer@@VapsColorRectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsColorRectangleRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4030 f i apsColorRectangleRenderer.o

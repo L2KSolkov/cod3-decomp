@@ -35,9 +35,9 @@ index	status	map_line
 34	PORTED	0002:003cb970 ??$Get@UcdFlagRandomSeedType@@@nglParamSet@@QAEIABUcdFlagRandomSeedType@@@Z 00BBAE70 f i cdFlagShader.o
 35	PORTED	0002:003cb9d0 ??$SetConstants@UParams@cdFlagVertex@@@cdFlagVertex@@YAXABUParams@0@@Z 00BBAED0 f i cdFlagShader.o
 36	PORTED	0002:003cb9f0 ??0cdFlagShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdFlagShaderMat@@@Z 00BBAEF0 f i cdFlagShader.o
-37	PORTED	0002:003cba20 ??_EcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o
-38	PORTED	0002:003cba20 ??_GcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o
+37	SKIPPED	0002:003cba20 ??_EcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+38	SKIPPED	0002:003cba20 ??_GcdFlagShaderNode@@UAEPAXI@Z 00BBAF20 f i cdFlagShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 39	PORTED	0002:003cba50 ??1cdFlagShaderNode@@UAE@XZ 00BBAF50 f i cdFlagShader.o
-40	VERIFIED	0002:003cba60 ??_GcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o
-41	VERIFIED	0002:003cba60 ??_EcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o
+40	SKIPPED	0002:003cba60 ??_GcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+41	SKIPPED	0002:003cba60 ??_EcdFlagShader@@UAEPAXI@Z 00BBAF60 f i cdFlagShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 42	VERIFIED	0002:003cba90 ??1cdFlagShader@@UAE@XZ 00BBAF90 f i cdFlagShader.o

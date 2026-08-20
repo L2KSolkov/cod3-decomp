@@ -851,8 +851,8 @@ index	status	map_line
 850	PORTED	0002:001e9470 ?IsFinished@AeThreadState@@QBE_NXZ 009D8970 f i scr.o
 851	PORTED	0002:001e9480 ?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ 009D8980 f i scr.o
 852	VERIFIED	0002:001e9490 ??1AeThreadState@@UAE@XZ 009D8990 f i scr.o
-853	VERIFIED	0002:001e94a0 ??_GAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o
-854	VERIFIED	0002:001e94a0 ??_EAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o
+853	SKIPPED	0002:001e94a0 ??_GAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+854	SKIPPED	0002:001e94a0 ??_EAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 855	PORTED	0002:001e94d0 ?get_dlist_node@EndOnScriptNode@@QAEPAXXZ 009D89D0 f i scr.o
 856	PORTED	0002:001e94e0 ??2EndOnScriptNode@@SAPAXI_NPBDH@Z 009D89E0 f i scr.o
 857	PORTED	0002:001e9500 ??3EndOnScriptNode@@SAXPAX_NPBDH@Z 009D8A00 f i scr.o
@@ -1104,7 +1104,7 @@ index	status	map_line
 1103	SKIPPED	0002:001edfc0 ??$_Ptr_cat@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0@Z 009DD4C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1104	SKIPPED	0002:001edfd0 ??$_Copy_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD4D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1105	SKIPPED	0002:001ee000 ??$_Copy_backward_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD500 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1106	VERIFIED	0002:001ee030 ??_Gstring@Broc@@QAEPAXI@Z 009DD530 f i scr.o
+1106	SKIPPED	0002:001ee030 ??_Gstring@Broc@@QAEPAXI@Z 009DD530 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1107	PORTED	0002:001ee060 ?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 009DD560 f i scr.o
 1108	SKIPPED	0002:001ee070 ??$_Construct@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABV120@@Z 009DD570 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1109	SKIPPED	0002:001ee090 ??$_Destroy@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1120,17 +1120,17 @@ index	status	map_line
 1119	PORTED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o
 1120	VERIFIED	0002:001ee290 ?GetBoneNameHash@XModelParts@@QBEII@Z 009DD790 f i scr.o
 1121	PORTED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o
-1122	VERIFIED	0002:001ee340 ??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o
-1123	VERIFIED	0002:001ee340 ??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o
+1122	SKIPPED	0002:001ee340 ??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1123	SKIPPED	0002:001ee340 ??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1124	VERIFIED	0002:001ee370 ??1AeThreadEntityNotifyTimeoutState@@UAE@XZ 009DD870 f i scr.o
-1125	VERIFIED	0002:001ee380 ??_EAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o
-1126	VERIFIED	0002:001ee380 ??_GAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o
+1125	SKIPPED	0002:001ee380 ??_EAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1126	SKIPPED	0002:001ee380 ??_GAeThreadPakNotifyState@@UAEPAXI@Z 009DD880 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1127	VERIFIED	0002:001ee3b0 ??1AeThreadPakNotifyState@@UAE@XZ 009DD8B0 f i scr.o
-1128	VERIFIED	0002:001ee3c0 ??_GAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o
-1129	VERIFIED	0002:001ee3c0 ??_EAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o
+1128	SKIPPED	0002:001ee3c0 ??_GAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1129	SKIPPED	0002:001ee3c0 ??_EAeThreadWaitState@@UAEPAXI@Z 009DD8C0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1130	VERIFIED	0002:001ee3f0 ??1AeThreadWaitState@@UAE@XZ 009DD8F0 f i scr.o
-1131	VERIFIED	0002:001ee400 ??_GAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
-1132	VERIFIED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o
+1131	SKIPPED	0002:001ee400 ??_GAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1132	SKIPPED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1133	VERIFIED	0002:001ee430 ??1AeThreadWaitFramesState@@UAE@XZ 009DD930 f i scr.o
 1134	SKIPPED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o
@@ -1221,8 +1221,8 @@ index	status	map_line
 1220	PORTED	0002:001ef590 ?ApplyStateController@AeThread@@QAEXPAVAeThreadState@@@Z 009DEA90 f i scr.o
 1221	PORTED	0002:001ef5c0 ?ExecThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009DEAC0 f i scr.o
 1222	PORTED	0002:001ef600 ?DereferenceHandle@AeThreadManager@@QBEPAVAeThread@@VHandle@@@Z 009DEB00 f i scr.o
-1223	VERIFIED	0002:001ef640 ??_EAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o
-1224	VERIFIED	0002:001ef640 ??_GAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o
+1223	SKIPPED	0002:001ef640 ??_EAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1224	SKIPPED	0002:001ef640 ??_GAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1225	VERIFIED	0002:001ef670 ??1AeThreadEntityNotifyMatchState@@UAE@XZ 009DEB70 f i scr.o
 1226	PORTED	0002:001ef680 ?MathFastSinCos@Broc@@YAXMAAM0@Z 009DEB80 f i scr.o
 1227	VERIFIED	0002:001ef6c0 ??0vehicle_follow@@QAE@XZ 009DEBC0 f i scr.o
@@ -1240,14 +1240,14 @@ index	status	map_line
 1239	PORTED	0002:001efbc0 ??0?$WaitTilOutputInst1@H@@QAE@ABH@Z 009DF0C0 f i scr.o
 1240	PORTED	0002:001efbf0 ?AssignData@?$WaitTilOutputInst1@H@@UAEXPAVWaitTilOutput@@@Z 009DF0F0 f i scr.o
 1241	PORTED	0002:001efca0 ?GetSize@?$WaitTilOutputInst1@H@@UAEHXZ 009DF1A0 f i scr.o
-1242	PORTED	0002:001efcb0 ??_G?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o
-1243	PORTED	0002:001efcb0 ??_E?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o
+1242	SKIPPED	0002:001efcb0 ??_G?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1243	SKIPPED	0002:001efcb0 ??_E?$WaitTilOutputInst1@H@@UAEPAXI@Z 009DF1B0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1244	PORTED	0002:001efce0 ??1?$WaitTilOutputInst1@H@@UAE@XZ 009DF1E0 f i scr.o
 1245	PORTED	0002:001efcf0 ??0?$WaitTilOutputInst2@MI@@QAE@ABMABI@Z 009DF1F0 f i scr.o
 1246	PORTED	0002:001efd20 ?AssignData@?$WaitTilOutputInst2@MI@@UAEXPAVWaitTilOutput@@@Z 009DF220 f i scr.o
 1247	PORTED	0002:001efde0 ?GetSize@?$WaitTilOutputInst2@MI@@UAEHXZ 009DF2E0 f i scr.o
-1248	PORTED	0002:001efdf0 ??_G?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
-1249	PORTED	0002:001efdf0 ??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o
+1248	SKIPPED	0002:001efdf0 ??_G?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1249	SKIPPED	0002:001efdf0 ??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1250	PORTED	0002:001efe20 ??1?$WaitTilOutputInst2@MI@@UAE@XZ 009DF320 f i scr.o
 1251	SKIPPED	0002:001efe30 ??B?$IVPointer@VAIType@@@@QBE_NXZ 009DF330 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1252	PORTED	0002:001efe50 ?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DF350 f i scr.o
@@ -1508,9 +1508,9 @@ index	status	map_line
 1507	SKIPPED	0002:00200cd0 ??$_Ucopy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@IAEPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@PAV231@00@Z 009F01D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1508	SKIPPED	0002:00200d00 ??$_Destroy_range@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@@Z 009F0200 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1509	SKIPPED	0002:00200d10 ??$_Uninitialized_fill_n@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@IABV120@AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@@Z 009F0210 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1510	VERIFIED	0002:00200d40 ??_GAeThread@@QAEPAXI@Z 009F0240 f i scr.o
-1511	VERIFIED	0002:00200d70 ??_EAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o
-1512	VERIFIED	0002:00200d70 ??_GAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o
+1510	SKIPPED	0002:00200d40 ??_GAeThread@@QAEPAXI@Z 009F0240 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1511	SKIPPED	0002:00200d70 ??_EAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1512	SKIPPED	0002:00200d70 ??_GAeThreadEntityNotifyState@@UAEPAXI@Z 009F0270 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1513	SKIPPED	0002:00200da0 ?erase@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V345@@Z 009F02A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1514	SKIPPED	0002:00200e50 ?lower_bound@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@ABH@Z 009F0350 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1515	PORTED	0002:00200f10 ?resize@?$dyn_array@Ventity@Broc@@@Broc@@QAEXI@Z 009F0410 f i scr.o

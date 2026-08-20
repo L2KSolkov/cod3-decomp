@@ -6,9 +6,9 @@ index	status	map_line
 5	VERIFIED	0002:003d5f80 ?Register@cdSimpleColorShader@@UAEXXZ 00BC5480 f cdSimpleColorShader.o
 6	VERIFIED	0002:003d5f90 ?AddNode@cdSimpleColorShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC5490 f cdSimpleColorShader.o
 7	PORTED	0002:003d6010 ??0cdSimpleShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimpleShaderMat@@_N@Z 00BC5510 f i cdSimpleColorShader.o
-8	PORTED	0002:003d6040 ??_GcdSimpleShaderNode@@UAEPAXI@Z 00BC5540 f i cdSimpleColorShader.o
-9	PORTED	0002:003d6040 ??_EcdSimpleShaderNode@@UAEPAXI@Z 00BC5540 f i cdSimpleColorShader.o
+8	SKIPPED	0002:003d6040 ??_GcdSimpleShaderNode@@UAEPAXI@Z 00BC5540 f i cdSimpleColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+9	SKIPPED	0002:003d6040 ??_EcdSimpleShaderNode@@UAEPAXI@Z 00BC5540 f i cdSimpleColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 10	PORTED	0002:003d6070 ??1cdSimpleShaderNode@@UAE@XZ 00BC5570 f i cdSimpleColorShader.o
-11	VERIFIED	0002:003d6080 ??_GcdSimpleColorShader@@UAEPAXI@Z 00BC5580 f i cdSimpleColorShader.o
-12	VERIFIED	0002:003d6080 ??_EcdSimpleColorShader@@UAEPAXI@Z 00BC5580 f i cdSimpleColorShader.o
+11	SKIPPED	0002:003d6080 ??_GcdSimpleColorShader@@UAEPAXI@Z 00BC5580 f i cdSimpleColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+12	SKIPPED	0002:003d6080 ??_EcdSimpleColorShader@@UAEPAXI@Z 00BC5580 f i cdSimpleColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 13	VERIFIED	0002:003d60b0 ??1cdSimpleColorShader@@UAE@XZ 00BC55B0 f i cdSimpleColorShader.o

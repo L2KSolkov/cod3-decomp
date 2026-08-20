@@ -503,12 +503,12 @@ index	status	map_line
 502	VERIFIED	0002:0015e410 ?GetSkeleton@nalBasePoseBlender@@QBEPBVnalBaseSkeleton@@XZ 0094D910 f i anim.o
 503	VERIFIED	0002:0015e420 ??0nalBasePoseBlender@@IAE@PBVnalBaseSkeleton@@@Z 0094D920 f i anim.o
 504	VERIFIED	0002:0015e440 ??1nalBasePoseBlender@@MAE@XZ 0094D940 f i anim.o
-505	VERIFIED	0002:0015e450 ??_GnalBasePoseBlender@@MAEPAXI@Z 0094D950 f i anim.o
-506	VERIFIED	0002:0015e450 ??_EnalBasePoseBlender@@MAEPAXI@Z 0094D950 f i anim.o
+505	SKIPPED	0002:0015e450 ??_GnalBasePoseBlender@@MAEPAXI@Z 0094D950 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+506	SKIPPED	0002:0015e450 ??_EnalBasePoseBlender@@MAEPAXI@Z 0094D950 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 507	VERIFIED	0002:0015e480 ??0nalInitList@@QAE@XZ 0094D980 f i anim.o
 508	VERIFIED	0002:0015e4a0 ??1nalInitList@@UAE@XZ 0094D9A0 f i anim.o
-509	VERIFIED	0002:0015e4b0 ??_EnalInitList@@UAEPAXI@Z 0094D9B0 f i anim.o
-510	VERIFIED	0002:0015e4b0 ??_GnalInitList@@UAEPAXI@Z 0094D9B0 f i anim.o
+509	SKIPPED	0002:0015e4b0 ??_EnalInitList@@UAEPAXI@Z 0094D9B0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+510	SKIPPED	0002:0015e4b0 ??_GnalInitList@@UAEPAXI@Z 0094D9B0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 511	VERIFIED	0002:0015e4e0 ?Compatible@@YA_NPBVnalBaseSkeleton@@0@Z 0094D9E0 f i anim.o
 512	VERIFIED	0002:0015e500 ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z 0094DA00 f i anim.o
 513	VERIFIED	0002:0015e520 ??3?$nalAnimClass@VnalAnyPose@@@@SAXPAX@Z 0094DA20 f i anim.o
@@ -519,11 +519,11 @@ index	status	map_line
 518	VERIFIED	0002:0015e5a0 ??0nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAE@PAV1@PBVnalBaseSkeleton@@@Z 0094DAA0 f i anim.o
 519	VERIFIED	0002:0015e600 ??1nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAE@XZ 0094DB00 f i anim.o
 520	VERIFIED	0002:0015e610 ?CreateInstance@?$nalAnimClass@VnalAnyPose@@@@QAEPAVnalInstanceClass@1@PAVnalBaseSkeleton@@@Z 0094DB10 f i anim.o
-521	VERIFIED	0002:0015e670 ??_EnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0094DB70 f i anim.o
-522	VERIFIED	0002:0015e670 ??_GnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0094DB70 f i anim.o
+521	SKIPPED	0002:0015e670 ??_EnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0094DB70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+522	SKIPPED	0002:0015e670 ??_GnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0094DB70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 523	VERIFIED	0002:0015e6b0 ??1nalClientSceneAnim@@UAE@XZ 0094DBB0 f i anim.o
-524	VERIFIED	0002:0015e6c0 ??_EnalClientSceneAnim@@UAEPAXI@Z 0094DBC0 f i anim.o
-525	VERIFIED	0002:0015e6c0 ??_GnalClientSceneAnim@@UAEPAXI@Z 0094DBC0 f i anim.o
+524	SKIPPED	0002:0015e6c0 ??_EnalClientSceneAnim@@UAEPAXI@Z 0094DBC0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+525	SKIPPED	0002:0015e6c0 ??_GnalClientSceneAnim@@UAEPAXI@Z 0094DBC0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 526	VERIFIED	0002:0015e6f0 ?GetDuration@nalSceneAnim@@QBEMXZ 0094DBF0 f i anim.o
 527	VERIFIED	0002:0015e700 ?IsLooping@nalSceneAnim@@QBE_NXZ 0094DC00 f i anim.o
 528	VERIFIED	0002:0015e710 ?GetTime@nalSceneAnimInstance@@QBEMXZ 0094DC10 f i anim.o
@@ -532,14 +532,14 @@ index	status	map_line
 531	VERIFIED	0002:0015e750 ??3nalGenericPose@nalGeneric@@SAXPAX@Z 0094DC50 f i anim.o
 532	VERIFIED	0002:0015e760 ?GetLODCount@nalGenericSkeleton@nalGeneric@@QBEIXZ 0094DC60 f i anim.o
 533	VERIFIED	0002:0015e770 ?GetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@QBEIH@Z 0094DC70 f i anim.o
-534	VERIFIED	0002:0015e790 ??_GnalGenericPose@nalGeneric@@QAEPAXI@Z 0094DC90 f i anim.o
+534	SKIPPED	0002:0015e790 ??_GnalGenericPose@nalGeneric@@QAEPAXI@Z 0094DC90 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 535	VERIFIED	0002:0015e7c0 ??1?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAE@XZ 0094DCC0 f i anim.o
 536	VERIFIED	0002:0015e7d0 ??0nalComponentInitList@@QAE@PBDABVnalComponentBase@@@Z 0094DCD0 f i anim.o
 537	VERIFIED	0002:0015e810 ??1nalComponentInitList@@UAE@XZ 0094DD10 f i anim.o
 538	VERIFIED	0002:0015e820 ??1nalComponentBase@@UAE@XZ 0094DD20 f i anim.o
 539	VERIFIED	0002:0015e830 ?BlendIntra@nalComponentBase@@UBEXHPAXPBX1M@Z 0094DD30 f i anim.o
-540	VERIFIED	0002:0015e840 ??_EnalComponentBase@@UAEPAXI@Z 0094DD40 f i anim.o
-541	VERIFIED	0002:0015e840 ??_GnalComponentBase@@UAEPAXI@Z 0094DD40 f i anim.o
+540	SKIPPED	0002:0015e840 ??_EnalComponentBase@@UAEPAXI@Z 0094DD40 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+541	SKIPPED	0002:0015e840 ??_GnalComponentBase@@UAEPAXI@Z 0094DD40 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 542	VERIFIED	0002:0015e870 ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VDir3@math@@@1@I@Z 0094DD70 f i anim.o
 543	VERIFIED	0002:0015e890 ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@I@Z 0094DD90 f i anim.o
 544	VERIFIED	0002:0015e8b0 ?Inst@InstanceBankMgr@@SAPAV1@XZ 0094DDB0 f i anim.o
@@ -573,8 +573,8 @@ index	status	map_line
 572	VERIFIED	0002:0015ed30 ??0?$nalGenericComponentHandle@VDir3@math@@@nalGeneric@@QAE@XZ 0094E230 f i anim.o
 573	VERIFIED	0002:0015ed40 ??Eiterator@?$reserved_dlist@VSceneAnimInfo@@@@QAEAAV01@XZ 0094E240 f i anim.o
 574	VERIFIED	0002:0015ed60 ??Eiterator@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AV01@H@Z 0094E260 f i anim.o
-575	VERIFIED	0002:0015ed90 ??_E?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 0094E290 f i anim.o
-576	VERIFIED	0002:0015ed90 ??_G?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 0094E290 f i anim.o
+575	SKIPPED	0002:0015ed90 ??_E?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 0094E290 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+576	SKIPPED	0002:0015ed90 ??_G?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 0094E290 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 577	VERIFIED	0002:0015edc0 ??0nalComponentBase@@QAE@XZ 0094E2C0 f i anim.o
 578	VERIFIED	0002:0015edd0 ?node_to_object@?$reserved_dlist@VSceneAnimInfo@@@@SAPAVSceneAnimInfo@@PAUdlist_node@1@@Z 0094E2D0 f i anim.o
 579	VERIFIED	0002:0015ede0 ?clear@?$reserved_dlist@VSceneAnimInfo@@@@QAEXXZ 0094E2E0 f i anim.o
@@ -625,8 +625,8 @@ index	status	map_line
 624	VERIFIED	0002:0015fa70 ?Init@LerpInfo@InteractState@@QAEXXZ 0094EF70 f i anim.o
 625	VERIFIED	0002:0015fb90 ??0InteractMetaAnimInstance@@QAE@PAV?$nalAnimClass@VnalAnyPose@@@@0PAVnalBaseSkeleton@@@Z 0094F090 f i anim.o
 626	VERIFIED	0002:0015fc90 ?VirtualGetPose@InteractMetaAnimInstance@@MAEXMMAAVnalBasePose@@ABV2@H@Z 0094F190 f i anim.o
-627	VERIFIED	0002:0015fd40 ??_EInteractMetaAnimInstance@@UAEPAXI@Z 0094F240 f i anim.o
-628	VERIFIED	0002:0015fd40 ??_GInteractMetaAnimInstance@@UAEPAXI@Z 0094F240 f i anim.o
+627	SKIPPED	0002:0015fd40 ??_EInteractMetaAnimInstance@@UAEPAXI@Z 0094F240 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+628	SKIPPED	0002:0015fd40 ??_GInteractMetaAnimInstance@@UAEPAXI@Z 0094F240 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 629	VERIFIED	0002:0015fd70 ??1InteractMetaAnimInstance@@UAE@XZ 0094F270 f i anim.o
 630	VERIFIED	0002:0015fde0 ??0InteractMetaAnimData@@QAE@XZ 0094F2E0 f i anim.o
 631	VERIFIED	0002:0015fe20 ?IsDelayCreate@InteractMetaAnimData@@UAEHXZ 0094F320 f i anim.o
@@ -638,15 +638,15 @@ index	status	map_line
 637	VERIFIED	0002:001600a0 ?GetAnim@nalGenericInstance@nalGeneric@@QBEPAVnalGenericAnim@2@XZ 0094F5A0 f i anim.o
 638	VERIFIED	0002:001600b0 ??0nalGenericPoseBlender@nalGeneric@@QAE@PBVnalGenericSkeleton@1@@Z 0094F5B0 f i anim.o
 639	VERIFIED	0002:00160150 ?VirtualBlend@nalGenericPoseBlender@nalGeneric@@MAEXAAVnalBasePose@@ABV3@1@Z 0094F650 f i anim.o
-640	VERIFIED	0002:00160160 ??_EnalGenericPoseBlender@nalGeneric@@UAEPAXI@Z 0094F660 f i anim.o
-641	VERIFIED	0002:00160160 ??_GnalGenericPoseBlender@nalGeneric@@UAEPAXI@Z 0094F660 f i anim.o
+640	SKIPPED	0002:00160160 ??_EnalGenericPoseBlender@nalGeneric@@UAEPAXI@Z 0094F660 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+641	SKIPPED	0002:00160160 ??_GnalGenericPoseBlender@nalGeneric@@UAEPAXI@Z 0094F660 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 642	VERIFIED	0002:00160190 ??1nalGenericPoseBlender@nalGeneric@@UAE@XZ 0094F690 f i anim.o
-643	VERIFIED	0002:001601f0 ??_GnalComponentInitList@@UAEPAXI@Z 0094F6F0 f i anim.o
-644	VERIFIED	0002:001601f0 ??_EnalComponentInitList@@UAEPAXI@Z 0094F6F0 f i anim.o
+643	SKIPPED	0002:001601f0 ??_GnalComponentInitList@@UAEPAXI@Z 0094F6F0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+644	SKIPPED	0002:001601f0 ??_EnalComponentInitList@@UAEPAXI@Z 0094F6F0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 645	VERIFIED	0002:00160220 ??1CODNoteTrack@@UAE@XZ 0094F720 f i anim.o
-646	VERIFIED	0002:00160230 ??_EXAnimNotifyInfo@@QAEPAXI@Z 0094F730 f i anim.o
-647	VERIFIED	0002:001602a0 ??_EAnimBankManager@@UAEPAXI@Z 0094F7A0 f i anim.o
-648	VERIFIED	0002:001602a0 ??_GAnimBankManager@@UAEPAXI@Z 0094F7A0 f i anim.o
+646	SKIPPED	0002:00160230 ??_EXAnimNotifyInfo@@QAEPAXI@Z 0094F730 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+647	SKIPPED	0002:001602a0 ??_EAnimBankManager@@UAEPAXI@Z 0094F7A0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+648	SKIPPED	0002:001602a0 ??_GAnimBankManager@@UAEPAXI@Z 0094F7A0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 649	VERIFIED	0002:001602d0 ??0?$reserved_dlist@VSceneAnimInfo@@@@QAE@XZ 0094F7D0 f i anim.o
 650	VERIFIED	0002:001602f0 ?push_back@?$reserved_dlist@VSceneAnimInfo@@@@QAEXPAVSceneAnimInfo@@@Z 0094F7F0 f i anim.o
 651	VERIFIED	0002:00160320 ?pop_back@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAVSceneAnimInfo@@XZ 0094F820 f i anim.o
@@ -660,8 +660,8 @@ index	status	map_line
 659	VERIFIED	0002:00160510 ?find@?$reserved_dlist@VXAnimTree@@@@QAE?AViterator@1@PAVXAnimTree@@@Z 0094FA10 f i anim.o
 660	VERIFIED	0002:00160560 ??0?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@IAE@XZ 0094FA60 f i anim.o
 661	VERIFIED	0002:00160570 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@UBEXAAPBX@Z 0094FA70 f i anim.o
-662	VERIFIED	0002:00160590 ??_G?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@MAEPAXI@Z 0094FA90 f i anim.o
-663	VERIFIED	0002:00160590 ??_E?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@MAEPAXI@Z 0094FA90 f i anim.o
+662	SKIPPED	0002:00160590 ??_G?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@MAEPAXI@Z 0094FA90 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+663	SKIPPED	0002:00160590 ??_E?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@MAEPAXI@Z 0094FA90 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 664	VERIFIED	0002:001605c0 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@UBEXAAPBX@Z 0094FAC0 f i anim.o
 665	VERIFIED	0002:001605d0 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@UBEXAAPBX@Z 0094FAD0 f i anim.o
 666	VERIFIED	0002:001605e0 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentBase@@VCODNoteData@@VCODNoteTrack@@@@UBEXAAPBX@Z 0094FAE0 f i anim.o
@@ -712,12 +712,12 @@ index	status	map_line
 711	VERIFIED	0002:001615c0 ?Blend@CODNoteTrack@@UBEXHPAXPBX1M@Z 00950AC0 f i anim.o
 712	VERIFIED	0002:001615d0 ?BlendArray@CODNoteTrack@@UBEXHPAXPBX1AAPBM@Z 00950AD0 f i anim.o
 713	VERIFIED	0002:001615e0 ?VirtualAdvanceAnimComponentData@CODNoteTrack@@UBEXAAPBX@Z 00950AE0 f i anim.o
-714	VERIFIED	0002:00161600 ??_GCODNoteTrack@@UAEPAXI@Z 00950B00 f i anim.o
-715	VERIFIED	0002:00161600 ??_ECODNoteTrack@@UAEPAXI@Z 00950B00 f i anim.o
+714	SKIPPED	0002:00161600 ??_GCODNoteTrack@@UAEPAXI@Z 00950B00 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+715	SKIPPED	0002:00161600 ??_ECODNoteTrack@@UAEPAXI@Z 00950B00 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 716	VERIFIED	0002:00161630 ??0SceneAnimClient@@QAE@PBVnalSceneAnim@@ABVtlFixedString@@MM@Z 00950B30 f i anim.o
 717	VERIFIED	0002:00161960 ?Render@SceneAnimClient@@UAEXPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@M@Z 00950E60 f i anim.o
-718	VERIFIED	0002:00161970 ??_ESceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o
-719	VERIFIED	0002:00161970 ??_GSceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o
+718	SKIPPED	0002:00161970 ??_ESceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+719	SKIPPED	0002:00161970 ??_GSceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 720	VERIFIED	0002:001619a0 ??1SceneAnimClient@@UAE@XZ 00950EA0 f i anim.o
 721	PORTED	0002:001619b0 ?CreateInstance@SceneAnimClient@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAV3@@Z 00950EB0 f i anim.o
 722	VERIFIED	0002:00161fc0 ?begin@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@XZ 009514C0 f i anim.o
@@ -734,9 +734,9 @@ index	status	map_line
 733	VERIFIED	0002:00163c50 ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z 00953150 f i anim.o
 734	VERIFIED	0002:00163d10 ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z 00953210 f i anim.o
 735	VERIFIED	0002:00163dd0 ?Release@SceneAnimClient@@UAEXXZ 009532D0 f i anim.o
-736	VERIFIED	0002:00163e80 ??_EXAnimUpdateTask@@UAEPAXI@Z 00953380 f i anim.o
-737	VERIFIED	0002:00163e80 ??_GXAnimUpdateTask@@UAEPAXI@Z 00953380 f i anim.o
+736	SKIPPED	0002:00163e80 ??_EXAnimUpdateTask@@UAEPAXI@Z 00953380 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+737	SKIPPED	0002:00163e80 ??_GXAnimUpdateTask@@UAEPAXI@Z 00953380 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 738	VERIFIED	0002:00163eb0 ??1XAnimUpdateTask@@UAE@XZ 009533B0 f i anim.o
-739	VERIFIED	0002:00163ec0 ??_EAnimationUpdateTask@@UAEPAXI@Z 009533C0 f i anim.o
-740	VERIFIED	0002:00163ec0 ??_GAnimationUpdateTask@@UAEPAXI@Z 009533C0 f i anim.o
+739	SKIPPED	0002:00163ec0 ??_EAnimationUpdateTask@@UAEPAXI@Z 009533C0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+740	SKIPPED	0002:00163ec0 ??_GAnimationUpdateTask@@UAEPAXI@Z 009533C0 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 741	VERIFIED	0002:00163ef0 ??1AnimationUpdateTask@@UAE@XZ 009533F0 f i anim.o

@@ -52,12 +52,12 @@ index	status	map_line
 51	VERIFIED	0002:00439110 ?Destroy@nglShaderProfiler@@QAEXXZ 00C28610 f i ngl_debug.o
 52	PENDING	0002:00439130 ??1nglShaderProfiler@@QAE@XZ 00C28630 f i ngl_debug.o
 53	VERIFIED	0002:00439150 ?PrintResults@nglShaderProfiler@@QAEXXZ 00C28650 f i ngl_debug.o
-54	PENDING	0002:004391a0 ??_GnglShaderProfiler@@QAEPAXI@Z 00C286A0 f i ngl_debug.o
+54	SKIPPED	0002:004391a0 ??_GnglShaderProfiler@@QAEPAXI@Z 00C286A0 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 55	VERIFIED	0002:004391e0 ??1nglDebugLineNode@@UAE@XZ 00C286E0 f i ngl_debug.o
 56	PENDING	0002:004391f0 ??$tl_clamp@IHH@@YAIABIABH1@Z 00C286F0 f i ngl_debug.o
 57	VERIFIED	0002:00439210 ?ProfileFrame@nglShaderProfiler@@QAEXXZ 00C28710 f i ngl_debug.o
-58	VERIFIED	0002:00439390 ??_EnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o
-59	VERIFIED	0002:00439390 ??_GnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o
+58	SKIPPED	0002:00439390 ??_EnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+59	SKIPPED	0002:00439390 ??_GnglDebugLineNode@@UAEPAXI@Z 00C28890 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 60	VERIFIED	0002:004393c0 ??0nglDebugTriNode@@QAE@XZ 00C288C0 f i ngl_debug.o
-61	VERIFIED	0002:004393f0 ??_EnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o
-62	VERIFIED	0002:004393f0 ??_GnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o
+61	SKIPPED	0002:004393f0 ??_EnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+62	SKIPPED	0002:004393f0 ??_GnglDebugTriNode@@UAEPAXI@Z 00C288F0 f i ngl_debug.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

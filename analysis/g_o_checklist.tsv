@@ -780,8 +780,8 @@ index	status	map_line
 779	VERIFIED	0002:000a52b0 ??3Task@@SAXPAX@Z 008947B0 f i g.o
 780	VERIFIED	0002:000a52d0 ??1Task@@UAE@XZ 008947D0 f i g.o
 781	VERIFIED	0002:000a52e0 ?Update@Task@@UAEXPAVEntity@@M@Z 008947E0 f i g.o
-782	VERIFIED	0002:000a52f0 ??_GTask@@UAEPAXI@Z 008947F0 f i g.o
-783	VERIFIED	0002:000a52f0 ??_ETask@@UAEPAXI@Z 008947F0 f i g.o
+782	SKIPPED	0002:000a52f0 ??_GTask@@UAEPAXI@Z 008947F0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+783	SKIPPED	0002:000a52f0 ??_ETask@@UAEPAXI@Z 008947F0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 784	VERIFIED	0002:000a5320 ??1TaskFunctor@@UAE@XZ 00894820 f i g.o
 785	VERIFIED	0002:000a5330 ?GetHandler@XAnimUpdateTask@@SAPAVTaskHandler@@XZ 00894830 f i g.o
 786	VERIFIED	0002:000a5340 ?GetHandler@AnimationUpdateTask@@SAPAVTaskHandler@@XZ 00894840 f i g.o
@@ -817,8 +817,8 @@ index	status	map_line
 816	VERIFIED	0002:000a58d0 ?GetY@Position3@math@@QBEMXZ 00894DD0 f i g.o
 817	VERIFIED	0002:000a5920 ??1WaitTilOutput@@UAE@XZ 00894E20 f i g.o
 818	VERIFIED	0002:000a5930 ?GetZ@Position3@math@@QBEMXZ 00894E30 f i g.o
-819	VERIFIED	0002:000a5980 ??_GWaitTilOutput@@UAEPAXI@Z 00894E80 f i g.o
-820	VERIFIED	0002:000a5980 ??_EWaitTilOutput@@UAEPAXI@Z 00894E80 f i g.o
+819	SKIPPED	0002:000a5980 ??_GWaitTilOutput@@UAEPAXI@Z 00894E80 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+820	SKIPPED	0002:000a5980 ??_EWaitTilOutput@@UAEPAXI@Z 00894E80 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 821	VERIFIED	0002:000a59b0 ?SetX@Position3@math@@QAEXM@Z 00894EB0 f i g.o
 822	VERIFIED	0002:000a59f0 ?SetY@Position3@math@@QAEXM@Z 00894EF0 f i g.o
 823	VERIFIED	0002:000a5a30 ?SetZ@Position3@math@@QAEXM@Z 00894F30 f i g.o
@@ -1087,10 +1087,10 @@ index	status	map_line
 1086	VERIFIED	0002:000ac140 ??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z 0089B640 f i g.o
 1087	VERIFIED	0002:000ac1c0 ??0vehicle_node_t@@QAE@ABU0@@Z 0089B6C0 f i g.o
 1088	VERIFIED	0002:000ac310 ??4vehicle_node_t@@QAEAAU0@ABU0@@Z 0089B810 f i g.o
-1089	VERIFIED	0002:000ac420 ??_Gvehicle_node_t@@QAEPAXI@Z 0089B920 f i g.o
+1089	SKIPPED	0002:000ac420 ??_Gvehicle_node_t@@QAEPAXI@Z 0089B920 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1090	VERIFIED	0002:000ac450 ??1DObjModel@@QAE@XZ 0089B950 f i g.o
 1091	VERIFIED	0002:000ac460 ??0tagInfo_t@@QAE@XZ 0089B960 f i g.o
-1092	VERIFIED	0002:000ac470 ??_GEntity@@QAEPAXI@Z 0089B970 f i g.o
+1092	SKIPPED	0002:000ac470 ??_GEntity@@QAEPAXI@Z 0089B970 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1093	VERIFIED	0002:000ac4a0 ??A?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@H@Z 0089B9A0 f i g.o
 1094	VERIFIED	0002:000ac520 ?size@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QBEHXZ 0089BA20 f i g.o
 1095	VERIFIED	0002:000ac530 ?RegisterDebugCallback@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXP6AXHPAVEntity@@@Z@Z 0089BA30 f i g.o
@@ -1283,8 +1283,8 @@ index	status	map_line
 1282	VERIFIED	0002:000af100 ?GetNumBones@XModelParts@@QBEHXZ 0089E600 f i g.o
 1283	VERIFIED	0002:000af110 ?GetNumBones@XModel@@QBEHH@Z 0089E610 f i g.o
 1284	VERIFIED	0002:000af150 ?IsActive@Task@@QBE_NXZ 0089E650 f i g.o
-1285	VERIFIED	0002:000af160 ??_GTaskFunctor@@UAEPAXI@Z 0089E660 f i g.o
-1286	VERIFIED	0002:000af160 ??_ETaskFunctor@@UAEPAXI@Z 0089E660 f i g.o
+1285	SKIPPED	0002:000af160 ??_GTaskFunctor@@UAEPAXI@Z 0089E660 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1286	SKIPPED	0002:000af160 ??_ETaskFunctor@@UAEPAXI@Z 0089E660 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1287	VERIFIED	0002:000af190 ??0DObjModel@@QAE@XZ 0089E690 f i g.o
 1288	VERIFIED	0002:000af1c0 ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z 0089E6C0 f i g.o
 1289	VERIFIED	0002:000af230 ?native_to_cdl_dir3@@YA?BVDir3@math@@QBM@Z 0089E730 f i g.o
@@ -1321,8 +1321,8 @@ index	status	map_line
 1320	VERIFIED	0002:000b0bc0 ??0TouchEntityData@@QAE@XZ 008A00C0 f i g.o
 1321	VERIFIED	0002:000b0be0 ??0vehicle_pathpos_t@@QAE@ABU0@@Z 008A00E0 f i g.o
 1322	VERIFIED	0002:000b0ca0 ??4vehicle_pathpos_t@@QAEAAU0@ABU0@@Z 008A01A0 f i g.o
-1323	VERIFIED	0002:000b0d60 ??_EEntityDeathTask@@UAEPAXI@Z 008A0260 f i g.o
-1324	VERIFIED	0002:000b0d60 ??_GEntityDeathTask@@UAEPAXI@Z 008A0260 f i g.o
+1323	SKIPPED	0002:000b0d60 ??_EEntityDeathTask@@UAEPAXI@Z 008A0260 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1324	SKIPPED	0002:000b0d60 ??_GEntityDeathTask@@UAEPAXI@Z 008A0260 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1325	VERIFIED	0002:000b0d90 ??1EntityDeathTask@@UAE@XZ 008A0290 f i g.o
 1326	VERIFIED	0002:000b0da0 ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z 008A02A0 f i g.o
 1327	VERIFIED	0002:000b0e20 ?BindObjectToHandle@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVEntity@@@Z 008A0320 f i g.o
@@ -1363,12 +1363,12 @@ index	status	map_line
 1362	VERIFIED	0002:000b14f0 ?free_space@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@QBEHXZ 008A09F0 f i g.o
 1363	VERIFIED	0002:000b1510 ??0?$TaskFunctor1@VAnimationUpdateTask@@M@@QAE@P8AnimationUpdateTask@@AEXPAVEntity@@M@ZABM@Z 008A0A10 f i g.o
 1364	VERIFIED	0002:000b1540 ?Update@?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEXPAVTask@@PAVEntity@@@Z 008A0A40 f i g.o
-1365	VERIFIED	0002:000b1560 ??_G?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z 008A0A60 f i g.o
-1366	VERIFIED	0002:000b1560 ??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z 008A0A60 f i g.o
+1365	SKIPPED	0002:000b1560 ??_G?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z 008A0A60 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1366	SKIPPED	0002:000b1560 ??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z 008A0A60 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1367	VERIFIED	0002:000b1590 ??0?$TaskFunctor1@VXAnimUpdateTask@@M@@QAE@P8XAnimUpdateTask@@AEXPAVEntity@@M@ZABM@Z 008A0A90 f i g.o
 1368	VERIFIED	0002:000b15c0 ?Update@?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEXPAVTask@@PAVEntity@@@Z 008A0AC0 f i g.o
-1369	VERIFIED	0002:000b15e0 ??_G?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z 008A0AE0 f i g.o
-1370	VERIFIED	0002:000b15e0 ??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z 008A0AE0 f i g.o
+1369	SKIPPED	0002:000b15e0 ??_G?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z 008A0AE0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1370	SKIPPED	0002:000b15e0 ??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z 008A0AE0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1371	VERIFIED	0002:000b1610 ??0?$ae_formatted_string@$0IA@E@@QAA@PBDZZ 008A0B10 f i g.o
 1372	VERIFIED	0002:000b1660 ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ 008A0B60 f i g.o
 1373	VERIFIED	0002:000b1680 ??0WaitTilOutput@@QAE@XZ 008A0B80 f i g.o
@@ -1396,11 +1396,11 @@ index	status	map_line
 1395	VERIFIED	0002:000b1df0 ??0?$WaitTilOutputInst2@Vstring@Broc@@V12@@@QAE@ABVstring@Broc@@0@Z 008A12F0 f i g.o
 1396	VERIFIED	0002:000b1e70 ?AssignData@?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEXPAVWaitTilOutput@@@Z 008A1370 f i g.o
 1397	VERIFIED	0002:000b1f50 ?GetSize@?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEHXZ 008A1450 f i g.o
-1398	VERIFIED	0002:000b1f60 ??_G?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z 008A1460 f i g.o
-1399	VERIFIED	0002:000b1f60 ??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z 008A1460 f i g.o
+1398	SKIPPED	0002:000b1f60 ??_G?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z 008A1460 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1399	SKIPPED	0002:000b1f60 ??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z 008A1460 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1400	VERIFIED	0002:000b1f90 ??1?$WaitTilOutputInst1@Vstring@Broc@@@@UAE@XZ 008A1490 f i g.o
-1401	VERIFIED	0002:000b1ff0 ??_G?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z 008A14F0 f i g.o
-1402	VERIFIED	0002:000b1ff0 ??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z 008A14F0 f i g.o
+1401	SKIPPED	0002:000b1ff0 ??_G?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z 008A14F0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1402	SKIPPED	0002:000b1ff0 ??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z 008A14F0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1403	VERIFIED	0002:000b2020 ??1?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAE@XZ 008A1520 f i g.o
 1404	VERIFIED	0002:000b2090 ??0proximity_data_t@@QAE@XZ 008A1590 f i g.o
 1405	VERIFIED	0002:000b2170 ?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z 008A1670 f i g.o
@@ -1429,20 +1429,20 @@ index	status	map_line
 1428	VERIFIED	0002:000b2850 ??0?$WaitTilOutputInst1@I@@QAE@ABI@Z 008A1D50 f i g.o
 1429	VERIFIED	0002:000b2880 ?AssignData@?$WaitTilOutputInst1@I@@UAEXPAVWaitTilOutput@@@Z 008A1D80 f i g.o
 1430	VERIFIED	0002:000b2930 ?GetSize@?$WaitTilOutputInst1@I@@UAEHXZ 008A1E30 f i g.o
-1431	VERIFIED	0002:000b2940 ??_G?$WaitTilOutputInst1@I@@UAEPAXI@Z 008A1E40 f i g.o
-1432	VERIFIED	0002:000b2940 ??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z 008A1E40 f i g.o
+1431	SKIPPED	0002:000b2940 ??_G?$WaitTilOutputInst1@I@@UAEPAXI@Z 008A1E40 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1432	SKIPPED	0002:000b2940 ??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z 008A1E40 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1433	VERIFIED	0002:000b2970 ??1?$WaitTilOutputInst1@I@@UAE@XZ 008A1E70 f i g.o
 1434	VERIFIED	0002:000b2980 ??0?$WaitTilOutputInst1@Ventity@Broc@@@@QAE@ABVentity@Broc@@@Z 008A1E80 f i g.o
 1435	VERIFIED	0002:000b29b0 ?AssignData@?$WaitTilOutputInst1@Ventity@Broc@@@@UAEXPAVWaitTilOutput@@@Z 008A1EB0 f i g.o
 1436	VERIFIED	0002:000b2a60 ?GetSize@?$WaitTilOutputInst1@Ventity@Broc@@@@UAEHXZ 008A1F60 f i g.o
-1437	VERIFIED	0002:000b2a70 ??_G?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z 008A1F70 f i g.o
-1438	VERIFIED	0002:000b2a70 ??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z 008A1F70 f i g.o
+1437	SKIPPED	0002:000b2a70 ??_G?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z 008A1F70 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1438	SKIPPED	0002:000b2a70 ??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z 008A1F70 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1439	VERIFIED	0002:000b2aa0 ??1?$WaitTilOutputInst1@Ventity@Broc@@@@UAE@XZ 008A1FA0 f i g.o
 1440	VERIFIED	0002:000b2ab0 ??0?$WaitTilOutputInst2@HVentity@Broc@@@@QAE@ABHABVentity@Broc@@@Z 008A1FB0 f i g.o
 1441	VERIFIED	0002:000b2ae0 ?AssignData@?$WaitTilOutputInst2@HVentity@Broc@@@@UAEXPAVWaitTilOutput@@@Z 008A1FE0 f i g.o
 1442	VERIFIED	0002:000b2ba0 ?GetSize@?$WaitTilOutputInst2@HVentity@Broc@@@@UAEHXZ 008A20A0 f i g.o
-1443	VERIFIED	0002:000b2bb0 ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z 008A20B0 f i g.o
-1444	VERIFIED	0002:000b2bb0 ??_G?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z 008A20B0 f i g.o
+1443	SKIPPED	0002:000b2bb0 ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z 008A20B0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1444	SKIPPED	0002:000b2bb0 ??_G?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z 008A20B0 f i g.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1445	VERIFIED	0002:000b2be0 ??1?$WaitTilOutputInst2@HVentity@Broc@@@@UAE@XZ 008A20E0 f i g.o
 1446	SKIPPED	0002:000b2bf0 ??0?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@QAE@XZ 008A20F0 f i g.o  SKIPPED: inline template/container helper; supplied by its template definition
 1447	VERIFIED	0002:000b2c30 ??1?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAE@XZ 008A2130 f i g.o

@@ -20,12 +20,12 @@ index	status	map_line
 19	VERIFIED	0002:00402950 ?InitShader@apsSimpleMeshRenderer@@SAXXZ 00BF1E50 f apsSimpleMeshRenderer.o
 20	PORTED	0002:00402990 ??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z 00BF1E90 f apsSimpleMeshRenderer.o
 21	VERIFIED	0002:004029c0 ?Render@apsSimpleMeshRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF1EC0 f apsSimpleMeshRenderer.o
-22	PORTED	0002:00402b60 ??0apsRenderNode@@QAE@XZ 00BF2060 f i apsSimpleMeshRenderer.o
-23	VERIFIED	0002:00402b70 ??_EapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o
-24	VERIFIED	0002:00402b70 ??_GapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o
-25	VERIFIED	0002:00402ba0 ??_EapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o
-26	VERIFIED	0002:00402ba0 ??_GapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o
+22	VERIFIED	0002:00402b60 ??0apsRenderNode@@QAE@XZ 00BF2060 f i apsSimpleMeshRenderer.o
+23	SKIPPED	0002:00402b70 ??_EapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+24	SKIPPED	0002:00402b70 ??_GapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+25	SKIPPED	0002:00402ba0 ??_EapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+26	SKIPPED	0002:00402ba0 ??_GapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	PORTED	0002:00402bd0 ??0apsSimpleMeshNode@@QAE@XZ 00BF20D0 f i apsSimpleMeshRenderer.o
 28	VERIFIED	0002:00402be0 ?GetDesc@apsSimpleMeshNode@@UAEXPAD@Z 00BF20E0 f i apsSimpleMeshRenderer.o
-29	PORTED	0002:00402c20 ??_GapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o
-30	PORTED	0002:00402c20 ??_EapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o
+29	SKIPPED	0002:00402c20 ??_GapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+30	SKIPPED	0002:00402c20 ??_EapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

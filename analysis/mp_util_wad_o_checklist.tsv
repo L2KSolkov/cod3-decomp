@@ -959,42 +959,42 @@ index	status	map_line
 958	SKIPPED	0002:00580410 ??Citerator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QBEPAU?$pair@$$CBUHashStr@@Ventity@Broc@@@2@XZ 00D6F910 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 959	SKIPPED	0002:00580440 ??Eiterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QAE?AV012@H@Z 00D6F940 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 960	SKIPPED	0002:00580480 ??9const_iterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QBE_NABV012@@Z 00D6F980 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-961	VERIFIED	0002:005804c0 ??_G?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEPAXI@Z 00D6F9C0 f i mp_util_wad.o
-962	VERIFIED	0002:005804c0 ??_E?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEPAXI@Z 00D6F9C0 f i mp_util_wad.o
-963	PORTED	0002:00580510 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEPAXI@Z 00D6FA10 f i mp_util_wad.o
-964	PORTED	0002:00580510 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEPAXI@Z 00D6FA10 f i mp_util_wad.o
-965	PORTED	0002:00580560 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEPAXI@Z 00D6FA60 f i mp_util_wad.o
-966	PORTED	0002:00580560 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEPAXI@Z 00D6FA60 f i mp_util_wad.o
-967	PORTED	0002:005805b0 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEPAXI@Z 00D6FAB0 f i mp_util_wad.o
-968	PORTED	0002:005805b0 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEPAXI@Z 00D6FAB0 f i mp_util_wad.o
-969	VERIFIED	0002:00580600 ??_E?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEPAXI@Z 00D6FB00 f i mp_util_wad.o
-970	VERIFIED	0002:00580600 ??_G?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEPAXI@Z 00D6FB00 f i mp_util_wad.o
-971	PORTED	0002:00580650 ??_G?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEPAXI@Z 00D6FB50 f i mp_util_wad.o
-972	PORTED	0002:00580650 ??_E?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEPAXI@Z 00D6FB50 f i mp_util_wad.o
-973	PORTED	0002:005806a0 ??_E?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBA0 f i mp_util_wad.o
-974	PORTED	0002:005806a0 ??_G?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBA0 f i mp_util_wad.o
-975	PORTED	0002:005806f0 ??_G?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBF0 f i mp_util_wad.o
-976	PORTED	0002:005806f0 ??_E?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBF0 f i mp_util_wad.o
-977	VERIFIED	0002:00580740 ??_E?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEPAXI@Z 00D6FC40 f i mp_util_wad.o
-978	VERIFIED	0002:00580740 ??_G?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEPAXI@Z 00D6FC40 f i mp_util_wad.o
-979	VERIFIED	0002:00580790 ??_E?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEPAXI@Z 00D6FC90 f i mp_util_wad.o
-980	VERIFIED	0002:00580790 ??_G?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEPAXI@Z 00D6FC90 f i mp_util_wad.o
-981	PORTED	0002:005807e0 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEPAXI@Z 00D6FCE0 f i mp_util_wad.o
-982	PORTED	0002:005807e0 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEPAXI@Z 00D6FCE0 f i mp_util_wad.o
-983	VERIFIED	0002:00580830 ??_E?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEPAXI@Z 00D6FD30 f i mp_util_wad.o
-984	VERIFIED	0002:00580830 ??_G?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEPAXI@Z 00D6FD30 f i mp_util_wad.o
-985	PORTED	0002:00580880 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEPAXI@Z 00D6FD80 f i mp_util_wad.o
-986	PORTED	0002:00580880 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEPAXI@Z 00D6FD80 f i mp_util_wad.o
-987	VERIFIED	0002:005808d0 ??_G?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEPAXI@Z 00D6FDD0 f i mp_util_wad.o
-988	VERIFIED	0002:005808d0 ??_E?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEPAXI@Z 00D6FDD0 f i mp_util_wad.o
-989	PORTED	0002:00580920 ??_E?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEPAXI@Z 00D6FE20 f i mp_util_wad.o
-990	PORTED	0002:00580920 ??_G?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEPAXI@Z 00D6FE20 f i mp_util_wad.o
-991	PORTED	0002:00580970 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEPAXI@Z 00D6FE70 f i mp_util_wad.o
-992	PORTED	0002:00580970 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEPAXI@Z 00D6FE70 f i mp_util_wad.o
-993	PORTED	0002:005809c0 ??_G?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEPAXI@Z 00D6FEC0 f i mp_util_wad.o
-994	PORTED	0002:005809c0 ??_E?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEPAXI@Z 00D6FEC0 f i mp_util_wad.o
-995	PORTED	0002:00580a10 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o
-996	PORTED	0002:00580a10 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o
+961	SKIPPED	0002:005804c0 ??_G?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEPAXI@Z 00D6F9C0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+962	SKIPPED	0002:005804c0 ??_E?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEPAXI@Z 00D6F9C0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+963	SKIPPED	0002:00580510 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEPAXI@Z 00D6FA10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+964	SKIPPED	0002:00580510 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEPAXI@Z 00D6FA10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+965	SKIPPED	0002:00580560 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEPAXI@Z 00D6FA60 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+966	SKIPPED	0002:00580560 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEPAXI@Z 00D6FA60 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+967	SKIPPED	0002:005805b0 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEPAXI@Z 00D6FAB0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+968	SKIPPED	0002:005805b0 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEPAXI@Z 00D6FAB0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+969	SKIPPED	0002:00580600 ??_E?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEPAXI@Z 00D6FB00 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+970	SKIPPED	0002:00580600 ??_G?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEPAXI@Z 00D6FB00 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+971	SKIPPED	0002:00580650 ??_G?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEPAXI@Z 00D6FB50 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+972	SKIPPED	0002:00580650 ??_E?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEPAXI@Z 00D6FB50 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+973	SKIPPED	0002:005806a0 ??_E?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBA0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+974	SKIPPED	0002:005806a0 ??_G?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBA0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+975	SKIPPED	0002:005806f0 ??_G?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBF0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+976	SKIPPED	0002:005806f0 ??_E?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEPAXI@Z 00D6FBF0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+977	SKIPPED	0002:00580740 ??_E?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEPAXI@Z 00D6FC40 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+978	SKIPPED	0002:00580740 ??_G?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEPAXI@Z 00D6FC40 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+979	SKIPPED	0002:00580790 ??_E?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEPAXI@Z 00D6FC90 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+980	SKIPPED	0002:00580790 ??_G?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEPAXI@Z 00D6FC90 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+981	SKIPPED	0002:005807e0 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEPAXI@Z 00D6FCE0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+982	SKIPPED	0002:005807e0 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEPAXI@Z 00D6FCE0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+983	SKIPPED	0002:00580830 ??_E?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEPAXI@Z 00D6FD30 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+984	SKIPPED	0002:00580830 ??_G?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEPAXI@Z 00D6FD30 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+985	SKIPPED	0002:00580880 ??_E?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEPAXI@Z 00D6FD80 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+986	SKIPPED	0002:00580880 ??_G?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEPAXI@Z 00D6FD80 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+987	SKIPPED	0002:005808d0 ??_G?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEPAXI@Z 00D6FDD0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+988	SKIPPED	0002:005808d0 ??_E?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEPAXI@Z 00D6FDD0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+989	SKIPPED	0002:00580920 ??_E?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEPAXI@Z 00D6FE20 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+990	SKIPPED	0002:00580920 ??_G?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEPAXI@Z 00D6FE20 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+991	SKIPPED	0002:00580970 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEPAXI@Z 00D6FE70 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+992	SKIPPED	0002:00580970 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEPAXI@Z 00D6FE70 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+993	SKIPPED	0002:005809c0 ??_G?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEPAXI@Z 00D6FEC0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+994	SKIPPED	0002:005809c0 ??_E?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEPAXI@Z 00D6FEC0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+995	SKIPPED	0002:00580a10 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+996	SKIPPED	0002:00580a10 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 997	VERIFIED	0002:00580a60 ??1?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAE@XZ 00D6FF60 f i mp_util_wad.o
 998	PORTED	0002:00580ad0 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAE@XZ 00D6FFD0 f i mp_util_wad.o
 999	PORTED	0002:00580b00 ??1?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAE@XZ 00D70000 f i mp_util_wad.o
@@ -1215,9 +1215,9 @@ index	status	map_line
 1214	PORTED	0002:00587db0 ?Destroy@?$BrocDtor@V?$dyn_array@Uvector@Broc@@@Broc@@@@UAEXPAX@Z 00D772B0 f i mp_util_wad.o
 1215	PORTED	0002:00587de0 ?Destroy@?$BrocDtor@V?$dyn_array@M@Broc@@@@UAEXPAX@Z 00D772E0 f i mp_util_wad.o
 1216	PORTED	0002:00587e10 ?Destroy@?$BrocDtor@V?$dyn_array@H@Broc@@@@UAEXPAX@Z 00D77310 f i mp_util_wad.o
-1217	VERIFIED	0002:00587e40 ??_G?$dyn_array@Uvector@Broc@@@Broc@@QAEPAXI@Z 00D77340 f i mp_util_wad.o
-1218	PORTED	0002:00587e90 ??_G?$dyn_array@M@Broc@@QAEPAXI@Z 00D77390 f i mp_util_wad.o
-1219	VERIFIED	0002:00587ee0 ??_G?$dyn_array@H@Broc@@QAEPAXI@Z 00D773E0 f i mp_util_wad.o
+1217	SKIPPED	0002:00587e40 ??_G?$dyn_array@Uvector@Broc@@@Broc@@QAEPAXI@Z 00D77340 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1218	SKIPPED	0002:00587e90 ??_G?$dyn_array@M@Broc@@QAEPAXI@Z 00D77390 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1219	SKIPPED	0002:00587ee0 ??_G?$dyn_array@H@Broc@@QAEPAXI@Z 00D773E0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1220	PORTED	0002:00587f30 ??$ConcatText@Vstring@Broc@@@Broc@@YAXAAVstring@0@ABV10@@Z 00D77430 f i mp_util_wad.o
 1221	PORTED	0002:00587f70 ?resize@?$dyn_array@Uvector@Broc@@@Broc@@QAEXII@Z 00D77470 f i mp_util_wad.o
 1222	PORTED	0002:00588270 ??4?$dyn_array@Uvector@Broc@@@Broc@@QAEXABV01@@Z 00D77770 f i mp_util_wad.o

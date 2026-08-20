@@ -13,6 +13,6 @@ index	status	map_line
 12	VERIFIED	0002:003c50f0 ?Render@cdSimpleInstance@@QAEXXZ 00BB45F0 f cdSimpleInstance.o
 13	PORTED	0002:003c5280 ??4nglShaderParamSet@@QAEAAU0@ABU0@@Z 00BB4780 f i cdSimpleInstance.o
 14	VERIFIED	0002:003c5290 ?push_back@?$ae_sized_array@PAH$0BIA@@@QAEXABQAH@Z 00BB4790 f i cdSimpleInstance.o
-15	VERIFIED	0002:003c5310 ??_GcdSimpleInstanceShader@@UAEPAXI@Z 00BB4810 f i cdSimpleInstance.o
-16	VERIFIED	0002:003c5310 ??_EcdSimpleInstanceShader@@UAEPAXI@Z 00BB4810 f i cdSimpleInstance.o
+15	SKIPPED	0002:003c5310 ??_GcdSimpleInstanceShader@@UAEPAXI@Z 00BB4810 f i cdSimpleInstance.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+16	SKIPPED	0002:003c5310 ??_EcdSimpleInstanceShader@@UAEPAXI@Z 00BB4810 f i cdSimpleInstance.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	VERIFIED	0002:003c5340 ??1cdSimpleInstanceShader@@UAE@XZ 00BB4840 f i cdSimpleInstance.o

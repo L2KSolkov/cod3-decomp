@@ -14,10 +14,10 @@ index	status	map_line
 13	PORTED	0002:003ce6b0 ?RegisterPShader@cdGunSightFullbrightPixel@@YAXXZ 00BBDBB0 f i cdGunSightShader.o
 14	PORTED	0002:003ce6d0 ?GetPShader@cdGunSightFullbrightPixel@@YAPAKXZ 00BBDBD0 f i cdGunSightShader.o
 15	PORTED	0002:003ce6e0 ??0cdGunSightShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdGunSightShaderMat@@@Z 00BBDBE0 f i cdGunSightShader.o
-16	PORTED	0002:003ce710 ??_EcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o
-17	PORTED	0002:003ce710 ??_GcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o
+16	SKIPPED	0002:003ce710 ??_EcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+17	SKIPPED	0002:003ce710 ??_GcdGunSightShaderNode@@UAEPAXI@Z 00BBDC10 f i cdGunSightShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:003ce740 ??1cdGunSightShaderNode@@UAE@XZ 00BBDC40 f i cdGunSightShader.o
-19	VERIFIED	0002:003ce750 ??_GcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o
-20	VERIFIED	0002:003ce750 ??_EcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o
+19	SKIPPED	0002:003ce750 ??_GcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003ce750 ??_EcdGunSightShader@@UAEPAXI@Z 00BBDC50 f i cdGunSightShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	VERIFIED	0002:003ce780 ??1cdGunSightShader@@UAE@XZ 00BBDC80 f i cdGunSightShader.o
 22	VERIFIED	0002:003ce790 ??0SimpleContext@@QAE@XZ 00BBDC90 f i cdGunSightShader.o

@@ -68,14 +68,14 @@ index	status	map_line
 67	PORTED	0002:003c36b0 ?ReleaseAll@?$tlResourceDirectory@UnglTexture@@@@UAEX_N0H@Z 00BB2BB0 f i ngl_aux.o
 68	PORTED	0002:003c37b0 ?Load@?$tlResourceDirectory@UnglTexture@@@@UAEPAUnglTexture@@ABVtlFixedString@@@Z 00BB2CB0 f i ngl_aux.o
 69	PORTED	0002:003c37c0 ?Release@?$tlResourceDirectory@UnglTexture@@@@UAEHPAUnglTexture@@H_N@Z 00BB2CC0 f i ngl_aux.o
-70	PORTED	0002:003c37d0 ??_E?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o
-71	PORTED	0002:003c37d0 ??_G?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o
-72	PORTED	0002:003c3800 ??_E?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o
-73	PORTED	0002:003c3800 ??_G?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o
-74	PORTED	0002:003c3830 ??_G?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o
-75	PORTED	0002:003c3830 ??_E?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o
-76	PORTED	0002:003c3860 ??_E?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o
-77	PORTED	0002:003c3860 ??_G?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o
+70	SKIPPED	0002:003c37d0 ??_E?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+71	SKIPPED	0002:003c37d0 ??_G?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB2CD0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+72	SKIPPED	0002:003c3800 ??_E?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+73	SKIPPED	0002:003c3800 ??_G?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB2D00 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+74	SKIPPED	0002:003c3830 ??_G?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+75	SKIPPED	0002:003c3830 ??_E?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB2D30 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+76	SKIPPED	0002:003c3860 ??_E?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+77	SKIPPED	0002:003c3860 ??_G?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB2D60 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 78	PORTED	0002:003c3890 ??0?$tlResourceDirectory@VnglFont@@@@QAE@XZ 00BB2D90 f i ngl_aux.o
 79	PORTED	0002:003c38a0 ??0?$tlResourceDirectory@UnglMaterial@@@@QAE@XZ 00BB2DA0 f i ngl_aux.o
 80	PORTED	0002:003c38b0 ??0?$tlResourceDirectory@UnglMesh@@@@QAE@XZ 00BB2DB0 f i ngl_aux.o
@@ -84,17 +84,17 @@ index	status	map_line
 83	PORTED	0002:003c38f0 ??0?$delegate_directory@UnglMesh@@@@QAE@PAV?$tlSkipList@UnglMesh@@VtlFixedString@@@@@Z 00BB2DF0 f i ngl_aux.o
 84	PORTED	0002:003c3910 ??0?$delegate_directory@UnglMaterial@@@@QAE@PAV?$tlSkipList@UnglMaterial@@VtlFixedString@@@@@Z 00BB2E10 f i ngl_aux.o
 85	PORTED	0002:003c3930 ??0?$delegate_directory@UnglTexture@@@@QAE@PAV?$tlSkipList@UnglTexture@@VtlFixedString@@@@@Z 00BB2E30 f i ngl_aux.o
-86	PORTED	0002:003c3950 ??_E?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o
-87	PORTED	0002:003c3950 ??_G?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o
+86	SKIPPED	0002:003c3950 ??_E?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+87	SKIPPED	0002:003c3950 ??_G?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB2E50 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 88	PORTED	0002:003c3980 ??1?$delegate_directory@VnglFont@@@@UAE@XZ 00BB2E80 f i ngl_aux.o
-89	PORTED	0002:003c3990 ??_G?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o
-90	PORTED	0002:003c3990 ??_E?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o
+89	SKIPPED	0002:003c3990 ??_G?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+90	SKIPPED	0002:003c3990 ??_E?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB2E90 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 91	PORTED	0002:003c39c0 ??1?$delegate_directory@UnglMesh@@@@UAE@XZ 00BB2EC0 f i ngl_aux.o
-92	PORTED	0002:003c39d0 ??_G?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o
-93	PORTED	0002:003c39d0 ??_E?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o
+92	SKIPPED	0002:003c39d0 ??_G?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+93	SKIPPED	0002:003c39d0 ??_E?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB2ED0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 94	PORTED	0002:003c3a00 ??1?$delegate_directory@UnglMaterial@@@@UAE@XZ 00BB2F00 f i ngl_aux.o
-95	PORTED	0002:003c3a10 ??_E?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o
-96	PORTED	0002:003c3a10 ??_G?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o
+95	SKIPPED	0002:003c3a10 ??_E?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+96	SKIPPED	0002:003c3a10 ??_G?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB2F10 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 97	PORTED	0002:003c3a40 ??1?$delegate_directory@UnglTexture@@@@UAE@XZ 00BB2F40 f i ngl_aux.o
 98	VERIFIED	0002:003c3a50 ??0ngl_aux_static_init@@QAE@XZ 00BB2F50 f i ngl_aux.o
 99	PORTED	0002:003c3b00 ?Find@?$delegate_directory@VnglFont@@@@UAEPAVnglFont@@ABVtlFixedString@@@Z 00BB3000 f i ngl_aux.o
@@ -105,11 +105,11 @@ index	status	map_line
 104	PORTED	0002:003c3cb0 ??RSkipListIterator@?$delegate_directory@VnglFont@@@@UBE_NXZ 00BB31B0 f i ngl_aux.o
 105	PORTED	0002:003c3cc0 ??ESkipListIterator@?$delegate_directory@VnglFont@@@@UAEXXZ 00BB31C0 f i ngl_aux.o
 106	PORTED	0002:003c3cd0 ??DSkipListIterator@?$delegate_directory@VnglFont@@@@UBEPAVnglFont@@XZ 00BB31D0 f i ngl_aux.o
-107	PORTED	0002:003c3ce0 ??_GSkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o
-108	PORTED	0002:003c3ce0 ??_ESkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o
+107	SKIPPED	0002:003c3ce0 ??_GSkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+108	SKIPPED	0002:003c3ce0 ??_ESkipListIterator@?$delegate_directory@VnglFont@@@@UAEPAXI@Z 00BB31E0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 109	PORTED	0002:003c3d10 ??1SkipListIterator@?$delegate_directory@VnglFont@@@@UAE@XZ 00BB3210 f i ngl_aux.o
-110	PORTED	0002:003c3d20 ??_GIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o
-111	PORTED	0002:003c3d20 ??_EIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o
+110	SKIPPED	0002:003c3d20 ??_GIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+111	SKIPPED	0002:003c3d20 ??_EIterator@?$tlResourceDirectory@VnglFont@@@@UAEPAXI@Z 00BB3220 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 112	PORTED	0002:003c3d50 ?Find@?$delegate_directory@UnglMesh@@@@UAEPAUnglMesh@@ABVtlFixedString@@@Z 00BB3250 f i ngl_aux.o
 113	PORTED	0002:003c3d60 ?Del@?$delegate_directory@UnglMesh@@@@UAE_NQAUnglMesh@@@Z 00BB3260 f i ngl_aux.o
 114	VERIFIED	0002:003c3d70 ?Del@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE_NPBUnglMesh@@@Z 00BB3270 f i ngl_aux.o
@@ -118,11 +118,11 @@ index	status	map_line
 117	PORTED	0002:003c3f00 ??RSkipListIterator@?$delegate_directory@UnglMesh@@@@UBE_NXZ 00BB3400 f i ngl_aux.o
 118	PORTED	0002:003c3f10 ??ESkipListIterator@?$delegate_directory@UnglMesh@@@@UAEXXZ 00BB3410 f i ngl_aux.o
 119	PORTED	0002:003c3f20 ??DSkipListIterator@?$delegate_directory@UnglMesh@@@@UBEPAUnglMesh@@XZ 00BB3420 f i ngl_aux.o
-120	PORTED	0002:003c3f30 ??_ESkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o
-121	PORTED	0002:003c3f30 ??_GSkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o
+120	SKIPPED	0002:003c3f30 ??_ESkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+121	SKIPPED	0002:003c3f30 ??_GSkipListIterator@?$delegate_directory@UnglMesh@@@@UAEPAXI@Z 00BB3430 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 122	PORTED	0002:003c3f60 ??1SkipListIterator@?$delegate_directory@UnglMesh@@@@UAE@XZ 00BB3460 f i ngl_aux.o
-123	PORTED	0002:003c3f70 ??_GIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o
-124	PORTED	0002:003c3f70 ??_EIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o
+123	SKIPPED	0002:003c3f70 ??_GIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+124	SKIPPED	0002:003c3f70 ??_EIterator@?$tlResourceDirectory@UnglMesh@@@@UAEPAXI@Z 00BB3470 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 125	PORTED	0002:003c3fa0 ?Find@?$delegate_directory@UnglMaterial@@@@UAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB34A0 f i ngl_aux.o
 126	PORTED	0002:003c3fb0 ?Find@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUnglMaterial@@ABVtlFixedString@@@Z 00BB34B0 f i ngl_aux.o
 127	PORTED	0002:003c4070 ?Del@?$delegate_directory@UnglMaterial@@@@UAE_NQAUnglMaterial@@@Z 00BB3570 f i ngl_aux.o
@@ -132,11 +132,11 @@ index	status	map_line
 131	PORTED	0002:003c4210 ??RSkipListIterator@?$delegate_directory@UnglMaterial@@@@UBE_NXZ 00BB3710 f i ngl_aux.o
 132	PORTED	0002:003c4220 ??ESkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEXXZ 00BB3720 f i ngl_aux.o
 133	PORTED	0002:003c4230 ??DSkipListIterator@?$delegate_directory@UnglMaterial@@@@UBEPAUnglMaterial@@XZ 00BB3730 f i ngl_aux.o
-134	PORTED	0002:003c4240 ??_ESkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o
-135	PORTED	0002:003c4240 ??_GSkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o
+134	SKIPPED	0002:003c4240 ??_ESkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+135	SKIPPED	0002:003c4240 ??_GSkipListIterator@?$delegate_directory@UnglMaterial@@@@UAEPAXI@Z 00BB3740 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 136	PORTED	0002:003c4270 ??1SkipListIterator@?$delegate_directory@UnglMaterial@@@@UAE@XZ 00BB3770 f i ngl_aux.o
-137	PORTED	0002:003c4280 ??_EIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o
-138	PORTED	0002:003c4280 ??_GIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o
+137	SKIPPED	0002:003c4280 ??_EIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+138	SKIPPED	0002:003c4280 ??_GIterator@?$tlResourceDirectory@UnglMaterial@@@@UAEPAXI@Z 00BB3780 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 139	PORTED	0002:003c42b0 ?Find@?$delegate_directory@UnglTexture@@@@UAEPAUnglTexture@@ABVtlFixedString@@@Z 00BB37B0 f i ngl_aux.o
 140	PORTED	0002:003c42c0 ?Del@?$delegate_directory@UnglTexture@@@@UAE_NQAUnglTexture@@@Z 00BB37C0 f i ngl_aux.o
 141	VERIFIED	0002:003c42d0 ?Del@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE_NPBUnglTexture@@@Z 00BB37D0 f i ngl_aux.o
@@ -145,11 +145,11 @@ index	status	map_line
 144	PORTED	0002:003c4460 ??RSkipListIterator@?$delegate_directory@UnglTexture@@@@UBE_NXZ 00BB3960 f i ngl_aux.o
 145	PORTED	0002:003c4470 ??ESkipListIterator@?$delegate_directory@UnglTexture@@@@UAEXXZ 00BB3970 f i ngl_aux.o
 146	PORTED	0002:003c4480 ??DSkipListIterator@?$delegate_directory@UnglTexture@@@@UBEPAUnglTexture@@XZ 00BB3980 f i ngl_aux.o
-147	PORTED	0002:003c4490 ??_ESkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o
-148	PORTED	0002:003c4490 ??_GSkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o
+147	SKIPPED	0002:003c4490 ??_ESkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+148	SKIPPED	0002:003c4490 ??_GSkipListIterator@?$delegate_directory@UnglTexture@@@@UAEPAXI@Z 00BB3990 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 149	PORTED	0002:003c44c0 ??1SkipListIterator@?$delegate_directory@UnglTexture@@@@UAE@XZ 00BB39C0 f i ngl_aux.o
-150	PORTED	0002:003c44d0 ??_GIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o
-151	PORTED	0002:003c44d0 ??_EIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o
+150	SKIPPED	0002:003c44d0 ??_GIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+151	SKIPPED	0002:003c44d0 ??_EIterator@?$tlResourceDirectory@UnglTexture@@@@UAEPAXI@Z 00BB39D0 f i ngl_aux.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 152	PORTED	0002:003c4500 ?Add@?$delegate_directory@VnglFont@@@@UAEPAVnglFont@@PAV2@@Z 00BB3A00 f i ngl_aux.o
 153	VERIFIED	0002:003c4510 ?Add@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAVnglFont@@PAV2@@Z 00BB3A10 f i ngl_aux.o
 154	PORTED	0002:003c4630 ?RandomLevel@_tlSkipListBase@@IAEHXZ 00BB3B30 f i ngl_aux.o

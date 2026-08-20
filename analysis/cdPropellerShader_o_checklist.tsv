@@ -14,10 +14,10 @@ index	status	map_line
 13	PORTED	0002:003d1360 ?RegisterPShader@cdPropellerFullbrightPixel@@YAXXZ 00BC0860 f i cdPropellerShader.o
 14	PORTED	0002:003d1380 ?GetPShader@cdPropellerFullbrightPixel@@YAPAKXZ 00BC0880 f i cdPropellerShader.o
 15	PORTED	0002:003d1390 ??0cdPropellerShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdPropellerShaderMat@@@Z 00BC0890 f i cdPropellerShader.o
-16	PORTED	0002:003d13c0 ??_GcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o
-17	PORTED	0002:003d13c0 ??_EcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o
+16	SKIPPED	0002:003d13c0 ??_GcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+17	SKIPPED	0002:003d13c0 ??_EcdPropellerShaderNode@@UAEPAXI@Z 00BC08C0 f i cdPropellerShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:003d13f0 ??1cdPropellerShaderNode@@UAE@XZ 00BC08F0 f i cdPropellerShader.o
-19	VERIFIED	0002:003d1400 ??_GcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o
-20	VERIFIED	0002:003d1400 ??_EcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o
+19	SKIPPED	0002:003d1400 ??_GcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003d1400 ??_EcdPropellerShader@@UAEPAXI@Z 00BC0900 f i cdPropellerShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	VERIFIED	0002:003d1430 ??1cdPropellerShader@@UAE@XZ 00BC0930 f i cdPropellerShader.o
 22	PORTED	0002:003d1440 ??0PropellerContext@@QAE@XZ 00BC0940 f i cdPropellerShader.o

@@ -1205,8 +1205,8 @@ index	status	map_line
 1204	VERIFIED	0002:001ad5e0 ?GetY@PanelAnimObject@@UAEMXZ 0099CAE0 f i shell.o
 1205	PORTED	0002:001ad5f0 ?SetPAOFlag@PanelAnimObject@@QAEXH_N@Z 0099CAF0 f i shell.o
 1206	PORTED	0002:001ad630 ?GetPAOFlag@PanelAnimObject@@QAE_NH@Z 0099CB30 f i shell.o
-1207	VERIFIED	0002:001ad650 ??_GPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o
-1208	VERIFIED	0002:001ad650 ??_EPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o
+1207	SKIPPED	0002:001ad650 ??_GPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1208	SKIPPED	0002:001ad650 ??_EPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1209	PORTED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o
 1210	PORTED	0002:001ad690 ?SetPeriod@FETextFlashInfo@@QAEXM@Z 0099CB90 f i shell.o
 1211	VERIFIED	0002:001ad6b0 ??0FEText@@QAE@XZ 0099CBB0 f i shell.o
@@ -1335,8 +1335,8 @@ index	status	map_line
 1334	VERIFIED	0002:001ae840 ?SetValue@FEMenuEntry@@UAEXH@Z 0099DD40 f i shell.o
 1335	VERIFIED	0002:001ae850 ?GetValue@FEMenuEntry@@UAEHXZ 0099DD50 f i shell.o
 1336	VERIFIED	0002:001ae860 ?OnHighlight@FEMenuEntry@@MAEX_N@Z 0099DD60 f i shell.o
-1337	VERIFIED	0002:001ae870 ??_GFEMenuEntry@@UAEPAXI@Z 0099DD70 f i shell.o
-1338	VERIFIED	0002:001ae870 ??_EFEMenuEntry@@UAEPAXI@Z 0099DD70 f i shell.o
+1337	SKIPPED	0002:001ae870 ??_GFEMenuEntry@@UAEPAXI@Z 0099DD70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1338	SKIPPED	0002:001ae870 ??_EFEMenuEntry@@UAEPAXI@Z 0099DD70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1339	VERIFIED	0002:001ae8c0 ??2FEMenu@@SAPAXI@Z 0099DDC0 f i shell.o
 1340	VERIFIED	0002:001ae8e0 ?GetReturnMenu@FEMenu@@QAEHXZ 0099DDE0 f i shell.o
 1341	VERIFIED	0002:001ae8f0 ?SetReturnMenu@FEMenu@@QAEXH@Z 0099DDF0 f i shell.o
@@ -1363,8 +1363,8 @@ index	status	map_line
 1362	PORTED	0002:001aead0 ?UpdateWidescreen@IGOWidget@@UAEX_NM@Z 0099DFD0 f i shell.o
 1363	VERIFIED	0002:001aeae0 ?UpdateSplitScreen@IGOWidget@@UAEXHH@Z 0099DFE0 f i shell.o
 1364	VERIFIED	0002:001aeaf0 ?ForceToAppear@IGOWidget@@UAEXXZ 0099DFF0 f i shell.o
-1365	VERIFIED	0002:001aeb00 ??_EIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o
-1366	VERIFIED	0002:001aeb00 ??_GIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o
+1365	SKIPPED	0002:001aeb00 ??_EIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1366	SKIPPED	0002:001aeb00 ??_GIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1367	VERIFIED	0002:001aeb30 ??0IGOMapObject@@QAE@XZ 0099E030 f i shell.o
 1368	PORTED	0002:001aeb40 ??0IGOObjective@@QAE@XZ 0099E040 f i shell.o
 1369	VERIFIED	0002:001aeb60 ?SetObjectivesOnly@IGOCompassWidget@@QAEX_N@Z 0099E060 f i shell.o
@@ -1412,38 +1412,38 @@ index	status	map_line
 1411	VERIFIED	0002:001af090 ?SetReturnMenu@MPUIInterface@@SAXH@Z 0099E590 f i shell.o
 1412	VERIFIED	0002:001af0a0 ?SetCableDisconnect@MPUIInterface@@SAX_N@Z 0099E5A0 f i shell.o
 1413	VERIFIED	0002:001af0b0 ?GetServerParams@MPUIInterface@@SAPAUsServerCreateParams@@XZ 0099E5B0 f i shell.o
-1414	VERIFIED	0002:001af0c0 ??_EIGOHealthWidget@@UAEPAXI@Z 0099E5C0 f i shell.o
-1415	VERIFIED	0002:001af0c0 ??_GIGOHealthWidget@@UAEPAXI@Z 0099E5C0 f i shell.o
+1414	SKIPPED	0002:001af0c0 ??_EIGOHealthWidget@@UAEPAXI@Z 0099E5C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1415	SKIPPED	0002:001af0c0 ??_GIGOHealthWidget@@UAEPAXI@Z 0099E5C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1416	VERIFIED	0002:001af0f0 ??1IGOHealthWidget@@UAE@XZ 0099E5F0 f i shell.o
-1417	VERIFIED	0002:001af160 ??_GIGOAmmoWidget@@UAEPAXI@Z 0099E660 f i shell.o
-1418	VERIFIED	0002:001af160 ??_EIGOAmmoWidget@@UAEPAXI@Z 0099E660 f i shell.o
+1417	SKIPPED	0002:001af160 ??_GIGOAmmoWidget@@UAEPAXI@Z 0099E660 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1418	SKIPPED	0002:001af160 ??_EIGOAmmoWidget@@UAEPAXI@Z 0099E660 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1419	VERIFIED	0002:001af190 ??1IGOAmmoWidget@@UAE@XZ 0099E690 f i shell.o
-1420	VERIFIED	0002:001af210 ??_EIGORankWidget@@UAEPAXI@Z 0099E710 f i shell.o
-1421	VERIFIED	0002:001af210 ??_GIGORankWidget@@UAEPAXI@Z 0099E710 f i shell.o
+1420	SKIPPED	0002:001af210 ??_EIGORankWidget@@UAEPAXI@Z 0099E710 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1421	SKIPPED	0002:001af210 ??_GIGORankWidget@@UAEPAXI@Z 0099E710 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1422	VERIFIED	0002:001af240 ??1IGORankWidget@@UAE@XZ 0099E740 f i shell.o
-1423	VERIFIED	0002:001af2d0 ??_EIGOVoteWidget@@UAEPAXI@Z 0099E7D0 f i shell.o
-1424	VERIFIED	0002:001af2d0 ??_GIGOVoteWidget@@UAEPAXI@Z 0099E7D0 f i shell.o
+1423	SKIPPED	0002:001af2d0 ??_EIGOVoteWidget@@UAEPAXI@Z 0099E7D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1424	SKIPPED	0002:001af2d0 ??_GIGOVoteWidget@@UAEPAXI@Z 0099E7D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1425	VERIFIED	0002:001af300 ??1IGOVoteWidget@@UAE@XZ 0099E800 f i shell.o
-1426	VERIFIED	0002:001af370 ??_EIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o
-1427	VERIFIED	0002:001af370 ??_GIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o
+1426	SKIPPED	0002:001af370 ??_EIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1427	SKIPPED	0002:001af370 ??_GIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1428	VERIFIED	0002:001af3a0 ??1IGOSpecialWeaponWidget@@UAE@XZ 0099E8A0 f i shell.o
 1429	PORTED	0002:001af430 ??0IGOFriendly@@QAE@XZ 0099E930 f i shell.o
 1430	PORTED	0002:001af440 ??0IGOEnemy@@QAE@XZ 0099E940 f i shell.o
 1431	VERIFIED	0002:001af450 ?remove_surrounding_whitespace@string@Broc@@QAEAAV12@XZ 0099E950 f i shell.o
 1432	VERIFIED	0002:001af480 ??9Broc@@YA_NABVstring@0@PBD@Z 0099E980 f i shell.o
-1433	VERIFIED	0002:001af4a0 ??_GIGOHintWidget@@UAEPAXI@Z 0099E9A0 f i shell.o
-1434	VERIFIED	0002:001af4a0 ??_EIGOHintWidget@@UAEPAXI@Z 0099E9A0 f i shell.o
+1433	SKIPPED	0002:001af4a0 ??_GIGOHintWidget@@UAEPAXI@Z 0099E9A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1434	SKIPPED	0002:001af4a0 ??_EIGOHintWidget@@UAEPAXI@Z 0099E9A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1435	VERIFIED	0002:001af4d0 ??1IGOHintWidget@@UAE@XZ 0099E9D0 f i shell.o
 1436	VERIFIED	0002:001af540 ?GetName@MPPlayer@@QBEPBDXZ 0099EA40 f i shell.o
 1437	VERIFIED	0002:001af550 ?GetTeam@MPPlayer@@QAEHXZ 0099EA50 f i shell.o
 1438	VERIFIED	0002:001af560 ?FindItem@MPPlayer@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z 0099EA60 f i shell.o
 1439	PORTED	0002:001af570 ??_Fcolor32@@QAEXXZ 0099EA70 f i shell.o
-1440	PORTED	0002:001af580 ??_EPanelMaterial@@QAEPAXI@Z 0099EA80 f i shell.o
+1440	SKIPPED	0002:001af580 ??_EPanelMaterial@@QAEPAXI@Z 0099EA80 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1441	VERIFIED	0002:001af5f0 ?movie_valid@movie_manager@@SA_NXZ 0099EAF0 f i shell.o
 1442	VERIFIED	0002:001af610 ??0nvlMovie@@QAE@XZ 0099EB10 f i shell.o
-1443	VERIFIED	0002:001af630 ??_GnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o
-1444	VERIFIED	0002:001af630 ??_EnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o
-1445	PORTED	0002:001af660 ??_EMultiLineString@@QAEPAXI@Z 0099EB60 f i shell.o
+1443	SKIPPED	0002:001af630 ??_GnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1444	SKIPPED	0002:001af630 ??_EnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1445	SKIPPED	0002:001af660 ??_EMultiLineString@@QAEPAXI@Z 0099EB60 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1446	PORTED	0002:001af6d0 ?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ 0099EBD0 f i shell.o
 1447	PORTED	0002:001af6e0 ?GetIndex@FEMenuListBoxItem@@QBE?BIXZ 0099EBE0 f i shell.o
 1448	PORTED	0002:001af6f0 ?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ 0099EBF0 f i shell.o
@@ -1489,7 +1489,7 @@ index	status	map_line
 1488	VERIFIED	0002:001afa10 ?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ 0099EF10 f i shell.o
 1489	VERIFIED	0002:001afa20 ?IsSystemActive@FEMenuSystem@@UAE_NXZ 0099EF20 f i shell.o
 1490	VERIFIED	0002:001afa30 ?NewMenuActive@FEMenuSystem@@MAEXXZ 0099EF30 f i shell.o
-1491	VERIFIED	0002:001afa40 ??_Estring@Broc@@QAEPAXI@Z 0099EF40 f i shell.o
+1491	SKIPPED	0002:001afa40 ??_Estring@Broc@@QAEPAXI@Z 0099EF40 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1492	VERIFIED	0002:001afab0 ??1FEMenuListBoxItem@@QAE@XZ 0099EFB0 f i shell.o
 1493	PORTED	0002:001afb20 ?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z 0099F020 f i shell.o
 1494	VERIFIED	0002:001afb30 ??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ 0099F030 f i shell.o
@@ -1678,8 +1678,8 @@ index	status	map_line
 1677	VERIFIED	0002:001b1b00 ?IsShown@PanelAnimObject@@UAE_NXZ 009A1000 f i shell.o
 1678	VERIFIED	0002:001b1b10 ?SetShown@PanelAnimObject@@UAEX_N@Z 009A1010 f i shell.o
 1679	PORTED	0002:001b1b40 ?ResetFlash@FEText@@QAEXXZ 009A1040 f i shell.o
-1680	VERIFIED	0002:001b1b60 ??_EFEText@@UAEPAXI@Z 009A1060 f i shell.o
-1681	VERIFIED	0002:001b1b60 ??_GFEText@@UAEPAXI@Z 009A1060 f i shell.o
+1680	SKIPPED	0002:001b1b60 ??_EFEText@@UAEPAXI@Z 009A1060 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1681	SKIPPED	0002:001b1b60 ??_GFEText@@UAEPAXI@Z 009A1060 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1682	VERIFIED	0002:001b1b90 ??0FEMultiLineText@@QAE@XZ 009A1090 f i shell.o
 1683	VERIFIED	0002:001b1bb0 ?IsMultiLineObject@FEMultiLineText@@UAE_NXZ 009A10B0 f i shell.o
 1684	VERIFIED	0002:001b1bc0 ?GetLineNum@FEMultiLineText@@UAEHXZ 009A10C0 f i shell.o
@@ -1695,8 +1695,8 @@ index	status	map_line
 1694	PORTED	0002:001b1cd0 ?ResetTextFlash@FEMenuEntry@@QAEXXZ 009A11D0 f i shell.o
 1695	VERIFIED	0002:001b1d00 ?SetText@FEMenuEntry@@UAEXVstring@Broc@@@Z 009A1200 f i shell.o
 1696	VERIFIED	0002:001b1d80 ?SetTextNoLocalize@FEMenuEntry@@UAEXVstring@Broc@@@Z 009A1280 f i shell.o
-1697	VERIFIED	0002:001b1e00 ??_EFEMenuSystem@@UAEPAXI@Z 009A1300 f i shell.o
-1698	VERIFIED	0002:001b1e00 ??_GFEMenuSystem@@UAEPAXI@Z 009A1300 f i shell.o
+1697	SKIPPED	0002:001b1e00 ??_EFEMenuSystem@@UAEPAXI@Z 009A1300 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1698	SKIPPED	0002:001b1e00 ??_GFEMenuSystem@@UAEPAXI@Z 009A1300 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1699	VERIFIED	0002:001b1e30 ?SetState@UIListBoxItem@UIListBox@@QAEXH@Z 009A1330 f i shell.o
 1700	VERIFIED	0002:001b2070 ?RemoveItems@UIListBoxItem@UIListBox@@QAEXXZ 009A1570 f i shell.o
 1701	VERIFIED	0002:001b2110 ?Draw@UIListBoxItem@UIListBox@@QAEXXZ 009A1610 f i shell.o
@@ -1719,63 +1719,63 @@ index	status	map_line
 1718	VERIFIED	0002:001b2d10 ?GetText@UIListBoxDataRow@UIListBox@@QAEPBDH@Z 009A2210 f i shell.o
 1719	VERIFIED	0002:001b2db0 ?ClearItem@UIListBoxDataRow@UIListBox@@QAEXXZ 009A22B0 f i shell.o
 1720	PORTED	0002:001b2ec0 ?GetFontName@FEManager@@SAPBDW4font_index@@@Z 009A23C0 f i shell.o
-1721	VERIFIED	0002:001b2ee0 ??_EIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o
-1722	VERIFIED	0002:001b2ee0 ??_GIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o
+1721	SKIPPED	0002:001b2ee0 ??_EIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1722	SKIPPED	0002:001b2ee0 ??_GIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1723	VERIFIED	0002:001b2f10 ?GetGlyphInfo@nglFont@@QAEABUnglGlyphInfo@@E@Z 009A2410 f i shell.o
-1724	VERIFIED	0002:001b2f60 ??_EIGOStanceWidget@@UAEPAXI@Z 009A2460 f i shell.o
-1725	VERIFIED	0002:001b2f60 ??_GIGOStanceWidget@@UAEPAXI@Z 009A2460 f i shell.o
+1724	SKIPPED	0002:001b2f60 ??_EIGOStanceWidget@@UAEPAXI@Z 009A2460 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1725	SKIPPED	0002:001b2f60 ??_GIGOStanceWidget@@UAEPAXI@Z 009A2460 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1726	VERIFIED	0002:001b2f90 ??1IGOStanceWidget@@UAE@XZ 009A2490 f i shell.o
-1727	VERIFIED	0002:001b2fa0 ??_EIGOHQProgressBarWidget@@UAEPAXI@Z 009A24A0 f i shell.o
-1728	VERIFIED	0002:001b2fa0 ??_GIGOHQProgressBarWidget@@UAEPAXI@Z 009A24A0 f i shell.o
-1729	VERIFIED	0002:001b2fd0 ??_GIGORaiseFlagWidget@@UAEPAXI@Z 009A24D0 f i shell.o
-1730	VERIFIED	0002:001b2fd0 ??_EIGORaiseFlagWidget@@UAEPAXI@Z 009A24D0 f i shell.o
-1731	VERIFIED	0002:001b3000 ??_GIGOTimerWidget@@UAEPAXI@Z 009A2500 f i shell.o
-1732	VERIFIED	0002:001b3000 ??_EIGOTimerWidget@@UAEPAXI@Z 009A2500 f i shell.o
-1733	VERIFIED	0002:001b3030 ??_EIGOInGameScoreWidget@@UAEPAXI@Z 009A2530 f i shell.o
-1734	VERIFIED	0002:001b3030 ??_GIGOInGameScoreWidget@@UAEPAXI@Z 009A2530 f i shell.o
-1735	VERIFIED	0002:001b3060 ??_EIGOGrenadeWidget@@UAEPAXI@Z 009A2560 f i shell.o
-1736	VERIFIED	0002:001b3060 ??_GIGOGrenadeWidget@@UAEPAXI@Z 009A2560 f i shell.o
-1737	VERIFIED	0002:001b3090 ??_GIGOGrenadeCookWidget@@UAEPAXI@Z 009A2590 f i shell.o
-1738	VERIFIED	0002:001b3090 ??_EIGOGrenadeCookWidget@@UAEPAXI@Z 009A2590 f i shell.o
-1739	VERIFIED	0002:001b30c0 ??_GIGOActionHintWidget@@UAEPAXI@Z 009A25C0 f i shell.o
-1740	VERIFIED	0002:001b30c0 ??_EIGOActionHintWidget@@UAEPAXI@Z 009A25C0 f i shell.o
+1727	SKIPPED	0002:001b2fa0 ??_EIGOHQProgressBarWidget@@UAEPAXI@Z 009A24A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1728	SKIPPED	0002:001b2fa0 ??_GIGOHQProgressBarWidget@@UAEPAXI@Z 009A24A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1729	SKIPPED	0002:001b2fd0 ??_GIGORaiseFlagWidget@@UAEPAXI@Z 009A24D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1730	SKIPPED	0002:001b2fd0 ??_EIGORaiseFlagWidget@@UAEPAXI@Z 009A24D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1731	SKIPPED	0002:001b3000 ??_GIGOTimerWidget@@UAEPAXI@Z 009A2500 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1732	SKIPPED	0002:001b3000 ??_EIGOTimerWidget@@UAEPAXI@Z 009A2500 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1733	SKIPPED	0002:001b3030 ??_EIGOInGameScoreWidget@@UAEPAXI@Z 009A2530 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1734	SKIPPED	0002:001b3030 ??_GIGOInGameScoreWidget@@UAEPAXI@Z 009A2530 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1735	SKIPPED	0002:001b3060 ??_EIGOGrenadeWidget@@UAEPAXI@Z 009A2560 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1736	SKIPPED	0002:001b3060 ??_GIGOGrenadeWidget@@UAEPAXI@Z 009A2560 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1737	SKIPPED	0002:001b3090 ??_GIGOGrenadeCookWidget@@UAEPAXI@Z 009A2590 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1738	SKIPPED	0002:001b3090 ??_EIGOGrenadeCookWidget@@UAEPAXI@Z 009A2590 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1739	SKIPPED	0002:001b30c0 ??_GIGOActionHintWidget@@UAEPAXI@Z 009A25C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1740	SKIPPED	0002:001b30c0 ??_EIGOActionHintWidget@@UAEPAXI@Z 009A25C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1741	VERIFIED	0002:001b30f0 ??1IGOActionHintWidget@@UAE@XZ 009A25F0 f i shell.o
-1742	VERIFIED	0002:001b3160 ??_EIGOTankHealthWidget@@UAEPAXI@Z 009A2660 f i shell.o
-1743	VERIFIED	0002:001b3160 ??_GIGOTankHealthWidget@@UAEPAXI@Z 009A2660 f i shell.o
+1742	SKIPPED	0002:001b3160 ??_EIGOTankHealthWidget@@UAEPAXI@Z 009A2660 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1743	SKIPPED	0002:001b3160 ??_GIGOTankHealthWidget@@UAEPAXI@Z 009A2660 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1744	VERIFIED	0002:001b3190 ??1IGOTankHealthWidget@@UAE@XZ 009A2690 f i shell.o
-1745	VERIFIED	0002:001b31a0 ??_GIGOTankLoadingWidget@@UAEPAXI@Z 009A26A0 f i shell.o
-1746	VERIFIED	0002:001b31a0 ??_EIGOTankLoadingWidget@@UAEPAXI@Z 009A26A0 f i shell.o
+1745	SKIPPED	0002:001b31a0 ??_GIGOTankLoadingWidget@@UAEPAXI@Z 009A26A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1746	SKIPPED	0002:001b31a0 ??_EIGOTankLoadingWidget@@UAEPAXI@Z 009A26A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1747	VERIFIED	0002:001b31d0 ??1IGOTankLoadingWidget@@UAE@XZ 009A26D0 f i shell.o
-1748	VERIFIED	0002:001b31e0 ??_EIGOTankReticleWidget@@UAEPAXI@Z 009A26E0 f i shell.o
-1749	VERIFIED	0002:001b31e0 ??_GIGOTankReticleWidget@@UAEPAXI@Z 009A26E0 f i shell.o
+1748	SKIPPED	0002:001b31e0 ??_EIGOTankReticleWidget@@UAEPAXI@Z 009A26E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1749	SKIPPED	0002:001b31e0 ??_GIGOTankReticleWidget@@UAEPAXI@Z 009A26E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1750	VERIFIED	0002:001b3210 ??1IGOTankReticleWidget@@UAE@XZ 009A2710 f i shell.o
-1751	VERIFIED	0002:001b3220 ??_GIGOTankIconWidget@@UAEPAXI@Z 009A2720 f i shell.o
-1752	VERIFIED	0002:001b3220 ??_EIGOTankIconWidget@@UAEPAXI@Z 009A2720 f i shell.o
+1751	SKIPPED	0002:001b3220 ??_GIGOTankIconWidget@@UAEPAXI@Z 009A2720 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1752	SKIPPED	0002:001b3220 ??_EIGOTankIconWidget@@UAEPAXI@Z 009A2720 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1753	VERIFIED	0002:001b3250 ??1IGOTankIconWidget@@UAE@XZ 009A2750 f i shell.o
-1754	VERIFIED	0002:001b3260 ??_GIGOCompassWidget@@UAEPAXI@Z 009A2760 f i shell.o
-1755	VERIFIED	0002:001b3260 ??_EIGOCompassWidget@@UAEPAXI@Z 009A2760 f i shell.o
-1756	VERIFIED	0002:001b3290 ??_GIGOJeepMapWidget@@UAEPAXI@Z 009A2790 f i shell.o
-1757	VERIFIED	0002:001b3290 ??_EIGOJeepMapWidget@@UAEPAXI@Z 009A2790 f i shell.o
+1754	SKIPPED	0002:001b3260 ??_GIGOCompassWidget@@UAEPAXI@Z 009A2760 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1755	SKIPPED	0002:001b3260 ??_EIGOCompassWidget@@UAEPAXI@Z 009A2760 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1756	SKIPPED	0002:001b3290 ??_GIGOJeepMapWidget@@UAEPAXI@Z 009A2790 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1757	SKIPPED	0002:001b3290 ??_EIGOJeepMapWidget@@UAEPAXI@Z 009A2790 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1758	VERIFIED	0002:001b32c0 ??1IGOJeepMapWidget@@UAE@XZ 009A27C0 f i shell.o
-1759	VERIFIED	0002:001b32d0 ??_GIGOGrenadeIndicator@@UAEPAXI@Z 009A27D0 f i shell.o
-1760	VERIFIED	0002:001b32d0 ??_EIGOGrenadeIndicator@@UAEPAXI@Z 009A27D0 f i shell.o
-1761	VERIFIED	0002:001b3300 ??_GIGOHeadIcons@@UAEPAXI@Z 009A2800 f i shell.o
-1762	VERIFIED	0002:001b3300 ??_EIGOHeadIcons@@UAEPAXI@Z 009A2800 f i shell.o
-1763	VERIFIED	0002:001b3330 ??_EIGORowboatWidget@@UAEPAXI@Z 009A2830 f i shell.o
-1764	VERIFIED	0002:001b3330 ??_GIGORowboatWidget@@UAEPAXI@Z 009A2830 f i shell.o
+1759	SKIPPED	0002:001b32d0 ??_GIGOGrenadeIndicator@@UAEPAXI@Z 009A27D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1760	SKIPPED	0002:001b32d0 ??_EIGOGrenadeIndicator@@UAEPAXI@Z 009A27D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1761	SKIPPED	0002:001b3300 ??_GIGOHeadIcons@@UAEPAXI@Z 009A2800 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1762	SKIPPED	0002:001b3300 ??_EIGOHeadIcons@@UAEPAXI@Z 009A2800 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1763	SKIPPED	0002:001b3330 ??_EIGORowboatWidget@@UAEPAXI@Z 009A2830 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1764	SKIPPED	0002:001b3330 ??_GIGORowboatWidget@@UAEPAXI@Z 009A2830 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1765	VERIFIED	0002:001b3360 ??1IGORowboatWidget@@UAE@XZ 009A2860 f i shell.o
-1766	VERIFIED	0002:001b3370 ??_EIGOItemIcons@@UAEPAXI@Z 009A2870 f i shell.o
-1767	VERIFIED	0002:001b3370 ??_GIGOItemIcons@@UAEPAXI@Z 009A2870 f i shell.o
+1766	SKIPPED	0002:001b3370 ??_EIGOItemIcons@@UAEPAXI@Z 009A2870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1767	SKIPPED	0002:001b3370 ??_GIGOItemIcons@@UAEPAXI@Z 009A2870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1768	VERIFIED	0002:001b33a0 ?HighlightRow@UIHighlightListBox@@QAEXH_N@Z 009A28A0 f i shell.o
 1769	VERIFIED	0002:001b33d0 ?DrawBackground@FESplitScreenMenu@@SAXXZ 009A28D0 f i shell.o
 1770	VERIFIED	0002:001b33f0 ??0FEMenuListBoxItem@@QAE@IABVstring@Broc@@H@Z 009A28F0 f i shell.o
-1771	VERIFIED	0002:001b3480 ??_EInGameOptionsMenu@@UAEPAXI@Z 009A2980 f i shell.o
-1772	VERIFIED	0002:001b3480 ??_GInGameOptionsMenu@@UAEPAXI@Z 009A2980 f i shell.o
-1773	VERIFIED	0002:001b34b0 ??_EAARInGameOptionsMenu@@UAEPAXI@Z 009A29B0 f i shell.o
-1774	VERIFIED	0002:001b34b0 ??_GAARInGameOptionsMenu@@UAEPAXI@Z 009A29B0 f i shell.o
-1775	VERIFIED	0002:001b34e0 ??_GFEManager@@UAEPAXI@Z 009A29E0 f i shell.o
-1776	VERIFIED	0002:001b34e0 ??_EFEManager@@UAEPAXI@Z 009A29E0 f i shell.o
-1777	VERIFIED	0002:001b3510 ??_GProfileManager@@QAEPAXI@Z 009A2A10 f i shell.o
+1771	SKIPPED	0002:001b3480 ??_EInGameOptionsMenu@@UAEPAXI@Z 009A2980 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1772	SKIPPED	0002:001b3480 ??_GInGameOptionsMenu@@UAEPAXI@Z 009A2980 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1773	SKIPPED	0002:001b34b0 ??_EAARInGameOptionsMenu@@UAEPAXI@Z 009A29B0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1774	SKIPPED	0002:001b34b0 ??_GAARInGameOptionsMenu@@UAEPAXI@Z 009A29B0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1775	SKIPPED	0002:001b34e0 ??_GFEManager@@UAEPAXI@Z 009A29E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1776	SKIPPED	0002:001b34e0 ??_EFEManager@@UAEPAXI@Z 009A29E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1777	SKIPPED	0002:001b3510 ??_GProfileManager@@QAEPAXI@Z 009A2A10 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1778	VERIFIED	0002:001b3550 ?UpdateSplitScreen@FEMenu@@UAEXXZ 009A2A50 f i shell.o
 1779	VERIFIED	0002:001b3560 ?OnStart@FEMenu@@UAEXH@Z 009A2A60 f i shell.o
 1780	VERIFIED	0002:001b3570 ?OnTriangle@FEMenu@@UAEXH@Z 009A2A70 f i shell.o
@@ -1785,11 +1785,11 @@ index	status	map_line
 1784	VERIFIED	0002:001b3630 ?GetValue@FESlider@@UAEHXZ 009A2B30 f i shell.o
 1785	VERIFIED	0002:001b3640 ?SetShown@FESlider@@UAEX_N@Z 009A2B40 f i shell.o
 1786	VERIFIED	0002:001b3690 ?SetShown@FEDoubleEntry@@UAEX_N@Z 009A2B90 f i shell.o
-1787	VERIFIED	0002:001b36d0 ??_GFEDoubleEntry@@UAEPAXI@Z 009A2BD0 f i shell.o
-1788	VERIFIED	0002:001b36d0 ??_EFEDoubleEntry@@UAEPAXI@Z 009A2BD0 f i shell.o
-1789	VERIFIED	0002:001b3700 ??_GFEMenuListBoxItem@@QAEPAXI@Z 009A2C00 f i shell.o
-1790	VERIFIED	0002:001b3730 ??_GGameSettings@@UAEPAXI@Z 009A2C30 f i shell.o
-1791	VERIFIED	0002:001b3730 ??_EGameSettings@@UAEPAXI@Z 009A2C30 f i shell.o
+1787	SKIPPED	0002:001b36d0 ??_GFEDoubleEntry@@UAEPAXI@Z 009A2BD0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1788	SKIPPED	0002:001b36d0 ??_EFEDoubleEntry@@UAEPAXI@Z 009A2BD0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1789	SKIPPED	0002:001b3700 ??_GFEMenuListBoxItem@@QAEPAXI@Z 009A2C00 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1790	SKIPPED	0002:001b3730 ??_GGameSettings@@UAEPAXI@Z 009A2C30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1791	SKIPPED	0002:001b3730 ??_EGameSettings@@UAEPAXI@Z 009A2C30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1792	SKIPPED	0002:001b3770 ??A?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAADI@Z 009A2C70 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1793	SKIPPED	0002:001b37a0 ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ 009A2CA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1794	SKIPPED	0002:001b37c0 ?find@?$ae_fixed_string@$0CA@E@@QBEHDH@Z 009A2CC0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1815,7 +1815,7 @@ index	status	map_line
 1814	PORTED	0002:001b3f30 ??1?$ae_vector@U_XUID@@@@QAE@XZ 009A3430 f i shell.o
 1815	PORTED	0002:001b3f60 ?resize@?$ae_vector@U_XUID@@@@QAEXHABU_XUID@@@Z 009A3460 f i shell.o
 1816	SKIPPED	0002:001b4070 ??9const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 009A3570 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1817	VERIFIED	0002:001b4090 ??_GUIListBoxData@UIListBox@@QAEPAXI@Z 009A3590 f i shell.o
+1817	SKIPPED	0002:001b4090 ??_GUIListBoxData@UIListBox@@QAEPAXI@Z 009A3590 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1818	VERIFIED	0002:001b40c0 ??1UIListBoxItem@UIListBox@@QAE@XZ 009A35C0 f i shell.o
 1819	SKIPPED	0002:001b40f0 ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDII@Z 009A35F0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1820	PORTED	0002:001b41f0 ?destroy_all@?$ae_vector@PAVPanelQuadSection@@@@AAEXXZ 009A36F0 f i shell.o
@@ -1879,8 +1879,8 @@ index	status	map_line
 1878	VERIFIED	0002:001b4bd0 ?SetVJustify@FEMultiLineText@@UAEXH@Z 009A40D0 f i shell.o
 1879	VERIFIED	0002:001b4c20 ?SetScale@FEMultiLineText@@UAEXM@Z 009A4120 f i shell.o
 1880	VERIFIED	0002:001b4ca0 ?SetScale@FEMultiLineText@@UAEXMM@Z 009A41A0 f i shell.o
-1881	VERIFIED	0002:001b4d20 ??_GFEMultiLineText@@UAEPAXI@Z 009A4220 f i shell.o
-1882	VERIFIED	0002:001b4d20 ??_EFEMultiLineText@@UAEPAXI@Z 009A4220 f i shell.o
+1881	SKIPPED	0002:001b4d20 ??_GFEMultiLineText@@UAEPAXI@Z 009A4220 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1882	SKIPPED	0002:001b4d20 ??_EFEMultiLineText@@UAEPAXI@Z 009A4220 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1883	VERIFIED	0002:001b4d50 ??0UIListBoxItem@UIListBox@@QAE@XZ 009A4250 f i shell.o
 1884	VERIFIED	0002:001b4dc0 ?SetStateCount@UIListBoxItem@UIListBox@@QAEXH@Z 009A42C0 f i shell.o
 1885	VERIFIED	0002:001b4e60 ?SetItem@UIListBoxItem@UIListBox@@QAEXPAVFEText@@H@Z 009A4360 f i shell.o
@@ -1898,11 +1898,11 @@ index	status	map_line
 1897	VERIFIED	0002:001b5570 ?SetEnabled@UIListBoxRow@UIListBox@@QAEX_N@Z 009A4A70 f i shell.o
 1898	VERIFIED	0002:001b5670 ?AddOption@DialogMenuSystem@@QAEXPBDP6A_NH@Z@Z 009A4B70 f i shell.o
 1899	VERIFIED	0002:001b56c0 ?CloseOnDelay@DialogMenuSystem@@QAEXHP6AXH@Z@Z 009A4BC0 f i shell.o
-1900	VERIFIED	0002:001b5720 ??_GIGOWarStatusWidget@@UAEPAXI@Z 009A4C20 f i shell.o
-1901	VERIFIED	0002:001b5720 ??_EIGOWarStatusWidget@@UAEPAXI@Z 009A4C20 f i shell.o
+1900	SKIPPED	0002:001b5720 ??_GIGOWarStatusWidget@@UAEPAXI@Z 009A4C20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1901	SKIPPED	0002:001b5720 ??_EIGOWarStatusWidget@@UAEPAXI@Z 009A4C20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1902	VERIFIED	0002:001b5750 ?SetValue@FESlider@@UAEXH@Z 009A4C50 f i shell.o
-1903	VERIFIED	0002:001b5770 ??_GFrontEndMenuSystem@@UAEPAXI@Z 009A4C70 f i shell.o
-1904	VERIFIED	0002:001b5770 ??_EFrontEndMenuSystem@@UAEPAXI@Z 009A4C70 f i shell.o
+1903	SKIPPED	0002:001b5770 ??_GFrontEndMenuSystem@@UAEPAXI@Z 009A4C70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1904	SKIPPED	0002:001b5770 ??_EFrontEndMenuSystem@@UAEPAXI@Z 009A4C70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1905	SKIPPED	0002:001b57a0 ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ 009A4CA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1906	SKIPPED	0002:001b57c0 ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDI@Z 009A4CC0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1907	PORTED	0002:001b5800 ??1?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 009A4D00 f i shell.o
@@ -1919,7 +1919,7 @@ index	status	map_line
 1918	SKIPPED	0002:001b5c20 ?end@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009A5120 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1919	SKIPPED	0002:001b5c40 ??Diterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBEAAU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@2@XZ 009A5140 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1920	SKIPPED	0002:001b5c50 ??Diterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBEAAU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@2@XZ 009A5150 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1921	VERIFIED	0002:001b5c60 ??_GUIListBoxItem@UIListBox@@QAEPAXI@Z 009A5160 f i shell.o
+1921	SKIPPED	0002:001b5c60 ??_GUIListBoxItem@UIListBox@@QAEPAXI@Z 009A5160 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1922	SKIPPED	0002:001b5c90 ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@QAE@XZ 009A5190 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1923	PORTED	0002:001b5cc0 ?resize@?$ae_vector@PAVPanelQuadSection@@@@QAEXH@Z 009A51C0 f i shell.o
 1924	PORTED	0002:001b5d60 ?construct_array@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEPAVUIListBoxItem@UIListBox@@H@Z 009A5260 f i shell.o
@@ -1970,8 +1970,8 @@ index	status	map_line
 1969	VERIFIED	0002:001b67d0 ?GetInitialHeight@PanelQuad@@UAEMXZ 009A5CD0 f i shell.o
 1970	VERIFIED	0002:001b6810 ??0TBankAlloc@@QAE@XZ 009A5D10 f i shell.o
 1971	VERIFIED	0002:001b6830 ??0FEMenuListBox@@QAE@PAVFEText@@PAVFEMenu@@H@Z 009A5D30 f i shell.o
-1972	VERIFIED	0002:001b6920 ??_EFEMenuListBox@@UAEPAXI@Z 009A5E20 f i shell.o
-1973	VERIFIED	0002:001b6920 ??_GFEMenuListBox@@UAEPAXI@Z 009A5E20 f i shell.o
+1972	SKIPPED	0002:001b6920 ??_EFEMenuListBox@@UAEPAXI@Z 009A5E20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1973	SKIPPED	0002:001b6920 ??_GFEMenuListBox@@UAEPAXI@Z 009A5E20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1974	VERIFIED	0002:001b6950 ??1FEMenuListBox@@UAE@XZ 009A5E50 f i shell.o
 1975	VERIFIED	0002:001b6a10 ??0SE_Entry_s@@QAE@XZ 009A5F10 f i shell.o
 1976	VERIFIED	0002:001b6a70 ??1SE_Entry_s@@QAE@XZ 009A5F70 f i shell.o
@@ -1982,7 +1982,7 @@ index	status	map_line
 1981	SKIPPED	0002:001b6dd0 ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QBE_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 009A62D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1982	SKIPPED	0002:001b6e20 ??Fiterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A6320 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1983	VERIFIED	0002:001b6e30 ??0UIListBoxRow@UIListBox@@QAE@XZ 009A6330 f i shell.o
-1984	VERIFIED	0002:001b6e40 ??_GUIListBoxDataRow@UIListBox@@QAEPAXI@Z 009A6340 f i shell.o
+1984	SKIPPED	0002:001b6e40 ??_GUIListBoxDataRow@UIListBox@@QAEPAXI@Z 009A6340 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1985	VERIFIED	0002:001b6e70 ??1UIListBoxRow@UIListBox@@QAE@XZ 009A6370 f i shell.o
 1986	SKIPPED	0002:001b6e80 ?_Init@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEXXZ 009A6380 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1987	SKIPPED	0002:001b6ec0 ?_Lbound@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IBEPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A63C0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1996,28 +1996,28 @@ index	status	map_line
 1995	SKIPPED	0002:001b7280 ?_Lbound@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@IBEPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A6780 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1996	SKIPPED	0002:001b7370 ?_Ubound@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@IBEPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A6870 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1997	SKIPPED	0002:001b7450 ??Eiterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AV012@H@Z 009A6950 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1998	SKIPPED	0002:001b7470 ??_G_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A6970 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1999	SKIPPED	0002:001b74a0 ??_G_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A69A0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1998	SKIPPED	0002:001b7470 ??_G_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A6970 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1999	SKIPPED	0002:001b74a0 ??_G_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A69A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2000	SKIPPED	0002:001b74d0 ??1_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@XZ 009A69D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2001	VERIFIED	0002:001b74e0 ??1PanelFile@@QAE@XZ 009A69E0 f i shell.o
 2002	VERIFIED	0002:001b7570 ?PanelFileUnloaded@FEMenu@@UAEXPAVPanelFile@@@Z 009A6A70 f i shell.o
 2003	VERIFIED	0002:001b7580 ?SetColumnCount@UIListBoxRow@UIListBox@@QAEXH@Z 009A6A80 f i shell.o
-2004	VERIFIED	0002:001b7600 ??_EIGOWeaponNameWidget@@UAEPAXI@Z 009A6B00 f i shell.o
-2005	VERIFIED	0002:001b7600 ??_GIGOWeaponNameWidget@@UAEPAXI@Z 009A6B00 f i shell.o
+2004	SKIPPED	0002:001b7600 ??_EIGOWeaponNameWidget@@UAEPAXI@Z 009A6B00 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2005	SKIPPED	0002:001b7600 ??_GIGOWeaponNameWidget@@UAEPAXI@Z 009A6B00 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2006	VERIFIED	0002:001b7630 ??1IGOWeaponNameWidget@@UAE@XZ 009A6B30 f i shell.o
 2007	VERIFIED	0002:001b76b0 ?SetLocation3D@FloatingPQ@@UAEXUvector@Broc@@@Z 009A6BB0 f i shell.o
 2008	VERIFIED	0002:001b76e0 ?GetLocation3D@FloatingPQ@@UAE?AUvector@Broc@@XZ 009A6BE0 f i shell.o
 2009	PORTED	0002:001b7710 ?CopyFrom@FloatingPQ@@UAEXPBV1@@Z 009A6C10 f i shell.o
-2010	VERIFIED	0002:001b7750 ??_GPanelFile@@QAEPAXI@Z 009A6C50 f i shell.o
+2010	SKIPPED	0002:001b7750 ??_GPanelFile@@QAEPAXI@Z 009A6C50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2011	PORTED	0002:001b7780 ?SetVis@FEMultiMenu@@UAEXH@Z 009A6C80 f i shell.o
 2012	PORTED	0002:001b7790 ?Init@FEMultiMenu@@UAEXXZ 009A6C90 f i shell.o
 2013	PORTED	0002:001b77a0 ?OnLeft@FEMultiMenu@@UAEXH@Z 009A6CA0 f i shell.o
 2014	PORTED	0002:001b77b0 ?OnRight@FEMultiMenu@@UAEXH@Z 009A6CB0 f i shell.o
-2015	VERIFIED	0002:001b77c0 ??_EFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o
-2016	VERIFIED	0002:001b77c0 ??_GFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o
-2017	VERIFIED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o
-2018	VERIFIED	0002:001b77f0 ??_EFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o
-2019	PORTED	0002:001b7820 ??_GDialogMenuDisplay@@QAEPAXI@Z 009A6D20 f i shell.o
+2015	SKIPPED	0002:001b77c0 ??_EFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2016	SKIPPED	0002:001b77c0 ??_GFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2017	SKIPPED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2018	SKIPPED	0002:001b77f0 ??_EFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2019	SKIPPED	0002:001b7820 ??_GDialogMenuDisplay@@QAEPAXI@Z 009A6D20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2020	PORTED	0002:001b7890 ?OnLeft@DialogMenu@@UAEXH@Z 009A6D90 f i shell.o
 2021	PORTED	0002:001b78a0 ?OnRight@DialogMenu@@UAEXH@Z 009A6DA0 f i shell.o
 2022	VERIFIED	0002:001b78b0 ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009A6DB0 f i shell.o
@@ -2062,49 +2062,49 @@ index	status	map_line
 2061	SKIPPED	0002:001b7ed0 ??0?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@1@@Z 009A73D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2062	SKIPPED	0002:001b7f10 ?lower_bound@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7410 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2063	SKIPPED	0002:001b7f30 ??0?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 009A7430 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2064	VERIFIED	0002:001b7f70 ??_GUIListBoxRow@UIListBox@@QAEPAXI@Z 009A7470 f i shell.o
+2064	SKIPPED	0002:001b7f70 ??_GUIListBoxRow@UIListBox@@QAEPAXI@Z 009A7470 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2065	SKIPPED	0002:001b7fa0 ?append@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z 009A74A0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2066	SKIPPED	0002:001b8100 ?lower_bound@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBE?AVconst_iterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7600 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2067	SKIPPED	0002:001b8120 ?upper_bound@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBE?AVconst_iterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7620 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2068	SKIPPED	0002:001b8140 ??$_Destroy@U_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@@std@@YAXPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@0@@Z 009A7640 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2069	SKIPPED	0002:001b8150 ??$_Destroy@U_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@@std@@YAXPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@@Z 009A7650 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2070	SKIPPED	0002:001b8160 ??_G_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A7660 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+2070	SKIPPED	0002:001b8160 ??_G_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAEPAXI@Z 009A7660 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2071	VERIFIED	0002:001b8190 ??0DefaultPanelQuad@@QAE@PAD@Z 009A7690 f i shell.o
 2072	VERIFIED	0002:001b81c0 ?Draw@DefaultPanelQuad@@UAEXXZ 009A76C0 f i shell.o
 2073	VERIFIED	0002:001b81d0 ??1FEMultiMenu@@UAE@XZ 009A76D0 f i shell.o
-2074	VERIFIED	0002:001b81e0 ??_EControllerDisconnectedMenu@@UAEPAXI@Z 009A76E0 f i shell.o
-2075	VERIFIED	0002:001b81e0 ??_GControllerDisconnectedMenu@@UAEPAXI@Z 009A76E0 f i shell.o
+2074	SKIPPED	0002:001b81e0 ??_EControllerDisconnectedMenu@@UAEPAXI@Z 009A76E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2075	SKIPPED	0002:001b81e0 ??_GControllerDisconnectedMenu@@UAEPAXI@Z 009A76E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2076	VERIFIED	0002:001b8210 ??1ControllerDisconnectedMenu@@UAE@XZ 009A7710 f i shell.o
-2077	VERIFIED	0002:001b8280 ??_EDialogMenu@@UAEPAXI@Z 009A7780 f i shell.o
-2078	VERIFIED	0002:001b8280 ??_GDialogMenu@@UAEPAXI@Z 009A7780 f i shell.o
+2077	SKIPPED	0002:001b8280 ??_EDialogMenu@@UAEPAXI@Z 009A7780 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2078	SKIPPED	0002:001b8280 ??_GDialogMenu@@UAEPAXI@Z 009A7780 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2079	VERIFIED	0002:001b82b0 ??1DialogMenu@@UAE@XZ 009A77B0 f i shell.o
-2080	VERIFIED	0002:001b8330 ??_EPanelQuad@@UAEPAXI@Z 009A7830 f i shell.o
-2081	VERIFIED	0002:001b8330 ??_GPanelQuad@@UAEPAXI@Z 009A7830 f i shell.o
+2080	SKIPPED	0002:001b8330 ??_EPanelQuad@@UAEPAXI@Z 009A7830 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2081	SKIPPED	0002:001b8330 ??_GPanelQuad@@UAEPAXI@Z 009A7830 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2082	VERIFIED	0002:001b8360 ??1OverlayMenuBase@@UAE@XZ 009A7860 f i shell.o
-2083	VERIFIED	0002:001b8370 ??_GFEMenu@@UAEPAXI@Z 009A7870 f i shell.o
-2084	VERIFIED	0002:001b8370 ??_EFEMenu@@UAEPAXI@Z 009A7870 f i shell.o
+2083	SKIPPED	0002:001b8370 ??_GFEMenu@@UAEPAXI@Z 009A7870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2084	SKIPPED	0002:001b8370 ??_EFEMenu@@UAEPAXI@Z 009A7870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2085	VERIFIED	0002:001b83a0 ?IsSystemActive@DialogMenuSystem@@UAE_NXZ 009A78A0 f i shell.o
-2086	VERIFIED	0002:001b83b0 ??_EMemCardCheckMenu@@UAEPAXI@Z 009A78B0 f i shell.o
-2087	VERIFIED	0002:001b83b0 ??_GMemCardCheckMenu@@UAEPAXI@Z 009A78B0 f i shell.o
-2088	VERIFIED	0002:001b83e0 ??_GOptionsGameplayMenu@@UAEPAXI@Z 009A78E0 f i shell.o
-2089	VERIFIED	0002:001b83e0 ??_EOptionsGameplayMenu@@UAEPAXI@Z 009A78E0 f i shell.o
-2090	VERIFIED	0002:001b8410 ??_EOptionsControlsMenu@@UAEPAXI@Z 009A7910 f i shell.o
-2091	VERIFIED	0002:001b8410 ??_GOptionsControlsMenu@@UAEPAXI@Z 009A7910 f i shell.o
-2092	VERIFIED	0002:001b8440 ??_GOptionsSoundMenu@@UAEPAXI@Z 009A7940 f i shell.o
-2093	VERIFIED	0002:001b8440 ??_EOptionsSoundMenu@@UAEPAXI@Z 009A7940 f i shell.o
-2094	VERIFIED	0002:001b8470 ??_EOptionsStickMenu@@UAEPAXI@Z 009A7970 f i shell.o
-2095	VERIFIED	0002:001b8470 ??_GOptionsStickMenu@@UAEPAXI@Z 009A7970 f i shell.o
-2096	VERIFIED	0002:001b84a0 ??_EOptionsButtonMenu@@UAEPAXI@Z 009A79A0 f i shell.o
-2097	VERIFIED	0002:001b84a0 ??_GOptionsButtonMenu@@UAEPAXI@Z 009A79A0 f i shell.o
-2098	VERIFIED	0002:001b84d0 ??_EGammaScreenMenu@@UAEPAXI@Z 009A79D0 f i shell.o
-2099	VERIFIED	0002:001b84d0 ??_GGammaScreenMenu@@UAEPAXI@Z 009A79D0 f i shell.o
-2100	VERIFIED	0002:001b8500 ??_ELoadingMenu@@UAEPAXI@Z 009A7A00 f i shell.o
-2101	VERIFIED	0002:001b8500 ??_GLoadingMenu@@UAEPAXI@Z 009A7A00 f i shell.o
+2086	SKIPPED	0002:001b83b0 ??_EMemCardCheckMenu@@UAEPAXI@Z 009A78B0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2087	SKIPPED	0002:001b83b0 ??_GMemCardCheckMenu@@UAEPAXI@Z 009A78B0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2088	SKIPPED	0002:001b83e0 ??_GOptionsGameplayMenu@@UAEPAXI@Z 009A78E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2089	SKIPPED	0002:001b83e0 ??_EOptionsGameplayMenu@@UAEPAXI@Z 009A78E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2090	SKIPPED	0002:001b8410 ??_EOptionsControlsMenu@@UAEPAXI@Z 009A7910 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2091	SKIPPED	0002:001b8410 ??_GOptionsControlsMenu@@UAEPAXI@Z 009A7910 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2092	SKIPPED	0002:001b8440 ??_GOptionsSoundMenu@@UAEPAXI@Z 009A7940 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2093	SKIPPED	0002:001b8440 ??_EOptionsSoundMenu@@UAEPAXI@Z 009A7940 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2094	SKIPPED	0002:001b8470 ??_EOptionsStickMenu@@UAEPAXI@Z 009A7970 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2095	SKIPPED	0002:001b8470 ??_GOptionsStickMenu@@UAEPAXI@Z 009A7970 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2096	SKIPPED	0002:001b84a0 ??_EOptionsButtonMenu@@UAEPAXI@Z 009A79A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2097	SKIPPED	0002:001b84a0 ??_GOptionsButtonMenu@@UAEPAXI@Z 009A79A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2098	SKIPPED	0002:001b84d0 ??_EGammaScreenMenu@@UAEPAXI@Z 009A79D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2099	SKIPPED	0002:001b84d0 ??_GGammaScreenMenu@@UAEPAXI@Z 009A79D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2100	SKIPPED	0002:001b8500 ??_ELoadingMenu@@UAEPAXI@Z 009A7A00 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2101	SKIPPED	0002:001b8500 ??_GLoadingMenu@@UAEPAXI@Z 009A7A00 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2102	VERIFIED	0002:001b8530 ?Init@VKMenu@@UAEXXZ 009A7A30 f i shell.o
-2103	VERIFIED	0002:001b8540 ??_EProfileMainMenu@@UAEPAXI@Z 009A7A40 f i shell.o
-2104	VERIFIED	0002:001b8540 ??_GProfileMainMenu@@UAEPAXI@Z 009A7A40 f i shell.o
-2105	VERIFIED	0002:001b8570 ??_GProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o
-2106	VERIFIED	0002:001b8570 ??_EProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o
+2103	SKIPPED	0002:001b8540 ??_EProfileMainMenu@@UAEPAXI@Z 009A7A40 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2104	SKIPPED	0002:001b8540 ??_GProfileMainMenu@@UAEPAXI@Z 009A7A40 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2105	SKIPPED	0002:001b8570 ??_GProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2106	SKIPPED	0002:001b8570 ??_EProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2107	SKIPPED	0002:001b85a0 ??Y?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@D@Z 009A7AA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2108	PORTED	0002:001b85c0 ??0?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@H@Z 009A7AC0 f i shell.o
 2109	PORTED	0002:001b85f0 ??1?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@XZ 009A7AF0 f i shell.o
@@ -2122,31 +2122,31 @@ index	status	map_line
 2121	SKIPPED	0002:001b89d0 ??0?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@QAE@ABU01@@Z 009A7ED0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2122	SKIPPED	0002:001b8a10 ??$_Destroy@U_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@@std@@YAXPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@0@@Z 009A7F10 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2123	SKIPPED	0002:001b8a20 ??0out_of_range@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 009A7F20 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2124	SKIPPED	0002:001b8a50 ??_Gout_of_range@std@@UAEPAXI@Z 009A7F50 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2125	SKIPPED	0002:001b8a50 ??_Eout_of_range@std@@UAEPAXI@Z 009A7F50 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+2124	SKIPPED	0002:001b8a50 ??_Gout_of_range@std@@UAEPAXI@Z 009A7F50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2125	SKIPPED	0002:001b8a50 ??_Eout_of_range@std@@UAEPAXI@Z 009A7F50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2126	SKIPPED	0002:001b8a80 ??1out_of_range@std@@UAE@XZ 009A7F80 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2127	VERIFIED	0002:001b8a90 ??_EDefaultPanelQuad@@UAEPAXI@Z 009A7F90 f i shell.o
-2128	VERIFIED	0002:001b8a90 ??_GDefaultPanelQuad@@UAEPAXI@Z 009A7F90 f i shell.o
+2127	SKIPPED	0002:001b8a90 ??_EDefaultPanelQuad@@UAEPAXI@Z 009A7F90 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2128	SKIPPED	0002:001b8a90 ??_GDefaultPanelQuad@@UAEPAXI@Z 009A7F90 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2129	VERIFIED	0002:001b8ac0 ??1DefaultPanelQuad@@UAE@XZ 009A7FC0 f i shell.o
-2130	VERIFIED	0002:001b8ad0 ??_GFloatingPQ@@UAEPAXI@Z 009A7FD0 f i shell.o
-2131	VERIFIED	0002:001b8ad0 ??_EFloatingPQ@@UAEPAXI@Z 009A7FD0 f i shell.o
+2130	SKIPPED	0002:001b8ad0 ??_GFloatingPQ@@UAEPAXI@Z 009A7FD0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2131	SKIPPED	0002:001b8ad0 ??_EFloatingPQ@@UAEPAXI@Z 009A7FD0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2132	VERIFIED	0002:001b8b00 ??1FloatingPQ@@UAE@XZ 009A8000 f i shell.o
-2133	VERIFIED	0002:001b8b10 ??_GFEMultiMenu@@UAEPAXI@Z 009A8010 f i shell.o
-2134	VERIFIED	0002:001b8b10 ??_EFEMultiMenu@@UAEPAXI@Z 009A8010 f i shell.o
+2133	SKIPPED	0002:001b8b10 ??_GFEMultiMenu@@UAEPAXI@Z 009A8010 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2134	SKIPPED	0002:001b8b10 ??_EFEMultiMenu@@UAEPAXI@Z 009A8010 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2135	VERIFIED	0002:001b8b40 ??1MultilineOverlayMenu@@UAE@XZ 009A8040 f i shell.o
 2136	VERIFIED	0002:001b8bc0 ?Init@OverlayMenuBase@@UAEXXZ 009A80C0 f i shell.o
-2137	VERIFIED	0002:001b8bd0 ??_EMultilineOverlayMenu@@UAEPAXI@Z 009A80D0 f i shell.o
-2138	VERIFIED	0002:001b8bd0 ??_GMultilineOverlayMenu@@UAEPAXI@Z 009A80D0 f i shell.o
+2137	SKIPPED	0002:001b8bd0 ??_EMultilineOverlayMenu@@UAEPAXI@Z 009A80D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2138	SKIPPED	0002:001b8bd0 ??_GMultilineOverlayMenu@@UAEPAXI@Z 009A80D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2139	VERIFIED	0002:001b8c00 ??0MultilineFrontendOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009A8100 f i shell.o
 2140	VERIFIED	0002:001b8c30 ?OnDeactivate@MultilineFrontendOverlayMenu@@UAEXPAVFEMenu@@@Z 009A8130 f i shell.o
 2141	VERIFIED	0002:001b8c40 ??0MultilineIngameOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009A8140 f i shell.o
-2142	VERIFIED	0002:001b8c70 ??_EDialogMenuSystem@@UAEPAXI@Z 009A8170 f i shell.o
-2143	VERIFIED	0002:001b8c70 ??_GDialogMenuSystem@@UAEPAXI@Z 009A8170 f i shell.o
-2144	VERIFIED	0002:001b8ca0 ??_GInGameMenuSystem@@UAEPAXI@Z 009A81A0 f i shell.o
-2145	VERIFIED	0002:001b8ca0 ??_EInGameMenuSystem@@UAEPAXI@Z 009A81A0 f i shell.o
+2142	SKIPPED	0002:001b8c70 ??_EDialogMenuSystem@@UAEPAXI@Z 009A8170 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2143	SKIPPED	0002:001b8c70 ??_GDialogMenuSystem@@UAEPAXI@Z 009A8170 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2144	SKIPPED	0002:001b8ca0 ??_GInGameMenuSystem@@UAEPAXI@Z 009A81A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2145	SKIPPED	0002:001b8ca0 ??_EInGameMenuSystem@@UAEPAXI@Z 009A81A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2146	VERIFIED	0002:001b8cd0 ??1InGameMenuSystem@@UAE@XZ 009A81D0 f i shell.o
-2147	VERIFIED	0002:001b8ce0 ??_GVKMenu@@UAEPAXI@Z 009A81E0 f i shell.o
-2148	VERIFIED	0002:001b8ce0 ??_EVKMenu@@UAEPAXI@Z 009A81E0 f i shell.o
+2147	SKIPPED	0002:001b8ce0 ??_GVKMenu@@UAEPAXI@Z 009A81E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2148	SKIPPED	0002:001b8ce0 ??_EVKMenu@@UAEPAXI@Z 009A81E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2149	SKIPPED	0002:001b8d10 ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z 009A8210 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2150	SKIPPED	0002:001b8d40 ??Y?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z 009A8240 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2151	PORTED	0002:001b8d70 ??1?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@XZ 009A8270 f i shell.o
@@ -2163,13 +2163,13 @@ index	status	map_line
 2162	SKIPPED	0002:001b9af0 ??0_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@PAU012@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@2@D@Z 009A8FF0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2163	SKIPPED	0002:001b9b40 ??0_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@PAU012@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@2@D@Z 009A9040 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2164	VERIFIED	0002:001b9bb0 ??1UIListBox@@UAE@XZ 009A90B0 f i shell.o
-2165	VERIFIED	0002:001b9c60 ??_EUIListBox@@UAEPAXI@Z 009A9160 f i shell.o
-2166	VERIFIED	0002:001b9c60 ??_GUIListBox@@UAEPAXI@Z 009A9160 f i shell.o
-2167	VERIFIED	0002:001b9c90 ??_GMultilineFrontendOverlayMenu@@UAEPAXI@Z 009A9190 f i shell.o
-2168	VERIFIED	0002:001b9c90 ??_EMultilineFrontendOverlayMenu@@UAEPAXI@Z 009A9190 f i shell.o
+2165	SKIPPED	0002:001b9c60 ??_EUIListBox@@UAEPAXI@Z 009A9160 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2166	SKIPPED	0002:001b9c60 ??_GUIListBox@@UAEPAXI@Z 009A9160 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2167	SKIPPED	0002:001b9c90 ??_GMultilineFrontendOverlayMenu@@UAEPAXI@Z 009A9190 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2168	SKIPPED	0002:001b9c90 ??_EMultilineFrontendOverlayMenu@@UAEPAXI@Z 009A9190 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2169	VERIFIED	0002:001b9cc0 ??1MultilineFrontendOverlayMenu@@UAE@XZ 009A91C0 f i shell.o
-2170	VERIFIED	0002:001b9cd0 ??_EMultilineIngameOverlayMenu@@UAEPAXI@Z 009A91D0 f i shell.o
-2171	VERIFIED	0002:001b9cd0 ??_GMultilineIngameOverlayMenu@@UAEPAXI@Z 009A91D0 f i shell.o
+2170	SKIPPED	0002:001b9cd0 ??_EMultilineIngameOverlayMenu@@UAEPAXI@Z 009A91D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2171	SKIPPED	0002:001b9cd0 ??_GMultilineIngameOverlayMenu@@UAEPAXI@Z 009A91D0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2172	VERIFIED	0002:001b9d00 ??1MultilineIngameOverlayMenu@@UAE@XZ 009A9200 f i shell.o
 2173	VERIFIED	0002:001b9d10 ??4SE_Entry_s@@QAEAAU0@ABU0@@Z 009A9210 f i shell.o
 2174	VERIFIED	0002:001b9d50 ??1UIHighlightListBox@@UAE@XZ 009A9250 f i shell.o
@@ -2180,12 +2180,12 @@ index	status	map_line
 2179	SKIPPED	0002:001ba1e0 ?_Buynode@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@PAU342@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@2@D@Z 009A96E0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2180	SKIPPED	0002:001ba2a0 ?_Buynode@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@IAEPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@2@PAU342@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@2@D@Z 009A97A0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2181	SKIPPED	0002:001ba350 ?clear@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEXXZ 009A9850 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2182	VERIFIED	0002:001ba390 ??_GIGOVoipList@@UAEPAXI@Z 009A9890 f i shell.o
-2183	VERIFIED	0002:001ba390 ??_EIGOVoipList@@UAEPAXI@Z 009A9890 f i shell.o
-2184	VERIFIED	0002:001ba3c0 ??_GUIHighlightListBox@@UAEPAXI@Z 009A98C0 f i shell.o
-2185	VERIFIED	0002:001ba3c0 ??_EUIHighlightListBox@@UAEPAXI@Z 009A98C0 f i shell.o
-2186	VERIFIED	0002:001ba3f0 ??_EUIPlayerListBox@@UAEPAXI@Z 009A98F0 f i shell.o
-2187	VERIFIED	0002:001ba3f0 ??_GUIPlayerListBox@@UAEPAXI@Z 009A98F0 f i shell.o
+2182	SKIPPED	0002:001ba390 ??_GIGOVoipList@@UAEPAXI@Z 009A9890 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2183	SKIPPED	0002:001ba390 ??_EIGOVoipList@@UAEPAXI@Z 009A9890 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2184	SKIPPED	0002:001ba3c0 ??_GUIHighlightListBox@@UAEPAXI@Z 009A98C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2185	SKIPPED	0002:001ba3c0 ??_EUIHighlightListBox@@UAEPAXI@Z 009A98C0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2186	SKIPPED	0002:001ba3f0 ??_EUIPlayerListBox@@UAEPAXI@Z 009A98F0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+2187	SKIPPED	0002:001ba3f0 ??_GUIPlayerListBox@@UAEPAXI@Z 009A98F0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2188	VERIFIED	0002:001ba420 ??1UIPlayerListBox@@UAE@XZ 009A9920 f i shell.o
 2189	SKIPPED	0002:001ba4d0 ?clear@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAEXXZ 009A99D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2190	SKIPPED	0002:001ba510 ?insert@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AU?$pair@Viterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@_N@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A9A10 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

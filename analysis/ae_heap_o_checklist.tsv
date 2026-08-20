@@ -9,5 +9,5 @@ index	status	map_line
 8	VERIFIED	0002:003bbf80 ?Malloc@ae_heap@@UAEPAXII@Z 00BAB480 f i ae_heap.o
 9	VERIFIED	0002:003bbfc0 ?Free@ae_heap@@UAEXPAX@Z 00BAB4C0 f i ae_heap.o
 10	VERIFIED	0002:003bbfe0 ?CheckFree@ae_heap@@UAE_NPAX@Z 00BAB4E0 f i ae_heap.o
-11	VERIFIED	0002:003bc020 ??_Eae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
-12	VERIFIED	0002:003bc020 ??_Gae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o
+11	SKIPPED	0002:003bc020 ??_Eae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+12	SKIPPED	0002:003bc020 ??_Gae_heap@@UAEPAXI@Z 00BAB520 f i ae_heap.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

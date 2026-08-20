@@ -24,9 +24,9 @@ index	status	map_line
 23	PORTED	0002:003de3c0 ??0cdWorldBlendParams@cdWorldBlendRender@@QAE@XZ 00BCD8C0 f i cdWorldBlendShader.o
 24	PORTED	0002:003de3d0 ??$SetConstants@UcdWorldBlendParams@cdWorldBlendRender@@@cdWorldBlendRender@@YAXABUcdWorldBlendParams@0@@Z 00BCD8D0 f i cdWorldBlendShader.o
 25	PORTED	0002:003de3f0 ??0cdWorldBlendShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldBlendShaderMat@@@Z 00BCD8F0 f i cdWorldBlendShader.o
-26	PORTED	0002:003de420 ??_EcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o
-27	PORTED	0002:003de420 ??_GcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o
+26	SKIPPED	0002:003de420 ??_EcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+27	SKIPPED	0002:003de420 ??_GcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 28	PORTED	0002:003de450 ??1cdWorldBlendShaderNode@@UAE@XZ 00BCD950 f i cdWorldBlendShader.o
-29	VERIFIED	0002:003de460 ??_EcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o
-30	VERIFIED	0002:003de460 ??_GcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o
+29	SKIPPED	0002:003de460 ??_EcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+30	SKIPPED	0002:003de460 ??_GcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 31	VERIFIED	0002:003de490 ??1cdWorldBlendShader@@UAE@XZ 00BCD990 f i cdWorldBlendShader.o

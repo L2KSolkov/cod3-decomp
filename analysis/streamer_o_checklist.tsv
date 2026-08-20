@@ -584,8 +584,8 @@ index	status	map_line
 583	PORTED	0002:00284db0 ?Free@ae_heap_wrapper@@UAEXPAX@Z 00A742B0 f i streamer.o
 584	PORTED	0002:00284dd0 ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z 00A742D0 f i streamer.o
 585	PORTED	0002:00284df0 ?GetHeapPointer@ae_heap_wrapper@@UAEPAUmem_heap@@XZ 00A742F0 f i streamer.o
-586	PORTED	0002:00284e00 ??_Gae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o
-587	PORTED	0002:00284e00 ??_Eae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o
+586	SKIPPED	0002:00284e00 ??_Gae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+587	SKIPPED	0002:00284e00 ??_Eae_heap_wrapper@@UAEPAXI@Z 00A74300 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 588	PORTED	0002:00284e30 ??1ae_heap_wrapper@@UAE@XZ 00A74330 f i streamer.o
 589	VERIFIED	0002:00284e40 ?Fixup@MipSettingsBank@@QAEXXZ 00A74340 f i streamer.o
 590	PORTED	0002:00284f80 ??0ThroughputMeasurer@@QAE@XZ 00A74480 f i streamer.o
@@ -647,22 +647,22 @@ index	status	map_line
 646	VERIFIED	0002:00286250 ?Add@?$BitSet@$0GD@@@QAEXH@Z 00A75750 f i streamer.o
 647	VERIFIED	0002:002862e0 ?Test@?$BitSet@$0GD@@@QBE_NH@Z 00A757E0 f i streamer.o
 648	PORTED	0002:00286370 ?back@?$ae_sized_array@UnglMeshLOD@@$07@@QAEAAUnglMeshLOD@@XZ 00A75870 f i streamer.o
-649	VERIFIED	0002:00286390 ??_G?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o
-650	VERIFIED	0002:00286390 ??_E?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o
-651	VERIFIED	0002:002863c0 ??_E?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o
-652	VERIFIED	0002:002863c0 ??_G?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o
-653	VERIFIED	0002:002863f0 ??_G?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o
-654	VERIFIED	0002:002863f0 ??_E?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o
-655	VERIFIED	0002:00286420 ??_G?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o
-656	VERIFIED	0002:00286420 ??_E?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o
-657	VERIFIED	0002:00286450 ??_E?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o
-658	VERIFIED	0002:00286450 ??_G?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o
-659	PORTED	0002:00286480 ??_G?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o
-660	PORTED	0002:00286480 ??_E?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o
-661	PORTED	0002:002864b0 ??_E?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o
-662	PORTED	0002:002864b0 ??_G?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o
-663	VERIFIED	0002:002864e0 ??_G?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o
-664	VERIFIED	0002:002864e0 ??_E?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o
+649	SKIPPED	0002:00286390 ??_G?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+650	SKIPPED	0002:00286390 ??_E?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A75890 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+651	SKIPPED	0002:002863c0 ??_E?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+652	SKIPPED	0002:002863c0 ??_G?$cdResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758C0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+653	SKIPPED	0002:002863f0 ??_G?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+654	SKIPPED	0002:002863f0 ??_E?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00A758F0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+655	SKIPPED	0002:00286420 ??_G?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+656	SKIPPED	0002:00286420 ??_E?$cdResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75920 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+657	SKIPPED	0002:00286450 ??_E?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+658	SKIPPED	0002:00286450 ??_G?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00A75950 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+659	SKIPPED	0002:00286480 ??_G?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+660	SKIPPED	0002:00286480 ??_E?$cdResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A75980 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+661	SKIPPED	0002:002864b0 ??_E?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+662	SKIPPED	0002:002864b0 ??_G?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00A759B0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+663	SKIPPED	0002:002864e0 ??_G?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+664	SKIPPED	0002:002864e0 ??_E?$cdResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00A759E0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 665	PORTED	0002:00286510 ??0?$ae_sized_array_base@Vmem_info@@$0CA@@@QAE@XZ 00A75A10 f i streamer.o
 666	VERIFIED	0002:00286540 ?back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@XZ 00A75A40 f i streamer.o
 667	PORTED	0002:00286560 ?find@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@PAVPakFile@@@Z 00A75A60 f i streamer.o
@@ -689,7 +689,7 @@ index	status	map_line
 688	PORTED	0002:00286b80 ?GetStreamZone@ZoneBoundaryBank@@QAEPBVStreamZone@@PBD@Z 00A76080 f i streamer.o
 689	VERIFIED	0002:00286bc0 ?Find@InstanceBank@@QBEHPBDI@Z 00A760C0 f i streamer.o
 690	VERIFIED	0002:00286ca0 ?FindEntry@InstanceBankSet@@QAEPAIW4eInstanceBankType@@PBDI@Z 00A761A0 f i streamer.o
-691	PORTED	0002:00286d50 ??_G?$ae_vector@PAVapkFile@apk@@@@QAEPAXI@Z 00A76250 f i streamer.o
+691	SKIPPED	0002:00286d50 ??_G?$ae_vector@PAVapkFile@apk@@@@QAEPAXI@Z 00A76250 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 692	PORTED	0002:00286da0 ??1InstanceListNode@@QAE@XZ 00A762A0 f i streamer.o
 693	PORTED	0002:00286e10 ?erase@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXH@Z 00A76310 f i streamer.o
 694	VERIFIED	0002:00286e60 ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ 00A76360 f i streamer.o
@@ -709,7 +709,7 @@ index	status	map_line
 708	PORTED	0002:00287420 ?erase@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXH@Z 00A76920 f i streamer.o
 709	VERIFIED	0002:00287470 ?resize@?$ae_vector@UGlowSprites@@@@QAEXH@Z 00A76970 f i streamer.o
 710	VERIFIED	0002:00287550 ?resize@?$ae_vector@UGlowBeam@@@@QAEXH@Z 00A76A50 f i streamer.o
-711	PORTED	0002:00287610 ??_GInstanceListNode@@QAEPAXI@Z 00A76B10 f i streamer.o
+711	SKIPPED	0002:00287610 ??_GInstanceListNode@@QAEPAXI@Z 00A76B10 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 712	VERIFIED	0002:00287640 ?SingletonDebugRender@StreamZoneManager@@SAXXZ 00A76B40 f i streamer.o
 713	PORTED	0002:00287650 ?erase@?$ae_sized_array@PAVAssetBankSet@@$0BI@@@QAEXViterator@1@@Z 00A76B50 f i streamer.o
 714	PORTED	0002:002876a0 ?clear@?$ae_vector@UGlowSprites@@@@QAEXXZ 00A76BA0 f i streamer.o
@@ -719,13 +719,13 @@ index	status	map_line
 718	SKIPPED	0002:00287710 ??0?$InplaceAssetBankSet@VZoneBoundaryBank@@@@QAE@XZ 00A76C10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 719	SKIPPED	0002:00287800 ?OnBankUnloaded@?$InplaceAssetBankSet@VZoneBoundaryBank@@@@MAEXAAVZoneBoundaryBank@@@Z 00A76D00 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
 720	SKIPPED	0002:00287810 ??1?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAE@XZ 00A76D10 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
-721	SKIPPED	0002:00287820 ??_E?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
-722	SKIPPED	0002:00287820 ??_G?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: inline template/container helper; supplied by its template definition
-723	VERIFIED	0002:00287850 ??_GAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
-724	VERIFIED	0002:00287850 ??_EAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o
+721	SKIPPED	0002:00287820 ??_E?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+722	SKIPPED	0002:00287820 ??_G?$InplaceAssetBankSet@VZoneBoundaryBank@@@@UAEPAXI@Z 00A76D20 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+723	SKIPPED	0002:00287850 ??_GAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+724	SKIPPED	0002:00287850 ??_EAssetBankSet@@UAEPAXI@Z 00A76D50 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 725	VERIFIED	0002:00287880 ?SingletonDebugRender@SceneManager@@SAXXZ 00A76D80 f i streamer.o
-726	PORTED	0002:00287890 ??_GSceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o
-727	PORTED	0002:00287890 ??_ESceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o
-728	VERIFIED	0002:002878c0 ??_GPakFile@@QAEPAXI@Z 00A76DC0 f i streamer.o
-729	PORTED	0002:002878f0 ??_EStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o
-730	PORTED	0002:002878f0 ??_GStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o
+726	SKIPPED	0002:00287890 ??_GSceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+727	SKIPPED	0002:00287890 ??_ESceneManager@@UAEPAXI@Z 00A76D90 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+728	SKIPPED	0002:002878c0 ??_GPakFile@@QAEPAXI@Z 00A76DC0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+729	SKIPPED	0002:002878f0 ??_EStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+730	SKIPPED	0002:002878f0 ??_GStreamZoneManager@@UAEPAXI@Z 00A76DF0 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

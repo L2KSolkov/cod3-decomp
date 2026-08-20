@@ -7,6 +7,6 @@ index	status	map_line
 6	PORTED	0002:004057b0 ?InitPShader@apsColorBillboardRenderPixel@@YAXXZ 00BF4CB0 f i apsColorBillboardRenderer.o
 7	PORTED	0002:004057d0 ??0apsColorBillboardNode@@QAE@XZ 00BF4CD0 f i apsColorBillboardRenderer.o
 8	VERIFIED	0002:004057e0 ?GetDesc@apsColorBillboardNode@@UAEXPAD@Z 00BF4CE0 f i apsColorBillboardRenderer.o
-9	PORTED	0002:00405830 ??_EapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o
-10	PORTED	0002:00405830 ??_GapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o
+9	SKIPPED	0002:00405830 ??_EapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+10	SKIPPED	0002:00405830 ??_GapsColorBillboardNode@@UAEPAXI@Z 00BF4D30 f i apsColorBillboardRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 11	PORTED	0002:00405860 ??$DefaultRender@VapsColorBillboardRenderer@@VapsColorBillboardNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsColorBillboardRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4D60 f i apsColorBillboardRenderer.o

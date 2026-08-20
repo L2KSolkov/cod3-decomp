@@ -13,11 +13,11 @@ index	status	map_line
 12	PORTED	0002:003e1690 ?GetPShader@cdSkyShaderPixel@@YAPAKXZ 00BD0B90 f i cdSkyShader.o
 13	VERIFIED	0002:003e16a0 ??0cdSkyShader@@QAE@XZ 00BD0BA0 f i cdSkyShader.o
 14	VERIFIED	0002:003e16d0 ?GetName@cdSkyShader@@UAE?AVtlFixedString@@XZ 00BD0BD0 f i cdSkyShader.o
-15	VERIFIED	0002:003e16f0 ??_EcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o
-16	VERIFIED	0002:003e16f0 ??_GcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o
+15	SKIPPED	0002:003e16f0 ??_EcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+16	SKIPPED	0002:003e16f0 ??_GcdSkyShader@@UAEPAXI@Z 00BD0BF0 f i cdSkyShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	VERIFIED	0002:003e1720 ??1cdSkyShader@@UAE@XZ 00BD0C20 f i cdSkyShader.o
 18	PORTED	0002:003e1730 ??0SkyContext@@QAE@XZ 00BD0C30 f i cdSkyShader.o
 19	VERIFIED	0002:003e1740 ?AddNode@cdSkyShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BD0C40 f i cdSkyShader.o
-20	PORTED	0002:003e17c0 ??_EcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o
-21	PORTED	0002:003e17c0 ??_GcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o
+20	SKIPPED	0002:003e17c0 ??_EcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+21	SKIPPED	0002:003e17c0 ??_GcdSkyShaderNode@@UAEPAXI@Z 00BD0CC0 f i cdSkyShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	PORTED	0002:003e17f0 ??1cdSkyShaderNode@@UAE@XZ 00BD0CF0 f i cdSkyShader.o

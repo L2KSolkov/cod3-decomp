@@ -24,9 +24,9 @@ index	status	map_line
 23	PORTED	0002:003dcef0 ??0cdWorldPointLitParams@cdWorldPointLitRender@@QAE@XZ 00BCC3F0 f i cdWorldPointLitShader.o
 24	PORTED	0002:003dcf00 ??$SetConstants@UcdWorldPointLitParams@cdWorldPointLitRender@@@cdWorldPointLitRender@@YAXABUcdWorldPointLitParams@0@@Z 00BCC400 f i cdWorldPointLitShader.o
 25	PORTED	0002:003dcf20 ??0cdWorldPointLitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldPointLitShaderMat@@@Z 00BCC420 f i cdWorldPointLitShader.o
-26	PORTED	0002:003dcf50 ??_GcdWorldPointLitShaderNode@@UAEPAXI@Z 00BCC450 f i cdWorldPointLitShader.o
-27	PORTED	0002:003dcf50 ??_EcdWorldPointLitShaderNode@@UAEPAXI@Z 00BCC450 f i cdWorldPointLitShader.o
+26	SKIPPED	0002:003dcf50 ??_GcdWorldPointLitShaderNode@@UAEPAXI@Z 00BCC450 f i cdWorldPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+27	SKIPPED	0002:003dcf50 ??_EcdWorldPointLitShaderNode@@UAEPAXI@Z 00BCC450 f i cdWorldPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 28	PORTED	0002:003dcf80 ??1cdWorldPointLitShaderNode@@UAE@XZ 00BCC480 f i cdWorldPointLitShader.o
-29	VERIFIED	0002:003dcf90 ??_EcdWorldPointLitShader@@UAEPAXI@Z 00BCC490 f i cdWorldPointLitShader.o
-30	VERIFIED	0002:003dcf90 ??_GcdWorldPointLitShader@@UAEPAXI@Z 00BCC490 f i cdWorldPointLitShader.o
+29	SKIPPED	0002:003dcf90 ??_EcdWorldPointLitShader@@UAEPAXI@Z 00BCC490 f i cdWorldPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+30	SKIPPED	0002:003dcf90 ??_GcdWorldPointLitShader@@UAEPAXI@Z 00BCC490 f i cdWorldPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 31	VERIFIED	0002:003dcfc0 ??1cdWorldPointLitShader@@UAE@XZ 00BCC4C0 f i cdWorldPointLitShader.o

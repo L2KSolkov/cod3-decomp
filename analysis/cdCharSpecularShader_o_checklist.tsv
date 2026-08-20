@@ -16,10 +16,10 @@ index	status	map_line
 15	PORTED	0002:003d27b0 ?RegisterPShader@cdCharSpecularFullbrightPixel@@YAXXZ 00BC1CB0 f i cdCharSpecularShader.o
 16	PORTED	0002:003d27d0 ?GetPShader@cdCharSpecularFullbrightPixel@@YAPAKXZ 00BC1CD0 f i cdCharSpecularShader.o
 17	PORTED	0002:003d27e0 ??0cdCharSpecularShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdCharSpecularShaderMat@@@Z 00BC1CE0 f i cdCharSpecularShader.o
-18	PORTED	0002:003d2810 ??_EcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o
-19	PORTED	0002:003d2810 ??_GcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o
+18	SKIPPED	0002:003d2810 ??_EcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+19	SKIPPED	0002:003d2810 ??_GcdCharSpecularShaderNode@@UAEPAXI@Z 00BC1D10 f i cdCharSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20	PORTED	0002:003d2840 ??1cdCharSpecularShaderNode@@UAE@XZ 00BC1D40 f i cdCharSpecularShader.o
-21	VERIFIED	0002:003d2850 ??_GcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o
-22	VERIFIED	0002:003d2850 ??_EcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o
+21	SKIPPED	0002:003d2850 ??_GcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+22	SKIPPED	0002:003d2850 ??_EcdCharSpecularShader@@UAEPAXI@Z 00BC1D50 f i cdCharSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 23	VERIFIED	0002:003d2880 ??1cdCharSpecularShader@@UAE@XZ 00BC1D80 f i cdCharSpecularShader.o
 24	PORTED	0002:003d2890 ??0CharSpecularContext@@QAE@XZ 00BC1D90 f i cdCharSpecularShader.o

@@ -29,5 +29,5 @@ index	status	map_line
 28	PENDING	0002:00431cd0 ?GetChromaDiff@nvlAFMVMovie@@IAEHXZ 00C211D0 f i nvl_afmv.o
 29	PENDING	0002:00431e20 ?IntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C21320 f i nvl_afmv.o
 30	PENDING	0002:00431ef0 ?NonIntraDCT@nvlAFMVMovie@@IAEXHQAEH@Z 00C213F0 f i nvl_afmv.o
-31	VERIFIED	0002:00431f20 ??_GnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o
-32	VERIFIED	0002:00431f20 ??_EnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o
+31	SKIPPED	0002:00431f20 ??_GnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+32	SKIPPED	0002:00431f20 ??_EnvlAFMVMovie@@UAEPAXI@Z 00C21420 f i nvl_afmv.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

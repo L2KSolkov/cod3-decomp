@@ -23,10 +23,10 @@ index	status	map_line
 22	PORTED	0002:003c8ea0 ??$Get@UcdSimpleAlphaAlphaParamType@@@nglParamSet@@QAEMABUcdSimpleAlphaAlphaParamType@@@Z 00BB83A0 f i cdSimpleAlphaShader.o
 23	PORTED	0002:003c8f00 ??$SetConstants@UParams@cdSimpleAlphaRender@@@cdSimpleAlphaRender@@YAXABUParams@0@@Z 00BB8400 f i cdSimpleAlphaShader.o
 24	PORTED	0002:003c8f20 ??0cdSimpleAlphaShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimpleAlphaShaderMat@@@Z 00BB8420 f i cdSimpleAlphaShader.o
-25	PORTED	0002:003c8f50 ??_GcdSimpleAlphaShaderNode@@UAEPAXI@Z 00BB8450 f i cdSimpleAlphaShader.o
-26	PORTED	0002:003c8f50 ??_EcdSimpleAlphaShaderNode@@UAEPAXI@Z 00BB8450 f i cdSimpleAlphaShader.o
+25	SKIPPED	0002:003c8f50 ??_GcdSimpleAlphaShaderNode@@UAEPAXI@Z 00BB8450 f i cdSimpleAlphaShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+26	SKIPPED	0002:003c8f50 ??_EcdSimpleAlphaShaderNode@@UAEPAXI@Z 00BB8450 f i cdSimpleAlphaShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	PORTED	0002:003c8f80 ??1cdSimpleAlphaShaderNode@@UAE@XZ 00BB8480 f i cdSimpleAlphaShader.o
-28	VERIFIED	0002:003c8f90 ??_GcdSimpleAlphaShader@@UAEPAXI@Z 00BB8490 f i cdSimpleAlphaShader.o
-29	VERIFIED	0002:003c8f90 ??_EcdSimpleAlphaShader@@UAEPAXI@Z 00BB8490 f i cdSimpleAlphaShader.o
+28	SKIPPED	0002:003c8f90 ??_GcdSimpleAlphaShader@@UAEPAXI@Z 00BB8490 f i cdSimpleAlphaShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+29	SKIPPED	0002:003c8f90 ??_EcdSimpleAlphaShader@@UAEPAXI@Z 00BB8490 f i cdSimpleAlphaShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 30	VERIFIED	0002:003c8fc0 ??1cdSimpleAlphaShader@@UAE@XZ 00BB84C0 f i cdSimpleAlphaShader.o
 31	PORTED	0002:003c8fd0 ??0Params@cdSimpleAlphaRender@@QAE@XZ 00BB84D0 f i cdSimpleAlphaShader.o

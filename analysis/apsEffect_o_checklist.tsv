@@ -137,10 +137,10 @@ index	status	map_line
 136	PORTED	0002:003f0550 ?push_back@?$apsBlockArray@UModifier@apsEffect@@@@QAEIABUModifier@apsEffect@@@Z 00BDFA50 f i apsEffect.o
 137	PORTED	0002:003f0670 ??$Limit@HH@apsMath@@YAHABH00@Z 00BDFB70 f i apsEffect.o
 138	PORTED	0002:003f0690 ??0apsEffect@@QAE@XZ 00BDFB90 f i apsEffect.o
-139	VERIFIED	0002:003f06c0 ??_GapsEffect@@QAEPAXI@Z 00BDFBC0 f i apsEffect.o
+139	SKIPPED	0002:003f06c0 ??_GapsEffect@@QAEPAXI@Z 00BDFBC0 f i apsEffect.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 140	VERIFIED	0002:003f06f0 ??$AEPS_VECTOR_NEW@VapsEffect@@@@YAPAVapsEffect@@HH@Z 00BDFBF0 f i apsEffect.o
 141	PORTED	0002:003f0750 ??$AEPS_VECTOR_DELETE@VapsEffect@@@@YAXHPAVapsEffect@@@Z 00BDFC50 f i apsEffect.o
 142	VERIFIED	0002:003f0790 ??0?$PoolAllocator@VapsEffect@@@apsMemory@@QAE@H@Z 00BDFC90 f i apsEffect.o
 143	VERIFIED	0002:003f0800 ??1?$PoolAllocator@VapsEffect@@@apsMemory@@QAE@XZ 00BDFD00 f i apsEffect.o
-144	VERIFIED	0002:003f0890 ??_G?$PoolAllocator@VapsEffect@@@apsMemory@@QAEPAXI@Z 00BDFD90 f i apsEffect.o
+144	SKIPPED	0002:003f0890 ??_G?$PoolAllocator@VapsEffect@@@apsMemory@@QAEPAXI@Z 00BDFD90 f i apsEffect.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 145	PORTED	0002:003f08c0 ??$apsDestroy@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@YAXPAV?$PoolAllocator@VapsEffect@@@apsMemory@@@Z 00BDFDC0 f i apsEffect.o

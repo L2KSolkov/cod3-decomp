@@ -4,11 +4,11 @@ index	status	map_line
 3	PORTED	0002:004733f0 ??0nalSceneAnimInstance@@IAE@PAVnalSceneAnim@@@Z 00C628F0 f i nal_stream.o
 4	PORTED	0002:00473420 ?IsReady@nalSceneAnimInstance@@UBE_NXZ 00C62920 f i nal_stream.o
 5	PORTED	0002:00473430 ?Play@nalSceneAnimInstance@@UAEXXZ 00C62930 f i nal_stream.o
-6	PORTED	0002:00473440 ??_GnalSceneAnimInstance@@UAEPAXI@Z 00C62940 f i nal_stream.o
-7	PORTED	0002:00473440 ??_EnalSceneAnimInstance@@UAEPAXI@Z 00C62940 f i nal_stream.o
+6	SKIPPED	0002:00473440 ??_GnalSceneAnimInstance@@UAEPAXI@Z 00C62940 f i nal_stream.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+7	SKIPPED	0002:00473440 ??_EnalSceneAnimInstance@@UAEPAXI@Z 00C62940 f i nal_stream.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 8	PORTED	0002:00473470 ??0nalStreamInstance@@QAE@HP6APAVnalClientSceneAnim@@PBVnalSceneAnim@@ABVtlFixedString@@PAX@Z2W4nflFileID@@HH@Z 00C62970 f i nal_stream.o
-9	PORTED	0002:004734d0 ??_GnalStreamInstance@@UAEPAXI@Z 00C629D0 f i nal_stream.o
-10	PORTED	0002:004734d0 ??_EnalStreamInstance@@UAEPAXI@Z 00C629D0 f i nal_stream.o
+9	SKIPPED	0002:004734d0 ??_GnalStreamInstance@@UAEPAXI@Z 00C629D0 f i nal_stream.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+10	SKIPPED	0002:004734d0 ??_EnalStreamInstance@@UAEPAXI@Z 00C629D0 f i nal_stream.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 11	PORTED	0002:00473500 ??1nalStreamInstance@@UAE@XZ 00C62A00 f i nal_stream.o
 12	PORTED	0002:00473580 ?nalStreamAnimQueueInstance@@YAPAVnalSceneAnimInstance@@IHHHP6APAVnalClientSceneAnim@@PBVnalSceneAnim@@ABVtlFixedString@@PAX@Z2@Z 00C62A80 f nal_stream.o
 13	PORTED	0002:00473600 ?IsReady@nalStreamInstance@@UBE_NXZ 00C62B00 f nal_stream.o

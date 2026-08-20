@@ -14,9 +14,9 @@ index	status	map_line
 13	VERIFIED	0002:003d4a20 ?GetName@cdAirplaneMetalShader@@UAE?AVtlFixedString@@XZ 00BC3F20 f i cdAirplaneMetalShader.o
 14	PORTED	0002:003d4a40 ??0Context@@QAE@XZ 00BC3F40 f i cdAirplaneMetalShader.o
 15	PORTED	0002:003d4a50 ??0cdAirplaneMetalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdAirplaneMetalShaderMat@@@Z 00BC3F50 f i cdAirplaneMetalShader.o
-16	PORTED	0002:003d4a80 ??_GcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o
-17	PORTED	0002:003d4a80 ??_EcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o
+16	SKIPPED	0002:003d4a80 ??_GcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+17	SKIPPED	0002:003d4a80 ??_EcdAirplaneMetalShaderNode@@UAEPAXI@Z 00BC3F80 f i cdAirplaneMetalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:003d4ab0 ??1cdAirplaneMetalShaderNode@@UAE@XZ 00BC3FB0 f i cdAirplaneMetalShader.o
-19	VERIFIED	0002:003d4ac0 ??_EcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o
-20	VERIFIED	0002:003d4ac0 ??_GcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o
+19	SKIPPED	0002:003d4ac0 ??_EcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003d4ac0 ??_GcdAirplaneMetalShader@@UAEPAXI@Z 00BC3FC0 f i cdAirplaneMetalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	VERIFIED	0002:003d4af0 ??1cdAirplaneMetalShader@@UAE@XZ 00BC3FF0 f i cdAirplaneMetalShader.o

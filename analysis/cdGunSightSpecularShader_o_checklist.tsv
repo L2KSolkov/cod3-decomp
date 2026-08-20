@@ -14,10 +14,10 @@ index	status	map_line
 13	PORTED	0002:003cdd40 ?RegisterPShader@cdGunSightSpecularFullbrightPixel@@YAXXZ 00BBD240 f i cdGunSightSpecularShader.o
 14	PORTED	0002:003cdd60 ?GetPShader@cdGunSightSpecularFullbrightPixel@@YAPAKXZ 00BBD260 f i cdGunSightSpecularShader.o
 15	PORTED	0002:003cdd70 ??0cdGunSightSpecularShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdGunSightSpecularShaderMat@@@Z 00BBD270 f i cdGunSightSpecularShader.o
-16	PORTED	0002:003cdda0 ??_EcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o
-17	PORTED	0002:003cdda0 ??_GcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o
+16	SKIPPED	0002:003cdda0 ??_EcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+17	SKIPPED	0002:003cdda0 ??_GcdGunSightSpecularShaderNode@@UAEPAXI@Z 00BBD2A0 f i cdGunSightSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:003cddd0 ??1cdGunSightSpecularShaderNode@@UAE@XZ 00BBD2D0 f i cdGunSightSpecularShader.o
-19	VERIFIED	0002:003cdde0 ??_GcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o
-20	VERIFIED	0002:003cdde0 ??_EcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o
+19	SKIPPED	0002:003cdde0 ??_GcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003cdde0 ??_EcdGunSightSpecularShader@@UAEPAXI@Z 00BBD2E0 f i cdGunSightSpecularShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	VERIFIED	0002:003cde10 ??1cdGunSightSpecularShader@@UAE@XZ 00BBD310 f i cdGunSightSpecularShader.o
 22	PORTED	0002:003cde20 ??0GunSightSpecularContext@@QAE@XZ 00BBD320 f i cdGunSightSpecularShader.o

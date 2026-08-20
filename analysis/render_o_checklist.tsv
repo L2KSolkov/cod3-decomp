@@ -528,8 +528,8 @@ index	status	map_line
 527	VERIFIED	0002:002e7ae0 ??0nglMeshParams@@QAE@I@Z 00AD6FE0 f i render.o
 528	VERIFIED	0002:002e7b00 ??0tlInitList@@QAE@XZ 00AD7000 f i render.o
 529	VERIFIED	0002:002e7b20 ??1tlInitList@@UAE@XZ 00AD7020 f i render.o
-530	VERIFIED	0002:002e7b30 ??_EtlInitList@@UAEPAXI@Z 00AD7030 f i render.o
-531	VERIFIED	0002:002e7b30 ??_GtlInitList@@UAEPAXI@Z 00AD7030 f i render.o
+530	SKIPPED	0002:002e7b30 ??_EtlInitList@@UAEPAXI@Z 00AD7030 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+531	SKIPPED	0002:002e7b30 ??_GtlInitList@@UAEPAXI@Z 00AD7030 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 532	VERIFIED	0002:002e7b60 ?nglIsSphereVisible@@YA_NABVPosition3@math@@MPBVVector4@2@@Z 00AD7060 f i render.o
 533	VERIFIED	0002:002e7c30 ?nglIsSphereVisible@@YA_NABVPosition3@math@@MPAUnglScene@@@Z 00AD7130 f i render.o
 534	VERIFIED	0002:002e7c60 ?SetZWrite@nglDxRenderState@@QAEX_N@Z 00AD7160 f i render.o
@@ -546,8 +546,8 @@ index	status	map_line
 545	VERIFIED	0002:002e7e10 ?CheckMaterialVersion@nglShader@@UAE_NPAUnglMaterial@@@Z 00AD7310 f i render.o
 546	VERIFIED	0002:002e7e20 ?CheckVertexDefVersion@nglShader@@UAE_NPAUnglMeshSection@@@Z 00AD7320 f i render.o
 547	VERIFIED	0002:002e7e30 ?BindSection@nglShader@@UAEXPAUnglMeshSection@@PAUnglMesh@@@Z 00AD7330 f i render.o
-548	VERIFIED	0002:002e7e40 ??_GnglShader@@UAEPAXI@Z 00AD7340 f i render.o
-549	VERIFIED	0002:002e7e40 ??_EnglShader@@UAEPAXI@Z 00AD7340 f i render.o
+548	SKIPPED	0002:002e7e40 ??_GnglShader@@UAEPAXI@Z 00AD7340 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+549	SKIPPED	0002:002e7e40 ??_EnglShader@@UAEPAXI@Z 00AD7340 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 550	VERIFIED	0002:002e7e70 ??2AnimationPlayer@@SAPAXI@Z 00AD7370 f i render.o
 551	VERIFIED	0002:002e7e90 ??3AnimationPlayer@@SAXPAX@Z 00AD7390 f i render.o
 552	VERIFIED	0002:002e7ea0 ?reset@cdl_proftimer@@QAEXXZ 00AD73A0 f i render.o
@@ -594,20 +594,20 @@ index	status	map_line
 593	VERIFIED	0002:002e8690 ?GetSortKey@apsEffect@@QBE?ATSortKey@1@XZ 00AD7B90 f i render.o
 594	VERIFIED	0002:002e86b0 ??1apsClient@@UAE@XZ 00AD7BB0 f i render.o
 595	VERIFIED	0002:002e86c0 ?UpdateAndRender@apsClient@@UAEXM@Z 00AD7BC0 f i render.o
-596	PORTED	0002:002e86d0 ??_EapsClient@@UAEPAXI@Z 00AD7BD0 f i render.o
-597	PORTED	0002:002e86d0 ??_GapsClient@@UAEPAXI@Z 00AD7BD0 f i render.o
+596	SKIPPED	0002:002e86d0 ??_EapsClient@@UAEPAXI@Z 00AD7BD0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+597	SKIPPED	0002:002e86d0 ??_GapsClient@@UAEPAXI@Z 00AD7BD0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 598	VERIFIED	0002:002e8700 ??0ApsDebugSphere@ApsGameClient@@QAE@XZ 00AD7C00 f i render.o
 599	VERIFIED	0002:002e8710 ??0ApsDebugLine@ApsGameClient@@QAE@XZ 00AD7C10 f i render.o
 600	VERIFIED	0002:002e8720 ??0apsClient@@QAE@XZ 00AD7C20 f i render.o
 601	VERIFIED	0002:002e8730 ??RParticleEraserPred@@QAE_NPBVParticleEffect@@@Z 00AD7C30 f i render.o
-602	VERIFIED	0002:002e8750 ??_GParticleEffect@@QAEPAXI@Z 00AD7C50 f i render.o
-603	VERIFIED	0002:002e8780 ??_EParticleEffect@@QAEPAXI@Z 00AD7C80 f i render.o
+602	SKIPPED	0002:002e8750 ??_GParticleEffect@@QAEPAXI@Z 00AD7C50 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+603	SKIPPED	0002:002e8780 ??_EParticleEffect@@QAEPAXI@Z 00AD7C80 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 604	VERIFIED	0002:002e87f0 ??0cdAepsShader@@QAE@XZ 00AD7CF0 f i render.o
 605	VERIFIED	0002:002e8830 ?GetName@cdAepsShader@@UAE?AVtlFixedString@@XZ 00AD7D30 f i render.o
 606	VERIFIED	0002:002e8850 ?AddNode@cdAepsShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00AD7D50 f i render.o
 607	VERIFIED	0002:002e8860 ??RLightEraserPred@@QAE_NPBVLightEffect@@@Z 00AD7D60 f i render.o
-608	VERIFIED	0002:002e8880 ??_GLightEffect@@QAEPAXI@Z 00AD7D80 f i render.o
-609	VERIFIED	0002:002e88b0 ??_GDynamicDecalSet@@QAEPAXI@Z 00AD7DB0 f i render.o
+608	SKIPPED	0002:002e8880 ??_GLightEffect@@QAEPAXI@Z 00AD7D80 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+609	SKIPPED	0002:002e88b0 ??_GDynamicDecalSet@@QAEPAXI@Z 00AD7DB0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 610	VERIFIED	0002:002e88f0 ??0WheelMark@@QAE@XZ 00AD7DF0 f i render.o
 611	VERIFIED	0002:002e8900 ??0?$jqPtr@X@@QAE@XZ 00AD7E00 f i render.o
 612	VERIFIED	0002:002e8910 ??0?$ae_sized_array@P6AXXZ$0CA@@@QAE@XZ 00AD7E10 f i render.o
@@ -697,10 +697,10 @@ index	status	map_line
 696	SKIPPED	0002:002e9ce0 ??Eiterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAEAAV012@XZ 00AD91E0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 697	SKIPPED	0002:002e9cf0 ??8const_iterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBE_NABV012@@Z 00AD91F0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 698	SKIPPED	0002:002e9d10 ??9const_iterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBE_NABV012@@Z 00AD9210 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-699	SKIPPED	0002:002e9d30 ??_E?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
-700	SKIPPED	0002:002e9d30 ??_G?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
-701	SKIPPED	0002:002e9d60 ??_E?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
-702	SKIPPED	0002:002e9d60 ??_G?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
+699	SKIPPED	0002:002e9d30 ??_E?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+700	SKIPPED	0002:002e9d30 ??_G?$InplaceAssetBankSet@VXModelBank@@@@UAEPAXI@Z 00AD9230 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+701	SKIPPED	0002:002e9d60 ??_E?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+702	SKIPPED	0002:002e9d60 ??_G?$InplaceAssetBankSet@VXModelPartsBank@@@@UAEPAXI@Z 00AD9260 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 703	VERIFIED	0002:002e9d90 ??0?$ae_sized_array_base@V?$ae_pair@FF@@$0BAA@@@QAE@XZ 00AD9290 f i render.o
 704	VERIFIED	0002:002e9da0 ??4DebugLine@@QAEAAV0@ABV0@@Z 00AD92A0 f i render.o
 705	VERIFIED	0002:002e9e10 ??4DebugSphere@@QAEAAV0@ABV0@@Z 00AD9310 f i render.o
@@ -827,22 +827,22 @@ index	status	map_line
 826	VERIFIED	0002:002ebb40 ?codListBeginScene@@YAXW4nglSceneParamType@@@Z 00ADB040 f i render.o
 827	VERIFIED	0002:002ebb50 ?codListEndScene@@YAXXZ 00ADB050 f i render.o
 828	VERIFIED	0002:002ebb60 ?codListAddMesh@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@@Z 00ADB060 f i render.o
-829	VERIFIED	0002:002ebb90 ??_ELightGridMgr@@UAEPAXI@Z 00ADB090 f i render.o
-830	VERIFIED	0002:002ebb90 ??_GLightGridMgr@@UAEPAXI@Z 00ADB090 f i render.o
+829	SKIPPED	0002:002ebb90 ??_ELightGridMgr@@UAEPAXI@Z 00ADB090 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+830	SKIPPED	0002:002ebb90 ??_GLightGridMgr@@UAEPAXI@Z 00ADB090 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 831	VERIFIED	0002:002ebbc0 ??1LightGridMgr@@UAE@XZ 00ADB0C0 f i render.o
 832	VERIFIED	0002:002ebbd0 ?_Set@nglParamSet@@IAEXII@Z 00ADB0D0 f i render.o
 833	VERIFIED	0002:002ebc20 ??0jqBatch@@QAE@XZ 00ADB120 f i render.o
 834	VERIFIED	0002:002ebc50 ??0AnimationPlayer@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z 00ADB150 f i render.o
 835	VERIFIED	0002:002ebd00 ??1AnimationPlayer@@QAE@XZ 00ADB200 f i render.o
-836	VERIFIED	0002:002ebdc0 ??_GAnimationPlayer@@QAEPAXI@Z 00ADB2C0 f i render.o
+836	SKIPPED	0002:002ebdc0 ??_GAnimationPlayer@@QAEPAXI@Z 00ADB2C0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 837	VERIFIED	0002:002ebdf0 ?GetNumElements@apsEffectTemplate@@QBEHXZ 00ADB2F0 f i render.o
 838	VERIFIED	0002:002ebe00 ?GetElement@apsEffectTemplate@@ABEABUElement@1@H@Z 00ADB300 f i render.o
 839	VERIFIED	0002:002ebe90 ?GetEndTime@apsEffectTemplate@@QBEMH@Z 00ADB390 f i render.o
 840	VERIFIED	0002:002ebeb0 ??0dpvs_t@@QAE@XZ 00ADB3B0 f i render.o
 841	VERIFIED	0002:002ebec0 ??0trGlobals_t@@QAE@XZ 00ADB3C0 f i render.o
 842	VERIFIED	0002:002ebed0 ??_FParticleEffect@@QAEXXZ 00ADB3D0 f i render.o
-843	VERIFIED	0002:002ebf30 ??_EcdAepsShader@@UAEPAXI@Z 00ADB430 f i render.o
-844	VERIFIED	0002:002ebf30 ??_GcdAepsShader@@UAEPAXI@Z 00ADB430 f i render.o
+843	SKIPPED	0002:002ebf30 ??_EcdAepsShader@@UAEPAXI@Z 00ADB430 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+844	SKIPPED	0002:002ebf30 ??_GcdAepsShader@@UAEPAXI@Z 00ADB430 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 845	VERIFIED	0002:002ebf60 ??1cdAepsShader@@UAE@XZ 00ADB460 f i render.o
 846	VERIFIED	0002:002ebf70 ??4?$jqPtr@X@@QAEABV0@PAX@Z 00ADB470 f i render.o
 847	VERIFIED	0002:002ebf90 ??B?$jqPtr@X@@QAEPAXXZ 00ADB490 f i render.o
@@ -906,7 +906,7 @@ index	status	map_line
 905	SKIPPED	0002:002ed800 ??0iterator@?$vector@UApsDebugLine@ApsGameClient@@V?$allocator@UApsDebugLine@ApsGameClient@@@std@@@std@@QAE@PAUApsDebugLine@ApsGameClient@@@Z 00ADCD00 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 906	SKIPPED	0002:002ed820 ??0iterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAE@PAUDecalSet@DynamicDecalMgr@@@Z 00ADCD20 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 907	SKIPPED	0002:002ed840 ??Diterator@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBEAAUDecalSet@DynamicDecalMgr@@XZ 00ADCD40 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-908	VERIFIED	0002:002ed850 ??_G?$phys_static_array@VVector4@math@@$0BE@@@QAEPAXI@Z 00ADCD50 f i render.o
+908	SKIPPED	0002:002ed850 ??_G?$phys_static_array@VVector4@math@@$0BE@@@QAEPAXI@Z 00ADCD50 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 909	SKIPPED	0002:002ed880 ?max_size@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBEIXZ 00ADCD80 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 910	SKIPPED	0002:002ed890 ?allocate@?$allocator@UDecalSet@DynamicDecalMgr@@@std@@QAEPAUDecalSet@DynamicDecalMgr@@I@Z 00ADCD90 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 911	SKIPPED	0002:002ed8b0 ?max_size@?$vector@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@QBEIXZ 00ADCDB0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -949,12 +949,12 @@ index	status	map_line
 948	SKIPPED	0002:002ee110 ??$_Uninit_copy@PAUApsDebugLine@ApsGameClient@@PAU12@V?$allocator@UApsDebugLine@ApsGameClient@@@std@@@std@@YAPAUApsDebugLine@ApsGameClient@@PAU12@00AAV?$allocator@UApsDebugLine@ApsGameClient@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00ADD610 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 949	VERIFIED	0002:002ee150 ?SetLOD@DObj@@QAEXH@Z 00ADD650 f i render.o
 950	VERIFIED	0002:002ee350 ?SetLODAnim@DObj@@QAEXH@Z 00ADD850 f i render.o
-951	VERIFIED	0002:002ee4c0 ??_EXModelManager@@EAEPAXI@Z 00ADD9C0 f i render.o
-952	VERIFIED	0002:002ee4c0 ??_GXModelManager@@EAEPAXI@Z 00ADD9C0 f i render.o
-953	VERIFIED	0002:002ee4f0 ??_EXModelPartsManager@@EAEPAXI@Z 00ADD9F0 f i render.o
-954	VERIFIED	0002:002ee4f0 ??_GXModelPartsManager@@EAEPAXI@Z 00ADD9F0 f i render.o
+951	SKIPPED	0002:002ee4c0 ??_EXModelManager@@EAEPAXI@Z 00ADD9C0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+952	SKIPPED	0002:002ee4c0 ??_GXModelManager@@EAEPAXI@Z 00ADD9C0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+953	SKIPPED	0002:002ee4f0 ??_EXModelPartsManager@@EAEPAXI@Z 00ADD9F0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+954	SKIPPED	0002:002ee4f0 ??_GXModelPartsManager@@EAEPAXI@Z 00ADD9F0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 955	VERIFIED	0002:002ee520 ??0backEndData_t@@QAE@XZ 00ADDA20 f i render.o
-956	VERIFIED	0002:002ee560 ??_G?$ae_vector@PAVParticleEffect@@@@QAEPAXI@Z 00ADDA60 f i render.o
+956	SKIPPED	0002:002ee560 ??_G?$ae_vector@PAVParticleEffect@@@@QAEPAXI@Z 00ADDA60 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 957	VERIFIED	0002:002ee5b0 ?begin@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ 00ADDAB0 f i render.o
 958	VERIFIED	0002:002ee600 ?ReleaseHandle@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00ADDB00 f i render.o
 959	VERIFIED	0002:002ee720 ??D?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QBEPAVDObj@@XZ 00ADDC20 f i render.o
@@ -1032,8 +1032,8 @@ index	status	map_line
 1031	SKIPPED	0002:002f0470 ?insert@?$vector@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@QAE?AViterator@12@V312@ABUApsDebugSphere@ApsGameClient@@@Z 00ADF970 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1032	SKIPPED	0002:002f0500 ?insert@?$vector@UApsDebugLine@ApsGameClient@@V?$allocator@UApsDebugLine@ApsGameClient@@@std@@@std@@QAE?AViterator@12@V312@ABUApsDebugLine@ApsGameClient@@@Z 00ADFA00 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1033	VERIFIED	0002:002f0580 ??0ApsGameClient@@QAE@XZ 00ADFA80 f i render.o
-1034	VERIFIED	0002:002f05e0 ??_EApsGameClient@@UAEPAXI@Z 00ADFAE0 f i render.o
-1035	VERIFIED	0002:002f05e0 ??_GApsGameClient@@UAEPAXI@Z 00ADFAE0 f i render.o
+1034	SKIPPED	0002:002f05e0 ??_EApsGameClient@@UAEPAXI@Z 00ADFAE0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1035	SKIPPED	0002:002f05e0 ??_GApsGameClient@@UAEPAXI@Z 00ADFAE0 f i render.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1036	SKIPPED	0002:002f0610 ?resize@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAEXI@Z 00ADFB10 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1037	SKIPPED	0002:002f0630 ?push_back@?$vector@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@QAEXABUApsDebugSphere@ApsGameClient@@@Z 00ADFB30 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1038	SKIPPED	0002:002f06e0 ?push_back@?$vector@UApsDebugLine@ApsGameClient@@V?$allocator@UApsDebugLine@ApsGameClient@@@std@@@std@@QAEXABUApsDebugLine@ApsGameClient@@@Z 00ADFBE0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

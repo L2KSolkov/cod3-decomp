@@ -27,9 +27,9 @@ index	status	map_line
 26	PORTED	0002:003db750 ??0cdWorldBlendPointLitParams@cdWorldBlendPointLitRender@@QAE@XZ 00BCAC50 f i cdWorldBlendPointLitShader.o
 27	PORTED	0002:003db760 ??$SetConstants@UcdWorldBlendPointLitParams@cdWorldBlendPointLitRender@@@cdWorldBlendPointLitRender@@YAXABUcdWorldBlendPointLitParams@0@@Z 00BCAC60 f i cdWorldBlendPointLitShader.o
 28	PORTED	0002:003db780 ??0cdWorldBlendPointLitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldBlendPointLitShaderMat@@@Z 00BCAC80 f i cdWorldBlendPointLitShader.o
-29	PORTED	0002:003db7b0 ??_EcdWorldBlendPointLitShaderNode@@UAEPAXI@Z 00BCACB0 f i cdWorldBlendPointLitShader.o
-30	PORTED	0002:003db7b0 ??_GcdWorldBlendPointLitShaderNode@@UAEPAXI@Z 00BCACB0 f i cdWorldBlendPointLitShader.o
+29	SKIPPED	0002:003db7b0 ??_EcdWorldBlendPointLitShaderNode@@UAEPAXI@Z 00BCACB0 f i cdWorldBlendPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+30	SKIPPED	0002:003db7b0 ??_GcdWorldBlendPointLitShaderNode@@UAEPAXI@Z 00BCACB0 f i cdWorldBlendPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 31	PORTED	0002:003db7e0 ??1cdWorldBlendPointLitShaderNode@@UAE@XZ 00BCACE0 f i cdWorldBlendPointLitShader.o
-32	VERIFIED	0002:003db7f0 ??_EcdWorldBlendPointLitShader@@UAEPAXI@Z 00BCACF0 f i cdWorldBlendPointLitShader.o
-33	VERIFIED	0002:003db7f0 ??_GcdWorldBlendPointLitShader@@UAEPAXI@Z 00BCACF0 f i cdWorldBlendPointLitShader.o
+32	SKIPPED	0002:003db7f0 ??_EcdWorldBlendPointLitShader@@UAEPAXI@Z 00BCACF0 f i cdWorldBlendPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+33	SKIPPED	0002:003db7f0 ??_GcdWorldBlendPointLitShader@@UAEPAXI@Z 00BCACF0 f i cdWorldBlendPointLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 34	VERIFIED	0002:003db820 ??1cdWorldBlendPointLitShader@@UAE@XZ 00BCAD20 f i cdWorldBlendPointLitShader.o

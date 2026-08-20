@@ -17,7 +17,7 @@ index	status	map_line
 16	PORTED	0002:004064d0 ??0?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ 00BF59D0 f i apsGroupMgr.o
 17	PORTED	0002:00406510 ??1?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ 00BF5A10 f i apsGroupMgr.o
 18	VERIFIED	0002:00406550 ??$AEPS_VECTOR_NEW@VapsGroup@@@@YAPAVapsGroup@@HH@Z 00BF5A50 f i apsGroupMgr.o
-19	VERIFIED	0002:004065a0 ??_GapsGroup@@QAEPAXI@Z 00BF5AA0 f i apsGroupMgr.o
+19	SKIPPED	0002:004065a0 ??_GapsGroup@@QAEPAXI@Z 00BF5AA0 f i apsGroupMgr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20	VERIFIED	0002:004065d0 ?TestAlloc@apsGroupManager@@QAEIH@Z 00BF5AD0 f apsGroupMgr.o
 21	VERIFIED	0002:00406620 ?Report@apsGroupManager@@QAEXXZ 00BF5B20 f apsGroupMgr.o
 22	VERIFIED	0002:00406770 ??0apsGroupManager@@QAE@H@Z 00BF5C70 f apsGroupMgr.o
@@ -32,5 +32,5 @@ index	status	map_line
 31	VERIFIED	0002:00406d50 ??0?$PoolAllocator@VapsGroup@@@apsMemory@@QAE@H@Z 00BF6250 f i apsGroupMgr.o
 32	PORTED	0002:00406dc0 ??$AEPS_VECTOR_DELETE@VapsGroup@@@@YAXHPAVapsGroup@@@Z 00BF62C0 f i apsGroupMgr.o
 33	VERIFIED	0002:00406e00 ??1?$PoolAllocator@VapsGroup@@@apsMemory@@QAE@XZ 00BF6300 f i apsGroupMgr.o
-34	VERIFIED	0002:00406e90 ??_G?$PoolAllocator@VapsGroup@@@apsMemory@@QAEPAXI@Z 00BF6390 f i apsGroupMgr.o
+34	SKIPPED	0002:00406e90 ??_G?$PoolAllocator@VapsGroup@@@apsMemory@@QAEPAXI@Z 00BF6390 f i apsGroupMgr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 35	VERIFIED	0002:00406ec0 ??$apsDestroy@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@YAXPAV?$PoolAllocator@VapsGroup@@@apsMemory@@@Z 00BF63C0 f i apsGroupMgr.o

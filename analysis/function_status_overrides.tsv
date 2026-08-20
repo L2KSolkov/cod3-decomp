@@ -22,6 +22,14 @@ apsSimpleMeshNode.o	?GetVShader@apsSimpleMeshRender@@YAKXZ	PORTED
 apsSimpleMeshNode.o	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	PORTED
 apsSimpleMeshNode.o	??0MeshParticleContext@@QAE@XZ	PORTED
 ngl_dx_fsaa.o	?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z	VERIFIED
+apsRectangleRenderer.o	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	FIXED
+apsRectangleRenderer.o	?Init@apsRectangleRenderer@@SAXXZ	FIXED
+apsRectangleRenderer.o	?RegisterVShader@apsRectangleRender@@YAXXZ	PORTED
+apsRectangleRenderer.o	?RegisterPShader@apsRectangleRenderPixel@@YAXXZ	PORTED
+apsRectangleRenderer.o	?InitPShader@apsRectangleRenderPixel@@YAXXZ	PORTED
+apsRectangleRenderer.o	??0apsRectangleNode@@QAE@XZ	PORTED
+apsRectangleRenderer.o	?GetVShader@apsRectangleRender@@YAKXZ	PORTED
+apsRectangleRenderer.o	?GetPShader@apsRectangleRenderPixel@@YAPAKXZ	PORTED
 ae_fixed_string.o	?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?Concat@AeStringSupport@@YAXPADAAHHPBD@Z	FIXED
 ae_fixed_string.o	?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z	FIXED

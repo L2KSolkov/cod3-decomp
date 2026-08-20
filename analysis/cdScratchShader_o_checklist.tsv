@@ -28,8 +28,8 @@ index	status	map_line
 27	PORTED	0002:003c5e00 ?GetPShader@cdScratchShaderPixel@@YAPAKXZ 00BB5300 f i cdScratchShader.o
 28	VERIFIED	0002:003c5e10 ??0cdScratchShader@@QAE@XZ 00BB5310 f i cdScratchShader.o
 29	VERIFIED	0002:003c5e40 ?GetName@cdScratchShader@@UAE?AVtlFixedString@@XZ 00BB5340 f i cdScratchShader.o
-30	VERIFIED	0002:003c5e60 ??_GcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o
-31	VERIFIED	0002:003c5e60 ??_EcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o
+30	SKIPPED	0002:003c5e60 ??_GcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+31	SKIPPED	0002:003c5e60 ??_EcdScratchShader@@UAEPAXI@Z 00BB5360 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 32	VERIFIED	0002:003c5e90 ??1cdScratchShader@@UAE@XZ 00BB5390 f i cdScratchShader.o
 33	PORTED	0002:003c5ea0 ??$IsSet@UnglTextureFrameParamType@@@nglParamSet@@QAE_NABUnglTextureFrameParamType@@@Z 00BB53A0 f i cdScratchShader.o
 34	PORTED	0002:003c5ed0 ??$Get@UnglTextureFrameParamType@@@nglParamSet@@QAEHABUnglTextureFrameParamType@@@Z 00BB53D0 f i cdScratchShader.o
@@ -39,9 +39,9 @@ index	status	map_line
 38	PORTED	0002:003c5fe0 ?GetDesc@nglShaderNode@@UAEXPAD@Z 00BB54E0 f i cdScratchShader.o
 39	PORTED	0002:003c5ff0 ?SetIFLFrame@nglShaderNode@@QAEXXZ 00BB54F0 f i cdScratchShader.o
 40	PORTED	0002:003c6040 ?RenderSetup@nglShaderNode@@QAEXXZ 00BB5540 f i cdScratchShader.o
-41	PORTED	0002:003c6090 ??_EnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o
-42	PORTED	0002:003c6090 ??_GnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o
+41	SKIPPED	0002:003c6090 ??_EnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+42	SKIPPED	0002:003c6090 ??_GnglShaderNode@@UAEPAXI@Z 00BB5590 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 43	PORTED	0002:003c60c0 ??0cdScratchShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdScratchMaterial@@@Z 00BB55C0 f i cdScratchShader.o
-44	PORTED	0002:003c60f0 ??_GcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o
-45	PORTED	0002:003c60f0 ??_EcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o
+44	SKIPPED	0002:003c60f0 ??_GcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+45	SKIPPED	0002:003c60f0 ??_EcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 46	PORTED	0002:003c6120 ??1cdScratchShaderNode@@UAE@XZ 00BB5620 f i cdScratchShader.o

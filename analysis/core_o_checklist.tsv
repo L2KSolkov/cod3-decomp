@@ -649,7 +649,7 @@ index	status	map_line
 648	SKIPPED	0002:000d3ad0 ?GetDebugFxList@ActiveEffectSet@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 008C2FD0 f core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 649	SKIPPED	0002:000d3c70 ?GetDebugFxList@EffectEventSys@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 008C3170 f core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 650	PORTED	0002:000db7b0 ??0Vector4@math@@QAE@ABVPosition3@1@@Z 008CACB0 f i core.o
-651	VERIFIED	0002:000db800 ??_GEntityNotify@@QAEPAXI@Z 008CAD00 f i core.o
+651	SKIPPED	0002:000db800 ??_GEntityNotify@@QAEPAXI@Z 008CAD00 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 652	PORTED	0002:000db840 ??0ServerTime@@QAE@XZ 008CAD40 f i core.o
 653	PORTED	0002:000db880 ??2EntityManager@@SAPAXIPAX@Z 008CAD80 f i core.o
 654	PORTED	0002:000db890 ?CreateInst@EntityManager@@SAXXZ 008CAD90 f i core.o
@@ -683,7 +683,7 @@ index	status	map_line
 682	VERIFIED	0002:000dc420 ?DeleteInst@PhysDataBankManager@@SAXXZ 008CB920 f i core.o
 683	PORTED	0002:000dc4a0 ??2InstanceBankMgr@@SAPAXIPAX@Z 008CB9A0 f i core.o
 684	VERIFIED	0002:000dc4b0 ?CreateInst@InstanceBankMgr@@SAXXZ 008CB9B0 f i core.o
-685	VERIFIED	0002:000dc5b0 ??_GInstanceBankMgr@@QAEPAXI@Z 008CBAB0 f i core.o
+685	SKIPPED	0002:000dc5b0 ??_GInstanceBankMgr@@QAEPAXI@Z 008CBAB0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 686	PORTED	0002:000dc5e0 ??2SoundDevice@@SAPAXIPAX@Z 008CBAE0 f i core.o
 687	VERIFIED	0002:000dc5f0 ?CreateInst@SoundDevice@@SAXXZ 008CBAF0 f i core.o
 688	PORTED	0002:000dc6f0 ?Inst@SoundHandleDb@SoundDevice@@SAPAV12@XZ 008CBBF0 f i core.o
@@ -694,7 +694,7 @@ index	status	map_line
 693	PORTED	0002:000dc780 ?IsSourceValid@Sound@SoundDevice@@QAE_NXZ 008CBC80 f i core.o
 694	PORTED	0002:000dc790 ?GetSourceId@Sound@SoundDevice@@QAE?AW4nslSourceID@@XZ 008CBC90 f i core.o
 695	PORTED	0002:000dc7a0 ?GetVolScale@SoundDevice@@QAEMXZ 008CBCA0 f i core.o
-696	VERIFIED	0002:000dc7b0 ??_GSoundDevice@@QAEPAXI@Z 008CBCB0 f i core.o
+696	SKIPPED	0002:000dc7b0 ??_GSoundDevice@@QAEPAXI@Z 008CBCB0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 697	PORTED	0002:000dc7e0 ??2STBManager@@SAPAXIPAX@Z 008CBCE0 f i core.o
 698	PORTED	0002:000dc7f0 ?Inst@STBManager@@SAPAV1@XZ 008CBCF0 f i core.o
 699	VERIFIED	0002:000dc800 ?DeleteInst@STBManager@@SAXXZ 008CBD00 f i core.o
@@ -707,10 +707,10 @@ index	status	map_line
 706	VERIFIED	0002:000dca40 ?DeleteInst@DialogueManager@@SAXXZ 008CBF40 f i core.o
 707	PORTED	0002:000dcac0 ??2SoundMediaMgr@@SAPAXIPAX@Z 008CBFC0 f i core.o
 708	PORTED	0002:000dcad0 ?CreateInst@SoundMediaMgr@@SAXXZ 008CBFD0 f i core.o
-709	VERIFIED	0002:000dcbc0 ??_GSoundMediaMgr@@QAEPAXI@Z 008CC0C0 f i core.o
+709	SKIPPED	0002:000dcbc0 ??_GSoundMediaMgr@@QAEPAXI@Z 008CC0C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 710	PORTED	0002:000dcbf0 ??2MusicMgr@@SAPAXIPAX@Z 008CC0F0 f i core.o
 711	VERIFIED	0002:000dcc00 ?CreateInst@MusicMgr@@SAXXZ 008CC100 f i core.o
-712	VERIFIED	0002:000dccf0 ??_GMusicMgr@@QAEPAXI@Z 008CC1F0 f i core.o
+712	SKIPPED	0002:000dccf0 ??_GMusicMgr@@QAEPAXI@Z 008CC1F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 713	PORTED	0002:000dcd20 ??2StreamZoneManager@@SAPAXIPAX@Z 008CC220 f i core.o
 714	VERIFIED	0002:000dcd30 ?CreateInst@StreamZoneManager@@SAXXZ 008CC230 f i core.o
 715	VERIFIED	0002:000dce30 ?DeleteInst@StreamZoneManager@@SAXXZ 008CC330 f i core.o
@@ -731,7 +731,7 @@ index	status	map_line
 730	VERIFIED	0002:000dd410 ?DeleteInst@PathNodeMgr@@SAXXZ 008CC910 f i core.o
 731	PORTED	0002:000dd490 ??2TestFPS@@SAPAXIPAX@Z 008CC990 f i core.o
 732	VERIFIED	0002:000dd4a0 ?CreateInst@TestFPS@@SAXXZ 008CC9A0 f i core.o
-733	VERIFIED	0002:000dd5a0 ??_GTestFPS@@QAEPAXI@Z 008CCAA0 f i core.o
+733	SKIPPED	0002:000dd5a0 ??_GTestFPS@@QAEPAXI@Z 008CCAA0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 734	PORTED	0002:000dd5d0 ??2CtrlIcon@@SAPAXIPAX@Z 008CCAD0 f i core.o
 735	PORTED	0002:000dd5e0 ?SetAllocator@tagInfo_t@@SAXPAVPoolAllocator@@@Z 008CCAE0 f i core.o
 736	PORTED	0002:000dd5f0 ?SetAllocator@CurveEffectListElem@@SAXPAVPoolAllocator@@@Z 008CCAF0 f i core.o
@@ -741,14 +741,14 @@ index	status	map_line
 740	PORTED	0002:000dd630 ?Inst@CurveManager@@SAPAV1@XZ 008CCB30 f i core.o
 741	PORTED	0002:000dd640 ?CreateInst@CurveManager@@SAXXZ 008CCB40 f i core.o
 742	PORTED	0002:000dd740 ?SetAllocator@CurveManager@@SAXPAVPoolAllocator@@@Z 008CCC40 f i core.o
-743	VERIFIED	0002:000dd750 ??_GCurveManager@@AAEPAXI@Z 008CCC50 f i core.o
+743	SKIPPED	0002:000dd750 ??_GCurveManager@@AAEPAXI@Z 008CCC50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 744	PORTED	0002:000dd780 ??0nalMatrix4x4@@QAE@ABVVector4@math@@000@Z 008CCC80 f i core.o
 745	PORTED	0002:000dd820 ??4nalMatrix4x4@@QAEAAV0@ABV0@@Z 008CCD20 f i core.o
 746	VERIFIED	0002:000dd8c0 ??1nalHeap@@UAE@XZ 008CCDC0 f i core.o
 747	PORTED	0002:000dd8d0 ?GetSize@nalHeap@@UAEHXZ 008CCDD0 f i core.o
 748	PORTED	0002:000dd8e0 ?GetUsedSpace@nalHeap@@UAEHXZ 008CCDE0 f i core.o
-749	VERIFIED	0002:000dd8f0 ??_EnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o
-750	VERIFIED	0002:000dd8f0 ??_GnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o
+749	SKIPPED	0002:000dd8f0 ??_EnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+750	SKIPPED	0002:000dd8f0 ??_GnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 751	PORTED	0002:000dd920 ??2GameSettings@@SAPAXIPAX@Z 008CCE20 f i core.o
 752	PORTED	0002:000dd930 ?CreateInst@GameSettings@@SAXXZ 008CCE30 f i core.o
 753	PORTED	0002:000dda30 ?DeleteInst@GameSettings@@SAXXZ 008CCF30 f i core.o
@@ -764,7 +764,7 @@ index	status	map_line
 763	VERIFIED	0002:000ddd20 ?DeleteInst@GdbFileManager@@SAXXZ 008CD220 f i core.o
 764	PORTED	0002:000ddda0 ??2CheckpointMgr@@SAPAXIPAX@Z 008CD2A0 f i core.o
 765	PORTED	0002:000dddb0 ?CreateInst@CheckpointMgr@@SAXXZ 008CD2B0 f i core.o
-766	VERIFIED	0002:000ddeb0 ??_GCheckpointMgr@@QAEPAXI@Z 008CD3B0 f i core.o
+766	SKIPPED	0002:000ddeb0 ??_GCheckpointMgr@@QAEPAXI@Z 008CD3B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 767	PORTED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o
 768	PORTED	0002:000ddef0 ?CreateInst@SplineMgr@@SAXXZ 008CD3F0 f i core.o
 769	VERIFIED	0002:000ddff0 ?DeleteInst@SplineMgr@@SAXXZ 008CD4F0 f i core.o
@@ -805,25 +805,25 @@ index	status	map_line
 804	PORTED	0002:000de6f0 ?length@string@Broc@@QBEIXZ 008CDBF0 f i core.o
 805	PORTED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o
 806	PORTED	0002:000de720 ?CreateInst@InteractionController@@SAXXZ 008CDC20 f i core.o
-807	VERIFIED	0002:000de820 ??_GInteractionController@@QAEPAXI@Z 008CDD20 f i core.o
+807	SKIPPED	0002:000de820 ??_GInteractionController@@QAEPAXI@Z 008CDD20 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 808	PORTED	0002:000de850 ??2PlayerAnimMgr@@SAPAXIPAX@Z 008CDD50 f i core.o
 809	PORTED	0002:000de860 ?CreateInst@PlayerAnimMgr@@SAXXZ 008CDD60 f i core.o
-810	VERIFIED	0002:000de950 ??_GPlayerAnimMgr@@QAEPAXI@Z 008CDE50 f i core.o
+810	SKIPPED	0002:000de950 ??_GPlayerAnimMgr@@QAEPAXI@Z 008CDE50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 811	VERIFIED	0002:000de980 ?SetGamePaused@GamePause@@SAXH_N@Z 008CDE80 f i core.o
 812	PORTED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o
 813	VERIFIED	0002:000dea30 ?CreateInst@MultiplayerMgr@@SAXXZ 008CDF30 f i core.o
-814	VERIFIED	0002:000deb20 ??_GMultiplayerMgr@@QAEPAXI@Z 008CE020 f i core.o
+814	SKIPPED	0002:000deb20 ??_GMultiplayerMgr@@QAEPAXI@Z 008CE020 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 815	PORTED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o
 816	PORTED	0002:000deb60 ??2BinFileManager@@SAPAXIPAX@Z 008CE060 f i core.o
 817	PORTED	0002:000deb70 ?CreateInst@BinFileManager@@SAXXZ 008CE070 f i core.o
-818	VERIFIED	0002:000dec70 ??_GBinFileManager@@AAEPAXI@Z 008CE170 f i core.o
+818	SKIPPED	0002:000dec70 ??_GBinFileManager@@AAEPAXI@Z 008CE170 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 819	PORTED	0002:000deca0 ??2DynamicDecalMgr@@SAPAXIPAX@Z 008CE1A0 f i core.o
 820	PORTED	0002:000decb0 ?CreateInst@DynamicDecalMgr@@SAXXZ 008CE1B0 f i core.o
-821	VERIFIED	0002:000deda0 ??_GDynamicDecalMgr@@QAEPAXI@Z 008CE2A0 f i core.o
+821	SKIPPED	0002:000deda0 ??_GDynamicDecalMgr@@QAEPAXI@Z 008CE2A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 822	PORTED	0002:000dedd0 ??1PadAliasMgr@@QAE@XZ 008CE2D0 f i core.o
 823	PORTED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o
 824	PORTED	0002:000dedf0 ?CreateInst@PadAliasMgr@@SAXXZ 008CE2F0 f i core.o
-825	PORTED	0002:000deef0 ??_GPadAliasMgr@@QAEPAXI@Z 008CE3F0 f i core.o
+825	SKIPPED	0002:000deef0 ??_GPadAliasMgr@@QAEPAXI@Z 008CE3F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 826	PORTED	0002:000def20 ??0idVec3@@QAE@XZ 008CE420 f i core.o
 827	PORTED	0002:000def30 ??0idVec3@@QAE@MMM@Z 008CE430 f i core.o
 828	PORTED	0002:000def60 ??AidVec3@@QAEAAMH@Z 008CE460 f i core.o
@@ -839,7 +839,7 @@ index	status	map_line
 838	PORTED	0002:000df1c0 ??Aquat_t@@QAEAAMH@Z 008CE6C0 f i core.o
 839	PORTED	0002:000df240 ??0strdata@@QAE@XZ 008CE740 f i core.o
 840	PORTED	0002:000df260 ??1strdata@@QAE@XZ 008CE760 f i core.o
-841	PORTED	0002:000df280 ??_Gstrdata@@QAEPAXI@Z 008CE780 f i core.o
+841	SKIPPED	0002:000df280 ??_Gstrdata@@QAEPAXI@Z 008CE780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 842	PORTED	0002:000df2c0 ?length@idStr@@QBEHXZ 008CE7C0 f i core.o
 843	VERIFIED	0002:000df2d0 ??1PendingQuery@EffectEventSys@@QAE@XZ 008CE7D0 f i core.o
 844	VERIFIED	0002:000df2e0 ??1RumbleEffectInstance@@QAE@XZ 008CE7E0 f i core.o
@@ -956,18 +956,18 @@ index	status	map_line
 955	SKIPPED	0002:000e0ab0 ?length@?$ae_fixed_string@$0BAA@G@@QBEHXZ 008CFFB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	SKIPPED	0002:000e0ac0 ?find@?$ae_fixed_string@$0BAA@G@@QBEHDH@Z 008CFFC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 957	PORTED	0002:000e0af0 ??0?$ae_pair@PBDW4ELanguage@@@@QAE@ABQBDABW4ELanguage@@@Z 008CFFF0 f i core.o
-958	SKIPPED	0002:000e0b10 ??_G?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-959	SKIPPED	0002:000e0b10 ??_E?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+958	SKIPPED	0002:000e0b10 ??_G?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+959	SKIPPED	0002:000e0b10 ??_E?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 960	VERIFIED	0002:000e0b40 ??4PendingQuery@EffectEventSys@@QAEAAU01@ABU01@@Z 008D0040 f i core.o
 961	PORTED	0002:000e0c30 ??0?$ae_sized_array_base@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D0130 f i core.o
-962	SKIPPED	0002:000e0c60 ??_E?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-963	SKIPPED	0002:000e0c60 ??_G?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-964	SKIPPED	0002:000e0c90 ??_G?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-965	SKIPPED	0002:000e0c90 ??_E?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-966	SKIPPED	0002:000e0cc0 ??_G?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-967	SKIPPED	0002:000e0cc0 ??_E?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-968	SKIPPED	0002:000e0cf0 ??_G?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-969	SKIPPED	0002:000e0cf0 ??_E?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+962	SKIPPED	0002:000e0c60 ??_E?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+963	SKIPPED	0002:000e0c60 ??_G?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+964	SKIPPED	0002:000e0c90 ??_G?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+965	SKIPPED	0002:000e0c90 ??_E?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+966	SKIPPED	0002:000e0cc0 ??_G?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+967	SKIPPED	0002:000e0cc0 ??_E?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+968	SKIPPED	0002:000e0cf0 ??_G?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+969	SKIPPED	0002:000e0cf0 ??_E?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 970	PORTED	0002:000e0d20 ??_FPoolConfig@PoolAllocator@@QAEXXZ 008D0220 f i core.o
 971	SKIPPED	0002:000e0d40 ?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ 008D0240 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 972	SKIPPED	0002:000e0d60 ??0?$allocator@D@std@@QAE@XZ 008D0260 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1092,15 +1092,15 @@ index	status	map_line
 1091	SKIPPED	0002:000e20e0 ??$_Ptr_cat@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAV12@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@0@Z 008D15E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1092	PORTED	0002:000e20f0 ??A?$DbColumnType@M@@QBEABMG@Z 008D15F0 f i core.o
 1093	SKIPPED	0002:000e2170 ??$Find@PAD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQAD@Z 008D1670 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1094	PORTED	0002:000e2280 ??_GBankManager@@AAEPAXI@Z 008D1780 f i core.o
-1095	VERIFIED	0002:000e22b0 ??_GPakManager@@QAEPAXI@Z 008D17B0 f i core.o
+1094	SKIPPED	0002:000e2280 ??_GBankManager@@AAEPAXI@Z 008D1780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1095	SKIPPED	0002:000e22b0 ??_GPakManager@@QAEPAXI@Z 008D17B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1096	PORTED	0002:000e22e0 ?GetColumnById@DbTable@@QBEABVDbColumn@@G@Z 008D17E0 f i core.o
 1097	PORTED	0002:000e2310 ?GetValue@DbGraphNode@@QBEPBXPBVDbTable@@G@Z 008D1810 f i core.o
 1098	VERIFIED	0002:000e2430 ??0DbQueryResults@@QAE@XZ 008D1930 f i core.o
 1099	VERIFIED	0002:000e2450 ??0SimpleCollisionDesc@@QAE@XZ 008D1950 f i core.o
 1100	VERIFIED	0002:000e2470 ??0CollisionDesc@@QAE@XZ 008D1970 f i core.o
-1101	VERIFIED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
-1102	VERIFIED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
+1101	SKIPPED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1102	SKIPPED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1103	PORTED	0002:000e24c0 ?Update@ServerTime@@QAEXH@Z 008D19C0 f i core.o
 1104	PORTED	0002:000e2520 ?Choose@DialogueInstance@@QAEPBDXZ 008D1A20 f i core.o
 1105	VERIFIED	0002:000e2560 ??0SoundParams@@QAE@XZ 008D1A60 f i core.o
@@ -1116,7 +1116,7 @@ index	status	map_line
 1115	VERIFIED	0002:000e27e0 ?DeleteInst@MusicMgr@@SAXXZ 008D1CE0 f i core.o
 1116	VERIFIED	0002:000e2870 ?DeleteInst@TestFPS@@SAXXZ 008D1D70 f i core.o
 1117	PORTED	0002:000e2900 ?CreateInst@CtrlIcon@@SAXXZ 008D1E00 f i core.o
-1118	PORTED	0002:000e2990 ??_GCtrlIcon@@QAEPAXI@Z 008D1E90 f i core.o
+1118	SKIPPED	0002:000e2990 ??_GCtrlIcon@@QAEPAXI@Z 008D1E90 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1119	VERIFIED	0002:000e29c0 ?DeleteInst@CurveManager@@SAXXZ 008D1EC0 f i core.o
 1120	VERIFIED	0002:000e2a50 ?Reformat@DialogMenuSystem@@QAEX_N@Z 008D1F50 f i core.o
 1121	PORTED	0002:000e2a90 ?AddTriangleResponse@DialogMenuSystem@@QAEXP6AXH@Z@Z 008D1F90 f i core.o
@@ -1137,22 +1137,22 @@ index	status	map_line
 1136	VERIFIED	0002:000e2fe0 ?DeleteInst@DynamicDecalMgr@@SAXXZ 008D24E0 f i core.o
 1137	PORTED	0002:000e3070 ?DeleteInst@PadAliasMgr@@SAXXZ 008D2570 f i core.o
 1138	PORTED	0002:000e30f0 ?DelRef@strdata@@QAE_NXZ 008D25F0 f i core.o
-1139	VERIFIED	0002:000e3130 ??_EDialogueManager@@UAEPAXI@Z 008D2630 f i core.o
-1140	VERIFIED	0002:000e3130 ??_GDialogueManager@@UAEPAXI@Z 008D2630 f i core.o
+1139	SKIPPED	0002:000e3130 ??_EDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1140	SKIPPED	0002:000e3130 ??_GDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1141	PORTED	0002:000e3160 ??1?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D2660 f i core.o
 1142	VERIFIED	0002:000e3180 ??0Params@AbstractEffectShakeAndRumble@@QAE@XZ 008D2680 f i core.o
 1143	VERIFIED	0002:000e3190 ??0Params@AbstractEffectLight@@QAE@XZ 008D2690 f i core.o
-1144	VERIFIED	0002:000e31a0 ??_GRumbleEffectInstance@@QAEPAXI@Z 008D26A0 f i core.o
-1145	VERIFIED	0002:000e31d0 ??_EAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o
-1146	VERIFIED	0002:000e31d0 ??_GAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o
+1144	SKIPPED	0002:000e31a0 ??_GRumbleEffectInstance@@QAEPAXI@Z 008D26A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1145	SKIPPED	0002:000e31d0 ??_EAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1146	SKIPPED	0002:000e31d0 ??_GAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1147	PORTED	0002:000e3200 ?StopEffect@AbstractEffectParticle@@UAEXXZ 008D2700 f i core.o
 1148	PORTED	0002:000e3210 ?PlayQueuedEffect@AbstractEffectParticle@@UAEXXZ 008D2710 f i core.o
-1149	VERIFIED	0002:000e3220 ??_GAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o
-1150	VERIFIED	0002:000e3220 ??_EAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o
-1151	VERIFIED	0002:000e3250 ??_GAnimHeap@@UAEPAXI@Z 008D2750 f i core.o
-1152	VERIFIED	0002:000e3250 ??_EAnimHeap@@UAEPAXI@Z 008D2750 f i core.o
-1153	PORTED	0002:000e3280 ??_EAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o
-1154	PORTED	0002:000e3280 ??_GAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o
+1149	SKIPPED	0002:000e3220 ??_GAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1150	SKIPPED	0002:000e3220 ??_EAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1151	SKIPPED	0002:000e3250 ??_GAnimHeap@@UAEPAXI@Z 008D2750 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1152	SKIPPED	0002:000e3250 ??_EAnimHeap@@UAEPAXI@Z 008D2750 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1153	SKIPPED	0002:000e3280 ??_EAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1154	SKIPPED	0002:000e3280 ??_GAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1155	PORTED	0002:000e32b0 ??1AnimCacheHeap@@UAE@XZ 008D27B0 f i core.o
 1156	PORTED	0002:000e32c0 ??0?$reserved_dlist@VEndOnScriptNode@@@@QAE@XZ 008D27C0 f i core.o
 1157	PORTED	0002:000e32e0 ?end@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D27E0 f i core.o
@@ -1282,29 +1282,29 @@ index	status	map_line
 1281	PORTED	0002:000e5b80 ?GetFieldById@DbFieldSet@@QBEPBVDbField@@I@Z 008D5080 f i core.o
 1282	PORTED	0002:000e5cd0 ?IsFieldWeakById@DbFieldSet@@QBE_NI@Z 008D51D0 f i core.o
 1283	VERIFIED	0002:000e5cf0 ??0DestructibleBankManager@@QAE@XZ 008D51F0 f i core.o
-1284	VERIFIED	0002:000e5d10 ??_GDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o
-1285	VERIFIED	0002:000e5d10 ??_EDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o
+1284	SKIPPED	0002:000e5d10 ??_GDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1285	SKIPPED	0002:000e5d10 ??_EDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1286	VERIFIED	0002:000e5d40 ??1DestructibleBankManager@@UAE@XZ 008D5240 f i core.o
 1287	PORTED	0002:000e5d50 ?DereferenceHandle@EffectEventSys@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D5250 f i core.o
 1288	PORTED	0002:000e5da0 ?Clear@CachedQuery@EffectEventSys@@QAEXXZ 008D52A0 f i core.o
 1289	PORTED	0002:000e5dc0 ?Clear@PendingQuery@EffectEventSys@@QAEXXZ 008D52C0 f i core.o
 1290	VERIFIED	0002:000e5e20 ??0PhysDataBankManager@@QAE@XZ 008D5320 f i core.o
-1291	VERIFIED	0002:000e5e40 ??_GPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o
-1292	VERIFIED	0002:000e5e40 ??_EPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o
+1291	SKIPPED	0002:000e5e40 ??_GPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1292	SKIPPED	0002:000e5e40 ??_EPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1293	VERIFIED	0002:000e5e70 ??1PhysDataBankManager@@UAE@XZ 008D5370 f i core.o
 1294	VERIFIED	0002:000e5e80 ?CreateInst@DialogueManager@@SAXXZ 008D5380 f i core.o
 1295	VERIFIED	0002:000e5f80 ??0DbTablesetMgr@@QAE@XZ 008D5480 f i core.o
-1296	VERIFIED	0002:000e5fa0 ??_GDbTablesetMgr@@UAEPAXI@Z 008D54A0 f i core.o
-1297	VERIFIED	0002:000e5fa0 ??_EDbTablesetMgr@@UAEPAXI@Z 008D54A0 f i core.o
+1296	SKIPPED	0002:000e5fa0 ??_GDbTablesetMgr@@UAEPAXI@Z 008D54A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1297	SKIPPED	0002:000e5fa0 ??_EDbTablesetMgr@@UAEPAXI@Z 008D54A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1298	VERIFIED	0002:000e5fd0 ??1DbTablesetMgr@@UAE@XZ 008D54D0 f i core.o
 1299	VERIFIED	0002:000e5fe0 ?DeleteInst@CtrlIcon@@SAXXZ 008D54E0 f i core.o
 1300	VERIFIED	0002:000e6060 ??1?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D5560 f i core.o
-1301	VERIFIED	0002:000e6080 ??_EAbstractEffectParticle@@UAEPAXI@Z 008D5580 f i core.o
-1302	VERIFIED	0002:000e6080 ??_GAbstractEffectParticle@@UAEPAXI@Z 008D5580 f i core.o
-1303	VERIFIED	0002:000e60b0 ??_EConfigStringManager@@EAEPAXI@Z 008D55B0 f i core.o
-1304	VERIFIED	0002:000e60b0 ??_GConfigStringManager@@EAEPAXI@Z 008D55B0 f i core.o
-1305	VERIFIED	0002:000e60e0 ??_GSTBManager@@EAEPAXI@Z 008D55E0 f i core.o
-1306	VERIFIED	0002:000e60e0 ??_ESTBManager@@EAEPAXI@Z 008D55E0 f i core.o
+1301	SKIPPED	0002:000e6080 ??_EAbstractEffectParticle@@UAEPAXI@Z 008D5580 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1302	SKIPPED	0002:000e6080 ??_GAbstractEffectParticle@@UAEPAXI@Z 008D5580 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1303	SKIPPED	0002:000e60b0 ??_EConfigStringManager@@EAEPAXI@Z 008D55B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1304	SKIPPED	0002:000e60b0 ??_GConfigStringManager@@EAEPAXI@Z 008D55B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1305	SKIPPED	0002:000e60e0 ??_GSTBManager@@EAEPAXI@Z 008D55E0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1306	SKIPPED	0002:000e60e0 ??_ESTBManager@@EAEPAXI@Z 008D55E0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1307	PORTED	0002:000e6110 ?begin@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D5610 f i core.o
 1308	PORTED	0002:000e6160 ?begin@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D5660 f i core.o
 1309	PORTED	0002:000e61b0 ?erase@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D56B0 f i core.o
@@ -1342,12 +1342,12 @@ index	status	map_line
 1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o
 1342	VERIFIED	0002:000e7e40 ??0DbFieldSet@@QAE@XZ 008D7340 f i core.o
 1343	VERIFIED	0002:000e7ee0 ??1DbFieldSet@@UAE@XZ 008D73E0 f i core.o
-1344	VERIFIED	0002:000e7ef0 ??_GDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o
-1345	VERIFIED	0002:000e7ef0 ??_EDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o
+1344	SKIPPED	0002:000e7ef0 ??_GDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1345	SKIPPED	0002:000e7ef0 ??_EDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1346	PORTED	0002:000e7f20 ??0DbQuery@@QAE@ABVDbTable@@@Z 008D7420 f i core.o
 1347	VERIFIED	0002:000e7f60 ??1DbQuery@@UAE@XZ 008D7460 f i core.o
-1348	VERIFIED	0002:000e7fb0 ??_GDbQuery@@UAEPAXI@Z 008D74B0 f i core.o
-1349	VERIFIED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o
+1348	SKIPPED	0002:000e7fb0 ??_GDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1349	SKIPPED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1350	PORTED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o
 1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o
 1352	PORTED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o
@@ -1377,26 +1377,26 @@ index	status	map_line
 1376	PORTED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o
 1377	PORTED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o
 1378	PORTED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o
-1379	SKIPPED	0002:000e9280 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPAXI@Z 008D8780 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1379	SKIPPED	0002:000e9280 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPAXI@Z 008D8780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1380	SKIPPED	0002:000e92d0 ??1logic_error@std@@UAE@XZ 008D87D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1381	SKIPPED	0002:000e9360 ?what@logic_error@std@@UBEPBDXZ 008D8860 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1382	SKIPPED	0002:000e9380 ??_Glogic_error@std@@UAEPAXI@Z 008D8880 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1383	SKIPPED	0002:000e9380 ??_Elogic_error@std@@UAEPAXI@Z 008D8880 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1384	PORTED	0002:000e93b0 ??_GEntityNotifySet@@QAEPAXI@Z 008D88B0 f i core.o
+1382	SKIPPED	0002:000e9380 ??_Glogic_error@std@@UAEPAXI@Z 008D8880 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1383	SKIPPED	0002:000e9380 ??_Elogic_error@std@@UAEPAXI@Z 008D8880 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1384	SKIPPED	0002:000e93b0 ??_GEntityNotifySet@@QAEPAXI@Z 008D88B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1385	VERIFIED	0002:000e93e0 ?GetDebugString@AbstractEffect@@UBE?AVstring@Broc@@XZ 008D88E0 f i core.o
 1386	PORTED	0002:000e9410 ?CreateInst@SmokeGrenadeMgr@@SAXXZ 008D8910 f i core.o
-1387	VERIFIED	0002:000e94c0 ??_GActiveEffectSet@@QAEPAXI@Z 008D89C0 f i core.o
-1388	VERIFIED	0002:000e94f0 ??_GAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o
-1389	VERIFIED	0002:000e94f0 ??_EAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o
+1387	SKIPPED	0002:000e94c0 ??_GActiveEffectSet@@QAEPAXI@Z 008D89C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1388	SKIPPED	0002:000e94f0 ??_GAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1389	SKIPPED	0002:000e94f0 ??_EAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1390	PORTED	0002:000e9520 ?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008D8A20 f i core.o
 1391	VERIFIED	0002:000e9530 ??0?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D8A30 f i core.o
 1392	SKIPPED	0002:000e9570 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z 008D8A70 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1393	SKIPPED	0002:000e96b0 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z 008D8BB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1394	SKIPPED	0002:000e97e0 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@@Z 008D8CE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1395	SKIPPED	0002:000e9800 ??$_Destroy@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@YAXPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@@Z 008D8D00 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1396	VERIFIED	0002:000e9840 ??_GRumbleManager@@QAEPAXI@Z 008D8D40 f i core.o
-1397	VERIFIED	0002:000e9870 ??_EAbstractEffectShakeAndRumble@@UAEPAXI@Z 008D8D70 f i core.o
-1398	VERIFIED	0002:000e9870 ??_GAbstractEffectShakeAndRumble@@UAEPAXI@Z 008D8D70 f i core.o
+1396	SKIPPED	0002:000e9840 ??_GRumbleManager@@QAEPAXI@Z 008D8D40 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1397	SKIPPED	0002:000e9870 ??_EAbstractEffectShakeAndRumble@@UAEPAXI@Z 008D8D70 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1398	SKIPPED	0002:000e9870 ??_GAbstractEffectShakeAndRumble@@UAEPAXI@Z 008D8D70 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1399	SKIPPED	0002:000e98a0 ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z 008D8DA0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1400	SKIPPED	0002:000e98e0 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z 008D8DE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1401	SKIPPED	0002:000e9910 ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@ABV01@@Z 008D8E10 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1405,11 +1405,11 @@ index	status	map_line
 1404	SKIPPED	0002:000e99c0 ??$_Construct@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@YAXPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@ABV10@@Z 008D8EC0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1405	SKIPPED	0002:000e9a30 ??0logic_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 008D8F30 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1406	SKIPPED	0002:000e9ab0 ??0length_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 008D8FB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1407	SKIPPED	0002:000e9ae0 ??_Glength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1408	SKIPPED	0002:000e9ae0 ??_Elength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
+1407	SKIPPED	0002:000e9ae0 ??_Glength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1408	SKIPPED	0002:000e9ae0 ??_Elength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1409	SKIPPED	0002:000e9b10 ??1length_error@std@@UAE@XZ 008D9010 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1410	PORTED	0002:000e9b20 ?CreateInst@EffectEventSys@@SAXXZ 008D9020 f i core.o
-1411	VERIFIED	0002:000e9c20 ??_GEffectEventSys@@QAEPAXI@Z 008D9120 f i core.o
+1411	SKIPPED	0002:000e9c20 ??_GEffectEventSys@@QAEPAXI@Z 008D9120 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1412	VERIFIED	0002:000e9c50 ?DeleteInst@RumbleManager@@SAXXZ 008D9150 f i core.o
 1413	SKIPPED	0002:000e9ce0 ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@PBD@Z 008D91E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1414	SKIPPED	0002:000e9d30 ?_Xlen@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@IBEXXZ 008D9230 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

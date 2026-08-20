@@ -1,7 +1,7 @@
 index	status	map_line
 1	VERIFIED	0002:00419d30 ?Render@apsRectangleNode@@UAEXXZ 00C09230 f apsRectangleNode.o
-2	PORTED	0002:00419d50 ?GetVShader@apsRectangleRender@@YAKXZ 00C09250 f i apsRectangleNode.o
-3	PORTED	0002:00419d60 ?GetPShader@apsRectangleRenderPixel@@YAPAKXZ 00C09260 f i apsRectangleNode.o
+2	VERIFIED	0002:00419d50 ?GetVShader@apsRectangleRender@@YAKXZ 00C09250 f i apsRectangleNode.o
+3	VERIFIED	0002:00419d60 ?GetPShader@apsRectangleRenderPixel@@YAPAKXZ 00C09260 f i apsRectangleNode.o
 4	PORTED	0002:00419d70 ?GetPos@RectangleParticle@@QAEAAUPacked@Dir3@math@@XZ 00C09270 f i apsRectangleNode.o
 5	PORTED	0002:00419d80 ?GetColor@RectangleParticle@@QAE?AVVector4@math@@XZ 00C09280 f i apsRectangleNode.o
 6	PORTED	0002:00419dd0 ?GetWidth@RectangleParticle@@QAEMXZ 00C092D0 f i apsRectangleNode.o

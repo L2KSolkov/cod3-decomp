@@ -79,10 +79,10 @@ index	status	map_line
 78	VERIFIED	0002:003ed070 ??$AEPS_VECTOR_NEW@UPoolBlock@Pool@apsMemory@@@@YAPAUPoolBlock@Pool@apsMemory@@HH@Z 00BDC570 f i apsMemory.o
 79	PENDING	0002:003ed0d0 ??$AEPS_VECTOR_DELETE@UPoolBlock@Pool@apsMemory@@@@YAXHPAUPoolBlock@Pool@apsMemory@@@Z 00BDC5D0 f i apsMemory.o
 80	VERIFIED	0002:003ed0f0 ??$apsDestroy@VBlockAllocator@apsMemory@@@@YAXPAVBlockAllocator@apsMemory@@@Z 00BDC5F0 f i apsMemory.o
-81	VERIFIED	0002:003ed100 ??_GapsGroupManager@@QAEPAXI@Z 00BDC600 f i apsMemory.o
+81	SKIPPED	0002:003ed100 ??_GapsGroupManager@@QAEPAXI@Z 00BDC600 f i apsMemory.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 82	VERIFIED	0002:003ed130 ??0BlockAllocator@apsMemory@@QAE@XZ 00BDC630 f i apsMemory.o
-83	VERIFIED	0002:003ed170 ??_EBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o
-84	VERIFIED	0002:003ed170 ??_GBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o
+83	SKIPPED	0002:003ed170 ??_EBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+84	SKIPPED	0002:003ed170 ??_GBlockAllocator@apsMemory@@UAEPAXI@Z 00BDC670 f i apsMemory.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 85	PENDING	0002:003ed1a0 ??1?$apsArray@PAVPool@apsMemory@@@@QAE@XZ 00BDC6A0 f i apsMemory.o
 86	PENDING	0002:003ed1f0 ?reserve@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z 00BDC6F0 f i apsMemory.o
 87	PENDING	0002:003ed2c0 ?resize@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z 00BDC7C0 f i apsMemory.o
@@ -91,5 +91,5 @@ index	status	map_line
 90	PENDING	0002:003ed4a0 ?MemAlign@BlockAllocator@apsMemory@@UBEPAXII@Z 00BDC9A0 f i apsMemory.o
 91	PENDING	0002:003ed4f0 ?MemFree@BlockAllocator@apsMemory@@UBEXPAX@Z 00BDC9F0 f i apsMemory.o
 92	PENDING	0002:003ed530 ?MemResize@BlockAllocator@apsMemory@@UBEPAXPAXII@Z 00BDCA30 f i apsMemory.o
-93	VERIFIED	0002:003ed580 ??_GBlockManager@apsMemory@@QAEPAXI@Z 00BDCA80 f i apsMemory.o
+93	SKIPPED	0002:003ed580 ??_GBlockManager@apsMemory@@QAEPAXI@Z 00BDCA80 f i apsMemory.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 94	VERIFIED	0002:003ed5b0 ??$apsDestroy@VBlockManager@apsMemory@@@@YAXPAVBlockManager@apsMemory@@@Z 00BDCAB0 f i apsMemory.o

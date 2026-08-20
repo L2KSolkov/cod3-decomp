@@ -9,10 +9,10 @@
 #include "apsRectangleRenderer.h"
 
 // APS shader static data definitions (aeps_xboxr)
-unsigned int* apsRectangleRender::VS = nullptr;
-const unsigned int** apsRectangleRender::VShaderTable = nullptr;
-unsigned int** apsRectangleRenderPixel::PS = nullptr;
-const unsigned int** apsRectangleRenderPixel::PShaderTable = nullptr;
+unsigned long* apsRectangleRender::VS = nullptr;
+const unsigned long** apsRectangleRender::VShaderTable = nullptr;
+unsigned long** apsRectangleRenderPixel::PS = nullptr;
+const unsigned long** apsRectangleRenderPixel::PShaderTable = nullptr;
 
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
@@ -22,9 +22,9 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ctor, then override mFields.
 // ea: 0x8051F0
 // ============================================================================
-apsRectangleRenderer::apsRectangleRenderer(const apsRectangleRenderer::cArgs* args)
-    : apsBillboardRenderer(args) {
-    mFields = (args->mVelocityTracked != 0) ? 30933 : 213;
+apsRectangleRenderer::apsRectangleRenderer(const apsRectangleRenderer::cArgs& args)
+    : apsBillboardRenderer(&args) {
+    mFields = (args.mVelocityTracked != 0) ? 30933 : 213;
 }
 
 // ============================================================================
@@ -32,10 +32,12 @@ apsRectangleRenderer::apsRectangleRenderer(const apsRectangleRenderer::cArgs* ar
 // ea: 0x805230
 // ============================================================================
 void apsRectangleRenderer::Init() {
-    if (apsRectangleRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsRectangleRender::VS), apsRectangleRender::VShaderTable[0]);
-    if (apsRectangleRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsRectangleRenderPixel::PS), apsRectangleRenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(
+        apsRectangleRender::VS,
+        reinterpret_cast<const unsigned int*>(apsRectangleRender::VShaderTable[0]));
+    nglDxRegisterPShader(
+        apsRectangleRenderPixel::PS,
+        reinterpret_cast<const unsigned int*>(apsRectangleRenderPixel::PShaderTable[0]));
 }
 
 // ============================================================================
@@ -50,6 +52,27 @@ apsRenderer::eRenderResult apsRectangleRenderer::Render(const apsRendererRenderI
         __debugbreak();
     }
     return this->DefaultRender<apsRectangleRenderer, apsRectangleNode>(rinfo);
+}
+
+void apsRectangleRender::RegisterVShader()
+{
+    nglDxRegisterVShader(
+        apsRectangleRender::VS,
+        reinterpret_cast<const unsigned int*>(apsRectangleRender::VShaderTable[0]));
+}
+
+void apsRectangleRenderPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(
+        apsRectangleRenderPixel::PS,
+        reinterpret_cast<const unsigned int*>(apsRectangleRenderPixel::PShaderTable[0]));
+}
+
+void apsRectangleRenderPixel::InitPShader()
+{
+    nglDxRegisterPShader(
+        apsRectangleRenderPixel::PS,
+        reinterpret_cast<const unsigned int*>(apsRectangleRenderPixel::PShaderTable[0]));
 }
 
 // ============================================================================

@@ -11,5 +11,5 @@ index	status	map_line
 10	VERIFIED	0002:004045e0 ?Render@apsShrimpRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF3AE0 f apsShrimpRenderer.o
 11	PORTED	0002:00404830 ??0apsShrimpNode@@QAE@XZ 00BF3D30 f i apsShrimpRenderer.o
 12	VERIFIED	0002:00404840 ?GetDesc@apsShrimpNode@@UAEXPAD@Z 00BF3D40 f i apsShrimpRenderer.o
-13	PORTED	0002:00404870 ??_EapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o
-14	PORTED	0002:00404870 ??_GapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o
+13	SKIPPED	0002:00404870 ??_EapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+14	SKIPPED	0002:00404870 ??_GapsShrimpNode@@UAEPAXI@Z 00BF3D70 f i apsShrimpRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

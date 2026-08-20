@@ -105,8 +105,8 @@ index	status	map_line
 104	VERIFIED	0002:0043e250 ??0nglDummyRenderNode@@QAE@XZ 00C2D750 f i ngl_scene.o
 105	VERIFIED	0002:0043e260 ?Render@nglDummyRenderNode@@UAEXXZ 00C2D760 f i ngl_scene.o
 106	PORTED	0002:0043e270 ?GetDesc@nglDummyRenderNode@@UAEXPAD@Z 00C2D770 f i ngl_scene.o
-107	VERIFIED	0002:0043e290 ??_GnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o
-108	VERIFIED	0002:0043e290 ??_EnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o
+107	SKIPPED	0002:0043e290 ??_GnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+108	SKIPPED	0002:0043e290 ??_EnglDummyRenderNode@@UAEPAXI@Z 00C2D790 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 109	SKIPPED	0002:0043e2c0 ??$_Adjust_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglOpaqueCompare@@@Z 00C2D7C0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 110	SKIPPED	0002:0043e340 ??$_Rotate@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00Urandom_access_iterator_tag@0@@Z 00C2D840 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 111	SKIPPED	0002:0043e360 ??$_Adjust_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@HHU10@VnglTransCompare@@@Z 00C2D860 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -118,8 +118,8 @@ index	status	map_line
 117	PORTED	0002:0043e4e0 ?Render@nglRenderCallbackNode@@UAEXXZ 00C2D9E0 f i ngl_scene.o
 118	PORTED	0002:0043e520 ?GetDesc@nglRenderCallbackNode@@UAEXPAD@Z 00C2DA20 f i ngl_scene.o
 119	PORTED	0002:0043e540 ?GetSortInfo@nglRenderCallbackNode@@UAEXAAUnglSortInfo@@@Z 00C2DA40 f i ngl_scene.o
-120	PORTED	0002:0043e560 ??_EnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o
-121	PORTED	0002:0043e560 ??_GnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o
+120	SKIPPED	0002:0043e560 ??_EnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+121	SKIPPED	0002:0043e560 ??_GnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 122	PORTED	0002:0043e590 ??0nglScene@@QAE@XZ 00C2DA90 f i ngl_scene.o
 123	SKIPPED	0002:0043e5d0 ??$_Make_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@0VnglOpaqueCompare@@PAH0@Z 00C2DAD0 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 124	SKIPPED	0002:0043e620 ??$rotate@PAU?$pair@PAVnglRenderNode@@I@std@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00@Z 00C2DB20 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

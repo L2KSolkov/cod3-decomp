@@ -701,26 +701,26 @@ index	status	map_line
 700	PORTED	0002:003b99d0 ?Init@SessionDetailsMenu@@UAEXXZ 00BA8ED0 f i mp_shell.o
 701	PORTED	0002:003b99e0 ?ForceRefresh@SessionListMenu@@QAEXXZ 00BA8EE0 f i mp_shell.o
 702	PORTED	0002:003b99f0 ?ForceRefresh@SessionLanListMenu@@QAEXXZ 00BA8EF0 f i mp_shell.o
-703	VERIFIED	0002:003b9a00 ??_EOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o
-704	VERIFIED	0002:003b9a00 ??_GOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o
+703	SKIPPED	0002:003b9a00 ??_EOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+704	SKIPPED	0002:003b9a00 ??_GOverlayMenuBase@@UAEPAXI@Z 00BA8F00 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 705	PORTED	0002:003b9a30 ?Init@VoteGameTypeMenu@@UAEXXZ 00BA8F30 f i mp_shell.o
 706	PORTED	0002:003b9a40 ?Update@VoteGameTypeMenu@@UAEXM@Z 00BA8F40 f i mp_shell.o
 707	PORTED	0002:003b9a50 ?OnTriangle@VoteGameTypeMenu@@UAEXH@Z 00BA8F50 f i mp_shell.o
-708	VERIFIED	0002:003b9a60 ??_GVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o
-709	VERIFIED	0002:003b9a60 ??_EVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o
+708	SKIPPED	0002:003b9a60 ??_GVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+709	SKIPPED	0002:003b9a60 ??_EVoteGameTypeMenu@@UAEPAXI@Z 00BA8F60 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 710	VERIFIED	0002:003b9a90 ??1VoteGameTypeMenu@@UAE@XZ 00BA8F90 f i mp_shell.o
 711	PORTED	0002:003b9aa0 ?Init@VoteMapMenu@@UAEXXZ 00BA8FA0 f i mp_shell.o
 712	PORTED	0002:003b9ab0 ?Update@VoteMapMenu@@UAEXM@Z 00BA8FB0 f i mp_shell.o
 713	PORTED	0002:003b9ac0 ?OnTriangle@VoteMapMenu@@UAEXH@Z 00BA8FC0 f i mp_shell.o
-714	VERIFIED	0002:003b9ad0 ??_GVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o
-715	VERIFIED	0002:003b9ad0 ??_EVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o
+714	SKIPPED	0002:003b9ad0 ??_GVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+715	SKIPPED	0002:003b9ad0 ??_EVoteMapMenu@@UAEPAXI@Z 00BA8FD0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 716	VERIFIED	0002:003b9b00 ??1VoteMapMenu@@UAE@XZ 00BA9000 f i mp_shell.o
 717	PORTED	0002:003b9b10 ?SetAnimSpeed@ModelMenu@@IAEXM@Z 00BA9010 f i mp_shell.o
 718	PORTED	0002:003b9b30 ?Me@AARScoreboardWinner@@SAPAV1@XZ 00BA9030 f i mp_shell.o
 719	PORTED	0002:003b9b40 ?Me@AARScoreboardLoser@@SAPAV1@XZ 00BA9040 f i mp_shell.o
 720	PORTED	0002:003b9b50 ?Init@HotJoinMenu@@UAEXXZ 00BA9050 f i mp_shell.o
-721	VERIFIED	0002:003b9b60 ??_EHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o
-722	VERIFIED	0002:003b9b60 ??_GHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o
+721	SKIPPED	0002:003b9b60 ??_EHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+722	SKIPPED	0002:003b9b60 ??_GHotJoinMenu@@UAEPAXI@Z 00BA9060 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 723	VERIFIED	0002:003b9b90 ??1HotJoinMenu@@UAE@XZ 00BA9090 f i mp_shell.o
 724	PORTED	0002:003b9ba0 ?Init@SpectateMenu@@UAEXXZ 00BA90A0 f i mp_shell.o
 725	SKIPPED	0002:003b9bb0 ??A?$ae_array@PAVFEText@@$07@@QAEAAPAVFEText@@H@Z 00BA90B0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -742,95 +742,95 @@ index	status	map_line
 741	SKIPPED	0002:003ba270 ??A?$ae_array@PAVFEText@@$0O@@@QAEAAPAVFEText@@H@Z 00BA9770 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 742	SKIPPED	0002:003ba2f0 ??A?$ae_array@PAVPanelQuad@@$09@@QAEAAPAVPanelQuad@@H@Z 00BA97F0 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 743	SKIPPED	0002:003ba370 ??A?$ae_array@H$06@@QAEAAHH@Z 00BA9870 f i mp_shell.o  SKIPPED: inline template/container helper; supplied by its template definition
-744	VERIFIED	0002:003ba3f0 ??_ECreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
-745	VERIFIED	0002:003ba3f0 ??_GCreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o
-746	VERIFIED	0002:003ba420 ??_GCreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o
-747	VERIFIED	0002:003ba420 ??_ECreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o
-748	VERIFIED	0002:003ba450 ??_GCreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o
-749	VERIFIED	0002:003ba450 ??_ECreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o
-750	VERIFIED	0002:003ba480 ??_GCreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o
-751	VERIFIED	0002:003ba480 ??_ECreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o
-752	VERIFIED	0002:003ba4b0 ??_EFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o
-753	VERIFIED	0002:003ba4b0 ??_GFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o
-754	VERIFIED	0002:003ba4e0 ??_GFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o
-755	VERIFIED	0002:003ba4e0 ??_EFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o
-756	VERIFIED	0002:003ba510 ??_EInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o
-757	VERIFIED	0002:003ba510 ??_GInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o
+744	SKIPPED	0002:003ba3f0 ??_ECreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+745	SKIPPED	0002:003ba3f0 ??_GCreateSessionMenu@@UAEPAXI@Z 00BA98F0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+746	SKIPPED	0002:003ba420 ??_GCreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+747	SKIPPED	0002:003ba420 ??_ECreateLanSessionMenu@@UAEPAXI@Z 00BA9920 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+748	SKIPPED	0002:003ba450 ??_GCreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+749	SKIPPED	0002:003ba450 ??_ECreateSessionAdvancedMenu@@UAEPAXI@Z 00BA9950 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+750	SKIPPED	0002:003ba480 ??_GCreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+751	SKIPPED	0002:003ba480 ??_ECreateLanSessionAdvancedMenu@@UAEPAXI@Z 00BA9980 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+752	SKIPPED	0002:003ba4b0 ??_EFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+753	SKIPPED	0002:003ba4b0 ??_GFindSessionMenu@@UAEPAXI@Z 00BA99B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+754	SKIPPED	0002:003ba4e0 ??_GFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+755	SKIPPED	0002:003ba4e0 ??_EFindLanSessionMenu@@UAEPAXI@Z 00BA99E0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+756	SKIPPED	0002:003ba510 ??_EInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+757	SKIPPED	0002:003ba510 ??_GInitialLoadingMenu@@UAEPAXI@Z 00BA9A10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 758	VERIFIED	0002:003ba540 ??1InitialLoadingMenu@@UAE@XZ 00BA9A40 f i mp_shell.o
-759	VERIFIED	0002:003ba550 ??_EInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o
-760	VERIFIED	0002:003ba550 ??_GInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o
+759	SKIPPED	0002:003ba550 ??_EInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+760	SKIPPED	0002:003ba550 ??_GInstantActionMenu@@UAEPAXI@Z 00BA9A50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 761	VERIFIED	0002:003ba580 ??1InstantActionMenu@@UAE@XZ 00BA9A80 f i mp_shell.o
-762	VERIFIED	0002:003ba590 ??_EPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o
-763	VERIFIED	0002:003ba590 ??_GPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o
+762	SKIPPED	0002:003ba590 ??_EPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+763	SKIPPED	0002:003ba590 ??_GPlayOnlineMenu@@UAEPAXI@Z 00BA9A90 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 764	VERIFIED	0002:003ba5c0 ??1PlayOnlineMenu@@UAE@XZ 00BA9AC0 f i mp_shell.o
-765	VERIFIED	0002:003ba5d0 ??_GPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o
-766	VERIFIED	0002:003ba5d0 ??_EPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o
+765	SKIPPED	0002:003ba5d0 ??_GPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+766	SKIPPED	0002:003ba5d0 ??_EPressStartMenu@@UAEPAXI@Z 00BA9AD0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 767	VERIFIED	0002:003ba600 ??1PressStartMenu@@UAE@XZ 00BA9B00 f i mp_shell.o
-768	VERIFIED	0002:003ba610 ??_GSessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o
-769	VERIFIED	0002:003ba610 ??_ESessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o
+768	SKIPPED	0002:003ba610 ??_GSessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+769	SKIPPED	0002:003ba610 ??_ESessionDetailsMenu@@UAEPAXI@Z 00BA9B10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 770	VERIFIED	0002:003ba640 ??1SessionDetailsMenu@@UAE@XZ 00BA9B40 f i mp_shell.o
-771	VERIFIED	0002:003ba650 ??_GAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o
-772	VERIFIED	0002:003ba650 ??_EAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o
-773	VERIFIED	0002:003ba680 ??_GAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o
-774	VERIFIED	0002:003ba680 ??_EAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o
-775	VERIFIED	0002:003ba6b0 ??_GAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o
-776	VERIFIED	0002:003ba6b0 ??_EAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o
+771	SKIPPED	0002:003ba650 ??_GAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+772	SKIPPED	0002:003ba650 ??_EAARBaseMenu@@UAEPAXI@Z 00BA9B50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+773	SKIPPED	0002:003ba680 ??_GAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+774	SKIPPED	0002:003ba680 ??_EAARPersonalStats@@UAEPAXI@Z 00BA9B80 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+775	SKIPPED	0002:003ba6b0 ??_GAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+776	SKIPPED	0002:003ba6b0 ??_EAARPauseMenu@@UAEPAXI@Z 00BA9BB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 777	PORTED	0002:003ba6e0 ?OnTriangle@HotJoinMenu@@UAEXH@Z 00BA9BE0 f i mp_shell.o
-778	VERIFIED	0002:003ba740 ??_GSpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o
-779	VERIFIED	0002:003ba740 ??_ESpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o
+778	SKIPPED	0002:003ba740 ??_GSpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+779	SKIPPED	0002:003ba740 ??_ESpectateMenu@@UAEPAXI@Z 00BA9C40 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 780	PORTED	0002:003ba770 ?Init@ModelMenu@@UAEXXZ 00BA9C70 f i mp_shell.o
 781	PORTED	0002:003ba780 ?Init@WeaponSelectMenu@@UAEXXZ 00BA9C80 f i mp_shell.o
 782	PORTED	0002:003ba790 ?OnTriangle@PauseMenu@@UAEXH@Z 00BA9C90 f i mp_shell.o
 783	PORTED	0002:003ba7f0 ?OnStart@PauseMenu@@UAEXH@Z 00BA9CF0 f i mp_shell.o
-784	VERIFIED	0002:003ba850 ??_GFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o
-785	VERIFIED	0002:003ba850 ??_EFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o
-786	VERIFIED	0002:003ba880 ??_GModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o
-787	VERIFIED	0002:003ba880 ??_EModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o
-788	VERIFIED	0002:003ba8b0 ??_EGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o
-789	VERIFIED	0002:003ba8b0 ??_GGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o
-790	VERIFIED	0002:003ba8e0 ??_GAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o
-791	VERIFIED	0002:003ba8e0 ??_EAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o
-792	VERIFIED	0002:003ba910 ??_EGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o
-793	VERIFIED	0002:003ba910 ??_GGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o
-794	VERIFIED	0002:003ba940 ??_GAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o
-795	VERIFIED	0002:003ba940 ??_EAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o
-796	VERIFIED	0002:003ba970 ??_GWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o
-797	VERIFIED	0002:003ba970 ??_EWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o
-798	VERIFIED	0002:003ba9a0 ??_GInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o
-799	VERIFIED	0002:003ba9a0 ??_EInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o
-800	VERIFIED	0002:003ba9d0 ??_EPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o
-801	VERIFIED	0002:003ba9d0 ??_GPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o
+784	SKIPPED	0002:003ba850 ??_GFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+785	SKIPPED	0002:003ba850 ??_EFESplitScreenMenu@@UAEPAXI@Z 00BA9D50 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+786	SKIPPED	0002:003ba880 ??_GModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+787	SKIPPED	0002:003ba880 ??_EModelMenu@@UAEPAXI@Z 00BA9D80 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+788	SKIPPED	0002:003ba8b0 ??_EGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+789	SKIPPED	0002:003ba8b0 ??_GGameSettingsEdit@@UAEPAXI@Z 00BA9DB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+790	SKIPPED	0002:003ba8e0 ??_GAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+791	SKIPPED	0002:003ba8e0 ??_EAARGameSettingsEdit@@UAEPAXI@Z 00BA9DE0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+792	SKIPPED	0002:003ba910 ??_EGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+793	SKIPPED	0002:003ba910 ??_GGameSettingsView@@UAEPAXI@Z 00BA9E10 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+794	SKIPPED	0002:003ba940 ??_GAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+795	SKIPPED	0002:003ba940 ??_EAARGameSettingsView@@UAEPAXI@Z 00BA9E40 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+796	SKIPPED	0002:003ba970 ??_GWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+797	SKIPPED	0002:003ba970 ??_EWeaponSelectMenu@@UAEPAXI@Z 00BA9E70 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+798	SKIPPED	0002:003ba9a0 ??_GInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+799	SKIPPED	0002:003ba9a0 ??_EInGameSwitchSides@@UAEPAXI@Z 00BA9EA0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+800	SKIPPED	0002:003ba9d0 ??_EPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+801	SKIPPED	0002:003ba9d0 ??_GPauseMenu@@UAEPAXI@Z 00BA9ED0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 802	PORTED	0002:003baa00 ?SetModelPosition@ModelMenu@@IAEXABVPosition3@math@@@Z 00BA9F00 f i mp_shell.o
 803	PORTED	0002:003baa40 ?SetModelAngles@ModelMenu@@IAEXABVDir3@math@@@Z 00BA9F40 f i mp_shell.o
 804	PORTED	0002:003baa80 ?Init@PlayLanMenu@@UAEXXZ 00BA9F80 f i mp_shell.o
 805	PORTED	0002:003baa90 ?Init@SessionListMenu@@UAEXXZ 00BA9F90 f i mp_shell.o
 806	PORTED	0002:003baaa0 ?Init@SessionLanListMenu@@UAEXXZ 00BA9FA0 f i mp_shell.o
-807	VERIFIED	0002:003baab0 ??_GPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o
-808	VERIFIED	0002:003baab0 ??_EPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o
+807	SKIPPED	0002:003baab0 ??_GPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+808	SKIPPED	0002:003baab0 ??_EPlayLanMenu@@UAEPAXI@Z 00BA9FB0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 809	VERIFIED	0002:003baae0 ??1PlayLanMenu@@UAE@XZ 00BA9FE0 f i mp_shell.o
-810	VERIFIED	0002:003bab50 ??_ESessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o
-811	VERIFIED	0002:003bab50 ??_GSessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o
-812	VERIFIED	0002:003bab80 ??_ESessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o
-813	VERIFIED	0002:003bab80 ??_GSessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o
-814	VERIFIED	0002:003babb0 ??_EOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o
-815	VERIFIED	0002:003babb0 ??_GOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o
-816	VERIFIED	0002:003babe0 ??_EInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o
-817	VERIFIED	0002:003babe0 ??_GInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o
-818	VERIFIED	0002:003bac10 ??_EAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o
-819	VERIFIED	0002:003bac10 ??_GAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o
+810	SKIPPED	0002:003bab50 ??_ESessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+811	SKIPPED	0002:003bab50 ??_GSessionListMenu@@UAEPAXI@Z 00BAA050 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+812	SKIPPED	0002:003bab80 ??_ESessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+813	SKIPPED	0002:003bab80 ??_GSessionLanListMenu@@UAEPAXI@Z 00BAA080 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+814	SKIPPED	0002:003babb0 ??_EOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+815	SKIPPED	0002:003babb0 ??_GOverlayMenu@@UAEPAXI@Z 00BAA0B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+816	SKIPPED	0002:003babe0 ??_EInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+817	SKIPPED	0002:003babe0 ??_GInGameOverlay@@UAEPAXI@Z 00BAA0E0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+818	SKIPPED	0002:003bac10 ??_EAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+819	SKIPPED	0002:003bac10 ??_GAAROverlay@@UAEPAXI@Z 00BAA110 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 820	PORTED	0002:003bac40 ?UpdateWidescreen@AARScoreboardBase@@MAEX_N@Z 00BAA140 f i mp_shell.o
-821	VERIFIED	0002:003bac50 ??_GAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o
-822	VERIFIED	0002:003bac50 ??_EAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o
-823	VERIFIED	0002:003bac80 ??_GAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o
-824	VERIFIED	0002:003bac80 ??_EAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o
-825	VERIFIED	0002:003bacb0 ??_EAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o
-826	VERIFIED	0002:003bacb0 ??_GAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o
+821	SKIPPED	0002:003bac50 ??_GAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+822	SKIPPED	0002:003bac50 ??_EAARMapVote@@UAEPAXI@Z 00BAA150 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+823	SKIPPED	0002:003bac80 ??_GAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+824	SKIPPED	0002:003bac80 ??_EAARGameModeVote@@UAEPAXI@Z 00BAA180 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+825	SKIPPED	0002:003bacb0 ??_EAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+826	SKIPPED	0002:003bacb0 ??_GAARMenuSystem@@UAEPAXI@Z 00BAA1B0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 827	VERIFIED	0002:003bace0 ??1AARMenuSystem@@UAE@XZ 00BAA1E0 f i mp_shell.o
-828	VERIFIED	0002:003bacf0 ??_GInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o
-829	VERIFIED	0002:003bacf0 ??_EInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o
-830	VERIFIED	0002:003bad20 ??_EAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o
-831	VERIFIED	0002:003bad20 ??_GAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o
-832	VERIFIED	0002:003bad50 ??_EAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o
-833	VERIFIED	0002:003bad50 ??_GAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o
-834	VERIFIED	0002:003bad80 ??_GAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o
-835	VERIFIED	0002:003bad80 ??_EAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o
+828	SKIPPED	0002:003bacf0 ??_GInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+829	SKIPPED	0002:003bacf0 ??_EInGameScoreBoard@@UAEPAXI@Z 00BAA1F0 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+830	SKIPPED	0002:003bad20 ??_EAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+831	SKIPPED	0002:003bad20 ??_GAARScoreboardBase@@UAEPAXI@Z 00BAA220 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+832	SKIPPED	0002:003bad50 ??_EAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+833	SKIPPED	0002:003bad50 ??_GAARScoreboardWinner@@UAEPAXI@Z 00BAA250 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+834	SKIPPED	0002:003bad80 ??_GAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+835	SKIPPED	0002:003bad80 ??_EAARScoreboardLoser@@UAEPAXI@Z 00BAA280 f i mp_shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

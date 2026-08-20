@@ -1,12 +1,12 @@
 index	status	map_line
-1	PORTED	0002:004051f0 ??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF46F0 f apsRectangleRenderer.o
-2	VERIFIED	0002:00405230 ?Init@apsRectangleRenderer@@SAXXZ 00BF4730 f apsRectangleRenderer.o
+1	FIXED	0002:004051f0 ??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF46F0 f apsRectangleRenderer.o
+2	FIXED	0002:00405230 ?Init@apsRectangleRenderer@@SAXXZ 00BF4730 f apsRectangleRenderer.o
 3	VERIFIED	0002:00405260 ?Render@apsRectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4760 f apsRectangleRenderer.o
 4	PORTED	0002:004052a0 ?RegisterVShader@apsRectangleRender@@YAXXZ 00BF47A0 f i apsRectangleRenderer.o
 5	PORTED	0002:004052c0 ?RegisterPShader@apsRectangleRenderPixel@@YAXXZ 00BF47C0 f i apsRectangleRenderer.o
 6	PORTED	0002:004052e0 ?InitPShader@apsRectangleRenderPixel@@YAXXZ 00BF47E0 f i apsRectangleRenderer.o
 7	PORTED	0002:00405300 ??0apsRectangleNode@@QAE@XZ 00BF4800 f i apsRectangleRenderer.o
 8	VERIFIED	0002:00405310 ?GetDesc@apsRectangleNode@@UAEXPAD@Z 00BF4810 f i apsRectangleRenderer.o
-9	PORTED	0002:00405350 ??_EapsRectangleNode@@UAEPAXI@Z 00BF4850 f i apsRectangleRenderer.o
-10	PORTED	0002:00405350 ??_GapsRectangleNode@@UAEPAXI@Z 00BF4850 f i apsRectangleRenderer.o
+9	SKIPPED	0002:00405350 ??_EapsRectangleNode@@UAEPAXI@Z 00BF4850 f i apsRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+10	SKIPPED	0002:00405350 ??_GapsRectangleNode@@UAEPAXI@Z 00BF4850 f i apsRectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 11	PORTED	0002:00405380 ??$DefaultRender@VapsRectangleRenderer@@VapsRectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsRectangleRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4880 f i apsRectangleRenderer.o

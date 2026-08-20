@@ -179,7 +179,7 @@ index	status	map_line
 178	PORTED	0002:00480c30 ??9iterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAE_NABV01@@Z 00C70130 f i physics_system.o
 179	PORTED	0002:00480c50 ??Diterator@?$phys_heap_memory_pool@Vrigid_body@@@@QAEAAVrigid_body@@XZ 00C70150 f i physics_system.o
 180	VERIFIED	0002:00480c60 ??0rigid_body@@QAE@XZ 00C70160 f i physics_system.o
-181	VERIFIED	0002:00480c70 ??_Grigid_body_constraint_contact@@QAEPAXI@Z 00C70170 f i physics_system.o
+181	SKIPPED	0002:00480c70 ??_Grigid_body_constraint_contact@@QAEPAXI@Z 00C70170 f i physics_system.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 182	PORTED	0002:00480ca0 ?init@?$phys_inplace_avl_tree_node@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAEXXZ 00C701A0 f i physics_system.o
 183	PORTED	0002:00480cb0 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_point@@@@QBE_NPBVrigid_body_constraint_point@@@Z 00C701B0 f i physics_system.o
 184	PORTED	0002:00480d10 ?is_member@?$phys_heap_memory_pool@Vrigid_body_constraint_hinge@@@@QBE_NPBVrigid_body_constraint_hinge@@@Z 00C70210 f i physics_system.o

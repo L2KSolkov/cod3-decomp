@@ -8,6 +8,22 @@
 #include "apsNodeRenderer.h"
 #include "apsParticleTypes.h"
 
+apsRectangleNode::apsRectangleNode()
+    : apsBillboardNode()
+{
+    mFlags = 0;
+}
+
+unsigned long apsRectangleRender::GetVShader()
+{
+    return apsRectangleRender::VS[0];
+}
+
+unsigned long* apsRectangleRenderPixel::GetPShader()
+{
+    return apsRectangleRenderPixel::PS[0];
+}
+
 // ============================================================================
 // apsRectangleNode::Render — forward to the rectangle node renderer.
 // ea: 0x819D30

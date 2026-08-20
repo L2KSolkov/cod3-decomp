@@ -16,10 +16,10 @@ index	status	map_line
 15	PORTED	0002:003d31d0 ?RegisterPShader@cdCharFullbrightPixel@@YAXXZ 00BC26D0 f i cdCharShader.o
 16	PORTED	0002:003d31f0 ?GetPShader@cdCharFullbrightPixel@@YAPAKXZ 00BC26F0 f i cdCharShader.o
 17	PORTED	0002:003d3200 ??0cdCharShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdCharShaderMat@@@Z 00BC2700 f i cdCharShader.o
-18	PORTED	0002:003d3230 ??_EcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o
-19	PORTED	0002:003d3230 ??_GcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o
+18	SKIPPED	0002:003d3230 ??_EcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+19	SKIPPED	0002:003d3230 ??_GcdCharShaderNode@@UAEPAXI@Z 00BC2730 f i cdCharShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20	PORTED	0002:003d3260 ??1cdCharShaderNode@@UAE@XZ 00BC2760 f i cdCharShader.o
-21	VERIFIED	0002:003d3270 ??_GcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o
-22	VERIFIED	0002:003d3270 ??_EcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o
+21	SKIPPED	0002:003d3270 ??_GcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+22	SKIPPED	0002:003d3270 ??_EcdCharShader@@UAEPAXI@Z 00BC2770 f i cdCharShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 23	VERIFIED	0002:003d32a0 ??1cdCharShader@@UAE@XZ 00BC27A0 f i cdCharShader.o
 24	PORTED	0002:003d32b0 ??0CharContext@@QAE@XZ 00BC27B0 f i cdCharShader.o

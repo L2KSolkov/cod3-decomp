@@ -6,9 +6,9 @@ index	status	map_line
 5	VERIFIED	0002:003d9e30 ?Register@cdWorldColorShader@@UAEXXZ 00BC9330 f cdWorldColorShader.o
 6	VERIFIED	0002:003d9e40 ?AddNode@cdWorldColorShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC9340 f cdWorldColorShader.o
 7	PORTED	0002:003d9ee0 ??0cdWorldShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldShaderMat@@_N@Z 00BC93E0 f i cdWorldColorShader.o
-8	PORTED	0002:003d9f10 ??_EcdWorldShaderNode@@UAEPAXI@Z 00BC9410 f i cdWorldColorShader.o
-9	PORTED	0002:003d9f10 ??_GcdWorldShaderNode@@UAEPAXI@Z 00BC9410 f i cdWorldColorShader.o
+8	SKIPPED	0002:003d9f10 ??_EcdWorldShaderNode@@UAEPAXI@Z 00BC9410 f i cdWorldColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+9	SKIPPED	0002:003d9f10 ??_GcdWorldShaderNode@@UAEPAXI@Z 00BC9410 f i cdWorldColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 10	PORTED	0002:003d9f40 ??1cdWorldShaderNode@@UAE@XZ 00BC9440 f i cdWorldColorShader.o
-11	VERIFIED	0002:003d9f50 ??_EcdWorldColorShader@@UAEPAXI@Z 00BC9450 f i cdWorldColorShader.o
-12	VERIFIED	0002:003d9f50 ??_GcdWorldColorShader@@UAEPAXI@Z 00BC9450 f i cdWorldColorShader.o
+11	SKIPPED	0002:003d9f50 ??_EcdWorldColorShader@@UAEPAXI@Z 00BC9450 f i cdWorldColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+12	SKIPPED	0002:003d9f50 ??_GcdWorldColorShader@@UAEPAXI@Z 00BC9450 f i cdWorldColorShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 13	VERIFIED	0002:003d9f80 ??1cdWorldColorShader@@UAE@XZ 00BC9480 f i cdWorldColorShader.o

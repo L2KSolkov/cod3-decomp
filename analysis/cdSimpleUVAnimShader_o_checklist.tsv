@@ -32,10 +32,10 @@ index	status	map_line
 31	PORTED	0002:003c79b0 ??$Get@UTextureMatrixParamType@@@nglParamSet@@QAEPAVMat44@math@@ABUTextureMatrixParamType@@@Z 00BB6EB0 f i cdSimpleUVAnimShader.o
 32	PORTED	0002:003c7a10 ??$Get@UisRotatingTextureParamType@@@nglParamSet@@QAEHABUisRotatingTextureParamType@@@Z 00BB6F10 f i cdSimpleUVAnimShader.o
 33	PORTED	0002:003c7a70 ??0cdSimpleUVAnimShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimpleUVAnimShaderMat@@@Z 00BB6F70 f i cdSimpleUVAnimShader.o
-34	PORTED	0002:003c7aa0 ??_GcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o
-35	PORTED	0002:003c7aa0 ??_EcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o
+34	SKIPPED	0002:003c7aa0 ??_GcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+35	SKIPPED	0002:003c7aa0 ??_EcdSimpleUVAnimShaderNode@@UAEPAXI@Z 00BB6FA0 f i cdSimpleUVAnimShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 36	PORTED	0002:003c7ad0 ??1cdSimpleUVAnimShaderNode@@UAE@XZ 00BB6FD0 f i cdSimpleUVAnimShader.o
-37	VERIFIED	0002:003c7ae0 ??_GcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o
-38	VERIFIED	0002:003c7ae0 ??_EcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o
+37	SKIPPED	0002:003c7ae0 ??_GcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+38	SKIPPED	0002:003c7ae0 ??_EcdSimpleUVAnimShader@@UAEPAXI@Z 00BB6FE0 f i cdSimpleUVAnimShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 39	VERIFIED	0002:003c7b10 ??1cdSimpleUVAnimShader@@UAE@XZ 00BB7010 f i cdSimpleUVAnimShader.o
 40	PORTED	0002:003c7b20 ??0SimpleUVAnimContext@@QAE@XZ 00BB7020 f i cdSimpleUVAnimShader.o

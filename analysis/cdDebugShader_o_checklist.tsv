@@ -19,9 +19,9 @@ index	status	map_line
 18	PORTED	0002:003c6960 ??$IsSet@UnglTintParamType@@@nglParamSet@@QAE_NABUnglTintParamType@@@Z 00BB5E60 f i cdDebugShader.o
 19	PORTED	0002:003c6990 ??$Get@UnglTintParamType@@@nglParamSet@@QAEPAVVector4@math@@ABUnglTintParamType@@@Z 00BB5E90 f i cdDebugShader.o
 20	PORTED	0002:003c69f0 ??0cdDebugShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDebugShaderMat@@@Z 00BB5EF0 f i cdDebugShader.o
-21	PORTED	0002:003c6a20 ??_GcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o
-22	PORTED	0002:003c6a20 ??_EcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o
+21	SKIPPED	0002:003c6a20 ??_GcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+22	SKIPPED	0002:003c6a20 ??_EcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 23	PORTED	0002:003c6a50 ??1cdDebugShaderNode@@UAE@XZ 00BB5F50 f i cdDebugShader.o
-24	VERIFIED	0002:003c6a60 ??_EcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o
-25	VERIFIED	0002:003c6a60 ??_GcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o
+24	SKIPPED	0002:003c6a60 ??_EcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+25	SKIPPED	0002:003c6a60 ??_GcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 26	VERIFIED	0002:003c6a90 ??1cdDebugShader@@UAE@XZ 00BB5F90 f i cdDebugShader.o

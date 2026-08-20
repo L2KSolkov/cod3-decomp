@@ -3,8 +3,8 @@ index	status	map_line
 2	PORTED	0002:003f0900 ?Set@Packed@Vector4@math@@QAEXMMMM@Z 00BDFE00 f i apsRegister.o
 3	VERIFIED	0002:003f0930 ??1apsVirtualBase@@UAE@XZ 00BDFE30 f i apsRegister.o
 4	VERIFIED	0002:003f0940 ?GetVtable@apsVirtualBase@@QBEIXZ 00BDFE40 f i apsRegister.o
-5	VERIFIED	0002:003f0950 ??_GapsVirtualBase@@UAEPAXI@Z 00BDFE50 f i apsRegister.o
-6	VERIFIED	0002:003f0950 ??_EapsVirtualBase@@UAEPAXI@Z 00BDFE50 f i apsRegister.o
+5	SKIPPED	0002:003f0950 ??_GapsVirtualBase@@UAEPAXI@Z 00BDFE50 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+6	SKIPPED	0002:003f0950 ??_EapsVirtualBase@@UAEPAXI@Z 00BDFE50 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7	VERIFIED	0002:003f0980 ??0apsSphere@@QAE@XZ 00BDFE80 f i apsRegister.o
 8	PORTED	0002:003f0990 ??0apsParam@@QAE@XZ 00BDFE90 f i apsRegister.o
 9	VERIFIED	0002:003f09a0 ??BapsParam@@QBEPAUnglTexture@@XZ 00BDFEA0 f i apsRegister.o
@@ -69,8 +69,8 @@ index	status	map_line
 68	VERIFIED	0002:003f17b0 ?GetVersion@apsLinearScaleSyncAction@@UBEMXZ 00BE0CB0 f i apsRegister.o
 69	VERIFIED	0002:003f17c0 ??1apsDomain@@UAE@XZ 00BE0CC0 f i apsRegister.o
 70	VERIFIED	0002:003f17d0 ??0apsDomain@@QAE@XZ 00BE0CD0 f i apsRegister.o
-71	VERIFIED	0002:003f17e0 ??_EapsDomain@@UAEPAXI@Z 00BE0CE0 f i apsRegister.o
-72	VERIFIED	0002:003f17e0 ??_GapsDomain@@UAEPAXI@Z 00BE0CE0 f i apsRegister.o
+71	SKIPPED	0002:003f17e0 ??_EapsDomain@@UAEPAXI@Z 00BE0CE0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+72	SKIPPED	0002:003f17e0 ??_GapsDomain@@UAEPAXI@Z 00BE0CE0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 73	VERIFIED	0002:003f1810 ??0apsCircleDomain@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE0D10 f i apsRegister.o
 74	VERIFIED	0002:003f1820 ?RetrieveVtable@apsCircleDomain@@SAIXZ 00BE0D20 f i apsRegister.o
 75	VERIFIED	0002:003f1850 ?GetId@apsCircleDomain@@UBEIXZ 00BE0D50 f i apsRegister.o
@@ -160,8 +160,8 @@ index	status	map_line
 159	VERIFIED	0002:003f3020 ??0apsRenderer@@QAE@XZ 00BE2520 f i apsRegister.o
 160	VERIFIED	0002:003f3040 ?GetChanceToRemove@apsRenderer@@UBEMXZ 00BE2540 f i apsRegister.o
 161	VERIFIED	0002:003f3050 ?GetMeshRadius@apsRenderer@@UBE_NAAM@Z 00BE2550 f i apsRegister.o
-162	VERIFIED	0002:003f3060 ??_EapsRenderer@@UAEPAXI@Z 00BE2560 f i apsRegister.o
-163	VERIFIED	0002:003f3060 ??_GapsRenderer@@UAEPAXI@Z 00BE2560 f i apsRegister.o
+162	SKIPPED	0002:003f3060 ??_EapsRenderer@@UAEPAXI@Z 00BE2560 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+163	SKIPPED	0002:003f3060 ??_GapsRenderer@@UAEPAXI@Z 00BE2560 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 164	VERIFIED	0002:003f3090 ?SetBlendMode@cArgs@apsBillboardRenderer@@QAEXVapsParam@@@Z 00BE2590 f i apsRegister.o
 165	VERIFIED	0002:003f30b0 ??0apsBillboardRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE25B0 f i apsRegister.o
 166	VERIFIED	0002:003f30d0 ?GetId@apsBillboardRenderer@@UBEIXZ 00BE25D0 f i apsRegister.o
@@ -171,50 +171,50 @@ index	status	map_line
 170	PORTED	0002:003f31a0 ?UseSortedRendering@apsBillboardRenderer@@UBEHXZ 00BE26A0 f i apsRegister.o
 171	VERIFIED	0002:003f31b0 ?GetChanceToRemove@apsBillboardRenderer@@UBEMXZ 00BE26B0 f i apsRegister.o
 172	VERIFIED	0002:003f31c0 ?RetrieveVtable@apsBillboardRenderer@@SAIXZ 00BE26C0 f i apsRegister.o
-173	VERIFIED	0002:003f31f0 ??_EapsBillboardRenderer@@UAEPAXI@Z 00BE26F0 f i apsRegister.o
-174	VERIFIED	0002:003f31f0 ??_GapsBillboardRenderer@@UAEPAXI@Z 00BE26F0 f i apsRegister.o
+173	SKIPPED	0002:003f31f0 ??_EapsBillboardRenderer@@UAEPAXI@Z 00BE26F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+174	SKIPPED	0002:003f31f0 ??_GapsBillboardRenderer@@UAEPAXI@Z 00BE26F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 175	VERIFIED	0002:003f3220 ??0apsUVARenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2720 f i apsRegister.o
 176	VERIFIED	0002:003f3240 ?GetId@apsUVARenderer@@UBEIXZ 00BE2740 f i apsRegister.o
 177	VERIFIED	0002:003f3250 ?GetVersion@apsUVARenderer@@UBEMXZ 00BE2750 f i apsRegister.o
 178	VERIFIED	0002:003f3260 ?RetrieveVtable@apsUVARenderer@@SAIXZ 00BE2760 f i apsRegister.o
-179	VERIFIED	0002:003f32a0 ??_EapsUVARenderer@@UAEPAXI@Z 00BE27A0 f i apsRegister.o
-180	VERIFIED	0002:003f32a0 ??_GapsUVARenderer@@UAEPAXI@Z 00BE27A0 f i apsRegister.o
+179	SKIPPED	0002:003f32a0 ??_EapsUVARenderer@@UAEPAXI@Z 00BE27A0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+180	SKIPPED	0002:003f32a0 ??_GapsUVARenderer@@UAEPAXI@Z 00BE27A0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 181	VERIFIED	0002:003f32d0 ??0apsColorBillboardRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE27D0 f i apsRegister.o
 182	VERIFIED	0002:003f32f0 ?GetId@apsColorBillboardRenderer@@UBEIXZ 00BE27F0 f i apsRegister.o
 183	VERIFIED	0002:003f3300 ?GetVersion@apsColorBillboardRenderer@@UBEMXZ 00BE2800 f i apsRegister.o
 184	VERIFIED	0002:003f3310 ?RetrieveVtable@apsColorBillboardRenderer@@SAIXZ 00BE2810 f i apsRegister.o
-185	VERIFIED	0002:003f3340 ??_GapsColorBillboardRenderer@@UAEPAXI@Z 00BE2840 f i apsRegister.o
-186	VERIFIED	0002:003f3340 ??_EapsColorBillboardRenderer@@UAEPAXI@Z 00BE2840 f i apsRegister.o
+185	SKIPPED	0002:003f3340 ??_GapsColorBillboardRenderer@@UAEPAXI@Z 00BE2840 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+186	SKIPPED	0002:003f3340 ??_EapsColorBillboardRenderer@@UAEPAXI@Z 00BE2840 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 187	VERIFIED	0002:003f3370 ??0apsColorUVARenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2870 f i apsRegister.o
 188	VERIFIED	0002:003f3390 ?GetId@apsColorUVARenderer@@UBEIXZ 00BE2890 f i apsRegister.o
 189	VERIFIED	0002:003f33a0 ?GetVersion@apsColorUVARenderer@@UBEMXZ 00BE28A0 f i apsRegister.o
 190	VERIFIED	0002:003f33b0 ?RetrieveVtable@apsColorUVARenderer@@SAIXZ 00BE28B0 f i apsRegister.o
-191	VERIFIED	0002:003f33f0 ??_GapsColorUVARenderer@@UAEPAXI@Z 00BE28F0 f i apsRegister.o
-192	VERIFIED	0002:003f33f0 ??_EapsColorUVARenderer@@UAEPAXI@Z 00BE28F0 f i apsRegister.o
+191	SKIPPED	0002:003f33f0 ??_GapsColorUVARenderer@@UAEPAXI@Z 00BE28F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+192	SKIPPED	0002:003f33f0 ??_EapsColorUVARenderer@@UAEPAXI@Z 00BE28F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 193	VERIFIED	0002:003f3420 ??0apsColorRectangleRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2920 f i apsRegister.o
 194	VERIFIED	0002:003f3440 ?GetId@apsColorRectangleRenderer@@UBEIXZ 00BE2940 f i apsRegister.o
 195	VERIFIED	0002:003f3450 ?GetVersion@apsColorRectangleRenderer@@UBEMXZ 00BE2950 f i apsRegister.o
 196	VERIFIED	0002:003f3460 ?RetrieveVtable@apsColorRectangleRenderer@@SAIXZ 00BE2960 f i apsRegister.o
-197	VERIFIED	0002:003f3490 ??_GapsColorRectangleRenderer@@UAEPAXI@Z 00BE2990 f i apsRegister.o
-198	VERIFIED	0002:003f3490 ??_EapsColorRectangleRenderer@@UAEPAXI@Z 00BE2990 f i apsRegister.o
+197	SKIPPED	0002:003f3490 ??_GapsColorRectangleRenderer@@UAEPAXI@Z 00BE2990 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+198	SKIPPED	0002:003f3490 ??_EapsColorRectangleRenderer@@UAEPAXI@Z 00BE2990 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 199	VERIFIED	0002:003f34c0 ??0apsRectangleRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE29C0 f i apsRegister.o
 200	VERIFIED	0002:003f34e0 ?GetId@apsRectangleRenderer@@UBEIXZ 00BE29E0 f i apsRegister.o
 201	VERIFIED	0002:003f34f0 ?GetVersion@apsRectangleRenderer@@UBEMXZ 00BE29F0 f i apsRegister.o
 202	VERIFIED	0002:003f3500 ?RetrieveVtable@apsRectangleRenderer@@SAIXZ 00BE2A00 f i apsRegister.o
-203	VERIFIED	0002:003f3530 ??_GapsRectangleRenderer@@UAEPAXI@Z 00BE2A30 f i apsRegister.o
-204	VERIFIED	0002:003f3530 ??_EapsRectangleRenderer@@UAEPAXI@Z 00BE2A30 f i apsRegister.o
+203	SKIPPED	0002:003f3530 ??_GapsRectangleRenderer@@UAEPAXI@Z 00BE2A30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+204	SKIPPED	0002:003f3530 ??_EapsRectangleRenderer@@UAEPAXI@Z 00BE2A30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 205	VERIFIED	0002:003f3560 ??0apsUVARectangleRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2A60 f i apsRegister.o
 206	VERIFIED	0002:003f3580 ?GetId@apsUVARectangleRenderer@@UBEIXZ 00BE2A80 f i apsRegister.o
 207	VERIFIED	0002:003f3590 ?GetVersion@apsUVARectangleRenderer@@UBEMXZ 00BE2A90 f i apsRegister.o
 208	VERIFIED	0002:003f35a0 ?RetrieveVtable@apsUVARectangleRenderer@@SAIXZ 00BE2AA0 f i apsRegister.o
-209	VERIFIED	0002:003f35e0 ??_GapsUVARectangleRenderer@@UAEPAXI@Z 00BE2AE0 f i apsRegister.o
-210	VERIFIED	0002:003f35e0 ??_EapsUVARectangleRenderer@@UAEPAXI@Z 00BE2AE0 f i apsRegister.o
+209	SKIPPED	0002:003f35e0 ??_GapsUVARectangleRenderer@@UAEPAXI@Z 00BE2AE0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+210	SKIPPED	0002:003f35e0 ??_EapsUVARectangleRenderer@@UAEPAXI@Z 00BE2AE0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 211	VERIFIED	0002:003f3610 ??0apsColorUVARectangleRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2B10 f i apsRegister.o
 212	VERIFIED	0002:003f3630 ?GetId@apsColorUVARectangleRenderer@@UBEIXZ 00BE2B30 f i apsRegister.o
 213	VERIFIED	0002:003f3640 ?GetVersion@apsColorUVARectangleRenderer@@UBEMXZ 00BE2B40 f i apsRegister.o
 214	VERIFIED	0002:003f3650 ?RetrieveVtable@apsColorUVARectangleRenderer@@SAIXZ 00BE2B50 f i apsRegister.o
-215	VERIFIED	0002:003f3690 ??_EapsColorUVARectangleRenderer@@UAEPAXI@Z 00BE2B90 f i apsRegister.o
-216	VERIFIED	0002:003f3690 ??_GapsColorUVARectangleRenderer@@UAEPAXI@Z 00BE2B90 f i apsRegister.o
+215	SKIPPED	0002:003f3690 ??_EapsColorUVARectangleRenderer@@UAEPAXI@Z 00BE2B90 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+216	SKIPPED	0002:003f3690 ??_GapsColorUVARectangleRenderer@@UAEPAXI@Z 00BE2B90 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 217	VERIFIED	0002:003f36c0 ??0apsSimpleMeshRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2BC0 f i apsRegister.o
 218	VERIFIED	0002:003f36e0 ?GetId@apsSimpleMeshRenderer@@UBEIXZ 00BE2BE0 f i apsRegister.o
 219	VERIFIED	0002:003f36f0 ?GetVersion@apsSimpleMeshRenderer@@UBEMXZ 00BE2BF0 f i apsRegister.o
@@ -222,8 +222,8 @@ index	status	map_line
 221	VERIFIED	0002:003f3710 ?SetScreenFacingNormal@apsSimpleMeshRenderer@@UAEXABVDir3@math@@@Z 00BE2C10 f i apsRegister.o
 222	VERIFIED	0002:003f3720 ?GetMeshRadius@apsSimpleMeshRenderer@@UBE_NAAM@Z 00BE2C20 f i apsRegister.o
 223	VERIFIED	0002:003f3780 ?RetrieveVtable@apsSimpleMeshRenderer@@SAIXZ 00BE2C80 f i apsRegister.o
-224	VERIFIED	0002:003f37b0 ??_EapsSimpleMeshRenderer@@UAEPAXI@Z 00BE2CB0 f i apsRegister.o
-225	VERIFIED	0002:003f37b0 ??_GapsSimpleMeshRenderer@@UAEPAXI@Z 00BE2CB0 f i apsRegister.o
+224	SKIPPED	0002:003f37b0 ??_EapsSimpleMeshRenderer@@UAEPAXI@Z 00BE2CB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+225	SKIPPED	0002:003f37b0 ??_GapsSimpleMeshRenderer@@UAEPAXI@Z 00BE2CB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 226	VERIFIED	0002:003f37e0 ?SetBlendMode@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z 00BE2CE0 f i apsRegister.o
 227	VERIFIED	0002:003f3800 ??0apsShrimpRenderer@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BE2D00 f i apsRegister.o
 228	VERIFIED	0002:003f3820 ?GetId@apsShrimpRenderer@@UBEIXZ 00BE2D20 f i apsRegister.o
@@ -231,14 +231,14 @@ index	status	map_line
 230	VERIFIED	0002:003f3840 ?IsCameraFacing@apsShrimpRenderer@@UBEHXZ 00BE2D40 f i apsRegister.o
 231	VERIFIED	0002:003f3850 ?SetScreenFacingNormal@apsShrimpRenderer@@UAEXABVDir3@math@@@Z 00BE2D50 f i apsRegister.o
 232	VERIFIED	0002:003f3860 ?RetrieveVtable@apsShrimpRenderer@@SAIXZ 00BE2D60 f i apsRegister.o
-233	VERIFIED	0002:003f3890 ??_GapsShrimpRenderer@@UAEPAXI@Z 00BE2D90 f i apsRegister.o
-234	VERIFIED	0002:003f3890 ??_EapsShrimpRenderer@@UAEPAXI@Z 00BE2D90 f i apsRegister.o
-235	VERIFIED	0002:003f38c0 ??_GapsBurstAction@@UAEPAXI@Z 00BE2DC0 f i apsRegister.o
-236	VERIFIED	0002:003f38c0 ??_EapsBurstAction@@UAEPAXI@Z 00BE2DC0 f i apsRegister.o
-237	VERIFIED	0002:003f38f0 ??_EapsRandomSpawnAction@@UAEPAXI@Z 00BE2DF0 f i apsRegister.o
-238	VERIFIED	0002:003f38f0 ??_GapsRandomSpawnAction@@UAEPAXI@Z 00BE2DF0 f i apsRegister.o
-239	VERIFIED	0002:003f3920 ??_GapsLinearScaleSyncAction@@UAEPAXI@Z 00BE2E20 f i apsRegister.o
-240	VERIFIED	0002:003f3920 ??_EapsLinearScaleSyncAction@@UAEPAXI@Z 00BE2E20 f i apsRegister.o
+233	SKIPPED	0002:003f3890 ??_GapsShrimpRenderer@@UAEPAXI@Z 00BE2D90 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+234	SKIPPED	0002:003f3890 ??_EapsShrimpRenderer@@UAEPAXI@Z 00BE2D90 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+235	SKIPPED	0002:003f38c0 ??_GapsBurstAction@@UAEPAXI@Z 00BE2DC0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+236	SKIPPED	0002:003f38c0 ??_EapsBurstAction@@UAEPAXI@Z 00BE2DC0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+237	SKIPPED	0002:003f38f0 ??_EapsRandomSpawnAction@@UAEPAXI@Z 00BE2DF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+238	SKIPPED	0002:003f38f0 ??_GapsRandomSpawnAction@@UAEPAXI@Z 00BE2DF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+239	SKIPPED	0002:003f3920 ??_GapsLinearScaleSyncAction@@UAEPAXI@Z 00BE2E20 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+240	SKIPPED	0002:003f3920 ??_EapsLinearScaleSyncAction@@UAEPAXI@Z 00BE2E20 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 241	VERIFIED	0002:003f3950 ?CreateBoxDomain@@YAPAV?$apsBoxDomain@$00@@MM@Z 00BE2E50 f i apsRegister.o
 242	VERIFIED	0002:003f39a0 ?CreateBoxDomain@@YAPAV?$apsBoxDomain@$02@@ABUPacked@Dir3@math@@0@Z 00BE2EA0 f i apsRegister.o
 243	VERIFIED	0002:003f3a80 ?CreatePointDomain@@YAPAV?$apsPointDomain@$00@@M@Z 00BE2F80 f i apsRegister.o
@@ -247,20 +247,20 @@ index	status	map_line
 246	VERIFIED	0002:003f3b30 ?GetId@apsDiscDomain@@UBEIXZ 00BE3030 f i apsRegister.o
 247	VERIFIED	0002:003f3b40 ?GetVersion@apsDiscDomain@@UBEMXZ 00BE3040 f i apsRegister.o
 248	VERIFIED	0002:003f3b50 ?RetrieveVtable@apsDiscDomain@@SAIXZ 00BE3050 f i apsRegister.o
-249	VERIFIED	0002:003f3b80 ??_EapsDiscDomain@@UAEPAXI@Z 00BE3080 f i apsRegister.o
-250	VERIFIED	0002:003f3b80 ??_GapsDiscDomain@@UAEPAXI@Z 00BE3080 f i apsRegister.o
-251	VERIFIED	0002:003f3bb0 ??_EapsCircleDomain@@UAEPAXI@Z 00BE30B0 f i apsRegister.o
-252	VERIFIED	0002:003f3bb0 ??_GapsCircleDomain@@UAEPAXI@Z 00BE30B0 f i apsRegister.o
-253	VERIFIED	0002:003f3be0 ??_GapsSphereDomain@@UAEPAXI@Z 00BE30E0 f i apsRegister.o
-254	VERIFIED	0002:003f3be0 ??_EapsSphereDomain@@UAEPAXI@Z 00BE30E0 f i apsRegister.o
-255	VERIFIED	0002:003f3c10 ??_GapsYHemisphereDomain@@UAEPAXI@Z 00BE3110 f i apsRegister.o
-256	VERIFIED	0002:003f3c10 ??_EapsYHemisphereDomain@@UAEPAXI@Z 00BE3110 f i apsRegister.o
-257	VERIFIED	0002:003f3c40 ??_EapsZHemisphereDomain@@UAEPAXI@Z 00BE3140 f i apsRegister.o
-258	VERIFIED	0002:003f3c40 ??_GapsZHemisphereDomain@@UAEPAXI@Z 00BE3140 f i apsRegister.o
-259	VERIFIED	0002:003f3c70 ??_GapsSphereSurfaceDomain@@UAEPAXI@Z 00BE3170 f i apsRegister.o
-260	VERIFIED	0002:003f3c70 ??_EapsSphereSurfaceDomain@@UAEPAXI@Z 00BE3170 f i apsRegister.o
-261	VERIFIED	0002:003f3ca0 ??_GapsLineDomain@@UAEPAXI@Z 00BE31A0 f i apsRegister.o
-262	VERIFIED	0002:003f3ca0 ??_EapsLineDomain@@UAEPAXI@Z 00BE31A0 f i apsRegister.o
+249	SKIPPED	0002:003f3b80 ??_EapsDiscDomain@@UAEPAXI@Z 00BE3080 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+250	SKIPPED	0002:003f3b80 ??_GapsDiscDomain@@UAEPAXI@Z 00BE3080 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+251	SKIPPED	0002:003f3bb0 ??_EapsCircleDomain@@UAEPAXI@Z 00BE30B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+252	SKIPPED	0002:003f3bb0 ??_GapsCircleDomain@@UAEPAXI@Z 00BE30B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+253	SKIPPED	0002:003f3be0 ??_GapsSphereDomain@@UAEPAXI@Z 00BE30E0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+254	SKIPPED	0002:003f3be0 ??_EapsSphereDomain@@UAEPAXI@Z 00BE30E0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+255	SKIPPED	0002:003f3c10 ??_GapsYHemisphereDomain@@UAEPAXI@Z 00BE3110 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+256	SKIPPED	0002:003f3c10 ??_EapsYHemisphereDomain@@UAEPAXI@Z 00BE3110 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+257	SKIPPED	0002:003f3c40 ??_EapsZHemisphereDomain@@UAEPAXI@Z 00BE3140 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+258	SKIPPED	0002:003f3c40 ??_GapsZHemisphereDomain@@UAEPAXI@Z 00BE3140 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+259	SKIPPED	0002:003f3c70 ??_GapsSphereSurfaceDomain@@UAEPAXI@Z 00BE3170 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+260	SKIPPED	0002:003f3c70 ??_EapsSphereSurfaceDomain@@UAEPAXI@Z 00BE3170 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+261	SKIPPED	0002:003f3ca0 ??_GapsLineDomain@@UAEPAXI@Z 00BE31A0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+262	SKIPPED	0002:003f3ca0 ??_EapsLineDomain@@UAEPAXI@Z 00BE31A0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 263	VERIFIED	0002:003f3cd0 ?CreateBumpDomain@@YAPAV?$apsBumpDomain@$00@@MM@Z 00BE31D0 f i apsRegister.o
 264	VERIFIED	0002:003f3d20 ?CreateBumpDomain@@YAPAV?$apsBumpDomain@$02@@ABUPacked@Dir3@math@@0@Z 00BE3220 f i apsRegister.o
 265	VERIFIED	0002:003f3e00 ?GetNewSimpleMeshRenderer@@YAPAVapsSimpleMeshRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE3300 f apsRegister.o
@@ -285,21 +285,21 @@ index	status	map_line
 284	PORTED	0002:003f6a70 ?push_front@?$apsArray@VapsParam@@@@QAEIABVapsParam@@@Z 00BE5F70 f i apsRegister.o
 285	PORTED	0002:003f6be0 ?destroy_all@?$apsArray@M@@QAEXXZ 00BE60E0 f i apsRegister.o
 286	PORTED	0002:003f6c30 ?destroy_all@?$apsArray@PAVapsDomain@@@@QAEXXZ 00BE6130 f i apsRegister.o
-287	VERIFIED	0002:003f6c80 ??_G?$apsBoxDomain@$00@@UAEPAXI@Z 00BE6180 f i apsRegister.o
-288	VERIFIED	0002:003f6c80 ??_E?$apsBoxDomain@$00@@UAEPAXI@Z 00BE6180 f i apsRegister.o
-289	VERIFIED	0002:003f6cb0 ??_G?$apsBoxDomain@$02@@UAEPAXI@Z 00BE61B0 f i apsRegister.o
-290	VERIFIED	0002:003f6cb0 ??_E?$apsBoxDomain@$02@@UAEPAXI@Z 00BE61B0 f i apsRegister.o
-291	VERIFIED	0002:003f6ce0 ??_G?$apsPointDomain@$00@@UAEPAXI@Z 00BE61E0 f i apsRegister.o
-292	VERIFIED	0002:003f6ce0 ??_E?$apsPointDomain@$00@@UAEPAXI@Z 00BE61E0 f i apsRegister.o
-293	VERIFIED	0002:003f6d10 ??_E?$apsPointDomain@$02@@UAEPAXI@Z 00BE6210 f i apsRegister.o
-294	VERIFIED	0002:003f6d10 ??_G?$apsPointDomain@$02@@UAEPAXI@Z 00BE6210 f i apsRegister.o
-295	VERIFIED	0002:003f6d40 ??_G?$apsBumpDomain@$00@@UAEPAXI@Z 00BE6240 f i apsRegister.o
-296	VERIFIED	0002:003f6d40 ??_E?$apsBumpDomain@$00@@UAEPAXI@Z 00BE6240 f i apsRegister.o
-297	VERIFIED	0002:003f6d70 ??_G?$apsBumpDomain@$02@@UAEPAXI@Z 00BE6270 f i apsRegister.o
-298	VERIFIED	0002:003f6d70 ??_E?$apsBumpDomain@$02@@UAEPAXI@Z 00BE6270 f i apsRegister.o
+287	SKIPPED	0002:003f6c80 ??_G?$apsBoxDomain@$00@@UAEPAXI@Z 00BE6180 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+288	SKIPPED	0002:003f6c80 ??_E?$apsBoxDomain@$00@@UAEPAXI@Z 00BE6180 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+289	SKIPPED	0002:003f6cb0 ??_G?$apsBoxDomain@$02@@UAEPAXI@Z 00BE61B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+290	SKIPPED	0002:003f6cb0 ??_E?$apsBoxDomain@$02@@UAEPAXI@Z 00BE61B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+291	SKIPPED	0002:003f6ce0 ??_G?$apsPointDomain@$00@@UAEPAXI@Z 00BE61E0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+292	SKIPPED	0002:003f6ce0 ??_E?$apsPointDomain@$00@@UAEPAXI@Z 00BE61E0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+293	SKIPPED	0002:003f6d10 ??_E?$apsPointDomain@$02@@UAEPAXI@Z 00BE6210 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+294	SKIPPED	0002:003f6d10 ??_G?$apsPointDomain@$02@@UAEPAXI@Z 00BE6210 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+295	SKIPPED	0002:003f6d40 ??_G?$apsBumpDomain@$00@@UAEPAXI@Z 00BE6240 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+296	SKIPPED	0002:003f6d40 ??_E?$apsBumpDomain@$00@@UAEPAXI@Z 00BE6240 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+297	SKIPPED	0002:003f6d70 ??_G?$apsBumpDomain@$02@@UAEPAXI@Z 00BE6270 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+298	SKIPPED	0002:003f6d70 ??_E?$apsBumpDomain@$02@@UAEPAXI@Z 00BE6270 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 299	PORTED	0002:003f6da0 ??$GetNewBillboardRenderer@VapsBillboardRenderer@@VcArgs@1@@@YAPAVapsBillboardRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE62A0 f i apsRegister.o
 300	PORTED	0002:003f7920 ??$GetNewBillboardRenderer@VapsColorBillboardRenderer@@VcArgs@1@@@YAPAVapsColorBillboardRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE6E20 f i apsRegister.o
-301	PORTED	0002:003f84a0 ??$GetNewBillboardRenderer@VapsRectangleRenderer@@VcArgs@1@@@YAPAVapsRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE79A0 f i apsRegister.o
+301	VERIFIED	0002:003f84a0 ??$GetNewBillboardRenderer@VapsRectangleRenderer@@VcArgs@1@@@YAPAVapsRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE79A0 f i apsRegister.o
 302	PORTED	0002:003f9020 ??$GetNewBillboardRenderer@VapsColorRectangleRenderer@@VcArgs@1@@@YAPAVapsColorRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE8520 f i apsRegister.o
 303	PORTED	0002:003f9ba0 ??$GetNewUVARenderer@VapsUVARenderer@@VcArgs@1@@@YAPAVapsUVARenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE90A0 f i apsRegister.o
 304	PORTED	0002:003fa800 ??$GetNewUVARenderer@VapsColorUVARenderer@@VcArgs@1@@@YAPAVapsColorUVARenderer@@ABV?$apsArray@VapsParam@@@@@Z 00BE9D00 f i apsRegister.o
@@ -308,209 +308,209 @@ index	status	map_line
 307	VERIFIED	0002:003fcd20 ??1?$apsArray@M@@QAE@XZ 00BEC220 f i apsRegister.o
 308	VERIFIED	0002:003fcd70 ??1?$apsArray@PAVapsDomain@@@@QAE@XZ 00BEC270 f i apsRegister.o
 309	VERIFIED	0002:003fcdc0 ??0apsAction@@IAE@XZ 00BEC2C0 f i apsRegister.o
-310	VERIFIED	0002:003fcdf0 ??_GapsAction@@UAEPAXI@Z 00BEC2F0 f i apsRegister.o
-311	VERIFIED	0002:003fcdf0 ??_EapsAction@@UAEPAXI@Z 00BEC2F0 f i apsRegister.o
+310	SKIPPED	0002:003fcdf0 ??_GapsAction@@UAEPAXI@Z 00BEC2F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+311	SKIPPED	0002:003fcdf0 ??_EapsAction@@UAEPAXI@Z 00BEC2F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 312	VERIFIED	0002:003fce20 ??0apsSourceAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC320 f i apsRegister.o
 313	VERIFIED	0002:003fce50 ?GetId@apsSourceAction@@UBEIXZ 00BEC350 f i apsRegister.o
 314	VERIFIED	0002:003fce60 ?GetVersion@apsSourceAction@@UBEMXZ 00BEC360 f i apsRegister.o
-315	VERIFIED	0002:003fce70 ??_EapsSourceAction@@UAEPAXI@Z 00BEC370 f i apsRegister.o
-316	VERIFIED	0002:003fce70 ??_GapsSourceAction@@UAEPAXI@Z 00BEC370 f i apsRegister.o
+315	SKIPPED	0002:003fce70 ??_EapsSourceAction@@UAEPAXI@Z 00BEC370 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+316	SKIPPED	0002:003fce70 ??_GapsSourceAction@@UAEPAXI@Z 00BEC370 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 317	VERIFIED	0002:003fcea0 ?RetrieveVtable@apsSourceAction@@SAIXZ 00BEC3A0 f i apsRegister.o
 318	VERIFIED	0002:003fcee0 ??0apsLifetimeAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC3E0 f i apsRegister.o
 319	VERIFIED	0002:003fcf10 ?GetId@apsLifetimeAction@@UBEIXZ 00BEC410 f i apsRegister.o
 320	VERIFIED	0002:003fcf20 ?GetVersion@apsLifetimeAction@@UBEMXZ 00BEC420 f i apsRegister.o
-321	VERIFIED	0002:003fcf30 ??_GapsLifetimeAction@@UAEPAXI@Z 00BEC430 f i apsRegister.o
-322	VERIFIED	0002:003fcf30 ??_EapsLifetimeAction@@UAEPAXI@Z 00BEC430 f i apsRegister.o
+321	SKIPPED	0002:003fcf30 ??_GapsLifetimeAction@@UAEPAXI@Z 00BEC430 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+322	SKIPPED	0002:003fcf30 ??_EapsLifetimeAction@@UAEPAXI@Z 00BEC430 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 323	VERIFIED	0002:003fcf60 ?RetrieveVtable@apsLifetimeAction@@SAIXZ 00BEC460 f i apsRegister.o
 324	VERIFIED	0002:003fcfa0 ??0apsAlphaFadeAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC4A0 f i apsRegister.o
 325	VERIFIED	0002:003fcfd0 ?GetId@apsAlphaFadeAction@@UBEIXZ 00BEC4D0 f i apsRegister.o
 326	VERIFIED	0002:003fcfe0 ?GetVersion@apsAlphaFadeAction@@UBEMXZ 00BEC4E0 f i apsRegister.o
-327	VERIFIED	0002:003fcff0 ??_EapsAlphaFadeAction@@UAEPAXI@Z 00BEC4F0 f i apsRegister.o
-328	VERIFIED	0002:003fcff0 ??_GapsAlphaFadeAction@@UAEPAXI@Z 00BEC4F0 f i apsRegister.o
+327	SKIPPED	0002:003fcff0 ??_EapsAlphaFadeAction@@UAEPAXI@Z 00BEC4F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+328	SKIPPED	0002:003fcff0 ??_GapsAlphaFadeAction@@UAEPAXI@Z 00BEC4F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 329	VERIFIED	0002:003fd020 ?RetrieveVtable@apsAlphaFadeAction@@SAIXZ 00BEC520 f i apsRegister.o
 330	VERIFIED	0002:003fd060 ??0apsAlphaFadeInOutAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC560 f i apsRegister.o
 331	VERIFIED	0002:003fd090 ?GetId@apsAlphaFadeInOutAction@@UBEIXZ 00BEC590 f i apsRegister.o
 332	VERIFIED	0002:003fd0a0 ?GetVersion@apsAlphaFadeInOutAction@@UBEMXZ 00BEC5A0 f i apsRegister.o
-333	VERIFIED	0002:003fd0b0 ??_EapsAlphaFadeInOutAction@@UAEPAXI@Z 00BEC5B0 f i apsRegister.o
-334	VERIFIED	0002:003fd0b0 ??_GapsAlphaFadeInOutAction@@UAEPAXI@Z 00BEC5B0 f i apsRegister.o
+333	SKIPPED	0002:003fd0b0 ??_EapsAlphaFadeInOutAction@@UAEPAXI@Z 00BEC5B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+334	SKIPPED	0002:003fd0b0 ??_GapsAlphaFadeInOutAction@@UAEPAXI@Z 00BEC5B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 335	VERIFIED	0002:003fd0e0 ?RetrieveVtable@apsAlphaFadeInOutAction@@SAIXZ 00BEC5E0 f i apsRegister.o
 336	VERIFIED	0002:003fd120 ??0apsRandomAlphaFadeInOutAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC620 f i apsRegister.o
 337	VERIFIED	0002:003fd150 ?GetId@apsRandomAlphaFadeInOutAction@@UBEIXZ 00BEC650 f i apsRegister.o
 338	VERIFIED	0002:003fd160 ?GetVersion@apsRandomAlphaFadeInOutAction@@UBEMXZ 00BEC660 f i apsRegister.o
-339	VERIFIED	0002:003fd170 ??_EapsRandomAlphaFadeInOutAction@@UAEPAXI@Z 00BEC670 f i apsRegister.o
-340	VERIFIED	0002:003fd170 ??_GapsRandomAlphaFadeInOutAction@@UAEPAXI@Z 00BEC670 f i apsRegister.o
+339	SKIPPED	0002:003fd170 ??_EapsRandomAlphaFadeInOutAction@@UAEPAXI@Z 00BEC670 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+340	SKIPPED	0002:003fd170 ??_GapsRandomAlphaFadeInOutAction@@UAEPAXI@Z 00BEC670 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 341	VERIFIED	0002:003fd1a0 ?RetrieveVtable@apsRandomAlphaFadeInOutAction@@SAIXZ 00BEC6A0 f i apsRegister.o
 342	VERIFIED	0002:003fd1e0 ??0apsLinearScaleAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC6E0 f i apsRegister.o
 343	VERIFIED	0002:003fd210 ?GetId@apsLinearScaleAction@@UBEIXZ 00BEC710 f i apsRegister.o
 344	VERIFIED	0002:003fd220 ?GetVersion@apsLinearScaleAction@@UBEMXZ 00BEC720 f i apsRegister.o
-345	VERIFIED	0002:003fd230 ??_GapsLinearScaleAction@@UAEPAXI@Z 00BEC730 f i apsRegister.o
-346	VERIFIED	0002:003fd230 ??_EapsLinearScaleAction@@UAEPAXI@Z 00BEC730 f i apsRegister.o
+345	SKIPPED	0002:003fd230 ??_GapsLinearScaleAction@@UAEPAXI@Z 00BEC730 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+346	SKIPPED	0002:003fd230 ??_EapsLinearScaleAction@@UAEPAXI@Z 00BEC730 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 347	VERIFIED	0002:003fd260 ?RetrieveVtable@apsLinearScaleAction@@SAIXZ 00BEC760 f i apsRegister.o
 348	VERIFIED	0002:003fd2a0 ??0apsExponentialScaleAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC7A0 f i apsRegister.o
 349	VERIFIED	0002:003fd2d0 ?GetId@apsExponentialScaleAction@@UBEIXZ 00BEC7D0 f i apsRegister.o
 350	VERIFIED	0002:003fd2e0 ?GetVersion@apsExponentialScaleAction@@UBEMXZ 00BEC7E0 f i apsRegister.o
-351	VERIFIED	0002:003fd2f0 ??_EapsExponentialScaleAction@@UAEPAXI@Z 00BEC7F0 f i apsRegister.o
-352	VERIFIED	0002:003fd2f0 ??_GapsExponentialScaleAction@@UAEPAXI@Z 00BEC7F0 f i apsRegister.o
+351	SKIPPED	0002:003fd2f0 ??_EapsExponentialScaleAction@@UAEPAXI@Z 00BEC7F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+352	SKIPPED	0002:003fd2f0 ??_GapsExponentialScaleAction@@UAEPAXI@Z 00BEC7F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 353	VERIFIED	0002:003fd320 ?RetrieveVtable@apsExponentialScaleAction@@SAIXZ 00BEC820 f i apsRegister.o
 354	VERIFIED	0002:003fd360 ??0apsLinearScaleWidthAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC860 f i apsRegister.o
 355	VERIFIED	0002:003fd390 ?GetId@apsLinearScaleWidthAction@@UBEIXZ 00BEC890 f i apsRegister.o
 356	VERIFIED	0002:003fd3a0 ?GetVersion@apsLinearScaleWidthAction@@UBEMXZ 00BEC8A0 f i apsRegister.o
-357	VERIFIED	0002:003fd3b0 ??_GapsLinearScaleWidthAction@@UAEPAXI@Z 00BEC8B0 f i apsRegister.o
-358	VERIFIED	0002:003fd3b0 ??_EapsLinearScaleWidthAction@@UAEPAXI@Z 00BEC8B0 f i apsRegister.o
+357	SKIPPED	0002:003fd3b0 ??_GapsLinearScaleWidthAction@@UAEPAXI@Z 00BEC8B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+358	SKIPPED	0002:003fd3b0 ??_EapsLinearScaleWidthAction@@UAEPAXI@Z 00BEC8B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 359	VERIFIED	0002:003fd3e0 ?RetrieveVtable@apsLinearScaleWidthAction@@SAIXZ 00BEC8E0 f i apsRegister.o
 360	VERIFIED	0002:003fd420 ??0apsExponentialScaleWidthAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC920 f i apsRegister.o
 361	VERIFIED	0002:003fd450 ?GetId@apsExponentialScaleWidthAction@@UBEIXZ 00BEC950 f i apsRegister.o
 362	VERIFIED	0002:003fd460 ?GetVersion@apsExponentialScaleWidthAction@@UBEMXZ 00BEC960 f i apsRegister.o
-363	VERIFIED	0002:003fd470 ??_GapsExponentialScaleWidthAction@@UAEPAXI@Z 00BEC970 f i apsRegister.o
-364	VERIFIED	0002:003fd470 ??_EapsExponentialScaleWidthAction@@UAEPAXI@Z 00BEC970 f i apsRegister.o
+363	SKIPPED	0002:003fd470 ??_GapsExponentialScaleWidthAction@@UAEPAXI@Z 00BEC970 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+364	SKIPPED	0002:003fd470 ??_EapsExponentialScaleWidthAction@@UAEPAXI@Z 00BEC970 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 365	VERIFIED	0002:003fd4a0 ?RetrieveVtable@apsExponentialScaleWidthAction@@SAIXZ 00BEC9A0 f i apsRegister.o
 366	VERIFIED	0002:003fd4e0 ??0apsLinearScaleHeightAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEC9E0 f i apsRegister.o
 367	VERIFIED	0002:003fd510 ?GetId@apsLinearScaleHeightAction@@UBEIXZ 00BECA10 f i apsRegister.o
 368	VERIFIED	0002:003fd520 ?GetVersion@apsLinearScaleHeightAction@@UBEMXZ 00BECA20 f i apsRegister.o
-369	VERIFIED	0002:003fd530 ??_GapsLinearScaleHeightAction@@UAEPAXI@Z 00BECA30 f i apsRegister.o
-370	VERIFIED	0002:003fd530 ??_EapsLinearScaleHeightAction@@UAEPAXI@Z 00BECA30 f i apsRegister.o
+369	SKIPPED	0002:003fd530 ??_GapsLinearScaleHeightAction@@UAEPAXI@Z 00BECA30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+370	SKIPPED	0002:003fd530 ??_EapsLinearScaleHeightAction@@UAEPAXI@Z 00BECA30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 371	VERIFIED	0002:003fd560 ?RetrieveVtable@apsLinearScaleHeightAction@@SAIXZ 00BECA60 f i apsRegister.o
 372	VERIFIED	0002:003fd5a0 ??0apsExponentialScaleHeightAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECAA0 f i apsRegister.o
 373	VERIFIED	0002:003fd5d0 ?GetId@apsExponentialScaleHeightAction@@UBEIXZ 00BECAD0 f i apsRegister.o
 374	VERIFIED	0002:003fd5e0 ?GetVersion@apsExponentialScaleHeightAction@@UBEMXZ 00BECAE0 f i apsRegister.o
-375	VERIFIED	0002:003fd5f0 ??_EapsExponentialScaleHeightAction@@UAEPAXI@Z 00BECAF0 f i apsRegister.o
-376	VERIFIED	0002:003fd5f0 ??_GapsExponentialScaleHeightAction@@UAEPAXI@Z 00BECAF0 f i apsRegister.o
+375	SKIPPED	0002:003fd5f0 ??_EapsExponentialScaleHeightAction@@UAEPAXI@Z 00BECAF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+376	SKIPPED	0002:003fd5f0 ??_GapsExponentialScaleHeightAction@@UAEPAXI@Z 00BECAF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 377	VERIFIED	0002:003fd620 ?RetrieveVtable@apsExponentialScaleHeightAction@@SAIXZ 00BECB20 f i apsRegister.o
 378	VERIFIED	0002:003fd660 ??0apsPositionMoveAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECB60 f i apsRegister.o
 379	VERIFIED	0002:003fd690 ?GetId@apsPositionMoveAction@@UBEIXZ 00BECB90 f i apsRegister.o
 380	VERIFIED	0002:003fd6a0 ?GetVersion@apsPositionMoveAction@@UBEMXZ 00BECBA0 f i apsRegister.o
-381	VERIFIED	0002:003fd6b0 ??_EapsPositionMoveAction@@UAEPAXI@Z 00BECBB0 f i apsRegister.o
-382	VERIFIED	0002:003fd6b0 ??_GapsPositionMoveAction@@UAEPAXI@Z 00BECBB0 f i apsRegister.o
+381	SKIPPED	0002:003fd6b0 ??_EapsPositionMoveAction@@UAEPAXI@Z 00BECBB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+382	SKIPPED	0002:003fd6b0 ??_GapsPositionMoveAction@@UAEPAXI@Z 00BECBB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 383	VERIFIED	0002:003fd6e0 ?RetrieveVtable@apsPositionMoveAction@@SAIXZ 00BECBE0 f i apsRegister.o
 384	VERIFIED	0002:003fd720 ??0apsMoveAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECC20 f i apsRegister.o
 385	VERIFIED	0002:003fd750 ?GetId@apsMoveAction@@UBEIXZ 00BECC50 f i apsRegister.o
 386	VERIFIED	0002:003fd760 ?GetVersion@apsMoveAction@@UBEMXZ 00BECC60 f i apsRegister.o
-387	VERIFIED	0002:003fd770 ??_EapsMoveAction@@UAEPAXI@Z 00BECC70 f i apsRegister.o
-388	VERIFIED	0002:003fd770 ??_GapsMoveAction@@UAEPAXI@Z 00BECC70 f i apsRegister.o
+387	SKIPPED	0002:003fd770 ??_EapsMoveAction@@UAEPAXI@Z 00BECC70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+388	SKIPPED	0002:003fd770 ??_GapsMoveAction@@UAEPAXI@Z 00BECC70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 389	VERIFIED	0002:003fd7a0 ?RetrieveVtable@apsMoveAction@@SAIXZ 00BECCA0 f i apsRegister.o
 390	VERIFIED	0002:003fd7e0 ??0apsObjectMoveAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECCE0 f i apsRegister.o
 391	VERIFIED	0002:003fd810 ?GetId@apsObjectMoveAction@@UBEIXZ 00BECD10 f i apsRegister.o
 392	VERIFIED	0002:003fd820 ?GetVersion@apsObjectMoveAction@@UBEMXZ 00BECD20 f i apsRegister.o
-393	VERIFIED	0002:003fd830 ??_GapsObjectMoveAction@@UAEPAXI@Z 00BECD30 f i apsRegister.o
-394	VERIFIED	0002:003fd830 ??_EapsObjectMoveAction@@UAEPAXI@Z 00BECD30 f i apsRegister.o
+393	SKIPPED	0002:003fd830 ??_GapsObjectMoveAction@@UAEPAXI@Z 00BECD30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+394	SKIPPED	0002:003fd830 ??_EapsObjectMoveAction@@UAEPAXI@Z 00BECD30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 395	VERIFIED	0002:003fd860 ?RetrieveVtable@apsObjectMoveAction@@SAIXZ 00BECD60 f i apsRegister.o
 396	VERIFIED	0002:003fd8a0 ??0apsMoveAtFixedVelocityAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECDA0 f i apsRegister.o
 397	VERIFIED	0002:003fd8d0 ?GetId@apsMoveAtFixedVelocityAction@@UBEIXZ 00BECDD0 f i apsRegister.o
 398	VERIFIED	0002:003fd8e0 ?GetVersion@apsMoveAtFixedVelocityAction@@UBEMXZ 00BECDE0 f i apsRegister.o
-399	VERIFIED	0002:003fd8f0 ??_GapsMoveAtFixedVelocityAction@@UAEPAXI@Z 00BECDF0 f i apsRegister.o
-400	VERIFIED	0002:003fd8f0 ??_EapsMoveAtFixedVelocityAction@@UAEPAXI@Z 00BECDF0 f i apsRegister.o
+399	SKIPPED	0002:003fd8f0 ??_GapsMoveAtFixedVelocityAction@@UAEPAXI@Z 00BECDF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+400	SKIPPED	0002:003fd8f0 ??_EapsMoveAtFixedVelocityAction@@UAEPAXI@Z 00BECDF0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 401	VERIFIED	0002:003fd920 ?RetrieveVtable@apsMoveAtFixedVelocityAction@@SAIXZ 00BECE20 f i apsRegister.o
 402	VERIFIED	0002:003fd960 ??0apsForceAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECE60 f i apsRegister.o
 403	VERIFIED	0002:003fd990 ?GetId@apsForceAction@@UBEIXZ 00BECE90 f i apsRegister.o
 404	VERIFIED	0002:003fd9a0 ?GetVersion@apsForceAction@@UBEMXZ 00BECEA0 f i apsRegister.o
-405	VERIFIED	0002:003fd9b0 ??_GapsForceAction@@UAEPAXI@Z 00BECEB0 f i apsRegister.o
-406	VERIFIED	0002:003fd9b0 ??_EapsForceAction@@UAEPAXI@Z 00BECEB0 f i apsRegister.o
+405	SKIPPED	0002:003fd9b0 ??_GapsForceAction@@UAEPAXI@Z 00BECEB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+406	SKIPPED	0002:003fd9b0 ??_EapsForceAction@@UAEPAXI@Z 00BECEB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 407	VERIFIED	0002:003fd9e0 ?RetrieveVtable@apsForceAction@@SAIXZ 00BECEE0 f i apsRegister.o
 408	VERIFIED	0002:003fda20 ??0apsColorShiftAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECF20 f i apsRegister.o
 409	VERIFIED	0002:003fda50 ?GetId@apsColorShiftAction@@UBEIXZ 00BECF50 f i apsRegister.o
 410	VERIFIED	0002:003fda60 ?GetVersion@apsColorShiftAction@@UBEMXZ 00BECF60 f i apsRegister.o
-411	VERIFIED	0002:003fda70 ??_EapsColorShiftAction@@UAEPAXI@Z 00BECF70 f i apsRegister.o
-412	VERIFIED	0002:003fda70 ??_GapsColorShiftAction@@UAEPAXI@Z 00BECF70 f i apsRegister.o
+411	SKIPPED	0002:003fda70 ??_EapsColorShiftAction@@UAEPAXI@Z 00BECF70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+412	SKIPPED	0002:003fda70 ??_GapsColorShiftAction@@UAEPAXI@Z 00BECF70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 413	VERIFIED	0002:003fdaa0 ?RetrieveVtable@apsColorShiftAction@@SAIXZ 00BECFA0 f i apsRegister.o
 414	VERIFIED	0002:003fdae0 ??0apsVelocityDragAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BECFE0 f i apsRegister.o
 415	VERIFIED	0002:003fdb10 ?GetId@apsVelocityDragAction@@UBEIXZ 00BED010 f i apsRegister.o
 416	VERIFIED	0002:003fdb20 ?GetVersion@apsVelocityDragAction@@UBEMXZ 00BED020 f i apsRegister.o
-417	VERIFIED	0002:003fdb30 ??_GapsVelocityDragAction@@UAEPAXI@Z 00BED030 f i apsRegister.o
-418	VERIFIED	0002:003fdb30 ??_EapsVelocityDragAction@@UAEPAXI@Z 00BED030 f i apsRegister.o
+417	SKIPPED	0002:003fdb30 ??_GapsVelocityDragAction@@UAEPAXI@Z 00BED030 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+418	SKIPPED	0002:003fdb30 ??_EapsVelocityDragAction@@UAEPAXI@Z 00BED030 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 419	VERIFIED	0002:003fdb60 ?RetrieveVtable@apsVelocityDragAction@@SAIXZ 00BED060 f i apsRegister.o
 420	VERIFIED	0002:003fdba0 ??0apsAngularVelocityDragAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED0A0 f i apsRegister.o
 421	VERIFIED	0002:003fdbd0 ?GetId@apsAngularVelocityDragAction@@UBEIXZ 00BED0D0 f i apsRegister.o
 422	VERIFIED	0002:003fdbe0 ?GetVersion@apsAngularVelocityDragAction@@UBEMXZ 00BED0E0 f i apsRegister.o
-423	VERIFIED	0002:003fdbf0 ??_EapsAngularVelocityDragAction@@UAEPAXI@Z 00BED0F0 f i apsRegister.o
-424	VERIFIED	0002:003fdbf0 ??_GapsAngularVelocityDragAction@@UAEPAXI@Z 00BED0F0 f i apsRegister.o
+423	SKIPPED	0002:003fdbf0 ??_EapsAngularVelocityDragAction@@UAEPAXI@Z 00BED0F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+424	SKIPPED	0002:003fdbf0 ??_GapsAngularVelocityDragAction@@UAEPAXI@Z 00BED0F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 425	VERIFIED	0002:003fdc20 ?RetrieveVtable@apsAngularVelocityDragAction@@SAIXZ 00BED120 f i apsRegister.o
 426	VERIFIED	0002:003fdc60 ??0apsVectorAngularVelocityDragAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED160 f i apsRegister.o
 427	VERIFIED	0002:003fdc90 ?GetId@apsVectorAngularVelocityDragAction@@UBEIXZ 00BED190 f i apsRegister.o
 428	VERIFIED	0002:003fdca0 ?GetVersion@apsVectorAngularVelocityDragAction@@UBEMXZ 00BED1A0 f i apsRegister.o
-429	VERIFIED	0002:003fdcb0 ??_GapsVectorAngularVelocityDragAction@@UAEPAXI@Z 00BED1B0 f i apsRegister.o
-430	VERIFIED	0002:003fdcb0 ??_EapsVectorAngularVelocityDragAction@@UAEPAXI@Z 00BED1B0 f i apsRegister.o
+429	SKIPPED	0002:003fdcb0 ??_GapsVectorAngularVelocityDragAction@@UAEPAXI@Z 00BED1B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+430	SKIPPED	0002:003fdcb0 ??_EapsVectorAngularVelocityDragAction@@UAEPAXI@Z 00BED1B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 431	VERIFIED	0002:003fdce0 ?RetrieveVtable@apsVectorAngularVelocityDragAction@@SAIXZ 00BED1E0 f i apsRegister.o
 432	VERIFIED	0002:003fdd20 ??0apsWorldPlaneReflectionAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED220 f i apsRegister.o
 433	VERIFIED	0002:003fdd50 ?GetId@apsWorldPlaneReflectionAction@@UBEIXZ 00BED250 f i apsRegister.o
 434	VERIFIED	0002:003fdd60 ?GetVersion@apsWorldPlaneReflectionAction@@UBEMXZ 00BED260 f i apsRegister.o
-435	VERIFIED	0002:003fdd70 ??_GapsWorldPlaneReflectionAction@@UAEPAXI@Z 00BED270 f i apsRegister.o
-436	VERIFIED	0002:003fdd70 ??_EapsWorldPlaneReflectionAction@@UAEPAXI@Z 00BED270 f i apsRegister.o
+435	SKIPPED	0002:003fdd70 ??_GapsWorldPlaneReflectionAction@@UAEPAXI@Z 00BED270 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+436	SKIPPED	0002:003fdd70 ??_EapsWorldPlaneReflectionAction@@UAEPAXI@Z 00BED270 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 437	VERIFIED	0002:003fdda0 ?RetrieveVtable@apsWorldPlaneReflectionAction@@SAIXZ 00BED2A0 f i apsRegister.o
 438	VERIFIED	0002:003fdde0 ??0apsUVAFrameAnimAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED2E0 f i apsRegister.o
 439	VERIFIED	0002:003fde10 ?GetId@apsUVAFrameAnimAction@@UBEIXZ 00BED310 f i apsRegister.o
 440	VERIFIED	0002:003fde20 ?GetVersion@apsUVAFrameAnimAction@@UBEMXZ 00BED320 f i apsRegister.o
-441	VERIFIED	0002:003fde30 ??_GapsUVAFrameAnimAction@@UAEPAXI@Z 00BED330 f i apsRegister.o
-442	VERIFIED	0002:003fde30 ??_EapsUVAFrameAnimAction@@UAEPAXI@Z 00BED330 f i apsRegister.o
+441	SKIPPED	0002:003fde30 ??_GapsUVAFrameAnimAction@@UAEPAXI@Z 00BED330 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+442	SKIPPED	0002:003fde30 ??_EapsUVAFrameAnimAction@@UAEPAXI@Z 00BED330 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 443	VERIFIED	0002:003fde60 ?RetrieveVtable@apsUVAFrameAnimAction@@SAIXZ 00BED360 f i apsRegister.o
 444	VERIFIED	0002:003fdea0 ??0apsAngleTrackVelocityAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED3A0 f i apsRegister.o
 445	VERIFIED	0002:003fded0 ?GetId@apsAngleTrackVelocityAction@@UBEIXZ 00BED3D0 f i apsRegister.o
 446	VERIFIED	0002:003fdee0 ?GetVersion@apsAngleTrackVelocityAction@@UBEMXZ 00BED3E0 f i apsRegister.o
-447	VERIFIED	0002:003fdef0 ??_GapsAngleTrackVelocityAction@@UAEPAXI@Z 00BED3F0 f i apsRegister.o
-448	VERIFIED	0002:003fdef0 ??_EapsAngleTrackVelocityAction@@UAEPAXI@Z 00BED3F0 f i apsRegister.o
+447	SKIPPED	0002:003fdef0 ??_GapsAngleTrackVelocityAction@@UAEPAXI@Z 00BED3F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+448	SKIPPED	0002:003fdef0 ??_EapsAngleTrackVelocityAction@@UAEPAXI@Z 00BED3F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 449	VERIFIED	0002:003fdf20 ?RetrieveVtable@apsAngleTrackVelocityAction@@SAIXZ 00BED420 f i apsRegister.o
 450	VERIFIED	0002:003fdf60 ??0apsAngleTrackElementXAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED460 f i apsRegister.o
 451	VERIFIED	0002:003fdf90 ?GetId@apsAngleTrackElementXAction@@UBEIXZ 00BED490 f i apsRegister.o
 452	VERIFIED	0002:003fdfa0 ?GetVersion@apsAngleTrackElementXAction@@UBEMXZ 00BED4A0 f i apsRegister.o
-453	VERIFIED	0002:003fdfb0 ??_GapsAngleTrackElementXAction@@UAEPAXI@Z 00BED4B0 f i apsRegister.o
-454	VERIFIED	0002:003fdfb0 ??_EapsAngleTrackElementXAction@@UAEPAXI@Z 00BED4B0 f i apsRegister.o
+453	SKIPPED	0002:003fdfb0 ??_GapsAngleTrackElementXAction@@UAEPAXI@Z 00BED4B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+454	SKIPPED	0002:003fdfb0 ??_EapsAngleTrackElementXAction@@UAEPAXI@Z 00BED4B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 455	VERIFIED	0002:003fdfe0 ?RetrieveVtable@apsAngleTrackElementXAction@@SAIXZ 00BED4E0 f i apsRegister.o
 456	VERIFIED	0002:003fe020 ??0apsAngleTrackElementYAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED520 f i apsRegister.o
 457	VERIFIED	0002:003fe050 ?GetId@apsAngleTrackElementYAction@@UBEIXZ 00BED550 f i apsRegister.o
 458	VERIFIED	0002:003fe060 ?GetVersion@apsAngleTrackElementYAction@@UBEMXZ 00BED560 f i apsRegister.o
-459	VERIFIED	0002:003fe070 ??_GapsAngleTrackElementYAction@@UAEPAXI@Z 00BED570 f i apsRegister.o
-460	VERIFIED	0002:003fe070 ??_EapsAngleTrackElementYAction@@UAEPAXI@Z 00BED570 f i apsRegister.o
+459	SKIPPED	0002:003fe070 ??_GapsAngleTrackElementYAction@@UAEPAXI@Z 00BED570 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+460	SKIPPED	0002:003fe070 ??_EapsAngleTrackElementYAction@@UAEPAXI@Z 00BED570 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 461	VERIFIED	0002:003fe0a0 ?RetrieveVtable@apsAngleTrackElementYAction@@SAIXZ 00BED5A0 f i apsRegister.o
 462	VERIFIED	0002:003fe0e0 ??0apsAngleTrackElementZAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED5E0 f i apsRegister.o
 463	VERIFIED	0002:003fe110 ?GetId@apsAngleTrackElementZAction@@UBEIXZ 00BED610 f i apsRegister.o
 464	VERIFIED	0002:003fe120 ?GetVersion@apsAngleTrackElementZAction@@UBEMXZ 00BED620 f i apsRegister.o
-465	VERIFIED	0002:003fe130 ??_EapsAngleTrackElementZAction@@UAEPAXI@Z 00BED630 f i apsRegister.o
-466	VERIFIED	0002:003fe130 ??_GapsAngleTrackElementZAction@@UAEPAXI@Z 00BED630 f i apsRegister.o
+465	SKIPPED	0002:003fe130 ??_EapsAngleTrackElementZAction@@UAEPAXI@Z 00BED630 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+466	SKIPPED	0002:003fe130 ??_GapsAngleTrackElementZAction@@UAEPAXI@Z 00BED630 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 467	VERIFIED	0002:003fe160 ?RetrieveVtable@apsAngleTrackElementZAction@@SAIXZ 00BED660 f i apsRegister.o
 468	VERIFIED	0002:003fe1a0 ??0apsPointAttractorAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED6A0 f i apsRegister.o
 469	VERIFIED	0002:003fe1d0 ?GetId@apsPointAttractorAction@@UBEIXZ 00BED6D0 f i apsRegister.o
 470	VERIFIED	0002:003fe1e0 ?GetVersion@apsPointAttractorAction@@UBEMXZ 00BED6E0 f i apsRegister.o
-471	VERIFIED	0002:003fe1f0 ??_GapsPointAttractorAction@@UAEPAXI@Z 00BED6F0 f i apsRegister.o
-472	VERIFIED	0002:003fe1f0 ??_EapsPointAttractorAction@@UAEPAXI@Z 00BED6F0 f i apsRegister.o
+471	SKIPPED	0002:003fe1f0 ??_GapsPointAttractorAction@@UAEPAXI@Z 00BED6F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+472	SKIPPED	0002:003fe1f0 ??_EapsPointAttractorAction@@UAEPAXI@Z 00BED6F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 473	VERIFIED	0002:003fe220 ?RetrieveVtable@apsPointAttractorAction@@SAIXZ 00BED720 f i apsRegister.o
 474	VERIFIED	0002:003fe260 ??0apsLineAttractorAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED760 f i apsRegister.o
 475	VERIFIED	0002:003fe290 ?GetId@apsLineAttractorAction@@UBEIXZ 00BED790 f i apsRegister.o
 476	VERIFIED	0002:003fe2a0 ?GetVersion@apsLineAttractorAction@@UBEMXZ 00BED7A0 f i apsRegister.o
-477	VERIFIED	0002:003fe2b0 ??_EapsLineAttractorAction@@UAEPAXI@Z 00BED7B0 f i apsRegister.o
-478	VERIFIED	0002:003fe2b0 ??_GapsLineAttractorAction@@UAEPAXI@Z 00BED7B0 f i apsRegister.o
+477	SKIPPED	0002:003fe2b0 ??_EapsLineAttractorAction@@UAEPAXI@Z 00BED7B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+478	SKIPPED	0002:003fe2b0 ??_GapsLineAttractorAction@@UAEPAXI@Z 00BED7B0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 479	VERIFIED	0002:003fe2e0 ?RetrieveVtable@apsLineAttractorAction@@SAIXZ 00BED7E0 f i apsRegister.o
 480	VERIFIED	0002:003fe320 ??0apsDecayLineAttractorAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED820 f i apsRegister.o
 481	VERIFIED	0002:003fe350 ?GetId@apsDecayLineAttractorAction@@UBEIXZ 00BED850 f i apsRegister.o
 482	VERIFIED	0002:003fe360 ?GetVersion@apsDecayLineAttractorAction@@UBEMXZ 00BED860 f i apsRegister.o
-483	VERIFIED	0002:003fe370 ??_EapsDecayLineAttractorAction@@UAEPAXI@Z 00BED870 f i apsRegister.o
-484	VERIFIED	0002:003fe370 ??_GapsDecayLineAttractorAction@@UAEPAXI@Z 00BED870 f i apsRegister.o
+483	SKIPPED	0002:003fe370 ??_EapsDecayLineAttractorAction@@UAEPAXI@Z 00BED870 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+484	SKIPPED	0002:003fe370 ??_GapsDecayLineAttractorAction@@UAEPAXI@Z 00BED870 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 485	VERIFIED	0002:003fe3a0 ?RetrieveVtable@apsDecayLineAttractorAction@@SAIXZ 00BED8A0 f i apsRegister.o
 486	VERIFIED	0002:003fe3e0 ??0apsKappaTauAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED8E0 f i apsRegister.o
 487	VERIFIED	0002:003fe410 ?GetId@apsKappaTauAction@@UBEIXZ 00BED910 f i apsRegister.o
 488	VERIFIED	0002:003fe420 ?GetVersion@apsKappaTauAction@@UBEMXZ 00BED920 f i apsRegister.o
-489	VERIFIED	0002:003fe430 ??_EapsKappaTauAction@@UAEPAXI@Z 00BED930 f i apsRegister.o
-490	VERIFIED	0002:003fe430 ??_GapsKappaTauAction@@UAEPAXI@Z 00BED930 f i apsRegister.o
+489	SKIPPED	0002:003fe430 ??_EapsKappaTauAction@@UAEPAXI@Z 00BED930 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+490	SKIPPED	0002:003fe430 ??_GapsKappaTauAction@@UAEPAXI@Z 00BED930 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 491	VERIFIED	0002:003fe460 ?RetrieveVtable@apsKappaTauAction@@SAIXZ 00BED960 f i apsRegister.o
 492	VERIFIED	0002:003fe4a0 ??0apsSpawnAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BED9A0 f i apsRegister.o
 493	VERIFIED	0002:003fe4d0 ?GetId@apsSpawnAction@@UBEIXZ 00BED9D0 f i apsRegister.o
 494	VERIFIED	0002:003fe4e0 ?GetVersion@apsSpawnAction@@UBEMXZ 00BED9E0 f i apsRegister.o
-495	VERIFIED	0002:003fe4f0 ??_GapsSpawnAction@@UAEPAXI@Z 00BED9F0 f i apsRegister.o
-496	VERIFIED	0002:003fe4f0 ??_EapsSpawnAction@@UAEPAXI@Z 00BED9F0 f i apsRegister.o
+495	SKIPPED	0002:003fe4f0 ??_GapsSpawnAction@@UAEPAXI@Z 00BED9F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+496	SKIPPED	0002:003fe4f0 ??_EapsSpawnAction@@UAEPAXI@Z 00BED9F0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 497	VERIFIED	0002:003fe520 ?RetrieveVtable@apsSpawnAction@@SAIXZ 00BEDA20 f i apsRegister.o
 498	VERIFIED	0002:003fe560 ??0apsSpawnOnDeathAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEDA60 f i apsRegister.o
 499	VERIFIED	0002:003fe590 ?GetId@apsSpawnOnDeathAction@@UBEIXZ 00BEDA90 f i apsRegister.o
 500	VERIFIED	0002:003fe5a0 ?GetVersion@apsSpawnOnDeathAction@@UBEMXZ 00BEDAA0 f i apsRegister.o
-501	VERIFIED	0002:003fe5b0 ??_GapsSpawnOnDeathAction@@UAEPAXI@Z 00BEDAB0 f i apsRegister.o
-502	VERIFIED	0002:003fe5b0 ??_EapsSpawnOnDeathAction@@UAEPAXI@Z 00BEDAB0 f i apsRegister.o
+501	SKIPPED	0002:003fe5b0 ??_GapsSpawnOnDeathAction@@UAEPAXI@Z 00BEDAB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+502	SKIPPED	0002:003fe5b0 ??_EapsSpawnOnDeathAction@@UAEPAXI@Z 00BEDAB0 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 503	VERIFIED	0002:003fe5e0 ?RetrieveVtable@apsSpawnOnDeathAction@@SAIXZ 00BEDAE0 f i apsRegister.o
 504	VERIFIED	0002:003fe620 ??0apsTrajectoryAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEDB20 f i apsRegister.o
 505	VERIFIED	0002:003fe650 ?GetId@apsTrajectoryAction@@UBEIXZ 00BEDB50 f i apsRegister.o
 506	VERIFIED	0002:003fe660 ?GetVersion@apsTrajectoryAction@@UBEMXZ 00BEDB60 f i apsRegister.o
-507	VERIFIED	0002:003fe670 ??_EapsTrajectoryAction@@UAEPAXI@Z 00BEDB70 f i apsRegister.o
-508	VERIFIED	0002:003fe670 ??_GapsTrajectoryAction@@UAEPAXI@Z 00BEDB70 f i apsRegister.o
+507	SKIPPED	0002:003fe670 ??_EapsTrajectoryAction@@UAEPAXI@Z 00BEDB70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+508	SKIPPED	0002:003fe670 ??_GapsTrajectoryAction@@UAEPAXI@Z 00BEDB70 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 509	VERIFIED	0002:003fe6a0 ?RetrieveVtable@apsTrajectoryAction@@SAIXZ 00BEDBA0 f i apsRegister.o
 510	VERIFIED	0002:003fe6e0 ??0apsEnvCollideAction@@QAE@W4APS_VTABLE_RETRIEVING_CTOR@@@Z 00BEDBE0 f i apsRegister.o
 511	VERIFIED	0002:003fe710 ?GetId@apsEnvCollideAction@@UBEIXZ 00BEDC10 f i apsRegister.o
 512	VERIFIED	0002:003fe720 ?GetVersion@apsEnvCollideAction@@UBEMXZ 00BEDC20 f i apsRegister.o
-513	VERIFIED	0002:003fe730 ??_GapsEnvCollideAction@@UAEPAXI@Z 00BEDC30 f i apsRegister.o
-514	VERIFIED	0002:003fe730 ??_EapsEnvCollideAction@@UAEPAXI@Z 00BEDC30 f i apsRegister.o
+513	SKIPPED	0002:003fe730 ??_GapsEnvCollideAction@@UAEPAXI@Z 00BEDC30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+514	SKIPPED	0002:003fe730 ??_EapsEnvCollideAction@@UAEPAXI@Z 00BEDC30 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 515	VERIFIED	0002:003fe760 ?RetrieveVtable@apsEnvCollideAction@@SAIXZ 00BEDC60 f i apsRegister.o

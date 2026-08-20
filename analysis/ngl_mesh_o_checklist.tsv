@@ -23,8 +23,8 @@ index	status	map_line
 22	PORTED	0002:00444620 ?AddNode@nglEmptyShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00C33B20 f i ngl_mesh.o
 23	PORTED	0002:00444630 ?Register@nglEmptyShader@@UAEXXZ 00C33B30 f i ngl_mesh.o
 24	PORTED	0002:00444650 ??1nglEmptyShader@@UAE@XZ 00C33B50 f i ngl_mesh.o
-25	PORTED	0002:00444660 ??_EnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o
-26	PORTED	0002:00444660 ??_GnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o
+25	SKIPPED	0002:00444660 ??_EnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+26	SKIPPED	0002:00444660 ??_GnglEmptyShader@@UAEPAXI@Z 00C33B60 f i ngl_mesh.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	PORTED	0002:00444690 ??4nglMeshParams@@QAEAAV0@ABV0@@Z 00C33B90 f i ngl_mesh.o
 28	VERIFIED	0002:004446c0 ??0?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33BC0 f i ngl_mesh.o
 29	VERIFIED	0002:004446e0 ??0?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33BE0 f i ngl_mesh.o

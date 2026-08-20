@@ -23,6 +23,6 @@ index	status	map_line
 22	VERIFIED	0002:003e01c0 ?GetName@cdWorldShader@@UAE?AVtlFixedString@@XZ 00BCF6C0 f i cdWorldShader.o
 23	PORTED	0002:003e01e0 ??0cdWorldParams@cdWorldRender@@QAE@XZ 00BCF6E0 f i cdWorldShader.o
 24	PORTED	0002:003e01f0 ??$SetConstants@UcdWorldParams@cdWorldRender@@@cdWorldRender@@YAXABUcdWorldParams@0@@Z 00BCF6F0 f i cdWorldShader.o
-25	VERIFIED	0002:003e0210 ??_GcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o
-26	VERIFIED	0002:003e0210 ??_EcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o
+25	SKIPPED	0002:003e0210 ??_GcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+26	SKIPPED	0002:003e0210 ??_EcdWorldShader@@UAEPAXI@Z 00BCF710 f i cdWorldShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	VERIFIED	0002:003e0240 ??1cdWorldShader@@UAE@XZ 00BCF740 f i cdWorldShader.o

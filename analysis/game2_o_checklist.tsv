@@ -627,8 +627,8 @@ index	status	map_line
 626	PORTED	0002:001173e0 ??1nalVirtual@@MAE@XZ 009068E0 f i game2.o
 627	PORTED	0002:001173f0 ?Dummy@nalVirtual@@MAEXXZ 009068F0 f i game2.o
 628	PORTED	0002:00117400 ?get_vtbl_ptr@nalVirtual@@QBEPAXXZ 00906900 f i game2.o
-629	PORTED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o
-630	PORTED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o
+629	SKIPPED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+630	SKIPPED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 631	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o
 632	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o
 633	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o
@@ -685,21 +685,21 @@ index	status	map_line
 684	PORTED	0002:00118700 ?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ 00907C00 f i game2.o
 685	SKIPPED	0002:00118710 ??0?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QAE@XZ 00907C10 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 686	PORTED	0002:00118740 ??0ScriptEvent@ScriptEventHandler@@QAE@XZ 00907C40 f i game2.o
-687	VERIFIED	0002:00118760 ??_GScriptEventHandler@@QAEPAXI@Z 00907C60 f i game2.o
+687	SKIPPED	0002:00118760 ??_GScriptEventHandler@@QAEPAXI@Z 00907C60 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 688	PORTED	0002:001187a0 ?GetHandler@HealthRegenTask@@SAPAVTaskHandler@@XZ 00907CA0 f i game2.o
 689	PORTED	0002:001187b0 ?GetTaskId@HealthRegenTask@@SA?AVFourCC@@XZ 00907CB0 f i game2.o
 690	PORTED	0002:001187d0 ?GetHandler@AnimNotifyTask@@SAPAVTaskHandler@@XZ 00907CD0 f i game2.o
 691	PORTED	0002:001187e0 ?GetTaskId@AnimNotifyTask@@SA?AVFourCC@@XZ 00907CE0 f i game2.o
 692	PORTED	0002:00118800 ??1ParticleIterator@apsRenderSort@@UAE@XZ 00907D00 f i game2.o
-693	PORTED	0002:00118810 ??_EParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o
-694	PORTED	0002:00118810 ??_GParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o
+693	SKIPPED	0002:00118810 ??_EParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+694	SKIPPED	0002:00118810 ??_GParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 695	PORTED	0002:00118840 ??1SortedParticleIterator@apsRenderSort@@UAE@XZ 00907D40 f i game2.o
 696	PORTED	0002:00118850 ??1UnsortedParticleIterator@apsRenderSort@@UAE@XZ 00907D50 f i game2.o
 697	PORTED	0002:00118860 ??0ParticleIterator@apsRenderSort@@QAE@XZ 00907D60 f i game2.o
 698	PORTED	0002:00118870 ??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ 00907D70 f i game2.o
 699	PORTED	0002:00118880 ?GetNextParticle@UnsortedParticleIterator@apsRenderSort@@UAEPAEXZ 00907D80 f i game2.o
-700	PORTED	0002:001188a0 ??_GUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o
-701	PORTED	0002:001188a0 ??_EUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o
+700	SKIPPED	0002:001188a0 ??_GUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+701	SKIPPED	0002:001188a0 ??_EUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 702	PORTED	0002:001188d0 ?GetBounds@apsGroup@@QBEABUapsBounds@@XZ 00907DD0 f i game2.o
 703	PORTED	0002:001188e0 ?SetEntityHandle@AnimNoteHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00907DE0 f i game2.o
 704	PORTED	0002:001188f0 ?GetNextNotifyIndex@AnimNoteHandler@@IAEHM@Z 00907DF0 f i game2.o
@@ -902,8 +902,8 @@ index	status	map_line
 901	PORTED	0002:0011b720 ?Transpose@nalMatrix4x4@@QBE?AV1@XZ 0090AC20 f i game2.o
 902	PORTED	0002:0011b7a0 ?Adjugate@nalMatrix4x4@@QBE?AV1@XZ 0090ACA0 f i game2.o
 903	VERIFIED	0002:0011b830 ?Inverse@nalMatrix4x4@@QBE?AV1@XZ 0090AD30 f i game2.o
-904	VERIFIED	0002:0011b8d0 ??_E?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o
-905	VERIFIED	0002:0011b8d0 ??_G?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o
+904	SKIPPED	0002:0011b8d0 ??_E?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+905	SKIPPED	0002:0011b8d0 ??_G?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z 0090ADD0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 906	PORTED	0002:0011b900 ?HasTrack@nalGenericAnim@nalGeneric@@QBE_NH@Z 0090AE00 f i game2.o
 907	PORTED	0002:0011b980 ?set_debug_render@rb_vehicle@@QAEX_N@Z 0090AE80 f i game2.o
 908	PORTED	0002:0011b9c0 ?get_debug_render@rb_vehicle@@QAE_NXZ 0090AEC0 f i game2.o
@@ -911,19 +911,19 @@ index	status	map_line
 910	PORTED	0002:0011b9e0 ?GetGroup@apsEffect@@QAEPAVapsGroup@@H@Z 0090AEE0 f i game2.o
 911	PORTED	0002:0011ba60 ??1CameraShake@@QAE@XZ 0090AF60 f i game2.o
 912	PORTED	0002:0011ba80 ?GetPath@SplineGroup@@QAEPAVSplinePathData@@XZ 0090AF80 f i game2.o
-913	VERIFIED	0002:0011baf0 ??_EHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o
-914	VERIFIED	0002:0011baf0 ??_GHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o
+913	SKIPPED	0002:0011baf0 ??_EHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+914	SKIPPED	0002:0011baf0 ??_GHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 915	VERIFIED	0002:0011bb20 ??1HealthRegenTask@@UAE@XZ 0090B020 f i game2.o
 916	PORTED	0002:0011bb30 ??0SortedParticleIterator@apsRenderSort@@QAE@XZ 0090B030 f i game2.o
 917	PORTED	0002:0011bb40 ?GetNextParticle@SortedParticleIterator@apsRenderSort@@UAEPAEXZ 0090B040 f i game2.o
-918	PORTED	0002:0011bb60 ??_ESortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o
-919	PORTED	0002:0011bb60 ??_GSortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o
+918	SKIPPED	0002:0011bb60 ??_ESortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+919	SKIPPED	0002:0011bb60 ??_GSortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 920	PORTED	0002:0011bb90 ??0AnimNoteHandler@@QAE@XZ 0090B090 f i game2.o
-921	PORTED	0002:0011bbb0 ??_ENotifyInfo@AnimNoteHandler@@QAEPAXI@Z 0090B0B0 f i game2.o
+921	SKIPPED	0002:0011bbb0 ??_ENotifyInfo@AnimNoteHandler@@QAEPAXI@Z 0090B0B0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 922	PORTED	0002:0011bc20 ?Reference@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@@Z 0090B120 f i game2.o
 923	PORTED	0002:0011bc30 ?Release@nalPlayMethod@AnimationPlayer@@UAEXXZ 0090B130 f i game2.o
-924	PORTED	0002:0011bc40 ??_EMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o
-925	PORTED	0002:0011bc40 ??_GMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o
+924	SKIPPED	0002:0011bc40 ??_EMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+925	SKIPPED	0002:0011bc40 ??_GMetaNalBaseAnim@@UAEPAXI@Z 0090B140 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 926	PORTED	0002:0011bc70 ??0weaponFileInfo_t@@QAE@XZ 0090B170 f i game2.o
 927	PORTED	0002:0011bca0 ??0?$reserved_dlist@VTask@@@@QAE@XZ 0090B1A0 f i game2.o
 928	PORTED	0002:0011bcc0 ?push_back@?$reserved_dlist@VTask@@@@QAEXPAVTask@@@Z 0090B1C0 f i game2.o
@@ -1020,13 +1020,13 @@ index	status	map_line
 1019	PORTED	0002:0011d570 ?SetKeyBinding@ButtonMgr@@SAXHHE@Z 0090CA70 f i game2.o
 1020	PORTED	0002:0011d5c0 ?Press@ButtonMgr@@SAXHH_N@Z 0090CAC0 f i game2.o
 1021	PORTED	0002:0011d600 ?Release@ButtonMgr@@SAXHH_N@Z 0090CB00 f i game2.o
-1022	VERIFIED	0002:0011d640 ??_ESplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o
-1023	VERIFIED	0002:0011d640 ??_GSplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o
+1022	SKIPPED	0002:0011d640 ??_ESplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1023	SKIPPED	0002:0011d640 ??_GSplineMgr@@UAEPAXI@Z 0090CB40 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1024	VERIFIED	0002:0011d670 ??1SplineMgr@@UAE@XZ 0090CB70 f i game2.o
 1025	PORTED	0002:0011d680 ??1AnimNoteHandler@@QAE@XZ 0090CB80 f i game2.o
 1026	PORTED	0002:0011d6c0 ?ParseNoteTracks@AnimNoteHandler@@QAEXPAVnalGenericAnim@nalGeneric@@@Z 0090CBC0 f i game2.o
 1027	PORTED	0002:0011dac0 ?AddEntityNotify@AnimNoteHandler@@IAEXABI@Z 0090CFC0 f i game2.o
-1028	PORTED	0002:0011db20 ??_GAnimNoteHandler@@QAEPAXI@Z 0090D020 f i game2.o
+1028	SKIPPED	0002:0011db20 ??_GAnimNoteHandler@@QAEPAXI@Z 0090D020 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1029	PORTED	0002:0011db80 ??0?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAE@XZ 0090D080 f i game2.o
 1030	PORTED	0002:0011dbd0 ?AllocateHandle@?$HandleDb@VTask@@$0CA@V?$SizedHandle@$0N@$0BD@@@@@QAE?AV?$SizedHandle@$0N@$0BD@@@XZ 0090D0D0 f i game2.o
 1031	PORTED	0002:0011dca0 ??D?$DbLinkedHandle@VTaskSys@@VTask@@@@QBEPAVTask@@XZ 0090D1A0 f i game2.o

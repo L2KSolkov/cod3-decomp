@@ -18,9 +18,9 @@ index	status	map_line
 17	VERIFIED	0002:003d0940 ??0nglDirLightInfo@@QAE@XZ 00BBFE40 f i cdGlassShader.o
 18	PORTED	0002:003d0950 ??$SetConstants@UParams@cdGlassRender@@@cdGlassRender@@YAXABUParams@0@@Z 00BBFE50 f i cdGlassShader.o
 19	VERIFIED	0002:003d0970 ?AddNode@cdGlassShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BBFE70 f i cdGlassShader.o
-20	PORTED	0002:003d0a00 ??_EcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o
-21	PORTED	0002:003d0a00 ??_GcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o
+20	SKIPPED	0002:003d0a00 ??_EcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+21	SKIPPED	0002:003d0a00 ??_GcdGlassShaderNode@@UAEPAXI@Z 00BBFF00 f i cdGlassShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	PORTED	0002:003d0a30 ??1cdGlassShaderNode@@UAE@XZ 00BBFF30 f i cdGlassShader.o
-23	VERIFIED	0002:003d0a40 ??_GcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o
-24	VERIFIED	0002:003d0a40 ??_EcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o
+23	SKIPPED	0002:003d0a40 ??_GcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+24	SKIPPED	0002:003d0a40 ??_EcdGlassShader@@UAEPAXI@Z 00BBFF40 f i cdGlassShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 25	VERIFIED	0002:003d0a70 ??1cdGlassShader@@UAE@XZ 00BBFF70 f i cdGlassShader.o

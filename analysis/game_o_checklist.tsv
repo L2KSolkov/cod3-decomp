@@ -747,7 +747,7 @@ index	status	map_line
 746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o
 747	PORTED	0002:0025c5e0 ??0__unnamed@Entity@@QAE@XZ 00A4BAE0 f i game.o
 748	VERIFIED	0002:0025c600 ??1AttachModelInfo@@QAE@XZ 00A4BB00 f i game.o
-749	VERIFIED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o
+749	SKIPPED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o
 751	PORTED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o
 752	PORTED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o
@@ -870,8 +870,8 @@ index	status	map_line
 869	VERIFIED	0002:0025e3d0 ??A?$ae_sized_array@W4EPadAliasStick@@$01@@QAEAAW4EPadAliasStick@@H@Z 00A4D8D0 f i game.o
 870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o
 871	VERIFIED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o
-872	SKIPPED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
+872	SKIPPED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
 875	PORTED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
 876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o
@@ -986,8 +986,8 @@ index	status	map_line
 985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o
 986	PORTED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o
 987	PORTED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o
-988	VERIFIED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o
-989	VERIFIED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o
+988	SKIPPED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+989	SKIPPED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 990	VERIFIED	0002:002600e0 ??1AnimNotifyTask@@UAE@XZ 00A4F5E0 f i game.o
 991	PORTED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o
 992	VERIFIED	0002:00260100 ??0CrossFadeInfo@SoundDevice@@QAE@XZ 00A4F600 f i game.o
@@ -998,11 +998,11 @@ index	status	map_line
 997	VERIFIED	0002:002601f0 ??0traceWork_t@@QAE@XZ 00A4F6F0 f i game.o
 998	PORTED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o
 999	PORTED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o
-1000	VERIFIED	0002:00260250 ??_ECGBankManager@@UAEPAXI@Z 00A4F750 f i game.o
-1001	VERIFIED	0002:00260250 ??_GCGBankManager@@UAEPAXI@Z 00A4F750 f i game.o
+1000	SKIPPED	0002:00260250 ??_ECGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1001	SKIPPED	0002:00260250 ??_GCGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1002	VERIFIED	0002:00260280 ??0AttachModelInfo@@QAE@XZ 00A4F780 f i game.o
-1003	VERIFIED	0002:002602b0 ??_GEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o
-1004	VERIFIED	0002:002602b0 ??_EEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o
+1003	SKIPPED	0002:002602b0 ??_GEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1004	SKIPPED	0002:002602b0 ??_EEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1005	PORTED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o
 1006	PORTED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o
 1007	VERIFIED	0002:00260360 ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z 00A4F860 f i game.o
@@ -1091,11 +1091,11 @@ index	status	map_line
 1090	VERIFIED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o
 1091	PORTED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o
 1092	PORTED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o
-1093	VERIFIED	0002:00261a10 ??_GAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o
-1094	VERIFIED	0002:00261a10 ??_EAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o
+1093	SKIPPED	0002:00261a10 ??_GAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1094	SKIPPED	0002:00261a10 ??_EAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1095	PORTED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o
-1096	VERIFIED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o
-1097	VERIFIED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o
+1096	SKIPPED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1097	SKIPPED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1098	VERIFIED	0002:00261ab0 ??1TempDCGSet@DCGBankManager@@QAE@XZ 00A50FB0 f i game.o
 1099	PORTED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o
 1100	PORTED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o
@@ -1121,12 +1121,12 @@ index	status	map_line
 1120	SKIPPED	0002:00262420 ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51920 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00262440 ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51940 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1122	SKIPPED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1123	PORTED	0002:00262610 ??_Gproximity_data_t@@QAEPAXI@Z 00A51B10 f i game.o
+1123	SKIPPED	0002:00262610 ??_Gproximity_data_t@@QAEPAXI@Z 00A51B10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1124	SKIPPED	0002:00262640 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A51B40 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1125	SKIPPED	0002:00262650 ??$_Uninitialized_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51B50 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1126	SKIPPED	0002:00262680 ??$_Uninit_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A51B80 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1127	VERIFIED	0002:002626c0 ??_GDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o
-1128	VERIFIED	0002:002626c0 ??_EDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o
+1127	SKIPPED	0002:002626c0 ??_GDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+1128	SKIPPED	0002:002626c0 ??_EDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1129	VERIFIED	0002:002626f0 ??0Context@PadAliasMgr@@QAE@XZ 00A51BF0 f i game.o
 1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o
 1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o
@@ -1141,7 +1141,7 @@ index	status	map_line
 1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o
 1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o
 1142	VERIFIED	0002:00262a00 ??1Curve@@QAE@XZ 00A51F00 f i game.o
-1143	VERIFIED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o
+1143	SKIPPED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1144	SKIPPED	0002:00262a90 ?_Destroy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXPAU?$pair@HH@2@0@Z 00A51F90 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1145	SKIPPED	0002:00262aa0 ?_Ufill@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@2@PAU32@IABU32@@Z 00A51FA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1146	PORTED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o

@@ -7,6 +7,6 @@ index	status	map_line
 6	PORTED	0002:00405550 ?InitPShader@apsColorUVARenderPixel@@YAXXZ 00BF4A50 f i apsColorUVARenderer.o
 7	PORTED	0002:00405570 ??0apsColorUVANode@@QAE@XZ 00BF4A70 f i apsColorUVARenderer.o
 8	VERIFIED	0002:00405580 ?GetDesc@apsColorUVANode@@UAEXPAD@Z 00BF4A80 f i apsColorUVARenderer.o
-9	PORTED	0002:004055b0 ??_EapsColorUVANode@@UAEPAXI@Z 00BF4AB0 f i apsColorUVARenderer.o
-10	PORTED	0002:004055b0 ??_GapsColorUVANode@@UAEPAXI@Z 00BF4AB0 f i apsColorUVARenderer.o
+9	SKIPPED	0002:004055b0 ??_EapsColorUVANode@@UAEPAXI@Z 00BF4AB0 f i apsColorUVARenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+10	SKIPPED	0002:004055b0 ??_GapsColorUVANode@@UAEPAXI@Z 00BF4AB0 f i apsColorUVARenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 11	PORTED	0002:004055e0 ??$DefaultRender@VapsColorUVARenderer@@VapsColorUVANode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsColorUVARenderer@@ABUapsRendererRenderInfo@@@Z 00BF4AE0 f i apsColorUVARenderer.o

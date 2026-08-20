@@ -14,9 +14,9 @@ index	status	map_line
 13	PORTED	0002:003d9c90 ?RegisterPShader@cdWaterFullbrightPixel@@YAXXZ 00BC9190 f i cdWaterShader.o
 14	PORTED	0002:003d9cb0 ?GetPShader@cdWaterFullbrightPixel@@YAPAKXZ 00BC91B0 f i cdWaterShader.o
 15	PORTED	0002:003d9cc0 ??0cdWaterShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWaterShaderMat@@@Z 00BC91C0 f i cdWaterShader.o
-16	PORTED	0002:003d9cf0 ??_GcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o
-17	PORTED	0002:003d9cf0 ??_EcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o
+16	SKIPPED	0002:003d9cf0 ??_GcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+17	SKIPPED	0002:003d9cf0 ??_EcdWaterShaderNode@@UAEPAXI@Z 00BC91F0 f i cdWaterShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:003d9d20 ??1cdWaterShaderNode@@UAE@XZ 00BC9220 f i cdWaterShader.o
-19	VERIFIED	0002:003d9d30 ??_EcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o
-20	VERIFIED	0002:003d9d30 ??_GcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o
+19	SKIPPED	0002:003d9d30 ??_EcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:003d9d30 ??_GcdWaterShader@@UAEPAXI@Z 00BC9230 f i cdWaterShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	VERIFIED	0002:003d9d60 ??1cdWaterShader@@UAE@XZ 00BC9260 f i cdWaterShader.o

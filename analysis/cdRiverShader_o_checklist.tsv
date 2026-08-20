@@ -25,14 +25,14 @@ index	status	map_line
 24	VERIFIED	0002:003d6cf0 ?GetVShaderFogConstantOffset@cdRiverShaderNode@@UAEHXZ 00BC61F0 f cdRiverShader.o
 25	VERIFIED	0002:003d6d00 ?AddNode@cdRiverShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC6200 f cdRiverShader.o
 26	PORTED	0002:003d6d70 ??0cdOceanShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdOceanShaderMat@@@Z 00BC6270 f i cdRiverShader.o
-27	PORTED	0002:003d6da0 ??_EcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o
-28	PORTED	0002:003d6da0 ??_GcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o
-29	VERIFIED	0002:003d6dd0 ??_GcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o
-30	VERIFIED	0002:003d6dd0 ??_EcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o
+27	SKIPPED	0002:003d6da0 ??_EcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+28	SKIPPED	0002:003d6da0 ??_GcdOceanShaderNode@@UAEPAXI@Z 00BC62A0 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+29	SKIPPED	0002:003d6dd0 ??_GcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+30	SKIPPED	0002:003d6dd0 ??_EcdOceanShader@@UAEPAXI@Z 00BC62D0 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 31	PORTED	0002:003d6e00 ??0cdRiverShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdRiverShaderMat@@@Z 00BC6300 f i cdRiverShader.o
-32	PORTED	0002:003d6e30 ??_GcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o
-33	PORTED	0002:003d6e30 ??_EcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o
+32	SKIPPED	0002:003d6e30 ??_GcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+33	SKIPPED	0002:003d6e30 ??_EcdRiverShaderNode@@UAEPAXI@Z 00BC6330 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 34	PORTED	0002:003d6e60 ??1cdRiverShaderNode@@UAE@XZ 00BC6360 f i cdRiverShader.o
-35	VERIFIED	0002:003d6e70 ??_GcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o
-36	VERIFIED	0002:003d6e70 ??_EcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o
+35	SKIPPED	0002:003d6e70 ??_GcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+36	SKIPPED	0002:003d6e70 ??_EcdRiverShader@@UAEPAXI@Z 00BC6370 f i cdRiverShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 37	VERIFIED	0002:003d6ea0 ??1cdRiverShader@@UAE@XZ 00BC63A0 f i cdRiverShader.o

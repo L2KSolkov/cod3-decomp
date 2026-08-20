@@ -152,4 +152,4 @@ index	status	map_line
 151	PENDING	0002:00490030 ??1?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAE@XZ 00C7F530 f i physics_system_internal.o
 152	PENDING	0002:00490040 ?allocate_buffer@?$phys_heap_memory_pool@Vrigid_body_constraint_angular_actuator@@@@QAEXHAAVphys_memory_heap@@@Z 00C7F540 f i physics_system_internal.o
 153	VERIFIED	0002:00490130 ??1physics_system@@QAE@XZ 00C7F630 f i physics_system_internal.o
-154	VERIFIED	0002:004901b0 ??_Gphysics_system@@QAEPAXI@Z 00C7F6B0 f i physics_system_internal.o
+154	SKIPPED	0002:004901b0 ??_Gphysics_system@@QAEPAXI@Z 00C7F6B0 f i physics_system_internal.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

@@ -355,12 +355,12 @@ index	status	map_line
 354	PORTED	0002:0032ade0 ?IsProbing@CFromIDQuery@@UBEHXZ 00B1A2E0 f i game_xbox.o
 355	PORTED	0002:0032ae00 ??0MPPlayerSet@@QAE@K@Z 00B1A300 f i game_xbox.o
 356	SKIPPED	0002:0032ae20 ??0?$ae_array@Vcolor32@@$04@@QAE@XZ 00B1A320 f i game_xbox.o  SKIPPED: inline template/container helper; supplied by its template definition
-357	VERIFIED	0002:0032ae60 ??_GInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
-358	VERIFIED	0002:0032ae60 ??_EInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o
+357	SKIPPED	0002:0032ae60 ??_GInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+358	SKIPPED	0002:0032ae60 ??_EInGameLiveOptionsMenu@@UAEPAXI@Z 00B1A360 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 359	PORTED	0002:0032ae90 ??0CBlob@@QAE@ABV0@@Z 00B1A390 f i game_xbox.o
 360	PORTED	0002:0032aeb0 ?GetVoiceDataSize@MPLiveEngine@@UAEKABU_XUID@@@Z 00B1A3B0 f i game_xbox.o
 361	PORTED	0002:0032aec0 ?GetVoiceData@MPLiveEngine@@UAEKABU_XUID@@PAX@Z 00B1A3C0 f i game_xbox.o
-362	PORTED	0002:0032aed0 ??_EMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o
-363	PORTED	0002:0032aed0 ??_GMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o
-364	VERIFIED	0002:0032af00 ??_EXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o
-365	VERIFIED	0002:0032af00 ??_GXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o
+362	SKIPPED	0002:0032aed0 ??_EMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+363	SKIPPED	0002:0032aed0 ??_GMPLiveEngine@@UAEPAXI@Z 00B1A3D0 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+364	SKIPPED	0002:0032af00 ??_EXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+365	SKIPPED	0002:0032af00 ??_GXboxLiveOptionsMenu@@UAEPAXI@Z 00B1A400 f i game_xbox.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

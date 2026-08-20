@@ -24,7 +24,7 @@ index	status	map_line
 23	VERIFIED	0002:003bdbe0 ?InPool@PoolAllocator@@QBE_NPAX@Z 00BAD0E0 f PoolAllocator.o
 24	SKIPPED	0002:003bdc20 ?ReportTotals@PoolAllocator@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@@Z 00BAD120 f PoolAllocator.o  SKIPPED: inline template/container helper; supplied by its template definition
 25	VERIFIED	0002:003bdc90 ?ReportAllocations@PoolAllocator@@QAEXXZ 00BAD190 f PoolAllocator.o
-26	VERIFIED	0002:003bdce0 ??_GBlockPool@PoolAllocator@@QAEPAXI@Z 00BAD1E0 f i PoolAllocator.o
+26	SKIPPED	0002:003bdce0 ??_GBlockPool@PoolAllocator@@QAEPAXI@Z 00BAD1E0 f i PoolAllocator.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	VERIFIED	0002:003bdd10 ??0?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QAE@XZ 00BAD210 f i PoolAllocator.o
 28	PORTED	0002:003bdd20 ?empty@?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QBE_NXZ 00BAD220 f i PoolAllocator.o
 29	PORTED	0002:003bdd30 ??0slist_node@?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QAE@PAU01@@Z 00BAD230 f i PoolAllocator.o

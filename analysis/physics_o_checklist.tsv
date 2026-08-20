@@ -711,7 +711,7 @@ index	status	map_line
 710	PORTED	0002:0031c520 ?add@?$phys_inplace_avl_tree@IUgjk_geom_info@gjk_geom_database@@@@QAEXABIPAUgjk_geom_info@gjk_geom_database@@@Z 00B0BA20 f i physics.o
 711	PORTED	0002:0031c8e0 ?add@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@QAEPAVrigid_body_sphere_list@@_NPBD@Z 00B0BDE0 f i physics.o
 712	PORTED	0002:0031c950 ?add@?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAEXABVrigid_body_pair_key@@PAVprop_collide_callback@@@Z 00B0BE50 f i physics.o
-713	PORTED	0002:0031cd40 ??_Grigid_body_sphere_list@@QAEPAXI@Z 00B0C240 f i physics.o
+713	SKIPPED	0002:0031cd40 ??_Grigid_body_sphere_list@@QAEPAXI@Z 00B0C240 f i physics.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 714	PORTED	0002:0031cd70 ?call_destructors@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@AAEXXZ 00B0C270 f i physics.o
 715	PORTED	0002:0031cda0 ?reset_buffer@?$phys_static_memory_pool@Vrigid_body_sphere_list@@$09@@AAEXXZ 00B0C2A0 f i physics.o
 716	PORTED	0002:0031ce20 ?add@?$phys_static_memory_pool@Uphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@$0BPE@@@QAEPAUphys_gjk_cache_info_internal@?$phys_gjk_cache_system_avl_tree@$0BPE@@@_NPBD@Z 00B0C320 f i physics.o
@@ -733,13 +733,13 @@ index	status	map_line
 732	PORTED	0002:0031e320 ?do_gjk_intersect@@YA_NPAVphys_collide_data@@_N@Z 00B0D820 f i physics.o
 733	VERIFIED	0002:0031e370 ??0biped_system@@QAE@PAVbiped_phys_info@@@Z 00B0D870 f i physics.o
 734	PORTED	0002:0031e440 ??1biped_system@@QAE@XZ 00B0D940 f i physics.o
-735	PORTED	0002:0031e490 ??_Gbiped_system@@QAEPAXI@Z 00B0D990 f i physics.o
+735	SKIPPED	0002:0031e490 ??_Gbiped_system@@QAEPAXI@Z 00B0D990 f i physics.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 736	PORTED	0002:0031e4c0 ?call_destructors@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@AAEXXZ 00B0D9C0 f i physics.o
 737	PORTED	0002:0031e500 ?reset_buffer@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@AAEXXZ 00B0DA00 f i physics.o
 738	VERIFIED	0002:0031e590 ??0?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE@XZ 00B0DA90 f i physics.o
 739	VERIFIED	0002:0031e5c0 ??1?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAE@XZ 00B0DAC0 f i physics.o
 740	VERIFIED	0002:0031e600 ?remove@?$phys_static_memory_pool@Vbiped_system@@$0BA@@@QAEXPAVbiped_system@@@Z 00B0DB00 f i physics.o
-741	PORTED	0002:0031e7c0 ??_Gbiped_phys_info@@QAEPAXI@Z 00B0DCC0 f i physics.o
+741	SKIPPED	0002:0031e7c0 ??_Gbiped_phys_info@@QAEPAXI@Z 00B0DCC0 f i physics.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 742	PORTED	0002:0031e800 ?call_destructors@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@AAEXXZ 00B0DD00 f i physics.o
 743	PORTED	0002:0031e8d0 ?reset_buffer@?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@AAEXXZ 00B0DDD0 f i physics.o
 744	VERIFIED	0002:0031e990 ??0?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@QAE@XZ 00B0DE90 f i physics.o

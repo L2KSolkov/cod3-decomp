@@ -13,6 +13,6 @@ index	status	map_line
 12	PORTED	0002:003d6970 ?GetPShader@cdSimplePixel@@YAPAKXZ 00BC5E70 f i cdSimpleShader.o
 13	VERIFIED	0002:003d6980 ?RegisterPShader@cdSimpleFullbrightPixel@@YAXXZ 00BC5E80 f i cdSimpleShader.o
 14	PORTED	0002:003d69a0 ?GetPShader@cdSimpleFullbrightPixel@@YAPAKXZ 00BC5EA0 f i cdSimpleShader.o
-15	VERIFIED	0002:003d69b0 ??_EcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o
-16	VERIFIED	0002:003d69b0 ??_GcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o
+15	SKIPPED	0002:003d69b0 ??_EcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+16	SKIPPED	0002:003d69b0 ??_GcdSimpleShader@@UAEPAXI@Z 00BC5EB0 f i cdSimpleShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	VERIFIED	0002:003d69e0 ??1cdSimpleShader@@UAE@XZ 00BC5EE0 f i cdSimpleShader.o

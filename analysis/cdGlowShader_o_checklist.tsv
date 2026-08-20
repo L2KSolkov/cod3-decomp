@@ -46,6 +46,6 @@ index	status	map_line
 45	PORTED	0002:003c2bc0 ?RegisterPShader@cdGlowApply@@YAXXZ 00BB20C0 f i cdGlowShader.o
 46	PORTED	0002:003c2be0 ?GetPShader@cdGlowApply@@YAPAKXZ 00BB20E0 f i cdGlowShader.o
 47	PORTED	0002:003c2bf0 ??$tl_clamp@MHH@@YAMABMABH1@Z 00BB20F0 f i cdGlowShader.o
-48	VERIFIED	0002:003c2c30 ??_EcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o
-49	VERIFIED	0002:003c2c30 ??_GcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o
+48	SKIPPED	0002:003c2c30 ??_EcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+49	SKIPPED	0002:003c2c30 ??_GcdGlowShader@@UAEPAXI@Z 00BB2130 f i cdGlowShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 50	VERIFIED	0002:003c2c60 ??1cdGlowShader@@UAE@XZ 00BB2160 f i cdGlowShader.o

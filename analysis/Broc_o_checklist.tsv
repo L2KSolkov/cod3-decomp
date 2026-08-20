@@ -96,7 +96,7 @@ index	status	map_line
 95	PORTED	0002:00529980 ?GetExtendedEntity@ExtendedEntity@Broc@@SAPAV12@I@Z 00D18E80 f Broc.o
 96	PORTED	0002:00529ac0 ?CreateExtendedEntity@ExtendedEntity@Broc@@CAPAXQAPBDH@Z 00D18FC0 f Broc.o
 97	PORTED	0002:00529db0 ?DeleteExtendedEntity@ExtendedEntity@Broc@@CAXPAX@Z 00D192B0 f Broc.o
-98	VERIFIED	0002:00529f10 ??_GExtendedEntity@Broc@@QAEPAXI@Z 00D19410 f i Broc.o
+98	SKIPPED	0002:00529f10 ??_GExtendedEntity@Broc@@QAEPAXI@Z 00D19410 f i Broc.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 99	PORTED	0002:00529f60 ?MatchExtendedEntityKey@ExtendedEntity@Broc@@CA_NPAXHPBD@Z 00D19460 f Broc.o
 100	PORTED	0002:0052a140 ?CopyExtendedEntity@ExtendedEntity@Broc@@CAPAXPBX@Z 00D19640 f Broc.o
 101	PORTED	0002:0052a2f0 ?InitScript@ExtendedEntity@Broc@@SAXAAUBrocExports@@@Z 00D197F0 f Broc.o

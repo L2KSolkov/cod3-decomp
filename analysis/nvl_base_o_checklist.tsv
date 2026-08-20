@@ -20,5 +20,5 @@ index	status	map_line
 19	VERIFIED	0002:0042e970 ?BufferCheckBytes@nvlMovieBase@@QAE_NH_N@Z 00C1DE70 f nvl_base.o
 20	VERIFIED	0002:0042eb80 ?IsBufferFull@nvlMovieBase@@QAE_NXZ 00C1E080 f nvl_base.o
 21	VERIFIED	0002:0042ebf0 ?RequestCallback@nvlMovieBase@@QAEXW4nflRequestState@@W4nflRequestID@@@Z 00C1E0F0 f nvl_base.o
-22	VERIFIED	0002:0042eca0 ??_GnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o
-23	VERIFIED	0002:0042eca0 ??_EnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o
+22	SKIPPED	0002:0042eca0 ??_GnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+23	SKIPPED	0002:0042eca0 ??_EnvlMovieBase@@UAEPAXI@Z 00C1E1A0 f i nvl_base.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

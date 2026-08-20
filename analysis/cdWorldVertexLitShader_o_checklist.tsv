@@ -18,9 +18,9 @@ index	status	map_line
 17	PORTED	0002:003ded30 ?GetPShader@cdWorldVertexLitFullbrightPixel@@YAPAKXZ 00BCE230 f i cdWorldVertexLitShader.o
 18	VERIFIED	0002:003ded40 ??0BackgroundContext@@QAE@XZ 00BCE240 f i cdWorldVertexLitShader.o
 19	PORTED	0002:003ded50 ??0cdWorldVertexLitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldVertexLitShaderMat@@@Z 00BCE250 f i cdWorldVertexLitShader.o
-20	PORTED	0002:003ded80 ??_GcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o
-21	PORTED	0002:003ded80 ??_EcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o
+20	SKIPPED	0002:003ded80 ??_GcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+21	SKIPPED	0002:003ded80 ??_EcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	PORTED	0002:003dedb0 ??1cdWorldVertexLitShaderNode@@UAE@XZ 00BCE2B0 f i cdWorldVertexLitShader.o
-23	VERIFIED	0002:003dedc0 ??_GcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o
-24	VERIFIED	0002:003dedc0 ??_EcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o
+23	SKIPPED	0002:003dedc0 ??_GcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+24	SKIPPED	0002:003dedc0 ??_EcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 25	VERIFIED	0002:003dedf0 ??1cdWorldVertexLitShader@@UAE@XZ 00BCE2F0 f i cdWorldVertexLitShader.o

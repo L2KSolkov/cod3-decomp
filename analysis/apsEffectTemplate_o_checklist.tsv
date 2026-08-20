@@ -61,7 +61,7 @@ index	status	map_line
 60	PORTED	0002:00401bc0 ??$apsFixUp@VapsRenderer@@@@YAXAAPAVapsRenderer@@PAX@Z 00BF10C0 f i apsEffectTemplate.o
 61	PORTED	0002:00401be0 ??$apsFixUp@VapsActionList@@@@YAXAAPAVapsActionList@@PAX@Z 00BF10E0 f i apsEffectTemplate.o
 62	PORTED	0002:00401c00 ??$apsFixUp@UModifier@apsEffectTemplate@@@@YAXAAPAUModifier@apsEffectTemplate@@PAX@Z 00BF1100 f i apsEffectTemplate.o
-63	VERIFIED	0002:00401c20 ??_GapsActionList@@QAEPAXI@Z 00BF1120 f i apsEffectTemplate.o
+63	SKIPPED	0002:00401c20 ??_GapsActionList@@QAEPAXI@Z 00BF1120 f i apsEffectTemplate.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 64	VERIFIED	0002:00401c50 ??1?$apsArray@UElement@apsEffectTemplate@@@@QAE@XZ 00BF1150 f i apsEffectTemplate.o
 65	PORTED	0002:00401ca0 ?resize@?$apsArray@UElement@apsEffectTemplate@@@@QAEIH@Z 00BF11A0 f i apsEffectTemplate.o
 66	VERIFIED	0002:00401dd0 ??1?$apsArray@UModifier@apsEffectTemplate@@@@QAE@XZ 00BF12D0 f i apsEffectTemplate.o

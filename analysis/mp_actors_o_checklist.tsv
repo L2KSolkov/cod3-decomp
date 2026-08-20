@@ -391,8 +391,8 @@ index	status	map_line
 390	SKIPPED	0002:0038a9e0 ?OnBankUnloaded@?$InplaceAssetBankSet@VAITypeBank@@@@MAEXAAVAITypeBank@@@Z 00B79EE0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 391	SKIPPED	0002:0038a9f0 ?capacity@?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QBEHXZ 00B79EF0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 392	SKIPPED	0002:0038aa00 ??A?$ae_array@PAUPathNode@PathNodes@@$0CAA@@@QAEAAPAUPathNode@PathNodes@@H@Z 00B79F00 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
-393	SKIPPED	0002:0038aa80 ??_G?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
-394	SKIPPED	0002:0038aa80 ??_E?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
+393	SKIPPED	0002:0038aa80 ??_G?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+394	SKIPPED	0002:0038aa80 ??_E?$InplaceAssetBankSet@VAITypeBank@@@@UAEPAXI@Z 00B79F80 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 395	SKIPPED	0002:0038aab0 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QAEAAPAVAITypeBank@@H@Z 00B79FB0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 396	SKIPPED	0002:0038ab30 ??$ReverseEndian@D@@YAXAADH@Z 00B7A030 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 397	SKIPPED	0002:0038ab40 ??A?$ae_array@PAVAITypeBank@@$0GD@@@QBEABQAVAITypeBank@@H@Z 00B7A040 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -402,8 +402,8 @@ index	status	map_line
 401	SKIPPED	0002:0038ac10 ??A?$InplaceVector@PBVAIType@@@@QAEAAPBVAIType@@I@Z 00B7A110 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 402	PORTED	0002:0038ac90 ??0ai_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00B7A190 f i mp_actors.o
 403	PORTED	0002:0038acd0 ??0BadPathManager@@QAE@XZ 00B7A1D0 f i mp_actors.o
-404	VERIFIED	0002:0038ace0 ??_GPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
-405	VERIFIED	0002:0038ace0 ??_EPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o
+404	SKIPPED	0002:0038ace0 ??_GPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+405	SKIPPED	0002:0038ace0 ??_EPathNodeMgr@@UAEPAXI@Z 00B7A1E0 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 406	VERIFIED	0002:0038ad10 ??1PathNodeMgr@@UAE@XZ 00B7A210 f i mp_actors.o
 407	SKIPPED	0002:0038ad20 ?Fixup@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B7A220 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 408	SKIPPED	0002:0038ada0 ??0?$InplaceAssetBankSet@VAITypeBank@@@@QAE@XZ 00B7A2A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -414,8 +414,8 @@ index	status	map_line
 413	SKIPPED	0002:0038afa0 ??$ReverseEndian@F@@YAXAAFH@Z 00B7A4A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 414	SKIPPED	0002:0038afc0 ??A?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVAIType@@I@Z 00B7A4C0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 415	SKIPPED	0002:0038b040 ??$FindIndex@PBD@?$InplaceAssetBank@VAIType@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 00B7A540 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
-416	VERIFIED	0002:0038b070 ??_GAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
-417	VERIFIED	0002:0038b070 ??_EAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o
+416	SKIPPED	0002:0038b070 ??_GAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+417	SKIPPED	0002:0038b070 ??_EAITypeManager@@EAEPAXI@Z 00B7A570 f i mp_actors.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 418	SKIPPED	0002:0038b0a0 ??$ReverseEndian@W4ENodeType@PathNodes@@@@YAXAAW4ENodeType@PathNodes@@H@Z 00B7A5A0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 419	SKIPPED	0002:0038b0d0 ??$ReverseEndian@Vstring@Broc@@@@YAXAAVstring@Broc@@H@Z 00B7A5D0 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition
 420	SKIPPED	0002:0038b100 ??$ReverseEndian@PAUPathLink@PathNodes@@@@YAXAAPAUPathLink@PathNodes@@H@Z 00B7A600 f i mp_actors.o  SKIPPED: inline template/container helper; supplied by its template definition

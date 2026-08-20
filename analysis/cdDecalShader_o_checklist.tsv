@@ -15,9 +15,9 @@ index	status	map_line
 14	PORTED	0002:003d1d90 ?GetPShader@cdDecalFullbrightPixel@@YAPAKXZ 00BC1290 f i cdDecalShader.o
 15	PORTED	0002:003d1da0 ??0DecalContext@@QAE@XZ 00BC12A0 f i cdDecalShader.o
 16	PORTED	0002:003d1db0 ??0cdDecalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDecalShaderMat@@@Z 00BC12B0 f i cdDecalShader.o
-17	PORTED	0002:003d1de0 ??_GcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o
-18	PORTED	0002:003d1de0 ??_EcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o
+17	SKIPPED	0002:003d1de0 ??_GcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+18	SKIPPED	0002:003d1de0 ??_EcdDecalShaderNode@@UAEPAXI@Z 00BC12E0 f i cdDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19	PORTED	0002:003d1e10 ??1cdDecalShaderNode@@UAE@XZ 00BC1310 f i cdDecalShader.o
-20	VERIFIED	0002:003d1e20 ??_EcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o
-21	VERIFIED	0002:003d1e20 ??_GcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o
+20	SKIPPED	0002:003d1e20 ??_EcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+21	SKIPPED	0002:003d1e20 ??_GcdDecalShader@@UAEPAXI@Z 00BC1320 f i cdDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	VERIFIED	0002:003d1e50 ??1cdDecalShader@@UAE@XZ 00BC1350 f i cdDecalShader.o

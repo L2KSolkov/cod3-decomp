@@ -17886,7 +17886,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 17885	0x007F6D70	0x00BE6270	??_E?$apsBumpDomain@$02@@UAEPAXI@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 17886	0x007F6DA0	0x00BE62A0	??$GetNewBillboardRenderer@VapsBillboardRenderer@@VcArgs@1@@@YAPAVapsBillboardRenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17887	0x007F7920	0x00BE6E20	??$GetNewBillboardRenderer@VapsColorBillboardRenderer@@VcArgs@1@@@YAPAVapsColorBillboardRenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17888	0x007F84A0	0x00BE79A0	??$GetNewBillboardRenderer@VapsRectangleRenderer@@VcArgs@1@@@YAPAVapsRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17888	0x007F84A0	0x00BE79A0	??$GetNewBillboardRenderer@VapsRectangleRenderer@@VcArgs@1@@@YAPAVapsRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 17889	0x007F9020	0x00BE8520	??$GetNewBillboardRenderer@VapsColorRectangleRenderer@@VcArgs@1@@@YAPAVapsColorRectangleRenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17890	0x007F9BA0	0x00BE90A0	??$GetNewUVARenderer@VapsUVARenderer@@VcArgs@1@@@YAPAVapsUVARenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17891	0x007FA800	0x00BE9D00	??$GetNewUVARenderer@VapsColorUVARenderer@@VcArgs@1@@@YAPAVapsColorUVARenderer@@ABV?$apsArray@VapsParam@@@@@Z	aeps_xboxr	apsRegister.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -18239,7 +18239,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18238	0x00802950	0x00BF1E50	?InitShader@apsSimpleMeshRenderer@@SAXXZ	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18239	0x00802990	0x00BF1E90	??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18240	0x008029C0	0x00BF1EC0	?Render@apsSimpleMeshRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18241	0x00802B60	0x00BF2060	??0apsRenderNode@@QAE@XZ	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18241	0x00802B60	0x00BF2060	??0apsRenderNode@@QAE@XZ	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18242	0x00802B70	0x00BF2070	??_EapsRenderNode@@UAEPAXI@Z	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18243	0x00802B70	0x00BF2070	??_GapsRenderNode@@UAEPAXI@Z	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18244	0x00802BA0	0x00BF20A0	??_EapsSimpleMeshShader@@UAEPAXI@Z	aeps_xboxr	apsSimpleMeshRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -18319,11 +18319,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18318	0x008049B0	0x00BF3EB0	?RegisterVShader@apsColorRectangleRender@@YAXXZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18319	0x008049D0	0x00BF3ED0	?RegisterPShader@apsColorRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18320	0x008049F0	0x00BF3EF0	?InitPShader@apsColorRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18321	0x00804A10	0x00BF3F10	??1apsBillboardNode@@UAE@XZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18322	0x00804A20	0x00BF3F20	??0apsBillboardNode@@QAE@XZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18321	0x00804A10	0x00BF3F10	??1apsBillboardNode@@UAE@XZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18322	0x00804A20	0x00BF3F20	??0apsBillboardNode@@QAE@XZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18323	0x00804A30	0x00BF3F30	?GetDesc@apsBillboardNode@@UAEXPAD@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18324	0x00804A70	0x00BF3F70	??_EapsBillboardNode@@UAEPAXI@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18325	0x00804A70	0x00BF3F70	??_GapsBillboardNode@@UAEPAXI@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18324	0x00804A70	0x00BF3F70	??_EapsBillboardNode@@UAEPAXI@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18325	0x00804A70	0x00BF3F70	??_GapsBillboardNode@@UAEPAXI@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18326	0x00804AA0	0x00BF3FA0	??0apsColorRectangleNode@@QAE@XZ	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18327	0x00804AB0	0x00BF3FB0	?GetDesc@apsColorRectangleNode@@UAEXPAD@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18328	0x00804B00	0x00BF4000	??_EapsColorRectangleNode@@UAEPAXI@Z	aeps_xboxr	apsColorRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -18359,16 +18359,16 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18358	0x008050C0	0x00BF45C0	??_GapsUVARectangleNode@@UAEPAXI@Z	aeps_xboxr	apsUVARectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18359	0x008050C0	0x00BF45C0	??_EapsUVARectangleNode@@UAEPAXI@Z	aeps_xboxr	apsUVARectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18360	0x008050F0	0x00BF45F0	??$DefaultRender@VapsUVARectangleRenderer@@VapsUVARectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsUVARectangleRenderer@@ABUapsRendererRenderInfo@@@Z	aeps_xboxr	apsUVARectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18361	0x008051F0	0x00BF46F0	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18362	0x00805230	0x00BF4730	?Init@apsRectangleRenderer@@SAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18361	0x008051F0	0x00BF46F0	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
+18362	0x00805230	0x00BF4730	?Init@apsRectangleRenderer@@SAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
 18363	0x00805260	0x00BF4760	?Render@apsRectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18364	0x008052A0	0x00BF47A0	?RegisterVShader@apsRectangleRender@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18365	0x008052C0	0x00BF47C0	?RegisterPShader@apsRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18366	0x008052E0	0x00BF47E0	?InitPShader@apsRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18367	0x00805300	0x00BF4800	??0apsRectangleNode@@QAE@XZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18364	0x008052A0	0x00BF47A0	?RegisterVShader@apsRectangleRender@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18365	0x008052C0	0x00BF47C0	?RegisterPShader@apsRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18366	0x008052E0	0x00BF47E0	?InitPShader@apsRectangleRenderPixel@@YAXXZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+18367	0x00805300	0x00BF4800	??0apsRectangleNode@@QAE@XZ	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 18368	0x00805310	0x00BF4810	?GetDesc@apsRectangleNode@@UAEXPAD@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18369	0x00805350	0x00BF4850	??_EapsRectangleNode@@UAEPAXI@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18370	0x00805350	0x00BF4850	??_GapsRectangleNode@@UAEPAXI@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18369	0x00805350	0x00BF4850	??_EapsRectangleNode@@UAEPAXI@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18370	0x00805350	0x00BF4850	??_GapsRectangleNode@@UAEPAXI@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18371	0x00805380	0x00BF4880	??$DefaultRender@VapsRectangleRenderer@@VapsRectangleNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAVapsRectangleRenderer@@ABUapsRendererRenderInfo@@@Z	aeps_xboxr	apsRectangleRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18372	0x00805480	0x00BF4980	??0apsColorUVARenderer@@QAE@ABVcArgs@0@@Z	aeps_xboxr	apsColorUVARenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18373	0x008054C0	0x00BF49C0	?Init@apsColorUVARenderer@@SAXXZ	aeps_xboxr	apsColorUVARenderer.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -18808,8 +18808,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18807	0x00818DC0	0x00C082C0	??$SortPointers@UUVARectangleParticle@@@apsRenderSort@@YAXPAUBuffer@0@PAEII@Z	aeps_xboxr	apsUVARectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18808	0x00818E00	0x00C08300	?Render@?$cNodeRenderer@UUVARectangleParticle@@VapsUVARectangleNode@@@@QAEXXZ	aeps_xboxr	apsUVARectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18809	0x00819D30	0x00C09230	?Render@apsRectangleNode@@UAEXXZ	aeps_xboxr	apsRectangleNode.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18810	0x00819D50	0x00C09250	?GetVShader@apsRectangleRender@@YAKXZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18811	0x00819D60	0x00C09260	?GetPShader@apsRectangleRenderPixel@@YAPAKXZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18810	0x00819D50	0x00C09250	?GetVShader@apsRectangleRender@@YAKXZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18811	0x00819D60	0x00C09260	?GetPShader@apsRectangleRenderPixel@@YAPAKXZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18812	0x00819D70	0x00C09270	?GetPos@RectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18813	0x00819D80	0x00C09280	?GetColor@RectangleParticle@@QAE?AVVector4@math@@XZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18814	0x00819DD0	0x00C092D0	?GetWidth@RectangleParticle@@QAEMXZ	aeps_xboxr	apsRectangleNode.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

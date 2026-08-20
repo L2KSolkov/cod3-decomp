@@ -17,5 +17,5 @@ index	status	map_line
 16	VERIFIED	0002:0043fba0 ?nglSetQuadPos@@YAXPAUnglQuad@@MM@Z 00C2F0A0 f ngl_quad.o
 17	VERIFIED	0002:0043fc00 ?nglListAddQuad@@YAXPAUnglQuad@@@Z 00C2F100 f ngl_quad.o
 18	VERIFIED	0002:0043fcc0 ??0nglQuadNode@@QAE@XZ 00C2F1C0 f i ngl_quad.o
-19	VERIFIED	0002:0043fcd0 ??_GnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o
-20	VERIFIED	0002:0043fcd0 ??_EnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o
+19	SKIPPED	0002:0043fcd0 ??_GnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
+20	SKIPPED	0002:0043fcd0 ??_EnglQuadNode@@UAEPAXI@Z 00C2F1D0 f i ngl_quad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
