@@ -1,46 +1,46 @@
 index	status	map_line
 1	PORTED	0002:00424050 _log10f 00C13550 f i nslDriverXBOXDSOUND.o
 2	PORTED	0002:00424060 ??0D3DXVECTOR3@@QAE@XZ 00C13560 f i nslDriverXBOXDSOUND.o
-3	PORTED	0002:00424070 ?DownloadEffectsImage@IDirectSound@@QAGJPBXKPBU_DSEFFECTIMAGELOC@@PAPAU_DSEFFECTIMAGEDESC@@@Z 00C13570 f i nslDriverXBOXDSOUND.o
-4	PORTED	0002:00424080 ?EnableHeadphones@IDirectSound@@QAGJH@Z 00C13580 f i nslDriverXBOXDSOUND.o
-5	PORTED	0002:00424090 ?SetDistanceFactor@IDirectSound@@QAGJMK@Z 00C13590 f i nslDriverXBOXDSOUND.o
-6	PORTED	0002:004240a0 ?SetOrientation@IDirectSound@@QAGJMMMMMMK@Z 00C135A0 f i nslDriverXBOXDSOUND.o
-7	PORTED	0002:004240b0 ?SetPosition@IDirectSound@@QAGJMMMK@Z 00C135B0 f i nslDriverXBOXDSOUND.o
-8	PORTED	0002:004240c0 ?SetVelocity@IDirectSound@@QAGJMMMK@Z 00C135C0 f i nslDriverXBOXDSOUND.o
-9	PORTED	0002:004240d0 ?SetI3DL2Listener@IDirectSound@@QAGJPBU_DSI3DL2LISTENER@@K@Z 00C135D0 f i nslDriverXBOXDSOUND.o
-10	PORTED	0002:004240e0 ?CommitDeferredSettings@IDirectSound@@QAGJXZ 00C135E0 f i nslDriverXBOXDSOUND.o
-11	PORTED	0002:004240f0 ?SynchPlayback@IDirectSound@@QAGJXZ 00C135F0 f i nslDriverXBOXDSOUND.o
-12	PORTED	0002:00424100 ?SetFormat@IDirectSoundBuffer@@QAGJPBUtWAVEFORMATEX@@@Z 00C13600 f i nslDriverXBOXDSOUND.o
-13	PORTED	0002:00424110 ?SetFrequency@IDirectSoundBuffer@@QAGJK@Z 00C13610 f i nslDriverXBOXDSOUND.o
-14	PORTED	0002:00424120 ?SetVolume@IDirectSoundBuffer@@QAGJJ@Z 00C13620 f i nslDriverXBOXDSOUND.o
-15	PORTED	0002:00424130 ?SetEG@IDirectSoundBuffer@@QAGJPBU_DSENVELOPEDESC@@@Z 00C13630 f i nslDriverXBOXDSOUND.o
-16	PORTED	0002:00424140 ?SetHeadroom@IDirectSoundBuffer@@QAGJK@Z 00C13640 f i nslDriverXBOXDSOUND.o
-17	PORTED	0002:00424150 ?SetMixBins@IDirectSoundBuffer@@QAGJPBU_DSMIXBINS@@@Z 00C13650 f i nslDriverXBOXDSOUND.o
-18	PORTED	0002:00424160 ?SetAllParameters@IDirectSoundBuffer@@QAGJPBU_DS3DBUFFER@@K@Z 00C13660 f i nslDriverXBOXDSOUND.o
-19	PORTED	0002:00424170 ?SetMaxDistance@IDirectSoundBuffer@@QAGJMK@Z 00C13670 f i nslDriverXBOXDSOUND.o
-20	PORTED	0002:00424180 ?SetMinDistance@IDirectSoundBuffer@@QAGJMK@Z 00C13680 f i nslDriverXBOXDSOUND.o
-21	PORTED	0002:00424190 ?SetMode@IDirectSoundBuffer@@QAGJKK@Z 00C13690 f i nslDriverXBOXDSOUND.o
-22	PORTED	0002:004241a0 ?SetRolloffCurve@IDirectSoundBuffer@@QAGJPBMKK@Z 00C136A0 f i nslDriverXBOXDSOUND.o
-23	PORTED	0002:004241b0 ?Play@IDirectSoundBuffer@@QAGJKKK@Z 00C136B0 f i nslDriverXBOXDSOUND.o
-24	PORTED	0002:004241c0 ?StopEx@IDirectSoundBuffer@@QAGJ_JK@Z 00C136C0 f i nslDriverXBOXDSOUND.o
-25	PORTED	0002:004241e0 ?Pause@IDirectSoundBuffer@@QAGJK@Z 00C136E0 f i nslDriverXBOXDSOUND.o
-26	PORTED	0002:004241f0 ?SetPlayRegion@IDirectSoundBuffer@@QAGJKK@Z 00C136F0 f i nslDriverXBOXDSOUND.o
-27	PORTED	0002:00424200 ?SetLoopRegion@IDirectSoundBuffer@@QAGJKK@Z 00C13700 f i nslDriverXBOXDSOUND.o
-28	PORTED	0002:00424210 ?GetStatus@IDirectSoundBuffer@@QAGJPAK@Z 00C13710 f i nslDriverXBOXDSOUND.o
-29	PORTED	0002:00424220 ?SetBufferData@IDirectSoundBuffer@@QAGJPAXK@Z 00C13720 f i nslDriverXBOXDSOUND.o
-30	PORTED	0002:00424230 ?SetFormat@IDirectSoundStream@@QAGJPBUtWAVEFORMATEX@@@Z 00C13730 f i nslDriverXBOXDSOUND.o
-31	PORTED	0002:00424240 ?SetFrequency@IDirectSoundStream@@QAGJK@Z 00C13740 f i nslDriverXBOXDSOUND.o
-32	PORTED	0002:00424250 ?SetVolume@IDirectSoundStream@@QAGJJ@Z 00C13750 f i nslDriverXBOXDSOUND.o
-33	PORTED	0002:00424260 ?SetEG@IDirectSoundStream@@QAGJPBU_DSENVELOPEDESC@@@Z 00C13760 f i nslDriverXBOXDSOUND.o
-34	PORTED	0002:00424270 ?SetHeadroom@IDirectSoundStream@@QAGJK@Z 00C13770 f i nslDriverXBOXDSOUND.o
-35	PORTED	0002:00424280 ?SetMixBins@IDirectSoundStream@@QAGJPBU_DSMIXBINS@@@Z 00C13780 f i nslDriverXBOXDSOUND.o
-36	PORTED	0002:00424290 ?SetAllParameters@IDirectSoundStream@@QAGJPBU_DS3DBUFFER@@K@Z 00C13790 f i nslDriverXBOXDSOUND.o
-37	PORTED	0002:004242a0 ?SetMaxDistance@IDirectSoundStream@@QAGJMK@Z 00C137A0 f i nslDriverXBOXDSOUND.o
-38	PORTED	0002:004242b0 ?SetMinDistance@IDirectSoundStream@@QAGJMK@Z 00C137B0 f i nslDriverXBOXDSOUND.o
-39	PORTED	0002:004242c0 ?SetMode@IDirectSoundStream@@QAGJKK@Z 00C137C0 f i nslDriverXBOXDSOUND.o
-40	PORTED	0002:004242d0 ?SetRolloffCurve@IDirectSoundStream@@QAGJPBMKK@Z 00C137D0 f i nslDriverXBOXDSOUND.o
-41	PORTED	0002:004242e0 ?Pause@IDirectSoundStream@@QAGJK@Z 00C137E0 f i nslDriverXBOXDSOUND.o
-42	PORTED	0002:004242f0 ?FlushEx@IDirectSoundStream@@QAGJ_JK@Z 00C137F0 f i nslDriverXBOXDSOUND.o
+3	SKIPPED	0002:00424070 ?DownloadEffectsImage@IDirectSound@@QAGJPBXKPBU_DSEFFECTIMAGELOC@@PAPAU_DSEFFECTIMAGEDESC@@@Z 00C13570 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+4	SKIPPED	0002:00424080 ?EnableHeadphones@IDirectSound@@QAGJH@Z 00C13580 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+5	SKIPPED	0002:00424090 ?SetDistanceFactor@IDirectSound@@QAGJMK@Z 00C13590 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+6	SKIPPED	0002:004240a0 ?SetOrientation@IDirectSound@@QAGJMMMMMMK@Z 00C135A0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+7	SKIPPED	0002:004240b0 ?SetPosition@IDirectSound@@QAGJMMMK@Z 00C135B0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+8	SKIPPED	0002:004240c0 ?SetVelocity@IDirectSound@@QAGJMMMK@Z 00C135C0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+9	SKIPPED	0002:004240d0 ?SetI3DL2Listener@IDirectSound@@QAGJPBU_DSI3DL2LISTENER@@K@Z 00C135D0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+10	SKIPPED	0002:004240e0 ?CommitDeferredSettings@IDirectSound@@QAGJXZ 00C135E0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+11	SKIPPED	0002:004240f0 ?SynchPlayback@IDirectSound@@QAGJXZ 00C135F0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+12	SKIPPED	0002:00424100 ?SetFormat@IDirectSoundBuffer@@QAGJPBUtWAVEFORMATEX@@@Z 00C13600 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+13	SKIPPED	0002:00424110 ?SetFrequency@IDirectSoundBuffer@@QAGJK@Z 00C13610 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+14	SKIPPED	0002:00424120 ?SetVolume@IDirectSoundBuffer@@QAGJJ@Z 00C13620 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+15	SKIPPED	0002:00424130 ?SetEG@IDirectSoundBuffer@@QAGJPBU_DSENVELOPEDESC@@@Z 00C13630 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+16	SKIPPED	0002:00424140 ?SetHeadroom@IDirectSoundBuffer@@QAGJK@Z 00C13640 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+17	SKIPPED	0002:00424150 ?SetMixBins@IDirectSoundBuffer@@QAGJPBU_DSMIXBINS@@@Z 00C13650 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+18	SKIPPED	0002:00424160 ?SetAllParameters@IDirectSoundBuffer@@QAGJPBU_DS3DBUFFER@@K@Z 00C13660 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+19	SKIPPED	0002:00424170 ?SetMaxDistance@IDirectSoundBuffer@@QAGJMK@Z 00C13670 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+20	SKIPPED	0002:00424180 ?SetMinDistance@IDirectSoundBuffer@@QAGJMK@Z 00C13680 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+21	SKIPPED	0002:00424190 ?SetMode@IDirectSoundBuffer@@QAGJKK@Z 00C13690 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+22	SKIPPED	0002:004241a0 ?SetRolloffCurve@IDirectSoundBuffer@@QAGJPBMKK@Z 00C136A0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+23	SKIPPED	0002:004241b0 ?Play@IDirectSoundBuffer@@QAGJKKK@Z 00C136B0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+24	SKIPPED	0002:004241c0 ?StopEx@IDirectSoundBuffer@@QAGJ_JK@Z 00C136C0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+25	SKIPPED	0002:004241e0 ?Pause@IDirectSoundBuffer@@QAGJK@Z 00C136E0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+26	SKIPPED	0002:004241f0 ?SetPlayRegion@IDirectSoundBuffer@@QAGJKK@Z 00C136F0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+27	SKIPPED	0002:00424200 ?SetLoopRegion@IDirectSoundBuffer@@QAGJKK@Z 00C13700 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+28	SKIPPED	0002:00424210 ?GetStatus@IDirectSoundBuffer@@QAGJPAK@Z 00C13710 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+29	SKIPPED	0002:00424220 ?SetBufferData@IDirectSoundBuffer@@QAGJPAXK@Z 00C13720 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+30	SKIPPED	0002:00424230 ?SetFormat@IDirectSoundStream@@QAGJPBUtWAVEFORMATEX@@@Z 00C13730 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+31	SKIPPED	0002:00424240 ?SetFrequency@IDirectSoundStream@@QAGJK@Z 00C13740 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+32	SKIPPED	0002:00424250 ?SetVolume@IDirectSoundStream@@QAGJJ@Z 00C13750 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+33	SKIPPED	0002:00424260 ?SetEG@IDirectSoundStream@@QAGJPBU_DSENVELOPEDESC@@@Z 00C13760 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+34	SKIPPED	0002:00424270 ?SetHeadroom@IDirectSoundStream@@QAGJK@Z 00C13770 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+35	SKIPPED	0002:00424280 ?SetMixBins@IDirectSoundStream@@QAGJPBU_DSMIXBINS@@@Z 00C13780 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+36	SKIPPED	0002:00424290 ?SetAllParameters@IDirectSoundStream@@QAGJPBU_DS3DBUFFER@@K@Z 00C13790 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+37	SKIPPED	0002:004242a0 ?SetMaxDistance@IDirectSoundStream@@QAGJMK@Z 00C137A0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+38	SKIPPED	0002:004242b0 ?SetMinDistance@IDirectSoundStream@@QAGJMK@Z 00C137B0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+39	SKIPPED	0002:004242c0 ?SetMode@IDirectSoundStream@@QAGJKK@Z 00C137C0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+40	SKIPPED	0002:004242d0 ?SetRolloffCurve@IDirectSoundStream@@QAGJPBMKK@Z 00C137D0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+41	SKIPPED	0002:004242e0 ?Pause@IDirectSoundStream@@QAGJK@Z 00C137E0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+42	SKIPPED	0002:004242f0 ?FlushEx@IDirectSoundStream@@QAGJ_JK@Z 00C137F0 f i nslDriverXBOXDSOUND.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
 43	VERIFIED	0002:00424590 ?nslDriverVoiceSize@@YAIXZ 00C13A90 f nslDriverXBOXDSOUND.o
 44	VERIFIED	0002:00424680 ?nslDriverClamp@@YAMMMM@Z 00C13B80 f nslDriverXBOXDSOUND.o
 45	VERIFIED	0002:004246b0 ?nslDriverCalculateRolloff@@YAXPAMMPBUnslWave@@@Z 00C13BB0 f nslDriverXBOXDSOUND.o

@@ -1,9 +1,9 @@
 index	status	map_line
-1	PENDING	0002:0042e0a0 ?CreateSoundBuffer@IDirectSound@@QAGJPBU_DSBUFFERDESC@@PAPAUIDirectSoundBuffer@@PAUIUnknown@@@Z 00C1D5A0 f i nvl_xbox.o
-2	PENDING	0002:0042e0b0 ?PlayEx@IDirectSoundBuffer@@QAGJ_JK@Z 00C1D5B0 f i nvl_xbox.o
-3	PENDING	0002:0042e0d0 ?Stop@IDirectSoundBuffer@@QAGJXZ 00C1D5D0 f i nvl_xbox.o
-4	PENDING	0002:0042e0e0 ?GetCurrentPosition@IDirectSoundBuffer@@QAGJPAK0@Z 00C1D5E0 f i nvl_xbox.o
-5	PENDING	0002:0042e0f0 ?SetCurrentPosition@IDirectSoundBuffer@@QAGJK@Z 00C1D5F0 f i nvl_xbox.o
+1	SKIPPED	0002:0042e0a0 ?CreateSoundBuffer@IDirectSound@@QAGJPBU_DSBUFFERDESC@@PAPAUIDirectSoundBuffer@@PAUIUnknown@@@Z 00C1D5A0 f i nvl_xbox.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+2	SKIPPED	0002:0042e0b0 ?PlayEx@IDirectSoundBuffer@@QAGJ_JK@Z 00C1D5B0 f i nvl_xbox.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+3	SKIPPED	0002:0042e0d0 ?Stop@IDirectSoundBuffer@@QAGJXZ 00C1D5D0 f i nvl_xbox.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+4	SKIPPED	0002:0042e0e0 ?GetCurrentPosition@IDirectSoundBuffer@@QAGJPAK0@Z 00C1D5E0 f i nvl_xbox.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
+5	SKIPPED	0002:0042e0f0 ?SetCurrentPosition@IDirectSoundBuffer@@QAGJK@Z 00C1D5F0 f i nvl_xbox.o  SKIPPED: external DirectSound interface wrapper; supplied by the platform shim
 6	VERIFIED	0002:0042e100 ?ProcessAudioChunk@nvlMovie@@EAEXXZ 00C1D600 f nvl_xbox.o
 7	VERIFIED	0002:0042e1e0 ?StartAudioPlayback@nvlMovie@@EAEXXZ 00C1D6E0 f nvl_xbox.o
 8	VERIFIED	0002:0042e230 ?StopAudioPlayback@nvlMovie@@EAEXXZ 00C1D730 f nvl_xbox.o

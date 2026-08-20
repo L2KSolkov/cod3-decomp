@@ -278,6 +278,8 @@ def shell_status(row: dict[str, str]) -> str:
 def shell_skip_note(row: dict[str, str]) -> str:
     """Return a note for library/compiler helper rows omitted from porting."""
     name = row.get("name", "")
+    if "IDirectSound" in name:
+        return "SKIPPED: external DirectSound interface wrapper; supplied by the platform shim"
     if name.startswith("??_E") or name.startswith("??_G"):
         return "SKIPPED: compiler-generated deleting destructor; supplied by the compiler"
     if (
