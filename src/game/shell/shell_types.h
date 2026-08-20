@@ -289,6 +289,9 @@ struct SE_Entry_s {
     std::string m_strString;  // +0x00
     std::string m_strDebug;   // +0x1C
     int         m_iFlags;     // +0x38
+
+    SE_Entry_s();             // 0x5B6A10
+    ~SE_Entry_s();            // 0x5B6A70
 };
 
 class CStringEdPackage {

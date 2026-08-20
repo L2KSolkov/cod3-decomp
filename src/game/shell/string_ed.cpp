@@ -301,6 +301,17 @@ void CStringEdPackage::Clear(int bChangingLanguages)
     m_strCurrentEntryEnglish_ParseOnly.assign("", 0);
 }
 
+// ea: 0x005B6A10
+SE_Entry_s::SE_Entry_s()
+    : m_strString(), m_strDebug(), m_iFlags(0)
+{
+}
+
+// ea: 0x005B6A70
+SE_Entry_s::~SE_Entry_s()
+{
+}
+
 // ea: 0x0059D980
 void CStringEdPackage::AddEntry(const char* psLocalReference)
 {

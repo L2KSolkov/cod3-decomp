@@ -1974,8 +1974,8 @@ index	status	map_line
 1972	PENDING	0002:001aa920       ??_EFEMenuListBox@@UAEPAXI@Z 009a5e20 f i shell.o
 1973	PENDING	0002:001aa920       ??_GFEMenuListBox@@UAEPAXI@Z 009a5e20 f i shell.o
 1974	PENDING	0002:001aa950       ??1FEMenuListBox@@UAE@XZ   009a5e50 f i shell.o
-1975	PENDING	0002:001aaa10       ??0SE_Entry_s@@QAE@XZ      009a5f10 f i shell.o
-1976	PENDING	0002:001aaa70       ??1SE_Entry_s@@QAE@XZ      009a5f70 f i shell.o
+1975	FIXED	0002:001aaa10       ??0SE_Entry_s@@QAE@XZ      009a5f10 f i shell.o
+1976	FIXED	0002:001aaa70       ??1SE_Entry_s@@QAE@XZ      009a5f70 f i shell.o
 1977	PENDING	0002:001aab10       ?clear@?$ae_vector@PAVPanelQuadSection@@@@QAEXXZ 009a6010 f i shell.o
 1978	PENDING	0002:001aab20       ?resize@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEXH@Z 009a6020 f i shell.o
 1979	PENDING	0002:001aace0       ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@QAE@XZ 009a61e0 f i shell.o
