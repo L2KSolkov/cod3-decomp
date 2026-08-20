@@ -9,69 +9,12 @@
 #include "ngl/ngl_scene.h"
 #include "ngl/nglFont.h"
 #include "core/ae_fixed_string.h"
+#include "nvl/nvl_api.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <intrin.h>
-
-// ============================================================================
-// nvl minimal view (stub bodies; real codec is nvl_xboxr, stubbed)
-// ============================================================================
-enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
-struct nglTexture;
-
-enum nvlResult {
-    NVL_RESULT_ERROR = -1,
-    NVL_RESULT_OK = 0,
-};
-enum nvlFrameState {
-    NVL_FRAME_ERROR = -1,
-    NVL_FRAME_READY = 0,
-    NVL_FRAME_STREAMING = 1,
-    NVL_FRAME_DECODING = 2,
-    NVL_FRAME_LAST = 3,
-    NVL_FRAME_NONE = 4,
-};
-
-class nvlMovieBase {
-public:
-    virtual ~nvlMovieBase() {}                       // 0x82E780
-    virtual nvlResult InitMovie() { return NVL_RESULT_ERROR; }  // 0x82E790
-    virtual nvlFrameState DecodeFrame() { return NVL_FRAME_NONE; }  // 0x82E530
-    virtual void Reset() {}                          // 0x82E590
-
-    int  mWidth;            // +0x04
-    int  mHeight;           // +0x08
-    int  mWorkBufferSize;   // +0x0C
-    int  mImageBufferSize;  // +0x10
-    int  mStreamBufferSize; // +0x14
-    unsigned char* mDataBuffer;  // +0x18
-    unsigned char* mImageBuffer; // +0x1C
-    unsigned char* mIntBuffer[4]; // +0x20
-
-    nglTexture* GetTexture() { return nullptr; }     // 0x82E520
-    nflFileID   ReleaseMovie() { return (nflFileID)0; }         // 0x82E410
-    nvlResult   SetAudioTrack(int t) { (void)t; return NVL_RESULT_ERROR; }  // 0x82E550
-    bool        IsBufferLoading() { return false; }  // 0x82E560
-    bool        IsBufferFull() { return false; }     // 0x82EB80
-};
-
-class nvlAFMVMovie : public nvlMovieBase {
-public:
-    nvlAFMVMovie() {}                                // 0x82ECE0
-    nvlResult ParseHeader(nflFileID id, bool back,
-                          int offset, int size) { (void)id; (void)back;
-        (void)offset; (void)size; return NVL_RESULT_ERROR; }  // 0x82EDF0
-};
-
-class nvlMovie : public nvlAFMVMovie {
-public:
-    nvlMovie() {}                                    // 0x82ED10
-    virtual void ProcessAudioChunk() {}              // 0x82E100
-    virtual void StartAudioPlayback() {}             // 0x82E1E0
-    virtual void StopAudioPlayback() {}              // 0x82E230
-};
 
 // ============================================================================
 // Externs (core.o / filesystem / ngl / game)
