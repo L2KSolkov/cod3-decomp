@@ -1879,8 +1879,8 @@ index	status	map_line
 1878	VERIFIED	0002:001a8bd0       ?SetVJustify@FEMultiLineText@@UAEXH@Z 009a40d0 f i shell.o
 1879	VERIFIED	0002:001a8c20       ?SetScale@FEMultiLineText@@UAEXM@Z 009a4120 f i shell.o
 1880	VERIFIED	0002:001a8ca0       ?SetScale@FEMultiLineText@@UAEXMM@Z 009a41a0 f i shell.o
-1881	PENDING	0002:001a8d20       ??_GFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
-1882	PENDING	0002:001a8d20       ??_EFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
+1881	VERIFIED	0002:001a8d20       ??_GFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
+1882	VERIFIED	0002:001a8d20       ??_EFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
 1883	VERIFIED	0002:001a8d50       ??0UIListBoxItem@UIListBox@@QAE@XZ 009a4250 f i shell.o
 1889	FIXED	0002:001a8fe0       ??4UIListBoxItem@UIListBox@@QAEXABV01@@Z 009a44e0 f i shell.o
 1884	VERIFIED	0002:001a8dc0       ?SetStateCount@UIListBoxItem@UIListBox@@QAEXH@Z 009a42c0 f i shell.o
