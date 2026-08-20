@@ -2101,7 +2101,7 @@ index	status	map_line
 2099	VERIFIED	0002:001ac4d0       ??_GGammaScreenMenu@@UAEPAXI@Z 009a79d0 f i shell.o
 2100	VERIFIED	0002:001ac500       ??_ELoadingMenu@@UAEPAXI@Z 009a7a00 f i shell.o
 2101	VERIFIED	0002:001ac500       ??_GLoadingMenu@@UAEPAXI@Z 009a7a00 f i shell.o
-2102	PENDING	0002:001ac530       ?Init@VKMenu@@UAEXXZ       009a7a30 f i shell.o
+2102	PORTED	0002:001ac530       ?Init@VKMenu@@UAEXXZ       009a7a30 f i shell.o
 2103	PENDING	0002:001ac540       ??_EProfileMainMenu@@UAEPAXI@Z 009a7a40 f i shell.o
 2104	PENDING	0002:001ac540       ??_GProfileMainMenu@@UAEPAXI@Z 009a7a40 f i shell.o
 2105	PENDING	0002:001ac570       ??_GProfileEditMenu@@UAEPAXI@Z 009a7a70 f i shell.o

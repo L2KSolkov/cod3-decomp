@@ -1724,6 +1724,7 @@ public:
 
     VKMenu(FEMenuSystem* s);            // 0x5942A0
     virtual ~VKMenu();                  // 0x5942F0
+    virtual void Init();                // 0x5B8530
     virtual void SetPanelFile(PanelFile* pf);  // 0x597740
     virtual void UpdateWidescreen(bool widescreen);  // 0x580500
     virtual void Draw();                // 0x580440

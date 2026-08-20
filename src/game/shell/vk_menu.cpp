@@ -141,6 +141,11 @@ VKMenu* VKMenu::Me()
     return (VKMenu*)g_femanager.fems->menus[18];
 }
 
+// ea: 0x005B8530
+void VKMenu::Init()
+{
+}
+
 // ea: 0x005744C0
 void VKMenu::SetEntryPositions()
 {
