@@ -582,45 +582,59 @@ bool InGameOptionsMenu::ResponseNoJustGoBackToPauseMenu(int client)
 // ea: 0x0057D300
 void InGameOptionsMenu::AddOptionsToCombos()
 {
-    for (const char* const* p = pszStickLayout; p < pszButtonLayout; ++p)
+    for (const char* const* p = pszStickLayout;
+         p < pszStickLayout + (sizeof(pszStickLayout) / sizeof(pszStickLayout[0]));
+         ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[0])->AddOption(v16);
     }
 
-    for (const char* const* p = pszButtonLayout; p < pszInvertAim; ++p)
+    for (const char* const* p = pszButtonLayout;
+         p < pszButtonLayout + (sizeof(pszButtonLayout) / sizeof(pszButtonLayout[0]));
+         ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[1])->AddOption(v16);
     }
 
-    for (const char* const* p = pszInvertAim; p < pszToggleADS; ++p)
+    for (const char* const* p = pszInvertAim;
+         p < pszInvertAim + (sizeof(pszInvertAim) / sizeof(pszInvertAim[0]));
+         ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[4])->AddOption(v16);
     }
 
-    for (const char* const* p = pszToggleADS; p < pszStickyAim; ++p)
+    for (const char* const* p = pszToggleADS;
+         p < pszToggleADS + (sizeof(pszToggleADS) / sizeof(pszToggleADS[0]));
+         ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[5])->AddOption(v16);
     }
 
-    for (const char* const* p = pszStickyAim; p < pszAlternateTankControls;
+    for (const char* const* p = pszStickyAim;
+         p < pszStickyAim + (sizeof(pszStickyAim) / sizeof(pszStickyAim[0]));
          ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[6])->AddOption(v16);
     }
 
-    for (const char* const* p = pszAlternateTankControls; p < pszVibration;
+    for (const char* const* p = pszAlternateTankControls;
+         p < pszAlternateTankControls
+                 + (sizeof(pszAlternateTankControls)
+                    / sizeof(pszAlternateTankControls[0]));
          ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[7])->AddOption(v16);
     }
 
-    for (const char* const* p = pszVibration; p < g_XBoxBadDiskWarnings; ++p)
+    for (const char* const* p = pszVibration;
+         p < pszVibration + (sizeof(pszVibration) / sizeof(pszVibration[0]));
+         ++p)
     {
         Broc::string v16(*p);
         ((FEComboBox*)entries[8])->AddOption(v16);

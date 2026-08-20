@@ -150,7 +150,7 @@ nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	VERIFIED	Phase 3: nslWave dire
 
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	VERIFIED	Compared all fifteen release symbols against codmp_xboxr.xbe.c and IDA; corrected txSlotNew to consume the free-list head as in the reference; remaining slot-pool operations match.
 
-nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	AFMV audit in progress; restored B-picture GetMBModes conditional bit consumption from codmp_xboxr.xbe.c and IDA, with the remaining release entries still requiring individual comparison.
+nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	VERIFIED	Compared all 15 release entries against codmp_xboxr.xbe.c and IDA; fixed B-picture GetMBModes conditional bit consumption and DoMotionDualP second-reference X addressing.
 
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	PORTED	[bdConnection] bdConnection.cpp: connection base (15 funcs)
 
