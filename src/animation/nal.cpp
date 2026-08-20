@@ -11778,6 +11778,132 @@ void nalComponent<nalComponentPOBase,
     }
 }
 
+// ea: 0x00862A00
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    animComponentData = (const char*)animComponentData + 32;
+}
+
+// ea: 0x00862A10
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x00862A20
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x00862A30
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x00862A40
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    (void)skeletonComponentData;
+}
+
+// ea: 0x00862A50
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x00862A60
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+// ea: 0x00862A70
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    animComponentData = (const void*)(((uintptr_t)animComponentData + 15u)
+                                       & ~uintptr_t(15u));
+}
+
+// ea: 0x00862AC0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 32;
+}
+
+// ea: 0x00862AF0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 15u)
+                                & ~uintptr_t(15u));
+            if (state != nullptr)
+                *(const void**)state = src;
+            src = (const char*)src + 32 * quantity;
+            state = (char*)state + 4;
+            *componentEnum.CustomAnimData =
+                (const char*)*componentEnum.CustomAnimData + 32;
+        }
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
