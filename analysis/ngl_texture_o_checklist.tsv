@@ -9,4 +9,4 @@ index	status	map_line
 8	VERIFIED	0002:004422f0 ?nglAPKTextureDeleteCallback@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@PAX@Z 00C317F0 f ngl_texture.o
 9	VERIFIED	0002:00442370 ?nglTextureInit@@YAXXZ 00C31870 f ngl_texture.o
 10	VERIFIED	0002:004423d0 ??0?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318D0 f i ngl_texture.o
-11	PORTED	0002:004423f0 ??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318F0 f i ngl_texture.o
+11	VERIFIED	0002:004423f0 ??1?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAE@XZ 00C318F0 f i ngl_texture.o

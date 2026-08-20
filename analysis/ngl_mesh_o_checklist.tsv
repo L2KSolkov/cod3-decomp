@@ -30,5 +30,5 @@ index	status	map_line
 29	VERIFIED	0002:004446e0 ??0?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33BE0 f i ngl_mesh.o
 30	PORTED	0002:00444700 ?NewNodeOfLevel@?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C00 f i ngl_mesh.o
 31	PORTED	0002:00444730 ?NewNodeOfLevel@?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C33C30 f i ngl_mesh.o
-32	PORTED	0002:00444760 ??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33C60 f i ngl_mesh.o
-33	PORTED	0002:00444770 ??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33C70 f i ngl_mesh.o
+32	VERIFIED	0002:00444760 ??1?$tlSkipList@UnglMesh@@VtlFixedString@@@@QAE@XZ 00C33C60 f i ngl_mesh.o
+33	VERIFIED	0002:00444770 ??1?$tlSkipList@UnglMaterial@@VtlFixedString@@@@QAE@XZ 00C33C70 f i ngl_mesh.o

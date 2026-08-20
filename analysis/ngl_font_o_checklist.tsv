@@ -25,4 +25,4 @@ index	status	map_line
 24	VERIFIED	0002:00443090 ?GetDesc@nglStringNode@@UAEXPAD@Z 00C32590 f i ngl_font.o
 25	SKIPPED	0002:004430a0 ??_GnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 26	SKIPPED	0002:004430a0 ??_EnglStringNode@@UAEPAXI@Z 00C325A0 f i ngl_font.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-27	PORTED	0002:004430d0 ??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C325D0 f i ngl_font.o
+27	VERIFIED	0002:004430d0 ??1?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C325D0 f i ngl_font.o
