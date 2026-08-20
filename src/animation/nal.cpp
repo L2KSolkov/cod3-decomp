@@ -12001,7 +12001,179 @@ void nalComponent<nalComponentPOBase,
         src = (const char*)src + 32 * quantity;
         dst = (char*)dst + 32;
         *componentEnum.CustomAnimData =
-            (const char*)*componentEnum.CustomAnimData + 32;
+        (const char*)*componentEnum.CustomAnimData + 32;
+    }
+}
+
+// ea: 0x00862ED0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+            {
+                src = (const char*)src + 32;
+                *componentEnum.CustomAnimData =
+                    (const char*)*componentEnum.CustomAnimData + 32;
+            }
+            continue;
+        }
+        unsigned char* target = (unsigned char*)dst + offset;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            std::memcpy(target, src, 32);
+            src = (const char*)src + 32;
+            *componentEnum.CustomAnimData =
+                (const char*)*componentEnum.CustomAnimData + 32;
+        }
+        else
+        {
+            std::memcpy(target, (const unsigned char*)def + offset, 32);
+        }
+    }
+}
+
+// ea: 0x00863030
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    src = (const void*)(((uintptr_t)src + 15u) & ~uintptr_t(15u));
+    *customAnimData =
+        (const void*)(((uintptr_t)*customAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const char* current = (const char*)src;
+    const char* animData = (const char*)*customAnimData;
+    const char* skeletonData = (const char*)*customSkeletonData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        std::memcpy((char*)dst + offsetTable[i + componentInfo->StartIndex],
+                    current, 32);
+        current += 32;
+        animData += 32;
+        skeletonData += 1;
+    }
+    src = current;
+    *customSkeletonData = skeletonData;
+    *customAnimData = animData;
+}
+
+// ea: 0x008630E0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    *componentEnum.CustomAnimData =
+        (const void*)(((uintptr_t)*componentEnum.CustomAnimData + 15u)
+                      & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0
+            && nalComponentTrackPresent(&componentEnum, track)
+            && !trajabs)
+        {
+            std::memcpy((char*)dst + offsetTable[track],
+                        *componentEnum.CustomAnimData, 32);
+        }
+        if (nalComponentTrackPresent(&componentEnum, track))
+            *componentEnum.CustomAnimData =
+                (const char*)*componentEnum.CustomAnimData + 32;
+    }
+}
+
+// ea: 0x00863210
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 32 * componentInfo->Count;
+}
+
+// ea: 0x00863240
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 32;
+}
+
+// ea: 0x00863290
+template <>
+void FastCopy<nalComponentTrajectoryPO, nalPositionOrientation>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 32u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// ea: 0x00863270
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentTrajectoryPO, nalPositionOrientation>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// ea: 0x008632E0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentTrajectoryPOData,
+                  nalComponentTrajectoryPO>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 32;
     }
 }
 
