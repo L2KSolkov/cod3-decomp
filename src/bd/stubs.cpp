@@ -454,12 +454,6 @@ bool bdBitBuffer::readRangedFloat32(float& value, float min, float max,
     return true;
 }
 
-bool bdBitBuffer::readInt32(int& value)
-{
-    (void)value;
-    return true;
-}
-
 bool bdBitBuffer::readInt16(short& value)
 {
     short decoded;
@@ -493,10 +487,31 @@ void bdBitBuffer::writeInt16(short value)
     writeBits(&encoded, 0x10u);
 }
 
+void bdBitBuffer::writeUInt16(unsigned short value)
+{
+    int encoded = value;
+    writeDataType(BD_BB_UNSIGNED_INTEGER16_TYPE);
+    writeBits(&encoded, 0x10u);
+}
+
+void bdBitBuffer::writeInt32(int value)
+{
+    int encoded = value;
+    writeDataType(BD_BB_SIGNED_INTEGER32_TYPE);
+    writeBits(&encoded, 0x20u);
+}
+
 void bdBitBuffer::writeUInt32(unsigned int value)
 {
     unsigned int encoded = value;
     writeDataType(BD_BB_UNSIGNED_INTEGER32_TYPE);
+    writeBits(&encoded, 0x20u);
+}
+
+void bdBitBuffer::writeFloat32(float value)
+{
+    float encoded = value;
+    writeDataType(BD_BB_FLOAT32_TYPE);
     writeBits(&encoded, 0x20u);
 }
 
@@ -523,7 +538,31 @@ void bdBitBuffer::writeBlob(const void* blob, unsigned int length)
 
 bool bdBitBuffer::readUInt16(unsigned short& value)
 {
-    (void)value;
+    unsigned short decoded;
+    if (!readDataType(BD_BB_UNSIGNED_INTEGER16_TYPE) ||
+        !readBits(&decoded, 0x10u))
+        return false;
+    value = decoded;
+    return true;
+}
+
+bool bdBitBuffer::readInt32(int& value)
+{
+    int decoded;
+    if (!readDataType(BD_BB_SIGNED_INTEGER32_TYPE) ||
+        !readBits(&decoded, 0x20u))
+        return false;
+    value = decoded;
+    return true;
+}
+
+bool bdBitBuffer::readFloat32(float& value)
+{
+    float decoded;
+    if (!readDataType(BD_BB_FLOAT32_TYPE) ||
+        !readBits(&decoded, 0x20u))
+        return false;
+    value = decoded;
     return true;
 }
 
@@ -531,12 +570,6 @@ bool bdBitBuffer::readChar8(char& value)
 {
     return readDataType(BD_BB_SIGNED_CHAR8_TYPE) &&
            readBits(&value, 8u);
-}
-
-bool bdBitBuffer::readFloat32(float& value)
-{
-    (void)value;
-    return true;
 }
 
 bool bdBitBuffer::readString(bdString& s)
