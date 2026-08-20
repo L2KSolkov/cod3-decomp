@@ -886,6 +886,16 @@ nal_init.o	?Delete@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPO
 nal_init.o	?Copy@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentTrajectoryPO@@VnalPositionOrientation@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
 nal_init.o	??0?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@IAE@XZ	VERIFIED
 nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAPBX@Z	PORTED
