@@ -20173,8 +20173,8 @@ index	status	map_line
 20172	SKIPPED	0002:00454730 ??_GtlInstanceBank@@QAEPAXI@Z 00C43C30 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20173	PORTED	0002:00454760 ??2?$tlResourceDirectory@VnalBaseSkeleton@@@@SAPAXI@Z 00C43C60 f i nal_init.o
 20174	PORTED	0002:00454780 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@IAE@XZ 00C43C80 f i nal_init.o
-20175	PENDING	0002:00454790 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAE@XZ 00C43C90 f i nal_init.o
-20176	PENDING	0002:004547a0 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAE@XZ 00C43CA0 f i nal_init.o
+20175	FIXED	0002:00454790 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAE@XZ 00C43C90 f i nal_init.o
+20176	FIXED	0002:004547a0 ??1?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@MAE@XZ 00C43CA0 f i nal_init.o
 20177	PORTED	0002:004547b0 ??2?$tlResourceDirectory@VnalAnimFile@@@@SAPAXI@Z 00C43CB0 f i nal_init.o
 20178	PORTED	0002:004547d0 ??2?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@SAPAXI@Z 00C43CD0 f i nal_init.o
 20179	PORTED	0002:004547f0 ??2?$tlResourceDirectory@VnalSceneAnim@@@@SAPAXI@Z 00C43CF0 f i nal_init.o
@@ -20227,25 +20227,25 @@ index	status	map_line
 20226	VERIFIED	0002:00454d00 ?GetUsedSpace@nalAnimHeap@@UAEHXZ 00C44200 f i nal_init.o
 20227	SKIPPED	0002:00454d10 ??_GnalAnimHeap@@UAEPAXI@Z 00C44210 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20228	SKIPPED	0002:00454d10 ??_EnalAnimHeap@@UAEPAXI@Z 00C44210 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20229	PENDING	0002:00454d40 ??1?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@MAE@XZ 00C44240 f i nal_init.o
-20230	PENDING	0002:00454d50 ??1?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@MAE@XZ 00C44250 f i nal_init.o
-20231	PENDING	0002:00454d60 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@MAE@XZ 00C44260 f i nal_init.o
-20232	PENDING	0002:00454d70 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@MAE@XZ 00C44270 f i nal_init.o
-20233	PENDING	0002:00454d80 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked8EntropyFloat3Data@@VnalComponentPacked8EntropyFloat3@@@@MAE@XZ 00C44280 f i nal_init.o
-20234	PENDING	0002:00454d90 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked16EntropyFloat3Data@@VnalComponentPacked16EntropyFloat3@@@@MAE@XZ 00C44290 f i nal_init.o
-20235	PENDING	0002:00454da0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@MAE@XZ 00C442A0 f i nal_init.o
-20236	PENDING	0002:00454db0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@MAE@XZ 00C442B0 f i nal_init.o
-20237	PENDING	0002:00454dc0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked8EntropyFloat4Data@@VnalComponentPacked8EntropyFloat4@@@@MAE@XZ 00C442C0 f i nal_init.o
-20238	PENDING	0002:00454dd0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@MAE@XZ 00C442D0 f i nal_init.o
-20239	PENDING	0002:00454de0 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@MAE@XZ 00C442E0 f i nal_init.o
-20240	PENDING	0002:00454df0 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@MAE@XZ 00C442F0 f i nal_init.o
-20241	PENDING	0002:00454e00 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@MAE@XZ 00C44300 f i nal_init.o
-20242	PENDING	0002:00454e10 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@MAE@XZ 00C44310 f i nal_init.o
-20243	PENDING	0002:00454e20 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAE@XZ 00C44320 f i nal_init.o
-20244	PENDING	0002:00454e30 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@MAE@XZ 00C44330 f i nal_init.o
-20245	PENDING	0002:00454e40 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ 00C44340 f i nal_init.o
-20246	PENDING	0002:00454e50 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ 00C44350 f i nal_init.o
-20247	PENDING	0002:00454e60 ??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ 00C44360 f i nal_init.o
+20229	FIXED	0002:00454d40 ??1?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@MAE@XZ 00C44240 f i nal_init.o
+20230	FIXED	0002:00454d50 ??1?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@MAE@XZ 00C44250 f i nal_init.o
+20231	FIXED	0002:00454d60 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@MAE@XZ 00C44260 f i nal_init.o
+20232	FIXED	0002:00454d70 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@MAE@XZ 00C44270 f i nal_init.o
+20233	FIXED	0002:00454d80 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked8EntropyFloat3Data@@VnalComponentPacked8EntropyFloat3@@@@MAE@XZ 00C44280 f i nal_init.o
+20234	FIXED	0002:00454d90 ??1?$nalComponent@VnalComponentFloat3Base@@VnalComponentPacked16EntropyFloat3Data@@VnalComponentPacked16EntropyFloat3@@@@MAE@XZ 00C44290 f i nal_init.o
+20235	FIXED	0002:00454da0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@MAE@XZ 00C442A0 f i nal_init.o
+20236	FIXED	0002:00454db0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentEntropyFloat4Data@@VnalComponentEntropyFloat4@@@@MAE@XZ 00C442B0 f i nal_init.o
+20237	FIXED	0002:00454dc0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked8EntropyFloat4Data@@VnalComponentPacked8EntropyFloat4@@@@MAE@XZ 00C442C0 f i nal_init.o
+20238	FIXED	0002:00454dd0 ??1?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@MAE@XZ 00C442D0 f i nal_init.o
+20239	FIXED	0002:00454de0 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@MAE@XZ 00C442E0 f i nal_init.o
+20240	FIXED	0002:00454df0 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@MAE@XZ 00C442F0 f i nal_init.o
+20241	FIXED	0002:00454e00 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@MAE@XZ 00C44300 f i nal_init.o
+20242	FIXED	0002:00454e10 ??1?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@MAE@XZ 00C44310 f i nal_init.o
+20243	FIXED	0002:00454e20 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAE@XZ 00C44320 f i nal_init.o
+20244	FIXED	0002:00454e30 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@MAE@XZ 00C44330 f i nal_init.o
+20245	FIXED	0002:00454e40 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ 00C44340 f i nal_init.o
+20246	FIXED	0002:00454e50 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ 00C44350 f i nal_init.o
+20247	FIXED	0002:00454e60 ??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ 00C44360 f i nal_init.o
 20248	PORTED	0002:00454e70 ??0nalComponentU8Base@@QAE@XZ 00C44370 f i nal_init.o
 20249	PORTED	0002:00454e80 ?GetType@nalComponentU8Base@@UBEIXZ 00C44380 f i nal_init.o
 20250	PORTED	0002:00454e90 ?GetPoseSize@nalComponentU8Base@@UBEHXZ 00C44390 f i nal_init.o
