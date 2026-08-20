@@ -2448,14 +2448,15 @@ char* txPathFix(const char* src, char* dir, int dirSize)
     if (input[0] == '\\' && input[1] == '\\' && remaining >= 2) {
         *output++ = '\\'; *output++ = '\\'; input += 2; remaining -= 2;
     }
-    bool pendingSlash = true;
+    bool atSegmentStart = true;
     while (*input != 0 && remaining > 0) {
         char ch = *input++;
         if (ch == '\\' || ch == '/') {
-            if (pendingSlash) continue;
-            *output++ = '/'; --remaining; pendingSlash = true;
+            if (atSegmentStart) {
+                *output++ = '/'; --remaining; atSegmentStart = false;
+            }
         } else {
-            *output++ = ch; --remaining; pendingSlash = false;
+            *output++ = ch; --remaining; atSegmentStart = true;
         }
     }
     *output = 0;

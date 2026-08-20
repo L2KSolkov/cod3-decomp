@@ -196,7 +196,7 @@ controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Pha
 
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (IDA-typed path normalization/helpers)
+nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	VERIFIED	Compared all eleven release symbols against codmp_xboxr.xbe.c and IDA; corrected txPathFix separator preservation while retaining host bounds/null guards; remaining path helpers match.
 
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
 
