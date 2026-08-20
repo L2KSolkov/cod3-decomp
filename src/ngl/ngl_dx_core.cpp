@@ -379,7 +379,7 @@ void nglVBlankCallback(_D3DVBLANKDATA* VBlankData) {
 // ============================================================================
 void ngliLoadPhysicalSection(apk::apkFile* File, apk::apkFileSection* Section,
                              void* UserData) {
-    MemoryBarrier();
+    __wbinvd();
 }
 
 void ngliUnloadPhysicalSection(apk::apkFile* File, apk::apkFileSection* Section,
