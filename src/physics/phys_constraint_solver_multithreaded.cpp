@@ -657,7 +657,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
 // ============================================================================
 // list_constraint_solver::process - ea: 0x894A50
 // ============================================================================
-void phys_constraint_solver_multithreaded_list_constraint_solver::process(
+void phys_constraint_solver_multithreaded::list_constraint_solver::process(
     const physics_system* psys, int psys_next_psc_visit_counter) {
     pulse_sum_constraint_solver* m_constraint_solver = this->m_constraint_solver;
     if (m_constraint_solver->m_first_partition_head != NULL) {

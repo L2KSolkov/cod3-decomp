@@ -31,6 +31,8 @@ void PHYS_STOP_PROF_TIMER(phys_proftimer_e p);
 void IPN_init(rigid_body* rb_partition_head);
 double IPN_get_max_delta_t(rigid_body* rb_partition_head);
 void IPN_reset_rbc_lists(rigid_body* rb_partition_head);
+void IPN_partition_process(const rigid_body_constraint* rbc);
+rigid_body* IPN_get_partition(const rigid_body_constraint* rbc);
 
 extern int g_physics_system_size;
 extern int g_physics_system_alignment;

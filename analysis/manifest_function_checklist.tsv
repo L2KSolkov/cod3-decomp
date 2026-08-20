@@ -21853,8 +21853,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 21852	0x0088B1C0	0x00C7A6C0	?take_next_step@rbint@@SAXPAVuser_rigid_body@@ABVouter_time@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21853	0x0088B2A0	0x00C7A7A0	?take_last_step@rbint@@SAXPAVuser_rigid_body@@ABVouter_time@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21854	0x0088B380	0x00C7A880	?epilog_frame_advance@rbint@@SAXQAVrigid_body@@ABVouter_time@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-21855	0x0088B3F0	0x00C7A8F0	?reset@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXAAVpulse_sum_constraint_solver@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
-21856	0x0088B410	0x00C7A910	?add@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPAVrigid_body@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+21855	0x0088B3F0	0x00C7A8F0	?reset@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXAAVpulse_sum_constraint_solver@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
+21856	0x0088B410	0x00C7A910	?add@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPAVrigid_body@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 21857	0x0088B430	0x00C7A930	?set_flag@physics_system@@QAEXIH@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21858	0x0088B460	0x00C7A960	?set_outside_sub_delta_t@physics_system@@QAEXM@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21859	0x0088B480	0x00C7A980	?set_next@rbcint@@SAXPAVrigid_body_constraint@@0@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
@@ -21865,18 +21865,18 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 21864	0x0088B650	0x00C7AB50	?IPN_merge@@YAXPAVrigid_body@@0@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 21865	0x0088B730	0x00C7AC30	?IPN_verify_time_scale@@YAXPAVrigid_body@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 21866	0x0088B890	0x00C7AD90	?IPN_verify_rigid_bodies@@YAXPAVrigid_body@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-21867	0x0088C830	0x00C7BD30	?generate_partitions_and_stuff@physics_system@@QAEXPAUlist_constraint_solver@phys_constraint_solver_multithreaded@@PAHM@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21868	0x0088D550	0x00C7CA50	?get_alignment@physics_system@@SA?BHXZ	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21869	0x0088D560	0x00C7CA60	?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21867	0x0088C830	0x00C7BD30	?generate_partitions_and_stuff@physics_system@@QAEXPAUlist_constraint_solver@phys_constraint_solver_multithreaded@@PAHM@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+21868	0x0088D550	0x00C7CA50	?get_alignment@physics_system@@SA?BHXZ	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+21869	0x0088D560	0x00C7CA60	?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21870	0x0088D620	0x00C7CB20	?time_step@physics_system@@QAEXM_N@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 21871	0x0088DA40	0x00C7CF40	??0physics_system@@QAE@XZ	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-21872	0x0088DC70	0x00C7D170	?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21873	0x0088DE20	0x00C7D320	?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21872	0x0088DC70	0x00C7D170	?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
+21873	0x0088DE20	0x00C7D320	?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	FIXED	FUNCTION status override	NO	NO	UNRESOLVED_ENGINE
 21874	0x0088DEC0	0x00C7D3C0	?frame_advance@physics_system@@QAEXM@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-21875	0x0088E130	0x00C7D630	?free_buffer@physics_system@@SAXPAV1@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21875	0x0088E130	0x00C7D630	?free_buffer@physics_system@@SAXPAV1@@Z	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21876	0x0088E140	0x00C7D640	?destroy_inst@physics_system@@SAXXZ	phys_xboxr	physics_system_internal.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-21877	0x0088E170	0x00C7D670	?IPN_partition_process@@YAXABVrigid_body_constraint@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-21878	0x0088E1D0	0x00C7D6D0	?IPN_get_partition@@YAPAVrigid_body@@ABVrigid_body_constraint@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21877	0x0088E170	0x00C7D670	?IPN_partition_process@@YAXABVrigid_body_constraint@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+21878	0x0088E1D0	0x00C7D6D0	?IPN_get_partition@@YAPAVrigid_body@@ABVrigid_body_constraint@@@Z	phys_xboxr	physics_system_internal.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 21879	0x0088E230	0x00C7D730	??0?$phys_link_list@Vpulse_sum_node@@@@QAE@XZ	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21880	0x0088E240	0x00C7D740	??0?$phys_link_list@Vpulse_sum_normal@@@@QAE@XZ	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21881	0x0088E250	0x00C7D750	??0?$phys_link_list@Vpulse_sum_point@@@@QAE@XZ	phys_xboxr	physics_system_internal.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

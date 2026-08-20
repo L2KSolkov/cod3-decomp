@@ -46,6 +46,15 @@ physics_system_internal.o	?IPN_init@@YAXPAVrigid_body@@@Z	PORTED
 physics_system_internal.o	?IPN_get_max_delta_t@@YA?BMPAVrigid_body@@@Z	FIXED
 physics_system_internal.o	?IPN_reset_rbc_lists@@YAXPAVrigid_body@@@Z	PORTED
 physics_system_internal.o	?verify_time_scale@@YAXPAVrigid_body_constraint@@ABVouter_time@@@Z	FIXED
+physics_system_internal.o	?get_alignment@physics_system@@SA?BHXZ	VERIFIED
+physics_system_internal.o	?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z	VERIFIED
+physics_system_internal.o	?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z	FIXED
+physics_system_internal.o	?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z	FIXED
+physics_system_internal.o	?free_buffer@physics_system@@SAXPAV1@@Z	VERIFIED
+physics_system_internal.o	?IPN_partition_process@@YAXABVrigid_body_constraint@@@Z	PORTED
+physics_system_internal.o	?IPN_get_partition@@YAPAVrigid_body@@ABVrigid_body_constraint@@@Z	PORTED
+physics_system_internal.o	?reset@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXAAVpulse_sum_constraint_solver@@@Z	FIXED
+physics_system_internal.o	?add@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPAVrigid_body@@@Z	FIXED
 nslSource.o	?tlIsPow2@@YA_NI@Z	VERIFIED
 nfl_system.o	?nfsLock@@YAXXZ	VERIFIED
 nfl_system.o	?nfsUnlock@@YAXXZ	VERIFIED

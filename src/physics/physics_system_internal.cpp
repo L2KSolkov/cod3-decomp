@@ -44,9 +44,21 @@ void PHYS_STOP_PROF_TIMER(phys_proftimer_e p) {
         g_phys_proftimer_callbacks.proftimer_stop(p);
 }
 
+void phys_constraint_solver_multithreaded::list_constraint_solver::reset(
+    pulse_sum_constraint_solver* constraint_solver) {
+    m_constraint_solver = constraint_solver;
+    constraint_solver->m_first_partition_head = nullptr;
+}
+
+void phys_constraint_solver_multithreaded::list_constraint_solver::add(rigid_body* cg) {
+    cg->m_partition_node.m_next_partition_head =
+        m_constraint_solver->m_first_partition_head;
+    m_constraint_solver->m_first_partition_head = cg;
+}
+
 // phys_constraint_solver_multithreaded.o (list_constraint_solver::process)
 extern void list_constraint_solver_process(
-    phys_constraint_solver_multithreaded_list_constraint_solver* lcs,
+    phys_constraint_solver_multithreaded::list_constraint_solver* lcs,
     physics_system* psys, int psys_next_psc_visit_counter);
 
 namespace nuge {
@@ -424,8 +436,6 @@ physics_system* physics_system::allocate_buffer(const phys_mem_info* pmi,
     if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 89,
                   "addr", "phys_memory_heap overflow."))
         __debugbreak();
-    if (v4 == NULL)
-        return NULL;
 label6:
     physics_system* v5 = ::new ((void*)v4) physics_system();
     v5->m_list_user_rigid_body.allocate_buffer(pmi->m_num_user_rigid_body, allocater);
@@ -471,7 +481,7 @@ void physics_system::create_inst(phys_mem_info* pmi) {
     g_physics_system = physics_system::allocate_buffer(pmi, &memory_heap);
     if (v1 != g_physics_system &&
         _tlAssert("source/physics_system_internal.cpp", 685,
-                  "addr == g_physics_system", ""))
+                  "addr == g_physics_system", defaultFileName))
         __debugbreak();
 }
 
@@ -485,6 +495,38 @@ void physics_system::destroy_inst() {
 
 void physics_system::free_buffer(physics_system* psys) {
     psys->~physics_system();
+}
+
+void IPN_partition_process(const rigid_body_constraint* rbc) {
+    rigid_body* b2 = rbc->b2;
+    if (rbc->b1 != nullptr && b2 != nullptr) {
+        rigid_body* partition_head = rbc->b1->m_partition_node.m_partition_head;
+        rigid_body* other_partition = b2->m_partition_node.m_partition_head;
+        if (partition_head != nullptr && other_partition != nullptr &&
+            partition_head != other_partition) {
+            if (partition_head->m_partition_node.m_partition_size <
+                other_partition->m_partition_node.m_partition_size)
+                IPN_merge(other_partition, partition_head);
+            else
+                IPN_merge(partition_head, other_partition);
+        }
+    }
+}
+
+rigid_body* IPN_get_partition(const rigid_body_constraint* rbc) {
+    rigid_body* result = rbc->b1 != nullptr
+        ? rbc->b1->m_partition_node.m_partition_head
+        : nullptr;
+    if (result != nullptr)
+        return result;
+
+    rigid_body* b2 = rbc->b2;
+    if ((b2 == nullptr || b2->m_partition_node.m_partition_head == nullptr) &&
+        _tlAssert("source/physics_system_internal.cpp", 288,
+                  "rbc.get_b2() && GIPN(rbc.get_b2())->m_partition_head",
+                  defaultFileName))
+        __debugbreak();
+    return b2->m_partition_node.m_partition_head;
 }
 
 // ============================================================================
@@ -618,7 +660,7 @@ void physics_system::time_step(float outside_delta_t, bool last_step) {
         g_phys_proftimer_callbacks.proftimer_start(phys_proftimer_phys_misc);
 
     solver_priority_sort();
-    phys_constraint_solver_multithreaded_list_constraint_solver list_cs;
+    phys_constraint_solver_multithreaded::list_constraint_solver list_cs;
     list_cs.m_constraint_solver = &m_constraint_solver;
     m_constraint_solver.m_first_partition_head = NULL;
     int next_psc_visit_counter = 0;
@@ -854,7 +896,7 @@ rigid_body* constraint_partition(Constraint* rbc) {
 void IPN_verify_rigid_bodies(rigid_body* rb_partition_head);
 
 void physics_system::generate_partitions_and_stuff(
-    phys_constraint_solver_multithreaded_list_constraint_solver* list_cs,
+    phys_constraint_solver_multithreaded::list_constraint_solver* list_cs,
     int* next_psc_visit_counter, float delta_t) {
     m_environment_rigid_body.m_constraint_count = 0;
     m_environment_rigid_body.m_contact_count = 0;

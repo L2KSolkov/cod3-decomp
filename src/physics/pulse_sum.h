@@ -841,22 +841,18 @@ static_assert(sizeof(phys_heap_memory_pool<int>) == 0x14, "phys_heap_memory_pool
 // list_constraint_solver - partition list fed to the multithreaded solver.
 struct physics_system;
 
-struct phys_constraint_solver_multithreaded_list_constraint_solver {
+namespace phys_constraint_solver_multithreaded {
+struct list_constraint_solver {
     pulse_sum_constraint_solver* m_constraint_solver;  // +0x00
 
-    void reset(pulse_sum_constraint_solver* constraint_solver) {  // ea: 0x88B3F0
-        m_constraint_solver = constraint_solver;
-        constraint_solver->m_first_partition_head = NULL;
-    }
-
-    void add(rigid_body* cg) {  // ea: 0x88B410
-        cg->m_partition_node.m_next_partition_head =
-            m_constraint_solver->m_first_partition_head;
-        m_constraint_solver->m_first_partition_head = cg;
-    }
-
+    void reset(pulse_sum_constraint_solver* constraint_solver);  // ea: 0x88B3F0
+    void add(rigid_body* cg);                                 // ea: 0x88B410
     void process(const physics_system* psys, int psys_next_psc_visit_counter);  // ea: 0x894A50
 };
+}
+
+using phys_constraint_solver_multithreaded_list_constraint_solver =
+    phys_constraint_solver_multithreaded::list_constraint_solver;
 
 struct physics_system {
     int      m_flags;                                     // +0x00
@@ -913,7 +909,7 @@ struct physics_system {
     void set_flag(unsigned int f, int b);           // ea: 0x88B430
     void set_outside_sub_delta_t(float outside_sub_delta_t);  // ea: 0x88B460
     void generate_partitions_and_stuff(
-        phys_constraint_solver_multithreaded_list_constraint_solver* list_cs,
+        phys_constraint_solver_multithreaded::list_constraint_solver* list_cs,
         int* next_psc_visit_counter, float delta_t);  // ea: 0x88C830
 };
 static_assert(sizeof(physics_system) == 0x360, "physics_system size mismatch");

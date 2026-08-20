@@ -2734,10 +2734,12 @@ void InspectorManager_Update(InspectorManager* self) { (void)self; }
 void InteractionController_ClearQueue(void* self) { (void)self; }
 void InteractionController_Update(void* self, float a) { (void)self; (void)a; }
 void InvalidateParticleCollisionCaches() {}
-struct phys_constraint_solver_multithreaded_list_constraint_solver;
+namespace phys_constraint_solver_multithreaded {
+struct list_constraint_solver;
+}
 struct physics_system;
 void list_constraint_solver_process(
-    phys_constraint_solver_multithreaded_list_constraint_solver* self,
+    phys_constraint_solver_multithreaded::list_constraint_solver* self,
     physics_system* sys, int a)
 {
     (void)self; (void)sys; (void)a;

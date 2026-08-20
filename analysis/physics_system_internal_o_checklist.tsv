@@ -14,8 +14,8 @@ index	status	map_line
 13	VERIFIED	0002:0048b1c0 ?take_next_step@rbint@@SAXPAVuser_rigid_body@@ABVouter_time@@@Z 00C7A6C0 f i physics_system_internal.o
 14	VERIFIED	0002:0048b2a0 ?take_last_step@rbint@@SAXPAVuser_rigid_body@@ABVouter_time@@@Z 00C7A7A0 f i physics_system_internal.o
 15	VERIFIED	0002:0048b380 ?epilog_frame_advance@rbint@@SAXQAVrigid_body@@ABVouter_time@@@Z 00C7A880 f i physics_system_internal.o
-16	VERIFIED	0002:0048b3f0 ?reset@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXAAVpulse_sum_constraint_solver@@@Z 00C7A8F0 f i physics_system_internal.o
-17	VERIFIED	0002:0048b410 ?add@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPAVrigid_body@@@Z 00C7A910 f i physics_system_internal.o
+16	FIXED	0002:0048b3f0 ?reset@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXAAVpulse_sum_constraint_solver@@@Z 00C7A8F0 f i physics_system_internal.o
+17	FIXED	0002:0048b410 ?add@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPAVrigid_body@@@Z 00C7A910 f i physics_system_internal.o
 18	VERIFIED	0002:0048b430 ?set_flag@physics_system@@QAEXIH@Z 00C7A930 f i physics_system_internal.o
 19	VERIFIED	0002:0048b460 ?set_outside_sub_delta_t@physics_system@@QAEXM@Z 00C7A960 f i physics_system_internal.o
 20	VERIFIED	0002:0048b480 ?set_next@rbcint@@SAXPAVrigid_body_constraint@@0@Z 00C7A980 f i physics_system_internal.o
@@ -26,18 +26,18 @@ index	status	map_line
 25	VERIFIED	0002:0048b650 ?IPN_merge@@YAXPAVrigid_body@@0@Z 00C7AB50 f physics_system_internal.o
 26	VERIFIED	0002:0048b730 ?IPN_verify_time_scale@@YAXPAVrigid_body@@@Z 00C7AC30 f physics_system_internal.o
 27	VERIFIED	0002:0048b890 ?IPN_verify_rigid_bodies@@YAXPAVrigid_body@@@Z 00C7AD90 f physics_system_internal.o
-28	PENDING	0002:0048c830 ?generate_partitions_and_stuff@physics_system@@QAEXPAUlist_constraint_solver@phys_constraint_solver_multithreaded@@PAHM@Z 00C7BD30 f physics_system_internal.o
-29	PENDING	0002:0048d550 ?get_alignment@physics_system@@SA?BHXZ 00C7CA50 f physics_system_internal.o
-30	PENDING	0002:0048d560 ?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z 00C7CA60 f physics_system_internal.o
+28	VERIFIED	0002:0048c830 ?generate_partitions_and_stuff@physics_system@@QAEXPAUlist_constraint_solver@phys_constraint_solver_multithreaded@@PAHM@Z 00C7BD30 f physics_system_internal.o
+29	VERIFIED	0002:0048d550 ?get_alignment@physics_system@@SA?BHXZ 00C7CA50 f physics_system_internal.o
+30	VERIFIED	0002:0048d560 ?get_buffer_size@physics_system@@SA?BHABVphys_mem_info@@@Z 00C7CA60 f physics_system_internal.o
 31	VERIFIED	0002:0048d620 ?time_step@physics_system@@QAEXM_N@Z 00C7CB20 f physics_system_internal.o
 32	VERIFIED	0002:0048da40 ??0physics_system@@QAE@XZ 00C7CF40 f physics_system_internal.o
-33	PENDING	0002:0048dc70 ?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z 00C7D170 f physics_system_internal.o
-34	PENDING	0002:0048de20 ?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z 00C7D320 f physics_system_internal.o
+33	FIXED	0002:0048dc70 ?allocate_buffer@physics_system@@SAPAV1@ABVphys_mem_info@@AAVphys_memory_heap@@@Z 00C7D170 f physics_system_internal.o
+34	FIXED	0002:0048de20 ?create_inst@physics_system@@SAXAAVphys_mem_info@@@Z 00C7D320 f physics_system_internal.o
 35	VERIFIED	0002:0048dec0 ?frame_advance@physics_system@@QAEXM@Z 00C7D3C0 f physics_system_internal.o
-36	PENDING	0002:0048e130 ?free_buffer@physics_system@@SAXPAV1@@Z 00C7D630 f physics_system_internal.o
+36	VERIFIED	0002:0048e130 ?free_buffer@physics_system@@SAXPAV1@@Z 00C7D630 f physics_system_internal.o
 37	VERIFIED	0002:0048e140 ?destroy_inst@physics_system@@SAXXZ 00C7D640 f physics_system_internal.o
-38	PENDING	0002:0048e170 ?IPN_partition_process@@YAXABVrigid_body_constraint@@@Z 00C7D670 f i physics_system_internal.o
-39	PENDING	0002:0048e1d0 ?IPN_get_partition@@YAPAVrigid_body@@ABVrigid_body_constraint@@@Z 00C7D6D0 f i physics_system_internal.o
+38	PORTED	0002:0048e170 ?IPN_partition_process@@YAXABVrigid_body_constraint@@@Z 00C7D670 f i physics_system_internal.o
+39	PORTED	0002:0048e1d0 ?IPN_get_partition@@YAPAVrigid_body@@ABVrigid_body_constraint@@@Z 00C7D6D0 f i physics_system_internal.o
 40	PENDING	0002:0048e230 ??0?$phys_link_list@Vpulse_sum_node@@@@QAE@XZ 00C7D730 f i physics_system_internal.o
 41	PENDING	0002:0048e240 ??0?$phys_link_list@Vpulse_sum_normal@@@@QAE@XZ 00C7D740 f i physics_system_internal.o
 42	PENDING	0002:0048e250 ??0?$phys_link_list@Vpulse_sum_point@@@@QAE@XZ 00C7D750 f i physics_system_internal.o
