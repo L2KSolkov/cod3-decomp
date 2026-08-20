@@ -110,7 +110,7 @@ render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	PORTED	ShaderC
 
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	VERIFIED	Phase 3: nsl.cpp; listener wrapper pointer constness and listener-0 delegation aligned to IDA ?nslSetListenerPosition@@YAXQBM@Z/?nslSetListenerOrientation@@YAXQBM0@Z; canonical full Debug build passed
 
-nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	IDA layout and NFL streaming lifecycle ported; all 21 non-inline bodies compile and 20/21 manifest decorations match the Win32 library. GetVersion remains the IDA/C-dump char* prototype despite the map's conflicting SAIXZ decoration.
+nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	VERIFIED	Compared all 21 release symbols against codmp_xboxr.xbe.c and IDA: asset-flag teardown, four-buffer rollover, NFL request scheduling/callbacks, initialization, reset state, accessors, and layout all match. GetVersion retains the IDA/C-dump char* prototype despite the map's conflicting SAIXZ decoration.
 
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
 
