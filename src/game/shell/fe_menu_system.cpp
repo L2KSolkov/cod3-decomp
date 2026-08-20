@@ -448,7 +448,7 @@ void FrontEndMenuSystem::Update(float time_inc)
                 __debugbreak();
         }
         DialogMenuDisplay* mDisplay =
-            g_femanager.mDMS[0]->mDisplay;
+            g_femanager.mDMS[currCl]->mDisplay;
         mDisplay->UpdateWidescreen(ws);
     }
     CheckIfSignedInXBox();
