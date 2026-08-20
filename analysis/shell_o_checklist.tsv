@@ -2138,9 +2138,9 @@ index	status	map_line
 2136	PORTED	0002:001acbc0       ?Init@OverlayMenuBase@@UAEXXZ 009a80c0 f i shell.o
 2137	VERIFIED	0002:001acbd0       ??_EMultilineOverlayMenu@@UAEPAXI@Z 009a80d0 f i shell.o
 2138	VERIFIED	0002:001acbd0       ??_GMultilineOverlayMenu@@UAEPAXI@Z 009a80d0 f i shell.o
-2139	PENDING	0002:001acc00       ??0MultilineFrontendOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009a8100 f i shell.o
-2140	PENDING	0002:001acc30       ?OnDeactivate@MultilineFrontendOverlayMenu@@UAEXPAVFEMenu@@@Z 009a8130 f i shell.o
-2141	PENDING	0002:001acc40       ??0MultilineIngameOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009a8140 f i shell.o
+2139	PORTED	0002:001acc00       ??0MultilineFrontendOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009a8100 f i shell.o
+2140	PORTED	0002:001acc30       ?OnDeactivate@MultilineFrontendOverlayMenu@@UAEXPAVFEMenu@@@Z 009a8130 f i shell.o
+2141	PORTED	0002:001acc40       ??0MultilineIngameOverlayMenu@@QAE@PAVFEMenuSystem@@@Z 009a8140 f i shell.o
 2142	PENDING	0002:001acc70       ??_EDialogMenuSystem@@UAEPAXI@Z 009a8170 f i shell.o
 2143	PENDING	0002:001acc70       ??_GDialogMenuSystem@@UAEPAXI@Z 009a8170 f i shell.o
 2144	PENDING	0002:001acca0       ??_GInGameMenuSystem@@UAEPAXI@Z 009a81a0 f i shell.o

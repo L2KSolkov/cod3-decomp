@@ -781,9 +781,11 @@ public:
     int mCachedAcceptMenu;          // +0x70
     int mCachedBackMenu;            // +0x74
 
+    MultilineFrontendOverlayMenu(FEMenuSystem* s); // 0x5B8C00
     static MultilineFrontendOverlayMenu* Me();  // ?Me@MultilineFrontendOverlayMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);        // ?Update@MultilineFrontendOverlayMenu@@UAEXM@Z
     virtual void OnCross(int c);    // ?OnCross@MultilineFrontendOverlayMenu@@UAEXH@Z
+    virtual void OnDeactivate(FEMenu* menu); // 0x5B8C30
     virtual void OnStart(int c);    // ?OnStart@MultilineFrontendOverlayMenu@@UAEXH@Z
     virtual void OnTriangle(int c); // ?OnTriangle@MultilineFrontendOverlayMenu@@UAEXH@Z
     void SetTempState(eState newState);  // ?SetTempState@MultilineFrontendOverlayMenu@@QAEXW4eState@1@@Z
@@ -802,6 +804,7 @@ public:
 
     eState mState;                  // +0x68
 
+    MultilineIngameOverlayMenu(FEMenuSystem* s); // 0x5B8C40
     static MultilineIngameOverlayMenu* Me();  // ?Me@MultilineIngameOverlayMenu@@SAPAV1@XZ
     void SetState(eState state);              // ?SetState@MultilineIngameOverlayMenu@@QAEXW4eState@1@@Z
     virtual void Update(float time_inc);      // ?Update@MultilineIngameOverlayMenu@@UAEXM@Z

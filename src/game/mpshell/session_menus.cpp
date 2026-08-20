@@ -2928,6 +2928,21 @@ void MultilineFrontendOverlayMenu::OnCross(int c)
     FEMenu::OnCross(c);
 }
 
+// ea: 0x005B8C00
+MultilineFrontendOverlayMenu::MultilineFrontendOverlayMenu(FEMenuSystem* s)
+    : MultilineOverlayMenu(s)
+{
+    mState = NO_OVERLAY;
+    mCachedState = NO_OVERLAY;
+}
+
+// ea: 0x005B8C30
+void MultilineFrontendOverlayMenu::OnDeactivate(FEMenu* menu)
+{
+    (void)menu;
+    mState = NO_OVERLAY;
+}
+
 // ea: 0x00790060
 MultilineFrontendOverlayMenu* MultilineFrontendOverlayMenu::Me()
 {
@@ -3937,6 +3952,14 @@ void MultilineIngameOverlayMenu::OnDeactivate(FEMenu* menu)
     InGameMenuSystem* v2 = g_femanager.mIGMS[currCl];
     if (v2 != nullptr)
         v2->is_active = false;
+}
+
+// ea: 0x005B8C40
+MultilineIngameOverlayMenu::MultilineIngameOverlayMenu(FEMenuSystem* s)
+    : MultilineOverlayMenu(s)
+{
+    mState = NO_OVERLAY;
+    default_color_scheme = 0;
 }
 
 // ea: 0x007903B0
