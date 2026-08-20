@@ -1204,9 +1204,6 @@ IGOAmmoWidget::IGOAmmoWidget(int client)
     frame = nullptr;
     clipAmmo = nullptr;
     totalAmmo = nullptr;
-    clip_val = 0;
-    ammo_val = 0;
-    dont_draw = false;
     draw_time = 0.0f;
 }
 
