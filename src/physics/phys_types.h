@@ -138,14 +138,14 @@ struct pulse_sum_normal {
     void  set_pulse_sum_limits_parent_ratio(float limit_ratio, pulse_sum_normal* parent);
 
     // solver methods (phys_constraint_solver_multithreaded.o)
-    float get_vel();
-    float get_last_vel();
-    float get_pos();
+    double get_vel();
+    double get_last_vel();
+    double get_pos();
     float get_objective();
     double clamp_pulse_sum(float ps);
     void  apply(const float* s_);
     void  calc_abs(const math::Dir3* b1_r_displace);
-    float get_unclamped_pulse_sum();
+    double get_unclamped_pulse_sum();
     void  set_object_vel(const math::Dir3* object_vel);
     void  set_object_col_pt(const math::Dir3* object_col_pt);
     double get_pulse_sum();

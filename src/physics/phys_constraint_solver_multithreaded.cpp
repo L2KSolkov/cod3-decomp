@@ -100,7 +100,7 @@ void shutdown() {
 // ============================================================================
 // pulse_sum_normal::get_vel - ea: 0x8932D0
 // ============================================================================
-float pulse_sum_normal::get_vel() {
+double pulse_sum_normal::get_vel() {
     pulse_sum_node* m_b2 = this->m_b2;
     math::Dir3 b2_vel;
     if (m_b2 != NULL) {
@@ -134,7 +134,7 @@ float pulse_sum_normal::get_vel() {
 // ============================================================================
 // pulse_sum_normal::get_last_vel - ea: 0x8933C0
 // ============================================================================
-float pulse_sum_normal::get_last_vel() {
+double pulse_sum_normal::get_last_vel() {
     pulse_sum_node* m_b2 = this->m_b2;
     math::Dir3 b2_vel;
     if (m_b2 != NULL) {
@@ -168,14 +168,14 @@ float pulse_sum_normal::get_last_vel() {
 // ============================================================================
 // pulse_sum_normal::get_pos - ea: 0x8934B0
 // ============================================================================
-float pulse_sum_normal::get_pos() {
+double pulse_sum_normal::get_pos() {
     pulse_sum_node* m_b2 = this->m_b2;
     math::Dir3 b2_pos;
     if (m_b2 != NULL) {
         rigid_body* m_rb = m_b2->m_rb;
         if ((~(m_rb->m_flags >> 6) & 1) == 0 &&
             _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                      "debug_flag_is_not_in_collision()", ""))
+                      "debug_flag_is_not_in_collision()", defaultFileName))
             __debugbreak();
         b2_pos.v = _mm_add_ps(m_rb->m_mat.w.v, m_b2_r.v);
     } else {
@@ -184,7 +184,7 @@ float pulse_sum_normal::get_pos() {
     rigid_body* v5 = m_b1->m_rb;
     if ((~(v5->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                  "debug_flag_is_not_in_collision()", ""))
+                  "debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     __m128 v6 = _mm_mul_ps(
         _mm_sub_ps(_mm_add_ps(v5->m_mat.w.v, m_b1_r.v), b2_pos.v), m_ud.v);
@@ -201,19 +201,19 @@ void pulse_sum_normal::set(rigid_body* const b1, const math::Dir3* b1_r,
                            const math::Dir3* b1_r_displace) {
     if (ps_cache == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 153,
-                  "ps_cache", ""))
+                  "ps_cache", defaultFileName))
         __debugbreak();
     if (b1 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 154,
-                  "b1", ""))
+                  "b1", defaultFileName))
         __debugbreak();
     if (b2 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 155,
-                  "b2", ""))
+                  "b2", defaultFileName))
         __debugbreak();
     if (b1 == b2 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 156,
-                  "b1 != b2", ""))
+                  "b1 != b2", defaultFileName))
         __debugbreak();
     PHYS_ASSERT_UNIT(ud);
 
@@ -222,7 +222,7 @@ void pulse_sum_normal::set(rigid_body* const b1, const math::Dir3* b1_r,
         goto check_flags;
     if (b2->m_node == NULL) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 158,
-                      "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", ""))
+                      "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
         v10 = b1;
     }
@@ -234,7 +234,7 @@ check_flags:
     if (v12 == 0 ||
         (b2->m_node == NULL ? (b2->m_flags & 0x30) : ((b2->m_flags & 0x30) == 0)) == 0) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 159,
-                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", ""))
+                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
         v10 = b1;
     }
@@ -337,7 +337,7 @@ const math::Dir3* pulse_sum_normal::get_relative_velocity(const math::Dir3* resu
 // ============================================================================
 // pulse_sum_normal::get_unclamped_pulse_sum - ea: 0x893A40
 // ============================================================================
-float pulse_sum_normal::get_unclamped_pulse_sum() {
+double pulse_sum_normal::get_unclamped_pulse_sum() {
     float ps = (m_right_side - get_objective() - m_cfm * m_pulse_sum) / m_denom + m_pulse_sum;
     return clamp_pulse_sum(ps);
 }
@@ -384,7 +384,7 @@ const math::Dir3* pulse_sum_point::get_pos(const math::Dir3* result) {
         rigid_body* m_rb = m_b2->m_rb;
         if ((~(m_rb->m_flags >> 6) & 1) == 0 &&
             _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                      "debug_flag_is_not_in_collision()", ""))
+                      "debug_flag_is_not_in_collision()", defaultFileName))
             __debugbreak();
         b2_pos.v = _mm_add_ps(m_rb->m_mat.w.v, m_b2_r.v);
     } else {
@@ -393,7 +393,7 @@ const math::Dir3* pulse_sum_point::get_pos(const math::Dir3* result) {
     rigid_body* v5 = m_b1->m_rb;
     if ((~(v5->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                  "debug_flag_is_not_in_collision()", ""))
+                  "debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     ((math::Dir3*)result)->v = _mm_sub_ps(
         _mm_add_ps(v5->m_mat.w.v, m_b1_r.v), b2_pos.v);
@@ -408,35 +408,35 @@ void pulse_sum_point::set(rigid_body* const b1, const math::Dir3* b1_r,
                           pulse_sum_cache* const ps_cache) {
     if (ps_cache == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 155,
-                  "ps_cache", ""))
+                  "ps_cache", defaultFileName))
         __debugbreak();
     if (b1 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 156,
-                  "b1", ""))
+                  "b1", defaultFileName))
         __debugbreak();
     if (b2 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 157,
-                  "b2", ""))
+                  "b2", defaultFileName))
         __debugbreak();
     if (b1 == b2 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 158,
-                  "b1 != b2", ""))
+                  "b1 != b2", defaultFileName))
         __debugbreak();
     if (b1->m_node == NULL && b2->m_node == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 159,
-                  "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", ""))
+                  "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", defaultFileName))
         __debugbreak();
     unsigned int v8 = (b1->m_node != NULL) ? ((b1->m_flags & 0x30) == 0)
                                            : (b1->m_flags & 0x30);
     if (v8 == 0 ||
         (b2->m_node == NULL ? (b2->m_flags & 0x30) : ((b2->m_flags & 0x30) == 0)) == 0) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 160,
-                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", ""))
+                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
     }
     if (b1->m_node == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point_inline.h", 162,
-                  "rbint::get_pulse_sum_node(b1) != NULL", ""))
+                  "rbint::get_pulse_sum_node(b1) != NULL", defaultFileName))
         __debugbreak();
     m_b1 = b1->m_node;
     m_b1_r.v = b1_r->v;
@@ -460,7 +460,7 @@ void pulse_sum_point::set(rigid_body* const b1, const math::Dir3* b1_r,
 // ============================================================================
 // pulse_sum_angular::get_vel - ea: 0x893E50
 // ============================================================================
-float pulse_sum_angular::get_vel() {
+double pulse_sum_angular::get_vel() {
     pulse_sum_node* m_b2 = this->m_b2;
     math::Dir3 b2_vel;
     if (m_b2 != NULL) {
@@ -494,14 +494,14 @@ float pulse_sum_angular::get_vel() {
 // ============================================================================
 // pulse_sum_angular::get_pos - ea: 0x893ED0
 // ============================================================================
-float pulse_sum_angular::get_pos() {
+double pulse_sum_angular::get_pos() {
     pulse_sum_node* m_b2 = this->m_b2;
     math::Dir3 b2_pos;
     if (m_b2 != NULL) {
         rigid_body* m_rb = m_b2->m_rb;
         if ((~(m_rb->m_flags >> 6) & 1) == 0 &&
             _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                      "debug_flag_is_not_in_collision()", ""))
+                      "debug_flag_is_not_in_collision()", defaultFileName))
             __debugbreak();
         b2_pos.v = _mm_add_ps(m_rb->m_mat.w.v, m_b2_r.v);
     } else {
@@ -510,7 +510,7 @@ float pulse_sum_angular::get_pos() {
     rigid_body* v5 = m_b1->m_rb;
     if ((~(v5->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
-                  "debug_flag_is_not_in_collision()", ""))
+                  "debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     __m128 v6 = _mm_mul_ps(
         _mm_sub_ps(_mm_add_ps(v5->m_mat.w.v, m_b1_r.v), b2_pos.v), m_ud.v);
@@ -526,19 +526,19 @@ void pulse_sum_angular::set(rigid_body* const b1, const math::Dir3* b1_r,
                             const math::Dir3* ud, pulse_sum_cache* const ps_cache) {
     if (ps_cache == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 122,
-                  "ps_cache", ""))
+                  "ps_cache", defaultFileName))
         __debugbreak();
     if (b1 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 123,
-                  "b1", ""))
+                  "b1", defaultFileName))
         __debugbreak();
     if (b2 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 124,
-                  "b2", ""))
+                  "b2", defaultFileName))
         __debugbreak();
     if (b1 == b2 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 125,
-                  "b1 != b2", ""))
+                  "b1 != b2", defaultFileName))
         __debugbreak();
     PHYS_ASSERT_UNIT(ud);
     rigid_body* v8 = b1;
@@ -546,7 +546,7 @@ void pulse_sum_angular::set(rigid_body* const b1, const math::Dir3* b1_r,
         goto check_flags;
     if (b2->m_node == NULL) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 127,
-                      "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", ""))
+                      "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
         v8 = b1;
     }
@@ -556,7 +556,7 @@ check_flags:
     if (v10 == 0 ||
         (b2->m_node == NULL ? (b2->m_flags & 0x30) : ((b2->m_flags & 0x30) == 0)) == 0) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 128,
-                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", ""))
+                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
         v8 = b1;
     }
@@ -607,7 +607,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
             m_first->m_pulse_sum = v52;
             if ((v52 < v8 || v52 > (m_first->m_pulse_sum_max + 0.0001f)) &&
                 _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 119,
-                          "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", ""))
+                          "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", defaultFileName))
                 __debugbreak();
             float s_ = m_first->m_pulse_sum - m_pulse_sum;
             m_first->apply(&s_);
@@ -629,7 +629,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
             k->m_suspension.m_pulse_sum = v52;
             if ((v52 < v14 || v52 > (k->m_suspension.m_pulse_sum_max + 0.0001f)) &&
                 _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 119,
-                          "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", ""))
+                          "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", defaultFileName))
                 __debugbreak();
             float v47 = k->m_suspension.m_pulse_sum - v50;
             k->m_suspension.apply(&v47);
@@ -654,7 +654,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
                     v18->m_pulse_sum = v52b;
                     if ((v52b < v21 || v52b > (v18->m_pulse_sum_max + 0.0001f)) &&
                         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 119,
-                                  "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", ""))
+                                  "m_pulse_sum >= (m_pulse_sum_min - .0001f) && m_pulse_sum <= (m_pulse_sum_max + .0001f)", defaultFileName))
                         __debugbreak();
                     float v45 = v18->m_pulse_sum - v46;
                     v18->apply(&v45);
@@ -742,26 +742,26 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
                             contact_point_info* cpi, float delta_t) {
     if (b1 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 275,
-                  "b1", ""))
+                  "b1", defaultFileName))
         __debugbreak();
     if (b2 == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 276,
-                  "b2", ""))
+                  "b2", defaultFileName))
         __debugbreak();
     if (b1 == b2 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 277,
-                  "b1 != b2", ""))
+                  "b1 != b2", defaultFileName))
         __debugbreak();
     if (b1->m_node == NULL && b2->m_node == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 278,
-                  "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", ""))
+                  "rbint::get_pulse_sum_node(b1) || rbint::get_pulse_sum_node(b2)", defaultFileName))
         __debugbreak();
     unsigned int v7 = (b1->m_node != NULL) ? ((b1->m_flags & 0x30) == 0)
                                            : (b1->m_flags & 0x30);
     if (v7 == 0 ||
         (b2->m_node == NULL ? (b2->m_flags & 0x30) : ((b2->m_flags & 0x30) == 0)) == 0) {
         if (_tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 279,
-                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", ""))
+                      "rbint::verify_pulse_sum_node(b1) && rbint::verify_pulse_sum_node(b2)", defaultFileName))
             __debugbreak();
     }
     if (b1->m_node == NULL &&
@@ -776,7 +776,7 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
     m_fric_coef = cpi->m_fric_coef;
     if (m_list_cpi_count != cpi->m_point_pair_count &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h", 287,
-                  "m_list_cpi_count == cpi->m_point_pair_count", ""))
+                  "m_list_cpi_count == cpi->m_point_pair_count", defaultFileName))
         __debugbreak();
     int m_point_pair_count = cpi->m_point_pair_count;
     math::Dir3* m_list_b1_r_loc = cpi->m_list_b1_r_loc;
@@ -817,7 +817,7 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
                 relative_velocity_4.v = _mm_add_ps(v16->m_mat.w.v, v);
                 if (m_b2 != NULL &&
                     _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new.h", 52,
-                              "psc->m_b2 == NULL", ""))
+                              "psc->m_b2 == NULL", defaultFileName))
                     __debugbreak();
                 v12->m_b2_ap_n.v = relative_velocity_4.v;
             }
