@@ -28,6 +28,19 @@ namespace LocalClient {
 extern int ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z
 }
 
+bool ProfileManager::IsSaveEnabled() const { return mSaveEnabled; }
+void ProfileManager::SetContinueWithoutSaving() { mContinueWithoutSavingId = mCardId; }
+bool ProfileManager::IsContinueWithoutSaving() { return mCardId == mContinueWithoutSavingId; }
+int ProfileManager::GetStatus() { return mCurrentStatus; }
+bool ProfileManager::IsControllingDMS() { return mCallback != nullptr; }
+void ProfileManager::SetStatus(int status) { mCurrentStatus = status; }
+void ProfileManager::SetOperation(int op) { mCurrentOp = op; }
+void ProfileManager::SetLastCardId() { mLastCardId = mCardId; }
+bool ProfileManager::HasCardChanged() { return mLastCardId != mCardId; }
+void ProfileManager::SetOverwriteOk() { mOverwriteOkCardId = mCardId; }
+bool ProfileManager::IsOverwriteOk() { return mCardId == mOverwriteOkCardId; }
+void ProfileManager::SetCreateOk() { mCreateOkCardId = mCardId; }
+
 // STBManager minimal view (full class in core/core_systems.h)
 class STBManager {
 public:

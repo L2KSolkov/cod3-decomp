@@ -1651,6 +1651,8 @@ public:
     void HighlightEntry(int entryNum);      // 0x57F050
     void UpdateSplitScreen();               // 0x57F070
     void SetDialogFlash(int entryNum);      // 0x5724D0
+    void Close();                           // 0x5AEE00
+    bool IsSplitScreen();                   // 0x5AEE10
 private:
     void SetPanelFileSplitScreen(PanelFile* pf);  // 0x57EF80
     void SetPanelFileMain(PanelFile* pf);         // 0x596030
@@ -1690,6 +1692,7 @@ public:
     void AddOption(const char* t,
                    bool (*responseFunc)(int));  // 0x572EE0
     void Reformat(bool vertical, int viewport); // 0x572F40
+    void SetHighLight(short index);             // 0x5AEDE0
 };
 static_assert(sizeof(DialogMenu) == 0x78, "DialogMenu size mismatch");
 
@@ -1711,6 +1714,10 @@ public:
     bool   mWasIGMSUpWhenLaunched;// +0x38
     float  mCountDown;            // +0x3C
     int    mState;                // +0x40
+
+    DialogMenuDisplay* GetDisplay();            // 0x5AEE20
+    bool GetFlag(int f);                         // 0x5AEE30
+    void SetFlag(char f, bool b);                // 0x5AEE50
 
     DialogMenuSystem(int client);  // 0x5940C0
     virtual ~DialogMenuSystem();   // 0x5941D0

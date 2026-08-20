@@ -107,6 +107,18 @@ DialogMenuDisplay::~DialogMenuDisplay()
     }
 }
 
+// ea: 0x005AEE00
+void DialogMenuDisplay::Close()
+{
+    mIsClosing = true;
+}
+
+// ea: 0x005AEE10
+bool DialogMenuDisplay::IsSplitScreen()
+{
+    return mViewport != 0;
+}
+
 // ea: 0x0059AE00
 void DialogMenuDisplay::SetPanelFile(PanelFile* pf)
 {
@@ -445,6 +457,12 @@ DialogMenu::DialogMenu(FEMenuSystem* s)
     mClient = 0;
 }
 
+// ea: 0x005AEDE0
+void DialogMenu::SetHighLight(short index)
+{
+    highlighted = index;
+}
+
 // ea: 0x00572BE0
 void DialogMenu::OnActivate()
 {
@@ -679,6 +697,27 @@ DialogMenuSystem::DialogMenuSystem(int client)
     else
         FEMenuSystem::Add(nullptr);
     mState = DMS_STATE_NONE;
+}
+
+// ea: 0x005AEE20
+DialogMenuDisplay* DialogMenuSystem::GetDisplay()
+{
+    return mDisplay;
+}
+
+// ea: 0x005AEE30
+bool DialogMenuSystem::GetFlag(int f)
+{
+    return (flags & f) != 0;
+}
+
+// ea: 0x005AEE50
+void DialogMenuSystem::SetFlag(char f, bool b)
+{
+    if (b)
+        flags |= f;
+    else
+        flags &= (char)~f;
 }
 
 DialogMenuSystem* DialogMenuSystem_ctor(void* mem, int client)

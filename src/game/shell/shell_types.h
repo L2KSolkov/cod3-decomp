@@ -83,6 +83,18 @@ public:
     void Retry();                                      // 0x59B040
     void SaveProfile(void (*callback)(int), bool quiet);  // 0x59B130
     void Update();                                     // 0x59D5C0
+    bool IsSaveEnabled() const;                        // 0x5AEE90
+    void SetContinueWithoutSaving();                  // 0x5AEEA0
+    bool IsContinueWithoutSaving();                   // 0x5AEEB0
+    int GetStatus();                                   // 0x5AEEC0
+    bool IsControllingDMS();                           // 0x5AEED0
+    void SetStatus(int status);                        // 0x5AEEE0
+    void SetOperation(int op);                        // 0x5AEEF0
+    void SetLastCardId();                              // 0x5AEF00
+    bool HasCardChanged();                             // 0x5AEF10
+    void SetOverwriteOk();                             // 0x5AEF30
+    bool IsOverwriteOk();                              // 0x5AEF40
+    void SetCreateOk();                                // 0x5AEF50
 private:
     virtual void Callback(MemoryUnitManager::eDeviceChange change,
                           int deviceID);    // 0x575270 (private virtual EAE)
@@ -328,6 +340,8 @@ public:
     uint16_t hour;    // +0x06
     uint16_t minute;  // +0x08
     uint16_t second;  // +0x0A
+
+    system_time();
 
     bool equals(system_time st);
     bool newer_than(system_time st);

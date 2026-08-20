@@ -141,3 +141,7 @@ DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank()
     result.mHandle.mVal = 0;
     return result;
 }
+system_time::system_time()
+    : year(2000), month(1), day(1), hour(0), minute(0), second(0)
+{
+}
