@@ -1881,7 +1881,8 @@ index	status	map_line
 1880	VERIFIED	0002:001a8ca0       ?SetScale@FEMultiLineText@@UAEXMM@Z 009a41a0 f i shell.o
 1881	PENDING	0002:001a8d20       ??_GFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
 1882	PENDING	0002:001a8d20       ??_EFEMultiLineText@@UAEPAXI@Z 009a4220 f i shell.o
-1883	PENDING	0002:001a8d50       ??0UIListBoxItem@UIListBox@@QAE@XZ 009a4250 f i shell.o
+1883	VERIFIED	0002:001a8d50       ??0UIListBoxItem@UIListBox@@QAE@XZ 009a4250 f i shell.o
+1889	FIXED	0002:001a8fe0       ??4UIListBoxItem@UIListBox@@QAEXABV01@@Z 009a44e0 f i shell.o
 1884	VERIFIED	0002:001a8dc0       ?SetStateCount@UIListBoxItem@UIListBox@@QAEXH@Z 009a42c0 f i shell.o
 1885	FIXED	0002:001a8e60       ?SetItem@UIListBoxItem@UIListBox@@QAEXPAVFEText@@H@Z 009a4360 f i shell.o
 1886	FIXED	0002:001a8e90       ?SetItem@UIListBoxItem@UIListBox@@QAEXPAVPanelQuad@@H@Z 009a4390 f i shell.o
@@ -1898,11 +1899,11 @@ index	status	map_line
 1897	VERIFIED	0002:001a9570       ?SetEnabled@UIListBoxRow@UIListBox@@QAEX_N@Z 009a4a70 f i shell.o
 1898	VERIFIED	0002:001a9670       ?AddOption@DialogMenuSystem@@QAEXPBDP6A_NH@Z@Z 009a4b70 f i shell.o
 1899	FIXED	0002:001a96c0       ?CloseOnDelay@DialogMenuSystem@@QAEXHP6AXH@Z@Z 009a4bc0 f i shell.o
-1900	PENDING	0002:001a9720       ??_GIGOWarStatusWidget@@UAEPAXI@Z 009a4c20 f i shell.o
-1901	PENDING	0002:001a9720       ??_EIGOWarStatusWidget@@UAEPAXI@Z 009a4c20 f i shell.o
-1902	PENDING	0002:001a9750       ?SetValue@FESlider@@UAEXH@Z 009a4c50 f i shell.o
-1903	PENDING	0002:001a9770       ??_GFrontEndMenuSystem@@UAEPAXI@Z 009a4c70 f i shell.o
-1904	PENDING	0002:001a9770       ??_EFrontEndMenuSystem@@UAEPAXI@Z 009a4c70 f i shell.o
+1900	VERIFIED	0002:001a9720       ??_GIGOWarStatusWidget@@UAEPAXI@Z 009a4c20 f i shell.o
+1901	VERIFIED	0002:001a9720       ??_EIGOWarStatusWidget@@UAEPAXI@Z 009a4c20 f i shell.o
+1902	VERIFIED	0002:001a9750       ?SetValue@FESlider@@UAEXH@Z 009a4c50 f i shell.o
+1903	VERIFIED	0002:001a9770       ??_GFrontEndMenuSystem@@UAEPAXI@Z 009a4c70 f i shell.o
+1904	VERIFIED	0002:001a9770       ??_EFrontEndMenuSystem@@UAEPAXI@Z 009a4c70 f i shell.o
 1905	PENDING	0002:001a97a0       ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ 009a4ca0 f i shell.o
 1906	PENDING	0002:001a97c0       ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDI@Z 009a4cc0 f i shell.o
 1907	PENDING	0002:001a9800       ??1?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 009a4d00 f i shell.o

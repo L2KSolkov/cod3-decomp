@@ -2970,6 +2970,7 @@ public:
         void SetStateCount(int count);  // 0x5B4DC0
         void SetItem(FEText* text, int state);       // 0x5B4E60
         void SetItem(PanelQuad* quad, int state);    // 0x5B4E90
+        void operator=(const UIListBoxItem& rhs);     // 0x5B4FE0
         void SetText(const char* text); // 0x5813A0
         void SetSelected(bool selected, bool flashing);  // 0x581460
         void SetColor(color32 unselectedColor,

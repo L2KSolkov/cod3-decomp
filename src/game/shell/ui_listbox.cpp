@@ -308,6 +308,55 @@ void UIListBox::UIListBoxItem::SetItem(PanelQuad* quad, int state)
     mType = kTypeQuad;
 }
 
+// ea: 0x5B4FE0
+void UIListBox::UIListBoxItem::operator=(const UIListBoxItem& rhs)
+{
+    mState = rhs.mState;
+    mStateCount = rhs.mStateCount;
+    if (mStateCount > mObjects.mCapacity)
+    {
+        PanelAnimObject** elements =
+            (PanelAnimObject**)tlMemAlloc(4 * mStateCount, 8u, 0);
+        for (int i = 0; i < mObjects.mSize; ++i)
+            elements[i] = mObjects.mElements[i];
+        if (mObjects.mElements != nullptr)
+        {
+            tlMemFree(mObjects.mElements);
+            mObjects.mElements = nullptr;
+            mObjects.mCapacity = 0;
+        }
+        mObjects.mElements = elements;
+        mObjects.mCapacity = mStateCount;
+        mObjects.mSize = mStateCount;
+    }
+    else
+    {
+        mObjects.mSize = mStateCount;
+    }
+    for (int i = 0; i < mStateCount; ++i)
+    {
+        if (i < 0 || i >= rhs.mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 161;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        if (i < 0 || i >= mObjects.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mObjects.mElements[i] = rhs.mObjects.mElements[i];
+    }
+}
+
 // ea: 0x5813A0
 void UIListBox::UIListBoxItem::SetText(const char* text)
 {
