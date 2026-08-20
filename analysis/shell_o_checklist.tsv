@@ -1977,7 +1977,7 @@ index	status	map_line
 1975	FIXED	0002:001aaa10       ??0SE_Entry_s@@QAE@XZ      009a5f10 f i shell.o
 1976	FIXED	0002:001aaa70       ??1SE_Entry_s@@QAE@XZ      009a5f70 f i shell.o
 1977	PENDING	0002:001aab10       ?clear@?$ae_vector@PAVPanelQuadSection@@@@QAEXXZ 009a6010 f i shell.o
-1978	PENDING	0002:001aab20       ?resize@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEXH@Z 009a6020 f i shell.o
+1978	FIXED	0002:001aab20       ?resize@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEXH@Z 009a6020 f i shell.o
 1979	PENDING	0002:001aace0       ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@QAE@XZ 009a61e0 f i shell.o
 1980	PENDING	0002:001aad70       ?construct_array@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEPAVUIListBoxDataRow@UIListBox@@H@Z 009a6270 f i shell.o
 1981	PENDING	0002:001aadd0       ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QBE_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 009a62d0 f i shell.o

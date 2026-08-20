@@ -130,6 +130,57 @@ static void ResizeUIListBoxDataVector(
     vector->mCapacity = newSize;
 }
 
+// Generated ae_vector<UIListBoxItem>::resize body at 0x5B6B20.
+static void ResizeUIListBoxItemVector(
+    ae_vector<UIListBox::UIListBoxItem>* vector, int newSize)
+{
+    if (newSize <= vector->mCapacity)
+    {
+        if (newSize <= vector->mSize)
+        {
+            for (int i = newSize; i < vector->mSize; ++i)
+            {
+                if (vector->mElements[i].mObjects.mElements != nullptr)
+                {
+                    tlMemFree(vector->mElements[i].mObjects.mElements);
+                    vector->mElements[i].mObjects.mElements = nullptr;
+                    vector->mElements[i].mObjects.mCapacity = 0;
+                }
+            }
+        }
+        else
+        {
+            for (int i = vector->mSize; i < newSize; ++i)
+                new (&vector->mElements[i]) UIListBox::UIListBoxItem();
+        }
+        vector->mSize = newSize;
+        return;
+    }
+
+    UIListBox::UIListBoxItem* elements =
+        (UIListBox::UIListBoxItem*)tlMemAlloc(24 * newSize, 8u, 0);
+    for (int i = 0; i < newSize; ++i)
+        new (&elements[i]) UIListBox::UIListBoxItem();
+    for (int i = 0; i < vector->mSize; ++i)
+        elements[i] = vector->mElements[i];
+    if (vector->mElements != nullptr)
+    {
+        for (int i = 0; i < vector->mSize; ++i)
+        {
+            if (vector->mElements[i].mObjects.mElements != nullptr)
+            {
+                tlMemFree(vector->mElements[i].mObjects.mElements);
+                vector->mElements[i].mObjects.mElements = nullptr;
+                vector->mElements[i].mObjects.mCapacity = 0;
+            }
+        }
+        tlMemFree(vector->mElements);
+    }
+    vector->mElements = elements;
+    vector->mCapacity = newSize;
+    vector->mSize = newSize;
+}
+
 // ea: 0x5B6160
 UIListBox::UIListBoxDataRow::UIListBoxDataRow()
 {
@@ -933,12 +984,7 @@ void UIListBox::UIListBoxRow::SetColumnCount(int columns)
             __debugbreak();
     }
     mColumnCount = columns;
-    mColumns.mCapacity = columns;
-    mColumns.mSize = columns;
-    mColumns.mElements =
-        (UIListBoxItem*)tlMemAlloc(24 * columns, 8u, 0);
-    for (int i = 0; i < columns; ++i)
-        new (&mColumns.mElements[i]) UIListBoxItem();
+    ResizeUIListBoxItemVector(&mColumns, columns);
 }
 
 // ea: 0x5B5130
