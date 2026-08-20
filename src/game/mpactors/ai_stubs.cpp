@@ -1089,7 +1089,7 @@
 }
 
 // ea: 0x0077CAC0  (?Path_FindPath@@YI?BHPAUpath_t@@W4team_t@@QBM2H@Z)
-    int __fastcall Path_FindPath(path_t*, team_t, const float* const, const float* const, int)
+    const int __fastcall Path_FindPath(path_t*, team_t, const float* const, const float* const, int)
 {
     return 0;
 }
