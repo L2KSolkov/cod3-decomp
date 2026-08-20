@@ -211,6 +211,7 @@ private:
     void StopAudioPlayback() override;
 
 public:
+    nvlMovie();
     ~nvlMovie() override;
     static IDirectSoundBuffer* mAudioBuffer;
 };

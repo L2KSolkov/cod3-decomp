@@ -86,6 +86,11 @@ public:
 
 // movie_manager / subtitle_manager statics
 nvlMovie* movie_manager::theMovie = nullptr;
+
+bool movie_manager::movie_valid()
+{
+    return theMovie != nullptr;
+}
 bool movie_manager::preloadDone = false;
 bool movie_manager::ignoreLocalizedTrack = false;
 float movie_manager::wait_timer = 0.0f;

@@ -48,7 +48,7 @@ public:
         } c;
     };
 
-    color32() {}
+    color32() { i = 0; }
     color32(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a)
     {
         c.b = _b;
@@ -2802,6 +2802,8 @@ public:
     virtual void MoveForSplitScreen(int viewport, int old_viewport);  // 0x571AC0
     virtual void SetValue(int value);   // slot 49
     virtual int GetValue();             // slot 50
+
+    void EnableNavigationSound(bool enable) { mEnableSound = enable; }
 
     void PlayNavigationSound();         // 0x57E230
     void SetWidgets(FEText* copy_this, FEText* label, PanelQuad* leftArrow,

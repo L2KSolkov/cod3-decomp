@@ -870,6 +870,7 @@ private:
     void StopAudioPlayback() override;
 
 public:
+    nvlMovie();
     ~nvlMovie() override;
     static IDirectSoundBuffer* mAudioBuffer;
 };
@@ -2686,6 +2687,11 @@ void nvlMovie::StopAudioPlayback() {
 }
 
 // ea: 0x00C1D8A0
+nvlMovie::nvlMovie()
+    : nvlAFMVMovie()
+{
+}
+
 nvlMovie::~nvlMovie() {
     const bool audioIsValid = mAudioIsValid;
     if (audioIsValid) {

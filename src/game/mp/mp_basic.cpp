@@ -982,6 +982,21 @@ void MPPlayer::SetName(const char* name)
     mName[31] = 0;
 }
 
+const char* MPPlayer::GetName() const
+{
+    return mName;
+}
+
+int MPPlayer::GetTeam()
+{
+    return mTeam;
+}
+
+Entity* MPPlayer::FindItem(EDroppedItemTypes item, short id)
+{
+    return reinterpret_cast<MPPlayerItems*>(mItems)->FindItem(item, id);
+}
+
 // ea: 0x00777CA0
 void MPPlayer::RemoveItem(EDroppedItemTypes item, ::MPEntityHandle handle)
 {

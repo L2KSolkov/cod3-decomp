@@ -1301,6 +1301,7 @@ public:
     static void continue_playing_wait_for_keypress();  // 0x591690
     static void load_and_play_movie(const char* movie_name,
                                     const char* sound_name);  // 0x593AF0
+    static bool movie_valid();
 
     static nvlMovie* theMovie;    // ?theMovie@movie_manager@@2PAVnvlMovie@@A
     static bool preloadDone;      // ?preloadDone@movie_manager@@2_NA
@@ -1939,6 +1940,9 @@ public:
     bdReference<bdConnection> GetConnection() const;  // ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ (mp.o 0x736190)
     void Reset(bool clearAll);        // ?Reset@MPPlayer@@QAEX_N@Z (mp.o 0x72CC20)
     void SetName(const char* name);   // ?SetName@MPPlayer@@QAEXPBD@Z (mp.o)
+    const char* GetName() const;      // ?GetName@MPPlayer@@QBEPBDXZ (shell.o)
+    int GetTeam();                    // ?GetTeam@MPPlayer@@QAEHXZ (shell.o)
+    Entity* FindItem(EDroppedItemTypes item, short id); // shell.o
     void RemoveItem(EDroppedItemTypes item,
                     ::MPEntityHandle handle);  // ?RemoveItem@MPPlayer@@QAEXW4EDroppedItemTypes@@VMPEntityHandle@@@Z (mp.o)
     bool deserialize(bdReference<bdBitBuffer> buffer);  // ?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
