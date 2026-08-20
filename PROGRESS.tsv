@@ -54,7 +54,7 @@ ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	PORTED	ngl_scene.cpp: full
 
 mp_xbox.o		mp_xbox.o	game	61	PORTED	MPMainMenuXBox.cpp (61/61): JoinGameMenu + MPMainMenuXBox + XBoxLiveIngameOptionsCOD3 + AARXBoxLiveIngameOptions menu classes; FEMenu/UIListBox bases extern (shell.o/core.o)
 
-nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (IDA-typed file/request/stream layer; txSlot ABI, driver scheduling, callbacks, workspace preallocation, and Win32 lifecycle aligned)
+nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	VERIFIED	Compared all 52 nfl_system.o functions against codmp_xboxr.xbe.c and IDA; corrected stream creation/priority propagation, native/subfile parent and handle resolution, request locking/state transitions, file-open/close assertions and diagnostics, and reverse driver shutdown. Win32 handle storage and lifecycle cleanup remain intentional host adaptations.
 
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	VERIFIED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr; IDA-verified AddParticlePool/AddPools no-ops)
 
