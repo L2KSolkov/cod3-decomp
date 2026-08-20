@@ -871,17 +871,17 @@ void nflStart(void* work)
                    (int)s_initParams.maxStreams, sizeof(nfsStream));
     txSlotPoolInit(&s_filePool, &s_files[0].slotEntry,
                    (int)s_initParams.maxFiles, sizeof(nfsFile));
-    s_defaultStreamID = (nflStreamID)txSlotNew(&s_streamPool);
-    nflSetStreamPriority(s_defaultStreamID, NFL_PRIORITY_NORMAL);
-    if (s_defaultStreamID == NFL_STREAM_ID_INVALID)
-        txAssertFailed(nullptr, "nfs_defaultStreamID!=NFL_STREAM_ID_INVALID",
-                       "nflStart", "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1311);
 #ifdef _WIN32
     if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI) {
         if (s_nfsMutex == nullptr) s_nfsMutex = CreateMutexA(nullptr, FALSE, nullptr);
         if (s_nfsEvent == nullptr) s_nfsEvent = CreateEventA(nullptr, FALSE, FALSE, nullptr);
     }
 #endif
+    s_defaultStreamID = (nflStreamID)txSlotNew(&s_streamPool);
+    nflSetStreamPriority(s_defaultStreamID, NFL_PRIORITY_NORMAL);
+    if (s_defaultStreamID == NFL_STREAM_ID_INVALID)
+        txAssertFailed(nullptr, "nfs_defaultStreamID!=NFL_STREAM_ID_INVALID",
+                       "nflStart", "c:/cod/code/tl/nfl/src/nfl_system.cpp", 1311);
     s_started = true;
 #ifdef _WIN32
     if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
