@@ -215,7 +215,7 @@ void SubStr(char* dst, int* const dstLen, const char* src, int begin, int count,
 // Split — split a length-prefixed string at the first delimiter
 // ea: 0x7BF0A0
 // ============================================================================
-void Split(char* dstBuff, int* dstLen, char* srcBuff, int* srcLen,
+void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
            char splitOn, int capacity) {
     int i;
     for (i = 0; i < *srcLen; ++i) {

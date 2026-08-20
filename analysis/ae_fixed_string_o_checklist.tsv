@@ -6,5 +6,5 @@ index	status	map_line
 5	VERIFIED	0002:003befa0 ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z 00BAE4A0 f ae_fixed_string.o
 6	VERIFIED	0002:003befe0 ?AeStrCopy@AeStringSupport@@YAXPADAAHHPBDH@Z 00BAE4E0 f ae_fixed_string.o
 7	VERIFIED	0002:003bf040 ?SubStr@AeStringSupport@@YAXPADAAHPBDHHH@Z 00BAE540 f ae_fixed_string.o
-8	PORTED	0002:003bf0a0 ?Split@AeStringSupport@@YAXPADAAH01DH@Z 00BAE5A0 f ae_fixed_string.o
+8	VERIFIED	0002:003bf0a0 ?Split@AeStringSupport@@YAXPADAAH01DH@Z 00BAE5A0 f ae_fixed_string.o
 9	PORTED	0002:003bf160 ?GetFileName@AeStringSupport@@YAXPADAAHPBDH_N@Z 00BAE660 f ae_fixed_string.o

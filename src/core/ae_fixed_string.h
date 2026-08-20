@@ -16,7 +16,7 @@
 namespace AeStringSupport {
 bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
                 int rhsLen);
-void Split(char* dstBuff, int* dstLen, char* srcBuff, int* srcLen,
+void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
            char splitOn, int capacity);
 }
 
