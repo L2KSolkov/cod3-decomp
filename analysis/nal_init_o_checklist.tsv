@@ -550,7 +550,7 @@ index	status	map_line
 549	PORTED	0002:00460770 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4FC70 f i nal_init.o
 550	PENDING	0002:00460850 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4FD50 f i nal_init.o
 551	PORTED	0002:00460a10 ??BnalQuaternion8@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ 00C4FF10 f i nal_init.o
-552	PENDING	0002:00460ac0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4FFC0 f i nal_init.o
+552	PORTED	0002:00460ac0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4FFC0 f i nal_init.o
 553	PENDING	0002:00460bb0 ?GetTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C500B0 f i nal_init.o
 554	PENDING	0002:00460c70 ?Construct@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C50170 f i nal_init.o
 555	PENDING	0002:00460ca0 ?Delete@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C501A0 f i nal_init.o
