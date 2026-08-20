@@ -158,6 +158,7 @@ public:
     ProfileMainMenu(FEMenuSystem* s);     // 0x593220
     virtual ~ProfileMainMenu();           // 0x5932C0
     static ProfileMainMenu* Me();         // 0x574EB0
+    SaveGameData** GetSaveSlots();
     void ClearEntries();                  // 0x574EC0
     virtual void Update(float time_inc);  // 0x574F00
     void CreateProfile();                 // 0x574F10
@@ -209,6 +210,7 @@ public:
     ProfileEditMenu(FEMenuSystem* s);     // 0x5934A0
     virtual ~ProfileEditMenu();           // 0x593530
     static ProfileEditMenu* Me();         // 0x574FA0
+    void NeedWrite();
     virtual void Update(float time_inc);  // 0x574FB0
     virtual void OnUp(int c);             // 0x574FC0
     virtual void OnDown(int c);           // 0x575020

@@ -1610,6 +1610,7 @@ public:
     int          mNameLength;    // +0x1B4
     bool         mNameValid;     // +0x1B8
     int          mSlotNum;       // +0x1BC
+    void SetSlotNum(int num) { mSlotNum = num; }
     bool         mSaveDialogDisplayed;  // +0x1C0
     int          mPrev;          // +0x1C4
 

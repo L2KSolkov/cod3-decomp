@@ -959,6 +959,11 @@ void cThreadSleep::sleepMilliseconds(unsigned long) {}
 // ============================================================================
 // MPPlayer (mp.o)
 // ============================================================================
+SaveGameData** MPProfileMainMenu::GetSaveSlots()
+{
+    return mSaveSlots;
+}
+
 unsigned char MPPlayer::GetNullId()
 {
     return 16;

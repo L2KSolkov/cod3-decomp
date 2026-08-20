@@ -1414,6 +1414,7 @@ public:
     MPProfileMainMenu(FEMenuSystem* s);  // ??0MPProfileMainMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x733920)
     virtual ~MPProfileMainMenu();  // ??1MPProfileMainMenu@@UAE@XZ (mp.o 0x7339D0)
     static MPProfileMainMenu* Me();  // ?Me@MPProfileMainMenu@@SAPAV1@XZ
+    SaveGameData** GetSaveSlots();
     static bool DialogResponseDeleteCancel(int index);  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z
     static bool DialogResponseProfileEdit(int index);   // ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z
     static bool DialogResponseNoMemCard(int index);     // ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z

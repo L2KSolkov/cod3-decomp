@@ -1850,6 +1850,16 @@ ProfileEditMenu* ProfileEditMenu::Me()
     return (ProfileEditMenu*)g_femanager.fems->menus[29];
 }
 
+SaveGameData** ProfileMainMenu::GetSaveSlots()
+{
+    return mSaveSlots;
+}
+
+void ProfileEditMenu::NeedWrite()
+{
+    mNeedWrite = true;
+}
+
 // ea: 0x00574FB0
 void ProfileEditMenu::Update(float time_inc)
 {

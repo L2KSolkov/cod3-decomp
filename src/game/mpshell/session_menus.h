@@ -907,6 +907,7 @@ public:
     short m_sLocalPlayerTeam;      // +0x1E0
 
     WeaponSelectMenu(FEMenuSystem* pauseMenuSystem);  // ??0WeaponSelectMenu@@QAE@PAVFEMenuSystem@@@Z
+    static WeaponSelectMenu* Me(int version);
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
     virtual void OnStart(int c);           // ?OnStart@WeaponSelectMenu@@UAEXH@Z
@@ -940,6 +941,7 @@ public:
 
     virtual ~InGameSwitchSides();          // ??1InGameSwitchSides@@UAE@XZ
     InGameSwitchSides(FEMenuSystem* s);    // ??0InGameSwitchSides@@QAE@PAVFEMenuSystem@@@Z
+    static InGameSwitchSides* Me(int version);
     virtual void Init();                          // ?Init@InGameSwitchSides@@UAEXXZ
     void OnDeactivate(ModelMenu* m);              // ?OnDeactivate@InGameSwitchSides@@QAEXPAVModelMenu@@@Z
     virtual void OnTriangle(int c);               // ?OnTriangle@InGameSwitchSides@@UAEXH@Z
@@ -1002,6 +1004,7 @@ public:
     uint8_t _pad3[0x3E0 - (0x2D8 + 0x108)];
 
     InGameScoreBoard(FEMenuSystem* pauseMenuSystem);  // ??0InGameScoreBoard@@QAE@PAVFEMenuSystem@@@Z
+    static InGameScoreBoard* Me(int version);
     virtual void Init();              // ?Init@InGameScoreBoard@@UAEXXZ
     virtual void OnTriangle(int c);   // ?OnTriangle@InGameScoreBoard@@UAEXH@Z
     virtual void OnCross(int c);      // ?OnCross@InGameScoreBoard@@UAEXH@Z
@@ -1329,6 +1332,7 @@ public:
     void* mTime;                         // +0x68 (FEText*)
     void* mButtonPress;                  // +0x6C (FEText*)
     SpectateMenu(FEMenuSystem* pauseMenuSystem);  // ??0SpectateMenu@@QAE@PAVFEMenuSystem@@@Z
+    static SpectateMenu* Me(int version);
     virtual ~SpectateMenu();  // ??1SpectateMenu@@UAE@XZ
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@SpectateMenu@@UAEXPAVFEMenu@@@Z
     virtual void OnStart(int c);           // ?OnStart@SpectateMenu@@UAEXH@Z
