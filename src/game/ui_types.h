@@ -697,7 +697,12 @@ public:
     }
     virtual void SetX(float posX) { xy.x = posX; }        // +0x98
     virtual void SetY(float y) { xy.y = y; }              // +0x9C
-    virtual void SetAlpha(float a) { (void)a; }           // +0xA0
+    virtual void SetAlpha(float a)                        // +0xA0
+    {
+        const unsigned char alpha = (unsigned char)(a * 255.0f);
+        color1.c.a = alpha;
+        color_unselected.c.a = alpha;
+    }
     virtual void SetPanelTextIndex(int the_index)        // +0xA4
     {
         panel_text_index = the_index;
