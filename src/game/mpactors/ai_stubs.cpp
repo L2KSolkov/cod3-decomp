@@ -450,7 +450,7 @@
 }
 
 // ea: 0x0077C350  (?Actor_Cover_IsValidCover@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@_N@Z)
-    int __fastcall Actor_Cover_IsValidCover(actor_s*, PathNodes::PathNode*, bool)
+    const int __fastcall Actor_Cover_IsValidCover(actor_s*, PathNodes::PathNode*, bool)
 {
     return 0;
 }
