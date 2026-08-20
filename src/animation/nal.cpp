@@ -8812,6 +8812,19 @@ void nalComponent<nalComponentFloat1Base,
     ptr = (char*)ptr + 4 * componentInfo->Count;
 }
 
+// ?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
+// (nal_init.o 0x857df0)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 3u) & ~uintptr_t(3u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 4;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentFloat3Data,
