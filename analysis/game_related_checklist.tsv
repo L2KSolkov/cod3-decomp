@@ -20723,19 +20723,19 @@ index	status	map_line
 20722	PORTED	0002:00461400 ?Copy@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C50900 f i nal_init.o
 20723	PORTED	0002:00461420 ??$FastCopy@VnalComponentPacked16EntropyQuat@@VQuaternion@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C50920 f i nal_init.o
 20724	PORTED	0002:00461470 ?ReleaseCache@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C50970 f i nal_init.o
-20725	PENDING	0002:00461500 ??0?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@IAE@XZ 00C50A00 f i nal_init.o
-20726	PENDING	0002:00461510 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A10 f i nal_init.o
-20727	PENDING	0002:00461520 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A20 f i nal_init.o
-20728	PENDING	0002:00461530 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A30 f i nal_init.o
-20729	PENDING	0002:00461540 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A40 f i nal_init.o
-20730	PENDING	0002:00461550 ?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A50 f i nal_init.o
-20731	PENDING	0002:00461560 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A60 f i nal_init.o
-20732	PENDING	0002:00461570 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A70 f i nal_init.o
-20733	PENDING	0002:00461580 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A80 f i nal_init.o
+20725	VERIFIED	0002:00461500 ??0?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@IAE@XZ 00C50A00 f i nal_init.o
+20726	PORTED	0002:00461510 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A10 f i nal_init.o
+20727	PORTED	0002:00461520 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A20 f i nal_init.o
+20728	PORTED	0002:00461530 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A30 f i nal_init.o
+20729	PORTED	0002:00461540 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A40 f i nal_init.o
+20730	PORTED	0002:00461550 ?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A50 f i nal_init.o
+20731	PORTED	0002:00461560 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A60 f i nal_init.o
+20732	PORTED	0002:00461570 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A70 f i nal_init.o
+20733	PORTED	0002:00461580 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A80 f i nal_init.o
 20734	SKIPPED	0002:00461590 ??_E?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAEPAXI@Z 00C50A90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20735	SKIPPED	0002:00461590 ??_G?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAEPAXI@Z 00C50A90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20736	PENDING	0002:004615c0 ?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C50AC0 f i nal_init.o
-20737	PENDING	0002:004615f0 ?SetupPartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50AF0 f i nal_init.o
+20736	PORTED	0002:004615c0 ?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C50AC0 f i nal_init.o
+20737	PORTED	0002:004615f0 ?SetupPartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50AF0 f i nal_init.o
 20738	PENDING	0002:004616c0 ?PartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C50BC0 f i nal_init.o
 20739	PENDING	0002:004617b0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C50CB0 f i nal_init.o
 20740	PENDING	0002:004618a0 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50DA0 f i nal_init.o
