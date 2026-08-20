@@ -971,21 +971,32 @@ nflFileID nfsOpenFile(nflMediaID media, const char* name,
         const nflMediaID selectedMedia = static_cast<nflMediaID>(static_cast<unsigned>(media) & bit);
         if (selectedMedia == 0) continue;
         nfdDriver* driver = nfsGetMediaDriver(selectedMedia);
-        if (driver == nullptr || driver->media == nullptr || driver->media->fnBind == nullptr)
+        if (driver == nullptr || driver->media == nullptr || driver->media->fnBind == nullptr) {
+            nfsWarning("nfsOpenFile: %s not registered with any of the file drivers",
+                       nfsMediaIDText(selectedMedia));
             continue;
+        }
         char fullName[256] = {};
         if (driver->media->fnBind(selectedMedia, name, fullName, sizeof(fullName))
-            != NFD_ERROR_NOERROR)
+            != NFD_ERROR_NOERROR) {
+            nfsMessage("nfsOpenFile: fnBind failed: %s %s\n",
+                       nfsMediaIDText(selectedMedia), name);
             continue;
-        nfsLock();
+        }
+        const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+        if (multiThreaded)
+            nfsLock();
         nflFileID id = AllocateFile();
         if (id == NFL_FILE_ID_INVALID) {
-            nfsUnlock();
+            if (multiThreaded) nfsUnlock();
+            nfsWarning("nfsOpenFile: Out of file handles");
             break;
         }
         const int index = FileIndex(id);
         if (index < 0) {
-            nfsUnlock();
+            txAssertFailed(nullptr, "file", "nfsOpenFile",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 512);
+            if (multiThreaded) nfsUnlock();
             return NFL_FILE_ID_INVALID;
         }
         nfsFile& file = s_files[index];
@@ -1000,11 +1011,14 @@ nflFileID nfsOpenFile(nflMediaID media, const char* name,
         if (driver->file == nullptr || driver->file->fnOpen == nullptr
             || driver->file->fnStatus == nullptr) {
             txSlotFree(&s_filePool, (txSlot)id);
-            nfsUnlock();
+            if (multiThreaded) nfsUnlock();
             return NFL_FILE_ID_INVALID;
         }
         const unsigned createdFileSize = fileSize != nullptr ? *fileSize : 0;
         void* handleStorage = nfsGetFileHandle(id);
+        if (handleStorage == nullptr)
+            txAssertFailed(nullptr, "fileHandle", "nfsOpenFile",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 524);
         const nfdError openResult = driver->file->fnOpen(handleStorage, fullName,
                                                          flags, createdFileSize);
         nfdFileInfo info = {};
@@ -1013,14 +1027,14 @@ nflFileID nfsOpenFile(nflMediaID media, const char* name,
         if (openResult == NFD_ERROR_NOERROR && statusResult == NFD_ERROR_NOERROR) {
             file.size = info.size;
             if (fileSize != nullptr) *fileSize = info.size;
-            nfsUnlock();
+            if (multiThreaded) nfsUnlock();
             return id;
         }
         if (openResult == NFD_ERROR_NOERROR && driver->file->fnClose != nullptr)
             driver->file->fnClose(handleStorage);
         s_fileHandles[index] = nullptr;
         txSlotFree(&s_filePool, (txSlot)id);
-        nfsUnlock();
+        if (multiThreaded) nfsUnlock();
     }
     nfsWarning("nfsOpenFile: unable to bind/open %s", name);
     return NFL_FILE_ID_INVALID;
