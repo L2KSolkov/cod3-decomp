@@ -1491,10 +1491,10 @@ index	status	map_line
 1490	VERIFIED	0002:001a3a30       ?NewMenuActive@FEMenuSystem@@MAEXXZ 0099ef30 f i shell.o
 1491	VERIFIED	0002:001a3a40       ??_Estring@Broc@@QAEPAXI@Z 0099ef40 f i shell.o
 1492	VERIFIED	0002:001a3ab0       ??1FEMenuListBoxItem@@QAE@XZ 0099efb0 f i shell.o
-1493	PENDING	0002:001a3b20       ?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z 0099f020 f i shell.o
-1494	PENDING	0002:001a3b30       ??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ 0099f030 f i shell.o
-1495	PENDING	0002:001a3b40       ??0Observer@MemoryUnitManager@@QAE@XZ 0099f040 f i shell.o
-1496	PENDING	0002:001a3b50       ?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ 0099f050 f i shell.o
+1493	FIXED	0002:001a3b20       ?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z 0099f020 f i shell.o
+1494	VERIFIED	0002:001a3b30       ??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ 0099f030 f i shell.o
+1495	VERIFIED	0002:001a3b40       ??0Observer@MemoryUnitManager@@QAE@XZ 0099f040 f i shell.o
+1496	FIXED	0002:001a3b50       ?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ 0099f050 f i shell.o
 1497	PENDING	0002:001a3b60       ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099f060 f i shell.o
 1498	PENDING	0002:001a3b80       ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099f080 f i shell.o
 1499	PENDING	0002:001a3b90       ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099f090 f i shell.o

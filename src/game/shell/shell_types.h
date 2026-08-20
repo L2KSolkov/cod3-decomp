@@ -252,6 +252,7 @@ public:
     void DialogDisplayNoMemCard();      // 0x592440
     void DialogDisplayNoFreeSpace();    // 0x5925D0
     static bool DialogResponseRetry(int);  // 0x592760
+    void SetDialogDisplayed(int dialog);
 private:
     void Activate();                    // 0x5866F0
 };
@@ -294,6 +295,7 @@ class CStringEdPackage {
     friend int ::SE_GetFlagMask(const char* psFlagName);
 public:
     int         m_bEndMarkerFound_ParseOnly;        // +0x00
+    int EndMarkerFoundDuringParse();
     std::string m_strCurrentEntryRef_ParseOnly;     // +0x04
     std::string m_strCurrentEntryEnglish_ParseOnly; // +0x20
     std::string m_strCurrentFileRef_ParseOnly;      // +0x3C

@@ -18,6 +18,11 @@ char sString[128];
 char sString_0[128];
 char sString_1[128];
 
+int CStringEdPackage::EndMarkerFoundDuringParse()
+{
+    return m_bEndMarkerFound_ParseOnly;
+}
+
 // ea: 0x00576BD0
 char* CStringEdPackage::Filename_PathOnly(const char* psFilename)
 {

@@ -2169,6 +2169,11 @@ MemCardCheckMenu* MemCardCheckMenu::Me()
     return (MemCardCheckMenu*)g_femanager.fems->menus[28];
 }
 
+void MemCardCheckMenu::SetDialogDisplayed(int dialog)
+{
+    mDialogDisplayed = dialog;
+}
+
 // ea: 0x00573490
 void MemCardCheckMenu::UpdateWidescreen(bool ws)
 {
