@@ -562,8 +562,15 @@ struct nalAnimFile {
 };
 static_assert(sizeof(nalAnimFile) == 72, "NAL animation file layout mismatch");
 
+template <>
+const tlFixedString*
+tlSkipList<nalAnimFile, tlFixedString>::GetKeyOf(const nalAnimFile* file)
+{
+    return &file->Header.Name;
+}
+
 // ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ (0x867880)
-template tlInstanceBankResourceDirectory<nalAnimFile>::tlInstanceBankResourceDirectory();
+template class tlInstanceBankResourceDirectory<nalAnimFile>;
 
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
 public:

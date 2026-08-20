@@ -26,19 +26,19 @@
 
 extern void tlWarning(const char* Format, ...);
 
-// Base iterator interface (tlResourceDirectory<T>::Iterator, 4-byte vftable).
-class tlResourceDirectoryIterator {
-public:
-    virtual ~tlResourceDirectoryIterator() {}
-    virtual void reset() = 0;
-    virtual bool operator()() = 0;
-    virtual void operator++() = 0;
-    virtual void* operator*() = 0;
-};
-
 template <typename T>
 class tlResourceDirectory {
 public:
+    // IDA local type: tlResourceDirectory<T>::Iterator.
+    class Iterator {
+    public:
+        virtual ~Iterator() {}
+        virtual void reset() = 0;
+        virtual bool operator()() = 0;
+        virtual void operator++() = 0;
+        virtual T* operator*() = 0;
+    };
+
     // ??2tlResourceDirectory@@SAPAXI@Z (nal_init.o / ngl_aux.o)
     // The Xbox template routes directory allocations through tlMemAlloc with
     // the library's standard 8-byte alignment and no special flags.
@@ -65,7 +65,7 @@ public:
         return false;
     }
 
-    virtual tlResourceDirectoryIterator* Enumerate() { return NULL; }
+    virtual Iterator* Enumerate() { return NULL; }
 
     virtual void ReleaseAll(bool warn, bool system, int maxforce) {
         (void)warn;
@@ -121,7 +121,7 @@ public:
 
     virtual bool Del(T* const DataPtr) { return skiplist->Del(DataPtr); }
 
-    class SkipListIterator : public tlResourceDirectoryIterator {
+    class SkipListIterator : public tlResourceDirectory<T>::Iterator {
     public:
         SkipListIterator(tlSkipList<T, tlFixedString>* list)
             : skiplist(list), cur(list ? list->Head->Forward[0] : NULL) {}
@@ -142,7 +142,7 @@ public:
                 cur = cur->Forward[0];
         }
 
-        virtual void* operator*() {
+        virtual T* operator*() {
             if (cur)
                 return cur->DataPtr;
             return NULL;
@@ -152,7 +152,7 @@ public:
         typename tlSkipList<T, tlFixedString>::Instance* cur;
     };
 
-    virtual tlResourceDirectoryIterator* Enumerate() {
+    virtual typename tlResourceDirectory<T>::Iterator* Enumerate() {
         if (!skiplist)
             return NULL;
         SkipListIterator* it = (SkipListIterator*)tlMemAlloc(sizeof(SkipListIterator), 8u, 0);
@@ -185,7 +185,66 @@ public:
 template <typename T>
 class tlInstanceBankResourceDirectory : public tlResourceDirectory<T> {
 public:
+    class SkipListIterator : public tlResourceDirectory<T>::Iterator {
+    public:
+        struct State {
+            tlSkipList<T, tlFixedString>* skiplist;
+            typename tlSkipList<T, tlFixedString>::Instance* cur;
+        };
+
+        explicit SkipListIterator(tlSkipList<T, tlFixedString>* list)
+        {
+            state.skiplist = list;
+            state.cur = (list && list->Head) ? list->Head->Forward[0] : NULL;
+        }
+
+        virtual void reset()
+        {
+            typename tlSkipList<T, tlFixedString>::Instance* head =
+                state.skiplist->Head;
+            state.cur = head ? head->Forward[0] : NULL;
+        }
+
+        virtual bool operator()() { return state.cur != NULL; }
+
+        virtual void operator++()
+        {
+            if (state.cur)
+                state.cur = state.cur->Forward[0];
+        }
+
+        virtual T* operator*()
+        {
+            return state.cur ? state.cur->DataPtr : NULL;
+        }
+
+        State state;
+    };
+
     tlInstanceBankResourceDirectory() : tlResourceDirectory<T>(), skiplist() {}
+
+    virtual T* Find(const tlFixedString& key)
+    {
+        return skiplist.Find(key);
+    }
+
+    virtual bool Del(T* const data)
+    {
+        return skiplist.Del(data);
+    }
+
+    virtual typename tlResourceDirectory<T>::Iterator* Enumerate()
+    {
+        void* memory = tlMemAlloc(sizeof(SkipListIterator), 8u, 0u);
+        if (!memory)
+            return NULL;
+        return new (memory) SkipListIterator(&skiplist);
+    }
+
+    virtual T* Add(T* data)
+    {
+        return skiplist.Add(data);
+    }
 
     tlSkipList<T, tlFixedString> skiplist;
 };
