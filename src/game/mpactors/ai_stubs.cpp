@@ -735,7 +735,7 @@
 }
 
 // ea: 0x0077C6C0  (?Actor_GetSuppressionPlanes@@YI?BHPAUactor_s@@QAY01MQAM@Z)
-    int __fastcall Actor_GetSuppressionPlanes(actor_s*, float (*)[2], float* const)
+    const int __fastcall Actor_GetSuppressionPlanes(actor_s*, float (*)[2], float* const)
 {
     return 0;
 }
