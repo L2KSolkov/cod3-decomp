@@ -268,6 +268,11 @@ protected:
         return buf;
     }
 
+    T* construct_array(int iCapacity, int iSize) {
+        (void)iSize;
+        return construct_array(iCapacity);
+    }
+
     // destroy_all — free the element buffer (no per-element destruction).
     // ?destroy_all@?$apsArray@T@@QAEXXZ (inline COMDATs)
     void destroy_all() {

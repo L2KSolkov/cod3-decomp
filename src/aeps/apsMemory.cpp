@@ -45,6 +45,72 @@ apsMemory::Config apsMemory::gConfig;   // @0xE49684 (default ctor runs)
 
 // apsSingleton<apsMemory::BlockManager>::InstancePtr() (explicit instantiation below)
 
+// IDA emits pointer-array construction as raw allocator calls: Pool* has no
+// constructor to run, so both overloads return uninitialised storage.
+template <>
+apsMemory::Pool** apsArray<apsMemory::Pool*>::construct_array(int iNumber) {
+    int old = apsCommon::SetPakAllocs(0);
+    apsMemory::Pool** result = (apsMemory::Pool**)apsCommon::GetAllocator()->MemAlign(
+        4 * iNumber, 4);
+    apsCommon::SetPakAllocs(old);
+    return result;
+}
+
+template <>
+apsMemory::Pool** apsArray<apsMemory::Pool*>::construct_array(int iCapacity, int iSize) {
+    (void)iSize;
+    int old = apsCommon::SetPakAllocs(0);
+    apsMemory::Pool** result = (apsMemory::Pool**)apsCommon::GetAllocator()->MemAlign(
+        4 * iCapacity, 4);
+    apsCommon::SetPakAllocs(old);
+    return result;
+}
+
+template <>
+apsSingleton<apsMemory::BlockManager>::apsSingleton() {
+    if (sInstancePtr != 0 &&
+        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
+                  "0 == sInstancePtr", "singleton already initialised"))
+        __debugbreak();
+    sInstancePtr = reinterpret_cast<apsMemory::BlockManager*>(this);
+}
+
+template <>
+apsSingleton<apsMemory::BlockManager>::~apsSingleton() {
+    if (sInstancePtr != 0) {
+        sInstancePtr = 0;
+    } else {
+        bool asserted = _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 104,
+                                  "sInstancePtr", "singleton not initialised");
+        sInstancePtr = 0;
+        if (asserted)
+            __debugbreak();
+    }
+}
+
+template <>
+apsSingleton<apsMemory::BlockAllocator>::apsSingleton() {
+    if (sInstancePtr != 0 &&
+        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
+                  "0 == sInstancePtr", "singleton already initialised"))
+        __debugbreak();
+    sInstancePtr = reinterpret_cast<apsMemory::BlockAllocator*>(
+        reinterpret_cast<unsigned char*>(this) - 4);
+}
+
+template <>
+apsSingleton<apsMemory::BlockAllocator>::~apsSingleton() {
+    if (sInstancePtr != 0) {
+        sInstancePtr = 0;
+    } else {
+        bool asserted = _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 104,
+                                  "sInstancePtr", "singleton not initialised");
+        sInstancePtr = 0;
+        if (asserted)
+            __debugbreak();
+    }
+}
+
 // ============================================================================
 // apsMemory::Pool::Init — set up the block array + free list.
 // ea: 0x7EC1E0
@@ -305,6 +371,41 @@ void apsMemory::Pool::Report() {
 // apsMemory::Pool::Pool / ~Pool
 // ea: 0x7EBCB0 / 0x7EC920
 // ============================================================================
+// ea: 0x7EBB60
+int apsMemory::Pool::PtrToIndex(void* pBlockData) {
+    return ((unsigned char*)pBlockData - mBlockData) / mBlockSize;
+}
+
+// ea: 0x7EBB80
+unsigned char* apsMemory::Pool::IndexToPtr(int index) {
+    return &mBlockData[index * mBlockSize];
+}
+
+// ea: 0x7EBBA0
+int apsMemory::Pool::NumBlocks() const {
+    return mNumBlocks;
+}
+
+// ea: 0x7EBBB0
+int apsMemory::Pool::BlockSize() const {
+    return mBlockSize;
+}
+
+// ea: 0x7EBBC0
+int apsMemory::Pool::NumBlocksUsed() const {
+    return mNumBlocksUsed;
+}
+
+// ea: 0x7EBBD0
+int apsMemory::Pool::NumBlocksFree() const {
+    return mNumBlocks - mNumBlocksUsed;
+}
+
+// ea: 0x7EBBE0
+unsigned int apsMemory::Pool::IsEmpty() const {
+    return mNumBlocksUsed == mNumBlocks;
+}
+
 apsMemory::Pool::Pool(PoolBlock* pBlocks) {
     mNumBlocks = 0;
     mNumBlocksUsed = 0;
@@ -346,11 +447,6 @@ void apsMemory::SetMaxModifiers(int maxModifiers) { gConfig.mMaxModifiers = maxM
 // ea: 0x7EC930
 // ============================================================================
 apsMemory::BlockManager::BlockManager(int memSize, int maxPools) {
-    if (apsSingleton<apsMemory::BlockManager>::sInstancePtr != 0 &&
-        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
-                  "0 == sInstancePtr", "singleton already initialised"))
-        __debugbreak();
-    apsSingleton<apsMemory::BlockManager>::sInstancePtr = this;
     mPools.mElements = 0;
     mPools.mCapacity = 0;
     mPools.mSize = 0;
@@ -454,6 +550,22 @@ apsMemory::BlockManager::~BlockManager() {
             __debugbreak();
         apsSingleton<apsMemory::BlockManager>::sInstancePtr = 0;
     }
+}
+
+// ea: 0x7ECD80
+void apsMemory::BlockManager::Save() {
+}
+
+// ea: 0x7ECD90
+void apsMemory::BlockManager::Restore() {
+}
+
+// ea: 0x7ECDA0
+void apsMemory::BlockManager::ResetReportCounters() {
+    mAllocFailures = 0;
+    mAllocSizeFailure = 0;
+    mAllocSuccesses = 0;
+    mAllocSizeSuccess = 0;
 }
 
 // ============================================================================
@@ -606,11 +718,6 @@ void apsMemory::BlockManager::FreeBlock(void* data) {
 // apsMemory::BlockAllocator — delegates to the BlockManager.
 // ============================================================================
 apsMemory::BlockAllocator::BlockAllocator() {
-    if (apsSingleton<apsMemory::BlockAllocator>::sInstancePtr != 0 &&
-        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
-                  "0 == sInstancePtr", "singleton already initialised"))
-        __debugbreak();
-    apsSingleton<apsMemory::BlockAllocator>::sInstancePtr = this;
 }
 
 void* apsMemory::BlockAllocator::MemAlign(unsigned int size, unsigned int alignment) {
@@ -808,6 +915,8 @@ apsAllocator* apsMemory::GetBlockAllocatorDirect() {
 // ============================================================================
 template class apsSingleton<apsMemory::BlockManager>;
 template class apsSingleton<apsMemory::BlockAllocator>;
+template class apsArray<apsMemory::Pool*>;
+template void apsDestroy<apsGroupManager>(apsGroupManager*);
 
 // apsSingleton<apsGroupManager>::InstancePtr() is owned by apsGroupMgr.o
 // (unported); referenced extern here, resolved by /FORCE:UNRESOLVED for now.

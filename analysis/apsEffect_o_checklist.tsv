@@ -110,8 +110,8 @@ index	status	map_line
 109	PORTED	0002:003efe00 ?resize_array@?$apsBlockArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@HH@Z 00BDF300 f i apsEffect.o
 110	PORTED	0002:003efe60 ?construct_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z 00BDF360 f i apsEffect.o
 111	PORTED	0002:003efeb0 ?resize_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z 00BDF3B0 f i apsEffect.o
-112	PORTED	0002:003eff10 ??0?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF410 f i apsEffect.o
-113	PORTED	0002:003eff50 ??1?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF450 f i apsEffect.o
+112	VERIFIED	0002:003eff10 ??0?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF410 f i apsEffect.o
+113	VERIFIED	0002:003eff50 ??1?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ 00BDF450 f i apsEffect.o
 114	PORTED	0002:003eff90 ??$Max@H@apsMath@@YAHABH0@Z 00BDF490 f i apsEffect.o
 115	PORTED	0002:003effb0 ??$Min@H@apsMath@@YAHABH0@Z 00BDF4B0 f i apsEffect.o
 116	VERIFIED	0002:003effd0 ?GetParam@apsAction@@QBEMH@Z 00BDF4D0 f i apsEffect.o

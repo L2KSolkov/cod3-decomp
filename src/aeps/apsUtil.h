@@ -17,8 +17,8 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // present in those emitted constructors.
 template <class T>
 struct apsSingleton {
-    apsSingleton() = default;
-    ~apsSingleton() = default;
+    apsSingleton() {}
+    ~apsSingleton() {}
 
     static T& Instance() {
         if (sInstancePtr == 0 &&

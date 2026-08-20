@@ -17348,13 +17348,13 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 17347	0x007EBB20	0x00BDB020	?Initialised@apsCommon@@SAIXZ	aeps_xboxr	apsCommon.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17348	0x007EBB30	0x00BDB030	??$apsDestroy@VapsError@@@@YAXPAVapsError@@@Z	aeps_xboxr	apsCommon.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17349	0x007EBB40	0x00BDB040	??0PoolBlock@Pool@apsMemory@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17350	0x007EBB60	0x00BDB060	?PtrToIndex@Pool@apsMemory@@QAEHPAX@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17351	0x007EBB80	0x00BDB080	?IndexToPtr@Pool@apsMemory@@QAEPAEH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17352	0x007EBBA0	0x00BDB0A0	?NumBlocks@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17353	0x007EBBB0	0x00BDB0B0	?BlockSize@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17354	0x007EBBC0	0x00BDB0C0	?NumBlocksUsed@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17355	0x007EBBD0	0x00BDB0D0	?NumBlocksFree@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17356	0x007EBBE0	0x00BDB0E0	?IsEmpty@Pool@apsMemory@@QBEIXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17350	0x007EBB60	0x00BDB060	?PtrToIndex@Pool@apsMemory@@QAEHPAX@Z	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
+17351	0x007EBB80	0x00BDB080	?IndexToPtr@Pool@apsMemory@@QAEPAEH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+17352	0x007EBBA0	0x00BDB0A0	?NumBlocks@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+17353	0x007EBBB0	0x00BDB0B0	?BlockSize@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+17354	0x007EBBC0	0x00BDB0C0	?NumBlocksUsed@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+17355	0x007EBBD0	0x00BDB0D0	?NumBlocksFree@Pool@apsMemory@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
+17356	0x007EBBE0	0x00BDB0E0	?IsEmpty@Pool@apsMemory@@QBEIXZ	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 17357	0x007EBBF0	0x00BDB0F0	?SetDefaults@Config@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17358	0x007EBC10	0x00BDB110	??0Config@apsMemory@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17359	0x007EBC30	0x00BDB130	?SetBufferSize@apsMemory@@YAXH@Z	aeps_xboxr	apsMemory.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -17405,40 +17405,40 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 17404	0x007ECCB0	0x00BDC1B0	?Reset@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17405	0x007ECCC0	0x00BDC1C0	?Reset@apsMemory@@YAXXZ	aeps_xboxr	apsMemory.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17406	0x007ECD00	0x00BDC200	?Term@apsMemory@@YAXXZ	aeps_xboxr	apsMemory.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17407	0x007ECD80	0x00BDC280	?Save@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17408	0x007ECD90	0x00BDC290	?Restore@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17409	0x007ECDA0	0x00BDC2A0	?ResetReportCounters@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17407	0x007ECD80	0x00BDC280	?Save@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17408	0x007ECD90	0x00BDC290	?Restore@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17409	0x007ECDA0	0x00BDC2A0	?ResetReportCounters@BlockManager@apsMemory@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	YES	YES	VERIFIED
 17410	0x007ECDB0	0x00BDC2B0	?InstancePtr@?$apsSingleton@VapsGroupManager@@@@SAPAVapsGroupManager@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17411	0x007ECDC0	0x00BDC2C0	??0?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17412	0x007ECE00	0x00BDC300	??1?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17411	0x007ECDC0	0x00BDC2C0	??0?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
+17412	0x007ECE00	0x00BDC300	??1?$apsSingleton@VBlockManager@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 17413	0x007ECE40	0x00BDC340	?InstancePtr@?$apsSingleton@VBlockManager@apsMemory@@@@SAPAVBlockManager@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17414	0x007ECE50	0x00BDC350	?Instance@?$apsSingleton@VBlockManager@apsMemory@@@@SAAAVBlockManager@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17415	0x007ECE80	0x00BDC380	??0?$apsArray@PAVPool@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17416	0x007ECE90	0x00BDC390	?size@?$apsArray@PAVPool@apsMemory@@@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17417	0x007ECEA0	0x00BDC3A0	??A?$apsArray@PAVPool@apsMemory@@@@QAEAAPAVPool@apsMemory@@H@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17418	0x007ECEF0	0x00BDC3F0	?begin@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17419	0x007ECF00	0x00BDC400	?end@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17420	0x007ECF10	0x00BDC410	??0?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17421	0x007ECF50	0x00BDC450	??1?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17415	0x007ECE80	0x00BDC380	??0?$apsArray@PAVPool@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17416	0x007ECE90	0x00BDC390	?size@?$apsArray@PAVPool@apsMemory@@@@QBEHXZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17417	0x007ECEA0	0x00BDC3A0	??A?$apsArray@PAVPool@apsMemory@@@@QAEAAPAVPool@apsMemory@@H@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17418	0x007ECEF0	0x00BDC3F0	?begin@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17419	0x007ECF00	0x00BDC400	?end@?$apsArray@PAVPool@apsMemory@@@@QAEPAPAVPool@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17420	0x007ECF10	0x00BDC410	??0?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
+17421	0x007ECF50	0x00BDC450	??1?$apsSingleton@VBlockAllocator@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	FIXED	FUNCTION status override	YES	YES	VERIFIED
 17422	0x007ECF90	0x00BDC490	?InstancePtr@?$apsSingleton@VBlockAllocator@apsMemory@@@@SAPAVBlockAllocator@apsMemory@@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17423	0x007ECFA0	0x00BDC4A0	?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@H@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17424	0x007ECFE0	0x00BDC4E0	?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@HH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17425	0x007ED020	0x00BDC520	?destroy_all@?$apsArray@PAVPool@apsMemory@@@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17423	0x007ECFA0	0x00BDC4A0	?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@H@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17424	0x007ECFE0	0x00BDC4E0	?construct_array@?$apsArray@PAVPool@apsMemory@@@@AAEPAPAVPool@apsMemory@@HH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17425	0x007ED020	0x00BDC520	?destroy_all@?$apsArray@PAVPool@apsMemory@@@@QAEXXZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 17426	0x007ED070	0x00BDC570	??$AEPS_VECTOR_NEW@UPoolBlock@Pool@apsMemory@@@@YAPAUPoolBlock@Pool@apsMemory@@HH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17427	0x007ED0D0	0x00BDC5D0	??$AEPS_VECTOR_DELETE@UPoolBlock@Pool@apsMemory@@@@YAXHPAUPoolBlock@Pool@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17427	0x007ED0D0	0x00BDC5D0	??$AEPS_VECTOR_DELETE@UPoolBlock@Pool@apsMemory@@@@YAXHPAUPoolBlock@Pool@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 17428	0x007ED0F0	0x00BDC5F0	??$apsDestroy@VBlockAllocator@apsMemory@@@@YAXPAVBlockAllocator@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17429	0x007ED100	0x00BDC600	??_GapsGroupManager@@QAEPAXI@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17430	0x007ED130	0x00BDC630	??0BlockAllocator@apsMemory@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17431	0x007ED170	0x00BDC670	??_EBlockAllocator@apsMemory@@UAEPAXI@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17432	0x007ED170	0x00BDC670	??_GBlockAllocator@apsMemory@@UAEPAXI@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-17433	0x007ED1A0	0x00BDC6A0	??1?$apsArray@PAVPool@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17434	0x007ED1F0	0x00BDC6F0	?reserve@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17435	0x007ED2C0	0x00BDC7C0	?resize@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17436	0x007ED390	0x00BDC890	?push_back@?$apsArray@PAVPool@apsMemory@@@@QAEIABQAVPool@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17437	0x007ED490	0x00BDC990	??$apsDestroy@VapsGroupManager@@@@YAXPAVapsGroupManager@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17438	0x007ED4A0	0x00BDC9A0	?MemAlign@BlockAllocator@apsMemory@@UBEPAXII@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17439	0x007ED4F0	0x00BDC9F0	?MemFree@BlockAllocator@apsMemory@@UBEXPAX@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17440	0x007ED530	0x00BDCA30	?MemResize@BlockAllocator@apsMemory@@UBEPAXPAXII@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17433	0x007ED1A0	0x00BDC6A0	??1?$apsArray@PAVPool@apsMemory@@@@QAE@XZ	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17434	0x007ED1F0	0x00BDC6F0	?reserve@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17435	0x007ED2C0	0x00BDC7C0	?resize@?$apsArray@PAVPool@apsMemory@@@@QAEIH@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17436	0x007ED390	0x00BDC890	?push_back@?$apsArray@PAVPool@apsMemory@@@@QAEIABQAVPool@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17437	0x007ED490	0x00BDC990	??$apsDestroy@VapsGroupManager@@@@YAXPAVapsGroupManager@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
+17438	0x007ED4A0	0x00BDC9A0	?MemAlign@BlockAllocator@apsMemory@@UBEPAXII@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17439	0x007ED4F0	0x00BDC9F0	?MemFree@BlockAllocator@apsMemory@@UBEXPAX@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+17440	0x007ED530	0x00BDCA30	?MemResize@BlockAllocator@apsMemory@@UBEPAXPAXII@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 17441	0x007ED580	0x00BDCA80	??_GBlockManager@apsMemory@@QAEPAXI@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17442	0x007ED5B0	0x00BDCAB0	??$apsDestroy@VBlockManager@apsMemory@@@@YAXPAVBlockManager@apsMemory@@@Z	aeps_xboxr	apsMemory.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 17443	0x007ED5C0	0x00BDCAC0	??Hmath@@YA?AVVector4@0@ABV10@ABVDir3@0@@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -17552,8 +17552,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 17551	0x007EFE00	0x00BDF300	?resize_array@?$apsBlockArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@HH@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17552	0x007EFE60	0x00BDF360	?construct_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17553	0x007EFEB0	0x00BDF3B0	?resize_array@?$apsBlockArray@UModifier@apsEffect@@@@AAEPAUModifier@apsEffect@@HH@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17554	0x007EFF10	0x00BDF410	??0?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-17555	0x007EFF50	0x00BDF450	??1?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+17554	0x007EFF10	0x00BDF410	??0?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+17555	0x007EFF50	0x00BDF450	??1?$apsSingleton@V?$PoolAllocator@VapsEffect@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 17556	0x007EFF90	0x00BDF490	??$Max@H@apsMath@@YAHABH0@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17557	0x007EFFB0	0x00BDF4B0	??$Min@H@apsMath@@YAHABH0@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 17558	0x007EFFD0	0x00BDF4D0	?GetParam@apsAction@@QBEMH@Z	aeps_xboxr	apsEffect.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -18290,8 +18290,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18289	0x00804180	0x00BF3680	?AddError@apsError@@QAAXW4eErrorType@1@PBDZZ	aeps_xboxr	apsError.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18290	0x008041C0	0x00BF36C0	??0apsError@@QAE@XZ	aeps_xboxr	apsError.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18291	0x00804290	0x00BF3790	??1apsError@@QAE@XZ	aeps_xboxr	apsError.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-18292	0x008042F0	0x00BF37F0	??0?$apsSingleton@VapsError@@@@QAE@XZ	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18293	0x00804330	0x00BF3830	??1?$apsSingleton@VapsError@@@@QAE@XZ	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18292	0x008042F0	0x00BF37F0	??0?$apsSingleton@VapsError@@@@QAE@XZ	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18293	0x00804330	0x00BF3830	??1?$apsSingleton@VapsError@@@@QAE@XZ	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18294	0x00804370	0x00BF3870	??$AEPS_VECTOR_NEW@UErrorMessage@apsError@@@@YAPAUErrorMessage@apsError@@HH@Z	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18295	0x008043B0	0x00BF38B0	??$AEPS_VECTOR_DELETE@UErrorMessage@apsError@@@@YAXHPAUErrorMessage@apsError@@@Z	aeps_xboxr	apsError.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18296	0x008043D0	0x00BF38D0	?Multiply@apsMath@@YA?AVVector4@math@@ABV23@0@Z	aeps_xboxr	apsShrimpRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -18411,8 +18411,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18410	0x00806160	0x00BF5660	?RegisterPShader@apsBillboardRenderPixel@@YAXXZ	aeps_xboxr	apsBillboardRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18411	0x00806180	0x00BF5680	?InitPShader@apsBillboardRenderPixel@@YAXXZ	aeps_xboxr	apsBillboardRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18412	0x008061A0	0x00BF56A0	??$DefaultRender@VapsBillboardRenderer@@VapsBillboardNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAV0@ABUapsRendererRenderInfo@@@Z	aeps_xboxr	apsBillboardRenderer.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18413	0x008062A0	0x00BF57A0	??0?$apsSingleton@VapsGroupManager@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18414	0x008062E0	0x00BF57E0	??1?$apsSingleton@VapsGroupManager@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18413	0x008062A0	0x00BF57A0	??0?$apsSingleton@VapsGroupManager@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18414	0x008062E0	0x00BF57E0	??1?$apsSingleton@VapsGroupManager@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18415	0x00806320	0x00BF5820	??0?$apsArray@PAVapsGroup@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18416	0x00806330	0x00BF5830	?size@?$apsArray@PAVapsGroup@@@@QBEHXZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18417	0x00806340	0x00BF5840	??A?$apsArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -18426,8 +18426,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18425	0x00806430	0x00BF5930	?GetPool@?$PoolAllocator@VapsGroup@@@apsMemory@@QAEAAVPool@2@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18426	0x00806440	0x00BF5940	?construct_array@?$apsArray@PAVapsGroup@@@@AAEPAPAVapsGroup@@HH@Z	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 18427	0x00806480	0x00BF5980	?destroy_all@?$apsArray@PAVapsGroup@@@@QAEXXZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18428	0x008064D0	0x00BF59D0	??0?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-18429	0x00806510	0x00BF5A10	??1?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18428	0x008064D0	0x00BF59D0	??0?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+18429	0x00806510	0x00BF5A10	??1?$apsSingleton@V?$PoolAllocator@VapsGroup@@@apsMemory@@@@QAE@XZ	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18430	0x00806550	0x00BF5A50	??$AEPS_VECTOR_NEW@VapsGroup@@@@YAPAVapsGroup@@HH@Z	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18431	0x008065A0	0x00BF5AA0	??_GapsGroup@@QAEPAXI@Z	aeps_xboxr	apsGroupMgr.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 18432	0x008065D0	0x00BF5AD0	?TestAlloc@apsGroupManager@@QAEIH@Z	aeps_xboxr	apsGroupMgr.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

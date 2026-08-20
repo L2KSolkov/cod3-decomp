@@ -52,7 +52,8 @@ static_assert(sizeof(Config) == 0x0C, "apsMemory::Config size mismatch");
 // ============================================================================
 // Pool — fixed-size-block memory pool (36 bytes).
 // ============================================================================
-struct Pool {
+class Pool {
+public:
     struct PoolBlock {     // 8 bytes
         short   mIndex;    // +0x00
         short   mNext;     // +0x02
@@ -126,13 +127,13 @@ struct Pool {
     static int CalcDataOverhead(int numBlocks, int blockSize);  // ?CalcDataOverhead@Pool@apsMemory@@SAHHH@Z
 
     // ---- inline accessors ----
-    int NumBlocks() const { return mNumBlocks; }            // ?NumBlocks@Pool@apsMemory@@QBEHXZ
-    int BlockSize() const { return mBlockSize; }            // ?BlockSize@Pool@apsMemory@@QBEHXZ
-    int NumBlocksUsed() const { return mNumBlocksUsed; }    // ?NumBlocksUsed@Pool@apsMemory@@QBEHXZ
-    int NumBlocksFree() const { return mNumBlocks - mNumBlocksUsed; }  // ?NumBlocksFree@Pool@apsMemory@@QBEHXZ
-    int IsEmpty() const { return mNumBlocksUsed == mNumBlocks; }  // ?IsEmpty@Pool@apsMemory@@QBEIXZ
-    int PtrToIndex(void* pBlockData) { return ((int*)pBlockData - (int*)mBlockData) / mBlockSize; }  // ?PtrToIndex@Pool@apsMemory@@QAEHPAX@Z
-    unsigned char* IndexToPtr(int index) { return &mBlockData[index * mBlockSize]; }  // ?IndexToPtr@Pool@apsMemory@@QAEPAEH@Z
+    int NumBlocks() const;            // ?NumBlocks@Pool@apsMemory@@QBEHXZ
+    int BlockSize() const;            // ?BlockSize@Pool@apsMemory@@QBEHXZ
+    int NumBlocksUsed() const;        // ?NumBlocksUsed@Pool@apsMemory@@QBEHXZ
+    int NumBlocksFree() const;        // ?NumBlocksFree@Pool@apsMemory@@QBEHXZ
+    unsigned int IsEmpty() const;     // ?IsEmpty@Pool@apsMemory@@QBEIXZ
+    int PtrToIndex(void* pBlockData); // ?PtrToIndex@Pool@apsMemory@@QAEHPAX@Z
+    unsigned char* IndexToPtr(int index); // ?IndexToPtr@Pool@apsMemory@@QAEPAEH@Z
 };
 static_assert(sizeof(Pool) == 0x24, "apsMemory::Pool size mismatch");
 
@@ -175,14 +176,9 @@ public:
     unsigned int Free(void* pBlock);                  // ?Free@BlockManager@apsMemory@@QAEIPAX@Z
     void* Resize(void* pBlock, int newSize);          // ?Resize@BlockManager@apsMemory@@QAEPAXPAXH@Z
     void Report();                                    // ?Report@BlockManager@apsMemory@@QAEXXZ
-    void Save() {}                                    // ?Save@BlockManager@apsMemory@@QAEXXZ (stub)
-    void Restore() {}                                 // ?Restore@BlockManager@apsMemory@@QAEXXZ (stub)
-    void ResetReportCounters() {                      // ?ResetReportCounters@BlockManager@apsMemory@@QAEXXZ
-        mAllocFailures = 0;
-        mAllocSizeFailure = 0;
-        mAllocSuccesses = 0;
-        mAllocSizeSuccess = 0;
-    }
+    void Save();                                      // ?Save@BlockManager@apsMemory@@QAEXXZ
+    void Restore();                                   // ?Restore@BlockManager@apsMemory@@QAEXXZ
+    void ResetReportCounters();                       // ?ResetReportCounters@BlockManager@apsMemory@@QAEXXZ
 };
 static_assert(sizeof(BlockManager) == 0x1C, "BlockManager size mismatch");
 
