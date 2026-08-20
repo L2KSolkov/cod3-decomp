@@ -313,3 +313,12 @@ phys_constraint_solver_multithreaded.o	?pulse_chain_within_limits@pulse_sum_whee
 phys_constraint_solver_multithreaded.o	?clamp_pulse_sum_pulse_chain@pulse_sum_wheel@@AAE?B_NPAM0@Z	FIXED
 phys_constraint_solver_multithreaded.o	?addp_pulse_chain@pulse_sum_wheel@@AAEXXZ	FIXED
 phys_constraint_solver_multithreaded.o	?SOLVER_solver_intermediate@pulse_sum_wheel@@AAEXHM@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	?apply@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABUvec2@2@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?clamp_n@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z	PORTED
+phys_constraint_solver_multithreaded.o	?clamp_f@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z	PORTED
+phys_constraint_solver_multithreaded.o	?project@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z	PORTED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_intermediate@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?set_pulse_sum_cache@psc_cpi@pulse_sum_contact@@QAEXPAV2@PAVpulse_sum_cache@@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?SOLVER_solver_intermediate@pulse_sum_contact@@AAEXHM@Z	PORTED
+phys_constraint_solver_multithreaded.o	??0psc_cpi@pulse_sum_contact@@QAE@XZ	FIXED
+phys_constraint_solver_multithreaded.o	?list_urbri_restore@pulse_sum_constraint_solver@@QAEXPAVuser_rigid_body_restore_info@1@@Z	VERIFIED

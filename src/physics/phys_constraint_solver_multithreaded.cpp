@@ -700,7 +700,7 @@ void pulse_sum_constraint_solver::solve_iterative(int max_iters, float max_error
                     pulse_sum_contact::vec2 v41;
                     v41.x = m_list_cpi->m_pulse_sum.x - v29;
                     v41.y = m_list_cpi->m_pulse_sum.y - v40;
-                    m_list_cpi->apply(m_list_cpi, &v41);
+                    m_list_cpi->apply(m_next_link, &v41);
                     float v34 = (m_list_cpi->m_denom_yy * v41.y) * (m_list_cpi->m_denom_yy * v41.y);
                     float dx = (m_list_cpi->m_denom_xx * v41.x) * (m_list_cpi->m_denom_xx * v41.x);
                     if (dx > error_sq)
@@ -1573,11 +1573,11 @@ void pulse_sum_wheel::SOLVER_solver_intermediate(int iter, float delta_t) {
 // ============================================================================
 // pulse_sum_contact::psc_cpi row methods
 // ============================================================================
-void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(psc_cpi* self, float* error_sq) {
+void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(pulse_sum_contact* psc, float* error_sq) {
     // ea: 0x897200
     vec2 m_last_pulse_sum = m_pulse_sum;
     vec2 objective;
-    get_objective(self, &objective);
+    get_objective(this, &objective);
     float v6 = m_pulse_sum.x - ((objective.x - m_right_side.x) / m_denom_xx);
     m_pulse_sum.x = v6;
     if (v6 > 0.0f)
@@ -1585,7 +1585,7 @@ void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(psc_cpi* self, float* e
     float v5 = objective.y - m_right_side.y;
     float v7 = m_pulse_sum.y - ((((m_pulse_sum.x - m_last_pulse_sum.x) * m_denom_xy) + v5) / m_denom_yy);
     m_pulse_sum.y = v7;
-    float v8 = 0.0f - (((pulse_sum_contact*)self)->m_fric_coef * m_pulse_sum.x);
+    float v8 = 0.0f - (psc->m_fric_coef * m_pulse_sum.x);
     if (v7 <= v8) {
         if ((0.0f - v8) > v7)
             m_pulse_sum.y = 0.0f - v8;
@@ -1595,7 +1595,7 @@ void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(psc_cpi* self, float* e
     vec2 delta_pulse_sum;
     delta_pulse_sum.x = m_pulse_sum.x - m_last_pulse_sum.x;
     delta_pulse_sum.y = m_pulse_sum.y - m_last_pulse_sum.y;
-    apply(self, &delta_pulse_sum);
+    apply(psc, &delta_pulse_sum);
     float v9 = (m_denom_xx * delta_pulse_sum.x) * (m_denom_xx * delta_pulse_sum.x);
     float v10 = (delta_pulse_sum.y * m_denom_yy) * (delta_pulse_sum.y * m_denom_yy);
     if (v9 > *error_sq)
@@ -1604,10 +1604,10 @@ void pulse_sum_contact::psc_cpi::SOLVER_apply_relaxation(psc_cpi* self, float* e
         *error_sq = v10;
 }
 
-void pulse_sum_contact::psc_cpi::SOLVER_solver_prolog(psc_cpi* self, int iter, float delta_t) {
+void pulse_sum_contact::psc_cpi::SOLVER_solver_prolog(pulse_sum_contact* psc, int iter, float delta_t) {
     // ea: 0x897160
     vec2 vel;
-    get_vel(self, &vel);
+    get_vel(this, &vel);
     m_right_side.x -= vel.x;
     m_right_side.y -= vel.y;
     if (m_pulse_sum_cache->m_visit_key != iter)
@@ -1620,17 +1620,18 @@ void pulse_sum_contact::psc_cpi::SOLVER_solver_prolog(psc_cpi* self, int iter, f
     m_pulse_sum.y = v9->m_pulse_sum * delta_t;
     if (m_pulse_sum.x > 0.0f)
         m_pulse_sum.x = 0.0f;
-    float v11 = 0.0f - (((pulse_sum_contact*)self)->m_fric_coef * m_pulse_sum.x);
+    float v11 = 0.0f - (psc->m_fric_coef * m_pulse_sum.x);
     if (m_pulse_sum.y <= v11) {
         if ((0.0f - v11) > m_pulse_sum.y)
             m_pulse_sum.y = 0.0f - v11;
     } else {
         m_pulse_sum.y = v11;
     }
-    apply(self, &m_pulse_sum);
+    apply(psc, &m_pulse_sum);
 }
 
-void pulse_sum_contact::psc_cpi::SOLVER_solver_intermediate(psc_cpi* self, int iter, float delta_t) {
+void pulse_sum_contact::psc_cpi::SOLVER_solver_intermediate(pulse_sum_contact* psc, int iter, float delta_t) {
+    (void)psc;
     float inv_dt = 1.0f / delta_t;
     m_pulse_sum_cache->m_pulse_sum = m_pulse_sum.x * inv_dt;
     m_pulse_sum_cache->m_visit_key = iter;
@@ -1638,8 +1639,57 @@ void pulse_sum_contact::psc_cpi::SOLVER_solver_intermediate(psc_cpi* self, int i
     m_pulse_sum_cache[1].m_visit_key = iter;
 }
 
-void pulse_sum_contact::psc_cpi::set_pulse_sum_cache(psc_cpi* self, pulse_sum_cache* cache) {
+void pulse_sum_contact::psc_cpi::set_pulse_sum_cache(pulse_sum_contact* psc, pulse_sum_cache* cache) {
+    (void)psc;
     m_pulse_sum_cache = cache;
+}
+
+void pulse_sum_contact::psc_cpi::clamp_n(pulse_sum_contact* psc) {
+    (void)psc;
+    if (m_pulse_sum.x > 0.0f)
+        m_pulse_sum.x = 0.0f;
+}
+
+void pulse_sum_contact::psc_cpi::clamp_f(pulse_sum_contact* psc) {
+    float v2 = 0.0f - (m_pulse_sum.x * psc->m_fric_coef);
+    if (m_pulse_sum.y <= v2) {
+        if ((0.0f - v2) > m_pulse_sum.y)
+            m_pulse_sum.y = 0.0f - v2;
+    } else {
+        m_pulse_sum.y = v2;
+    }
+}
+
+void pulse_sum_contact::psc_cpi::project(pulse_sum_contact* psc) {
+    vec2* p_m_pulse_sum = &m_pulse_sum;
+    if (m_pulse_sum.x > 0.0f)
+        p_m_pulse_sum->x = 0.0f;
+    float v3 = 0.0f - (psc->m_fric_coef * p_m_pulse_sum->x);
+    if (m_pulse_sum.y <= v3) {
+        if ((0.0f - v3) > m_pulse_sum.y)
+            m_pulse_sum.y = 0.0f - v3;
+        apply(psc, p_m_pulse_sum);
+    } else {
+        m_pulse_sum.y = v3;
+        apply(psc, p_m_pulse_sum);
+    }
+}
+
+void pulse_sum_contact::SOLVER_solver_intermediate(int iter, float delta_t) {
+    psc_cpi* begin = m_list_cpi;
+    psc_cpi* end = begin + m_list_cpi_count;
+    if (begin != end) {
+        float inv_dt = 1.0f / delta_t;
+        do {
+            pulse_sum_cache* cache = begin->m_pulse_sum_cache;
+            cache->m_visit_key = iter;
+            cache->m_pulse_sum = begin->m_pulse_sum.x * inv_dt;
+            cache[1].m_pulse_sum = begin->m_pulse_sum.y * inv_dt;
+            cache[1].m_visit_key = iter;
+            begin->m_right_side.x = begin->m_big_dirt + begin->m_right_side.x;
+            ++begin;
+        } while (begin != end);
+    }
 }
 
 const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_vel(psc_cpi* self, vec2* result) {
@@ -1700,9 +1750,8 @@ const pulse_sum_contact::vec2* pulse_sum_contact::psc_cpi::get_objective(psc_cpi
     return result;
 }
 
-void pulse_sum_contact::psc_cpi::apply(psc_cpi* self, const vec2* s_) {
+void pulse_sum_contact::psc_cpi::apply(pulse_sum_contact* psc, const vec2* s_) {
     // ea: 0x892FB0 - apply 2D impulse (n + f1) to both bodies.
-    pulse_sum_contact* psc = (pulse_sum_contact*)self;
     pulse_sum_node* m_b1 = psc->m_b1;
     __m128 n_imp = _mm_mul_ps(psc->m_ud_n.v, _mm_set1_ps(s_->x));
     __m128 f_imp = _mm_mul_ps(m_ud_f1.v, _mm_set1_ps(s_->y));
@@ -2172,7 +2221,7 @@ void pulse_sum_constraint_solver::solve_constraints() {
          c != NULL; c = c->m_link.m_next_link) {
         for (pulse_sum_contact::psc_cpi* cp = c->m_list_cpi;
              cp != &c->m_list_cpi[c->m_list_cpi_count]; ++cp)
-            cp->SOLVER_solver_prolog(cp, m_si.m_psc_visit_counter, m_si.m_delta_t);
+            cp->SOLVER_solver_prolog(c, m_si.m_psc_visit_counter, m_si.m_delta_t);
     }
     solve_iterative(m_si.m_max_vel_iters, m_si.m_max_vel_error_sq);
     for (pulse_sum_normal* kk = m_list_pulse_sum_normal.m_first; kk != NULL; kk = kk->m_link.m_next_link) {
@@ -2189,11 +2238,8 @@ void pulse_sum_constraint_solver::solve_constraints() {
     }
     for (pulse_sum_wheel* i1 = m_list_pulse_sum_wheel.m_first; i1 != NULL; i1 = i1->m_link.m_next_link)
         i1->SOLVER_solver_intermediate(m_si.m_next_psc_visit_counter, m_si.m_delta_t);
-    for (pulse_sum_contact* i2 = m_list_pulse_sum_contact.m_first; i2 != NULL; i2 = i2->m_link.m_next_link) {
-        for (pulse_sum_contact::psc_cpi* cp = i2->m_list_cpi;
-             cp != &i2->m_list_cpi[i2->m_list_cpi_count]; ++cp)
-            cp->SOLVER_solver_intermediate(cp, m_si.m_next_psc_visit_counter, m_si.m_delta_t);
-    }
+    for (pulse_sum_contact* i2 = m_list_pulse_sum_contact.m_first; i2 != NULL; i2 = i2->m_link.m_next_link)
+        i2->SOLVER_solver_intermediate(m_si.m_next_psc_visit_counter, m_si.m_delta_t);
     solve_iterative(m_si.m_max_vel_pos_iters, m_si.m_max_vel_pos_error_sq);
     bool any_stable = false;
     for (pulse_sum_node* m_first = m_list_pulse_sum_node.m_first;

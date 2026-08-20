@@ -240,6 +240,7 @@ struct pulse_sum_contact {
     int        m_list_cpi_count;                   // +0x30
 
     void set(rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t);
+    void SOLVER_solver_intermediate(int iter, float delta_t);
     static double get_std_max_penalty_restitution_vel();
 };
 static_assert(sizeof(pulse_sum_contact) == 0x40, "pulse_sum_contact size mismatch");
@@ -263,17 +264,7 @@ struct pulse_sum_contact::psc_cpi {
     float      m_denom_xy;                        // +0x8C
     pulse_sum_cache* m_pulse_sum_cache;           // +0x90
 
-    psc_cpi() {  // ea: 0x893250
-        m_pulse_sum.x = 0.0f;
-        m_pulse_sum.y = 0.0f;
-        m_right_side.x = 0.0f;
-        m_right_side.y = 0.0f;
-        m_big_dirt = 0.0f;
-        m_denom_xx = 0.0f;
-        m_denom_yy = 0.0f;
-        m_denom_xy = 0.0f;
-        m_pulse_sum_cache = NULL;
-    }
+    psc_cpi() {}  // ea: 0x893250
 
     const math::Dir3* object_vel_();
     const math::Dir3* object_col_pt_();
@@ -289,14 +280,14 @@ struct pulse_sum_contact::psc_cpi {
                                     float delta_t, float max_penalty_restitution_vel);
     void  calc_fric_dir(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
     void  calc_abs_and_fric_dir(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
-    void  apply(psc_cpi* self, const vec2* s_);
-    void  clamp_n(psc_cpi* self);
-    void  clamp_f(psc_cpi* self);
-    void  project(psc_cpi* self);
-    void  SOLVER_solver_intermediate(psc_cpi* self, int iter, float delta_t);
-    void  SOLVER_solver_prolog(psc_cpi* self, int iter, float delta_t);
-    void  SOLVER_apply_relaxation(psc_cpi* self, float* error_sq);
-    void  set_pulse_sum_cache(psc_cpi* self, pulse_sum_cache* cache);
+    void  apply(pulse_sum_contact* psc, const vec2* s_);
+    void  clamp_n(pulse_sum_contact* psc);
+    void  clamp_f(pulse_sum_contact* psc);
+    void  project(pulse_sum_contact* psc);
+    void  SOLVER_solver_intermediate(pulse_sum_contact* psc, int iter, float delta_t);
+    void  SOLVER_solver_prolog(pulse_sum_contact* psc, int iter, float delta_t);
+    void  SOLVER_apply_relaxation(pulse_sum_contact* psc, float* error_sq);
+    void  set_pulse_sum_cache(pulse_sum_contact* psc, pulse_sum_cache* cache);
     const vec2* get_vel(psc_cpi* self, vec2* result);
     const vec2* get_objective(psc_cpi* self, vec2* result);
 };

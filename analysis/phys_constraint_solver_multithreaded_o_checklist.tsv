@@ -59,15 +59,15 @@ index	status	map_line
 58	FIXED	0002:00492d10 ?clamp_pulse_sum_pulse_chain@pulse_sum_wheel@@AAE?B_NPAM0@Z 00C82210 f i phys_constraint_solver_multithreaded.o
 59	FIXED	0002:00492e00 ?addp_pulse_chain@pulse_sum_wheel@@AAEXXZ 00C82300 f i phys_constraint_solver_multithreaded.o
 60	VERIFIED	0002:00492f10 ?SOLVER_solver_intermediate@pulse_sum_wheel@@AAEXHM@Z 00C82410 f i phys_constraint_solver_multithreaded.o
-61	PENDING	0002:00492fb0 ?apply@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABUvec2@2@@Z 00C824B0 f i phys_constraint_solver_multithreaded.o
-62	PENDING	0002:004930a0 ?clamp_n@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825A0 f i phys_constraint_solver_multithreaded.o
-63	PENDING	0002:004930c0 ?clamp_f@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825C0 f i phys_constraint_solver_multithreaded.o
-64	PENDING	0002:00493100 ?project@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C82600 f i phys_constraint_solver_multithreaded.o
-65	PENDING	0002:00493160 ?SOLVER_solver_intermediate@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z 00C82660 f i phys_constraint_solver_multithreaded.o
-66	PENDING	0002:004931c0 ?set_pulse_sum_cache@psc_cpi@pulse_sum_contact@@QAEXPAV2@PAVpulse_sum_cache@@@Z 00C826C0 f i phys_constraint_solver_multithreaded.o
-67	PENDING	0002:004931d0 ?SOLVER_solver_intermediate@pulse_sum_contact@@AAEXHM@Z 00C826D0 f i phys_constraint_solver_multithreaded.o
-68	PENDING	0002:00493250 ??0psc_cpi@pulse_sum_contact@@QAE@XZ 00C82750 f i phys_constraint_solver_multithreaded.o
-69	PENDING	0002:00493260 ?list_urbri_restore@pulse_sum_constraint_solver@@QAEXPAVuser_rigid_body_restore_info@1@@Z 00C82760 f i phys_constraint_solver_multithreaded.o
+61	FIXED	0002:00492fb0 ?apply@psc_cpi@pulse_sum_contact@@QAEXPAV2@ABUvec2@2@@Z 00C824B0 f i phys_constraint_solver_multithreaded.o
+62	PORTED	0002:004930a0 ?clamp_n@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825A0 f i phys_constraint_solver_multithreaded.o
+63	PORTED	0002:004930c0 ?clamp_f@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C825C0 f i phys_constraint_solver_multithreaded.o
+64	PORTED	0002:00493100 ?project@psc_cpi@pulse_sum_contact@@QAEXPAV2@@Z 00C82600 f i phys_constraint_solver_multithreaded.o
+65	FIXED	0002:00493160 ?SOLVER_solver_intermediate@psc_cpi@pulse_sum_contact@@QAEXPAV2@HM@Z 00C82660 f i phys_constraint_solver_multithreaded.o
+66	FIXED	0002:004931c0 ?set_pulse_sum_cache@psc_cpi@pulse_sum_contact@@QAEXPAV2@PAVpulse_sum_cache@@@Z 00C826C0 f i phys_constraint_solver_multithreaded.o
+67	PORTED	0002:004931d0 ?SOLVER_solver_intermediate@pulse_sum_contact@@AAEXHM@Z 00C826D0 f i phys_constraint_solver_multithreaded.o
+68	FIXED	0002:00493250 ??0psc_cpi@pulse_sum_contact@@QAE@XZ 00C82750 f i phys_constraint_solver_multithreaded.o
+69	VERIFIED	0002:00493260 ?list_urbri_restore@pulse_sum_constraint_solver@@QAEXPAVuser_rigid_body_restore_info@1@@Z 00C82760 f i phys_constraint_solver_multithreaded.o
 70	VERIFIED	0002:00493290 ?set_solver_params@pulse_sum_constraint_solver@@QAEXHHHH@Z 00C82790 f i phys_constraint_solver_multithreaded.o
 71	VERIFIED	0002:004932b0 ?init@phys_constraint_solver_multithreaded@@YAXXZ 00C827B0 f phys_constraint_solver_multithreaded.o
 72	VERIFIED	0002:004932c0 ?shutdown@phys_constraint_solver_multithreaded@@YAXXZ 00C827C0 f phys_constraint_solver_multithreaded.o
