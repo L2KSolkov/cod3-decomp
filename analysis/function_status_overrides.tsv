@@ -1058,3 +1058,11 @@ nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponent
 nal_init.o	?Skip@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	??0?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@IAE@XZ	SKIPPED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z	PORTED
