@@ -582,45 +582,47 @@ bool InGameOptionsMenu::ResponseNoJustGoBackToPauseMenu(int client)
 // ea: 0x0057D300
 void InGameOptionsMenu::AddOptionsToCombos()
 {
-    for (int i = 0; i < 4; ++i)
+    for (const char* const* p = pszStickLayout; p < pszButtonLayout; ++p)
     {
-        Broc::string v16(pszStickLayout[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[0])->AddOption(v16);
     }
 
-    for (int i = 0; i < 4; ++i)
+    for (const char* const* p = pszButtonLayout; p < pszInvertAim; ++p)
     {
-        Broc::string v16(pszButtonLayout[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[1])->AddOption(v16);
     }
 
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = pszInvertAim; p < pszToggleADS; ++p)
     {
-        Broc::string v16(pszInvertAim[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[4])->AddOption(v16);
     }
 
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = pszToggleADS; p < pszStickyAim; ++p)
     {
-        Broc::string v16(pszToggleADS[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[5])->AddOption(v16);
     }
 
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = pszStickyAim; p < pszAlternateTankControls;
+         ++p)
     {
-        Broc::string v16(pszStickyAim[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[6])->AddOption(v16);
     }
 
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = pszAlternateTankControls; p < pszVibration;
+         ++p)
     {
-        Broc::string v16(pszAlternateTankControls[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[7])->AddOption(v16);
     }
 
-    for (int i = 0; i < 2; ++i)
+    for (const char* const* p = pszVibration; p < g_XBoxBadDiskWarnings; ++p)
     {
-        Broc::string v16(pszVibration[i]);
+        Broc::string v16(*p);
         ((FEComboBox*)entries[8])->AddOption(v16);
     }
 }
