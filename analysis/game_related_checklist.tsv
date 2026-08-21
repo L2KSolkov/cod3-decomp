@@ -2199,16 +2199,16 @@ index	status	map_line
 2198	PORTED	0002:000dd310 ??2PathNodeMgr@@SAPAXIPAX@Z 008CC810 f i core.o
 2199	VERIFIED	0002:000dd320 ?CreateInst@PathNodeMgr@@SAXXZ 008CC820 f i core.o VERIFIED: existing CreateInst body matches IDA
 2200	VERIFIED	0002:000dd410 ?DeleteInst@PathNodeMgr@@SAXXZ 008CC910 f i core.o
-2201	PORTED	0002:000dd490 ??2TestFPS@@SAPAXIPAX@Z 008CC990 f i core.o
+2201	PORTED	0002:000dd490 ??2TestFPS@@SAPAXIPAX@Z 008CC990 f i core.o PORTED: IDA placement allocator returns p
 2202	VERIFIED	0002:000dd4a0 ?CreateInst@TestFPS@@SAXXZ 008CC9A0 f i core.o
 2203	SKIPPED	0002:000dd5a0 ??_GTestFPS@@QAEPAXI@Z 008CCAA0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2204	PORTED	0002:000dd5d0 ??2CtrlIcon@@SAPAXIPAX@Z 008CCAD0 f i core.o
-2205	PORTED	0002:000dd5e0 ?SetAllocator@tagInfo_t@@SAXPAVPoolAllocator@@@Z 008CCAE0 f i core.o
-2206	PORTED	0002:000dd5f0 ?SetAllocator@CurveEffectListElem@@SAXPAVPoolAllocator@@@Z 008CCAF0 f i core.o
-2207	PORTED	0002:000dd600 ?SetAllocator@Curve@@SAXPAVPoolAllocator@@@Z 008CCB00 f i core.o
-2208	PORTED	0002:000dd610 ?SetAllocator@CurveEvalFunc@@SAXPAVPoolAllocator@@@Z 008CCB10 f i core.o
-2209	PORTED	0002:000dd620 ??2CurveManager@@SAPAXIPAX@Z 008CCB20 f i core.o
-2210	PORTED	0002:000dd630 ?Inst@CurveManager@@SAPAV1@XZ 008CCB30 f i core.o
+2204	PORTED	0002:000dd5d0 ??2CtrlIcon@@SAPAXIPAX@Z 008CCAD0 f i core.o PORTED: IDA placement allocator returns p
+2205	PORTED	0002:000dd5e0 ?SetAllocator@tagInfo_t@@SAXPAVPoolAllocator@@@Z 008CCAE0 f i core.o PORTED: IDA assigns sAllocator
+2206	PORTED	0002:000dd5f0 ?SetAllocator@CurveEffectListElem@@SAXPAVPoolAllocator@@@Z 008CCAF0 f i core.o PORTED: IDA assigns sAllocator
+2207	PORTED	0002:000dd600 ?SetAllocator@Curve@@SAXPAVPoolAllocator@@@Z 008CCB00 f i core.o PORTED: IDA assigns sAllocator
+2208	PORTED	0002:000dd610 ?SetAllocator@CurveEvalFunc@@SAXPAVPoolAllocator@@@Z 008CCB10 f i core.o PORTED: IDA assigns sAllocator
+2209	PORTED	0002:000dd620 ??2CurveManager@@SAPAXIPAX@Z 008CCB20 f i core.o PORTED: IDA placement allocator returns p
+2210	PORTED	0002:000dd630 ?Inst@CurveManager@@SAPAV1@XZ 008CCB30 f i core.o PORTED: IDA returns sInst
 2211	PORTED	0002:000dd640 ?CreateInst@CurveManager@@SAXXZ 008CCB40 f i core.o
 2212	PORTED	0002:000dd740 ?SetAllocator@CurveManager@@SAXPAVPoolAllocator@@@Z 008CCC40 f i core.o
 2213	SKIPPED	0002:000dd750 ??_GCurveManager@@AAEPAXI@Z 008CCC50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
