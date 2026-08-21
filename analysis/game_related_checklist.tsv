@@ -3515,10 +3515,10 @@ index	status	map_line
 3514	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o  PORTED: IDA-backed polynomial Slerp implemented
 3515	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o  PORTED: IDA-backed modifier list cleanup implemented
 3516	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o  PORTED: IDA-backed quaternion matrix expansion implemented
-3517	PORTED	0002:00117180 ?GetZone@NodeHandle@PathNodes@@QBEGXZ 00906680 f i game2.o
-3518	PORTED	0002:00117190 ?GetValue@NodeHandle@PathNodes@@QBEGXZ 00906690 f i game2.o
-3519	PORTED	0002:001171a0 ?ClearStats@clientPersistent_t@@QAEXXZ 009066A0 f i game2.o
-3520	PORTED	0002:001171d0 ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ 009066D0 f i game2.o
+3517	PORTED	0002:00117180 ?GetZone@NodeHandle@PathNodes@@QBEGXZ 00906680 f i game2.o  PORTED: IDA-backed const accessor returns 0
+3518	PORTED	0002:00117190 ?GetValue@NodeHandle@PathNodes@@QBEGXZ 00906690 f i game2.o  PORTED: IDA-backed const accessor returns mValue
+3519	PORTED	0002:001171a0 ?ClearStats@clientPersistent_t@@QAEXXZ 009066A0 f i game2.o  PORTED: IDA-backed 0x194-byte clear plus mStats[6][28] and mBaseScore stores
+3520	PORTED	0002:001171d0 ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ 009066D0 f i game2.o  PORTED: IDA-backed static sHandler accessor
 3521	PORTED	0002:001171e0 ?GetTaskId@EntityDeathTask@@SA?AVFourCC@@XZ 009066E0 f i game2.o
 3522	VERIFIED	0002:00117200 ??0BoundingBox@@QAE@XZ 00906700 f i game2.o
 3523	PORTED	0002:00117290 ??1BoundingBox@@QAE@XZ 00906790 f i game2.o
