@@ -476,6 +476,8 @@ public:
         dlist_node* m_next;
         dlist_node* m_prev;
 
+        dlist_node(dlist_node* next, dlist_node* prev)
+            : m_next(next), m_prev(prev) {}
         void pop();
     };
 
@@ -506,6 +508,7 @@ public:
     dlist_node* m_tail;
 
     reserved_dlist();
+    bool empty() const;
     void push_back(T* obj);
     const_iterator end() const;
     T* pop_back();
@@ -526,6 +529,12 @@ reserved_dlist<T>::reserved_dlist()
     m_head = p_m_end;
     p_m_end->m_next = nullptr;
     m_tail = reinterpret_cast<dlist_node*>(&m_head);
+}
+
+template <typename T>
+bool reserved_dlist<T>::empty() const
+{
+    return m_head == reinterpret_cast<const dlist_node*>(&m_end);
 }
 
 template <typename T>
@@ -732,6 +741,9 @@ reserved_dlist<AeThreadState>::node_to_object(
 
 template reserved_dlist<AeThreadState>::reserved_dlist();
 template reserved_dlist<AeThread>::reserved_dlist();
+template bool reserved_dlist<Task>::empty() const;
+template reserved_dlist<Task>::dlist_node::dlist_node(
+    reserved_dlist<Task>::dlist_node*, reserved_dlist<Task>::dlist_node*);
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
