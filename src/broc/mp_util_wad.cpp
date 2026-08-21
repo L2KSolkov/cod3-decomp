@@ -4459,8 +4459,8 @@ unsigned int Host_ResetStage1();
 void Host_FlowControl(Broc::entity self);
 void AddPoints(Broc::bint forAllies, Broc::bint forAxis);
 void NoRespawnForDefenders(Broc::bbool no_respawn);
-void HQ_Destroyed(Broc::entity self);
-void HQ_Defended(Broc::entity self);
+void HQ_Destroyed();
+void HQ_Defended();
 char Host_PickInitialPoints();
 void SetupStage1();
 void SetUpStage3();
@@ -11235,12 +11235,12 @@ void Host_FlowControl(Broc::entity self) {
     if ((int)mp_util_wad::pLevel->hq_stage == 5) {
         Broc::Code_DebugOut("*HQ* StageTimer 5\n");
         BroadcastGameState();
-        HQ_Destroyed(lvl);
+        HQ_Destroyed();
     } else {
         Broc::Code_DebugOut("*HQ* StageTimer 4\n");
         mp_util_wad::pLevel->hq_stage = 4;
         BroadcastGameState();
-        HQ_Defended(lvl);
+        HQ_Defended();
     }
 }
 
@@ -11602,15 +11602,11 @@ void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
         mp_util_wad::pLevel->hq_stage = (int)stage;
         if (stage == 4) {
             Broc::Code_DebugOut("*HQ* going to stage 4\n");
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
-            HQ_Defended(lvl);
+            HQ_Defended();
         }
         if (stage == 5) {
             Broc::Code_DebugOut("*HQ* going to stage 5\n");
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
-            HQ_Destroyed(lvl);
+            HQ_Destroyed();
         }
     }
 }
@@ -11905,16 +11901,170 @@ void* TriggerRadio__functor(Broc::entity self) {
 }
 
 // HQ_Destroyed - ea: 0x957570
-void HQ_Destroyed(Broc::entity self) {
-    (void)self;
+void HQ_Destroyed() {
+    Broc::Code_DebugOut("*HQ* HQ_Destroyed\n");
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        *mp_util_wad::GetEE_setting_up_hq(p) = 0;
+        i = (int)i + 1;
+    }
     ShowHQDestroyed();
-    // Full radio cleanup + score award happens via ClearGame / round callbacks.
+    if ((bool)mp_util_wad::pLevel->allies_defending)
+        AddPoints(Broc::bint(0), Broc::bint(10));
+    else
+        AddPoints(Broc::bint(10), Broc::bint(0));
+
+    Broc::string script("MX_HQ_HQDestroyed");
+    Broc::entity* levelEntity =
+        mp_util_wad::pLevel != nullptr
+            ? &mp_util_wad::pLevel->_base.entity
+            : nullptr;
+    Broc::EffectEventPlay(levelEntity, &script);
+    script.~string();
+
+    if ((bool)mp_util_wad::pLevel->allies_defending) {
+        Broc::entity lvl1 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team1("allies");
+        Broc::string sound1("MP_HQ_Destroyed_Allies");
+        Broc::bfloat delay1(2.14f);
+        void* ftor1 =
+            _mp_audio::PlayTeamDialog__functor(lvl1, team1, sound1, delay1);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor1);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("axis");
+        Broc::string sound2("MP_HQ_DestroyedEnemy_Axis");
+        Broc::bfloat delay2(2.14f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    } else {
+        Broc::entity lvl1 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team1("axis");
+        Broc::string sound1("MP_HQ_Destroyed_Axis");
+        Broc::bfloat delay1(2.14f);
+        void* ftor1 =
+            _mp_audio::PlayTeamDialog__functor(lvl1, team1, sound1, delay1);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor1);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("allies");
+        Broc::string sound2("MP_HQ_DestroyedEnemy_Allies");
+        Broc::bfloat delay2(2.14f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    }
+
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    void* reset = ResetGame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                        __LINE__, "ResetGame", reset);
+    players.~dyn_array();
 }
 
 // HQ_Defended - ea: 0x957D10
-void HQ_Defended(Broc::entity self) {
-    (void)self;
+void HQ_Defended() {
+    Broc::Code_DebugOut("*HQ* HQ_Defended\n");
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        *mp_util_wad::GetEE_setting_up_hq(p) = 0;
+        i = (int)i + 1;
+    }
     ShowHQDefended();
+    Broc::string script("MX_HQ_HQDefended");
+    Broc::entity* levelEntity =
+        mp_util_wad::pLevel != nullptr
+            ? &mp_util_wad::pLevel->_base.entity
+            : nullptr;
+    Broc::EffectEventPlay(levelEntity, &script);
+    script.~string();
+
+    if ((bool)mp_util_wad::pLevel->allies_defending) {
+        Broc::entity lvl1 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team1("allies");
+        Broc::string sound1("MP_HQ_FriendlyDefended_Allies");
+        Broc::bfloat delay1(1.2f);
+        void* ftor1 =
+            _mp_audio::PlayTeamDialog__functor(lvl1, team1, sound1, delay1);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor1);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("axis");
+        Broc::string sound2("MP_HQ_EnemyDefended_Axis");
+        Broc::bfloat delay2(1.2f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    } else {
+        Broc::entity lvl1 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team1("axis");
+        Broc::string sound1("MP_HQ_FriendlyDefended_Axis");
+        Broc::bfloat delay1(1.2f);
+        void* ftor1 =
+            _mp_audio::PlayTeamDialog__functor(lvl1, team1, sound1, delay1);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor1);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("allies");
+        Broc::string sound2("MP_HQ_EnemyDefended_Allies");
+        Broc::bfloat delay2(1.2f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    }
+
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    void* reset = ResetGame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                        __LINE__, "ResetGame", reset);
+    players.~dyn_array();
 }
 
 // SetUpStage3 - ea: 0x9588A0
