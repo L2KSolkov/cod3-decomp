@@ -229,7 +229,7 @@ index	status	map_line
 228	VERIFIED	0002:000baec0 ?Com_FilterPath@@YAHPAD0H@Z 008AA3C0 f core.o
 229	VERIFIED	0002:000baf50 ?Com_HashKey@@YAHPADH@Z 008AA450 f core.o
 230	VERIFIED	0002:000bafa0 ?Com_RealTime@@YAHPAUqtime_s@@@Z 008AA4A0 f core.o
-231	PORTED	0002:000bb010 _Z_FreeInternal 008AA510 f core.o
+231	VERIFIED	0002:000bb010 _Z_FreeInternal 008AA510 f core.o VERIFIED: FUNCTION existing heap free wrapper matches IDA
 232	VERIFIED	0002:000bb020 ?Com_InitZoneMemory@@YAXXZ 008AA520 f core.o
 233	VERIFIED	0002:000bb030 ?_copyDWord@@YAXPAIII@Z 008AA530 f core.o
 234	VERIFIED	0002:000bb0c0 ?Com_Memset@@YAXPAXHI@Z 008AA5C0 f core.o
@@ -364,7 +364,7 @@ index	status	map_line
 363	VERIFIED	0002:000bfd90 ?AngleNormalize180Accurate@@YA?BMM@Z 008AF290 f core.o
 364	VERIFIED	0002:000bfe60 ?ProjectPointOnPlane@@YAXQAMQBM1@Z 008AF360 f core.o
 365	VERIFIED	0002:000bffd0 ?NormalToLatLong@@YAXQBMQAE@Z 008AF4D0 f core.o
-366	PORTED	0002:000c02f0 _Z_MallocInternal 008AF7F0 f core.o
+366	VERIFIED	0002:000c02f0 _Z_MallocInternal 008AF7F0 f core.o VERIFIED: FUNCTION existing zeroing heap allocator and OOM path match IDA
 367	VERIFIED	0002:000c0330 ?CopyStringInternal@@YAPADPBD@Z 008AF830 f core.o
 368	VERIFIED	0002:000c0390 ?Com_Memcpy@@YAXPAXPBXI@Z 008AF890 f core.o
 369	VERIFIED	0002:000c0540 ?Com_Close@@YAXXZ 008AFA40 f core.o
@@ -485,9 +485,9 @@ index	status	map_line
 484	VERIFIED	0002:000c5e30 ?GetSTBString@STBManager@@QAEPBDPBD@Z 008B5330 f core.o
 485	VERIFIED	0002:000c5ef0 ?GetSTBString@STBManager@@QAEPBDI@Z 008B53F0 f core.o
 486	VERIFIED	0002:000c5f30 ?GetSTBString@STBManager@@QAEPBDW4TPakId@@I@Z 008B5430 f core.o
-487	PORTED	0002:000c5fa0 ?GetSTBFlags@STBManager@@QAE?BIPBD@Z 008B54A0 f core.o
-488	PORTED	0002:000c5fe0 ?GetSTBFlags@STBManager@@QAE?BII@Z 008B54E0 f core.o
-489	PORTED	0002:000c6010 ?GetSTBFlags@STBManager@@QAE?BIW4TPakId@@I@Z 008B5510 f core.o
+487	VERIFIED	0002:000c5fa0 ?GetSTBFlags@STBManager@@QAE?BIPBD@Z 008B54A0 f core.o VERIFIED: FUNCTION existing reference STB flag lookup matches IDA
+488	VERIFIED	0002:000c5fe0 ?GetSTBFlags@STBManager@@QAE?BII@Z 008B54E0 f core.o VERIFIED: FUNCTION existing hash STB flag lookup matches IDA
+489	VERIFIED	0002:000c6010 ?GetSTBFlags@STBManager@@QAE?BIW4TPakId@@I@Z 008B5510 f core.o VERIFIED: FUNCTION existing pak/hash STB flag lookup matches IDA
 490	VERIFIED	0002:000c6070 ?DecodeBank@STBManager@@QAEXPBDPAEHW4TPakId@@@Z 008B5570 f core.o
 491	VERIFIED	0002:000c6450 ?GetNotify@EntityNotifySet@@QBEPAVEntityNotify@@ABVHashString@@@Z 008B5950 f core.o
 492	VERIFIED	0002:000c64d0 ?AssignScriptVariable@EntityNotifySet@@QAE_NABVHashString@@PAVWaitTilOutput@@@Z 008B59D0 f core.o
