@@ -211,13 +211,13 @@ static_assert(sizeof(nglMeshNode) == 0x90, "nglMeshNode size mismatch");
 // ============================================================================
 class nglMeshParams {
 public:
+    nglMeshParams();
+    nglMeshParams(unsigned int flags);
     unsigned int  Flags;    // +0x00
     unsigned int  NBones;   // +0x04
     math::Mat43*  Bones;    // +0x08
     unsigned int  LOD;      // +0x0C
-    union {
-        __m128 v;           // +0x10
-    } Scale;                // +0x10 (Dir3-ish scale vector)
+    math::DiagMat33 Scale; // +0x10
 };
 static_assert(sizeof(nglMeshParams) == 0x20, "nglMeshParams size mismatch");
 
