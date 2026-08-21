@@ -11168,8 +11168,10 @@ void StartGame(Broc::entity self) {
 unsigned int Host_ResetStage1() {
     Broc::Code_DebugOut("*HQ* Host_ResetStage1\n");
     Host_PickInitialPoints();
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = Host_FlowControl__functor(lvl);
     return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
                                __LINE__, "Host_FlowControl", ftor);
