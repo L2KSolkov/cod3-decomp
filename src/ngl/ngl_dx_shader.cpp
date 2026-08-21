@@ -234,6 +234,68 @@ const unsigned int* nglDxRegisterInternalShaders() {
 }
 
 // ============================================================================
+// gpuSetVertexConstant - ea: 0x84F930
+// ============================================================================
+void gpuSetVertexConstant(int idx, math::Mat44* data, unsigned int nelements) {
+    const int reg = idx + 96;
+    if (4 * nelements == 1)
+        D3DDevice_SetVertexShaderConstant1Fast(reg, data);
+    else
+        D3DDevice_SetVertexShaderConstantNotInlineFast(reg, data, 16 * nelements);
+}
+
+// ============================================================================
+// Internal pixel shader registration helpers - ea: 0x84F960-0x84F9D0
+// ============================================================================
+const unsigned int* nglDOFPixelShader::RegisterShader() {
+    nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+    nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+    return nglDOFPixelShader::PShaderTable[0];
+}
+
+const unsigned int* nglDOFPixelShader::RegisterPShader() {
+    nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+    nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+    return nglDOFPixelShader::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelPreFX::RegisterShader() {
+    nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+    nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+    return nglGlowShaderPixelPreFX::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelPreFX::RegisterPShader() {
+    nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+    nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+    return nglGlowShaderPixelPreFX::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelFX::RegisterShader() {
+    nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+    nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+    return nglGlowShaderPixelFX::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelFX::RegisterPShader() {
+    nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+    nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+    return nglGlowShaderPixelFX::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelPostFX::RegisterShader() {
+    nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    return nglGlowShaderPixelPostFX::PShaderTable[0];
+}
+
+const unsigned int* nglGlowShaderPixelPostFX::RegisterPShader() {
+    nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    return nglGlowShaderPixelPostFX::PShaderTable[0];
+}
+
+// ============================================================================
 // nglDxInitShaders - ea: 0x84E950
 // ============================================================================
 void nglDxInitShaders(bool RegisterShaders) {

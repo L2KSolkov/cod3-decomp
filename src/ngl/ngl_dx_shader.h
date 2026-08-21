@@ -7,6 +7,7 @@
 
 class nglMeshNode;
 struct nglMeshSection;
+namespace math { class Mat44; }
 
 // ngl_dx_shader.o (functions, defined in ngl_dx_shader.cpp)
 void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
@@ -19,5 +20,6 @@ const unsigned int* nglDxRegisterInternalShaders();
 void nglDxInitShaders(bool RegisterShaders);
 void nglDxSetupVShaderBones(int VSReg, nglMeshNode* MeshNode, nglMeshSection* Section);
 void nglDxSetBonesLocal(int p, nglMeshNode* MeshNode, nglMeshSection* Section);
+void gpuSetVertexConstant(int idx, math::Mat44* data, unsigned int nelements);
 
 #endif // COD3_NGL_NGL_DX_SHADER_H
