@@ -132,11 +132,11 @@ void team_balance(Broc::bbool always);
 }
 namespace _mp_common {
 AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
-void* QuitGameThread__functor(Broc::entity selfLevel);
-void* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
-void* HostHasMigrated__functor(Broc::entity self);
+AeThreadFunctor* QuitGameThread__functor(Broc::entity selfLevel);
+AeThreadFunctor* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
+AeThreadFunctor* HostHasMigrated__functor(Broc::entity self);
 AeThreadFunctor* RespawnPlayer__functor(Broc::entity guy, Broc::string team);
-void* LocalPlayerRespawn__functor(Broc::entity player);
+AeThreadFunctor* LocalPlayerRespawn__functor(Broc::entity player);
 AeThreadFunctor* PunishedForTeamKill__functor(Broc::entity ent,
                                               Broc::bbool punished);
 AeThreadFunctor* reenable_medic_call__functor(Broc::entity self,
@@ -157,7 +157,7 @@ AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitT
 void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
 AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
                                                 Broc::vector position);
-void* NewHost__functor(Broc::entity self);
+AeThreadFunctor* NewHost__functor(Broc::entity self);
 void* LocalPlayerIntermission__functor(Broc::entity player);
 void* RunFrame__functor(Broc::entity selfLevel);
 }
@@ -13119,19 +13119,19 @@ AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow)
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bbool>(StopFollowing, self, blackNow);
 }
-void* QuitGameThread__functor(Broc::entity selfLevel) {
+AeThreadFunctor* QuitGameThread__functor(Broc::entity selfLevel) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(QuitGameThread, selfLevel);
 }
-void* QuitGameWithMessage__functor(Broc::entity self, HashStr message) {
+AeThreadFunctor* QuitGameWithMessage__functor(Broc::entity self, HashStr message) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, HashStr>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, HashStr>(QuitGameWithMessage, self, message);
 }
-void* HostHasMigrated__functor(Broc::entity self) {
+AeThreadFunctor* HostHasMigrated__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -13145,7 +13145,7 @@ AeThreadFunctor* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
     team.~string();
     return result;
 }
-void* LocalPlayerRespawn__functor(Broc::entity player) {
+AeThreadFunctor* LocalPlayerRespawn__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -13246,7 +13246,7 @@ AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::vector>(AddArtilleryObjective, self, position);
 }
-void* NewHost__functor(Broc::entity self) {
+AeThreadFunctor* NewHost__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
