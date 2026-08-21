@@ -1538,7 +1538,7 @@ index	status	map_line
 1537	PORTED	0002:000b4d40 ??0DbQueryString@@QAE@PBD@Z 008A4240 f i core.o
 1538	PORTED	0002:000b4d70 ?c_str@DbQueryString@@QBEPBDXZ 008A4270 f i core.o
 1539	PORTED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o
-1540	PORTED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o
+1540	SKIPPED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 1541	PORTED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o
 1542	PORTED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o
 1543	PORTED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o
@@ -6675,82 +6675,82 @@ index	status	map_line
 6674	VERIFIED	0002:001afb60 ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099F060 f i shell.o	VERIFIED: matches IDA mVal copy assignment
 6675	SKIPPED	0002:001afb80 ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099F080 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6676	VERIFIED	0002:001afb90 ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099F090 f i shell.o
-6677	PORTED	0002:001afba0 ?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ 0099F0A0 f i shell.o
-6678	PORTED	0002:001afbb0 ??A?$ae_vector@PAVPanelQuadSection@@@@QBEABQAVPanelQuadSection@@H@Z 0099F0B0 f i shell.o
-6679	PORTED	0002:001afc30 ??A?$ae_vector@PAVPanelQuadSection@@@@QAEAAPAVPanelQuadSection@@H@Z 0099F130 f i shell.o
+6677	SKIPPED	0002:001afba0 ?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ 0099F0A0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6678	SKIPPED	0002:001afbb0 ??A?$ae_vector@PAVPanelQuadSection@@@@QBEABQAVPanelQuadSection@@H@Z 0099F0B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6679	SKIPPED	0002:001afc30 ??A?$ae_vector@PAVPanelQuadSection@@@@QAEAAPAVPanelQuadSection@@H@Z 0099F130 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6680	VERIFIED	0002:001afcb0 ??0?$ae_vector@PAVPanelQuad@@@@QAE@XZ 0099F1B0 f i shell.o
-6681	PORTED	0002:001afcc0 ?size@?$ae_vector@PAVPanelQuad@@@@QBEHXZ 0099F1C0 f i shell.o
-6682	PORTED	0002:001afcd0 ??A?$ae_vector@PAVPanelQuad@@@@QAEAAPAVPanelQuad@@H@Z 0099F1D0 f i shell.o
-6683	PORTED	0002:001afd50 ?begin@?$ae_vector@PAVPanelQuad@@@@QAEPAPAVPanelQuad@@XZ 0099F250 f i shell.o
-6684	PORTED	0002:001afd60 ?end@?$ae_vector@PAVPanelQuad@@@@QAEPAPAVPanelQuad@@XZ 0099F260 f i shell.o
+6681	SKIPPED	0002:001afcc0 ?size@?$ae_vector@PAVPanelQuad@@@@QBEHXZ 0099F1C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6682	SKIPPED	0002:001afcd0 ??A?$ae_vector@PAVPanelQuad@@@@QAEAAPAVPanelQuad@@H@Z 0099F1D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6683	SKIPPED	0002:001afd50 ?begin@?$ae_vector@PAVPanelQuad@@@@QAEPAPAVPanelQuad@@XZ 0099F250 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6684	SKIPPED	0002:001afd60 ?end@?$ae_vector@PAVPanelQuad@@@@QAEPAPAVPanelQuad@@XZ 0099F260 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6685	VERIFIED	0002:001afd70 ??0?$ae_vector@PAVFEText@@@@QAE@XZ 0099F270 f i shell.o
-6686	PORTED	0002:001afd80 ?size@?$ae_vector@PAVFEText@@@@QBEHXZ 0099F280 f i shell.o
-6687	PORTED	0002:001afd90 ??A?$ae_vector@PAVFEText@@@@QAEAAPAVFEText@@H@Z 0099F290 f i shell.o
-6688	PORTED	0002:001afe10 ?begin@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F310 f i shell.o
-6689	PORTED	0002:001afe20 ?end@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F320 f i shell.o
+6686	SKIPPED	0002:001afd80 ?size@?$ae_vector@PAVFEText@@@@QBEHXZ 0099F280 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6687	SKIPPED	0002:001afd90 ??A?$ae_vector@PAVFEText@@@@QAEAAPAVFEText@@H@Z 0099F290 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6688	SKIPPED	0002:001afe10 ?begin@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F310 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6689	SKIPPED	0002:001afe20 ?end@?$ae_vector@PAVFEText@@@@QAEPAPAVFEText@@XZ 0099F320 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6690	SKIPPED	0002:001afe30 ??A?$ae_array@PAVPanelQuad@@$04@@QAEAAPAVPanelQuad@@H@Z 0099F330 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6691	VERIFIED	0002:001afeb0 ??0?$ae_vector@PAVPanelAnimObject@@@@QAE@XZ 0099F3B0 f i shell.o
-6692	PORTED	0002:001afec0 ??A?$ae_vector@PAVPanelAnimObject@@@@QBEABQAVPanelAnimObject@@H@Z 0099F3C0 f i shell.o
-6693	PORTED	0002:001aff40 ??A?$ae_vector@PAVPanelAnimObject@@@@QAEAAPAVPanelAnimObject@@H@Z 0099F440 f i shell.o
-6694	PORTED	0002:001affc0 ??A?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEAAVUIListBoxItem@UIListBox@@H@Z 0099F4C0 f i shell.o
+6692	SKIPPED	0002:001afec0 ??A?$ae_vector@PAVPanelAnimObject@@@@QBEABQAVPanelAnimObject@@H@Z 0099F3C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6693	SKIPPED	0002:001aff40 ??A?$ae_vector@PAVPanelAnimObject@@@@QAEAAPAVPanelAnimObject@@H@Z 0099F440 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6694	SKIPPED	0002:001affc0 ??A?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEAAVUIListBoxItem@UIListBox@@H@Z 0099F4C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6695	VERIFIED	0002:001b0040 ??0?$ae_vector@VUIListBoxData@UIListBox@@@@QAE@XZ 0099F540 f i shell.o
-6696	PORTED	0002:001b0050 ??A?$ae_vector@VUIListBoxData@UIListBox@@@@QBEABVUIListBoxData@UIListBox@@H@Z 0099F550 f i shell.o
-6697	PORTED	0002:001b00d0 ??A?$ae_vector@VUIListBoxData@UIListBox@@@@QAEAAVUIListBoxData@UIListBox@@H@Z 0099F5D0 f i shell.o
-6698	PORTED	0002:001b0150 ??A?$ae_vector@VUIListBoxRow@UIListBox@@@@QAEAAVUIListBoxRow@UIListBox@@H@Z 0099F650 f i shell.o
-6699	PORTED	0002:001b01d0 ??A?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAEAAVUIListBoxDataRow@UIListBox@@H@Z 0099F6D0 f i shell.o
-6700	PORTED	0002:001b0250 ??A?$ae_vector@Vcolor32@@@@QAEAAVcolor32@@H@Z 0099F750 f i shell.o
-6701	PORTED	0002:001b02d0 ??A?$ae_vector@_N@@QAEAA_NH@Z 0099F7D0 f i shell.o
+6696	SKIPPED	0002:001b0050 ??A?$ae_vector@VUIListBoxData@UIListBox@@@@QBEABVUIListBoxData@UIListBox@@H@Z 0099F550 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6697	SKIPPED	0002:001b00d0 ??A?$ae_vector@VUIListBoxData@UIListBox@@@@QAEAAVUIListBoxData@UIListBox@@H@Z 0099F5D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6698	SKIPPED	0002:001b0150 ??A?$ae_vector@VUIListBoxRow@UIListBox@@@@QAEAAVUIListBoxRow@UIListBox@@H@Z 0099F650 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6699	SKIPPED	0002:001b01d0 ??A?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAEAAVUIListBoxDataRow@UIListBox@@H@Z 0099F6D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6700	SKIPPED	0002:001b0250 ??A?$ae_vector@Vcolor32@@@@QAEAAVcolor32@@H@Z 0099F750 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6701	SKIPPED	0002:001b02d0 ??A?$ae_vector@_N@@QAEAA_NH@Z 0099F7D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6702	VERIFIED	0002:001b0350 ??0?$ae_sized_array@UProfile@ProfileManager@@$05@@QAE@XZ 0099F850 f i shell.o
 6703	VERIFIED	0002:001b0360 ??A?$ae_sized_array@UProfile@ProfileManager@@$05@@QBEABUProfile@ProfileManager@@H@Z 0099F860 f i shell.o
 6704	VERIFIED	0002:001b03e0 ??A?$ae_sized_array@UProfile@ProfileManager@@$05@@QAEAAUProfile@ProfileManager@@H@Z 0099F8E0 f i shell.o
 6705	VERIFIED	0002:001b0460 ??0?$ae_formatted_string@$0EA@E@@QAA@PBDZZ 0099F960 f i shell.o
 6706	VERIFIED	0002:001b04b0 ??0?$ae_vector@PAVFEMenuListBoxItem@@@@QAE@XZ 0099F9B0 f i shell.o
-6707	PORTED	0002:001b04c0 ?size@?$ae_vector@PAVFEMenuListBoxItem@@@@QBEHXZ 0099F9C0 f i shell.o
-6708	PORTED	0002:001b04d0 ??A?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@H@Z 0099F9D0 f i shell.o
-6709	PORTED	0002:001b0550 ??0?$ae_pair@VHashString@@H@@QAE@ABVHashString@@ABH@Z 0099FA50 f i shell.o
+6707	SKIPPED	0002:001b04c0 ?size@?$ae_vector@PAVFEMenuListBoxItem@@@@QBEHXZ 0099F9C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6708	SKIPPED	0002:001b04d0 ??A?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@H@Z 0099F9D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6709	SKIPPED	0002:001b0550 ??0?$ae_pair@VHashString@@H@@QAE@ABVHashString@@ABH@Z 0099FA50 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6710	SKIPPED	0002:001b0570 ??A?$ae_array@PAVPanelQuad@@$08@@QAEAAPAVPanelQuad@@H@Z 0099FA70 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6711	SKIPPED	0002:001b05f0 ??A?$ae_array@PAVFEText@@$01@@QAEAAPAVFEText@@H@Z 0099FAF0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6712	SKIPPED	0002:001b0670 ??A?$ae_array@PAVFEText@@$00@@QAEAAPAVFEText@@H@Z 0099FB70 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6713	VERIFIED	0002:001b06f0 ??0?$ae_vector@H@@QAE@XZ 0099FBF0 f i shell.o
-6714	PORTED	0002:001b0700 ??A?$ae_vector@H@@QAEAAHH@Z 0099FC00 f i shell.o
+6714	SKIPPED	0002:001b0700 ??A?$ae_vector@H@@QAEAAHH@Z 0099FC00 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6715	VERIFIED	0002:001b0780 ??0?$ae_vector@U_XUID@@@@QAE@XZ 0099FC80 f i shell.o
-6716	PORTED	0002:001b0790 ??A?$ae_vector@U_XUID@@@@QAEAAU_XUID@@H@Z 0099FC90 f i shell.o
+6716	SKIPPED	0002:001b0790 ??A?$ae_vector@U_XUID@@@@QAEAAU_XUID@@H@Z 0099FC90 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6717	VERIFIED	0002:001b0810 ??0?$ae_sized_array@PAVPanelFileUser@@$0M@@@QAE@XZ 0099FD10 f i shell.o
-6718	PORTED	0002:001b0820 ??A?$ae_sized_array@PAVPanelFileUser@@$0M@@@QAEAAPAVPanelFileUser@@H@Z 0099FD20 f i shell.o
-6719	PORTED	0002:001b08a0 ?size@?$ae_sized_array@PAVPanelFileUser@@$0M@@@QBEHXZ 0099FDA0 f i shell.o
+6718	SKIPPED	0002:001b0820 ??A?$ae_sized_array@PAVPanelFileUser@@$0M@@@QAEAAPAVPanelFileUser@@H@Z 0099FD20 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6719	SKIPPED	0002:001b08a0 ?size@?$ae_sized_array@PAVPanelFileUser@@$0M@@@QBEHXZ 0099FDA0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6720	VERIFIED	0002:001b08b0 ?push_back@?$ae_sized_array@PAVPanelFileUser@@$0M@@@QAEXABQAVPanelFileUser@@@Z 0099FDB0 f i shell.o
 6721	SKIPPED	0002:001b0930 ??8const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 0099FE30 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6722	SKIPPED	0002:001b0950 ??9const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 0099FE50 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6723	VERIFIED	0002:001b0970 ??1UIListBoxData@UIListBox@@QAE@XZ 0099FE70 f i shell.o
-6724	PORTED	0002:001b0980 ?construct_array@?$ae_vector@PAVPanelQuadSection@@@@AAEPAPAVPanelQuadSection@@HH@Z 0099FE80 f i shell.o
-6725	PORTED	0002:001b09b0 ?construct_array@?$ae_vector@PAVPanelQuad@@@@AAEPAPAVPanelQuad@@HH@Z 0099FEB0 f i shell.o
-6726	PORTED	0002:001b09e0 ?destroy_all@?$ae_vector@PAVPanelQuad@@@@AAEXXZ 0099FEE0 f i shell.o
-6727	PORTED	0002:001b0a10 ?construct_array@?$ae_vector@PAVFEText@@@@AAEPAPAVFEText@@HH@Z 0099FF10 f i shell.o
-6728	PORTED	0002:001b0a40 ?destroy_all@?$ae_vector@PAVFEText@@@@AAEXXZ 0099FF40 f i shell.o
-6729	PORTED	0002:001b0a70 ?begin@?$ae_vector@PAVPanelAnimObject@@@@QAEPAPAVPanelAnimObject@@XZ 0099FF70 f i shell.o
-6730	PORTED	0002:001b0a80 ?end@?$ae_vector@PAVPanelAnimObject@@@@QAEPAPAVPanelAnimObject@@XZ 0099FF80 f i shell.o
-6731	PORTED	0002:001b0a90 ?construct_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@H@Z 0099FF90 f i shell.o
-6732	PORTED	0002:001b0ac0 ?construct_and_initialize_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@HABQAV2@@Z 0099FFC0 f i shell.o
-6733	PORTED	0002:001b0b10 ?construct_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@HH@Z 009A0010 f i shell.o
-6734	PORTED	0002:001b0b40 ?destroy_all@?$ae_vector@PAVPanelAnimObject@@@@AAEXXZ 009A0040 f i shell.o
-6735	PORTED	0002:001b0b70 ?begin@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEPAVUIListBoxItem@UIListBox@@XZ 009A0070 f i shell.o
-6736	PORTED	0002:001b0b80 ?end@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEPAVUIListBoxItem@UIListBox@@XZ 009A0080 f i shell.o
-6737	PORTED	0002:001b0b90 ?begin@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEPAVUIListBoxData@UIListBox@@XZ 009A0090 f i shell.o
-6738	PORTED	0002:001b0ba0 ?end@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEPAVUIListBoxData@UIListBox@@XZ 009A00A0 f i shell.o
-6739	PORTED	0002:001b0bb0 ?construct_array@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEPAVUIListBoxData@UIListBox@@H@Z 009A00B0 f i shell.o
-6740	PORTED	0002:001b0c60 ?construct_array@?$ae_vector@Vcolor32@@@@AAEPAVcolor32@@H@Z 009A0160 f i shell.o
-6741	PORTED	0002:001b0cb0 ?construct_and_initialize_array@?$ae_vector@Vcolor32@@@@AAEPAVcolor32@@HABV2@@Z 009A01B0 f i shell.o
-6742	PORTED	0002:001b0d00 ?construct_and_initialize_array@?$ae_vector@_N@@AAEPA_NHAB_N@Z 009A0200 f i shell.o
-6743	PORTED	0002:001b0d40 ?end@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEPAPAVFEMenuListBoxItem@@XZ 009A0240 f i shell.o
-6744	PORTED	0002:001b0d50 ?construct_array@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEPAPAVFEMenuListBoxItem@@HH@Z 009A0250 f i shell.o
-6745	PORTED	0002:001b0d80 ?begin@?$ae_vector@H@@QAEPAHXZ 009A0280 f i shell.o
-6746	PORTED	0002:001b0d90 ?end@?$ae_vector@H@@QAEPAHXZ 009A0290 f i shell.o
-6747	PORTED	0002:001b0da0 ?construct_and_initialize_array@?$ae_vector@H@@AAEPAHHABH@Z 009A02A0 f i shell.o
-6748	PORTED	0002:001b0df0 ?destroy_all@?$ae_vector@H@@AAEXXZ 009A02F0 f i shell.o
-6749	PORTED	0002:001b0e20 ?begin@?$ae_vector@U_XUID@@@@QAEPAU_XUID@@XZ 009A0320 f i shell.o
-6750	PORTED	0002:001b0e30 ?end@?$ae_vector@U_XUID@@@@QAEPAU_XUID@@XZ 009A0330 f i shell.o
-6751	PORTED	0002:001b0e40 ?construct_and_initialize_array@?$ae_vector@U_XUID@@@@AAEPAU_XUID@@HABU2@@Z 009A0340 f i shell.o
-6752	PORTED	0002:001b0ea0 ?destroy_all@?$ae_vector@U_XUID@@@@AAEXXZ 009A03A0 f i shell.o
+6724	SKIPPED	0002:001b0980 ?construct_array@?$ae_vector@PAVPanelQuadSection@@@@AAEPAPAVPanelQuadSection@@HH@Z 0099FE80 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6725	SKIPPED	0002:001b09b0 ?construct_array@?$ae_vector@PAVPanelQuad@@@@AAEPAPAVPanelQuad@@HH@Z 0099FEB0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6726	SKIPPED	0002:001b09e0 ?destroy_all@?$ae_vector@PAVPanelQuad@@@@AAEXXZ 0099FEE0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6727	SKIPPED	0002:001b0a10 ?construct_array@?$ae_vector@PAVFEText@@@@AAEPAPAVFEText@@HH@Z 0099FF10 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6728	SKIPPED	0002:001b0a40 ?destroy_all@?$ae_vector@PAVFEText@@@@AAEXXZ 0099FF40 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6729	SKIPPED	0002:001b0a70 ?begin@?$ae_vector@PAVPanelAnimObject@@@@QAEPAPAVPanelAnimObject@@XZ 0099FF70 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6730	SKIPPED	0002:001b0a80 ?end@?$ae_vector@PAVPanelAnimObject@@@@QAEPAPAVPanelAnimObject@@XZ 0099FF80 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6731	SKIPPED	0002:001b0a90 ?construct_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@H@Z 0099FF90 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6732	SKIPPED	0002:001b0ac0 ?construct_and_initialize_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@HABQAV2@@Z 0099FFC0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6733	SKIPPED	0002:001b0b10 ?construct_array@?$ae_vector@PAVPanelAnimObject@@@@AAEPAPAVPanelAnimObject@@HH@Z 009A0010 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6734	SKIPPED	0002:001b0b40 ?destroy_all@?$ae_vector@PAVPanelAnimObject@@@@AAEXXZ 009A0040 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6735	SKIPPED	0002:001b0b70 ?begin@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEPAVUIListBoxItem@UIListBox@@XZ 009A0070 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6736	SKIPPED	0002:001b0b80 ?end@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEPAVUIListBoxItem@UIListBox@@XZ 009A0080 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6737	SKIPPED	0002:001b0b90 ?begin@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEPAVUIListBoxData@UIListBox@@XZ 009A0090 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6738	SKIPPED	0002:001b0ba0 ?end@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEPAVUIListBoxData@UIListBox@@XZ 009A00A0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6739	SKIPPED	0002:001b0bb0 ?construct_array@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEPAVUIListBoxData@UIListBox@@H@Z 009A00B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6740	SKIPPED	0002:001b0c60 ?construct_array@?$ae_vector@Vcolor32@@@@AAEPAVcolor32@@H@Z 009A0160 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6741	SKIPPED	0002:001b0cb0 ?construct_and_initialize_array@?$ae_vector@Vcolor32@@@@AAEPAVcolor32@@HABV2@@Z 009A01B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6742	SKIPPED	0002:001b0d00 ?construct_and_initialize_array@?$ae_vector@_N@@AAEPA_NHAB_N@Z 009A0200 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6743	SKIPPED	0002:001b0d40 ?end@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEPAPAVFEMenuListBoxItem@@XZ 009A0240 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6744	SKIPPED	0002:001b0d50 ?construct_array@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEPAPAVFEMenuListBoxItem@@HH@Z 009A0250 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6745	SKIPPED	0002:001b0d80 ?begin@?$ae_vector@H@@QAEPAHXZ 009A0280 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6746	SKIPPED	0002:001b0d90 ?end@?$ae_vector@H@@QAEPAHXZ 009A0290 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6747	SKIPPED	0002:001b0da0 ?construct_and_initialize_array@?$ae_vector@H@@AAEPAHHABH@Z 009A02A0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6748	SKIPPED	0002:001b0df0 ?destroy_all@?$ae_vector@H@@AAEXXZ 009A02F0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6749	SKIPPED	0002:001b0e20 ?begin@?$ae_vector@U_XUID@@@@QAEPAU_XUID@@XZ 009A0320 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6750	SKIPPED	0002:001b0e30 ?end@?$ae_vector@U_XUID@@@@QAEPAU_XUID@@XZ 009A0330 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6751	SKIPPED	0002:001b0e40 ?construct_and_initialize_array@?$ae_vector@U_XUID@@@@AAEPAU_XUID@@HABU2@@Z 009A0340 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6752	SKIPPED	0002:001b0ea0 ?destroy_all@?$ae_vector@U_XUID@@@@AAEXXZ 009A03A0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6753	SKIPPED	0002:001b0ed0 ??0?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@std@@QAE@XZ 009A03D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6754	SKIPPED	0002:001b0ee0 ??0?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@std@@QAE@XZ 009A03E0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6755	SKIPPED	0002:001b0ef0 ??8const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 009A03F0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -6763,17 +6763,17 @@ index	status	map_line
 6762	SKIPPED	0002:001b0f70 ??0?$pair@Viterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@_N@std@@QAE@ABViterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@1@AB_N@Z 009A0470 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6763	SKIPPED	0002:001b0f90 ??8const_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 009A0490 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6764	SKIPPED	0002:001b0fb0 ?_Mynode@const_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBEPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@3@XZ 009A04B0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-6765	PORTED	0002:001b0fc0 ?begin@?$ae_vector@PAVPanelQuadSection@@@@QAEPAPAVPanelQuadSection@@XZ 009A04C0 f i shell.o
-6766	PORTED	0002:001b0fd0 ?end@?$ae_vector@PAVPanelQuadSection@@@@QAEPAPAVPanelQuadSection@@XZ 009A04D0 f i shell.o
-6767	PORTED	0002:001b0fe0 ?construct_array@?$ae_vector@PAVPanelQuadSection@@@@AAEPAPAVPanelQuadSection@@H@Z 009A04E0 f i shell.o
-6768	PORTED	0002:001b1010 ?construct_array@?$ae_vector@PAVPanelQuad@@@@AAEPAPAVPanelQuad@@H@Z 009A0510 f i shell.o
-6769	PORTED	0002:001b1040 ?construct_array@?$ae_vector@PAVFEText@@@@AAEPAPAVFEText@@H@Z 009A0540 f i shell.o
+6765	SKIPPED	0002:001b0fc0 ?begin@?$ae_vector@PAVPanelQuadSection@@@@QAEPAPAVPanelQuadSection@@XZ 009A04C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6766	SKIPPED	0002:001b0fd0 ?end@?$ae_vector@PAVPanelQuadSection@@@@QAEPAPAVPanelQuadSection@@XZ 009A04D0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6767	SKIPPED	0002:001b0fe0 ?construct_array@?$ae_vector@PAVPanelQuadSection@@@@AAEPAPAVPanelQuadSection@@H@Z 009A04E0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6768	SKIPPED	0002:001b1010 ?construct_array@?$ae_vector@PAVPanelQuad@@@@AAEPAPAVPanelQuad@@H@Z 009A0510 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6769	SKIPPED	0002:001b1040 ?construct_array@?$ae_vector@PAVFEText@@@@AAEPAPAVFEText@@H@Z 009A0540 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6770	VERIFIED	0002:001b1070 ??0?$ae_vector@VUIListBoxItem@UIListBox@@@@QAE@XZ 009A0570 f i shell.o
-6771	PORTED	0002:001b1080 ?begin@?$ae_vector@VUIListBoxRow@UIListBox@@@@QAEPAVUIListBoxRow@UIListBox@@XZ 009A0580 f i shell.o
-6772	PORTED	0002:001b1090 ?begin@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAEPAVUIListBoxDataRow@UIListBox@@XZ 009A0590 f i shell.o
-6773	PORTED	0002:001b10a0 ?begin@?$ae_vector@Vcolor32@@@@QAEPAVcolor32@@XZ 009A05A0 f i shell.o
-6774	PORTED	0002:001b10b0 ?begin@?$ae_vector@_N@@QAEPA_NXZ 009A05B0 f i shell.o
-6775	PORTED	0002:001b10c0 ?begin@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEPAPAVFEMenuListBoxItem@@XZ 009A05C0 f i shell.o
+6771	SKIPPED	0002:001b1080 ?begin@?$ae_vector@VUIListBoxRow@UIListBox@@@@QAEPAVUIListBoxRow@UIListBox@@XZ 009A0580 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6772	SKIPPED	0002:001b1090 ?begin@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAEPAVUIListBoxDataRow@UIListBox@@XZ 009A0590 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6773	SKIPPED	0002:001b10a0 ?begin@?$ae_vector@Vcolor32@@@@QAEPAVcolor32@@XZ 009A05A0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6774	SKIPPED	0002:001b10b0 ?begin@?$ae_vector@_N@@QAEPA_NXZ 009A05B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6775	SKIPPED	0002:001b10c0 ?begin@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEPAPAVFEMenuListBoxItem@@XZ 009A05C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6776	SKIPPED	0002:001b10d0 ?_Isnil@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@KAAADPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@@Z 009A05D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6777	SKIPPED	0002:001b10e0 ?_Left@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@KAAAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@PAU342@@Z 009A05E0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6778	SKIPPED	0002:001b10f0 ?_Parent@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@KAAAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@PAU342@@Z 009A05F0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -6974,34 +6974,34 @@ index	status	map_line
 6973	SKIPPED	0002:001b3830 ??A?$ae_fixed_string@$0CA@E@@QAEAADH@Z 009A2D30 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6974	SKIPPED	0002:001b38b0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@PBD@Z 009A2DB0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6975	SKIPPED	0002:001b38f0 ??Y?$ae_fixed_string@$0CA@E@@QAEAAV0@D@Z 009A2DF0 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
-6976	PORTED	0002:001b3930 ??1?$ae_vector@PAVPanelQuad@@@@QAE@XZ 009A2E30 f i shell.o
-6977	PORTED	0002:001b3960 ?push_back@?$ae_vector@PAVPanelQuad@@@@QAEXABQAVPanelQuad@@@Z 009A2E60 f i shell.o
-6978	PORTED	0002:001b3a10 ??1?$ae_vector@PAVFEText@@@@QAE@XZ 009A2F10 f i shell.o
-6979	PORTED	0002:001b3a40 ?push_back@?$ae_vector@PAVFEText@@@@QAEXABQAVFEText@@@Z 009A2F40 f i shell.o
-6980	PORTED	0002:001b3af0 ??1?$ae_vector@PAVPanelAnimObject@@@@QAE@XZ 009A2FF0 f i shell.o
-6981	PORTED	0002:001b3b20 ?resize@?$ae_vector@PAVPanelAnimObject@@@@QAEXH@Z 009A3020 f i shell.o
-6982	PORTED	0002:001b3bc0 ?resize@?$ae_vector@PAVPanelAnimObject@@@@QAEXHABQAVPanelAnimObject@@@Z 009A30C0 f i shell.o
-6983	PORTED	0002:001b3c80 ?push_back@?$ae_vector@PAVPanelAnimObject@@@@QAEXABQAVPanelAnimObject@@@Z 009A3180 f i shell.o
-6984	PORTED	0002:001b3d30 ??0?$ae_vector@Vcolor32@@@@QAE@H@Z 009A3230 f i shell.o
-6985	PORTED	0002:001b3d60 ??0?$ae_vector@Vcolor32@@@@QAE@HABVcolor32@@@Z 009A3260 f i shell.o
-6986	PORTED	0002:001b3dc0 ??0?$ae_vector@_N@@QAE@HAB_N@Z 009A32C0 f i shell.o
-6987	PORTED	0002:001b3e20 ?back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@XZ 009A3320 f i shell.o
-6988	PORTED	0002:001b3e30 ?pop_back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEXXZ 009A3330 f i shell.o
-6989	PORTED	0002:001b3e40 ??1?$ae_vector@H@@QAE@XZ 009A3340 f i shell.o
-6990	PORTED	0002:001b3e70 ?resize@?$ae_vector@H@@QAEXHABH@Z 009A3370 f i shell.o
-6991	PORTED	0002:001b3f30 ??1?$ae_vector@U_XUID@@@@QAE@XZ 009A3430 f i shell.o
-6992	PORTED	0002:001b3f60 ?resize@?$ae_vector@U_XUID@@@@QAEXHABU_XUID@@@Z 009A3460 f i shell.o
+6976	SKIPPED	0002:001b3930 ??1?$ae_vector@PAVPanelQuad@@@@QAE@XZ 009A2E30 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6977	SKIPPED	0002:001b3960 ?push_back@?$ae_vector@PAVPanelQuad@@@@QAEXABQAVPanelQuad@@@Z 009A2E60 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6978	SKIPPED	0002:001b3a10 ??1?$ae_vector@PAVFEText@@@@QAE@XZ 009A2F10 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6979	SKIPPED	0002:001b3a40 ?push_back@?$ae_vector@PAVFEText@@@@QAEXABQAVFEText@@@Z 009A2F40 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6980	SKIPPED	0002:001b3af0 ??1?$ae_vector@PAVPanelAnimObject@@@@QAE@XZ 009A2FF0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6981	SKIPPED	0002:001b3b20 ?resize@?$ae_vector@PAVPanelAnimObject@@@@QAEXH@Z 009A3020 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6982	SKIPPED	0002:001b3bc0 ?resize@?$ae_vector@PAVPanelAnimObject@@@@QAEXHABQAVPanelAnimObject@@@Z 009A30C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6983	SKIPPED	0002:001b3c80 ?push_back@?$ae_vector@PAVPanelAnimObject@@@@QAEXABQAVPanelAnimObject@@@Z 009A3180 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6984	SKIPPED	0002:001b3d30 ??0?$ae_vector@Vcolor32@@@@QAE@H@Z 009A3230 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6985	SKIPPED	0002:001b3d60 ??0?$ae_vector@Vcolor32@@@@QAE@HABVcolor32@@@Z 009A3260 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6986	SKIPPED	0002:001b3dc0 ??0?$ae_vector@_N@@QAE@HAB_N@Z 009A32C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6987	SKIPPED	0002:001b3e20 ?back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEAAPAVFEMenuListBoxItem@@XZ 009A3320 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6988	SKIPPED	0002:001b3e30 ?pop_back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEXXZ 009A3330 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6989	SKIPPED	0002:001b3e40 ??1?$ae_vector@H@@QAE@XZ 009A3340 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6990	SKIPPED	0002:001b3e70 ?resize@?$ae_vector@H@@QAEXHABH@Z 009A3370 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6991	SKIPPED	0002:001b3f30 ??1?$ae_vector@U_XUID@@@@QAE@XZ 009A3430 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6992	SKIPPED	0002:001b3f60 ?resize@?$ae_vector@U_XUID@@@@QAEXHABU_XUID@@@Z 009A3460 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 6993	SKIPPED	0002:001b4070 ??9const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 009A3570 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6994	SKIPPED	0002:001b4090 ??_GUIListBoxData@UIListBox@@QAEPAXI@Z 009A3590 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6995	VERIFIED	0002:001b40c0 ??1UIListBoxItem@UIListBox@@QAE@XZ 009A35C0 f i shell.o
 6996	SKIPPED	0002:001b40f0 ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDII@Z 009A35F0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-6997	PORTED	0002:001b41f0 ?destroy_all@?$ae_vector@PAVPanelQuadSection@@@@AAEXXZ 009A36F0 f i shell.o
-6998	PORTED	0002:001b4220 ?resize@?$ae_vector@PAVPanelQuad@@@@QAEXH@Z 009A3720 f i shell.o
-6999	PORTED	0002:001b42c0 ?resize@?$ae_vector@PAVFEText@@@@QAEXH@Z 009A37C0 f i shell.o
-7000	PORTED	0002:001b4360 ?destroy_all@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEXXZ 009A3860 f i shell.o
-7001	PORTED	0002:001b43b0 ?destroy_all@?$ae_vector@Vcolor32@@@@AAEXXZ 009A38B0 f i shell.o
-7002	PORTED	0002:001b43e0 ?destroy_all@?$ae_vector@_N@@AAEXXZ 009A38E0 f i shell.o
-7003	PORTED	0002:001b4410 ?destroy_all@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEXXZ 009A3910 f i shell.o
+6997	SKIPPED	0002:001b41f0 ?destroy_all@?$ae_vector@PAVPanelQuadSection@@@@AAEXXZ 009A36F0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6998	SKIPPED	0002:001b4220 ?resize@?$ae_vector@PAVPanelQuad@@@@QAEXH@Z 009A3720 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+6999	SKIPPED	0002:001b42c0 ?resize@?$ae_vector@PAVFEText@@@@QAEXH@Z 009A37C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7000	SKIPPED	0002:001b4360 ?destroy_all@?$ae_vector@VUIListBoxData@UIListBox@@@@AAEXXZ 009A3860 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7001	SKIPPED	0002:001b43b0 ?destroy_all@?$ae_vector@Vcolor32@@@@AAEXXZ 009A38B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7002	SKIPPED	0002:001b43e0 ?destroy_all@?$ae_vector@_N@@AAEXXZ 009A38E0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7003	SKIPPED	0002:001b4410 ?destroy_all@?$ae_vector@PAVFEMenuListBoxItem@@@@AAEXXZ 009A3910 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7004	SKIPPED	0002:001b4440 ?_Key@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@KAABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@PAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@@Z 009A3940 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7005	SKIPPED	0002:001b4450 ?_Lmost@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEAAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@XZ 009A3950 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7006	SKIPPED	0002:001b4460 ?_Rmost@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@IAEAAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@2@XZ 009A3960 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -7082,28 +7082,28 @@ index	status	map_line
 7081	SKIPPED	0002:001b5770 ??_EFrontEndMenuSystem@@UAEPAXI@Z 009A4C70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7082	SKIPPED	0002:001b57a0 ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ 009A4CA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7083	SKIPPED	0002:001b57c0 ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDI@Z 009A4CC0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7084	PORTED	0002:001b5800 ??1?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 009A4D00 f i shell.o
-7085	PORTED	0002:001b5830 ?push_back@?$ae_vector@PAVPanelQuadSection@@@@QAEXABQAVPanelQuadSection@@@Z 009A4D30 f i shell.o
-7086	PORTED	0002:001b58e0 ?clear@?$ae_vector@PAVPanelQuad@@@@QAEXXZ 009A4DE0 f i shell.o
-7087	PORTED	0002:001b58f0 ?clear@?$ae_vector@PAVFEText@@@@QAEXXZ 009A4DF0 f i shell.o
-7088	PORTED	0002:001b5900 ??1?$ae_vector@VUIListBoxData@UIListBox@@@@QAE@XZ 009A4E00 f i shell.o
-7089	PORTED	0002:001b5910 ?resize@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEXH@Z 009A4E10 f i shell.o
-7090	PORTED	0002:001b5ac0 ??1?$ae_vector@Vcolor32@@@@QAE@XZ 009A4FC0 f i shell.o
-7091	PORTED	0002:001b5af0 ??1?$ae_vector@_N@@QAE@XZ 009A4FF0 f i shell.o
-7092	PORTED	0002:001b5b20 ??1?$ae_vector@PAVFEMenuListBoxItem@@@@QAE@XZ 009A5020 f i shell.o
-7093	PORTED	0002:001b5b50 ?push_back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEXABQAVFEMenuListBoxItem@@@Z 009A5050 f i shell.o
+7084	SKIPPED	0002:001b5800 ??1?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 009A4D00 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7085	SKIPPED	0002:001b5830 ?push_back@?$ae_vector@PAVPanelQuadSection@@@@QAEXABQAVPanelQuadSection@@@Z 009A4D30 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7086	SKIPPED	0002:001b58e0 ?clear@?$ae_vector@PAVPanelQuad@@@@QAEXXZ 009A4DE0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7087	SKIPPED	0002:001b58f0 ?clear@?$ae_vector@PAVFEText@@@@QAEXXZ 009A4DF0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7088	SKIPPED	0002:001b5900 ??1?$ae_vector@VUIListBoxData@UIListBox@@@@QAE@XZ 009A4E00 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7089	SKIPPED	0002:001b5910 ?resize@?$ae_vector@VUIListBoxData@UIListBox@@@@QAEXH@Z 009A4E10 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7090	SKIPPED	0002:001b5ac0 ??1?$ae_vector@Vcolor32@@@@QAE@XZ 009A4FC0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7091	SKIPPED	0002:001b5af0 ??1?$ae_vector@_N@@QAE@XZ 009A4FF0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7092	SKIPPED	0002:001b5b20 ??1?$ae_vector@PAVFEMenuListBoxItem@@@@QAE@XZ 009A5020 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7093	SKIPPED	0002:001b5b50 ?push_back@?$ae_vector@PAVFEMenuListBoxItem@@@@QAEXABQAVFEMenuListBoxItem@@@Z 009A5050 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7094	SKIPPED	0002:001b5c00 ?end@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009A5100 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7095	SKIPPED	0002:001b5c20 ?end@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009A5120 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7096	SKIPPED	0002:001b5c40 ??Diterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QBEAAU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@2@XZ 009A5140 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7097	SKIPPED	0002:001b5c50 ??Diterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBEAAU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@2@XZ 009A5150 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7098	SKIPPED	0002:001b5c60 ??_GUIListBoxItem@UIListBox@@QAEPAXI@Z 009A5160 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7099	SKIPPED	0002:001b5c90 ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@QAE@XZ 009A5190 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7100	PORTED	0002:001b5cc0 ?resize@?$ae_vector@PAVPanelQuadSection@@@@QAEXH@Z 009A51C0 f i shell.o
-7101	PORTED	0002:001b5d60 ?construct_array@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEPAVUIListBoxItem@UIListBox@@H@Z 009A5260 f i shell.o
-7102	PORTED	0002:001b5e20 ?destroy_all@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEXXZ 009A5320 f i shell.o
+7100	SKIPPED	0002:001b5cc0 ?resize@?$ae_vector@PAVPanelQuadSection@@@@QAEXH@Z 009A51C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7101	SKIPPED	0002:001b5d60 ?construct_array@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEPAVUIListBoxItem@UIListBox@@H@Z 009A5260 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7102	SKIPPED	0002:001b5e20 ?destroy_all@?$ae_vector@VUIListBoxItem@UIListBox@@@@AAEXXZ 009A5320 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7103	SKIPPED	0002:001b5e80 ?begin@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@XZ 009A5380 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7104	VERIFIED	0002:001b5ea0 ??1UIListBoxDataRow@UIListBox@@QAE@XZ 009A53A0 f i shell.o
-7105	PORTED	0002:001b5eb0 ??1?$ae_vector@VUIListBoxItem@UIListBox@@@@QAE@XZ 009A53B0 f i shell.o
+7105	SKIPPED	0002:001b5eb0 ??1?$ae_vector@VUIListBoxItem@UIListBox@@@@QAE@XZ 009A53B0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7106	SKIPPED	0002:001b5ec0 ??Eiterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A53C0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7107	SKIPPED	0002:001b5ed0 ??Fiterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A53D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7108	SKIPPED	0002:001b5ee0 ??Eiterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A53E0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -7152,10 +7152,10 @@ index	status	map_line
 7151	VERIFIED	0002:001b6950 ??1FEMenuListBox@@UAE@XZ 009A5E50 f i shell.o
 7152	VERIFIED	0002:001b6a10 ??0SE_Entry_s@@QAE@XZ 009A5F10 f i shell.o
 7153	VERIFIED	0002:001b6a70 ??1SE_Entry_s@@QAE@XZ 009A5F70 f i shell.o
-7154	PORTED	0002:001b6b10 ?clear@?$ae_vector@PAVPanelQuadSection@@@@QAEXXZ 009A6010 f i shell.o
-7155	PORTED	0002:001b6b20 ?resize@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEXH@Z 009A6020 f i shell.o
+7154	SKIPPED	0002:001b6b10 ?clear@?$ae_vector@PAVPanelQuadSection@@@@QAEXXZ 009A6010 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7155	SKIPPED	0002:001b6b20 ?resize@?$ae_vector@VUIListBoxItem@UIListBox@@@@QAEXH@Z 009A6020 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7156	SKIPPED	0002:001b6ce0 ??1?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@QAE@XZ 009A61E0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7157	PORTED	0002:001b6d70 ?construct_array@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEPAVUIListBoxDataRow@UIListBox@@H@Z 009A6270 f i shell.o
+7157	SKIPPED	0002:001b6d70 ?construct_array@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEPAVUIListBoxDataRow@UIListBox@@H@Z 009A6270 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7158	SKIPPED	0002:001b6dd0 ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QBE_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 009A62D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7159	SKIPPED	0002:001b6e20 ??Fiterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEAAV012@XZ 009A6320 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7160	VERIFIED	0002:001b6e30 ??0UIListBoxRow@UIListBox@@QAE@XZ 009A6330 f i shell.o
@@ -7230,10 +7230,10 @@ index	status	map_line
 7229	VERIFIED	0002:001b7c40 ?Init@ProfileEditMenu@@UAEXXZ 009A7140 f i shell.o
 7230	VERIFIED	0002:001b7c50 ?OnLeft@ProfileEditMenu@@UAEXH@Z 009A7150 f i shell.o
 7231	VERIFIED	0002:001b7c60 ?OnRight@ProfileEditMenu@@UAEXH@Z 009A7160 f i shell.o
-7232	PORTED	0002:001b7c70 ??0?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@H@Z 009A7170 f i shell.o
+7232	SKIPPED	0002:001b7c70 ??0?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@H@Z 009A7170 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7233	SKIPPED	0002:001b7ca0 ?append@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ID@Z 009A71A0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7234	PORTED	0002:001b7dc0 ?construct_array@?$ae_vector@VUIListBoxRow@UIListBox@@@@AAEPAVUIListBoxRow@UIListBox@@H@Z 009A72C0 f i shell.o
-7235	PORTED	0002:001b7e10 ?destroy_all@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEXXZ 009A7310 f i shell.o
+7234	SKIPPED	0002:001b7dc0 ?construct_array@?$ae_vector@VUIListBoxRow@UIListBox@@@@AAEPAVUIListBoxRow@UIListBox@@H@Z 009A72C0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7235	SKIPPED	0002:001b7e10 ?destroy_all@?$ae_vector@VUIListBoxDataRow@UIListBox@@@@AAEXXZ 009A7310 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7236	SKIPPED	0002:001b7e70 ??0?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@1@@Z 009A7370 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7237	SKIPPED	0002:001b7eb0 ?lower_bound@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A73B0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7238	SKIPPED	0002:001b7ed0 ??0?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@ABU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@ABV?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@1@@Z 009A73D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -7283,12 +7283,12 @@ index	status	map_line
 7282	SKIPPED	0002:001b8570 ??_GProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7283	SKIPPED	0002:001b8570 ??_EProfileEditMenu@@UAEPAXI@Z 009A7A70 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7284	SKIPPED	0002:001b85a0 ??Y?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@D@Z 009A7AA0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7285	PORTED	0002:001b85c0 ??0?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@H@Z 009A7AC0 f i shell.o
-7286	PORTED	0002:001b85f0 ??1?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@XZ 009A7AF0 f i shell.o
+7285	SKIPPED	0002:001b85c0 ??0?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@H@Z 009A7AC0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
+7286	SKIPPED	0002:001b85f0 ??1?$ae_vector@VUIListBoxDataRow@UIListBox@@@@QAE@XZ 009A7AF0 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7287	SKIPPED	0002:001b8600 ?find@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7B00 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7288	SKIPPED	0002:001b8680 ?find@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE?AViterator@12@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7B80 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7289	SKIPPED	0002:001b8700 ?append@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z 009A7C00 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7290	PORTED	0002:001b8730 ?destroy_all@?$ae_vector@VUIListBoxRow@UIListBox@@@@AAEXXZ 009A7C30 f i shell.o
+7290	SKIPPED	0002:001b8730 ?destroy_all@?$ae_vector@VUIListBoxRow@UIListBox@@@@AAEXXZ 009A7C30 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7291	SKIPPED	0002:001b8790 ??0?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@ABH@Z 009A7C90 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7292	SKIPPED	0002:001b87d0 ?equal_range@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBE?AU?$pair@Vconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@V123@@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A7CD0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7293	PORTED	0002:001b8810 ??0SE_Entry_s@@QAE@ABU0@@Z 009A7D10 f i shell.o
@@ -7326,7 +7326,7 @@ index	status	map_line
 7325	SKIPPED	0002:001b8ce0 ??_EVKMenu@@UAEPAXI@Z 009A81E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 7326	SKIPPED	0002:001b8d10 ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z 009A8210 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7327	SKIPPED	0002:001b8d40 ??Y?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z 009A8240 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-7328	PORTED	0002:001b8d70 ??1?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@XZ 009A8270 f i shell.o
+7328	SKIPPED	0002:001b8d70 ??1?$ae_vector@VUIListBoxRow@UIListBox@@@@QAE@XZ 009A8270 f i shell.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition
 7329	SKIPPED	0002:001b8d80 ?count@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QBEIABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 009A8280 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7330	SKIPPED	0002:001b8dd0 ?_Erase@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@IAEXPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@2@@Z 009A82D0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7331	SKIPPED	0002:001b8e30 ??0?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@ABUSE_Entry_s@@@Z 009A8330 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
