@@ -224,6 +224,7 @@ public:
         struct targetname_struct {
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
+            const Broc::string& operator=(const Broc::string& rhs);
         };
         struct maxhealth_struct {
             unsigned int mHandle;  // +0x00
@@ -970,7 +971,14 @@ struct BrocAPI {
     void (*mCVarSetFloat)(const char*, float);            // +0x260
     unsigned int (*mSpawn)(const Broc::string*, const Broc::vector*,
                            TPakInfo);                    // +0x264
-    char _pad268[0x290 - 0x268];                          // +0x268
+    unsigned int (*mSpawnWithFlag)(const Broc::string*, const Broc::vector*,
+                                   const int, TPakInfo);  // +0x268
+    unsigned int (*mSpawnWithFlagAndSize)(const Broc::string*, const Broc::vector*,
+                                          Broc::vector*, Broc::vector*,
+                                          const int, TPakInfo); // +0x26C
+    unsigned int (*mSpawnTriggerMount)(Broc::vector*, Broc::vector*,
+                                       const bool, TPakInfo); // +0x270
+    char _pad274[0x290 - 0x274];                          // +0x274
     unsigned int (*mSoundPlay)(const Broc::string*, float); // +0x290
     char _pad294[0x2A0 - 0x294];                          // +0x294
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
@@ -1033,9 +1041,18 @@ struct BrocAPI {
     unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
     void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
-    char _pad3D0[0x528 - 0x3D0];                          // +0x3D0
+    char _pad3D0[0x43C - 0x3D0];                          // +0x3D0
+    void (*mDebugRenderText)(const char*, const int, const int); // +0x43C
+    void (*mDebugRenderEntityBBox)(const unsigned int, const Broc::vector*, float); // +0x440
+    void (*mDebugRenderBox)(const Broc::vector*, const Broc::vector*,
+                            const Broc::vector*, float); // +0x444
+    void (*mDebugRenderSphere)(const Broc::vector*, const float,
+                               const Broc::vector*, float); // +0x448
+    char _pad44C[0x528 - 0x44C];                          // +0x44C
     unsigned int (*mGetTime)();                           // +0x528
-    char _pad52C[0x6D8 - 0x52C];                          // +0x52C
+    char _pad52C[0x68C - 0x52C];                          // +0x52C
+    void (*mLinkTo3)(const unsigned int, const unsigned int); // +0x68C
+    char _pad690[0x6D8 - 0x690];                          // +0x690
     void (*mDelete)(unsigned int);                        // +0x6D8
     char _pad6DC[0x6E8 - 0x6DC];                          // +0x6DC
     void (*mSetModel)(unsigned int, const Broc::string*, TPakInfo); // +0x6E8
@@ -1063,7 +1080,9 @@ struct BrocAPI {
     bool (*mHasWeaponAndAmmo)(unsigned int, const Broc::string*, int*); // +0xA30
     bool (*mSwitchToWeapon)(unsigned int, const Broc::string*); // +0xA34
     bool (*mSwitchToLastWeapon)(unsigned int);             // +0xA38
-    char _padA3C[0xA8C - 0xA3C];                          // +0xA3C
+    char _padA3C[0xA5C - 0xA3C];                          // +0xA3C
+    int (*mUseButtonPressed)(const unsigned int);          // +0xA5C
+    char _padA60[0xA8C - 0xA60];                          // +0xA60
     int (*mOpenMenu)(const Broc::string*, int);            // +0xA8C
     int (*mIsMenuOpen)(const Broc::string*, int);          // +0xA90
     int (*mOpenMenuNoMouse)(unsigned int, const Broc::string*); // +0xA94
@@ -1168,10 +1187,10 @@ Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
 void Delete(const Broc::entity& e);
 void Delete(Broc::entity* e);  // pointer convenience wrapper
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
-                    const Broc::vector* origin, int pakInfo);
+                    const Broc::vector* origin, TPakInfo pakInfo);
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
-                    const Broc::vector* origin, const Broc::vector* mins,
-                    const Broc::vector* maxs, int iSpawnFlags, int pakInfo);
+                    const Broc::vector* origin, Broc::vector* mins,
+                    Broc::vector* maxs, int iSpawnFlags, TPakInfo pakInfo);
 void LinkTo(Broc::entity* e, Broc::entity* pe);
 void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
@@ -1228,7 +1247,7 @@ int IsTouching(const Broc::entity* e, const Broc::entity* other);
 bool IsLocalHost();                              // ea: 0x92F6B0
 bool IsVehicleFlipped(const Broc::entity* e);
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
-int UseButtonPressed(Broc::entity e);            // ea: 0x92F4D0
+int UseButtonPressed(const Broc::entity& e);     // ea: 0x92F4D0
 float Length(const Broc::vector* v);
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440
@@ -1320,7 +1339,7 @@ void Code_SendGameStateCTF(Broc::entity player, const Broc::vector* allied_flag,
                            Broc::entity axis_flag_holder);
 void Code_SetCompassVisibilty(int teamid, bool visible);
 void Code_PickupItem(int netID, Broc::entity player);
-void Code_AreaCaptured(int netID, int team, int hostOnly);
+void Code_AreaCaptured(int netID, unsigned int team, unsigned int hostOnly);
 void Code_DropItem(int itemType, int netID, const Broc::vector* position,
                    const Broc::vector* angles, const Broc::vector* velocity);
 void Code_HostDropItem(int itemType, int netID, const Broc::vector* position,

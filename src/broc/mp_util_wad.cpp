@@ -2125,6 +2125,13 @@ const Broc::string* Broc::entity::__unnamed::targetname_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::targetname_struct::operator= - ea: 0x955090
+const Broc::string& Broc::entity::__unnamed::targetname_struct::operator=(
+    const Broc::string& rhs) {
+    Broc::gBrocAPI.m_entity_set_targetname(mHandle, rhs);
+    return rhs;
+}
+
 // Broc::entity::__unnamed::maxhealth_struct::Get - ea: 0x93ADE0
 const Broc::bint* Broc::entity::__unnamed::maxhealth_struct::Get(
     Broc::bint* result) const {
@@ -2504,11 +2511,62 @@ Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
 
 // Broc::Spawn - ea: 0x9354E0
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* inClassname,
-                    const Broc::vector* origin, int pakInfo) {
+                    const Broc::vector* origin, TPakInfo pakInfo) {
     unsigned int handle = gBrocAPI.mSpawn(inClassname, origin,
-                                          (TPakInfo)pakInfo);
+                                          pakInfo);
     new (result) Broc::entity(handle);
     return result;
+}
+
+// Broc::Spawn (with size/flags) - ea: 0x9550E0
+Broc::entity* Spawn(Broc::entity* result, const Broc::string* inClassname,
+                    const Broc::vector* origin, Broc::vector* mins,
+                    Broc::vector* maxs, int iSpawnFlags, TPakInfo pakInfo) {
+    unsigned int handle = gBrocAPI.mSpawnWithFlagAndSize(
+        inClassname, origin, mins, maxs, iSpawnFlags, pakInfo);
+    new (result) Broc::entity(handle);
+    return result;
+}
+
+// Broc::LinkTo - ea: 0x955130
+void LinkTo(Broc::entity* e, Broc::entity* pe) {
+    gBrocAPI.mLinkTo3(e->GetHandle(), pe->GetHandle());
+}
+
+// Broc::UseButtonPressed - ea: 0x954120
+int UseButtonPressed(const Broc::entity& e) {
+    return gBrocAPI.mUseButtonPressed(e.GetHandle());
+}
+
+// Broc::Code_AreaCaptured - ea: 0x954940
+void Broc::Code_AreaCaptured(int netID, unsigned int team,
+                             unsigned int hostOnly) {
+    gBrocAPI.mAreaCaptured(netID, team, hostOnly);
+}
+
+// Broc::Code_DebugRenderBox - ea: 0x94CD50
+void Broc::Code_DebugRenderBox(const Broc::vector* min,
+                               const Broc::vector* max,
+                               const Broc::vector* color, float alpha) {
+    gBrocAPI.mDebugRenderBox(min, max, color, alpha);
+}
+
+// Broc::Code_DebugRenderText - ea: 0x955AF0
+void Broc::Code_DebugRenderText(const char* text, int x, int y) {
+    gBrocAPI.mDebugRenderText(text, x, y);
+}
+
+// Broc::Code_DebugRenderEntityBBox - ea: 0x9562E0
+void Broc::Code_DebugRenderEntityBBox(Broc::entity e,
+                                      const Broc::vector* color,
+                                      float alpha) {
+    gBrocAPI.mDebugRenderEntityBBox(e.GetHandle(), color, alpha);
+}
+
+// Broc::Code_DebugRenderSphere - ea: 0x956320
+void Broc::Code_DebugRenderSphere(const Broc::vector* point, float radius,
+                                  const Broc::vector* color, float alpha) {
+    gBrocAPI.mDebugRenderSphere(point, radius, color, alpha);
 }
 
 // Broc::EffectEventPlay - ea: 0x935520
@@ -2871,7 +2929,7 @@ void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
     Broc::string inClassname("script_model");
     Broc::entity plane;
     Broc::vector* startOrg = &plane_struct.plane_start_orgs[(unsigned int)num];
-    Broc::Spawn(&plane, &inClassname, startOrg, 0);
+    Broc::Spawn(&plane, &inClassname, startOrg, static_cast<TPakInfo>(0));
     inClassname.~string();
     Broc::SetModel(&plane, &plane_struct.plane_model, 0);
     Broc::vector* angles = &plane_struct.plane_angles[(unsigned int)num];
@@ -3350,7 +3408,8 @@ Broc::entity* SpawnLineSound(Broc::entity* result, Broc::entity startOfLine,
         mp_util_wad::entity_get_origin(&end, endOfLineEntity);
         Broc::string inClassname("script_origin");
         Broc::entity soundMover;
-        Broc::Spawn(&soundMover, &inClassname, &start, INVALID_PAK_INFO);
+        Broc::Spawn(&soundMover, &inClassname, &start,
+                    static_cast<TPakInfo>(INVALID_PAK_INFO));
         inClassname.~string();
         Broc::EffectEventPlay(&soundMover, &sound);
         void* ftor = MoveSoundAlongLine__functor(soundMover, start, end);
@@ -3485,7 +3544,8 @@ void PlayTeamSoundStoppable(Broc::entity self, Broc::string sound,
         if (Broc::size(players) > 0)
             mp_util_wad::entity_get_origin(&origin, players[0]);
         mp_util_wad::pLevel->hack_sound_entity =
-            *Broc::Spawn(&spawnResult, &inClassname, &origin, INVALID_PAK_INFO);
+            *Broc::Spawn(&spawnResult, &inClassname, &origin,
+                         static_cast<TPakInfo>(INVALID_PAK_INFO));
         inClassname.~string();
     }
     Broc::bint i(0);
@@ -3542,7 +3602,8 @@ void PlayTeamSoundStoppable(Broc::entity self, Broc::string primaryteam,
         Broc::string inClassname("script_origin");
         Broc::entity spawnResult;
         mp_util_wad::pLevel->hack_sound_entity =
-            *Broc::Spawn(&spawnResult, &inClassname, &origin, INVALID_PAK_INFO);
+            *Broc::Spawn(&spawnResult, &inClassname, &origin,
+                         static_cast<TPakInfo>(INVALID_PAK_INFO));
         inClassname.~string();
     }
     if (Broc::size(players) == 1) {
@@ -3649,7 +3710,8 @@ void PlaySoundAtLocation(Broc::entity self, Broc::string sound,
     Broc::wait(2.5f);
     Broc::string inClassname("script_origin");
     Broc::entity temp_entity;
-    Broc::Spawn(&temp_entity, &inClassname, &position, INVALID_PAK_INFO);
+    Broc::Spawn(&temp_entity, &inClassname, &position,
+                static_cast<TPakInfo>(INVALID_PAK_INFO));
     inClassname.~string();
     HashStr notifyHash;
     Broc::string_hash(&notifyHash, &sound);
@@ -7741,7 +7803,8 @@ void fireydeath(Broc::entity self, Broc::entity tank) {
     Broc::vector up(0.0f, 0.0f, 32.0f);
     Broc::vector spawnPos = origin + up;
     Broc::entity flameemitter;
-    Broc::Spawn(&flameemitter, &inClassname, &spawnPos, 0);
+    Broc::Spawn(&flameemitter, &inClassname, &spawnPos,
+                static_cast<TPakInfo>(0));
     inClassname.~string();
     void* ftor = deleteonextinguish__functor(flameemitter);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
@@ -10601,7 +10664,8 @@ void InitializeFlags() {
         *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
         Broc::string inClassname("trigger_multiple");
         Broc::entity trig;
-        Broc::Spawn(&trig, &inClassname, &origin, &mins, &maxs, 2, 0);
+        Broc::Spawn(&trig, &inClassname, &origin, &mins, &maxs, 2,
+                    static_cast<TPakInfo>(0));
         inClassname.~string();
         *mp_util_wad::GetEE_trigger(flag) = trig;
         Broc::LinkTo(mp_util_wad::GetEE_trigger(flag), &flag);
