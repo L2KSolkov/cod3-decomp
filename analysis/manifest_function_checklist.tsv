@@ -7205,17 +7205,17 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 7204	0x005B7A90	0x009A6F90	?Init@OptionsControlsMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7205	0x005B7AA0	0x009A6FA0	?OnLeft@OptionsControlsMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7206	0x005B7AB0	0x009A6FB0	?OnRight@OptionsControlsMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7207	0x005B7AC0	0x009A6FC0	?Init@OptionsSoundMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7207	0x005B7AC0	0x009A6FC0	?Init@OptionsSoundMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7208	0x005B7AD0	0x009A6FD0	?OnLeft@OptionsSoundMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7209	0x005B7AE0	0x009A6FE0	?OnRight@OptionsSoundMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7210	0x005B7AF0	0x009A6FF0	?Init@OptionsStickMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7211	0x005B7B00	0x009A7000	?OnUp@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7212	0x005B7B10	0x009A7010	?OnDown@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7210	0x005B7AF0	0x009A6FF0	?Init@OptionsStickMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7211	0x005B7B00	0x009A7000	?OnUp@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7212	0x005B7B10	0x009A7010	?OnDown@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7213	0x005B7B20	0x009A7020	?OnLeft@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7214	0x005B7B30	0x009A7030	?OnRight@OptionsStickMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7215	0x005B7B40	0x009A7040	?Init@OptionsButtonMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7216	0x005B7B50	0x009A7050	?OnUp@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7217	0x005B7B60	0x009A7060	?OnDown@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7215	0x005B7B40	0x009A7040	?Init@OptionsButtonMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7216	0x005B7B50	0x009A7050	?OnUp@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7217	0x005B7B60	0x009A7060	?OnDown@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7218	0x005B7B70	0x009A7070	?OnLeft@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7219	0x005B7B80	0x009A7080	?OnRight@OptionsButtonMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7220	0x005B7B90	0x009A7090	?Init@GammaScreenMenu@@UAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

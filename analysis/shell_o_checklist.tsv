@@ -2028,17 +2028,17 @@ index	status	map_line
 2027	VERIFIED	0002:001b7a90 ?Init@OptionsControlsMenu@@UAEXXZ 009A6F90 f i shell.o  VERIFIED: exact IDA no-op override
 2028	VERIFIED	0002:001b7aa0 ?OnLeft@OptionsControlsMenu@@UAEXH@Z 009A6FA0 f i shell.o
 2029	VERIFIED	0002:001b7ab0 ?OnRight@OptionsControlsMenu@@UAEXH@Z 009A6FB0 f i shell.o
-2030	PORTED	0002:001b7ac0 ?Init@OptionsSoundMenu@@UAEXXZ 009A6FC0 f i shell.o  PORTED: added IDA-derived empty override
+2030	VERIFIED	0002:001b7ac0 ?Init@OptionsSoundMenu@@UAEXXZ 009A6FC0 f i shell.o  VERIFIED: exact IDA no-op override
 2031	VERIFIED	0002:001b7ad0 ?OnLeft@OptionsSoundMenu@@UAEXH@Z 009A6FD0 f i shell.o
 2032	VERIFIED	0002:001b7ae0 ?OnRight@OptionsSoundMenu@@UAEXH@Z 009A6FE0 f i shell.o
-2033	PORTED	0002:001b7af0 ?Init@OptionsStickMenu@@UAEXXZ 009A6FF0 f i shell.o  PORTED: added IDA-derived empty override
-2034	PORTED	0002:001b7b00 ?OnUp@OptionsStickMenu@@UAEXH@Z 009A7000 f i shell.o  PORTED: added IDA-derived empty override
-2035	PORTED	0002:001b7b10 ?OnDown@OptionsStickMenu@@UAEXH@Z 009A7010 f i shell.o  PORTED: added IDA-derived empty override
+2033	VERIFIED	0002:001b7af0 ?Init@OptionsStickMenu@@UAEXXZ 009A6FF0 f i shell.o  VERIFIED: exact IDA no-op override
+2034	VERIFIED	0002:001b7b00 ?OnUp@OptionsStickMenu@@UAEXH@Z 009A7000 f i shell.o  VERIFIED: exact IDA no-op override
+2035	VERIFIED	0002:001b7b10 ?OnDown@OptionsStickMenu@@UAEXH@Z 009A7010 f i shell.o  VERIFIED: exact IDA no-op override
 2036	VERIFIED	0002:001b7b20 ?OnLeft@OptionsStickMenu@@UAEXH@Z 009A7020 f i shell.o
 2037	VERIFIED	0002:001b7b30 ?OnRight@OptionsStickMenu@@UAEXH@Z 009A7030 f i shell.o
-2038	PORTED	0002:001b7b40 ?Init@OptionsButtonMenu@@UAEXXZ 009A7040 f i shell.o  PORTED: added IDA-derived empty override
-2039	PORTED	0002:001b7b50 ?OnUp@OptionsButtonMenu@@UAEXH@Z 009A7050 f i shell.o  PORTED: added IDA-derived empty override
-2040	PORTED	0002:001b7b60 ?OnDown@OptionsButtonMenu@@UAEXH@Z 009A7060 f i shell.o  PORTED: added IDA-derived empty override
+2038	VERIFIED	0002:001b7b40 ?Init@OptionsButtonMenu@@UAEXXZ 009A7040 f i shell.o  VERIFIED: exact IDA no-op override
+2039	VERIFIED	0002:001b7b50 ?OnUp@OptionsButtonMenu@@UAEXH@Z 009A7050 f i shell.o  VERIFIED: exact IDA no-op override
+2040	VERIFIED	0002:001b7b60 ?OnDown@OptionsButtonMenu@@UAEXH@Z 009A7060 f i shell.o  VERIFIED: exact IDA no-op override
 2041	VERIFIED	0002:001b7b70 ?OnLeft@OptionsButtonMenu@@UAEXH@Z 009A7070 f i shell.o
 2042	VERIFIED	0002:001b7b80 ?OnRight@OptionsButtonMenu@@UAEXH@Z 009A7080 f i shell.o
 2043	VERIFIED	0002:001b7b90 ?Init@GammaScreenMenu@@UAEXXZ 009A7090 f i shell.o
