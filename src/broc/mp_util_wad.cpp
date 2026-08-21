@@ -3871,6 +3871,15 @@ extern void* StartGame__functor(Broc::entity self);
 extern void* main__functor(Broc::entity self);
 extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
                                    const Broc::string* spawnpoint);
+void main(Broc::entity self);
+
+// main__functor - ea: 0x93CC70
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 
 void main(Broc::entity self) {
     Broc::bbool team_game(false);
