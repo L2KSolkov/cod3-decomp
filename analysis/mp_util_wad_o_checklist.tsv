@@ -432,7 +432,7 @@ index	status	map_line
 431	PORTED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o	PORTED: IDA forwards *rhs and this->mHandle to m_entity_set_persistent_player_rank, then returns rhs
 432	VERIFIED	0002:00548a30 ?put_player_into_spectate_mode@_mp_common@@YAXVentity@Broc@@@Z 00D37F30 f mp_util_wad.o
 433	PORTED	0002:00548ad0 ?SpawnLocalSpectator__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D37FD0 f i mp_util_wad.o
-434	VERIFIED	0002:00548b70 ?SpawnLocalSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D38070 f mp_util_wad.o
+434	FIXED	0002:00548b70 ?SpawnLocalSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D38070 f mp_util_wad.o	FIXED: IDA 0x00948B70 constructs the fade waittill entity from pLevel->_base.entity; earlier endon calls use guy
 435	PORTED	0002:00548f20 ?UpdateSpectateSpawn__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D38420 f i mp_util_wad.o
 436	VERIFIED	0002:00548fc0 ?SpawnSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D384C0 f mp_util_wad.o
 437	PORTED	0002:005491b0 ?Get@viewangles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D386B0 f i mp_util_wad.o
