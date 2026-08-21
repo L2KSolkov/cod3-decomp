@@ -6356,7 +6356,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6355	0x0059E670	0x0098DB70	?SE_LoadLanguage@@YAPBDPBDH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6356	0x005AD200	0x0099C700	??0SCheckpointGameVar@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6357	0x005AD210	0x0099C710	??0SEntitySaveInfo@@QAE@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
-6358	0x005AD240	0x0099C740	?TextOut@XFONT@@QAGJPAUD3DSurface@@PBGIJJ@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6358	0x005AD240	0x0099C740	?TextOut@XFONT@@QAGJPAUD3DSurface@@PBGIJJ@Z		shell.o	game		f i	1	SKIPPED	XDK API delegated to platform shim	NO	NO	SKIPPED
 6359	0x005AD250	0x0099C750	?GetHandle@LiveWrapper@@SAPAV1@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6360	0x005AD260	0x0099C760	?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6361	0x005AD270	0x0099C770	?button_pressed_clear_all@controller@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
