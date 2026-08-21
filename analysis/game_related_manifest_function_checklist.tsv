@@ -19973,9 +19973,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19972	0x0084AAA0	0x00C39FA0	?gpuCreateRenderSurface@@YAPAUD3DSurface@@IIW4gpuTextureFormat@@W4gpuMultiSampleType@@@Z	ngl_xboxr	ngl_gpu_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19973	0x0084AAD0	0x00C39FD0	?gpuCreateDepthStencilSurface@@YAPAUD3DSurface@@IIW4gpuTextureFormat@@W4gpuMultiSampleType@@@Z	ngl_xboxr	ngl_gpu_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19974	0x0084AB00	0x00C3A000	?nglCreateTexture@@YAPAUnglTexture@@IIHHHH@Z	ngl_xboxr	ngl_gpu_texture.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19975	0x0084AC70	0x00C3A170	?GetDepthStencilSurface@D3DDevice@@SGJPAPAUD3DSurface@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19975	0x0084AC70	0x00C3A170	?GetDepthStencilSurface@D3DDevice@@SGJPAPAUD3DSurface@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19976	0x0084ACA0	0x00C3A1A0	?GetSurfaceLevel@D3DTexture@@QAGJIPAPAUD3DSurface@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19977	0x0084ACD0	0x00C3A1D0	?GetCubeMapSurface@D3DCubeTexture@@QAGJW4_D3DCUBEMAP_FACES@@IPAPAUD3DSurface@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19977	0x0084ACD0	0x00C3A1D0	?GetCubeMapSurface@D3DCubeTexture@@QAGJW4_D3DCUBEMAP_FACES@@IPAPAUD3DSurface@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19978	0x0084AD10	0x00C3A210	?nglSaveTexture@@YAXPAUnglTexture@@PBD@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19979	0x0084ADB0	0x00C3A2B0	?nglCreateTextureFromFile@@YAPAUnglTexture@@PAXH@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19980	0x0084AE20	0x00C3A320	?nglDestroyTexture@@YAXPAUnglTexture@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -19987,9 +19987,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19986	0x0084B100	0x00C3A600	?nglUpdateInternalTextures@@YAXXZ	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19987	0x0084B1A0	0x00C3A6A0	?nglDestroyNormalCubeMap@@YAXXZ	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19988	0x0084B1C0	0x00C3A6C0	?nglCreateNormalCubeMap@@YAXI@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-19989	0x0084B640	0x00C3AB40	?GetDesc@D3DSurface@@QAGJPAU_D3DSURFACE_DESC@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19990	0x0084B660	0x00C3AB60	?LockRect@D3DSurface@@QAGJPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19991	0x0084B680	0x00C3AB80	?UnlockRect@D3DSurface@@QAGJXZ	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19989	0x0084B640	0x00C3AB40	?GetDesc@D3DSurface@@QAGJPAU_D3DSURFACE_DESC@@@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+19990	0x0084B660	0x00C3AB60	?LockRect@D3DSurface@@QAGJPAU_D3DLOCKED_RECT@@PBUtagRECT@@K@Z	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+19991	0x0084B680	0x00C3AB80	?UnlockRect@D3DSurface@@QAGJXZ	ngl_xboxr	ngl_dx_tex_create.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19992	0x0084B690	0x00C3AB90	??4Mat34@math@@QAEABV01@ABVDiagMat33@1@@Z	ngl_xboxr	ngl_gpu.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19993	0x0084B760	0x00C3AC60	?nglGpuUnpackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPAVVector4@math@@II@Z	ngl_xboxr	ngl_gpu.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19994	0x0084BE60	0x00C3B360	?nglGpuPackVertexBuffer@@YAXPAUD3DVertexBuffer@@PAUgpuVertexFormat@@W4gpuVertexElementUsage@@IPBVVector4@math@@II@Z	ngl_xboxr	ngl_gpu.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
