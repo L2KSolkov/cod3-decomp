@@ -2968,6 +2968,12 @@ void memcpyToStack(unsigned char* dest, unsigned char* src, int count)
     }
 }
 
+// ea: 0x005E9F60
+int FastCeil(float x)
+{
+    return (int)ceil((double)x);
+}
+
 // DestroyBrocInstsStub (scr.o 0x5BC0E0, empty)
 static void DestroyBrocInstsStub(void*)
 {
