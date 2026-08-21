@@ -8033,8 +8033,10 @@ void* fire__functor(Broc::entity self) {
 namespace _mp_nano {
 void main() {
     Broc::EnableNanoForces(true);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = WindBlowing__functor(lvl);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_nano.bro",
                         __LINE__, "WindBlowing", ftor);
