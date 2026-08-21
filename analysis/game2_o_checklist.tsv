@@ -764,13 +764,13 @@ index	status	map_line
 763	PORTED	0002:001196f0 ??9iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBE_NV01@@Z 00908BF0 f i game2.o  PORTED: exact drone map iterator comparison emitted
 764	PORTED	0002:00119710 ??0?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@QAE@ABIABQAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@Z 00908C10 f i game2.o  PORTED: exact field-pointer pair constructor emitted
 765	PORTED	0002:00119730 ?erase@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEXPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908C30 f i game2.o  PORTED: exact handle-vector erase with IDA assert metadata
-766	PORTED	0002:001197d0 ?find@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABV2@@Z 00908CD0 f i game2.o
-767	PORTED	0002:00119800 ??Dconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D00 f i game2.o
-768	PORTED	0002:00119810 ??Cconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D10 f i game2.o
-769	PORTED	0002:00119820 ??Econst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D20 f i game2.o
-770	PORTED	0002:00119830 ??9const_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D30 f i game2.o
-771	PORTED	0002:00119850 ??Citerator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEAAPAVTaskHandler@@XZ 00908D50 f i game2.o
-772	PORTED	0002:00119860 ??Eiterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D60 f i game2.o
+766	PORTED	0002:001197d0 ?find@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABV2@@Z 00908CD0 f i game2.o  PORTED: shared TaskHandler const_iterator dereference emitted
+767	PORTED	0002:00119800 ??Dconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D00 f i game2.o  PORTED: shared TaskHandler const_iterator arrow emitted
+768	PORTED	0002:00119810 ??Cconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D10 f i game2.o  PORTED: shared TaskHandler const_iterator increment emitted
+769	PORTED	0002:00119820 ??Econst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D20 f i game2.o  PORTED: shared TaskHandler const_iterator comparison emitted
+770	PORTED	0002:00119830 ??9const_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D30 f i game2.o  PORTED: shared TaskHandler iterator arrow emitted
+771	PORTED	0002:00119850 ??Citerator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEAAPAVTaskHandler@@XZ 00908D50 f i game2.o  PORTED: shared TaskHandler iterator increment emitted
+772	PORTED	0002:00119860 ??Eiterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D60 f i game2.o  PORTED: shared TaskHandler iterator comparison emitted
 773	PORTED	0002:00119870 ??9iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D70 f i game2.o
 774	PORTED	0002:00119890 ??Eiterator@?$reserved_dlist@VTask@@@@QAEAAV01@XZ 00908D90 f i game2.o
 775	PORTED	0002:001198b0 ??Eiterator@?$reserved_dlist@VTask@@@@QAE?AV01@H@Z 00908DB0 f i game2.o
