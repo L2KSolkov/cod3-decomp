@@ -468,8 +468,6 @@ CameraShakeInstance* CameraShake::StartCameraShake(int type,
     if (ShakeType->m_internalExternal != 0)
     {
         NewShakeInstance = GetNewShakeInstance();
-        if (NewShakeInstance == nullptr)
-            return nullptr;
         NewShakeInstance->m_magnitude = size;
         NewShakeInstance->m_type = type;
         NewShakeInstance->m_magnitudeInc = 0.0f;
