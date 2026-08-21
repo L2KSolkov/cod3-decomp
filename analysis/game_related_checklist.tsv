@@ -23855,7 +23855,7 @@ index	status	map_line
 23854	PORTED	0002:0052e2d0 ?GetUninitialized@BroAnim@@QAEIXZ 00D1D7D0 f i Broc.o
 23855	PORTED	0002:0052e2f0 ??0HashStr@@QAE@XZ 00D1D7F0 f i Broc.o
 23856	VERIFIED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o
-23857	PORTED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o
+23857	VERIFIED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	VERIFIED: IDA 0x0092EEC0 matches direct mp_anim_wad::ResolveAnim forwarding and BOOL conversion
 23858	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 23859	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
 23860	VERIFIED	0002:0052efb0 ?GetBroAnim@mp_util_wad@@YAIII@Z 00D1E4B0 f mp_util_wad.o

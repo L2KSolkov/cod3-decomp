@@ -1,6 +1,6 @@
 index	status	map_line
 1	VERIFIED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o
-2	PORTED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o
+2	VERIFIED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	VERIFIED: IDA 0x0092EEC0 matches direct mp_anim_wad::ResolveAnim forwarding and BOOL conversion
 3	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 4	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
 5	VERIFIED	0002:0052efb0 ?GetBroAnim@mp_util_wad@@YAIII@Z 00D1E4B0 f mp_util_wad.o
