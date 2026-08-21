@@ -1122,6 +1122,8 @@ public:
         float fadein_rate;   // +0x24
         int state;           // +0x28
 
+        void Stop();  // ea: 0x516B90
+        void Release();  // ea: 0x516BC0
         bool Update(AnimationPlayer* player, float delta);  // ?Update@nalAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
         void Compose(nalGeneric::nalGenericPose& pose,
                      nalGeneric::nalGenericPose& tmpPose);  // ?Compose@nalAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0@Z
@@ -1137,6 +1139,7 @@ public:
         float fadeout_rate;  // +0x3C
         int type;            // +0x40
 
+        void Kill();  // ea: 0x516C70
         bool Update(AnimationPlayer* player, float delta);  // ?Update@nalPartialAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
     };
 
@@ -1780,6 +1783,65 @@ AnimationPlayer::nalPlayMethod::~nalPlayMethod()
         mNoteHandler->mNotify = nullptr;
         mem_heap_free(mNoteHandler);
     }
+}
+
+// ea: 0x516B90
+void AnimationPlayer::nalAnimState::Stop()
+{
+    nalAnimCallback* callback =
+        reinterpret_cast<nalAnimCallback*>(this->callback);
+    this->state = 2;
+    if (callback != nullptr)
+    {
+        typedef void (__thiscall *ReleaseFn)(nalAnimCallback*);
+        void** vftable = *reinterpret_cast<void***>(callback);
+        reinterpret_cast<ReleaseFn>(vftable[2])(callback);
+    }
+    this->callback = nullptr;
+}
+
+// ea: 0x516BC0
+void AnimationPlayer::nalAnimState::Release()
+{
+    nalAnimCallback* callback =
+        reinterpret_cast<nalAnimCallback*>(this->callback);
+    if (callback != nullptr)
+    {
+        typedef void (__thiscall *ReleaseFn)(nalAnimCallback*);
+        void** vftable = *reinterpret_cast<void***>(callback);
+        reinterpret_cast<ReleaseFn>(vftable[2])(callback);
+    }
+    AnimationPlayer::nalPlayMethod* playMethod =
+        reinterpret_cast<AnimationPlayer::nalPlayMethod*>(this->play_method);
+    if (playMethod != nullptr)
+    {
+        typedef void (__thiscall *ReleaseFn)(AnimationPlayer::nalPlayMethod*);
+        void** vftable = *reinterpret_cast<void***>(playMethod);
+        reinterpret_cast<ReleaseFn>(vftable[4])(playMethod);
+    }
+    if (this->instance != nullptr)
+    {
+        typedef void (__thiscall *DeletingDtorFn)(void*, unsigned int);
+        void** vftable = *reinterpret_cast<void***>(this->instance);
+        reinterpret_cast<DeletingDtorFn>(vftable[0])(this->instance, 1);
+    }
+}
+
+// ea: 0x516C70
+void AnimationPlayer::nalPartialAnimState::Kill()
+{
+    nalAnimCallback* callback =
+        reinterpret_cast<nalAnimCallback*>(this->base.callback);
+    this->base.state = 2;
+    if (callback != nullptr)
+    {
+        typedef void (__thiscall *ReleaseFn)(nalAnimCallback*);
+        void** vftable = *reinterpret_cast<void***>(callback);
+        reinterpret_cast<ReleaseFn>(vftable[2])(callback);
+    }
+    this->base.callback = nullptr;
+    this->base.state = 3;
+    this->base.alpha = 0.0f;
 }
 
 // ============================================================================
