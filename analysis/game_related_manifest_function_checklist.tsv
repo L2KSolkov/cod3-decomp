@@ -5351,7 +5351,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 5350	0x0056AE40	0x0095A340	?ReadLong@@YAIPAEAAH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5351	0x0056AE80	0x0095A380	?ReadChar@@YAEPAEAAH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5352	0x0056AEA0	0x0095A3A0	?ReadFloat@@YAMPAEAAH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-5353	0x0056AEE0	0x0095A3E0	?ReadShort@@YAFPAEAAH@Z		shell.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+5353	0x0056AEE0	0x0095A3E0	?ReadShort@@YAFPAEAAH@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile	YES	YES	VERIFIED
 5354	0x0056AF00	0x0095A400	?ReadString@@YAXPAEAAHAAVstring@Broc@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5355	0x0056AF50	0x0095A450	?ReadStringPointer@@YAPADPAEAAH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5356	0x0056AFA0	0x0095A4A0	?ReadVector3d@@YAXAAUvector@Broc@@PAEAAH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
