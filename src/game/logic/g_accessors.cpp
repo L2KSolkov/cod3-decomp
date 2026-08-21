@@ -523,6 +523,49 @@ math::Dir3 math::operator-(const math::Dir3& _v)
     r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
     return r;
 }
+math::Vector4 math::RepeatX(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_shuffle_ps(_v.v, _v.v, 0);
+    return r;
+}
+math::Vector4 math::RepeatY(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_shuffle_ps(_v.v, _v.v, 85);
+    return r;
+}
+math::Vector4 math::RepeatZ(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_shuffle_ps(_v.v, _v.v, 170);
+    return r;
+}
+math::Vector4 math::RepeatW(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_shuffle_ps(_v.v, _v.v, 255);
+    return r;
+}
+math::Dir3 math::operator+(const math::Dir3& _a, const math::Dir3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Dir3 math::operator-(const math::Dir3& _a, const math::Dir3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_sub_ps(_a.v, _b.v);
+    return r;
+}
+float math::Dot(const math::Dir3& _a, const math::Dir3& _b)
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 85).m128_f32[0]
+              + _mm_shuffle_ps(v2, v2, 170).m128_f32[0]);
+}
 math::Position3 math::operator-(const math::Position3& _v)
 {
     math::Position3 r;
@@ -617,6 +660,22 @@ math::Vector4 math::operator+(const math::Vector4& _a, const math::Vector4& _b)
 {
     math::Vector4 r;
     r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Dir3 math::Normalize(const math::Dir3& _v)
+{
+    __m128 v2 = _mm_mul_ps(_v.v, _v.v);
+    float len = (float)sqrt((double)(v2.m128_f32[0]
+                                     + (_mm_shuffle_ps(v2, v2, 85).m128_f32[0]
+                                        + _mm_shuffle_ps(v2, v2, 170).m128_f32[0])));
+    math::Dir3 r;
+    r.v = _mm_div_ps(_v.v, _mm_set1_ps(len));
+    return r;
+}
+math::Vector4 math::Vector4_Zero()
+{
+    math::Vector4 r;
+    r.v = _mm_setzero_ps();
     return r;
 }
 math::Dir3 math::operator-(const math::Dir3& _a, const math::Position3& _b)
@@ -766,6 +825,16 @@ const math::Dir3& math::Dir3::operator/=(float _v)
     v = _mm_div_ps(v, _mm_set1_ps(_v));
     return *this;
 }
+const math::Dir3& math::Dir3::operator+=(const math::Dir3& _v)
+{
+    v = _mm_add_ps(v, _v.v);
+    return *this;
+}
+const math::Dir3& math::Dir3::operator*=(float _v)
+{
+    v = _mm_mul_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
 const math::Position3& math::Position3::operator+=(const math::Dir3& _v)
 {
     v = _mm_add_ps(v, _v.v);
@@ -789,6 +858,21 @@ const math::Position3& math::Position3::operator/=(float _v)
 const math::Vector4& math::Vector4::operator-=(const math::Vector4& _v)
 {
     v = _mm_sub_ps(v, _v.v);
+    return *this;
+}
+const math::Vector4& math::Vector4::operator+=(const math::Vector4& _v)
+{
+    v = _mm_add_ps(v, _v.v);
+    return *this;
+}
+const math::Vector4& math::Vector4::operator*=(float _v)
+{
+    v = _mm_mul_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+const math::Vector4& math::Vector4::operator/=(float _v)
+{
+    v = _mm_div_ps(v, _mm_set1_ps(_v));
     return *this;
 }
 

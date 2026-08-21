@@ -74,6 +74,8 @@ public:
     const math::Dir3& operator*=(const math::Mat33& m);
     const math::Dir3& operator+=(float _v);  // ??YDir3@math@@QAEABV01@M@Z (render.o 0x6E6490)
     const math::Dir3& operator-=(float _v);  // ??ZDir3@math@@QAEABV01@M@Z (render.o 0x6E64D0)
+    const math::Dir3& operator+=(const math::Dir3& _v); // game2.o 0x004EB190
+    const math::Dir3& operator*=(float _v);              // game2.o 0x004EB1D0
 
     // cg.o inline COMDAT (??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z)
     const math::Dir3& operator-=(const math::Position3& v);
@@ -166,6 +168,13 @@ float Sin(float radians);  // ?Sin@math@@YAMM@Z (ngl_debug.o 0x835800)
 
 // g.o free-function vector math (0x4A5FB0-0x4A65E0)
 Dir3 operator-(const Dir3& _v);  // ??Gmath@@YA?AVDir3@0@ABV10@@Z
+Vector4 RepeatX(const Vector4& _v);  // ?RepeatX@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EAFB0)
+Vector4 RepeatY(const Vector4& _v);  // ?RepeatY@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EAFF0)
+Vector4 RepeatZ(const Vector4& _v);  // ?RepeatZ@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EB030)
+Vector4 RepeatW(const Vector4& _v);  // ?RepeatW@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EB070)
+Dir3 operator+(const Dir3& _a, const Dir3& _b); // ??Hmath@@YA?AVDir3@0@ABV10@0@Z (game2.o 0x004EB0B0)
+Dir3 operator-(const Dir3& _a, const Dir3& _b); // ??Gmath@@YA?AVDir3@0@ABV10@0@Z (game2.o 0x004EB0F0)
+float Dot(const Dir3& _a, const Dir3& _b);       // ?Dot@math@@YAMABVDir3@1@0@Z (game2.o 0x004EB130)
 Position3 operator-(const Position3& _v);
 Vector4 operator-(const Vector4& _v);
 float Length(const Dir3& _v);  // ?Length@math@@YAMABVDir3@1@@Z
@@ -181,6 +190,8 @@ Dir3 operator+(const Dir3& _a, const Position3& _b);
 Position3 operator+(const Position3& _a, const Dir3& _b);
 Position3 operator+(const Position3& _a, const Position3& _b);  // ??Hmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6630)
 Vector4 operator+(const Vector4& _a, const Vector4& _b);        // ??Hmath@@YA?AVVector4@0@ABV10@0@Z (g.o 0x4A6670)
+Dir3 Normalize(const Dir3& _v);                                  // ?Normalize@math@@YA?AVDir3@1@ABV21@@Z (game2.o 0x004EB2D0)
+Vector4 Vector4_Zero();                                          // ?Vector4_Zero@math@@YA?AVVector4@1@XZ (game2.o 0x004EB350)
 Dir3 operator-(const Dir3& _a, const Position3& _b);            // ??Gmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z (g.o 0x4A66B0)
 Position3 operator-(const Position3& _a, const Dir3& _b);       // ??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z (g.o 0x4A66F0)
 Position3 operator-(const Position3& _a, const Position3& _b);  // ??Gmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6730)
@@ -256,6 +267,9 @@ public:
     float& operator[](int i) { return v.m128_f32[i]; }
 
     const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)
+    const Vector4& operator+=(const Vector4& _v);  // game2.o 0x004EB210
+    const Vector4& operator*=(float _v);           // game2.o 0x004EB250
+    const Vector4& operator/=(float _v);           // game2.o 0x004EB290
     const Vector4& operator-=(const Vector4& _v);  // ??ZVector4@math@@QAEABV01@ABV01@@Z (g.o 0x4A6E30)
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
