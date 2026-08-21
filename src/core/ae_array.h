@@ -75,6 +75,13 @@ public:
             --m_size;
         return m_elements[m_size];
     }
+    void erase(int idx) {
+        int size = m_size;
+        if (size > 1 && idx < size)
+            m_elements[idx] = m_elements[size - 1];
+        if (m_size != 0)
+            --m_size;
+    }
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
 
     // Binary mangle: const_iterator@?$ae_sized_array@...@@ (Entity* const*)

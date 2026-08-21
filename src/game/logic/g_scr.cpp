@@ -3232,6 +3232,19 @@ AeThread* AeThreadManager::DereferenceHandle(Handle h)
     return nullptr;
 }
 
+// ea: 0x005EFB10
+template <>
+AeThread* DbLinkedHandle<AeThreadManager, AeThread>::operator*() const
+{
+    AeThreadManagerLayout* layout = (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+        (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)layout->mHandleDb;
+    unsigned int index = mHandle.mVal & 0xFF;
+    if ((mHandle.mVal >> 8) == (unsigned int)db->mElements[index].mKey)
+        return db->mElements[index].mObject;
+    return nullptr;
+}
+
 // SetJmp/LongJmp (register-snapshot longjmp; transcribed from disasm)
 __declspec(naked) void SetJmp(unsigned int* storageAddr)
 {
