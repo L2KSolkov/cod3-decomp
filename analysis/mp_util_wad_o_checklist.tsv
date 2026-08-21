@@ -129,7 +129,7 @@ index	status	map_line
 128	VERIFIED	0002:00532e80 ?IsEEDefined_bigsplashed@@YA?AUbbool@@Ventity@Broc@@@Z 00D22380 f mp_util_wad.o	VERIFIED: IDA 0x00932E80 uses key 0x65FADA86 bint GetVal and IsDefined
 129	FIXED	0002:00532f30 ?GetEE_audio_ambmin@@YAAAUbfloat@@Ventity@Broc@@@Z 00D22430 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 130	VERIFIED	0002:00532f80 ?IsEEDefined_audio_ambmin@@YA?AUbbool@@Ventity@Broc@@@Z 00D22480 f mp_util_wad.o	VERIFIED: IDA 0x00932F80 uses key 0xC6588AA5 bfloat GetVal and IsDefined
-131	PORTED	0002:00533030 ?plane_flyby_setup@_mp_airplanes@@YAXVstring@Broc@@00Ubint@@Ubfloat@@22@Z 00D22530 f mp_util_wad.o  PORTED: reconstructed from IDA control flow; Level base/entity layout typed from IDA
+131	VERIFIED	0002:00533030 ?plane_flyby_setup@_mp_airplanes@@YAXVstring@Broc@@00Ubint@@Ubfloat@@22@Z 00D22530 f mp_util_wad.o	VERIFIED: IDA 0x00933030 matches entity discovery, script-ID validation/sort, duplicate checks, target path collection, cleanup, and thread creation
 132	PORTED	0002:005346f0 ??8bint@@QBE_NU0@@Z 00D23BF0 f i mp_util_wad.o
 133	PORTED	0002:00534720 ??9bint@@QBE_NU0@@Z 00D23C20 f i mp_util_wad.o
 134	PORTED	0002:00534750 ??Ebint@@QAEHH@Z 00D23C50 f i mp_util_wad.o
