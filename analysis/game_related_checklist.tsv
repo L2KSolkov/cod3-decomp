@@ -2212,31 +2212,31 @@ index	status	map_line
 2211	PORTED	0002:000dd640 ?CreateInst@CurveManager@@SAXXZ 008CCB40 f i core.o
 2212	PORTED	0002:000dd740 ?SetAllocator@CurveManager@@SAXPAVPoolAllocator@@@Z 008CCC40 f i core.o
 2213	SKIPPED	0002:000dd750 ??_GCurveManager@@AAEPAXI@Z 008CCC50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2214	PORTED	0002:000dd780 ??0nalMatrix4x4@@QAE@ABVVector4@math@@000@Z 008CCC80 f i core.o
-2215	PORTED	0002:000dd820 ??4nalMatrix4x4@@QAEAAV0@ABV0@@Z 008CCD20 f i core.o
+2214	PORTED	0002:000dd780 ??0nalMatrix4x4@@QAE@ABVVector4@math@@000@Z 008CCC80 f i core.o PORTED: IDA constructor copies the four math::Vector4 rows
+2215	PORTED	0002:000dd820 ??4nalMatrix4x4@@QAEAAV0@ABV0@@Z 008CCD20 f i core.o PORTED: IDA assignment copies all 16 matrix dwords
 2216	VERIFIED	0002:000dd8c0 ??1nalHeap@@UAE@XZ 008CCDC0 f i core.o
-2217	PORTED	0002:000dd8d0 ?GetSize@nalHeap@@UAEHXZ 008CCDD0 f i core.o
-2218	PORTED	0002:000dd8e0 ?GetUsedSpace@nalHeap@@UAEHXZ 008CCDE0 f i core.o
+2217	PORTED	0002:000dd8d0 ?GetSize@nalHeap@@UAEHXZ 008CCDD0 f i core.o PORTED: IDA base implementation returns 0
+2218	PORTED	0002:000dd8e0 ?GetUsedSpace@nalHeap@@UAEHXZ 008CCDE0 f i core.o PORTED: IDA base implementation returns 0
 2219	SKIPPED	0002:000dd8f0 ??_EnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2220	SKIPPED	0002:000dd8f0 ??_GnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2221	PORTED	0002:000dd920 ??2GameSettings@@SAPAXIPAX@Z 008CCE20 f i core.o
-2222	PORTED	0002:000dd930 ?CreateInst@GameSettings@@SAXXZ 008CCE30 f i core.o
+2221	PORTED	0002:000dd920 ??2GameSettings@@SAPAXIPAX@Z 008CCE20 f i core.o PORTED: IDA placement operator returns the supplied storage
+2222	VERIFIED	0002:000dd930 ?CreateInst@GameSettings@@SAXXZ 008CCE30 f i core.o VERIFIED: existing CreateInst body matches IDA
 2223	PORTED	0002:000dda30 ?DeleteInst@GameSettings@@SAXXZ 008CCF30 f i core.o
-2224	PORTED	0002:000ddab0 ?AddTriangleResponse@DialogMenu@@QAEXP6AXH@Z@Z 008CCFB0 f i core.o
-2225	PORTED	0002:000ddac0 ?GetActiveLayer@DialogMenuSystem@@QAEPAVDialogMenu@@XZ 008CCFC0 f i core.o
-2226	PORTED	0002:000ddae0 ?TriangleResponseNone@DialogMenuSystem@@SAXH@Z 008CCFE0 f i core.o
+2224	PORTED	0002:000ddab0 ?AddTriangleResponse@DialogMenu@@QAEXP6AXH@Z@Z 008CCFB0 f i core.o PORTED: IDA stores the callback in triangleResponse
+2225	PORTED	0002:000ddac0 ?GetActiveLayer@DialogMenuSystem@@QAEPAVDialogMenu@@XZ 008CCFC0 f i core.o PORTED: IDA maps GetActiveMenu()==0 into GetLayer
+2226	PORTED	0002:000ddae0 ?TriangleResponseNone@DialogMenuSystem@@SAXH@Z 008CCFE0 f i core.o PORTED: IDA body is an empty static helper
 2227	VERIFIED	0002:000ddaf0 ?GetDMS@FEManager@@QAEPAVDialogMenuSystem@@H@Z 008CCFF0 f i core.o
 2228	VERIFIED	0002:000ddb70 ?GetIGMS@FEManager@@QAEPAVInGameMenuSystem@@H@Z 008CD070 f i core.o
-2229	PORTED	0002:000ddbf0 ?IsValid@GdbFile@@QBE_NXZ 008CD0F0 f i core.o
-2230	PORTED	0002:000ddc00 ??2GdbFileManager@@SAPAXIPAX@Z 008CD100 f i core.o
-2231	PORTED	0002:000ddc10 ?Inst@GdbFileManager@@SAPAV1@XZ 008CD110 f i core.o
+2229	PORTED	0002:000ddbf0 ?IsValid@GdbFile@@QBE_NXZ 008CD0F0 f i core.o PORTED: IDA tests mRecord for non-null
+2230	PORTED	0002:000ddc00 ??2GdbFileManager@@SAPAXIPAX@Z 008CD100 f i core.o PORTED: IDA placement operator returns the supplied storage
+2231	PORTED	0002:000ddc10 ?Inst@GdbFileManager@@SAPAV1@XZ 008CD110 f i core.o PORTED: IDA returns GdbFileManager::sInst
 2232	VERIFIED	0002:000ddc20 ?CreateInst@GdbFileManager@@SAXXZ 008CD120 f i core.o
 2233	VERIFIED	0002:000ddd20 ?DeleteInst@GdbFileManager@@SAXXZ 008CD220 f i core.o
-2234	PORTED	0002:000ddda0 ??2CheckpointMgr@@SAPAXIPAX@Z 008CD2A0 f i core.o
-2235	PORTED	0002:000dddb0 ?CreateInst@CheckpointMgr@@SAXXZ 008CD2B0 f i core.o
+2234	PORTED	0002:000ddda0 ??2CheckpointMgr@@SAPAXIPAX@Z 008CD2A0 f i core.o PORTED: IDA placement operator returns the supplied storage
+2235	VERIFIED	0002:000dddb0 ?CreateInst@CheckpointMgr@@SAXXZ 008CD2B0 f i core.o VERIFIED: existing CreateInst body matches IDA
 2236	SKIPPED	0002:000ddeb0 ??_GCheckpointMgr@@QAEPAXI@Z 008CD3B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2237	PORTED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o
-2238	PORTED	0002:000ddef0 ?CreateInst@SplineMgr@@SAXXZ 008CD3F0 f i core.o
+2237	PORTED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o PORTED: IDA placement operator returns the supplied storage
+2238	VERIFIED	0002:000ddef0 ?CreateInst@SplineMgr@@SAXXZ 008CD3F0 f i core.o VERIFIED: existing CreateInst body matches IDA
 2239	VERIFIED	0002:000ddff0 ?DeleteInst@SplineMgr@@SAXXZ 008CD4F0 f i core.o
 2240	PORTED	0002:000de070 ?SetAllocator@LightEffect@@SAXPAVPoolAllocator@@@Z 008CD570 f i core.o
 2241	PORTED	0002:000de080 ?SetFinished@LightEffect@@QAEXXZ 008CD580 f i core.o
