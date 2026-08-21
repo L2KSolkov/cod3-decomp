@@ -11428,8 +11428,10 @@ void ResetGame(Broc::entity self) {
     (void)self;
     Broc::Code_DebugOut("*HQ* ResetGame\n");
     ClearGame();
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0x9DD2E1FD;
     Broc::notify(lvl, n);
