@@ -4246,6 +4246,7 @@ static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 class CGBankManager : public AssetBankSet {
 public:
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
+    static void* operator new(size_t size, void* p);
     static void CreateInst();
     static void DeleteInst();
     static CGBankManager* Inst();  // ?Inst@CGBankManager@@SAPAV1@XZ

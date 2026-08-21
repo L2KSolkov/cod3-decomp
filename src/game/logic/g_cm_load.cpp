@@ -8519,6 +8519,7 @@ class DCGBank;
 class DCGBankManager {
 public:
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
+    static void* operator new(size_t size, void* p);
     static void CreateInst();       // ?CreateInst@DCGBankManager@@SAXXZ
     static void DeleteInst();       // ?DeleteInst@DCGBankManager@@SAXXZ
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
@@ -8579,6 +8580,7 @@ public:
     virtual ~DCGBankManager();     // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
+void* DCGBankManager::operator new(size_t /*size*/, void* p) { return p; }
 extern void AssetBankSet_Dtor(void* self);   // AssetBankSet::~AssetBankSet
 extern void AssetBankSet_ctor(void* self);   // AssetBankSet::AssetBankSet
 extern const void* DCGBank_get_set(void* bank, int id);  // ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z

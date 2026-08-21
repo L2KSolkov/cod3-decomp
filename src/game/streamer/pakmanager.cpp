@@ -715,6 +715,8 @@ public:
     float    pcx;              // +0x14
     GcBanks  gc;               // +0x18
 
+    NumBanks() = default;
+    NumBanks(float count, float aram);
     float& to_float();         // ?to_float@NumBanks@@QAEAAMXZ
     float to_float() const;    // ?to_float@NumBanks@@QBEMXZ
 };
@@ -823,6 +825,8 @@ public:
     TBankAlloc m_last_alloc;      // +0x20
 
     static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+    static void* operator new(size_t size, void* p);
+    static BankManager* Inst();
     static void CreateInst();     // ?CreateInst@BankManager@@SAXXZ
     static void DeleteInst();     // ?DeleteInst@BankManager@@SAXXZ
     BankManager();                // ??0BankManager@@QAE@XZ
@@ -1288,6 +1292,8 @@ public:
     static void operator delete(void* ptr);  // ??3PakFile@@SAXPAX@Z
     TPakId GetId() const;       // ?GetId@PakFile@@QBE?AW4TPakId@@XZ
     EPakType GetType() const;   // ?GetType@PakFile@@QBE?AW4EPakType@@XZ
+    nflFileID GetFileId() const;
+    const PakHeader* GetHeader() const;
     bool IsLoading() const;     // ?IsLoading@PakFile@@QBE_NXZ
     bool IsLoaded() const;      // ?IsLoaded@PakFile@@QBE_NXZ
     bool IsUnloading() const;   // ?IsUnloading@PakFile@@QBE_NXZ
@@ -1791,6 +1797,7 @@ public:
     };
     static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
+    static void* operator new(size_t size, void* p);
     struct TThreadedPakContextStack {
         uint32_t key;            // +0x00 thread id
         TPakId stack[128];       // +0x04
@@ -1873,6 +1880,7 @@ public:
     void SetProgressCallback(void (*cb)(float));
     // - ea: 0x4B45E0 (core.o inline)
     TPakId GetGlobalPakId() const;
+    TPakId GetCurrentPakId() const;
     // - ea: 0x6657A0
     bool IsLoaded(TPakId id) const;
     // - ea: 0x665830
@@ -1985,6 +1993,12 @@ public:
     // - ea: 0x670370
     void AsyncUnloadPak(TPakId id);  // ?AsyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z
 };
+
+// ea: 0x4B44D0
+void* PakManager::operator new(size_t /*size*/, void* p)
+{
+    return p;
+}
 
 extern PoolAllocator* gPakMemHeapAllocator;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
 PoolAllocator* PakFile::sAllocator = nullptr;  // ?sAllocator@PakFile@@0PAVPoolAllocator@@A @ 0xF592EC
@@ -3461,6 +3475,12 @@ void PakManager::SetProgressCallback(void (*cb)(float))
 TPakId PakManager::GetGlobalPakId() const
 {
     return mGlobalPakId;
+}
+
+// ea: 0x4B4620
+TPakId PakManager::GetCurrentPakId() const
+{
+    return mCurrentPakId;
 }
 
 // ea: 0x6657A0
@@ -10905,6 +10925,19 @@ mem_info::mem_info(unsigned char* data_, int size_)
     size = size_;
 }
 
+// ea: 0x4B4350
+NumBanks::NumBanks(float count, float aram)
+{
+    ps2 = count;
+    xbox = count;
+    xenon = count;
+    pcx = count;
+    ps3.main = count;
+    ps3.lram = aram;
+    gc.main = count;
+    gc.aram = aram;
+}
+
 // ea: 0x663230 / 0x663240
 float& NumBanks::to_float() { return xbox; }
 float NumBanks::to_float() const { return xbox; }
@@ -10983,6 +11016,12 @@ void PakFile::operator delete(void* ptr)
 
 // ea: 0x663510
 TPakId PakFile::GetId() const { return mPakId; }
+
+// ea: 0x4B44B0
+nflFileID PakFile::GetFileId() const { return mFileId; }
+
+// ea: 0x4B44C0
+const PakHeader* PakFile::GetHeader() const { return mHeader; }
 
 // ea: 0x663520
 EPakType PakFile::GetType() const { return mPakType; }
@@ -13301,7 +13340,18 @@ not_found:
     }
 }
 
-// ea: 0x66F0A0
+// ea: 0x4B43A0
+void* BankManager::operator new(size_t /*size*/, void* p)
+{
+    return p;
+}
+
+// ea: 0x4B43B0
+BankManager* BankManager::Inst()
+{
+    return sInst;
+}
+
 BankManager::BankManager()
 {
     mFreeBanks.Clear();

@@ -4441,6 +4441,8 @@ extern void* AssetBankSet_ctor(void* self);  // streamer.o
 extern void CGBankManager_DebugRender_impl(void* self);  // 0x646700
 void* CGBankManager::sInst = nullptr;         // ?sInst@CGBankManager@@2PAV1@A @ 0xF4F438
 
+void* CGBankManager::operator new(size_t /*size*/, void* p) { return p; }
+
 // Static bridge used by the DebugRender callback registration.
 static void CGBankManager_DebugRender_bridge()
 {
