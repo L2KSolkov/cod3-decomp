@@ -7885,14 +7885,20 @@ void fireydeath(Broc::entity self, Broc::entity tank) {
     HashStr ext;
     ext.mVal = 0x6E9DD6CEu;
     Broc::endon(tank, ext);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     Broc::endon(lvl, ext);
     Broc::string fireextinguish("fireextinguish");
     Broc::string target;
     mp_util_wad::entity_get_targetname(&target, tank);
     Broc::string combined = fireextinguish + target;
-    Broc::endon(lvl, Broc::string_hash(combined.c_str()));
+    Broc::entity lvl2 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    Broc::endon(lvl2, Broc::string_hash(combined.c_str()));
     combined.~string();
     target.~string();
     fireextinguish.~string();
