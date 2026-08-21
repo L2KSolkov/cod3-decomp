@@ -594,7 +594,7 @@ index	status	map_line
 593	VERIFIED	0002:005590b0 ?ShowSetupGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D485B0 f mp_util_wad.o
 594	VERIFIED	0002:00559120 ?ShowDestructionGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48620 f mp_util_wad.o
 595	VERIFIED	0002:00559190 ?ShowLosingHQGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48690 f mp_util_wad.o
-596	VERIFIED	0002:00559200 ?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z 00D48700 f mp_util_wad.o
+596	FIXED	0002:00559200 ?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z 00D48700 f mp_util_wad.o	FIXED: IDA 0x00959200 uses pLevel->_base.entity (or null) for endon
 597	PORTED	0002:005593a0 ??Zbint@@QAEHH@Z 00D488A0 f i mp_util_wad.o
 598	VERIFIED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o
 599	PORTED	0002:0055ad50 ??D@YA?AUbfloat@@Ubint@@U0@@Z 00D4A250 f i mp_util_wad.o
