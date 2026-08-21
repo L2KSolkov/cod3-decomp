@@ -36,6 +36,14 @@ public:
         unsigned int    blockAlign;   // +0x04, alignment requirement
         unsigned int    numBlocks;    // +0x08, number of blocks
         void*           block;        // +0x0C, preallocated block (or nullptr)
+
+        PoolConfig() = default;
+        PoolConfig(unsigned int sizeBlock, unsigned int blockCount,
+                   unsigned int alignBlock, void* blok)
+            : blockSize(sizeBlock), blockAlign(alignBlock),
+              numBlocks(blockCount), block(blok)
+        {
+        }
     };
     static_assert(sizeof(PoolConfig) == 0x10, "PoolConfig size mismatch");
     static_assert(offsetof(PoolConfig, blockAlign) == 0x04,

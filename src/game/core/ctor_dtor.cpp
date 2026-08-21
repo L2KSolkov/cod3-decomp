@@ -140,6 +140,19 @@ void* EntityNotify::get_dlist_node()
 {
     return this;
 }
+// ea: 0x004B3F80
+int EntityNotify::get_dlist_node_offset()
+{
+    return 0;
+}
+unsigned int EntityNotify::GetStr() const
+{
+    return mStr;
+}
+WaitTilOutput* EntityNotify::GetParam() const
+{
+    return mParam;
+}
 void* EntityNotify::operator new(size_t size, bool forceHeapAlloc,
                                  const char* /*file*/, int /*line*/)
 {
@@ -179,6 +192,11 @@ void EntityNotifySet::operator delete(void* ptr)
 
 // WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
 PoolAllocator* WaitTilOutput::sAllocator;
+// ea: 0x004B3EB0
+void WaitTilOutput::SetAllocator(PoolAllocator* allocator)
+{
+    WaitTilOutput::sAllocator = allocator;
+}
 // WaitTilOutput ctor (g.o 0x4B1680)
 WaitTilOutput::WaitTilOutput()
 {

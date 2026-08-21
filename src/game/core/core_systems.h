@@ -1042,6 +1042,7 @@ public:
     virtual int GetSize();  // ?GetSize@WaitTilOutput@@UAEHXZ
     void* dListNodeFiller1;  // +0x04
     void* dListNodeFiller2;  // +0x08
+    static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc,
                               const char* file, int line);  // ??2WaitTilOutput@@SAPAXI_NPBDH@Z
     static void* operator new(size_t size);  // ??2WaitTilOutput@@SAPAXI@Z
@@ -1066,6 +1067,9 @@ public:
                  WaitTilOutput* param);  // ea: 0x004BDAA0
     ~EntityNotify();                     // ea: 0x004B5650
     void* get_dlist_node();              // ?get_dlist_node@EntityNotify@@QAEPAXXZ (g.o 0x4A5B70)
+    static int get_dlist_node_offset();
+    unsigned int GetStr() const;
+    WaitTilOutput* GetParam() const;
     DbLinkedHandle<EntityHandleDb, Entity> GetOwner() const;
     static void* operator new(size_t size, bool forceHeapAlloc,
                               const char* file, int line);  // ??2EntityNotify@@SAPAXI_NPBDH@Z (g.o 0x4A5BF0)

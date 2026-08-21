@@ -343,6 +343,7 @@ public:
 
     AeThreadState(EAction result = kActionNone);             // scr.o 0x5EE0A0
     void* get_dlist_node();                                  // 0x5E9420
+    static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9430
     static void operator delete(void* ptr);                  // 0x5E9450
     bool IsFinished() const;                                 // 0x5E9470
@@ -358,6 +359,12 @@ struct AeThreadStateAllocAccess {
 };
 
 PoolAllocator* AeThreadState::sAllocator;
+
+// ea: 0x004B3F10
+void AeThreadState::SetAllocator(PoolAllocator* a)
+{
+    AeThreadState::sAllocator = a;
+}
 
 // ea: 0x005EE0A0
 AeThreadState::AeThreadState(EAction result)
@@ -440,6 +447,8 @@ public:
     EndOnScriptNode(AeThread* t);  // ??0EndOnScriptNode@@QAE@PAVAeThread@@@Z (0x5DB230)
     AeThread* GetThread();         // ?GetThread@EndOnScriptNode@@QAEPAVAeThread@@XZ (0x5C9850)
     void* get_dlist_node();         // 0x5E94D0
+    static int get_dlist_node_offset();
+    static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E94E0
     static void operator delete(void* ptr); // 0x5E9500/0x5E9520
 
@@ -5221,6 +5230,18 @@ unsigned int sKillAnimScript = 0xFFFFFFFF;  // ?sKillAnimScript@@3IA @ 0xF3AC0C 
 
 PoolAllocator* EndOnScriptNode::sAllocator;
 PoolAllocator* EntityNotifySetLocal::sAllocator;
+
+// ea: 0x004B3F70
+void EndOnScriptNode::SetAllocator(PoolAllocator* allocator)
+{
+    EndOnScriptNode::sAllocator = allocator;
+}
+
+// ea: 0x004B3F60
+int EndOnScriptNode::get_dlist_node_offset()
+{
+    return 0;
+}
 
 // ea: 0x005E94D0
 void* EndOnScriptNode::get_dlist_node()
