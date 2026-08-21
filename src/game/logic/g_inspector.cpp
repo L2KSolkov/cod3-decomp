@@ -435,6 +435,11 @@ InspectorManager::InspectorManager()
     m_KEY_RIGHT_VERY_FAST_DEBOUNCE = 0;
 }
 
+int InspectorManager::IsActive()
+{
+    return m_data.active;
+}
+
 // ============================================================================
 // InspectorManager::ResetKeys - ea: 0x4EC050
 // ============================================================================

@@ -976,6 +976,8 @@ struct ButtonEntry {
     const BaseCmdFuncInfo* mBoundCmdRelease; // +0x08
 
     void SetCmdBinding();                    // ea: 0x4F6CC0
+    void Init();                              // game2.o 0x004EB440
+    unsigned char GetKeyInfoIndex() const;    // game2.o 0x004EB450
     const BaseCmdFuncInfo* GetBoundCmdPress();  // ea: 0x4F6D50
     const BaseCmdFuncInfo* GetBoundCmdRelease();  // ea: 0x4F6D80
     void SetKeyBinding(unsigned char keyInfoIndex);  // ea: 0x4FEAA0
@@ -983,6 +985,18 @@ struct ButtonEntry {
     void Release(bool doCommands);           // ea: 0x4FEB60
 };
 static_assert(sizeof(ButtonEntry) == 0xC, "ButtonEntry size mismatch");
+
+void ButtonEntry::Init()
+{
+    mKeyInfoIndex = (unsigned char)-1;
+    mBoundCmdPress = nullptr;
+    mBoundCmdRelease = nullptr;
+}
+
+unsigned char ButtonEntry::GetKeyInfoIndex() const
+{
+    return mKeyInfoIndex;
+}
 
 struct KeyInfoEntry {
     int mState;              // +0x00 (bitfields mDown/mRepeats)

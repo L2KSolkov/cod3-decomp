@@ -75,6 +75,7 @@ public:
     _INSPECTOR_DATA m_data;              // +0x74
 
     InspectorManager();                  // ea: 0x4F7100
+    int IsActive();                       // game2.o 0x004EB460
     void ResetKeys();                    // ea: 0x4EC050
     void ReadKeys();                     // ea: 0x4EC090
     _INSPECTOR_MENU* AddSubMenu(_INSPECTOR_MENU* parent, char* heading);  // ea: 0x4EC260

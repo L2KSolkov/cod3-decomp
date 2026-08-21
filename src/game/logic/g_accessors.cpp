@@ -1035,6 +1035,18 @@ const math::Mat44& math::Mat44::operator=(const math::Mat44& _m)
     w = _m.w;
     return *this;
 }
+void math::Mat44::SetW(const math::Vector4& _w)
+{
+    w = _w;
+}
+math::Vector4& math::Mat44::operator[](unsigned int i)
+{
+    return reinterpret_cast<math::Vector4*>(this)[i];
+}
+const math::Vector4& math::Mat44::operator[](unsigned int i) const
+{
+    return reinterpret_cast<const math::Vector4*>(this)[i];
+}
 
 // ============================================================================
 // Matrix free functions (g.o 0x4A75B0-0x4A82C0)
