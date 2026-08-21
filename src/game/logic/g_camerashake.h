@@ -153,4 +153,4 @@ extern float dword_F04458[256];
 extern float dword_F0445C[256];
 
 // CameraShake helper free functions (game2.o)
-CameraShakeInstance* FN_ShakeTestFunction();  // ea: 0x4FEF40
+void FN_ShakeTestFunction();  // ea: 0x4FEF40

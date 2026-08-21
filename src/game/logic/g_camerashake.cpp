@@ -614,14 +614,12 @@ int MsaQuat::MatrixToQuaternion(math::Mat43* mat, math::Position3* pos)
 // ============================================================================
 // FN_ShakeTestFunction - ea: 0x4FEF40
 // ============================================================================
-CameraShakeInstance* FN_ShakeTestFunction()
+void FN_ShakeTestFunction()
 {
     CameraShakeInstance* result = g_cameraShake[0].StartCameraShake(
         (g_ShakeTest2d == 0) + 1, nullptr, 1.0f, g_ShakeTestTime, -1.0f);
     float v2 = g_ShakeTestMag;
     float v3 = g_ShakeTestFreq;
-    if (result == nullptr)
-        return nullptr;
     if (g_ShakeTestMag != 0.0f)
     {
         result->m_noiseFloats[0].m_range = g_ShakeTestMag;
@@ -632,7 +630,6 @@ CameraShakeInstance* FN_ShakeTestFunction()
         result->m_noiseFloats[0].m_freq_mult = v3;
         result->m_noiseFloats[1].m_freq_mult = v3;
     }
-    return result;
 }
 
 // ea: 0x4F8F70

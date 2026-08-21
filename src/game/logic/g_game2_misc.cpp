@@ -279,8 +279,41 @@ struct nalMatrix4x4 {
     float z[4];
     float w[4];
 
-    nalMatrix4x4(const nalPositionOrientation& po);
 };
+
+static void nalMatrix4x4_FromPositionOrientation(
+    const nalPositionOrientation& po, nalMatrix4x4* mat)
+{
+    const float qx = po.orient.x;
+    const float qy = po.orient.y;
+    const float qz = po.orient.z;
+    const float qw = po.orient.w;
+    const float xx = qx * qx;
+    const float yy = qy * qy;
+    const float zz = qz * qz;
+    const float xy = qx * qy;
+    const float xz = qx * qz;
+    const float yz = qy * qz;
+    const float wx = qw * qx;
+    const float wy = qw * qy;
+    const float wz = qw * qz;
+    mat->x[0] = 1.0f - (yy + zz);
+    mat->x[1] = xy + wz;
+    mat->x[2] = xz - wy;
+    mat->x[3] = 0.0f;
+    mat->y[0] = xy - wz;
+    mat->y[1] = 1.0f - (xx + zz);
+    mat->y[2] = yz + wx;
+    mat->y[3] = 0.0f;
+    mat->z[0] = xz + wy;
+    mat->z[1] = yz - wx;
+    mat->z[2] = 1.0f - (xx + yy);
+    mat->z[3] = 0.0f;
+    mat->w[0] = po.pos.v.m128_f32[0];
+    mat->w[1] = po.pos.v.m128_f32[1];
+    mat->w[2] = po.pos.v.m128_f32[2];
+    mat->w[3] = 1.0f;
+}
 
 void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 {
@@ -411,11 +444,13 @@ void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
                                      &stru_F05378);
     nalPositionOrientation po =
         nalGenericPose_GetModelPositionOrientation(pose, &leftFootHandle);
-    nalMatrix4x4 leftMatrix(po);
+    nalMatrix4x4 leftMatrix;
+    nalMatrix4x4_FromPositionOrientation(po, &leftMatrix);
     *leftFootMat = leftMatrix;
     nalPositionOrientation po2 =
         nalGenericPose_GetModelPositionOrientation(pose, &rightFootHandle);
-    nalMatrix4x4 rightMatrix(po2);
+    nalMatrix4x4 rightMatrix;
+    nalMatrix4x4_FromPositionOrientation(po2, &rightMatrix);
     *rightFootMat = rightMatrix;
 }
 
@@ -922,7 +957,7 @@ void stat_SetPlayerWeaponUsed(int weapon)
 }
 
 // ea: 0x4FE870
-int stat_support_Initialize()
+void stat_support_Initialize()
 {
     if (gXMissionData[0].name[0] != 0)
     {
@@ -941,16 +976,19 @@ int stat_support_Initialize()
     memset(&gTempMissionData, 0, sizeof(gTempMissionData));
     gTotalResetOfLevel = false;
     gMissionDataInitialized = true;
-    return 0;
 }
 
 // ea: 0x4FE8D0
-char stat_SetMissionToTrack(const char* mission_name)
+bool stat_SetMissionToTrack(const char* mission_name)
 {
     gMissionData = nullptr;
     _xmission_data* v1 = gXMissionData;
     if (mission_name == nullptr)
     {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\stat_support.cpp";
+        AeAssert::gCurrentLine = 256;
+        AeAssert::gCurrentExpr = "mission_name";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("mission name must be set"))
             __debugbreak();
