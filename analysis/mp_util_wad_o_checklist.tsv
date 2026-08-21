@@ -223,18 +223,18 @@ index	status	map_line
 222	VERIFIED	0002:00539590 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D28A90 f mp_util_wad.o
 223	VERIFIED	0002:00539a50 ?StopTeamSound@_mp_audio@@YAXXZ 00D28F50 f mp_util_wad.o
 224	PORTED	0002:00539b70 ?EffectEventStopEmitting@Broc@@YAXI@Z 00D29070 f i mp_util_wad.o	PORTED: IDA forwards effect id to mEffectEventStop
-225	PORTED	0002:00539ba0 ?notify@Broc@@YAXABVentity@1@UHashStr@@@Z 00D290A0 f i mp_util_wad.o
+225	PORTED	0002:00539ba0 ?notify@Broc@@YAXABVentity@1@UHashStr@@@Z 00D290A0 f i mp_util_wad.o	PORTED: IDA forwards entity handle and HashStr value to mEntNotify
 226	VERIFIED	0002:00539be0 ?PlayTeamSound@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D290E0 f mp_util_wad.o
 227	VERIFIED	0002:00539dc0 ?PlaySoundAtLocation@_mp_audio@@YAXVentity@Broc@@Vstring@3@Uvector@3@@Z 00D292C0 f mp_util_wad.o
 228	VERIFIED	0002:00539ee0 ?ThreadLineSound@_mp_audio@@YAXVentity@Broc@@@Z 00D293E0 f mp_util_wad.o
-229	PORTED	0002:0053a080 ?Get@targetname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D29580 f i mp_util_wad.o
+229	PORTED	0002:0053a080 ?Get@targetname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D29580 f i mp_util_wad.o	PORTED: IDA copies m_entity_get_targetname result through a temporary string
 230	VERIFIED	0002:0053a130 ?ThreadStaticSound@_mp_audio@@YAXVentity@Broc@@@Z 00D29630 f mp_util_wad.o
-231	PORTED	0002:0053a270 ?ThreadStaticSoundPlay__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D29770 f i mp_util_wad.o
+231	VERIFIED	0002:0053a270 ?ThreadStaticSoundPlay__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D29770 f i mp_util_wad.o	VERIFIED: IDA allocates 0x10 bytes and constructs AeThreadFunctor2 with ThreadStaticSoundPlay
 232	VERIFIED	0002:0053a330 ?ThreadStaticSoundPlay@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D29830 f mp_util_wad.o
 233	VERIFIED	0002:0053a3a0 ?sound_repeat@_mp_audio@@YAXVentity@Broc@@@Z 00D298A0 f mp_util_wad.o
-234	PORTED	0002:0053a4e0 ?ThreadStaticSoundRandomPlay__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D299E0 f i mp_util_wad.o
+234	VERIFIED	0002:0053a4e0 ?ThreadStaticSoundRandomPlay__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D299E0 f i mp_util_wad.o	VERIFIED: IDA allocates 0x10 bytes and constructs AeThreadFunctor2 with ThreadStaticSoundRandomPlay
 235	VERIFIED	0002:0053a5a0 ?ThreadStaticSoundRandomPlay@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D29AA0 f mp_util_wad.o
-236	PORTED	0002:0053a640 ?PlayPainSound@_mp_audio@@YAXVentity@Broc@@Ubint@@@Z 00D29B40 f mp_util_wad.o
+236	VERIFIED	0002:0053a640 ?PlayPainSound@_mp_audio@@YAXVentity@Broc@@Ubint@@@Z 00D29B40 f mp_util_wad.o	VERIFIED: IDA matches damage gate, cooldown, health thresholds, forced chance, team sounds, and timestamp update
 237	PORTED	0002:0053ac50 ??Ybint@@QAEHH@Z 00D2A150 f i mp_util_wad.o
 238	PORTED	0002:0053ac90 ??4bbool@@QAEM_N@Z 00D2A190 f i mp_util_wad.o
 239	PORTED	0002:0053acc0 ??D@YA?AUbfloat@@MU0@@Z 00D2A1C0 f i mp_util_wad.o
