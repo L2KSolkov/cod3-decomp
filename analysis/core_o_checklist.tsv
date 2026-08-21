@@ -678,7 +678,7 @@ index	status	map_line
 677	PORTED	0002:000dbf00 ?ACosUpper@math@@YAMM@Z 008CB400 f i core.o
 678	VERIFIED	0002:000dc020 ?ATan@math@@YAMMM@Z 008CB520 f i core.o
 679	PORTED	0002:000dc300 ??2AnimBankManager@@SAPAXIPAX@Z 008CB800 f i core.o
-680	PORTED	0002:000dc310 ?CreateInst@AnimBankManager@@SAXXZ 008CB810 f i core.o
+680	VERIFIED	0002:000dc310 ?CreateInst@AnimBankManager@@SAXXZ 008CB810 f i core.o
 681	PORTED	0002:000dc410 ??2PhysDataBankManager@@SAPAXIPAX@Z 008CB910 f i core.o
 682	VERIFIED	0002:000dc420 ?DeleteInst@PhysDataBankManager@@SAXXZ 008CB920 f i core.o
 683	PORTED	0002:000dc4a0 ??2InstanceBankMgr@@SAPAXIPAX@Z 008CB9A0 f i core.o
