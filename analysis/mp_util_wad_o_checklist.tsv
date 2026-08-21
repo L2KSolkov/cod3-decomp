@@ -12,12 +12,12 @@ index	status	map_line
 11	VERIFIED	0002:0052f170 ?IsDefined@entity@Broc@@QBE_NXZ 00D1E670 f i mp_util_wad.o
 12	VERIFIED	0002:0052f1a0 ?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z 00D1E6A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F1A0 matches GetRef key 0xD9150A3C
 13	VERIFIED	0002:0052f1f0 ?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E6F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F1F0 matches guarded GetVal/IsDefined key 0xD9150A3C and bbool result
-14	PORTED	0002:0052f2a0 ?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z 00D1E7A0 f mp_util_wad.o
-15	PORTED	0002:0052f2f0 ?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E7F0 f mp_util_wad.o
-16	PORTED	0002:0052f3a0 ?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z 00D1E8A0 f mp_util_wad.o
-17	PORTED	0002:0052f3f0 ?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E8F0 f mp_util_wad.o
-18	PORTED	0002:0052f4a0 ?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z 00D1E9A0 f mp_util_wad.o
-19	PORTED	0002:0052f4f0 ?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E9F0 f mp_util_wad.o
+14	VERIFIED	0002:0052f2a0 ?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z 00D1E7A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F2A0 matches GetRef key 0xC65889A7
+15	VERIFIED	0002:0052f2f0 ?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E7F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F2F0 matches guarded GetVal/IsDefined key 0xC65889A7 and bbool result
+16	VERIFIED	0002:0052f3a0 ?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z 00D1E8A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F3A0 matches GetRef key 0x085FE049
+17	VERIFIED	0002:0052f3f0 ?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E8F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F3F0 matches guarded GetVal/IsDefined key 0x085FE049 and bbool result
+18	VERIFIED	0002:0052f4a0 ?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z 00D1E9A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F4A0 matches GetRef key 0x4C3C14A1
+19	VERIFIED	0002:0052f4f0 ?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E9F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F4F0 matches guarded GetVal/IsDefined key 0x4C3C14A1 and bbool result
 20	PORTED	0002:0052f5a0 ?GetEE_respawnmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EAA0 f mp_util_wad.o
 21	PORTED	0002:0052f5f0 ?IsEEDefined_respawnmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EAF0 f mp_util_wad.o
 22	VERIFIED	0002:0052f6f0 ?IsDefined@Broc@@YA_NABVstring@1@@Z 00D1EBF0 f i mp_util_wad.o

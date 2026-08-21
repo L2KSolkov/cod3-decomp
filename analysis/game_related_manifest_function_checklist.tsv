@@ -23867,12 +23867,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 25833	0x0092F170	0x00D1E670	?IsDefined@entity@Broc@@QBE_NXZ	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25834	0x0092F1A0	0x00D1E6A0	?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
 25835	0x0092F1F0	0x00D1E6F0	?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
-25836	0x0092F2A0	0x00D1E7A0	?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25837	0x0092F2F0	0x00D1E7F0	?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25838	0x0092F3A0	0x00D1E8A0	?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25839	0x0092F3F0	0x00D1E8F0	?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25840	0x0092F4A0	0x00D1E9A0	?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25841	0x0092F4F0	0x00D1E9F0	?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+25836	0x0092F2A0	0x00D1E7A0	?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25837	0x0092F2F0	0x00D1E7F0	?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
+25838	0x0092F3A0	0x00D1E8A0	?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25839	0x0092F3F0	0x00D1E8F0	?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
+25840	0x0092F4A0	0x00D1E9A0	?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25841	0x0092F4F0	0x00D1E9F0	?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
 25842	0x0092F5A0	0x00D1EAA0	?GetEE_respawnmodel@@YAAAVstring@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25843	0x0092F5F0	0x00D1EAF0	?IsEEDefined_respawnmodel@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25844	0x0092F6F0	0x00D1EBF0	?IsDefined@Broc@@YA_NABVstring@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
