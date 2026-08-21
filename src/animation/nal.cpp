@@ -5523,8 +5523,26 @@ void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
 
 class nalVirtual {
 public:
-    virtual ~nalVirtual() {}
+    virtual ~nalVirtual();
+    virtual void Dummy();
+    void* get_vtbl_ptr() const;
 };
+
+// ea: 0x005173E0
+nalVirtual::~nalVirtual()
+{
+}
+
+// ea: 0x005173F0
+void nalVirtual::Dummy()
+{
+}
+
+// ea: 0x00517400
+void* nalVirtual::get_vtbl_ptr() const
+{
+    return *(void* const*)this;
+}
 
 // nalDynamicPtrCast / nalAnimPtrCast / nalSkeletonPtrCast - anim.o COMDATs
 // (0x55F160/0x55F1A0/0x55F1C0/0x560F20/0x560F40/0x560810); vftable addresses
