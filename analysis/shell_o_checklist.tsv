@@ -1191,7 +1191,7 @@ index	status	map_line
 1190	VERIFIED	0002:001ad420 ??GBroc@@YA?AUvector@0@ABU10@0@Z 0099C920 f i shell.o
 1191	VERIFIED	0002:001ad470 ??KBroc@@YA?AUvector@0@ABU10@M@Z 0099C970 f i shell.o
 1192	VERIFIED	0002:001ad4c0 ?IsMedic@@YA_NH@Z 0099C9C0 f i shell.o
-1193	PORTED	0002:001ad4e0 ??0color32@@QAE@EEEE@Z 0099C9E0 f i shell.o
+1193	VERIFIED	0002:001ad4e0 ??0color32@@QAE@EEEE@Z 0099C9E0 f i shell.o	VERIFIED: matches IDA packed channel assignments
 1194	PORTED	0002:001ad510 ?get_red@color32@@QBEEXZ 0099CA10 f i shell.o
 1195	PORTED	0002:001ad520 ?get_green@color32@@QBEEXZ 0099CA20 f i shell.o
 1196	PORTED	0002:001ad530 ?get_blue@color32@@QBEEXZ 0099CA30 f i shell.o

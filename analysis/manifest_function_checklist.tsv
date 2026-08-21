@@ -6368,7 +6368,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6367	0x005AD420	0x0099C920	??GBroc@@YA?AUvector@0@ABU10@0@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6368	0x005AD470	0x0099C970	??KBroc@@YA?AUvector@0@ABU10@M@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6369	0x005AD4C0	0x0099C9C0	?IsMedic@@YA_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6370	0x005AD4E0	0x0099C9E0	??0color32@@QAE@EEEE@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6370	0x005AD4E0	0x0099C9E0	??0color32@@QAE@EEEE@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6371	0x005AD510	0x0099CA10	?get_red@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6372	0x005AD520	0x0099CA20	?get_green@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6373	0x005AD530	0x0099CA30	?get_blue@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
