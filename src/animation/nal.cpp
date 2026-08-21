@@ -8077,6 +8077,12 @@ struct nalQuatDecoder : QuatDecoderBase {
                 float scale);
 };
 
+template <typename PACKED>
+struct nalPackedQuatDecoder : QuatDecoderBase {
+    void Decode(PACKED* dst, unsigned int stride, unsigned int qty,
+                float scale, int* work);
+};
+
 template <typename T>
 struct nalPackedFloatDecoder : nalFloatDecoder {};
 
@@ -8469,6 +8475,113 @@ void nalEntropyDecoder::nalQuatDecoder::Decode(
     delta[2] = z;
     _mm_storeu_ps(&qval.x, q);
 }
+
+template <typename PACKED>
+void nalEntropyDecoder::nalPackedQuatDecoder<PACKED>::Decode(
+    PACKED* dst, unsigned int stride, unsigned int qty,
+    float scale, int* work)
+{
+    if (qty == 0)
+        return;
+
+    float step = scale;
+    if (step < 0.0f)
+        step = -step;
+
+    const __m128 signMaskW = _mm_setr_ps(0.0f, 0.0f, 0.0f, -0.0f);
+    if ((channels[0].decoder & 0xC0u) != 0)
+    {
+        while (true)
+        {
+            if ((channels[0].decoder & 0x40u) != 0)
+            {
+                const __m128 delta = _mm_setr_ps(
+                    (float)this->delta[0], (float)this->delta[1],
+                    (float)this->delta[2], 0.0f);
+                const __m128 scaled = _mm_mul_ps(delta, _mm_set1_ps(step));
+                const __m128 squared = _mm_mul_ps(scaled, scaled);
+                const float w = sqrtf(fabsf(
+                    1.0f - (squared.m128_f32[0]
+                             + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+                             + _mm_shuffle_ps(squared, squared, 170).m128_f32[0])));
+                const __m128 v = _mm_shuffle_ps(
+                    scaled, _mm_shuffle_ps(_mm_set1_ps(w), scaled, 160), 52);
+                const __m128 q = _mm_loadu_ps(&qval.x);
+                const __m128 rotated = _mm_xor_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 36),
+                                   _mm_shuffle_ps(q, q, 63)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(v, v, 73),
+                                       _mm_shuffle_ps(q, q, 82)),
+                            _mm_sub_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(v, v, 191),
+                                           _mm_shuffle_ps(q, q, 164)),
+                                _mm_mul_ps(_mm_shuffle_ps(v, v, 210),
+                                           _mm_shuffle_ps(q, q, 201))))),
+                    signMaskW);
+                _mm_storeu_ps(&qval.x, rotated);
+            }
+            *dst = PACKED(&qval);
+            dst += stride;
+            channels[0].decoder = (unsigned char)(channels[0].decoder - 64u);
+            --qty;
+            if (qty == 0 || (channels[0].decoder & 0xC0u) == 0)
+                break;
+        }
+        if (qty == 0)
+            return;
+    }
+
+    channels[0].Decode(work, 12u, qty);
+    channels[1].Decode(work + 1, 12u, qty);
+    channels[2].Decode(work + 2, 12u, qty);
+
+    int x = delta[0];
+    int y = delta[1];
+    int z = delta[2];
+    __m128 q = _mm_loadu_ps(&qval.x);
+    for (unsigned int i = 0; i < qty; ++i)
+    {
+        x += work[0];
+        y += work[1];
+        z += work[2];
+        const __m128 value = _mm_setr_ps((float)x, (float)y, (float)z, 0.0f);
+        const __m128 scaled = _mm_mul_ps(value, _mm_set1_ps(step));
+        const __m128 squared = _mm_mul_ps(scaled, scaled);
+        const float w = sqrtf(fabsf(
+            1.0f - (squared.m128_f32[0]
+                     + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+                     + _mm_shuffle_ps(squared, squared, 170).m128_f32[0])));
+        const __m128 v = _mm_shuffle_ps(
+            scaled, _mm_shuffle_ps(_mm_set1_ps(w), scaled, 160), 52);
+        q = _mm_xor_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 36), _mm_shuffle_ps(q, q, 63)),
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v, v, 73), _mm_shuffle_ps(q, q, 82)),
+                    _mm_sub_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 191),
+                                   _mm_shuffle_ps(q, q, 164)),
+                        _mm_mul_ps(_mm_shuffle_ps(v, v, 210),
+                                   _mm_shuffle_ps(q, q, 201))))),
+            signMaskW);
+        math::Quaternion current;
+        _mm_storeu_ps(&current.x, q);
+        *dst = PACKED(&current);
+        dst += stride;
+        work += 12;
+    }
+    delta[0] = x;
+    delta[1] = y;
+    delta[2] = z;
+    _mm_storeu_ps(&qval.x, q);
+}
+
+template struct nalEntropyDecoder::nalPackedQuatDecoder<
+    nalEntropyDecoder::nalQuaternion8>;
+template struct nalEntropyDecoder::nalPackedQuatDecoder<
+    nalEntropyDecoder::nalQuaternion16>;
 
 // ea: 0x00865E40
 nalEntropyDecoder::nalQuaternion8::nalQuaternion8(const math::Quaternion* q)
@@ -8905,6 +9018,10 @@ struct nalComponentPacked8EntropyQuatData : nalComponentData {
     struct AnimData {
         float QuantizationScale;
     };
+    struct StateType {
+        nalEntropyDecoder::nalPackedQuatDecoder<
+            nalEntropyDecoder::nalQuaternion8> QuatDecoder;
+    };
 };
 class nalComponentPacked8EntropyQuat
     : public nalComponent<nalComponentQuatBase,
@@ -8920,6 +9037,10 @@ struct nalComponentPacked16EntropyQuatData : nalComponentData {
     };
     struct AnimData {
         float QuantizationScale;
+    };
+    struct StateType {
+        nalEntropyDecoder::nalPackedQuatDecoder<
+            nalEntropyDecoder::nalQuaternion16> QuatDecoder;
     };
 };
 class nalComponentPacked16EntropyQuat
@@ -14523,6 +14644,140 @@ void nalComponent<nalComponentQuatBase,
     src = current;
     *customSkeletonData = skeletonData;
     *customAnimData = animComponentData;
+}
+
+// (nal_init.o 0x8658C0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::QuatDecoderBase* decoder =
+                (nalEntropyDecoder::QuatDecoderBase*)state;
+            const float* skeletonData = (const float*)*customSkeletonData;
+            const unsigned char* encoded =
+                (const unsigned char*)src;
+            const unsigned char* compressed = encoded + 1;
+            const unsigned char blockSize = *encoded;
+            if (decoder != nullptr)
+            {
+                new (decoder) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity,
+                    *skeletonData * *animData,
+                    compressed, 0);
+            }
+            src = compressed + blockSize;
+            state = (char*)state + sizeof(nalEntropyDecoder::QuatDecoderBase);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
+// (nal_init.o 0x8659E0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::nalPackedQuatDecoder<
+                nalEntropyDecoder::nalQuaternion8>* decoder =
+                (nalEntropyDecoder::nalPackedQuatDecoder<
+                    nalEntropyDecoder::nalQuaternion8>*)state;
+            decoder->Decode(
+                (nalEntropyDecoder::nalQuaternion8*)dst,
+                (unsigned int)stride, (unsigned int)quantity,
+                *(const float*)*customSkeletonData * *animData,
+                (int*)work);
+            state = (char*)state + sizeof(nalEntropyDecoder::QuatDecoderBase);
+            dst = (char*)dst + 3;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// (nal_init.o 0x865EF0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* encoded =
+                (const unsigned char*)src;
+            const unsigned char* compressed = encoded + 1;
+            const unsigned char blockSize = *encoded;
+            const float scale = *(const float*)*customSkeletonData
+                                * *animData;
+            alignas(16) unsigned char storage[
+                sizeof(nalEntropyDecoder::QuatDecoderBase)];
+            nalEntropyDecoder::QuatDecoderBase* decoder =
+                new (storage) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity, scale, compressed, 0);
+            reinterpret_cast<nalEntropyDecoder::nalPackedQuatDecoder<
+                nalEntropyDecoder::nalQuaternion8>*>(decoder)->Decode(
+                    (nalEntropyDecoder::nalQuaternion8*)dst,
+                    (unsigned int)stride, (unsigned int)quantity, scale,
+                    (int*)nalDecodeWorkArray);
+            src = compressed + blockSize;
+            dst = (char*)dst + 3;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
 }
 
 // ea: 0x00860740
