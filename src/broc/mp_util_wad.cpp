@@ -6762,8 +6762,10 @@ void LocalPlayerIntermission(Broc::entity player) {
     Broc::wait(0.25f);
     SpawnIntermission(player);
     Broc::wait(0.1f);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = FadeUpWhenLoaded__functor(lvl, player);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                         __LINE__, "FadeUpWhenLoaded", ftor);
