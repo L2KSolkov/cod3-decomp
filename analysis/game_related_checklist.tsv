@@ -10332,7 +10332,7 @@ index	status	map_line
 10331	VERIFIED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o
 10332	VERIFIED	0002:0026f390 ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z 00A5E890 f streamer.o
 10333	VERIFIED	0002:0026f3c0 ?GetName@@YA?AVtlFixedString@@PBD@Z 00A5E8C0 f streamer.o
-10334	VERIFIED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o
+10334	FIXED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o	FIXED: matched IDA literal bank type 2 (MESHFILE); corrected mesh name copy path
 10335	PORTED	0002:0026f4c0 ?DecodeSkeleton@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5E9C0 f streamer.o
 10336	PORTED	0002:0026f590 ?DecodeAnim@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5EA90 f streamer.o
 10337	VERIFIED	0002:0026f670 ?GetMultiApkFcn@@YAP6AXPBDPAUMultiApk@@W4TPakId@@@Z0@Z 00A5EB70 f streamer.o

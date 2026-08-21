@@ -10332,7 +10332,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 10331	0x0066F230	0x00A5E730	?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 10332	0x0066F390	0x00A5E890	?can_alloc@BankManager@@QBE_NVNumBanks@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 10333	0x0066F3C0	0x00A5E8C0	?GetName@@YA?AVtlFixedString@@PBD@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-10334	0x0066F480	0x00A5E980	?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+10334	0x0066F480	0x00A5E980	?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z		streamer.o	game		f	0	FIXED	FUNCTION corrected against IDA and runtime assert	YES	YES	VERIFIED
 10335	0x0066F4C0	0x00A5E9C0	?DecodeSkeleton@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 10336	0x0066F590	0x00A5EA90	?DecodeAnim@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 10337	0x0066F670	0x00A5EB70	?GetMultiApkFcn@@YAP6AXPBDPAUMultiApk@@W4TPakId@@@Z0@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
