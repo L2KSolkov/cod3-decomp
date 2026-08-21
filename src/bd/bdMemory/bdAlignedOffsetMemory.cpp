@@ -13,6 +13,11 @@ typedef unsigned int bdUWord;
 
 extern const char defaultFileName[];
 
+// ea: 0x8A03C0
+void* bdMalloc(unsigned int nSize) {
+    return malloc(nSize);
+}
+
 void* bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
     const bdUWord mask = align - 1;
     if ((mask & align) != 0) {
