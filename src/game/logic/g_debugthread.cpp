@@ -1650,10 +1650,10 @@ extern Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
     DbLinkedHandle<EntityHandleDb, Entity> h);
 extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);
 
-Task* TaskSys_GetTaskForEntity(unsigned int taskId,
+Task* TaskSys_GetTaskForEntity(FourCC taskId,
     DbLinkedHandle<EntityHandleDb, Entity> eh)
 {
-    TaskHandlerImpl* v3 = TaskSys_LookupHandler(taskId);
+    TaskHandlerImpl* v3 = TaskSys_LookupHandler(taskId.mVal);
     if (v3 != nullptr)
         return TaskHandler_GetTaskForEntity(v3, eh);
     return nullptr;
