@@ -1553,25 +1553,25 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1552	0x004B5180	0x008A4680	?CreateInst@LightGridMgr@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1553	0x004B5280	0x008A4780	?DeleteInst@LightGridMgr@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1554	0x004B5300	0x008A4800	?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA trStaticModelList_t allocator setter	NO	NO	VERIFIED
-1555	0x004B5310	0x008A4810	?Inst@DObjHandleDb@@SAPAV1@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1556	0x004B5320	0x008A4820	?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1557	0x004B5330	0x008A4830	?IsDefined@vector@Broc@@QBE_NXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1555	0x004B5310	0x008A4810	?Inst@DObjHandleDb@@SAPAV1@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA singleton accessor	NO	NO	VERIFIED
+1556	0x004B5320	0x008A4820	?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA allocator setter	NO	NO	VERIFIED
+1557	0x004B5330	0x008A4830	?IsDefined@vector@Broc@@QBE_NXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA sNaN component predicate	NO	NO	VERIFIED
 1558	0x004B5380	0x008A4880	?get_num_controllers@controller@@QAEHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1559	0x004B5390	0x008A4890	??_U@YAPAXI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1560	0x004B53A0	0x008A48A0	??_V@YAXPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1561	0x004B53B0	0x008A48B0	?GetVal@FourCC@@QBEHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1562	0x004B53C0	0x008A48C0	??8@YA_NVFourCC@@0@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1563	0x004B53E0	0x008A48E0	?value@tlFixedString@@QBEPBIXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1561	0x004B53B0	0x008A48B0	?GetVal@FourCC@@QBEHXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA value accessor	NO	NO	VERIFIED
+1562	0x004B53C0	0x008A48C0	??8@YA_NVFourCC@@0@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA value comparison	NO	NO	VERIFIED
+1563	0x004B53E0	0x008A48E0	?value@tlFixedString@@QBEPBIXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing const value accessor returns object storage per IDA/map signature	NO	NO	VERIFIED
 1564	0x004B53F0	0x008A48F0	??0tlFixedString@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1565	0x004B5420	0x008A4920	??4tlFixedString@@QAEABV0@ABV0@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1565	0x004B5420	0x008A4920	??4tlFixedString@@QAEABV0@ABV0@@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing assignment copies the eight IDA dwords	NO	NO	VERIFIED
 1566	0x004B5470	0x008A4970	?c_str@tlFixedString@@QAEPADXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1567	0x004B5480	0x008A4980	?SetAllocator@AeThread@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1568	0x004B5490	0x008A4990	?mathInit@math@@YAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1569	0x004B54E0	0x008A49E0	?Abs@math@@YAMM@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1570	0x004B54F0	0x008A49F0	?GetTimeStartExec@AeThreadManager@@SA_KXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1567	0x004B5480	0x008A4980	?SetAllocator@AeThread@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA allocator setter	NO	NO	VERIFIED
+1568	0x004B5490	0x008A4990	?mathInit@math@@YAXXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA control-word and MXCSR initialization	NO	NO	VERIFIED
+1569	0x004B54E0	0x008A49E0	?Abs@math@@YAMM@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA scalar absolute-value wrapper	NO	NO	VERIFIED
+1570	0x004B54F0	0x008A49F0	?GetTimeStartExec@AeThreadManager@@SA_KXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA start-time accessor	NO	NO	VERIFIED
 1571	0x004B5500	0x008A4A00	?GetX@Dir3@math@@QBEMXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1572	0x004B5520	0x008A4A20	?GetY@Dir3@math@@QBEMXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1573	0x004B5570	0x008A4A70	?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1573	0x004B5570	0x008A4A70	?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA allocator setter	NO	NO	VERIFIED
 1574	0x004B5580	0x008A4A80	??2DestructibleBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1575	0x004B5590	0x008A4A90	?DeleteInst@DestructibleBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1576	0x004B5610	0x008A4B10	?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
