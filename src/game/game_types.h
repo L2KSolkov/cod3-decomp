@@ -370,6 +370,7 @@ public:
     bool RemoveScriptEvent(HashString h, HashString callback); // ?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z (scr.o 0x5E9B90)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
+    void Notify(const char* n);                  // ?Notify@Entity@@QAEXPBD@Z (scr.o 0x5EE310)
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const unsigned int& e);  // ?Notify@Entity@@QAEXVHashString@@ABI@Z

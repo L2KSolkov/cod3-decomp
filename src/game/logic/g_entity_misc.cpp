@@ -1477,6 +1477,14 @@ static int          sNotifyInitFlags;  // $S69_1 @ 0xF58C38
 static unsigned int footstep;          // ?footstep @ 0xF58C34
 static unsigned int step;              // ?step @ 0xF58C30
 
+// ea: 0x005EE310
+void Entity::Notify(const char* n)
+{
+    HashString h;
+    h.mHash = HashString::CalcHash(n);
+    Notify(h);
+}
+
 // ea: 0x0062AE00
 void Entity::Notify(HashString h)
 {

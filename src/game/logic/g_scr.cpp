@@ -270,6 +270,8 @@ public:
     struct BrocObjCreated {
         ae_sized_array<ae_pair<void*, unsigned int>, 15> list;  // +0x00
         BrocObjCreated* next;                                  // +0x7C
+
+        static void operator delete(void* ptr);                // scr.o 0x5EE230
     };
 
     AeDListNode m_dlist_node;                           // +0x00
@@ -290,6 +292,11 @@ public:
     static void operator delete(void* ptr);                     // 0x5E9890/0x5E98B0
     void SetHandle(Handle h);                            // scr.o 0x5E98D0
     Handle GetHandle() const;                            // scr.o 0x5E98E0
+    void ActivateDebug();                                // scr.o 0x5EE1E0
+    bool IsFinished() const;                              // scr.o 0x5EE1F0
+    bool IsDebug() const;                                 // scr.o 0x5EE200
+    bool HasExecuted() const;                             // scr.o 0x5EE210
+    void SetExecuted();                                   // scr.o 0x5EE220
     void SetKillFlag();  // ?SetKillFlag@AeThread@@QAEXXZ (scr.o 0x5C1F00)
     void Kill();         // ?Kill@AeThread@@QAEXXZ (scr.o 0x5C1F10)
     void RegisterBrocInst(void* inst, BrocDtorBase* dtor);  // scr.o 0x5C9400
@@ -333,6 +340,7 @@ public:
     bool mFinished;                                          // +0x0C
     EAction mResult;                                         // +0x10
 
+    AeThreadState(EAction result = kActionNone);             // scr.o 0x5EE0A0
     void* get_dlist_node();                                  // 0x5E9420
     static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9430
     static void operator delete(void* ptr);                  // 0x5E9450
@@ -349,6 +357,15 @@ struct AeThreadStateAllocAccess {
 };
 
 PoolAllocator* AeThreadState::sAllocator;
+
+// ea: 0x005EE0A0
+AeThreadState::AeThreadState(EAction result)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = result;
+}
 
 // ea: 0x005E9420
 void* AeThreadState::get_dlist_node()
@@ -3035,6 +3052,36 @@ void AeThread::operator delete(void* ptr)
     sAllocator->Release(ptr);
 }
 
+// ea: 0x005EE1E0
+void AeThread::ActivateDebug()
+{
+    mFlags.mMask |= 0x100u;
+}
+
+// ea: 0x005EE1F0
+bool AeThread::IsFinished() const
+{
+    return (mFlags.mMask & 8u) != 0;
+}
+
+// ea: 0x005EE200
+bool AeThread::IsDebug() const
+{
+    return ((mFlags.mMask >> 8) & 1u) != 0;
+}
+
+// ea: 0x005EE210
+bool AeThread::HasExecuted() const
+{
+    return (mFlags.mMask & 0x80u) != 0;
+}
+
+// ea: 0x005EE220
+void AeThread::SetExecuted()
+{
+    mFlags.mMask |= 0x80u;
+}
+
 // ea: 0x005E98D0
 void AeThread::SetHandle(Handle h)
 {
@@ -4316,6 +4363,15 @@ static void BrocFree(void* p)
         gBrocPool->Release(p);
     else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
         mem_heap_free(p);
+}
+
+// ea: 0x005EE230
+void AeThread::BrocObjCreated::operator delete(void* ptr)
+{
+    if (gBrocPool->InPool(ptr))
+        gBrocPool->Release(ptr);
+    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(ptr))
+        mem_heap_free(ptr);
 }
 
 // ea: 0x005C9400
