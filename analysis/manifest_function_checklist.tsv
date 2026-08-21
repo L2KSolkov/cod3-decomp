@@ -6441,7 +6441,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6440	0x005ADF60	0x0099D460	?Shift@MultiLineString@@QAEXMM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6441	0x005ADFA0	0x0099D4A0	?GetTotalWidth@MultiLineString@@QAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6442	0x005ADFB0	0x0099D4B0	??0PanelMaterial@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6443	0x005ADFD0	0x0099D4D0	??1PanelMaterial@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6443	0x005ADFD0	0x0099D4D0	??1PanelMaterial@@QAE@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6444	0x005ADFE0	0x0099D4E0	??0LightPanelQuad@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6445	0x005AE000	0x0099D500	?SetX@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6446	0x005AE020	0x0099D520	?SetY@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

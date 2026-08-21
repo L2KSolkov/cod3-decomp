@@ -1264,7 +1264,7 @@ index	status	map_line
 1263	VERIFIED	0002:001adf60 ?Shift@MultiLineString@@QAEXMM@Z 0099D460 f i shell.o
 1264	VERIFIED	0002:001adfa0 ?GetTotalWidth@MultiLineString@@QAEMXZ 0099D4A0 f i shell.o
 1265	VERIFIED	0002:001adfb0 ??0PanelMaterial@@QAE@XZ 0099D4B0 f i shell.o
-1266	PORTED	0002:001adfd0 ??1PanelMaterial@@QAE@XZ 0099D4D0 f i shell.o
+1266	PORTED	0002:001adfd0 ??1PanelMaterial@@QAE@XZ 0099D4D0 f i shell.o	PORTED: added IDA-derived empty destructor
 1267	VERIFIED	0002:001adfe0 ??0LightPanelQuad@@QAE@XZ 0099D4E0 f i shell.o
 1268	PORTED	0002:001ae000 ?SetX@PanelQuadSection@@AAEXHM@Z 0099D500 f i shell.o
 1269	PORTED	0002:001ae020 ?SetY@PanelQuadSection@@AAEXHM@Z 0099D520 f i shell.o
