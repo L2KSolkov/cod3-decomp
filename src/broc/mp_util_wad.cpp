@@ -12205,9 +12205,230 @@ void RemoveRadioModel() {
 
 // TriggerRadio - ea: 0x9593E0
 void TriggerRadio(Broc::entity self) {
-    (void)self;
-    // Radio capture / radioTriggerTime updates are handled via the runtime
-    // capture hooks; entry point preserved.
+    static bool initialized = false;
+    static Broc::bint last_time;
+    if (!initialized) {
+        initialized = true;
+        Broc::GetTime(&last_time);
+    }
+
+    Broc::bint this_time;
+    Broc::GetTime(&this_time);
+    Broc::bint time_delta((int)this_time - (int)last_time);
+    last_time = this_time;
+    mp_util_wad::pLevel->last_radio_trigger_time = this_time;
+
+    if ((int)time_delta > 250 || (int)time_delta < 0) {
+        time_delta = 0;
+        mp_util_wad::pLevel->radioTriggerTime = 0;
+        Broc::dyn_array<Broc::entity> stale_players;
+        Broc::GetPlayerArray(&stale_players);
+        for (int i = 0; i < Broc::size(stale_players); ++i) {
+            Broc::entity player = stale_players[(unsigned int)i];
+            *mp_util_wad::GetEE_setting_up_hq(player) = 0;
+        }
+        stale_players.~dyn_array();
+    }
+
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint current_time;
+    for (int i = 0; i < Broc::size(players); ++i) {
+        Broc::GetTime(&current_time);
+        mp_util_wad::entity_set_key(
+            players[(unsigned int)i], (int)current_time);
+    }
+
+    if ((int)mp_util_wad::pLevel->hq_stage == 2) {
+        int num_axis_triggering = 0;
+        int num_allies_triggering = 0;
+        Broc::dyn_array<Broc::entity> touching_players;
+        Broc::GetPlayerArray(&touching_players);
+
+        for (int i = 0; i < Broc::size(touching_players); ++i) {
+            Broc::entity player = touching_players[(unsigned int)i];
+            Broc::bint player_state;
+            mp_util_wad::entity_get_playerState(&player_state, player);
+            if ((int)player_state != 3 ||
+                !Broc::IsTouching(&player, &self) ||
+                Broc::Code_IsInVehicle(player))
+                continue;
+
+            *mp_util_wad::GetEE_setting_up_hq(player) = 1;
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, player);
+            bool is_axis = team == "axis";
+            team.~string();
+            if (is_axis) {
+                if (num_allies_triggering > 0) {
+                    *mp_util_wad::GetEE_setting_up_hq(player) = 0;
+                    mp_util_wad::pLevel->radioTriggerTime = 0;
+                    touching_players.~dyn_array();
+                    players.~dyn_array();
+                    return;
+                }
+                ++num_axis_triggering;
+                mp_util_wad::pLevel->allies_defending = false;
+            } else {
+                if (num_axis_triggering > 0) {
+                    *mp_util_wad::GetEE_setting_up_hq(player) = 0;
+                    mp_util_wad::pLevel->radioTriggerTime = 0;
+                    touching_players.~dyn_array();
+                    players.~dyn_array();
+                    return;
+                }
+                mp_util_wad::pLevel->allies_defending = true;
+                ++num_allies_triggering;
+            }
+        }
+
+        if (num_allies_triggering == 0 || num_axis_triggering == 0) {
+            if ((int)mp_util_wad::pLevel->radioTriggerTime == 0) {
+                Broc::string script("MP_HQ_Build");
+                Broc::entity* level_entity =
+                    mp_util_wad::pLevel != nullptr
+                        ? &mp_util_wad::pLevel->_base.entity
+                        : nullptr;
+                Broc::EffectEventPlay(level_entity, &script);
+                script.~string();
+            }
+            Broc::bfloat cap_speed;
+            GetCapSpeed(&cap_speed,
+                        Broc::bint(num_allies_triggering +
+                                   num_axis_triggering));
+            mp_util_wad::pLevel->radioTriggerTime =
+                (int)mp_util_wad::pLevel->radioTriggerTime +
+                (int)((int)time_delta * (float)cap_speed);
+
+            for (int i = 0; i < Broc::size(touching_players); ++i) {
+                Broc::entity player = touching_players[(unsigned int)i];
+                Broc::bint player_state;
+                mp_util_wad::entity_get_playerState(&player_state, player);
+                if ((int)player_state == 3 &&
+                    Broc::IsTouching(&player, &self) &&
+                    !Broc::Code_IsInVehicle(player))
+                    ShowSetupGraphic(player);
+            }
+
+            if ((int)mp_util_wad::pLevel->radioTriggerTime > 15000 &&
+                Broc::IsLocalHost()) {
+                mp_util_wad::pLevel->hq_stage = 3;
+                mp_util_wad::pLevel->radioTriggerTime = 0;
+                for (int i = 0; i < Broc::size(touching_players); ++i) {
+                    Broc::entity player = touching_players[(unsigned int)i];
+                    *mp_util_wad::GetEE_setting_up_hq(player) = 0;
+                }
+            }
+        }
+        touching_players.~dyn_array();
+        players.~dyn_array();
+        return;
+    }
+
+    if ((int)mp_util_wad::pLevel->hq_stage == 3) {
+        int num_attackers_triggering = 0;
+        int num_defenders_triggering = 0;
+        int net_attackers_triggering = 0;
+        Broc::dyn_array<Broc::entity> all_players;
+        Broc::GetPlayerArray(&all_players);
+
+        for (int i = 0; i < Broc::size(all_players); ++i) {
+            Broc::entity player = all_players[(unsigned int)i];
+            Broc::bint player_state;
+            mp_util_wad::entity_get_playerState(&player_state, player);
+            if ((int)player_state != 3 ||
+                !Broc::IsTouching(&player, &self) ||
+                Broc::Code_IsInVehicle(player))
+                continue;
+
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, player);
+            bool is_defender =
+                (team == "allies" &&
+                 (bool)mp_util_wad::pLevel->allies_defending) ||
+                (team == "axis" &&
+                 !(bool)mp_util_wad::pLevel->allies_defending);
+            if (is_defender) {
+                ++num_defenders_triggering;
+            } else {
+                bool is_attacker =
+                    (team == "allies" &&
+                     !(bool)mp_util_wad::pLevel->allies_defending) ||
+                    (team == "axis" &&
+                     (bool)mp_util_wad::pLevel->allies_defending);
+                if (is_attacker) {
+                    *mp_util_wad::GetEE_setting_up_hq(player) = 1;
+                    ++num_attackers_triggering;
+                }
+            }
+            team.~string();
+        }
+
+        net_attackers_triggering =
+            num_attackers_triggering - num_defenders_triggering;
+        if (net_attackers_triggering < 0)
+            net_attackers_triggering = 0;
+        if (net_attackers_triggering == 0 &&
+            num_attackers_triggering == 0)
+            mp_util_wad::pLevel->radioTriggerTime = 0;
+        if ((int)mp_util_wad::pLevel->radioTriggerTime == 0 &&
+            net_attackers_triggering > 0) {
+            Broc::string script("MP_HQ_Build");
+            Broc::entity* level_entity =
+                mp_util_wad::pLevel != nullptr
+                    ? &mp_util_wad::pLevel->_base.entity
+                    : nullptr;
+            Broc::EffectEventPlay(level_entity, &script);
+            script.~string();
+        }
+        mp_util_wad::pLevel->radioTriggerTime =
+            (int)mp_util_wad::pLevel->radioTriggerTime +
+            (int)time_delta * net_attackers_triggering;
+
+        for (int i = 0; i < Broc::size(all_players); ++i) {
+            Broc::entity player = all_players[(unsigned int)i];
+            Broc::bint player_state;
+            mp_util_wad::entity_get_playerState(&player_state, player);
+            if ((int)player_state != 3)
+                continue;
+
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, player);
+            bool is_defender =
+                (team == "allies" &&
+                 (bool)mp_util_wad::pLevel->allies_defending) ||
+                (team == "axis" &&
+                 !(bool)mp_util_wad::pLevel->allies_defending);
+            if (is_defender) {
+                if (!Broc::IsTouching(&player, &self) ||
+                    Broc::Code_IsInVehicle(player)) {
+                    if (net_attackers_triggering > 0)
+                        ShowLosingHQGraphic(player);
+                } else if (num_attackers_triggering > 0) {
+                    Broc::SetActionHint(
+                        (int)0x7A8A9265u, Broc::GetPlayerIndex(player));
+                } else if (num_defenders_triggering > 0) {
+                    Broc::SetActionHint(
+                        (int)0x9E58202Bu, Broc::GetPlayerIndex(player));
+                }
+            } else if (Broc::IsTouching(&player, &self) &&
+                       !Broc::Code_IsInVehicle(player)) {
+                if (net_attackers_triggering > 0) {
+                    ShowDestructionGraphic(player);
+                } else if (num_defenders_triggering > 0) {
+                    Broc::SetActionHint(
+                        (int)0x9E58202Bu, Broc::GetPlayerIndex(player));
+                }
+            }
+            team.~string();
+        }
+
+        if ((int)mp_util_wad::pLevel->radioTriggerTime > 15000 &&
+            Broc::IsLocalHost())
+            mp_util_wad::pLevel->hq_stage = 5;
+        all_players.~dyn_array();
+    }
+    players.~dyn_array();
 }
 
 // Track_Ownership - ea: 0x95BE00
