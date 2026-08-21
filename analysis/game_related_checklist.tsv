@@ -3597,17 +3597,17 @@ index	status	map_line
 3596	PORTED	0002:001187b0 ?GetTaskId@HealthRegenTask@@SA?AVFourCC@@XZ 00907CB0 f i game2.o  PORTED: IDA-backed FourCC result 1213351758
 3597	PORTED	0002:001187d0 ?GetHandler@AnimNotifyTask@@SAPAVTaskHandler@@XZ 00907CD0 f i game2.o  PORTED: IDA-backed static handler accessor
 3598	PORTED	0002:001187e0 ?GetTaskId@AnimNotifyTask@@SA?AVFourCC@@XZ 00907CE0 f i game2.o  PORTED: IDA-backed FourCC result 1095648857
-3599	PORTED	0002:00118800 ??1ParticleIterator@apsRenderSort@@UAE@XZ 00907D00 f i game2.o
+3599	PORTED	0002:00118800 ??1ParticleIterator@apsRenderSort@@UAE@XZ 00907D00 f i game2.o  PORTED: IDA-backed virtual destructor restores base vtable
 3600	SKIPPED	0002:00118810 ??_EParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3601	SKIPPED	0002:00118810 ??_GParticleIterator@apsRenderSort@@UAEPAXI@Z 00907D10 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-3602	PORTED	0002:00118840 ??1SortedParticleIterator@apsRenderSort@@UAE@XZ 00907D40 f i game2.o
-3603	PORTED	0002:00118850 ??1UnsortedParticleIterator@apsRenderSort@@UAE@XZ 00907D50 f i game2.o
-3604	PORTED	0002:00118860 ??0ParticleIterator@apsRenderSort@@QAE@XZ 00907D60 f i game2.o
-3605	PORTED	0002:00118870 ??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ 00907D70 f i game2.o
-3606	PORTED	0002:00118880 ?GetNextParticle@UnsortedParticleIterator@apsRenderSort@@UAEPAEXZ 00907D80 f i game2.o
+3602	PORTED	0002:00118840 ??1SortedParticleIterator@apsRenderSort@@UAE@XZ 00907D40 f i game2.o  PORTED: IDA-backed derived destructor
+3603	PORTED	0002:00118850 ??1UnsortedParticleIterator@apsRenderSort@@UAE@XZ 00907D50 f i game2.o  PORTED: IDA-backed derived destructor
+3604	PORTED	0002:00118860 ??0ParticleIterator@apsRenderSort@@QAE@XZ 00907D60 f i game2.o  PORTED: IDA-backed base vtable constructor
+3605	PORTED	0002:00118870 ??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ 00907D70 f i game2.o  PORTED: IDA-backed derived vtable constructor
+3606	PORTED	0002:00118880 ?GetNextParticle@UnsortedParticleIterator@apsRenderSort@@UAEPAEXZ 00907D80 f i game2.o  PORTED: IDA-backed end check and stride advance
 3607	SKIPPED	0002:001188a0 ??_GUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3608	SKIPPED	0002:001188a0 ??_EUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-3609	PORTED	0002:001188d0 ?GetBounds@apsGroup@@QBEABUapsBounds@@XZ 00907DD0 f i game2.o
+3609	PORTED	0002:001188d0 ?GetBounds@apsGroup@@QBEABUapsBounds@@XZ 00907DD0 f i game2.o  PORTED: IDA-backed mBounds reference accessor
 3610	PORTED	0002:001188e0 ?SetEntityHandle@AnimNoteHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00907DE0 f i game2.o
 3611	PORTED	0002:001188f0 ?GetNextNotifyIndex@AnimNoteHandler@@IAEHM@Z 00907DF0 f i game2.o
 3612	PORTED	0002:00118b40 ??0NotifyInfo@AnimNoteHandler@@QAE@XZ 00908040 f i game2.o
