@@ -858,15 +858,15 @@ index	status	map_line
 857	PORTED	0002:00467df0 ?Add@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00C572F0 f i nal_init.o
 858	VERIFIED	0002:00467e00 ?Add@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00C57300 f i nal_init.o
 859	VERIFIED	0002:00467f20 ?Init@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ 00C57420 f i nal_init.o
-860	PORTED	0002:00467f60 ??0?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@QAE@XZ 00C57460 f i nal_init.o
-861	PORTED	0002:00467f90 ?Find@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C57490 f i nal_init.o
-862	VERIFIED	0002:00467fa0 ?Find@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C574A0 f i nal_init.o
-863	PORTED	0002:00468060 ?Del@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAE_NQAVnalSceneAnim@@@Z 00C57560 f i nal_init.o
-864	PORTED	0002:00468070 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVIterator@?$tlResourceDirectory@VnalSceneAnim@@@@XZ 00C57570 f i nal_init.o
-865	PORTED	0002:004680b0 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEXXZ 00C575B0 f i nal_init.o
-866	PORTED	0002:004680d0 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UBE_NXZ 00C575D0 f i nal_init.o
-867	PORTED	0002:004680e0 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEXXZ 00C575E0 f i nal_init.o
-868	PORTED	0002:004680f0 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UBEPAVnalSceneAnim@@XZ 00C575F0 f i nal_init.o
+860	VERIFIED	0002:00467f60 ??0?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@QAE@XZ 00C57460 f i nal_init.o	VERIFIED: vtable install and inline skip-list random/head initialization match IDA
+861	VERIFIED	0002:00467f90 ?Find@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C57490 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+862	VERIFIED	0002:00467fa0 ?Find@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEPAVnalSceneAnim@@ABVtlFixedString@@@Z 00C574A0 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+863	VERIFIED	0002:00468060 ?Del@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAE_NQAVnalSceneAnim@@@Z 00C57560 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Del specialization per IDA
+864	VERIFIED	0002:00468070 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVIterator@?$tlResourceDirectory@VnalSceneAnim@@@@XZ 00C57570 f i nal_init.o	VERIFIED: 0x0C-byte iterator allocation, vtable, list pointer, and head cursor match IDA
+865	VERIFIED	0002:004680b0 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEXXZ 00C575B0 f i nal_init.o	VERIFIED: reset restores the skip-list head cursor exactly as IDA
+866	VERIFIED	0002:004680d0 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UBE_NXZ 00C575D0 f i nal_init.o	VERIFIED: iterator-validity test matches IDA
+867	VERIFIED	0002:004680e0 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEXXZ 00C575E0 f i nal_init.o	VERIFIED: iterator increment and null guard match IDA
+868	VERIFIED	0002:004680f0 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UBEPAVnalSceneAnim@@XZ 00C575F0 f i nal_init.o	VERIFIED: iterator dereference and null result match IDA
 869	SKIPPED	0002:00468100 ??_ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57600 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 870	SKIPPED	0002:00468100 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57600 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 871	SKIPPED	0002:00468130 ??_EIterator@?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57630 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
