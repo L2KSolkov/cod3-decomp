@@ -884,6 +884,18 @@ FETextFlashInfo::FETextFlashInfo(color32 col, float period)
     reset = false;
 }
 
+// ea: 0x005AD680
+void FETextFlashInfo::SetColor(color32 col)
+{
+    flash_color = col;
+}
+
+// ea: 0x005AD690
+void FETextFlashInfo::SetPeriod(float period)
+{
+    flash_period = period;
+}
+
 // ea: 0x0056B970
 void FETextFlashInfo::Update(float time_inc)
 {

@@ -720,6 +720,8 @@ struct FETextFlashInfo {
     uint8_t _pad11[3];         // +0x11
 
     FETextFlashInfo(color32 col, float period);  // shell.o 0x56B940
+    void SetColor(color32 col);                  // shell.o 0x5AD680
+    void SetPeriod(float period);                // shell.o 0x5AD690
     void Update(float time_inc);                 // shell.o 0x56B970
     color32 GetColor(color32 normal_color);      // shell.o 0x56B9B0
     void Reset();                                // shell.o 0x56BA70
