@@ -608,7 +608,7 @@ index	status	map_line
 607	PORTED	0002:0055b1e0 ?RemoveRadioModel@_mp_hq@@YAXXZ 00D4A6E0 f mp_util_wad.o
 608	FIXED	0002:0055b2c0 ?ClearGame@_mp_hq@@YAXXZ 00D4A7C0 f mp_util_wad.o	FIXED: IDA 0x0095B2C0 notifies pLevel->_base.entity (or null)
 609	PORTED	0002:0055b4f0 ?RemoveEventHandler@Broc@@YA_NABVentity@1@UHashStr@@1@Z 00D4A9F0 f i mp_util_wad.o	PORTED: IDA 0x0095B4F0 returns mRemoveEventHandler for the entity handle and HashStr values
-610	VERIFIED	0002:0055b540 ?ResetGame@_mp_hq@@YAXVentity@Broc@@@Z 00D4AA40 f mp_util_wad.o
+610	FIXED	0002:0055b540 ?ResetGame@_mp_hq@@YAXVentity@Broc@@@Z 00D4AA40 f mp_util_wad.o	FIXED: IDA 0x0095B540 notifies pLevel->_base.entity (or null)
 611	PORTED	0002:0055b610 ?GetSpawnPoint@_mp_hq@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D4AB10 f mp_util_wad.o
 612	VERIFIED	0002:0055b740 ?GetTriggerFromIndex@_mp_hq@@YAXXZ 00D4AC40 f mp_util_wad.o
 613	VERIFIED	0002:0055b920 ?BroadcastGameState@_mp_hq@@YAXXZ 00D4AE20 f mp_util_wad.o
