@@ -213,16 +213,16 @@ index	status	map_line
 212	PORTED	0002:00538a60 ?DistanceSquared@@YAMABUvector@Broc@@0@Z 00D27F60 f i mp_util_wad.o	PORTED: IDA forwards vector references to mVecDistanceSquared
 213	PORTED	0002:00538a90 ?PlaySound@_mp_audio@@YAXVentity@Broc@@Vstring@3@Ubfloat@@@Z 00D27F90 f mp_util_wad.o
 214	VERIFIED	0002:00538b20 ?PlayLocalDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z 00D28020 f mp_util_wad.o
-215	PORTED	0002:00538ba0 ?DialogPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D280A0 f i mp_util_wad.o
+215	PORTED	0002:00538ba0 ?DialogPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D280A0 f i mp_util_wad.o	PORTED: IDA forwards entity handle to mDialogPlay with zero flags
 216	PORTED	0002:00538be0 ?PlayTeamDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@1Ubfloat@@@Z 00D280E0 f mp_util_wad.o
-217	PORTED	0002:00538da0 ??Ebint@@QAEHXZ 00D282A0 f i mp_util_wad.o
-218	PORTED	0002:00538de0 ?Get@team_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D282E0 f i mp_util_wad.o
+217	FIXED	0002:00538da0 ??Ebint@@QAEHXZ 00D282A0 f i mp_util_wad.o	FIXED: IDA prefix operator++ asserts then returns old mVal while incrementing
+218	PORTED	0002:00538de0 ?Get@team_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D282E0 f i mp_util_wad.o	PORTED: IDA copies m_entity_get_sentient_team result through temporary string
 219	PORTED	0002:00538e90 ?PlayTeamDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@11Ubfloat@@@Z 00D28390 f mp_util_wad.o
 220	VERIFIED	0002:005391b0 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z 00D286B0 f mp_util_wad.o
-221	PORTED	0002:00539550 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@UHashStr@@_N@Z 00D28A50 f i mp_util_wad.o
+221	PORTED	0002:00539550 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@UHashStr@@_N@Z 00D28A50 f i mp_util_wad.o	PORTED: IDA forwards handle, notify hash, stoppable, and false final flag
 222	VERIFIED	0002:00539590 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D28A90 f mp_util_wad.o
 223	VERIFIED	0002:00539a50 ?StopTeamSound@_mp_audio@@YAXXZ 00D28F50 f mp_util_wad.o
-224	PORTED	0002:00539b70 ?EffectEventStopEmitting@Broc@@YAXI@Z 00D29070 f i mp_util_wad.o
+224	PORTED	0002:00539b70 ?EffectEventStopEmitting@Broc@@YAXI@Z 00D29070 f i mp_util_wad.o	PORTED: IDA forwards effect id to mEffectEventStop
 225	PORTED	0002:00539ba0 ?notify@Broc@@YAXABVentity@1@UHashStr@@@Z 00D290A0 f i mp_util_wad.o
 226	VERIFIED	0002:00539be0 ?PlayTeamSound@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D290E0 f mp_util_wad.o
 227	VERIFIED	0002:00539dc0 ?PlaySoundAtLocation@_mp_audio@@YAXVentity@Broc@@Vstring@3@Uvector@3@@Z 00D292C0 f mp_util_wad.o
