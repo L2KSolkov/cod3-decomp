@@ -143,21 +143,21 @@ index	status	map_line
 142	FIXED	0002:00534a20 ?Delete@Broc@@YAXABVentity@1@@Z 00D23F20 f i mp_util_wad.o  FIXED: IDA const-reference entry point restored; pointer wrapper retained
 143	VERIFIED	0002:00534a50 ?Distance@@YAMABUvector@Broc@@0@Z 00D23F50 f i mp_util_wad.o  VERIFIED: matches IDA mVecDistance forwarding
 144	VERIFIED	0002:00534a80 ?VectorToAngles@@YA?AUvector@Broc@@ABU12@@Z 00D23F80 f i mp_util_wad.o  VERIFIED: matches IDA local-output copy and mVecToAngles forwarding
-145	PORTED	0002:00534ad0 ??0mp_plane@_mp_airplanes@@QAE@XZ 00D23FD0 f i mp_util_wad.o
-146	PORTED	0002:00534bd0 ?plane_flyby_thread__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@@Z 00D240D0 f i mp_util_wad.o  PORTED: IDA AeThreadFunctor2 allocation/capture at 0x54 bytes
+145	VERIFIED	0002:00534ad0 ??0mp_plane@_mp_airplanes@@QAE@XZ 00D23FD0 f i mp_util_wad.o	VERIFIED: IDA 0x00934AD0 initializes strings, boxed scalars, and all four dynamic arrays
+146	VERIFIED	0002:00534bd0 ?plane_flyby_thread__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@@Z 00D240D0 f i mp_util_wad.o	VERIFIED: IDA 0x00934BD0 allocates 0x54-byte AeThreadFunctor2, captures arguments, destroys the plane copy, and null-checks allocation
 147	VERIFIED	0002:00534c90 ??1mp_plane@_mp_airplanes@@QAE@XZ 00D24190 f i mp_util_wad.o
 148	VERIFIED	0002:00534d50 ??0mp_plane@_mp_airplanes@@QAE@ABU01@@Z 00D24250 f i mp_util_wad.o
 149	VERIFIED	0002:00534e80 ?plane_flyby_thread@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@@Z 00D24380 f mp_util_wad.o
 150	FIXED	0002:00535060 ??4bint@@QAEHH@Z 00D24560 f i mp_util_wad.o	FIXED: IDA returns assigned int, not bint reference
 151	FIXED	0002:00535090 ??M@YA?AUbbool@@Ubint@@0@Z 00D24590 f i mp_util_wad.o	FIXED: IDA bbool value-return comparison restored
-152	PORTED	0002:005350d0 ?RandomInt@@YAHH@Z 00D245D0 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mMathsRandomInt forwarding wrapper
-153	PORTED	0002:00535100 ?plane_flyby__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@Ubint@@@Z 00D24600 f i mp_util_wad.o  PORTED: IDA AeThreadFunctor3 allocation/capture at 0x58 bytes
+152	VERIFIED	0002:005350d0 ?RandomInt@@YAHH@Z 00D245D0 f i mp_util_wad.o	VERIFIED: IDA 0x009350D0 directly forwards iMax to gBrocAPI.mMathsRandomInt
+153	VERIFIED	0002:00535100 ?plane_flyby__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@Ubint@@@Z 00D24600 f i mp_util_wad.o	VERIFIED: IDA 0x00935100 allocates 0x58-byte AeThreadFunctor3, captures all arguments, destroys the plane copy, and null-checks allocation
 154	FIXED	0002:005351c0 ?plane_flyby@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@Ubint@@@Z 00D246C0 f mp_util_wad.o	FIXED: restored IDA angles proxy assignment and automatic mp_plane cleanup
 155	FIXED	0002:00535420 ??4bfloat@@QAEMM@Z 00D24920 f i mp_util_wad.o	FIXED: IDA returns assigned float as double
-156	PORTED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o	PORTED: IDA bfloat multiplication value-return operator
-157	PORTED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o	PORTED: IDA m_entity_set_angles proxy assignment
-158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	PORTED: IDA mSpawn forwarding and entity construction; corrected TPakInfo ABI
-159	PORTED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o	PORTED: IDA mEffectEventPlay forwarding with zero notify/default flags
+156	VERIFIED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o	VERIFIED: IDA 0x00935450 multiplies lhs.mVal by rhs and constructs the bfloat result
+157	VERIFIED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o	VERIFIED: IDA 0x00935490 forwards mHandle and the vector to m_entity_set_angles, returning rhs
+158	VERIFIED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	VERIFIED: IDA 0x009354E0 forwards classname, origin, and TPakInfo to mSpawn, then constructs the entity result
+159	VERIFIED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o	VERIFIED: IDA 0x00935520 forwards the entity handle and script with notify=0 and both boolean flags false
 160	PORTED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	PORTED: IDA mSetModel forwarding
 161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	PORTED: IDA mMoveTo forwarding
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
