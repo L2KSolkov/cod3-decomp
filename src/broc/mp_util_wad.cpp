@@ -10468,8 +10468,10 @@ void SetupRound() {
                           goalHash.mVal);
     Broc::AddEventHandler(&mp_util_wad::pLevel->base_axis, label.mVal,
                           goalHash.mVal);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = WaitThenPickFlagToLaunch__functor(lvl, 5.0f,
                                                    "MPSCF_FLAG_SPAWNED");
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_scf.bro",
