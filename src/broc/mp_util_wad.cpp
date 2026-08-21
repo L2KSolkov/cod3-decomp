@@ -2407,6 +2407,13 @@ int IsPlayer(const Broc::entity& e) {
     return gBrocAPI.mEntityIsPlayer(e.GetHandle());
 }
 
+// IsTouching - ea: 0x95AE30
+bool IsTouching(const Broc::entity* e, const Broc::entity* other) {
+    unsigned int other_handle = other->GetHandle();
+    unsigned int handle = e->GetHandle();
+    return gBrocAPI.mIsTouching(handle, other_handle);
+}
+
 // IsVehicle - ea: 0x93BE60
 int IsVehicle(const Broc::entity& e) {
     return gBrocAPI.mEntityIsVehicle(e.GetHandle());
@@ -2831,6 +2838,38 @@ bfloat::bfloat(long double rhs) : mVal((float)rhs) {}
 bfloat operator*(int lhs, bfloat rhs) {
     return bfloat((float)lhs * rhs.mVal);
 }
+
+// operator*(bint, bfloat) - ea: 0x95AD50
+bfloat operator*(bint lhs, bfloat rhs) {
+    float lhs_value = lhs.mVal;
+    float value = rhs.mVal * lhs_value;
+    return bfloat(value);
+}
+
+// operator+(bint, bfloat) - ea: 0x95ADA0
+bfloat operator+(bint lhs, bfloat rhs) {
+    float lhs_value = lhs.mVal;
+    float value = rhs.mVal + lhs_value;
+    return bfloat(value);
+}
+
+// bfloat::IsDefined - ea: 0x95AED0
+bool bfloat::IsDefined() const {
+    return IS_NAN(mVal) == 0;
+}
+
+// bint::operator=(bfloat) - ea: 0x95AE70
+int bint::operator=(bfloat rhs) {
+    if (rhs.IsDefined()) {
+        mVal = (int)rhs.mVal;
+        return mVal;
+    }
+    mVal = bint::sUndefined;
+    return bint::sUndefined;
+}
+
+float bfloat::sUndefined = 0.0f;
+int bint::sUndefined = 0;
 
 // operator*(bint, int) - ea: 0x93D8E0
 bint operator*(bint lhs, int rhs) {
@@ -4172,6 +4211,12 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
     sound_to_play.~string();
     players.~dyn_array();
 }
+}
+
+const int& Broc::entity::__unnamed::key_struct::operator=(
+    const int& rhs) {
+    Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);
+    return rhs;
 }
 
 // ============================================================================

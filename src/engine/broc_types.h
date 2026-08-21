@@ -273,6 +273,10 @@ public:
             __int16 Get() const;
             const __int16& operator=(const __int16& rhs);
         };
+        struct key_struct {
+            unsigned int mHandle;  // +0x00
+            const int& operator=(const int& rhs);
+        };
     };
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::origin_struct) == 4,
                             "origin_struct size mismatch");
@@ -300,6 +304,8 @@ public:
                             "team_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::ctf_has_flag_struct) == 4,
                             "ctf_has_flag_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::key_struct) == 4,
+                            "key_struct size mismatch");
 
     entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
     entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)
@@ -717,6 +723,8 @@ struct bfloat {
     explicit bfloat(float v) : mVal(v) {}
     bfloat(long double v);
     operator float() const { return mVal; }
+    bool IsDefined() const;
+    static float sUndefined;
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "global bfloat size mismatch");
 
@@ -724,10 +732,14 @@ struct bint {
     int mVal;
     explicit bint(int v) : mVal(v) {}
     bint(const bfloat& rhs);
+    int operator=(bfloat rhs);
+    static int sUndefined;
 };
 bint operator+(bint lhs, bint rhs);
 bint operator*(bint lhs, int rhs);
 bfloat operator*(int lhs, bfloat rhs);
+bfloat operator*(bint lhs, bfloat rhs);
+bfloat operator+(bint lhs, bfloat rhs);
 struct bbool {
     bool mVal;
     explicit bbool(bool v) : mVal(v) {}
@@ -1054,7 +1066,9 @@ struct BrocAPI {
     unsigned int (*mGetTime)();                           // +0x528
     char _pad52C[0x68C - 0x52C];                          // +0x52C
     void (*mLinkTo3)(const unsigned int, const unsigned int); // +0x68C
-    char _pad690[0x6D8 - 0x690];                          // +0x690
+    char _pad690[0x6C8 - 0x690];                          // +0x690
+    bool (*mIsTouching)(const unsigned int, const unsigned int); // +0x6C8
+    char _pad6CC[0x6D8 - 0x6CC];                          // +0x6CC
     void (*mDelete)(unsigned int);                        // +0x6D8
     char _pad6DC[0x6E8 - 0x6DC];                          // +0x6DC
     void (*mSetModel)(unsigned int, const Broc::string*, TPakInfo); // +0x6E8
@@ -1245,7 +1259,7 @@ int IsPlayer(const Broc::entity& e);             // ea: 0x93BE30
 int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int IsVehicle(const Broc::entity* e);            // ea: 0x92F350
 int IsSentient(const Broc::entity* e);           // ea: 0x92F380
-int IsTouching(const Broc::entity* e, const Broc::entity* other);
+bool IsTouching(const Broc::entity* e, const Broc::entity* other);
 bool IsLocalHost();                              // ea: 0x92F6B0
 bool IsVehicleFlipped(const Broc::entity* e);
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
