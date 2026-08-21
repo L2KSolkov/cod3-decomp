@@ -44,8 +44,8 @@ struct nalGenericBoneHandle {
     void* skeleton;      // +0x04
 };
 struct nalPositionOrientation {
-    math::Position3 pos;   // +0x00
-    math::Dir3 orient;     // +0x10
+    math::Quaternion orient;  // +0x00
+    math::Position3 pos;      // +0x10
 };
 namespace nalGeneric {
 class nalGenericSkeleton;
@@ -278,6 +278,8 @@ struct nalMatrix4x4 {
     float y[4];
     float z[4];
     float w[4];
+
+    nalMatrix4x4(const nalPositionOrientation& po);
 };
 
 void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
@@ -409,12 +411,12 @@ void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
                                      &stru_F05378);
     nalPositionOrientation po =
         nalGenericPose_GetModelPositionOrientation(pose, &leftFootHandle);
-    nalMatrix4x4* m = (nalMatrix4x4*)&po;
-    *leftFootMat = *m;
+    nalMatrix4x4 leftMatrix(po);
+    *leftFootMat = leftMatrix;
     nalPositionOrientation po2 =
         nalGenericPose_GetModelPositionOrientation(pose, &rightFootHandle);
-    nalMatrix4x4* m2 = (nalMatrix4x4*)&po2;
-    *rightFootMat = *m2;
+    nalMatrix4x4 rightMatrix(po2);
+    *rightFootMat = rightMatrix;
 }
 
 // ============================================================================
