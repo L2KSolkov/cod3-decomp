@@ -11369,8 +11369,10 @@ void ShowLosingHQGraphic(Broc::entity guy) {
 // ShowProgressBar - ea: 0x959200
 void ShowProgressBar(Broc::entity self, Broc::string colour) {
     (void)self;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr e;
     e.mVal = 0x863B4D44;
     Broc::endon(lvl, e);
