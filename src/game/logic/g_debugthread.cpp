@@ -2396,6 +2396,9 @@ void TestFPS::PositionCamera(pmove_t* pmove)
                 mCurrentPosition.x, mCurrentPosition.y, mCurrentPosition.z
             };
             TeleportPlayer(player, position, angles);
+            pmove->ps->velocity.v.m128_f32[2] = 0.0f;
+            pmove->ps->velocity.v.m128_f32[1] = 0.0f;
+            pmove->ps->velocity.v.m128_f32[0] = 0.0f;
         }
     }
 }
