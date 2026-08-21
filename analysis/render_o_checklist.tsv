@@ -41,7 +41,7 @@ index	status	map_line
 40	VERIFIED	0002:002bdc10 ?DObjInit@@YAXXZ 00AAD110 f render.o
 41	VERIFIED	0002:002bdc20 ?DObjShutdown@@YAXXZ 00AAD120 f render.o
 42	VERIFIED	0002:002bdc30 ?DObjIgnoreCollision@@YAHPAVDObj@@H@Z 00AAD130 f render.o
-43	PORTED	0002:002bdc60 ?DObjGetHierarchyBits@@YAXPAVDObj@@HQAH@Z 00AAD160 f render.o
+43	VERIFIED	0002:002bdc60 ?DObjGetHierarchyBits@@YAXPAVDObj@@HQAH@Z 00AAD160 f render.o
 44	VERIFIED	0002:002bddf0 ?DObjCompleteHierarchyBits@@YAXPAVDObj@@QAH@Z 00AAD2F0 f render.o
 45	VERIFIED	0002:002bdee0 ?DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00AAD3E0 f render.o
 46	VERIFIED	0002:002bdef0 ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z 00AAD3F0 f render.o
@@ -49,7 +49,7 @@ index	status	map_line
 48	VERIFIED	0002:002bdf90 ?DObjSkelExists@@YAHPAVDObj@@H@Z 00AAD490 f render.o
 49	VERIFIED	0002:002bdfb0 ?DObjSkelExistsConst@@YAHPAVDObj@@H@Z 00AAD4B0 f render.o
 50	VERIFIED	0002:002bdfd0 ?DObjGetNumModels@@YAHPAVDObj@@@Z 00AAD4D0 f render.o
-51	PORTED	0002:002bdfe0 ?DObjSetRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4E0 f render.o
+51	VERIFIED	0002:002bdfe0 ?DObjSetRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4E0 f render.o
 52	VERIFIED	0002:002bdff0 ?DObjSetControlRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4F0 f render.o
 53	VERIFIED	0002:002be150 ?DObjGetNumSurfaces@@YAHPAVDObj@@PAH@Z 00AAD650 f render.o
 54	VERIFIED	0002:002be160 ?DObjGetSurface@@YAPAVXSurface@@PAVDObj@@HHPAH@Z 00AAD660 f render.o
@@ -58,7 +58,7 @@ index	status	map_line
 57	VERIFIED	0002:002be190 ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z 00AAD690 f render.o
 58	VERIFIED	0002:002be1e0 ?DObjNumBones@@YAHPAVDObj@@@Z 00AAD6E0 f render.o
 59	VERIFIED	0002:002be320 ?GetMat@DObj@@QAEABVMat43@math@@H@Z 00AAD820 f render.o
-60	PORTED	0002:002be390 ?R_XModelDebugAxes@@YAXPAVtrRefEntity@@QAH@Z 00AAD890 f render.o
+60	VERIFIED	0002:002be390 ?R_XModelDebugAxes@@YAXPAVtrRefEntity@@QAH@Z 00AAD890 f render.o
 61	VERIFIED	0002:002be630 ?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@@Z 00AADB30 f render.o
 62	VERIFIED	0002:002be890 ?render_view_model_arms@@YAXHAAVnglMeshParams@@ABVMat43@math@@AAV23@@Z 00AADD90 f render.o
 63	VERIFIED	0002:002bea90 ?render_view_model_weapon@@YAXHAAVnglMeshParams@@AAVMat43@math@@@Z 00AADF90 f render.o
@@ -681,7 +681,7 @@ index	status	map_line
 680	VERIFIED	0002:002e9a00 ??0?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAE@XZ 00AD8F00 f i render.o
 681	VERIFIED	0002:002e9a20 ?add@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEPAPAVtrRefEntity@@_NPBD@Z 00AD8F20 f i render.o
 682	VERIFIED	0002:002e9a70 ??A?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEAAPAVtrRefEntity@@H@Z 00AD8F70 f i render.o
-683	PORTED	0002:002e9ad0 ?get_count@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QBE?BHXZ 00AD8FD0 f i render.o
+683	VERIFIED	0002:002e9ad0 ?get_count@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QBE?BHXZ 00AD8FD0 f i render.o
 684	VERIFIED	0002:002e9ae0 ??Eiterator@?$reserved_dlist@VtrRefEntity@@@@QAEAAV01@XZ 00AD8FE0 f i render.o
 685	SKIPPED	0002:002e9b00 ?size@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBEIXZ 00AD9000 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 686	VERIFIED	0002:002e9b20 ?Instance@?$apsSingleton@VapsError@@@@SAAAVapsError@@XZ 00AD9020 f i render.o
