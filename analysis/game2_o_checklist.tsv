@@ -757,13 +757,13 @@ index	status	map_line
 756	SKIPPED	0002:00119530 ??A?$InplaceVector@VSplinePathData@@@@QAEAAVSplinePathData@@I@Z 00908A30 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 757	SKIPPED	0002:001195b0 ?capacity@?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QBEHXZ 00908AB0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 758	SKIPPED	0002:001195c0 ??A?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QAEAAUSplineEntry@SplineMgr@@H@Z 00908AC0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
-759	PORTED	0002:00119640 ??0?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAE@XZ 00908B40 f i game2.o
-760	PORTED	0002:00119650 ?push_back@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXABQAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@@Z 00908B50 f i game2.o
-761	PORTED	0002:001196d0 ??Diterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBEAAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@XZ 00908BD0 f i game2.o
-762	PORTED	0002:001196e0 ??Eiterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEAAV01@XZ 00908BE0 f i game2.o
-763	PORTED	0002:001196f0 ??9iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBE_NV01@@Z 00908BF0 f i game2.o
-764	PORTED	0002:00119710 ??0?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@QAE@ABIABQAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@Z 00908C10 f i game2.o
-765	PORTED	0002:00119730 ?erase@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEXPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908C30 f i game2.o
+759	PORTED	0002:00119640 ??0?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAE@XZ 00908B40 f i game2.o  PORTED: exact drone map array constructor emitted
+760	PORTED	0002:00119650 ?push_back@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXABQAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@@Z 00908B50 f i game2.o  PORTED: exact drone map capacity-guarded push_back emitted
+761	PORTED	0002:001196d0 ??Diterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBEAAPAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@XZ 00908BD0 f i game2.o  PORTED: exact drone map iterator dereference emitted
+762	PORTED	0002:001196e0 ??Eiterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEAAV01@XZ 00908BE0 f i game2.o  PORTED: exact drone map iterator increment emitted
+763	PORTED	0002:001196f0 ??9iterator@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QBE_NV01@@Z 00908BF0 f i game2.o  PORTED: exact drone map iterator comparison emitted
+764	PORTED	0002:00119710 ??0?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@QAE@ABIABQAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@Z 00908C10 f i game2.o  PORTED: exact field-pointer pair constructor emitted
+765	PORTED	0002:00119730 ?erase@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEXPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908C30 f i game2.o  PORTED: exact handle-vector erase with IDA assert metadata
 766	PORTED	0002:001197d0 ?find@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEPAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABV2@@Z 00908CD0 f i game2.o
 767	PORTED	0002:00119800 ??Dconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D00 f i game2.o
 768	PORTED	0002:00119810 ??Cconst_iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEABQAVTaskHandler@@XZ 00908D10 f i game2.o
