@@ -125,6 +125,7 @@ public:
     unsigned int IsLocalSpace() const { return mFlags & 2; }
     const math::Mat43& GetGroupLocalToWorldTransform() const { return mLocalToWorld; }
     unsigned char* GetParticles() const { return mFirstParticle; }
+    const apsBounds& GetBounds() const; // game2.o 0x5188D0
 
 protected:
     void SetLocalSpace(unsigned int bLocalSpace) {

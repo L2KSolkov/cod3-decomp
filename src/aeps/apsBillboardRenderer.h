@@ -28,6 +28,39 @@ struct Buffer {
     unsigned int  capacity;   // +0x00
     unsigned char** buffer;   // +0x04
 };
+
+class ParticleIterator {
+public:
+    ParticleIterator();
+    virtual ~ParticleIterator();
+    virtual unsigned char* GetNextParticle() = 0;
+};
+
+class SortedParticleIterator : public ParticleIterator {
+public:
+    unsigned int m_index;            // +0x04
+    unsigned int m_maxIndex;         // +0x08
+    unsigned char** m_firstParticle; // +0x0C
+    ~SortedParticleIterator();
+};
+
+class UnsortedParticleIterator : public ParticleIterator {
+public:
+    unsigned int m_stride;            // +0x04
+    unsigned char* m_firstParticle;   // +0x08
+    unsigned char* m_particleEnd;     // +0x0C
+    unsigned char* m_currentParticle; // +0x10
+    UnsortedParticleIterator();
+    ~UnsortedParticleIterator();
+    unsigned char* GetNextParticle() override;
+};
+
+static_assert(sizeof(ParticleIterator) == 0x04,
+              "ParticleIterator size mismatch");
+static_assert(sizeof(SortedParticleIterator) == 0x10,
+              "SortedParticleIterator size mismatch");
+static_assert(sizeof(UnsortedParticleIterator) == 0x14,
+              "UnsortedParticleIterator size mismatch");
 }
 // ============================================================================
 // apsBillboardNode — billboard render node (192 bytes).

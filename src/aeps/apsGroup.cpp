@@ -57,6 +57,12 @@ apsSphere apsBounds::Sphere() const
     return result;
 }
 
+// ea: 0x005188D0
+const apsBounds& apsGroup::GetBounds() const
+{
+    return mBounds;
+}
+
 // ============================================================================
 // HackTurnOffAepsMemory / HackTurnOnAepsMemory — switch aps memory to/from
 // the pak-block allocator (used by the runtime memory debugger).

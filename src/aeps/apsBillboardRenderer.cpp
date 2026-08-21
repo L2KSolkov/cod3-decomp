@@ -21,6 +21,45 @@ const unsigned int** apsBillboardRenderPixel::PShaderTable = nullptr;
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+namespace apsRenderSort {
+
+// ea: 0x00518800
+ParticleIterator::~ParticleIterator()
+{
+}
+
+// ea: 0x00518840
+SortedParticleIterator::~SortedParticleIterator()
+{
+}
+
+// ea: 0x00518850
+UnsortedParticleIterator::~UnsortedParticleIterator()
+{
+}
+
+// ea: 0x00518860
+ParticleIterator::ParticleIterator()
+{
+}
+
+// ea: 0x00518870
+UnsortedParticleIterator::UnsortedParticleIterator()
+{
+}
+
+// ea: 0x00518880
+unsigned char* UnsortedParticleIterator::GetNextParticle()
+{
+    unsigned char* result = m_currentParticle;
+    if (result >= m_particleEnd)
+        return nullptr;
+    m_currentParticle = result + m_stride;
+    return result;
+}
+
+}
+
 // ============================================================================
 // apsBillboardRenderer::UsesAmbientLighting — any positive ambient coefficient?
 // ea: 0x805C50
