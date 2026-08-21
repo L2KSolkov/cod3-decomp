@@ -33,6 +33,22 @@ SortedParticleIterator::~SortedParticleIterator()
 {
 }
 
+// ea: 0x0051BB30
+SortedParticleIterator::SortedParticleIterator()
+{
+}
+
+// ea: 0x0051BB40
+unsigned char* SortedParticleIterator::GetNextParticle()
+{
+    const unsigned int index = m_index;
+    if (index >= m_maxIndex)
+        return nullptr;
+    unsigned char* result = m_firstParticle[index];
+    m_index = index + 1;
+    return result;
+}
+
 // ea: 0x00518850
 UnsortedParticleIterator::~UnsortedParticleIterator()
 {

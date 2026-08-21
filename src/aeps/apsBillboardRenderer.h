@@ -41,7 +41,9 @@ public:
     unsigned int m_index;            // +0x04
     unsigned int m_maxIndex;         // +0x08
     unsigned char** m_firstParticle; // +0x0C
+    SortedParticleIterator();
     ~SortedParticleIterator();
+    unsigned char* GetNextParticle() override;
 };
 
 class UnsortedParticleIterator : public ParticleIterator {
