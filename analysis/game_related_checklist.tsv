@@ -8309,11 +8309,11 @@ index	status	map_line
 8308	VERIFIED	0002:001e9e70 ?MathsRandomIntRange@Broc@@YAHHH@Z 009D9370 f i scr.o
 8309	VERIFIED	0002:001e9ea0 ?MathsRandomFloatRange@Broc@@YAMMM@Z 009D93A0 f i scr.o
 8310	VERIFIED	0002:001e9ee0 ?MathsLog@Broc@@YAMM@Z 009D93E0 f i scr.o
-8311	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o
+8311	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 8312	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-8313	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o
-8314	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o
-8315	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o
+8313	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8314	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8315	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 8316	PORTED	0002:001e9fd0 ?get_owner@rb_vehicle@@QAEPAVEntity@@XZ 009D94D0 f i scr.o
 8317	PORTED	0002:001e9fe0 ?set_script_brake@rb_vehicle@@QAEXM@Z 009D94E0 f i scr.o
 8318	PORTED	0002:001ea000 ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z 009D9500 f i scr.o

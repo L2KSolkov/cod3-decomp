@@ -8309,11 +8309,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8308	0x005E9E70	0x009D9370	?MathsRandomIntRange@Broc@@YAHHH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8309	0x005E9EA0	0x009D93A0	?MathsRandomFloatRange@Broc@@YAMMM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8310	0x005E9EE0	0x009D93E0	?MathsLog@Broc@@YAMM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8311	0x005E9F50	0x009D9450	?IsRankedGame@MultiplayerMgr@@QAE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8311	0x005E9F50	0x009D9450	?IsRankedGame@MultiplayerMgr@@QAE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8312	0x005E9F60	0x009D9460	?FastCeil@@YAHM@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
-8313	0x005E9F80	0x009D9480	?Inst@AITypeManager@@SAPAV1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8314	0x005E9F90	0x009D9490	?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8315	0x005E9FB0	0x009D94B0	?SetSeconds@SpectateMenu@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8313	0x005E9F80	0x009D9480	?Inst@AITypeManager@@SAPAV1@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8314	0x005E9F90	0x009D9490	?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8315	0x005E9FB0	0x009D94B0	?SetSeconds@SpectateMenu@@QAEXH@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8316	0x005E9FD0	0x009D94D0	?get_owner@rb_vehicle@@QAEPAVEntity@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8317	0x005E9FE0	0x009D94E0	?set_script_brake@rb_vehicle@@QAEXM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8318	0x005EA000	0x009D9500	?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
