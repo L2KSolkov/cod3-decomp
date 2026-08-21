@@ -2792,6 +2792,30 @@ int Broc::GetMaxAmmo(Broc::entity* e, const Broc::string* slot) {
     return Broc::gBrocAPI.mGetMaxAmmo(handle, slot);
 }
 
+// RandomIntRange - ea: 0x964890
+int Broc::RandomIntRange(int iMin, int iMax) {
+    return Broc::gBrocAPI.mMathsRandomIntRange(iMin, iMax);
+}
+
+// CreateNanoForce - ea: 0x964970
+unsigned int Broc::CreateNanoForce(const Broc::string* id,
+                                   const Broc::vector* param1,
+                                   const Broc::vector* param2) {
+    return Broc::gBrocAPI.mCreateNanoForce(id, param1, param2);
+}
+
+// EnableNanoForces - direct BrocAPI callback
+void Broc::EnableNanoForces(bool onOff) {
+    Broc::gBrocAPI.mEnableNanoForces(onOff);
+}
+
+// RadiusDamage - ea: 0x9645B0
+void Broc::RadiusDamage(const Broc::vector* origin, float range,
+                        float max_damage, float min_damage, int damageType) {
+    Broc::gBrocAPI.mRadiusDamage(origin, range, max_damage, min_damage,
+                                 damageType);
+}
+
 // bbool::operator== - ea: 0x93F610
 bool bbool::operator==(bool rhs) const {
     return rhs == mVal;

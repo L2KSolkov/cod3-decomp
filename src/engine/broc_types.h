@@ -1074,9 +1074,19 @@ struct BrocAPI {
                             const Broc::vector*, float); // +0x444
     void (*mDebugRenderSphere)(const Broc::vector*, const float,
                                const Broc::vector*, float); // +0x448
-    char _pad44C[0x528 - 0x44C];                          // +0x44C
+    char _pad44C[0x4B0 - 0x44C];                          // +0x44C
+    unsigned int (*mCreateNanoForce)(const Broc::string*,
+                                     const Broc::vector*,
+                                     const Broc::vector*); // +0x4B0
+    void (*mEnableNanoForces)(bool);                      // +0x4B4
+    char _pad4B8[0x528 - 0x4B8];                          // +0x4B8
     unsigned int (*mGetTime)();                           // +0x528
-    char _pad52C[0x68C - 0x52C];                          // +0x52C
+    char _pad52C[0x594 - 0x52C];                          // +0x52C
+    void (*mRadiusDamage)(const Broc::vector*, float, float, float,
+                          int);                           // +0x594
+    void (*mRadiusDamageFromEnt)(unsigned int, const Broc::vector*, float,
+                                 float, float, int);       // +0x598
+    char _pad59C[0x68C - 0x59C];                          // +0x59C
     void (*mLinkTo3)(const unsigned int, const unsigned int); // +0x68C
     char _pad690[0x6C8 - 0x690];                          // +0x690
     bool (*mIsTouching)(const unsigned int, const unsigned int); // +0x6C8
