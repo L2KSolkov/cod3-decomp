@@ -632,11 +632,11 @@ index	status	map_line
 631	VERIFIED	0002:0055cf90 ?CallbackGetTeamDestroyingHQPercent@_mp_hq@@YAHXZ 00D4C490 f mp_util_wad.o
 632	VERIFIED	0002:0055d130 ?CallbackGetHQCaptureStatus@_mp_hq@@YAHXZ 00D4C630 f mp_util_wad.o
 633	VERIFIED	0002:0055d1a0 ?CallbackDebugRender@_mp_hq@@YAXXZ 00D4C6A0 f mp_util_wad.o
-634	PORTED	0002:0055d1c0 ?compare@_mp_hq@@YA?AUbint@@ABUvector@Broc@@0@Z 00D4C6C0 f mp_util_wad.o
-635	PORTED	0002:0055d300 ??9bfloat@@QBE_NM@Z 00D4C800 f i mp_util_wad.o
-636	PORTED	0002:0055d350 ?SortPoints@_mp_hq@@YAXXZ 00D4C850 f mp_util_wad.o
-637	PORTED	0002:0055d5a0 ?GetCapSpeed@_mp_hq@@YA?AUbfloat@@Ubint@@@Z 00D4CAA0 f mp_util_wad.o
-638	PORTED	0002:0055d660 ??Xbfloat@@QAEMM@Z 00D4CB60 f i mp_util_wad.o
+634	VERIFIED	0002:0055d1c0 ?compare@_mp_hq@@YA?AUbint@@ABUvector@Broc@@0@Z 00D4C6C0 f mp_util_wad.o	VERIFIED: Existing component-wise vector comparison and fallback result match IDA 0x0095D1C0
+635	FIXED	0002:0055d300 ??9bfloat@@QBE_NM@Z 00D4C800 f i mp_util_wad.o	FIXED: IDA 0x0095D300 bfloat::operator!=(float) added
+636	VERIFIED	0002:0055d350 ?SortPoints@_mp_hq@@YAXXZ 00D4C850 f mp_util_wad.o	VERIFIED: Existing HQ-point insertion ordering and swaps match IDA 0x0095D350
+637	VERIFIED	0002:0055d5a0 ?GetCapSpeed@_mp_hq@@YA?AUbfloat@@Ubint@@@Z 00D4CAA0 f mp_util_wad.o	VERIFIED: Existing geometric capture-speed accumulation matches IDA 0x0095D5A0
+638	FIXED	0002:0055d660 ??Xbfloat@@QAEMM@Z 00D4CB60 f i mp_util_wad.o	FIXED: IDA 0x0095D660 bfloat::operator*=(float) and AssertDefined path added
 639	VERIFIED	0002:0055d6b0 ?main@_mp_loadout@@YAXXZ 00D4CBB0 f mp_util_wad.o
 640	VERIFIED	0002:0055d7a0 ?SetTeams@_mp_loadout@@YAXVstring@Broc@@0@Z 00D4CCA0 f mp_util_wad.o
 641	PORTED	0002:0055dd60 ?SetAlliesModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D260 f mp_util_wad.o
