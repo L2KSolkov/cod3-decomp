@@ -120,6 +120,10 @@ struct BitSet {
         {
             return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
         }
+        int operator*() const  // ??Diterator@?$BitSet@$0BAA@@@QBEHXZ (scr.o 0x005EACC0)
+        {
+            return (int)m_cur_val;
+        }
         void operator++()  // ??Eiterator@?$BitSet@$0FEA@@@QAEXXZ
         {
             while (m_word_idx < GetNumWords())

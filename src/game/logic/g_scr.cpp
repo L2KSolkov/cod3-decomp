@@ -443,12 +443,30 @@ public:
         void pop();
     };
 
+    class const_iterator {
+    public:
+        const dlist_node* m_node;
+        const dlist_node* m_next;
+
+        const_iterator(const dlist_node* cur, const dlist_node* next);
+        bool compare(const const_iterator& rhs) const;
+    };
+
+    class iterator {
+    public:
+        dlist_node* m_node;
+        dlist_node* m_next;
+
+        iterator(T* obj);
+    };
+
     int m_size;
     dlist_node* m_head;
     dlist_node* m_end;
     dlist_node* m_tail;
 
     void clear();
+    const dlist_node* get_head() const;
     static const T* node_to_object(const dlist_node* node);
 };
 
@@ -466,6 +484,34 @@ void reserved_dlist<T>::clear()
     m_head = reinterpret_cast<dlist_node*>(&m_end);
     m_end = nullptr;
     m_tail = reinterpret_cast<dlist_node*>(&m_head);
+}
+
+template <typename T>
+reserved_dlist<T>::const_iterator::const_iterator(
+    const dlist_node* cur, const dlist_node* next)
+    : m_node(cur), m_next(next)
+{
+}
+
+template <typename T>
+bool reserved_dlist<T>::const_iterator::compare(
+    const const_iterator& rhs) const
+{
+    return rhs.m_next == m_next;
+}
+
+template <typename T>
+const typename reserved_dlist<T>::dlist_node*
+reserved_dlist<T>::get_head() const
+{
+    return m_head;
+}
+
+template <typename T>
+reserved_dlist<T>::iterator::iterator(T* obj)
+    : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
+      m_next(reinterpret_cast<dlist_node*>(obj->m_dlist_node.mNext))
+{
 }
 
 template <typename T>
@@ -488,6 +534,18 @@ template void reserved_dlist<EndOnScriptNode>::dlist_node::pop();
 template void reserved_dlist<AeThread>::dlist_node::pop();
 template void reserved_dlist<AeThreadState>::clear();
 template void reserved_dlist<AeThread>::clear();
+template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
+    const reserved_dlist<AeThreadState>::dlist_node*,
+    const reserved_dlist<AeThreadState>::dlist_node*);
+template bool reserved_dlist<AeThreadState>::const_iterator::compare(
+    const reserved_dlist<AeThreadState>::const_iterator&) const;
+template bool reserved_dlist<AeThread>::const_iterator::compare(
+    const reserved_dlist<AeThread>::const_iterator&) const;
+template const reserved_dlist<AeThreadState>::dlist_node*
+reserved_dlist<AeThreadState>::get_head() const;
+template reserved_dlist<AeThreadState>::iterator::iterator(AeThreadState*);
+template reserved_dlist<AeThread>::iterator::iterator(AeThread*);
+template reserved_dlist<EndOnScriptNode>::iterator::iterator(EndOnScriptNode*);
 template const AeThreadState*
 reserved_dlist<AeThreadState>::node_to_object(
     const reserved_dlist<AeThreadState>::dlist_node*);
