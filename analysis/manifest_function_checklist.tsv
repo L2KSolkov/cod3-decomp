@@ -6567,7 +6567,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6566	0x005AEE10	0x0099E310	?IsSplitScreen@DialogMenuDisplay@@QBE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6567	0x005AEE20	0x0099E320	?GetDisplay@DialogMenuSystem@@QAEPAVDialogMenuDisplay@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6568	0x005AEE30	0x0099E330	?GetFlag@DialogMenuSystem@@QAE_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6569	0x005AEE50	0x0099E350	?SetFlag@DialogMenuSystem@@QAEXH_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6569	0x005AEE50	0x0099E350	?SetFlag@DialogMenuSystem@@QAEXH_N@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6570	0x005AEE90	0x0099E390	?IsSaveEnabled@ProfileManager@@QBE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6571	0x005AEEA0	0x0099E3A0	?SetContinueWithoutSaving@ProfileManager@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6572	0x005AEEB0	0x0099E3B0	?IsContinueWithoutSaving@ProfileManager@@QAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

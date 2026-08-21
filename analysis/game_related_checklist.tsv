@@ -6567,7 +6567,7 @@ index	status	map_line
 6566	VERIFIED	0002:001aee10 ?IsSplitScreen@DialogMenuDisplay@@QBE_NXZ 0099E310 f i shell.o	VERIFIED: matches IDA mViewport test
 6567	VERIFIED	0002:001aee20 ?GetDisplay@DialogMenuSystem@@QAEPAVDialogMenuDisplay@@XZ 0099E320 f i shell.o
 6568	VERIFIED	0002:001aee30 ?GetFlag@DialogMenuSystem@@QAE_NH@Z 0099E330 f i shell.o
-6569	PORTED	0002:001aee50 ?SetFlag@DialogMenuSystem@@QAEXH_N@Z 0099E350 f i shell.o
+6569	VERIFIED	0002:001aee50 ?SetFlag@DialogMenuSystem@@QAEXH_N@Z 0099E350 f i shell.o	VERIFIED: matches IDA dialog flag set/clear
 6570	VERIFIED	0002:001aee90 ?IsSaveEnabled@ProfileManager@@QBE_NXZ 0099E390 f i shell.o
 6571	VERIFIED	0002:001aeea0 ?SetContinueWithoutSaving@ProfileManager@@QAEXXZ 0099E3A0 f i shell.o
 6572	VERIFIED	0002:001aeeb0 ?IsContinueWithoutSaving@ProfileManager@@QAE_NXZ 0099E3B0 f i shell.o
