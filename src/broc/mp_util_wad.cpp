@@ -2205,6 +2205,12 @@ void Broc::SetTakeDamage(const Broc::entity& e, int damage) {
     Broc::gBrocAPI.mSetTakeDamage(e.GetHandle(), damage);
 }
 
+// Code_IncPlayerStat - ea: 0x941F40
+void Broc::Code_IncPlayerStat(Broc::entity player, unsigned int index,
+                              __int16 value) {
+    Broc::gBrocAPI.mIncPlayerStat(player.GetHandle(), index, value);
+}
+
 // Broc::entity::__unnamed::nextPlayerClass_struct::operator= - ea: 0x93E410
 const __int16& Broc::entity::__unnamed::nextPlayerClass_struct::operator=(
     const __int16& rhs) {

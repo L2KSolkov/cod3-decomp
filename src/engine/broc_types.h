@@ -1245,7 +1245,7 @@ void Code_FinishDamage(Broc::entity player, Broc::entity inflictor,
                        int weapon, int hitLoc);
 int Code_GetPlayerTotalScore(Broc::entity player);
 int Code_GetPlayerStat(Broc::entity player, int index);
-void Code_IncPlayerStat(Broc::entity player, int index, int value);
+void Code_IncPlayerStat(Broc::entity player, unsigned int index, __int16 value);
 int Code_GetTeamScore(const Broc::string& team);
 void Code_IncTeamScore(const Broc::string& team, int ammount);
 bool Code_PositionWouldTelefrag(const Broc::vector* position);
