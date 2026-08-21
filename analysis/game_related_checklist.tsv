@@ -8461,20 +8461,20 @@ index	status	map_line
 8460	FIXED	0002:001ed1e0 ??$pnode_get_field@F$0CM@$0A@@BrocSys@@YAFH@Z 009DC6E0 f i scr.o
 8461	FIXED	0002:001ed290 ??$pnode_set_field@Vstring@Broc@@$0CI@$0CE@@BrocSys@@YAXHVstring@Broc@@@Z 009DC790 f i scr.o
 8462	FIXED	0002:001ed3d0 ??$pnode_get_field@Vstring@Broc@@$0CI@$0CF@@BrocSys@@YA?AVstring@Broc@@H@Z 009DC8D0 f i scr.o
-8463	PORTED	0002:001ed530 ??$vnode_set_field@Vstring@Broc@@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DCA30 f i scr.o
-8464	PORTED	0002:001ed5f0 ??$vnode_get_field@Vstring@Broc@@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DCAF0 f i scr.o
-8465	PORTED	0002:001ed690 ??$vnode_set_field@Vstring@Broc@@$03@BrocSys@@YAXHVstring@Broc@@@Z 009DCB90 f i scr.o
-8466	PORTED	0002:001ed750 ??$vnode_get_field@Vstring@Broc@@$03@BrocSys@@YA?AVstring@Broc@@H@Z 009DCC50 f i scr.o
-8467	PORTED	0002:001ed7f0 ??$vnode_set_field@Uvector@Broc@@$0BE@@BrocSys@@YAXHUvector@Broc@@@Z 009DCCF0 f i scr.o
-8468	PORTED	0002:001ed880 ??$vnode_get_field@Uvector@Broc@@$0BE@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCD80 f i scr.o
-8469	PORTED	0002:001ed940 ??$vnode_set_field@Uvector@Broc@@$0CM@@BrocSys@@YAXHUvector@Broc@@@Z 009DCE40 f i scr.o
-8470	PORTED	0002:001ed9d0 ??$vnode_get_field@Uvector@Broc@@$0CM@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCED0 f i scr.o
-8471	PORTED	0002:001eda90 ??$vnode_set_field@M$07@BrocSys@@YAXHM@Z 009DCF90 f i scr.o
-8472	PORTED	0002:001edb10 ??$vnode_get_field@M$07@BrocSys@@YAMH@Z 009DD010 f i scr.o
-8473	PORTED	0002:001edb90 ??$vnode_set_field@M$0M@@BrocSys@@YAXHM@Z 009DD090 f i scr.o
-8474	PORTED	0002:001edc10 ??$vnode_get_field@M$0M@@BrocSys@@YAMH@Z 009DD110 f i scr.o
-8475	PORTED	0002:001edc90 ??$vnode_set_field@Vstring@Broc@@$0BA@@BrocSys@@YAXHVstring@Broc@@@Z 009DD190 f i scr.o
-8476	PORTED	0002:001edd50 ??$vnode_get_field@Vstring@Broc@@$0BA@@BrocSys@@YA?AVstring@Broc@@H@Z 009DD250 f i scr.o
+8463	FIXED	0002:001ed530 ??$vnode_set_field@Vstring@Broc@@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DCA30 f i scr.o
+8464	FIXED	0002:001ed5f0 ??$vnode_get_field@Vstring@Broc@@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DCAF0 f i scr.o
+8465	FIXED	0002:001ed690 ??$vnode_set_field@Vstring@Broc@@$03@BrocSys@@YAXHVstring@Broc@@@Z 009DCB90 f i scr.o
+8466	FIXED	0002:001ed750 ??$vnode_get_field@Vstring@Broc@@$03@BrocSys@@YA?AVstring@Broc@@H@Z 009DCC50 f i scr.o
+8467	FIXED	0002:001ed7f0 ??$vnode_set_field@Uvector@Broc@@$0BE@@BrocSys@@YAXHUvector@Broc@@@Z 009DCCF0 f i scr.o
+8468	FIXED	0002:001ed880 ??$vnode_get_field@Uvector@Broc@@$0BE@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCD80 f i scr.o
+8469	FIXED	0002:001ed940 ??$vnode_set_field@Uvector@Broc@@$0CM@@BrocSys@@YAXHUvector@Broc@@@Z 009DCE40 f i scr.o
+8470	FIXED	0002:001ed9d0 ??$vnode_get_field@Uvector@Broc@@$0CM@@BrocSys@@YA?AUvector@Broc@@H@Z 009DCED0 f i scr.o
+8471	FIXED	0002:001eda90 ??$vnode_set_field@M$07@BrocSys@@YAXHM@Z 009DCF90 f i scr.o
+8472	FIXED	0002:001edb10 ??$vnode_get_field@M$07@BrocSys@@YAMH@Z 009DD010 f i scr.o
+8473	FIXED	0002:001edb90 ??$vnode_set_field@M$0M@@BrocSys@@YAXHM@Z 009DD090 f i scr.o
+8474	FIXED	0002:001edc10 ??$vnode_get_field@M$0M@@BrocSys@@YAMH@Z 009DD110 f i scr.o
+8475	FIXED	0002:001edc90 ??$vnode_set_field@Vstring@Broc@@$0BA@@BrocSys@@YAXHVstring@Broc@@@Z 009DD190 f i scr.o
+8476	FIXED	0002:001edd50 ??$vnode_get_field@Vstring@Broc@@$0BA@@BrocSys@@YA?AVstring@Broc@@H@Z 009DD250 f i scr.o
 8477	SKIPPED	0002:001eddf0 ??$?0U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DD2F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8478	PORTED	0002:001ede00 ??$hash_value@H@stdext@@YAIABH@Z 009DD300 f i scr.o
 8479	SKIPPED	0002:001ede20 ??$?8U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@0@0@Z 009DD320 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

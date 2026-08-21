@@ -8461,20 +8461,20 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8460	0x005ED1E0	0x009DC6E0	??$pnode_get_field@F$0CM@$0A@@BrocSys@@YAFH@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
 8461	0x005ED290	0x009DC790	??$pnode_set_field@Vstring@Broc@@$0CI@$0CE@@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
 8462	0x005ED3D0	0x009DC8D0	??$pnode_get_field@Vstring@Broc@@$0CI@$0CF@@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
-8463	0x005ED530	0x009DCA30	??$vnode_set_field@Vstring@Broc@@$0A@@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8464	0x005ED5F0	0x009DCAF0	??$vnode_get_field@Vstring@Broc@@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8465	0x005ED690	0x009DCB90	??$vnode_set_field@Vstring@Broc@@$03@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8466	0x005ED750	0x009DCC50	??$vnode_get_field@Vstring@Broc@@$03@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8467	0x005ED7F0	0x009DCCF0	??$vnode_set_field@Uvector@Broc@@$0BE@@BrocSys@@YAXHUvector@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8468	0x005ED880	0x009DCD80	??$vnode_get_field@Uvector@Broc@@$0BE@@BrocSys@@YA?AUvector@Broc@@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8469	0x005ED940	0x009DCE40	??$vnode_set_field@Uvector@Broc@@$0CM@@BrocSys@@YAXHUvector@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8470	0x005ED9D0	0x009DCED0	??$vnode_get_field@Uvector@Broc@@$0CM@@BrocSys@@YA?AUvector@Broc@@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8471	0x005EDA90	0x009DCF90	??$vnode_set_field@M$07@BrocSys@@YAXHM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8472	0x005EDB10	0x009DD010	??$vnode_get_field@M$07@BrocSys@@YAMH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8473	0x005EDB90	0x009DD090	??$vnode_set_field@M$0M@@BrocSys@@YAXHM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8474	0x005EDC10	0x009DD110	??$vnode_get_field@M$0M@@BrocSys@@YAMH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8475	0x005EDC90	0x009DD190	??$vnode_set_field@Vstring@Broc@@$0BA@@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8476	0x005EDD50	0x009DD250	??$vnode_get_field@Vstring@Broc@@$0BA@@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8463	0x005ED530	0x009DCA30	??$vnode_set_field@Vstring@Broc@@$0A@@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8464	0x005ED5F0	0x009DCAF0	??$vnode_get_field@Vstring@Broc@@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8465	0x005ED690	0x009DCB90	??$vnode_set_field@Vstring@Broc@@$03@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8466	0x005ED750	0x009DCC50	??$vnode_get_field@Vstring@Broc@@$03@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8467	0x005ED7F0	0x009DCCF0	??$vnode_set_field@Uvector@Broc@@$0BE@@BrocSys@@YAXHUvector@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8468	0x005ED880	0x009DCD80	??$vnode_get_field@Uvector@Broc@@$0BE@@BrocSys@@YA?AUvector@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8469	0x005ED940	0x009DCE40	??$vnode_set_field@Uvector@Broc@@$0CM@@BrocSys@@YAXHUvector@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8470	0x005ED9D0	0x009DCED0	??$vnode_get_field@Uvector@Broc@@$0CM@@BrocSys@@YA?AUvector@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8471	0x005EDA90	0x009DCF90	??$vnode_set_field@M$07@BrocSys@@YAXHM@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8472	0x005EDB10	0x009DD010	??$vnode_get_field@M$07@BrocSys@@YAMH@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8473	0x005EDB90	0x009DD090	??$vnode_set_field@M$0M@@BrocSys@@YAXHM@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8474	0x005EDC10	0x009DD110	??$vnode_get_field@M$0M@@BrocSys@@YAMH@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8475	0x005EDC90	0x009DD190	??$vnode_set_field@Vstring@Broc@@$0BA@@BrocSys@@YAXHVstring@Broc@@@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
+8476	0x005EDD50	0x009DD250	??$vnode_get_field@Vstring@Broc@@$0BA@@BrocSys@@YA?AVstring@Broc@@H@Z		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation/disassembly	NO	NO	VERIFIED
 8477	0x005EDDF0	0x009DD2F0	??$?0U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAE@ABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8478	0x005EDE00	0x009DD300	??$hash_value@H@stdext@@YAIABH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8479	0x005EDE20	0x009DD320	??$?8U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@0@0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
