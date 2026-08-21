@@ -423,7 +423,7 @@ index	status	map_line
 422	PORTED	0002:00547a30 ??M@YA?AUbbool@@HUbint@@@Z 00D36F30 f i mp_util_wad.o
 423	VERIFIED	0002:00547a70 ?Code_GetPlayerTotalScore@Broc@@YAHVentity@1@@Z 00D36F70 f i mp_util_wad.o
 424	VERIFIED	0002:00547aa0 ?CheckLastManStanding@_mp_common@@YAXVstring@Broc@@@Z 00D36FA0 f mp_util_wad.o
-425	VERIFIED	0002:00547f40 ?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z 00D37440 f mp_util_wad.o
+425	FIXED	0002:00547f40 ?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z 00D37440 f mp_util_wad.o	FIXED: IDA 0x00947F40 independently reloads pLevel->_base.entity for notify and both endon paths
 426	VERIFIED	0002:005483a0 ?waitframe@_mp_common@@YAXXZ 00D378A0 f mp_util_wad.o
 427	PORTED	0002:005483d0 ?DestroyHudElem@_mp_common@@YAXAAVhudelem@Broc@@@Z 00D378D0 f mp_util_wad.o
 428	VERIFIED	0002:00548420 ?SetUndefined@hudelem@Broc@@QAEXXZ 00D37920 f i mp_util_wad.o
