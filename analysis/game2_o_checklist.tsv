@@ -63,20 +63,20 @@ index	status	map_line
 62	VERIFIED	0002:000eb450 ?GetKeyInfoIndex@ButtonEntry@@QBEEXZ 008DA950 f i game2.o
 63	VERIFIED	0002:000eb460 ?IsActive@InspectorManager@@QAEHXZ 008DA960 f i game2.o
 64	VERIFIED	0002:000eb470 ?SetW@Mat44@math@@QAEXABVVector4@2@@Z 008DA970 f i game2.o
-65	PORTED	0002:000eb4a0 ??AMat44@math@@QAEAAVVector4@1@I@Z 008DA9A0 f i game2.o
-66	PORTED	0002:000eb4c0 ??AMat44@math@@QBEABVVector4@1@I@Z 008DA9C0 f i game2.o
+65	VERIFIED	0002:000eb4a0 ??AMat44@math@@QAEAAVVector4@1@I@Z 008DA9A0 f i game2.o
+66	VERIFIED	0002:000eb4c0 ??AMat44@math@@QBEABVVector4@1@I@Z 008DA9C0 f i game2.o
 67	VERIFIED	0002:000eb4e0 ??0Mat44@math@@QAE@ABV01@@Z 008DA9E0 f i game2.o
-68	PORTED	0002:000eb580 ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat44@1@@Z 008DAA80 f i game2.o
-69	PORTED	0002:000eb5f0 ??Dmath@@YA?AVDir3@0@ABV10@ABVMat44@0@@Z 008DAAF0 f i game2.o
-70	PORTED	0002:000eb660 ?Mul@math@@YA?AVVector4@1@ABV21@ABVMat44@1@@Z 008DAB60 f i game2.o
-71	PORTED	0002:000eb6f0 ??Dmath@@YA?AVVector4@0@ABV10@ABVMat44@0@@Z 008DABF0 f i game2.o
-72	PORTED	0002:000eb780 ?GetMinValue@Sound@SoundDevice@@QAEMXZ 008DAC80 f i game2.o
-73	PORTED	0002:000eb790 ?GetMaxValue@Sound@SoundDevice@@QAEMXZ 008DAC90 f i game2.o
-74	PORTED	0002:000eb7a0 ?GetEntHdl@Sound@SoundDevice@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DACA0 f i game2.o
-75	PORTED	0002:000eb7c0 ?GetCurrentReverb@SoundDevice@@QAEPAUnslEffect@@XZ 008DACC0 f i game2.o
-76	PORTED	0002:000eb7d0 ?Mul@math@@YA?AVMat44@1@ABV21@0@Z 008DACD0 f i game2.o
-77	PORTED	0002:000eba00 ??Dmath@@YA?AVMat44@0@ABV10@0@Z 008DAF00 f i game2.o
-78	PORTED	0002:000ebc30 ??XMat44@math@@QAEABV01@ABV01@@Z 008DB130 f i game2.o
+68	VERIFIED	0002:000eb580 ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat44@1@@Z 008DAA80 f i game2.o
+69	VERIFIED	0002:000eb5f0 ??Dmath@@YA?AVDir3@0@ABV10@ABVMat44@0@@Z 008DAAF0 f i game2.o
+70	VERIFIED	0002:000eb660 ?Mul@math@@YA?AVVector4@1@ABV21@ABVMat44@1@@Z 008DAB60 f i game2.o
+71	VERIFIED	0002:000eb6f0 ??Dmath@@YA?AVVector4@0@ABV10@ABVMat44@0@@Z 008DABF0 f i game2.o
+72	VERIFIED	0002:000eb780 ?GetMinValue@Sound@SoundDevice@@QAEMXZ 008DAC80 f i game2.o
+73	VERIFIED	0002:000eb790 ?GetMaxValue@Sound@SoundDevice@@QAEMXZ 008DAC90 f i game2.o
+74	VERIFIED	0002:000eb7a0 ?GetEntHdl@Sound@SoundDevice@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DACA0 f i game2.o
+75	VERIFIED	0002:000eb7c0 ?GetCurrentReverb@SoundDevice@@QAEPAUnslEffect@@XZ 008DACC0 f i game2.o
+76	VERIFIED	0002:000eb7d0 ?Mul@math@@YA?AVMat44@1@ABV21@0@Z 008DACD0 f i game2.o
+77	VERIFIED	0002:000eba00 ??Dmath@@YA?AVMat44@0@ABV10@0@@Z 008DAF00 f i game2.o
+78	VERIFIED	0002:000ebc30 ??XMat44@math@@QAEABV01@ABV01@@Z 008DB130 f i game2.o
 79	PORTED	0002:000ebe10 ?LockPort@MPLiveEngine@@QAEXK@Z 008DB310 f i game2.o
 80	FIXED	0002:000ebe30 ?InGameMenusActive@FEManager@@QAE_NH@Z 008DB330 f i game2.o
 81	VERIFIED	0002:000ebe60 ?Controller_LockPort@@YAXH@Z 008DB360 f game2.o
@@ -101,7 +101,7 @@ index	status	map_line
 100	VERIFIED	0002:000ec5d0 ?Print@InspectorManager@@QAEXPADHHM@Z 008DBAD0 f game2.o
 101	VERIFIED	0002:000ec690 ?GetTextSize@InspectorManager@@QAEXPADPAH1M@Z 008DBB90 f game2.o
 102	VERIFIED	0002:000ec6d0 ?TakeCubeMapShot@@YAXXZ 008DBBD0 f game2.o
-103	PORTED	0002:000ec6e0 ?PlayRumble@@YAXXZ 008DBBE0 f game2.o
+103	VERIFIED	0002:000ec6e0 ?PlayRumble@@YAXXZ 008DBBE0 f game2.o
 104	VERIFIED	0002:000ec720 ?AddRenderMenus@InspectorManager@@QAEXXZ 008DBC20 f game2.o
 105	VERIFIED	0002:000ec8a0 ?AddPhysicsMenus@InspectorManager@@QAEXXZ 008DBDA0 f game2.o
 106	VERIFIED	0002:000ec8d0 ?reticleCenterSize_Function@weaponFuncs@@YAHH@Z 008DBDD0 f game2.o
