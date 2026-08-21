@@ -5726,11 +5726,9 @@ void PunishedForTeamKill(Broc::entity ent, Broc::bbool punished) {
         team.~string();
         if (!Broc::Code_IsRankedGame() || !Broc::Code_IsHost()) {
             Broc::wait(2.0f);
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
             HashStr msg;
             msg.mVal = 0xF2554CB4;
-            void* ftor = QuitGameWithMessage__functor(lvl, msg);
+            void* ftor = QuitGameWithMessage__functor(ent, msg);
             Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                                 __LINE__, "QuitGameWithMessage", ftor);
         }
