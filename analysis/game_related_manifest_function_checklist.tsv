@@ -23865,8 +23865,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 25831	0x0092F130	0x00D1E630	?IsDefined@Broc@@YA_NABVentity@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25832	0x0092F150	0x00D1E650	?IsDefined@Broc@@YA_NABUvector@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25833	0x0092F170	0x00D1E670	?IsDefined@entity@Broc@@QBE_NXZ	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-25834	0x0092F1A0	0x00D1E6A0	?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25835	0x0092F1F0	0x00D1E6F0	?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+25834	0x0092F1A0	0x00D1E6A0	?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25835	0x0092F1F0	0x00D1E6F0	?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
 25836	0x0092F2A0	0x00D1E7A0	?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25837	0x0092F2F0	0x00D1E7F0	?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25838	0x0092F3A0	0x00D1E8A0	?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

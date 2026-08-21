@@ -10,8 +10,8 @@ index	status	map_line
 9	VERIFIED	0002:0052f130 ?IsDefined@Broc@@YA_NABVentity@1@@Z 00D1E630 f i mp_util_wad.o
 10	VERIFIED	0002:0052f150 ?IsDefined@Broc@@YA_NABUvector@1@@Z 00D1E650 f i mp_util_wad.o
 11	VERIFIED	0002:0052f170 ?IsDefined@entity@Broc@@QBE_NXZ 00D1E670 f i mp_util_wad.o
-12	PORTED	0002:0052f1a0 ?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z 00D1E6A0 f mp_util_wad.o
-13	PORTED	0002:0052f1f0 ?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E6F0 f mp_util_wad.o
+12	VERIFIED	0002:0052f1a0 ?GetEE_audio_indoor@@YAAAUbint@@Ventity@Broc@@@Z 00D1E6A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F1A0 matches GetRef key 0xD9150A3C
+13	VERIFIED	0002:0052f1f0 ?IsEEDefined_audio_indoor@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E6F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F1F0 matches guarded GetVal/IsDefined key 0xD9150A3C and bbool result
 14	PORTED	0002:0052f2a0 ?GetEE_audio_ambmax@@YAAAUbfloat@@Ventity@Broc@@@Z 00D1E7A0 f mp_util_wad.o
 15	PORTED	0002:0052f2f0 ?IsEEDefined_audio_ambmax@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E7F0 f mp_util_wad.o
 16	PORTED	0002:0052f3a0 ?GetEE_sound@@YAAAUbint@@Ventity@Broc@@@Z 00D1E8A0 f mp_util_wad.o
