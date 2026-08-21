@@ -2105,6 +2105,13 @@ const Broc::vector* Broc::entity::__unnamed::origin_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::origin_struct::operator= - ea: 0x938A10
+const Broc::vector* Broc::entity::__unnamed::origin_struct::operator=(
+    const Broc::vector* rhs) {
+    Broc::gBrocAPI.m_entity_set_origin(mHandle, *rhs);
+    return rhs;
+}
+
 // Broc::entity::__unnamed::target_struct::Get - ea: 0x934920
 const Broc::string* Broc::entity::__unnamed::target_struct::Get(
     Broc::string* result) const {

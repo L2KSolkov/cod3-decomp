@@ -216,6 +216,7 @@ public:
         struct origin_struct {
             unsigned int mHandle;  // +0x00
             const Broc::vector* Get(Broc::vector* result) const;
+            const Broc::vector* operator=(const Broc::vector* rhs);
         };
         struct target_struct {
             unsigned int mHandle;  // +0x00
