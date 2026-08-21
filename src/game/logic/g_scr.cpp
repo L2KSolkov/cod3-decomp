@@ -430,6 +430,71 @@ private:
     friend struct AeThreadEntityNotifyState;
 };
 
+// scr.o reserved_dlist specializations (IDA: 0x005EA8B0-0x005EA950).
+// These symbols are emitted here because g_scr.cpp uses local layout views
+// instead of including core_systems.h alongside g_local.h.
+template <typename T>
+class reserved_dlist {
+public:
+    struct dlist_node {
+        dlist_node* m_next;
+        dlist_node* m_prev;
+
+        void pop();
+    };
+
+    int m_size;
+    dlist_node* m_head;
+    dlist_node* m_end;
+    dlist_node* m_tail;
+
+    void clear();
+    static const T* node_to_object(const dlist_node* node);
+};
+
+template <typename T>
+void reserved_dlist<T>::dlist_node::pop()
+{
+    m_next->m_prev = m_prev;
+    m_prev->m_next = m_next;
+}
+
+template <typename T>
+void reserved_dlist<T>::clear()
+{
+    m_size = 0;
+    m_head = reinterpret_cast<dlist_node*>(&m_end);
+    m_end = nullptr;
+    m_tail = reinterpret_cast<dlist_node*>(&m_head);
+}
+
+template <typename T>
+const T* reserved_dlist<T>::node_to_object(const dlist_node* node)
+{
+    return reinterpret_cast<const T*>(node);
+}
+
+template <>
+const AeThreadState*
+reserved_dlist<AeThreadState>::node_to_object(
+    const reserved_dlist<AeThreadState>::dlist_node* node)
+{
+    return reinterpret_cast<const AeThreadState*>(
+        reinterpret_cast<const unsigned char*>(node) - sizeof(AeDListNode));
+}
+
+template void reserved_dlist<AeThreadState>::dlist_node::pop();
+template void reserved_dlist<EndOnScriptNode>::dlist_node::pop();
+template void reserved_dlist<AeThread>::dlist_node::pop();
+template void reserved_dlist<AeThreadState>::clear();
+template void reserved_dlist<AeThread>::clear();
+template const AeThreadState*
+reserved_dlist<AeThreadState>::node_to_object(
+    const reserved_dlist<AeThreadState>::dlist_node*);
+template const AeThread*
+reserved_dlist<AeThread>::node_to_object(
+    const reserved_dlist<AeThread>::dlist_node*);
+
 class WaitTilOutput;  // core_systems.h; full local view below (0xC bytes + virtuals)
 struct ScriptEventHandler {
     bool RemoveEvent(HashString h, HashString callback);  // ?RemoveEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z (g_game2_misc.cpp 0x4F59F0)
