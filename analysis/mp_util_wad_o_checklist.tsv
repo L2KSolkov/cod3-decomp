@@ -597,12 +597,12 @@ index	status	map_line
 596	FIXED	0002:00559200 ?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z 00D48700 f mp_util_wad.o	FIXED: IDA 0x00959200 uses pLevel->_base.entity (or null) for endon
 597	PORTED	0002:005593a0 ??Zbint@@QAEHH@Z 00D488A0 f i mp_util_wad.o
 598	FIXED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o	FIXED: IDA 0x009593E0 stage-2 radio capture/conflict handling and stage-3 attacker/defender progress, effects, hints, and host transitions ported
-599	PORTED	0002:0055ad50 ??D@YA?AUbfloat@@Ubint@@U0@@Z 00D4A250 f i mp_util_wad.o
-600	PORTED	0002:0055ada0 ??H@YA?AUbfloat@@Ubint@@U0@@Z 00D4A2A0 f i mp_util_wad.o
-601	PORTED	0002:0055adf0 ??4key_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D4A2F0 f i mp_util_wad.o
-602	PORTED	0002:0055ae30 ?IsTouching@Broc@@YA_NABVentity@1@0@Z 00D4A330 f i mp_util_wad.o
-603	PORTED	0002:0055ae70 ??4bint@@QAEHUbfloat@@@Z 00D4A370 f i mp_util_wad.o
-604	PORTED	0002:0055aed0 ?IsDefined@bfloat@@QBE_NXZ 00D4A3D0 f i mp_util_wad.o
+599	FIXED	0002:0055ad50 ??D@YA?AUbfloat@@Ubint@@U0@@Z 00D4A250 f i mp_util_wad.o	FIXED: IDA 0x0095AD50 multiplies bfloat by bint in float space
+600	FIXED	0002:0055ada0 ??H@YA?AUbfloat@@Ubint@@U0@@Z 00D4A2A0 f i mp_util_wad.o	FIXED: IDA 0x0095ADA0 adds bint to bfloat in float space
+601	FIXED	0002:0055adf0 ??4key_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D4A2F0 f i mp_util_wad.o	FIXED: IDA 0x0095ADF0 forwards key assignment through m_entity_set_key and returns rhs
+602	FIXED	0002:0055ae30 ?IsTouching@Broc@@YA_NABVentity@1@0@Z 00D4A330 f i mp_util_wad.o	FIXED: IDA 0x0095AE30 forwards both entity handles through mIsTouching and returns bool
+603	FIXED	0002:0055ae70 ??4bint@@QAEHUbfloat@@@Z 00D4A370 f i mp_util_wad.o	FIXED: IDA 0x0095AE70 assigns defined bfloat values and uses bint::sUndefined for NaN
+604	FIXED	0002:0055aed0 ?IsDefined@bfloat@@QBE_NXZ 00D4A3D0 f i mp_util_wad.o	FIXED: IDA 0x0095AED0 returns true when bfloat is not NaN
 605	FIXED	0002:0055af10 ?SwitchToRadioOnly@_mp_hq@@YAXXZ 00D4A410 f mp_util_wad.o	FIXED: IDA 0x0095AF10 no-arg radio objective, trigger handler, and HQ-ready effect ported
 606	FIXED	0002:0055b0f0 ?AddRadioModel@_mp_hq@@YAXXZ 00D4A5F0 f mp_util_wad.o	FIXED: IDA 0x0095B0F0 resolves hq_radio and positions it at pointA when pointA_isHQ
 607	FIXED	0002:0055b1e0 ?RemoveRadioModel@_mp_hq@@YAXXZ 00D4A6E0 f mp_util_wad.o	FIXED: IDA 0x0095B1E0 resolves hq_radio and moves it to (0,0,-10000)
