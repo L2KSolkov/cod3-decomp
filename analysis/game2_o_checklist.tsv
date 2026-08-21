@@ -624,9 +624,9 @@ index	status	map_line
 623	PORTED	0002:001173b0 ??0PerformanceStats@TestFPS@@QAE@XZ 009068B0 f i game2.o  PORTED: IDA-backed empty nested constructor
 624	PORTED	0002:001173c0 ?IsActive@DebugThread@@QAEHXZ 009068C0 f i game2.o  PORTED: IDA-backed m_active accessor
 625	PORTED	0002:001173d0 ?SetActive@DebugThread@@QAEXH@Z 009068D0 f i game2.o  PORTED: IDA-backed m_active store
-626	PORTED	0002:001173e0 ??1nalVirtual@@MAE@XZ 009068E0 f i game2.o
-627	PORTED	0002:001173f0 ?Dummy@nalVirtual@@MAEXXZ 009068F0 f i game2.o
-628	PORTED	0002:00117400 ?get_vtbl_ptr@nalVirtual@@QBEPAXXZ 00906900 f i game2.o
+626	PORTED	0002:001173e0 ??1nalVirtual@@MAE@XZ 009068E0 f i game2.o  PORTED: IDA-backed base destructor/vtable reset
+627	PORTED	0002:001173f0 ?Dummy@nalVirtual@@MAEXXZ 009068F0 f i game2.o  PORTED: IDA-backed empty virtual method
+628	PORTED	0002:00117400 ?get_vtbl_ptr@nalVirtual@@QBEPAXXZ 00906900 f i game2.o  PORTED: IDA-backed vtable pointer accessor
 629	SKIPPED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 630	SKIPPED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 631	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o
