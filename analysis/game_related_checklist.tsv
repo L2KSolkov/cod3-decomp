@@ -21015,18 +21015,18 @@ index	status	map_line
 21014	SKIPPED	0002:00468100 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57600 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21015	SKIPPED	0002:00468130 ??_EIterator@?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57630 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21016	SKIPPED	0002:00468130 ??_GIterator@?$tlResourceDirectory@VnalSceneAnim@@@@UAEPAXI@Z 00C57630 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-21017	PORTED	0002:00468160 ?Add@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@PAV2@@Z 00C57660 f i nal_init.o
+21017	VERIFIED	0002:00468160 ?Add@?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@UAEPAVnalSceneAnim@@PAV2@@Z 00C57660 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Add specialization per IDA
 21018	VERIFIED	0002:00468170 ?Add@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEPAVnalSceneAnim@@PAV2@@Z 00C57670 f i nal_init.o
 21019	VERIFIED	0002:00468290 ?Init@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ 00C57790 f i nal_init.o
-21020	PORTED	0002:004682d0 ??0?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@QAE@XZ 00C577D0 f i nal_init.o
-21021	PORTED	0002:00468300 ?Find@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C57800 f i nal_init.o
-21022	VERIFIED	0002:00468310 ?Find@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C57810 f i nal_init.o
-21023	PORTED	0002:004683d0 ?Del@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAE_NQAVnalBaseSkeleton@@@Z 00C578D0 f i nal_init.o
-21024	PORTED	0002:004683e0 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@XZ 00C578E0 f i nal_init.o
-21025	PORTED	0002:00468420 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEXXZ 00C57920 f i nal_init.o
-21026	PORTED	0002:00468440 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UBE_NXZ 00C57940 f i nal_init.o
-21027	PORTED	0002:00468450 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEXXZ 00C57950 f i nal_init.o
-21028	PORTED	0002:00468460 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UBEPAVnalBaseSkeleton@@XZ 00C57960 f i nal_init.o
+21020	VERIFIED	0002:004682d0 ??0?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@QAE@XZ 00C577D0 f i nal_init.o	VERIFIED: vtable install and inline skip-list random/head initialization match IDA
+21021	VERIFIED	0002:00468300 ?Find@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C57800 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+21022	VERIFIED	0002:00468310 ?Find@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEPAVnalBaseSkeleton@@ABVtlFixedString@@@Z 00C57810 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+21023	VERIFIED	0002:004683d0 ?Del@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAE_NQAVnalBaseSkeleton@@@Z 00C578D0 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Del specialization per IDA
+21024	VERIFIED	0002:004683e0 ?Enumerate@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@XZ 00C578E0 f i nal_init.o	VERIFIED: 0x0C-byte iterator allocation, vtable, list pointer, and head cursor match IDA
+21025	VERIFIED	0002:00468420 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEXXZ 00C57920 f i nal_init.o	VERIFIED: reset restores the skip-list head cursor exactly as IDA
+21026	VERIFIED	0002:00468440 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UBE_NXZ 00C57940 f i nal_init.o	VERIFIED: iterator-validity test matches IDA
+21027	VERIFIED	0002:00468450 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEXXZ 00C57950 f i nal_init.o	VERIFIED: iterator increment and null guard match IDA
+21028	VERIFIED	0002:00468460 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UBEPAVnalBaseSkeleton@@XZ 00C57960 f i nal_init.o	VERIFIED: iterator dereference and null result match IDA
 21029	SKIPPED	0002:00468470 ??_ESkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C57970 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21030	SKIPPED	0002:00468470 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C57970 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21031	SKIPPED	0002:004684a0 ??_GIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C579A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
