@@ -2256,28 +2256,28 @@ index	status	map_line
 2255	PORTED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o PORTED: IDA releases through sAllocator
 2256	PORTED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o PORTED: IDA releases through sAllocator
 2257	PORTED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o PORTED: IDA assigns and returns the allocator
-2258	PORTED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o
-2259	PORTED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o
-2260	PORTED	0002:000de530 ?SetAllocator@AbstractEffect@@SAXPAVPoolAllocator@@@Z 008CDA30 f i core.o
+2258	PORTED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o PORTED: IDA PoolAllocator::Allocate wrapper
+2259	PORTED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o PORTED: IDA PoolAllocator::Release wrapper
+2260	PORTED	0002:000de530 ?SetAllocator@AbstractEffect@@SAXPAVPoolAllocator@@@Z 008CDA30 f i core.o PORTED: IDA allocator assignment
 2261	VERIFIED	0002:000de540 ?SetPoPtr@AbstractEffect@@UAEXPAVMat43@math@@@Z 008CDA40 f i core.o
-2262	PORTED	0002:000de550 ?GetEffectNameHashStr@AbstractEffect@@QAE?BIXZ 008CDA50 f i core.o
-2263	PORTED	0002:000de560 ?GetFlags@AbstractEffect@@QBEHXZ 008CDA60 f i core.o
-2264	PORTED	0002:000de570 ?Test@AbstractEffect@@QBE_NH@Z 008CDA70 f i core.o
-2265	PORTED	0002:000de590 ?GetLifeTime@AbstractEffect@@QAEHXZ 008CDA90 f i core.o
-2266	PORTED	0002:000de5a0 ?SetFlag@AbstractEffectSound@@QAEXW4EAbstractSoundEffectFlags@@@Z 008CDAA0 f i core.o
+2262	PORTED	0002:000de550 ?GetEffectNameHashStr@AbstractEffect@@QAE?BIXZ 008CDA50 f i core.o PORTED: IDA field accessor
+2263	PORTED	0002:000de560 ?GetFlags@AbstractEffect@@QBEHXZ 008CDA60 f i core.o PORTED: IDA field accessor
+2264	PORTED	0002:000de570 ?Test@AbstractEffect@@QBE_NH@Z 008CDA70 f i core.o PORTED: IDA flag test
+2265	PORTED	0002:000de590 ?GetLifeTime@AbstractEffect@@QAEHXZ 008CDA90 f i core.o PORTED: IDA lifetime accessor
+2266	PORTED	0002:000de5a0 ?SetFlag@AbstractEffectSound@@QAEXW4EAbstractSoundEffectFlags@@@Z 008CDAA0 f i core.o PORTED: IDA derived sound flag OR
 2267	PORTED	0002:000de5c0 ??2RumbleManager@@SAPAXIPAX@Z 008CDAC0 f i core.o
 2268	PORTED	0002:000de5d0 ??8@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAD0 f i core.o
 2269	PORTED	0002:000de5f0 ??9@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAF0 f i core.o
-2270	PORTED	0002:000de610 ??0SmokeGrenadeInfo@@QAE@XZ 008CDB10 f i core.o
-2271	PORTED	0002:000de640 ??2SmokeGrenadeMgr@@SAPAXIPAX@Z 008CDB40 f i core.o
-2272	PORTED	0002:000de650 ?Q_rsqrt@@YAMM@Z 008CDB50 f i core.o
-2273	PORTED	0002:000de6a0 ?Clamp0To1@@YAMM@Z 008CDBA0 f i core.o
-2274	PORTED	0002:000de6f0 ?length@string@Broc@@QBEIXZ 008CDBF0 f i core.o
-2275	PORTED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o
-2276	PORTED	0002:000de720 ?CreateInst@InteractionController@@SAXXZ 008CDC20 f i core.o
+2270	PORTED	0002:000de610 ??0SmokeGrenadeInfo@@QAE@XZ 008CDB10 f i core.o PORTED: IDA constructor and 0x14-byte layout
+2271	PORTED	0002:000de640 ??2SmokeGrenadeMgr@@SAPAXIPAX@Z 008CDB40 f i core.o PORTED: IDA placement allocator
+2272	PORTED	0002:000de650 ?Q_rsqrt@@YAMM@Z 008CDB50 f i core.o PORTED: IDA fast inverse square root
+2273	PORTED	0002:000de6a0 ?Clamp0To1@@YAMM@Z 008CDBA0 f i core.o PORTED: IDA clamp branches
+2274	VERIFIED	0002:000de6f0 ?length@string@Broc@@QBEIXZ 008CDBF0 f i core.o VERIFIED: existing Broc::string length matches IDA
+2275	PORTED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o PORTED: IDA placement allocator
+2276	VERIFIED	0002:000de720 ?CreateInst@InteractionController@@SAXXZ 008CDC20 f i core.o VERIFIED: existing CreateInst matches IDA
 2277	SKIPPED	0002:000de820 ??_GInteractionController@@QAEPAXI@Z 008CDD20 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2278	PORTED	0002:000de850 ??2PlayerAnimMgr@@SAPAXIPAX@Z 008CDD50 f i core.o
-2279	PORTED	0002:000de860 ?CreateInst@PlayerAnimMgr@@SAXXZ 008CDD60 f i core.o
+2278	PORTED	0002:000de850 ??2PlayerAnimMgr@@SAPAXIPAX@Z 008CDD50 f i core.o PORTED: IDA placement allocator
+2279	VERIFIED	0002:000de860 ?CreateInst@PlayerAnimMgr@@SAXXZ 008CDD60 f i core.o VERIFIED: existing CreateInst matches IDA
 2280	SKIPPED	0002:000de950 ??_GPlayerAnimMgr@@QAEPAXI@Z 008CDE50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2281	VERIFIED	0002:000de980 ?SetGamePaused@GamePause@@SAXH_N@Z 008CDE80 f i core.o
 2282	PORTED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o
