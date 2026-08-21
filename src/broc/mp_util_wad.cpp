@@ -6813,8 +6813,10 @@ void FollowClient(Broc::entity player, Broc::bint newClient) {
                 Broc::wait(1.0f);
                 mp_util_wad::entity_set_spectatorClient(player, (int)newClient);
                 Broc::wait(1.0f);
-                Broc::entity lvl;
-                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                Broc::entity lvl =
+                    mp_util_wad::pLevel != nullptr
+                        ? mp_util_wad::pLevel->_base.entity
+                        : Broc::entity();
                 FadeUpWhenLoaded(lvl, player);
             }
         }
