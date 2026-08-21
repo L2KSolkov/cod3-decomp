@@ -2093,6 +2093,23 @@ void plane_roll(Broc::entity self);
 // ============================================================================
 namespace Broc {
 
+// Broc::entity::__unnamed::origin_struct::Get - ea: 0x9348D0
+const Broc::vector* Broc::entity::__unnamed::origin_struct::Get(
+    Broc::vector* result) const {
+    Broc::vector temp;
+    *result = *Broc::gBrocAPI.m_entity_get_origin(&temp, mHandle);
+    return result;
+}
+
+// Broc::entity::__unnamed::target_struct::Get - ea: 0x934920
+const Broc::string* Broc::entity::__unnamed::target_struct::Get(
+    Broc::string* result) const {
+    Broc::string temp;
+    Broc::string* rhs = Broc::gBrocAPI.m_entity_get_target(&temp, mHandle);
+    new (result) Broc::string(*rhs);
+    return result;
+}
+
 // IsDefined overloads - ea: 0x92F130 / 0x92F150 / 0x92F6F0
 bool IsDefined(const Broc::entity& e) {
     return e.___u0 != 0;
