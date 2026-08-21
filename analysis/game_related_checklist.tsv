@@ -20027,19 +20027,19 @@ index	status	map_line
 20026	VERIFIED	0002:0044df20 ?nglDxSetBonesWorld@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z 00C3D420 f ngl_dx_shader.o
 20027	VERIFIED	0002:0044e7e0 ?nglDxSetupVShaderFog@@YAXHPAVnglMeshNode@@MMMM@Z 00C3DCE0 f ngl_dx_shader.o
 20028	VERIFIED	0002:0044e8c0 ?nglDxSetupVShaderLights@@YAXHPAVnglMeshNode@@@Z 00C3DDC0 f ngl_dx_shader.o
-20029	VERIFIED	0002:0044e910 ?nglDxRegisterInternalShaders@@YAXXZ 00C3DE10 f ngl_dx_shader.o
+20029	FIXED	0002:0044e910 ?nglDxRegisterInternalShaders@@YAXXZ 00C3DE10 f ngl_dx_shader.o
 20030	VERIFIED	0002:0044e950 ?nglDxInitShaders@@YAX_N@Z 00C3DE50 f ngl_dx_shader.o
 20031	VERIFIED	0002:0044eaf0 ?nglDxSetupVShaderBones@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z 00C3DFF0 f ngl_dx_shader.o
 20032	VERIFIED	0002:0044f1e0 ?nglDxSetBonesLocal@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z 00C3E6E0 f ngl_dx_shader.o
-20033	PORTED	0002:0044f930 ?gpuSetVertexConstant@@YAXHPAVMat44@math@@I@Z 00C3EE30 f i ngl_dx_shader.o
-20034	PORTED	0002:0044f960 ?RegisterShader@nglDOFPixelShader@@YAXXZ 00C3EE60 f i ngl_dx_shader.o
-20035	PORTED	0002:0044f970 ?RegisterPShader@nglDOFPixelShader@@YAXXZ 00C3EE70 f i ngl_dx_shader.o
-20036	PORTED	0002:0044f980 ?RegisterShader@nglGlowShaderPixelPreFX@@YAXXZ 00C3EE80 f i ngl_dx_shader.o
-20037	PORTED	0002:0044f990 ?RegisterPShader@nglGlowShaderPixelPreFX@@YAXXZ 00C3EE90 f i ngl_dx_shader.o
-20038	PORTED	0002:0044f9a0 ?RegisterShader@nglGlowShaderPixelFX@@YAXXZ 00C3EEA0 f i ngl_dx_shader.o
-20039	PORTED	0002:0044f9b0 ?RegisterPShader@nglGlowShaderPixelFX@@YAXXZ 00C3EEB0 f i ngl_dx_shader.o
-20040	PORTED	0002:0044f9c0 ?RegisterShader@nglGlowShaderPixelPostFX@@YAXXZ 00C3EEC0 f i ngl_dx_shader.o
-20041	PORTED	0002:0044f9d0 ?RegisterPShader@nglGlowShaderPixelPostFX@@YAXXZ 00C3EED0 f i ngl_dx_shader.o
+20033	FIXED	0002:0044f930 ?gpuSetVertexConstant@@YAXHPAVMat44@math@@I@Z 00C3EE30 f i ngl_dx_shader.o
+20034	FIXED	0002:0044f960 ?RegisterShader@nglDOFPixelShader@@YAXXZ 00C3EE60 f i ngl_dx_shader.o
+20035	FIXED	0002:0044f970 ?RegisterPShader@nglDOFPixelShader@@YAXXZ 00C3EE70 f i ngl_dx_shader.o
+20036	FIXED	0002:0044f980 ?RegisterShader@nglGlowShaderPixelPreFX@@YAXXZ 00C3EE80 f i ngl_dx_shader.o
+20037	FIXED	0002:0044f990 ?RegisterPShader@nglGlowShaderPixelPreFX@@YAXXZ 00C3EE90 f i ngl_dx_shader.o
+20038	FIXED	0002:0044f9a0 ?RegisterShader@nglGlowShaderPixelFX@@YAXXZ 00C3EEA0 f i ngl_dx_shader.o
+20039	FIXED	0002:0044f9b0 ?RegisterPShader@nglGlowShaderPixelFX@@YAXXZ 00C3EEB0 f i ngl_dx_shader.o
+20040	FIXED	0002:0044f9c0 ?RegisterShader@nglGlowShaderPixelPostFX@@YAXXZ 00C3EEC0 f i ngl_dx_shader.o
+20041	FIXED	0002:0044f9d0 ?RegisterPShader@nglGlowShaderPixelPostFX@@YAXXZ 00C3EED0 f i ngl_dx_shader.o
 20042	VERIFIED	0002:0044fc90 ?Reset@nglDxRenderState@@QAEXXZ 00C3F190 f ngl_dx_state.o
 20043	VERIFIED	0002:0044fcc0 ?SetBlendMode@nglDxRenderState@@QAEXI@Z 00C3F1C0 f ngl_dx_state.o
 20044	VERIFIED	0002:0044fed0 ?FSAAFixup@nglDxRenderState@@QAEXXZ 00C3F3D0 f ngl_dx_state.o

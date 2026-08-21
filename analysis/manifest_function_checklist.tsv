@@ -20027,19 +20027,19 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20026	0x0084DF20	0x00C3D420	?nglDxSetBonesWorld@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20027	0x0084E7E0	0x00C3DCE0	?nglDxSetupVShaderFog@@YAXHPAVnglMeshNode@@MMMM@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20028	0x0084E8C0	0x00C3DDC0	?nglDxSetupVShaderLights@@YAXHPAVnglMeshNode@@@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20029	0x0084E910	0x00C3DE10	?nglDxRegisterInternalShaders@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+20029	0x0084E910	0x00C3DE10	?nglDxRegisterInternalShaders@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f	0	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
 20030	0x0084E950	0x00C3DE50	?nglDxInitShaders@@YAX_N@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20031	0x0084EAF0	0x00C3DFF0	?nglDxSetupVShaderBones@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20032	0x0084F1E0	0x00C3E6E0	?nglDxSetBonesLocal@@YAXHPAVnglMeshNode@@PAUnglMeshSection@@@Z	ngl_xboxr	ngl_dx_shader.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20033	0x0084F930	0x00C3EE30	?gpuSetVertexConstant@@YAXHPAVMat44@math@@I@Z	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20034	0x0084F960	0x00C3EE60	?RegisterShader@nglDOFPixelShader@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20035	0x0084F970	0x00C3EE70	?RegisterPShader@nglDOFPixelShader@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20036	0x0084F980	0x00C3EE80	?RegisterShader@nglGlowShaderPixelPreFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20037	0x0084F990	0x00C3EE90	?RegisterPShader@nglGlowShaderPixelPreFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20038	0x0084F9A0	0x00C3EEA0	?RegisterShader@nglGlowShaderPixelFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20039	0x0084F9B0	0x00C3EEB0	?RegisterPShader@nglGlowShaderPixelFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20040	0x0084F9C0	0x00C3EEC0	?RegisterShader@nglGlowShaderPixelPostFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20041	0x0084F9D0	0x00C3EED0	?RegisterPShader@nglGlowShaderPixelPostFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20033	0x0084F930	0x00C3EE30	?gpuSetVertexConstant@@YAXHPAVMat44@math@@I@Z	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20034	0x0084F960	0x00C3EE60	?RegisterShader@nglDOFPixelShader@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20035	0x0084F970	0x00C3EE70	?RegisterPShader@nglDOFPixelShader@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20036	0x0084F980	0x00C3EE80	?RegisterShader@nglGlowShaderPixelPreFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20037	0x0084F990	0x00C3EE90	?RegisterPShader@nglGlowShaderPixelPreFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20038	0x0084F9A0	0x00C3EEA0	?RegisterShader@nglGlowShaderPixelFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20039	0x0084F9B0	0x00C3EEB0	?RegisterPShader@nglGlowShaderPixelFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20040	0x0084F9C0	0x00C3EEC0	?RegisterShader@nglGlowShaderPixelPostFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
+20041	0x0084F9D0	0x00C3EED0	?RegisterPShader@nglGlowShaderPixelPostFX@@YAXXZ	ngl_xboxr	ngl_dx_shader.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
 20042	0x0084FC90	0x00C3F190	?Reset@nglDxRenderState@@QAEXXZ	ngl_xboxr	ngl_dx_state.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20043	0x0084FCC0	0x00C3F1C0	?SetBlendMode@nglDxRenderState@@QAEXI@Z	ngl_xboxr	ngl_dx_state.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20044	0x0084FED0	0x00C3F3D0	?FSAAFixup@nglDxRenderState@@QAEXXZ	ngl_xboxr	ngl_dx_state.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
