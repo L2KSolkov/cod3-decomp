@@ -705,7 +705,7 @@ index	status	map_line
 704	PORTED	0002:00564290 ?minefield_kill__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@0@Z 00D53790 f i mp_util_wad.o
 705	VERIFIED	0002:00564330 ?minefield_kill@_mp_minefield@@YAXVentity@Broc@@0@Z 00D53830 f mp_util_wad.o
 706	PORTED	0002:005645b0 ?RadiusDamage@@YAXABUvector@Broc@@MMMH@Z 00D53AB0 f i mp_util_wad.o
-707	VERIFIED	0002:005645f0 ?main@_mp_nano@@YAXXZ 00D53AF0 f mp_util_wad.o
+707	FIXED	0002:005645f0 ?main@_mp_nano@@YAXXZ 00D53AF0 f mp_util_wad.o	FIXED: IDA 0x009645F0 copies pLevel->_base.entity (or null) into WindBlowing__functor
 708	VERIFIED	0002:00564680 ?EnableNanoForces@Broc@@YAX_N@Z 00D53B80 f i mp_util_wad.o
 709	PORTED	0002:005646b0 ?WindBlowing__functor@_mp_nano@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D53BB0 f i mp_util_wad.o
 710	VERIFIED	0002:00564750 ?WindBlowing@_mp_nano@@YAXVentity@Broc@@@Z 00D53C50 f mp_util_wad.o
