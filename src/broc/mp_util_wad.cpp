@@ -317,6 +317,8 @@ unsigned int GetBroAnim(unsigned int treename, unsigned int animname) {
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::vector>(0xAEB6D8F1);
 }
 
@@ -341,6 +343,8 @@ Broc::bbool* IsEEDefined_flagEnd(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_audio_indoor(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xD9150A3C);
 }
 
@@ -365,6 +369,8 @@ Broc::bbool* IsEEDefined_audio_indoor(Broc::bbool* result, Broc::entity ent) {
 Broc::bfloat* GetEE_audio_ambmax(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bfloat>(0xC65889A7);
 }
 
@@ -389,6 +395,8 @@ Broc::bbool* IsEEDefined_audio_ambmax(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_sound(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x085FE049);
 }
 
@@ -413,6 +421,8 @@ Broc::bbool* IsEEDefined_sound(Broc::bbool* result, Broc::entity ent) {
 Broc::bbool* GetEE_specialWeaponChangeClassFlag(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bbool>(0x4C3C14A1);
 }
 
@@ -437,6 +447,8 @@ Broc::bbool* IsEEDefined_specialWeaponChangeClassFlag(Broc::bbool* result, Broc:
 Broc::string* GetEE_respawnmodel(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0x86F21A11);
 }
 
@@ -462,6 +474,8 @@ Broc::bbool* IsEEDefined_respawnmodel(Broc::bbool* result, Broc::entity ent) {
 Broc::string* GetEE_deathmodel(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0xEA19FC37);
 }
 
@@ -487,6 +501,8 @@ Broc::bbool* IsEEDefined_deathmodel(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_punishedTeamKills(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x35249286);
 }
 
@@ -511,6 +527,8 @@ Broc::bbool* IsEEDefined_punishedTeamKills(Broc::bbool* result, Broc::entity ent
 Broc::bbool* GetEE_firstSpectate(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bbool>(0x72013241);
 }
 
@@ -535,6 +553,8 @@ Broc::bbool* IsEEDefined_firstSpectate(Broc::bbool* result, Broc::entity ent) {
 Broc::vector* GetEE_home_position(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::vector>(0xE42FE83D);
 }
 
@@ -559,6 +579,8 @@ Broc::bbool* IsEEDefined_home_position(Broc::bbool* result, Broc::entity ent) {
 Broc::string* GetEE_deathfire(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0xF790400C);
 }
 
@@ -584,6 +606,8 @@ Broc::bbool* IsEEDefined_deathfire(Broc::bbool* result, Broc::entity ent) {
 Broc::bfloat* GetEE_waiting(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bfloat>(0xB24418D3);
 }
 
@@ -608,6 +632,8 @@ Broc::bbool* IsEEDefined_waiting(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_last_dropped_time(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x1FA6AD2F);
 }
 
@@ -632,6 +658,8 @@ Broc::bbool* IsEEDefined_last_dropped_time(Broc::bbool* result, Broc::entity ent
 Broc::bbool* GetEE_flag_in_minefield(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bbool>(0x3A88015C);
 }
 
@@ -656,6 +684,8 @@ Broc::bbool* IsEEDefined_flag_in_minefield(Broc::bbool* result, Broc::entity ent
 Broc::bint* GetEE_index(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x07AA1578);
 }
 
@@ -680,6 +710,8 @@ Broc::bbool* IsEEDefined_index(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_lastPainSoundTime(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x7654A134);
 }
 
@@ -760,6 +792,8 @@ Broc::bbool* IsEEDefined_holder(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_lastTouch(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x54E300B7);
 }
 
@@ -784,6 +818,8 @@ Broc::bbool* IsEEDefined_lastTouch(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_audio_track_p(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x538E9F75);
 }
 
@@ -808,6 +844,8 @@ Broc::bbool* IsEEDefined_audio_track_p(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_specialWeaponTime(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x14D6461A);
 }
 
@@ -832,6 +870,8 @@ Broc::bbool* IsEEDefined_specialWeaponTime(Broc::bbool* result, Broc::entity ent
 Broc::bbool* GetEE_autobalance(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bbool>(0xFBCC92DF);
 }
 
@@ -856,6 +896,8 @@ Broc::bbool* IsEEDefined_autobalance(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_teamSound(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x2FCF6330);
 }
 
@@ -880,6 +922,8 @@ Broc::bbool* IsEEDefined_teamSound(Broc::bbool* result, Broc::entity ent) {
 HashStr* GetEE_message_when_returned(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<HashStr>(0x717BB65E);
 }
 
@@ -904,6 +948,8 @@ Broc::bbool* IsEEDefined_message_when_returned(Broc::bbool* result, Broc::entity
 Broc::bint* GetEE_damage_effect(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x75BFB68B);
 }
 
@@ -928,6 +974,8 @@ Broc::bbool* IsEEDefined_damage_effect(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_spawnTime(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xF922BE58);
 }
 
@@ -952,6 +1000,8 @@ Broc::bbool* IsEEDefined_spawnTime(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_pickupCaptureDelayTime(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x4743187E);
 }
 
@@ -976,6 +1026,8 @@ Broc::bbool* IsEEDefined_pickupCaptureDelayTime(Broc::bbool* result, Broc::entit
 Broc::vector* GetEE_flagStart(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::vector>(0x38D17CE8);
 }
 
@@ -1000,6 +1052,8 @@ Broc::bbool* IsEEDefined_flagStart(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_capAllowedTeam(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xF430CD43);
 }
 
@@ -1024,6 +1078,8 @@ Broc::bbool* IsEEDefined_capAllowedTeam(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_last_touch_time(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xB80289A4);
 }
 
@@ -1048,6 +1104,8 @@ Broc::bbool* IsEEDefined_last_touch_time(Broc::bbool* result, Broc::entity ent) 
 Broc::bint* GetEE_objective_status(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x36CBF8DE);
 }
 
@@ -1072,6 +1130,8 @@ Broc::bbool* IsEEDefined_objective_status(Broc::bbool* result, Broc::entity ent)
 Broc::bint* GetEE_spawnCount(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x1C4A56B2);
 }
 
@@ -1096,6 +1156,8 @@ Broc::bbool* IsEEDefined_spawnCount(Broc::bbool* result, Broc::entity ent) {
 Broc::bfloat* GetEE_capStatus(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bfloat>(0x53377998);
 }
 
@@ -1120,6 +1182,8 @@ Broc::bbool* IsEEDefined_capStatus(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_capTeam(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xAF35F29B);
 }
 
@@ -1144,6 +1208,8 @@ Broc::bbool* IsEEDefined_capTeam(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_numDeaths(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xBEB96D49);
 }
 
@@ -1168,6 +1234,8 @@ Broc::bbool* IsEEDefined_numDeaths(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_killsSinceLastDeath(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xB8F24ACB);
 }
 
@@ -1192,6 +1260,8 @@ Broc::bbool* IsEEDefined_killsSinceLastDeath(Broc::bbool* result, Broc::entity e
 Broc::vector* GetEE_home_angles(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::vector>(0x385575E2);
 }
 
@@ -1216,6 +1286,8 @@ Broc::bbool* IsEEDefined_home_angles(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_inDeath(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x9A8500FD);
 }
 
@@ -1240,6 +1312,8 @@ Broc::bbool* IsEEDefined_inDeath(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_sound_handle(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x8B17F374);
 }
 
@@ -1264,6 +1338,8 @@ Broc::bbool* IsEEDefined_sound_handle(Broc::bbool* result, Broc::entity ent) {
 Broc::bfloat* GetEE_capSpeed(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bfloat>(0x95E84605);
 }
 
@@ -1288,6 +1364,8 @@ Broc::bbool* IsEEDefined_capSpeed(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_setting_up_hq(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x64A1977A);
 }
 
@@ -1312,6 +1390,8 @@ Broc::bbool* IsEEDefined_setting_up_hq(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_spawnscore(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x1D653125);
 }
 
@@ -1336,6 +1416,8 @@ Broc::bbool* IsEEDefined_spawnscore(Broc::bbool* result, Broc::entity ent) {
 Broc::bbool* GetEE_bTeamKilledWithArtillery(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bbool>(0x4D2B5732);
 }
 
@@ -1360,6 +1442,8 @@ Broc::bbool* IsEEDefined_bTeamKilledWithArtillery(Broc::bbool* result, Broc::ent
 Broc::bint* GetEE_cappedSinceLastDeath(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xAAF03B39);
 }
 
@@ -1384,6 +1468,8 @@ Broc::bbool* IsEEDefined_cappedSinceLastDeath(Broc::bbool* result, Broc::entity 
 Broc::bint* GetEE_isInsideFollowClient(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x2D6AF62A);
 }
 
@@ -1408,6 +1494,8 @@ Broc::bbool* IsEEDefined_isInsideFollowClient(Broc::bbool* result, Broc::entity 
 Broc::bint* GetEE_returnedSinceLastDeath(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xCBEADD95);
 }
 
@@ -1432,6 +1520,8 @@ Broc::bbool* IsEEDefined_returnedSinceLastDeath(Broc::bbool* result, Broc::entit
 Broc::bint* GetEE_lastMedicCall(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0xA2978152);
 }
 
@@ -1456,6 +1546,8 @@ Broc::bbool* IsEEDefined_lastMedicCall(Broc::bbool* result, Broc::entity ent) {
 Broc::bint* GetEE_bigsplashed(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bint>(0x65FADA86);
 }
 
@@ -1480,6 +1572,8 @@ Broc::bbool* IsEEDefined_bigsplashed(Broc::bbool* result, Broc::entity ent) {
 Broc::bfloat* GetEE_audio_ambmin(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::bfloat>(0xC6588AA5);
 }
 
@@ -1487,6 +1581,8 @@ Broc::bfloat* GetEE_audio_ambmin(Broc::entity ent) {
 Broc::string* GetEE_script_sound(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0x4816A2BD);
 }
 
@@ -1511,6 +1607,8 @@ Broc::bbool* IsEEDefined_script_sound(Broc::bbool* result, Broc::entity ent) {
 Broc::string* GetEE_vehicletype(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0x128D7CA2);
 }
 
