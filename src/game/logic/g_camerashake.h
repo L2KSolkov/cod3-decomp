@@ -42,6 +42,11 @@ struct NoiseFloat {
     float m_freq_mult;    // +0x08
     float m_range;        // +0x0C
 
+    NoiseFloat();         // ea: 0x5184C0
+    ~NoiseFloat();        // ea: 0x518510
+    void Init(unsigned int oct, float freq, float range); // ea: 0x518520
+    void SetFrequency(float f); // ea: 0x518570
+    void SetRange(float f);     // ea: 0x518590
     float GetValue();     // ea: 0x4F5830
 };
 static_assert(sizeof(NoiseFloat) == 0x10, "NoiseFloat size mismatch");

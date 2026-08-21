@@ -157,6 +157,41 @@ float NoiseManager::GetElapsedTime()
     return (float)cgGlobal.time * 0.001f;
 }
 
+// ea: 0x005184C0
+NoiseFloat::NoiseFloat()
+    : m_seed((float)(rand() % 0x4000)),
+      m_num_octaves(3),
+      m_freq_mult(1.0f),
+      m_range(0.0f)
+{
+}
+
+// ea: 0x00518510
+NoiseFloat::~NoiseFloat()
+{
+}
+
+// ea: 0x00518520
+void NoiseFloat::Init(unsigned int oct, float freq, float range)
+{
+    m_seed = (float)(rand() % 0x4000);
+    m_freq_mult = freq;
+    m_num_octaves = oct;
+    m_range = range;
+}
+
+// ea: 0x00518570
+void NoiseFloat::SetFrequency(float f)
+{
+    m_freq_mult = f;
+}
+
+// ea: 0x00518590
+void NoiseFloat::SetRange(float f)
+{
+    m_range = f;
+}
+
 // ea: 0x4F5830
 float NoiseFloat::GetValue()
 {
