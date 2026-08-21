@@ -9671,8 +9671,10 @@ void CallbackHostMigrated() {
 // CallbackNextRound - ea: 0x94EB60
 void CallbackNextRound() {
     mp_util_wad::pLevel->roundOver = true;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0x6FA23667u;
     Broc::notify(lvl, n);
