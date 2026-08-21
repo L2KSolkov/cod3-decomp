@@ -78,6 +78,64 @@ EffectEventSys* sInst = nullptr;  // 0x012F0380
 }
 
 PoolAllocator* ActiveEffectSet_sAllocator = nullptr;
+PoolAllocator* ActiveEffectSet::sAllocator = nullptr;
+
+void* ActiveEffectSet::operator new(size_t size, bool forceHeapAlloc)
+{
+    return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+void ActiveEffectSet::operator delete(void* ptr, bool, const char*, int)
+{
+    sAllocator->Release(ptr);
+}
+
+void ActiveEffectSet::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
+void ActiveEffectSet::SetAllocator(PoolAllocator* allocator)
+{
+    sAllocator = allocator;
+    ActiveEffectSet_sAllocator = allocator;
+}
+
+Handle ActiveEffectSet::GetHandle() const
+{
+    return mId;
+}
+
+void ActiveEffectSet::SetHandle(Handle h)
+{
+    mId = h;
+}
+
+TPakId ActiveEffectSet::GetPakId() const
+{
+    return mPakId;
+}
+
+void* EffectEventSys::operator new(size_t, void* p)
+{
+    return p;
+}
+
+EffectEventSys::EffectRef::EffectRef()
+    : first(0), second(0)
+{
+}
+
+SoundOptions::SoundOptions()
+    : mFxDontPlayFootSteps(0), mFxDontPlayGearRattle(0),
+      mFxDontPlayLanding(0), mFxDontPlayScriptCall(0),
+      mFxDontPlayScriptCall_Dir(0), mFxDontPlayWeapon(0),
+      mFxDontPlayBulletHit(0), mFxDontPlayGrenadeBounce(0),
+      mFxDontPlayProjExplode(0), mFxDontPlayVehicle(0),
+      mFxDontPlayTurret(0), mFxDontPlayVehicleWheel(0),
+      mFxDontPlayLightFlash(0), mFxDontPlayMusic(0)
+{
+}
 
 // ea: 0x004E9B20
 EffectEventSys* EffectEventSys::CreateInst()

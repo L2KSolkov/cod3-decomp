@@ -237,6 +237,7 @@ public:
     Vector4(__m128 _v) : v(_v) {}
     Vector4(const Vector4& other) : v(other.v) {}  // implicit copy
     Vector4(const Vector4::Constant& _c);  // ??0Vector4@math@@QAE@ABUConstant@01@@Z (g.o 0x4A5F80)
+    Vector4(const Position3& _v);           // ??0Vector4@math@@QAE@ABVPosition3@1@@Z (core.o 0x4DB7B0)
     Vector4(const Dir3& _v);  // ??0Vector4@math@@QAE@ABVDir3@1@@Z
     Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
@@ -269,6 +270,8 @@ inline math::Vector4 math::Position3::val34() const
 class Mat43 {
 public:
     Mat43() {}
+    Mat43(const Dir3& _x, const Dir3& _y, const Dir3& _z,
+          const Position3& _w);            // ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z (core.o 0x4DBB90)
 
     // ??0Mat43@math@@QAE@ABVDiagMat33@1@@Z (anim.o 0x539FC0)
     Mat43(const DiagMat33& m);
@@ -286,6 +289,10 @@ public:
     Dir3& GetY();                  // ?GetY@Mat43@math@@QAEAAVDir3@2@XZ (g.o 0x4A70C0)
     Dir3& GetZ();                  // ?GetZ@Mat43@math@@QAEAAVDir3@2@XZ (g.o 0x4A70D0)
     Position3& GetW();             // ?GetW@Mat43@math@@QAEAAVPosition3@2@XZ (g.o 0x4A70E0)
+    void SetX(const Dir3& _x);     // ?SetX@Mat43@math@@QAEXABVDir3@2@@Z (core.o 0x4DBBC30)
+    void SetY(const Dir3& _y);     // ?SetY@Mat43@math@@QAEXABVDir3@2@@Z (core.o 0x4DBBC60)
+    void SetZ(const Dir3& _z);     // ?SetZ@Mat43@math@@QAEXABVDir3@2@@Z (core.o 0x4DBBC90)
+    void SetW(const Position3& _w); // ?SetW@Mat43@math@@QAEXABVPosition3@2@@Z (core.o 0x4DBBCC0)
     Dir3      x;  // +0x00 — right axis
     Dir3      y;  // +0x10 — forward axis
     Dir3      z;  // +0x20 — up axis
@@ -372,6 +379,7 @@ public:
     void SetX(const Vector4& _x);  // ?SetX@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E65F0)
     void SetY(const Vector4& _y);  // ?SetY@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E6630)
     void SetZ(const Vector4& _z);  // ?SetZ@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E6670)
+    const Mat44& operator=(const Mat44& _m);  // ??4Mat44@math@@QAEABV01@ABV01@@Z (core.o 0x4DBD50)
 };
 static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
 
@@ -396,6 +404,8 @@ Mat43    Mul(const DiagMat33& a, const Mat43& b);                 // ?Mul@math@@
 Mat43    Mul(const TranMat43& a, const Mat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABUTranMat43@1@ABV21@@Z (render.o 0x6E6C90)
 Mat43    operator*(const DiagMat33& a, const Mat43& b);           // ??Dmath@@YA?AVMat43@0@ABVDiagMat33@0@ABV10@@Z (render.o 0x6E6E10)
 Mat43    operator*(const TranMat43& a, const Mat43& b);           // ??Dmath@@YA?AVMat43@0@ABUTranMat43@0@ABV10@@Z (render.o 0x6E6F20)
+float    ASinUpper(float y);                                      // ?ASinUpper@math@@YAMM@Z (core.o 0x4DBDF0)
+float    ACosUpper(float x);                                      // ?ACosUpper@math@@YAMM@Z (core.o 0x4DBF00)
 Mat33    AxisSinCosToRotMat(const Dir3& v, float s, float c);     // ?AxisSinCosToRotMat@math@@YA?AVMat33@1@ABVDir3@1@MM@Z
 Mat33    AxisAngleToRotMat(const Dir3& axis, float angle);        // ?AxisAngleToRotMat@math@@YA?AVMat33@1@ABVDir3@1@M@Z
 Vector4  Vector4_One();                                           // ?Vector4_One@math@@YA?AVVector4@1@XZ (sv.o 0x51E110)
@@ -435,6 +445,9 @@ static_assert(sizeof(Quaternion) == 0x10, "Quaternion size mismatch");
 // mangled symbols are emitted there)
 Quaternion Unitize(const Quaternion& q);  // ?Unitize@math@@YA?AVQuaternion@1@ABV21@@Z (0x53AF10)
 Vector4    UnitDirW();                    // ?UnitDirW@math@@YA?AVVector4@1@XZ (0x539D80)
+Dir3       UnitDirX();                    // ?UnitDirX@math@@YA?AVDir3@1@XZ (core.o 0x4DBA00)
+Dir3       UnitDirY();                    // ?UnitDirY@math@@YA?AVDir3@1@XZ (core.o 0x4DBA40)
+Dir3       UnitDirZ();                    // ?UnitDirZ@math@@YA?AVDir3@1@XZ (core.o 0x4DBAA0)
 DiagMat33  IdentityMat33();               // ?IdentityMat33@math@@YA?AVDiagMat33@1@XZ (0x55F240)
 Dir3       Mul(const Dir3& v, const Mat33& m);  // ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat33@1@@Z (0x53A2B0)
 Dir3       operator*(const Dir3& v, const Mat33& m);  // ??Dmath@@YA?AVDir3@0@ABV10@ABVMat33@0@@Z (0x53A340)

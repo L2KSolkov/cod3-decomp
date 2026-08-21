@@ -85,6 +85,45 @@ float ATan(float y, float x)
 
 } // namespace math
 
+namespace math {
+
+float ASinUpper(float y)
+{
+    if (y >= 0.5f)
+    {
+        float a = sqrtf(fabsf((1.0f - y) * 0.5f));
+        return (((((a * a) * a) * (a * a) * (a * a) * -0.1079625f)
+               - ((a * a) * a * (a * a) * 0.15000001f))
+               - ((a * a) * a * 0.33333331f))
+               - (a * 2.0f) + 1.570796f;
+    }
+    return (((((y * y) * y) * (y * y) * (y * y) * 0.053981241f)
+           + ((y * y) * y * (y * y) * 0.075000003f))
+           + ((y * y) * y * 0.1666667f)) + y;
+}
+
+float ACosUpper(float x)
+{
+    float v;
+    if (x >= 0.5f)
+    {
+        float a = sqrtf(fabsf((1.0f - x) * 0.5f));
+        v = (((((a * a) * a) * (a * a) * (a * a) * -0.1079625f)
+             - ((a * a) * a * (a * a) * 0.15000001f))
+             - ((a * a) * a * 0.33333331f))
+             - (a * 2.0f) + 1.570796f;
+    }
+    else
+    {
+        v = (((((x * x) * x) * (x * x) * (x * x) * 0.053981241f)
+             + ((x * x) * x * (x * x) * 0.075000003f))
+             + ((x * x) * x * 0.1666667f)) + x;
+    }
+    return 1.5707964f - v;
+}
+
+} // namespace math
+
 // ============================================================================
 // Externs (core.o data / libc)
 // ============================================================================

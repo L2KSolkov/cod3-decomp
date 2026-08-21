@@ -78,6 +78,12 @@ extern void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self);
 extern void* InplaceAssetBankSet_StringTableBank_ctor(void* self);
 extern void RemoveLight(void* light);
 
+ServerTime::ServerTime()
+    : mNumTicksElapsed(0), mTickMSec(1), mTickDelta(0.001f),
+      mTickDeltaInv(1000.0f), mElapsedTime(0.0f)
+{
+}
+
 namespace EffectEventSysStatics {
 extern EffectEventSys* sInst;
 }

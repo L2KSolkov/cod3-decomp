@@ -427,6 +427,10 @@ math::Vector4::Vector4(const math::Dir3& _v)
 {
     v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
 }
+math::Vector4::Vector4(const math::Position3& _v)
+{
+    v = _v.val34().v;
+}
 
 // Free-function vector math (g.o 0x4A5FB0-0x4A65E0)
 math::Dir3 math::operator-(const math::Dir3& _v)
@@ -787,6 +791,58 @@ math::Dir3& math::Mat43::GetZ()
 math::Position3& math::Mat43::GetW()
 {
     return w;
+}
+math::Mat43::Mat43(const math::Dir3& _x, const math::Dir3& _y,
+                   const math::Dir3& _z, const math::Position3& _w)
+{
+    x = _x;
+    y = _y;
+    z = _z;
+    w = _w;
+}
+void math::Mat43::SetX(const math::Dir3& _x)
+{
+    x = _x;
+}
+void math::Mat43::SetY(const math::Dir3& _y)
+{
+    y = _y;
+}
+void math::Mat43::SetZ(const math::Dir3& _z)
+{
+    z = _z;
+}
+void math::Mat43::SetW(const math::Position3& _w)
+{
+    w = _w;
+}
+
+math::Dir3 math::UnitDirX()
+{
+    math::Dir3 result;
+    result.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    return result;
+}
+math::Dir3 math::UnitDirY()
+{
+    math::Dir3 result;
+    result.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    return result;
+}
+math::Dir3 math::UnitDirZ()
+{
+    math::Dir3 result;
+    result.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    return result;
+}
+
+const math::Mat44& math::Mat44::operator=(const math::Mat44& _m)
+{
+    x = _m.x;
+    y = _m.y;
+    z = _m.z;
+    w = _m.w;
+    return *this;
 }
 
 // ============================================================================

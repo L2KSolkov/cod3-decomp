@@ -1240,6 +1240,7 @@ struct AssetBankSet {
 
 class EntityManager : public AssetBankSet {
 public:
+    static void* operator new(size_t size, void* p); // ??2EntityManager@@SAPAXIPAX@Z (core.o 0x4DB880)
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
     static EntityManager* CreateInst();     // ?CreateInst@EntityManager@@SAXXZ (core.o 0x4DB890)
     static void DeleteInst();               // ?DeleteInst@EntityManager@@SAXXZ (core.o 0x4DB980)

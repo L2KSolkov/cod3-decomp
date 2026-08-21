@@ -43,6 +43,7 @@ enum nslWaveID : int;            // TODO: enum values from IDA
 struct ParticleEffect;
 struct apsEffect;
 struct gdLight;
+class PoolAllocator;
 struct LightEffect;
 struct CameraShakeInstance;
 struct EndOnScriptNode;
@@ -581,6 +582,12 @@ static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
 // ============================================================================
 class ActiveEffectSet {
 public:
+    static PoolAllocator* sAllocator;
+    static void* operator new(size_t size, bool forceHeapAlloc);
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    static void SetAllocator(PoolAllocator* allocator);
     ae_sized_array<AbstractEffect*, 6> mEffects;  // +0x00
     TPakId                             mPakId;    // +0x1C
     math::Mat43*                       mPoPtr;    // +0x20
@@ -598,6 +605,9 @@ public:
     void FastForward(float deltaT);                     // ea: 0x004C0D50
     void PlayQueuedEffect();                            // ea: 0x004C0DD0
     void SetPoPtr(math::Mat43* po);                     // ea: 0x004C0E40
+    Handle GetHandle() const;                            // core.o 0x004DBB30
+    void SetHandle(Handle h);                            // core.o 0x004DBB50
+    TPakId GetPakId() const;                             // core.o 0x004DBB60
     void StopLoopingEffects();                          // ea: 0x004C0EC0
     void GetDebugFxList(Entity* ent,
                         std::vector<std::string>& fx) const;  // ea: 0x004D3AD0
@@ -631,6 +641,7 @@ static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 // ============================================================================
 class EffectEventSys {
 public:
+    static void* operator new(size_t size, void* p);
     static EffectEventSys* sInst;       // ?sInst@EffectEventSys@@2PAV1@A @ 0x00F00E80
     static EffectEventSys* CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
@@ -676,6 +687,7 @@ public:
     struct EffectRef {
         unsigned int first;   // +0x00
         int          second;  // +0x04
+        EffectRef();          // ??0EffectRef@EffectEventSys@@QAE@XZ (core.o 0x4DBCF0)
     };
     static_assert(sizeof(EffectRef) == 0x8, "EffectRef size mismatch");
 
@@ -1559,6 +1571,7 @@ static_assert(offsetof(filelist_s, numfiles) == 0x80,
 // ============================================================================
 class SoundOptions {
 public:
+    SoundOptions();           // ??0SoundOptions@@QAE@XZ (core.o 0x4DBD10)
     int mFxDontPlayFootSteps;     // +0x00
     int mFxDontPlayGearRattle;    // +0x04
     int mFxDontPlayLanding;       // +0x08
@@ -1609,6 +1622,7 @@ struct ServerTime {
     float        mTickDelta;        // +0x08
     float        mTickDeltaInv;     // +0x0C
     float        mElapsedTime;      // +0x10
+    ServerTime();                    // ??0ServerTime@@QAE@XZ (core.o 0x4DB840)
 
     float GetElapsedTime() const { return mElapsedTime; }  // ?GetElapsedTime@ServerTime@@QBEMXZ (sv.o 0x51E1D0; inline COMDAT)
 };

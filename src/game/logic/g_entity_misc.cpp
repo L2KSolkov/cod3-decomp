@@ -4330,6 +4330,11 @@ void SoundDevice::CreateInst()
         sInst = nullptr;
 }
 
+void* EntityManager::operator new(size_t, void* p)
+{
+    return p;
+}
+
 EntityManager* EntityManager::CreateInst()
 {
     if (sInst != nullptr)
