@@ -11296,18 +11296,25 @@ char Host_PickInitialPoints() {
         HashStr key;
         key.mVal = 0x19F9F0E8u;
         Broc::entity trig;
-        *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies) =
+        Broc::entity levelEntityForTrigger =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        *mp_util_wad::GetEE_trigger(levelEntityForTrigger) =
             *Broc::GetEnt(&trig, &t2, key, 0);
         t2.~string();
     }
+    Broc::entity levelEntity =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     Broc::bbool hasTrig;
-    mp_util_wad::IsEEDefined_trigger(&hasTrig, mp_util_wad::pLevel->base_allies);
+    mp_util_wad::IsEEDefined_trigger(&hasTrig, levelEntity);
     if ((bool)hasTrig) {
-        Broc::bint k;
-        Broc::entity trig = *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies);
+        Broc::entity trig = *mp_util_wad::GetEE_trigger(levelEntity);
         mp_util_wad::pLevel->triggerIndex = (int)mp_util_wad::entity_get_key(trig);
     }
-    return 1;
+    return (char)((bool)hasTrig);
 }
 
 // SetupStage1 - ea: 0x958870
