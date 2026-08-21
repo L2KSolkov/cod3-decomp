@@ -67,10 +67,10 @@ index	status	map_line
 66	PORTED	0002:000b4d30 ??0DbQueryString@@QAE@XZ 008A4230 f i core.o PORTED: FUNCTION implemented IDA DbQueryString default constructor
 67	PORTED	0002:000b4d40 ??0DbQueryString@@QAE@PBD@Z 008A4240 f i core.o PORTED: FUNCTION implemented IDA DbQueryString bounded constructor
 68	PORTED	0002:000b4d70 ?c_str@DbQueryString@@QBEPBDXZ 008A4270 f i core.o PORTED: FUNCTION implemented IDA DbQueryString c_str accessor
-69	PORTED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o
-70	PORTED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o
-71	PORTED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o
-72	PORTED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o
+69	VERIFIED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path
+70	PORTED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o PORTED: FUNCTION implemented IDA DbQueryResults specific-match accessor
+71	PORTED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o PORTED: FUNCTION implemented IDA ae_heap_base constructor
+72	PORTED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor
 73	PORTED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o
 74	VERIFIED	0002:000b4e40 ?CreateInst@XModelManager@@SAXXZ 008A4340 f i core.o
 75	VERIFIED	0002:000b4f40 ?DeleteInst@XModelManager@@SAXXZ 008A4440 f i core.o

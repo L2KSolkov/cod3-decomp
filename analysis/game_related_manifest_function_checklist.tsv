@@ -1537,10 +1537,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1536	0x004B4D30	0x008A4230	??0DbQueryString@@QAE@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString default constructor	NO	NO	VERIFIED
 1537	0x004B4D40	0x008A4240	??0DbQueryString@@QAE@PBD@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString bounded constructor	NO	NO	VERIFIED
 1538	0x004B4D70	0x008A4270	?c_str@DbQueryString@@QBEPBDXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString c_str accessor	NO	NO	VERIFIED
-1539	0x004B4D80	0x008A4280	?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1540	0x004B4E00	0x008A4300	?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ		core.o	game		f i	1	SKIPPED	STL/template helper skipped	NO	NO	SKIPPED
-1541	0x004B4E10	0x008A4310	??0ae_heap_base@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1542	0x004B4E20	0x008A4320	?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1539	0x004B4D80	0x008A4280	?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path	NO	NO	VERIFIED
+1540	0x004B4E00	0x008A4300	?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryResults specific-match accessor	NO	NO	VERIFIED
+1541	0x004B4E10	0x008A4310	??0ae_heap_base@@QAE@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA ae_heap_base constructor	NO	NO	VERIFIED
+1542	0x004B4E20	0x008A4320	?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor	NO	NO	VERIFIED
 1543	0x004B4E30	0x008A4330	??2XModelManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1544	0x004B4E40	0x008A4340	?CreateInst@XModelManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1545	0x004B4F40	0x008A4440	?DeleteInst@XModelManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
