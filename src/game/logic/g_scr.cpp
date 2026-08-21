@@ -248,6 +248,9 @@ public:
             static PoolAllocator* sAllocator;   // scr.o @ 0x132A0CC
             friend struct BackupStack;
         public:
+            Block();                                  // scr.o 0x5E9960
+            static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9900
+            static void operator delete(void* ptr);                    // 0x5E9920/0x5E9940
             static PoolAllocator* GetAllocator();  // g.o
             static void SetupAllocator();          // scr.o 0x5C9340
         };
@@ -282,6 +285,11 @@ public:
     const char* mFile;                                  // +0x48
     int mLine;                                          // +0x4C
 
+    AeThread* get_dlist_node();                         // scr.o 0x5E9860
+    static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9870
+    static void operator delete(void* ptr);                     // 0x5E9890/0x5E98B0
+    void SetHandle(Handle h);                            // scr.o 0x5E98D0
+    Handle GetHandle() const;                            // scr.o 0x5E98E0
     void SetKillFlag();  // ?SetKillFlag@AeThread@@QAEXXZ (scr.o 0x5C1F00)
     void Kill();         // ?Kill@AeThread@@QAEXXZ (scr.o 0x5C1F10)
     void RegisterBrocInst(void* inst, BrocDtorBase* dtor);  // scr.o 0x5C9400
@@ -503,6 +511,26 @@ static_assert(sizeof(AeThread::BackupStack::Block) == 0x100,
               "BackupStack::Block size mismatch");
 
 PoolAllocator* AeThread::BackupStack::Block::sAllocator;
+
+// ea: 0x005E9960
+AeThread::BackupStack::Block::Block()
+    : mNext(nullptr)
+{
+}
+
+// ea: 0x005E9900
+void* AeThread::BackupStack::Block::operator new(size_t size,
+                                                  bool forceHeapAlloc)
+{
+    return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+// ea: 0x005E9920 / 0x005E9940
+void AeThread::BackupStack::Block::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
 PoolAllocator* AeThread::BackupStack::Block::GetAllocator()
 {
     return AeThread::BackupStack::Block::sAllocator;
@@ -2865,6 +2893,48 @@ __declspec(naked) void LongJmp(unsigned int* r)
 
 PoolAllocator* AeThread::sAllocator;
 unsigned int* AeThread::sBackup = (unsigned int*)-1;
+
+// ea: 0x005E9860
+AeThread* AeThread::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x005E9870
+void* AeThread::operator new(size_t size, bool forceHeapAlloc)
+{
+    return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+// ea: 0x005E9890 / 0x005E98B0
+void AeThread::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
+// ea: 0x005E98D0
+void AeThread::SetHandle(Handle h)
+{
+    mHandle = h;
+}
+
+// ea: 0x005E98E0
+Handle AeThread::GetHandle() const
+{
+    return mHandle;
+}
+
+// ea: 0x005E9970
+AeThread* AeThreadManager::GetExecutingThread()
+{
+    return (AeThread*)mThreadExecuting;
+}
+
+// ea: 0x005E9980
+void AeThreadManager::SetExecutingThread(AeThread* t)
+{
+    mThreadExecuting = t;
+}
 
 // DestroyBrocInstsStub (scr.o 0x5BC0E0, empty)
 static void DestroyBrocInstsStub(void*)

@@ -470,6 +470,8 @@ public:
     void ReleaseHandle(AeThread* t);           // ?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C9770)
     void ReleaseHandle(Handle h);              // ?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z (scr.o 0x5C97A0)
     Handle AssignHandle(AeThread* t);          // ?AssignHandle@AeThreadManager@@QAE?AVHandle@@PAVAeThread@@@Z (scr.o 0x5DB160)
+    AeThread* GetExecutingThread();            // ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ (scr.o 0x5E9970)
+    void SetExecutingThread(AeThread* t);      // ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5E9980)
 private:
     void KillThread(AeThread* t);              // ?KillThread@AeThreadManager@@AAEXPAVAeThread@@@Z (scr.o 0x5DC120)
     void ProcessScriptNotifys();               // ?ProcessScriptNotifys@AeThreadManager@@AAEXXZ (scr.o 0x5C96D0)
