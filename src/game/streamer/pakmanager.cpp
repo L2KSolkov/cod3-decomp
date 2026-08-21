@@ -2677,6 +2677,8 @@ struct BoundingBox {
         vmin.v = _mm_set1_ps(3.4028235e38f);
         vmax.v = _mm_set1_ps(-3.4028235e38f);
     }
+    ~BoundingBox();  // ??1BoundingBox@@QAE@XZ (game2.o 0x517290)
+    math::Position3 center() const;  // ?center@BoundingBox@@QBE?AVPosition3@math@@XZ (game2.o 0x5172A0)
     bool intersect(const math::Position3& p) const;
     void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
 };
@@ -11127,6 +11129,19 @@ const InplaceVector<float>& ZdNode::GetZoneDistances() const
 const BoundingBox& ZoneCellBox::GetBounds() const
 {
     return *(const BoundingBox*)this;
+}
+
+// ea: 0x00517290
+BoundingBox::~BoundingBox()
+{
+}
+
+// ea: 0x005172A0
+math::Position3 BoundingBox::center() const
+{
+    math::Position3 result;
+    result.v = _mm_mul_ps(_mm_add_ps(vmax.v, vmin.v), _mm_set1_ps(0.5f));
+    return result;
 }
 
 // ea: 0x684460
