@@ -1367,12 +1367,14 @@ struct nalInstanceClass;
 
 struct MetaNalBaseAnim {
     void** __vftable;           // +0x00
-    tlFixedString Name;         // +0x04 (32 bytes)
-    unsigned char _pad24[0x30 - 0x24];  // +0x24 (nalAnimClass extra)
+    void* NextAnim;             // +0x04 (nalAnimClass next-animation link)
+    tlFixedString Name;         // +0x08 (32 bytes)
+    int SkeletonNameIndex;      // +0x28
+    unsigned int Version;       // +0x2C
     void* Skeleton;             // +0x30
     unsigned int Flags;         // +0x34
     float Duration;             // +0x38
-    unsigned char _pad3C[4];    // +0x3C (nalAnimClass instance ptr area)
+    int InstanceCount;          // +0x3C
     MetaAnimData* mData;        // +0x40
 
     MetaNalBaseAnim();                       // ea: 0x4F5F20
