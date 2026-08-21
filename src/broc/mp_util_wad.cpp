@@ -154,7 +154,7 @@ AeThreadFunctor* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool cansp
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
 AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
-void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
+AeThreadFunctor* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
 AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
                                                 Broc::vector position);
 AeThreadFunctor* NewHost__functor(Broc::entity self);
@@ -2213,6 +2213,11 @@ void Broc::DoDamage(const Broc::entity& e, float damage,
 // SetTakeDamage - ea: 0x940E90
 void Broc::SetTakeDamage(const Broc::entity& e, int damage) {
     Broc::gBrocAPI.mSetTakeDamage(e.GetHandle(), damage);
+}
+
+// Broc::TakeAllWeapons - ea: 0x946010
+void Broc::TakeAllWeapons(Broc::entity* e) {
+    Broc::gBrocAPI.mTakeAllWeapons(e->GetHandle());
 }
 
 // Broc::OpenMenu - ea: 0x945810
@@ -13286,7 +13291,7 @@ AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitT
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(restart_round, selfLevel, waitTime);
 }
-void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime) {
+AeThreadFunctor* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>));
     if (storage == NULL)
         return NULL;

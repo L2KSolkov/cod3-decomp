@@ -1028,7 +1028,9 @@ struct BrocAPI {
                     float);                              // +0x9E8
     char _pad9EC[0x9FC - 0x9EC];                          // +0x9EC
     void (*mRotateTo)(unsigned int, const Broc::vector&, float, float, float); // +0x9FC
-    char _padA00[0xA8C - 0xA00];                          // +0xA00
+    char _padA00[0xA24 - 0xA00];                          // +0xA00
+    void (*mTakeAllWeapons)(unsigned int);                 // +0xA24
+    char _padA28[0xA8C - 0xA28];                          // +0xA28
     int (*mOpenMenu)(const Broc::string*, int);            // +0xA8C
     int (*mIsMenuOpen)(const Broc::string*, int);          // +0xA90
     int (*mOpenMenuNoMouse)(unsigned int, const Broc::string*); // +0xA94
