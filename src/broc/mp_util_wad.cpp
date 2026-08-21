@@ -2453,6 +2453,16 @@ void Broc::Code_SendGameState(Broc::entity player, int currentTime, int timeLimi
                             roundOver, roundCount);
 }
 
+// Broc::Code_SendGameStateHQ - ea: 0x95BAB0
+void Broc::Code_SendGameStateHQ(Broc::entity player, unsigned int stage,
+                                const Broc::vector& vA,
+                                const Broc::vector& vB,
+                                unsigned int triggerIndex,
+                                bool alliesDefending, bool pointAIsHQ) {
+    gBrocAPI.mSendGameStateHQ(player.GetHandle(), stage, vA, vB,
+                              triggerIndex, alliesDefending, pointAIsHQ);
+}
+
 // Code_IncTeamScore - ea: 0x93DE70
 void Broc::Code_IncTeamScore(const Broc::string& team, int amount) {
     gBrocAPI.mIncTeamScore(team, amount);
@@ -2476,6 +2486,12 @@ void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func) {
         funcHash.mVal = func;
         AddEventHandler(*e, labelHash, funcHash);
     }
+}
+
+// Broc::RemoveEventHandler - ea: 0x95B4F0
+bool RemoveEventHandler(Broc::entity* e, HashStr label, HashStr func) {
+    return gBrocAPI.mRemoveEventHandler(e->GetHandle(), label.mVal,
+                                         func.mVal);
 }
 
 // SoundPlay - ea: 0x936070
@@ -10343,10 +10359,10 @@ void SetupRound() {
     Broc::string_hash(&goalHash, "_mp_scf::Goal");
     HashStr label;
     label.mVal = 0xF2F5EAB4;
-    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_allies, label.mVal,
-                             goalHash.mVal);
-    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_axis, label.mVal,
-                             goalHash.mVal);
+    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_allies, label,
+                             goalHash);
+    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_axis, label,
+                             goalHash);
     Broc::AddEventHandler(&mp_util_wad::pLevel->base_allies, label.mVal,
                           goalHash.mVal);
     Broc::AddEventHandler(&mp_util_wad::pLevel->base_axis, label.mVal,
@@ -11276,8 +11292,8 @@ void ClearGame() {
     Broc::string_hash(&trigHash, "_mp_hq::TriggerRadio");
     HashStr label;
     label.mVal = 0xF2F5EAB4;
-    Broc::RemoveEventHandler(mp_util_wad::GetEE_trigger(lvl), label.mVal,
-                             trigHash.mVal);
+    Broc::RemoveEventHandler(mp_util_wad::GetEE_trigger(lvl), label,
+                             trigHash);
     Broc::dyn_array<Broc::entity> players;
     Broc::GetPlayerArray(&players);
     Broc::bint i(0);
@@ -11359,10 +11375,10 @@ void BroadcastGameState() {
         while ((int)i < Broc::size(players)) {
             Broc::Code_SendGameStateHQ(
                 players[(unsigned int)(int)i],
-                (int)mp_util_wad::pLevel->hq_stage,
-                &mp_util_wad::pLevel->pointA,
-                &mp_util_wad::pLevel->pointB,
-                (int)mp_util_wad::pLevel->triggerIndex,
+                (unsigned int)(int)mp_util_wad::pLevel->hq_stage,
+                mp_util_wad::pLevel->pointA,
+                mp_util_wad::pLevel->pointB,
+                (unsigned int)(int)mp_util_wad::pLevel->triggerIndex,
                 (bool)mp_util_wad::pLevel->allies_defending,
                 (bool)mp_util_wad::pLevel->pointA_isHQ);
             i = (int)i + 1;
@@ -11537,9 +11553,9 @@ void CallbackPlayerEnter(Broc::entity player, int hot_joiner) {
     Broc::Code_DebugOut("*HQ* CallbackPlayerEnter\n");
     _mp_common::CallbackPlayerEnter(player, hot_joiner);
     Broc::Code_SendGameStateHQ(
-        player, (int)mp_util_wad::pLevel->hq_stage,
-        &mp_util_wad::pLevel->pointA, &mp_util_wad::pLevel->pointB,
-        (int)mp_util_wad::pLevel->triggerIndex,
+        player, (unsigned int)(int)mp_util_wad::pLevel->hq_stage,
+        mp_util_wad::pLevel->pointA, mp_util_wad::pLevel->pointB,
+        (unsigned int)(int)mp_util_wad::pLevel->triggerIndex,
         (bool)mp_util_wad::pLevel->allies_defending,
         (bool)mp_util_wad::pLevel->pointA_isHQ);
 }

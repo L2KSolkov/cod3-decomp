@@ -899,7 +899,8 @@ struct BrocAPI {
     void (*mEntNotify)(unsigned int, unsigned int);       // +0x074
     char _pad78[0x8C - 0x78];                             // +0x078
     void (*mAddEventHandler)(unsigned int, unsigned int, unsigned int); // +0x08C
-    char _pad90[0x94 - 0x90];                             // +0x090
+    bool (*mRemoveEventHandler)(unsigned int, const unsigned int,
+                                const unsigned int);      // +0x090
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
     unsigned int (*mGetEntByNum)(int);                    // +0x098
     char _pad9C[0xA4 - 0x9C];                             // +0x09C
@@ -1012,8 +1013,9 @@ struct BrocAPI {
     char _pad344[0x370 - 0x344];                          // +0x344
     void (*mSendGameState)(unsigned int, int, int, int, int,
                            bool, bool, bool, int, int, int, bool, int, int); // +0x370
-    void (*mSendGameStateHQ)(unsigned int, unsigned int, const Broc::vector&,
-                             const Broc::vector&, unsigned int, bool, bool); // +0x374
+    void (*mSendGameStateHQ)(const unsigned int, const unsigned int,
+                             const Broc::vector, const Broc::vector,
+                             const unsigned int, const bool, const bool); // +0x374
     void (*mSendGameStateCTF)(unsigned int, const Broc::vector&,
                               const Broc::vector&, unsigned int,
                               const Broc::vector&, const Broc::vector&,
@@ -1204,7 +1206,7 @@ void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time);
 void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
 void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
-void RemoveEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
+bool RemoveEventHandler(Broc::entity* e, HashStr label, HashStr func);
 HashStr string_hash(const char* str);
 HashStr* string_hash(HashStr* result, const char* str);
 HashStr* string_hash(HashStr* result, const Broc::string* str);
@@ -1348,9 +1350,9 @@ void Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
                            const Broc::vector* flag,
                            const Broc::vector* flagAngles,
                            Broc::entity flag_holder);
-void Code_SendGameStateHQ(Broc::entity player, int stage,
-                          const Broc::vector* vA, const Broc::vector* vB,
-                          int triggerIndex, bool alliesDefending,
+void Code_SendGameStateHQ(Broc::entity player, unsigned int stage,
+                          const Broc::vector& vA, const Broc::vector& vB,
+                          unsigned int triggerIndex, bool alliesDefending,
                           bool pointAIsHQ);
 void Code_SendGameStateDOM(Broc::entity player, int flag0, int flag1,
                            int flag2, int flag3, int flag4);
