@@ -1,5 +1,5 @@
 index	status	map_line
-1	VERIFIED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o
+1	FIXED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o	FIXED: added IDA pointer-backed word_39C6FA registration for "flag"
 2	VERIFIED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	VERIFIED: IDA 0x0092EEC0 matches direct mp_anim_wad::ResolveAnim forwarding and BOOL conversion
 3	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 4	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
@@ -45,8 +45,8 @@ index	status	map_line
 44	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body added
 45	FIXED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body and nullEnt fallback match IDA disassembly
 46	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
-47	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o
-48	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o
+47	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and nullEnt fallback
+48	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and guarded GetVal path
 49	FIXED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
 50	PORTED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match
 51	FIXED	0002:00530600 ?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z 00D1FB00 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added

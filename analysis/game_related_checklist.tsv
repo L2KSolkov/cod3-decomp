@@ -23854,7 +23854,7 @@ index	status	map_line
 23853	VERIFIED	0002:0052e2a0 ??0BroAnim@@QAE@XZ 00D1D7A0 f i Broc.o
 23854	PORTED	0002:0052e2d0 ?GetUninitialized@BroAnim@@QAEIXZ 00D1D7D0 f i Broc.o
 23855	PORTED	0002:0052e2f0 ??0HashStr@@QAE@XZ 00D1D7F0 f i Broc.o
-23856	VERIFIED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o
+23856	FIXED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o	FIXED: added IDA pointer-backed word_39C6FA registration for "flag"
 23857	VERIFIED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	VERIFIED: IDA 0x0092EEC0 matches direct mp_anim_wad::ResolveAnim forwarding and BOOL conversion
 23858	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 23859	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
@@ -23900,8 +23900,8 @@ index	status	map_line
 23899	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body added
 23900	FIXED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body and nullEnt fallback match IDA disassembly
 23901	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
-23902	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o
-23903	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o
+23902	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and nullEnt fallback
+23903	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and guarded GetVal path
 23904	FIXED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
 23905	PORTED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match
 23906	FIXED	0002:00530600 ?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z 00D1FB00 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
