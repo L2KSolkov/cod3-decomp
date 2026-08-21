@@ -588,9 +588,9 @@ index	status	map_line
 587	PORTED	0002:00558830 ?Get@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAE?AVentity@Broc@@XZ 00D47D30 f i mp_util_wad.o
 588	FIXED	0002:00558870 ?SetupStage1@_mp_hq@@YAXXZ 00D47D70 f mp_util_wad.o	FIXED: IDA 0x00958870 calls no-arg RemoveRadioModel
 589	FIXED	0002:005588a0 ?SetUpStage3@_mp_hq@@YAXXZ 00D47DA0 f mp_util_wad.o	FIXED: IDA 0x009588A0 ports objective replacement, defender respawn lock, established-HQ effect, team dialog threads, radio timer reset, and setup graphic
-590	PORTED	0002:00558ee0 ?ShowHQDestroyed@_mp_hq@@YAXXZ 00D483E0 f mp_util_wad.o
-591	PORTED	0002:00558f90 ?ShowHQDefended@_mp_hq@@YAXXZ 00D48490 f mp_util_wad.o
-592	PORTED	0002:00559010 ?ShowHQSetUp@_mp_hq@@YAXXZ 00D48510 f mp_util_wad.o
+590	VERIFIED	0002:00558ee0 ?ShowHQDestroyed@_mp_hq@@YAXXZ 00D483E0 f mp_util_wad.o	VERIFIED: IDA 0x00958EE0 matches the shutdown/award messages and 3000ms string timer
+591	VERIFIED	0002:00558f90 ?ShowHQDefended@_mp_hq@@YAXXZ 00D48490 f mp_util_wad.o	VERIFIED: IDA 0x00958F90 matches the defended message and 3000ms string timer
+592	VERIFIED	0002:00559010 ?ShowHQSetUp@_mp_hq@@YAXXZ 00D48510 f mp_util_wad.o	VERIFIED: IDA 0x00959010 resets radioTriggerTime, selects the setup message, and sets the 3000ms string timer
 593	VERIFIED	0002:005590b0 ?ShowSetupGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D485B0 f mp_util_wad.o
 594	VERIFIED	0002:00559120 ?ShowDestructionGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48620 f mp_util_wad.o
 595	VERIFIED	0002:00559190 ?ShowLosingHQGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48690 f mp_util_wad.o
