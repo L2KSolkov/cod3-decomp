@@ -239,7 +239,7 @@ ngl_dx_tex_create.o	17	11	6	0	0	0	0
 ngl_dx_texture.o	17	12	5	0	0	0	0
 ngl_font.o	27	26	1	0	0	0	0
 ngl_gpu.o	32	17	15	0	0	0	0
-ngl_gpu_debug.o	4	2	2	0	0	0	0
+ngl_gpu_debug.o	4	4	0	0	0	0	0
 ngl_gpu_meshedit.o	14	12	2	0	0	0	0
 ngl_gpu_texture.o	17	0	17	0	0	0	0
 ngl_internal.o	29	24	5	0	0	0	0

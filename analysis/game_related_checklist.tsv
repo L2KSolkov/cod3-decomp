@@ -20071,8 +20071,8 @@ index	status	map_line
 20070	VERIFIED	0002:004511b0 ?Compare@ngliShaderProfile@@QAEXPAU1@@Z 00C406B0 f ngl_dx_debug.o
 20071	VERIFIED	0002:00451460 ?Render@nglDebugLineNode@@UAEXXZ 00C40960 f ngl_gpu_debug.o
 20072	VERIFIED	0002:00451620 ?Render@nglDebugTriNode@@UAEXXZ 00C40B20 f ngl_gpu_debug.o
-20073	PORTED	0002:004517f0 ?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40CF0 f i ngl_gpu_debug.o
-20074	PORTED	0002:00451800 ?gpuDisableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40D00 f i ngl_gpu_debug.o
+20073	VERIFIED	0002:004517f0 ?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40CF0 f i ngl_gpu_debug.o
+20074	VERIFIED	0002:00451800 ?gpuDisableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z 00C40D00 f i ngl_gpu_debug.o
 20075	VERIFIED	0002:00451a30 ?ngliSetRenderTarget@@YAXPAUnglTexture@@@Z 00C40F30 f ngl_dx_scene.o
 20076	VERIFIED	0002:00451ae0 ?nglSetCubeMapRenderTarget@@YAXPAUnglTexture@@H@Z 00C40FE0 f ngl_dx_scene.o
 20077	VERIFIED	0002:00451b70 ?ngliSetZTarget@@YAXPAUnglTexture@@@Z 00C41070 f ngl_dx_scene.o

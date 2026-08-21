@@ -20071,8 +20071,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20070	0x008511B0	0x00C406B0	?Compare@ngliShaderProfile@@QAEXPAU1@@Z	ngl_xboxr	ngl_dx_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20071	0x00851460	0x00C40960	?Render@nglDebugLineNode@@UAEXXZ	ngl_xboxr	ngl_gpu_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20072	0x00851620	0x00C40B20	?Render@nglDebugTriNode@@UAEXXZ	ngl_xboxr	ngl_gpu_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20073	0x008517F0	0x00C40CF0	?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	ngl_xboxr	ngl_gpu_debug.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20074	0x00851800	0x00C40D00	?gpuDisableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	ngl_xboxr	ngl_gpu_debug.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20073	0x008517F0	0x00C40CF0	?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	ngl_xboxr	ngl_gpu_debug.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+20074	0x00851800	0x00C40D00	?gpuDisableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	ngl_xboxr	ngl_gpu_debug.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20075	0x00851A30	0x00C40F30	?ngliSetRenderTarget@@YAXPAUnglTexture@@@Z	ngl_xboxr	ngl_dx_scene.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20076	0x00851AE0	0x00C40FE0	?nglSetCubeMapRenderTarget@@YAXPAUnglTexture@@H@Z	ngl_xboxr	ngl_dx_scene.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20077	0x00851B70	0x00C41070	?ngliSetZTarget@@YAXPAUnglTexture@@@Z	ngl_xboxr	ngl_dx_scene.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
