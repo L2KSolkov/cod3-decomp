@@ -1303,7 +1303,7 @@ void* MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
 }
 
 // ============================================================================
-// TaskHandler - task dispatch handler (0x30, IDA verified)
+// TaskHandler - task dispatch handler (0x30, IDA layout)
 // ============================================================================
 struct DListNode {
     DListNode* m_next;  // +0x00
@@ -1311,10 +1311,10 @@ struct DListNode {
 };
 
 struct DList {
-    DListNode m_end;     // +0x00
-    DListNode* m_head;   // +0x08
-    DListNode** m_tail;  // +0x0C
-    int m_size;          // +0x10
+    int m_size;          // +0x00
+    DListNode* m_head;   // +0x04
+    DListNode* m_end;    // +0x08 (sentinel storage is the field address)
+    DListNode* m_tail;   // +0x0C
 };
 
 struct QuickTaskDeactivation {
@@ -1367,6 +1367,7 @@ extern void ae_sized_array_push_back_handler(TaskSysImpl2* self,
                                              TaskHandlerImpl* const* elt);
 extern void* mem_heap_malloc_sz(unsigned int size);
 extern void HandleDb_ReleaseTaskHandle(void* self, Handle h);
+extern void TaskSys_DeliverTasks();
 
 // ea: 0x4FFB20
 TaskHandlerImpl::TaskHandlerImpl(unsigned int task_id, unsigned int flags)
@@ -1375,16 +1376,16 @@ TaskHandlerImpl::TaskHandlerImpl(unsigned int task_id, unsigned int flags)
     mTaskId = task_id;
     m_dlist[0] = nullptr;
     m_dlist[1] = nullptr;
-    mTaskList.m_end.m_next = nullptr;
-    mTaskList.m_end.m_prev = nullptr;
-    mTaskList.m_head = &mTaskList.m_end;
-    mTaskList.m_tail = &mTaskList.m_head;
     mTaskList.m_size = 0;
-    mQuickDeactivationList.m_end.m_next = nullptr;
-    mQuickDeactivationList.m_end.m_prev = nullptr;
-    mQuickDeactivationList.m_head = &mQuickDeactivationList.m_end;
-    mQuickDeactivationList.m_tail = &mQuickDeactivationList.m_head;
+    mTaskList.m_end = nullptr;
+    mTaskList.m_head = reinterpret_cast<DListNode*>(&mTaskList.m_end);
+    mTaskList.m_tail = reinterpret_cast<DListNode*>(&mTaskList.m_head);
     mQuickDeactivationList.m_size = 0;
+    mQuickDeactivationList.m_end = nullptr;
+    mQuickDeactivationList.m_head =
+        reinterpret_cast<DListNode*>(&mQuickDeactivationList.m_end);
+    mQuickDeactivationList.m_tail =
+        reinterpret_cast<DListNode*>(&mQuickDeactivationList.m_head);
     TaskHandlerImpl* self = this;
     ae_sized_array_push_back_handler(TaskSysImpl2_sInst, &self);
 }
@@ -1394,7 +1395,8 @@ TaskHandlerImpl::~TaskHandlerImpl()
 {
     // Delete owned quick-deactivation records (each is a heap block).
     DListNode* q = mQuickDeactivationList.m_head;
-    while (q != nullptr && q != &mQuickDeactivationList.m_end)
+    while (q != nullptr
+           && q != reinterpret_cast<DListNode*>(&mQuickDeactivationList.m_end))
     {
         DListNode* next = q->m_next;
         QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
@@ -1403,7 +1405,8 @@ TaskHandlerImpl::~TaskHandlerImpl()
     }
     // Delete owned task objects (dlist node is embedded in Task).
     DListNode* t = mTaskList.m_head;
-    while (t != nullptr && t != &mTaskList.m_end)
+    while (t != nullptr
+           && t != reinterpret_cast<DListNode*>(&mTaskList.m_end))
     {
         DListNode* next = t->m_next;
         Task* task = (Task*)((char*)t - 0x4);
@@ -1425,11 +1428,13 @@ void TaskHandlerImpl::QuickDeactivation(
         v3->m_dlist_node.m_prev = nullptr;
         v3->mEnt = h;
     }
-    DListNode* tail = *mQuickDeactivationList.m_tail;
-    v3->m_dlist_node.m_next = &mQuickDeactivationList.m_end;
+    DListNode* tail = mQuickDeactivationList.m_tail;
+    v3->m_dlist_node.m_next =
+        reinterpret_cast<DListNode*>(&mQuickDeactivationList.m_end);
     v3->m_dlist_node.m_prev = tail;
-    tail->m_next = &v3->m_dlist_node;
-    *mQuickDeactivationList.m_tail = &v3->m_dlist_node;
+    tail->m_next = reinterpret_cast<DListNode*>(&v3->m_dlist_node);
+    mQuickDeactivationList.m_tail =
+        reinterpret_cast<DListNode*>(&v3->m_dlist_node);
     ++mQuickDeactivationList.m_size;
 }
 
@@ -1441,7 +1446,8 @@ void TaskHandlerImpl::DeactivateAll()
     mFlags |= 8u;
     DListNode* m_head = mTaskList.m_head;
     DListNode* m_next = m_head != nullptr ? m_head->m_next : nullptr;
-    if (m_head != &mTaskList.m_end && m_next != nullptr)
+    if (m_head != reinterpret_cast<DListNode*>(&mTaskList.m_end)
+        && m_next != nullptr)
     {
         do
         {
@@ -1462,9 +1468,11 @@ Task* TaskHandlerImpl::GetTaskForEntity(
 {
     DListNode* m_head = mTaskList.m_head;
     DListNode* m_next = m_head != nullptr ? m_head->m_next : nullptr;
-    if (m_head == &mTaskList.m_end || m_next == nullptr)
+    if (m_head == reinterpret_cast<DListNode*>(&mTaskList.m_end)
+        || m_next == nullptr)
         return nullptr;
-    while (*(unsigned int*)((char*)m_head + 0x14) != h.mHandle.mVal)
+    while (((Task*)((char*)m_head - 0x4))
+               ->mEntityHandle.mHandle.mVal != h.mHandle.mVal)
     {
         m_head = m_next;
         m_next = m_next->m_next;
@@ -1480,45 +1488,89 @@ Task* TaskHandlerImpl::GetTaskForEntity(
 
 void TaskHandlerImpl::Update(float deltaT, void* ftor)
 {
-    // Apply quick-deactivation records: mark those entities' tasks.
+    // Drain quick-deactivation records into the fixed release-build array.
+    struct QuickEraseList {
+        DbLinkedHandle<EntityHandleDb, Entity>* m_elements;
+        unsigned char m_elementdata[512];
+        int m_size;
+    };
+    QuickEraseList quickEraseList = {};
+    quickEraseList.m_elements =
+        reinterpret_cast<DbLinkedHandle<EntityHandleDb, Entity>*>(
+            quickEraseList.m_elementdata);
+
     DListNode* q = mQuickDeactivationList.m_head;
-    while (q != nullptr && q != &mQuickDeactivationList.m_end)
+    while (q != nullptr
+           && q != reinterpret_cast<DListNode*>(&mQuickDeactivationList.m_end))
     {
         QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
-        unsigned int entVal = rec->mEnt.mHandle.mVal;
         DListNode* next = q->m_next;
-        Entity* ent = EntityHandleDb::sInst.GetObject(entVal);
-        if (ent != nullptr)
-            ent->mFlags |= 4u;
+        mQuickDeactivationList.m_head = next;
+        next->m_prev = q->m_prev;
+        --mQuickDeactivationList.m_size;
+        quickEraseList.m_elements[quickEraseList.m_size++] = rec->mEnt;
         mem_heap_free(rec);
-        q = next;
+        q = mQuickDeactivationList.m_head;
     }
-    mQuickDeactivationList.m_head = &mQuickDeactivationList.m_end;
-    mQuickDeactivationList.m_size = 0;
 
-    // Run each task's Update.
+    ae_sized_array<Task*, 128> deactivatedTasks;
     DListNode* t = mTaskList.m_head;
-    while (t != nullptr && t != &mTaskList.m_end)
+    if (t == reinterpret_cast<DListNode*>(&mTaskList.m_end))
+        t = nullptr;
+    while (t != nullptr)
     {
         Task* task = (Task*)((char*)t - 0x4);
         DListNode* next = t->m_next;
+        Entity* entity = EntityHandleDb::sInst.GetObject(
+            task->mEntityHandle.mHandle.mVal);
+        if (entity != nullptr && (mFlags & 1u) != 0
+            && (task->mFlags & 4u) == 0)
+        {
+            for (int i = 0; i < quickEraseList.m_size; ++i)
+            {
+                if (quickEraseList.m_elements[i].mHandle.mVal
+                    == entity->mHandle.mHandle.mVal)
+                {
+                    task->mFlags |= 4u;
+                    break;
+                }
+            }
+        }
         if (ftor != nullptr)
         {
-            // TaskFunctor path: fn(task, entity)
-            ((void(*)(Task*, void*))ftor)(task, nullptr);
+            typedef void (__thiscall *FunctorUpdateFn)(
+                TaskFunctor*, Task*, Entity*);
+            void** functorVftable = *(void***)ftor;
+            ((FunctorUpdateFn)functorVftable[1])(
+                reinterpret_cast<TaskFunctor*>(ftor), task, entity);
         }
         else
         {
-            // Task::Update(Entity*, float)
-            typedef void (*UpdateFn)(Task*, Entity*, float);
-            void** vt = *(void***)task;
-            UpdateFn fn = (UpdateFn)vt[4];  // vtable slot 4 = Update
-            Entity* e = EntityHandleDb::sInst.GetObject(
-                task->mEntityHandle.mHandle.mVal);
-            fn(task, e, deltaT);
+            task->Update(entity, deltaT);
         }
+        unsigned char deactivate = static_cast<unsigned char>(
+            ~((task->mFlags & 0xFFFFFFFEu) >> 2));
+        task->mFlags &= ~1u;
+        if ((deactivate & 1u) == 0)
+            deactivatedTasks.push_back(task);
         t = next;
     }
+
+    for (int i = 0; i < deactivatedTasks.m_size; ++i)
+    {
+        Task* task = deactivatedTasks.m_elements[i];
+        DListNode* node = reinterpret_cast<DListNode*>(task->_dlist);
+        node->m_next->m_prev = node->m_prev;
+        node->m_prev->m_next = node->m_next;
+        --mTaskList.m_size;
+        if (task->mTaskHandle.mVal != 0)
+            HandleDb_ReleaseTaskHandle(&TaskSysImpl2_sInst->mHandleDb,
+                                       task->mTaskHandle);
+        typedef void (__thiscall *DeletingDtorFn)(Task*, unsigned int);
+        void** taskVftable = *(void***)task;
+        ((DeletingDtorFn)taskVftable[0])(task, 1);
+    }
+    TaskSys_DeliverTasks();
 }
 
 // ============================================================================
@@ -1651,10 +1703,11 @@ void TaskSys_DeliverTasks()
         if (handler != nullptr)
         {
             DListNode* node = (DListNode*)&task->_dlist[0];
-            node->m_next = &handler->mTaskList.m_end;
-            node->m_prev = *handler->mTaskList.m_tail;
-            (*handler->mTaskList.m_tail)->m_next = node;
-            *handler->mTaskList.m_tail = node;
+            node->m_next =
+                reinterpret_cast<DListNode*>(&handler->mTaskList.m_end);
+            node->m_prev = handler->mTaskList.m_tail;
+            handler->mTaskList.m_tail->m_next = node;
+            handler->mTaskList.m_tail = node;
             ++handler->mTaskList.m_size;
         }
         --count;
