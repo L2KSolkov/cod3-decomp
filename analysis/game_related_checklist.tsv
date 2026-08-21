@@ -6369,7 +6369,7 @@ index	status	map_line
 6368	VERIFIED	0002:001ad470 ??KBroc@@YA?AUvector@0@ABU10@M@Z 0099C970 f i shell.o
 6369	VERIFIED	0002:001ad4c0 ?IsMedic@@YA_NH@Z 0099C9C0 f i shell.o
 6370	VERIFIED	0002:001ad4e0 ??0color32@@QAE@EEEE@Z 0099C9E0 f i shell.o	VERIFIED: matches IDA packed channel assignments
-6371	PORTED	0002:001ad510 ?get_red@color32@@QBEEXZ 0099CA10 f i shell.o
+6371	VERIFIED	0002:001ad510 ?get_red@color32@@QBEEXZ 0099CA10 f i shell.o	VERIFIED: matches IDA red-channel accessor
 6372	PORTED	0002:001ad520 ?get_green@color32@@QBEEXZ 0099CA20 f i shell.o
 6373	PORTED	0002:001ad530 ?get_blue@color32@@QBEEXZ 0099CA30 f i shell.o
 6374	PORTED	0002:001ad540 ?get_alpha@color32@@QBEEXZ 0099CA40 f i shell.o
