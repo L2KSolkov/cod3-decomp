@@ -82,19 +82,19 @@ index	status	map_line
 81	VERIFIED	0002:00531550 ?GetEE_damagelight@@YAAAVstring@Broc@@Ventity@2@@Z 00D20A50 f mp_util_wad.o	VERIFIED: IDA 0x00931550 forwards handle lookup and GetRef key 0xAA4AB8F7
 82	VERIFIED	0002:005315a0 ?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z 00D20AA0 f mp_util_wad.o	VERIFIED: IDA 0x009315A0 uses key 0xAA4AB8F7 string GetVal and IsDefined
 83	FIXED	0002:005316a0 ?GetEE_spawnCount@@YAAAUbint@@Ventity@Broc@@@Z 00D20BA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-84	PORTED	0002:005316f0 ?IsEEDefined_spawnCount@@YA?AUbbool@@Ventity@Broc@@@Z 00D20BF0 f mp_util_wad.o
+84	VERIFIED	0002:005316f0 ?IsEEDefined_spawnCount@@YA?AUbbool@@Ventity@Broc@@@Z 00D20BF0 f mp_util_wad.o	VERIFIED: IDA 0x009316F0 uses key 0x1C4A56B2 bint GetVal and IsDefined
 85	FIXED	0002:005317a0 ?GetEE_capStatus@@YAAAUbfloat@@Ventity@Broc@@@Z 00D20CA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-86	PORTED	0002:005317f0 ?IsEEDefined_capStatus@@YA?AUbbool@@Ventity@Broc@@@Z 00D20CF0 f mp_util_wad.o
+86	VERIFIED	0002:005317f0 ?IsEEDefined_capStatus@@YA?AUbbool@@Ventity@Broc@@@Z 00D20CF0 f mp_util_wad.o	VERIFIED: IDA 0x009317F0 uses key 0x53377998 bfloat GetVal and IsDefined
 87	FIXED	0002:005318a0 ?GetEE_capTeam@@YAAAUbint@@Ventity@Broc@@@Z 00D20DA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-88	PORTED	0002:005318f0 ?IsEEDefined_capTeam@@YA?AUbbool@@Ventity@Broc@@@Z 00D20DF0 f mp_util_wad.o
+88	VERIFIED	0002:005318f0 ?IsEEDefined_capTeam@@YA?AUbbool@@Ventity@Broc@@@Z 00D20DF0 f mp_util_wad.o	VERIFIED: IDA 0x009318F0 uses key 0xAF35F29B bint GetVal and IsDefined
 89	FIXED	0002:005319a0 ?GetEE_numDeaths@@YAAAUbint@@Ventity@Broc@@@Z 00D20EA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-90	PORTED	0002:005319f0 ?IsEEDefined_numDeaths@@YA?AUbbool@@Ventity@Broc@@@Z 00D20EF0 f mp_util_wad.o
-91	PORTED	0002:00531aa0 ?GetEE_reverb@@YAAAVstring@Broc@@Ventity@2@@Z 00D20FA0 f mp_util_wad.o	PORTED: implemented from IDA key 0x11523406 and nullEnt fallback
-92	PORTED	0002:00531af0 ?IsEEDefined_reverb@@YA?AUbbool@@Ventity@Broc@@@Z 00D20FF0 f mp_util_wad.o  PORTED: implemented from IDA key 0x11523406 and string GetVal/IsDefined path; source body added
+90	VERIFIED	0002:005319f0 ?IsEEDefined_numDeaths@@YA?AUbbool@@Ventity@Broc@@@Z 00D20EF0 f mp_util_wad.o	VERIFIED: IDA 0x009319F0 uses key 0xBEB96D49 bint GetVal and IsDefined
+91	VERIFIED	0002:00531aa0 ?GetEE_reverb@@YAAAVstring@Broc@@Ventity@2@@Z 00D20FA0 f mp_util_wad.o	VERIFIED: IDA 0x00931AA0 forwards handle lookup and GetRef key 0x11523406
+92	VERIFIED	0002:00531af0 ?IsEEDefined_reverb@@YA?AUbbool@@Ventity@Broc@@@Z 00D20FF0 f mp_util_wad.o	VERIFIED: IDA 0x00931AF0 uses key 0x11523406 string GetVal and IsDefined
 93	FIXED	0002:00531bf0 ?GetEE_killsSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D210F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-94	PORTED	0002:00531c40 ?IsEEDefined_killsSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21140 f mp_util_wad.o
+94	VERIFIED	0002:00531c40 ?IsEEDefined_killsSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21140 f mp_util_wad.o	VERIFIED: IDA 0x00931C40 uses key 0xB8F24ACB bint GetVal and IsDefined
 95	FIXED	0002:00531cf0 ?GetEE_home_angles@@YAAAUvector@Broc@@Ventity@2@@Z 00D211F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-96	PORTED	0002:00531d40 ?IsEEDefined_home_angles@@YA?AUbbool@@Ventity@Broc@@@Z 00D21240 f mp_util_wad.o
+96	VERIFIED	0002:00531d40 ?IsEEDefined_home_angles@@YA?AUbbool@@Ventity@Broc@@@Z 00D21240 f mp_util_wad.o	VERIFIED: IDA 0x00931D40 uses key 0x385575E2 vector GetVal and IsDefined
 97	FIXED	0002:00531df0 ?GetEE_inDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D212F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 98	PORTED	0002:00531e40 ?IsEEDefined_inDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21340 f mp_util_wad.o
 99	FIXED	0002:00531ef0 ?GetEE_sound_handle@@YAAAUbint@@Ventity@Broc@@@Z 00D213F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
