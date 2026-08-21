@@ -229,6 +229,16 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::bint* Get(Broc::bint* result) const;
         };
+        struct health_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::bint* Get(Broc::bint* result) const;
+            const int& operator=(const int& rhs);
+        };
+        struct rank_struct {
+            unsigned int mHandle;  // +0x00
+            __int16 Get() const;
+            const __int16& operator=(const __int16& rhs);
+        };
         struct playerState_struct {
             unsigned int mHandle;  // +0x00
             const Broc::bint* Get(Broc::bint* result) const;
@@ -264,6 +274,10 @@ public:
                             "targetname_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::maxhealth_struct) == 4,
                             "maxhealth_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::health_struct) == 4,
+                            "health_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::rank_struct) == 4,
+                            "rank_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::playerState_struct) == 4,
                             "playerState_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::spectatorClient_struct) == 4,
@@ -688,11 +702,20 @@ bool operator<(bint lhs, int rhs);
 } // namespace Broc
 
 // Global boxed operators emitted by mp_util_wad.o.
+struct bfloat {
+    float mVal;
+    explicit bfloat(float v) : mVal(v) {}
+    operator float() const { return mVal; }
+};
+COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "global bfloat size mismatch");
+
 struct bint {
     int mVal;
     explicit bint(int v) : mVal(v) {}
+    bint(const bfloat& rhs);
 };
 bint operator*(bint lhs, int rhs);
+bfloat operator*(int lhs, bfloat rhs);
 struct bbool {
     bool mVal;
     explicit bbool(bool v) : mVal(v) {}

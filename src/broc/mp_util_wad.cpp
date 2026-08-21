@@ -140,11 +140,11 @@ void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished);
 void* reenable_medic_call__functor(Broc::entity self, Broc::bint time);
 void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft);
 void* TeamChangeKillPlayer__functor(Broc::entity player);
-void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
-void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap);
-void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
-                          Broc::bint delay, Broc::bbool reviveable,
-                          Broc::bbool fade);
+AeThreadFunctor* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
+AeThreadFunctor* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap);
+AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_killer,
+                                     Broc::bint delay, Broc::bbool reviveable,
+                                     Broc::bbool fade);
 void* UpdateSpectateCritical__functor(Broc::entity guy);
 void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
 void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
@@ -2128,6 +2128,32 @@ const Broc::bint* Broc::entity::__unnamed::maxhealth_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::health_struct::Get - ea: 0x940E10
+const Broc::bint* Broc::entity::__unnamed::health_struct::Get(
+    Broc::bint* result) const {
+    new (result) Broc::bint(Broc::gBrocAPI.m_entity_get_health(mHandle));
+    return result;
+}
+
+// Broc::entity::__unnamed::health_struct::operator= - ea: 0x940250
+const int& Broc::entity::__unnamed::health_struct::operator=(
+    const int& rhs) {
+    Broc::gBrocAPI.m_entity_set_health(mHandle, rhs);
+    return rhs;
+}
+
+// Broc::entity::__unnamed::rank_struct::Get - ea: 0x940820
+__int16 Broc::entity::__unnamed::rank_struct::Get() const {
+    return Broc::gBrocAPI.m_entity_get_persistent_player_rank(mHandle);
+}
+
+// Broc::entity::__unnamed::rank_struct::operator= - ea: 0x9489F0
+const __int16& Broc::entity::__unnamed::rank_struct::operator=(
+    const __int16& rhs) {
+    Broc::gBrocAPI.m_entity_set_persistent_player_rank(mHandle, rhs);
+    return rhs;
+}
+
 // Broc::entity::__unnamed::playerState_struct::Get - ea: 0x93BDF0
 const Broc::bint* Broc::entity::__unnamed::playerState_struct::Get(
     Broc::bint* result) const {
@@ -2519,6 +2545,14 @@ Broc::bfloat operator*(float lhs, Broc::bfloat rhs) {
 // operator*(bfloat, int) - ea: 0x93AD40
 Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
+}
+
+// bint::bint(const bfloat&) - ea: 0x940290
+bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
+
+// operator*(int, bfloat) - ea: 0x940210
+bfloat operator*(int lhs, bfloat rhs) {
+    return bfloat((float)lhs * rhs.mVal);
 }
 
 // operator*(bint, int) - ea: 0x93D8E0
@@ -13100,21 +13134,21 @@ void* TeamChangeKillPlayer__functor(Broc::entity player) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(TeamChangeKillPlayer, player);
 }
-void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player) {
+AeThreadFunctor* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::entity>(FadeUpWhenLoaded, self, player);
 }
-void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap) {
+AeThreadFunctor* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(HealthRegenPlayerBreathing, self, healthCap);
 }
-void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
-                          Broc::bint delay, Broc::bbool reviveable,
-                          Broc::bbool fade) {
+AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_killer,
+                                     Broc::bint delay, Broc::bbool reviveable,
+                                     Broc::bbool fade) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor5<Broc::entity, Broc::entity, Broc::bint, Broc::bbool, Broc::bbool>));
     if (storage == NULL)
         return NULL;
