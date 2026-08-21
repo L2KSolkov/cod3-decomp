@@ -572,7 +572,7 @@ ngl_dx_mesh.o	4	4	0	0	0	0	0
 ngl_dx_quad.o	11	3	8	0	0	0	0
 ngl_dx_scene.o	27	18	9	0	0	0	0
 ngl_dx_scenedump.o	3	3	0	0	0	0	0
-ngl_dx_shader.o	18	8	10	0	0	0	0
+ngl_dx_shader.o	18	9	9	0	0	0	0
 ngl_dx_state.o	5	5	0	0	0	0	0
 ngl_dx_tex_create.o	17	11	6	0	0	0	0
 ngl_dx_texture.o	17	12	5	0	0	0	0

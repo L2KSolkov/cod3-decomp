@@ -572,7 +572,7 @@ ngl_dx_mesh.o	analysis/ngl_dx_mesh_o_checklist.tsv	analysis/ngl_dx_mesh_o_invent
 ngl_dx_quad.o	analysis/ngl_dx_quad_o_checklist.tsv	analysis/ngl_dx_quad_o_inventory.tsv	analysis/ngl_dx_quad_o_plan.tsv	11	3	8	0	0	0	0
 ngl_dx_scene.o	analysis/ngl_dx_scene_o_checklist.tsv	analysis/ngl_dx_scene_o_inventory.tsv	analysis/ngl_dx_scene_o_plan.tsv	27	18	9	0	0	0	0
 ngl_dx_scenedump.o	analysis/ngl_dx_scenedump_o_checklist.tsv	analysis/ngl_dx_scenedump_o_inventory.tsv	analysis/ngl_dx_scenedump_o_plan.tsv	3	3	0	0	0	0	0
-ngl_dx_shader.o	analysis/ngl_dx_shader_o_checklist.tsv	analysis/ngl_dx_shader_o_inventory.tsv	analysis/ngl_dx_shader_o_plan.tsv	18	8	10	0	0	0	0
+ngl_dx_shader.o	analysis/ngl_dx_shader_o_checklist.tsv	analysis/ngl_dx_shader_o_inventory.tsv	analysis/ngl_dx_shader_o_plan.tsv	18	9	9	0	0	0	0
 ngl_dx_state.o	analysis/ngl_dx_state_o_checklist.tsv	analysis/ngl_dx_state_o_inventory.tsv	analysis/ngl_dx_state_o_plan.tsv	5	5	0	0	0	0	0
 ngl_dx_tex_create.o	analysis/ngl_dx_tex_create_o_checklist.tsv	analysis/ngl_dx_tex_create_o_inventory.tsv	analysis/ngl_dx_tex_create_o_plan.tsv	17	11	6	0	0	0	0
 ngl_dx_texture.o	analysis/ngl_dx_texture_o_checklist.tsv	analysis/ngl_dx_texture_o_inventory.tsv	analysis/ngl_dx_texture_o_plan.tsv	17	12	5	0	0	0	0
