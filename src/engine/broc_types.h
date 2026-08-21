@@ -1126,6 +1126,8 @@ public:
 
     NodeHandle();                            // ??0NodeHandle@PathNodes@@QAE@XZ (g.o 0x4A75A0)
     NodeHandle(int value);                   // ??0NodeHandle@PathNodes@@QAE@H@Z (g.o 0x4A7630)
+    unsigned short GetZone() const;          // ?GetZone@NodeHandle@PathNodes@@QBEGXZ (game2.o 0x517180)
+    unsigned short GetValue() const;         // ?GetValue@NodeHandle@PathNodes@@QBEGXZ (game2.o 0x517190)
     unsigned short GetZoneIndex() const;     // ?GetZoneIndex@NodeHandle@PathNodes@@QBEGXZ (g.o 0x4A7650)
     static NodeHandle NullHandle();          // ?NullHandle@NodeHandle@PathNodes@@SA?AV12@XZ (g.o 0x4A7660)
     bool IsAssigned() const;                 // ?IsAssigned@NodeHandle@PathNodes@@QBE_NXZ (g.o 0x4A7670)

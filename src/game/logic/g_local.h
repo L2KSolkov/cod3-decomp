@@ -5250,6 +5250,8 @@ static_assert(sizeof(TaskSys) == 0x19C, "TaskSys size mismatch");
 struct EntityDeathTask : Task {
     EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z
     virtual void Update(Entity* e, float delta);  // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
+    static TaskHandler sHandler;  // ?sHandler@EntityDeathTask@@0VTaskHandler@@A
+    static TaskHandler* GetHandler();  // ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ (game2.o 0x5171D0)
 };
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,

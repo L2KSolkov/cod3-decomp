@@ -217,6 +217,12 @@ TaskHandler* AnimationUpdateTask::GetHandler()
 {
     return &AnimationUpdateTask::sHandler;
 }
+TaskHandler EntityDeathTask::sHandler;
+// ea: 0x005171D0
+TaskHandler* EntityDeathTask::GetHandler()
+{
+    return &EntityDeathTask::sHandler;
+}
 FourCC TaskHandler::GetId() const
 {
     FourCC result;
@@ -1608,6 +1614,16 @@ PathNodes::NodeHandle::NodeHandle(int value)
 unsigned short PathNodes::NodeHandle::GetZoneIndex() const
 {
     return (unsigned short)(mValue - 1);
+}
+// ea: 0x00517180
+unsigned short PathNodes::NodeHandle::GetZone() const
+{
+    return 0;
+}
+// ea: 0x00517190
+unsigned short PathNodes::NodeHandle::GetValue() const
+{
+    return mValue;
 }
 PathNodes::NodeHandle PathNodes::NodeHandle::NullHandle()
 {
@@ -3204,6 +3220,14 @@ void clientPersistent_t::Clear()
     playerClass = -1;
     playerState = 0;
     rank = 0;
+}
+
+// ea: 0x005171A0
+void clientPersistent_t::ClearStats()
+{
+    memset(this, 0, 0x194u);
+    mStats[6][28] = 0;
+    mBaseScore = 0;
 }
 
 // clientPersistent_t::GetStat (g.o 0x5E9C80)

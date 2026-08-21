@@ -80,6 +80,7 @@ struct clientPersistent_t {
     int     maxHealth;                              // +0x214
 
     void Clear();  // ?Clear@clientPersistent_t@@QAEXXZ (g.o 0x4AF940)
+    void ClearStats();  // ?ClearStats@clientPersistent_t@@QAEXXZ (game2.o 0x5171A0)
     int GetStat(int stat);    // ?GetStat@clientPersistent_t@@QAEHH@Z
     int GetTotalScore();  // ?GetTotalScore@clientPersistent_t@@QAEHXZ (scr.o inline)
 };
