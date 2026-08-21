@@ -3625,7 +3625,7 @@ index	status	map_line
 3624	SKIPPED	0002:00118d00 ??0?$ae_fixed_string@$0EA@E@@QAE@XZ 00908200 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3625	SKIPPED	0002:00118d10 ??A?$InplaceVector@E@@QBEABEI@Z 00908210 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3626	PORTED	0002:00118d90 ??A?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@QAEAAV?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@H@Z 00908290 f i game2.o
-3627	PORTED	0002:00118e10 ??A?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@QAEAAVKeyInfoEntry@@H@Z 00908310 f i game2.o
+3627	PORTED	0002:00118e10 ??A?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@QAEAAVKeyInfoEntry@@H@Z 00908310 f i game2.o  PORTED: IDA-backed unsigned index overload with matching bounds assert
 3628	PORTED	0002:00118e90 ?empty@?$reserved_dlist@VTask@@@@QBE_NXZ 00908390 f i game2.o
 3629	PORTED	0002:00118eb0 ??0dlist_node@?$reserved_dlist@VTask@@@@QAE@PAU01@0@Z 009083B0 f i game2.o
 3630	SKIPPED	0002:00118ed0 ?size@?$InplaceVector@VBspCell@@@@QBEIXZ 009083D0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
