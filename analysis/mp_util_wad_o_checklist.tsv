@@ -820,7 +820,7 @@ index	status	map_line
 819	FIXED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o	FIXED: IDA 0x00972780 uses separate pLevel->_base.entity values for the extinguish and target-hash endon paths
 820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o
 821	PORTED	0002:00572af0 ?deleteonextinguish__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D61FF0 f i mp_util_wad.o
-822	VERIFIED	0002:00572b90 ?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62090 f mp_util_wad.o
+822	FIXED	0002:00572b90 ?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62090 f mp_util_wad.o	FIXED: IDA 0x00972B90 waits on pLevel->_base.entity (or null)
 823	VERIFIED	0002:00572c20 ?setup_effects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62120 f mp_util_wad.o
 824	VERIFIED	0002:00573280 ?main@_mp_tdm@@YAXVentity@Broc@@@Z 00D62780 f mp_util_wad.o
 825	PORTED	0002:00573350 ?StartGame__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D62850 f i mp_util_wad.o
