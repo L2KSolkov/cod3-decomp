@@ -911,8 +911,8 @@ index	status	map_line
 910	PORTED	0002:001e9c40 ?TimeUserEnd@TimerRenderBars@@QAEXXZ 009D9140 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 911	VERIFIED	0002:001e9c80 ?GetStat@clientPersistent_t@@QAEHH@Z 009D9180 f i scr.o
 912	VERIFIED	0002:001e9d40 ?GetTotalScore@clientPersistent_t@@QAEHXZ 009D9240 f i scr.o
-913	PORTED	0002:001e9d70 ?memcpyFromStack@@YAXPAX0I@Z 009D9270 f i scr.o
-914	PORTED	0002:001e9da0 ?memcpyToStack@@YAXPAX0I@Z 009D92A0 f i scr.o
+913	PORTED	0002:001e9d70 ?memcpyFromStack@@YAXPAX0I@Z 009D9270 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+914	PORTED	0002:001e9da0 ?memcpyToStack@@YAXPAX0I@Z 009D92A0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 915	VERIFIED	0002:001e9dd0 ?MathsRandomInt@Broc@@YAHH@Z 009D92D0 f i scr.o
 916	VERIFIED	0002:001e9e50 ?MathsRandomFloat@Broc@@YAMM@Z 009D9350 f i scr.o
 917	VERIFIED	0002:001e9e70 ?MathsRandomIntRange@Broc@@YAHHH@Z 009D9370 f i scr.o

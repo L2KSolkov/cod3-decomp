@@ -8302,8 +8302,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8301	0x005E9C40	0x009D9140	?TimeUserEnd@TimerRenderBars@@QAEXXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8302	0x005E9C80	0x009D9180	?GetStat@clientPersistent_t@@QAEHH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8303	0x005E9D40	0x009D9240	?GetTotalScore@clientPersistent_t@@QAEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8304	0x005E9D70	0x009D9270	?memcpyFromStack@@YAXPAX0I@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8305	0x005E9DA0	0x009D92A0	?memcpyToStack@@YAXPAX0I@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8304	0x005E9D70	0x009D9270	?memcpyFromStack@@YAXPAX0I@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8305	0x005E9DA0	0x009D92A0	?memcpyToStack@@YAXPAX0I@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8306	0x005E9DD0	0x009D92D0	?MathsRandomInt@Broc@@YAHH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8307	0x005E9E50	0x009D9350	?MathsRandomFloat@Broc@@YAMM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8308	0x005E9E70	0x009D9370	?MathsRandomIntRange@Broc@@YAHHH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
