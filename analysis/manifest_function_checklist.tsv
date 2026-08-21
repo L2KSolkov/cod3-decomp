@@ -8288,8 +8288,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8287	0x005E99A0	0x009D8EA0	_asinf		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8288	0x005E99B0	0x009D8EB0	_atanf		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8289	0x005E99C0	0x009D8EC0	_logf		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8290	0x005E99E0	0x009D8EE0	?fmod@@YAMMM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8291	0x005E9A00	0x009D8F00	?log@@YAMM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8290	0x005E99E0	0x009D8EE0	?fmod@@YAMMM@Z		scr.o	game		f i	1	SKIPPED	CRT math wrapper supplied by platform runtime	NO	NO	VERIFIED
+8291	0x005E9A00	0x009D8F00	?log@@YAMM@Z		scr.o	game		f i	1	SKIPPED	CRT math wrapper supplied by platform runtime	NO	NO	VERIFIED
 8292	0x005E9A20	0x009D8F20	?button_released_clear_all@controller@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8293	0x005E9A50	0x009D8F50	??BtlFixedString@@QAEPADXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8294	0x005E9A60	0x009D8F60	?GetHash@tlFixedString@@QBEIXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

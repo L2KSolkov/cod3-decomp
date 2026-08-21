@@ -8288,8 +8288,8 @@ index	status	map_line
 8287	VERIFIED	0002:001e99a0 _asinf 009D8EA0 f i scr.o
 8288	VERIFIED	0002:001e99b0 _atanf 009D8EB0 f i scr.o
 8289	VERIFIED	0002:001e99c0 _logf 009D8EC0 f i scr.o
-8290	PORTED	0002:001e99e0 ?fmod@@YAMMM@Z 009D8EE0 f i scr.o
-8291	PORTED	0002:001e9a00 ?log@@YAMM@Z 009D8F00 f i scr.o
+8290	SKIPPED	0002:001e99e0 ?fmod@@YAMMM@Z 009D8EE0 f i scr.o	SKIPPED: CRT math wrapper; supplied by the platform runtime
+8291	SKIPPED	0002:001e9a00 ?log@@YAMM@Z 009D8F00 f i scr.o	SKIPPED: CRT math wrapper; supplied by the platform runtime
 8292	VERIFIED	0002:001e9a20 ?button_released_clear_all@controller@@QAEXH@Z 009D8F20 f i scr.o
 8293	PORTED	0002:001e9a50 ??BtlFixedString@@QAEPADXZ 009D8F50 f i scr.o
 8294	PORTED	0002:001e9a60 ?GetHash@tlFixedString@@QBEIXZ 009D8F60 f i scr.o
