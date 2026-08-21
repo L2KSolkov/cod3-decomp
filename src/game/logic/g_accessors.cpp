@@ -23,6 +23,11 @@ int TotalScoreForStats(short* const stats);
 
 extern float sNaN;
 
+void* DestructibleBankManager::operator new(size_t, void* p)
+{
+    return p;
+}
+
 PoolAllocator* AeThreadFunctor::sAllocator;
 
 // core.o 0x4B5320
@@ -55,6 +60,18 @@ float math::Abs(float a)
 unsigned __int64 AeThreadManager::GetTimeStartExec()
 {
     return AeThreadManager::sTimeStart;
+}
+
+// core.o 0x4B5610
+void Entity::SetNotifySet(EntityNotifySet* n)
+{
+    mNotifySet = n;
+}
+
+// core.o 0x4B5630
+const math::Position3& Entity::GetPosition()
+{
+    return r.currentOrigin;
 }
 
 // ============================================================================

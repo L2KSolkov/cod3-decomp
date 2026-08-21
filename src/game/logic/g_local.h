@@ -5273,6 +5273,7 @@ static_assert(sizeof(PhysData) == 0x14, "PhysData size mismatch");
 class DestructibleBankManager {
 public:
     static DestructibleBankManager* sInst;
+    static void* operator new(size_t size, void* p); // ??2DestructibleBankManager@@SAPAXIPAX@Z
     static DestructibleBankManager* Inst();  // ?Inst@DestructibleBankManager@@SAPAV1@XZ
     IVPointer<Destructible> GetDestructible(TPakId pak_id, const char* name);
 };

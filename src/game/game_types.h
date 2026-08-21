@@ -422,6 +422,8 @@ public:
     DObj*    mDObj;                               // +0x23C
     EntityNotifySet* mNotifySet;                  // +0x240
     EntityNotifySet* GetNotifySet();              // ?GetNotifySet@Entity@@QAEPAVEntityNotifySet@@XZ (g.o 0x4A6620)
+    void SetNotifySet(EntityNotifySet* n);        // ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z (core.o 0x4B5610)
+    const math::Position3& GetPosition();         // ?GetPosition@Entity@@QAEABVPosition3@math@@XZ (core.o 0x4B5630)
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;  // ?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ (g.o 0x4A67B0)
     void SetEntityArrayIndex(int v);              // ?SetEntityArrayIndex@Entity@@QAEXH@Z (g.o 0x4A67D0)
     int GetEntityArrayIndex() const;              // ?GetEntityArrayIndex@Entity@@QBEHXZ (g.o 0x4A67F0)
