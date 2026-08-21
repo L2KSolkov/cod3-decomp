@@ -1963,8 +1963,8 @@ index	status	map_line
 1962	VERIFIED	0002:000c64d0 ?AssignScriptVariable@EntityNotifySet@@QAE_NABVHashString@@PAVWaitTilOutput@@@Z 008B59D0 f core.o
 1963	VERIFIED	0002:000c6500 ?IsFinished@EntityNotifySet@@QAE_NXZ 008B5A00 f core.o
 1964	VERIFIED	0002:000c6590 ?KillEndOnThreads@EntityNotifySet@@QAEXXZ 008B5A90 f core.o
-1965	PORTED	0002:000c65d0 ?FS_HandleForFile@@YAHH@Z 008B5AD0 f core.o
-1966	PORTED	0002:000c6890 ?FS_BuildOSPath@@YAXPBD00QAD@Z 008B5D90 f core.o
+1965	VERIFIED	0002:000c65d0 ?FS_HandleForFile@@YAHH@Z 008B5AD0 f core.o VERIFIED: FUNCTION existing handle allocation and exhaustion path match IDA
+1966	VERIFIED	0002:000c6890 ?FS_BuildOSPath@@YAXPBD00QAD@Z 008B5D90 f core.o VERIFIED: FUNCTION existing OS path wrapper matches IDA
 1967	VERIFIED	0002:000c68b0 ?FS_CopyFile@@YAXPAD0@Z 008B5DB0 f core.o
 1968	VERIFIED	0002:000c69b0 ?FS_FileExists@@YAHPBD@Z 008B5EB0 f core.o
 1969	VERIFIED	0002:000c6a10 ?FS_FOpenFileWrite@@YAHPBD@Z 008B5F10 f core.o
@@ -2003,8 +2003,8 @@ index	status	map_line
 2002	VERIFIED	0002:000c9fa0 ?Com_WriteDefaults_f@@YAXXZ 008B94A0 f core.o
 2003	VERIFIED	0002:000ca010 ?Com_ControllerWarningDialog@@YAX_NH@Z 008B9510 f core.o
 2004	VERIFIED	0002:000ca120 ?Com_CheckControllerUnplugged@@YAX_NH@Z 008B9620 f core.o
-2005	PORTED	0002:000ca240 ?Com_SaveCvarsToBuffer@@YAHQAPBDHPADH@Z 008B9740 f core.o
-2006	PORTED	0002:000ca2e0 ?Com_LoadCvarsFromBuffer@@YAHQAPBDHPBD1@Z 008B97E0 f core.o
+2005	FIXED	0002:000ca240 ?Com_SaveCvarsToBuffer@@YAHQAPBDHPADH@Z 008B9740 f core.o FIXED: FUNCTION uses shared defaultFileName object per IDA
+2006	VERIFIED	0002:000ca2e0 ?Com_LoadCvarsFromBuffer@@YAHQAPBDHPBD1@Z 008B97E0 f core.o VERIFIED: FUNCTION existing cvar parser and completion reporting match IDA
 2007	VERIFIED	0002:000ca470 ?FS_Dir_f@@YAXXZ 008B9970 f core.o
 2008	VERIFIED	0002:000ca530 ?FS_TouchFile_f@@YAXXZ 008B9A30 f core.o
 2009	VERIFIED	0002:000ca590 ?Cvar_VMSet@@YAXPAUvmCvar_t@@PBD@Z 008B9A90 f core.o
