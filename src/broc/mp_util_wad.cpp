@@ -6175,8 +6175,10 @@ void CallbackRoundOver(int condition, Broc::string team) {
     Broc::Code_DebugOut("*COMMON* CallbackRoundOver\n");
     mp_util_wad::pLevel->roundOver = true;
     mp_util_wad::pLevel->roundStarted = false;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr label;
     label.mVal = 0x863B4D44;
     Broc::notify(lvl, label);
@@ -6280,8 +6282,10 @@ void CallbackRoundOver(int condition, Broc::string team) {
         }
     }
     players.~dyn_array();
-    Broc::entity lvl2;
-    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl2 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = restart_round__functor(lvl2, (int)waitTime);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                         __LINE__, "restart_round", ftor);
