@@ -935,7 +935,7 @@ index	status	map_line
 934	VERIFIED	0002:0018b840 ??0PanelQuad@@QAE@PAD@Z 0097AD40 f shell.o
 935	VERIFIED	0002:0018b930 ?CopyFrom@PanelQuad@@UAEXPBV1@@Z 0097AE30 f shell.o
 936	VERIFIED	0002:0018bac0 ?Init@PanelQuad@@UAEXQAUvector@Broc@@QAVcolor32@@W4panel_layer@@MPBD@Z 0097AFC0 f shell.o	VERIFIED: matches IDA contiguous UV initialization, allocation, texture, bounds, and center-point flow
-937	VERIFIED	0002:0018bc10 ?Load@PanelQuad@@UAEXPAVPanelMaterial@@PAEAAHPBVMat43@math@@@Z 0097B110 f shell.o
+937	FIXED	0002:0018bc10 ?Load@PanelQuad@@UAEXPAVPanelMaterial@@PAEAAHPBVMat43@math@@@Z 0097B110 f shell.o  FIXED: re-ported signed panel counts and contiguous scratch handling from IDA
 938	VERIFIED	0002:0018c450 ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0097B950 f shell.o
 939	VERIFIED	0002:0018c4c0 ?Cleanup@PanelFile@@AAEXXZ 0097B9C0 f shell.o
 940	VERIFIED	0002:0018c5b0 ?Clone@PanelFile@@QAEPAV1@XZ 0097BAB0 f shell.o
@@ -1370,7 +1370,7 @@ index	status	map_line
 1369	VERIFIED	0002:001aeb60 ?SetObjectivesOnly@IGOCompassWidget@@QAEX_N@Z 0099E060 f i shell.o
 1370	VERIFIED	0002:001aeb80 ?GetInitialWidth@IGOCompassWidget@@QAEMXZ 0099E080 f i shell.o
 1371	VERIFIED	0002:001aebb0 ??0UIListBoxData@UIListBox@@QAE@XZ 0099E0B0 f i shell.o
-1372	PORTED	0002:001aebd0 ?GetState@UIListBoxData@UIListBox@@QAEHXZ 0099E0D0 f i shell.o	PORTED: added IDA-derived mState accessor
+1372	VERIFIED	0002:001aebd0 ?GetState@UIListBoxData@UIListBox@@QAEHXZ 0099E0D0 f i shell.o	VERIFIED: matches IDA mState accessor
 1373	VERIFIED	0002:001aebe0 ?SetState@UIListBoxData@UIListBox@@QAEXH@Z 0099E0E0 f i shell.o
 1374	VERIFIED	0002:001aec70 ?SetText@UIListBoxData@UIListBox@@QAEXPBD@Z 0099E170 f i shell.o
 1375	VERIFIED	0002:001aec80 ?ClearText@UIListBoxData@UIListBox@@QAEXXZ 0099E180 f i shell.o
@@ -1445,13 +1445,13 @@ index	status	map_line
 1444	SKIPPED	0002:001af630 ??_EnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1445	SKIPPED	0002:001af660 ??_EMultiLineString@@QAEPAXI@Z 0099EB60 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1446	VERIFIED	0002:001af6d0 ?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ 0099EBD0 f i shell.o	VERIFIED: matches IDA mViewport test
-1447	PORTED	0002:001af6e0 ?GetIndex@FEMenuListBoxItem@@QBE?BIXZ 0099EBE0 f i shell.o	PORTED: added IDA-derived mIndex accessor
-1448	PORTED	0002:001af6f0 ?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ 0099EBF0 f i shell.o	PORTED: added IDA-derived mSubItemCount accessor
-1449	PORTED	0002:001af700 ?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ 0099EC00 f i shell.o	PORTED: added IDA-derived mText accessor
-1450	PORTED	0002:001af710 ?GetData@FEMenuListBoxItem@@QBE?BHXZ 0099EC10 f i shell.o	PORTED: added IDA-derived mData accessor
-1451	PORTED	0002:001af720 ?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC20 f i shell.o	PORTED: added IDA-derived mRowHeight setter
-1452	PORTED	0002:001af740 ?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC40 f i shell.o	PORTED: added IDA-derived mHeadingSpacing setter
-1453	PORTED	0002:001af760 ?EnableNavigationSound@FESlider@@QAEX_N@Z 0099EC60 f i shell.o	PORTED: added IDA-derived mEnableSound setter
+1447	VERIFIED	0002:001af6e0 ?GetIndex@FEMenuListBoxItem@@QBE?BIXZ 0099EBE0 f i shell.o	VERIFIED: matches IDA mIndex accessor
+1448	VERIFIED	0002:001af6f0 ?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ 0099EBF0 f i shell.o	VERIFIED: matches IDA mSubItemCount accessor
+1449	VERIFIED	0002:001af700 ?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ 0099EC00 f i shell.o	VERIFIED: matches IDA mText accessor
+1450	VERIFIED	0002:001af710 ?GetData@FEMenuListBoxItem@@QBE?BHXZ 0099EC10 f i shell.o	VERIFIED: matches IDA mData accessor
+1451	VERIFIED	0002:001af720 ?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC20 f i shell.o	VERIFIED: matches IDA mRowHeight setter
+1452	VERIFIED	0002:001af740 ?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC40 f i shell.o	VERIFIED: matches IDA mHeadingSpacing setter
+1453	VERIFIED	0002:001af760 ?EnableNavigationSound@FESlider@@QAEX_N@Z 0099EC60 f i shell.o	VERIFIED: matches IDA mEnableSound setter
 1454	VERIFIED	0002:001af770 ?EnableNavigationSound@FEMenu@@UAEX_N@Z 0099EC70 f i shell.o
 1455	VERIFIED	0002:001af780 ?InputLock@FEMenu@@UAEX_N@Z 0099EC80 f i shell.o
 1456	VERIFIED	0002:001af790 ?Load@FEMenu@@UAEX_N@Z 0099EC90 f i shell.o
@@ -2018,27 +2018,27 @@ index	status	map_line
 2017	SKIPPED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2018	SKIPPED	0002:001b77f0 ??_EFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2019	SKIPPED	0002:001b7820 ??_GDialogMenuDisplay@@QAEPAXI@Z 009A6D20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2020	PORTED	0002:001b7890 ?OnLeft@DialogMenu@@UAEXH@Z 009A6D90 f i shell.o
-2021	PORTED	0002:001b78a0 ?OnRight@DialogMenu@@UAEXH@Z 009A6DA0 f i shell.o
+2020	PORTED	0002:001b7890 ?OnLeft@DialogMenu@@UAEXH@Z 009A6D90 f i shell.o  PORTED: added IDA-derived empty override
+2021	PORTED	0002:001b78a0 ?OnRight@DialogMenu@@UAEXH@Z 009A6DA0 f i shell.o  PORTED: added IDA-derived empty override
 2022	VERIFIED	0002:001b78b0 ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009A6DB0 f i shell.o
-2023	PORTED	0002:001b7910 ?Init@MemCardCheckMenu@@UAEXXZ 009A6E10 f i shell.o
-2024	PORTED	0002:001b7920 ?Init@OptionsGameplayMenu@@UAEXXZ 009A6E20 f i shell.o
+2023	PORTED	0002:001b7910 ?Init@MemCardCheckMenu@@UAEXXZ 009A6E10 f i shell.o  PORTED: added IDA-derived empty override
+2024	PORTED	0002:001b7920 ?Init@OptionsGameplayMenu@@UAEXXZ 009A6E20 f i shell.o  PORTED: added IDA-derived empty override
 2025	VERIFIED	0002:001b7930 ?OnLeft@OptionsGameplayMenu@@UAEXH@Z 009A6E30 f i shell.o
 2026	VERIFIED	0002:001b79e0 ?OnRight@OptionsGameplayMenu@@UAEXH@Z 009A6EE0 f i shell.o
-2027	PORTED	0002:001b7a90 ?Init@OptionsControlsMenu@@UAEXXZ 009A6F90 f i shell.o
+2027	PORTED	0002:001b7a90 ?Init@OptionsControlsMenu@@UAEXXZ 009A6F90 f i shell.o  PORTED: added IDA-derived empty override
 2028	VERIFIED	0002:001b7aa0 ?OnLeft@OptionsControlsMenu@@UAEXH@Z 009A6FA0 f i shell.o
 2029	VERIFIED	0002:001b7ab0 ?OnRight@OptionsControlsMenu@@UAEXH@Z 009A6FB0 f i shell.o
-2030	PORTED	0002:001b7ac0 ?Init@OptionsSoundMenu@@UAEXXZ 009A6FC0 f i shell.o
+2030	PORTED	0002:001b7ac0 ?Init@OptionsSoundMenu@@UAEXXZ 009A6FC0 f i shell.o  PORTED: added IDA-derived empty override
 2031	VERIFIED	0002:001b7ad0 ?OnLeft@OptionsSoundMenu@@UAEXH@Z 009A6FD0 f i shell.o
 2032	VERIFIED	0002:001b7ae0 ?OnRight@OptionsSoundMenu@@UAEXH@Z 009A6FE0 f i shell.o
-2033	PORTED	0002:001b7af0 ?Init@OptionsStickMenu@@UAEXXZ 009A6FF0 f i shell.o
-2034	PORTED	0002:001b7b00 ?OnUp@OptionsStickMenu@@UAEXH@Z 009A7000 f i shell.o
-2035	PORTED	0002:001b7b10 ?OnDown@OptionsStickMenu@@UAEXH@Z 009A7010 f i shell.o
+2033	PORTED	0002:001b7af0 ?Init@OptionsStickMenu@@UAEXXZ 009A6FF0 f i shell.o  PORTED: added IDA-derived empty override
+2034	PORTED	0002:001b7b00 ?OnUp@OptionsStickMenu@@UAEXH@Z 009A7000 f i shell.o  PORTED: added IDA-derived empty override
+2035	PORTED	0002:001b7b10 ?OnDown@OptionsStickMenu@@UAEXH@Z 009A7010 f i shell.o  PORTED: added IDA-derived empty override
 2036	VERIFIED	0002:001b7b20 ?OnLeft@OptionsStickMenu@@UAEXH@Z 009A7020 f i shell.o
 2037	VERIFIED	0002:001b7b30 ?OnRight@OptionsStickMenu@@UAEXH@Z 009A7030 f i shell.o
-2038	PORTED	0002:001b7b40 ?Init@OptionsButtonMenu@@UAEXXZ 009A7040 f i shell.o
-2039	PORTED	0002:001b7b50 ?OnUp@OptionsButtonMenu@@UAEXH@Z 009A7050 f i shell.o
-2040	PORTED	0002:001b7b60 ?OnDown@OptionsButtonMenu@@UAEXH@Z 009A7060 f i shell.o
+2038	PORTED	0002:001b7b40 ?Init@OptionsButtonMenu@@UAEXXZ 009A7040 f i shell.o  PORTED: added IDA-derived empty override
+2039	PORTED	0002:001b7b50 ?OnUp@OptionsButtonMenu@@UAEXH@Z 009A7050 f i shell.o  PORTED: added IDA-derived empty override
+2040	PORTED	0002:001b7b60 ?OnDown@OptionsButtonMenu@@UAEXH@Z 009A7060 f i shell.o  PORTED: added IDA-derived empty override
 2041	VERIFIED	0002:001b7b70 ?OnLeft@OptionsButtonMenu@@UAEXH@Z 009A7070 f i shell.o
 2042	VERIFIED	0002:001b7b80 ?OnRight@OptionsButtonMenu@@UAEXH@Z 009A7080 f i shell.o
 2043	VERIFIED	0002:001b7b90 ?Init@GammaScreenMenu@@UAEXXZ 009A7090 f i shell.o
