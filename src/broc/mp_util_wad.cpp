@@ -2229,6 +2229,33 @@ void SetCvar(const char* cvar, const char* value) {
     gBrocAPI.mCVarSetString(cvar, value);
 }
 
+// Code_GetTeamScore - ea: 0x93D920
+int Broc::Code_GetTeamScore(const Broc::string& team) {
+    return gBrocAPI.mGetTeamScore(team);
+}
+
+// Code_SendGameState - ea: 0x93D950
+void Broc::Code_SendGameState(Broc::entity player, int currentTime, int timeLimit,
+                              int scoreLimit, int roundLimit, bool friendlyFire,
+                              bool lastManStanding, bool teamBalance,
+                              int respawnTime, int alliesScore, int axisScore,
+                              bool roundStarted, int roundOver, int roundCount) {
+    gBrocAPI.mSendGameState(player.GetHandle(), currentTime, timeLimit, scoreLimit,
+                            roundLimit, friendlyFire, lastManStanding, teamBalance,
+                            respawnTime, alliesScore, axisScore, roundStarted,
+                            roundOver, roundCount);
+}
+
+// Code_IncTeamScore - ea: 0x93DE70
+void Broc::Code_IncTeamScore(const Broc::string& team, int amount) {
+    gBrocAPI.mIncTeamScore(team, amount);
+}
+
+// SetCvar - ea: 0x93DED0
+void SetCvar(const char* cvar, int value) {
+    gBrocAPI.mCVarSetInt(cvar, value);
+}
+
 // AddEventHandler - ea: 0x9360D0
 void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func) {
     gBrocAPI.mAddEventHandler(e.GetHandle(), label.mVal, func.mVal);
@@ -2421,6 +2448,11 @@ Broc::bfloat operator*(float lhs, Broc::bfloat rhs) {
 // operator*(bfloat, int) - ea: 0x93AD40
 Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
+}
+
+// operator*(bint, int) - ea: 0x93D8E0
+bint operator*(bint lhs, int rhs) {
+    return bint(lhs.mVal * rhs);
 }
 
 // operator+(bint, int) - ea: 0x9370B0
@@ -4470,10 +4502,10 @@ void SetupCallbacks(Broc::bbool teamGameType) {
 void CallbackGameScore(int alliesScore, int axisScore) {
     Broc::Code_ClearTeamScores();
     Broc::string team("allies");
-    Broc::Code_IncTeamScore(&team, alliesScore);
+    Broc::Code_IncTeamScore(team, alliesScore);
     team.~string();
     Broc::string team2("axis");
-    Broc::Code_IncTeamScore(&team2, axisScore);
+    Broc::Code_IncTeamScore(team2, axisScore);
     team2.~string();
 }
 
@@ -4773,10 +4805,10 @@ void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
     Broc::SetCvar("mp_friendlyfire", friendlyFire);
     Broc::Code_ClearTeamScores();
     Broc::string team("allies");
-    Broc::Code_IncTeamScore(&team, alliesScore);
+    Broc::Code_IncTeamScore(team, alliesScore);
     team.~string();
     Broc::string team2("axis");
-    Broc::Code_IncTeamScore(&team2, axisScore);
+    Broc::Code_IncTeamScore(team2, axisScore);
     team2.~string();
     if (!wasRoundStarted && (bool)mp_util_wad::pLevel->roundStarted &&
         !(bool)mp_util_wad::pLevel->roundOver) {
@@ -4835,8 +4867,8 @@ void CallbackHostOptionsChanged(int forceMapChange) {
     while ((int)i < Broc::size(players)) {
         Broc::string team("axis");
         Broc::string team2("allies");
-        int axisScore = Broc::Code_GetTeamScore(&team);
-        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        int axisScore = Broc::Code_GetTeamScore(team);
+        int alliesScore = Broc::Code_GetTeamScore(team2);
         Broc::Code_SendGameState(
             players[(unsigned int)(int)i], (float)timePassed,
             (int)mp_util_wad::pLevel->timeLimit,
@@ -4922,8 +4954,8 @@ void CheckScoreLimit() {
     } else {
         Broc::string team("allies");
         Broc::string team2("axis");
-        int alliesScore = Broc::Code_GetTeamScore(&team);
-        int axisScore = Broc::Code_GetTeamScore(&team2);
+        int alliesScore = Broc::Code_GetTeamScore(team);
+        int axisScore = Broc::Code_GetTeamScore(team2);
         team.~string();
         team2.~string();
         hit = alliesScore < (int)mp_util_wad::pLevel->scoreLimit &&
@@ -5041,10 +5073,10 @@ void TeamChangeKillPlayer(Broc::entity player) {
 // GetWinningTeam - ea: 0x94C4A0
 Broc::string* GetWinningTeam(Broc::string* result) {
     Broc::string team("allies");
-    Broc::bint allies_score(Broc::Code_GetTeamScore(&team));
+    Broc::bint allies_score(Broc::Code_GetTeamScore(team));
     team.~string();
     Broc::string team2("axis");
-    Broc::bint axis_score(Broc::Code_GetTeamScore(&team2));
+    Broc::bint axis_score(Broc::Code_GetTeamScore(team2));
     team2.~string();
     Broc::bint allies_total_score(0);
     Broc::bint axis_total_score(0);
@@ -5425,8 +5457,8 @@ void CallbackPlayerEnter(Broc::entity player, int hot_joiner) {
     GetTimeTillNextRound(&timeTillNextRound);
     Broc::string team("axis");
     Broc::string team2("allies");
-    int axisScore = Broc::Code_GetTeamScore(&team);
-    int alliesScore = Broc::Code_GetTeamScore(&team2);
+    int axisScore = Broc::Code_GetTeamScore(team);
+    int alliesScore = Broc::Code_GetTeamScore(team2);
     Broc::Code_SendGameState(
         player, (float)timePassed, (int)mp_util_wad::pLevel->timeLimit,
         (int)mp_util_wad::pLevel->scoreLimit, (int)mp_util_wad::pLevel->roundLimit,
@@ -5771,11 +5803,11 @@ void CallbackRoundOver(int condition, Broc::string team) {
     case kEndRoundLastManStanding:
         if (team == "axis") {
             Broc::string t("axis");
-            Broc::Code_IncTeamScore(&t, 1);
+            Broc::Code_IncTeamScore(t, 1);
             t.~string();
         } else if (team == "allies") {
             Broc::string t("allies");
-            Broc::Code_IncTeamScore(&t, 1);
+            Broc::Code_IncTeamScore(t, 1);
             t.~string();
         }
         mp_util_wad::pLevel->roundWinner = team;
@@ -5998,8 +6030,8 @@ void finish_starting_round(Broc::entity self, Broc::bbool firstTime) {
     while ((int)i < Broc::size(players)) {
         Broc::string team("axis");
         Broc::string team2("allies");
-        int axisScore = Broc::Code_GetTeamScore(&team);
-        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        int axisScore = Broc::Code_GetTeamScore(team);
+        int alliesScore = Broc::Code_GetTeamScore(team2);
         Broc::Code_SendGameState(
             players[(unsigned int)(int)i], 0.0f,
             (int)mp_util_wad::pLevel->timeLimit,
@@ -6855,8 +6887,8 @@ void HostHasMigrated(Broc::entity self) {
     while ((int)i < Broc::size(players)) {
         Broc::string team("axis");
         Broc::string team2("allies");
-        int axisScore = Broc::Code_GetTeamScore(&team);
-        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        int axisScore = Broc::Code_GetTeamScore(team);
+        int alliesScore = Broc::Code_GetTeamScore(team2);
         Broc::Code_SendGameState(
             players[(unsigned int)(int)i], (float)timePassed,
             (int)mp_util_wad::pLevel->timeLimit,
@@ -10711,12 +10743,12 @@ void Host_FlowControl(Broc::entity self) {
 void AddPoints(Broc::bint forAllies, Broc::bint forAxis) {
     if ((int)forAllies != 0) {
         Broc::string team("allies");
-        Broc::Code_IncTeamScore(&team, (int)forAllies);
+        Broc::Code_IncTeamScore(team, (int)forAllies);
         team.~string();
     }
     if ((int)forAxis != 0) {
         Broc::string team("axis");
-        Broc::Code_IncTeamScore(&team, (int)forAxis);
+        Broc::Code_IncTeamScore(team, (int)forAxis);
         team.~string();
     }
 }
@@ -10978,8 +11010,8 @@ void SyncScores() {
     while ((int)i < Broc::size(players)) {
         Broc::string team("axis");
         Broc::string team2("allies");
-        int axisScore = Broc::Code_GetTeamScore(&team);
-        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        int axisScore = Broc::Code_GetTeamScore(team);
+        int alliesScore = Broc::Code_GetTeamScore(team2);
         Broc::Code_SendGameState(
             players[(unsigned int)(int)i], (float)timePassed,
             (int)mp_util_wad::pLevel->timeLimit,
@@ -11580,8 +11612,8 @@ void CallbackRoundOver(int condition, Broc::string team) {
         } else {
             Broc::SetTutorialTextAllPlayers((int)0x8C1FDAB3);
         }
-        Broc::bint scadder(Broc::Code_GetTeamScore(&otherTeam));
-        Broc::Code_IncTeamScore(&team, (int)scadder);
+        Broc::bint scadder(Broc::Code_GetTeamScore(otherTeam));
+        Broc::Code_IncTeamScore(team, (int)scadder);
         mp_util_wad::pLevel->roundWinner = team;
         otherTeam.~string();
     }
@@ -11721,15 +11753,15 @@ void WARScore(Broc::entity self) {
                 Broc::string team("axis");
                 Broc::string team2("allies");
                 int mVal = (int)points;
-                Broc::Code_IncTeamScore(&team, mVal);
-                Broc::Code_IncTeamScore(&team2, 0);
+                Broc::Code_IncTeamScore(team, mVal);
+                Broc::Code_IncTeamScore(team2, 0);
                 team.~string();
                 team2.~string();
             } else {
                 Broc::string team("allies");
                 Broc::string team2("axis");
-                Broc::Code_IncTeamScore(&team, (int)points);
-                Broc::Code_IncTeamScore(&team2, 0);
+                Broc::Code_IncTeamScore(team, (int)points);
+                Broc::Code_IncTeamScore(team2, 0);
                 team.~string();
                 team2.~string();
             }
@@ -12801,10 +12833,10 @@ Broc::string* PickTeam(Broc::string* result, Broc::entity player) {
         *result = "axis";
     else {
         Broc::string team("allies");
-        allies = Broc::Code_GetTeamScore(&team);
+        allies = Broc::Code_GetTeamScore(team);
         team.~string();
         Broc::string team2("axis");
-        axis = Broc::Code_GetTeamScore(&team2);
+        axis = Broc::Code_GetTeamScore(team2);
         team2.~string();
         if ((int)allies < (int)axis)
             *result = "allies";
@@ -13242,7 +13274,7 @@ void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
     if (enemyKill) {
         Broc::string ateam;
         mp_util_wad::entity_get_team(&ateam, attacker);
-        Broc::Code_IncTeamScore(&ateam, 1);
+        Broc::Code_IncTeamScore(ateam, 1);
         ateam.~string();
     }
 }

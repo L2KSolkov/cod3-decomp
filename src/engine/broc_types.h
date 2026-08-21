@@ -670,6 +670,11 @@ bool operator<(bint lhs, int rhs);
 } // namespace Broc
 
 // Global boxed operators emitted by mp_util_wad.o.
+struct bint {
+    int mVal;
+    explicit bint(int v) : mVal(v) {}
+};
+bint operator*(bint lhs, int rhs);
 Broc::bbool operator>(Broc::bfloat lhs, int rhs);
 Broc::bbool operator<(float lhs, Broc::bfloat rhs);
 Broc::bfloat operator*(Broc::bfloat lhs, Broc::bfloat rhs);
@@ -900,7 +905,13 @@ struct BrocAPI {
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
-    char _pad2C4[0x3CC - 0x2C4];                          // +0x2C4
+    char _pad2C4[0x33C - 0x2C4];                          // +0x2C4
+    void (*mIncTeamScore)(const Broc::string&, int);      // +0x33C
+    int (*mGetTeamScore)(const Broc::string&);            // +0x340
+    char _pad344[0x370 - 0x344];                          // +0x344
+    void (*mSendGameState)(unsigned int, int, int, int, int,
+                           bool, bool, bool, int, int, int, bool, int, int); // +0x370
+    char _pad374[0x3CC - 0x374];                          // +0x374
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
     char _pad3D0[0x528 - 0x3D0];                          // +0x3D0
     unsigned int (*mGetTime)();                           // +0x528
@@ -1131,8 +1142,8 @@ void Code_FinishDamage(Broc::entity player, Broc::entity inflictor,
 int Code_GetPlayerTotalScore(Broc::entity player);
 int Code_GetPlayerStat(Broc::entity player, int index);
 void Code_IncPlayerStat(Broc::entity player, int index, int value);
-int Code_GetTeamScore(const Broc::string* team);
-void Code_IncTeamScore(const Broc::string* team, int ammount);
+int Code_GetTeamScore(const Broc::string& team);
+void Code_IncTeamScore(const Broc::string& team, int ammount);
 bool Code_PositionWouldTelefrag(const Broc::vector* position);
 void Code_ChangePlayerTeam(Broc::entity player, const Broc::string* team,
                            bool autoBalance);
@@ -1190,7 +1201,7 @@ void Code_GetOutOfVehicle(Broc::entity player);
 bool Code_IsInVehicle(Broc::entity player);
 void Code_Obituary(Broc::entity target, Broc::entity attacker,
                    const Broc::string* weapon, int mod, int teamGame);
-void Code_SendGameState(Broc::entity player, float currentTime, int timeLimit,
+void Code_SendGameState(Broc::entity player, int currentTime, int timeLimit,
                         int scoreLimit, int roundLimit, bool friendlyFire,
                         bool lastManStanding, bool teamBalance, int respawnTime,
                         int alliesScore, int axisScore, bool roundStarted,
