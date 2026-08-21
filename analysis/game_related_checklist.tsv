@@ -3547,9 +3547,9 @@ index	status	map_line
 3546	VERIFIED	0002:00117e50 ??0nalMatrix4x4@@QAE@ABV0@@Z 00907350 f i game2.o
 3547	VERIFIED	0002:00117ef0 ??0nalPositionOrientation@@QAE@XZ 009073F0 f i game2.o
 3548	VERIFIED	0002:00117f00 ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z 00907400 f i game2.o
-3549	PORTED	0002:00118160 ?nalBlend@@YAXAAVnalPositionOrientation@@ABV1@1MM@Z 00907660 f i game2.o
-3550	PORTED	0002:00118220 ?GetDefaultPose@nalBaseSkeleton@@QBEABVnalBasePose@@XZ 00907720 f i game2.o
-3551	PORTED	0002:00118230 ??0nalVirtual@@QAE@XZ 00907730 f i game2.o
+3549	PORTED	0002:00118160 ?nalBlend@@YAXAAVnalPositionOrientation@@ABV1@1MM@Z 00907660 f i game2.o  PORTED: IDA-backed SIMD position blend followed by quaternion slerp
+3550	PORTED	0002:00118220 ?GetDefaultPose@nalBaseSkeleton@@QBEABVnalBasePose@@XZ 00907720 f i game2.o  PORTED: existing source matches IDA vtable thunk
+3551	PORTED	0002:00118230 ??0nalVirtual@@QAE@XZ 00907730 f i game2.o  PORTED: IDA-backed virtual-base constructor
 3552	VERIFIED	0002:00118240 ?GetSkeleton@nalBasePose@@QBEPBVnalBaseSkeleton@@XZ 00907740 f i game2.o
 3553	PORTED	0002:00118250 ??0?$nalAnimClass@VnalAnyPose@@@@QAE@XZ 00907750 f i game2.o
 3554	PORTED	0002:00118280 ?GetName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00907780 f i game2.o
