@@ -2936,6 +2936,38 @@ void AeThreadManager::SetExecutingThread(AeThread* t)
     mThreadExecuting = t;
 }
 
+// ea: 0x005E9D70
+void memcpyFromStack(unsigned char* dest, unsigned char* src, int count)
+{
+    if (count > 0)
+    {
+        unsigned int words = ((unsigned int)(count - 1) >> 2) + 1;
+        unsigned int* d = (unsigned int*)dest;
+        unsigned int* s = (unsigned int*)src;
+        do
+        {
+            *d++ = *s++;
+            --words;
+        } while (words != 0);
+    }
+}
+
+// ea: 0x005E9DA0
+void memcpyToStack(unsigned char* dest, unsigned char* src, int count)
+{
+    if (count > 0)
+    {
+        unsigned int words = ((unsigned int)(count - 1) >> 2) + 1;
+        unsigned int* d = (unsigned int*)dest;
+        unsigned int* s = (unsigned int*)src;
+        do
+        {
+            *d++ = *s++;
+            --words;
+        } while (words != 0);
+    }
+}
+
 // DestroyBrocInstsStub (scr.o 0x5BC0E0, empty)
 static void DestroyBrocInstsStub(void*)
 {
