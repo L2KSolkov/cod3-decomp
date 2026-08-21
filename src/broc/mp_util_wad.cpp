@@ -2128,6 +2128,14 @@ const Broc::bint* Broc::entity::__unnamed::maxhealth_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::playerState_struct::Get - ea: 0x93BDF0
+const Broc::bint* Broc::entity::__unnamed::playerState_struct::Get(
+    Broc::bint* result) const {
+    new (result) Broc::bint(
+        Broc::gBrocAPI.m_entity_get_persistent_player_playerState(mHandle));
+    return result;
+}
+
 // Broc::entity::__unnamed::angles_struct::operator= - ea: 0x935490
 const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     const Broc::vector* rhs) {
@@ -2185,6 +2193,21 @@ int RandomInt(int iMax) {
 Broc::bint* GetTime(Broc::bint* result) {
     new (result) Broc::bint(gBrocAPI.mGetTime());
     return result;
+}
+
+// IsPlayer - ea: 0x93BE30
+int IsPlayer(const Broc::entity& e) {
+    return gBrocAPI.mEntityIsPlayer(e.GetHandle());
+}
+
+// IsVehicle - ea: 0x93BE60
+int IsVehicle(const Broc::entity& e) {
+    return gBrocAPI.mEntityIsVehicle(e.GetHandle());
+}
+
+// Code_GetWeaponName - ea: 0x93BE90
+void Code_GetWeaponName(int weaponIndex, Broc::string& weapon) {
+    gBrocAPI.mGetWeaponName(static_cast<unsigned int>(weaponIndex), &weapon);
 }
 
 // GetCvarInt - ea: 0x935970
@@ -2366,6 +2389,16 @@ Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
 }
 
+// operator!=(bint, int) - ea: 0x93BD20
+bool Broc::bint::operator!=(int rhs) const {
+    return mVal != rhs;
+}
+
+// operator*(bfloat, bfloat) - ea: 0x93BD50
+Broc::bfloat operator*(Broc::bfloat lhs, Broc::bfloat rhs) {
+    return Broc::bfloat(lhs.mVal * rhs.mVal);
+}
+
 // operator*(float, bfloat) - ea: 0x93ACC0
 Broc::bfloat operator*(float lhs, Broc::bfloat rhs) {
     return Broc::bfloat(rhs.mVal * lhs);
@@ -2398,6 +2431,11 @@ Broc::bbool operator>(Broc::bint lhs, int rhs) {
 
 // operator<(int, bfloat) - ea: 0x93AD80
 Broc::bbool operator<(int lhs, Broc::bfloat rhs) {
+    return Broc::bbool(rhs.mVal > lhs);
+}
+
+// operator<(float, bfloat) - ea: 0x93BDA0
+Broc::bbool operator<(float lhs, Broc::bfloat rhs) {
     return Broc::bbool(rhs.mVal > lhs);
 }
 
@@ -3503,7 +3541,7 @@ void PlayPainSound(Broc::entity guy, Broc::bint damage) {
 
 // PlayKillerCredit - ea: 0x93BEE0
 void PlayKillerCredit(Broc::entity killer) {
-    if (Broc::IsPlayer(&killer) == 0)
+    if (Broc::IsPlayer(killer) == 0)
         return;
     Broc::bint state;
     mp_util_wad::entity_get_playerState(&state, killer);
@@ -3585,7 +3623,7 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
                        Broc::bint means_of_damage) {
     Broc::bfloat chance(0.25f);
     if ((int)weapon == 0 || (int)means_of_damage == 11 ||
-        !Broc::Code_GetTeamGame() || Broc::IsPlayer(&attacker) == 0)
+        !Broc::Code_GetTeamGame() || Broc::IsPlayer(attacker) == 0)
         return;
     Broc::string gt;
     Broc::string at;
@@ -3637,7 +3675,7 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
     }
     Broc::string sound_to_play;
     sound_to_play = "";
-    if (Broc::IsVehicle(&inflictor) != 0) {
+    if (Broc::IsVehicle(inflictor) != 0) {
         if ((int)means_of_damage == 20 || (int)means_of_damage == 21 ||
             (int)means_of_damage == 22 || (int)means_of_damage == 31) {
             sound_to_play.~string();
@@ -3663,7 +3701,7 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
     } else {
         Broc::string weaponName;
         weaponName = "";
-        Broc::Code_GetWeaponName((int)weapon, &weaponName);
+        Broc::Code_GetWeaponName((int)weapon, weaponName);
         Broc::string ateam;
         mp_util_wad::entity_get_team(&ateam, attacker);
         if (weaponName == "kar98_sniper" || weaponName == "springfield") {
@@ -4462,7 +4500,7 @@ void CallbackVehicleKilled(Broc::entity killedVehicle, Broc::entity inflictor,
     (void)inflictor;
     (void)weapon;
     (void)mod;
-    if (occupantCount > 0 && Broc::IsPlayer(&attacker) != 0) {
+    if (occupantCount > 0 && Broc::IsPlayer(attacker) != 0) {
         AddToPlayerStats(attacker, Broc::bint(6), 1);
         Broc::entity spotter;
         Broc::Code_GetSpotterEntity(&spotter, killedVehicle);
@@ -4661,7 +4699,7 @@ void CallbackCallForMedic(Broc::entity ent) {
 
 // CallbackPickupItem - ea: 0x9437F0
 void CallbackPickupItem(Broc::entity pickerupper, Broc::entity dropper) {
-    if (Broc::IsPlayer(&dropper) == 0)
+    if (Broc::IsPlayer(dropper) == 0)
         return;
     Broc::string dteam;
     Broc::string pteam;
@@ -5438,7 +5476,7 @@ void CallbackPlayerRevive(Broc::entity player, Broc::entity medic) {
     HashStr label;
     label.mVal = 0x11524591u;
     Broc::notify(&player, label);
-    if (Broc::IsPlayer(&medic) != 0)
+    if (Broc::IsPlayer(medic) != 0)
         AddToPlayerStats(medic, Broc::bint(11), 1);
     Broc::string weapon("mp_revive");
     Broc::Code_Obituary(player, medic, &weapon, 1, 0);
@@ -5490,7 +5528,7 @@ void CallbackPlayerDamageTeam(Broc::entity player, Broc::entity inflictor,
                               int weapon, int hitLoc) {
     bool teamKill = false;
     if (!(bool)mp_util_wad::pLevel->friendlyFire &&
-        Broc::IsDefined(attacker) && Broc::IsPlayer(&attacker) != 0 &&
+        Broc::IsDefined(attacker) && Broc::IsPlayer(attacker) != 0 &&
         attacker != player) {
         Broc::string pteam;
         Broc::string ateam;
@@ -5560,10 +5598,10 @@ void CallbackPlayerKilled(Broc::entity killedPlayer, Broc::entity inflictor,
                           Broc::entity attacker, int weapon, int mod,
                           int health) {
     Broc::string weaponName((const char*)NULL);
-    Broc::Code_GetWeaponName(weapon, &weaponName);
+    Broc::Code_GetWeaponName(weapon, weaponName);
     Broc::entity team_killer;
     team_killer.___u0 = 0;
-    if (attacker.IsDefined() && Broc::IsPlayer(&attacker) != 0) {
+    if (attacker.IsDefined() && Broc::IsPlayer(attacker) != 0) {
         if (attacker != killedPlayer) {
             bool teamKill = false;
             if (Broc::Code_GetTeamGame()) {
@@ -8629,7 +8667,7 @@ int CallbackGetSlotClipCount(const char* slotName, unsigned int playerClass,
 
 // CallbackGiveAmmoPack - ea: 0x962AE0
 void CallbackGiveAmmoPack(Broc::entity playerEnt, unsigned int rank) {
-    if (Broc::IsPlayer(&playerEnt) != 0) {
+    if (Broc::IsPlayer(playerEnt) != 0) {
         GiveAmmoPack(playerEnt, Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
                      Broc::bint((int)rank));
     }
@@ -8637,7 +8675,7 @@ void CallbackGiveAmmoPack(Broc::entity playerEnt, unsigned int rank) {
 
 // CallbackCanPickupAmmoPack - ea: 0x963240
 int CallbackCanPickupAmmoPack(Broc::entity playerEnt) {
-    if (Broc::IsPlayer(&playerEnt) == 0)
+    if (Broc::IsPlayer(playerEnt) == 0)
         return 0;
     Broc::string slot("primary");
     Broc::bbool full;
@@ -8651,7 +8689,7 @@ int CallbackCanPickupAmmoPack(Broc::entity playerEnt) {
 
 // CallbackPickupKit - ea: 0x962B60
 void CallbackPickupKit(Broc::entity playerEnt, __int16 newClass) {
-    if (Broc::IsPlayer(&playerEnt) != 0) {
+    if (Broc::IsPlayer(playerEnt) != 0) {
         Broc::string slot("primary");
         Broc::bfloat primaryScale;
         GetStartingWeaponAmmoScale(&primaryScale, playerEnt, slot,
@@ -13077,7 +13115,7 @@ void minefield_think(Broc::entity self) {
             label.mVal = 0xF2F5EAB4;
             Broc::waittill(self, label, &target);
         } while (Broc::IsSentient(&target) == 0 &&
-                 Broc::IsVehicle(&target) == 0);
+                 Broc::IsVehicle(target) == 0);
         if (!(bool)*mp_util_wad::GetEE_flag_in_minefield(target)) {
             void* ftor = minefield_kill__functor(self, target);
             Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_minefield.bro",

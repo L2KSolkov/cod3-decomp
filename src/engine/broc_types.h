@@ -229,6 +229,10 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::bint* Get(Broc::bint* result) const;
         };
+        struct playerState_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::bint* Get(Broc::bint* result) const;
+        };
         struct angles_struct {
             unsigned int mHandle;  // +0x00
             const Broc::vector* operator=(const Broc::vector* rhs);
@@ -246,6 +250,8 @@ public:
                             "targetname_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::maxhealth_struct) == 4,
                             "maxhealth_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::playerState_struct) == 4,
+                            "playerState_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
@@ -592,6 +598,7 @@ struct bint {
     operator int() const { AssertDefined(); return mVal; }
     // ea: 0x936F20
     bool operator==(int rhs) const { return rhs == mVal; }
+    bool operator!=(int rhs) const;  // ea: 0x93BD20
     int operator++(int) { AssertDefined(); return ++mVal; }
     int operator++() { AssertDefined(); return mVal++; }
     int operator--(int) { AssertDefined(); return --mVal; }
@@ -664,6 +671,8 @@ bool operator<(bint lhs, int rhs);
 
 // Global boxed operators emitted by mp_util_wad.o.
 Broc::bbool operator>(Broc::bfloat lhs, int rhs);
+Broc::bbool operator<(float lhs, Broc::bfloat rhs);
+Broc::bfloat operator*(Broc::bfloat lhs, Broc::bfloat rhs);
 Broc::bfloat operator+(float lhs, Broc::bfloat rhs);
 Broc::vector AnglesToForward(const Broc::vector& angles);
 float DistanceSquared(const Broc::vector& a, const Broc::vector& b);
@@ -854,7 +863,17 @@ struct BrocAPI {
     char _padE0[0xF8 - 0xE0];                              // +0x0E0
     int (*mDialogPlay)(unsigned int, const Broc::string*, int,
                        bool);                              // +0x0F8
-    char _padFC[0x140 - 0xFC];                            // +0x0FC
+    char _padFC[0x118 - 0xFC];                            // +0x0FC
+    int (*mEntityIsAlive)(unsigned int);                  // +0x118
+    int (*mEntityExists)(unsigned int);                   // +0x11C
+    int (*mEntityIsPlayer)(unsigned int);                 // +0x120
+    int (*mEntityIsAI)(unsigned int);                     // +0x124
+    int (*mEntityIsSentient)(unsigned int);               // +0x128
+    int (*mEntityIsVehicle)(unsigned int);                // +0x12C
+    int (*mEntityIsVehicleTank)(unsigned int);            // +0x130
+    int (*mEntityIsWounded)(unsigned int);                // +0x134
+    int (*mIsPathNodeDefined)(unsigned int);              // +0x138
+    int (*mIsVehicleNodeDefined)(unsigned int);           // +0x13C
     int (*mMathsRandomInt)(int);                          // +0x140
     char _pad144[0x148 - 0x144];                          // +0x144
     int (*mMathsRandomIntRange)(int, int);                // +0x148
@@ -877,7 +896,9 @@ struct BrocAPI {
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
-    char _pad2C4[0x528 - 0x2C4];                          // +0x2C4
+    char _pad2C4[0x3CC - 0x2C4];                          // +0x2C4
+    void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
+    char _pad3D0[0x528 - 0x3D0];                          // +0x3D0
     unsigned int (*mGetTime)();                           // +0x528
     char _pad52C[0x6D8 - 0x52C];                          // +0x52C
     void (*mDelete)(unsigned int);                        // +0x6D8
@@ -1025,7 +1046,7 @@ float VectorLength(const Broc::vector* v);
 float VectorDot(const Broc::vector* a, const Broc::vector* b);
 void VectorNormalize(Broc::vector* result, const Broc::vector* v);
 int VecCloser(const Broc::vector* a, const Broc::vector* b, const Broc::vector* c);
-bool IsPlayer(const Broc::entity* e);            // ea: 0x92F2F0
+int IsPlayer(const Broc::entity& e);             // ea: 0x93BE30
 int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int IsVehicle(const Broc::entity* e);            // ea: 0x92F350
 int IsSentient(const Broc::entity* e);           // ea: 0x92F380
@@ -1180,7 +1201,7 @@ void Code_ClearSpottingFromOccupants(Broc::entity ent);
 void Code_GetSpotterEntity(Broc::entity* result, Broc::entity ent);
 int Code_IsMenuOpen(const Broc::string* menu, int viewport);
 void Code_ForceControllerErrorMessageDown();
-void Code_GetWeaponName(int weaponIndex, Broc::string* weapon);
+void Code_GetWeaponName(int weaponIndex, Broc::string& weapon);
 void OpenMenu(const Broc::string* str, int viewport);
 void CloseMenu(const Broc::string* str, int viewport);
 void CloseAllMenus(int viewport);
