@@ -6384,8 +6384,8 @@ index	status	map_line
 6383	VERIFIED	0002:001ad630 ?GetPAOFlag@PanelAnimObject@@QAE_NH@Z 0099CB30 f i shell.o	VERIFIED: matches IDA masked flag test
 6384	SKIPPED	0002:001ad650 ??_GPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6385	SKIPPED	0002:001ad650 ??_EPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-6386	PORTED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o
-6387	PORTED	0002:001ad690 ?SetPeriod@FETextFlashInfo@@QAEXM@Z 0099CB90 f i shell.o
+6386	PORTED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o	PORTED: added IDA-derived flash_color setter
+6387	PORTED	0002:001ad690 ?SetPeriod@FETextFlashInfo@@QAEXM@Z 0099CB90 f i shell.o	PORTED: added IDA-derived flash_period setter
 6388	VERIFIED	0002:001ad6b0 ??0FEText@@QAE@XZ 0099CBB0 f i shell.o
 6389	VERIFIED	0002:001ad830 ?Draw@FEText@@UAEXXZ 0099CD30 f i shell.o
 6390	VERIFIED	0002:001ad840 ?AddedToMenu@FEText@@UAEX_N@Z 0099CD40 f i shell.o
