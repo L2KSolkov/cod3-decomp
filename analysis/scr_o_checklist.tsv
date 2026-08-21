@@ -1133,31 +1133,31 @@ index	status	map_line
 1132	SKIPPED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1133	VERIFIED	0002:001ee430 ??1AeThreadWaitFramesState@@UAE@XZ 009DD930 f i scr.o
 1134	SKIPPED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o
-1136	PORTED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o
-1137	PORTED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o
+1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o PORTED: assert and flag path matches IDA decompilation
+1136	PORTED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o PORTED: assert and string assignment match IDA decompilation
+1137	PORTED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o PORTED: field writes match IDA decompilation
 1138	VERIFIED	0002:001ee650 ?AnglesToRight@@YAXQBMQAM@Z 009DDB50 f i scr.o
 1139	PORTED	0002:001ee750 ??0weaponInfo_s@@QAE@XZ 009DDC50 f i scr.o
 1140	VERIFIED	0002:001ee790 ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z 009DDC90 f i scr.o
-1141	PORTED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o
+1141	VERIFIED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o VERIFIED: generic ae_sized_array::back matches IDA decompilation
 1142	SKIPPED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1143	PORTED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o
-1144	PORTED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o
-1145	PORTED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o
-1146	PORTED	0002:001ee8a0 ?push_back@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DDDA0 f i scr.o
-1147	PORTED	0002:001ee8d0 ??0?$reserved_dlist@VAeThread@@@@QAE@XZ 009DDDD0 f i scr.o
-1148	PORTED	0002:001ee8f0 ?push_back@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DDDF0 f i scr.o
-1149	PORTED	0002:001ee920 ?pop_back@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 009DDE20 f i scr.o
-1150	PORTED	0002:001ee950 ?free_space@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009DDE50 f i scr.o
-1151	PORTED	0002:001ee960 ??Diterator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 009DDE60 f i scr.o
+1143	PORTED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o PORTED: constructor matches IDA sentinel initialization
+1144	PORTED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o PORTED: link and tail updates match IDA decompilation
+1145	PORTED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o PORTED: end iterator fields match IDA decompilation
+1146	PORTED	0002:001ee8a0 ?push_back@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DDDA0 f i scr.o PORTED: link and tail updates match IDA decompilation
+1147	PORTED	0002:001ee8d0 ??0?$reserved_dlist@VAeThread@@@@QAE@XZ 009DDDD0 f i scr.o PORTED: constructor matches IDA sentinel initialization
+1148	PORTED	0002:001ee8f0 ?push_back@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DDDF0 f i scr.o PORTED: link and tail updates match IDA decompilation
+1149	PORTED	0002:001ee920 ?pop_back@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 009DDE20 f i scr.o PORTED: tail removal matches IDA decompilation
+1150	VERIFIED	0002:001ee950 ?free_space@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009DDE50 f i scr.o VERIFIED: generic ae_sized_array::free_space matches IDA decompilation
+1151	PORTED	0002:001ee960 ??Diterator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 009DDE60 f i scr.o PORTED: dereference applies IDA's 4-byte AeThreadState node offset
 1152	VERIFIED	0002:001ee970 ?BindObjectToHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXVHandle@@PAVAeThread@@@Z 009DDE70 f i scr.o
-1153	PORTED	0002:001eea10 ?DereferenceHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@VHandle@@@Z 009DDF10 f i scr.o
-1154	PORTED	0002:001eea50 ??Dconst_iterator@?$reserved_dlist@VAeThreadState@@@@QBEPBVAeThreadState@@XZ 009DDF50 f i scr.o
-1155	PORTED	0002:001eea60 ??9const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 009DDF60 f i scr.o
-1156	PORTED	0002:001eea90 ??Dconst_iterator@?$reserved_dlist@VAeThread@@@@QBEPBVAeThread@@XZ 009DDF90 f i scr.o
-1157	PORTED	0002:001eeaa0 ??9const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 009DDFA0 f i scr.o
-1158	PORTED	0002:001eead0 ?clear@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXXZ 009DDFD0 f i scr.o
-1159	PORTED	0002:001eeae0 ?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009DDFE0 f i scr.o
+1153	VERIFIED	0002:001eea10 ?DereferenceHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@VHandle@@@Z 009DDF10 f i scr.o VERIFIED: HandleDb key/object lookup matches IDA decompilation
+1154	PORTED	0002:001eea50 ??Dconst_iterator@?$reserved_dlist@VAeThreadState@@@@QBEPBVAeThreadState@@XZ 009DDF50 f i scr.o PORTED: const dereference applies IDA's 4-byte AeThreadState node offset
+1155	PORTED	0002:001eea60 ??9const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 009DDF60 f i scr.o PORTED: m_next comparison matches IDA decompilation
+1156	PORTED	0002:001eea90 ??Dconst_iterator@?$reserved_dlist@VAeThread@@@@QBEPBVAeThread@@XZ 009DDF90 f i scr.o PORTED: const dereference returns node as AeThread pointer per IDA
+1157	PORTED	0002:001eeaa0 ??9const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 009DDFA0 f i scr.o PORTED: m_next comparison matches IDA decompilation
+1158	VERIFIED	0002:001eead0 ?clear@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXXZ 009DDFD0 f i scr.o VERIFIED: generic ae_sized_array::clear matches IDA decompilation
+1159	VERIFIED	0002:001eeae0 ?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009DDFE0 f i scr.o VERIFIED: generic ae_sized_array::back matches IDA decompilation
 1160	SKIPPED	0002:001eeb00 ??9const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z 009DE000 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1161	VERIFIED	0002:001eeb20 ??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ 009DE020 f i scr.o
 1162	PORTED	0002:001eeb40 ?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ 009DE040 f i scr.o
