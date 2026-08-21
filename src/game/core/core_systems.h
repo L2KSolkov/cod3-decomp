@@ -1071,6 +1071,7 @@ public:
     unsigned int GetStr() const;
     WaitTilOutput* GetParam() const;
     DbLinkedHandle<EntityHandleDb, Entity> GetOwner() const;
+    static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc,
                               const char* file, int line);  // ??2EntityNotify@@SAPAXI_NPBDH@Z (g.o 0x4A5BF0)
     static void operator delete(void* ptr);  // ??3EntityNotify@@SAXPAX@Z (core.o 0x4B3F90)
@@ -1089,6 +1090,8 @@ public:
 
     EntityNotifySet(Entity* e);  // ea: 0x004C1D80
     ~EntityNotifySet();          // ea: 0x004CEAE0
+    void* get_dlist_node();
+    static int get_dlist_node_offset();
     void AddNotify(const HashString& h,
                    DbLinkedHandle<EntityHandleDb, Entity> owner);
     void AddEndOn(EndOnScriptNode* node);  // scr.o 0x5EF500
@@ -1101,6 +1104,7 @@ public:
     static void UpdateList();
     static void* operator new(size_t size, bool forceHeapAlloc);
     static void operator delete(void* ptr);
+    static void SetAllocator(PoolAllocator* allocator);
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
 };
 static_assert(sizeof(EntityNotifySet) == 0x2C, "EntityNotifySet size mismatch");

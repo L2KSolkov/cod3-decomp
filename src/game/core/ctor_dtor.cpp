@@ -145,6 +145,10 @@ int EntityNotify::get_dlist_node_offset()
 {
     return 0;
 }
+void EntityNotify::SetAllocator(PoolAllocator* allocator)
+{
+    EntityNotify::sAllocator = allocator;
+}
 unsigned int EntityNotify::GetStr() const
 {
     return mStr;
@@ -188,6 +192,18 @@ void* EntityNotifySet::operator new(size_t size, bool forceHeapAlloc)
 void EntityNotifySet::operator delete(void* ptr)
 {
     EntityNotifySet::sAllocator->Release(ptr);
+}
+void* EntityNotifySet::get_dlist_node()
+{
+    return this;
+}
+int EntityNotifySet::get_dlist_node_offset()
+{
+    return 0;
+}
+void EntityNotifySet::SetAllocator(PoolAllocator* allocator)
+{
+    EntityNotifySet::sAllocator = allocator;
 }
 
 // WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
