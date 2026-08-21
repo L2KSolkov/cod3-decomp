@@ -122,6 +122,8 @@ struct nalMatrix4x4Local {
 };
 
 namespace nalGeneric {
+class nalGenericAnim;
+class nalGenericInstance;
 class nalGenericBoneHandle {
 public:
     unsigned int index;   // +0x00
@@ -1092,7 +1094,9 @@ public:
         nalPlayMethod();       // ea: 0x4FA500
         ~nalPlayMethod();      // ea: 0x50BB30
         void Advance(void* state, float delta);  // ea: 0x50BB80
-        void* CreateInstance(void* anim, void* skeleton);  // ea: 0x504C60
+        nalGeneric::nalGenericInstance* CreateInstance(
+            nalGeneric::nalGenericAnim* anim,
+            nalGeneric::nalGenericSkeleton* skeleton);  // ea: 0x504C60
         void SetNoteHandlerEntityHandle(
             DbLinkedHandle<EntityHandleDb, Entity> handle);  // ea: 0x4F5D10
         void Release();  // nalPlayMethod::Release (thunk)
@@ -1761,12 +1765,15 @@ void AnimationPlayer::nalPlayMethod::Advance(void* state, float delta)
 extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
 extern void AnimNoteHandler_ParseNoteTracks(void* self, void* anim);
 
-void* AnimationPlayer::nalPlayMethod::CreateInstance(void* anim, void* skeleton)
+nalGeneric::nalGenericInstance*
+AnimationPlayer::nalPlayMethod::CreateInstance(
+    nalGeneric::nalGenericAnim* anim,
+    nalGeneric::nalGenericSkeleton* skeleton)
 {
     void* instance = nalGenericAnim_CreateInstance(anim, skeleton);
     if (mNoteHandler != nullptr)
         AnimNoteHandler_ParseNoteTracks(mNoteHandler, anim);
-    return instance;
+    return reinterpret_cast<nalGeneric::nalGenericInstance*>(instance);
 }
 
 // ============================================================================
