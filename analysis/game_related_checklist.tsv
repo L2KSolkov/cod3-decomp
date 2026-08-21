@@ -23878,10 +23878,10 @@ index	status	map_line
 23877	VERIFIED	0002:0052f6f0 ?IsDefined@Broc@@YA_NABVstring@1@@Z 00D1EBF0 f i mp_util_wad.o
 23878	PORTED	0002:0052f710 ?GetEE_deathmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EC10 f mp_util_wad.o
 23879	PORTED	0002:0052f760 ?IsEEDefined_deathmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EC60 f mp_util_wad.o
-23880	PORTED	0002:0052f860 ?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z 00D1ED60 f mp_util_wad.o
-23881	PORTED	0002:0052f8b0 ?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EDB0 f mp_util_wad.o
-23882	PORTED	0002:0052f960 ?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z 00D1EE60 f mp_util_wad.o
-23883	PORTED	0002:0052f9b0 ?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EEB0 f mp_util_wad.o
+23880	VERIFIED	0002:0052f860 ?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z 00D1ED60 f mp_util_wad.o	VERIFIED: IDA 0x0092F860 matches GetRef key 0x35249286
+23881	VERIFIED	0002:0052f8b0 ?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EDB0 f mp_util_wad.o	VERIFIED: IDA 0x0092F8B0 matches guarded GetVal/IsDefined key 0x35249286 and bbool result
+23882	VERIFIED	0002:0052f960 ?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z 00D1EE60 f mp_util_wad.o	VERIFIED: IDA 0x0092F960 matches GetRef key 0x72013241
+23883	VERIFIED	0002:0052f9b0 ?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EEB0 f mp_util_wad.o	VERIFIED: IDA 0x0092F9B0 matches guarded GetVal/IsDefined key 0x72013241 and bbool result
 23884	PORTED	0002:0052fa60 ?GetEE_home_position@@YAAAUvector@Broc@@Ventity@2@@Z 00D1EF60 f mp_util_wad.o
 23885	PORTED	0002:0052fab0 ?IsEEDefined_home_position@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EFB0 f mp_util_wad.o
 23886	PORTED	0002:0052fb60 ?GetEE_deathfire@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F060 f mp_util_wad.o

@@ -23878,10 +23878,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 25844	0x0092F6F0	0x00D1EBF0	?IsDefined@Broc@@YA_NABVstring@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25845	0x0092F710	0x00D1EC10	?GetEE_deathmodel@@YAAAVstring@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25846	0x0092F760	0x00D1EC60	?IsEEDefined_deathmodel@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25847	0x0092F860	0x00D1ED60	?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25848	0x0092F8B0	0x00D1EDB0	?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25849	0x0092F960	0x00D1EE60	?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25850	0x0092F9B0	0x00D1EEB0	?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+25847	0x0092F860	0x00D1ED60	?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25848	0x0092F8B0	0x00D1EDB0	?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
+25849	0x0092F960	0x00D1EE60	?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25850	0x0092F9B0	0x00D1EEB0	?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
 25851	0x0092FA60	0x00D1EF60	?GetEE_home_position@@YAAAUvector@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25852	0x0092FAB0	0x00D1EFB0	?IsEEDefined_home_position@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25853	0x0092FB60	0x00D1F060	?GetEE_deathfire@@YAAAVstring@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
