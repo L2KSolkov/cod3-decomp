@@ -3058,6 +3058,7 @@ public:
     void ReleaseHandle(Handle h);
     T* DereferenceHandle(Handle h) const;
     void BindObjectToHandle(Handle handle, T* obj);
+    void Dump();
     H AllocateHandle();
 };
 
@@ -3128,6 +3129,60 @@ void HandleDb<T, CAPACITY, H>::BindObjectToHandle(Handle handle, T* obj)
         }
         mElements[v3].mObject = obj;
     }
+}
+
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::Dump()
+{
+    if (mDebugCallback != nullptr)
+    {
+        tlPrintf("handle db contents:\n");
+        unsigned int allocated[(CAPACITY + 31) / 32];
+        for (int i = 0; i < (CAPACITY + 31) / 32; ++i)
+            allocated[i] = ~mFreeIndices[i];
+
+        unsigned int cur_word = allocated[0];
+        int word_idx = 0;
+        int cur_val = -1;
+        for (;;)
+        {
+            if (word_idx != -1)
+            {
+                if (cur_word == 0)
+                {
+                    do
+                    {
+                        if (word_idx >= (CAPACITY + 31) / 32 - 1)
+                            break;
+                        ++word_idx;
+                        cur_word = allocated[word_idx];
+                    } while (cur_word == 0);
+                }
+                if (cur_word != 0)
+                {
+                    unsigned long bit;
+                    _BitScanForward(&bit, cur_word);
+                    cur_val = word_idx * 32 + (int)bit;
+                    cur_word &= ~(1u << bit);
+                }
+                else
+                {
+                    cur_val = -1;
+                    word_idx = -1;
+                }
+            }
+            if (cur_val == -1 && word_idx == -1)
+                break;
+            mDebugCallback(cur_val, mElements[cur_val].mObject);
+        }
+    }
+
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+    AeAssert::gCurrentLine = 193;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+        __debugbreak();
 }
 
 template <typename T, int CAPACITY, typename H>
