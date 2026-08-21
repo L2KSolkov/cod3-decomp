@@ -152,25 +152,25 @@ index	status	map_line
 151	VERIFIED	0002:004556c0 ?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ 00C44BC0 f i nal_init.o
 152	VERIFIED	0002:00455700 ?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ 00C44C00 f i nal_init.o
 153	VERIFIED	0002:00455740 ?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ 00C44C40 f i nal_init.o
-154	PORTED	0002:00455780 ??1nalComponentEntropyFloat1@@UAE@XZ 00C44C80 f i nal_init.o
-155	PORTED	0002:00455790 ??1nalComponentPacked8Float1@@UAE@XZ 00C44C90 f i nal_init.o
-156	PORTED	0002:004557a0 ??1nalComponentFloat3@@UAE@XZ 00C44CA0 f i nal_init.o
-157	PORTED	0002:004557b0 ??1nalComponentEntropyFloat3@@UAE@XZ 00C44CB0 f i nal_init.o
-158	PORTED	0002:004557c0 ??1nalComponentPacked8EntropyFloat3@@UAE@XZ 00C44CC0 f i nal_init.o
-159	PORTED	0002:004557d0 ??1nalComponentPacked16EntropyFloat3@@UAE@XZ 00C44CD0 f i nal_init.o
-160	PORTED	0002:004557e0 ??1nalComponentFloat4@@UAE@XZ 00C44CE0 f i nal_init.o
-161	PORTED	0002:004557f0 ??1nalComponentEntropyFloat4@@UAE@XZ 00C44CF0 f i nal_init.o
-162	PORTED	0002:00455800 ??1nalComponentPacked8EntropyFloat4@@UAE@XZ 00C44D00 f i nal_init.o
-163	PORTED	0002:00455810 ??1nalComponentPacked16EntropyFloat4@@UAE@XZ 00C44D10 f i nal_init.o
-164	PORTED	0002:00455820 ??1nalComponentQuat@@UAE@XZ 00C44D20 f i nal_init.o
-165	PORTED	0002:00455830 ??1nalComponentEntropyQuat@@UAE@XZ 00C44D30 f i nal_init.o
-166	PORTED	0002:00455840 ??1nalComponentPacked8EntropyQuat@@UAE@XZ 00C44D40 f i nal_init.o
-167	PORTED	0002:00455850 ??1nalComponentPacked16EntropyQuat@@UAE@XZ 00C44D50 f i nal_init.o
-168	PORTED	0002:00455860 ??1nalComponentPO@@UAE@XZ 00C44D60 f i nal_init.o
-169	PORTED	0002:00455870 ??1nalComponentEntropyPO@@UAE@XZ 00C44D70 f i nal_init.o
-170	PORTED	0002:00455880 ??1nalComponentTrajectoryPO@@UAE@XZ 00C44D80 f i nal_init.o
-171	PORTED	0002:00455890 ??1nalComponentEntropyTrajectoryPO@@UAE@XZ 00C44D90 f i nal_init.o
-172	PORTED	0002:004558a0 ??1nalComponentPacked16EntropyIKSpin@@UAE@XZ 00C44DA0 f i nal_init.o
+154	VERIFIED	0002:00455780 ??1nalComponentEntropyFloat1@@UAE@XZ 00C44C80 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+155	VERIFIED	0002:00455790 ??1nalComponentPacked8Float1@@UAE@XZ 00C44C90 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+156	VERIFIED	0002:004557a0 ??1nalComponentFloat3@@UAE@XZ 00C44CA0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+157	VERIFIED	0002:004557b0 ??1nalComponentEntropyFloat3@@UAE@XZ 00C44CB0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+158	VERIFIED	0002:004557c0 ??1nalComponentPacked8EntropyFloat3@@UAE@XZ 00C44CC0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+159	VERIFIED	0002:004557d0 ??1nalComponentPacked16EntropyFloat3@@UAE@XZ 00C44CD0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+160	VERIFIED	0002:004557e0 ??1nalComponentFloat4@@UAE@XZ 00C44CE0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+161	VERIFIED	0002:004557f0 ??1nalComponentEntropyFloat4@@UAE@XZ 00C44CF0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+162	VERIFIED	0002:00455800 ??1nalComponentPacked8EntropyFloat4@@UAE@XZ 00C44D00 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+163	VERIFIED	0002:00455810 ??1nalComponentPacked16EntropyFloat4@@UAE@XZ 00C44D10 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+164	VERIFIED	0002:00455820 ??1nalComponentQuat@@UAE@XZ 00C44D20 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+165	VERIFIED	0002:00455830 ??1nalComponentEntropyQuat@@UAE@XZ 00C44D30 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+166	VERIFIED	0002:00455840 ??1nalComponentPacked8EntropyQuat@@UAE@XZ 00C44D40 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+167	VERIFIED	0002:00455850 ??1nalComponentPacked16EntropyQuat@@UAE@XZ 00C44D50 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+168	VERIFIED	0002:00455860 ??1nalComponentPO@@UAE@XZ 00C44D60 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+169	VERIFIED	0002:00455870 ??1nalComponentEntropyPO@@UAE@XZ 00C44D70 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+170	VERIFIED	0002:00455880 ??1nalComponentTrajectoryPO@@UAE@XZ 00C44D80 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+171	VERIFIED	0002:00455890 ??1nalComponentEntropyTrajectoryPO@@UAE@XZ 00C44D90 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
+172	VERIFIED	0002:004558a0 ??1nalComponentPacked16EntropyIKSpin@@UAE@XZ 00C44DA0 f i nal_init.o  VERIFIED: empty source destructor emits the nalComponentBase vtable assignment shown by IDA
 173	VERIFIED	0002:004558b0 ??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@IAE@XZ 00C44DB0 f i nal_init.o
 174	PORTED	0002:004558c0 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z 00C44DC0 f i nal_init.o
 175	SKIPPED	0002:004558d0 ??_G?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@MAEPAXI@Z 00C44DD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
