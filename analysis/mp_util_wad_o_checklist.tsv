@@ -148,13 +148,13 @@ index	status	map_line
 147	VERIFIED	0002:00534c90 ??1mp_plane@_mp_airplanes@@QAE@XZ 00D24190 f i mp_util_wad.o
 148	VERIFIED	0002:00534d50 ??0mp_plane@_mp_airplanes@@QAE@ABU01@@Z 00D24250 f i mp_util_wad.o
 149	VERIFIED	0002:00534e80 ?plane_flyby_thread@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@@Z 00D24380 f mp_util_wad.o
-150	PORTED	0002:00535060 ??4bint@@QAEHH@Z 00D24560 f i mp_util_wad.o
-151	PORTED	0002:00535090 ??M@YA?AUbbool@@Ubint@@0@Z 00D24590 f i mp_util_wad.o
-152	PORTED	0002:005350d0 ?RandomInt@@YAHH@Z 00D245D0 f i mp_util_wad.o
+150	FIXED	0002:00535060 ??4bint@@QAEHH@Z 00D24560 f i mp_util_wad.o	FIXED: IDA returns assigned int, not bint reference
+151	FIXED	0002:00535090 ??M@YA?AUbbool@@Ubint@@0@Z 00D24590 f i mp_util_wad.o	FIXED: IDA bbool value-return comparison restored
+152	PORTED	0002:005350d0 ?RandomInt@@YAHH@Z 00D245D0 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mMathsRandomInt forwarding wrapper
 153	PORTED	0002:00535100 ?plane_flyby__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@Ubint@@@Z 00D24600 f i mp_util_wad.o  PORTED: IDA AeThreadFunctor3 allocation/capture at 0x58 bytes
 154	PORTED	0002:005351c0 ?plane_flyby@_mp_airplanes@@YAXVentity@Broc@@Ump_plane@1@Ubint@@@Z 00D246C0 f mp_util_wad.o
-155	PORTED	0002:00535420 ??4bfloat@@QAEMM@Z 00D24920 f i mp_util_wad.o
-156	PORTED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o
+155	FIXED	0002:00535420 ??4bfloat@@QAEMM@Z 00D24920 f i mp_util_wad.o	FIXED: IDA returns assigned float as double
+156	PORTED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o	PORTED: IDA bfloat multiplication value-return operator
 157	PORTED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o
 158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o
 159	PORTED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o
@@ -164,18 +164,18 @@ index	status	map_line
 163	VERIFIED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o
 164	PORTED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o
 165	VERIFIED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o
-166	PORTED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o
+166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
 167	VERIFIED	0002:005358f0 ?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z 00D24DF0 f mp_util_wad.o
-168	PORTED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o
+168	PORTED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mCVarGetInt forwarding wrapper
 169	VERIFIED	0002:005359a0 ?main@_mp_audio@@YAXXZ 00D24EA0 f mp_util_wad.o
-170	PORTED	0002:00536040 ??4bint@@QAEHI@Z 00D25540 f i mp_util_wad.o
-171	PORTED	0002:00536070 ?SoundPlay@@YAIABVstring@Broc@@M@Z 00D25570 f i mp_util_wad.o
-172	PORTED	0002:005360a0 ?ReverbSetParams@@YAXABVstring@Broc@@_N@Z 00D255A0 f i mp_util_wad.o
-173	PORTED	0002:005360d0 ?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z 00D255D0 f i mp_util_wad.o
+170	PORTED	0002:00536040 ??4bint@@QAEHI@Z 00D25540 f i mp_util_wad.o	PORTED: IDA unsigned-int assignment overload
+171	PORTED	0002:00536070 ?SoundPlay@@YAIABVstring@Broc@@M@Z 00D25570 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mSoundPlay forwarding wrapper
+172	PORTED	0002:005360a0 ?ReverbSetParams@@YAXABVstring@Broc@@_N@Z 00D255A0 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mReverbSetParams forwarding wrapper
+173	PORTED	0002:005360d0 ?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z 00D255D0 f i mp_util_wad.o	PORTED: IDA entity-handle and HashStr forwarding wrapper
 174	PORTED	0002:00536120 ?PlayerLocation__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D25620 f i mp_util_wad.o
 175	PORTED	0002:005361c0 ?ambient_system__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D256C0 f i mp_util_wad.o
 176	VERIFIED	0002:00536280 ?CallbackSetLevelAudio@_mp_audio@@YAXPBD00HH@Z 00D25780 f mp_util_wad.o
-177	PORTED	0002:00536360 ??4bfloat@@QAEMH@Z 00D25860 f i mp_util_wad.o
+177	PORTED	0002:00536360 ??4bfloat@@QAEMH@Z 00D25860 f i mp_util_wad.o	PORTED: IDA int-to-bfloat assignment overload
 178	VERIFIED	0002:00536390 ?ambient_chatter_system@_mp_audio@@YAXVentity@Broc@@@Z 00D25890 f mp_util_wad.o
 179	PORTED	0002:005364b0 ?audio_spawner__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D259B0 f i mp_util_wad.o
 180	VERIFIED	0002:00536570 ?interior_triggering_device@_mp_audio@@YAXVentity@Broc@@0@Z 00D25A70 f mp_util_wad.o
