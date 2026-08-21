@@ -13,6 +13,7 @@
 #include "filesystem/apk.h"
 #include "game/logic/g_inspector.h"
 #include "core/fourcc.h"
+#include "core/PoolAllocator.h"
 
 class ScriptEventParams;
 
@@ -137,6 +138,16 @@ struct ScriptEventHandler {
     ScriptEventHandler* mNext;          // +0x40
 
     ScriptEventHandler();               // ea: 0x4F9860
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ea: 0x004EAC70
+    static void* operator new(size_t size, void* placement)
+    {
+        (void)size;
+        return placement;
+    }
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line); // ea: 0x004EAC90
+    static void operator delete(void* ptr);                  // ea: 0x004EACB0
     static void SetAllocator(PoolAllocator* allocator); // core.o 0x4B5570
     ~ScriptEventHandler();              // ea: 0x4F59D0
     bool AddEvent(HashString h, HashString callback);  // ea: 0x4F98D0
@@ -1473,6 +1484,35 @@ int ButtonMgr::ClearAllBindings()
 extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler
 extern void* PoolAllocator_Allocate(void* self, unsigned int s,
                                     bool forceHeapAlloc);
+
+// ea: 0x004EAC70
+void* ScriptEventHandler::operator new(size_t size, bool forceHeapAlloc,
+                                        const char* file, int line)
+{
+    (void)file;
+    (void)line;
+    return PoolAllocator_Allocate(ScriptEventHandler_sAllocator,
+                                  static_cast<unsigned int>(size),
+                                  forceHeapAlloc);
+}
+
+// ea: 0x004EAC90
+void ScriptEventHandler::operator delete(void* ptr, bool forceHeapAlloc,
+                                         const char* file, int line)
+{
+    (void)forceHeapAlloc;
+    (void)file;
+    (void)line;
+    reinterpret_cast<PoolAllocator*>(ScriptEventHandler_sAllocator)
+        ->Release(ptr);
+}
+
+// ea: 0x004EACB0
+void ScriptEventHandler::operator delete(void* ptr)
+{
+    reinterpret_cast<PoolAllocator*>(ScriptEventHandler_sAllocator)
+        ->Release(ptr);
+}
 
 // core.o 0x4B5570
 void ScriptEventHandler::SetAllocator(PoolAllocator* allocator)

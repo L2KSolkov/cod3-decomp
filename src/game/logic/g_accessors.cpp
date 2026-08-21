@@ -445,6 +445,11 @@ const math::Dir3& math::Dir3::operator=(const math::Position3& _v)
     v = _v.v;
     return *this;
 }
+const math::Dir3& math::Dir3::operator=(const math::Vector4& _v)
+{
+    v = _v.v;
+    return *this;
+}
 math::Dir3::Dir3(const math::Position3& _v)
 {
     v = _v.v;
@@ -470,9 +475,41 @@ math::Position3::Position3(const math::Position3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
 }
+void math::Position3::Packed::Set(const math::Position3& _v)
+{
+    x = _v.v.m128_f32[0];
+    y = _mm_shuffle_ps(_v.v, _v.v, 85).m128_f32[0];
+    z = _mm_shuffle_ps(_v.v, _v.v, 170).m128_f32[0];
+}
+float math::Position3::Packed::GetX() const
+{
+    return x;
+}
+float math::Position3::Packed::GetY() const
+{
+    return y;
+}
+float math::Position3::Packed::GetZ() const
+{
+    return z;
+}
+const math::Position3::Packed&
+math::Position3::Packed::operator=(const math::Position3& _v)
+{
+    Set(_v);
+    return *this;
+}
+math::Position3::Packed::Packed()
+{
+}
 math::Vector4::Vector4(const math::Dir3& _v)
 {
     v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
+}
+const math::Vector4& math::Vector4::operator=(const math::Dir3& _v)
+{
+    v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
+    return *this;
 }
 math::Vector4::Vector4(const math::Position3& _v)
 {

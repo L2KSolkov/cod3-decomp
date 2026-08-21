@@ -60,6 +60,7 @@ public:
     Dir3(const Position3& _v);    // ??0Dir3@math@@QAE@ABVPosition3@1@@Z
     Dir3(const Vector4& _v);      // ??0Dir3@math@@QAE@ABVVector4@1@@Z
     const Dir3& operator=(const Position3& _v);  // ??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z
+    const Dir3& operator=(const Vector4& _v);    // game2.o 0x004EAF50
     float GetX() const;           // ?GetX@Dir3@math@@QBEMXZ
     float GetY() const;           // ?GetY@Dir3@math@@QBEMXZ
     float GetZ() const;           // ?GetZ@Dir3@math@@QBEMXZ (g.o 0x4A56A0)
@@ -138,6 +139,12 @@ public:
 
     struct Packed {
         float x, y, z;
+        void Set(const Position3& v);  // game2.o 0x004EACD0
+        float GetX() const;            // game2.o 0x004EAD60
+        float GetY() const;            // game2.o 0x004EAD70
+        float GetZ() const;            // game2.o 0x004EAD80
+        const Packed& operator=(const Position3& v);  // game2.o 0x004EAD90
+        Packed();                       // game2.o 0x004EAE20
     };
     Position3(const Position3::Packed& _p);  // ??0Position3@math@@QAE@ABUPacked@01@@Z
     const Position3& operator=(const Position3::Packed& _p);  // ??4Position3@math@@QAEABV01@ABUPacked@01@@Z
@@ -243,6 +250,7 @@ public:
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
     const Vector4& operator=(const Vector4::Packed& _p);  // ??4Vector4@math@@QAEABV01@ABUPacked@01@@Z (render.o 0x6E6220)
     const Vector4& operator=(const Position3& _v);  // ??4Vector4@math@@QAEABV01@ABVPosition3@1@@Z (render.o 0x6E61D0)
+    const Vector4& operator=(const Dir3& _v);      // game2.o 0x004EAF70
 
     float operator[](int i) const { return v.m128_f32[i]; }
     float& operator[](int i) { return v.m128_f32[i]; }
