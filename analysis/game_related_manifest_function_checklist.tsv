@@ -6380,8 +6380,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6379	0x005AD5B0	0x0099CAB0	?SetZvalueAbs@PanelAnimObject@@UAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6380	0x005AD5D0	0x0099CAD0	?GetZvalue@PanelAnimObject@@UAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6381	0x005AD5E0	0x0099CAE0	?GetY@PanelAnimObject@@UAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6382	0x005AD5F0	0x0099CAF0	?SetPAOFlag@PanelAnimObject@@QAEXH_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6383	0x005AD630	0x0099CB30	?GetPAOFlag@PanelAnimObject@@QAE_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6382	0x005AD5F0	0x0099CAF0	?SetPAOFlag@PanelAnimObject@@QAEXH_N@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
+6383	0x005AD630	0x0099CB30	?GetPAOFlag@PanelAnimObject@@QAE_NH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6384	0x005AD650	0x0099CB50	??_GPanelAnimObject@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6385	0x005AD650	0x0099CB50	??_EPanelAnimObject@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6386	0x005AD680	0x0099CB80	?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

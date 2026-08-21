@@ -6380,8 +6380,8 @@ index	status	map_line
 6379	VERIFIED	0002:001ad5b0 ?SetZvalueAbs@PanelAnimObject@@UAEXM@Z 0099CAB0 f i shell.o
 6380	VERIFIED	0002:001ad5d0 ?GetZvalue@PanelAnimObject@@UAEMXZ 0099CAD0 f i shell.o
 6381	VERIFIED	0002:001ad5e0 ?GetY@PanelAnimObject@@UAEMXZ 0099CAE0 f i shell.o
-6382	PORTED	0002:001ad5f0 ?SetPAOFlag@PanelAnimObject@@QAEXH_N@Z 0099CAF0 f i shell.o
-6383	PORTED	0002:001ad630 ?GetPAOFlag@PanelAnimObject@@QAE_NH@Z 0099CB30 f i shell.o
+6382	VERIFIED	0002:001ad5f0 ?SetPAOFlag@PanelAnimObject@@QAEXH_N@Z 0099CAF0 f i shell.o	VERIFIED: matches IDA flag set/clear branches
+6383	VERIFIED	0002:001ad630 ?GetPAOFlag@PanelAnimObject@@QAE_NH@Z 0099CB30 f i shell.o	VERIFIED: matches IDA masked flag test
 6384	SKIPPED	0002:001ad650 ??_GPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6385	SKIPPED	0002:001ad650 ??_EPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6386	PORTED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o
