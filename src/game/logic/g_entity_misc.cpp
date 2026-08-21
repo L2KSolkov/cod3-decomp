@@ -4693,6 +4693,9 @@ public:
     virtual void Update(Entity* pEnt, float deltaT);  // virtual in binary (UAEX)
     static void RegisterFunc(const char* pKey,
                              AnimNotifyCallback cbFunc);
+    static TaskHandler sHandler;          // ?sHandler@AnimNotifyTask@@0VTaskHandler@@A
+    static TaskHandler* GetHandler();     // ea: 0x5187D0
+    static FourCC GetTaskId();            // ea: 0x5187E0
 private:
     static int Find(unsigned int key);  // ?Find@AnimNotifyTask@@CAHI@Z
 public:
@@ -4703,8 +4706,23 @@ public:
     static ae_vector<AnimNotifyCallback> mPtrs;  // @ 0xF50CA0
 };
 static_assert(sizeof(AnimNotifyTask) == 0x24, "AnimNotifyTask size mismatch");
+TaskHandler AnimNotifyTask::sHandler;
 ae_vector<unsigned int> AnimNotifyTask::mKeys;
 ae_vector<AnimNotifyCallback> AnimNotifyTask::mPtrs;
+
+// ea: 0x005187D0
+TaskHandler* AnimNotifyTask::GetHandler()
+{
+    return &AnimNotifyTask::sHandler;
+}
+
+// ea: 0x005187E0
+FourCC AnimNotifyTask::GetTaskId()
+{
+    FourCC result;
+    result.mVal = 1095648857;
+    return result;
+}
 
 // file-scope hashes ($S12_2-guarded; .data @ 0xF58C3C..0xF58C50)
 static unsigned int donotetracksdoneHash;  // @ 0xF58C4C

@@ -4587,7 +4587,17 @@ extern cdl_proftimer cdl_proftimer_ent_actors;    // game.o
 extern cdl_proftimer cdl_proftimer_dobj_anim;     // game.o
 
 // anim.o task-handler system (external; opaque views)
-struct TaskHandler;
+// TaskHandler layout from the game2.o local type (0x30 bytes).
+struct TaskHandler {
+    uint8_t m_dlist_node[8];          // +0x00 reserved_dlist node
+    FourCC mTaskId;                   // +0x08
+    uint32_t mFlags;                  // +0x0C Bitmask<unsigned int>
+    uint8_t mTaskList[16];            // +0x10 reserved_dlist<Task>
+    uint8_t mQuickDeactivationList[16]; // +0x20 reserved_dlist<QuickTaskDeactivation>
+
+    FourCC GetId() const;             // game.o 0x4A5340
+};
+static_assert(sizeof(TaskHandler) == 0x30, "TaskHandler size mismatch");
 struct TaskFunctor {
     void* __vftable;
     virtual ~TaskFunctor();  // ??1TaskFunctor@@UAE@XZ (g.o 0x4A5320)

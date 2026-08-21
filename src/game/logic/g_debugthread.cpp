@@ -978,8 +978,27 @@ struct HealthRegenTask : Task {
     HealthRegenTask(DbLinkedHandle<EntityHandleDb, Entity> h, float damageDelay,
                     float rechargeRate);
     void Update(Entity* e, float deltaT);  // ea: 0x4F9AC0
+    static TaskHandler sHandler;          // ?sHandler@HealthRegenTask@@0VTaskHandler@@A
+    static TaskHandler* GetHandler();     // ea: 0x5187A0
+    static FourCC GetTaskId();            // ea: 0x5187B0
 };
 static_assert(sizeof(HealthRegenTask) == 0x38, "HealthRegenTask size mismatch");
+
+TaskHandler HealthRegenTask::sHandler;
+
+// ea: 0x005187A0
+TaskHandler* HealthRegenTask::GetHandler()
+{
+    return &HealthRegenTask::sHandler;
+}
+
+// ea: 0x005187B0
+FourCC HealthRegenTask::GetTaskId()
+{
+    FourCC result;
+    result.mVal = 1213351758;
+    return result;
+}
 
 extern void* HealthRegenTask_vftable;  // ??_7HealthRegenTask@@6B@
 cvar_t* HealthRegenTask_sDamageDelay;    // game2.o statics

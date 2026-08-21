@@ -200,12 +200,14 @@ _weapon_category gWeaponCategories[64];       // ?gWeaponCategories@@3PAU_weapon
 // ============================================================================
 // ScriptEventHandler - script event dispatch list (0x44, IDA verified)
 // ============================================================================
-struct ScriptEvent {
-    HashString notify;    // +0x00
-    HashString callback;  // +0x04
-};
-
 struct ScriptEventHandler {
+    struct ScriptEvent {
+        HashString notify;    // +0x00
+        HashString callback;  // +0x04
+
+        ScriptEvent();        // ea: 0x518740
+    };
+
     unsigned char m_dlist_node[8];      // +0x00
     ScriptEvent mEvents[7];             // +0x08
     ScriptEventHandler* mNext;          // +0x40
@@ -228,8 +230,16 @@ struct ScriptEventHandler {
     bool RemoveEvent(HashString h, HashString callback);  // ea: 0x4F59F0
     bool ExecEvents(Entity* ent, HashString h, ScriptEventParams* params);  // ea: 0x4F5A50
 };
+using ScriptEvent = ScriptEventHandler::ScriptEvent;
 static_assert(sizeof(ScriptEventHandler) == 0x44,
               "ScriptEventHandler size mismatch");
+
+// ea: 0x00518740
+ScriptEventHandler::ScriptEvent::ScriptEvent()
+{
+    notify.mHash = 0;
+    callback.mHash = 0;
+}
 
 // ============================================================================
 // ScriptEventHandler::~ScriptEventHandler - ea: 0x4F59D0
@@ -2550,10 +2560,6 @@ bool ScriptEventHandler::AddEvent(HashString h, const char* callback)
 // ============================================================================
 // TaskSys::LookupHandler - ea: 0x4FF990
 // ============================================================================
-struct TaskHandler {
-    unsigned int mTaskId;  // +0x00 FourCC
-};
-
 struct TaskSysImpl {
     TaskHandler* mTaskHandlers[32];  // +0x00 ae_sized_array<TaskHandler*,32>
     int m_size;                      // +0x80
@@ -2567,7 +2573,7 @@ TaskHandler* TaskSysImpl::LookupHandler(unsigned int id)
     int count = m_size;
     for (int i = 0; i < count; ++i)
     {
-        if (mTaskHandlers[i]->mTaskId == id)
+        if (mTaskHandlers[i]->mTaskId.mVal == id)
             return mTaskHandlers[i];
     }
     return nullptr;

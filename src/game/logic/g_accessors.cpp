@@ -192,11 +192,6 @@ const char* XModel::GetName() const
 }
 
 // XAnimUpdateTask / AnimationUpdateTask GetHandler (g.o 0x4A5330/0x4A5340)
-class TaskHandler {
-public:
-    unsigned int mTaskId;
-    FourCC GetId() const;
-};
 class XAnimUpdateTask {
 public:
     static TaskHandler sHandler;  // ?sHandler@XAnimUpdateTask@@0VTaskHandler@@A
@@ -233,7 +228,7 @@ FourCC EntityDeathTask::GetTaskId()
 FourCC TaskHandler::GetId() const
 {
     FourCC result;
-    result.mVal = mTaskId;
+    result.mVal = mTaskId.mVal;
     return result;
 }
 
