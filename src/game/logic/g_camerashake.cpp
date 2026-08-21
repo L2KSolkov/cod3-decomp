@@ -330,6 +330,10 @@ CameraShakeInstance* CameraShake::GetNewShakeInstance()
     m_instanceData[v1].m_active = 1;
     return &m_instanceData[v1];
 too_many:
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CameraShake.cpp";
+    AeAssert::gCurrentLine = 131;
+    AeAssert::gCurrentExpr = "pShake";
     if (!AeAssert::IsIgnored()
         && AeAssert::Assert("Too many active Camera Shakes"))
     {
@@ -378,6 +382,10 @@ CameraShakeType* CameraShake::GetShakeType(int type)
     {
         if (i->m_type == -1)
         {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CameraShake.cpp";
+            AeAssert::gCurrentLine = 371;
+            AeAssert::gCurrentExpr = "0";
             if (!AeAssert::IsIgnored()
                 && AeAssert::Assert("Bad camera shake"))
             {
