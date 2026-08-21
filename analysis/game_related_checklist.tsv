@@ -6848,7 +6848,7 @@ index	status	map_line
 6847	SKIPPED	0002:001b1930 ?compare@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEHIIPBDI@Z 009A0E30 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6848	SKIPPED	0002:001b19d0 ??$_Iter_cat@Vconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@@std@@YA?AUbidirectional_iterator_tag@0@ABVconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@@Z 009A0ED0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 6849	VERIFIED	0002:001b19e0 ??0StubData@@QAE@XZ 009A0EE0 f i shell.o  VERIFIED: exact IDA constructor initialization and Init() call
-6850	PORTED	0002:001b1a00 ??0SaveGameData@@QAE@XZ 009A0F00 f i shell.o  PORTED: added IDA-derived friendlies/game-vars initialization
+6850	VERIFIED	0002:001b1a00 ??0SaveGameData@@QAE@XZ 009A0F00 f i shell.o  VERIFIED: exact IDA initialization loops and Init() sequence
 6851	VERIFIED	0002:001b1a90 ?StartAnim@PanelAnimObject@@UAEX_N@Z 009A0F90 f i shell.o
 6852	VERIFIED	0002:001b1ac0 ?ResetXform@PanelAnimObject@@UAEXXZ 009A0FC0 f i shell.o
 6853	VERIFIED	0002:001b1ad0 ?IsFading@PanelAnimObject@@UAE_NXZ 009A0FD0 f i shell.o
