@@ -23902,14 +23902,14 @@ index	status	map_line
 23901	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
 23902	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o
 23903	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o
-23904	PORTED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o
-23905	PORTED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o
-23906	PORTED	0002:00530600 ?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z 00D1FB00 f mp_util_wad.o
-23907	PORTED	0002:00530650 ?IsEEDefined_audio_track_p@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FB50 f mp_util_wad.o
-23908	PORTED	0002:00530700 ?GetEE_specialWeaponTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1FC00 f mp_util_wad.o
-23909	PORTED	0002:00530750 ?IsEEDefined_specialWeaponTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FC50 f mp_util_wad.o
-23910	PORTED	0002:00530800 ?GetEE_autobalance@@YAAAUbbool@@Ventity@Broc@@@Z 00D1FD00 f mp_util_wad.o
-23911	PORTED	0002:00530850 ?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FD50 f mp_util_wad.o
+23904	PORTED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match
+23905	PORTED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match
+23906	PORTED	0002:00530600 ?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z 00D1FB00 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match
+23907	PORTED	0002:00530650 ?IsEEDefined_audio_track_p@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FB50 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match
+23908	PORTED	0002:00530700 ?GetEE_specialWeaponTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1FC00 f mp_util_wad.o	PORTED: reverified against decompile key 0x14D6461A; bint GetRef/GetVal types match
+23909	PORTED	0002:00530750 ?IsEEDefined_specialWeaponTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FC50 f mp_util_wad.o	PORTED: reverified against decompile key 0x14D6461A; bint GetRef/GetVal types match
+23910	PORTED	0002:00530800 ?GetEE_autobalance@@YAAAUbbool@@Ventity@Broc@@@Z 00D1FD00 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match
+23911	PORTED	0002:00530850 ?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FD50 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match
 23912	PORTED	0002:00530900 ?GetEE_goal@@YAAAVentity@Broc@@V12@@Z 00D1FE00 f mp_util_wad.o
 23913	PORTED	0002:00530950 ?IsEEDefined_goal@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FE50 f mp_util_wad.o
 23914	PORTED	0002:00530a00 ?GetEE_teamSound@@YAAAUbint@@Ventity@Broc@@@Z 00D1FF00 f mp_util_wad.o
