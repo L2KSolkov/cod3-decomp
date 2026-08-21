@@ -2397,6 +2397,8 @@ public:
 class DbTablesetMgr : public InplaceAssetBankSet<DbTablesetBank> {
 public:
     static DbTablesetMgr* sInst;
+    static void* operator new(unsigned int size, void* p);
+    static DbTablesetMgr* Inst();
     static DbTablesetMgr* CreateInst();
     static void DeleteInst();
     DbTablesetMgr();
@@ -2440,6 +2442,19 @@ public:
 XModelPartsManager* XModelPartsManager::sInst = nullptr;
 AITypeManager* AITypeManager::sInst = nullptr;
 DbTablesetMgr* DbTablesetMgr::sInst = nullptr;
+
+// ea: 0x004DD040
+void* DbTablesetMgr::operator new(unsigned int size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DD050
+DbTablesetMgr* DbTablesetMgr::Inst()
+{
+    return DbTablesetMgr::sInst;
+}
 
 static_assert(sizeof(InplaceAssetBankSet<DbTablesetBank>) == 0x190,
               "InplaceAssetBankSet<DbTablesetBank> size mismatch");

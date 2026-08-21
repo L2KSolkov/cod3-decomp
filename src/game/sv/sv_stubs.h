@@ -1389,6 +1389,7 @@ public:
     PathNodes::TOC1* mLevelTOC;      // +0x04
     PathNodes::TOC2* mLevelTOC2;     // +0x08
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
+    static void* operator new(size_t size, void* p);
     static PathNodeMgr* CreateInst();     // ?CreateInst@PathNodeMgr@@SAPAV1@XZ
     static void DeleteInst();             // ?DeleteInst@PathNodeMgr@@SAXXZ
     static PathNodeMgr* Inst();          // ?Inst@PathNodeMgr@@SAPAV1@XZ (g.o 0x4A97D0)
@@ -1575,6 +1576,7 @@ public:
 class SceneManager {
 public:
     uint8_t _pad[4];
+    static void* operator new(size_t size, void* p);
     static SceneManager* sInst;          // ?sInst@SceneManager@@2PAV1@A
     InplaceVector<unsigned char>* mPersistantStorage;
     static SceneManager* Inst();                 // ?Inst@SceneManager@@SAPAV1@XZ (g.o 0x4A9E40)

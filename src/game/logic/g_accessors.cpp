@@ -1529,6 +1529,12 @@ PathNodeMgr* PathNodeMgr::Inst()
 {
     return PathNodeMgr::sInst;
 }
+// ea: 0x004DD310
+void* PathNodeMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 int PathNodeMgr::GetTotalNodeCount() const
 {
     if (mLevelTOC != nullptr)
@@ -1589,6 +1595,12 @@ ConfigStringManager* ConfigStringManager::Inst()
 SceneManager* SceneManager::Inst()
 {
     return SceneManager::sInst;
+}
+// ea: 0x004DD0E0
+void* SceneManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
 }
 InplaceVector<unsigned char>* SceneManager::GetPersistantStorage()
 {

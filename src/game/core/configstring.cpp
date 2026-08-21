@@ -44,6 +44,19 @@ struct ConfigStringTreeElement {
     unsigned int mValue;
 };
 
+// ea: 0x004DD270
+const char* ConfigString::GetName() const
+{
+    return mName.mStr;
+}
+
+// ea: 0x004DD280
+void* ConfigStringManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 extern void GetPakPrerequisites(TPakId pakId,
                                 ae_sized_array<TPakId, 32>* ret);

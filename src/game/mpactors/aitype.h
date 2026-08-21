@@ -63,6 +63,7 @@ private:
 public:
     static AITypeManager* sInst;  // ?sInst@AITypeManager@@2PAV1@A (defined in pakmanager.cpp)
     static AITypeManager* Inst(); // ?Inst@AITypeManager@@SAPAV1@XZ (scr.o 0x5E9F80)
+    static void* operator new(unsigned int size, void* p);
     static void CreateInst();      // ?CreateInst@AITypeManager@@SAXXZ
     static void DeleteInst();      // ?DeleteInst@AITypeManager@@SAXXZ
     IVPointer<AIType> GetAIType(TPakId pak_id, const char* name,

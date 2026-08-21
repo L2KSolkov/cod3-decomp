@@ -1046,6 +1046,7 @@ public:
     InplaceString mName;          // +0x00
     unsigned int  mNumKeyValues;  // +0x04
     unsigned char mStringMap[8];  // +0x08 (InplaceTree<InplaceString,InplaceString>)
+    const char* GetName() const;  // ?GetName@ConfigString@@QBEPBDXZ
 };
 static_assert(sizeof(ConfigString) == 0x10, "ConfigString size mismatch");
 
@@ -1064,6 +1065,7 @@ class ConfigStringManager {
 public:
     static void CreateInst();  // ?CreateInst@ConfigStringManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@ConfigStringManager@@SAXXZ (core.o)
+    static void* operator new(size_t size, void* p);
     unsigned char mData[0x18C];  // InplaceAssetBankSet<ConfigStringBank>
     static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@2PAV1@A (core.o @ 0x12F039C)
     void DecodeBank(const char* name, unsigned char* data, int size,

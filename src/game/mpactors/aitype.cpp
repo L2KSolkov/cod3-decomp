@@ -242,6 +242,13 @@ void AIType::InitActor(actor_s* actor)
 // AITypeManager
 // ============================================================================
 
+// ea: 0x004DCEB0
+void* AITypeManager::operator new(unsigned int size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 // ea: 0x005E9F80
 AITypeManager* AITypeManager::Inst()
 {
