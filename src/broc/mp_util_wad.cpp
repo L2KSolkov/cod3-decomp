@@ -4352,8 +4352,7 @@ int SetupGameVariables() {
         mp_util_wad::pLevel->teamBalance = false;
     else
         mp_util_wad::pLevel->teamBalance = true;
-    mp_util_wad::pLevel->respawnTime = Broc::GetCvarInt("mp_respawntime");
-    return 0;
+    return mp_util_wad::pLevel->respawnTime = Broc::GetCvarInt("mp_respawntime");
 }
 
 // LaunchGametype - ea: 0x93C2C0
