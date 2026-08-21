@@ -1958,13 +1958,15 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
                                    material->color);
 
         unsigned int bits = buffer[index]
-                           | ((buffer[index + 1]
-                               | (buffer[index + 2] << 8)) << 8);
+                           | (buffer[index + 1] << 8)
+                           | (buffer[index + 2] << 16)
+                           | (buffer[index + 3] << 24);
         index += 4;
         memcpy(&uvs[i].x, &bits, sizeof(bits));
         bits = buffer[index]
-             | ((buffer[index + 1]
-                 | (buffer[index + 2] << 8)) << 8);
+             | (buffer[index + 1] << 8)
+             | (buffer[index + 2] << 16)
+             | (buffer[index + 3] << 24);
         index += 4;
         memcpy(&uvs[i].y, &bits, sizeof(bits));
     }
