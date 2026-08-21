@@ -9,6 +9,11 @@
 #include "filesystem/apk.h"
 #include "core/tlFixedString.h"
 
+// D3DResource::Register - ea: 0x844CF0
+void __stdcall D3DResource::Register(void* pBase) {
+    D3DResource_Register(this, pBase);
+}
+
 // ============================================================================
 // ngliProcessTexture — fix up a texture loaded from an APK entry:
 //   - resolve the "image" section into the texture

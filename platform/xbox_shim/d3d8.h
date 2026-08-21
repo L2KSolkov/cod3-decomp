@@ -20,6 +20,7 @@ struct D3DResource {
     unsigned int Common;  // +0x00
     unsigned int Data;    // +0x04
     unsigned int Lock;    // +0x08
+    void __stdcall Register(void* pBase);
 };
 static_assert(sizeof(D3DResource) == 0x0C, "D3DResource size mismatch");
 
