@@ -71,6 +71,7 @@ public:
 
 
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
+extern const char defaultFileName[];  // shared empty/default string @ 0xCD67AE
 
 // ============================================================================
 // Minimal network/message types (server_types.h full version in sv/)
@@ -2094,7 +2095,7 @@ int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars, char* buffer,
         else
         {
         notFound:
-            string = "";
+            string = defaultFileName;
         }
         int v8 = _snprintf(buffer, bufsize, "%s \"%s\"\n", cvarnames[v4], string);
         if (v8 < 0)
