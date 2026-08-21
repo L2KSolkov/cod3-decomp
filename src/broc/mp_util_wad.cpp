@@ -11631,16 +11631,20 @@ void CallbackNextRound() {
     if (!(bool)mp_util_wad::pLevel->roundOver) {
         Broc::Code_DebugOut(
             "*HQ* CallbackNextRound called when round not considered over, clearing\n");
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         HashStr n;
         n.mVal = 0x863B4D44;
         Broc::notify(lvl, n);
         mp_util_wad::pLevel->roundOver = true;
         ClearGame();
     }
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n2;
     n2.mVal = 0x6FA23667u;
     Broc::notify(lvl, n2);
