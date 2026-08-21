@@ -11744,8 +11744,10 @@ unsigned int CallbackHostMigrated() {
     _mp_common::CallbackHostMigrated();
     BroadcastGameState();
     if (Broc::IsLocalHost()) {
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         void* ftor = Host_FlowControl__functor(lvl);
         return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
                                    __LINE__, "Host_FlowControl", ftor);
