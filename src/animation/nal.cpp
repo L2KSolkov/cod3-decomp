@@ -32693,6 +32693,7 @@ public:
 
 class AnimBankManager : public AssetBankSet {
 public:
+    static void* operator new(unsigned int s, void* p); // core.o 0x004DC300
     static AnimBankManager* sInst;  // ?sInst@AnimBankManager@@2PAV1@A
     static AnimBankManager* CreateInst();  // core.o 0x004DC310
     AnimBankManager();   // ??0AnimBankManager@@QAE@XZ (0x545650)
@@ -32711,6 +32712,11 @@ public:
 };
 static_assert(sizeof(AnimBankManager) == 0x190,
               "AnimBankManager size mismatch");
+
+void* AnimBankManager::operator new(unsigned int, void* p)
+{
+    return p;
+}
 
 // ea: 0x004DC310
 AnimBankManager* AnimBankManager::CreateInst()

@@ -2142,6 +2142,7 @@ struct MipSettingsBank {
 // InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
 class InstanceBankMgr {
 public:
+    static void* operator new(unsigned int s, void* p); // core.o 0x004DC4A0
     cdResourceDirectory<nalAnimClass<nalAnyPose>> m_anim_directory;  // +0x00
     cdResourceDirectory<nalSceneAnim>             m_scnanim_directory;   // +0x0C
     cdResourceDirectory<nalAnimFile>              m_animfile_directory;  // +0x18
@@ -2181,6 +2182,11 @@ public:
                      float* out_value);  // ?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z
 };
 InstanceBankMgr* InstanceBankMgr::sInst = nullptr;
+
+void* InstanceBankMgr::operator new(unsigned int, void* p)
+{
+    return p;
+}
 
 // ea: 0x004DC4B0 (core.o inline)
 void InstanceBankMgr::CreateInst()

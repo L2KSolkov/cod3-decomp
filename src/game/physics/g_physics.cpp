@@ -12308,6 +12308,7 @@ class PhysDataBank;
 class DestructibleLocal;
 class PhysDataBankManager : public InplaceAssetBankSet<PhysDataBank> {
 public:
+    static void* operator new(unsigned int s, void* p); // core.o 0x004DC410
     static PhysDataBankManager* sInst;  // ?sInst@PhysDataBankManager@@2PAV1@A (g_globals.cpp)
     static PhysDataBankManager* CreateInst();
     static void DeleteInst();
@@ -12340,6 +12341,11 @@ static_assert(sizeof(InplaceAssetBankSet<DestructibleBank>) == 0x190,
               "InplaceAssetBankSet<DestructibleBank> size mismatch");
 static_assert(sizeof(DestructibleBankManager) == 0x190,
               "DestructibleBankManager size mismatch");
+
+void* PhysDataBankManager::operator new(unsigned int, void* p)
+{
+    return p;
+}
 
 // ea: 0x004E5E20
 PhysDataBankManager::PhysDataBankManager()
