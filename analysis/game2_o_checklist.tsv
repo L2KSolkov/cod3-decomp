@@ -748,8 +748,8 @@ index	status	map_line
 747	PORTED	0002:00119430 ??Diterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEAAUPerformanceStats@TestFPS@@XZ 00908930 f i game2.o  PORTED: shared iterator dereference explicitly emitted
 748	PORTED	0002:00119440 ??Eiterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEAAV01@XZ 00908940 f i game2.o  PORTED: shared iterator increment explicitly emitted
 749	PORTED	0002:00119450 ??9iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NV01@@Z 00908950 f i game2.o  PORTED: shared iterator comparison explicitly emitted
-750	PORTED	0002:00119470 ?size@?$apsBlockArray@PAVapsGroup@@@@QBEHXZ 00908970 f i game2.o
-751	PORTED	0002:00119480 ??A?$apsBlockArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z 00908980 f i game2.o
+750	PORTED	0002:00119470 ?size@?$apsBlockArray@PAVapsGroup@@@@QBEHXZ 00908970 f i game2.o  PORTED: shared apsBlockArray size explicitly emitted
+751	PORTED	0002:00119480 ??A?$apsBlockArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z 00908980 f i game2.o  PORTED: shared apsBlockArray checked indexer explicitly emitted
 752	SKIPPED	0002:001194e0 ??Diterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBEAAV?$ae_fixed_string@$0EA@E@@XZ 009089E0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 753	SKIPPED	0002:001194f0 ??Eiterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QAEAAV01@XZ 009089F0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 754	SKIPPED	0002:00119500 ??9iterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBE_NV01@@Z 00908A00 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
