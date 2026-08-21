@@ -23888,14 +23888,14 @@ index	status	map_line
 23887	PORTED	0002:0052fbb0 ?IsEEDefined_deathfire@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F0B0 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
 23888	PORTED	0002:0052fcb0 ?GetEE_waiting@@YAAAUbfloat@@Ventity@Broc@@@Z 00D1F1B0 f mp_util_wad.o	PORTED: reverified against decompile key 0xB24418D3; bfloat GetRef/GetVal types match
 23889	PORTED	0002:0052fd00 ?IsEEDefined_waiting@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F200 f mp_util_wad.o	PORTED: reverified against decompile key 0xB24418D3; bfloat GetRef/GetVal types match
-23890	PORTED	0002:0052fdb0 ?GetEE_last_dropped_time@@YAAAUbint@@Ventity@Broc@@@Z 00D1F2B0 f mp_util_wad.o
-23891	PORTED	0002:0052fe00 ?IsEEDefined_last_dropped_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F300 f mp_util_wad.o
-23892	PORTED	0002:0052feb0 ?GetEE_flag_in_minefield@@YAAAUbbool@@Ventity@Broc@@@Z 00D1F3B0 f mp_util_wad.o
-23893	PORTED	0002:0052ff00 ?IsEEDefined_flag_in_minefield@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F400 f mp_util_wad.o
-23894	PORTED	0002:0052ffb0 ?GetEE_index@@YAAAUbint@@Ventity@Broc@@@Z 00D1F4B0 f mp_util_wad.o
-23895	PORTED	0002:00530000 ?IsEEDefined_index@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F500 f mp_util_wad.o
-23896	PORTED	0002:005300b0 ?GetEE_lastPainSoundTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1F5B0 f mp_util_wad.o
-23897	PORTED	0002:00530100 ?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F600 f mp_util_wad.o
+23890	PORTED	0002:0052fdb0 ?GetEE_last_dropped_time@@YAAAUbint@@Ventity@Broc@@@Z 00D1F2B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x1FA6AD2F; bint GetRef/GetVal types match
+23891	PORTED	0002:0052fe00 ?IsEEDefined_last_dropped_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F300 f mp_util_wad.o	PORTED: reverified against decompile key 0x1FA6AD2F; bint GetRef/GetVal types match
+23892	PORTED	0002:0052feb0 ?GetEE_flag_in_minefield@@YAAAUbbool@@Ventity@Broc@@@Z 00D1F3B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x3A88015C; bbool GetRef/GetVal types match
+23893	PORTED	0002:0052ff00 ?IsEEDefined_flag_in_minefield@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F400 f mp_util_wad.o	PORTED: reverified against decompile key 0x3A88015C; bbool GetRef/GetVal types match
+23894	PORTED	0002:0052ffb0 ?GetEE_index@@YAAAUbint@@Ventity@Broc@@@Z 00D1F4B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x07AA1578; bint GetRef/GetVal types match
+23895	PORTED	0002:00530000 ?IsEEDefined_index@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F500 f mp_util_wad.o	PORTED: reverified against decompile key 0x07AA1578; bint GetRef/GetVal types match
+23896	PORTED	0002:005300b0 ?GetEE_lastPainSoundTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1F5B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match
+23897	PORTED	0002:00530100 ?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F600 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match
 23898	PORTED	0002:005301b0 ?GetEE_audio_ambp@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F6B0 f mp_util_wad.o
 23899	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o
 23900	PORTED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o
