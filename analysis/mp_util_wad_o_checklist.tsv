@@ -673,16 +673,16 @@ index	status	map_line
 672	VERIFIED	0002:00560d70 ?NotifyWhenTimerExpires__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@UHashStr@@@Z 00D50270 f i mp_util_wad.o	VERIFIED: Existing 0x14 allocation/null guard/AeThreadFunctor3 construction matches IDA 0x00960D70
 673	VERIFIED	0002:00560e10 ?local_player_joined@_mp_loadout@@YAXVentity@Broc@@@Z 00D50310 f mp_util_wad.o
 674	VERIFIED	0002:00560e70 ?SpecialClassAudio@_mp_loadout@@YAXVentity@Broc@@@Z 00D50370 f mp_util_wad.o
-675	PORTED	0002:00561080 ?NotifyWhenTimerExpires@_mp_loadout@@YAXVentity@Broc@@Ubint@@UHashStr@@@Z 00D50580 f mp_util_wad.o
-676	PORTED	0002:00561150 ?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z 00D50650 f mp_util_wad.o
+675	VERIFIED	0002:00561080 ?NotifyWhenTimerExpires@_mp_loadout@@YAXVentity@Broc@@Ubint@@UHashStr@@@Z 00D50580 f mp_util_wad.o	VERIFIED: Existing three endon guards, timed wait, and notify match IDA 0x00961080
+676	VERIFIED	0002:00561150 ?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z 00D50650 f mp_util_wad.o	VERIFIED: IDA 0x00961150 is an empty function; existing port is empty
 677	VERIFIED	0002:00561170 ?GiveHealth@_mp_loadout@@YAXVentity@Broc@@@Z 00D50670 f mp_util_wad.o
-678	PORTED	0002:00561270 ?HealthAmmoDispenser__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Ubbool@@Ubint@@33@Z 00D50770 f i mp_util_wad.o
+678	VERIFIED	0002:00561270 ?HealthAmmoDispenser__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Ubbool@@Ubint@@33@Z 00D50770 f i mp_util_wad.o	VERIFIED: Existing 0x20 allocation, null guard, construction, and weapon destruction match IDA 0x00961270
 679	VERIFIED	0002:00561340 ?GiveAmmoWeapon@_mp_loadout@@YAXVentity@Broc@@@Z 00D50840 f mp_util_wad.o
-680	PORTED	0002:005614c0 ?HealthAmmoDispenser@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubbool@@Ubint@@33@Z 00D509C0 f mp_util_wad.o
-681	PORTED	0002:00561ab0 ?IsFullWeaponAmmo@_mp_loadout@@YA?AUbbool@@Ventity@Broc@@Vstring@4@Ubint@@F@Z 00D50FB0 f mp_util_wad.o
-682	PORTED	0002:00561ba0 ?GetMaxAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D510A0 f i mp_util_wad.o
-683	PORTED	0002:00561bd0 ?GetStartingWeaponAmmoScale@_mp_loadout@@YA?AUbfloat@@Ventity@Broc@@Vstring@4@Ubint@@F@Z 00D510D0 f mp_util_wad.o
-684	PORTED	0002:00561db0 ?GiveWeaponAmmoPack@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FFUbbool@@@Z 00D512B0 f mp_util_wad.o
+680	VERIFIED	0002:005614c0 ?HealthAmmoDispenser@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubbool@@Ubint@@33@Z 00D509C0 f mp_util_wad.o	VERIFIED: Existing timer selection, endon/wait loop, recharge, reset, and ready-event flow match IDA 0x009614C0
+681	VERIFIED	0002:00561ab0 ?IsFullWeaponAmmo@_mp_loadout@@YA?AUbbool@@Ventity@Broc@@Vstring@4@Ubint@@F0@Z 00D50FB0 f mp_util_wad.o	VERIFIED: Existing slot-ammo/max-ammo comparison and string cleanup match IDA 0x00961AB0
+682	FIXED	0002:00561ba0 ?GetMaxAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D510A0 f i mp_util_wad.o	FIXED: IDA 0x00961BA0 handle extraction and mGetMaxAmmo forwarding added
+683	VERIFIED	0002:00561bd0 ?GetStartingWeaponAmmoScale@_mp_loadout@@YA?AUbfloat@@Ventity@Broc@@Vstring@4@Ubint@@F@Z 00D510D0 f mp_util_wad.o	VERIFIED: Existing clip-count/full-clip, grenade special case, and ammo ratio match IDA 0x00961BD0
+684	FIXED	0002:00561db0 ?GiveWeaponAmmoPack@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FFUbbool@@@Z 00D512B0 f mp_util_wad.o	FIXED: IDA 0x00961DB0 grenade cap check and slot-ammo-only update restored
 685	PORTED	0002:00562060 ?GiveWeaponAmmo@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@3@Z 00D51560 f mp_util_wad.o
 686	PORTED	0002:005623d0 ?GiveWeaponAmmoScale@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@Ubfloat@@@Z 00D518D0 f mp_util_wad.o
 687	PORTED	0002:00562660 ??D@YA?AUbfloat@@U0@Ubint@@@Z 00D51B60 f i mp_util_wad.o
