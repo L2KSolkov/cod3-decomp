@@ -309,7 +309,7 @@ index	status	map_line
 308	PORTED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o	PORTED: IDA forwards target/attacker handles, weapon reference, mod, and bool teamGame to mObituary at +0x320
 309	VERIFIED	0002:0053f6d0 ?Code_SetRespawnMaxTime@Broc@@YAXVentity@1@H@Z 00D2EBD0 f i mp_util_wad.o
 310	PORTED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o	PORTED: IDA returns a Broc::entity constructed from mGetSpotterEntity(ent.GetHandle()) at +0x3C4
-311	PORTED	0002:0053f740 ?DeathState__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0Ubint@@Ubbool@@2@Z 00D2EC40 f i mp_util_wad.o
+311	FIXED	0002:0053f740 ?DeathState__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0Ubint@@Ubbool@@2@Z 00D2EC40 f i mp_util_wad.o	FIXED: IDA allocates 0x18 bytes, constructs AeThreadFunctor5<entity,entity,bint,bbool,bbool>, and returns AeThreadFunctor*
 312	VERIFIED	0002:0053f7f0 ?CallbackPlayerAssist@_mp_common@@YAXVentity@Broc@@@Z 00D2ECF0 f mp_util_wad.o
 313	VERIFIED	0002:0053f860 ?CallbackPainFlinch@_mp_common@@YAXVentity@Broc@@H@Z 00D2ED60 f mp_util_wad.o
 314	PORTED	0002:0053f8d0 ?PlayPainSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2EDD0 f i mp_util_wad.o
@@ -318,18 +318,18 @@ index	status	map_line
 317	PORTED	0002:0053fa90 ?CallbackPlayerDamageTeam@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EF90 f mp_util_wad.o
 318	VERIFIED	0002:0053fcc0 ?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z 00D2F1C0 f i mp_util_wad.o
 319	VERIFIED	0002:0053fcf0 ?CallbackPlayerSpawn@_mp_common@@YAXVentity@Broc@@H@Z 00D2F1F0 f mp_util_wad.o
-320	PORTED	0002:00540210 ??D@YA?AUbfloat@@HU0@@Z 00D2F710 f i mp_util_wad.o
-321	PORTED	0002:00540250 ??4health_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2F750 f i mp_util_wad.o
-322	PORTED	0002:00540290 ??0bint@@QAE@ABUbfloat@@@Z 00D2F790 f i mp_util_wad.o
-323	PORTED	0002:005402c0 ?FadeUpWhenLoaded__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0@Z 00D2F7C0 f i mp_util_wad.o
-324	PORTED	0002:00540360 ?HealthRegenPlayerBreathing__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2F860 f i mp_util_wad.o
+320	PORTED	0002:00540210 ??D@YA?AUbfloat@@HU0@@Z 00D2F710 f i mp_util_wad.o	PORTED: IDA multiplies the integer lhs by rhs.mVal and constructs the global bfloat result
+321	PORTED	0002:00540250 ??4health_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2F750 f i mp_util_wad.o	PORTED: IDA forwards *rhs and this->mHandle to m_entity_set_health, then returns rhs
+322	PORTED	0002:00540290 ??0bint@@QAE@ABUbfloat@@@Z 00D2F790 f i mp_util_wad.o	PORTED: IDA truncates rhs->mVal to int and stores it in the global bint
+323	FIXED	0002:005402c0 ?FadeUpWhenLoaded__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0@Z 00D2F7C0 f i mp_util_wad.o	FIXED: IDA allocates 0x10 bytes, constructs AeThreadFunctor2<entity,entity>, and returns AeThreadFunctor*
+324	FIXED	0002:00540360 ?HealthRegenPlayerBreathing__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2F860 f i mp_util_wad.o	FIXED: IDA allocates 0x10 bytes, constructs AeThreadFunctor2<entity,bint>, and returns AeThreadFunctor*
 325	VERIFIED	0002:00540400 ?CallbackPlayerRevive@_mp_common@@YAXVentity@Broc@@0@Z 00D2F900 f mp_util_wad.o
-326	PORTED	0002:00540820 ?Get@rank_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D2FD20 f i mp_util_wad.o
+326	PORTED	0002:00540820 ?Get@rank_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D2FD20 f i mp_util_wad.o	PORTED: IDA returns m_entity_get_persistent_player_rank(this->mHandle)
 327	PORTED	0002:00540850 ?Get@playerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D2FD50 f i mp_util_wad.o
 328	PORTED	0002:00540880 ?CloseMenu@Broc@@YAXABVstring@1@H@Z 00D2FD80 f i mp_util_wad.o
 329	VERIFIED	0002:005408b0 ?CallbackCanTeamChange@_mp_common@@YAHVentity@Broc@@H@Z 00D2FDB0 f mp_util_wad.o
 330	VERIFIED	0002:00540d40 ?TeamChangeKillPlayer@_mp_common@@YAXVentity@Broc@@@Z 00D30240 f mp_util_wad.o
-331	PORTED	0002:00540e10 ?Get@health_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D30310 f i mp_util_wad.o
+331	PORTED	0002:00540e10 ?Get@health_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D30310 f i mp_util_wad.o	PORTED: IDA calls m_entity_get_health(this->mHandle) and constructs the bint result
 332	PORTED	0002:00540e50 ?DoDamage@Broc@@YAXABVentity@1@MABUvector@1@W4hitLocation_t@@@Z 00D30350 f i mp_util_wad.o
 333	PORTED	0002:00540e90 ?SetTakeDamage@Broc@@YAXABVentity@1@H@Z 00D30390 f i mp_util_wad.o
 334	VERIFIED	0002:00540ec0 ?CallbackPlayerTeamChange@_mp_common@@YAXVentity@Broc@@HH@Z 00D303C0 f mp_util_wad.o
@@ -429,7 +429,7 @@ index	status	map_line
 428	VERIFIED	0002:00548420 ?SetUndefined@hudelem@Broc@@QAEXXZ 00D37920 f i mp_util_wad.o
 429	PORTED	0002:00548450 ?Destroy@@YAXABVhudelem@Broc@@@Z 00D37950 f i mp_util_wad.o
 430	PORTED	0002:00548480 ?AddToPlayerStats@_mp_common@@YAXVentity@Broc@@Ubint@@H@Z 00D37980 f mp_util_wad.o
-431	PORTED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o
+431	PORTED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o	PORTED: IDA forwards *rhs and this->mHandle to m_entity_set_persistent_player_rank, then returns rhs
 432	VERIFIED	0002:00548a30 ?put_player_into_spectate_mode@_mp_common@@YAXVentity@Broc@@@Z 00D37F30 f mp_util_wad.o
 433	PORTED	0002:00548ad0 ?SpawnLocalSpectator__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D37FD0 f i mp_util_wad.o
 434	VERIFIED	0002:00548b70 ?SpawnLocalSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D38070 f mp_util_wad.o
