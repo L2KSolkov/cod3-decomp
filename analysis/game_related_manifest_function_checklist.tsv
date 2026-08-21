@@ -1509,36 +1509,36 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1508	0x004B4660	0x008A3B60	_fmodf		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1509	0x004B4680	0x008A3B80	_modff		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1510	0x004B46B0	0x008A3BB0	?sqrt@@YAMM@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1511	0x004B46C0	0x008A3BC0	??0DbField@@QAE@GW4EDbColumnType@@W4EDbMatchType@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbField constructor and range asserts	NO	NO	VERIFIED
+1511	0x004B46C0	0x008A3BC0	??0DbField@@QAE@GW4EDbColumnType@@W4EDbMatchType@@@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbField constructor and range asserts match IDA	NO	NO	VERIFIED
 1512	0x004B47B0	0x008A3CB0	??1DbField@@QAE@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION implicit compiler-generated DbField destructor matches IDA trivial body	NO	NO	VERIFIED
-1513	0x004B47C0	0x008A3CC0	?GetColumnType@DbField@@QBE?AW4EDbColumnType@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbField column-type accessor	NO	NO	VERIFIED
-1514	0x004B47D0	0x008A3CD0	?GetMatchType@DbField@@QBE?AW4EDbMatchType@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbField match-type accessor	NO	NO	VERIFIED
-1515	0x004B47E0	0x008A3CE0	?GetId@DbField@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbField id accessor	NO	NO	VERIFIED
-1516	0x004B47F0	0x008A3CF0	?GetId@DbColumn@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbColumn id accessor	NO	NO	VERIFIED
-1517	0x004B4800	0x008A3D00	?GetSize@DbColumn@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbColumn size accessor	NO	NO	VERIFIED
-1518	0x004B4810	0x008A3D10	?get_element_ptr@DbColumn@@QBEPBXG@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbColumn element-pointer accessor	NO	NO	VERIFIED
-1519	0x004B4830	0x008A3D30	?GetColUsedNum@DbRow@@QBEFXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbRow column-count accessor	NO	NO	VERIFIED
-1520	0x004B4840	0x008A3D40	?GetFieldId@DbGraphNode@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode field-id accessor	NO	NO	VERIFIED
-1521	0x004B4850	0x008A3D50	?IsLeaf@DbGraphNode@@QBE_NXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode leaf test	NO	NO	VERIFIED
-1522	0x004B4860	0x008A3D60	?GetNumHits@DbGraphNode@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode hit-count accessor	NO	NO	VERIFIED
-1523	0x004B48D0	0x008A3DD0	?GetHits@DbGraphNode@@QBEPAPAVDbRow@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode hit-array accessor	NO	NO	VERIFIED
-1524	0x004B4940	0x008A3E40	?GetNumChildren@DbGraphNode@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode child-count accessor	NO	NO	VERIFIED
-1525	0x004B49B0	0x008A3EB0	?GetChild@DbGraphNode@@QBEPAV1@G@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbGraphNode child accessor and bounds asserts	NO	NO	VERIFIED
-1526	0x004B4A90	0x008A3F90	?GetName@DbTable@@QBEPBDXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbTable name accessor	NO	NO	VERIFIED
-1527	0x004B4AA0	0x008A3FA0	?GetSchema@DbTable@@QBEABVDbSchema@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbTable schema accessor	NO	NO	VERIFIED
-1528	0x004B4AB0	0x008A3FB0	?GetIndexRoot@DbTable@@QBEPBVDbGraphNode@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbTable index-root accessor	NO	NO	VERIFIED
-1529	0x004B4AC0	0x008A3FC0	?GetColumnByIndex@DbTable@@QBEABVDbColumn@@G@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA const DbTable column accessor	NO	NO	VERIFIED
-1530	0x004B4AE0	0x008A3FE0	?GetColumnByIndex@DbTable@@QAEAAVDbColumn@@G@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA mutable DbTable column accessor	NO	NO	VERIFIED
-1531	0x004B4B00	0x008A4000	?GetColumnIndex@DbTable@@QBEFG@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbTable column-index lookup	NO	NO	VERIFIED
-1532	0x004B4BB0	0x008A40B0	?GetNumColumnTypes@DbSchema@@QBEGXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbSchema column-count accessor	NO	NO	VERIFIED
-1533	0x004B4BC0	0x008A40C0	?GetColumnType@DbSchema@@QBE?AW4EDbColumnType@@G@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbSchema column-type lookup and assert	NO	NO	VERIFIED
-1534	0x004B4C40	0x008A4140	?GetMatchType@DbSchema@@QBE?AW4EDbMatchType@@G@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbSchema match-type lookup and assert	NO	NO	VERIFIED
-1535	0x004B4CC0	0x008A41C0	?GetTable@DbTableSet@@QBEPAVDbTable@@PBD@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbTableSet name lookup	NO	NO	VERIFIED
-1536	0x004B4D30	0x008A4230	??0DbQueryString@@QAE@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString default constructor	NO	NO	VERIFIED
-1537	0x004B4D40	0x008A4240	??0DbQueryString@@QAE@PBD@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString bounded constructor	NO	NO	VERIFIED
-1538	0x004B4D70	0x008A4270	?c_str@DbQueryString@@QBEPBDXZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryString c_str accessor	NO	NO	VERIFIED
+1513	0x004B47C0	0x008A3CC0	?GetColumnType@DbField@@QBE?AW4EDbColumnType@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbField column-type accessor matches IDA	NO	NO	VERIFIED
+1514	0x004B47D0	0x008A3CD0	?GetMatchType@DbField@@QBE?AW4EDbMatchType@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbField match-type accessor matches IDA	NO	NO	VERIFIED
+1515	0x004B47E0	0x008A3CE0	?GetId@DbField@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbField id accessor matches IDA	NO	NO	VERIFIED
+1516	0x004B47F0	0x008A3CF0	?GetId@DbColumn@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbColumn id accessor matches IDA	NO	NO	VERIFIED
+1517	0x004B4800	0x008A3D00	?GetSize@DbColumn@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbColumn size accessor matches IDA	NO	NO	VERIFIED
+1518	0x004B4810	0x008A3D10	?get_element_ptr@DbColumn@@QBEPBXG@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbColumn element-pointer accessor matches IDA	NO	NO	VERIFIED
+1519	0x004B4830	0x008A3D30	?GetColUsedNum@DbRow@@QBEFXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbRow column-count accessor matches IDA	NO	NO	VERIFIED
+1520	0x004B4840	0x008A3D40	?GetFieldId@DbGraphNode@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode field-id accessor matches IDA	NO	NO	VERIFIED
+1521	0x004B4850	0x008A3D50	?IsLeaf@DbGraphNode@@QBE_NXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode leaf test matches IDA	NO	NO	VERIFIED
+1522	0x004B4860	0x008A3D60	?GetNumHits@DbGraphNode@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode hit-count accessor matches IDA	NO	NO	VERIFIED
+1523	0x004B48D0	0x008A3DD0	?GetHits@DbGraphNode@@QBEPAPAVDbRow@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode hit-array accessor matches IDA	NO	NO	VERIFIED
+1524	0x004B4940	0x008A3E40	?GetNumChildren@DbGraphNode@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode child-count accessor matches IDA	NO	NO	VERIFIED
+1525	0x004B49B0	0x008A3EB0	?GetChild@DbGraphNode@@QBEPAV1@G@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbGraphNode child accessor and bounds asserts match IDA	NO	NO	VERIFIED
+1526	0x004B4A90	0x008A3F90	?GetName@DbTable@@QBEPBDXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbTable name accessor matches IDA (name field at offset zero)	NO	NO	VERIFIED
+1527	0x004B4AA0	0x008A3FA0	?GetSchema@DbTable@@QBEABVDbSchema@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbTable schema accessor matches IDA	NO	NO	VERIFIED
+1528	0x004B4AB0	0x008A3FB0	?GetIndexRoot@DbTable@@QBEPBVDbGraphNode@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbTable index-root accessor matches IDA	NO	NO	VERIFIED
+1529	0x004B4AC0	0x008A3FC0	?GetColumnByIndex@DbTable@@QBEABVDbColumn@@G@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing const DbTable column accessor matches IDA	NO	NO	VERIFIED
+1530	0x004B4AE0	0x008A3FE0	?GetColumnByIndex@DbTable@@QAEAAVDbColumn@@G@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing mutable DbTable column accessor matches IDA	NO	NO	VERIFIED
+1531	0x004B4B00	0x008A4000	?GetColumnIndex@DbTable@@QBEFG@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbTable column-index lookup and assert match IDA	NO	NO	VERIFIED
+1532	0x004B4BB0	0x008A40B0	?GetNumColumnTypes@DbSchema@@QBEGXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbSchema column-count accessor matches IDA	NO	NO	VERIFIED
+1533	0x004B4BC0	0x008A40C0	?GetColumnType@DbSchema@@QBE?AW4EDbColumnType@@G@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbSchema column-type lookup and assert match IDA	NO	NO	VERIFIED
+1534	0x004B4C40	0x008A4140	?GetMatchType@DbSchema@@QBE?AW4EDbMatchType@@G@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbSchema match-type lookup and assert match IDA	NO	NO	VERIFIED
+1535	0x004B4CC0	0x008A41C0	?GetTable@DbTableSet@@QBEPAVDbTable@@PBD@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbTableSet name lookup matches IDA	NO	NO	VERIFIED
+1536	0x004B4D30	0x008A4230	??0DbQueryString@@QAE@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbQueryString default constructor matches IDA	NO	NO	VERIFIED
+1537	0x004B4D40	0x008A4240	??0DbQueryString@@QAE@PBD@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbQueryString bounded constructor matches IDA	NO	NO	VERIFIED
+1538	0x004B4D70	0x008A4270	?c_str@DbQueryString@@QBEPBDXZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbQueryString c_str accessor matches IDA	NO	NO	VERIFIED
 1539	0x004B4D80	0x008A4280	?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path	NO	NO	VERIFIED
-1540	0x004B4E00	0x008A4300	?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryResults specific-match accessor	NO	NO	VERIFIED
+1540	0x004B4E00	0x008A4300	?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DbQueryResults specific-match accessor matches IDA	NO	NO	VERIFIED
 1541	0x004B4E10	0x008A4310	??0ae_heap_base@@QAE@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA ae_heap_base constructor	NO	NO	VERIFIED
 1542	0x004B4E20	0x008A4320	?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor	NO	NO	VERIFIED
 1543	0x004B4E30	0x008A4330	??2XModelManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA XModelManager placement-new passthrough	NO	NO	VERIFIED
