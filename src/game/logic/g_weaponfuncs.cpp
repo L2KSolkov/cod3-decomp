@@ -43,7 +43,7 @@ int reticleMinOfs_Function(int v)
 }
 
 // ea: 0x004EC960
-double duckedOfsF_Function(float v)
+float duckedOfsF_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -54,7 +54,7 @@ double duckedOfsF_Function(float v)
 }
 
 // ea: 0x004EC9A0
-double duckedOfsR_Function(float v)
+float duckedOfsR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -65,7 +65,7 @@ double duckedOfsR_Function(float v)
 }
 
 // ea: 0x004EC9E0
-double duckedOfsU_Function(float v)
+float duckedOfsU_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -76,7 +76,7 @@ double duckedOfsU_Function(float v)
 }
 
 // ea: 0x004ECA20
-double proneOfsF_Function(float v)
+float proneOfsF_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -87,7 +87,7 @@ double proneOfsF_Function(float v)
 }
 
 // ea: 0x004ECA60
-double proneOfsR_Function(float v)
+float proneOfsR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -98,7 +98,7 @@ double proneOfsR_Function(float v)
 }
 
 // ea: 0x004ECAA0
-double proneOfsU_Function(float v)
+float proneOfsU_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -109,7 +109,7 @@ double proneOfsU_Function(float v)
 }
 
 // ea: 0x004ECAE0
-double standMoveF_Function(float v)
+float standMoveF_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -120,7 +120,7 @@ double standMoveF_Function(float v)
 }
 
 // ea: 0x004ECB20
-double standMoveR_Function(float v)
+float standMoveR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -131,7 +131,7 @@ double standMoveR_Function(float v)
 }
 
 // ea: 0x004ECB60
-double standMoveU_Function(float v)
+float standMoveU_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -142,7 +142,7 @@ double standMoveU_Function(float v)
 }
 
 // ea: 0x004ECBA0
-double duckedMoveF_Function(float v)
+float duckedMoveF_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -153,7 +153,7 @@ double duckedMoveF_Function(float v)
 }
 
 // ea: 0x004ECBE0
-double duckedMoveR_Function(float v)
+float duckedMoveR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -164,7 +164,7 @@ double duckedMoveR_Function(float v)
 }
 
 // ea: 0x004ECC20
-double duckedMoveU_Function(float v)
+float duckedMoveU_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -175,7 +175,7 @@ double duckedMoveU_Function(float v)
 }
 
 // ea: 0x004ECC60
-double proneMoveF_Function(float v)
+float proneMoveF_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -186,7 +186,7 @@ double proneMoveF_Function(float v)
 }
 
 // ea: 0x004ECCA0
-double proneMoveR_Function(float v)
+float proneMoveR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -197,7 +197,7 @@ double proneMoveR_Function(float v)
 }
 
 // ea: 0x004ECCE0
-double proneMoveU_Function(float v)
+float proneMoveU_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -208,7 +208,7 @@ double proneMoveU_Function(float v)
 }
 
 // ea: 0x004ECD20
-double proneRotP_Function(float v)
+float proneRotP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -219,7 +219,7 @@ double proneRotP_Function(float v)
 }
 
 // ea: 0x004ECD60
-double proneRotY_Function(float v)
+float proneRotY_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -230,7 +230,7 @@ double proneRotY_Function(float v)
 }
 
 // ea: 0x004ECDA0
-double proneRotR_Function(float v)
+float proneRotR_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -241,7 +241,7 @@ double proneRotR_Function(float v)
 }
 
 // ea: 0x004ECDE0
-double standMoveMinSpeed_Function(float v)
+float standMoveMinSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -252,7 +252,7 @@ double standMoveMinSpeed_Function(float v)
 }
 
 // ea: 0x004ECE20
-double duckedMoveMinSpeed_Function(float v)
+float duckedMoveMinSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -263,7 +263,7 @@ double duckedMoveMinSpeed_Function(float v)
 }
 
 // ea: 0x004ECE60
-double proneMoveMinSpeed_Function(float v)
+float proneMoveMinSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -274,7 +274,7 @@ double proneMoveMinSpeed_Function(float v)
 }
 
 // ea: 0x004ECEA0
-double posProneRotRate_Function(float v)
+float posProneRotRate_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -285,7 +285,7 @@ double posProneRotRate_Function(float v)
 }
 
 // ea: 0x004ECEE0
-double proneRotMinSpeed_Function(float v)
+float proneRotMinSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -318,7 +318,7 @@ int meleeDamage_Function(int v)
 }
 
 // ea: 0x004ECF80
-double sensitivityScale_Function(float v)
+float sensitivityScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -560,7 +560,7 @@ int fuseTime_Function(int v)
 }
 
 // ea: 0x004ED3B0
-double moveSpeedScale_Function(float v)
+float moveSpeedScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -571,7 +571,7 @@ double moveSpeedScale_Function(float v)
 }
 
 // ea: 0x004ED3F0
-double gunMaxPitch_Function(float v)
+float gunMaxPitch_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -582,7 +582,7 @@ double gunMaxPitch_Function(float v)
 }
 
 // ea: 0x004ED430
-double gunMaxYaw_Function(float v)
+float gunMaxYaw_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -593,7 +593,7 @@ double gunMaxYaw_Function(float v)
 }
 
 // ea: 0x004ED470
-double swayMaxAngle_Function(float v)
+float swayMaxAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -604,7 +604,7 @@ double swayMaxAngle_Function(float v)
 }
 
 // ea: 0x004ED4B0
-double swayLerpSpeed_Function(float v)
+float swayLerpSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -615,7 +615,7 @@ double swayLerpSpeed_Function(float v)
 }
 
 // ea: 0x004ED4F0
-double swayPitchScale_Function(float v)
+float swayPitchScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -626,7 +626,7 @@ double swayPitchScale_Function(float v)
 }
 
 // ea: 0x004ED530
-double swayYawScale_Function(float v)
+float swayYawScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -637,7 +637,7 @@ double swayYawScale_Function(float v)
 }
 
 // ea: 0x004ED570
-double swayHorizScale_Function(float v)
+float swayHorizScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -648,7 +648,7 @@ double swayHorizScale_Function(float v)
 }
 
 // ea: 0x004ED5B0
-double swayVertScale_Function(float v)
+float swayVertScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -659,7 +659,7 @@ double swayVertScale_Function(float v)
 }
 
 // ea: 0x004ED5F0
-double swayShellShockScale_Function(float v)
+float swayShellShockScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -670,7 +670,7 @@ double swayShellShockScale_Function(float v)
 }
 
 // ea: 0x004ED630
-double adsSwayMaxAngle_Function(float v)
+float adsSwayMaxAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -681,7 +681,7 @@ double adsSwayMaxAngle_Function(float v)
 }
 
 // ea: 0x004ED670
-double adsSwayLerpSpeed_Function(float v)
+float adsSwayLerpSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -692,7 +692,7 @@ double adsSwayLerpSpeed_Function(float v)
 }
 
 // ea: 0x004ED6B0
-double adsSwayPitchScale_Function(float v)
+float adsSwayPitchScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -703,7 +703,7 @@ double adsSwayPitchScale_Function(float v)
 }
 
 // ea: 0x004ED6F0
-double adsSwayYawScale_Function(float v)
+float adsSwayYawScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -714,7 +714,7 @@ double adsSwayYawScale_Function(float v)
 }
 
 // ea: 0x004ED730
-double adsSwayHorizScale_Function(float v)
+float adsSwayHorizScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -725,7 +725,7 @@ double adsSwayHorizScale_Function(float v)
 }
 
 // ea: 0x004ED770
-double adsSwayVertScale_Function(float v)
+float adsSwayVertScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -835,7 +835,7 @@ int adsTransOutTime_Function(int v)
 }
 
 // ea: 0x004ED960
-double adsIdleAmount_Function(float v)
+float adsIdleAmount_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -846,7 +846,7 @@ double adsIdleAmount_Function(float v)
 }
 
 // ea: 0x004ED9A0
-double adsZoomFov_Function(float v)
+float adsZoomFov_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -857,7 +857,7 @@ double adsZoomFov_Function(float v)
 }
 
 // ea: 0x004ED9E0
-double adsSensitivityScale_Function(float v)
+float adsSensitivityScale_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -868,7 +868,7 @@ double adsSensitivityScale_Function(float v)
 }
 
 // ea: 0x004EDA20
-double adsZoomInFrac_Function(float v)
+float adsZoomInFrac_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -879,7 +879,7 @@ double adsZoomInFrac_Function(float v)
 }
 
 // ea: 0x004EDA60
-double adsZoomOutFrac_Function(float v)
+float adsZoomOutFrac_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -890,7 +890,7 @@ double adsZoomOutFrac_Function(float v)
 }
 
 // ea: 0x004EDAA0
-double adsOverlayWidth_Function(float v)
+float adsOverlayWidth_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -901,7 +901,7 @@ double adsOverlayWidth_Function(float v)
 }
 
 // ea: 0x004EDAE0
-double adsOverlayHeight_Function(float v)
+float adsOverlayHeight_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -912,7 +912,7 @@ double adsOverlayHeight_Function(float v)
 }
 
 // ea: 0x004EDB20
-double adsBobFactor_Function(float v)
+float adsBobFactor_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -923,7 +923,7 @@ double adsBobFactor_Function(float v)
 }
 
 // ea: 0x004EDB60
-double adsViewBobMult_Function(float v)
+float adsViewBobMult_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -934,7 +934,7 @@ double adsViewBobMult_Function(float v)
 }
 
 // ea: 0x004EDBA0
-double adsAimPitch_Function(float v)
+float adsAimPitch_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -945,7 +945,7 @@ double adsAimPitch_Function(float v)
 }
 
 // ea: 0x004EDBE0
-double adsCrosshairInFrac_Function(float v)
+float adsCrosshairInFrac_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -956,7 +956,7 @@ double adsCrosshairInFrac_Function(float v)
 }
 
 // ea: 0x004EDC20
-double adsCrosshairOutFrac_Function(float v)
+float adsCrosshairOutFrac_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -989,7 +989,7 @@ int adsTransBlendTime_Function(int v)
 }
 
 // ea: 0x004EDCC0
-double adsGunKickPitchMin_Function(float v)
+float adsGunKickPitchMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1000,7 +1000,7 @@ double adsGunKickPitchMin_Function(float v)
 }
 
 // ea: 0x004EDD00
-double adsGunKickPitchMax_Function(float v)
+float adsGunKickPitchMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1011,7 +1011,7 @@ double adsGunKickPitchMax_Function(float v)
 }
 
 // ea: 0x004EDD40
-double adsGunKickYawMin_Function(float v)
+float adsGunKickYawMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1022,7 +1022,7 @@ double adsGunKickYawMin_Function(float v)
 }
 
 // ea: 0x004EDD80
-double adsGunKickYawMax_Function(float v)
+float adsGunKickYawMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1033,7 +1033,7 @@ double adsGunKickYawMax_Function(float v)
 }
 
 // ea: 0x004EDDC0
-double adsGunKickAccel_Function(float v)
+float adsGunKickAccel_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1044,7 +1044,7 @@ double adsGunKickAccel_Function(float v)
 }
 
 // ea: 0x004EDE00
-double adsGunKickSpeedMax_Function(float v)
+float adsGunKickSpeedMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1055,7 +1055,7 @@ double adsGunKickSpeedMax_Function(float v)
 }
 
 // ea: 0x004EDE40
-double adsGunKickSpeedDecay_Function(float v)
+float adsGunKickSpeedDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1066,7 +1066,7 @@ double adsGunKickSpeedDecay_Function(float v)
 }
 
 // ea: 0x004EDE80
-double adsGunKickStaticDecay_Function(float v)
+float adsGunKickStaticDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1077,7 +1077,7 @@ double adsGunKickStaticDecay_Function(float v)
 }
 
 // ea: 0x004EDEC0
-double adsViewKickPitchMin_Function(float v)
+float adsViewKickPitchMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1088,7 +1088,7 @@ double adsViewKickPitchMin_Function(float v)
 }
 
 // ea: 0x004EDF00
-double adsViewKickPitchMax_Function(float v)
+float adsViewKickPitchMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1099,7 +1099,7 @@ double adsViewKickPitchMax_Function(float v)
 }
 
 // ea: 0x004EDF40
-double adsViewKickYawMin_Function(float v)
+float adsViewKickYawMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1110,7 +1110,7 @@ double adsViewKickYawMin_Function(float v)
 }
 
 // ea: 0x004EDF80
-double adsViewKickYawMax_Function(float v)
+float adsViewKickYawMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1121,7 +1121,7 @@ double adsViewKickYawMax_Function(float v)
 }
 
 // ea: 0x004EDFC0
-double adsViewKickCenterSpeed_Function(float v)
+float adsViewKickCenterSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1132,7 +1132,7 @@ double adsViewKickCenterSpeed_Function(float v)
 }
 
 // ea: 0x004EE000
-double adsSpread_Function(float v)
+float adsSpread_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1143,7 +1143,7 @@ double adsSpread_Function(float v)
 }
 
 // ea: 0x004EE040
-double adsSpreadDucked_Function(float v)
+float adsSpreadDucked_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1154,7 +1154,7 @@ double adsSpreadDucked_Function(float v)
 }
 
 // ea: 0x004EE080
-double adsSpreadProne_Function(float v)
+float adsSpreadProne_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1165,7 +1165,7 @@ double adsSpreadProne_Function(float v)
 }
 
 // ea: 0x004EE0C0
-double hipSpreadStandMin_Function(float v)
+float hipSpreadStandMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1176,7 +1176,7 @@ double hipSpreadStandMin_Function(float v)
 }
 
 // ea: 0x004EE100
-double hipSpreadDuckedMin_Function(float v)
+float hipSpreadDuckedMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1187,7 +1187,7 @@ double hipSpreadDuckedMin_Function(float v)
 }
 
 // ea: 0x004EE140
-double hipSpreadProneMin_Function(float v)
+float hipSpreadProneMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1198,7 +1198,7 @@ double hipSpreadProneMin_Function(float v)
 }
 
 // ea: 0x004EE180
-double hipSpreadMax_Function(float v)
+float hipSpreadMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1209,7 +1209,7 @@ double hipSpreadMax_Function(float v)
 }
 
 // ea: 0x004EE1C0
-double hipSpreadDecayRate_Function(float v)
+float hipSpreadDecayRate_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1220,7 +1220,7 @@ double hipSpreadDecayRate_Function(float v)
 }
 
 // ea: 0x004EE200
-double hipSpreadFireAdd_Function(float v)
+float hipSpreadFireAdd_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1231,7 +1231,7 @@ double hipSpreadFireAdd_Function(float v)
 }
 
 // ea: 0x004EE240
-double hipSpreadTurnAdd_Function(float v)
+float hipSpreadTurnAdd_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1242,7 +1242,7 @@ double hipSpreadTurnAdd_Function(float v)
 }
 
 // ea: 0x004EE280
-double hipSpreadMoveAdd_Function(float v)
+float hipSpreadMoveAdd_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1253,7 +1253,7 @@ double hipSpreadMoveAdd_Function(float v)
 }
 
 // ea: 0x004EE2C0
-double hipSpreadDuckedDecay_Function(float v)
+float hipSpreadDuckedDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1264,7 +1264,7 @@ double hipSpreadDuckedDecay_Function(float v)
 }
 
 // ea: 0x004EE300
-double hipSpreadProneDecay_Function(float v)
+float hipSpreadProneDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1275,7 +1275,7 @@ double hipSpreadProneDecay_Function(float v)
 }
 
 // ea: 0x004EE340
-double hipReticleSidePos_Function(float v)
+float hipReticleSidePos_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1286,7 +1286,7 @@ double hipReticleSidePos_Function(float v)
 }
 
 // ea: 0x004EE380
-double hipIdleAmount_Function(float v)
+float hipIdleAmount_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1297,7 +1297,7 @@ double hipIdleAmount_Function(float v)
 }
 
 // ea: 0x004EE3C0
-double hipGunKickPitchMin_Function(float v)
+float hipGunKickPitchMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1308,7 +1308,7 @@ double hipGunKickPitchMin_Function(float v)
 }
 
 // ea: 0x004EE400
-double hipGunKickPitchMax_Function(float v)
+float hipGunKickPitchMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1319,7 +1319,7 @@ double hipGunKickPitchMax_Function(float v)
 }
 
 // ea: 0x004EE440
-double hipGunKickYawMin_Function(float v)
+float hipGunKickYawMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1330,7 +1330,7 @@ double hipGunKickYawMin_Function(float v)
 }
 
 // ea: 0x004EE480
-double hipGunKickYawMax_Function(float v)
+float hipGunKickYawMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1341,7 +1341,7 @@ double hipGunKickYawMax_Function(float v)
 }
 
 // ea: 0x004EE4C0
-double hipGunKickAccel_Function(float v)
+float hipGunKickAccel_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1352,7 +1352,7 @@ double hipGunKickAccel_Function(float v)
 }
 
 // ea: 0x004EE500
-double hipGunKickSpeedMax_Function(float v)
+float hipGunKickSpeedMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1363,7 +1363,7 @@ double hipGunKickSpeedMax_Function(float v)
 }
 
 // ea: 0x004EE540
-double hipGunKickSpeedDecay_Function(float v)
+float hipGunKickSpeedDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1374,7 +1374,7 @@ double hipGunKickSpeedDecay_Function(float v)
 }
 
 // ea: 0x004EE580
-double hipGunKickStaticDecay_Function(float v)
+float hipGunKickStaticDecay_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1385,7 +1385,7 @@ double hipGunKickStaticDecay_Function(float v)
 }
 
 // ea: 0x004EE5C0
-double hipViewKickPitchMin_Function(float v)
+float hipViewKickPitchMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1396,7 +1396,7 @@ double hipViewKickPitchMin_Function(float v)
 }
 
 // ea: 0x004EE600
-double hipViewKickPitchMax_Function(float v)
+float hipViewKickPitchMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1407,7 +1407,7 @@ double hipViewKickPitchMax_Function(float v)
 }
 
 // ea: 0x004EE640
-double hipViewKickYawMin_Function(float v)
+float hipViewKickYawMin_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1418,7 +1418,7 @@ double hipViewKickYawMin_Function(float v)
 }
 
 // ea: 0x004EE680
-double hipViewKickYawMax_Function(float v)
+float hipViewKickYawMax_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1429,7 +1429,7 @@ double hipViewKickYawMax_Function(float v)
 }
 
 // ea: 0x004EE6C0
-double hipViewKickCenterSpeed_Function(float v)
+float hipViewKickCenterSpeed_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1440,7 +1440,7 @@ double hipViewKickCenterSpeed_Function(float v)
 }
 
 // ea: 0x004EE700
-double aiEffectiveRange_Function(float v)
+float aiEffectiveRange_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1451,7 +1451,7 @@ double aiEffectiveRange_Function(float v)
 }
 
 // ea: 0x004EE740
-double aiMissRange_Function(float v)
+float aiMissRange_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1462,7 +1462,7 @@ double aiMissRange_Function(float v)
 }
 
 // ea: 0x004EE780
-double aiDamageMod_Function(float v)
+float aiDamageMod_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1473,7 +1473,7 @@ double aiDamageMod_Function(float v)
 }
 
 // ea: 0x004EE7C0
-double bulletConeAngle_Function(float v)
+float bulletConeAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1484,7 +1484,7 @@ double bulletConeAngle_Function(float v)
 }
 
 // ea: 0x004EE800
-double adsBulletConeAngle_Function(float v)
+float adsBulletConeAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1495,7 +1495,7 @@ double adsBulletConeAngle_Function(float v)
 }
 
 // ea: 0x004EE840
-double animIKOffsetTime_Function(float v)
+float animIKOffsetTime_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1506,7 +1506,7 @@ double animIKOffsetTime_Function(float v)
 }
 
 // ea: 0x004EE880
-double animIKOffsetForce_Function(float v)
+float animIKOffsetForce_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1517,7 +1517,7 @@ double animIKOffsetForce_Function(float v)
 }
 
 // ea: 0x004EE8C0
-double animIKOffsetDist_Function(float v)
+float animIKOffsetDist_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1528,7 +1528,7 @@ double animIKOffsetDist_Function(float v)
 }
 
 // ea: 0x004EE900
-double animIKPitchTime_Function(float v)
+float animIKPitchTime_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1539,7 +1539,7 @@ double animIKPitchTime_Function(float v)
 }
 
 // ea: 0x004EE940
-double animIKPitchForce_Function(float v)
+float animIKPitchForce_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1550,7 +1550,7 @@ double animIKPitchForce_Function(float v)
 }
 
 // ea: 0x004EE980
-double animIKPitchAngle_Function(float v)
+float animIKPitchAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1561,7 +1561,7 @@ double animIKPitchAngle_Function(float v)
 }
 
 // ea: 0x004EE9C0
-double animIKTorsoRecoilPitchTime_Function(float v)
+float animIKTorsoRecoilPitchTime_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1572,7 +1572,7 @@ double animIKTorsoRecoilPitchTime_Function(float v)
 }
 
 // ea: 0x004EEA00
-double animIKTorsoRecoilPitchForce_Function(float v)
+float animIKTorsoRecoilPitchForce_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1583,7 +1583,7 @@ double animIKTorsoRecoilPitchForce_Function(float v)
 }
 
 // ea: 0x004EEA40
-double animIKTorsoRecoilPitchAngle_Function(float v)
+float animIKTorsoRecoilPitchAngle_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1737,7 +1737,7 @@ int maxAmmoMP_Function(int v)
 }
 
 // ea: 0x004EECF0
-double sensitivityScaleMP_Function(float v)
+float sensitivityScaleMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1748,7 +1748,7 @@ double sensitivityScaleMP_Function(float v)
 }
 
 // ea: 0x004EED30
-double adsZoomFovMP_Function(float v)
+float adsZoomFovMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1781,7 +1781,7 @@ int adsTransOutTimeMP_Function(int v)
 }
 
 // ea: 0x004EEDD0
-double adsSensitivityScaleMP_Function(float v)
+float adsSensitivityScaleMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1792,7 +1792,7 @@ double adsSensitivityScaleMP_Function(float v)
 }
 
 // ea: 0x004EEE10
-double adsSpreadMP_Function(float v)
+float adsSpreadMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1803,7 +1803,7 @@ double adsSpreadMP_Function(float v)
 }
 
 // ea: 0x004EEE50
-double adsSpreadDuckedMP_Function(float v)
+float adsSpreadDuckedMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1814,7 +1814,7 @@ double adsSpreadDuckedMP_Function(float v)
 }
 
 // ea: 0x004EEE90
-double adsSpreadProneMP_Function(float v)
+float adsSpreadProneMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1825,7 +1825,7 @@ double adsSpreadProneMP_Function(float v)
 }
 
 // ea: 0x004EEED0
-double hipSpreadStandMinMP_Function(float v)
+float hipSpreadStandMinMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1836,7 +1836,7 @@ double hipSpreadStandMinMP_Function(float v)
 }
 
 // ea: 0x004EEF10
-double hipSpreadDuckedMinMP_Function(float v)
+float hipSpreadDuckedMinMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1847,7 +1847,7 @@ double hipSpreadDuckedMinMP_Function(float v)
 }
 
 // ea: 0x004EEF50
-double hipSpreadProneMinMP_Function(float v)
+float hipSpreadProneMinMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1858,7 +1858,7 @@ double hipSpreadProneMinMP_Function(float v)
 }
 
 // ea: 0x004EEF90
-double hipSpreadMaxMP_Function(float v)
+float hipSpreadMaxMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1869,7 +1869,7 @@ double hipSpreadMaxMP_Function(float v)
 }
 
 // ea: 0x004EEFD0
-double hipSpreadDecayRateMP_Function(float v)
+float hipSpreadDecayRateMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1880,7 +1880,7 @@ double hipSpreadDecayRateMP_Function(float v)
 }
 
 // ea: 0x004EF010
-double hipSpreadFireAddMP_Function(float v)
+float hipSpreadFireAddMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1891,7 +1891,7 @@ double hipSpreadFireAddMP_Function(float v)
 }
 
 // ea: 0x004EF050
-double hipSpreadTurnAddMP_Function(float v)
+float hipSpreadTurnAddMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1902,7 +1902,7 @@ double hipSpreadTurnAddMP_Function(float v)
 }
 
 // ea: 0x004EF090
-double hipSpreadMoveAddMP_Function(float v)
+float hipSpreadMoveAddMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1913,7 +1913,7 @@ double hipSpreadMoveAddMP_Function(float v)
 }
 
 // ea: 0x004EF0D0
-double hipSpreadDuckedDecayMP_Function(float v)
+float hipSpreadDuckedDecayMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
@@ -1924,7 +1924,7 @@ double hipSpreadDuckedDecayMP_Function(float v)
 }
 
 // ea: 0x004EF110
-double hipSpreadProneDecayMP_Function(float v)
+float hipSpreadProneDecayMP_Function(float v)
 {
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
