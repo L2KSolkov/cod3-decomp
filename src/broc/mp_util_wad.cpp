@@ -9605,8 +9605,10 @@ void SetupRound() {
     mp_util_wad::pLevel->spawnTypeAllies = "spawn_ctf_allies_primary";
     mp_util_wad::pLevel->spawnTypeAxis = "spawn_ctf_axis_primary";
     Broc::SetTutorialTextAllPlayers(-1);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* sw = SwitchToSecondarySpawns__functor(lvl);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_ctf.bro",
                         __LINE__, "SwitchToSecondarySpawns", sw);
