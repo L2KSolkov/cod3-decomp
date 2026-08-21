@@ -1539,23 +1539,23 @@ index	status	map_line
 1538	VERIFIED	0002:000b4d70 ?c_str@DbQueryString@@QBEPBDXZ 008A4270 f i core.o VERIFIED: FUNCTION existing DbQueryString c_str accessor matches IDA
 1539	VERIFIED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path
 1540	VERIFIED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o	SKIPPED: ae_vector/ae_sized_array/ae_pair inline container helper; supplied by template definition VERIFIED: FUNCTION existing DbQueryResults specific-match accessor matches IDA
-1541	PORTED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o PORTED: FUNCTION implemented IDA ae_heap_base constructor
-1542	PORTED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor
-1543	PORTED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o PORTED: FUNCTION implemented IDA XModelManager placement-new passthrough
+1541	VERIFIED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o VERIFIED: FUNCTION existing ae_heap_base constructor matches IDA
+1542	VERIFIED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o VERIFIED: FUNCTION existing null ae_heap_base heap accessor matches IDA
+1543	VERIFIED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o VERIFIED: FUNCTION existing XModelManager placement-new passthrough matches IDA
 1544	VERIFIED	0002:000b4e40 ?CreateInst@XModelManager@@SAXXZ 008A4340 f i core.o
 1545	VERIFIED	0002:000b4f40 ?DeleteInst@XModelManager@@SAXXZ 008A4440 f i core.o
-1546	PORTED	0002:000b4fc0 ??2XModelPartsManager@@SAPAXIPAX@Z 008A44C0 f i core.o PORTED: FUNCTION implemented IDA XModelPartsManager placement-new passthrough
+1546	VERIFIED	0002:000b4fc0 ??2XModelPartsManager@@SAPAXIPAX@Z 008A44C0 f i core.o VERIFIED: FUNCTION existing XModelPartsManager placement-new passthrough matches IDA
 1547	VERIFIED	0002:000b4fd0 ?CreateInst@XModelPartsManager@@SAXXZ 008A44D0 f i core.o
 1548	VERIFIED	0002:000b50d0 ?DeleteInst@XModelPartsManager@@SAXXZ 008A45D0 f i core.o
-1549	PORTED	0002:000b5150 ?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z 008A4650 f i core.o PORTED: FUNCTION implemented IDA Task allocator setter
-1550	PORTED	0002:000b5160 ?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z 008A4660 f i core.o PORTED: FUNCTION implemented IDA SceneAnimInfo allocator setter
-1551	PORTED	0002:000b5170 ??2LightGridMgr@@SAPAXIPAX@Z 008A4670 f i core.o PORTED: FUNCTION implemented IDA LightGridMgr placement-new passthrough
+1549	VERIFIED	0002:000b5150 ?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z 008A4650 f i core.o VERIFIED: FUNCTION existing Task allocator setter matches IDA
+1550	VERIFIED	0002:000b5160 ?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z 008A4660 f i core.o VERIFIED: FUNCTION existing SceneAnimInfo allocator setter matches IDA
+1551	VERIFIED	0002:000b5170 ??2LightGridMgr@@SAPAXIPAX@Z 008A4670 f i core.o VERIFIED: FUNCTION existing LightGridMgr placement-new passthrough matches IDA
 1552	VERIFIED	0002:000b5180 ?CreateInst@LightGridMgr@@SAXXZ 008A4680 f i core.o
 1553	VERIFIED	0002:000b5280 ?DeleteInst@LightGridMgr@@SAXXZ 008A4780 f i core.o
-1554	PORTED	0002:000b5300 ?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z 008A4800 f i core.o PORTED: FUNCTION implemented IDA trStaticModelList_t allocator setter
-1555	PORTED	0002:000b5310 ?Inst@DObjHandleDb@@SAPAV1@XZ 008A4810 f i core.o PORTED: FUNCTION implemented IDA singleton accessor
-1556	PORTED	0002:000b5320 ?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z 008A4820 f i core.o PORTED: FUNCTION implemented IDA allocator setter
-1557	PORTED	0002:000b5330 ?IsDefined@vector@Broc@@QBE_NXZ 008A4830 f i core.o PORTED: FUNCTION implemented IDA sNaN component predicate
+1554	VERIFIED	0002:000b5300 ?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z 008A4800 f i core.o VERIFIED: FUNCTION existing trStaticModelList_t allocator setter matches IDA
+1555	VERIFIED	0002:000b5310 ?Inst@DObjHandleDb@@SAPAV1@XZ 008A4810 f i core.o VERIFIED: FUNCTION existing DObjHandleDb singleton accessor matches IDA
+1556	VERIFIED	0002:000b5320 ?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z 008A4820 f i core.o VERIFIED: FUNCTION existing AeThreadFunctor allocator setter matches IDA
+1557	VERIFIED	0002:000b5330 ?IsDefined@vector@Broc@@QBE_NXZ 008A4830 f i core.o VERIFIED: FUNCTION existing Broc::vector sNaN component predicate matches IDA
 1558	VERIFIED	0002:000b5380 ?get_num_controllers@controller@@QAEHXZ 008A4880 f i core.o
 1559	VERIFIED	0002:000b5390 ??_U@YAPAXI@Z 008A4890 f i core.o
 1560	VERIFIED	0002:000b53a0 ??_V@YAXPAX@Z 008A48A0 f i core.o
