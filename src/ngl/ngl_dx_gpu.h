@@ -568,6 +568,9 @@ enum gpuIndexType {
 // ============================================================================
 // gpu buffer helpers (inline COMDATs, apsVertexBuffer.o)
 // ============================================================================
+void gpuDestroyVertexBuffer(D3DVertexBuffer* buf);
+void gpuDestroyIndexBuffer(D3DIndexBuffer* buf);
+
 inline D3DIndexBuffer* gpuCreateIndexBuffer(unsigned int nindices, gpuIndexType indextype) {
     return D3DDevice_CreateIndexBuffer2(nindices * (2 * (indextype == GPU_INDEX_16) + 2));
 }

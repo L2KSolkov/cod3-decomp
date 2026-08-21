@@ -23,6 +23,15 @@ int             nglScratchVertexOffset = 0;
 D3DIndexBuffer* nglScratchIndexBufferA = NULL;
 D3DVertexBuffer* nglScratchVertexBufferA = NULL;
 
+// gpuDestroyVertexBuffer / gpuDestroyIndexBuffer - ea: 0x8435B0 / 0x8435C0
+void gpuDestroyVertexBuffer(D3DVertexBuffer* buf) {
+    D3DResource_Release((D3DResource*)buf);
+}
+
+void gpuDestroyIndexBuffer(D3DIndexBuffer* buf) {
+    D3DResource_Release((D3DResource*)buf);
+}
+
 // ============================================================================
 // nglScratchIndexAlloc â€” ea: 0x843110
 // ============================================================================
