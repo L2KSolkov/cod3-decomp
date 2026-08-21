@@ -107,16 +107,16 @@ index	status	map_line
 106	VERIFIED	0002:00532240 ?IsEEDefined_setting_up_hq@@YA?AUbbool@@Ventity@Broc@@@Z 00D21740 f mp_util_wad.o	VERIFIED: IDA 0x00932240 uses key 0x64A1977A bint GetVal and IsDefined
 107	VERIFIED	0002:005322f0 ?GetEE_weaponstr@@YAAAVstring@Broc@@Ventity@2@@Z 00D217F0 f mp_util_wad.o	VERIFIED: IDA 0x009322F0 forwards handle lookup and GetRef key 0x93FB3A03
 108	VERIFIED	0002:00532340 ?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z 00D21840 f mp_util_wad.o	VERIFIED: IDA 0x00932340 uses key 0x93FB3A03 string GetVal and IsDefined
-109	PORTED	0002:00532440 ?GetEE_damagecritical@@YAAAVstring@Broc@@Ventity@2@@Z 00D21940 f mp_util_wad.o	PORTED: implemented from IDA key 0xCF71F1AA and nullEnt fallback
-110	PORTED	0002:00532490 ?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z 00D21990 f mp_util_wad.o  PORTED: implemented from IDA key 0xCF71F1AA and string GetVal/IsDefined path; source body added
+109	VERIFIED	0002:00532440 ?GetEE_damagecritical@@YAAAVstring@Broc@@Ventity@2@@Z 00D21940 f mp_util_wad.o	VERIFIED: IDA 0x00932440 forwards handle lookup and GetRef key 0xCF71F1AA
+110	VERIFIED	0002:00532490 ?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z 00D21990 f mp_util_wad.o	VERIFIED: IDA 0x00932490 uses key 0xCF71F1AA string GetVal and IsDefined
 111	FIXED	0002:00532590 ?GetEE_spawnscore@@YAAAUbint@@Ventity@Broc@@@Z 00D21A90 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-112	PORTED	0002:005325e0 ?IsEEDefined_spawnscore@@YA?AUbbool@@Ventity@Broc@@@Z 00D21AE0 f mp_util_wad.o
-113	PORTED	0002:00532690 ?GetEE_deathfx@@YAAAVstring@Broc@@Ventity@2@@Z 00D21B90 f mp_util_wad.o	PORTED: implemented from IDA key 0x04756FC4 and nullEnt fallback
-114	PORTED	0002:005326e0 ?IsEEDefined_deathfx@@YA?AUbbool@@Ventity@Broc@@@Z 00D21BE0 f mp_util_wad.o  PORTED: implemented from IDA key 0x04756FC4 and string GetVal/IsDefined path; source body added
+112	VERIFIED	0002:005325e0 ?IsEEDefined_spawnscore@@YA?AUbbool@@Ventity@Broc@@@Z 00D21AE0 f mp_util_wad.o	VERIFIED: IDA 0x009325E0 uses key 0x1D653125 bint GetVal and IsDefined
+113	VERIFIED	0002:00532690 ?GetEE_deathfx@@YAAAVstring@Broc@@Ventity@2@@Z 00D21B90 f mp_util_wad.o	VERIFIED: IDA 0x00932690 forwards handle lookup and GetRef key 0x04756FC4
+114	VERIFIED	0002:005326e0 ?IsEEDefined_deathfx@@YA?AUbbool@@Ventity@Broc@@@Z 00D21BE0 f mp_util_wad.o	VERIFIED: IDA 0x009326E0 uses key 0x04756FC4 string GetVal and IsDefined
 115	FIXED	0002:005327e0 ?GetEE_bTeamKilledWithArtillery@@YAAAUbbool@@Ventity@Broc@@@Z 00D21CE0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-116	PORTED	0002:00532830 ?IsEEDefined_bTeamKilledWithArtillery@@YA?AUbbool@@Ventity@Broc@@@Z 00D21D30 f mp_util_wad.o
-117	PORTED	0002:005328e0 ?GetEE_damageheavy@@YAAAVstring@Broc@@Ventity@2@@Z 00D21DE0 f mp_util_wad.o	PORTED: implemented from IDA key 0xAA000DBC and nullEnt fallback
-118	PORTED	0002:00532930 ?IsEEDefined_damageheavy@@YA?AUbbool@@Ventity@Broc@@@Z 00D21E30 f mp_util_wad.o  PORTED: implemented from IDA key 0xAA000DBC and string GetVal/IsDefined path; source body added
+116	VERIFIED	0002:00532830 ?IsEEDefined_bTeamKilledWithArtillery@@YA?AUbbool@@Ventity@Broc@@@Z 00D21D30 f mp_util_wad.o	VERIFIED: IDA 0x00932830 uses key 0x4D2B5732 bbool GetVal and IsDefined
+117	VERIFIED	0002:005328e0 ?GetEE_damageheavy@@YAAAVstring@Broc@@Ventity@2@@Z 00D21DE0 f mp_util_wad.o	VERIFIED: IDA 0x009328E0 forwards handle lookup and GetRef key 0xAA000DBC
+118	VERIFIED	0002:00532930 ?IsEEDefined_damageheavy@@YA?AUbbool@@Ventity@Broc@@@Z 00D21E30 f mp_util_wad.o	VERIFIED: IDA 0x00932930 uses key 0xAA000DBC string GetVal and IsDefined
 119	FIXED	0002:00532a30 ?GetEE_cappedSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D21F30 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 120	PORTED	0002:00532a80 ?IsEEDefined_cappedSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21F80 f mp_util_wad.o
 121	FIXED	0002:00532b30 ?GetEE_isInsideFollowClient@@YAAAUbint@@Ventity@Broc@@@Z 00D22030 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
