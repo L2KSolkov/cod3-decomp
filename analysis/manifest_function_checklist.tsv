@@ -6532,12 +6532,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6531	0x005AEA30	0x0099DF30	?UpdateWidescreen@PanelFileUser@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6532	0x005AEA40	0x0099DF40	??0IGOWidget@@QAE@H@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6533	0x005AEA70	0x0099DF70	??1IGOWidget@@UAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6534	0x005AEA80	0x0099DF80	?Init@IGOWidget@@UAEXPAVPanelFile@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6535	0x005AEA90	0x0099DF90	?Update@IGOWidget@@UAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6536	0x005AEAA0	0x0099DFA0	?Draw@IGOWidget@@UAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6534	0x005AEA80	0x0099DF80	?Init@IGOWidget@@UAEXPAVPanelFile@@@Z		shell.o	game		f i	1	FIXED	FUNCTION corrected against IDA vtable	NO	NO	VERIFIED
+6535	0x005AEA90	0x0099DF90	?Update@IGOWidget@@UAEXM@Z		shell.o	game		f i	1	FIXED	FUNCTION corrected against IDA vtable	NO	NO	VERIFIED
+6536	0x005AEAA0	0x0099DFA0	?Draw@IGOWidget@@UAEXXZ		shell.o	game		f i	1	FIXED	FUNCTION corrected against IDA vtable	NO	NO	VERIFIED
 6537	0x005AEAB0	0x0099DFB0	?IsShown@IGOWidget@@UAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6538	0x005AEAC0	0x0099DFC0	?SetShown@IGOWidget@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6539	0x005AEAD0	0x0099DFD0	?UpdateWidescreen@IGOWidget@@UAEX_NM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6539	0x005AEAD0	0x0099DFD0	?UpdateWidescreen@IGOWidget@@UAEX_NM@Z		shell.o	game		f i	1	FIXED	FUNCTION corrected against IDA vtable	NO	NO	VERIFIED
 6540	0x005AEAE0	0x0099DFE0	?UpdateSplitScreen@IGOWidget@@UAEXHH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6541	0x005AEAF0	0x0099DFF0	?ForceToAppear@IGOWidget@@UAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6542	0x005AEB00	0x0099E000	??_EIGOWidget@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

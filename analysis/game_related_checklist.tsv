@@ -6532,12 +6532,12 @@ index	status	map_line
 6531	VERIFIED	0002:001aea30 ?UpdateWidescreen@PanelFileUser@@UAEX_N@Z 0099DF30 f i shell.o
 6532	VERIFIED	0002:001aea40 ??0IGOWidget@@QAE@H@Z 0099DF40 f i shell.o
 6533	VERIFIED	0002:001aea70 ??1IGOWidget@@UAE@XZ 0099DF70 f i shell.o
-6534	PORTED	0002:001aea80 ?Init@IGOWidget@@UAEXPAVPanelFile@@@Z 0099DF80 f i shell.o
-6535	PORTED	0002:001aea90 ?Update@IGOWidget@@UAEXM@Z 0099DF90 f i shell.o
-6536	PORTED	0002:001aeaa0 ?Draw@IGOWidget@@UAEXXZ 0099DFA0 f i shell.o
+6534	FIXED	0002:001aea80 ?Init@IGOWidget@@UAEXPAVPanelFile@@@Z 0099DF80 f i shell.o	FIXED: matched IDA concrete empty base method; removed incorrect pure-virtual declaration
+6535	FIXED	0002:001aea90 ?Update@IGOWidget@@UAEXM@Z 0099DF90 f i shell.o	FIXED: matched IDA concrete empty base method; removed incorrect pure-virtual declaration
+6536	FIXED	0002:001aeaa0 ?Draw@IGOWidget@@UAEXXZ 0099DFA0 f i shell.o	FIXED: matched IDA concrete empty base method; removed incorrect pure-virtual declaration
 6537	VERIFIED	0002:001aeab0 ?IsShown@IGOWidget@@UAE_NXZ 0099DFB0 f i shell.o
 6538	VERIFIED	0002:001aeac0 ?SetShown@IGOWidget@@UAEX_N@Z 0099DFC0 f i shell.o
-6539	PORTED	0002:001aead0 ?UpdateWidescreen@IGOWidget@@UAEX_NM@Z 0099DFD0 f i shell.o
+6539	FIXED	0002:001aead0 ?UpdateWidescreen@IGOWidget@@UAEX_NM@Z 0099DFD0 f i shell.o	FIXED: matched IDA concrete empty base method; removed incorrect pure-virtual declaration
 6540	VERIFIED	0002:001aeae0 ?UpdateSplitScreen@IGOWidget@@UAEXHH@Z 0099DFE0 f i shell.o
 6541	VERIFIED	0002:001aeaf0 ?ForceToAppear@IGOWidget@@UAEXXZ 0099DFF0 f i shell.o
 6542	SKIPPED	0002:001aeb00 ??_EIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
