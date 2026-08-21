@@ -11656,8 +11656,10 @@ void CallbackNextRound() {
 // CallbackRoundOver - ea: 0x95C5F0
 void CallbackRoundOver(int condition, Broc::string team) {
     Broc::Code_DebugOut("*HQ* CallbackRoundOver\n");
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0x863B4D44;
     Broc::notify(lvl, n);
