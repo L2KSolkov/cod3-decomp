@@ -161,6 +161,8 @@ extern void RegisterHashString(int h, const char* txt);
 
 // IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
 static __int16 s_flagKey;
+// IDA global byte_3A6023: pointer-backed key storage for the "goal" field.
+static char s_goalKey;
 
 void RegisterHashStrings() {
     RegisterHashString(19721985, "ClearGame");
@@ -246,6 +248,7 @@ void RegisterHashStrings() {
     RegisterHashString(-2025829234, "flag_pickedup");
     RegisterHashString(1328252895, "flag_time_out");
     RegisterHashString(-1353926140, "flipped");
+    RegisterHashString(reinterpret_cast<int>(&s_goalKey), "goal");
     RegisterHashString(-89255650, "holder");
     RegisterHashString(945124834, "home_angles");
     RegisterHashString(-466622403, "home_position");
@@ -819,6 +822,96 @@ Broc::bbool* IsEEDefined_flag(Broc::bbool* result, Broc::entity ent) {
         result->mVal = false;
     }
     return result;
+}
+
+// ea: 0x00930900
+Broc::entity* GetEE_goal(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::entity>(reinterpret_cast<unsigned int>(&s_goalKey));
+}
+
+// ea: 0x00930B00
+Broc::entity* GetEE_trigger(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::entity>(0xF2F5EAB4);
+}
+
+// ea: 0x00931300
+Broc::string* GetEE_audio_track(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0x0F1F2946);
+}
+
+// ea: 0x00931550
+Broc::string* GetEE_damagelight(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0xAA4AB8F7);
+}
+
+// ea: 0x00931AA0
+Broc::string* GetEE_reverb(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0x11523406);
+}
+
+// ea: 0x009320F0
+Broc::entity* GetEE_lastspawnpoint(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::entity>(0x9AA56007);
+}
+
+// ea: 0x009322F0
+Broc::string* GetEE_weaponstr(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0x93FB3A03);
+}
+
+// ea: 0x00932440
+Broc::string* GetEE_damagecritical(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0xCF71F1AA);
+}
+
+// ea: 0x00932690
+Broc::string* GetEE_deathfx(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0x04756FC4);
+}
+
+// ea: 0x009328E0
+Broc::string* GetEE_damageheavy(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::string>(0xAA000DBC);
 }
 
 // GetEE_lastTouch / IsEEDefined_lastTouch (key 0x54E300B7)
