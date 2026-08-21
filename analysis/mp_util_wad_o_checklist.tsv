@@ -298,17 +298,17 @@ index	status	map_line
 297	VERIFIED	0002:0053e560 ?SetActionHint@Broc@@YAXHH@Z 00D2DA60 f i mp_util_wad.o
 298	VERIFIED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o
 299	VERIFIED	0002:0053e5c0 ?CallbackPlayerEnter@_mp_common@@YAXVentity@Broc@@H@Z 00D2DAC0 f mp_util_wad.o
-300	PORTED	0002:0053e910 ?Code_GetPlayerName@Broc@@YAPBDVentity@1@@Z 00D2DE10 f i mp_util_wad.o
+300	PORTED	0002:0053e910 ?Code_GetPlayerName@Broc@@YAPBDVentity@1@@Z 00D2DE10 f i mp_util_wad.o	PORTED: IDA returns mGetPlayerName(player.GetHandle()) as const char*
 301	VERIFIED	0002:0053e940 ?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z 00D2DE40 f i mp_util_wad.o
 302	VERIFIED	0002:0053e970 ?CallbackPlayerLeave@_mp_common@@YAXVentity@Broc@@@Z 00D2DE70 f mp_util_wad.o
 303	VERIFIED	0002:0053ea80 ?CallbackPlayerRespawnRequest@_mp_common@@YAXVentity@Broc@@H@Z 00D2DF80 f mp_util_wad.o
-304	PORTED	0002:0053eb50 ?RespawnPlayer__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D2E050 f i mp_util_wad.o
+304	PORTED	0002:0053eb50 ?RespawnPlayer__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D2E050 f i mp_util_wad.o	PORTED: IDA allocates 0x10 bytes, constructs AeThreadFunctor2<entity,string>, destroys the by-value team temporary, and returns AeThreadFunctor*
 305	VERIFIED	0002:0053ec10 ?CallbackPlayerKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z 00D2E110 f mp_util_wad.o
-306	PORTED	0002:0053f610 ??8bbool@@QBE_N_N@Z 00D2EB10 f i mp_util_wad.o
-307	PORTED	0002:0053f640 ??9entity@Broc@@QBE_NABV01@@Z 00D2EB40 f i mp_util_wad.o
-308	PORTED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o
+306	PORTED	0002:0053f610 ??8bbool@@QBE_N_N@Z 00D2EB10 f i mp_util_wad.o	PORTED: IDA compares rhs bool with global bbool.mVal
+307	PORTED	0002:0053f640 ??9entity@Broc@@QBE_NABV01@@Z 00D2EB40 f i mp_util_wad.o	PORTED: IDA compares this and rhs entity handles through GetHandle
+308	PORTED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o	PORTED: IDA forwards target/attacker handles, weapon reference, mod, and bool teamGame to mObituary at +0x320
 309	VERIFIED	0002:0053f6d0 ?Code_SetRespawnMaxTime@Broc@@YAXVentity@1@H@Z 00D2EBD0 f i mp_util_wad.o
-310	PORTED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o
+310	PORTED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o	PORTED: IDA returns a Broc::entity constructed from mGetSpotterEntity(ent.GetHandle()) at +0x3C4
 311	PORTED	0002:0053f740 ?DeathState__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0Ubint@@Ubbool@@2@Z 00D2EC40 f i mp_util_wad.o
 312	VERIFIED	0002:0053f7f0 ?CallbackPlayerAssist@_mp_common@@YAXVentity@Broc@@@Z 00D2ECF0 f mp_util_wad.o
 313	VERIFIED	0002:0053f860 ?CallbackPainFlinch@_mp_common@@YAXVentity@Broc@@H@Z 00D2ED60 f mp_util_wad.o
