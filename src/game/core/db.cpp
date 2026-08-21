@@ -303,6 +303,12 @@ const char* DbQueryString::c_str() const
     return buf;
 }
 
+// ea: 0x004B4E00
+ae_sized_array<DbRow*, 64>& DbQueryResults::GetCurrentMatchesSpecific()
+{
+    return mMatchesSpec;
+}
+
 bool BitSet255_Test(const void* self, int v);
 
 // ea: 0x004E5AC0

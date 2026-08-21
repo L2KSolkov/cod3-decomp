@@ -421,14 +421,21 @@ int mem_host_fprintf(unsigned handle, const char* fmt, ...) {
 
 class ae_heap_base {
 public:
+    ae_heap_base();
     virtual ~ae_heap_base();
+    mem_heap* GetHeapPointer();
 protected:
     void* MemAlloc(unsigned size, unsigned align, mem_heap* heap);
     void  MemFree(void* ptr, mem_heap* heap);
     bool  MemCheckFree(void* ptr, mem_heap* heap);
 };
 
+// ea: 0x004B4E10
+ae_heap_base::ae_heap_base() {}
 ae_heap_base::~ae_heap_base() {}
+
+// ea: 0x004B4E20
+mem_heap* ae_heap_base::GetHeapPointer() { return nullptr; }
 
 class ae_heap : public ae_heap_base {
     mem_heap mHeap;

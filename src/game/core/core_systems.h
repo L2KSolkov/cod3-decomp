@@ -1022,6 +1022,7 @@ public:
     DbRow* GetRandomResult();
     DbRow* GetRandomResultSpecific();
     DbRow* GetResult(unsigned int idx);
+    ae_sized_array<DbRow*, 64>& GetCurrentMatchesSpecific();
 };
 static_assert(sizeof(DbQueryResults) == 0x20C, "DbQueryResults size mismatch");
 
