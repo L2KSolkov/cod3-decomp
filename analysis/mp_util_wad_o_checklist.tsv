@@ -596,7 +596,7 @@ index	status	map_line
 595	VERIFIED	0002:00559190 ?ShowLosingHQGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48690 f mp_util_wad.o
 596	FIXED	0002:00559200 ?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z 00D48700 f mp_util_wad.o	FIXED: IDA 0x00959200 uses pLevel->_base.entity (or null) for endon
 597	PORTED	0002:005593a0 ??Zbint@@QAEHH@Z 00D488A0 f i mp_util_wad.o
-598	PORTED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o	PORTED: source entry remains a stub; IDA 0x009593E0 still requires the full radio capture/state machine pass
+598	FIXED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o	FIXED: IDA 0x009593E0 stage-2 radio capture/conflict handling and stage-3 attacker/defender progress, effects, hints, and host transitions ported
 599	PORTED	0002:0055ad50 ??D@YA?AUbfloat@@Ubint@@U0@@Z 00D4A250 f i mp_util_wad.o
 600	PORTED	0002:0055ada0 ??H@YA?AUbfloat@@Ubint@@U0@@Z 00D4A2A0 f i mp_util_wad.o
 601	PORTED	0002:0055adf0 ??4key_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D4A2F0 f i mp_util_wad.o
