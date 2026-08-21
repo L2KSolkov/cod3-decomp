@@ -3679,11 +3679,11 @@ index	status	map_line
 3678	PORTED	0002:00119850 ??Citerator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBEAAPAVTaskHandler@@XZ 00908D50 f i game2.o  PORTED: shared TaskHandler iterator increment emitted
 3679	PORTED	0002:00119860 ??Eiterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEAAV01@XZ 00908D60 f i game2.o  PORTED: shared TaskHandler iterator comparison emitted
 3680	PORTED	0002:00119870 ??9iterator@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QBE_NV01@@Z 00908D70 f i game2.o
-3681	PORTED	0002:00119890 ??Eiterator@?$reserved_dlist@VTask@@@@QAEAAV01@XZ 00908D90 f i game2.o
-3682	PORTED	0002:001198b0 ??Eiterator@?$reserved_dlist@VTask@@@@QAE?AV01@H@Z 00908DB0 f i game2.o
-3683	PORTED	0002:001198e0 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908DE0 f i game2.o
-3684	PORTED	0002:00119980 ??0?$ae_sized_array@PAVTask@@$0IA@@@QAE@XZ 00908E80 f i game2.o
-3685	PORTED	0002:00119990 ?push_back@?$ae_sized_array@PAVTask@@$0IA@@@QAEXABQAVTask@@@Z 00908E90 f i game2.o
+3681	PORTED	0002:00119890 ??Eiterator@?$reserved_dlist@VTask@@@@QAEAAV01@XZ 00908D90 f i game2.o  PORTED: reserved Task iterator prefix increment matches existing implementation
+3682	PORTED	0002:001198b0 ??Eiterator@?$reserved_dlist@VTask@@@@QAE?AV01@H@Z 00908DB0 f i game2.o  PORTED: reserved Task iterator postfix increment matches existing implementation
+3683	PORTED	0002:001198e0 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00908DE0 f i game2.o  PORTED: shared 128-element handle push_back explicitly emitted
+3684	PORTED	0002:00119980 ??0?$ae_sized_array@PAVTask@@$0IA@@@QAE@XZ 00908E80 f i game2.o  PORTED: shared Task*[128] constructor explicitly emitted
+3685	PORTED	0002:00119990 ?push_back@?$ae_sized_array@PAVTask@@$0IA@@@QAEXABQAVTask@@@Z 00908E90 f i game2.o  PORTED: shared Task*[128] push_back explicitly emitted
 3686	PORTED	0002:00119a30 ??Diterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QBEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00908F30 f i game2.o
 3687	PORTED	0002:00119a40 ??Eiterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QAEAAV01@XZ 00908F40 f i game2.o
 3688	PORTED	0002:00119a50 ??9iterator@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0IA@@@QBE_NV01@@Z 00908F50 f i game2.o
