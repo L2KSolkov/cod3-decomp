@@ -660,17 +660,17 @@ index	status	map_line
 659	VERIFIED	0002:0055f190 ?GetGrenadeWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E690 f mp_util_wad.o	VERIFIED: Existing gametype/team/class grenade branches match IDA 0x0095F190
 660	VERIFIED	0002:0055f430 ?GiveSpecialWeapon@_mp_loadout@@YAXVentity@Broc@@Ubint@@FUbbool@@@Z 00D4E930 f mp_util_wad.o	VERIFIED: Existing local-player special dispatch and respawn guards match IDA 0x0095F430
 661	VERIFIED	0002:0055f6b0 ?GiveDualPistols@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4EBB0 f mp_util_wad.o
-662	PORTED	0002:0055f9b0 ?SetWeaponSlotAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D4EEB0 f i mp_util_wad.o
-663	PORTED	0002:0055f9f0 ?GetFullClipAmmoCount@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D4EEF0 f i mp_util_wad.o
+662	FIXED	0002:0055f9b0 ?SetWeaponSlotAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D4EEB0 f i mp_util_wad.o	FIXED: IDA 0x0095F9B0 handle extraction and mSetWeaponSlotAmmo forwarding added
+663	FIXED	0002:0055f9f0 ?GetFullClipAmmoCount@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D4EEF0 f i mp_util_wad.o	FIXED: IDA 0x0095F9F0 handle extraction and mGetFullClipAmmoCount forwarding added
 664	VERIFIED	0002:0055fa20 ?GiveBazooka@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4EF20 f mp_util_wad.o
 665	VERIFIED	0002:0055fc50 ?GiveSatchel@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4F150 f mp_util_wad.o
 666	VERIFIED	0002:0055fdf0 ?GiveMine@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4F2F0 f mp_util_wad.o
 667	VERIFIED	0002:0055ff90 ?GiveRifleGrenades@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4F490 f mp_util_wad.o
 668	VERIFIED	0002:005601d0 ?GiveArtillery@_mp_loadout@@YAXVentity@Broc@@@Z 00D4F6D0 f mp_util_wad.o
-669	PORTED	0002:005603c0 ?ArtilleryDispenser__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D4F8C0 f i mp_util_wad.o
+669	VERIFIED	0002:005603c0 ?ArtilleryDispenser__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D4F8C0 f i mp_util_wad.o	VERIFIED: Existing 0xC allocation/null guard/AeThreadFunctor1 construction matches IDA 0x009603C0
 670	VERIFIED	0002:00560460 ?GiveSmokeGrenadeSpecial@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4F960 f mp_util_wad.o
 671	VERIFIED	0002:005605d0 ?ArtilleryDispenser@_mp_loadout@@YAXVentity@Broc@@@Z 00D4FAD0 f mp_util_wad.o
-672	PORTED	0002:00560d70 ?NotifyWhenTimerExpires__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@UHashStr@@@Z 00D50270 f i mp_util_wad.o
+672	VERIFIED	0002:00560d70 ?NotifyWhenTimerExpires__functor@_mp_loadout@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@UHashStr@@@Z 00D50270 f i mp_util_wad.o	VERIFIED: Existing 0x14 allocation/null guard/AeThreadFunctor3 construction matches IDA 0x00960D70
 673	VERIFIED	0002:00560e10 ?local_player_joined@_mp_loadout@@YAXVentity@Broc@@@Z 00D50310 f mp_util_wad.o
 674	VERIFIED	0002:00560e70 ?SpecialClassAudio@_mp_loadout@@YAXVentity@Broc@@@Z 00D50370 f mp_util_wad.o
 675	PORTED	0002:00561080 ?NotifyWhenTimerExpires@_mp_loadout@@YAXVentity@Broc@@Ubint@@UHashStr@@@Z 00D50580 f mp_util_wad.o
