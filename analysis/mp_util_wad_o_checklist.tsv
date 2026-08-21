@@ -397,7 +397,7 @@ index	status	map_line
 396	FIXED	0002:00545870 ?SetSpectateTeamKill@Broc@@YAXHABVentity@1@H@Z 00D34D70 f i mp_util_wad.o	FIXED: corrected entity to const-reference ABI while retaining the IDA-backed handle forward
 397	FIXED	0002:005458b0 ?UpdateSpectateCritical__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D34DB0 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 398	FIXED	0002:00545950 ?UpdateSpectateDead__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D34E50 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
-399	PORTED	0002:005459f0 ?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D34EF0 f mp_util_wad.o
+399	FIXED	0002:005459f0 ?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D34EF0 f mp_util_wad.o	FIXED: IDA 0x009459F0 reloads pLevel->_base.entity before FadeUpWhenLoaded
 400	VERIFIED	0002:00545b90 ?Code_ScreenFadeToBlack@Broc@@YAXIH@Z 00D35090 f i mp_util_wad.o
 401	FIXED	0002:00545bc0 ?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D350C0 f mp_util_wad.o	FIXED: IDA 0x00945BC0 constructs FadeUpWhenLoaded with pLevel->_base.entity and the original player
 402	VERIFIED	0002:00545d30 ?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z 00D35230 f mp_util_wad.o
