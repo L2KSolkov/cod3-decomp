@@ -349,10 +349,10 @@ index	status	map_line
 348	VERIFIED	0002:005421a0 ?Code_NextRound@Broc@@YAX_N@Z 00D316A0 f i mp_util_wad.o
 349	VERIFIED	0002:005421d0 ?CallbackDebugRender@_mp_common@@YAXXZ 00D316D0 f mp_util_wad.o	VERIFIED: Existing implementation returns pLevel->RenderSpawnPoints(), matching IDA
 350	VERIFIED	0002:00542200 ?CallbackFireArtillery@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D31700 f mp_util_wad.o
-351	PORTED	0002:005430c0 ??0bfloat@@QAE@N@Z 00D325C0 f i mp_util_wad.o
-352	PORTED	0002:005430f0 ?PlaySound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Ubfloat@@@Z 00D325F0 f i mp_util_wad.o
-353	PORTED	0002:005431b0 ?PlaySoundAtLocation__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Uvector@4@@Z 00D326B0 f i mp_util_wad.o
-354	PORTED	0002:00543270 ?AddArtilleryObjective__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Uvector@4@@Z 00D32770 f i mp_util_wad.o
+351	PORTED	0002:005430c0 ??0bfloat@@QAE@N@Z 00D325C0 f i mp_util_wad.o	PORTED: IDA stores the long-double constructor argument in the global bfloat mVal
+352	FIXED	0002:005430f0 ?PlaySound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Ubfloat@@@Z 00D325F0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor3<entity,string,bfloat>*; corrected the wrapper return ABI
+353	FIXED	0002:005431b0 ?PlaySoundAtLocation__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Uvector@4@@Z 00D326B0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor3<entity,string,vector>*; corrected the wrapper return ABI
+354	FIXED	0002:00543270 ?AddArtilleryObjective__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Uvector@4@@Z 00D32770 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,vector>*; corrected the wrapper return ABI
 355	VERIFIED	0002:00543310 ?CallbackFireArtilleryShell@_mp_common@@YAXVentity@Broc@@@Z 00D32810 f mp_util_wad.o
 356	VERIFIED	0002:00543390 ?CallbackDenyArtillery@_mp_common@@YAXVentity@Broc@@@Z 00D32890 f mp_util_wad.o
 357	VERIFIED	0002:005435c0 ?CallbackVehicleKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z 00D32AC0 f mp_util_wad.o
