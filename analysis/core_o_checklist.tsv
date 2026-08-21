@@ -824,23 +824,23 @@ index	status	map_line
 823	PORTED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o
 824	PORTED	0002:000dedf0 ?CreateInst@PadAliasMgr@@SAXXZ 008CE2F0 f i core.o
 825	SKIPPED	0002:000deef0 ??_GPadAliasMgr@@QAEPAXI@Z 008CE3F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-826	PORTED	0002:000def20 ??0idVec3@@QAE@XZ 008CE420 f i core.o
-827	PORTED	0002:000def30 ??0idVec3@@QAE@MMM@Z 008CE430 f i core.o
-828	PORTED	0002:000def60 ??AidVec3@@QAEAAMH@Z 008CE460 f i core.o
-829	PORTED	0002:000def70 ??4idVec3@@QAEAAV0@ABV0@@Z 008CE470 f i core.o
-830	PORTED	0002:000defa0 ?set@idVec3@@QAEXMMM@Z 008CE4A0 f i core.o
-831	PORTED	0002:000defd0 ??DidVec3@@QBEMABV0@@Z 008CE4D0 f i core.o
-832	PORTED	0002:000df000 ??DidVec3@@QBE?AV0@M@Z 008CE500 f i core.o
-833	PORTED	0002:000df050 ??HidVec3@@QBE?AV0@ABV0@@Z 008CE550 f i core.o
-834	PORTED	0002:000df0a0 ??0angles_t@@QAE@ABVidVec3@@@Z 008CE5A0 f i core.o
-835	PORTED	0002:000df0d0 ??0mat3_t@@QAE@XZ 008CE5D0 f i core.o
-836	PORTED	0002:000df0e0 ??0mat3_t@@QAE@ABVidVec3@@00@Z 008CE5E0 f i core.o
-837	PORTED	0002:000df140 ??Amat3_t@@QAEAAVidVec3@@H@Z 008CE640 f i core.o
-838	PORTED	0002:000df1c0 ??Aquat_t@@QAEAAMH@Z 008CE6C0 f i core.o
-839	PORTED	0002:000df240 ??0strdata@@QAE@XZ 008CE740 f i core.o
-840	PORTED	0002:000df260 ??1strdata@@QAE@XZ 008CE760 f i core.o
+826	PORTED	0002:000def20 ??0idVec3@@QAE@XZ 008CE420 f i core.o PORTED: IDA-matched default constructor
+827	PORTED	0002:000def30 ??0idVec3@@QAE@MMM@Z 008CE430 f i core.o PORTED: IDA-matched component constructor
+828	PORTED	0002:000def60 ??AidVec3@@QAEAAMH@Z 008CE460 f i core.o PORTED: IDA-matched indexed component access
+829	PORTED	0002:000def70 ??4idVec3@@QAEAAV0@ABV0@@Z 008CE470 f i core.o PORTED: IDA-matched component assignment
+830	PORTED	0002:000defa0 ?set@idVec3@@QAEXMMM@Z 008CE4A0 f i core.o PORTED: IDA-matched component setter
+831	PORTED	0002:000defd0 ??DidVec3@@QBEMABV0@@Z 008CE4D0 f i core.o PORTED: IDA-matched dot product
+832	PORTED	0002:000df000 ??DidVec3@@QBE?AV0@M@Z 008CE500 f i core.o PORTED: IDA-matched scalar multiply
+833	PORTED	0002:000df050 ??HidVec3@@QBE?AV0@ABV0@@Z 008CE550 f i core.o PORTED: IDA-matched vector addition
+834	PORTED	0002:000df0a0 ??0angles_t@@QAE@ABVidVec3@@@Z 008CE5A0 f i core.o PORTED: IDA-matched idVec3 field copy
+835	PORTED	0002:000df0d0 ??0mat3_t@@QAE@XZ 008CE5D0 f i core.o PORTED: IDA-matched default constructor
+836	PORTED	0002:000df0e0 ??0mat3_t@@QAE@ABVidVec3@@00@Z 008CE5E0 f i core.o PORTED: IDA-matched three-row constructor
+837	PORTED	0002:000df140 ??Amat3_t@@QAEAAVidVec3@@H@Z 008CE640 f i core.o PORTED: IDA-matched indexed row access and assert
+838	PORTED	0002:000df1c0 ??Aquat_t@@QAEAAMH@Z 008CE6C0 f i core.o PORTED: IDA-matched indexed component access and assert
+839	PORTED	0002:000df240 ??0strdata@@QAE@XZ 008CE740 f i core.o PORTED: IDA-matched storage initialization
+840	PORTED	0002:000df260 ??1strdata@@QAE@XZ 008CE760 f i core.o PORTED: IDA-matched storage destructor
 841	SKIPPED	0002:000df280 ??_Gstrdata@@QAEPAXI@Z 008CE780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-842	PORTED	0002:000df2c0 ?length@idStr@@QBEHXZ 008CE7C0 f i core.o
+842	PORTED	0002:000df2c0 ?length@idStr@@QBEHXZ 008CE7C0 f i core.o PORTED: IDA-matched null-safe length accessor
 843	VERIFIED	0002:000df2d0 ??1PendingQuery@EffectEventSys@@QAE@XZ 008CE7D0 f i core.o
 844	VERIFIED	0002:000df2e0 ??1RumbleEffectInstance@@QAE@XZ 008CE7E0 f i core.o
 845	PORTED	0002:000df2f0 ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ 008CE7F0 f i core.o
