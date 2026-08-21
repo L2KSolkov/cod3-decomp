@@ -1111,10 +1111,116 @@ void HealthRegenTask::Update(Entity* e, float deltaT)
 // AnimationPlayer note handler + play method (game2.o)
 // ============================================================================
 struct AnimNoteHandler {
+    struct NotifyInfo {
+        Broc::string name;       // +0x00
+        unsigned int hashed_name; // +0x04
+        float time;              // +0x08
+
+        NotifyInfo();            // ea: 0x518B40
+        ~NotifyInfo();           // ea: 0x518B60
+    };
+
     DbLinkedHandle<EntityHandleDb, Entity> mEntHandle;  // +0x00
-    void* mNotify;       // +0x04
+    NotifyInfo* mNotify; // +0x04
     int mNotifyIndex;    // +0x08
+
+    void SetEntityHandle(DbLinkedHandle<EntityHandleDb, Entity> handle);
+    int GetNextNotifyIndex(float time);
 };
+
+static_assert(sizeof(AnimNoteHandler::NotifyInfo) == 0x0C,
+              "AnimNoteHandler::NotifyInfo size mismatch");
+
+// ea: 0x00518B40
+AnimNoteHandler::NotifyInfo::NotifyInfo()
+    : name((Broc::string::Block*)nullptr)
+{
+}
+
+// ea: 0x00518B60
+AnimNoteHandler::NotifyInfo::~NotifyInfo()
+{
+}
+
+// ea: 0x005188E0
+void AnimNoteHandler::SetEntityHandle(
+    DbLinkedHandle<EntityHandleDb, Entity> handle)
+{
+    mEntHandle = handle;
+}
+
+// ea: 0x005188F0
+int AnimNoteHandler::GetNextNotifyIndex(float time)
+{
+    if (time > 1.0f)
+        return -1;
+
+    NotifyInfo* bestNotifyInfo = nullptr;
+    if (time < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AnimationPlayer.cpp";
+        AeAssert::gCurrentLine = 185;
+        AeAssert::gCurrentExpr = "time >= 0.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid time"))
+            __debugbreak();
+    }
+
+    NotifyInfo* notify = mNotify;
+    float bestTime = 2.0f;
+    if (notify == nullptr)
+        return -1;
+
+    if (notify->hashed_name != 0)
+    {
+        do
+        {
+            float testTime = notify->time;
+            if (testTime < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\AnimationPlayer.cpp";
+                AeAssert::gCurrentLine = 194;
+                AeAssert::gCurrentExpr = "testTime >= 0";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid"))
+                    __debugbreak();
+            }
+            if (time <= testTime && bestTime > testTime)
+            {
+                bestTime = testTime;
+                bestNotifyInfo = notify;
+            }
+            ++notify;
+        } while (notify->hashed_name != 0);
+    }
+
+    if (bestNotifyInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AnimationPlayer.cpp";
+        AeAssert::gCurrentLine = 206;
+        AeAssert::gCurrentExpr = "bestNotifyInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bestNotifyInfo"))
+            __debugbreak();
+    }
+    if (bestNotifyInfo != mNotify
+        && bestNotifyInfo->time <= (bestNotifyInfo - 1)->time)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AnimationPlayer.cpp";
+        AeAssert::gCurrentLine = 207;
+        AeAssert::gCurrentExpr =
+            "bestNotifyInfo == mNotify || bestNotifyInfo->time > "
+            "(bestNotifyInfo-1)->time";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bestNotifyInfo"))
+            __debugbreak();
+    }
+    return static_cast<int>(bestNotifyInfo - mNotify);
+}
 
 class AnimationPlayer {
 public:
