@@ -223,6 +223,13 @@ TaskHandler* EntityDeathTask::GetHandler()
 {
     return &EntityDeathTask::sHandler;
 }
+// ea: 0x005171E0
+FourCC EntityDeathTask::GetTaskId()
+{
+    FourCC result;
+    result.mVal = 0x44455448;
+    return result;
+}
 FourCC TaskHandler::GetId() const
 {
     FourCC result;
