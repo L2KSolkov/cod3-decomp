@@ -5235,14 +5235,18 @@ void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
     }
     if (!wasRoundOver && (bool)mp_util_wad::pLevel->roundOver &&
         timeTillNextRound > 3.0) {
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         void* ftor = HandleJoinAfterRoundOver__functor(lvl, timeTillNextRound);
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                             __LINE__, "HandleJoinAfterRoundOver", ftor);
     }
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr label;
     label.mVal = 0x531AD8D9u;
     Broc::notify(lvl, label);
