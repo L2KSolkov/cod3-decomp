@@ -755,7 +755,7 @@ index	status	map_line
 754	PORTED	0002:0056a640 ?WaitForNoTouchFlag__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59B40 f i mp_util_wad.o
 755	VERIFIED	0002:0056a6e0 ?Goal@_mp_scf@@YAXVentity@Broc@@0@Z 00D59BE0 f mp_util_wad.o
 756	PORTED	0002:0056ac20 ?Get@pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QBE?BUbint@@XZ 00D5A120 f i mp_util_wad.o
-757	PORTED	0002:0056ac60 ?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z 00D5A160 f mp_util_wad.o
+757	FIXED	0002:0056ac60 ?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z 00D5A160 f mp_util_wad.o	FIXED: IDA 0x0096AC60 uses pLevel->_base.entity (or null) for notify/endon
 758	VERIFIED	0002:0056ad50 ?PickFlagToLaunch@_mp_scf@@YAXXZ 00D5A250 f mp_util_wad.o
 759	PORTED	0002:0056ae40 ?Code_HostDropItem@Broc@@YAXHHABUvector@1@00@Z 00D5A340 f i mp_util_wad.o
 760	PORTED	0002:0056ae80 ?GetRef@home_angles_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D5A380 f i mp_util_wad.o
