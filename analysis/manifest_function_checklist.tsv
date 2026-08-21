@@ -8268,10 +8268,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8267	0x005E97C0	0x009D8CC0	??0hudelem@Broc@@QAE@H@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8268	0x005E97E0	0x009D8CE0	?GetIndex@hudelem@Broc@@QBEHXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8269	0x005E97F0	0x009D8CF0	??0pathnode@Broc@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8270	0x005E9800	0x009D8D00	?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8271	0x005E9810	0x009D8D10	?IsDefined@pathnode@Broc@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8272	0x005E9830	0x009D8D30	?GetHandle@vehiclenode@Broc@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8273	0x005E9840	0x009D8D40	?IsDefined@vehiclenode@Broc@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8270	0x005E9800	0x009D8D00	?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8271	0x005E9810	0x009D8D10	?IsDefined@pathnode@Broc@@QBE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8272	0x005E9830	0x009D8D30	?GetHandle@vehiclenode@Broc@@QBEHXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8273	0x005E9840	0x009D8D40	?IsDefined@vehiclenode@Broc@@QBE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8274	0x005E9850	0x009D8D50	??0entity@Broc@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8275	0x005E9860	0x009D8D60	?get_dlist_node@AeThread@@QAEPAXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8276	0x005E9870	0x009D8D70	??2AeThread@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
