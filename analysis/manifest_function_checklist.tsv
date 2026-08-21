@@ -6578,12 +6578,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6577	0x005AEF00	0x0099E400	?SetLastCardId@ProfileManager@@AAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6578	0x005AEF10	0x0099E410	?HasCardChanged@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6579	0x005AEF30	0x0099E430	?SetOverwriteOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
-6580	0x005AEF40	0x0099E440	?IsOverwriteOk@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6581	0x005AEF50	0x0099E450	?SetCreateOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6580	0x005AEF40	0x0099E440	?IsOverwriteOk@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6581	0x005AEF50	0x0099E450	?SetCreateOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6582	0x005AEF60	0x0099E460	?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6583	0x005AEFB0	0x0099E4B0	?IsPlayerSpotted@@YA_NPAVEntity@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6584	0x005AF000	0x0099E500	?ValidPlayerState@@YA_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6585	0x005AF040	0x0099E540	??0sTime@knet@kuju@@QAE@J@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6585	0x005AF040	0x0099E540	??0sTime@knet@kuju@@QAE@J@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6586	0x005AF060	0x0099E560	??GsTime@knet@kuju@@QBE?AV012@ABV012@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6587	0x005AF080	0x0099E580	?getSeconds@sTime@knet@kuju@@QBEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6588	0x005AF090	0x0099E590	?SetReturnMenu@MPUIInterface@@SAXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6604,8 +6604,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6603	0x005AF370	0x0099E870	??_EIGOSpecialWeaponWidget@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6604	0x005AF370	0x0099E870	??_GIGOSpecialWeaponWidget@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6605	0x005AF3A0	0x0099E8A0	??1IGOSpecialWeaponWidget@@UAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6606	0x005AF430	0x0099E930	??0IGOFriendly@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6607	0x005AF440	0x0099E940	??0IGOEnemy@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6606	0x005AF430	0x0099E930	??0IGOFriendly@@QAE@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6607	0x005AF440	0x0099E940	??0IGOEnemy@@QAE@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6608	0x005AF450	0x0099E950	?remove_surrounding_whitespace@string@Broc@@QAEAAV12@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6609	0x005AF480	0x0099E980	??9Broc@@YA_NABVstring@0@PBD@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6610	0x005AF4A0	0x0099E9A0	??_GIGOHintWidget@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6621,14 +6621,14 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6620	0x005AF630	0x0099EB30	??_GnvlMovie@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6621	0x005AF630	0x0099EB30	??_EnvlMovie@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6622	0x005AF660	0x0099EB60	??_EMultiLineString@@QAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6623	0x005AF6D0	0x0099EBD0	?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6624	0x005AF6E0	0x0099EBE0	?GetIndex@FEMenuListBoxItem@@QBE?BIXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6625	0x005AF6F0	0x0099EBF0	?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6626	0x005AF700	0x0099EC00	?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6627	0x005AF710	0x0099EC10	?GetData@FEMenuListBoxItem@@QBE?BHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6628	0x005AF720	0x0099EC20	?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6629	0x005AF740	0x0099EC40	?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6630	0x005AF760	0x0099EC60	?EnableNavigationSound@FESlider@@QAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6623	0x005AF6D0	0x0099EBD0	?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6624	0x005AF6E0	0x0099EBE0	?GetIndex@FEMenuListBoxItem@@QBE?BIXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6625	0x005AF6F0	0x0099EBF0	?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6626	0x005AF700	0x0099EC00	?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6627	0x005AF710	0x0099EC10	?GetData@FEMenuListBoxItem@@QBE?BHXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6628	0x005AF720	0x0099EC20	?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6629	0x005AF740	0x0099EC40	?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6630	0x005AF760	0x0099EC60	?EnableNavigationSound@FESlider@@QAEX_N@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6631	0x005AF770	0x0099EC70	?EnableNavigationSound@FEMenu@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6632	0x005AF780	0x0099EC80	?InputLock@FEMenu@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6633	0x005AF790	0x0099EC90	?Load@FEMenu@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6653,9 +6653,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6652	0x005AF8E0	0x0099EDE0	?GetDefaultColorScheme@FEMenu@@UAEDXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6653	0x005AF8F0	0x0099EDF0	?GetSystem@FEMenu@@UAEPAVFEMenuSystem@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6654	0x005AF900	0x0099EE00	?GetFlags@FEMenu@@UAEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6655	0x005AF910	0x0099EE10	?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6655	0x005AF910	0x0099EE10	?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6656	0x005AF920	0x0099EE20	?GetSaveSlots@MPProfileMainMenu@@QAEPAPAUSaveGameData@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6657	0x005AF930	0x0099EE30	?SetSlotNum@VKMenu@@QAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6657	0x005AF930	0x0099EE30	?SetSlotNum@VKMenu@@QAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6658	0x005AF950	0x0099EE50	?GetSaveSlots@ProfileMainMenu@@QAEPAPAUSaveGameData@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6659	0x005AF960	0x0099EE60	?NeedWrite@ProfileEditMenu@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6660	0x005AF970	0x0099EE70	?Me@HotJoinMenu@@SAPAV1@H@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6668,11 +6668,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6667	0x005AFA30	0x0099EF30	?NewMenuActive@FEMenuSystem@@MAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6668	0x005AFA40	0x0099EF40	??_Estring@Broc@@QAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6669	0x005AFAB0	0x0099EFB0	??1FEMenuListBoxItem@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6670	0x005AFB20	0x0099F020	?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6670	0x005AFB20	0x0099F020	?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6671	0x005AFB30	0x0099F030	??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6672	0x005AFB40	0x0099F040	??0Observer@MemoryUnitManager@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6673	0x005AFB50	0x0099F050	?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6674	0x005AFB60	0x0099F060	??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6674	0x005AFB60	0x0099F060	??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6675	0x005AFB80	0x0099F080	?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6676	0x005AFB90	0x0099F090	??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6677	0x005AFBA0	0x0099F0A0	?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

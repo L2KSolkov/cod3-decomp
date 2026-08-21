@@ -6578,12 +6578,12 @@ index	status	map_line
 6577	VERIFIED	0002:001aef00 ?SetLastCardId@ProfileManager@@AAEXXZ 0099E400 f i shell.o	VERIFIED: matches IDA card-id snapshot
 6578	VERIFIED	0002:001aef10 ?HasCardChanged@ProfileManager@@ABE_NXZ 0099E410 f i shell.o	VERIFIED: matches IDA card-id comparison
 6579	VERIFIED	0002:001aef30 ?SetOverwriteOk@ProfileManager@@AAEXXZ 0099E430 f i shell.o	VERIFIED: matches IDA overwrite-card snapshot
-6580	PORTED	0002:001aef40 ?IsOverwriteOk@ProfileManager@@ABE_NXZ 0099E440 f i shell.o
-6581	PORTED	0002:001aef50 ?SetCreateOk@ProfileManager@@AAEXXZ 0099E450 f i shell.o
+6580	VERIFIED	0002:001aef40 ?IsOverwriteOk@ProfileManager@@ABE_NXZ 0099E440 f i shell.o	VERIFIED: matches IDA card-id comparison
+6581	VERIFIED	0002:001aef50 ?SetCreateOk@ProfileManager@@AAEXXZ 0099E450 f i shell.o	VERIFIED: matches IDA card-id snapshot
 6582	VERIFIED	0002:001aef60 ?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ 0099E460 f i shell.o
 6583	VERIFIED	0002:001aefb0 ?IsPlayerSpotted@@YA_NPAVEntity@@@Z 0099E4B0 f i shell.o
 6584	VERIFIED	0002:001af000 ?ValidPlayerState@@YA_NH@Z 0099E500 f i shell.o
-6585	PORTED	0002:001af040 ??0sTime@knet@kuju@@QAE@J@Z 0099E540 f i shell.o
+6585	VERIFIED	0002:001af040 ??0sTime@knet@kuju@@QAE@J@Z 0099E540 f i shell.o	VERIFIED: matches IDA mTime constructor
 6586	VERIFIED	0002:001af060 ??GsTime@knet@kuju@@QBE?AV012@ABV012@@Z 0099E560 f i shell.o
 6587	VERIFIED	0002:001af080 ?getSeconds@sTime@knet@kuju@@QBEMXZ 0099E580 f i shell.o
 6588	VERIFIED	0002:001af090 ?SetReturnMenu@MPUIInterface@@SAXH@Z 0099E590 f i shell.o
@@ -6604,8 +6604,8 @@ index	status	map_line
 6603	SKIPPED	0002:001af370 ??_EIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6604	SKIPPED	0002:001af370 ??_GIGOSpecialWeaponWidget@@UAEPAXI@Z 0099E870 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6605	VERIFIED	0002:001af3a0 ??1IGOSpecialWeaponWidget@@UAE@XZ 0099E8A0 f i shell.o
-6606	PORTED	0002:001af430 ??0IGOFriendly@@QAE@XZ 0099E930 f i shell.o
-6607	PORTED	0002:001af440 ??0IGOEnemy@@QAE@XZ 0099E940 f i shell.o
+6606	VERIFIED	0002:001af430 ??0IGOFriendly@@QAE@XZ 0099E930 f i shell.o	VERIFIED: matches IDA draw=false constructor
+6607	VERIFIED	0002:001af440 ??0IGOEnemy@@QAE@XZ 0099E940 f i shell.o	VERIFIED: matches IDA draw=false constructor
 6608	VERIFIED	0002:001af450 ?remove_surrounding_whitespace@string@Broc@@QAEAAV12@XZ 0099E950 f i shell.o
 6609	VERIFIED	0002:001af480 ??9Broc@@YA_NABVstring@0@PBD@Z 0099E980 f i shell.o
 6610	SKIPPED	0002:001af4a0 ??_GIGOHintWidget@@UAEPAXI@Z 0099E9A0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -6621,14 +6621,14 @@ index	status	map_line
 6620	SKIPPED	0002:001af630 ??_GnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6621	SKIPPED	0002:001af630 ??_EnvlMovie@@UAEPAXI@Z 0099EB30 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6622	SKIPPED	0002:001af660 ??_EMultiLineString@@QAEPAXI@Z 0099EB60 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-6623	PORTED	0002:001af6d0 ?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ 0099EBD0 f i shell.o
-6624	PORTED	0002:001af6e0 ?GetIndex@FEMenuListBoxItem@@QBE?BIXZ 0099EBE0 f i shell.o
-6625	PORTED	0002:001af6f0 ?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ 0099EBF0 f i shell.o
-6626	PORTED	0002:001af700 ?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ 0099EC00 f i shell.o
-6627	PORTED	0002:001af710 ?GetData@FEMenuListBoxItem@@QBE?BHXZ 0099EC10 f i shell.o
-6628	PORTED	0002:001af720 ?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC20 f i shell.o
-6629	PORTED	0002:001af740 ?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC40 f i shell.o
-6630	PORTED	0002:001af760 ?EnableNavigationSound@FESlider@@QAEX_N@Z 0099EC60 f i shell.o
+6623	VERIFIED	0002:001af6d0 ?IsSplitScreen@FESplitScreenMenu@@QBE_NXZ 0099EBD0 f i shell.o	VERIFIED: matches IDA mViewport test
+6624	PORTED	0002:001af6e0 ?GetIndex@FEMenuListBoxItem@@QBE?BIXZ 0099EBE0 f i shell.o	PORTED: added IDA-derived mIndex accessor
+6625	PORTED	0002:001af6f0 ?GetSubItemCount@FEMenuListBoxItem@@QBE?BIXZ 0099EBF0 f i shell.o	PORTED: added IDA-derived mSubItemCount accessor
+6626	PORTED	0002:001af700 ?GetText@FEMenuListBoxItem@@QBEABVstring@Broc@@XZ 0099EC00 f i shell.o	PORTED: added IDA-derived mText accessor
+6627	PORTED	0002:001af710 ?GetData@FEMenuListBoxItem@@QBE?BHXZ 0099EC10 f i shell.o	PORTED: added IDA-derived mData accessor
+6628	PORTED	0002:001af720 ?SetVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC20 f i shell.o	PORTED: added IDA-derived mRowHeight setter
+6629	PORTED	0002:001af740 ?SetHeadingVerticalSpacing@FEMenuListBox@@QAEXM@Z 0099EC40 f i shell.o	PORTED: added IDA-derived mHeadingSpacing setter
+6630	PORTED	0002:001af760 ?EnableNavigationSound@FESlider@@QAEX_N@Z 0099EC60 f i shell.o	PORTED: added IDA-derived mEnableSound setter
 6631	VERIFIED	0002:001af770 ?EnableNavigationSound@FEMenu@@UAEX_N@Z 0099EC70 f i shell.o
 6632	VERIFIED	0002:001af780 ?InputLock@FEMenu@@UAEX_N@Z 0099EC80 f i shell.o
 6633	VERIFIED	0002:001af790 ?Load@FEMenu@@UAEX_N@Z 0099EC90 f i shell.o
@@ -6653,9 +6653,9 @@ index	status	map_line
 6652	VERIFIED	0002:001af8e0 ?GetDefaultColorScheme@FEMenu@@UAEDXZ 0099EDE0 f i shell.o
 6653	VERIFIED	0002:001af8f0 ?GetSystem@FEMenu@@UAEPAVFEMenuSystem@@XZ 0099EDF0 f i shell.o
 6654	VERIFIED	0002:001af900 ?GetFlags@FEMenu@@UAEHXZ 0099EE00 f i shell.o
-6655	PORTED	0002:001af910 ?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ 0099EE10 f i shell.o
+6655	PORTED	0002:001af910 ?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ 0099EE10 f i shell.o	PORTED: added IDA-derived base forwarding thunk
 6656	VERIFIED	0002:001af920 ?GetSaveSlots@MPProfileMainMenu@@QAEPAPAUSaveGameData@@XZ 0099EE20 f i shell.o
-6657	PORTED	0002:001af930 ?SetSlotNum@VKMenu@@QAEXH@Z 0099EE30 f i shell.o
+6657	VERIFIED	0002:001af930 ?SetSlotNum@VKMenu@@QAEXH@Z 0099EE30 f i shell.o	VERIFIED: matches IDA mSlotNum assignment
 6658	VERIFIED	0002:001af950 ?GetSaveSlots@ProfileMainMenu@@QAEPAPAUSaveGameData@@XZ 0099EE50 f i shell.o
 6659	VERIFIED	0002:001af960 ?NeedWrite@ProfileEditMenu@@QAEXXZ 0099EE60 f i shell.o
 6660	VERIFIED	0002:001af970 ?Me@HotJoinMenu@@SAPAV1@H@Z 0099EE70 f i shell.o
@@ -6668,11 +6668,11 @@ index	status	map_line
 6667	VERIFIED	0002:001afa30 ?NewMenuActive@FEMenuSystem@@MAEXXZ 0099EF30 f i shell.o
 6668	SKIPPED	0002:001afa40 ??_Estring@Broc@@QAEPAXI@Z 0099EF40 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6669	VERIFIED	0002:001afab0 ??1FEMenuListBoxItem@@QAE@XZ 0099EFB0 f i shell.o
-6670	PORTED	0002:001afb20 ?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z 0099F020 f i shell.o
+6670	VERIFIED	0002:001afb20 ?SetDialogDisplayed@MemCardCheckMenu@@AAEXH@Z 0099F020 f i shell.o	VERIFIED: matches IDA mDialogDisplayed assignment
 6671	VERIFIED	0002:001afb30 ??0InsertRemoveObserver@MemoryUnitManager@@QAE@XZ 0099F030 f i shell.o
 6672	VERIFIED	0002:001afb40 ??0Observer@MemoryUnitManager@@QAE@XZ 0099F040 f i shell.o
 6673	VERIFIED	0002:001afb50 ?EndMarkerFoundDuringParse@CStringEdPackage@@QAEHXZ 0099F050 f i shell.o
-6674	PORTED	0002:001afb60 ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099F060 f i shell.o
+6674	VERIFIED	0002:001afb60 ??4?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAEAAV0@VHandle@@@Z 0099F060 f i shell.o	VERIFIED: matches IDA mVal copy assignment
 6675	SKIPPED	0002:001afb80 ?empty@?$ae_fixed_string@$0CA@E@@QBE_NXZ 0099F080 f i shell.o  SKIPPED: inline template/container helper; supplied by its template definition
 6676	VERIFIED	0002:001afb90 ??0?$ae_vector@PAVPanelQuadSection@@@@QAE@XZ 0099F090 f i shell.o
 6677	PORTED	0002:001afba0 ?size@?$ae_vector@PAVPanelQuadSection@@@@QBEHXZ 0099F0A0 f i shell.o
