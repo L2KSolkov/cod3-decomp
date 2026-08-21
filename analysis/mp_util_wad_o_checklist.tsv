@@ -717,7 +717,7 @@ index	status	map_line
 716	PORTED	0002:00565960 ??HBroc@@YA?AVstring@0@ABV10@Uvector@0@@Z 00D54E60 f i mp_util_wad.o
 717	PORTED	0002:00565a00 ?StartGame__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D54F00 f i mp_util_wad.o
 718	FIXED	0002:00565aa0 ?StartGame@_mp_scf@@YAXVentity@Broc@@@Z 00D54FA0 f mp_util_wad.o	FIXED: IDA 0x00965AA0 copies pLevel->_base.entity (or null) into RunFrame__functor
-719	VERIFIED	0002:00565b60 ?SetupRound@_mp_scf@@YAXXZ 00D55060 f mp_util_wad.o
+719	FIXED	0002:00565b60 ?SetupRound@_mp_scf@@YAXXZ 00D55060 f mp_util_wad.o	FIXED: IDA 0x00965B60 copies pLevel->_base.entity (or null) into WaitThenPickFlagToLaunch__functor
 720	PORTED	0002:00565eb0 ?WaitThenPickFlagToLaunch__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubfloat@@PBD@Z 00D553B0 f i mp_util_wad.o
 721	VERIFIED	0002:00565f50 ?IsFlagAlive@_mp_scf@@YAHVentity@Broc@@@Z 00D55450 f mp_util_wad.o
 722	VERIFIED	0002:00565f90 ?ObjectiveUpdater@_mp_scf@@YAXVentity@Broc@@@Z 00D55490 f mp_util_wad.o
