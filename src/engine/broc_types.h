@@ -122,6 +122,10 @@ public:
     dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
     ~dyn_array();  // ea: 0x933129
 
+    // ea: 0x005EDF00 / 0x005EDF10 (dyn_array<Broc::entity>)
+    T* begin() { return mElements; }
+    T* end() { return &mElements[mSize]; }
+
     void reserve(unsigned int newCapacity) {
         if (newCapacity > mCapacity) {
             T* ne = new T[newCapacity];
@@ -160,6 +164,16 @@ public:
 
 template <typename T> int size(const dyn_array<T>& ar) { return (int)ar.mSize; }
 template <typename T> void push(dyn_array<T>& ar, const T& elt);
+
+// ea: 0x005EDF90 (Broc::min_val<unsigned int>)
+template <typename T>
+T min_val(const T* lhs, const T* rhs)
+{
+    T result = *lhs;
+    if (*lhs >= *rhs)
+        return *rhs;
+    return result;
+}
 
 // ============================================================================
 // Broc::vector — 3D vector (12 bytes)
