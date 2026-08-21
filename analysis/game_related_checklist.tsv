@@ -5317,7 +5317,7 @@ index	status	map_line
 5316	VERIFIED	0002:00169af0 ?SetUV@PanelQuadSection@@QAEXQAM0@Z 00958FF0 f shell.o
 5317	VERIFIED	0002:00169b30 ?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 00959030 f shell.o	VERIFIED: matches IDA four-vertex UV assignments
 5318	VERIFIED	0002:00169b70 ?SetPos@PanelQuadSection@@QAEXQAM0@Z 00959070 f shell.o
-5319	PORTED	0002:00169bb0 ?SetPos@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 009590B0 f shell.o
+5319	VERIFIED	0002:00169bb0 ?SetPos@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 009590B0 f shell.o	VERIFIED: matches IDA four-vertex position assignments
 5320	VERIFIED	0002:00169bf0 ?ResetToInitialXY@PanelQuadSection@@QAEXXZ 009590F0 f shell.o
 5321	VERIFIED	0002:00169c60 ?GetMax@PanelQuadSection@@QAE?AUvector@Broc@@XZ 00959160 f shell.o
 5322	VERIFIED	0002:00169d00 ?GetMin@PanelQuadSection@@QAE?AUvector@Broc@@XZ 00959200 f shell.o
