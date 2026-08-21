@@ -2352,13 +2352,17 @@ public:
     IGOWidget(int client);                          // 0x5AEA40
 
     virtual ~IGOWidget() {}                        // inline COMDAT
-    virtual void Init(PanelFile* panel) = 0;
-    virtual void Update(float time_inc) = 0;
-    virtual void Draw() = 0;
+    virtual void Init(PanelFile* panel) { (void)panel; }
+    virtual void Update(float time_inc) { (void)time_inc; }
+    virtual void Draw() {}
     virtual bool IsShown() { return is_shown; }    // 0x5AEAB0
     virtual void SetShown(bool s) { is_shown = s; }  // 0x5AEAC0
     virtual void UpdateWidescreen(bool widescreen,
-                                  float about_x) = 0;
+                                  float about_x)
+    {
+        (void)widescreen;
+        (void)about_x;
+    }
     virtual void UpdateSplitScreen(int viewport,
                                    int old_viewport) {}  // 0x5AEAE0 (empty)
     virtual void ForceToAppear() { force_appear = true; }  // 0x5AEAF0
