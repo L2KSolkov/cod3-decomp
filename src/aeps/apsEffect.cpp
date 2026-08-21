@@ -120,6 +120,9 @@ void apsBlockArray<T>::destroy_all() {
     }
 }
 
+template int apsBlockArray<apsGroup*>::size() const;
+template apsGroup*& apsBlockArray<apsGroup*>::operator[](int);
+
 // ============================================================================
 // `anonymous namespace'::GetLightInfo
 // ============================================================================
