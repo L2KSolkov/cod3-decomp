@@ -20852,10 +20852,10 @@ index	status	map_line
 20851	VERIFIED	0002:00464e50 ?Copy@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54350 f i nal_init.o  VERIFIED: FastCopy dispatch matches IDA
 20852	VERIFIED	0002:00464e70 ??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54370 f i nal_init.o  VERIFIED: aligned qmemcpy with 96-byte count stride matches IDA
 20853	VERIFIED	0002:00464ed0 ?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C543D0 f i nal_init.o  VERIFIED: 2-byte cache alignment and present-track 26-byte advances match IDA
-20854	PORTED	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o
-20855	PORTED	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
-20856	PORTED	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
-20857	PORTED	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o
+20854	SKIPPED	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o  SKIPPED: STL/container destructor; supplied by the library/compiler
+20855	SKIPPED	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o  SKIPPED: STL/container destructor; supplied by the library/compiler
+20856	SKIPPED	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o  SKIPPED: STL/container destructor; supplied by the library/compiler
+20857	SKIPPED	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o  SKIPPED: STL/container destructor; supplied by the library/compiler
 20858	PORTED	0002:00464fa0 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544A0 f i nal_init.o
 20859	PORTED	0002:00464fd0 ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544D0 f i nal_init.o
 20860	PORTED	0002:00465060 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54560 f i nal_init.o
