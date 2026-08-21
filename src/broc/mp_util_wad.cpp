@@ -2117,6 +2117,17 @@ const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     return rhs;
 }
 
+// Broc::entity::__unnamed::team_struct::Get - ea: 0x938DE0
+const Broc::string* Broc::entity::__unnamed::team_struct::Get(
+    Broc::string* result) const {
+    Broc::string temp;
+    Broc::string* rhs = Broc::gBrocAPI.m_entity_get_sentient_team(
+        &temp, mHandle);
+    new (result) Broc::string(*rhs);
+    temp.~string();
+    return result;
+}
+
 // IsDefined overloads - ea: 0x92F130 / 0x92F150 / 0x92F6F0
 bool IsDefined(const Broc::entity& e) {
     return e.___u0 != 0;
@@ -2216,6 +2227,27 @@ Broc::entity* Spawn(Broc::entity* result, const Broc::string* inClassname,
 int EffectEventPlay(Broc::entity* e, const Broc::string* script) {
     unsigned int handle = e->GetHandle();
     return gBrocAPI.mEffectEventPlay(handle, script, 0, false, false);
+}
+
+// Broc::DialogPlay - ea: 0x938BA0
+int DialogPlay(const Broc::entity& e, const Broc::string& script) {
+    return gBrocAPI.mDialogPlay(e.GetHandle(), &script, 0, false);
+}
+
+int DialogPlay(Broc::entity e, const Broc::string* script) {
+    return gBrocAPI.mDialogPlay(e.GetHandle(), script, 0, false);
+}
+
+// Broc::EffectEventPlay (notify) - ea: 0x939550
+int EffectEventPlay(Broc::entity* e, const Broc::string* script,
+                    HashStr notifyHash, bool stoppable) {
+    return gBrocAPI.mEffectEventPlay(e->GetHandle(), script,
+                                     notifyHash.mVal, stoppable, false);
+}
+
+// Broc::EffectEventStopEmitting - ea: 0x939B70
+void EffectEventStopEmitting(unsigned int effectId) {
+    gBrocAPI.mEffectEventStop(effectId);
 }
 
 // Broc::EffectEventPlay (non-entity) - ea: 0x937A90

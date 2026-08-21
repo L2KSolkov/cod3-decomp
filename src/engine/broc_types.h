@@ -224,6 +224,10 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::vector* operator=(const Broc::vector* rhs);
         };
+        struct team_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::string* Get(Broc::string* result) const;
+        };
     };
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::origin_struct) == 4,
                             "origin_struct size mismatch");
@@ -231,6 +235,8 @@ public:
                             "target_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
+                            "team_struct size mismatch");
 
     entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
     entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)
@@ -574,7 +580,7 @@ struct bint {
     // ea: 0x936F20
     bool operator==(int rhs) const { return rhs == mVal; }
     int operator++(int) { AssertDefined(); return ++mVal; }
-    int operator++() { AssertDefined(); return ++mVal; }
+    int operator++() { AssertDefined(); return mVal++; }
     int operator--(int) { AssertDefined(); return --mVal; }
     bint& operator+=(int v) { AssertDefined(); mVal += v; return *this; }
     bint& operator-=(int v) { AssertDefined(); mVal -= v; return *this; }
@@ -813,7 +819,21 @@ struct BrocAPI {
     int (*mEffectEventPlayNonEnt)(const Broc::string*, const Broc::vector*,
                                   const Broc::vector*, bool, unsigned int,
                                   int);                   // +0x0BC
-    char _padC0[0x140 - 0xC0];                            // +0x0C0
+    int (*mEffectEventPlayDir)(unsigned int, const Broc::string*,
+                               const Broc::vector*, int, bool); // +0x0C0
+    int (*mEffectEventQueue)(unsigned int, const Broc::string*, int,
+                             bool, bool);                 // +0x0C4
+    int (*mEffectEventQueueDialog)(unsigned int, const Broc::string*, int,
+                                   bool);                  // +0x0C8
+    void (*mEffectEventPlayQueued)(unsigned int);          // +0x0CC
+    bool (*mEffectEventIsStillPlaying)(unsigned int);      // +0x0D0
+    void (*mEffectEventStop)(unsigned int);                // +0x0D4
+    void (*mEffectEventFastForward)(unsigned int, float);  // +0x0D8
+    int (*mEffectEventWeaponPlay)(unsigned int, unsigned int); // +0x0DC
+    char _padE0[0xF8 - 0xE0];                              // +0x0E0
+    int (*mDialogPlay)(unsigned int, const Broc::string*, int,
+                       bool);                              // +0x0F8
+    char _padFC[0x140 - 0xFC];                            // +0x0FC
     int (*mMathsRandomInt)(int);                          // +0x140
     char _pad144[0x148 - 0x144];                          // +0x144
     int (*mMathsRandomIntRange)(int, int);                // +0x148
@@ -1141,8 +1161,9 @@ void Code_GetWeaponName(int weaponIndex, Broc::string* weapon);
 void OpenMenu(const Broc::string* str, int viewport);
 void CloseMenu(const Broc::string* str, int viewport);
 void CloseAllMenus(int viewport);
+int DialogPlay(const Broc::entity& e, const Broc::string& script);
 int DialogPlay(Broc::entity e, const Broc::string* script);
-int EffectEventStopEmitting(int effectId);
+void EffectEventStopEmitting(unsigned int effectId);
 void GetWeaponSlotWeapon(Broc::entity e, const Broc::string* slot, Broc::string* result);
 int GetWeaponSlotAmmo(Broc::entity e, const Broc::string* slot);
 int GetWeaponSlotClipAmmo(Broc::entity e, const Broc::string* slot);
