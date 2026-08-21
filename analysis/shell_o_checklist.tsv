@@ -2009,10 +2009,10 @@ index	status	map_line
 2008	VERIFIED	0002:001b76e0 ?GetLocation3D@FloatingPQ@@UAE?AUvector@Broc@@XZ 009A6BE0 f i shell.o
 2009	VERIFIED	0002:001b7710 ?CopyFrom@FloatingPQ@@UAEXPBV1@@Z 009A6C10 f i shell.o  VERIFIED: matches IDA base copy and location_3d copy
 2010	SKIPPED	0002:001b7750 ??_GPanelFile@@QAEPAXI@Z 009A6C50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2011	PORTED	0002:001b7780 ?SetVis@FEMultiMenu@@UAEXH@Z 009A6C80 f i shell.o  PORTED: added IDA-derived empty override
-2012	PORTED	0002:001b7790 ?Init@FEMultiMenu@@UAEXXZ 009A6C90 f i shell.o  PORTED: added IDA-derived empty override
-2013	PORTED	0002:001b77a0 ?OnLeft@FEMultiMenu@@UAEXH@Z 009A6CA0 f i shell.o  PORTED: added IDA-derived forwarding override
-2014	PORTED	0002:001b77b0 ?OnRight@FEMultiMenu@@UAEXH@Z 009A6CB0 f i shell.o  PORTED: added IDA-derived forwarding override
+2011	VERIFIED	0002:001b7780 ?SetVis@FEMultiMenu@@UAEXH@Z 009A6C80 f i shell.o  VERIFIED: exact IDA no-op override
+2012	VERIFIED	0002:001b7790 ?Init@FEMultiMenu@@UAEXXZ 009A6C90 f i shell.o  VERIFIED: exact IDA no-op override
+2013	VERIFIED	0002:001b77a0 ?OnLeft@FEMultiMenu@@UAEXH@Z 009A6CA0 f i shell.o  VERIFIED: exact IDA Left() forwarding override
+2014	VERIFIED	0002:001b77b0 ?OnRight@FEMultiMenu@@UAEXH@Z 009A6CB0 f i shell.o  VERIFIED: exact IDA Right() forwarding override
 2015	SKIPPED	0002:001b77c0 ??_EFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2016	SKIPPED	0002:001b77c0 ??_GFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2017	SKIPPED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
