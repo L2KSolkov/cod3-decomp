@@ -951,30 +951,30 @@ index	status	map_line
 950	SKIPPED	0002:001ea5b0 ??0?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AB0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 951	SKIPPED	0002:001ea5d0 ??1?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AD0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 952	SKIPPED	0002:001ea5e0 ?push_back@?$ae_array_dynamic@PAVAnimBroRef@@@@QAEXABQAVAnimBroRef@@@Z 009D9AE0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-953	PORTED	0002:001ea680 ?size@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEHXZ 009D9B80 f i scr.o
+953	VERIFIED	0002:001ea680 ?size@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEHXZ 009D9B80 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::size
 954	VERIFIED	0002:001ea690 ?push_back@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEXABVentity@Broc@@@Z 009D9B90 f i scr.o
-955	PORTED	0002:001ea730 ??Dconst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEABVentity@Broc@@XZ 009D9C30 f i scr.o
-956	PORTED	0002:001ea740 ??Econst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEAAV01@XZ 009D9C40 f i scr.o
-957	PORTED	0002:001ea750 ??9const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE_NV01@@Z 009D9C50 f i scr.o
-958	PORTED	0002:001ea770 ??0?$ae_pair@HPAX@@QAE@ABHABQAX@Z 009D9C70 f i scr.o
+955	VERIFIED	0002:001ea730 ??Dconst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBEABVentity@Broc@@XZ 009D9C30 f i scr.o	VERIFIED: matches IDA const_iterator dereference
+956	VERIFIED	0002:001ea740 ??Econst_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAEAAV01@XZ 009D9C40 f i scr.o	VERIFIED: matches IDA const_iterator increment
+957	VERIFIED	0002:001ea750 ??9const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE_NV01@@Z 009D9C50 f i scr.o	VERIFIED: matches IDA const_iterator comparison
+958	SKIPPED	0002:001ea770 ??0?$ae_pair@HPAX@@QAE@ABHABQAX@Z 009D9C70 f i scr.o	SKIPPED: compiler-generated ae_pair copy helper
 959	SKIPPED	0002:001ea790 ?size@?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEIXZ 009D9C90 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 960	SKIPPED	0002:001ea7a0 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEABV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 009D9CA0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-961	PORTED	0002:001ea820 ??A?$ae_sized_array@G$0BAA@@@QAEAAGH@Z 009D9D20 f i scr.o
-962	PORTED	0002:001ea8a0 ?size@?$ae_sized_array@F$07@@QBEHXZ 009D9DA0 f i scr.o
-963	PORTED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o
-964	PORTED	0002:001ea8c0 ?clear@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DC0 f i scr.o
-965	PORTED	0002:001ea8e0 ?pop@dlist_node@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DE0 f i scr.o
-966	PORTED	0002:001ea900 ?pop@dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 009D9E00 f i scr.o
-967	PORTED	0002:001ea920 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPBVAeThread@@PBUdlist_node@1@@Z 009D9E20 f i scr.o
-968	PORTED	0002:001ea930 ?clear@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E30 f i scr.o
-969	PORTED	0002:001ea950 ?pop@dlist_node@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E50 f i scr.o
-970	PORTED	0002:001ea970 ?capacity@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D9E70 f i scr.o
-971	PORTED	0002:001ea980 ?pop_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009D9E80 f i scr.o
+961	VERIFIED	0002:001ea820 ??A?$ae_sized_array@G$0BAA@@@QAEAAGH@Z 009D9D20 f i scr.o	VERIFIED: matches IDA disassembly bounds check and element address
+962	VERIFIED	0002:001ea8a0 ?size@?$ae_sized_array@F$07@@QBEHXZ 009D9DA0 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::size
+963	PORTED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o	PORTED: implemented from IDA disassembly with AeThreadState node adjustment; VERIFIED: Debug build passed
+964	PORTED	0002:001ea8c0 ?clear@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DC0 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+965	PORTED	0002:001ea8e0 ?pop@dlist_node@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DE0 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+966	PORTED	0002:001ea900 ?pop@dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 009D9E00 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+967	PORTED	0002:001ea920 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPBVAeThread@@PBUdlist_node@1@@Z 009D9E20 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+968	PORTED	0002:001ea930 ?clear@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E30 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+969	PORTED	0002:001ea950 ?pop@dlist_node@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E50 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+970	VERIFIED	0002:001ea970 ?capacity@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D9E70 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::capacity
+971	VERIFIED	0002:001ea980 ?pop_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009D9E80 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::pop_back
 972	VERIFIED	0002:001ea9a0 ??0?$ae_pair@PAXI@@QAE@XZ 009D9EA0 f i scr.o
 973	VERIFIED	0002:001ea9b0 ??0?$SizedHandle@$07$0BI@@@QAE@HH@Z 009D9EB0 f i scr.o
-974	PORTED	0002:001eaab0 ??0?$SizedHandle@$07$0BI@@@QAE@VHandle@@@Z 009D9FB0 f i scr.o
-975	PORTED	0002:001eaad0 ?GetIndex@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FD0 f i scr.o
-976	PORTED	0002:001eaae0 ?GetKey@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FE0 f i scr.o
+974	VERIFIED	0002:001eaab0 ??0?$SizedHandle@$07$0BI@@@QAE@VHandle@@@Z 009D9FB0 f i scr.o	VERIFIED: matches IDA disassembly Handle copy
+975	VERIFIED	0002:001eaad0 ?GetIndex@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FD0 f i scr.o	VERIFIED: matches IDA disassembly mask 0xFF
+976	VERIFIED	0002:001eaae0 ?GetKey@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FE0 f i scr.o	VERIFIED: matches IDA disassembly shift by 8
 977	VERIFIED	0002:001eaaf0 ??0DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ 009D9FF0 f i scr.o
 978	PORTED	0002:001eab10 ?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ 009DA010 f i scr.o
 979	PORTED	0002:001eab20 ?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z 009DA020 f i scr.o
