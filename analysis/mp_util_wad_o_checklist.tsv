@@ -186,19 +186,19 @@ index	status	map_line
 185	VERIFIED	0002:00536f50 ?SoundCrossFade@@YAXIIM@Z 00D26450 f i mp_util_wad.o	VERIFIED: IDA 0x00936F50 forwards both handles and time to mSoundCrossFade
 186	VERIFIED	0002:00536f80 ?audio_crossfade_wait__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D26480 f i mp_util_wad.o	VERIFIED: IDA 0x00936F80 allocates a 0x0C-byte AeThreadFunctor1 and null-checks before construction
 187	VERIFIED	0002:00537020 ?audio_crossfade_wait@_mp_audio@@YAXVentity@Broc@@@Z 00D26520 f mp_util_wad.o
-188	PORTED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o	PORTED: IDA constructs bint from lhs.mVal plus int rhs
+188	VERIFIED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o	VERIFIED: IDA 0x009370B0 converts lhs to int, adds rhs, and constructs the bint result
 189	VERIFIED	0002:005370e0 ?track_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D265E0 f mp_util_wad.o
 190	VERIFIED	0002:00537190 ?reverb_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26690 f mp_util_wad.o
 191	VERIFIED	0002:00537240 ?ambient_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26740 f mp_util_wad.o
 192	FIXED	0002:005372e0 ?ambient_system@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D267E0 f mp_util_wad.o	FIXED: IDA 0x009372E0 constructs fMin from pLevel->_base.entity before audio_spawner
-193	PORTED	0002:005376c0 ??M@YA?AUbbool@@Ubfloat@@M@Z 00D26BC0 f i mp_util_wad.o	PORTED: IDA returns bbool(rhs greater than lhs.mVal)
-194	PORTED	0002:00537710 ??O@YA?AUbbool@@Ubfloat@@M@Z 00D26C10 f i mp_util_wad.o	PORTED: IDA returns bbool(lhs.mVal greater than rhs)
+193	VERIFIED	0002:005376c0 ??M@YA?AUbbool@@Ubfloat@@M@Z 00D26BC0 f i mp_util_wad.o	VERIFIED: IDA 0x009376C0 returns bbool(rhs greater than lhs bfloat value)
+194	VERIFIED	0002:00537710 ??O@YA?AUbbool@@Ubfloat@@M@Z 00D26C10 f i mp_util_wad.o	VERIFIED: IDA 0x00937710 returns bbool(lhs bfloat value greater than rhs)
 195	VERIFIED	0002:00537760 ?audio_spawner@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D26C60 f mp_util_wad.o
-196	PORTED	0002:005379f0 ??H@YA?AUbint@@HU0@@Z 00D26EF0 f i mp_util_wad.o	PORTED: IDA constructs bint from int lhs plus rhs.mVal
-197	PORTED	0002:00537a20 ??DBroc@@YA?AUvector@0@ABU10@M@Z 00D26F20 f i mp_util_wad.o	PORTED: IDA scales all vector components by rhs
-198	PORTED	0002:00537a90 ?EffectEventPlay@Broc@@YAHABVstring@1@ABUvector@1@1@Z 00D26F90 f i mp_util_wad.o	PORTED: IDA non-entity effect forward uses mEffectEventPlayNonEnt
-199	PORTED	0002:00537ad0 ?AnglesToForward@@YA?AUvector@Broc@@ABU12@@Z 00D26FD0 f i mp_util_wad.o	PORTED: IDA forwards through mVecAnglesToForward and returns vector
-200	PORTED	0002:00537b20 ?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z 00D27020 f mp_util_wad.o
+196	VERIFIED	0002:005379f0 ??H@YA?AUbint@@HU0@@Z 00D26EF0 f i mp_util_wad.o	VERIFIED: IDA 0x009379F0 adds int lhs to rhs.mVal and constructs the bint result
+197	VERIFIED	0002:00537a20 ??DBroc@@YA?AUvector@0@ABU10@M@Z 00D26F20 f i mp_util_wad.o	VERIFIED: IDA 0x00937A20 multiplies all three vector components by rhs
+198	VERIFIED	0002:00537a90 ?EffectEventPlay@Broc@@YAHABVstring@1@ABUvector@1@1@Z 00D26F90 f i mp_util_wad.o	VERIFIED: IDA 0x00937A90 forwards script, position, facing, false, and zero notify/flags to mEffectEventPlayNonEnt
+199	VERIFIED	0002:00537ad0 ?AnglesToForward@@YA?AUvector@Broc@@ABU12@@Z 00D26FD0 f i mp_util_wad.o	VERIFIED: IDA 0x00937AD0 uses a temporary vector, calls mVecAnglesToForward, and copies the result
+200	VERIFIED	0002:00537b20 ?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z 00D27020 f mp_util_wad.o	VERIFIED: IDA 0x00937B20 computes projection t, clamps endpoints, writes out_PointOnLine, and returns t
 201	PORTED	0002:00537e70 ??H@YA?AUbfloat@@MU0@@Z 00D27370 f i mp_util_wad.o	PORTED: IDA adds float lhs to bfloat rhs
 202	VERIFIED	0002:00537eb0 ?StopLineSound@_mp_audio@@YAXVstring@Broc@@@Z 00D273B0 f mp_util_wad.o
 203	VERIFIED	0002:00538030 ?StopAllLineSounds@_mp_audio@@YAXXZ 00D27530 f mp_util_wad.o
