@@ -343,11 +343,11 @@ index	status	map_line
 342	VERIFIED	0002:00541f00 ??Fbint@@QAEHH@Z 00D31400 f i mp_util_wad.o	VERIFIED: Existing bint postfix decrement asserts defined and decrements mVal, matching IDA
 343	PORTED	0002:00541f40 ?Code_IncPlayerStat@Broc@@YAXVentity@1@IF@Z 00D31440 f i mp_util_wad.o	PORTED: IDA forwards player handle, unsigned stat index, and 16-bit value to mIncPlayerStat at +0x328
 344	VERIFIED	0002:00541f80 ?SetTutorialTextAllPlayers@Broc@@YAXH@Z 00D31480 f i mp_util_wad.o
-345	PORTED	0002:00541fb0 ?restart_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D314B0 f i mp_util_wad.o
+345	FIXED	0002:00541fb0 ?restart_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D314B0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bint>*; corrected the wrapper return ABI
 346	VERIFIED	0002:00542050 ?CallbackNextRound@_mp_common@@YAXXZ 00D31550 f mp_util_wad.o
 347	VERIFIED	0002:005420e0 ?CallbackRestartMap@_mp_common@@YAXXZ 00D315E0 f mp_util_wad.o
 348	VERIFIED	0002:005421a0 ?Code_NextRound@Broc@@YAX_N@Z 00D316A0 f i mp_util_wad.o
-349	PORTED	0002:005421d0 ?CallbackDebugRender@_mp_common@@YAXXZ 00D316D0 f mp_util_wad.o
+349	VERIFIED	0002:005421d0 ?CallbackDebugRender@_mp_common@@YAXXZ 00D316D0 f mp_util_wad.o	VERIFIED: Existing implementation returns pLevel->RenderSpawnPoints(), matching IDA
 350	VERIFIED	0002:00542200 ?CallbackFireArtillery@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D31700 f mp_util_wad.o
 351	PORTED	0002:005430c0 ??0bfloat@@QAE@N@Z 00D325C0 f i mp_util_wad.o
 352	PORTED	0002:005430f0 ?PlaySound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@Ubfloat@@@Z 00D325F0 f i mp_util_wad.o
