@@ -31,6 +31,9 @@ unsigned int GetBroAnim(unsigned int treename, unsigned int animname);
 void RegisterHashStrings();
 }
 
+extern Broc::bint* GetEE_script_idnumber(Broc::entity ent);
+extern Broc::bbool* IsEEDefined_script_idnumber(Broc::bbool* result, Broc::entity ent);
+
 // ============================================================================
 // Thread-functor externs (stubs at the bottom until each script is ported).
 // ============================================================================
@@ -1976,9 +1979,110 @@ extern void* plane_flyby__functor(Broc::entity self, mp_plane plane_struct, Broc
 extern void* plane_roll__functor(Broc::entity self);
 extern void* plane_flyby_thread__functor(Broc::entity self, mp_plane plane_struct);
 
+// ea: 0x00933030
 void plane_flyby_setup(Broc::string t_name, Broc::string model, Broc::string sound,
                        Broc::bint speed, Broc::bfloat min_delay, Broc::bfloat max_delay,
-                       Broc::bfloat sound_delay);
+                       Broc::bfloat sound_delay) {
+    Broc::dyn_array<Broc::entity> ents;
+    HashStr targetnameKey{0x19F9F0E8u};
+    Broc::GetEntArray(&t_name, targetnameKey.mVal, &ents, 0);
+
+    const char* const scriptFile = "c:\\cod\\code\\script\\_mp_airplanes.bro";
+    auto warn = [&](const Broc::string& message) {
+        if (Broc::gBrocAPI.mWarning(scriptFile, __LINE__, message.c_str()))
+            __debugbreak();
+    };
+    auto originText = [](const Broc::entity& ent) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, ent);
+        Broc::string result("(");
+        result += origin.x;
+        result += ", ";
+        result += origin.y;
+        result += ", ";
+        result += origin.z;
+        result += " )";
+        return result;
+    };
+
+    if (Broc::size(ents) < 1) {
+        Broc::string message = Broc::string("AIRPLANE PATH ERROR: Could not find any entities with a targetname of ") + t_name;
+        warn(message);
+        return;
+    }
+
+    for (int i = 0; i < Broc::size(ents); ++i) {
+        Broc::bbool defined;
+        IsEEDefined_script_idnumber(&defined, ents[(unsigned int)i]);
+        if (!defined) {
+            Broc::string message = Broc::string("AIRPLANE PATH ERROR: script_origin @ ") + originText(ents[(unsigned int)i]);
+            message += " does not have a script_idnumber, ABORTING!";
+            warn(message);
+            return;
+        }
+    }
+
+    for (int i = 0; i < Broc::size(ents); ++i) {
+        for (int j = i; j < Broc::size(ents); ++j) {
+            const int idJ = (int)*GetEE_script_idnumber(ents[(unsigned int)j]);
+            const int idI = (int)*GetEE_script_idnumber(ents[(unsigned int)i]);
+            if (idJ > idI) {
+                Broc::entity temp = ents[(unsigned int)i];
+                ents[(unsigned int)i] = ents[(unsigned int)j];
+                ents[(unsigned int)j] = temp;
+            } else if (j != i && idJ == idI) {
+                Broc::string message = Broc::string("AIRPLANE PATH ERROR: script_origin @ ") + originText(ents[(unsigned int)i]);
+                message += " has the same script_idnumber as the script_origin @ ";
+                message += originText(ents[(unsigned int)j]);
+                message += ", ABORTING!";
+                warn(message);
+                return;
+            }
+        }
+    }
+
+    mp_plane plane_struct;
+    plane_struct.plane_model = model;
+    plane_struct.plane_speed = speed;
+    plane_struct.plane_sound = sound;
+    plane_struct.plane_min_delay = min_delay;
+    plane_struct.plane_max_delay = max_delay;
+    plane_struct.plane_sound_delay = sound_delay;
+
+    Broc::entity target_ent;
+    for (int i = 0; i < Broc::size(ents); ++i) {
+        Broc::string target;
+        mp_util_wad::entity_get_target(&target, ents[(unsigned int)i]);
+        if (!Broc::IsDefined(target)) {
+            Broc::string message = Broc::string("AIRPLANE PATH ERROR: script_origin @ ") + originText(ents[(unsigned int)i]);
+            message += " does not have a target, ABORTING!";
+            warn(message);
+            return;
+        }
+
+        HashStr targetKey{0x19F9F0E8u};
+        Broc::GetEnt(&target_ent, &target, targetKey, 0);
+        Broc::vector start;
+        Broc::vector end;
+        mp_util_wad::entity_get_origin(&start, ents[(unsigned int)i]);
+        mp_util_wad::entity_get_origin(&end, target_ent);
+        plane_struct.plane_start_orgs.push_back(start);
+        plane_struct.plane_end_orgs.push_back(end);
+        plane_struct.plane_dists.push_back(Broc::Distance(&start, &end));
+        Broc::vector delta = end - start;
+        Broc::vector angles;
+        Broc::VectorToAngles(&angles, &delta);
+        plane_struct.plane_angles.push_back(angles);
+        Broc::Delete(&ents[(unsigned int)i]);
+        Broc::Delete(&target_ent);
+    }
+
+    Broc::entity levelEntity;
+    if (mp_util_wad::pLevel != nullptr)
+        levelEntity = mp_util_wad::pLevel->_base.entity;
+    void* ftor = plane_flyby_thread__functor(levelEntity, plane_struct);
+    Broc::thread_create(false, scriptFile, __LINE__, "plane_flyby_thread", ftor);
+}
 void plane_flyby_thread(Broc::entity self, mp_plane plane_struct);
 void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num);
 void plane_roll(Broc::entity self);

@@ -8,6 +8,18 @@
 
 #include "engine/broc_types.h"
 
+// IDA type: mp_anim_wad::Level (12 bytes), inherited by mp_util_wad::Level.
+// The base entity is the second member at +0x04.
+namespace mp_anim_wad {
+struct Level {
+    void*        vftable;
+    Broc::entity entity;
+    unsigned char flags;
+    unsigned char _pad09[3];
+};
+static_assert(sizeof(Level) == 0x0C, "mp_anim_wad::Level size mismatch");
+}
+
 namespace mp_util_wad {
 
 // ============================================================================
@@ -15,7 +27,7 @@ namespace mp_util_wad {
 // Verified against IDA ordinal 8663.
 // ============================================================================
 struct Level {
-    char     _base[0x0C];                       // +0x00 (mp_anim_wad::Level base)
+    mp_anim_wad::Level _base;                   // +0x00 (mp_anim_wad::Level base)
     unsigned char flags;                        // +0x0C
     Broc::bint last_HQ_Point_key;               // +0x10
     char     line_sound_emitters[0x28];         // +0x14 (std::hash_map, 40B)
