@@ -506,7 +506,7 @@ index	status	map_line
 505	PORTED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o
 506	VERIFIED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o
 507	PORTED	0002:0054eaa0 ?Code_SendGameStateCTF@Broc@@YAXVentity@1@ABUvector@1@10110@Z 00D3DFA0 f i mp_util_wad.o
-508	VERIFIED	0002:0054eb60 ?CallbackNextRound@_mp_ctf@@YAXXZ 00D3E060 f mp_util_wad.o
+508	FIXED	0002:0054eb60 ?CallbackNextRound@_mp_ctf@@YAXXZ 00D3E060 f mp_util_wad.o	FIXED: IDA 0x0094EB60 notifies pLevel->_base.entity (or null)
 509	VERIFIED	0002:0054ebf0 ?CallbackHostOptionsChanged@_mp_ctf@@YAXH@Z 00D3E0F0 f mp_util_wad.o
 510	VERIFIED	0002:0054ec30 ?CallbackGameState@_mp_ctf@@YAXHHHHHHHHHHHHH@Z 00D3E130 f mp_util_wad.o
 511	VERIFIED	0002:0054ec90 ?CallbackShowFlagHint@_mp_ctf@@YAHXZ 00D3E190 f mp_util_wad.o
