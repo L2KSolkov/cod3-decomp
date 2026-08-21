@@ -1469,19 +1469,19 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1468	0x004B3E50	0x008A3350	?clear@?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@QAEXXZ		g.o	game		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 1469	0x004B3E60	0x008A3360	?clear@?$ae_vector@Udebug_sphere@@@@QAEXXZ		g.o	game		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 1470	0x004B3E70	0x008A3370	?clear@?$ae_vector@Udebug_aabb@@@@QAEXXZ		g.o	game		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-1471	0x004B3E80	0x008A3380	??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1472	0x004B3EB0	0x008A33B0	?SetAllocator@WaitTilOutput@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1471	0x004B3E80	0x008A3380	??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA PoolConfig field-order constructor	NO	NO	VERIFIED
+1472	0x004B3EB0	0x008A33B0	?SetAllocator@WaitTilOutput@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA WaitTilOutput allocator setter	NO	NO	VERIFIED
 1473	0x004B3EC0	0x008A33C0	?assign@?$char_traits@D@std@@SAXAADABD@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1474	0x004B3EE0	0x008A33E0	?length@?$char_traits@D@std@@SAIPBD@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1475	0x004B3F10	0x008A3410	?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1475	0x004B3F10	0x008A3410	?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA AeThreadState allocator setter	NO	NO	VERIFIED
 1476	0x004B3F20	0x008A3420	?copy@?$char_traits@D@std@@SAPADPADPBDI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1477	0x004B3F50	0x008A3450	?move@?$char_traits@D@std@@SAPADPADPBDI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1478	0x004B3F60	0x008A3460	?get_dlist_node_offset@EndOnScriptNode@@SAHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1479	0x004B3F70	0x008A3470	?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1480	0x004B3F80	0x008A3480	?get_dlist_node_offset@EntityNotify@@SAHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1478	0x004B3F60	0x008A3460	?get_dlist_node_offset@EndOnScriptNode@@SAHXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA zero dlist-node offset accessor	NO	NO	VERIFIED
+1479	0x004B3F70	0x008A3470	?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA EndOnScriptNode allocator setter	NO	NO	VERIFIED
+1480	0x004B3F80	0x008A3480	?get_dlist_node_offset@EntityNotify@@SAHXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA zero dlist-node offset accessor	NO	NO	VERIFIED
 1481	0x004B3F90	0x008A3490	??3EntityNotify@@SAXPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1482	0x004B3FB0	0x008A34B0	?GetStr@EntityNotify@@QBEIXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1483	0x004B3FC0	0x008A34C0	?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1482	0x004B3FB0	0x008A34B0	?GetStr@EntityNotify@@QBEIXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA mStr getter	NO	NO	VERIFIED
+1483	0x004B3FC0	0x008A34C0	?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA mParam getter	NO	NO	VERIFIED
 1484	0x004B3FD0	0x008A34D0	?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1485	0x004B3FE0	0x008A34E0	?get_dlist_node@EntityNotifySet@@QAEPAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1486	0x004B3FF0	0x008A34F0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
