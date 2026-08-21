@@ -154,6 +154,27 @@ void EntityNotify::operator delete(void* ptr, bool /*forceHeapAlloc*/,
     EntityNotify::sAllocator->Release(ptr);
 }
 
+// ea: 0x005E9560
+DbLinkedHandle<EntityHandleDb, Entity> EntityNotify::GetOwner() const
+{
+    DbLinkedHandle<EntityHandleDb, Entity> result;
+    result.mHandle.mVal = mOwner.mHandle.mVal;
+    return result;
+}
+
+// ea: 0x005E9580
+void* EntityNotifySet::operator new(size_t size, bool forceHeapAlloc)
+{
+    return EntityNotifySet::sAllocator->Allocate((unsigned int)size,
+                                                  forceHeapAlloc);
+}
+
+// ea: 0x005E95A0
+void EntityNotifySet::operator delete(void* ptr)
+{
+    EntityNotifySet::sAllocator->Release(ptr);
+}
+
 // WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
 PoolAllocator* WaitTilOutput::sAllocator;
 // WaitTilOutput ctor (g.o 0x4B1680)

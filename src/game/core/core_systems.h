@@ -982,6 +982,7 @@ public:
                  WaitTilOutput* param);  // ea: 0x004BDAA0
     ~EntityNotify();                     // ea: 0x004B5650
     void* get_dlist_node();              // ?get_dlist_node@EntityNotify@@QAEPAXXZ (g.o 0x4A5B70)
+    DbLinkedHandle<EntityHandleDb, Entity> GetOwner() const;
     static void* operator new(size_t size, bool forceHeapAlloc,
                               const char* file, int line);  // ??2EntityNotify@@SAPAXI_NPBDH@Z (g.o 0x4A5BF0)
     static void operator delete(void* ptr);  // ??3EntityNotify@@SAXPAX@Z (core.o 0x4B3F90)
@@ -1003,11 +1004,14 @@ public:
     void AddNotify(const HashString& h,
                    DbLinkedHandle<EntityHandleDb, Entity> owner);
     EntityNotify* GetNotify(const HashString& chk) const;
+    bool CheckForNotify(const HashString& chk) const;
     bool AssignScriptVariable(const HashString& chk,
                               WaitTilOutput* scriptVariable);
     bool IsFinished();
     void KillEndOnThreads();
     static void UpdateList();
+    static void* operator new(size_t size, bool forceHeapAlloc);
+    static void operator delete(void* ptr);
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
 };
 static_assert(sizeof(EntityNotifySet) == 0x2C, "EntityNotifySet size mismatch");

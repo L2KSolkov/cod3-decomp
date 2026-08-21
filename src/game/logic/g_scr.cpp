@@ -451,6 +451,8 @@ struct AeThreadEntityNotifyState : AeThreadState {
     HashString mNotifyStr;                        // +0x18
     EndOnScriptNode* mEndOnNode;                  // +0x1C
 
+    HashString GetNotify() const;                  // 0x5E9540
+
     AeThreadEntityNotifyState(
         DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
         AeThreadState::EAction result);  // 0x5DB280
@@ -4742,6 +4744,21 @@ EndOnScriptNode::EndOnScriptNode(AeThread* t)
     }
     mThread = t->mHandle;
 }
+
+// ea: 0x005E9540
+HashString AeThreadEntityNotifyState::GetNotify() const
+{
+    return mNotifyStr;
+}
+
+// ea: 0x005E95E0
+template <typename T>
+bool IsDefined(T t)
+{
+    return t != static_cast<T>(0xFEFEFEFEu);
+}
+
+template bool IsDefined<unsigned int>(unsigned int);
 
 // ea: 0x005C9850 (mHandleDb at sInst+0x34; index = mVal & 0xFF, key = mVal >> 8)
 AeThread* EndOnScriptNode::GetThread()

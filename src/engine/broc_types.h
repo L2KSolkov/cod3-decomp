@@ -173,6 +173,14 @@ struct vector {
     vector(float ix, float iy) : x(ix), y(iy), z(0.0f) {}
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
     vector& operator+=(const vector& rhs);
+    vector& operator/=(float rhs)
+    {
+        x = x * (1.0f / rhs);
+        const float zValue = (1.0f / rhs) * z;
+        y = (1.0f / rhs) * y;
+        z = zValue;
+        return *this;
+    }
     bool operator==(const vector& rhs);
     float operator[](int i) const { return (&x)[i]; }
     void Set(float X, float Y, float Z);  // ?Set@vector@Broc@@QAEXMMM@Z (g.o 0x4A5DE0)

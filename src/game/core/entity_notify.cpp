@@ -49,6 +49,12 @@ EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
     return nullptr;
 }
 
+// ea: 0x005E95C0
+bool EntityNotifySet::CheckForNotify(const HashString& chk) const
+{
+    return GetNotify(chk) != nullptr;
+}
+
 // ea: 0x004C64D0
 bool EntityNotifySet::AssignScriptVariable(const HashString& chk,
                                           WaitTilOutput* scriptVariable)
