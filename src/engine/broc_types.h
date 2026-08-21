@@ -873,7 +873,8 @@ void GetEntArray(const Broc::string* name, unsigned int key,
                  Broc::dyn_array<Broc::entity>* out, unsigned int flags);
 Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
                      unsigned int flags);
-void Delete(Broc::entity* e);
+void Delete(const Broc::entity& e);
+void Delete(Broc::entity* e);  // pointer convenience wrapper
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
                     const Broc::vector* origin, int pakInfo);
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,

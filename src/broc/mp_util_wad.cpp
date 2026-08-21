@@ -2144,13 +2144,18 @@ Broc::vector* VectorToAngles(Broc::vector* result, const Broc::vector* vecIn) {
 Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
                      unsigned int flags) {
     unsigned int v4 = gBrocAPI.mGetEnt(val, key.mVal, NULL, 0, flags);
-    result->___u0 = v4;
+    new (result) Broc::entity(v4);
     return result;
 }
 
 // Delete - ea: 0x934A20
+void Delete(const Broc::entity& e) {
+    gBrocAPI.mDelete(e.GetHandle());
+}
+
 void Delete(Broc::entity* e) {
-    gBrocAPI.mDelete(e->GetHandle());
+    if (e != NULL)
+        Delete(*e);
 }
 
 // operator+(string, float) - ea: 0x934830
