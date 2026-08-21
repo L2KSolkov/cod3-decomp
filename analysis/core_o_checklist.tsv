@@ -12,11 +12,11 @@ index	status	map_line
 11	VERIFIED	0002:000b3f90 ??3EntityNotify@@SAXPAX@Z 008A3490 f i core.o
 12	PORTED	0002:000b3fb0 ?GetStr@EntityNotify@@QBEIXZ 008A34B0 f i core.o PORTED: FUNCTION implemented IDA mStr getter
 13	PORTED	0002:000b3fc0 ?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ 008A34C0 f i core.o PORTED: FUNCTION implemented IDA mParam getter
-14	PORTED	0002:000b3fd0 ?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z 008A34D0 f i core.o
-15	PORTED	0002:000b3fe0 ?get_dlist_node@EntityNotifySet@@QAEPAXXZ 008A34E0 f i core.o
-16	PORTED	0002:000b3ff0 ?get_dlist_node_offset@EntityNotifySet@@SAHXZ 008A34F0 f i core.o
-17	PORTED	0002:000b4000 ??3EntityNotifySet@@SAXPAX@Z 008A3500 f i core.o
-18	PORTED	0002:000b4020 ?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z 008A3520 f i core.o
+14	PORTED	0002:000b3fd0 ?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z 008A34D0 f i core.o PORTED: FUNCTION implemented IDA EntityNotify allocator setter
+15	PORTED	0002:000b3fe0 ?get_dlist_node@EntityNotifySet@@QAEPAXXZ 008A34E0 f i core.o PORTED: FUNCTION implemented IDA dlist-node accessor
+16	PORTED	0002:000b3ff0 ?get_dlist_node_offset@EntityNotifySet@@SAHXZ 008A34F0 f i core.o PORTED: FUNCTION implemented IDA zero dlist-node offset accessor
+17	PORTED	0002:000b4000 ??3EntityNotifySet@@SAXPAX@Z 008A3500 f i core.o PORTED: FUNCTION matches IDA PoolAllocator release destructor
+18	PORTED	0002:000b4020 ?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z 008A3520 f i core.o PORTED: FUNCTION implemented IDA EntityNotifySet allocator setter
 19	PORTED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o
 20	VERIFIED	0002:000b4040 ?CreateInst@DCGBankManager@@SAXXZ 008A3540 f i core.o
 21	VERIFIED	0002:000b4140 ?DeleteInst@DCGBankManager@@SAXXZ 008A3640 f i core.o

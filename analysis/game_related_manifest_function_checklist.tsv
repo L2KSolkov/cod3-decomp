@@ -1482,11 +1482,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1481	0x004B3F90	0x008A3490	??3EntityNotify@@SAXPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1482	0x004B3FB0	0x008A34B0	?GetStr@EntityNotify@@QBEIXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA mStr getter	NO	NO	VERIFIED
 1483	0x004B3FC0	0x008A34C0	?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA mParam getter	NO	NO	VERIFIED
-1484	0x004B3FD0	0x008A34D0	?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1485	0x004B3FE0	0x008A34E0	?get_dlist_node@EntityNotifySet@@QAEPAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1486	0x004B3FF0	0x008A34F0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1487	0x004B4000	0x008A3500	??3EntityNotifySet@@SAXPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1488	0x004B4020	0x008A3520	?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1484	0x004B3FD0	0x008A34D0	?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA EntityNotify allocator setter	NO	NO	VERIFIED
+1485	0x004B3FE0	0x008A34E0	?get_dlist_node@EntityNotifySet@@QAEPAXXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA dlist-node accessor	NO	NO	VERIFIED
+1486	0x004B3FF0	0x008A34F0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA zero dlist-node offset accessor	NO	NO	VERIFIED
+1487	0x004B4000	0x008A3500	??3EntityNotifySet@@SAXPAX@Z		core.o	game		f i	1	PORTED	FUNCTION matches IDA PoolAllocator release destructor	NO	NO	VERIFIED
+1488	0x004B4020	0x008A3520	?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA EntityNotifySet allocator setter	NO	NO	VERIFIED
 1489	0x004B4030	0x008A3530	??2DCGBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1490	0x004B4040	0x008A3540	?CreateInst@DCGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1491	0x004B4140	0x008A3640	?DeleteInst@DCGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
