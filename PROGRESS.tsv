@@ -514,7 +514,7 @@ bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported 
 
 bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 3: bdCore init/quit and singleton reverse cleanup ported from IDA 0x89E900-0x89EA83
 
-bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 3: aligned offset formula/free/realloc corrected from IDA 0x8A03D0-0x8A04F7
+bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	4	PORTED	Phase 3: bdMalloc thunk plus aligned offset malloc/free/realloc ported from IDA 0x8A03C0-0x8A04F7
 
 bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	bdSessionInfo.h/.cpp (session info formatters; bdSession/bdAddressMapImpl opaque)
 
