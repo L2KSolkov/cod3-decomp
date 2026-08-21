@@ -220,11 +220,17 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
         };
+        struct angles_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::vector* operator=(const Broc::vector* rhs);
+        };
     };
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::origin_struct) == 4,
                             "origin_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::target_struct) == 4,
                             "target_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
+                            "angles_struct size mismatch");
 
     entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
     entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)

@@ -2110,6 +2110,13 @@ const Broc::string* Broc::entity::__unnamed::target_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::angles_struct::operator= - ea: 0x935490
+const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
+    const Broc::vector* rhs) {
+    Broc::gBrocAPI.m_entity_set_angles(mHandle, *rhs);
+    return rhs;
+}
+
 // IsDefined overloads - ea: 0x92F130 / 0x92F150 / 0x92F6F0
 bool IsDefined(const Broc::entity& e) {
     return e.___u0 != 0;
@@ -2302,7 +2309,8 @@ void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
     inClassname.~string();
     Broc::SetModel(&plane, &plane_struct.plane_model, 0);
     Broc::vector* angles = &plane_struct.plane_angles[(unsigned int)num];
-    // plane.angles = *angles (entity angles assignment)
+    Broc::entity::__unnamed::angles_struct planeAngles = {plane.GetHandle()};
+    planeAngles = angles;
     float* dist = &plane_struct.plane_dists[(unsigned int)num];
     float time = *dist / (float)plane_struct.plane_speed;
     float randTime = RandomFloatRange(time, time * 1.05f);
@@ -2316,8 +2324,6 @@ void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
     Broc::EffectEventPlay(&plane, &plane_struct.plane_sound);
     Broc::wait_accurate(randTime - soundDelay);
     Broc::Delete(&plane);
-    plane_struct.plane_model.~string();
-    plane_struct.plane_sound.~string();
 }
 
 // ============================================================================
