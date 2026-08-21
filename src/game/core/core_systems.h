@@ -103,7 +103,9 @@ struct BitSet {
         unsigned int m_cur_val;  // +0x08
         unsigned int m_cur_word; // +0x0C
 
-        iterator() : m_src(nullptr), m_word_idx(0), m_cur_val(0), m_cur_word(0) {}
+        iterator()
+            : m_src(nullptr), m_word_idx(-1), m_cur_val((unsigned int)-1),
+              m_cur_word((unsigned int)-1) {}
         iterator(const BitSet<N>* src)  // ??0iterator@?$BitSet@$0FEA@@@QAE@ABV1@@Z (g.o 0x4B1970)
         {
             m_src = (BitSet<N>*)src;
@@ -126,22 +128,31 @@ struct BitSet {
         }
         void operator++()  // ??Eiterator@?$BitSet@$0FEA@@@QAEXXZ
         {
-            while (m_word_idx < GetNumWords())
+            if (m_word_idx != -1)
             {
+                if (m_cur_word == 0)
+                {
+                    do
+                    {
+                        if (m_word_idx >= GetNumWords() - 1)
+                            break;
+                        ++m_word_idx;
+                        m_cur_word = ((const unsigned int*)m_src->mBits)[m_word_idx];
+                    } while (m_cur_word == 0);
+                }
                 if (m_cur_word != 0)
                 {
                     unsigned long idx;
                     _BitScanForward(&idx, m_cur_word);
                     m_cur_val = m_word_idx * 32 + (int)idx;
-                    m_cur_word &= m_cur_word - 1;
-                    return;
+                    m_cur_word &= ~(1u << idx);
                 }
-                ++m_word_idx;
-                if (m_word_idx < GetNumWords())
-                    m_cur_word = ((const unsigned int*)m_src->mBits)[m_word_idx];
+                else
+                {
+                    m_cur_val = (unsigned int)-1;
+                    m_word_idx = -1;
+                }
             }
-            m_cur_val = (unsigned int)-1;
-            m_word_idx = -1;
         }
     };
 
