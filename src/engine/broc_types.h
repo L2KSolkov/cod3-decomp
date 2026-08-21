@@ -793,7 +793,10 @@ struct BrocAPI {
     int (*mGetNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0A4
     char _padA8[0xAC - 0xA8];                             // +0x0A8
     int (*mGetVehicleNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0AC
-    char _padB0[0x140 - 0xB0];                            // +0x0B0
+    char _padB0[0xB8 - 0xB0];                            // +0x0B0
+    int (*mEffectEventPlay)(unsigned int, const Broc::string*, int,
+                            bool, bool);                 // +0x0B8
+    char _padBC[0x140 - 0xBC];                            // +0x0BC
     int (*mMathsRandomInt)(int);                          // +0x140
     char _pad144[0x148 - 0x144];                          // +0x144
     int (*mMathsRandomIntRange)(int, int);                // +0x148
@@ -804,13 +807,21 @@ struct BrocAPI {
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
     char _pad1A4[0x250 - 0x1A4];                          // +0x1A4
     int (*mCVarGetInt)(const char*);                      // +0x250
-    char _pad254[0x290 - 0x254];                          // +0x254
+    char _pad254[0x264 - 0x254];                          // +0x254
+    unsigned int (*mSpawn)(const Broc::string*, const Broc::vector*,
+                           TPakInfo);                    // +0x264
+    char _pad268[0x290 - 0x268];                          // +0x268
     unsigned int (*mSoundPlay)(const Broc::string*, float); // +0x290
     char _pad294[0x2C0 - 0x294];                          // +0x294
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
     char _pad2C4[0x6D8 - 0x2C4];                          // +0x2C4
     void (*mDelete)(unsigned int);                        // +0x6D8
-    char _pad6DC[0x9FC - 0x6DC];                          // +0x6DC
+    char _pad6DC[0x6E8 - 0x6DC];                          // +0x6DC
+    void (*mSetModel)(unsigned int, const Broc::string*, TPakInfo); // +0x6E8
+    char _pad6EC[0x9E8 - 0x6EC];                          // +0x6EC
+    void (*mMoveTo)(unsigned int, const Broc::vector*, float, float,
+                    float);                              // +0x9E8
+    char _pad9EC[0x9FC - 0x9EC];                          // +0x9EC
     void (*mRotateTo)(unsigned int, const Broc::vector&, float, float, float); // +0x9FC
     char _padA00[0xBD0 - 0xA00];                          // +0xA00
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0

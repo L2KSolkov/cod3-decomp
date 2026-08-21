@@ -2198,6 +2198,34 @@ Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
     return result;
 }
 
+// Broc::Spawn - ea: 0x9354E0
+Broc::entity* Spawn(Broc::entity* result, const Broc::string* inClassname,
+                    const Broc::vector* origin, int pakInfo) {
+    unsigned int handle = gBrocAPI.mSpawn(inClassname, origin,
+                                          (TPakInfo)pakInfo);
+    new (result) Broc::entity(handle);
+    return result;
+}
+
+// Broc::EffectEventPlay - ea: 0x935520
+int EffectEventPlay(Broc::entity* e, const Broc::string* script) {
+    unsigned int handle = e->GetHandle();
+    return gBrocAPI.mEffectEventPlay(handle, script, 0, false, false);
+}
+
+// Broc::SetModel - ea: 0x935560
+void SetModel(Broc::entity* e, const Broc::string* modelName, int whichPak) {
+    unsigned int handle = e->GetHandle();
+    gBrocAPI.mSetModel(handle, modelName, (TPakInfo)whichPak);
+}
+
+// Broc::MoveTo - ea: 0x9355A0
+void MoveTo(Broc::entity* e, const Broc::vector* vPos, float totalTime,
+            float accTime, float decTime) {
+    unsigned int handle = e->GetHandle();
+    gBrocAPI.mMoveTo(handle, vPos, totalTime, accTime, decTime);
+}
+
 // Delete - ea: 0x934A20
 void Delete(const Broc::entity& e) {
     gBrocAPI.mDelete(e.GetHandle());
