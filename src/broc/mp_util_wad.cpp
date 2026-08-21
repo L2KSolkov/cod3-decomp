@@ -11180,8 +11180,10 @@ unsigned int Host_ResetStage1() {
 // Host_FlowControl - ea: 0x956FE0
 void Host_FlowControl(Broc::entity self) {
     (void)self;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr e1;
     e1.mVal = 0x9DD2E1FD;
     Broc::endon(lvl, e1);
