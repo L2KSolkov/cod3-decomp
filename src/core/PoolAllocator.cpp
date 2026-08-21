@@ -393,6 +393,17 @@ int PoolAllocator::GetMemRemaining() const {
 }
 
 // ============================================================================
+// PoolAllocator::GetLargestBlockSize
+// ea: 0x005EF4E0 (scr.o)
+// ============================================================================
+int PoolAllocator::GetLargestBlockSize() const {
+    int last = mPoolSizes.m_size - 1;
+    if (last <= 0)
+        last = 0;
+    return mPoolSizes.m_elements[last];
+}
+
+// ============================================================================
 // PoolAllocator::ReportTotals
 // ea: 0x7BDC20
 // ============================================================================

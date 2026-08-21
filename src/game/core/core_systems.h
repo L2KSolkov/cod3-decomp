@@ -1087,6 +1087,7 @@ public:
     ~EntityNotifySet();          // ea: 0x004CEAE0
     void AddNotify(const HashString& h,
                    DbLinkedHandle<EntityHandleDb, Entity> owner);
+    void AddEndOn(EndOnScriptNode* node);  // scr.o 0x5EF500
     EntityNotify* GetNotify(const HashString& chk) const;
     bool CheckForNotify(const HashString& chk) const;
     bool AssignScriptVariable(const HashString& chk,

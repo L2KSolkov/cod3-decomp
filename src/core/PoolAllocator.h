@@ -119,4 +119,5 @@ public:
     bool IsEmpty() const { return mPoolArray.m_size == 0; }
     int  GetMemSize() const;
     int  GetMemRemaining() const;
+    int  GetLargestBlockSize() const;
 };

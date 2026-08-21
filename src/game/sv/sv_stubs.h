@@ -466,6 +466,8 @@ public:
     // scr.o methods (AeThread.cpp; layout overlays defined in g_scr.cpp)
     AeThreadManager();                         // ??0AeThreadManager@@QAE@XZ (scr.o 0x5DB100)
     void AddThread(AeThread* t);               // ?AddThread@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C95F0)
+    void ExecThread(AeThread* t);              // scr.o 0x5EF5C0
+    AeThread* DereferenceHandle(Handle h);    // scr.o 0x5EF600
     void DebugThread(unsigned int threadId);   // ?DebugThread@AeThreadManager@@QAEXI@Z (scr.o 0x5C97C0)
     void ReleaseHandle(AeThread* t);           // ?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C9770)
     void ReleaseHandle(Handle h);              // ?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z (scr.o 0x5C97A0)

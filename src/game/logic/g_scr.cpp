@@ -307,6 +307,7 @@ public:
              unsigned int ehandle, AeThreadFunctor* ftor,
              bool bUseScratchpad);                          // scr.o 0x5C79D0
     void Sleep(AeThreadState* stateController);             // scr.o 0x5C7AC0
+    void ApplyStateController(AeThreadState* stateController); // scr.o 0x5EF590
     void ProcessState();  // ?ProcessState@AeThread@@QAEXXZ (scr.o 0x5C8EE0)
     void Execute(float deltaT);  // ?Execute@AeThread@@QAEXM@Z (scr.o 0x5C90A0)
     bool HasEndCond(int notify) const;  // ?HasEndCond@AeThread@@QBE_NH@Z (scr.o 0x5C92B0)
@@ -492,6 +493,8 @@ public:
     T* pop_back();
     iterator find(T* object);
     void clear();
+    void erase(T* object);
+    const_iterator begin() const;
     const dlist_node* get_head() const;
     static T* node_to_object(dlist_node* node);
     static const T* node_to_object(const dlist_node* node);
@@ -658,6 +661,39 @@ bool reserved_dlist<T>::const_iterator::operator!=(
     return m_next != rhs.m_next;
 }
 
+template <typename T>
+void reserved_dlist<T>::erase(T* object)
+{
+    iterator found = find(object);
+    if (found.m_next == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+        AeAssert::gCurrentLine = 418;
+        AeAssert::gCurrentExpr = "find( obj ) != end()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    object->m_dlist_node.mNext->mPrev = object->m_dlist_node.mPrev;
+    object->m_dlist_node.mPrev->mNext = object->m_dlist_node.mNext;
+    --m_size;
+}
+
+template <typename T>
+typename reserved_dlist<T>::const_iterator reserved_dlist<T>::begin() const
+{
+    const dlist_node* head = m_head;
+    const dlist_node* next = head != nullptr ? head->m_next : nullptr;
+    const_iterator result(head, next);
+    if (m_head == reinterpret_cast<const dlist_node*>(&m_end))
+    {
+        result.m_node = nullptr;
+        result.m_next = nullptr;
+    }
+    return result;
+}
+
 template <>
 AeThreadState*
 reserved_dlist<AeThreadState>::node_to_object(
@@ -683,6 +719,15 @@ template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
 template reserved_dlist<AeThreadState>::const_iterator
 reserved_dlist<AeThreadState>::end() const;
+template void reserved_dlist<AeThreadState>::erase(AeThreadState*);
+template void reserved_dlist<EndOnScriptNode>::erase(EndOnScriptNode*);
+template void reserved_dlist<AeThread>::erase(AeThread*);
+template reserved_dlist<AeThreadState>::const_iterator
+reserved_dlist<AeThreadState>::begin() const;
+template reserved_dlist<EndOnScriptNode>::const_iterator
+reserved_dlist<EndOnScriptNode>::begin() const;
+template reserved_dlist<AeThread>::const_iterator
+reserved_dlist<AeThread>::begin() const;
 template AeThread* reserved_dlist<AeThread>::pop_back();
 template void reserved_dlist<AeThreadState>::dlist_node::pop();
 template void reserved_dlist<EndOnScriptNode>::dlist_node::pop();
@@ -3130,6 +3175,61 @@ struct AeThreadManagerLayout {
 
 void BrocDtorBase::Destroy(void* /*inst*/)
 {
+}
+
+// ea: 0x005EF400
+void Broc::dyn_array<Broc::string>::destroy_all()
+{
+    Broc::string* element = mElements;
+    if (element == nullptr)
+        return;
+    Broc::string* endElement = mElements + mSize;
+    while (element != endElement)
+    {
+        element->~string();
+        ++element;
+    }
+    void* allocation = mElements;
+    if (gBrocPool->InPool(allocation))
+        gBrocPool->Release(allocation);
+    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(allocation))
+        mem_heap_free(allocation);
+}
+
+// ea: 0x005EF590
+void AeThread::ApplyStateController(AeThreadState* stateController)
+{
+    stateController->m_dlist_node.mNext = mStateControllers.m_end;
+    stateController->m_dlist_node.mPrev = mStateControllers.m_tail;
+    ((AeDListNode*)mStateControllers.m_tail)->mNext =
+        &stateController->m_dlist_node;
+    mStateControllers.m_tail = &stateController->m_dlist_node;
+    ++mStateControllers.m_size;
+}
+
+// ea: 0x005EF5C0
+void AeThreadManager::ExecThread(AeThread* t)
+{
+    AeThreadManagerLayout* layout = (AeThreadManagerLayout*)this;
+    t->m_dlist_node.mNext = layout->mExecThreads.m_end;
+    t->m_dlist_node.mPrev = layout->mExecThreads.m_tail;
+    ((AeDListNode*)layout->mExecThreads.m_tail)->mNext = &t->m_dlist_node;
+    layout->mExecThreads.m_tail = &t->m_dlist_node;
+    ++layout->mExecThreads.m_size;
+    layout->mNewThreadExec = t;
+    t->mFlags.mMask |= 0x800;
+}
+
+// ea: 0x005EF600
+AeThread* AeThreadManager::DereferenceHandle(Handle h)
+{
+    AeThreadManagerLayout* layout = (AeThreadManagerLayout*)this;
+    HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+        (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)layout->mHandleDb;
+    unsigned int index = h.mVal & 0xFF;
+    if ((h.mVal >> 8) == (unsigned int)db->mElements[index].mKey)
+        return db->mElements[index].mObject;
+    return nullptr;
 }
 
 // SetJmp/LongJmp (register-snapshot longjmp; transcribed from disasm)

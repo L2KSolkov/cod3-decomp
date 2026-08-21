@@ -37,6 +37,19 @@ void EntityNotifySet::AddNotify(const HashString& h,
         mStrings.m_head = &n->m_dlist_node;
 }
 
+// ea: 0x005EF500 (scr.o)
+void EntityNotifySet::AddEndOn(EndOnScriptNode* node)
+{
+    reserved_dlist<EndOnScriptNode>::dlist_node* tail = mEndOnList.m_tail;
+    reserved_dlist<EndOnScriptNode>::dlist_node* nodeData =
+        reinterpret_cast<reserved_dlist<EndOnScriptNode>::dlist_node*>(node);
+    nodeData->mNext = mEndOnList.m_end;
+    nodeData->mPrev = tail;
+    tail->mNext = nodeData;
+    mEndOnList.m_tail = nodeData;
+    ++mEndOnList.m_size;
+}
+
 // ea: 0x004C6450
 EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
 {

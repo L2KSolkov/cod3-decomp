@@ -121,6 +121,7 @@ public:
 
     dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
     ~dyn_array();  // ea: 0x933129
+    void destroy_all();  // scr.o 0x5EF400 (Broc::dyn_array<Broc::string>)
 
     // ea: 0x005EDF00 / 0x005EDF10 (dyn_array<Broc::entity>)
     T* begin() { return mElements; }
