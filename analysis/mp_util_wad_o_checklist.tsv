@@ -596,7 +596,7 @@ index	status	map_line
 595	VERIFIED	0002:00559190 ?ShowLosingHQGraphic@_mp_hq@@YAXVentity@Broc@@@Z 00D48690 f mp_util_wad.o
 596	FIXED	0002:00559200 ?ShowProgressBar@_mp_hq@@YAXVentity@Broc@@Vstring@3@@Z 00D48700 f mp_util_wad.o	FIXED: IDA 0x00959200 uses pLevel->_base.entity (or null) for endon
 597	PORTED	0002:005593a0 ??Zbint@@QAEHH@Z 00D488A0 f i mp_util_wad.o
-598	VERIFIED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o
+598	PORTED	0002:005593e0 ?TriggerRadio@_mp_hq@@YAXVentity@Broc@@@Z 00D488E0 f mp_util_wad.o	PORTED: source entry remains a stub; IDA 0x009593E0 still requires the full radio capture/state machine pass
 599	PORTED	0002:0055ad50 ??D@YA?AUbfloat@@Ubint@@U0@@Z 00D4A250 f i mp_util_wad.o
 600	PORTED	0002:0055ada0 ??H@YA?AUbfloat@@Ubint@@U0@@Z 00D4A2A0 f i mp_util_wad.o
 601	PORTED	0002:0055adf0 ??4key_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D4A2F0 f i mp_util_wad.o
@@ -614,7 +614,7 @@ index	status	map_line
 613	VERIFIED	0002:0055b920 ?BroadcastGameState@_mp_hq@@YAXXZ 00D4AE20 f mp_util_wad.o
 614	PORTED	0002:0055bab0 ?Code_SendGameStateHQ@Broc@@YAXVentity@1@IABUvector@1@1I_N2@Z 00D4AFB0 f i mp_util_wad.o	PORTED: IDA 0x0095BAB0 forwards the entity handle, unsigned stage/index, vector references, and bool flags to mSendGameStateHQ
 615	VERIFIED	0002:0055bb30 ?SyncScores@_mp_hq@@YAXXZ 00D4B030 f mp_util_wad.o
-616	VERIFIED	0002:0055be00 ?Track_Ownership@_mp_hq@@YAXVentity@Broc@@@Z 00D4B300 f mp_util_wad.o
+616	FIXED	0002:0055be00 ?Track_Ownership@_mp_hq@@YAXVentity@Broc@@@Z 00D4B300 f mp_util_wad.o	FIXED: IDA 0x0095BE00 waits for HQ stage 3, awards one point per second to the defending side, and exits on the level notify
 617	FIXED	0002:0055bf20 ?String_Timer@_mp_hq@@YAXVentity@Broc@@@Z 00D4B420 f mp_util_wad.o	FIXED: IDA 0x0095BF20 uses pLevel->_base.entity (or null) for endon
 618	FIXED	0002:0055c010 ?CallbackGameStateHQ@_mp_hq@@YAXIUvector@Broc@@0IHH@Z 00D4B510 f mp_util_wad.o	FIXED: IDA 0x0095C010 stage-2 path calls no-arg SwitchToRadioOnly; stage-3 calls no-arg SetUpStage3 and passes the actual level entity to Track_Ownership; stages 4/5 call no-arg HQ_Defended/HQ_Destroyed
 619	PORTED	0002:0055c380 ??M@YA?AUbbool@@Ubint@@I@Z 00D4B880 f i mp_util_wad.o
