@@ -600,12 +600,12 @@ index	status	map_line
 599	VERIFIED	0002:0010d840 ?AddSettingsMenus@InspectorManager@@QAEXXZ 008FCD40 f game2.o
 600	VERIFIED	0002:0010e1b0 ?SetupUserMenus@InspectorManager@@QAEXXZ 008FD6B0 f game2.o
 601	VERIFIED	0002:0010e250 ?Initialise@InspectorManager@@QAEXXZ 008FD750 f game2.o
-602	PORTED	0002:00116b70 ??0Vector4@math@@QAE@ABVQuaternion@1@@Z 00906070 f i game2.o
+602	PORTED	0002:00116b70 ??0Vector4@math@@QAE@ABVQuaternion@1@@Z 00906070 f i game2.o  PORTED: IDA-backed Quaternion layout and Vector4 constructor implemented
 603	FIXED	0002:00116b90 ?Stop@nalAnimState@AnimationPlayer@@QAEXXZ 00906090 f i game2.o
 604	FIXED	0002:00116bc0 ?Release@nalAnimState@AnimationPlayer@@QAEXXZ 009060C0 f i game2.o
-605	PORTED	0002:00116c00 ?Dot@math@@YAMABVQuaternion@1@0@Z 00906100 f i game2.o
+605	PORTED	0002:00116c00 ?Dot@math@@YAMABVQuaternion@1@0@Z 00906100 f i game2.o  PORTED: IDA-backed quaternion dot product implemented
 606	FIXED	0002:00116c70 ?Kill@nalPartialAnimState@AnimationPlayer@@QAEXXZ 00906170 f i game2.o
-607	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o
+607	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o  PORTED: IDA-backed polynomial Slerp implemented
 608	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o
 609	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o
 610	PORTED	0002:00117180 ?GetZone@NodeHandle@PathNodes@@QBEGXZ 00906680 f i game2.o
