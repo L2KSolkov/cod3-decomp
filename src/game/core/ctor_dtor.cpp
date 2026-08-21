@@ -22,7 +22,7 @@ class controller { public:
 
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -30,6 +30,8 @@ extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
+
+extern const char* const defaultFileName;
 
 #define ASSERT_IDX(idx, cap, line)                                         \
     do {                                                                   \
@@ -289,11 +291,69 @@ WaitTilOutputInst2<T1, T2>::~WaitTilOutputInst2()
 {
 }
 
+template <>
+void WaitTilOutputInst1<int>::AssignData(WaitTilOutput* scriptVariable)
+{
+    int size = scriptVariable->GetSize();
+    if (size > GetSize())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\script\\include\\WaitTilParms.h";
+        AeAssert::gCurrentLine = 91;
+        AeAssert::gCurrentExpr = "scriptVariable->GetSize() <= GetSize()";
+        if (AeAssert::IsIgnored())
+        {
+            *(int*)((unsigned char*)scriptVariable + 0x0C) = data;
+        }
+        else
+        {
+            if (AeAssert::Assert(defaultFileName))
+            {
+                __debugbreak();
+                *(int*)((unsigned char*)scriptVariable + 0x0C) = data;
+                return;
+            }
+            *(int*)((unsigned char*)scriptVariable + 0x0C) = data;
+        }
+        return;
+    }
+    *(int*)((unsigned char*)scriptVariable + 0x0C) = data;
+}
+
+template <>
+void WaitTilOutputInst2<float, unsigned int>::AssignData(
+    WaitTilOutput* scriptVariable)
+{
+    int size = scriptVariable->GetSize();
+    if (size > GetSize())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\script\\include\\WaitTilParms.h";
+        AeAssert::gCurrentLine = 118;
+        AeAssert::gCurrentExpr = "scriptVariable->GetSize() <= GetSize()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    unsigned int data1Bits;
+    memcpy(&data1Bits, &data1, sizeof(data1Bits));
+    if (size == 1)
+    {
+        *(unsigned int*)((unsigned char*)scriptVariable + 0x0C) = data1Bits;
+    }
+    else if (size == 2)
+    {
+        *(unsigned int*)((unsigned char*)scriptVariable + 0x0C) = data1Bits;
+        *(unsigned int*)((unsigned char*)scriptVariable + 0x10) = data2;
+    }
+}
+
 template class WaitTilOutputInst1<Broc::string>;
 template class WaitTilOutputInst1<unsigned int>;
 template class WaitTilOutputInst1<Broc::entity>;
 template class WaitTilOutputInst2<Broc::string, Broc::string>;
 template class WaitTilOutputInst2<int, Broc::entity>;
+template class WaitTilOutputInst1<int>;
+template class WaitTilOutputInst2<float, unsigned int>;
 
 void force_waitinst1_delete(WaitTilOutputInst1<Broc::string>* p) { delete p; }
 void force_waitinst1u_delete(WaitTilOutputInst1<unsigned int>* p) { delete p; }
