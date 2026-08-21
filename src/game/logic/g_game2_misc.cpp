@@ -1815,6 +1815,10 @@ struct SplineEntry {
     int pakId;   // +0x00 (PAK_ID_INVALID = -1)
     void* file;  // +0x04
     int pad8;    // +0x08
+
+    SplineEntry();                         // ea: 0x5186C0
+    void Unload();                         // ea: 0x5186E0
+    bool IsUsed() const;                   // ea: 0x518700
 };
 
 struct SplineGroupFile {
@@ -1852,6 +1856,7 @@ public:
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
     virtual ~SplineMgr();                                             // ea: 0x51D670
+    static SplineMgr* Inst();                                         // ea: 0x5186B0
     static void* operator new(size_t size, void* p);
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
     void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
@@ -1862,6 +1867,31 @@ public:
 
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
+
+// ea: 0x005186B0
+SplineMgr* SplineMgr::Inst()
+{
+    return sInst;
+}
+
+// ea: 0x005186C0
+SplineEntry::SplineEntry()
+    : pakId(-1), file(nullptr)
+{
+}
+
+// ea: 0x005186E0
+void SplineEntry::Unload()
+{
+    pakId = -1;
+    file = nullptr;
+}
+
+// ea: 0x00518700
+bool SplineEntry::IsUsed() const
+{
+    return pakId != -1;
+}
 
 // ea: 0x004DDEE0
 void* SplineMgr::operator new(size_t size, void* p)
