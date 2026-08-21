@@ -845,17 +845,17 @@ index	status	map_line
 844	VERIFIED	0002:001dfd70 ?CalcStringHash@BrocSys@@YAIPBD@Z 009CF270 f scr.o
 845	VERIFIED	0002:001dfdb0 ?InitAPI@BrocSys@@YAXXZ 009CF2B0 f scr.o
 846	VERIFIED	0002:001e0160 ?LoadScript@BrocSys@@YAXXZ 009CF660 f scr.o
-847	PORTED	0002:001e9420 ?get_dlist_node@AeThreadState@@QAEPAXXZ 009D8920 f i scr.o
-848	PORTED	0002:001e9430 ??2AeThreadState@@SAPAXI_NPBDH@Z 009D8930 f i scr.o
-849	PORTED	0002:001e9450 ??3AeThreadState@@SAXPAX_NPBDH@Z 009D8950 f i scr.o
-850	PORTED	0002:001e9470 ?IsFinished@AeThreadState@@QBE_NXZ 009D8970 f i scr.o
-851	PORTED	0002:001e9480 ?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ 009D8980 f i scr.o
+847	VERIFIED	0002:001e9420 ?get_dlist_node@AeThreadState@@QAEPAXXZ 009D8920 f i scr.o	VERIFIED: matches IDA decompile
+848	VERIFIED	0002:001e9430 ??2AeThreadState@@SAPAXI_NPBDH@Z 009D8930 f i scr.o	VERIFIED: matches IDA decompile
+849	VERIFIED	0002:001e9450 ??3AeThreadState@@SAXPAX_NPBDH@Z 009D8950 f i scr.o	VERIFIED: matches IDA decompile
+850	VERIFIED	0002:001e9470 ?IsFinished@AeThreadState@@QBE_NXZ 009D8970 f i scr.o	VERIFIED: matches IDA decompile
+851	VERIFIED	0002:001e9480 ?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ 009D8980 f i scr.o	VERIFIED: matches IDA decompile
 852	VERIFIED	0002:001e9490 ??1AeThreadState@@UAE@XZ 009D8990 f i scr.o
 853	SKIPPED	0002:001e94a0 ??_GAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 854	SKIPPED	0002:001e94a0 ??_EAeThreadState@@UAEPAXI@Z 009D89A0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-855	PORTED	0002:001e94d0 ?get_dlist_node@EndOnScriptNode@@QAEPAXXZ 009D89D0 f i scr.o
-856	PORTED	0002:001e94e0 ??2EndOnScriptNode@@SAPAXI_NPBDH@Z 009D89E0 f i scr.o
-857	PORTED	0002:001e9500 ??3EndOnScriptNode@@SAXPAX_NPBDH@Z 009D8A00 f i scr.o
+855	VERIFIED	0002:001e94d0 ?get_dlist_node@EndOnScriptNode@@QAEPAXXZ 009D89D0 f i scr.o	VERIFIED: matches IDA decompile
+856	VERIFIED	0002:001e94e0 ??2EndOnScriptNode@@SAPAXI_NPBDH@Z 009D89E0 f i scr.o	VERIFIED: matches IDA decompile
+857	VERIFIED	0002:001e9500 ??3EndOnScriptNode@@SAXPAX_NPBDH@Z 009D8A00 f i scr.o	VERIFIED: matches IDA decompile
 858	PORTED	0002:001e9520 ??3EndOnScriptNode@@SAXPAX@Z 009D8A20 f i scr.o
 859	PORTED	0002:001e9540 ?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ 009D8A40 f i scr.o
 860	PORTED	0002:001e9560 ?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 009D8A60 f i scr.o
