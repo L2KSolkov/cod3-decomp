@@ -1387,7 +1387,7 @@ index	status	map_line
 1386	VERIFIED	0002:001aedd0 ?Inst@GameSettings@@SAPAV1@XZ 0099E2D0 f i shell.o
 1387	VERIFIED	0002:001aede0 ?SetHighLight@DialogMenu@@QAEXH@Z 0099E2E0 f i shell.o	VERIFIED: matches IDA highlighted-index assignment
 1388	VERIFIED	0002:001aee00 ?Close@DialogMenuDisplay@@QAEXXZ 0099E300 f i shell.o
-1389	PORTED	0002:001aee10 ?IsSplitScreen@DialogMenuDisplay@@QBE_NXZ 0099E310 f i shell.o
+1389	VERIFIED	0002:001aee10 ?IsSplitScreen@DialogMenuDisplay@@QBE_NXZ 0099E310 f i shell.o	VERIFIED: matches IDA mViewport test
 1390	VERIFIED	0002:001aee20 ?GetDisplay@DialogMenuSystem@@QAEPAVDialogMenuDisplay@@XZ 0099E320 f i shell.o
 1391	VERIFIED	0002:001aee30 ?GetFlag@DialogMenuSystem@@QAE_NH@Z 0099E330 f i shell.o
 1392	PORTED	0002:001aee50 ?SetFlag@DialogMenuSystem@@QAEXH_N@Z 0099E350 f i shell.o
