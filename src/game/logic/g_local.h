@@ -5214,6 +5214,7 @@ public:
                                 const char* file, int line);  // ??3Task@@SAXPAX_NPBDH@Z
     static void* operator new(size_t, void* p) { return p; }  // placement
     static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
+    static void SetAllocator(PoolAllocator* allocator);
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
 

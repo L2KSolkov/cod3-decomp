@@ -44,6 +44,12 @@ CGBankManager* CGBankManager::Inst()
 {
     return (CGBankManager*)CGBankManager::sInst;
 }
+
+// ea: 0x004B5150
+void Task::SetAllocator(PoolAllocator* allocator)
+{
+    Task::sAllocator = allocator;
+}
 PhysDataBankManager* PhysDataBankManager::Inst()
 {
     return PhysDataBankManager::sInst;

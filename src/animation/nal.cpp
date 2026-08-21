@@ -176,9 +176,16 @@ public:
                                 const char* file, int line);
     static void operator delete(void* ptr);
     static PoolAllocator* sAllocator;  // ?sAllocator@SceneAnimInfo@@2PAVPoolAllocator@@A
+    static void SetAllocator(PoolAllocator* allocator);
 };
 
 PoolAllocator* SceneAnimInfo::sAllocator = nullptr;  // @ 0xF25A30
+
+// ea: 0x004B5160
+void SceneAnimInfo::SetAllocator(PoolAllocator* allocator)
+{
+    SceneAnimInfo::sAllocator = allocator;
+}
 
 // ea: 0x0055F1F0
 SceneAnimInfo::SceneAnimInfo(float blendIn, float blendOut)

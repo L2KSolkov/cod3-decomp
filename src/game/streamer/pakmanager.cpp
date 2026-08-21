@@ -2319,6 +2319,7 @@ const char* cdResourceDirectory<T>::DirectoryName()
 class XModelManager {
 public:
     static XModelManager* sInst;  // defined in sv_globals.cpp
+    static void* operator new(unsigned int size, void* p);
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
     IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);  // render.o 0xAC54D0; stub
@@ -2332,6 +2333,7 @@ IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
 class XModelPartsManager {
 public:
     static XModelPartsManager* sInst;
+    static void* operator new(unsigned int size, void* p);
     static XModelPartsManager* Inst();  // ?Inst@XModelPartsManager@@SAPAV1@XZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
@@ -2399,6 +2401,7 @@ public:
 class LightGridMgr {
 public:
     static LightGridMgr* sInst;
+    static void* operator new(unsigned int size, void* p);
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
 
@@ -2497,6 +2500,24 @@ void DbTablesetMgr::DeleteInst()
     DbTablesetMgr::sInst = nullptr;
 }
 LightGridMgr* LightGridMgr::sInst = nullptr;
+
+// ea: 0x004B4E30
+void* XModelManager::operator new(unsigned int /*size*/, void* p)
+{
+    return p;
+}
+
+// ea: 0x004B4FC0
+void* XModelPartsManager::operator new(unsigned int /*size*/, void* p)
+{
+    return p;
+}
+
+// ea: 0x004B5170
+void* LightGridMgr::operator new(unsigned int /*size*/, void* p)
+{
+    return p;
+}
 
 void XModelManager::DecodeBank(const char* name, unsigned char* data,
                                int size, TPakId pak_id)

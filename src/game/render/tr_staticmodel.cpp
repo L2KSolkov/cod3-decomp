@@ -44,6 +44,7 @@ struct trStaticModelList_t {
     StaticModel* model;          // +0x00
     trStaticModelList_t* next;   // +0x04
     static PoolAllocator* sAllocator;  // ?sAllocator@trStaticModelList_t@@2PAVPoolAllocator@@A @ 0xF7443C
+    static void SetAllocator(PoolAllocator* a);
 };
 
 class PoolAllocator {
@@ -72,6 +73,12 @@ struct world_t {
 };
 
 PoolAllocator* trStaticModelList_t::sAllocator;
+
+// ea: 0x004B5300
+void trStaticModelList_t::SetAllocator(PoolAllocator* a)
+{
+    trStaticModelList_t::sAllocator = a;
+}
 int g_staticCount;                            // ?g_staticCount@@3HA @ 0xEAECD0
 
 // ============================================================================
