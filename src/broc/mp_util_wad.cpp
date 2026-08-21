@@ -5607,8 +5607,10 @@ void WaitForTeams() {
 
 // HandleJoinAfterRoundOver - ea: 0x94BAE0
 void HandleJoinAfterRoundOver(Broc::entity self, Broc::bint timeleft) {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr e1;
     e1.mVal = 0xAFE7EFF4;
     Broc::endon(lvl, e1);
@@ -5624,8 +5626,10 @@ void HandleJoinAfterRoundOver(Broc::entity self, Broc::bint timeleft) {
 // QuitGameWithMessage - ea: 0x9448E0
 void QuitGameWithMessage(Broc::entity self, HashStr message) {
     Broc::CloseAllMenus(0);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     if (self.___u0 != lvl.___u0) {
         Broc::SetTutorialText((int)message.mVal, Broc::GetPlayerIndex(self));
     } else {
@@ -5666,8 +5670,10 @@ void FadeUpWhenLoaded(Broc::entity self, Broc::entity player) {
     if ((bool)mp_util_wad::pLevel->roundStarted ||
         !Broc::IsDefined(mp_util_wad::pLevel->isInFadeUpWhenLoaded)) {
         mp_util_wad::pLevel->isInFadeUpWhenLoaded = 1;
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         HashStr label;
         label.mVal = 0x2A9ACF98u;
         Broc::waittill(lvl, label);
