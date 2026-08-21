@@ -2460,10 +2460,10 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
     const float cosLower = a5;
 
     nalMatrix4x4 upper;
-    upper.x.v = _mm_set_ps(0.0f, sinUpper * sinTwist,
-                            sinUpper * cosTwist, cosUpper);
-    upper.y.v = _mm_set_ps(0.0f, cosUpper * sinTwist,
+    upper.x.v = _mm_set_ps(0.0f, cosUpper * sinTwist,
                             cosUpper * cosTwist, -sinUpper);
+    upper.y.v = _mm_set_ps(0.0f, sinUpper * sinTwist,
+                            sinUpper * cosTwist, cosUpper);
     upper.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
     upper.w.v = _mm_set_ps(1.0f, upperLength * sinUpper * sinTwist,
                             upperLength * sinUpper * cosTwist,
@@ -2492,10 +2492,10 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
     multiplyRows(upper, base, m1);
 
     nalMatrix4x4 lower;
-    lower.x.v = _mm_set_ps(0.0f, -sinLower * sinTwist,
-                           -sinLower * cosTwist, cosLower);
-    lower.y.v = _mm_set_ps(0.0f, cosLower * sinTwist,
+    lower.x.v = _mm_set_ps(0.0f, cosLower * sinTwist,
                            cosLower * cosTwist, sinLower);
+    lower.y.v = _mm_set_ps(0.0f, -sinLower * sinTwist,
+                           -sinLower * cosTwist, cosLower);
     lower.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
     lower.w = upper.w;
     multiplyRows(lower, base, m2);
