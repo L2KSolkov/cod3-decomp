@@ -372,6 +372,7 @@ public:
     void FreeSlot(bool isPrivate);
     unsigned int GetLockedPort();  // ?GetLockedPort@MPLiveEngine@@QAEKXZ (sv.o 0x51E190)
     static MPLiveEngine* GetHandle();
+    LivePlayer* GetLocalPlayer();  // shell.o 0x5AD260
     unsigned int GetPortToLock();
     unsigned int GetVoiceData(unsigned int consoleID, unsigned int buffer);
     unsigned int GetVoiceDataSize(unsigned int consoleID);

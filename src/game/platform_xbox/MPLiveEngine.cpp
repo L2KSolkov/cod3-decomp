@@ -67,6 +67,12 @@ bool MPUIInterface::BlockUntilNetReady()
     instance = bdSingleton<bdNetImpl>::getInstance();
     return instance->getStatus() == BD_NET_DONE;
 }
+
+// ea: 0x005AD260
+LivePlayer* MPLiveEngine::GetLocalPlayer()
+{
+    return LiveWrapper::GetLocalPlayer(actualPort);
+}
 void MPUIInterface::QueryFromID(XNKID* sessionID)
 {
     void* memory = mem_heap_malloc(0xD0);
