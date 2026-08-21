@@ -6112,7 +6112,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6111	0x0058B840	0x0097AD40	??0PanelQuad@@QAE@PAD@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6112	0x0058B930	0x0097AE30	?CopyFrom@PanelQuad@@UAEXPBV1@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6113	0x0058BAC0	0x0097AFC0	?Init@PanelQuad@@UAEXQAUvector@Broc@@QAVcolor32@@W4panel_layer@@MPBD@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile and local layout	NO	NO	VERIFIED
-6114	0x0058BC10	0x0097B110	?Load@PanelQuad@@UAEXPAVPanelMaterial@@PAEAAHPBVMat43@math@@@Z		shell.o	game		f	0	FIXED	FUNCTION full disassembly audit; no remaining mismatches	YES	YES	VERIFIED
+6114	0x0058BC10	0x0097B110	?Load@PanelQuad@@UAEXPAVPanelMaterial@@PAEAAHPBVMat43@math@@@Z		shell.o	game		f	0	FIXED	FUNCTION fixed cursor byte/element mismatch and ind alias against disassembly	YES	YES	VERIFIED
 6115	0x0058C450	0x0097B950	?Clone@PanelQuad@@SAPAV1@PAV1@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6116	0x0058C4C0	0x0097B9C0	?Cleanup@PanelFile@@AAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6117	0x0058C5B0	0x0097BAB0	?Clone@PanelFile@@QAEPAV1@XZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
