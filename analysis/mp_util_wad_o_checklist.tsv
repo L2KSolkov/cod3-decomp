@@ -368,7 +368,7 @@ index	status	map_line
 367	FIXED	0002:00543cc0 ?reenable_medic_call__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D331C0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bint>*; corrected the wrapper return ABI
 368	VERIFIED	0002:00543d60 ?CallbackPunishedForTeamKill@_mp_common@@YAXVentity@Broc@@H@Z 00D33260 f mp_util_wad.o
 369	FIXED	0002:00543dd0 ?PunishedForTeamKill__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D332D0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bbool>*; corrected the wrapper return ABI
-370	VERIFIED	0002:00543e70 ?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D33370 f mp_util_wad.o	VERIFIED: Existing logic matches IDA branches for punished count, hints, sounds, and quit handling
+370	FIXED	0002:00543e70 ?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D33370 f mp_util_wad.o	FIXED: IDA 0x00943E70 passes the original ent copy to QuitGameWithMessage__functor; the old port incorrectly used a level sentinel
 371	VERIFIED	0002:00544360 ?Code_IsHost@Broc@@YA_NXZ 00D33860 f i mp_util_wad.o
 372	VERIFIED	0002:00544380 ?Code_IsRankedGame@Broc@@YA_NXZ 00D33880 f i mp_util_wad.o
 373	FIXED	0002:005443a0 ?QuitGameWithMessage__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@UHashStr@@@Z 00D338A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,HashStr>*; corrected the wrapper return ABI
