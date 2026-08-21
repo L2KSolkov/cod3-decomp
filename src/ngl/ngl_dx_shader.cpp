@@ -213,7 +213,7 @@ void nglDxSetupVShaderLights(int VSReg, nglMeshNode* MeshNode) {
 // ============================================================================
 // nglDxRegisterInternalShaders - ea: 0x84E910
 // ============================================================================
-const unsigned int* nglDxRegisterInternalShaders() {
+void nglDxRegisterInternalShaders() {
     nglDOFPixelShader::PS[0] =
         (unsigned int*)nglDOFPixelShader::PShaderTable[0];
     nglDOFPixelShader::Shader =
@@ -230,7 +230,6 @@ const unsigned int* nglDxRegisterInternalShaders() {
         (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
     nglGlowShaderPixelPostFX::Shader =
         (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
-    return nglGlowShaderPixelPostFX::PShaderTable[0];
 }
 
 // ============================================================================
@@ -247,52 +246,44 @@ void gpuSetVertexConstant(int idx, math::Mat44* data, unsigned int nelements) {
 // ============================================================================
 // Internal pixel shader registration helpers - ea: 0x84F960-0x84F9D0
 // ============================================================================
-const unsigned int* nglDOFPixelShader::RegisterShader() {
+void nglDOFPixelShader::RegisterShader() {
     nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
     nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
-    return nglDOFPixelShader::PShaderTable[0];
 }
 
-const unsigned int* nglDOFPixelShader::RegisterPShader() {
+void nglDOFPixelShader::RegisterPShader() {
     nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
     nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
-    return nglDOFPixelShader::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelPreFX::RegisterShader() {
+void nglGlowShaderPixelPreFX::RegisterShader() {
     nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
     nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
-    return nglGlowShaderPixelPreFX::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelPreFX::RegisterPShader() {
+void nglGlowShaderPixelPreFX::RegisterPShader() {
     nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
     nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
-    return nglGlowShaderPixelPreFX::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelFX::RegisterShader() {
+void nglGlowShaderPixelFX::RegisterShader() {
     nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
     nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
-    return nglGlowShaderPixelFX::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelFX::RegisterPShader() {
+void nglGlowShaderPixelFX::RegisterPShader() {
     nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
     nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
-    return nglGlowShaderPixelFX::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelPostFX::RegisterShader() {
+void nglGlowShaderPixelPostFX::RegisterShader() {
     nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
     nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
-    return nglGlowShaderPixelPostFX::PShaderTable[0];
 }
 
-const unsigned int* nglGlowShaderPixelPostFX::RegisterPShader() {
+void nglGlowShaderPixelPostFX::RegisterPShader() {
     nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
     nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
-    return nglGlowShaderPixelPostFX::PShaderTable[0];
 }
 
 // ============================================================================

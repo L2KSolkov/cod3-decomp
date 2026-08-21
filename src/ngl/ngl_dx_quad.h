@@ -145,29 +145,29 @@ struct nglDOFPixelShader {
     static unsigned int*  Shader;     // ?Shader@nglDOFPixelShader@@3PAKA
     static unsigned int** PS;
     static const unsigned int** PShaderTable;
-    static const unsigned int* RegisterShader();
-    static const unsigned int* RegisterPShader();
+    static void RegisterShader();
+    static void RegisterPShader();
 };
 struct nglGlowShaderPixelPreFX {
     static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelPreFX@@3PAKA
     static unsigned int** PS;
     static const unsigned int** PShaderTable;
-    static const unsigned int* RegisterShader();
-    static const unsigned int* RegisterPShader();
+    static void RegisterShader();
+    static void RegisterPShader();
 };
 struct nglGlowShaderPixelFX {
     static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelFX@@3PAKA
     static unsigned int** PS;
     static const unsigned int** PShaderTable;
-    static const unsigned int* RegisterShader();
-    static const unsigned int* RegisterPShader();
+    static void RegisterShader();
+    static void RegisterPShader();
 };
 struct nglGlowShaderPixelPostFX {
     static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelPostFX@@3PAKA
     static unsigned int** PS;
     static const unsigned int** PShaderTable;
-    static const unsigned int* RegisterShader();
-    static const unsigned int* RegisterPShader();
+    static void RegisterShader();
+    static void RegisterPShader();
 };
 struct nglGpuQuadPUVMatColVertexShader {
     static unsigned int  Shader;      // ?Shader@nglGpuQuadPUVMatColVertexShader@@3KA
