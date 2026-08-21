@@ -11152,8 +11152,10 @@ void StartGame(Broc::entity self) {
     mp_util_wad::pLevel->teamCantRespawn = "";
     mp_util_wad::pLevel->last_HQ_Point_key = 0;
     _mp_common::StartRound(Broc::bbool(true));
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = _mp_common::RunFrame__functor(lvl);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
                         __LINE__, "_mp_common::RunFrame", ftor);
