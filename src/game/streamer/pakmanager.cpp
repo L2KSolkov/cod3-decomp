@@ -12983,7 +12983,12 @@ static void InternalAllocate(float numAvailableBanks, BitSet<64>* freeBanks1,
         }
     }
     bool half = false;
-    if (*numBanks > 0.0f)
+    // The reference enters the half-bank path only when a fractional bank
+    // remains.  It compares the value with its truncation, rather than merely
+    // testing for a positive request; the latter can consume a half bank for
+    // an exhausted whole-bank request and leads to the allocator assertion.
+    const float wholeBanks = (float)(int)(*numBanks);
+    if (*numBanks > wholeBanks)
     {
         half = true;
         int v9 = 0;
