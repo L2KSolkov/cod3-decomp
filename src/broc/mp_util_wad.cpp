@@ -2209,6 +2209,29 @@ void plane_flyby_thread(Broc::entity self, mp_plane plane_struct) {
     }
 }
 
+// _mp_airplanes::plane_flyby_thread__functor - ea: 0x934BD0
+void* plane_flyby_thread__functor(Broc::entity self, mp_plane plane_struct) {
+    void* storage = AeThreadFunctor::operator new(
+        sizeof(AeThreadFunctor2<Broc::entity, mp_plane>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage)
+        AeThreadFunctor2<Broc::entity, mp_plane>(plane_flyby_thread,
+                                                  self, plane_struct);
+}
+
+// _mp_airplanes::plane_flyby__functor - ea: 0x935100
+void* plane_flyby__functor(Broc::entity self, mp_plane plane_struct,
+                           Broc::bint num) {
+    void* storage = AeThreadFunctor::operator new(
+        sizeof(AeThreadFunctor3<Broc::entity, mp_plane, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage)
+        AeThreadFunctor3<Broc::entity, mp_plane, Broc::bint>(
+            plane_flyby, self, plane_struct, num);
+}
+
 // ============================================================================
 // _mp_airplanes::plane_flyby - ea: 0x9351C0
 // ============================================================================
