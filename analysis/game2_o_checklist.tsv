@@ -708,11 +708,11 @@ index	status	map_line
 707	PORTED	0002:00118b70 ??0MetaNalBaseAnim@@QAE@W4nalRegisterKey@@@Z 00908070 f i game2.o
 708	PORTED	0002:00118ba0 ?VirtualCreateInstance@MetaNalBaseAnim@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 009080A0 f i game2.o
 709	PORTED	0002:00118c00 ??1MetaNalBaseAnim@@UAE@XZ 00908100 f i game2.o
-710	PORTED	0002:00118c10 ??0angles_t@@QAE@XZ 00908110 f i game2.o
-711	PORTED	0002:00118c20 ??Aangles_t@@QAEAAMH@Z 00908120 f i game2.o
-712	PORTED	0002:00118ca0 ?Zero@angles_t@@QAEAAV1@XZ 009081A0 f i game2.o
-713	PORTED	0002:00118cc0 ??0mpAnimJointPosOrientations_t@@QAE@XZ 009081C0 f i game2.o
-714	PORTED	0002:00118cd0 ??0mpAnimJointBoneHandles_t@@QAE@XZ 009081D0 f i game2.o
+710	PORTED	0002:00118c10 ??0angles_t@@QAE@XZ 00908110 f i game2.o  PORTED: IDA-backed empty three-float constructor
+711	PORTED	0002:00118c20 ??Aangles_t@@QAEAAMH@Z 00908120 f i game2.o  PORTED: IDA-backed bounds check and float reference
+712	PORTED	0002:00118ca0 ?Zero@angles_t@@QAEAAV1@XZ 009081A0 f i game2.o  PORTED: IDA-backed zero of pitch/yaw/roll
+713	PORTED	0002:00118cc0 ??0mpAnimJointPosOrientations_t@@QAE@XZ 009081C0 f i game2.o  PORTED: IDA-backed empty orientation aggregate constructor
+714	PORTED	0002:00118cd0 ??0mpAnimJointBoneHandles_t@@QAE@XZ 009081D0 f i game2.o  PORTED: IDA-backed null skeleton initialization
 715	VERIFIED	0002:00118ce0 ?GetSkeleton@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081E0 f i game2.o
 716	VERIFIED	0002:00118cf0 ?GetSkeleton@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ 009081F0 f i game2.o
 717	SKIPPED	0002:00118d00 ??0?$ae_fixed_string@$0EA@E@@QAE@XZ 00908200 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
