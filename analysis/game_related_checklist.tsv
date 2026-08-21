@@ -3635,8 +3635,8 @@ index	status	map_line
 3634	PORTED	0002:00118f50 ?empty@?$reserved_dlist@VQuickTaskDeactivation@@@@QBE_NXZ 00908450 f i game2.o  PORTED: IDA-backed sentinel comparison
 3635	PORTED	0002:00118f70 ??0dlist_node@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@PAU01@0@Z 00908470 f i game2.o  PORTED: IDA-backed next/previous pointer initialization
 3636	PORTED	0002:00118f90 ??0dlist_node@?$reserved_dlist@VTaskHandler@@@@QAE@PAU01@0@Z 00908490 f i game2.o  PORTED: IDA-backed next/previous pointer initialization
-3637	PORTED	0002:00118fb0 ??0?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE@XZ 009084B0 f i game2.o
-3638	PORTED	0002:00118fc0 ?push_back@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEXABQAVTaskHandler@@@Z 009084C0 f i game2.o
+3637	PORTED	0002:00118fb0 ??0?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE@XZ 009084B0 f i game2.o  PORTED: shared ae_sized_array constructor explicitly emitted for TaskHandler pointers
+3638	PORTED	0002:00118fc0 ?push_back@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEXABQAVTaskHandler@@@Z 009084C0 f i game2.o  PORTED: shared ae_sized_array push_back matches IDA assert and capacity guard
 3639	PORTED	0002:00119050 ??A?$ae_sized_array@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAEAAV?$ae_sized_array@VButtonEntry@@$0BA@@@H@Z 00908550 f i game2.o
 3640	PORTED	0002:001190d0 ??A?$ae_sized_array@VButtonEntry@@$0BA@@@QAEAAVButtonEntry@@H@Z 009085D0 f i game2.o
 3641	VERIFIED	0002:00119150 ?size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908650 f i game2.o
