@@ -8628,21 +8628,21 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8627	0x005EFB50	0x009DF050	??Cconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPBU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8628	0x005EFB60	0x009DF060	??Citerator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8629	0x005EFB70	0x009DF070	??0?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@QAE@ABHABV?$ae_fixed_string@$0CA@E@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8630	0x005EFBC0	0x009DF0C0	??0?$WaitTilOutputInst1@H@@QAE@ABH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8631	0x005EFBF0	0x009DF0F0	?AssignData@?$WaitTilOutputInst1@H@@UAEXPAVWaitTilOutput@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8632	0x005EFCA0	0x009DF1A0	?GetSize@?$WaitTilOutputInst1@H@@UAEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8630	0x005EFBC0	0x009DF0C0	??0?$WaitTilOutputInst1@H@@QAE@ABH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA constructor and WaitTilOutput layout	NO	NO	VERIFIED
+8631	0x005EFBF0	0x009DF0F0	?AssignData@?$WaitTilOutputInst1@H@@UAEXPAVWaitTilOutput@@@Z		scr.o	game		f i	1	FIXED	FUNCTION copied IDA size guard, assert metadata, and output payload	NO	NO	VERIFIED
+8632	0x005EFCA0	0x009DF1A0	?GetSize@?$WaitTilOutputInst1@H@@UAEHXZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA constant size	NO	NO	VERIFIED
 8633	0x005EFCB0	0x009DF1B0	??_G?$WaitTilOutputInst1@H@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8634	0x005EFCB0	0x009DF1B0	??_E?$WaitTilOutputInst1@H@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8635	0x005EFCE0	0x009DF1E0	??1?$WaitTilOutputInst1@H@@UAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8636	0x005EFCF0	0x009DF1F0	??0?$WaitTilOutputInst2@MI@@QAE@ABMABI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8637	0x005EFD20	0x009DF220	?AssignData@?$WaitTilOutputInst2@MI@@UAEXPAVWaitTilOutput@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8638	0x005EFDE0	0x009DF2E0	?GetSize@?$WaitTilOutputInst2@MI@@UAEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8635	0x005EFCE0	0x009DF1E0	??1?$WaitTilOutputInst1@H@@UAE@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA virtual destructor reset	NO	NO	VERIFIED
+8636	0x005EFCF0	0x009DF1F0	??0?$WaitTilOutputInst2@MI@@QAE@ABMABI@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA constructor and two-value payload layout	NO	NO	VERIFIED
+8637	0x005EFD20	0x009DF220	?AssignData@?$WaitTilOutputInst2@MI@@UAEXPAVWaitTilOutput@@@Z		scr.o	game		f i	1	FIXED	FUNCTION copied IDA size guard, assert metadata, and two-value output payload	NO	NO	VERIFIED
+8638	0x005EFDE0	0x009DF2E0	?GetSize@?$WaitTilOutputInst2@MI@@UAEHXZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA constant size	NO	NO	VERIFIED
 8639	0x005EFDF0	0x009DF2F0	??_G?$WaitTilOutputInst2@MI@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8640	0x005EFDF0	0x009DF2F0	??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8641	0x005EFE20	0x009DF320	??1?$WaitTilOutputInst2@MI@@UAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8641	0x005EFE20	0x009DF320	??1?$WaitTilOutputInst2@MI@@UAE@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA virtual destructor reset	NO	NO	VERIFIED
 8642	0x005EFE30	0x009DF330	??B?$IVPointer@VAIType@@@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8643	0x005EFE50	0x009DF350	?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8644	0x005EFF30	0x009DF430	??0?$BitSet@$0BAA@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8643	0x005EFE50	0x009DF350	?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ		scr.o	game		f i	1	PORTED	FUNCTION implemented IDA allocated-index dump and HandleDb assertion	NO	NO	VERIFIED
+8644	0x005EFF30	0x009DF430	??0?$BitSet@$0BAA@@@QAE@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA zero-initializing constructor	NO	NO	VERIFIED
 8645	0x005EFF60	0x009DF460	?_Hashval@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@IBEIABH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8646	0x005EFFA0	0x009DF4A0	?end@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8647	0x005EFFC0	0x009DF4C0	?erase@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@V312@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
