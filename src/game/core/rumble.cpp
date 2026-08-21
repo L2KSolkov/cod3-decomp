@@ -6,6 +6,7 @@
 
 #include "game/core/core_globals.h"
 #include "game/game_types.h"
+#include "core/PoolAllocator.h"
 
 #include <string.h>
 #include <new>
@@ -289,8 +290,6 @@ extern int AnimHeap_sInst;
 extern void* PoolAllocator_Allocate(void* allocator, unsigned int s,
                                     bool forceHeapAlloc);
 extern void PoolAllocator_Release(void* allocator, void* ptr);
-extern void* RumbleEffectInstance_sAllocator;
-
 extern Broc::string RumbleEffect_GetNotes(const RumbleEffect* self, int rumbleID);
 extern void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
                                       float delay, float intensity,
@@ -301,21 +300,25 @@ extern void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle han
                                       Broc::string rumble_notes, int looping);
 extern void RumbleEffectInstance_Dtor(void* self);
 
-// RumbleEffect / pool artifacts (core.o; stubs, port later)
+PoolAllocator* RumbleEffectInstance::sAllocator = nullptr;
+
+// RumbleEffect / pool artifacts (core.o)
 void* PoolAllocator_Allocate(void* allocator, unsigned int s,
                              bool forceHeapAlloc)
 {
-    (void)allocator; (void)s; (void)forceHeapAlloc;
-    return nullptr;
+    if (allocator == nullptr)
+        return nullptr;
+    return reinterpret_cast<PoolAllocator*>(allocator)->Allocate(
+        s, forceHeapAlloc);
 }
 void PoolAllocator_Release(void* allocator, void* ptr)
 {
-    (void)allocator; (void)ptr;
+    if (allocator != nullptr)
+        reinterpret_cast<PoolAllocator*>(allocator)->Release(ptr);
 }
 Broc::string RumbleEffect_GetNotes(const RumbleEffect* self, int rumbleID)
 {
-    (void)self; (void)rumbleID;
-    return Broc::string((Broc::string::Block*)nullptr);
+    return self->GetNotes((ERumbleMotorID)rumbleID);
 }
 void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
                                float delay, float intensity,
@@ -332,6 +335,86 @@ void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
 void RumbleEffectInstance_Dtor(void* self)
 {
     (void)self;
+}
+
+// ea: 0x004DE420
+RumbleEffectInstanceHandle::RumbleEffectInstanceHandle(int val)
+    : mVal(val)
+{
+}
+
+// ea: 0x004DE440
+int RumbleEffectInstanceHandle::GetVal() const
+{
+    return mVal;
+}
+
+// ea: 0x004DE450
+bool RumbleEffectInstanceHandle::IsNull() const
+{
+    return mVal == 0;
+}
+
+// ea: 0x004DE460
+void* RumbleEffectInstance::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x004DE470
+int RumbleEffectInstance::get_dlist_node_offset()
+{
+    return 0;
+}
+
+// ea: 0x004DE480
+void* RumbleEffectInstance::operator new(unsigned int size,
+                                         bool forceHeapAlloc,
+                                         const char* file, int line)
+{
+    (void)file;
+    (void)line;
+    return sAllocator->Allocate(size, forceHeapAlloc);
+}
+
+// ea: 0x004DE4A0
+void RumbleEffectInstance::operator delete(void* ptr, bool forceHeapAlloc,
+                                           const char* file, int line)
+{
+    (void)forceHeapAlloc;
+    (void)file;
+    (void)line;
+    sAllocator->Release(ptr);
+}
+
+// ea: 0x004DE4C0
+void RumbleEffectInstance::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
+// ea: 0x004DE4E0
+PoolAllocator* RumbleEffectInstance::SetAllocator(PoolAllocator* p)
+{
+    sAllocator = p;
+    return p;
+}
+
+// ea: 0x004DE390
+Broc::string RumbleEffect::GetNotes(ERumbleMotorID rumbleID) const
+{
+    if ((int)rumbleID >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr =
+            "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[(int)rumbleID].rumble_notes;
 }
 
 // ea: 0x004BD110
@@ -382,7 +465,7 @@ RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
             if (data.delay > 0.0f
                 && effect.GetEnabled((ERumbleMotorID)v8))
             {
-                void* v9 = PoolAllocator_Allocate(RumbleEffectInstance_sAllocator,
+                void* v9 = PoolAllocator_Allocate(RumbleEffectInstance::sAllocator,
                                                   0x30u, false);
                 RumbleEffectInstance* inst = (RumbleEffectInstance*)v9;
                 int looping = (data.m_flags.mVal & 2) != 0;
@@ -511,7 +594,7 @@ void RumbleManager::Reset()
         {
             RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
             RumbleEffectInstance_Dtor(n);
-            PoolAllocator_Release(RumbleEffectInstance_sAllocator, n);
+            PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
             n = next;
         }
         mRumbleLists[list].m_head = nullptr;
@@ -537,7 +620,7 @@ void RumbleManager::Remove(RumbleEffectInstanceHandle handle)
             if (n->m_handle.mVal == handle.mVal)
             {
                 RumbleEffectInstance_Dtor(n);
-                PoolAllocator_Release(RumbleEffectInstance_sAllocator, n);
+                PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
                 break;
             }
             n = next;
@@ -617,7 +700,7 @@ void RumbleManager::FrameAdvance(float delta_time)
             {
                 // expired: remove
                 RumbleEffectInstance_Dtor(n);
-                PoolAllocator_Release(RumbleEffectInstance_sAllocator, n);
+                PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
             }
             else if ((n->m_intensity * intensity) > max_intensity)
             {

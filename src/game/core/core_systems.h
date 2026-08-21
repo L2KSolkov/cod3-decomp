@@ -19,6 +19,8 @@
 #include "game/game_types.h"
 #include "game/core/core_types.h"
 
+class PoolAllocator;
+
 // TPakId is defined fully in game/sv/sv_stubs.h; forward-declare the enum so
 // this header stays standalone (C++11 allows enum : int forward decls).
 enum TPakId : int;
@@ -530,6 +532,10 @@ enum ERumbleMotorID;
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
+    RumbleEffectInstanceHandle() = default;
+    RumbleEffectInstanceHandle(int val);
+    int GetVal() const;
+    bool IsNull() const;
 };
 static_assert(sizeof(RumbleEffectInstanceHandle) == 0x4,
               "RumbleEffectInstanceHandle size mismatch");
@@ -770,6 +776,7 @@ static_assert(sizeof(EffectEventSys) == 0xA380, "EffectEventSys size mismatch");
 // Rumble types (core.o rumble.cpp)
 // ============================================================================
 struct RumbleEffectInstance {
+    static PoolAllocator* sAllocator;
     reserved_dlist<RumbleEffectInstance>::dlist_node m_dlist_node;  // +0x00
     RumbleEffectInstanceHandle m_handle;      // +0x08
     float m_cur_time;          // +0x0C
@@ -781,6 +788,14 @@ struct RumbleEffectInstance {
     float m_duration;          // +0x24
     Broc::string m_rumble_notes;  // +0x28
     Bitmask<unsigned int> m_flags;  // +0x2C
+    void* get_dlist_node();
+    static int get_dlist_node_offset();
+    static void* operator new(unsigned int size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    static PoolAllocator* SetAllocator(PoolAllocator* p);
 };
 static_assert(sizeof(RumbleEffectInstance) == 0x30,
               "RumbleEffectInstance size mismatch");
@@ -813,6 +828,7 @@ public:
     float GetRampDownDuration(ERumbleMotorID rumbleID) const;   // ?GetRampDownDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE210)
     float GetRampUpDuration(ERumbleMotorID rumbleID) const;     // ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE290)
     float GetSteadyDuration(ERumbleMotorID rumbleID) const;     // ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE310)
+    Broc::string GetNotes(ERumbleMotorID rumbleID) const;       // ?GetNotes@RumbleEffect@@QBE?AVstring@Broc@@W4ERumbleMotorID@@@Z (core.o 0x4DE390)
     void SetLooping(ERumbleMotorID rumbleID, bool looping);     // ?SetLooping@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (cg.o 0x6BBDE0)
     void SetUsingNotes(ERumbleMotorID rumbleID, bool new_using_notes); // scr.o 0x5EE470
     void SetNotes(ERumbleMotorID rumbleID, const Broc::string& new_notes); // scr.o 0x5EE510
