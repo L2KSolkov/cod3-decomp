@@ -6673,19 +6673,25 @@ void CheckLastManStandingEnoughPlayers(Broc::entity guy) {
     if ((bool)mp_util_wad::pLevel->lastManStanding &&
         !(bool)mp_util_wad::pLevel->roundOver &&
         (bool)mp_util_wad::pLevel->roundStarted) {
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         HashStr n1;
         n1.mVal = 0xA8743279;
         Broc::notify(lvl, n1);
         Broc::wait(0.1f);
-        Broc::entity lvl2;
-        lvl2.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         HashStr n2;
         n2.mVal = 0x4DEC2E76u;
         Broc::endon(lvl2, n2);
-        Broc::entity lvl3;
-        lvl3.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl3 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         Broc::endon(lvl3, n1);
         Broc::wait(30.0f);
         Broc::bint anyoneLeftAxis(0);
