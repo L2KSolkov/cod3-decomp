@@ -6358,7 +6358,7 @@ index	status	map_line
 6357	VERIFIED	0002:001ad210 ??0SEntitySaveInfo@@QAE@XZ 0099C710 f i shell.o	VERIFIED: matches IDA member zero-initialization
 6358	SKIPPED	0002:001ad240 ?TextOut@XFONT@@QAGJPAUD3DSurface@@PBGIJJ@Z 0099C740 f i shell.o	SKIPPED: XDK XFONT API; provided by the Win32 graphics/font shim
 6359	VERIFIED	0002:001ad250 ?GetHandle@LiveWrapper@@SAPAV1@XZ 0099C750 f i shell.o
-6360	PORTED	0002:001ad260 ?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ 0099C760 f i shell.o	PORTED: added IDA-derived actualPort forwarding accessor
+6360	VERIFIED	0002:001ad260 ?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ 0099C760 f i shell.o	VERIFIED: matches IDA actualPort forwarding accessor
 6361	VERIFIED	0002:001ad270 ?button_pressed_clear_all@controller@@QAEXXZ 0099C770 f i shell.o
 6362	VERIFIED	0002:001ad2d0 ?GetLerpOrigin@EntityState@@QBE?BVPosition3@math@@XZ 0099C7D0 f i shell.o	VERIFIED: matches IDA result-copy accessor
 6363	VERIFIED	0002:001ad300 ??0vector@Broc@@QAE@MM@Z 0099C800 f i shell.o	VERIFIED: matches IDA two-component constructor with zero z
@@ -6384,14 +6384,14 @@ index	status	map_line
 6383	VERIFIED	0002:001ad630 ?GetPAOFlag@PanelAnimObject@@QAE_NH@Z 0099CB30 f i shell.o	VERIFIED: matches IDA masked flag test
 6384	SKIPPED	0002:001ad650 ??_GPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 6385	SKIPPED	0002:001ad650 ??_EPanelAnimObject@@UAEPAXI@Z 0099CB50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-6386	PORTED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o	PORTED: added IDA-derived flash_color setter
-6387	PORTED	0002:001ad690 ?SetPeriod@FETextFlashInfo@@QAEXM@Z 0099CB90 f i shell.o	PORTED: added IDA-derived flash_period setter
+6386	VERIFIED	0002:001ad680 ?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z 0099CB80 f i shell.o	VERIFIED: matches IDA flash_color setter
+6387	VERIFIED	0002:001ad690 ?SetPeriod@FETextFlashInfo@@QAEXM@Z 0099CB90 f i shell.o	VERIFIED: matches IDA flash_period setter
 6388	VERIFIED	0002:001ad6b0 ??0FEText@@QAE@XZ 0099CBB0 f i shell.o
 6389	VERIFIED	0002:001ad830 ?Draw@FEText@@UAEXXZ 0099CD30 f i shell.o
 6390	VERIFIED	0002:001ad840 ?AddedToMenu@FEText@@UAEX_N@Z 0099CD40 f i shell.o
 6391	VERIFIED	0002:001ad860 ?IsOnMenu@FEText@@UAE_NXZ 0099CD60 f i shell.o
 6392	VERIFIED	0002:001ad870 ?IsMultiLineObject@FEText@@UAE_NXZ 0099CD70 f i shell.o
-6393	PORTED	0002:001ad880 ?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z 0099CD80 f i shell.o	PORTED: added IDA-derived xy_initial assignment
+6393	VERIFIED	0002:001ad880 ?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z 0099CD80 f i shell.o	VERIFIED: matches IDA xy_initial assignment
 6394	VERIFIED	0002:001ad8b0 ?SetFont@FEText@@UAEXW4font_index@@@Z 0099CDB0 f i shell.o
 6395	VERIFIED	0002:001ad8c0 ?SetEvenNumberSpacing@FEText@@UAEX_N@Z 0099CDC0 f i shell.o
 6396	VERIFIED	0002:001ad8e0 ?SetScale@FEText@@UAEXM@Z 0099CDE0 f i shell.o
@@ -6441,7 +6441,7 @@ index	status	map_line
 6440	VERIFIED	0002:001adf60 ?Shift@MultiLineString@@QAEXMM@Z 0099D460 f i shell.o
 6441	VERIFIED	0002:001adfa0 ?GetTotalWidth@MultiLineString@@QAEMXZ 0099D4A0 f i shell.o
 6442	VERIFIED	0002:001adfb0 ??0PanelMaterial@@QAE@XZ 0099D4B0 f i shell.o
-6443	PORTED	0002:001adfd0 ??1PanelMaterial@@QAE@XZ 0099D4D0 f i shell.o	PORTED: added IDA-derived empty destructor
+6443	VERIFIED	0002:001adfd0 ??1PanelMaterial@@QAE@XZ 0099D4D0 f i shell.o	VERIFIED: matches IDA empty destructor
 6444	VERIFIED	0002:001adfe0 ??0LightPanelQuad@@QAE@XZ 0099D4E0 f i shell.o
 6445	VERIFIED	0002:001ae000 ?SetX@PanelQuadSection@@AAEXHM@Z 0099D500 f i shell.o	VERIFIED: matches IDA indexed X assignment
 6446	VERIFIED	0002:001ae020 ?SetY@PanelQuadSection@@AAEXHM@Z 0099D520 f i shell.o	VERIFIED: matches IDA indexed Y assignment

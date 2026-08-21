@@ -6358,7 +6358,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6357	0x005AD210	0x0099C710	??0SEntitySaveInfo@@QAE@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6358	0x005AD240	0x0099C740	?TextOut@XFONT@@QAGJPAUD3DSurface@@PBGIJJ@Z		shell.o	game		f i	1	SKIPPED	XDK API delegated to platform shim	NO	NO	SKIPPED
 6359	0x005AD250	0x0099C750	?GetHandle@LiveWrapper@@SAPAV1@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6360	0x005AD260	0x0099C760	?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6360	0x005AD260	0x0099C760	?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6361	0x005AD270	0x0099C770	?button_pressed_clear_all@controller@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6362	0x005AD2D0	0x0099C7D0	?GetLerpOrigin@EntityState@@QBE?BVPosition3@math@@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6363	0x005AD300	0x0099C800	??0vector@Broc@@QAE@MM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
@@ -6384,14 +6384,14 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6383	0x005AD630	0x0099CB30	?GetPAOFlag@PanelAnimObject@@QAE_NH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6384	0x005AD650	0x0099CB50	??_GPanelAnimObject@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6385	0x005AD650	0x0099CB50	??_EPanelAnimObject@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6386	0x005AD680	0x0099CB80	?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-6387	0x005AD690	0x0099CB90	?SetPeriod@FETextFlashInfo@@QAEXM@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6386	0x005AD680	0x0099CB80	?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6387	0x005AD690	0x0099CB90	?SetPeriod@FETextFlashInfo@@QAEXM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6388	0x005AD6B0	0x0099CBB0	??0FEText@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6389	0x005AD830	0x0099CD30	?Draw@FEText@@UAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6390	0x005AD840	0x0099CD40	?AddedToMenu@FEText@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6391	0x005AD860	0x0099CD60	?IsOnMenu@FEText@@UAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6392	0x005AD870	0x0099CD70	?IsMultiLineObject@FEText@@UAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6393	0x005AD880	0x0099CD80	?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6393	0x005AD880	0x0099CD80	?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6394	0x005AD8B0	0x0099CDB0	?SetFont@FEText@@UAEXW4font_index@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6395	0x005AD8C0	0x0099CDC0	?SetEvenNumberSpacing@FEText@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6396	0x005AD8E0	0x0099CDE0	?SetScale@FEText@@UAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6441,7 +6441,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6440	0x005ADF60	0x0099D460	?Shift@MultiLineString@@QAEXMM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6441	0x005ADFA0	0x0099D4A0	?GetTotalWidth@MultiLineString@@QAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6442	0x005ADFB0	0x0099D4B0	??0PanelMaterial@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6443	0x005ADFD0	0x0099D4D0	??1PanelMaterial@@QAE@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6443	0x005ADFD0	0x0099D4D0	??1PanelMaterial@@QAE@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6444	0x005ADFE0	0x0099D4E0	??0LightPanelQuad@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6445	0x005AE000	0x0099D500	?SetX@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6446	0x005AE020	0x0099D520	?SetY@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
