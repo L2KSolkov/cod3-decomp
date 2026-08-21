@@ -2804,6 +2804,10 @@ bool operator!=(Broc::bint lhs, Broc::bint rhs) {
     return lhs.mVal != rhs.mVal;
 }
 
+Broc::bbool operator<(Broc::bint lhs, int rhs) {
+    return Broc::bbool(lhs.mVal < rhs);
+}
+
 Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
 }
@@ -4559,7 +4563,7 @@ Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
 void* main__functor(Broc::entity self);
 void* StartGame__functor(Broc::entity self);
 void* Host_FlowControl__functor(Broc::entity self);
-void* Track_Ownership__functor(Broc::entity self);
+AeThreadFunctor* Track_Ownership__functor(Broc::entity self);
 void* ResetGame__functor(Broc::entity self);
 void* TriggerRadio__functor(Broc::entity self);
 }
@@ -11526,7 +11530,8 @@ void GetTriggerFromIndex() {
         Broc::bint k;
         if ((int)mp_util_wad::entity_get_key(t) ==
             (int)mp_util_wad::pLevel->triggerIndex) {
-            *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies) = t;
+            Broc::entity level_entity = mp_util_wad::pLevel->_base.entity;
+            *mp_util_wad::GetEE_trigger(level_entity) = t;
             Broc::Code_DebugOut("*HQ* got trigger\n");
             triggerType.~string();
             triggers.~dyn_array();
@@ -11933,7 +11938,7 @@ void* Host_FlowControl__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(Host_FlowControl, self);
 }
-void* Track_Ownership__functor(Broc::entity self) {
+AeThreadFunctor* Track_Ownership__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -12810,7 +12815,7 @@ void WARScore(Broc::entity self) {
             pointsTimer = 10;
             points = (int)mp_util_wad::pLevel->warIndex -
                      (int)mp_util_wad::pLevel->lastFlagIndex / 2;
-            if (points < 0)
+            if ((int)points < 0)
                 points = -points;
             if ((int)points > 2)
                 points = 2;

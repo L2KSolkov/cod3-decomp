@@ -651,7 +651,7 @@ struct bint {
     int operator++() { AssertDefined(); return mVal++; }
     int operator--(int) { AssertDefined(); return --mVal; }
     int operator+=(int v) { AssertDefined(); mVal += v; return mVal; }
-    bint& operator-=(int v) { AssertDefined(); mVal -= v; return *this; }
+    int operator-=(int v) { AssertDefined(); mVal -= v; return mVal; }
     void AssertDefined() const {}  // ea: 0x934790
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bint) == 4, "bint size mismatch");
@@ -713,7 +713,7 @@ bint operator*(int lhs, bint rhs);
 bint operator*(bint lhs, int rhs);
 bfloat operator*(bfloat lhs, float rhs);
 bfloat operator*(bfloat lhs, bfloat rhs);
-bool operator<(bint lhs, int rhs);
+bbool operator<(bint lhs, int rhs);
 
 } // namespace Broc
 
