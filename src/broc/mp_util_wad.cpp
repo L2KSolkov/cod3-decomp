@@ -3113,7 +3113,10 @@ void ambient_system(Broc::entity lvl, Broc::string spawn_package) {
                        (float)mp_util_wad::pLevel->audio_current_ambient_wait > 100000.0f;
         if (!bad_max) {
             while (1) {
-                Broc::entity fMin;
+                Broc::entity fMin =
+                    mp_util_wad::pLevel != nullptr
+                        ? mp_util_wad::pLevel->_base.entity
+                        : Broc::entity();
                 Broc::string fMax = mp_util_wad::pLevel->audio_current_ambpack;
                 void* ftor = audio_spawner__functor(fMin, fMax);
                 Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
@@ -3136,8 +3139,10 @@ void ambient_chatter_system(Broc::entity self) {
     (void)self;
     for (;;) {
         extern void* audio_spawner__functor(Broc::entity, Broc::string);
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         Broc::string sound("dist_chatter");
         void* ftor = audio_spawner__functor(lvl, sound);
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
@@ -3201,8 +3206,10 @@ void PlayerLocation(Broc::entity self) {
                             (unsigned int)(int)mp_util_wad::pLevel
                                 ->audio_current_track_handle,
                             (unsigned int)(int)snd1, 2.0f);
-                        Broc::entity lvl;
-                        lvl.___u0 = mp_util_wad::pLevel != NULL;
+                        Broc::entity lvl =
+                            mp_util_wad::pLevel != nullptr
+                                ? mp_util_wad::pLevel->_base.entity
+                                : Broc::entity();
                         void* ftor = audio_crossfade_wait__functor(lvl);
                         Broc::thread_create(false,
                                             "c:\\cod\\code\\script\\_mp_audio.bro",
@@ -3881,13 +3888,17 @@ void main() {
     mp_util_wad::pLevel->audio_indoor_switch = 0;
     mp_util_wad::pLevel->audio_change_priority = 0;
     mp_util_wad::pLevel->crossfade_done = 1;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* playerLoc = PlayerLocation__functor(lvl);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
                         __LINE__, "PlayerLocation", playerLoc);
-    Broc::entity lvl2;
-    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl2 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     Broc::string ambient = mp_util_wad::pLevel->ambient_setting;
     void* ambSys = ambient_system__functor(lvl2, ambient);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
@@ -4960,8 +4971,10 @@ void CallbackVehicleKilled(Broc::entity killedVehicle, Broc::entity inflictor,
 void CallbackHealthRegenRecovering(Broc::entity self) {
     if (Broc::Code_IsLocalPlayer(self)) {
         Broc::string script("breathing_better");
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         Broc::EffectEventPlay(&lvl, &script);
         script.~string();
     }
@@ -5008,8 +5021,10 @@ void CallbackRestartMap() {
 
 // CallbackStopFollowing - ea: 0x941350
 unsigned int CallbackStopFollowing() {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = StopFollowing__functor(lvl, true);
     return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                                __LINE__, "StopFollowing", ftor);
@@ -5017,8 +5032,10 @@ unsigned int CallbackStopFollowing() {
 
 // CallbackQuitGame - ea: 0x944580
 unsigned int CallbackQuitGame() {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = QuitGameThread__functor(lvl);
     return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                                __LINE__, "QuitGameThread", ftor);
@@ -5026,8 +5043,10 @@ unsigned int CallbackQuitGame() {
 
 // CallbackHostDisconnected - ea: 0x9446A0
 unsigned int CallbackHostDisconnected() {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr msg;
     msg.mVal = 0xA45844A6;
     void* ftor = QuitGameWithMessage__functor(lvl, msg);
@@ -5037,8 +5056,10 @@ unsigned int CallbackHostDisconnected() {
 
 // CallbackLocalPlayerKicked - ea: 0x944730
 unsigned int CallbackLocalPlayerKicked() {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr msg;
     msg.mVal = 0x3546BB54u;
     void* ftor = QuitGameWithMessage__functor(lvl, msg);
@@ -5048,8 +5069,10 @@ unsigned int CallbackLocalPlayerKicked() {
 
 // CallbackHostMigrated - ea: 0x9447C0
 unsigned int CallbackHostMigrated() {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = HostHasMigrated__functor(lvl);
     return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                                __LINE__, "HostHasMigrated", ftor);
