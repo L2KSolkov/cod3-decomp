@@ -3570,11 +3570,11 @@ index	status	map_line
 3569	PORTED	0002:00118390 ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z 00907890 f i game2.o
 3570	VERIFIED	0002:00118420 ?GetFrameCount@nalGenericAnim@nalGeneric@@QBEHXZ 00907920 f i game2.o
 3571	VERIFIED	0002:00118430 ?CreateInstance@nalGenericAnim@nalGeneric@@QAEPAVnalGenericInstance@2@PAVnalGenericSkeleton@2@@Z 00907930 f i game2.o
-3572	PORTED	0002:001184c0 ??0NoiseFloat@@QAE@XZ 009079C0 f i game2.o
-3573	PORTED	0002:00118510 ??1NoiseFloat@@QAE@XZ 00907A10 f i game2.o
-3574	PORTED	0002:00118520 ?Init@NoiseFloat@@QAEXKMM@Z 00907A20 f i game2.o
-3575	PORTED	0002:00118570 ?SetFrequency@NoiseFloat@@QAEXM@Z 00907A70 f i game2.o
-3576	PORTED	0002:00118590 ?SetRange@NoiseFloat@@QAEXM@Z 00907A90 f i game2.o
+3572	PORTED	0002:001184c0 ??0NoiseFloat@@QAE@XZ 009079C0 f i game2.o  PORTED: IDA-backed seeded defaults and octave/frequency/range initialization
+3573	PORTED	0002:00118510 ??1NoiseFloat@@QAE@XZ 00907A10 f i game2.o  PORTED: IDA-backed empty destructor
+3574	PORTED	0002:00118520 ?Init@NoiseFloat@@QAEXKMM@Z 00907A20 f i game2.o  PORTED: IDA-backed seed reset and parameter stores
+3575	PORTED	0002:00118570 ?SetFrequency@NoiseFloat@@QAEXM@Z 00907A70 f i game2.o  PORTED: IDA-backed frequency setter
+3576	PORTED	0002:00118590 ?SetRange@NoiseFloat@@QAEXM@Z 00907A90 f i game2.o  PORTED: IDA-backed range setter
 3577	VERIFIED	0002:001185b0 ??0MsaQuat@@QAE@XZ 00907AB0 f i game2.o
 3578	PORTED	0002:001185c0 ?Set3DScale@CameraShake@@QAEXM@Z 00907AC0 f i game2.o
 3579	PORTED	0002:001185e0 ?Get3DScale@CameraShake@@QAEMXZ 00907AE0 f i game2.o
