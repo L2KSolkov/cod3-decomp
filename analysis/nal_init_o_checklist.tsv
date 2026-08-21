@@ -102,30 +102,30 @@ index	status	map_line
 101	FIXED	0002:00454e40 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentTrajectoryPOData@@VnalComponentTrajectoryPO@@@@MAE@XZ 00C44340 f i nal_init.o
 102	FIXED	0002:00454e50 ??1?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@MAE@XZ 00C44350 f i nal_init.o
 103	FIXED	0002:00454e60 ??1?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@MAE@XZ 00C44360 f i nal_init.o
-104	PORTED	0002:00454e70 ??0nalComponentU8Base@@QAE@XZ 00C44370 f i nal_init.o
-105	PORTED	0002:00454e80 ?GetType@nalComponentU8Base@@UBEIXZ 00C44380 f i nal_init.o
-106	PORTED	0002:00454e90 ?GetPoseSize@nalComponentU8Base@@UBEHXZ 00C44390 f i nal_init.o
+104	VERIFIED	0002:00454e70 ??0nalComponentU8Base@@QAE@XZ 00C44370 f i nal_init.o  VERIFIED: constructor vtable assignment matches IDA
+105	VERIFIED	0002:00454e80 ?GetType@nalComponentU8Base@@UBEIXZ 00C44380 f i nal_init.o  VERIFIED: returns the TypeID address as in IDA
+106	VERIFIED	0002:00454e90 ?GetPoseSize@nalComponentU8Base@@UBEHXZ 00C44390 f i nal_init.o  VERIFIED: returns pose size 1 as in IDA
 107	SKIPPED	0002:00454ea0 ??_GnalComponentU8Base@@UAEPAXI@Z 00C443A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 108	SKIPPED	0002:00454ea0 ??_EnalComponentU8Base@@UAEPAXI@Z 00C443A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-109	PORTED	0002:00454ed0 ?GetPoseAlignment@nalComponentU8Base@@UBEHXZ 00C443D0 f i nal_init.o
-110	PORTED	0002:00454ee0 ??0nalComponentFloat1Base@@QAE@XZ 00C443E0 f i nal_init.o
-111	PORTED	0002:00454ef0 ?GetType@nalComponentFloat1Base@@UBEIXZ 00C443F0 f i nal_init.o
-112	PORTED	0002:00454f00 ?GetPoseSize@nalComponentFloat1Base@@UBEHXZ 00C44400 f i nal_init.o
+109	VERIFIED	0002:00454ed0 ?GetPoseAlignment@nalComponentU8Base@@UBEHXZ 00C443D0 f i nal_init.o  VERIFIED: returns pose alignment 1 as in IDA
+110	VERIFIED	0002:00454ee0 ??0nalComponentFloat1Base@@QAE@XZ 00C443E0 f i nal_init.o  VERIFIED: constructor vtable assignment matches IDA
+111	VERIFIED	0002:00454ef0 ?GetType@nalComponentFloat1Base@@UBEIXZ 00C443F0 f i nal_init.o  VERIFIED: returns the TypeID address as in IDA
+112	VERIFIED	0002:00454f00 ?GetPoseSize@nalComponentFloat1Base@@UBEHXZ 00C44400 f i nal_init.o  VERIFIED: returns pose size 4 as in IDA
 113	SKIPPED	0002:00454f10 ??_EnalComponentFloat1Base@@UAEPAXI@Z 00C44410 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 114	SKIPPED	0002:00454f10 ??_GnalComponentFloat1Base@@UAEPAXI@Z 00C44410 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-115	PORTED	0002:00454f40 ?GetPoseAlignment@nalComponentFloat1Base@@UBEHXZ 00C44440 f i nal_init.o
-116	PORTED	0002:00454f50 ??0nalComponentFloat3Base@@QAE@XZ 00C44450 f i nal_init.o
-117	PORTED	0002:00454f60 ?GetType@nalComponentFloat3Base@@UBEIXZ 00C44460 f i nal_init.o
-118	PORTED	0002:00454f70 ?GetPoseSize@nalComponentFloat3Base@@UBEHXZ 00C44470 f i nal_init.o
+115	VERIFIED	0002:00454f40 ?GetPoseAlignment@nalComponentFloat1Base@@UBEHXZ 00C44440 f i nal_init.o  VERIFIED: returns pose alignment 4 as in IDA
+116	VERIFIED	0002:00454f50 ??0nalComponentFloat3Base@@QAE@XZ 00C44450 f i nal_init.o  VERIFIED: constructor vtable assignment matches IDA
+117	VERIFIED	0002:00454f60 ?GetType@nalComponentFloat3Base@@UBEIXZ 00C44460 f i nal_init.o  VERIFIED: returns the TypeID address as in IDA
+118	VERIFIED	0002:00454f70 ?GetPoseSize@nalComponentFloat3Base@@UBEHXZ 00C44470 f i nal_init.o  VERIFIED: returns pose size 16 as in IDA
 119	SKIPPED	0002:00454f80 ??_GnalComponentFloat3Base@@UAEPAXI@Z 00C44480 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 120	SKIPPED	0002:00454f80 ??_EnalComponentFloat3Base@@UAEPAXI@Z 00C44480 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-121	PORTED	0002:00454fb0 ?GetPoseAlignment@nalComponentFloat3Base@@UBEHXZ 00C444B0 f i nal_init.o
-122	PORTED	0002:00454fc0 ??0nalComponentFloat4Base@@QAE@XZ 00C444C0 f i nal_init.o
-123	PORTED	0002:00454fd0 ?GetType@nalComponentFloat4Base@@UBEIXZ 00C444D0 f i nal_init.o
-124	PORTED	0002:00454fe0 ?GetPoseSize@nalComponentFloat4Base@@UBEHXZ 00C444E0 f i nal_init.o
+121	VERIFIED	0002:00454fb0 ?GetPoseAlignment@nalComponentFloat3Base@@UBEHXZ 00C444B0 f i nal_init.o  VERIFIED: returns pose alignment 16 as in IDA
+122	VERIFIED	0002:00454fc0 ??0nalComponentFloat4Base@@QAE@XZ 00C444C0 f i nal_init.o  VERIFIED: constructor vtable assignment matches IDA
+123	VERIFIED	0002:00454fd0 ?GetType@nalComponentFloat4Base@@UBEIXZ 00C444D0 f i nal_init.o  VERIFIED: returns the TypeID address as in IDA
+124	VERIFIED	0002:00454fe0 ?GetPoseSize@nalComponentFloat4Base@@UBEHXZ 00C444E0 f i nal_init.o  VERIFIED: returns pose size 16 as in IDA
 125	SKIPPED	0002:00454ff0 ??_GnalComponentFloat4Base@@UAEPAXI@Z 00C444F0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 126	SKIPPED	0002:00454ff0 ??_EnalComponentFloat4Base@@UAEPAXI@Z 00C444F0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-127	PORTED	0002:00455020 ?GetPoseAlignment@nalComponentFloat4Base@@UBEHXZ 00C44520 f i nal_init.o
+127	VERIFIED	0002:00455020 ?GetPoseAlignment@nalComponentFloat4Base@@UBEHXZ 00C44520 f i nal_init.o  VERIFIED: returns pose alignment 16 as in IDA
 128	PORTED	0002:00455030 ??0nalComponentQuatBase@@QAE@XZ 00C44530 f i nal_init.o
 129	PORTED	0002:00455040 ?GetType@nalComponentQuatBase@@UBEIXZ 00C44540 f i nal_init.o
 130	PORTED	0002:00455050 ?GetPoseSize@nalComponentQuatBase@@UBEHXZ 00C44550 f i nal_init.o
