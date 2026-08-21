@@ -399,7 +399,7 @@ index	status	map_line
 398	FIXED	0002:00545950 ?UpdateSpectateDead__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D34E50 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 399	PORTED	0002:005459f0 ?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D34EF0 f mp_util_wad.o
 400	VERIFIED	0002:00545b90 ?Code_ScreenFadeToBlack@Broc@@YAXIH@Z 00D35090 f i mp_util_wad.o
-401	VERIFIED	0002:00545bc0 ?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D350C0 f mp_util_wad.o
+401	FIXED	0002:00545bc0 ?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D350C0 f mp_util_wad.o	FIXED: IDA 0x00945BC0 constructs FadeUpWhenLoaded with pLevel->_base.entity and the original player
 402	VERIFIED	0002:00545d30 ?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z 00D35230 f mp_util_wad.o
 403	PORTED	0002:00545fb0 ?Get@nextPlayerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D354B0 f i mp_util_wad.o	PORTED: Added the IDA-backed persistent nextPlayerClass getter
 404	FIXED	0002:00545fe0 ?Code_RequestRespawn@Broc@@YAXI@Z 00D354E0 f i mp_util_wad.o	FIXED: corrected playerID to unsigned-int ABI and forwarded unchanged to mRequestRespawn
