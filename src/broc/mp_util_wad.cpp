@@ -2768,6 +2768,11 @@ void ObjectiveAdd(int iObjective, const Broc::string& state,
                                   height, "1", -1, -1, clientIndex);
 }
 
+// GetWeaponIndex - ea: 0x95EE40
+int Broc::GetWeaponIndex(const Broc::string* team) {
+    return Broc::gBrocAPI.mGetWeaponIndex(team);
+}
+
 // bbool::operator== - ea: 0x93F610
 bool bbool::operator==(bool rhs) const {
     return rhs == mVal;

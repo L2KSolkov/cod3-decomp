@@ -1000,7 +1000,16 @@ struct BrocAPI {
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
-    char _pad2C4[0x2EC - 0x2C4];                          // +0x2C4
+    void (*mSetIndoor)(bool);                             // +0x2C4
+    void (*mLoadWbk)(const Broc::string*);                // +0x2C8
+    void (*mFreeWbk)(const Broc::string*);                // +0x2CC
+    int (*mGetWeaponIndex)(const Broc::string*);          // +0x2D0
+    int (*mGetNodeClaimer)(const Broc::pathnode*);        // +0x2D4
+    void (*mSetProjectileSpeed)(unsigned int, int);       // +0x2D8
+    void (*mSetWeaponPlayerUpOffset)(unsigned int, float);// +0x2DC
+    int (*mGetPlayerArray)(unsigned int*);                // +0x2E0
+    int (*mGetLocalPlayerArray)(unsigned int*);           // +0x2E4
+    char _pad2E8[0x2EC - 0x2E8];                          // +0x2E8
     void (*mPlayerRespawn)(unsigned int, const Broc::vector*,
                            const Broc::vector*, const Broc::string*); // +0x2EC
     void (*mPlayerSpawn)(unsigned int, const Broc::vector*,
