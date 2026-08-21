@@ -840,6 +840,12 @@ void InGameOptionsMenu::OnDown(int c)
     UpdateSplitScreenOptions(highlighted_prev);
 }
 
+// ea: 0x005AF910
+void InGameOptionsMenu::UpdateSplitScreen()
+{
+    FESplitScreenMenu::UpdateSplitScreen();
+}
+
 // ea: 0x00595200
 void InGameOptionsMenu::UpdateSplitScreenOptions(int last_highlighted)
 {

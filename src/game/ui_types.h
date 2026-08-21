@@ -2008,6 +2008,7 @@ public:
     virtual void OnCross(int c);          // 0x56EB30
     virtual void OnStart(int c);          // 0x56EBE0
     virtual void Update(float time_inc);  // 0x57D450
+    virtual void UpdateSplitScreen();     // ea: 0x005AF910
     virtual void OnDeactivate(FEMenu* m); // 0x57D630
     virtual void OnTriangle(int c);       // 0x591B00
     virtual void OnUp(int c);             // 0x595690
@@ -2894,6 +2895,11 @@ public:
     FEMenuListBoxItem(unsigned int index, const Broc::string& text,
                       int data);  // inline COMDAT 0x5B2DF0-ish
     ~FEMenuListBoxItem();         // ?dtor 0x5B2E10-ish
+    // ea: 0x005AF6E0 / 0x005AF6F0 / 0x005AF700 / 0x005AF710
+    unsigned int GetIndex() const { return mIndex; }
+    unsigned int GetSubItemCount() const { return mSubItemCount; }
+    const Broc::string& GetText() const { return mText; }
+    int GetData() const { return mData; }
     const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
     const unsigned int AddSubItem(const Broc::string& text);  // shell.o 0x571D60
 };
@@ -2982,6 +2988,8 @@ public:
     virtual void SetValue(int value);   // slot 49
     virtual int GetValue();             // slot 50
 
+    // ea: 0x005AF760
+    void EnableNavigationSound(bool enable) { mEnableSound = enable; }
     void PlayNavigationSound();         // 0x57E3C0
     void SetRange(int min, int max);    // 0x571BB0
     void AdjustBar();                   // 0x57E350
@@ -3033,6 +3041,12 @@ public:
     void SetColumnWidth(unsigned int column, float width);  // 0x571DF0
     void SetColumnHeading(unsigned int column,
                           const char* heading);  // 0x571E60
+    // ea: 0x005AF720 / 0x005AF740
+    void SetVerticalSpacing(float row_height) { mRowHeight = row_height; }
+    void SetHeadingVerticalSpacing(float heading_spacing)
+    {
+        mHeadingSpacing = heading_spacing;
+    }
     void Sort(unsigned int column);      // 0x571ED0 (empty)
     void FormatForSplitScreen(int viewport, int old_viewport);  // 0x571EE0
     void Clear();                        // 0x586420
