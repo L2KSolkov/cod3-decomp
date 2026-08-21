@@ -851,10 +851,52 @@ static_assert(sizeof(RumbleManager) == 0x30, "RumbleManager size mismatch");
 // ============================================================================
 // DB query types (core.o db.cpp)
 // ============================================================================
+enum EDbColumnType : int {
+    kDbColumnTypeINT = 0,
+    kDbColumnTypeINT_SET = 1,
+    kDbColumnTypeFLOAT = 2,
+    kDbColumnTypeFLOAT_SET = 3,
+    kDbColumnTypeSTRING = 4,
+    kDbColumnTypeSTRING_SET = 5,
+    kDbColumnTypeENUM = 6,
+    kDbColumnTypeENUM_SET = 7,
+    kDbColumnTypeBOOL = 8,
+    kDbColumnTypeFOURCC = 9,
+    kDbColumnTypeFOURCC_SET = 10,
+    kDbColumnTypeANGLE = 11,
+    kDbColumnTypeSHORT = 12,
+    kDbColumnTypeCount = 13,
+    kDbColumnTypeMin = 0,
+    kDbColumnTypeMax = 12,
+    kDbColumnTypeInvalid = -1,
+};
+
+enum EDbMatchType : int {
+    kDbMatchTypeEXACT = 0,
+    kDbMatchTypePERCENTAGE = 1,
+    kDbMatchTypeGREATER_THAN = 2,
+    kDbMatchTypeLESS_THAN = 3,
+    kDbMatchTypeGREATER_THAN_EQUAL = 4,
+    kDbMatchTypeLESS_THAN_EQUAL = 5,
+    kDbMatchTypeOUTPUT = 6,
+    kDbMatchTypePRECISE = 7,
+    kDbMatchTypeNOT_EQUAL = 8,
+    kDbMatchTypeEXACT_NOCASE = 9,
+    kDbMatchTypeCount = 10,
+    kDbMatchTypeMin = 0,
+    kDbMatchTypeMax = 9,
+    kDbMatchTypeInvalid = -1,
+};
+
 struct DbField {
     unsigned char m_column_type;  // +0x00
     unsigned char m_match_type;   // +0x01
     uint16_t      mId;            // +0x02
+    DbField(uint16_t columnId, EDbColumnType col_type,
+            EDbMatchType match_type);
+    EDbColumnType GetColumnType() const;
+    EDbMatchType GetMatchType() const;
+    uint16_t GetId() const;
 };
 static_assert(sizeof(DbField) == 0x4, "DbField size mismatch");
 
@@ -864,6 +906,7 @@ public:
     void*     mTable;        // +0x04 (DbTable*)
     int16_t   mRowIndex;     // +0x08
     int16_t   mColUsedNum;   // +0x0A
+    int16_t GetColUsedNum() const;
 };
 static_assert(sizeof(DbRow) == 0xC, "DbRow size mismatch");
 
@@ -873,6 +916,9 @@ struct DbColumn {
     unsigned int mElementSize;   // +0x04
     void*  mElements;            // +0x08
     DbStringHashTable* mStringHash;  // +0x0C
+    uint16_t GetId() const;
+    uint16_t GetSize() const;
+    const char* get_element_ptr(uint16_t idx) const;
 };
 static_assert(sizeof(DbColumn) == 0x10, "DbColumn size mismatch");
 
@@ -883,6 +929,9 @@ struct DbSchema {
     const unsigned char* mMatchTypes;   // +0x08
     BitSet<255>     mPlaceholder;       // +0x0C
     const char**    mColumnNames;       // +0x2C
+    uint16_t GetNumColumnTypes() const;
+    EDbColumnType GetColumnType(uint16_t columnId) const;
+    EDbMatchType GetMatchType(uint16_t columnId) const;
 };
 static_assert(sizeof(DbSchema) == 0x30, "DbSchema size mismatch");
 
@@ -897,14 +946,37 @@ public:
     int     mNumRows;        // +0x28
     void*   mIndexRoot;      // +0x2C (DbGraphNode*)
     DbSchema* mSchema;       // +0x30
+    const char* GetName() const;
+    const DbSchema& GetSchema() const;
+    const DbGraphNode* GetIndexRoot() const;
+    const DbColumn& GetColumnByIndex(uint16_t idx) const;
+    DbColumn& GetColumnByIndex(uint16_t idx);
+    int16_t GetColumnIndex(uint16_t columnId) const;
 };
 static_assert(sizeof(DbTable) == 0x34, "DbTable size mismatch");
 
 class DbGraphNode {
 public:
-    unsigned char mAttachments[0xC];  // +0x00 (NodeAttach)
+    struct AttachNonLeaf {
+        DbGraphNode** children;
+        uint16_t numChildren;
+        int16_t* valueIndices;
+    };
+    struct AttachLeaf {
+        DbRow** hits;
+        uint16_t numHits;
+    };
+    union NodeAttach {
+        AttachNonLeaf nonLeaf;
+        AttachLeaf leaf;
+    } mAttachments;                  // +0x00 (NodeAttach)
     uint16_t      mFieldId;           // +0x0C
-    unsigned char _pad[2];            // +0x0E
+    int GetFieldId() const;
+    bool IsLeaf() const;
+    uint16_t GetNumHits() const;
+    DbRow** GetHits() const;
+    uint16_t GetNumChildren() const;
+    DbGraphNode* GetChild(uint16_t idx) const;
 };
 static_assert(sizeof(DbGraphNode) == 0x10, "DbGraphNode size mismatch");
 
@@ -1205,8 +1277,17 @@ public:
     char         mName[32];     // +0x00
     DbTable*     mTables;       // +0x20
     unsigned int mNumTables;    // +0x24
+    DbTable* GetTable(const char* name) const;
 };
 static_assert(sizeof(DbTableSet) == 0x28, "DbTableSet size mismatch");
+
+struct DbQueryString {
+    char buf[128];
+    DbQueryString();
+    DbQueryString(const char* data);
+    const char* c_str() const;
+};
+static_assert(sizeof(DbQueryString) == 0x80, "DbQueryString size mismatch");
 
 // ============================================================================
 // Pak/dialogue/file-support types (verified against IDA)

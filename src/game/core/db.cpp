@@ -5,6 +5,7 @@
 #include "game/core/core_systems.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -26,6 +27,281 @@ bool Assert(const char* fmt, ...);
             && AeAssert::Assert("old cod assert"))                        \
             __debugbreak();                                               \
     } while (0)
+
+// ea: 0x004B46C0
+DbField::DbField(uint16_t columnId, EDbColumnType col_type,
+                 EDbMatchType match_type)
+    : m_column_type((unsigned char)col_type),
+      m_match_type((unsigned char)match_type),
+      mId(columnId)
+{
+    if (col_type > kDbColumnTypeSHORT) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 71;
+        AeAssert::gCurrentExpr =
+            "( (EDbColumnType)col_type >= kDbColumnTypeMin && "
+            "(EDbColumnType)col_type <= kDbColumnTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if (match_type >= kDbMatchTypeCount) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 72;
+        AeAssert::gCurrentExpr =
+            "( (EDbMatchType)match_type >= kDbMatchTypeMin && "
+            "(EDbMatchType)match_type <= kDbMatchTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x004B47C0
+EDbColumnType DbField::GetColumnType() const
+{
+    return (EDbColumnType)m_column_type;
+}
+
+// ea: 0x004B47D0
+EDbMatchType DbField::GetMatchType() const
+{
+    return (EDbMatchType)m_match_type;
+}
+
+// ea: 0x004B47E0
+uint16_t DbField::GetId() const
+{
+    return mId;
+}
+
+// ea: 0x004B47F0
+uint16_t DbColumn::GetId() const
+{
+    return mId;
+}
+
+// ea: 0x004B4800
+uint16_t DbColumn::GetSize() const
+{
+    return mNumElements;
+}
+
+// ea: 0x004B4810
+const char* DbColumn::get_element_ptr(uint16_t idx) const
+{
+    return (const char*)mElements + mElementSize * idx;
+}
+
+// ea: 0x004B4830
+int16_t DbRow::GetColUsedNum() const
+{
+    return mColUsedNum;
+}
+
+// ea: 0x004B4840
+int DbGraphNode::GetFieldId() const
+{
+    return mFieldId & 0x7FFF;
+}
+
+// ea: 0x004B4850
+bool DbGraphNode::IsLeaf() const
+{
+    return (mFieldId & 0x8000) != 0;
+}
+
+// ea: 0x004B4860
+uint16_t DbGraphNode::GetNumHits() const
+{
+    if (!IsLeaf()) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 285;
+        AeAssert::gCurrentExpr = "IsLeaf()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("only leaf nodes have hits"))
+            __debugbreak();
+    }
+    return mAttachments.leaf.numHits;
+}
+
+// ea: 0x004B48D0
+DbRow** DbGraphNode::GetHits() const
+{
+    if (!IsLeaf()) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 291;
+        AeAssert::gCurrentExpr = "IsLeaf()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("only leaf nodes have hits"))
+            __debugbreak();
+    }
+    return mAttachments.leaf.hits;
+}
+
+// ea: 0x004B4940
+uint16_t DbGraphNode::GetNumChildren() const
+{
+    if (IsLeaf()) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 299;
+        AeAssert::gCurrentExpr = "!IsLeaf()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("only non-leaf nodes have children"))
+            __debugbreak();
+    }
+    return mAttachments.nonLeaf.numChildren;
+}
+
+// ea: 0x004B49B0
+DbGraphNode* DbGraphNode::GetChild(uint16_t idx) const
+{
+    if (IsLeaf()) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 305;
+        AeAssert::gCurrentExpr = "!IsLeaf()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("only non-leaf nodes have children"))
+            __debugbreak();
+    }
+    if (idx >= mAttachments.nonLeaf.numChildren) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 306;
+        AeAssert::gCurrentExpr = "idx < mAttachments.nonLeaf.numChildren";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid Index"))
+            __debugbreak();
+    }
+    return mAttachments.nonLeaf.children[idx];
+}
+
+// ea: 0x004B4A90
+const char* DbTable::GetName() const
+{
+    return mName;
+}
+
+// ea: 0x004B4AA0
+const DbSchema& DbTable::GetSchema() const
+{
+    return *mSchema;
+}
+
+// ea: 0x004B4AB0
+const DbGraphNode* DbTable::GetIndexRoot() const
+{
+    return (const DbGraphNode*)mIndexRoot;
+}
+
+// ea: 0x004B4AC0
+const DbColumn& DbTable::GetColumnByIndex(uint16_t idx) const
+{
+    return *mColumns[idx];
+}
+
+// ea: 0x004B4AE0
+DbColumn& DbTable::GetColumnByIndex(uint16_t idx)
+{
+    return *mColumns[idx];
+}
+
+// ea: 0x004B4B00
+int16_t DbTable::GetColumnIndex(uint16_t columnId) const
+{
+    int v2 = 0;
+    if (mNumColumns == 0)
+        return -1;
+    for (DbColumn** i = mColumns; (*i)->mId != columnId; ++i) {
+        if (++v2 >= mNumColumns)
+            return -1;
+    }
+    if ((int)(uint16_t)v2 != v2) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 384;
+        AeAssert::gCurrentExpr = "((i)&0xFFFF) == (i)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    return (int16_t)v2;
+}
+
+// ea: 0x004B4BB0
+uint16_t DbSchema::GetNumColumnTypes() const
+{
+    return mNumColumnTypes;
+}
+
+// ea: 0x004B4BC0
+EDbColumnType DbSchema::GetColumnType(uint16_t columnId) const
+{
+    if (columnId >= mNumColumnTypes) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 429;
+        AeAssert::gCurrentExpr = "columnId < mNumColumnTypes";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid column id"))
+            __debugbreak();
+    }
+    return (EDbColumnType)mColumnTypes[columnId];
+}
+
+// ea: 0x004B4C40
+EDbMatchType DbSchema::GetMatchType(uint16_t columnId) const
+{
+    if (columnId >= mNumColumnTypes) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 435;
+        AeAssert::gCurrentExpr = "columnId < mNumColumnTypes";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid column id"))
+            __debugbreak();
+    }
+    return (EDbMatchType)mMatchTypes[columnId];
+}
+
+// ea: 0x004B4CC0
+DbTable* DbTableSet::GetTable(const char* name) const
+{
+    if (mNumTables == 0)
+        return nullptr;
+    unsigned int v3 = 0;
+    unsigned int i = 0;
+    for (; _stricmp(mTables[i].mName, name) != 0; ++i) {
+        if (++v3 >= mNumTables)
+            return nullptr;
+    }
+    return &mTables[i];
+}
+
+// ea: 0x004B4D30
+DbQueryString::DbQueryString()
+{
+    buf[0] = 0;
+}
+
+// ea: 0x004B4D40
+DbQueryString::DbQueryString(const char* data)
+{
+    strncpy(buf, data, 0x7F);
+    buf[127] = 0;
+}
+
+// ea: 0x004B4D70
+const char* DbQueryString::c_str() const
+{
+    return buf;
+}
 
 bool BitSet255_Test(const void* self, int v);
 
@@ -157,12 +433,11 @@ void DbQuery::AcceptMatchingLeaf(const DbGraphNode* node,
     {
         ASSERT("node->IsLeaf()", "c:\\cod\\code\\game\\DbQuery.cpp", 48);
     }
-    // leaf hits live in the node's attachment array; walk them
-    const unsigned short* hits = (const unsigned short*)&node->mAttachments[0];
-    unsigned short NumHits = hits[1];
+    // leaf hits live in the node's typed attachment union; walk them
+    unsigned short NumHits = node->mAttachments.leaf.numHits;
     if (NumHits != 0)
     {
-        DbRow* const* hitRows = (DbRow* const*)hits;
+        DbRow* const* hitRows = node->mAttachments.leaf.hits;
         for (int i = NumHits; i != 0; --i)
         {
             int mColUsedNum = (*hitRows)->mColUsedNum;
@@ -349,10 +624,10 @@ void DbQuery::FindMatches(DbQueryResults& results)
         return;
     }
     // non-leaf: evaluate children against constraints
-    int numChildren = *(int*)&cur->mAttachments[0];
+    int numChildren = cur->GetNumChildren();
     for (int i = 0; i < numChildren && i < 256; ++i)
     {
-        DbGraphNode* child = *(DbGraphNode**)(&cur->mAttachments[4 + 4 * i]);
+        DbGraphNode* child = cur->GetChild((uint16_t)i);
         if (child != nullptr && (child->mFieldId & 0x8000) != 0)
             AcceptMatchingLeaf(child, results);
     }
