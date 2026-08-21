@@ -812,6 +812,7 @@ public:
         xy_initial.z += offset.z;
     }
     virtual void SetTextNoLocalize(const char* s) { text = s; } // +0x90
+    void SetInitialXY(Broc::vector pos);                  // shell.o 0x5AD880
     virtual void SetPos(float x, float y)                // +0x94
     {
         xy.x = x;

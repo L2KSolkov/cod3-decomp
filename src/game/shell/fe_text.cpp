@@ -583,6 +583,12 @@ void FEText::SetNoFlash(const color32 col)
     flags = (int16_t)((flags & 0xFFF6) | 1);
 }
 
+// ea: 0x005AD880
+void FEText::SetInitialXY(Broc::vector pos)
+{
+    xy_initial = pos;
+}
+
 // ea: 0x0056C950
 void FEText::SetFlash(color32 col1, color32 col2, float period)
 {
