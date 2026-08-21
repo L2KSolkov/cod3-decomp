@@ -1352,6 +1352,12 @@ MultiplayerMgr* MultiplayerMgr::Inst()
 {
     return MultiplayerMgr::sInst;
 }
+
+// ea: 0x005E9F50
+bool MultiplayerMgr::IsRankedGame()
+{
+    return this->mRankedGame;
+}
 MPPeer* MultiplayerMgr::GetPeer()
 {
     return mPeer;

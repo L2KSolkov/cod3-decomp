@@ -3413,6 +3413,20 @@ void SpectateMenu::Clear()
     mTeamKill = false;
 }
 
+// ea: 0x005E9F90
+void SpectateMenu::SetState(ESpectatorState state)
+{
+    mState = state;
+    UpdateState();
+}
+
+// ea: 0x005E9FB0
+void SpectateMenu::SetSeconds(int secs)
+{
+    mSeconds = secs;
+    UpdateSeconds();
+}
+
 // ea: 0x00792780
 void SpectateMenu::UpdateSeconds()
 {

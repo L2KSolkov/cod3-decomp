@@ -520,6 +520,7 @@ public:
     static void CreateInst();       // ?CreateInst@MultiplayerMgr@@SAXXZ
     static void DeleteInst();       // ?DeleteInst@MultiplayerMgr@@SAXXZ (core.o 0x4E2EC0)
     MultiplayerMgr();               // ??0MultiplayerMgr@@QAE@XZ (mp.o 0x7610F0)
+    bool IsRankedGame();            // ?IsRankedGame@MultiplayerMgr@@QAE_NXZ (scr.o 0x5E9F50)
     int GetCurrentPlayerCountOnTeam(int team);  // ?GetCurrentPlayerCountOnTeam@MultiplayerMgr@@QAEHH@Z (mp.o 0x740060)
     MPPeer* GetPeer();              // ?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ (g.o 0x4A9790)
     kuju::knet::sTime getLocalTime();  // ?getLocalTime@MultiplayerMgr@@QAE?AVsTime@knet@kuju@@XZ (mp.o 0x72C530)

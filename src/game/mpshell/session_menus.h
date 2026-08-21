@@ -10,6 +10,7 @@
 struct sServerCreateParams;  // full definition in session_menus.cpp
 class Entity;
 enum eGameType : int;        // full definition in session_menus.cpp
+enum ESpectatorState : int;  // full definition in session_menus.cpp
 enum EPlayerClass : int {
     kPlayerClassRifleman = 0,
     kPlayerClassInfantry = 1,
@@ -1354,6 +1355,8 @@ public:
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@SpectateMenu@@UAEXXZ
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@SpectateMenu@@UAEX_N@Z
     void Clear();                           // ?Clear@SpectateMenu@@QAEXXZ
+    void SetState(ESpectatorState state);    // ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z (scr.o 0x5E9F90)
+    void SetSeconds(int secs);              // ?SetSeconds@SpectateMenu@@QAEXH@Z (scr.o 0x5E9FB0)
     void UpdateSeconds();                   // ?UpdateSeconds@SpectateMenu@@QAEXXZ
     void SetMedic(bool medic);              // ?SetMedic@SpectateMenu@@QAEX_N@Z
     void SetTeamKill(bool team_kill, Entity* killer); // ?SetTeamKill@SpectateMenu@@QAEX_NPAVEntity@@@Z

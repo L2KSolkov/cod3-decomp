@@ -242,6 +242,12 @@ void AIType::InitActor(actor_s* actor)
 // AITypeManager
 // ============================================================================
 
+// ea: 0x005E9F80
+AITypeManager* AITypeManager::Inst()
+{
+    return AITypeManager::sInst;
+}
+
 // ea: 0x00783A70
 AITypeManager::AITypeManager()
 {
