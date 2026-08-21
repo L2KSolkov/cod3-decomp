@@ -1049,7 +1049,7 @@ float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
 unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
 unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
-extern int IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAHXZ (game2.o)
+extern void IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAXXZ (game2.o)
 extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)
 
 // PathNode / zone / audio-tick helper views (opaque owners)
@@ -2037,7 +2037,7 @@ Entity* RenderPlayerStats()
 // ============================================================================
 // IM_RenderGameEntityStats - ea: 0x502150
 // ============================================================================
-int IM_RenderGameEntityStats()
+void IM_RenderGameEntityStats()
 {
     char tmpstr[128];
     float white[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -2223,7 +2223,6 @@ int IM_RenderGameEntityStats()
                       g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
         y += 14;
     }
-    return 0;
 }
 
 // ============================================================================
