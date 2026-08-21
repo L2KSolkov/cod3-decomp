@@ -795,7 +795,7 @@ index	status	map_line
 794	PORTED	0002:005709f0 ?BlowUpIfUnderWorld__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FEF0 f i mp_util_wad.o
 795	VERIFIED	0002:00570a90 ?fire@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5FF90 f mp_util_wad.o
 796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o
-797	VERIFIED	0002:00570b10 ?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60010 f mp_util_wad.o
+797	FIXED	0002:00570b10 ?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60010 f mp_util_wad.o	FIXED: IDA 0x00970B10 passes pLevel->_base.entity (or null) to DoDamage
 798	PORTED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
 800	PORTED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o
