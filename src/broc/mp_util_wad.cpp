@@ -7921,8 +7921,10 @@ void fireydeath(Broc::entity self, Broc::entity tank) {
 
 // deleteonextinguish - ea: 0x972B90
 void deleteonextinguish(Broc::entity self) {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr ext;
     ext.mVal = 0x6E9DD6CEu;
     Broc::waittill(lvl, ext);
