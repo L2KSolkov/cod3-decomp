@@ -15427,8 +15427,8 @@ struct MultiApk {
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
 {
     tlFixedString result = GetName(name);
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, pakId, result,
-                                (unsigned int)file);
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESHFILE, pakId, result,
+                                 (unsigned int)file);
 }
 
 // ea: 0x66F670

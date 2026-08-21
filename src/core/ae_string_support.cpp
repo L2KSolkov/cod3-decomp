@@ -183,6 +183,7 @@ void AeStrCopy(char* dst, int* const dstLen, int dstCapacity, const char* src, i
     while (rem > 0) {
         *dst = *src;
         ++dst;
+        ++src;
         --rem;
     }
     *dst = 0;
