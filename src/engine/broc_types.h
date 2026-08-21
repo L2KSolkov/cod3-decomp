@@ -723,6 +723,9 @@ struct bfloat {
     explicit bfloat(float v) : mVal(v) {}
     bfloat(long double v);
     operator float() const { return mVal; }
+    bool operator!=(float rhs) const;
+    double operator*=(float rhs);
+    void AssertDefined() const;
     bool IsDefined() const;
     static float sUndefined;
 };

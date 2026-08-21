@@ -2857,6 +2857,20 @@ bfloat operator+(bint lhs, bfloat rhs) {
     return bfloat(value);
 }
 
+// bfloat::operator!= - ea: 0x95D300
+bool bfloat::operator!=(float rhs) const {
+    return mVal != rhs;
+}
+
+// bfloat::operator*= - ea: 0x95D660
+double bfloat::operator*=(float rhs) {
+    AssertDefined();
+    mVal = mVal * rhs;
+    return mVal;
+}
+
+void bfloat::AssertDefined() const {}
+
 // bfloat::IsDefined - ea: 0x95AED0
 bool bfloat::IsDefined() const {
     return IS_NAN(mVal) == 0;
