@@ -18,6 +18,7 @@ float Abs(float a);
 class Dir3;
 class Position3;
 class Vector4;
+class Quaternion;
 class Mat33;
 class Mat44;
 class Mat43;
@@ -257,6 +258,7 @@ public:
     Vector4(const Vector4::Constant& _c);  // ??0Vector4@math@@QAE@ABUConstant@01@@Z (g.o 0x4A5F80)
     Vector4(const Position3& _v);           // ??0Vector4@math@@QAE@ABVPosition3@1@@Z (core.o 0x4DB7B0)
     Vector4(const Dir3& _v);  // ??0Vector4@math@@QAE@ABVDir3@1@@Z
+    Vector4(const Quaternion& _v);  // ??0Vector4@math@@QAE@ABVQuaternion@1@@Z (game2.o 0x00516B70)
     Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
     const Vector4& operator=(const Vector4::Packed& _p);  // ??4Vector4@math@@QAEABV01@ABUPacked@01@@Z (render.o 0x6E6220)
@@ -464,10 +466,15 @@ static_assert(sizeof(TranMat43) == 0x10, "TranMat43 size mismatch");
 // binary's V-tag mangling in free-function signatures)
 class Quaternion {
 public:
-    float x;  // +0x00
-    float y;  // +0x04
-    float z;  // +0x08
-    float w;  // +0x0C
+    union {
+        __m128 v;  // +0x00 (IDA local type: math::Quaternion::v)
+        struct {
+            float x;  // +0x00
+            float y;  // +0x04
+            float z;  // +0x08
+            float w;  // +0x0C
+        };
+    };
 
     Quaternion();                                // ??0Quaternion@math@@QAE@XZ (g.o 0x4A8530)
     Quaternion(float _x, float _y, float _z, float _w);  // ??0Quaternion@math@@QAE@MMMM@Z (g.o 0x4A8540)
@@ -490,11 +497,102 @@ Dir3       operator*(const Dir3& v, const Mat33& m);  // ??Dmath@@YA?AVDir3@0@AB
 Quaternion Mul(const Quaternion& a, const Quaternion& b);  // ?Mul@math@@YA?AVQuaternion@1@ABV21@0@Z (0x53AD40)
 Quaternion operator*(const Quaternion& a, const Quaternion& b);  // ??Dmath@@YA?AVQuaternion@0@ABV10@0@Z (0x53ADF0)
 float      LengthSquared(const Quaternion& q);  // ?LengthSquared@math@@YAMABVQuaternion@1@@Z (0x53AEA0)
+float      Dot(const Quaternion& a, const Quaternion& b);  // ?Dot@math@@YAMABVQuaternion@1@0@Z (game2.o 0x00516C00)
+Quaternion Slerp(float t, const Quaternion& a, const Quaternion& b);  // ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z (game2.o 0x00516CB0)
 
 // g.o quaternion free functions (0x4A85B0-0x4A8620)
 Quaternion operator*(const Quaternion& _a, float _b);  // ??Dmath@@YA?AVQuaternion@0@ABV10@M@Z (g.o 0x4A85B0)
 Quaternion DeclareUnit(const Quaternion& _q);          // ?DeclareUnit@math@@YA?AVQuaternion@1@ABV21@@Z (g.o 0x4A85F0)
 Quaternion GetQuaternion(const Mat33& rot);            // ?GetQuaternion@math@@YA?AVQuaternion@1@ABVMat33@1@@Z (g.o 0x4A8620)
+
+// ea: 0x00516B70
+inline math::Vector4::Vector4(const math::Quaternion& _v)
+{
+    v = _v.v;
+}
+
+// ea: 0x00516C00
+inline float math::Dot(const math::Quaternion& _a,
+                       const math::Quaternion& _b)
+{
+    __m128 product = _mm_mul_ps(_a.v, _b.v);
+    return product.m128_f32[0]
+           + (_mm_shuffle_ps(product, product, 85).m128_f32[0]
+              + (_mm_shuffle_ps(product, product, 170).m128_f32[0]
+                 + _mm_shuffle_ps(product, product, 255).m128_f32[0]));
+}
+
+// ea: 0x00516CB0
+inline math::Quaternion math::Slerp(float t,
+                                    const math::Quaternion& _a,
+                                    const math::Quaternion& _b)
+{
+    __m128 product = _mm_mul_ps(_a.v, _b.v);
+    float dot = product.m128_f32[0]
+                + (_mm_shuffle_ps(product, product, 85).m128_f32[0]
+                   + (_mm_shuffle_ps(product, product, 170).m128_f32[0]
+                      + _mm_shuffle_ps(product, product, 255).m128_f32[0]));
+    float adjustedDot = dot;
+    __m128 weights;
+    if (dot >= 0.0f)
+    {
+        weights = _mm_setr_ps(1.0f - t, t, 1.0f, 0.0f);
+    }
+    else
+    {
+        adjustedDot = 0.0f - dot;
+        weights = _mm_setr_ps(1.0f - t, 0.0f - t, 1.0f, 0.0f);
+    }
+
+    if (adjustedDot < 0.99999899f)
+    {
+        float theta;
+        if (adjustedDot >= 0.5f)
+        {
+            float s = sqrtf((1.0f - adjustedDot) * 0.5f);
+            float s2 = s * s;
+            float s3 = s2 * s;
+            float s5 = s3 * s2;
+            theta = ((((s5 * s2) * 0.1079625f)
+                      + (s5 * 0.15000001f))
+                     + (s3 * 0.33333331f))
+                    + (s * 2.0f);
+        }
+        else
+        {
+            float d2 = adjustedDot * adjustedDot;
+            float d3 = d2 * adjustedDot;
+            float d4 = d2 * d2;
+            theta = ((((d4 * d2) * -0.053981241f)
+                      - (d4 * 0.075000003f))
+                     - (d3 * 0.1666667f))
+                    - adjustedDot + 1.570796f;
+        }
+
+        __m128 angle = _mm_mul_ps(weights, _mm_set1_ps(theta));
+        __m128 angle2 = _mm_mul_ps(angle, angle);
+        __m128 angle3 = _mm_mul_ps(angle2, angle);
+        __m128 angle5 = _mm_mul_ps(angle2, angle3);
+        const __m128 sinCoefs =
+            _mm_setr_ps(-0.16666667f, 0.0083333338f, -0.00019841269f, 0.0f);
+        __m128 sine = _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(
+                    angle,
+                    _mm_mul_ps(_mm_mul_ps(angle2, angle5),
+                               _mm_shuffle_ps(sinCoefs, sinCoefs, 170))),
+                _mm_mul_ps(angle5, _mm_shuffle_ps(sinCoefs, sinCoefs, 85))),
+            _mm_mul_ps(angle3, _mm_shuffle_ps(sinCoefs, sinCoefs, 0)));
+        float denominator = _mm_shuffle_ps(sine, sine, 170).m128_f32[0];
+        weights = _mm_div_ps(sine, _mm_set1_ps(denominator));
+    }
+
+    math::Quaternion result;
+    result.v = _mm_add_ps(
+        _mm_mul_ps(_a.v, _mm_shuffle_ps(weights, weights, 0)),
+        _mm_mul_ps(_b.v, _mm_shuffle_ps(weights, weights, 85)));
+    return result;
+}
 
 
 // ============================================================================
