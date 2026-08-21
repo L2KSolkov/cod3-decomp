@@ -19776,7 +19776,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19775	0x00841E10	0x00C31310	?SetTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19776	0x00841E30	0x00C31330	?SwitchTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 19777	0x00841E60	0x00C31360	?GetLevelCount@D3DBaseTexture@@QAGKXZ	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19778	0x00841E70	0x00C31370	?SetMaxAnisotropy@nglDxRenderState@@QAEHHH@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19778	0x00841E70	0x00C31370	?SetMaxAnisotropy@nglDxRenderState@@QAEHHH@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	FIXED	PROGRESS object aggregate	YES	YES	VERIFIED
 19779	0x00841EB0	0x00C313B0	??0nglDxTexCacheClass@@QAE@XZ	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19780	0x00841EC0	0x00C313C0	?SetFilter@nglDxTexCacheClass@@QAEXIII@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 19781	0x00842180	0x00C31680	?NewNodeOfLevel@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_dx_texture.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

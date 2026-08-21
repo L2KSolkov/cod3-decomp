@@ -19776,7 +19776,7 @@ index	status	map_line
 19775	PORTED	0002:00441e10 ?SetTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z 00C31310 f i ngl_dx_texture.o
 19776	PORTED	0002:00441e30 ?SwitchTexture@D3DDevice@@SGJKPAUD3DBaseTexture@@@Z 00C31330 f i ngl_dx_texture.o
 19777	PORTED	0002:00441e60 ?GetLevelCount@D3DBaseTexture@@QAGKXZ 00C31360 f i ngl_dx_texture.o
-19778	PORTED	0002:00441e70 ?SetMaxAnisotropy@nglDxRenderState@@QAEHHH@Z 00C31370 f i ngl_dx_texture.o
+19778	FIXED	0002:00441e70 ?SetMaxAnisotropy@nglDxRenderState@@QAEHHH@Z 00C31370 f i ngl_dx_texture.o
 19779	VERIFIED	0002:00441eb0 ??0nglDxTexCacheClass@@QAE@XZ 00C313B0 f i ngl_dx_texture.o
 19780	VERIFIED	0002:00441ec0 ?SetFilter@nglDxTexCacheClass@@QAEXIII@Z 00C313C0 f i ngl_dx_texture.o
 19781	PORTED	0002:00442180 ?NewNodeOfLevel@?$tlSkipList@UnglTexture@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C31680 f i ngl_dx_texture.o

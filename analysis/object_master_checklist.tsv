@@ -575,7 +575,7 @@ ngl_dx_scenedump.o	analysis/ngl_dx_scenedump_o_checklist.tsv	analysis/ngl_dx_sce
 ngl_dx_shader.o	analysis/ngl_dx_shader_o_checklist.tsv	analysis/ngl_dx_shader_o_inventory.tsv	analysis/ngl_dx_shader_o_plan.tsv	18	18	0	0	0	0	0
 ngl_dx_state.o	analysis/ngl_dx_state_o_checklist.tsv	analysis/ngl_dx_state_o_inventory.tsv	analysis/ngl_dx_state_o_plan.tsv	5	5	0	0	0	0	0
 ngl_dx_tex_create.o	analysis/ngl_dx_tex_create_o_checklist.tsv	analysis/ngl_dx_tex_create_o_inventory.tsv	analysis/ngl_dx_tex_create_o_plan.tsv	17	16	1	0	0	0	0
-ngl_dx_texture.o	analysis/ngl_dx_texture_o_checklist.tsv	analysis/ngl_dx_texture_o_inventory.tsv	analysis/ngl_dx_texture_o_plan.tsv	17	12	5	0	0	0	0
+ngl_dx_texture.o	analysis/ngl_dx_texture_o_checklist.tsv	analysis/ngl_dx_texture_o_inventory.tsv	analysis/ngl_dx_texture_o_plan.tsv	17	13	4	0	0	0	0
 ngl_font.o	analysis/ngl_font_o_checklist.tsv	analysis/ngl_font_o_inventory.tsv	analysis/ngl_font_o_plan.tsv	27	26	1	0	0	0	0
 ngl_gpu.o	analysis/ngl_gpu_o_checklist.tsv	analysis/ngl_gpu_o_inventory.tsv	analysis/ngl_gpu_o_plan.tsv	32	17	15	0	0	0	0
 ngl_gpu_debug.o	analysis/ngl_gpu_debug_o_checklist.tsv	analysis/ngl_gpu_debug_o_inventory.tsv	analysis/ngl_gpu_debug_o_plan.tsv	4	4	0	0	0	0	0
