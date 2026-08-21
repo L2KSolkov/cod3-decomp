@@ -380,13 +380,13 @@ index	status	map_line
 379	FIXED	0002:00544730 ?CallbackLocalPlayerKicked@_mp_common@@YAXXZ 00D33C30 f mp_util_wad.o	FIXED: IDA 0x00944730 constructs QuitGameWithMessage with pLevel->_base.entity and hash 0x3546BB54
 380	FIXED	0002:005447c0 ?CallbackHostMigrated@_mp_common@@YAXXZ 00D33CC0 f mp_util_wad.o	FIXED: IDA 0x009447C0 constructs HostHasMigrated with pLevel->_base.entity
 381	FIXED	0002:00544840 ?HostHasMigrated__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D33D40 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
-382	VERIFIED	0002:005448e0 ?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z 00D33DE0 f mp_util_wad.o
+382	FIXED	0002:005448e0 ?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z 00D33DE0 f mp_util_wad.o	FIXED: IDA 0x009448E0 compares against pLevel->_base.entity before choosing player or all-player tutorial text
 383	PORTED	0002:005449d0 ?CloseAllMenus@Broc@@YAXH@Z 00D33ED0 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mCloseAllMenus
 384	VERIFIED	0002:00544a00 ?HostHasMigrated@_mp_common@@YAXVentity@Broc@@@Z 00D33F00 f mp_util_wad.o
 385	FIXED	0002:00544e70 ?Code_RoundOver@Broc@@YAXHABVstring@1@@Z 00D34370 f i mp_util_wad.o	FIXED: corrected winner to const-reference ABI and passed its address to mRoundOver
 386	FIXED	0002:00544ea0 ?NewHost__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D343A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
 387	VERIFIED	0002:00544f40 ?NewHost@_mp_common@@YAXVentity@Broc@@@Z 00D34440 f mp_util_wad.o
-388	VERIFIED	0002:00544f90 ?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z 00D34490 f mp_util_wad.o
+388	FIXED	0002:00544f90 ?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z 00D34490 f mp_util_wad.o	FIXED: IDA 0x00944F90 waits on pLevel->_base.entity for the fade-up label
 389	VERIFIED	0002:005450a0 ?Code_ScreenFadeUp@Broc@@YAXIH@Z 00D345A0 f i mp_util_wad.o
 390	VERIFIED	0002:005450d0 ?RespawnPlayer@_mp_common@@YAXVentity@Broc@@Vstring@3@@Z 00D345D0 f mp_util_wad.o
 391	FIXED	0002:00545310 ?Code_PlayerRespawn@Broc@@YAXVentity@1@ABUvector@1@1ABVstring@1@@Z 00D34810 f i mp_util_wad.o	FIXED: corrected origin/angles/team to const-reference ABI and passed addresses to mPlayerRespawn
@@ -473,7 +473,7 @@ index	status	map_line
 472	VERIFIED	0002:0054b900 ?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D3AE00 f mp_util_wad.o
 473	PORTED	0002:0054ba60 ?ObjectiveDelete@@YAXHH@Z 00D3AF60 f i mp_util_wad.o	PORTED: IDA direct global forward to mObjectiveDelete
 474	PORTED	0002:0054ba90 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@PBD@Z 00D3AF90 f i mp_util_wad.o	PORTED: IDA forwards both const string references, by-value vector, and default objective arguments to mObjectiveAdd5
-475	PORTED	0002:0054bae0 ?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AFE0 f mp_util_wad.o
+475	FIXED	0002:0054bae0 ?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AFE0 f mp_util_wad.o	FIXED: IDA 0x0094BAE0 uses pLevel->_base.entity for both endon labels
 476	VERIFIED	0002:0054bbd0 ?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ 00D3B0D0 f mp_util_wad.o
 477	PORTED	0002:0054bd80 ?LocalPlayerIntermission__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3B280 f i mp_util_wad.o
 478	PORTED	0002:0054be20 ?HasValidWeaponInSlot@_mp_common@@YA?AUbbool@@Ventity@Broc@@Vstring@4@@Z 00D3B320 f mp_util_wad.o
