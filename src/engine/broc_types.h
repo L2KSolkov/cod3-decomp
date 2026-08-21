@@ -613,8 +613,9 @@ struct bfloat {
     double operator=(float v) { mVal = v; return v; }
     double operator=(int v) { mVal = (float)v; return mVal; }
     operator float() const { return mVal; }
-    bfloat& operator+=(float v) { mVal += v; return *this; }
+    double operator+=(float v) { AssertDefined(); mVal += v; return mVal; }
     bfloat& operator-=(float v) { mVal -= v; return *this; }
+    void AssertDefined() const {}  // ea: 0x93B250
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "bfloat size mismatch");
 
