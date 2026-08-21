@@ -856,18 +856,18 @@ index	status	map_line
 855	VERIFIED	0002:001e94d0 ?get_dlist_node@EndOnScriptNode@@QAEPAXXZ 009D89D0 f i scr.o	VERIFIED: matches IDA decompile
 856	VERIFIED	0002:001e94e0 ??2EndOnScriptNode@@SAPAXI_NPBDH@Z 009D89E0 f i scr.o	VERIFIED: matches IDA decompile
 857	VERIFIED	0002:001e9500 ??3EndOnScriptNode@@SAXPAX_NPBDH@Z 009D8A00 f i scr.o	VERIFIED: matches IDA decompile
-858	PORTED	0002:001e9520 ??3EndOnScriptNode@@SAXPAX@Z 009D8A20 f i scr.o
-859	PORTED	0002:001e9540 ?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ 009D8A40 f i scr.o
-860	PORTED	0002:001e9560 ?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 009D8A60 f i scr.o
-861	PORTED	0002:001e9580 ??2EntityNotifySet@@SAPAXI_NPBDH@Z 009D8A80 f i scr.o
-862	PORTED	0002:001e95a0 ??3EntityNotifySet@@SAXPAX_NPBDH@Z 009D8AA0 f i scr.o
-863	PORTED	0002:001e95c0 ?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z 009D8AC0 f i scr.o
-864	PORTED	0002:001e95e0 ??$IsDefined@I@@YA_NI@Z 009D8AE0 f i scr.o
-865	PORTED	0002:001e9600 ??0vector@Broc@@QAE@QAM@Z 009D8B00 f i scr.o
-866	PORTED	0002:001e9630 ??_0vector@Broc@@QAEAAU01@M@Z 009D8B30 f i scr.o
-867	PORTED	0002:001e9680 ??Avector@Broc@@QBEMH@Z 009D8B80 f i scr.o
-868	PORTED	0002:001e9690 ?length2@Broc@@YAMABUvector@1@@Z 009D8B90 f i scr.o
-869	PORTED	0002:001e96c0 ?dot@Broc@@YAMABUvector@1@0@Z 009D8BC0 f i scr.o
+858	VERIFIED	0002:001e9520 ??3EndOnScriptNode@@SAXPAX@Z 009D8A20 f i scr.o	VERIFIED: matches IDA decompile and disassembly
+859	PORTED	0002:001e9540 ?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ 009D8A40 f i scr.o	PORTED: added IDA-derived GetNotify accessor
+860	PORTED	0002:001e9560 ?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 009D8A60 f i scr.o	PORTED: added IDA-derived GetOwner accessor
+861	PORTED	0002:001e9580 ??2EntityNotifySet@@SAPAXI_NPBDH@Z 009D8A80 f i scr.o	PORTED: added IDA-derived allocator operator
+862	PORTED	0002:001e95a0 ??3EntityNotifySet@@SAXPAX_NPBDH@Z 009D8AA0 f i scr.o	PORTED: added IDA-derived allocator operator
+863	PORTED	0002:001e95c0 ?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z 009D8AC0 f i scr.o	PORTED: added IDA-derived notify check
+864	PORTED	0002:001e95e0 ??$IsDefined@I@@YA_NI@Z 009D8AE0 f i scr.o	PORTED: added IDA-derived IsDefined specialization
+865	SKIPPED	0002:001e9600 ??0vector@Broc@@QAE@QAM@Z 009D8B00 f i scr.o	SKIPPED: compiler-generated vector copy constructor; supplied by the compiler
+866	PORTED	0002:001e9630 ??_0vector@Broc@@QAEAAU01@M@Z 009D8B30 f i scr.o	PORTED: added IDA-derived vector division assignment
+867	VERIFIED	0002:001e9680 ??Avector@Broc@@QBEMH@Z 009D8B80 f i scr.o	VERIFIED: matches IDA disassembly; float return is encoded by mangled M type
+868	VERIFIED	0002:001e9690 ?length2@Broc@@YAMABUvector@1@@Z 009D8B90 f i scr.o	VERIFIED: matches IDA decompile and disassembly
+869	VERIFIED	0002:001e96c0 ?dot@Broc@@YAMABUvector@1@0@Z 009D8BC0 f i scr.o	VERIFIED: matches IDA decompile and disassembly
 870	PORTED	0002:001e96f0 ?VecDistance@Broc@@YAMABUvector@1@0@Z 009D8BF0 f i scr.o
 871	PORTED	0002:001e9710 ?VecDistanceSquared@Broc@@YAMABUvector@1@0@Z 009D8C10 f i scr.o
 872	PORTED	0002:001e9730 ?VecCloser@Broc@@YAHABUvector@1@00@Z 009D8C30 f i scr.o

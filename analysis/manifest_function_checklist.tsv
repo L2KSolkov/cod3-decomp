@@ -8247,18 +8247,18 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8246	0x005E94D0	0x009D89D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile	NO	NO	VERIFIED
 8247	0x005E94E0	0x009D89E0	??2EndOnScriptNode@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile	NO	NO	VERIFIED
 8248	0x005E9500	0x009D8A00	??3EndOnScriptNode@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile	NO	NO	VERIFIED
-8249	0x005E9520	0x009D8A20	??3EndOnScriptNode@@SAXPAX@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8250	0x005E9540	0x009D8A40	?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8251	0x005E9560	0x009D8A60	?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8252	0x005E9580	0x009D8A80	??2EntityNotifySet@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8253	0x005E95A0	0x009D8AA0	??3EntityNotifySet@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8254	0x005E95C0	0x009D8AC0	?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8255	0x005E95E0	0x009D8AE0	??$IsDefined@I@@YA_NI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8256	0x005E9600	0x009D8B00	??0vector@Broc@@QAE@QAM@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8257	0x005E9630	0x009D8B30	??_0vector@Broc@@QAEAAU01@M@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8258	0x005E9680	0x009D8B80	??Avector@Broc@@QBEMH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8259	0x005E9690	0x009D8B90	?length2@Broc@@YAMABUvector@1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8260	0x005E96C0	0x009D8BC0	?dot@Broc@@YAMABUvector@1@0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8249	0x005E9520	0x009D8A20	??3EndOnScriptNode@@SAXPAX@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile and disassembly	NO	NO	VERIFIED
+8250	0x005E9540	0x009D8A40	?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8251	0x005E9560	0x009D8A60	?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8252	0x005E9580	0x009D8A80	??2EntityNotifySet@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8253	0x005E95A0	0x009D8AA0	??3EntityNotifySet@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8254	0x005E95C0	0x009D8AC0	?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8255	0x005E95E0	0x009D8AE0	??$IsDefined@I@@YA_NI@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA disassembly	NO	NO	VERIFIED
+8256	0x005E9600	0x009D8B00	??0vector@Broc@@QAE@QAM@Z		scr.o	game		f i	1	SKIPPED	STL/compiler-generated equivalent; compiler supplies copy constructor	NO	NO	VERIFIED
+8257	0x005E9630	0x009D8B30	??_0vector@Broc@@QAEAAU01@M@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8258	0x005E9680	0x009D8B80	??Avector@Broc@@QBEMH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA disassembly; float return encoded by mangled M type	NO	NO	VERIFIED
+8259	0x005E9690	0x009D8B90	?length2@Broc@@YAMABUvector@1@@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile and disassembly	NO	NO	VERIFIED
+8260	0x005E96C0	0x009D8BC0	?dot@Broc@@YAMABUvector@1@0@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompile and disassembly	NO	NO	VERIFIED
 8261	0x005E96F0	0x009D8BF0	?VecDistance@Broc@@YAMABUvector@1@0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8262	0x005E9710	0x009D8C10	?VecDistanceSquared@Broc@@YAMABUvector@1@0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8263	0x005E9730	0x009D8C30	?VecCloser@Broc@@YAHABUvector@1@00@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
