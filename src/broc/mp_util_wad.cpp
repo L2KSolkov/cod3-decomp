@@ -159,6 +159,9 @@ namespace mp_util_wad {
 
 extern void RegisterHashString(int h, const char* txt);
 
+// IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
+static __int16 s_flagKey;
+
 void RegisterHashStrings() {
     RegisterHashString(19721985, "ClearGame");
     RegisterHashString(1635421430, "GiveSpecialAmmo");
@@ -235,6 +238,7 @@ void RegisterHashStrings() {
     RegisterHashString(1128239878, "fire_special");
     RegisterHashString(1855837902, "fireextinguish");
     RegisterHashString(1912681025, "firstSpectate");
+    RegisterHashString(reinterpret_cast<int>(&s_flagKey), "flag");
     RegisterHashString(-1363748623, "flagEnd");
     RegisterHashString(953253096, "flagStart");
     RegisterHashString(-94902329, "flag_dropped");
@@ -777,6 +781,35 @@ Broc::bbool* IsEEDefined_holder(Broc::bbool* result, Broc::entity ent) {
         if (ee != NULL) {
             Broc::entity v;
             const Broc::entity* val = ee->GetVal<Broc::entity>(&v, 0xFAAE111E);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// ea: 0x00930400
+Broc::entity* GetEE_flag(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
+    return &ee->GetRef<Broc::entity>(reinterpret_cast<unsigned int>(&s_flagKey));
+}
+
+// ea: 0x00930450
+Broc::bbool* IsEEDefined_flag(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::entity v;
+            const Broc::entity* val = ee->GetVal<Broc::entity>(
+                &v, reinterpret_cast<unsigned int>(&s_flagKey));
             bool IsDefined = Broc::IsDefined(*val);
             result->mVal = IsDefined;
         } else {
