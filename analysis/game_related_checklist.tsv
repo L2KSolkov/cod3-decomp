@@ -2238,24 +2238,24 @@ index	status	map_line
 2237	PORTED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o PORTED: IDA placement operator returns the supplied storage
 2238	VERIFIED	0002:000ddef0 ?CreateInst@SplineMgr@@SAXXZ 008CD3F0 f i core.o VERIFIED: existing CreateInst body matches IDA
 2239	VERIFIED	0002:000ddff0 ?DeleteInst@SplineMgr@@SAXXZ 008CD4F0 f i core.o
-2240	PORTED	0002:000de070 ?SetAllocator@LightEffect@@SAXPAVPoolAllocator@@@Z 008CD570 f i core.o
-2241	PORTED	0002:000de080 ?SetFinished@LightEffect@@QAEXXZ 008CD580 f i core.o
+2240	PORTED	0002:000de070 ?SetAllocator@LightEffect@@SAXPAVPoolAllocator@@@Z 008CD570 f i core.o PORTED: IDA assigns LightEffect::sAllocator
+2241	PORTED	0002:000de080 ?SetFinished@LightEffect@@QAEXXZ 008CD580 f i core.o PORTED: IDA clears mActive
 2242	VERIFIED	0002:000de090 ?GetDelay@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD590 f i core.o
 2243	VERIFIED	0002:000de110 ?GetEnabled@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008CD610 f i core.o
 2244	VERIFIED	0002:000de190 ?GetIntensity@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD690 f i core.o
 2245	VERIFIED	0002:000de210 ?GetRampDownDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD710 f i core.o
 2246	VERIFIED	0002:000de290 ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD790 f i core.o
 2247	VERIFIED	0002:000de310 ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD810 f i core.o
-2248	PORTED	0002:000de390 ?GetNotes@RumbleEffect@@QBE?AVstring@Broc@@W4ERumbleMotorID@@@Z 008CD890 f i core.o
-2249	PORTED	0002:000de420 ??0RumbleEffectInstanceHandle@@QAE@H@Z 008CD920 f i core.o
-2250	PORTED	0002:000de440 ?GetVal@RumbleEffectInstanceHandle@@QBEHXZ 008CD940 f i core.o
-2251	PORTED	0002:000de450 ?IsNull@RumbleEffectInstanceHandle@@QBE_NXZ 008CD950 f i core.o
-2252	PORTED	0002:000de460 ?get_dlist_node@RumbleEffectInstance@@QAEPAXXZ 008CD960 f i core.o
-2253	PORTED	0002:000de470 ?get_dlist_node_offset@RumbleEffectInstance@@SAHXZ 008CD970 f i core.o
-2254	PORTED	0002:000de480 ??2RumbleEffectInstance@@SAPAXI_NPBDH@Z 008CD980 f i core.o
-2255	PORTED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o
-2256	PORTED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o
-2257	PORTED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o
+2248	PORTED	0002:000de390 ?GetNotes@RumbleEffect@@QBE?AVstring@Broc@@W4ERumbleMotorID@@@Z 008CD890 f i core.o PORTED: IDA validates the motor enum and copies rumble_notes
+2249	PORTED	0002:000de420 ??0RumbleEffectInstanceHandle@@QAE@H@Z 008CD920 f i core.o PORTED: IDA stores the supplied handle value
+2250	PORTED	0002:000de440 ?GetVal@RumbleEffectInstanceHandle@@QBEHXZ 008CD940 f i core.o PORTED: IDA returns mVal
+2251	PORTED	0002:000de450 ?IsNull@RumbleEffectInstanceHandle@@QBE_NXZ 008CD950 f i core.o PORTED: IDA compares mVal with zero
+2252	PORTED	0002:000de460 ?get_dlist_node@RumbleEffectInstance@@QAEPAXXZ 008CD960 f i core.o PORTED: IDA returns this
+2253	PORTED	0002:000de470 ?get_dlist_node_offset@RumbleEffectInstance@@SAHXZ 008CD970 f i core.o PORTED: IDA returns zero
+2254	PORTED	0002:000de480 ??2RumbleEffectInstance@@SAPAXI_NPBDH@Z 008CD980 f i core.o PORTED: IDA allocates through sAllocator
+2255	PORTED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o PORTED: IDA releases through sAllocator
+2256	PORTED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o PORTED: IDA releases through sAllocator
+2257	PORTED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o PORTED: IDA assigns and returns the allocator
 2258	PORTED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o
 2259	PORTED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o
 2260	PORTED	0002:000de530 ?SetAllocator@AbstractEffect@@SAXPAVPoolAllocator@@@Z 008CDA30 f i core.o
