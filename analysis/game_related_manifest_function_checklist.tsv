@@ -6436,7 +6436,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6435	0x005ADE60	0x0099D360	?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6436	0x005ADE90	0x0099D390	?ConvertColor@FEText@@SAIVcolor32@@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6437	0x005ADED0	0x0099D3D0	??0MultiLineButtons@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6438	0x005ADEF0	0x0099D3F0	?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6438	0x005ADEF0	0x0099D3F0	?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6439	0x005ADF10	0x0099D410	?SetPos@MultiLineString@@QAEXMM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6440	0x005ADF60	0x0099D460	?Shift@MultiLineString@@QAEXMM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6441	0x005ADFA0	0x0099D4A0	?GetTotalWidth@MultiLineString@@QAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

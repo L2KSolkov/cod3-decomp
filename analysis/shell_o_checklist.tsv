@@ -1259,7 +1259,7 @@ index	status	map_line
 1258	VERIFIED	0002:001ade60 ?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ 0099D360 f i shell.o
 1259	VERIFIED	0002:001ade90 ?ConvertColor@FEText@@SAIVcolor32@@@Z 0099D390 f i shell.o	VERIFIED: matches IDA packed color conversion
 1260	VERIFIED	0002:001aded0 ??0MultiLineButtons@@QAE@XZ 0099D3D0 f i shell.o
-1261	PORTED	0002:001adef0 ?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z 0099D3F0 f i shell.o
+1261	VERIFIED	0002:001adef0 ?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z 0099D3F0 f i shell.o	VERIFIED: matches IDA aggregate copy
 1262	VERIFIED	0002:001adf10 ?SetPos@MultiLineString@@QAEXMM@Z 0099D410 f i shell.o
 1263	VERIFIED	0002:001adf60 ?Shift@MultiLineString@@QAEXMM@Z 0099D460 f i shell.o
 1264	VERIFIED	0002:001adfa0 ?GetTotalWidth@MultiLineString@@QAEMXZ 0099D4A0 f i shell.o
