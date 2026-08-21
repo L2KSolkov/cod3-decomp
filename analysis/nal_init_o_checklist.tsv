@@ -747,11 +747,11 @@ index	status	map_line
 746	PORTED	0002:00465ef0 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C553F0 f i nal_init.o
 747	PORTED	0002:00466040 ?CycleTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C55540 f i nal_init.o
 748	PORTED	0002:00466070 ??$FastCycleTrajectory@VnalComponentPacked8EntropyQuat@@VQuaternion@math@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked8EntropyQuatData@@USkeletonComponentData@7@UAnimComponentData@5@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C55570 f i nal_init.o
-749	PENDING	0002:004660f0 ?SetupPartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C555F0 f i nal_init.o
-750	PENDING	0002:00466210 ?PartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C55710 f i nal_init.o
-751	PENDING	0002:00466330 ?Decode@?$nalPackedQuatDecoder@VnalQuaternion16@nalEntropyDecoder@@@nalEntropyDecoder@@QAEXPAVnalQuaternion16@2@IIMPAX@Z 00C55830 f i nal_init.o
+749	PORTED	0002:004660f0 ?SetupPartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C555F0 f i nal_init.o
+750	PORTED	0002:00466210 ?PartialDecode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C55710 f i nal_init.o
+751	PORTED	0002:00466330 ?Decode@?$nalPackedQuatDecoder@VnalQuaternion16@nalEntropyDecoder@@@nalEntropyDecoder@@QAEXPAVnalQuaternion16@2@IIMPAX@Z 00C55830 f i nal_init.o
 752	PORTED	0002:00466670 ??0nalQuaternion16@nalEntropyDecoder@@QAE@ABVQuaternion@math@@@Z 00C55B70 f i nal_init.o
-753	PENDING	0002:004666d0 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C55BD0 f i nal_init.o
+753	PORTED	0002:004666d0 ?Decode@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C55BD0 f i nal_init.o
 754	PORTED	0002:00466830 ?CycleTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C55D30 f i nal_init.o
 755	PORTED	0002:00466860 ??$FastCycleTrajectory@VnalComponentPacked16EntropyQuat@@VQuaternion@math@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked16EntropyQuatData@@USkeletonComponentData@7@UAnimComponentData@5@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C55D60 f i nal_init.o
 756	PORTED	0002:004668e0 ?CycleTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C55DE0 f i nal_init.o
