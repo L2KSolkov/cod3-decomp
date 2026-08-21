@@ -669,16 +669,16 @@ index	status	map_line
 668	PORTED	0002:00118570 ?SetFrequency@NoiseFloat@@QAEXM@Z 00907A70 f i game2.o  PORTED: IDA-backed frequency setter
 669	PORTED	0002:00118590 ?SetRange@NoiseFloat@@QAEXM@Z 00907A90 f i game2.o  PORTED: IDA-backed range setter
 670	VERIFIED	0002:001185b0 ??0MsaQuat@@QAE@XZ 00907AB0 f i game2.o
-671	PORTED	0002:001185c0 ?Set3DScale@CameraShake@@QAEXM@Z 00907AC0 f i game2.o
-672	PORTED	0002:001185e0 ?Get3DScale@CameraShake@@QAEMXZ 00907AE0 f i game2.o
-673	PORTED	0002:001185f0 ?SetScaleCOD@CameraShake@@QAEXMH@Z 00907AF0 f i game2.o
-674	PORTED	0002:00118610 ?GetScaleCOD@CameraShake@@QAEMXZ 00907B10 f i game2.o
-675	PORTED	0002:00118620 ?IsZoneValid@PathNodeMgr@@QAE_NH@Z 00907B20 f i game2.o
-676	PORTED	0002:00118630 ?GetTOC@PathNodeMgr@@QAEPAUTOC1@PathNodes@@XZ 00907B30 f i game2.o
-677	PORTED	0002:00118640 ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@X@1@I@Z 00907B40 f i game2.o
-678	PORTED	0002:00118650 ?IsVisible@apsEffect@@QAEHXZ 00907B50 f i game2.o
-679	PORTED	0002:00118660 ??1CameraShakeInstance@@QAE@XZ 00907B60 f i game2.o
-680	PORTED	0002:00118680 ??0CameraShakeInstance@@QAE@XZ 00907B80 f i game2.o
+671	PORTED	0002:001185c0 ?Set3DScale@CameraShake@@QAEXM@Z 00907AC0 f i game2.o  PORTED: IDA-backed 3D scale store
+672	PORTED	0002:001185e0 ?Get3DScale@CameraShake@@QAEMXZ 00907AE0 f i game2.o  PORTED: IDA-backed float load
+673	PORTED	0002:001185f0 ?SetScaleCOD@CameraShake@@QAEXMH@Z 00907AF0 f i game2.o  PORTED: IDA-backed COD scale and ADS flag stores
+674	PORTED	0002:00118610 ?GetScaleCOD@CameraShake@@QAEMXZ 00907B10 f i game2.o  PORTED: IDA-backed COD scale load
+675	PORTED	0002:00118620 ?IsZoneValid@PathNodeMgr@@QAE_NH@Z 00907B20 f i game2.o  PORTED: IDA-backed always-true zone result
+676	PORTED	0002:00118630 ?GetTOC@PathNodeMgr@@QAEPAUTOC1@PathNodes@@XZ 00907B30 f i game2.o  PORTED: IDA-backed mLevelTOC accessor
+677	PORTED	0002:00118640 ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@X@1@I@Z 00907B40 f i game2.o  PORTED: existing always-true generic type stub matches IDA
+678	PORTED	0002:00118650 ?IsVisible@apsEffect@@QAEHXZ 00907B50 f i game2.o  PORTED: IDA-backed mFlags visibility bit test
+679	PORTED	0002:00118660 ??1CameraShakeInstance@@QAE@XZ 00907B60 f i game2.o  PORTED: existing NoiseFloat member destructor sequence matches IDA
+680	PORTED	0002:00118680 ??0CameraShakeInstance@@QAE@XZ 00907B80 f i game2.o  PORTED: existing NoiseFloat member constructor sequence matches IDA
 681	PORTED	0002:001186b0 ?Inst@SplineMgr@@SAPAV1@XZ 00907BB0 f i game2.o
 682	PORTED	0002:001186c0 ??0SplineEntry@SplineMgr@@QAE@XZ 00907BC0 f i game2.o
 683	PORTED	0002:001186e0 ?Unload@SplineEntry@SplineMgr@@QAEXXZ 00907BE0 f i game2.o
