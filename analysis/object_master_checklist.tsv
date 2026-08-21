@@ -585,7 +585,7 @@ ngl_internal.o	analysis/ngl_internal_o_checklist.tsv	analysis/ngl_internal_o_inv
 ngl_lighting.o	analysis/ngl_lighting_o_checklist.tsv	analysis/ngl_lighting_o_inventory.tsv	analysis/ngl_lighting_o_plan.tsv	41	22	19	0	0	0	0
 ngl_mesh.o	analysis/ngl_mesh_o_checklist.tsv	analysis/ngl_mesh_o_inventory.tsv	analysis/ngl_mesh_o_plan.tsv	33	21	12	0	0	0	0
 ngl_meshedit.o	analysis/ngl_meshedit_o_checklist.tsv	analysis/ngl_meshedit_o_inventory.tsv	analysis/ngl_meshedit_o_plan.tsv	9	9	0	0	0	0	0
-ngl_morph.o	analysis/ngl_morph_o_checklist.tsv	analysis/ngl_morph_o_inventory.tsv	analysis/ngl_morph_o_plan.tsv	12	11	1	0	0	0	0
+ngl_morph.o	analysis/ngl_morph_o_checklist.tsv	analysis/ngl_morph_o_inventory.tsv	analysis/ngl_morph_o_plan.tsv	12	12	0	0	0	0	0
 ngl_quad.o	analysis/ngl_quad_o_checklist.tsv	analysis/ngl_quad_o_inventory.tsv	analysis/ngl_quad_o_plan.tsv	20	20	0	0	0	0	0
 ngl_scene.o	analysis/ngl_scene_o_checklist.tsv	analysis/ngl_scene_o_inventory.tsv	analysis/ngl_scene_o_plan.tsv	150	73	77	0	0	0	0
 ngl_scenedump.o	analysis/ngl_scenedump_o_checklist.tsv	analysis/ngl_scenedump_o_inventory.tsv	analysis/ngl_scenedump_o_plan.tsv	7	7	0	0	0	0	0

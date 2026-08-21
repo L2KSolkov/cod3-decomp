@@ -20128,7 +20128,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20127	0x00853570	0x00C42A70	?nglMorphInit@@YAXXZ	ngl_xboxr	ngl_morph.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20128	0x008535B0	0x00C42AB0	?nglProcessMorph@@YAXPAUnglMorphSet@@@Z	ngl_xboxr	ngl_morph.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20129	0x00853600	0x00C42B00	??0?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20130	0x00853620	0x00C42B20	?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20130	0x00853620	0x00C42B20	?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20131	0x00853650	0x00C42B50	?Init@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20132	0x00853690	0x00C42B90	?Add@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@PAU2@@Z	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20133	0x008537B0	0x00C42CB0	??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ	ngl_xboxr	ngl_morph.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

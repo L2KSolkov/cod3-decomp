@@ -20128,7 +20128,7 @@ index	status	map_line
 20127	VERIFIED	0002:00453570 ?nglMorphInit@@YAXXZ 00C42A70 f ngl_morph.o
 20128	VERIFIED	0002:004535b0 ?nglProcessMorph@@YAXPAUnglMorphSet@@@Z 00C42AB0 f ngl_morph.o
 20129	VERIFIED	0002:00453600 ??0?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42B00 f i ngl_morph.o
-20130	PORTED	0002:00453620 ?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C42B20 f i ngl_morph.o
+20130	VERIFIED	0002:00453620 ?NewNodeOfLevel@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C42B20 f i ngl_morph.o
 20131	VERIFIED	0002:00453650 ?Init@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEXXZ 00C42B50 f i ngl_morph.o
 20132	VERIFIED	0002:00453690 ?Add@?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAEPAUnglMorphSet@@PAU2@@Z 00C42B90 f i ngl_morph.o
 20133	VERIFIED	0002:004537b0 ??1?$tlSkipList@UnglMorphSet@@VtlFixedString@@@@QAE@XZ 00C42CB0 f i ngl_morph.o
