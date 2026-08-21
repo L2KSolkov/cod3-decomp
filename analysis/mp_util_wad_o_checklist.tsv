@@ -158,20 +158,20 @@ index	status	map_line
 157	VERIFIED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o	VERIFIED: IDA 0x00935490 forwards mHandle and the vector to m_entity_set_angles, returning rhs
 158	VERIFIED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	VERIFIED: IDA 0x009354E0 forwards classname, origin, and TPakInfo to mSpawn, then constructs the entity result
 159	VERIFIED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o	VERIFIED: IDA 0x00935520 forwards the entity handle and script with notify=0 and both boolean flags false
-160	PORTED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	PORTED: IDA mSetModel forwarding
-161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	PORTED: IDA mMoveTo forwarding
+160	VERIFIED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	VERIFIED: IDA 0x00935560 forwards the entity handle, model name, and TPakInfo to mSetModel
+161	VERIFIED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	VERIFIED: IDA 0x009355A0 forwards handle, position, total time, acceleration, and deceleration to mMoveTo
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
 163	VERIFIED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o
-164	PORTED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o	PORTED: IDA int constructor stores mVal as float
+164	VERIFIED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o	VERIFIED: IDA 0x00935840 stores the integer rhs in bfloat::mVal and returns this
 165	VERIFIED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o
 166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
 167	VERIFIED	0002:005358f0 ?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z 00D24DF0 f mp_util_wad.o
-168	PORTED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mCVarGetInt forwarding wrapper
+168	VERIFIED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	VERIFIED: IDA 0x00935970 directly forwards the cvar name to mCVarGetInt
 169	FIXED	0002:005359a0 ?main@_mp_audio@@YAXXZ 00D24EA0 f mp_util_wad.o	FIXED: IDA 0x009359A0 constructs both worker functors with pLevel->_base.entity, not a boolean handle
-170	PORTED	0002:00536040 ??4bint@@QAEHI@Z 00D25540 f i mp_util_wad.o	PORTED: IDA unsigned-int assignment overload
-171	PORTED	0002:00536070 ?SoundPlay@@YAIABVstring@Broc@@M@Z 00D25570 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mSoundPlay forwarding wrapper
-172	PORTED	0002:005360a0 ?ReverbSetParams@@YAXABVstring@Broc@@_N@Z 00D255A0 f i mp_util_wad.o	PORTED: IDA gBrocAPI.mReverbSetParams forwarding wrapper
-173	PORTED	0002:005360d0 ?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z 00D255D0 f i mp_util_wad.o	PORTED: IDA entity-handle and HashStr forwarding wrapper
+170	VERIFIED	0002:00536040 ??4bint@@QAEHI@Z 00D25540 f i mp_util_wad.o	VERIFIED: IDA 0x00936040 stores the unsigned rhs in bint::mVal and returns rhs
+171	VERIFIED	0002:00536070 ?SoundPlay@@YAIABVstring@Broc@@M@Z 00D25570 f i mp_util_wad.o	VERIFIED: IDA 0x00936070 forwards the string pointer and volume to mSoundPlay
+172	VERIFIED	0002:005360a0 ?ReverbSetParams@@YAXABVstring@Broc@@_N@Z 00D255A0 f i mp_util_wad.o	VERIFIED: IDA 0x009360A0 forwards the string pointer and immediate flag to mReverbSetParams
+173	VERIFIED	0002:005360d0 ?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z 00D255D0 f i mp_util_wad.o	VERIFIED: IDA 0x009360D0 forwards entity handle and both HashStr mVal values to mAddEventHandler
 174	PORTED	0002:00536120 ?PlayerLocation__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D25620 f i mp_util_wad.o
 175	PORTED	0002:005361c0 ?ambient_system__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D256C0 f i mp_util_wad.o
 176	VERIFIED	0002:00536280 ?CallbackSetLevelAudio@_mp_audio@@YAXPBD00HH@Z 00D25780 f mp_util_wad.o
