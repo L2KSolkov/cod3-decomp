@@ -775,6 +775,22 @@ template reserved_dlist<TaskHandler>::dlist_node::dlist_node(
 template ae_sized_array<TaskHandler*, 32>::ae_sized_array();
 template void ae_sized_array<TaskHandler*, 32>::push_back(
     TaskHandler* const&);
+template TaskHandler* const&
+ae_sized_array<TaskHandler*, 32>::const_iterator::operator*() const;
+template TaskHandler* const*
+ae_sized_array<TaskHandler*, 32>::const_iterator::operator->() const;
+template ae_sized_array<TaskHandler*, 32>::const_iterator&
+ae_sized_array<TaskHandler*, 32>::const_iterator::operator++();
+template bool ae_sized_array<TaskHandler*, 32>::const_iterator::operator!=(
+    ae_sized_array<TaskHandler*, 32>::const_iterator) const;
+template TaskHandler*&
+ae_sized_array<TaskHandler*, 32>::iterator::operator*() const;
+template TaskHandler**
+ae_sized_array<TaskHandler*, 32>::iterator::operator->() const;
+template ae_sized_array<TaskHandler*, 32>::iterator&
+ae_sized_array<TaskHandler*, 32>::iterator::operator++();
+template bool ae_sized_array<TaskHandler*, 32>::iterator::operator!=(
+    ae_sized_array<TaskHandler*, 32>::iterator) const;
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
