@@ -1476,7 +1476,7 @@ index	status	map_line
 1475	VERIFIED	0002:001af8e0 ?GetDefaultColorScheme@FEMenu@@UAEDXZ 0099EDE0 f i shell.o
 1476	VERIFIED	0002:001af8f0 ?GetSystem@FEMenu@@UAEPAVFEMenuSystem@@XZ 0099EDF0 f i shell.o
 1477	VERIFIED	0002:001af900 ?GetFlags@FEMenu@@UAEHXZ 0099EE00 f i shell.o
-1478	PORTED	0002:001af910 ?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ 0099EE10 f i shell.o	PORTED: added IDA-derived base forwarding thunk
+1478	VERIFIED	0002:001af910 ?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ 0099EE10 f i shell.o	VERIFIED: exact IDA thunk forwarding to FESplitScreenMenu::UpdateSplitScreen
 1479	VERIFIED	0002:001af920 ?GetSaveSlots@MPProfileMainMenu@@QAEPAPAUSaveGameData@@XZ 0099EE20 f i shell.o
 1480	VERIFIED	0002:001af930 ?SetSlotNum@VKMenu@@QAEXH@Z 0099EE30 f i shell.o	VERIFIED: matches IDA mSlotNum assignment
 1481	VERIFIED	0002:001af950 ?GetSaveSlots@ProfileMainMenu@@QAEPAPAUSaveGameData@@XZ 0099EE50 f i shell.o

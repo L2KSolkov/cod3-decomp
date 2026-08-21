@@ -6653,7 +6653,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6652	0x005AF8E0	0x0099EDE0	?GetDefaultColorScheme@FEMenu@@UAEDXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6653	0x005AF8F0	0x0099EDF0	?GetSystem@FEMenu@@UAEPAVFEMenuSystem@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6654	0x005AF900	0x0099EE00	?GetFlags@FEMenu@@UAEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6655	0x005AF910	0x0099EE10	?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+6655	0x005AF910	0x0099EE10	?UpdateSplitScreen@InGameOptionsMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION matches IDA thunk forwarding to FESplitScreenMenu::UpdateSplitScreen	YES	YES	VERIFIED
 6656	0x005AF920	0x0099EE20	?GetSaveSlots@MPProfileMainMenu@@QAEPAPAUSaveGameData@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6657	0x005AF930	0x0099EE30	?SetSlotNum@VKMenu@@QAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6658	0x005AF950	0x0099EE50	?GetSaveSlots@ProfileMainMenu@@QAEPAPAUSaveGameData@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
