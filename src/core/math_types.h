@@ -352,6 +352,7 @@ public:
     Mat33() {}
     Mat33(const Mat33& _m);        // ??0Mat33@math@@QAE@ABV01@@Z (g.o 0x4A7100)
     Mat33(const Dir3& _x, const Dir3& _y, const Dir3& _z);  // ??0Mat33@math@@QAE@ABVDir3@1@00@Z (g.o 0x4A6FB0)
+    Mat33(const Quaternion& _q);   // ??0Mat33@math@@QAE@ABVQuaternion@1@@Z (game2.o 0x00516FD0)
     const Mat33& operator=(const Mat33& _m);  // ??4Mat33@math@@QAEABV01@ABV01@@Z (g.o 0x4A7180)
     const Mat33& operator*=(const Mat33& _m);  // ??XMat33@math@@QAEABV01@ABV01@@Z (g.o 0x4A7F60)
     const Dir3& GetX() const;  // ?GetX@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7030)
@@ -592,6 +593,44 @@ inline math::Quaternion math::Slerp(float t,
         _mm_mul_ps(_a.v, _mm_shuffle_ps(weights, weights, 0)),
         _mm_mul_ps(_b.v, _mm_shuffle_ps(weights, weights, 85)));
     return result;
+}
+
+// ea: 0x00516FD0
+inline math::Mat33::Mat33(const math::Quaternion& _q)
+{
+    __m128 doubled = _mm_add_ps(_q.v, _q.v);
+    __m128 product = _mm_mul_ps(
+        _mm_shuffle_ps(doubled, doubled, 255), _q.v);
+    const __m128 signMask =
+        _mm_setr_ps(-0.0f, -0.0f, -0.0f, -0.0f);
+    __m128 negated = _mm_xor_ps(signMask, product);
+    float diagonal = _mm_shuffle_ps(product, product, 255).m128_f32[0]
+                     - 1.0f;
+    __m128 term;
+
+    term = _mm_setr_ps(
+        diagonal,
+        _mm_shuffle_ps(negated, negated, 170).m128_f32[0],
+        _mm_shuffle_ps(product, product, 85).m128_f32[0],
+        0.0f);
+    x.v = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(_q.v, _q.v, 0)), term);
+
+    term = _mm_setr_ps(
+        _mm_shuffle_ps(product, product, 170).m128_f32[0],
+        diagonal,
+        negated.m128_f32[0],
+        0.0f);
+    y.v = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(_q.v, _q.v, 85)), term);
+
+    term = _mm_setr_ps(
+        _mm_shuffle_ps(negated, negated, 85).m128_f32[0],
+        product.m128_f32[0],
+        diagonal,
+        0.0f);
+    z.v = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(_q.v, _q.v, 170)), term);
 }
 
 

@@ -1144,6 +1144,7 @@ public:
     };
 
     void Advance(float delta);  // ea: 0x4FA550
+    void _KillModifiers(nalPartialAnimState* killer);  // ea: 0x516F40
     static void DebugDump(Entity* ent);  // ea: 0x4F5D30
     void GetPose(nalGeneric::nalGenericPose& Pose,
                  nalGeneric::nalGenericSkeleton* Skeleton,
@@ -1842,6 +1843,42 @@ void AnimationPlayer::nalPartialAnimState::Kill()
     this->base.callback = nullptr;
     this->base.state = 3;
     this->base.alpha = 0.0f;
+}
+
+// ea: 0x516F40
+void AnimationPlayer::_KillModifiers(
+    AnimationPlayer::nalPartialAnimState* killer)
+{
+    struct AnimationPlayerPartialListView {
+        unsigned char _pad00[0x34];
+        nalPartialAnimState* PartialAnimStates;
+    };
+    AnimationPlayerPartialListView* self =
+        reinterpret_cast<AnimationPlayerPartialListView*>(this);
+    nalPartialAnimState* partialAnimStates = self->PartialAnimStates;
+    unsigned int mask = killer->mask;
+    float priority = killer->priority;
+    while (partialAnimStates != nullptr)
+    {
+        if (partialAnimStates->mask == mask
+            && partialAnimStates != killer
+            && priority >= partialAnimStates->priority)
+        {
+            nalAnimCallback* callback = reinterpret_cast<nalAnimCallback*>(
+                partialAnimStates->base.callback);
+            partialAnimStates->base.state = 2;
+            if (callback != nullptr)
+            {
+                typedef void (__thiscall *ReleaseFn)(nalAnimCallback*);
+                void** vftable = *reinterpret_cast<void***>(callback);
+                reinterpret_cast<ReleaseFn>(vftable[2])(callback);
+            }
+            partialAnimStates->base.callback = nullptr;
+            partialAnimStates->base.state = 3;
+            partialAnimStates->base.alpha = 0.0f;
+        }
+        partialAnimStates = partialAnimStates->next;
+    }
 }
 
 // ============================================================================
