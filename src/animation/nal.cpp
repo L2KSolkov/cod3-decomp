@@ -1141,11 +1141,18 @@ public:
 // Mat33 base; this matches the generated C body and the release inheritance.
 class nalMatrix3x3 : public math::Mat33 {
 public:
+    nalMatrix3x3();
     nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
                  const math::Dir3& z);
+    float Determinant() const;
 };
 
 static_assert(sizeof(nalMatrix3x3) == 0x30, "nalMatrix3x3 layout mismatch");
+
+// ea: 0x005176D0
+nalMatrix3x3::nalMatrix3x3()
+{
+}
 
 nalMatrix3x3::nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
                            const math::Dir3& z)
@@ -1153,6 +1160,26 @@ nalMatrix3x3::nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
     this->x.v = x.v;
     this->y.v = y.v;
     this->z.v = z.v;
+}
+
+// ea: 0x005176E0
+float nalMatrix3x3::Determinant() const
+{
+    const float x0 = x.v.m128_f32[0];
+    const float x1 = x.v.m128_f32[1];
+    const float x2 = x.v.m128_f32[2];
+    const float y0 = y.v.m128_f32[0];
+    const float y1 = y.v.m128_f32[1];
+    const float y2 = y.v.m128_f32[2];
+    const float z0 = z.v.m128_f32[0];
+    const float z1 = z.v.m128_f32[1];
+    const float z2 = z.v.m128_f32[2];
+    return z1 * y0 * x2
+         + z0 * y2 * x1
+         + z2 * y1 * x0
+         - z0 * y1 * x2
+         - z1 * y2 * x0
+         - z2 * y0 * x1;
 }
 
 // ea: 0x00868AC0
