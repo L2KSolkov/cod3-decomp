@@ -432,6 +432,10 @@ class hudelem {
 public:
     unsigned int ___u0;
 
+    hudelem();
+    hudelem(unsigned int v);
+    unsigned int GetIndex() const;
+
     void SetUndefined();             // ea: 0x92F7D0
     void x(int v);                   // hudelem.x property
     void y(int v);                   // hudelem.y property

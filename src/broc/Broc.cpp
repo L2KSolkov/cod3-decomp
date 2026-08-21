@@ -289,6 +289,24 @@ void VecAnglesToVectors(const vector* angles, vector* forward,
     AngleVectors(&angles->x, &forward->x, &right->x, &up->x);
 }
 
+// ea: 0x005E97B0
+hudelem::hudelem()
+    : ___u0(0xFFFFFFFFu)
+{
+}
+
+// ea: 0x005E97C0
+hudelem::hudelem(unsigned int v)
+    : ___u0(v)
+{
+}
+
+// ea: 0x005E97E0
+unsigned int hudelem::GetIndex() const
+{
+    return ___u0;
+}
+
 // ea: 0x005EF530
 void VecAnglesToUp(vector* vecOut, const vector* angles) {
     ::AnglesToUp(&angles->x, &vecOut->x);
