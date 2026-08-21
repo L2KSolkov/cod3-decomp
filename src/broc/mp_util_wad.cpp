@@ -4463,7 +4463,7 @@ void HQ_Destroyed(Broc::entity self);
 void HQ_Defended(Broc::entity self);
 char Host_PickInitialPoints();
 void SetupStage1();
-void SetUpStage3(Broc::entity self);
+void SetUpStage3();
 int ShowHQDestroyed();
 int ShowHQDefended();
 int ShowHQSetUp();
@@ -11216,7 +11216,7 @@ void Host_FlowControl(Broc::entity self) {
     if ((int)mp_util_wad::pLevel->hq_stage < 5) {
         Broc::Code_DebugOut("*HQ* StageTimer 3\n");
         BroadcastGameState();
-        SetUpStage3(lvl);
+        SetUpStage3();
         mp_util_wad::pLevel->hq_stage_time = 90;
         mp_util_wad::pLevel->hq_stage_time =
             (int)mp_util_wad::pLevel->hq_stage_time - 1;
@@ -11590,9 +11590,11 @@ void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
         if ((int)mp_util_wad::pLevel->hq_stage < 3 && stage >= 3) {
             Broc::Code_DebugOut("*HQ* going to stage 3\n");
             mp_util_wad::pLevel->allies_defending = alliesDefending != 0;
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
-            SetUpStage3(lvl);
+            SetUpStage3();
+            Broc::entity lvl =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             void* ftor = Track_Ownership__functor(lvl);
             Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
                                 __LINE__, "Track_Ownership", ftor);
@@ -11916,10 +11918,76 @@ void HQ_Defended(Broc::entity self) {
 }
 
 // SetUpStage3 - ea: 0x9588A0
-void SetUpStage3(Broc::entity self) {
-    (void)self;
-    ShowHQSetUp();
+void SetUpStage3() {
+    ObjectiveDelete(0, -1);
+    if ((bool)mp_util_wad::pLevel->pointA_isHQ) {
+        Broc::string pszString("flag");
+        Broc::string state("i_HQ_captured_c");
+        ObjectiveAdd(0, state, pszString, mp_util_wad::pLevel->pointA,
+                     (float)lHQObjectiveHeight, -1);
+        state.~string();
+        pszString.~string();
+    }
     NoRespawnForDefenders(Broc::bbool(true));
+    Broc::string script("MX_HQ_HQEstablished");
+    Broc::entity* levelEntity =
+        mp_util_wad::pLevel != nullptr
+            ? &mp_util_wad::pLevel->_base.entity
+            : nullptr;
+    Broc::EffectEventPlay(levelEntity, &script);
+    script.~string();
+
+    if ((bool)mp_util_wad::pLevel->allies_defending) {
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team("allies");
+        Broc::string sound("MP_HQ_EstablishFriendly_Allies");
+        Broc::bfloat delay(1.2f);
+        void* ftor =
+            _mp_audio::PlayTeamDialog__functor(lvl, team, sound, delay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("axis");
+        Broc::string sound2("MP_HQ_EstablishEnemy_Axis");
+        Broc::bfloat delay2(1.2f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    } else {
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team("axis");
+        Broc::string sound("MP_HQ_EstablishFriendly_Axis");
+        Broc::bfloat delay(1.2f);
+        void* ftor =
+            _mp_audio::PlayTeamDialog__functor(lvl, team, sound, delay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor);
+
+        Broc::entity lvl2 =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
+        Broc::string team2("allies");
+        Broc::string sound2("MP_HQ_EstablishEnemy_Allies");
+        Broc::bfloat delay2(1.2f);
+        void* ftor2 =
+            _mp_audio::PlayTeamDialog__functor(lvl2, team2, sound2, delay2);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog", ftor2);
+    }
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    ShowHQSetUp();
 }
 
 // SwitchToRadioOnly - ea: 0x95AF10
