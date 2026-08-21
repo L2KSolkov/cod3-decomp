@@ -8597,34 +8597,34 @@ index	status	map_line
 8596	SKIPPED	0002:001ef2d0 ?construct@?$allocator@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@ABQAU342@@Z 009DE7D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8597	SKIPPED	0002:001ef2f0 ??0?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@QAE@ABU01@@Z 009DE7F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8598	SKIPPED	0002:001ef340 ??0?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAE@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DE840 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-8599	PORTED	0002:001ef350 ??$safe_for_each@Viterator@?$reserved_dlist@VAeThreadState@@@@V?$DelFunctor@VAeThreadState@@@@@@YAXViterator@?$reserved_dlist@VAeThreadState@@@@0V?$DelFunctor@VAeThreadState@@@@@Z 009DE850 f i scr.o
+8599	PORTED	0002:001ef350 ??$safe_for_each@Viterator@?$reserved_dlist@VAeThreadState@@@@V?$DelFunctor@VAeThreadState@@@@@@YAXViterator@?$reserved_dlist@VAeThreadState@@@@0V?$DelFunctor@VAeThreadState@@@@@Z 009DE850 f i scr.o  safe_for_each cleanup helper matches the IDA iterator/deleter walk
 8600	SKIPPED	0002:001ef3a0 ??$copy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00@Z 009DE8A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8601	SKIPPED	0002:001ef3d0 ??$copy_backward@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00@Z 009DE8D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-8602	PORTED	0002:001ef400 ?destroy_all@?$dyn_array@Vstring@Broc@@@Broc@@AAEXXZ 009DE900 f i scr.o
+8602	PORTED	0002:001ef400 ?destroy_all@?$dyn_array@Vstring@Broc@@@Broc@@AAEXXZ 009DE900 f i scr.o  dyn_array<string>::destroy_all ported from IDA decompilation
 8603	SKIPPED	0002:001ef480 ?construct@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@ABV342@@Z 009DE980 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8604	SKIPPED	0002:001ef4a0 ?destroy@?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DE9A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8605	SKIPPED	0002:001ef4b0 ??$_Uninit_copy@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 009DE9B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-8606	PORTED	0002:001ef4e0 ?GetLargestBlockSize@PoolAllocator@@QBEHXZ 009DE9E0 f i scr.o
-8607	PORTED	0002:001ef500 ?AddEndOn@EntityNotifySet@@QAEXPAVEndOnScriptNode@@@Z 009DEA00 f i scr.o
-8608	PORTED	0002:001ef530 ?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA30 f i scr.o
-8609	PORTED	0002:001ef550 ?VecAnglesToRight@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA50 f i scr.o
-8610	PORTED	0002:001ef570 ?VecAnglesToForward@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA70 f i scr.o
-8611	PORTED	0002:001ef590 ?ApplyStateController@AeThread@@QAEXPAVAeThreadState@@@Z 009DEA90 f i scr.o
-8612	PORTED	0002:001ef5c0 ?ExecThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009DEAC0 f i scr.o
-8613	PORTED	0002:001ef600 ?DereferenceHandle@AeThreadManager@@QBEPAVAeThread@@VHandle@@@Z 009DEB00 f i scr.o
+8606	PORTED	0002:001ef4e0 ?GetLargestBlockSize@PoolAllocator@@QBEHXZ 009DE9E0 f i scr.o  GetLargestBlockSize ported from IDA decompilation
+8607	PORTED	0002:001ef500 ?AddEndOn@EntityNotifySet@@QAEXPAVEndOnScriptNode@@@Z 009DEA00 f i scr.o  EntityNotifySet::AddEndOn ported from IDA decompilation
+8608	VERIFIED	0002:001ef530 ?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA30 f i scr.o  VecAnglesToUp matches IDA decompilation and existing Broc wrapper
+8609	VERIFIED	0002:001ef550 ?VecAnglesToRight@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA50 f i scr.o  VecAnglesToRight matches IDA decompilation and existing Broc wrapper
+8610	VERIFIED	0002:001ef570 ?VecAnglesToForward@Broc@@YAXAAUvector@1@ABU21@@Z 009DEA70 f i scr.o  VecAnglesToForward matches IDA decompilation and existing Broc wrapper
+8611	PORTED	0002:001ef590 ?ApplyStateController@AeThread@@QAEXPAVAeThreadState@@@Z 009DEA90 f i scr.o  ApplyStateController ported from IDA decompilation
+8612	PORTED	0002:001ef5c0 ?ExecThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009DEAC0 f i scr.o  ExecThread ported from IDA decompilation
+8613	PORTED	0002:001ef600 ?DereferenceHandle@AeThreadManager@@QBEPAVAeThread@@VHandle@@@Z 009DEB00 f i scr.o  AeThreadManager::DereferenceHandle ported from IDA decompilation
 8614	SKIPPED	0002:001ef640 ??_EAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 8615	SKIPPED	0002:001ef640 ??_GAeThreadEntityNotifyMatchState@@UAEPAXI@Z 009DEB40 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 8616	VERIFIED	0002:001ef670 ??1AeThreadEntityNotifyMatchState@@UAE@XZ 009DEB70 f i scr.o
-8617	PORTED	0002:001ef680 ?MathFastSinCos@Broc@@YAXMAAM0@Z 009DEB80 f i scr.o
+8617	VERIFIED	0002:001ef680 ?MathFastSinCos@Broc@@YAXMAAM0@Z 009DEB80 f i scr.o  MathFastSinCos matches IDA decompilation and existing Broc wrapper
 8618	VERIFIED	0002:001ef6c0 ??0vehicle_follow@@QAE@XZ 009DEBC0 f i scr.o
-8619	PORTED	0002:001ef770 ?erase@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DEC70 f i scr.o
-8620	PORTED	0002:001ef810 ?begin@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DED10 f i scr.o
-8621	PORTED	0002:001ef860 ?erase@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DED60 f i scr.o
-8622	PORTED	0002:001ef900 ?erase@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DEE00 f i scr.o
+8619	PORTED	0002:001ef770 ?erase@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DEC70 f i scr.o  reserved_dlist<AeThreadState>::erase ported from IDA decompilation
+8620	PORTED	0002:001ef810 ?begin@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DED10 f i scr.o  reserved_dlist<AeThreadState>::begin ported from IDA decompilation
+8621	PORTED	0002:001ef860 ?erase@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DED60 f i scr.o  reserved_dlist<EndOnScriptNode>::erase ported from IDA decompilation
+8622	PORTED	0002:001ef900 ?erase@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DEE00 f i scr.o  reserved_dlist<AeThread>::erase ported from IDA decompilation
 8623	VERIFIED	0002:001ef9a0 ??0?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DEEA0 f i scr.o
-8624	PORTED	0002:001ef9b0 ?erase@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEXH@Z 009DEEB0 f i scr.o
+8624	PORTED	0002:001ef9b0 ?erase@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEXH@Z 009DEEB0 f i scr.o  ae_sized_array::erase ported from IDA decompilation
 8625	VERIFIED	0002:001efa00 ?ReleaseHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXVHandle@@@Z 009DEF00 f i scr.o
-8626	PORTED	0002:001efb10 ??D?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QBEPAVAeThread@@XZ 009DF010 f i scr.o
+8626	PORTED	0002:001efb10 ??D?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QBEPAVAeThread@@XZ 009DF010 f i scr.o  DbLinkedHandle<AeThreadManager,AeThread>::operator* ported from IDA decompilation
 8627	SKIPPED	0002:001efb50 ??Cconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPBU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DF050 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8628	SKIPPED	0002:001efb60 ??Citerator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPAU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@XZ 009DF060 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8629	SKIPPED	0002:001efb70 ??0?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@QAE@ABHABV?$ae_fixed_string@$0CA@E@@@Z 009DF070 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
