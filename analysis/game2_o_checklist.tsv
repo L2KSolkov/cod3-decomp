@@ -1,13 +1,13 @@
 index	status	map_line
-1	PORTED	0002:000ea9a0 ?Center@apsSphere@@QAEAAUPacked@Dir3@math@@XZ 008D9EA0 f i game2.o
+1	VERIFIED	0002:000ea9a0 ?Center@apsSphere@@QAEAAUPacked@Dir3@math@@XZ 008D9EA0 f i game2.o
 2	VERIFIED	0002:000ea9b0 ?SetSplineCallback@apsCommon@@SAXP6APAMI@Z@Z 008D9EB0 f i game2.o
-3	PORTED	0002:000ea9c0 ?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ 008D9EC0 f i game2.o
-4	PORTED	0002:000ea9d0 ?get_dlist_node@Task@@QAEPAXXZ 008D9ED0 f i game2.o
-5	PORTED	0002:000ea9e0 ?get_dlist_node_offset@Task@@SAHXZ 008D9EE0 f i game2.o
-6	PORTED	0002:000ea9f0 ?GetId@Task@@QBE?AVFourCC@@XZ 008D9EF0 f i game2.o
-7	PORTED	0002:000eaa10 ?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D9F10 f i game2.o
-8	PORTED	0002:000eaa30 ?GetTaskHandle@Task@@QBE?AVHandle@@XZ 008D9F30 f i game2.o
-9	PORTED	0002:000eaa50 ?get_dlist_node_offset@AeThreadState@@SAHXZ 008D9F50 f i game2.o
+3	VERIFIED	0002:000ea9c0 ?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ 008D9EC0 f i game2.o
+4	VERIFIED	0002:000ea9d0 ?get_dlist_node@Task@@QAEPAXXZ 008D9ED0 f i game2.o
+5	VERIFIED	0002:000ea9e0 ?get_dlist_node_offset@Task@@SAHXZ 008D9EE0 f i game2.o
+6	VERIFIED	0002:000ea9f0 ?GetId@Task@@QBE?AVFourCC@@XZ 008D9EF0 f i game2.o
+7	VERIFIED	0002:000eaa10 ?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D9F10 f i game2.o
+8	VERIFIED	0002:000eaa30 ?GetTaskHandle@Task@@QBE?AVHandle@@XZ 008D9F30 f i game2.o
+9	VERIFIED	0002:000eaa50 ?get_dlist_node_offset@AeThreadState@@SAHXZ 008D9F50 f i game2.o
 10	VERIFIED	0002:000eaa60 ?button_pressed_clear_all@controller@@QAEXH@Z 008D9F60 f i game2.o
 11	VERIFIED	0002:000eaa90 ?set_locked_port@controller@@QAEXH@Z 008D9F90 f i game2.o
 12	VERIFIED	0002:000eaab0 ?unlock_port@controller@@QAEXXZ 008D9FB0 f i game2.o

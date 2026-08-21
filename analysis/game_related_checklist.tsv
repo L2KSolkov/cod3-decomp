@@ -2906,15 +2906,15 @@ index	status	map_line
 2905	SKIPPED	0002:000ea800 ?clear@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEXXZ 008D9D00 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2906	SKIPPED	0002:000ea860 ?insert@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@V312@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 008D9D60 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 2907	SKIPPED	0002:000ea8f0 ?push_back@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 008D9DF0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-2908	PORTED	0002:000ea9a0 ?Center@apsSphere@@QAEAAUPacked@Dir3@math@@XZ 008D9EA0 f i game2.o
+2908	VERIFIED	0002:000ea9a0 ?Center@apsSphere@@QAEAAUPacked@Dir3@math@@XZ 008D9EA0 f i game2.o
 2909	VERIFIED	0002:000ea9b0 ?SetSplineCallback@apsCommon@@SAXP6APAMI@Z@Z 008D9EB0 f i game2.o
-2910	PORTED	0002:000ea9c0 ?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ 008D9EC0 f i game2.o
-2911	PORTED	0002:000ea9d0 ?get_dlist_node@Task@@QAEPAXXZ 008D9ED0 f i game2.o
-2912	PORTED	0002:000ea9e0 ?get_dlist_node_offset@Task@@SAHXZ 008D9EE0 f i game2.o
-2913	PORTED	0002:000ea9f0 ?GetId@Task@@QBE?AVFourCC@@XZ 008D9EF0 f i game2.o
-2914	PORTED	0002:000eaa10 ?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D9F10 f i game2.o
-2915	PORTED	0002:000eaa30 ?GetTaskHandle@Task@@QBE?AVHandle@@XZ 008D9F30 f i game2.o
-2916	PORTED	0002:000eaa50 ?get_dlist_node_offset@AeThreadState@@SAHXZ 008D9F50 f i game2.o
+2910	VERIFIED	0002:000ea9c0 ?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ 008D9EC0 f i game2.o
+2911	VERIFIED	0002:000ea9d0 ?get_dlist_node@Task@@QAEPAXXZ 008D9ED0 f i game2.o
+2912	VERIFIED	0002:000ea9e0 ?get_dlist_node_offset@Task@@SAHXZ 008D9EE0 f i game2.o
+2913	VERIFIED	0002:000ea9f0 ?GetId@Task@@QBE?AVFourCC@@XZ 008D9EF0 f i game2.o
+2914	VERIFIED	0002:000eaa10 ?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D9F10 f i game2.o
+2915	VERIFIED	0002:000eaa30 ?GetTaskHandle@Task@@QBE?AVHandle@@XZ 008D9F30 f i game2.o
+2916	VERIFIED	0002:000eaa50 ?get_dlist_node_offset@AeThreadState@@SAHXZ 008D9F50 f i game2.o
 2917	VERIFIED	0002:000eaa60 ?button_pressed_clear_all@controller@@QAEXH@Z 008D9F60 f i game2.o
 2918	VERIFIED	0002:000eaa90 ?set_locked_port@controller@@QAEXH@Z 008D9F90 f i game2.o
 2919	VERIFIED	0002:000eaab0 ?unlock_port@controller@@QAEXXZ 008D9FB0 f i game2.o
