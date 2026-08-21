@@ -374,11 +374,11 @@ index	status	map_line
 373	FIXED	0002:005443a0 ?QuitGameWithMessage__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@UHashStr@@@Z 00D338A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,HashStr>*; corrected the wrapper return ABI
 374	VERIFIED	0002:00544440 ?CallbackSpawnButtonPressed@_mp_common@@YAXVentity@Broc@@@Z 00D33940 f mp_util_wad.o
 375	FIXED	0002:005444e0 ?LocalPlayerRespawn__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D339E0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
-376	PORTED	0002:00544580 ?CallbackQuitGame@_mp_common@@YAXXZ 00D33A80 f mp_util_wad.o
+376	VERIFIED	0002:00544580 ?CallbackQuitGame@_mp_common@@YAXXZ 00D33A80 f mp_util_wad.o	VERIFIED: Existing implementation creates QuitGameThread with the level entity and forwards to thread_create, matching IDA
 377	FIXED	0002:00544600 ?QuitGameThread__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D33B00 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
-378	PORTED	0002:005446a0 ?CallbackHostDisconnected@_mp_common@@YAXXZ 00D33BA0 f mp_util_wad.o
-379	PORTED	0002:00544730 ?CallbackLocalPlayerKicked@_mp_common@@YAXXZ 00D33C30 f mp_util_wad.o
-380	PORTED	0002:005447c0 ?CallbackHostMigrated@_mp_common@@YAXXZ 00D33CC0 f mp_util_wad.o
+378	VERIFIED	0002:005446a0 ?CallbackHostDisconnected@_mp_common@@YAXXZ 00D33BA0 f mp_util_wad.o	VERIFIED: Existing implementation uses hash 0xA45844A6 and QuitGameWithMessage, matching IDA
+379	VERIFIED	0002:00544730 ?CallbackLocalPlayerKicked@_mp_common@@YAXXZ 00D33C30 f mp_util_wad.o	VERIFIED: Existing implementation uses hash 0x3546BB54 and QuitGameWithMessage, matching IDA
+380	VERIFIED	0002:005447c0 ?CallbackHostMigrated@_mp_common@@YAXXZ 00D33CC0 f mp_util_wad.o	VERIFIED: Existing implementation creates HostHasMigrated with the level entity and forwards to thread_create, matching IDA
 381	FIXED	0002:00544840 ?HostHasMigrated__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D33D40 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
 382	VERIFIED	0002:005448e0 ?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z 00D33DE0 f mp_util_wad.o
 383	VERIFIED	0002:005449d0 ?CloseAllMenus@Broc@@YAXH@Z 00D33ED0 f i mp_util_wad.o
