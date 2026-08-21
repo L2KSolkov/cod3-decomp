@@ -632,9 +632,9 @@ index	status	map_line
 631	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o  PORTED: IDA-backed SIMD quaternion slerp polynomial
 632	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o  PORTED: IDA-backed empty constructor
 633	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o  PORTED: IDA-backed six-term SIMD-row determinant
-634	PORTED	0002:00117890 ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z 00906D90 f i game2.o
-635	PORTED	0002:00117ac0 ?Translate@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00906FC0 f i game2.o
-636	PORTED	0002:00117b40 ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z 00907040 f i game2.o
+634	PORTED	0002:00117890 ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z 00906D90 f i game2.o  PORTED: IDA-backed row-wise SIMD matrix multiply with alias-safe source temporaries
+635	PORTED	0002:00117ac0 ?Translate@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00906FC0 f i game2.o  PORTED: IDA-backed translation row shuffle and homogeneous w
+636	PORTED	0002:00117b40 ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z 00907040 f i game2.o  PORTED: IDA-backed quaternion rotation rows and sign-mask arithmetic
 637	PORTED	0002:00117d10 ?Cofactor@nalMatrix4x4@@QBEMHH@Z 00907210 f i game2.o
 638	PORTED	0002:00117e00 ?Determinant@nalMatrix4x4@@QBEMXZ 00907300 f i game2.o
 639	VERIFIED	0002:00117e50 ??0nalMatrix4x4@@QAE@ABV0@@Z 00907350 f i game2.o
