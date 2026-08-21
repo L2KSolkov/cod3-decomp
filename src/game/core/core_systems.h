@@ -803,6 +803,8 @@ public:
     float GetRampUpDuration(ERumbleMotorID rumbleID) const;     // ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE290)
     float GetSteadyDuration(ERumbleMotorID rumbleID) const;     // ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE310)
     void SetLooping(ERumbleMotorID rumbleID, bool looping);     // ?SetLooping@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (cg.o 0x6BBDE0)
+    void SetUsingNotes(ERumbleMotorID rumbleID, bool new_using_notes); // scr.o 0x5EE470
+    void SetNotes(ERumbleMotorID rumbleID, const Broc::string& new_notes); // scr.o 0x5EE510
     void SetDelay(ERumbleMotorID rumbleID, float new_delay);              // ?SetDelay@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8A70)
     void SetEnabled(ERumbleMotorID rumbleID, bool new_enabled);           // ?SetEnabled@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (g.o 0x4A8B60)
     void SetIntensity(ERumbleMotorID rumbleID, float new_intensity);      // ?SetIntensity@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8BE0)

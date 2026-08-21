@@ -39,6 +39,17 @@ struct refdef_s {
     refdef_s() {}  // ea: 0x00687A90
 };
 
+// ea: 0x005EE750
+weaponInfo_s::weaponInfo_s()
+{
+    iWorldSurfIndex.mValue = nullptr;
+    iWorldSurfIndex.mPakId = PAK_ID_INVALID;
+    iPickupSurfIndex.mValue = nullptr;
+    iPickupSurfIndex.mPakId = PAK_ID_INVALID;
+    iMissileSurfIndex.mValue = nullptr;
+    iMissileSurfIndex.mPakId = PAK_ID_INVALID;
+}
+
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 class RumbleEffect;
 class RumbleEffectInstanceHandle;
@@ -466,7 +477,24 @@ struct _objectiveInfo_t {
     _objectiveInfo_t* pChild;     // +0x28
     _objectiveInfo_t* pParent;    // +0x2C
     char szString[128];           // +0x30
+
+    void Clear();                 // ?Clear@_objectiveInfo_t@@QAEXXZ (scr.o 0x5EE600)
 };
+
+// ea: 0x005EE600
+void _objectiveInfo_t::Clear()
+{
+    *(int*)&vOrigin[1] = 0;
+    vOrigin[0] = 0.0f;
+    szString[0] = 0;
+    ringTime = -1;
+    ring = 0;
+    displayOrder = -1;
+    pChild = nullptr;
+    pParent = nullptr;
+    *(int*)&height = 0;
+    state = 0;
+}
 
 struct localEntity_t {
     void*        next;  // +0x00

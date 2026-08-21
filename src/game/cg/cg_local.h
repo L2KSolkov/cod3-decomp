@@ -183,6 +183,7 @@ public:
 };
 
 struct weaponInfo_s {
+    weaponInfo_s();                    // ??0weaponInfo_s@@QAE@XZ (scr.o 0x5EE750)
     float viewModelAnimRates[25];  // +0x00
     char  handModel[24];           // +0x64
     unsigned char registered;      // +0x7C

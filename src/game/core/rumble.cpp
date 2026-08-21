@@ -216,6 +216,55 @@ void RumbleEffect::SetLooping(ERumbleMotorID rumbleID, bool looping)
     mRumbleDataArray[rumbleID].m_flags.mVal |= 2u;
 }
 
+// ea: 0x005EE470
+void RumbleEffect::SetUsingNotes(ERumbleMotorID rumbleID,
+                                  bool new_using_notes)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 130;
+        AeAssert::gCurrentExpr =
+            "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if (new_using_notes)
+        mRumbleDataArray[rumbleID].m_flags.mVal |= 1u;
+    else
+        mRumbleDataArray[rumbleID].m_flags.mVal &= 0xFFFFFFFEu;
+}
+
+// ea: 0x005EE510
+void RumbleEffect::SetNotes(ERumbleMotorID rumbleID,
+                             const Broc::string& new_notes)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 136;
+        AeAssert::gCurrentExpr =
+            "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if (new_notes.mBlock == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 137;
+        AeAssert::gCurrentExpr = "new_notes.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RUMBLE NOTES STRING IS EMPTY"))
+            __debugbreak();
+    }
+    mRumbleDataArray[rumbleID].rumble_notes = new_notes;
+}
+
 extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
 extern int currCl;
