@@ -235,15 +235,15 @@ index	status	map_line
 234	VERIFIED	0002:0053a4e0 ?ThreadStaticSoundRandomPlay__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D299E0 f i mp_util_wad.o	VERIFIED: IDA allocates 0x10 bytes and constructs AeThreadFunctor2 with ThreadStaticSoundRandomPlay
 235	VERIFIED	0002:0053a5a0 ?ThreadStaticSoundRandomPlay@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D29AA0 f mp_util_wad.o
 236	VERIFIED	0002:0053a640 ?PlayPainSound@_mp_audio@@YAXVentity@Broc@@Ubint@@@Z 00D29B40 f mp_util_wad.o	VERIFIED: IDA matches damage gate, cooldown, health thresholds, forced chance, team sounds, and timestamp update
-237	PORTED	0002:0053ac50 ??Ybint@@QAEHH@Z 00D2A150 f i mp_util_wad.o
-238	PORTED	0002:0053ac90 ??4bbool@@QAEM_N@Z 00D2A190 f i mp_util_wad.o
-239	PORTED	0002:0053acc0 ??D@YA?AUbfloat@@MU0@@Z 00D2A1C0 f i mp_util_wad.o
-240	PORTED	0002:0053ad00 ??O@YA?AUbbool@@Ubint@@H@Z 00D2A200 f i mp_util_wad.o
-241	PORTED	0002:0053ad40 ??D@YA?AUbfloat@@U0@H@Z 00D2A240 f i mp_util_wad.o
-242	PORTED	0002:0053ad80 ??M@YA?AUbbool@@HUbfloat@@@Z 00D2A280 f i mp_util_wad.o
-243	PORTED	0002:0053ade0 ?Get@maxhealth_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D2A2E0 f i mp_util_wad.o
-244	PORTED	0002:0053ae20 ?GetTime@@YA?AUbint@@XZ 00D2A320 f i mp_util_wad.o
-245	PORTED	0002:0053ae50 ??0bfloat@@QAE@ABUbint@@@Z 00D2A350 f i mp_util_wad.o
+237	FIXED	0002:0053ac50 ??Ybint@@QAEHH@Z 00D2A150 f i mp_util_wad.o	FIXED: IDA asserts then returns updated mVal as int
+238	FIXED	0002:0053ac90 ??4bbool@@QAEM_N@Z 00D2A190 f i mp_util_wad.o	FIXED: IDA stores bool and returns double conversion
+239	PORTED	0002:0053acc0 ??D@YA?AUbfloat@@MU0@@Z 00D2A1C0 f i mp_util_wad.o	PORTED: IDA multiplies float and bfloat, constructs result
+240	PORTED	0002:0053ad00 ??O@YA?AUbbool@@Ubint@@H@Z 00D2A200 f i mp_util_wad.o	PORTED: IDA compares bint value greater than int into bbool
+241	PORTED	0002:0053ad40 ??D@YA?AUbfloat@@U0@H@Z 00D2A240 f i mp_util_wad.o	PORTED: IDA multiplies bfloat value by int, constructs result
+242	PORTED	0002:0053ad80 ??M@YA?AUbbool@@HUbfloat@@@Z 00D2A280 f i mp_util_wad.o	PORTED: IDA compares bfloat value greater than int into bbool
+243	PORTED	0002:0053ade0 ?Get@maxhealth_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D2A2E0 f i mp_util_wad.o	PORTED: IDA forwards maxhealth handle and constructs bint result
+244	PORTED	0002:0053ae20 ?GetTime@@YA?AUbint@@XZ 00D2A320 f i mp_util_wad.o	PORTED: IDA wraps mGetTime result in bint
+245	PORTED	0002:0053ae50 ??0bfloat@@QAE@ABUbint@@@Z 00D2A350 f i mp_util_wad.o	PORTED: IDA converts bint mVal to float
 246	PORTED	0002:0053ae80 ?PlayDeathSound@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z 00D2A380 f mp_util_wad.o
 247	PORTED	0002:0053b200 ??Ybfloat@@QAEMM@Z 00D2A700 f i mp_util_wad.o
 248	PORTED	0002:0053b250 ?AssertDefined@bfloat@@QBEXXZ 00D2A750 f i mp_util_wad.o
