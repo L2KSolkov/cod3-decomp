@@ -730,8 +730,8 @@ index	status	map_line
 729	PORTED	0002:00118f90 ??0dlist_node@?$reserved_dlist@VTaskHandler@@@@QAE@PAU01@0@Z 00908490 f i game2.o  PORTED: IDA-backed next/previous pointer initialization
 730	PORTED	0002:00118fb0 ??0?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAE@XZ 009084B0 f i game2.o  PORTED: shared ae_sized_array constructor explicitly emitted for TaskHandler pointers
 731	PORTED	0002:00118fc0 ?push_back@?$ae_sized_array@PAVTaskHandler@@$0CA@@@QAEXABQAVTaskHandler@@@Z 009084C0 f i game2.o  PORTED: shared ae_sized_array push_back matches IDA assert and capacity guard
-732	PORTED	0002:00119050 ??A?$ae_sized_array@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAEAAV?$ae_sized_array@VButtonEntry@@$0BA@@@H@Z 00908550 f i game2.o
-733	PORTED	0002:001190d0 ??A?$ae_sized_array@VButtonEntry@@$0BA@@@QAEAAVButtonEntry@@H@Z 009085D0 f i game2.o
+732	PORTED	0002:00119050 ??A?$ae_sized_array@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAEAAV?$ae_sized_array@VButtonEntry@@$0BA@@@H@Z 00908550 f i game2.o  PORTED: shared signed index accessor matches IDA bounds assert
+733	PORTED	0002:001190d0 ??A?$ae_sized_array@VButtonEntry@@$0BA@@@QAEAAVButtonEntry@@H@Z 009085D0 f i game2.o  PORTED: shared unsigned index accessor matches IDA bounds assert
 734	VERIFIED	0002:00119150 ?size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908650 f i game2.o
 735	PORTED	0002:00119160 ?capacity@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908660 f i game2.o
 736	VERIFIED	0002:00119170 ?begin@?$ae_vector@PAVParticleEffect@@@@QAEPAPAVParticleEffect@@XZ 00908670 f i game2.o
