@@ -637,6 +637,12 @@ bool operator>(bint lhs, int rhs);
 
 } // namespace Broc
 
+// Global boxed operators emitted by mp_util_wad.o.
+Broc::bbool operator>(Broc::bfloat lhs, int rhs);
+Broc::bfloat operator+(float lhs, Broc::bfloat rhs);
+Broc::vector AnglesToForward(const Broc::vector& angles);
+float DistanceSquared(const Broc::vector& a, const Broc::vector& b);
+
 // ============================================================================
 // Broc free helpers used by the mp_util_wad accessor layer.
 // ============================================================================
@@ -804,16 +810,22 @@ struct BrocAPI {
     char _padB0[0xB8 - 0xB0];                            // +0x0B0
     int (*mEffectEventPlay)(unsigned int, const Broc::string*, int,
                             bool, bool);                 // +0x0B8
-    char _padBC[0x140 - 0xBC];                            // +0x0BC
+    int (*mEffectEventPlayNonEnt)(const Broc::string*, const Broc::vector*,
+                                  const Broc::vector*, bool, unsigned int,
+                                  int);                   // +0x0BC
+    char _padC0[0x140 - 0xC0];                            // +0x0C0
     int (*mMathsRandomInt)(int);                          // +0x140
     char _pad144[0x148 - 0x144];                          // +0x144
     int (*mMathsRandomIntRange)(int, int);                // +0x148
     float (*mMathsRandomFloatRange)(float, float);         // +0x14C
     char _pad150[0x184 - 0x150];                          // +0x150
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
-    char _pad188[0x1A0 - 0x188];                          // +0x188
+    float (*mVecDistanceSquared)(const Broc::vector*, const Broc::vector*); // +0x188
+    char _pad18C[0x1A0 - 0x18C];                          // +0x18C
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
-    char _pad1A4[0x250 - 0x1A4];                          // +0x1A4
+    char _pad1A4[0x1AC - 0x1A4];                          // +0x1A4
+    void (*mVecAnglesToForward)(Broc::vector*, const Broc::vector*); // +0x1AC
+    char _pad1B0[0x250 - 0x1B0];                          // +0x1B0
     int (*mCVarGetInt)(const char*);                      // +0x250
     char _pad254[0x264 - 0x254];                          // +0x254
     unsigned int (*mSpawn)(const Broc::string*, const Broc::vector*,
@@ -929,11 +941,10 @@ void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
 int EffectEventPlay(Broc::entity* e, const Broc::string* script);
 int EffectEventPlay(Broc::entity* e, const Broc::string* script,
                     HashStr notifyHash, bool stoppable);
-int EffectEventPlay(const Broc::string* script, const Broc::vector* pos,
-                    const Broc::vector* facing);
+int EffectEventPlay(const Broc::string& script, const Broc::vector& pos,
+                    const Broc::vector& facing);
 void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time);
 void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
-void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
 void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 void RemoveEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
@@ -967,7 +978,6 @@ vector operator+(const vector& a, const vector& b);
 vector operator-(const vector& a, const vector& b);
 vector operator*(const vector& a, float s);
 float Distance(const Broc::vector* a, const Broc::vector* b);
-float DistanceSquared(const Broc::vector* a, const Broc::vector* b);
 float VectorLength(const Broc::vector* v);
 float VectorDot(const Broc::vector* a, const Broc::vector* b);
 void VectorNormalize(Broc::vector* result, const Broc::vector* v);

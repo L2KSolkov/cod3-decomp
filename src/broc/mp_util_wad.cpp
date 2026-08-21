@@ -2218,6 +2218,14 @@ int EffectEventPlay(Broc::entity* e, const Broc::string* script) {
     return gBrocAPI.mEffectEventPlay(handle, script, 0, false, false);
 }
 
+// Broc::EffectEventPlay (non-entity) - ea: 0x937A90
+int Broc::EffectEventPlay(const Broc::string& script,
+                          const Broc::vector& pos,
+                          const Broc::vector& facing) {
+    return gBrocAPI.mEffectEventPlayNonEnt(&script, &pos, &facing,
+                                           false, 0, 0);
+}
+
 // Broc::SetModel - ea: 0x935560
 void SetModel(Broc::entity* e, const Broc::string* modelName, int whichPak) {
     unsigned int handle = e->GetHandle();
@@ -2262,6 +2270,18 @@ Broc::string operator+(const Broc::string& lhs, float rhs) {
 
 } // namespace Broc
 
+// AnglesToForward - ea: 0x937AD0
+Broc::vector AnglesToForward(const Broc::vector& angles) {
+    Broc::vector result;
+    Broc::gBrocAPI.mVecAnglesToForward(&result, &angles);
+    return result;
+}
+
+// DistanceSquared - ea: 0x938A60
+float DistanceSquared(const Broc::vector& a, const Broc::vector& b) {
+    return Broc::gBrocAPI.mVecDistanceSquared(&a, &b);
+}
+
 // ============================================================================
 // Boxed-type operators (mp_util_wad.o inline COMDATs)
 // ============================================================================
@@ -2303,6 +2323,16 @@ Broc::bbool operator>(Broc::bfloat lhs, float rhs) {
 // operator+(int, bint) - ea: 0x9379F0
 Broc::bint operator+(int lhs, Broc::bint rhs) {
     return Broc::bint(lhs + rhs.mVal);
+}
+
+// operator+(float, bfloat) - ea: 0x937E70
+Broc::bfloat operator+(float lhs, Broc::bfloat rhs) {
+    return Broc::bfloat(rhs.mVal + lhs);
+}
+
+// operator>(bfloat, int) - ea: 0x9389A0
+Broc::bbool operator>(Broc::bfloat lhs, int rhs) {
+    return Broc::bbool(lhs.mVal > rhs);
 }
 
 // Broc::operator*(vector, float) - ea: 0x937A20
@@ -2489,7 +2519,7 @@ void audio_spawner(Broc::entity self, Broc::string sound) {
         int v2 = RandomInt(360);
         Broc::vector angle(0.0f, (float)v2, 0.0f);
         Broc::vector dir;
-        Broc::AnglesToForward(&dir, &angle);
+        dir = ::AnglesToForward(angle);
         int v4 = RandomInt((int)range);
         Broc::vector v20;
         Broc::vector pos;
@@ -2503,7 +2533,7 @@ void audio_spawner(Broc::entity self, Broc::string sound) {
         (void)sum;
         float z = Broc::vector_get(&v23, 2) + (float)RandomInt((int)height);
         Broc::vector facing(0.0f, 0.0f, 0.0f);
-        Broc::EffectEventPlay(&sound, &pos, &facing);
+        Broc::EffectEventPlay(sound, pos, facing);
         players.~dyn_array();
         sound.~string();
     } else {
@@ -2859,18 +2889,14 @@ void MoveSoundAlongLine(Broc::entity toMove, Broc::vector start,
                         Broc::vector end) {
     Broc::dyn_array<Broc::entity> players;
     Broc::GetLocalPlayerArray(&players);
-    Broc::entity player;
-    player.___u0 = 0;
-    if (Broc::size(players) > 0)
-        player = players[0];
+    Broc::entity player(players[0]);
     Broc::vector pos;
     Broc::bfloat closest_dist;
     for (;;) {
         if (!Broc::IsDefined(player)) {
             Broc::dyn_array<Broc::entity> entarr;
             Broc::GetPlayerArray(&entarr);
-            if (Broc::size(entarr) > 0)
-                player = entarr[0];
+            player = entarr[0];
             entarr.~dyn_array();
         }
         Broc::vector porg;
@@ -2878,11 +2904,11 @@ void MoveSoundAlongLine(Broc::entity toMove, Broc::vector start,
         closest_point_on_line_to_point(porg, start, end, pos);
         mp_util_wad::entity_set_origin(toMove, pos);
         if (Broc::IsDefined(pos)) {
-            float dist = Broc::DistanceSquared(&porg, &pos);
+            float dist = ::DistanceSquared(porg, pos);
             closest_dist = dist;
-            if ((float)closest_dist > 65536.0f) {
+            if (::operator>(closest_dist, 0x100000)) {
                 Broc::wait(2.0f);
-            } else if ((float)closest_dist > 262144.0f) {
+            } else if (::operator>(closest_dist, 0x40000)) {
                 Broc::wait(0.2f);
             } else {
                 Broc::wait(0.01f);
@@ -3515,7 +3541,7 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
                 Broc::vector gorg;
                 mp_util_wad::entity_get_origin(&porg, p);
                 mp_util_wad::entity_get_origin(&gorg, guy);
-                float dsq = Broc::DistanceSquared(&porg, &gorg);
+                float dsq = ::DistanceSquared(porg, gorg);
                 if (dsq < (float)distance_sqr) {
                     talker = p;
                     break;
@@ -7368,7 +7394,7 @@ void WindBlowing(Broc::entity self) {
         Broc::vector ang(Broc::RandomFloatRange(0.0f, 10.0f),
                          (float)(int)angle_360, 0.0f);
         Broc::vector dir;
-        Broc::AnglesToForward(&dir, &ang);
+        dir = ::AnglesToForward(ang);
         Broc::bint speed(Broc::RandomIntRange(0, 3));
         Broc::bfloat sp((float)(int)speed);
         CreateGlobalWind(dir, sp);
@@ -12115,7 +12141,7 @@ Broc::entity* GetSpawnpointSemiRandom(Broc::entity* result, Broc::entity* self,
                     Broc::vector sp2;
                     mp_util_wad::entity_get_origin(
                         &sp2, (*spawnpoints)[(unsigned int)(int)i]);
-                    if (Broc::DistanceSquared(&sp2, &ap) > 4000000.0f) {
+                    if (::DistanceSquared(sp2, ap) > 4000000.0f) {
                         semirandomspawns.push_back(
                             (*spawnpoints)[(unsigned int)(int)i]);
                         break;
