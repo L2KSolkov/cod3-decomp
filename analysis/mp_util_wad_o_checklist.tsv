@@ -291,7 +291,7 @@ index	status	map_line
 290	PORTED	0002:0053e3d0 ??4playerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D8D0 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_playerClass and returns the const __int16 reference
 291	PORTED	0002:0053e410 ??4nextPlayerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D910 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_nextPlayerClass and returns the const __int16 reference
 292	PORTED	0002:0053e450 ??4playerState_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D950 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_playerState and returns the const int reference
-293	PORTED	0002:0053e490 ?Code_PlayerSpawn@Broc@@YAXVentity@1@ABUvector@1@1_N@Z 00D2D990 f i mp_util_wad.o	PORTED: IDA gets player.GetHandle and forwards origin, angles, and bool stopPhysics to mPlayerSpawn
+293	FIXED	0002:0053e490 ?Code_PlayerSpawn@Broc@@YAXVentity@1@ABUvector@1@1_N@Z 00D2D990 f i mp_util_wad.o	FIXED: Corrected the BrocAPI field and forward to pass the IDA-declared vector pointers
 294	VERIFIED	0002:0053e4d0 ?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z 00D2D9D0 f i mp_util_wad.o
 295	VERIFIED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o
 296	VERIFIED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o
@@ -364,7 +364,7 @@ index	status	map_line
 363	FIXED	0002:00543a00 ?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z 00D32F00 f mp_util_wad.o	FIXED: Disassembly stack frame includes an unused Broc::entity argument; corrected the signature
 364	VERIFIED	0002:00543a20 ?CallbackCallForMedic@_mp_common@@YAXVentity@Broc@@@Z 00D32F20 f mp_util_wad.o
 365	PORTED	0002:00543c50 ??H@YA?AUbint@@U0@0@Z 00D33150 f i mp_util_wad.o	PORTED: IDA adds the two global bint mVal fields and constructs the result
-366	VERIFIED	0002:00543c90 ?SetSpectateMedic@Broc@@YAXHH@Z 00D33190 f i mp_util_wad.o
+366	PORTED	0002:00543c90 ?SetSpectateMedic@Broc@@YAXHH@Z 00D33190 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mSetSpectateMedic
 367	FIXED	0002:00543cc0 ?reenable_medic_call__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D331C0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bint>*; corrected the wrapper return ABI
 368	VERIFIED	0002:00543d60 ?CallbackPunishedForTeamKill@_mp_common@@YAXVentity@Broc@@H@Z 00D33260 f mp_util_wad.o
 369	FIXED	0002:00543dd0 ?PunishedForTeamKill__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D332D0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bbool>*; corrected the wrapper return ABI
@@ -381,28 +381,28 @@ index	status	map_line
 380	VERIFIED	0002:005447c0 ?CallbackHostMigrated@_mp_common@@YAXXZ 00D33CC0 f mp_util_wad.o	VERIFIED: Existing implementation creates HostHasMigrated with the level entity and forwards to thread_create, matching IDA
 381	FIXED	0002:00544840 ?HostHasMigrated__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D33D40 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
 382	VERIFIED	0002:005448e0 ?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z 00D33DE0 f mp_util_wad.o
-383	VERIFIED	0002:005449d0 ?CloseAllMenus@Broc@@YAXH@Z 00D33ED0 f i mp_util_wad.o
+383	PORTED	0002:005449d0 ?CloseAllMenus@Broc@@YAXH@Z 00D33ED0 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mCloseAllMenus
 384	VERIFIED	0002:00544a00 ?HostHasMigrated@_mp_common@@YAXVentity@Broc@@@Z 00D33F00 f mp_util_wad.o
-385	PORTED	0002:00544e70 ?Code_RoundOver@Broc@@YAXHABVstring@1@@Z 00D34370 f i mp_util_wad.o
+385	PORTED	0002:00544e70 ?Code_RoundOver@Broc@@YAXHABVstring@1@@Z 00D34370 f i mp_util_wad.o	PORTED: Added the IDA-backed forward to mRoundOver with const string pointer ABI
 386	FIXED	0002:00544ea0 ?NewHost__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D343A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
 387	VERIFIED	0002:00544f40 ?NewHost@_mp_common@@YAXVentity@Broc@@@Z 00D34440 f mp_util_wad.o
 388	VERIFIED	0002:00544f90 ?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z 00D34490 f mp_util_wad.o
 389	VERIFIED	0002:005450a0 ?Code_ScreenFadeUp@Broc@@YAXIH@Z 00D345A0 f i mp_util_wad.o
 390	VERIFIED	0002:005450d0 ?RespawnPlayer@_mp_common@@YAXVentity@Broc@@Vstring@3@@Z 00D345D0 f mp_util_wad.o
-391	PORTED	0002:00545310 ?Code_PlayerRespawn@Broc@@YAXVentity@1@ABUvector@1@1ABVstring@1@@Z 00D34810 f i mp_util_wad.o
+391	PORTED	0002:00545310 ?Code_PlayerRespawn@Broc@@YAXVentity@1@ABUvector@1@1ABVstring@1@@Z 00D34810 f i mp_util_wad.o	PORTED: Added the IDA-backed handle and pointer forward to mPlayerRespawn
 392	PORTED	0002:00545350 ?Spectate@_mp_common@@YAXVentity@Broc@@Ubint@@Ubbool@@@Z 00D34850 f mp_util_wad.o
 393	PORTED	0002:00545420 ?DeathState@_mp_common@@YAXVentity@Broc@@0Ubint@@Ubbool@@2@Z 00D34920 f mp_util_wad.o
-394	PORTED	0002:00545810 ?OpenMenu@Broc@@YAHABVstring@1@H@Z 00D34D10 f i mp_util_wad.o
-395	VERIFIED	0002:00545840 ?SetSpectateState@Broc@@YAXHH@Z 00D34D40 f i mp_util_wad.o
-396	PORTED	0002:00545870 ?SetSpectateTeamKill@Broc@@YAXHABVentity@1@H@Z 00D34D70 f i mp_util_wad.o
-397	PORTED	0002:005458b0 ?UpdateSpectateCritical__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D34DB0 f i mp_util_wad.o
-398	PORTED	0002:00545950 ?UpdateSpectateDead__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D34E50 f i mp_util_wad.o
+394	PORTED	0002:00545810 ?OpenMenu@Broc@@YAHABVstring@1@H@Z 00D34D10 f i mp_util_wad.o	PORTED: Added the IDA-backed int-returning forward to gBrocAPI.mOpenMenu
+395	PORTED	0002:00545840 ?SetSpectateState@Broc@@YAXHH@Z 00D34D40 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mSetSpectateState
+396	PORTED	0002:00545870 ?SetSpectateTeamKill@Broc@@YAXHABVentity@1@H@Z 00D34D70 f i mp_util_wad.o	PORTED: Added the IDA-backed handle conversion and forward to mSetSpectateTeamKill
+397	FIXED	0002:005458b0 ?UpdateSpectateCritical__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D34DB0 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
+398	FIXED	0002:00545950 ?UpdateSpectateDead__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D34E50 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 399	PORTED	0002:005459f0 ?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D34EF0 f mp_util_wad.o
 400	VERIFIED	0002:00545b90 ?Code_ScreenFadeToBlack@Broc@@YAXIH@Z 00D35090 f i mp_util_wad.o
 401	VERIFIED	0002:00545bc0 ?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D350C0 f mp_util_wad.o
 402	VERIFIED	0002:00545d30 ?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z 00D35230 f mp_util_wad.o
-403	PORTED	0002:00545fb0 ?Get@nextPlayerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D354B0 f i mp_util_wad.o
-404	PORTED	0002:00545fe0 ?Code_RequestRespawn@Broc@@YAXI@Z 00D354E0 f i mp_util_wad.o
+403	PORTED	0002:00545fb0 ?Get@nextPlayerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D354B0 f i mp_util_wad.o	PORTED: Added the IDA-backed persistent nextPlayerClass getter
+404	PORTED	0002:00545fe0 ?Code_RequestRespawn@Broc@@YAXI@Z 00D354E0 f i mp_util_wad.o	PORTED: Added the IDA-backed forward to mRequestRespawn
 405	PORTED	0002:00546010 ?TakeAllWeapons@Broc@@YAXABVentity@1@@Z 00D35510 f i mp_util_wad.o
 406	VERIFIED	0002:00546040 ?RunFrame@_mp_common@@YAXVentity@Broc@@@Z 00D35540 f mp_util_wad.o
 407	PORTED	0002:00546080 ?CreateClock@_mp_common@@YAXUbint@@@Z 00D35580 f mp_util_wad.o
@@ -444,7 +444,7 @@ index	status	map_line
 443	PORTED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o
 444	PORTED	0002:00549b60 ?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D39060 f mp_util_wad.o
 445	VERIFIED	0002:00549bb0 ?UpdateSpectateCritical@_mp_common@@YAXVentity@Broc@@@Z 00D390B0 f mp_util_wad.o
-446	VERIFIED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o
+446	PORTED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mSetSpectateSeconds
 447	PORTED	0002:00549ee0 ?UpdateSpectateCriticalGoingToDie__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D393E0 f i mp_util_wad.o
 448	VERIFIED	0002:00549f80 ?UpdateSpectateCriticalGoingToDie@_mp_common@@YAXVentity@Broc@@@Z 00D39480 f mp_util_wad.o
 449	PORTED	0002:0054a2d0 ?UpdateSpectateDead@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D397D0 f mp_util_wad.o
