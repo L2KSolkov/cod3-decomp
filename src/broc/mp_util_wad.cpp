@@ -6425,14 +6425,20 @@ void StartRound(Broc::bbool firstTime) {
 void finish_starting_round(Broc::entity self, Broc::bbool firstTime) {
     (void)self;
     Broc::Code_DebugOut("*COMMON* finish_starting_round\n");
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr e1;
     e1.mVal = 0x863B4D44;
     Broc::endon(lvl, e1);
+    Broc::entity lvl2 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr e2;
     e2.mVal = 0x531AD8D9u;
-    Broc::endon(lvl, e2);
+    Broc::endon(lvl2, e2);
     if (Broc::GetCvarInt("mp_debug") == 0 &&
         ((bool)mp_util_wad::pLevel->lastManStanding ||
          (bool)mp_util_wad::pLevel->mustHaveBothTeamsToStart)) {
@@ -6441,15 +6447,19 @@ void finish_starting_round(Broc::entity self, Broc::bbool firstTime) {
         if (!(bool)both)
             WaitForTeams();
     }
-    Broc::entity lvl2;
-    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl3 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0x4DEC2E76u;
-    Broc::notify(lvl2, n);
+    Broc::notify(lvl3, n);
     Broc::wait(0.1f);
-    Broc::entity lvl3;
-    lvl3.___u0 = mp_util_wad::pLevel != NULL;
-    Broc::endon(lvl3, n);
+    Broc::entity lvl4 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    Broc::endon(lvl4, n);
     Broc::bint t;
     Broc::GetTime(&t);
     mp_util_wad::pLevel->startTime = (int)t;
