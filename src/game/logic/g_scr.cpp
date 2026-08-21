@@ -292,6 +292,7 @@ public:
     static void operator delete(void* ptr);                     // 0x5E9890/0x5E98B0
     void SetHandle(Handle h);                            // scr.o 0x5E98D0
     Handle GetHandle() const;                            // scr.o 0x5E98E0
+    DbLinkedHandle<EntityHandleDb, Entity> GetOwner() const; // game2.o 0x004EABD0
     void ActivateDebug();                                // scr.o 0x5EE1E0
     bool IsFinished() const;                              // scr.o 0x5EE1F0
     bool IsDebug() const;                                 // scr.o 0x5EE200
@@ -3439,6 +3440,12 @@ void AeThread::SetHandle(Handle h)
 Handle AeThread::GetHandle() const
 {
     return mHandle;
+}
+
+// ea: 0x004EABD0
+DbLinkedHandle<EntityHandleDb, Entity> AeThread::GetOwner() const
+{
+    return mOwner;
 }
 
 // ea: 0x005E9970
