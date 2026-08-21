@@ -1074,6 +1074,21 @@ public:
     nalPositionOrientation Inverse() const;
 };
 
+extern math::Quaternion slerp(const math::Quaternion& q0,
+                              const math::Quaternion& q1, float t);
+
+// ?nalBlend@@YAXAAVnalPositionOrientation@@ABV1@1MM@Z (game2.o 0x518160)
+void nalBlend(nalPositionOrientation& result,
+              const nalPositionOrientation& a,
+              const nalPositionOrientation& b,
+              float blend, float oneMinusBlend)
+{
+    result.pos.v = _mm_add_ps(
+        _mm_mul_ps(a.pos.v, _mm_set1_ps(oneMinusBlend)),
+        _mm_mul_ps(b.pos.v, _mm_set1_ps(blend)));
+    result.orient = slerp(a.orient, b.orient, blend);
+}
+
 static nalPositionOrientation nalMakeIdentityPositionOrientation()
 {
     nalPositionOrientation result = {};
@@ -5657,10 +5672,16 @@ void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
 
 class nalVirtual {
 public:
+    nalVirtual();
     virtual ~nalVirtual();
     virtual void Dummy();
     void* get_vtbl_ptr() const;
 };
+
+// ea: 0x00518230
+nalVirtual::nalVirtual()
+{
+}
 
 // ea: 0x005173E0
 nalVirtual::~nalVirtual()
