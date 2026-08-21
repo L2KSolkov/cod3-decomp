@@ -6547,7 +6547,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6546	0x005AEB60	0x0099E060	?SetObjectivesOnly@IGOCompassWidget@@QAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6547	0x005AEB80	0x0099E080	?GetInitialWidth@IGOCompassWidget@@QAEMXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6548	0x005AEBB0	0x0099E0B0	??0UIListBoxData@UIListBox@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6549	0x005AEBD0	0x0099E0D0	?GetState@UIListBoxData@UIListBox@@QAEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6549	0x005AEBD0	0x0099E0D0	?GetState@UIListBoxData@UIListBox@@QAEHXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6550	0x005AEBE0	0x0099E0E0	?SetState@UIListBoxData@UIListBox@@QAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6551	0x005AEC70	0x0099E170	?SetText@UIListBoxData@UIListBox@@QAEXPBD@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6552	0x005AEC80	0x0099E180	?ClearText@UIListBoxData@UIListBox@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

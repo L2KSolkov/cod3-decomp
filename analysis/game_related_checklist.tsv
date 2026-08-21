@@ -6547,7 +6547,7 @@ index	status	map_line
 6546	VERIFIED	0002:001aeb60 ?SetObjectivesOnly@IGOCompassWidget@@QAEX_N@Z 0099E060 f i shell.o
 6547	VERIFIED	0002:001aeb80 ?GetInitialWidth@IGOCompassWidget@@QAEMXZ 0099E080 f i shell.o
 6548	VERIFIED	0002:001aebb0 ??0UIListBoxData@UIListBox@@QAE@XZ 0099E0B0 f i shell.o
-6549	PORTED	0002:001aebd0 ?GetState@UIListBoxData@UIListBox@@QAEHXZ 0099E0D0 f i shell.o
+6549	PORTED	0002:001aebd0 ?GetState@UIListBoxData@UIListBox@@QAEHXZ 0099E0D0 f i shell.o	PORTED: added IDA-derived mState accessor
 6550	VERIFIED	0002:001aebe0 ?SetState@UIListBoxData@UIListBox@@QAEXH@Z 0099E0E0 f i shell.o
 6551	VERIFIED	0002:001aec70 ?SetText@UIListBoxData@UIListBox@@QAEXPBD@Z 0099E170 f i shell.o
 6552	VERIFIED	0002:001aec80 ?ClearText@UIListBoxData@UIListBox@@QAEXXZ 0099E180 f i shell.o
