@@ -8496,21 +8496,21 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8495	0x005EDFD0	0x009DD4D0	??$_Copy_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8496	0x005EE000	0x009DD500	??$_Copy_backward_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8497	0x005EE030	0x009DD530	??_Gstring@Broc@@QAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8498	0x005EE060	0x009DD560	?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8498	0x005EE060	0x009DD560	?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ		scr.o	game		f i	1	FIXED	FUNCTION corrected against IDA decompilation	NO	NO	VERIFIED
 8499	0x005EE070	0x009DD570	??$_Construct@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABV120@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8500	0x005EE090	0x009DD590	??$_Destroy@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8501	0x005EE0A0	0x009DD5A0	??0AeThreadState@@QAE@W4EAction@0@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8501	0x005EE0A0	0x009DD5A0	??0AeThreadState@@QAE@W4EAction@0@@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
 8502	0x005EE0D0	0x009DD5D0	?length@Broc@@YAMABUvector@1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8503	0x005EE110	0x009DD610	?normalize@Broc@@YAXAAUvector@1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8504	0x005EE1A0	0x009DD6A0	?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8505	0x005EE1E0	0x009DD6E0	?ActivateDebug@AeThread@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8506	0x005EE1F0	0x009DD6F0	?IsFinished@AeThread@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8507	0x005EE200	0x009DD700	?IsDebug@AeThread@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8508	0x005EE210	0x009DD710	?HasExecuted@AeThread@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8509	0x005EE220	0x009DD720	?SetExecuted@AeThread@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8510	0x005EE230	0x009DD730	??3BrocObjCreated@AeThread@@SAXPAX@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8503	0x005EE110	0x009DD610	?normalize@Broc@@YAXAAUvector@1@@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8504	0x005EE1A0	0x009DD6A0	?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8505	0x005EE1E0	0x009DD6E0	?ActivateDebug@AeThread@@QAEXXZ		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8506	0x005EE1F0	0x009DD6F0	?IsFinished@AeThread@@QBE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8507	0x005EE200	0x009DD700	?IsDebug@AeThread@@QBE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8508	0x005EE210	0x009DD710	?HasExecuted@AeThread@@QBE_NXZ		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8509	0x005EE220	0x009DD720	?SetExecuted@AeThread@@QAEXXZ		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8510	0x005EE230	0x009DD730	??3BrocObjCreated@AeThread@@SAXPAX@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
 8511	0x005EE290	0x009DD790	?GetBoneNameHash@XModelParts@@QBEII@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8512	0x005EE310	0x009DD810	?Notify@Entity@@QAEXPBD@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8512	0x005EE310	0x009DD810	?Notify@Entity@@QAEXPBD@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
 8513	0x005EE340	0x009DD840	??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8514	0x005EE340	0x009DD840	??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8515	0x005EE370	0x009DD870	??1AeThreadEntityNotifyTimeoutState@@UAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

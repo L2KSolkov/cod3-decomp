@@ -1105,21 +1105,21 @@ index	status	map_line
 1104	SKIPPED	0002:001edfd0 ??$_Copy_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD4D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1105	SKIPPED	0002:001ee000 ??$_Copy_backward_opt@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 009DD500 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1106	SKIPPED	0002:001ee030 ??_Gstring@Broc@@QAEPAXI@Z 009DD530 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1107	PORTED	0002:001ee060 ?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 009DD560 f i scr.o
+1107	FIXED	0002:001ee060 ?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 009DD560 f i scr.o FIXED: generic dyn_array::begin now covers the Broc::string instantiation
 1108	SKIPPED	0002:001ee070 ??$_Construct@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABV120@@Z 009DD570 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1109	SKIPPED	0002:001ee090 ??$_Destroy@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1110	PORTED	0002:001ee0a0 ??0AeThreadState@@QAE@W4EAction@0@@Z 009DD5A0 f i scr.o
+1110	PORTED	0002:001ee0a0 ??0AeThreadState@@QAE@W4EAction@0@@Z 009DD5A0 f i scr.o PORTED: constructor matches IDA decompilation
 1111	VERIFIED	0002:001ee0d0 ?length@Broc@@YAMABUvector@1@@Z 009DD5D0 f i scr.o
-1112	PORTED	0002:001ee110 ?normalize@Broc@@YAXAAUvector@1@@Z 009DD610 f i scr.o
-1113	PORTED	0002:001ee1a0 ?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z 009DD6A0 f i scr.o
-1114	PORTED	0002:001ee1e0 ?ActivateDebug@AeThread@@QAEXXZ 009DD6E0 f i scr.o
-1115	PORTED	0002:001ee1f0 ?IsFinished@AeThread@@QBE_NXZ 009DD6F0 f i scr.o
-1116	PORTED	0002:001ee200 ?IsDebug@AeThread@@QBE_NXZ 009DD700 f i scr.o
-1117	PORTED	0002:001ee210 ?HasExecuted@AeThread@@QBE_NXZ 009DD710 f i scr.o
-1118	PORTED	0002:001ee220 ?SetExecuted@AeThread@@QAEXXZ 009DD720 f i scr.o
-1119	PORTED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o
+1112	VERIFIED	0002:001ee110 ?normalize@Broc@@YAXAAUvector@1@@Z 009DD610 f i scr.o VERIFIED: matches IDA decompilation
+1113	VERIFIED	0002:001ee1a0 ?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z 009DD6A0 f i scr.o VERIFIED: matches IDA decompilation
+1114	PORTED	0002:001ee1e0 ?ActivateDebug@AeThread@@QAEXXZ 009DD6E0 f i scr.o PORTED: flag operation matches IDA decompilation
+1115	PORTED	0002:001ee1f0 ?IsFinished@AeThread@@QBE_NXZ 009DD6F0 f i scr.o PORTED: flag operation matches IDA decompilation
+1116	PORTED	0002:001ee200 ?IsDebug@AeThread@@QBE_NXZ 009DD700 f i scr.o PORTED: flag operation matches IDA decompilation
+1117	PORTED	0002:001ee210 ?HasExecuted@AeThread@@QBE_NXZ 009DD710 f i scr.o PORTED: flag operation matches IDA decompilation
+1118	PORTED	0002:001ee220 ?SetExecuted@AeThread@@QAEXXZ 009DD720 f i scr.o PORTED: flag operation matches IDA decompilation
+1119	PORTED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o PORTED: allocator path matches IDA decompilation
 1120	VERIFIED	0002:001ee290 ?GetBoneNameHash@XModelParts@@QBEII@Z 009DD790 f i scr.o
-1121	PORTED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o
+1121	PORTED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o PORTED: hash-and-forward path matches IDA decompilation
 1122	SKIPPED	0002:001ee340 ??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1123	SKIPPED	0002:001ee340 ??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1124	VERIFIED	0002:001ee370 ??1AeThreadEntityNotifyTimeoutState@@UAE@XZ 009DD870 f i scr.o
