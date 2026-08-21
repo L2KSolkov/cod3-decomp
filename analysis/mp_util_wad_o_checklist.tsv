@@ -199,18 +199,18 @@ index	status	map_line
 198	VERIFIED	0002:00537a90 ?EffectEventPlay@Broc@@YAHABVstring@1@ABUvector@1@1@Z 00D26F90 f i mp_util_wad.o	VERIFIED: IDA 0x00937A90 forwards script, position, facing, false, and zero notify/flags to mEffectEventPlayNonEnt
 199	VERIFIED	0002:00537ad0 ?AnglesToForward@@YA?AUvector@Broc@@ABU12@@Z 00D26FD0 f i mp_util_wad.o	VERIFIED: IDA 0x00937AD0 uses a temporary vector, calls mVecAnglesToForward, and copies the result
 200	VERIFIED	0002:00537b20 ?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z 00D27020 f mp_util_wad.o	VERIFIED: IDA 0x00937B20 computes projection t, clamps endpoints, writes out_PointOnLine, and returns t
-201	PORTED	0002:00537e70 ??H@YA?AUbfloat@@MU0@@Z 00D27370 f i mp_util_wad.o	PORTED: IDA adds float lhs to bfloat rhs
+201	VERIFIED	0002:00537e70 ??H@YA?AUbfloat@@MU0@@Z 00D27370 f i mp_util_wad.o	VERIFIED: IDA 0x00937E70 adds float lhs to rhs bfloat value and constructs the result
 202	VERIFIED	0002:00537eb0 ?StopLineSound@_mp_audio@@YAXVstring@Broc@@@Z 00D273B0 f mp_util_wad.o
 203	VERIFIED	0002:00538030 ?StopAllLineSounds@_mp_audio@@YAXXZ 00D27530 f mp_util_wad.o
-204	PORTED	0002:005380f0 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@Vstring@3@0@Z 00D275F0 f mp_util_wad.o
-205	PORTED	0002:00538320 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@V23@Vstring@3@@Z 00D27820 f mp_util_wad.o
-206	PORTED	0002:00538650 ?IsAlive@Broc@@YAHABVentity@1@@Z 00D27B50 f i mp_util_wad.o
-207	PORTED	0002:00538680 ?MoveSoundAlongLine__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Uvector@4@1@Z 00D27B80 f i mp_util_wad.o
+204	VERIFIED	0002:005380f0 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@Vstring@3@0@Z 00D275F0 f mp_util_wad.o	VERIFIED: IDA 0x009380F0 matches start-entity lookup, warning/error paths, nested spawn, map insertion, result copy, and string cleanup
+205	VERIFIED	0002:00538320 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@V23@Vstring@3@@Z 00D27820 f mp_util_wad.o	VERIFIED: IDA 0x00938320 matches target/sound validation, end lookup, spawn, effect playback, movement functor, and cleanup
+206	VERIFIED	0002:00538650 ?IsAlive@Broc@@YAHABVentity@1@@Z 00D27B50 f i mp_util_wad.o	VERIFIED: IDA 0x00938650 forwards the entity handle to mEntityIsAlive
+207	VERIFIED	0002:00538680 ?MoveSoundAlongLine__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Uvector@4@1@Z 00D27B80 f i mp_util_wad.o	VERIFIED: IDA 0x00938680 allocates a 0x24-byte AeThreadFunctor3 and null-checks before construction
 208	FIXED	0002:00538720 ?MoveSoundAlongLine@_mp_audio@@YAXVentity@Broc@@Uvector@3@1@Z 00D27C20 f mp_util_wad.o	FIXED: IDA player fallback and 0x100000/0x40000 wait thresholds restored
-209	PORTED	0002:005389a0 ??O@YA?AUbbool@@Ubfloat@@H@Z 00D27EA0 f i mp_util_wad.o	PORTED: IDA returns bbool(lhs.mVal greater than int rhs)
-210	PORTED	0002:005389f0 ?IsDefined@Broc@@YA_NAAUvector@1@@Z 00D27EF0 f i mp_util_wad.o
-211	PORTED	0002:00538a10 ??4origin_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D27F10 f i mp_util_wad.o
-212	PORTED	0002:00538a60 ?DistanceSquared@@YAMABUvector@Broc@@0@Z 00D27F60 f i mp_util_wad.o	PORTED: IDA forwards vector references to mVecDistanceSquared
+209	VERIFIED	0002:005389a0 ??O@YA?AUbbool@@Ubfloat@@H@Z 00D27EA0 f i mp_util_wad.o	VERIFIED: IDA 0x009389A0 compares bfloat value greater than int rhs and returns bbool
+210	VERIFIED	0002:005389f0 ?IsDefined@Broc@@YA_NAAUvector@1@@Z 00D27EF0 f i mp_util_wad.o	VERIFIED: IDA 0x009389F0 forwards to Broc::vector::IsDefined
+211	FIXED	0002:00538a10 ??4origin_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D27F10 f i mp_util_wad.o	FIXED: IDA 0x00938A10 origin proxy setter added; forwards mHandle and vector to m_entity_set_origin
+212	VERIFIED	0002:00538a60 ?DistanceSquared@@YAMABUvector@Broc@@0@Z 00D27F60 f i mp_util_wad.o	VERIFIED: IDA 0x00938A60 forwards both vectors to mVecDistanceSquared
 213	PORTED	0002:00538a90 ?PlaySound@_mp_audio@@YAXVentity@Broc@@Vstring@3@Ubfloat@@@Z 00D27F90 f mp_util_wad.o
 214	VERIFIED	0002:00538b20 ?PlayLocalDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z 00D28020 f mp_util_wad.o
 215	PORTED	0002:00538ba0 ?DialogPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D280A0 f i mp_util_wad.o	PORTED: IDA forwards entity handle to mDialogPlay with zero flags
