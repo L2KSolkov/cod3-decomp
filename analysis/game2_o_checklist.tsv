@@ -614,8 +614,8 @@ index	status	map_line
 613	PORTED	0002:001171d0 ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ 009066D0 f i game2.o  PORTED: IDA-backed static sHandler accessor
 614	PORTED	0002:001171e0 ?GetTaskId@EntityDeathTask@@SA?AVFourCC@@XZ 009066E0 f i game2.o  PORTED: IDA-backed FourCC result 0x44455448
 615	VERIFIED	0002:00117200 ??0BoundingBox@@QAE@XZ 00906700 f i game2.o
-616	PORTED	0002:00117290 ??1BoundingBox@@QAE@XZ 00906790 f i game2.o
-617	PORTED	0002:001172a0 ?center@BoundingBox@@QBE?AVPosition3@math@@XZ 009067A0 f i game2.o
+616	PORTED	0002:00117290 ??1BoundingBox@@QAE@XZ 00906790 f i game2.o  PORTED: IDA-backed empty destructor
+617	PORTED	0002:001172a0 ?center@BoundingBox@@QBE?AVPosition3@math@@XZ 009067A0 f i game2.o  PORTED: IDA-backed SIMD midpoint of vmin and vmax
 618	PORTED	0002:001172f0 ?width@BoundingBox@@QBEMXZ 009067F0 f i game2.o
 619	PORTED	0002:00117320 ?height@BoundingBox@@QBEMXZ 00906820 f i game2.o
 620	PORTED	0002:00117380 ?GetCellId@ZoneCellDesc@@QBEIXZ 00906880 f i game2.o
