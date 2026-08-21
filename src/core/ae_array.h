@@ -41,6 +41,18 @@ public:
         return m_elements[idx];
     }
 
+    T& operator[](unsigned int idx) {
+        if (idx >= static_cast<unsigned int>(CAPACITY)) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return m_elements[idx];
+    }
+
     const T& operator[](int idx) const {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
