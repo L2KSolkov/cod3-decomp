@@ -316,7 +316,11 @@ float move_back_distance;
 extern int curListener;
 struct SaveGameData;
 extern SaveGameData gSaveGameData[4];
-struct FEManager { public: bool mDontDrawHud; };  // minimal view (+0x3C)
+struct FEManager {
+    unsigned char _pad00[0x3C];
+    bool mDontDrawHud;  // +0x3C
+    bool InGameMenusActive(int client);
+};
 extern FEManager g_femanager;
 int unk_F6A2AC[4 * 3208];  // cg.o BSS
 void* nglBuildScene_RenderTarget = nullptr;  // ngl.o
@@ -349,12 +353,10 @@ class subtitle_manager {
 public:
     static void render();  // ?render@subtitle_manager@@SAXXZ
 };
-// ?FEManager_InGameMenusActive@@YA_NPAXH@Z artifact (real member
-// FEManager::InGameMenusActive, shell.o; not ported yet)
+// ?FEManager_InGameMenusActive@@YA_NPAXH@Z artifact (game2.o wrapper)
 bool FEManager_InGameMenusActive(void* self, int client)
 {
-    (void)self; (void)client;
-    return false;
+    return static_cast<FEManager*>(self)->InGameMenusActive(client);
 }
 extern void FEManager_DrawIGO(void* self, int client);
 struct cvar_t;

@@ -399,6 +399,7 @@ public:
         GetFontName(font_index index);  // shell.o 0x5B2EC0
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
+    bool InGameMenusActive(int client);      // ?InGameMenusActive@FEManager@@QAE_NH@Z (game2.o 0x4EBE30)
     InGameMenuSystem* GetIGMS(int client);   // ?GetIGMS@FEManager@@QAEPAVInGameMenuSystem@@H@Z (shell.o 0x57F410)
     DialogMenuSystem* GetDMS(int client);    // ?GetDMS@FEManager@@QAEPAVDialogMenuSystem@@H@Z
     void UpdateIGO(float time_inc);           // ?UpdateIGO@FEManager@@QAEXM@Z (cl.o 0x528390)

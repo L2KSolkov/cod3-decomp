@@ -67,6 +67,13 @@ void FEManager::SetInGameMenusActive(bool active, int client)
         v3->is_active = active;
 }
 
+// ea: 0x4EBE30 (game2.o)
+bool FEManager::InGameMenusActive(int client)
+{
+    InGameMenuSystem* v2 = mIGMS[client];
+    return v2 != nullptr && v2->IsSystemActive();
+}
+
 // ea: 0x528390
 void FEManager::UpdateIGO(float time_inc)
 {

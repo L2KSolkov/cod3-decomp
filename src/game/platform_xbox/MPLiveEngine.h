@@ -370,6 +370,7 @@ public:
     void ClearKeys();
     void DoWork();
     void FreeSlot(bool isPrivate);
+    void LockPort(unsigned int port); // ?LockPort@MPLiveEngine@@QAEXK@Z (game2.o 0x4EBE10)
     unsigned int GetLockedPort();  // ?GetLockedPort@MPLiveEngine@@QAEKXZ (sv.o 0x51E190)
     static MPLiveEngine* GetHandle();
     LivePlayer* GetLocalPlayer();  // shell.o 0x5AD260
