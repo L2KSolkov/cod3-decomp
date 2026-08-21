@@ -1138,6 +1138,12 @@ public:
     // ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z (game2.o 0x517B40)
     void Rotate(const math::Quaternion& rotation);
 
+    // ?Cofactor@nalMatrix4x4@@QBEMHH@Z (game2.o 0x517D10)
+    float Cofactor(int x, int y) const;
+
+    // ?Determinant@nalMatrix4x4@@QBEMXZ (game2.o 0x517E00)
+    float Determinant() const;
+
     // ?Identity@nalMatrix4x4@@2V1@A
     static nalMatrix4x4 Identity;
 };
@@ -21425,11 +21431,10 @@ static nalMatrix4x4 nalMakeIdentity4x4()
 }
 nalMatrix4x4 nalMatrix4x4::Identity = nalMakeIdentity4x4();
 
-// IDA 0x517D10/0x517E00/0x51B720/0x51B830: cofactor expansion,
-// adjugate transpose, and determinant-zero identity fallback.
-static float nalMatrix4x4Cofactor(const nalMatrix4x4& matrix, int x, int y)
+// ea: 0x00517D10
+float nalMatrix4x4::Cofactor(int x, int y) const
 {
-    float minor[3][3];
+    nalMatrix3x3 minor;
     int minorRow = 0;
     for (int row = 0; row < 4; ++row)
     {
@@ -21440,19 +21445,31 @@ static float nalMatrix4x4Cofactor(const nalMatrix4x4& matrix, int x, int y)
         {
             if (column == y)
                 continue;
-            const float* source = &matrix.x.v.m128_f32[0] + row * 4 + column;
-            minor[minorRow][minorColumn++] = *source;
+            const float* source = &this->x.v.m128_f32[0]
+                                + row * 4 + column;
+            (&minor.x.v.m128_f32[0])[minorRow * 4 + minorColumn] = *source;
+            ++minorColumn;
         }
         ++minorRow;
     }
-    const float determinant =
-        minor[0][0] * minor[1][1] * minor[2][2]
-        + minor[0][2] * minor[1][0] * minor[2][1]
-        + minor[0][1] * minor[1][2] * minor[2][0]
-        - minor[0][2] * minor[1][1] * minor[2][0]
-        - minor[0][0] * minor[1][2] * minor[2][1]
-        - minor[0][1] * minor[1][0] * minor[2][2];
-    return (((y ^ x) & 1) != 0) ? -determinant : determinant;
+    const float sign = ((y ^ x) & 1) != 0 ? -1.0f : 1.0f;
+    return minor.Determinant() * sign;
+}
+
+// ea: 0x00517E00
+float nalMatrix4x4::Determinant() const
+{
+    float result = 0.0f;
+    for (int i = 0; i < 4; ++i)
+        result += this->Cofactor(0, i) * this->x.v.m128_f32[i];
+    return result;
+}
+
+// IDA 0x517D10/0x517E00/0x51B720/0x51B830: cofactor expansion,
+// adjugate transpose, and determinant-zero identity fallback.
+static float nalMatrix4x4Cofactor(const nalMatrix4x4& matrix, int x, int y)
+{
+    return matrix.Cofactor(x, y);
 }
 
 nalMatrix4x4 nalMatrix4x4::Inverse() const
