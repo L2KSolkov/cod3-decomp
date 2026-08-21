@@ -919,7 +919,7 @@ index	status	map_line
 918	VERIFIED	0002:001e9ea0 ?MathsRandomFloatRange@Broc@@YAMMM@Z 009D93A0 f i scr.o
 919	VERIFIED	0002:001e9ee0 ?MathsLog@Broc@@YAMM@Z 009D93E0 f i scr.o
 920	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o
-921	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o
+921	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 922	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o
 923	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o
 924	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o

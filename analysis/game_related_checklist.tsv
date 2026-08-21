@@ -8310,7 +8310,7 @@ index	status	map_line
 8309	VERIFIED	0002:001e9ea0 ?MathsRandomFloatRange@Broc@@YAMMM@Z 009D93A0 f i scr.o
 8310	VERIFIED	0002:001e9ee0 ?MathsLog@Broc@@YAMM@Z 009D93E0 f i scr.o
 8311	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o
-8312	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o
+8312	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 8313	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o
 8314	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o
 8315	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o
