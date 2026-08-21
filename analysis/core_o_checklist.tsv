@@ -1,23 +1,23 @@
 index	status	map_line
-1	PORTED	0002:000b3e80 ??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z 008A3380 f i core.o PORTED: FUNCTION implemented IDA PoolConfig field-order constructor
-2	PORTED	0002:000b3eb0 ?SetAllocator@WaitTilOutput@@SAXPAVPoolAllocator@@@Z 008A33B0 f i core.o PORTED: FUNCTION implemented IDA WaitTilOutput allocator setter
+1	VERIFIED	0002:000b3e80 ??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z 008A3380 f i core.o VERIFIED: FUNCTION existing PoolConfig field-order constructor matches IDA
+2	VERIFIED	0002:000b3eb0 ?SetAllocator@WaitTilOutput@@SAXPAVPoolAllocator@@@Z 008A33B0 f i core.o VERIFIED: FUNCTION existing allocator setter matches IDA
 3	SKIPPED	0002:000b3ec0 ?assign@?$char_traits@D@std@@SAXAADABD@Z 008A33C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 4	SKIPPED	0002:000b3ee0 ?length@?$char_traits@D@std@@SAIPBD@Z 008A33E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-5	PORTED	0002:000b3f10 ?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z 008A3410 f i core.o PORTED: FUNCTION implemented IDA AeThreadState allocator setter
+5	VERIFIED	0002:000b3f10 ?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z 008A3410 f i core.o VERIFIED: FUNCTION existing allocator setter matches IDA
 6	SKIPPED	0002:000b3f20 ?copy@?$char_traits@D@std@@SAPADPADPBDI@Z 008A3420 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 7	SKIPPED	0002:000b3f50 ?move@?$char_traits@D@std@@SAPADPADPBDI@Z 008A3450 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-8	PORTED	0002:000b3f60 ?get_dlist_node_offset@EndOnScriptNode@@SAHXZ 008A3460 f i core.o PORTED: FUNCTION implemented IDA zero dlist-node offset accessor
-9	PORTED	0002:000b3f70 ?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z 008A3470 f i core.o PORTED: FUNCTION implemented IDA EndOnScriptNode allocator setter
-10	PORTED	0002:000b3f80 ?get_dlist_node_offset@EntityNotify@@SAHXZ 008A3480 f i core.o PORTED: FUNCTION implemented IDA zero dlist-node offset accessor
+8	VERIFIED	0002:000b3f60 ?get_dlist_node_offset@EndOnScriptNode@@SAHXZ 008A3460 f i core.o VERIFIED: FUNCTION existing zero dlist-node offset accessor matches IDA
+9	VERIFIED	0002:000b3f70 ?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z 008A3470 f i core.o VERIFIED: FUNCTION existing allocator setter matches IDA
+10	VERIFIED	0002:000b3f80 ?get_dlist_node_offset@EntityNotify@@SAHXZ 008A3480 f i core.o VERIFIED: FUNCTION existing zero dlist-node offset accessor matches IDA
 11	VERIFIED	0002:000b3f90 ??3EntityNotify@@SAXPAX@Z 008A3490 f i core.o
-12	PORTED	0002:000b3fb0 ?GetStr@EntityNotify@@QBEIXZ 008A34B0 f i core.o PORTED: FUNCTION implemented IDA mStr getter
-13	PORTED	0002:000b3fc0 ?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ 008A34C0 f i core.o PORTED: FUNCTION implemented IDA mParam getter
-14	PORTED	0002:000b3fd0 ?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z 008A34D0 f i core.o PORTED: FUNCTION implemented IDA EntityNotify allocator setter
-15	PORTED	0002:000b3fe0 ?get_dlist_node@EntityNotifySet@@QAEPAXXZ 008A34E0 f i core.o PORTED: FUNCTION implemented IDA dlist-node accessor
-16	PORTED	0002:000b3ff0 ?get_dlist_node_offset@EntityNotifySet@@SAHXZ 008A34F0 f i core.o PORTED: FUNCTION implemented IDA zero dlist-node offset accessor
-17	PORTED	0002:000b4000 ??3EntityNotifySet@@SAXPAX@Z 008A3500 f i core.o PORTED: FUNCTION matches IDA PoolAllocator release destructor
-18	PORTED	0002:000b4020 ?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z 008A3520 f i core.o PORTED: FUNCTION implemented IDA EntityNotifySet allocator setter
-19	PORTED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o PORTED: FUNCTION implemented IDA DCGBankManager placement-new passthrough
+12	VERIFIED	0002:000b3fb0 ?GetStr@EntityNotify@@QBEIXZ 008A34B0 f i core.o VERIFIED: FUNCTION existing mStr getter matches IDA
+13	VERIFIED	0002:000b3fc0 ?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ 008A34C0 f i core.o VERIFIED: FUNCTION existing mParam getter matches IDA
+14	VERIFIED	0002:000b3fd0 ?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z 008A34D0 f i core.o VERIFIED: FUNCTION existing allocator setter matches IDA
+15	VERIFIED	0002:000b3fe0 ?get_dlist_node@EntityNotifySet@@QAEPAXXZ 008A34E0 f i core.o VERIFIED: FUNCTION existing dlist-node accessor matches IDA
+16	VERIFIED	0002:000b3ff0 ?get_dlist_node_offset@EntityNotifySet@@SAHXZ 008A34F0 f i core.o VERIFIED: FUNCTION existing zero dlist-node offset accessor matches IDA
+17	VERIFIED	0002:000b4000 ??3EntityNotifySet@@SAXPAX@Z 008A3500 f i core.o VERIFIED: FUNCTION existing PoolAllocator release destructor matches IDA
+18	VERIFIED	0002:000b4020 ?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z 008A3520 f i core.o VERIFIED: FUNCTION existing allocator setter matches IDA
+19	VERIFIED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA
 20	VERIFIED	0002:000b4040 ?CreateInst@DCGBankManager@@SAXXZ 008A3540 f i core.o
 21	VERIFIED	0002:000b4140 ?DeleteInst@DCGBankManager@@SAXXZ 008A3640 f i core.o
 22	PORTED	0002:000b41c0 ??2CGBankManager@@SAPAXIPAX@Z 008A36C0 f i core.o
