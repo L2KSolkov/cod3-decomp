@@ -6443,12 +6443,12 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6442	0x005ADFB0	0x0099D4B0	??0PanelMaterial@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6443	0x005ADFD0	0x0099D4D0	??1PanelMaterial@@QAE@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6444	0x005ADFE0	0x0099D4E0	??0LightPanelQuad@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6445	0x005AE000	0x0099D500	?SetX@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6446	0x005AE020	0x0099D520	?SetY@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6447	0x005AE040	0x0099D540	?SetU@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6448	0x005AE060	0x0099D560	?SetV@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6449	0x005AE080	0x0099D580	?SetCol@PanelQuadSection@@AAEXHI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6450	0x005AE0A0	0x0099D5A0	?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6445	0x005AE000	0x0099D500	?SetX@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6446	0x005AE020	0x0099D520	?SetY@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6447	0x005AE040	0x0099D540	?SetU@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6448	0x005AE060	0x0099D560	?SetV@PanelQuadSection@@AAEXHM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6449	0x005AE080	0x0099D580	?SetCol@PanelQuadSection@@AAEXHI@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6450	0x005AE0A0	0x0099D5A0	?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6451	0x005AE0B0	0x0099D5B0	?SetTexture@PanelQuadSection@@QAEXPAUnglTexture@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6452	0x005AE0C0	0x0099D5C0	?SetZ@PanelQuadSection@@QAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6453	0x005AE0E0	0x0099D5E0	?GetTexture@PanelQuadSection@@QAEPAUnglTexture@@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

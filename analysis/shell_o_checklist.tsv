@@ -1266,12 +1266,12 @@ index	status	map_line
 1265	VERIFIED	0002:001adfb0 ??0PanelMaterial@@QAE@XZ 0099D4B0 f i shell.o
 1266	PORTED	0002:001adfd0 ??1PanelMaterial@@QAE@XZ 0099D4D0 f i shell.o	PORTED: added IDA-derived empty destructor
 1267	VERIFIED	0002:001adfe0 ??0LightPanelQuad@@QAE@XZ 0099D4E0 f i shell.o
-1268	PORTED	0002:001ae000 ?SetX@PanelQuadSection@@AAEXHM@Z 0099D500 f i shell.o
-1269	PORTED	0002:001ae020 ?SetY@PanelQuadSection@@AAEXHM@Z 0099D520 f i shell.o
-1270	PORTED	0002:001ae040 ?SetU@PanelQuadSection@@AAEXHM@Z 0099D540 f i shell.o
-1271	PORTED	0002:001ae060 ?SetV@PanelQuadSection@@AAEXHM@Z 0099D560 f i shell.o
-1272	PORTED	0002:001ae080 ?SetCol@PanelQuadSection@@AAEXHI@Z 0099D580 f i shell.o
-1273	PORTED	0002:001ae0a0 ?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z 0099D5A0 f i shell.o
+1268	VERIFIED	0002:001ae000 ?SetX@PanelQuadSection@@AAEXHM@Z 0099D500 f i shell.o	VERIFIED: matches IDA indexed X assignment
+1269	VERIFIED	0002:001ae020 ?SetY@PanelQuadSection@@AAEXHM@Z 0099D520 f i shell.o	VERIFIED: matches IDA indexed Y assignment
+1270	VERIFIED	0002:001ae040 ?SetU@PanelQuadSection@@AAEXHM@Z 0099D540 f i shell.o	VERIFIED: matches IDA indexed U assignment
+1271	VERIFIED	0002:001ae060 ?SetV@PanelQuadSection@@AAEXHM@Z 0099D560 f i shell.o	VERIFIED: matches IDA indexed V assignment
+1272	VERIFIED	0002:001ae080 ?SetCol@PanelQuadSection@@AAEXHI@Z 0099D580 f i shell.o	VERIFIED: matches IDA indexed color assignment
+1273	VERIFIED	0002:001ae0a0 ?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z 0099D5A0 f i shell.o	VERIFIED: matches IDA texture assignment
 1274	VERIFIED	0002:001ae0b0 ?SetTexture@PanelQuadSection@@QAEXPAUnglTexture@@@Z 0099D5B0 f i shell.o
 1275	VERIFIED	0002:001ae0c0 ?SetZ@PanelQuadSection@@QAEXM@Z 0099D5C0 f i shell.o
 1276	VERIFIED	0002:001ae0e0 ?GetTexture@PanelQuadSection@@QAEPAUnglTexture@@XZ 0099D5E0 f i shell.o
