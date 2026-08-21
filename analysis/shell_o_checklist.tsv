@@ -1366,7 +1366,7 @@ index	status	map_line
 1365	SKIPPED	0002:001aeb00 ??_EIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1366	SKIPPED	0002:001aeb00 ??_GIGOWidget@@UAEPAXI@Z 0099E000 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1367	VERIFIED	0002:001aeb30 ??0IGOMapObject@@QAE@XZ 0099E030 f i shell.o
-1368	PORTED	0002:001aeb40 ??0IGOObjective@@QAE@XZ 0099E040 f i shell.o
+1368	VERIFIED	0002:001aeb40 ??0IGOObjective@@QAE@XZ 0099E040 f i shell.o	VERIFIED: matches IDA draw/state/world-state initialization
 1369	VERIFIED	0002:001aeb60 ?SetObjectivesOnly@IGOCompassWidget@@QAEX_N@Z 0099E060 f i shell.o
 1370	VERIFIED	0002:001aeb80 ?GetInitialWidth@IGOCompassWidget@@QAEMXZ 0099E080 f i shell.o
 1371	VERIFIED	0002:001aebb0 ??0UIListBoxData@UIListBox@@QAE@XZ 0099E0B0 f i shell.o
