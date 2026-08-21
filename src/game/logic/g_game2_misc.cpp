@@ -1253,7 +1253,7 @@ struct ButtonMgr {
     static void InitKeyBindings(int c);
     static void InitKeyBindings();
     static void ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt);
-    static int ClearAllBindings();
+    static void ClearAllBindings();
 };
 
 ButtonEntry ButtonMgr::mButtons[1][16];
@@ -1538,7 +1538,7 @@ void ButtonMgr::ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt)
 // ============================================================================
 // ButtonMgr::ClearAllBindings - ea: 0x5017C0
 // ============================================================================
-int ButtonMgr::ClearAllBindings()
+void ButtonMgr::ClearAllBindings()
 {
     for (int i = 0; i <= 196; i += 196)
     {
@@ -1552,7 +1552,6 @@ int ButtonMgr::ClearAllBindings()
             e->SetCmdBinding();
         }
     }
-    return 196;
 }
 
 // ============================================================================
