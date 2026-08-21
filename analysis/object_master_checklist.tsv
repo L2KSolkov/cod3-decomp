@@ -759,7 +759,7 @@ setmode.obj	analysis/setmode_obj_checklist.tsv	analysis/setmode_obj_inventory.ts
 setvbuf.obj	analysis/setvbuf_obj_checklist.tsv	analysis/setvbuf_obj_inventory.tsv	analysis/setvbuf_obj_plan.tsv	1	0	0	1	0	0	0
 sfntaccs.obj	analysis/sfntaccs_obj_checklist.tsv	analysis/sfntaccs_obj_inventory.tsv	analysis/sfntaccs_obj_plan.tsv	40	0	0	40	0	0	0
 shadersnapshot.obj	analysis/shadersnapshot_obj_checklist.tsv	analysis/shadersnapshot_obj_inventory.tsv	analysis/shadersnapshot_obj_plan.tsv	40	0	0	40	0	0	0
-shell.o	analysis/shell_o_checklist.tsv	analysis/shell_o_inventory.tsv	analysis/shell_o_plan.tsv	2214	1756	458	0	0	0	0
+shell.o	analysis/shell_o_checklist.tsv	analysis/shell_o_inventory.tsv	analysis/shell_o_plan.tsv	2214	1761	453	0	0	0	0
 sin.obj	analysis/sin_obj_checklist.tsv	analysis/sin_obj_inventory.tsv	analysis/sin_obj_plan.tsv	1	0	0	1	0	0	0
 skin.obj	analysis/skin_obj_checklist.tsv	analysis/skin_obj_inventory.tsv	analysis/skin_obj_plan.tsv	22	0	0	22	0	0	0
 snprintf.obj	analysis/snprintf_obj_checklist.tsv	analysis/snprintf_obj_inventory.tsv	analysis/snprintf_obj_plan.tsv	1	0	0	1	0	0	0

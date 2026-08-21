@@ -759,7 +759,7 @@ setmode.obj	2	0	0	2	0	0	0
 setvbuf.obj	1	0	0	1	0	0	0
 sfntaccs.obj	40	0	0	40	0	0	0
 shadersnapshot.obj	40	0	0	40	0	0	0
-shell.o	2214	1756	458	0	0	0	0
+shell.o	2214	1761	453	0	0	0	0
 sin.obj	1	0	0	1	0	0	0
 skin.obj	22	0	0	22	0	0	0
 snprintf.obj	1	0	0	1	0	0	0

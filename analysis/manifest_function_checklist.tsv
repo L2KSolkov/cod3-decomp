@@ -5793,7 +5793,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 5792	0x005793A0	0x009688A0	?DrawGrenade@IGOGrenadeIndicator@@QAEXPBVEntity@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5793	0x00579530	0x00968A30	?UpdateWidescreen@IGOVoipList@@UAEX_NM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5794	0x00579540	0x00968A40	?UpdateSplitScreen@IGOVoipList@@UAEXHH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-5795	0x00579550	0x00968A50	?AddPQSection@PanelQuadSection@@QAEXQAUvector@Broc@@0QAVcolor32@@M@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+5795	0x00579550	0x00968A50	?AddPQSection@PanelQuadSection@@QAEXQAUvector@Broc@@0QAVcolor32@@M@Z		shell.o	game		f	0	FIXED	PROGRESS object aggregate	NO	NO	VERIFIED
 5796	0x00579610	0x00968B10	?Mask@PanelQuadSection@@QAEXMW4mask_type@@MM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5797	0x00579800	0x00968D00	?SetColorNAVert@PanelQuadSection@@QAEXHVcolor32@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5798	0x00579840	0x00968D40	?SetAlphaVert@PanelQuadSection@@QAEXHM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
