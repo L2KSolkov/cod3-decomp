@@ -3508,10 +3508,10 @@ index	status	map_line
 3507	VERIFIED	0002:0010e1b0 ?SetupUserMenus@InspectorManager@@QAEXXZ 008FD6B0 f game2.o
 3508	VERIFIED	0002:0010e250 ?Initialise@InspectorManager@@QAEXXZ 008FD750 f game2.o
 3509	PORTED	0002:00116b70 ??0Vector4@math@@QAE@ABVQuaternion@1@@Z 00906070 f i game2.o
-3510	PORTED	0002:00116b90 ?Stop@nalAnimState@AnimationPlayer@@QAEXXZ 00906090 f i game2.o
-3511	PORTED	0002:00116bc0 ?Release@nalAnimState@AnimationPlayer@@QAEXXZ 009060C0 f i game2.o
+3510	FIXED	0002:00116b90 ?Stop@nalAnimState@AnimationPlayer@@QAEXXZ 00906090 f i game2.o
+3511	FIXED	0002:00116bc0 ?Release@nalAnimState@AnimationPlayer@@QAEXXZ 009060C0 f i game2.o
 3512	PORTED	0002:00116c00 ?Dot@math@@YAMABVQuaternion@1@0@Z 00906100 f i game2.o
-3513	PORTED	0002:00116c70 ?Kill@nalPartialAnimState@AnimationPlayer@@QAEXXZ 00906170 f i game2.o
+3513	FIXED	0002:00116c70 ?Kill@nalPartialAnimState@AnimationPlayer@@QAEXXZ 00906170 f i game2.o
 3514	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o
 3515	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o
 3516	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o
