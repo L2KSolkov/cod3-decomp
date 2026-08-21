@@ -197,6 +197,7 @@ struct vector {
         return *this;
     }
     bool operator==(const vector& rhs);
+    bool IsDefined() const;  // ?IsDefined@vector@Broc@@QBE_NXZ (core.o 0x4B5330)
     float operator[](int i) const { return (&x)[i]; }
     void Set(float X, float Y, float Z);  // ?Set@vector@Broc@@QAEXMMM@Z (g.o 0x4A5DE0)
 };

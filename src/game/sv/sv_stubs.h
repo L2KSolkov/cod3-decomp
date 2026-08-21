@@ -458,6 +458,8 @@ public:
     void*   mThreadExecuting;  // +0x858 (scr.o 0x5BC880)
     uint8_t _pad2[2148 - 0x85C];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
+    static unsigned __int64 sTimeStart; // ?sTimeStart@AeThreadManager@@2_KA
+    static unsigned __int64 GetTimeStartExec(); // ?GetTimeStartExec@AeThreadManager@@SA_KXZ
     static AeThreadManager* Inst(); // ?Inst@AeThreadManager@@SAPAV1@XZ (g.o 0x4A6340)
     void KillAllThreads();
     void UnloadScript(void* p);  // ?UnloadScript@AeThreadManager@@QAEXPAX@Z (scr.o 0x5C1F30)

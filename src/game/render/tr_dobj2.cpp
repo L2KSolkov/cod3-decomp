@@ -279,12 +279,17 @@ private:
 public:
     DObjHandleDb();  // ??0DObjHandleDb@@QAE@XZ (g.o 0x4B3D40)
     void Init();  // ?Init@DObjHandleDb@@QAEXXZ (g.o 0x448B80)
+    static DObjHandleDb* Inst();  // ?Inst@DObjHandleDb@@SAPAV1@XZ (core.o 0x4B5310)
 };
 DObjHandleDb::DObjHandleDb() : HandleDb<DObj, 1344, SizedHandle<12, 20>>()
 {
 }
 void DObjHandleDb::Init()
 {
+}
+DObjHandleDb* DObjHandleDb::Inst()
+{
+    return &DObjHandleDb::sInst;
 }
 DObjHandleDb DObjHandleDb::sInst;
 DObjHandleDb* DObjHandleDb_SInst()

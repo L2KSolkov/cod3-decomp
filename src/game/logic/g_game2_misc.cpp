@@ -117,6 +117,7 @@ struct ScriptEventHandler {
     ScriptEventHandler* mNext;          // +0x40
 
     ScriptEventHandler();               // ea: 0x4F9860
+    static void SetAllocator(PoolAllocator* allocator); // core.o 0x4B5570
     ~ScriptEventHandler();              // ea: 0x4F59D0
     bool AddEvent(HashString h, HashString callback);  // ea: 0x4F98D0
     bool AddEvent(HashString h, const char* callback); // ea: 0x4FF780
@@ -1444,6 +1445,12 @@ int ButtonMgr::ClearAllBindings()
 extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler
 extern void* PoolAllocator_Allocate(void* self, unsigned int s,
                                     bool forceHeapAlloc);
+
+// core.o 0x4B5570
+void ScriptEventHandler::SetAllocator(PoolAllocator* allocator)
+{
+    ScriptEventHandler_sAllocator = allocator;
+}
 
 // ea: 0x4F9860
 ScriptEventHandler::ScriptEventHandler()

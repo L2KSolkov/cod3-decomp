@@ -320,6 +320,7 @@ public:
     {
         return sAllocator;
     }
+    static void SetAllocator(PoolAllocator* allocator);
     static unsigned int* sBackup;      // ?sBackup@AeThread@@2PAIA @ 0x1329C7C
 };
 
@@ -3366,6 +3367,12 @@ __declspec(naked) void LongJmp(unsigned int* r)
 
 PoolAllocator* AeThread::sAllocator;
 unsigned int* AeThread::sBackup = (unsigned int*)-1;
+
+// core.o 0x4B5480
+void AeThread::SetAllocator(PoolAllocator* allocator)
+{
+    AeThread::sAllocator = allocator;
+}
 
 // ea: 0x005E9860
 AeThread* AeThread::get_dlist_node()

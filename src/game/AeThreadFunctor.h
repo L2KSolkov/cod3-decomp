@@ -14,12 +14,17 @@
 #include "engine/broc_types.h"
 #include <stddef.h>
 
+class PoolAllocator;
+
 // ============================================================================
 // AeThreadFunctor — base class for script thread functors.
 // Size: 0x04 (4 bytes, vtable only) — verified against IDA
 // ============================================================================
 class AeThreadFunctor {
 public:
+    static PoolAllocator* sAllocator;
+    static void SetAllocator(PoolAllocator* allocator);
+
     static void* operator new(size_t size) {
         return Broc::gBrocAPI.mPoolAlloc((unsigned int)size);
     }

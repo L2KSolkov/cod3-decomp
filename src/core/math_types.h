@@ -11,6 +11,9 @@
 
 namespace math {
 
+void mathInit();
+float Abs(float a);
+
 // Forward declarations
 class Dir3;
 class Position3;

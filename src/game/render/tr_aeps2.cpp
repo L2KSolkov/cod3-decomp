@@ -119,7 +119,20 @@ public:
 // InplaceAssetBank<T, Tree> (ae/inplace/InplaceAssetBank.h)
 struct FourCC {
     unsigned int mVal;  // +0x00
+
+    int GetVal() const;  // ?GetVal@FourCC@@QBEHXZ (core.o 0x4B53B0)
 };
+bool operator==(FourCC lhs, FourCC rhs);  // ??8@YA_NVFourCC@@0@Z (core.o 0x4B53C0)
+
+int FourCC::GetVal() const
+{
+    return (int)mVal;
+}
+
+bool operator==(FourCC lhs, FourCC rhs)
+{
+    return lhs.mVal == rhs.mVal;
+}
 struct PtrFixupTable {
     void Fixup(const void* pBase);  // ?Fixup@PtrFixupTable@@QAEXPBX@Z (filesystem/inplace.cpp)
 };

@@ -7,6 +7,7 @@
 #include "core/mem_heap.h"
 #include "core/PoolAllocator.h"
 #include "core/tlFixedString.h"
+#include "game/AeThreadFunctor.h"
 #include "game/logic/g_local.h"
 
 #include <intrin.h>
@@ -18,6 +19,42 @@
 
 namespace PlayerStats {
 int TotalScoreForStats(short* const stats);
+}
+
+extern float sNaN;
+
+PoolAllocator* AeThreadFunctor::sAllocator;
+
+// core.o 0x4B5320
+void AeThreadFunctor::SetAllocator(PoolAllocator* allocator)
+{
+    AeThreadFunctor::sAllocator = allocator;
+}
+
+// core.o 0x4B5330
+bool Broc::vector::IsDefined() const
+{
+    return x != sNaN || y != sNaN || z != sNaN;
+}
+
+// core.o 0x4B5490
+void math::mathInit()
+{
+    _controlfp(0x300u, 0x300u);
+    _controlfp(0x20000u, 0x30000u);
+    _mm_setcsr(_mm_getcsr() | 0x6000u);
+}
+
+// core.o 0x4B54E0
+float math::Abs(float a)
+{
+    return fabsf(a);
+}
+
+// core.o 0x4B54F0
+unsigned __int64 AeThreadManager::GetTimeStartExec()
+{
+    return AeThreadManager::sTimeStart;
 }
 
 // ============================================================================
