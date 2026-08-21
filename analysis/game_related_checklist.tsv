@@ -2924,7 +2924,7 @@ index	status	map_line
 2923	VERIFIED	0002:000eab70 ??9tlFixedString@@QBE_NABV0@@Z 008DA070 f i game2.o
 2924	VERIFIED	0002:000eabb0 ?c_str@tlFixedString@@QBEPBDXZ 008DA0B0 f i game2.o
 2925	VERIFIED	0002:000eabc0 ?get_dlist_node_offset@AeThread@@SAHXZ 008DA0C0 f i game2.o
-2926	PORTED	0002:000eabd0 ?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DA0D0 f i game2.o
+2926	VERIFIED	0002:000eabd0 ?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DA0D0 f i game2.o
 2927	VERIFIED	0002:000eabf0 ?SetX@Dir3@math@@QAEXM@Z 008DA0F0 f i game2.o
 2928	VERIFIED	0002:000eac30 ?SetY@Dir3@math@@QAEXM@Z 008DA130 f i game2.o
 2929	VERIFIED	0002:000eac70 ??2ScriptEventHandler@@SAPAXI_NPBDH@Z 008DA170 f i game2.o
@@ -2984,7 +2984,7 @@ index	status	map_line
 2983	VERIFIED	0002:000eb7d0 ?Mul@math@@YA?AVMat44@1@ABV21@0@Z 008DACD0 f i game2.o
 2984	VERIFIED	0002:000eba00 ??Dmath@@YA?AVMat44@0@ABV10@0@Z 008DAF00 f i game2.o
 2985	VERIFIED	0002:000ebc30 ??XMat44@math@@QAEABV01@ABV01@@Z 008DB130 f i game2.o
-2986	PORTED	0002:000ebe10 ?LockPort@MPLiveEngine@@QAEXK@Z 008DB310 f i game2.o
+2986	VERIFIED	0002:000ebe10 ?LockPort@MPLiveEngine@@QAEXK@Z 008DB310 f i game2.o
 2987	FIXED	0002:000ebe30 ?InGameMenusActive@FEManager@@QAE_NH@Z 008DB330 f i game2.o
 2988	VERIFIED	0002:000ebe60 ?Controller_LockPort@@YAXH@Z 008DB360 f game2.o
 2989	VERIFIED	0002:000ebea0 ?Controller_UnlockPort@@YAXXZ 008DB3A0 f game2.o
