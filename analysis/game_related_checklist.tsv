@@ -6358,7 +6358,7 @@ index	status	map_line
 6357	VERIFIED	0002:001ad210 ??0SEntitySaveInfo@@QAE@XZ 0099C710 f i shell.o	VERIFIED: matches IDA member zero-initialization
 6358	SKIPPED	0002:001ad240 ?TextOut@XFONT@@QAGJPAUD3DSurface@@PBGIJJ@Z 0099C740 f i shell.o	SKIPPED: XDK XFONT API; provided by the Win32 graphics/font shim
 6359	VERIFIED	0002:001ad250 ?GetHandle@LiveWrapper@@SAPAV1@XZ 0099C750 f i shell.o
-6360	PORTED	0002:001ad260 ?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ 0099C760 f i shell.o
+6360	PORTED	0002:001ad260 ?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ 0099C760 f i shell.o	PORTED: added IDA-derived actualPort forwarding accessor
 6361	VERIFIED	0002:001ad270 ?button_pressed_clear_all@controller@@QAEXXZ 0099C770 f i shell.o
 6362	PORTED	0002:001ad2d0 ?GetLerpOrigin@EntityState@@QBE?BVPosition3@math@@XZ 0099C7D0 f i shell.o
 6363	PORTED	0002:001ad300 ??0vector@Broc@@QAE@MM@Z 0099C800 f i shell.o
