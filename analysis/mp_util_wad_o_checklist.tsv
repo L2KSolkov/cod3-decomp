@@ -436,7 +436,7 @@ index	status	map_line
 435	PORTED	0002:00548f20 ?UpdateSpectateSpawn__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D38420 f i mp_util_wad.o
 436	VERIFIED	0002:00548fc0 ?SpawnSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D384C0 f mp_util_wad.o
 437	PORTED	0002:005491b0 ?Get@viewangles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D386B0 f i mp_util_wad.o
-438	VERIFIED	0002:00549200 ?SpawnIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D38700 f mp_util_wad.o
+438	FIXED	0002:00549200 ?SpawnIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D38700 f mp_util_wad.o	FIXED: IDA 0x00949200 constructs FadeUpWhenLoaded with pLevel->_base.entity and the player
 439	VERIFIED	0002:005495c0 ?QuitGameThread@_mp_common@@YAXVentity@Broc@@@Z 00D38AC0 f mp_util_wad.o
 440	VERIFIED	0002:00549600 ?Code_QuitGame@Broc@@YAXXZ 00D38B00 f i mp_util_wad.o
 441	PORTED	0002:00549620 ?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D38B20 f mp_util_wad.o
