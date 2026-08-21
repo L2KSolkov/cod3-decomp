@@ -783,6 +783,9 @@ template reserved_dlist<QuickTaskDeactivation>::dlist_node::dlist_node(
 template reserved_dlist<TaskHandler>::dlist_node::dlist_node(
     reserved_dlist<TaskHandler>::dlist_node*,
     reserved_dlist<TaskHandler>::dlist_node*);
+template ae_sized_array<TaskHandler*, 32>::ae_sized_array();
+template void ae_sized_array<TaskHandler*, 32>::push_back(
+    TaskHandler* const&);
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
