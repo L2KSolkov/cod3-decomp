@@ -212,17 +212,6 @@ EntityNotifyLocal::~EntityNotifyLocal()
     mParam = nullptr;
 }
 
-// ae_pair (class tag V per binary mangling; same shape as g_accessors.cpp)
-template <typename T1, typename T2>
-class ae_pair {
-public:
-    T1 m_first;   // +0x00
-    T2 m_second;  // +0x04
-
-    ae_pair() : m_first(), m_second() {}
-    ae_pair(const T1& f, const T2& s) : m_first(f), m_second(s) {}
-};
-
 template <typename T, int CAPACITY>
 struct ae_array {
     T m_elements[CAPACITY];  // +0x00
@@ -4861,7 +4850,7 @@ void AeThread::RegisterBrocDtor(void* inst)
                     && AeAssert::Assert("out of bounds"))
                     __debugbreak();
             }
-            if (mBrocCreated->list.m_elements[v4].m_first == inst)
+            if (mBrocCreated->list.m_elements[v4].first == inst)
                 break;
             --v4;
         }
@@ -4911,8 +4900,8 @@ void AeThread::DestroyBrocInsts()
                 }
                 ae_pair<void*, unsigned int>& elt =
                     mBrocCreated->list.m_elements[v2];
-                BrocDtorBase* dtor = (BrocDtorBase*)elt.m_second;
-                dtor->Destroy(elt.m_first);
+                BrocDtorBase* dtor = (BrocDtorBase*)elt.second;
+                dtor->Destroy(elt.first);
             }
             BrocObjCreated* v4 = mBrocCreated;
             mBrocCreated = mBrocCreated->next;

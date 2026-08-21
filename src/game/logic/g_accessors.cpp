@@ -2412,15 +2412,6 @@ template class ae_fixed_string<1024, unsigned short>;
 template class ae_fixed_string<128, unsigned char>;
 template class DbLinkedHandle<TaskSys, Task>;
 
-// ae_pair (g.o 0x4AD2C0-0x4ADFB0)
-template <typename T1, typename T2>
-class ae_pair {
-public:
-    T1 m_first;   // +0x00
-    T2 m_second;  // +0x04
-
-    ae_pair(const T1& f, const T2& s) : m_first(f), m_second(s) {}
-};
 template class ae_pair<const char*, void (*)()>;
 template class ae_pair<const char*, void (*)(Entity*)>;
 template class ae_pair<const char*, unsigned int>;

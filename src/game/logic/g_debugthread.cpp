@@ -47,11 +47,6 @@ extern bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used,
                            int& peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z (render.o)
 extern void FX_ReportFX();               // ?FX_ReportFX@@YAXXZ (render.o)
 
-template <typename A, typename B>
-struct ae_pair {
-    A first;   // +0x00
-    B second;  // +0x04
-};
 struct ParticleEffect {
     static ae_sized_array<ae_pair<short, short>, 256> sArray;  // ?sArray@ParticleEffect@@2V?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@A (render.o)
 };

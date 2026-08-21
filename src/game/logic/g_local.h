@@ -16,6 +16,7 @@
 #include "game/sv/sv_stubs.h"
 #include "game/core/core_types.h"
 #include "core/color.h"
+#include "core/ae_array.h"
 #include "engine/broc_types.h"
 #include "core/fourcc.h"
 
@@ -51,6 +52,8 @@ public:
     void reserve(int iCapacity);
     void push_back(const T& iElement);
     void resize(int iNewSize);
+    void erase(T* iToErase);
+    T* find(const T& iFindVal);
     void clear() { resize(0); }
 
 private:
@@ -59,6 +62,25 @@ private:
     void destroy_all();                            // private per binary AAE mangle
 };
 static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
+
+template <typename A, typename B>
+struct ae_pair {
+    A first;   // +0x00
+    B second;  // +0x04
+
+    ae_pair() : first(), second() {}
+    ae_pair(const A& f, const B& s) : first(f), second(s) {}
+    // ea: 0x00519710
+    ae_pair(const A* f, const B* s) : first(*f), second(*s) {}
+};
+
+using DroneHandleVec = ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>;
+using DroneHandlePair = ae_pair<unsigned int, DroneHandleVec*>;
+using DroneAEArray = ae_sized_array<DroneHandlePair*, 8>;
+struct DroneAEMap {
+    DroneHandlePair* m_elements[8];
+    int m_size;
+};
 
 template <typename T>
 T* ae_vector<T>::construct_array(int iCapacity, int iSize)

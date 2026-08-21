@@ -2653,34 +2653,74 @@ TaskHandler* TaskSysImpl::LookupHandler(unsigned int id)
 // ============================================================================
 // Drone animation entity map helpers
 // ============================================================================
-template <typename A, typename B>
-struct ae_pair {
-    A first;   // +0x00
-    B second;  // +0x04
-};
-
 template int ae_sized_array<ae_pair<short, short>, 256>::capacity() const;
 
-// ae_vector<DbLinkedHandle<EntityHandleDb,Entity>> - 12 bytes
-struct DroneHandleVec {
-    DbLinkedHandle<EntityHandleDb, Entity>* mElements;  // +0x00
-    int mCapacity;   // +0x04
-    int mSize;       // +0x08
-};
-
-// gDroneAEMap: ae_sized_array<ae_pair<uint, DroneHandleVec*>*, 8>
-struct DroneAEMap {
-    ae_pair<unsigned int, DroneHandleVec*>* m_elements[8];  // +0x00
-    int m_size;   // +0x20
-};
-
 DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@A (game2.o @ 0x12F45E0)
+
+template DroneAEArray::ae_sized_array();
+template void DroneAEArray::push_back(
+    DroneHandlePair* const&);
+template DroneHandlePair*&
+DroneAEArray::iterator::operator*() const;
+template DroneAEArray::iterator&
+DroneAEArray::iterator::operator++();
+template bool DroneAEArray::iterator::operator!=(
+    DroneAEArray::iterator) const;
+template ae_pair<unsigned int, DroneHandleVec*>::ae_pair(
+    const unsigned int*, DroneHandleVec* const*);
+
+template <>
+void ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>::erase(
+    DbLinkedHandle<EntityHandleDb, Entity>* iToErase)
+{
+    if (mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 268;
+        AeAssert::gCurrentExpr = "mSize > 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("can't erase in empty vector"))
+            __debugbreak();
+    }
+    DbLinkedHandle<EntityHandleDb, Entity>* end = &mElements[mSize];
+    if (iToErase != end)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity>* last = end - 1;
+        if (iToErase != last)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity>* it = iToErase;
+            do
+            {
+                it->mHandle.mVal = (it + 1)->mHandle.mVal;
+                ++it;
+            } while (it != last);
+        }
+        --mSize;
+    }
+}
+
+template <>
+DbLinkedHandle<EntityHandleDb, Entity>*
+ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>::find(
+    const DbLinkedHandle<EntityHandleDb, Entity>& iFindVal)
+{
+    DbLinkedHandle<EntityHandleDb, Entity>* result = mElements;
+    DbLinkedHandle<EntityHandleDb, Entity>* end = &mElements[mSize];
+    for (; result != end; ++result)
+    {
+        if (result->mHandle.mVal == iFindVal.mHandle.mVal)
+            break;
+    }
+    return result;
+}
+
 extern void ae_vector_push_back_handle(DroneHandleVec* self,
     const DbLinkedHandle<EntityHandleDb, Entity>* elem);
 void ae_vector_push_back_handle(DroneHandleVec* self,
                                 const DbLinkedHandle<EntityHandleDb, Entity>* elem)
 {
-    (void)self; (void)elem;
+    self->push_back(*elem);
 }
 extern void ae_sized_array_push_back_pair(DroneAEMap* self,
     ae_pair<unsigned int, DroneHandleVec*>* const* elt);

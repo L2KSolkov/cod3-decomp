@@ -3014,13 +3014,10 @@ void ae_sized_array_push_back_handler(struct TaskSysImpl2* self,
 {
     (void)self; (void)elem;
 }
-struct DroneAEMap;
-struct DroneHandleVec;
-template <typename K, typename V> struct ae_pair;
 void ae_sized_array_push_back_pair(
-    DroneAEMap* self, ae_pair<unsigned int, DroneHandleVec*>* const* elt)
+    DroneAEMap* self, DroneHandlePair* const* elt)
 {
-    (void)self; (void)elt;
+    reinterpret_cast<DroneAEArray*>(self)->push_back(*elt);
 }
 
 void* cdScratchMaterial_Ctor(void* self, void* a, unsigned int b, int c,
