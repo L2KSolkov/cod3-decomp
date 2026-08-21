@@ -433,6 +433,56 @@ Broc::bbool* IsEEDefined_specialWeaponChangeClassFlag(Broc::bbool* result, Broc:
     return result;
 }
 
+// GetEE_respawnmodel / IsEEDefined_respawnmodel (key 0x86F21A11)
+Broc::string* GetEE_respawnmodel(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0x86F21A11);
+}
+
+Broc::bbool* IsEEDefined_respawnmodel(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v;
+            const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x86F21A11);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_deathmodel / IsEEDefined_deathmodel (key 0xEA19FC37)
+Broc::string* GetEE_deathmodel(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0xEA19FC37);
+}
+
+Broc::bbool* IsEEDefined_deathmodel(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v;
+            const Broc::string* val = ee->GetVal<Broc::string>(&v, 0xEA19FC37);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 // GetEE_punishedTeamKills / IsEEDefined_punishedTeamKills (key 0x35249286)
 Broc::bint* GetEE_punishedTeamKills(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
@@ -494,6 +544,31 @@ Broc::bbool* IsEEDefined_home_position(Broc::bbool* result, Broc::entity ent) {
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
         if (ee != NULL) {
             Broc::vector v; const Broc::vector* val = ee->GetVal<Broc::vector>(&v, 0xE42FE83D);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_deathfire / IsEEDefined_deathfire (key 0xF790400C)
+Broc::string* GetEE_deathfire(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0xF790400C);
+}
+
+Broc::bbool* IsEEDefined_deathfire(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v;
+            const Broc::string* val = ee->GetVal<Broc::string>(&v, 0xF790400C);
             bool IsDefined = Broc::IsDefined(*val);
             result->mVal = IsDefined;
         } else {
