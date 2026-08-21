@@ -1635,12 +1635,11 @@ void TaskSys_DeactivateTask(Handle taskHandle)
 // ============================================================================
 // TaskSys::PostTaskAndAllocateHandle - ea: 0x50D810
 // ============================================================================
-extern void TaskSys_PostTask_glue(Task* t);
 extern Handle TaskSys_CreateTaskHandle(Task* t);
 
 Handle TaskSys_PostTaskAndAllocateHandle(Task* t)
 {
-    TaskSys_PostTask_glue(t);
+    TaskSys::sInst.PostTask(t);
     return TaskSys_CreateTaskHandle(t);
 }
 
