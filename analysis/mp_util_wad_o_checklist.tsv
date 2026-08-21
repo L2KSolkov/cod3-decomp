@@ -361,14 +361,14 @@ index	status	map_line
 360	VERIFIED	0002:00543720 ?CallbackHealthRegenRecovering@_mp_common@@YAXVentity@Broc@@@Z 00D32C20 f mp_util_wad.o
 361	VERIFIED	0002:005437f0 ?CallbackPickupItem@_mp_common@@YAXVentity@Broc@@0@Z 00D32CF0 f mp_util_wad.o
 362	VERIFIED	0002:00543980 ?CallbackMineFailed@_mp_common@@YAXVentity@Broc@@@Z 00D32E80 f mp_util_wad.o
-363	PORTED	0002:00543a00 ?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z 00D32F00 f mp_util_wad.o
+363	FIXED	0002:00543a00 ?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z 00D32F00 f mp_util_wad.o	FIXED: Disassembly stack frame includes an unused Broc::entity argument; corrected the signature
 364	VERIFIED	0002:00543a20 ?CallbackCallForMedic@_mp_common@@YAXVentity@Broc@@@Z 00D32F20 f mp_util_wad.o
-365	PORTED	0002:00543c50 ??H@YA?AUbint@@U0@0@Z 00D33150 f i mp_util_wad.o
+365	PORTED	0002:00543c50 ??H@YA?AUbint@@U0@0@Z 00D33150 f i mp_util_wad.o	PORTED: IDA adds the two global bint mVal fields and constructs the result
 366	VERIFIED	0002:00543c90 ?SetSpectateMedic@Broc@@YAXHH@Z 00D33190 f i mp_util_wad.o
-367	PORTED	0002:00543cc0 ?reenable_medic_call__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D331C0 f i mp_util_wad.o
+367	FIXED	0002:00543cc0 ?reenable_medic_call__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D331C0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bint>*; corrected the wrapper return ABI
 368	VERIFIED	0002:00543d60 ?CallbackPunishedForTeamKill@_mp_common@@YAXVentity@Broc@@H@Z 00D33260 f mp_util_wad.o
-369	PORTED	0002:00543dd0 ?PunishedForTeamKill__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D332D0 f i mp_util_wad.o
-370	PORTED	0002:00543e70 ?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D33370 f mp_util_wad.o
+369	FIXED	0002:00543dd0 ?PunishedForTeamKill__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D332D0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bbool>*; corrected the wrapper return ABI
+370	VERIFIED	0002:00543e70 ?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D33370 f mp_util_wad.o	VERIFIED: Existing logic matches IDA branches for punished count, hints, sounds, and quit handling
 371	VERIFIED	0002:00544360 ?Code_IsHost@Broc@@YA_NXZ 00D33860 f i mp_util_wad.o
 372	VERIFIED	0002:00544380 ?Code_IsRankedGame@Broc@@YA_NXZ 00D33880 f i mp_util_wad.o
 373	PORTED	0002:005443a0 ?QuitGameWithMessage__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@UHashStr@@@Z 00D338A0 f i mp_util_wad.o
