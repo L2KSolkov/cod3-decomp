@@ -606,8 +606,8 @@ index	status	map_line
 605	PORTED	0002:00116c00 ?Dot@math@@YAMABVQuaternion@1@0@Z 00906100 f i game2.o  PORTED: IDA-backed quaternion dot product implemented
 606	FIXED	0002:00116c70 ?Kill@nalPartialAnimState@AnimationPlayer@@QAEXXZ 00906170 f i game2.o
 607	PORTED	0002:00116cb0 ?Slerp@math@@YA?AVQuaternion@1@MABV21@0@Z 009061B0 f i game2.o  PORTED: IDA-backed polynomial Slerp implemented
-608	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o
-609	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o
+608	PORTED	0002:00116f40 ?_KillModifiers@AnimationPlayer@@QAEXPAVnalPartialAnimState@1@@Z 00906440 f i game2.o  PORTED: IDA-backed modifier list cleanup implemented
+609	PORTED	0002:00116fd0 ??0Mat33@math@@QAE@ABVQuaternion@1@@Z 009064D0 f i game2.o  PORTED: IDA-backed quaternion matrix expansion implemented
 610	PORTED	0002:00117180 ?GetZone@NodeHandle@PathNodes@@QBEGXZ 00906680 f i game2.o
 611	PORTED	0002:00117190 ?GetValue@NodeHandle@PathNodes@@QBEGXZ 00906690 f i game2.o
 612	PORTED	0002:001171a0 ?ClearStats@clientPersistent_t@@QAEXXZ 009066A0 f i game2.o
