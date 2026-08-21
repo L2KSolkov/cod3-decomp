@@ -5952,7 +5952,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 5951	0x00580D30	0x00970230	??0ProfileManager@@QAE@XZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5952	0x00580D90	0x00970290	?HasMemCard@ProfileManager@@QAE_NXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5953	0x00580DB0	0x009702B0	?IsProfileNameUsed@ProfileManager@@QBE_NPBD@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-5954	0x00580E40	0x00970340	?GetProfiles@ProfileManager@@QAEHQAPAUProfile@1@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+5954	0x00580E40	0x00970340	?GetProfiles@ProfileManager@@QAEHQAPAUProfile@1@@Z		shell.o	game		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	VERIFIED
 5955	0x00580EC0	0x009703C0	?FileExists@ProfileManager@@AAE_NXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5956	0x00580ED0	0x009703D0	?EnoughFreeSpace@ProfileManager@@QAE_NXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5957	0x00580F00	0x00970400	?SetProfile@ProfileManager@@QAEXPAUSaveGameData@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
