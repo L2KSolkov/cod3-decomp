@@ -161,15 +161,15 @@ struct D3DBaseTexture : D3DResource {
 };
 static_assert(sizeof(D3DBaseTexture) == 0x14, "D3DBaseTexture size mismatch");
 struct D3DTexture : D3DBaseTexture {
-    unsigned int GetSurfaceLevel(unsigned int Level, D3DSurface** ppSurfaceLevel) {
+    unsigned int __stdcall GetSurfaceLevel(unsigned int Level, D3DSurface** ppSurfaceLevel) {
         D3DSurface* SurfaceLevel2 = D3DTexture_GetSurfaceLevel2(this, Level);
         *ppSurfaceLevel = SurfaceLevel2;
         return SurfaceLevel2 != NULL ? 0 : 0x8007000E;
     }
 };
 struct D3DCubeTexture : D3DBaseTexture {
-    unsigned int GetCubeMapSurface(_D3DCUBEMAP_FACES FaceType, unsigned int Level,
-                                   D3DSurface** ppCubeMapSurface) {
+    unsigned int __stdcall GetCubeMapSurface(_D3DCUBEMAP_FACES FaceType, unsigned int Level,
+                                             D3DSurface** ppCubeMapSurface) {
         D3DSurface* CubeMapSurface2 = D3DCubeTexture_GetCubeMapSurface2(this, FaceType, Level);
         *ppCubeMapSurface = CubeMapSurface2;
         return CubeMapSurface2 != NULL ? 0 : 0x8007000E;
@@ -183,14 +183,15 @@ struct D3DSurface {
     unsigned int Format;  // +0x0C
     unsigned int Size;    // +0x10
     D3DBaseTexture* Parent;// +0x14
-    int GetDesc(_D3DSURFACE_DESC* pDesc) {
+    int __stdcall GetDesc(_D3DSURFACE_DESC* pDesc) {
         D3DSurface_GetDesc(this, pDesc);
         return 0;
     }
-    void* LockRect(D3DLOCKED_RECT* pLockedRect, const void* pRect, unsigned int Flags) {
-        return D3DSurface_LockRect(this, pLockedRect, pRect, Flags);
+    int __stdcall LockRect(D3DLOCKED_RECT* pLockedRect, const void* pRect, unsigned int Flags) {
+        D3DSurface_LockRect(this, pLockedRect, pRect, Flags);
+        return 0;
     }
-    int UnlockRect() {
+    int __stdcall UnlockRect() {
         return 0;
     }
 };

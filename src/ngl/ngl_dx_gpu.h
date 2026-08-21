@@ -365,6 +365,11 @@ enum _D3DRESOURCETYPE {
 // ============================================================================
 class D3DDevice {
 public:
+    static unsigned int __stdcall GetDepthStencilSurface(D3DSurface** ppZStencilSurface) {
+        D3DSurface* DepthStencilSurface2 = D3DDevice_GetDepthStencilSurface2();
+        *ppZStencilSurface = DepthStencilSurface2;
+        return DepthStencilSurface2 != nullptr ? 0 : 0x88760866;
+    }
     static long __stdcall SetRenderTarget(D3DSurface* pRenderTarget,
                                           D3DSurface* pNewZStencil);
     static long __stdcall SetRenderState(_D3DRENDERSTATETYPE State,
