@@ -5934,8 +5934,10 @@ void CallbackPlayerSpawn(Broc::entity player, int team_changed) {
         HashStr label2;
         label2.mVal = 0x86018C9u;
         Broc::notify(player, label2);
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         void* ftor2 = FadeUpWhenLoaded__functor(lvl, player);
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                             __LINE__, "FadeUpWhenLoaded", ftor2);
@@ -5965,8 +5967,10 @@ void CallbackPlayerRevive(Broc::entity player, Broc::entity medic) {
         Broc::string menu2("spectate");
         Broc::CloseMenu(menu2, Broc::GetPlayerIndex(player));
         menu2.~string();
-        Broc::entity lvl;
-        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::entity lvl =
+            mp_util_wad::pLevel != nullptr
+                ? mp_util_wad::pLevel->_base.entity
+                : Broc::entity();
         void* ftor = FadeUpWhenLoaded__functor(lvl, player);
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                             __LINE__, "FadeUpWhenLoaded", ftor);
