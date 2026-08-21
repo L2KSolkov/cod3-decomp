@@ -2985,9 +2985,9 @@ index	status	map_line
 2984	PORTED	0002:000eba00 ??Dmath@@YA?AVMat44@0@ABV10@0@Z 008DAF00 f i game2.o
 2985	PORTED	0002:000ebc30 ??XMat44@math@@QAEABV01@ABV01@@Z 008DB130 f i game2.o
 2986	PORTED	0002:000ebe10 ?LockPort@MPLiveEngine@@QAEXK@Z 008DB310 f i game2.o
-2987	PORTED	0002:000ebe30 ?InGameMenusActive@FEManager@@QAE_NH@Z 008DB330 f i game2.o
-2988	PORTED	0002:000ebe60 ?Controller_LockPort@@YAXH@Z 008DB360 f game2.o
-2989	PORTED	0002:000ebea0 ?Controller_UnlockPort@@YAXXZ 008DB3A0 f game2.o
+2987	FIXED	0002:000ebe30 ?InGameMenusActive@FEManager@@QAE_NH@Z 008DB330 f i game2.o
+2988	VERIFIED	0002:000ebe60 ?Controller_LockPort@@YAXH@Z 008DB360 f game2.o
+2989	VERIFIED	0002:000ebea0 ?Controller_UnlockPort@@YAXXZ 008DB3A0 f game2.o
 2990	VERIFIED	0002:000ebeb0 ?IN_Shutdown@@YAXXZ 008DB3B0 f game2.o
 2991	VERIFIED	0002:000ebec0 ?RecalibrateInput@@YAHH@Z 008DB3C0 f game2.o
 2992	VERIFIED	0002:000ebf20 ?EventAllKeysReleased@@YAXH@Z 008DB420 f game2.o
