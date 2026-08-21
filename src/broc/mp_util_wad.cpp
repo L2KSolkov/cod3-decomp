@@ -41,10 +41,11 @@ namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage);
 void* audio_spawner__functor(Broc::entity self, Broc::string sound);
 void* ambient_system__functor(Broc::entity self, Broc::string spawn_package);
-void* PlaySound__functor(Broc::entity self, Broc::string sound,
-                         Broc::bfloat delay);
-void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
-                                   Broc::vector position);
+AeThreadFunctor* PlaySound__functor(Broc::entity self, Broc::string sound,
+                                     Broc::bfloat delay);
+AeThreadFunctor* PlaySoundAtLocation__functor(Broc::entity self,
+                                               Broc::string sound,
+                                               Broc::vector position);
 void* PlayTeamDialog__functor(Broc::entity self, Broc::string team,
                               Broc::string sound, Broc::bfloat delay);
 void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
@@ -152,7 +153,8 @@ void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
 AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
 void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
-void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position);
+AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
+                                                Broc::vector position);
 void* NewHost__functor(Broc::entity self);
 void* LocalPlayerIntermission__functor(Broc::entity player);
 void* RunFrame__functor(Broc::entity selfLevel);
@@ -2576,6 +2578,9 @@ Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
 
 // bint::bint(const bfloat&) - ea: 0x940290
 bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
+
+// bfloat::bfloat(long double) - ea: 0x9430C0
+bfloat::bfloat(long double rhs) : mVal((float)rhs) {}
 
 // operator*(int, bfloat) - ea: 0x940210
 bfloat operator*(int lhs, bfloat rhs) {
@@ -7799,19 +7804,20 @@ void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
         return NULL;
     return ::new (storage) AeThreadFunctor3<Broc::entity, Broc::vector, Broc::vector>(MoveSoundAlongLine, toMove, start, end);
 }
-void* PlaySound__functor(Broc::entity self, Broc::string sound,
-                         Broc::bfloat delay) {
+AeThreadFunctor* PlaySound__functor(Broc::entity self, Broc::string sound,
+                                     Broc::bfloat delay) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::string, Broc::bfloat>));
-    void* result = NULL;
+    AeThreadFunctor* result = NULL;
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor3<Broc::entity, Broc::string, Broc::bfloat>(PlaySound, self, sound, delay);
     sound.~string();
     return result;
 }
-void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
-                                   Broc::vector position) {
+AeThreadFunctor* PlaySoundAtLocation__functor(Broc::entity self,
+                                               Broc::string sound,
+                                               Broc::vector position) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>));
-    void* result = NULL;
+    AeThreadFunctor* result = NULL;
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>(PlaySoundAtLocation, self, sound, position);
     sound.~string();
@@ -13223,7 +13229,8 @@ void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime) {
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bbool>(finish_starting_round, self, firstTime);
 }
-void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position) {
+AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
+                                                Broc::vector position) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::vector>));
     if (storage == NULL)
         return NULL;

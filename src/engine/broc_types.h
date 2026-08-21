@@ -706,6 +706,7 @@ bool operator<(bint lhs, int rhs);
 struct bfloat {
     float mVal;
     explicit bfloat(float v) : mVal(v) {}
+    bfloat(long double v);
     operator float() const { return mVal; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "global bfloat size mismatch");
