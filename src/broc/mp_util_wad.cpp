@@ -2773,6 +2773,19 @@ int Broc::GetWeaponIndex(const Broc::string* team) {
     return Broc::gBrocAPI.mGetWeaponIndex(team);
 }
 
+// SetWeaponSlotAmmo - ea: 0x95F9B0
+void Broc::SetWeaponSlotAmmo(Broc::entity* e, const Broc::string* sSlot,
+                             int iSetAmmo) {
+    unsigned int handle = e->GetHandle();
+    Broc::gBrocAPI.mSetWeaponSlotAmmo(handle, sSlot, iSetAmmo);
+}
+
+// GetFullClipAmmoCount - ea: 0x95F9F0
+int Broc::GetFullClipAmmoCount(Broc::entity* e, const Broc::string* slot) {
+    unsigned int handle = e->GetHandle();
+    return Broc::gBrocAPI.mGetFullClipAmmoCount(handle, slot);
+}
+
 // bbool::operator== - ea: 0x93F610
 bool bbool::operator==(bool rhs) const {
     return rhs == mVal;

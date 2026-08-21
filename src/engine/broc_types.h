@@ -1130,7 +1130,8 @@ struct BrocAPI {
     void (*mSetWeaponSlotAmmo)(unsigned int, const Broc::string*, int); // +0xAE0
     int (*mGetWeaponSlotClipAmmo)(unsigned int, const Broc::string*); // +0xAE4
     void (*mSetWeaponSlotClipAmmo)(unsigned int, const Broc::string*, int); // +0xAE8
-    char _padAEC[0xBD0 - 0xAEC];                          // +0xAEC
+    int (*mGetFullClipAmmoCount)(unsigned int, const Broc::string*); // +0xAEC
+    char _padAF0[0xBD0 - 0xAF0];                          // +0xAF0
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
     void (*mPoolFree)(void*);                              // +0xBD4
     char _padBD8[0xBDC - 0xBD8];                          // +0xBD8
