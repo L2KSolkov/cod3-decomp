@@ -594,7 +594,7 @@ void stat_support_Shutdown()
 // stat_CommitStatsToLevel - merge temp mission stats into the mission data
 // ea: 0x4F64E0
 // ============================================================================
-bool stat_CommitStatsToLevel()
+void stat_CommitStatsToLevel()
 {
     if (gMissionDataInitialized)
     {
@@ -616,10 +616,8 @@ bool stat_CommitStatsToLevel()
             gMissionData->weaponsUsed[0] |= gTempMissionData.weaponsUsed[0];
             gMissionData->weaponsUsed[1] |= gTempMissionData.weaponsUsed[1];
             gMissionData->weaponsUsed[2] |= gTempMissionData.weaponsUsed[2];
-            return gMissionData != nullptr;
         }
     }
-    return gMissionDataInitialized;
 }
 
 // ============================================================================
@@ -750,9 +748,20 @@ void stat_DecStat(eMissionStats which, _xmission_data* xd)
 }
 
 // ea: 0x4F6890
-double stat_GetAvgStat(unsigned int which)
+float stat_GetAvgStat(unsigned int which)
 {
-    STAT_ASSERT(which);
+    if (which > 0x10u)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\stat_support.cpp";
+        AeAssert::gCurrentLine = 366;
+        AeAssert::gCurrentExpr = "which > eInvalid && which < eNumStats";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid range access detected!"))
+        {
+            __debugbreak();
+        }
+    }
     if (!gMissionDataInitialized || gMissionData == nullptr)
         return 0.0;
     int v2 = 0;
@@ -768,7 +777,7 @@ double stat_GetAvgStat(unsigned int which)
         if (v3 == nullptr)
             return 0.0;
     }
-    return (double)v2 / (double)v4;
+    return (float)v2 / (float)v4;
 }
 
 // ea: 0x4F6950
@@ -797,7 +806,7 @@ int stat_GetMissionCompletionTime()
 }
 
 // ea: 0x4F69F0
-char stat_UpdateMissionCompletionTime()
+void stat_UpdateMissionCompletionTime()
 {
     if (gMissionDataInitialized && gMissionData != nullptr)
     {
@@ -806,13 +815,11 @@ char stat_UpdateMissionCompletionTime()
         gMissionData->missionLastTick = (int)__rdtsc();
         gMissionData->missionTime += v2;
         gMissionData->missionTime = gMissionData->missionTime / 1000;
-        return (char)gMissionData->missionTime;
     }
-    return 0;
 }
 
 // ea: 0x4F6A70
-char stat_WasPlayerWeaponUsed(int weaponHash, int* bitSetArray)
+bool stat_WasPlayerWeaponUsed(int weaponHash, int* bitSetArray)
 {
     if (!gMissionDataInitialized || gMissionData == nullptr)
         return 0;
