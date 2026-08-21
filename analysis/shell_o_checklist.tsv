@@ -1344,11 +1344,11 @@ index	status	map_line
 1343	VERIFIED	0002:001ae910 ?OnUp@FEMenu@@UAEXH@Z 0099DE10 f i shell.o
 1344	VERIFIED	0002:001ae920 ?OnDown@FEMenu@@UAEXH@Z 0099DE20 f i shell.o
 1345	VERIFIED	0002:001ae930 ?SetDefaultColorScheme@FEMenu@@UAEXD@Z 0099DE30 f i shell.o
-1346	PORTED	0002:001ae940 ?GetFlag@FEMenu@@QAE_NH@Z 0099DE40 f i shell.o
-1347	PORTED	0002:001ae960 ?SetFlag@FEMenu@@QAEXH_N@Z 0099DE60 f i shell.o
+1346	VERIFIED	0002:001ae940 ?GetFlag@FEMenu@@QAE_NH@Z 0099DE40 f i shell.o	VERIFIED: matches IDA menu flag test
+1347	VERIFIED	0002:001ae960 ?SetFlag@FEMenu@@QAEXH_N@Z 0099DE60 f i shell.o	VERIFIED: matches IDA menu flag set/clear
 1348	VERIFIED	0002:001ae990 ?SetDefaultColorScheme@FEMenuSystem@@UAEXD@Z 0099DE90 f i shell.o
-1349	PORTED	0002:001ae9a0 ?GetBDFlag@FEMenuSystem@@IAE_NHH@Z 0099DEA0 f i shell.o
-1350	PORTED	0002:001ae9c0 ?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z 0099DEC0 f i shell.o
+1349	VERIFIED	0002:001ae9a0 ?GetBDFlag@FEMenuSystem@@IAE_NHH@Z 0099DEA0 f i shell.o	VERIFIED: matches IDA controller button-down flag test
+1350	VERIFIED	0002:001ae9c0 ?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z 0099DEC0 f i shell.o	VERIFIED: matches IDA controller button-down flag set/clear
 1351	VERIFIED	0002:001aea00 ??0PanelFileUser@@QAE@XZ 0099DF00 f i shell.o
 1352	VERIFIED	0002:001aea10 ?SetPanelFile@PanelFileUser@@UAEXPAVPanelFile@@@Z 0099DF10 f i shell.o
 1353	VERIFIED	0002:001aea20 ?PanelFileUnloaded@PanelFileUser@@UAEXPAVPanelFile@@@Z 0099DF20 f i shell.o

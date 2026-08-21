@@ -6521,11 +6521,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6520	0x005AE910	0x0099DE10	?OnUp@FEMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6521	0x005AE920	0x0099DE20	?OnDown@FEMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6522	0x005AE930	0x0099DE30	?SetDefaultColorScheme@FEMenu@@UAEXD@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6523	0x005AE940	0x0099DE40	?GetFlag@FEMenu@@QAE_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6524	0x005AE960	0x0099DE60	?SetFlag@FEMenu@@QAEXH_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6523	0x005AE940	0x0099DE40	?GetFlag@FEMenu@@QAE_NH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6524	0x005AE960	0x0099DE60	?SetFlag@FEMenu@@QAEXH_N@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6525	0x005AE990	0x0099DE90	?SetDefaultColorScheme@FEMenuSystem@@UAEXD@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6526	0x005AE9A0	0x0099DEA0	?GetBDFlag@FEMenuSystem@@IAE_NHH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6527	0x005AE9C0	0x0099DEC0	?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6526	0x005AE9A0	0x0099DEA0	?GetBDFlag@FEMenuSystem@@IAE_NHH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6527	0x005AE9C0	0x0099DEC0	?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6528	0x005AEA00	0x0099DF00	??0PanelFileUser@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6529	0x005AEA10	0x0099DF10	?SetPanelFile@PanelFileUser@@UAEXPAVPanelFile@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6530	0x005AEA20	0x0099DF20	?PanelFileUnloaded@PanelFileUser@@UAEXPAVPanelFile@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
