@@ -44,6 +44,7 @@ class GameSettings : public MemoryUnitManager::Observer {
 public:
     static GameSettings* sInst;                         // ?sInst@GameSettings@@2PAV1@A
     static GameSettings* Inst();                        // 0x5AEDE0
+    static void* operator new(size_t size, void* p);
     static GameSettings* CreateInst();                   // ?CreateInst@GameSettings@@SAXXZ
     MemoryUnitManager::Container container;  // +0x04 (648 bytes)
     SaveGameData* m_temp_buffer;             // +0x28C
@@ -98,6 +99,13 @@ static_assert(offsetof(GameSettings, m_cur_name) == 0x292,
               "GameSettings::m_cur_name offset mismatch");
 
 GameSettings* GameSettings::sInst = nullptr;
+
+// ea: 0x004DD920
+void* GameSettings::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x005AEDE0
 GameSettings* GameSettings::Inst()

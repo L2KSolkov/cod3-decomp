@@ -1635,6 +1635,7 @@ public:
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
     virtual ~SplineMgr();                                             // ea: 0x51D670
+    static void* operator new(size_t size, void* p);
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
     void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
     static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
@@ -1644,6 +1645,13 @@ public:
 
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
+
+// ea: 0x004DDEE0
+void* SplineMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x004DDEF0
 SplineMgr* SplineMgr::CreateInst()

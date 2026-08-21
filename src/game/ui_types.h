@@ -1850,6 +1850,7 @@ public:
                       void (*delayResp)(int));  // 0x572F60
     void AddOption(const char* t,
                    bool (*responseFunc)(int));  // 0x572EE0
+    void AddTriangleResponse(void (*responseFunc)(int)); // 0x4DDAB0
     void Reformat(bool vertical, int viewport); // 0x572F40
     void SetHighLight(short index);             // 0x5AEDE0
 };
@@ -1875,6 +1876,7 @@ public:
     int    mState;                // +0x40
 
     DialogMenuDisplay* GetDisplay();            // 0x5AEE20
+    DialogMenu* GetActiveLayer();               // 0x4DDAC0
     bool GetFlag(int f);                         // 0x5AEE30
     void SetFlag(char f, bool b);                // 0x5AEE50
 
@@ -1907,6 +1909,7 @@ public:
     void UseSmallBackground(bool use);       // 0x572850
     static bool DefaultNoResponse(int client);  // 0x572860
     static bool DefaultYesResponse(int client); // 0x586690
+    static void TriangleResponseNone();         // 0x4DDAE0
     void OnStart(int c);                     // 0x572880
     void SetState(eState newState);          // 0x586640
     void BringUp(const char* t, bool type_ok, bool type_yn,

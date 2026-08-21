@@ -1406,6 +1406,8 @@ static_assert(sizeof(StringTableEntry) == 0xC, "StringTableEntry size mismatch")
 
 struct nalHeap {
     virtual ~nalHeap();  // __vftable at +0x00
+    virtual int GetSize();
+    virtual int GetUsedSpace();
 };
 static_assert(sizeof(nalHeap) == 0x4, "nalHeap size mismatch");
 

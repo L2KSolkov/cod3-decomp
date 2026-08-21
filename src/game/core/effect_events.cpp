@@ -595,6 +595,18 @@ DbQuery::~DbQuery()
 // ea: 0x004DD8C0
 nalHeap::~nalHeap() {}
 
+// ea: 0x004DD8D0
+int nalHeap::GetSize()
+{
+    return 0;
+}
+
+// ea: 0x004DD8E0
+int nalHeap::GetUsedSpace()
+{
+    return 0;
+}
+
 // LightEffect (core.o; SetScale is a member)
 void LightEffect::SetScale(float s)
 {
@@ -629,7 +641,7 @@ extern ParticleParams gParticleParams;  // 0x00F00F58
 ParticleParams gParticleParams;
 
 struct GdbFile {
-    void* mValues;  // InplaceVector<GdbFileSet::Value>* (name-accessed)
+    void* mRecord;  // InplaceVector<GdbFileSet::Value>* (name-accessed)
 };
 
 extern SoundOptions gSoundOptions;  // 0x00F00EF0

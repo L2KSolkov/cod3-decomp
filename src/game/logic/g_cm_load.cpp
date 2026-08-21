@@ -8847,7 +8847,8 @@ void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
 class GdbFile {
 public:
     void* mLayout;   // +0x00 (InplaceTree<uint,uint>*)
-    void* mRecords;  // +0x04 (InplaceVector<GdbFileSet::Value>*)
+    void* mRecord;   // +0x04 (InplaceVector<GdbFileSet::Value>*)
+    bool IsValid() const;
 };
 struct GdbFileSet;
 struct GdbFileBank;
@@ -8858,6 +8859,8 @@ private:
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     virtual ~GdbFileManager();  // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
 public:
+    static void* operator new(size_t size, void* p);
+    static GdbFileManager* Inst();
     static void CreateInst();  // ?CreateInst@GdbFileManager@@SAXXZ (core.o 0x4DDC20)
     static void DeleteInst();  // ?DeleteInst@GdbFileManager@@SAXXZ (core.o 0x4DDD20)
     void DecodeBank(const char* name, unsigned char* data, int size,
@@ -8867,6 +8870,25 @@ public:
     static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
 };
 GdbFileManager* GdbFileManager::sInst = nullptr;
+
+// ea: 0x004DDBF0
+bool GdbFile::IsValid() const
+{
+    return mRecord != nullptr;
+}
+
+// ea: 0x004DDC00
+void* GdbFileManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DDC10
+GdbFileManager* GdbFileManager::Inst()
+{
+    return sInst;
+}
 
 // ea: 0x004DDC20
 void GdbFileManager::CreateInst()
@@ -9903,12 +9925,12 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pakId, const char* name,
         if (v7 != nullptr)
         {
             result.mLayout = (char*)mValue + 0x04;
-            result.mRecords = *v7;
+            result.mRecord = *v7;
             return result;
         }
     }
     result.mLayout = nullptr;
-    result.mRecords = nullptr;
+    result.mRecord = nullptr;
     return result;
 }
 

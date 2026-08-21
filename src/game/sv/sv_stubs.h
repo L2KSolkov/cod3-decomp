@@ -1067,6 +1067,7 @@ public:
     ExplodedArray mCheckpointScriptExploded;        // +0x910
     int          mCheckpointIndex;        // +0xB14
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
+    static void* operator new(size_t size, void* p);
     static CheckpointMgr* CreateInst();   // ?CreateInst@CheckpointMgr@@SAPAV1@XZ
     static void DeleteInst();             // ?DeleteInst@CheckpointMgr@@SAXXZ
     CheckpointMgr();                      // ??0CheckpointMgr@@QAE@XZ (game.o 0x6220C0)

@@ -12225,7 +12225,7 @@ static const cspField_t weaponInfoFields[334] = {
 // GdbFile result holder (mirrors g_cm_load.cpp TU-local struct)
 struct GdbFile {
     void* mLayout;    // +0x00 (InplaceTree<uint,uint>*)
-    void* mRecords;   // +0x04 (InplaceVector<GdbFileSet::Value>*)
+    void* mRecord;    // +0x04 (InplaceVector<GdbFileSet::Value>*)
 };
 class GdbFileManager {
 public:
@@ -12461,7 +12461,7 @@ void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
         *pDecals = 0;
         GdbFile gdb;
         gdb = GdbFileManager::sInst->GetGdbFile(pakId, buf, "decal");
-        void* records = gdb.mRecords;
+        void* records = gdb.mRecord;
         if (records != nullptr)
         {
             if (*(unsigned int*)records == 0)
@@ -12497,8 +12497,8 @@ void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
             GdbFile gdb2;
             gdb2 = GdbFileManager::sInst->GetGdbFile(pakId, "m1garand_wood",
                                                      "decal");
-            if (gdb2.mRecords != nullptr)
-                *pDecals = *(void***)((char*)gdb2.mRecords + 4);
+            if (gdb2.mRecord != nullptr)
+                *pDecals = *(void***)((char*)gdb2.mRecord + 4);
         }
         ++pDecals;
         ++namea;

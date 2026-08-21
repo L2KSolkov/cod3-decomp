@@ -685,6 +685,12 @@ void DialogMenu::AddOption(const char* t, bool (*responseFunc)(int))
     mDisplay->mOptionText[mDisplay->mOptionCount++] = t;
 }
 
+// ea: 0x004DDAB0
+void DialogMenu::AddTriangleResponse(void (*responseFunc)(int))
+{
+    triangleResponse = responseFunc;
+}
+
 // ea: 0x00572F40
 void DialogMenu::Reformat(bool vertical, int viewport)
 {
@@ -1041,10 +1047,22 @@ DialogMenu* DialogMenuSystem::GetLayer(bool layer1)
     return (DialogMenu*)menus[!layer1];
 }
 
+// ea: 0x004DDAC0
+DialogMenu* DialogMenuSystem::GetActiveLayer()
+{
+    const int activeMenu = GetActiveMenu();
+    return GetLayer(activeMenu == 0);
+}
+
 // ea: 0x00572850
 void DialogMenuSystem::UseSmallBackground(bool use)
 {
     (void)use;
+}
+
+// ea: 0x004DDAE0
+void DialogMenuSystem::TriangleResponseNone()
+{
 }
 
 // ea: 0x00572860

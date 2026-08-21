@@ -1556,6 +1556,12 @@ CheckpointMgr* CheckpointMgr::Inst()
 {
     return CheckpointMgr::sInst;
 }
+// ea: 0x004DDDA0
+void* CheckpointMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 bool CheckpointMgr::CheckpointSaveExists()
 {
     return mCheckpointSaveExists;
@@ -1932,7 +1938,30 @@ bool operator!=(Handle lhs, Handle rhs)
 class nalMatrix4x4 : public math::Mat44 {
 public:
     nalMatrix4x4() {}
+    nalMatrix4x4(const math::Vector4& _x, const math::Vector4& _y,
+                 const math::Vector4& _z, const math::Vector4& _w);
+    nalMatrix4x4& operator=(const nalMatrix4x4& other);
 };
+
+nalMatrix4x4::nalMatrix4x4(const math::Vector4& _x,
+                           const math::Vector4& _y,
+                           const math::Vector4& _z,
+                           const math::Vector4& _w)
+{
+    x.v = _x.v;
+    y.v = _y.v;
+    z.v = _z.v;
+    w.v = _w.v;
+}
+
+nalMatrix4x4& nalMatrix4x4::operator=(const nalMatrix4x4& other)
+{
+    x.v = other.x.v;
+    y.v = other.y.v;
+    z.v = other.z.v;
+    w.v = other.w.v;
+    return *this;
+}
 class nalPositionOrientation {
 public:
     math::Quaternion o;  // +0x00
