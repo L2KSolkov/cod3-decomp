@@ -365,6 +365,14 @@ enum _D3DRESOURCETYPE {
 // ============================================================================
 class D3DDevice {
 public:
+    static int __stdcall BeginPush(unsigned int Count, unsigned int** ppPush) {
+        *ppPush = D3DDevice_BeginPush(Count);
+        return 0;
+    }
+    static int __stdcall EndPush(unsigned int* pPush) {
+        D3DDevice_EndPush(pPush);
+        return 0;
+    }
     static unsigned int __stdcall GetDepthStencilSurface(D3DSurface** ppZStencilSurface) {
         D3DSurface* DepthStencilSurface2 = D3DDevice_GetDepthStencilSurface2();
         *ppZStencilSurface = DepthStencilSurface2;
