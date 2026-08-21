@@ -2659,6 +2659,8 @@ struct ae_pair {
     B second;  // +0x04
 };
 
+template int ae_sized_array<ae_pair<short, short>, 256>::capacity() const;
+
 // ae_vector<DbLinkedHandle<EntityHandleDb,Entity>> - 12 bytes
 struct DroneHandleVec {
     DbLinkedHandle<EntityHandleDb, Entity>* mElements;  // +0x00
