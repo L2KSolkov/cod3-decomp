@@ -7152,8 +7152,10 @@ void SpawnLocalSpectator(Broc::entity guy) {
         if (Broc::Code_IsLocalPlayer(guy)) {
             Broc::wait(0.1f);
             if (!firstSpectate) {
-                Broc::entity lvl;
-                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                Broc::entity lvl =
+                    mp_util_wad::pLevel != nullptr
+                        ? mp_util_wad::pLevel->_base.entity
+                        : Broc::entity();
                 HashStr fade;
                 fade.mVal = 0x2A9ACF98u;
                 Broc::waittill(lvl, fade);
