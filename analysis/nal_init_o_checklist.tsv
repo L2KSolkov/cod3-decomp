@@ -486,14 +486,14 @@ index	status	map_line
 485	PORTED	0002:0045eb00 ??$FastCopy@VnalComponentPacked16EntropyFloat4@@VVector4@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C4E000 f i nal_init.o
 486	PORTED	0002:0045eb50 ?ReleaseCache@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C4E050 f i nal_init.o
 487	VERIFIED	0002:0045ebe0 ??0?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@IAE@XZ 00C4E0E0 f i nal_init.o
-488	PORTED	0002:0045ebf0 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E0F0 f i nal_init.o
-489	PORTED	0002:0045ec00 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E100 f i nal_init.o
-490	PORTED	0002:0045ec10 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E110 f i nal_init.o
-491	PORTED	0002:0045ec20 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E120 f i nal_init.o
-492	PORTED	0002:0045ec30 ?VirtualAlignAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E130 f i nal_init.o
-493	PORTED	0002:0045ec40 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E140 f i nal_init.o
-494	PORTED	0002:0045ec50 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E150 f i nal_init.o
-495	PORTED	0002:0045ec60 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E160 f i nal_init.o
+488	VERIFIED	0002:0045ebf0 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E0F0 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+489	VERIFIED	0002:0045ec00 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E100 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+490	VERIFIED	0002:0045ec10 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E110 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+491	VERIFIED	0002:0045ec20 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E120 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+492	VERIFIED	0002:0045ec30 ?VirtualAlignAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E130 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+493	VERIFIED	0002:0045ec40 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E140 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+494	VERIFIED	0002:0045ec50 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E150 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
+495	VERIFIED	0002:0045ec60 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXAAPBX@Z 00C4E160 f i nal_init.o  VERIFIED: existing no-op body matches IDA's 3-byte return
 496	SKIPPED	0002:0045ec70 ??_G?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@MAEPAXI@Z 00C4E170 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 497	SKIPPED	0002:0045ec70 ??_E?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@MAEPAXI@Z 00C4E170 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 498	PORTED	0002:0045eca0 ?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentQuatData@@VnalComponentQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4E1A0 f i nal_init.o
