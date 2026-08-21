@@ -1086,6 +1086,8 @@ class STBManager {
 public:
     static void CreateInst();  // ?CreateInst@STBManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@STBManager@@SAXXZ (core.o)
+    static STBManager* Inst(); // ?Inst@STBManager@@SAPAV1@XZ (core.o)
+    static void* operator new(size_t size, void* p);
     static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
     void* mBankArray[99];      // +0x04 (ae_array<StringTableBank*,99>)
 
@@ -1446,6 +1448,8 @@ static_assert(sizeof(DialogueBank) == 0x1C, "DialogueBank size mismatch");
 struct DialogueManager : AssetBankSet {
     static void CreateInst();  // ?CreateInst@DialogueManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DialogueManager@@SAXXZ (core.o)
+    static DialogueManager* Inst(); // ?Inst@DialogueManager@@SAPAV1@XZ (core.o)
+    static void* operator new(size_t size, void* p);
     DialogueBank* mBanks[99];  // +0x04 ae_array<DialogueBank*,99>
     virtual void UnloadBank(TPakId pakId);
     void DecodeDialogueBank(const char* name, unsigned char* data, int size,

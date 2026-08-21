@@ -260,6 +260,19 @@ static_assert(sizeof(DbTablesetManagerLayout) == 0x190,
 // ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
 STBManager* STBManager_sInst = nullptr;
 
+// ea: 0x4DC7E0
+void* STBManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x4DC7F0
+STBManager* STBManager::Inst()
+{
+    return STBManager::sInst;
+}
+
 // ea: 0x4E8800 (core.o inline)
 void STBManager::CreateInst()
 {

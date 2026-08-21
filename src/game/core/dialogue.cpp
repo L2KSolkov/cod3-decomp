@@ -46,6 +46,19 @@ unsigned int* InplaceTree_Find_Dialogue(void* tree, unsigned int* key)
 // DialogueManager.mBanks is opaque; expose element access through the
 // IDA-backed singleton holder at 0x012F0374.
 
+// ea: 0x004DCA20
+void* DialogueManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DCA30
+DialogueManager* DialogueManager::Inst()
+{
+    return DialogueManagerStatics::sInst;
+}
+
 // ea: 0x004E5E80
 void DialogueManager::CreateInst()
 {

@@ -3611,6 +3611,7 @@ struct MusicMgr {
     int    mCrossFadeType;   // +0x1C
     static void CreateInst(); // ?CreateInst@MusicMgr@@SAXXZ (core.o 0x4DCC00)
     static void DeleteInst(); // ?DeleteInst@MusicMgr@@SAXXZ (core.o 0x4E27E0)
+    static void* operator new(size_t size, void* p);
     MusicMgr();              // ??0MusicMgr@@QAE@XZ
     ~MusicMgr();             // ??1MusicMgr@@QAE@XZ (game.o 0x63A7D0)
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x62D6D0)
@@ -3623,6 +3624,13 @@ struct MusicMgr {
     static MusicMgr* sInst;      // ?sInst@MusicMgr@@2PAV1@A @ 0xF4EBE4
 };
 MusicMgr* MusicMgr::sInst = nullptr;
+
+// ea: 0x004DCBF0
+void* MusicMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x00612E30
 MusicMgr::MusicMgr()
@@ -3689,6 +3697,7 @@ public:
     static SoundMediaMgr* sInst;        // ?sInst@SoundMediaMgr@@2PAV1@A
     static SoundMediaMgr* CreateInst();  // core.o 0x004DCAD0
     static void DeleteInst();            // core.o 0x004E2750
+    static void* operator new(size_t size, void* p);
     nslWaveID mFoliageRustleSound;       // +0x00, IDA type size 0x04
     SoundMediaMgr();              // ??0SoundMediaMgr@@QAE@XZ (game.o 0x603EF0)
     ~SoundMediaMgr();             // ??1SoundMediaMgr@@QAE@XZ (game.o 0x603F00)
@@ -3706,6 +3715,13 @@ extern Handle PostEffectEventLanding(const Entity* ent,
                                      const CollisionDesc& col_desc);
 
 SoundMediaMgr* SoundMediaMgr::sInst = nullptr;
+
+// ea: 0x004DCAC0
+void* SoundMediaMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x004DCAD0
 SoundMediaMgr* SoundMediaMgr::CreateInst()
@@ -4899,6 +4915,8 @@ public:
     static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
     static void CreateInst();          // ?CreateInst@AudioBankMgr@@SAXXZ
     static void DeleteInst();          // ?DeleteInst@AudioBankMgr@@SAXXZ
+    static AudioBankMgr* Inst();       // ?Inst@AudioBankMgr@@SAPAV1@XZ
+    static void* operator new(size_t size, void* p);
     AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
@@ -4921,6 +4939,19 @@ public:
 };
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
 extern void* AudioBankMgr_sInst;
+
+// ea: 0x004DC880
+void* AudioBankMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DC890
+AudioBankMgr* AudioBankMgr::Inst()
+{
+    return AudioBankMgr::sInst;
+}
 
 // ============================================================================
 // AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470

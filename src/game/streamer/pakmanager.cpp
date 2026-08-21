@@ -2900,6 +2900,7 @@ public:
 
     static void CreateInst();
     static void DeleteInst();
+    static void* operator new(size_t size, void* p);
     StreamZoneManager();       // ??0StreamZoneManager@@QAE@XZ @ 0x678250
     ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
     static void SingletonDebugRender();  // ?SingletonDebugRender@StreamZoneManager@@SAXXZ @ 0x687640
@@ -11258,6 +11259,13 @@ StreamZoneManager::StreamZoneManager()
     mDebugRenderMode = 0;
     zoneGraphScale = 0.0f;
     Cmd_AddCommand("ZoneGraph", ToggleZoneGraph);
+}
+
+// ea: 0x004DCD20
+void* StreamZoneManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
 }
 
 // ea: 0x00684670
