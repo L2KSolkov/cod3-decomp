@@ -23873,19 +23873,19 @@ index	status	map_line
 23872	VERIFIED	0002:0052f3f0 ?IsEEDefined_sound@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E8F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F3F0 matches guarded GetVal/IsDefined key 0x085FE049 and bbool result
 23873	VERIFIED	0002:0052f4a0 ?GetEE_specialWeaponChangeClassFlag@@YAAAUbbool@@Ventity@Broc@@@Z 00D1E9A0 f mp_util_wad.o	VERIFIED: IDA 0x0092F4A0 matches GetRef key 0x4C3C14A1
 23874	VERIFIED	0002:0052f4f0 ?IsEEDefined_specialWeaponChangeClassFlag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E9F0 f mp_util_wad.o	VERIFIED: IDA 0x0092F4F0 matches guarded GetVal/IsDefined key 0x4C3C14A1 and bbool result
-23875	PORTED	0002:0052f5a0 ?GetEE_respawnmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EAA0 f mp_util_wad.o
-23876	PORTED	0002:0052f5f0 ?IsEEDefined_respawnmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EAF0 f mp_util_wad.o
+23875	PORTED	0002:0052f5a0 ?GetEE_respawnmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EAA0 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
+23876	PORTED	0002:0052f5f0 ?IsEEDefined_respawnmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EAF0 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
 23877	VERIFIED	0002:0052f6f0 ?IsDefined@Broc@@YA_NABVstring@1@@Z 00D1EBF0 f i mp_util_wad.o
-23878	PORTED	0002:0052f710 ?GetEE_deathmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EC10 f mp_util_wad.o
-23879	PORTED	0002:0052f760 ?IsEEDefined_deathmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EC60 f mp_util_wad.o
+23878	PORTED	0002:0052f710 ?GetEE_deathmodel@@YAAAVstring@Broc@@Ventity@2@@Z 00D1EC10 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
+23879	PORTED	0002:0052f760 ?IsEEDefined_deathmodel@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EC60 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
 23880	VERIFIED	0002:0052f860 ?GetEE_punishedTeamKills@@YAAAUbint@@Ventity@Broc@@@Z 00D1ED60 f mp_util_wad.o	VERIFIED: IDA 0x0092F860 matches GetRef key 0x35249286
 23881	VERIFIED	0002:0052f8b0 ?IsEEDefined_punishedTeamKills@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EDB0 f mp_util_wad.o	VERIFIED: IDA 0x0092F8B0 matches guarded GetVal/IsDefined key 0x35249286 and bbool result
 23882	VERIFIED	0002:0052f960 ?GetEE_firstSpectate@@YAAAUbbool@@Ventity@Broc@@@Z 00D1EE60 f mp_util_wad.o	VERIFIED: IDA 0x0092F960 matches GetRef key 0x72013241
 23883	VERIFIED	0002:0052f9b0 ?IsEEDefined_firstSpectate@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EEB0 f mp_util_wad.o	VERIFIED: IDA 0x0092F9B0 matches guarded GetVal/IsDefined key 0x72013241 and bbool result
 23884	PORTED	0002:0052fa60 ?GetEE_home_position@@YAAAUvector@Broc@@Ventity@2@@Z 00D1EF60 f mp_util_wad.o
 23885	PORTED	0002:0052fab0 ?IsEEDefined_home_position@@YA?AUbbool@@Ventity@Broc@@@Z 00D1EFB0 f mp_util_wad.o
-23886	PORTED	0002:0052fb60 ?GetEE_deathfire@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F060 f mp_util_wad.o
-23887	PORTED	0002:0052fbb0 ?IsEEDefined_deathfire@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F0B0 f mp_util_wad.o
+23886	PORTED	0002:0052fb60 ?GetEE_deathfire@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F060 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
+23887	PORTED	0002:0052fbb0 ?IsEEDefined_deathfire@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F0B0 f mp_util_wad.o	PORTED: added IDA-derived string GetRef and guarded GetVal/IsDefined implementation
 23888	PORTED	0002:0052fcb0 ?GetEE_waiting@@YAAAUbfloat@@Ventity@Broc@@@Z 00D1F1B0 f mp_util_wad.o
 23889	PORTED	0002:0052fd00 ?IsEEDefined_waiting@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F200 f mp_util_wad.o
 23890	PORTED	0002:0052fdb0 ?GetEE_last_dropped_time@@YAAAUbint@@Ventity@Broc@@@Z 00D1F2B0 f mp_util_wad.o
