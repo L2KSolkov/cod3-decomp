@@ -5,6 +5,7 @@
 
 #include "aeps/apsError.h"
 #include "core/ae_array.h"
+#include "core/fourcc.h"
 
 #include <new>
 #include <string.h>
@@ -117,13 +118,6 @@ public:
 };
 
 // InplaceAssetBank<T, Tree> (ae/inplace/InplaceAssetBank.h)
-struct FourCC {
-    unsigned int mVal;  // +0x00
-
-    int GetVal() const;  // ?GetVal@FourCC@@QBEHXZ (core.o 0x4B53B0)
-};
-bool operator==(FourCC lhs, FourCC rhs);  // ??8@YA_NVFourCC@@0@Z (core.o 0x4B53C0)
-
 int FourCC::GetVal() const
 {
     return (int)mVal;

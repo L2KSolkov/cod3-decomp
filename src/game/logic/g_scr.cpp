@@ -344,6 +344,7 @@ public:
 
     AeThreadState(EAction result = kActionNone);             // scr.o 0x5EE0A0
     void* get_dlist_node();                                  // 0x5E9420
+    static int get_dlist_node_offset();                      // game2.o 0x004EAA50
     static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9430
     static void operator delete(void* ptr);                  // 0x5E9450
@@ -380,6 +381,12 @@ AeThreadState::AeThreadState(EAction result)
 void* AeThreadState::get_dlist_node()
 {
     return &m_dlist_node;
+}
+
+// ea: 0x004EAA50
+int AeThreadState::get_dlist_node_offset()
+{
+    return 4;
 }
 
 // ea: 0x005E9430

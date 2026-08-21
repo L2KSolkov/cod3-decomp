@@ -71,12 +71,19 @@ struct AeThread {
     int mLine;              // +0x4C
 
     void GetCondText(ae_fixed_string<64, unsigned char>& str);  // ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z
+    static int get_dlist_node_offset();  // game2.o 0x004EABC0
 };
 
 // AeThread::GetCondText (game2.o; stub)
 void AeThread::GetCondText(ae_fixed_string<64, unsigned char>& str)
 {
     (void)str;
+}
+
+// ea: 0x004EABC0
+int AeThread::get_dlist_node_offset()
+{
+    return 0;
 }
 
 extern void DisplayPoolTotals(PoolAllocator* pool);   // g_game2_misc.cpp
@@ -911,6 +918,38 @@ Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, int idTask)
     mEntityHandle = handle;
     mTaskHandle.mVal = 0;
     mFlags = 1;
+}
+
+// ea: 0x004EA9D0
+void* Task::get_dlist_node()
+{
+    return &_dlist[0];
+}
+
+// ea: 0x004EA9E0
+int Task::get_dlist_node_offset()
+{
+    return 4;
+}
+
+// ea: 0x004EA9F0
+FourCC Task::GetId()
+{
+    FourCC result;
+    result.mVal = mTaskId;
+    return result;
+}
+
+// ea: 0x004EAA10
+DbLinkedHandle<EntityHandleDb, Entity> Task::GetEntityHandle()
+{
+    return mEntityHandle;
+}
+
+// ea: 0x004EAA30
+Handle Task::GetTaskHandle()
+{
+    return mTaskHandle;
 }
 
 struct HealthRegenTask : Task {

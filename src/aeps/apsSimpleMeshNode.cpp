@@ -24,6 +24,12 @@ apsSphere::apsSphere(const math::Dir3::Packed& center, float radius)
     Set(center, radius);
 }
 
+// ea: 0x004EA9A0
+math::Dir3::Packed& apsSphere::Center()
+{
+    return *reinterpret_cast<math::Dir3::Packed*>(&mSphere.v.m128_f32[0]);
+}
+
 const math::Mat43& apsRenderNode::Matrix() const
 {
     return mLocalToWorld;

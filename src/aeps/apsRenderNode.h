@@ -26,6 +26,7 @@ struct apsSphere {
     apsSphere();
     apsSphere(const math::Dir3::Packed& center, float radius);
     void Set(const math::Dir3::Packed& center, float radius);
+    math::Dir3::Packed& Center();  // game2.o 0x004EA9A0
 };
 
 // ============================================================================

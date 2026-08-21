@@ -12,8 +12,15 @@
 
 #include "filesystem/apk.h"
 #include "game/logic/g_inspector.h"
+#include "core/fourcc.h"
 
 class ScriptEventParams;
+
+// ea: 0x004EAAC0
+FourCC::FourCC(int v)
+    : mVal(static_cast<unsigned int>(v))
+{
+}
 
 // ea: 0x004DE610
 SmokeGrenadeInfo::SmokeGrenadeInfo()
@@ -969,8 +976,16 @@ static_assert(sizeof(ButtonEntry) == 0xC, "ButtonEntry size mismatch");
 struct KeyInfoEntry {
     int mState;              // +0x00 (bitfields mDown/mRepeats)
     char* mBoundCmdName;     // +0x04
+
+    char* GetBoundCmdName(); // game2.o 0x004EA9C0
 };
 static_assert(sizeof(KeyInfoEntry) == 8, "KeyInfoEntry size mismatch");
+
+// ea: 0x004EA9C0
+char* KeyInfoEntry::GetBoundCmdName()
+{
+    return mBoundCmdName;
+}
 
 extern const BaseCmdFuncInfo* GetCmd(const char* cmdName);  // ?GetCmd (core.o)
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
