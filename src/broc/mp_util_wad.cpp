@@ -4454,7 +4454,7 @@ void CallbackVehicleMantled(Broc::entity vehicle, Broc::entity mantler);  // ea:
 void CallbackHealthRegenRecovering(Broc::entity self);   // ea: 0x943720
 void CallbackPickupItem(Broc::entity pickerupper, Broc::entity dropper);  // ea: 0x9437F0
 void CallbackMineFailed(Broc::entity ent);               // ea: 0x943980
-void CallbackReviveFailed();                             // ea: 0x943A00
+void CallbackReviveFailed(Broc::entity ent);              // ea: 0x943A00
 void CallbackCallForMedic(Broc::entity ent);             // ea: 0x943A20
 void CallbackPunishedForTeamKill(Broc::entity ent, int punished);  // ea: 0x943D60
 void PunishedForTeamKill(Broc::entity ent, Broc::bbool punished);  // ea: 0x943E70
@@ -4727,7 +4727,8 @@ void CallbackMineFailed(Broc::entity ent) {
 }
 
 // CallbackReviveFailed - ea: 0x943A00
-void CallbackReviveFailed() {
+void CallbackReviveFailed(Broc::entity ent) {
+    (void)ent;
 }
 
 // CallbackDebugRender - ea: 0x9421D0
