@@ -1868,6 +1868,10 @@ SplineEntry* SplineMgr::GetUnusedEntry()
         if (mList[i].pakId == -1)
             return &mList[i];
     }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\splinemgr.cpp";
+    AeAssert::gCurrentLine = 38;
+    AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored() && AeAssert::Error("Too many spline files loaded"))
         __debugbreak();
     return nullptr;
