@@ -156,10 +156,10 @@ index	status	map_line
 155	FIXED	0002:00535420 ??4bfloat@@QAEMM@Z 00D24920 f i mp_util_wad.o	FIXED: IDA returns assigned float as double
 156	PORTED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o	PORTED: IDA bfloat multiplication value-return operator
 157	PORTED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o	PORTED: IDA m_entity_set_angles proxy assignment
-158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o
-159	PORTED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o
-160	PORTED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o
-161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o
+158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	PORTED: IDA mSpawn forwarding and entity construction
+159	PORTED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o	PORTED: IDA mEffectEventPlay forwarding with zero notify/default flags
+160	PORTED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	PORTED: IDA mSetModel forwarding
+161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	PORTED: IDA mMoveTo forwarding
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
 163	VERIFIED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o
 164	PORTED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o
