@@ -2430,6 +2430,14 @@ template int ae_sized_array<PerformanceStats, 1000>::size() const;
 template bool ae_sized_array<PerformanceStats, 1000>::empty() const;
 template void ae_sized_array<PerformanceStats, 1000>::push_back(
     const PerformanceStats&);
+template ae_sized_array<bool, 100>::ae_sized_array();
+template bool& ae_sized_array<bool, 100>::operator[](unsigned int);
+template PerformanceStats&
+ae_sized_array<PerformanceStats, 1000>::iterator::operator*() const;
+template ae_sized_array<PerformanceStats, 1000>::iterator&
+ae_sized_array<PerformanceStats, 1000>::iterator::operator++();
+template bool ae_sized_array<PerformanceStats, 1000>::iterator::operator!=(
+    ae_sized_array<PerformanceStats, 1000>::iterator) const;
 
 // ea: 0x005173B0
 TestFPS::PerformanceStats::PerformanceStats()
