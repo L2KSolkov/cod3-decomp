@@ -683,12 +683,12 @@ index	status	map_line
 682	FIXED	0002:00561ba0 ?GetMaxAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D510A0 f i mp_util_wad.o	FIXED: IDA 0x00961BA0 handle extraction and mGetMaxAmmo forwarding added
 683	VERIFIED	0002:00561bd0 ?GetStartingWeaponAmmoScale@_mp_loadout@@YA?AUbfloat@@Ventity@Broc@@Vstring@4@Ubint@@F@Z 00D510D0 f mp_util_wad.o	VERIFIED: Existing clip-count/full-clip, grenade special case, and ammo ratio match IDA 0x00961BD0
 684	FIXED	0002:00561db0 ?GiveWeaponAmmoPack@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FFUbbool@@@Z 00D512B0 f mp_util_wad.o	FIXED: IDA 0x00961DB0 grenade cap check and slot-ammo-only update restored
-685	PORTED	0002:00562060 ?GiveWeaponAmmo@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@3@Z 00D51560 f mp_util_wad.o
-686	PORTED	0002:005623d0 ?GiveWeaponAmmoScale@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@Ubfloat@@@Z 00D518D0 f mp_util_wad.o
-687	PORTED	0002:00562660 ??D@YA?AUbfloat@@U0@Ubint@@@Z 00D51B60 f i mp_util_wad.o
-688	PORTED	0002:005626b0 ?GetWeaponClipCount@_mp_loadout@@YA?AUbint@@Vstring@Broc@@U2@F0@Z 00D51BB0 f mp_util_wad.o
-689	PORTED	0002:00562920 ?CallbackGetClipCount@_mp_loadout@@YAHIIH@Z 00D51E20 f mp_util_wad.o
-690	PORTED	0002:005629e0 ?CallbackGetSlotClipCount@_mp_loadout@@YAHPBDIIH@Z 00D51EE0 f mp_util_wad.o
+685	VERIFIED	0002:00562060 ?GiveWeaponAmmo@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@3@Z 00D51560 f mp_util_wad.o	VERIFIED: Existing clip calculation, extra-round handling, and fill/non-fill writes match IDA 0x00962060
+686	VERIFIED	0002:005623d0 ?GiveWeaponAmmoScale@_mp_loadout@@YAXVentity@Broc@@Vstring@3@Ubint@@FUbbool@@Ubfloat@@@Z 00D518D0 f mp_util_wad.o	VERIFIED: Existing scaled clip arithmetic and fill/non-fill writes match IDA 0x009623D0
+687	VERIFIED	0002:00562660 ??D@YA?AUbfloat@@U0@Ubint@@@Z 00D51B60 f i mp_util_wad.o	VERIFIED: Existing bfloat-times-bint operator matches IDA 0x00962660
+688	VERIFIED	0002:005626b0 ?GetWeaponClipCount@_mp_loadout@@YA?AUbint@@Vstring@Broc@@U2@F0@Z 00D51BB0 f mp_util_wad.o	VERIFIED: Existing slot dispatch, special fallback, and string cleanup match IDA 0x009626B0
+689	VERIFIED	0002:00562920 ?CallbackGetClipCount@_mp_loadout@@YAHIIH@Z 00D51E20 f mp_util_wad.o	VERIFIED: Existing allied-team selection and primary clip callback match IDA 0x00962920
+690	VERIFIED	0002:005629e0 ?CallbackGetSlotClipCount@_mp_loadout@@YAHPBDIIH@Z 00D51EE0 f mp_util_wad.o	VERIFIED: Existing slot/team construction and dispatch match IDA 0x009629E0
 691	VERIFIED	0002:00562ae0 ?CallbackGiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@I@Z 00D51FE0 f mp_util_wad.o
 692	PORTED	0002:00562b60 ?CallbackPickupKit@_mp_loadout@@YAXVentity@Broc@@I@Z 00D52060 f mp_util_wad.o
 693	VERIFIED	0002:00563240 ?CallbackCanPickupAmmoPack@_mp_loadout@@YAHVentity@Broc@@@Z 00D52740 f mp_util_wad.o
