@@ -57,6 +57,11 @@ PanelMaterial::PanelMaterial()
     texture = nullptr;
 }
 
+// ea: 0x005ADFD0
+PanelMaterial::~PanelMaterial()
+{
+}
+
 // ============================================================================
 // PanelQuadSection bounds
 // ============================================================================

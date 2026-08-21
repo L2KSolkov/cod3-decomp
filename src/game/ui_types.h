@@ -562,6 +562,7 @@ public:
     bool        wrapv;           // +0x0F
 
     PanelMaterial();  // shell.o 0x5ADFB0
+    ~PanelMaterial(); // shell.o 0x5ADFD0
 };
 static_assert(sizeof(PanelMaterial) == 0x10, "PanelMaterial size mismatch");
 
