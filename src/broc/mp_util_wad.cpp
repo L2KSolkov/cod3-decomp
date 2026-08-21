@@ -11395,8 +11395,10 @@ void ShowProgressBar(Broc::entity self, Broc::string colour) {
 // ClearGame - ea: 0x95B2C0
 void ClearGame() {
     Broc::Code_DebugOut("*HQ* ClearGame\n");
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0x12CEF01u;
     Broc::notify(lvl, n);
