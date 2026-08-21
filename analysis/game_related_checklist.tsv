@@ -1572,11 +1572,11 @@ index	status	map_line
 1571	VERIFIED	0002:000b5500 ?GetX@Dir3@math@@QBEMXZ 008A4A00 f i core.o
 1572	VERIFIED	0002:000b5520 ?GetY@Dir3@math@@QBEMXZ 008A4A20 f i core.o
 1573	PORTED	0002:000b5570 ?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z 008A4A70 f i core.o PORTED: FUNCTION implemented IDA allocator setter
-1574	PORTED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o
+1574	PORTED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o PORTED: FUNCTION implemented IDA placement-new passthrough
 1575	VERIFIED	0002:000b5590 ?DeleteInst@DestructibleBankManager@@SAXXZ 008A4A90 f i core.o
-1576	PORTED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o
-1577	PORTED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o
-1578	PORTED	0002:000b5640 ?GetDObj@Entity@@QBEPBVDObj@@XZ 008A4B40 f i core.o
+1576	PORTED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o PORTED: FUNCTION implemented IDA notify-set setter
+1577	PORTED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o PORTED: FUNCTION implemented IDA current-origin accessor
+1578	VERIFIED	0002:000b5640 ?GetDObj@Entity@@QBEPBVDObj@@XZ 008A4B40 f i core.o VERIFIED: FUNCTION existing DObj member accessor matches IDA
 1579	VERIFIED	0002:000b5650 ??1EntityNotify@@QAE@XZ 008A4B50 f core.o
 1580	VERIFIED	0002:000b5670 ?FS_Initialized@@YAHXZ 008A4B70 f core.o
 1581	VERIFIED	0002:000b5680 ?FS_CheckFileSystemStarted@@YAXXZ 008A4B80 f core.o

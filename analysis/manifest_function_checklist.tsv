@@ -1572,11 +1572,11 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1571	0x004B5500	0x008A4A00	?GetX@Dir3@math@@QBEMXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1572	0x004B5520	0x008A4A20	?GetY@Dir3@math@@QBEMXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1573	0x004B5570	0x008A4A70	?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA allocator setter	NO	NO	VERIFIED
-1574	0x004B5580	0x008A4A80	??2DestructibleBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1574	0x004B5580	0x008A4A80	??2DestructibleBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA placement-new passthrough	NO	NO	VERIFIED
 1575	0x004B5590	0x008A4A90	?DeleteInst@DestructibleBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1576	0x004B5610	0x008A4B10	?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1577	0x004B5630	0x008A4B30	?GetPosition@Entity@@QAEABVPosition3@math@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1578	0x004B5640	0x008A4B40	?GetDObj@Entity@@QBEPBVDObj@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1576	0x004B5610	0x008A4B10	?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA notify-set setter	NO	NO	VERIFIED
+1577	0x004B5630	0x008A4B30	?GetPosition@Entity@@QAEABVPosition3@math@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA current-origin accessor	NO	NO	VERIFIED
+1578	0x004B5640	0x008A4B40	?GetDObj@Entity@@QBEPBVDObj@@XZ		core.o	game		f i	1	VERIFIED	VERIFIED: FUNCTION existing DObj member accessor matches IDA	NO	NO	VERIFIED
 1579	0x004B5650	0x008A4B50	??1EntityNotify@@QAE@XZ		core.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1580	0x004B5670	0x008A4B70	?FS_Initialized@@YAHXZ		core.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1581	0x004B5680	0x008A4B80	?FS_CheckFileSystemStarted@@YAXXZ		core.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
