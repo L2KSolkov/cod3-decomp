@@ -20986,15 +20986,15 @@ index	status	map_line
 20985	PORTED	0002:00467a80 ?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00C56F80 f i nal_init.o
 20986	VERIFIED	0002:00467a90 ?Add@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@PAV2@@Z 00C56F90 f i nal_init.o
 20987	VERIFIED	0002:00467bb0 ?Init@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C570B0 f i nal_init.o
-20988	PORTED	0002:00467bf0 ??0?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00C570F0 f i nal_init.o
-20989	PORTED	0002:00467c20 ?Find@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57120 f i nal_init.o
-20990	VERIFIED	0002:00467c30 ?Find@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57130 f i nal_init.o
-20991	PORTED	0002:00467cf0 ?Del@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE_NQAV?$nalAnimClass@VnalAnyPose@@@@@Z 00C571F0 f i nal_init.o
-20992	PORTED	0002:00467d00 ?Enumerate@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAVIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@XZ 00C57200 f i nal_init.o
-20993	PORTED	0002:00467d40 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEXXZ 00C57240 f i nal_init.o
-20994	PORTED	0002:00467d60 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UBE_NXZ 00C57260 f i nal_init.o
-20995	PORTED	0002:00467d70 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEXXZ 00C57270 f i nal_init.o
-20996	PORTED	0002:00467d80 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UBEPAV?$nalAnimClass@VnalAnyPose@@@@XZ 00C57280 f i nal_init.o
+20988	VERIFIED	0002:00467bf0 ??0?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00C570F0 f i nal_init.o	VERIFIED: vtable install and inline skip-list random/head initialization match IDA
+20989	VERIFIED	0002:00467c20 ?Find@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57120 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+20990	VERIFIED	0002:00467c30 ?Find@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@ABVtlFixedString@@@Z 00C57130 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Find specialization per IDA
+20991	VERIFIED	0002:00467cf0 ?Del@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAE_NQAV?$nalAnimClass@VnalAnyPose@@@@@Z 00C571F0 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Del specialization per IDA
+20992	VERIFIED	0002:00467d00 ?Enumerate@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAVIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@XZ 00C57200 f i nal_init.o	VERIFIED: 0x0C-byte iterator allocation, vtable, list pointer, and head cursor match IDA
+20993	VERIFIED	0002:00467d40 ?reset@SkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEXXZ 00C57240 f i nal_init.o	VERIFIED: reset restores the skip-list head cursor exactly as IDA
+20994	VERIFIED	0002:00467d60 ??RSkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UBE_NXZ 00C57260 f i nal_init.o	VERIFIED: iterator-validity test matches IDA
+20995	VERIFIED	0002:00467d70 ??ESkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEXXZ 00C57270 f i nal_init.o	VERIFIED: iterator increment and null guard match IDA
+20996	VERIFIED	0002:00467d80 ??DSkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UBEPAV?$nalAnimClass@VnalAnyPose@@@@XZ 00C57280 f i nal_init.o	VERIFIED: iterator dereference and null result match IDA
 20997	SKIPPED	0002:00467d90 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C57290 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20998	SKIPPED	0002:00467d90 ??_ESkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C57290 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20999	SKIPPED	0002:00467dc0 ??_EIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C572C0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
