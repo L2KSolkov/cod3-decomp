@@ -20062,8 +20062,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20061	0x00850C80	0x00C40180	?nglDebugDrawRect@@YAXHHHHI@Z	ngl_xboxr	ngl_debugdraw.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20062	0x00850D00	0x00C40200	?nglDebugDrawTextInternal@@YAXHHIPBDZZ	ngl_xboxr	ngl_debugdraw.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20063	0x00850FB0	0x00C404B0	?nglDebugDrawText@@YAHHHIPBDZZ	ngl_xboxr	ngl_debugdraw.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-20064	0x00851070	0x00C40570	?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z	ngl_xboxr	ngl_dx_draw.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20065	0x00851090	0x00C40590	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	ngl_xboxr	ngl_dx_draw.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+20064	0x00851070	0x00C40570	?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z	ngl_xboxr	ngl_dx_draw.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
+20065	0x00851090	0x00C40590	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	ngl_xboxr	ngl_dx_draw.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 20066	0x00851120	0x00C40620	?ngliGetDebugFlagPtr@@YAPAEPBD@Z	ngl_xboxr	ngl_dx_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20067	0x00851130	0x00C40630	?PrintHeader@ngliShaderProfile@@SAXXZ	ngl_xboxr	ngl_dx_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 20068	0x00851140	0x00C40640	?Print@ngliShaderProfile@@QAEXXZ	ngl_xboxr	ngl_dx_debug.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

@@ -564,7 +564,7 @@ ngl_debugdraw.o	11	11	0	0	0	0	0
 ngl_dx_buf.o	4	4	0	0	0	0	0
 ngl_dx_core.o	43	25	18	0	0	0	0
 ngl_dx_debug.o	5	5	0	0	0	0	0
-ngl_dx_draw.o	2	1	1	0	0	0	0
+ngl_dx_draw.o	2	2	0	0	0	0	0
 ngl_dx_filters.o	28	18	10	0	0	0	0
 ngl_dx_font.o	2	2	0	0	0	0	0
 ngl_dx_fsaa.o	2	1	1	0	0	0	0

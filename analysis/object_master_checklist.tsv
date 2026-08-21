@@ -564,7 +564,7 @@ ngl_debugdraw.o	analysis/ngl_debugdraw_o_checklist.tsv	analysis/ngl_debugdraw_o_
 ngl_dx_buf.o	analysis/ngl_dx_buf_o_checklist.tsv	analysis/ngl_dx_buf_o_inventory.tsv	analysis/ngl_dx_buf_o_plan.tsv	4	4	0	0	0	0	0
 ngl_dx_core.o	analysis/ngl_dx_core_o_checklist.tsv	analysis/ngl_dx_core_o_inventory.tsv	analysis/ngl_dx_core_o_plan.tsv	43	25	18	0	0	0	0
 ngl_dx_debug.o	analysis/ngl_dx_debug_o_checklist.tsv	analysis/ngl_dx_debug_o_inventory.tsv	analysis/ngl_dx_debug_o_plan.tsv	5	5	0	0	0	0	0
-ngl_dx_draw.o	analysis/ngl_dx_draw_o_checklist.tsv	analysis/ngl_dx_draw_o_inventory.tsv	analysis/ngl_dx_draw_o_plan.tsv	2	1	1	0	0	0	0
+ngl_dx_draw.o	analysis/ngl_dx_draw_o_checklist.tsv	analysis/ngl_dx_draw_o_inventory.tsv	analysis/ngl_dx_draw_o_plan.tsv	2	2	0	0	0	0	0
 ngl_dx_filters.o	analysis/ngl_dx_filters_o_checklist.tsv	analysis/ngl_dx_filters_o_inventory.tsv	analysis/ngl_dx_filters_o_plan.tsv	28	18	10	0	0	0	0
 ngl_dx_font.o	analysis/ngl_dx_font_o_checklist.tsv	analysis/ngl_dx_font_o_inventory.tsv	analysis/ngl_dx_font_o_plan.tsv	2	2	0	0	0	0	0
 ngl_dx_fsaa.o	analysis/ngl_dx_fsaa_o_checklist.tsv	analysis/ngl_dx_fsaa_o_inventory.tsv	analysis/ngl_dx_fsaa_o_plan.tsv	2	1	1	0	0	0	0

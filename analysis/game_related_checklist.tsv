@@ -20062,7 +20062,7 @@ index	status	map_line
 20061	VERIFIED	0002:00450c80 ?nglDebugDrawRect@@YAXHHHHI@Z 00C40180 f ngl_debugdraw.o
 20062	VERIFIED	0002:00450d00 ?nglDebugDrawTextInternal@@YAXHHIPBDZZ 00C40200 f ngl_debugdraw.o
 20063	VERIFIED	0002:00450fb0 ?nglDebugDrawText@@YAHHHIPBDZZ 00C404B0 f ngl_debugdraw.o
-20064	PORTED	0002:00451070 ?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z 00C40570 f i ngl_dx_draw.o
+20064	VERIFIED	0002:00451070 ?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z 00C40570 f i ngl_dx_draw.o
 20065	VERIFIED	0002:00451090 ?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z 00C40590 f ngl_dx_draw.o
 20066	VERIFIED	0002:00451120 ?ngliGetDebugFlagPtr@@YAPAEPBD@Z 00C40620 f ngl_dx_debug.o
 20067	VERIFIED	0002:00451130 ?PrintHeader@ngliShaderProfile@@SAXXZ 00C40630 f ngl_dx_debug.o
