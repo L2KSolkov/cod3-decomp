@@ -220,6 +220,10 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
         };
+        struct targetname_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::string* Get(Broc::string* result) const;
+        };
         struct angles_struct {
             unsigned int mHandle;  // +0x00
             const Broc::vector* operator=(const Broc::vector* rhs);
@@ -233,6 +237,8 @@ public:
                             "origin_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::target_struct) == 4,
                             "target_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::targetname_struct) == 4,
+                            "targetname_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
@@ -804,7 +810,9 @@ struct BrocAPI {
     char _pad5C[0x68 - 0x5C];                             // +0x05C
     void (*mThreadDebugNotice)(const char*);              // +0x068
     unsigned int (*mThreadGetId)();                       // +0x06C
-    char _pad70[0x8C - 0x70];                             // +0x070
+    char _pad70[0x74 - 0x70];                             // +0x070
+    void (*mEntNotify)(unsigned int, unsigned int);       // +0x074
+    char _pad78[0x8C - 0x78];                             // +0x078
     void (*mAddEventHandler)(unsigned int, unsigned int, unsigned int); // +0x08C
     char _pad90[0x94 - 0x90];                             // +0x090
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094

@@ -2110,6 +2110,17 @@ const Broc::string* Broc::entity::__unnamed::target_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::targetname_struct::Get - ea: 0x93A080
+const Broc::string* Broc::entity::__unnamed::targetname_struct::Get(
+    Broc::string* result) const {
+    Broc::string temp;
+    Broc::string* rhs = Broc::gBrocAPI.m_entity_get_targetname(
+        &temp, mHandle);
+    new (result) Broc::string(*rhs);
+    temp.~string();
+    return result;
+}
+
 // Broc::entity::__unnamed::angles_struct::operator= - ea: 0x935490
 const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     const Broc::vector* rhs) {
@@ -2227,6 +2238,11 @@ Broc::entity* Spawn(Broc::entity* result, const Broc::string* inClassname,
 int EffectEventPlay(Broc::entity* e, const Broc::string* script) {
     unsigned int handle = e->GetHandle();
     return gBrocAPI.mEffectEventPlay(handle, script, 0, false, false);
+}
+
+// Broc::notify - ea: 0x939BA0
+void notify(const Broc::entity* ent, HashStr label) {
+    gBrocAPI.mEntNotify(ent->GetHandle(), label.mVal);
 }
 
 // Broc::DialogPlay - ea: 0x938BA0
