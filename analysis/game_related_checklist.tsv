@@ -1559,23 +1559,23 @@ index	status	map_line
 1558	VERIFIED	0002:000b5380 ?get_num_controllers@controller@@QAEHXZ 008A4880 f i core.o
 1559	VERIFIED	0002:000b5390 ??_U@YAPAXI@Z 008A4890 f i core.o
 1560	VERIFIED	0002:000b53a0 ??_V@YAXPAX@Z 008A48A0 f i core.o
-1561	PORTED	0002:000b53b0 ?GetVal@FourCC@@QBEHXZ 008A48B0 f i core.o PORTED: FUNCTION implemented IDA value accessor
-1562	PORTED	0002:000b53c0 ??8@YA_NVFourCC@@0@Z 008A48C0 f i core.o PORTED: FUNCTION implemented IDA value comparison
+1561	VERIFIED	0002:000b53b0 ?GetVal@FourCC@@QBEHXZ 008A48B0 f i core.o VERIFIED: FUNCTION existing FourCC value accessor matches IDA
+1562	VERIFIED	0002:000b53c0 ??8@YA_NVFourCC@@0@Z 008A48C0 f i core.o VERIFIED: FUNCTION existing FourCC value comparison matches IDA
 1563	VERIFIED	0002:000b53e0 ?value@tlFixedString@@QBEPBIXZ 008A48E0 f i core.o VERIFIED: FUNCTION existing const value accessor returns object storage per IDA/map signature
 1564	VERIFIED	0002:000b53f0 ??0tlFixedString@@QAE@XZ 008A48F0 f i core.o
 1565	VERIFIED	0002:000b5420 ??4tlFixedString@@QAEABV0@ABV0@@Z 008A4920 f i core.o VERIFIED: FUNCTION existing assignment copies the eight IDA dwords
 1566	VERIFIED	0002:000b5470 ?c_str@tlFixedString@@QAEPADXZ 008A4970 f i core.o
-1567	PORTED	0002:000b5480 ?SetAllocator@AeThread@@SAXPAVPoolAllocator@@@Z 008A4980 f i core.o PORTED: FUNCTION implemented IDA allocator setter
-1568	PORTED	0002:000b5490 ?mathInit@math@@YAXXZ 008A4990 f i core.o PORTED: FUNCTION implemented IDA control-word and MXCSR initialization
-1569	PORTED	0002:000b54e0 ?Abs@math@@YAMM@Z 008A49E0 f i core.o PORTED: FUNCTION implemented IDA scalar absolute-value wrapper
-1570	PORTED	0002:000b54f0 ?GetTimeStartExec@AeThreadManager@@SA_KXZ 008A49F0 f i core.o PORTED: FUNCTION implemented IDA start-time accessor
+1567	VERIFIED	0002:000b5480 ?SetAllocator@AeThread@@SAXPAVPoolAllocator@@@Z 008A4980 f i core.o VERIFIED: FUNCTION existing AeThread allocator setter matches IDA
+1568	VERIFIED	0002:000b5490 ?mathInit@math@@YAXXZ 008A4990 f i core.o VERIFIED: FUNCTION existing mathInit control-word and MXCSR initialization matches IDA
+1569	VERIFIED	0002:000b54e0 ?Abs@math@@YAMM@Z 008A49E0 f i core.o VERIFIED: FUNCTION existing scalar math::Abs wrapper matches IDA
+1570	VERIFIED	0002:000b54f0 ?GetTimeStartExec@AeThreadManager@@SA_KXZ 008A49F0 f i core.o VERIFIED: FUNCTION existing start-time accessor matches IDA
 1571	VERIFIED	0002:000b5500 ?GetX@Dir3@math@@QBEMXZ 008A4A00 f i core.o
 1572	VERIFIED	0002:000b5520 ?GetY@Dir3@math@@QBEMXZ 008A4A20 f i core.o
-1573	PORTED	0002:000b5570 ?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z 008A4A70 f i core.o PORTED: FUNCTION implemented IDA allocator setter
-1574	PORTED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o PORTED: FUNCTION implemented IDA placement-new passthrough
+1573	VERIFIED	0002:000b5570 ?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z 008A4A70 f i core.o VERIFIED: FUNCTION existing ScriptEventHandler allocator setter matches IDA
+1574	VERIFIED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o VERIFIED: FUNCTION existing DestructibleBankManager placement-new passthrough matches IDA
 1575	VERIFIED	0002:000b5590 ?DeleteInst@DestructibleBankManager@@SAXXZ 008A4A90 f i core.o
-1576	PORTED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o PORTED: FUNCTION implemented IDA notify-set setter
-1577	PORTED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o PORTED: FUNCTION implemented IDA current-origin accessor
+1576	VERIFIED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o VERIFIED: FUNCTION existing Entity notify-set setter matches IDA
+1577	VERIFIED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o VERIFIED: FUNCTION existing Entity current-origin accessor matches IDA
 1578	VERIFIED	0002:000b5640 ?GetDObj@Entity@@QBEPBVDObj@@XZ 008A4B40 f i core.o VERIFIED: FUNCTION existing DObj member accessor matches IDA
 1579	VERIFIED	0002:000b5650 ??1EntityNotify@@QAE@XZ 008A4B50 f core.o
 1580	VERIFIED	0002:000b5670 ?FS_Initialized@@YAHXZ 008A4B70 f core.o
