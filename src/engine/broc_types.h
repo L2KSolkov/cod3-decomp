@@ -566,9 +566,13 @@ struct bint {
 
     bint() : mVal(0) {}
     bint(int v) : mVal(v) {}
+    // ea: 0x936EF0
+    bint(unsigned int v) : mVal(v) {}
     int operator=(int v) { mVal = v; return v; }
     unsigned int operator=(unsigned int v) { mVal = v; return v; }
     operator int() const { AssertDefined(); return mVal; }
+    // ea: 0x936F20
+    bool operator==(int rhs) const { return rhs == mVal; }
     int operator++(int) { AssertDefined(); return ++mVal; }
     int operator++() { AssertDefined(); return ++mVal; }
     int operator--(int) { AssertDefined(); return --mVal; }
@@ -583,6 +587,8 @@ struct bfloat {
 
     bfloat() : mVal(0.0f) {}
     bfloat(float v) : mVal(v) {}
+    // ea: 0x935840
+    bfloat(int v) : mVal((float)v) {}
     double operator=(float v) { mVal = v; return v; }
     double operator=(int v) { mVal = (float)v; return mVal; }
     operator float() const { return mVal; }
@@ -615,9 +621,11 @@ bool operator<(bfloat lhs, bfloat rhs);
 bool operator>(bfloat lhs, bfloat rhs);
 bool operator==(bfloat lhs, bfloat rhs);
 bool operator!=(bfloat lhs, bfloat rhs);
-bool operator<(bfloat lhs, float rhs);
-bool operator>(bfloat lhs, float rhs);
+bbool operator<(bfloat lhs, float rhs);
+bbool operator>(bfloat lhs, float rhs);
 bint operator+(bint lhs, bint rhs);
+bint operator+(bint lhs, int rhs);
+bint operator+(int lhs, bint rhs);
 bint operator-(bint lhs, bint rhs);
 bint operator*(bint lhs, bint rhs);
 bint operator*(int lhs, bint rhs);
@@ -812,7 +820,9 @@ struct BrocAPI {
                            TPakInfo);                    // +0x264
     char _pad268[0x290 - 0x268];                          // +0x268
     unsigned int (*mSoundPlay)(const Broc::string*, float); // +0x290
-    char _pad294[0x2C0 - 0x294];                          // +0x294
+    char _pad294[0x2A0 - 0x294];                          // +0x294
+    void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
+    char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
     char _pad2C4[0x6D8 - 0x2C4];                          // +0x2C4
     void (*mDelete)(unsigned int);                        // +0x6D8

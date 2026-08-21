@@ -2190,6 +2190,11 @@ void ReverbSetParams(const Broc::string* name, bool immediate) {
     gBrocAPI.mReverbSetParams(name, immediate);
 }
 
+// Broc::SoundCrossFade - ea: 0x936F50
+void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time) {
+    gBrocAPI.mSoundCrossFade(handle1, handle2, time);
+}
+
 // GetEnt - ea: 0x9349D0
 Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
                      unsigned int flags) {
@@ -2278,6 +2283,31 @@ bool operator!=(Broc::bint lhs, Broc::bint rhs) {
 
 Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
+}
+
+// operator+(bint, int) - ea: 0x9370B0
+Broc::bint operator+(Broc::bint lhs, int rhs) {
+    return Broc::bint(lhs.mVal + rhs);
+}
+
+// operator<(bfloat, float) - ea: 0x9376C0
+Broc::bbool operator<(Broc::bfloat lhs, float rhs) {
+    return Broc::bbool(rhs > lhs.mVal);
+}
+
+// operator>(bfloat, float) - ea: 0x937710
+Broc::bbool operator>(Broc::bfloat lhs, float rhs) {
+    return Broc::bbool(lhs.mVal > rhs);
+}
+
+// operator+(int, bint) - ea: 0x9379F0
+Broc::bint operator+(int lhs, Broc::bint rhs) {
+    return Broc::bint(lhs + rhs.mVal);
+}
+
+// Broc::operator*(vector, float) - ea: 0x937A20
+Broc::vector Broc::operator*(const Broc::vector& lhs, float rhs) {
+    return Broc::vector(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
 
 // ============================================================================
@@ -3324,7 +3354,7 @@ void PlayPainSound(Broc::entity guy, Broc::bint damage) {
     mp_util_wad::entity_get_maxhealth(&mh, guy);
     Broc::bfloat max_health((float)(int)mh);
     Broc::bfloat percent_of_total_health_damaged =
-        max_health > 0.0001f ? (float)(int)damage / (float)max_health : 0.5f;
+        ::operator>(max_health, 0.0001f) ? (float)(int)damage / (float)max_health : 0.5f;
     if ((float)percent_of_total_health_damaged < 0.25f)
         chance = 0.1f;
     else if ((float)percent_of_total_health_damaged < 0.5f)
