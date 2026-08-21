@@ -284,15 +284,13 @@ public:
     void UndefineEEField(unsigned int key);
     unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
     bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
+    bool operator!=(const entity& rhs) const;         // ea: 0x93F640
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(entity) == 4, "Broc::entity size mismatch");
 
 
 inline bool operator==(const entity& lhs, const entity& rhs) {
     return lhs.___u0 == rhs.___u0;
-}
-inline bool operator!=(const entity& lhs, const entity& rhs) {
-    return lhs.___u0 != rhs.___u0;
 }
 
 // ============================================================================
@@ -695,6 +693,11 @@ struct bint {
     explicit bint(int v) : mVal(v) {}
 };
 bint operator*(bint lhs, int rhs);
+struct bbool {
+    bool mVal;
+    explicit bbool(bool v) : mVal(v) {}
+    bool operator==(bool rhs) const;
+};
 Broc::bbool operator>(Broc::bfloat lhs, int rhs);
 Broc::bbool operator<(float lhs, Broc::bfloat rhs);
 Broc::bfloat operator*(Broc::bfloat lhs, Broc::bfloat rhs);
@@ -953,7 +956,34 @@ struct BrocAPI {
     char _pad344[0x370 - 0x344];                          // +0x344
     void (*mSendGameState)(unsigned int, int, int, int, int,
                            bool, bool, bool, int, int, int, bool, int, int); // +0x370
-    char _pad374[0x3CC - 0x374];                          // +0x374
+    void (*mSendGameStateHQ)(unsigned int, unsigned int, const Broc::vector&,
+                             const Broc::vector&, unsigned int, bool, bool); // +0x374
+    void (*mSendGameStateCTF)(unsigned int, const Broc::vector&,
+                              const Broc::vector&, unsigned int,
+                              const Broc::vector&, const Broc::vector&,
+                              unsigned int);                // +0x378
+    void (*mSendGameStateSCF)(unsigned int, int, const Broc::vector&,
+                              const Broc::vector&, unsigned int); // +0x37C
+    void (*mSendGameStateDOM)(unsigned int, int, int, int, int, int); // +0x380
+    void (*mSendGameStateSD)(unsigned int, unsigned int, unsigned int, bool,
+                             const Broc::vector&, const Broc::vector&, int); // +0x384
+    void (*mSendGameScore)(int, int);                       // +0x388
+    void (*mEnterGame)();                                   // +0x38C
+    void (*mDebugOut)(const char*);                         // +0x390
+    bool (*mControllerErrorMessageUp)();                    // +0x394
+    void (*mForceControllerErrorMessageDown)();             // +0x398
+    void (*mDropItem1)(int, int, const Broc::vector*, const Broc::vector*); // +0x39C
+    void (*mDropItem2)(int, int, const Broc::vector*, const Broc::vector*, const Broc::vector*); // +0x3A0
+    void (*mHostDropItem1)(int, int, const Broc::vector*, const Broc::vector*); // +0x3A4
+    void (*mHostDropItem2)(int, int, const Broc::vector*, const Broc::vector*, const Broc::vector*); // +0x3A8
+    void (*mPickupItem)(int, unsigned int);                  // +0x3AC
+    void (*mAreaCaptured)(int, unsigned int, unsigned int);  // +0x3B0
+    void (*mSendHostBombRequest)(unsigned int, bool);        // +0x3B4
+    void (*mSendBombExplosion)(unsigned int);                // +0x3B8
+    void (*mSendBombOperation)(unsigned int, bool);          // +0x3BC
+    void (*mSendBombOperationEvent)(unsigned int, bool, bool); // +0x3C0
+    unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
+    void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
     char _pad3D0[0x528 - 0x3D0];                          // +0x3D0
     unsigned int (*mGetTime)();                           // +0x528
@@ -1190,7 +1220,7 @@ bool Code_PositionWouldTelefrag(const Broc::vector* position);
 void Code_ChangePlayerTeam(Broc::entity player, const Broc::string* team,
                            bool autoBalance);
 bool Code_IsLocalPlayer(Broc::entity player);
-char* Code_GetPlayerName(Broc::entity player);
+const char* Code_GetPlayerName(Broc::entity player);
 void Code_DebugOut(const char* strOut);
 void Code_NextRound(bool allowChange);
 void Code_RoundOver(int condition, const Broc::string* winner);
@@ -1242,7 +1272,7 @@ void Code_SetRespawnMaxTime(Broc::entity player, int time);
 void Code_GetOutOfVehicle(Broc::entity player);
 bool Code_IsInVehicle(Broc::entity player);
 void Code_Obituary(Broc::entity target, Broc::entity attacker,
-                   const Broc::string* weapon, int mod, int teamGame);
+                   const Broc::string* weapon, int mod, bool teamGame);
 void Code_SendGameState(Broc::entity player, int currentTime, int timeLimit,
                         int scoreLimit, int roundLimit, bool friendlyFire,
                         bool lastManStanding, bool teamBalance, int respawnTime,
@@ -1255,7 +1285,7 @@ void Code_SettleMapVote();
 void Code_SettleGameModeVote();
 void Code_SetShowTime(float gameTime);
 void Code_ClearSpottingFromOccupants(Broc::entity ent);
-void Code_GetSpotterEntity(Broc::entity* result, Broc::entity ent);
+Broc::entity Code_GetSpotterEntity(Broc::entity ent);
 int Code_IsMenuOpen(const Broc::string* menu, int viewport);
 void Code_ForceControllerErrorMessageDown();
 void Code_GetWeaponName(int weaponIndex, Broc::string& weapon);

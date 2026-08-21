@@ -134,7 +134,7 @@ void* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
 void* QuitGameThread__functor(Broc::entity selfLevel);
 void* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
 void* HostHasMigrated__functor(Broc::entity self);
-void* RespawnPlayer__functor(Broc::entity guy, Broc::string team);
+AeThreadFunctor* RespawnPlayer__functor(Broc::entity guy, Broc::string team);
 void* LocalPlayerRespawn__functor(Broc::entity player);
 void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished);
 void* reenable_medic_call__functor(Broc::entity self, Broc::bint time);
@@ -2180,6 +2180,28 @@ const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     return rhs;
 }
 
+// Broc::entity::operator!= - ea: 0x93F640
+bool Broc::entity::operator!=(const Broc::entity& rhs) const {
+    return GetHandle() != rhs.GetHandle();
+}
+
+// Code_GetPlayerName - ea: 0x93E910
+const char* Broc::Code_GetPlayerName(Broc::entity player) {
+    return Broc::gBrocAPI.mGetPlayerName(player.GetHandle());
+}
+
+// Code_Obituary - ea: 0x93F680
+void Broc::Code_Obituary(Broc::entity target, Broc::entity attacker,
+                         const Broc::string* weapon, int mod, bool teamGame) {
+    Broc::gBrocAPI.mObituary(target.GetHandle(), attacker.GetHandle(), *weapon,
+                             mod, teamGame);
+}
+
+// Code_GetSpotterEntity - ea: 0x93F700
+Broc::entity Broc::Code_GetSpotterEntity(Broc::entity ent) {
+    return Broc::entity(Broc::gBrocAPI.mGetSpotterEntity(ent.GetHandle()));
+}
+
 // Code_PlayerSpawn - ea: 0x93E490
 void Broc::Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
                             const Broc::vector* angles, bool stopPhysics) {
@@ -2438,6 +2460,11 @@ Broc::string operator+(const Broc::string& lhs, float rhs) {
 }
 
 } // namespace Broc
+
+// bbool::operator== - ea: 0x93F610
+bool bbool::operator==(bool rhs) const {
+    return rhs == mVal;
+}
 
 // AnglesToForward - ea: 0x937AD0
 Broc::vector AnglesToForward(const Broc::vector& angles) {
@@ -4564,7 +4591,7 @@ void CallbackPlayerLeave(Broc::entity leavingPlayer) {
             (int)mp_util_wad::pLevel->playersLeavingDuringRound + 1;
     }
     if (!Broc::Code_IsLocalPlayer(leavingPlayer)) {
-        char* name = Broc::Code_GetPlayerName(leavingPlayer);
+        const char* name = Broc::Code_GetPlayerName(leavingPlayer);
         Broc::iprintln(name, " ", "MPSCRIPT_DISCONNECTED");
     }
 }
@@ -4601,7 +4628,7 @@ void CallbackVehicleKilled(Broc::entity killedVehicle, Broc::entity inflictor,
     if (occupantCount > 0 && Broc::IsPlayer(attacker) != 0) {
         AddToPlayerStats(attacker, Broc::bint(6), 1);
         Broc::entity spotter;
-        Broc::Code_GetSpotterEntity(&spotter, killedVehicle);
+        spotter = Broc::Code_GetSpotterEntity(killedVehicle);
         if (Broc::IsDefined(spotter) && spotter.___u0 != attacker.___u0) {
             AddToPlayerStats(attacker, Broc::bint(23), 1);
             Broc::Code_ClearSpottingFromOccupants(killedVehicle);
@@ -5744,7 +5771,7 @@ void CallbackPlayerKilled(Broc::entity killedPlayer, Broc::entity inflictor,
                     break;
                 }
                 Broc::entity spotter;
-                Broc::Code_GetSpotterEntity(&spotter, killedPlayer);
+                spotter = Broc::Code_GetSpotterEntity(killedPlayer);
                 if (Broc::IsDefined(spotter))
                     AddToPlayerStats(attacker, Broc::bint(23), 1);
             }
@@ -13035,11 +13062,13 @@ void* HostHasMigrated__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(HostHasMigrated, self);
 }
-void* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
+AeThreadFunctor* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
     if (storage == NULL)
         return NULL;
-    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(RespawnPlayer, guy, team);
+    AeThreadFunctor* result = ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(RespawnPlayer, guy, team);
+    team.~string();
+    return result;
 }
 void* LocalPlayerRespawn__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
