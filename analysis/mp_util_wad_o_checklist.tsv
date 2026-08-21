@@ -690,14 +690,14 @@ index	status	map_line
 689	VERIFIED	0002:00562920 ?CallbackGetClipCount@_mp_loadout@@YAHIIH@Z 00D51E20 f mp_util_wad.o	VERIFIED: Existing allied-team selection and primary clip callback match IDA 0x00962920
 690	VERIFIED	0002:005629e0 ?CallbackGetSlotClipCount@_mp_loadout@@YAHPBDIIH@Z 00D51EE0 f mp_util_wad.o	VERIFIED: Existing slot/team construction and dispatch match IDA 0x009629E0
 691	VERIFIED	0002:00562ae0 ?CallbackGiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@I@Z 00D51FE0 f mp_util_wad.o
-692	PORTED	0002:00562b60 ?CallbackPickupKit@_mp_loadout@@YAXVentity@Broc@@I@Z 00D52060 f mp_util_wad.o
+692	VERIFIED	0002:00562b60 ?CallbackPickupKit@_mp_loadout@@YAXVentity@Broc@@I@Z 00D52060 f mp_util_wad.o	VERIFIED: Existing player guard, scale clamping, slot reset, class update, and refill flow match IDA 0x00962B60
 693	VERIFIED	0002:00563240 ?CallbackCanPickupAmmoPack@_mp_loadout@@YAHVentity@Broc@@@Z 00D52740 f mp_util_wad.o
-694	PORTED	0002:005633d0 ?GetPrimaryClipCount@_mp_loadout@@YA?AUbint@@U2@FVstring@Broc@@@Z 00D528D0 f mp_util_wad.o
-695	PORTED	0002:005639b0 ?GetPistolClipCount@_mp_loadout@@YA?AUbint@@U2@F@Z 00D52EB0 f mp_util_wad.o
-696	PORTED	0002:00563a90 ?CallbackGetGrenadeCount@_mp_loadout@@YAHII@Z 00D52F90 f mp_util_wad.o
-697	PORTED	0002:00563ae0 ?GetGrenadeCount@_mp_loadout@@YA?AUbint@@U2@F@Z 00D52FE0 f mp_util_wad.o
-698	PORTED	0002:00563e20 ?GetsDualPistols@_mp_loadout@@YA?AUbbool@@F@Z 00D53320 f mp_util_wad.o
-699	PORTED	0002:00563e70 ?GetRankCount@_mp_loadout@@YA?AUbint@@U2@000@Z 00D53370 f mp_util_wad.o
+694	VERIFIED	0002:005633d0 ?GetPrimaryClipCount@_mp_loadout@@YA?AUbint@@U2@FVstring@Broc@@@Z 00D528D0 f mp_util_wad.o	VERIFIED: Existing class/rank/team clip table matches IDA 0x009633D0
+695	VERIFIED	0002:005639b0 ?GetPistolClipCount@_mp_loadout@@YA?AUbint@@U2@F@Z 00D52EB0 f mp_util_wad.o	VERIFIED: Existing rank masking, dual-pistol check, and clip counts match IDA 0x009639B0
+696	VERIFIED	0002:00563a90 ?CallbackGetGrenadeCount@_mp_loadout@@YAHII@Z 00D52F90 f mp_util_wad.o	VERIFIED: Existing callback argument conversion and grenade-count forwarding match IDA 0x00963A90
+697	VERIFIED	0002:00563ae0 ?GetGrenadeCount@_mp_loadout@@YA?AUbint@@U2@F@Z 00D52FE0 f mp_util_wad.o	VERIFIED: Existing class/rank grenade table matches IDA 0x00963AE0
+698	VERIFIED	0002:00563e20 ?GetsDualPistols@_mp_loadout@@YA?AUbbool@@F@Z 00D53320 f mp_util_wad.o	VERIFIED: IDA 0x00963E20 always returns false; existing port matches
+699	VERIFIED	0002:00563e70 ?GetRankCount@_mp_loadout@@YA?AUbint@@U2@000@Z 00D53370 f mp_util_wad.o	VERIFIED: Existing rank 1/2 selection with rank0 fallback matches IDA 0x00963E70
 700	VERIFIED	0002:00563ee0 ?main@_mp_minefield@@YAXVentity@Broc@@@Z 00D533E0 f mp_util_wad.o
 701	PORTED	0002:005640b0 ?minefield_think__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D535B0 f i mp_util_wad.o
 702	VERIFIED	0002:00564150 ?minefield_think@_mp_minefield@@YAXVentity@Broc@@@Z 00D53650 f mp_util_wad.o
