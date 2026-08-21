@@ -40,21 +40,21 @@ index	status	map_line
 39	FIXED	0002:0052ffb0 ?GetEE_index@@YAAAUbint@@Ventity@Broc@@@Z 00D1F4B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x07AA1578; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
 40	VERIFIED	0002:00530000 ?IsEEDefined_index@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F500 f mp_util_wad.o	VERIFIED: IDA 0x00930000 uses key 0x07AA1578 bint GetVal and IsDefined
 41	FIXED	0002:005300b0 ?GetEE_lastPainSoundTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1F5B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
-42	PORTED	0002:00530100 ?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F600 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match
+42	VERIFIED	0002:00530100 ?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F600 f mp_util_wad.o	VERIFIED: IDA 0x00930100 uses key 0x7654A134 bint GetVal and IsDefined
 43	FIXED	0002:005301b0 ?GetEE_audio_ambp@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F6B0 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body and nullEnt fallback match IDA disassembly
-44	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body added
+44	VERIFIED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o	VERIFIED: IDA 0x00930200 uses key 0xAB157931 string GetVal and IsDefined
 45	FIXED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body and nullEnt fallback match IDA disassembly
-46	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
-47	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and nullEnt fallback
-48	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed word_39C6FA key and guarded GetVal path
+46	VERIFIED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	VERIFIED: IDA 0x00930350 uses key 0xFAAE111E entity GetVal and IsDefined
+47	VERIFIED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o	VERIFIED: IDA 0x00930400 forwards handle lookup and GetRef with &word_39C6FA
+48	VERIFIED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o	VERIFIED: IDA 0x00930450 uses key &word_39C6FA entity GetVal and IsDefined
 49	FIXED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
-50	PORTED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o	PORTED: reverified against decompile key 0x54E300B7; bint GetRef/GetVal types match
+50	VERIFIED	0002:00530550 ?IsEEDefined_lastTouch@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FA50 f mp_util_wad.o	VERIFIED: IDA 0x00930550 uses key 0x54E300B7 bint GetVal and IsDefined
 51	FIXED	0002:00530600 ?GetEE_audio_track_p@@YAAAUbint@@Ventity@Broc@@@Z 00D1FB00 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
-52	PORTED	0002:00530650 ?IsEEDefined_audio_track_p@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FB50 f mp_util_wad.o	PORTED: reverified against decompile key 0x538E9F75; bint GetRef/GetVal types match
+52	VERIFIED	0002:00530650 ?IsEEDefined_audio_track_p@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FB50 f mp_util_wad.o	VERIFIED: IDA 0x00930650 uses key 0x538E9F75 bint GetVal and IsDefined
 53	FIXED	0002:00530700 ?GetEE_specialWeaponTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1FC00 f mp_util_wad.o	PORTED: reverified against decompile key 0x14D6461A; bint GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
-54	PORTED	0002:00530750 ?IsEEDefined_specialWeaponTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FC50 f mp_util_wad.o	PORTED: reverified against decompile key 0x14D6461A; bint GetRef/GetVal types match
+54	VERIFIED	0002:00530750 ?IsEEDefined_specialWeaponTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FC50 f mp_util_wad.o	VERIFIED: IDA 0x00930750 uses key 0x14D6461A bint GetVal and IsDefined
 55	FIXED	0002:00530800 ?GetEE_autobalance@@YAAAUbbool@@Ventity@Broc@@@Z 00D1FD00 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
-56	PORTED	0002:00530850 ?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FD50 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match
+56	VERIFIED	0002:00530850 ?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FD50 f mp_util_wad.o	VERIFIED: IDA 0x00930850 uses key 0xFBCC92DF bbool GetVal and IsDefined
 57	PORTED	0002:00530900 ?GetEE_goal@@YAAAVentity@Broc@@V12@@Z 00D1FE00 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed byte_3A6023 key and nullEnt fallback
 58	PORTED	0002:00530950 ?IsEEDefined_goal@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FE50 f mp_util_wad.o  PORTED: implemented from IDA pointer-backed byte_3A6023 key and guarded GetVal path; source body added
 59	FIXED	0002:00530a00 ?GetEE_teamSound@@YAAAUbint@@Ventity@Broc@@@Z 00D1FF00 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
