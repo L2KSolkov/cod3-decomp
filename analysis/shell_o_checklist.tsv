@@ -1651,7 +1651,7 @@ index	status	map_line
 1650	SKIPPED	0002:001b1700 ??0?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@QAE@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 009A0C00 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1651	SKIPPED	0002:001b1710 ??0?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@QAE@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 009A0C10 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1652	SKIPPED	0002:001b1720 ?_Inc@const_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@QAEXXZ 009A0C20 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1653	PORTED	0002:001b1790 ??$tl_clamp@HHH@@YAHABH00@Z 009A0C90 f i shell.o
+1653	SKIPPED	0002:001b1790 ??$tl_clamp@HHH@@YAHABH00@Z 009A0C90 f i shell.o  SKIPPED: tl_clamp template helper; supplied by template definition
 1654	SKIPPED	0002:001b17c0 ??$_Destroy@PAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@@std@@YAXPAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@0@@Z 009A0CC0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1655	SKIPPED	0002:001b17d0 ??$_Destroy@PAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@@std@@YAXPAPAU_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@0@@Z 009A0CD0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1656	SKIPPED	0002:001b17e0 ??$_Destroy@PAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@@std@@YAXPAPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@@Z 009A0CE0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1670,14 +1670,14 @@ index	status	map_line
 1669	SKIPPED	0002:001b1910 ??$_Construct@PAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@PAU123@@std@@YAXPAPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@ABQAU120@@Z 009A0E10 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1670	SKIPPED	0002:001b1930 ?compare@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEHIIPBDI@Z 009A0E30 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1671	SKIPPED	0002:001b19d0 ??$_Iter_cat@Vconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@@std@@YA?AUbidirectional_iterator_tag@0@ABVconst_iterator@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@0@@Z 009A0ED0 f i shell.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1672	PORTED	0002:001b19e0 ??0StubData@@QAE@XZ 009A0EE0 f i shell.o
-1673	PORTED	0002:001b1a00 ??0SaveGameData@@QAE@XZ 009A0F00 f i shell.o
+1672	PORTED	0002:001b19e0 ??0StubData@@QAE@XZ 009A0EE0 f i shell.o  PORTED: added IDA-derived profile/controller initialization
+1673	PORTED	0002:001b1a00 ??0SaveGameData@@QAE@XZ 009A0F00 f i shell.o  PORTED: added IDA-derived friendlies/game-vars initialization
 1674	VERIFIED	0002:001b1a90 ?StartAnim@PanelAnimObject@@UAEX_N@Z 009A0F90 f i shell.o
 1675	VERIFIED	0002:001b1ac0 ?ResetXform@PanelAnimObject@@UAEXXZ 009A0FC0 f i shell.o
 1676	VERIFIED	0002:001b1ad0 ?IsFading@PanelAnimObject@@UAE_NXZ 009A0FD0 f i shell.o
 1677	VERIFIED	0002:001b1b00 ?IsShown@PanelAnimObject@@UAE_NXZ 009A1000 f i shell.o
 1678	VERIFIED	0002:001b1b10 ?SetShown@PanelAnimObject@@UAEX_N@Z 009A1010 f i shell.o
-1679	PORTED	0002:001b1b40 ?ResetFlash@FEText@@QAEXXZ 009A1040 f i shell.o
+1679	VERIFIED	0002:001b1b40 ?ResetFlash@FEText@@QAEXXZ 009A1040 f i shell.o  VERIFIED: matches IDA flash reset
 1680	SKIPPED	0002:001b1b60 ??_EFEText@@UAEPAXI@Z 009A1060 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1681	SKIPPED	0002:001b1b60 ??_GFEText@@UAEPAXI@Z 009A1060 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1682	VERIFIED	0002:001b1b90 ??0FEMultiLineText@@QAE@XZ 009A1090 f i shell.o
@@ -1689,10 +1689,10 @@ index	status	map_line
 1688	VERIFIED	0002:001b1c00 ?SetButtonScale@FEMultiLineText@@UAEXM@Z 009A1100 f i shell.o
 1689	VERIFIED	0002:001b1c20 ?SetButtonColor@FEMultiLineText@@UAEXVcolor32@@@Z 009A1120 f i shell.o
 1690	VERIFIED	0002:001b1c30 ?SetBoxWidth@FEMultiLineText@@UAEXH@Z 009A1130 f i shell.o
-1691	PORTED	0002:001b1c50 ?GetPos@FEMultiLineText@@UAEXAAM0@Z 009A1150 f i shell.o
+1691	VERIFIED	0002:001b1c50 ?GetPos@FEMultiLineText@@UAEXAAM0@Z 009A1150 f i shell.o  VERIFIED: matches IDA xy copy
 1692	VERIFIED	0002:001b1c70 ?SetCutOffIfTooLong@FEMultiLineText@@UAEX_N@Z 009A1170 f i shell.o
 1693	VERIFIED	0002:001b1c90 ??0FEMenuEntry@@QAE@PAVFEText@@PAVFEMenu@@_N@Z 009A1190 f i shell.o
-1694	PORTED	0002:001b1cd0 ?ResetTextFlash@FEMenuEntry@@QAEXXZ 009A11D0 f i shell.o
+1694	VERIFIED	0002:001b1cd0 ?ResetTextFlash@FEMenuEntry@@QAEXXZ 009A11D0 f i shell.o  VERIFIED: matches IDA nested flash reset
 1695	VERIFIED	0002:001b1d00 ?SetText@FEMenuEntry@@UAEXVstring@Broc@@@Z 009A1200 f i shell.o
 1696	VERIFIED	0002:001b1d80 ?SetTextNoLocalize@FEMenuEntry@@UAEXVstring@Broc@@@Z 009A1280 f i shell.o
 1697	SKIPPED	0002:001b1e00 ??_EFEMenuSystem@@UAEPAXI@Z 009A1300 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -1718,7 +1718,7 @@ index	status	map_line
 1717	VERIFIED	0002:001b2c80 ?SetText@UIListBoxDataRow@UIListBox@@QAEXHPBD@Z 009A2180 f i shell.o
 1718	VERIFIED	0002:001b2d10 ?GetText@UIListBoxDataRow@UIListBox@@QAEPBDH@Z 009A2210 f i shell.o
 1719	VERIFIED	0002:001b2db0 ?ClearItem@UIListBoxDataRow@UIListBox@@QAEXXZ 009A22B0 f i shell.o
-1720	PORTED	0002:001b2ec0 ?GetFontName@FEManager@@SAPBDW4font_index@@@Z 009A23C0 f i shell.o
+1720	VERIFIED	0002:001b2ec0 ?GetFontName@FEManager@@SAPBDW4font_index@@@Z 009A23C0 f i shell.o  VERIFIED: matches IDA font_name_array index
 1721	SKIPPED	0002:001b2ee0 ??_EIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1722	SKIPPED	0002:001b2ee0 ??_GIGOFrontEnd@@UAEPAXI@Z 009A23E0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1723	VERIFIED	0002:001b2f10 ?GetGlyphInfo@nglFont@@QAEABUnglGlyphInfo@@E@Z 009A2410 f i shell.o
@@ -1958,7 +1958,7 @@ index	status	map_line
 1957	VERIFIED	0002:001b6490 ?GetCenterX@PanelQuad@@UAEMXZ 009A5990 f i shell.o
 1958	VERIFIED	0002:001b64a0 ?GetCenterY@PanelQuad@@UAEMXZ 009A59A0 f i shell.o
 1959	VERIFIED	0002:001b64b0 ?GetY@PanelQuad@@UAEMXZ 009A59B0 f i shell.o
-1960	PORTED	0002:001b64c0 ?GetRotation@PanelQuad@@UBEMXZ 009A59C0 f i shell.o
+1960	VERIFIED	0002:001b64c0 ?GetRotation@PanelQuad@@UBEMXZ 009A59C0 f i shell.o  VERIFIED: matches IDA rotation accessor
 1961	VERIFIED	0002:001b64d0 ?SetSectionUV@PanelQuad@@UAEXHQAM0@Z 009A59D0 f i shell.o
 1962	VERIFIED	0002:001b6530 ?GetTexture@PanelQuad@@UAEPAUnglTexture@@XZ 009A5A30 f i shell.o
 1963	VERIFIED	0002:001b65a0 ?SetAlpha@PanelQuad@@UAEXHHM@Z 009A5AA0 f i shell.o
@@ -2007,12 +2007,12 @@ index	status	map_line
 2006	VERIFIED	0002:001b7630 ??1IGOWeaponNameWidget@@UAE@XZ 009A6B30 f i shell.o
 2007	VERIFIED	0002:001b76b0 ?SetLocation3D@FloatingPQ@@UAEXUvector@Broc@@@Z 009A6BB0 f i shell.o
 2008	VERIFIED	0002:001b76e0 ?GetLocation3D@FloatingPQ@@UAE?AUvector@Broc@@XZ 009A6BE0 f i shell.o
-2009	PORTED	0002:001b7710 ?CopyFrom@FloatingPQ@@UAEXPBV1@@Z 009A6C10 f i shell.o
+2009	VERIFIED	0002:001b7710 ?CopyFrom@FloatingPQ@@UAEXPBV1@@Z 009A6C10 f i shell.o  VERIFIED: matches IDA base copy and location_3d copy
 2010	SKIPPED	0002:001b7750 ??_GPanelFile@@QAEPAXI@Z 009A6C50 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2011	PORTED	0002:001b7780 ?SetVis@FEMultiMenu@@UAEXH@Z 009A6C80 f i shell.o
-2012	PORTED	0002:001b7790 ?Init@FEMultiMenu@@UAEXXZ 009A6C90 f i shell.o
-2013	PORTED	0002:001b77a0 ?OnLeft@FEMultiMenu@@UAEXH@Z 009A6CA0 f i shell.o
-2014	PORTED	0002:001b77b0 ?OnRight@FEMultiMenu@@UAEXH@Z 009A6CB0 f i shell.o
+2011	PORTED	0002:001b7780 ?SetVis@FEMultiMenu@@UAEXH@Z 009A6C80 f i shell.o  PORTED: added IDA-derived empty override
+2012	PORTED	0002:001b7790 ?Init@FEMultiMenu@@UAEXXZ 009A6C90 f i shell.o  PORTED: added IDA-derived empty override
+2013	PORTED	0002:001b77a0 ?OnLeft@FEMultiMenu@@UAEXH@Z 009A6CA0 f i shell.o  PORTED: added IDA-derived forwarding override
+2014	PORTED	0002:001b77b0 ?OnRight@FEMultiMenu@@UAEXH@Z 009A6CB0 f i shell.o  PORTED: added IDA-derived forwarding override
 2015	SKIPPED	0002:001b77c0 ??_EFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2016	SKIPPED	0002:001b77c0 ??_GFEComboBox@@UAEPAXI@Z 009A6CC0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2017	SKIPPED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
