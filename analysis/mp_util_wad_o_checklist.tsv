@@ -264,8 +264,8 @@ index	status	map_line
 263	VERIFIED	0002:0053ca80 ?Code_DisplayScoreBoard@Broc@@YAX_NH@Z 00D2BF80 f i mp_util_wad.o
 264	VERIFIED	0002:0053cab0 ?Code_SetShowScore@Broc@@YAX_N@Z 00D2BFB0 f i mp_util_wad.o
 265	VERIFIED	0002:0053cae0 ?Code_SetupLevelSpecificVariables@Broc@@YAXXZ 00D2BFE0 f i mp_util_wad.o
-266	PORTED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o
-267	PORTED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o
+266	PORTED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o	PORTED: IDA constructs temporary string, calls mCVarGetString, copy-constructs result, and destroys temporary
+267	PORTED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o	PORTED: IDA forwards cvar/value directly to mCVarSetString
 268	PORTED	0002:0053cbd0 ?main__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C0D0 f i mp_util_wad.o
 269	PORTED	0002:0053cc70 ?main__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C170 f i mp_util_wad.o
 270	PORTED	0002:0053cd10 ?main__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C210 f i mp_util_wad.o
