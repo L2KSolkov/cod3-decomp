@@ -1524,10 +1524,10 @@ void TaskHandlerImpl::Update(float deltaT, void* ftor)
 // ============================================================================
 // TaskSys::ReleaseTask - ea: 0x504970
 // ============================================================================
-void TaskSys_ReleaseTask(Task* t)
+void TaskSys::ReleaseTask(Task* t)
 {
     if (t->mTaskHandle.mVal != 0)
-        HandleDb_ReleaseTaskHandle(&TaskSysImpl2_sInst->mHandleDb,
+        HandleDb_ReleaseTaskHandle(&mHandleDb,
                                    t->mTaskHandle);
 }
 

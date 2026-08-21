@@ -5243,6 +5243,7 @@ public:
     static TaskSys sInst;   // ?sInst@TaskSys@@0V1@A @ 0x012F4120 (object, per binary mangle)
     static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
+    void ReleaseTask(Task* t);  // ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z game2.o
 };
 static_assert(sizeof(TaskSys) == 0x19C, "TaskSys size mismatch");
 
