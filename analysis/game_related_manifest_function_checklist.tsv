@@ -10329,7 +10329,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 10328	0x0066EE30	0x00A5E330	?DestroyHeaps@PakFile@@AAEXXZ		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 10329	0x0066F060	0x00A5E560	??1PakHeapContext@@QAE@XZ		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 10330	0x0066F0A0	0x00A5E5A0	??0BankManager@@AAE@XZ		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-10331	0x0066F230	0x00A5E730	?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+10331	0x0066F230	0x00A5E730	?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z		streamer.o	game		f	0	FIXED	FUNCTION corrected against IDA allocator disassembly	YES	YES	VERIFIED
 10332	0x0066F390	0x00A5E890	?can_alloc@BankManager@@QBE_NVNumBanks@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 10333	0x0066F3C0	0x00A5E8C0	?GetName@@YA?AVtlFixedString@@PBD@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 10334	0x0066F480	0x00A5E980	?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z		streamer.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED

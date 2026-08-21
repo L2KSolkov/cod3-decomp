@@ -240,7 +240,7 @@ index	status	map_line
 239	PORTED	0002:0026ee30 ?DestroyHeaps@PakFile@@AAEXXZ 00A5E330 f streamer.o
 240	VERIFIED	0002:0026f060 ??1PakHeapContext@@QAE@XZ 00A5E560 f streamer.o
 241	PORTED	0002:0026f0a0 ??0BankManager@@AAE@XZ 00A5E5A0 f streamer.o
-242	VERIFIED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o
+242	FIXED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o  FIXED: matched IDA fractional-bank test in InternalAllocate; only fractional requests enter half-bank path
 243	VERIFIED	0002:0026f390 ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z 00A5E890 f streamer.o
 244	VERIFIED	0002:0026f3c0 ?GetName@@YA?AVtlFixedString@@PBD@Z 00A5E8C0 f streamer.o
 245	FIXED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o	FIXED: matched IDA literal bank type 2 (MESHFILE); corrected mesh name copy path
