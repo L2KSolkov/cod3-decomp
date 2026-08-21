@@ -255,6 +255,7 @@ public:
         };
         struct nextPlayerClass_struct {
             unsigned int mHandle;  // +0x00
+            __int16 Get() const;
             const __int16& operator=(const __int16& rhs);
         };
         struct angles_struct {
@@ -955,10 +956,10 @@ struct BrocAPI {
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
     char _pad2C4[0x2EC - 0x2C4];                          // +0x2C4
-    void (*mPlayerRespawn)(unsigned int, const Broc::vector&,
-                           const Broc::vector&, const Broc::string&); // +0x2EC
-    void (*mPlayerSpawn)(unsigned int, const Broc::vector&,
-                         const Broc::vector&, bool);      // +0x2F0
+    void (*mPlayerRespawn)(unsigned int, const Broc::vector*,
+                           const Broc::vector*, const Broc::string*); // +0x2EC
+    void (*mPlayerSpawn)(unsigned int, const Broc::vector*,
+                         const Broc::vector*, bool);      // +0x2F0
     void (*mSetPlayerAlive)(unsigned int, int);            // +0x2F4
     void (*mSetRespawnMaxTime)(unsigned int, int);         // +0x2F8
     const char* (*mGetPlayerName)(unsigned int);           // +0x2FC
@@ -966,7 +967,7 @@ struct BrocAPI {
     void (*mFinishDamage)(unsigned int, unsigned int, unsigned int,
                           const Broc::vector&, const Broc::vector&, int,
                           int, int, int);                  // +0x304
-    void (*mRoundOver)(int, const Broc::string&);           // +0x308
+    void (*mRoundOver)(int, const Broc::string*);           // +0x308
     bool (*mIsLocalPlayer)(unsigned int);                  // +0x30C
     bool (*mIsInVehicle1)(unsigned int);                   // +0x310
     bool (*mIsInVehicle2)(unsigned int, unsigned int);     // +0x314
@@ -1027,10 +1028,18 @@ struct BrocAPI {
                     float);                              // +0x9E8
     char _pad9EC[0x9FC - 0x9EC];                          // +0x9EC
     void (*mRotateTo)(unsigned int, const Broc::vector&, float, float, float); // +0x9FC
-    char _padA00[0xA98 - 0xA00];                          // +0xA00
+    char _padA00[0xA8C - 0xA00];                          // +0xA00
+    int (*mOpenMenu)(const Broc::string*, int);            // +0xA8C
+    int (*mIsMenuOpen)(const Broc::string*, int);          // +0xA90
+    int (*mOpenMenuNoMouse)(unsigned int, const Broc::string*); // +0xA94
     void (*mCloseMenu1)(unsigned int);                    // +0xA98
     void (*mCloseMenu2)(const Broc::string*, int);        // +0xA9C
-    char _padAA0[0xBD0 - 0xAA0];                         // +0xAA0
+    void (*mCloseAllMenus)(int);                           // +0xAA0
+    void (*mSetSpectateState)(int, int);                   // +0xAA4
+    void (*mSetSpectateSeconds)(int, int);                 // +0xAA8
+    void (*mSetSpectateMedic)(int, int);                   // +0xAAC
+    void (*mSetSpectateTeamKill)(int, unsigned int, int);  // +0xAB0
+    char _padAB4[0xBD0 - 0xAB4];                          // +0xAB4
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
     void (*mPoolFree)(void*);                              // +0xBD4
     char _padBD8[0xBDC - 0xBD8];                          // +0xBD8
@@ -1323,7 +1332,7 @@ Broc::entity Code_GetSpotterEntity(Broc::entity ent);
 int Code_IsMenuOpen(const Broc::string* menu, int viewport);
 void Code_ForceControllerErrorMessageDown();
 void Code_GetWeaponName(int weaponIndex, Broc::string& weapon);
-void OpenMenu(const Broc::string* str, int viewport);
+int OpenMenu(const Broc::string* str, int viewport);
 void CloseMenu(const Broc::string& str, int viewport);
 void CloseAllMenus(int viewport);
 int DialogPlay(const Broc::entity& e, const Broc::string& script);

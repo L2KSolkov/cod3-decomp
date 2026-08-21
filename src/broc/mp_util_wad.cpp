@@ -148,9 +148,9 @@ AeThreadFunctor* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bi
 AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_killer,
                                      Broc::bint delay, Broc::bbool reviveable,
                                      Broc::bbool fade);
-void* UpdateSpectateCritical__functor(Broc::entity guy);
+AeThreadFunctor* UpdateSpectateCritical__functor(Broc::entity guy);
 void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
-void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
+AeThreadFunctor* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
 AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
@@ -2186,6 +2186,12 @@ __int16 Broc::entity::__unnamed::playerClass_struct::Get() const {
     return Broc::gBrocAPI.m_entity_get_persistent_player_playerClass(mHandle);
 }
 
+// Broc::entity::__unnamed::nextPlayerClass_struct::Get - ea: 0x945FB0
+__int16 Broc::entity::__unnamed::nextPlayerClass_struct::Get() const {
+    return Broc::gBrocAPI.m_entity_get_persistent_player_nextPlayerClass(
+        mHandle);
+}
+
 // Broc::entity::__unnamed::playerClass_struct::operator= - ea: 0x93E3D0
 const __int16& Broc::entity::__unnamed::playerClass_struct::operator=(
     const __int16& rhs) {
@@ -2207,6 +2213,36 @@ void Broc::DoDamage(const Broc::entity& e, float damage,
 // SetTakeDamage - ea: 0x940E90
 void Broc::SetTakeDamage(const Broc::entity& e, int damage) {
     Broc::gBrocAPI.mSetTakeDamage(e.GetHandle(), damage);
+}
+
+// Broc::OpenMenu - ea: 0x945810
+int Broc::OpenMenu(const Broc::string* str, int viewport) {
+    return Broc::gBrocAPI.mOpenMenu(str, viewport);
+}
+
+// Broc::CloseAllMenus - ea: 0x9449D0
+void Broc::CloseAllMenus(int viewport) {
+    Broc::gBrocAPI.mCloseAllMenus(viewport);
+}
+
+// Broc::SetSpectateMedic - ea: 0x943C90
+void Broc::SetSpectateMedic(int medic, int viewport) {
+    Broc::gBrocAPI.mSetSpectateMedic(medic, viewport);
+}
+
+// Broc::SetSpectateState - ea: 0x945840
+void Broc::SetSpectateState(int state, int viewport) {
+    Broc::gBrocAPI.mSetSpectateState(state, viewport);
+}
+
+// Broc::SetSpectateTeamKill - ea: 0x945870
+void Broc::SetSpectateTeamKill(int team_kill, Broc::entity* e, int viewport) {
+    Broc::gBrocAPI.mSetSpectateTeamKill(team_kill, e->GetHandle(), viewport);
+}
+
+// Broc::SetSpectateSeconds - ea: 0x949EB0
+void Broc::SetSpectateSeconds(int seconds, int viewport) {
+    Broc::gBrocAPI.mSetSpectateSeconds(seconds, viewport);
 }
 
 // Code_IncPlayerStat - ea: 0x941F40
@@ -2262,8 +2298,25 @@ Broc::entity Broc::Code_GetSpotterEntity(Broc::entity ent) {
 // Code_PlayerSpawn - ea: 0x93E490
 void Broc::Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
                             const Broc::vector* angles, bool stopPhysics) {
-    Broc::gBrocAPI.mPlayerSpawn(player.GetHandle(), *origin, *angles,
-                                 stopPhysics);
+    Broc::gBrocAPI.mPlayerSpawn(player.GetHandle(), origin, angles, stopPhysics);
+}
+
+// Broc::Code_RoundOver - ea: 0x944E70
+void Broc::Code_RoundOver(int condition, const Broc::string* winner) {
+    Broc::gBrocAPI.mRoundOver(condition, winner);
+}
+
+// Broc::Code_PlayerRespawn - ea: 0x945310
+void Broc::Code_PlayerRespawn(Broc::entity player,
+                              const Broc::vector* origin,
+                              const Broc::vector* angles,
+                              const Broc::string* team) {
+    Broc::gBrocAPI.mPlayerRespawn(player.GetHandle(), origin, angles, team);
+}
+
+// Broc::Code_RequestRespawn - ea: 0x945FE0
+void Broc::Code_RequestRespawn(int playerID) {
+    Broc::gBrocAPI.mRequestRespawn(static_cast<unsigned int>(playerID));
 }
 
 // Broc::entity::__unnamed::team_struct::Get - ea: 0x938DE0
@@ -13197,7 +13250,7 @@ AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_kill
         return NULL;
     return ::new (storage) AeThreadFunctor5<Broc::entity, Broc::entity, Broc::bint, Broc::bbool, Broc::bbool>(DeathState, player, team_killer, delay, reviveable, fade);
 }
-void* UpdateSpectateCritical__functor(Broc::entity guy) {
+AeThreadFunctor* UpdateSpectateCritical__functor(Broc::entity guy) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -13209,7 +13262,7 @@ void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(UpdateSpectateCriticalGoingToDie, guy);
 }
-void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn) {
+AeThreadFunctor* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>));
     if (storage == NULL)
         return NULL;
