@@ -2663,7 +2663,7 @@ void CheckAEMapValidation()
 // stat_StatDamageEvent - ea: 0x509460
 // ============================================================================
 void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
-                          int iMod, int hitLoc)
+                          int iMod, hitLocation_t hitLoc)
 {
     Entity* v5 = pAttacker;
     if (pAttacker->scr_vehicle != nullptr)
@@ -2697,7 +2697,7 @@ void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
         else
         {
             const char* team = pSelf->team.mBlock != nullptr
-                ? (const char*)(pSelf->team.mBlock + 1) : "";
+                ? (const char*)(pSelf->team.mBlock + 1) : defaultFileName;
             if (_stricmp(team, "axis") != 0)
                 return;
         }
