@@ -3586,10 +3586,10 @@ index	status	map_line
 3585	PORTED	0002:00118650 ?IsVisible@apsEffect@@QAEHXZ 00907B50 f i game2.o  PORTED: IDA-backed mFlags visibility bit test
 3586	PORTED	0002:00118660 ??1CameraShakeInstance@@QAE@XZ 00907B60 f i game2.o  PORTED: existing NoiseFloat member destructor sequence matches IDA
 3587	PORTED	0002:00118680 ??0CameraShakeInstance@@QAE@XZ 00907B80 f i game2.o  PORTED: existing NoiseFloat member constructor sequence matches IDA
-3588	PORTED	0002:001186b0 ?Inst@SplineMgr@@SAPAV1@XZ 00907BB0 f i game2.o
-3589	PORTED	0002:001186c0 ??0SplineEntry@SplineMgr@@QAE@XZ 00907BC0 f i game2.o
-3590	PORTED	0002:001186e0 ?Unload@SplineEntry@SplineMgr@@QAEXXZ 00907BE0 f i game2.o
-3591	PORTED	0002:00118700 ?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ 00907C00 f i game2.o
+3588	PORTED	0002:001186b0 ?Inst@SplineMgr@@SAPAV1@XZ 00907BB0 f i game2.o  PORTED: IDA-backed singleton accessor
+3589	PORTED	0002:001186c0 ??0SplineEntry@SplineMgr@@QAE@XZ 00907BC0 f i game2.o  PORTED: IDA-backed PAK invalid/file-null constructor; padding untouched
+3590	PORTED	0002:001186e0 ?Unload@SplineEntry@SplineMgr@@QAEXXZ 00907BE0 f i game2.o  PORTED: IDA-backed invalidation and file clear
+3591	PORTED	0002:00118700 ?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ 00907C00 f i game2.o  PORTED: IDA-backed PAK sentinel test
 3592	SKIPPED	0002:00118710 ??0?$ae_array@USplineEntry@SplineMgr@@$0CA@@@QAE@XZ 00907C10 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3593	PORTED	0002:00118740 ??0ScriptEvent@ScriptEventHandler@@QAE@XZ 00907C40 f i game2.o
 3594	SKIPPED	0002:00118760 ??_GScriptEventHandler@@QAEPAXI@Z 00907C60 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
