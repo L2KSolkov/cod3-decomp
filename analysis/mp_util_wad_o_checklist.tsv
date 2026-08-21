@@ -139,10 +139,10 @@ index	status	map_line
 138	VERIFIED	0002:00534830 ??HBroc@@YA?AVstring@0@ABV10@M@Z 00D23D30 f i mp_util_wad.o
 139	PORTED	0002:005348d0 ?Get@origin_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D23DD0 f i mp_util_wad.o  PORTED: IDA proxy type mHandle +0x00 and origin API copy
 140	PORTED	0002:00534920 ?Get@target_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D23E20 f i mp_util_wad.o  PORTED: IDA proxy type mHandle +0x00 and target string copy construction
-141	PORTED	0002:005349d0 ?GetEnt@Broc@@YA?AVentity@1@ABVstring@1@UHashStr@@I@Z 00D23ED0 f i mp_util_wad.o
-142	PORTED	0002:00534a20 ?Delete@Broc@@YAXABVentity@1@@Z 00D23F20 f i mp_util_wad.o
-143	PORTED	0002:00534a50 ?Distance@@YAMABUvector@Broc@@0@Z 00D23F50 f i mp_util_wad.o
-144	PORTED	0002:00534a80 ?VectorToAngles@@YA?AUvector@Broc@@ABU12@@Z 00D23F80 f i mp_util_wad.o
+141	FIXED	0002:005349d0 ?GetEnt@Broc@@YA?AVentity@1@ABVstring@1@UHashStr@@I@Z 00D23ED0 f i mp_util_wad.o  FIXED: IDA result constructor restored
+142	FIXED	0002:00534a20 ?Delete@Broc@@YAXABVentity@1@@Z 00D23F20 f i mp_util_wad.o  FIXED: IDA const-reference entry point restored; pointer wrapper retained
+143	VERIFIED	0002:00534a50 ?Distance@@YAMABUvector@Broc@@0@Z 00D23F50 f i mp_util_wad.o  VERIFIED: matches IDA mVecDistance forwarding
+144	VERIFIED	0002:00534a80 ?VectorToAngles@@YA?AUvector@Broc@@ABU12@@Z 00D23F80 f i mp_util_wad.o  VERIFIED: matches IDA local-output copy and mVecToAngles forwarding
 145	PORTED	0002:00534ad0 ??0mp_plane@_mp_airplanes@@QAE@XZ 00D23FD0 f i mp_util_wad.o
 146	PORTED	0002:00534bd0 ?plane_flyby_thread__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ump_plane@1@@Z 00D240D0 f i mp_util_wad.o
 147	VERIFIED	0002:00534c90 ??1mp_plane@_mp_airplanes@@QAE@XZ 00D24190 f i mp_util_wad.o
