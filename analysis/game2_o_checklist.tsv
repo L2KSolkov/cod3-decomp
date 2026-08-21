@@ -437,7 +437,7 @@ index	status	map_line
 436	VERIFIED	0002:000f5d30 ?DebugDump@AnimationPlayer@@SAXPAVEntity@@@Z 008E5230 f game2.o
 437	FIXED	0002:000f5ed0 ?nalMatrix4x4_to_Axis4@@YAXAAVnalMatrix4x4@@QAY02M@Z 008E53D0 f game2.o
 438	VERIFIED	0002:000f5f10 ?Invoke@nalAnimCallback@AnimationPlayer@@UAE_NPAV2@@Z 008E5410 f game2.o
-439	VERIFIED	0002:000f5f20 ??0MetaNalBaseAnim@@QAE@XZ 008E5420 f game2.o
+439	FIXED	0002:000f5f20 ??0MetaNalBaseAnim@@QAE@XZ 008E5420 f game2.o  FIXED: corrected nalAnimClass-derived field offsets from IDA type layout
 440	VERIFIED	0002:000f5f50 ?Create@MetaNalBaseAnim@@QAEXPAVMetaAnimData@@@Z 008E5450 f game2.o
 441	VERIFIED	0002:000f5fe0 ?DelayCreate@MetaNalBaseAnim@@QAEXPAPAV?$nalAnimClass@VnalAnyPose@@@@H@Z 008E54E0 f game2.o
 442	VERIFIED	0002:000f6010 ?IsDelayCreate@MetaNalBaseAnim@@QAEHXZ 008E5510 f game2.o
