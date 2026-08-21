@@ -607,7 +607,19 @@ int nalHeap::GetUsedSpace()
     return 0;
 }
 
-// LightEffect (core.o; SetScale is a member)
+// LightEffect (core.o)
+// ea: 0x004DE070
+void LightEffect::SetAllocator(PoolAllocator* allocator)
+{
+    sAllocator = allocator;
+}
+
+// ea: 0x004DE080
+void LightEffect::SetFinished()
+{
+    mActive = false;
+}
+
 void LightEffect::SetScale(float s)
 {
     (void)s;

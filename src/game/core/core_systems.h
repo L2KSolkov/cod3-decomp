@@ -1251,6 +1251,7 @@ struct gdShakeRumble {
 static_assert(sizeof(gdShakeRumble) == 0x38, "gdShakeRumble size mismatch");
 
 struct LightEffect {
+    static PoolAllocator* sAllocator;
     int           mType;          // +0x00 (LightEffect::eType)
     TPakId        mPakId;         // +0x04
     unsigned char _pad[0x10 - 0x08];
@@ -1270,6 +1271,8 @@ struct LightEffect {
     float         mScale;         // +0x5C
     bool          mFade;          // +0x60
 
+    static void SetAllocator(PoolAllocator* allocator);
+    void SetFinished();
     void SetScale(float s);       // ?SetScale@LightEffect@@QAEXM@Z
     bool IsLightFinished();       // ?IsLightFinished@LightEffect@@QAE_NXZ
 };
