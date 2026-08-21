@@ -3537,8 +3537,8 @@ index	status	map_line
 3536	SKIPPED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3537	SKIPPED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3538	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o  PORTED: IDA-backed SIMD quaternion slerp polynomial
-3539	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o
-3540	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o
+3539	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o  PORTED: IDA-backed empty constructor
+3540	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o  PORTED: IDA-backed six-term SIMD-row determinant
 3541	PORTED	0002:00117890 ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z 00906D90 f i game2.o
 3542	PORTED	0002:00117ac0 ?Translate@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00906FC0 f i game2.o
 3543	PORTED	0002:00117b40 ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z 00907040 f i game2.o
