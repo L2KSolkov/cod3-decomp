@@ -580,14 +580,14 @@ index	status	map_line
 579	VERIFIED	0002:00461420 ??$FastCopy@VnalComponentPacked16EntropyQuat@@VQuaternion@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C50920 f i nal_init.o  VERIFIED: aligned qmemcpy with 16-byte count stride matches IDA
 580	VERIFIED	0002:00461470 ?ReleaseCache@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C50970 f i nal_init.o  VERIFIED: 2-byte cache alignment and present-track 8-byte advances match IDA
 581	VERIFIED	0002:00461500 ??0?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@IAE@XZ 00C50A00 f i nal_init.o
-582	PORTED	0002:00461510 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A10 f i nal_init.o
-583	PORTED	0002:00461520 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A20 f i nal_init.o
-584	PORTED	0002:00461530 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A30 f i nal_init.o
-585	PORTED	0002:00461540 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A40 f i nal_init.o
-586	PORTED	0002:00461550 ?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A50 f i nal_init.o
-587	PORTED	0002:00461560 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A60 f i nal_init.o
-588	PORTED	0002:00461570 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A70 f i nal_init.o
-589	PORTED	0002:00461580 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A80 f i nal_init.o
+582	VERIFIED	0002:00461510 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A10 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+583	VERIFIED	0002:00461520 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A20 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+584	VERIFIED	0002:00461530 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A30 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+585	VERIFIED	0002:00461540 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A40 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+586	VERIFIED	0002:00461550 ?VirtualAlignAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A50 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+587	VERIFIED	0002:00461560 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A60 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+588	VERIFIED	0002:00461570 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A70 f i nal_init.o  VERIFIED: existing no-op body matches IDA
+589	VERIFIED	0002:00461580 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAPBX@Z 00C50A80 f i nal_init.o  VERIFIED: existing no-op body matches IDA
 590	SKIPPED	0002:00461590 ??_E?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAEPAXI@Z 00C50A90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 591	SKIPPED	0002:00461590 ??_G?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAEPAXI@Z 00C50A90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 592	PORTED	0002:004615c0 ?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C50AC0 f i nal_init.o
