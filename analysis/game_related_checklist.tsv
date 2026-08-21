@@ -23911,11 +23911,11 @@ index	status	map_line
 23910	FIXED	0002:00530800 ?GetEE_autobalance@@YAAAUbbool@@Ventity@Broc@@@Z 00D1FD00 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match  FIXED: IDA getter disassembly nullEnt fallback added
 23911	PORTED	0002:00530850 ?IsEEDefined_autobalance@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FD50 f mp_util_wad.o	PORTED: reverified against decompile key 0xFBCC92DF; bbool GetRef/GetVal types match
 23912	PORTED	0002:00530900 ?GetEE_goal@@YAAAVentity@Broc@@V12@@Z 00D1FE00 f mp_util_wad.o	PORTED: implemented from IDA pointer-backed byte_3A6023 key and nullEnt fallback
-23913	PORTED	0002:00530950 ?IsEEDefined_goal@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FE50 f mp_util_wad.o
+23913	PORTED	0002:00530950 ?IsEEDefined_goal@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FE50 f mp_util_wad.o  PORTED: implemented from IDA pointer-backed byte_3A6023 key and guarded GetVal path; source body added
 23914	FIXED	0002:00530a00 ?GetEE_teamSound@@YAAAUbint@@Ventity@Broc@@@Z 00D1FF00 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23915	PORTED	0002:00530a50 ?IsEEDefined_teamSound@@YA?AUbbool@@Ventity@Broc@@@Z 00D1FF50 f mp_util_wad.o
 23916	PORTED	0002:00530b00 ?GetEE_trigger@@YAAAVentity@Broc@@V12@@Z 00D20000 f mp_util_wad.o	PORTED: implemented from IDA key 0xF2F5EAB4 and nullEnt fallback
-23917	PORTED	0002:00530b50 ?IsEEDefined_trigger@@YA?AUbbool@@Ventity@Broc@@@Z 00D20050 f mp_util_wad.o
+23917	PORTED	0002:00530b50 ?IsEEDefined_trigger@@YA?AUbbool@@Ventity@Broc@@@Z 00D20050 f mp_util_wad.o  PORTED: implemented from IDA key 0xF2F5EAB4 and guarded GetVal path; source body added
 23918	FIXED	0002:00530c00 ?GetEE_message_when_returned@@YAAAUHashStr@@Ventity@Broc@@@Z 00D20100 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23919	PORTED	0002:00530c50 ?IsEEDefined_message_when_returned@@YA?AUbbool@@Ventity@Broc@@@Z 00D20150 f mp_util_wad.o
 23920	FIXED	0002:00530d00 ?GetEE_damage_effect@@YAAAUbint@@Ventity@Broc@@@Z 00D20200 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
@@ -23931,11 +23931,11 @@ index	status	map_line
 23930	FIXED	0002:00531200 ?GetEE_last_touch_time@@YAAAUbint@@Ventity@Broc@@@Z 00D20700 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23931	PORTED	0002:00531250 ?IsEEDefined_last_touch_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D20750 f mp_util_wad.o
 23932	PORTED	0002:00531300 ?GetEE_audio_track@@YAAAVstring@Broc@@Ventity@2@@Z 00D20800 f mp_util_wad.o	PORTED: implemented from IDA key 0x0F1F2946 and nullEnt fallback
-23933	PORTED	0002:00531350 ?IsEEDefined_audio_track@@YA?AUbbool@@Ventity@Broc@@@Z 00D20850 f mp_util_wad.o
+23933	PORTED	0002:00531350 ?IsEEDefined_audio_track@@YA?AUbbool@@Ventity@Broc@@@Z 00D20850 f mp_util_wad.o  PORTED: implemented from IDA key 0x0F1F2946 and string GetVal/IsDefined path; source body added
 23934	FIXED	0002:00531450 ?GetEE_objective_status@@YAAAUbint@@Ventity@Broc@@@Z 00D20950 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23935	PORTED	0002:005314a0 ?IsEEDefined_objective_status@@YA?AUbbool@@Ventity@Broc@@@Z 00D209A0 f mp_util_wad.o
 23936	PORTED	0002:00531550 ?GetEE_damagelight@@YAAAVstring@Broc@@Ventity@2@@Z 00D20A50 f mp_util_wad.o	PORTED: implemented from IDA key 0xAA4AB8F7 and nullEnt fallback
-23937	PORTED	0002:005315a0 ?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z 00D20AA0 f mp_util_wad.o
+23937	PORTED	0002:005315a0 ?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z 00D20AA0 f mp_util_wad.o  PORTED: implemented from IDA key 0xAA4AB8F7 and string GetVal/IsDefined path; source body added
 23938	FIXED	0002:005316a0 ?GetEE_spawnCount@@YAAAUbint@@Ventity@Broc@@@Z 00D20BA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23939	PORTED	0002:005316f0 ?IsEEDefined_spawnCount@@YA?AUbbool@@Ventity@Broc@@@Z 00D20BF0 f mp_util_wad.o
 23940	FIXED	0002:005317a0 ?GetEE_capStatus@@YAAAUbfloat@@Ventity@Broc@@@Z 00D20CA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
@@ -23945,7 +23945,7 @@ index	status	map_line
 23944	FIXED	0002:005319a0 ?GetEE_numDeaths@@YAAAUbint@@Ventity@Broc@@@Z 00D20EA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23945	PORTED	0002:005319f0 ?IsEEDefined_numDeaths@@YA?AUbbool@@Ventity@Broc@@@Z 00D20EF0 f mp_util_wad.o
 23946	PORTED	0002:00531aa0 ?GetEE_reverb@@YAAAVstring@Broc@@Ventity@2@@Z 00D20FA0 f mp_util_wad.o	PORTED: implemented from IDA key 0x11523406 and nullEnt fallback
-23947	PORTED	0002:00531af0 ?IsEEDefined_reverb@@YA?AUbbool@@Ventity@Broc@@@Z 00D20FF0 f mp_util_wad.o
+23947	PORTED	0002:00531af0 ?IsEEDefined_reverb@@YA?AUbbool@@Ventity@Broc@@@Z 00D20FF0 f mp_util_wad.o  PORTED: implemented from IDA key 0x11523406 and string GetVal/IsDefined path; source body added
 23948	FIXED	0002:00531bf0 ?GetEE_killsSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D210F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23949	PORTED	0002:00531c40 ?IsEEDefined_killsSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21140 f mp_util_wad.o
 23950	FIXED	0002:00531cf0 ?GetEE_home_angles@@YAAAUvector@Broc@@Ventity@2@@Z 00D211F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
@@ -23957,21 +23957,21 @@ index	status	map_line
 23956	FIXED	0002:00531ff0 ?GetEE_capSpeed@@YAAAUbfloat@@Ventity@Broc@@@Z 00D214F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23957	PORTED	0002:00532040 ?IsEEDefined_capSpeed@@YA?AUbbool@@Ventity@Broc@@@Z 00D21540 f mp_util_wad.o
 23958	PORTED	0002:005320f0 ?GetEE_lastspawnpoint@@YAAAVentity@Broc@@V12@@Z 00D215F0 f mp_util_wad.o	PORTED: implemented from IDA key 0x9AA56007 and nullEnt fallback
-23959	PORTED	0002:00532140 ?IsEEDefined_lastspawnpoint@@YA?AUbbool@@Ventity@Broc@@@Z 00D21640 f mp_util_wad.o
+23959	PORTED	0002:00532140 ?IsEEDefined_lastspawnpoint@@YA?AUbbool@@Ventity@Broc@@@Z 00D21640 f mp_util_wad.o  PORTED: implemented from IDA key 0x9AA56007 and guarded GetVal path; source body added
 23960	FIXED	0002:005321f0 ?GetEE_setting_up_hq@@YAAAUbint@@Ventity@Broc@@@Z 00D216F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23961	PORTED	0002:00532240 ?IsEEDefined_setting_up_hq@@YA?AUbbool@@Ventity@Broc@@@Z 00D21740 f mp_util_wad.o
 23962	PORTED	0002:005322f0 ?GetEE_weaponstr@@YAAAVstring@Broc@@Ventity@2@@Z 00D217F0 f mp_util_wad.o	PORTED: implemented from IDA key 0x93FB3A03 and nullEnt fallback
-23963	PORTED	0002:00532340 ?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z 00D21840 f mp_util_wad.o
+23963	PORTED	0002:00532340 ?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z 00D21840 f mp_util_wad.o  PORTED: implemented from IDA key 0x93FB3A03 and string GetVal/IsDefined path; source body added
 23964	PORTED	0002:00532440 ?GetEE_damagecritical@@YAAAVstring@Broc@@Ventity@2@@Z 00D21940 f mp_util_wad.o	PORTED: implemented from IDA key 0xCF71F1AA and nullEnt fallback
-23965	PORTED	0002:00532490 ?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z 00D21990 f mp_util_wad.o
+23965	PORTED	0002:00532490 ?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z 00D21990 f mp_util_wad.o  PORTED: implemented from IDA key 0xCF71F1AA and string GetVal/IsDefined path; source body added
 23966	FIXED	0002:00532590 ?GetEE_spawnscore@@YAAAUbint@@Ventity@Broc@@@Z 00D21A90 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23967	PORTED	0002:005325e0 ?IsEEDefined_spawnscore@@YA?AUbbool@@Ventity@Broc@@@Z 00D21AE0 f mp_util_wad.o
 23968	PORTED	0002:00532690 ?GetEE_deathfx@@YAAAVstring@Broc@@Ventity@2@@Z 00D21B90 f mp_util_wad.o	PORTED: implemented from IDA key 0x04756FC4 and nullEnt fallback
-23969	PORTED	0002:005326e0 ?IsEEDefined_deathfx@@YA?AUbbool@@Ventity@Broc@@@Z 00D21BE0 f mp_util_wad.o
+23969	PORTED	0002:005326e0 ?IsEEDefined_deathfx@@YA?AUbbool@@Ventity@Broc@@@Z 00D21BE0 f mp_util_wad.o  PORTED: implemented from IDA key 0x04756FC4 and string GetVal/IsDefined path; source body added
 23970	FIXED	0002:005327e0 ?GetEE_bTeamKilledWithArtillery@@YAAAUbbool@@Ventity@Broc@@@Z 00D21CE0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23971	PORTED	0002:00532830 ?IsEEDefined_bTeamKilledWithArtillery@@YA?AUbbool@@Ventity@Broc@@@Z 00D21D30 f mp_util_wad.o
 23972	PORTED	0002:005328e0 ?GetEE_damageheavy@@YAAAVstring@Broc@@Ventity@2@@Z 00D21DE0 f mp_util_wad.o	PORTED: implemented from IDA key 0xAA000DBC and nullEnt fallback
-23973	PORTED	0002:00532930 ?IsEEDefined_damageheavy@@YA?AUbbool@@Ventity@Broc@@@Z 00D21E30 f mp_util_wad.o
+23973	PORTED	0002:00532930 ?IsEEDefined_damageheavy@@YA?AUbbool@@Ventity@Broc@@@Z 00D21E30 f mp_util_wad.o  PORTED: implemented from IDA key 0xAA000DBC and string GetVal/IsDefined path; source body added
 23974	FIXED	0002:00532a30 ?GetEE_cappedSinceLastDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D21F30 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 23975	PORTED	0002:00532a80 ?IsEEDefined_cappedSinceLastDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21F80 f mp_util_wad.o
 23976	FIXED	0002:00532b30 ?GetEE_isInsideFollowClient@@YAAAUbint@@Ventity@Broc@@@Z 00D22030 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
