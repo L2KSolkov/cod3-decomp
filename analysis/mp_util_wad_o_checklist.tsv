@@ -403,13 +403,13 @@ index	status	map_line
 402	VERIFIED	0002:00545d30 ?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z 00D35230 f mp_util_wad.o
 403	PORTED	0002:00545fb0 ?Get@nextPlayerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D354B0 f i mp_util_wad.o	PORTED: Added the IDA-backed persistent nextPlayerClass getter
 404	PORTED	0002:00545fe0 ?Code_RequestRespawn@Broc@@YAXI@Z 00D354E0 f i mp_util_wad.o	PORTED: Added the IDA-backed forward to mRequestRespawn
-405	PORTED	0002:00546010 ?TakeAllWeapons@Broc@@YAXABVentity@1@@Z 00D35510 f i mp_util_wad.o
+405	PORTED	0002:00546010 ?TakeAllWeapons@Broc@@YAXABVentity@1@@Z 00D35510 f i mp_util_wad.o	PORTED: Added the IDA-backed entity-handle forward to mTakeAllWeapons
 406	VERIFIED	0002:00546040 ?RunFrame@_mp_common@@YAXVentity@Broc@@@Z 00D35540 f mp_util_wad.o
-407	PORTED	0002:00546080 ?CreateClock@_mp_common@@YAXUbint@@@Z 00D35580 f mp_util_wad.o
+407	VERIFIED	0002:00546080 ?CreateClock@_mp_common@@YAXUbint@@@Z 00D35580 f mp_util_wad.o	VERIFIED: Existing implementation matches IDA's timeLimit > 0 check and Code_SetShowTime forward
 408	VERIFIED	0002:005460e0 ?Code_SetShowTime@Broc@@YAXM@Z 00D355E0 f i mp_util_wad.o
 409	PORTED	0002:00546110 ?StartRound@_mp_common@@YAXUbbool@@@Z 00D35610 f mp_util_wad.o
 410	VERIFIED	0002:00546570 ?Code_ForceControllerErrorMessageDown@Broc@@YAXXZ 00D35A70 f i mp_util_wad.o
-411	PORTED	0002:00546590 ?finish_starting_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D35A90 f i mp_util_wad.o
+411	FIXED	0002:00546590 ?finish_starting_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D35A90 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 412	PORTED	0002:00546630 ?finish_starting_round@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D35B30 f mp_util_wad.o
 413	PORTED	0002:00546c00 ?restart_round@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D36100 f mp_util_wad.o
 414	VERIFIED	0002:005473f0 ?Code_SettleMapVote@Broc@@YAXXZ 00D368F0 f i mp_util_wad.o
