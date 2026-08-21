@@ -283,15 +283,15 @@ index	status	map_line
 282	PORTED	0002:0053de70 ?Code_IncTeamScore@Broc@@YAXABVstring@1@H@Z 00D2D370 f i mp_util_wad.o	PORTED: IDA forwards the const string reference and amount to gBrocAPI.mIncTeamScore at +0x33C
 283	VERIFIED	0002:0053dea0 ?Code_DebugOut@Broc@@YAXPBD@Z 00D2D3A0 f i mp_util_wad.o
 284	PORTED	0002:0053ded0 ?SetCvar@@YAXPBDH@Z 00D2D3D0 f i mp_util_wad.o	PORTED: IDA forwards cvar and integer value to gBrocAPI.mCVarSetInt at +0x25C
-285	PORTED	0002:0053df00 ?HandleJoinAfterRoundOver__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2D400 f i mp_util_wad.o
+285	VERIFIED	0002:0053df00 ?HandleJoinAfterRoundOver__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2D400 f i mp_util_wad.o	VERIFIED: existing source matches IDA allocation of 0x10 bytes and AeThreadFunctor2<Broc::entity,bint> construction with HandleJoinAfterRoundOver
 286	VERIFIED	0002:0053dfa0 ?CallbackGameScore@_mp_common@@YAXHH@Z 00D2D4A0 f mp_util_wad.o
-287	PORTED	0002:0053e060 ?CallbackPlayerJoin@_mp_common@@YAXVentity@Broc@@IH@Z 00D2D560 f mp_util_wad.o
-288	PORTED	0002:0053e340 ?Get@angles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D2D840 f i mp_util_wad.o
-289	PORTED	0002:0053e390 ??4spectatorClient_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D890 f i mp_util_wad.o
-290	PORTED	0002:0053e3d0 ??4playerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D8D0 f i mp_util_wad.o
-291	PORTED	0002:0053e410 ??4nextPlayerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D910 f i mp_util_wad.o
-292	PORTED	0002:0053e450 ??4playerState_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D950 f i mp_util_wad.o
-293	PORTED	0002:0053e490 ?Code_PlayerSpawn@Broc@@YAXVentity@1@ABUvector@1@1_N@Z 00D2D990 f i mp_util_wad.o
+287	VERIFIED	0002:0053e060 ?CallbackPlayerJoin@_mp_common@@YAXVentity@Broc@@IH@Z 00D2D560 f mp_util_wad.o	VERIFIED: existing source matches IDA local-player setup, initial game state, class/state resets, spectate/intermission branches, spawn, and max-health update
+288	PORTED	0002:0053e340 ?Get@angles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D2D840 f i mp_util_wad.o	PORTED: IDA uses a six-vector temporary, copies m_entity_get_angles output into result, and returns result
+289	PORTED	0002:0053e390 ??4spectatorClient_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D890 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_player_spectatorClient and returns the const int reference
+290	PORTED	0002:0053e3d0 ??4playerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D8D0 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_playerClass and returns the const __int16 reference
+291	PORTED	0002:0053e410 ??4nextPlayerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D910 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_nextPlayerClass and returns the const __int16 reference
+292	PORTED	0002:0053e450 ??4playerState_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D950 f i mp_util_wad.o	PORTED: IDA forwards mHandle and rhs value to m_entity_set_persistent_player_playerState and returns the const int reference
+293	PORTED	0002:0053e490 ?Code_PlayerSpawn@Broc@@YAXVentity@1@ABUvector@1@1_N@Z 00D2D990 f i mp_util_wad.o	PORTED: IDA gets player.GetHandle and forwards origin, angles, and bool stopPhysics to mPlayerSpawn
 294	VERIFIED	0002:0053e4d0 ?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z 00D2D9D0 f i mp_util_wad.o
 295	VERIFIED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o
 296	VERIFIED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o
