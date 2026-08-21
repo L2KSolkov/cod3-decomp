@@ -266,13 +266,13 @@ index	status	map_line
 265	VERIFIED	0002:0053cae0 ?Code_SetupLevelSpecificVariables@Broc@@YAXXZ 00D2BFE0 f i mp_util_wad.o
 266	PORTED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o	PORTED: IDA constructs temporary string, calls mCVarGetString, copy-constructs result, and destroys temporary
 267	PORTED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o	PORTED: IDA forwards cvar/value directly to mCVarSetString
-268	PORTED	0002:0053cbd0 ?main__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C0D0 f i mp_util_wad.o
-269	PORTED	0002:0053cc70 ?main__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C170 f i mp_util_wad.o
-270	PORTED	0002:0053cd10 ?main__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C210 f i mp_util_wad.o
-271	PORTED	0002:0053cdb0 ?main__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C2B0 f i mp_util_wad.o
-272	PORTED	0002:0053ce50 ?main__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C350 f i mp_util_wad.o
-273	PORTED	0002:0053cef0 ?main__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C3F0 f i mp_util_wad.o
-274	PORTED	0002:0053cf90 ?main__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C490 f i mp_util_wad.o
+268	VERIFIED	0002:0053cbd0 ?main__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C0D0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_ctf::main
+269	PORTED	0002:0053cc70 ?main__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C170 f i mp_util_wad.o	PORTED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_dm::main; previously missing
+270	VERIFIED	0002:0053cd10 ?main__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C210 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_hq::main
+271	VERIFIED	0002:0053cdb0 ?main__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C2B0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_minefield::main
+272	VERIFIED	0002:0053ce50 ?main__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C350 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_scf::main
+273	VERIFIED	0002:0053cef0 ?main__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C3F0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_tdm::main
+274	VERIFIED	0002:0053cf90 ?main__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C490 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_war::main
 275	PORTED	0002:0053d030 ?SetupGameVariables@_mp_common@@YAXXZ 00D2C530 f mp_util_wad.o
 276	PORTED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o
 277	VERIFIED	0002:0053d3b0 ?CallbackHostOptionsChanged@_mp_common@@YAXH@Z 00D2C8B0 f mp_util_wad.o
