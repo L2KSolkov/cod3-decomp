@@ -23896,10 +23896,10 @@ index	status	map_line
 23895	PORTED	0002:00530000 ?IsEEDefined_index@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F500 f mp_util_wad.o	PORTED: reverified against decompile key 0x07AA1578; bint GetRef/GetVal types match
 23896	PORTED	0002:005300b0 ?GetEE_lastPainSoundTime@@YAAAUbint@@Ventity@Broc@@@Z 00D1F5B0 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match
 23897	PORTED	0002:00530100 ?IsEEDefined_lastPainSoundTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F600 f mp_util_wad.o	PORTED: reverified against decompile key 0x7654A134; bint GetRef/GetVal types match
-23898	PORTED	0002:005301b0 ?GetEE_audio_ambp@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F6B0 f mp_util_wad.o
-23899	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o
-23900	PORTED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o
-23901	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o
+23898	PORTED	0002:005301b0 ?GetEE_audio_ambp@@YAAAVstring@Broc@@Ventity@2@@Z 00D1F6B0 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body added
+23899	PORTED	0002:00530200 ?IsEEDefined_audio_ambp@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F700 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xAB157931; source body added
+23900	PORTED	0002:00530300 ?GetEE_holder@@YAAAVentity@Broc@@V12@@Z 00D1F800 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
+23901	PORTED	0002:00530350 ?IsEEDefined_holder@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F850 f mp_util_wad.o	PORTED: implemented from IDA decompile key 0xFAAE111E; source body added
 23902	PORTED	0002:00530400 ?GetEE_flag@@YAAAVentity@Broc@@V12@@Z 00D1F900 f mp_util_wad.o
 23903	PORTED	0002:00530450 ?IsEEDefined_flag@@YA?AUbbool@@Ventity@Broc@@@Z 00D1F950 f mp_util_wad.o
 23904	PORTED	0002:00530500 ?GetEE_lastTouch@@YAAAUbint@@Ventity@Broc@@@Z 00D1FA00 f mp_util_wad.o
