@@ -4,8 +4,8 @@ index	status	map_line
 3	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 4	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
 5	VERIFIED	0002:0052efb0 ?GetBroAnim@mp_util_wad@@YAIII@Z 00D1E4B0 f mp_util_wad.o
-6	PORTED	0002:0052f000 ?GetEE_flagEnd@@YAAAUvector@Broc@@Ventity@2@@Z 00D1E500 f mp_util_wad.o
-7	PORTED	0002:0052f050 ?IsEEDefined_flagEnd@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E550 f mp_util_wad.o
+6	VERIFIED	0002:0052f000 ?GetEE_flagEnd@@YAAAUvector@Broc@@Ventity@2@@Z 00D1E500 f mp_util_wad.o	VERIFIED: IDA 0x0092F000 matches handle lookup and GetRef key 0xAEB6D8F1
+7	VERIFIED	0002:0052f050 ?IsEEDefined_flagEnd@@YA?AUbbool@@Ventity@Broc@@@Z 00D1E550 f mp_util_wad.o	VERIFIED: IDA 0x0092F050 matches entity/extended-entity guards, GetVal key 0xAEB6D8F1, and bbool result
 8	PORTED	0002:0052f100 ??0bbool@@QAE@_N@Z 00D1E600 f i mp_util_wad.o
 9	VERIFIED	0002:0052f130 ?IsDefined@Broc@@YA_NABVentity@1@@Z 00D1E630 f i mp_util_wad.o
 10	VERIFIED	0002:0052f150 ?IsDefined@Broc@@YA_NABUvector@1@@Z 00D1E650 f i mp_util_wad.o

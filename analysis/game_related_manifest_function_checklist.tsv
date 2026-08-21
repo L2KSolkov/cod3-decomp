@@ -23859,8 +23859,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 25825	0x0092EF10	0x00D1E410	?ResolveAnimName@mp_util_wad@@YAPBDI@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25826	0x0092EF50	0x00D1E450	?ValidateAnimationIndices@mp_util_wad@@YA_NXZ	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25827	0x0092EFB0	0x00D1E4B0	?GetBroAnim@mp_util_wad@@YAIII@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-25828	0x0092F000	0x00D1E500	?GetEE_flagEnd@@YAAAUvector@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-25829	0x0092F050	0x00D1E550	?IsEEDefined_flagEnd@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+25828	0x0092F000	0x00D1E500	?GetEE_flagEnd@@YAAAUvector@Broc@@Ventity@2@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile	NO	NO	VERIFIED
+25829	0x0092F050	0x00D1E550	?IsEEDefined_flagEnd@@YA?AUbbool@@Ventity@Broc@@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f	0	VERIFIED	FUNCTION matched IDA decompile and local bbool type	NO	NO	VERIFIED
 25830	0x0092F100	0x00D1E600	??0bbool@@QAE@_N@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 25831	0x0092F130	0x00D1E630	?IsDefined@Broc@@YA_NABVentity@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 25832	0x0092F150	0x00D1E650	?IsDefined@Broc@@YA_NABUvector@1@@Z	MPBrocCore_xboxd	mp_util_wad.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
