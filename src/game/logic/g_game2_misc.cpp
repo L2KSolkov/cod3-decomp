@@ -1540,18 +1540,19 @@ void ButtonMgr::ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt)
 // ============================================================================
 int ButtonMgr::ClearAllBindings()
 {
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i <= 196; i += 196)
     {
-        for (int j = 0; j < 16; ++j)
+        for (int j = 0; j <= 180; j += 12)
         {
-            ButtonEntry* e = &mButtons[i][j];
+            ButtonEntry* e = reinterpret_cast<ButtonEntry*>(
+                reinterpret_cast<unsigned char*>(&mButtons) + i + j);
             e->mKeyInfoIndex = 0xFF;
             e->mBoundCmdPress = nullptr;
             e->mBoundCmdRelease = nullptr;
             e->SetCmdBinding();
         }
     }
-    return 0;
+    return 196;
 }
 
 // ============================================================================
