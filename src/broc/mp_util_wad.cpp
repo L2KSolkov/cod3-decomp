@@ -150,7 +150,7 @@ void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
 void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
-void* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
+AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
 void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
 void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position);
 void* NewHost__functor(Broc::entity self);
@@ -13211,7 +13211,7 @@ void* SpawnLocalSpectator__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(SpawnLocalSpectator, guy);
 }
-void* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime) {
+AeThreadFunctor* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
     if (storage == NULL)
         return NULL;
