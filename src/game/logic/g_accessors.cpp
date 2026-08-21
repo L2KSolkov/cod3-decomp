@@ -22,6 +22,8 @@ int TotalScoreForStats(short* const stats);
 }
 
 extern float sNaN;
+extern float nslGetWaveParam(nslWaveID waveID, int paramIndex,
+                             float defaultValue);
 
 void* DestructibleBankManager::operator new(size_t, void* p)
 {
@@ -97,6 +99,51 @@ XModelManager* XModelManager::Inst()
 CGBankManager* CGBankManager::Inst()
 {
     return (CGBankManager*)CGBankManager::sInst;
+}
+
+void* SoundDevice::operator new(size_t, void* p)
+{
+    return p;
+}
+
+SoundDevice::SoundHandleDb* SoundDevice::SoundHandleDb::Inst()
+{
+    return &SoundDevice::SoundHandleDb::sInst;
+}
+
+float SoundDevice::Sound::GetStartingPitch() const
+{
+    return nslGetWaveParam((nslWaveID)mWave, 1, 1.0f);
+}
+
+float SoundDevice::Sound::GetStartingVolume() const
+{
+    return nslGetWaveParam((nslWaveID)mWave, 0, 1.0f);
+}
+
+float SoundDevice::Sound::GetMaxDist() const
+{
+    return nslGetWaveParam((nslWaveID)mWave, 26, 1.0f);
+}
+
+float SoundDevice::Sound::GetMinDist() const
+{
+    return nslGetWaveParam((nslWaveID)mWave, 25, 1.0f);
+}
+
+bool SoundDevice::Sound::IsSourceValid() const
+{
+    return mSource != -1;
+}
+
+nslSourceID SoundDevice::Sound::GetSourceId() const
+{
+    return (nslSourceID)mSource;
+}
+
+float SoundDevice::GetVolScale() const
+{
+    return mVolScale;
 }
 
 // ea: 0x004B5150

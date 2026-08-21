@@ -786,6 +786,7 @@ enum ESoundEnvironment {
 
 class SoundDevice {
 public:
+    static void* operator new(size_t size, void* p); // ??2SoundDevice@@SAPAXIPAX@Z (core.o 0x4DC5E0)
     class Sound {
     public:
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
@@ -814,6 +815,12 @@ public:
         bool  IsPaused() const;             // ?IsPaused@Sound@SoundDevice@@QBE_NXZ
         bool  IsFinished() const;           // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
         bool  IsLooped() const;             // ?IsLooped@Sound@SoundDevice@@QBE_NXZ
+        float GetStartingPitch() const;     // core.o 0x4DC700
+        float GetStartingVolume() const;    // core.o 0x4DC720
+        float GetMaxDist() const;           // core.o 0x4DC740
+        float GetMinDist() const;           // core.o 0x4DC760
+        bool IsSourceValid() const;         // core.o 0x4DC780
+        nslSourceID GetSourceId() const;    // core.o 0x4DC790
         float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
         ae_fixed_string<1024, unsigned short> GetDebugString() const;  // ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ (game.o 0x6216F0)
         void PlayQueued();                  // ?PlayQueued@Sound@SoundDevice@@QAEXXZ
@@ -849,6 +856,7 @@ public:
         uint8_t   _pad[0x40];
         DbElement mElements[0x200];  // +0x40
         static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
+        static SoundHandleDb* Inst();       // ?Inst@SoundHandleDb@SoundDevice@@SAPAV12@XZ
         // HandleDb<Sound,512,SizedHandle<12,20>> inline methods (COMDAT in
         // binary; ported from ea 0x6627B0/0x660710/0x661D80).
         Handle AllocateHandle() {
@@ -929,6 +937,7 @@ public:
     float mDebugListenerUp[3];        // +0x7A94
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     static SoundDevice* Inst();     // ?Inst@SoundDevice@@SAPAV1@XZ (g.o 0x4A8520)
+    float GetVolScale() const;      // ?GetVolScale@SoundDevice@@QBEMXZ (core.o 0x4DC7A0)
     static void CreateInst();       // ?CreateInst@SoundDevice@@SAXXZ (core.o 0x4DC5F0)
     static void DeleteInst();       // ?DeleteInst@SoundDevice@@SAXXZ (core.o 0x4E26C0)
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
