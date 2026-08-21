@@ -110,7 +110,9 @@ void PanelQuadSection::AddPQSection(Broc::vector* xy, Broc::vector* uv,
         quad.Verts[v5].Y = xy[v5].y;
         quad.Verts[v5].U = uv[v5].x;
         quad.Verts[v5].V = uv[v5].y;
-        quad.Verts[v5].Color = col[v5].i;
+        const unsigned int packed = col[v5].i;
+        quad.Verts[v5].Color =
+            packed | ((((packed >> 8) & 0xFFu) | (HIWORD(packed) << 8)) << 8);
     }
     quad.Z = z;
 }
