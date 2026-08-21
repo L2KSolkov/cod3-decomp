@@ -716,6 +716,7 @@ struct bint {
     explicit bint(int v) : mVal(v) {}
     bint(const bfloat& rhs);
 };
+bint operator+(bint lhs, bint rhs);
 bint operator*(bint lhs, int rhs);
 bfloat operator*(int lhs, bfloat rhs);
 struct bbool {

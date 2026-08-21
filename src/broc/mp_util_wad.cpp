@@ -137,8 +137,10 @@ void* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
 void* HostHasMigrated__functor(Broc::entity self);
 AeThreadFunctor* RespawnPlayer__functor(Broc::entity guy, Broc::string team);
 void* LocalPlayerRespawn__functor(Broc::entity player);
-void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished);
-void* reenable_medic_call__functor(Broc::entity self, Broc::bint time);
+AeThreadFunctor* PunishedForTeamKill__functor(Broc::entity ent,
+                                              Broc::bbool punished);
+AeThreadFunctor* reenable_medic_call__functor(Broc::entity self,
+                                              Broc::bint time);
 void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft);
 AeThreadFunctor* TeamChangeKillPlayer__functor(Broc::entity player);
 AeThreadFunctor* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
@@ -2590,6 +2592,11 @@ bfloat operator*(int lhs, bfloat rhs) {
 // operator*(bint, int) - ea: 0x93D8E0
 bint operator*(bint lhs, int rhs) {
     return bint(lhs.mVal * rhs);
+}
+
+// operator+(bint, bint) - ea: 0x943C50
+bint operator+(bint lhs, bint rhs) {
+    return bint(lhs.mVal + rhs.mVal);
 }
 
 // operator+(bint, int) - ea: 0x9370B0
@@ -13143,13 +13150,15 @@ void* LocalPlayerRespawn__functor(Broc::entity player) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(LocalPlayerRespawn, player);
 }
-void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished) {
+AeThreadFunctor* PunishedForTeamKill__functor(Broc::entity ent,
+                                              Broc::bbool punished) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bbool>(PunishedForTeamKill, ent, punished);
 }
-void* reenable_medic_call__functor(Broc::entity self, Broc::bint time) {
+AeThreadFunctor* reenable_medic_call__functor(Broc::entity self,
+                                              Broc::bint time) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
     if (storage == NULL)
         return NULL;
