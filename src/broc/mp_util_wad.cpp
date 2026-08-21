@@ -12213,6 +12213,23 @@ void TriggerRadio(Broc::entity self) {
 // Track_Ownership - ea: 0x95BE00
 void Track_Ownership(Broc::entity self) {
     (void)self;
+    Broc::Code_DebugOut("*HQ* Track_Ownership\n");
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    HashStr n;
+    n.mVal = 0x12CEF01u;
+    Broc::endon(lvl, n);
+    for (;;) {
+        do {
+            Broc::wait(1.0f);
+        } while ((int)mp_util_wad::pLevel->hq_stage != 3);
+        if ((bool)mp_util_wad::pLevel->allies_defending)
+            AddPoints(Broc::bint(0), Broc::bint(1));
+        else
+            AddPoints(Broc::bint(1), Broc::bint(0));
+    }
 }
 }
 
