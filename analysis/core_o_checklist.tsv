@@ -706,7 +706,7 @@ index	status	map_line
 705	PORTED	0002:000dca30 ?Inst@DialogueManager@@SAPAV1@XZ 008CBF30 f i core.o
 706	VERIFIED	0002:000dca40 ?DeleteInst@DialogueManager@@SAXXZ 008CBF40 f i core.o
 707	PORTED	0002:000dcac0 ??2SoundMediaMgr@@SAPAXIPAX@Z 008CBFC0 f i core.o
-708	PORTED	0002:000dcad0 ?CreateInst@SoundMediaMgr@@SAXXZ 008CBFD0 f i core.o
+708	VERIFIED	0002:000dcad0 ?CreateInst@SoundMediaMgr@@SAXXZ 008CBFD0 f i core.o VERIFIED: existing CreateInst body matches IDA
 709	SKIPPED	0002:000dcbc0 ??_GSoundMediaMgr@@QAEPAXI@Z 008CC0C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 710	PORTED	0002:000dcbf0 ??2MusicMgr@@SAPAXIPAX@Z 008CC0F0 f i core.o
 711	VERIFIED	0002:000dcc00 ?CreateInst@MusicMgr@@SAXXZ 008CC100 f i core.o
