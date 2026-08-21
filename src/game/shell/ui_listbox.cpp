@@ -52,6 +52,12 @@ UIListBox::UIListBoxData::~UIListBoxData()
     mText.~string();
 }
 
+// ea: 0x005AEBD0
+int UIListBox::UIListBoxData::GetState()
+{
+    return mState;
+}
+
 // ea: 0x5AEBE0
 void UIListBox::UIListBoxData::SetState(int state)
 {

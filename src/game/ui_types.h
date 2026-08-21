@@ -3063,6 +3063,7 @@ public:
 
         UIListBoxData();      // 0x5AEBB0
         ~UIListBoxData();     // 0x5B0970
+        int GetState();       // 0x5AEBD0
         void SetState(int state);  // 0x5AEBE0
         void SetText(const char* text);  // 0x5AEC70
         void ClearText();      // 0x5AEC80
