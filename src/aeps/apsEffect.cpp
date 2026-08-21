@@ -432,6 +432,12 @@ int apsEffect::GetNumActiveEffects() {
 // ============================================================================
 void apsEffect::StopEmitting() { mStopEmitting = 1; }
 
+// ea: 0x00518650
+int apsEffect::IsVisible()
+{
+    return mFlags & 2;
+}
+
 unsigned int apsEffect::GetRaycastCountdownMaxValue() { return 3; }
 
 void apsEffect::IncrementRaycastCountdown() {

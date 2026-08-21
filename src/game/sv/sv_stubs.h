@@ -1407,6 +1407,8 @@ public:
     static PathNodeMgr* CreateInst();     // ?CreateInst@PathNodeMgr@@SAPAV1@XZ
     static void DeleteInst();             // ?DeleteInst@PathNodeMgr@@SAXXZ
     static PathNodeMgr* Inst();          // ?Inst@PathNodeMgr@@SAPAV1@XZ (g.o 0x4A97D0)
+    char IsZoneValid(int index);          // ?IsZoneValid@PathNodeMgr@@QAE_NH@Z (game2.o 0x518620)
+    PathNodes::TOC1* GetTOC();            // ?GetTOC@PathNodeMgr@@QAEPAUTOC1@PathNodes@@XZ (game2.o 0x518630)
     int GetTotalNodeCount() const;       // ?GetTotalNodeCount@PathNodeMgr@@QBEHXZ (g.o 0x4A97E0)
     PathNodeMgr();                               // ??0PathNodeMgr@@QAE@XZ
     void InitPaths();                            // ?InitPaths@PathNodeMgr@@QAEXXZ

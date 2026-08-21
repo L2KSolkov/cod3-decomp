@@ -162,6 +162,19 @@ PathNodeMgr::PathNodeMgr()
     level.pathsInvalid = true;
 }
 
+// ea: 0x00518620
+char PathNodeMgr::IsZoneValid(int index)
+{
+    (void)index;
+    return 1;
+}
+
+// ea: 0x00518630
+PathNodes::TOC1* PathNodeMgr::GetTOC()
+{
+    return mLevelTOC;
+}
+
 // ea: 0x004DD320
 PathNodeMgr* PathNodeMgr::CreateInst()
 {

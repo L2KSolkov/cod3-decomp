@@ -672,6 +672,31 @@ CameraShake::CameraShake()
 {
 }
 
+// ea: 0x005185C0
+void CameraShake::Set3DScale(float scale)
+{
+    m_scale3D = scale;
+}
+
+// ea: 0x005185E0
+float CameraShake::Get3DScale()
+{
+    return m_scale3D;
+}
+
+// ea: 0x005185F0
+void CameraShake::SetScaleCOD(float scale, int onlyADS)
+{
+    m_scaleCOD = scale;
+    m_scaleCOD_onlyADS = onlyADS;
+}
+
+// ea: 0x00518610
+float CameraShake::GetScaleCOD()
+{
+    return m_scaleCOD;
+}
+
 // ============================================================================
 // CameraShake::Rumble - ea: 0x4FF360
 // ============================================================================

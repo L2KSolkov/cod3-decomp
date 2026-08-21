@@ -102,6 +102,10 @@ public:
     CameraShakeInstance m_instanceData[5];  // +0x0C
 
     CameraShake();                            // ea: 0x4F8F70
+    void Set3DScale(float scale);             // ea: 0x5185C0
+    float Get3DScale();                        // ea: 0x5185E0
+    void SetScaleCOD(float scale, int onlyADS); // ea: 0x5185F0
+    float GetScaleCOD();                       // ea: 0x518610
     void Initialise();                        // ea: 0x4F4DB0
     CameraShakeInstance* GetNewShakeInstance();  // ea: 0x4F4E20
     void StopCameraShake(CameraShakeInstance* pShake);  // ea: 0x4F4F90

@@ -374,6 +374,7 @@ public:
     void Report(int index);              // ?Report@apsEffect@@QAEXH@Z
     void Update(float iCurTime);         // ?Update@apsEffect@@QAEXM@Z
     unsigned int IsDone();               // ?IsDone@apsEffect@@QAEIXZ
+    int IsVisible();                      // ?IsVisible@apsEffect@@QAEHXZ (game2.o 0x518650)
     void FastForward(float deltaT, int numIncr);  // ?FastForward@apsEffect@@QAEXMH@Z
     void CalcSortKey();                  // ?CalcSortKey@apsEffect@@QAEXXZ
     unsigned int RequestRaycast(const math::Dir3& start, const math::Dir3& end);  // ?RequestRaycast@apsEffect@@QAEIABVDir3@math@@0@Z
