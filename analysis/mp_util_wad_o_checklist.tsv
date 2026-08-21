@@ -500,7 +500,7 @@ index	status	map_line
 499	PORTED	0002:0054e030 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@1Ubfloat@@@Z 00D3D530 f i mp_util_wad.o
 500	PORTED	0002:0054e100 ?PlayTeamSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11@Z 00D3D600 f i mp_util_wad.o
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
-502	PORTED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o
+502	PORTED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o	PORTED: IDA 0x0094E2A0 forwards the const __int16& to m_entity_set_player_ctf_has_flag and returns it
 503	VERIFIED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o
 504	PORTED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o
 505	PORTED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o
@@ -513,29 +513,29 @@ index	status	map_line
 512	VERIFIED	0002:0054ecc0 ?SwitchToSecondarySpawns@_mp_ctf@@YAXVentity@Broc@@@Z 00D3E1C0 f mp_util_wad.o
 513	PORTED	0002:0054ed20 ?vLerp@_mp_ctf@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D3E220 f mp_util_wad.o
 514	PORTED	0002:0054ee90 ?IsFlagAtBase@_mp_ctf@@YA?AUbbool@@Ventity@Broc@@@Z 00D3E390 f mp_util_wad.o
-515	PORTED	0002:0054ef50 ?Length@@YAMABUvector@Broc@@@Z 00D3E450 f i mp_util_wad.o
+515	PORTED	0002:0054ef50 ?Length@@YAMABUvector@Broc@@@Z 00D3E450 f i mp_util_wad.o	PORTED: IDA 0x0094EF50 direct mVecLength forward
 516	VERIFIED	0002:0054ef80 ?TeamObjectiveUpdate@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3E480 f mp_util_wad.o
 517	PORTED	0002:0054fa60 ??8entity@Broc@@QBE_NABV01@@Z 00D3EF60 f i mp_util_wad.o
-518	PORTED	0002:0054faa0 ?Get@ctf_has_flag_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D3EFA0 f i mp_util_wad.o
+518	PORTED	0002:0054faa0 ?Get@ctf_has_flag_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D3EFA0 f i mp_util_wad.o	PORTED: IDA 0x0094FAA0 returns m_entity_get_player_ctf_has_flag
 519	VERIFIED	0002:0054fad0 ?ObjectiveUpdater@_mp_ctf@@YAXVentity@Broc@@@Z 00D3EFD0 f mp_util_wad.o
 520	VERIFIED	0002:0054fdf0 ?CallbackPlayerKilled@_mp_ctf@@YAXVentity@Broc@@00HHH@Z 00D3F2F0 f mp_util_wad.o
 521	VERIFIED	0002:0054fee0 ?CallbackDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F3E0 f mp_util_wad.o
 522	VERIFIED	0002:0054ff10 ?CallbackPlayerLeave@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F410 f mp_util_wad.o
 523	VERIFIED	0002:0054ffa0 ?CallbackGameStateCTF@_mp_ctf@@YAXUvector@Broc@@0Ventity@3@001@Z 00D3F4A0 f mp_util_wad.o
 524	VERIFIED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o
-525	PORTED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o
+525	PORTED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	PORTED: IDA 0x00950B10 direct mDropItem2 forward
 526	PORTED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o
-527	PORTED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o
+527	PORTED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	PORTED: IDA 0x00950B80 forwards entity handle to mSwitchToLastWeapon
 528	VERIFIED	0002:00550bb0 ?UpdateFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@1@Z 00D400B0 f mp_util_wad.o
 529	VERIFIED	0002:00550bf0 ?LaunchFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@11@Z 00D400F0 f mp_util_wad.o
-530	PORTED	0002:00550c40 ?Launch@Broc@@YAXABVentity@1@ABUvector@1@@Z 00D40140 f i mp_util_wad.o
+530	PORTED	0002:00550c40 ?Launch@Broc@@YAXABVentity@1@ABUvector@1@@Z 00D40140 f i mp_util_wad.o	PORTED: IDA 0x00950C40 forwards entity handle and velocity to mLaunch
 531	VERIFIED	0002:00550c70 ?EntityOff@_mp_ctf@@YAXVentity@Broc@@@Z 00D40170 f mp_util_wad.o
 532	VERIFIED	0002:00550cd0 ?CompassUnderlay@_mp_ctf@@YAXVentity@Broc@@@Z 00D401D0 f mp_util_wad.o
 533	PORTED	0002:00550f30 ?HandlePickupFlag@_mp_ctf@@YAXHVentity@Broc@@Ubbool@@1@Z 00D40430 f mp_util_wad.o
-534	PORTED	0002:005528e0 ?SetOwner@Broc@@YAXABVentity@1@0@Z 00D41DE0 f i mp_util_wad.o
-535	PORTED	0002:00552920 ?GiveWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D41E20 f i mp_util_wad.o
-536	PORTED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o
-537	PORTED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o
+534	PORTED	0002:005528e0 ?SetOwner@Broc@@YAXABVentity@1@0@Z 00D41DE0 f i mp_util_wad.o	PORTED: IDA 0x009528E0 forwards both entity handles to mSetOwner
+535	PORTED	0002:00552920 ?GiveWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D41E20 f i mp_util_wad.o	PORTED: IDA 0x00952920 direct mGiveWeapon forward
+536	PORTED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o	PORTED: IDA 0x00952950 direct mSetWeaponSlotClipAmmo forward
+537	PORTED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o	PORTED: IDA 0x00952990 direct mObjectiveRing forward
 538	PORTED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o
 539	VERIFIED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o
 540	VERIFIED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o
