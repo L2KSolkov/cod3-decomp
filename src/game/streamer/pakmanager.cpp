@@ -2679,6 +2679,8 @@ struct BoundingBox {
     }
     ~BoundingBox();  // ??1BoundingBox@@QAE@XZ (game2.o 0x517290)
     math::Position3 center() const;  // ?center@BoundingBox@@QBE?AVPosition3@math@@XZ (game2.o 0x5172A0)
+    float width() const;  // ?width@BoundingBox@@QBEMXZ (game2.o 0x5172F0)
+    float height() const;  // ?height@BoundingBox@@QBEMXZ (game2.o 0x517320)
     bool intersect(const math::Position3& p) const;
     void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
 };
@@ -2888,6 +2890,7 @@ public:
     InplaceVector<const ZoneCellBox*> mCellBoxes;  // +0x24
     const StreamZone* mZone;  // +0x2C
 
+    unsigned int GetCellId() const;  // ?GetCellId@ZoneCellDesc@@QBEIXZ (game2.o 0x517380)
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
     bool BoundsIntersect(const math::Position3& p) const;  // stub (BoundingBox::intersect)
     const ZdNode* GetZdNode(const math::Position3& position,
@@ -11142,6 +11145,24 @@ math::Position3 BoundingBox::center() const
     math::Position3 result;
     result.v = _mm_mul_ps(_mm_add_ps(vmax.v, vmin.v), _mm_set1_ps(0.5f));
     return result;
+}
+
+// ea: 0x005172F0
+float BoundingBox::width() const
+{
+    return vmax.v.m128_f32[0] - vmin.v.m128_f32[0];
+}
+
+// ea: 0x00517320
+float BoundingBox::height() const
+{
+    return vmax.v.m128_f32[1] - vmin.v.m128_f32[1];
+}
+
+// ea: 0x00517380
+unsigned int ZoneCellDesc::GetCellId() const
+{
+    return mCellId;
 }
 
 // ea: 0x684460
