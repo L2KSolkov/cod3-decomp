@@ -14,8 +14,8 @@ index	status	map_line
 13	PORTED	0002:000eaac0 ??0FourCC@@QAE@H@Z 008D9FC0 f i game2.o
 14	VERIFIED	0002:000eaae0 ??0tlFixedString@@QAE@ABV0@@Z 008D9FE0 f i game2.o
 15	VERIFIED	0002:000eab30 ??8tlFixedString@@QBE_NABV0@@Z 008DA030 f i game2.o
-16	PORTED	0002:000eab70 ??9tlFixedString@@QBE_NABV0@@Z 008DA070 f i game2.o
-17	PORTED	0002:000eabb0 ?c_str@tlFixedString@@QBEPBDXZ 008DA0B0 f i game2.o
+16	VERIFIED	0002:000eab70 ??9tlFixedString@@QBE_NABV0@@Z 008DA070 f i game2.o
+17	VERIFIED	0002:000eabb0 ?c_str@tlFixedString@@QBEPBDXZ 008DA0B0 f i game2.o
 18	PORTED	0002:000eabc0 ?get_dlist_node_offset@AeThread@@SAHXZ 008DA0C0 f i game2.o
 19	PORTED	0002:000eabd0 ?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008DA0D0 f i game2.o
 20	VERIFIED	0002:000eabf0 ?SetX@Dir3@math@@QAEXM@Z 008DA0F0 f i game2.o
