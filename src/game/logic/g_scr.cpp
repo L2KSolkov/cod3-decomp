@@ -791,6 +791,23 @@ template ae_sized_array<TaskHandler*, 32>::iterator&
 ae_sized_array<TaskHandler*, 32>::iterator::operator++();
 template bool ae_sized_array<TaskHandler*, 32>::iterator::operator!=(
     ae_sized_array<TaskHandler*, 32>::iterator) const;
+template void ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::push_back(
+    const DbLinkedHandle<EntityHandleDb, Entity>&);
+template ae_sized_array<Task*, 128>::ae_sized_array();
+template void ae_sized_array<Task*, 128>::push_back(Task* const&);
+template DbLinkedHandle<EntityHandleDb, Entity>&
+ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::iterator::operator*() const;
+template ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::iterator&
+ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::iterator::operator++();
+template bool
+ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::iterator::operator!=(
+    ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 128>::iterator) const;
+template Task*&
+ae_sized_array<Task*, 128>::iterator::operator*() const;
+template ae_sized_array<Task*, 128>::iterator&
+ae_sized_array<Task*, 128>::iterator::operator++();
+template bool ae_sized_array<Task*, 128>::iterator::operator!=(
+    ae_sized_array<Task*, 128>::iterator) const;
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
