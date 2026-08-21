@@ -138,7 +138,7 @@ index	status	map_line
 137	VERIFIED	0002:001698b0 ?ScaleAbsoluteCenter@PanelQuadSection@@QAEXMMMM@Z 00958DB0 f shell.o
 138	VERIFIED	0002:00169ab0 ?SetColorVert@PanelQuadSection@@QAEXHVcolor32@@@Z 00958FB0 f shell.o
 139	VERIFIED	0002:00169af0 ?SetUV@PanelQuadSection@@QAEXQAM0@Z 00958FF0 f shell.o
-140	PORTED	0002:00169b30 ?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 00959030 f shell.o
+140	VERIFIED	0002:00169b30 ?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 00959030 f shell.o	VERIFIED: matches IDA four-vertex UV assignments
 141	VERIFIED	0002:00169b70 ?SetPos@PanelQuadSection@@QAEXQAM0@Z 00959070 f shell.o
 142	PORTED	0002:00169bb0 ?SetPos@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 009590B0 f shell.o
 143	VERIFIED	0002:00169bf0 ?ResetToInitialXY@PanelQuadSection@@QAEXXZ 009590F0 f shell.o

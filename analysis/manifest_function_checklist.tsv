@@ -5315,7 +5315,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 5314	0x005698B0	0x00958DB0	?ScaleAbsoluteCenter@PanelQuadSection@@QAEXMMMM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5315	0x00569AB0	0x00958FB0	?SetColorVert@PanelQuadSection@@QAEXHVcolor32@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5316	0x00569AF0	0x00958FF0	?SetUV@PanelQuadSection@@QAEXQAM0@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	YES	VERIFIED
-5317	0x00569B30	0x00959030	?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z		shell.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+5317	0x00569B30	0x00959030	?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile	YES	YES	VERIFIED
 5318	0x00569B70	0x00959070	?SetPos@PanelQuadSection@@QAEXQAM0@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	YES	VERIFIED
 5319	0x00569BB0	0x009590B0	?SetPos@PanelQuadSection@@QAEXQAUvector@Broc@@@Z		shell.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 5320	0x00569BF0	0x009590F0	?ResetToInitialXY@PanelQuadSection@@QAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
