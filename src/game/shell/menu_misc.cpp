@@ -32,6 +32,31 @@ FEMultiMenu::FEMultiMenu(FEMenuSystem* s, int num, int flg)
     enableNavigationSound = false;
 }
 
+// ea: 0x005B7780
+void FEMultiMenu::SetVis(int first)
+{
+    (void)first;
+}
+
+// ea: 0x005B7790
+void FEMultiMenu::Init()
+{
+}
+
+// ea: 0x005B77A0
+void FEMultiMenu::OnLeft(int c)
+{
+    (void)c;
+    Left();
+}
+
+// ea: 0x005B77B0
+void FEMultiMenu::OnRight(int c)
+{
+    (void)c;
+    Right();
+}
+
 // ea: 0x00570950
 void FEMultiMenu::ButtonHeldAction()
 {

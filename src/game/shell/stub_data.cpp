@@ -34,6 +34,49 @@ enum {
     UIX_LOGON_FORCE_DWORD = 0xFFFFFFFF,
 };
 
+// ea: 0x005B19E0
+StubData::StubData()
+{
+    mProfileName[0] = 0;
+    mControllerPort = 0;
+    Init();
+}
+
+// ea: 0x005B1A00
+SaveGameData::SaveGameData()
+{
+    mStubData.mProfileName[0] = 0;
+    mStubData.mControllerPort = 0;
+    mStubData.Init();
+
+    CheckpointMgr::SEntitySaveInfo* friendlies =
+        reinterpret_cast<CheckpointMgr::SEntitySaveInfo*>(mFriendlies);
+    for (int i = 16; i != 0; --i)
+    {
+        friendlies->mOrientation[0] = 0.0f;
+        friendlies->mOrientation[1] = 0.0f;
+        friendlies->mOrientation[2] = 0.0f;
+        friendlies->mOrigin[0] = 0.0f;
+        friendlies->mOrigin[1] = 0.0f;
+        friendlies->mOrigin[2] = 0.0f;
+        friendlies->mTargetname[0] = 0;
+        ++friendlies;
+    }
+
+    SCheckpointGameVar* game_vars =
+        reinterpret_cast<SCheckpointGameVar*>(mGameVars);
+    for (int j = 256; j != 0; --j)
+    {
+        game_vars->mHashVarName = 0;
+        game_vars->mVal = 0;
+        game_vars->mDataSize = 0;
+        ++game_vars;
+    }
+
+    Init();
+    mStubData.Init();
+}
+
 // ea: 0x00563FE0
 void StubData::Init()
 {

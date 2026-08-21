@@ -1700,6 +1700,10 @@ static_assert(offsetof(LoadingMenu, mTipArrays) == 0x8C,
 class FEMultiMenu : public FEMenu {
 public:
     FEMultiMenu(FEMenuSystem* s, int num, int flg);  // 0x5921B0
+    virtual void SetVis(int first);                  // 0x5B7780 (empty)
+    virtual void Init();                             // 0x5B7790 (empty)
+    virtual void OnLeft(int c);                      // 0x5B77A0
+    virtual void OnRight(int c);                     // 0x5B77B0
 protected:
     virtual void ButtonHeldAction();                 // slot 62 0x570950
 };

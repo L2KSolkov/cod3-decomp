@@ -185,6 +185,7 @@ static_assert(offsetof(DCGSet, id) == 0x68, "DCGSet::id offset");
 // StubData â€” per-controller MP save/profile data (1216 bytes) â€” verified IDA
 // ============================================================================
 struct StubData {
+    StubData();
     char    mProfileName[16];          // +0x000
     int     mSaveGameSlot;             // +0x010
     int     mLevelReached;             // +0x014
@@ -271,6 +272,7 @@ static_assert(offsetof(StubData, mInvertAim) == 0x41, "StubData::mInvertAim offs
 // SaveGameData â€” MP save game bundle (7156 bytes) â€” verified IDA
 // ============================================================================
 struct SaveGameData {
+    SaveGameData();
     StubData mStubData;         // +0x000
     bool     mCheckpointSaveExists;    // +0x4C0
     int      ammo[92];                 // +0x4C4
