@@ -3536,7 +3536,7 @@ index	status	map_line
 3535	PORTED	0002:00117400 ?get_vtbl_ptr@nalVirtual@@QBEPAXXZ 00906900 f i game2.o  PORTED: IDA-backed vtable pointer accessor
 3536	SKIPPED	0002:00117410 ??_GnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3537	SKIPPED	0002:00117410 ??_EnalVirtual@@MAEPAXI@Z 00906910 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-3538	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o
+3538	PORTED	0002:00117440 ?slerp@@YA?AVQuaternion@math@@ABV12@0M@Z 00906940 f i game2.o  PORTED: IDA-backed SIMD quaternion slerp polynomial
 3539	PORTED	0002:001176d0 ??0nalMatrix3x3@@QAE@XZ 00906BD0 f i game2.o
 3540	PORTED	0002:001176e0 ?Determinant@nalMatrix3x3@@QBEMXZ 00906BE0 f i game2.o
 3541	PORTED	0002:00117890 ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z 00906D90 f i game2.o
