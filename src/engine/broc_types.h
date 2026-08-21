@@ -30,6 +30,7 @@ COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
 namespace Broc {
 class string;
+struct bint;
 }
 
 // ============================================================================
@@ -224,6 +225,10 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
         };
+        struct maxhealth_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::bint* Get(Broc::bint* result) const;
+        };
         struct angles_struct {
             unsigned int mHandle;  // +0x00
             const Broc::vector* operator=(const Broc::vector* rhs);
@@ -239,6 +244,8 @@ public:
                             "target_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::targetname_struct) == 4,
                             "targetname_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::maxhealth_struct) == 4,
+                            "maxhealth_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
@@ -588,7 +595,7 @@ struct bint {
     int operator++(int) { AssertDefined(); return ++mVal; }
     int operator++() { AssertDefined(); return mVal++; }
     int operator--(int) { AssertDefined(); return --mVal; }
-    bint& operator+=(int v) { AssertDefined(); mVal += v; return *this; }
+    int operator+=(int v) { AssertDefined(); mVal += v; return mVal; }
     bint& operator-=(int v) { AssertDefined(); mVal -= v; return *this; }
     void AssertDefined() const {}  // ea: 0x934790
 };
@@ -601,6 +608,8 @@ struct bfloat {
     bfloat(float v) : mVal(v) {}
     // ea: 0x935840
     bfloat(int v) : mVal((float)v) {}
+    // ea: 0x93AE50
+    bfloat(const bint& rhs) : mVal((float)rhs.mVal) {}
     double operator=(float v) { mVal = v; return v; }
     double operator=(int v) { mVal = (float)v; return mVal; }
     operator float() const { return mVal; }
@@ -619,7 +628,7 @@ struct bbool {
 
     bbool() : mVal(false) {}
     bbool(bool v) : mVal(v) {}
-    bbool& operator=(bool v) { mVal = v; return *this; }
+    double operator=(bool v) { mVal = v; return (double)v; }
     operator bool() const { return mVal; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "bbool size mismatch");
@@ -635,6 +644,10 @@ bool operator==(bfloat lhs, bfloat rhs);
 bool operator!=(bfloat lhs, bfloat rhs);
 bbool operator<(bfloat lhs, float rhs);
 bbool operator>(bfloat lhs, float rhs);
+bfloat operator*(float lhs, bfloat rhs);
+bfloat operator*(bfloat lhs, int rhs);
+bbool operator>(bint lhs, int rhs);
+bbool operator<(int lhs, bfloat rhs);
 bint operator+(bint lhs, bint rhs);
 bint operator+(bint lhs, int rhs);
 bint operator+(int lhs, bint rhs);
@@ -645,7 +658,6 @@ bint operator*(bint lhs, int rhs);
 bfloat operator*(bfloat lhs, float rhs);
 bfloat operator*(bfloat lhs, bfloat rhs);
 bool operator<(bint lhs, int rhs);
-bool operator>(bint lhs, int rhs);
 
 } // namespace Broc
 
@@ -864,7 +876,9 @@ struct BrocAPI {
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
-    char _pad2C4[0x6D8 - 0x2C4];                          // +0x2C4
+    char _pad2C4[0x528 - 0x2C4];                          // +0x2C4
+    unsigned int (*mGetTime)();                           // +0x528
+    char _pad52C[0x6D8 - 0x52C];                          // +0x52C
     void (*mDelete)(unsigned int);                        // +0x6D8
     char _pad6DC[0x6E8 - 0x6DC];                          // +0x6DC
     void (*mSetModel)(unsigned int, const Broc::string*, TPakInfo); // +0x6E8

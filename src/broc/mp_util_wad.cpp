@@ -2121,6 +2121,13 @@ const Broc::string* Broc::entity::__unnamed::targetname_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::maxhealth_struct::Get - ea: 0x93ADE0
+const Broc::bint* Broc::entity::__unnamed::maxhealth_struct::Get(
+    Broc::bint* result) const {
+    new (result) Broc::bint(Broc::gBrocAPI.m_entity_get_maxhealth(mHandle));
+    return result;
+}
+
 // Broc::entity::__unnamed::angles_struct::operator= - ea: 0x935490
 const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     const Broc::vector* rhs) {
@@ -2172,6 +2179,12 @@ Broc::vector* VectorToAngles(Broc::vector* result, const Broc::vector* vecIn) {
 // RandomInt - ea: 0x9350D0
 int RandomInt(int iMax) {
     return gBrocAPI.mMathsRandomInt(iMax);
+}
+
+// GetTime - ea: 0x93AE20
+Broc::bint* GetTime(Broc::bint* result) {
+    new (result) Broc::bint(gBrocAPI.mGetTime());
+    return result;
 }
 
 // GetCvarInt - ea: 0x935970
@@ -2353,6 +2366,16 @@ Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
 }
 
+// operator*(float, bfloat) - ea: 0x93ACC0
+Broc::bfloat operator*(float lhs, Broc::bfloat rhs) {
+    return Broc::bfloat(rhs.mVal * lhs);
+}
+
+// operator*(bfloat, int) - ea: 0x93AD40
+Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
+    return Broc::bfloat(lhs.mVal * rhs);
+}
+
 // operator+(bint, int) - ea: 0x9370B0
 Broc::bint operator+(Broc::bint lhs, int rhs) {
     return Broc::bint(lhs.mVal + rhs);
@@ -2366,6 +2389,16 @@ Broc::bbool operator<(Broc::bfloat lhs, float rhs) {
 // operator>(bfloat, float) - ea: 0x937710
 Broc::bbool operator>(Broc::bfloat lhs, float rhs) {
     return Broc::bbool(lhs.mVal > rhs);
+}
+
+// operator>(bint, int) - ea: 0x93AD00
+Broc::bbool operator>(Broc::bint lhs, int rhs) {
+    return Broc::bbool(lhs.mVal > rhs);
+}
+
+// operator<(int, bfloat) - ea: 0x93AD80
+Broc::bbool operator<(int lhs, Broc::bfloat rhs) {
+    return Broc::bbool(rhs.mVal > lhs);
 }
 
 // operator+(int, bint) - ea: 0x9379F0
