@@ -885,9 +885,13 @@ struct BrocAPI {
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
     char _pad1A4[0x1AC - 0x1A4];                          // +0x1A4
     void (*mVecAnglesToForward)(Broc::vector*, const Broc::vector*); // +0x1AC
-    char _pad1B0[0x250 - 0x1B0];                          // +0x1B0
+    char _pad1B0[0x24C - 0x1B0];                          // +0x1B0
+    void (*mCVarGetString)(Broc::string*, const char*);   // +0x24C
     int (*mCVarGetInt)(const char*);                      // +0x250
-    char _pad254[0x264 - 0x254];                          // +0x254
+    float (*mCVarGetFloat)(const char*);                  // +0x254
+    void (*mCVarSetString)(const char*, const char*);     // +0x258
+    void (*mCVarSetInt)(const char*, int);                // +0x25C
+    void (*mCVarSetFloat)(const char*, float);            // +0x260
     unsigned int (*mSpawn)(const Broc::string*, const Broc::vector*,
                            TPakInfo);                    // +0x264
     char _pad268[0x290 - 0x268];                          // +0x268

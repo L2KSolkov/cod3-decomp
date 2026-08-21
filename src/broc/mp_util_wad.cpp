@@ -2215,6 +2215,20 @@ int GetCvarInt(const char* cvar) {
     return gBrocAPI.mCVarGetInt(cvar);
 }
 
+// GetCvar - ea: 0x93CB00
+Broc::string* GetCvar(Broc::string* result, const char* cvar) {
+    Broc::string output((Broc::string::Block*)nullptr);
+    gBrocAPI.mCVarGetString(&output, cvar);
+    new (result) Broc::string(output);
+    output.~string();
+    return result;
+}
+
+// SetCvar - ea: 0x93CBA0
+void SetCvar(const char* cvar, const char* value) {
+    gBrocAPI.mCVarSetString(cvar, value);
+}
+
 // AddEventHandler - ea: 0x9360D0
 void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func) {
     gBrocAPI.mAddEventHandler(e.GetHandle(), label.mVal, func.mVal);
