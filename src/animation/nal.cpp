@@ -4623,6 +4623,7 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
 
 class InteractionController {
 public:
+    static void* operator new(size_t size, void* p); // core.o 0x004DE710
     static InteractionController* CreateInst(); // core.o 0x004DE720
     static void DeleteInst();                   // core.o 0x004E2DA0
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
@@ -4793,6 +4794,13 @@ InteractionController* InteractionController::CreateInst()
     }
     InteractionController::sInstHolder.sInst[0] = nullptr;
     return nullptr;
+}
+
+// ea: 0x004DE710
+void* InteractionController::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
 }
 
 // ea: 0x004E2DA0
@@ -5614,6 +5622,7 @@ const char* GetButtonTextName(int index)
 
 class PlayerAnimMgr {
 public:
+    static void* operator new(size_t size, void* p); // core.o 0x004DE850
     static PlayerAnimMgr* sInst;       // ?sInst@PlayerAnimMgr@@2PAV1@A @ 0xF25A28
     static PlayerAnimMgr* CreateInst(); // core.o 0x004DE860
     static void DeleteInst();           // core.o 0x004E2E30
@@ -5671,6 +5680,13 @@ PlayerAnimMgr* PlayerAnimMgr::CreateInst()
     PlayerAnimMgr::sInst = nullptr;
     PlayerAnimMgr_sInst = nullptr;
     return nullptr;
+}
+
+// ea: 0x004DE850
+void* PlayerAnimMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
 }
 
 // ea: 0x004E2E30

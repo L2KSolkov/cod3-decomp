@@ -24,6 +24,7 @@ class PoolAllocator;
 // TPakId is defined fully in game/sv/sv_stubs.h; forward-declare the enum so
 // this header stays standalone (C++11 allows enum : int forward decls).
 enum TPakId : int;
+enum EAbstractSoundEffectFlags : int;
 
 // ============================================================================
 // Enum placeholders - values must be fetched from IDA when porting bodies.
@@ -385,6 +386,15 @@ static_assert(offsetof(SoundParams, mDuration) == 0x18,
 // ============================================================================
 class AbstractEffect {
 public:
+    static PoolAllocator* sAllocator;
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void* operator new(size_t size, void* p);
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    static void operator delete(void* ptr, void* p);
+    static void SetAllocator(PoolAllocator* allocator);
     virtual ~AbstractEffect();
     AbstractEffect() { memset(this, 0, sizeof(AbstractEffect)); }
     AbstractEffect(TPakId pak_id, DbLinkedHandle<EntityHandleDb, Entity> ent, int flags,
@@ -400,6 +410,10 @@ public:
     virtual bool IsFinished();
     virtual void StopEffect();
     virtual Broc::string GetDebugString() const;
+    unsigned int GetEffectNameHashStr();
+    int GetFlags() const;
+    bool Test(int flag) const;
+    int GetLifeTime();
     math::Position3 GetPosition() const;        // ea: 0x004CC230
     Broc::string GetEntityDebugString() const;  // ea: 0x004CC330
     bool IsFinishedFading();                    // ea: 0x004E2D40
@@ -436,6 +450,8 @@ struct AbstractEffectSound : AbstractEffect {
     const char*     mSubtitle;     // +0x94
     DbLinkedHandle<void, void> mSound;  // +0x98 (SoundDevice::Sound handle)
     nslWaveID       mWaveHdl;      // +0x9C
+
+    void SetFlag(EAbstractSoundEffectFlags flag);
 
     AbstractEffectSound(TPakId pakId, DbLinkedHandle<EntityHandleDb, Entity> ent,
                         int flags, float delayTrigger,

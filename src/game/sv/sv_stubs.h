@@ -25,6 +25,7 @@
 // g_local.h / mp_types.h).
 enum itemType_t : int;
 enum EDroppedItemTypes : int;
+class apsEffect;
 struct MP_ANIM_INDEX;  // full definition in mp_basic.cpp (mp.o anim tables)
 
 // Global net entity handle (g.o 0x4A9700 family) - map mangling uses the
@@ -713,10 +714,14 @@ public:
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
 struct SmokeGrenadeInfo {
-    float mTime;   // +0x00
-    void* mEffect; // +0x04
-    bool  bHit[4]; // +0x08
+    apsEffect* mEffect; // +0x00
+    float mTime;        // +0x04
+    bool  bHit[10];     // +0x08
+
+    SmokeGrenadeInfo(); // core.o 0x4DE610
 };
+static_assert(sizeof(SmokeGrenadeInfo) == 0x14,
+              "SmokeGrenadeInfo size mismatch");
 
 class SceneEntity;  // streamer.o (IDA SceneEntity)
 class SceneBank;    // streamer.o (IDA map mangling uses class key)
@@ -730,6 +735,7 @@ struct SmokeGrenadeInfoList {
 
 class SmokeGrenadeMgr {
 public:
+    static void* operator new(size_t size, void* p);
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static SmokeGrenadeMgr* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
     static SmokeGrenadeMgr* CreateInst();  // ?CreateInst@SmokeGrenadeMgr@@SAPAV1@XZ

@@ -9,6 +9,7 @@
 #include "aeps/apsEffect.h"
 
 #include <new>
+#include <stdint.h>
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
@@ -2883,6 +2884,102 @@ void AbstractEffectShakeAndRumble::FrameAdvance(float delta_t)
 // ============================================================================
 // AbstractEffect fades + particle IsFinished
 // ============================================================================
+
+PoolAllocator* AbstractEffect::sAllocator = nullptr;
+
+// ea: 0x004DE4F0
+void* AbstractEffect::operator new(unsigned int size, bool forceHeapAlloc,
+                                   const char* file, int line)
+{
+    (void)file;
+    (void)line;
+    return sAllocator->Allocate(size, forceHeapAlloc);
+}
+
+void* AbstractEffect::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DE510
+void AbstractEffect::operator delete(void* ptr, bool forceHeapAlloc,
+                                     const char* file, int line)
+{
+    (void)forceHeapAlloc;
+    (void)file;
+    (void)line;
+    sAllocator->Release(ptr);
+}
+
+void AbstractEffect::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
+void AbstractEffect::operator delete(void* ptr, void* p)
+{
+    (void)ptr;
+    (void)p;
+}
+
+// ea: 0x004DE530
+void AbstractEffect::SetAllocator(PoolAllocator* allocator)
+{
+    sAllocator = allocator;
+}
+
+// ea: 0x004DE550
+unsigned int AbstractEffect::GetEffectNameHashStr()
+{
+    return mEffectNameHashStr;
+}
+
+// ea: 0x004DE560
+int AbstractEffect::GetFlags() const
+{
+    return mFlags;
+}
+
+// ea: 0x004DE570
+bool AbstractEffect::Test(int flag) const
+{
+    return (flag & mFlags) != 0;
+}
+
+// ea: 0x004DE590
+int AbstractEffect::GetLifeTime()
+{
+    return mCountSinceStarted;
+}
+
+// ea: 0x004DE5A0
+void AbstractEffectSound::SetFlag(EAbstractSoundEffectFlags flag)
+{
+    mFlags |= static_cast<unsigned int>(flag);
+}
+
+// ea: 0x004DE650
+float Q_rsqrt(float number)
+{
+    union FloatBits {
+        float f;
+        uint32_t i;
+    } y = {number};
+    const float half = number * 0.5f;
+    y.i = 0x5F3759DFu - (y.i >> 1);
+    return (1.5f - half * y.f * y.f) * y.f;
+}
+
+// ea: 0x004DE6A0
+float Clamp0To1(float f)
+{
+    if (f < 0.0f)
+        return 0.0f;
+    if (f <= 1.0f)
+        return f;
+    return 1.0f;
+}
 
 // ea: 0x004E2D40
 bool AbstractEffect::IsFinishedFading()

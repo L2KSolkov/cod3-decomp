@@ -15,6 +15,19 @@
 
 class ScriptEventParams;
 
+// ea: 0x004DE610
+SmokeGrenadeInfo::SmokeGrenadeInfo()
+    : mEffect(nullptr), mTime(0.0f), bHit{}
+{
+}
+
+// ea: 0x004DE640
+void* SmokeGrenadeMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)
 // ============================================================================
