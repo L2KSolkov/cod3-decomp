@@ -185,7 +185,7 @@ void nglDxRenderState::SetBlendColor(unsigned int v) {
 // ============================================================================
 // nglDxRenderState::SetMaxAnisotropy - ea: 0x841E70
 // ============================================================================
-int nglDxRenderState::SetMaxAnisotropy(unsigned int stage, unsigned int v) {
+int nglDxRenderState::SetMaxAnisotropy(int stage, int v) {
     int result = D3DDevice_SetTextureState_ParameterCheck(stage, D3DTSS_MAXANISOTROPY, v);
     if (result == 0) {
         D3D__DirtyFlags |= 1 << stage;

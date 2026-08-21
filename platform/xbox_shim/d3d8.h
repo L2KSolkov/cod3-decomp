@@ -150,6 +150,7 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* pTexture, unsi
 D3DSurface* __stdcall D3DCubeTexture_GetCubeMapSurface2(D3DBaseTexture* pTexture,
                                                         _D3DCUBEMAP_FACES FaceType,
                                                         unsigned int Level);
+unsigned int __stdcall D3DBaseTexture_GetLevelCount(D3DBaseTexture* pTexture);
 int         __stdcall D3DSurface_GetDesc(D3DSurface* pSurface, _D3DSURFACE_DESC* pDesc);
 void*       __stdcall D3DSurface_LockRect(D3DSurface* pSurface, D3DLOCKED_RECT* pLockedRect,
                                           const void* pRect, unsigned int Flags);
@@ -158,6 +159,10 @@ void*       __stdcall D3DSurface_LockRect(D3DSurface* pSurface, D3DLOCKED_RECT* 
 struct D3DBaseTexture : D3DResource {
     unsigned int Format;  // +0x0C
     unsigned int Size;    // +0x10
+
+    unsigned int __stdcall GetLevelCount() {
+        return D3DBaseTexture_GetLevelCount(this);
+    }
 };
 static_assert(sizeof(D3DBaseTexture) == 0x14, "D3DBaseTexture size mismatch");
 struct D3DTexture : D3DBaseTexture {

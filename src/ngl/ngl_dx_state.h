@@ -26,7 +26,7 @@ struct nglDxRenderState {
                                                      static_cast<unsigned int>(v)) == 0)
             D3DDevice_SetRenderState_MultiSampleAntiAlias(static_cast<unsigned int>(v));
     }
-    int SetMaxAnisotropy(unsigned int stage, unsigned int v);  // ea: 0x841E70
+    int SetMaxAnisotropy(int stage, int v);  // ea: 0x841E70
 };
 static_assert(sizeof(nglDxRenderState) == 4, "nglDxRenderState size mismatch");
 
