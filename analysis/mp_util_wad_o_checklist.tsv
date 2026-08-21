@@ -620,7 +620,7 @@ index	status	map_line
 619	PORTED	0002:0055c380 ??M@YA?AUbbool@@Ubint@@I@Z 00D4B880 f i mp_util_wad.o
 620	PORTED	0002:0055c3c0 ?Track_Ownership__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D4B8C0 f i mp_util_wad.o
 621	VERIFIED	0002:0055c460 ?CallbackGameState@_mp_hq@@YAXHHHHHHHHHHHHH@Z 00D4B960 f mp_util_wad.o
-622	VERIFIED	0002:0055c4d0 ?CallbackNextRound@_mp_hq@@YAXXZ 00D4B9D0 f mp_util_wad.o
+622	FIXED	0002:0055c4d0 ?CallbackNextRound@_mp_hq@@YAXXZ 00D4B9D0 f mp_util_wad.o	FIXED: IDA 0x0095C4D0 uses pLevel->_base.entity (or null) for both notify paths
 623	VERIFIED	0002:0055c5f0 ?CallbackRoundOver@_mp_hq@@YAXHVstring@Broc@@@Z 00D4BAF0 f mp_util_wad.o
 624	VERIFIED	0002:0055c6f0 ?CallbackPlayerJoin@_mp_hq@@YAXVentity@Broc@@IH@Z 00D4BBF0 f mp_util_wad.o
 625	VERIFIED	0002:0055c740 ?CallbackPlayerEnter@_mp_hq@@YAXVentity@Broc@@H@Z 00D4BC40 f mp_util_wad.o
