@@ -14691,6 +14691,142 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// (nal_init.o 0x8660F0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked16EntropyQuatData,
+                  nalComponentPacked16EntropyQuat>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::QuatDecoderBase* decoder =
+                (nalEntropyDecoder::QuatDecoderBase*)state;
+            const float* skeletonData = (const float*)*customSkeletonData;
+            const unsigned char* encoded =
+                (const unsigned char*)src;
+            const unsigned char* compressed = encoded + 1;
+            const unsigned char blockSize = *encoded;
+            if (decoder != nullptr)
+            {
+                new (decoder) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity,
+                    *skeletonData * *animData,
+                    compressed, 0);
+            }
+            src = compressed + blockSize;
+            state = (char*)state + sizeof(nalEntropyDecoder::QuatDecoderBase);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+    }
+}
+
+// (nal_init.o 0x866210)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked16EntropyQuatData,
+                  nalComponentPacked16EntropyQuat>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    dst = (void*)(((uintptr_t)dst + 1u) & ~uintptr_t(1u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::nalPackedQuatDecoder<
+                nalEntropyDecoder::nalQuaternion16>* decoder =
+                (nalEntropyDecoder::nalPackedQuatDecoder<
+                    nalEntropyDecoder::nalQuaternion16>*)state;
+            decoder->Decode(
+                (nalEntropyDecoder::nalQuaternion16*)dst,
+                (unsigned int)stride, (unsigned int)quantity,
+                *(const float*)*customSkeletonData * *animData,
+                (int*)work);
+            state = (char*)state + sizeof(nalEntropyDecoder::QuatDecoderBase);
+            dst = (char*)dst + 8;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// (nal_init.o 0x8666D0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked16EntropyQuatData,
+                  nalComponentPacked16EntropyQuat>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    dst = (void*)(((uintptr_t)dst + 1u) & ~uintptr_t(1u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* encoded =
+                (const unsigned char*)src;
+            const unsigned char* compressed = encoded + 1;
+            const unsigned char blockSize = *encoded;
+            const float scale = *(const float*)*customSkeletonData
+                                * *animData;
+            alignas(16) unsigned char storage[
+                sizeof(nalEntropyDecoder::QuatDecoderBase)];
+            nalEntropyDecoder::QuatDecoderBase* decoder =
+                new (storage) nalEntropyDecoder::QuatDecoderBase(
+                    (unsigned int)quantity, scale, compressed, 0);
+            reinterpret_cast<nalEntropyDecoder::nalPackedQuatDecoder<
+                nalEntropyDecoder::nalQuaternion16>*>(decoder)->Decode(
+                    (nalEntropyDecoder::nalQuaternion16*)dst,
+                    (unsigned int)stride, (unsigned int)quantity, scale,
+                    (int*)nalDecodeWorkArray);
+            src = compressed + blockSize;
+            dst = (char*)dst + 8;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // (nal_init.o 0x8659E0)
 template <>
 void nalComponent<nalComponentQuatBase,
