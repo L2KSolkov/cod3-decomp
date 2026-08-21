@@ -172,6 +172,74 @@ struct reserved_dlist {
         dlist_node(dlist_node* prev, dlist_node* next)
             : mNext(next), mPrev(prev) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
     };
+
+    class iterator {
+    public:
+        dlist_node* m_node;  // +0x00
+        dlist_node* m_next;  // +0x04
+
+        iterator(dlist_node* cur, dlist_node* next)
+            : m_node(cur), m_next(next) {}
+
+        // ea: 0x005EA260 (reserved_dlist<AeThreadState>)
+        iterator operator++(int)
+        {
+            dlist_node* old_node = m_node;
+            dlist_node* next = m_next;
+            if (next != nullptr)
+            {
+                m_node = next;
+                m_next = next->mNext;
+            }
+            iterator result(old_node, next);
+            return result;
+        }
+
+        // ea: 0x005EA290 (reserved_dlist<AeThread>)
+        iterator& operator++()
+        {
+            dlist_node* next = m_next;
+            if (next != nullptr)
+            {
+                m_node = next;
+                m_next = next->mNext;
+            }
+            return *this;
+        }
+    };
+
+    class const_iterator {
+    public:
+        const dlist_node* m_node;  // +0x00
+        const dlist_node* m_next;  // +0x04
+
+        const_iterator(const dlist_node* cur, const dlist_node* next)
+            : m_node(cur), m_next(next) {}
+
+        // ea: 0x005EA3E0 (reserved_dlist<AeThread>)
+        const_iterator(const const_iterator& it)
+            : m_node(it.m_node), m_next(it.m_next) {}
+
+        // ea: 0x005EA360 (reserved_dlist<AeThreadState>)
+        const_iterator& operator++()
+        {
+            if (m_next == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+                AeAssert::gCurrentLine = 501;
+                AeAssert::gCurrentExpr = "m_next != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            const dlist_node* next = m_next;
+            m_node = next;
+            m_next = next->mNext;
+            return *this;
+        }
+    };
+
     int         m_size;  // +0x00
     dlist_node* m_head;  // +0x04
     dlist_node* m_end;   // +0x08
