@@ -96,17 +96,17 @@ index	status	map_line
 95	FIXED	0002:00531cf0 ?GetEE_home_angles@@YAAAUvector@Broc@@Ventity@2@@Z 00D211F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 96	VERIFIED	0002:00531d40 ?IsEEDefined_home_angles@@YA?AUbbool@@Ventity@Broc@@@Z 00D21240 f mp_util_wad.o	VERIFIED: IDA 0x00931D40 uses key 0x385575E2 vector GetVal and IsDefined
 97	FIXED	0002:00531df0 ?GetEE_inDeath@@YAAAUbint@@Ventity@Broc@@@Z 00D212F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-98	PORTED	0002:00531e40 ?IsEEDefined_inDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21340 f mp_util_wad.o
+98	VERIFIED	0002:00531e40 ?IsEEDefined_inDeath@@YA?AUbbool@@Ventity@Broc@@@Z 00D21340 f mp_util_wad.o	VERIFIED: IDA 0x00931E40 uses key 0x9A8500FD bint GetVal and IsDefined
 99	FIXED	0002:00531ef0 ?GetEE_sound_handle@@YAAAUbint@@Ventity@Broc@@@Z 00D213F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-100	PORTED	0002:00531f40 ?IsEEDefined_sound_handle@@YA?AUbbool@@Ventity@Broc@@@Z 00D21440 f mp_util_wad.o
+100	VERIFIED	0002:00531f40 ?IsEEDefined_sound_handle@@YA?AUbbool@@Ventity@Broc@@@Z 00D21440 f mp_util_wad.o	VERIFIED: IDA 0x00931F40 uses key 0x8B17F374 bint GetVal and IsDefined
 101	FIXED	0002:00531ff0 ?GetEE_capSpeed@@YAAAUbfloat@@Ventity@Broc@@@Z 00D214F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-102	PORTED	0002:00532040 ?IsEEDefined_capSpeed@@YA?AUbbool@@Ventity@Broc@@@Z 00D21540 f mp_util_wad.o
-103	PORTED	0002:005320f0 ?GetEE_lastspawnpoint@@YAAAVentity@Broc@@V12@@Z 00D215F0 f mp_util_wad.o	PORTED: implemented from IDA key 0x9AA56007 and nullEnt fallback
-104	PORTED	0002:00532140 ?IsEEDefined_lastspawnpoint@@YA?AUbbool@@Ventity@Broc@@@Z 00D21640 f mp_util_wad.o  PORTED: implemented from IDA key 0x9AA56007 and guarded GetVal path; source body added
+102	VERIFIED	0002:00532040 ?IsEEDefined_capSpeed@@YA?AUbbool@@Ventity@Broc@@@Z 00D21540 f mp_util_wad.o	VERIFIED: IDA 0x00932040 uses key 0x95E84605 bfloat GetVal and IsDefined
+103	VERIFIED	0002:005320f0 ?GetEE_lastspawnpoint@@YAAAVentity@Broc@@V12@@Z 00D215F0 f mp_util_wad.o	VERIFIED: IDA 0x009320F0 forwards handle lookup and GetRef key 0x9AA56007
+104	VERIFIED	0002:00532140 ?IsEEDefined_lastspawnpoint@@YA?AUbbool@@Ventity@Broc@@@Z 00D21640 f mp_util_wad.o	VERIFIED: IDA 0x00932140 uses key 0x9AA56007 entity GetVal and IsDefined
 105	FIXED	0002:005321f0 ?GetEE_setting_up_hq@@YAAAUbint@@Ventity@Broc@@@Z 00D216F0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-106	PORTED	0002:00532240 ?IsEEDefined_setting_up_hq@@YA?AUbbool@@Ventity@Broc@@@Z 00D21740 f mp_util_wad.o
-107	PORTED	0002:005322f0 ?GetEE_weaponstr@@YAAAVstring@Broc@@Ventity@2@@Z 00D217F0 f mp_util_wad.o	PORTED: implemented from IDA key 0x93FB3A03 and nullEnt fallback
-108	PORTED	0002:00532340 ?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z 00D21840 f mp_util_wad.o  PORTED: implemented from IDA key 0x93FB3A03 and string GetVal/IsDefined path; source body added
+106	VERIFIED	0002:00532240 ?IsEEDefined_setting_up_hq@@YA?AUbbool@@Ventity@Broc@@@Z 00D21740 f mp_util_wad.o	VERIFIED: IDA 0x00932240 uses key 0x64A1977A bint GetVal and IsDefined
+107	VERIFIED	0002:005322f0 ?GetEE_weaponstr@@YAAAVstring@Broc@@Ventity@2@@Z 00D217F0 f mp_util_wad.o	VERIFIED: IDA 0x009322F0 forwards handle lookup and GetRef key 0x93FB3A03
+108	VERIFIED	0002:00532340 ?IsEEDefined_weaponstr@@YA?AUbbool@@Ventity@Broc@@@Z 00D21840 f mp_util_wad.o	VERIFIED: IDA 0x00932340 uses key 0x93FB3A03 string GetVal and IsDefined
 109	PORTED	0002:00532440 ?GetEE_damagecritical@@YAAAVstring@Broc@@Ventity@2@@Z 00D21940 f mp_util_wad.o	PORTED: implemented from IDA key 0xCF71F1AA and nullEnt fallback
 110	PORTED	0002:00532490 ?IsEEDefined_damagecritical@@YA?AUbbool@@Ventity@Broc@@@Z 00D21990 f mp_util_wad.o  PORTED: implemented from IDA key 0xCF71F1AA and string GetVal/IsDefined path; source body added
 111	FIXED	0002:00532590 ?GetEE_spawnscore@@YAAAUbint@@Ventity@Broc@@@Z 00D21A90 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
