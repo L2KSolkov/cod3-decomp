@@ -1,6 +1,6 @@
 index	status	map_line
 1	FIXED	0002:004051f0 ??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF46F0 f apsRectangleRenderer.o
-2	FIXED	0002:00405230 ?Init@apsRectangleRenderer@@SAXXZ 00BF4730 f apsRectangleRenderer.o
+2	FIXED	0002:00405230 ?Init@apsRectangleRenderer@@SAXXZ 00BF4730 f apsRectangleRenderer.o  FIXED: restored the one-element shader storage/table backing from apsRectangleRendererVertex.o; the reference Init body was already exact
 3	VERIFIED	0002:00405260 ?Render@apsRectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4760 f apsRectangleRenderer.o
 4	PORTED	0002:004052a0 ?RegisterVShader@apsRectangleRender@@YAXXZ 00BF47A0 f i apsRectangleRenderer.o
 5	PORTED	0002:004052c0 ?RegisterPShader@apsRectangleRenderPixel@@YAXXZ 00BF47C0 f i apsRectangleRenderer.o
