@@ -7195,14 +7195,14 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 7194	0x005B77F0	0x009A6CF0	??_GFESlider@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7195	0x005B77F0	0x009A6CF0	??_EFESlider@@UAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7196	0x005B7820	0x009A6D20	??_GDialogMenuDisplay@@QAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-7197	0x005B7890	0x009A6D90	?OnLeft@DialogMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7198	0x005B78A0	0x009A6DA0	?OnRight@DialogMenu@@UAEXH@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7197	0x005B7890	0x009A6D90	?OnLeft@DialogMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7198	0x005B78A0	0x009A6DA0	?OnRight@DialogMenu@@UAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7199	0x005B78B0	0x009A6DB0	?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7200	0x005B7910	0x009A6E10	?Init@MemCardCheckMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
-7201	0x005B7920	0x009A6E20	?Init@OptionsGameplayMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7200	0x005B7910	0x009A6E10	?Init@MemCardCheckMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
+7201	0x005B7920	0x009A6E20	?Init@OptionsGameplayMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7202	0x005B7930	0x009A6E30	?OnLeft@OptionsGameplayMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7203	0x005B79E0	0x009A6EE0	?OnRight@OptionsGameplayMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7204	0x005B7A90	0x009A6F90	?Init@OptionsControlsMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
+7204	0x005B7A90	0x009A6F90	?Init@OptionsControlsMenu@@UAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION exact IDA no-op override	YES	YES	VERIFIED
 7205	0x005B7AA0	0x009A6FA0	?OnLeft@OptionsControlsMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7206	0x005B7AB0	0x009A6FB0	?OnRight@OptionsControlsMenu@@UAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7207	0x005B7AC0	0x009A6FC0	?Init@OptionsSoundMenu@@UAEXXZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY

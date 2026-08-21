@@ -2018,14 +2018,14 @@ index	status	map_line
 2017	SKIPPED	0002:001b77f0 ??_GFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2018	SKIPPED	0002:001b77f0 ??_EFESlider@@UAEPAXI@Z 009A6CF0 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 2019	SKIPPED	0002:001b7820 ??_GDialogMenuDisplay@@QAEPAXI@Z 009A6D20 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-2020	PORTED	0002:001b7890 ?OnLeft@DialogMenu@@UAEXH@Z 009A6D90 f i shell.o  PORTED: added IDA-derived empty override
-2021	PORTED	0002:001b78a0 ?OnRight@DialogMenu@@UAEXH@Z 009A6DA0 f i shell.o  PORTED: added IDA-derived empty override
+2020	VERIFIED	0002:001b7890 ?OnLeft@DialogMenu@@UAEXH@Z 009A6D90 f i shell.o  VERIFIED: exact IDA no-op override
+2021	VERIFIED	0002:001b78a0 ?OnRight@DialogMenu@@UAEXH@Z 009A6DA0 f i shell.o  VERIFIED: exact IDA no-op override
 2022	VERIFIED	0002:001b78b0 ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009A6DB0 f i shell.o
-2023	PORTED	0002:001b7910 ?Init@MemCardCheckMenu@@UAEXXZ 009A6E10 f i shell.o  PORTED: added IDA-derived empty override
-2024	PORTED	0002:001b7920 ?Init@OptionsGameplayMenu@@UAEXXZ 009A6E20 f i shell.o  PORTED: added IDA-derived empty override
+2023	VERIFIED	0002:001b7910 ?Init@MemCardCheckMenu@@UAEXXZ 009A6E10 f i shell.o  VERIFIED: exact IDA no-op override
+2024	VERIFIED	0002:001b7920 ?Init@OptionsGameplayMenu@@UAEXXZ 009A6E20 f i shell.o  VERIFIED: exact IDA no-op override
 2025	VERIFIED	0002:001b7930 ?OnLeft@OptionsGameplayMenu@@UAEXH@Z 009A6E30 f i shell.o
 2026	VERIFIED	0002:001b79e0 ?OnRight@OptionsGameplayMenu@@UAEXH@Z 009A6EE0 f i shell.o
-2027	PORTED	0002:001b7a90 ?Init@OptionsControlsMenu@@UAEXXZ 009A6F90 f i shell.o  PORTED: added IDA-derived empty override
+2027	VERIFIED	0002:001b7a90 ?Init@OptionsControlsMenu@@UAEXXZ 009A6F90 f i shell.o  VERIFIED: exact IDA no-op override
 2028	VERIFIED	0002:001b7aa0 ?OnLeft@OptionsControlsMenu@@UAEXH@Z 009A6FA0 f i shell.o
 2029	VERIFIED	0002:001b7ab0 ?OnRight@OptionsControlsMenu@@UAEXH@Z 009A6FB0 f i shell.o
 2030	PORTED	0002:001b7ac0 ?Init@OptionsSoundMenu@@UAEXXZ 009A6FC0 f i shell.o  PORTED: added IDA-derived empty override
