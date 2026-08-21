@@ -4472,9 +4472,9 @@ void ShowDestructionGraphic(Broc::entity guy);
 void ShowLosingHQGraphic(Broc::entity guy);
 void ShowProgressBar(Broc::entity self, Broc::string colour);
 void TriggerRadio(Broc::entity self);
-void SwitchToRadioOnly(Broc::entity self);
-void AddRadioModel(Broc::entity self);
-void RemoveRadioModel(Broc::entity self);
+void SwitchToRadioOnly();
+void AddRadioModel();
+void RemoveRadioModel();
 void ClearGame();
 void ResetGame(Broc::entity self);
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
@@ -11091,6 +11091,8 @@ void ObjectiveUpdater(Broc::entity guy) {
 // ============================================================================
 namespace _mp_hq {
 
+static Broc::bfloat lHQObjectiveHeight(30.0f);
+
 // main - ea: 0x956920
 void main(Broc::entity self) {
     Broc::Code_DebugOut("*HQ* main\n");
@@ -11206,7 +11208,7 @@ void Host_FlowControl(Broc::entity self) {
     if ((int)mp_util_wad::pLevel->hq_stage <= 2) {
         Broc::Code_DebugOut("*HQ* StageTimer 2\n");
         mp_util_wad::pLevel->hq_stage = 2;
-        SwitchToRadioOnly(lvl);
+        SwitchToRadioOnly();
         BroadcastGameState();
         while ((int)mp_util_wad::pLevel->hq_stage < 3)
             Broc::wait(1.0f);
@@ -11310,7 +11312,7 @@ char Host_PickInitialPoints() {
 
 // SetupStage1 - ea: 0x958870
 void SetupStage1() {
-    RemoveRadioModel(mp_util_wad::pLevel->base_allies);
+    RemoveRadioModel();
     NoRespawnForDefenders(Broc::bbool(false));
 }
 
@@ -11404,7 +11406,7 @@ void ClearGame() {
     Broc::notify(lvl, n);
     mp_util_wad::pLevel->hq_stage = 0;
     ObjectiveDelete(0, -1);
-    RemoveRadioModel(lvl);
+    RemoveRadioModel();
     HashStr trigHash;
     Broc::string_hash(&trigHash, "_mp_hq::TriggerRadio");
     HashStr label;
@@ -11578,7 +11580,7 @@ void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
             GetTriggerFromIndex();
             Broc::entity lvl;
             lvl.___u0 = mp_util_wad::pLevel != NULL;
-            SwitchToRadioOnly(lvl);
+            SwitchToRadioOnly();
             Broc::string script("MX_HQ_HQReady");
             Broc::entity lvl2;
             lvl2.___u0 = mp_util_wad::pLevel != NULL;
@@ -11921,23 +11923,59 @@ void SetUpStage3(Broc::entity self) {
 }
 
 // SwitchToRadioOnly - ea: 0x95AF10
-void SwitchToRadioOnly(Broc::entity self) {
-    (void)self;
-    AddRadioModel(mp_util_wad::pLevel->base_allies);
+void SwitchToRadioOnly() {
+    ObjectiveDelete(0, -1);
+    if ((bool)mp_util_wad::pLevel->pointA_isHQ) {
+        Broc::string pszString("flag");
+        Broc::string state("i_objective_c");
+        ObjectiveAdd(0, state, pszString, mp_util_wad::pLevel->pointA,
+                     (float)lHQObjectiveHeight, -1);
+        state.~string();
+        pszString.~string();
+    }
+    AddRadioModel();
+    HashStr funcHash;
+    Broc::string_hash(&funcHash, "_mp_hq::TriggerRadio");
+    HashStr label;
+    label.mVal = 0xF2F5EAB4;
+    Broc::AddEventHandler(mp_util_wad::GetEE_trigger(
+                              mp_util_wad::pLevel->_base.entity),
+                          label.mVal, funcHash.mVal);
+    Broc::string script("MX_HQ_HQReady");
+    Broc::entity* levelEntity =
+        mp_util_wad::pLevel != nullptr
+            ? &mp_util_wad::pLevel->_base.entity
+            : nullptr;
+    Broc::EffectEventPlay(levelEntity, &script);
+    script.~string();
 }
 
 // AddRadioModel - ea: 0x95B0F0
-void AddRadioModel(Broc::entity self) {
-    Broc::string model("xmodel/radio");
-    Broc::SetModel(&self, &model, 0);
-    model.~string();
+void AddRadioModel() {
+    Broc::string val("hq_radio");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::entity radio;
+    Broc::GetEnt(&radio, &val, key, 0);
+    val.~string();
+    if (!Broc::IsDefined(radio))
+        return;
+    if ((bool)mp_util_wad::pLevel->pointA_isHQ)
+        mp_util_wad::entity_set_origin(radio, mp_util_wad::pLevel->pointA);
 }
 
 // RemoveRadioModel - ea: 0x95B1E0
-void RemoveRadioModel(Broc::entity self) {
-    Broc::string model("xmodel/radio_off");
-    Broc::SetModel(&self, &model, 0);
-    model.~string();
+void RemoveRadioModel() {
+    Broc::string val("hq_radio");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::entity radio;
+    Broc::GetEnt(&radio, &val, key, 0);
+    val.~string();
+    if (!Broc::IsDefined(radio))
+        return;
+    Broc::vector hidden(0.0f, 0.0f, -10000.0f);
+    mp_util_wad::entity_set_origin(radio, hidden);
 }
 
 // TriggerRadio - ea: 0x9593E0
