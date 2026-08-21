@@ -3821,8 +3821,8 @@ index	status	map_line
 3820	SKIPPED	0002:0011baf0 ??_EHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3821	SKIPPED	0002:0011baf0 ??_GHealthRegenTask@@UAEPAXI@Z 0090AFF0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3822	VERIFIED	0002:0011bb20 ??1HealthRegenTask@@UAE@XZ 0090B020 f i game2.o
-3823	PORTED	0002:0011bb30 ??0SortedParticleIterator@apsRenderSort@@QAE@XZ 0090B030 f i game2.o
-3824	PORTED	0002:0011bb40 ?GetNextParticle@SortedParticleIterator@apsRenderSort@@UAEPAEXZ 0090B040 f i game2.o
+3823	PORTED	0002:0011bb30 ??0SortedParticleIterator@apsRenderSort@@QAE@XZ 0090B030 f i game2.o  PORTED: IDA-backed constructor installs the derived vtable
+3824	PORTED	0002:0011bb40 ?GetNextParticle@SortedParticleIterator@apsRenderSort@@UAEPAEXZ 0090B040 f i game2.o  PORTED: IDA-backed bounds check, indexed fetch, and increment
 3825	SKIPPED	0002:0011bb60 ??_ESortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3826	SKIPPED	0002:0011bb60 ??_GSortedParticleIterator@apsRenderSort@@UAEPAXI@Z 0090B060 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3827	PORTED	0002:0011bb90 ??0AnimNoteHandler@@QAE@XZ 0090B090 f i game2.o
