@@ -410,7 +410,7 @@ index	status	map_line
 409	FIXED	0002:00546110 ?StartRound@_mp_common@@YAXUbbool@@@Z 00D35610 f mp_util_wad.o	FIXED: IDA 0x00946110 constructs the notify and finish_starting_round callbacks from pLevel->_base.entity
 410	VERIFIED	0002:00546570 ?Code_ForceControllerErrorMessageDown@Broc@@YAXXZ 00D35A70 f i mp_util_wad.o
 411	FIXED	0002:00546590 ?finish_starting_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D35A90 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
-412	PORTED	0002:00546630 ?finish_starting_round@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D35B30 f mp_util_wad.o
+412	FIXED	0002:00546630 ?finish_starting_round@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D35B30 f mp_util_wad.o	FIXED: IDA 0x00946630 reloads pLevel->_base.entity independently for each endon/notify path
 413	PORTED	0002:00546c00 ?restart_round@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D36100 f mp_util_wad.o
 414	VERIFIED	0002:005473f0 ?Code_SettleMapVote@Broc@@YAXXZ 00D368F0 f i mp_util_wad.o
 415	VERIFIED	0002:00547410 ?Code_SettleGameModeVote@Broc@@YAXXZ 00D36910 f i mp_util_wad.o
