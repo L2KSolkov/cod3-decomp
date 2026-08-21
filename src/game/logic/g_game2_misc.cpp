@@ -270,7 +270,7 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
 }
 
 // ============================================================================
-// nalMatrix4x4_to_Axis4 - copy rotation rows to axis array
+// nalMatrix4x4_to_Axis4 - copy the first three components of each row
 // ea: 0x4F5ED0
 // ============================================================================
 struct nalMatrix4x4 {
@@ -282,11 +282,12 @@ struct nalMatrix4x4 {
 
 void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 {
+    const float* rows = &mat->x[0];
     for (int i = 0; i < 4; ++i)
     {
-        axis[i][0] = mat->x[i];
-        axis[i][1] = mat->y[i];
-        axis[i][2] = mat->z[i];
+        axis[i][0] = rows[i * 4 + 0];
+        axis[i][1] = rows[i * 4 + 1];
+        axis[i][2] = rows[i * 4 + 2];
     }
 }
 
