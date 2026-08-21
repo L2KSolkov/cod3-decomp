@@ -6507,8 +6507,10 @@ void restart_round(Broc::entity selfLevel, Broc::bint waitTime) {
     if ((int)waitTime < 1)
         waitTime = 1;
     Broc::wait((float)(int)waitTime);
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr fade;
     fade.mVal = 0x2A9ACF98u;
     Broc::waittill(lvl, fade);
@@ -6529,26 +6531,34 @@ void restart_round(Broc::entity selfLevel, Broc::bint waitTime) {
             Broc::wait(2.0f);
         if (mp_util_wad::pLevel->roundWinner == "allies") {
             Broc::string script("MX_MPVictory_Allies");
-            Broc::entity lvl2;
-            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::entity lvl2 =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             mp_util_wad::pLevel->roundEndMusic =
                 Broc::EffectEventPlay(&lvl2, &script);
             script.~string();
             Broc::string dialog("MP_GEN_AlliesWin");
-            Broc::entity lvl3;
-            lvl3.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::entity lvl3 =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             Broc::DialogPlay(lvl3, &dialog);
             dialog.~string();
         } else if (mp_util_wad::pLevel->roundWinner == "axis") {
             Broc::string script("MX_MPVictory_Axis");
-            Broc::entity lvl2;
-            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::entity lvl2 =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             mp_util_wad::pLevel->roundEndMusic =
                 Broc::EffectEventPlay(&lvl2, &script);
             script.~string();
             Broc::string dialog("MP_GEN_AxisWin");
-            Broc::entity lvl3;
-            lvl3.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::entity lvl3 =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             Broc::DialogPlay(lvl3, &dialog);
             dialog.~string();
         } else {
