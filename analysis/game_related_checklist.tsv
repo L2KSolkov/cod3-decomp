@@ -8273,18 +8273,18 @@ index	status	map_line
 8272	PORTED	0002:001e9830 ?GetHandle@vehiclenode@Broc@@QBEHXZ 009D8D30 f i scr.o
 8273	PORTED	0002:001e9840 ?IsDefined@vehiclenode@Broc@@QBE_NXZ 009D8D40 f i scr.o
 8274	VERIFIED	0002:001e9850 ??0entity@Broc@@QAE@XZ 009D8D50 f i scr.o
-8275	PORTED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o
-8276	PORTED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o
-8277	PORTED	0002:001e9890 ??3AeThread@@SAXPAX_NPBDH@Z 009D8D90 f i scr.o
-8278	PORTED	0002:001e98b0 ??3AeThread@@SAXPAX@Z 009D8DB0 f i scr.o
-8279	PORTED	0002:001e98d0 ?SetHandle@AeThread@@QAEXVHandle@@@Z 009D8DD0 f i scr.o
-8280	PORTED	0002:001e98e0 ?GetHandle@AeThread@@QBE?AVHandle@@XZ 009D8DE0 f i scr.o
-8281	PORTED	0002:001e9900 ??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z 009D8E00 f i scr.o
-8282	PORTED	0002:001e9920 ??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z 009D8E20 f i scr.o
-8283	PORTED	0002:001e9940 ??3Block@BackupStack@AeThread@@SAXPAX@Z 009D8E40 f i scr.o
-8284	PORTED	0002:001e9960 ??0Block@BackupStack@AeThread@@QAE@XZ 009D8E60 f i scr.o
-8285	PORTED	0002:001e9970 ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ 009D8E70 f i scr.o
-8286	PORTED	0002:001e9980 ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009D8E80 f i scr.o
+8275	PORTED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8276	PORTED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8277	PORTED	0002:001e9890 ??3AeThread@@SAXPAX_NPBDH@Z 009D8D90 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8278	PORTED	0002:001e98b0 ??3AeThread@@SAXPAX@Z 009D8DB0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8279	PORTED	0002:001e98d0 ?SetHandle@AeThread@@QAEXVHandle@@@Z 009D8DD0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8280	PORTED	0002:001e98e0 ?GetHandle@AeThread@@QBE?AVHandle@@XZ 009D8DE0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8281	PORTED	0002:001e9900 ??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z 009D8E00 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8282	PORTED	0002:001e9920 ??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z 009D8E20 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8283	PORTED	0002:001e9940 ??3Block@BackupStack@AeThread@@SAXPAX@Z 009D8E40 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8284	PORTED	0002:001e9960 ??0Block@BackupStack@AeThread@@QAE@XZ 009D8E60 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8285	PORTED	0002:001e9970 ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ 009D8E70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+8286	PORTED	0002:001e9980 ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009D8E80 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 8287	VERIFIED	0002:001e99a0 _asinf 009D8EA0 f i scr.o
 8288	VERIFIED	0002:001e99b0 _atanf 009D8EB0 f i scr.o
 8289	VERIFIED	0002:001e99c0 _logf 009D8EC0 f i scr.o
