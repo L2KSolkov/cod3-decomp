@@ -54,7 +54,7 @@ void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
 void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
                              Broc::string teamsound,
                              Broc::string otherteamsound);
-void* player_dying_sounds__functor(Broc::entity player);
+AeThreadFunctor* player_dying_sounds__functor(Broc::entity player);
 void* audio_crossfade_wait__functor(Broc::entity self);
 void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name);
 void* ThreadStaticSoundRandomPlay__functor(Broc::entity self,
@@ -130,7 +130,7 @@ Broc::string* team_balance(Broc::string* result, Broc::entity guy,
 void team_balance(Broc::bbool always);
 }
 namespace _mp_common {
-void* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
+AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
 void* QuitGameThread__functor(Broc::entity selfLevel);
 void* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
 void* HostHasMigrated__functor(Broc::entity self);
@@ -139,7 +139,7 @@ void* LocalPlayerRespawn__functor(Broc::entity player);
 void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished);
 void* reenable_medic_call__functor(Broc::entity self, Broc::bint time);
 void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft);
-void* TeamChangeKillPlayer__functor(Broc::entity player);
+AeThreadFunctor* TeamChangeKillPlayer__functor(Broc::entity player);
 AeThreadFunctor* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
 AeThreadFunctor* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap);
 AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_killer,
@@ -2177,11 +2177,32 @@ const int& Broc::entity::__unnamed::spectatorClient_struct::operator=(
     return rhs;
 }
 
+// Broc::entity::__unnamed::playerClass_struct::Get - ea: 0x940850
+__int16 Broc::entity::__unnamed::playerClass_struct::Get() const {
+    return Broc::gBrocAPI.m_entity_get_persistent_player_playerClass(mHandle);
+}
+
 // Broc::entity::__unnamed::playerClass_struct::operator= - ea: 0x93E3D0
 const __int16& Broc::entity::__unnamed::playerClass_struct::operator=(
     const __int16& rhs) {
     Broc::gBrocAPI.m_entity_set_persistent_player_playerClass(mHandle, rhs);
     return rhs;
+}
+
+// CloseMenu - ea: 0x940880
+void Broc::CloseMenu(const Broc::string& str, int viewport) {
+    Broc::gBrocAPI.mCloseMenu2(&str, viewport);
+}
+
+// DoDamage - ea: 0x940E50
+void Broc::DoDamage(const Broc::entity& e, float damage,
+                    const Broc::vector& vecIn, hitLocation_t hitLoc) {
+    Broc::gBrocAPI.mDoDamage(e.GetHandle(), damage, &vecIn, hitLoc);
+}
+
+// SetTakeDamage - ea: 0x940E90
+void Broc::SetTakeDamage(const Broc::entity& e, int damage) {
+    Broc::gBrocAPI.mSetTakeDamage(e.GetHandle(), damage);
 }
 
 // Broc::entity::__unnamed::nextPlayerClass_struct::operator= - ea: 0x93E410
@@ -5165,12 +5186,12 @@ void TeamChangeKillPlayer(Broc::entity player) {
         mp_util_wad::entity_get_health(&health, player);
         if (!((int)health > 0))
             break;
-        Broc::SetTakeDamage(&player, 1);
+        Broc::SetTakeDamage(player, 1);
         Broc::vector origin;
         mp_util_wad::entity_get_origin(&origin, player);
         Broc::vector down(0.0f, 0.0f, -5.0f);
         Broc::vector vecIn = origin + down;
-        Broc::DoDamage(&player, 10000.0f, &vecIn, HITLOC_NONE);
+        Broc::DoDamage(player, 10000.0f, vecIn, HITLOC_NONE);
         Broc::wait(0.1f);
     }
 }
@@ -5642,10 +5663,10 @@ void CallbackPlayerRevive(Broc::entity player, Broc::entity medic) {
     weapon.~string();
     if (Broc::Code_IsLocalPlayer(player)) {
         Broc::string menu("weapon");
-        Broc::CloseMenu(&menu, Broc::GetPlayerIndex(player));
+        Broc::CloseMenu(menu, Broc::GetPlayerIndex(player));
         menu.~string();
         Broc::string menu2("spectate");
-        Broc::CloseMenu(&menu2, Broc::GetPlayerIndex(player));
+        Broc::CloseMenu(menu2, Broc::GetPlayerIndex(player));
         menu2.~string();
         Broc::entity lvl;
         lvl.___u0 = mp_util_wad::pLevel != NULL;
@@ -5865,10 +5886,10 @@ void CallbackRoundOver(int condition, Broc::string team) {
         Broc::entity p = local_players[(unsigned int)(int)i];
         int idx = Broc::GetPlayerIndex(p);
         Broc::string menu("side_select");
-        Broc::CloseMenu(&menu, idx);
+        Broc::CloseMenu(menu, idx);
         menu.~string();
         Broc::string menu2("weapon");
-        Broc::CloseMenu(&menu2, idx);
+        Broc::CloseMenu(menu2, idx);
         menu2.~string();
         i = (int)i + 1;
     }
@@ -6412,7 +6433,7 @@ void LocalPlayerIntermission(Broc::entity player) {
 // LocalPlayerRespawn - ea: 0x945D30
 void LocalPlayerRespawn(Broc::entity player) {
     Broc::string menu("spectate");
-    Broc::CloseMenu(&menu, Broc::GetPlayerIndex(player));
+    Broc::CloseMenu(menu, Broc::GetPlayerIndex(player));
     menu.~string();
     if (mp_util_wad::entity_get_nextPlayerClass(player) == -1) {
         Broc::TakeAllWeapons(&player);
@@ -7180,7 +7201,7 @@ void BlowUpIfUnderWorld(Broc::entity self) {
                 if (selfPos.z < -1000.0f) {
                     Broc::entity lvl;
                     lvl.___u0 = mp_util_wad::pLevel != NULL;
-                    Broc::DoDamage(&lvl, 10000.0f, &selfPos, HITLOC_NONE);
+                    Broc::DoDamage(lvl, 10000.0f, selfPos, HITLOC_NONE);
                 }
             }
         }
@@ -7211,8 +7232,8 @@ void BlowUpIfFlipped(Broc::entity self) {
                     selfPos = pos;
                     Broc::bint health2;
                     mp_util_wad::entity_get_health(&health2, self);
-                    Broc::DoDamage(&self, (float)((int)health2 + 100),
-                                   &selfPos, HITLOC_NONE);
+                    Broc::DoDamage(self, (float)((int)health2 + 100),
+                                   selfPos, HITLOC_NONE);
                 }
             }
         }
@@ -7288,7 +7309,7 @@ void HostSafeVehicleRespawn(Broc::entity self) {
         Broc::wait(2.0f);
     }
     Broc::Code_RespawnVehicle(&self);
-    Broc::SetTakeDamage(&self, 1);
+    Broc::SetTakeDamage(self, 1);
     Broc::Code_BroadcastVehicleRespawn(self);
 }
 
@@ -7325,7 +7346,7 @@ void death(Broc::entity self, Broc::entity attacker) {
         mp_util_wad::entity_get_origin(&origin2, self);
         Broc::RadiusDamage(&origin2, 512.0f, 100.0f, 1.0f, 27);
         Broc::wait(0.2f);
-        Broc::SetTakeDamage(&self, 0);
+    Broc::SetTakeDamage(self, 0);
         Broc::wait(1.0f);
         Broc::string respawnmodel = *mp_util_wad::GetEE_respawnmodel(self);
         Broc::SetModel(&self, &respawnmodel, 0);
@@ -7447,7 +7468,7 @@ void inactivity_blowup(Broc::entity self) {
     mp_util_wad::entity_get_origin(&origin, self);
     Broc::bint health;
     mp_util_wad::entity_get_health(&health, self);
-    Broc::DoDamage(&self, (float)((int)health + 100), &origin, HITLOC_NONE);
+    Broc::DoDamage(self, (float)((int)health + 100), origin, HITLOC_NONE);
 }
 
 // local_player_hit_effects - ea: 0x9720A0
@@ -7825,7 +7846,7 @@ void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
     otherteamsound.~string();
     return result;
 }
-void* player_dying_sounds__functor(Broc::entity player) {
+AeThreadFunctor* player_dying_sounds__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -13072,7 +13093,7 @@ void team_balance(Broc::bbool always) {
 }
 }
 namespace _mp_common {
-void* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow) {
+AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>));
     if (storage == NULL)
         return NULL;
@@ -13128,7 +13149,7 @@ void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft) 
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(HandleJoinAfterRoundOver, self, timeleft);
 }
-void* TeamChangeKillPlayer__functor(Broc::entity player) {
+AeThreadFunctor* TeamChangeKillPlayer__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
