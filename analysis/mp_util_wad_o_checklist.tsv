@@ -279,7 +279,7 @@ index	status	map_line
 278	PORTED	0002:0053d8e0 ??D@YA?AUbint@@U0@H@Z 00D2CDE0 f i mp_util_wad.o	PORTED: IDA uses global bint, reads lhs.mVal, multiplies by rhs, constructs and returns the result
 279	PORTED	0002:0053d920 ?Code_GetTeamScore@Broc@@YAHABVstring@1@@Z 00D2CE20 f i mp_util_wad.o	PORTED: IDA forwards the const string reference to gBrocAPI.mGetTeamScore at +0x340
 280	PORTED	0002:0053d950 ?Code_SendGameState@Broc@@YAXVentity@1@HHHH_N11HHH_NHH@Z 00D2CE50 f i mp_util_wad.o	PORTED: IDA gets the player handle and forwards all 13 state values to gBrocAPI.mSendGameState at +0x370
-281	VERIFIED	0002:0053d9c0 ?CallbackGameState@_mp_common@@YAXHHHHHHHHHHHHH@Z 00D2CEC0 f mp_util_wad.o
+281	FIXED	0002:0053d9c0 ?CallbackGameState@_mp_common@@YAXHHHHHHHHHHHHH@Z 00D2CEC0 f mp_util_wad.o	FIXED: IDA 0x0093D9C0 constructs both callback entities from pLevel->_base.entity before HandleJoinAfterRoundOver and notify
 282	PORTED	0002:0053de70 ?Code_IncTeamScore@Broc@@YAXABVstring@1@H@Z 00D2D370 f i mp_util_wad.o	PORTED: IDA forwards the const string reference and amount to gBrocAPI.mIncTeamScore at +0x33C
 283	VERIFIED	0002:0053dea0 ?Code_DebugOut@Broc@@YAXPBD@Z 00D2D3A0 f i mp_util_wad.o
 284	PORTED	0002:0053ded0 ?SetCvar@@YAXPBDH@Z 00D2D3D0 f i mp_util_wad.o	PORTED: IDA forwards cvar and integer value to gBrocAPI.mCVarSetInt at +0x25C
