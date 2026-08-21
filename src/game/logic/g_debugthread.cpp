@@ -1607,13 +1607,26 @@ void TaskSys_Update(float deltaT)
 // ============================================================================
 // TaskSys::DeactivateTask - ea: 0x50B9C0
 // ============================================================================
-extern Task* HandleDb_GetTask(void* self, Handle h);  // GetObject on Task HandleDb
+struct TaskHandleDbView {
+    struct DbElement {
+        Task* mObject;
+        int mKey;
+    } mElements[32];
+};
 
 void TaskSys_DeactivateTask(Handle taskHandle)
 {
-    Task* t = HandleDb_GetTask(&TaskSysImpl2_sInst->mHandleDb, taskHandle);
-    if (t != nullptr)
-        t->mFlags |= 4u;
+    unsigned int index = taskHandle.mVal & 0x1FFFu;
+    TaskHandleDbView* db = reinterpret_cast<TaskHandleDbView*>(
+        &TaskSys::sInst.mHandleDb);
+    if (index < 0x20u
+        && (taskHandle.mVal >> 13) ==
+               static_cast<unsigned int>(db->mElements[index].mKey))
+    {
+        Task* object = db->mElements[index].mObject;
+        if (object != nullptr)
+            object->mFlags |= 4u;
+    }
 }
 
 // ============================================================================
