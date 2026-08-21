@@ -6373,8 +6373,10 @@ void CallbackFireArtillery(Broc::entity firer, Broc::vector position) {
 // StartRound - ea: 0x946110
 void StartRound(Broc::bbool firstTime) {
     Broc::Code_DebugOut("*COMMON* StartRound\n");
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr label;
     label.mVal = 0xAFE7EFF4;
     Broc::notify(lvl, label);
@@ -6410,8 +6412,10 @@ void StartRound(Broc::bbool firstTime) {
     players.~dyn_array();
     Broc::Code_ClearPlayerStats();
     Broc::Code_ClearTeamScores();
-    Broc::entity lvl2;
-    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl2 =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     void* ftor = finish_starting_round__functor(lvl2, (bool)firstTime);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                         __LINE__, "finish_starting_round", ftor);
