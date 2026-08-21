@@ -17,6 +17,79 @@
 
 class ScriptEventParams;
 
+static const __m128 Float4_SinCoefs_1_game2 =
+    _mm_setr_ps(-0.16666667f, 0.0083333338f, -0.00019841269f, 0.0f);
+
+// ea: 0x00517440
+math::Quaternion slerp(const math::Quaternion& q0,
+                       const math::Quaternion& q1, float t)
+{
+    __m128 product = _mm_mul_ps(q0.v, q1.v);
+    float dot = product.m128_f32[0]
+        + (product.m128_f32[1]
+           + (product.m128_f32[2] + product.m128_f32[3]));
+    float adjustedDot = dot;
+    __m128 weights = _mm_setr_ps(1.0f - t, t, 1.0f, 0.0f);
+    if (dot < 0.0f)
+    {
+        adjustedDot = -dot;
+        weights = _mm_setr_ps(1.0f - t, -t, 1.0f, 0.0f);
+    }
+
+    if (adjustedDot < 0.99999899f)
+    {
+        float theta;
+        if (adjustedDot >= 0.5f)
+        {
+            float s = sqrtf((1.0f - adjustedDot) * 0.5f);
+            float s2 = s * s;
+            float s3 = s2 * s;
+            float s5 = s3 * s2;
+            theta = ((((s5 * s2) * 0.1079625f)
+                      + (s5 * 0.15000001f))
+                     + (s3 * 0.33333331f))
+                + (s * 2.0f);
+        }
+        else
+        {
+            float dot2 = adjustedDot * adjustedDot;
+            float dot3 = dot2 * adjustedDot;
+            float dot4 = dot2 * dot2;
+            theta = ((((dot4 * dot2) * -0.053981241f)
+                      - (dot4 * 0.075000003f))
+                     - (dot3 * 0.1666667f))
+                - adjustedDot + 1.570796f;
+        }
+
+        __m128 angle = _mm_mul_ps(weights, _mm_set1_ps(theta));
+        __m128 angle2 = _mm_mul_ps(angle, angle);
+        __m128 angle3 = _mm_mul_ps(angle2, angle);
+        __m128 angle5 = _mm_mul_ps(angle2, angle3);
+        __m128 sine = _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(
+                    angle,
+                    _mm_mul_ps(
+                        _mm_mul_ps(angle2, angle5),
+                        _mm_shuffle_ps(Float4_SinCoefs_1_game2,
+                                       Float4_SinCoefs_1_game2, 170))),
+                _mm_mul_ps(angle5,
+                           _mm_shuffle_ps(Float4_SinCoefs_1_game2,
+                                          Float4_SinCoefs_1_game2, 85))),
+            _mm_mul_ps(angle3,
+                       _mm_shuffle_ps(Float4_SinCoefs_1_game2,
+                                      Float4_SinCoefs_1_game2, 0)));
+        float denominator = sine.m128_f32[2];
+        weights = _mm_div_ps(sine, _mm_set1_ps(denominator));
+    }
+
+    math::Quaternion result;
+    result.v = _mm_add_ps(
+        _mm_mul_ps(q0.v, _mm_shuffle_ps(weights, weights, 0)),
+        _mm_mul_ps(q1.v, _mm_shuffle_ps(weights, weights, 85)));
+    return result;
+}
+
 // ea: 0x004EAAC0
 FourCC::FourCC(int v)
     : mVal(static_cast<unsigned int>(v))
