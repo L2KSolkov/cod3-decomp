@@ -131,6 +131,21 @@ float SoundDevice::Sound::GetMinDist() const
     return nslGetWaveParam((nslWaveID)mWave, 25, 1.0f);
 }
 
+float SoundDevice::Sound::GetMinValue() const
+{
+    return mMinRange;
+}
+
+float SoundDevice::Sound::GetMaxValue() const
+{
+    return mMaxRange;
+}
+
+DbLinkedHandle<EntityHandleDb, Entity> SoundDevice::Sound::GetEntHdl() const
+{
+    return DbLinkedHandle<EntityHandleDb, Entity>(mEntHandle);
+}
+
 bool SoundDevice::Sound::IsSourceValid() const
 {
     return mSource != -1;
@@ -144,6 +159,11 @@ nslSourceID SoundDevice::Sound::GetSourceId() const
 float SoundDevice::GetVolScale() const
 {
     return mVolScale;
+}
+
+nslEffect* SoundDevice::GetCurrentReverb()
+{
+    return reinterpret_cast<nslEffect*>(mCurrentReverb);
 }
 
 // ea: 0x004B5150
@@ -710,6 +730,48 @@ math::Dir3 math::operator/(const math::Dir3& _a, float _b)
     return r;
 }
 
+math::Dir3 math::Mul(const math::Dir3& _v, const math::Mat44& _m)
+{
+    math::Dir3 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v));
+    return r;
+}
+
+math::Dir3 math::operator*(const math::Dir3& _v, const math::Mat44& _m)
+{
+    math::Dir3 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v));
+    return r;
+}
+
+math::Vector4 math::Mul(const math::Vector4& _v, const math::Mat44& _m)
+{
+    math::Vector4 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 255), _m.w.v)));
+    return r;
+}
+
+math::Vector4 math::operator*(const math::Vector4& _v, const math::Mat44& _m)
+{
+    math::Vector4 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 255), _m.w.v)));
+    return r;
+}
+
 // Vector4(const Constant&) (g.o 0x4A5F80)
 math::Vector4::Vector4(const math::Vector4::Constant& _c)
 {
@@ -1033,6 +1095,24 @@ const math::Mat44& math::Mat44::operator=(const math::Mat44& _m)
     y = _m.y;
     z = _m.z;
     w = _m.w;
+    return *this;
+}
+math::Mat44 math::Mul(const math::Mat44& _a, const math::Mat44& _b)
+{
+    math::Mat44 r;
+    r.x = math::Mul(_a.x, _b);
+    r.y = math::Mul(_a.y, _b);
+    r.z = math::Mul(_a.z, _b);
+    r.w = math::Mul(_a.w, _b);
+    return r;
+}
+math::Mat44 math::operator*(const math::Mat44& _a, const math::Mat44& _b)
+{
+    return math::Mul(_a, _b);
+}
+const math::Mat44& math::Mat44::operator*=(const math::Mat44& _m)
+{
+    *this = math::Mul(*this, _m);
     return *this;
 }
 void math::Mat44::SetW(const math::Vector4& _w)

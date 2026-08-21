@@ -790,6 +790,8 @@ enum ESoundEnvironment {
 #undef PlaySound
 #endif
 
+struct nslEffect;
+
 class SoundDevice {
 public:
     static void* operator new(size_t size, void* p); // ??2SoundDevice@@SAPAXIPAX@Z (core.o 0x4DC5E0)
@@ -825,6 +827,9 @@ public:
         float GetStartingVolume() const;    // core.o 0x4DC720
         float GetMaxDist() const;           // core.o 0x4DC740
         float GetMinDist() const;           // core.o 0x4DC760
+        float GetMinValue() const;          // game2.o 0x004EB780
+        float GetMaxValue() const;          // game2.o 0x004EB790
+        DbLinkedHandle<EntityHandleDb, Entity> GetEntHdl() const; // game2.o 0x004EB7A0
         bool IsSourceValid() const;         // core.o 0x4DC780
         nslSourceID GetSourceId() const;    // core.o 0x4DC790
         float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
@@ -944,6 +949,7 @@ public:
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     static SoundDevice* Inst();     // ?Inst@SoundDevice@@SAPAV1@XZ (g.o 0x4A8520)
     float GetVolScale() const;      // ?GetVolScale@SoundDevice@@QBEMXZ (core.o 0x4DC7A0)
+    nslEffect* GetCurrentReverb();  // game2.o 0x004EB7C0
     static void CreateInst();       // ?CreateInst@SoundDevice@@SAXXZ (core.o 0x4DC5F0)
     static void DeleteInst();       // ?DeleteInst@SoundDevice@@SAXXZ (core.o 0x4E26C0)
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)

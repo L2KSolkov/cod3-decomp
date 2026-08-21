@@ -367,6 +367,10 @@ static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 
 // g.o matrix free functions (0x4A75B0-0x4A82C0)
 Position3 Mul(const Position3& _v, const Mat43& _m);  // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat43@1@@Z (g.o 0x4A75B0)
+Dir3 Mul(const Dir3& _v, const Mat44& _m);            // ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat44@1@@Z (game2.o 0x004EB580)
+Dir3 operator*(const Dir3& _v, const Mat44& _m);      // ??Dmath@@YA?AVDir3@0@ABV10@ABVMat44@0@@Z (game2.o 0x004EB5F0)
+Vector4 Mul(const Vector4& _v, const Mat44& _m);      // ?Mul@math@@YA?AVVector4@1@ABV21@ABVMat44@1@@Z (game2.o 0x004EB660)
+Vector4 operator*(const Vector4& _v, const Mat44& _m); // ??Dmath@@YA?AVVector4@0@ABV10@ABVMat44@0@@Z (game2.o 0x004EB6F0)
 Position3 operator*(const Position3& _v, const Mat43& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A76E0)
 Position3 Mul(const Position3& _v, const DiagMat33& _m);  // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVDiagMat33@1@@Z (ngl_debug.o 0x8356C0)
 Position3 operator*(const Position3& _v, const DiagMat33& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z (ngl_debug.o 0x8356F0)
@@ -409,6 +413,7 @@ public:
     Vector4& operator[](unsigned int i); // ??AMat44@math@@QAEAAVVector4@1@I@Z (game2.o 0x004EB4A0)
     const Vector4& operator[](unsigned int i) const; // ??AMat44@math@@QBEABVVector4@1@I@Z (game2.o 0x004EB4C0)
     const Mat44& operator=(const Mat44& _m);  // ??4Mat44@math@@QAEABV01@ABV01@@Z (core.o 0x4DBD50)
+    const Mat44& operator*=(const Mat44& _m); // ??XMat44@math@@QAEABV01@ABV01@@Z (game2.o 0x004EBC30)
 };
 static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
 
@@ -428,6 +433,8 @@ Vector4  operator*(const Vector4& v, const Mat43& m);             // ??Dmath@@YA
 Vector4  Mul(const Position3& v, const Mat44& m);                 // ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z
 Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z
 Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z
+Mat44    Mul(const Mat44& a, const Mat44& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@0@Z (game2.o 0x004EB7D0)
+Mat44    operator*(const Mat44& a, const Mat44& b);               // ??Dmath@@YA?AVMat44@0@ABV10@0@Z (game2.o 0x004EBA00)
 Mat43    Mul(const Mat43& a, const TranMat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABV21@ABUTranMat43@1@@Z (render.o 0x6E69F0)
 Mat43    Mul(const DiagMat33& a, const Mat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABVDiagMat33@1@ABV21@@Z (render.o 0x6E6AE0)
 Mat43    Mul(const TranMat43& a, const Mat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABUTranMat43@1@ABV21@@Z (render.o 0x6E6C90)
