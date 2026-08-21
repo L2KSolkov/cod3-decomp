@@ -131,7 +131,7 @@ index	status	map_line
 130	VERIFIED	0002:00169530 ?Draw@IGOItemIcons@@UAEXXZ 00958A30 f shell.o
 131	VERIFIED	0002:001696b0 ?Draw@IGOVoipList@@UAEXXZ 00958BB0 f shell.o
 132	VERIFIED	0002:001696d0 ??0PanelQuadSection@@QAE@XZ 00958BD0 f shell.o
-133	PORTED	0002:001696f0 ?SetInitialXY@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 00958BF0 f shell.o
+133	VERIFIED	0002:001696f0 ?SetInitialXY@PanelQuadSection@@QAEXQAUvector@Broc@@@Z 00958BF0 f shell.o	VERIFIED: matches IDA decompile and PanelQuadSection/Broc::vector local types
 134	VERIFIED	0002:00169720 ?SetXYInitialToCurrentPos@PanelQuadSection@@QAEXXZ 00958C20 f shell.o
 135	VERIFIED	0002:00169750 ?Rotate@PanelQuadSection@@QAEXMMM@Z 00958C50 f shell.o
 136	VERIFIED	0002:001697e0 ?Scale@PanelQuadSection@@QAEXMMMM@Z 00958CE0 f shell.o

@@ -5308,7 +5308,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 5307	0x00569530	0x00958A30	?Draw@IGOItemIcons@@UAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5308	0x005696B0	0x00958BB0	?Draw@IGOVoipList@@UAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5309	0x005696D0	0x00958BD0	??0PanelQuadSection@@QAE@XZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-5310	0x005696F0	0x00958BF0	?SetInitialXY@PanelQuadSection@@QAEXQAUvector@Broc@@@Z		shell.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
+5310	0x005696F0	0x00958BF0	?SetInitialXY@PanelQuadSection@@QAEXQAUvector@Broc@@@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile and local types	YES	YES	VERIFIED
 5311	0x00569720	0x00958C20	?SetXYInitialToCurrentPos@PanelQuadSection@@QAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5312	0x00569750	0x00958C50	?Rotate@PanelQuadSection@@QAEXMMM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 5313	0x005697E0	0x00958CE0	?Scale@PanelQuadSection@@QAEXMMMM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
