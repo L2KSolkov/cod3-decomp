@@ -3608,10 +3608,10 @@ index	status	map_line
 3607	SKIPPED	0002:001188a0 ??_GUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3608	SKIPPED	0002:001188a0 ??_EUnsortedParticleIterator@apsRenderSort@@UAEPAXI@Z 00907DA0 f i game2.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 3609	PORTED	0002:001188d0 ?GetBounds@apsGroup@@QBEABUapsBounds@@XZ 00907DD0 f i game2.o  PORTED: IDA-backed mBounds reference accessor
-3610	PORTED	0002:001188e0 ?SetEntityHandle@AnimNoteHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00907DE0 f i game2.o
-3611	PORTED	0002:001188f0 ?GetNextNotifyIndex@AnimNoteHandler@@IAEHM@Z 00907DF0 f i game2.o
-3612	PORTED	0002:00118b40 ??0NotifyInfo@AnimNoteHandler@@QAE@XZ 00908040 f i game2.o
-3613	PORTED	0002:00118b60 ??1NotifyInfo@AnimNoteHandler@@QAE@XZ 00908060 f i game2.o
+3610	PORTED	0002:001188e0 ?SetEntityHandle@AnimNoteHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00907DE0 f i game2.o  PORTED: IDA-backed entity handle assignment
+3611	PORTED	0002:001188f0 ?GetNextNotifyIndex@AnimNoteHandler@@IAEHM@Z 00907DF0 f i game2.o  PORTED: IDA-backed ordered notify scan and assert paths
+3612	PORTED	0002:00118b40 ??0NotifyInfo@AnimNoteHandler@@QAE@XZ 00908040 f i game2.o  PORTED: IDA-backed Broc string-null constructor
+3613	PORTED	0002:00118b60 ??1NotifyInfo@AnimNoteHandler@@QAE@XZ 00908060 f i game2.o  PORTED: IDA-backed Broc string destructor
 3614	PORTED	0002:00118b70 ??0MetaNalBaseAnim@@QAE@W4nalRegisterKey@@@Z 00908070 f i game2.o
 3615	PORTED	0002:00118ba0 ?VirtualCreateInstance@MetaNalBaseAnim@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 009080A0 f i game2.o
 3616	PORTED	0002:00118c00 ??1MetaNalBaseAnim@@UAE@XZ 00908100 f i game2.o
