@@ -7900,10 +7900,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 7899	0x005CAB50	0x009BA050	?GetEntByNum@BrocSys@@YAIH@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7900	0x005CABA0	0x009BA0A0	?DrawTracer@BrocSys@@YAXI@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7901	0x005CAC20	0x009BA120	?EffectEventWeaponPlay@BrocSys@@YAHII@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7902	0x005CAD10	0x009BA210	?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+7902	0x005CAD10	0x009BA210	?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z		scr.o	game		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	VERIFIED
 7903	0x005CAE70	0x009BA370	?EffectEventPlayNonEnt@BrocSys@@YAHABVstring@Broc@@ABUvector@3@1_NIH@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7904	0x005CB000	0x009BA500	?EffectEventPlayDir@BrocSys@@YAHIABVstring@Broc@@ABUvector@3@H_N@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-7905	0x005CB140	0x009BA640	?EffectEventQueue@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+7905	0x005CB140	0x009BA640	?EffectEventQueue@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z		scr.o	game		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	VERIFIED
 7906	0x005CB280	0x009BA780	?EffectEventQueueDialog@BrocSys@@YAHIABVstring@Broc@@H_N@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7907	0x005CB390	0x009BA890	?DialogPlay@BrocSys@@YAHIABVstring@Broc@@H_N@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 7908	0x005CB5C0	0x009BAAC0	?EntityExists@BrocSys@@YAHI@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -8093,7 +8093,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8092	0x005D4E20	0x009C4320	?MPScript_SendGameStateCTF@BrocSys@@YAXIUvector@Broc@@0I00I@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8093	0x005D4FC0	0x009C44C0	?MPScript_SendGameStateSCF@BrocSys@@YAXIHUvector@Broc@@0I@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8094	0x005D50D0	0x009C45D0	?MPScript_SendGameStateDOM@BrocSys@@YAXIHHHHH@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8095	0x005D5140	0x009C4640	?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8095	0x005D5140	0x009C4640	?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z		scr.o	game		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	VERIFIED
 8096	0x005D5270	0x009C4770	?MPScript_PickupItem@BrocSys@@YAXHI@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8097	0x005D52D0	0x009C47D0	?MPScript_GetSpotterEntity@BrocSys@@YAII@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8098	0x005D5350	0x009C4850	?MPScript_ClearSpottingFromOccupants@BrocSys@@YAXI@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -8232,7 +8232,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8231	0x005DF9E0	0x009CEEE0	?GetCondText@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8232	0x005DFB40	0x009CF040	?GetDebugTxt@AeThreadEntityNotifyMatchState@@UAEXAAV?$ae_fixed_string@$0EA@E@@@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8233	0x005DFC50	0x009CF150	?RegisterHashString@BrocSys@@YAXHPBD@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8234	0x005DFD30	0x009CF230	?RegisterHashString@BrocSys@@YAHPBD@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8234	0x005DFD30	0x009CF230	?RegisterHashString@BrocSys@@YAHPBD@Z		scr.o	game		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	VERIFIED
 8235	0x005DFD70	0x009CF270	?CalcStringHash@BrocSys@@YAIPBD@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8236	0x005DFDB0	0x009CF2B0	?InitAPI@BrocSys@@YAXXZ		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8237	0x005E0160	0x009CF660	?LoadScript@BrocSys@@YAXXZ		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

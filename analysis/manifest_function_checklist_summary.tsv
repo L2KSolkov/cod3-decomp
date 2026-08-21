@@ -743,7 +743,7 @@ scentry.obj	10	0	0	10	0	0	0
 schedule.obj	7	0	0	7	0	0	0
 scline.obj	4	0	0	4	0	0	0
 scmemory.obj	3	0	0	3	0	0	0
-scr.o	1540	905	635	0	0	0	0
+scr.o	1540	909	631	0	0	0	0
 scspline.obj	4	0	0	4	0	0	0
 secchk.obj	1	0	0	1	0	0	0
 seccinit.obj	1	0	0	1	0	0	0
