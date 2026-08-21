@@ -934,7 +934,7 @@ index	status	map_line
 933	VERIFIED	0002:0018b780 ??0PanelQuad@@QAE@XZ 0097AC80 f shell.o
 934	VERIFIED	0002:0018b840 ??0PanelQuad@@QAE@PAD@Z 0097AD40 f shell.o
 935	VERIFIED	0002:0018b930 ?CopyFrom@PanelQuad@@UAEXPBV1@@Z 0097AE30 f shell.o
-936	PORTED	0002:0018bac0 ?Init@PanelQuad@@UAEXQAUvector@Broc@@QAVcolor32@@W4panel_layer@@MPBD@Z 0097AFC0 f shell.o
+936	VERIFIED	0002:0018bac0 ?Init@PanelQuad@@UAEXQAUvector@Broc@@QAVcolor32@@W4panel_layer@@MPBD@Z 0097AFC0 f shell.o	VERIFIED: matches IDA contiguous UV initialization, allocation, texture, bounds, and center-point flow
 937	VERIFIED	0002:0018bc10 ?Load@PanelQuad@@UAEXPAVPanelMaterial@@PAEAAHPBVMat43@math@@@Z 0097B110 f shell.o
 938	VERIFIED	0002:0018c450 ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0097B950 f shell.o
 939	VERIFIED	0002:0018c4c0 ?Cleanup@PanelFile@@AAEXXZ 0097B9C0 f shell.o
