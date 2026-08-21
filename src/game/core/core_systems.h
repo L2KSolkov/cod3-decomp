@@ -99,13 +99,13 @@ struct BitSet {
     class iterator {
     public:
         BitSet<N>* m_src;        // +0x00
-        int m_word_idx;          // +0x04
-        unsigned int m_cur_val;  // +0x08
-        unsigned int m_cur_word; // +0x0C
+        unsigned int m_cur_word; // +0x04
+        int m_word_idx;          // +0x08
+        int m_cur_val;           // +0x0C
 
         iterator()
-            : m_src(nullptr), m_word_idx(-1), m_cur_val((unsigned int)-1),
-              m_cur_word((unsigned int)-1) {}
+            : m_src(nullptr), m_cur_word((unsigned int)-1), m_word_idx(-1),
+              m_cur_val(-1) {}
         iterator(const BitSet<N>* src)  // ??0iterator@?$BitSet@$0FEA@@@QAE@ABV1@@Z (g.o 0x4B1970)
         {
             m_src = (BitSet<N>*)src;
@@ -166,8 +166,7 @@ struct BitSet {
         iterator it;
         it.m_src = nullptr;
         it.m_word_idx = -1;
-        it.m_cur_val = (unsigned int)-1;
-        it.m_cur_word = 0;
+        it.m_cur_val = -1;
         return it;
     }
 };

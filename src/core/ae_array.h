@@ -115,11 +115,9 @@ public:
 template <typename T, int CAPACITY>
 class ae_sized_array_base {
 public:
-    T m_elementdata[CAPACITY];  // +0x00
-    T* m_elements;              // +0x4000
-    int m_size;                 // +0x4004
+    T m_elements[CAPACITY];  // +0x00
 
-    ae_sized_array_base() : m_elements(m_elementdata), m_size(0) {}
+    ae_sized_array_base() {}
 };
 
 // ============================================================================

@@ -466,6 +466,7 @@ public:
         const dlist_node* m_next;
 
         const_iterator(const dlist_node* cur, const dlist_node* next);
+        const_iterator(const reserved_dlist& dlist);
         const T* operator*() const;
         bool operator!=(const const_iterator& rhs) const;
         bool compare(const const_iterator& rhs) const;
@@ -489,6 +490,7 @@ public:
     void push_back(T* obj);
     const_iterator end() const;
     T* pop_back();
+    iterator find(T* object);
     void clear();
     const dlist_node* get_head() const;
     static T* node_to_object(dlist_node* node);
@@ -537,6 +539,36 @@ T* reserved_dlist<T>::pop_back()
 }
 
 template <typename T>
+typename reserved_dlist<T>::iterator reserved_dlist<T>::find(T* object)
+{
+    dlist_node* m_head_node = m_head;
+    dlist_node* m_next = m_head_node->m_next;
+    dlist_node* object_node =
+        reinterpret_cast<dlist_node*>(&object->m_dlist_node);
+    iterator result(object);
+    if (m_head_node->m_next != nullptr)
+    {
+        while (m_head_node != object_node)
+        {
+            m_head_node = m_next;
+            m_next = m_next->m_next;
+            if (m_next == nullptr)
+            {
+                result.m_node = reinterpret_cast<dlist_node*>(&m_end);
+                result.m_next = nullptr;
+                return result;
+            }
+        }
+        result.m_node = object_node;
+        result.m_next = object_node->m_next;
+        return result;
+    }
+    result.m_node = reinterpret_cast<dlist_node*>(&m_end);
+    result.m_next = nullptr;
+    return result;
+}
+
+template <typename T>
 void reserved_dlist<T>::dlist_node::pop()
 {
     m_next->m_prev = m_prev;
@@ -557,6 +589,21 @@ reserved_dlist<T>::const_iterator::const_iterator(
     const dlist_node* cur, const dlist_node* next)
     : m_node(cur), m_next(next)
 {
+}
+
+template <typename T>
+reserved_dlist<T>::const_iterator::const_iterator(
+    const reserved_dlist<T>& dlist)
+{
+    const dlist_node* m_head_node = dlist.m_head;
+    m_node = m_head_node;
+    m_next = m_head_node != nullptr ? m_head_node->m_next : nullptr;
+    if (dlist.m_head ==
+        reinterpret_cast<const dlist_node*>(&dlist.m_end))
+    {
+        m_next = nullptr;
+        m_node = nullptr;
+    }
 }
 
 template <typename T>
@@ -645,6 +692,8 @@ template void reserved_dlist<AeThread>::clear();
 template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
     const reserved_dlist<AeThreadState>::dlist_node*,
     const reserved_dlist<AeThreadState>::dlist_node*);
+template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
+    const reserved_dlist<AeThreadState>&);
 template bool reserved_dlist<AeThreadState>::const_iterator::compare(
     const reserved_dlist<AeThreadState>::const_iterator&) const;
 template bool reserved_dlist<AeThread>::const_iterator::compare(
@@ -654,6 +703,12 @@ reserved_dlist<AeThreadState>::get_head() const;
 template reserved_dlist<AeThreadState>::iterator::iterator(AeThreadState*);
 template reserved_dlist<AeThread>::iterator::iterator(AeThread*);
 template reserved_dlist<EndOnScriptNode>::iterator::iterator(EndOnScriptNode*);
+template reserved_dlist<AeThreadState>::iterator
+reserved_dlist<AeThreadState>::find(AeThreadState*);
+template reserved_dlist<EndOnScriptNode>::iterator
+reserved_dlist<EndOnScriptNode>::find(EndOnScriptNode*);
+template reserved_dlist<AeThread>::iterator
+reserved_dlist<AeThread>::find(AeThread*);
 template AeThreadState*
 reserved_dlist<AeThreadState>::iterator::operator*();
 template const AeThreadState*
