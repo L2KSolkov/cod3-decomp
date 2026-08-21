@@ -6555,7 +6555,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6554	0x005AECD0	0x0099E1D0	??4UIListBoxData@UIListBox@@QAEXABV01@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6555	0x005AECF0	0x0099E1F0	?IsEnabled@UIListBoxDataRow@UIListBox@@QAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6556	0x005AED00	0x0099E200	?SetEnabled@UIListBoxDataRow@UIListBox@@QAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6557	0x005AED10	0x0099E210	?GetActivateKey@IGOFrontEnd@@QAEPBDXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6557	0x005AED10	0x0099E210	?GetActivateKey@IGOFrontEnd@@QAEPBDXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6558	0x005AED20	0x0099E220	?GetLMGKey@IGOFrontEnd@@QAEPBDXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6559	0x005AED40	0x0099E240	?GetActionHintTimer@IGOFrontEnd@@QAEHH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6560	0x005AED60	0x0099E260	?SetActionHintTimer@IGOFrontEnd@@QAEXHH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

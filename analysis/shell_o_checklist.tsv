@@ -1378,7 +1378,7 @@ index	status	map_line
 1377	VERIFIED	0002:001aecd0 ??4UIListBoxData@UIListBox@@QAEXABV01@@Z 0099E1D0 f i shell.o
 1378	VERIFIED	0002:001aecf0 ?IsEnabled@UIListBoxDataRow@UIListBox@@QAE_NXZ 0099E1F0 f i shell.o
 1379	VERIFIED	0002:001aed00 ?SetEnabled@UIListBoxDataRow@UIListBox@@QAEX_N@Z 0099E200 f i shell.o
-1380	PORTED	0002:001aed10 ?GetActivateKey@IGOFrontEnd@@QAEPBDXZ 0099E210 f i shell.o
+1380	VERIFIED	0002:001aed10 ?GetActivateKey@IGOFrontEnd@@QAEPBDXZ 0099E210 f i shell.o	VERIFIED: matches IDA activate_key accessor
 1381	VERIFIED	0002:001aed20 ?GetLMGKey@IGOFrontEnd@@QAEPBDXZ 0099E220 f i shell.o
 1382	VERIFIED	0002:001aed40 ?GetActionHintTimer@IGOFrontEnd@@QAEHH@Z 0099E240 f i shell.o
 1383	VERIFIED	0002:001aed60 ?SetActionHintTimer@IGOFrontEnd@@QAEXHH@Z 0099E260 f i shell.o
