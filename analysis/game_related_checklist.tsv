@@ -8367,30 +8367,30 @@ index	status	map_line
 8366	VERIFIED	0002:001eaad0 ?GetIndex@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FD0 f i scr.o	VERIFIED: matches IDA disassembly mask 0xFF
 8367	VERIFIED	0002:001eaae0 ?GetKey@?$SizedHandle@$07$0BI@@@QBEHXZ 009D9FE0 f i scr.o	VERIFIED: matches IDA disassembly shift by 8
 8368	VERIFIED	0002:001eaaf0 ??0DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ 009D9FF0 f i scr.o
-8369	PORTED	0002:001eab10 ?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ 009DA010 f i scr.o
-8370	PORTED	0002:001eab20 ?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z 009DA020 f i scr.o
-8371	PORTED	0002:001eab30 ?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ 009DA030 f i scr.o
-8372	PORTED	0002:001eab40 ?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DA040 f i scr.o
-8373	PORTED	0002:001eab50 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z 009DA050 f i scr.o
-8374	PORTED	0002:001eab70 ?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 009DA070 f i scr.o
-8375	PORTED	0002:001eab90 ?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 009DA090 f i scr.o
-8376	PORTED	0002:001eabb0 ?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ 009DA0B0 f i scr.o
-8377	PORTED	0002:001eabc0 ?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z 009DA0C0 f i scr.o
+8369	VERIFIED	0002:001eab10 ?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ 009DA010 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
+8370	VERIFIED	0002:001eab20 ?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z 009DA020 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
+8371	VERIFIED	0002:001eab30 ?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ 009DA030 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
+8372	VERIFIED	0002:001eab40 ?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DA040 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
+8373	PORTED	0002:001eab50 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z 009DA050 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+8374	PORTED	0002:001eab70 ?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 009DA070 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+8375	PORTED	0002:001eab90 ?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 009DA090 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+8376	VERIFIED	0002:001eabb0 ?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ 009DA0B0 f i scr.o	VERIFIED: matches IDA decompile and existing ae_sized_array<T,N>::size
+8377	VERIFIED	0002:001eabc0 ?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z 009DA0C0 f i scr.o	VERIFIED: matches IDA decompile; direct m_size assignment
 8378	SKIPPED	0002:001eabe0 ?_Kfn@?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@SAABHABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@Z 009DA0E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8379	SKIPPED	0002:001eabf0 ??0?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QAE@XZ 009DA0F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8380	SKIPPED	0002:001eac00 ??0?$hash_compare@HU?$less@H@std@@@stdext@@QAE@XZ 009DA100 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8381	SKIPPED	0002:001eac10 ?size@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEIXZ 009DA110 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8382	SKIPPED	0002:001eac30 ??8const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z 009DA130 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8383	SKIPPED	0002:001eac50 ??0?$pair@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@_N@std@@QAE@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@AB_N@Z 009DA150 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-8384	PORTED	0002:001eac70 ??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ 009DA170 f i scr.o
-8385	PORTED	0002:001eac80 ??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z 009DA180 f i scr.o
+8384	VERIFIED	0002:001eac70 ??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ 009DA170 f i scr.o	VERIFIED: matches IDA decompile and existing ae_sized_array_base constructor
+8385	VERIFIED	0002:001eac80 ??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z 009DA180 f i scr.o	VERIFIED: matches IDA decompile and existing const_iterator constructor
 8386	SKIPPED	0002:001eaca0 ?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ 009DA1A0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-8387	PORTED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o
-8388	PORTED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o
-8389	PORTED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o
-8390	PORTED	0002:001ead00 ?GetWord@?$BitSet@$0BAA@@@QBEIH@Z 009DA200 f i scr.o
-8391	PORTED	0002:001ead10 ?GetNumWords@?$BitSet@$0BAA@@@SAHXZ 009DA210 f i scr.o
-8392	PORTED	0002:001ead20 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z 009DA220 f i scr.o
+8387	PORTED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o	PORTED: added exact m_cur_val return from IDA; VERIFIED: Debug build passed
+8388	PORTED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+8389	PORTED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+8390	VERIFIED	0002:001ead00 ?GetWord@?$BitSet@$0BAA@@@QBEIH@Z 009DA200 f i scr.o	VERIFIED: matches IDA decompile and existing BitSet::GetWord
+8391	VERIFIED	0002:001ead10 ?GetNumWords@?$BitSet@$0BAA@@@SAHXZ 009DA210 f i scr.o	VERIFIED: matches IDA decompile and existing BitSet::GetNumWords
+8392	PORTED	0002:001ead20 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z 009DA220 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
 8393	SKIPPED	0002:001ead40 ??0?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@QAE@ABV?$hash_compare@HU?$less@H@std@@@1@@Z 009DA240 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8394	SKIPPED	0002:001ead60 ??R?$less@H@std@@QBE_NABH0@Z 009DA260 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 8395	SKIPPED	0002:001ead80 ?_Nextnode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@@Z 009DA280 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

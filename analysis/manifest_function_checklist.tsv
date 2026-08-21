@@ -8367,30 +8367,30 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8366	0x005EAAD0	0x009D9FD0	?GetIndex@?$SizedHandle@$07$0BI@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
 8367	0x005EAAE0	0x009D9FE0	?GetKey@?$SizedHandle@$07$0BI@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
 8368	0x005EAAF0	0x009D9FF0	??0DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8369	0x005EAB10	0x009DA010	?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8370	0x005EAB20	0x009DA020	?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8371	0x005EAB30	0x009DA030	?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8372	0x005EAB40	0x009DA040	?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8373	0x005EAB50	0x009DA050	??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8374	0x005EAB70	0x009DA070	?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8375	0x005EAB90	0x009DA090	?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8376	0x005EABB0	0x009DA0B0	?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8377	0x005EABC0	0x009DA0C0	?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8369	0x005EAB10	0x009DA010	?GetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8370	0x005EAB20	0x009DA020	?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8371	0x005EAB30	0x009DA030	?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8372	0x005EAB40	0x009DA040	?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8373	0x005EAB50	0x009DA050	??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8374	0x005EAB70	0x009DA070	?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8375	0x005EAB90	0x009DA090	?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8376	0x005EABB0	0x009DA0B0	?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8377	0x005EABC0	0x009DA0C0	?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
 8378	0x005EABE0	0x009DA0E0	?_Kfn@?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@SAABHABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8379	0x005EABF0	0x009DA0F0	??0?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8380	0x005EAC00	0x009DA100	??0?$hash_compare@HU?$less@H@std@@@stdext@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8381	0x005EAC10	0x009DA110	?size@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEIXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8382	0x005EAC30	0x009DA130	??8const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8383	0x005EAC50	0x009DA150	??0?$pair@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@_N@std@@QAE@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@1@AB_N@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8384	0x005EAC70	0x009DA170	??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8385	0x005EAC80	0x009DA180	??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8384	0x005EAC70	0x009DA170	??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8385	0x005EAC80	0x009DA180	??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
 8386	0x005EACA0	0x009DA1A0	?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8387	0x005EACC0	0x009DA1C0	??Diterator@?$BitSet@$0BAA@@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8388	0x005EACD0	0x009DA1D0	?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8389	0x005EACE0	0x009DA1E0	??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8390	0x005EAD00	0x009DA200	?GetWord@?$BitSet@$0BAA@@@QBEIH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8391	0x005EAD10	0x009DA210	?GetNumWords@?$BitSet@$0BAA@@@SAHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8392	0x005EAD20	0x009DA220	??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8387	0x005EACC0	0x009DA1C0	??Diterator@?$BitSet@$0BAA@@@QBEHXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8388	0x005EACD0	0x009DA1D0	?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8389	0x005EACE0	0x009DA1E0	??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
+8390	0x005EAD00	0x009DA200	?GetWord@?$BitSet@$0BAA@@@QBEIH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8391	0x005EAD10	0x009DA210	?GetNumWords@?$BitSet@$0BAA@@@SAHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	VERIFIED
+8392	0x005EAD20	0x009DA220	??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile	NO	NO	VERIFIED
 8393	0x005EAD40	0x009DA240	??0?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@QAE@ABV?$hash_compare@HU?$less@H@std@@@1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8394	0x005EAD60	0x009DA260	??R?$less@H@std@@QBE_NABH0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8395	0x005EAD80	0x009DA280	?_Nextnode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
