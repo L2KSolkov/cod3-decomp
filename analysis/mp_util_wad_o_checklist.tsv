@@ -273,8 +273,8 @@ index	status	map_line
 272	VERIFIED	0002:0053ce50 ?main__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C350 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_scf::main
 273	VERIFIED	0002:0053cef0 ?main__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C3F0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_tdm::main
 274	VERIFIED	0002:0053cf90 ?main__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C490 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_war::main
-275	PORTED	0002:0053d030 ?SetupGameVariables@_mp_common@@YAXXZ 00D2C530 f mp_util_wad.o
-276	PORTED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o
+275	FIXED	0002:0053d030 ?SetupGameVariables@_mp_common@@YAXXZ 00D2C530 f mp_util_wad.o	FIXED: IDA stores all cvars in Level and returns the respawnTime bint assignment result; port previously discarded that result and returned zero
+276	VERIFIED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o	VERIFIED: IDA callback registration order and team/non-team damage callback selection match the port
 277	VERIFIED	0002:0053d3b0 ?CallbackHostOptionsChanged@_mp_common@@YAXH@Z 00D2C8B0 f mp_util_wad.o
 278	PORTED	0002:0053d8e0 ??D@YA?AUbint@@U0@H@Z 00D2CDE0 f i mp_util_wad.o
 279	PORTED	0002:0053d920 ?Code_GetTeamScore@Broc@@YAHABVstring@1@@Z 00D2CE20 f i mp_util_wad.o
