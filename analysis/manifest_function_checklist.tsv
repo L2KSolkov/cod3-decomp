@@ -8550,20 +8550,20 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8549	0x005EEAD0	0x009DDFD0	?clear@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXXZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8550	0x005EEAE0	0x009DDFE0	?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8551	0x005EEB00	0x009DE000	??9const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8552	0x005EEB20	0x009DE020	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8553	0x005EEB40	0x009DE040	?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8554	0x005EEB60	0x009DE060	?end@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8552	0x005EEB20	0x009DE020	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	YES	YES	VERIFIED
+8553	0x005EEB40	0x009DE040	?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8554	0x005EEB60	0x009DE060	?end@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8555	0x005EEB80	0x009DE080	??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8556	0x005EEBD0	0x009DE0D0	??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8557	0x005EEBF0	0x009DE0F0	??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8558	0x005EEC00	0x009DE100	?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8559	0x005EEC60	0x009DE160	?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8560	0x005EECB0	0x009DE1B0	?find@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@PAVAeThread@@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8561	0x005EED00	0x009DE200	?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8562	0x005EED20	0x009DE220	?Add@?$BitSet@$0BAA@@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8563	0x005EEDB0	0x009DE2B0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8557	0x005EEBF0	0x009DE0F0	??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8558	0x005EEC00	0x009DE100	?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8559	0x005EEC60	0x009DE160	?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8560	0x005EECB0	0x009DE1B0	?find@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@PAVAeThread@@@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA decompilation	NO	NO	VERIFIED
+8561	0x005EED00	0x009DE200	?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8562	0x005EED20	0x009DE220	?Add@?$BitSet@$0BAA@@@QAEXH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8563	0x005EEDB0	0x009DE2B0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8564	0x005EEE40	0x009DE340	??0?$ae_fixed_string@$0CA@E@@QAE@ABV0@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8565	0x005EEE80	0x009DE380	??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8565	0x005EEE80	0x009DE380	??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z		scr.o	game		f i	1	PORTED	FUNCTION ported from IDA disassembly	NO	NO	VERIFIED
 8566	0x005EEED0	0x009DE3D0	?size@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QBEIXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8567	0x005EEEE0	0x009DE3E0	??R?$hash_compare@HU?$less@H@std@@@stdext@@QBEIABH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8568	0x005EEF00	0x009DE400	??R?$hash_compare@HU?$less@H@std@@@stdext@@QBE_NABH0@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
@@ -8573,15 +8573,15 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8572	0x005EEF50	0x009DE450	??Eiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8573	0x005EEF60	0x009DE460	??Fiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8574	0x005EEF70	0x009DE470	??C?$IVPointer@VAIType@@@@QBEPBVAIType@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8575	0x005EEF90	0x009DE490	??0iterator@?$BitSet@$0BAA@@@QAE@ABV1@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8576	0x005EEFD0	0x009DE4D0	?Clear@?$BitSet@$0BAA@@@QAEXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8577	0x005EEFF0	0x009DE4F0	??S?$BitSet@$0BAA@@@QBE?AV0@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8578	0x005EF070	0x009DE570	?begin@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8579	0x005EF0B0	0x009DE5B0	?end@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8575	0x005EEF90	0x009DE490	??0iterator@?$BitSet@$0BAA@@@QAE@ABV1@@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8576	0x005EEFD0	0x009DE4D0	?Clear@?$BitSet@$0BAA@@@QAEXXZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8577	0x005EEFF0	0x009DE4F0	??S?$BitSet@$0BAA@@@QBE?AV0@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8578	0x005EF070	0x009DE570	?begin@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
+8579	0x005EF0B0	0x009DE5B0	?end@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8580	0x005EF0D0	0x009DE5D0	?destroy@?$allocator@U_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@QAEXPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8581	0x005EF0E0	0x009DE5E0	??0iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@PAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8582	0x005EF100	0x009DE600	??Eiterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AV012@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8583	0x005EF120	0x009DE620	??9iterator@?$BitSet@$0BAA@@@QAE_NABV01@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8583	0x005EF120	0x009DE620	??9iterator@?$BitSet@$0BAA@@@QAE_NABV01@@Z		scr.o	game		f i	1	VERIFIED	FUNCTION matches IDA decompilation	NO	NO	VERIFIED
 8584	0x005EF170	0x009DE670	??Diterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBEAAV0?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8585	0x005EF180	0x009DE680	??Hiterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE?AV012@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8586	0x005EF1A0	0x009DE6A0	?begin@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
