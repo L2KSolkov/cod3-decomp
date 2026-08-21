@@ -481,7 +481,22 @@ void AnimIK::ApplyLadderClimb(Entity* ent, nalMatrix4x4* leftFootMat,
 // AnimIK::Initialize - ea: 0x4FAE50
 // Fetch joint bone handles + precompute IK arm lengths.
 // ============================================================================
-const tlFixedString AnimIK_BoneNames[8] = {};     // ?AnimIK_BoneNames (game2.o @ 0xF052F8)
+// These are the 12 entries consumed by Initialize from the reference's
+// contiguous static bone-name block (F04A40..F04C00).
+const tlFixedString AnimIK_InitializeBoneNames[12] = {
+    tlFixedString("bip01 l forearm"),
+    tlFixedString("bip01 l upperarm"),
+    tlFixedString("bip01 l clavicle"),
+    tlFixedString("bip01 r forearm"),
+    tlFixedString("bip01 r upperarm"),
+    tlFixedString("bip01 r clavicle"),
+    tlFixedString("bip01 l calf"),
+    tlFixedString("bip01 l thigh"),
+    tlFixedString("bip01 pelvis"),
+    tlFixedString("bip01 r calf"),
+    tlFixedString("bip01 r thigh"),
+    tlFixedString("bip01 pelvis")
+};
 const tlFixedString AnimIK_ParentNames[8] = {};   // ?AnimIK_ParentNames (game2.o @ 0xF05318+)
 
 void AnimIK::Initialize()
@@ -494,13 +509,13 @@ void AnimIK::Initialize()
     }
     ik_ADS = Cvar_Get("ik_ADS", "0", 512);
     // Joints 0..3: for each, resolve parent/joint/child bone handles from
-    // AnimIK_BoneNames, then compute the two arm lengths + inverse terms.
+    // the reference's four contiguous triplets, then compute the lengths.
     for (int j = 0; j < 4; ++j)
     {
         nalGenericBoneHandle* h = &handles[j * 3];
         for (int k = 0; k < 3; ++k)
             nalGenericSkeleton_GetBoneHandle(skeleton, &h[k],
-                                             &AnimIK_BoneNames[j * 3 + k]);
+                                             &AnimIK_InitializeBoneNames[j * 3 + k]);
         nalPositionOrientation a =
             nalGenericPose_GetModelPositionOrientation(pose, &h[0]);
         nalPositionOrientation b =
