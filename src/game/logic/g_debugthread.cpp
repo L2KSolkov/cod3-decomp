@@ -1318,9 +1318,26 @@ struct DList {
 };
 
 struct QuickTaskDeactivation {
-    DListNode node;  // next/prev
-    unsigned int mEntHandle;  // +0x08
+    DListNode m_dlist_node;  // next/prev
+    DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x08
+
+    void* get_dlist_node();
+    static int get_dlist_node_offset();
+    DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;
 };
+
+void* QuickTaskDeactivation::get_dlist_node()
+{
+    return this;
+}
+int QuickTaskDeactivation::get_dlist_node_offset()
+{
+    return 0;
+}
+DbLinkedHandle<EntityHandleDb, Entity> QuickTaskDeactivation::GetHandle() const
+{
+    return mEnt;
+}
 
 struct TaskHandlerImpl {
     void* m_dlist[2];    // +0x00
@@ -1404,15 +1421,15 @@ void TaskHandlerImpl::QuickDeactivation(
         (QuickTaskDeactivation*)mem_heap_malloc_sz(0xC);
     if (v3 != nullptr)
     {
-        v3->node.m_next = nullptr;
-        v3->node.m_prev = nullptr;
-        v3->mEntHandle = h.mHandle.mVal;
+        v3->m_dlist_node.m_next = nullptr;
+        v3->m_dlist_node.m_prev = nullptr;
+        v3->mEnt = h;
     }
     DListNode* tail = *mQuickDeactivationList.m_tail;
-    v3->node.m_next = &mQuickDeactivationList.m_end;
-    v3->node.m_prev = tail;
-    tail->m_next = &v3->node;
-    *mQuickDeactivationList.m_tail = &v3->node;
+    v3->m_dlist_node.m_next = &mQuickDeactivationList.m_end;
+    v3->m_dlist_node.m_prev = tail;
+    tail->m_next = &v3->m_dlist_node;
+    *mQuickDeactivationList.m_tail = &v3->m_dlist_node;
     ++mQuickDeactivationList.m_size;
 }
 
@@ -1468,7 +1485,7 @@ void TaskHandlerImpl::Update(float deltaT, void* ftor)
     while (q != nullptr && q != &mQuickDeactivationList.m_end)
     {
         QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
-        unsigned int entVal = rec->mEntHandle;
+        unsigned int entVal = rec->mEnt.mHandle.mVal;
         DListNode* next = q->m_next;
         Entity* ent = EntityHandleDb::sInst.GetObject(entVal);
         if (ent != nullptr)

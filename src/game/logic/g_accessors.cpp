@@ -174,7 +174,8 @@ const char* XModel::GetName() const
 // XAnimUpdateTask / AnimationUpdateTask GetHandler (g.o 0x4A5330/0x4A5340)
 class TaskHandler {
 public:
-    uint8_t _pad[4];
+    unsigned int mTaskId;
+    FourCC GetId() const;
 };
 class XAnimUpdateTask {
 public:
@@ -195,6 +196,12 @@ TaskHandler* XAnimUpdateTask::GetHandler()
 TaskHandler* AnimationUpdateTask::GetHandler()
 {
     return &AnimationUpdateTask::sHandler;
+}
+FourCC TaskHandler::GetId() const
+{
+    FourCC result;
+    result.mVal = mTaskId;
+    return result;
 }
 
 // ============================================================================
@@ -894,6 +901,22 @@ const math::Dir3& math::Mat33::GetY() const
 const math::Dir3& math::Mat33::GetZ() const
 {
     return z;
+}
+math::Dir3& math::Mat33::GetX()
+{
+    return x;
+}
+math::Dir3& math::Mat33::GetY()
+{
+    return y;
+}
+math::Dir3& math::Mat33::GetZ()
+{
+    return z;
+}
+math::Dir3& math::Mat33::operator[](unsigned int i)
+{
+    return reinterpret_cast<math::Dir3*>(this)[i];
 }
 math::Mat33::Mat33(const math::Mat33& _m)
 {
