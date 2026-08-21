@@ -499,6 +499,8 @@ public:
         dlist_node* m_next;
 
         iterator(T* obj);
+        iterator& operator++();
+        iterator operator++(int);
         T* operator*();
     };
 
@@ -658,6 +660,31 @@ reserved_dlist<T>::iterator::iterator(T* obj)
 }
 
 template <typename T>
+typename reserved_dlist<T>::iterator&
+reserved_dlist<T>::iterator::operator++()
+{
+    if (m_next != nullptr)
+    {
+        m_node = m_next;
+        m_next = m_next->m_next;
+    }
+    return *this;
+}
+
+template <typename T>
+typename reserved_dlist<T>::iterator
+reserved_dlist<T>::iterator::operator++(int)
+{
+    iterator result = *this;
+    if (m_next != nullptr)
+    {
+        m_node = m_next;
+        m_next = m_next->m_next;
+    }
+    return result;
+}
+
+template <typename T>
 T* reserved_dlist<T>::node_to_object(dlist_node* node)
 {
     return reinterpret_cast<T*>(node);
@@ -778,6 +805,10 @@ reserved_dlist<AeThreadState>::get_head() const;
 template reserved_dlist<AeThreadState>::iterator::iterator(AeThreadState*);
 template reserved_dlist<AeThread>::iterator::iterator(AeThread*);
 template reserved_dlist<EndOnScriptNode>::iterator::iterator(EndOnScriptNode*);
+template reserved_dlist<AeThreadState>::iterator&
+reserved_dlist<AeThreadState>::iterator::operator++();
+template reserved_dlist<AeThread>::iterator
+reserved_dlist<AeThread>::iterator::operator++(int);
 template reserved_dlist<AeThreadState>::iterator
 reserved_dlist<AeThreadState>::find(AeThreadState*);
 template reserved_dlist<EndOnScriptNode>::iterator
