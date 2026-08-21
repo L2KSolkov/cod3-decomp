@@ -699,10 +699,10 @@ index	status	map_line
 698	VERIFIED	0002:00563e20 ?GetsDualPistols@_mp_loadout@@YA?AUbbool@@F@Z 00D53320 f mp_util_wad.o	VERIFIED: IDA 0x00963E20 always returns false; existing port matches
 699	VERIFIED	0002:00563e70 ?GetRankCount@_mp_loadout@@YA?AUbint@@U2@000@Z 00D53370 f mp_util_wad.o	VERIFIED: Existing rank 1/2 selection with rank0 fallback matches IDA 0x00963E70
 700	VERIFIED	0002:00563ee0 ?main@_mp_minefield@@YAXVentity@Broc@@@Z 00D533E0 f mp_util_wad.o
-701	PORTED	0002:005640b0 ?minefield_think__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D535B0 f i mp_util_wad.o
+701	VERIFIED	0002:005640b0 ?minefield_think__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D535B0 f i mp_util_wad.o	VERIFIED: Existing 0xC allocation/null guard/AeThreadFunctor1 construction matches IDA 0x009640B0
 702	VERIFIED	0002:00564150 ?minefield_think@_mp_minefield@@YAXVentity@Broc@@@Z 00D53650 f mp_util_wad.o
-703	PORTED	0002:00564260 ?IsSentient@Broc@@YAHABVentity@1@@Z 00D53760 f i mp_util_wad.o
-704	PORTED	0002:00564290 ?minefield_kill__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@0@Z 00D53790 f i mp_util_wad.o
+703	VERIFIED	0002:00564260 ?IsSentient@Broc@@YAHABVentity@1@@Z 00D53760 f i mp_util_wad.o	VERIFIED: Existing handle extraction and mEntityIsSentient forwarding match IDA 0x00964260
+704	VERIFIED	0002:00564290 ?minefield_kill__functor@_mp_minefield@@YAPAVAeThreadFunctor@@Ventity@Broc@@0@Z 00D53790 f i mp_util_wad.o	VERIFIED: Existing 0x10 allocation/null guard/AeThreadFunctor2 construction match IDA 0x00964290
 705	VERIFIED	0002:00564330 ?minefield_kill@_mp_minefield@@YAXVentity@Broc@@0@Z 00D53830 f mp_util_wad.o
 706	PORTED	0002:005645b0 ?RadiusDamage@@YAXABUvector@Broc@@MMMH@Z 00D53AB0 f i mp_util_wad.o
 707	FIXED	0002:005645f0 ?main@_mp_nano@@YAXXZ 00D53AF0 f mp_util_wad.o	FIXED: IDA 0x009645F0 copies pLevel->_base.entity (or null) into WindBlowing__functor
