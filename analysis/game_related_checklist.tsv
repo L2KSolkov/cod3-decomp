@@ -3466,7 +3466,7 @@ index	status	map_line
 3465	VERIFIED	0002:00103d20 ?FN_DebugThread_Select_UniqueIndex@@YAXXZ 008F3220 f game2.o
 3466	VERIFIED	0002:00103e30 ?_Return_MF_UnderCrossHair@@YAPAVEntity@@XZ 008F3330 f game2.o
 3467	VERIFIED	0002:00103fd0 ?RenderUniqueIndex@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008F34D0 f game2.o
-3468	PORTED	0002:00104560 ?DecodeSplineGroup@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 008F3A60 f game2.o
+3468	VERIFIED	0002:00104560 ?DecodeSplineGroup@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 008F3A60 f game2.o
 3469	VERIFIED	0002:00104580 ??0SplineMgr@@QAE@XZ 008F3A80 f game2.o
 3470	VERIFIED	0002:001045c0 ?GetSpline@SplineMgr@@QAEXPBDPAUSplinePath@@@Z 008F3AC0 f game2.o
 3471	SKIPPED	0002:001045f0 ?ReverseEndianSplinePath@SplineMgr@@AAEXAAUSplinePath@@@Z 008F3AF0 f game2.o  SKIPPED: inline template/container helper; supplied by its template definition
