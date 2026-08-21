@@ -2426,6 +2426,11 @@ using PerformanceStats = TestFPS::PerformanceStats;
 static_assert(sizeof(TestFPS::PerformanceStats) == 0x2C,
               "PerformanceStats size mismatch");
 
+template int ae_sized_array<PerformanceStats, 1000>::size() const;
+template bool ae_sized_array<PerformanceStats, 1000>::empty() const;
+template void ae_sized_array<PerformanceStats, 1000>::push_back(
+    const PerformanceStats&);
+
 // ea: 0x005173B0
 TestFPS::PerformanceStats::PerformanceStats()
 {
