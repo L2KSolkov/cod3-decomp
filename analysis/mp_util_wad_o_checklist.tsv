@@ -137,8 +137,8 @@ index	status	map_line
 136	VERIFIED	0002:005347b0 ??M@YA?AUbbool@@Ubint@@H@Z 00D23CB0 f i mp_util_wad.o	VERIFIED: IDA 0x009347B0 compares bint lhs against int rhs and returns bbool
 137	VERIFIED	0002:005347f0 ??O@YA?AUbbool@@Ubint@@0@Z 00D23CF0 f i mp_util_wad.o	VERIFIED: IDA 0x009347F0 compares two bint values and returns bbool
 138	VERIFIED	0002:00534830 ??HBroc@@YA?AVstring@0@ABV10@M@Z 00D23D30 f i mp_util_wad.o
-139	PORTED	0002:005348d0 ?Get@origin_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D23DD0 f i mp_util_wad.o  PORTED: IDA proxy type mHandle +0x00 and origin API copy
-140	PORTED	0002:00534920 ?Get@target_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D23E20 f i mp_util_wad.o  PORTED: IDA proxy type mHandle +0x00 and target string copy construction
+139	VERIFIED	0002:005348d0 ?Get@origin_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D23DD0 f i mp_util_wad.o	VERIFIED: IDA 0x009348D0 uses mHandle and m_entity_get_origin into a temporary vector, then copies to result
+140	VERIFIED	0002:00534920 ?Get@target_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D23E20 f i mp_util_wad.o	VERIFIED: IDA 0x00934920 calls m_entity_get_target, copy-constructs result, and destroys the temporary
 141	FIXED	0002:005349d0 ?GetEnt@Broc@@YA?AVentity@1@ABVstring@1@UHashStr@@I@Z 00D23ED0 f i mp_util_wad.o  FIXED: IDA result constructor restored
 142	FIXED	0002:00534a20 ?Delete@Broc@@YAXABVentity@1@@Z 00D23F20 f i mp_util_wad.o  FIXED: IDA const-reference entry point restored; pointer wrapper retained
 143	VERIFIED	0002:00534a50 ?Distance@@YAMABUvector@Broc@@0@Z 00D23F50 f i mp_util_wad.o  VERIFIED: matches IDA mVecDistance forwarding
