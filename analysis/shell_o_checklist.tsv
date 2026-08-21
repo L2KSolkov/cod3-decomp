@@ -1040,7 +1040,7 @@ index	status	map_line
 1039	VERIFIED	0002:001933a0 ?DialogDisplayProfileLoading@ProfileMainMenu@@QAEXH@Z 009828A0 f shell.o
 1040	VERIFIED	0002:001934a0 ??0ProfileEditMenu@@QAE@PAVFEMenuSystem@@@Z 009829A0 f shell.o
 1041	VERIFIED	0002:00193530 ??1ProfileEditMenu@@UAE@XZ 00982A30 f shell.o
-1042	PORTED	0002:001935b0 ?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@@Z 00982AB0 f shell.o
+1042	VERIFIED	0002:001935b0 ?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@@Z 00982AB0 f shell.o	VERIFIED: matches IDA status guard, memory-unit checks, profile loading, and callback branches
 1043	VERIFIED	0002:001936f0 ?DeleteProfile@ProfileManager@@QAEXH@Z 00982BF0 f shell.o
 1044	VERIFIED	0002:00193860 ?DeleteCorruptSave@ProfileManager@@QAEXXZ 00982D60 f shell.o
 1045	VERIFIED	0002:00193910 ?DialogResponseDeleteCorruptSave@ProfileManager@@CA_NH@Z 00982E10 f shell.o

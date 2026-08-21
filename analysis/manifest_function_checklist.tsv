@@ -6217,7 +6217,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6216	0x005933A0	0x009828A0	?DialogDisplayProfileLoading@ProfileMainMenu@@QAEXH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6217	0x005934A0	0x009829A0	??0ProfileEditMenu@@QAE@PAVFEMenuSystem@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6218	0x00593530	0x00982A30	??1ProfileEditMenu@@UAE@XZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6219	0x005935B0	0x00982AB0	?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6219	0x005935B0	0x00982AB0	?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile and local types	NO	NO	VERIFIED
 6220	0x005936F0	0x00982BF0	?DeleteProfile@ProfileManager@@QAEXH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6221	0x00593860	0x00982D60	?DeleteCorruptSave@ProfileManager@@QAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6222	0x00593910	0x00982E10	?DialogResponseDeleteCorruptSave@ProfileManager@@CA_NH@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
