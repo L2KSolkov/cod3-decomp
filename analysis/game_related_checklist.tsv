@@ -6370,10 +6370,10 @@ index	status	map_line
 6369	VERIFIED	0002:001ad4c0 ?IsMedic@@YA_NH@Z 0099C9C0 f i shell.o
 6370	VERIFIED	0002:001ad4e0 ??0color32@@QAE@EEEE@Z 0099C9E0 f i shell.o	VERIFIED: matches IDA packed channel assignments
 6371	VERIFIED	0002:001ad510 ?get_red@color32@@QBEEXZ 0099CA10 f i shell.o	VERIFIED: matches IDA red-channel accessor
-6372	PORTED	0002:001ad520 ?get_green@color32@@QBEEXZ 0099CA20 f i shell.o
-6373	PORTED	0002:001ad530 ?get_blue@color32@@QBEEXZ 0099CA30 f i shell.o
-6374	PORTED	0002:001ad540 ?get_alpha@color32@@QBEEXZ 0099CA40 f i shell.o
-6375	PORTED	0002:001ad550 ?set_alpha@color32@@QAEXE@Z 0099CA50 f i shell.o
+6372	VERIFIED	0002:001ad520 ?get_green@color32@@QBEEXZ 0099CA20 f i shell.o	VERIFIED: matches IDA green-channel accessor
+6373	VERIFIED	0002:001ad530 ?get_blue@color32@@QBEEXZ 0099CA30 f i shell.o	VERIFIED: matches IDA blue-channel accessor
+6374	VERIFIED	0002:001ad540 ?get_alpha@color32@@QBEEXZ 0099CA40 f i shell.o	VERIFIED: matches IDA alpha-channel accessor
+6375	VERIFIED	0002:001ad550 ?set_alpha@color32@@QAEXE@Z 0099CA50 f i shell.o	VERIFIED: matches IDA alpha-channel setter
 6376	PORTED	0002:001ad560 ??4color32@@QAEABV0@ABV0@@Z 0099CA60 f i shell.o
 6377	VERIFIED	0002:001ad580 ??0PanelAnimObject@@QAE@XZ 0099CA80 f i shell.o
 6378	VERIFIED	0002:001ad5a0 ??1PanelAnimObject@@UAE@XZ 0099CAA0 f i shell.o

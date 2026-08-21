@@ -6370,10 +6370,10 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6369	0x005AD4C0	0x0099C9C0	?IsMedic@@YA_NH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6370	0x005AD4E0	0x0099C9E0	??0color32@@QAE@EEEE@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6371	0x005AD510	0x0099CA10	?get_red@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
-6372	0x005AD520	0x0099CA20	?get_green@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6373	0x005AD530	0x0099CA30	?get_blue@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6374	0x005AD540	0x0099CA40	?get_alpha@color32@@QBEEXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6375	0x005AD550	0x0099CA50	?set_alpha@color32@@QAEXE@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6372	0x005AD520	0x0099CA20	?get_green@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6373	0x005AD530	0x0099CA30	?get_blue@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6374	0x005AD540	0x0099CA40	?get_alpha@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6375	0x005AD550	0x0099CA50	?set_alpha@color32@@QAEXE@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6376	0x005AD560	0x0099CA60	??4color32@@QAEABV0@ABV0@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6377	0x005AD580	0x0099CA80	??0PanelAnimObject@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6378	0x005AD5A0	0x0099CAA0	??1PanelAnimObject@@UAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
