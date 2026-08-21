@@ -6029,7 +6029,7 @@ index	status	map_line
 6028	VERIFIED	0002:00184da0 ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z 009742A0 f shell.o
 6029	VERIFIED	0002:00184ed0 ?SetScaleAdjustButtons@FEMultiLineText@@UAEXMM@Z 009743D0 f shell.o
 6030	VERIFIED	0002:00184fc0 ?SetPos@FEMultiLineText@@UAEXMM@Z 009744C0 f shell.o
-6031	PORTED	0002:00185010 ?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z 00974510 f shell.o
+6031	VERIFIED	0002:00185010 ?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z 00974510 f shell.o	VERIFIED: matches IDA decompile, including base-flag branch, scale, spacing, alpha, and justification flow
 6032	VERIFIED	0002:001851d0 ?SetHigh@InGameOptionsMenu@@MAEXH_N@Z 009746D0 f shell.o
 6033	VERIFIED	0002:00185240 ?Update@AARInGameOptionsMenu@@UAEXM@Z 00974740 f shell.o
 6034	VERIFIED	0002:00185260 ?UpdateButtonFontForLanguage@FEManager@@QAEXXZ 00974760 f shell.o

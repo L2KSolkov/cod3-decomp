@@ -6029,7 +6029,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6028	0x00584DA0	0x009742A0	??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6029	0x00584ED0	0x009743D0	?SetScaleAdjustButtons@FEMultiLineText@@UAEXMM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6030	0x00584FC0	0x009744C0	?SetPos@FEMultiLineText@@UAEXMM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6031	0x00585010	0x00974510	?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6031	0x00585010	0x00974510	?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z		shell.o	game		f	0	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6032	0x005851D0	0x009746D0	?SetHigh@InGameOptionsMenu@@MAEXH_N@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6033	0x00585240	0x00974740	?Update@AARInGameOptionsMenu@@UAEXM@Z		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6034	0x00585260	0x00974760	?UpdateButtonFontForLanguage@FEManager@@QAEXXZ		shell.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

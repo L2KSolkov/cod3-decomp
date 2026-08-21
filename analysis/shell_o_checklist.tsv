@@ -852,7 +852,7 @@ index	status	map_line
 851	VERIFIED	0002:00184da0 ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z 009742A0 f shell.o
 852	VERIFIED	0002:00184ed0 ?SetScaleAdjustButtons@FEMultiLineText@@UAEXMM@Z 009743D0 f shell.o
 853	VERIFIED	0002:00184fc0 ?SetPos@FEMultiLineText@@UAEXMM@Z 009744C0 f shell.o
-854	PORTED	0002:00185010 ?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z 00974510 f shell.o
+854	VERIFIED	0002:00185010 ?Animate@FEMultiLineText@@MAEXPAVMat43@math@@M@Z 00974510 f shell.o	VERIFIED: matches IDA decompile, including base-flag branch, scale, spacing, alpha, and justification flow
 855	VERIFIED	0002:001851d0 ?SetHigh@InGameOptionsMenu@@MAEXH_N@Z 009746D0 f shell.o
 856	VERIFIED	0002:00185240 ?Update@AARInGameOptionsMenu@@UAEXM@Z 00974740 f shell.o
 857	VERIFIED	0002:00185260 ?UpdateButtonFontForLanguage@FEManager@@QAEXXZ 00974760 f shell.o
