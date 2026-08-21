@@ -2337,6 +2337,18 @@ const Broc::string* Broc::entity::__unnamed::team_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::ctf_has_flag_struct::operator= - ea: 0x94E2A0
+const __int16& Broc::entity::__unnamed::ctf_has_flag_struct::operator=(
+    const __int16& rhs) {
+    Broc::gBrocAPI.m_entity_set_player_ctf_has_flag(mHandle, rhs);
+    return rhs;
+}
+
+// Broc::entity::__unnamed::ctf_has_flag_struct::Get - ea: 0x94FAA0
+__int16 Broc::entity::__unnamed::ctf_has_flag_struct::Get() const {
+    return Broc::gBrocAPI.m_entity_get_player_ctf_has_flag(mHandle);
+}
+
 // IsDefined overloads - ea: 0x92F130 / 0x92F150 / 0x92F6F0
 bool IsDefined(const Broc::entity& e) {
     return e.___u0 != 0;
@@ -2357,6 +2369,11 @@ template <typename T> bool IsDefined(const T& t) {
 // Distance - ea: 0x934A50
 float Distance(const Broc::vector* v0, const Broc::vector* v1) {
     return gBrocAPI.mVecDistance(v0, v1);
+}
+
+// Length - ea: 0x94EF50
+float Length(const Broc::vector* v) {
+    return gBrocAPI.mVecLength(v);
 }
 
 // VectorToAngles - ea: 0x934A80
@@ -2568,6 +2585,39 @@ void SetModel(Broc::entity* e, const Broc::string* modelName, int whichPak) {
     gBrocAPI.mSetModel(handle, modelName, (TPakInfo)whichPak);
 }
 
+// Broc::Code_DropItem - ea: 0x950B10
+void Code_DropItem(int itemType, int netID, const Broc::vector* position,
+                   const Broc::vector* angles,
+                   const Broc::vector* velocity) {
+    gBrocAPI.mDropItem2(itemType, netID, position, angles, velocity);
+}
+
+// Broc::SwitchToLastWeapon - ea: 0x950B80
+bool SwitchToLastWeapon(Broc::entity* e) {
+    return gBrocAPI.mSwitchToLastWeapon(e->GetHandle());
+}
+
+// Broc::Launch - ea: 0x950C40
+void Launch(Broc::entity* e, const Broc::vector* velocity) {
+    gBrocAPI.mLaunch(e->GetHandle(), velocity);
+}
+
+// Broc::SetOwner - ea: 0x9528E0
+void SetOwner(Broc::entity* e, Broc::entity* owner) {
+    gBrocAPI.mSetOwner(e->GetHandle(), owner->GetHandle());
+}
+
+// Broc::GiveWeapon - ea: 0x952920
+void GiveWeapon(Broc::entity* e, const Broc::string* pszWeaponName) {
+    gBrocAPI.mGiveWeapon(e->GetHandle(), pszWeaponName);
+}
+
+// Broc::SetWeaponSlotClipAmmo - ea: 0x952950
+void SetWeaponSlotClipAmmo(Broc::entity* e, const Broc::string* sSlot,
+                           int iSetClipAmmo) {
+    gBrocAPI.mSetWeaponSlotClipAmmo(e->GetHandle(), sSlot, iSetClipAmmo);
+}
+
 // Broc::MoveTo - ea: 0x9355A0
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float totalTime,
             float accTime, float decTime) {
@@ -2614,6 +2664,11 @@ int Broc::Code_IsMenuOpen(const Broc::string& menu, int viewport) {
 // ObjectiveDelete - ea: 0x94BA60
 void ObjectiveDelete(int iObjective, int clientIndex) {
     Broc::gBrocAPI.mObjectiveDelete(iObjective, clientIndex);
+}
+
+// ObjectiveRing - ea: 0x952990
+void ObjectiveRing(int iObjective, int clientIndex) {
+    Broc::gBrocAPI.mObjectiveRing(iObjective, clientIndex);
 }
 
 // ObjectiveAdd - ea: 0x94BA90

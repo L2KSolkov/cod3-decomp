@@ -267,6 +267,11 @@ public:
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
         };
+        struct ctf_has_flag_struct {
+            unsigned int mHandle;  // +0x00
+            __int16 Get() const;
+            const __int16& operator=(const __int16& rhs);
+        };
     };
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::origin_struct) == 4,
                             "origin_struct size mismatch");
@@ -292,6 +297,8 @@ public:
                             "angles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
                             "team_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::ctf_has_flag_struct) == 4,
+                            "ctf_has_flag_struct size mismatch");
 
     entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
     entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)
@@ -936,9 +943,15 @@ struct BrocAPI {
     char _pad150[0x184 - 0x150];                          // +0x150
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
     float (*mVecDistanceSquared)(const Broc::vector*, const Broc::vector*); // +0x188
-    char _pad18C[0x1A0 - 0x18C];                          // +0x18C
+    float (*mVecLength)(const Broc::vector*);              // +0x18C
+    float (*mVecLengthSquared)(const Broc::vector*);       // +0x190
+    int (*mVecCloser)(const Broc::vector*, const Broc::vector*,
+                      const Broc::vector*);               // +0x194
+    float (*mVecDot)(const Broc::vector*, const Broc::vector*); // +0x198
+    void (*mVecNormalize)(Broc::vector*, const Broc::vector*); // +0x19C
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
-    char _pad1A4[0x1AC - 0x1A4];                          // +0x1A4
+    void (*mVecAnglesToUp)(Broc::vector*, const Broc::vector*); // +0x1A4
+    void (*mVecAnglesToRight)(Broc::vector*, const Broc::vector*); // +0x1A8
     void (*mVecAnglesToForward)(Broc::vector*, const Broc::vector*); // +0x1AC
     char _pad1B0[0x1DC - 0x1B0];                          // +0x1B0
     void (*mObjectiveAdd5)(int, const Broc::string*, const Broc::string*,
@@ -946,7 +959,9 @@ struct BrocAPI {
                            const char*, int, int, int);   // +0x1DC
     char _pad1E0[0x1E8 - 0x1E0];                          // +0x1E0
     void (*mObjectiveDelete)(int, int);                   // +0x1E8
-    char _pad1EC[0x24C - 0x1EC];                          // +0x1EC
+    char _pad1EC[0x208 - 0x1EC];                          // +0x1EC
+    void (*mObjectiveRing)(int, int);                     // +0x208
+    char _pad20C[0x24C - 0x20C];                          // +0x20C
     void (*mCVarGetString)(Broc::string*, const char*);   // +0x24C
     int (*mCVarGetInt)(const char*);                      // +0x250
     float (*mCVarGetFloat)(const char*);                  // +0x254
@@ -1029,16 +1044,26 @@ struct BrocAPI {
     void (*mSetNormalHealth)(unsigned int, float);        // +0x6F4
     void (*mDoDamage)(unsigned int, float, const Broc::vector*, hitLocation_t); // +0x6F8
     void (*mSetTakeDamage)(unsigned int, int);            // +0x6FC
-    char _pad700[0x9E8 - 0x700];                          // +0x700
+    char _pad700[0x738 - 0x700];                          // +0x700
+    void (*mSetOwner)(unsigned int, unsigned int);        // +0x738
+    char _pad73C[0x838 - 0x73C];                          // +0x73C
+    void (*mLaunch)(unsigned int, const Broc::vector*);   // +0x838
+    char _pad83C[0x9E8 - 0x83C];                          // +0x83C
     void (*mMoveTo)(unsigned int, const Broc::vector*, float, float,
                     float);                              // +0x9E8
     char _pad9EC[0x9FC - 0x9EC];                          // +0x9EC
     void (*mRotateTo)(unsigned int, const Broc::vector&, float, float, float); // +0x9FC
-    char _padA00[0xA24 - 0xA00];                          // +0xA00
+    char _padA00[0xA18 - 0xA00];                          // +0xA00
+    void (*mGiveWeapon)(unsigned int, const Broc::string*); // +0xA18
+    void (*mGiveWeaponAndAmmo)(unsigned int, const Broc::string*, int); // +0xA1C
+    void (*mTakeWeapon)(unsigned int, const Broc::string*); // +0xA20
     void (*mTakeAllWeapons)(unsigned int);                 // +0xA24
-    char _padA28[0xA34 - 0xA28];                          // +0xA28
+    void (*mGetCurrentWeapon)(unsigned int, Broc::string*); // +0xA28
+    bool (*mHasWeapon)(unsigned int, const Broc::string*); // +0xA2C
+    bool (*mHasWeaponAndAmmo)(unsigned int, const Broc::string*, int*); // +0xA30
     bool (*mSwitchToWeapon)(unsigned int, const Broc::string*); // +0xA34
-    char _padA38[0xA8C - 0xA38];                          // +0xA38
+    bool (*mSwitchToLastWeapon)(unsigned int);             // +0xA38
+    char _padA3C[0xA8C - 0xA3C];                          // +0xA3C
     int (*mOpenMenu)(const Broc::string*, int);            // +0xA8C
     int (*mIsMenuOpen)(const Broc::string*, int);          // +0xA90
     int (*mOpenMenuNoMouse)(unsigned int, const Broc::string*); // +0xA94
@@ -1254,7 +1279,9 @@ void Rumble(const Broc::string* lowFreqNotes, float lowFreqDuraton,
             const Broc::string& highFreqNotes, float highFreqDuration,
             int player_index);
 bool SwitchToWeapon(const Broc::entity& e, const Broc::string& weapon);
+bool SwitchToLastWeapon(Broc::entity* e);
 void TakeAllWeapons(const Broc::entity& e);
+void SetOwner(Broc::entity* e, Broc::entity* owner);
 void DoDamage(const Broc::entity& e, float damage, const Broc::vector& vecIn, hitLocation_t hitLoc);
 float RandomFloat(float fMax);
 void MusicStop();
@@ -1294,6 +1321,8 @@ void Code_SendGameStateCTF(Broc::entity player, const Broc::vector* allied_flag,
 void Code_SetCompassVisibilty(int teamid, bool visible);
 void Code_PickupItem(int netID, Broc::entity player);
 void Code_AreaCaptured(int netID, int team, int hostOnly);
+void Code_DropItem(int itemType, int netID, const Broc::vector* position,
+                   const Broc::vector* angles, const Broc::vector* velocity);
 void Code_HostDropItem(int itemType, int netID, const Broc::vector* position,
                        const Broc::vector* angles, const Broc::vector* velocity);
 void Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
