@@ -68,19 +68,19 @@ index	status	map_line
 67	FIXED	0002:00530e00 ?GetEE_spawnTime@@YAAAUbint@@Ventity@Broc@@@Z 00D20300 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 68	VERIFIED	0002:00530e50 ?IsEEDefined_spawnTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D20350 f mp_util_wad.o	VERIFIED: IDA 0x00930E50 uses key 0xF922BE58 bint GetVal and IsDefined
 69	FIXED	0002:00530f00 ?GetEE_pickupCaptureDelayTime@@YAAAUbint@@Ventity@Broc@@@Z 00D20400 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-70	PORTED	0002:00530f50 ?IsEEDefined_pickupCaptureDelayTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D20450 f mp_util_wad.o
+70	VERIFIED	0002:00530f50 ?IsEEDefined_pickupCaptureDelayTime@@YA?AUbbool@@Ventity@Broc@@@Z 00D20450 f mp_util_wad.o	VERIFIED: IDA 0x00930F50 uses key 0x4743187E bint GetVal and IsDefined
 71	FIXED	0002:00531000 ?GetEE_flagStart@@YAAAUvector@Broc@@Ventity@2@@Z 00D20500 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-72	PORTED	0002:00531050 ?IsEEDefined_flagStart@@YA?AUbbool@@Ventity@Broc@@@Z 00D20550 f mp_util_wad.o
+72	VERIFIED	0002:00531050 ?IsEEDefined_flagStart@@YA?AUbbool@@Ventity@Broc@@@Z 00D20550 f mp_util_wad.o	VERIFIED: IDA 0x00931050 uses key 0x38D17CE8 vector GetVal and IsDefined
 73	FIXED	0002:00531100 ?GetEE_capAllowedTeam@@YAAAUbint@@Ventity@Broc@@@Z 00D20600 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-74	PORTED	0002:00531150 ?IsEEDefined_capAllowedTeam@@YA?AUbbool@@Ventity@Broc@@@Z 00D20650 f mp_util_wad.o
+74	VERIFIED	0002:00531150 ?IsEEDefined_capAllowedTeam@@YA?AUbbool@@Ventity@Broc@@@Z 00D20650 f mp_util_wad.o	VERIFIED: IDA 0x00931150 uses key 0xF430CD43 bint GetVal and IsDefined
 75	FIXED	0002:00531200 ?GetEE_last_touch_time@@YAAAUbint@@Ventity@Broc@@@Z 00D20700 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-76	PORTED	0002:00531250 ?IsEEDefined_last_touch_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D20750 f mp_util_wad.o
-77	PORTED	0002:00531300 ?GetEE_audio_track@@YAAAVstring@Broc@@Ventity@2@@Z 00D20800 f mp_util_wad.o	PORTED: implemented from IDA key 0x0F1F2946 and nullEnt fallback
-78	PORTED	0002:00531350 ?IsEEDefined_audio_track@@YA?AUbbool@@Ventity@Broc@@@Z 00D20850 f mp_util_wad.o  PORTED: implemented from IDA key 0x0F1F2946 and string GetVal/IsDefined path; source body added
+76	VERIFIED	0002:00531250 ?IsEEDefined_last_touch_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D20750 f mp_util_wad.o	VERIFIED: IDA 0x00931250 uses key 0xB80289A4 bint GetVal and IsDefined
+77	VERIFIED	0002:00531300 ?GetEE_audio_track@@YAAAVstring@Broc@@Ventity@2@@Z 00D20800 f mp_util_wad.o	VERIFIED: IDA 0x00931300 forwards handle lookup and GetRef key 0x0F1F2946
+78	VERIFIED	0002:00531350 ?IsEEDefined_audio_track@@YA?AUbbool@@Ventity@Broc@@@Z 00D20850 f mp_util_wad.o	VERIFIED: IDA 0x00931350 uses key 0x0F1F2946 string GetVal and IsDefined
 79	FIXED	0002:00531450 ?GetEE_objective_status@@YAAAUbint@@Ventity@Broc@@@Z 00D20950 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
-80	PORTED	0002:005314a0 ?IsEEDefined_objective_status@@YA?AUbbool@@Ventity@Broc@@@Z 00D209A0 f mp_util_wad.o
-81	PORTED	0002:00531550 ?GetEE_damagelight@@YAAAVstring@Broc@@Ventity@2@@Z 00D20A50 f mp_util_wad.o	PORTED: implemented from IDA key 0xAA4AB8F7 and nullEnt fallback
-82	PORTED	0002:005315a0 ?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z 00D20AA0 f mp_util_wad.o  PORTED: implemented from IDA key 0xAA4AB8F7 and string GetVal/IsDefined path; source body added
+80	VERIFIED	0002:005314a0 ?IsEEDefined_objective_status@@YA?AUbbool@@Ventity@Broc@@@Z 00D209A0 f mp_util_wad.o	VERIFIED: IDA 0x009314A0 uses key 0x36CBF8DE bint GetVal and IsDefined
+81	VERIFIED	0002:00531550 ?GetEE_damagelight@@YAAAVstring@Broc@@Ventity@2@@Z 00D20A50 f mp_util_wad.o	VERIFIED: IDA 0x00931550 forwards handle lookup and GetRef key 0xAA4AB8F7
+82	VERIFIED	0002:005315a0 ?IsEEDefined_damagelight@@YA?AUbbool@@Ventity@Broc@@@Z 00D20AA0 f mp_util_wad.o	VERIFIED: IDA 0x009315A0 uses key 0xAA4AB8F7 string GetVal and IsDefined
 83	FIXED	0002:005316a0 ?GetEE_spawnCount@@YAAAUbint@@Ventity@Broc@@@Z 00D20BA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
 84	PORTED	0002:005316f0 ?IsEEDefined_spawnCount@@YA?AUbbool@@Ventity@Broc@@@Z 00D20BF0 f mp_util_wad.o
 85	FIXED	0002:005317a0 ?GetEE_capStatus@@YAAAUbfloat@@Ventity@Broc@@@Z 00D20CA0 f mp_util_wad.o  FIXED: IDA getter disassembly nullEnt fallback added
