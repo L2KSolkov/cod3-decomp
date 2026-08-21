@@ -8264,9 +8264,9 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8263	0x005E9730	0x009D8C30	?VecCloser@Broc@@YAHABUvector@1@00@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8264	0x005E9780	0x009D8C80	?VecToAngles@Broc@@YAXAAUvector@1@ABU21@@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8265	0x005E97A0	0x009D8CA0	?VecAnglesToVectors@Broc@@YAXABUvector@1@AAU21@11@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8266	0x005E97B0	0x009D8CB0	??0hudelem@Broc@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8267	0x005E97C0	0x009D8CC0	??0hudelem@Broc@@QAE@H@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8268	0x005E97E0	0x009D8CE0	?GetIndex@hudelem@Broc@@QBEHXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8266	0x005E97B0	0x009D8CB0	??0hudelem@Broc@@QAE@XZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8267	0x005E97C0	0x009D8CC0	??0hudelem@Broc@@QAE@H@Z		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
+8268	0x005E97E0	0x009D8CE0	?GetIndex@hudelem@Broc@@QBEHXZ		scr.o	game		f i	1	PORTED	FUNCTION added from IDA decompile and disassembly	NO	NO	VERIFIED
 8269	0x005E97F0	0x009D8CF0	??0pathnode@Broc@@QAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8270	0x005E9800	0x009D8D00	?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8271	0x005E9810	0x009D8D10	?IsDefined@pathnode@Broc@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
