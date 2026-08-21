@@ -6374,7 +6374,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6373	0x005AD530	0x0099CA30	?get_blue@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6374	0x005AD540	0x0099CA40	?get_alpha@color32@@QBEEXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6375	0x005AD550	0x0099CA50	?set_alpha@color32@@QAEXE@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
-6376	0x005AD560	0x0099CA60	??4color32@@QAEABV0@ABV0@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6376	0x005AD560	0x0099CA60	??4color32@@QAEABV0@ABV0@@Z		shell.o	game		f i	1	SKIPPED	Compiler-generated trivial copy helper	NO	NO	SKIPPED
 6377	0x005AD580	0x0099CA80	??0PanelAnimObject@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6378	0x005AD5A0	0x0099CAA0	??1PanelAnimObject@@UAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6379	0x005AD5B0	0x0099CAB0	?SetZvalueAbs@PanelAnimObject@@UAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -6614,7 +6614,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6613	0x005AF540	0x0099EA40	?GetName@MPPlayer@@QBEPBDXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6614	0x005AF550	0x0099EA50	?GetTeam@MPPlayer@@QAEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6615	0x005AF560	0x0099EA60	?FindItem@MPPlayer@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6616	0x005AF570	0x0099EA70	??_Fcolor32@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6616	0x005AF570	0x0099EA70	??_Fcolor32@@QAEXXZ		shell.o	game		f i	1	SKIPPED	Compiler-generated constructor closure	NO	NO	SKIPPED
 6617	0x005AF580	0x0099EA80	??_EPanelMaterial@@QAEPAXI@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6618	0x005AF5F0	0x0099EAF0	?movie_valid@movie_manager@@SA_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6619	0x005AF610	0x0099EB10	??0nvlMovie@@QAE@XZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

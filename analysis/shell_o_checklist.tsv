@@ -1197,7 +1197,7 @@ index	status	map_line
 1196	VERIFIED	0002:001ad530 ?get_blue@color32@@QBEEXZ 0099CA30 f i shell.o	VERIFIED: matches IDA blue-channel accessor
 1197	VERIFIED	0002:001ad540 ?get_alpha@color32@@QBEEXZ 0099CA40 f i shell.o	VERIFIED: matches IDA alpha-channel accessor
 1198	VERIFIED	0002:001ad550 ?set_alpha@color32@@QAEXE@Z 0099CA50 f i shell.o	VERIFIED: matches IDA alpha-channel setter
-1199	PORTED	0002:001ad560 ??4color32@@QAEABV0@ABV0@@Z 0099CA60 f i shell.o
+1199	SKIPPED	0002:001ad560 ??4color32@@QAEABV0@ABV0@@Z 0099CA60 f i shell.o	SKIPPED: compiler-generated trivial color32 copy assignment
 1200	VERIFIED	0002:001ad580 ??0PanelAnimObject@@QAE@XZ 0099CA80 f i shell.o
 1201	VERIFIED	0002:001ad5a0 ??1PanelAnimObject@@UAE@XZ 0099CAA0 f i shell.o
 1202	VERIFIED	0002:001ad5b0 ?SetZvalueAbs@PanelAnimObject@@UAEXM@Z 0099CAB0 f i shell.o
@@ -1437,7 +1437,7 @@ index	status	map_line
 1436	VERIFIED	0002:001af540 ?GetName@MPPlayer@@QBEPBDXZ 0099EA40 f i shell.o
 1437	VERIFIED	0002:001af550 ?GetTeam@MPPlayer@@QAEHXZ 0099EA50 f i shell.o
 1438	VERIFIED	0002:001af560 ?FindItem@MPPlayer@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z 0099EA60 f i shell.o
-1439	PORTED	0002:001af570 ??_Fcolor32@@QAEXXZ 0099EA70 f i shell.o
+1439	SKIPPED	0002:001af570 ??_Fcolor32@@QAEXXZ 0099EA70 f i shell.o	SKIPPED: compiler-generated color32 default-constructor closure
 1440	SKIPPED	0002:001af580 ??_EPanelMaterial@@QAEPAXI@Z 0099EA80 f i shell.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1441	VERIFIED	0002:001af5f0 ?movie_valid@movie_manager@@SA_NXZ 0099EAF0 f i shell.o
 1442	VERIFIED	0002:001af610 ??0nvlMovie@@QAE@XZ 0099EB10 f i shell.o
