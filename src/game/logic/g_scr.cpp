@@ -24545,13 +24545,65 @@ T pnode_get_field(int handle)
     return *(T*)((char*)node + OFF);
 }
 
-// vnode storage is mp_level-internal (NodeFieldManager); no ported accessor.
-template <typename T, int OFF>
-void vnode_set_field(int /*handle*/, T /*val*/) {}
-template <typename T, int OFF>
-T vnode_get_field(int /*handle*/)
+// BrocEntity.cpp 6298/6320: vnode fields are direct vehicle_node_t members.
+template <typename T>
+static T vnode_invalid_value()
 {
     return T();
+}
+
+template <>
+inline Broc::string vnode_invalid_value<Broc::string>()
+{
+    return Broc::string(static_cast<Broc::string::Block*>(nullptr));
+}
+
+template <>
+inline Broc::vector vnode_invalid_value<Broc::vector>()
+{
+    Broc::vector value;
+    value.x = sNaN;
+    value.y = sNaN;
+    value.z = sNaN;
+    return value;
+}
+
+template <typename T, int OFF>
+void vnode_set_field(int handle, T val)
+{
+    vehicle_node_t* node = s_nodes[handle];
+    if (node == nullptr || handle == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6298;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set field on NULL vehicle node"))
+            __debugbreak();
+    }
+    else
+    {
+        *(T*)((char*)node + OFF) = val;
+    }
+}
+
+template <typename T, int OFF>
+T vnode_get_field(int handle)
+{
+    vehicle_node_t* node = s_nodes[handle];
+    if (node == nullptr || handle == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6320;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get field off vehicle NULL node"))
+            __debugbreak();
+        return vnode_invalid_value<T>();
+    }
+    return *(T*)((char*)node + OFF);
 }
 
 template <typename T, int OFF, int IDX>
