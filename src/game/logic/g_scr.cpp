@@ -24257,6 +24257,86 @@ void entity_set_persistent_player_field(unsigned int handle, T val);
 template <typename T, int OFF, int IDX>
 T entity_get_persistent_player_field(unsigned int handle);
 
+// IDA type dump: the release binary stores the script field callbacks as a
+// 38-entry table of erased function pointers.  Slot zero is intentionally
+// null in the original image; the typed path-node callbacks below are the
+// separate weak globals used by the special angle/type fields.
+using BrocFieldFn = void (__cdecl *)(void*, int, void*);
+BrocFieldFn sScrFcnPtrs[38] = {
+    nullptr,
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_ReadOnlyField),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetOrigin),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetHealth),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetAngles),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_GetAngles),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetModel),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetByte),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_GetByte),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetWord),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_GetWord),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetTarget),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetTargetName),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetGroupName),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetNoteWorthy),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::Scr_SetAnimName),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_ReadOnly),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_Clamp_0_1),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_SetTime),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_GetTime),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_SetWeapon),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_GetWeapon),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_GetGroundType),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_SetAnimPos),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_SetFavoriteEnemy),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::ActorScr_GetFavoriteEnemy),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_ReadOnly),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_SetTeam),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_GetTeam),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_SetGoalRadius),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_SetGoalAngleTolerance),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_ConvertNode),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_ConvertSentient),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::SentientScr_ConvertSentientEnemy),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::PathNode_SetAngles),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::PathNode_GetAngles),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::PathNode_SetType),
+    reinterpret_cast<BrocFieldFn>(&BrocSys::PathNode_GetType),
+};
+
+void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
+    &BrocSys::PathNode_SetAngles;
+void (__cdecl *off_DF49A4)(PathNodes::PathNode*, int, Broc::vector*) =
+    &BrocSys::PathNode_GetAngles;
+void (__cdecl *off_DF49A8)(PathNodes::PathNode*, int, Broc::string*) =
+    &BrocSys::PathNode_SetType;
+void (__cdecl *off_DF49AC)(PathNodes::PathNode*, int, Broc::string*) =
+    &BrocSys::PathNode_GetType;
+
+static void pnode_init_callback_value(Broc::vector& value)
+{
+    value.x = sNaN;
+    value.y = sNaN;
+    value.z = sNaN;
+}
+
+template <typename T>
+static void pnode_init_callback_value(T&)
+{
+}
+
+template <typename T>
+static T pnode_get_type_value(const PathNodes::PathNode*)
+{
+    return T();
+}
+
+template <>
+inline Broc::string pnode_get_type_value<Broc::string>(
+    const PathNodes::PathNode* node)
+{
+    return Broc::string(nodeStringTable[node->mConstant.mType]);
+}
+
 // hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
 // elem byte offset OFF (fallback path; the binary's Scr_Set* hooks do the same)
 template <typename T, int OFF>
@@ -24379,37 +24459,90 @@ T entity_get_actor_field(unsigned int handle)
 template <typename T, int OFF, int IDX>
 void pnode_set_field(int handle, T val)
 {
-    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(
-        (PathNodes::NodeHandle)(unsigned short)handle);
-    if (node != nullptr)
-    {
-        *(T*)((char*)node + OFF) = val;
-        return;
-    }
-    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    const int originalHandle = handle;
+    PathNodes::NodeHandle nodeHandle;
+    nodeHandle.mValue = (unsigned short)handle;
+    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(nodeHandle);
+
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5878;
+    AeAssert::gCurrentLine = 6225;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to set field on NULL pathnode"))
+        && AeAssert::Warning(
+            "Setting pathnode field- MD told me this doesn't happen"))
         __debugbreak();
+
+    if (node == nullptr || originalHandle == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6244;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set field on NULL path node"))
+            __debugbreak();
+    }
+    else if (sScrFcnPtrs[0] != nullptr)
+    {
+        sScrFcnPtrs[0](node, OFF, &val);
+    }
+    else if (IDX == 34 && off_DF49A0 != nullptr)
+    {
+        off_DF49A0(node, OFF, reinterpret_cast<Broc::vector*>(&val));
+    }
+    else if (IDX == 36 && off_DF49A8 != nullptr)
+    {
+        off_DF49A8(node, OFF, reinterpret_cast<Broc::string*>(&val));
+    }
+    else
+    {
+        *(T*)((char*)node + OFF) = val;
+    }
 }
 
 template <typename T, int OFF, int IDX>
 T pnode_get_field(int handle)
 {
-    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(
-        (PathNodes::NodeHandle)(unsigned short)handle);
-    if (node != nullptr)
-        return *(T*)((char*)node + OFF);
-    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5898;
-    AeAssert::gCurrentExpr = nullptr;
-    if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to get field off NULL pathnode"))
-        __debugbreak();
-    return T();
+    const int originalHandle = handle;
+    PathNodes::NodeHandle nodeHandle;
+    nodeHandle.mValue = (unsigned short)handle;
+    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(nodeHandle);
+    if (node == nullptr || originalHandle == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6273;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get field off path NULL node"))
+            __debugbreak();
+        return T();
+    }
+
+    if (IDX == 35 && off_DF49A4 != nullptr)
+    {
+        T value{};
+        pnode_init_callback_value(value);
+        off_DF49A4(node, OFF, reinterpret_cast<Broc::vector*>(&value));
+        return value;
+    }
+    if (IDX == 37 && off_DF49AC != nullptr)
+    {
+        T value{};
+        off_DF49AC(node, OFF, reinterpret_cast<Broc::string*>(&value));
+        return value;
+    }
+    if (sScrFcnPtrs[0] != nullptr)
+    {
+        T value{};
+        pnode_init_callback_value(value);
+        sScrFcnPtrs[0](node, OFF, &value);
+        return value;
+    }
+    if (IDX == 37)
+        return pnode_get_type_value<T>(node);
+    return *(T*)((char*)node + OFF);
 }
 
 // vnode storage is mp_level-internal (NodeFieldManager); no ported accessor.
