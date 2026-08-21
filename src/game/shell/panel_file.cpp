@@ -2009,7 +2009,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
     Broc::vector panel_scratch[8];
     Broc::vector* tmp_initial = &panel_scratch[0];
     Broc::vector* tmp_wed = &panel_scratch[4];
-    int* wedge_indices = reinterpret_cast<int*>(&tmp_wed[3]);
+    int wedge_indices[4];
     Broc::vector uv_out[4];
     for (int i = 0; i < 4; ++i)
     {
@@ -2040,7 +2040,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
                 goto use_last_triangle;
             ++tri1;
             ++tri2;
-            didx_cursor += 6;
+            didx_cursor += 3;
 
         emit_section:
             color32 section_colors[4];
@@ -2085,7 +2085,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
             VectorPushBack(pqs, section);
             ++tri1;
             ++tri2;
-            didx_cursor += 6;
+            didx_cursor += 3;
             if (tri1 >= num_tri)
                 goto finish;
             continue;
