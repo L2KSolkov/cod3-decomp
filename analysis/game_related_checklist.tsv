@@ -6391,7 +6391,7 @@ index	status	map_line
 6390	VERIFIED	0002:001ad840 ?AddedToMenu@FEText@@UAEX_N@Z 0099CD40 f i shell.o
 6391	VERIFIED	0002:001ad860 ?IsOnMenu@FEText@@UAE_NXZ 0099CD60 f i shell.o
 6392	VERIFIED	0002:001ad870 ?IsMultiLineObject@FEText@@UAE_NXZ 0099CD70 f i shell.o
-6393	PORTED	0002:001ad880 ?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z 0099CD80 f i shell.o
+6393	PORTED	0002:001ad880 ?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z 0099CD80 f i shell.o	PORTED: added IDA-derived xy_initial assignment
 6394	VERIFIED	0002:001ad8b0 ?SetFont@FEText@@UAEXW4font_index@@@Z 0099CDB0 f i shell.o
 6395	VERIFIED	0002:001ad8c0 ?SetEvenNumberSpacing@FEText@@UAEX_N@Z 0099CDC0 f i shell.o
 6396	VERIFIED	0002:001ad8e0 ?SetScale@FEText@@UAEXM@Z 0099CDE0 f i shell.o

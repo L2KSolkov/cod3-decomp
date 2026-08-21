@@ -6391,7 +6391,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6390	0x005AD840	0x0099CD40	?AddedToMenu@FEText@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6391	0x005AD860	0x0099CD60	?IsOnMenu@FEText@@UAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6392	0x005AD870	0x0099CD70	?IsMultiLineObject@FEText@@UAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6393	0x005AD880	0x0099CD80	?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6393	0x005AD880	0x0099CD80	?SetInitialXY@FEText@@QAEXUvector@Broc@@@Z		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6394	0x005AD8B0	0x0099CDB0	?SetFont@FEText@@UAEXW4font_index@@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6395	0x005AD8C0	0x0099CDC0	?SetEvenNumberSpacing@FEText@@UAEX_N@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6396	0x005AD8E0	0x0099CDE0	?SetScale@FEText@@UAEXM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
