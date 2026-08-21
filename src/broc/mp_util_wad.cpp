@@ -10731,8 +10731,10 @@ void CompassUnderlay(Broc::entity p) {
 // WaitThenPickFlagToLaunch - ea: 0x96AC60
 void WaitThenPickFlagToLaunch(Broc::entity self, Broc::bfloat wait_time,
                               const char* message) {
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
     HashStr n;
     n.mVal = 0xEEBE2988;
     Broc::notify(lvl, n);
