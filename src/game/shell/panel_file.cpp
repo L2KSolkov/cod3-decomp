@@ -1916,52 +1916,63 @@ void PanelFile::LoadPanelText2(unsigned char* buffer, int& index,
 void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
                      const math::Mat43* parent_matrix)
 {
-    unsigned short v9 = (unsigned short)(buffer[index]
-                                         | (buffer[index + 1] << 8));
+    int material_index = (short)(buffer[index]
+                                 | (buffer[index + 1] << 8));
     index += 2;
-    PanelMaterial* ind3 = &mats[v9];
-    unsigned short n = (unsigned short)(buffer[index]
-                                        | (buffer[index + 1] << 8));
+    PanelMaterial* material = &mats[material_index];
+    int nwedges = (short)(buffer[index]
+                          | (buffer[index + 1] << 8));
     index += 2;
-    Broc::vector* verts = (Broc::vector*)mem_heap_malloc(12 * n);
+
+    const unsigned int vertex_bytes = 12 * nwedges;
+    Broc::vector* verts = (Broc::vector*)mem_heap_malloc(vertex_bytes);
     if (verts != nullptr)
     {
-        for (int j = 0; j < n; ++j)
+        for (int i = nwedges; i != 0; --i)
         {
-            verts[j].x = sNaN;
-            verts[j].y = sNaN;
-            verts[j].z = sNaN;
+            verts[i - 1].x = sNaN;
+            verts[i - 1].y = sNaN;
+            verts[i - 1].z = sNaN;
         }
     }
-    color32* colors = (color32*)mem_heap_malloc(4 * n);
+
+    color32* colors = (color32*)mem_heap_malloc(4 * nwedges);
     if (colors != nullptr)
-        memset(colors, 0, 4 * n);
-    Broc::vector* uvs = (Broc::vector*)mem_heap_malloc(12 * n);
+        memset(colors, 0, 4 * nwedges);
+
+    Broc::vector* uvs = (Broc::vector*)mem_heap_malloc(vertex_bytes);
     if (uvs != nullptr)
     {
-        for (int k = 0; k < n; ++k)
+        for (int i = nwedges; i != 0; --i)
         {
-            uvs[k].x = sNaN;
-            uvs[k].y = sNaN;
-            uvs[k].z = sNaN;
+            uvs[i - 1].x = sNaN;
+            uvs[i - 1].y = sNaN;
+            uvs[i - 1].z = sNaN;
         }
     }
-    for (int i = 0; i < n; ++i)
+
+    for (int i = 0; i < nwedges; ++i)
     {
         ReadVector3d(verts[i], buffer, index);
-        color32 v97 = ReadColor(buffer, index);
-        colors[i] = MultiplyColors(v97, ind3->color);
-        float u = *(float*)&buffer[index];
+        colors[i] = MultiplyColors(ReadColor(buffer, index),
+                                   material->color);
+
+        unsigned int bits = buffer[index]
+                           | ((buffer[index + 1]
+                               | (buffer[index + 2] << 8)) << 8);
         index += 4;
-        uvs[i].x = u;
-        float v = *(float*)&buffer[index];
+        memcpy(&uvs[i].x, &bits, sizeof(bits));
+        bits = buffer[index]
+             | ((buffer[index + 1]
+                 | (buffer[index + 2] << 8)) << 8);
         index += 4;
-        uvs[i].y = v;
+        memcpy(&uvs[i].y, &bits, sizeof(bits));
     }
-    unsigned short v36 = (unsigned short)(buffer[index]
-                                          | (buffer[index + 1] << 8));
+
+    int strip_count = (short)(buffer[index]
+                              | (buffer[index + 1] << 8));
     index += 2;
-    if (v36 != 1)
+    if (strip_count != 1)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEPanel.cpp";
@@ -1970,16 +1981,19 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    unsigned short v37 = (unsigned short)(buffer[index]
-                                          | (buffer[index + 1] << 8));
+
+    int index_count = (short)(buffer[index]
+                              | (buffer[index + 1] << 8));
     index += 2;
-    short* didxs = (short*)mem_heap_malloc(2 * v37);
-    for (int m = 0; m < v37; ++m)
+    short* didxs = (short*)mem_heap_malloc(2 * index_count);
+    for (int i = 0; i < index_count; ++i)
     {
-        didxs[m] = (short)(buffer[index] | (buffer[index + 1] << 8));
+        didxs[i] = (short)(buffer[index]
+                           | (buffer[index + 1] << 8));
         index += 2;
     }
-    if (n < 3)
+
+    if (nwedges < 3)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEPanel.cpp";
@@ -1988,10 +2002,8 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    math::Mat43 matcopy = *parent_matrix;
-    // IDA's frame has these two four-vector regions back-to-back.  The
-    // fourth tmp_initial entry is followed by tmp_wed[0..2] when the quad
-    // section consumes four vertices.
+
+    math::Mat43 matrix = *parent_matrix;
     Broc::vector panel_scratch[8];
     Broc::vector* tmp_initial = &panel_scratch[0];
     Broc::vector* tmp_wed = &panel_scratch[4];
@@ -2009,96 +2021,107 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
             tmp_wed[i].z = sNaN;
         }
     }
-    float v93 = 0.0f;
-    int num_tri = v37 / 3;
+
+    float z_value = 0.0f;
+    const int num_tri = index_count / 3;
     int tri1 = 0;
-    int v97 = 1;
-    short* z = didxs;
+    int tri2 = 1;
+    short* didx_cursor = didxs;
     if (num_tri > 0)
     {
         for (;;)
         {
-            if (v97 >= num_tri)
-                goto LABEL_39;
-            if (CountSharedVertices(didxs, tri1, v97,
+            if (tri2 >= num_tri)
+                goto use_last_triangle;
+            if (CountSharedVertices(didxs, tri1, tri2,
                                     wedge_indices) != 2)
-                goto LABEL_39;
+                goto use_last_triangle;
             ++tri1;
-            ++v97;
-            z += 6;
-        LABEL_40:
-            color32 mat[4];
-            for (int v51 = 0; v51 < 4; ++v51)
+            ++tri2;
+            didx_cursor += 6;
+
+        emit_section:
+            color32 section_colors[4];
+            for (int i = 0; i < 4; ++i)
             {
-                int idx = wedge_indices[v51];
-                Broc::vector vert = verts[idx];
-                tmp_initial[v51 + 3].x =
-                    matcopy.x.v.m128_f32[0] * vert.x
-                    + matcopy.y.v.m128_f32[0] * vert.y
-                    + matcopy.z.v.m128_f32[0] * vert.z
-                    + matcopy.w.v.m128_f32[0];
-                tmp_initial[v51 + 3].y =
-                    matcopy.x.v.m128_f32[1] * vert.x
-                    + matcopy.y.v.m128_f32[1] * vert.y
-                    + matcopy.z.v.m128_f32[1] * vert.z
-                    + matcopy.w.v.m128_f32[1];
-                v93 = matcopy.x.v.m128_f32[2] * vert.x
-                      + matcopy.y.v.m128_f32[2] * vert.y
-                      + matcopy.z.v.m128_f32[2] * vert.z
-                      + matcopy.w.v.m128_f32[2];
-                uv_out[v51] = uvs[idx];
-                mat[v51] = colors[idx];
+                const int vertex_index = wedge_indices[i];
+                const Broc::vector& vertex = verts[vertex_index];
+                tmp_initial[i + 3].x =
+                    matrix.x.v.m128_f32[0] * vertex.x
+                    + matrix.y.v.m128_f32[0] * vertex.y
+                    + matrix.z.v.m128_f32[0] * vertex.z
+                    + matrix.w.v.m128_f32[0];
+                tmp_initial[i + 3].y =
+                    matrix.x.v.m128_f32[1] * vertex.x
+                    + matrix.y.v.m128_f32[1] * vertex.y
+                    + matrix.z.v.m128_f32[1] * vertex.z
+                    + matrix.w.v.m128_f32[1];
+                z_value = matrix.x.v.m128_f32[2] * vertex.x
+                        + matrix.y.v.m128_f32[2] * vertex.y
+                        + matrix.z.v.m128_f32[2] * vertex.z
+                        + matrix.w.v.m128_f32[2];
+                uv_out[i] = uvs[vertex_index];
+                section_colors[i] = colors[vertex_index];
             }
-            PanelQuadSection* v67 =
+
+            PanelQuadSection* section =
                 (PanelQuadSection*)mem_heap_malloc(0x68u);
-            if (v67 != nullptr)
+            if (section != nullptr)
             {
-                v67->quad.Tex = nullptr;
-                v67->quad.Z = 0.0f;
+                section->quad.Tex = nullptr;
+                section->quad.Z = 0.0f;
             }
-            v67->AddPQSection(&tmp_initial[3], uv_out, mat, v93);
-            for (int v68 = 0; v68 < 4; ++v68)
+            section->AddPQSection(&tmp_initial[3], uv_out,
+                                  section_colors, z_value);
+            for (int i = 0; i < 4; ++i)
             {
-                v67->x_initial[v68] = (short)tmp_initial[v68 + 3].x;
-                v67->y_initial[v68] = (short)tmp_initial[v68 + 3].y;
+                section->x_initial[i] =
+                    (short)tmp_initial[i + 3].x;
+                section->y_initial[i] =
+                    (short)tmp_initial[i + 3].y;
             }
-            VectorPushBack(pqs, v67);
+            VectorPushBack(pqs, section);
             ++tri1;
-            ++v97;
-            z += 6;
+            ++tri2;
+            didx_cursor += 6;
             if (tri1 >= num_tri)
-                goto LABEL_47;
+                goto finish;
             continue;
-        LABEL_39:
-            wedge_indices[0] = ((short*)z)[0];
-            wedge_indices[1] = ((short*)z)[1];
-            wedge_indices[2] = ((short*)z)[2];
+
+        use_last_triangle:
+            wedge_indices[0] = didx_cursor[0];
+            wedge_indices[1] = didx_cursor[1];
+            wedge_indices[2] = didx_cursor[2];
             wedge_indices[3] = wedge_indices[2];
-            goto LABEL_40;
+            goto emit_section;
         }
     }
-LABEL_47:
-    SetZvalueAbs(v93);
-    unsigned int v71 = ind3->bilinearfilter != 0;
-    if (!ind3->wrapu)
-        v71 |= 0x40;
-    if (!ind3->wrapv)
-        v71 |= 0x80;
-    if (ind3->texture != nullptr && ind3->hasmap)
-        SetTexture(ind3->texture);
-    if (v71 != 0)
-        SetMaterialFlags(v71);
+
+finish:
+    SetZvalueAbs(z_value);
+    unsigned int material_flags = material->bilinearfilter != 0;
+    if (!material->wrapu)
+        material_flags |= 0x40;
+    if (!material->wrapv)
+        material_flags |= 0x80;
+    if (material->texture != nullptr && material->hasmap)
+        SetTexture(material->texture);
+    if (material_flags != 0)
+        SetMaterialFlags(material_flags);
+
     mem_heap_free(verts);
     mem_heap_free(uvs);
     mem_heap_free(colors);
     mem_heap_free(didxs);
+
     Broc::vector min_coords = GetMin();
-    Broc::vector Max = GetMax();
-    float y = Max.y;
-    float v12 = min_coords.z;
-    center_point.x = ((Max.x - min_coords.x) * 0.5f) + min_coords.x;
-    center_point.y = ((y - min_coords.y) * 0.5f) + min_coords.y;
-    center_point.z = ((Max.z - v12) * 0.5f) + v12;
+    Broc::vector max_coords = GetMax();
+    center_point.x = ((max_coords.x - min_coords.x) * 0.5f)
+                   + min_coords.x;
+    center_point.y = ((max_coords.y - min_coords.y) * 0.5f)
+                   + min_coords.y;
+    center_point.z = ((max_coords.z - min_coords.z) * 0.5f)
+                   + min_coords.z;
 }
 
 // ============================================================================
