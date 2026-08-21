@@ -3472,7 +3472,7 @@ index	status	map_line
 3471	SKIPPED	0002:001045f0 ?ReverseEndianSplinePath@SplineMgr@@AAEXAAUSplinePath@@@Z 008F3AF0 f game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3472	SKIPPED	0002:001046c0 ?ReverseEndianSplineGroupFile@SplineMgr@@AAEXAAVHashGroupFile@@@Z 008F3BC0 f game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3473	VERIFIED	0002:001048c0 ?UpdateDroneAEMap@@YAHPAVEntity@@I@Z 008F3DC0 f game2.o
-3474	PORTED	0002:00104970 ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z 008F3E70 f game2.o
+3474	FIXED	0002:00104970 ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z 008F3E70 f game2.o
 3475	PORTED	0002:00104990 ?Update@TaskHandler@@QAEXMPAVTaskFunctor@@@Z 008F3E90 f game2.o
 3476	VERIFIED	0002:00104b80 ?DeactivateAll@TaskHandler@@QAEXXZ 008F4080 f game2.o
 3477	VERIFIED	0002:00104bc0 ?GetTaskForEntity@TaskHandler@@QBEPAVTask@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008F40C0 f game2.o
