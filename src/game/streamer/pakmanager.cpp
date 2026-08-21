@@ -2880,6 +2880,7 @@ public:
 
     const char* GetName() const;              // ?GetName@StreamZone@@QBEPBDXZ
     void SetPakInfo(const PakInfoNode* n);    // ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z
+    const PakInfoNode* GetPakInfo() const;     // ?GetPakInfo@StreamZone@@QBEPBUPakInfoNode@@XZ (game2.o 0x5173A0)
 };
 
 // ZoneCellDesc (streamer.o view; mZone +0x2C)
@@ -2892,6 +2893,7 @@ public:
 
     unsigned int GetCellId() const;  // ?GetCellId@ZoneCellDesc@@QBEIXZ (game2.o 0x517380)
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
+    const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellDesc@@QBEABVBoundingBox@@XZ (game2.o 0x517390)
     bool BoundsIntersect(const math::Position3& p) const;  // stub (BoundingBox::intersect)
     const ZdNode* GetZdNode(const math::Position3& position,
                             bool force);  // ?GetZdNode@ZoneCellDesc@@QAEPBVZdNode@@ABVPosition3@math@@_N@Z
@@ -11165,6 +11167,12 @@ unsigned int ZoneCellDesc::GetCellId() const
     return mCellId;
 }
 
+// ea: 0x00517390
+const BoundingBox& ZoneCellDesc::GetBounds() const
+{
+    return mAabb;
+}
+
 // ea: 0x684460
 void BoundingBox::accumulate(const math::Position3& p)
 {
@@ -11200,6 +11208,9 @@ const char* StreamZone::GetName() const { return mName.mStr; }
 
 // ea: 0x6636C0
 void StreamZone::SetPakInfo(const PakInfoNode* n) { mPakInfo = n; }
+
+// ea: 0x005173A0
+const PakInfoNode* StreamZone::GetPakInfo() const { return mPakInfo; }
 
 // ea: 0x6636D0
 const BitSet<64>& ZoneOverrideBrushSet::GetZoneBitset() const

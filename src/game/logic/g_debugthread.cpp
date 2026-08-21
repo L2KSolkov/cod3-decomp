@@ -437,6 +437,18 @@ void RenderUniqueIndex(DbLinkedHandle<EntityHandleDb, Entity> index)
     }
 }
 
+// ea: 0x005173C0
+int DebugThread::IsActive()
+{
+    return m_active;
+}
+
+// ea: 0x005173D0
+void DebugThread::SetActive(int active)
+{
+    m_active = active;
+}
+
 // ============================================================================
 // DebugThread::Render - ea: 0x50A050
 // ============================================================================
@@ -2271,7 +2283,7 @@ void TestFPS::DeleteInst()
     TestFPS::sInst = nullptr;
 }
 
-struct PerformanceStats {
+struct TestFPS::PerformanceStats {
     float mPosition[3];   // +0x00
     int   mPositionIndex; // +0x0C
     int   mCell;          // +0x10
@@ -2281,9 +2293,16 @@ struct PerformanceStats {
     float mRenderTime;    // +0x20
     int   mNodeCount;     // +0x24
     int   mPolyCount;     // +0x28
+    PerformanceStats();
 };
-static_assert(sizeof(PerformanceStats) == 0x2C,
+using PerformanceStats = TestFPS::PerformanceStats;
+static_assert(sizeof(TestFPS::PerformanceStats) == 0x2C,
               "PerformanceStats size mismatch");
+
+// ea: 0x005173B0
+TestFPS::PerformanceStats::PerformanceStats()
+{
+}
 
 extern bool gUseNfl;  // ?gUseNfl (game2.o)
 char buffer[0x4000];  // ?buffer (game2.o)

@@ -589,6 +589,8 @@ struct DebugThread {
     char* DisplayMessage(char* msg, int xpos, int ypos, float r, float g,
                          float b, float scale, float alphaMin);
     void Update();   // ?Update@DebugThread@@QAEXXZ (game2.o 0x4F46A0)
+    int IsActive();   // ?IsActive@DebugThread@@QAEHXZ (game2.o 0x5173C0)
+    void SetActive(int active);  // ?SetActive@DebugThread@@QAEXH@Z (game2.o 0x5173D0)
 };
 static_assert(sizeof(DebugThread) == 0x14, "DebugThread size mismatch");
 
@@ -688,6 +690,7 @@ void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 // game2.o FPS test harness (full layout 0xAD90, verified against IDA)
 class TestFPS {
 public:
+    struct PerformanceStats;
     unsigned char _pad[0xABE0];       // mStats[1000] data
     int mStats_size;                  // +0xABE0 (mStats.m_size)
     unsigned char _pad2[0xAC48 - 0xABE4];  // mCells data
