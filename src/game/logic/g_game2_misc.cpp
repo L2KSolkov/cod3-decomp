@@ -560,15 +560,14 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4* leftFootMat,
 // InitDefaultPak - load the embedded default pak archive
 // ea: 0x4F6040
 // ============================================================================
-apk::apkFile* InitDefaultPak()
+void InitDefaultPak()
 {
     unsigned char* v0 =
         (unsigned char*)tlMemAlloc(default_apk_size, 0x1000u, 0x10000);
     memcpy(v0, default_apk, default_apk_size);
     default_pak_buf = v0;
-    apk::apkFile* result = apk::apkLoadFileInPlace(v0, true);
+    apk::apkLoadFileInPlace(v0, true);
     MemoryBarrier();
-    return result;
 }
 
 // ============================================================================

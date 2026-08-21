@@ -159,7 +159,7 @@ void Init();  // ?Init@BrocSys@@YAXXZ (scr.o)
 // ngl / aps / game2 / streamer / render externs
 extern void nglInit();                                    // ngl_internal.o
 namespace apk { struct apkFile; }
-extern apk::apkFile* InitDefaultPak();                    // ?InitDefaultPak@@YAPAVapkFile@apk@@XZ
+extern void InitDefaultPak();                             // ?InitDefaultPak@@YAXXZ
 extern void InitCDAepsShader();                           // render.o
 extern void apsInitParticleMemory(int memSize, bool bBigBuffers);  // render.o
 extern void StartupNfl();                                 // streamer.o
