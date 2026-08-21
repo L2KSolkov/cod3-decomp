@@ -2292,18 +2292,18 @@ void InspectorManager::UserRenderHook()
             v3 = NumZones * (*(PathNodeLevelTOC**)PathNodeMgr::sInst)->mNodeCount;
         sprintf(string, "Num Nodes in Level: %d", v3);
         float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-        RE_Text_Paint(416.0f, 412.0f, 5, scaleScalar * 0.55f, color, string,
+        RE_Text_Paint(422.0f, 412.0f, 5, scaleScalar * 0.55f, color, string,
                       0, 0, 0);
-        RE_Text_Paint(408.0f, 410.0f, 5, scaleScalar * 0.55f, m_currentRgba,
+        RE_Text_Paint(420.0f, 410.0f, 5, scaleScalar * 0.55f, m_currentRgba,
                       string, 0, 0, 0);
         sprintf(string, "Num Nodes in Zone: %d", mNodeCount);
         color[0] = 0.0f;
         color[1] = 0.0f;
         color[2] = 0.0f;
         color[3] = 1.0f;
-        RE_Text_Paint(416.0f, 426.0f, 5, scaleScalar * 0.55f, color, string,
+        RE_Text_Paint(422.0f, 426.0f, 5, scaleScalar * 0.55f, color, string,
                       0, 0, 0);
-        RE_Text_Paint(408.0f, 424.0f, 5, scaleScalar * 0.55f, m_currentRgba,
+        RE_Text_Paint(420.0f, 424.0f, 5, scaleScalar * 0.55f, m_currentRgba,
                       string, 0, 0, 0);
     }
     if (g_renderGameEntityStats)
