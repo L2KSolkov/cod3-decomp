@@ -20906,68 +20906,68 @@ index	status	map_line
 20905	VERIFIED	0002:00466b30 ?ComponentSetupPartialDecode@nalComponentPacked16EntropyIKSpin@@SAXPAUStateType@nalComponentPacked16EntropyIKSpinData@@AAPBEHPAUSkeletonData@nalComponentData@@PAUAnimData@3@PAUSkeletonComponentData@3@PAUAnimComponentData@3@@Z 00C56030 f i nal_init.o	VERIFIED: state alignment, active/inactive stream layout, and component strides match IDA
 20906	VERIFIED	0002:00466ce0 ?CycleTrajectory@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C561E0 f i nal_init.o	VERIFIED: wrapper delegates to the matching FastCycleTrajectory specialization per IDA
 20907	VERIFIED	0002:00466d10 ??$FastCycleTrajectory@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@USkeletonData@nalComponentData@@UAnimData@nalComponentPacked16EntropyIKSpinData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C56210 f i nal_init.o	VERIFIED: anim/skeleton alignment, track gating, and 20-byte skeleton stride match IDA
-20908	PORTED	0002:00466dd0 ?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C562D0 f i nal_init.o
-20909	PORTED	0002:00466e00 ??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z 00C56300 f i nal_init.o
+20908	VERIFIED	0002:00466dd0 ?Construct@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C562D0 f i nal_init.o	VERIFIED: 16-byte construction alignment and 96-byte per-component stride match IDA
+20909	VERIFIED	0002:00466e00 ??0nalComponentSignalCounter@@QAE@W4nalRegisterKey@@@Z 00C56300 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20910	SKIPPED	0002:00466e50 ??_GnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20911	SKIPPED	0002:00466e50 ??_EnalComponentSignalCounter@@UAEPAXI@Z 00C56350 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20912	PORTED	0002:00466e80 ??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z 00C56380 f i nal_init.o
+20912	VERIFIED	0002:00466e80 ??0nalComponentRLE8Int1@@QAE@W4nalRegisterKey@@@Z 00C56380 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20913	SKIPPED	0002:00466ed0 ??_EnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20914	SKIPPED	0002:00466ed0 ??_GnalComponentRLE8Int1@@UAEPAXI@Z 00C563D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20915	PORTED	0002:00466f00 ??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z 00C56400 f i nal_init.o
+20915	VERIFIED	0002:00466f00 ??0nalComponentEntropyFloat1@@QAE@W4nalRegisterKey@@@Z 00C56400 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20916	SKIPPED	0002:00466f50 ??_EnalComponentEntropyFloat1@@UAEPAXI@Z 00C56450 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20917	SKIPPED	0002:00466f50 ??_GnalComponentEntropyFloat1@@UAEPAXI@Z 00C56450 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20918	PORTED	0002:00466f80 ??0nalComponentPacked8Float1@@QAE@W4nalRegisterKey@@@Z 00C56480 f i nal_init.o
+20918	VERIFIED	0002:00466f80 ??0nalComponentPacked8Float1@@QAE@W4nalRegisterKey@@@Z 00C56480 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20919	SKIPPED	0002:00466fd0 ??_GnalComponentPacked8Float1@@UAEPAXI@Z 00C564D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20920	SKIPPED	0002:00466fd0 ??_EnalComponentPacked8Float1@@UAEPAXI@Z 00C564D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20921	PORTED	0002:00467000 ??0nalComponentFloat3@@QAE@W4nalRegisterKey@@@Z 00C56500 f i nal_init.o
+20921	VERIFIED	0002:00467000 ??0nalComponentFloat3@@QAE@W4nalRegisterKey@@@Z 00C56500 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20922	SKIPPED	0002:00467050 ??_GnalComponentFloat3@@UAEPAXI@Z 00C56550 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20923	SKIPPED	0002:00467050 ??_EnalComponentFloat3@@UAEPAXI@Z 00C56550 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20924	PORTED	0002:00467080 ??0nalComponentEntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56580 f i nal_init.o
+20924	VERIFIED	0002:00467080 ??0nalComponentEntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56580 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20925	SKIPPED	0002:004670d0 ??_EnalComponentEntropyFloat3@@UAEPAXI@Z 00C565D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20926	SKIPPED	0002:004670d0 ??_GnalComponentEntropyFloat3@@UAEPAXI@Z 00C565D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20927	PORTED	0002:00467100 ??0nalComponentPacked8EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56600 f i nal_init.o
+20927	VERIFIED	0002:00467100 ??0nalComponentPacked8EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56600 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20928	SKIPPED	0002:00467150 ??_EnalComponentPacked8EntropyFloat3@@UAEPAXI@Z 00C56650 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20929	SKIPPED	0002:00467150 ??_GnalComponentPacked8EntropyFloat3@@UAEPAXI@Z 00C56650 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20930	PORTED	0002:00467180 ??0nalComponentPacked16EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56680 f i nal_init.o
+20930	VERIFIED	0002:00467180 ??0nalComponentPacked16EntropyFloat3@@QAE@W4nalRegisterKey@@@Z 00C56680 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20931	SKIPPED	0002:004671d0 ??_EnalComponentPacked16EntropyFloat3@@UAEPAXI@Z 00C566D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20932	SKIPPED	0002:004671d0 ??_GnalComponentPacked16EntropyFloat3@@UAEPAXI@Z 00C566D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20933	PORTED	0002:00467200 ??0nalComponentFloat4@@QAE@W4nalRegisterKey@@@Z 00C56700 f i nal_init.o
+20933	VERIFIED	0002:00467200 ??0nalComponentFloat4@@QAE@W4nalRegisterKey@@@Z 00C56700 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20934	SKIPPED	0002:00467250 ??_GnalComponentFloat4@@UAEPAXI@Z 00C56750 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20935	SKIPPED	0002:00467250 ??_EnalComponentFloat4@@UAEPAXI@Z 00C56750 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20936	PORTED	0002:00467280 ??0nalComponentEntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56780 f i nal_init.o
+20936	VERIFIED	0002:00467280 ??0nalComponentEntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56780 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20937	SKIPPED	0002:004672d0 ??_GnalComponentEntropyFloat4@@UAEPAXI@Z 00C567D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20938	SKIPPED	0002:004672d0 ??_EnalComponentEntropyFloat4@@UAEPAXI@Z 00C567D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20939	PORTED	0002:00467300 ??0nalComponentPacked8EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56800 f i nal_init.o
+20939	VERIFIED	0002:00467300 ??0nalComponentPacked8EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56800 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20940	SKIPPED	0002:00467350 ??_EnalComponentPacked8EntropyFloat4@@UAEPAXI@Z 00C56850 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20941	SKIPPED	0002:00467350 ??_GnalComponentPacked8EntropyFloat4@@UAEPAXI@Z 00C56850 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20942	PORTED	0002:00467380 ??0nalComponentPacked16EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56880 f i nal_init.o
+20942	VERIFIED	0002:00467380 ??0nalComponentPacked16EntropyFloat4@@QAE@W4nalRegisterKey@@@Z 00C56880 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20943	SKIPPED	0002:004673d0 ??_GnalComponentPacked16EntropyFloat4@@UAEPAXI@Z 00C568D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20944	SKIPPED	0002:004673d0 ??_EnalComponentPacked16EntropyFloat4@@UAEPAXI@Z 00C568D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20945	PORTED	0002:00467400 ??0nalComponentQuat@@QAE@W4nalRegisterKey@@@Z 00C56900 f i nal_init.o
+20945	VERIFIED	0002:00467400 ??0nalComponentQuat@@QAE@W4nalRegisterKey@@@Z 00C56900 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20946	SKIPPED	0002:00467450 ??_EnalComponentQuat@@UAEPAXI@Z 00C56950 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20947	SKIPPED	0002:00467450 ??_GnalComponentQuat@@UAEPAXI@Z 00C56950 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20948	PORTED	0002:00467480 ??0nalComponentEntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56980 f i nal_init.o
+20948	VERIFIED	0002:00467480 ??0nalComponentEntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56980 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20949	SKIPPED	0002:004674d0 ??_GnalComponentEntropyQuat@@UAEPAXI@Z 00C569D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20950	SKIPPED	0002:004674d0 ??_EnalComponentEntropyQuat@@UAEPAXI@Z 00C569D0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20951	PORTED	0002:00467500 ??0nalComponentPacked8EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A00 f i nal_init.o
+20951	VERIFIED	0002:00467500 ??0nalComponentPacked8EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A00 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20952	SKIPPED	0002:00467550 ??_GnalComponentPacked8EntropyQuat@@UAEPAXI@Z 00C56A50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20953	SKIPPED	0002:00467550 ??_EnalComponentPacked8EntropyQuat@@UAEPAXI@Z 00C56A50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20954	PORTED	0002:00467580 ??0nalComponentPacked16EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A80 f i nal_init.o
+20954	VERIFIED	0002:00467580 ??0nalComponentPacked16EntropyQuat@@QAE@W4nalRegisterKey@@@Z 00C56A80 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20955	SKIPPED	0002:004675d0 ??_EnalComponentPacked16EntropyQuat@@UAEPAXI@Z 00C56AD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20956	SKIPPED	0002:004675d0 ??_GnalComponentPacked16EntropyQuat@@UAEPAXI@Z 00C56AD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20957	PORTED	0002:00467600 ??0nalComponentPO@@QAE@W4nalRegisterKey@@@Z 00C56B00 f i nal_init.o
+20957	VERIFIED	0002:00467600 ??0nalComponentPO@@QAE@W4nalRegisterKey@@@Z 00C56B00 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20958	SKIPPED	0002:00467650 ??_EnalComponentPO@@UAEPAXI@Z 00C56B50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20959	SKIPPED	0002:00467650 ??_GnalComponentPO@@UAEPAXI@Z 00C56B50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20960	PORTED	0002:00467680 ??0nalComponentEntropyPO@@QAE@W4nalRegisterKey@@@Z 00C56B80 f i nal_init.o
+20960	VERIFIED	0002:00467680 ??0nalComponentEntropyPO@@QAE@W4nalRegisterKey@@@Z 00C56B80 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20961	SKIPPED	0002:004676d0 ??_EnalComponentEntropyPO@@UAEPAXI@Z 00C56BD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20962	SKIPPED	0002:004676d0 ??_GnalComponentEntropyPO@@UAEPAXI@Z 00C56BD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20963	PORTED	0002:00467700 ??0nalComponentTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C00 f i nal_init.o
+20963	VERIFIED	0002:00467700 ??0nalComponentTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C00 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20964	SKIPPED	0002:00467750 ??_EnalComponentTrajectoryPO@@UAEPAXI@Z 00C56C50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20965	SKIPPED	0002:00467750 ??_GnalComponentTrajectoryPO@@UAEPAXI@Z 00C56C50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20966	PORTED	0002:00467780 ??0nalComponentEntropyTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C80 f i nal_init.o
+20966	VERIFIED	0002:00467780 ??0nalComponentEntropyTrajectoryPO@@QAE@W4nalRegisterKey@@@Z 00C56C80 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20967	SKIPPED	0002:004677d0 ??_EnalComponentEntropyTrajectoryPO@@UAEPAXI@Z 00C56CD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20968	SKIPPED	0002:004677d0 ??_GnalComponentEntropyTrajectoryPO@@UAEPAXI@Z 00C56CD0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20969	PORTED	0002:00467800 ??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z 00C56D00 f i nal_init.o
+20969	VERIFIED	0002:00467800 ??0nalComponentPacked16EntropyIKSpin@@QAE@W4nalRegisterKey@@@Z 00C56D00 f i nal_init.o	VERIFIED: register-key guard, vtable install, and assert line match IDA
 20970	SKIPPED	0002:00467850 ??_EnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20971	SKIPPED	0002:00467850 ??_GnalComponentPacked16EntropyIKSpin@@UAEPAXI@Z 00C56D50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20972	PORTED	0002:00467880 ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ 00C56D80 f i nal_init.o
