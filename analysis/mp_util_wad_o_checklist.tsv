@@ -156,7 +156,7 @@ index	status	map_line
 155	FIXED	0002:00535420 ??4bfloat@@QAEMM@Z 00D24920 f i mp_util_wad.o	FIXED: IDA returns assigned float as double
 156	PORTED	0002:00535450 ??D@YA?AUbfloat@@U0@M@Z 00D24950 f i mp_util_wad.o	PORTED: IDA bfloat multiplication value-return operator
 157	PORTED	0002:00535490 ??4angles_struct@__unnamed@entity@Broc@@QAEABUvector@3@ABU43@@Z 00D24990 f i mp_util_wad.o	PORTED: IDA m_entity_set_angles proxy assignment
-158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	PORTED: IDA mSpawn forwarding and entity construction
+158	PORTED	0002:005354e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@W4TPakInfo@@@Z 00D249E0 f i mp_util_wad.o	PORTED: IDA mSpawn forwarding and entity construction; corrected TPakInfo ABI
 159	PORTED	0002:00535520 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D24A20 f i mp_util_wad.o	PORTED: IDA mEffectEventPlay forwarding with zero notify/default flags
 160	PORTED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	PORTED: IDA mSetModel forwarding
 161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	PORTED: IDA mMoveTo forwarding
@@ -487,7 +487,7 @@ index	status	map_line
 486	PORTED	0002:0054c4a0 ?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ 00D3B9A0 f mp_util_wad.o
 487	PORTED	0002:0054c9f0 ?Code_GetPlayerStat@Broc@@YAFVentity@1@I@Z 00D3BEF0 f i mp_util_wad.o
 488	VERIFIED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o
-489	PORTED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o
+489	PORTED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	PORTED: IDA 0x0094CD50 direct mDebugRenderBox forward
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
 491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
 492	PORTED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	PORTED: IDA forwards height/clientIndex and default display/child arguments to mObjectiveAdd5
@@ -546,23 +546,23 @@ index	status	map_line
 545	VERIFIED	0002:00553720 ?WaitForNoTouchFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D42C20 f mp_util_wad.o
 546	VERIFIED	0002:00553870 ?PickupFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D42D70 f mp_util_wad.o
 547	PORTED	0002:005540f0 ??4bint@@QAEHM@Z 00D435F0 f i mp_util_wad.o
-548	PORTED	0002:00554120 ?UseButtonPressed@Broc@@YAHABVentity@1@@Z 00D43620 f i mp_util_wad.o
+548	PORTED	0002:00554120 ?UseButtonPressed@Broc@@YAHABVentity@1@@Z 00D43620 f i mp_util_wad.o	PORTED: IDA 0x00954120 forwards const entity reference handle to mUseButtonPressed
 549	PORTED	0002:00554150 ?WaitForNoTouchFlag__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D43650 f i mp_util_wad.o
 550	VERIFIED	0002:005541f0 ?Goal@_mp_ctf@@YAXVentity@Broc@@@Z 00D436F0 f mp_util_wad.o
-551	PORTED	0002:00554940 ?Code_AreaCaptured@Broc@@YAXHHH@Z 00D43E40 f i mp_util_wad.o
+551	PORTED	0002:00554940 ?Code_AreaCaptured@Broc@@YAXHHH@Z 00D43E40 f i mp_util_wad.o	PORTED: IDA 0x00954940 direct mAreaCaptured forward
 552	VERIFIED	0002:00554970 ?FlagThreadLauncher@_mp_ctf@@YAXVentity@Broc@@@Z 00D43E70 f mp_util_wad.o
-553	PORTED	0002:00555090 ??4targetname_struct@__unnamed@entity@Broc@@QAEABVstring@3@ABV43@@Z 00D44590 f i mp_util_wad.o
-554	PORTED	0002:005550e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@AAU41@2HW4TPakInfo@@@Z 00D445E0 f i mp_util_wad.o
-555	PORTED	0002:00555130 ?LinkTo@Broc@@YAXABVentity@1@0@Z 00D44630 f i mp_util_wad.o
+553	PORTED	0002:00555090 ??4targetname_struct@__unnamed@entity@Broc@@QAEABVstring@3@ABV43@@Z 00D44590 f i mp_util_wad.o	PORTED: IDA 0x00955090 forwards rhs to m_entity_set_targetname and returns it
+554	PORTED	0002:005550e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@AAU41@2HW4TPakInfo@@@Z 00D445E0 f i mp_util_wad.o	PORTED: IDA 0x009550E0 mSpawnWithFlagAndSize forward and entity construction
+555	PORTED	0002:00555130 ?LinkTo@Broc@@YAXABVentity@1@0@Z 00D44630 f i mp_util_wad.o	PORTED: IDA 0x00955130 forwards both handles to mLinkTo3
 556	VERIFIED	0002:00555170 ?CallbackPlayerJoin@_mp_ctf@@YAXVentity@Broc@@IH@Z 00D44670 f mp_util_wad.o
 557	PORTED	0002:00555250 ?ObjectiveUpdater__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D44750 f i mp_util_wad.o
 558	VERIFIED	0002:005552f0 ?CallbackPlayerEnter@_mp_ctf@@YAXVentity@Broc@@H@Z 00D447F0 f mp_util_wad.o
 559	VERIFIED	0002:00555400 ?UnlinkFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D44900 f mp_util_wad.o
 560	PORTED	0002:00555620 ?RenderFlagInfo@_mp_ctf@@YAXVentity@Broc@@Ubint@@1@Z 00D44B20 f mp_util_wad.o
-561	PORTED	0002:00555af0 ?Code_DebugRenderText@Broc@@YAXPBDHH@Z 00D44FF0 f i mp_util_wad.o
+561	PORTED	0002:00555af0 ?Code_DebugRenderText@Broc@@YAXPBDHH@Z 00D44FF0 f i mp_util_wad.o	PORTED: IDA 0x00955AF0 direct mDebugRenderText forward
 562	VERIFIED	0002:00555b20 ?CallbackDebugRender@_mp_ctf@@YAXXZ 00D45020 f mp_util_wad.o
-563	PORTED	0002:005562e0 ?Code_DebugRenderEntityBBox@Broc@@YAXVentity@1@ABUvector@1@M@Z 00D457E0 f i mp_util_wad.o
-564	PORTED	0002:00556320 ?Code_DebugRenderSphere@Broc@@YAXABUvector@1@M0M@Z 00D45820 f i mp_util_wad.o
+563	PORTED	0002:005562e0 ?Code_DebugRenderEntityBBox@Broc@@YAXVentity@1@ABUvector@1@M@Z 00D457E0 f i mp_util_wad.o	PORTED: IDA 0x009562E0 forwards entity handle to mDebugRenderEntityBBox
+564	PORTED	0002:00556320 ?Code_DebugRenderSphere@Broc@@YAXABUvector@1@M0M@Z 00D45820 f i mp_util_wad.o	PORTED: IDA 0x00956320 direct mDebugRenderSphere forward
 565	PORTED	0002:00556360 ?GetSpawnPoint@_mp_ctf@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D45860 f mp_util_wad.o
 566	VERIFIED	0002:005565d0 ?main@_mp_dm@@YAXVentity@Broc@@@Z 00D45AD0 f mp_util_wad.o
 567	PORTED	0002:005566b0 ?StartGame__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D45BB0 f i mp_util_wad.o
