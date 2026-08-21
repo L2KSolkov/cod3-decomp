@@ -96,6 +96,8 @@ private:
     CurveManager();            // ??0CurveManager@@QAE@XZ (game.o 0x638160)
     ~CurveManager();           // ??1CurveManager@@AAE@XZ (game.o 0x61F780)
 public:
+    static void* operator new(unsigned int size, void* p);
+    static CurveManager* Inst();
     static CurveManager* CreateInst();
     static void DeleteInst();
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
@@ -142,6 +144,19 @@ static_assert(sizeof(CurveManager) == 0x28C, "CurveManager size mismatch");
 CurveManager* CurveManager::sInst = nullptr;
 extern void mem_heap_free(void* ptr);
 extern void* CurveManager_sInst;  // core.o artifact mirror
+
+// ea: 0x004DD620
+void* CurveManager::operator new(unsigned int size, void* p)
+{
+    (void)size;
+    return p;
+}
+
+// ea: 0x004DD630
+CurveManager* CurveManager::Inst()
+{
+    return CurveManager::sInst;
+}
 
 // ea: 0x004DD640
 CurveManager* CurveManager::CreateInst()
@@ -257,6 +272,7 @@ struct CurveEvalFunc {
     float (__cdecl* mFunc)(unsigned int, unsigned int, unsigned int,
                            float, float, unsigned int);  // +0x0C
     static PoolAllocator* sAllocator;  // ?sAllocator@CurveEvalFunc@@2PAVPoolAllocator@@A @ 0xF4EC28
+    static void SetAllocator(PoolAllocator* allocator);
 };
 PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 
@@ -286,6 +302,7 @@ public:
         void**      m_tail;  // +0x0C
     } mEffectList;                      // +0x5C
     static PoolAllocator* sAllocator;   // ?sAllocator@Curve@@2PAVPoolAllocator@@A @ 0xF4EC24
+    static void SetAllocator(PoolAllocator* allocator);
 
     Curve();   // ??0Curve@@QAE@XZ (game.o 0x6298A0)
     ~Curve();  // ??1Curve@@QAE@XZ (game.o 0x662A00)
@@ -300,10 +317,29 @@ struct CurveEffectListElem {
     Handle       mSound;         // +0x10
     float        mEffectParams[2];  // +0x14
     static PoolAllocator* sAllocator;  // ?sAllocator@CurveEffectListElem@@2PAVPoolAllocator@@A @ 0xF4EC2C
+    static void SetAllocator(PoolAllocator* allocator);
 };
 static_assert(sizeof(CurveEffectListElem) == 0x1C,
               "CurveEffectListElem size mismatch");
 PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
+
+// ea: 0x004DD5F0
+void CurveEffectListElem::SetAllocator(PoolAllocator* allocator)
+{
+    CurveEffectListElem::sAllocator = allocator;
+}
+
+// ea: 0x004DD600
+void Curve::SetAllocator(PoolAllocator* allocator)
+{
+    Curve::sAllocator = allocator;
+}
+
+// ea: 0x004DD610
+void CurveEvalFunc::SetAllocator(PoolAllocator* allocator)
+{
+    CurveEvalFunc::sAllocator = allocator;
+}
 
 // ea: 0x004DD610 (CurveManager.cpp)
 // SetupPoolAllocator assigns the common allocator to the curve families

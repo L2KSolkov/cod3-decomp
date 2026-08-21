@@ -142,6 +142,7 @@ struct tagInfo_t {
     float      parentInvAxis[4][3];  // +0x40
 
     static class PoolAllocator* sAllocator;  // ?sAllocator@tagInfo_t@@2PAVPoolAllocator@@A
+    static void SetAllocator(PoolAllocator* allocator);
     static void* operator new(size_t size, bool forceHeapAlloc,
                               const char* file, int line);  // ??2tagInfo_t@@SAPAXI_NPBDH@Z (g.o 0x4A7760)
     static void operator delete(void* ptr, bool forceHeapAlloc,

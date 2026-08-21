@@ -23,6 +23,13 @@ bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
 
+// ea: 0x004DD5D0
+void* CtrlIcon::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 // ea: 0x004E2900
 CtrlIcon* CtrlIcon::CreateInst()
 {

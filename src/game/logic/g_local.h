@@ -710,6 +710,7 @@ public:
     Handle mPlayerHandle;             // +0xAD88
     void* mFile;                      // +0xAD8C (_iobuf*)
     static TestFPS* sInst;  // ?sInst@TestFPS@@2PAV1@A
+    static void* operator new(unsigned int size, void* p);
     TestFPS();              // ?TestFPS@TestFPS@@QAE@XZ (game2.o 0x4FEC20)
     ~TestFPS();             // ?~TestFPS@TestFPS@@QAE@XZ (game2.o 0x4EBFF0)
     void GetPath(char* path);  // ?GetPath@TestFPS@@AAEXPAD@Z (game2.o 0x4EC020)

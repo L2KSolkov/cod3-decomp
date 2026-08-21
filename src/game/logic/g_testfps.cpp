@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// ea: 0x004DD490
+void* TestFPS::operator new(unsigned int size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 // ============================================================================
 // StreamZone / ZoneCellDesc local views (streamer.o; TestFPS.cpp usage)
 // ============================================================================

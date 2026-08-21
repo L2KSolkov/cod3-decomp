@@ -1431,6 +1431,7 @@ class CtrlIcon {
 public:
     static CtrlIcon* CreateInst();  // ?CreateInst@CtrlIcon@@SAPAV1@XZ (core.o)
     static void DeleteInst();  // ?DeleteInst@CtrlIcon@@SAXXZ (core.o)
+    static void* operator new(size_t size, void* p);
     static CtrlIcon* sInst;  // ?sInst@CtrlIcon@@2PAV1@A
     char mScratchBuffer[2048];  // +0x00
     bool ContainsIconTag(const char* text);
