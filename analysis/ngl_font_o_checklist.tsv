@@ -19,7 +19,7 @@ index	status	map_line
 18	VERIFIED	0002:00442f70 ?nglListAddString@@YAXPAVnglFont@@MMMMMPBDZZ 00C32470 f ngl_font.o
 19	VERIFIED	0002:00442fb0 ?nglListAddString@@YAXPAVnglFont@@MMMIMMPBDZZ 00C324B0 f ngl_font.o
 20	VERIFIED	0002:00442ff0 ??0?$tlSkipList@VnglFont@@VtlFixedString@@@@QAE@XZ 00C324F0 f i ngl_font.o
-21	PORTED	0002:00443010 ?NewNodeOfLevel@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C32510 f i ngl_font.o
+21	VERIFIED	0002:00443010 ?NewNodeOfLevel@?$tlSkipList@VnglFont@@VtlFixedString@@@@QAEPAUInstance@1@H@Z 00C32510 f i ngl_font.o
 22	VERIFIED	0002:00443040 ?GetCellWidth@nglFont@@QAEIE@Z 00C32540 f i ngl_font.o
 23	VERIFIED	0002:00443080 ??0nglStringNode@@QAE@XZ 00C32580 f i ngl_font.o
 24	VERIFIED	0002:00443090 ?GetDesc@nglStringNode@@UAEXPAD@Z 00C32590 f i ngl_font.o
