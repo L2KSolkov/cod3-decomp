@@ -736,9 +736,9 @@ index	status	map_line
 735	PORTED	0002:00119160 ?capacity@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBEHXZ 00908660 f i game2.o  PORTED: shared capacity helper explicitly emitted for particle array
 736	VERIFIED	0002:00119170 ?begin@?$ae_vector@PAVParticleEffect@@@@QAEPAPAVParticleEffect@@XZ 00908670 f i game2.o
 737	VERIFIED	0002:00119180 ?end@?$ae_vector@PAVParticleEffect@@@@QAEPAPAVParticleEffect@@XZ 00908680 f i game2.o
-738	PORTED	0002:00119190 ?size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEHXZ 00908690 f i game2.o
-739	PORTED	0002:001191a0 ?empty@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NXZ 009086A0 f i game2.o
-740	PORTED	0002:001191c0 ?push_back@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXABUPerformanceStats@TestFPS@@@Z 009086C0 f i game2.o
+738	PORTED	0002:00119190 ?size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEHXZ 00908690 f i game2.o  PORTED: shared size helper explicitly emitted for PerformanceStats array
+739	PORTED	0002:001191a0 ?empty@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NXZ 009086A0 f i game2.o  PORTED: shared m_size==0 empty helper explicitly emitted
+740	PORTED	0002:001191c0 ?push_back@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXABUPerformanceStats@TestFPS@@@Z 009086C0 f i game2.o  PORTED: shared capacity-guarded push_back explicitly emitted
 741	PORTED	0002:00119270 ??0?$ae_sized_array@_N$0GE@@@QAE@XZ 00908770 f i game2.o
 742	PORTED	0002:00119280 ??A?$ae_sized_array@_N$0GE@@@QAEAA_NH@Z 00908780 f i game2.o
 743	VERIFIED	0002:00119300 ??0?$DbLinkedHandle@VTaskSys@@VTask@@@@QAE@VHandle@@@Z 00908800 f i game2.o
