@@ -232,9 +232,23 @@ public:
         struct playerState_struct {
             unsigned int mHandle;  // +0x00
             const Broc::bint* Get(Broc::bint* result) const;
+            const int& operator=(const int& rhs);
+        };
+        struct spectatorClient_struct {
+            unsigned int mHandle;  // +0x00
+            const int& operator=(const int& rhs);
+        };
+        struct playerClass_struct {
+            unsigned int mHandle;  // +0x00
+            const __int16& operator=(const __int16& rhs);
+        };
+        struct nextPlayerClass_struct {
+            unsigned int mHandle;  // +0x00
+            const __int16& operator=(const __int16& rhs);
         };
         struct angles_struct {
             unsigned int mHandle;  // +0x00
+            const Broc::vector* Get(Broc::vector* result) const;
             const Broc::vector* operator=(const Broc::vector* rhs);
         };
         struct team_struct {
@@ -252,6 +266,12 @@ public:
                             "maxhealth_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::playerState_struct) == 4,
                             "playerState_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::spectatorClient_struct) == 4,
+                            "spectatorClient_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::playerClass_struct) == 4,
+                            "playerClass_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::nextPlayerClass_struct) == 4,
+                            "nextPlayerClass_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
@@ -905,7 +925,29 @@ struct BrocAPI {
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
-    char _pad2C4[0x33C - 0x2C4];                          // +0x2C4
+    char _pad2C4[0x2EC - 0x2C4];                          // +0x2C4
+    void (*mPlayerRespawn)(unsigned int, const Broc::vector&,
+                           const Broc::vector&, const Broc::string&); // +0x2EC
+    void (*mPlayerSpawn)(unsigned int, const Broc::vector&,
+                         const Broc::vector&, bool);      // +0x2F0
+    void (*mSetPlayerAlive)(unsigned int, int);            // +0x2F4
+    void (*mSetRespawnMaxTime)(unsigned int, int);         // +0x2F8
+    const char* (*mGetPlayerName)(unsigned int);           // +0x2FC
+    void (*mRequestRespawn)(unsigned int);                 // +0x300
+    void (*mFinishDamage)(unsigned int, unsigned int, unsigned int,
+                          const Broc::vector&, const Broc::vector&, int,
+                          int, int, int);                  // +0x304
+    void (*mRoundOver)(int, const Broc::string&);           // +0x308
+    bool (*mIsLocalPlayer)(unsigned int);                  // +0x30C
+    bool (*mIsInVehicle1)(unsigned int);                   // +0x310
+    bool (*mIsInVehicle2)(unsigned int, unsigned int);     // +0x314
+    unsigned int (*mGetPlayerInSeat)(unsigned int, unsigned int); // +0x318
+    void (*mGetOutOfVehicle)(unsigned int);                // +0x31C
+    void (*mObituary)(unsigned int, unsigned int, const Broc::string&, int,
+                      bool);                               // +0x320
+    void (*mClearPlayerStats)();                            // +0x324
+    void (*mIncPlayerStat)(unsigned int, unsigned int, short); // +0x328
+    char _pad32C[0x33C - 0x32C];                           // +0x32C
     void (*mIncTeamScore)(const Broc::string&, int);      // +0x33C
     int (*mGetTeamScore)(const Broc::string&);            // +0x340
     char _pad344[0x370 - 0x344];                          // +0x344
@@ -1191,7 +1233,7 @@ void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
 void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);
 void Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
-                      const Broc::vector* angles, int stopPhysics);
+                      const Broc::vector* angles, bool stopPhysics);
 void Code_PlayerRespawn(Broc::entity player, const Broc::vector* origin,
                         const Broc::vector* angles, const Broc::string* team);
 void Code_RequestRespawn(int playerID);

@@ -2136,11 +2136,55 @@ const Broc::bint* Broc::entity::__unnamed::playerState_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::angles_struct::Get - ea: 0x93E340
+const Broc::vector* Broc::entity::__unnamed::angles_struct::Get(
+    Broc::vector* result) const {
+    Broc::vector temp[6];
+    *result = *Broc::gBrocAPI.m_entity_get_angles(temp, mHandle);
+    return result;
+}
+
+// Broc::entity::__unnamed::spectatorClient_struct::operator= - ea: 0x93E390
+const int& Broc::entity::__unnamed::spectatorClient_struct::operator=(
+    const int& rhs) {
+    Broc::gBrocAPI.m_entity_set_player_spectatorClient(mHandle, rhs);
+    return rhs;
+}
+
+// Broc::entity::__unnamed::playerClass_struct::operator= - ea: 0x93E3D0
+const __int16& Broc::entity::__unnamed::playerClass_struct::operator=(
+    const __int16& rhs) {
+    Broc::gBrocAPI.m_entity_set_persistent_player_playerClass(mHandle, rhs);
+    return rhs;
+}
+
+// Broc::entity::__unnamed::nextPlayerClass_struct::operator= - ea: 0x93E410
+const __int16& Broc::entity::__unnamed::nextPlayerClass_struct::operator=(
+    const __int16& rhs) {
+    Broc::gBrocAPI.m_entity_set_persistent_player_nextPlayerClass(mHandle,
+                                                                    rhs);
+    return rhs;
+}
+
+// Broc::entity::__unnamed::playerState_struct::operator= - ea: 0x93E450
+const int& Broc::entity::__unnamed::playerState_struct::operator=(
+    const int& rhs) {
+    Broc::gBrocAPI.m_entity_set_persistent_player_playerState(mHandle, rhs);
+    return rhs;
+}
+
 // Broc::entity::__unnamed::angles_struct::operator= - ea: 0x935490
 const Broc::vector* Broc::entity::__unnamed::angles_struct::operator=(
     const Broc::vector* rhs) {
     Broc::gBrocAPI.m_entity_set_angles(mHandle, *rhs);
     return rhs;
+}
+
+// Code_PlayerSpawn - ea: 0x93E490
+void Broc::Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
+                            const Broc::vector* angles, bool stopPhysics) {
+    Broc::gBrocAPI.mPlayerSpawn(player.GetHandle(), *origin, *angles,
+                                 stopPhysics);
 }
 
 // Broc::entity::__unnamed::team_struct::Get - ea: 0x938DE0
