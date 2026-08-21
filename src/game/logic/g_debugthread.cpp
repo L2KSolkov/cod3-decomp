@@ -1594,15 +1594,13 @@ void TaskSys::ReleaseTask(Task* t)
 TaskHandlerImpl* HealthRegenTask_sHandler = nullptr;  // ?HealthRegenTask_sHandler (game2.o)
 TaskHandlerImpl* AnimNotifyTask_sHandler = nullptr;   // ?AnimNotifyTask_sHandler (game2.o)
 TaskHandlerImpl* EntityDeathTask_sHandler = nullptr;  // ?EntityDeathTask_sHandler (game2.o)
-extern void TaskHandler_Update(TaskHandlerImpl* self, float deltaT,
-                               void* ftor);
 extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);
 
 void TaskSys_Update(float deltaT)
 {
-    TaskHandler_Update(HealthRegenTask_sHandler, deltaT, nullptr);
-    TaskHandler_Update(AnimNotifyTask_sHandler, deltaT, nullptr);
-    TaskHandler_Update(EntityDeathTask_sHandler, deltaT, nullptr);
+    HealthRegenTask_sHandler->Update(deltaT, nullptr);
+    AnimNotifyTask_sHandler->Update(deltaT, nullptr);
+    EntityDeathTask_sHandler->Update(deltaT, nullptr);
 }
 
 // ============================================================================
