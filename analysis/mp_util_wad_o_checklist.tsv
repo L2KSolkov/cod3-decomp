@@ -817,7 +817,7 @@ index	status	map_line
 816	PORTED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o
 817	PORTED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o
 818	VERIFIED	0002:005726c0 ?bigsplash@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61BC0 f mp_util_wad.o
-819	VERIFIED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o
+819	FIXED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o	FIXED: IDA 0x00972780 uses separate pLevel->_base.entity values for the extinguish and target-hash endon paths
 820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o
 821	PORTED	0002:00572af0 ?deleteonextinguish__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D61FF0 f i mp_util_wad.o
 822	VERIFIED	0002:00572b90 ?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62090 f mp_util_wad.o
