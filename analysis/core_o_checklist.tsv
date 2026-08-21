@@ -652,7 +652,7 @@ index	status	map_line
 651	SKIPPED	0002:000db800 ??_GEntityNotify@@QAEPAXI@Z 008CAD00 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 652	PORTED	0002:000db840 ??0ServerTime@@QAE@XZ 008CAD40 f i core.o
 653	PORTED	0002:000db880 ??2EntityManager@@SAPAXIPAX@Z 008CAD80 f i core.o
-654	PORTED	0002:000db890 ?CreateInst@EntityManager@@SAXXZ 008CAD90 f i core.o
+654	VERIFIED	0002:000db890 ?CreateInst@EntityManager@@SAXXZ 008CAD90 f i core.o
 655	VERIFIED	0002:000db980 ?DeleteInst@EntityManager@@SAXXZ 008CAE80 f i core.o
 656	PORTED	0002:000dba00 ?UnitDirX@math@@YA?AVDir3@1@XZ 008CAF00 f i core.o
 657	PORTED	0002:000dba40 ?UnitDirY@math@@YA?AVDir3@1@XZ 008CAF40 f i core.o
