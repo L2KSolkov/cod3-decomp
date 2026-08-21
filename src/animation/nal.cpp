@@ -1132,6 +1132,12 @@ public:
     // ea: 0x00868AC0
     void Scale(const math::Dir3& scale);
 
+    // ?Translate@nalMatrix4x4@@QAEXABVDir3@math@@@Z (game2.o 0x517AC0)
+    void Translate(const math::Dir3& translation);
+
+    // ?Rotate@nalMatrix4x4@@QAEXABVQuaternion@math@@@Z (game2.o 0x517B40)
+    void Rotate(const math::Quaternion& rotation);
+
     // ?Identity@nalMatrix4x4@@2V1@A
     static nalMatrix4x4 Identity;
 };
@@ -1191,6 +1197,101 @@ void nalMatrix4x4::Scale(const math::Dir3& scale)
     this->x.v = _mm_mul_ps(this->x.v, x);
     this->y.v = _mm_mul_ps(this->y.v, y);
     this->z.v = _mm_mul_ps(this->z.v, z);
+}
+
+// ?MulMatrix@@YAXAAVnalMatrix4x4@@ABV1@1@Z (game2.o 0x517890)
+void MulMatrix(nalMatrix4x4& dst, const nalMatrix4x4& src1,
+               const nalMatrix4x4& src2)
+{
+    const __m128 src1X = src1.x.v;
+    const __m128 src1Y = src1.y.v;
+    const __m128 src1Z = src1.z.v;
+    const __m128 src1W = src1.w.v;
+    const __m128 src2X = src2.x.v;
+    const __m128 src2Y = src2.y.v;
+    const __m128 src2Z = src2.z.v;
+    const __m128 src2W = src2.w.v;
+
+    const __m128 y = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1Y, src1Y, 0), src2X),
+                   _mm_mul_ps(_mm_shuffle_ps(src1Y, src1Y, 85), src2Y)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1Y, src1Y, 170), src2Z),
+                   _mm_mul_ps(_mm_shuffle_ps(src1Y, src1Y, 255), src2W)));
+    const __m128 z = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1Z, src1Z, 0), src2X),
+                   _mm_mul_ps(_mm_shuffle_ps(src1Z, src1Z, 85), src2Y)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1Z, src1Z, 170), src2Z),
+                   _mm_mul_ps(_mm_shuffle_ps(src1Z, src1Z, 255), src2W)));
+    const __m128 x = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1X, src1X, 0), src2X),
+                   _mm_mul_ps(_mm_shuffle_ps(src1X, src1X, 85), src2Y)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1X, src1X, 170), src2Z),
+                   _mm_mul_ps(_mm_shuffle_ps(src1X, src1X, 255), src2W)));
+    const __m128 w = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1W, src1W, 0), src2X),
+                   _mm_mul_ps(_mm_shuffle_ps(src1W, src1W, 85), src2Y)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(src1W, src1W, 170), src2Z),
+                   _mm_mul_ps(_mm_shuffle_ps(src1W, src1W, 255), src2W)));
+
+    dst.x.v = x;
+    dst.y.v = y;
+    dst.z.v = z;
+    dst.w.v = w;
+}
+
+// ea: 0x00517AC0
+void nalMatrix4x4::Translate(const math::Dir3& translation)
+{
+    this->w.v = _mm_shuffle_ps(
+        translation.v,
+        _mm_shuffle_ps(_mm_setzero_ps(), translation.v, 160),
+        52);
+    this->w.v.m128_f32[3] = 1.0f;
+}
+
+// ea: 0x00517B40
+void nalMatrix4x4::Rotate(const math::Quaternion& rotation)
+{
+    const __m128 v = rotation.v;
+    const __m128 doubled = _mm_add_ps(v, v);
+    const __m128 products = _mm_mul_ps(
+        _mm_shuffle_ps(doubled, doubled, 255), v);
+    static const __m128 signMask = {
+        -0.0f, -0.0f, -0.0f, -0.0f};
+    const __m128 signedProducts = _mm_xor_ps(signMask, products);
+    const float diagonal =
+        _mm_shuffle_ps(products, products, 255).m128_f32[0] - 1.0f;
+
+    __m128 row;
+    row.m128_f32[0] = diagonal;
+    row.m128_f32[1] = _mm_shuffle_ps(signedProducts, signedProducts, 170)
+                          .m128_f32[0];
+    row.m128_f32[2] = _mm_shuffle_ps(products, products, 85).m128_f32[0];
+    row.m128_f32[3] = 0.0f;
+    const __m128 x = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(v, v, 0)), row);
+
+    row.m128_f32[0] = _mm_shuffle_ps(products, products, 170).m128_f32[0];
+    row.m128_f32[1] = diagonal;
+    row.m128_f32[2] = signedProducts.m128_f32[0];
+    row.m128_f32[3] = 0.0f;
+    const __m128 y = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(v, v, 85)), row);
+
+    row.m128_f32[0] = _mm_shuffle_ps(signedProducts, signedProducts, 85)
+                          .m128_f32[0];
+    row.m128_f32[1] = products.m128_f32[0];
+    row.m128_f32[2] = diagonal;
+    row.m128_f32[3] = 0.0f;
+    const __m128 z = _mm_add_ps(
+        _mm_mul_ps(doubled, _mm_shuffle_ps(v, v, 170)), row);
+
+    this->x.v = _mm_shuffle_ps(x, _mm_shuffle_ps(_mm_setzero_ps(), x, 160),
+                               52);
+    this->y.v = _mm_shuffle_ps(y, _mm_shuffle_ps(_mm_setzero_ps(), y, 160),
+                               52);
+    this->z.v = _mm_shuffle_ps(z, _mm_shuffle_ps(_mm_setzero_ps(), z, 160),
+                               52);
 }
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
