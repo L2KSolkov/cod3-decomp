@@ -3646,15 +3646,15 @@ index	status	map_line
 3645	PORTED	0002:00119190 ?size@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEHXZ 00908690 f i game2.o  PORTED: shared size helper explicitly emitted for PerformanceStats array
 3646	PORTED	0002:001191a0 ?empty@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NXZ 009086A0 f i game2.o  PORTED: shared m_size==0 empty helper explicitly emitted
 3647	PORTED	0002:001191c0 ?push_back@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEXABUPerformanceStats@TestFPS@@@Z 009086C0 f i game2.o  PORTED: shared capacity-guarded push_back explicitly emitted
-3648	PORTED	0002:00119270 ??0?$ae_sized_array@_N$0GE@@@QAE@XZ 00908770 f i game2.o
-3649	PORTED	0002:00119280 ??A?$ae_sized_array@_N$0GE@@@QAEAA_NH@Z 00908780 f i game2.o
+3648	PORTED	0002:00119270 ??0?$ae_sized_array@_N$0GE@@@QAE@XZ 00908770 f i game2.o  PORTED: shared bool[100] constructor explicitly emitted
+3649	PORTED	0002:00119280 ??A?$ae_sized_array@_N$0GE@@@QAEAA_NH@Z 00908780 f i game2.o  PORTED: shared bool[100] unsigned accessor explicitly emitted
 3650	VERIFIED	0002:00119300 ??0?$DbLinkedHandle@VTaskSys@@VTask@@@@QAE@VHandle@@@Z 00908800 f i game2.o
 3651	SKIPPED	0002:00119320 ??A?$InplaceVector@M@@QBEABMI@Z 00908820 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3652	SKIPPED	0002:001193a0 ?size@?$InplaceVector@PBVZoneCellDesc@@@@QBEIXZ 009088A0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 3653	SKIPPED	0002:001193b0 ??A?$InplaceVector@PBVZoneCellDesc@@@@QBEABQBVZoneCellDesc@@I@Z 009088B0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
-3654	PORTED	0002:00119430 ??Diterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEAAUPerformanceStats@TestFPS@@XZ 00908930 f i game2.o
-3655	PORTED	0002:00119440 ??Eiterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEAAV01@XZ 00908940 f i game2.o
-3656	PORTED	0002:00119450 ??9iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NV01@@Z 00908950 f i game2.o
+3654	PORTED	0002:00119430 ??Diterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBEAAUPerformanceStats@TestFPS@@XZ 00908930 f i game2.o  PORTED: shared iterator dereference explicitly emitted
+3655	PORTED	0002:00119440 ??Eiterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QAEAAV01@XZ 00908940 f i game2.o  PORTED: shared iterator increment explicitly emitted
+3656	PORTED	0002:00119450 ??9iterator@?$ae_sized_array@UPerformanceStats@TestFPS@@$0DOI@@@QBE_NV01@@Z 00908950 f i game2.o  PORTED: shared iterator comparison explicitly emitted
 3657	PORTED	0002:00119470 ?size@?$apsBlockArray@PAVapsGroup@@@@QBEHXZ 00908970 f i game2.o
 3658	PORTED	0002:00119480 ??A?$apsBlockArray@PAVapsGroup@@@@QAEAAPAVapsGroup@@H@Z 00908980 f i game2.o
 3659	SKIPPED	0002:001194e0 ??Diterator@?$ae_sized_array@V?$ae_fixed_string@$0EA@E@@$07@@QBEAAV?$ae_fixed_string@$0EA@E@@XZ 009089E0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
