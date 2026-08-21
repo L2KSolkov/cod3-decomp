@@ -325,6 +325,12 @@ public:
     bool mFinished;                                          // +0x0C
     EAction mResult;                                         // +0x10
 
+    void* get_dlist_node();                                  // 0x5E9420
+    static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E9430
+    static void operator delete(void* ptr);                  // 0x5E9450
+    bool IsFinished() const;                                 // 0x5E9470
+    EAction GetResult() const;                               // 0x5E9480
+
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@AeThreadState@@0PAVPoolAllocator@@A @ 0x132A0D4
     friend struct AeThreadStateAllocAccess;
@@ -335,6 +341,36 @@ struct AeThreadStateAllocAccess {
 };
 
 PoolAllocator* AeThreadState::sAllocator;
+
+// ea: 0x005E9420
+void* AeThreadState::get_dlist_node()
+{
+    return &m_dlist_node;
+}
+
+// ea: 0x005E9430
+void* AeThreadState::operator new(size_t size, bool forceHeapAlloc)
+{
+    return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+// ea: 0x005E9450
+void AeThreadState::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
+
+// ea: 0x005E9470
+bool AeThreadState::IsFinished() const
+{
+    return mFinished;
+}
+
+// ea: 0x005E9480
+AeThreadState::EAction AeThreadState::GetResult() const
+{
+    return mResult;
+}
 
 struct AeThreadWaitState : AeThreadState {
     float mTimeRemaining;  // +0x14
@@ -377,6 +413,9 @@ public:
 
     EndOnScriptNode(AeThread* t);  // ??0EndOnScriptNode@@QAE@PAVAeThread@@@Z (0x5DB230)
     AeThread* GetThread();         // ?GetThread@EndOnScriptNode@@QAEPAVAeThread@@XZ (0x5C9850)
+    void* get_dlist_node();         // 0x5E94D0
+    static void* operator new(size_t size, bool forceHeapAlloc); // 0x5E94E0
+    static void operator delete(void* ptr); // 0x5E9500/0x5E9520
 
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@EndOnScriptNode@@0PAVPoolAllocator@@A
@@ -4569,6 +4608,24 @@ unsigned int sKillAnimScript = 0xFFFFFFFF;  // ?sKillAnimScript@@3IA @ 0xF3AC0C 
 
 PoolAllocator* EndOnScriptNode::sAllocator;
 PoolAllocator* EntityNotifySetLocal::sAllocator;
+
+// ea: 0x005E94D0
+void* EndOnScriptNode::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x005E94E0
+void* EndOnScriptNode::operator new(size_t size, bool forceHeapAlloc)
+{
+    return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+// ea: 0x005E9500
+void EndOnScriptNode::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
 
 // IDA's sEntityNotifySet (0x00DD8AFC), kept as the local layout twin used by
 // the script-side notify state code in this translation unit.
