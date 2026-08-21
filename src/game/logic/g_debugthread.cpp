@@ -2099,6 +2099,10 @@ void TestFPS::OutputStats()
         {
             if (mFile == nullptr)
             {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+                AeAssert::gCurrentLine = 608;
+                AeAssert::gCurrentExpr = "mFile";
                 if (!AeAssert::IsIgnored()
                     && AeAssert::Assert("old cod assert"))
                     __debugbreak();
@@ -2152,6 +2156,10 @@ void TestFPS::OutputStats()
         }
         else
         {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+            AeAssert::gCurrentLine = 663;
+            AeAssert::gCurrentExpr = nullptr;
             if (!AeAssert::IsIgnored()
                 && AeAssert::Warning("Couldn't open %s for writing", filename))
                 __debugbreak();
