@@ -1087,13 +1087,14 @@ struct AnimNoteHandler {
 
 class AnimationPlayer {
 public:
+    struct nalAnimState;
     struct nalPlayMethod {
         void** __vftable;       // +0x00
         AnimNoteHandler* mNoteHandler;  // +0x04
 
         nalPlayMethod();       // ea: 0x4FA500
         ~nalPlayMethod();      // ea: 0x50BB30
-        void Advance(void* state, float delta);  // ea: 0x50BB80
+        void Advance(nalAnimState* state, float delta);  // ea: 0x50BB80
         nalGeneric::nalGenericInstance* CreateInstance(
             nalGeneric::nalGenericAnim* anim,
             nalGeneric::nalGenericSkeleton* skeleton);  // ea: 0x504C60
@@ -1787,20 +1788,20 @@ AnimationPlayer::nalPlayMethod::~nalPlayMethod()
 // ============================================================================
 // AnimationPlayer::nalPlayMethod::Advance - ea: 0x50BB80
 // ============================================================================
-struct nalAnimStateView {
-    void* instance;      // +0x00
-    float speed;         // +0x04
-    float t;             // +0x08
+struct nalGenericInstanceDurationView {
+    void* __vftable;     // +0x00
+    float duration;      // +0x04
+    float inverseDuration; // +0x08
 };
 
 extern void AnimNoteHandler_Advance(void* self, float t);
 
-void AnimationPlayer::nalPlayMethod::Advance(void* state, float delta)
+void AnimationPlayer::nalPlayMethod::Advance(nalAnimState* state, float delta)
 {
-    nalAnimStateView* st = (nalAnimStateView*)state;
-    float v3 = (*(float*)((char*)st->instance + 0x14)
-                * st->speed) * delta + st->t;
-    st->t = v3;
+    nalGenericInstanceDurationView* instance =
+        reinterpret_cast<nalGenericInstanceDurationView*>(state->instance);
+    float v3 = (instance->inverseDuration * state->speed) * delta + state->t;
+    state->t = v3;
     if (mNoteHandler != nullptr)
         AnimNoteHandler_Advance(mNoteHandler, v3);
 }
