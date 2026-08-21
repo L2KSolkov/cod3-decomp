@@ -6343,8 +6343,10 @@ void CallbackFireArtillery(Broc::entity firer, Broc::vector position) {
         mp_util_wad::entity_get_playerState(&state, p);
         if (pteam == fteam && (int)state == 3) {
             if (!(bool)played_incoming_sound) {
-                Broc::entity lvl;
-                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                Broc::entity lvl =
+                    mp_util_wad::pLevel != nullptr
+                        ? mp_util_wad::pLevel->_base.entity
+                        : Broc::entity();
                 Broc::string sound("incoming");
                 void* ftor =
                     _mp_audio::PlaySoundAtLocation__functor(lvl, sound, position);
@@ -6353,8 +6355,10 @@ void CallbackFireArtillery(Broc::entity firer, Broc::vector position) {
                                     ftor);
                 played_incoming_sound = true;
             }
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::entity lvl =
+                mp_util_wad::pLevel != nullptr
+                    ? mp_util_wad::pLevel->_base.entity
+                    : Broc::entity();
             void* ftor = AddArtilleryObjective__functor(lvl, position);
             Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                                 __LINE__, "AddArtilleryObjective", ftor);
