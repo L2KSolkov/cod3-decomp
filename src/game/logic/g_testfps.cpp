@@ -217,6 +217,13 @@ void TestFPS::NextPosition()
                 if (!AeAssert::IsIgnored()
                     && AeAssert::Assert("old cod assert"))
                     __debugbreak();
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+                AeAssert::gCurrentLine = 529;
+                AeAssert::gCurrentExpr = "zone";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
             }
             BoundingBoxLocal nb = GetCellBBox(mCellIndex, CellZone);
             mCurrentPosition.x = (nb.vmin.v.m128_f32[0]
