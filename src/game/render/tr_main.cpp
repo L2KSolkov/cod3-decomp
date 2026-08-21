@@ -70,6 +70,22 @@ public:
     unsigned char iAmVisible : 1;  // +0xFB
     unsigned char noShadow : 1;    // +0xFB
     unsigned char iflIndex;  // +0xFB
+
+    // ea: 0x005E9A80
+    void set_transparent(unsigned char transparent)
+    {
+        if (transparent != 0)
+        {
+            if (transparent == 1)
+                mAlpha = 0.5f;
+            else
+                mAlpha = transparent * 0.0039215689f;
+        }
+        else
+        {
+            mAlpha = 1.0f;
+        }
+    }
 };
 
 // viewParms_t (IDA type; size 0x1E0)

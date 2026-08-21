@@ -1506,6 +1506,13 @@ bool Entity::AddScriptEvent(HashString h, HashString callback)
     return mScriptEventHandler->AddEvent(h, callback);
 }
 
+// ea: 0x005E9B90
+bool Entity::RemoveScriptEvent(HashString h, HashString callback)
+{
+    ScriptEventHandler* handler = mScriptEventHandler;
+    return handler != nullptr && handler->RemoveEvent(h, callback);
+}
+
 // ============================================================================
 // FnReverseOptions - flip all effect-sound toggles
 // ea: 0x4F4510

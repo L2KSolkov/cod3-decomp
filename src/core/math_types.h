@@ -106,6 +106,7 @@ public:
     Position3(float _x, float _y, float _z);  // ??0Position3@math@@QAE@MMM@Z (g.o 0x4A57A0)
     Position3(float _x);           // ??0Position3@math@@QAE@M@Z (g.o 0x4A5830)
     Position3(const Position3& other) : v(other.v) {}  // implicit copy
+    Vector4 val34() const;          // ?val34@Position3@math@@QBE?AVVector4@2@XZ (scr.o 0x5E9BB0)
     Position3(const Dir3& _v);    // ??0Position3@math@@QAE@ABVDir3@1@@Z
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
     const Position3& operator+=(const Dir3& _v);       // ??YPosition3@math@@QAEABV01@ABVDir3@1@@Z (g.o 0x4A6D30)
@@ -246,6 +247,16 @@ public:
     const Vector4& operator-=(const Vector4& _v);  // ??ZVector4@math@@QAEABV01@ABV01@@Z (g.o 0x4A6E30)
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
+
+// ea: 0x005E9BB0
+inline math::Vector4 math::Position3::val34() const
+{
+    __m128 one = _mm_set_ss(1.0f);
+    __m128 z = _mm_shuffle_ps(one, v, _MM_SHUFFLE(2, 2, 0, 0));
+    math::Vector4 result;
+    result.v = _mm_shuffle_ps(v, z, _MM_SHUFFLE(0, 3, 1, 0));
+    return result;
+}
 
 // ============================================================================
 // Mat43 — 4x3 affine transform matrix (64 bytes)

@@ -367,6 +367,7 @@ public:
     void SetAnimDebug(int lastAnim);  // ?SetAnimDebug@Entity@@QAEXH@Z (game.o 0x62AFB0)
     void SetScriptEventHandler(ScriptEventHandler* n);  // ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z (streamer.o 0x6816F0)
     bool AddScriptEvent(HashString h, HashString callback);  // ?AddScriptEvent@Entity@@QAE_NVHashString@@V2@@Z (core.o)
+    bool RemoveScriptEvent(HashString h, HashString callback); // ?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z (scr.o 0x5E9B90)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z

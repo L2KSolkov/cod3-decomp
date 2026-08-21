@@ -1209,6 +1209,10 @@ public:
         mFrameAdvance.mBegin = t;
     }
     void TimeGameAdvanceEnd();  // ea: 0x6E6BF0 (render.o)
+    // ea: 0x005E9C00
+    void TimeUserBegin() { mUser.mBegin = __rdtsc(); }
+    // ea: 0x005E9C40
+    void TimeUserEnd() { mUser.mEnd = __rdtsc(); }
 private:
     float CalcRenderTimeScale() const;  // ?CalcRenderTimeScale@TimerRenderBars@@ABEMXZ
 };
