@@ -3523,9 +3523,9 @@ index	status	map_line
 3522	VERIFIED	0002:00117200 ??0BoundingBox@@QAE@XZ 00906700 f i game2.o
 3523	PORTED	0002:00117290 ??1BoundingBox@@QAE@XZ 00906790 f i game2.o  PORTED: IDA-backed empty destructor
 3524	PORTED	0002:001172a0 ?center@BoundingBox@@QBE?AVPosition3@math@@XZ 009067A0 f i game2.o  PORTED: IDA-backed SIMD midpoint of vmin and vmax
-3525	PORTED	0002:001172f0 ?width@BoundingBox@@QBEMXZ 009067F0 f i game2.o
-3526	PORTED	0002:00117320 ?height@BoundingBox@@QBEMXZ 00906820 f i game2.o
-3527	PORTED	0002:00117380 ?GetCellId@ZoneCellDesc@@QBEIXZ 00906880 f i game2.o
+3525	PORTED	0002:001172f0 ?width@BoundingBox@@QBEMXZ 009067F0 f i game2.o  PORTED: IDA-backed vmax.x minus vmin.x
+3526	PORTED	0002:00117320 ?height@BoundingBox@@QBEMXZ 00906820 f i game2.o  PORTED: IDA-backed vmax.y minus vmin.y
+3527	PORTED	0002:00117380 ?GetCellId@ZoneCellDesc@@QBEIXZ 00906880 f i game2.o  PORTED: IDA-backed mCellId accessor
 3528	PORTED	0002:00117390 ?GetBounds@ZoneCellDesc@@QBEABVBoundingBox@@XZ 00906890 f i game2.o
 3529	PORTED	0002:001173a0 ?GetPakInfo@StreamZone@@QBEPBUPakInfoNode@@XZ 009068A0 f i game2.o
 3530	PORTED	0002:001173b0 ??0PerformanceStats@TestFPS@@QAE@XZ 009068B0 f i game2.o
