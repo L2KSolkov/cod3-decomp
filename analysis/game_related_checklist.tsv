@@ -1487,23 +1487,23 @@ index	status	map_line
 1486	PORTED	0002:000b3ff0 ?get_dlist_node_offset@EntityNotifySet@@SAHXZ 008A34F0 f i core.o PORTED: FUNCTION implemented IDA zero dlist-node offset accessor
 1487	PORTED	0002:000b4000 ??3EntityNotifySet@@SAXPAX@Z 008A3500 f i core.o PORTED: FUNCTION matches IDA PoolAllocator release destructor
 1488	PORTED	0002:000b4020 ?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z 008A3520 f i core.o PORTED: FUNCTION implemented IDA EntityNotifySet allocator setter
-1489	PORTED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o
+1489	PORTED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o PORTED: FUNCTION implemented IDA DCGBankManager placement-new passthrough
 1490	VERIFIED	0002:000b4040 ?CreateInst@DCGBankManager@@SAXXZ 008A3540 f i core.o
 1491	VERIFIED	0002:000b4140 ?DeleteInst@DCGBankManager@@SAXXZ 008A3640 f i core.o
 1492	PORTED	0002:000b41c0 ??2CGBankManager@@SAPAXIPAX@Z 008A36C0 f i core.o
 1493	VERIFIED	0002:000b41d0 ?CreateInst@CGBankManager@@SAXXZ 008A36D0 f i core.o
 1494	VERIFIED	0002:000b42d0 ?DeleteInst@CGBankManager@@SAXXZ 008A37D0 f i core.o
-1495	PORTED	0002:000b4350 ??0NumBanks@@QAE@MM@Z 008A3850 f i core.o
-1496	PORTED	0002:000b43a0 ??2BankManager@@SAPAXIPAX@Z 008A38A0 f i core.o
-1497	PORTED	0002:000b43b0 ?Inst@BankManager@@SAPAV1@XZ 008A38B0 f i core.o
+1495	PORTED	0002:000b4350 ??0NumBanks@@QAE@MM@Z 008A3850 f i core.o PORTED: FUNCTION implemented IDA NumBanks field-order constructor
+1496	PORTED	0002:000b43a0 ??2BankManager@@SAPAXIPAX@Z 008A38A0 f i core.o PORTED: FUNCTION implemented IDA BankManager placement-new passthrough
+1497	PORTED	0002:000b43b0 ?Inst@BankManager@@SAPAV1@XZ 008A38B0 f i core.o PORTED: FUNCTION implemented IDA BankManager singleton accessor
 1498	VERIFIED	0002:000b43c0 ?CreateInst@BankManager@@SAXXZ 008A38C0 f i core.o
-1499	PORTED	0002:000b44b0 ?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ 008A39B0 f i core.o
-1500	PORTED	0002:000b44c0 ?GetHeader@PakFile@@QBEPBUPakHeader@@XZ 008A39C0 f i core.o
-1501	PORTED	0002:000b44d0 ??2PakManager@@SAPAXIPAX@Z 008A39D0 f i core.o
+1499	PORTED	0002:000b44b0 ?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ 008A39B0 f i core.o PORTED: FUNCTION implemented IDA PakFile mFileId getter
+1500	PORTED	0002:000b44c0 ?GetHeader@PakFile@@QBEPBUPakHeader@@XZ 008A39C0 f i core.o PORTED: FUNCTION implemented IDA PakFile mHeader getter
+1501	PORTED	0002:000b44d0 ??2PakManager@@SAPAXIPAX@Z 008A39D0 f i core.o PORTED: FUNCTION implemented IDA PakManager placement-new passthrough
 1502	VERIFIED	0002:000b44e0 ?CreateInst@PakManager@@SAXXZ 008A39E0 f i core.o
 1503	VERIFIED	0002:000b45e0 ?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ 008A3AE0 f i core.o
 1504	VERIFIED	0002:000b45f0 ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z 008A3AF0 f i core.o
-1505	PORTED	0002:000b4620 ?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ 008A3B20 f i core.o
+1505	PORTED	0002:000b4620 ?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ 008A3B20 f i core.o PORTED: FUNCTION implemented IDA current-pak accessor
 1506	VERIFIED	0002:000b4630 _acosf 008A3B30 f i core.o
 1507	VERIFIED	0002:000b4640 _floorf 008A3B40 f i core.o
 1508	VERIFIED	0002:000b4660 _fmodf 008A3B60 f i core.o

@@ -1487,23 +1487,23 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1486	0x004B3FF0	0x008A34F0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ		core.o	game		f i	1	PORTED	FUNCTION implemented IDA zero dlist-node offset accessor	NO	NO	VERIFIED
 1487	0x004B4000	0x008A3500	??3EntityNotifySet@@SAXPAX@Z		core.o	game		f i	1	PORTED	FUNCTION matches IDA PoolAllocator release destructor	NO	NO	VERIFIED
 1488	0x004B4020	0x008A3520	?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	FUNCTION implemented IDA EntityNotifySet allocator setter	NO	NO	VERIFIED
-1489	0x004B4030	0x008A3530	??2DCGBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1489	0x004B4030	0x008A3530	??2DCGBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DCGBankManager placement-new passthrough	NO	NO	VERIFIED
 1490	0x004B4040	0x008A3540	?CreateInst@DCGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1491	0x004B4140	0x008A3640	?DeleteInst@DCGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1492	0x004B41C0	0x008A36C0	??2CGBankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1493	0x004B41D0	0x008A36D0	?CreateInst@CGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1494	0x004B42D0	0x008A37D0	?DeleteInst@CGBankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1495	0x004B4350	0x008A3850	??0NumBanks@@QAE@MM@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1496	0x004B43A0	0x008A38A0	??2BankManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1497	0x004B43B0	0x008A38B0	?Inst@BankManager@@SAPAV1@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1495	0x004B4350	0x008A3850	??0NumBanks@@QAE@MM@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA NumBanks field-order constructor	NO	NO	VERIFIED
+1496	0x004B43A0	0x008A38A0	??2BankManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA BankManager placement-new passthrough	NO	NO	VERIFIED
+1497	0x004B43B0	0x008A38B0	?Inst@BankManager@@SAPAV1@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA BankManager singleton accessor	NO	NO	VERIFIED
 1498	0x004B43C0	0x008A38C0	?CreateInst@BankManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1499	0x004B44B0	0x008A39B0	?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1500	0x004B44C0	0x008A39C0	?GetHeader@PakFile@@QBEPBUPakHeader@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1501	0x004B44D0	0x008A39D0	??2PakManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1499	0x004B44B0	0x008A39B0	?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA PakFile mFileId getter	NO	NO	VERIFIED
+1500	0x004B44C0	0x008A39C0	?GetHeader@PakFile@@QBEPBUPakHeader@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA PakFile mHeader getter	NO	NO	VERIFIED
+1501	0x004B44D0	0x008A39D0	??2PakManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA PakManager placement-new passthrough	NO	NO	VERIFIED
 1502	0x004B44E0	0x008A39E0	?CreateInst@PakManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1503	0x004B45E0	0x008A3AE0	?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1504	0x004B45F0	0x008A3AF0	?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1505	0x004B4620	0x008A3B20	?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1505	0x004B4620	0x008A3B20	?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA current-pak accessor	NO	NO	VERIFIED
 1506	0x004B4630	0x008A3B30	_acosf		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1507	0x004B4640	0x008A3B40	_floorf		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1508	0x004B4660	0x008A3B60	_fmodf		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
