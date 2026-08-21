@@ -156,11 +156,14 @@ static_assert(offsetof(sysEvent_t, evType) == 0x04,
 // angles_t - Euler angles (12 bytes)
 // Size: 0x0C (12 bytes) - verified against IDA
 // ============================================================================
+class idVec3;
 class angles_t {
 public:
     float pitch;  // +0x00
     float yaw;    // +0x04
     float roll;   // +0x08
+    angles_t() = default;
+    angles_t(const idVec3& vec);
 };
 static_assert(sizeof(angles_t) == 0x0C, "angles_t size mismatch");
 
@@ -208,6 +211,15 @@ public:
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08
+
+    idVec3();
+    idVec3(float x, float y, float z);
+    float& operator[](int index);
+    idVec3& operator=(const idVec3& value);
+    void set(float x, float y, float z);
+    float operator*(const idVec3& value) const;
+    idVec3 operator*(float value) const;
+    idVec3 operator+(const idVec3& value) const;
 };
 static_assert(sizeof(idVec3) == 0x0C, "idVec3 size mismatch");
 static_assert(offsetof(idVec3, z) == 0x08, "idVec3::z offset mismatch");
@@ -219,6 +231,9 @@ static_assert(offsetof(idVec3, z) == 0x08, "idVec3::z offset mismatch");
 class mat3_t {
 public:
     idVec3 mat[3];  // +0x00
+    mat3_t();
+    mat3_t(const idVec3& x, const idVec3& y, const idVec3& z);
+    idVec3& operator[](unsigned int index);
     void Transpose(mat3_t& matrix);
     void Transpose();
     void ProjectVector(const idVec3& src, idVec3& dst) const;
@@ -239,6 +254,32 @@ public:
     float y;  // +0x04
     float z;  // +0x08
     float w;  // +0x0C
+    float& operator[](unsigned int index);
 };
 static_assert(sizeof(quat_t) == 0x10, "quat_t size mismatch");
 static_assert(offsetof(quat_t, w) == 0x0C, "quat_t::w offset mismatch");
+
+// ============================================================================
+// idStr storage types (16-byte storage block; verified against IDA)
+// ============================================================================
+struct strdata {
+    int len;
+    int refcount;
+    char* data;
+    int alloced;
+
+    strdata();
+    ~strdata();
+};
+static_assert(sizeof(strdata) == 0x10, "strdata size mismatch");
+
+class idStr {
+public:
+    strdata* m_data;
+    int length() const;
+
+protected:
+    void EnsureDataWritable();
+    void EnsureAlloced(int amount, bool keepold);
+};
+static_assert(sizeof(idStr) == 0x04, "idStr size mismatch");

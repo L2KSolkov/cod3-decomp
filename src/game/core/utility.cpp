@@ -91,21 +91,121 @@ void mat3_t::Clear()
     this->mat[2].z = 1.0f;
 }
 
-// idStr internal
-struct strdata {
-    int len;
-    int refcount;
-    char* data;
-    int alloced;
-};
+// ea: 0x004DEF20
+idVec3::idVec3()
+{
+}
 
-class idStr {
-public:
-    strdata* m_data;
-protected:
-    void EnsureDataWritable();
-    void EnsureAlloced(int amount, bool keepold);
-};
+// ea: 0x004DEF30
+idVec3::idVec3(float x, float y, float z)
+    : x(x), y(y), z(z)
+{
+}
+
+// ea: 0x004DEF60
+float& idVec3::operator[](int index)
+{
+    return (&x)[index];
+}
+
+// ea: 0x004DEF70
+idVec3& idVec3::operator=(const idVec3& value)
+{
+    x = value.x;
+    y = value.y;
+    z = value.z;
+    return *this;
+}
+
+// ea: 0x004DEFA0
+void idVec3::set(float x, float y, float z)
+{
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+// ea: 0x004DEFD0
+float idVec3::operator*(const idVec3& value) const
+{
+    return value.z * z + value.y * y + value.x * x;
+}
+
+// ea: 0x004DF000
+idVec3 idVec3::operator*(float value) const
+{
+    return idVec3(x * value, y * value, z * value);
+}
+
+// ea: 0x004DF050
+idVec3 idVec3::operator+(const idVec3& value) const
+{
+    return idVec3(value.x + x, value.y + y, value.z + z);
+}
+
+// ea: 0x004DF0A0
+angles_t::angles_t(const idVec3& vec)
+{
+    pitch = vec.x;
+    yaw = vec.y;
+    roll = vec.z;
+}
+
+// ea: 0x004DF0D0
+mat3_t::mat3_t()
+{
+}
+
+// ea: 0x004DF0E0
+mat3_t::mat3_t(const idVec3& x, const idVec3& y, const idVec3& z)
+{
+    mat[0] = x;
+    mat[1] = y;
+    mat[2] = z;
+}
+
+// ea: 0x004DF140
+idVec3& mat3_t::operator[](unsigned int index)
+{
+    if (index > 2)
+    {
+        ASSERT("( index >= 0 ) && ( index < 3 )",
+               "c:\\cod\\code\\game\\math_matrix.h", 87);
+    }
+    return mat[index];
+}
+
+// ea: 0x004DF1C0
+float& quat_t::operator[](unsigned int index)
+{
+    if (index >= 4)
+    {
+        ASSERT("( index >= 0 ) && ( index < 4 )",
+               "c:\\cod\\code\\game\\math_quaternion.h", 72);
+    }
+    return (&x)[index];
+}
+
+// ea: 0x004DF240
+strdata::strdata()
+    : len(0), refcount(0), data(nullptr), alloced(0)
+{
+}
+
+// ea: 0x004DF260
+strdata::~strdata()
+{
+    if (data != nullptr)
+        mem_heap_free(data);
+}
+
+// ea: 0x004DF2C0
+int idStr::length() const
+{
+    if (m_data != nullptr)
+        return m_data->len;
+    return 0;
+}
 
 // ea: 0x004C0880
 void idStr::EnsureDataWritable()
