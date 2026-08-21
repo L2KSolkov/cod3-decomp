@@ -2140,6 +2140,49 @@ Broc::vector* VectorToAngles(Broc::vector* result, const Broc::vector* vecIn) {
     return result;
 }
 
+// RandomInt - ea: 0x9350D0
+int RandomInt(int iMax) {
+    return gBrocAPI.mMathsRandomInt(iMax);
+}
+
+// GetCvarInt - ea: 0x935970
+int GetCvarInt(const char* cvar) {
+    return gBrocAPI.mCVarGetInt(cvar);
+}
+
+// AddEventHandler - ea: 0x9360D0
+void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func) {
+    gBrocAPI.mAddEventHandler(e.GetHandle(), label.mVal, func.mVal);
+}
+
+void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func) {
+    if (e != NULL) {
+        HashStr labelHash;
+        HashStr funcHash;
+        labelHash.mVal = label;
+        funcHash.mVal = func;
+        AddEventHandler(*e, labelHash, funcHash);
+    }
+}
+
+// SoundPlay - ea: 0x936070
+unsigned int SoundPlay(const Broc::string& name, float volume) {
+    return gBrocAPI.mSoundPlay(&name, volume);
+}
+
+unsigned int SoundPlay(const Broc::string* name, float volume) {
+    return gBrocAPI.mSoundPlay(name, volume);
+}
+
+// ReverbSetParams - ea: 0x9360A0
+void ReverbSetParams(const Broc::string& name, bool immediate) {
+    gBrocAPI.mReverbSetParams(&name, immediate);
+}
+
+void ReverbSetParams(const Broc::string* name, bool immediate) {
+    gBrocAPI.mReverbSetParams(name, immediate);
+}
+
 // GetEnt - ea: 0x9349D0
 Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
                      unsigned int flags) {
@@ -2158,6 +2201,18 @@ void Delete(Broc::entity* e) {
         Delete(*e);
 }
 
+// RotateTo - ea: 0x9358B0
+void RotateTo(const Broc::entity& e, const Broc::vector& angles,
+              float totalTime, float accTime, float decTime) {
+    gBrocAPI.mRotateTo(e.GetHandle(), angles, totalTime, accTime, decTime);
+}
+
+void RotateTo(Broc::entity* e, const Broc::vector* angles, float totalTime,
+              float accTime, float decTime) {
+    if (e != NULL && angles != NULL)
+        RotateTo(*e, *angles, totalTime, accTime, decTime);
+}
+
 // operator+(string, float) - ea: 0x934830
 Broc::string operator+(const Broc::string& lhs, float rhs) {
     Broc::string r(lhs);
@@ -2170,8 +2225,8 @@ Broc::string operator+(const Broc::string& lhs, float rhs) {
 // ============================================================================
 // Boxed-type operators (mp_util_wad.o inline COMDATs)
 // ============================================================================
-bool operator<(Broc::bint lhs, Broc::bint rhs) {
-    return lhs.mVal < rhs.mVal;
+Broc::bbool operator<(Broc::bint lhs, Broc::bint rhs) {
+    return Broc::bbool(lhs.mVal < rhs.mVal);
 }
 
 bool operator>(Broc::bint lhs, Broc::bint rhs) {
@@ -2184,6 +2239,10 @@ bool operator==(Broc::bint lhs, Broc::bint rhs) {
 
 bool operator!=(Broc::bint lhs, Broc::bint rhs) {
     return lhs.mVal != rhs.mVal;
+}
+
+Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
+    return Broc::bfloat(lhs.mVal * rhs);
 }
 
 // ============================================================================

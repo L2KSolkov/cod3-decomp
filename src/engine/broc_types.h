@@ -560,7 +560,8 @@ struct bint {
 
     bint() : mVal(0) {}
     bint(int v) : mVal(v) {}
-    bint& operator=(int v) { mVal = v; return *this; }
+    int operator=(int v) { mVal = v; return v; }
+    unsigned int operator=(unsigned int v) { mVal = v; return v; }
     operator int() const { AssertDefined(); return mVal; }
     int operator++(int) { AssertDefined(); return ++mVal; }
     int operator++() { AssertDefined(); return ++mVal; }
@@ -576,7 +577,8 @@ struct bfloat {
 
     bfloat() : mVal(0.0f) {}
     bfloat(float v) : mVal(v) {}
-    bfloat& operator=(float v) { mVal = v; return *this; }
+    double operator=(float v) { mVal = v; return v; }
+    double operator=(int v) { mVal = (float)v; return mVal; }
     operator float() const { return mVal; }
     bfloat& operator+=(float v) { mVal += v; return *this; }
     bfloat& operator-=(float v) { mVal -= v; return *this; }
@@ -599,7 +601,7 @@ struct bbool {
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "bbool size mismatch");
 
 // Boxed-type comparison operators (mp_util_wad.o inline COMDATs).
-bool operator<(bint lhs, bint rhs);
+bbool operator<(bint lhs, bint rhs);
 bool operator>(bint lhs, bint rhs);
 bool operator==(bint lhs, bint rhs);
 bool operator!=(bint lhs, bint rhs);
@@ -776,22 +778,35 @@ struct BrocAPI {
     char _pad5C[0x68 - 0x5C];                             // +0x05C
     void (*mThreadDebugNotice)(const char*);              // +0x068
     unsigned int (*mThreadGetId)();                       // +0x06C
-    char _pad70[0x94 - 0x70];                             // +0x070
+    char _pad70[0x8C - 0x70];                             // +0x070
+    void (*mAddEventHandler)(unsigned int, unsigned int, unsigned int); // +0x08C
+    char _pad90[0x94 - 0x90];                             // +0x090
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
     unsigned int (*mGetEntByNum)(int);                    // +0x098
     char _pad9C[0xA4 - 0x9C];                             // +0x09C
     int (*mGetNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0A4
     char _padA8[0xAC - 0xA8];                             // +0x0A8
     int (*mGetVehicleNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0AC
-    char _padB0[0x14C - 0xB0];                            // +0x0B0
+    char _padB0[0x140 - 0xB0];                            // +0x0B0
+    int (*mMathsRandomInt)(int);                          // +0x140
+    char _pad144[0x148 - 0x144];                          // +0x144
+    int (*mMathsRandomIntRange)(int, int);                // +0x148
     float (*mMathsRandomFloatRange)(float, float);         // +0x14C
     char _pad150[0x184 - 0x150];                          // +0x150
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
     char _pad188[0x1A0 - 0x188];                          // +0x188
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
-    char _pad1A4[0x6D8 - 0x1A4];                          // +0x1A4
+    char _pad1A4[0x250 - 0x1A4];                          // +0x1A4
+    int (*mCVarGetInt)(const char*);                      // +0x250
+    char _pad254[0x290 - 0x254];                          // +0x254
+    unsigned int (*mSoundPlay)(const Broc::string*, float); // +0x290
+    char _pad294[0x2C0 - 0x294];                          // +0x294
+    void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
+    char _pad2C4[0x6D8 - 0x2C4];                          // +0x2C4
     void (*mDelete)(unsigned int);                        // +0x6D8
-    char _pad6DC[0xBD0 - 0x6DC];                          // +0x6DC
+    char _pad6DC[0x9FC - 0x6DC];                          // +0x6DC
+    void (*mRotateTo)(unsigned int, const Broc::vector&, float, float, float); // +0x9FC
+    char _padA00[0xBD0 - 0xA00];                          // +0xA00
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
     void (*mPoolFree)(void*);                              // +0xBD4
     char _padBD8[0xBDC - 0xBD8];                          // +0xBD8
@@ -892,13 +907,16 @@ int EffectEventPlay(const Broc::string* script, const Broc::vector* pos,
 void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time);
 void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
 void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
+void AddEventHandler(const Broc::entity& e, HashStr label, HashStr func);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 void RemoveEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 HashStr string_hash(const char* str);
 HashStr* string_hash(HashStr* result, const char* str);
 HashStr* string_hash(HashStr* result, const Broc::string* str);
 unsigned int SoundPlay(const Broc::string& name, float volume);
+unsigned int SoundPlay(const Broc::string* name, float volume);
 void ReverbSetParams(const Broc::string& name, bool immediate);
+void ReverbSetParams(const Broc::string* name, bool immediate);
 int GetCvarInt(const char* cvar);
 void iprintlnbold(const Broc::string& s);
 void Code_SetTeamGame(bool teamGame);
@@ -951,7 +969,10 @@ void SetSpectateTeamKill(int team_kill, Broc::entity* e, int viewport);
 void SetSpectateMedic(int medic, int viewport);
 void SetSpectateSeconds(int seconds, int viewport);
 void SetTakeDamage(Broc::entity* e, int damage);
-void RotateTo(Broc::entity* e, const Broc::vector* angles, float time);
+void RotateTo(const Broc::entity& e, const Broc::vector& angles,
+              float totalTime, float accTime, float decTime);
+void RotateTo(Broc::entity* e, const Broc::vector* angles, float totalTime,
+              float accTime, float decTime);
 void GiveWeapon(Broc::entity* e, const Broc::string* pszWeaponName);
 void TakeWeapon(Broc::entity* e, const Broc::string* pszWeaponName);
 void SetWeaponSlotAmmo(Broc::entity* e, const Broc::string* sSlot, int iSetAmmo);
