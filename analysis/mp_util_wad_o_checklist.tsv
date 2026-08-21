@@ -162,7 +162,7 @@ index	status	map_line
 161	PORTED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	PORTED: IDA mMoveTo forwarding
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
 163	VERIFIED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o
-164	PORTED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o
+164	PORTED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o	PORTED: IDA int constructor stores mVal as float
 165	VERIFIED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o
 166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
 167	VERIFIED	0002:005358f0 ?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z 00D24DF0 f mp_util_wad.o
@@ -181,21 +181,21 @@ index	status	map_line
 180	VERIFIED	0002:00536570 ?interior_triggering_device@_mp_audio@@YAXVentity@Broc@@0@Z 00D25A70 f mp_util_wad.o
 181	VERIFIED	0002:00536740 ?Code_IsLocalPlayer@Broc@@YA_NVentity@1@@Z 00D25C40 f i mp_util_wad.o
 182	VERIFIED	0002:00536770 ?PlayerLocation@_mp_audio@@YAXVentity@Broc@@@Z 00D25C70 f mp_util_wad.o
-183	PORTED	0002:00536ef0 ??0bint@@QAE@I@Z 00D263F0 f i mp_util_wad.o
-184	PORTED	0002:00536f20 ??8bint@@QBE_NH@Z 00D26420 f i mp_util_wad.o
-185	PORTED	0002:00536f50 ?SoundCrossFade@@YAXIIM@Z 00D26450 f i mp_util_wad.o
+183	PORTED	0002:00536ef0 ??0bint@@QAE@I@Z 00D263F0 f i mp_util_wad.o	PORTED: IDA unsigned constructor stores mVal
+184	PORTED	0002:00536f20 ??8bint@@QBE_NH@Z 00D26420 f i mp_util_wad.o	PORTED: IDA equality compares mVal to int
+185	PORTED	0002:00536f50 ?SoundCrossFade@@YAXIIM@Z 00D26450 f i mp_util_wad.o	PORTED: IDA forwards both handles and fade time to mSoundCrossFade
 186	PORTED	0002:00536f80 ?audio_crossfade_wait__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D26480 f i mp_util_wad.o
 187	VERIFIED	0002:00537020 ?audio_crossfade_wait@_mp_audio@@YAXVentity@Broc@@@Z 00D26520 f mp_util_wad.o
-188	PORTED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o
+188	PORTED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o	PORTED: IDA constructs bint from lhs.mVal plus int rhs
 189	VERIFIED	0002:005370e0 ?track_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D265E0 f mp_util_wad.o
 190	VERIFIED	0002:00537190 ?reverb_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26690 f mp_util_wad.o
 191	VERIFIED	0002:00537240 ?ambient_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26740 f mp_util_wad.o
 192	VERIFIED	0002:005372e0 ?ambient_system@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D267E0 f mp_util_wad.o
-193	PORTED	0002:005376c0 ??M@YA?AUbbool@@Ubfloat@@M@Z 00D26BC0 f i mp_util_wad.o
-194	PORTED	0002:00537710 ??O@YA?AUbbool@@Ubfloat@@M@Z 00D26C10 f i mp_util_wad.o
+193	PORTED	0002:005376c0 ??M@YA?AUbbool@@Ubfloat@@M@Z 00D26BC0 f i mp_util_wad.o	PORTED: IDA returns bbool(rhs greater than lhs.mVal)
+194	PORTED	0002:00537710 ??O@YA?AUbbool@@Ubfloat@@M@Z 00D26C10 f i mp_util_wad.o	PORTED: IDA returns bbool(lhs.mVal greater than rhs)
 195	VERIFIED	0002:00537760 ?audio_spawner@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D26C60 f mp_util_wad.o
-196	PORTED	0002:005379f0 ??H@YA?AUbint@@HU0@@Z 00D26EF0 f i mp_util_wad.o
-197	PORTED	0002:00537a20 ??DBroc@@YA?AUvector@0@ABU10@M@Z 00D26F20 f i mp_util_wad.o
+196	PORTED	0002:005379f0 ??H@YA?AUbint@@HU0@@Z 00D26EF0 f i mp_util_wad.o	PORTED: IDA constructs bint from int lhs plus rhs.mVal
+197	PORTED	0002:00537a20 ??DBroc@@YA?AUvector@0@ABU10@M@Z 00D26F20 f i mp_util_wad.o	PORTED: IDA scales all vector components by rhs
 198	PORTED	0002:00537a90 ?EffectEventPlay@Broc@@YAHABVstring@1@ABUvector@1@1@Z 00D26F90 f i mp_util_wad.o
 199	PORTED	0002:00537ad0 ?AnglesToForward@@YA?AUvector@Broc@@ABU12@@Z 00D26FD0 f i mp_util_wad.o
 200	PORTED	0002:00537b20 ?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z 00D27020 f mp_util_wad.o
