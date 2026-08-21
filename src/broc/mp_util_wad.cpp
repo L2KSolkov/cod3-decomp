@@ -2216,13 +2216,13 @@ void Broc::SetTakeDamage(const Broc::entity& e, int damage) {
 }
 
 // Broc::TakeAllWeapons - ea: 0x946010
-void Broc::TakeAllWeapons(Broc::entity* e) {
-    Broc::gBrocAPI.mTakeAllWeapons(e->GetHandle());
+void Broc::TakeAllWeapons(const Broc::entity& e) {
+    Broc::gBrocAPI.mTakeAllWeapons(e.GetHandle());
 }
 
 // Broc::OpenMenu - ea: 0x945810
-int Broc::OpenMenu(const Broc::string* str, int viewport) {
-    return Broc::gBrocAPI.mOpenMenu(str, viewport);
+int Broc::OpenMenu(const Broc::string& str, int viewport) {
+    return Broc::gBrocAPI.mOpenMenu(&str, viewport);
 }
 
 // Broc::CloseAllMenus - ea: 0x9449D0
@@ -2241,8 +2241,9 @@ void Broc::SetSpectateState(int state, int viewport) {
 }
 
 // Broc::SetSpectateTeamKill - ea: 0x945870
-void Broc::SetSpectateTeamKill(int team_kill, Broc::entity* e, int viewport) {
-    Broc::gBrocAPI.mSetSpectateTeamKill(team_kill, e->GetHandle(), viewport);
+void Broc::SetSpectateTeamKill(int team_kill, const Broc::entity& e,
+                               int viewport) {
+    Broc::gBrocAPI.mSetSpectateTeamKill(team_kill, e.GetHandle(), viewport);
 }
 
 // Broc::SetSpectateSeconds - ea: 0x949EB0
@@ -2301,27 +2302,28 @@ Broc::entity Broc::Code_GetSpotterEntity(Broc::entity ent) {
 }
 
 // Code_PlayerSpawn - ea: 0x93E490
-void Broc::Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
-                            const Broc::vector* angles, bool stopPhysics) {
-    Broc::gBrocAPI.mPlayerSpawn(player.GetHandle(), origin, angles, stopPhysics);
+void Broc::Code_PlayerSpawn(Broc::entity player, const Broc::vector& origin,
+                            const Broc::vector& angles, bool stopPhysics) {
+    Broc::gBrocAPI.mPlayerSpawn(player.GetHandle(), &origin, &angles,
+                                stopPhysics);
 }
 
 // Broc::Code_RoundOver - ea: 0x944E70
-void Broc::Code_RoundOver(int condition, const Broc::string* winner) {
-    Broc::gBrocAPI.mRoundOver(condition, winner);
+void Broc::Code_RoundOver(int condition, const Broc::string& winner) {
+    Broc::gBrocAPI.mRoundOver(condition, &winner);
 }
 
 // Broc::Code_PlayerRespawn - ea: 0x945310
 void Broc::Code_PlayerRespawn(Broc::entity player,
-                              const Broc::vector* origin,
-                              const Broc::vector* angles,
-                              const Broc::string* team) {
-    Broc::gBrocAPI.mPlayerRespawn(player.GetHandle(), origin, angles, team);
+                              const Broc::vector& origin,
+                              const Broc::vector& angles,
+                              const Broc::string& team) {
+    Broc::gBrocAPI.mPlayerRespawn(player.GetHandle(), &origin, &angles, &team);
 }
 
 // Broc::Code_RequestRespawn - ea: 0x945FE0
-void Broc::Code_RequestRespawn(int playerID) {
-    Broc::gBrocAPI.mRequestRespawn(static_cast<unsigned int>(playerID));
+void Broc::Code_RequestRespawn(unsigned int playerID) {
+    Broc::gBrocAPI.mRequestRespawn(playerID);
 }
 
 // Broc::entity::__unnamed::team_struct::Get - ea: 0x938DE0
@@ -2499,8 +2501,36 @@ int EffectEventPlay(Broc::entity* e, const Broc::string* script) {
 }
 
 // Broc::notify - ea: 0x939BA0
-void notify(const Broc::entity* ent, HashStr label) {
-    gBrocAPI.mEntNotify(ent->GetHandle(), label.mVal);
+void notify(const Broc::entity& ent, HashStr label) {
+    gBrocAPI.mEntNotify(ent.GetHandle(), label.mVal);
+}
+
+// Broc::notify - ea: 0x94B8B0
+void notify(const Broc::entity& ent, const char* label) {
+    HashStr hash;
+    Broc::string_hash(&hash, label);
+    gBrocAPI.mEntNotify(ent.GetHandle(), hash.mVal);
+}
+
+// GetWeaponSlotAmmo - ea: 0x94BF20
+int GetWeaponSlotAmmo(const Broc::entity& e, const Broc::string& slot) {
+    return gBrocAPI.mGetWeaponSlotAmmo(e.GetHandle(), &slot);
+}
+
+// GetWeaponSlotClipAmmo - ea: 0x94BF50
+int GetWeaponSlotClipAmmo(const Broc::entity& e, const Broc::string& slot) {
+    return gBrocAPI.mGetWeaponSlotClipAmmo(e.GetHandle(), &slot);
+}
+
+// SwitchToWeapon - ea: 0x94C1B0
+bool SwitchToWeapon(const Broc::entity& e, const Broc::string& weapon) {
+    return gBrocAPI.mSwitchToWeapon(e.GetHandle(), &weapon);
+}
+
+// GetWeaponSlotWeapon - ea: 0x94C1E0
+void GetWeaponSlotWeapon(const Broc::entity& e, const Broc::string& slot,
+                         Broc::string& result) {
+    gBrocAPI.mGetWeaponSlotWeapon(e.GetHandle(), &slot, &result);
 }
 
 // Broc::DialogPlay - ea: 0x938BA0
@@ -2575,6 +2605,32 @@ Broc::string operator+(const Broc::string& lhs, float rhs) {
 }
 
 } // namespace Broc
+
+// Code_IsMenuOpen - ea: 0x94A8A0
+int Broc::Code_IsMenuOpen(const Broc::string& menu, int viewport) {
+    return Broc::gBrocAPI.mIsMenuOpen(&menu, viewport);
+}
+
+// ObjectiveDelete - ea: 0x94BA60
+void ObjectiveDelete(int iObjective, int clientIndex) {
+    Broc::gBrocAPI.mObjectiveDelete(iObjective, clientIndex);
+}
+
+// ObjectiveAdd - ea: 0x94BA90
+void ObjectiveAdd(int iObjective, const Broc::string& state,
+                  const Broc::string& pszString, Broc::vector vPos,
+                  const char* display) {
+    Broc::gBrocAPI.mObjectiveAdd5(iObjective, &state, &pszString, &vPos, 0,
+                                  0.0f, display, -1, -1, -1);
+}
+
+// ObjectiveAdd - ea: 0x94D2D0
+void ObjectiveAdd(int iObjective, const Broc::string& state,
+                  const Broc::string& pszString, Broc::vector vPos,
+                  float height, int clientIndex) {
+    Broc::gBrocAPI.mObjectiveAdd5(iObjective, &state, &pszString, &vPos, 0,
+                                  height, "1", -1, -1, clientIndex);
+}
 
 // bbool::operator== - ea: 0x93F610
 bool bbool::operator==(bool rhs) const {
@@ -3490,7 +3546,7 @@ void StopTeamSound() {
         if ((bool)defined) {
             HashStr label;
             label.mVal = 0x5DA1DA2Du;
-            Broc::notify(&mp_util_wad::pLevel->hack_sound_entity, label);
+            Broc::notify(mp_util_wad::pLevel->hack_sound_entity, label);
             int handle =
                 (int)*mp_util_wad::GetEE_teamSound(
                     mp_util_wad::pLevel->hack_sound_entity);
@@ -4715,7 +4771,7 @@ void CallbackGameScore(int alliesScore, int axisScore) {
 void CallbackPlayerLeave(Broc::entity leavingPlayer) {
     HashStr label;
     label.mVal = 0x4C745BCAu;  // "disconnect"
-    Broc::notify(&leavingPlayer, label);
+    Broc::notify(leavingPlayer, label);
     if ((bool)mp_util_wad::pLevel->roundStarted &&
         !(bool)mp_util_wad::pLevel->roundOver) {
         mp_util_wad::pLevel->playersLeavingDuringRound =
@@ -4871,7 +4927,7 @@ void CallbackSpawnButtonPressed(Broc::entity ent) {
     if (Broc::Code_IsLocalPlayer(ent)) {
         HashStr label;
         label.mVal = 0xC39A4465;
-        Broc::notify(&ent, label);
+        Broc::notify(ent, label);
         void* ftor = LocalPlayerRespawn__functor(ent);
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                             __LINE__, "LocalPlayerRespawn", ftor);
@@ -4889,7 +4945,7 @@ void CallbackPunishedForTeamKill(Broc::entity ent, int punished) {
 void CallbackPlayerClassChange(Broc::entity player, unsigned int newPlayerClass) {
     HashStr label;
     label.mVal = 0x70FACFE9u;
-    Broc::notify(&player, label);
+    Broc::notify(player, label);
     mp_util_wad::entity_set_nextPlayerClass(player, (__int16)newPlayerClass);
     *mp_util_wad::GetEE_specialWeaponChangeClassFlag(player) = true;
     if (Broc::Code_IsLocalPlayer(player)) {
@@ -5033,7 +5089,7 @@ void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr label;
     label.mVal = 0x531AD8D9u;
-    Broc::notify(&lvl, label);
+    Broc::notify(lvl, label);
 }
 
 // CallbackHostOptionsChanged - ea: 0x93D3B0
@@ -5176,7 +5232,7 @@ void CheckScoreLimit() {
 // EndRound - ea: 0x94AE30
 void EndRound(EEndRoundCondition condition, Broc::string winner) {
     if (!(bool)mp_util_wad::pLevel->roundOver)
-        Broc::Code_RoundOver((int)condition, &winner);
+        Broc::Code_RoundOver((int)condition, winner);
     winner.~string();
 }
 
@@ -5571,7 +5627,7 @@ int CallbackCanTeamChange(Broc::entity player, int team_allies) {
 void CallbackPlayerTeamChange(Broc::entity player, int autoBalance, int denied) {
     HashStr label;
     label.mVal = 0xE7D05EDA;
-    Broc::notify(&player, label);
+    Broc::notify(player, label);
     if (denied == 0) {
         *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
         bool local = Broc::Code_IsLocalPlayer(player);
@@ -5633,7 +5689,7 @@ void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
         Broc::vector angles;
         mp_util_wad::entity_get_origin(&origin, player);
         mp_util_wad::entity_get_angles(&angles, player);
-        Broc::Code_PlayerSpawn(player, &origin, &angles, 1);
+        Broc::Code_PlayerSpawn(player, origin, angles, 1);
         Broc::Code_SetPlayerAlive(player, Broc::GetCvarInt("g_player_maxhealth"));
     }
 }
@@ -5698,7 +5754,7 @@ void CallbackPlayerSpawn(Broc::entity player, int team_changed) {
     }
     HashStr label;
     label.mVal = 0x86018C9u;
-    Broc::notify(&player, label);
+    Broc::notify(player, label);
     bool localPlayer = Broc::Code_IsLocalPlayer(player);
     _mp_loadout::GiveLoadout(player);
     *mp_util_wad::GetEE_spawnCount(player) =
@@ -5713,7 +5769,7 @@ void CallbackPlayerSpawn(Broc::entity player, int team_changed) {
                             __LINE__, "HealthRegenPlayerBreathing", ftor);
         HashStr label2;
         label2.mVal = 0x86018C9u;
-        Broc::notify(&player, label2);
+        Broc::notify(player, label2);
         Broc::entity lvl;
         lvl.___u0 = mp_util_wad::pLevel != NULL;
         void* ftor2 = FadeUpWhenLoaded__functor(lvl, player);
@@ -5732,7 +5788,7 @@ void CallbackPlayerRevive(Broc::entity player, Broc::entity medic) {
     mp_util_wad::entity_set_health(player, Broc::GetCvarInt("g_player_maxhealth"));
     HashStr label;
     label.mVal = 0x11524591u;
-    Broc::notify(&player, label);
+    Broc::notify(player, label);
     if (Broc::IsPlayer(medic) != 0)
         AddToPlayerStats(medic, Broc::bint(11), 1);
     Broc::string weapon("mp_revive");
@@ -5753,7 +5809,7 @@ void CallbackPlayerRevive(Broc::entity player, Broc::entity medic) {
         if (Broc::Code_GetTeamGame()) {
             HashStr label2;
             label2.mVal = 0xC9444C8D;
-            Broc::notify(&player, label2);
+            Broc::notify(player, label2);
             _mp_loadout::GiveSpecialWeapon(
                 player, (int)mp_util_wad::entity_get_playerClass(player),
                 (int)mp_util_wad::entity_get_rank(player), true);
@@ -5955,7 +6011,7 @@ void CallbackRoundOver(int condition, Broc::string team) {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr label;
     label.mVal = 0x863B4D44;
-    Broc::notify(&lvl, label);
+    Broc::notify(lvl, label);
     Broc::dyn_array<Broc::entity> local_players;
     Broc::GetLocalPlayerArray(&local_players);
     Broc::bint i(0);
@@ -6145,7 +6201,7 @@ void StartRound(Broc::bbool firstTime) {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr label;
     label.mVal = 0xAFE7EFF4;
-    Broc::notify(&lvl, label);
+    Broc::notify(lvl, label);
     Broc::Code_ForceControllerErrorMessageDown();
     mp_util_wad::pLevel->roundOver = false;
     mp_util_wad::pLevel->roundWinner = "";
@@ -6157,7 +6213,7 @@ void StartRound(Broc::bbool firstTime) {
         while ((int)i < Broc::size(players)) {
             Broc::entity p = players[(unsigned int)(int)i];
             Broc::string menu("spectate");
-            Broc::OpenMenu(&menu, Broc::GetPlayerIndex(p));
+            Broc::OpenMenu(menu, Broc::GetPlayerIndex(p));
             menu.~string();
             Broc::SetSpectateState(0, Broc::GetPlayerIndex(p));
             i = (int)i + 1;
@@ -6209,7 +6265,7 @@ void finish_starting_round(Broc::entity self, Broc::bbool firstTime) {
     lvl2.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x4DEC2E76u;
-    Broc::notify(&lvl2, n);
+    Broc::notify(lvl2, n);
     Broc::wait(0.1f);
     Broc::entity lvl3;
     lvl3.___u0 = mp_util_wad::pLevel != NULL;
@@ -6421,7 +6477,7 @@ void CheckLastManStandingEnoughPlayers(Broc::entity guy) {
         lvl.___u0 = mp_util_wad::pLevel != NULL;
         HashStr n1;
         n1.mVal = 0xA8743279;
-        Broc::notify(&lvl, n1);
+        Broc::notify(lvl, n1);
         Broc::wait(0.1f);
         Broc::entity lvl2;
         lvl2.___u0 = mp_util_wad::pLevel != NULL;
@@ -6495,7 +6551,7 @@ void LocalPlayerIntermission(Broc::entity player) {
     Broc::endon(player, e2);
     HashStr n;
     n.mVal = 0x24B5BA64u;
-    Broc::notify(&player, n);
+    Broc::notify(player, n);
     *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
     Broc::wait(0.25f);
     SpawnIntermission(player);
@@ -6513,15 +6569,15 @@ void LocalPlayerRespawn(Broc::entity player) {
     Broc::CloseMenu(menu, Broc::GetPlayerIndex(player));
     menu.~string();
     if (mp_util_wad::entity_get_nextPlayerClass(player) == -1) {
-        Broc::TakeAllWeapons(&player);
+        Broc::TakeAllWeapons(player);
         Broc::string side("side_select");
-        Broc::OpenMenu(&side, Broc::GetPlayerIndex(player));
+        Broc::OpenMenu(side, Broc::GetPlayerIndex(player));
         side.~string();
         HashStr w1;
         w1.mVal = 0xE7D05EDA;
         Broc::waittill(player, w1);
         Broc::string weapon("weapon");
-        Broc::OpenMenu(&weapon, Broc::GetPlayerIndex(player));
+        Broc::OpenMenu(weapon, Broc::GetPlayerIndex(player));
         weapon.~string();
         HashStr w2;
         w2.mVal = 0x70FACFE9u;
@@ -6687,7 +6743,7 @@ void UpdateSpectateCriticalGoingToDie(Broc::entity guy) {
 void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
     HashStr n;
     n.mVal = 0x6A7DEF26u;
-    Broc::notify(&guy, n);
+    Broc::notify(guy, n);
     Broc::wait(0.1f);
     static const unsigned int labels[] = {
         0x4C745BCAu, 0xC1E6FED9, 0x24B5BA64u, 0x86018C9u, 0x11524591u,
@@ -6717,7 +6773,7 @@ void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
             Broc::GetTime(&now);
             Broc::string menu("spectate");
             bool done = (int)respawnTime < (int)now &&
-                        Broc::Code_IsMenuOpen(&menu, playerIndex) != 0;
+                        Broc::Code_IsMenuOpen(menu, playerIndex) != 0;
             menu.~string();
             if (done)
                 break;
@@ -6726,9 +6782,9 @@ void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
             int seconds = ((int)respawnTime - (int)t + 999) / 1000;
             Broc::SetSpectateSeconds(seconds, playerIndex);
             Broc::string empty("");
-            if (Broc::Code_IsMenuOpen(&empty, playerIndex) != 0) {
+            if (Broc::Code_IsMenuOpen(empty, playerIndex) != 0) {
                 Broc::string spec("spectate");
-                Broc::OpenMenu(&spec, playerIndex);
+                Broc::OpenMenu(spec, playerIndex);
                 spec.~string();
             }
             empty.~string();
@@ -6776,7 +6832,7 @@ void DeathState(Broc::entity player, Broc::entity team_killer, Broc::bint delay,
     bool is_local_player = Broc::Code_IsLocalPlayer(player);
     if (is_local_player) {
         Broc::string menu("spectate");
-        Broc::OpenMenu(&menu, Broc::GetPlayerIndex(player));
+        Broc::OpenMenu(menu, Broc::GetPlayerIndex(player));
         menu.~string();
         Broc::SetSpectateState(0, Broc::GetPlayerIndex(player));
     }
@@ -6786,11 +6842,11 @@ void DeathState(Broc::entity player, Broc::entity team_killer, Broc::bint delay,
     if ((int)state != 2) {
         HashStr n;
         n.mVal = 0xC1E6FED9;
-        Broc::notify(&player, n);
+        Broc::notify(player, n);
         mp_util_wad::entity_set_spectatorClient(player, -1);
         mp_util_wad::entity_set_health(player, 0);
         if (Broc::IsDefined(team_killer))
-            Broc::SetSpectateTeamKill(1, &team_killer,
+            Broc::SetSpectateTeamKill(1, team_killer,
                                       Broc::GetPlayerIndex(player));
         if ((bool)reviveable) {
             if (is_local_player)
@@ -6847,7 +6903,7 @@ void RespawnPlayer(Broc::entity guy, Broc::string team) {
     Broc::vector angles;
     mp_util_wad::entity_get_angles(&angles, spawnpoint);
     mp_util_wad::entity_get_origin(&origin, spawnpoint);
-    Broc::Code_PlayerRespawn(guy, &origin, &angles, &new_team);
+    Broc::Code_PlayerRespawn(guy, origin, angles, new_team);
     new_team.~string();
     team.~string();
 }
@@ -6878,7 +6934,7 @@ void SpawnLocalSpectator(Broc::entity guy) {
         }
         HashStr n;
         n.mVal = 0xC1E6FED9;
-        Broc::notify(&guy, n);
+        Broc::notify(guy, n);
         bool firstSpectate = (bool)*mp_util_wad::GetEE_firstSpectate(guy);
         if (!firstSpectate) {
             Broc::Code_ScreenFadeToBlack(0xFAu, local_player_index);
@@ -6896,7 +6952,7 @@ void SpawnLocalSpectator(Broc::entity guy) {
                 Broc::Code_ScreenFadeUp(0xFAu, local_player_index);
             }
             Broc::string menu("spectate");
-            Broc::OpenMenu(&menu, local_player_index);
+            Broc::OpenMenu(menu, local_player_index);
             menu.~string();
             void* ftor = UpdateSpectateSpawn__functor(guy);
             Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
@@ -6925,7 +6981,7 @@ void SpawnSpectator(Broc::entity guy) {
             mp_util_wad::entity_get_angles(&angles, spawnpoint);
         }
     }
-    Broc::Code_PlayerSpawn(guy, &origin, &angles, 0);
+    Broc::Code_PlayerSpawn(guy, origin, angles, 0);
 }
 
 // SpawnIntermission - ea: 0x949200
@@ -6933,7 +6989,7 @@ void SpawnIntermission(Broc::entity player) {
     Broc::Code_DebugOut("*COMMON* SpawnIntermission\n");
     HashStr n;
     n.mVal = 0x24B5BA64u;
-    Broc::notify(&player, n);
+    Broc::notify(player, n);
     mp_util_wad::entity_set_playerState(player, 2);
     mp_util_wad::entity_set_spectatorClient(player, -1);
     mp_util_wad::entity_set_health(player, 0);
@@ -6958,7 +7014,7 @@ void SpawnIntermission(Broc::entity player) {
         angles = Broc::vector(0.0f, 0.0f, 0.0f);
         stopPhysics = 0;
     }
-    Broc::Code_PlayerSpawn(player, &origin, &angles, stopPhysics);
+    Broc::Code_PlayerSpawn(player, origin, angles, stopPhysics);
     if (Broc::Code_IsLocalPlayer(player)) {
         Broc::entity lvl;
         lvl.___u0 = mp_util_wad::pLevel != NULL;
@@ -6966,7 +7022,7 @@ void SpawnIntermission(Broc::entity player) {
         Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                             __LINE__, "FadeUpWhenLoaded", ftor);
         Broc::string menu("spectate");
-        Broc::OpenMenu(&menu, Broc::GetPlayerIndex(player));
+        Broc::OpenMenu(menu, Broc::GetPlayerIndex(player));
         menu.~string();
         Broc::SetSpectateState(0, Broc::GetPlayerIndex(player));
     }
@@ -7002,7 +7058,7 @@ Broc::entity* GetBestSpectateSpawn(Broc::entity* result, Broc::entity* self) {
 // HealthRegenPlayerBreathing - ea: 0x94B6F0
 void HealthRegenPlayerBreathing(Broc::entity ent, Broc::bint healthCap) {
     Broc::endon(ent, "death");
-    Broc::notify(&ent, "end_HealthRegenPlayerBreathing");
+    Broc::notify(ent, "end_HealthRegenPlayerBreathing");
     Broc::wait(2.0f);
     Broc::endon(ent, "end_HealthRegenPlayerBreathing");
     for (;;) {
@@ -7029,18 +7085,18 @@ void AddArtilleryObjective(Broc::entity self, Broc::vector position) {
         ((int)mp_util_wad::pLevel->ArtilleryObjectiveIndex + 1) % 4;
     Broc::string pszString("artillery");
     Broc::string state("i_incoming_artillery_c");
-    Broc::ObjectiveAdd((int)index, &state, &pszString, position, "1");
+    ObjectiveAdd((int)index, state, pszString, position, "1");
     state.~string();
     pszString.~string();
     Broc::wait(15.0f);
-    Broc::ObjectiveDelete((int)index, -1);
+    ObjectiveDelete((int)index, -1);
 }
 
 // HasValidWeaponInSlot - ea: 0x94BE20
 Broc::bbool* HasValidWeaponInSlot(Broc::bbool* result, Broc::entity player,
                                   Broc::string slot) {
-    int ammo = Broc::GetWeaponSlotAmmo(player, &slot);
-    int clip = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    int ammo = Broc::GetWeaponSlotAmmo(player, slot);
+    int clip = Broc::GetWeaponSlotClipAmmo(player, slot);
     *result = Broc::bbool(ammo != 0 || clip != 0);
     slot.~string();
     return result;
@@ -7059,8 +7115,8 @@ void SelectFirstAvailableWeapon(Broc::entity player) {
             Broc::bbool valid;
             HasValidWeaponInSlot(&valid, player, *slots[i]);
             if ((bool)valid) {
-                Broc::GetWeaponSlotWeapon(player, slots[i], &weapon);
-                Broc::SwitchToWeapon(&player, &weapon);
+                Broc::GetWeaponSlotWeapon(player, *slots[i], weapon);
+                Broc::SwitchToWeapon(player, weapon);
                 weapon.~string();
                 return;
             }
@@ -7111,7 +7167,7 @@ void HostHasMigrated(Broc::entity self) {
     if ((bool)mp_util_wad::pLevel->roundOver) {
         Broc::string winner;
         GetWinningTeam(&winner);
-        Broc::Code_RoundOver(0, &winner);
+        Broc::Code_RoundOver(0, winner);
         winner.~string();
     } else {
         if ((float)timePassed >=
@@ -8198,7 +8254,7 @@ const char* GetAxisWeapon(Broc::string team, Broc::bint playerClass) {
 
 // GiveWeapons - ea: 0x95E270
 void GiveWeapons(Broc::entity player, Broc::bint playerClass, Broc::bint rank) {
-    Broc::TakeAllWeapons(&player);
+    Broc::TakeAllWeapons(player);
     if ((int)playerClass > 6)
         playerClass = 2;
     Broc::string weapon;
@@ -8232,7 +8288,7 @@ void GiveWeapons(Broc::entity player, Broc::bint playerClass, Broc::bint rank) {
         }
     }
     GiveAmmo(player, playerClass, rank, Broc::bbool(true));
-    Broc::SwitchToWeapon(&player, &weapon);
+    Broc::SwitchToWeapon(player, weapon);
     pistol.~string();
     weapon.~string();
 }
@@ -8343,7 +8399,7 @@ void GiveSpecialWeapon(Broc::entity player, Broc::bint playerClass,
         }
         HashStr n;
         n.mVal = 0xC9444C8D;
-        Broc::notify(&player, n);
+        Broc::notify(player, n);
         switch ((int)playerClass) {
         case 0:
             if (!isRespawn)
@@ -8575,7 +8631,7 @@ void NotifyWhenTimerExpires(Broc::entity player, Broc::bint time,
     e3.mVal = 0x74AA0A6u;
     Broc::endon(player, e3);
     Broc::wait((float)(int)time);
-    Broc::notify(&player, notifyString);
+    Broc::notify(player, notifyString);
 }
 
 // local_player_joined - ea: 0x960E10
@@ -8621,7 +8677,7 @@ void SpecialClassAudio(Broc::entity player) {
 // IsFullWeaponAmmo - ea: 0x961AB0
 Broc::bbool* IsFullWeaponAmmo(Broc::bbool* result, Broc::entity player,
                               Broc::string slot) {
-    int slotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int slotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
     int maxSlotAmmo = Broc::GetMaxAmmo(&player, &slot);
     *result = Broc::bbool(slotAmmo >= maxSlotAmmo);
     slot.~string();
@@ -8645,8 +8701,8 @@ Broc::bfloat* GetStartingWeaponAmmoScale(Broc::bfloat* result,
         clipCount = 1;
     }
     Broc::bint amount((int)clipSize * (int)clipCount);
-    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
-    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
     float scale = (float)(originalSlotAmmo + originalSlotClipAmmo) /
                   (float)(int)amount;
     *result = Broc::bfloat(scale);
@@ -8669,8 +8725,8 @@ void GiveWeaponAmmo(Broc::entity player, Broc::string slot,
         clipCount = 1;
     }
     Broc::bint amount((int)clipSize * (int)clipCount);
-    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
-    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
     if (originalSlotAmmo + originalSlotClipAmmo > (int)amount) {
         amount = originalSlotAmmo + originalSlotClipAmmo;
     } else if (onlyOneExtra) {
@@ -8704,8 +8760,8 @@ void GiveWeaponAmmoScale(Broc::entity player, Broc::string slot,
         clipCount = 1;
     }
     Broc::bint amount((int)(scale * (float)(int)clipSize) * (int)clipCount);
-    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
-    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
     Broc::SetWeaponSlotAmmo(&player, &slot, 0);
     if ((bool)fillClips) {
         Broc::SetWeaponSlotClipAmmo(&player, &slot, 0);
@@ -8741,8 +8797,8 @@ void GiveWeaponAmmoPack(Broc::entity player, Broc::string slot,
             clipCount = 1;
     }
     Broc::bint amount((int)clipSize * (int)clipCount);
-    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
-    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
     Broc::bint currentAmmo(originalSlotAmmo + originalSlotClipAmmo);
     Broc::bint maxAmmo((int)clipSize * (int)clipCount);
     if ((int)currentAmmo > (int)maxAmmo)
@@ -9071,7 +9127,7 @@ void ArtilleryDispenser(Broc::entity player) {
             wait.mVal = 0x617A8CF6u;
             Broc::waittill(player, wait);
             Broc::string sSlot("special");
-    Broc::bint ammo(Broc::GetWeaponSlotAmmo(player, &sSlot));
+    Broc::bint ammo(Broc::GetWeaponSlotAmmo(player, sSlot));
             sSlot.~string();
             if ((int)ammo == 0) {
                 Broc::string script("Scout_Artillery_Ready");
@@ -9267,7 +9323,7 @@ void main(Broc::entity self) {
     Broc::string state("i_flag_axis_c");
     Broc::vector axisOrigin;
     mp_util_wad::entity_get_origin(&axisOrigin, mp_util_wad::pLevel->axis_flag_ent);
-    Broc::ObjectiveAdd(0, &state, &pszString, axisOrigin,
+    ObjectiveAdd(0, state, pszString, axisOrigin,
                        (float)lCTFObjectiveDontShow, -1);
     state.~string();
     pszString.~string();
@@ -9275,7 +9331,7 @@ void main(Broc::entity self) {
     Broc::string state2("i_flag_allied_c");
     Broc::vector alliesOrigin;
     mp_util_wad::entity_get_origin(&alliesOrigin, mp_util_wad::pLevel->allies_flag_ent);
-    Broc::ObjectiveAdd(1, &state2, &pszString2, alliesOrigin,
+    ObjectiveAdd(1, state2, pszString2, alliesOrigin,
                        (float)lCTFObjectiveDontShow, -1);
     state2.~string();
     pszString2.~string();
@@ -9390,7 +9446,7 @@ void CallbackNextRound() {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x6FA23667u;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     SetupRound();
     _mp_common::CallbackNextRound();
 }
@@ -9490,8 +9546,8 @@ void TeamObjectiveUpdate(Broc::entity guy, int iTeamFlag) {
     else
         ourTeam = Broc::bbool(iTeamFlag == 2);
     team.~string();
-    Broc::ObjectiveDelete((int)iObjective, Broc::GetPlayerIndex(guy));
-    Broc::ObjectiveDelete((int)iObjectiveCarrier, Broc::GetPlayerIndex(guy));
+    ObjectiveDelete((int)iObjective, Broc::GetPlayerIndex(guy));
+    ObjectiveDelete((int)iObjectiveCarrier, Broc::GetPlayerIndex(guy));
     if (*mp_util_wad::GetEE_holder(flag) == Broc::gEntityUndef) {
         Broc::string pszString("flag");
         Broc::vector origin;
@@ -9499,23 +9555,20 @@ void TeamObjectiveUpdate(Broc::entity guy, int iTeamFlag) {
         if ((bool)ourTeam && (bool)atBase &&
             mp_util_wad::entity_get_ctf_has_flag(guy) != 0) {
             Broc::string state("i_objective_c");
-            Broc::ObjectiveAdd((int)iObjective, &state, &pszString, origin,
+            ObjectiveAdd((int)iObjective, state, pszString, origin,
                                (float)lCTFObjectiveHeightFlag,
                                Broc::GetPlayerIndex(guy));
             state.~string();
         } else if ((bool)atBase) {
-            Broc::ObjectiveAdd((int)iObjective, &sObjectiveStateThisTeam,
-                               &pszString, origin,
+            ObjectiveAdd((int)iObjective, sObjectiveStateThisTeam, pszString, origin,
                                (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
         } else {
             Broc::vector goal;
             mp_util_wad::entity_get_origin(&goal, *mp_util_wad::GetEE_goal(flag));
-            Broc::ObjectiveAdd((int)iObjective, &sObjectiveStateNeutralThisTeam,
-                               &pszString, goal, (float)lCTFObjectiveDontShow,
+            ObjectiveAdd((int)iObjective, sObjectiveStateNeutralThisTeam, pszString, goal, (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
-            Broc::ObjectiveAdd((int)iObjectiveCarrier, &sObjectiveStateThisTeam,
-                               &pszString, origin, (float)lCTFObjectiveDontShow,
+            ObjectiveAdd((int)iObjectiveCarrier, sObjectiveStateThisTeam, pszString, origin, (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
         }
         pszString.~string();
@@ -9523,8 +9576,7 @@ void TeamObjectiveUpdate(Broc::entity guy, int iTeamFlag) {
         Broc::string pszString("flag");
         Broc::vector goal;
         mp_util_wad::entity_get_origin(&goal, *mp_util_wad::GetEE_goal(flag));
-        Broc::ObjectiveAdd((int)iObjective, &sObjectiveStateNeutralThisTeam,
-                           &pszString, goal, (float)lCTFObjectiveDontShow,
+        ObjectiveAdd((int)iObjective, sObjectiveStateNeutralThisTeam, pszString, goal, (float)lCTFObjectiveDontShow,
                            Broc::GetPlayerIndex(guy));
         Broc::string hteam;
         Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
@@ -9532,8 +9584,7 @@ void TeamObjectiveUpdate(Broc::entity guy, int iTeamFlag) {
         if (hteam == team && holder != guy) {
             Broc::vector hpos;
             mp_util_wad::entity_get_origin(&hpos, holder);
-            Broc::ObjectiveAdd((int)iObjectiveCarrier, &sObjectiveStateThisTeam,
-                               &pszString, hpos, (float)lCTFObjectiveDontShow,
+            ObjectiveAdd((int)iObjectiveCarrier, sObjectiveStateThisTeam, pszString, hpos, (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
         }
         hteam.~string();
@@ -9562,7 +9613,7 @@ void ObjectiveUpdater(Broc::entity guy) {
             Broc::string state("i_flag_axis_c");
             Broc::vector pos;
             mp_util_wad::entity_get_origin(&pos, mp_util_wad::pLevel->axis_flag_ent);
-            Broc::ObjectiveAdd(0, &state, &pszString, pos,
+            ObjectiveAdd(0, state, pszString, pos,
                                (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
             state.~string();
@@ -9571,7 +9622,7 @@ void ObjectiveUpdater(Broc::entity guy) {
             Broc::string state2("i_flag_allied_c");
             Broc::vector pos2;
             mp_util_wad::entity_get_origin(&pos2, mp_util_wad::pLevel->allies_flag_ent);
-            Broc::ObjectiveAdd(1, &state2, &pszString2, pos2,
+            ObjectiveAdd(1, state2, pszString2, pos2,
                                (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
             state2.~string();
@@ -9814,7 +9865,7 @@ void UnlinkFlag(Broc::entity flag) {
 void DestroyIcon(Broc::entity toucher) {
     HashStr n;
     n.mVal = 0xA738D71C;
-    Broc::notify(&toucher, n);
+    Broc::notify(toucher, n);
     mp_util_wad::pLevel->showFlagHint = 0;
 }
 
@@ -9822,7 +9873,7 @@ void DestroyIcon(Broc::entity toucher) {
 void WaitForNoTouchFlag(Broc::entity toucher) {
     HashStr n;
     n.mVal = 0xA738D71C;
-    Broc::notify(&toucher, n);
+    Broc::notify(toucher, n);
     Broc::wait(0.5f);
     Broc::endon(toucher, n);
     for (;;) {
@@ -9841,7 +9892,7 @@ void WaitForNoTouchFlag(Broc::entity toucher) {
 void WaitForFlagTimeOut(Broc::entity flag) {
     HashStr n;
     n.mVal = 0x4F2B87DFu;
-    Broc::notify(&flag, n);
+    Broc::notify(flag, n);
     Broc::wait(0.1f);
     Broc::endon(flag, n);
     HashStr e1;
@@ -10205,7 +10256,7 @@ void CallbackNextRound() {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x6FA23667u;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     SetupRound();
     _mp_common::CallbackNextRound();
 }
@@ -10445,7 +10496,7 @@ void WaitThenPickFlagToLaunch(Broc::entity self, Broc::bfloat wait_time,
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0xEEBE2988;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     Broc::wait(0.1f);
     Broc::endon(lvl, n);
     Broc::wait((float)wait_time);
@@ -10470,7 +10521,7 @@ void LaunchFlag(Broc::bint flag, Broc::vector position, Broc::vector angles,
                 Broc::vector velocity) {
     ResetFlags();
     mp_util_wad::pLevel->current_flag = (int)flag;
-    Broc::ObjectiveRing(2, -1);
+    ObjectiveRing(2, -1);
     Broc::entity f = mp_util_wad::pLevel->scfFlags[(unsigned int)(int)flag];
     if (Broc::Length(&velocity) >= 0.1f)
         LaunchFlagAndTrigger(f, position, angles, velocity);
@@ -10569,7 +10620,7 @@ void UnlinkFlag(Broc::entity flag) {
 void DestroyIcon(Broc::entity toucher) {
     HashStr n;
     n.mVal = 0xA738D71C;
-    Broc::notify(&toucher, n);
+    Broc::notify(toucher, n);
     mp_util_wad::pLevel->showFlagHint = 0;
 }
 
@@ -10577,7 +10628,7 @@ void DestroyIcon(Broc::entity toucher) {
 void WaitForNoTouchFlag(Broc::entity toucher) {
     HashStr n;
     n.mVal = 0xA738D71C;
-    Broc::notify(&toucher, n);
+    Broc::notify(toucher, n);
     Broc::wait(0.5f);
     Broc::endon(toucher, n);
     for (;;) {
@@ -10596,7 +10647,7 @@ void WaitForNoTouchFlag(Broc::entity toucher) {
 void WaitForFlagTimeOut(Broc::entity flag) {
     HashStr n;
     n.mVal = 0x4F2B87DFu;
-    Broc::notify(&flag, n);
+    Broc::notify(flag, n);
     Broc::wait(0.1f);
     Broc::endon(flag, n);
     HashStr e1;
@@ -10774,7 +10825,7 @@ void ObjectiveUpdater(Broc::entity guy) {
         Broc::string state("i_flag_axis_c");
         Broc::vector pos;
         mp_util_wad::entity_get_origin(&pos, mp_util_wad::pLevel->base_axis);
-        Broc::ObjectiveAdd(1, &state, &pszString, pos,
+        ObjectiveAdd(1, state, pszString, pos,
                            (float)lSCFObjectiveDontShow,
                            Broc::GetPlayerIndex(guy));
         state.~string();
@@ -10783,12 +10834,12 @@ void ObjectiveUpdater(Broc::entity guy) {
         Broc::string state2("i_flag_allied_c");
         Broc::vector pos2;
         mp_util_wad::entity_get_origin(&pos2, mp_util_wad::pLevel->base_allies);
-        Broc::ObjectiveAdd(0, &state2, &pszString2, pos2,
+        ObjectiveAdd(0, state2, pszString2, pos2,
                            (float)lSCFObjectiveDontShow,
                            Broc::GetPlayerIndex(guy));
         state2.~string();
         pszString2.~string();
-        Broc::ObjectiveDelete(2, Broc::GetPlayerIndex(guy));
+        ObjectiveDelete(2, Broc::GetPlayerIndex(guy));
     }
 }
 }
@@ -11098,9 +11149,9 @@ void ClearGame() {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x12CEF01u;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     mp_util_wad::pLevel->hq_stage = 0;
-    Broc::ObjectiveDelete(0, -1);
+    ObjectiveDelete(0, -1);
     RemoveRadioModel(lvl);
     HashStr trigHash;
     Broc::string_hash(&trigHash, "_mp_hq::TriggerRadio");
@@ -11129,7 +11180,7 @@ void ResetGame(Broc::entity self) {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x9DD2E1FD;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     Broc::wait(3.0f);
     if (Broc::IsLocalHost() && !(bool)mp_util_wad::pLevel->roundOver) {
         Broc::wait(1.0f);
@@ -11328,7 +11379,7 @@ void CallbackNextRound() {
         lvl.___u0 = mp_util_wad::pLevel != NULL;
         HashStr n;
         n.mVal = 0x863B4D44;
-        Broc::notify(&lvl, n);
+        Broc::notify(lvl, n);
         mp_util_wad::pLevel->roundOver = true;
         ClearGame();
     }
@@ -11336,7 +11387,7 @@ void CallbackNextRound() {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n2;
     n2.mVal = 0x6FA23667u;
-    Broc::notify(&lvl, n2);
+    Broc::notify(lvl, n2);
     _mp_common::CallbackNextRound();
     if (Broc::IsLocalHost())
         Host_ResetStage1();
@@ -11349,7 +11400,7 @@ void CallbackRoundOver(int condition, Broc::string team) {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x863B4D44;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     mp_util_wad::pLevel->roundOver = true;
     ClearGame();
     _mp_common::CallbackRoundOver(condition, team);
@@ -11784,7 +11835,7 @@ void CallbackNextRound() {
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
     n.mVal = 0x6FA23667u;
-    Broc::notify(&lvl, n);
+    Broc::notify(lvl, n);
     SetupRound();
     _mp_common::CallbackNextRound();
 }
