@@ -29,6 +29,8 @@ extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAM
 extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
 extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
 class AnimBroRef;  // anim.o bro_anim ref (opaque; class tag V per binary)
+struct ScriptEventHandler;
+struct QuickTaskDeactivation;
 
 // mp_level entry (mp_level.xboxd; defined in broc/mp_level.cpp)
 namespace mp_level {
@@ -771,6 +773,16 @@ template reserved_dlist<AeThread>::reserved_dlist();
 template bool reserved_dlist<Task>::empty() const;
 template reserved_dlist<Task>::dlist_node::dlist_node(
     reserved_dlist<Task>::dlist_node*, reserved_dlist<Task>::dlist_node*);
+template reserved_dlist<ScriptEventHandler>::dlist_node::dlist_node(
+    reserved_dlist<ScriptEventHandler>::dlist_node*,
+    reserved_dlist<ScriptEventHandler>::dlist_node*);
+template bool reserved_dlist<QuickTaskDeactivation>::empty() const;
+template reserved_dlist<QuickTaskDeactivation>::dlist_node::dlist_node(
+    reserved_dlist<QuickTaskDeactivation>::dlist_node*,
+    reserved_dlist<QuickTaskDeactivation>::dlist_node*);
+template reserved_dlist<TaskHandler>::dlist_node::dlist_node(
+    reserved_dlist<TaskHandler>::dlist_node*,
+    reserved_dlist<TaskHandler>::dlist_node*);
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
