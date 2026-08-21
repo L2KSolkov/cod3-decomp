@@ -574,7 +574,7 @@ index	status	map_line
 573	VERIFIED	0002:00556e90 ?IsLocalHost@Broc@@YA_NXZ 00D46390 f i mp_util_wad.o
 574	FIXED	0002:00556eb0 ?Host_ResetStage1@_mp_hq@@YAXXZ 00D463B0 f mp_util_wad.o	FIXED: IDA 0x00956EB0 copies pLevel->_base.entity (or null) into Host_FlowControl__functor
 575	PORTED	0002:00556f40 ?Host_FlowControl__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D46440 f i mp_util_wad.o
-576	VERIFIED	0002:00556fe0 ?Host_FlowControl@_mp_hq@@YAXVentity@Broc@@@Z 00D464E0 f mp_util_wad.o
+576	FIXED	0002:00556fe0 ?Host_FlowControl@_mp_hq@@YAXVentity@Broc@@@Z 00D464E0 f mp_util_wad.o	FIXED: IDA 0x00956FE0 uses pLevel->_base.entity (or null) for both endon paths
 577	PORTED	0002:005573e0 ?AddPoints@_mp_hq@@YAXUbint@@0@Z 00D468E0 f mp_util_wad.o
 578	PORTED	0002:005574d0 ?NoRespawnForDefenders@_mp_hq@@YAXUbbool@@@Z 00D469D0 f mp_util_wad.o
 579	PORTED	0002:00557570 ?HQ_Destroyed@_mp_hq@@YAXXZ 00D46A70 f mp_util_wad.o
