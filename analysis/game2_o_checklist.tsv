@@ -722,8 +722,8 @@ index	status	map_line
 721	PORTED	0002:00118e90 ?empty@?$reserved_dlist@VTask@@@@QBE_NXZ 00908390 f i game2.o  PORTED: IDA-backed sentinel comparison
 722	PORTED	0002:00118eb0 ??0dlist_node@?$reserved_dlist@VTask@@@@QAE@PAU01@0@Z 009083B0 f i game2.o  PORTED: IDA-backed next/previous pointer initialization
 723	SKIPPED	0002:00118ed0 ?size@?$InplaceVector@VBspCell@@@@QBEIXZ 009083D0 f i game2.o  SKIPPED: inline template/container helper; supplied by its template definition
-724	PORTED	0002:00118ee0 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009083E0 f i game2.o
-725	PORTED	0002:00118f00 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAE?AV01@H@Z 00908400 f i game2.o
+724	PORTED	0002:00118ee0 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009083E0 f i game2.o  PORTED: IDA-backed prefix increment advances node and cached next
+725	PORTED	0002:00118f00 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAE?AV01@H@Z 00908400 f i game2.o  PORTED: IDA-backed postfix copy then increment
 726	PORTED	0002:00118f30 ??0dlist_node@?$reserved_dlist@VScriptEventHandler@@@@QAE@PAU01@0@Z 00908430 f i game2.o
 727	PORTED	0002:00118f50 ?empty@?$reserved_dlist@VQuickTaskDeactivation@@@@QBE_NXZ 00908450 f i game2.o
 728	PORTED	0002:00118f70 ??0dlist_node@?$reserved_dlist@VQuickTaskDeactivation@@@@QAE@PAU01@0@Z 00908470 f i game2.o
