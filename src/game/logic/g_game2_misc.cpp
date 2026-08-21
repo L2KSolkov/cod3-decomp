@@ -1197,6 +1197,11 @@ struct ButtonEntry {
 };
 static_assert(sizeof(ButtonEntry) == 0xC, "ButtonEntry size mismatch");
 
+template ButtonEntry&
+ae_sized_array<ButtonEntry, 16>::operator[](unsigned int);
+template ae_sized_array<ButtonEntry, 16>&
+ae_sized_array<ae_sized_array<ButtonEntry, 16>, 1>::operator[](int);
+
 void ButtonEntry::Init()
 {
     mKeyInfoIndex = (unsigned char)-1;
