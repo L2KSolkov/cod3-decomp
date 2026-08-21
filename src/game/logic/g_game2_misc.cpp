@@ -2821,23 +2821,19 @@ Entity* _Return_MF_UnderCrossHair()
 // ============================================================================
 // SmokeGrenadeMgr::AddSmokeGrenade - ea: 0x4FFBD0
 // ============================================================================
-extern void ae_vector_push_back_smoke(DroneHandleVec* self, const SmokeGrenadeInfo* elem);
-void ae_vector_push_back_smoke(DroneHandleVec* self,
-                               const SmokeGrenadeInfo* elem)
-{
-    (void)self; (void)elem;
-}
-
 void SmokeGrenadeMgr::AddSmokeGrenade(const SmokeGrenadeInfo* smokeGrenInfo)
 {
     if (smokeGrenInfo->mEffect != nullptr)
     {
-        ae_vector_push_back_smoke(
-            (DroneHandleVec*)&mSmokeGrenadeInfoList,
-            smokeGrenInfo);
+        reinterpret_cast<ae_vector<SmokeGrenadeInfo>*>(
+            &mSmokeGrenadeInfoList)->push_back(*smokeGrenInfo);
     }
     else
     {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SmokeGrenadeMgr.cpp";
+        AeAssert::gCurrentLine = 18;
+        AeAssert::gCurrentExpr = nullptr;
         if (!AeAssert::IsIgnored()
             && AeAssert::Warning("Smoke Grenade Info with null effect"))
             __debugbreak();
