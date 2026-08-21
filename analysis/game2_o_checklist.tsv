@@ -644,21 +644,21 @@ index	status	map_line
 643	PORTED	0002:00118220 ?GetDefaultPose@nalBaseSkeleton@@QBEABVnalBasePose@@XZ 00907720 f i game2.o  PORTED: existing source matches IDA vtable thunk
 644	PORTED	0002:00118230 ??0nalVirtual@@QAE@XZ 00907730 f i game2.o  PORTED: IDA-backed virtual-base constructor
 645	VERIFIED	0002:00118240 ?GetSkeleton@nalBasePose@@QBEPBVnalBaseSkeleton@@XZ 00907740 f i game2.o
-646	PORTED	0002:00118250 ??0?$nalAnimClass@VnalAnyPose@@@@QAE@XZ 00907750 f i game2.o
-647	PORTED	0002:00118280 ?GetName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00907780 f i game2.o
+646	PORTED	0002:00118250 ??0?$nalAnimClass@VnalAnyPose@@@@QAE@XZ 00907750 f i game2.o  PORTED: existing tlFixedString/default-vtable initialization matches IDA
+647	PORTED	0002:00118280 ?GetName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ 00907780 f i game2.o  PORTED: existing Name member accessor matches IDA
 648	VERIFIED	0002:00118290 ?Process@?$nalAnimClass@VnalAnyPose@@@@UAEXXZ 00907790 f i game2.o
 649	VERIFIED	0002:001182a0 ?Release@?$nalAnimClass@VnalAnyPose@@@@UAEXXZ 009077A0 f i game2.o
-650	PORTED	0002:001182b0 ?IsLooping@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ 009077B0 f i game2.o
-651	PORTED	0002:001182c0 ?CheckVersion@?$nalAnimClass@VnalAnyPose@@@@UBE_NXZ 009077C0 f i game2.o
+650	PORTED	0002:001182b0 ?IsLooping@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ 009077B0 f i game2.o  PORTED: existing Flags bit-0 accessor matches IDA
+651	PORTED	0002:001182c0 ?CheckVersion@?$nalAnimClass@VnalAnyPose@@@@UBE_NXZ 009077C0 f i game2.o  PORTED: existing false-returning version stub matches IDA
 652	VERIFIED	0002:001182d0 ??2nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z 009077D0 f i game2.o
 653	VERIFIED	0002:001182f0 ??3nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@SAXPAX@Z 009077F0 f i game2.o
 654	VERIFIED	0002:00118300 ?GetAnim@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEPAV2@XZ 00907800 f i game2.o
 655	VERIFIED	0002:00118310 ?GetSkeleton@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ 00907810 f i game2.o
-656	PORTED	0002:00118320 ?GetInverseDuration@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ 00907820 f i game2.o
+656	PORTED	0002:00118320 ?GetInverseDuration@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ 00907820 f i game2.o  PORTED: existing float load with double return matches IDA
 657	VERIFIED	0002:00118330 ??1?$nalAnimClass@VnalAnyPose@@@@UAE@XZ 00907830 f i game2.o
 658	PORTED	0002:00118340 ?GetDefaultPose@nalGenericSkeleton@nalGeneric@@QBEABVnalGenericPose@2@XZ 00907840 f i game2.o
-659	PORTED	0002:00118350 ??0nalGenericBoneHandle@nalGeneric@@QAE@XZ 00907850 f i game2.o
-660	PORTED	0002:00118360 ?IsValid@nalGenericBoneHandle@nalGeneric@@QBE_NXZ 00907860 f i game2.o
+659	PORTED	0002:00118350 ??0nalGenericBoneHandle@nalGeneric@@QAE@XZ 00907850 f i game2.o  PORTED: existing Skeleton-null constructor matches IDA
+660	PORTED	0002:00118360 ?IsValid@nalGenericBoneHandle@nalGeneric@@QBE_NXZ 00907860 f i game2.o  PORTED: existing non-null Skeleton test matches IDA
 661	PORTED	0002:00118370 ??0nalGenericBoneHandle@nalGeneric@@IAE@PBVnalGenericSkeleton@1@H@Z 00907870 f i game2.o
 662	PORTED	0002:00118390 ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z 00907890 f i game2.o
 663	VERIFIED	0002:00118420 ?GetFrameCount@nalGenericAnim@nalGeneric@@QBEHXZ 00907920 f i game2.o
