@@ -20983,7 +20983,7 @@ index	status	map_line
 20982	SKIPPED	0002:00467a20 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F20 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20983	SKIPPED	0002:00467a50 ??_GIterator@?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20984	SKIPPED	0002:00467a50 ??_EIterator@?$tlResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C56F50 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-20985	PORTED	0002:00467a80 ?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00C56F80 f i nal_init.o
+20985	VERIFIED	0002:00467a80 ?Add@?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAVnalAnimFile@@PAV2@@Z 00C56F80 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Add specialization per IDA
 20986	VERIFIED	0002:00467a90 ?Add@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEPAVnalAnimFile@@PAV2@@Z 00C56F90 f i nal_init.o
 20987	VERIFIED	0002:00467bb0 ?Init@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C570B0 f i nal_init.o
 20988	VERIFIED	0002:00467bf0 ??0?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@QAE@XZ 00C570F0 f i nal_init.o	VERIFIED: vtable install and inline skip-list random/head initialization match IDA
@@ -20999,7 +20999,7 @@ index	status	map_line
 20998	SKIPPED	0002:00467d90 ??_ESkipListIterator@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C57290 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20999	SKIPPED	0002:00467dc0 ??_EIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C572C0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21000	SKIPPED	0002:00467dc0 ??_GIterator@?$tlResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAXI@Z 00C572C0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-21001	PORTED	0002:00467df0 ?Add@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00C572F0 f i nal_init.o
+21001	VERIFIED	0002:00467df0 ?Add@?$tlInstanceBankResourceDirectory@V?$nalAnimClass@VnalAnyPose@@@@@@UAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00C572F0 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Add specialization per IDA
 21002	VERIFIED	0002:00467e00 ?Add@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEPAV?$nalAnimClass@VnalAnyPose@@@@PAV2@@Z 00C57300 f i nal_init.o
 21003	VERIFIED	0002:00467f20 ?Init@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ 00C57420 f i nal_init.o
 21004	VERIFIED	0002:00467f60 ??0?$tlInstanceBankResourceDirectory@VnalSceneAnim@@@@QAE@XZ 00C57460 f i nal_init.o	VERIFIED: vtable install and inline skip-list random/head initialization match IDA
@@ -21031,7 +21031,7 @@ index	status	map_line
 21030	SKIPPED	0002:00468470 ??_GSkipListIterator@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C57970 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21031	SKIPPED	0002:004684a0 ??_GIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C579A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21032	SKIPPED	0002:004684a0 ??_EIterator@?$tlResourceDirectory@VnalBaseSkeleton@@@@UAEPAXI@Z 00C579A0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-21033	PORTED	0002:004684d0 ?Add@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@PAV2@@Z 00C579D0 f i nal_init.o
+21033	VERIFIED	0002:004684d0 ?Add@?$tlInstanceBankResourceDirectory@VnalBaseSkeleton@@@@UAEPAVnalBaseSkeleton@@PAV2@@Z 00C579D0 f i nal_init.o	VERIFIED: delegates to the matching tlSkipList::Add specialization per IDA
 21034	VERIFIED	0002:004684e0 ?Add@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEPAVnalBaseSkeleton@@PAV2@@Z 00C579E0 f i nal_init.o
 21035	VERIFIED	0002:00468600 ?Init@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ 00C57B00 f i nal_init.o
 21036	SKIPPED	0002:00468640 ??_G?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@UAEPAXI@Z 00C57B40 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
