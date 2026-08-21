@@ -1463,6 +1463,11 @@ OptionsGameplayMenu* OptionsGameplayMenu::Me()
     return (OptionsGameplayMenu*)g_femanager.fems->menus[19];
 }
 
+// ea: 0x005B7920
+void OptionsGameplayMenu::Init()
+{
+}
+
 // ea: 0x005B7930
 void OptionsGameplayMenu::OnLeft(int c)
 {
@@ -1817,6 +1822,11 @@ OptionsControlsMenu::~OptionsControlsMenu()
 OptionsControlsMenu* OptionsControlsMenu::Me()
 {
     return (OptionsControlsMenu*)g_femanager.fems->menus[20];
+}
+
+// ea: 0x005B7A90
+void OptionsControlsMenu::Init()
+{
 }
 
 // ea: 0x005B7AA0
@@ -2263,6 +2273,11 @@ OptionsSoundMenu* OptionsSoundMenu::Me()
     return (OptionsSoundMenu*)g_femanager.fems->menus[22];
 }
 
+// ea: 0x005B7AC0
+void OptionsSoundMenu::Init()
+{
+}
+
 // ea: 0x005B7AD0
 void OptionsSoundMenu::OnLeft(int c)
 {
@@ -2601,6 +2616,23 @@ OptionsStickMenu* OptionsStickMenu::Me()
     return (OptionsStickMenu*)g_femanager.fems->menus[24];
 }
 
+// ea: 0x005B7AF0
+void OptionsStickMenu::Init()
+{
+}
+
+// ea: 0x005B7B00
+void OptionsStickMenu::OnUp(int c)
+{
+    (void)c;
+}
+
+// ea: 0x005B7B10
+void OptionsStickMenu::OnDown(int c)
+{
+    (void)c;
+}
+
 // ea: 0x005B7B20
 void OptionsStickMenu::OnLeft(int c)
 {
@@ -2918,6 +2950,23 @@ OptionsButtonMenu::~OptionsButtonMenu()
 OptionsButtonMenu* OptionsButtonMenu::Me()
 {
     return (OptionsButtonMenu*)g_femanager.fems->menus[25];
+}
+
+// ea: 0x005B7B40
+void OptionsButtonMenu::Init()
+{
+}
+
+// ea: 0x005B7B50
+void OptionsButtonMenu::OnUp(int c)
+{
+    (void)c;
+}
+
+// ea: 0x005B7B60
+void OptionsButtonMenu::OnDown(int c)
+{
+    (void)c;
 }
 
 // ea: 0x005B7B70

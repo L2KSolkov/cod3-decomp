@@ -1831,6 +1831,8 @@ public:
     int    mClient;         // +0x74
 
     DialogMenu(FEMenuSystem* s);        // 0x592340
+    virtual void OnLeft(int c);          // 0x5B7890 (empty)
+    virtual void OnRight(int c);         // 0x5B78A0 (empty)
     virtual void SetPanelFile(PanelFile* pf); // 0x5B78B0
     virtual void OnActivate();          // 0x572BE0
     virtual void Draw();                // 0x572BF0
@@ -2083,6 +2085,7 @@ public:
     OptionsGameplayMenu(FEMenuSystem* s);  // 0x592800
     virtual ~OptionsGameplayMenu();        // 0x5928C0
     static OptionsGameplayMenu* Me();      // 0x5734A0
+    virtual void Init();                   // 0x5B7920 (empty)
     virtual void OnUp(int c);              // 0x573580
     virtual void OnDown(int c);            // 0x5735F0
     virtual void OnLeft(int c);            // 0x5B7930
@@ -2134,6 +2137,7 @@ public:
     OptionsControlsMenu(FEMenuSystem* s);  // 0x592950
     virtual ~OptionsControlsMenu();        // 0x592A30
     static OptionsControlsMenu* Me();      // 0x5737D0
+    virtual void Init();                   // 0x5B7A90 (empty)
     virtual void Update(float time_inc);   // 0x5737E0
     virtual void ButtonHeldAction();       // 0x573860
     virtual void OnUp(int c);              // 0x5738D0
@@ -2179,6 +2183,7 @@ public:
     OptionsSoundMenu(FEMenuSystem* s);  // 0x592AC0
     virtual ~OptionsSoundMenu();        // 0x592B80
     static OptionsSoundMenu* Me();      // 0x573B80
+    virtual void Init();                // 0x5B7AC0 (empty)
     virtual void Update(float time_inc);   // 0x573B90
     virtual void OnUp(int c);              // 0x573BF0
     virtual void OnDown(int c);            // 0x573C80
@@ -2224,6 +2229,9 @@ public:
     OptionsStickMenu(FEMenuSystem* s);  // 0x592C10
     virtual ~OptionsStickMenu();        // 0x592C70
     static OptionsStickMenu* Me();      // 0x573D80
+    virtual void Init();                // 0x5B7AF0 (empty)
+    virtual void OnUp(int c);           // 0x5B7B00 (empty)
+    virtual void OnDown(int c);         // 0x5B7B10 (empty)
     virtual void OnLeft(int c);         // 0x5B7B20
     virtual void OnRight(int c);        // 0x5B7B30
     virtual void Update(float time_inc);   // 0x573D90
@@ -2265,6 +2273,9 @@ public:
     OptionsButtonMenu(FEMenuSystem* s);  // 0x592CE0
     virtual ~OptionsButtonMenu();        // 0x592D40
     static OptionsButtonMenu* Me();      // 0x574060
+    virtual void Init();                 // 0x5B7B40 (empty)
+    virtual void OnUp(int c);            // 0x5B7B50 (empty)
+    virtual void OnDown(int c);          // 0x5B7B60 (empty)
     virtual void OnLeft(int c);           // 0x5B7B70
     virtual void OnRight(int c);          // 0x5B7B80
     virtual void Update(float time_inc);   // 0x574070

@@ -250,6 +250,7 @@ public:
     MemCardCheckMenu(FEMenuSystem* s);  // 0x5923F0
     virtual ~MemCardCheckMenu();        // 0x592430
     static MemCardCheckMenu* Me();      // 0x573480
+    virtual void Init();                // 0x5B7910 (empty)
     virtual void UpdateWidescreen(bool ws);  // 0x573490
     static bool DialogResponseContinue(int);  // 0x57F6A0
     virtual void Update(float time_inc);// 0x586730

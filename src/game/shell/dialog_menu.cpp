@@ -604,6 +604,18 @@ void DialogMenu::CloseOnDelay(int delaySeconds, void (*delayResp)(int))
     delayResponse = delayResp;
 }
 
+// ea: 0x005B7890
+void DialogMenu::OnLeft(int c)
+{
+    (void)c;
+}
+
+// ea: 0x005B78A0
+void DialogMenu::OnRight(int c)
+{
+    (void)c;
+}
+
 // ea: 0x00572F90
 void DialogMenu::UpdateSplitScreen()
 {
