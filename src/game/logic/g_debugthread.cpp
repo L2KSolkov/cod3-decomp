@@ -1608,10 +1608,12 @@ void TaskSys_Update(float deltaT)
 // TaskSys::DeactivateTask - ea: 0x50B9C0
 // ============================================================================
 struct TaskHandleDbView {
+    unsigned int mFreeIndices;
     struct DbElement {
         Task* mObject;
         int mKey;
     } mElements[32];
+    void* mDebugCallback;
 };
 
 void TaskSys_DeactivateTask(Handle taskHandle)
@@ -1660,9 +1662,6 @@ Task* TaskSys_GetTaskForEntity(unsigned int taskId,
 // ============================================================================
 // TaskSys::CreateTaskHandle - ea: 0x50BA00
 // ============================================================================
-extern void HandleDb_AllocateTaskHandle(void* self, Task** t);
-extern void HandleDb_BindTaskObject(void* self, Handle h, Task* obj);
-
 Handle TaskSys_CreateTaskHandle(Task* t)
 {
     if (t->mTaskHandle.mVal != 0)
@@ -1671,12 +1670,31 @@ Handle TaskSys_CreateTaskHandle(Task* t)
             && AeAssert::Assert("handle already assigned"))
             __debugbreak();
     }
-    Task* pt = t;
-    HandleDb_AllocateTaskHandle(&TaskSysImpl2_sInst->mHandleDb, &pt);
-    t->mTaskHandle.mVal = pt->mTaskHandle.mVal;
-    HandleDb_BindTaskObject(&TaskSysImpl2_sInst->mHandleDb,
-                            t->mTaskHandle, t);
-    return t->mTaskHandle;
+    TaskHandleDbView* db = reinterpret_cast<TaskHandleDbView*>(
+        &TaskSys::sInst.mHandleDb);
+    unsigned int freeBits = db->mFreeIndices;
+    int index = -1;
+    if (freeBits != 0)
+    {
+        unsigned int bit = freeBits & (~freeBits + 1u);
+        index = 0;
+        while ((bit >> index) != 1u)
+            ++index;
+    }
+    if (index < 0 || index >= 0x20)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+        return Handle();
+    }
+    db->mFreeIndices &= ~(1u << index);
+    Handle handle;
+    handle.mVal = (static_cast<unsigned int>(db->mElements[index].mKey) << 13)
+        | static_cast<unsigned int>(index);
+    t->mTaskHandle.mVal = handle.mVal;
+    db->mElements[index].mObject = t;
+    return handle;
 }
 
 // ============================================================================
