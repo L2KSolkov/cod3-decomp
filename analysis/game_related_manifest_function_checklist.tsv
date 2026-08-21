@@ -1541,18 +1541,18 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 1540	0x004B4E00	0x008A4300	?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA DbQueryResults specific-match accessor	NO	NO	VERIFIED
 1541	0x004B4E10	0x008A4310	??0ae_heap_base@@QAE@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA ae_heap_base constructor	NO	NO	VERIFIED
 1542	0x004B4E20	0x008A4320	?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor	NO	NO	VERIFIED
-1543	0x004B4E30	0x008A4330	??2XModelManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1543	0x004B4E30	0x008A4330	??2XModelManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA XModelManager placement-new passthrough	NO	NO	VERIFIED
 1544	0x004B4E40	0x008A4340	?CreateInst@XModelManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1545	0x004B4F40	0x008A4440	?DeleteInst@XModelManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1546	0x004B4FC0	0x008A44C0	??2XModelPartsManager@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1546	0x004B4FC0	0x008A44C0	??2XModelPartsManager@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA XModelPartsManager placement-new passthrough	NO	NO	VERIFIED
 1547	0x004B4FD0	0x008A44D0	?CreateInst@XModelPartsManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1548	0x004B50D0	0x008A45D0	?DeleteInst@XModelPartsManager@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1549	0x004B5150	0x008A4650	?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1550	0x004B5160	0x008A4660	?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-1551	0x004B5170	0x008A4670	??2LightGridMgr@@SAPAXIPAX@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1549	0x004B5150	0x008A4650	?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA Task allocator setter	NO	NO	VERIFIED
+1550	0x004B5160	0x008A4660	?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA SceneAnimInfo allocator setter	NO	NO	VERIFIED
+1551	0x004B5170	0x008A4670	??2LightGridMgr@@SAPAXIPAX@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA LightGridMgr placement-new passthrough	NO	NO	VERIFIED
 1552	0x004B5180	0x008A4680	?CreateInst@LightGridMgr@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 1553	0x004B5280	0x008A4780	?DeleteInst@LightGridMgr@@SAXXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-1554	0x004B5300	0x008A4800	?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+1554	0x004B5300	0x008A4800	?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	PORTED	PORTED: FUNCTION implemented IDA trStaticModelList_t allocator setter	NO	NO	VERIFIED
 1555	0x004B5310	0x008A4810	?Inst@DObjHandleDb@@SAPAV1@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1556	0x004B5320	0x008A4820	?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 1557	0x004B5330	0x008A4830	?IsDefined@vector@Broc@@QBE_NXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

@@ -71,18 +71,18 @@ index	status	map_line
 70	PORTED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o PORTED: FUNCTION implemented IDA DbQueryResults specific-match accessor
 71	PORTED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o PORTED: FUNCTION implemented IDA ae_heap_base constructor
 72	PORTED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o PORTED: FUNCTION implemented IDA null ae_heap_base heap accessor
-73	PORTED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o
+73	PORTED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o PORTED: FUNCTION implemented IDA XModelManager placement-new passthrough
 74	VERIFIED	0002:000b4e40 ?CreateInst@XModelManager@@SAXXZ 008A4340 f i core.o
 75	VERIFIED	0002:000b4f40 ?DeleteInst@XModelManager@@SAXXZ 008A4440 f i core.o
-76	PORTED	0002:000b4fc0 ??2XModelPartsManager@@SAPAXIPAX@Z 008A44C0 f i core.o
+76	PORTED	0002:000b4fc0 ??2XModelPartsManager@@SAPAXIPAX@Z 008A44C0 f i core.o PORTED: FUNCTION implemented IDA XModelPartsManager placement-new passthrough
 77	VERIFIED	0002:000b4fd0 ?CreateInst@XModelPartsManager@@SAXXZ 008A44D0 f i core.o
 78	VERIFIED	0002:000b50d0 ?DeleteInst@XModelPartsManager@@SAXXZ 008A45D0 f i core.o
-79	PORTED	0002:000b5150 ?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z 008A4650 f i core.o
-80	PORTED	0002:000b5160 ?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z 008A4660 f i core.o
-81	PORTED	0002:000b5170 ??2LightGridMgr@@SAPAXIPAX@Z 008A4670 f i core.o
+79	PORTED	0002:000b5150 ?SetAllocator@Task@@SAXPAVPoolAllocator@@@Z 008A4650 f i core.o PORTED: FUNCTION implemented IDA Task allocator setter
+80	PORTED	0002:000b5160 ?SetAllocator@SceneAnimInfo@@SAXPAVPoolAllocator@@@Z 008A4660 f i core.o PORTED: FUNCTION implemented IDA SceneAnimInfo allocator setter
+81	PORTED	0002:000b5170 ??2LightGridMgr@@SAPAXIPAX@Z 008A4670 f i core.o PORTED: FUNCTION implemented IDA LightGridMgr placement-new passthrough
 82	VERIFIED	0002:000b5180 ?CreateInst@LightGridMgr@@SAXXZ 008A4680 f i core.o
 83	VERIFIED	0002:000b5280 ?DeleteInst@LightGridMgr@@SAXXZ 008A4780 f i core.o
-84	PORTED	0002:000b5300 ?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z 008A4800 f i core.o
+84	PORTED	0002:000b5300 ?SetAllocator@trStaticModelList_t@@SAXPAVPoolAllocator@@@Z 008A4800 f i core.o PORTED: FUNCTION implemented IDA trStaticModelList_t allocator setter
 85	PORTED	0002:000b5310 ?Inst@DObjHandleDb@@SAPAV1@XZ 008A4810 f i core.o
 86	PORTED	0002:000b5320 ?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z 008A4820 f i core.o
 87	PORTED	0002:000b5330 ?IsDefined@vector@Broc@@QBE_NXZ 008A4830 f i core.o
