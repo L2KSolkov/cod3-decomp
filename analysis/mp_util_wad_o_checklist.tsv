@@ -639,26 +639,26 @@ index	status	map_line
 638	FIXED	0002:0055d660 ??Xbfloat@@QAEMM@Z 00D4CB60 f i mp_util_wad.o	FIXED: IDA 0x0095D660 bfloat::operator*=(float) and AssertDefined path added
 639	VERIFIED	0002:0055d6b0 ?main@_mp_loadout@@YAXXZ 00D4CBB0 f mp_util_wad.o
 640	VERIFIED	0002:0055d7a0 ?SetTeams@_mp_loadout@@YAXVstring@Broc@@0@Z 00D4CCA0 f mp_util_wad.o
-641	PORTED	0002:0055dd60 ?SetAlliesModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D260 f mp_util_wad.o
-642	PORTED	0002:0055ddf0 ?SetAxisModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D2F0 f mp_util_wad.o
+641	VERIFIED	0002:0055dd60 ?SetAlliesModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D260 f mp_util_wad.o	VERIFIED: Existing model-table indexing and assignment match IDA 0x0095DD60
+642	VERIFIED	0002:0055ddf0 ?SetAxisModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D2F0 f mp_util_wad.o	VERIFIED: Existing axis model offset/index and assignment match IDA 0x0095DDF0
 643	VERIFIED	0002:0055de90 ?GiveLoadout@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D390 f mp_util_wad.o
 644	VERIFIED	0002:0055df10 ?UpdatePlayerModelForRank@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D410 f mp_util_wad.o
-645	PORTED	0002:0055e080 ?SetAiType@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D4D580 f i mp_util_wad.o
+645	VERIFIED	0002:0055e080 ?SetAiType@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D4D580 f i mp_util_wad.o	VERIFIED: Existing mSetAiType callback forwarding matches IDA 0x0095E080
 646	VERIFIED	0002:0055e0c0 ?SetPlayerModel@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D5C0 f mp_util_wad.o
-647	PORTED	0002:0055e1e0 ?SetViewModel@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D4D6E0 f i mp_util_wad.o
+647	VERIFIED	0002:0055e1e0 ?SetViewModel@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D4D6E0 f i mp_util_wad.o	VERIFIED: Existing mSetViewModel callback forwarding matches IDA 0x0095E1E0
 648	VERIFIED	0002:0055e210 ?DisplayYouWillSpawnWithMessage@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D710 f mp_util_wad.o
-649	PORTED	0002:0055e270 ?GiveWeapons@_mp_loadout@@YAXVentity@Broc@@Ubint@@1@Z 00D4D770 f mp_util_wad.o
+649	VERIFIED	0002:0055e270 ?GiveWeapons@_mp_loadout@@YAXVentity@Broc@@Ubint@@1@Z 00D4D770 f mp_util_wad.o	VERIFIED: Existing weapon/pistol, special, ammo, and switch flow matches IDA 0x0095E270
 650	VERIFIED	0002:0055e600 ?Code_SetSpecialRecharge@Broc@@YAXHHHH@Z 00D4DB00 f i mp_util_wad.o
-651	PORTED	0002:0055e640 ?GiveAmmo@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DB40 f mp_util_wad.o
-652	PORTED	0002:0055e840 ?GiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DD40 f mp_util_wad.o
+651	VERIFIED	0002:0055e640 ?GiveAmmo@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DB40 f mp_util_wad.o	VERIFIED: Existing primary/secondary/grenade ammo flow matches IDA 0x0095E640
+652	VERIFIED	0002:0055e840 ?GiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DD40 f mp_util_wad.o	VERIFIED: Existing rank/class/smoke ammo-pack branches match IDA 0x0095E840
 653	VERIFIED	0002:0055ec60 ?CallbackGetTeamWeapon@_mp_loadout@@YAHPBDI@Z 00D4E160 f mp_util_wad.o
-654	PORTED	0002:0055ee40 ?GetWeaponIndex@Broc@@YAHABVstring@1@@Z 00D4E340 f i mp_util_wad.o
-655	PORTED	0002:0055ee70 ?GetAlliesWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E370 f mp_util_wad.o
-656	PORTED	0002:0055ef60 ?GetAxisWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E460 f mp_util_wad.o
-657	PORTED	0002:0055f050 ?GetAmericanWeapon@_mp_loadout@@YAPBDUbint@@@Z 00D4E550 f mp_util_wad.o
-658	PORTED	0002:0055f0f0 ?GetGermanWeapon@_mp_loadout@@YAPBDUbint@@@Z 00D4E5F0 f mp_util_wad.o
-659	PORTED	0002:0055f190 ?GetGrenadeWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E690 f mp_util_wad.o
-660	PORTED	0002:0055f430 ?GiveSpecialWeapon@_mp_loadout@@YAXVentity@Broc@@Ubint@@FUbbool@@@Z 00D4E930 f mp_util_wad.o
+654	FIXED	0002:0055ee40 ?GetWeaponIndex@Broc@@YAHABVstring@1@@Z 00D4E340 f i mp_util_wad.o	FIXED: IDA 0x0095EE40 forwards to mGetWeaponIndex; callback/layout added
+655	VERIFIED	0002:0055ee70 ?GetAlliesWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E370 f mp_util_wad.o	VERIFIED: Existing allies team validation and weapon fallback match IDA 0x0095EE70
+656	VERIFIED	0002:0055ef60 ?GetAxisWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E460 f mp_util_wad.o	VERIFIED: Existing axis team validation and weapon fallback match IDA 0x0095EF60
+657	VERIFIED	0002:0055f050 ?GetAmericanWeapon@_mp_loadout@@YAPBDUbint@@@Z 00D4E550 f mp_util_wad.o	VERIFIED: Existing class-to-American-weapon switch matches IDA 0x0095F050
+658	VERIFIED	0002:0055f0f0 ?GetGermanWeapon@_mp_loadout@@YAPBDUbint@@@Z 00D4E5F0 f mp_util_wad.o	VERIFIED: Existing class-to-German-weapon switch matches IDA 0x0095F0F0
+659	VERIFIED	0002:0055f190 ?GetGrenadeWeapon@_mp_loadout@@YAPBDVstring@Broc@@Ubint@@@Z 00D4E690 f mp_util_wad.o	VERIFIED: Existing gametype/team/class grenade branches match IDA 0x0095F190
+660	VERIFIED	0002:0055f430 ?GiveSpecialWeapon@_mp_loadout@@YAXVentity@Broc@@Ubint@@FUbbool@@@Z 00D4E930 f mp_util_wad.o	VERIFIED: Existing local-player special dispatch and respawn guards match IDA 0x0095F430
 661	VERIFIED	0002:0055f6b0 ?GiveDualPistols@_mp_loadout@@YAXVentity@Broc@@F@Z 00D4EBB0 f mp_util_wad.o
 662	PORTED	0002:0055f9b0 ?SetWeaponSlotAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D4EEB0 f i mp_util_wad.o
 663	PORTED	0002:0055f9f0 ?GetFullClipAmmoCount@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D4EEF0 f i mp_util_wad.o
