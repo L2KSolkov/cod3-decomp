@@ -727,7 +727,7 @@ index	status	map_line
 726	PORTED	0002:000dd280 ??2ConfigStringManager@@SAPAXIPAX@Z 008CC780 f i core.o
 727	VERIFIED	0002:000dd290 ?DeleteInst@ConfigStringManager@@SAXXZ 008CC790 f i core.o
 728	PORTED	0002:000dd310 ??2PathNodeMgr@@SAPAXIPAX@Z 008CC810 f i core.o
-729	PORTED	0002:000dd320 ?CreateInst@PathNodeMgr@@SAXXZ 008CC820 f i core.o
+729	VERIFIED	0002:000dd320 ?CreateInst@PathNodeMgr@@SAXXZ 008CC820 f i core.o VERIFIED: existing CreateInst body matches IDA
 730	VERIFIED	0002:000dd410 ?DeleteInst@PathNodeMgr@@SAXXZ 008CC910 f i core.o
 731	PORTED	0002:000dd490 ??2TestFPS@@SAPAXIPAX@Z 008CC990 f i core.o
 732	VERIFIED	0002:000dd4a0 ?CreateInst@TestFPS@@SAXXZ 008CC9A0 f i core.o
