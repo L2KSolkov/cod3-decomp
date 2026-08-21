@@ -7,12 +7,20 @@
 //   nglCurDepthBuffer   @0x10E69CC (data, D3DSurface*)
 // ============================================================================
 #include "nglTexture.h"
+#include "ngl/ngl_dx_gpu.h"
 
 // ngl_dx_tex_create.o (data, not yet ported -> /FORCE:UNRESOLVED)
 extern nglTexture nglBackBufferTex;
 
 D3DSurface* nglCurSurface = 0;
 D3DSurface* nglCurDepthBuffer = 0;
+
+// D3DDevice::SetRenderTarget - ea: 0x851070
+long __stdcall D3DDevice::SetRenderTarget(D3DSurface* pRenderTarget,
+                                           D3DSurface* pNewZStencil) {
+    D3DDevice_SetRenderTarget(pRenderTarget, pNewZStencil);
+    return 0;
+}
 
 // ============================================================================
 // nglDxSetRenderTarget — bind color + depth surfaces for the current pass.

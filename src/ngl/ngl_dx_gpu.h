@@ -365,6 +365,8 @@ enum _D3DRESOURCETYPE {
 // ============================================================================
 class D3DDevice {
 public:
+    static long __stdcall SetRenderTarget(D3DSurface* pRenderTarget,
+                                          D3DSurface* pNewZStencil);
     static long __stdcall SetRenderState(_D3DRENDERSTATETYPE State,
                                          unsigned long Value);  // ?SetRenderState@D3DDevice@@SGJW4_D3DRENDERSTATETYPE@@K@Z (render.o 0x6E5650)
     static long __stdcall PersistDisplay();  // ?PersistDisplay@D3DDevice@@SGJXZ (sv.o 0x51E0B0; XDK shim)
