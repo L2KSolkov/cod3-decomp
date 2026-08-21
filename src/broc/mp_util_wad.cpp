@@ -700,6 +700,58 @@ Broc::bbool* IsEEDefined_lastPainSoundTime(Broc::bbool* result, Broc::entity ent
     return result;
 }
 
+// ea: 0x009301B0
+Broc::string* GetEE_audio_ambp(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0xAB157931);
+}
+
+// ea: 0x00930200
+Broc::bbool* IsEEDefined_audio_ambp(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v;
+            const Broc::string* val = ee->GetVal<Broc::string>(&v, 0xAB157931);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// ea: 0x00930300
+Broc::entity* GetEE_holder(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::entity>(0xFAAE111E);
+}
+
+// ea: 0x00930350
+Broc::bbool* IsEEDefined_holder(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::entity v;
+            const Broc::entity* val = ee->GetVal<Broc::entity>(&v, 0xFAAE111E);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 // GetEE_lastTouch / IsEEDefined_lastTouch (key 0x54E300B7)
 Broc::bint* GetEE_lastTouch(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
