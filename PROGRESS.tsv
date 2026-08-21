@@ -546,7 +546,7 @@ ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	PORTED	ngl_dx_quad.h/.c
 
 ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	PORTED	ngl_gpu_debug.h/.cpp (debug line/tri render + gpuSetVertexShader inline)
 
-nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp; nalIKMap2DTo3D FIXED from the IDA/C reference, nalIKSolve2D remains ported
 
 phys_xboxr:phys_collision.o	phys_xboxr	phys_collision.o	engine	2	PORTED	phys_collision.cpp calc_feature_normal ported; process @0x878C10 (2678B) deferred (needs manifold_process infra)
 
