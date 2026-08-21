@@ -307,6 +307,31 @@ unsigned int hudelem::GetIndex() const
     return ___u0;
 }
 
+// ea: 0x005E9800
+TPathnodeHandle pathnode::GetHandle() const
+{
+    return (TPathnodeHandle)___u0;
+}
+
+// ea: 0x005E9810
+bool pathnode::IsDefined() const
+{
+    return ___u0 != (unsigned int)INVALID_PATHNODE_HANDLE
+        && ___u0 != 0xFFFFFFFFu;
+}
+
+// ea: 0x005E9830
+TVehiclenodeHandle vehiclenode::GetHandle() const
+{
+    return (TVehiclenodeHandle)___u0;
+}
+
+// ea: 0x005E9840
+bool vehiclenode::IsDefined() const
+{
+    return ___u0 != (unsigned int)INVALID_VEHICLENODE_HANDLE;
+}
+
 // ea: 0x005EF530
 void VecAnglesToUp(vector* vecOut, const vector* angles) {
     ::AnglesToUp(&angles->x, &vecOut->x);

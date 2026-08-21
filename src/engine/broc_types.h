@@ -405,12 +405,22 @@ COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEnt
 // ============================================================================
 // Broc::pathnode / Broc::vehiclenode — node handles (4 bytes each)
 // ============================================================================
+enum TPathnodeHandle : int {
+    INVALID_PATHNODE_HANDLE = 0,
+};
+
+enum TVehiclenodeHandle : int {
+    INVALID_VEHICLENODE_HANDLE = -1,
+};
+
 class pathnode {
 public:
     unsigned int ___u0;
 
     pathnode() : ___u0(0) {}
     explicit pathnode(int value) : ___u0((unsigned int)value) {}
+    TPathnodeHandle GetHandle() const;
+    bool IsDefined() const;
 };
 // Binary mangle uses class tag V for pathnode (PAVpathnode@Broc@@).
 COD3_STATIC_ASSERT_32BIT(sizeof(pathnode) == 4, "Broc::pathnode size mismatch");
@@ -422,6 +432,8 @@ public:
 
     vehiclenode() : ___u0(0) {}
     explicit vehiclenode(int value) : ___u0((unsigned int)value) {}
+    TVehiclenodeHandle GetHandle() const;
+    bool IsDefined() const;
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size mismatch");
 
