@@ -1,5 +1,5 @@
 index	status	map_line
-1	PORTED	0002:004421b0 ??0_tlSkipListBase@@IAE@XZ 00C316B0 f i ngl_texture.o
+1	VERIFIED	0002:004421b0 ??0_tlSkipListBase@@IAE@XZ 00C316B0 f i ngl_texture.o
 2	VERIFIED	0002:004421d0 ?nglSetIFLSpeed@@YAXM@Z 00C316D0 f ngl_texture.o
 3	VERIFIED	0002:004421f0 ?nglScreenShot@@YAXPBD@Z 00C316F0 f ngl_texture.o
 4	VERIFIED	0002:00442240 ?nglGetTexture@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00C31740 f ngl_texture.o
