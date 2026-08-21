@@ -245,8 +245,8 @@ index	status	map_line
 244	PORTED	0002:0053ae20 ?GetTime@@YA?AUbint@@XZ 00D2A320 f i mp_util_wad.o	PORTED: IDA wraps mGetTime result in bint
 245	PORTED	0002:0053ae50 ??0bfloat@@QAE@ABUbint@@@Z 00D2A350 f i mp_util_wad.o	PORTED: IDA converts bint mVal to float
 246	PORTED	0002:0053ae80 ?PlayDeathSound@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z 00D2A380 f mp_util_wad.o
-247	PORTED	0002:0053b200 ??Ybfloat@@QAEMM@Z 00D2A700 f i mp_util_wad.o
-248	PORTED	0002:0053b250 ?AssertDefined@bfloat@@QBEXXZ 00D2A750 f i mp_util_wad.o
+247	FIXED	0002:0053b200 ??Ybfloat@@QAEMM@Z 00D2A700 f i mp_util_wad.o	FIXED: IDA asserts, adds float to mVal, and returns double mVal
+248	VERIFIED	0002:0053b250 ?AssertDefined@bfloat@@QBEXXZ 00D2A750 f i mp_util_wad.o	VERIFIED: IDA function is an empty no-op
 249	PORTED	0002:0053b270 ?PlayKillerWarning@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z 00D2A770 f mp_util_wad.o
 250	PORTED	0002:0053bd20 ??9bint@@QBE_NH@Z 00D2B220 f i mp_util_wad.o
 251	PORTED	0002:0053bd50 ??D@YA?AUbfloat@@U0@0@Z 00D2B250 f i mp_util_wad.o
