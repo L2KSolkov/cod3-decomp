@@ -685,7 +685,7 @@ index	status	map_line
 684	PORTED	0002:00464220 ?ReleaseCache@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C53720 f i nal_init.o
 685	PORTED	0002:004642c0 ?CycleTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C537C0 f i nal_init.o
 686	PORTED	0002:004642f0 ??$SlowCycleTrajectory@VnalComponentEntropyTrajectoryPO@@VnalPositionOrientation@@USkeletonData@nalComponentData@@UAnimData@nalComponentEntropyTrajectoryPOData@@USkeletonComponentData@6@UAnimComponentData@6@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C537F0 f i nal_init.o
-687	PENDING	0002:00464460 ??0?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@IAE@XZ 00C53960 f i nal_init.o
+687	VERIFIED	0002:00464460 ??0?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@IAE@XZ 00C53960 f i nal_init.o
 688	PORTED	0002:00464470 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z 00C53970 f i nal_init.o
 689	PORTED	0002:00464480 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z 00C53980 f i nal_init.o
 690	PORTED	0002:00464490 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAPBX@Z 00C53990 f i nal_init.o
