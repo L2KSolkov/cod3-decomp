@@ -1184,7 +1184,7 @@ index	status	map_line
 1183	PORTED	0002:001ad260 ?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ 0099C760 f i shell.o	PORTED: added IDA-derived actualPort forwarding accessor
 1184	VERIFIED	0002:001ad270 ?button_pressed_clear_all@controller@@QAEXXZ 0099C770 f i shell.o
 1185	VERIFIED	0002:001ad2d0 ?GetLerpOrigin@EntityState@@QBE?BVPosition3@math@@XZ 0099C7D0 f i shell.o	VERIFIED: matches IDA result-copy accessor
-1186	PORTED	0002:001ad300 ??0vector@Broc@@QAE@MM@Z 0099C800 f i shell.o
+1186	VERIFIED	0002:001ad300 ??0vector@Broc@@QAE@MM@Z 0099C800 f i shell.o	VERIFIED: matches IDA two-component constructor with zero z
 1187	VERIFIED	0002:001ad330 ??Yvector@Broc@@QAEAAU01@ABU01@@Z 0099C830 f i shell.o
 1188	PORTED	0002:001ad380 ??8vector@Broc@@QBE_NABU01@@Z 0099C880 f i shell.o
 1189	VERIFIED	0002:001ad3d0 ??HBroc@@YA?AUvector@0@ABU10@0@Z 0099C8D0 f i shell.o

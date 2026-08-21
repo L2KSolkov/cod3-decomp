@@ -6361,7 +6361,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6360	0x005AD260	0x0099C760	?GetLocalPlayer@MPLiveEngine@@QAEPAVLivePlayer@@XZ		shell.o	game		f i	1	PORTED	FUNCTION ported from IDA decompile	NO	NO	PORT_STATUS_ONLY
 6361	0x005AD270	0x0099C770	?button_pressed_clear_all@controller@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6362	0x005AD2D0	0x0099C7D0	?GetLerpOrigin@EntityState@@QBE?BVPosition3@math@@XZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
-6363	0x005AD300	0x0099C800	??0vector@Broc@@QAE@MM@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6363	0x005AD300	0x0099C800	??0vector@Broc@@QAE@MM@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile and local type	NO	NO	VERIFIED
 6364	0x005AD330	0x0099C830	??Yvector@Broc@@QAEAAU01@ABU01@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6365	0x005AD380	0x0099C880	??8vector@Broc@@QBE_NABU01@@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6366	0x005AD3D0	0x0099C8D0	??HBroc@@YA?AUvector@0@ABU10@0@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
