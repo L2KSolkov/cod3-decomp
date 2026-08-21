@@ -704,6 +704,8 @@ Broc::bbool* IsEEDefined_lastPainSoundTime(Broc::bbool* result, Broc::entity ent
 Broc::string* GetEE_audio_ambp(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::string>(0xAB157931);
 }
 
@@ -730,6 +732,8 @@ Broc::bbool* IsEEDefined_audio_ambp(Broc::bbool* result, Broc::entity ent) {
 Broc::entity* GetEE_holder(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    if (ee == NULL)
+        ee = &Broc::ExtendedEntity::nullEnt;
     return &ee->GetRef<Broc::entity>(0xFAAE111E);
 }
 
