@@ -119,7 +119,73 @@ struct nalGenericBoneHandle {
 struct nalPositionOrientation {
     math::Quaternion orient;  // +0x00
     math::Position3 pos;      // +0x10
+
+    nalPositionOrientation() {}
 };
+static_assert(sizeof(nalPositionOrientation) == 0x20,
+              "nalPositionOrientation size mismatch");
+
+struct mpAnimJointPosOrientations_t {
+    nalPositionOrientation child;  // +0x00
+    nalPositionOrientation joint;  // +0x20
+    nalPositionOrientation parent; // +0x40
+
+    mpAnimJointPosOrientations_t(); // ea: 0x518CC0
+};
+static_assert(sizeof(mpAnimJointPosOrientations_t) == 0x60,
+              "mpAnimJointPosOrientations_t size mismatch");
+
+struct mpAnimJointBoneHandles_t {
+    nalGenericBoneHandle child;  // +0x00
+    nalGenericBoneHandle joint;  // +0x08
+    nalGenericBoneHandle parent; // +0x10
+
+    mpAnimJointBoneHandles_t(); // ea: 0x518CD0
+};
+static_assert(sizeof(mpAnimJointBoneHandles_t) == 0x18,
+              "mpAnimJointBoneHandles_t size mismatch");
+
+// ea: 0x00518C10
+angles_t::angles_t()
+{
+}
+
+// ea: 0x00518C20
+float& angles_t::operator[](int index)
+{
+    if (index < 0 || index >= 3)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\math_angles.h";
+        AeAssert::gCurrentLine = 83;
+        AeAssert::gCurrentExpr = "( index >= 0 ) && ( index < 3 )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return (&pitch)[index];
+}
+
+// ea: 0x00518CA0
+angles_t& angles_t::Zero()
+{
+    pitch = 0.0f;
+    yaw = 0.0f;
+    roll = 0.0f;
+    return *this;
+}
+
+// ea: 0x00518CC0
+mpAnimJointPosOrientations_t::mpAnimJointPosOrientations_t()
+{
+}
+
+// ea: 0x00518CD0
+mpAnimJointBoneHandles_t::mpAnimJointBoneHandles_t()
+{
+    child.skeleton = nullptr;
+    joint.skeleton = nullptr;
+    parent.skeleton = nullptr;
+}
 namespace nalGeneric {
 class nalGenericSkeleton;
 class nalGenericPose;

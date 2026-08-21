@@ -162,7 +162,9 @@ public:
     float pitch;  // +0x00
     float yaw;    // +0x04
     float roll;   // +0x08
-    angles_t() = default;
+    angles_t();
+    float& operator[](int index);
+    angles_t& Zero();
     angles_t(const idVec3& vec);
 };
 static_assert(sizeof(angles_t) == 0x0C, "angles_t size mismatch");
