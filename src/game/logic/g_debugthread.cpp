@@ -1700,21 +1700,36 @@ Handle TaskSys_CreateTaskHandle(Task* t)
 // ============================================================================
 // TaskSys::ShutDown - ea: 0x50B920
 // ============================================================================
-extern void TaskSys_DeliverTasks_glue();
-
 void TaskSys_ShutDown()
 {
-    TaskSys_DeliverTasks_glue();
-    int count = TaskSysImpl2_sInst->m_size;
+    TaskSys_DeliverTasks();
+    int count = TaskSys::sInst.mTaskHandlersSize;
     for (int i = 0; i < count; ++i)
     {
-        TaskHandlerImpl* handler = TaskSysImpl2_sInst->mTaskHandlers[i];
-        if (handler != nullptr)
-            handler->DeactivateAll();
+        TaskHandlerImpl* handler = reinterpret_cast<TaskHandlerImpl*>(
+            TaskSys::sInst.mTaskHandlers[i]);
+        if (handler == nullptr)
+            continue;
+        handler->mFlags |= 8u;
+        DListNode* node = handler->mTaskList.m_head;
+        DListNode* end = reinterpret_cast<DListNode*>(&handler->mTaskList.m_end);
+        if (node != end && node != nullptr)
+        {
+            while (node != nullptr)
+            {
+                Task* task = reinterpret_cast<Task*>(
+                    reinterpret_cast<char*>(node) - 0x4);
+                task->mFlags |= 4u;
+                node = node->m_next;
+            }
+        }
     }
-    TaskHandler_Update(HealthRegenTask_sHandler, 0.01f, nullptr);
-    TaskHandler_Update(AnimNotifyTask_sHandler, 0.01f, nullptr);
-    TaskHandler_Update(EntityDeathTask_sHandler, 0.01f, nullptr);
+    if (HealthRegenTask_sHandler != nullptr)
+        HealthRegenTask_sHandler->Update(0.01f, nullptr);
+    if (AnimNotifyTask_sHandler != nullptr)
+        AnimNotifyTask_sHandler->Update(0.01f, nullptr);
+    if (EntityDeathTask_sHandler != nullptr)
+        EntityDeathTask_sHandler->Update(0.01f, nullptr);
 }
 
 // ============================================================================
