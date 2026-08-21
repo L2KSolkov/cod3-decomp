@@ -6571,13 +6571,13 @@ index	status	map_line
 6570	VERIFIED	0002:001aee90 ?IsSaveEnabled@ProfileManager@@QBE_NXZ 0099E390 f i shell.o
 6571	VERIFIED	0002:001aeea0 ?SetContinueWithoutSaving@ProfileManager@@QAEXXZ 0099E3A0 f i shell.o
 6572	VERIFIED	0002:001aeeb0 ?IsContinueWithoutSaving@ProfileManager@@QAE_NXZ 0099E3B0 f i shell.o
-6573	PORTED	0002:001aeec0 ?GetStatus@ProfileManager@@QBEHXZ 0099E3C0 f i shell.o
-6574	PORTED	0002:001aeed0 ?IsControllingDMS@ProfileManager@@ABE_NXZ 0099E3D0 f i shell.o
-6575	PORTED	0002:001aeee0 ?SetStatus@ProfileManager@@AAEXH@Z 0099E3E0 f i shell.o
-6576	PORTED	0002:001aeef0 ?SetOperation@ProfileManager@@AAEXH@Z 0099E3F0 f i shell.o
-6577	PORTED	0002:001aef00 ?SetLastCardId@ProfileManager@@AAEXXZ 0099E400 f i shell.o
-6578	PORTED	0002:001aef10 ?HasCardChanged@ProfileManager@@ABE_NXZ 0099E410 f i shell.o
-6579	PORTED	0002:001aef30 ?SetOverwriteOk@ProfileManager@@AAEXXZ 0099E430 f i shell.o
+6573	VERIFIED	0002:001aeec0 ?GetStatus@ProfileManager@@QBEHXZ 0099E3C0 f i shell.o	VERIFIED: matches IDA current-status accessor
+6574	VERIFIED	0002:001aeed0 ?IsControllingDMS@ProfileManager@@ABE_NXZ 0099E3D0 f i shell.o	VERIFIED: matches IDA callback-presence test
+6575	VERIFIED	0002:001aeee0 ?SetStatus@ProfileManager@@AAEXH@Z 0099E3E0 f i shell.o	VERIFIED: matches IDA status assignment
+6576	VERIFIED	0002:001aeef0 ?SetOperation@ProfileManager@@AAEXH@Z 0099E3F0 f i shell.o	VERIFIED: matches IDA operation assignment
+6577	VERIFIED	0002:001aef00 ?SetLastCardId@ProfileManager@@AAEXXZ 0099E400 f i shell.o	VERIFIED: matches IDA card-id snapshot
+6578	VERIFIED	0002:001aef10 ?HasCardChanged@ProfileManager@@ABE_NXZ 0099E410 f i shell.o	VERIFIED: matches IDA card-id comparison
+6579	VERIFIED	0002:001aef30 ?SetOverwriteOk@ProfileManager@@AAEXXZ 0099E430 f i shell.o	VERIFIED: matches IDA overwrite-card snapshot
 6580	PORTED	0002:001aef40 ?IsOverwriteOk@ProfileManager@@ABE_NXZ 0099E440 f i shell.o
 6581	PORTED	0002:001aef50 ?SetCreateOk@ProfileManager@@AAEXXZ 0099E450 f i shell.o
 6582	VERIFIED	0002:001aef60 ?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ 0099E460 f i shell.o

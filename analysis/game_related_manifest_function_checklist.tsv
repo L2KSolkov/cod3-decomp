@@ -6571,13 +6571,13 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 6570	0x005AEE90	0x0099E390	?IsSaveEnabled@ProfileManager@@QBE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6571	0x005AEEA0	0x0099E3A0	?SetContinueWithoutSaving@ProfileManager@@QAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 6572	0x005AEEB0	0x0099E3B0	?IsContinueWithoutSaving@ProfileManager@@QAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-6573	0x005AEEC0	0x0099E3C0	?GetStatus@ProfileManager@@QBEHXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6574	0x005AEED0	0x0099E3D0	?IsControllingDMS@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6575	0x005AEEE0	0x0099E3E0	?SetStatus@ProfileManager@@AAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6576	0x005AEEF0	0x0099E3F0	?SetOperation@ProfileManager@@AAEXH@Z		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6577	0x005AEF00	0x0099E400	?SetLastCardId@ProfileManager@@AAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6578	0x005AEF10	0x0099E410	?HasCardChanged@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-6579	0x005AEF30	0x0099E430	?SetOverwriteOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+6573	0x005AEEC0	0x0099E3C0	?GetStatus@ProfileManager@@QBEHXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6574	0x005AEED0	0x0099E3D0	?IsControllingDMS@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6575	0x005AEEE0	0x0099E3E0	?SetStatus@ProfileManager@@AAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6576	0x005AEEF0	0x0099E3F0	?SetOperation@ProfileManager@@AAEXH@Z		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6577	0x005AEF00	0x0099E400	?SetLastCardId@ProfileManager@@AAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6578	0x005AEF10	0x0099E410	?HasCardChanged@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
+6579	0x005AEF30	0x0099E430	?SetOverwriteOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	VERIFIED	FUNCTION checked against IDA decompile	NO	NO	VERIFIED
 6580	0x005AEF40	0x0099E440	?IsOverwriteOk@ProfileManager@@ABE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6581	0x005AEF50	0x0099E450	?SetCreateOk@ProfileManager@@AAEXXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 6582	0x005AEF60	0x0099E460	?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ		shell.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
