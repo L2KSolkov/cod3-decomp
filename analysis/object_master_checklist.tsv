@@ -743,7 +743,7 @@ scentry.obj	analysis/scentry_obj_checklist.tsv	analysis/scentry_obj_inventory.ts
 schedule.obj	analysis/schedule_obj_checklist.tsv	analysis/schedule_obj_inventory.tsv	analysis/schedule_obj_plan.tsv	7	0	0	7	0	0	0
 scline.obj	analysis/scline_obj_checklist.tsv	analysis/scline_obj_inventory.tsv	analysis/scline_obj_plan.tsv	4	0	0	4	0	0	0
 scmemory.obj	analysis/scmemory_obj_checklist.tsv	analysis/scmemory_obj_inventory.tsv	analysis/scmemory_obj_plan.tsv	3	0	0	3	0	0	0
-scr.o	analysis/scr_o_checklist.tsv	analysis/scr_o_inventory.tsv	analysis/scr_o_plan.tsv	1540	909	631	0	0	0	0
+scr.o	analysis/scr_o_checklist.tsv	analysis/scr_o_inventory.tsv	analysis/scr_o_plan.tsv	1540	917	623	0	0	0	0
 scspline.obj	analysis/scspline_obj_checklist.tsv	analysis/scspline_obj_inventory.tsv	analysis/scspline_obj_plan.tsv	4	0	0	4	0	0	0
 secchk.obj	analysis/secchk_obj_checklist.tsv	analysis/secchk_obj_inventory.tsv	analysis/secchk_obj_plan.tsv	1	0	0	1	0	0	0
 seccinit.obj	analysis/seccinit_obj_checklist.tsv	analysis/seccinit_obj_inventory.tsv	analysis/seccinit_obj_plan.tsv	1	0	0	1	0	0	0

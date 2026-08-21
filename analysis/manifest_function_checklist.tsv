@@ -8236,17 +8236,17 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 8235	0x005DFD70	0x009CF270	?CalcStringHash@BrocSys@@YAIPBD@Z		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8236	0x005DFDB0	0x009CF2B0	?InitAPI@BrocSys@@YAXXZ		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8237	0x005E0160	0x009CF660	?LoadScript@BrocSys@@YAXXZ		scr.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8238	0x005E9420	0x009D8920	?get_dlist_node@AeThreadState@@QAEPAXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8239	0x005E9430	0x009D8930	??2AeThreadState@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8240	0x005E9450	0x009D8950	??3AeThreadState@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8241	0x005E9470	0x009D8970	?IsFinished@AeThreadState@@QBE_NXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8242	0x005E9480	0x009D8980	?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8238	0x005E9420	0x009D8920	?get_dlist_node@AeThreadState@@QAEPAXXZ		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8239	0x005E9430	0x009D8930	??2AeThreadState@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8240	0x005E9450	0x009D8950	??3AeThreadState@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8241	0x005E9470	0x009D8970	?IsFinished@AeThreadState@@QBE_NXZ		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8242	0x005E9480	0x009D8980	?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
 8243	0x005E9490	0x009D8990	??1AeThreadState@@UAE@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8244	0x005E94A0	0x009D89A0	??_GAeThreadState@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 8245	0x005E94A0	0x009D89A0	??_EAeThreadState@@UAEPAXI@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-8246	0x005E94D0	0x009D89D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8247	0x005E94E0	0x009D89E0	??2EndOnScriptNode@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-8248	0x005E9500	0x009D8A00	??3EndOnScriptNode@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+8246	0x005E94D0	0x009D89D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8247	0x005E94E0	0x009D89E0	??2EndOnScriptNode@@SAPAXI_NPBDH@Z		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
+8248	0x005E9500	0x009D8A00	??3EndOnScriptNode@@SAXPAX_NPBDH@Z		scr.o	game		f i	1	PORTED	PROGRESS object aggregate	NO	NO	VERIFIED
 8249	0x005E9520	0x009D8A20	??3EndOnScriptNode@@SAXPAX@Z		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8250	0x005E9540	0x009D8A40	?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 8251	0x005E9560	0x009D8A60	?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ		scr.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
