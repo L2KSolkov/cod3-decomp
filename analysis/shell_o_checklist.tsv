@@ -1057,7 +1057,7 @@ index	status	map_line
 1056	VERIFIED	0002:001942a0 ??0VKMenu@@QAE@PAVFEMenuSystem@@@Z 009837A0 f shell.o
 1057	VERIFIED	0002:001942f0 ??1VKMenu@@UAE@XZ 009837F0 f shell.o
 1058	VERIFIED	0002:00194300 ?LoadSelectedProfile@ProfileMainMenu@@AAEX_N@Z 00983800 f shell.o
-1059	PORTED	0002:00194370 ?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@P6AXH@Z@Z 00983870 f shell.o
+1059	VERIFIED	0002:00194370 ?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@P6AXH@Z@Z 00983870 f shell.o	VERIFIED: matches IDA callback guard, loading dialog, state capture, and overload call
 1060	VERIFIED	0002:001943f0 ?DeleteProfile@ProfileManager@@QAEXHP6AXH@Z@Z 009838F0 f shell.o
 1061	VERIFIED	0002:00194470 ?DialogDisplayCorruptData@ProfileManager@@AAEXXZ 00983970 f shell.o
 1062	VERIFIED	0002:00194600 ?DialogDisplayFormat@ProfileManager@@AAEXXZ 00983B00 f shell.o
