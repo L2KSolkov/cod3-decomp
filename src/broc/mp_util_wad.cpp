@@ -2786,6 +2786,12 @@ int Broc::GetFullClipAmmoCount(Broc::entity* e, const Broc::string* slot) {
     return Broc::gBrocAPI.mGetFullClipAmmoCount(handle, slot);
 }
 
+// GetMaxAmmo - ea: 0x961BA0
+int Broc::GetMaxAmmo(Broc::entity* e, const Broc::string* slot) {
+    unsigned int handle = e->GetHandle();
+    return Broc::gBrocAPI.mGetMaxAmmo(handle, slot);
+}
+
 // bbool::operator== - ea: 0x93F610
 bool bbool::operator==(bool rhs) const {
     return rhs == mVal;
@@ -9087,8 +9093,6 @@ void GiveWeaponAmmoScale(Broc::entity player, Broc::string slot,
 void GiveWeaponAmmoPack(Broc::entity player, Broc::string slot,
                         Broc::bint playerClass, __int16 rank,
                         __int16 packRank, bool bIsSmokeGrenade) {
-    (void)playerClass;
-    (void)rank;
     Broc::bint clipCount(0);
     Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
     if (packRank > 0)
@@ -9104,18 +9108,25 @@ void GiveWeaponAmmoPack(Broc::entity player, Broc::string slot,
         if (packRank >= 2)
             clipCount = 1;
     }
-    Broc::bint amount((int)clipSize * (int)clipCount);
-    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
-    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
-    Broc::bint currentAmmo(originalSlotAmmo + originalSlotClipAmmo);
-    Broc::bint maxAmmo((int)clipSize * (int)clipCount);
-    if ((int)currentAmmo > (int)maxAmmo)
-        amount = (int)currentAmmo;
-    Broc::SetWeaponSlotAmmo(&player, &slot, 0);
-    Broc::SetWeaponSlotClipAmmo(&player, &slot, 0);
-    Broc::SetWeaponSlotClipAmmo(&player, &slot, (int)amount);
-    if ((int)amount > (int)clipSize)
-        Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - (int)clipSize);
+    if (slot == "grenade") {
+        int slotAmmo = Broc::GetWeaponSlotAmmo(player, slot);
+        int slotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, slot);
+        Broc::bint currentAmmo(slotClipAmmo + slotAmmo);
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, player);
+        Broc::bint maxAmmo;
+        GetWeaponClipCount(&maxAmmo, Broc::string(slot), playerClass, rank,
+                           team);
+        team.~string();
+        Broc::bint check((int)currentAmmo + (int)clipCount);
+        if ((int)check > (int)maxAmmo)
+            clipCount = 0;
+    }
+    if ((int)clipCount > 0) {
+        Broc::bint amount((int)clipSize * (int)clipCount);
+        amount = (int)amount + Broc::GetWeaponSlotAmmo(player, slot);
+        Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount);
+    }
     slot.~string();
 }
 
