@@ -7546,8 +7546,10 @@ void BlowUpIfUnderWorld(Broc::entity self) {
                 Broc::GetOrigin(&pos, &self);
                 selfPos = pos;
                 if (selfPos.z < -1000.0f) {
-                    Broc::entity lvl;
-                    lvl.___u0 = mp_util_wad::pLevel != NULL;
+                    Broc::entity lvl =
+                        mp_util_wad::pLevel != nullptr
+                            ? mp_util_wad::pLevel->_base.entity
+                            : Broc::entity();
                     Broc::DoDamage(lvl, 10000.0f, selfPos, HITLOC_NONE);
                 }
             }
