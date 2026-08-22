@@ -895,11 +895,26 @@ public:
             if (h.mVal == 0)
                 return;
             unsigned int idx = h.mVal & 0xFFF;
-            if (idx < 0x200
-                && (unsigned int)mElements[idx].mKey == (h.mVal >> 12)) {
+            if (idx >= 0x200) {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+                AeAssert::gCurrentLine = 175;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("freeing invalid handle"))
+                    __debugbreak();
+            } else if ((unsigned int)mElements[idx].mKey == (h.mVal >> 12)) {
                 _pad[idx >> 3] |= (uint8_t)(1u << (idx & 7));
                 mElements[idx].mObject = nullptr;
                 ++mElements[idx].mKey;
+            } else {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+                AeAssert::gCurrentLine = 170;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("freeing invalid handle"))
+                    __debugbreak();
             }
         }
     };

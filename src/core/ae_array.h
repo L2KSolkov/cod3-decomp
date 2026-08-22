@@ -17,6 +17,7 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 // ae_sized_array_base<T,CAPACITY> stores the element backing region.  The

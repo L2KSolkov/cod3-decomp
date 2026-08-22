@@ -2328,6 +2328,8 @@ public:
     static void DeleteInst();          // ?DeleteInst@PadAliasMgr@@SAXXZ
     static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
+    void Clear();                 // game.o 0x00661BA0
+    void Clear(int cntl);         // game.o 0x00661BD0
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
     ~PadAliasMgr();           // ??1PadAliasMgr@@QAE@XZ (core.o 0x004DEDD0)
     static void* operator new(size_t size, void* p); // ??2PadAliasMgr@@SAPAXIPAX@Z (core.o 0x004DEDE0)
@@ -2401,6 +2403,20 @@ PadAliasMgr* PadAliasMgr::CreateInst()
 PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
 {
     return mCtx[ctxIndex];
+}
+
+// ea: 0x00661BA0
+void PadAliasMgr::Clear()
+{
+    for (int i = 3; i != 0; --i)
+        mCtx[3 - i].Clear();
+}
+
+// ea: 0x00661BD0
+void PadAliasMgr::Clear(int cntl)
+{
+    for (int i = 3; i != 0; --i)
+        mCtx[3 - i].Clear(cntl);
 }
 
 extern int LocalClient_ClientToPort(int client);  // cl.o

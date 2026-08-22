@@ -2766,6 +2766,10 @@ public:
     unsigned int m_count;    // +0x00
     T*           m_elements; // +0x04
     cdl_array() : m_count(0), m_elements(nullptr) {}
+    cdl_array(unsigned int count) : m_count(0), m_elements(nullptr)
+    {
+        resize(count);
+    }
     ~cdl_array() { done(); }
 
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
