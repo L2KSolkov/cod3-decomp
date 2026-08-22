@@ -395,6 +395,7 @@ public:
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
+    biped_phys_info* get_bp_info();             // ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ (game.o 0x00602210)
     void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
     bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
     const math::Mat43 CalcRotTranMat43();         // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)

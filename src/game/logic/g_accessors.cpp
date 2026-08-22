@@ -73,6 +73,12 @@ proxy_obj_t::proxy_obj_t(unsigned char _bi, unsigned short _oi,
 {
 }
 
+// game.o 0x602210
+biped_phys_info* Entity::get_bp_info()
+{
+    return mBPInfo;
+}
+
 extern float sNaN;
 extern float nslGetWaveParam(nslWaveID waveID, int paramIndex,
                              float defaultValue);
