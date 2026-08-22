@@ -15566,8 +15566,10 @@ void UpdateAllowedCap() {
             Broc::string state("i_objective_c");
             Broc::entity area =
                 mp_util_wad::pLevel->warAreas[(unsigned int)flagId];
+            Broc::entity::__unnamed::origin_struct originField = {
+                area.GetHandle()};
             Broc::vector origin;
-            Broc::GetOrigin(&origin, &area);
+            originField.Get(&origin);
             ObjectiveAdd(flagId, state, pszString, origin,
                          (float)lWARObjectiveHeight, -1);
         } else {
