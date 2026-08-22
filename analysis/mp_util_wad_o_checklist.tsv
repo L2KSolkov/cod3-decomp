@@ -491,14 +491,14 @@ index	status	map_line
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
 491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
 492	PORTED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	PORTED: IDA forwards height/clientIndex and default display/child arguments to mObjectiveAdd5
-493	PORTED	0002:0054d320 ?StartGame__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C820 f i mp_util_wad.o
-494	PORTED	0002:0054d3c0 ?FlagThreadLauncher__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C8C0 f i mp_util_wad.o
+493	FIXED	0002:0054d320 ?StartGame__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C820 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
+494	FIXED	0002:0054d3c0 ?FlagThreadLauncher__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C8C0 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 495	FIXED	0002:0054d460 ?StartGame@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C960 f mp_util_wad.o	FIXED: IDA 0x0094D460 copies pLevel->_base.entity (or null) into RunFrame__functor
 496	VERIFIED	0002:0054d510 ?Code_EnterGame@Broc@@YAXXZ 00D3CA10 f i mp_util_wad.o
-497	PORTED	0002:0054d530 ?RunFrame__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3CA30 f i mp_util_wad.o
+497	FIXED	0002:0054d530 ?RunFrame__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3CA30 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 498	VERIFIED	0002:0054d5d0 ?CallbackAreaCaptured@_mp_ctf@@YAXHH@Z 00D3CAD0 f mp_util_wad.o
-499	PORTED	0002:0054e030 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@1Ubfloat@@@Z 00D3D530 f i mp_util_wad.o
-500	PORTED	0002:0054e100 ?PlayTeamSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11@Z 00D3D600 f i mp_util_wad.o
+499	FIXED	0002:0054e030 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@1Ubfloat@@@Z 00D3D530 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::bfloat>* per IDA
+500	FIXED	0002:0054e100 ?PlayTeamSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11@Z 00D3D600 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::string>* per IDA
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
 502	PORTED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o	PORTED: IDA 0x0094E2A0 forwards the const __int16& to m_entity_set_player_ctf_has_flag and returns it
 503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: IDA 0x0094E2E0 copies pLevel->_base.entity (or null) into SwitchToSecondarySpawns__functor
