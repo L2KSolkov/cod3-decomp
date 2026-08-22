@@ -475,17 +475,17 @@ index	status	map_line
 474	PORTED	0002:0054ba90 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@PBD@Z 00D3AF90 f i mp_util_wad.o	PORTED: IDA forwards both const string references, by-value vector, and default objective arguments to mObjectiveAdd5
 475	FIXED	0002:0054bae0 ?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AFE0 f mp_util_wad.o	FIXED: IDA 0x0094BAE0 uses pLevel->_base.entity for both endon labels
 476	VERIFIED	0002:0054bbd0 ?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ 00D3B0D0 f mp_util_wad.o
-477	PORTED	0002:0054bd80 ?LocalPlayerIntermission__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3B280 f i mp_util_wad.o
-478	PORTED	0002:0054be20 ?HasValidWeaponInSlot@_mp_common@@YA?AUbbool@@Ventity@Broc@@Vstring@4@@Z 00D3B320 f mp_util_wad.o
-479	PORTED	0002:0054bf20 ?GetWeaponSlotAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B420 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and slot to mGetWeaponSlotAmmo
-480	PORTED	0002:0054bf50 ?GetWeaponSlotClipAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B450 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and slot to mGetWeaponSlotClipAmmo
+477	FIXED	0002:0054bd80 ?LocalPlayerIntermission__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3B280 f i mp_util_wad.o	FIXED: corrected the wrapper return type to AeThreadFunctor1<Broc::entity>* per IDA's constructor return type
+478	VERIFIED	0002:0054be20 ?HasValidWeaponInSlot@_mp_common@@YA?AUbbool@@Ventity@Broc@@Vstring@4@@Z 00D3B320 f mp_util_wad.o	VERIFIED: body matches IDA's slot lookup, weapon-handle validity test, and by-value slot destruction
+479	VERIFIED	0002:0054bf20 ?GetWeaponSlotAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B420 f i mp_util_wad.o	VERIFIED: IDA forwards const entity/string references and slot to mGetWeaponSlotAmmo
+480	VERIFIED	0002:0054bf50 ?GetWeaponSlotClipAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B450 f i mp_util_wad.o	VERIFIED: IDA forwards const entity/string references and slot to mGetWeaponSlotClipAmmo
 481	VERIFIED	0002:0054bf80 ?SelectFirstAvailableWeapon@_mp_common@@YAXVentity@Broc@@@Z 00D3B480 f mp_util_wad.o
 482	PORTED	0002:0054c1b0 ?SwitchToWeapon@Broc@@YA_NABVentity@1@ABVstring@1@@Z 00D3B6B0 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and returns mSwitchToWeapon
 483	PORTED	0002:0054c1e0 ?GetWeaponSlotWeapon@Broc@@YAXABVentity@1@ABVstring@1@AAV31@@Z 00D3B6E0 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and output string to mGetWeaponSlotWeapon
-484	PORTED	0002:0054c220 ?reenable_medic_call@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3B720 f mp_util_wad.o
-485	PORTED	0002:0054c380 ?GetTimeTillNextRound@_mp_common@@YA?AUbint@@XZ 00D3B880 f mp_util_wad.o
-486	PORTED	0002:0054c4a0 ?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ 00D3B9A0 f mp_util_wad.o
-487	PORTED	0002:0054c9f0 ?Code_GetPlayerStat@Broc@@YAFVentity@1@I@Z 00D3BEF0 f i mp_util_wad.o
+484	VERIFIED	0002:0054c220 ?reenable_medic_call@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3B720 f mp_util_wad.o	VERIFIED: IDA matches the six hash labels, wait, and SetSpectateMedic call
+485	VERIFIED	0002:0054c380 ?GetTimeTillNextRound@_mp_common@@YA?AUbint@@XZ 00D3B880 f mp_util_wad.o	VERIFIED: IDA matches level round-over handling and next-round time arithmetic
+486	VERIFIED	0002:0054c4a0 ?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ 00D3B9A0 f mp_util_wad.o	VERIFIED: IDA matches team-score comparison and tie-break behavior
+487	FIXED	0002:0054c9f0 ?Code_GetPlayerStat@Broc@@YAFVentity@1@I@Z 00D3BEF0 f i mp_util_wad.o	FIXED: added the IDA-matching __int16 wrapper and BrocAPI mGetPlayerStat slot at +0x330
 488	VERIFIED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o
 489	PORTED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	PORTED: IDA 0x0094CD50 direct mDebugRenderBox forward
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
