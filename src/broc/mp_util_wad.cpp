@@ -10354,12 +10354,6 @@ void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
 // ============================================================================
 namespace _mp_ctf {
 
-static Broc::entity AxisFlagHolder;
-static Broc::entity AlliesFlagHolder;
-static Broc::vector AxisFlagOrigin;
-static Broc::vector AxisFlagAngles;
-static Broc::vector AlliesFlagOrigin;
-static Broc::vector AlliesFlagAngles;
 static Broc::bfloat lCTFObjectiveDontShow(-1.0f);
 static Broc::bfloat lCTFObjectiveHeightFlag(0.0f);
 static Broc::bfloat lCTFEntityOffZOffset(-1000.0f);
