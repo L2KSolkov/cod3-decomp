@@ -859,7 +859,7 @@ index	status	map_line
 858	FIXED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o	FIXED: uses the IDA-backed AnimHeap::sInst singleton for the 1 MiB range check
 859	VERIFIED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o	VERIFIED: stores mType/callback and strlen(type) exactly as IDA
 860	VERIFIED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o	VERIFIED: IDA strncmp prefix, callback offset, and false return match
-861	PORTED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o PORTED: source implementation in 460bc8e9; IDA 0x004DF4B0 forwards to AeHash
+861	VERIFIED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o	VERIFIED: forwards the byte-string pointer to AeHash exactly as IDA 0x004DF4B0
 862	SKIPPED	0002:000df4c0 ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008CE9C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 863	VERIFIED	0002:000df4d0 ?push_back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXABQAVae_heap_base@@@Z 008CE9D0 f i core.o
 864	VERIFIED	0002:000df560 ??0?$Bitmask@G@@QAE@XZ 008CEA60 f i core.o
