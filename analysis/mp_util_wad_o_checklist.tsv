@@ -1218,7 +1218,7 @@ index	status	map_line
 1217	SKIPPED	0002:00587e40 ??_G?$dyn_array@Uvector@Broc@@@Broc@@QAEPAXI@Z 00D77340 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1218	SKIPPED	0002:00587e90 ??_G?$dyn_array@M@Broc@@QAEPAXI@Z 00D77390 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1219	SKIPPED	0002:00587ee0 ??_G?$dyn_array@H@Broc@@QAEPAXI@Z 00D773E0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1220	PORTED	0002:00587f30 ??$ConcatText@Vstring@Broc@@@Broc@@YAXAAVstring@0@ABV10@@Z 00D77430 f i mp_util_wad.o	PORTED: added the IDA string ConcatText specialization through the shared formatter
+1220	VERIFIED	0002:00587f30 ??$ConcatText@Vstring@Broc@@@Broc@@YAXAAVstring@0@ABV10@@Z 00D77430 f i mp_util_wad.o	VERIFIED: IDA string ConcatText assignment matches the shared 256-byte formatter
 1221	VERIFIED	0002:00587f70 ?resize@?$dyn_array@Uvector@Broc@@@Broc@@QAEXII@Z 00D77470 f i mp_util_wad.o	VERIFIED: IDA resize behavior matches the shared dyn_array Win32 storage implementation
 1222	VERIFIED	0002:00588270 ??4?$dyn_array@Uvector@Broc@@@Broc@@QAEXABV01@@Z 00D77770 f i mp_util_wad.o	VERIFIED: IDA vector copy-assignment behavior matches the shared dyn_array implementation
 1223	VERIFIED	0002:00588490 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@II@Z 00D77990 f i mp_util_wad.o	VERIFIED: IDA vector construct_array behavior matches the shared Win32 allocator equivalent
@@ -1228,26 +1228,26 @@ index	status	map_line
 1227	VERIFIED	0002:00588c90 ??4?$dyn_array@M@Broc@@QAEXABV01@@Z 00D78190 f i mp_util_wad.o	VERIFIED: IDA float copy-assignment behavior matches the shared dyn_array implementation
 1228	VERIFIED	0002:00588e90 ?destroy_all@?$dyn_array@M@Broc@@AAEXXZ 00D78390 f i mp_util_wad.o	VERIFIED: IDA float destroy_all behavior matches the shared Win32 storage equivalent
 1229	FIXED	0002:00589010 ?resize@?$dyn_array@Vstring@Broc@@@Broc@@QAEXII@Z 00D78510 f i mp_util_wad.o	FIXED: matched IDA string resize destruction by releasing removed string blocks while preserving Win32 capacity storage
-1230	PORTED	0002:00589310 ??$ConcatText@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAVstring@0@AAY0BD@$$CBDABUbint@@@Z 00D78810 f i mp_util_wad.o	PORTED: added the IDA string/bint ConcatText formatter
-1231	PORTED	0002:00589370 ?GetText@Broc@@YAPBDPBDPAD@Z 00D78870 f i mp_util_wad.o	PORTED: added the IDA localized const-char GetText overload
-1232	PORTED	0002:005893a0 ?GetText@Broc@@YAPBDUbint@@PAD@Z 00D788A0 f i mp_util_wad.o	PORTED: added the IDA decimal bint GetText overload
-1233	PORTED	0002:005893e0 ??$ConcatText@PBD$$BY01$$CBD$$BY0BD@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0BD@$$CBD@Z 00D788E0 f i mp_util_wad.o	PORTED: added the IDA three-part ConcatText formatter
-1234	PORTED	0002:00589470 ??$ConcatText@PBD$$BY01$$CBD$$BY0BG@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0BG@$$CBD@Z 00D78970 f i mp_util_wad.o	PORTED: added the IDA three-part ConcatText formatter
-1235	PORTED	0002:00589500 ??$ConcatText@$$BY0BC@$$CBD@Broc@@YAXAAVstring@0@AAY0BC@$$CBD@Z 00D78A00 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1236	PORTED	0002:00589540 ??$ConcatText@PBD$$BY01$$CBD$$BY0CB@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0CB@$$CBD@Z 00D78A40 f i mp_util_wad.o	PORTED: added the IDA three-part ConcatText formatter
-1237	PORTED	0002:005895d0 ??$ConcatText@$$BY0BL@$$CBD@Broc@@YAXAAVstring@0@AAY0BL@$$CBD@Z 00D78AD0 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1238	PORTED	0002:00589610 ??$ConcatText@$$BY0BJ@$$CBD@Broc@@YAXAAVstring@0@AAY0BJ@$$CBD@Z 00D78B10 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1239	PORTED	0002:00589650 ??$ConcatText@$$BY0BG@$$CBD@Broc@@YAXAAVstring@0@AAY0BG@$$CBD@Z 00D78B50 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1240	PORTED	0002:00589690 ??$ConcatText@$$BY0BI@$$CBD@Broc@@YAXAAVstring@0@AAY0BI@$$CBD@Z 00D78B90 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1241	PORTED	0002:005896d0 ??$ConcatText@$$BY0CF@$$CBD@Broc@@YAXAAVstring@0@AAY0CF@$$CBD@Z 00D78BD0 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1242	PORTED	0002:00589710 ??$ConcatText@$$BY0CH@$$CBD@Broc@@YAXAAVstring@0@AAY0CH@$$CBD@Z 00D78C10 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1243	PORTED	0002:00589750 ??$ConcatText@$$BY0BK@$$CBD@Broc@@YAXAAVstring@0@AAY0BK@$$CBD@Z 00D78C50 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1244	PORTED	0002:00589790 ??$ConcatText@$$BY0BH@$$CBD@Broc@@YAXAAVstring@0@AAY0BH@$$CBD@Z 00D78C90 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1245	PORTED	0002:005897d0 ??$ConcatText@$$BY0BA@$$CBD@Broc@@YAXAAVstring@0@AAY0BA@$$CBD@Z 00D78CD0 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1246	PORTED	0002:00589810 ??$ConcatText@$$BY0BD@$$CBD@Broc@@YAXAAVstring@0@AAY0BD@$$CBD@Z 00D78D10 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1247	PORTED	0002:00589850 ??$ConcatText@PBD@Broc@@YAXAAVstring@0@ABQBD@Z 00D78D50 f i mp_util_wad.o	PORTED: added the IDA const-char* ConcatText formatter
-1248	PORTED	0002:00589890 ??$ConcatText@$$BY0CE@$$CBD@Broc@@YAXAAVstring@0@AAY0CE@$$CBD@Z 00D78D90 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1249	PORTED	0002:005898d0 ??$ConcatText@$$BY0BM@$$CBD@Broc@@YAXAAVstring@0@AAY0BM@$$CBD@Z 00D78DD0 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
+1230	VERIFIED	0002:00589310 ??$ConcatText@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAVstring@0@AAY0BD@$$CBDABUbint@@@Z 00D78810 f i mp_util_wad.o	VERIFIED: IDA string/bint ConcatText uses the shared localized/decimal formatter
+1231	VERIFIED	0002:00589370 ?GetText@Broc@@YAPBDPBDPAD@Z 00D78870 f i mp_util_wad.o	VERIFIED: IDA const-char GetText forwards to mLocalize as ported
+1232	VERIFIED	0002:005893a0 ?GetText@Broc@@YAPBDUbint@@PAD@Z 00D788A0 f i mp_util_wad.o	VERIFIED: IDA bint GetText emits decimal text as ported
+1233	VERIFIED	0002:005893e0 ??$ConcatText@PBD$$BY01$$CBD$$BY0BD@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0BD@$$CBD@Z 00D788E0 f i mp_util_wad.o	VERIFIED: IDA three-part ConcatText sequence matches the shared formatter
+1234	VERIFIED	0002:00589470 ??$ConcatText@PBD$$BY01$$CBD$$BY0BG@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0BG@$$CBD@Z 00D78970 f i mp_util_wad.o	VERIFIED: IDA three-part ConcatText sequence matches the shared formatter
+1235	VERIFIED	0002:00589500 ??$ConcatText@$$BY0BC@$$CBD@Broc@@YAXAAVstring@0@AAY0BC@$$CBD@Z 00D78A00 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1236	VERIFIED	0002:00589540 ??$ConcatText@PBD$$BY01$$CBD$$BY0CB@$$CBD@Broc@@YAXAAVstring@0@ABQBDAAY01$$CBDAAY0CB@$$CBD@Z 00D78A40 f i mp_util_wad.o	VERIFIED: IDA three-part ConcatText sequence matches the shared formatter
+1237	VERIFIED	0002:005895d0 ??$ConcatText@$$BY0BL@$$CBD@Broc@@YAXAAVstring@0@AAY0BL@$$CBD@Z 00D78AD0 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1238	VERIFIED	0002:00589610 ??$ConcatText@$$BY0BJ@$$CBD@Broc@@YAXAAVstring@0@AAY0BJ@$$CBD@Z 00D78B10 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1239	VERIFIED	0002:00589650 ??$ConcatText@$$BY0BG@$$CBD@Broc@@YAXAAVstring@0@AAY0BG@$$CBD@Z 00D78B50 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1240	VERIFIED	0002:00589690 ??$ConcatText@$$BY0BI@$$CBD@Broc@@YAXAAVstring@0@AAY0BI@$$CBD@Z 00D78B90 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1241	VERIFIED	0002:005896d0 ??$ConcatText@$$BY0CF@$$CBD@Broc@@YAXAAVstring@0@AAY0CF@$$CBD@Z 00D78BD0 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1242	VERIFIED	0002:00589710 ??$ConcatText@$$BY0CH@$$CBD@Broc@@YAXAAVstring@0@AAY0CH@$$CBD@Z 00D78C10 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1243	VERIFIED	0002:00589750 ??$ConcatText@$$BY0BK@$$CBD@Broc@@YAXAAVstring@0@AAY0BK@$$CBD@Z 00D78C50 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1244	VERIFIED	0002:00589790 ??$ConcatText@$$BY0BH@$$CBD@Broc@@YAXAAVstring@0@AAY0BH@$$CBD@Z 00D78C90 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1245	VERIFIED	0002:005897d0 ??$ConcatText@$$BY0BA@$$CBD@Broc@@YAXAAVstring@0@AAY0BA@$$CBD@Z 00D78CD0 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1246	VERIFIED	0002:00589810 ??$ConcatText@$$BY0BD@$$CBD@Broc@@YAXAAVstring@0@AAY0BD@$$CBD@Z 00D78D10 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1247	VERIFIED	0002:00589850 ??$ConcatText@PBD@Broc@@YAXAAVstring@0@ABQBD@Z 00D78D50 f i mp_util_wad.o	VERIFIED: IDA const-char ConcatText sequence matches the shared formatter
+1248	VERIFIED	0002:00589890 ??$ConcatText@$$BY0CE@$$CBD@Broc@@YAXAAVstring@0@AAY0CE@$$CBD@Z 00D78D90 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
+1249	VERIFIED	0002:005898d0 ??$ConcatText@$$BY0BM@$$CBD@Broc@@YAXAAVstring@0@AAY0BM@$$CBD@Z 00D78DD0 f i mp_util_wad.o	VERIFIED: IDA single-part ConcatText sequence matches the shared formatter
 1250	VERIFIED	0002:00589910 ?resize@?$dyn_array@H@Broc@@QAEXII@Z 00D78E10 f i mp_util_wad.o	VERIFIED: IDA int resize behavior matches the shared dyn_array implementation
 1251	VERIFIED	0002:00589ba0 ?construct_array@?$dyn_array@H@Broc@@AAEPAHII@Z 00D790A0 f i mp_util_wad.o	VERIFIED: IDA int construct_array behavior matches the shared Win32 allocator equivalent
 1252	VERIFIED	0002:00589d30 ?destroy_all@?$dyn_array@H@Broc@@AAEXXZ 00D79230 f i mp_util_wad.o	VERIFIED: IDA int destroy_all behavior matches the shared Win32 storage equivalent
