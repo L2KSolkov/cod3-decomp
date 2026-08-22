@@ -10572,12 +10572,14 @@ void CallbackHostMigrated() {
         Broc::vector aOrigin;
         Broc::entity h = *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->axis_flag_ent);
         mp_util_wad::entity_get_angles(&aAngles, mp_util_wad::pLevel->axis_flag_ent);
-        mp_util_wad::entity_get_origin(&aOrigin, h);
+        mp_util_wad::entity_get_origin(&aOrigin,
+                                       mp_util_wad::pLevel->axis_flag_ent);
         Broc::vector bAngles;
         Broc::vector bOrigin;
         Broc::entity h2 = *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->allies_flag_ent);
         mp_util_wad::entity_get_angles(&bAngles, mp_util_wad::pLevel->allies_flag_ent);
-        mp_util_wad::entity_get_origin(&bOrigin, h2);
+        mp_util_wad::entity_get_origin(&bOrigin,
+                                       mp_util_wad::pLevel->allies_flag_ent);
         Broc::Code_SendGameStateCTF(p, &aOrigin, &aAngles, h, &bOrigin, &bAngles, h2);
         i = (int)i + 1;
     }
