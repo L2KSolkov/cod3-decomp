@@ -2929,3 +2929,46 @@ Broc::vector* GetEE_origin(Broc::vector* result, Broc::pathnode node) {
     *result = value;
     return result;
 }
+
+// IsEEDefined_origin - ea: 0x995D70.
+Broc::bbool* IsEEDefined_origin(Broc::bbool* result,
+                                Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_script_chain - ea: 0x995E10. Field key from IDA: 0x46F0EE57.
+Broc::string* GetEE_script_chain(Broc::string* result,
+                                 Broc::pathnode node) {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+        &value, node.GetHandle(), 0x46F0EE57u);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_script_chain - ea: 0x995F10.
+Broc::bbool* IsEEDefined_script_chain(Broc::bbool* result,
+                                      Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        Broc::string value;
+        Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+            &value, node.GetHandle(), 0x46F0EE57u);
+        result->mVal = Broc::IsDefined(rhs);
+        value.~string();
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_targetname - ea: 0x996010.
+Broc::string* GetEE_targetname(Broc::string* result, Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_targetname(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
