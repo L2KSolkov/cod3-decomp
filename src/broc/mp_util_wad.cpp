@@ -15740,7 +15740,9 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
     Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
     Broc::bint team(1);
     Broc::string selfTeam;
-    mp_util_wad::entity_get_team(&selfTeam, *self);
+    Broc::entity::__unnamed::team_struct selfTeamField = {
+        self->GetHandle()};
+    selfTeamField.Get(&selfTeam);
     if (selfTeam == "axis") {
         spawnType = mp_util_wad::pLevel->spawnTypeAxis;
         team = -1;
@@ -15753,9 +15755,11 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
 
     Broc::entity area = mp_util_wad::pLevel->warAreas[
         (unsigned int)(int)mp_util_wad::pLevel->warIndex];
-    Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+    Broc::entity& trigger = area->flagEnd.GetRef();
     Broc::string targetname;
-    mp_util_wad::entity_get_targetname(&targetname, trigger);
+    Broc::entity::__unnamed::targetname_struct targetnameField = {
+        trigger.GetHandle()};
+    targetnameField.Get(&targetname);
     Broc::GetEntArray(&targetname, 0x15B1F8A7u, &temp_spawnpoints, 0);
 
     for (Broc::bint i(0); (int)i < Broc::size(temp_spawnpoints);
@@ -15783,8 +15787,9 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                     (int)team)
                     continue;
                 Broc::string candidateTarget;
-                mp_util_wad::entity_get_targetname(&candidateTarget,
-                                                   candidateTrigger);
+                Broc::entity::__unnamed::targetname_struct candidateTargetField = {
+                    candidateTrigger.GetHandle()};
+                candidateTargetField.Get(&candidateTarget);
                 Broc::GetEntArray(&candidateTarget, 0x15B1F8A7u,
                                   &temp_spawnpoints, 0);
                 for (Broc::bint j(0); (int)j < Broc::size(temp_spawnpoints);
@@ -15812,8 +15817,9 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                     (int)team)
                     continue;
                 Broc::string candidateTarget;
-                mp_util_wad::entity_get_targetname(&candidateTarget,
-                                                   candidateTrigger);
+                Broc::entity::__unnamed::targetname_struct candidateTargetField = {
+                    candidateTrigger.GetHandle()};
+                candidateTargetField.Get(&candidateTarget);
                 Broc::GetEntArray(&candidateTarget, 0x15B1F8A7u,
                                   &temp_spawnpoints, 0);
                 for (Broc::bint j(0); (int)j < Broc::size(temp_spawnpoints);
