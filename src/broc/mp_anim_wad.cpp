@@ -3167,3 +3167,49 @@ Broc::bbool* IsEEDefined_detourstart(Broc::bbool* result,
     }
     return result;
 }
+
+// GetEE_eventwait_used - ea: 0x996E50. Field key from IDA: 0xBBC555C7.
+Broc::bint* GetEE_eventwait_used(Broc::bint* result,
+                                 Broc::vehiclenode node) {
+    const int value = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+        node.GetHandle(), 0xBBC555C7u);
+    new (result) Broc::bint(value);
+    return result;
+}
+
+// IsEEDefined_eventwait_used - ea: 0x996ED0.
+Broc::bbool* IsEEDefined_eventwait_used(Broc::bbool* result,
+                                        Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+            node.GetHandle(), 0xBBC555C7u);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_detoured - ea: 0x996F80. Field key from IDA: 0xBF22439C.
+Broc::bint* GetEE_detoured(Broc::bint* result,
+                           Broc::vehiclenode node) {
+    const int value = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+        node.GetHandle(), 0xBF22439Cu);
+    new (result) Broc::bint(value);
+    return result;
+}
+
+// IsEEDefined_detoured - ea: 0x997000.
+Broc::bbool* IsEEDefined_detoured(Broc::bbool* result,
+                                  Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+            node.GetHandle(), 0xBF22439Cu);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
