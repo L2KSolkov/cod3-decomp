@@ -933,20 +933,20 @@ index	status	map_line
 932	FIXED	0002:000e0600 ?GetValue@?$DbFieldType@M@@QBEABMXZ 008CFB00 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0600 returns the address of m_val
 933	FIXED	0002:000e0610 ?GetValue@?$DbFieldType@VFourCC@@@@QBEABVFourCC@@XZ 008CFB10 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0610 returns the address of m_val
 934	FIXED	0002:000e0620 ?GetValue@?$DbFieldType@VDbQueryString@@@@QBEABVDbQueryString@@XZ 008CFB20 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0620 returns the address of m_val
-935	PORTED	0002:000e0630 ??0?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAE@XZ 008CFB30 f i core.o
-936	PORTED	0002:000e0640 ?empty@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBE_NXZ 008CFB40 f i core.o
-937	PORTED	0002:000e0660 ?push_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEXABQBVDbGraphNode@@@Z 008CFB60 f i core.o
-938	PORTED	0002:000e0700 ?pop_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEAAPBVDbGraphNode@@XZ 008CFC00 f i core.o
+935	VERIFIED	0002:000e0630 ??0?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAE@XZ 008CFB30 f i core.o VERIFIED: IDA 0x004E0630 initializes m_size to zero; existing template matches
+936	VERIFIED	0002:000e0640 ?empty@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBE_NXZ 008CFB40 f i core.o VERIFIED: IDA 0x004E0640 returns m_size == 0; existing template matches
+937	VERIFIED	0002:000e0660 ?push_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEXABQBVDbGraphNode@@@Z 008CFB60 f i core.o VERIFIED: IDA 0x004E0660 asserts at line 174, conditionally stores the element, and increments m_size; existing template matches
+938	VERIFIED	0002:000e0700 ?pop_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEAAPBVDbGraphNode@@XZ 008CFC00 f i core.o VERIFIED: IDA 0x004E0700 decrements nonzero m_size and returns the indexed element; existing template matches
 939	SKIPPED	0002:000e0730 ??9?$IVPointer@VDbTableSet@@@@QBE_NABV0@@Z 008CFC30 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 940	VERIFIED	0002:000e0750 ??0?$ae_sized_array@PBVDbTable@@$0BA@@@QAE@XZ 008CFC50 f i core.o
 941	VERIFIED	0002:000e0760 ?push_back@?$ae_sized_array@PBVDbTable@@$0BA@@@QAEXABQBVDbTable@@@Z 008CFC60 f i core.o
 942	VERIFIED	0002:000e07e0 ??0?$ae_formatted_string@$0CA@E@@QAA@PBDZZ 008CFCE0 f i core.o
 943	VERIFIED	0002:000e0830 ??0?$ae_sized_array@M$0CA@@@QAE@XZ 008CFD30 f i core.o
-944	PORTED	0002:000e0840 ??A?$ae_sized_array@M$0CA@@@QAEAAMH@Z 008CFD40 f i core.o
+944	VERIFIED	0002:000e0840 ??A?$ae_sized_array@M$0CA@@@QAEAAMH@Z 008CFD40 f i core.o VERIFIED: IDA 0x004E0840 checks idx against 0x20 with ae_array.h line 154 assert and returns m_elements[idx]; existing template matches
 945	VERIFIED	0002:000e08c0 ?push_back@?$ae_sized_array@M$0CA@@@QAEXABM@Z 008CFDC0 f i core.o
-946	PORTED	0002:000e0950 ??Diterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QBEAAPBVDbTable@@XZ 008CFE50 f i core.o
-947	PORTED	0002:000e0960 ??Eiterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QAEAAV01@XZ 008CFE60 f i core.o
-948	PORTED	0002:000e0970 ??9iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QBE_NV01@@Z 008CFE70 f i core.o
+946	VERIFIED	0002:000e0950 ??Diterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QBEAAPBVDbTable@@XZ 008CFE50 f i core.o VERIFIED: IDA 0x004E0950 returns iterator m_ptr; existing template matches
+947	VERIFIED	0002:000e0960 ??Eiterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QAEAAV01@XZ 008CFE60 f i core.o VERIFIED: IDA 0x004E0960 increments m_ptr and returns this; existing template matches
+948	VERIFIED	0002:000e0970 ??9iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QBE_NV01@@Z 008CFE70 f i core.o VERIFIED: IDA 0x004E0970 compares iterator m_ptr values; existing template matches
 949	SKIPPED	0002:000e0990 ?size@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008CFE90 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 950	PORTED	0002:000e09c0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEAAV01@XZ 008CFEC0 f i core.o
 951	PORTED	0002:000e09e0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AV01@H@Z 008CFEE0 f i core.o
