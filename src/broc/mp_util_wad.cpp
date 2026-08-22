@@ -12402,7 +12402,41 @@ void CallbackDropFlag(Broc::entity player) {
 
 // HandleDropFlag - ea: 0x969F10
 void HandleDropFlag(Broc::entity player) {
-    (void)player;
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, player);
+    if (!(bool)hasHolder)
+        return;
+
+    mp_util_wad::entity_set_ctf_has_flag(player, 0);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    *mp_util_wad::GetEE_last_dropped_time(player) = (int)now;
+
+    static Broc::bfloat speed(200.0f);
+    static Broc::bfloat pitch_0(-30.0f);
+    Broc::vector playerAngles;
+    mp_util_wad::entity_get_angles(&playerAngles, player);
+    Broc::vector launchAngles((float)pitch_0, playerAngles.y, 0.0f);
+    Broc::vector velocity = ::AnglesToForward(launchAngles) * (float)speed;
+
+    Broc::vector playerOrigin;
+    mp_util_wad::entity_get_origin(&playerOrigin, player);
+    Broc::vector dropOffset(0.0f, 0.0f, 20.0f);
+    Broc::vector dropOrigin = playerOrigin + dropOffset;
+    Broc::Code_DropItem(
+        4, (int)mp_util_wad::pLevel->current_flag, &dropOrigin,
+        &playerAngles, &velocity);
+
+    Broc::string axisWeapon("mp_flag_axis");
+    Broc::TakeWeapon(&player, &axisWeapon);
+    axisWeapon.~string();
+    Broc::string alliesWeapon("mp_flag_allies");
+    Broc::TakeWeapon(&player, &alliesWeapon);
+    alliesWeapon.~string();
+
+    if (!Broc::SwitchToLastWeapon(&player))
+        _mp_common::SelectFirstAvailableWeapon(player);
+    *mp_util_wad::GetEE_holder(player) = Broc::gEntityUndef;
 }
 
 // HandlePickupFlag - ea: 0x968920
