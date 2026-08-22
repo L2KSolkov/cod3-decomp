@@ -843,23 +843,23 @@ index	status	map_line
 842	VERIFIED	0002:000df2c0 ?length@idStr@@QBEHXZ 008CE7C0 f i core.o VERIFIED: IDA 0x004DF2C0 returns m_data->len or zero; existing source matches
 843	VERIFIED	0002:000df2d0 ??1PendingQuery@EffectEventSys@@QAE@XZ 008CE7D0 f i core.o
 844	VERIFIED	0002:000df2e0 ??1RumbleEffectInstance@@QAE@XZ 008CE7E0 f i core.o
-845	PORTED	0002:000df2f0 ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ 008CE7F0 f i core.o
+845	PORTED	0002:000df2f0 ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ 008CE7F0 f i core.o PORTED: source implementation in 8c8586d1; IDA 0x004DF2F0 sets mFlags |= 1u
 846	VERIFIED	0002:000df300 ?FastForward@AbstractEffect@@UAEXM@Z 008CE800 f i core.o
 847	VERIFIED	0002:000df310 ?StartFadeOut@AbstractEffect@@UAEXM@Z 008CE810 f i core.o
 848	VERIFIED	0002:000df320 ?IsLooping@AbstractEffect@@UBE_NXZ 008CE820 f i core.o
 849	VERIFIED	0002:000df330 ?IsQueued@AbstractEffect@@UBE_NXZ 008CE830 f i core.o
-850	PORTED	0002:000df340 ?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z 008CE840 f i core.o
-851	PORTED	0002:000df350 ?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ 008CE850 f i core.o
-852	PORTED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o
-853	PORTED	0002:000df370 ??_FRumbleEffectInstanceHandle@@QAEXXZ 008CE870 f i core.o
+850	PORTED	0002:000df340 ?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z 008CE840 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF340 empty body
+851	PORTED	0002:000df350 ?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ 008CE850 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF350 empty body
+852	PORTED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF360 empty body
+853	SKIPPED	0002:000df370 ??_FRumbleEffectInstanceHandle@@QAEXXZ 008CE870 f i core.o SKIPPED: compiler-generated default constructor closure; supplied by the compiler
 854	VERIFIED	0002:000df380 ??0nalHeap@@QAE@XZ 008CE880 f i core.o
 855	PORTED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o
 856	PORTED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o
 857	PORTED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o
 858	PORTED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o
-859	PORTED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o
-860	PORTED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o
-861	PORTED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o
+859	PORTED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF430 stores mType, strlen(type), and callback
+860	PORTED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF460 performs prefix callback search and returns false
+861	PORTED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o PORTED: source implementation in 460bc8e9; IDA 0x004DF4B0 forwards to AeHash
 862	SKIPPED	0002:000df4c0 ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008CE9C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 863	VERIFIED	0002:000df4d0 ?push_back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXABQAVae_heap_base@@@Z 008CE9D0 f i core.o
 864	VERIFIED	0002:000df560 ??0?$Bitmask@G@@QAE@XZ 008CEA60 f i core.o
