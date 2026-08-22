@@ -174,7 +174,7 @@ index	status	map_line
 173	VERIFIED	0002:0012c960 ?Key_KeynumToString@@YAPADHH@Z 0091BE60 f cl.o
 174	VERIFIED	0002:0012ca80 ?CL_PortInPlay@@YA_NH@Z 0091BF80 f cl.o
 175	VERIFIED	0002:0012cab0 ?CL_GetKeyBinding@@YAHPBDPAPBD1@Z 0091BFB0 f cl.o
-176	PORTED	0002:0012caf0 ?CL_PreAllocStrings@@YAXXZ 0091BFF0 f cl.o PORTED: IDA match; preserves allocation sizes and initialization order
+176	FIXED	0002:0012caf0 ?CL_PreAllocStrings@@YAXXZ 0091BFF0 f cl.o FIXED: restored IDA void signature and removed decompiler-only return value
 177	VERIFIED	0002:0012cbb0 ?CL_EndgameMenu@@YAXXZ 0091C0B0 f cl.o
 178	VERIFIED	0002:0012cbc0 ?CL_CDDialog@@YAXXZ 0091C0C0 f cl.o
 179	VERIFIED	0002:0012cbd0 ?CL_AddReliableCommand@@YAXPBD@Z 0091C0D0 f cl.o
