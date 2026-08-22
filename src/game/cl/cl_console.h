@@ -162,14 +162,14 @@ extern cvar_t* cl_viewYawCompensate;
 // ============================================================================
 // Functions
 // ============================================================================
-int Con_ToggleConsole_f();
+void Con_ToggleConsole_f();
 void Con_Dump_f();
 void Con_RunConsole();
 int Con_PageUp();
 int Con_PageDown();
 int Con_Top();
-int Con_Bottom();
-int Con_ClearNotify();
+void Con_Bottom();
+void Con_ClearNotify();
 void Con_ClearMiniConsole();
 void Con_ClearSubtitles();
 int Con_CheckResize();

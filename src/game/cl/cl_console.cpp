@@ -322,7 +322,7 @@ cvar_t* com_cl_running;
 // ============================================================================
 
 // ea: 0x529070
-int Con_ToggleConsole_f()
+void Con_ToggleConsole_f()
 {
     Field_Clear(&g_consoleField);
     g_consoleField.widthInPixels = g_console_field_width;
@@ -330,7 +330,6 @@ int Con_ToggleConsole_f()
     g_consoleField.charHeight = (float)g_console_char_height;
     g_consoleField.bFixedSize = 1;
     cls.keyCatchers ^= 1;
-    return 1;
 }
 
 // ea: 0x5290C0
@@ -455,14 +454,13 @@ int Con_Top()
 }
 
 // ea: 0x5296C0
-int Con_Bottom()
+void Con_Bottom()
 {
     con.display = con.current;
-    return con.current;
 }
 
 // ea: 0x529720
-int Con_ClearNotify()
+void Con_ClearNotify()
 {
     memset(con.gamemsg_starttimes, 0, 4 * 8);
     memset(con.gamemsg_endtimes, 0, 4 * 8);
@@ -471,7 +469,6 @@ int Con_ClearNotify()
     memset(msgwnd.endtimes, 0, 4 * msgwnd.count);
     msgwnd.current_line = 0;
     msgwnd.typingLineIndex = -1;
-    return 0;
 }
 
 // ea: 0x529780
