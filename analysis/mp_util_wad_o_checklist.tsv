@@ -818,7 +818,7 @@ index	status	map_line
 817	VERIFIED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o	VERIFIED: IDA 0x00972680 forwards scale, duration, source, radius, and player index
 818	VERIFIED	0002:005726c0 ?bigsplash@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61BC0 f mp_util_wad.o
 819	FIXED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o	FIXED: IDA 0x00972780 uses separate pLevel->_base.entity values for the extinguish and target-hash endon paths
-820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o	PORTED: added IDA 0x00972AB0 string adapter forwarding c_str() to the existing char-label endon path
+820	VERIFIED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o	VERIFIED: IDA 0x00972AB0 forwards c_str() to the const-char endon overload
 821	VERIFIED	0002:00572af0 ?deleteonextinguish__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D61FF0 f i mp_util_wad.o	VERIFIED: IDA 0x00972AF0 matches 0xC-byte AeThreadFunctor1 allocation, null check, and deleteonextinguish constructor
 822	FIXED	0002:00572b90 ?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62090 f mp_util_wad.o	FIXED: IDA 0x00972B90 waits on pLevel->_base.entity (or null)
 823	VERIFIED	0002:00572c20 ?setup_effects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62120 f mp_util_wad.o
@@ -830,7 +830,7 @@ index	status	map_line
 829	VERIFIED	0002:005736b0 ?PickTeam@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@@Z 00D62BB0 f mp_util_wad.o	VERIFIED: IDA 0x009736B0 matches player enumeration, player-state filtering, team counts, score tie-break, random tie-break, and cleanup
 830	VERIFIED	0002:00573ba0 ?team_balance@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@V23@@Z 00D630A0 f mp_util_wad.o	VERIFIED: IDA 0x00973BA0 matches per-team counts, allowance-2 balancing decisions, result construction, and cleanup
 831	VERIFIED	0002:00573fa0 ?team_balance@_mp_teambalance@@YAXUbbool@@@Z 00D634A0 f mp_util_wad.o	VERIFIED: IDA 0x00973FA0 matches team collection, half-total calculation, random selection, team changes, and cleanup
-832	PORTED	0002:00574680 ?Code_ChangePlayerTeam@Broc@@YAXVentity@1@ABVstring@1@_N@Z 00D63B80 f i mp_util_wad.o	PORTED: added the exact IDA 0x00974680 API wrapper using entity handle, team pointer, and autoBalance
+832	VERIFIED	0002:00574680 ?Code_ChangePlayerTeam@Broc@@YAXVentity@1@ABVstring@1@_N@Z 00D63B80 f i mp_util_wad.o	VERIFIED: IDA 0x00974680 forwards player handle, team pointer, and autoBalance to mChangePlayerTeam
 833	VERIFIED	0002:005746c0 ?vLerp@_mp_war@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D63BC0 f mp_util_wad.o	VERIFIED: IDA 0x009746C0 matches component-wise a + (b - a) * t interpolation and result construction
 834	VERIFIED	0002:00574830 ?main@_mp_war@@YAXVentity@Broc@@@Z 00D63D30 f mp_util_wad.o
 835	VERIFIED	0002:00574d50 ?StartGame__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64250 f i mp_util_wad.o	VERIFIED: IDA 0x00974D50 matches 0xC-byte AeThreadFunctor1 allocation, null check, and StartGame constructor
