@@ -13351,12 +13351,14 @@ int CallbackGetFlagBreatherTime() {
 int CallbackGetTeamControllingFlag(unsigned int flagIndex) {
     if (!(bool)mp_util_wad::pLevel->roundStarted)
         return 0;
-    if ((int)flagIndex < 0 ||
-        (int)flagIndex >= Broc::size(mp_util_wad::pLevel->warAreas))
+    if (flagIndex >= (unsigned int)Broc::size(mp_util_wad::pLevel->warAreas))
         return 0;
     Broc::entity area = mp_util_wad::pLevel->warAreas[flagIndex];
-    Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-    return (int)*mp_util_wad::GetEE_capTeam(trigger);
+    Broc::entity& trigger = area->flagEnd.GetRef();
+    int team = (int)trigger->capTeam.GetRef();
+    if (team == -1)
+        return -1;
+    return team == 1;
 }
 
 // CallbackGetFlagBeingCaptured - ea: 0x978140
