@@ -1332,9 +1332,9 @@ index	status	map_line
 1331	SKIPPED	0002:000e69e0 ?end@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1332	SKIPPED	0002:000e6a00 ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@II@Z 008D5F00 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1333	SKIPPED	0002:000e6aa0 ?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z 008D5FA0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1334	PORTED	0002:000e6c40 ??$Where@VDbQueryString@@@DbQuery@@QAEXHABVDbQueryString@@_N@Z 008D6140 f i core.o
-1335	PORTED	0002:000e7010 ??$Where@H@DbQuery@@QAEXHABH_N@Z 008D6510 f i core.o
-1336	PORTED	0002:000e73f0 ??$Where@M@DbQuery@@QAEXHABM_N@Z 008D68F0 f i core.o
+1334	FIXED	0002:000e6c40 ??$Where@VDbQueryString@@@DbQuery@@QAEXHABVDbQueryString@@_N@Z 008D6140 f i core.o	FIXED: exact IDA template behavior; duplicate/schema/range checks, aligned buffer placement, and DbFieldType<DbQueryString>
+1335	FIXED	0002:000e7010 ??$Where@H@DbQuery@@QAEXHABH_N@Z 008D6510 f i core.o	FIXED: exact IDA template behavior; duplicate/schema/range checks, aligned buffer placement, and DbField storage
+1336	FIXED	0002:000e73f0 ??$Where@M@DbQuery@@QAEXHABM_N@Z 008D68F0 f i core.o	FIXED: exact IDA template behavior; duplicate/schema/range checks, aligned buffer placement, and DbField storage
 1337	SKIPPED	0002:000e77d0 ??$Find@PBDV?$IVPointer@VDbTableSet@@@@@?$InplaceAssetBankSet@VDbTablesetBank@@@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VDbTableSet@@@@@@PAW42@@Z 008D6CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o  PORTED: exact float pointer fallback to default value
 1339	SKIPPED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
