@@ -724,10 +724,10 @@ index	status	map_line
 723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o	PORTED: restored exact no-op constructor with IDA-confirmed 48-byte layout
 724	VERIFIED	0002:0025bd20 ??0sphere_t@@QAE@XZ 00A4B220 f i game.o
 725	VERIFIED	0002:0025bd30 ?collide_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@PAV32@@Z 00A4B230 f i game.o
-726	PORTED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o
-727	PORTED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o
-728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o
-729	PORTED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o
+726	PORTED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o	PORTED: restored exact command initializer and IDA-confirmed BaseCmdFuncInfo offsets
+727	PORTED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o	PORTED: restored exact input-command initializer and IDA-confirmed BaseCmdFuncInfo offsets
+728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o	PORTED: restored exact self dlist accessor from IDA
+729	PORTED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o	PORTED: restored exact zero dlist offset from IDA
 730	PORTED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o
 731	PORTED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o
 732	PORTED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o
