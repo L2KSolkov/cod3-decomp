@@ -325,14 +325,14 @@ index	status	map_line
 324	SKIPPED	0002:005965f0 ?IsDefined@type_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85AF0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_type
 325	PORTED	0002:00596620 ?GetEE_angles@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D85B20 f mp_anim_wad.o	PORTED: added IDA 0x00996620 pathnode angles API access; source commit 102a0b63
 326	SKIPPED	0002:00596650 ?Get@angles_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85B50 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_angles
-327	PORTED	0002:005966a0 ?IsEEDefined_angles@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85BA0 f mp_anim_wad.o
-328	PORTED	0002:00596710 ?IsDefined@angles_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85C10 f i mp_anim_wad.o
-329	PORTED	0002:00596740 ?GetEE_reservename@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85C40 f mp_anim_wad.o
-330	PORTED	0002:00596790 ?Get@reservename_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85C90 f i mp_anim_wad.o
-331	PORTED	0002:00596840 ?IsEEDefined_reservename@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85D40 f mp_anim_wad.o
-332	PORTED	0002:005968b0 ?IsDefined@reservename_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85DB0 f i mp_anim_wad.o
-333	PORTED	0002:005968e0 ?GetEE_script_delay@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D85DE0 f mp_anim_wad.o
-334	PORTED	0002:00596910 ??Cvehiclenode@Broc@@QAEPAV01@XZ 00D85E10 f i mp_anim_wad.o
+327	PORTED	0002:005966a0 ?IsEEDefined_angles@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85BA0 f mp_anim_wad.o	PORTED: added IDA 0x009966A0 pathnode angles defined-check using mIsPathNodeDefined; source commit 7e95ae51
+328	SKIPPED	0002:00596710 ?IsDefined@angles_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85C10 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_angles
+329	PORTED	0002:00596740 ?GetEE_reservename@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85C40 f mp_anim_wad.o	PORTED: added IDA 0x00996740 pathnode reservename API access; source commit 7e95ae51
+330	SKIPPED	0002:00596790 ?Get@reservename_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85C90 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_reservename
+331	PORTED	0002:00596840 ?IsEEDefined_reservename@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85D40 f mp_anim_wad.o	PORTED: added IDA 0x00996840 pathnode reservename defined-check using mIsPathNodeDefined; source commit 7e95ae51
+332	SKIPPED	0002:005968b0 ?IsDefined@reservename_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85DB0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_reservename
+333	PORTED	0002:005968e0 ?GetEE_script_delay@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D85DE0 f mp_anim_wad.o	PORTED: added IDA 0x009968E0 vehicle-node float-field access using key 0x47018F83; source commit 7e95ae51
+334	SKIPPED	0002:00596910 ??Cvehiclenode@Broc@@QAEPAV01@XZ 00D85E10 f i mp_anim_wad.o	SKIPPED: trivial compiler-generated vehiclenode operator->; direct handle access is equivalent in the port
 335	PORTED	0002:00596930 ?Get@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D85E30 f i mp_anim_wad.o
 336	PORTED	0002:00596980 ?IsEEDefined_script_delay@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85E80 f mp_anim_wad.o
 337	PORTED	0002:005969f0 ?IsDefined@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D85EF0 f i mp_anim_wad.o
