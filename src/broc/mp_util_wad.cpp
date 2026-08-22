@@ -7276,10 +7276,9 @@ void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
         for (;;) {
             Broc::bint now;
             Broc::GetTime(&now);
-            Broc::string menu("spectate");
+            Broc::string menu("");
             bool done = (int)respawnTime < (int)now &&
                         Broc::Code_IsMenuOpen(menu, playerIndex) != 0;
-            menu.~string();
             if (done)
                 break;
             Broc::bint t;
@@ -7290,9 +7289,7 @@ void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
             if (Broc::Code_IsMenuOpen(empty, playerIndex) != 0) {
                 Broc::string spec("spectate");
                 Broc::OpenMenu(spec, playerIndex);
-                spec.~string();
             }
-            empty.~string();
             waitframe();
         }
         if ((bool)canspawn) {
