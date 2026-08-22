@@ -10533,16 +10533,17 @@ void CallbackAreaCaptured(int index, int team) {
         Broc::iprintln("MPCTF_ALLIES_CAPTURED_FLAG");
     }
 
-    HashStr messageWhenReturned;
-    messageWhenReturned.mVal = 0xFFFFFFFFu;
+    HashStr messageWhenReturned(0xFFFFFFFFu);
     *mp_util_wad::GetEE_message_when_returned(flag) = messageWhenReturned;
 
     Broc::vector angles;
-    mp_util_wad::entity_get_angles(&angles,
-                                   *mp_util_wad::GetEE_goal(flag));
+    Broc::entity::__unnamed::angles_struct anglesField = {
+        mp_util_wad::GetEE_goal(flag)->GetHandle()};
+    anglesField.Get(&angles);
     Broc::vector origin;
-    mp_util_wad::entity_get_origin(&origin,
-                                   *mp_util_wad::GetEE_goal(flag));
+    Broc::entity::__unnamed::origin_struct originField = {
+        mp_util_wad::GetEE_goal(flag)->GetHandle()};
+    originField.Get(&origin);
     UpdateFlagAndTrigger(flag, origin, angles);
     UnlinkFlag(flag);
 }
