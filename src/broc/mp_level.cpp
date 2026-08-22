@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include "engine/broc_types.h"
+#include "game/AeThreadFunctor.h"
 
 #include <cstring>
 
@@ -12,6 +13,20 @@
 // tags from the original object; the full runtime views live in engine/broc_types.h.
 struct BrocAPI;
 struct BrocExports;
+
+namespace Broc {
+
+// ea: 0x00925400. IDA forwards the functor entity and creation request to the
+// runtime's internal thread-create callback.
+unsigned int thread_create(bool createHandle, const char* file, int line,
+                           const char* func, AeThreadFunctor* functor)
+{
+    const unsigned int ent = functor->GetEnt();
+    return gBrocAPI.mThreadCreateInternal(file, line, func, ent, functor,
+                                          createHandle);
+}
+
+} // namespace Broc
 
 // ============================================================================
 // Animation & hash string registry

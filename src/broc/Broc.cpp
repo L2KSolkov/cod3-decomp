@@ -1635,6 +1635,58 @@ void GetAllVehicleNodes(dyn_array<vehiclenode>* nodearr)
     }
 }
 
+// ea: 0x0092C290. IDA queries entity handles through the runtime and wraps
+// each returned handle in a Broc entity.
+void GetEntArray(const string* val, HashStr key,
+                 dyn_array<entity>* entarr, unsigned int flags)
+{
+    entarr->clear();
+    unsigned int intarr[1024];
+    const int size = static_cast<int>(
+        gBrocAPI.mGetEnt(val, static_cast<int>(key.mVal), intarr, 1024,
+                         static_cast<int>(flags)));
+    if (size == 1024
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 159,
+               "getentarray- there may be more entities than the current capacity"))
+        __debugbreak();
+    entarr->reserve(static_cast<unsigned int>(size + entarr->size()));
+    for (int i = 0; i < size; ++i)
+        entarr->push_back(entity(intarr[i]));
+}
+
+// ea: 0x0092C4D0. IDA wraps the runtime's player handles in entities.
+void GetPlayerArray(dyn_array<entity>* entarr)
+{
+    entarr->clear();
+    unsigned int intarr[32];
+    const int size = gBrocAPI.mGetPlayerArray(intarr);
+    if (size > 32
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 184,
+               "GetPlayerArray- there may be more entities than the current capacity"))
+        __debugbreak();
+    entarr->reserve(static_cast<unsigned int>(size + entarr->size()));
+    for (int i = 0; i < size; ++i)
+        entarr->push_back(entity(intarr[i]));
+}
+
+// ea: 0x0092C5D0. IDA wraps the runtime's local-player handles in entities.
+void GetLocalPlayerArray(dyn_array<entity>* entarr)
+{
+    entarr->clear();
+    unsigned int intarr[32];
+    const int size = gBrocAPI.mGetLocalPlayerArray(intarr);
+    if (size > 32
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 195,
+               "GetPlayerArray- there may be more entities than the current capacity"))
+        __debugbreak();
+    entarr->reserve(static_cast<unsigned int>(size + entarr->size()));
+    for (int i = 0; i < size; ++i)
+        entarr->push_back(entity(intarr[i]));
+}
+
 // ============================================================================
 // EEHelper / EEDefault templates
 // ============================================================================

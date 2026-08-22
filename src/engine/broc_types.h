@@ -1188,7 +1188,12 @@ struct BrocAPI {
     char _pad10[0x34 - 0x10];                             // +0x010
     bool mKillThread;                                     // +0x034
     unsigned char _pad35[0x38 - 0x35];                    // +0x035
-    char _pad38[0x44 - 0x38];                             // +0x038
+    unsigned int (*mThreadExecInternal)(const char*, int, const char*,
+                                        unsigned int, AeThreadFunctor*, bool); // +0x038
+    unsigned int (*mThreadCreateInternal)(const char*, int, const char*,
+                                          unsigned int, AeThreadFunctor*, bool); // +0x03C
+    unsigned int (*mThreadNotifyInternal)(const char*, int, const char*,
+                                          unsigned int, AeThreadFunctor*, bool); // +0x040
     void (*mThreadBackupStack)(unsigned int);             // +0x044
     void (*mThreadGetDebugInfo)(Broc::string*, Broc::string*, Broc::string*); // +0x048
     void (*mThreadSleepInternal)(float);                  // +0x04C
@@ -1566,13 +1571,21 @@ extern BrocAPI gBrocAPI;  // ?gBrocAPI@@3UBrocAPI@@A @0x10F0568
 void wait(float seconds);
 void wait_accurate(float seconds);
 unsigned int thread_create(bool createHandle, const char* file, int line,
-                           const char* func, void* functor);
+                           const char* func, AeThreadFunctor* functor);
+// Existing generated functor factories in the port retain their opaque
+// storage return type; route those calls to the canonical IDA-typed entry.
+inline unsigned int thread_create(bool createHandle, const char* file, int line,
+                                  const char* func, void* functor)
+{
+    return thread_create(createHandle, file, line, func,
+                         static_cast<AeThreadFunctor*>(functor));
+}
 float RandomFloatRange(float fMin, float fMax);
 int RandomInt(int iMax);
 int RandomIntRange(int iMin, int iMax);
 void wait(float seconds);
 void wait_accurate(float seconds);
-void GetEntArray(const Broc::string* name, unsigned int key,
+void GetEntArray(const Broc::string* name, HashStr key,
                  Broc::dyn_array<Broc::entity>* out, unsigned int flags);
 Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
                      unsigned int flags);
@@ -1642,7 +1655,7 @@ int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
 int UseButtonPressed(const Broc::entity& e);     // ea: 0x92F4D0
 float Length(const Broc::vector* v);
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
-void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440
+void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92C4D0
 void notify(const entity& ent, HashStr label);   // ea: 0x939BA0
 void notify(const entity& ent, const char* label); // ea: 0x94B8B0
 void iprintln(const char* msg);
