@@ -1484,6 +1484,13 @@ void endon(entity ent, const string& label)
     endon(ent, label.c_str());
 }
 
+// ea: 0x00935870. IDA terminates the entity thread on the supplied hash.
+void endon(entity ent, HashStr label)
+{
+    gBrocAPI.mThreadTerminateOnNotify(ent.GetHandle(),
+                                      static_cast<unsigned int>(label));
+}
+
 void thread_sleep_time(void) {}
 void thread_sleep_frames(void) {}
 void thread_sleep_until_notify(void) {}

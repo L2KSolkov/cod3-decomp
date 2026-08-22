@@ -59,8 +59,8 @@ void ScaleOverTime(const Broc::hudelem* hud, float time, int w, int h)
 }
 
 namespace mp_anim_wad {
-int ResolveAnim(unsigned int treename, unsigned int animname,
-                unsigned int* getVal, unsigned int setVal);
+unsigned int ResolveAnim(unsigned int treename, unsigned int animname,
+                         unsigned int* getVal, unsigned int setVal);
 const char* ResolveAnimName(unsigned int anim);
 bool ValidateAnimationIndices();
 unsigned int GetBroAnim(unsigned int treename, unsigned int animname);

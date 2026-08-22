@@ -815,11 +815,6 @@ void waittill(entity ent, HashStr signal);
 void waittill(entity ent, HashStr signal, entity* output);
 bool AssignParameterForNotify(const entity& ent, HashStr signal,
                               WaitTilOutput* output);
-WaitTilOutput* WaitTilOutputInst1Entity_Construct(void* storage,
-                                                  const entity& value);
-void WaitTilOutputInst1Entity_CopyData(const WaitTilOutput* output,
-                                       entity* value);
-void WaitTilOutputInst1Entity_Destroy(WaitTilOutput* output);
 void waittill_timeout(entity ent, HashStr signal, float timeout);
 void waittillmatch(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
 void waittillor(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
@@ -932,6 +927,13 @@ bfloat operator*(bfloat lhs, bfloat rhs);
 bbool operator<(bint lhs, int rhs);
 
 } // namespace Broc
+
+// The entity wait-output helpers are emitted at global scope by ctor_dtor.cpp.
+WaitTilOutput* WaitTilOutputInst1Entity_Construct(void* storage,
+                                                  const Broc::entity& value);
+void WaitTilOutputInst1Entity_CopyData(const WaitTilOutput* output,
+                                       Broc::entity* value);
+void WaitTilOutputInst1Entity_Destroy(WaitTilOutput* output);
 
 // Global boxed operators emitted by mp_util_wad.o.
 struct bfloat {
