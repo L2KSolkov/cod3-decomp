@@ -657,8 +657,9 @@ LABEL_17:
 }
 
 // ea: 0x52E270
-void GetClipboardDataUI(char* buf)
+void GetClipboardDataUI(char* buf, int buflen)
 {
+    (void)buflen;
     *buf = 0;
 }
 
