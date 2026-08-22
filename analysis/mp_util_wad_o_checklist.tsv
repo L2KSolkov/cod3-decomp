@@ -714,7 +714,7 @@ index	status	map_line
 713	FIXED	0002:00564970 ?CreateNanoForce@Broc@@YAIABVstring@1@ABUvector@1@1@Z 00D53E70 f i mp_util_wad.o	FIXED: IDA 0x00964970 direct mCreateNanoForce forwarding added
 714	VERIFIED	0002:005649a0 ?main@_mp_scf@@YAXVentity@Broc@@@Z 00D53EA0 f mp_util_wad.o
 715	VERIFIED	0002:005658c0 ??HBroc@@YA?AVstring@0@ABV10@H@Z 00D54DC0 f i mp_util_wad.o	VERIFIED: Existing copy construction, integer append, and returned string match IDA 0x009658C0
-716	PORTED	0002:00565960 ??HBroc@@YA?AVstring@0@ABV10@Uvector@0@@Z 00D54E60 f i mp_util_wad.o	PORTED: matched IDA 0x00965960 temporary string, localized ConcatText<string,vector>, and return path
+716	VERIFIED	0002:00565960 ??HBroc@@YA?AVstring@0@ABV10@Uvector@0@@Z 00D54E60 f i mp_util_wad.o	VERIFIED: Existing null-block string, ConcatText<string,vector>, and copied return match IDA 0x00965960
 717	FIXED	0002:00565a00 ?StartGame__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D54F00 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor1<Broc::entity>* and constructor path at 0x00965A00
 718	FIXED	0002:00565aa0 ?StartGame@_mp_scf@@YAXVentity@Broc@@@Z 00D54FA0 f mp_util_wad.o	FIXED: IDA 0x00965AA0 copies pLevel->_base.entity (or null) into RunFrame__functor
 719	FIXED	0002:00565b60 ?SetupRound@_mp_scf@@YAXXZ 00D55060 f mp_util_wad.o	FIXED: IDA 0x00965B60 copies pLevel->_base.entity (or null) into WaitThenPickFlagToLaunch__functor
@@ -725,7 +725,7 @@ index	status	map_line
 724	FIXED	0002:00567930 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11Ubfloat@@@Z 00D56E30 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor5<entity,string,string,string,bfloat>* and 0x1C-byte construction/destruction path at 0x00967930
 725	VERIFIED	0002:00567a20 ?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z 00D56F20 f mp_util_wad.o	VERIFIED: matched IDA control flow, debug string, roundStarted reset, 4.0-second wait, and Code_NextRound(false) at 0x00967A20
 726	VERIFIED	0002:00567a80 ?CallbackPlayerSpawn@_mp_scf@@YAXVentity@Broc@@H@Z 00D56F80 f mp_util_wad.o
-727	PORTED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o	PORTED: added the IDA-backed reverse string comparison wrapper forwarding to operator==(string,const char*) at 0x00967D90
+727	VERIFIED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o	VERIFIED: Existing reverse string comparison forwards to operator==(string,const char*) exactly as IDA 0x00967D90
 728	VERIFIED	0002:00567dc0 ?CallbackHostMigrated@_mp_scf@@YAXXZ 00D572C0 f mp_util_wad.o
 729	PORTED	0002:00567fc0 ?Code_SendGameStateSCF@Broc@@YAXVentity@1@HABUvector@1@10@Z 00D574C0 f i mp_util_wad.o	PORTED: added the IDA-backed vector copies, handle extraction, and mSendGameStateSCF call at 0x00967FC0
 730	PORTED	0002:00568040 ?GetRef@holder_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D57540 f i mp_util_wad.o
