@@ -254,7 +254,7 @@ index	status	map_line
 253	FIXED	0002:0012f210 ?CL_Restart@@YAXXZ 0091E710 f cl.o FIXED: uses Broc::string assignment for IDA-matched config-string cleanup
 254	FIXED	0002:0012f290 ?CL_GetConfigString@@YAPBDH@Z 0091E790 f cl.o FIXED: uses the IDA-derived Broc::string config-string type
 255	VERIFIED	0002:0012f2b0 ?CL_InitCGame@@YAXXZ 0091E7B0 f cl.o
-256	PORTED	0002:0012f550 ?Con_Clear_f@@YAXXZ 0091EA50 f cl.o PORTED: IDA match; fills console text with the color-coded space value
+256	FIXED	0002:0012f550 ?Con_Clear_f@@YAXXZ 0091EA50 f cl.o FIXED: restored fixed con.text buffer walk, void signature, and removed decompiler-only return
 257	VERIFIED	0002:0012f590 ?Con_Init@@YAXXZ 0091EA90 f cl.o
 258	VERIFIED	0002:0012f670 ?CL_RestoreMessages@@YAHPAEH@Z 0091EB70 f cl.o
 259	VERIFIED	0002:0012f750 ?Con_Close@@YAXXZ 0091EC50 f cl.o
