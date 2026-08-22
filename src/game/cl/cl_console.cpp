@@ -423,31 +423,35 @@ void Con_RunConsole()
 // ea: 0x529650
 int Con_PageUp()
 {
+    int result = con.current;
     int v1 = con.current - (con.display - 2);
     con.display -= 2;
     if (v1 >= con.totallines)
     {
-        con.display = con.current - con.totallines + 1;
+        result = con.current - con.totallines + 1;
+        con.display = result;
     }
-    return con.current;
+    return result;
 }
 
 // ea: 0x529680
 int Con_PageDown()
 {
+    int result = con.display + 2;
     con.display += 2;
     if (con.display > con.current)
         con.display = con.current;
-    return con.display;
+    return result;
 }
 
 // ea: 0x5296A0
 int Con_Top()
 {
+    int result = con.current - con.totallines;
     con.display = con.totallines;
     if (con.current - con.totallines >= con.totallines)
-        con.display = con.current - con.totallines + 1;
-    return con.current - con.totallines;
+        con.display = ++result;
+    return result;
 }
 
 // ea: 0x5296C0
@@ -521,7 +525,9 @@ int Con_CheckResize()
                 }
             }
             mem_heap_free(tbuf);
-            con.gamemsg_starttimes[3] = 0;
+            memset(con.gamemsg_starttimes, 0, 4 * 8);
+            memset(con.gamemsg_endtimes, 0, 4 * 8);
+            memset(con.gamemsg_lines, 0, 4 * 8);
             memset(msgwnd.starttimes, 0, 4 * msgwnd.count);
             memset(msgwnd.endtimes, 0, 4 * msgwnd.count);
             msgwnd.current_line = 0;
