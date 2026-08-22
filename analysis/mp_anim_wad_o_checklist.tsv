@@ -357,14 +357,14 @@ index	status	map_line
 356	SKIPPED	0002:00596fb0 ?Get@detoured_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D864B0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_detoured
 357	PORTED	0002:00597000 ?IsEEDefined_detoured@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86500 f mp_anim_wad.o	PORTED: added IDA 0x00997000 vehicle-node int defined-check using key 0xBF22439C; source commit 13c77f72
 358	SKIPPED	0002:00597070 ?IsDefined@detoured_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86570 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_detoured
-359	PORTED	0002:005970b0 ?GetEE_script_uniquename@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D865B0 f mp_anim_wad.o
-360	PORTED	0002:00597100 ?Get@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86600 f i mp_anim_wad.o
-361	PORTED	0002:005971b0 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D866B0 f mp_anim_wad.o
-362	PORTED	0002:00597220 ?IsDefined@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86720 f i mp_anim_wad.o
-363	PORTED	0002:005972b0 ?GetEE_target@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D867B0 f mp_anim_wad.o
-364	PORTED	0002:00597300 ?Get@target_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86800 f i mp_anim_wad.o
-365	PORTED	0002:005973b0 ?IsEEDefined_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D868B0 f mp_anim_wad.o
-366	PORTED	0002:00597420 ?IsDefined@target_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86920 f i mp_anim_wad.o
+359	PORTED	0002:005970b0 ?GetEE_script_uniquename@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D865B0 f mp_anim_wad.o	PORTED: added IDA 0x009970B0 vehicle-node string-field access using key 0xF8E5A82C; source commit ed85e377
+360	SKIPPED	0002:00597100 ?Get@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86600 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_uniquename
+361	PORTED	0002:005971b0 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D866B0 f mp_anim_wad.o	PORTED: added IDA 0x009971B0 vehicle-node string defined-check using key 0xF8E5A82C; source commit ed85e377
+362	SKIPPED	0002:00597220 ?IsDefined@script_uniquename_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86720 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_uniquename
+363	PORTED	0002:005972b0 ?GetEE_target@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D867B0 f mp_anim_wad.o	PORTED: added IDA 0x009972B0 vehicle-node target API access; source commit ed85e377
+364	SKIPPED	0002:00597300 ?Get@target_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D86800 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_target(vehiclenode)
+365	PORTED	0002:005973b0 ?IsEEDefined_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D868B0 f mp_anim_wad.o	PORTED: added IDA 0x009973B0 vehicle-node target defined-check using mIsVehicleNodeDefined; source commit ed85e377
+366	SKIPPED	0002:00597420 ?IsDefined@target_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86920 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_target(vehiclenode)
 367	PORTED	0002:00597450 ?GetEE_speed@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D86950 f mp_anim_wad.o
 368	PORTED	0002:00597480 ?Get@speed_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D86980 f i mp_anim_wad.o
 369	PORTED	0002:005974c0 ?IsEEDefined_speed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D869C0 f mp_anim_wad.o
