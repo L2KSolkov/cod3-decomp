@@ -154,10 +154,46 @@ int Code_GetPlayerTotalScore(Broc::entity player)
     return gBrocAPI.mGetPlayerTotalScore(player.GetHandle());
 }
 
+// ea: 0x0093CA40. IDA forwards directly to the runtime callback.
+void Code_ClearPlayerStats()
+{
+    gBrocAPI.mClearPlayerStats();
+}
+
+// ea: 0x0093CA60. IDA forwards directly to the runtime callback.
+void Code_ClearTeamScores()
+{
+    gBrocAPI.mClearTeamScores();
+}
+
+// ea: 0x0093CA80. IDA forwards directly to the runtime callback.
+void Code_DisplayScoreBoard(bool show, int time)
+{
+    gBrocAPI.mDisplayScoreBoard(show, time);
+}
+
+// ea: 0x0093CAB0. IDA forwards directly to the runtime callback.
+void Code_SetShowScore(bool showScore)
+{
+    gBrocAPI.mSetShowScore(showScore);
+}
+
+// ea: 0x0093CAE0. IDA forwards directly to the runtime callback.
+void Code_SetupLevelSpecificVariables()
+{
+    gBrocAPI.mSetupLevelSpecificVariables();
+}
+
 // ea: 0x00928B40. IDA forwards to the runtime's typed random-range callback.
 float RandomFloatRange(float fMin, float fMax)
 {
     return gBrocAPI.mMathsRandomFloatRange(fMin, fMax);
+}
+
+// ea: 0x0094D2A0. IDA forwards directly to the runtime callback.
+void Code_SetTeamGame(bool teamGame)
+{
+    gBrocAPI.mSetTeamGame(teamGame);
 }
 
 // FireTurret - ea: 0x970AE0

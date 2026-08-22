@@ -1339,12 +1339,20 @@ struct BrocAPI {
     char _pad32C[0x330 - 0x32C];                           // +0x32C
     __int16 (*mGetPlayerStat)(const unsigned int, const unsigned int); // +0x330
     int (*mGetPlayerTotalScore)(const unsigned int);        // +0x334
-    char _pad338[0x33C - 0x338];                           // +0x338
+    void (*mClearTeamScores)();                            // +0x338
     void (*mIncTeamScore)(const Broc::string&, int);      // +0x33C
     int (*mGetTeamScore)(const Broc::string&);            // +0x340
     void (*mChangePlayerTeam)(const unsigned int,
                               const Broc::string*, const bool); // +0x344
-    char _pad348[0x36C - 0x348];                          // +0x348
+    void (*mDisplayScoreBoard)(const bool, const int);     // +0x348
+    void (*mSettleMapVote)();                              // +0x34C
+    void (*mSettleGameModeVote)();                         // +0x350
+    bool (*mSpecialEditionSkin)();                         // +0x354
+    int (*mGetSpecialRechargePlayerClass)();               // +0x358
+    void (*mSetSpecialRecharge)(const int, const int, const int, const int); // +0x35C
+    void (*mAdvanceSpecialRecharge)(const int);            // +0x360
+    void (*mSendInitialGameState)(const unsigned int);     // +0x364
+    void (*mSendVehicleStates)(const unsigned int);        // +0x368
     void (*mBroadcastVehicleRespawn)(const unsigned int); // +0x36C
     void (*mSendGameState)(unsigned int, int, int, int, int,
                            bool, bool, bool, int, int, int, bool, int, int); // +0x370
@@ -1378,9 +1386,27 @@ struct BrocAPI {
     unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
     void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
-    char _pad3D0[0x3E0 - 0x3D0];                          // +0x3D0
+    void (*mSetTeamGame)(const bool);                      // +0x3D0
+    void (*mSetShowScore)(const bool);                      // +0x3D4
+    void (*mSetShowTime)(const float);                      // +0x3D8
+    bool (*mGetTeamGame)();                                // +0x3DC
     bool (*mPositionWouldTelefrag)(const Broc::vector*);  // +0x3E0
-    char _pad3E4[0x424 - 0x3E4];                          // +0x3E4
+    bool (*mIsHost)();                                     // +0x3E4
+    bool (*mIsRankedGame)();                              // +0x3E8
+    bool (*mIsLanGame)();                                  // +0x3EC
+    bool (*mIsOnlineGame)();                               // +0x3F0
+    bool (*mIsLocalGame)();                                // +0x3F4
+    bool (*mIsSplitScreen)();                              // +0x3F8
+    void (*mSetupLevelSpecificVariables)();                // +0x3FC
+    void (*mScreenFadeToBlack)(const unsigned int, const int); // +0x400
+    void (*mScreenFadeUp)(const unsigned int, const int);  // +0x404
+    int (*mFollowCycle)(const unsigned int, const int);    // +0x408
+    int (*mActiveMenu)();                                  // +0x40C
+    void (*mNextRound)(bool);                              // +0x410
+    bool (*mNextRoundMapChanges)();                        // +0x414
+    void (*mQuitGame)();                                   // +0x418
+    void (*mEnableWeapon)(const unsigned int);             // +0x41C
+    void (*mDisableWeapon)(const unsigned int);            // +0x420
     void (*mRespawnVehicle)(const unsigned int);          // +0x424
     char _pad428[0x438 - 0x428];                          // +0x428
     const char* (*mLocalize)(const char*);                // +0x438
