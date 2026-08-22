@@ -1309,12 +1309,12 @@ index	status	map_line
 1308	PORTED	0002:000e6160 ?begin@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D5660 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
 1309	PORTED	0002:000e61b0 ?erase@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D56B0 f i core.o  PORTED: exact IDA unlink and assertion path
 1310	PORTED	0002:000e6250 ?begin@?$reserved_dlist@VEntityNotify@@@@QBE?AVconst_iterator@1@XZ 008D5750 f i core.o  PORTED: exact IDA const-iterator initialization and sentinel handling
-1311	PORTED	0002:000e62a0 ?begin@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@XZ 008D57A0 f i core.o
-1312	PORTED	0002:000e62f0 ?erase@?$reserved_dlist@VEntityNotifySet@@@@QAEXPAVEntityNotifySet@@@Z 008D57F0 f i core.o
+1311	VERIFIED	0002:000e62a0 ?begin@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@XZ 008D57A0 f i core.o  VERIFIED: shared begin body matches IDA sentinel handling
+1312	VERIFIED	0002:000e62f0 ?erase@?$reserved_dlist@VEntityNotifySet@@@@QAEXPAVEntityNotifySet@@@Z 008D57F0 f i core.o  VERIFIED: shared erase body matches IDA assertion and unlink sequence
 1313	VERIFIED	0002:000e6390 ??0?$BitSet@$0EA@@@QAE@XZ 008D5890 f i core.o
 1314	VERIFIED	0002:000e63b0 ??0?$BitSet@$0PP@@@QAE@XZ 008D58B0 f i core.o
 1315	VERIFIED	0002:000e63e0 ??0?$BitSet@$0DB@@@QAE@XZ 008D58E0 f i core.o
-1316	PORTED	0002:000e6400 ?Set@?$BitSet@$0DB@@@QAEXH_N@Z 008D5900 f i core.o
+1316	PORTED	0002:000e6400 ?Set@?$BitSet@$0DB@@@QAEXH_N@Z 008D5900 f i core.o  PORTED: exact IDA Add/Rmv dispatch
 1317	PORTED	0002:000e6430 ?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z 008D5930 f i core.o
 1318	VERIFIED	0002:000e6540 ??D?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A40 f i core.o
 1319	VERIFIED	0002:000e6580 ??C?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A80 f i core.o
