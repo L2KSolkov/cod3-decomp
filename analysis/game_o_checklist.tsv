@@ -868,8 +868,8 @@ index	status	map_line
 867	VERIFIED	0002:0025e2d0 ??A?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAEAAW4EPadAliasButton@@H@Z 00A4D7D0 f i game.o
 868	VERIFIED	0002:0025e350 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasStick@@$01@@H@Z 00A4D850 f i game.o
 869	VERIFIED	0002:0025e3d0 ??A?$ae_sized_array@W4EPadAliasStick@@$01@@QAEAAW4EPadAliasStick@@H@Z 00A4D8D0 f i game.o
-870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o
-871	VERIFIED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o
+870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o	IDA: initializes all 16 WbkEntry slots: name/state words zero, pakFile=-1, fileID=invalid, bankId=-1; specialized constructor restored.
+871	FIXED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o	IDA: existing implicit assignment did not guarantee the reference 27-word copy; explicit 27-word assignment restored.
 872	SKIPPED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
