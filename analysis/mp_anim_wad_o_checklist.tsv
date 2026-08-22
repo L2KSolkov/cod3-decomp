@@ -229,14 +229,14 @@ index	status	map_line
 228	PORTED	0002:00593d30 ?IsEEDefined_script_patroller@@YA?AUbbool@@Ventity@Broc@@@Z 00D83230 f mp_anim_wad.o	PORTED: added IDA 0x00993D30 defined-check for key 0x58434709; source commit 1c16206b
 229	PORTED	0002:00593de0 ?GetEE_script_accuracyvsai@@YAAAUbint@@Ventity@Broc@@@Z 00D832E0 f mp_anim_wad.o	PORTED: added IDA 0x00993DE0 ExtendedEntity bint reference for key 0xE403FE72; source commit 1c16206b
 230	PORTED	0002:00593e30 ?IsEEDefined_script_accuracyvsai@@YA?AUbbool@@Ventity@Broc@@@Z 00D83330 f mp_anim_wad.o	PORTED: added IDA 0x00993E30 defined-check for key 0xE403FE72; source commit 1c16206b
-231	PORTED	0002:00593ee0 ?GetEE_script_ambush_type@@YAAAVstring@Broc@@Ventity@2@@Z 00D833E0 f mp_anim_wad.o
-232	PORTED	0002:00593f30 ?IsEEDefined_script_ambush_type@@YA?AUbbool@@Ventity@Broc@@@Z 00D83430 f mp_anim_wad.o
-233	PORTED	0002:00594030 ?GetEE_script_mg42auto@@YAAAUbint@@Ventity@Broc@@@Z 00D83530 f mp_anim_wad.o
-234	PORTED	0002:00594080 ?IsEEDefined_script_mg42auto@@YA?AUbbool@@Ventity@Broc@@@Z 00D83580 f mp_anim_wad.o
-235	PORTED	0002:00594130 ?GetEE_radius@@YAAAUbint@@Ventity@Broc@@@Z 00D83630 f mp_anim_wad.o
-236	PORTED	0002:00594180 ?IsEEDefined_radius@@YA?AUbbool@@Ventity@Broc@@@Z 00D83680 f mp_anim_wad.o
-237	PORTED	0002:00594230 ?GetEE_script_killspawner@@YAAAUbint@@Ventity@Broc@@@Z 00D83730 f mp_anim_wad.o
-238	PORTED	0002:00594280 ?IsEEDefined_script_killspawner@@YA?AUbbool@@Ventity@Broc@@@Z 00D83780 f mp_anim_wad.o
+231	PORTED	0002:00593ee0 ?GetEE_script_ambush_type@@YAAAVstring@Broc@@Ventity@2@@Z 00D833E0 f mp_anim_wad.o	PORTED: added IDA 0x00993EE0 string reference for key 0x93F860D5; source commit 1f3765a9
+232	PORTED	0002:00593f30 ?IsEEDefined_script_ambush_type@@YA?AUbbool@@Ventity@Broc@@@Z 00D83430 f mp_anim_wad.o	PORTED: added IDA 0x00993F30 string defined-check for key 0x93F860D5; source commit 1f3765a9
+233	VERIFIED	0002:00594030 ?GetEE_script_mg42auto@@YAAAUbint@@Ventity@Broc@@@Z 00D83530 f mp_anim_wad.o	VERIFIED: IDA 0x00994030 key 0x24596F27 matches existing mp_anim_wad.cpp implementation
+234	VERIFIED	0002:00594080 ?IsEEDefined_script_mg42auto@@YA?AUbbool@@Ventity@Broc@@@Z 00D83580 f mp_anim_wad.o	VERIFIED: IDA 0x00994080 key 0x24596F27 matches existing mp_anim_wad.cpp implementation
+235	VERIFIED	0002:00594130 ?GetEE_radius@@YAAAUbint@@Ventity@Broc@@@Z 00D83630 f mp_anim_wad.o	VERIFIED: IDA 0x00994130 key 0x110004A8 matches existing mp_anim_wad.cpp implementation
+236	VERIFIED	0002:00594180 ?IsEEDefined_radius@@YA?AUbbool@@Ventity@Broc@@@Z 00D83680 f mp_anim_wad.o	VERIFIED: IDA 0x00994180 key 0x110004A8 matches existing mp_anim_wad.cpp implementation
+237	VERIFIED	0002:00594230 ?GetEE_script_killspawner@@YAAAUbint@@Ventity@Broc@@@Z 00D83730 f mp_anim_wad.o	VERIFIED: IDA 0x00994230 key 0x0AC80A00 matches existing mp_anim_wad.cpp implementation
+238	VERIFIED	0002:00594280 ?IsEEDefined_script_killspawner@@YA?AUbbool@@Ventity@Broc@@@Z 00D83780 f mp_anim_wad.o	VERIFIED: IDA 0x00994280 key 0x0AC80A00 matches existing mp_anim_wad.cpp implementation
 239	PORTED	0002:00594330 ?GetEE_script_aitargetname@@YAAAVstring@Broc@@Ventity@2@@Z 00D83830 f mp_anim_wad.o
 240	PORTED	0002:00594380 ?IsEEDefined_script_aitargetname@@YA?AUbbool@@Ventity@Broc@@@Z 00D83880 f mp_anim_wad.o
 241	PORTED	0002:00594480 ?GetEE_script_landmark@@YAAAVstring@Broc@@Ventity@2@@Z 00D83980 f mp_anim_wad.o
