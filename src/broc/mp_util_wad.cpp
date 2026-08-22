@@ -12269,12 +12269,12 @@ void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
             mp_util_wad::pLevel->triggerIndex = (int)triggerIndex;
             mp_util_wad::pLevel->pointA_isHQ = pointAIsHQ != 0;
             GetTriggerFromIndex();
-            Broc::entity lvl;
-            lvl.___u0 = mp_util_wad::pLevel != NULL;
             SwitchToRadioOnly();
             Broc::string script("MX_HQ_HQReady");
             Broc::entity lvl2;
-            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            lvl2 = mp_util_wad::pLevel != nullptr
+                       ? mp_util_wad::pLevel->_base.entity
+                       : Broc::entity();
             Broc::EffectEventPlay(&lvl2, &script);
             script.~string();
         }
