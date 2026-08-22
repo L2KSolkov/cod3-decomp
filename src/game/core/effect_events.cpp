@@ -958,8 +958,8 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
         result.mVal = 0;
         return result;
     }
-    if (pos.x != sNaN && pos.y != sNaN && pos.z != sNaN
-        && facing.x != sNaN && facing.y != sNaN && facing.z != sNaN)
+    if ((pos.x != sNaN || pos.y != sNaN || pos.z != sNaN)
+        && (facing.x != sNaN || facing.y != sNaN || facing.z != sNaN))
     {
         math::Mat43* v24 = (math::Mat43*)gCommonPoolAllocator->Allocate(
             0x40, false);
