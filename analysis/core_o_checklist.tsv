@@ -1101,15 +1101,15 @@ index	status	map_line
 1100	VERIFIED	0002:000e2470 ??0CollisionDesc@@QAE@XZ 008D1970 f i core.o
 1101	SKIPPED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1102	SKIPPED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1103	PORTED	0002:000e24c0 ?Update@ServerTime@@QAEXH@Z 008D19C0 f i core.o
-1104	PORTED	0002:000e2520 ?Choose@DialogueInstance@@QAEPBDXZ 008D1A20 f i core.o
+1103	FIXED	0002:000e24c0 ?Update@ServerTime@@QAEXH@Z 008D19C0 f i core.o FIXED: IDA tick clamp/delta/elapsed update added in 9b24ec4b; IDA 0x004E24C0
+1104	FIXED	0002:000e2520 ?Choose@DialogueInstance@@QAEPBDXZ 008D1A20 f i core.o FIXED: IDA rotating dialogue choice added in 9b24ec4b; IDA 0x004E2520
 1105	VERIFIED	0002:000e2560 ??0SoundParams@@QAE@XZ 008D1A60 f i core.o
 1106	VERIFIED	0002:000e2570 ??0ParticleParams@@QAE@XZ 008D1A70 f i core.o
-1107	PORTED	0002:000e25a0 ?SetPending@ActiveEffectSet@@QAEX_N@Z 008D1AA0 f i core.o
-1108	PORTED	0002:000e25d0 ?SetOwnsMatrix@ActiveEffectSet@@QAEXXZ 008D1AD0 f i core.o
-1109	PORTED	0002:000e25e0 ?GetEffectCount@ActiveEffectSet@@QBE?BHXZ 008D1AE0 f i core.o
-1110	PORTED	0002:000e25f0 ?GetEffect@ActiveEffectSet@@QBEPAVAbstractEffect@@H@Z 008D1AF0 f i core.o
-1111	PORTED	0002:000e2610 ?GetHandle@DObj@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D1B10 f i core.o
+1107	FIXED	0002:000e25a0 ?SetPending@ActiveEffectSet@@QAEX_N@Z 008D1AA0 f i core.o FIXED: IDA pending flag set/clear added in 9b24ec4b; IDA 0x004E25A0
+1108	FIXED	0002:000e25d0 ?SetOwnsMatrix@ActiveEffectSet@@QAEXXZ 008D1AD0 f i core.o FIXED: IDA owns-matrix flag set added in 9b24ec4b; IDA 0x004E25D0
+1109	FIXED	0002:000e25e0 ?GetEffectCount@ActiveEffectSet@@QBE?BHXZ 008D1AE0 f i core.o FIXED: IDA mEffects size accessor added in 9b24ec4b; IDA 0x004E25E0
+1110	FIXED	0002:000e25f0 ?GetEffect@ActiveEffectSet@@QBEPAVAbstractEffect@@H@Z 008D1AF0 f i core.o FIXED: IDA mEffects pointer accessor added in 9b24ec4b; IDA 0x004E25F0
+1111	FIXED	0002:000e2610 ?GetHandle@DObj@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 008D1B10 f i core.o FIXED: IDA handle copy accessor added in 9b24ec4b; IDA 0x004E2610
 1112	VERIFIED	0002:000e2630 ?DeleteInst@InstanceBankMgr@@SAXXZ 008D1B30 f i core.o
 1113	VERIFIED	0002:000e26c0 ?DeleteInst@SoundDevice@@SAXXZ 008D1BC0 f i core.o
 1114	VERIFIED	0002:000e2750 ?DeleteInst@SoundMediaMgr@@SAXXZ 008D1C50 f i core.o
@@ -1122,14 +1122,14 @@ index	status	map_line
 1121	PORTED	0002:000e2a90 ?AddTriangleResponse@DialogMenuSystem@@QAEXP6AXH@Z@Z 008D1F90 f i core.o
 1122	PORTED	0002:000e2ac0 ?GetStruct@GdbFile@@QAEPAXXZ 008D1FC0 f i core.o
 1123	VERIFIED	0002:000e2ad0 ?DeleteInst@CheckpointMgr@@SAXXZ 008D1FD0 f i core.o
-1124	PORTED	0002:000e2b60 ?GetLooping@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008D2060 f i core.o
-1125	PORTED	0002:000e2b80 ?NullHandle@RumbleEffectInstanceHandle@@SA?AV1@XZ 008D2080 f i core.o
-1126	PORTED	0002:000e2ba0 ??0RumbleEffectInstance@@QAE@VRumbleEffectInstanceHandle@@MMMMMMVstring@Broc@@_N@Z 008D20A0 f i core.o
-1127	PORTED	0002:000e2d30 ?IsLooping@RumbleEffectInstance@@QAE_NXZ 008D2230 f i core.o
+1124	FIXED	0002:000e2b60 ?GetLooping@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008D2060 f i core.o FIXED: IDA rumble flag accessor added in 9b24ec4b; IDA 0x004E2B60
+1125	FIXED	0002:000e2b80 ?NullHandle@RumbleEffectInstanceHandle@@SA?AV1@XZ 008D2080 f i core.o FIXED: IDA zero-handle factory added in 9b24ec4b; IDA 0x004E2B80
+1126	FIXED	0002:000e2ba0 ??0RumbleEffectInstance@@QAE@VRumbleEffectInstanceHandle@@MMMMMMVstring@Broc@@_N@Z 008D20A0 f i core.o FIXED: IDA field initialization, note flag, and handle assert added in 9b24ec4b; IDA 0x004E2BA0
+1127	FIXED	0002:000e2d30 ?IsLooping@RumbleEffectInstance@@QAE_NXZ 008D2230 f i core.o FIXED: IDA looping flag accessor added in 9b24ec4b; IDA 0x004E2D30
 1128	VERIFIED	0002:000e2d40 ?IsFinishedFading@AbstractEffect@@QAE_NXZ 008D2240 f i core.o
-1129	PORTED	0002:000e2d70 ?IsFading@AbstractEffect@@QAE_NXZ 008D2270 f i core.o
-1130	PORTED	0002:000e2d80 ?IsSound@AbstractEffect@@QAE_NXZ 008D2280 f i core.o
-1131	PORTED	0002:000e2d90 ?is_player_vehicle@rb_vehicle@@QBE_NXZ 008D2290 f i core.o
+1129	FIXED	0002:000e2d70 ?IsFading@AbstractEffect@@QAE_NXZ 008D2270 f i core.o FIXED: IDA code-flag query added in 9b24ec4b; IDA 0x004E2D70
+1130	FIXED	0002:000e2d80 ?IsSound@AbstractEffect@@QAE_NXZ 008D2280 f i core.o FIXED: IDA sound code-flag query added in 9b24ec4b; IDA 0x004E2D80
+1131	FIXED	0002:000e2d90 ?is_player_vehicle@rb_vehicle@@QBE_NXZ 008D2290 f i core.o FIXED: IDA vehicle flag query added in 9b24ec4b; IDA 0x004E2D90
 1132	VERIFIED	0002:000e2da0 ?DeleteInst@InteractionController@@SAXXZ 008D22A0 f i core.o
 1133	VERIFIED	0002:000e2e30 ?DeleteInst@PlayerAnimMgr@@SAXXZ 008D2330 f i core.o
 1134	VERIFIED	0002:000e2ec0 ?DeleteInst@MultiplayerMgr@@SAXXZ 008D23C0 f i core.o
