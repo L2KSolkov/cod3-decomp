@@ -525,29 +525,29 @@ index	status	map_line
 524	VERIFIED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o
 525	VERIFIED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	VERIFIED: IDA directly forwards item, netID, position, angles, and velocity to mDropItem2
 526	PORTED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o	PORTED: added the IDA-backed entity-handle and mTakeWeapon forward
-527	PORTED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	PORTED: IDA 0x00950B80 forwards entity handle to mSwitchToLastWeapon
+527	VERIFIED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	VERIFIED: IDA 0x00950B80 matches the existing entity-handle forward to mSwitchToLastWeapon
 528	VERIFIED	0002:00550bb0 ?UpdateFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@1@Z 00D400B0 f mp_util_wad.o
 529	VERIFIED	0002:00550bf0 ?LaunchFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@11@Z 00D400F0 f mp_util_wad.o
-530	PORTED	0002:00550c40 ?Launch@Broc@@YAXABVentity@1@ABUvector@1@@Z 00D40140 f i mp_util_wad.o	PORTED: IDA 0x00950C40 forwards entity handle and velocity to mLaunch
+530	VERIFIED	0002:00550c40 ?Launch@Broc@@YAXABVentity@1@ABUvector@1@@Z 00D40140 f i mp_util_wad.o	VERIFIED: IDA 0x00950C40 matches the existing entity-handle and velocity forward to mLaunch
 531	VERIFIED	0002:00550c70 ?EntityOff@_mp_ctf@@YAXVentity@Broc@@@Z 00D40170 f mp_util_wad.o
 532	VERIFIED	0002:00550cd0 ?CompassUnderlay@_mp_ctf@@YAXVentity@Broc@@@Z 00D401D0 f mp_util_wad.o
 533	PORTED	0002:00550f30 ?HandlePickupFlag@_mp_ctf@@YAXHVentity@Broc@@Ubbool@@1@Z 00D40430 f mp_util_wad.o
-534	PORTED	0002:005528e0 ?SetOwner@Broc@@YAXABVentity@1@0@Z 00D41DE0 f i mp_util_wad.o	PORTED: IDA 0x009528E0 forwards both entity handles to mSetOwner
-535	PORTED	0002:00552920 ?GiveWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D41E20 f i mp_util_wad.o	PORTED: IDA 0x00952920 direct mGiveWeapon forward
-536	PORTED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o	PORTED: IDA 0x00952950 direct mSetWeaponSlotClipAmmo forward
-537	PORTED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o	PORTED: IDA 0x00952990 direct mObjectiveRing forward
-538	PORTED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o
+534	VERIFIED	0002:005528e0 ?SetOwner@Broc@@YAXABVentity@1@0@Z 00D41DE0 f i mp_util_wad.o	VERIFIED: IDA 0x009528E0 matches the existing two-entity-handle forward to mSetOwner
+535	VERIFIED	0002:00552920 ?GiveWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D41E20 f i mp_util_wad.o	VERIFIED: IDA 0x00952920 matches the existing entity-handle and string forward to mGiveWeapon
+536	VERIFIED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o	VERIFIED: IDA 0x00952950 matches the existing entity-handle, string, and integer forward to mSetWeaponSlotClipAmmo
+537	VERIFIED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o	VERIFIED: IDA 0x00952990 matches the existing direct mObjectiveRing forward
+538	FIXED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 539	VERIFIED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o
 540	VERIFIED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o
 541	VERIFIED	0002:00552f30 ?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z 00D42430 f mp_util_wad.o
-542	PORTED	0002:005533a0 ?WaitForFlagTimeOut__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D428A0 f i mp_util_wad.o
+542	FIXED	0002:005533a0 ?WaitForFlagTimeOut__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D428A0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 543	VERIFIED	0002:00553440 ?WaitForFlagTimeOut@_mp_ctf@@YAXVentity@Broc@@@Z 00D42940 f mp_util_wad.o
 544	VERIFIED	0002:005536d0 ?DestroyIcon@_mp_ctf@@YAXVentity@Broc@@@Z 00D42BD0 f mp_util_wad.o
 545	VERIFIED	0002:00553720 ?WaitForNoTouchFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D42C20 f mp_util_wad.o
 546	VERIFIED	0002:00553870 ?PickupFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D42D70 f mp_util_wad.o
-547	PORTED	0002:005540f0 ??4bint@@QAEHM@Z 00D435F0 f i mp_util_wad.o
-548	PORTED	0002:00554120 ?UseButtonPressed@Broc@@YAHABVentity@1@@Z 00D43620 f i mp_util_wad.o	PORTED: IDA 0x00954120 forwards const entity reference handle to mUseButtonPressed
-549	PORTED	0002:00554150 ?WaitForNoTouchFlag__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D43650 f i mp_util_wad.o
+547	PORTED	0002:005540f0 ??4bint@@QAEHM@Z 00D435F0 f i mp_util_wad.o	PORTED: added the IDA-backed global bint::operator=(float) at 0x009540F0
+548	VERIFIED	0002:00554120 ?UseButtonPressed@Broc@@YAHABVentity@1@@Z 00D43620 f i mp_util_wad.o	VERIFIED: IDA 0x00954120 matches the existing const entity-reference forward to mUseButtonPressed
+549	FIXED	0002:00554150 ?WaitForNoTouchFlag__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D43650 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 550	VERIFIED	0002:005541f0 ?Goal@_mp_ctf@@YAXVentity@Broc@@@Z 00D436F0 f mp_util_wad.o
 551	PORTED	0002:00554940 ?Code_AreaCaptured@Broc@@YAXHHH@Z 00D43E40 f i mp_util_wad.o	PORTED: IDA 0x00954940 direct mAreaCaptured forward
 552	VERIFIED	0002:00554970 ?FlagThreadLauncher@_mp_ctf@@YAXVentity@Broc@@@Z 00D43E70 f mp_util_wad.o
