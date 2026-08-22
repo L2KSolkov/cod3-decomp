@@ -902,24 +902,24 @@ index	status	map_line
 901	VERIFIED	0002:001e9a20 ?button_released_clear_all@controller@@QAEXH@Z 009D8F20 f i scr.o
 902	VERIFIED	0002:001e9a50 ??BtlFixedString@@QAEPADXZ 009D8F50 f i scr.o	VERIFIED: matches IDA decompile
 903	VERIFIED	0002:001e9a60 ?GetHash@tlFixedString@@QBEIXZ 009D8F60 f i scr.o	VERIFIED: matches IDA decompile
-904	PORTED	0002:001e9a70 ?IsLoaded@BspCell@@QBE_NXZ 009D8F70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-905	PORTED	0002:001e9a80 ?set_transparent@trRefEntity@@QAEXE@Z 009D8F80 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+904	VERIFIED	0002:001e9a70 ?IsLoaded@BspCell@@QBE_NXZ 009D8F70 f i scr.o	VERIFIED: matches IDA decompile and disassembly; tests mMeshFile at +0x3C
+905	VERIFIED	0002:001e9a80 ?set_transparent@trRefEntity@@QAEXE@Z 009D8F80 f i scr.o	VERIFIED: matches IDA decompile and disassembly; preserves byte input, alpha special case 1=0.5, and 1/255 scaling
 906	VERIFIED	0002:001e9af0 ?AddScriptEvent@Entity@@QAE_NVHashString@@V2@@Z 009D8FF0 f i scr.o	VERIFIED: matches IDA decompile
-907	PORTED	0002:001e9b90 ?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z 009D9090 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-908	PORTED	0002:001e9bb0 ?val34@Position3@math@@QBE?AVVector4@2@XZ 009D90B0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-909	PORTED	0002:001e9c00 ?TimeUserBegin@TimerRenderBars@@QAEXXZ 009D9100 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-910	PORTED	0002:001e9c40 ?TimeUserEnd@TimerRenderBars@@QAEXXZ 009D9140 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+907	VERIFIED	0002:001e9b90 ?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z 009D9090 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns false without a handler and tail-calls RemoveEvent otherwise
+908	VERIFIED	0002:001e9bb0 ?val34@Position3@math@@QBE?AVVector4@2@XZ 009D90B0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; SSE shuffle produces xyz plus homogeneous 1.0
+909	VERIFIED	0002:001e9c00 ?TimeUserBegin@TimerRenderBars@@QAEXXZ 009D9100 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores RDTSC low/high at +0x30/+0x34
+910	VERIFIED	0002:001e9c40 ?TimeUserEnd@TimerRenderBars@@QAEXXZ 009D9140 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores RDTSC low/high at +0x38/+0x3C
 911	VERIFIED	0002:001e9c80 ?GetStat@clientPersistent_t@@QAEHH@Z 009D9180 f i scr.o
 912	VERIFIED	0002:001e9d40 ?GetTotalScore@clientPersistent_t@@QAEHXZ 009D9240 f i scr.o
-913	PORTED	0002:001e9d70 ?memcpyFromStack@@YAXPAX0I@Z 009D9270 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-914	PORTED	0002:001e9da0 ?memcpyToStack@@YAXPAX0I@Z 009D92A0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+913	VERIFIED	0002:001e9d70 ?memcpyFromStack@@YAXPAX0I@Z 009D9270 f i scr.o	VERIFIED: matches IDA decompile and disassembly; copies rounded-up 32-bit words only when count is positive
+914	VERIFIED	0002:001e9da0 ?memcpyToStack@@YAXPAX0I@Z 009D92A0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; copies rounded-up 32-bit words only when count is positive
 915	VERIFIED	0002:001e9dd0 ?MathsRandomInt@Broc@@YAHH@Z 009D92D0 f i scr.o
 916	VERIFIED	0002:001e9e50 ?MathsRandomFloat@Broc@@YAMM@Z 009D9350 f i scr.o
 917	VERIFIED	0002:001e9e70 ?MathsRandomIntRange@Broc@@YAHHH@Z 009D9370 f i scr.o
 918	VERIFIED	0002:001e9ea0 ?MathsRandomFloatRange@Broc@@YAMMM@Z 009D93A0 f i scr.o
 919	VERIFIED	0002:001e9ee0 ?MathsLog@Broc@@YAMM@Z 009D93E0 f i scr.o
-920	PORTED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-921	PORTED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+920	VERIFIED	0002:001e9f50 ?IsRankedGame@MultiplayerMgr@@QAE_NXZ 009D9450 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns mRankedGame at +0x35
+921	VERIFIED	0002:001e9f60 ?FastCeil@@YAHM@Z 009D9460 f i scr.o	VERIFIED: matches IDA disassembly; computes ceil(double(x)) and converts through the CRT integer helper
 922	PORTED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 923	PORTED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 924	PORTED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
