@@ -881,7 +881,7 @@ index	status	map_line
 880	PORTED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF10 boxed bfloat inequality
 881	PORTED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF60 unary negative
 882	PORTED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AFB0 boxed bfloat addition
-883	VERIFIED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o
+883	FIXED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o	FIXED: replaced stub with IDA 0x0097B000 active-round touch counting and signed capture-speed updates
 884	FIXED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o	FIXED: corrected the 0x0097B580 signature/body to the global bfloat/bint types from IDA
 885	FIXED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o	FIXED: ported IDA 0x0097B640 loop; updates cap permissions and i_objective_c marker
 886	FIXED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o	FIXED: corrected global bint/int signature and ported IDA 0x0097B850 model/objective flow
