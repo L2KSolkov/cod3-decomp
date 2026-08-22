@@ -62,66 +62,66 @@ index	status	map_line
 61	VERIFIED	0002:0012a270 ?Con_DrawStringOnHUD@@YAXHHPBFHMH@Z 00919770 f cl.o
 62	VERIFIED	0002:0012a530 ?CL_BackUpKeys@@YAXXZ 00919A30 f cl.o
 63	VERIFIED	0002:0012a560 ?CL_RecallKeys@@YAXXZ 00919A60 f cl.o
-64	PORTED	0002:0012a590 ?CL_InitButtons@@YAXXZ 00919A90 f cl.o PORTED: IDA-verified kb/kbss and per-client button-state clearing
+64	FIXED	0002:0012a590 ?CL_InitButtons@@YAXXZ 00919A90 f cl.o FIXED: corrected IDA-derived 29-button kb/kbss layout and per-client clearing
 65	VERIFIED	0002:0012a5c0 ?IN_MLookDown@@YAXXZ 00919AC0 f cl.o
 66	PORTED	0002:0012a5d0 ?IN_KeyDown@@YAXPAUkbutton_t@@HH@Z 00919AD0 f cl.o PORTED: IDA-verified two-key tracking, duplicate suppression, active transition, and overflow message
 67	PORTED	0002:0012a630 ?IN_KeyUp@@YAXPAUkbutton_t@@HH@Z 00919B30 f cl.o PORTED: IDA-verified key validation asserts, key release bookkeeping, msec accumulation, and reset path
 68	VERIFIED	0002:0012a790 ?CL_KeyState@@YAMPAUkbutton_t@@@Z 00919C90 f cl.o
 69	VERIFIED	0002:0012a820 ?CL_SetTempStanceStatus@@YAXXZ 00919D20 f cl.o
-70	VERIFIED	0002:0012a860 ?IN_UpDown@@YAXHH@Z 00919D60 f cl.o
-71	VERIFIED	0002:0012a8e0 ?IN_UpUp@@YAXHH@Z 00919DE0 f cl.o
-72	VERIFIED	0002:0012a910 ?IN_DownDown@@YAXHH@Z 00919E10 f cl.o
-73	VERIFIED	0002:0012a960 ?IN_DownUp@@YAXHH@Z 00919E60 f cl.o
-74	VERIFIED	0002:0012a9b0 ?IN_LeftDown@@YAXHH@Z 00919EB0 f cl.o
-75	VERIFIED	0002:0012aa10 ?IN_LeftUp@@YAXHH@Z 00919F10 f cl.o
-76	VERIFIED	0002:0012aa30 ?IN_RightDown@@YAXHH@Z 00919F30 f cl.o
-77	VERIFIED	0002:0012aa50 ?IN_RightUp@@YAXHH@Z 00919F50 f cl.o
-78	VERIFIED	0002:0012aa70 ?IN_ForwardDown@@YAXHH@Z 00919F70 f cl.o
-79	VERIFIED	0002:0012aa90 ?IN_ForwardUp@@YAXHH@Z 00919F90 f cl.o
-80	VERIFIED	0002:0012aab0 ?IN_BackDown@@YAXHH@Z 00919FB0 f cl.o
-81	VERIFIED	0002:0012aad0 ?IN_BackUp@@YAXHH@Z 00919FD0 f cl.o
-82	VERIFIED	0002:0012aaf0 ?IN_LookupDown@@YAXHH@Z 00919FF0 f cl.o
-83	VERIFIED	0002:0012ab10 ?IN_LookupUp@@YAXHH@Z 0091A010 f cl.o
-84	VERIFIED	0002:0012ab30 ?IN_LookdownDown@@YAXHH@Z 0091A030 f cl.o
-85	VERIFIED	0002:0012ab50 ?IN_LookdownUp@@YAXHH@Z 0091A050 f cl.o
-86	VERIFIED	0002:0012ab70 ?IN_MoveleftDown@@YAXHH@Z 0091A070 f cl.o
-87	VERIFIED	0002:0012ab90 ?IN_MoveleftUp@@YAXHH@Z 0091A090 f cl.o
-88	VERIFIED	0002:0012abb0 ?IN_MoverightDown@@YAXHH@Z 0091A0B0 f cl.o
-89	VERIFIED	0002:0012abd0 ?IN_MoverightUp@@YAXHH@Z 0091A0D0 f cl.o
-90	VERIFIED	0002:0012abf0 ?IN_SpeedDown@@YAXHH@Z 0091A0F0 f cl.o
-91	VERIFIED	0002:0012ac10 ?IN_SpeedUp@@YAXHH@Z 0091A110 f cl.o
-92	VERIFIED	0002:0012ac30 ?IN_StrafeDown@@YAXHH@Z 0091A130 f cl.o
-93	VERIFIED	0002:0012ac50 ?IN_StrafeUp@@YAXHH@Z 0091A150 f cl.o
-94	VERIFIED	0002:0012ac70 ?IN_Button0Up@@YAXHH@Z 0091A170 f cl.o
-95	VERIFIED	0002:0012ac90 ?IN_Button1Down@@YAXHH@Z 0091A190 f cl.o
-96	VERIFIED	0002:0012acb0 ?IN_Button1Up@@YAXHH@Z 0091A1B0 f cl.o
-97	VERIFIED	0002:0012acd0 ?IN_Button4Down@@YAXHH@Z 0091A1D0 f cl.o
-98	VERIFIED	0002:0012acf0 ?IN_Button4Up@@YAXHH@Z 0091A1F0 f cl.o
-99	VERIFIED	0002:0012ad10 ?IN_Button5Down@@YAXHH@Z 0091A210 f cl.o
-100	VERIFIED	0002:0012ad30 ?IN_Button5Up@@YAXHH@Z 0091A230 f cl.o
-101	VERIFIED	0002:0012ad50 ?IN_ActivateDown@@YAXHH@Z 0091A250 f cl.o
-102	VERIFIED	0002:0012ad70 ?IN_ActivateUp@@YAXHH@Z 0091A270 f cl.o
-103	VERIFIED	0002:0012ad90 ?IN_ActivateReloadDown@@YAXHH@Z 0091A290 f cl.o
-104	VERIFIED	0002:0012adb0 ?IN_ActivateReloadUp@@YAXHH@Z 0091A2B0 f cl.o
-105	VERIFIED	0002:0012add0 ?IN_Wbutton0Down@@YAXHH@Z 0091A2D0 f cl.o
-106	VERIFIED	0002:0012adf0 ?IN_Wbutton0Up@@YAXHH@Z 0091A2F0 f cl.o
-107	VERIFIED	0002:0012ae10 ?IN_Wbutton2Down@@YAXHH@Z 0091A310 f cl.o
-108	VERIFIED	0002:0012ae30 ?IN_Wbutton2Up@@YAXHH@Z 0091A330 f cl.o
-109	VERIFIED	0002:0012ae50 ?IN_ReloadDown@@YAXHH@Z 0091A350 f cl.o
-110	VERIFIED	0002:0012ae70 ?IN_ReloadUp@@YAXHH@Z 0091A370 f cl.o
-111	VERIFIED	0002:0012ae90 ?IN_LeanLeftDown@@YAXHH@Z 0091A390 f cl.o
-112	VERIFIED	0002:0012aeb0 ?IN_LeanLeftUp@@YAXHH@Z 0091A3B0 f cl.o
-113	VERIFIED	0002:0012aed0 ?IN_LeanRightDown@@YAXHH@Z 0091A3D0 f cl.o
-114	VERIFIED	0002:0012aef0 ?IN_LeanRightUp@@YAXHH@Z 0091A3F0 f cl.o
-115	VERIFIED	0002:0012af10 ?IN_Wbutton6Down@@YAXHH@Z 0091A410 f cl.o
-116	VERIFIED	0002:0012af60 ?IN_Wbutton6Up@@YAXHH@Z 0091A460 f cl.o
-117	VERIFIED	0002:0012afb0 ?IN_Wbutton7Down@@YAXHH@Z 0091A4B0 f cl.o
-118	VERIFIED	0002:0012afd0 ?IN_Wbutton7Up@@YAXHH@Z 0091A4D0 f cl.o
+70	FIXED	0002:0012a860 ?IN_UpDown@@YAXHH@Z 00919D60 f cl.o FIXED: corrected shared IDA-derived kb indices
+71	FIXED	0002:0012a8e0 ?IN_UpUp@@YAXHH@Z 00919DE0 f cl.o FIXED: corrected shared IDA-derived kb indices
+72	FIXED	0002:0012a910 ?IN_DownDown@@YAXHH@Z 00919E10 f cl.o FIXED: corrected shared IDA-derived kb indices
+73	FIXED	0002:0012a960 ?IN_DownUp@@YAXHH@Z 00919E60 f cl.o FIXED: corrected shared IDA-derived kb indices
+74	FIXED	0002:0012a9b0 ?IN_LeftDown@@YAXHH@Z 00919EB0 f cl.o FIXED: corrected shared IDA-derived kb indices
+75	FIXED	0002:0012aa10 ?IN_LeftUp@@YAXHH@Z 00919F10 f cl.o FIXED: corrected shared IDA-derived kb indices
+76	FIXED	0002:0012aa30 ?IN_RightDown@@YAXHH@Z 00919F30 f cl.o FIXED: corrected shared IDA-derived kb indices
+77	FIXED	0002:0012aa50 ?IN_RightUp@@YAXHH@Z 00919F50 f cl.o FIXED: corrected shared IDA-derived kb indices
+78	FIXED	0002:0012aa70 ?IN_ForwardDown@@YAXHH@Z 00919F70 f cl.o FIXED: corrected shared IDA-derived kb indices
+79	FIXED	0002:0012aa90 ?IN_ForwardUp@@YAXHH@Z 00919F90 f cl.o FIXED: corrected shared IDA-derived kb indices
+80	FIXED	0002:0012aab0 ?IN_BackDown@@YAXHH@Z 00919FB0 f cl.o FIXED: corrected shared IDA-derived kb indices
+81	FIXED	0002:0012aad0 ?IN_BackUp@@YAXHH@Z 00919FD0 f cl.o FIXED: corrected shared IDA-derived kb indices
+82	FIXED	0002:0012aaf0 ?IN_LookupDown@@YAXHH@Z 00919FF0 f cl.o FIXED: corrected shared IDA-derived kb indices
+83	FIXED	0002:0012ab10 ?IN_LookupUp@@YAXHH@Z 0091A010 f cl.o FIXED: corrected shared IDA-derived kb indices
+84	FIXED	0002:0012ab30 ?IN_LookdownDown@@YAXHH@Z 0091A030 f cl.o FIXED: corrected shared IDA-derived kb indices
+85	FIXED	0002:0012ab50 ?IN_LookdownUp@@YAXHH@Z 0091A050 f cl.o FIXED: corrected shared IDA-derived kb indices
+86	FIXED	0002:0012ab70 ?IN_MoveleftDown@@YAXHH@Z 0091A070 f cl.o FIXED: corrected shared IDA-derived kb indices
+87	FIXED	0002:0012ab90 ?IN_MoveleftUp@@YAXHH@Z 0091A090 f cl.o FIXED: corrected shared IDA-derived kb indices
+88	FIXED	0002:0012abb0 ?IN_MoverightDown@@YAXHH@Z 0091A0B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+89	FIXED	0002:0012abd0 ?IN_MoverightUp@@YAXHH@Z 0091A0D0 f cl.o FIXED: corrected shared IDA-derived kb indices
+90	FIXED	0002:0012abf0 ?IN_SpeedDown@@YAXHH@Z 0091A0F0 f cl.o FIXED: corrected shared IDA-derived kb indices
+91	FIXED	0002:0012ac10 ?IN_SpeedUp@@YAXHH@Z 0091A110 f cl.o FIXED: corrected shared IDA-derived kb indices
+92	FIXED	0002:0012ac30 ?IN_StrafeDown@@YAXHH@Z 0091A130 f cl.o FIXED: corrected shared IDA-derived kb indices
+93	FIXED	0002:0012ac50 ?IN_StrafeUp@@YAXHH@Z 0091A150 f cl.o FIXED: corrected shared IDA-derived kb indices
+94	FIXED	0002:0012ac70 ?IN_Button0Up@@YAXHH@Z 0091A170 f cl.o FIXED: corrected shared IDA-derived kb indices
+95	FIXED	0002:0012ac90 ?IN_Button1Down@@YAXHH@Z 0091A190 f cl.o FIXED: corrected shared IDA-derived kb indices
+96	FIXED	0002:0012acb0 ?IN_Button1Up@@YAXHH@Z 0091A1B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+97	FIXED	0002:0012acd0 ?IN_Button4Down@@YAXHH@Z 0091A1D0 f cl.o FIXED: corrected shared IDA-derived kb indices
+98	FIXED	0002:0012acf0 ?IN_Button4Up@@YAXHH@Z 0091A1F0 f cl.o FIXED: corrected shared IDA-derived kb indices
+99	FIXED	0002:0012ad10 ?IN_Button5Down@@YAXHH@Z 0091A210 f cl.o FIXED: corrected shared IDA-derived kb indices
+100	FIXED	0002:0012ad30 ?IN_Button5Up@@YAXHH@Z 0091A230 f cl.o FIXED: corrected shared IDA-derived kb indices
+101	FIXED	0002:0012ad50 ?IN_ActivateDown@@YAXHH@Z 0091A250 f cl.o FIXED: corrected shared IDA-derived kb indices
+102	FIXED	0002:0012ad70 ?IN_ActivateUp@@YAXHH@Z 0091A270 f cl.o FIXED: corrected shared IDA-derived kb indices
+103	FIXED	0002:0012ad90 ?IN_ActivateReloadDown@@YAXHH@Z 0091A290 f cl.o FIXED: corrected shared IDA-derived kb indices
+104	FIXED	0002:0012adb0 ?IN_ActivateReloadUp@@YAXHH@Z 0091A2B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+105	FIXED	0002:0012add0 ?IN_Wbutton0Down@@YAXHH@Z 0091A2D0 f cl.o FIXED: corrected shared IDA-derived kb indices
+106	FIXED	0002:0012adf0 ?IN_Wbutton0Up@@YAXHH@Z 0091A2F0 f cl.o FIXED: corrected shared IDA-derived kb indices
+107	FIXED	0002:0012ae10 ?IN_Wbutton2Down@@YAXHH@Z 0091A310 f cl.o FIXED: corrected shared IDA-derived kb indices
+108	FIXED	0002:0012ae30 ?IN_Wbutton2Up@@YAXHH@Z 0091A330 f cl.o FIXED: corrected shared IDA-derived kb indices
+109	FIXED	0002:0012ae50 ?IN_ReloadDown@@YAXHH@Z 0091A350 f cl.o FIXED: corrected shared IDA-derived kb indices
+110	FIXED	0002:0012ae70 ?IN_ReloadUp@@YAXHH@Z 0091A370 f cl.o FIXED: corrected shared IDA-derived kb indices
+111	FIXED	0002:0012ae90 ?IN_LeanLeftDown@@YAXHH@Z 0091A390 f cl.o FIXED: corrected shared IDA-derived kb indices
+112	FIXED	0002:0012aeb0 ?IN_LeanLeftUp@@YAXHH@Z 0091A3B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+113	FIXED	0002:0012aed0 ?IN_LeanRightDown@@YAXHH@Z 0091A3D0 f cl.o FIXED: corrected shared IDA-derived kb indices
+114	FIXED	0002:0012aef0 ?IN_LeanRightUp@@YAXHH@Z 0091A3F0 f cl.o FIXED: corrected shared IDA-derived kb indices
+115	FIXED	0002:0012af10 ?IN_Wbutton6Down@@YAXHH@Z 0091A410 f cl.o FIXED: corrected shared IDA-derived kb indices
+116	FIXED	0002:0012af60 ?IN_Wbutton6Up@@YAXHH@Z 0091A460 f cl.o FIXED: corrected shared IDA-derived kb indices
+117	FIXED	0002:0012afb0 ?IN_Wbutton7Down@@YAXHH@Z 0091A4B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+118	FIXED	0002:0012afd0 ?IN_Wbutton7Up@@YAXHH@Z 0091A4D0 f cl.o FIXED: corrected shared IDA-derived kb indices
 119	PORTED	0002:0012aff0 ?IN_ToggleADS@@YAXHH@Z 0091A4F0 f cl.o
-120	VERIFIED	0002:0012b010 ?IN_SprintDown@@YAXHH@Z 0091A510 f cl.o
-121	VERIFIED	0002:0012b030 ?IN_SprintUp@@YAXHH@Z 0091A530 f cl.o
-122	VERIFIED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o
-123	VERIFIED	0002:0012b070 ?IN_ButtonUp@@YAXHH@Z 0091A570 f cl.o
+120	FIXED	0002:0012b010 ?IN_SprintDown@@YAXHH@Z 0091A510 f cl.o FIXED: corrected shared IDA-derived kb indices
+121	FIXED	0002:0012b030 ?IN_SprintUp@@YAXHH@Z 0091A530 f cl.o FIXED: corrected shared IDA-derived kb indices
+122	FIXED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o FIXED: corrected shared IDA-derived kb indices
+123	FIXED	0002:0012b070 ?IN_ButtonUp@@YAXHH@Z 0091A570 f cl.o FIXED: corrected shared IDA-derived kb indices
 124	PORTED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o
 125	PORTED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o
 126	PORTED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o
@@ -129,42 +129,42 @@ index	status	map_line
 128	PORTED	0002:0012b1d0 ?IN_ToggleProne@@YAXXZ 0091A6D0 f cl.o
 129	PORTED	0002:0012b230 ?IN_GoProne@@YAXXZ 0091A730 f cl.o
 130	PORTED	0002:0012b280 ?IN_GoCrouch@@YAXXZ 0091A780 f cl.o
-131	VERIFIED	0002:0012b2d0 ?IN_GoStandDown@@YAXHH@Z 0091A7D0 f cl.o
-132	VERIFIED	0002:0012b360 ?IN_GoStandUp@@YAXHH@Z 0091A860 f cl.o
+131	FIXED	0002:0012b2d0 ?IN_GoStandDown@@YAXHH@Z 0091A7D0 f cl.o FIXED: corrected shared IDA-derived kb indices
+132	FIXED	0002:0012b360 ?IN_GoStandUp@@YAXHH@Z 0091A860 f cl.o FIXED: corrected shared IDA-derived kb indices
 133	PORTED	0002:0012b390 ?IN_Stance_Down@@YAXXZ 0091A890 f cl.o
 134	PORTED	0002:0012b410 ?IN_Stance_Up@@YAXXZ 0091A910 f cl.o
-135	VERIFIED	0002:0012b450 ?IN_LeanRightSwitchNextDown@@YAXHH@Z 0091A950 f cl.o
-136	VERIFIED	0002:0012b490 ?IN_LeanRightSwitchNextUp@@YAXHH@Z 0091A990 f cl.o
-137	VERIFIED	0002:0012b4b0 ?IN_LeanLeftSwitchNextDown@@YAXHH@Z 0091A9B0 f cl.o
-138	VERIFIED	0002:0012b4f0 ?IN_LeanLeftSwitchNextUp@@YAXHH@Z 0091A9F0 f cl.o
+135	FIXED	0002:0012b450 ?IN_LeanRightSwitchNextDown@@YAXHH@Z 0091A950 f cl.o FIXED: corrected shared IDA-derived kb indices
+136	FIXED	0002:0012b490 ?IN_LeanRightSwitchNextUp@@YAXHH@Z 0091A990 f cl.o FIXED: corrected shared IDA-derived kb indices
+137	FIXED	0002:0012b4b0 ?IN_LeanLeftSwitchNextDown@@YAXHH@Z 0091A9B0 f cl.o FIXED: corrected shared IDA-derived kb indices
+138	FIXED	0002:0012b4f0 ?IN_LeanLeftSwitchNextUp@@YAXHH@Z 0091A9F0 f cl.o FIXED: corrected shared IDA-derived kb indices
 139	VERIFIED	0002:0012b510 ?IN_TogglePaused@@YAXXZ 0091AA10 f cl.o
-140	VERIFIED	0002:0012b540 ?IN_SmokeGrenadeAttackDown@@YAXHH@Z 0091AA40 f cl.o
-141	VERIFIED	0002:0012b5c0 ?IN_SmokeGrenadeAttackUp@@YAXHH@Z 0091AAC0 f cl.o
-142	VERIFIED	0002:0012b5e0 ?IN_ClassButtonDown@@YAXHH@Z 0091AAE0 f cl.o
-143	VERIFIED	0002:0012b700 ?IN_ClassButtonUp@@YAXHH@Z 0091AC00 f cl.o
-144	VERIFIED	0002:0012b720 ?IN_GrenadeAttackDown@@YAXHH@Z 0091AC20 f cl.o
-145	VERIFIED	0002:0012b840 ?IN_GrenadeAttackUp@@YAXHH@Z 0091AD40 f cl.o
-146	VERIFIED	0002:0012b870 ?IN_ActivateMoveUpDown@@YAXHH@Z 0091AD70 f cl.o
-147	VERIFIED	0002:0012b920 ?IN_ActivateMoveUpUp@@YAXHH@Z 0091AE20 f cl.o
-148	VERIFIED	0002:0012b960 ?IN_ActivateMeleeDown@@YAXHH@Z 0091AE60 f cl.o
-149	VERIFIED	0002:0012b9c0 ?IN_ActivateMeleeUp@@YAXHH@Z 0091AEC0 f cl.o
+140	FIXED	0002:0012b540 ?IN_SmokeGrenadeAttackDown@@YAXHH@Z 0091AA40 f cl.o FIXED: corrected shared IDA-derived kb indices
+141	FIXED	0002:0012b5c0 ?IN_SmokeGrenadeAttackUp@@YAXHH@Z 0091AAC0 f cl.o FIXED: corrected shared IDA-derived kb indices
+142	FIXED	0002:0012b5e0 ?IN_ClassButtonDown@@YAXHH@Z 0091AAE0 f cl.o FIXED: corrected shared IDA-derived kb indices
+143	FIXED	0002:0012b700 ?IN_ClassButtonUp@@YAXHH@Z 0091AC00 f cl.o FIXED: corrected shared IDA-derived kb indices
+144	FIXED	0002:0012b720 ?IN_GrenadeAttackDown@@YAXHH@Z 0091AC20 f cl.o FIXED: corrected shared IDA-derived kb indices
+145	FIXED	0002:0012b840 ?IN_GrenadeAttackUp@@YAXHH@Z 0091AD40 f cl.o FIXED: corrected shared IDA-derived kb indices
+146	FIXED	0002:0012b870 ?IN_ActivateMoveUpDown@@YAXHH@Z 0091AD70 f cl.o FIXED: corrected shared IDA-derived kb indices
+147	FIXED	0002:0012b920 ?IN_ActivateMoveUpUp@@YAXHH@Z 0091AE20 f cl.o FIXED: corrected shared IDA-derived kb indices
+148	FIXED	0002:0012b960 ?IN_ActivateMeleeDown@@YAXHH@Z 0091AE60 f cl.o FIXED: corrected shared IDA-derived kb indices
+149	FIXED	0002:0012b9c0 ?IN_ActivateMeleeUp@@YAXHH@Z 0091AEC0 f cl.o FIXED: corrected shared IDA-derived kb indices
 150	VERIFIED	0002:0012b9f0 ?IN_AnalogStickLeanDown@@YAXXZ 0091AEF0 f cl.o
 151	VERIFIED	0002:0012ba00 ?IN_AnalogStickLeanUp@@YAXXZ 0091AF00 f cl.o
-152	VERIFIED	0002:0012ba10 ?CL_AdjustAngles@@YAXXZ 0091AF10 f cl.o
-153	VERIFIED	0002:0012bae0 ?CL_IsADS@@YA_NH@Z 0091AFE0 f cl.o
-154	PORTED	0002:0012bb50 ?CL_StanceButtonUpdate@@YAXXZ 0091B050 f cl.o
-155	VERIFIED	0002:0012bc10 ?CL_KeyMove@@YAXPAUusercmd_s@@@Z 0091B110 f cl.o
+152	FIXED	0002:0012ba10 ?CL_AdjustAngles@@YAXXZ 0091AF10 f cl.o FIXED: corrected shared IDA-derived kb indices
+153	FIXED	0002:0012bae0 ?CL_IsADS@@YA_NH@Z 0091AFE0 f cl.o FIXED: corrected shared IDA-derived kb indices
+154	FIXED	0002:0012bb50 ?CL_StanceButtonUpdate@@YAXXZ 0091B050 f cl.o FIXED: corrected shared IDA-derived kb indices
+155	FIXED	0002:0012bc10 ?CL_KeyMove@@YAXPAUusercmd_s@@@Z 0091B110 f cl.o FIXED: corrected shared IDA-derived kb indices
 156	PORTED	0002:0012be60 ?CL_MouseEvent@@YAXHHH@Z 0091B360 f cl.o
 157	PORTED	0002:0012beb0 ?CL_JoystickEvent@@YAXHHH@Z 0091B3B0 f cl.o
 158	VERIFIED	0002:0012bef0 ?CL_JoystickMove@@YAXPAUusercmd_s@@@Z 0091B3F0 f cl.o
 159	PORTED	0002:0012bff0 ?GetAverageDelta@@YAXAAMAAHH@Z 0091B4F0 f cl.o
-160	VERIFIED	0002:0012c080 ?CL_CmdButtons@@YAXPAUusercmd_s@@@Z 0091B580 f cl.o
-161	VERIFIED	0002:0012c100 ?CL_SetUsercmdButtonsWeapons@@YAXHH@Z 0091B600 f cl.o
-162	VERIFIED	0002:0012c140 ?CL_FinishMove@@YAXPAUusercmd_s@@@Z 0091B640 f cl.o
+160	FIXED	0002:0012c080 ?CL_CmdButtons@@YAXPAUusercmd_s@@@Z 0091B580 f cl.o FIXED: corrected shared IDA-derived kb indices
+161	FIXED	0002:0012c100 ?CL_SetUsercmdButtonsWeapons@@YAXHH@Z 0091B600 f cl.o FIXED: corrected shared IDA-derived kb indices
+162	FIXED	0002:0012c140 ?CL_FinishMove@@YAXPAUusercmd_s@@@Z 0091B640 f cl.o FIXED: corrected shared IDA-derived kb indices
 163	VERIFIED	0002:0012c280 ?CL_GetCurUserCmd@@YAABUusercmd_s@@H@Z 0091B780 f cl.o
 164	VERIFIED	0002:0012c2b0 ?IN_EnableAsserts@@YAXXZ 0091B7B0 f cl.o
 165	VERIFIED	0002:0012c2c0 ?CL_ShutdownInput@@YAXXZ 0091B7C0 f cl.o
-166	VERIFIED	0002:0012c540 ?CL_ClearKeys@@YAXXZ 0091BA40 f cl.o
+166	FIXED	0002:0012c540 ?CL_ClearKeys@@YAXXZ 0091BA40 f cl.o FIXED: corrected shared IDA-derived kb indices
 167	PORTED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o
 168	PORTED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o
 169	VERIFIED	0002:0012c7f0 ?Key_GetOverstrikeMode@@YAHXZ 0091BCF0 f cl.o
