@@ -16036,23 +16036,28 @@ void DebugRenderSpawnPoints() {
                 (int)mp_util_wad::pLevel->lastFlagIndex) {
             Broc::entity area =
                 mp_util_wad::pLevel->warAreas[(unsigned int)(int)mp_util_wad::pLevel->warIndex];
-            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+            Broc::entity& trigger = area->flagEnd.GetRef();
             Broc::string tn;
-            mp_util_wad::entity_get_targetname(&tn, trigger);
+            Broc::entity::__unnamed::targetname_struct targetnameField = {
+                trigger.GetHandle()};
+            targetnameField.Get(&tn);
             HashStr key;
             key.mVal = 0x15B1F8A7u;
             Broc::GetEntArray(&tn, key.mVal, &spawnpoints, 0);
             tn.~string();
 
             Broc::vector origin;
-            for (int i = 0; i < Broc::size(spawnpoints); ++i) {
+            for (Broc::bint i(0); (int)i < Broc::size(spawnpoints);
+                 i = (int)i + 1) {
                 Broc::entity spawnpoint = spawnpoints[(unsigned int)i];
                 Broc::entity::__unnamed::classname_struct classnameField = {
                     spawnpoint.GetHandle()};
                 Broc::string classname;
                 classnameField.Get(&classname);
                 if (classname == mp_util_wad::pLevel->spawnTypeAllies) {
-                    mp_util_wad::entity_get_origin(&origin, spawnpoint);
+                    Broc::entity::__unnamed::origin_struct originField = {
+                        spawnpoint.GetHandle()};
+                    originField.Get(&origin);
                     Broc::vector maxBox = origin + maxs;
                     Broc::vector minBox = origin + mins;
                     Broc::Code_DebugRenderBox(
@@ -16062,14 +16067,17 @@ void DebugRenderSpawnPoints() {
                 classname.~string();
             }
 
-            for (int i = 0; i < Broc::size(spawnpoints); ++i) {
+            for (Broc::bint i(0); (int)i < Broc::size(spawnpoints);
+                 i = (int)i + 1) {
                 Broc::entity spawnpoint = spawnpoints[(unsigned int)i];
                 Broc::entity::__unnamed::classname_struct classnameField = {
                     spawnpoint.GetHandle()};
                 Broc::string classname;
                 classnameField.Get(&classname);
                 if (classname == mp_util_wad::pLevel->spawnTypeAxis) {
-                    mp_util_wad::entity_get_origin(&origin, spawnpoint);
+                    Broc::entity::__unnamed::origin_struct originField = {
+                        spawnpoint.GetHandle()};
+                    originField.Get(&origin);
                     Broc::vector maxBox = origin + maxs;
                     Broc::vector minBox = origin + mins;
                     Broc::Code_DebugRenderBox(
