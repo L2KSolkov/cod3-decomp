@@ -1162,7 +1162,7 @@ index	status	map_line
 1161	FIXED	0002:00586710 ??$IsDefined@UHashStr@@@@YA_NABUHashStr@@@Z 00D75C10 f i mp_util_wad.o	FIXED: free IsDefined<HashStr> now resolves through the IDA sentinel-aware member
 1162	PORTED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o	PORTED: added IDA HashStr::IsDefined sentinel comparison
 1163	VERIFIED	0002:00586760 ??$size@Ventity@Broc@@@Broc@@YAHABV?$dyn_array@Ventity@Broc@@@0@@Z 00D75C60 f i mp_util_wad.o
-1164	PORTED	0002:00586780 ??$println@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAY0BD@$$CBDABUbint@@@Z 00D75C80 f i mp_util_wad.o	PORTED: added the IDA println wrapper using ConcatText and mPrintLn
+1164	FIXED	0002:00586780 ??$println@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAY0BD@$$CBDABUbint@@@Z 00D75C80 f i mp_util_wad.o	FIXED: routed the IDA println wrapper through mPrintLn instead of the iprintln mIPrintLn path
 1165	PORTED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o	PORTED: added the IDA direct push_back(vector) wrapper
 1166	PORTED	0002:00586850 ??$push@M@Broc@@YAXAAV?$dyn_array@M@0@ABM@Z 00D75D50 f i mp_util_wad.o	PORTED: added the IDA direct push_back(float) wrapper
 1167	VERIFIED	0002:00586880 ??$size@Uvector@Broc@@@Broc@@YAHABV?$dyn_array@Uvector@Broc@@@0@@Z 00D75D80 f i mp_util_wad.o
