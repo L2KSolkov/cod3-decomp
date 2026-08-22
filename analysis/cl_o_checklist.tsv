@@ -165,8 +165,8 @@ index	status	map_line
 164	VERIFIED	0002:0012c2b0 ?IN_EnableAsserts@@YAXXZ 0091B7B0 f cl.o
 165	VERIFIED	0002:0012c2c0 ?CL_ShutdownInput@@YAXXZ 0091B7C0 f cl.o
 166	FIXED	0002:0012c540 ?CL_ClearKeys@@YAXXZ 0091BA40 f cl.o FIXED: corrected shared IDA-derived kb indices
-167	PORTED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o
-168	PORTED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o
+167	PORTED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o PORTED: IDA match; clears kb and the current client kbss entry
+168	PORTED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o PORTED: IDA match; intentionally empty in the reference
 169	VERIFIED	0002:0012c7f0 ?Key_GetOverstrikeMode@@YAHXZ 0091BCF0 f cl.o
 170	VERIFIED	0002:0012c800 ?Key_SetOverstrikeMode@@YAXH@Z 0091BD00 f cl.o
 171	VERIFIED	0002:0012c810 ?SetBinding@KeyInfoEntry@@QAEXPBD@Z 0091BD10 f cl.o
@@ -174,11 +174,11 @@ index	status	map_line
 173	VERIFIED	0002:0012c960 ?Key_KeynumToString@@YAPADHH@Z 0091BE60 f cl.o
 174	VERIFIED	0002:0012ca80 ?CL_PortInPlay@@YA_NH@Z 0091BF80 f cl.o
 175	VERIFIED	0002:0012cab0 ?CL_GetKeyBinding@@YAHPBDPAPBD1@Z 0091BFB0 f cl.o
-176	PORTED	0002:0012caf0 ?CL_PreAllocStrings@@YAXXZ 0091BFF0 f cl.o
+176	PORTED	0002:0012caf0 ?CL_PreAllocStrings@@YAXXZ 0091BFF0 f cl.o PORTED: IDA match; preserves allocation sizes and initialization order
 177	VERIFIED	0002:0012cbb0 ?CL_EndgameMenu@@YAXXZ 0091C0B0 f cl.o
 178	VERIFIED	0002:0012cbc0 ?CL_CDDialog@@YAXXZ 0091C0C0 f cl.o
 179	VERIFIED	0002:0012cbd0 ?CL_AddReliableCommand@@YAXPBD@Z 0091C0D0 f cl.o
-180	PORTED	0002:0012cc70 ?CL_ChangeReliableCommand@@YAXXZ 0091C170 f cl.o
+180	PORTED	0002:0012cc70 ?CL_ChangeReliableCommand@@YAXXZ 0091C170 f cl.o PORTED: IDA match; clamps length and appends newline/terminator
 181	VERIFIED	0002:0012ccc0 ?CL_ForwardCommandToServer@@YAXPBD@Z 0091C1C0 f cl.o
 182	VERIFIED	0002:0012cd20 ?CL_ForwardToServer_f@@YAXXZ 0091C220 f cl.o
 183	VERIFIED	0002:0012cd60 ?CL_Setenv_f@@YAXXZ 0091C260 f cl.o
@@ -202,16 +202,16 @@ index	status	map_line
 201	VERIFIED	0002:0012d4a0 ?CL_AddDebugLine@@YAXQBM00HHHH@Z 0091C9A0 f cl.o
 202	VERIFIED	0002:0012d600 ?CL_FlushDebugData@@YAXH@Z 0091CB00 f cl.o
 203	VERIFIED	0002:0012d840 ?CL_UpdateDebugData@@YAXXZ 0091CD40 f cl.o
-204	PORTED	0002:0012d930 ?CL_ShutdownDebugData@@YAXXZ 0091CE30 f cl.o
+204	PORTED	0002:0012d930 ?CL_ShutdownDebugData@@YAXXZ 0091CE30 f cl.o PORTED: IDA match; frees five buffers and clears the 0x2C-byte state block
 205	VERIFIED	0002:0012d9d0 ?CL_Netchan_Transmit@@YAXPAUnetchan_t@@PAUmsg_t@@@Z 0091CED0 f cl.o
 206	VERIFIED	0002:0012da00 ?CL_Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z 0091CF00 f cl.o
 207	VERIFIED	0002:0012da10 ?SHOWNET@@YAXPAUmsg_t@@PAD@Z 0091CF10 f cl.o
-208	PORTED	0002:0012da40 ?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z 0091CF40 f cl.o
+208	PORTED	0002:0012da40 ?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z 0091CF40 f cl.o PORTED: IDA match; intentionally empty in the reference
 209	VERIFIED	0002:0012da50 ?CL_ParseCommandString@@YAXPAUmsg_t@@@Z 0091CF50 f cl.o
-210	PORTED	0002:0012dab0 ?SCR_DrawNamedPic@@YAXMMMMPBDH@Z 0091CFB0 f cl.o
+210	PORTED	0002:0012dab0 ?SCR_DrawNamedPic@@YAXMMMMPBDH@Z 0091CFB0 f cl.o PORTED: IDA match; intentionally empty in the reference
 211	VERIFIED	0002:0012dac0 ?SCR_AdjustFrom640@@YAXPAM000@Z 0091CFC0 f cl.o
 212	VERIFIED	0002:0012db40 ?SCR_FillRect@@YAXMMMMPBM@Z 0091D040 f cl.o
-213	PORTED	0002:0012dbd0 ?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z 0091D0D0 f cl.o
+213	PORTED	0002:0012dbd0 ?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z 0091D0D0 f cl.o PORTED: IDA match; preserves 640-space scaling and full UVs
 214	VERIFIED	0002:0012dc50 ?SCR_AdjustTo640@@YAXPAM000@Z 0091D150 f cl.o
 215	VERIFIED	0002:0012dce0 ?SCR_DrawSmallChar@@YAXHHH@Z 0091D1E0 f cl.o
 216	VERIFIED	0002:0012ddb0 ?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z 0091D2B0 f cl.o
