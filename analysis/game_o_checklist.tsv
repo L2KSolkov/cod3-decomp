@@ -707,21 +707,21 @@ index	status	map_line
 706	PORTED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o  PORTED: restored exact SIMD all-gt comparison mask
 707	PORTED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o  PORTED: restored exact SIMD any-le comparison mask
 708	PORTED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o  PORTED: restored exact SIMD any-ge comparison mask
-709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o
-710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o
-711	PORTED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o
-712	PORTED	0002:0025b6b0 ?nglGetStripIndices@@YAHHH@Z 00A4ABB0 f i game.o
-713	PORTED	0002:0025b6d0 ??0SCheckpointGameVar@@QAE@III@Z 00A4ABD0 f i game.o
-714	PORTED	0002:0025b6f0 ?inc@cdl_profcounter@@QAEXXZ 00A4ABF0 f i game.o
+709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o	PORTED: restored exact no-op constructor from IDA
+710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o	PORTED: restored exact Array-to-valid-flag view from IDA
+711	PORTED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o	PORTED: restored exact static size formula from IDA
+712	PORTED	0002:0025b6b0 ?nglGetStripIndices@@YAHHH@Z 00A4ABB0 f i game.o	PORTED: restored exact strip index count formula from IDA
+713	PORTED	0002:0025b6d0 ??0SCheckpointGameVar@@QAE@III@Z 00A4ABD0 f i game.o	PORTED: restored exact three-field constructor from IDA
+714	PORTED	0002:0025b6f0 ?inc@cdl_profcounter@@QAEXXZ 00A4ABF0 f i game.o	PORTED: restored exact profiler counter increment from IDA
 715	PORTED	0002:0025b700 ?Select_lt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AC00 f i game.o
 716	PORTED	0002:0025b860 ?Select_gt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AD60 f i game.o
 717	PORTED	0002:0025b9c0 ?FloatIsNegative@@YAHM@Z 00A4AEC0 f i game.o
 718	PORTED	0002:0025b9e0 ?FloatSign@@YAHM@Z 00A4AEE0 f i game.o
 719	PORTED	0002:0025ba10 ?BoxOnPlaneSide@@YAHABVPosition3@math@@0ABVVector4@2@@Z 00A4AF10 f i game.o
-720	PORTED	0002:0025bce0 ?Inst@BinFileManager@@SAPAV1@XZ 00A4B1E0 f i game.o
+720	PORTED	0002:0025bce0 ?Inst@BinFileManager@@SAPAV1@XZ 00A4B1E0 f i game.o	PORTED: restored exact singleton accessor from IDA
 721	VERIFIED	0002:0025bcf0 ??0leafList_s@@QAE@XZ 00A4B1F0 f i game.o
 722	VERIFIED	0002:0025bd00 ??0areaParms_t@@QAE@XZ 00A4B200 f i game.o
-723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o
+723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o	PORTED: restored exact no-op constructor with IDA-confirmed 48-byte layout
 724	VERIFIED	0002:0025bd20 ??0sphere_t@@QAE@XZ 00A4B220 f i game.o
 725	VERIFIED	0002:0025bd30 ?collide_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@PAV32@@Z 00A4B230 f i game.o
 726	PORTED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o
