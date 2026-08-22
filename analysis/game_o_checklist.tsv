@@ -10,12 +10,12 @@ index	status	map_line
 9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o  PORTED: restored exact IDA null-pointer reset
 10	VERIFIED	0002:00201de0 ?set_buffer@phys_memory_heap@@QAEXQAXHH@Z 009F12E0 f i game.o
 11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o  PORTED: restored exact IDA field-ordering constructor
-12	PORTED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o
+12	SKIPPED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o  SKIPPED: MSVC CRT supplies the exact float abs runtime helper
 13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o
 14	PORTED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o
 15	PORTED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o
-16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o
-17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o
+16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o  PORTED: restored exact IDA lock/assert state transition
+17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o  PORTED: restored exact IDA unlock/assert state transition
 18	PORTED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o
 19	PORTED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o
 20	PORTED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o
