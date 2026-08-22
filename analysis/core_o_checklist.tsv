@@ -1318,15 +1318,15 @@ index	status	map_line
 1317	VERIFIED	0002:000e6430 ?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z 008D5930 f i core.o VERIFIED: existing handle release, generation increment, free-index update, and warning match IDA
 1318	VERIFIED	0002:000e6540 ??D?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A40 f i core.o
 1319	VERIFIED	0002:000e6580 ??C?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A80 f i core.o
-1320	PORTED	0002:000e65c0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D5AC0 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
-1321	PORTED	0002:000e6610 ?erase@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@AAV21@@Z 008D5B10 f i core.o  PORTED: exact IDA successor return, unlink, iterator clear, and line-433 assertion
-1322	PORTED	0002:000e66f0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D5BF0 f i core.o  PORTED: exact IDA const-iterator initialization and sentinel handling
-1323	PORTED	0002:000e6740 ??1?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008D5C40 f i core.o
+1320	VERIFIED	0002:000e65c0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D5AC0 f i core.o  VERIFIED: shared iterator begin body matches IDA initialization and sentinel handling
+1321	VERIFIED	0002:000e6610 ?erase@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@AAV21@@Z 008D5B10 f i core.o  VERIFIED: shared iterator erase body matches IDA successor return, unlink, clearing, and line-433 assertion
+1322	VERIFIED	0002:000e66f0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D5BF0 f i core.o  VERIFIED: shared const-iterator begin body matches IDA initialization and sentinel handling
+1323	SKIPPED	0002:000e6740 ??1?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008D5C40 f i core.o SKIPPED: ae_vector<T> template destructor instantiation; shared destroy_all() is already implemented
 1324	VERIFIED	0002:000e6770 ??0?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAE@XZ 008D5C70 f i core.o
 1325	SKIPPED	0002:000e67b0 ??B?$IVPointer@VDbTableSet@@@@QBE_NXZ 008D5CB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1326	SKIPPED	0002:000e67d0 ?get_file_name@?$ae_fixed_string@$0IA@E@@QBE?AV1@_N@Z 008D5CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1327	SKIPPED	0002:000e6840 ?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z 008D5D40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1328	PORTED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o  PORTED: exact IDA callback enumeration and out-of-handles error path
+1328	VERIFIED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o  VERIFIED: existing callback enumeration and out-of-handles error path match IDA
 1329	PORTED	0002:000e6990 ??0?$BitSet@$0CAA@@@QAE@XZ 008D5E90 f i core.o
 1330	SKIPPED	0002:000e69c0 ?begin@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EC0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1331	SKIPPED	0002:000e69e0 ?end@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1336,10 +1336,10 @@ index	status	map_line
 1335	FIXED	0002:000e7010 ??$Where@H@DbQuery@@QAEXHABH_N@Z 008D6510 f i core.o	FIXED: exact IDA template behavior; duplicate/schema/range checks, aligned buffer placement, and DbField storage
 1336	FIXED	0002:000e73f0 ??$Where@M@DbQuery@@QAEXHABM_N@Z 008D68F0 f i core.o	FIXED: exact IDA template behavior; duplicate/schema/range checks, aligned buffer placement, and DbField storage
 1337	SKIPPED	0002:000e77d0 ??$Find@PBDV?$IVPointer@VDbTableSet@@@@@?$InplaceAssetBankSet@VDbTablesetBank@@@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VDbTableSet@@@@@@PAW42@@Z 008D6CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o  PORTED: exact float pointer fallback to default value
+1338	VERIFIED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o  VERIFIED: existing float pointer fallback to default value matches IDA
 1339	SKIPPED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1340	SKIPPED	0002:000e7b70 ??$PredicateSearch@VTypeCallbackSearch@@V?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@VTypeCallbackSearch@@V?$AeType@V?$IVPointer@VConfigString@@@@@@@Z 008D7070 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o  PORTED: exact IDA iterator walk and destructor/pool-release cleanup
+1341	VERIFIED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o  VERIFIED: existing iterator walk and DelFunctor cleanup are ABI-equivalent to IDA destructor/pool-release path
 1342	VERIFIED	0002:000e7e40 ??0DbFieldSet@@QAE@XZ 008D7340 f i core.o
 1343	VERIFIED	0002:000e7ee0 ??1DbFieldSet@@UAE@XZ 008D73E0 f i core.o
 1344	SKIPPED	0002:000e7ef0 ??_GDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
