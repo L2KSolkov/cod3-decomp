@@ -52,7 +52,7 @@ index	status	map_line
 51	FIXED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o	FIXED: IDA 0x0086E9B0 delegates through the bone handle index
 52	FIXED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o	FIXED: IDA 0x0086E9D0 initializes the base instance, pose, offset map, same-skeleton masks, and cross-skeleton track mapping
 53	FIXED	0002:0046ef30 ?TouchDecompCache@nalGenericInstance@nalGeneric@@QAEXMMHI@Z 00C5E430 f nal_generic.o	FIXED: IDA 0x0086EF30 wraps/clamps normalized times, updates PrevT, and touches required frame cache blocks
-54	PORTED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o	PORTED: declaration remains; direct IDA float-pose body is still pending
+54	FIXED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o	FIXED: IDA 0x0086F260 frame wrapping, interpolation, trajectory cycling, cache pose update, and PrevPose tracking ported
 55	PORTED	0002:0046f920 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QAE@PBVnalGenericSkeleton@nalGeneric@@H@Z 00C5EE20 f i nal_generic.o
 56	PORTED	0002:0046f940 ??0nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@PAV1@PBVnalGenericSkeleton@nalGeneric@@@Z 00C5EE40 f i nal_generic.o
 57	SKIPPED	0002:0046f9a0 ??_GnalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C5EEA0 f i nal_generic.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
