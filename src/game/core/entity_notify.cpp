@@ -50,6 +50,12 @@ void EntityNotifySet::AddEndOn(EndOnScriptNode* node)
     ++mEndOnList.m_size;
 }
 
+// ea: 0x005EF700 (scr.o)
+void EntityNotifySet::RmvEndOn(EndOnScriptNode* node)
+{
+    mEndOnList.erase(node);
+}
+
 // ea: 0x004C6450
 EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
 {

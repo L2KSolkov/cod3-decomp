@@ -275,6 +275,8 @@ public:
         ae_sized_array<ae_pair<void*, unsigned int>, 15> list;  // +0x00
         BrocObjCreated* next;                                  // +0x7C
 
+        BrocObjCreated(BrocObjCreated* n);
+        static void* operator new(size_t size);
         static void operator delete(void* ptr);                // scr.o 0x5EE230
     };
 
@@ -4992,6 +4994,29 @@ static void BrocFree(void* p)
         mem_heap_free(p);
 }
 
+// ea: 0x005EF710
+AeThread::BrocObjCreated::BrocObjCreated(BrocObjCreated* n)
+    : next(n)
+{
+    list.m_size = 0;
+}
+
+// ea: 0x005EF730
+void* AeThread::BrocObjCreated::operator new(size_t size)
+{
+    (void)size;
+    unsigned int last = gBrocPool->mPoolSizes.m_size - 1;
+    void* result = nullptr;
+    if (gBrocPool->mPoolSizes.m_elements[last <= 0 ? 0 : last] < 0x80u
+        || (result = gBrocPool->Allocate(0x80u, false)) == nullptr)
+    {
+        result = static_cast<ae_heap*>(gBrocHeap)->Malloc(128, 4);
+        if (result == nullptr)
+            return mem_heap_malloc(0x80u);
+    }
+    return result;
+}
+
 // ea: 0x005EE230
 void AeThread::BrocObjCreated::operator delete(void* ptr)
 {
@@ -5020,11 +5045,10 @@ void AeThread::RegisterBrocInst(void* inst, BrocDtorBase* dtor)
                     mBrocCreated = mBrocCreated->next;
                     if (mBrocCreated == nullptr)
                     {
-                        BrocObjCreated* v6 = new BrocObjCreated;
+                        BrocObjCreated* v6 =
+                            new BrocObjCreated(this->mBrocCreated);
                         if (v6 == nullptr)
                             goto alloc_fail;
-                        v6->list.m_size = 0;
-                        v6->next = this->mBrocCreated;
                         goto have;
                     }
                 }
@@ -5034,13 +5058,8 @@ void AeThread::RegisterBrocInst(void* inst, BrocDtorBase* dtor)
     }
     else
     {
-        BrocObjCreated* v6 = new BrocObjCreated;
-        if (v6 != nullptr)
-        {
-            v6->list.m_size = 0;
-            v6->next = nullptr;
-        }
-        else
+        BrocObjCreated* v6 = new BrocObjCreated(nullptr);
+        if (v6 == nullptr)
         {
         alloc_fail:
             v6 = nullptr;

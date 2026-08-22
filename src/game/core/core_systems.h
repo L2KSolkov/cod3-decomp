@@ -1768,6 +1768,7 @@ public:
     void AddNotify(const HashString& h,
                    DbLinkedHandle<EntityHandleDb, Entity> owner);
     void AddEndOn(EndOnScriptNode* node);  // scr.o 0x5EF500
+    void RmvEndOn(EndOnScriptNode* node);  // scr.o 0x5EF700
     EntityNotify* GetNotify(const HashString& chk) const;
     bool CheckForNotify(const HashString& chk) const;
     bool AssignScriptVariable(const HashString& chk,
