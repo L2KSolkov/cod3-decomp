@@ -169,6 +169,7 @@ Broc::string* team_balance(Broc::string* result, Broc::entity guy,
 void team_balance(Broc::bbool always);
 }
 namespace _mp_common {
+void StartRound(Broc::bbool firstTime);
 AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
 AeThreadFunctor* QuitGameThread__functor(Broc::entity selfLevel);
 AeThreadFunctor* QuitGameWithMessage__functor(Broc::entity self, HashStr message);
@@ -4594,10 +4595,11 @@ namespace _mp_dm {
 namespace _mp_common {
 void SetupCallbacks(Broc::bbool teamGameType);
 }
-extern void* StartGame__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 extern AeThreadFunctor1<Broc::entity>* main__functor(Broc::entity self);
 extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
                                    const Broc::string* spawnpoint);
+void StartGame(Broc::entity self);
 void main(Broc::entity self);
 
 // main__functor - ea: 0x93CC70
@@ -4619,6 +4621,47 @@ void main(Broc::entity self) {
     void* started = StartGame__functor(self);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_dm.bro",
                         __LINE__, "StartGame", started);
+}
+
+// StartGame__functor - ea: 0x9566B0
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
+}
+
+// StartGame - ea: 0x956750
+void StartGame(Broc::entity self) {
+    (void)self;
+    ::_mp_common::StartRound(Broc::bbool(true));
+    Broc::entity selfLevel =
+        mp_util_wad::pLevel != nullptr
+            ? mp_util_wad::pLevel->_base.entity
+            : Broc::entity();
+    AeThreadFunctor1<Broc::entity>* ftor =
+        ::_mp_common::RunFrame__functor(selfLevel);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_dm.bro",
+                        __LINE__, "_mp_common::RunFrame", ftor);
+    Broc::Code_EnterGame();
+}
+
+// GetSpawnPoint - ea: 0x9567F0
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
+                            const Broc::string* team) {
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::entity spawnpoint;
+    Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
+    if (*team == "axis")
+        spawnType = mp_util_wad::pLevel->spawnTypeAxis;
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&spawnType, key.mVal, &spawnpoints, 0);
+    Broc::entity selected;
+    spawnpoint.___u0 =
+        ::_mp_spawnlogic::GetSpawnpointDM(&selected, self, &spawnpoints)->___u0;
+    new (result) Broc::entity(spawnpoint);
+    return result;
 }
 }
 
