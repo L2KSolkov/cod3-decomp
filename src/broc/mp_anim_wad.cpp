@@ -6,6 +6,7 @@
 
 #include "mp_anim_wad.h"
 #include "engine/broc_types.h"
+#include <new>
 
 // IDA types: BroAnim is a 4-byte value wrapper and AnimRef is the 12-byte
 // {mAnim, mTreeNameHash, mVarNameHash} record used by generic_human.
@@ -2690,6 +2691,38 @@ Broc::bbool* IsEEDefined_script_fb_max_onscreen_enemies(Broc::bbool* result, Bro
         } else {
             result->mVal = false;
         }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_script_door - ea: 0x994CD0. Field key from IDA: 0x022700C8.
+Broc::string* GetEE_script_door(Broc::string* result, Broc::pathnode node) {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+        &value, node.GetHandle(), 0x022700C8u);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
+
+// Broc::IsDefined(pathnode*) - ea: 0x994EF0.
+namespace Broc {
+bool IsDefined(const pathnode* node) {
+    return node != nullptr && node->IsDefined();
+}
+}
+
+// IsEEDefined_script_door - ea: 0x994DF0.
+Broc::bbool* IsEEDefined_script_door(Broc::bbool* result,
+                                      Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        Broc::string value;
+        Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+            &value, node.GetHandle(), 0x022700C8u);
+        result->mVal = Broc::IsDefined(rhs);
+        value.~string();
     } else {
         result->mVal = false;
     }
