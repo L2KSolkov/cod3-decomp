@@ -1158,36 +1158,36 @@ index	status	map_line
 1157	PORTED	0002:00586670 ?IsDefined@bint@@QBE_NXZ 00D75B70 f i mp_util_wad.o	PORTED: added IDA bint::IsDefined sentinel comparison
 1158	FIXED	0002:005866a0 ??$IsDefined@Ubfloat@@@@YA_NABUbfloat@@@Z 00D75BA0 f i mp_util_wad.o	FIXED: free IsDefined<bfloat> now forwards to the IDA NaN-aware member
 1159	FIXED	0002:005866c0 ??$IsDefined@Ubbool@@@@YA_NABUbbool@@@Z 00D75BC0 f i mp_util_wad.o	FIXED: free IsDefined<bbool> now resolves through the IDA sentinel-aware member
-1160	PORTED	0002:005866e0 ?IsDefined@bbool@@QBE_NXZ 00D75BE0 f i mp_util_wad.o	PORTED: added IDA bbool::IsDefined sentinel comparison
+1160	VERIFIED	0002:005866e0 ?IsDefined@bbool@@QBE_NXZ 00D75BE0 f i mp_util_wad.o	VERIFIED: IDA bbool::IsDefined sentinel comparison matches the port
 1161	FIXED	0002:00586710 ??$IsDefined@UHashStr@@@@YA_NABUHashStr@@@Z 00D75C10 f i mp_util_wad.o	FIXED: free IsDefined<HashStr> now resolves through the IDA sentinel-aware member
-1162	PORTED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o	PORTED: added IDA HashStr::IsDefined sentinel comparison
+1162	VERIFIED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o	VERIFIED: IDA HashStr::IsDefined sentinel comparison matches the port
 1163	VERIFIED	0002:00586760 ??$size@Ventity@Broc@@@Broc@@YAHABV?$dyn_array@Ventity@Broc@@@0@@Z 00D75C60 f i mp_util_wad.o
 1164	FIXED	0002:00586780 ??$println@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAY0BD@$$CBDABUbint@@@Z 00D75C80 f i mp_util_wad.o	FIXED: routed the IDA println wrapper through mPrintLn instead of the iprintln mIPrintLn path
-1165	PORTED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o	PORTED: added the IDA direct push_back(vector) wrapper
-1166	PORTED	0002:00586850 ??$push@M@Broc@@YAXAAV?$dyn_array@M@0@ABM@Z 00D75D50 f i mp_util_wad.o	PORTED: added the IDA direct push_back(float) wrapper
+1165	VERIFIED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o	VERIFIED: IDA direct vector push_back wrapper matches the port
+1166	VERIFIED	0002:00586850 ??$push@M@Broc@@YAXAAV?$dyn_array@M@0@ABM@Z 00D75D50 f i mp_util_wad.o	VERIFIED: IDA direct float push_back wrapper matches the port
 1167	VERIFIED	0002:00586880 ??$size@Uvector@Broc@@@Broc@@YAHABV?$dyn_array@Uvector@Broc@@@0@@Z 00D75D80 f i mp_util_wad.o
-1168	PORTED	0002:005868a0 ??$iprintlnbold@Vstring@Broc@@@Broc@@YAXABVstring@0@@Z 00D75DA0 f i mp_util_wad.o	PORTED: added the IDA iprintlnbold string wrapper using mIPrintLnBold
-1169	PORTED	0002:00586930 ??$iprintln@PBD$$BY01$$CBD$$BY0BD@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BD@$$CBD@Z 00D75E30 f i mp_util_wad.o	PORTED: added the IDA three-part iprintln formatting wrapper
-1170	PORTED	0002:005869d0 ??$iprintln@PBD$$BY01$$CBD$$BY0BG@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BG@$$CBD@Z 00D75ED0 f i mp_util_wad.o	PORTED: added the IDA three-part iprintln formatting wrapper
-1171	PORTED	0002:00586a70 ??$iprintln@$$BY0BC@$$CBD@Broc@@YAXAAY0BC@$$CBD@Z 00D75F70 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1172	PORTED	0002:00586b00 ??$iprintln@PBD$$BY01$$CBD$$BY0CB@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0CB@$$CBD@Z 00D76000 f i mp_util_wad.o	PORTED: added the IDA three-part iprintln formatting wrapper
+1168	VERIFIED	0002:005868a0 ??$iprintlnbold@Vstring@Broc@@@Broc@@YAXABVstring@0@@Z 00D75DA0 f i mp_util_wad.o	VERIFIED: IDA string iprintlnbold wrapper uses mIPrintLnBold as ported
+1169	VERIFIED	0002:00586930 ??$iprintln@PBD$$BY01$$CBD$$BY0BD@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BD@$$CBD@Z 00D75E30 f i mp_util_wad.o	VERIFIED: IDA three-part iprintln wrapper matches the port
+1170	VERIFIED	0002:005869d0 ??$iprintln@PBD$$BY01$$CBD$$BY0BG@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BG@$$CBD@Z 00D75ED0 f i mp_util_wad.o	VERIFIED: IDA three-part iprintln wrapper matches the port
+1171	VERIFIED	0002:00586a70 ??$iprintln@$$BY0BC@$$CBD@Broc@@YAXAAY0BC@$$CBD@Z 00D75F70 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1172	VERIFIED	0002:00586b00 ??$iprintln@PBD$$BY01$$CBD$$BY0CB@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0CB@$$CBD@Z 00D76000 f i mp_util_wad.o	VERIFIED: IDA three-part iprintln wrapper matches the port
 1173	VERIFIED	0002:00586ba0 ??$IsDefined@Vhudelem@Broc@@@@YA_NABVhudelem@Broc@@@Z 00D760A0 f i mp_util_wad.o	VERIFIED: IDA 0x00986BA0 forwards to hudelem::IsDefined()
 1174	VERIFIED	0002:00586bc0 ?IsDefined@hudelem@Broc@@QBE_NXZ 00D760C0 f i mp_util_wad.o	VERIFIED: IDA 0x00986BC0 checks mHudIndex against -1
-1175	PORTED	0002:00586bf0 ??$iprintln@$$BY0BL@$$CBD@Broc@@YAXAAY0BL@$$CBD@Z 00D760F0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1176	PORTED	0002:00586c80 ??$iprintln@$$BY0BJ@$$CBD@Broc@@YAXAAY0BJ@$$CBD@Z 00D76180 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1177	PORTED	0002:00586d10 ??$iprintln@$$BY0BG@$$CBD@Broc@@YAXAAY0BG@$$CBD@Z 00D76210 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1178	PORTED	0002:00586da0 ??$iprintln@$$BY0BI@$$CBD@Broc@@YAXAAY0BI@$$CBD@Z 00D762A0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1179	PORTED	0002:00586e30 ??$iprintln@$$BY0CF@$$CBD@Broc@@YAXAAY0CF@$$CBD@Z 00D76330 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1180	PORTED	0002:00586ec0 ??$iprintln@$$BY0CH@$$CBD@Broc@@YAXAAY0CH@$$CBD@Z 00D763C0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1181	PORTED	0002:00586f50 ??$iprintln@$$BY0BK@$$CBD@Broc@@YAXAAY0BK@$$CBD@Z 00D76450 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1182	PORTED	0002:00586fe0 ??$iprintln@$$BY0BH@$$CBD@Broc@@YAXAAY0BH@$$CBD@Z 00D764E0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1183	PORTED	0002:00587070 ??$iprintln@$$BY0BA@$$CBD@Broc@@YAXAAY0BA@$$CBD@Z 00D76570 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
+1175	VERIFIED	0002:00586bf0 ??$iprintln@$$BY0BL@$$CBD@Broc@@YAXAAY0BL@$$CBD@Z 00D760F0 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1176	VERIFIED	0002:00586c80 ??$iprintln@$$BY0BJ@$$CBD@Broc@@YAXAAY0BJ@$$CBD@Z 00D76180 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1177	VERIFIED	0002:00586d10 ??$iprintln@$$BY0BG@$$CBD@Broc@@YAXAAY0BG@$$CBD@Z 00D76210 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1178	VERIFIED	0002:00586da0 ??$iprintln@$$BY0BI@$$CBD@Broc@@YAXAAY0BI@$$CBD@Z 00D762A0 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1179	VERIFIED	0002:00586e30 ??$iprintln@$$BY0CF@$$CBD@Broc@@YAXAAY0CF@$$CBD@Z 00D76330 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1180	VERIFIED	0002:00586ec0 ??$iprintln@$$BY0CH@$$CBD@Broc@@YAXAAY0CH@$$CBD@Z 00D763C0 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1181	VERIFIED	0002:00586f50 ??$iprintln@$$BY0BK@$$CBD@Broc@@YAXAAY0BK@$$CBD@Z 00D76450 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1182	VERIFIED	0002:00586fe0 ??$iprintln@$$BY0BH@$$CBD@Broc@@YAXAAY0BH@$$CBD@Z 00D764E0 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1183	VERIFIED	0002:00587070 ??$iprintln@$$BY0BA@$$CBD@Broc@@YAXAAY0BA@$$CBD@Z 00D76570 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
 1184	PORTED	0002:00587100 ??$waittill@Ventity@Broc@@@Broc@@YAXVentity@0@UHashStr@@AAV10@@Z 00D76600 f i mp_util_wad.o	PORTED: added the IDA entity waittill output carrier wrapper and shared carrier bridge
 1185	PORTED	0002:005871c0 ?AssignParameterForNotify@Broc@@YA_NABVentity@1@UHashStr@@PAVWaitTilOutput@@@Z 00D766C0 f i mp_util_wad.o	PORTED: added the IDA BrocAPI mAssignParameterForNotify forwarding wrapper
-1186	PORTED	0002:00587200 ??$iprintln@$$BY0BD@$$CBD@Broc@@YAXAAY0BD@$$CBD@Z 00D76700 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1187	PORTED	0002:00587290 ??$iprintln@PBD@Broc@@YAXABQBD@Z 00D76790 f i mp_util_wad.o	PORTED: added the IDA const-char* iprintln wrapper
-1188	PORTED	0002:00587320 ??$iprintlnbold@$$BY0CE@$$CBD@Broc@@YAXAAY0CE@$$CBD@Z 00D76820 f i mp_util_wad.o	PORTED: added the IDA single-part iprintlnbold formatting wrapper
-1189	PORTED	0002:005873b0 ??$iprintlnbold@$$BY0BM@$$CBD@Broc@@YAXAAY0BM@$$CBD@Z 00D768B0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintlnbold formatting wrapper
+1186	VERIFIED	0002:00587200 ??$iprintln@$$BY0BD@$$CBD@Broc@@YAXAAY0BD@$$CBD@Z 00D76700 f i mp_util_wad.o	VERIFIED: IDA single-part iprintln wrapper matches the port
+1187	VERIFIED	0002:00587290 ??$iprintln@PBD@Broc@@YAXABQBD@Z 00D76790 f i mp_util_wad.o	VERIFIED: IDA const-char* iprintln wrapper matches the port
+1188	VERIFIED	0002:00587320 ??$iprintlnbold@$$BY0CE@$$CBD@Broc@@YAXAAY0CE@$$CBD@Z 00D76820 f i mp_util_wad.o	VERIFIED: IDA single-part iprintlnbold wrapper matches the port
+1189	VERIFIED	0002:005873b0 ??$iprintlnbold@$$BY0BM@$$CBD@Broc@@YAXAAY0BM@$$CBD@Z 00D768B0 f i mp_util_wad.o	VERIFIED: IDA single-part iprintlnbold wrapper matches the port
 1190	VERIFIED	0002:00587440 ??0?$dyn_array@H@Broc@@QAE@XZ 00D76940 f i mp_util_wad.o
 1191	VERIFIED	0002:005874b0 ??1?$dyn_array@H@Broc@@QAE@XZ 00D769B0 f i mp_util_wad.o
 1192	VERIFIED	0002:005874f0 ??A?$dyn_array@H@Broc@@QAEAAHI@Z 00D769F0 f i mp_util_wad.o
