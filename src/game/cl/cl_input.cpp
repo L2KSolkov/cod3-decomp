@@ -216,17 +216,33 @@ void IN_KeyUp(kbutton_t* b, unsigned int key, int time)
     }
     if (key >= 0x100)
     {
-        ASSERT("key >= 0 && key < 256", "c:\\cod\\code\\game\\cl_input.cpp", 165);
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_input.cpp";
+        AeAssert::gCurrentLine = 165;
+        AeAssert::gCurrentExpr = "key >= 0 && key < 256";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad key value"))
+            __debugbreak();
     }
     if ((unsigned int)b->down[0] >= 0x100)
     {
-        ASSERT("b->down[0] >= 0 && b->down[0] < 256",
-               "c:\\cod\\code\\game\\cl_input.cpp", 166);
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_input.cpp";
+        AeAssert::gCurrentLine = 166;
+        AeAssert::gCurrentExpr = "b->down[0] >= 0 && b->down[0] < 256";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad key value"))
+            __debugbreak();
     }
     if ((unsigned int)b->down[1] >= 0x100)
     {
-        ASSERT("b->down[1] >= 0 && b->down[1] < 256",
-               "c:\\cod\\code\\game\\cl_input.cpp", 167);
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_input.cpp";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "b->down[1] >= 0 && b->down[1] < 256";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad key value"))
+            __debugbreak();
     }
     int down0 = b->down[0];
     if (down0 == (int)key)
