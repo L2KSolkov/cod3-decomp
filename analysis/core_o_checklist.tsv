@@ -853,12 +853,12 @@ index	status	map_line
 852	VERIFIED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o	VERIFIED: empty virtual body matches IDA 0x004DF360
 853	SKIPPED	0002:000df370 ??_FRumbleEffectInstanceHandle@@QAEXXZ 008CE870 f i core.o SKIPPED: compiler-generated default constructor closure; supplied by the compiler
 854	VERIFIED	0002:000df380 ??0nalHeap@@QAE@XZ 008CE880 f i core.o
-855	PORTED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF390 installs the AnimCacheHeap vtable
-856	PORTED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3A0 forwards to nalAnimationCache::MemAlloc
-857	PORTED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3C0 forwards size-header value to nalAnimationCache::MemFree
-858	PORTED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3F0 bounds-checks AnimHeap block then frees
-859	PORTED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF430 stores mType, strlen(type), and callback
-860	PORTED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF460 performs prefix callback search and returns false
+855	VERIFIED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o	VERIFIED: adapter-backed vtable installation preserves the IDA five-slot ae_heap_base vtable
+856	VERIFIED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o	VERIFIED: forwards size/alignment to nalAnimationCache::MemAlloc as IDA does
+857	VERIFIED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o	VERIFIED: extracts the aligned size header and forwards to nalAnimationCache::MemFree
+858	FIXED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o	FIXED: uses the IDA-backed AnimHeap::sInst singleton for the 1 MiB range check
+859	VERIFIED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o	VERIFIED: stores mType/callback and strlen(type) exactly as IDA
+860	VERIFIED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o	VERIFIED: IDA strncmp prefix, callback offset, and false return match
 861	PORTED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o PORTED: source implementation in 460bc8e9; IDA 0x004DF4B0 forwards to AeHash
 862	SKIPPED	0002:000df4c0 ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008CE9C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 863	VERIFIED	0002:000df4d0 ?push_back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXABQAVae_heap_base@@@Z 008CE9D0 f i core.o
