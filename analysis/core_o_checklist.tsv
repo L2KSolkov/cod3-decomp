@@ -863,11 +863,11 @@ index	status	map_line
 862	SKIPPED	0002:000df4c0 ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008CE9C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 863	VERIFIED	0002:000df4d0 ?push_back@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXABQAVae_heap_base@@@Z 008CE9D0 f i core.o
 864	VERIFIED	0002:000df560 ??0?$Bitmask@G@@QAE@XZ 008CEA60 f i core.o
-865	PORTED	0002:000df570 ?Add@?$Bitmask@G@@QAEXH@Z 008CEA70 f i core.o
-866	PORTED	0002:000df600 ?Rmv@?$Bitmask@G@@QAEXH@Z 008CEB00 f i core.o
-867	PORTED	0002:000df690 ?Test@?$Bitmask@G@@QBE_NH@Z 008CEB90 f i core.o
-868	PORTED	0002:000df720 ?Set@?$Bitmask@G@@QAEXH_N@Z 008CEC20 f i core.o
-869	PORTED	0002:000df750 ?Clear@?$Bitmask@G@@QAEXXZ 008CEC50 f i core.o
+865	FIXED	0002:000df570 ?Add@?$Bitmask@G@@QAEXH@Z 008CEA70 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF570 validates the 16-bit bit index and sets the bit
+866	FIXED	0002:000df600 ?Rmv@?$Bitmask@G@@QAEXH@Z 008CEB00 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF600 validates the 16-bit bit index and clears the bit
+867	FIXED	0002:000df690 ?Test@?$Bitmask@G@@QBE_NH@Z 008CEB90 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF690 validates the 16-bit bit index and tests the bit
+868	FIXED	0002:000df720 ?Set@?$Bitmask@G@@QAEXH_N@Z 008CEC20 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF720 dispatches to Add or Rmv
+869	FIXED	0002:000df750 ?Clear@?$Bitmask@G@@QAEXXZ 008CEC50 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF750 assigns zero to mMask
 870	PORTED	0002:000df760 ?empty@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NXZ 008CEC60 f i core.o
 871	PORTED	0002:000df780 ?empty@?$reserved_dlist@VEntityNotify@@@@QBE_NXZ 008CEC80 f i core.o
 872	VERIFIED	0002:000df7a0 ??0dlist_node@?$reserved_dlist@VEntityNotify@@@@QAE@PAU01@0@Z 008CECA0 f i core.o
