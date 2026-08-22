@@ -398,6 +398,18 @@ struct reserved_dlist {
         iterator(dlist_node* cur, dlist_node* next)
             : m_node(cur), m_next(next) {}
 
+        iterator(reserved_dlist* dlist)
+        {
+            dlist_node* head = dlist->m_head;
+            m_node = head;
+            m_next = head != nullptr ? head->mNext : nullptr;
+            if (dlist->m_head == &dlist->m_end)
+            {
+                m_next = nullptr;
+                m_node = nullptr;
+            }
+        }
+
         iterator(T* obj)
             : m_node(reinterpret_cast<dlist_node*>(obj)),
               m_next(m_node->mNext) {}

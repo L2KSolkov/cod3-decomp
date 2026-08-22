@@ -801,7 +801,7 @@ static void CheckpointVectorResize(CheckpointVector<T>* v, int iNewSize)
 {
     if (iNewSize > v->mCapacity)
     {
-        T* newElements = CheckpointVectorConstruct<T>(iNewSize, 0);
+        T* newElements = CheckpointVectorConstruct<T>(iNewSize);
         for (int i = 0; i < v->mSize; ++i)
             newElements[i] = v->mElements[i];
         if (v->mElements != nullptr)
