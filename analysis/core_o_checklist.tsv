@@ -740,7 +740,7 @@ index	status	map_line
 739	VERIFIED	0002:000dd620 ??2CurveManager@@SAPAXIPAX@Z 008CCB20 f i core.o	VERIFIED: existing CurveManager placement operator new matches IDA 0x004DD620
 740	VERIFIED	0002:000dd630 ?Inst@CurveManager@@SAPAV1@XZ 008CCB30 f i core.o	VERIFIED: existing CurveManager singleton accessor matches IDA 0x004DD630
 741	VERIFIED	0002:000dd640 ?CreateInst@CurveManager@@SAXXZ 008CCB40 f i core.o	VERIFIED: existing CurveManager creation path matches IDA 0x004DD640
-742	PORTED	0002:000dd740 ?SetAllocator@CurveManager@@SAXPAVPoolAllocator@@@Z 008CCC40 f i core.o	PORTED: added missing sAllocator_0 storage and setter from IDA 0x004DD740; source commit 99755b56
+742	VERIFIED	0002:000dd740 ?SetAllocator@CurveManager@@SAXPAVPoolAllocator@@@Z 008CCC40 f i core.o	VERIFIED: single allocator-slot assignment matches IDA 0x004DD740
 743	SKIPPED	0002:000dd750 ??_GCurveManager@@AAEPAXI@Z 008CCC50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 744	VERIFIED	0002:000dd780 ??0nalMatrix4x4@@QAE@ABVVector4@math@@000@Z 008CCC80 f i core.o	VERIFIED: existing nalMatrix4x4 constructor copies four rows as IDA 0x004DD780
 745	VERIFIED	0002:000dd820 ??4nalMatrix4x4@@QAEAAV0@ABV0@@Z 008CCD20 f i core.o	VERIFIED: existing nalMatrix4x4 assignment copies all 16 dwords as IDA 0x004DD820
