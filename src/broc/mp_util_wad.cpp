@@ -13580,17 +13580,41 @@ void CallbackGameStateDOM(int flag0, int flag1, int flag2, int flag3,
 
 // SendFlagStates - ea: 0x978960
 void SendFlagStates(Broc::entity player) {
-    int flags[5] = {0, 0, 0, 0, 0};
+    Broc::bbool currentHeightOwnsFlag[5] = {true, true, true, true, true};
     Broc::bint i(0);
-    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas) && (int)i < 5) {
-        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
-        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-        flags[(int)i] = (int)((float)*mp_util_wad::GetEE_capStatus(trigger) *
-                              32767.0f);
+    while ((int)i < 5) {
+        bool ownsFlag = false;
+        if ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+            Broc::entity area =
+                mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+            ownsFlag = *mp_util_wad::GetEE_capTeam(trigger) != 0;
+        }
+        currentHeightOwnsFlag[(unsigned int)(int)i] = ownsFlag;
         i = (int)i + 1;
     }
-    Broc::Code_SendGameStateDOM(player, flags[0], flags[1], flags[2], flags[3],
-                                flags[4]);
+
+    int currentHeight[5] = {0, 0, 0, 0, 0};
+    Broc::bint lhs(0);
+    while ((int)lhs < 5) {
+        if ((int)lhs < Broc::size(mp_util_wad::pLevel->warAreas)) {
+            Broc::entity area =
+                mp_util_wad::pLevel->warAreas[(unsigned int)(int)lhs];
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+            Broc::bfloat status = *mp_util_wad::GetEE_capStatus(trigger);
+            Broc::bfloat scaled((float)status * 32767.0f);
+            currentHeight[(int)lhs] = (int)(float)scaled;
+            if ((bool)currentHeightOwnsFlag[(unsigned int)(int)lhs])
+                currentHeight[(int)lhs] |= 1;
+            else
+                currentHeight[(int)lhs] &= ~1;
+        }
+        lhs = (int)lhs + 1;
+    }
+
+    Broc::Code_SendGameStateDOM(player, currentHeight[0], currentHeight[1],
+                                currentHeight[2], currentHeight[3],
+                                currentHeight[4]);
 }
 
 // WAR_Init - ea: 0x978D10
