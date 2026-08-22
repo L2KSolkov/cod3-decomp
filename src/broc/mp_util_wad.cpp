@@ -4890,7 +4890,7 @@ void* main__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* SwitchToSecondarySpawns__functor(Broc::entity self);
-void* ObjectiveUpdater__functor(Broc::entity guy);
+AeThreadFunctor1<Broc::entity>* ObjectiveUpdater__functor(Broc::entity guy);
 AeThreadFunctor1<Broc::entity>* CompassUnderlay__functor(Broc::entity p);
 AeThreadFunctor1<Broc::entity>* WaitForFlagTimeOut__functor(Broc::entity flag);
 AeThreadFunctor1<Broc::entity>* WaitForNoTouchFlag__functor(Broc::entity toucher);
@@ -10508,7 +10508,7 @@ AeThreadFunctor1<Broc::entity>* SwitchToSecondarySpawns__functor(Broc::entity se
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(SwitchToSecondarySpawns, self);
 }
-void* ObjectiveUpdater__functor(Broc::entity guy) {
+AeThreadFunctor1<Broc::entity>* ObjectiveUpdater__functor(Broc::entity guy) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
