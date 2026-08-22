@@ -143,6 +143,30 @@ void reserved_dlist<RumbleEffectInstance>::delete_all()
     this->m_size = 0;
 }
 
+template <typename Container>
+void delete_container_elements(Container* container);
+
+// ea: 0x004E9230
+template <>
+void delete_container_elements<reserved_dlist<RumbleEffectInstance>>(
+    reserved_dlist<RumbleEffectInstance>* container)
+{
+    reserved_dlist<RumbleEffectInstance>::dlist_node* m_head =
+        container->m_head;
+    reserved_dlist<RumbleEffectInstance>::dlist_node* m_next =
+        m_head != nullptr ? m_head->mNext : nullptr;
+    if (m_head == reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+                     &container->m_end))
+    {
+        m_next = nullptr;
+        m_head = nullptr;
+    }
+    safe_for_each<reserved_dlist<RumbleEffectInstance>::iterator,
+                  DelFunctor<RumbleEffectInstance>>(
+        reserved_dlist<RumbleEffectInstance>::iterator(m_head, m_next),
+        container->end());
+}
+
 template void DelFunctor<EntityNotify>::operator()(EntityNotify*) const;
 template void DelFunctor<RumbleEffectInstance>::operator()(
     RumbleEffectInstance*) const;
@@ -156,6 +180,8 @@ template reserved_dlist<RumbleEffectInstance>::const_iterator
 reserved_dlist<RumbleEffectInstance>::begin() const;
 template void reserved_dlist<EntityNotify>::delete_all();
 template void reserved_dlist<RumbleEffectInstance>::delete_all();
+template void delete_container_elements<reserved_dlist<RumbleEffectInstance>>(
+    reserved_dlist<RumbleEffectInstance>*);
 
 // ea: 0x004E3E50
 ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const
