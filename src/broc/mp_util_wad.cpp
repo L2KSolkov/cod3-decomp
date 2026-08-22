@@ -1957,6 +1957,118 @@ Broc::bbool* IsEEDefined_script_breathpuff(Broc::bbool* result,
     return result;
 }
 
+// GetEE_script_hdi_time / IsEEDefined_script_hdi_time - ea: 0x990810 / 0x990860
+Broc::bfloat* GetEE_script_hdi_time(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bfloat>(0x1EFB7FB7u);
+}
+
+Broc::bbool* IsEEDefined_script_hdi_time(Broc::bbool* result,
+                                          Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bfloat value;
+    const Broc::bfloat* stored =
+        ee->GetVal<Broc::bfloat>(&value, 0x1EFB7FB7u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_fxstart / IsEEDefined_script_fxstart - ea: 0x990910 / 0x990960
+Broc::bint* GetEE_script_fxstart(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xD472B980u);
+}
+
+Broc::bbool* IsEEDefined_script_fxstart(Broc::bbool* result,
+                                         Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xD472B980u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_delay_max / IsEEDefined_script_delay_max - ea: 0x990A10 / 0x990A60
+Broc::bfloat* GetEE_script_delay_max(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bfloat>(0x04A98DA8u);
+}
+
+Broc::bbool* IsEEDefined_script_delay_max(Broc::bbool* result,
+                                           Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bfloat value;
+    const Broc::bfloat* stored =
+        ee->GetVal<Broc::bfloat>(&value, 0x04A98DA8u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_int / IsEEDefined_script_int - ea: 0x990B10 / 0x990B60
+Broc::bint* GetEE_script_int(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xB27D62BFu);
+}
+
+Broc::bbool* IsEEDefined_script_int(Broc::bbool* result,
+                                     Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xB27D62BFu);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
 // GetEE_flagEnd / IsEEDefined_flagEnd (key 0xAEB6D8F1)
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
