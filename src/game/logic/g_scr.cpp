@@ -523,6 +523,7 @@ public:
     T* pop_back();
     iterator find(T* object);
     void clear();
+    void delete_all();
     void erase(T* object);
     const_iterator begin() const;
     const dlist_node* get_head() const;
@@ -790,6 +791,32 @@ reserved_dlist<AeThreadState>::node_to_object(
 {
     return reinterpret_cast<const AeThreadState*>(
         reinterpret_cast<const unsigned char*>(node) - 4);
+}
+
+// ea: 0x005EFBA0
+template <>
+void reserved_dlist<AeThreadState>::delete_all()
+{
+    dlist_node* m_head = this->m_head;
+    dlist_node* p_m_head = reinterpret_cast<dlist_node*>(&this->m_head);
+    dlist_node** p_m_end = &this->m_end;
+    dlist_node* m_next = m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == reinterpret_cast<dlist_node*>(p_m_end))
+    {
+        m_next = nullptr;
+        m_head = nullptr;
+    }
+    while (m_next != nullptr)
+    {
+        dlist_node* current = m_head;
+        m_head = m_next;
+        m_next = m_next->m_next;
+        if (current != nullptr)
+            delete reserved_dlist<AeThreadState>::node_to_object(current);
+    }
+    p_m_head->m_next = reinterpret_cast<dlist_node*>(p_m_end);
+    this->m_tail = p_m_head;
+    this->m_size = 0;
 }
 
 template reserved_dlist<AeThreadState>::reserved_dlist();
