@@ -64,7 +64,7 @@ index	status	map_line
 63	VERIFIED	0002:0012a560 ?CL_RecallKeys@@YAXXZ 00919A60 f cl.o
 64	FIXED	0002:0012a590 ?CL_InitButtons@@YAXXZ 00919A90 f cl.o FIXED: corrected IDA-derived 29-button kb/kbss layout and per-client clearing
 65	VERIFIED	0002:0012a5c0 ?IN_MLookDown@@YAXXZ 00919AC0 f cl.o
-66	PORTED	0002:0012a5d0 ?IN_KeyDown@@YAXPAUkbutton_t@@HH@Z 00919AD0 f cl.o PORTED: IDA-verified two-key tracking, duplicate suppression, active transition, and overflow message
+66	VERIFIED	0002:0012a5d0 ?IN_KeyDown@@YAXPAUkbutton_t@@HH@Z 00919AD0 f cl.o VERIFIED: matches IDA two-key tracking, duplicate suppression, active transition, and overflow message
 67	FIXED	0002:0012a630 ?IN_KeyUp@@YAXPAUkbutton_t@@HH@Z 00919B30 f cl.o FIXED: restored IDA Bad key value messages and per-expression metadata
 68	VERIFIED	0002:0012a790 ?CL_KeyState@@YAMPAUkbutton_t@@@Z 00919C90 f cl.o
 69	VERIFIED	0002:0012a820 ?CL_SetTempStanceStatus@@YAXXZ 00919D20 f cl.o
@@ -117,7 +117,7 @@ index	status	map_line
 116	FIXED	0002:0012af60 ?IN_Wbutton6Up@@YAXHH@Z 0091A460 f cl.o FIXED: corrected shared IDA-derived kb indices
 117	FIXED	0002:0012afb0 ?IN_Wbutton7Down@@YAXHH@Z 0091A4B0 f cl.o FIXED: corrected shared IDA-derived kb indices
 118	FIXED	0002:0012afd0 ?IN_Wbutton7Up@@YAXHH@Z 0091A4D0 f cl.o FIXED: corrected shared IDA-derived kb indices
-119	PORTED	0002:0012aff0 ?IN_ToggleADS@@YAXHH@Z 0091A4F0 f cl.o PORTED: IDA match; toggles the current client's ADS flag
+119	VERIFIED	0002:0012aff0 ?IN_ToggleADS@@YAXHH@Z 0091A4F0 f cl.o VERIFIED: matches IDA toggle of the current client's ADS flag
 120	FIXED	0002:0012b010 ?IN_SprintDown@@YAXHH@Z 0091A510 f cl.o FIXED: corrected shared IDA-derived kb indices
 121	FIXED	0002:0012b030 ?IN_SprintUp@@YAXHH@Z 0091A530 f cl.o FIXED: corrected shared IDA-derived kb indices
 122	FIXED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o FIXED: corrected shared IDA-derived kb indices
