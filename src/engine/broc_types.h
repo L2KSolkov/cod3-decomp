@@ -449,6 +449,7 @@ bool   operator!=(HashStr lhs, const string& rhs);
 bool   operator!=(const string& lhs, HashStr rhs);
 string operator+(const string& lhs, const string& rhs);
 string operator+(const string& lhs, const char* rhs);
+string operator+(const string& lhs, int rhs);
 string operator+(const string& lhs, float rhs);  // ea: 0x934830
 
 // ============================================================================

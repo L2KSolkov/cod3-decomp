@@ -2837,6 +2837,13 @@ void RotateTo(Broc::entity* e, const Broc::vector* angles, float totalTime,
         RotateTo(*e, *angles, totalTime, accTime, decTime);
 }
 
+// operator+(string, int) - ea: 0x9658C0
+Broc::string operator+(const Broc::string& lhs, int rhs) {
+    Broc::string r(lhs);
+    r += rhs;
+    return r;
+}
+
 // operator+(string, float) - ea: 0x934830
 Broc::string operator+(const Broc::string& lhs, float rhs) {
     Broc::string r(lhs);
