@@ -46,6 +46,7 @@ public:
     static GameSettings* Inst();                        // 0x5AEDE0
     static void* operator new(size_t size, void* p);
     static GameSettings* CreateInst();                   // ?CreateInst@GameSettings@@SAXXZ
+    static void DeleteInst();                            // ?DeleteInst@GameSettings@@SAXXZ
     MemoryUnitManager::Container container;  // +0x04 (648 bytes)
     SaveGameData* m_temp_buffer;             // +0x28C
     bool m_mc_has_save;                      // +0x290
@@ -133,6 +134,25 @@ GameSettings* GameSettings::CreateInst()
     else
         sInst = nullptr;
     return sInst;
+}
+
+// ea: 0x004DDA30
+void GameSettings::DeleteInst()
+{
+    GameSettings* instance = sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\game_data.h";
+        AeAssert::gCurrentLine = 71;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+        delete instance;
+    sInst = nullptr;
 }
 static_assert(offsetof(GameSettings, m_continued_without_saving) == 0x29E,
               "GameSettings::m_continued_without_saving offset mismatch");
