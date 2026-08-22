@@ -179,7 +179,7 @@ index	status	map_line
 178	FIXED	0002:00536390 ?ambient_chatter_system@_mp_audio@@YAXVentity@Broc@@@Z 00D25890 f mp_util_wad.o	FIXED: IDA 0x00936390 passes the copied pLevel base entity into audio_spawner
 179	VERIFIED	0002:005364b0 ?audio_spawner__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D259B0 f i mp_util_wad.o	VERIFIED: IDA 0x009364B0 allocates a 0x10-byte AeThreadFunctor2, captures entity/string, and destroys the string copy
 180	VERIFIED	0002:00536570 ?interior_triggering_device@_mp_audio@@YAXVentity@Broc@@0@Z 00D25A70 f mp_util_wad.o
-181	VERIFIED	0002:00536740 ?Code_IsLocalPlayer@Broc@@YA_NVentity@1@@Z 00D25C40 f i mp_util_wad.o
+181	PORTED	0002:00536740 ?Code_IsLocalPlayer@Broc@@YA_NVentity@1@@Z 00D25C40 f i mp_util_wad.o	PORTED: added IDA 0x00936740 wrapper forwarding mIsLocalPlayer(GetHandle())
 182	FIXED	0002:00536770 ?PlayerLocation@_mp_audio@@YAXVentity@Broc@@@Z 00D25C70 f mp_util_wad.o	FIXED: IDA 0x00936770 passes the copied pLevel base entity into audio_crossfade_wait
 183	VERIFIED	0002:00536ef0 ??0bint@@QAE@I@Z 00D263F0 f i mp_util_wad.o	VERIFIED: IDA 0x00936EF0 stores the unsigned rhs in bint::mVal and returns this
 184	VERIFIED	0002:00536f20 ??8bint@@QBE_NH@Z 00D26420 f i mp_util_wad.o	VERIFIED: IDA 0x00936F20 compares rhs with bint::mVal
@@ -296,7 +296,7 @@ index	status	map_line
 295	VERIFIED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o
 296	VERIFIED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o
 297	VERIFIED	0002:0053e560 ?SetActionHint@Broc@@YAXHH@Z 00D2DA60 f i mp_util_wad.o
-298	VERIFIED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o
+298	PORTED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o	PORTED: added IDA 0x0093E590 wrapper forwarding mGetPlayerIndex(GetHandle())
 299	VERIFIED	0002:0053e5c0 ?CallbackPlayerEnter@_mp_common@@YAXVentity@Broc@@H@Z 00D2DAC0 f mp_util_wad.o
 300	VERIFIED	0002:0053e910 ?Code_GetPlayerName@Broc@@YAPBDVentity@1@@Z 00D2DE10 f i mp_util_wad.o	VERIFIED: IDA 0x0093E910 gets the copied player's handle and returns mGetPlayerName
 301	VERIFIED	0002:0053e940 ?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z 00D2DE40 f i mp_util_wad.o
@@ -787,65 +787,65 @@ index	status	map_line
 786	VERIFIED	0002:0056f6c0 ?get_spawnpoint_middle_third@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5EBC0 f mp_util_wad.o	VERIFIED: IDA 0x0096F6C0 matches state exclusions, opposing-team badspot collection, 1,000,000 sentinel, z scaling, late-opponent weighting, sort, and middle-third selection
 787	VERIFIED	0002:00570140 ?main@_mp_tankdrive@@YAXXZ 00D5F640 f mp_util_wad.o
 788	VERIFIED	0002:00570160 ?init_all_tanks@_mp_tankdrive@@YAXXZ 00D5F660 f mp_util_wad.o
-789	PORTED	0002:005702c0 ?SetMaxVehicles@@YAXH@Z 00D5F7C0 f i mp_util_wad.o
+789	FIXED	0002:005702c0 ?SetMaxVehicles@@YAXH@Z 00D5F7C0 f i mp_util_wad.o	FIXED: IDA 0x009702C0 calls BrocAPI::mSetMaxVehicles at offset 0x5C4; added the typed API member and matched the dispatch
 790	VERIFIED	0002:005702f0 ?init_tank@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5F7F0 f mp_util_wad.o
-791	PORTED	0002:00570800 ?Get@model_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D5FD00 f i mp_util_wad.o
-792	PORTED	0002:005708b0 ?BlowUpIfFlipped__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FDB0 f i mp_util_wad.o
-793	PORTED	0002:00570950 ?VehicleDamagedEffects__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FE50 f i mp_util_wad.o
-794	PORTED	0002:005709f0 ?BlowUpIfUnderWorld__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FEF0 f i mp_util_wad.o
+791	PORTED	0002:00570800 ?Get@model_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D5FD00 f i mp_util_wad.o	PORTED: added IDA 0x00970800 model proxy type and temporary-string copy wrapper around BrocAPI::m_entity_get_model
+792	VERIFIED	0002:005708b0 ?BlowUpIfFlipped__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FDB0 f i mp_util_wad.o	VERIFIED: IDA 0x009708B0 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::BlowUpIfFlipped
+793	VERIFIED	0002:00570950 ?VehicleDamagedEffects__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FE50 f i mp_util_wad.o	VERIFIED: IDA 0x00970950 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::VehicleDamagedEffects
+794	VERIFIED	0002:005709f0 ?BlowUpIfUnderWorld__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FEF0 f i mp_util_wad.o	VERIFIED: IDA 0x009709F0 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::BlowUpIfUnderWorld
 795	VERIFIED	0002:00570a90 ?fire@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5FF90 f mp_util_wad.o
-796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o
+796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o	PORTED: added IDA 0x00970AE0 wrapper calling mFireTurret(GetHandle(), false)
 797	FIXED	0002:00570b10 ?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60010 f mp_util_wad.o	FIXED: IDA 0x00970B10 passes pLevel->_base.entity (or null) to DoDamage
-798	PORTED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o
+798	PORTED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o	PORTED: added IDA 0x00970C60 wrapper with temporary vector, mGetOrigin callback, and result copy
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
-800	PORTED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o
+800	PORTED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o	PORTED: added IDA 0x00970E80 wrapper forwarding mIsVehicleFlipped(GetHandle())
 801	PORTED	0002:00570eb0 ?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z 00D603B0 f mp_util_wad.o
-802	PORTED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o
+802	PORTED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o	PORTED: added IDA 0x009712A0 entity proxy type and bint result wrapper over m_entity_get_takedamage
 803	VERIFIED	0002:005712e0 ?HostSafeVehicleRespawn@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D607E0 f mp_util_wad.o
-804	PORTED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o
-805	VERIFIED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o
-806	PORTED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o
+804	PORTED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o	PORTED: added IDA 0x009713A0 entity proxy type and temporary-vector copy wrapper over m_entity_get_rotate
+805	PORTED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o	PORTED: added IDA 0x009713F0 wrapper forwarding mBroadcastVehicleRespawn(GetHandle())
+806	PORTED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o	PORTED: added IDA 0x00971420 wrapper forwarding mRespawnVehicle(GetHandle())
 807	VERIFIED	0002:00571450 ?death@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D60950 f mp_util_wad.o
-808	PORTED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o
-809	PORTED	0002:00571800 ?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z 00D60D00 f mp_util_wad.o
-810	VERIFIED	0002:00571890 ?VehicleDamagedEffects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60D90 f mp_util_wad.o
-811	PORTED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o
-812	PORTED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o
+808	PORTED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o	PORTED: added IDA 0x009717B0 wrapper forwarding mRadiusDamageFromEnt(GetHandle(), origin, range, max, min, damageType)
+809	VERIFIED	0002:00571800 ?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z 00D60D00 f mp_util_wad.o	VERIFIED: IDA 0x00971800 matches health+damage > 0 gate and local_player_hit_effects(self, damage, mod); attacker is unused
+810	VERIFIED	0002:00571890 ?VehicleDamagedEffects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60D90 f mp_util_wad.o	VERIFIED: IDA 0x00971890 matches health thresholds, damage-effect stop/play transitions, wait loop, and effect selection
+811	PORTED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o	PORTED: added IDA 0x00971F80 bint-to-int conversion followed by float multiply and bfloat construction
+812	PORTED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o	PORTED: added IDA 0x00971FC0 comparison returning bbool(rhs float > lhs int)
 813	VERIFIED	0002:00572020 ?inactivity_blowup@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61520 f mp_util_wad.o
 814	PORTED	0002:005720a0 ?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z 00D615A0 f mp_util_wad.o
-815	PORTED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o
-816	PORTED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o
-817	PORTED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o
+815	PORTED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o	PORTED: added IDA 0x009725C0 wrapper constructing the callback-returned entity handle
+816	PORTED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o	PORTED: added IDA 0x00972600 mRumbleNotes forwarder with by-value high-frequency string destruction
+817	PORTED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o	PORTED: added IDA 0x00972680 mEarthquake forwarder
 818	VERIFIED	0002:005726c0 ?bigsplash@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61BC0 f mp_util_wad.o
 819	FIXED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o	FIXED: IDA 0x00972780 uses separate pLevel->_base.entity values for the extinguish and target-hash endon paths
-820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o
-821	PORTED	0002:00572af0 ?deleteonextinguish__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D61FF0 f i mp_util_wad.o
+820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o	PORTED: added IDA 0x00972AB0 string adapter forwarding c_str() to the existing char-label endon path
+821	VERIFIED	0002:00572af0 ?deleteonextinguish__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D61FF0 f i mp_util_wad.o	VERIFIED: IDA 0x00972AF0 matches 0xC-byte AeThreadFunctor1 allocation, null check, and deleteonextinguish constructor
 822	FIXED	0002:00572b90 ?deleteonextinguish@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62090 f mp_util_wad.o	FIXED: IDA 0x00972B90 waits on pLevel->_base.entity (or null)
 823	VERIFIED	0002:00572c20 ?setup_effects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D62120 f mp_util_wad.o
 824	VERIFIED	0002:00573280 ?main@_mp_tdm@@YAXVentity@Broc@@@Z 00D62780 f mp_util_wad.o
-825	PORTED	0002:00573350 ?StartGame__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D62850 f i mp_util_wad.o
+825	VERIFIED	0002:00573350 ?StartGame__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D62850 f i mp_util_wad.o	VERIFIED: IDA 0x00973350 matches 0xC-byte AeThreadFunctor1 allocation, null check, and _mp_tdm::StartGame constructor
 826	VERIFIED	0002:005733f0 ?CallbackPlayerKilled@_mp_tdm@@YAXVentity@Broc@@00HHH@Z 00D628F0 f mp_util_wad.o
 827	VERIFIED	0002:005735e0 ?StartGame@_mp_tdm@@YAXVentity@Broc@@@Z 00D62AE0 f mp_util_wad.o
-828	PORTED	0002:00573690 ?main@_mp_teambalance@@YAXVentity@Broc@@@Z 00D62B90 f mp_util_wad.o
-829	PORTED	0002:005736b0 ?PickTeam@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@@Z 00D62BB0 f mp_util_wad.o
-830	PORTED	0002:00573ba0 ?team_balance@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@V23@@Z 00D630A0 f mp_util_wad.o
-831	PORTED	0002:00573fa0 ?team_balance@_mp_teambalance@@YAXUbbool@@@Z 00D634A0 f mp_util_wad.o
-832	PORTED	0002:00574680 ?Code_ChangePlayerTeam@Broc@@YAXVentity@1@ABVstring@1@_N@Z 00D63B80 f i mp_util_wad.o
-833	PORTED	0002:005746c0 ?vLerp@_mp_war@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D63BC0 f mp_util_wad.o
+828	VERIFIED	0002:00573690 ?main@_mp_teambalance@@YAXVentity@Broc@@@Z 00D62B90 f mp_util_wad.o	VERIFIED: IDA 0x00973690 is an empty function body, matching the port
+829	VERIFIED	0002:005736b0 ?PickTeam@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@@Z 00D62BB0 f mp_util_wad.o	VERIFIED: IDA 0x009736B0 matches player enumeration, player-state filtering, team counts, score tie-break, random tie-break, and cleanup
+830	VERIFIED	0002:00573ba0 ?team_balance@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@V23@@Z 00D630A0 f mp_util_wad.o	VERIFIED: IDA 0x00973BA0 matches per-team counts, allowance-2 balancing decisions, result construction, and cleanup
+831	VERIFIED	0002:00573fa0 ?team_balance@_mp_teambalance@@YAXUbbool@@@Z 00D634A0 f mp_util_wad.o	VERIFIED: IDA 0x00973FA0 matches team collection, half-total calculation, random selection, team changes, and cleanup
+832	PORTED	0002:00574680 ?Code_ChangePlayerTeam@Broc@@YAXVentity@1@ABVstring@1@_N@Z 00D63B80 f i mp_util_wad.o	PORTED: added the exact IDA 0x00974680 API wrapper using entity handle, team pointer, and autoBalance
+833	VERIFIED	0002:005746c0 ?vLerp@_mp_war@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D63BC0 f mp_util_wad.o	VERIFIED: IDA 0x009746C0 matches component-wise a + (b - a) * t interpolation and result construction
 834	VERIFIED	0002:00574830 ?main@_mp_war@@YAXVentity@Broc@@@Z 00D63D30 f mp_util_wad.o
-835	PORTED	0002:00574d50 ?StartGame__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64250 f i mp_util_wad.o
+835	VERIFIED	0002:00574d50 ?StartGame__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64250 f i mp_util_wad.o	VERIFIED: IDA 0x00974D50 matches 0xC-byte AeThreadFunctor1 allocation, null check, and StartGame constructor
 836	VERIFIED	0002:00574df0 ?StartGame@_mp_war@@YAXVentity@Broc@@@Z 00D642F0 f mp_util_wad.o
-837	PORTED	0002:00574f00 ?WARScore__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64400 f i mp_util_wad.o
+837	VERIFIED	0002:00574f00 ?WARScore__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64400 f i mp_util_wad.o	VERIFIED: IDA 0x00974F00 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WARScore constructor
 838	PORTED	0002:00574fa0 ?PlayCapturedSounds@_mp_war@@YAXVentity@Broc@@Ubint@@1@Z 00D644A0 f mp_util_wad.o
-839	PORTED	0002:00575950 ?SoundFadeOut@@YAXIM@Z 00D64E50 f i mp_util_wad.o
+839	PORTED	0002:00575950 ?SoundFadeOut@@YAXIM@Z 00D64E50 f i mp_util_wad.o	PORTED: added exact IDA 0x00975950 wrapper forwarding handle and time to mSoundFadeOut
 840	VERIFIED	0002:00575980 ?WARScore@_mp_war@@YAXVentity@Broc@@@Z 00D64E80 f mp_util_wad.o
-841	PORTED	0002:00575d70 ?Code_SendGameScore@Broc@@YAXHH@Z 00D65270 f i mp_util_wad.o
-842	PORTED	0002:00575da0 ?GiveTeamMembersPoints@_mp_war@@YAXUvector@Broc@@Ubfloat@@Vstring@3@@Z 00D652A0 f mp_util_wad.o
-843	PORTED	0002:00575ff0 ??M@YA?AUbbool@@Ubfloat@@0@Z 00D654F0 f i mp_util_wad.o
+841	PORTED	0002:00575d70 ?Code_SendGameScore@Broc@@YAXHH@Z 00D65270 f i mp_util_wad.o	PORTED: added exact IDA 0x00975D70 wrapper forwarding both scores to mSendGameScore
+842	VERIFIED	0002:00575da0 ?GiveTeamMembersPoints@_mp_war@@YAXUvector@Broc@@Ubfloat@@Vstring@3@@Z 00D652A0 f mp_util_wad.o	VERIFIED: IDA 0x00975DA0 matches active-player filtering, distance/radius test, team comparison, stat 20 increment, and cleanup
+843	PORTED	0002:00575ff0 ??M@YA?AUbbool@@Ubfloat@@0@Z 00D654F0 f i mp_util_wad.o	PORTED: added exact IDA 0x00975FF0 comparison returning rhs.mVal > lhs.mVal
 844	VERIFIED	0002:00576050 ?CallbackHostMigrated@_mp_war@@YAXXZ 00D65550 f mp_util_wad.o
 845	VERIFIED	0002:00576150 ?CallbackAreaCaptured@_mp_war@@YAXHH@Z 00D65650 f mp_util_wad.o
-846	PORTED	0002:005769d0 ?ObjectiveState@@YAXHABVstring@Broc@@PBDH@Z 00D65ED0 f i mp_util_wad.o
-847	PORTED	0002:00576a10 ?PlayCapturedSounds__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@1@Z 00D65F10 f i mp_util_wad.o
+846	PORTED	0002:005769d0 ?ObjectiveState@@YAXHABVstring@Broc@@PBDH@Z 00D65ED0 f i mp_util_wad.o	PORTED: added exact IDA 0x009769D0 wrapper forwarding objective, state, display, and client index
+847	VERIFIED	0002:00576a10 ?PlayCapturedSounds__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@1@Z 00D65F10 f i mp_util_wad.o	VERIFIED: IDA 0x00976A10 matches 0x14-byte AeThreadFunctor3 allocation, null check, and constructor arguments
 848	PORTED	0002:00576ab0 ?GetRef@flag_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FB0 f i mp_util_wad.o
 849	PORTED	0002:00576ae0 ?GetRef@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FE0 f i mp_util_wad.o
 850	PORTED	0002:00576b10 ??4capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEABMABM@Z 00D66010 f i mp_util_wad.o
