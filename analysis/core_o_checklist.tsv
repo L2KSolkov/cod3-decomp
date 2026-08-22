@@ -817,11 +817,11 @@ index	status	map_line
 816	VERIFIED	0002:000deb60 ??2BinFileManager@@SAPAXIPAX@Z 008CE060 f i core.o	VERIFIED: returns the supplied placement pointer exactly as IDA 0x004DEB60
 817	VERIFIED	0002:000deb70 ?CreateInst@BinFileManager@@SAXXZ 008CE070 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 818	SKIPPED	0002:000dec70 ??_GBinFileManager@@AAEPAXI@Z 008CE170 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-819	PORTED	0002:000deca0 ??2DynamicDecalMgr@@SAPAXIPAX@Z 008CE1A0 f i core.o PORTED: IDA 0x004DECA0 placement wrapper; source commit ed6a5e48
+819	VERIFIED	0002:000deca0 ??2DynamicDecalMgr@@SAPAXIPAX@Z 008CE1A0 f i core.o	VERIFIED: returns the supplied placement pointer exactly as IDA 0x004DECA0
 820	VERIFIED	0002:000decb0 ?CreateInst@DynamicDecalMgr@@SAXXZ 008CE1B0 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 821	SKIPPED	0002:000deda0 ??_GDynamicDecalMgr@@QAEPAXI@Z 008CE2A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-822	PORTED	0002:000dedd0 ??1PadAliasMgr@@QAE@XZ 008CE2D0 f i core.o PORTED: IDA 0x004DEDD0 empty destructor; source commit d862c803
-823	PORTED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o PORTED: IDA 0x004DEDE0 placement wrapper; source commit 5b543ea2
+822	VERIFIED	0002:000dedd0 ??1PadAliasMgr@@QAE@XZ 008CE2D0 f i core.o	VERIFIED: empty destructor matches IDA 0x004DEDD0
+823	VERIFIED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o	VERIFIED: returns the supplied placement pointer exactly as IDA 0x004DEDE0
 824	VERIFIED	0002:000dedf0 ?CreateInst@PadAliasMgr@@SAXXZ 008CE2F0 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 825	SKIPPED	0002:000deef0 ??_GPadAliasMgr@@QAEPAXI@Z 008CE3F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 826	VERIFIED	0002:000def20 ??0idVec3@@QAE@XZ 008CE420 f i core.o VERIFIED: IDA 0x004DEF20 is an empty default constructor; existing source matches
