@@ -1710,6 +1710,8 @@ class nalGenericSkeleton;
 class nalGenericInstance;
 void Blend(nalGenericPose& out, float blend,
            const nalGenericPose& a, const nalGenericPose& b);
+void BlendIntra(nalGenericPose& out, float blend,
+                const nalGenericPose& a, const nalGenericPose& b);
 }
 
 enum nalRegisterKey : int {
@@ -2762,6 +2764,34 @@ static void nalComponentCopyRaw(const nalComponentBase* component,
     const void* srcPtr = src;
     reinterpret_cast<CopyFn>(vtable[17])(
         component, componentInfo, &dstPtr, &srcPtr);
+}
+
+static void nalComponentGetTrajectoryRaw(const nalComponentBase* component,
+                                         nalComponentEnumView& componentEnum,
+                                         void* poseData, bool trajectoryAbsolute,
+                                         const int* offsets)
+{
+    using TrajectoryFn = void (__thiscall*)(const void*, void*, void*,
+                                            bool, const int*);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<TrajectoryFn>(vtable[13])(
+        component, &componentEnum, poseData, trajectoryAbsolute, offsets);
+}
+
+static void nalComponentCycleTrajectoryRaw(
+    const nalComponentBase* component, nalComponentEnumView& componentEnum,
+    void* poseData, void* previousPoseData, int cycle,
+    bool trajectoryAbsolute, const int* offsets)
+{
+    using CycleTrajectoryFn = void (__thiscall*)(const void*, void*, void*,
+                                                 void*, int, bool,
+                                                 const int*);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<CycleTrajectoryFn>(vtable[14])(
+        component, &componentEnum, poseData, previousPoseData, cycle,
+        trajectoryAbsolute, offsets);
 }
 
 // ea: 0x0086DC30
@@ -8242,6 +8272,189 @@ touch_current_frames:
         frameB = looping ? 0 : frameCount - 1;
     TouchDecompCache(frameA, lod);
     TouchDecompCache(frameB, lod);
+}
+
+// ea: 0x0086F260
+void nalGenericInstance::GetPose(float t, float t_prev, nalGenericPose& pose,
+                                  const nalGenericPose& defaultPose, int lod,
+                                  unsigned hint)
+{
+    nalGenericAnim* anim = GetAnim();
+    const nalGenericSkeleton* animSkeleton = anim->Skeleton;
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+    int cycle = 0;
+    float ta;
+    float tPrev;
+
+    if ((anim->Flags & 1u) == 0)
+    {
+        ta = t < 1.0f ? (t < 0.0f ? 0.0f : t) : 1.0f;
+        tPrev = t_prev < 1.0f ? (t_prev < 0.0f ? 0.0f : t_prev) : 1.0f;
+    }
+    else
+    {
+        const int wholeT = static_cast<int>(t);
+        ta = t < 0.0f
+                 ? static_cast<float>(1 - wholeT) + t
+                 : t - static_cast<float>(wholeT);
+        const int wholePrev = static_cast<int>(t_prev);
+        if (t_prev < 0.0f)
+        {
+            cycle = wholeT - (1 - wholePrev);
+            tPrev = static_cast<float>(1 - wholePrev) + t_prev;
+        }
+        else
+        {
+            cycle = wholeT - wholePrev;
+            tPrev = t_prev - static_cast<float>(wholePrev);
+        }
+    }
+
+    if (ta < 0.0f || ta > 1.0f || tPrev < 0.0f || tPrev > 1.0f)
+    {
+        if (_tlAssert(
+               "source/common/nal_generic.cpp", 1414,
+               "t >= 0.0f && t <= 1.0f && t_prev >= 0.0f && t_prev <= 1.0f",
+               "t or t_prev out of range"))
+        {
+            __debugbreak();
+        }
+    }
+
+    const bool trajectoryAbsolute = (anim->Flags & 2u) != 0;
+    const int lastTrajectoryComponent =
+        skeleton->LODCount < 2
+            ? skeleton->PoseComponentCount
+            : skeleton->LODInfo[skeleton->LODCount - 2].FirstComponent;
+
+    if (tPrev != PrevT)
+    {
+        if ((hint & 1u) != 0)
+        {
+            int frame = (anim->Flags & 1u) != 0
+                            ? static_cast<int>(anim->FrameCount * tPrev)
+                            : static_cast<int>((anim->FrameCount - 1) * tPrev);
+            if (frame >= anim->FrameCount)
+                frame = (anim->Flags & 1u) != 0
+                            ? 0 : anim->FrameCount - 1;
+            GetPose(frame, PrevPose, defaultPose, lod);
+        }
+        else
+        {
+            int frameA = (anim->Flags & 1u) != 0
+                             ? static_cast<int>(anim->FrameCount * tPrev)
+                             : static_cast<int>((anim->FrameCount - 1) * tPrev);
+            if (frameA >= anim->FrameCount)
+            {
+                if (_tlAssert("source/common/nal_generic.cpp", 1456,
+                              "frameA < Anim->GetFrameCount()",
+                              "generated a frame beyond the frame count"))
+                {
+                    __debugbreak();
+                }
+            }
+            int frameB = frameA + 1;
+            if (frameB >= anim->FrameCount)
+                frameB = (anim->Flags & 1u) != 0 ? 0 : anim->FrameCount - 1;
+            const float blend =
+                (anim->Flags & 1u) != 0
+                    ? anim->FrameCount * tPrev - frameA
+                    : (anim->FrameCount - 1) * tPrev - frameA;
+            nalGenericPose poseA(skeleton, 0);
+            nalGenericPose poseB(skeleton, 0);
+            GetPose(frameA, poseA, defaultPose, lod);
+            GetPose(frameB, poseB, defaultPose, lod);
+            if (frameA > frameB)
+            {
+                const void* skeletonPrivateData = animSkeleton->PrivateData;
+                const void* animPrivateData = anim->PrivateData;
+                nalComponentEnumView componentEnum = {
+                    anim, nullptr, &skeletonPrivateData, &animPrivateData};
+                for (int i = 0; i < lastTrajectoryComponent; ++i)
+                {
+                    const nalComponentInfo* component =
+                        &animSkeleton->PoseComponentInfo[i];
+                    componentEnum.ComponentInfo = component;
+                    nalComponentCycleTrajectoryRaw(
+                        component->Component, componentEnum,
+                        static_cast<unsigned char*>(poseB.PoseData),
+                        static_cast<unsigned char*>(poseA.PoseData), cycle,
+                        trajectoryAbsolute, OffsetMap->Offsets);
+                }
+            }
+            nalGeneric::BlendIntra(PrevPose, blend, poseA, poseB);
+        }
+        PrevT = tPrev;
+    }
+
+    if ((hint & 1u) != 0)
+    {
+        int frame = (anim->Flags & 1u) != 0
+                        ? static_cast<int>(anim->FrameCount * ta)
+                        : static_cast<int>((anim->FrameCount - 1) * ta);
+        if (frame >= anim->FrameCount)
+            frame = (anim->Flags & 1u) != 0 ? 0 : anim->FrameCount - 1;
+        GetPose(frame, pose, defaultPose, lod);
+    }
+    else
+    {
+        int frameA = (anim->Flags & 1u) != 0
+                         ? static_cast<int>(anim->FrameCount * ta)
+                         : static_cast<int>((anim->FrameCount - 1) * ta);
+        if (frameA >= anim->FrameCount)
+            frameA = (anim->Flags & 1u) != 0 ? 0 : anim->FrameCount - 1;
+        int frameB = frameA + 1;
+        if (frameB >= anim->FrameCount)
+            frameB = (anim->Flags & 1u) != 0 ? 0 : anim->FrameCount - 1;
+        const float blend =
+            (anim->Flags & 1u) != 0
+                ? anim->FrameCount * ta - frameA
+                : (anim->FrameCount - 1) * ta - frameA;
+        nalGenericPose poseA(skeleton, 0);
+        nalGenericPose poseB(skeleton, 0);
+        GetPose(frameA, poseA, defaultPose, lod);
+        GetPose(frameB, poseB, defaultPose, lod);
+        if (frameA > frameB)
+        {
+            const void* skeletonPrivateData = animSkeleton->PrivateData;
+            const void* animPrivateData = anim->PrivateData;
+            nalComponentEnumView componentEnum = {
+                anim, nullptr, &skeletonPrivateData, &animPrivateData};
+            for (int i = 0; i < lastTrajectoryComponent; ++i)
+            {
+                const nalComponentInfo* component =
+                    &animSkeleton->PoseComponentInfo[i];
+                componentEnum.ComponentInfo = component;
+                nalComponentCycleTrajectoryRaw(
+                    component->Component, componentEnum,
+                    static_cast<unsigned char*>(poseB.PoseData),
+                    static_cast<unsigned char*>(poseA.PoseData), cycle,
+                    trajectoryAbsolute, OffsetMap->Offsets);
+            }
+        }
+        nalGeneric::BlendIntra(pose, blend, poseA, poseB);
+    }
+
+    nalGenericPose poseCopy(pose, true);
+    poseCopy.LOD = skeleton->LODCount - 1;
+    const void* skeletonPrivateData = skeleton->PrivateData;
+    const void* animPrivateData = anim->PrivateData;
+    nalComponentEnumView componentEnum = {
+        anim, nullptr, &skeletonPrivateData, &animPrivateData};
+    for (int i = 0; i < lastTrajectoryComponent; ++i)
+    {
+        const nalComponentInfo* component =
+            &animSkeleton->PoseComponentInfo[i];
+        componentEnum.ComponentInfo = component;
+        nalComponentCycleTrajectoryRaw(
+            component->Component, componentEnum,
+            static_cast<unsigned char*>(pose.PoseData),
+            static_cast<unsigned char*>(PrevPose.PoseData), cycle,
+            trajectoryAbsolute, OffsetMap->Offsets);
+    }
+    PrevPose = poseCopy;
+    PrevT = ta;
 }
 
 // ea: 0x0086E070
