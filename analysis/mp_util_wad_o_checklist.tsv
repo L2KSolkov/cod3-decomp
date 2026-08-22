@@ -862,7 +862,7 @@ index	status	map_line
 861	VERIFIED	0002:00577e70 ?WAR_Init__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67370 f i mp_util_wad.o	VERIFIED: IDA 0x00977E70 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WAR_Init constructor
 862	FIXED	0002:00577f10 ?CallbackGetFlagCount@_mp_war@@YAHXZ 00D67410 f mp_util_wad.o	FIXED: corrected IDA 0x00977F10 check from size>0 to dyn_array capacity!=0 before returning flag count
 863	VERIFIED	0002:00577f90 ?CallbackGetFlagBreatherTime@_mp_war@@YAHXZ 00D67490 f mp_util_wad.o
-864	FIXED	0002:00578020 ?CallbackGetTeamControllingFlag@_mp_war@@YAHI@Z 00D67520 f mp_util_wad.o	FIXED: added IDA 0x00978020 roundStarted guard before flag-index/team lookup
+864	FIXED	0002:00578020 ?CallbackGetTeamControllingFlag@_mp_war@@YAHI@Z 00D67520 f mp_util_wad.o	FIXED: matched IDA 0x00978020 flag-end capTeam lookup and -1/0/1 normalization
 865	PORTED	0002:00578110 ?GetRef@capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbint@@XZ 00D67610 f i mp_util_wad.o	PORTED: added IDA 0x00978110 GetRef using global bint and key 0xAF35F29B
 866	FIXED	0002:00578140 ?CallbackGetFlagBeingCaptured@_mp_war@@YAHXZ 00D67640 f mp_util_wad.o	FIXED: replaced cap-status scan with IDA 0x00978140 warIndex validity check returning index or -1
 867	FIXED	0002:005781e0 ?CallbackGetTeamCapturingFlag@_mp_war@@YAHXZ 00D676E0 f mp_util_wad.o	FIXED: replaced area scan with IDA 0x009781E0 warIndex bounds check and active cap-status sign mapping
