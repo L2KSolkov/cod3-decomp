@@ -43,7 +43,7 @@ index	status	map_line
 42	PORTED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o PORTED: IDA-verified VM_Call call number 15
 43	PORTED	0002:00128fe0 ?CL_LoadWeaponInfo@@YAXXZ 009184E0 f cl.o PORTED: IDA-verified VM_Call call number 16
 44	VERIFIED	0002:00129000 ?CL_LookupColor@@YAXEQAM@Z 00918500 f cl.o
-45	PORTED	0002:00129070 ?Con_ToggleConsole_f@@YAXXZ 00918570 f cl.o PORTED: IDA-verified field reset, console geometry setup, key-catcher toggle, and return value
+45	FIXED	0002:00129070 ?Con_ToggleConsole_f@@YAXXZ 00918570 f cl.o FIXED: restored void signature and removed decompiler-only return; matches IDA YAXXZ/disassembly
 46	VERIFIED	0002:001290c0 ?Con_Dump_f@@YAXXZ 009185C0 f cl.o
 47	VERIFIED	0002:00129550 ?CL_SaveMessages@@YAHPAEH@Z 00918A50 f cl.o
 48	VERIFIED	0002:001295a0 ?Con_DrawMiniConsole@@YAXHHM@Z 00918AA0 f cl.o
@@ -52,8 +52,8 @@ index	status	map_line
 51	FIXED	0002:00129650 ?Con_PageUp@@YAXXZ 00918B50 f cl.o FIXED: matched IDA result selection and display clamp
 52	FIXED	0002:00129680 ?Con_PageDown@@YAXXZ 00918B80 f cl.o FIXED: matched IDA pre-clamp return value and display clamp
 53	FIXED	0002:001296a0 ?Con_Top@@YAXXZ 00918BA0 f cl.o FIXED: matched IDA post-increment result and display assignment
-54	PORTED	0002:001296c0 ?Con_Bottom@@YAXXZ 00918BC0 f cl.o PORTED: IDA-verified display assignment and return value
-55	PORTED	0002:00129720 ?Con_ClearNotify@@YAXXZ 00918C20 f cl.o PORTED: IDA-verified console/message-window reset fields and return value
+54	FIXED	0002:001296c0 ?Con_Bottom@@YAXXZ 00918BC0 f cl.o FIXED: restored void signature and removed decompiler-only return; matches IDA YAXXZ/disassembly
+55	FIXED	0002:00129720 ?Con_ClearNotify@@YAXXZ 00918C20 f cl.o FIXED: restored void signature and removed decompiler-only return; matches IDA YAXXZ/disassembly
 56	VERIFIED	0002:00129780 ?Con_ClearMiniConsole@@YAXXZ 00918C80 f cl.o
 57	VERIFIED	0002:00129790 ?Con_ClearSubtitles@@YAXXZ 00918C90 f cl.o
 58	FIXED	0002:001297a0 ?Con_CheckResize@@YAXXZ 00918CA0 f cl.o FIXED: restored IDA notify-array resets after console buffer migration
