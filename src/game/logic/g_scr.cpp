@@ -25043,6 +25043,50 @@ static BrocFieldFn player_field_callback()
     return reinterpret_cast<BrocFieldFn>(sScrFcnPtrs[0]);
 }
 
+template <>
+Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
+    unsigned int cap, unsigned int iSize)
+{
+    (void)iSize;
+    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
+        4 * cap, 4));
+    for (Broc::entity* i = result; i != &result[cap]; ++i)
+    {
+        if (i != nullptr)
+            i->___u0 = 0;
+    }
+    return result;
+}
+
+template <>
+Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
+    unsigned int iNumber)
+{
+    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
+        4 * iNumber, 4));
+    for (Broc::entity* i = result; i != &result[iNumber]; ++i)
+    {
+        if (i != nullptr)
+            i->___u0 = 0;
+    }
+    return result;
+}
+
+template <>
+Broc::string* Broc::dyn_array<Broc::string>::construct_array(
+    unsigned int cap, unsigned int iSize)
+{
+    (void)iSize;
+    Broc::string* result = static_cast<Broc::string*>(BrocSys::MemAlloc(
+        4 * cap, 4));
+    for (Broc::string* i = result; i != &result[cap]; ++i)
+    {
+        if (i != nullptr)
+            new (i) Broc::string();
+    }
+    return result;
+}
+
 void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
     &BrocSys::PathNode_SetAngles;
 void (__cdecl *off_DF49A4)(PathNodes::PathNode*, int, Broc::vector*) =
