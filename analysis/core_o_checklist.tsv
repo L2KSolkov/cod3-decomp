@@ -1195,8 +1195,8 @@ index	status	map_line
 1194	PORTED	0002:000e3cf0 ?back@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008D31F0 f i core.o
 1195	PORTED	0002:000e3d10 ?erase@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEXH@Z 008D3210 f i core.o
 1196	VERIFIED	0002:000e3d80 ??0?$ae_sized_array@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D3280 f i core.o
-1197	PORTED	0002:000e3db0 ?BindObjectToHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@PAVActiveEffectSet@@@Z 008D32B0 f i core.o
-1198	PORTED	0002:000e3e50 ?DereferenceHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D3350 f i core.o
+1197	VERIFIED	0002:000e3db0 ?BindObjectToHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@PAVActiveEffectSet@@@Z 008D32B0 f i core.o  VERIFIED: existing body matches IDA key validation and object binding
+1198	PORTED	0002:000e3e50 ?DereferenceHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D3350 f i core.o  PORTED: exact IDA key check and object return
 1199	SKIPPED	0002:000e3e90 ??0?$InplaceAssetBankSet@VPhysDataBank@@@@QAE@XZ 008D3390 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1200	SKIPPED	0002:000e3f60 ?UnloadBank@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXW4TPakId@@@Z 008D3460 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1201	SKIPPED	0002:000e3fc0 ?Fixup@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QAEXXZ 008D34C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
