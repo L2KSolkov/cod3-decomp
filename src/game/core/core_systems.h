@@ -321,6 +321,7 @@ struct reserved_dlist {
     dlist_node* m_end;   // +0x08
     dlist_node* m_tail;  // +0x0C
 
+    bool empty() const { return m_head == &m_end; }
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
 };
