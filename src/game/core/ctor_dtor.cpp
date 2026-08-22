@@ -395,6 +395,30 @@ template class WaitTilOutputInst2<int, Broc::entity>;
 template class WaitTilOutputInst1<int>;
 template class WaitTilOutputInst2<float, unsigned int>;
 
+// Shared bridge for the mp_util_wad waittill<entity> wrapper.  The carrier
+// type and its virtual layout are the IDA-defined WaitTilOutputInst1 entity.
+static_assert(sizeof(WaitTilOutputInst1<Broc::entity>) == 0x10,
+              "WaitTilOutputInst1<entity> size mismatch");
+WaitTilOutput* WaitTilOutputInst1Entity_Construct(void* storage,
+                                                  const Broc::entity& value)
+{
+    return ::new (storage) WaitTilOutputInst1<Broc::entity>(value);
+}
+
+void WaitTilOutputInst1Entity_CopyData(const WaitTilOutput* output,
+                                       Broc::entity* value)
+{
+    const WaitTilOutputInst1<Broc::entity>* carrier =
+        static_cast<const WaitTilOutputInst1<Broc::entity>*>(output);
+    *value = carrier->data;
+}
+
+void WaitTilOutputInst1Entity_Destroy(WaitTilOutput* output)
+{
+    static_cast<WaitTilOutputInst1<Broc::entity>*>(output)->
+        ~WaitTilOutputInst1<Broc::entity>();
+}
+
 void force_waitinst1_delete(WaitTilOutputInst1<Broc::string>* p) { delete p; }
 void force_waitinst1u_delete(WaitTilOutputInst1<unsigned int>* p) { delete p; }
 void force_waitinst1e_delete(WaitTilOutputInst1<Broc::entity>* p) { delete p; }

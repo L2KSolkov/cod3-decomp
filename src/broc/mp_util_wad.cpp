@@ -2994,6 +2994,19 @@ bool AssignParameterForNotify(const Broc::entity& ent, HashStr signal,
                                               output);
 }
 
+// ea: 0x00987100. IDA constructs the entity output carrier on the stack,
+// waits for the notify, then copies the assigned entity back to the caller.
+void waittill(Broc::entity ent, HashStr signal, Broc::entity* output)
+{
+    __declspec(align(4)) unsigned char storage[0x10];
+    WaitTilOutput* outParms =
+        WaitTilOutputInst1Entity_Construct(storage, *output);
+    Broc::waittill(ent, signal);
+    if (AssignParameterForNotify(ent, signal, outParms))
+        WaitTilOutputInst1Entity_CopyData(outParms, output);
+    WaitTilOutputInst1Entity_Destroy(outParms);
+}
+
 const char* GetText(const Broc::string& str, char* /*buff*/) {
     return gBrocAPI.mLocalize(str.c_str());
 }
