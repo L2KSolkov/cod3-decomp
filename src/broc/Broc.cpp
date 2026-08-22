@@ -160,6 +160,48 @@ float RandomFloatRange(float fMin, float fMax)
     return gBrocAPI.mMathsRandomFloatRange(fMin, fMax);
 }
 
+// FireTurret - ea: 0x970AE0
+void FireTurret(Broc::entity* e)
+{
+    gBrocAPI.mFireTurret(e->GetHandle(), false);
+}
+
+// GetOrigin - ea: 0x970C60
+Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e)
+{
+    Broc::vector value;
+    gBrocAPI.mGetOrigin(e->GetHandle(), &value);
+    *result = value;
+    return result;
+}
+
+// IsVehicleFlipped - ea: 0x970E80
+bool IsVehicleFlipped(const Broc::entity* e)
+{
+    return gBrocAPI.mIsVehicleFlipped(e->GetHandle());
+}
+
+// Code_BroadcastVehicleRespawn - ea: 0x9713F0
+void Code_BroadcastVehicleRespawn(Broc::entity vehicle)
+{
+    gBrocAPI.mBroadcastVehicleRespawn(vehicle.GetHandle());
+}
+
+// Code_RespawnVehicle - ea: 0x971420
+void Code_RespawnVehicle(Broc::entity* e)
+{
+    gBrocAPI.mRespawnVehicle(e->GetHandle());
+}
+
+// RadiusDamageFromEnt - ea: 0x9717B0
+void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
+                         float range, float max_damage, float min_damage,
+                         int damageType)
+{
+    gBrocAPI.mRadiusDamageFromEnt(which->GetHandle(), origin, range,
+                                  max_damage, min_damage, damageType);
+}
+
 float MathsLog(float fVal)
 {
     if (fVal <= 0.0f)
@@ -1453,6 +1495,13 @@ void endon(entity ent, const char* label)
     RegisterHashString(h.mVal, label);
     gBrocAPI.mThreadTerminateOnNotify(ent.GetHandle(), h.mVal);
 }
+
+// endon(entity, string) - ea: 0x972AB0
+void endon(entity ent, const string& label)
+{
+    endon(ent, label.c_str());
+}
+
 void thread_sleep_time(void) {}
 void thread_sleep_frames(void) {}
 void thread_sleep_until_notify(void) {}

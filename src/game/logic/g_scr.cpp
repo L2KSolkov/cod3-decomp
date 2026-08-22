@@ -2846,7 +2846,7 @@ void DrawCompassFriendlies(bool inBool)
 // ea: 0x005BCEC0
 void SetMaxVehicles(int vehicles)
 {
-    vehicle_InitDynamicBuffers(vehicles);
+    Broc::gBrocAPI.mSetMaxVehicles(vehicles);
 }
 
 // ea: 0x005BCED0 (empty stub)
