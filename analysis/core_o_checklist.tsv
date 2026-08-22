@@ -1153,16 +1153,16 @@ index	status	map_line
 1152	SKIPPED	0002:000e3250 ??_EAnimHeap@@UAEPAXI@Z 008D2750 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1153	SKIPPED	0002:000e3280 ??_EAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1154	SKIPPED	0002:000e3280 ??_GAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1155	PORTED	0002:000e32b0 ??1AnimCacheHeap@@UAE@XZ 008D27B0 f i core.o PORTED: source implementation in 50780385; IDA 0x004E32B0 is a thunk to the empty ae_heap_base destructor
-1156	PORTED	0002:000e32c0 ??0?$reserved_dlist@VEndOnScriptNode@@@@QAE@XZ 008D27C0 f i core.o
-1157	PORTED	0002:000e32e0 ?end@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D27E0 f i core.o
-1158	PORTED	0002:000e3300 ??0?$reserved_dlist@VEntityNotify@@@@QAE@XZ 008D2800 f i core.o
-1159	PORTED	0002:000e3320 ?end@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D2820 f i core.o
-1160	PORTED	0002:000e3340 ?end@?$reserved_dlist@VEntityNotify@@@@QBE?AVconst_iterator@1@XZ 008D2840 f i core.o
-1161	PORTED	0002:000e3360 ??0?$reserved_dlist@VEntityNotifySet@@@@QAE@XZ 008D2860 f i core.o
-1162	PORTED	0002:000e3380 ?push_back@?$reserved_dlist@VEntityNotifySet@@@@QAEXPAVEntityNotifySet@@@Z 008D2880 f i core.o
-1163	PORTED	0002:000e33b0 ?end@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@XZ 008D28B0 f i core.o
-1164	PORTED	0002:000e33d0 ?find@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@PAVEntityNotifySet@@@Z 008D28D0 f i core.o
+1155	VERIFIED	0002:000e32b0 ??1AnimCacheHeap@@UAE@XZ 008D27B0 f i core.o VERIFIED: source empty destructor invokes the ae_heap_base destructor, matching IDA's thunk
+1156	SKIPPED	0002:000e32c0 ??0?$reserved_dlist@VEndOnScriptNode@@@@QAE@XZ 008D27C0 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared constructor is already implemented
+1157	SKIPPED	0002:000e32e0 ?end@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D27E0 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared end() is already implemented
+1158	SKIPPED	0002:000e3300 ??0?$reserved_dlist@VEntityNotify@@@@QAE@XZ 008D2800 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared constructor is already implemented
+1159	SKIPPED	0002:000e3320 ?end@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D2820 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared end() is already implemented
+1160	SKIPPED	0002:000e3340 ?end@?$reserved_dlist@VEntityNotify@@@@QBE?AVconst_iterator@1@XZ 008D2840 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared const end() is already implemented
+1161	SKIPPED	0002:000e3360 ??0?$reserved_dlist@VEntityNotifySet@@@@QAE@XZ 008D2860 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared constructor is already implemented
+1162	SKIPPED	0002:000e3380 ?push_back@?$reserved_dlist@VEntityNotifySet@@@@QAEXPAVEntityNotifySet@@@Z 008D2880 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared push_back() is already implemented
+1163	SKIPPED	0002:000e33b0 ?end@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@XZ 008D28B0 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared end() is already implemented
+1164	SKIPPED	0002:000e33d0 ?find@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@PAVEntityNotifySet@@@Z 008D28D0 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared find() is already implemented
 1165	PORTED	0002:000e3420 ?Clear@?$BitSet@$0EA@@@QAEXXZ 008D2920 f i core.o
 1166	VERIFIED	0002:000e3440 ?Add@?$BitSet@$0EA@@@QAEXH@Z 008D2940 f i core.o
 1167	VERIFIED	0002:000e34d0 ?Rmv@?$BitSet@$0EA@@@QAEXH@Z 008D29D0 f i core.o
