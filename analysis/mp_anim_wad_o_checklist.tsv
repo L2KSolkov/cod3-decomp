@@ -61,14 +61,14 @@ index	status	map_line
 60	PORTED	0002:0058e3e0 ?IsEEDefined_weaponinfo@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D8E0 f mp_anim_wad.o	PORTED: added IDA 0x0098E3E0 defined-check for key 0x135CE3F6; source commit 3d2da8b7
 61	PORTED	0002:0058e4e0 ?GetEE_script_pacifist@@YAAAUbint@@Ventity@Broc@@@Z 00D7D9E0 f mp_anim_wad.o	PORTED: added IDA 0x0098E4E0 ExtendedEntity bint reference for key 0x8CC9C547; source commit 3d2da8b7
 62	PORTED	0002:0058e530 ?IsEEDefined_script_pacifist@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DA30 f mp_anim_wad.o	PORTED: added IDA 0x0098E530 defined-check for key 0x8CC9C547; source commit 3d2da8b7
-63	PORTED	0002:0058e5e0 ?GetEE_script_turretweaponpak@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DAE0 f mp_anim_wad.o
-64	PORTED	0002:0058e630 ?IsEEDefined_script_turretweaponpak@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DB30 f mp_anim_wad.o
-65	PORTED	0002:0058e730 ?GetEE_script_fb_retreat_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z 00D7DC30 f mp_anim_wad.o
-66	PORTED	0002:0058e780 ?IsEEDefined_script_fb_retreat_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DC80 f mp_anim_wad.o
-67	PORTED	0002:0058e830 ?GetEE_script_grenades@@YAAAUbint@@Ventity@Broc@@@Z 00D7DD30 f mp_anim_wad.o
-68	PORTED	0002:0058e880 ?IsEEDefined_script_grenades@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DD80 f mp_anim_wad.o
-69	PORTED	0002:0058e930 ?GetEE_script_hidden@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DE30 f mp_anim_wad.o
-70	PORTED	0002:0058e980 ?IsEEDefined_script_hidden@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DE80 f mp_anim_wad.o
+63	PORTED	0002:0058e5e0 ?GetEE_script_turretweaponpak@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DAE0 f mp_anim_wad.o	PORTED: added IDA 0x0098E5E0 ExtendedEntity string reference for key 0xC655B680; source commit 4d7e5cf0
+64	PORTED	0002:0058e630 ?IsEEDefined_script_turretweaponpak@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DB30 f mp_anim_wad.o	PORTED: added IDA 0x0098E630 defined-check for key 0xC655B680; source commit 4d7e5cf0
+65	PORTED	0002:0058e730 ?GetEE_script_fb_retreat_chunk_size@@YAAAUbint@@Ventity@Broc@@@Z 00D7DC30 f mp_anim_wad.o	PORTED: added IDA 0x0098E730 ExtendedEntity bint reference for key 0xEA795D04; source commit 4d7e5cf0
+66	PORTED	0002:0058e780 ?IsEEDefined_script_fb_retreat_chunk_size@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DC80 f mp_anim_wad.o	PORTED: added IDA 0x0098E780 defined-check for key 0xEA795D04; source commit 4d7e5cf0
+67	PORTED	0002:0058e830 ?GetEE_script_grenades@@YAAAUbint@@Ventity@Broc@@@Z 00D7DD30 f mp_anim_wad.o	PORTED: added IDA 0x0098E830 ExtendedEntity bint reference for key 0x601948FD; source commit 4d7e5cf0
+68	PORTED	0002:0058e880 ?IsEEDefined_script_grenades@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DD80 f mp_anim_wad.o	PORTED: added IDA 0x0098E880 defined-check for key 0x601948FD; source commit 4d7e5cf0
+69	PORTED	0002:0058e930 ?GetEE_script_hidden@@YAAAVstring@Broc@@Ventity@2@@Z 00D7DE30 f mp_anim_wad.o	PORTED: added IDA 0x0098E930 ExtendedEntity string reference for key 0x30CC2C00; source commit 4d7e5cf0
+70	PORTED	0002:0058e980 ?IsEEDefined_script_hidden@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DE80 f mp_anim_wad.o	PORTED: added IDA 0x0098E980 defined-check for key 0x30CC2C00; source commit 4d7e5cf0
 71	PORTED	0002:0058ea80 ?GetEE_script_fb_id@@YAAAUbint@@Ventity@Broc@@@Z 00D7DF80 f mp_anim_wad.o
 72	PORTED	0002:0058ead0 ?IsEEDefined_script_fb_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D7DFD0 f mp_anim_wad.o
 73	PORTED	0002:0058eb80 ?GetEE_script_effect_id@@YAAAVstring@Broc@@Ventity@2@@Z 00D7E080 f mp_anim_wad.o
