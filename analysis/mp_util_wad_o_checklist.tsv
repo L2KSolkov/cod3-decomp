@@ -772,8 +772,8 @@ index	status	map_line
 771	FIXED	0002:0056c140 ?CallbackDebugRender@_mp_scf@@YAXXZ 00D5B640 f mp_util_wad.o	FIXED: matched IDA 0x0096C140 typed trigger/base origins, playerState, and ctf_has_flag field access; source commit 1fa0d92e
 772	VERIFIED	0002:0056c9a0 ?main@_mp_shellshock@@YAXXZ 00D5BEA0 f mp_util_wad.o
 773	FIXED	0002:0056c9c0 ?ShellshockOnDamage@_mp_shellshock@@YAXVentity@Broc@@Ubint@@1@Z 00D5BEC0 f mp_util_wad.o	FIXED: matched IDA 0x0096C9C0 global bint/bfloat signatures, assignment operators, cause set, thresholds, blur durations, and default ShellShock call; source commit 24f8459c
-774	PORTED	0002:0056cc60 ?ShellShock@Broc@@YAXABVentity@1@ABVstring@1@M@Z 00D5C160 f i mp_util_wad.o	PORTED: IDA reverified direct entity-handle forwarding to mShellShock
-775	PORTED	0002:0056cca0 ?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z 00D5C1A0 f mp_util_wad.o	PORTED: IDA reverified empty body; source intentionally preserves the reference no-op
+774	PORTED	0002:0056cc60 ?ShellShock@Broc@@YAXABVentity@1@ABVstring@1@M@Z 00D5C160 f i mp_util_wad.o	PORTED: added IDA 0x0096CC60 entity-handle forwarding to gBrocAPI.mShellShock; source commit 162311ab
+775	FIXED	0002:0056cca0 ?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z 00D5C1A0 f mp_util_wad.o	FIXED: matched IDA 0x0096CCA0 empty body and global bfloat signature; source commit 24f8459c
 776	VERIFIED	0002:0056ccc0 ?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5C1C0 f mp_util_wad.o	VERIFIED: IDA 0x0096CCC0 matches cg_debugSpawnPoints dispatch and no-telefrag overload selection
 777	VERIFIED	0002:0056cd30 ?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@Ubbool@@@Z 00D5C230 f mp_util_wad.o	VERIFIED: IDA 0x0096CD30 matches random shuffle, ignoreTeleFrag filtering, and result construction
 778	VERIFIED	0002:0056cf50 ?Code_PositionWouldTelefrag@Broc@@YA_NABUvector@1@@Z 00D5C450 f i mp_util_wad.o	VERIFIED: IDA 0x0096CF50 directly returns mPositionWouldTelefrag(position); implementation matches
