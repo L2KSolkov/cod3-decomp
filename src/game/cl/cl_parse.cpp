@@ -467,7 +467,7 @@ void CL_SendCmd()
 // ============================================================================
 
 // ea: 0x534140
-int CL_InitInput()
+void CL_InitInput()
 {
     Cmd_AddCommand("centerview", (void(__cdecl*)())IN_CenterView);
     Cmd_AddInputCommand("+moveup", IN_UpDown);
@@ -556,7 +556,6 @@ int CL_InitInput()
     cl_stance_ss[0] = 0;
     cl_altFireButtonDown_ss[0] = 0;
     cl_grenadeButtonDown_ss[0] = 0;
-    return 0;
 }
 
 // ============================================================================

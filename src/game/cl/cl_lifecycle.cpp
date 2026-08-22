@@ -82,7 +82,7 @@ extern int CL_ShutdownDebugData();
 extern void CL_ShutdownInput();
 extern void CL_ShutdownUI();
 extern void StatMon_Reset();
-extern int CL_InitInput();
+extern void CL_InitInput();
 extern void CL_InitGamepadCommands();
 extern void CL_InitKeyCommands();
 extern void CL_ConfigstringModified();
