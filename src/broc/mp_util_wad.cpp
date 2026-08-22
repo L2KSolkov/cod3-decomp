@@ -2654,9 +2654,9 @@ int Broc::GetPlayerIndex(Broc::entity player) {
 
 // Code_GetPlayerInSeat - ea: 0x9725C0
 void Broc::Code_GetPlayerInSeat(Broc::entity* result,
-                                Broc::entity vehicle, int seat) {
-    new (result) Broc::entity(
-        gBrocAPI.mGetPlayerInSeat(vehicle.GetHandle(), (unsigned int)seat));
+                                Broc::entity vehicle, unsigned int seat) {
+    new (result) Broc::entity(gBrocAPI.mGetPlayerInSeat(
+        vehicle.GetHandle(), seat));
 }
 
 // Rumble - ea: 0x972600

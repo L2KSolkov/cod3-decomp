@@ -1580,7 +1580,8 @@ void Code_DebugRenderEntityBBox(Broc::entity e, const Broc::vector* color,
                                 float alpha);
 void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
-void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);
+void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle,
+                          unsigned int seat);
 void Code_PlayerSpawn(Broc::entity player, const Broc::vector& origin,
                       const Broc::vector& angles, bool stopPhysics);
 void Code_PlayerRespawn(Broc::entity player, const Broc::vector& origin,
