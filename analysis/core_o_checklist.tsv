@@ -1261,7 +1261,7 @@ index	status	map_line
 1260	SKIPPED	0002:000e50c0 ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008D45C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1261	SKIPPED	0002:000e50d0 ?allocate@?$allocator@D@std@@QAEPADI@Z 008D45D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1262	SKIPPED	0002:000e50f0 ??$Find@PBD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQBD@Z 008D45F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1263	SKIPPED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
+1263	PORTED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  PORTED: exact IDA column/row lookup and truncation assertions
 1264	PORTED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o
 1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1271,11 +1271,11 @@ index	status	map_line
 1270	SKIPPED	0002:000e5570 ??A?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVConfigString@@I@Z 008D4A70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1271	PORTED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o
 1272	SKIPPED	0002:000e5620 ??$FindIndex@PBD@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 008D4B20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1273	PORTED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o
+1273	PORTED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o  PORTED: exact IDA column/row lookup and truncation assertions
 1274	SKIPPED	0002:000e5780 ??$FindIndex@PAD@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 008D4C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1275	VERIFIED	0002:000e57b0 ?DeleteInst@BankManager@@SAXXZ 008D4CB0 f i core.o
 1276	VERIFIED	0002:000e5840 ?DeleteInst@PakManager@@SAXXZ 008D4D40 f i core.o
-1277	PORTED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o
+1277	PORTED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o  PORTED: exact IDA string fallback through GetFieldValuePtr
 1278	PORTED	0002:000e5900 ?AddField@DbFieldSet@@QAEXPAVDbField@@_N@Z 008D4E00 f i core.o  PORTED: exact IDA bitmap updates, field insertion, and enum assertions
 1279	PORTED	0002:000e5aa0 ?IsFieldSpecified@DbFieldSet@@QBE_NI@Z 008D4FA0 f i core.o  PORTED: exact IDA specified-field bitmap test
 1280	VERIFIED	0002:000e5ac0 ?Clear@DbFieldSet@@QAEXXZ 008D4FC0 f i core.o
