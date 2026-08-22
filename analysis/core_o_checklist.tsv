@@ -1356,7 +1356,7 @@ index	status	map_line
 1355	PORTED	0002:000e8620 ??0PendingQuery@EffectEventSys@@QAE@XZ 008D7B20 f i core.o	PORTED: exact IDA constructor; corrected enum values and constructed PendingQuery array elements instead of zeroing them
 1356	PORTED	0002:000e86f0 ?CreateInst@PhysDataBankManager@@SAXXZ 008D7BF0 f i core.o
 1357	VERIFIED	0002:000e8800 ?CreateInst@STBManager@@SAXXZ 008D7D00 f i core.o
-1358	PORTED	0002:000e8910 ?CreateInst@DbTablesetMgr@@SAXXZ 008D7E10 f i core.o
+1358	VERIFIED	0002:000e8910 ?CreateInst@DbTablesetMgr@@SAXXZ 008D7E10 f i core.o	VERIFIED: IDA allocation/base construction/vtable/singleton path matches; derived-pointer return is ABI-equivalent to IDA base-pointer return
 1359	VERIFIED	0002:000e8a20 ?CreateInst@ConfigStringManager@@SAXXZ 008D7F20 f i core.o
 1360	FIXED	0002:000e8b30 ?GetOwner@AbstractEffect@@QBEPAVEntity@@XZ 008D8030 f i core.o	FIXED: restored the exact IDA EntityHandleDb key/index lookup as AbstractEffect::GetOwner; existing helper now delegates to it
 1361	VERIFIED	0002:000e8b70 ?CreateInst@RumbleManager@@SAXXZ 008D8070 f i core.o	VERIFIED: IDA allocation, assert metadata, sentinel-list initialization, and singleton assignment match
