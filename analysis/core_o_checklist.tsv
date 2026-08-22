@@ -1348,7 +1348,7 @@ index	status	map_line
 1347	VERIFIED	0002:000e7f60 ??1DbQuery@@UAE@XZ 008D7460 f i core.o
 1348	SKIPPED	0002:000e7fb0 ??_GDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1349	SKIPPED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1350	PORTED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o
+1350	VERIFIED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o	VERIFIED: IDA allocation, assertion metadata, base construction/vtable path, singleton assignment, and failure reset match
 1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o	VERIFIED: IDA clears both BitSet words and first byte of all three DbQueryString fields; member default construction has the same final state
 1352	PORTED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o  PORTED: exact specified/weak bit updates, field routing, and bad-id assert
 1353	PORTED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o  PORTED: exact string field copies, weak bits, and bad-id assert
