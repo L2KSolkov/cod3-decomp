@@ -88,6 +88,20 @@ public:
             --m_size;
         return m_elements[m_size];
     }
+    T& expand() {
+        if (m_size >= CAPACITY) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 192;
+            AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no room left in array"))
+                __debugbreak();
+        }
+        int size = m_size;
+        m_size = size + 1;
+        return m_elements[size];
+    }
     void erase(int idx) {
         int size = m_size;
         if (size > 1 && idx < size)
