@@ -2645,6 +2645,219 @@ nalGenericInstance::~nalGenericInstance()
     tlMemFree(AnimCompTracks);
 }
 
+struct nalComponentEnumView {
+    void* Anim;
+    const nalComponentInfo* ComponentInfo;
+    const void** CustomSkeletonData;
+    const void** CustomAnimData;
+};
+
+static void nalComponentDecodeRaw(const nalComponentBase* component,
+                                  nalComponentEnumView& componentEnum,
+                                  void** dstPtr, const void** srcPtr,
+                                  int quantity, int stride)
+{
+    using DecodeFn = void (__thiscall*)(const void*, void*, void**,
+                                        const void**, int, int);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<DecodeFn>(vtable[9])(
+        component, &componentEnum, dstPtr, srcPtr, quantity, stride);
+}
+
+static void nalComponentSkipRaw(const nalComponentBase* component,
+                                nalComponentEnumView& componentEnum,
+                                void** dstPtr, const void** srcPtr, int quantity)
+{
+    using SkipFn = void (__thiscall*)(const void*, void*, void**,
+                                      const void**, int);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<SkipFn>(vtable[10])(
+        component, &componentEnum, dstPtr, srcPtr, quantity);
+}
+
+static void nalComponentConvertRaw(const nalComponentBase* component,
+                                   int vtableIndex,
+                                   nalComponentEnumView& componentEnum,
+                                   unsigned char* dstPtr,
+                                   const void** srcPtr,
+                                   const unsigned char* defaultPtr,
+                                   const int* offsetTable)
+{
+    using ConvertFn = void (__thiscall*)(const void*, void*, void*,
+                                         const void**, const void*,
+                                         const int*);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<ConvertFn>(vtable[vtableIndex])(
+        component, &componentEnum, dstPtr, srcPtr, defaultPtr, offsetTable);
+}
+
+// ea: 0x0086DC30
+void nalGenericInstance::CacheBlock(int blockIdx, int lod)
+{
+    nalGenericAnim* anim = GetAnim();
+    const nalGenericSkeleton* skeleton = anim->Skeleton;
+    int blockLength = anim->BlockUnit;
+    if (blockLength * (blockIdx + 1) > anim->FrameCount)
+        blockLength = anim->FrameCount - blockIdx * blockLength;
+
+    nalAnimCache::nalObject* cacheObject = anim->CacheData[blockIdx];
+    if (cacheObject != nullptr && lod < cacheObject->LOD)
+    {
+        nalAnimationCache.IncreaseLOD(cacheObject,
+                                       anim->CachedPoseInfo,
+                                       lod, blockLength);
+    }
+    else
+    {
+        cacheObject = nalAnimationCache.Allocate(
+            anim->CachedPoseInfo, lod, blockLength,
+            &anim->CacheData[blockIdx]);
+    }
+    if (cacheObject == nullptr
+        && _tlAssert("source/common/nal_generic.cpp", 1669,
+                     "cacheObject",
+                     "couldn't find room in the animation cache"))
+    {
+        __debugbreak();
+    }
+
+    unsigned char* dstPtr = reinterpret_cast<unsigned char*>(cacheObject + 1);
+    const unsigned char* srcPtr = static_cast<const unsigned char*>(
+        anim->BlockData[blockIdx]);
+    const void* skeletonPrivateData = skeleton->PrivateData;
+    const void* animPrivateData = anim->PrivateData;
+    nalAnimCache::nalLOD* nextLOD = nullptr;
+
+    for (int lodIndex = static_cast<int>(skeleton->LODCount) - 1;; --lodIndex)
+    {
+        const nalLODInfo& lodInfo = skeleton->LODInfo[lodIndex];
+        const int firstComponent = lodInfo.FirstComponent;
+        const int lastComponent =
+            lodIndex < 1
+                ? skeleton->PoseComponentCount
+                : skeleton->LODInfo[lodIndex - 1].FirstComponent;
+        const int stride = anim->CachedPoseInfo.LODInfo[lodIndex].Size;
+        const int componentCount = lastComponent - firstComponent;
+        if (cacheObject->LOD < 0 || lodIndex < cacheObject->LOD)
+        {
+            for (int i = 0; i < componentCount; ++i)
+            {
+                const nalComponentInfo* component =
+                    &skeleton->PoseComponentInfo[firstComponent + i];
+                nalComponentEnumView componentEnum = {
+                    anim, component, &skeletonPrivateData, &animPrivateData};
+                nalComponentDecodeRaw(component->Component, componentEnum,
+                                      reinterpret_cast<void**>(&dstPtr),
+                                      reinterpret_cast<const void**>(&srcPtr),
+                                      blockLength, stride);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < componentCount; ++i)
+            {
+                const nalComponentInfo* component =
+                    &skeleton->PoseComponentInfo[firstComponent + i];
+                nalComponentEnumView componentEnum = {
+                    anim, component, &skeletonPrivateData, &animPrivateData};
+                nalComponentSkipRaw(component->Component, componentEnum,
+                                    reinterpret_cast<void**>(&dstPtr),
+                                    reinterpret_cast<const void**>(&srcPtr),
+                                    blockLength);
+            }
+        }
+
+        if (nextLOD != nullptr)
+            nextLOD = nextLOD->NextLOD;
+        else
+            nextLOD = cacheObject->NextLOD;
+        dstPtr = nextLOD != nullptr
+                     ? reinterpret_cast<unsigned char*>(nextLOD + 1)
+                     : nullptr;
+        if (nextLOD == nullptr)
+            break;
+    }
+    cacheObject->LOD = lod;
+}
+
+// ea: 0x0086DE10
+void nalGenericInstance::ConvertPoseData(
+    unsigned char* dstPtr, const nalAnimCache::nalObject* cacheObject,
+    int frame, const unsigned char* defaultPtr, const int* offsetTable,
+    int lod)
+{
+    nalGenericAnim* anim = GetAnim();
+    const nalGenericSkeleton* animSkeleton = anim->Skeleton;
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+    const void* skeletonPrivateData = animSkeleton->PrivateData;
+    const void* animPrivateData = anim->PrivateData;
+
+    if (skeleton != animSkeleton)
+        memcpy(dstPtr, defaultPtr, static_cast<size_t>(skeleton->PoseSize));
+
+    const int highestLOD = static_cast<int>(animSkeleton->LODCount) - 1;
+    int lodIndex = highestLOD;
+    const unsigned char* srcPtr =
+        reinterpret_cast<const unsigned char*>(cacheObject + 1)
+        + frame * anim->CachedPoseInfo.LODInfo[highestLOD].Size;
+    nalAnimCache::nalLOD* nextLOD = nullptr;
+
+    if (lodIndex >= lod)
+    {
+        for (;;)
+        {
+            const nalLODInfo& lodInfo = animSkeleton->LODInfo[lodIndex];
+            const int firstComponent = lodInfo.FirstComponent;
+            const int lastComponent =
+                lodIndex < 1
+                    ? animSkeleton->PoseComponentCount
+                    : animSkeleton->LODInfo[lodIndex - 1].FirstComponent;
+            for (int componentIndex = firstComponent;
+                 componentIndex < lastComponent; ++componentIndex)
+            {
+                const nalComponentInfo* component =
+                    &animSkeleton->PoseComponentInfo[componentIndex];
+                nalComponentEnumView componentEnum = {
+                    anim, component, &skeletonPrivateData, &animPrivateData};
+                const bool perfect =
+                    AnimCompTracks != nullptr
+                    && AnimCompTracks[componentIndex] != 0;
+                nalComponentConvertRaw(component->Component,
+                                       perfect ? 12 : 11,
+                                       componentEnum, dstPtr,
+                                       reinterpret_cast<const void**>(&srcPtr),
+                                       defaultPtr, offsetTable);
+            }
+
+            if (nextLOD != nullptr)
+                nextLOD = nextLOD->NextLOD;
+            else
+                nextLOD = cacheObject->NextLOD;
+            --lodIndex;
+            if (lodIndex < lod)
+                break;
+            srcPtr = reinterpret_cast<const unsigned char*>(nextLOD + 1)
+                     + frame * anim->CachedPoseInfo.LODInfo[lodIndex].Size;
+        }
+    }
+}
+
+// ea: 0x0086DF80
+void nalGenericInstance::TouchDecompCache(int index, int lod)
+{
+    nalGenericAnim* anim = GetAnim();
+    const int block = index / anim->BlockUnit;
+    nalAnimCache::nalObject* cacheObject = anim->CacheData[block];
+    if (cacheObject != nullptr && cacheObject->LOD <= lod)
+        nalAnimationCache.Touch(cacheObject);
+    else
+        CacheBlock(block, lod);
+}
+
 // ea: 0x00854BC0
 nalGenericAnim::nalGenericAnim(nalRegisterKey key)
 {
