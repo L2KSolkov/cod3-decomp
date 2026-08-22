@@ -3045,3 +3045,38 @@ Broc::vector* GetEE_angles(Broc::vector* result, Broc::pathnode node) {
     *result = value;
     return result;
 }
+
+// IsEEDefined_angles - ea: 0x9966A0.
+Broc::bbool* IsEEDefined_angles(Broc::bbool* result,
+                                Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_reservename - ea: 0x996740.
+Broc::string* GetEE_reservename(Broc::string* result,
+                                Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_reservename(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_reservename - ea: 0x996840.
+Broc::bbool* IsEEDefined_reservename(Broc::bbool* result,
+                                     Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_script_delay(vehiclenode) - ea: 0x9968E0.
+Broc::bfloat* GetEE_script_delay(Broc::bfloat* result,
+                                 Broc::vehiclenode node) {
+    const float value = Broc::gBrocAPI.mBrocExports.mGetVNodeField_float(
+        node.GetHandle(), 0x47018F83u);
+    new (result) Broc::bfloat(value);
+    return result;
+}
