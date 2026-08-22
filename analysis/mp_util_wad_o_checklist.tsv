@@ -1135,7 +1135,7 @@ index	status	map_line
 1134	VERIFIED	0002:005850b0 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D745B0 f i mp_util_wad.o
 1135	VERIFIED	0002:00585120 ??1?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D74620 f i mp_util_wad.o
 1136	VERIFIED	0002:00585160 ??A?$dyn_array@Uvector@Broc@@@Broc@@QAEAAUvector@1@I@Z 00D74660 f i mp_util_wad.o
-1137	VERIFIED	0002:00585380 ?push_back@?$dyn_array@Uvector@Broc@@@Broc@@QAEXABUvector@2@@Z 00D74880 f i mp_util_wad.o
+1137	FIXED	0002:00585380 ?push_back@?$dyn_array@Uvector@Broc@@@Broc@@QAEXABUvector@2@@Z 00D74880 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
 1138	FIXED	0002:005855b0 ??0?$dyn_array@M@Broc@@QAE@ABV01@@Z 00D74AB0 f i mp_util_wad.o	FIXED: float dyn_array copy construction now preserves source capacity and copies initialized elements
 1139	VERIFIED	0002:00585740 ??0?$dyn_array@M@Broc@@QAE@XZ 00D74C40 f i mp_util_wad.o	VERIFIED: IDA 0x00985740 zero-initializes mElements, mCapacity, and mSize and conditionally invokes BrocObjCtor
 1140	VERIFIED	0002:005857b0 ??1?$dyn_array@M@Broc@@QAE@XZ 00D74CB0 f i mp_util_wad.o
@@ -1191,7 +1191,7 @@ index	status	map_line
 1190	VERIFIED	0002:00587440 ??0?$dyn_array@H@Broc@@QAE@XZ 00D76940 f i mp_util_wad.o
 1191	VERIFIED	0002:005874b0 ??1?$dyn_array@H@Broc@@QAE@XZ 00D769B0 f i mp_util_wad.o
 1192	VERIFIED	0002:005874f0 ??A?$dyn_array@H@Broc@@QAEAAHI@Z 00D769F0 f i mp_util_wad.o
-1193	VERIFIED	0002:00587710 ?push_back@?$dyn_array@H@Broc@@QAEXABH@Z 00D76C10 f i mp_util_wad.o
+1193	FIXED	0002:00587710 ?push_back@?$dyn_array@H@Broc@@QAEXABH@Z 00D76C10 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
 1194	PORTED	0002:00587910 ??$IsDefined@Ventity@Broc@@@Broc@@YA_NABV?$dyn_array@Ventity@Broc@@@0@@Z 00D76E10 f i mp_util_wad.o	PORTED: added the IDA capacity-nonzero dyn_array IsDefined wrapper
 1195	SKIPPED	0002:00587940 ??$_Distance@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@I@std@@YAXViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@0AAI@Z 00D76E40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1196	PORTED	0002:00587990 ??$hash_value@UHashStr@@@stdext@@YAIABUHashStr@@@Z 00D76E90 f i mp_util_wad.o	PORTED: added the IDA HashStr XOR 0xDEADBEEF hash helper
@@ -1224,7 +1224,7 @@ index	status	map_line
 1223	PORTED	0002:00588490 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@II@Z 00D77990 f i mp_util_wad.o	PORTED: added the IDA vector construct_array helper
 1224	PORTED	0002:00588680 ?destroy_all@?$dyn_array@Uvector@Broc@@@Broc@@AAEXXZ 00D77B80 f i mp_util_wad.o	PORTED: added the IDA vector destroy_all helper
 1225	PORTED	0002:00588800 ?resize@?$dyn_array@M@Broc@@QAEXII@Z 00D77D00 f i mp_util_wad.o
-1226	PORTED	0002:00588a90 ?push_back@?$dyn_array@M@Broc@@QAEXABM@Z 00D77F90 f i mp_util_wad.o
+1226	FIXED	0002:00588a90 ?push_back@?$dyn_array@M@Broc@@QAEXABM@Z 00D77F90 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
 1227	PORTED	0002:00588c90 ??4?$dyn_array@M@Broc@@QAEXABV01@@Z 00D78190 f i mp_util_wad.o	PORTED: added the IDA dyn_array float copy-assignment behavior
 1228	PORTED	0002:00588e90 ?destroy_all@?$dyn_array@M@Broc@@AAEXXZ 00D78390 f i mp_util_wad.o	PORTED: added the IDA float destroy_all helper
 1229	PORTED	0002:00589010 ?resize@?$dyn_array@Vstring@Broc@@@Broc@@QAEXII@Z 00D78510 f i mp_util_wad.o
