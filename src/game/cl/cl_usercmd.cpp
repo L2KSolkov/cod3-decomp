@@ -26,11 +26,8 @@ extern int CL_StanceButtonUpdate();
 extern const signed char ClampChar(int i);
 int dword_F12110;     // mlook active
 int dword_F170F0 = 0;  // cl.o BSS @ 0xF170F0 (base turn speed)
-float Deltas[4][5];  // ?Deltas@@3PAY04MA (cl.o BSS @ 0xF128C0)
-int dword_F133C4[20];  // cl.o BSS (delta accumulation)
-int dword_F133C8[20];  // cl.o BSS
-int dword_F133CC[20];  // cl.o BSS
-int dword_F133D0[20];  // cl.o BSS
+float Deltas[2][5];  // ?Deltas@@3PAY04MA (cl.o BSS @ 0xF128C0)
+float dword_F133C4[10];  // adjacent IDA history elements at F133C4..F133D0
 extern struct cvar_t* cl_anglespeedkey;
 extern struct cvar_t* cl_yawspeed;
 extern struct cvar_t* cl_pitchspeed;
@@ -402,9 +399,9 @@ void GetAverageDelta(float* deltaAngle, int* index, int iStickIndex)
     *deltaAngle = 0.0f;
     *deltaAngle = Deltas[iStickIndex][0];
     *deltaAngle = dword_F133C4[5 * iStickIndex] + *deltaAngle;
-    *deltaAngle = dword_F133C8[5 * iStickIndex] + *deltaAngle;
-    *deltaAngle = dword_F133CC[5 * iStickIndex] + *deltaAngle;
-    *deltaAngle = (dword_F133D0[5 * iStickIndex] + *deltaAngle) * 0.2f;
+    *deltaAngle = dword_F133C4[5 * iStickIndex + 1] + *deltaAngle;
+    *deltaAngle = dword_F133C4[5 * iStickIndex + 2] + *deltaAngle;
+    *deltaAngle = (dword_F133C4[5 * iStickIndex + 3] + *deltaAngle) * 0.2f;
 }
 
 // ea: 0x52C560
