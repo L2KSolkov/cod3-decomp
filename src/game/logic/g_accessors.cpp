@@ -126,6 +126,14 @@ bool tlUnlockScratchpad()
     return result;
 }
 
+// game.o 0x601F80
+int ae_stricmp(const char* s1, const char* s2)
+{
+    if (s1 != nullptr && s2 != nullptr)
+        return ae_stricmpn(s1, s2, 0x7FFFFFFF);
+    return -1;
+}
+
 void* DestructibleBankManager::operator new(size_t, void* p)
 {
     return p;
