@@ -733,6 +733,90 @@ Broc::bbool* IsEEDefined_script_accuracyStationaryMod(
     return result;
 }
 
+// GetEE_noshadow / IsEEDefined_noshadow - ea: 0x98D8A0 / 0x98D8F0
+Broc::bint* GetEE_noshadow(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xF89BEE03u);
+}
+
+Broc::bbool* IsEEDefined_noshadow(Broc::bbool* result,
+                                   Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xF89BEE03u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_offtime / IsEEDefined_script_offtime - ea: 0x98D9A0 / 0x98D9F0
+Broc::bint* GetEE_script_offtime(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0x5E56E3BEu);
+}
+
+Broc::bbool* IsEEDefined_script_offtime(Broc::bbool* result,
+                                         Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x5E56E3BEu);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_playerseek / IsEEDefined_script_playerseek - ea: 0x98DAA0 / 0x98DAF0
+Broc::bint* GetEE_script_playerseek(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xDD16B1E9u);
+}
+
+Broc::bbool* IsEEDefined_script_playerseek(Broc::bbool* result,
+                                            Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xDD16B1E9u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
 // GetEE_flagEnd / IsEEDefined_flagEnd (key 0xAEB6D8F1)
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
@@ -2323,13 +2407,13 @@ Broc::bbool* IsEEDefined_script_sound(Broc::bbool* result, Broc::entity ent) {
     return result;
 }
 
-// GetEE_vehicletype / IsEEDefined_vehicletype (key 0x128D7CA2)
+// GetEE_vehicletype / IsEEDefined_vehicletype (key 0x128D01A2)
 Broc::string* GetEE_vehicletype(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     if (ee == NULL)
         ee = &Broc::ExtendedEntity::nullEnt;
-    return &ee->GetRef<Broc::string>(0x128D7CA2);
+    return &ee->GetRef<Broc::string>(0x128D01A2u);
 }
 
 Broc::bbool* IsEEDefined_vehicletype(Broc::bbool* result, Broc::entity ent) {
@@ -2337,7 +2421,7 @@ Broc::bbool* IsEEDefined_vehicletype(Broc::bbool* result, Broc::entity ent) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
         if (ee != NULL) {
-            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x128D7CA2);
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x128D01A2u);
             bool IsDefined = Broc::IsDefined(*val);
             result->mVal = IsDefined;
         } else {
