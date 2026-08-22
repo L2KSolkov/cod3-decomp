@@ -403,7 +403,8 @@ struct reserved_dlist {
             dlist_node* head = dlist->m_head;
             m_node = head;
             m_next = head != nullptr ? head->mNext : nullptr;
-            if (dlist->m_head == &dlist->m_end)
+            if (dlist->m_head
+                == reinterpret_cast<dlist_node*>(&dlist->m_end))
             {
                 m_next = nullptr;
                 m_node = nullptr;
