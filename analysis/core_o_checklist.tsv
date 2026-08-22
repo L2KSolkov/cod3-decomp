@@ -785,23 +785,23 @@ index	status	map_line
 784	VERIFIED	0002:000de480 ??2RumbleEffectInstance@@SAPAXI_NPBDH@Z 008CD980 f i core.o	VERIFIED: existing allocator new matches IDA 0x004DE480
 785	VERIFIED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o	VERIFIED: existing allocator delete overload matches IDA 0x004DE4A0
 786	VERIFIED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o	VERIFIED: existing plain allocator delete matches IDA 0x004DE4C0
-787	PORTED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o PORTED: IDA assigns and returns the allocator
-788	PORTED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o PORTED: IDA PoolAllocator::Allocate wrapper
-789	PORTED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o PORTED: IDA PoolAllocator::Release wrapper
-790	PORTED	0002:000de530 ?SetAllocator@AbstractEffect@@SAXPAVPoolAllocator@@@Z 008CDA30 f i core.o PORTED: IDA allocator assignment
+787	VERIFIED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o VERIFIED: IDA 0x004DE4E0 stores and returns the allocator; existing source matches
+788	VERIFIED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o VERIFIED: IDA 0x004DE4F0 forwards size/forceHeapAlloc to PoolAllocator::Allocate; existing source matches
+789	VERIFIED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o VERIFIED: IDA 0x004DE510 forwards ptr to PoolAllocator::Release; existing source matches
+790	VERIFIED	0002:000de530 ?SetAllocator@AbstractEffect@@SAXPAVPoolAllocator@@@Z 008CDA30 f i core.o VERIFIED: IDA 0x004DE530 assigns sAllocator; existing source matches
 791	VERIFIED	0002:000de540 ?SetPoPtr@AbstractEffect@@UAEXPAVMat43@math@@@Z 008CDA40 f i core.o
-792	PORTED	0002:000de550 ?GetEffectNameHashStr@AbstractEffect@@QAE?BIXZ 008CDA50 f i core.o PORTED: IDA field accessor
-793	PORTED	0002:000de560 ?GetFlags@AbstractEffect@@QBEHXZ 008CDA60 f i core.o PORTED: IDA field accessor
-794	PORTED	0002:000de570 ?Test@AbstractEffect@@QBE_NH@Z 008CDA70 f i core.o PORTED: IDA flag test
-795	PORTED	0002:000de590 ?GetLifeTime@AbstractEffect@@QAEHXZ 008CDA90 f i core.o PORTED: IDA lifetime accessor
-796	PORTED	0002:000de5a0 ?SetFlag@AbstractEffectSound@@QAEXW4EAbstractSoundEffectFlags@@@Z 008CDAA0 f i core.o PORTED: IDA derived sound flag OR
-797	PORTED	0002:000de5c0 ??2RumbleManager@@SAPAXIPAX@Z 008CDAC0 f i core.o
-798	PORTED	0002:000de5d0 ??8@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAD0 f i core.o
-799	PORTED	0002:000de5f0 ??9@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAF0 f i core.o
-800	PORTED	0002:000de610 ??0SmokeGrenadeInfo@@QAE@XZ 008CDB10 f i core.o PORTED: IDA constructor and 0x14-byte layout
-801	PORTED	0002:000de640 ??2SmokeGrenadeMgr@@SAPAXIPAX@Z 008CDB40 f i core.o PORTED: IDA placement allocator
-802	PORTED	0002:000de650 ?Q_rsqrt@@YAMM@Z 008CDB50 f i core.o PORTED: IDA fast inverse square root
-803	PORTED	0002:000de6a0 ?Clamp0To1@@YAMM@Z 008CDBA0 f i core.o PORTED: IDA clamp branches
+792	VERIFIED	0002:000de550 ?GetEffectNameHashStr@AbstractEffect@@QAE?BIXZ 008CDA50 f i core.o VERIFIED: IDA 0x004DE550 returns mEffectNameHashStr; existing source matches
+793	VERIFIED	0002:000de560 ?GetFlags@AbstractEffect@@QBEHXZ 008CDA60 f i core.o VERIFIED: IDA 0x004DE560 returns mFlags; existing source matches
+794	VERIFIED	0002:000de570 ?Test@AbstractEffect@@QBE_NH@Z 008CDA70 f i core.o VERIFIED: IDA 0x004DE570 tests flag & mFlags; existing source matches
+795	VERIFIED	0002:000de590 ?GetLifeTime@AbstractEffect@@QAEHXZ 008CDA90 f i core.o VERIFIED: IDA 0x004DE590 returns mCountSinceStarted; existing source matches
+796	VERIFIED	0002:000de5a0 ?SetFlag@AbstractEffectSound@@QAEXW4EAbstractSoundEffectFlags@@@Z 008CDAA0 f i core.o VERIFIED: IDA 0x004DE5A0 ORs the sound flag into mFlags; existing source matches
+797	VERIFIED	0002:000de5c0 ??2RumbleManager@@SAPAXIPAX@Z 008CDAC0 f i core.o VERIFIED: IDA 0x004DE5C0 returns placement pointer; existing source matches
+798	VERIFIED	0002:000de5d0 ??8@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAD0 f i core.o VERIFIED: IDA 0x004DE5D0 compares mVal for equality; existing source matches
+799	VERIFIED	0002:000de5f0 ??9@YA_NVRumbleEffectInstanceHandle@@0@Z 008CDAF0 f i core.o VERIFIED: IDA 0x004DE5F0 compares mVal for inequality; existing source matches
+800	VERIFIED	0002:000de610 ??0SmokeGrenadeInfo@@QAE@XZ 008CDB10 f i core.o VERIFIED: IDA 0x004DE610 clears mEffect, mTime, and all three bHit entries; existing source matches
+801	VERIFIED	0002:000de640 ??2SmokeGrenadeMgr@@SAPAXIPAX@Z 008CDB40 f i core.o VERIFIED: IDA 0x004DE640 returns placement pointer; existing source matches
+802	VERIFIED	0002:000de650 ?Q_rsqrt@@YAMM@Z 008CDB50 f i core.o VERIFIED: IDA 0x004DE650 matches the Quake inverse-square-root bit algorithm; existing source matches symbol type
+803	VERIFIED	0002:000de6a0 ?Clamp0To1@@YAMM@Z 008CDBA0 f i core.o VERIFIED: IDA 0x004DE6A0 clamps below zero, passes through [0,1], and clamps above one; existing source matches
 804	VERIFIED	0002:000de6f0 ?length@string@Broc@@QBEIXZ 008CDBF0 f i core.o VERIFIED: existing Broc::string length matches IDA
 805	PORTED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o PORTED: IDA placement allocator
 806	VERIFIED	0002:000de720 ?CreateInst@InteractionController@@SAXXZ 008CDC20 f i core.o VERIFIED: existing CreateInst matches IDA
