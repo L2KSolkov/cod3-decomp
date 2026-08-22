@@ -12834,8 +12834,10 @@ void CallbackAreaCaptured(int index, int team) {
     Broc::entity level = mp_util_wad::pLevel != nullptr
                               ? mp_util_wad::pLevel->_base.entity
                               : Broc::entity();
+    Broc::bint waitSeconds(30);
+    Broc::bfloat waitTime(waitSeconds);
     void* ftor = WaitThenPickFlagToLaunch__functor(
-        level, Broc::bfloat(30.0f), "MPSCF_FLAG_SPAWNED");
+        level, waitTime, "MPSCF_FLAG_SPAWNED");
     Broc::thread_create(false,
                         "c:\\cod\\code\\script\\_mp_scf.bro",
                         __LINE__ + 57, "WaitThenPickFlagToLaunch", ftor);
