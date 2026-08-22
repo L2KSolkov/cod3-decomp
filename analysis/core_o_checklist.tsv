@@ -1135,7 +1135,7 @@ index	status	map_line
 1134	VERIFIED	0002:000e2ec0 ?DeleteInst@MultiplayerMgr@@SAXXZ 008D23C0 f i core.o
 1135	VERIFIED	0002:000e2f50 ?DeleteInst@BinFileManager@@SAXXZ 008D2450 f i core.o
 1136	VERIFIED	0002:000e2fe0 ?DeleteInst@DynamicDecalMgr@@SAXXZ 008D24E0 f i core.o
-1137	PORTED	0002:000e3070 ?DeleteInst@PadAliasMgr@@SAXXZ 008D2570 f i core.o
+1137	VERIFIED	0002:000e3070 ?DeleteInst@PadAliasMgr@@SAXXZ 008D2570 f i core.o	VERIFIED: existing DeleteInst matches IDA assertion/free/null path; compatibility mirror reset is outside the IDA singleton storage
 1138	PORTED	0002:000e30f0 ?DelRef@strdata@@QAE_NXZ 008D25F0 f i core.o
 1139	SKIPPED	0002:000e3130 ??_EDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1140	SKIPPED	0002:000e3130 ??_GDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
