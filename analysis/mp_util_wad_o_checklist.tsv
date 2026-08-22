@@ -859,7 +859,7 @@ index	status	map_line
 858	PORTED	0002:005774d0 ??M@YA?AUbbool@@Ubfloat@@H@Z 00D669D0 f i mp_util_wad.o	PORTED: added exact IDA 0x009774D0 comparison returning rhs > lhs
 859	VERIFIED	0002:00577520 ?CallbackNextRound@_mp_war@@YAXXZ 00D66A20 f mp_util_wad.o
 860	VERIFIED	0002:00577590 ?SetupRound@_mp_war@@YAXXZ 00D66A90 f mp_util_wad.o
-861	PORTED	0002:00577e70 ?WAR_Init__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67370 f i mp_util_wad.o
+861	VERIFIED	0002:00577e70 ?WAR_Init__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67370 f i mp_util_wad.o	VERIFIED: IDA 0x00977E70 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WAR_Init constructor
 862	VERIFIED	0002:00577f10 ?CallbackGetFlagCount@_mp_war@@YAHXZ 00D67410 f mp_util_wad.o
 863	VERIFIED	0002:00577f90 ?CallbackGetFlagBreatherTime@_mp_war@@YAHXZ 00D67490 f mp_util_wad.o
 864	VERIFIED	0002:00578020 ?CallbackGetTeamControllingFlag@_mp_war@@YAHI@Z 00D67520 f mp_util_wad.o
@@ -869,20 +869,20 @@ index	status	map_line
 868	PORTED	0002:00578330 ?GetRef@capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D67830 f i mp_util_wad.o	PORTED: added IDA 0x00978330 GetRef using global bfloat and key 0x53377998
 869	VERIFIED	0002:00578360 ?CallbackGetCapturingFlagPercent@_mp_war@@YAHXZ 00D67860 f mp_util_wad.o
 870	VERIFIED	0002:00578470 ?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z 00D67970 f mp_util_wad.o
-871	PORTED	0002:005785f0 ?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z 00D67AF0 f mp_util_wad.o
+871	VERIFIED	0002:005785f0 ?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z 00D67AF0 f mp_util_wad.o	VERIFIED: IDA 0x009785F0 returns pLevel->capCount
 872	VERIFIED	0002:00578620 ?CallbackPlayerJoin@_mp_war@@YAXVentity@Broc@@IH@Z 00D67B20 f mp_util_wad.o
 873	VERIFIED	0002:00578660 ?CallbackPlayerEnter@_mp_war@@YAXVentity@Broc@@H@Z 00D67B60 f mp_util_wad.o
-874	PORTED	0002:00578710 ?WarnPlayerAboutInactiveFlag__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67C10 f i mp_util_wad.o
+874	VERIFIED	0002:00578710 ?WarnPlayerAboutInactiveFlag__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67C10 f i mp_util_wad.o	VERIFIED: IDA 0x00978710 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WarnPlayerAboutInactiveFlag constructor
 875	VERIFIED	0002:005787b0 ?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z 00D67CB0 f mp_util_wad.o
 876	VERIFIED	0002:00578960 ?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z 00D67E60 f mp_util_wad.o
 877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
 878	VERIFIED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o
 879	VERIFIED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o
-880	PORTED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o
-881	PORTED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o
-882	PORTED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o
+880	PORTED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF10 boxed bfloat inequality
+881	PORTED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF60 unary negative
+882	PORTED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AFB0 boxed bfloat addition
 883	VERIFIED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o
-884	PORTED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o
+884	FIXED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o	FIXED: corrected the 0x0097B580 signature/body to the global bfloat/bint types from IDA
 885	PORTED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o
 886	PORTED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o
 887	PORTED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o
@@ -891,7 +891,7 @@ index	status	map_line
 890	PORTED	0002:0057c370 ?WAR_FlagUpdate__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D6B870 f i mp_util_wad.o
 891	PORTED	0002:0057c410 ?SortMarkers@_mp_war@@YAXXZ 00D6B910 f mp_util_wad.o
 892	PORTED	0002:0057c650 ?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D6BB50 f mp_util_wad.o
-893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o
+893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	PORTED: added global bint conversion used by IDA 0x0097B580 and matching the inline conversion body
 894	PORTED	0002:0057d060 ?Get@classname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D6C560 f i mp_util_wad.o
 895	VERIFIED	0002:0057d110 ?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6C610 f mp_util_wad.o
 896	VERIFIED	0002:0057d620 ?CallbackDebugRender@_mp_war@@YAXXZ 00D6CB20 f mp_util_wad.o
