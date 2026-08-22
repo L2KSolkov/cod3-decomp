@@ -919,42 +919,42 @@ index	status	map_line
 918	VERIFIED	0002:0057eff0 ??0?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@Ubfloat@@@ZABV12@ABV32@ABU4@@Z 00D6E4F0 f i mp_util_wad.o	VERIFIED: IDA 0x0097EFF0 copies entity/string and captures bfloat
 919	VERIFIED	0002:0057f0a0 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEIXZ 00D6E5A0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F0A0 returns the captured entity handle
 920	VERIFIED	0002:0057f0d0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEXXZ 00D6E5D0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F0D0 copies entity/string and invokes the stored callback with bfloat
-921	PORTED	0002:0057f170 ??0?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@1Ubfloat@@@ZABV12@ABV32@5ABU4@@Z 00D6E670 f i mp_util_wad.o
-922	PORTED	0002:0057f240 ?GetEnt@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEIXZ 00D6E740 f i mp_util_wad.o
-923	PORTED	0002:0057f270 ?CallFunction@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEXXZ 00D6E770 f i mp_util_wad.o
-924	PORTED	0002:0057f340 ??0?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@11Ubfloat@@@ZABV12@ABV32@55ABU4@@Z 00D6E840 f i mp_util_wad.o
-925	PORTED	0002:0057f420 ?GetEnt@?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEIXZ 00D6E920 f i mp_util_wad.o
-926	PORTED	0002:0057f450 ?CallFunction@?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEXXZ 00D6E950 f i mp_util_wad.o
+921	VERIFIED	0002:0057f170 ??0?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@1Ubfloat@@@ZABV12@ABV32@5ABU4@@Z 00D6E670 f i mp_util_wad.o	VERIFIED: IDA 0x0097F170 matches AeThreadFunctor4 entity/string/string/bfloat capture layout
+922	VERIFIED	0002:0057f240 ?GetEnt@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEIXZ 00D6E740 f i mp_util_wad.o	VERIFIED: IDA 0x0097F240 returns the captured entity handle
+923	VERIFIED	0002:0057f270 ?CallFunction@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEXXZ 00D6E770 f i mp_util_wad.o	VERIFIED: IDA 0x0097F270 copies captured strings and invokes the stored callback
+924	VERIFIED	0002:0057f340 ??0?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@11Ubfloat@@@ZABV12@ABV32@55ABU4@@Z 00D6E840 f i mp_util_wad.o	VERIFIED: IDA 0x0097F340 matches AeThreadFunctor5 entity/string/string/string/bfloat capture layout
+925	VERIFIED	0002:0057f420 ?GetEnt@?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEIXZ 00D6E920 f i mp_util_wad.o	VERIFIED: IDA 0x0097F420 returns the captured entity handle
+926	VERIFIED	0002:0057f450 ?CallFunction@?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAEXXZ 00D6E950 f i mp_util_wad.o	VERIFIED: IDA 0x0097F450 copies captured strings and invokes the stored callback
 927	VERIFIED	0002:0057f550 ??0?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@QAE@P6AXVentity@Broc@@Vstring@2@11@ZABV12@ABV32@44@Z 00D6EA50 f i mp_util_wad.o
 928	VERIFIED	0002:0057f620 ?GetEnt@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEIXZ 00D6EB20 f i mp_util_wad.o
 929	VERIFIED	0002:0057f650 ?CallFunction@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAEXXZ 00D6EB50 f i mp_util_wad.o
 930	VERIFIED	0002:0057f740 ??0?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@QAE@P6AXVentity@Broc@@Vstring@2@Uvector@2@@ZABV12@ABV32@ABU42@@Z 00D6EC40 f i mp_util_wad.o
 931	VERIFIED	0002:0057f800 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEIXZ 00D6ED00 f i mp_util_wad.o
 932	VERIFIED	0002:0057f830 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAEXXZ 00D6ED30 f i mp_util_wad.o
-933	PORTED	0002:0057f8f0 ??0?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@QAE@P6AXVentity@Broc@@Ubint@@@ZABV12@ABU3@@Z 00D6EDF0 f i mp_util_wad.o
-934	PORTED	0002:0057f990 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEIXZ 00D6EE90 f i mp_util_wad.o
-935	PORTED	0002:0057f9c0 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEXXZ 00D6EEC0 f i mp_util_wad.o
+933	VERIFIED	0002:0057f8f0 ??0?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@QAE@P6AXVentity@Broc@@Ubint@@@ZABV12@ABU3@@Z 00D6EDF0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F8F0 matches AeThreadFunctor2 entity/bint capture layout
+934	VERIFIED	0002:0057f990 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEIXZ 00D6EE90 f i mp_util_wad.o	VERIFIED: IDA 0x0097F990 returns the captured entity handle
+935	VERIFIED	0002:0057f9c0 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAEXXZ 00D6EEC0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F9C0 invokes the stored entity/bint callback
 936	VERIFIED	0002:0057fa00 ??0?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@QAE@P6AXVentity@Broc@@Uvector@2@@ZABV12@ABU32@@Z 00D6EF00 f i mp_util_wad.o
 937	VERIFIED	0002:0057fab0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEIXZ 00D6EFB0 f i mp_util_wad.o
 938	VERIFIED	0002:0057fae0 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAEXXZ 00D6EFE0 f i mp_util_wad.o
-939	PORTED	0002:0057fb40 ??0?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@QAE@P6AXVentity@Broc@@Ubbool@@@ZABV12@ABU3@@Z 00D6F040 f i mp_util_wad.o
-940	PORTED	0002:0057fbe0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEIXZ 00D6F0E0 f i mp_util_wad.o
-941	PORTED	0002:0057fc10 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEXXZ 00D6F110 f i mp_util_wad.o
+939	VERIFIED	0002:0057fb40 ??0?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@QAE@P6AXVentity@Broc@@Ubbool@@@ZABV12@ABU3@@Z 00D6F040 f i mp_util_wad.o	VERIFIED: IDA 0x0097FB40 matches AeThreadFunctor2 entity/bbool capture layout
+940	VERIFIED	0002:0057fbe0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEIXZ 00D6F0E0 f i mp_util_wad.o	VERIFIED: IDA 0x0097FBE0 returns the captured entity handle
+941	VERIFIED	0002:0057fc10 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAEXXZ 00D6F110 f i mp_util_wad.o	VERIFIED: IDA 0x0097FC10 invokes the stored entity/bbool callback
 942	VERIFIED	0002:0057fc50 ??0?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@QAE@P6AXVentity@Broc@@UHashStr@@@ZABV12@ABU3@@Z 00D6F150 f i mp_util_wad.o
 943	VERIFIED	0002:0057fcf0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEIXZ 00D6F1F0 f i mp_util_wad.o
 944	VERIFIED	0002:0057fd20 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAEXXZ 00D6F220 f i mp_util_wad.o
-945	PORTED	0002:0057fd60 ??0?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@QAE@P6AXVentity@Broc@@0Ubint@@Ubbool@@2@ZABV12@4ABU3@ABU4@6@Z 00D6F260 f i mp_util_wad.o
-946	PORTED	0002:0057fe30 ?GetEnt@?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEIXZ 00D6F330 f i mp_util_wad.o
-947	PORTED	0002:0057fe60 ?CallFunction@?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEXXZ 00D6F360 f i mp_util_wad.o
-948	PORTED	0002:0057fed0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@QAE@P6AXVentity@Broc@@Ubint@@UHashStr@@@ZABV12@ABU3@ABU4@@Z 00D6F3D0 f i mp_util_wad.o
-949	PORTED	0002:0057ff80 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEIXZ 00D6F480 f i mp_util_wad.o
-950	PORTED	0002:0057ffb0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEXXZ 00D6F4B0 f i mp_util_wad.o
-951	PORTED	0002:00580000 ??0?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@QAE@P6AXVentity@Broc@@Vstring@2@Ubbool@@Ubint@@33@ZABV12@ABV32@ABU4@ABU5@88@Z 00D6F500 f i mp_util_wad.o
-952	PORTED	0002:005800e0 ?GetEnt@?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEIXZ 00D6F5E0 f i mp_util_wad.o
-953	PORTED	0002:00580110 ?CallFunction@?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEXXZ 00D6F610 f i mp_util_wad.o
-954	PORTED	0002:005801d0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@QAE@P6AXVentity@Broc@@Ubfloat@@PBD@ZABV12@ABU3@ABQBD@Z 00D6F6D0 f i mp_util_wad.o
-955	PORTED	0002:00580280 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEIXZ 00D6F780 f i mp_util_wad.o
-956	PORTED	0002:005802b0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEXXZ 00D6F7B0 f i mp_util_wad.o
+945	VERIFIED	0002:0057fd60 ??0?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@QAE@P6AXVentity@Broc@@0Ubint@@Ubbool@@2@ZABV12@4ABU3@ABU4@6@Z 00D6F260 f i mp_util_wad.o	VERIFIED: IDA 0x0097FD60 matches AeThreadFunctor5 entity/entity/bint/bbool/bbool capture layout
+946	VERIFIED	0002:0057fe30 ?GetEnt@?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEIXZ 00D6F330 f i mp_util_wad.o	VERIFIED: IDA 0x0097FE30 returns the captured entity handle
+947	VERIFIED	0002:0057fe60 ?CallFunction@?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAEXXZ 00D6F360 f i mp_util_wad.o	VERIFIED: IDA 0x0097FE60 invokes the stored mixed-argument callback
+948	VERIFIED	0002:0057fed0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@QAE@P6AXVentity@Broc@@Ubint@@UHashStr@@@ZABV12@ABU3@ABU4@@Z 00D6F3D0 f i mp_util_wad.o	VERIFIED: IDA 0x0097FED0 matches AeThreadFunctor3 entity/bint/HashStr capture layout
+949	VERIFIED	0002:0057ff80 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEIXZ 00D6F480 f i mp_util_wad.o	VERIFIED: IDA 0x0097FF80 returns the captured entity handle
+950	VERIFIED	0002:0057ffb0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAEXXZ 00D6F4B0 f i mp_util_wad.o	VERIFIED: IDA 0x0097FFB0 invokes the stored entity/bint/HashStr callback
+951	VERIFIED	0002:00580000 ??0?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@QAE@P6AXVentity@Broc@@Vstring@2@Ubbool@@Ubint@@33@ZABV12@ABV32@ABU4@ABU5@88@Z 00D6F500 f i mp_util_wad.o	VERIFIED: IDA 0x00980000 matches AeThreadFunctor6 entity/string/bbool/bint/bint/bint capture layout
+952	VERIFIED	0002:005800e0 ?GetEnt@?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEIXZ 00D6F5E0 f i mp_util_wad.o	VERIFIED: IDA 0x009800E0 returns the captured entity handle
+953	VERIFIED	0002:00580110 ?CallFunction@?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAEXXZ 00D6F610 f i mp_util_wad.o	VERIFIED: IDA 0x00980110 invokes the stored six-argument callback
+954	VERIFIED	0002:005801d0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@QAE@P6AXVentity@Broc@@Ubfloat@@PBD@ZABV12@ABU3@ABQBD@Z 00D6F6D0 f i mp_util_wad.o	VERIFIED: IDA 0x009801D0 matches AeThreadFunctor3 entity/bfloat/const-char capture layout
+955	VERIFIED	0002:00580280 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEIXZ 00D6F780 f i mp_util_wad.o	VERIFIED: IDA 0x00980280 returns the captured entity handle
+956	VERIFIED	0002:005802b0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEXXZ 00D6F7B0 f i mp_util_wad.o	VERIFIED: IDA 0x009802B0 invokes the stored entity/bfloat/const-char callback
 957	SKIPPED	0002:00580300 ??A?$hash_map@UHashStr@@Vstring@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@std@@@std@@QAEAAVstring@Broc@@ABUHashStr@@@Z 00D6F800 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 958	SKIPPED	0002:00580410 ??Citerator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QBEPAU?$pair@$$CBUHashStr@@Ventity@Broc@@@2@XZ 00D6F910 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 959	SKIPPED	0002:00580440 ??Eiterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QAE?AV012@H@Z 00D6F940 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
