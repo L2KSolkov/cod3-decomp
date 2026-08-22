@@ -397,14 +397,14 @@ index	status	map_line
 396	SKIPPED	0002:00597c80 ?Get@crash_path_target_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D87180 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_crash_path_target
 397	PORTED	0002:00597cd0 ?IsEEDefined_crash_path_target@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D871D0 f mp_anim_wad.o	PORTED: added IDA 0x00997CD0 vehicle-node handle defined-check using key 0x6903BF83; source commit 5c607806
 398	SKIPPED	0002:00597d40 ?IsDefined@crash_path_target_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87240 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_crash_path_target
-399	PORTED	0002:00597d80 ?GetEE_detourpath@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D87280 f mp_anim_wad.o
-400	PORTED	0002:00597db0 ?Get@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D872B0 f i mp_anim_wad.o
-401	PORTED	0002:00597e00 ?IsEEDefined_detourpath@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87300 f mp_anim_wad.o
-402	PORTED	0002:00597e70 ?IsDefined@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87370 f i mp_anim_wad.o
-403	PORTED	0002:00597eb0 ?GetEE_eventwaiting@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D873B0 f mp_anim_wad.o
-404	PORTED	0002:00597ee0 ?Get@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D873E0 f i mp_anim_wad.o
-405	PORTED	0002:00597f30 ?IsEEDefined_eventwaiting@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87430 f mp_anim_wad.o
-406	PORTED	0002:00597fa0 ?IsDefined@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D874A0 f i mp_anim_wad.o
+399	PORTED	0002:00597d80 ?GetEE_detourpath@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D87280 f mp_anim_wad.o	PORTED: added IDA 0x00997D80 vehicle-node int-field accessor using key 0x10C7A560; source commit 1322879f
+400	SKIPPED	0002:00597db0 ?Get@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D872B0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_detourpath
+401	PORTED	0002:00597e00 ?IsEEDefined_detourpath@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87300 f mp_anim_wad.o	PORTED: added IDA 0x00997E00 vehicle-node int defined-check using key 0x10C7A560; source commit 1322879f
+402	SKIPPED	0002:00597e70 ?IsDefined@detourpath_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87370 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_detourpath
+403	PORTED	0002:00597eb0 ?GetEE_eventwaiting@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D873B0 f mp_anim_wad.o	PORTED: added IDA 0x00997EB0 vehicle-node int-field accessor using key 0x2E7BC275; source commit 1322879f
+404	SKIPPED	0002:00597ee0 ?Get@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D873E0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_eventwaiting
+405	PORTED	0002:00597f30 ?IsEEDefined_eventwaiting@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87430 f mp_anim_wad.o	PORTED: added IDA 0x00997F30 vehicle-node int defined-check using key 0x2E7BC275; source commit 1322879f
+406	SKIPPED	0002:00597fa0 ?IsDefined@eventwaiting_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D874A0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_eventwaiting
 407	PORTED	0002:00597fe0 ?GetEE_derailed@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D874E0 f mp_anim_wad.o
 408	PORTED	0002:00598010 ?Get@derailed_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D87510 f i mp_anim_wad.o
 409	PORTED	0002:00598060 ?IsEEDefined_derailed@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87560 f mp_anim_wad.o
