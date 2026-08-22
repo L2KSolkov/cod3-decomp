@@ -248,13 +248,13 @@ index	status	map_line
 247	FIXED	0002:0053b200 ??Ybfloat@@QAEMM@Z 00D2A700 f i mp_util_wad.o	FIXED: IDA asserts, adds float to mVal, and returns double mVal
 248	VERIFIED	0002:0053b250 ?AssertDefined@bfloat@@QBEXXZ 00D2A750 f i mp_util_wad.o	VERIFIED: IDA function is an empty no-op
 249	VERIFIED	0002:0053b270 ?PlayKillerWarning@_mp_audio@@YAXVentity@Broc@@00Ubint@@1@Z 00D2A770 f mp_util_wad.o	VERIFIED: IDA matches team gate, random chance, player-state/distance scan, vehicle and weapon sound selection, and effect playback
-250	PORTED	0002:0053bd20 ??9bint@@QBE_NH@Z 00D2B220 f i mp_util_wad.o	PORTED: IDA compares bint mVal against int and returns BOOL
-251	PORTED	0002:0053bd50 ??D@YA?AUbfloat@@U0@0@Z 00D2B250 f i mp_util_wad.o	PORTED: IDA converts both bfloat operands, multiplies, and constructs result
-252	PORTED	0002:0053bda0 ??M@YA?AUbbool@@MUbfloat@@@Z 00D2B2A0 f i mp_util_wad.o	PORTED: IDA compares bfloat value greater than float into bbool
-253	PORTED	0002:0053bdf0 ?Get@playerState_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D2B2F0 f i mp_util_wad.o	PORTED: IDA forwards playerState handle and constructs bint result
-254	PORTED	0002:0053be30 ?IsPlayer@Broc@@YAHABVentity@1@@Z 00D2B330 f i mp_util_wad.o	PORTED: IDA forwards entity handle to mEntityIsPlayer
-255	PORTED	0002:0053be60 ?IsVehicle@Broc@@YAHABVentity@1@@Z 00D2B360 f i mp_util_wad.o	PORTED: IDA forwards entity handle to mEntityIsVehicle
-256	PORTED	0002:0053be90 ?Code_GetWeaponName@Broc@@YAXHAAVstring@1@@Z 00D2B390 f i mp_util_wad.o	PORTED: IDA forwards weapon index and string reference to mGetWeaponName
+250	VERIFIED	0002:0053bd20 ??9bint@@QBE_NH@Z 00D2B220 f i mp_util_wad.o	VERIFIED: IDA 0x0093BD20 compares bint.mVal against int rhs
+251	VERIFIED	0002:0053bd50 ??D@YA?AUbfloat@@U0@0@Z 00D2B250 f i mp_util_wad.o	VERIFIED: IDA 0x0093BD50 converts both bfloat operands, multiplies, and constructs bfloat
+252	VERIFIED	0002:0053bda0 ??M@YA?AUbbool@@MUbfloat@@@Z 00D2B2A0 f i mp_util_wad.o	VERIFIED: IDA 0x0093BDA0 compares rhs.mVal greater than float lhs and constructs bbool
+253	VERIFIED	0002:0053bdf0 ?Get@playerState_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D2B2F0 f i mp_util_wad.o	VERIFIED: IDA 0x0093BDF0 forwards mHandle to persistent playerState getter and constructs bint
+254	VERIFIED	0002:0053be30 ?IsPlayer@Broc@@YAHABVentity@1@@Z 00D2B330 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE30 gets the entity handle and forwards it to mEntityIsPlayer
+255	VERIFIED	0002:0053be60 ?IsVehicle@Broc@@YAHABVentity@1@@Z 00D2B360 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE60 gets the entity handle and forwards it to mEntityIsVehicle
+256	VERIFIED	0002:0053be90 ?Code_GetWeaponName@Broc@@YAXHAAVstring@1@@Z 00D2B390 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE90 forwards weaponIndex and the output string to mGetWeaponName
 257	VERIFIED	0002:0053bec0 ?Code_GetTeamGame@Broc@@YA_NXZ 00D2B3C0 f i mp_util_wad.o
 258	VERIFIED	0002:0053bee0 ?PlayKillerCredit@_mp_audio@@YAXVentity@Broc@@@Z 00D2B3E0 f mp_util_wad.o
 259	VERIFIED	0002:0053c240 ?player_dying_sounds@_mp_audio@@YAXVentity@Broc@@@Z 00D2B740 f mp_util_wad.o
