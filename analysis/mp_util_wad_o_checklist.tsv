@@ -502,29 +502,29 @@ index	status	map_line
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
 502	PORTED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o	PORTED: IDA 0x0094E2A0 forwards the const __int16& to m_entity_set_player_ctf_has_flag and returns it
 503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: IDA 0x0094E2E0 copies pLevel->_base.entity (or null) into SwitchToSecondarySpawns__functor
-504	PORTED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o
-505	PORTED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o
+504	VERIFIED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o	VERIFIED: IDA directly forwards teamid and visible to mSetCompassVisibilty
+505	FIXED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 506	VERIFIED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o
-507	PORTED	0002:0054eaa0 ?Code_SendGameStateCTF@Broc@@YAXVentity@1@ABUvector@1@10110@Z 00D3DFA0 f i mp_util_wad.o
+507	PORTED	0002:0054eaa0 ?Code_SendGameStateCTF@Broc@@YAXVentity@1@ABUvector@1@10110@Z 00D3DFA0 f i mp_util_wad.o	PORTED: added the IDA-backed vector-copy and mSendGameStateCTF forward
 508	FIXED	0002:0054eb60 ?CallbackNextRound@_mp_ctf@@YAXXZ 00D3E060 f mp_util_wad.o	FIXED: IDA 0x0094EB60 notifies pLevel->_base.entity (or null)
 509	VERIFIED	0002:0054ebf0 ?CallbackHostOptionsChanged@_mp_ctf@@YAXH@Z 00D3E0F0 f mp_util_wad.o
 510	VERIFIED	0002:0054ec30 ?CallbackGameState@_mp_ctf@@YAXHHHHHHHHHHHHH@Z 00D3E130 f mp_util_wad.o
 511	VERIFIED	0002:0054ec90 ?CallbackShowFlagHint@_mp_ctf@@YAHXZ 00D3E190 f mp_util_wad.o
 512	VERIFIED	0002:0054ecc0 ?SwitchToSecondarySpawns@_mp_ctf@@YAXVentity@Broc@@@Z 00D3E1C0 f mp_util_wad.o
-513	PORTED	0002:0054ed20 ?vLerp@_mp_ctf@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D3E220 f mp_util_wad.o
-514	PORTED	0002:0054ee90 ?IsFlagAtBase@_mp_ctf@@YA?AUbbool@@Ventity@Broc@@@Z 00D3E390 f mp_util_wad.o
+513	VERIFIED	0002:0054ed20 ?vLerp@_mp_ctf@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D3E220 f mp_util_wad.o	VERIFIED: IDA matches component-wise linear interpolation and result construction
+514	VERIFIED	0002:0054ee90 ?IsFlagAtBase@_mp_ctf@@YA?AUbbool@@Ventity@Broc@@@Z 00D3E390 f mp_util_wad.o	VERIFIED: IDA matches goal/flag origin subtraction, z suppression, and 0.15 threshold
 515	PORTED	0002:0054ef50 ?Length@@YAMABUvector@Broc@@@Z 00D3E450 f i mp_util_wad.o	PORTED: IDA 0x0094EF50 direct mVecLength forward
 516	VERIFIED	0002:0054ef80 ?TeamObjectiveUpdate@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3E480 f mp_util_wad.o
-517	PORTED	0002:0054fa60 ??8entity@Broc@@QBE_NABV01@@Z 00D3EF60 f i mp_util_wad.o
-518	PORTED	0002:0054faa0 ?Get@ctf_has_flag_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D3EFA0 f i mp_util_wad.o	PORTED: IDA 0x0094FAA0 returns m_entity_get_player_ctf_has_flag
+517	FIXED	0002:0054fa60 ??8entity@Broc@@QBE_NABV01@@Z 00D3EF60 f i mp_util_wad.o	FIXED: added the IDA-matching Broc::entity member operator==
+518	VERIFIED	0002:0054faa0 ?Get@ctf_has_flag_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D3EFA0 f i mp_util_wad.o	VERIFIED: IDA returns m_entity_get_player_ctf_has_flag from the stored handle
 519	VERIFIED	0002:0054fad0 ?ObjectiveUpdater@_mp_ctf@@YAXVentity@Broc@@@Z 00D3EFD0 f mp_util_wad.o
 520	VERIFIED	0002:0054fdf0 ?CallbackPlayerKilled@_mp_ctf@@YAXVentity@Broc@@00HHH@Z 00D3F2F0 f mp_util_wad.o
 521	VERIFIED	0002:0054fee0 ?CallbackDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F3E0 f mp_util_wad.o
 522	VERIFIED	0002:0054ff10 ?CallbackPlayerLeave@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F410 f mp_util_wad.o
 523	VERIFIED	0002:0054ffa0 ?CallbackGameStateCTF@_mp_ctf@@YAXUvector@Broc@@0Ventity@3@001@Z 00D3F4A0 f mp_util_wad.o
 524	VERIFIED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o
-525	PORTED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	PORTED: IDA 0x00950B10 direct mDropItem2 forward
-526	PORTED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o
+525	VERIFIED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	VERIFIED: IDA directly forwards item, netID, position, angles, and velocity to mDropItem2
+526	PORTED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o	PORTED: added the IDA-backed entity-handle and mTakeWeapon forward
 527	PORTED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	PORTED: IDA 0x00950B80 forwards entity handle to mSwitchToLastWeapon
 528	VERIFIED	0002:00550bb0 ?UpdateFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@1@Z 00D400B0 f mp_util_wad.o
 529	VERIFIED	0002:00550bf0 ?LaunchFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@11@Z 00D400F0 f mp_util_wad.o
