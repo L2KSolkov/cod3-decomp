@@ -48,8 +48,8 @@ index	status	map_line
 47	VERIFIED	0002:0046e510 ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z 00C5DA10 f nal_generic.o
 48	FIXED	0002:0046e660 ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z 00C5DB60 f nal_generic.o	FIXED: IDA 0x0086E660 initializes stack-or-heap pose storage and constructs each pose component
 49	FIXED	0002:0046e740 ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z 00C5DC40 f nal_generic.o	FIXED: IDA 0x0086E740 allocates/constructs the destination pose and conditionally copies pose bytes
-50	PORTED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o
-51	PORTED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o
+50	FIXED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o	FIXED: IDA 0x0086E880 resolves parent bone indices and composes model orientation recursively
+51	FIXED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o	FIXED: IDA 0x0086E9B0 delegates through the bone handle index
 52	FIXED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o	FIXED: IDA 0x0086E9D0 initializes the base instance, pose, offset map, same-skeleton masks, and cross-skeleton track mapping
 53	FIXED	0002:0046ef30 ?TouchDecompCache@nalGenericInstance@nalGeneric@@QAEXMMHI@Z 00C5E430 f nal_generic.o	FIXED: IDA 0x0086EF30 wraps/clamps normalized times, updates PrevT, and touches required frame cache blocks
 54	PORTED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o	PORTED: declaration remains; direct IDA float-pose body is still pending
