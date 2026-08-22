@@ -1221,36 +1221,36 @@ index	status	map_line
 1220	SKIPPED	0002:000e4760 ?end@?$ae_sized_array@PBVDbTable@@$0BA@@@QAE?AViterator@1@XZ 008D3C60 f i core.o SKIPPED: ae_sized_array<T,N> template instantiation; shared end() is already implemented
 1221	SKIPPED	0002:000e4780 ??0?$ae_fixed_string@$0IA@E@@QAE@PBD@Z 008D3C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1222	SKIPPED	0002:000e47b0 ??Diterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEPAVRumbleEffectInstance@@XZ 008D3CB0 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared operator*() is already implemented
-1223	PORTED	0002:000e47c0 ??9iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV01@@Z 008D3CC0 f i core.o
-1224	PORTED	0002:000e47f0 ??Dconst_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBEPBVRumbleEffectInstance@@XZ 008D3CF0 f i core.o
-1225	PORTED	0002:000e4800 ??9const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV01@@Z 008D3D00 f i core.o
+1223	SKIPPED	0002:000e47c0 ??9iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV01@@Z 008D3CC0 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared operator!=() is already implemented
+1224	SKIPPED	0002:000e47f0 ??Dconst_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBEPBVRumbleEffectInstance@@XZ 008D3CF0 f i core.o SKIPPED: reserved_dlist<T> const_iterator template instantiation; shared operator*() is already implemented
+1225	SKIPPED	0002:000e4800 ??9const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV01@@Z 008D3D00 f i core.o SKIPPED: reserved_dlist<T> const_iterator template instantiation; shared operator!=() is already implemented
 1226	VERIFIED	0002:000e4830 ??0?$ae_formatted_string@$0EAA@G@@QAA@PBDZZ 008D3D30 f i core.o
 1227	SKIPPED	0002:000e4890 ??0?$ae_fixed_string@$0BAA@G@@QAE@PBD@Z 008D3D90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1228	SKIPPED	0002:000e48d0 ?substr@?$ae_fixed_string@$0BAA@G@@QBEAAV1@AAV1@HH@Z 008D3DD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1229	PORTED	0002:000e4920 ??0?$ae_sized_array_base@UPoolConfig@PoolAllocator@@$0BA@@@QAE@XZ 008D3E20 f i core.o
+1229	SKIPPED	0002:000e4920 ??0?$ae_sized_array_base@UPoolConfig@PoolAllocator@@$0BA@@@QAE@XZ 008D3E20 f i core.o SKIPPED: ae_sized_array_base<T,N> template instantiation; shared constructor is already implemented
 1230	SKIPPED	0002:000e4960 ??0?$_String_val@DV?$allocator@D@std@@@std@@IAE@V?$allocator@D@1@@Z 008D3E60 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1231	PORTED	0002:000e4970 ?find@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@PAVEntityNotify@@@Z 008D3E70 f i core.o
-1232	PORTED	0002:000e49c0 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@AAV1@@Z 008D3EC0 f i core.o
-1233	PORTED	0002:000e4a10 ??0const_iterator@?$reserved_dlist@VEntityNotify@@@@QAE@ABV1@@Z 008D3F10 f i core.o
-1234	PORTED	0002:000e4a60 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@AAV1@@Z 008D3F60 f i core.o
-1235	PORTED	0002:000e4ab0 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@AAV1@@Z 008D3FB0 f i core.o
-1236	PORTED	0002:000e4b00 ?Rmv@?$BitSet@$0DB@@@QAEXH@Z 008D4000 f i core.o
-1237	PORTED	0002:000e4b90 ?Add@?$BitSet@$0CAA@@@QAEXH@Z 008D4090 f i core.o
-1238	PORTED	0002:000e4c20 ?Rmv@?$BitSet@$0CAA@@@QAEXH@Z 008D4120 f i core.o
-1239	PORTED	0002:000e4cb0 ?DereferenceHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVSound@SoundDevice@@VHandle@@@Z 008D41B0 f i core.o
-1240	PORTED	0002:000e4cf0 ?find@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@PAVRumbleEffectInstance@@@Z 008D41F0 f i core.o
-1241	PORTED	0002:000e4d40 ?destroy_all@?$ae_vector@USmokeGrenadeInfo@@@@AAEXXZ 008D4240 f i core.o
+1231	SKIPPED	0002:000e4970 ?find@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@PAVEntityNotify@@@Z 008D3E70 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared find() is already implemented
+1232	SKIPPED	0002:000e49c0 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@AAV1@@Z 008D3EC0 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared copy constructor is already implemented
+1233	SKIPPED	0002:000e4a10 ??0const_iterator@?$reserved_dlist@VEntityNotify@@@@QAE@ABV1@@Z 008D3F10 f i core.o SKIPPED: reserved_dlist<T> const_iterator template instantiation; shared copy constructor is already implemented
+1234	SKIPPED	0002:000e4a60 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@AAV1@@Z 008D3F60 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared copy constructor is already implemented
+1235	SKIPPED	0002:000e4ab0 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@AAV1@@Z 008D3FB0 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared copy constructor is already implemented
+1236	SKIPPED	0002:000e4b00 ?Rmv@?$BitSet@$0DB@@@QAEXH@Z 008D4000 f i core.o SKIPPED: BitSet<N> template instantiation; shared Rmv() is already implemented
+1237	SKIPPED	0002:000e4b90 ?Add@?$BitSet@$0CAA@@@QAEXH@Z 008D4090 f i core.o SKIPPED: BitSet<N> template instantiation; shared Add() is already implemented
+1238	SKIPPED	0002:000e4c20 ?Rmv@?$BitSet@$0CAA@@@QAEXH@Z 008D4120 f i core.o SKIPPED: BitSet<N> template instantiation; shared Rmv() is already implemented
+1239	VERIFIED	0002:000e4cb0 ?DereferenceHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVSound@SoundDevice@@VHandle@@@Z 008D41B0 f i core.o VERIFIED: existing SoundFromHandle path matches IDA mask, capacity check, key check, and object return
+1240	SKIPPED	0002:000e4cf0 ?find@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@PAVRumbleEffectInstance@@@Z 008D41F0 f i core.o SKIPPED: reserved_dlist<T> template instantiation; shared find() is already implemented
+1241	SKIPPED	0002:000e4d40 ?destroy_all@?$ae_vector@USmokeGrenadeInfo@@@@AAEXXZ 008D4240 f i core.o SKIPPED: ae_vector<T> template instantiation; shared destroy_all() is already implemented
 1242	SKIPPED	0002:000e4d70 ??C?$IVPointer@VDbTableSet@@@@QBEPBVDbTableSet@@XZ 008D4270 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1243	SKIPPED	0002:000e4d90 ??0?$ae_fixed_string@$0IA@E@@QAE@ABV0@@Z 008D4290 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1244	SKIPPED	0002:000e4dd0 ??0?$_Vector_val@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@IAE@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@1@@Z 008D42D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1245	PORTED	0002:000e4de0 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@AAV1@@Z 008D42E0 f i core.o
-1246	PORTED	0002:000e4e30 ??0const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@ABV1@@Z 008D4330 f i core.o
-1247	PORTED	0002:000e4e80 ??0iterator@?$BitSet@$0CAA@@@QAE@ABV1@@Z 008D4380 f i core.o
+1245	SKIPPED	0002:000e4de0 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@AAV1@@Z 008D42E0 f i core.o SKIPPED: reserved_dlist<T> iterator template instantiation; shared copy constructor is already implemented
+1246	SKIPPED	0002:000e4e30 ??0const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@ABV1@@Z 008D4330 f i core.o SKIPPED: reserved_dlist<T> const_iterator template instantiation; shared copy constructor is already implemented
+1247	SKIPPED	0002:000e4e80 ??0iterator@?$BitSet@$0CAA@@@QAE@ABV1@@Z 008D4380 f i core.o SKIPPED: BitSet<N> iterator template instantiation; shared copy constructor is already implemented
 1248	SKIPPED	0002:000e4ec0 ??Diterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@XZ 008D43C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1249	SKIPPED	0002:000e4ed0 ??Hiterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBE?AV012@H@Z 008D43D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1250	SKIPPED	0002:000e4ef0 ?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z 008D43F0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1251	PORTED	0002:000e4f20 ?Clear@?$BitSet@$0CAA@@@QAEXXZ 008D4420 f i core.o
-1252	PORTED	0002:000e4f40 ??S?$BitSet@$0CAA@@@QBE?AV0@XZ 008D4440 f i core.o
+1251	SKIPPED	0002:000e4f20 ?Clear@?$BitSet@$0CAA@@@QAEXXZ 008D4420 f i core.o SKIPPED: BitSet<N> template instantiation; shared Clear() is already implemented
+1252	SKIPPED	0002:000e4f40 ??S?$BitSet@$0CAA@@@QBE?AV0@XZ 008D4440 f i core.o SKIPPED: BitSet<N> template instantiation; shared operator~() is already implemented
 1253	PORTED	0002:000e4f90 ?begin@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D4490 f i core.o
 1254	PORTED	0002:000e4fd0 ?end@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D44D0 f i core.o
 1255	SKIPPED	0002:000e4ff0 ?max_size@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008D44F0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
