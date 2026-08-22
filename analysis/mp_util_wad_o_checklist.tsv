@@ -444,22 +444,22 @@ index	status	map_line
 443	PORTED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o	PORTED: added global int*bint multiplication
 444	VERIFIED	0002:00549b60 ?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D39060 f mp_util_wad.o	VERIFIED: IDA implementation is GetTime plus 20000
 445	VERIFIED	0002:00549bb0 ?UpdateSpectateCritical@_mp_common@@YAXVentity@Broc@@@Z 00D390B0 f mp_util_wad.o
-446	PORTED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mSetSpectateSeconds
-447	PORTED	0002:00549ee0 ?UpdateSpectateCriticalGoingToDie__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D393E0 f i mp_util_wad.o
+446	VERIFIED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	VERIFIED: Existing implementation matches the IDA direct forward to gBrocAPI.mSetSpectateSeconds
+447	FIXED	0002:00549ee0 ?UpdateSpectateCriticalGoingToDie__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D393E0 f i mp_util_wad.o	FIXED: corrected return type to AeThreadFunctor1<Broc::entity>* per IDA constructor result
 448	VERIFIED	0002:00549f80 ?UpdateSpectateCriticalGoingToDie@_mp_common@@YAXVentity@Broc@@@Z 00D39480 f mp_util_wad.o
 449	PORTED	0002:0054a2d0 ?UpdateSpectateDead@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D397D0 f mp_util_wad.o
-450	PORTED	0002:0054a8a0 ?Code_IsMenuOpen@Broc@@YAHABVstring@1@H@Z 00D39DA0 f i mp_util_wad.o	PORTED: IDA direct forward to mIsMenuOpen with const string reference ABI
+450	VERIFIED	0002:0054a8a0 ?Code_IsMenuOpen@Broc@@YAHABVstring@1@H@Z 00D39DA0 f i mp_util_wad.o	VERIFIED: Existing implementation matches the IDA direct forward to mIsMenuOpen with const string reference ABI
 451	VERIFIED	0002:0054a8d0 ?UpdateSpectateSpawn@_mp_common@@YAXVentity@Broc@@@Z 00D39DD0 f mp_util_wad.o
-452	PORTED	0002:0054aa60 ?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D39F60 f mp_util_wad.o
-453	PORTED	0002:0054aa80 ?ProgressBarCreate@_mp_common@@YAXUbint@@@Z 00D39F80 f mp_util_wad.o
-454	PORTED	0002:0054abd0 ??4x_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A0D0 f i mp_util_wad.o
-455	PORTED	0002:0054ac10 ??4y_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A110 f i mp_util_wad.o
-456	PORTED	0002:0054ac50 ??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z 00D3A150 f i mp_util_wad.o
-457	PORTED	0002:0054ac90 ??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z 00D3A190 f i mp_util_wad.o
-458	PORTED	0002:0054acd0 ?NewHudElem@@YA?AVhudelem@Broc@@H@Z 00D3A1D0 f i mp_util_wad.o
-459	PORTED	0002:0054ad10 ?SetShader@@YAXABVhudelem@Broc@@ABVstring@2@HH@Z 00D3A210 f i mp_util_wad.o
-460	PORTED	0002:0054ad50 ?ProgressBarUpdate@_mp_common@@YAXUbfloat@@0@Z 00D3A250 f mp_util_wad.o
-461	PORTED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o
+452	VERIFIED	0002:0054aa60 ?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D39F60 f mp_util_wad.o	VERIFIED: Existing no-op body matches the IDA function
+453	FIXED	0002:0054aa80 ?ProgressBarCreate@_mp_common@@YAXUbint@@@Z 00D39F80 f mp_util_wad.o	FIXED: corrected HUD proxy assignments and exact NewHudElem/SetShader calls
+454	PORTED	0002:0054abd0 ??4x_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A0D0 f i mp_util_wad.o	PORTED: added IDA-backed HUD x property proxy operator
+455	PORTED	0002:0054ac10 ??4y_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A110 f i mp_util_wad.o	PORTED: added IDA-backed HUD y property proxy operator
+456	PORTED	0002:0054ac50 ??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z 00D3A150 f i mp_util_wad.o	PORTED: added IDA-backed HUD sort property proxy operator
+457	PORTED	0002:0054ac90 ??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z 00D3A190 f i mp_util_wad.o	PORTED: added IDA-backed HUD alpha property proxy operator
+458	PORTED	0002:0054acd0 ?NewHudElem@@YA?AVhudelem@Broc@@H@Z 00D3A1D0 f i mp_util_wad.o	PORTED: added exact global HUD allocation wrapper
+459	PORTED	0002:0054ad10 ?SetShader@@YAXABVhudelem@Broc@@ABVstring@2@HH@Z 00D3A210 f i mp_util_wad.o	PORTED: added exact global shader wrapper
+460	FIXED	0002:0054ad50 ?ProgressBarUpdate@_mp_common@@YAXUbfloat@@0@Z 00D3A250 f mp_util_wad.o	FIXED: corrected call to the exact global ScaleOverTime wrapper
+461	PORTED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o	PORTED: added exact global scale wrapper
 462	VERIFIED	0002:0054ae00 ?ProgressBarDelete@_mp_common@@YAXXZ 00D3A300 f mp_util_wad.o
 463	VERIFIED	0002:0054ae30 ?EndRound@_mp_common@@YAXW4EEndRoundCondition@@Vstring@Broc@@@Z 00D3A330 f mp_util_wad.o
 464	PORTED	0002:0054aec0 ?HasBothTeams@_mp_common@@YA?AUbbool@@XZ 00D3A3C0 f mp_util_wad.o
