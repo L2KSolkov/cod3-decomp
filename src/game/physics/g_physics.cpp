@@ -868,6 +868,10 @@ public:
     void set_throttle(float throttle);  // ?set_throttle@rb_vehicle@@QAEXM@Z (inline)
     void set_hand_brake(float braking);  // ?set_hand_brake@rb_vehicle@@QAEXM@Z (inline)
     void set_steer_factor(float steer_factor);  // ?set_steer_factor@rb_vehicle@@QAEXM@Z (inline)
+    Entity* get_owner();  // ?get_owner@rb_vehicle@@QAEPAVEntity@@XZ
+    void set_script_brake(float brake);  // ?set_script_brake@rb_vehicle@@QAEXM@Z
+    void set_script_target(const math::Position3& goal_position,
+                           float goal_radius, float goal_speed);  // ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z
     void update_from_network(const math::Position3& position,
                              const math::Position3& angles,
                              const math::Dir3& vel,
@@ -4457,6 +4461,26 @@ void rb_vehicle::debug_render()
             }
         }
     }
+}
+
+// ea: 0x005E9FD0
+Entity* rb_vehicle::get_owner()
+{
+    return m_owner;
+}
+
+// ea: 0x005E9FE0
+void rb_vehicle::set_script_brake(float brake)
+{
+    m_script_brake = brake;
+}
+
+// ea: 0x005EA000
+void rb_vehicle::set_script_target(const math::Position3& goal_position,
+                                   float goal_radius, float goal_speed)
+{
+    mVehicleController.SetScriptTarget(*this, goal_position, goal_radius,
+                                       goal_speed);
 }
 
 // ea: 0x6F2910 (inline COMDAT)
