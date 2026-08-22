@@ -13352,7 +13352,9 @@ void CallbackDebugRender() {
         if (Broc::IsDefined(flag)) {
             Broc::entity trigger = *mp_util_wad::GetEE_trigger(flag);
             Broc::vector triggerOrigin;
-            mp_util_wad::entity_get_origin(&triggerOrigin, trigger);
+            Broc::entity::__unnamed::origin_struct triggerOriginField = {
+                trigger.GetHandle()};
+            triggerOriginField.Get(&triggerOrigin);
             Broc::Code_DebugRenderSphere(&triggerOrigin, 10.0f, &green, 1.0f);
             Broc::Code_DebugRenderEntityBBox(trigger, &green, 0.4f);
             RenderFlagInfo(flag, x, y);
@@ -13363,8 +13365,9 @@ void CallbackDebugRender() {
 
     if (Broc::IsDefined(mp_util_wad::pLevel->base_allies)) {
         Broc::vector origin;
-        mp_util_wad::entity_get_origin(&origin,
-                                       mp_util_wad::pLevel->base_allies);
+        Broc::entity::__unnamed::origin_struct originField = {
+            mp_util_wad::pLevel->base_allies.GetHandle()};
+        originField.Get(&origin);
         Broc::Code_DebugRenderSphere(&origin, 10.0f, &green, 1.0f);
         Broc::Code_DebugRenderEntityBBox(mp_util_wad::pLevel->base_allies,
                                          &green, 0.4f);
@@ -13373,8 +13376,9 @@ void CallbackDebugRender() {
     Broc::vector red(1.0f, 0.0f, 0.0f);
     if (Broc::IsDefined(mp_util_wad::pLevel->base_axis)) {
         Broc::vector origin;
-        mp_util_wad::entity_get_origin(&origin,
-                                       mp_util_wad::pLevel->base_axis);
+        Broc::entity::__unnamed::origin_struct originField = {
+            mp_util_wad::pLevel->base_axis.GetHandle()};
+        originField.Get(&origin);
         Broc::Code_DebugRenderSphere(&origin, 10.0f, &red, 1.0f);
         Broc::Code_DebugRenderEntityBBox(mp_util_wad::pLevel->base_axis,
                                          &red, 0.4f);
@@ -13391,7 +13395,9 @@ void CallbackDebugRender() {
         temp += " State: ";
 
         Broc::bint playerState;
-        mp_util_wad::entity_get_playerState(&playerState, player);
+        Broc::entity::__unnamed::playerState_struct playerStateField = {
+            player.GetHandle()};
+        playerStateField.Get(&playerState);
         switch ((int)playerState) {
         case 0: temp += " JOINING "; break;
         case 1: temp += " SPECTATING "; break;
@@ -13418,9 +13424,9 @@ void CallbackDebugRender() {
         }
 
         temp += " Icon: ";
-        temp += mp_util_wad::entity_get_ctf_has_flag(player) != 0
-                    ? "true"
-                    : "false";
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlagField = {
+            player.GetHandle()};
+        temp += ctfHasFlagField.Get() != 0 ? "true" : "false";
         Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
         y += (int)y_inc;
         ++playerIndex;
