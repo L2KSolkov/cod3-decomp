@@ -1286,8 +1286,8 @@ index	status	map_line
 1285	SKIPPED	0002:000e5d10 ??_EDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1286	VERIFIED	0002:000e5d40 ??1DestructibleBankManager@@UAE@XZ 008D5240 f i core.o
 1287	VERIFIED	0002:000e5d50 ?DereferenceHandle@EffectEventSys@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D5250 f i core.o  VERIFIED: existing handle mask, key validation, and object return match IDA
-1288	PORTED	0002:000e5da0 ?Clear@CachedQuery@EffectEventSys@@QAEXXZ 008D52A0 f i core.o  PORTED: exact IDA bitmap reset
-1289	PORTED	0002:000e5dc0 ?Clear@PendingQuery@EffectEventSys@@QAEXXZ 008D52C0 f i core.o  PORTED: exact IDA pending-query reset
+1288	VERIFIED	0002:000e5da0 ?Clear@CachedQuery@EffectEventSys@@QAEXXZ 008D52A0 f i core.o  VERIFIED: existing bitmap reset matches IDA
+1289	VERIFIED	0002:000e5dc0 ?Clear@PendingQuery@EffectEventSys@@QAEXXZ 008D52C0 f i core.o  VERIFIED: existing pending-query reset matches IDA
 1290	VERIFIED	0002:000e5e20 ??0PhysDataBankManager@@QAE@XZ 008D5320 f i core.o
 1291	SKIPPED	0002:000e5e40 ??_GPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1292	SKIPPED	0002:000e5e40 ??_EPhysDataBankManager@@UAEPAXI@Z 008D5340 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -1305,17 +1305,17 @@ index	status	map_line
 1304	SKIPPED	0002:000e60b0 ??_GConfigStringManager@@EAEPAXI@Z 008D55B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1305	SKIPPED	0002:000e60e0 ??_GSTBManager@@EAEPAXI@Z 008D55E0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1306	SKIPPED	0002:000e60e0 ??_ESTBManager@@EAEPAXI@Z 008D55E0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1307	PORTED	0002:000e6110 ?begin@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D5610 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
-1308	PORTED	0002:000e6160 ?begin@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D5660 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
-1309	PORTED	0002:000e61b0 ?erase@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D56B0 f i core.o  PORTED: exact IDA unlink and assertion path
-1310	PORTED	0002:000e6250 ?begin@?$reserved_dlist@VEntityNotify@@@@QBE?AVconst_iterator@1@XZ 008D5750 f i core.o  PORTED: exact IDA const-iterator initialization and sentinel handling
+1307	VERIFIED	0002:000e6110 ?begin@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D5610 f i core.o  VERIFIED: shared begin body matches IDA iterator initialization and sentinel handling
+1308	VERIFIED	0002:000e6160 ?begin@?$reserved_dlist@VEntityNotify@@@@QAE?AViterator@1@XZ 008D5660 f i core.o  VERIFIED: shared begin body matches IDA iterator initialization and sentinel handling
+1309	VERIFIED	0002:000e61b0 ?erase@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D56B0 f i core.o  VERIFIED: shared erase body matches IDA unlink and assertion path
+1310	VERIFIED	0002:000e6250 ?begin@?$reserved_dlist@VEntityNotify@@@@QBE?AVconst_iterator@1@XZ 008D5750 f i core.o  VERIFIED: shared const begin body matches IDA iterator initialization and sentinel handling
 1311	VERIFIED	0002:000e62a0 ?begin@?$reserved_dlist@VEntityNotifySet@@@@QAE?AViterator@1@XZ 008D57A0 f i core.o  VERIFIED: shared begin body matches IDA sentinel handling
 1312	VERIFIED	0002:000e62f0 ?erase@?$reserved_dlist@VEntityNotifySet@@@@QAEXPAVEntityNotifySet@@@Z 008D57F0 f i core.o  VERIFIED: shared erase body matches IDA assertion and unlink sequence
 1313	VERIFIED	0002:000e6390 ??0?$BitSet@$0EA@@@QAE@XZ 008D5890 f i core.o
 1314	VERIFIED	0002:000e63b0 ??0?$BitSet@$0PP@@@QAE@XZ 008D58B0 f i core.o
 1315	VERIFIED	0002:000e63e0 ??0?$BitSet@$0DB@@@QAE@XZ 008D58E0 f i core.o
-1316	PORTED	0002:000e6400 ?Set@?$BitSet@$0DB@@@QAEXH_N@Z 008D5900 f i core.o  PORTED: exact IDA Add/Rmv dispatch
-1317	PORTED	0002:000e6430 ?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z 008D5930 f i core.o
+1316	SKIPPED	0002:000e6400 ?Set@?$BitSet@$0DB@@@QAEXH_N@Z 008D5900 f i core.o SKIPPED: BitSet<N> template instantiation; shared Set() is already implemented
+1317	VERIFIED	0002:000e6430 ?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z 008D5930 f i core.o VERIFIED: existing handle release, generation increment, free-index update, and warning match IDA
 1318	VERIFIED	0002:000e6540 ??D?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A40 f i core.o
 1319	VERIFIED	0002:000e6580 ??C?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A80 f i core.o
 1320	PORTED	0002:000e65c0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D5AC0 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
