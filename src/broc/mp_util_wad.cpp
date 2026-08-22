@@ -192,7 +192,7 @@ AeThreadFunctor* finish_starting_round__functor(Broc::entity self, Broc::bbool f
 AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
                                                 Broc::vector position);
 AeThreadFunctor* NewHost__functor(Broc::entity self);
-void* LocalPlayerIntermission__functor(Broc::entity player);
+AeThreadFunctor1<Broc::entity>* LocalPlayerIntermission__functor(Broc::entity player);
 void* RunFrame__functor(Broc::entity selfLevel);
 }
 
@@ -14344,7 +14344,7 @@ AeThreadFunctor* NewHost__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(NewHost, self);
 }
-void* LocalPlayerIntermission__functor(Broc::entity player) {
+AeThreadFunctor1<Broc::entity>* LocalPlayerIntermission__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;

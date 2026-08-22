@@ -142,6 +142,18 @@ float RandomFloat(float fMax)
     return gBrocAPI.mMathsRandomFloat(fMax);
 }
 
+// ea: 0x0094C9F0. IDA forwards the player stat index to the runtime.
+__int16 Code_GetPlayerStat(Broc::entity player, int index)
+{
+    return gBrocAPI.mGetPlayerStat(player.GetHandle(), (unsigned int)index);
+}
+
+// Runtime export used by _mp_common::GetWinningTeam.
+int Code_GetPlayerTotalScore(Broc::entity player)
+{
+    return gBrocAPI.mGetPlayerTotalScore(player.GetHandle());
+}
+
 // ea: 0x00928B40. IDA forwards to the runtime's typed random-range callback.
 float RandomFloatRange(float fMin, float fMax)
 {

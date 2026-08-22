@@ -1087,7 +1087,10 @@ struct BrocAPI {
                       bool);                               // +0x320
     void (*mClearPlayerStats)();                            // +0x324
     void (*mIncPlayerStat)(unsigned int, unsigned int, short); // +0x328
-    char _pad32C[0x33C - 0x32C];                           // +0x32C
+    char _pad32C[0x330 - 0x32C];                           // +0x32C
+    __int16 (*mGetPlayerStat)(const unsigned int, const unsigned int); // +0x330
+    int (*mGetPlayerTotalScore)(const unsigned int);        // +0x334
+    char _pad338[0x33C - 0x338];                           // +0x338
     void (*mIncTeamScore)(const Broc::string&, int);      // +0x33C
     int (*mGetTeamScore)(const Broc::string&);            // +0x340
     char _pad344[0x370 - 0x344];                          // +0x344
@@ -1426,7 +1429,7 @@ void Code_FinishDamage(Broc::entity player, Broc::entity inflictor,
                        const Broc::vector* position, int damage, int mod,
                        int weapon, int hitLoc);
 int Code_GetPlayerTotalScore(Broc::entity player);
-int Code_GetPlayerStat(Broc::entity player, int index);
+__int16 Code_GetPlayerStat(Broc::entity player, int index);
 void Code_IncPlayerStat(Broc::entity player, unsigned int index, __int16 value);
 int Code_GetTeamScore(const Broc::string& team);
 void Code_IncTeamScore(const Broc::string& team, int ammount);
