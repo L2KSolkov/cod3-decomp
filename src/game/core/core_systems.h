@@ -838,6 +838,7 @@ struct HandleDb {
     Handle AllocateHandle();                       // ea: 0x004E8D50
     void BindObjectToHandle(Handle handle,
                             ActiveEffectSet* obj); // ea: 0x004E3DB0
+    ActiveEffectSet* DereferenceHandle(Handle handle) const;
     void ReleaseHandle(Handle h);                  // ea: 0x004E6430
 };
 static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");

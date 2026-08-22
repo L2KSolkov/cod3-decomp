@@ -28,7 +28,6 @@ struct PakInfoNode {
     Broc::string longName;  // +0x00
 };
 
-
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
 extern ECoderId gCurrentAuthor;
@@ -39,6 +38,15 @@ bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
 bool Error(const char* fmt, ...);
+}
+
+// ea: 0x004E3E50
+ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const
+{
+    unsigned int index = handle.mVal & 0x1FFu;
+    if ((handle.mVal >> 9) == mElements[index].mKey)
+        return mElements[index].mObject;
+    return nullptr;
 }
 
 #define ASSERT_IDX(idx, cap, line)                                         \
