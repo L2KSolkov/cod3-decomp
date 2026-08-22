@@ -9067,6 +9067,18 @@ public:
     const nalGeneric::nalComponentInfo* ComponentInfo;  // +0x04
     const void** CustomSkeletonData;   // +0x08
     const void** CustomAnimData;       // +0x0C
+
+    // ea: 0x00868CA0
+    nalComponentEnum(const nalGeneric::nalComponentInfo* componentInfo,
+                     const void** customSkeletonData,
+                     const nalGeneric::nalGenericAnim* anim,
+                     const void** customAnimData)
+        : Anim(const_cast<nalGeneric::nalGenericAnim*>(anim)),
+          ComponentInfo(componentInfo),
+          CustomSkeletonData(customSkeletonData),
+          CustomAnimData(customAnimData)
+    {
+    }
 };
 
 class CODNoteTrack : public nalComponentBase {
