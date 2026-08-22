@@ -507,6 +507,33 @@ private:
 COD3_STATIC_ASSERT_32BIT(sizeof(string) == 4, "Broc::string size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(string::Block) == 12, "Broc::string::Block size mismatch");
 
+// IDA's string specialization destroys elements removed by resize.  The
+// Win32 dyn_array storage keeps every capacity slot constructed by new[], so
+// reset those slots to the IDA null-string state before they can be reused.
+template <>
+inline void dyn_array<string>::resize(unsigned int newSize,
+                                       unsigned int newCapacity)
+{
+    if (newSize > mCapacity) {
+        string* newElements = new string[newCapacity];
+        unsigned int copyCount = mSize < newSize ? mSize : newSize;
+        for (unsigned int i = 0; i < copyCount; ++i)
+            newElements[i] = mElements[i];
+        delete[] mElements;
+        mElements = newElements;
+        mSize = newSize;
+        mCapacity = newCapacity;
+        return;
+    }
+
+    if (newSize < mSize) {
+        string empty(static_cast<string::Block*>(NULL));
+        for (unsigned int i = newSize; i < mSize; ++i)
+            mElements[i] = empty;
+    }
+    mSize = newSize;
+}
+
 // Broc::collResult — script trace result (IDA type 5174)
 struct collResult {
     float mFraction;     // +0x00
