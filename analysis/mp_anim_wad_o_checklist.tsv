@@ -309,14 +309,14 @@ index	status	map_line
 308	SKIPPED	0002:00595f80 ?IsDefined@script_chain_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85480 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_chain
 309	PORTED	0002:00596010 ?GetEE_targetname@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85510 f mp_anim_wad.o	PORTED: added IDA 0x00996010 pathnode targetname API access; source commit e452026a
 310	SKIPPED	0002:00596060 ?Get@targetname_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85560 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_targetname
-311	PORTED	0002:00596110 ?IsEEDefined_targetname@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85610 f mp_anim_wad.o
-312	PORTED	0002:00596180 ?IsDefined@targetname_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85680 f i mp_anim_wad.o
-313	PORTED	0002:005961b0 ?GetEE_animscript@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D856B0 f mp_anim_wad.o
-314	PORTED	0002:00596200 ?Get@animscript_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85700 f i mp_anim_wad.o
-315	PORTED	0002:005962b0 ?IsEEDefined_animscript@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D857B0 f mp_anim_wad.o
-316	PORTED	0002:00596320 ?IsDefined@animscript_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85820 f i mp_anim_wad.o
-317	PORTED	0002:00596350 ?GetEE_script_ambush_trigger_distance@@YA?AUbint@@Vpathnode@Broc@@@Z 00D85850 f mp_anim_wad.o
-318	PORTED	0002:00596380 ?Get@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D85880 f i mp_anim_wad.o
+311	PORTED	0002:00596110 ?IsEEDefined_targetname@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85610 f mp_anim_wad.o	PORTED: added IDA 0x00996110 pathnode targetname defined-check using mIsPathNodeDefined; source commit 5eb6edd7
+312	SKIPPED	0002:00596180 ?IsDefined@targetname_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85680 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_targetname
+313	PORTED	0002:005961b0 ?GetEE_animscript@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D856B0 f mp_anim_wad.o	PORTED: added IDA 0x009961B0 pathnode animscript API access; source commit 5eb6edd7
+314	SKIPPED	0002:00596200 ?Get@animscript_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85700 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_animscript
+315	PORTED	0002:005962b0 ?IsEEDefined_animscript@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D857B0 f mp_anim_wad.o	PORTED: added IDA 0x009962B0 pathnode animscript defined-check using mIsPathNodeDefined; source commit 5eb6edd7
+316	SKIPPED	0002:00596320 ?IsDefined@animscript_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85820 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_animscript
+317	PORTED	0002:00596350 ?GetEE_script_ambush_trigger_distance@@YA?AUbint@@Vpathnode@Broc@@@Z 00D85850 f mp_anim_wad.o	PORTED: added IDA 0x00996350 pathnode int-field access using key 0xC609EC11; source commit 5eb6edd7
+318	SKIPPED	0002:00596380 ?Get@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D85880 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_ambush_trigger_distance
 319	PORTED	0002:005963d0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D858D0 f mp_anim_wad.o
 320	PORTED	0002:00596440 ?IsDefined@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85940 f i mp_anim_wad.o
 321	PORTED	0002:00596480 ?GetEE_type@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85980 f mp_anim_wad.o
