@@ -550,7 +550,7 @@ index	status	map_line
 549	FIXED	0002:00554150 ?WaitForNoTouchFlag__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D43650 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 550	PORTED	0002:005541f0 ?Goal@_mp_ctf@@YAXVentity@Broc@@@Z 00D436F0 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x009541F0 round gate, holder distances, pickup delay, weapon-slot validation, capture checks, and cappedSinceLastDeath updates; source commit 4470a6ca
 551	VERIFIED	0002:00554940 ?Code_AreaCaptured@Broc@@YAXHHH@Z 00D43E40 f i mp_util_wad.o	VERIFIED: IDA 0x00954940 matches the existing three-argument mAreaCaptured forward
-552	VERIFIED	0002:00554970 ?FlagThreadLauncher@_mp_ctf@@YAXVentity@Broc@@@Z 00D43E70 f mp_util_wad.o
+552	PORTED	0002:00554970 ?FlagThreadLauncher@_mp_ctf@@YAXVentity@Broc@@@Z 00D43E70 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x00954970 trigger/goal spawn, linkage, flag effects, team fields, return message, weapon string, holder reset, and event registration; source commit cc41acf8
 553	VERIFIED	0002:00555090 ??4targetname_struct@__unnamed@entity@Broc@@QAEABVstring@3@ABV43@@Z 00D44590 f i mp_util_wad.o	VERIFIED: IDA 0x00955090 matches the existing targetname forward and rhs return
 554	VERIFIED	0002:005550e0 ?Spawn@Broc@@YA?AVentity@1@ABVstring@1@ABUvector@1@AAU41@2HW4TPakInfo@@@Z 00D445E0 f i mp_util_wad.o	VERIFIED: IDA 0x009550E0 matches the existing mSpawnWithFlagAndSize call and entity construction
 555	VERIFIED	0002:00555130 ?LinkTo@Broc@@YAXABVentity@1@0@Z 00D44630 f i mp_util_wad.o	VERIFIED: IDA 0x00955130 matches the existing two-handle mLinkTo3 forward
