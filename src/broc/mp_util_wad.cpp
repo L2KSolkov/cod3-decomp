@@ -8545,9 +8545,12 @@ void local_player_hit_effects(Broc::entity self, Broc::bint damage,
         local_damage_scalar = 1.0f;
     static Broc::bfloat sTankDamageMin(0.85f);
     static Broc::bfloat sTankDamageMax(1.25f);
-    static Broc::bfloat sTankDamageLength(0.7f);
-    static Broc::bfloat sTankDamageLowRumbleLength(1.0f);
-    static Broc::bfloat sTankDamageHighRumbleLength(0.5f);
+    static Broc::bfloat sTankDamageLength(
+        Broc::operator*(Broc::bfloat(0.7f), (float)local_damage_scalar));
+    static Broc::bfloat sTankDamageLowRumbleLength(
+        Broc::operator*(Broc::bfloat(1.0f), (float)local_damage_scalar));
+    static Broc::bfloat sTankDamageHighRumbleLength(
+        Broc::operator*(Broc::bfloat(0.5f), (float)local_damage_scalar));
     Broc::bint i(0);
     while ((int)i < 3) {
         Broc::entity occupant;
