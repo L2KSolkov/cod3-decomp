@@ -2,12 +2,12 @@ index	status	map_line
 1	VERIFIED	0002:0058afc0 ?RegisterHashStrings@mp_anim_wad@@YAXXZ 00D7A4C0 f mp_anim_wad.o
 2	FIXED	0002:0058c590 ?ResolveAnim@mp_anim_wad@@YAIIIPAII@Z 00D7BA90 f mp_anim_wad.o	FIXED: matched IDA 0x0098C590 branch/hash behavior and corrected the unsigned int return type; source commit 99fb560a
 3	VERIFIED	0002:0058c650 ?GetAnim@AnimRef@Broc@@QBEIXZ 00D7BB50 f i mp_anim_wad.o
-4	PORTED	0002:0058c680 ??BBroAnim@@QBE?BIXZ 00D7BB80 f i mp_anim_wad.o
+4	VERIFIED	0002:0058c680 ??BBroAnim@@QBE?BIXZ 00D7BB80 f i mp_anim_wad.o	VERIFIED: IDA 0x0098C680 returns BroAnim::mVal unchanged
 5	VERIFIED	0002:0058c6a0 ?SetAnim@AnimRef@Broc@@QAEXI@Z 00D7BBA0 f i mp_anim_wad.o
 6	VERIFIED	0002:0058c6e0 ??0BroAnim@@QAE@I@Z 00D7BBE0 f i mp_anim_wad.o
 7	VERIFIED	0002:0058c710 ?ResolveAnimName@mp_anim_wad@@YAPBDI@Z 00D7BC10 f mp_anim_wad.o
 8	VERIFIED	0002:0058c790 ?ValidateAnimationIndices@mp_anim_wad@@YA_NXZ 00D7BC90 f mp_anim_wad.o
-9	PORTED	0002:0058c840 ?IsUnresolved@AnimRef@Broc@@QBE_NXZ 00D7BD40 f i mp_anim_wad.o
+9	VERIFIED	0002:0058c840 ?IsUnresolved@AnimRef@Broc@@QBE_NXZ 00D7BD40 f i mp_anim_wad.o	VERIFIED: IDA 0x0098C840 compares the animation value against 0xFFFFFFFF
 10	VERIFIED	0002:0058c870 ?GetBroAnim@mp_anim_wad@@YAIII@Z 00D7BD70 f mp_anim_wad.o
 11	PORTED	0002:0058c8c0 ?GetEE_script_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7BDC0 f mp_anim_wad.o
 12	PORTED	0002:0058c910 ?IsEEDefined_script_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7BE10 f mp_anim_wad.o
