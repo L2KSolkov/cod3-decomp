@@ -890,7 +890,7 @@ index	status	map_line
 889	PORTED	0002:0025e8c0 ?Release@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A4DDC0 f i game.o
 890	SKIPPED	0002:0025e8d0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QAEAAPAVGdbFileBank@@H@Z 00A4DDD0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 891	PORTED	0002:0025e950 ?set_size@?$ae_sized_array@G$0BAA@@@QAEXH@Z 00A4DE50 f i game.o
-892	PORTED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o
+892	FIXED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o	IDA: existing helper zeroed the unused tail; fixed to zero exactly the first iSize elements as in the reference loop.
 893	PORTED	0002:0025e9d0 ?destroy_all@?$ae_vector@USCheckpointGameVar@@@@AAEXXZ 00A4DED0 f i game.o
 894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o
 895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o
