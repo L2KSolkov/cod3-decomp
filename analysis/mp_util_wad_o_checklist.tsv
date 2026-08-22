@@ -174,7 +174,7 @@ index	status	map_line
 173	VERIFIED	0002:005360d0 ?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z 00D255D0 f i mp_util_wad.o	VERIFIED: IDA 0x009360D0 forwards entity handle and both HashStr mVal values to mAddEventHandler
 174	VERIFIED	0002:00536120 ?PlayerLocation__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D25620 f i mp_util_wad.o	VERIFIED: IDA 0x00936120 allocates a 0x0C-byte AeThreadFunctor1 and null-checks before construction
 175	VERIFIED	0002:005361c0 ?ambient_system__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D256C0 f i mp_util_wad.o	VERIFIED: IDA 0x009361C0 allocates a 0x10-byte AeThreadFunctor2, captures both arguments, and destroys the string copy
-176	VERIFIED	0002:00536280 ?CallbackSetLevelAudio@_mp_audio@@YAXPBD00HH@Z 00D25780 f mp_util_wad.o
+176	FIXED	0002:00536280 ?CallbackSetLevelAudio@_mp_audio@@YAXPBD00HH@Z 00D25780 f mp_util_wad.o	FIXED: aligned IDA 0x00936280 writes with mp_util_wad::pLevel and removed the non-reference pLevelAudio indirection; source commit 21f0660c
 177	VERIFIED	0002:00536360 ??4bfloat@@QAEMH@Z 00D25860 f i mp_util_wad.o	VERIFIED: IDA 0x00936360 stores rhs in bfloat::mVal and returns the stored value as double
 178	FIXED	0002:00536390 ?ambient_chatter_system@_mp_audio@@YAXVentity@Broc@@@Z 00D25890 f mp_util_wad.o	FIXED: IDA 0x00936390 passes the copied pLevel base entity into audio_spawner
 179	VERIFIED	0002:005364b0 ?audio_spawner__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D259B0 f i mp_util_wad.o	VERIFIED: IDA 0x009364B0 allocates a 0x10-byte AeThreadFunctor2, captures entity/string, and destroys the string copy
