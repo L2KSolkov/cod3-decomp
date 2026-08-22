@@ -98,6 +98,50 @@ void safe_for_each<reserved_dlist<RumbleEffectInstance>::iterator,
     }
 }
 
+// ea: 0x004E8C90
+template <>
+void reserved_dlist<EntityNotify>::delete_all()
+{
+    dlist_node* m_head = this->m_head;
+    dlist_node* p_m_head = reinterpret_cast<dlist_node*>(&this->m_head);
+    dlist_node** p_m_end = &this->m_end;
+    dlist_node* m_next = m_head != nullptr ? m_head->mNext : nullptr;
+    if (m_head == reinterpret_cast<dlist_node*>(p_m_end))
+    {
+        m_next = nullptr;
+        m_head = nullptr;
+    }
+    safe_for_each<reserved_dlist<EntityNotify>::iterator,
+                  DelFunctor<EntityNotify>>(
+        reserved_dlist<EntityNotify>::iterator(m_head, m_next),
+        this->end());
+    p_m_head->mNext = reinterpret_cast<dlist_node*>(p_m_end);
+    this->m_tail = p_m_head;
+    this->m_size = 0;
+}
+
+// ea: 0x004E8E30
+template <>
+void reserved_dlist<RumbleEffectInstance>::delete_all()
+{
+    dlist_node* m_head = this->m_head;
+    dlist_node* p_m_head = reinterpret_cast<dlist_node*>(&this->m_head);
+    dlist_node** p_m_end = &this->m_end;
+    dlist_node* m_next = m_head != nullptr ? m_head->mNext : nullptr;
+    if (m_head == reinterpret_cast<dlist_node*>(p_m_end))
+    {
+        m_next = nullptr;
+        m_head = nullptr;
+    }
+    safe_for_each<reserved_dlist<RumbleEffectInstance>::iterator,
+                  DelFunctor<RumbleEffectInstance>>(
+        reserved_dlist<RumbleEffectInstance>::iterator(m_head, m_next),
+        this->end());
+    p_m_head->mNext = reinterpret_cast<dlist_node*>(p_m_end);
+    this->m_tail = p_m_head;
+    this->m_size = 0;
+}
+
 template void DelFunctor<EntityNotify>::operator()(EntityNotify*) const;
 template void DelFunctor<RumbleEffectInstance>::operator()(
     RumbleEffectInstance*) const;
@@ -109,6 +153,8 @@ reserved_dlist<RumbleEffectInstance>::erase(
     reserved_dlist<RumbleEffectInstance>::iterator&);
 template reserved_dlist<RumbleEffectInstance>::const_iterator
 reserved_dlist<RumbleEffectInstance>::begin() const;
+template void reserved_dlist<EntityNotify>::delete_all();
+template void reserved_dlist<RumbleEffectInstance>::delete_all();
 
 // ea: 0x004E3E50
 ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const

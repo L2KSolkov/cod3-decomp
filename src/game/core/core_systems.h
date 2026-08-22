@@ -443,6 +443,7 @@ struct reserved_dlist {
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
     void erase(T* obj);
     iterator erase(iterator& i);
+    void delete_all();
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");
@@ -1616,6 +1617,11 @@ public:
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
 static_assert(sizeof(EntityNotify) == 0x14, "EntityNotify size mismatch");
+
+template <>
+void reserved_dlist<EntityNotify>::delete_all();
+template <>
+void reserved_dlist<RumbleEffectInstance>::delete_all();
 
 class EntityNotifySet {
 public:
