@@ -442,6 +442,7 @@ struct reserved_dlist {
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
     void erase(T* obj);
+    iterator erase(iterator& i);
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");
@@ -507,6 +508,41 @@ void reserved_dlist<T>::erase(T* obj)
     obj->m_dlist_node.mNext->mPrev = obj->m_dlist_node.mPrev;
     obj->m_dlist_node.mPrev->mNext = obj->m_dlist_node.mNext;
     --m_size;
+}
+
+template <typename T>
+typename reserved_dlist<T>::iterator reserved_dlist<T>::erase(iterator& i)
+{
+    dlist_node* node = i.m_node;
+    iterator found = find(node_to_object(node));
+    if (found.m_next == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+        AeAssert::gCurrentLine = 433;
+        AeAssert::gCurrentExpr =
+            "find( node_to_object( erase_node ) ) != end()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    iterator next;
+    next.m_node = i.m_node;
+    dlist_node* m_next = i.m_next;
+    if (m_next != nullptr)
+    {
+        next.m_node = m_next;
+        m_next = m_next->mNext;
+    }
+    node->mNext->mPrev = node->mPrev;
+    node->mPrev->mNext = node->mNext;
+    node->mNext = nullptr;
+    node->mPrev = nullptr;
+    i.m_node = nullptr;
+    i.m_next = nullptr;
+    --m_size;
+    next.m_next = m_next;
+    return next;
 }
 
 template <int N>

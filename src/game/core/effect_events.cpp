@@ -100,6 +100,13 @@ template void DelFunctor<EntityNotify>::operator()(EntityNotify*) const;
 template void DelFunctor<RumbleEffectInstance>::operator()(
     RumbleEffectInstance*) const;
 template void BitSet<49>::Set(int, bool);
+template reserved_dlist<RumbleEffectInstance>::iterator
+reserved_dlist<RumbleEffectInstance>::begin();
+template reserved_dlist<RumbleEffectInstance>::iterator
+reserved_dlist<RumbleEffectInstance>::erase(
+    reserved_dlist<RumbleEffectInstance>::iterator&);
+template reserved_dlist<RumbleEffectInstance>::const_iterator
+reserved_dlist<RumbleEffectInstance>::begin() const;
 
 // ea: 0x004E3E50
 ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const
