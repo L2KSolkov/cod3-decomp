@@ -796,15 +796,15 @@ index	status	map_line
 795	VERIFIED	0002:00570a90 ?fire@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5FF90 f mp_util_wad.o
 796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o	PORTED: added IDA 0x00970AE0 wrapper calling mFireTurret(GetHandle(), false)
 797	FIXED	0002:00570b10 ?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60010 f mp_util_wad.o	FIXED: IDA 0x00970B10 passes pLevel->_base.entity (or null) to DoDamage
-798	PORTED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o	PORTED: added IDA 0x00970C60 wrapper with temporary vector, mGetOrigin callback, and result copy
+798	VERIFIED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o	VERIFIED: IDA 0x00970C60 constructs a temporary vector, calls mGetOrigin with the handle, and copies the result; implementation matches
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
-800	PORTED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o	PORTED: added IDA 0x00970E80 wrapper forwarding mIsVehicleFlipped(GetHandle())
+800	VERIFIED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o	VERIFIED: IDA 0x00970E80 forwards entity.GetHandle() to mIsVehicleFlipped; implementation matches
 801	PORTED	0002:00570eb0 ?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z 00D603B0 f mp_util_wad.o
 802	VERIFIED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o	VERIFIED: IDA 0x009712A0 matches m_entity_get_takedamage, bint construction, and result return
 803	VERIFIED	0002:005712e0 ?HostSafeVehicleRespawn@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D607E0 f mp_util_wad.o
 804	VERIFIED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o	VERIFIED: IDA 0x009713A0 matches m_entity_get_rotate temporary vector copy and result return
-805	PORTED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o	PORTED: added IDA 0x009713F0 wrapper forwarding mBroadcastVehicleRespawn(GetHandle())
-806	PORTED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o	PORTED: added IDA 0x00971420 wrapper forwarding mRespawnVehicle(GetHandle())
+805	VERIFIED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o	VERIFIED: IDA 0x009713F0 forwards entity.GetHandle() to mBroadcastVehicleRespawn; implementation matches
+806	VERIFIED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o	VERIFIED: IDA 0x00971420 forwards entity.GetHandle() to mRespawnVehicle; implementation matches
 807	VERIFIED	0002:00571450 ?death@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D60950 f mp_util_wad.o
 808	PORTED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o	PORTED: added IDA 0x009717B0 wrapper forwarding mRadiusDamageFromEnt(GetHandle(), origin, range, max, min, damageType)
 809	VERIFIED	0002:00571800 ?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z 00D60D00 f mp_util_wad.o	VERIFIED: IDA 0x00971800 matches health+damage > 0 gate and local_player_hit_effects(self, damage, mod); attacker is unused
