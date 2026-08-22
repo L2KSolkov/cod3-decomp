@@ -695,38 +695,38 @@ index	status	map_line
 694	VERIFIED	0002:000dc790 ?GetSourceId@Sound@SoundDevice@@QAE?AW4nslSourceID@@XZ 008CBC90 f i core.o	VERIFIED: existing source ID return matches IDA 0x004DC790
 695	VERIFIED	0002:000dc7a0 ?GetVolScale@SoundDevice@@QAEMXZ 008CBCA0 f i core.o	VERIFIED: existing volume-scale return matches IDA 0x004DC7A0
 696	SKIPPED	0002:000dc7b0 ??_GSoundDevice@@QAEPAXI@Z 008CBCB0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-697	PORTED	0002:000dc7e0 ??2STBManager@@SAPAXIPAX@Z 008CBCE0 f i core.o
-698	PORTED	0002:000dc7f0 ?Inst@STBManager@@SAPAV1@XZ 008CBCF0 f i core.o
+697	VERIFIED	0002:000dc7e0 ??2STBManager@@SAPAXIPAX@Z 008CBCE0 f i core.o	VERIFIED: existing STBManager placement operator new matches IDA 0x004DC7E0
+698	VERIFIED	0002:000dc7f0 ?Inst@STBManager@@SAPAV1@XZ 008CBCF0 f i core.o	VERIFIED: existing STBManager singleton accessor matches IDA 0x004DC7F0
 699	VERIFIED	0002:000dc800 ?DeleteInst@STBManager@@SAXXZ 008CBD00 f i core.o
-700	PORTED	0002:000dc880 ??2AudioBankMgr@@SAPAXIPAX@Z 008CBD80 f i core.o
-701	PORTED	0002:000dc890 ?Inst@AudioBankMgr@@SAPAV1@XZ 008CBD90 f i core.o
+700	VERIFIED	0002:000dc880 ??2AudioBankMgr@@SAPAXIPAX@Z 008CBD80 f i core.o	VERIFIED: existing AudioBankMgr placement operator new matches IDA 0x004DC880
+701	VERIFIED	0002:000dc890 ?Inst@AudioBankMgr@@SAPAV1@XZ 008CBD90 f i core.o	VERIFIED: existing AudioBankMgr singleton accessor matches IDA 0x004DC890
 702	VERIFIED	0002:000dc8a0 ?CreateInst@AudioBankMgr@@SAXXZ 008CBDA0 f i core.o
 703	VERIFIED	0002:000dc9a0 ?DeleteInst@AudioBankMgr@@SAXXZ 008CBEA0 f i core.o
-704	PORTED	0002:000dca20 ??2DialogueManager@@SAPAXIPAX@Z 008CBF20 f i core.o
-705	PORTED	0002:000dca30 ?Inst@DialogueManager@@SAPAV1@XZ 008CBF30 f i core.o
+704	VERIFIED	0002:000dca20 ??2DialogueManager@@SAPAXIPAX@Z 008CBF20 f i core.o	VERIFIED: existing DialogueManager placement operator new matches IDA 0x004DCA20
+705	VERIFIED	0002:000dca30 ?Inst@DialogueManager@@SAPAV1@XZ 008CBF30 f i core.o	VERIFIED: existing DialogueManager singleton accessor matches IDA 0x004DCA30
 706	VERIFIED	0002:000dca40 ?DeleteInst@DialogueManager@@SAXXZ 008CBF40 f i core.o
-707	PORTED	0002:000dcac0 ??2SoundMediaMgr@@SAPAXIPAX@Z 008CBFC0 f i core.o
+707	VERIFIED	0002:000dcac0 ??2SoundMediaMgr@@SAPAXIPAX@Z 008CBFC0 f i core.o	VERIFIED: existing SoundMediaMgr placement operator new matches IDA 0x004DCAC0
 708	VERIFIED	0002:000dcad0 ?CreateInst@SoundMediaMgr@@SAXXZ 008CBFD0 f i core.o VERIFIED: existing CreateInst body matches IDA
 709	SKIPPED	0002:000dcbc0 ??_GSoundMediaMgr@@QAEPAXI@Z 008CC0C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-710	PORTED	0002:000dcbf0 ??2MusicMgr@@SAPAXIPAX@Z 008CC0F0 f i core.o
+710	VERIFIED	0002:000dcbf0 ??2MusicMgr@@SAPAXIPAX@Z 008CC0F0 f i core.o	VERIFIED: existing MusicMgr placement operator new matches IDA 0x004DCBF0
 711	VERIFIED	0002:000dcc00 ?CreateInst@MusicMgr@@SAXXZ 008CC100 f i core.o
 712	SKIPPED	0002:000dccf0 ??_GMusicMgr@@QAEPAXI@Z 008CC1F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-713	PORTED	0002:000dcd20 ??2StreamZoneManager@@SAPAXIPAX@Z 008CC220 f i core.o
+713	VERIFIED	0002:000dcd20 ??2StreamZoneManager@@SAPAXIPAX@Z 008CC220 f i core.o	VERIFIED: existing StreamZoneManager placement operator new matches IDA 0x004DCD20
 714	VERIFIED	0002:000dcd30 ?CreateInst@StreamZoneManager@@SAXXZ 008CC230 f i core.o
 715	VERIFIED	0002:000dce30 ?DeleteInst@StreamZoneManager@@SAXXZ 008CC330 f i core.o
-716	PORTED	0002:000dceb0 ??2AITypeManager@@SAPAXIPAX@Z 008CC3B0 f i core.o
+716	VERIFIED	0002:000dceb0 ??2AITypeManager@@SAPAXIPAX@Z 008CC3B0 f i core.o	VERIFIED: existing AITypeManager placement operator new matches IDA 0x004DCEB0
 717	VERIFIED	0002:000dcec0 ?CreateInst@AITypeManager@@SAXXZ 008CC3C0 f i core.o
 718	VERIFIED	0002:000dcfc0 ?DeleteInst@AITypeManager@@SAXXZ 008CC4C0 f i core.o
-719	PORTED	0002:000dd040 ??2DbTablesetMgr@@SAPAXIPAX@Z 008CC540 f i core.o
-720	PORTED	0002:000dd050 ?Inst@DbTablesetMgr@@SAPAV1@XZ 008CC550 f i core.o
+719	VERIFIED	0002:000dd040 ??2DbTablesetMgr@@SAPAXIPAX@Z 008CC540 f i core.o	VERIFIED: existing DbTablesetMgr placement operator new matches IDA 0x004DD040
+720	VERIFIED	0002:000dd050 ?Inst@DbTablesetMgr@@SAPAV1@XZ 008CC550 f i core.o	VERIFIED: existing DbTablesetMgr singleton accessor matches IDA 0x004DD050
 721	VERIFIED	0002:000dd060 ?DeleteInst@DbTablesetMgr@@SAXXZ 008CC560 f i core.o
-722	PORTED	0002:000dd0e0 ??2SceneManager@@SAPAXIPAX@Z 008CC5E0 f i core.o
+722	VERIFIED	0002:000dd0e0 ??2SceneManager@@SAPAXIPAX@Z 008CC5E0 f i core.o	VERIFIED: existing SceneManager placement operator new matches IDA 0x004DD0E0
 723	VERIFIED	0002:000dd0f0 ?CreateInst@SceneManager@@SAXXZ 008CC5F0 f i core.o
 724	VERIFIED	0002:000dd1f0 ?DeleteInst@SceneManager@@SAXXZ 008CC6F0 f i core.o
-725	PORTED	0002:000dd270 ?GetName@ConfigString@@QBEPBDXZ 008CC770 f i core.o
-726	PORTED	0002:000dd280 ??2ConfigStringManager@@SAPAXIPAX@Z 008CC780 f i core.o
+725	VERIFIED	0002:000dd270 ?GetName@ConfigString@@QBEPBDXZ 008CC770 f i core.o	VERIFIED: existing ConfigString name return matches IDA 0x004DD270
+726	VERIFIED	0002:000dd280 ??2ConfigStringManager@@SAPAXIPAX@Z 008CC780 f i core.o	VERIFIED: existing ConfigStringManager placement operator new matches IDA 0x004DD280
 727	VERIFIED	0002:000dd290 ?DeleteInst@ConfigStringManager@@SAXXZ 008CC790 f i core.o
-728	PORTED	0002:000dd310 ??2PathNodeMgr@@SAPAXIPAX@Z 008CC810 f i core.o
+728	VERIFIED	0002:000dd310 ??2PathNodeMgr@@SAPAXIPAX@Z 008CC810 f i core.o	VERIFIED: existing PathNodeMgr placement operator new matches IDA 0x004DD310
 729	VERIFIED	0002:000dd320 ?CreateInst@PathNodeMgr@@SAXXZ 008CC820 f i core.o VERIFIED: existing CreateInst body matches IDA
 730	VERIFIED	0002:000dd410 ?DeleteInst@PathNodeMgr@@SAXXZ 008CC910 f i core.o
 731	PORTED	0002:000dd490 ??2TestFPS@@SAPAXIPAX@Z 008CC990 f i core.o PORTED: IDA placement allocator returns p
