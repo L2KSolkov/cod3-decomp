@@ -2739,6 +2739,33 @@ static void nalComponentConstructRaw(const nalComponentBase* component,
         component, componentInfo, poseData);
 }
 
+static void nalComponentBlendIntraRaw(const nalComponentBase* component,
+                                      int count, void* dst,
+                                      const void* srcA, const void* srcB,
+                                      float blend)
+{
+    using BlendFn = void (__thiscall*)(const void*, int, void*,
+                                       const void*, const void*, float);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<BlendFn>(vtable[4])(
+        component, count, dst, srcA, srcB, blend);
+}
+
+static void nalComponentCopyRaw(const nalComponentBase* component,
+                                const nalComponentInfo* componentInfo,
+                                void* dst, const void* src)
+{
+    using CopyFn = void (__thiscall*)(const void*, const nalComponentInfo*,
+                                      void**, const void**);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    void* dstPtr = dst;
+    const void* srcPtr = src;
+    reinterpret_cast<CopyFn>(vtable[17])(
+        component, componentInfo, &dstPtr, &srcPtr);
+}
+
 // ea: 0x0086DC30
 void nalGenericInstance::CacheBlock(int blockIdx, int lod)
 {
@@ -8224,6 +8251,78 @@ inline void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
                   const nalGenericPose& b)
 {
     (void)out; (void)blend; (void)a; (void)b;
+}
+
+// ea: 0x0086E1B0
+namespace nalGeneric {
+void BlendIntra(nalGenericPose& out, float blend,
+                const nalGenericPose& a, const nalGenericPose& b)
+{
+    int outLOD = a.LOD;
+    if (outLOD < b.LOD)
+        outLOD = b.LOD;
+    int blendLOD = a.LOD;
+    if (blendLOD > b.LOD)
+        blendLOD = b.LOD;
+    out.LOD = blendLOD;
+
+    if (a.Skeleton != b.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 1886,
+                     "poseA.GetSkeleton() == poseB.GetSkeleton()",
+                     "pose blend mismatch"))
+    {
+        __debugbreak();
+    }
+
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(a.Skeleton);
+    int componentGroup = 0;
+    int firstComponentCount = 0;
+    if (outLOD - 1 < 0)
+        firstComponentCount = skeleton->PoseComponentCount;
+    else
+        firstComponentCount = skeleton->LODInfo[outLOD - 1].FirstComponent;
+
+    const nalComponentInfo* component = skeleton->PoseComponentInfo;
+    for (int i = 0; i < firstComponentCount; ++i, ++component)
+    {
+        nalComponentBlendIntraRaw(
+            component->Component, component->Count,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(a.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(b.PoseData) + component->Offset,
+            blend);
+        ++componentGroup;
+    }
+
+    int remainingComponentCount = skeleton->PoseComponentCount;
+    if (a.LOD > b.LOD)
+    {
+        if (b.LOD - 1 >= 0)
+            remainingComponentCount = skeleton->LODInfo[b.LOD - 1].FirstComponent;
+    }
+    else if (a.LOD - 1 >= 0)
+    {
+        remainingComponentCount = skeleton->LODInfo[a.LOD - 1].FirstComponent;
+    }
+
+    const nalGenericPose* sourcePose = (a.LOD > b.LOD) ? &b : &a;
+    for (int i = componentGroup; i < remainingComponentCount; ++i, ++component)
+    {
+        nalComponentCopyRaw(
+            component->Component, component,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(sourcePose->PoseData)
+                + component->Offset);
+    }
+}
+} // namespace nalGeneric
+
+void nalGenericBlendIntra(nalGenericPose& out, float blend,
+                          const nalGenericPose& a,
+                          const nalGenericPose& b)
+{
+    nalGeneric::BlendIntra(out, blend, a, b);
 }
 
 // ea: 0x0086E660
