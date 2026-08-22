@@ -544,8 +544,8 @@ void Field_CharEvent(field_t* edit, int ch)
 // ============================================================================
 int gaGlobs_axes[12];  // cl.o BSS
 float prevDir[2][3];  // ?prevDir@@3PAY02MA (cl.o BSS)
-int dword_F11E4C[6];  // cl.o BSS
-int dword_F11E50[6];  // cl.o BSS
+float dword_F11E4C[6];  // cl.o BSS; IDA uses these as float history vectors
+float dword_F11E50[6];  // cl.o BSS; IDA uses these as float history vectors
 float gSwirlPitchFactor;
 extern unsigned int frame_msec;
 int totalTime[2];  // cl.o BSS
@@ -565,11 +565,11 @@ void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
     currDir[2] = 0.0f;
     VectorNormalize(currDir);
     float* v3 = prevDir[iStickIndex];
-    if (*v3 != 0.0f || dword_F11E4C[3 * iStickIndex] != 0)
+    if (*v3 != 0.0f || dword_F11E4C[3 * iStickIndex] != 0.0f)
     {
-        *fCosDeltaAngle = ((float)dword_F11E50[3 * iStickIndex] * 0.0f)
+        *fCosDeltaAngle = (dword_F11E50[3 * iStickIndex] * 0.0f)
                           + (*v3 * currDir[0])
-                          + ((float)dword_F11E4C[3 * iStickIndex] * v7);
+                          + (dword_F11E4C[3 * iStickIndex] * v7);
         float crossPro[2];
         CrossProduct(prevDir[iStickIndex], currDir, crossPro);
         if (crossPro[0] <= 0.0f)
@@ -583,7 +583,7 @@ void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
         }
     }
     v3[0] = currDir[0];
-    dword_F11E4C[3 * iStickIndex] = (int)v7;
+    dword_F11E4C[3 * iStickIndex] = v7;
     dword_F11E50[3 * iStickIndex] = 0;
 }
 

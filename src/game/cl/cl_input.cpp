@@ -26,6 +26,7 @@ extern int com_frameTime;
 extern unsigned int frame_msec;
 extern int currCl;
 extern int dword_106000;
+extern cvar_t* cl_freelook;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
 extern int dword_F6A28C[];     // ?dword_F6A28C (per-client port array)
 namespace BrocSys { void GiveWeapon(Entity* pSelf, const char* pszWeaponName); }
@@ -150,7 +151,6 @@ extern void GamePause_SetGamePaused(int client, bool paused);
 bool gGrenadeCanBePickedUp;
 bool gCookingLiveGrenade;
 int cl_analogStickLean_integer;
-int cl_freelook_integer;
 int cl_binocButtonDown_integer;
 
 class EntityManager {
@@ -322,14 +322,13 @@ void IN_MLookDown()
 }
 
 // ea: 0x530510
-int IN_MLookUp()
+void IN_MLookUp()
 {
     kb[KB_MLOOK].active = 0;
-    if (cl_freelook_integer == 0)
+    if (cl_freelook->integer == 0)
     {
         cl[currCl].viewangles[0] = 0.0f - (cl[currCl].snap.ps.delta_angles[0] * 0.0054931641f);
     }
-    return 0;
 }
 
 // ea: 0x52A860

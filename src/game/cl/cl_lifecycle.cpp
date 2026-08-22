@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "engine/broc_types.h"
 
 #include <string.h>
 
@@ -19,6 +20,7 @@ extern void Com_Printf(const char* fmt, ...);
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Cvar_Set(const char* var_name, const char* value);
+extern const char defaultFileName[];
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
 extern void Cmd_RemoveCommand(const char* cmd_name);
@@ -186,10 +188,7 @@ void clientConnection_t::Swap(clientConnection_t* to)
 }
 
 // cls.configstrings - Broc::string[1024] (the "servername" field aliases it)
-struct Broc_string_view2 {
-    void* mBlock;
-};
-extern Broc_string_view2 cls_configstrings[1024];
+extern Broc::string cls_configstrings[1024];
 
 // ============================================================================
 // Lifecycle
@@ -203,7 +202,10 @@ int CL_ClearState()
     for (int i = 0; i < 1024; ++i)
     {
         if (cls_configstrings[i].mBlock != nullptr)
-            cls_configstrings[i].mBlock = nullptr;
+        {
+            Broc::string empty((Broc::string::Block*)nullptr);
+            cls_configstrings[i] = empty;
+        }
     }
     memset(cl, 0, sizeof(clientActive_t) * 2);
     memset(&clc, 0, sizeof(clc));
@@ -235,7 +237,8 @@ void CL_ConfigstringModified()
         ASSERT("cls.configstrings[index].IsDefined()",
                "c:\\cod\\code\\game\\cl_cgame.cpp", 329);
     }
-    cls_configstrings[v1].mBlock = (void*)(s - 12);
+    cls_configstrings[v1].mBlock =
+        reinterpret_cast<Broc::string::Block*>(const_cast<char*>(s - 12));
 }
 
 // ea: 0x52F290
@@ -257,7 +260,7 @@ int CL_Restart()
             ASSERT("!cls.configstrings[i].IsDefined()",
                    "c:\\cod\\code\\game\\cl_cgame.cpp", 356);
         }
-        cls_configstrings[i].mBlock = nullptr;
+        cls_configstrings[i] = defaultFileName;
     }
     return VM_Call(cgvm, 19);
 }

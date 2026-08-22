@@ -217,7 +217,7 @@ int CL_InitButtons();
 void CL_BackUpKeys();
 void CL_RecallKeys();
 void IN_MLookDown();
-int IN_MLookUp();
+void IN_MLookUp();
 void IN_UpDown(int key, int time);
 void IN_UpUp(int key, int time);
 void IN_DownDown(int key, int time);
