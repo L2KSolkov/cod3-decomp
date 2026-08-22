@@ -428,7 +428,7 @@ index	status	map_line
 427	FIXED	0002:005483d0 ?DestroyHudElem@_mp_common@@YAXAAVhudelem@Broc@@@Z 00D378D0 f mp_util_wad.o	FIXED: IDA tests IsDefined<hudelem>(elem), calls global Destroy, then SetUndefined
 428	VERIFIED	0002:00548420 ?SetUndefined@hudelem@Broc@@QAEXXZ 00D37920 f i mp_util_wad.o	VERIFIED: IDA 0x00948420 matches the existing mHudIndex = -1 assignment
 429	VERIFIED	0002:00548450 ?Destroy@@YAXABVhudelem@Broc@@@Z 00D37950 f i mp_util_wad.o	VERIFIED: IDA 0x00948450 matches the existing const HUD pointer forward to gBrocAPI.mDestroy
-430	PORTED	0002:00548480 ?AddToPlayerStats@_mp_common@@YAXVentity@Broc@@Ubint@@H@Z 00D37980 f mp_util_wad.o
+430	FIXED	0002:00548480 ?AddToPlayerStats@_mp_common@@YAXVentity@Broc@@Ubint@@H@Z 00D37980 f mp_util_wad.o	FIXED: matched IDA 0x00948480 rank-promotion flow and removed the port-only explicit team-string destructor
 431	VERIFIED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o	VERIFIED: IDA forwards *rhs and this->mHandle to m_entity_set_persistent_player_rank, then returns rhs
 432	VERIFIED	0002:00548a30 ?put_player_into_spectate_mode@_mp_common@@YAXVentity@Broc@@@Z 00D37F30 f mp_util_wad.o
 433	FIXED	0002:00548ad0 ?SpawnLocalSpectator__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D37FD0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
