@@ -129,8 +129,8 @@ void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
 }
 namespace _mp_shellshock {
 void main();
-void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage);
-void blur_view(Broc::entity self, Broc::bfloat blur_time);
+void ShellshockOnDamage(Broc::entity self, ::bint cause, ::bint damage);
+void blur_view(Broc::entity self, ::bfloat blur_time);
 }
 namespace _mp_spawnlogic {
 Broc::entity* GetSpawnpointRandom(Broc::entity* result,
@@ -3240,6 +3240,24 @@ bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
 
 // bint::bint(float) - ea: 0x925170
 bint::bint(float rhs) : mVal((int)rhs) {}
+
+// bint::operator=(int) - IDA/C3 declaration
+int bint::operator=(int rhs) {
+    mVal = rhs;
+    return mVal;
+}
+
+// bint::operator=(unsigned int) - IDA/C3 declaration
+unsigned int bint::operator=(unsigned int rhs) {
+    mVal = (int)rhs;
+    return rhs;
+}
+
+// bint::operator+=(int) - IDA/C3 declaration
+int bint::operator+=(int rhs) {
+    mVal += rhs;
+    return mVal;
+}
 
 // bint::operator int() - ea: 0x97D020 inline body
 bint::operator int() const {
@@ -6810,7 +6828,7 @@ void CallbackPlayerDamage(Broc::entity player, Broc::entity inflictor,
                           int weapon, int hitLoc) {
     if (hitLoc == 2 && mod != 11 && mod != 31)
         mod = 12;
-    _mp_shellshock::ShellshockOnDamage(player, Broc::bint(mod), Broc::bint(damage));
+    _mp_shellshock::ShellshockOnDamage(player, ::bint(mod), ::bint(damage));
     Broc::Code_FinishDamage(player, inflictor, attacker, dir, point, damage,
                             mod, weapon, hitLoc);
 }
@@ -16465,7 +16483,7 @@ void main() {
 }
 
 // ShellshockOnDamage - ea: 0x96C9C0
-void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) {
+void ShellshockOnDamage(Broc::entity self, ::bint cause, ::bint damage) {
     if ((int)cause == 27 || (int)cause == 3 || (int)cause == 4 ||
         (int)cause == 5 || (int)cause == 6 || (int)cause == 17 ||
         (int)cause == 18 || (int)cause == 9 || (int)cause == 10) {
@@ -16476,15 +16494,15 @@ void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) 
                     if ((int)damage > 10)
                         time = 1;
                 } else {
-                    blur_view(self, Broc::bfloat(0.25f));
+                    blur_view(self, ::bfloat(0.25f));
                     time = 2;
                 }
             } else {
-                blur_view(self, Broc::bfloat(1.0f));
+                blur_view(self, ::bfloat(1.0f));
                 time = 3;
             }
         } else {
-            blur_view(self, Broc::bfloat(2.0f));
+            blur_view(self, ::bfloat(2.0f));
             time = 4;
         }
         if ((int)time != 0) {
@@ -16496,7 +16514,7 @@ void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) 
 }
 
 // blur_view - ea: 0x96CCA0
-void blur_view(Broc::entity self, Broc::bfloat blur_time) {
+void blur_view(Broc::entity self, ::bfloat blur_time) {
     (void)self;
     (void)blur_time;
 }

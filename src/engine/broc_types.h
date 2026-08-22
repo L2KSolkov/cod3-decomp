@@ -956,8 +956,11 @@ struct bint {
     bint(float v);
     bint(const bfloat& rhs);
     operator int() const;
+    int operator=(int rhs);
+    unsigned int operator=(unsigned int rhs);
     int operator++();
     int operator--();
+    int operator+=(int rhs);
     void AssertDefined() const {}
     int operator*=(int rhs);
     int operator=(float rhs);  // ea: 0x9540F0
