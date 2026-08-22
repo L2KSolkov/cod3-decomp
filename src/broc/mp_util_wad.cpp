@@ -11110,8 +11110,97 @@ void* Goal__functor(Broc::entity self) {
 
 // Goal - ea: 0x9541F0
 void Goal(Broc::entity self) {
-    (void)self;
-    // Flag goal capture check is handled by HandlePickupFlag + Code_AreaCaptured.
+    Broc::dyn_array<Broc::entity> players;
+    Broc::entity axis_holder;
+    Broc::entity allies_holder;
+    Broc::string flag_weapon((const char*)NULL);
+    if (!(bool)mp_util_wad::pLevel->roundStarted)
+        return;
+
+    Broc::bint dist;
+    axis_holder = *mp_util_wad::GetEE_holder(
+        mp_util_wad::pLevel->allies_flag_ent);
+    allies_holder = *mp_util_wad::GetEE_holder(
+        mp_util_wad::pLevel->axis_flag_ent);
+
+    Broc::vector selfOrigin;
+    mp_util_wad::entity_get_origin(&selfOrigin, self);
+    Broc::bint axis_dist;
+    if (Broc::IsDefined(axis_holder)) {
+        Broc::vector holderOrigin;
+        mp_util_wad::entity_get_origin(&holderOrigin, axis_holder);
+        axis_dist = (int)Broc::Distance(&holderOrigin, &selfOrigin);
+    } else {
+        axis_dist = 0;
+    }
+
+    Broc::bint allies_dist;
+    if (Broc::IsDefined(allies_holder)) {
+        Broc::vector holderOrigin;
+        mp_util_wad::entity_get_origin(&holderOrigin, allies_holder);
+        allies_dist = (int)Broc::Distance(&holderOrigin, &selfOrigin);
+    } else {
+        allies_dist = 0;
+    }
+
+    Broc::string targetName;
+    mp_util_wad::entity_get_targetname(&targetName, self);
+    bool isAxisBase = targetName == "axis";
+    targetName.~string();
+    if (isAxisBase && Broc::Code_IsLocalPlayer(axis_holder)) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)*mp_util_wad::GetEE_pickupCaptureDelayTime(axis_holder) >=
+            (int)now)
+            return;
+
+        Broc::string slot("flag");
+        Broc::GetWeaponSlotWeapon(axis_holder, slot, flag_weapon);
+        slot.~string();
+        if (flag_weapon == "mp_flag_allies" && (int)axis_dist < 64) {
+            Broc::vector flagOrigin;
+            mp_util_wad::entity_get_origin(
+                &flagOrigin, mp_util_wad::pLevel->axis_flag_ent);
+            Broc::entity goal = *mp_util_wad::GetEE_goal(
+                mp_util_wad::pLevel->axis_flag_ent);
+            Broc::vector goalOrigin;
+            mp_util_wad::entity_get_origin(&goalOrigin, goal);
+            dist = (int)Broc::Distance(&goalOrigin, &flagOrigin);
+            if ((int)dist < 64) {
+                Broc::Code_AreaCaptured(0, 1, 0);
+                *mp_util_wad::GetEE_cappedSinceLastDeath(axis_holder) = 1;
+            }
+        }
+    }
+
+    targetName = Broc::string((const char*)NULL);
+    mp_util_wad::entity_get_targetname(&targetName, self);
+    bool isAlliesBase = targetName == "allies";
+    targetName.~string();
+    if (isAlliesBase && Broc::Code_IsLocalPlayer(allies_holder)) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)*mp_util_wad::GetEE_pickupCaptureDelayTime(allies_holder) <
+            (int)now) {
+            Broc::string slot("flag");
+            Broc::GetWeaponSlotWeapon(allies_holder, slot, flag_weapon);
+            slot.~string();
+            if (flag_weapon == "mp_flag_axis" && (int)allies_dist < 64) {
+                Broc::vector flagOrigin;
+                mp_util_wad::entity_get_origin(
+                    &flagOrigin, mp_util_wad::pLevel->allies_flag_ent);
+                Broc::entity goal = *mp_util_wad::GetEE_goal(
+                    mp_util_wad::pLevel->allies_flag_ent);
+                Broc::vector goalOrigin;
+                mp_util_wad::entity_get_origin(&goalOrigin, goal);
+                dist = (int)Broc::Distance(&goalOrigin, &flagOrigin);
+                if ((int)dist < 64) {
+                    Broc::Code_AreaCaptured(0, 0, 0);
+                    *mp_util_wad::GetEE_cappedSinceLastDeath(allies_holder) = 1;
+                }
+            }
+        }
+    }
 }
 
 // FlagThreadLauncher - ea: 0x954970
