@@ -2421,6 +2421,11 @@ const Broc::string* Broc::entity::__unnamed::team_struct::Get(
     return result;
 }
 
+// Broc::entity::operator== - ea: 0x94FA60
+bool Broc::entity::operator==(const Broc::entity& rhs) const {
+    return rhs.GetHandle() == GetHandle();
+}
+
 // Broc::entity::__unnamed::ctf_has_flag_struct::operator= - ea: 0x94E2A0
 const __int16& Broc::entity::__unnamed::ctf_has_flag_struct::operator=(
     const __int16& rhs) {
@@ -2550,6 +2555,22 @@ void Broc::Code_SendGameStateHQ(Broc::entity player, unsigned int stage,
                                 bool alliesDefending, bool pointAIsHQ) {
     gBrocAPI.mSendGameStateHQ(player.GetHandle(), stage, vA, vB,
                               triggerIndex, alliesDefending, pointAIsHQ);
+}
+
+// Broc::Code_SendGameStateCTF - ea: 0x94EAA0
+void Broc::Code_SendGameStateCTF(
+    Broc::entity player, const Broc::vector* allied_flag,
+    const Broc::vector* allied_angles, Broc::entity allied_flag_holder,
+    const Broc::vector* axis_flag, const Broc::vector* axis_angles,
+    Broc::entity axis_flag_holder) {
+    Broc::vector axisAnglesCopy = *axis_angles;
+    Broc::vector axisFlagCopy = *axis_flag;
+    Broc::vector alliedAnglesCopy = *allied_angles;
+    Broc::vector alliedFlagCopy = *allied_flag;
+    gBrocAPI.mSendGameStateCTF(
+        player.GetHandle(), alliedFlagCopy, alliedAnglesCopy,
+        allied_flag_holder.GetHandle(), axisFlagCopy, axisAnglesCopy,
+        axis_flag_holder.GetHandle());
 }
 
 // Code_IncTeamScore - ea: 0x93DE70
@@ -2753,6 +2774,12 @@ void Code_DropItem(int itemType, int netID, const Broc::vector* position,
                    const Broc::vector* angles,
                    const Broc::vector* velocity) {
     gBrocAPI.mDropItem2(itemType, netID, position, angles, velocity);
+}
+
+// Broc::TakeWeapon - ea: 0x950B50
+void Broc::TakeWeapon(Broc::entity* e,
+                      const Broc::string* pszWeaponName) {
+    gBrocAPI.mTakeWeapon(e->GetHandle(), pszWeaponName);
 }
 
 // Broc::SwitchToLastWeapon - ea: 0x950B80
@@ -4856,7 +4883,7 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
 void* main__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self);
-void* SwitchToSecondarySpawns__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* SwitchToSecondarySpawns__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
 void* CompassUnderlay__functor(Broc::entity p);
 void* WaitForFlagTimeOut__functor(Broc::entity flag);
@@ -10469,7 +10496,7 @@ AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(FlagThreadLauncher, self);
 }
-void* SwitchToSecondarySpawns__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* SwitchToSecondarySpawns__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;

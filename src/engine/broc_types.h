@@ -321,14 +321,10 @@ public:
     void UndefineEEField(unsigned int key);
     unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
     bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
+    bool operator==(const entity& rhs) const;         // ea: 0x94FA60
     bool operator!=(const entity& rhs) const;         // ea: 0x93F640
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(entity) == 4, "Broc::entity size mismatch");
-
-
-inline bool operator==(const entity& lhs, const entity& rhs) {
-    return lhs.___u0 == rhs.___u0;
-}
 
 // ============================================================================
 // Broc::string — reference-counted (COW) string (4 bytes)
