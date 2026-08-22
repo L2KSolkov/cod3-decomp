@@ -405,9 +405,8 @@ void GetAverageDelta(float* deltaAngle, int* index, int iStickIndex)
 }
 
 // ea: 0x52C560
-int CL_ClearKeysForAll()
+void CL_ClearKeysForAll()
 {
     memset(kb, 0, sizeof(kb));
     memset(kbss[currCl], 0, sizeof(kbss[currCl]));
-    return 0;
 }
