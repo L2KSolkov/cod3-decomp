@@ -760,11 +760,11 @@ index	status	map_line
 759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
 760	PORTED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o	PORTED: restored exact zero/null array constructor from IDA
 761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-762	PORTED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o
-763	PORTED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o
-764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o
-765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o
-766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o
+762	PORTED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o	PORTED: instantiated exact DCGSet count accessor using IDA-confirmed 112-byte type
+763	PORTED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o	PORTED: instantiated exact const DCGSet indexer and assertion contract
+764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o	PORTED: instantiated exact mutable DCGSet indexer and assertion contract
+765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o	PORTED: instantiated exact aligned DCGSet loader with sizeof stride
+766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o	PORTED: restored exact aligned cdl_patch_t loader with sizeof stride
 767	SKIPPED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 768	SKIPPED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o
