@@ -353,8 +353,9 @@ int CL_StanceButtonUpdate()
 }
 
 // ea: 0x52BE60
-void CL_MouseEvent(int dx, int dy)
+void CL_MouseEvent(int dx, int dy, int time)
 {
+    (void)time;
     int mouseIndex = cl[currCl].mouseIndex;
     cl[currCl].mouseDx[mouseIndex] += dx;
     cl[currCl].mouseDy[mouseIndex] += dy;

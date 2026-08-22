@@ -134,7 +134,7 @@ extern void CL_ShutdownAll();
 extern void CL_StartHunkUsers();
 extern void CL_KeyEvent(int key, int down, unsigned int time);
 extern void CL_CharEvent(int key);
-extern void CL_MouseEvent(int dx, int dy);
+extern void CL_MouseEvent(int dx, int dy, int time);
 extern void CL_GamepadEvent(int physicalAxis, int value, int time);
 extern void CL_PacketEvent(netadr_t from, msg_t* msg, int time);
 extern void SV_Shutdown();
@@ -1753,7 +1753,7 @@ int Com_EventLoop()
             break;
         case 3u:  // SE_MOUSE
             ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1681);
-            CL_MouseEvent(key, down);
+            CL_MouseEvent(key, down, (int)ev);
             break;
         case 4u:  // SE_JOYSTICK
             ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1691);
