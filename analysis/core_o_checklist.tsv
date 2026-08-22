@@ -1318,9 +1318,9 @@ index	status	map_line
 1317	PORTED	0002:000e6430 ?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z 008D5930 f i core.o
 1318	VERIFIED	0002:000e6540 ??D?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A40 f i core.o
 1319	VERIFIED	0002:000e6580 ??C?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QBEPAVSound@SoundDevice@@XZ 008D5A80 f i core.o
-1320	PORTED	0002:000e65c0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D5AC0 f i core.o
-1321	PORTED	0002:000e6610 ?erase@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@AAV21@@Z 008D5B10 f i core.o
-1322	PORTED	0002:000e66f0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D5BF0 f i core.o
+1320	PORTED	0002:000e65c0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@XZ 008D5AC0 f i core.o  PORTED: exact IDA iterator initialization and sentinel handling
+1321	PORTED	0002:000e6610 ?erase@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AViterator@1@AAV21@@Z 008D5B10 f i core.o  PORTED: exact IDA successor return, unlink, iterator clear, and line-433 assertion
+1322	PORTED	0002:000e66f0 ?begin@?$reserved_dlist@VRumbleEffectInstance@@@@QBE?AVconst_iterator@1@XZ 008D5BF0 f i core.o  PORTED: exact IDA const-iterator initialization and sentinel handling
 1323	PORTED	0002:000e6740 ??1?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008D5C40 f i core.o
 1324	VERIFIED	0002:000e6770 ??0?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAE@XZ 008D5C70 f i core.o
 1325	SKIPPED	0002:000e67b0 ??B?$IVPointer@VDbTableSet@@@@QBE_NXZ 008D5CB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
