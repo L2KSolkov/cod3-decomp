@@ -70,11 +70,69 @@ struct Bitmask {
     Bitmask() : mVal(0) {}
     explicit Bitmask(T v) : mVal(v) {}
 
-    // ?Test@?$Bitmask@I@@QBE_NH@Z (g.o 0x4ACD50)
-    bool Test(int b) const { return ((1 << b) & mVal) != 0; }
+    // ?Add@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF570)
+    void Add(int b)
+    {
+        if (b >= static_cast<int>(sizeof(T) * 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
+            AeAssert::gCurrentLine = 77;
+            AeAssert::gCurrentExpr =
+                "b >= 0 && b < (int32)(sizeof(_T) * 8)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        mVal |= static_cast<T>(1 << b);
+    }
+
+    // ?Rmv@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF600)
+    void Rmv(int b)
+    {
+        if (b >= static_cast<int>(sizeof(T) * 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
+            AeAssert::gCurrentLine = 83;
+            AeAssert::gCurrentExpr =
+                "b >= 0 && b < (int32)(sizeof(_T) * 8)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        mVal &= static_cast<T>(~(1 << b));
+    }
+
+    // ?Test@?$Bitmask@G@@QBE_NH@Z (core.o 0x004DF690)
+    bool Test(int b) const
+    {
+        if (b >= static_cast<int>(sizeof(T) * 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
+            AeAssert::gCurrentLine = 89;
+            AeAssert::gCurrentExpr =
+                "b >= 0 && b < (int32)(sizeof(_T) * 8)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        return ((1 << b) & mVal) != 0;
+    }
+
+    // ?Set@?$Bitmask@G@@QAEXH_N@Z (core.o 0x004DF720)
+    void Set(int b, bool v)
+    {
+        if (v)
+            Add(b);
+        else
+            Rmv(b);
+    }
+
     // ?IsEmpty@?$Bitmask@I@@QBE_NXZ (g.o 0x4ACDE0)
     bool IsEmpty() const { return mVal == 0; }
-    // ?Clear@?$Bitmask@I@@QAEXXZ (g.o 0x4ACDF0)
+    // ?Clear@?$Bitmask@G@@QAEXXZ (core.o 0x004DF750)
     void Clear() { mVal = 0; }
 };
 
