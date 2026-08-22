@@ -843,14 +843,14 @@ index	status	map_line
 842	VERIFIED	0002:000df2c0 ?length@idStr@@QBEHXZ 008CE7C0 f i core.o VERIFIED: IDA 0x004DF2C0 returns m_data->len or zero; existing source matches
 843	VERIFIED	0002:000df2d0 ??1PendingQuery@EffectEventSys@@QAE@XZ 008CE7D0 f i core.o
 844	VERIFIED	0002:000df2e0 ??1RumbleEffectInstance@@QAE@XZ 008CE7E0 f i core.o
-845	PORTED	0002:000df2f0 ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ 008CE7F0 f i core.o PORTED: source implementation in 8c8586d1; IDA 0x004DF2F0 sets mFlags |= 1u
+845	VERIFIED	0002:000df2f0 ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ 008CE7F0 f i core.o	VERIFIED: mFlags |= 1u matches IDA 0x004DF2F0
 846	VERIFIED	0002:000df300 ?FastForward@AbstractEffect@@UAEXM@Z 008CE800 f i core.o
 847	VERIFIED	0002:000df310 ?StartFadeOut@AbstractEffect@@UAEXM@Z 008CE810 f i core.o
 848	VERIFIED	0002:000df320 ?IsLooping@AbstractEffect@@UBE_NXZ 008CE820 f i core.o
 849	VERIFIED	0002:000df330 ?IsQueued@AbstractEffect@@UBE_NXZ 008CE830 f i core.o
-850	PORTED	0002:000df340 ?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z 008CE840 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF340 empty body
-851	PORTED	0002:000df350 ?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ 008CE850 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF350 empty body
-852	PORTED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF360 empty body
+850	VERIFIED	0002:000df340 ?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z 008CE840 f i core.o	VERIFIED: empty virtual body matches IDA 0x004DF340
+851	VERIFIED	0002:000df350 ?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ 008CE850 f i core.o	VERIFIED: empty virtual body matches IDA 0x004DF350
+852	VERIFIED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o	VERIFIED: empty virtual body matches IDA 0x004DF360
 853	SKIPPED	0002:000df370 ??_FRumbleEffectInstanceHandle@@QAEXXZ 008CE870 f i core.o SKIPPED: compiler-generated default constructor closure; supplied by the compiler
 854	VERIFIED	0002:000df380 ??0nalHeap@@QAE@XZ 008CE880 f i core.o
 855	PORTED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF390 installs the AnimCacheHeap vtable
