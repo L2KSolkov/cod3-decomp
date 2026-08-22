@@ -287,28 +287,25 @@ int CL_GetKeyBinding(const char* pszBinding, const char** ppszKey1,
 }
 
 // ea: 0x52CAF0
-int CL_PreAllocStrings()
+void CL_PreAllocStrings()
 {
-    int result = 0x2000;
+    int allocationCount = 0x2000;
     dword_F171D0 = 0x2000;
     dword_F171C0 = 256;
     if (dword_F171C8 == nullptr)
     {
         dword_F171C8 = _Z_MallocInternal(33792);
         dword_F171CC = _Z_MallocInternal((unsigned int)dword_F171C0);
-        result = dword_F171D0;
         dword_F171C4 = 0;
     }
     if (ptr == nullptr)
     {
-        ptr = _Z_MallocInternal(44 * (unsigned int)result);
+        ptr = _Z_MallocInternal(44 * (unsigned int)allocationCount);
         dword_F171DC = _Z_MallocInternal((unsigned int)dword_F171D0);
         dword_F171E0 = _Z_MallocInternal(4 * (unsigned int)dword_F171D0);
-        result = (int)_Z_MallocInternal(4 * (unsigned int)dword_F171D0);
-        dword_F171E4 = result;
+        dword_F171E4 = (int)_Z_MallocInternal(4 * (unsigned int)dword_F171D0);
         dword_F171D4 = 0;
     }
-    return result;
 }
 
 // ============================================================================
