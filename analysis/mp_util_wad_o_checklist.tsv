@@ -838,7 +838,7 @@ index	status	map_line
 837	VERIFIED	0002:00574f00 ?WARScore__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D64400 f i mp_util_wad.o	VERIFIED: IDA 0x00974F00 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WARScore constructor
 838	FIXED	0002:00574fa0 ?PlayCapturedSounds@_mp_war@@YAXVentity@Broc@@Ubint@@1@Z 00D644A0 f mp_util_wad.o	FIXED: replaced the stub with the IDA 0x00974FA0 capture branches, exact sound names, team dialog/team sound functors, fades, and thread creation
 839	PORTED	0002:00575950 ?SoundFadeOut@@YAXIM@Z 00D64E50 f i mp_util_wad.o	PORTED: added exact IDA 0x00975950 wrapper forwarding handle and time to mSoundFadeOut
-840	VERIFIED	0002:00575980 ?WARScore@_mp_war@@YAXVentity@Broc@@@Z 00D64E80 f mp_util_wad.o
+840	FIXED	0002:00575980 ?WARScore@_mp_war@@YAXVentity@Broc@@@Z 00D64E80 f mp_util_wad.o	FIXED: corrected IDA 0x00975980 score update to read both team scores and call Code_SendGameScore with the winning-side points
 841	PORTED	0002:00575d70 ?Code_SendGameScore@Broc@@YAXHH@Z 00D65270 f i mp_util_wad.o	PORTED: added exact IDA 0x00975D70 wrapper forwarding both scores to mSendGameScore
 842	VERIFIED	0002:00575da0 ?GiveTeamMembersPoints@_mp_war@@YAXUvector@Broc@@Ubfloat@@Vstring@3@@Z 00D652A0 f mp_util_wad.o	VERIFIED: IDA 0x00975DA0 matches active-player filtering, distance/radius test, team comparison, stat 20 increment, and cleanup
 843	PORTED	0002:00575ff0 ??M@YA?AUbbool@@Ubfloat@@0@Z 00D654F0 f i mp_util_wad.o	PORTED: added exact IDA 0x00975FF0 comparison returning rhs.mVal > lhs.mVal
