@@ -301,14 +301,14 @@ index	status	map_line
 300	SKIPPED	0002:00595cc0 ?IsDefined@radius_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D851C0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_radius
 301	PORTED	0002:00595cf0 ?GetEE_origin@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D851F0 f mp_anim_wad.o	PORTED: added IDA 0x00995CF0 pathnode origin API access; source commit 810faa1b
 302	SKIPPED	0002:00595d20 ?Get@origin_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85220 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_origin
-303	PORTED	0002:00595d70 ?IsEEDefined_origin@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85270 f mp_anim_wad.o
-304	PORTED	0002:00595de0 ?IsDefined@origin_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D852E0 f i mp_anim_wad.o
-305	PORTED	0002:00595e10 ?GetEE_script_chain@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85310 f mp_anim_wad.o
-306	PORTED	0002:00595e60 ?Get@script_chain_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85360 f i mp_anim_wad.o
-307	PORTED	0002:00595f10 ?IsEEDefined_script_chain@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85410 f mp_anim_wad.o
-308	PORTED	0002:00595f80 ?IsDefined@script_chain_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85480 f i mp_anim_wad.o
-309	PORTED	0002:00596010 ?GetEE_targetname@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85510 f mp_anim_wad.o
-310	PORTED	0002:00596060 ?Get@targetname_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85560 f i mp_anim_wad.o
+303	PORTED	0002:00595d70 ?IsEEDefined_origin@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85270 f mp_anim_wad.o	PORTED: added IDA 0x00995D70 pathnode origin defined-check using mIsPathNodeDefined; source commit e452026a
+304	SKIPPED	0002:00595de0 ?IsDefined@origin_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D852E0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_origin
+305	PORTED	0002:00595e10 ?GetEE_script_chain@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85310 f mp_anim_wad.o	PORTED: added IDA 0x00995E10 pathnode string-field access using key 0x46F0EE57; source commit e452026a
+306	SKIPPED	0002:00595e60 ?Get@script_chain_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85360 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_chain
+307	PORTED	0002:00595f10 ?IsEEDefined_script_chain@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85410 f mp_anim_wad.o	PORTED: added IDA 0x00995F10 pathnode string defined-check using key 0x46F0EE57; source commit e452026a
+308	SKIPPED	0002:00595f80 ?IsDefined@script_chain_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85480 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_chain
+309	PORTED	0002:00596010 ?GetEE_targetname@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85510 f mp_anim_wad.o	PORTED: added IDA 0x00996010 pathnode targetname API access; source commit e452026a
+310	SKIPPED	0002:00596060 ?Get@targetname_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D85560 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_targetname
 311	PORTED	0002:00596110 ?IsEEDefined_targetname@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85610 f mp_anim_wad.o
 312	PORTED	0002:00596180 ?IsDefined@targetname_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85680 f i mp_anim_wad.o
 313	PORTED	0002:005961b0 ?GetEE_animscript@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D856B0 f mp_anim_wad.o
