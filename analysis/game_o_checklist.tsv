@@ -1087,13 +1087,13 @@ index	status	map_line
 1086	SKIPPED	0002:00261820 ?destroy@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@@Z 00A50D20 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1087	SKIPPED	0002:00261830 ??$_Uninit_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A50D30 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1088	VERIFIED	0002:00261870 ??1rtree_visitor_t@@QAE@XZ 00A50D70 f i game.o
-1089	PORTED	0002:00261880 ??0CachedLightGrid@@QAE@XZ 00A50D80 f i game.o
-1090	VERIFIED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o
-1091	PORTED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o
-1092	PORTED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o
+1089	PORTED	0002:00261880 ??0CachedLightGrid@@QAE@XZ 00A50D80 f i game.o  PORTED: IDA 0x00661880 initializes all lastPos components to FLT_MAX and sets moved=true; constructor restored in g_accessors.cpp.
+1090	FIXED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o  FIXED: IDA 0x006618B0 preserves the visibility byte while clearing bit 1 at offset +0xFB; constructor now mirrors that write after refEntity zero-init.
+1091	PORTED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o  PORTED: IDA 0x00661990 restored the exact intrusive-list append overload in g_entity_misc.cpp.
+1092	PORTED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o  PORTED: IDA 0x006619C0 restored as Entity::AnimationDebug::AnimationDebug with exact pointer/int assignments and CStrToAeStr length handling.
 1093	SKIPPED	0002:00261a10 ??_GAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1094	SKIPPED	0002:00261a10 ??_EAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1095	PORTED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o
+1095	PORTED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o  PORTED: IDA 0x00661A40 allocates GetSize() bytes aligned to 8, stores Array, and clears the first two words; constructor restored in ngl_dx_core.cpp.
 1096	SKIPPED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1097	SKIPPED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1098	VERIFIED	0002:00261ab0 ??1TempDCGSet@DCGBankManager@@QAE@XZ 00A50FB0 f i game.o
