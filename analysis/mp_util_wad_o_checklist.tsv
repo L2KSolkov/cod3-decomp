@@ -868,7 +868,7 @@ index	status	map_line
 867	FIXED	0002:005781e0 ?CallbackGetTeamCapturingFlag@_mp_war@@YAHXZ 00D676E0 f mp_util_wad.o	FIXED: replaced area scan with IDA 0x009781E0 warIndex bounds check and active cap-status sign mapping
 868	PORTED	0002:00578330 ?GetRef@capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D67830 f i mp_util_wad.o	PORTED: added IDA 0x00978330 GetRef using global bfloat and key 0x53377998
 869	FIXED	0002:00578360 ?CallbackGetCapturingFlagPercent@_mp_war@@YAHXZ 00D67860 f mp_util_wad.o	FIXED: replaced area scan/magnitude scaling with IDA 0x00978360 active warIndex capStatus*100 result
-870	VERIFIED	0002:00578470 ?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z 00D67970 f mp_util_wad.o
+870	FIXED	0002:00578470 ?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z 00D67970 f mp_util_wad.o	FIXED: matched IDA 0x00978470 WAR array/index, playerState, flagEnd trigger touch, vehicle rejection, and contest-count path
 871	VERIFIED	0002:005785f0 ?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z 00D67AF0 f mp_util_wad.o	VERIFIED: IDA 0x009785F0 returns pLevel->capCount
 872	VERIFIED	0002:00578620 ?CallbackPlayerJoin@_mp_war@@YAXVentity@Broc@@IH@Z 00D67B20 f mp_util_wad.o
 873	VERIFIED	0002:00578660 ?CallbackPlayerEnter@_mp_war@@YAXVentity@Broc@@H@Z 00D67B60 f mp_util_wad.o
