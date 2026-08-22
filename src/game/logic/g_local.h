@@ -4132,6 +4132,8 @@ struct cdl_object_t {
     float    box_radius[3]; // +0x14 (Dir3::Packed)
     float    sphere_radius; // +0x20
 
+    float get_sphere_radius() const;                   // game.o 0x601CD0
+    int get_sflags() const;                            // game.o 0x601CE0
     const math::Position3 get_center_local() const;  // ?get_center_local@cdl_object_t@@QBE?BVPosition3@math@@XZ (g.o 0x4AECC0)
     math::Dir3 get_box_radius() const;               // ?get_box_radius@cdl_object_t@@QBE?AVDir3@math@@XZ (g.o 0x4AED30)
     math::Position3 get_max() const;                 // ?get_max@cdl_object_t@@QBE?AVPosition3@math@@XZ (g.o 0x4AEDA0)
@@ -4141,7 +4143,10 @@ struct cdl_brush_t {
     uint16_t first_side;  // +0x00
     uint16_t num_sides;   // +0x02
 };
-struct cdlPlane { union { __m128 data; int packed[4]; }; };  // IDA: math::Vector4 data (16 bytes)
+struct cdlPlane {
+    union { __m128 data; int packed[4]; };
+    const math::Dir3& get_normal() const;              // game.o 0x601CC0
+};  // IDA: math::Vector4 data (16 bytes)
 struct cdl_patch_t {
     uint16_t first_index;  // +0x00
     uint16_t num_inds;     // +0x02
@@ -4150,6 +4155,7 @@ struct proxy_obj_t {
     uint16_t oi;  // +0x00
     uint8_t  bi;  // +0x02
     uint8_t  ti;  // +0x03
+    proxy_obj_t(unsigned char _bi, unsigned short _oi, unsigned char _ti);
 };
 struct bounded_proxy_obj_t {
     uint16_t oi;        // +0x00
@@ -4292,6 +4298,7 @@ public:
     CGBankManager();        // ??0CGBankManager@@QAE@XZ (game.o 0x6492D0)
     virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
     CGBank* GetBank(TPakId pakId);  // ?GetBank@CGBankManager@@QAEPAVCGBank@@W4TPakId@@@Z (g.o 0x4AEFC0)
+    int Count() const;               // ?Count@CGBankManager@@QBEHXZ (game.o 0x601DB0)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 private:
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)

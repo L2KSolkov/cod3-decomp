@@ -6,6 +6,8 @@
 
 #pragma once
 
+class Color;
+
 // Color32 (IDA type; class V-tag; 4 bytes)
 class Color32 {
 public:
@@ -18,6 +20,10 @@ public:
         } c;
         unsigned int i;
     };
+
+    Color32(unsigned char _r, unsigned char _g, unsigned char _b,
+            unsigned char _a);
+    Color to_color();
 };
 static_assert(sizeof(Color32) == 4, "Color32 size mismatch");
 

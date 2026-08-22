@@ -21,6 +21,58 @@ namespace PlayerStats {
 int TotalScoreForStats(short* const stats);
 }
 
+// game.o 0x601CC0
+const math::Dir3& cdlPlane::get_normal() const
+{
+    return reinterpret_cast<const math::Dir3&>(*this);
+}
+
+// game.o 0x601CD0
+float cdl_object_t::get_sphere_radius() const
+{
+    return sphere_radius;
+}
+
+// game.o 0x601CE0
+int cdl_object_t::get_sflags() const
+{
+    return sflags;
+}
+
+// game.o 0x601D00
+Color32::Color32(unsigned char _r, unsigned char _g, unsigned char _b,
+                 unsigned char _a)
+{
+    c.b = _b;
+    c.g = _g;
+    c.r = _r;
+    c.a = _a;
+}
+
+// game.o 0x601D30
+Color Color32::to_color()
+{
+    Color result;
+    result.r = c.r * 0.0039215689f;
+    result.g = c.g * 0.0039215689f;
+    result.b = c.b * 0.0039215689f;
+    result.a = c.a * 0.0039215689f;
+    return result;
+}
+
+// game.o 0x601DB0
+int CGBankManager::Count() const
+{
+    return mCount;
+}
+
+// game.o 0x601F00
+proxy_obj_t::proxy_obj_t(unsigned char _bi, unsigned short _oi,
+                         unsigned char _ti)
+    : oi(_oi), bi(_bi), ti(_ti)
+{
+}
+
 extern float sNaN;
 extern float nslGetWaveParam(nslWaveID waveID, int paramIndex,
                              float defaultValue);

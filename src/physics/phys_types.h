@@ -167,6 +167,13 @@ struct phys_memory_heap {
     char* m_buffer_cur;    // +0x08
     char* m_user_start;    // +0x0C
 
+    void nullify_buffer() {
+        m_buffer_start = nullptr;
+        m_buffer_end = nullptr;
+        m_buffer_cur = nullptr;
+        m_user_start = nullptr;
+    }
+
     // allocate - ea: 0x718AF0 (inline COMDAT, physics.o)
     void* allocate(int size, int alignment, bool no_error,
                    const char* error_msg);
