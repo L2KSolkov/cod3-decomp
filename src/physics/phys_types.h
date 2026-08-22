@@ -671,6 +671,7 @@ public:
     void do_collision(float delta_t);
     void epilog_vel_constraint(float delta_t);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
+    double get_displaced_center_dist() const;  // game.o 0x0065C4C0
 };
 static_assert(sizeof(rigid_body_constraint_wheel) == 0xE0, "rigid_body_constraint_wheel size mismatch");
 static_assert(offsetof(rigid_body_constraint_wheel, m_b2_hitp_loc) == 0x10, "wheel::m_b2_hitp_loc offset mismatch");

@@ -158,6 +158,12 @@ double lerp_float(float tgt, float cur, float rate, float delta_t) {
 }
 
 // ============================================================================
+// game.o 0x0065C4C0
+double rigid_body_constraint_wheel::get_displaced_center_dist() const
+{
+    return m_wheel_displaced_center_dist;
+}
+
 // rigid_body_constraint_wheel::set_wheel_state_accelerating â€” ea: 0x884DA0
 // ============================================================================
 void rigid_body_constraint_wheel::set_wheel_state_accelerating(float desired_speed_k,

@@ -241,6 +241,7 @@ struct debug_brush {
     const cdlBrush* brush;      // +0x00
     math::Mat43        mat;     // +0x10
     Color              color;   // +0x50
+    debug_brush();
     debug_brush(const cdlBrush& _brush, const math::Mat43& _mat,
                 const Color& _color)
         : brush(&_brush), mat(_mat), color(_color)
@@ -248,6 +249,11 @@ struct debug_brush {
     }
 };
 static_assert(sizeof(debug_brush) == 0x60, "debug_brush size mismatch");
+
+// game.o 0x0065C4D0
+debug_brush::debug_brush()
+{
+}
 
 ae_vector<debug_brush> debug_brushes;  // ?debug_brushes@@3V?$ae_vector@Udebug_brush@@@@A (game.o)
 

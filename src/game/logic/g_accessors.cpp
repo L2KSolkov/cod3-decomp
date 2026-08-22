@@ -99,6 +99,18 @@ biped_phys_info* Entity::get_bp_info()
     return mBPInfo;
 }
 
+// game.o 0x0065C5B0
+void DObj::SetEntity(Entity* entity)
+{
+    mEntity = entity;
+}
+
+// game.o 0x0065C5D0
+biped_system* biped_phys_info::get_bp_sys()
+{
+    return m_bp_sys;
+}
+
 extern float sNaN;
 extern float nslGetWaveParam(nslWaveID waveID, int paramIndex,
                              float defaultValue);

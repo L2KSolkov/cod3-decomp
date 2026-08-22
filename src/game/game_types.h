@@ -49,6 +49,7 @@ public:
     struct biped_system* m_bp_sys;                 // +0x568
     int32_t             m_current_debug_joint;     // +0x56C
     uint32_t            m_render_flags;            // +0x570 (Bitmask<unsigned int>)
+    biped_system* get_bp_sys();                    // game.o 0x0065C5D0
 };
 static_assert(sizeof(biped_phys_info) == 0x580, "biped_phys_info size mismatch");
 static_assert(offsetof(biped_phys_info, m_bp_sys) == 0x568,

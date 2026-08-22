@@ -5428,6 +5428,7 @@ public:
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(TPakId pakId);            // ??0DObj@@QAE@W4TPakId@@@Z (render.o 0x6D9920)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
+    void SetEntity(Entity* entity); // game.o 0x0065C5B0
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;
     // ?GetBoneParent@DObj@@QAEHH@Z (render.o 0x6CE560)
     int GetBoneParent(int boneIndex);
