@@ -6261,6 +6261,18 @@ Broc::bfloat operator*(Broc::bfloat lhs, float rhs) {
     return Broc::bfloat(lhs.mVal * rhs);
 }
 
+// The script-facing boxed types are namespaced in the port. These overloads
+// retain the IDA 0x0093AD40/0x009370B0 arithmetic for those exact call sites.
+namespace Broc {
+bint operator+(bint lhs, int rhs) {
+    return bint(static_cast<int>(lhs) + rhs);
+}
+
+bfloat operator*(bfloat lhs, float rhs) {
+    return bfloat(static_cast<float>(lhs) * rhs);
+}
+} // namespace Broc
+
 // operator!=(bint, int) - ea: 0x93BD20
 bool Broc::bint::operator!=(int rhs) const {
     return mVal != rhs;
