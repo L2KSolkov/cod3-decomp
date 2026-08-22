@@ -1182,7 +1182,7 @@ index	status	map_line
 1181	PORTED	0002:00586f50 ??$iprintln@$$BY0BK@$$CBD@Broc@@YAXAAY0BK@$$CBD@Z 00D76450 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1182	PORTED	0002:00586fe0 ??$iprintln@$$BY0BH@$$CBD@Broc@@YAXAAY0BH@$$CBD@Z 00D764E0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1183	PORTED	0002:00587070 ??$iprintln@$$BY0BA@$$CBD@Broc@@YAXAAY0BA@$$CBD@Z 00D76570 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
-1184	PORTED	0002:00587100 ??$waittill@Ventity@Broc@@@Broc@@YAXVentity@0@UHashStr@@AAV10@@Z 00D76600 f i mp_util_wad.o
+1184	PORTED	0002:00587100 ??$waittill@Ventity@Broc@@@Broc@@YAXVentity@0@UHashStr@@AAV10@@Z 00D76600 f i mp_util_wad.o	PORTED: added the IDA entity waittill output carrier wrapper and shared carrier bridge
 1185	PORTED	0002:005871c0 ?AssignParameterForNotify@Broc@@YA_NABVentity@1@UHashStr@@PAVWaitTilOutput@@@Z 00D766C0 f i mp_util_wad.o	PORTED: added the IDA BrocAPI mAssignParameterForNotify forwarding wrapper
 1186	PORTED	0002:00587200 ??$iprintln@$$BY0BD@$$CBD@Broc@@YAXAAY0BD@$$CBD@Z 00D76700 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1187	PORTED	0002:00587290 ??$iprintln@PBD@Broc@@YAXABQBD@Z 00D76790 f i mp_util_wad.o	PORTED: added the IDA const-char* iprintln wrapper
