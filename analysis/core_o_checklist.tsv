@@ -1376,7 +1376,7 @@ index	status	map_line
 1375	PORTED	0002:000e9150 ??$Where@W4EAction@@@EffectEventSys@@QAEXHABW4EAction@@_N@Z 008D8650 f i core.o  PORTED: exact context update and CachedQuery delegation
 1376	PORTED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o  PORTED: exact context update and CachedQuery delegation
 1377	PORTED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o  PORTED: exact context update and CachedQuery delegation
-1378	PORTED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o
+1378	PORTED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o  PORTED: exact sentinel-aware safe_for_each cleanup from IDA
 1379	SKIPPED	0002:000e9280 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPAXI@Z 008D8780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1380	SKIPPED	0002:000e92d0 ??1logic_error@std@@UAE@XZ 008D87D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1381	SKIPPED	0002:000e9360 ?what@logic_error@std@@UBEPBDXZ 008D8860 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
