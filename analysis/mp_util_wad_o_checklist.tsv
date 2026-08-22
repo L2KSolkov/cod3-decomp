@@ -846,10 +846,10 @@ index	status	map_line
 845	VERIFIED	0002:00576150 ?CallbackAreaCaptured@_mp_war@@YAXHH@Z 00D65650 f mp_util_wad.o
 846	PORTED	0002:005769d0 ?ObjectiveState@@YAXHABVstring@Broc@@PBDH@Z 00D65ED0 f i mp_util_wad.o	PORTED: added exact IDA 0x009769D0 wrapper forwarding objective, state, display, and client index
 847	VERIFIED	0002:00576a10 ?PlayCapturedSounds__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@1@Z 00D65F10 f i mp_util_wad.o	VERIFIED: IDA 0x00976A10 matches 0x14-byte AeThreadFunctor3 allocation, null check, and constructor arguments
-848	PORTED	0002:00576ab0 ?GetRef@flag_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FB0 f i mp_util_wad.o
-849	PORTED	0002:00576ae0 ?GetRef@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FE0 f i mp_util_wad.o
-850	PORTED	0002:00576b10 ??4capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEABMABM@Z 00D66010 f i mp_util_wad.o
-851	PORTED	0002:00576b60 ??4capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D66060 f i mp_util_wad.o
+848	PORTED	0002:00576ab0 ?GetRef@flag_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FB0 f i mp_util_wad.o	PORTED: added IDA 0x00976AB0 GetRef using the registered s_flagKey
+849	PORTED	0002:00576ae0 ?GetRef@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FE0 f i mp_util_wad.o	PORTED: added IDA 0x00976AE0 GetRef using key 0xF2F5EAB4; trigger Get and assignment remain separate functions
+850	PORTED	0002:00576b10 ??4capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEABMABM@Z 00D66010 f i mp_util_wad.o	PORTED: added IDA 0x00976B10 SetVal<bfloat> using key 0x53377998
+851	PORTED	0002:00576b60 ??4capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D66060 f i mp_util_wad.o	PORTED: added IDA 0x00976B60 SetVal<bint> using key 0xAF35F29B
 852	VERIFIED	0002:00576bb0 ?CallbackHostOptionsChanged@_mp_war@@YAXH@Z 00D660B0 f mp_util_wad.o
 853	VERIFIED	0002:00576bf0 ?CallbackGameState@_mp_war@@YAXHHHHHHHHHHHHH@Z 00D660F0 f mp_util_wad.o
 854	VERIFIED	0002:00576c50 ?CallbackPlayerKilled@_mp_war@@YAXVentity@Broc@@00HHH@Z 00D66150 f mp_util_wad.o
