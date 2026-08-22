@@ -922,19 +922,19 @@ index	status	map_line
 921	FIXED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o	IDA type shows m_elements pointer at +0 and raw m_elementdata at +4; fixed the prior inline-array base and constructor to point into storage.
 922	VERIFIED	0002:0025ed10 ??0?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAE@XZ 00A4E210 f i game.o
 923	VERIFIED	0002:0025ed20 ??0?$ae_sized_array@W4EPadAliasStick@@$01@@QAE@XZ 00A4E220 f i game.o
-924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o
+924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o	IDA: returns the vector mElements pointer unchanged.
 925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o	IDA: allocates 12*iNumber bytes and zeroes every element; exact one-argument overload restored.
-926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o
-927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o
-928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o
-929	PORTED	0002:0025edd0 ?empty@?$reserved_dlist@VCurve@@@@QBE_NXZ 00A4E2D0 f i game.o
-930	PORTED	0002:0025edf0 ?get_head@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAUdlist_node@1@XZ 00A4E2F0 f i game.o
-931	PORTED	0002:0025ee00 ?empty@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NXZ 00A4E300 f i game.o
-932	PORTED	0002:0025ee20 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAVCurve@@@Z 00A4E320 f i game.o
-933	PORTED	0002:0025ee40 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAVCurveEffectListElem@@@Z 00A4E340 f i game.o
-934	PORTED	0002:0025ee60 ?begin@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E360 f i game.o
-935	PORTED	0002:0025ee70 ?end@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E370 f i game.o
-936	PORTED	0002:0025ee90 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@H@Z 00A4E390 f i game.o
+926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o	IDA: returns the list head node pointer.
+927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o	IDA: compares m_head against the embedded end sentinel.
+928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o	IDA: returns the list head node pointer.
+929	PORTED	0002:0025edd0 ?empty@?$reserved_dlist@VCurve@@@@QBE_NXZ 00A4E2D0 f i game.o	IDA: compares m_head against the embedded end sentinel.
+930	PORTED	0002:0025edf0 ?get_head@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAUdlist_node@1@XZ 00A4E2F0 f i game.o	IDA: returns the list head node pointer.
+931	PORTED	0002:0025ee00 ?empty@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NXZ 00A4E300 f i game.o	IDA: compares m_head against the embedded end sentinel.
+932	PORTED	0002:0025ee20 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAVCurve@@@Z 00A4E320 f i game.o	IDA: stores the supplied Curve pointer as the iterator node.
+933	PORTED	0002:0025ee40 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAVCurveEffectListElem@@@Z 00A4E340 f i game.o	IDA: stores the supplied CurveEffectListElem pointer as the iterator node.
+934	PORTED	0002:0025ee60 ?begin@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E360 f i game.o	IDA: returns the debug_brush vector mElements pointer unchanged.
+935	PORTED	0002:0025ee70 ?end@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E370 f i game.o	IDA: returns mElements plus mSize using debug_brush element stride.
+936	PORTED	0002:0025ee90 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@H@Z 00A4E390 f i game.o	IDA: allocates 96*iNumber bytes with tlMemAlloc and returns the allocation.
 937	SKIPPED	0002:0025eec0 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@ABV01@@Z 00A4E3C0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 938	SKIPPED	0002:0025eed0 ?deallocate@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@I@Z 00A4E3D0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 939	SKIPPED	0002:0025eef0 ??Yiterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAV012@H@Z 00A4E3F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
