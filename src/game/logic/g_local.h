@@ -39,6 +39,7 @@ struct CachedLightGrid {
     float lastPos[3];
     bool moved;
 
+    CachedLightGrid();  // game.o 0x00661880
     void Initialize();  // game.o 0x00601F50
 };
 static_assert(sizeof(CachedLightGrid) == 0x74, "CachedLightGrid size mismatch");

@@ -935,6 +935,7 @@ trRefEntity::trRefEntity(int foo)
     *(unsigned char*)((char*)this + 0x74) = 1;      // mLightGrid.moved
     *(float*)((char*)this + 0xEC) = 1.0f;           // mScale
     *(float*)((char*)this + 0xF0) = -1.0f;          // mAlpha
+    *(uint8_t*)((char*)this + 0xFB) &= 0xFD;        // clear noShadow bit
     this->mWaterHeightOffset = 0;
     this->iflIndex = (uint8_t)-1;
     this->mSnapshotId = 0;
@@ -978,6 +979,19 @@ trRefEntity& Entity::GetRenderEntity()
 // ============================================================================
 // Entity::SetAnimDebug - ea: 0x62AFB0
 // ============================================================================
+// ea: 0x006619C0
+Entity::AnimationDebug::AnimationDebug(int lastAnim, int prev2last,
+                                        const char* animName)
+    : lastAnimPlayed(reinterpret_cast<const char*>(
+          static_cast<uintptr_t>(static_cast<unsigned int>(lastAnim)))),
+      prev2lastAnimPlayed(reinterpret_cast<const char*>(
+          static_cast<uintptr_t>(static_cast<unsigned int>(prev2last))))
+{
+    AeStringSupport::CStrToAeStr((char*)lastAnimNamed.mBuff, &lastAnim, 63,
+                                 animName);
+    lastAnimNamed.mLength = (unsigned char)lastAnim;
+}
+
 extern void* mem_heap_malloc(unsigned int size);  // mem_lib
 extern void AeStringSupport::CStrToAeStr(char* oBuff, int* const oLen,
                                          int capacity,
@@ -1445,6 +1459,7 @@ struct EntityNotifySet {
     unsigned char mEndOnList[0x10];  // +0x1C
 
     EntityNotifySet(Entity* e);      // core.o 0x4C1D80
+    void AddNotify(EntityNotify* notify);  // game.o 0x00661990
     static PoolAllocator* sAllocator;    // core.o @ 0xF00E2C
 };
 
@@ -1458,6 +1473,18 @@ struct NotifyNode {
     NotifyNode* m_next;  // +0x00
     NotifyNode* m_prev;  // +0x04
 };
+
+// ea: 0x0062AD70
+void EntityNotifySet::AddNotify(EntityNotify* notify)
+{
+    NotifyDList* strings = (NotifyDList*)((char*)this + 0x0C);
+    NotifyNode* node = (NotifyNode*)&notify->m_dlist_node;
+    node->m_next = (NotifyNode*)strings->m_end;
+    node->m_prev = (NotifyNode*)strings->m_tail;
+    ((NotifyNode*)strings->m_tail)->m_next = node;
+    strings->m_tail = node;
+    ++strings->m_size;
+}
 
 // ea: 0x0062AD70
 void Entity::AddNotify(EntityNotify* notify)

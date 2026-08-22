@@ -371,21 +371,21 @@ struct AttachModelInfo {
 };
 static_assert(sizeof(AttachModelInfo) == 0x0C, "AttachModelInfo size mismatch");
 
-struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
-
-// Entity::AnimationDebug - 0x48 bytes (verified vs SetAnimDebug disasm)
-struct EntityAnimationDebug {
-    const char* lastAnimPlayed;      // +0x00
-    const char* prev2lastAnimPlayed; // +0x04
-    ae_fixed_string<64, unsigned char> lastAnimNamed;  // +0x08
-};
-
 // ============================================================================
 // Entity — main game entity (1136 bytes)
 // Size: 0x470 (1136 bytes) — verified against IDA (107 members)
 // ============================================================================
 class Entity {
 public:
+    // Entity::AnimationDebug - 0x48 bytes (verified vs SetAnimDebug disasm)
+    struct AnimationDebug {
+        const char* lastAnimPlayed;      // +0x00
+        const char* prev2lastAnimPlayed; // +0x04
+        ae_fixed_string<64, unsigned char> lastAnimNamed;  // +0x08
+
+        AnimationDebug(int lastAnim, int prev2last, const char* animName);
+    };
+
     Entity();             // ?Entity@@QAE@XZ (core.o)
     Entity(TPakId pakId); // ?Entity@@QAE@W4TPakId@@@Z (core.o)
     ~Entity();            // ??1Entity@@QAE@XZ (core.o)
@@ -567,7 +567,7 @@ public:
     Handle   effectLoopingFire;                   // +0x448
     int32_t  previousEventSequence;               // +0x44C
     int32_t  previousPreEventSequence;            // +0x450
-    struct EntityAnimationDebug* mAnimDebug;       // +0x454
+    AnimationDebug* mAnimDebug;                    // +0x454
     void*    mBrocExtendedEntity;                 // +0x458
     proximity_data_t* proximity_data;             // +0x45C
     int32_t  uniqueIndex;                         // +0x460
@@ -575,6 +575,7 @@ public:
     uint8_t  _pad464[12];                         // +0x464
 };
 static_assert(sizeof(Entity) == 0x470, "Entity size mismatch");
+using EntityAnimationDebug = Entity::AnimationDebug;
 static_assert(offsetof(Entity, s) == 0x000, "Entity::s offset mismatch");
 static_assert(offsetof(Entity, r) == 0x0E0, "Entity::r offset mismatch");
 static_assert(offsetof(Entity, mPakId) == 0x230, "Entity::mPakId offset mismatch");

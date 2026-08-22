@@ -310,6 +310,15 @@ int ae_stricmp(const char* s1, const char* s2)
 // game.o 0x006600A0
 LightGridData::LightGridData() {}
 
+// game.o 0x00661880
+CachedLightGrid::CachedLightGrid()
+{
+    lastPos[0] = 3.4028235e38f;
+    lastPos[1] = 3.4028235e38f;
+    lastPos[2] = 3.4028235e38f;
+    moved = true;
+}
+
 // game.o 0x601F50
 void CachedLightGrid::Initialize()
 {

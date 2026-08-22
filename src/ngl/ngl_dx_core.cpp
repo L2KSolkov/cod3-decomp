@@ -128,6 +128,16 @@ void nglParamSet::Clear()
     array[1] = 0;
 }
 
+// game.o 0x00661A40
+nglShaderParamSet::nglShaderParamSet()
+{
+    unsigned int* array =
+        static_cast<unsigned int*>(nglListAlloc(GetSize(), 8u));
+    Array = array;
+    array[0] = 0;
+    array[1] = 0;
+}
+
 // ea: 0x0065B690
 unsigned __int64* nglParamSet::ValidFlag()
 {
