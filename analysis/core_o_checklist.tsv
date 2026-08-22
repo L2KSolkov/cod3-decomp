@@ -1326,7 +1326,7 @@ index	status	map_line
 1325	SKIPPED	0002:000e67b0 ??B?$IVPointer@VDbTableSet@@@@QBE_NXZ 008D5CB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1326	SKIPPED	0002:000e67d0 ?get_file_name@?$ae_fixed_string@$0IA@E@@QBE?AV1@_N@Z 008D5CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1327	SKIPPED	0002:000e6840 ?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z 008D5D40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1328	PORTED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o
+1328	PORTED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o  PORTED: exact IDA callback enumeration and out-of-handles error path
 1329	PORTED	0002:000e6990 ??0?$BitSet@$0CAA@@@QAE@XZ 008D5E90 f i core.o
 1330	SKIPPED	0002:000e69c0 ?begin@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EC0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1331	SKIPPED	0002:000e69e0 ?end@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1336,7 +1336,7 @@ index	status	map_line
 1335	PORTED	0002:000e7010 ??$Where@H@DbQuery@@QAEXHABH_N@Z 008D6510 f i core.o
 1336	PORTED	0002:000e73f0 ??$Where@M@DbQuery@@QAEXHABM_N@Z 008D68F0 f i core.o
 1337	SKIPPED	0002:000e77d0 ??$Find@PBDV?$IVPointer@VDbTableSet@@@@@?$InplaceAssetBankSet@VDbTablesetBank@@@@QBE?AV?$IVPointer@VDbTableSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VDbTableSet@@@@@@PAW42@@Z 008D6CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o
+1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o  PORTED: exact float pointer fallback to default value
 1339	SKIPPED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1340	SKIPPED	0002:000e7b70 ??$PredicateSearch@VTypeCallbackSearch@@V?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@VTypeCallbackSearch@@V?$AeType@V?$IVPointer@VConfigString@@@@@@@Z 008D7070 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o  PORTED: exact IDA iterator walk and destructor/pool-release cleanup
@@ -1363,8 +1363,8 @@ index	status	map_line
 1362	PORTED	0002:000e8c50 ??0SmokeGrenadeMgr@@QAE@XZ 008D8150 f i core.o
 1363	SKIPPED	0002:000e8c60 ??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ 008D8160 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1364	PORTED	0002:000e8c90 ?delete_all@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D8190 f i core.o
-1365	PORTED	0002:000e8cf0 ??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ 008D81F0 f i core.o
-1366	PORTED	0002:000e8d50 ?AllocateHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE?AV?$SizedHandle@$08$0BH@@@XZ 008D8250 f i core.o
+1365	FIXED	0002:000e8cf0 ??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ 008D81F0 f i core.o  FIXED: replaced aggregate initialization with exact mFreeIndices/key/callback constructor
+1366	FIXED	0002:000e8d50 ?AllocateHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE?AV?$SizedHandle@$08$0BH@@@XZ 008D8250 f i core.o  FIXED: uses IDA BitSet iterator, Rmv, Dump-on-exhaustion, and key/index packing
 1367	PORTED	0002:000e8e30 ?delete_all@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D8330 f i core.o
 1368	SKIPPED	0002:000e8e90 ??A?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@I@Z 008D8390 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1369	PORTED	0002:000e8eb0 ??0?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D83B0 f i core.o
