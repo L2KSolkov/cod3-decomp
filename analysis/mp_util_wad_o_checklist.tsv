@@ -1183,7 +1183,7 @@ index	status	map_line
 1182	PORTED	0002:00586fe0 ??$iprintln@$$BY0BH@$$CBD@Broc@@YAXAAY0BH@$$CBD@Z 00D764E0 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1183	PORTED	0002:00587070 ??$iprintln@$$BY0BA@$$CBD@Broc@@YAXAAY0BA@$$CBD@Z 00D76570 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1184	PORTED	0002:00587100 ??$waittill@Ventity@Broc@@@Broc@@YAXVentity@0@UHashStr@@AAV10@@Z 00D76600 f i mp_util_wad.o
-1185	PORTED	0002:005871c0 ?AssignParameterForNotify@Broc@@YA_NABVentity@1@UHashStr@@PAVWaitTilOutput@@@Z 00D766C0 f i mp_util_wad.o
+1185	PORTED	0002:005871c0 ?AssignParameterForNotify@Broc@@YA_NABVentity@1@UHashStr@@PAVWaitTilOutput@@@Z 00D766C0 f i mp_util_wad.o	PORTED: added the IDA BrocAPI mAssignParameterForNotify forwarding wrapper
 1186	PORTED	0002:00587200 ??$iprintln@$$BY0BD@$$CBD@Broc@@YAXAAY0BD@$$CBD@Z 00D76700 f i mp_util_wad.o	PORTED: added the IDA single-part iprintln formatting wrapper
 1187	PORTED	0002:00587290 ??$iprintln@PBD@Broc@@YAXABQBD@Z 00D76790 f i mp_util_wad.o	PORTED: added the IDA const-char* iprintln wrapper
 1188	PORTED	0002:00587320 ??$iprintlnbold@$$BY0CE@$$CBD@Broc@@YAXAAY0CE@$$CBD@Z 00D76820 f i mp_util_wad.o	PORTED: added the IDA single-part iprintlnbold formatting wrapper
@@ -1192,9 +1192,9 @@ index	status	map_line
 1191	VERIFIED	0002:005874b0 ??1?$dyn_array@H@Broc@@QAE@XZ 00D769B0 f i mp_util_wad.o
 1192	VERIFIED	0002:005874f0 ??A?$dyn_array@H@Broc@@QAEAAHI@Z 00D769F0 f i mp_util_wad.o
 1193	VERIFIED	0002:00587710 ?push_back@?$dyn_array@H@Broc@@QAEXABH@Z 00D76C10 f i mp_util_wad.o
-1194	PORTED	0002:00587910 ??$IsDefined@Ventity@Broc@@@Broc@@YA_NABV?$dyn_array@Ventity@Broc@@@0@@Z 00D76E10 f i mp_util_wad.o
+1194	PORTED	0002:00587910 ??$IsDefined@Ventity@Broc@@@Broc@@YA_NABV?$dyn_array@Ventity@Broc@@@0@@Z 00D76E10 f i mp_util_wad.o	PORTED: added the IDA capacity-nonzero dyn_array IsDefined wrapper
 1195	SKIPPED	0002:00587940 ??$_Distance@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@I@std@@YAXViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@0AAI@Z 00D76E40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1196	PORTED	0002:00587990 ??$hash_value@UHashStr@@@stdext@@YAIABUHashStr@@@Z 00D76E90 f i mp_util_wad.o
+1196	PORTED	0002:00587990 ??$hash_value@UHashStr@@@stdext@@YAIABUHashStr@@@Z 00D76E90 f i mp_util_wad.o	PORTED: added the IDA HashStr XOR 0xDEADBEEF hash helper
 1197	SKIPPED	0002:005879c0 ??$?8U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@0@0@Z 00D76EC0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1198	SKIPPED	0002:005879e0 ??$insert@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QAEXViterator@01@00@Z 00D76EE0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1199	SKIPPED	0002:00587a30 ??$?8U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@0@0@Z 00D76F30 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
