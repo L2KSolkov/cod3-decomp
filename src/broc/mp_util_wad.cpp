@@ -12606,8 +12606,61 @@ void CallbackDropItem(int itemType, int netID, Broc::vector locator,
 
 // Goal - ea: 0x96A6E0
 void Goal(Broc::entity self, Broc::entity triggerer) {
-    (void)self;
-    (void)triggerer;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::entity flag_holder;
+
+    if (!(bool)mp_util_wad::pLevel->roundStarted ||
+        Broc::IsPlayer(triggerer) == 0)
+        return;
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, triggerer);
+    if (!(bool)hasHolder || Broc::Code_IsInVehicle(triggerer) ||
+        !Broc::Code_IsLocalPlayer(triggerer))
+        return;
+
+    Broc::bint captureDelay;
+    captureDelay = (int)*mp_util_wad::GetEE_pickupCaptureDelayTime(
+        mp_util_wad::pLevel->_base.entity);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    if ((int)captureDelay >= (int)now)
+        return;
+
+    HashStr goalHash;
+    Broc::string_hash(&goalHash, "_mp_scf::Goal");
+    HashStr eventLabel;
+    eventLabel.mVal = 0xF2F5EAB4u;
+    Broc::RemoveEventHandler(&self, eventLabel, goalHash);
+
+    Broc::string triggererTeam;
+    Broc::string baseTargetname;
+    mp_util_wad::entity_get_team(&triggererTeam, triggerer);
+    mp_util_wad::entity_get_targetname(&baseTargetname, self);
+
+    if (triggererTeam == "axis" && baseTargetname == "scf_base_allies") {
+        Broc::Code_AreaCaptured(0, 1, 0);
+        Broc::wait(1.0f);
+    }
+
+    triggererTeam.~string();
+    baseTargetname.~string();
+
+    Broc::string triggererTeam2;
+    Broc::string baseTargetname2;
+    mp_util_wad::entity_get_team(&triggererTeam2, triggerer);
+    mp_util_wad::entity_get_targetname(&baseTargetname2, self);
+
+    if (triggererTeam2 == "allies" && baseTargetname2 == "scf_base_axis") {
+        Broc::Code_AreaCaptured(0, 0, 0);
+        Broc::wait(1.0f);
+    }
+
+    triggererTeam2.~string();
+    baseTargetname2.~string();
+
+    Broc::string_hash(&goalHash, "_mp_scf::Goal");
+    Broc::AddEventHandler(&self, eventLabel.mVal, goalHash.mVal);
 }
 
 // RenderFlagInfo - ea: 0x96BCD0
