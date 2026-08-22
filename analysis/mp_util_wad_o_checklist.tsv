@@ -809,8 +809,8 @@ index	status	map_line
 808	PORTED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o	PORTED: added IDA 0x009717B0 wrapper forwarding mRadiusDamageFromEnt(GetHandle(), origin, range, max, min, damageType)
 809	VERIFIED	0002:00571800 ?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z 00D60D00 f mp_util_wad.o	VERIFIED: IDA 0x00971800 matches health+damage > 0 gate and local_player_hit_effects(self, damage, mod); attacker is unused
 810	VERIFIED	0002:00571890 ?VehicleDamagedEffects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60D90 f mp_util_wad.o	VERIFIED: IDA 0x00971890 matches health thresholds, damage-effect stop/play transitions, wait loop, and effect selection
-811	PORTED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o	PORTED: added IDA 0x00971F80 bint-to-int conversion followed by float multiply and bfloat construction
-812	PORTED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o	PORTED: added IDA 0x00971FC0 comparison returning bbool(rhs float > lhs int)
+811	VERIFIED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o	VERIFIED: IDA 0x00971F80 matches bint-to-int conversion, float multiply, and bfloat construction
+812	VERIFIED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o	VERIFIED: IDA 0x00971FC0 matches bfloat-to-float conversion and bbool(rhs float > lhs int)
 813	VERIFIED	0002:00572020 ?inactivity_blowup@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61520 f mp_util_wad.o
 814	PORTED	0002:005720a0 ?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z 00D615A0 f mp_util_wad.o
 815	PORTED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o	PORTED: added IDA 0x009725C0 wrapper constructing the callback-returned entity handle
