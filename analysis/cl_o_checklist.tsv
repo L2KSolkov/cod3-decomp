@@ -325,7 +325,7 @@ index	status	map_line
 324	VERIFIED	0002:001358c0 ?CL_MapLoading@@YAXXZ 00924DC0 f cl.o
 325	VERIFIED	0002:001359e0 ?CL_Init@@YAXXZ 00924EE0 f cl.o
 326	VERIFIED	0002:001397d0 ??1clientStatic_t@@QAE@XZ 00928CD0 f i cl.o
-327	PORTED	0002:001397f0 ?DoRenderText@InteractionController@@QBEHH@Z 00928CF0 f i cl.o
+327	FIXED	0002:001397f0 ?DoRenderText@InteractionController@@QBEHH@Z 00928CF0 f i cl.o FIXED: restored signed index type and IDA's index < 0 || index >= 5 bounds check
 328	VERIFIED	0002:001398b0 ?Me@PauseMenu@@SAPAV1@H@Z 00928DB0 f i cl.o
 329	PORTED	0002:001398d0 ??0KeyInfoEntry@@QAE@XZ 00928DD0 f i cl.o
 330	VERIFIED	0002:001398f0 ?SetDown@KeyInfo@@SAXHHH@Z 00928DF0 f i cl.o
