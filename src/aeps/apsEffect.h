@@ -371,6 +371,7 @@ public:
     void GetBounds(apsBounds& iBounds);  // ?GetBounds@apsEffect@@QAEXAAUapsBounds@@@Z
     void SetPosition(const math::Dir3& pos);  // ?SetPosition@apsEffect@@QAEXABVDir3@math@@@Z
     void SetCulled(unsigned int bCulled); // ?SetCulled@apsEffect@@QAEXI@Z
+    void OverrideNonScreenFacingNormal(); // ?OverrideNonScreenFacingNormal@apsEffect@@QAEXXZ (core.o 0x004DF2F0)
     void Report(int index);              // ?Report@apsEffect@@QAEXH@Z
     void Update(float iCurTime);         // ?Update@apsEffect@@QAEXM@Z
     unsigned int IsDone();               // ?IsDone@apsEffect@@QAEIXZ

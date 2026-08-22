@@ -659,6 +659,12 @@ void apsEffect::SetCulled(unsigned int bCulled) {
     }
 }
 
+// ea: 0x004DF2F0
+void apsEffect::OverrideNonScreenFacingNormal()
+{
+    mFlags |= 1u;
+}
+
 void apsEffect::Report(int index) {
     if (mTemplate == 0 &&
         _tlAssert("c:/cod/code/tl/aeps/include\\apsEffect.h", 182, "mTemplate", "null template"))
