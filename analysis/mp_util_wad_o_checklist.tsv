@@ -1263,22 +1263,22 @@ index	status	map_line
 1262	SKIPPED	0002:0058a2a0 ??$_Uninitialized_copy@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@0@@Z 00D797A0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1263	SKIPPED	0002:0058a2f0 ??$_Copy_backward_opt@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@0@PAV120@00U_Nonscalar_ptr_iterator_tag@0@@Z 00D797F0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1264	PORTED	0002:0058a340 ??$safe_cast@PAV?$WaitTilOutputInst1@Ventity@Broc@@@@PAVWaitTilOutput@@@@YAPAV?$WaitTilOutputInst1@Ventity@Broc@@@@PAVWaitTilOutput@@@Z 00D79840 f i mp_util_wad.o
-1265	PORTED	0002:0058a3b0 ?capacity@?$dyn_array@Uvector@Broc@@@Broc@@QBEHXZ 00D798B0 f i mp_util_wad.o
-1266	PORTED	0002:0058a3d0 ?begin@?$dyn_array@Uvector@Broc@@@Broc@@QAEPAUvector@2@XZ 00D798D0 f i mp_util_wad.o
-1267	PORTED	0002:0058a3f0 ?end@?$dyn_array@Uvector@Broc@@@Broc@@QAEPAUvector@2@XZ 00D798F0 f i mp_util_wad.o
-1268	PORTED	0002:0058a420 ?empty@?$dyn_array@Uvector@Broc@@@Broc@@QBE_NXZ 00D79920 f i mp_util_wad.o
-1269	PORTED	0002:0058a450 ?capacity@?$dyn_array@M@Broc@@QBEHXZ 00D79950 f i mp_util_wad.o
-1270	PORTED	0002:0058a470 ?size@?$dyn_array@M@Broc@@QBEHXZ 00D79970 f i mp_util_wad.o
-1271	PORTED	0002:0058a490 ?begin@?$dyn_array@M@Broc@@QAEPAMXZ 00D79990 f i mp_util_wad.o
-1272	PORTED	0002:0058a4b0 ?end@?$dyn_array@M@Broc@@QAEPAMXZ 00D799B0 f i mp_util_wad.o
-1273	PORTED	0002:0058a4e0 ?empty@?$dyn_array@M@Broc@@QBE_NXZ 00D799E0 f i mp_util_wad.o
-1274	PORTED	0002:0058a510 ?end@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 00D79A10 f i mp_util_wad.o
-1275	PORTED	0002:0058a540 ?begin@?$dyn_array@H@Broc@@QAEPAHXZ 00D79A40 f i mp_util_wad.o
-1276	PORTED	0002:0058a560 ?end@?$dyn_array@H@Broc@@QAEPAHXZ 00D79A60 f i mp_util_wad.o
-1277	PORTED	0002:0058a590 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@I@Z 00D79A90 f i mp_util_wad.o
-1278	PORTED	0002:0058a780 ?construct_array@?$dyn_array@M@Broc@@AAEPAMII@Z 00D79C80 f i mp_util_wad.o
-1279	PORTED	0002:0058a910 ?construct_array@?$dyn_array@M@Broc@@AAEPAMI@Z 00D79E10 f i mp_util_wad.o
-1280	PORTED	0002:0058aaa0 ?construct_array@?$dyn_array@Vstring@Broc@@@Broc@@AAEPAVstring@2@I@Z 00D79FA0 f i mp_util_wad.o
-1281	PORTED	0002:0058ac90 ?construct_array@?$dyn_array@H@Broc@@AAEPAHI@Z 00D7A190 f i mp_util_wad.o
+1265	VERIFIED	0002:0058a3b0 ?capacity@?$dyn_array@Uvector@Broc@@@Broc@@QBEHXZ 00D798B0 f i mp_util_wad.o	VERIFIED: IDA vector capacity accessor matches mCapacity
+1266	VERIFIED	0002:0058a3d0 ?begin@?$dyn_array@Uvector@Broc@@@Broc@@QAEPAUvector@2@XZ 00D798D0 f i mp_util_wad.o	VERIFIED: IDA vector begin accessor matches mElements
+1267	VERIFIED	0002:0058a3f0 ?end@?$dyn_array@Uvector@Broc@@@Broc@@QAEPAUvector@2@XZ 00D798F0 f i mp_util_wad.o	VERIFIED: IDA vector end accessor matches mElements plus mSize
+1268	VERIFIED	0002:0058a420 ?empty@?$dyn_array@Uvector@Broc@@@Broc@@QBE_NXZ 00D79920 f i mp_util_wad.o	VERIFIED: IDA vector empty accessor checks mSize == 0
+1269	VERIFIED	0002:0058a450 ?capacity@?$dyn_array@M@Broc@@QBEHXZ 00D79950 f i mp_util_wad.o	VERIFIED: IDA float capacity accessor matches mCapacity
+1270	VERIFIED	0002:0058a470 ?size@?$dyn_array@M@Broc@@QBEHXZ 00D79970 f i mp_util_wad.o	VERIFIED: IDA float size accessor matches mSize
+1271	VERIFIED	0002:0058a490 ?begin@?$dyn_array@M@Broc@@QAEPAMXZ 00D79990 f i mp_util_wad.o	VERIFIED: IDA float begin accessor matches mElements
+1272	VERIFIED	0002:0058a4b0 ?end@?$dyn_array@M@Broc@@QAEPAMXZ 00D799B0 f i mp_util_wad.o	VERIFIED: IDA float end accessor matches mElements plus mSize
+1273	VERIFIED	0002:0058a4e0 ?empty@?$dyn_array@M@Broc@@QBE_NXZ 00D799E0 f i mp_util_wad.o	VERIFIED: IDA float empty accessor checks mSize == 0
+1274	VERIFIED	0002:0058a510 ?end@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 00D79A10 f i mp_util_wad.o	VERIFIED: IDA string end accessor matches mElements plus mSize
+1275	VERIFIED	0002:0058a540 ?begin@?$dyn_array@H@Broc@@QAEPAHXZ 00D79A40 f i mp_util_wad.o	VERIFIED: IDA int begin accessor matches mElements
+1276	VERIFIED	0002:0058a560 ?end@?$dyn_array@H@Broc@@QAEPAHXZ 00D79A60 f i mp_util_wad.o	VERIFIED: IDA int end accessor matches mElements plus mSize
+1277	VERIFIED	0002:0058a590 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@I@Z 00D79A90 f i mp_util_wad.o	VERIFIED: IDA vector one-argument construct_array initializes each capacity slot
+1278	VERIFIED	0002:0058a780 ?construct_array@?$dyn_array@M@Broc@@AAEPAMII@Z 00D79C80 f i mp_util_wad.o	VERIFIED: IDA float two-argument construct_array matches the shared allocator equivalent
+1279	VERIFIED	0002:0058a910 ?construct_array@?$dyn_array@M@Broc@@AAEPAMI@Z 00D79E10 f i mp_util_wad.o	VERIFIED: IDA float one-argument construct_array matches the shared allocator equivalent
+1280	VERIFIED	0002:0058aaa0 ?construct_array@?$dyn_array@Vstring@Broc@@@Broc@@AAEPAVstring@2@I@Z 00D79FA0 f i mp_util_wad.o	VERIFIED: IDA string one-argument construct_array initializes null strings
+1281	VERIFIED	0002:0058ac90 ?construct_array@?$dyn_array@H@Broc@@AAEPAHI@Z 00D7A190 f i mp_util_wad.o	VERIFIED: IDA int one-argument construct_array matches the shared allocator equivalent
 1282	SKIPPED	0002:0058ae20 ??$_Uninit_copy@PAViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00D7A320 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1283	SKIPPED	0002:0058aef0 ??$_Uninit_copy@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@PAV123@V?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@3@@std@@YAPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@0@PAV120@00AAV?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00D7A3F0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
