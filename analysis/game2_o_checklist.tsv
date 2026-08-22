@@ -591,7 +591,7 @@ index	status	map_line
 590	VERIFIED	0002:0010bac0 ??1TaskHandler@@QAE@XZ 008FAFC0 f game2.o
 591	VERIFIED	0002:0010bb30 ??1nalPlayMethod@AnimationPlayer@@QAE@XZ 008FB030 f game2.o
 592	FIXED	0002:0010bb80 ?Advance@nalPlayMethod@AnimationPlayer@@UAEXPAVnalAnimState@2@M@Z 008FB080 f game2.o
-593	VERIFIED	0002:0010bbc0 ?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@nalGeneric@@PAVnalGenericPose@4@@Z 008FB0C0 f game2.o
+593	FIXED	0002:0010bbc0 ?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@nalGeneric@@PAVnalGenericPose@4@@Z 008FB0C0 f game2.o	FIXED: NAL skeleton mirror now uses the IDA class tag so AnimIK::Update emits the exact external symbol; full link no longer reports it
 594	VERIFIED	0002:0010bdf0 ?IN_Init@@YAXXZ 008FB2F0 f game2.o
 595	VERIFIED	0002:0010bed0 ?Render@InspectorManager@@QAEXXZ 008FB3D0 f game2.o
 596	VERIFIED	0002:0010c420 ?AddDebuggingMenus@InspectorManager@@QAEXXZ 008FB920 f game2.o
