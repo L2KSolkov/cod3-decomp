@@ -833,20 +833,12 @@ public:
     int mUsed;   // +0x04
     int mFree;   // +0x08
 
+    cFreeList();
+    ~cFreeList();
     void Init(int num);   // ?Init@?$cFreeList@UDSkel@@@@QAEXH@Z (g.o 0x4AD6D0)
     void Shutdown();      // ?Shutdown@?$cFreeList@UDSkel@@@@QAEXXZ (g.o 0x4AD790)
     void Free(T* ptr);    // ?Free@?$cFreeList@VEntity@@@@QAEXPAVEntity@@@Z (g.o 0x4AD540)
-    T* Alloc()
-    {
-        T* p = mpFree;
-        if (p != nullptr)
-        {
-            mpFree = (T*)*(void**)p;
-            --mFree;
-            ++mUsed;
-        }
-        return p;
-    }
+    T* Alloc();
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
 

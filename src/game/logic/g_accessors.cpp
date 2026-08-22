@@ -2732,6 +2732,64 @@ template class phys_static_array<int, 128>;
 
 // cFreeList real bodies (g.o 0x4AD540-0x4ADA70)
 template <typename T>
+cFreeList<T>::cFreeList()
+    : mpFree(nullptr), mUsed(0), mFree(0)
+{
+}
+
+template <typename T>
+cFreeList<T>::~cFreeList()
+{
+    if (mUsed != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = "mUsed == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+}
+
+template <typename T>
+T* cFreeList<T>::Alloc()
+{
+    T* result = mpFree;
+    if (mpFree != nullptr)
+    {
+        int freeCount = mFree;
+        if (freeCount > 0)
+        {
+            ++mUsed;
+            mFree = freeCount - 1;
+            mpFree = (T*)*(void**)result;
+            return result;
+        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 49;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "cFreeList is full (%d used).  Think about deleting some objects or expanding the list.",
+                mUsed))
+            __debugbreak();
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 61;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("cFreeList Alloc is out of items.  %d used.",
+                                mUsed))
+            __debugbreak();
+    }
+    return nullptr;
+}
+
+template <typename T>
 void cFreeList<T>::Init(int num)
 {
     if (mpFree != nullptr)
