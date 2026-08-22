@@ -173,14 +173,14 @@ index	status	map_line
 172	PORTED	0002:00591fa0 ?IsEEDefined_script_team@@YA?AUbbool@@Ventity@Broc@@@Z 00D814A0 f mp_anim_wad.o	PORTED: added IDA 0x00991FA0 defined-check for key 0x022F9A7B; source commit d241a0af
 173	PORTED	0002:005920a0 ?GetEE_script_multiplier@@YAAAUbint@@Ventity@Broc@@@Z 00D815A0 f mp_anim_wad.o	PORTED: added IDA 0x009920A0 ExtendedEntity bint reference for key 0x9874995B; source commit d241a0af
 174	PORTED	0002:005920f0 ?IsEEDefined_script_multiplier@@YA?AUbbool@@Ventity@Broc@@@Z 00D815F0 f mp_anim_wad.o	PORTED: added IDA 0x009920F0 defined-check for key 0x9874995B; source commit d241a0af
-175	PORTED	0002:005921a0 ?GetEE_script_mg42stayput@@YAAAUbint@@Ventity@Broc@@@Z 00D816A0 f mp_anim_wad.o
-176	PORTED	0002:005921f0 ?IsEEDefined_script_mg42stayput@@YA?AUbbool@@Ventity@Broc@@@Z 00D816F0 f mp_anim_wad.o
-177	PORTED	0002:005922a0 ?GetEE_script_lmgaccuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D817A0 f mp_anim_wad.o
-178	PORTED	0002:005922f0 ?IsEEDefined_script_lmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D817F0 f mp_anim_wad.o
-179	PORTED	0002:005923a0 ?GetEE_script_ambush_trigger_distance@@YAAAUbint@@Ventity@Broc@@@Z 00D818A0 f mp_anim_wad.o
-180	PORTED	0002:005923f0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Ventity@Broc@@@Z 00D818F0 f mp_anim_wad.o
-181	PORTED	0002:005924a0 ?GetEE_script_accuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D819A0 f mp_anim_wad.o
-182	PORTED	0002:005924f0 ?IsEEDefined_script_accuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D819F0 f mp_anim_wad.o
+175	PORTED	0002:005921a0 ?GetEE_script_mg42stayput@@YAAAUbint@@Ventity@Broc@@@Z 00D816A0 f mp_anim_wad.o	PORTED: added IDA 0x009921A0 ExtendedEntity bint reference for key 0x149F24E8; source commit 5d067abb
+176	PORTED	0002:005921f0 ?IsEEDefined_script_mg42stayput@@YA?AUbbool@@Ventity@Broc@@@Z 00D816F0 f mp_anim_wad.o	PORTED: added IDA 0x009921F0 defined-check for key 0x149F24E8; source commit 5d067abb
+177	PORTED	0002:005922a0 ?GetEE_script_lmgaccuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D817A0 f mp_anim_wad.o	PORTED: added IDA 0x009922A0 ExtendedEntity bfloat reference for key 0x467CC17F; source commit 5d067abb
+178	PORTED	0002:005922f0 ?IsEEDefined_script_lmgaccuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D817F0 f mp_anim_wad.o	PORTED: added IDA 0x009922F0 defined-check for key 0x467CC17F; source commit 5d067abb
+179	PORTED	0002:005923a0 ?GetEE_script_ambush_trigger_distance@@YAAAUbint@@Ventity@Broc@@@Z 00D818A0 f mp_anim_wad.o	PORTED: added IDA 0x009923A0 ExtendedEntity bint reference for key 0xC609EC11; source commit 5d067abb
+180	PORTED	0002:005923f0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Ventity@Broc@@@Z 00D818F0 f mp_anim_wad.o	PORTED: added IDA 0x009923F0 defined-check for key 0xC609EC11; source commit 5d067abb
+181	PORTED	0002:005924a0 ?GetEE_script_accuracy@@YAAAUbfloat@@Ventity@Broc@@@Z 00D819A0 f mp_anim_wad.o	PORTED: added IDA 0x009924A0 ExtendedEntity bfloat reference for key 0x4FC25C1F; source commit 5d067abb
+182	PORTED	0002:005924f0 ?IsEEDefined_script_accuracy@@YA?AUbbool@@Ventity@Broc@@@Z 00D819F0 f mp_anim_wad.o	PORTED: added IDA 0x009924F0 defined-check for key 0x4FC25C1F; source commit 5d067abb
 183	PORTED	0002:005925a0 ?GetEE_script_damage@@YAAAUbint@@Ventity@Broc@@@Z 00D81AA0 f mp_anim_wad.o
 184	PORTED	0002:005925f0 ?IsEEDefined_script_damage@@YA?AUbbool@@Ventity@Broc@@@Z 00D81AF0 f mp_anim_wad.o
 185	PORTED	0002:005926a0 ?GetEE_script_fb_min_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D81BA0 f mp_anim_wad.o
