@@ -1505,6 +1505,120 @@ Broc::bbool* IsEEDefined_script_exploder(Broc::bbool* result,
     return result;
 }
 
+// GetEE_script_startinghealth / IsEEDefined_script_startinghealth - ea: 0x98F770 / 0x98F7C0
+Broc::bint* GetEE_script_startinghealth(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xBA634DF6u);
+}
+
+Broc::bbool* IsEEDefined_script_startinghealth(Broc::bbool* result,
+                                                Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xBA634DF6u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_flashlight / IsEEDefined_script_flashlight - ea: 0x98F870 / 0x98F8C0
+Broc::bint* GetEE_script_flashlight(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0xED5D0E1Au);
+}
+
+Broc::bbool* IsEEDefined_script_flashlight(Broc::bbool* result,
+                                            Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0xED5D0E1Au);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_fxid / IsEEDefined_script_fxid - ea: 0x98F970 / 0x98F9C0
+Broc::string* GetEE_script_fxid(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::string>(0x02283EFFu);
+}
+
+Broc::bbool* IsEEDefined_script_fxid(Broc::bbool* result,
+                                      Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    {
+        Broc::string value;
+        const Broc::string* stored =
+            ee->GetVal<Broc::string>(&value, 0x02283EFFu);
+        result->mVal = Broc::IsDefined(stored);
+    }
+    return result;
+}
+
+// GetEE_script_delete / IsEEDefined_script_delete - ea: 0x98FAC0 / 0x98FB10
+Broc::bint* GetEE_script_delete(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0x273390A7u);
+}
+
+Broc::bbool* IsEEDefined_script_delete(Broc::bbool* result,
+                                        Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x273390A7u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
 // GetEE_flagEnd / IsEEDefined_flagEnd (key 0xAEB6D8F1)
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
