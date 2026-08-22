@@ -44,6 +44,7 @@ struct LocalFields {
         };
         struct pickupCaptureDelayTime_struct {
             const Broc::bint* Get(Broc::bint* result) const;
+            const int& operator=(const int& rhs);
         };
 
     };

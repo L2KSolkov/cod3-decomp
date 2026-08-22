@@ -4540,6 +4540,17 @@ mp_util_wad::LocalFields::__unnamed::pickupCaptureDelayTime_struct::Get(
     return result;
 }
 
+// pickupCaptureDelayTime_struct::operator= - ea: 0x9697E0
+const int&
+mp_util_wad::LocalFields::__unnamed::pickupCaptureDelayTime_struct::operator=(
+    const int& rhs) {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    Broc::bint value(rhs);
+    ee->SetVal<Broc::bint>(0x4743187Eu, value);
+    return rhs;
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);
