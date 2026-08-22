@@ -2890,3 +2890,42 @@ Broc::string* GetEE_script_ambush_type(Broc::string* result,
     value.~string();
     return result;
 }
+
+// IsEEDefined_script_ambush_type - ea: 0x995AE0.
+Broc::bbool* IsEEDefined_script_ambush_type(Broc::bbool* result,
+                                            Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        Broc::string value;
+        Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+            &value, node.GetHandle(), 0x93F860D5u);
+        result->mVal = Broc::IsDefined(rhs);
+        value.~string();
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_radius(pathnode) - ea: 0x995BE0.
+Broc::bfloat* GetEE_radius(Broc::bfloat* result, Broc::pathnode node) {
+    const float value = gpBrocAPI->mBrocExports.m_pnode_get_radius(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::bfloat(value);
+    return result;
+}
+
+// IsEEDefined_radius(pathnode) - ea: 0x995C50.
+Broc::bbool* IsEEDefined_radius(Broc::bbool* result,
+                                Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_origin - ea: 0x995CF0.
+Broc::vector* GetEE_origin(Broc::vector* result, Broc::pathnode node) {
+    const Broc::vector value = gpBrocAPI->mBrocExports.m_pnode_get_origin(
+        static_cast<int>(node.GetHandle()));
+    *result = value;
+    return result;
+}
