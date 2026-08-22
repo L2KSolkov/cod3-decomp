@@ -22,8 +22,8 @@ index	status	map_line
 21	PORTED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o  PORTED: restored exact IDA packed-position constructor
 22	PORTED	0002:00202210 ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ 009F1710 f i game.o  PORTED: restored exact IDA mBPInfo getter
 23	VERIFIED	0002:00202220 ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z 009F1720 f i game.o
-24	PORTED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o
-25	PORTED	0002:00202330 ??4Position3@math@@QAEABV01@ABVDir3@1@@Z 009F1830 f i game.o
+24	PORTED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o  PORTED: restored exact packed XYZ to SIMD assignment
+25	PORTED	0002:00202330 ??4Position3@math@@QAEABV01@ABVDir3@1@@Z 009F1830 f i game.o  PORTED: restored exact Dir3 SIMD assignment
 26	VERIFIED	0002:00202350 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PBDI@Z 009F1850 f game.o
 27	VERIFIED	0002:002023c0 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@II@Z 009F18C0 f game.o
 28	VERIFIED	0002:002023f0 ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z 009F18F0 f game.o
