@@ -4803,12 +4803,12 @@ void CallbackPlayerAssist(Broc::entity assistplayer);    // ea: 0x93F7F0
 void CallbackPainFlinch(Broc::entity player, int damage);  // ea: 0x93F860
 void CallbackPlayerDamage(Broc::entity victim, Broc::entity inflictor,
                           Broc::entity attacker, const Broc::vector* damageDir,
-                          const Broc::vector* point, int damage, int dflags,
-                          int mod, int weapon);          // ea: 0x93F970
+                          const Broc::vector* point, int damage, int mod,
+                          int weapon, int hitLoc);       // ea: 0x93F970
 void CallbackPlayerDamageTeam(Broc::entity victim, Broc::entity inflictor,
                               Broc::entity attacker, const Broc::vector* damageDir,
-                              const Broc::vector* point, int damage, int dflags,
-                              int mod, int weapon);      // ea: 0x93FA90
+                              const Broc::vector* point, int damage, int mod,
+                              int weapon, int hitLoc);   // ea: 0x93FA90
 void CallbackPlayerSpawn(Broc::entity player, int team_changed);  // ea: 0x93FCF0
 void CallbackPlayerRevive(Broc::entity player, Broc::entity medic);  // ea: 0x940400
 int CallbackCanTeamChange(Broc::entity player, int team_allies);  // ea: 0x9408B0
