@@ -122,6 +122,11 @@ void* EffectEventSys::operator new(size_t, void* p)
     return p;
 }
 
+bool EffectEventSys::IsStoppingAll() const
+{
+    return mStoppingAll;
+}
+
 EffectEventSys::EffectRef::EffectRef()
     : first(0), second(0)
 {

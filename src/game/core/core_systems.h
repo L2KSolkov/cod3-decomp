@@ -667,6 +667,7 @@ public:
     static EffectEventSys* sInst;       // ?sInst@EffectEventSys@@2PAV1@A @ 0x00F00E80
     static EffectEventSys* CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
+    bool IsStoppingAll() const;             // core.o 0x004DBB80
     struct CachedQuery {
         BitSet<49>    mSpecifiedFields;  // +0x000
         BitSet<49>    mWeakFields;       // +0x008
