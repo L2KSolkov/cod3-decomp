@@ -333,14 +333,14 @@ index	status	map_line
 332	SKIPPED	0002:005968b0 ?IsDefined@reservename_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85DB0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_reservename
 333	PORTED	0002:005968e0 ?GetEE_script_delay@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D85DE0 f mp_anim_wad.o	PORTED: added IDA 0x009968E0 vehicle-node float-field access using key 0x47018F83; source commit 7e95ae51
 334	SKIPPED	0002:00596910 ??Cvehiclenode@Broc@@QAEPAV01@XZ 00D85E10 f i mp_anim_wad.o	SKIPPED: trivial compiler-generated vehiclenode operator->; direct handle access is equivalent in the port
-335	PORTED	0002:00596930 ?Get@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D85E30 f i mp_anim_wad.o
-336	PORTED	0002:00596980 ?IsEEDefined_script_delay@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85E80 f mp_anim_wad.o
-337	PORTED	0002:005969f0 ?IsDefined@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D85EF0 f i mp_anim_wad.o
-338	PORTED	0002:00596a30 ?IsDefined@Broc@@YA_NABVvehiclenode@1@@Z 00D85F30 f i mp_anim_wad.o
-339	PORTED	0002:00596a50 ?GetEE_endswitch@@YA?AVvehiclenode@Broc@@V12@@Z 00D85F50 f mp_anim_wad.o
-340	PORTED	0002:00596a80 ?Get@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D85F80 f i mp_anim_wad.o
-341	PORTED	0002:00596ad0 ?IsEEDefined_endswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85FD0 f mp_anim_wad.o
-342	PORTED	0002:00596b40 ?IsDefined@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86040 f i mp_anim_wad.o
+335	SKIPPED	0002:00596930 ?Get@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D85E30 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_delay(vehiclenode)
+336	PORTED	0002:00596980 ?IsEEDefined_script_delay@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85E80 f mp_anim_wad.o	PORTED: added IDA 0x00996980 vehicle-node float defined-check using key 0x47018F83; source commit 16a218e3
+337	SKIPPED	0002:005969f0 ?IsDefined@script_delay_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D85EF0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_delay(vehiclenode)
+338	PORTED	0002:00596a30 ?IsDefined@Broc@@YA_NABVvehiclenode@1@@Z 00D85F30 f i mp_anim_wad.o	PORTED: added IDA 0x00996A30 vehiclenode pointer defined-check; source commit 16a218e3
+339	PORTED	0002:00596a50 ?GetEE_endswitch@@YA?AVvehiclenode@Broc@@V12@@Z 00D85F50 f mp_anim_wad.o	PORTED: added IDA 0x00996A50 vehiclenode field access using key 0xA007FC29; source commit 16a218e3
+340	SKIPPED	0002:00596a80 ?Get@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D85F80 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_endswitch
+341	PORTED	0002:00596ad0 ?IsEEDefined_endswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85FD0 f mp_anim_wad.o	PORTED: added IDA 0x00996AD0 vehiclenode field defined-check using key 0xA007FC29; source commit 16a218e3
+342	SKIPPED	0002:00596b40 ?IsDefined@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86040 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_endswitch
 343	PORTED	0002:00596b80 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D86080 f mp_anim_wad.o
 344	PORTED	0002:00596bd0 ?Get@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D860D0 f i mp_anim_wad.o
 345	PORTED	0002:00596c80 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86180 f mp_anim_wad.o
