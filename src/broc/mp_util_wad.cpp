@@ -8,6 +8,7 @@
 #include "engine/broc_types.h"
 #include "game/AeThreadFunctor.h"
 #include <string.h>
+#include <stdio.h>
 #include <new>
 
 using Broc::RandomFloatRange;
@@ -2851,6 +2852,24 @@ void RotateTo(Broc::entity* e, const Broc::vector* angles, float totalTime,
         RotateTo(*e, *angles, totalTime, accTime, decTime);
 }
 
+const char* GetText(const Broc::string& str, char* /*buff*/) {
+    return gBrocAPI.mLocalize(str.c_str());
+}
+
+char* GetText(const Broc::vector& v, char* buff) {
+    sprintf(buff, "%f,%f,%f", v.x, v.y, v.z);
+    return buff;
+}
+
+template <>
+void ConcatText<Broc::string, Broc::vector>(Broc::string& txt,
+                                            const Broc::string& lhs,
+                                            const Broc::vector& rhs) {
+    char tmpBuf[256];
+    txt = GetText(lhs, tmpBuf);
+    txt += GetText(rhs, tmpBuf);
+}
+
 // operator+(string, int) - ea: 0x9658C0
 Broc::string operator+(const Broc::string& lhs, int rhs) {
     Broc::string r(lhs);
@@ -2863,6 +2882,13 @@ Broc::string operator+(const Broc::string& lhs, float rhs) {
     Broc::string r(lhs);
     r += rhs;
     return r;
+}
+
+// operator+(string, vector) - ea: 0x965960
+Broc::string operator+(const Broc::string& lhs, const Broc::vector& rhs) {
+    Broc::string txt(static_cast<Broc::string::Block*>(nullptr));
+    ConcatText(txt, lhs, rhs);
+    return Broc::string(txt);
 }
 
 } // namespace Broc

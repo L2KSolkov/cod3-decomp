@@ -452,6 +452,15 @@ string operator+(const string& lhs, const string& rhs);
 string operator+(const string& lhs, const char* rhs);
 string operator+(const string& lhs, int rhs);
 string operator+(const string& lhs, float rhs);  // ea: 0x934830
+string operator+(const string& lhs, const vector& rhs);  // ea: 0x965960
+
+const char* GetText(const string& str, char* buff);
+char* GetText(const vector& v, char* buff);
+template <typename T, typename U>
+void ConcatText(string& txt, const T& lhs, const U& rhs);
+template <>
+void ConcatText<string, vector>(string& txt, const string& lhs,
+                                const vector& rhs);
 
 // ============================================================================
 // Broc::ExtendedEntity — variable storage for script entities (12 bytes)
@@ -1125,7 +1134,8 @@ struct BrocAPI {
     unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
     void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
-    char _pad3D0[0x43C - 0x3D0];                          // +0x3D0
+    char _pad3D0[0x438 - 0x3D0];                          // +0x3D0
+    const char* (*mLocalize)(const char*);                // +0x438
     void (*mDebugRenderText)(const char*, const int, const int); // +0x43C
     void (*mDebugRenderEntityBBox)(const unsigned int, const Broc::vector*, float); // +0x440
     void (*mDebugRenderBox)(const Broc::vector*, const Broc::vector*,
