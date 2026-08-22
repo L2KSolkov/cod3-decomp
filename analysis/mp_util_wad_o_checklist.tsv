@@ -514,7 +514,7 @@ index	status	map_line
 513	VERIFIED	0002:0054ed20 ?vLerp@_mp_ctf@@YA?AUvector@Broc@@U23@0Ubfloat@@@Z 00D3E220 f mp_util_wad.o	VERIFIED: IDA matches component-wise linear interpolation and result construction
 514	VERIFIED	0002:0054ee90 ?IsFlagAtBase@_mp_ctf@@YA?AUbbool@@Ventity@Broc@@@Z 00D3E390 f mp_util_wad.o	VERIFIED: IDA matches goal/flag origin subtraction, z suppression, and 0.15 threshold
 515	VERIFIED	0002:0054ef50 ?Length@@YAMABUvector@Broc@@@Z 00D3E450 f i mp_util_wad.o	VERIFIED: IDA 0x0094EF50 matches the existing direct mVecLength forward
-516	VERIFIED	0002:0054ef80 ?TeamObjectiveUpdate@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3E480 f mp_util_wad.o
+516	FIXED	0002:0054ef80 ?TeamObjectiveUpdate@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3E480 f mp_util_wad.o	FIXED: reacquired player team before comparing the defined flag holder team, matching IDA 0x0094EF80 and avoiding use of a destroyed string (source commit 67f502c4)
 517	FIXED	0002:0054fa60 ??8entity@Broc@@QBE_NABV01@@Z 00D3EF60 f i mp_util_wad.o	FIXED: added the IDA-matching Broc::entity member operator==
 518	VERIFIED	0002:0054faa0 ?Get@ctf_has_flag_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D3EFA0 f i mp_util_wad.o	VERIFIED: IDA returns m_entity_get_player_ctf_has_flag from the stored handle
 519	VERIFIED	0002:0054fad0 ?ObjectiveUpdater@_mp_ctf@@YAXVentity@Broc@@@Z 00D3EFD0 f mp_util_wad.o
