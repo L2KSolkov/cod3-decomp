@@ -14313,7 +14313,117 @@ void WarnPlayerAboutInactiveFlag(Broc::entity self) {
 
 // CallbackDebugRender - ea: 0x97D620
 void CallbackDebugRender() {
-    DebugRenderSpawnPoints();
+    _mp_common::CallbackDebugRender();
+    if (Broc::GetCvarInt("mp_debugrender") != 1)
+        return;
+
+    Broc::bint x(40);
+    Broc::bint y(20);
+    Broc::bint y_inc(20);
+    Broc::string temp;
+
+    if ((int)mp_util_wad::pLevel->warIndex < 0 ||
+        (int)mp_util_wad::pLevel->warIndex >
+            (int)mp_util_wad::pLevel->lastFlagIndex) {
+        int index = (int)mp_util_wad::pLevel->warIndex;
+        Broc::entity area =
+            mp_util_wad::pLevel->warAreas[(unsigned int)index];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        float capSpeed = (float)*mp_util_wad::GetEE_capSpeed(trigger);
+        Broc::bbool capping((int)mp_util_wad::pLevel->capCount != 0);
+
+        temp = "War Flag Index: ";
+        temp += index;
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+        y += (int)y_inc;
+
+        temp = "Players Capping: ";
+        temp += (int)mp_util_wad::pLevel->capCount;
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+        y += (int)y_inc;
+
+        float capStatus = (float)*mp_util_wad::GetEE_capStatus(trigger);
+        temp = "Cap Status: ";
+        temp += capStatus;
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+        y += (int)y_inc;
+
+        float leftToGo = capSpeed > 0.0f
+                             ? 1.0f - capStatus
+                             : (-1.0f - capStatus) * -1.0f;
+        temp = "Time Til Cap: ";
+        if ((bool)capping)
+            temp += (leftToGo * 20.0f) / capSpeed;
+        else
+            temp += "0";
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+        y += (int)y_inc;
+
+        temp = "Cap Speed: ";
+        temp += capSpeed;
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+
+        if ((bool)capping) {
+            Broc::dyn_array<Broc::entity> players;
+            Broc::GetPlayerArray(&players);
+            for (int i = 0; i < Broc::size(players); ++i) {
+                Broc::entity player = players[(unsigned int)i];
+                Broc::bint playerState;
+                mp_util_wad::entity_get_playerState(&playerState, player);
+                if ((int)playerState != 3 ||
+                    !Broc::IsTouching(&player, &trigger) ||
+                    Broc::Code_IsInVehicle(player))
+                    continue;
+
+                Broc::string team;
+                mp_util_wad::entity_get_team(&team, player);
+                const Broc::vector* color =
+                    team == "axis" ? &mp_util_wad::pLevel->spawnColorAxis
+                                    : &mp_util_wad::pLevel->spawnColorAllies;
+                Broc::vector origin;
+                mp_util_wad::entity_get_origin(&origin, player);
+                Broc::Code_DebugRenderSphere(&origin, 20.0f, color, 0.5f);
+                team.~string();
+            }
+            players.~dyn_array();
+        }
+    }
+
+    Broc::bint allies_capped(0);
+    Broc::bint axis_capped(0);
+    for (int i = 0; i < Broc::size(mp_util_wad::pLevel->warAreas); ++i) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        float capStatus = (float)*mp_util_wad::GetEE_capStatus(trigger);
+
+        y += (int)y_inc;
+        temp = "Cap Status  ";
+        temp += i;
+        temp += ": ";
+        temp += capStatus;
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+
+        if (capStatus >= 0.99989998f)
+            ++allies_capped;
+        if (capStatus <= -0.99989998f)
+            ++axis_capped;
+    }
+
+    y += (int)y_inc;
+    temp = "Cap Totals:  allies ";
+    temp += (int)allies_capped;
+    temp += " axis ";
+    temp += (int)axis_capped;
+    Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+
+    for (int i = 0; i < Broc::size(mp_util_wad::pLevel->warAreas); ++i) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        Broc::vector color(1.0f, 0.0f, 0.0f);
+        Broc::Code_DebugRenderEntityBBox(trigger, &color, 0.1f);
+    }
+    mp_util_wad::pLevel->capCount = 0;
+    temp.~string();
 }
 
 // DebugRenderSpawnPoints - ea: 0x97E280
