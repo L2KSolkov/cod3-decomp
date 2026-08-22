@@ -38,6 +38,23 @@ void Destroy(const Broc::hudelem* hud)
     Broc::gBrocAPI.mDestroy(hud);
 }
 
+Broc::hudelem* NewHudElem(Broc::hudelem* result, int panelType)
+{
+    Broc::hudelem temp;
+    result->___u0 = Broc::gBrocAPI.mNewHudElem(&temp, panelType)->___u0;
+    return result;
+}
+
+void SetShader(const Broc::hudelem* hud, const Broc::string* shader, int w, int h)
+{
+    Broc::gBrocAPI.mSetShader(hud, shader, w, h);
+}
+
+void ScaleOverTime(const Broc::hudelem* hud, float time, int w, int h)
+{
+    Broc::gBrocAPI.mScaleOverTime(hud, time, w, h);
+}
+
 namespace mp_anim_wad {
 int ResolveAnim(unsigned int treename, unsigned int animname,
                 unsigned int* getVal, unsigned int setVal);
@@ -165,7 +182,8 @@ AeThreadFunctor* DeathState__functor(Broc::entity player, Broc::entity team_kill
                                      Broc::bint delay, Broc::bbool reviveable,
                                      Broc::bbool fade);
 AeThreadFunctor* UpdateSpectateCritical__functor(Broc::entity guy);
-void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
+AeThreadFunctor1<Broc::entity>* UpdateSpectateCriticalGoingToDie__functor(
+    Broc::entity guy);
 AeThreadFunctor* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
@@ -2112,6 +2130,32 @@ void plane_roll(Broc::entity self);
 // Broc free helpers + gBrocAPI-backed wrappers (mp_util_wad.o COMDATs).
 // ============================================================================
 namespace Broc {
+
+// HUD property proxy operators - ea: 0x94ABD0 / 0x94AC10 / 0x94AC50 / 0x94AC90.
+const int& Broc::hudelem::__unnamed::x_struct::operator=(const int& rhs)
+{
+    Broc::gBrocAPI.hud_set_x(mHandle, rhs);
+    return rhs;
+}
+
+const int& Broc::hudelem::__unnamed::y_struct::operator=(const int& rhs)
+{
+    Broc::gBrocAPI.hud_set_y(mHandle, rhs);
+    return rhs;
+}
+
+const float& Broc::hudelem::__unnamed::sort_struct::operator=(const float& rhs)
+{
+    Broc::gBrocAPI.hud_set_sort(mHandle, rhs);
+    return rhs;
+}
+
+const unsigned char& Broc::hudelem::__unnamed::alpha_struct::operator=(
+    const unsigned char& rhs)
+{
+    Broc::gBrocAPI.hud_set_alpha(mHandle, rhs);
+    return rhs;
+}
 
 // Broc::entity::__unnamed::origin_struct::Get - ea: 0x9348D0
 const Broc::vector* Broc::entity::__unnamed::origin_struct::Get(
@@ -5601,13 +5645,13 @@ void DestroyHudElem(Broc::hudelem* elem) {
 // ProgressBarCreate - ea: 0x94AA80
 void ProgressBarCreate(Broc::bint width) {
     Broc::hudelem tmp;
-    mp_util_wad::pLevel->progress_bar = *Broc::NewHudElem(&tmp, -1);
-    mp_util_wad::pLevel->progress_bar.x(160);
-    mp_util_wad::pLevel->progress_bar.y(360);
-    mp_util_wad::pLevel->progress_bar.sort(0.0f);
-    mp_util_wad::pLevel->progress_bar.alpha(0x80);
+    mp_util_wad::pLevel->progress_bar = *NewHudElem(&tmp, -1);
+    mp_util_wad::pLevel->progress_bar.x = 160;
+    mp_util_wad::pLevel->progress_bar.y = 360;
+    mp_util_wad::pLevel->progress_bar.sort = 0.0f;
+    mp_util_wad::pLevel->progress_bar.alpha = 0x80;
     Broc::string s("white");
-    Broc::SetShader(&mp_util_wad::pLevel->progress_bar, &s, (int)width, 32);
+    SetShader(&mp_util_wad::pLevel->progress_bar, &s, (int)width, 32);
     s.~string();
 }
 
@@ -5615,7 +5659,7 @@ void ProgressBarCreate(Broc::bint width) {
 void ProgressBarUpdate(Broc::bfloat value, Broc::bfloat time) {
     int w = (int)((float)value * 320.0f);
     float scaleTime = (float)time;
-    Broc::ScaleOverTime(&mp_util_wad::pLevel->progress_bar, scaleTime, w, 32);
+    ScaleOverTime(&mp_util_wad::pLevel->progress_bar, scaleTime, w, 32);
 }
 
 // ProgressBarDelete - ea: 0x94AE00
@@ -14250,7 +14294,8 @@ AeThreadFunctor* UpdateSpectateCritical__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(UpdateSpectateCritical, guy);
 }
-void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy) {
+AeThreadFunctor1<Broc::entity>* UpdateSpectateCriticalGoingToDie__functor(
+    Broc::entity guy) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;

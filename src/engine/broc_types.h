@@ -560,20 +560,57 @@ COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size misma
 // ============================================================================
 class hudelem {
 public:
-    unsigned int ___u0;
+    struct __unnamed {
+        struct x_struct {
+            unsigned int mHandle;
+            const int& operator=(const int& rhs);
+        };
+        struct y_struct {
+            unsigned int mHandle;
+            const int& operator=(const int& rhs);
+        };
+        struct alignX_struct { unsigned int mHandle; };
+        struct alignY_struct { unsigned int mHandle; };
+        struct sort_struct {
+            unsigned int mHandle;
+            const float& operator=(const float& rhs);
+        };
+        struct fontScale_struct { unsigned int mHandle; };
+        struct alpha_struct {
+            unsigned int mHandle;
+            const unsigned char& operator=(const unsigned char& rhs);
+        };
+        struct red_struct { unsigned int mHandle; };
+        struct green_struct { unsigned int mHandle; };
+        struct blue_struct { unsigned int mHandle; };
+    };
+
+    union {
+        unsigned int ___u0;
+        __unnamed::x_struct x;
+        __unnamed::y_struct y;
+        __unnamed::alignX_struct alignX;
+        __unnamed::alignY_struct alignY;
+        __unnamed::sort_struct sort;
+        __unnamed::fontScale_struct fontScale;
+        __unnamed::alpha_struct alpha;
+        __unnamed::red_struct red;
+        __unnamed::green_struct green;
+        __unnamed::blue_struct blue;
+    };
 
     hudelem();
     hudelem(unsigned int v);
     unsigned int GetIndex() const;
 
     bool IsDefined() const;             // ?IsDefined@hudelem@Broc@@QBE_NXZ
-    void SetUndefined();             // ea: 0x92F7D0
-    void x(int v);                   // hudelem.x property
-    void y(int v);                   // hudelem.y property
-    void sort(float v);              // hudelem.sort property
-    void alpha(unsigned char v);     // hudelem.alpha property
+    void SetUndefined();             // ea: 0x948420
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(hudelem) == 4, "Broc::hudelem size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::x_struct) == 4,
+                         "hudelem x_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::sort_struct) == 4,
+                         "hudelem sort_struct size mismatch");
 
 // ============================================================================
 // EEHelper / EEDefault — template helpers for ExtendedEntity field types
@@ -1105,7 +1142,9 @@ struct BrocAPI {
                           int);                           // +0x594
     void (*mRadiusDamageFromEnt)(unsigned int, const Broc::vector*, float,
                                  float, float, int);       // +0x598
-    char _pad59C[0x68C - 0x59C];                          // +0x59C
+    char _pad59C[0x60C - 0x59C];                          // +0x59C
+    Broc::hudelem* (*mNewHudElem)(Broc::hudelem*, int);  // +0x60C
+    char _pad610[0x68C - 0x610];                          // +0x610
     void (*mLinkTo3)(const unsigned int, const unsigned int); // +0x68C
     char _pad690[0x6C8 - 0x690];                          // +0x690
     bool (*mIsTouching)(const unsigned int, const unsigned int); // +0x6C8
@@ -1161,7 +1200,13 @@ struct BrocAPI {
     void (*mSetWeaponSlotClipAmmo)(unsigned int, const Broc::string*, int); // +0xAE8
     int (*mGetFullClipAmmoCount)(unsigned int, const Broc::string*); // +0xAEC
     int (*mGetMaxAmmo)(unsigned int, const Broc::string*); // +0xAF0
-    char _padAF4[0xBC4 - 0xAF4];                          // +0xAF4
+    char _padAF4[0xB94 - 0xAF4];                          // +0xAF4
+    void (*mSetShader)(const Broc::hudelem*, const Broc::string*, int,
+                       int);                              // +0xB94
+    char _padB98[0xBB8 - 0xB98];                          // +0xB98
+    void (*mScaleOverTime)(const Broc::hudelem*, float, int,
+                           int);                          // +0xBB8
+    char _padBBC[0xBC4 - 0xBBC];                          // +0xBBC
     void (*mDestroy)(const Broc::hudelem*);               // +0xBC4
     char _padBC8[0xBD0 - 0xBC8];                          // +0xBC8
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
@@ -1178,7 +1223,15 @@ struct BrocAPI {
     char _padBrocExports[0xE00 - (0xBE8 + 0x1C8 + 0x10)]; // +0xDC0
     void (*mRegisterHashString)(int, const char*);         // +0xE00
     const char* (*mHashToStr)(int);                        // +0xE04
-    char _padE08[0xF1C - 0xE08];                           // +0xE08
+    char _padE08[0xE24 - 0xE08];                           // +0xE08
+    void (*hud_set_x)(int, int);                           // +0xE24
+    char _padE28[0xE2C - 0xE28];                           // +0xE28
+    void (*hud_set_y)(int, int);                           // +0xE2C
+    char _padE30[0xE44 - 0xE30];                           // +0xE30
+    void (*hud_set_sort)(int, float);                      // +0xE44
+    char _padE48[0xE54 - 0xE48];                           // +0xE48
+    void (*hud_set_alpha)(int, unsigned char);             // +0xE54
+    char _padE58[0xF1C - 0xE58];                           // +0xE58
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
     Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24
@@ -1461,9 +1514,6 @@ void EffectEventStopEmitting(unsigned int effectId);
 void GetWeaponSlotWeapon(const Broc::entity& e, const Broc::string& slot, Broc::string& result);
 int GetWeaponSlotAmmo(const Broc::entity& e, const Broc::string& slot);
 int GetWeaponSlotClipAmmo(const Broc::entity& e, const Broc::string& slot);
-Broc::hudelem* NewHudElem(Broc::hudelem* result, int panelType);
-void SetShader(Broc::hudelem* hud, const Broc::string* shader, int w, int h);
-void ScaleOverTime(Broc::hudelem* hud, float time, int w, int h);
 template <typename... Args> void println(const char* fmt, const Args&... args);
 template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
@@ -1474,6 +1524,9 @@ template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 void MusicStop();
 void SoundStop(unsigned int handle);
 void Destroy(const Broc::hudelem* hud);
+Broc::hudelem* NewHudElem(Broc::hudelem* result, int panelType);
+void SetShader(const Broc::hudelem* hud, const Broc::string* shader, int w, int h);
+void ScaleOverTime(const Broc::hudelem* hud, float time, int w, int h);
 
 // Global script exports (their release symbols are not in namespace Broc).
 void ObjectiveAdd(int iObjective, const Broc::string& state,
