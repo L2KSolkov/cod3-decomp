@@ -1250,7 +1250,7 @@ index	status	map_line
 1249	SKIPPED	0002:001efdf0 ??_E?$WaitTilOutputInst2@MI@@UAEPAXI@Z 009DF2F0 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1250	VERIFIED	0002:001efe20 ??1?$WaitTilOutputInst2@MI@@UAE@XZ 009DF320 f i scr.o VERIFIED: matches IDA virtual destructor reset
 1251	SKIPPED	0002:001efe30 ??B?$IVPointer@VAIType@@@@QBE_NXZ 009DF330 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1252	PORTED	0002:001efe50 ?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DF350 f i scr.o PORTED: implemented IDA allocated-index dump and HandleDb assertion
+1252	VERIFIED	0002:001efe50 ?Dump@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DF350 f i scr.o VERIFIED: matches IDA allocated-index walk, debug callback, and HandleDb error path
 1253	VERIFIED	0002:001eff30 ??0?$BitSet@$0BAA@@@QAE@XZ 009DF430 f i scr.o VERIFIED: matches IDA zero-initializing constructor
 1254	SKIPPED	0002:001eff60 ?_Hashval@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@IBEIABH@Z 009DF460 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1255	SKIPPED	0002:001effa0 ?end@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE?AViterator@12@XZ 009DF4A0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
