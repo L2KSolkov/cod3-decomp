@@ -581,11 +581,11 @@ index	status	map_line
 580	FIXED	0002:00557c70 ?ResetGame__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D47170 f i mp_util_wad.o	FIXED: corrected return type to AeThreadFunctor1<Broc::entity>* per IDA 0x00957C70
 581	FIXED	0002:00557d10 ?HQ_Defended@_mp_hq@@YAXXZ 00D47210 f mp_util_wad.o	FIXED: IDA 0x00957D10 clears player setup state, plays effect/dialogs, and launches ResetGame
 582	FIXED	0002:00558390 ?Host_PickInitialPoints@_mp_hq@@YAXXZ 00D47890 f mp_util_wad.o	FIXED: IDA 0x00958390 stores HQ target trigger on the level entity, reads that same trigger for triggerIndex, and returns trigger presence
-583	PORTED	0002:00558750 ?Get@key_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D47C50 f i mp_util_wad.o	PORTED: Added IDA 0x00958750 m_entity_get_key call and placement construction of the bint result
-584	PORTED	0002:00558790 ??Centity@Broc@@QAEPAULocalFields@mp_util_wad@@XZ 00D47C90 f i mp_util_wad.o	PORTED: added IDA 0x00958790 operator-> forwarding to LocalEE
-585	PORTED	0002:005587c0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_util_wad@@XZ 00D47CC0 f i mp_util_wad.o	PORTED: added IDA 0x009587D0 GetEE-backed LocalFields pointer; mp_level_wad type is the 20-byte alias
-586	PORTED	0002:005587f0 ??4trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEABVentity@Broc@@ABV45@@Z 00D47CF0 f i mp_util_wad.o	PORTED: added IDA 0x009587F0 SetVal key 0xF2F5EAB4 and return-rhs wrapper
-587	PORTED	0002:00558830 ?Get@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAE?AVentity@Broc@@XZ 00D47D30 f i mp_util_wad.o	PORTED: added IDA 0x00958830 GetVal key 0xF2F5EAB4 into the result entity
+583	VERIFIED	0002:00558750 ?Get@key_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D47C50 f i mp_util_wad.o	VERIFIED: IDA 0x00958750 constructs bint from m_entity_get_key; implementation matches
+584	VERIFIED	0002:00558790 ??Centity@Broc@@QAEPAULocalFields@mp_util_wad@@XZ 00D47C90 f i mp_util_wad.o	VERIFIED: IDA 0x00958790 returns LocalEE(); implementation matches
+585	VERIFIED	0002:005587c0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_util_wad@@XZ 00D47CC0 f i mp_util_wad.o	VERIFIED: IDA 0x009587C0 forwards to GetEE(); implementation matches
+586	VERIFIED	0002:005587f0 ??4trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEABVentity@Broc@@ABV45@@Z 00D47CF0 f i mp_util_wad.o	VERIFIED: IDA 0x009587F0 calls ExtendedEntity::SetVal with key 0xF2F5EAB4; implementation matches
+587	VERIFIED	0002:00558830 ?Get@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAE?AVentity@Broc@@XZ 00D47D30 f i mp_util_wad.o	VERIFIED: IDA 0x00958830 calls ExtendedEntity::GetVal with key 0xF2F5EAB4; implementation matches
 588	FIXED	0002:00558870 ?SetupStage1@_mp_hq@@YAXXZ 00D47D70 f mp_util_wad.o	FIXED: IDA 0x00958870 calls no-arg RemoveRadioModel
 589	FIXED	0002:005588a0 ?SetUpStage3@_mp_hq@@YAXXZ 00D47DA0 f mp_util_wad.o	FIXED: IDA 0x009588A0 ports objective replacement, defender respawn lock, established-HQ effect, team dialog threads, radio timer reset, and setup graphic
 590	VERIFIED	0002:00558ee0 ?ShowHQDestroyed@_mp_hq@@YAXXZ 00D483E0 f mp_util_wad.o	VERIFIED: IDA 0x00958EE0 matches the shutdown/award messages and 3000ms string timer
