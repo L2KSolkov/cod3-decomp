@@ -987,15 +987,15 @@ index	status	map_line
 986	VERIFIED	0002:000e0e90 ?GetNumWords@?$BitSet@$0PP@@@SAHXZ 008D0390 f i core.o VERIFIED: IDA 0x004E0E90 returns 8; existing BitSet formula matches
 987	FIXED	0002:000e0ea0 ?set_size@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXH@Z 008D03A0 f i core.o FIXED: shared ae_sized_array helper added in 1f7c5015; IDA 0x004E0EA0 assigns m_size=s
 988	SKIPPED	0002:000e0ec0 ??A?$ae_array@PAVDestructibleBank@@$0GD@@@QAEAAPAVDestructibleBank@@H@Z 008D03C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-989	PORTED	0002:000e0f40 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAUdlist_node@1@0@Z 008D0440 f i core.o
-990	PORTED	0002:000e0f60 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAVEntityNotifySet@@@Z 008D0460 f i core.o
-991	PORTED	0002:000e0f80 ?compare@iterator@?$reserved_dlist@VEntityNotifySet@@@@QBE_NABV12@@Z 008D0480 f i core.o
-992	PORTED	0002:000e0fa0 ??0const_iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PBUdlist_node@1@0@Z 008D04A0 f i core.o
-993	PORTED	0002:000e0fc0 ?compare@const_iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV12@@Z 008D04C0 f i core.o
-994	PORTED	0002:000e0fe0 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PAUdlist_node@1@0@Z 008D04E0 f i core.o
-995	PORTED	0002:000e1000 ?compare@iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV12@@Z 008D0500 f i core.o
-996	PORTED	0002:000e1020 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAUdlist_node@1@0@Z 008D0520 f i core.o
-997	PORTED	0002:000e1040 ?compare@iterator@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NABV12@@Z 008D0540 f i core.o
+989	VERIFIED	0002:000e0f40 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAUdlist_node@1@0@Z 008D0440 f i core.o VERIFIED: IDA 0x004E0F40 stores cur and next; existing iterator constructor matches
+990	FIXED	0002:000e0f60 ??0iterator@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAVEntityNotifySet@@@Z 008D0460 f i core.o FIXED: shared iterator object constructor added in 1528f7a9; IDA 0x004E0F60 points at obj.m_dlist_node and its m_next
+991	FIXED	0002:000e0f80 ?compare@iterator@?$reserved_dlist@VEntityNotifySet@@@@QBE_NABV12@@Z 008D0480 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E0F80 compares rhs.m_next with this->m_next
+992	VERIFIED	0002:000e0fa0 ??0const_iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PBUdlist_node@1@0@Z 008D04A0 f i core.o VERIFIED: IDA 0x004E0FA0 stores cur and next; existing const_iterator constructor matches
+993	FIXED	0002:000e0fc0 ?compare@const_iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV12@@Z 008D04C0 f i core.o FIXED: shared const_iterator compare added in 1528f7a9; IDA 0x004E0FC0 compares rhs.m_next with this->m_next
+994	VERIFIED	0002:000e0fe0 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PAUdlist_node@1@0@Z 008D04E0 f i core.o VERIFIED: IDA 0x004E0FE0 stores cur and next; existing iterator constructor matches
+995	FIXED	0002:000e1000 ?compare@iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV12@@Z 008D0500 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E1000 compares rhs.m_next with this->m_next
+996	VERIFIED	0002:000e1020 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAUdlist_node@1@0@Z 008D0520 f i core.o VERIFIED: IDA 0x004E1020 stores cur and next; existing iterator constructor matches
+997	FIXED	0002:000e1040 ?compare@iterator@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NABV12@@Z 008D0540 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E1040 compares rhs.m_next with this->m_next
 998	PORTED	0002:000e1060 ??0?$SizedHandle@$08$0BH@@@QAE@HH@Z 008D0560 f i core.o
 999	PORTED	0002:000e1160 ??0?$SizedHandle@$08$0BH@@@QAE@VHandle@@@Z 008D0660 f i core.o
 1000	PORTED	0002:000e1180 ?GetIndex@?$SizedHandle@$08$0BH@@@QBEHXZ 008D0680 f i core.o
