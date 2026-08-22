@@ -1227,7 +1227,7 @@ index	status	map_line
 1226	FIXED	0002:00588a90 ?push_back@?$dyn_array@M@Broc@@QAEXABM@Z 00D77F90 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
 1227	VERIFIED	0002:00588c90 ??4?$dyn_array@M@Broc@@QAEXABV01@@Z 00D78190 f i mp_util_wad.o	VERIFIED: IDA float copy-assignment behavior matches the shared dyn_array implementation
 1228	VERIFIED	0002:00588e90 ?destroy_all@?$dyn_array@M@Broc@@AAEXXZ 00D78390 f i mp_util_wad.o	VERIFIED: IDA float destroy_all behavior matches the shared Win32 storage equivalent
-1229	PORTED	0002:00589010 ?resize@?$dyn_array@Vstring@Broc@@@Broc@@QAEXII@Z 00D78510 f i mp_util_wad.o
+1229	FIXED	0002:00589010 ?resize@?$dyn_array@Vstring@Broc@@@Broc@@QAEXII@Z 00D78510 f i mp_util_wad.o	FIXED: matched IDA string resize destruction by releasing removed string blocks while preserving Win32 capacity storage
 1230	PORTED	0002:00589310 ??$ConcatText@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAVstring@0@AAY0BD@$$CBDABUbint@@@Z 00D78810 f i mp_util_wad.o	PORTED: added the IDA string/bint ConcatText formatter
 1231	PORTED	0002:00589370 ?GetText@Broc@@YAPBDPBDPAD@Z 00D78870 f i mp_util_wad.o	PORTED: added the IDA localized const-char GetText overload
 1232	PORTED	0002:005893a0 ?GetText@Broc@@YAPBDUbint@@PAD@Z 00D788A0 f i mp_util_wad.o	PORTED: added the IDA decimal bint GetText overload
