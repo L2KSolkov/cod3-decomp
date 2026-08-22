@@ -5081,7 +5081,7 @@ void WAR_TouchFlag(Broc::entity self);
     ::bfloat* GetCapSpeed(::bfloat* result, ::bint guysCapping);
 void UpdateAllowedCap();
 void AllowCap(::bint team, int flag_id);
-void WAR_InitFlag(Broc::entity self, Broc::bint flag_id);
+void WAR_InitFlag(Broc::entity self, int flag_id);
 int SortMarkers();
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                             const Broc::string* self_team);
@@ -13589,9 +13589,88 @@ void AllowCap(::bint team, int flag_id) {
 }
 
 // WAR_InitFlag - ea: 0x97BB60
-void WAR_InitFlag(Broc::entity self, Broc::bint flag_id) {
-    (void)flag_id;
-    *mp_util_wad::GetEE_trigger(self) = self;
+void WAR_InitFlag(Broc::entity self, int flag_id) {
+    Broc::string target;
+    mp_util_wad::entity_get_target(&target, self);
+    if (!Broc::IsDefined(target))
+        return;
+
+    Broc::dyn_array<Broc::entity> stuff;
+    Broc::entity trigger;
+    Broc::string targetValue;
+    mp_util_wad::entity_get_target(&targetValue, self);
+    HashStr targetKey;
+    targetKey.mVal = 0x19F9F0E8u;
+    Broc::GetEnt(&trigger, &targetValue, targetKey, 0);
+    *mp_util_wad::GetEE_trigger(self) = trigger;
+    targetValue.~string();
+
+    Broc::bbool triggerDefined;
+    if (!(bool)*mp_util_wad::IsEEDefined_trigger(&triggerDefined, self)) {
+        stuff.~dyn_array();
+        target.~string();
+        return;
+    }
+
+    Broc::entity linked = *mp_util_wad::GetEE_trigger(self);
+    *mp_util_wad::GetEE_index(linked) = flag_id;
+
+    Broc::string classname("script_model");
+    Broc::vector origin;
+    mp_util_wad::entity_get_origin(&origin, self);
+    Broc::entity flag;
+    Broc::Spawn(&flag, &classname, &origin,
+                static_cast<TPakInfo>(INVALID_PAK_INFO));
+    *mp_util_wad::GetEE_flag(linked) = flag;
+    classname.~string();
+
+    Broc::vector angles;
+    mp_util_wad::entity_get_angles(&angles, self);
+    Broc::entity::__unnamed::angles_struct flagAngles = {flag.GetHandle()};
+    flagAngles = &angles;
+
+    Broc::string modelName("p_mp_dom_flag_hanging_nt");
+    Broc::SetModel(&flag, &modelName, INVALID_PAK_INFO);
+    modelName.~string();
+
+    Broc::string targetname;
+    mp_util_wad::entity_get_targetname(&targetname, linked);
+    Broc::GetEntArray(&targetname, 0x15B1F8A7u, &stuff, 0);
+    targetname.~string();
+
+    Broc::vector offsetStart(0.0f, 0.0f, 40.0f);
+    *mp_util_wad::GetEE_flagStart(linked) = origin + offsetStart;
+    Broc::vector offsetEnd(0.0f, 0.0f, 120.0f);
+    *mp_util_wad::GetEE_flagEnd(linked) = origin + offsetEnd;
+
+    *mp_util_wad::GetEE_capSpeed(linked) = flag_id;
+    Broc::bint now;
+    Broc::GetTime(&now);
+    *mp_util_wad::GetEE_lastTouch(self) = now;
+    *mp_util_wad::GetEE_capStatus(self) = 0.0f;
+    *mp_util_wad::GetEE_capTeam(self) = 0;
+    *mp_util_wad::GetEE_capAllowedTeam(self) = -999;
+    *mp_util_wad::GetEE_capStatus(linked) = 0.0f;
+    *mp_util_wad::GetEE_capTeam(linked) = 0;
+    *mp_util_wad::GetEE_capAllowedTeam(linked) = -999;
+
+    Broc::string script("FLAG_FLAPPING");
+    Broc::EffectEventPlay(&self, &script);
+    script.~string();
+    Broc::wait(0.01f);
+
+    void* updated = WAR_FlagUpdate__functor(linked);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                        __LINE__, "WAR_FlagUpdate",
+                        reinterpret_cast<AeThreadFunctor*>(updated));
+
+    HashStr touchLabel;
+    touchLabel.mVal = 0xF2F5EAB4u;
+    HashStr touchFunction;
+    Broc::string_hash(&touchFunction, "_mp_war::WAR_TouchFlag");
+    Broc::AddEventHandler(linked, touchLabel, touchFunction);
+    stuff.~dyn_array();
+    target.~string();
 }
 
 // SortMarkers - ea: 0x97C410
