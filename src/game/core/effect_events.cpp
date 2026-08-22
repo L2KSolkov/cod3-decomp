@@ -99,6 +99,7 @@ void safe_for_each<reserved_dlist<RumbleEffectInstance>::iterator,
 template void DelFunctor<EntityNotify>::operator()(EntityNotify*) const;
 template void DelFunctor<RumbleEffectInstance>::operator()(
     RumbleEffectInstance*) const;
+template void BitSet<49>::Set(int, bool);
 
 // ea: 0x004E3E50
 ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const

@@ -168,6 +168,7 @@ struct BitSet {
     void Clear();  // ?Clear@?$BitSet@$0FEA@@@QAEXXZ (g.o 0x4AE790)
     void Add(int v);  // ?Add@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B1750)
     void Rmv(int v);  // ?Rmv@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B17E0)
+    void Set(int b, bool v);
     BitSet<N> operator~() const;  // ??S?$BitSet@$0FEA@@@QBE?AV0@XZ (g.o 0x4B1870)
 
     class iterator {
@@ -545,6 +546,15 @@ void BitSet<N>::Rmv(int v)
             __debugbreak();
     }
     ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F));
+}
+
+template <int N>
+void BitSet<N>::Set(int b, bool v)
+{
+    if (v)
+        Add(b);
+    else
+        Rmv(b);
 }
 
 template <int N>
