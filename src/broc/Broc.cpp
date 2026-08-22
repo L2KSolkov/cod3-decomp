@@ -307,6 +307,18 @@ unsigned int hudelem::GetIndex() const
     return ___u0;
 }
 
+// ea: 0x00986BC0
+bool hudelem::IsDefined() const
+{
+    return ___u0 != 0xFFFFFFFFu;
+}
+
+// ea: 0x00948420
+void hudelem::SetUndefined()
+{
+    ___u0 = 0xFFFFFFFFu;
+}
+
 // ea: 0x005E9800
 TPathnodeHandle pathnode::GetHandle() const
 {

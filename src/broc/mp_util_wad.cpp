@@ -22,6 +22,22 @@ using Broc::SetModel;
 using Broc::MoveTo;
 using Broc::EffectEventPlay;
 
+// mp_util_wad entry points - ea: 0x947450 / 0x947480 / 0x948450.
+void MusicStop()
+{
+    Broc::gBrocAPI.mMusicStop(0.0f);
+}
+
+void SoundStop(unsigned int handle)
+{
+    Broc::gBrocAPI.mSoundStop(handle);
+}
+
+void Destroy(const Broc::hudelem* hud)
+{
+    Broc::gBrocAPI.mDestroy(hud);
+}
+
 namespace mp_anim_wad {
 int ResolveAnim(unsigned int treename, unsigned int animname,
                 unsigned int* getVal, unsigned int setVal);
@@ -2188,6 +2204,14 @@ const Broc::vector* Broc::entity::__unnamed::angles_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::viewangles_struct::Get - ea: 0x9491B0
+const Broc::vector* Broc::entity::__unnamed::viewangles_struct::Get(
+    Broc::vector* result) const {
+    Broc::vector temp[6];
+    *result = *Broc::gBrocAPI.m_entity_get_player_viewangles(temp, mHandle);
+    return result;
+}
+
 // Broc::entity::__unnamed::spectatorClient_struct::operator= - ea: 0x93E390
 const int& Broc::entity::__unnamed::spectatorClient_struct::operator=(
     const int& rhs) {
@@ -2379,6 +2403,11 @@ bool IsDefined(const Broc::string& s) {
 template <typename T> bool IsDefined(const T& t) {
     return t.mVal != 0;
 }
+
+template <typename T> bool IsDefined(const T* t) {
+    return t != nullptr && t->IsDefined();
+}
+template bool IsDefined<Broc::hudelem>(const Broc::hudelem* t);
 
 // Distance - ea: 0x934A50
 float Distance(const Broc::vector* v0, const Broc::vector* v1) {
@@ -2949,9 +2978,29 @@ bint operator*(bint lhs, int rhs) {
     return bint(lhs.mVal * rhs);
 }
 
+// operator*(bint, bint) - ea: 0x949AE0
+bint operator*(bint lhs, bint rhs) {
+    return bint(rhs.mVal * lhs.mVal);
+}
+
+// operator*(int, bint) - ea: 0x949B20
+bint operator*(int lhs, bint rhs) {
+    return bint(lhs * rhs.mVal);
+}
+
 // operator+(bint, bint) - ea: 0x943C50
 bint operator+(bint lhs, bint rhs) {
     return bint(lhs.mVal + rhs.mVal);
+}
+
+// operator<(bfloat, bint) - ea: 0x949670
+bbool operator<(bfloat lhs, bint rhs) {
+    return bbool(rhs.mVal > lhs.mVal);
+}
+
+// operator<(int, bint) - ea: 0x949A30
+bbool operator<(int lhs, bint rhs) {
+    return bbool(lhs < rhs.mVal);
 }
 
 // operator+(bint, int) - ea: 0x9370B0
@@ -5543,8 +5592,8 @@ Broc::bint* GetGoingToDieTime(Broc::bint* result) {
 
 // DestroyHudElem - ea: 0x9483D0
 void DestroyHudElem(Broc::hudelem* elem) {
-    if (Broc::IsDefined(*elem)) {
-        Broc::Destroy(elem);
+    if (Broc::IsDefined<Broc::hudelem>(elem)) {
+        Destroy(elem);
         elem->SetUndefined();
     }
 }
@@ -6633,7 +6682,7 @@ void restart_round(Broc::entity selfLevel, Broc::bint waitTime) {
     fade.mVal = 0x2A9ACF98u;
     Broc::waittill(lvl, fade);
     if (Broc::Code_GetTeamGame()) {
-        Broc::MusicStop();
+        MusicStop();
         Broc::wait(1.0f);
         if (mp_util_wad::pLevel->roundWinner.length() == 0) {
             Broc::string winner;
@@ -6703,7 +6752,7 @@ void restart_round(Broc::entity selfLevel, Broc::bint waitTime) {
         Broc::bint musicHandle((int)Broc::SoundPlay(name, 1.0f));
         name.~string();
         Broc::wait_accurate(20.0f);
-        Broc::SoundStop((unsigned int)(int)musicHandle);
+        SoundStop((unsigned int)(int)musicHandle);
         Broc::Code_SettleMapVote();
         Broc::Code_SettleGameModeVote();
         Broc::Code_DisplayScoreBoard(false, 20);

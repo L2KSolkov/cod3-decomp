@@ -265,6 +265,10 @@ public:
             const Broc::vector* Get(Broc::vector* result) const;
             const Broc::vector* operator=(const Broc::vector* rhs);
         };
+        struct viewangles_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::vector* Get(Broc::vector* result) const;
+        };
         struct team_struct {
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
@@ -301,6 +305,8 @@ public:
                             "nextPlayerClass_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::angles_struct) == 4,
                             "angles_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::viewangles_struct) == 4,
+                            "viewangles_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::team_struct) == 4,
                             "team_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::ctf_has_flag_struct) == 4,
@@ -560,6 +566,7 @@ public:
     hudelem(unsigned int v);
     unsigned int GetIndex() const;
 
+    bool IsDefined() const;             // ?IsDefined@hudelem@Broc@@QBE_NXZ
     void SetUndefined();             // ea: 0x92F7D0
     void x(int v);                   // hudelem.x property
     void y(int v);                   // hudelem.y property
@@ -740,6 +747,8 @@ struct bint {
     static int sUndefined;
 };
 bint operator+(bint lhs, bint rhs);
+bint operator*(bint lhs, bint rhs);
+bint operator*(int lhs, bint rhs);
 bint operator*(bint lhs, int rhs);
 bfloat operator*(int lhs, bfloat rhs);
 bfloat operator*(bint lhs, bfloat rhs);
@@ -749,6 +758,8 @@ struct bbool {
     explicit bbool(bool v) : mVal(v) {}
     bool operator==(bool rhs) const;
 };
+bbool operator<(bfloat lhs, bint rhs);
+bbool operator<(int lhs, bint rhs);
 Broc::bbool operator>(Broc::bfloat lhs, int rhs);
 Broc::bbool operator<(float lhs, Broc::bfloat rhs);
 Broc::bfloat operator*(Broc::bfloat lhs, Broc::bfloat rhs);
@@ -763,8 +774,9 @@ namespace Broc {
 bool IsDefined(const Broc::entity& e);              // ea: 0x92F130
 bool IsDefined(const Broc::vector& v);              // ea: 0x92F150
 bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
-inline bool IsDefined(const Broc::hudelem& h) { return h.___u0 != 0; }
+inline bool IsDefined(const Broc::hudelem& h) { return h.IsDefined(); }
 template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
+template <typename T> bool IsDefined(const T* t);
 
 extern Broc::entity gEntityUndef;
 
@@ -995,9 +1007,15 @@ struct BrocAPI {
                                           const int, TPakInfo); // +0x26C
     unsigned int (*mSpawnTriggerMount)(Broc::vector*, Broc::vector*,
                                        const bool, TPakInfo); // +0x270
-    char _pad274[0x290 - 0x274];                          // +0x274
+    char _pad274[0x280 - 0x274];                          // +0x274
+    void (*mMusicPlay)(const Broc::string*);              // +0x280
+    void (*mMusicStop)(float);                            // +0x284
+    void (*mMusicIndoorPlay)(const Broc::string*, float); // +0x288
+    void (*mMusicIndoorStop)(float);                      // +0x28C
     unsigned int (*mSoundPlay)(const Broc::string*, float); // +0x290
-    char _pad294[0x2A0 - 0x294];                          // +0x294
+    void (*mSoundStop)(unsigned int);                     // +0x294
+    void (*mSoundFadeIn)(unsigned int, float);            // +0x298
+    void (*mSoundFadeOut)(unsigned int, float);           // +0x29C
     void (*mSoundCrossFade)(unsigned int, unsigned int, float); // +0x2A0
     char _pad2A4[0x2C0 - 0x2A4];                          // +0x2A4
     void (*mReverbSetParams)(const Broc::string*, bool);  // +0x2C0
@@ -1143,7 +1161,9 @@ struct BrocAPI {
     void (*mSetWeaponSlotClipAmmo)(unsigned int, const Broc::string*, int); // +0xAE8
     int (*mGetFullClipAmmoCount)(unsigned int, const Broc::string*); // +0xAEC
     int (*mGetMaxAmmo)(unsigned int, const Broc::string*); // +0xAF0
-    char _padAF4[0xBD0 - 0xAF4];                          // +0xAF4
+    char _padAF4[0xBC4 - 0xAF4];                          // +0xAF4
+    void (*mDestroy)(const Broc::hudelem*);               // +0xBC4
+    char _padBC8[0xBD0 - 0xBC8];                          // +0xBC8
     void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
     void (*mPoolFree)(void*);                              // +0xBD4
     char _padBD8[0xBDC - 0xBD8];                          // +0xBD8
@@ -1442,7 +1462,6 @@ void GetWeaponSlotWeapon(const Broc::entity& e, const Broc::string& slot, Broc::
 int GetWeaponSlotAmmo(const Broc::entity& e, const Broc::string& slot);
 int GetWeaponSlotClipAmmo(const Broc::entity& e, const Broc::string& slot);
 Broc::hudelem* NewHudElem(Broc::hudelem* result, int panelType);
-void Destroy(Broc::hudelem* hud);
 void SetShader(Broc::hudelem* hud, const Broc::string* shader, int w, int h);
 void ScaleOverTime(Broc::hudelem* hud, float time, int w, int h);
 template <typename... Args> void println(const char* fmt, const Args&... args);
@@ -1450,6 +1469,11 @@ template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 }
+
+// Global mp_util_wad entry points.
+void MusicStop();
+void SoundStop(unsigned int handle);
+void Destroy(const Broc::hudelem* hud);
 
 // Global script exports (their release symbols are not in namespace Broc).
 void ObjectiveAdd(int iObjective, const Broc::string& state,
