@@ -203,13 +203,11 @@ int CL_FirstSnapshot()
 }
 
 // ea: 0x528F60
-int CL_SetCGameTime()
+void CL_SetCGameTime()
 {
     if (cls.state == 2)  // CA_ACTIVE
     {
         cl[0].serverTime = com_time;
         cl[0].oldServerTime = com_time;
-        return com_time;
     }
-    return 0;
 }
