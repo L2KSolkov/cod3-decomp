@@ -1804,6 +1804,17 @@ struct nalTrackInfo {
 };
 static_assert(sizeof(nalTrackInfo) == 40, "nalTrackInfo layout mismatch");
 
+class nalComponentBase;
+struct nalComponentInfo {
+    tlFixedString EncodingType; // +0x00
+    nalComponentBase* Component; // +0x20
+    int StartIndex;              // +0x24
+    int Count;                   // +0x28
+    int Offset;                  // +0x2C
+};
+static_assert(sizeof(nalComponentInfo) == 48,
+              "nalComponentInfo layout mismatch");
+
 class nalGenericSkeleton {
 public:
     // ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z
@@ -1878,7 +1889,7 @@ public:
     nalBoneInfo* BoneInfo; // +0x74
     int TrackCount; // +0x78
     int PoseTrackCount; // +0x7C
-    void* TrackInfo; // +0x80
+    nalTrackInfo* TrackInfo; // +0x80
     int PoseComponentCount; // +0x84
     nalComponentInfo* PoseComponentInfo; // +0x88
     int PoseSize; // +0x8C
@@ -2396,6 +2407,242 @@ unsigned nalGenericInstance::GetHash(const nalGenericSkeleton* from,
     const uintptr_t toValue = reinterpret_cast<uintptr_t>(to);
     return static_cast<unsigned>(((fromValue ^ (toValue >> 3)) >> 3)
                                  % 0x43u);
+}
+
+static unsigned nalComponentGetType(const nalComponentBase* component)
+{
+    using GetTypeFn = unsigned (__thiscall*)(const void*);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    return reinterpret_cast<GetTypeFn>(vtable[1])(component);
+}
+
+static int nalComponentGetPoseSize(const nalComponentBase* component)
+{
+    using GetPoseSizeFn = int (__thiscall*)(const void*);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    return reinterpret_cast<GetPoseSizeFn>(vtable[2])(component);
+}
+
+// ea: 0x0086E9D0
+nalGenericInstance::nalGenericInstance(nalGenericAnim* anim,
+                                       nalGenericSkeleton* skeleton)
+    : nalAnimClass<nalGenericPose>::nalInstanceClass(
+          reinterpret_cast<nalAnimClass<nalGenericPose>*>(anim),
+          reinterpret_cast<const nalBaseSkeleton*>(skeleton)),
+      PrevPose(skeleton, 0), PrevT(-1000000000.0f), OffsetMap(nullptr),
+      AnimCompTracks(nullptr)
+{
+    const nalGenericSkeleton* animSkeleton = anim->Skeleton;
+    const nalGenericSkeleton* componentGroup =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+
+    if (OffsetMapTable == nullptr)
+    {
+        OffsetMapTable = static_cast<nalOffsetMap**>(
+            tlMemAlloc(0x10Cu, 8u, 8u));
+        memset(OffsetMapTable, 0, 0x10Cu);
+    }
+
+    const unsigned bucket = GetHash(animSkeleton, componentGroup);
+    nalOffsetMap* map = OffsetMapTable[bucket];
+    while (map != nullptr
+           && (map->From != animSkeleton || map->To != componentGroup))
+    {
+        map = map->Next;
+    }
+
+    if (map == nullptr)
+    {
+        map = static_cast<nalOffsetMap*>(
+            tlMemAlloc(20u + 4u * static_cast<unsigned>(
+                                   animSkeleton->PoseTrackCount),
+                       8u, 8u));
+        OffsetMap = map;
+        map->ReferenceCount = 1;
+        map->From = animSkeleton;
+        map->To = componentGroup;
+        map->Next = OffsetMapTable[bucket];
+        map->Offsets = &map[1].ReferenceCount;
+        OffsetMapTable[bucket] = map;
+
+        if (animSkeleton == componentGroup)
+        {
+            AnimCompTracks = static_cast<unsigned char*>(
+                tlMemAlloc(static_cast<unsigned>(
+                               componentGroup->PoseComponentCount),
+                           8u, 0u));
+
+            int track = 0;
+            for (int componentIndex = 0;
+                 componentIndex < componentGroup->PoseComponentCount;
+                 ++componentIndex)
+            {
+                const nalComponentInfo& component =
+                    componentGroup->PoseComponentInfo[componentIndex];
+                AnimCompTracks[componentIndex] = 1;
+                int offset = component.Offset;
+                for (int componentTrack = 0;
+                     componentTrack < component.Count;
+                     ++componentTrack, ++track)
+                {
+                    if (track >= anim->Skeleton->PoseTrackCount
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                               621, "track < GetSkeleton()->PoseTrackCount",
+                               "attempt to access an invalid track"))
+                    {
+                        __debugbreak();
+                    }
+                    if (anim->TrackBitMask != nullptr
+                        && ((1u << (track & 0x1F))
+                            & anim->TrackBitMask[track / 32]) == 0)
+                    {
+                        AnimCompTracks[componentIndex] = 0;
+                    }
+                    map->Offsets[track] = offset;
+                    offset += nalComponentGetPoseSize(component.Component);
+                }
+            }
+        }
+        else
+        {
+            for (int track = 0; track < animSkeleton->PoseTrackCount;
+                 ++track)
+            {
+                map->Offsets[track] = -1;
+            }
+
+            for (int animComponentIndex = 0;
+                 animComponentIndex < animSkeleton->PoseComponentCount;
+                 ++animComponentIndex)
+            {
+                const nalComponentInfo& animComponent =
+                    animSkeleton->PoseComponentInfo[animComponentIndex];
+                for (int groupComponentIndex = 0;
+                     groupComponentIndex < componentGroup->PoseComponentCount;
+                     ++groupComponentIndex)
+                {
+                    const nalComponentInfo& groupComponent =
+                        componentGroup->PoseComponentInfo[groupComponentIndex];
+                    if (nalComponentGetType(groupComponent.Component)
+                        != nalComponentGetType(animComponent.Component))
+                    {
+                        continue;
+                    }
+
+                    for (int animTrackOffset = 0;
+                         animTrackOffset < animComponent.Count;
+                         ++animTrackOffset)
+                    {
+                        const int animTrackIndex =
+                            animComponent.StartIndex + animTrackOffset;
+                        const nalTrackInfo& animTrack =
+                            animSkeleton->TrackInfo[animTrackIndex];
+                        const nalBoneInfo& animBone =
+                            animSkeleton->BoneInfo[animTrack.BoneIndex];
+
+                        for (int groupTrackOffset = 0;
+                             groupTrackOffset < groupComponent.Count;
+                             ++groupTrackOffset)
+                        {
+                            const int groupTrackIndex =
+                                groupComponent.StartIndex + groupTrackOffset;
+                            const nalTrackInfo& groupTrack =
+                                componentGroup->TrackInfo[groupTrackIndex];
+                            const nalBoneInfo& groupBone =
+                                componentGroup->BoneInfo[groupTrack.BoneIndex];
+                            if (groupBone.Name == animBone.Name
+                                && groupTrack.Name == animTrack.Name)
+                            {
+                                map->Offsets[animTrackIndex] =
+                                    groupComponent.Offset
+                                    + groupTrackOffset
+                                          * nalComponentGetPoseSize(
+                                                groupComponent.Component);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        OffsetMap = map;
+        ++map->ReferenceCount;
+    }
+
+    if (OffsetMap->From == OffsetMap->To)
+    {
+        AnimCompTracks = static_cast<unsigned char*>(
+            tlMemAlloc(static_cast<unsigned>(
+                           componentGroup->PoseComponentCount),
+                       8u, 0u));
+        for (int componentIndex = 0;
+             componentIndex < componentGroup->PoseComponentCount;
+             ++componentIndex)
+        {
+            const nalComponentInfo& component =
+                componentGroup->PoseComponentInfo[componentIndex];
+            AnimCompTracks[componentIndex] = 1;
+            for (int componentTrack = 0; componentTrack < component.Count;
+                 ++componentTrack)
+            {
+                const int track = component.StartIndex + componentTrack;
+                if (track >= anim->Skeleton->PoseTrackCount
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                           621, "track < GetSkeleton()->PoseTrackCount",
+                           "attempt to access an invalid track"))
+                {
+                    __debugbreak();
+                }
+                if (anim->TrackBitMask != nullptr
+                    && ((1u << (track & 0x1F))
+                        & anim->TrackBitMask[track / 32]) == 0)
+                {
+                    AnimCompTracks[componentIndex] = 0;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0086DB50
+nalGenericInstance::~nalGenericInstance()
+{
+    nalGenericAnim* anim = GetAnim();
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+    const unsigned bucket = GetHash(anim->Skeleton, skeleton);
+
+    nalOffsetMap* previous = nullptr;
+    nalOffsetMap* map = OffsetMapTable != nullptr
+                            ? OffsetMapTable[bucket]
+                            : nullptr;
+    while (map != nullptr && map != OffsetMap)
+    {
+        previous = map;
+        map = map->Next;
+    }
+    if (map != nullptr)
+    {
+        --map->ReferenceCount;
+        if (map->ReferenceCount == 0)
+        {
+            if (previous != nullptr)
+                previous->Next = map->Next;
+            else
+                OffsetMapTable[bucket] = map->Next;
+            tlMemFree(map);
+        }
+    }
+
+    tlMemFree(AnimCompTracks);
 }
 
 // ea: 0x00854BC0
@@ -5163,10 +5410,9 @@ void XAnimEntry_Create(XAnimEntry* self)
 }
 void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton)
 {
-    memset(self, 0, 0x30);
-    *(void**)((char*)self + 0x0C) = skeleton;  // Skeleton +0x0C
-    (void)anim;
-    return self;
+    return new (self) nalGenericInstance(
+        static_cast<nalGenericAnim*>(anim),
+        static_cast<nalGenericSkeleton*>(skeleton));
 }
 
 extern void ValidatePakId(int pakId);  // g_entity_misc.cpp stub
@@ -6657,17 +6903,6 @@ unsigned char nalComponentIKSpinBase::TypeID = 0;
 // nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
 namespace nalGeneric {
 class nalGenericSkeleton;
-
-// nalComponentInfo - component run-length/start info (nal_generic.h)
-struct nalComponentInfo {
-    tlFixedString EncodingType; // +0x00
-    nalComponentBase* Component; // +0x20
-    int StartIndex;  // +0x24
-    int Count;       // +0x28
-    int Offset;       // +0x2C
-};
-static_assert(sizeof(nalComponentInfo) == 48,
-              "nalComponentInfo layout mismatch");
 
 template <typename T>
 class nalGenericComponentHandle {
