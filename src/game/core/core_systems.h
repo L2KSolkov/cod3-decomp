@@ -1464,7 +1464,24 @@ template <typename T>
 struct DbFieldType : DbField {
     T m_val;  // +0x04
 
+    DbFieldType(uint16_t columnId, T* v, EDbColumnType col_type,
+                EDbMatchType match_type)
+        : DbField(columnId, col_type, match_type), m_val(*v) {}
+
     const T& GetValue() const { return m_val; }
+};
+template <>
+struct DbFieldType<DbQueryString> : DbField {
+    DbQueryString m_val;  // +0x04
+
+    DbFieldType(uint16_t columnId, const DbQueryString* v,
+                EDbColumnType col_type, EDbMatchType match_type)
+        : DbField(columnId, col_type, match_type)
+    {
+        memcpy(&m_val, v, sizeof(m_val));
+    }
+
+    const DbQueryString& GetValue() const { return m_val; }
 };
 static_assert(sizeof(DbFieldType<int>) == 8,
               "DbFieldType<int> size mismatch");

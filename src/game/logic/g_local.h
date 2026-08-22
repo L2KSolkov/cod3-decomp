@@ -33,6 +33,7 @@
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* Ptr);
+extern char* GetNullBuffer(int size);
 
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA
 template <typename T>
@@ -871,13 +872,19 @@ public:
 private:
     bool IsUsed(unsigned int index) const
     {
-        const unsigned char* p = (const unsigned char*)&mElements[index];
-        for (unsigned int i = 0; i < sizeof(InplaceTreeElement<K, V>); ++i)
+        if (index >= mSize)
         {
-            if (p[i] != 0)
-                return true;
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 211;
+            AeAssert::gCurrentExpr = "index >= 0 && index < mSize";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
         }
-        return false;
+        return memcmp(&mElements[index],
+                      GetNullBuffer((int)sizeof(InplaceTreeElement<K, V>)),
+                      sizeof(InplaceTreeElement<K, V>)) != 0;
     }
 };
 

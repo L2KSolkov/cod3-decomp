@@ -39,6 +39,8 @@ void FixupPointer(T** ptr, const void* base)
 
 template void FixupPointer<unsigned int>(unsigned int** ptr,
                                          const void* base);
+template void FixupPointer<PtrFixupTable>(PtrFixupTable** ptr,
+                                          const void* base);
 
 // ============================================================================
 // ExtractNode — unpack a packed node entry into offset + next pointer

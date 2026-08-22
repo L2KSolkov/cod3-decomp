@@ -123,6 +123,13 @@ public:
         mHandle = rhs;
         return *this;
     }
+    template <typename OtherHandleDb, typename OtherT>
+    DbLinkedHandle& operator=(
+        const DbLinkedHandle<OtherHandleDb, OtherT>& rhs)
+    {
+        mHandle.mVal = rhs.mHandle.mVal;
+        return *this;
+    }
     T* operator*() const;  // ??D?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBEPAVEntity@@XZ (g.o 0x4B2670)
     T* operator->() const; // ??C?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBEPAVEntity@@XZ (g.o 0x4B26B0)
     bool IsValid() const { return mHandle.mVal != 0; }
