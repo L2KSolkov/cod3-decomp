@@ -1097,13 +1097,13 @@ index	status	map_line
 1096	SKIPPED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1097	SKIPPED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1098	VERIFIED	0002:00261ab0 ??1TempDCGSet@DCGBankManager@@QAE@XZ 00A50FB0 f i game.o
-1099	PORTED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o
-1100	PORTED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o
-1101	PORTED	0002:00261c10 ??0?$cdl_array@Ucdl_object_t@@@@QAE@I@Z 00A51110 f i game.o
-1102	VERIFIED	0002:00261c40 ??1?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A51140 f i game.o
-1103	PORTED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o
-1104	PORTED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o
-1105	PORTED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o
+1099	PORTED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o  PORTED: IDA 0x00661BA0 clears all three PadAliasMgr contexts; manager overload restored in g_cmd.cpp.
+1100	PORTED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o  PORTED: IDA 0x00661BD0 clears the supplied controller alias in all three contexts; manager overload restored in g_cmd.cpp.
+1101	PORTED	0002:00261c10 ??0?$cdl_array@Ucdl_object_t@@@@QAE@I@Z 00A51110 f i game.o  PORTED: IDA 0x00661C10 initializes count/elements and delegates to cdl_array<T>::resize; count constructor restored.
+1102	VERIFIED	0002:00261c40 ??1?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A51140 f i game.o  VERIFIED: IDA 0x00661C40 matches generic ae_vector cleanup for function-pointer elements.
+1103	VERIFIED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o  VERIFIED: IDA 0x00661C70 matches generic ae_vector growth, copy, free, append, and size increment.
+1104	VERIFIED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o  VERIFIED: IDA 0x00661D20 matches ae_sized_array::erase, including last-element assignment and guarded size decrement.
+1105	FIXED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o  FIXED: IDA 0x00661D80 now records HandleDb.h lines 170/175 and emits the invalid-handle warning/assert paths for invalid index or generation.
 1106	SKIPPED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1107	PORTED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o
 1108	PORTED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o
