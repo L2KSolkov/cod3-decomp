@@ -740,7 +740,7 @@ index	status	map_line
 739	VERIFIED	0002:00568530 ?LaunchFlagAndTrigger@_mp_scf@@YAXVentity@Broc@@Uvector@3@11@Z 00D57A30 f mp_util_wad.o
 740	VERIFIED	0002:00568590 ?EntityOff@_mp_scf@@YAXVentity@Broc@@@Z 00D57A90 f mp_util_wad.o
 741	VERIFIED	0002:00568610 ?CompassUnderlay@_mp_scf@@YAXVentity@Broc@@@Z 00D57B10 f mp_util_wad.o
-742	PORTED	0002:00568870 ?IsFlagAtBase@_mp_scf@@YA?AUbbool@@Ventity@Broc@@@Z 00D57D70 f mp_util_wad.o
+742	VERIFIED	0002:00568870 ?IsFlagAtBase@_mp_scf@@YA?AUbbool@@Ventity@Broc@@@Z 00D57D70 f mp_util_wad.o	VERIFIED: IDA 0x00968870 matches home_position/origin subtraction, z suppression, and the 0.1 threshold
 743	PORTED	0002:00568920 ?HandlePickupFlag@_mp_scf@@YAXVentity@Broc@@0HH@Z 00D57E20 f mp_util_wad.o
 744	PORTED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o
 745	PORTED	0002:005697e0 ??4pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D58CE0 f i mp_util_wad.o
