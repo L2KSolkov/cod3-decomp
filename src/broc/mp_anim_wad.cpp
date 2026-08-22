@@ -2767,3 +2767,44 @@ Broc::string* GetEE_script_noteworthy(Broc::string* result,
     value.~string();
     return result;
 }
+
+// IsEEDefined_script_noteworthy - ea: 0x9951A0.
+Broc::bbool* IsEEDefined_script_noteworthy(Broc::bbool* result,
+                                           Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_script_fb_id - ea: 0x995240. Field key from IDA: 0x4723E508.
+Broc::bint* GetEE_script_fb_id(Broc::bint* result, Broc::pathnode node) {
+    const int value = Broc::gBrocAPI.mBrocExports.mGetPNodeField_int(
+        node.GetHandle(), 0x4723E508u);
+    new (result) Broc::bint(value);
+    return result;
+}
+
+// IsEEDefined_script_fb_id - ea: 0x9952C0.
+Broc::bbool* IsEEDefined_script_fb_id(Broc::bbool* result,
+                                      Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetPNodeField_int(
+            node.GetHandle(), 0x4723E508u);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_script_waittill - ea: 0x995370. Field key from IDA: 0x1164451E.
+Broc::string* GetEE_script_waittill(Broc::string* result,
+                                    Broc::pathnode node) {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+        &value, node.GetHandle(), 0x1164451Eu);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
