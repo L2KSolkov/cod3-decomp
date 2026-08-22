@@ -1797,6 +1797,13 @@ struct nalBoneInfo {
 };
 static_assert(sizeof(nalBoneInfo) == 48, "nalBoneInfo layout mismatch");
 
+struct nalTrackInfo {
+    tlFixedString Name;   // +0x00
+    int BoneIndex;        // +0x20
+    unsigned Pad;         // +0x24
+};
+static_assert(sizeof(nalTrackInfo) == 40, "nalTrackInfo layout mismatch");
+
 class nalGenericSkeleton {
 public:
     // ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z
@@ -2154,7 +2161,7 @@ static_assert(sizeof(nalGenericAnim) == 112,
 class nalGenericInstance
     : public nalAnimClass<nalGenericPose>::nalInstanceClass {
 public:
-    static nalOffsetMap* OffsetMapTable[0x43]; // ?OffsetMapTable @ 0x10E9540
+    static nalOffsetMap** OffsetMapTable; // ?OffsetMapTable @ 0x10E9540
 
     nalGenericInstance(nalGenericAnim* anim, nalGenericSkeleton* skeleton);
     ~nalGenericInstance();
@@ -2189,7 +2196,7 @@ static_assert(sizeof(nalGenericInstance) == 48,
 // ============================================================================
 unsigned char nalGenericPose::PoseStack[10240] = {};
 unsigned nalGenericPose::PoseSP = 0;
-nalOffsetMap* nalGenericInstance::OffsetMapTable[0x43] = {};
+nalOffsetMap** nalGenericInstance::OffsetMapTable = nullptr;
 
 // ea: 0x00868BF0
 void nalGenericPose::Construct(const nalBaseSkeleton* skeleton,
@@ -6653,10 +6660,14 @@ class nalGenericSkeleton;
 
 // nalComponentInfo - component run-length/start info (nal_generic.h)
 struct nalComponentInfo {
-    unsigned char _pad[0x24];
+    tlFixedString EncodingType; // +0x00
+    nalComponentBase* Component; // +0x20
     int StartIndex;  // +0x24
     int Count;       // +0x28
+    int Offset;       // +0x2C
 };
+static_assert(sizeof(nalComponentInfo) == 48,
+              "nalComponentInfo layout mismatch");
 
 template <typename T>
 class nalGenericComponentHandle {
