@@ -785,6 +785,18 @@ static T* CheckpointVectorConstruct(int iCapacity, int iSize)
 }
 
 template <typename T>
+static T* CheckpointVectorConstruct(int iNumber)
+{
+    T* p = (T*)tlMemAlloc(iNumber * sizeof(T), 8, 0);
+    for (T* i = p; i != p + iNumber; ++i)
+        memset(i, 0, sizeof(T));
+    return p;
+}
+
+template SCheckpointGameVar*
+CheckpointVectorConstruct<SCheckpointGameVar>(int);
+
+template <typename T>
 static void CheckpointVectorResize(CheckpointVector<T>* v, int iNewSize)
 {
     if (iNewSize > v->mCapacity)
