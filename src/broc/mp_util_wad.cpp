@@ -4851,7 +4851,7 @@ void* main__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* Host_FlowControl__functor(Broc::entity self);
 AeThreadFunctor* Track_Ownership__functor(Broc::entity self);
-void* ResetGame__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* ResetGame__functor(Broc::entity self);
 void* TriggerRadio__functor(Broc::entity self);
 }
 namespace _mp_scf {
@@ -11591,12 +11591,10 @@ void AddPoints(Broc::bint forAllies, Broc::bint forAxis) {
     if ((int)forAllies != 0) {
         Broc::string team("allies");
         Broc::Code_IncTeamScore(team, (int)forAllies);
-        team.~string();
     }
     if ((int)forAxis != 0) {
         Broc::string team("axis");
         Broc::Code_IncTeamScore(team, (int)forAxis);
-        team.~string();
     }
 }
 
@@ -12237,7 +12235,7 @@ AeThreadFunctor* Track_Ownership__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(Track_Ownership, self);
 }
-void* ResetGame__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* ResetGame__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
