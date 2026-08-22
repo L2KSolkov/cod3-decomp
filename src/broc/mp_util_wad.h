@@ -39,6 +39,9 @@ struct LocalFields {
         struct home_position_struct {
             Broc::vector& GetRef();
         };
+        struct home_angles_struct {
+            Broc::vector& GetRef();
+        };
 
     };
 
@@ -46,6 +49,7 @@ struct LocalFields {
         __unnamed::trigger_struct flagEnd;
         __unnamed::holder_struct holder;
         __unnamed::home_position_struct home_position;
+        __unnamed::home_angles_struct home_angles;
         unsigned char mProxyFields[4];
     };
 };

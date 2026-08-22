@@ -4520,6 +4520,13 @@ Broc::vector& mp_util_wad::LocalFields::__unnamed::home_position_struct::GetRef(
     return ee->GetRef<Broc::vector>(0xE42FE83Du);
 }
 
+// home_angles_struct::GetRef - ea: 0x96AE80
+Broc::vector& mp_util_wad::LocalFields::__unnamed::home_angles_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<Broc::vector>(0x385575E2u);
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);
