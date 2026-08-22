@@ -882,18 +882,18 @@ index	status	map_line
 881	VERIFIED	0002:001e9830 ?GetHandle@vehiclenode@Broc@@QBEHXZ 009D8D30 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns the stored vehiclenode handle
 882	VERIFIED	0002:001e9840 ?IsDefined@vehiclenode@Broc@@QBE_NXZ 009D8D40 f i scr.o	VERIFIED: matches IDA decompile and disassembly; rejects the 0xFFFFFFFF invalid handle
 883	VERIFIED	0002:001e9850 ??0entity@Broc@@QAE@XZ 009D8D50 f i scr.o
-884	PORTED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-885	PORTED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-886	PORTED	0002:001e9890 ??3AeThread@@SAXPAX_NPBDH@Z 009D8D90 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-887	PORTED	0002:001e98b0 ??3AeThread@@SAXPAX@Z 009D8DB0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-888	PORTED	0002:001e98d0 ?SetHandle@AeThread@@QAEXVHandle@@@Z 009D8DD0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-889	PORTED	0002:001e98e0 ?GetHandle@AeThread@@QBE?AVHandle@@XZ 009D8DE0 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-890	PORTED	0002:001e9900 ??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z 009D8E00 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-891	PORTED	0002:001e9920 ??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z 009D8E20 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-892	PORTED	0002:001e9940 ??3Block@BackupStack@AeThread@@SAXPAX@Z 009D8E40 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-893	PORTED	0002:001e9960 ??0Block@BackupStack@AeThread@@QAE@XZ 009D8E60 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-894	PORTED	0002:001e9970 ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ 009D8E70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
-895	PORTED	0002:001e9980 ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009D8E80 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
+884	VERIFIED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns this
+885	VERIFIED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o	VERIFIED: matches IDA decompile and disassembly; forwards size and forceHeapAlloc to AeThread allocator
+886	VERIFIED	0002:001e9890 ??3AeThread@@SAXPAX_NPBDH@Z 009D8D90 f i scr.o	VERIFIED: matches IDA decompile and disassembly; releases ptr through AeThread allocator
+887	VERIFIED	0002:001e98b0 ??3AeThread@@SAXPAX@Z 009D8DB0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; releases ptr through AeThread allocator
+888	VERIFIED	0002:001e98d0 ?SetHandle@AeThread@@QAEXVHandle@@@Z 009D8DD0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores Handle::mVal at AeThread +0x14
+889	VERIFIED	0002:001e98e0 ?GetHandle@AeThread@@QBE?AVHandle@@XZ 009D8DE0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; hidden Handle return copies AeThread +0x14
+890	VERIFIED	0002:001e9900 ??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z 009D8E00 f i scr.o	VERIFIED: matches IDA decompile and disassembly; forwards size and forceHeapAlloc to Block allocator
+891	VERIFIED	0002:001e9920 ??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z 009D8E20 f i scr.o	VERIFIED: matches IDA decompile and disassembly; releases ptr through Block allocator
+892	VERIFIED	0002:001e9940 ??3Block@BackupStack@AeThread@@SAXPAX@Z 009D8E40 f i scr.o	VERIFIED: matches IDA decompile and disassembly; releases ptr through Block allocator
+893	VERIFIED	0002:001e9960 ??0Block@BackupStack@AeThread@@QAE@XZ 009D8E60 f i scr.o	VERIFIED: matches IDA disassembly; clears Block::mNext at +0xFC
+894	VERIFIED	0002:001e9970 ?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ 009D8E70 f i scr.o	VERIFIED: matches IDA decompile and disassembly; reads mThreadExecuting at +0x858
+895	VERIFIED	0002:001e9980 ?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z 009D8E80 f i scr.o	VERIFIED: matches IDA decompile and disassembly; writes mThreadExecuting at +0x858
 896	VERIFIED	0002:001e99a0 _asinf 009D8EA0 f i scr.o
 897	VERIFIED	0002:001e99b0 _atanf 009D8EB0 f i scr.o
 898	VERIFIED	0002:001e99c0 _logf 009D8EC0 f i scr.o
