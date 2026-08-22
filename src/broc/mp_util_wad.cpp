@@ -13400,18 +13400,27 @@ int CallbackGetCapturingFlagPercent() {
 
 // CallbackGetFlagBeingContested - ea: 0x978470
 int CallbackGetFlagBeingContested(Broc::entity player) {
-    (void)player;
-    Broc::bint i(0);
-    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
-        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
-        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-        if ((float)*mp_util_wad::GetEE_capStatus(trigger) != 0.0f &&
-            (float)*mp_util_wad::GetEE_capStatus(trigger) != 1.0f &&
-            (float)*mp_util_wad::GetEE_capStatus(trigger) != -1.0f)
-            return 1;
-        i = (int)i + 1;
-    }
-    return 0;
+    if (mp_util_wad::pLevel->warAreas.mCapacity == 0)
+        return 0;
+    if ((int)mp_util_wad::pLevel->warIndex < 0)
+        return 0;
+    int index = (int)mp_util_wad::pLevel->warIndex;
+    if (index >= Broc::size(mp_util_wad::pLevel->warAreas))
+        return 0;
+
+    Broc::bint playerState;
+    mp_util_wad::entity_get_playerState(&playerState, player);
+    if ((int)playerState != 3)
+        return 0;
+
+    Broc::entity area =
+        mp_util_wad::pLevel->warAreas[(unsigned int)index];
+    Broc::entity& trigger = area->flagEnd.GetRef();
+    if (!Broc::IsTouching(&trigger, &player))
+        return 0;
+    if (Broc::Code_IsInVehicle(player))
+        return 0;
+    return GetNumPlayersContestingFlag();
 }
 
 // GetNumPlayersContestingFlag - ea: 0x9785F0
