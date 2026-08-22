@@ -33,7 +33,7 @@ index	status	map_line
 32	FIXED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o FIXED: matched IDA allocator parameter types and defaultFileName assert format
 33	FIXED	0002:00128af0 ?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00917FF0 f cl.o FIXED: matched IDA defaultFileName assert format for both checks
 34	VERIFIED	0002:00128ba0 ?LoadWorld@@YAXPBD@Z 009180A0 f cl.o
-35	VERIFIED	0002:00128bd0 ?CL_CgameSystemCalls@@YAHPAH@Z 009180D0 f cl.o
+35	FIXED	0002:00128bd0 ?CL_CgameSystemCalls@@YAHPAH@Z 009180D0 f cl.o FIXED: matched IDA byte extraction for Text_PaintWithCursor cursor character
 36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o PORTED: IDA-verified cgvm null return and VM_Call call number 2
 37	VERIFIED	0002:00128e40 ?CL_CGameRendering@@YAXXZ 00918340 f cl.o
 38	FIXED	0002:00128e70 ?CL_FirstSnapshot@@YAXXZ 00918370 f cl.o FIXED: matched IDA cvar assert, pak cleanup, FEManager state transitions, and menu activation; removed no-op helper path
