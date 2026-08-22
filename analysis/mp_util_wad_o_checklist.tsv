@@ -522,7 +522,7 @@ index	status	map_line
 521	VERIFIED	0002:0054fee0 ?CallbackDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F3E0 f mp_util_wad.o
 522	VERIFIED	0002:0054ff10 ?CallbackPlayerLeave@_mp_ctf@@YAXVentity@Broc@@@Z 00D3F410 f mp_util_wad.o
 523	FIXED	0002:0054ffa0 ?CallbackGameStateCTF@_mp_ctf@@YAXUvector@Broc@@0Ventity@3@001@Z 00D3F4A0 f mp_util_wad.o	FIXED: matched IDA 0x94FFA0 callback arguments for both flag origins, angles, and holders; restored holder unlink/relink, ctf_has_flag, and HandlePickupFlag paths; removed unused invented static holder/origin state; source commits d1c481b0, e035000d
-524	PORTED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o	PORTED: replaced no-op with C3/IDA 0x009505F0 holder check, pitch/speed drop velocity, target-team net ID, local assert, weapon switch, and holder clear; source commit 5aa55043
+524	FIXED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o	FIXED: reverified IDA 0x009505F0 and aligned ctf_has_flag/angles/targetname/origin proxies plus local-player assertion order (source commit f82889e2)
 525	VERIFIED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	VERIFIED: IDA directly forwards item, netID, position, angles, and velocity to mDropItem2
 526	VERIFIED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x00950B50 handle extraction and mTakeWeapon forwarding
 527	VERIFIED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	VERIFIED: IDA 0x00950B80 matches the existing entity-handle forward to mSwitchToLastWeapon
