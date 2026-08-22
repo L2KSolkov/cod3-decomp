@@ -687,26 +687,26 @@ index	status	map_line
 686	VERIFIED	0002:002466a0 ?ClearEntities@CurveManager@@QAEXXZ 00A35BA0 f game.o
 687	VERIFIED	0002:00246700 ?DebugRender@CGBankManager@@QAEXXZ 00A35C00 f game.o
 688	VERIFIED	0002:002492d0 ??0CGBankManager@@QAE@XZ 00A387D0 f game.o
-689	PORTED	0002:0025b030 ?AbsValue@math@@YA?AVDir3@1@ABV21@@Z 00A4A530 f i game.o
+689	PORTED	0002:0025b030 ?AbsValue@math@@YA?AVDir3@1@ABV21@@Z 00A4A530 f i game.o  PORTED: restored exact sign-mask absolute-value SIMD helper
 690	VERIFIED	0002:0025b070 ??0WbkEntry@AudioBankMgr@@QAE@XZ 00A4A570 f i game.o
-691	PORTED	0002:0025b0e0 ??8math@@YA_NABVDir3@0@0@Z 00A4A5E0 f i game.o
-692	PORTED	0002:0025b1c0 ??Hmath@@YA?AVDir3@0@ABV10@M@Z 00A4A6C0 f i game.o
-693	PORTED	0002:0025b200 ??Hmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A700 f i game.o
-694	PORTED	0002:0025b250 ??Gmath@@YA?AVVector4@0@ABV10@0@Z 00A4A750 f i game.o
-695	PORTED	0002:0025b2b0 ??Gmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A7B0 f i game.o
-696	PORTED	0002:0025b330 ??Kmath@@YA?AVPosition3@0@ABV10@M@Z 00A4A830 f i game.o
+691	PORTED	0002:0025b0e0 ??8math@@YA_NABVDir3@0@0@Z 00A4A5E0 f i game.o  PORTED: restored exact XYZ Dir3 equality
+692	PORTED	0002:0025b1c0 ??Hmath@@YA?AVDir3@0@ABV10@M@Z 00A4A6C0 f i game.o  PORTED: restored exact Dir3 plus scalar SIMD helper
+693	PORTED	0002:0025b200 ??Hmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A700 f i game.o  PORTED: restored exact Position3 val34 plus Vector4 helper
+694	PORTED	0002:0025b250 ??Gmath@@YA?AVVector4@0@ABV10@0@@Z 00A4A750 f i game.o  PORTED: restored exact Vector4 subtraction
+695	PORTED	0002:0025b2b0 ??Gmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A7B0 f i game.o  PORTED: restored exact Position3 val34 minus Vector4 helper
+696	PORTED	0002:0025b330 ??Kmath@@YA?AVPosition3@0@ABV10@M@Z 00A4A830 f i game.o  PORTED: restored exact Position3 scalar division
 697	PORTED	0002:0025b370 ?IsStreamed@Sound@SoundDevice@@QBE_NXZ 00A4A870 f i game.o
 698	PORTED	0002:0025b390 ?GetWaveId@Sound@SoundDevice@@QAE?AW4nslWaveID@@XZ 00A4A890 f i game.o
-699	PORTED	0002:0025b3a0 ??Dmath@@YAMABVPosition3@0@0@Z 00A4A8A0 f i game.o
-700	PORTED	0002:0025b400 ??ZDir3@math@@QAEABV01@ABV01@@Z 00A4A900 f i game.o
-701	PORTED	0002:0025b440 ??ZPosition3@math@@QAEABV01@ABVDir3@1@@Z 00A4A940 f i game.o
-702	PORTED	0002:0025b480 ?UnitNegDirX@math@@YA?AVDir3@1@XZ 00A4A980 f i game.o
-703	PORTED	0002:0025b4c0 ?UnitNegDirY@math@@YA?AVDir3@1@XZ 00A4A9C0 f i game.o
-704	PORTED	0002:0025b500 ?UnitNegDirZ@math@@YA?AVDir3@1@XZ 00A4AA00 f i game.o
-705	PORTED	0002:0025b540 ?Compare_all_ge@math@@YA_NABVVector4@1@0@Z 00A4AA40 f i game.o
-706	PORTED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o
-707	PORTED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o
-708	PORTED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o
+699	PORTED	0002:0025b3a0 ??Dmath@@YAMABVPosition3@0@0@Z 00A4A8A0 f i game.o  PORTED: restored exact Position3 dot product
+700	PORTED	0002:0025b400 ??ZDir3@math@@QAEABV01@ABV01@@Z 00A4A900 f i game.o  PORTED: restored exact Dir3 subtraction assignment
+701	PORTED	0002:0025b440 ??ZPosition3@math@@QAEABV01@ABVDir3@1@@Z 00A4A940 f i game.o  PORTED: restored exact Position3 minus Dir3 assignment
+702	PORTED	0002:0025b480 ?UnitNegDirX@math@@YA?AVDir3@1@XZ 00A4A980 f i game.o  PORTED: restored exact negative X unit vector
+703	PORTED	0002:0025b4c0 ?UnitNegDirY@math@@YA?AVDir3@1@XZ 00A4A9C0 f i game.o  PORTED: restored exact negative Y unit vector
+704	PORTED	0002:0025b500 ?UnitNegDirZ@math@@YA?AVDir3@1@XZ 00A4AA00 f i game.o  PORTED: restored exact negative Z unit vector
+705	PORTED	0002:0025b540 ?Compare_all_ge@math@@YA_NABVVector4@1@0@Z 00A4AA40 f i game.o  PORTED: restored exact SIMD all-ge comparison mask
+706	PORTED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o  PORTED: restored exact SIMD all-gt comparison mask
+707	PORTED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o  PORTED: restored exact SIMD any-le comparison mask
+708	PORTED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o  PORTED: restored exact SIMD any-ge comparison mask
 709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o
 710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o
 711	PORTED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o
