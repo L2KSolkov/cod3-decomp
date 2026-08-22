@@ -723,6 +723,38 @@ void EffectEventSys::CachedQuery::Clear()
     mWeakFields.mBits[0] = 0;
 }
 
+// ea: 0x004E8620
+EffectEventSys::PendingQuery::PendingQuery()
+    : mScriptId((Broc::string::Block*)nullptr)
+{
+    mCachedQuery.mSpecifiedFields.mBits[1] = 0;
+    mCachedQuery.mSpecifiedFields.mBits[0] = 0;
+    mCachedQuery.mWeakFields.mBits[1] = 0;
+    mCachedQuery.mWeakFields.mBits[0] = 0;
+    mCachedQuery.mWEAPON_ID[0] = 0;
+    mCachedQuery.mVEHICLE_ID[0] = 0;
+    mCachedQuery.mSCRIPT_ID[0] = 0;
+    mCollisionInfo.simple.coord.v = _mm_setzero_ps();
+    mCollisionInfo.simple.normal.v = _mm_setzero_ps();
+    mCollisionInfo.material = kCollisionMaterialInvalid;
+    mQueryEnt.mHandle.mVal = 0;
+    mEffect.mVal = 0;
+    mFlags.mVal = 0;
+    mType = EEffectContextInvalid;
+    mCachedQuery.mSpecifiedFields.mBits[1] = 0;
+    mCachedQuery.mSpecifiedFields.mBits[0] = 0;
+    mCachedQuery.mWeakFields.mBits[1] = 0;
+    mCachedQuery.mWeakFields.mBits[0] = 0;
+    mQueryEnt.mHandle.mVal = 0;
+    mBoneIndex = -1;
+    mCacheSoundType = -1;
+    mQueryType = -1;
+    mEffect.mVal = 0;
+    mFlags.mVal = 0;
+    mDialogNotify = 0;
+    mMatrix = nullptr;
+}
+
 // ea: 0x004E5DC0
 void EffectEventSys::PendingQuery::Clear()
 {

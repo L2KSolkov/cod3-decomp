@@ -1094,7 +1094,6 @@ EffectEventSys::EffectEventSys()
 {
     mEffectSets.m_size = 0;
     mFadingEffects.m_size = 0;
-    memset(&mPendingQueries, 0, sizeof(mPendingQueries));
     mCurrentQuery = nullptr;
     mStoppingAll = false;
     for (int i = 0; i < 32; ++i)
