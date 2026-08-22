@@ -10770,17 +10770,20 @@ void TeamObjectiveUpdate(Broc::entity guy, int iTeamFlag) {
         Broc::vector goal;
         mp_util_wad::entity_get_origin(&goal, *mp_util_wad::GetEE_goal(flag));
         ObjectiveAdd((int)iObjective, sObjectiveStateNeutralThisTeam, pszString, goal, (float)lCTFObjectiveDontShow,
-                           Broc::GetPlayerIndex(guy));
+                               Broc::GetPlayerIndex(guy));
+        Broc::string playerTeam;
+        mp_util_wad::entity_get_team(&playerTeam, guy);
         Broc::string hteam;
         Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
         mp_util_wad::entity_get_team(&hteam, holder);
-        if (hteam == team && holder != guy) {
+        if (hteam == playerTeam && holder != guy) {
             Broc::vector hpos;
             mp_util_wad::entity_get_origin(&hpos, holder);
             ObjectiveAdd((int)iObjectiveCarrier, sObjectiveStateThisTeam, pszString, hpos, (float)lCTFObjectiveDontShow,
                                Broc::GetPlayerIndex(guy));
         }
         hteam.~string();
+        playerTeam.~string();
         pszString.~string();
     }
     sObjectiveCarrierState.~string();
