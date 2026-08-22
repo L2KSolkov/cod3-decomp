@@ -883,7 +883,7 @@ index	status	map_line
 882	VERIFIED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	VERIFIED: IDA 0x0097AFB0 constructs lhs plus rhs
 883	FIXED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o	FIXED: replaced stub with IDA 0x0097B000 active-round touch counting and signed capture-speed updates; IDA short-circuit verified: GetTime runs only after warIndex matches (source commit f30d12a6)
 884	FIXED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o	FIXED: corrected the 0x0097B580 signature/body to the global bfloat/bint types from IDA; rechecked IDA decompile: 1.0 geometric series, 0.75 factor, i<guysCapping
-885	FIXED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o	FIXED: ported IDA 0x0097B640 loop; updates cap permissions and i_objective_c marker
+885	FIXED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o	FIXED: ported IDA 0x0097B640 loop; updates cap permissions and i_objective_c marker; rechecked IDA origin_struct::Get call for active-area objective position (source commit f3122575)
 886	FIXED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o	FIXED: corrected global bint/int signature and ported IDA 0x0097B850 model/objective flow
 887	VERIFIED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o	VERIFIED: IDA 0x0097BAE0 forwards the entity handle to mShow
 888	VERIFIED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o	VERIFIED: IDA 0x0097BB10 constructs bint and SetVal key 0xF430CD43
