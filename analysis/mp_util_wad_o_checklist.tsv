@@ -771,9 +771,9 @@ index	status	map_line
 770	PORTED	0002:0056bcd0 ?RenderFlagInfo@_mp_scf@@YAXVentity@Broc@@Ubint@@1@Z 00D5B1D0 f mp_util_wad.o
 771	VERIFIED	0002:0056c140 ?CallbackDebugRender@_mp_scf@@YAXXZ 00D5B640 f mp_util_wad.o
 772	VERIFIED	0002:0056c9a0 ?main@_mp_shellshock@@YAXXZ 00D5BEA0 f mp_util_wad.o
-773	PORTED	0002:0056c9c0 ?ShellshockOnDamage@_mp_shellshock@@YAXVentity@Broc@@Ubint@@1@Z 00D5BEC0 f mp_util_wad.o
-774	PORTED	0002:0056cc60 ?ShellShock@Broc@@YAXABVentity@1@ABVstring@1@M@Z 00D5C160 f i mp_util_wad.o
-775	PORTED	0002:0056cca0 ?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z 00D5C1A0 f mp_util_wad.o
+773	PORTED	0002:0056c9c0 ?ShellshockOnDamage@_mp_shellshock@@YAXVentity@Broc@@Ubint@@1@Z 00D5BEC0 f mp_util_wad.o	PORTED: IDA reverified cause set {27,3,4,5,6,17,18,9,10}, damage thresholds 25/50/90, blur durations, and default ShellShock call
+774	PORTED	0002:0056cc60 ?ShellShock@Broc@@YAXABVentity@1@ABVstring@1@M@Z 00D5C160 f i mp_util_wad.o	PORTED: IDA reverified direct entity-handle forwarding to mShellShock
+775	PORTED	0002:0056cca0 ?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z 00D5C1A0 f mp_util_wad.o	PORTED: IDA reverified empty body; source intentionally preserves the reference no-op
 776	VERIFIED	0002:0056ccc0 ?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5C1C0 f mp_util_wad.o	VERIFIED: IDA 0x0096CCC0 matches cg_debugSpawnPoints dispatch and no-telefrag overload selection
 777	VERIFIED	0002:0056cd30 ?GetSpawnpointRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@Ubbool@@@Z 00D5C230 f mp_util_wad.o	VERIFIED: IDA 0x0096CD30 matches random shuffle, ignoreTeleFrag filtering, and result construction
 778	VERIFIED	0002:0056cf50 ?Code_PositionWouldTelefrag@Broc@@YA_NABUvector@1@@Z 00D5C450 f i mp_util_wad.o	VERIFIED: IDA 0x0096CF50 directly returns mPositionWouldTelefrag(position); implementation matches
