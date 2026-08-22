@@ -459,7 +459,7 @@ index	status	map_line
 458	VERIFIED	0002:0054acd0 ?NewHudElem@@YA?AVhudelem@Broc@@H@Z 00D3A1D0 f i mp_util_wad.o	VERIFIED: IDA 0x0094ACD0 matches the existing temporary HUD allocation and index copy
 459	VERIFIED	0002:0054ad10 ?SetShader@@YAXABVhudelem@Broc@@ABVstring@2@HH@Z 00D3A210 f i mp_util_wad.o	VERIFIED: IDA 0x0094AD10 matches the existing four-argument shader forward
 460	FIXED	0002:0054ad50 ?ProgressBarUpdate@_mp_common@@YAXUbfloat@@0@Z 00D3A250 f mp_util_wad.o	FIXED: corrected call to the exact global ScaleOverTime wrapper
-461	PORTED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o	PORTED: added exact global scale wrapper
+461	VERIFIED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o	VERIFIED: IDA 0x0094ADC0 matches the existing HUD, time, width, and height forward
 462	VERIFIED	0002:0054ae00 ?ProgressBarDelete@_mp_common@@YAXXZ 00D3A300 f mp_util_wad.o
 463	VERIFIED	0002:0054ae30 ?EndRound@_mp_common@@YAXW4EEndRoundCondition@@Vstring@Broc@@@Z 00D3A330 f mp_util_wad.o
 464	VERIFIED	0002:0054aec0 ?HasBothTeams@_mp_common@@YA?AUbbool@@XZ 00D3A3C0 f mp_util_wad.o	VERIFIED: Existing player/team counting and team-game condition match IDA
@@ -469,9 +469,9 @@ index	status	map_line
 468	VERIFIED	0002:0054b650 ?AudioOnPlayerDeath@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AB50 f mp_util_wad.o	VERIFIED: Existing local-player Player_Dying effect path matches IDA
 469	VERIFIED	0002:0054b6f0 ?HealthRegenPlayerBreathing@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3ABF0 f mp_util_wad.o	VERIFIED: Existing endon/health/breathing loop matches IDA
 470	FIXED	0002:0054b880 ?RandomFloat@@YAMM@Z 00D3AD80 f i mp_util_wad.o	FIXED: added mMathsRandomFloat +0x144 callback and exact wrapper
-471	PORTED	0002:0054b8b0 ?notify@Broc@@YAXABVentity@1@PBD@Z 00D3ADB0 f i mp_util_wad.o	PORTED: IDA hashes the label, then forwards the const entity reference handle and hash to mEntNotify
+471	VERIFIED	0002:0054b8b0 ?notify@Broc@@YAXABVentity@1@PBD@Z 00D3ADB0 f i mp_util_wad.o	VERIFIED: IDA 0x0094B8B0 matches the existing label hash and entity-notify forward
 472	VERIFIED	0002:0054b900 ?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D3AE00 f mp_util_wad.o
-473	PORTED	0002:0054ba60 ?ObjectiveDelete@@YAXHH@Z 00D3AF60 f i mp_util_wad.o	PORTED: IDA direct global forward to mObjectiveDelete
+473	VERIFIED	0002:0054ba60 ?ObjectiveDelete@@YAXHH@Z 00D3AF60 f i mp_util_wad.o	VERIFIED: IDA 0x0094BA60 matches the existing objective/client forward to mObjectiveDelete
 474	PORTED	0002:0054ba90 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@PBD@Z 00D3AF90 f i mp_util_wad.o	PORTED: IDA forwards both const string references, by-value vector, and default objective arguments to mObjectiveAdd5
 475	FIXED	0002:0054bae0 ?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AFE0 f mp_util_wad.o	FIXED: IDA 0x0094BAE0 uses pLevel->_base.entity for both endon labels
 476	VERIFIED	0002:0054bbd0 ?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ 00D3B0D0 f mp_util_wad.o
@@ -480,14 +480,14 @@ index	status	map_line
 479	VERIFIED	0002:0054bf20 ?GetWeaponSlotAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B420 f i mp_util_wad.o	VERIFIED: IDA forwards const entity/string references and slot to mGetWeaponSlotAmmo
 480	VERIFIED	0002:0054bf50 ?GetWeaponSlotClipAmmo@Broc@@YAHABVentity@1@ABVstring@1@@Z 00D3B450 f i mp_util_wad.o	VERIFIED: IDA forwards const entity/string references and slot to mGetWeaponSlotClipAmmo
 481	VERIFIED	0002:0054bf80 ?SelectFirstAvailableWeapon@_mp_common@@YAXVentity@Broc@@@Z 00D3B480 f mp_util_wad.o
-482	PORTED	0002:0054c1b0 ?SwitchToWeapon@Broc@@YA_NABVentity@1@ABVstring@1@@Z 00D3B6B0 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and returns mSwitchToWeapon
-483	PORTED	0002:0054c1e0 ?GetWeaponSlotWeapon@Broc@@YAXABVentity@1@ABVstring@1@AAV31@@Z 00D3B6E0 f i mp_util_wad.o	PORTED: IDA forwards const entity/string references and output string to mGetWeaponSlotWeapon
+482	VERIFIED	0002:0054c1b0 ?SwitchToWeapon@Broc@@YA_NABVentity@1@ABVstring@1@@Z 00D3B6B0 f i mp_util_wad.o	VERIFIED: IDA 0x0094C1B0 matches the existing entity-handle/string forward and bool return
+483	VERIFIED	0002:0054c1e0 ?GetWeaponSlotWeapon@Broc@@YAXABVentity@1@ABVstring@1@AAV31@@Z 00D3B6E0 f i mp_util_wad.o	VERIFIED: IDA 0x0094C1E0 matches the existing entity-handle, slot, and output-string forward
 484	VERIFIED	0002:0054c220 ?reenable_medic_call@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3B720 f mp_util_wad.o	VERIFIED: IDA matches the six hash labels, wait, and SetSpectateMedic call
 485	VERIFIED	0002:0054c380 ?GetTimeTillNextRound@_mp_common@@YA?AUbint@@XZ 00D3B880 f mp_util_wad.o	VERIFIED: IDA matches level round-over handling and next-round time arithmetic
 486	VERIFIED	0002:0054c4a0 ?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ 00D3B9A0 f mp_util_wad.o	VERIFIED: IDA matches team-score comparison and tie-break behavior
 487	FIXED	0002:0054c9f0 ?Code_GetPlayerStat@Broc@@YAFVentity@1@I@Z 00D3BEF0 f i mp_util_wad.o	FIXED: added the IDA-matching __int16 wrapper and BrocAPI mGetPlayerStat slot at +0x330
 488	VERIFIED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o
-489	PORTED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	PORTED: IDA 0x0094CD50 direct mDebugRenderBox forward
+489	VERIFIED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	VERIFIED: IDA 0x0094CD50 matches the existing min/max/color/alpha forward to mDebugRenderBox
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
 491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
 492	PORTED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	PORTED: IDA forwards height/clientIndex and default display/child arguments to mObjectiveAdd5
