@@ -24860,6 +24860,69 @@ BrocFieldFn sScrFcnPtrs[38] = {
     reinterpret_cast<BrocFieldFn>(&BrocSys::PathNode_GetType),
 };
 
+// IDA weak globals used by the entity field specializations.  These are
+// separate from sScrFcnPtrs in the release image.
+using EntityFieldFn = void (__cdecl *)(Entity*, int, void*);
+using EntityVectorFieldFn = void (__cdecl *)(Entity*, int, Broc::vector*);
+using EntityIntFieldFn = void (__cdecl *)(Entity*, int, int*);
+using EntityStringFieldFn = void (__cdecl *)(Entity*, int, Broc::string*);
+
+EntityFieldFn off_DF491C = &BrocSys::Scr_ReadOnlyField;
+EntityVectorFieldFn off_DF4920 = &BrocSys::Scr_SetOrigin;
+EntityIntFieldFn off_DF4924 = &BrocSys::Scr_SetHealth;
+EntityVectorFieldFn off_DF4928 = &BrocSys::Scr_SetAngles;
+EntityVectorFieldFn off_DF492C = &BrocSys::Scr_GetAngles;
+EntityStringFieldFn off_DF4930 = &BrocSys::Scr_SetModel;
+EntityIntFieldFn off_DF493C = &BrocSys::Scr_SetWord;
+EntityIntFieldFn off_DF4940 = &BrocSys::Scr_GetWord;
+EntityStringFieldFn off_DF4944 = &BrocSys::Scr_SetTarget;
+EntityStringFieldFn off_DF4948 = &BrocSys::Scr_SetTargetName;
+EntityStringFieldFn off_DF494C = &BrocSys::Scr_SetGroupName;
+EntityStringFieldFn off_DF4950 = &BrocSys::Scr_SetNoteWorthy;
+EntityStringFieldFn off_DF4954 = &BrocSys::Scr_SetAnimName;
+
+template <int IDX>
+static BrocFieldFn entity_set_field_callback()
+{
+    if (IDX == 0)
+        return sScrFcnPtrs[0];
+    if (IDX == 1)
+        return reinterpret_cast<BrocFieldFn>(off_DF491C);
+    if (IDX == 2)
+        return reinterpret_cast<BrocFieldFn>(off_DF4920);
+    if (IDX == 3)
+        return reinterpret_cast<BrocFieldFn>(off_DF4924);
+    if (IDX == 4)
+        return reinterpret_cast<BrocFieldFn>(off_DF4928);
+    if (IDX == 9)
+        return reinterpret_cast<BrocFieldFn>(off_DF493C);
+    if (IDX == 11)
+        return reinterpret_cast<BrocFieldFn>(off_DF4944);
+    if (IDX == 12)
+        return reinterpret_cast<BrocFieldFn>(off_DF4948);
+    if (IDX == 13)
+        return reinterpret_cast<BrocFieldFn>(off_DF494C);
+    if (IDX == 14)
+        return reinterpret_cast<BrocFieldFn>(off_DF4950);
+    if (IDX == 15)
+        return reinterpret_cast<BrocFieldFn>(off_DF4954);
+    return nullptr;
+}
+
+template <int IDX>
+static BrocFieldFn entity_get_field_callback()
+{
+    if (IDX == 0)
+        return sScrFcnPtrs[0];
+    if (IDX == 5)
+        return reinterpret_cast<BrocFieldFn>(off_DF492C);
+    if (IDX == 6)
+        return reinterpret_cast<BrocFieldFn>(off_DF4930);
+    if (IDX == 10)
+        return reinterpret_cast<BrocFieldFn>(off_DF4940);
+    return nullptr;
+}
+
 void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
     &BrocSys::PathNode_SetAngles;
 void (__cdecl *off_DF49A4)(PathNodes::PathNode*, int, Broc::vector*) =
@@ -24945,7 +25008,11 @@ void entity_set_field(unsigned int handle, T val)
     Entity* mObject = BrocSysApiHandleToEntity(handle);
     if (mObject != nullptr && handle != 0)
     {
-        *(T*)((char*)mObject + OFF) = val;
+        BrocFieldFn callback = entity_set_field_callback<IDX>();
+        if (callback != nullptr)
+            callback(mObject, OFF, &val);
+        else
+            *(T*)((char*)mObject + OFF) = val;
         return;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -24962,7 +25029,16 @@ T entity_get_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
     if (mObject != nullptr)
+    {
+        BrocFieldFn callback = entity_get_field_callback<IDX>();
+        if (callback != nullptr)
+        {
+            T value{};
+            callback(mObject, OFF, &value);
+            return value;
+        }
         return *(T*)((char*)mObject + OFF);
+    }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
     AeAssert::gCurrentLine = 5818;
