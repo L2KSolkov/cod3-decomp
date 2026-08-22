@@ -562,6 +562,7 @@ struct reserved_dlist {
     }
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
+    void push_front(T* obj);
     void erase(T* obj);
     iterator erase(iterator& i);
     void delete_all();
@@ -582,6 +583,18 @@ void reserved_dlist<T>::push_back(T* obj)
     node->mPrev = m_tail;
     m_tail->mNext = node;
     m_tail = node;
+    ++m_size;
+}
+
+template <typename T>
+void reserved_dlist<T>::push_front(T* obj)
+{
+    dlist_node* node = reinterpret_cast<dlist_node*>(obj);
+    node->mPrev = m_head->mPrev;
+    dlist_node* head = m_head;
+    node->mNext = head;
+    head->mPrev = node;
+    m_head = node;
     ++m_size;
 }
 
