@@ -558,7 +558,7 @@ index	status	map_line
 557	FIXED	0002:00555250 ?ObjectiveUpdater__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D44750 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 558	VERIFIED	0002:005552f0 ?CallbackPlayerEnter@_mp_ctf@@YAXVentity@Broc@@H@Z 00D447F0 f mp_util_wad.o
 559	VERIFIED	0002:00555400 ?UnlinkFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D44900 f mp_util_wad.o
-560	PORTED	0002:00555620 ?RenderFlagInfo@_mp_ctf@@YAXVentity@Broc@@Ubint@@1@Z 00D44B20 f mp_util_wad.o
+560	PORTED	0002:00555620 ?RenderFlagInfo@_mp_ctf@@YAXVentity@Broc@@Ubint@@1@Z 00D44B20 f mp_util_wad.o	PORTED: implemented IDA 0x00955620 holder/base/drop-position debug text path; source commit b9177a9b
 561	VERIFIED	0002:00555af0 ?Code_DebugRenderText@Broc@@YAXPBDHH@Z 00D44FF0 f i mp_util_wad.o	VERIFIED: IDA 0x00955AF0 matches the existing text/x/y mDebugRenderText forward
 562	VERIFIED	0002:00555b20 ?CallbackDebugRender@_mp_ctf@@YAXXZ 00D45020 f mp_util_wad.o
 563	VERIFIED	0002:005562e0 ?Code_DebugRenderEntityBBox@Broc@@YAXVentity@1@ABUvector@1@M@Z 00D457E0 f i mp_util_wad.o	VERIFIED: IDA 0x009562E0 matches the existing entity-handle/color/alpha forward
