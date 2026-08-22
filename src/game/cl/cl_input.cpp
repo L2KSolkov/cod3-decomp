@@ -755,7 +755,7 @@ void IN_GoStandUp(int key, int time)
 }
 
 // ea: 0x52B280
-int IN_GoCrouch()
+void IN_GoCrouch()
 {
     if ((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
         || cl[currCl].snap.ps.vehType == 2 && cl[currCl].snap.ps.vehPos == 1)
@@ -766,11 +766,10 @@ int IN_GoCrouch()
                 cl_stance_ss[currCl] = 1;
         }
     }
-    return 6320 * currCl;
 }
 
 // ea: 0x52B230
-int IN_GoProne()
+void IN_GoProne()
 {
     if ((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
         || cl[currCl].snap.ps.vehType == 2 && cl[currCl].snap.ps.vehPos == 1)
@@ -781,11 +780,10 @@ int IN_GoProne()
                 cl_stance_ss[currCl] = 2;
         }
     }
-    return 6320 * currCl;
 }
 
 // ea: 0x52B170
-int IN_ToggleCrouch()
+void IN_ToggleCrouch()
 {
     if ((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
         || cl[currCl].snap.ps.vehType == 2 && cl[currCl].snap.ps.vehPos == 1)
@@ -798,11 +796,10 @@ int IN_ToggleCrouch()
             }
         }
     }
-    return 6320 * currCl;
 }
 
 // ea: 0x52B1D0
-int IN_ToggleProne()
+void IN_ToggleProne()
 {
     if ((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
         || cl[currCl].snap.ps.vehType == 2 && cl[currCl].snap.ps.vehPos == 1)
@@ -815,11 +812,10 @@ int IN_ToggleProne()
             }
         }
     }
-    return 6320 * currCl;
 }
 
 // ea: 0x52B130
-int IN_RaiseStance()
+void IN_RaiseStance()
 {
     if (kb[KB_WBUTTON6].active == 0)
     {
@@ -837,11 +833,10 @@ int IN_RaiseStance()
             }
         }
     }
-    return kb[KB_WBUTTON6].active;
 }
 
 // ea: 0x52B0C0
-int IN_LowerStance()
+void IN_LowerStance()
 {
     if ((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
         || cl[currCl].snap.ps.vehType == 2 && cl[currCl].snap.ps.vehPos == 1)
@@ -863,11 +858,10 @@ int IN_LowerStance()
             }
         }
     }
-    return 6320 * currCl;
 }
 
 // ea: 0x52B390
-int IN_Stance_Down()
+void IN_Stance_Down()
 {
     int v0 = currCl;
     if (((dword_106000 & cl[currCl].snap.ps.eFlags) == 0
@@ -882,11 +876,10 @@ int IN_Stance_Down()
         if (cl[currCl].stancePosition != 1)
             cl_stance_ss[v0] = 1;
     }
-    return currCl * 6320;
 }
 
 // ea: 0x52B410
-int IN_Stance_Up()
+void IN_Stance_Up()
 {
     if (kb[KB_WBUTTON6].active == 0 && kb[KB_CROUCH].active == 0)
     {
@@ -894,7 +887,6 @@ int IN_Stance_Up()
             cl_stance_ss[currCl] = 0;
         *reinterpret_cast<int*>(&cl[currCl].stanceHeld) = 0;
     }
-    return kb[KB_WBUTTON6].active;
 }
 
 // ea: 0x52B4B0
