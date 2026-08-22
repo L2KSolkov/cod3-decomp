@@ -887,7 +887,7 @@ index	status	map_line
 886	FIXED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o	FIXED: corrected global bint/int signature and ported IDA 0x0097B850 model/objective flow; rechecked IDA field access, INVALID_PAK_INFO model, Show, and cap reset branches
 887	VERIFIED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o	VERIFIED: IDA 0x0097BAE0 forwards the entity handle to mShow
 888	VERIFIED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o	VERIFIED: IDA 0x0097BB10 constructs bint and SetVal key 0xF430CD43
-889	FIXED	0002:0057bb60 ?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z 00D6B060 f mp_util_wad.o	FIXED: replaced stub with IDA/C3 trigger lookup, flag spawn, capture initialization, update thread, and touch handler
+889	FIXED	0002:0057bb60 ?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z 00D6B060 f mp_util_wad.o	FIXED: replaced stub with IDA/C3 trigger lookup, flag spawn, capture initialization, update thread, and touch handler; rechecked IDA target/origin/angles/targetname proxy accessors and per-endpoint origin reads (source commit 68c0596c)
 890	VERIFIED	0002:0057c370 ?WAR_FlagUpdate__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D6B870 f i mp_util_wad.o	VERIFIED: IDA 0x0097C370 allocation and AeThreadFunctor1 constructor match
 891	VERIFIED	0002:0057c410 ?SortMarkers@_mp_war@@YAXXZ 00D6B910 f mp_util_wad.o	VERIFIED: IDA 0x0097C410 nested key-based warAreas sort matches
 892	FIXED	0002:0057c650 ?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D6BB50 f mp_util_wad.o	FIXED: matched IDA 0x0097C650 team-aware active/adjacent WAR area search, classname filtering, random selection, and common fallback
