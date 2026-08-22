@@ -3513,3 +3513,20 @@ Broc::bbool* IsEEDefined_targetname(Broc::bbool* result,
         && Broc::gBrocAPI.mIsVehicleNodeDefined(node.GetHandle()) != 0;
     return result;
 }
+
+// GetEE_angles(vehiclenode) - ea: 0x9982B0.
+Broc::vector* GetEE_angles(Broc::vector* result,
+                           Broc::vehiclenode node) {
+    const Broc::vector value = gpBrocAPI->mBrocExports.m_vnode_get_angles(
+        static_cast<int>(node.GetHandle()));
+    *result = value;
+    return result;
+}
+
+// IsEEDefined_angles(vehiclenode) - ea: 0x998330.
+Broc::bbool* IsEEDefined_angles(Broc::bbool* result,
+                                Broc::vehiclenode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsVehicleNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
