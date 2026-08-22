@@ -874,15 +874,15 @@ index	status	map_line
 873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
 875	PORTED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
-876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o
-877	PORTED	0002:0025e6f0 ?done@?$cdl_array@Ucdl_object_t@@@@QAEXXZ 00A4DBF0 f i game.o
-878	PORTED	0002:0025e720 ?done@?$cdl_array@Ucdl_brush_t@@@@QAEXXZ 00A4DC20 f i game.o
-879	PORTED	0002:0025e750 ?done@?$cdl_array@Ucdl_vinfo_t@@@@QAEXXZ 00A4DC50 f i game.o
-880	PORTED	0002:0025e780 ?done@?$cdl_array@Uvi4@@@@QAEXXZ 00A4DC80 f i game.o
-881	PORTED	0002:0025e7b0 ?call_destructors@?$phys_static_array@H$0BAA@@@AAEXXZ 00A4DCB0 f i game.o
-882	PORTED	0002:0025e7c0 ?call_destructors@?$phys_static_array@H$0IA@@@AAEXXZ 00A4DCC0 f i game.o
-883	PORTED	0002:0025e7d0 ?construct_array@?$ae_vector@I@@AAEPAIHH@Z 00A4DCD0 f i game.o
-884	VERIFIED	0002:0025e800 ?destroy_all@?$ae_vector@I@@AAEXXZ 00A4DD00 f i game.o
+876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
+877	PORTED	0002:0025e6f0 ?done@?$cdl_array@Ucdl_object_t@@@@QAEXXZ 00A4DBF0 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
+878	PORTED	0002:0025e720 ?done@?$cdl_array@Ucdl_brush_t@@@@QAEXXZ 00A4DC20 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
+879	PORTED	0002:0025e750 ?done@?$cdl_array@Ucdl_vinfo_t@@@@QAEXXZ 00A4DC50 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
+880	PORTED	0002:0025e780 ?done@?$cdl_array@Uvi4@@@@QAEXXZ 00A4DC80 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
+881	PORTED	0002:0025e7b0 ?call_destructors@?$phys_static_array@H$0BAA@@@AAEXXZ 00A4DCB0 f i game.o	IDA: empty body for phys_static_array<int,256>; existing generic no-op matches.
+882	PORTED	0002:0025e7c0 ?call_destructors@?$phys_static_array@H$0IA@@@AAEXXZ 00A4DCC0 f i game.o	IDA: empty body for phys_static_array<int,128>; existing generic no-op matches.
+883	PORTED	0002:0025e7d0 ?construct_array@?$ae_vector@I@@AAEPAIHH@Z 00A4DCD0 f i game.o	IDA: allocates 4*iCapacity bytes with tlMemAlloc(size,8,0); existing generic construct_array matches.
+884	VERIFIED	0002:0025e800 ?destroy_all@?$ae_vector@I@@AAEXXZ 00A4DD00 f i game.o	IDA: frees non-null mElements and clears pointer/capacity; existing generic destroy_all matches.
 885	PORTED	0002:0025e830 ?construct_array@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEPAP6AXVentity@Broc@@@ZHH@Z 00A4DD30 f i game.o
 886	PORTED	0002:0025e860 ?pop_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A4DD60 f i game.o
 887	PORTED	0002:0025e890 ??0DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A4DD90 f i game.o
