@@ -8852,13 +8852,21 @@ void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
     }
 }
 
+struct GdbFileSet {
+    union Value {
+        int i;
+        float f;
+        const char* s;
+    };
+};
+
 class GdbFile {
 public:
     void* mLayout;   // +0x00 (InplaceTree<uint,uint>*)
-    void* mRecord;   // +0x04 (InplaceVector<GdbFileSet::Value>*)
+    InplaceVector<GdbFileSet::Value>* mRecord; // +0x04
     bool IsValid() const;
+    GdbFileSet::Value* GetStruct();
 };
-struct GdbFileSet;
 struct GdbFileBank;
 class PakFile;
 
@@ -8883,6 +8891,12 @@ GdbFileManager* GdbFileManager::sInst = nullptr;
 bool GdbFile::IsValid() const
 {
     return mRecord != nullptr;
+}
+
+// ea: 0x004E2AC0
+GdbFileSet::Value* GdbFile::GetStruct()
+{
+    return &(*mRecord)[0];
 }
 
 // ea: 0x004DDC00
@@ -9933,7 +9947,8 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pakId, const char* name,
         if (v7 != nullptr)
         {
             result.mLayout = (char*)mValue + 0x04;
-            result.mRecord = *v7;
+            result.mRecord =
+                reinterpret_cast<InplaceVector<GdbFileSet::Value>*>(*v7);
             return result;
         }
     }
