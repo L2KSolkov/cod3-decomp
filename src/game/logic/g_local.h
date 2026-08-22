@@ -4155,6 +4155,7 @@ struct proxy_obj_t {
     uint16_t oi;  // +0x00
     uint8_t  bi;  // +0x02
     uint8_t  ti;  // +0x03
+    proxy_obj_t() = default;
     proxy_obj_t(unsigned char _bi, unsigned short _oi, unsigned char _ti);
 };
 struct bounded_proxy_obj_t {

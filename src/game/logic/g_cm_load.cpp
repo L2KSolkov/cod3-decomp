@@ -71,6 +71,7 @@ struct BspNode {
             int area;             // +0x08
         } leaf;
     } u;
+    bool IsNode() const { return contents == -1; }  // game.o 0x00601F40
 };
 static_assert(sizeof(BspNode) == 0x10, "BspNode size mismatch");
 
