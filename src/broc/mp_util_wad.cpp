@@ -10862,7 +10862,7 @@ void CallbackGameStateCTF(Broc::vector allied_flag, Broc::vector allied_angles,
                           Broc::vector axis_angles, Broc::entity axis_flag_holder) {
     if (Broc::IsDefined(mp_util_wad::pLevel->axis_flag_ent)) {
         Broc::entity holder = *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->axis_flag_ent);
-        if (holder != Broc::gEntityUndef && holder != AxisFlagHolder)
+        if (holder != Broc::gEntityUndef && holder != axis_flag_holder)
             UnlinkFlag(holder);
     }
     Broc::string val("ctf_axis");
@@ -10872,21 +10872,23 @@ void CallbackGameStateCTF(Broc::vector allied_flag, Broc::vector allied_angles,
     mp_util_wad::pLevel->axis_flag_ent = *Broc::GetEnt(&e, &val, key, 0);
     val.~string();
     *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->axis_flag_ent) =
-        AxisFlagHolder;
+        axis_flag_holder;
     Broc::bbool defined;
     mp_util_wad::IsEEDefined_holder(&defined, mp_util_wad::pLevel->axis_flag_ent);
     if ((bool)defined) {
-        mp_util_wad::entity_set_ctf_has_flag(AxisFlagHolder, 1);
-        *mp_util_wad::GetEE_holder(AxisFlagHolder) =
+        Broc::entity pickerupper =
+            *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->axis_flag_ent);
+        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        *mp_util_wad::GetEE_holder(pickerupper) =
             mp_util_wad::pLevel->axis_flag_ent;
-        HandlePickupFlag(1, AxisFlagHolder, Broc::bbool(false),
+        HandlePickupFlag(1, pickerupper, Broc::bbool(false),
                          Broc::bbool(false));
     }
-    mp_util_wad::entity_set_origin(mp_util_wad::pLevel->axis_flag_ent, AxisFlagOrigin);
-    mp_util_wad::entity_set_angles(mp_util_wad::pLevel->axis_flag_ent, AxisFlagAngles);
+    mp_util_wad::entity_set_origin(mp_util_wad::pLevel->axis_flag_ent, axis_flag);
+    mp_util_wad::entity_set_angles(mp_util_wad::pLevel->axis_flag_ent, axis_angles);
     if (Broc::IsDefined(mp_util_wad::pLevel->allies_flag_ent)) {
         Broc::entity holder = *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->allies_flag_ent);
-        if (holder != Broc::gEntityUndef && holder != AlliesFlagHolder)
+        if (holder != Broc::gEntityUndef && holder != allied_flag_holder)
             UnlinkFlag(holder);
     }
     Broc::string val2("ctf_allies");
@@ -10896,20 +10898,20 @@ void CallbackGameStateCTF(Broc::vector allied_flag, Broc::vector allied_angles,
     mp_util_wad::pLevel->allies_flag_ent = *Broc::GetEnt(&e2, &val2, key2, 0);
     val2.~string();
     *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->allies_flag_ent) =
-        AlliesFlagHolder;
+        allied_flag_holder;
     Broc::bbool defined2;
     mp_util_wad::IsEEDefined_holder(&defined2, mp_util_wad::pLevel->allies_flag_ent);
     if ((bool)defined2) {
-        mp_util_wad::entity_set_ctf_has_flag(AlliesFlagHolder, 1);
-        *mp_util_wad::GetEE_holder(AlliesFlagHolder) =
+        Broc::entity pickerupper =
+            *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->allies_flag_ent);
+        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        *mp_util_wad::GetEE_holder(pickerupper) =
             mp_util_wad::pLevel->allies_flag_ent;
-        HandlePickupFlag(2, AlliesFlagHolder, Broc::bbool(false),
+        HandlePickupFlag(2, pickerupper, Broc::bbool(false),
                          Broc::bbool(false));
     }
-    mp_util_wad::entity_set_origin(mp_util_wad::pLevel->allies_flag_ent, AlliesFlagOrigin);
-    mp_util_wad::entity_set_angles(mp_util_wad::pLevel->allies_flag_ent, AlliesFlagAngles);
-    (void)allied_flag; (void)allied_angles; (void)allied_flag_holder;
-    (void)axis_flag; (void)axis_angles; (void)axis_flag_holder;
+    mp_util_wad::entity_set_origin(mp_util_wad::pLevel->allies_flag_ent, allied_flag);
+    mp_util_wad::entity_set_angles(mp_util_wad::pLevel->allies_flag_ent, allied_angles);
 }
 
 // UpdateFlagAndTrigger - ea: 0x950BB0
