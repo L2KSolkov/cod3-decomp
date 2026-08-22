@@ -12293,7 +12293,106 @@ void* Goal__functor(Broc::entity self, Broc::entity triggerer) {
 
 // CallbackAreaCaptured - ea: 0x9670F0
 void CallbackAreaCaptured(int index, int team) {
-    (void)index; (void)team;
+    (void)index;
+    Broc::bbool playSounds(true);
+    Broc::string myteam("axis");
+    Broc::string otherteam("allies");
+    if (team == 1) {
+        myteam = "allies";
+        otherteam = "axis";
+    }
+
+    Broc::Code_DebugOut("*SCF* CallbackAreaCaptured\n");
+    Broc::entity flag = mp_util_wad::pLevel->scfFlags[
+        (unsigned int)(int)mp_util_wad::pLevel->current_flag];
+    if (!Broc::IsDefined(flag) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__ + 16,
+            "flag holder broke"))
+        __debugbreak();
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder) {
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        _mp_common::AddToPlayerStats(holder, Broc::bint(19), 1);
+    }
+
+    if (team != 0) {
+        myteam = "axis";
+        Broc::string scoreTeam("axis");
+        Broc::Code_IncTeamScore(scoreTeam, 1);
+        scoreTeam.~string();
+
+        if ((bool)playSounds) {
+            Broc::entity level = mp_util_wad::pLevel != nullptr
+                                      ? mp_util_wad::pLevel->_base.entity
+                                      : Broc::entity();
+            void* ftor = _mp_audio::PlayTeamSound__functor(
+                level, myteam, Broc::string("MX_CTF_EnemyTeamScore"),
+                Broc::string("MX_CTF_MyTeamScore"));
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_scf.bro",
+                                __LINE__ + 44, "_mp_audio::PlayTeamSound",
+                                ftor);
+
+            Broc::entity level2 = mp_util_wad::pLevel != nullptr
+                                       ? mp_util_wad::pLevel->_base.entity
+                                       : Broc::entity();
+            void* dialogFtor = _mp_audio::PlayTeamDialog__functor(
+                level2, myteam,
+                Broc::string("MP_SFCTF_EnemyCaptured_Allies"),
+                Broc::string("MP_SFCTF_FriendlyCaptured_Axis"),
+                Broc::bfloat(0.5f));
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_scf.bro",
+                                __LINE__ + 45, "_mp_audio::PlayTeamDialog",
+                                dialogFtor);
+        }
+        Broc::iprintln("MPSCF_AXIS_CAPTURED_FLAG");
+    } else {
+        myteam = "allies";
+        Broc::string scoreTeam("allies");
+        Broc::Code_IncTeamScore(scoreTeam, 1);
+        scoreTeam.~string();
+
+        if ((bool)playSounds) {
+            Broc::entity level = mp_util_wad::pLevel != nullptr
+                                      ? mp_util_wad::pLevel->_base.entity
+                                      : Broc::entity();
+            void* ftor = _mp_audio::PlayTeamSound__functor(
+                level, myteam, Broc::string("MX_CTF_EnemyTeamScore"),
+                Broc::string("MX_CTF_MyTeamScore"));
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_scf.bro",
+                                __LINE__ + 31, "_mp_audio::PlayTeamSound",
+                                ftor);
+
+            Broc::entity level2 = mp_util_wad::pLevel != nullptr
+                                       ? mp_util_wad::pLevel->_base.entity
+                                       : Broc::entity();
+            void* dialogFtor = _mp_audio::PlayTeamDialog__functor(
+                level2, myteam,
+                Broc::string("MP_SFCTF_EnemyCaptured_Axis"),
+                Broc::string("MP_SFCTF_FriendlyCaptured_Allies"),
+                Broc::bfloat(0.5f));
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_scf.bro",
+                                __LINE__ + 32, "_mp_audio::PlayTeamDialog",
+                                dialogFtor);
+        }
+        Broc::iprintln("MPSCF_ALLIES_CAPTURED_FLAG");
+    }
+
+    ResetFlags();
+    Broc::entity level = mp_util_wad::pLevel != nullptr
+                              ? mp_util_wad::pLevel->_base.entity
+                              : Broc::entity();
+    void* ftor = WaitThenPickFlagToLaunch__functor(
+        level, Broc::bfloat(30.0f), "MPSCF_FLAG_SPAWNED");
+    Broc::thread_create(false,
+                        "c:\\cod\\code\\script\\_mp_scf.bro",
+                        __LINE__ + 57, "WaitThenPickFlagToLaunch", ftor);
 }
 
 // CallbackDropFlag - ea: 0x969EE0
