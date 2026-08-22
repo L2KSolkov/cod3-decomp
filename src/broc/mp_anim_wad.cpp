@@ -3336,3 +3336,43 @@ Broc::bbool* IsEEDefined_friendlywait(Broc::bbool* result,
     }
     return result;
 }
+
+// GetEE_offramp_used - ea: 0x9978D0. Field key from IDA: 0x2FCE5F3B.
+Broc::bint* GetEE_offramp_used(Broc::bint* result,
+                               Broc::vehiclenode node) {
+    const int value = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+        node.GetHandle(), 0x2FCE5F3Bu);
+    new (result) Broc::bint(value);
+    return result;
+}
+
+// IsEEDefined_offramp_used - ea: 0x997950.
+Broc::bbool* IsEEDefined_offramp_used(Broc::bbool* result,
+                                      Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetVNodeField_int(
+            node.GetHandle(), 0x2FCE5F3Bu);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_origin(vehiclenode) - ea: 0x997A00.
+Broc::vector* GetEE_origin(Broc::vector* result,
+                           Broc::vehiclenode node) {
+    const Broc::vector value = gpBrocAPI->mBrocExports.m_vnode_get_origin(
+        static_cast<int>(node.GetHandle()));
+    *result = value;
+    return result;
+}
+
+// IsEEDefined_origin - ea: 0x997A80.
+Broc::bbool* IsEEDefined_origin(Broc::bbool* result,
+                                Broc::vehiclenode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsVehicleNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
