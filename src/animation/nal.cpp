@@ -1756,6 +1756,7 @@ public:
     void SetPoseBoneOrientation(const nalGenericBoneHandle&, const math::Quaternion&);
     math::Quaternion GetPoseBoneOrientationInternal(int boneIdx) const;
     math::Quaternion GetPoseBoneOrientation(const nalGenericBoneHandle&) const;
+    math::Quaternion GetBoneModelOrientation(int boneIdx) const;
     math::Quaternion GetBoneModelOrientation(const nalGenericBoneHandle&) const;
 
     // ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
@@ -2397,6 +2398,38 @@ math::Quaternion nalGenericPose::GetPoseBoneOrientation(
     const nalGenericBoneHandle& handle) const
 {
     return GetPoseBoneOrientationInternal(handle.BoneIndex);
+}
+
+// ea: 0x0086E880
+math::Quaternion nalGenericPose::GetBoneModelOrientation(int boneIdx) const
+{
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+    math::Quaternion result = GetPoseBoneOrientationInternal(boneIdx);
+    const short parentIndex = skeleton->BoneInfo[boneIdx].Index;
+    if (parentIndex >= 0)
+    {
+        for (int i = 0; i < skeleton->BoneCount; ++i)
+        {
+            if (parentIndex == skeleton->BoneInfo[i].Index)
+            {
+                if (i > 0)
+                {
+                    result = math::Mul(
+                        result, GetBoneModelOrientation(i));
+                }
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+// ea: 0x0086E9B0
+math::Quaternion nalGenericPose::GetBoneModelOrientation(
+    const nalGenericBoneHandle& handle) const
+{
+    return GetBoneModelOrientation(handle.BoneIndex);
 }
 
 // ea: 0x00868D50
