@@ -912,8 +912,8 @@ index	status	map_line
 911	FIXED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o FIXED: source implementation in bbc76616; IDA 0x004E0190 asserts at ae_array.h line 192, increments m_size, and returns the prior slot
 912	SKIPPED	0002:000e0220 ??1?$InplaceAssetBankSet@VPhysDataBank@@@@UAE@XZ 008CF720 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	SKIPPED	0002:000e0230 ?OnBankUnloaded@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXAAVPhysDataBank@@@Z 008CF730 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-914	PORTED	0002:000e0240 ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@VHandle@@@Z 008CF740 f i core.o
-915	PORTED	0002:000e0260 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@H@Z 008CF760 f i core.o
+914	VERIFIED	0002:000e0240 ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@VHandle@@@Z 008CF740 f i core.o VERIFIED: IDA 0x004E0240 copies h.mVal into the handle storage; existing DbLinkedHandle constructor matches
+915	VERIFIED	0002:000e0260 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@H@Z 008CF760 f i core.o VERIFIED: IDA 0x004E0260 stores the integer value in mVal; existing DbLinkedHandle constructor matches
 916	SKIPPED	0002:000e0280 ??1?$InplaceAssetBankSet@VStringTableBank@@@@UAE@XZ 008CF780 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 917	SKIPPED	0002:000e0290 ?OnBankUnloaded@?$InplaceAssetBankSet@VStringTableBank@@@@MAEXAAVStringTableBank@@@Z 008CF790 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 918	SKIPPED	0002:000e02a0 ??A?$ae_array@PAVStringTableBank@@$0GD@@@QAEAAPAVStringTableBank@@H@Z 008CF7A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -924,11 +924,11 @@ index	status	map_line
 923	SKIPPED	0002:000e0440 ??1?$InplaceAssetBankSet@VConfigStringBank@@@@UAE@XZ 008CF940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 924	SKIPPED	0002:000e0450 ?OnBankUnloaded@?$InplaceAssetBankSet@VConfigStringBank@@@@MAEXAAVConfigStringBank@@@Z 008CF950 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 925	SKIPPED	0002:000e0460 ??A?$InplaceVector@TValue@GdbFileSet@@@@QAEAATValue@GdbFileSet@@I@Z 008CF960 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-926	PORTED	0002:000e04e0 ??0dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAU01@0@Z 008CF9E0 f i core.o
-927	PORTED	0002:000e0500 ??0?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008CFA00 f i core.o
+926	VERIFIED	0002:000e04e0 ??0dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAU01@0@Z 008CF9E0 f i core.o VERIFIED: IDA 0x004E04E0 stores next then prev; existing dlist_node constructor matches
+927	VERIFIED	0002:000e0500 ??0?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008CFA00 f i core.o VERIFIED: IDA 0x004E0500 zeros mElements, mCapacity, and mSize; existing ae_vector constructor matches
 928	VERIFIED	0002:000e0510 ?push_back@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAEXABUPoolConfig@PoolAllocator@@@Z 008CFA10 f i core.o
-929	PORTED	0002:000e05c0 ??0?$VariableSaver@H@@QAE@AAH@Z 008CFAC0 f i core.o
-930	PORTED	0002:000e05e0 ??1?$VariableSaver@H@@QAE@XZ 008CFAE0 f i core.o
+929	FIXED	0002:000e05c0 ??0?$VariableSaver@H@@QAE@AAH@Z 008CFAC0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05C0 snapshots stored and originalValue
+930	FIXED	0002:000e05e0 ??1?$VariableSaver@H@@QAE@XZ 008CFAE0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05E0 restores originalValue through stored
 931	PORTED	0002:000e05f0 ?GetValue@?$DbFieldType@H@@QBEABHXZ 008CFAF0 f i core.o
 932	PORTED	0002:000e0600 ?GetValue@?$DbFieldType@M@@QBEABMXZ 008CFB00 f i core.o
 933	PORTED	0002:000e0610 ?GetValue@?$DbFieldType@VFourCC@@@@QBEABVFourCC@@XZ 008CFB10 f i core.o
