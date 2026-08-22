@@ -447,7 +447,7 @@ index	status	map_line
 446	VERIFIED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	VERIFIED: Existing implementation matches the IDA direct forward to gBrocAPI.mSetSpectateSeconds
 447	FIXED	0002:00549ee0 ?UpdateSpectateCriticalGoingToDie__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D393E0 f i mp_util_wad.o	FIXED: corrected return type to AeThreadFunctor1<Broc::entity>* per IDA constructor result
 448	VERIFIED	0002:00549f80 ?UpdateSpectateCriticalGoingToDie@_mp_common@@YAXVentity@Broc@@@Z 00D39480 f mp_util_wad.o
-449	PORTED	0002:0054a2d0 ?UpdateSpectateDead@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D397D0 f mp_util_wad.o
+449	FIXED	0002:0054a2d0 ?UpdateSpectateDead@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D397D0 f mp_util_wad.o	FIXED: matched IDA 0x0094A2D0 default-file-name menu check and automatic string cleanup
 450	VERIFIED	0002:0054a8a0 ?Code_IsMenuOpen@Broc@@YAHABVstring@1@H@Z 00D39DA0 f i mp_util_wad.o	VERIFIED: Existing implementation matches the IDA direct forward to mIsMenuOpen with const string reference ABI
 451	VERIFIED	0002:0054a8d0 ?UpdateSpectateSpawn@_mp_common@@YAXVentity@Broc@@@Z 00D39DD0 f mp_util_wad.o
 452	VERIFIED	0002:0054aa60 ?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D39F60 f mp_util_wad.o	VERIFIED: Existing no-op body matches the IDA function
