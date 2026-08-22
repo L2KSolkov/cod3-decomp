@@ -870,6 +870,10 @@ template bool reserved_dlist<AeThreadState>::const_iterator::compare(
     const reserved_dlist<AeThreadState>::const_iterator&) const;
 template bool reserved_dlist<AeThread>::const_iterator::compare(
     const reserved_dlist<AeThread>::const_iterator&) const;
+template reserved_dlist<AeThreadState>::const_iterator&
+reserved_dlist<AeThreadState>::const_iterator::operator++();
+template reserved_dlist<AeThread>::const_iterator&
+reserved_dlist<AeThread>::const_iterator::operator++();
 template const reserved_dlist<AeThreadState>::dlist_node*
 reserved_dlist<AeThreadState>::get_head() const;
 template reserved_dlist<AeThreadState>::iterator::iterator(AeThreadState*);
