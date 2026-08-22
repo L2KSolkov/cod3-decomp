@@ -1708,15 +1708,13 @@ struct nalComponentInfo;
 class nalGenericPose;
 class nalGenericSkeleton;
 class nalGenericInstance;
+void Blend(nalGenericPose& out, float blend,
+           const nalGenericPose& a, const nalGenericPose& b);
 }
 
 enum nalRegisterKey : int {
     NAL_REGISTER_KEY = 0x11235813,
 };
-
-void Blend(nalGeneric::nalGenericPose& out, float blend,
-           const nalGeneric::nalGenericPose& a,
-           const nalGeneric::nalGenericPose& b);
 
 namespace nalGeneric {
 class nalGenericPose : public nalBasePose {
@@ -2065,9 +2063,9 @@ void nalGenericSkeleton::VirtualBlend(
     nalBasePose* dst, float blend, const nalBasePose* src0,
     const nalBasePose* src1)
 {
-    Blend(*reinterpret_cast<nalGenericPose*>(dst), blend,
-          *reinterpret_cast<const nalGenericPose*>(src0),
-          *reinterpret_cast<const nalGenericPose*>(src1));
+    nalGeneric::Blend(*reinterpret_cast<nalGenericPose*>(dst), blend,
+                      *reinterpret_cast<const nalGenericPose*>(src0),
+                      *reinterpret_cast<const nalGenericPose*>(src1));
 }
 
 // ea: 0x00868DD0
@@ -8246,12 +8244,74 @@ touch_current_frames:
     TouchDecompCache(frameB, lod);
 }
 
-// nalGeneric::Blend (local view; real body in nal_xboxr port)
-inline void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
-                  const nalGenericPose& b)
+// ea: 0x0086E070
+namespace nalGeneric {
+void Blend(nalGenericPose& out, float blend,
+           const nalGenericPose& a, const nalGenericPose& b)
 {
-    (void)out; (void)blend; (void)a; (void)b;
+    int outLOD = a.LOD;
+    if (outLOD < b.LOD)
+        outLOD = b.LOD;
+    int blendLOD = a.LOD;
+    if (blendLOD > b.LOD)
+        blendLOD = b.LOD;
+    out.LOD = blendLOD;
+
+    if (a.Skeleton != b.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 1846,
+                     "poseA.GetSkeleton() == poseB.GetSkeleton()",
+                     "pose blend mismatch"))
+    {
+        __debugbreak();
+    }
+
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(a.Skeleton);
+    int componentGroup = 0;
+    int firstComponentCount = 0;
+    if (outLOD - 1 < 0)
+        firstComponentCount = skeleton->PoseComponentCount;
+    else
+        firstComponentCount = skeleton->LODInfo[outLOD - 1].FirstComponent;
+
+    const nalComponentInfo* component = skeleton->PoseComponentInfo;
+    for (int i = 0; i < firstComponentCount; ++i, ++component)
+    {
+        using BlendFn = void (__thiscall*)(const void*, int, void*,
+                                           const void*, const void*, float);
+        const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+            component->Component);
+        reinterpret_cast<BlendFn>(vtable[3])(
+            component->Component, component->Count,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(a.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(b.PoseData) + component->Offset,
+            blend);
+        ++componentGroup;
+    }
+
+    int remainingComponentCount = skeleton->PoseComponentCount;
+    if (a.LOD > b.LOD)
+    {
+        if (b.LOD - 1 >= 0)
+            remainingComponentCount = skeleton->LODInfo[b.LOD - 1].FirstComponent;
+    }
+    else if (a.LOD - 1 >= 0)
+    {
+        remainingComponentCount = skeleton->LODInfo[a.LOD - 1].FirstComponent;
+    }
+
+    const nalGenericPose* sourcePose = (a.LOD > b.LOD) ? &b : &a;
+    for (int i = componentGroup; i < remainingComponentCount; ++i, ++component)
+    {
+        nalComponentCopyRaw(
+            component->Component, component,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(sourcePose->PoseData)
+                + component->Offset);
+    }
 }
+} // namespace nalGeneric
 
 // ea: 0x0086E1B0
 namespace nalGeneric {
