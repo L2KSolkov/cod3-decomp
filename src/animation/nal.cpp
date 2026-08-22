@@ -2694,6 +2694,18 @@ static void nalComponentConvertRaw(const nalComponentBase* component,
         component, &componentEnum, dstPtr, srcPtr, defaultPtr, offsetTable);
 }
 
+static void nalComponentConstructRaw(const nalComponentBase* component,
+                                     const nalComponentInfo* componentInfo,
+                                     void** poseData)
+{
+    using ConstructFn = void (__thiscall*)(const void*, const nalComponentInfo*,
+                                           void**);
+    const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+        component);
+    reinterpret_cast<ConstructFn>(vtable[15])(
+        component, componentInfo, poseData);
+}
+
 // ea: 0x0086DC30
 void nalGenericInstance::CacheBlock(int blockIdx, int lod)
 {
@@ -8127,11 +8139,45 @@ inline void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
     (void)out; (void)blend; (void)a; (void)b;
 }
 
-// Global-scope stub bodies for the local nalGeneric views in this TU
-// (the correctly-mangled real definitions live in the nal_xboxr port).
-inline nalGenericPose::nalGenericPose(const nalGenericSkeleton* skel, int flags)
+// ea: 0x0086E660
+nalGenericPose::nalGenericPose(const nalGenericSkeleton* skel, int flags)
+    : nalBasePose(reinterpret_cast<const nalBaseSkeleton*>(skel), flags),
+      PoseData(nullptr), AllocedData(false)
 {
-    (void)skel; (void)flags;
+    if (tlIsStackPtr(this))
+    {
+        const unsigned aligned =
+            ~(static_cast<unsigned>(skel->PoseAlignment) - 1u)
+            & (PoseSP + static_cast<unsigned>(skel->PoseAlignment) - 1u);
+        PoseData = &PoseStack[aligned];
+        const unsigned next = (static_cast<unsigned>(skel->PoseSize)
+                                + aligned + 3u) & ~3u;
+        if (next + 4u <= sizeof(PoseStack))
+        {
+            PoseStack[next] = static_cast<unsigned char>(PoseSP);
+            PoseSP = next + 4u;
+        }
+        else
+        {
+            PoseData = nullptr;
+        }
+    }
+
+    if (PoseData == nullptr)
+    {
+        PoseData = tlMemAlloc(static_cast<unsigned>(skel->PoseSize),
+                              static_cast<unsigned>(skel->PoseAlignment), 0u);
+        AllocedData = true;
+    }
+
+    void* poseData = PoseData;
+    for (int componentIndex = 0;
+         componentIndex < skel->PoseComponentCount; ++componentIndex)
+    {
+        const nalComponentInfo* component =
+            &skel->PoseComponentInfo[componentIndex];
+        nalComponentConstructRaw(component->Component, component, &poseData);
+    }
 }
 
 // ea: 0x00868D80
