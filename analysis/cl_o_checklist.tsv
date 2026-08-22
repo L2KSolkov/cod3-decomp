@@ -17,7 +17,7 @@ index	status	map_line
 16	VERIFIED	0002:00128500 ?CL_CapTurnRate@@YAXMM@Z 00917A00 f cl.o
 17	VERIFIED	0002:00128530 ?CL_SetViewAngles@@YAXQAM@Z 00917A30 f cl.o
 18	VERIFIED	0002:001285b0 ?CL_SetViewAnglesAxis@@YAXHM@Z 00917AB0 f cl.o
-19	PORTED	0002:00128670 ?CL_SaveWrite@@YAXPBXH@Z 00917B70 f cl.o
+19	PORTED	0002:00128670 ?CL_SaveWrite@@YAXPBXH@Z 00917B70 f cl.o PORTED: IDA-verified assert metadata, 16-byte hunk allocation, and qmemcpy path
 20	VERIFIED	0002:001286f0 ?CL_LoadRead@@YAXPBXH@Z 00917BF0 f cl.o
 21	VERIFIED	0002:00128710 ?CL_GetCurrentSnapshotNumber@@YAXPAH0@Z 00917C10 f cl.o
 22	VERIFIED	0002:00128750 ?CL_GetSnapshot@@YAHHPAUsnapshot_t@@@Z 00917C50 f cl.o
@@ -25,9 +25,9 @@ index	status	map_line
 24	VERIFIED	0002:00128820 ?CL_SetUserCmdAimValues@@YAXMMMMM@Z 00917D20 f cl.o
 25	VERIFIED	0002:00128880 ?CL_SetUserCmdInShellshock@@YAXH@Z 00917D80 f cl.o
 26	VERIFIED	0002:001288a0 ?CL_AddCgameCommand@@YAXPBDP6AXXZ@Z 00917DA0 f cl.o
-27	PORTED	0002:001288b0 ?CL_CM_LoadMap@@YAXPBD@Z 00917DB0 f cl.o
+27	PORTED	0002:001288b0 ?CL_CM_LoadMap@@YAXPBD@Z 00917DB0 f cl.o PORTED: IDA-verified intentional empty function
 28	VERIFIED	0002:001288c0 ?CL_ShutdownCGame@@YAXXZ 00917DC0 f cl.o
-29	PORTED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o
+29	PORTED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o PORTED: IDA-verified allocation assert, timestamp increment, and zero-wrap correction
 30	PORTED	0002:00128960 ?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z 00917E60 f cl.o
 31	PORTED	0002:00128970 ?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z 00917E70 f cl.o
 32	PORTED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o
