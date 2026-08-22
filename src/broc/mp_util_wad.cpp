@@ -2866,6 +2866,14 @@ void Code_DropItem(int itemType, int netID, const Broc::vector* position,
     gBrocAPI.mDropItem2(itemType, netID, position, angles, velocity);
 }
 
+// Broc::Code_HostDropItem - ea: 0x96AE40
+void Code_HostDropItem(int itemType, int netID,
+                       const Broc::vector* position,
+                       const Broc::vector* angles,
+                       const Broc::vector* velocity) {
+    gBrocAPI.mHostDropItem2(itemType, netID, position, angles, velocity);
+}
+
 // Broc::TakeWeapon - ea: 0x950B50
 void Broc::TakeWeapon(Broc::entity* e,
                       const Broc::string* pszWeaponName) {
