@@ -65,7 +65,7 @@ index	status	map_line
 64	FIXED	0002:0012a590 ?CL_InitButtons@@YAXXZ 00919A90 f cl.o FIXED: corrected IDA-derived 29-button kb/kbss layout and per-client clearing
 65	VERIFIED	0002:0012a5c0 ?IN_MLookDown@@YAXXZ 00919AC0 f cl.o
 66	PORTED	0002:0012a5d0 ?IN_KeyDown@@YAXPAUkbutton_t@@HH@Z 00919AD0 f cl.o PORTED: IDA-verified two-key tracking, duplicate suppression, active transition, and overflow message
-67	PORTED	0002:0012a630 ?IN_KeyUp@@YAXPAUkbutton_t@@HH@Z 00919B30 f cl.o PORTED: IDA-verified key validation asserts, key release bookkeeping, msec accumulation, and reset path
+67	FIXED	0002:0012a630 ?IN_KeyUp@@YAXPAUkbutton_t@@HH@Z 00919B30 f cl.o FIXED: restored IDA Bad key value messages and per-expression metadata
 68	VERIFIED	0002:0012a790 ?CL_KeyState@@YAMPAUkbutton_t@@@Z 00919C90 f cl.o
 69	VERIFIED	0002:0012a820 ?CL_SetTempStanceStatus@@YAXXZ 00919D20 f cl.o
 70	FIXED	0002:0012a860 ?IN_UpDown@@YAXHH@Z 00919D60 f cl.o FIXED: corrected shared IDA-derived kb indices
