@@ -1138,17 +1138,17 @@ index	status	map_line
 1137	SKIPPED	0002:00262970 ??$_Ucopy@PAU?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@1@PAU21@00@Z 00A51E70 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1138	SKIPPED	0002:002629a0 ??$_Uninitialized_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51EA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1139	VERIFIED	0002:002629d0 ?SingletonDebugRender@SoundDevice@@SAXXZ 00A51ED0 f i game.o
-1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o
+1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o  PORTED: IDA 0x006629E0 delegates directly to Sound::Stop; declaration and implementation restored.
 1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o  PORTED: IDA 0x006629F0 now delegates to the restored SoundHandleDb/HandleDb constructor.
 1142	VERIFIED	0002:00262a00 ??1Curve@@QAE@XZ 00A51F00 f i game.o
 1143	SKIPPED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1144	SKIPPED	0002:00262a90 ?_Destroy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXPAU?$pair@HH@2@0@Z 00A51F90 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1145	SKIPPED	0002:00262aa0 ?_Ufill@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@2@PAU32@IABU32@@Z 00A51FA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1146	PORTED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o
+1146	PORTED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o  PORTED: IDA 0x00662AD0 behavior restored in the curve deleter helper: Curve::~Curve followed by Curve::sAllocator->Release.
 1147	SKIPPED	0002:00262b00 ?_Tidy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXXZ 00A52000 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1148	SKIPPED	0002:00262b40 ?erase@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@V312@0@Z 00A52040 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1149	PORTED	0002:00262ba0 ??$safe_for_each@Viterator@?$reserved_dlist@VCurve@@@@V?$DelFunctor@VCurve@@@@@@YAXViterator@?$reserved_dlist@VCurve@@@@0V?$DelFunctor@VCurve@@@@@Z 00A520A0 f i game.o
-1150	PORTED	0002:00262c80 ?delete_all@?$reserved_dlist@VCurve@@@@QAEXXZ 00A52180 f i game.o
+1149	PORTED	0002:00262ba0 ??$safe_for_each@Viterator@?$reserved_dlist@VCurve@@@@V?$DelFunctor@VCurve@@@@@@YAXViterator@?$reserved_dlist@VCurve@@@@0V?$DelFunctor@VCurve@@@@@Z 00A520A0 f i game.o  PORTED: IDA 0x00662BA0 traversal and safe deletion behavior restored in the curve list helper.
+1150	PORTED	0002:00262c80 ?delete_all@?$reserved_dlist@VCurve@@@@QAEXXZ 00A52180 f i game.o  PORTED: IDA 0x00662C80 sentinel handling, curve cleanup, allocator release, and list reset restored.
 1151	SKIPPED	0002:00262ce0 ??1?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A521E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1152	SKIPPED	0002:00262d20 ?_Xlen@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IBEXXZ 00A52220 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1153	SKIPPED	0002:00262da0 ?_Buy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE_NI@Z 00A522A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1156,4 +1156,4 @@ index	status	map_line
 1155	SKIPPED	0002:002630f0 ??0?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A525F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1156	SKIPPED	0002:00263110 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXIU?$pair@HH@2@@Z 00A52610 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1157	SKIPPED	0002:002631a0 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXI@Z 00A526A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1158	PORTED	0002:002631c0 ?SingletonDebugRender@CGBankManager@@SAXXZ 00A526C0 f i game.o
+1158	PORTED	0002:002631c0 ?SingletonDebugRender@CGBankManager@@SAXXZ 00A526C0 f i game.o  PORTED: IDA 0x006631C0 loads CGBankManager::sInst and tail-calls DebugRender; static thunk restored.
