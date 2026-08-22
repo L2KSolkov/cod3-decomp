@@ -566,8 +566,8 @@ index	status	map_line
 565	FIXED	0002:00556360 ?GetSpawnPoint@_mp_ctf@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D45860 f mp_util_wad.o	FIXED: matched IDA 0x00956360 spawn-type fallback/copy order and removed duplicate automatic dyn_array/string destruction
 566	VERIFIED	0002:005565d0 ?main@_mp_dm@@YAXVentity@Broc@@@Z 00D45AD0 f mp_util_wad.o
 567	VERIFIED	0002:005566b0 ?StartGame__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D45BB0 f i mp_util_wad.o	VERIFIED: IDA 0x009566B0 allocates 0xC bytes and constructs AeThreadFunctor1<entity>(StartGame, self); implementation matches
-568	PORTED	0002:00556750 ?StartGame@_mp_dm@@YAXVentity@Broc@@@Z 00D45C50 f mp_util_wad.o	PORTED: Added exact IDA 0x00956750 round-start, RunFrame thread, and Code_EnterGame sequence
-569	PORTED	0002:005567f0 ?GetSpawnPoint@_mp_dm@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D45CF0 f mp_util_wad.o	PORTED: Added exact IDA 0x009567F0 spawn-type selection, entity query, DM spawn selection, and result construction
+568	VERIFIED	0002:00556750 ?StartGame@_mp_dm@@YAXVentity@Broc@@@Z 00D45C50 f mp_util_wad.o	VERIFIED: IDA/disassembly 0x00956750 confirms StartRound(true), pLevel entity selection, RunFrame thread creation, and Code_EnterGame; implementation matches
+569	VERIFIED	0002:005567f0 ?GetSpawnPoint@_mp_dm@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D45CF0 f mp_util_wad.o	VERIFIED: IDA 0x009567F0 matches spawn type selection, GetEntArray hash 0xF756C677, DM selection, and result construction; implementation matches
 570	VERIFIED	0002:00556920 ?main@_mp_hq@@YAXVentity@Broc@@@Z 00D45E20 f mp_util_wad.o
 571	FIXED	0002:00556ca0 ?StartGame__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D461A0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 572	FIXED	0002:00556d40 ?StartGame@_mp_hq@@YAXVentity@Broc@@@Z 00D46240 f mp_util_wad.o	FIXED: IDA 0x00956D40 copies pLevel->_base.entity (or null) into RunFrame__functor
