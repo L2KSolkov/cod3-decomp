@@ -1519,7 +1519,7 @@ extern int Sys_Milliseconds();
 extern void CL_RecallKeys();     // cl.o
 extern void CL_BackUpKeys();     // cl.o
 extern int CL_ClearKeysForAll(); // cl.o
-extern void CL_GamepadEvent(unsigned int physicalAxis, int value);  // cl.o
+extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
 
 void IN_Frame()
 {
@@ -1592,8 +1592,10 @@ void IN_Frame()
                           * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
             else
                 y = 0;
-            CL_GamepadEvent(0u, x);
-            CL_GamepadEvent(1u, y);
+            int time = Sys_Milliseconds();
+            CL_GamepadEvent(0, x, time);
+            time = Sys_Milliseconds();
+            CL_GamepadEvent(1, y, time);
             ctl->stick_value(controller_port, controller::LEFTSTICK, x, y);
             if (abs(x) >= value)
                 x = (int)((2 * (x >= 0) - 1)
@@ -1605,8 +1607,10 @@ void IN_Frame()
                           * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
             else
                 y = 0;
-            CL_GamepadEvent(2u, x);
-            CL_GamepadEvent(3u, y);
+            time = Sys_Milliseconds();
+            CL_GamepadEvent(2, x, time);
+            time = Sys_Milliseconds();
+            CL_GamepadEvent(3, y, time);
         }
     }
     if (currCl == NS_CLIENT)

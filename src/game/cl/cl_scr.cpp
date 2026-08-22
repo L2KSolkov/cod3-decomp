@@ -693,9 +693,10 @@ void CL_InitGamepadAxisBindings()
 }
 
 // ea: 0x52EE00
-void CL_GamepadEvent(unsigned int physicalAxis, int value)
+void CL_GamepadEvent(int physicalAxis, int value, int time)
 {
-    if (physicalAxis >= 6)
+    (void)time;
+    if (physicalAxis < 0 || physicalAxis >= 6)
         Com_Error((errorParm_t)1, "CL_GamepadEvent: bad axis %i", physicalAxis);
     gaGlobs[currCl].axesValues[physicalAxis] = value;
 }
