@@ -24881,6 +24881,29 @@ EntityStringFieldFn off_DF494C = &BrocSys::Scr_SetGroupName;
 EntityStringFieldFn off_DF4950 = &BrocSys::Scr_SetNoteWorthy;
 EntityStringFieldFn off_DF4954 = &BrocSys::Scr_SetAnimName;
 
+using ActorFieldFn = void (__cdecl *)(actor_s*, int, void*);
+using ActorFloatFieldFn = void (__cdecl *)(actor_s*, int, float*);
+using ActorConstIntFieldFn = void (__cdecl *)(actor_s*, int, const int*);
+using ActorIntFieldFn = void (__cdecl *)(actor_s*, int, int*);
+using ActorConstStringFieldFn = void (__cdecl *)(actor_s*, int, const Broc::string*);
+using ActorStringFieldFn = void (__cdecl *)(actor_s*, int, Broc::string*);
+using ActorConstUIntFieldFn = void (__cdecl *)(actor_s*, int, const unsigned int*);
+using ActorEntityFieldFn = void (__cdecl *)(actor_s*, int, Broc::entity*);
+
+ActorFieldFn off_DF4958 = &BrocSys::ActorScr_ReadOnly;
+ActorFloatFieldFn off_DF495C = &BrocSys::ActorScr_Clamp_0_1;
+ActorConstIntFieldFn off_DF4960 = &BrocSys::ActorScr_SetTime;
+ActorIntFieldFn off_DF4964 = &BrocSys::ActorScr_GetTime;
+ActorConstStringFieldFn off_DF4968 = &BrocSys::ActorScr_SetWeapon;
+ActorStringFieldFn off_DF496C[2] = {
+    &BrocSys::ActorScr_GetWeapon,
+    &BrocSys::ActorScr_GetGroundType,
+};
+ActorStringFieldFn off_DF4970 = &BrocSys::ActorScr_GetGroundType;
+ActorConstUIntFieldFn off_DF4974 = &BrocSys::ActorScr_SetAnimPos;
+ActorEntityFieldFn off_DF4978 = &BrocSys::ActorScr_SetFavoriteEnemy;
+ActorEntityFieldFn off_DF497C = &BrocSys::ActorScr_GetFavoriteEnemy;
+
 template <int IDX>
 static BrocFieldFn entity_set_field_callback()
 {
@@ -24920,6 +24943,42 @@ static BrocFieldFn entity_get_field_callback()
         return reinterpret_cast<BrocFieldFn>(off_DF4930);
     if (IDX == 10)
         return reinterpret_cast<BrocFieldFn>(off_DF4940);
+    return nullptr;
+}
+
+template <int IDX>
+static ActorFieldFn actor_set_field_callback()
+{
+    if (IDX == 0)
+        return reinterpret_cast<ActorFieldFn>(sScrFcnPtrs[0]);
+    if (IDX == 16)
+        return reinterpret_cast<ActorFieldFn>(off_DF4958);
+    if (IDX == 17)
+        return reinterpret_cast<ActorFieldFn>(off_DF495C);
+    if (IDX == 18)
+        return reinterpret_cast<ActorFieldFn>(off_DF4960);
+    if (IDX == 20)
+        return reinterpret_cast<ActorFieldFn>(off_DF4968);
+    if (IDX == 23)
+        return reinterpret_cast<ActorFieldFn>(off_DF4974);
+    if (IDX == 24)
+        return reinterpret_cast<ActorFieldFn>(off_DF4978);
+    return nullptr;
+}
+
+template <int IDX>
+static ActorFieldFn actor_get_field_callback()
+{
+    if (IDX == 0)
+        return reinterpret_cast<ActorFieldFn>(sScrFcnPtrs[0]);
+    if (IDX == 19)
+        return reinterpret_cast<ActorFieldFn>(off_DF4964);
+    if (IDX == 21)
+        return reinterpret_cast<ActorFieldFn>(off_DF496C[0]);
+    if (IDX == 22)
+        return reinterpret_cast<ActorFieldFn>(off_DF4970);
+    if (IDX == 25)
+        return reinterpret_cast<ActorFieldFn>(off_DF497C);
     return nullptr;
 }
 
@@ -25053,34 +25112,70 @@ template <typename T, int OFF, int IDX>
 void entity_set_actor_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->actor != nullptr)
+    if (mObject == nullptr)
     {
-        *(T*)((char*)mObject->actor + OFF) = val;
-        return;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5858;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set field on NULL entity"))
+            __debugbreak();
     }
-    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5826;
-    AeAssert::gCurrentExpr = nullptr;
-    if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to set actor field on NULL entity"))
-        __debugbreak();
+    else if (mObject->actor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5853;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set actor field from non-actor entity."))
+            __debugbreak();
+    }
+    else
+    {
+        ActorFieldFn callback = actor_set_field_callback<IDX>();
+        if (callback != nullptr)
+            callback(mObject->actor, OFF, &val);
+        else
+            *(T*)((char*)mObject->actor + OFF) = val;
+    }
 }
 
 template <typename T, int OFF, int IDX>
 T entity_get_actor_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->actor != nullptr)
-        return *(T*)((char*)mObject->actor + OFF);
-    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5850;
-    AeAssert::gCurrentExpr = nullptr;
-    if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to get actor field off NULL entity"))
-        __debugbreak();
-    return T();
+    if (mObject == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5901;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get field off NULL entity"))
+            __debugbreak();
+        return T();
+    }
+    if (mObject->actor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5894;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get actor field from non-actor entity."))
+            __debugbreak();
+        return T();
+    }
+    ActorFieldFn callback = actor_get_field_callback<IDX>();
+    if (callback != nullptr)
+    {
+        T value{};
+        callback(mObject->actor, OFF, &value);
+        return value;
+    }
+    return *(T*)((char*)mObject->actor + OFF);
 }
 
 template <typename T, int OFF, int IDX>
