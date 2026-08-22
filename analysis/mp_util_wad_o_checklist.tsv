@@ -200,9 +200,9 @@ index	status	map_line
 199	VERIFIED	0002:00537ad0 ?AnglesToForward@@YA?AUvector@Broc@@ABU12@@Z 00D26FD0 f i mp_util_wad.o	VERIFIED: IDA 0x00937AD0 uses a temporary vector, calls mVecAnglesToForward, and copies the result
 200	VERIFIED	0002:00537b20 ?closest_point_on_line_to_point@_mp_audio@@YA?AUbfloat@@Uvector@Broc@@00AAU34@@Z 00D27020 f mp_util_wad.o	VERIFIED: IDA 0x00937B20 computes projection t, clamps endpoints, writes out_PointOnLine, and returns t
 201	VERIFIED	0002:00537e70 ??H@YA?AUbfloat@@MU0@@Z 00D27370 f i mp_util_wad.o	VERIFIED: IDA 0x00937E70 adds float lhs to rhs bfloat value and constructs the result
-202	VERIFIED	0002:00537eb0 ?StopLineSound@_mp_audio@@YAXVstring@Broc@@@Z 00D273B0 f mp_util_wad.o
+202	FIXED	0002:00537eb0 ?StopLineSound@_mp_audio@@YAXVstring@Broc@@@Z 00D273B0 f mp_util_wad.o	FIXED: switched line-entity hashing to IDA's value-returning Broc::string_hash overload; source commit 6ef994c6
 203	VERIFIED	0002:00538030 ?StopAllLineSounds@_mp_audio@@YAXXZ 00D27530 f mp_util_wad.o
-204	VERIFIED	0002:005380f0 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@Vstring@3@0@Z 00D275F0 f mp_util_wad.o	VERIFIED: IDA 0x009380F0 matches start-entity lookup, warning/error paths, nested spawn, map insertion, result copy, and string cleanup
+204	FIXED	0002:005380f0 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@Vstring@3@0@Z 00D275F0 f mp_util_wad.o	FIXED: switched line-entity map hashing to IDA's value-returning Broc::string_hash overload; source commit 6ef994c6
 205	VERIFIED	0002:00538320 ?SpawnLineSound@_mp_audio@@YA?AVentity@Broc@@V23@Vstring@3@@Z 00D27820 f mp_util_wad.o	VERIFIED: IDA 0x00938320 matches target/sound validation, end lookup, spawn, effect playback, movement functor, and cleanup
 206	VERIFIED	0002:00538650 ?IsAlive@Broc@@YAHABVentity@1@@Z 00D27B50 f i mp_util_wad.o	VERIFIED: IDA 0x00938650 forwards the entity handle to mEntityIsAlive
 207	VERIFIED	0002:00538680 ?MoveSoundAlongLine__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Uvector@4@1@Z 00D27B80 f i mp_util_wad.o	VERIFIED: IDA 0x00938680 allocates a 0x24-byte AeThreadFunctor3 and null-checks before construction
@@ -218,14 +218,14 @@ index	status	map_line
 217	FIXED	0002:00538da0 ??Ebint@@QAEHXZ 00D282A0 f i mp_util_wad.o	FIXED: IDA prefix operator++ asserts then returns old mVal while incrementing
 218	VERIFIED	0002:00538de0 ?Get@team_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D282E0 f i mp_util_wad.o	VERIFIED: IDA 0x00938DE0 calls m_entity_get_sentient_team, copy-constructs result, and destroys temporary
 219	VERIFIED	0002:00538e90 ?PlayTeamDialog@_mp_audio@@YAXVentity@Broc@@Vstring@3@11Ubfloat@@@Z 00D28390 f mp_util_wad.o	VERIFIED: IDA 0x00938E90 handles local-player team selection, delay, primary/secondary dialog, and cleanup
-220	VERIFIED	0002:005391b0 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z 00D286B0 f mp_util_wad.o
+220	FIXED	0002:005391b0 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@1@Z 00D286B0 f mp_util_wad.o	FIXED: switched team-sound hashing to IDA's value-returning Broc::string_hash overload; source commit 6ef994c6
 221	VERIFIED	0002:00539550 ?EffectEventPlay@Broc@@YAHABVentity@1@ABVstring@1@UHashStr@@_N@Z 00D28A50 f i mp_util_wad.o	VERIFIED: IDA 0x00939550 forwards entity handle, script, notifyHash.mVal, stoppable, and false final flag
-222	VERIFIED	0002:00539590 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D28A90 f mp_util_wad.o
+222	FIXED	0002:00539590 ?PlayTeamSoundStoppable@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D28A90 f mp_util_wad.o	FIXED: switched team-sound hashing to IDA's value-returning Broc::string_hash overload; source commit 6ef994c6
 223	VERIFIED	0002:00539a50 ?StopTeamSound@_mp_audio@@YAXXZ 00D28F50 f mp_util_wad.o
 224	VERIFIED	0002:00539b70 ?EffectEventStopEmitting@Broc@@YAXI@Z 00D29070 f i mp_util_wad.o	VERIFIED: IDA 0x00939B70 forwards effect id to mEffectEventStop
 225	FIXED	0002:00539ba0 ?notify@Broc@@YAXABVentity@1@UHashStr@@@Z 00D290A0 f i mp_util_wad.o	FIXED: corrected entity argument to const reference ABI; IDA/map symbol now matches
 226	VERIFIED	0002:00539be0 ?PlayTeamSound@_mp_audio@@YAXVentity@Broc@@Vstring@3@11@Z 00D290E0 f mp_util_wad.o
-227	VERIFIED	0002:00539dc0 ?PlaySoundAtLocation@_mp_audio@@YAXVentity@Broc@@Vstring@3@Uvector@3@@Z 00D292C0 f mp_util_wad.o
+227	FIXED	0002:00539dc0 ?PlaySoundAtLocation@_mp_audio@@YAXVentity@Broc@@Vstring@3@Uvector@3@@Z 00D292C0 f mp_util_wad.o	FIXED: switched location-sound hashing to IDA's value-returning Broc::string_hash overload; source commit 6ef994c6
 228	VERIFIED	0002:00539ee0 ?ThreadLineSound@_mp_audio@@YAXVentity@Broc@@@Z 00D293E0 f mp_util_wad.o
 229	VERIFIED	0002:0053a080 ?Get@targetname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D29580 f i mp_util_wad.o	VERIFIED: IDA 0x0093A080 calls m_entity_get_targetname, copy-constructs result, and destroys temporary
 230	VERIFIED	0002:0053a130 ?ThreadStaticSound@_mp_audio@@YAXVentity@Broc@@@Z 00D29630 f mp_util_wad.o
