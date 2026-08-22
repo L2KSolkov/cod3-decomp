@@ -864,23 +864,23 @@ index	status	map_line
 863	VERIFIED	0002:001e95c0 ?CheckForNotify@EntityNotifySet@@QBE_NABVHashString@@@Z 009D8AC0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns GetNotify result non-null
 864	VERIFIED	0002:001e95e0 ??$IsDefined@I@@YA_NI@Z 009D8AE0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; compares unsigned value against 0xFEFEFEFE
 865	SKIPPED	0002:001e9600 ??0vector@Broc@@QAE@QAM@Z 009D8B00 f i scr.o	SKIPPED: compiler-generated vector copy constructor; supplied by the compiler
-866	PORTED	0002:001e9630 ??_0vector@Broc@@QAEAAU01@M@Z 009D8B30 f i scr.o	PORTED: added IDA-derived vector division assignment
+866	VERIFIED	0002:001e9630 ??_0vector@Broc@@QAEAAU01@M@Z 009D8B30 f i scr.o	VERIFIED: matches IDA decompile and disassembly; computes reciprocal once and updates x, y, z in order
 867	VERIFIED	0002:001e9680 ??Avector@Broc@@QBEMH@Z 009D8B80 f i scr.o	VERIFIED: matches IDA disassembly; float return is encoded by mangled M type
 868	VERIFIED	0002:001e9690 ?length2@Broc@@YAMABUvector@1@@Z 009D8B90 f i scr.o	VERIFIED: matches IDA decompile and disassembly
 869	VERIFIED	0002:001e96c0 ?dot@Broc@@YAMABUvector@1@0@Z 009D8BC0 f i scr.o	VERIFIED: matches IDA decompile and disassembly
-870	PORTED	0002:001e96f0 ?VecDistance@Broc@@YAMABUvector@1@0@Z 009D8BF0 f i scr.o
-871	PORTED	0002:001e9710 ?VecDistanceSquared@Broc@@YAMABUvector@1@0@Z 009D8C10 f i scr.o
-872	PORTED	0002:001e9730 ?VecCloser@Broc@@YAHABUvector@1@00@Z 009D8C30 f i scr.o
-873	PORTED	0002:001e9780 ?VecToAngles@Broc@@YAXAAUvector@1@ABU21@@Z 009D8C80 f i scr.o
-874	PORTED	0002:001e97a0 ?VecAnglesToVectors@Broc@@YAXABUvector@1@AAU21@11@Z 009D8CA0 f i scr.o
-875	PORTED	0002:001e97b0 ??0hudelem@Broc@@QAE@XZ 009D8CB0 f i scr.o
-876	PORTED	0002:001e97c0 ??0hudelem@Broc@@QAE@H@Z 009D8CC0 f i scr.o
-877	PORTED	0002:001e97e0 ?GetIndex@hudelem@Broc@@QBEHXZ 009D8CE0 f i scr.o
+870	VERIFIED	0002:001e96f0 ?VecDistance@Broc@@YAMABUvector@1@0@Z 009D8BF0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; forwards both vector x addresses to VectorDistance
+871	VERIFIED	0002:001e9710 ?VecDistanceSquared@Broc@@YAMABUvector@1@0@Z 009D8C10 f i scr.o	VERIFIED: matches IDA decompile and disassembly; forwards both vector x addresses to VectorDistanceSquared
+872	VERIFIED	0002:001e9730 ?VecCloser@Broc@@YAHABUvector@1@00@Z 009D8C30 f i scr.o	VERIFIED: matches IDA decompile and disassembly; compares B-to-reference squared distance against A-to-reference
+873	VERIFIED	0002:001e9780 ?VecToAngles@Broc@@YAXAAUvector@1@ABU21@@Z 009D8C80 f i scr.o	VERIFIED: matches IDA decompile and disassembly; forwards vector storage to vectoangles
+874	VERIFIED	0002:001e97a0 ?VecAnglesToVectors@Broc@@YAXABUvector@1@AAU21@11@Z 009D8CA0 f i scr.o	VERIFIED: matches IDA tail jump and signature; forwards all four vector storages to AngleVectors
+875	VERIFIED	0002:001e97b0 ??0hudelem@Broc@@QAE@XZ 009D8CB0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; initializes HUD index to -1
+876	VERIFIED	0002:001e97c0 ??0hudelem@Broc@@QAE@H@Z 009D8CC0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores the supplied HUD index
+877	VERIFIED	0002:001e97e0 ?GetIndex@hudelem@Broc@@QBEHXZ 009D8CE0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns the stored HUD index
 878	VERIFIED	0002:001e97f0 ??0pathnode@Broc@@QAE@XZ 009D8CF0 f i scr.o
-879	PORTED	0002:001e9800 ?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ 009D8D00 f i scr.o
-880	PORTED	0002:001e9810 ?IsDefined@pathnode@Broc@@QBE_NXZ 009D8D10 f i scr.o
-881	PORTED	0002:001e9830 ?GetHandle@vehiclenode@Broc@@QBEHXZ 009D8D30 f i scr.o
-882	PORTED	0002:001e9840 ?IsDefined@vehiclenode@Broc@@QBE_NXZ 009D8D40 f i scr.o
+879	VERIFIED	0002:001e9800 ?GetHandle@pathnode@Broc@@QBE?AW4TPathnodeHandle@2@XZ 009D8D00 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns the stored pathnode handle
+880	VERIFIED	0002:001e9810 ?IsDefined@pathnode@Broc@@QBE_NXZ 009D8D10 f i scr.o	VERIFIED: matches IDA decompile and disassembly; rejects both zero and 0xFFFFFFFF handles
+881	VERIFIED	0002:001e9830 ?GetHandle@vehiclenode@Broc@@QBEHXZ 009D8D30 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns the stored vehiclenode handle
+882	VERIFIED	0002:001e9840 ?IsDefined@vehiclenode@Broc@@QBE_NXZ 009D8D40 f i scr.o	VERIFIED: matches IDA decompile and disassembly; rejects the 0xFFFFFFFF invalid handle
 883	VERIFIED	0002:001e9850 ??0entity@Broc@@QAE@XZ 009D8D50 f i scr.o
 884	PORTED	0002:001e9860 ?get_dlist_node@AeThread@@QAEPAXXZ 009D8D60 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
 885	PORTED	0002:001e9870 ??2AeThread@@SAPAXI_NPBDH@Z 009D8D70 f i scr.o	PORTED: implemented from IDA decompile and disassembly; VERIFIED: Debug build passed
