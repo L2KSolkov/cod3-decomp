@@ -13170,8 +13170,7 @@ void CallbackDropItem(int itemType, int netID, Broc::vector locator,
 
     flag = mp_util_wad::pLevel->scfFlags[(unsigned int)netID];
 
-    HashStr dropNotify;
-    dropNotify.mVal = 0xFA57E7C7u;
+    HashStr dropNotify(0xFA57E7C7u);
     Broc::notify(flag, dropNotify);
 
     Broc::bbool hasHolder;
@@ -13186,9 +13185,7 @@ void CallbackDropItem(int itemType, int netID, Broc::vector locator,
     LaunchFlag(Broc::bint(netID), locator, angles, velocity);
     ObjectiveRing(2, -1);
 
-    Broc::vector home =
-        *mp_util_wad::GetEE_home_position(
-            mp_util_wad::pLevel->scfFlags[(unsigned int)netID]);
+    Broc::vector& home = flag->home_position.GetRef();
     if (Broc::Distance(&locator, &home) > 2.0f ||
         Broc::Length(&velocity) > 1.0f) {
         void* ftor = WaitForFlagTimeOut__functor(flag);
