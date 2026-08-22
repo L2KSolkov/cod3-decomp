@@ -11491,7 +11491,72 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
 
 // CallbackPickupScriptItem - ea: 0x952A60
 void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
-    (void)netID; (void)guy; (void)itemIndex;
+    Broc::bbool playSounds(true);
+    Broc::bbool giveStats(itemIndex == 0);
+    Broc::entity flag = mp_util_wad::pLevel->allies_flag_ent;
+    Broc::string flagTeam("allies");
+    if (netID == 1) {
+        flag = mp_util_wad::pLevel->axis_flag_ent;
+        flagTeam = "axis";
+    }
+
+    Broc::entity currentHolder = *mp_util_wad::GetEE_holder(flag);
+    if (currentHolder == Broc::gEntityUndef) {
+        Broc::vector goalOrigin;
+        Broc::vector flagOrigin;
+        mp_util_wad::entity_get_origin(
+            &goalOrigin, *mp_util_wad::GetEE_goal(flag));
+        mp_util_wad::entity_get_origin(&flagOrigin, flag);
+        if (Broc::Distance(&goalOrigin, &flagOrigin) < 1.0f) {
+            Broc::vector pickerOrigin;
+            mp_util_wad::entity_get_origin(&pickerOrigin, guy);
+            if (Broc::Distance(&flagOrigin, &pickerOrigin) <= 256.0f) {
+                if (itemIndex != 0) {
+                    if (!Broc::Code_IsHost()) {
+                        Broc::string pickerTeam;
+                        bool reject = !Broc::Code_IsLocalPlayer(guy);
+                        if (!reject && Broc::IsDefined(guy)) {
+                            mp_util_wad::entity_get_team(&pickerTeam, guy);
+                            reject = pickerTeam == flagTeam;
+                            pickerTeam.~string();
+                        }
+                        if (reject) {
+                            flagTeam.~string();
+                            return;
+                        }
+                    } else {
+                        Broc::Code_PickupItem(netID, guy);
+                    }
+                }
+                HandlePickupFlag(netID, guy, playSounds, giveStats);
+                flagTeam.~string();
+                return;
+            }
+        }
+    }
+
+    if (*mp_util_wad::GetEE_holder(flag) != guy) {
+        if (itemIndex != 0) {
+            flagTeam.~string();
+            return;
+        }
+
+        UnlinkFlag(flag);
+        Broc::string pickerTeam;
+        Broc::string holderTeam;
+        mp_util_wad::entity_get_team(&pickerTeam, guy);
+        mp_util_wad::entity_get_team(
+            &holderTeam, *mp_util_wad::GetEE_holder(flag));
+        if (holderTeam == pickerTeam)
+            playSounds = false;
+        holderTeam.~string();
+        pickerTeam.~string();
+    } else {
+        playSounds = false;
+    }
+
+    HandlePickupFlag(netID, guy, playSounds, giveStats);
+    flagTeam.~string();
 }
 
 // CallbackDropItem - ea: 0x952F30
