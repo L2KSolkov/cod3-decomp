@@ -591,17 +591,17 @@ void Con_Linefeed(print_msg_type_t type, int duration, int flags)
 }
 
 // ea: 0x52F550
-unsigned char Con_Clear_f()
+void Con_Clear_f()
 {
     short* text = con.text;
+    unsigned char color;
     do
     {
-        unsigned char result = ColorIndex(0x37);
-        *text++ = (short)((result << 8) | 0x20);
+        color = ColorIndex(0x37);
+        *text++ = (short)((color << 8) | 0x20);
     }
-    while (text < &con.text[con.current]);
+    while (text < con.text + 2048);
     con.display = con.current;
-    return ColorIndex(0x37);
 }
 
 // ea: 0x52F750

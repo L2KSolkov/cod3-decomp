@@ -176,7 +176,7 @@ int Con_CheckResize();
 void Con_UpdateNotifyLine(print_msg_type_t type, int bLineFeed,
                           int duration, int flags);
 void Con_Linefeed(print_msg_type_t type, int duration, int flags);
-unsigned char Con_Clear_f();
+void Con_Clear_f();
 void Con_Close();
 void Con_Init();
 
