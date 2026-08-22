@@ -2669,6 +2669,13 @@ unsigned int SoundPlay(const Broc::string* name, float volume) {
     return gBrocAPI.mSoundPlay(name, volume);
 }
 
+// Broc::ShellShock - ea: 0x96CC60
+void Broc::ShellShock(Broc::entity* e, const Broc::string* shock,
+                      float fVal) {
+    const unsigned int handle = e->GetHandle();
+    gBrocAPI.mShellShock(handle, shock, fVal);
+}
+
 // Code_IsLocalPlayer - ea: 0x936740
 bool Broc::Code_IsLocalPlayer(Broc::entity player) {
     return gBrocAPI.mIsLocalPlayer(player.GetHandle());
