@@ -799,7 +799,7 @@ index	status	map_line
 798	VERIFIED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o	VERIFIED: IDA 0x00970C60 constructs a temporary vector, calls mGetOrigin with the handle, and copies the result; implementation matches
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
 800	VERIFIED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o	VERIFIED: IDA 0x00970E80 forwards entity.GetHandle() to mIsVehicleFlipped; implementation matches
-801	PORTED	0002:00570eb0 ?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z 00D603B0 f mp_util_wad.o
+801	VERIFIED	0002:00570eb0 ?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z 00D603B0 f mp_util_wad.o	VERIFIED: IDA 0x00970EB0 matches script_vehicle/player scans, 280/210 distance thresholds, and bint result cleanup; implementation matches
 802	VERIFIED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o	VERIFIED: IDA 0x009712A0 matches m_entity_get_takedamage, bint construction, and result return
 803	VERIFIED	0002:005712e0 ?HostSafeVehicleRespawn@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D607E0 f mp_util_wad.o
 804	VERIFIED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o	VERIFIED: IDA 0x009713A0 matches m_entity_get_rotate temporary vector copy and result return
