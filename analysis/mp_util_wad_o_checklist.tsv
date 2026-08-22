@@ -462,13 +462,13 @@ index	status	map_line
 461	PORTED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o	PORTED: added exact global scale wrapper
 462	VERIFIED	0002:0054ae00 ?ProgressBarDelete@_mp_common@@YAXXZ 00D3A300 f mp_util_wad.o
 463	VERIFIED	0002:0054ae30 ?EndRound@_mp_common@@YAXW4EEndRoundCondition@@Vstring@Broc@@@Z 00D3A330 f mp_util_wad.o
-464	PORTED	0002:0054aec0 ?HasBothTeams@_mp_common@@YA?AUbbool@@XZ 00D3A3C0 f mp_util_wad.o
+464	VERIFIED	0002:0054aec0 ?HasBothTeams@_mp_common@@YA?AUbbool@@XZ 00D3A3C0 f mp_util_wad.o	VERIFIED: Existing player/team counting and team-game condition match IDA
 465	VERIFIED	0002:0054b210 ?WaitForTeams@_mp_common@@YAXXZ 00D3A710 f mp_util_wad.o
-466	PORTED	0002:0054b370 ?GetSpawnPoint@_mp_common@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D3A870 f mp_util_wad.o
-467	PORTED	0002:0054b4a0 ?GetBestSpectateSpawn@_mp_common@@YA?AVentity@Broc@@AAV23@@Z 00D3A9A0 f mp_util_wad.o
-468	PORTED	0002:0054b650 ?AudioOnPlayerDeath@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AB50 f mp_util_wad.o
-469	PORTED	0002:0054b6f0 ?HealthRegenPlayerBreathing@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3ABF0 f mp_util_wad.o
-470	PORTED	0002:0054b880 ?RandomFloat@@YAMM@Z 00D3AD80 f i mp_util_wad.o
+466	VERIFIED	0002:0054b370 ?GetSpawnPoint@_mp_common@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D3A870 f mp_util_wad.o	VERIFIED: Existing spawn type selection, entity enumeration, and anti-camp call match IDA
+467	VERIFIED	0002:0054b4a0 ?GetBestSpectateSpawn@_mp_common@@YA?AVentity@Broc@@AAV23@@Z 00D3A9A0 f mp_util_wad.o	VERIFIED: Existing intermission spawn lookup and nearest/random selection match IDA
+468	VERIFIED	0002:0054b650 ?AudioOnPlayerDeath@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AB50 f mp_util_wad.o	VERIFIED: Existing local-player Player_Dying effect path matches IDA
+469	VERIFIED	0002:0054b6f0 ?HealthRegenPlayerBreathing@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3ABF0 f mp_util_wad.o	VERIFIED: Existing endon/health/breathing loop matches IDA
+470	FIXED	0002:0054b880 ?RandomFloat@@YAMM@Z 00D3AD80 f i mp_util_wad.o	FIXED: added mMathsRandomFloat +0x144 callback and exact wrapper
 471	PORTED	0002:0054b8b0 ?notify@Broc@@YAXABVentity@1@PBD@Z 00D3ADB0 f i mp_util_wad.o	PORTED: IDA hashes the label, then forwards the const entity reference handle and hash to mEntNotify
 472	VERIFIED	0002:0054b900 ?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D3AE00 f mp_util_wad.o
 473	PORTED	0002:0054ba60 ?ObjectiveDelete@@YAXHH@Z 00D3AF60 f i mp_util_wad.o	PORTED: IDA direct global forward to mObjectiveDelete
