@@ -341,14 +341,14 @@ index	status	map_line
 340	SKIPPED	0002:00596a80 ?Get@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE?BV34@XZ 00D85F80 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_endswitch
 341	PORTED	0002:00596ad0 ?IsEEDefined_endswitch@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D85FD0 f mp_anim_wad.o	PORTED: added IDA 0x00996AD0 vehiclenode field defined-check using key 0xA007FC29; source commit 16a218e3
 342	SKIPPED	0002:00596b40 ?IsDefined@endswitch_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86040 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_endswitch
-343	PORTED	0002:00596b80 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D86080 f mp_anim_wad.o
-344	PORTED	0002:00596bd0 ?Get@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D860D0 f i mp_anim_wad.o
-345	PORTED	0002:00596c80 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86180 f mp_anim_wad.o
-346	PORTED	0002:00596cf0 ?IsDefined@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D861F0 f i mp_anim_wad.o
-347	PORTED	0002:00596d20 ?GetEE_detourstart@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86220 f mp_anim_wad.o
-348	PORTED	0002:00596d50 ?Get@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86250 f i mp_anim_wad.o
-349	PORTED	0002:00596da0 ?IsEEDefined_detourstart@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D862A0 f mp_anim_wad.o
-350	PORTED	0002:00596e10 ?IsDefined@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86310 f i mp_anim_wad.o
+343	PORTED	0002:00596b80 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vvehiclenode@2@@Z 00D86080 f mp_anim_wad.o	PORTED: added IDA 0x00996B80 vehicle-node script_noteworthy API access; source commit 35ce9a49
+344	SKIPPED	0002:00596bd0 ?Get@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D860D0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_noteworthy(vehiclenode)
+345	PORTED	0002:00596c80 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86180 f mp_anim_wad.o	PORTED: added IDA 0x00996C80 vehicle-node script_noteworthy defined-check using mIsVehicleNodeDefined; source commit 35ce9a49
+346	SKIPPED	0002:00596cf0 ?IsDefined@script_noteworthy_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D861F0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_noteworthy(vehiclenode)
+347	PORTED	0002:00596d20 ?GetEE_detourstart@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86220 f mp_anim_wad.o	PORTED: added IDA 0x00996D20 vehicle-node int-field access using key 0x29FCB701; source commit 35ce9a49
+348	SKIPPED	0002:00596d50 ?Get@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86250 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_detourstart
+349	PORTED	0002:00596da0 ?IsEEDefined_detourstart@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D862A0 f mp_anim_wad.o	PORTED: added IDA 0x00996DA0 vehicle-node int defined-check using key 0x29FCB701; source commit 35ce9a49
+350	SKIPPED	0002:00596e10 ?IsDefined@detourstart_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86310 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_detourstart
 351	PORTED	0002:00596e50 ?GetEE_eventwait_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86350 f mp_anim_wad.o
 352	PORTED	0002:00596e80 ?Get@eventwait_used_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86380 f i mp_anim_wad.o
 353	PORTED	0002:00596ed0 ?IsEEDefined_eventwait_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D863D0 f mp_anim_wad.o
