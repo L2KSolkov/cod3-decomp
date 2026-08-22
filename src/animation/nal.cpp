@@ -850,7 +850,7 @@ public:
     // ea: 0x005182A0
     virtual void Release() {}
     // ea: 0x005182C0
-    virtual bool CheckVersion() { return false; }
+    virtual bool CheckVersion() const { return false; }
 
     // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
     static void* operator new(unsigned int sz)
@@ -867,7 +867,7 @@ public:
     tlFixedString Name;             // +0x08
     int SkeletonNameIndex;          // +0x28
     unsigned int Version;           // +0x2C
-    const nalBaseSkeleton* Skeleton; // +0x30
+    typename nalAnimSkeletonRet<T>::type Skeleton; // +0x30
     unsigned int Flags;             // +0x34
     float Duration;                 // +0x38
     int InstanceCount;              // +0x3C
@@ -906,8 +906,7 @@ public:
     // ?CreateInstance@?$nalAnimClass@VnalAnyPose@@@@QAEPAVnalInstanceClass@1@PAVnalBaseSkeleton@@@Z (0x55E610)
     nalInstanceClass* CreateInstance(nalBaseSkeleton* skeleton);
     // game2.o virtual (MetaNalBaseAnim overrides)
-    virtual nalInstanceClass* VirtualCreateInstance(nalAnimClass<T>* a,
-                                                    nalBaseSkeleton* skeleton);
+    virtual nalInstanceClass* VirtualCreateInstance(nalBaseSkeleton* skeleton);
 
 };
 static_assert(sizeof(nalAnimClass<nalAnyPose>::nalInstanceClass) == 20,
@@ -933,13 +932,13 @@ const tlFixedString& nalAnimClass<T>::GetAnimTypeName() const
     {
         __debugbreak();
     }
-    return Skeleton->AnimTypeName;
+    return reinterpret_cast<const nalBaseSkeleton*>(Skeleton)->AnimTypeName;
 }
 
 template <typename T>
 void nalAnimClass<T>::SetSkeleton(const nalBaseSkeleton* skeleton)
 {
-    Skeleton = skeleton;
+    Skeleton = reinterpret_cast<decltype(Skeleton)>(skeleton);
 }
 
 template <typename T>
@@ -960,7 +959,7 @@ nalAnimClass<T>::nalInstanceClass::nalInstanceClass(nalAnimClass<T>* a,
     const nalBaseSkeleton* skeleton = s;
     InverseDuration = v3;
     if (s == nullptr)
-        skeleton = a->Skeleton;
+        skeleton = reinterpret_cast<const nalBaseSkeleton*>(a->Skeleton);
     this->Skeleton = skeleton;
     this->Anim = a;
     ++a->InstanceCount;
@@ -987,15 +986,13 @@ nalAnimClass<T>::CreateInstance(nalBaseSkeleton* skeleton)
     {
         __debugbreak();
     }
-    return VirtualCreateInstance(this, skeleton);
+    return VirtualCreateInstance(skeleton);
 }
 
 template <typename T>
 typename nalAnimClass<T>::nalInstanceClass*
-nalAnimClass<T>::VirtualCreateInstance(nalAnimClass<T>* a,
-                                       nalBaseSkeleton* skeleton)
+nalAnimClass<T>::VirtualCreateInstance(nalBaseSkeleton* skeleton)
 {
-    (void)a;
     return new nalInstanceClass(this, skeleton);
 }
 
@@ -2114,26 +2111,16 @@ nalPositionOrientation nalGenericPose::GetModelPositionOrientation(
 // ============================================================================
 // nalGenericAnim Ã¢â‚¬â€ runtime animation instance (per-skeleton)
 // ============================================================================
-class nalGenericAnim {
+class nalGenericAnim : public nalAnimClass<nalGenericPose> {
 public:
-    // IDA type 4732: the generic animation vtable begins with Dummy before
-    // the destructor and the shared nalAnimClass operations.
-    virtual void Dummy() {}
-    virtual ~nalGenericAnim();
-    virtual void Process();
-    virtual void Release() {}
-    virtual bool CheckVersion() const;
-    virtual nalAnimClass<nalAnyPose>::nalInstanceClass*
-        VirtualCreateInstance(nalBaseSkeleton* skeleton);
-
-    nalAnimClass<nalGenericPose>* NextAnim; // +0x04
-    tlFixedString Name;                     // +0x08
-    int SkeletonNameIndex;                  // +0x28
-    unsigned Version;                       // +0x2C
-    const nalGenericSkeleton* Skeleton;     // +0x30
-    unsigned Flags;                         // +0x34
-    float Duration;                         // +0x38
-    int InstanceCount;                      // +0x3C
+    // IDA type 4732: the generic animation vtable uses the shared
+    // nalAnimClass<nalGenericPose> slots.
+    ~nalGenericAnim() override;
+    void Process() override;
+    void Release() override {}
+    bool CheckVersion() const override;
+    nalAnimClass<nalGenericPose>::nalInstanceClass*
+        VirtualCreateInstance(nalBaseSkeleton* skeleton) override;
 
     float SampleRate;                       // +0x40
     int FrameCount;                         // +0x44
@@ -2164,7 +2151,8 @@ static_assert(sizeof(nalGenericAnim) == 112,
 // ============================================================================
 // nalGenericInstance Ã¢â‚¬â€ animated skeleton instance (pose cache, decompression)
 // ============================================================================
-class nalGenericInstance {
+class nalGenericInstance
+    : public nalAnimClass<nalGenericPose>::nalInstanceClass {
 public:
     static nalOffsetMap* OffsetMapTable[0x43]; // ?OffsetMapTable @ 0x10E9540
 
@@ -2182,11 +2170,19 @@ public:
 
     static unsigned GetHash(const nalGenericSkeleton*, const nalGenericSkeleton*);
 
-    nalGenericAnim* Anim;  // +0x04
+    nalGenericPose PrevPose;       // +0x14
+    float PrevT;                   // +0x24
+    nalOffsetMap* OffsetMap;      // +0x28
+    unsigned char* AnimCompTracks; // +0x2C
 
     // ?GetAnim@nalGenericInstance@nalGeneric@@QBEPAVnalGenericAnim@2@XZ (0x5600A0)
-    nalGenericAnim* GetAnim() const { return Anim; }
+    nalGenericAnim* GetAnim() const
+    {
+        return reinterpret_cast<nalGenericAnim*>(Anim);
+    }
 };
+static_assert(sizeof(nalGenericInstance) == 48,
+              "nalGenericInstance layout mismatch");
 
 // ============================================================================
 // nalGenericPoseBlender Ã¢â‚¬â€ pose blending
@@ -2397,7 +2393,6 @@ unsigned nalGenericInstance::GetHash(const nalGenericSkeleton* from,
 
 // ea: 0x00854BC0
 nalGenericAnim::nalGenericAnim(nalRegisterKey key)
-    : Name()
 {
     if (key != NAL_REGISTER_KEY
         && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
@@ -2418,10 +2413,10 @@ bool nalGenericAnim::CheckVersion() const
 }
 
 // ea: 0x00854C30
-nalAnimClass<nalAnyPose>::nalInstanceClass*
+nalAnimClass<nalGenericPose>::nalInstanceClass*
 nalGenericAnim::VirtualCreateInstance(nalBaseSkeleton* skeleton)
 {
-    return reinterpret_cast<nalAnimClass<nalAnyPose>::nalInstanceClass*>(
+    return reinterpret_cast<nalAnimClass<nalGenericPose>::nalInstanceClass*>(
         CreateInstance(reinterpret_cast<nalGenericSkeleton*>(skeleton)));
 }
 
