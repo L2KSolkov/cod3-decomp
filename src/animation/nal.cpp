@@ -9689,7 +9689,7 @@ nalGenericPoseBlender::nalGenericPoseBlender(
 }
 
 // ?Blend@nalGenericPoseBlender@@QAEXAAVnalGenericPose@@ABV2@1M@Z (stub;
-// real body in the nal_xboxr port)
+// direct IDA body remains separate from the 3-argument blend-array path)
 void nalGenericPoseBlender::Blend(nalGenericPose& out,
                                   const nalGenericPose& a,
                                   const nalGenericPose& b, float t)
@@ -9702,7 +9702,67 @@ void nalGenericPoseBlender::Blend(nalGenericPose& out,
                                   const nalGenericPose& a,
                                   const nalGenericPose& b)
 {
-    (void)out; (void)a; (void)b;
+    int blendLOD = a.LOD;
+    if (blendLOD < b.LOD)
+        blendLOD = b.LOD;
+    out.LOD = blendLOD;
+
+    if (a.Skeleton != b.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 1993,
+                     "poseA.GetSkeleton() == poseB.GetSkeleton()",
+                     "pose blend mismatch"))
+    {
+        __debugbreak();
+    }
+
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(a.Skeleton);
+    const float* blendPtr = BlendValues;
+    int componentGroup = 0;
+    int firstComponentCount = 0;
+    if (blendLOD - 1 < 0)
+        firstComponentCount = skeleton->PoseComponentCount;
+    else
+        firstComponentCount = skeleton->LODInfo[blendLOD - 1].FirstComponent;
+
+    const nalComponentInfo* component = skeleton->PoseComponentInfo;
+    for (int i = 0; i < firstComponentCount; ++i, ++component)
+    {
+        using BlendArrayFn = void (__thiscall*)(const void*, int, void*,
+                                                const void*, const void*,
+                                                const float**);
+        const void* const* vtable = *reinterpret_cast<const void* const* const*>(
+            component->Component);
+        reinterpret_cast<BlendArrayFn>(vtable[5])(
+            component->Component, component->Count,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(a.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(b.PoseData) + component->Offset,
+            &blendPtr);
+        ++componentGroup;
+    }
+
+    int remainingComponentCount = skeleton->PoseComponentCount;
+    const nalGenericPose* sourcePose = &a;
+    if (a.LOD > b.LOD)
+    {
+        sourcePose = &b;
+        if (b.LOD - 1 >= 0)
+            remainingComponentCount = skeleton->LODInfo[b.LOD - 1].FirstComponent;
+    }
+    else if (a.LOD - 1 >= 0)
+    {
+        remainingComponentCount = skeleton->LODInfo[a.LOD - 1].FirstComponent;
+    }
+
+    for (int i = componentGroup; i < remainingComponentCount; ++i, ++component)
+    {
+        nalComponentCopyRaw(
+            component->Component, component,
+            static_cast<unsigned char*>(out.PoseData) + component->Offset,
+            static_cast<const unsigned char*>(sourcePose->PoseData)
+                + component->Offset);
+    }
 }
 
 // ??$nalPosePtrCast@VnalGenericPose@nalGeneric@@@@YAPAVnalGenericPose@nalGeneric@@PAVnalBasePose@@@Z
