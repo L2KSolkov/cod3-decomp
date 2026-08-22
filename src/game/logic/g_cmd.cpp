@@ -2167,6 +2167,7 @@ public:
     Context mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
     static PadAliasMgr* CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
+    static void DeleteInst();          // ?DeleteInst@PadAliasMgr@@SAXXZ
     static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
@@ -2182,6 +2183,27 @@ extern void* PadAliasMgr_sInst;
 // ea: 0x004DEDD0
 PadAliasMgr::~PadAliasMgr()
 {
+}
+
+// ea: 0x004E3070
+void PadAliasMgr::DeleteInst()
+{
+    PadAliasMgr* instance = sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.h";
+        AeAssert::gCurrentLine = 46;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+        instance = sInst;
+    }
+    if (instance != nullptr)
+        mem_heap_free(instance);
+    sInst = nullptr;
+    PadAliasMgr_sInst = nullptr;
 }
 
 // ea: 0x004DEDE0

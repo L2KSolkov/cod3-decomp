@@ -199,6 +199,17 @@ strdata::~strdata()
         mem_heap_free(data);
 }
 
+// ea: 0x004E30F0
+bool strdata::DelRef()
+{
+    if (--refcount >= 0)
+        return false;
+    if (data != nullptr)
+        mem_heap_free(data);
+    mem_heap_free(this);
+    return true;
+}
+
 // ea: 0x004DF2C0
 int idStr::length() const
 {

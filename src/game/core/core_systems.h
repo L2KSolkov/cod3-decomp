@@ -280,6 +280,16 @@ struct reserved_dlist {
             : m_node(reinterpret_cast<dlist_node*>(obj)),
               m_next(m_node->mNext) {}
 
+        T* operator*() { return reinterpret_cast<T*>(m_node); }
+        bool operator==(const iterator& rhs) const
+        {
+            return m_next == rhs.m_next;
+        }
+        bool operator!=(const iterator& rhs) const
+        {
+            return m_next != rhs.m_next;
+        }
+
         bool compare(const iterator& rhs) const
         {
             return rhs.m_next == m_next;
@@ -326,6 +336,15 @@ struct reserved_dlist {
         const_iterator(const const_iterator& it)
             : m_node(it.m_node), m_next(it.m_next) {}
 
+        const T* operator*() const
+        {
+            return reinterpret_cast<const T*>(m_node);
+        }
+        bool operator!=(const const_iterator& rhs) const
+        {
+            return m_next != rhs.m_next;
+        }
+
         bool compare(const const_iterator& rhs) const
         {
             return rhs.m_next == m_next;
@@ -355,6 +374,44 @@ struct reserved_dlist {
     dlist_node* m_head;  // +0x04
     dlist_node* m_end;   // +0x08
     dlist_node* m_tail;  // +0x0C
+
+    reserved_dlist()
+    {
+        dlist_node* p_m_end = reinterpret_cast<dlist_node*>(&m_end);
+        m_size = 0;
+        m_head = p_m_end;
+        p_m_end->mNext = nullptr;
+        m_tail = reinterpret_cast<dlist_node*>(&m_head);
+    }
+
+    iterator end()
+    {
+        return iterator(reinterpret_cast<dlist_node*>(&m_end), nullptr);
+    }
+    const_iterator end() const
+    {
+        return const_iterator(
+            reinterpret_cast<const dlist_node*>(&m_end), nullptr);
+    }
+
+    iterator find(T* object)
+    {
+        dlist_node* head = m_head;
+        dlist_node* next = head->mNext;
+        if (head->mNext != nullptr)
+        {
+            while (head != reinterpret_cast<dlist_node*>(object))
+            {
+                head = next;
+                next = next->mNext;
+                if (next == nullptr)
+                    return end();
+            }
+            dlist_node* node = reinterpret_cast<dlist_node*>(object);
+            return iterator(node, node->mNext);
+        }
+        return end();
+    }
 
     static T* node_to_object(dlist_node* node)
     {
@@ -598,6 +655,8 @@ struct AbstractEffectParticle : AbstractEffect {
 
     AbstractEffectParticle();   // ea: 0x004CF600
     ~AbstractEffectParticle();  // ea: 0x004C12C0
+    void StopEffect();                           // ea: 0x004E3200
+    void PlayQueuedEffect();                     // ea: 0x004E3210
     void SetPoPtr(math::Mat43* po);               // ea: 0x004BD200
     bool IsLooping() const;                       // ea: 0x004BD220
     void AdjustEffect_Scale(const char* param,

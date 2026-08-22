@@ -2542,6 +2542,17 @@ float AbstractEffectShakeAndRumble::GetDistanceScale(int client)
 // AbstractEffectParticle virtuals
 // ============================================================================
 
+// ea: 0x004E3200
+void AbstractEffectParticle::StopEffect()
+{
+}
+
+// ea: 0x004E3210
+void AbstractEffectParticle::PlayQueuedEffect()
+{
+    mParticle->mFlags.mVal &= ~2u;
+}
+
 // ea: 0x004BD200
 void AbstractEffectParticle::SetPoPtr(math::Mat43* po)
 {

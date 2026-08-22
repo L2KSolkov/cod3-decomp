@@ -272,6 +272,7 @@ struct strdata {
 
     strdata();
     ~strdata();
+    bool DelRef();
 };
 static_assert(sizeof(strdata) == 0x10, "strdata size mismatch");
 

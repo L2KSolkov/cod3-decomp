@@ -29,6 +29,7 @@ public:
 
     int size() const { return m_size; }
     bool empty() const { return m_size == 0; }
+    void clear() { m_size = 0; }
 
     T& operator[](int idx) {
         if (idx < 0 || idx >= CAPACITY) {
