@@ -980,9 +980,9 @@ index	status	map_line
 979	VERIFIED	0002:001eab20 ?SetObject@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXPAVAeThread@@@Z 009DA020 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
 980	VERIFIED	0002:001eab30 ?GetKey@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEHXZ 009DA030 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
 981	VERIFIED	0002:001eab40 ?Release@DbElement@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXXZ 009DA040 f i scr.o	VERIFIED: matches IDA decompile and local HandleDb::DbElement
-982	PORTED	0002:001eab50 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z 009DA050 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
-983	PORTED	0002:001eab70 ?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 009DA070 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
-984	PORTED	0002:001eab90 ?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 009DA090 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+982	VERIFIED	0002:001eab50 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PBUdlist_node@1@0@Z 009DA050 f i scr.o	VERIFIED: matches IDA assignments of m_node and m_next
+983	VERIFIED	0002:001eab70 ?compare@const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV12@@Z 009DA070 f i scr.o	VERIFIED: matches IDA comparison of rhs.m_next and m_next
+984	VERIFIED	0002:001eab90 ?compare@const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV12@@Z 009DA090 f i scr.o	VERIFIED: matches IDA comparison of rhs.m_next and m_next
 985	VERIFIED	0002:001eabb0 ?size@?$ae_sized_array@PAVAeThread@@$0EA@@@QBEHXZ 009DA0B0 f i scr.o	VERIFIED: matches IDA decompile and existing ae_sized_array<T,N>::size
 986	VERIFIED	0002:001eabc0 ?set_size@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXH@Z 009DA0C0 f i scr.o	VERIFIED: matches IDA decompile; direct m_size assignment
 987	SKIPPED	0002:001eabe0 ?_Kfn@?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@SAABHABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@Z 009DA0E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -994,12 +994,12 @@ index	status	map_line
 993	VERIFIED	0002:001eac70 ??0?$ae_sized_array_base@Ventity@Broc@@$0CAA@@@QAE@XZ 009DA170 f i scr.o	VERIFIED: matches IDA decompile and existing ae_sized_array_base constructor
 994	VERIFIED	0002:001eac80 ??0const_iterator@?$ae_sized_array@Ventity@Broc@@$0CAA@@@AAE@PBVentity@Broc@@@Z 009DA180 f i scr.o	VERIFIED: matches IDA decompile and existing const_iterator constructor
 995	SKIPPED	0002:001eaca0 ?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ 009DA1A0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-996	PORTED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o	PORTED: added exact m_cur_val return from IDA; VERIFIED: Debug build passed
-997	PORTED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
-998	PORTED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+996	VERIFIED	0002:001eacc0 ??Diterator@?$BitSet@$0BAA@@@QBEHXZ 009DA1C0 f i scr.o	VERIFIED: matches IDA return of m_cur_val
+997	VERIFIED	0002:001eacd0 ?get_head@?$reserved_dlist@VAeThreadState@@@@QBEPBUdlist_node@1@XZ 009DA1D0 f i scr.o	VERIFIED: matches IDA return of m_head
+998	VERIFIED	0002:001eace0 ??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z 009DA1E0 f i scr.o	VERIFIED: matches IDA node and next initialization
 999	VERIFIED	0002:001ead00 ?GetWord@?$BitSet@$0BAA@@@QBEIH@Z 009DA200 f i scr.o	VERIFIED: matches IDA decompile and existing BitSet::GetWord
 1000	VERIFIED	0002:001ead10 ?GetNumWords@?$BitSet@$0BAA@@@SAHXZ 009DA210 f i scr.o	VERIFIED: matches IDA decompile and existing BitSet::GetNumWords
-1001	PORTED	0002:001ead20 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z 009DA220 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+1001	VERIFIED	0002:001ead20 ??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z 009DA220 f i scr.o	VERIFIED: matches IDA node and next initialization
 1002	SKIPPED	0002:001ead40 ??0?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@QAE@ABV?$hash_compare@HU?$less@H@std@@@1@@Z 009DA240 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1003	SKIPPED	0002:001ead60 ??R?$less@H@std@@QBE_NABH0@Z 009DA260 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1004	SKIPPED	0002:001ead80 ?_Nextnode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@KAAAPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@PAU342@@Z 009DA280 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1011,7 +1011,7 @@ index	status	map_line
 1010	SKIPPED	0002:001eadf0 ??Econst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DA2F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1011	SKIPPED	0002:001eae00 ??Fconst_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAEAAV012@XZ 009DA300 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1012	SKIPPED	0002:001eae10 ?_Mynode@const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@3@XZ 009DA310 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1013	PORTED	0002:001eae20 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAVEndOnScriptNode@@@Z 009DA320 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+1013	VERIFIED	0002:001eae20 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAVEndOnScriptNode@@@Z 009DA320 f i scr.o	VERIFIED: matches IDA node and next initialization
 1014	FIXED	0002:001eae40 ??Eiterator@?$BitSet@$0BAA@@@QAEXXZ 009DA340 f i scr.o	FIXED: corrected sentinel and word-walk to IDA disassembly; VERIFIED: Debug build passed
 1015	VERIFIED	0002:001eaee0 ??0?$BitSet@$0BAA@@@QAE@W4EInitializer@0@@Z 009DA3E0 f i scr.o	VERIFIED: matches IDA decompile; intentional uninitialized initializer
 1016	SKIPPED	0002:001eaef0 ??0?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@QAE@ABV01@@Z 009DA3F0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
