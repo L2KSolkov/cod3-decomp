@@ -166,7 +166,7 @@ index	status	map_line
 165	FIXED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o	FIXED: added the IDA 0x00935870 HashStr overload forwarding to mThreadTerminateOnNotify; source commit 690fe2e8
 166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
 167	VERIFIED	0002:005358f0 ?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z 00D24DF0 f mp_util_wad.o
-168	VERIFIED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	VERIFIED: IDA 0x00935970 directly forwards the cvar name to mCVarGetInt
+168	FIXED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	FIXED: bound AudioPrint to the existing Broc::GetCvarInt helper instead of a nonexistent _mp_audio symbol; source commit a5fc8878
 169	FIXED	0002:005359a0 ?main@_mp_audio@@YAXXZ 00D24EA0 f mp_util_wad.o	FIXED: IDA 0x009359A0 constructs both worker functors with pLevel->_base.entity, not a boolean handle
 170	VERIFIED	0002:00536040 ??4bint@@QAEHI@Z 00D25540 f i mp_util_wad.o	VERIFIED: IDA 0x00936040 stores the unsigned rhs in bint::mVal and returns rhs
 171	VERIFIED	0002:00536070 ?SoundPlay@@YAIABVstring@Broc@@M@Z 00D25570 f i mp_util_wad.o	VERIFIED: IDA 0x00936070 forwards the string pointer and volume to mSoundPlay
