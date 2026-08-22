@@ -1251,6 +1251,7 @@ private:
     BinFileManager();        // ??0BinFileManager@@AAE@XZ
     ~BinFileManager();       // ??1BinFileManager@@AAE@XZ
 public:
+    static void* operator new(size_t size, void* p); // ??2BinFileManager@@SAPAXIPAX@Z (core.o 0x004DEB60)
     struct DataElem {
         unsigned int mHash;    // +0x00
         TPakId mPakId;         // +0x04
@@ -1272,6 +1273,13 @@ static_assert(sizeof(BinFileManager::DataElem) == 0x0C,
 static_assert(sizeof(BinFileManager) == 0x25C,
               "BinFileManager size mismatch");
 BinFileManager* BinFileManager::sInst = nullptr;
+
+// ea: 0x004DEB60
+void* BinFileManager::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x004DEB70
 BinFileManager* BinFileManager::CreateInst()
