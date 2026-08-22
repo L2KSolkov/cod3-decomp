@@ -2384,6 +2384,30 @@ Broc::bbool* IsEEDefined_script_accuracyvsai(Broc::bbool* result, Broc::entity e
     return result;
 }
 
+// GetEE_script_ambush_type / IsEEDefined_script_ambush_type (key 0x93F860D5)
+Broc::string* GetEE_script_ambush_type(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0x93F860D5);
+}
+
+Broc::bbool* IsEEDefined_script_ambush_type(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x93F860D5);
+            bool IsDefined = Broc::IsDefined(val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 // GetEE_script_mg42auto / IsEEDefined_script_mg42auto (key 0x24596F27)
 Broc::bint* GetEE_script_mg42auto(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
