@@ -2170,12 +2170,19 @@ public:
     static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
+    ~PadAliasMgr();           // ??1PadAliasMgr@@QAE@XZ (core.o 0x004DEDD0)
     void WriteBindings(int f);  // ?WriteBindings@PadAliasMgr@@QAEXH@Z (game.o 0x62B520)
 };
 static_assert(sizeof(PadAliasMgr::Context) == 0x148, "PadAliasMgr::Context size mismatch");
 static_assert(sizeof(PadAliasMgr) == 0x3D8, "PadAliasMgr size mismatch");
 PadAliasMgr* PadAliasMgr::sInst = nullptr;
 extern void* PadAliasMgr_sInst;
+
+// ea: 0x004DEDD0
+PadAliasMgr::~PadAliasMgr()
+{
+}
+
 PadAliasMgr* PadAliasMgr::Inst()
 {
     return PadAliasMgr::sInst;
