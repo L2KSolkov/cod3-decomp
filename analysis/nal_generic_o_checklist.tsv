@@ -46,7 +46,7 @@ index	status	map_line
 45	PORTED	0002:0046e1b0 ?BlendIntra@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D6B0 f nal_generic.o
 46	VERIFIED	0002:0046e2f0 ?BlendTorso@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D7F0 f nal_generic.o
 47	VERIFIED	0002:0046e510 ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z 00C5DA10 f nal_generic.o
-48	VERIFIED	0002:0046e660 ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z 00C5DB60 f nal_generic.o
+48	FIXED	0002:0046e660 ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z 00C5DB60 f nal_generic.o	FIXED: IDA 0x0086E660 initializes stack-or-heap pose storage and constructs each pose component
 49	VERIFIED	0002:0046e740 ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z 00C5DC40 f nal_generic.o
 50	PORTED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o
 51	PORTED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o
