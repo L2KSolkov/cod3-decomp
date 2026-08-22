@@ -2171,6 +2171,7 @@ public:
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
     ~PadAliasMgr();           // ??1PadAliasMgr@@QAE@XZ (core.o 0x004DEDD0)
+    static void* operator new(size_t size, void* p); // ??2PadAliasMgr@@SAPAXIPAX@Z (core.o 0x004DEDE0)
     void WriteBindings(int f);  // ?WriteBindings@PadAliasMgr@@QAEXH@Z (game.o 0x62B520)
 };
 static_assert(sizeof(PadAliasMgr::Context) == 0x148, "PadAliasMgr::Context size mismatch");
@@ -2181,6 +2182,13 @@ extern void* PadAliasMgr_sInst;
 // ea: 0x004DEDD0
 PadAliasMgr::~PadAliasMgr()
 {
+}
+
+// ea: 0x004DEDE0
+void* PadAliasMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
 }
 
 PadAliasMgr* PadAliasMgr::Inst()
