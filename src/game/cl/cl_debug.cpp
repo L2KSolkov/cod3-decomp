@@ -174,7 +174,13 @@ char CL_DObjInvalidateSkels()
     char result = (char)bCL_AllowedAllocSkel;
     if (bCL_AllowedAllocSkel == 0)
     {
-        ASSERT("bCL_AllowedAllocSkel", "c:\\cod\\code\\game\\cl_cgame.cpp", 513);
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_cgame.cpp";
+        AeAssert::gCurrentLine = 513;
+        AeAssert::gCurrentExpr = "bCL_AllowedAllocSkel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
     }
     if (++com_skelTimeStamp == 0)
         com_skelTimeStamp = 1;

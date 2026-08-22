@@ -133,7 +133,13 @@ void CL_GetGlconfigUI(glconfig_t* config)
 // ea: 0x528670
 void CL_SaveWrite(const void* buffer, unsigned int len)
 {
-    ASSERT("0", "c:\\cod\\code\\game\\cl_cgame.cpp", 163);
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_cgame.cpp";
+    AeAssert::gCurrentLine = 163;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Is this still called?"))
+        __debugbreak();
     memcpy(mem_heap_malloc_ctx(16, len, "hunk",
                                "c:\\cod\\code\\game\\cl_cgame.cpp", 165),
            buffer, len);
