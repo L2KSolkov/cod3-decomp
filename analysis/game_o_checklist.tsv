@@ -1,15 +1,15 @@
 index	status	map_line
-1	PORTED	0002:00201cc0 ?get_normal@cdlPlane@@QBEABVDir3@math@@XZ 009F11C0 f i game.o
-2	PORTED	0002:00201cd0 ?get_sphere_radius@cdl_object_t@@QBEMXZ 009F11D0 f i game.o
-3	PORTED	0002:00201ce0 ?get_sflags@cdl_object_t@@QBEHXZ 009F11E0 f i game.o
+1	PORTED	0002:00201cc0 ?get_normal@cdlPlane@@QBEABVDir3@math@@XZ 009F11C0 f i game.o  PORTED: restored exact IDA accessor returning the plane normal view
+2	PORTED	0002:00201cd0 ?get_sphere_radius@cdl_object_t@@QBEMXZ 009F11D0 f i game.o  PORTED: restored exact IDA sphere_radius accessor
+3	PORTED	0002:00201ce0 ?get_sflags@cdl_object_t@@QBEHXZ 009F11E0 f i game.o  PORTED: restored exact IDA sflags accessor
 4	VERIFIED	0002:00201cf0 ??0subdivision_visitor@@QAE@XZ 009F11F0 f i game.o
-5	PORTED	0002:00201d00 ??0Color32@@QAE@EEEE@Z 009F1200 f i game.o
-6	PORTED	0002:00201d30 ?to_color@Color32@@QAE?AVColor@@XZ 009F1230 f i game.o
-7	PORTED	0002:00201da0 ?Inst@DCGBankManager@@SAPAV1@XZ 009F12A0 f i game.o
-8	PORTED	0002:00201db0 ?Count@CGBankManager@@QBEHXZ 009F12B0 f i game.o
-9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o
+5	PORTED	0002:00201d00 ??0Color32@@QAE@EEEE@Z 009F1200 f i game.o  PORTED: restored exact IDA channel-ordering constructor
+6	PORTED	0002:00201d30 ?to_color@Color32@@QAE?AVColor@@XZ 009F1230 f i game.o  PORTED: restored exact IDA byte-to-float conversion
+7	VERIFIED	0002:00201da0 ?Inst@DCGBankManager@@SAPAV1@XZ 009F12A0 f i game.o  VERIFIED: existing source returns DCGBankManager::sInst exactly
+8	PORTED	0002:00201db0 ?Count@CGBankManager@@QBEHXZ 009F12B0 f i game.o  PORTED: restored exact IDA mCount accessor
+9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o  PORTED: restored exact IDA null-pointer reset
 10	VERIFIED	0002:00201de0 ?set_buffer@phys_memory_heap@@QAEXQAXHH@Z 009F12E0 f i game.o
-11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o
+11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o  PORTED: restored exact IDA field-ordering constructor
 12	PORTED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o
 13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o
 14	PORTED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o
