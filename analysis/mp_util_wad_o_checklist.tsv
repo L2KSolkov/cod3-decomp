@@ -721,7 +721,7 @@ index	status	map_line
 720	FIXED	0002:00565eb0 ?WaitThenPickFlagToLaunch__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubfloat@@PBD@Z 00D553B0 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor3<Broc::entity,bfloat,const char*>* and 0x14-byte constructor path at 0x00965EB0
 721	VERIFIED	0002:00565f50 ?IsFlagAlive@_mp_scf@@YAHVentity@Broc@@@Z 00D55450 f mp_util_wad.o
 722	VERIFIED	0002:00565f90 ?ObjectiveUpdater@_mp_scf@@YAXVentity@Broc@@@Z 00D55490 f mp_util_wad.o
-723	VERIFIED	0002:005670f0 ?CallbackAreaCaptured@_mp_scf@@YAXHH@Z 00D565F0 f mp_util_wad.o
+723	PORTED	0002:005670f0 ?CallbackAreaCaptured@_mp_scf@@YAXHH@Z 00D565F0 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x009670F0 holder stats, team score, audio/dialog, capture messages, reset, and 30-second relaunch flow; source commit ef778003
 724	FIXED	0002:00567930 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11Ubfloat@@@Z 00D56E30 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor5<entity,string,string,string,bfloat>* and 0x1C-byte construction/destruction path at 0x00967930
 725	VERIFIED	0002:00567a20 ?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z 00D56F20 f mp_util_wad.o	VERIFIED: matched IDA control flow, debug string, roundStarted reset, 4.0-second wait, and Code_NextRound(false) at 0x00967A20
 726	VERIFIED	0002:00567a80 ?CallbackPlayerSpawn@_mp_scf@@YAXVentity@Broc@@H@Z 00D56F80 f mp_util_wad.o
