@@ -1141,21 +1141,21 @@ index	status	map_line
 1140	VERIFIED	0002:001ee790 ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z 009DDC90 f i scr.o
 1141	VERIFIED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o VERIFIED: generic ae_sized_array::back matches IDA decompilation
 1142	SKIPPED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1143	PORTED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o PORTED: constructor matches IDA sentinel initialization
-1144	PORTED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o PORTED: link and tail updates match IDA decompilation
-1145	PORTED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o PORTED: end iterator fields match IDA decompilation
-1146	PORTED	0002:001ee8a0 ?push_back@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DDDA0 f i scr.o PORTED: link and tail updates match IDA decompilation
-1147	PORTED	0002:001ee8d0 ??0?$reserved_dlist@VAeThread@@@@QAE@XZ 009DDDD0 f i scr.o PORTED: constructor matches IDA sentinel initialization
-1148	PORTED	0002:001ee8f0 ?push_back@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DDDF0 f i scr.o PORTED: link and tail updates match IDA decompilation
-1149	PORTED	0002:001ee920 ?pop_back@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 009DDE20 f i scr.o PORTED: tail removal matches IDA decompilation
+1143	VERIFIED	0002:001ee830 ??0?$reserved_dlist@VAeThreadState@@@@QAE@XZ 009DDD30 f i scr.o VERIFIED: constructor matches IDA sentinel initialization
+1144	VERIFIED	0002:001ee850 ?push_back@?$reserved_dlist@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DDD50 f i scr.o VERIFIED: link and tail updates match IDA decompilation
+1145	VERIFIED	0002:001ee880 ?end@?$reserved_dlist@VAeThreadState@@@@QBE?AVconst_iterator@1@XZ 009DDD80 f i scr.o VERIFIED: end iterator fields match IDA decompilation
+1146	VERIFIED	0002:001ee8a0 ?push_back@?$reserved_dlist@VEndOnScriptNode@@@@QAEXPAVEndOnScriptNode@@@Z 009DDDA0 f i scr.o VERIFIED: link and tail updates match IDA decompilation
+1147	VERIFIED	0002:001ee8d0 ??0?$reserved_dlist@VAeThread@@@@QAE@XZ 009DDDD0 f i scr.o VERIFIED: constructor matches IDA sentinel initialization
+1148	VERIFIED	0002:001ee8f0 ?push_back@?$reserved_dlist@VAeThread@@@@QAEXPAVAeThread@@@Z 009DDDF0 f i scr.o VERIFIED: link and tail updates match IDA decompilation
+1149	VERIFIED	0002:001ee920 ?pop_back@?$reserved_dlist@VAeThread@@@@QAEPAVAeThread@@XZ 009DDE20 f i scr.o VERIFIED: tail removal matches IDA decompilation
 1150	VERIFIED	0002:001ee950 ?free_space@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009DDE50 f i scr.o VERIFIED: generic ae_sized_array::free_space matches IDA decompilation
-1151	PORTED	0002:001ee960 ??Diterator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 009DDE60 f i scr.o PORTED: dereference applies IDA's 4-byte AeThreadState node offset
+1151	VERIFIED	0002:001ee960 ??Diterator@?$reserved_dlist@VAeThreadState@@@@QAEPAVAeThreadState@@XZ 009DDE60 f i scr.o VERIFIED: dereference applies IDA's 4-byte AeThreadState node offset
 1152	VERIFIED	0002:001ee970 ?BindObjectToHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAEXVHandle@@PAVAeThread@@@Z 009DDE70 f i scr.o
 1153	VERIFIED	0002:001eea10 ?DereferenceHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QBEPAVAeThread@@VHandle@@@Z 009DDF10 f i scr.o VERIFIED: HandleDb key/object lookup matches IDA decompilation
-1154	PORTED	0002:001eea50 ??Dconst_iterator@?$reserved_dlist@VAeThreadState@@@@QBEPBVAeThreadState@@XZ 009DDF50 f i scr.o PORTED: const dereference applies IDA's 4-byte AeThreadState node offset
-1155	PORTED	0002:001eea60 ??9const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 009DDF60 f i scr.o PORTED: m_next comparison matches IDA decompilation
-1156	PORTED	0002:001eea90 ??Dconst_iterator@?$reserved_dlist@VAeThread@@@@QBEPBVAeThread@@XZ 009DDF90 f i scr.o PORTED: const dereference returns node as AeThread pointer per IDA
-1157	PORTED	0002:001eeaa0 ??9const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 009DDFA0 f i scr.o PORTED: m_next comparison matches IDA decompilation
+1154	VERIFIED	0002:001eea50 ??Dconst_iterator@?$reserved_dlist@VAeThreadState@@@@QBEPBVAeThreadState@@XZ 009DDF50 f i scr.o VERIFIED: const dereference applies IDA's 4-byte AeThreadState node offset
+1155	VERIFIED	0002:001eea60 ??9const_iterator@?$reserved_dlist@VAeThreadState@@@@QBE_NABV01@@Z 009DDF60 f i scr.o VERIFIED: m_next comparison matches IDA decompilation
+1156	VERIFIED	0002:001eea90 ??Dconst_iterator@?$reserved_dlist@VAeThread@@@@QBEPBVAeThread@@XZ 009DDF90 f i scr.o VERIFIED: const dereference returns node as AeThread pointer per IDA
+1157	VERIFIED	0002:001eeaa0 ??9const_iterator@?$reserved_dlist@VAeThread@@@@QBE_NABV01@@Z 009DDFA0 f i scr.o VERIFIED: m_next comparison matches IDA decompilation
 1158	VERIFIED	0002:001eead0 ?clear@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXXZ 009DDFD0 f i scr.o VERIFIED: generic ae_sized_array::clear matches IDA decompilation
 1159	VERIFIED	0002:001eeae0 ?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009DDFE0 f i scr.o VERIFIED: generic ae_sized_array::back matches IDA decompilation
 1160	SKIPPED	0002:001eeb00 ??9const_iterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QBE_NABV012@@Z 009DE000 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1165,14 +1165,14 @@ index	status	map_line
 1164	SKIPPED	0002:001eeb80 ??Y?$ae_fixed_string@$0BAA@G@@QAEAAV0@PBD@Z 009DE080 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1165	SKIPPED	0002:001eebd0 ??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ 009DE0D0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 1166	VERIFIED	0002:001eebf0 ??0?$ae_sized_array_base@V?$ae_pair@PAXI@@$0P@@@QAE@XZ 009DE0F0 f i scr.o VERIFIED: elements-only base constructor matches IDA decompilation
-1167	PORTED	0002:001eec00 ?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z 009DE100 f i scr.o PORTED: state-node search and end result match IDA decompilation
-1168	PORTED	0002:001eec60 ?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z 009DE160 f i scr.o PORTED: node search and end result match IDA decompilation
-1169	PORTED	0002:001eecb0 ?find@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@PAVAeThread@@@Z 009DE1B0 f i scr.o PORTED: node search and end result match IDA decompilation
+1167	VERIFIED	0002:001eec00 ?find@?$reserved_dlist@VAeThreadState@@@@QAE?AViterator@1@PAVAeThreadState@@@Z 009DE100 f i scr.o VERIFIED: state-node search and end result match IDA disassembly
+1168	VERIFIED	0002:001eec60 ?find@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@PAVEndOnScriptNode@@@Z 009DE160 f i scr.o VERIFIED: node search and end result match IDA disassembly
+1169	VERIFIED	0002:001eecb0 ?find@?$reserved_dlist@VAeThread@@@@QAE?AViterator@1@PAVAeThread@@@Z 009DE1B0 f i scr.o VERIFIED: node search and end result match IDA disassembly
 1170	VERIFIED	0002:001eed00 ?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009DE200 f i scr.o VERIFIED: generic back index rule matches IDA decompilation
 1171	VERIFIED	0002:001eed20 ?Add@?$BitSet@$0BAA@@@QAEXH@Z 009DE220 f i scr.o VERIFIED: bounds assert and bit set match IDA decompilation
 1172	VERIFIED	0002:001eedb0 ?Rmv@?$BitSet@$0BAA@@@QAEXH@Z 009DE2B0 f i scr.o VERIFIED: bounds assert and bit clear match IDA decompilation
 1173	SKIPPED	0002:001eee40 ??0?$ae_fixed_string@$0CA@E@@QAE@ABV0@@Z 009DE340 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1174	PORTED	0002:001eee80 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z 009DE380 f i scr.o PORTED: list iterator initialization matches IDA disassembly
+1174	VERIFIED	0002:001eee80 ??0const_iterator@?$reserved_dlist@VAeThreadState@@@@QAE@ABV1@@Z 009DE380 f i scr.o VERIFIED: list iterator initialization matches IDA disassembly
 1175	SKIPPED	0002:001eeed0 ?size@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QBEIXZ 009DE3D0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1176	SKIPPED	0002:001eeee0 ??R?$hash_compare@HU?$less@H@std@@@stdext@@QBEIABH@Z 009DE3E0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1177	SKIPPED	0002:001eef00 ??R?$hash_compare@HU?$less@H@std@@@stdext@@QBE_NABH0@Z 009DE400 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
