@@ -1,5 +1,5 @@
 index	status	map_line
-1	VERIFIED	0002:0058afc0 ?RegisterHashStrings@mp_anim_wad@@YAXXZ 00D7A4C0 f mp_anim_wad.o
+1	FIXED	0002:0058afc0 ?RegisterHashStrings@mp_anim_wad@@YAXXZ 00D7A4C0 f mp_anim_wad.o	FIXED: bound RegisterHashString calls to the IDA global symbol at 0x00929060.
 2	FIXED	0002:0058c590 ?ResolveAnim@mp_anim_wad@@YAIIIPAII@Z 00D7BA90 f mp_anim_wad.o	FIXED: matched IDA 0x0098C590 branch/hash behavior and corrected the unsigned int return type; source commit 99fb560a
 3	VERIFIED	0002:0058c650 ?GetAnim@AnimRef@Broc@@QBEIXZ 00D7BB50 f i mp_anim_wad.o
 4	VERIFIED	0002:0058c680 ??BBroAnim@@QBE?BIXZ 00D7BB80 f i mp_anim_wad.o	VERIFIED: IDA 0x0098C680 returns BroAnim::mVal unchanged
