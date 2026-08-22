@@ -206,6 +206,7 @@ public:
     void AddRemotePlayer(const LivePlayer* playerToAdd);
     void Render();
     void Render(void* renderSurface);
+    bool GetUIXRender();
     char* GetIcon(unsigned int portNumber);
 
     // LiveWrapper batch 2

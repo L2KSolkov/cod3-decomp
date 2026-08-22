@@ -7,6 +7,12 @@
 // ============================================================================
 
 #include "XboxLive.h"
+
+// ea: 0x007E1A80
+bool LiveWrapper::GetUIXRender()
+{
+    return renderingEnabled;
+}
 #include "d3d8.h"
 #include "xlive.h"
 #include "core/mem_heap.h"
