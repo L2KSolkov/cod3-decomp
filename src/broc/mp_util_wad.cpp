@@ -11127,8 +11127,65 @@ void CallbackDebugRender() {
 }
 
 // RenderFlagInfo - ea: 0x955620
-void RenderFlagInfo(Broc::entity guy, Broc::bint flagID, Broc::bint flagTeam) {
-    (void)guy; (void)flagID; (void)flagTeam;
+void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
+    if (!Broc::IsDefined(flag))
+        return;
+
+    Broc::string text((const char*)NULL);
+    if (flag == mp_util_wad::pLevel->allies_flag_ent)
+        text = "Allies Flag ";
+    else
+        text = "Axis Flag ";
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder) {
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        Broc::string name(Broc::Code_GetPlayerName(holder));
+        text += "is held by ";
+        text += name;
+
+        Broc::bbool holderHasHolder;
+        mp_util_wad::IsEEDefined_holder(&holderHasHolder, holder);
+        if (!(bool)holderHasHolder ||
+            *mp_util_wad::GetEE_holder(holder) != flag)
+            text += ". Who DOES NOT THINK HE IS HOLDING THE FLAG.";
+        name.~string();
+    } else {
+        Broc::bint distance(0);
+        Broc::bbool hasGoal;
+        mp_util_wad::IsEEDefined_goal(&hasGoal, flag);
+        if ((bool)hasGoal) {
+            Broc::vector flagOrigin;
+            Broc::vector goalOrigin;
+            mp_util_wad::entity_get_origin(&flagOrigin, flag);
+            Broc::entity goal = *mp_util_wad::GetEE_goal(flag);
+            mp_util_wad::entity_get_origin(&goalOrigin, goal);
+            distance = static_cast<int>(
+                Broc::Distance(&goalOrigin, &flagOrigin));
+        }
+
+        if ((int)distance < 60) {
+            text += "is at the base.";
+        } else {
+            text += "is dropped at position (";
+            Broc::vector origin;
+            mp_util_wad::entity_get_origin(&origin, flag);
+            Broc::string value(origin.x);
+            text += value;
+            text += ",";
+            value = origin.y;
+            text += value;
+            text += ",";
+            value = origin.z;
+            text += value;
+            value.~string();
+            text += ")";
+        }
+    }
+
+    Broc::Code_DebugRenderText(text.c_str(), (int)x, (int)y);
+    text.~string();
 }
 
 // HandleDropFlag - ea: 0x9505F0
