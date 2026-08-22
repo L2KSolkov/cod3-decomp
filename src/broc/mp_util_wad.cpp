@@ -3033,6 +3033,12 @@ bool bfloat::IsDefined() const {
     return IS_NAN(mVal) == 0;
 }
 
+// bint::operator=(float) - ea: 0x9540F0
+int bint::operator=(float rhs) {
+    mVal = rhs;
+    return mVal;
+}
+
 // bint::operator=(bfloat) - ea: 0x95AE70
 int bint::operator=(bfloat rhs) {
     if (rhs.IsDefined()) {
@@ -4885,9 +4891,9 @@ AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* SwitchToSecondarySpawns__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
-void* CompassUnderlay__functor(Broc::entity p);
-void* WaitForFlagTimeOut__functor(Broc::entity flag);
-void* WaitForNoTouchFlag__functor(Broc::entity toucher);
+AeThreadFunctor1<Broc::entity>* CompassUnderlay__functor(Broc::entity p);
+AeThreadFunctor1<Broc::entity>* WaitForFlagTimeOut__functor(Broc::entity flag);
+AeThreadFunctor1<Broc::entity>* WaitForNoTouchFlag__functor(Broc::entity toucher);
 void* PickupFlag__functor(Broc::entity self);
 void* Goal__functor(Broc::entity self);
 }
@@ -10508,19 +10514,19 @@ void* ObjectiveUpdater__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(ObjectiveUpdater, guy);
 }
-void* CompassUnderlay__functor(Broc::entity p) {
+AeThreadFunctor1<Broc::entity>* CompassUnderlay__functor(Broc::entity p) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(CompassUnderlay, p);
 }
-void* WaitForFlagTimeOut__functor(Broc::entity flag) {
+AeThreadFunctor1<Broc::entity>* WaitForFlagTimeOut__functor(Broc::entity flag) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(WaitForFlagTimeOut, flag);
 }
-void* WaitForNoTouchFlag__functor(Broc::entity toucher) {
+AeThreadFunctor1<Broc::entity>* WaitForNoTouchFlag__functor(Broc::entity toucher) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;

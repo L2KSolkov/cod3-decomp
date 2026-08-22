@@ -776,6 +776,7 @@ struct bint {
     int mVal;
     explicit bint(int v) : mVal(v) {}
     bint(const bfloat& rhs);
+    int operator=(float rhs);  // ea: 0x9540F0
     int operator=(bfloat rhs);
     static int sUndefined;
 };
