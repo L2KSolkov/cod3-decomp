@@ -166,7 +166,7 @@ index	status	map_line
 165	VERIFIED	0002:0012c2c0 ?CL_ShutdownInput@@YAXXZ 0091B7C0 f cl.o
 166	FIXED	0002:0012c540 ?CL_ClearKeys@@YAXXZ 0091BA40 f cl.o FIXED: corrected shared IDA-derived kb indices
 167	FIXED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
-168	PORTED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o PORTED: IDA match; intentionally empty in the reference
+168	VERIFIED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o VERIFIED: matches IDA intentional empty function
 169	VERIFIED	0002:0012c7f0 ?Key_GetOverstrikeMode@@YAHXZ 0091BCF0 f cl.o
 170	VERIFIED	0002:0012c800 ?Key_SetOverstrikeMode@@YAXH@Z 0091BD00 f cl.o
 171	VERIFIED	0002:0012c810 ?SetBinding@KeyInfoEntry@@QAEXPBD@Z 0091BD10 f cl.o
@@ -191,7 +191,7 @@ index	status	map_line
 190	VERIFIED	0002:0012cf00 ?CL_ShutdownRef@@YAXXZ 0091C400 f cl.o
 191	VERIFIED	0002:0012cf30 ?CL_InitRenderer@@YAXXZ 0091C430 f cl.o
 192	VERIFIED	0002:0012cfc0 ?CL_ScaledMilliseconds@@YAHXZ 0091C4C0 f cl.o
-193	PORTED	0002:0012cfe0 ?CG_GetGameModel@@YAFF@Z 0091C4E0 f cl.o PORTED: IDA match; forwards model lookup through VM call 8
+193	VERIFIED	0002:0012cfe0 ?CG_GetGameModel@@YAFF@Z 0091C4E0 f cl.o VERIFIED: matches IDA VM_Call call number 8 and model index forwarding
 194	VERIFIED	0002:0012d000 ?CL_GetFontInfo@@YAPAVnglFont@@HM@Z 0091C500 f cl.o
 195	VERIFIED	0002:0012d020 ?CL_ShellExecute_URL_f@@YAXXZ 0091C520 f cl.o
 196	VERIFIED	0002:0012d080 ?CL_IncAnimWeight_f@@YAXXZ 0091C580 f cl.o
@@ -206,17 +206,17 @@ index	status	map_line
 205	VERIFIED	0002:0012d9d0 ?CL_Netchan_Transmit@@YAXPAUnetchan_t@@PAUmsg_t@@@Z 0091CED0 f cl.o
 206	VERIFIED	0002:0012da00 ?CL_Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z 0091CF00 f cl.o
 207	VERIFIED	0002:0012da10 ?SHOWNET@@YAXPAUmsg_t@@PAD@Z 0091CF10 f cl.o
-208	PORTED	0002:0012da40 ?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z 0091CF40 f cl.o PORTED: IDA match; intentionally empty in the reference
+208	VERIFIED	0002:0012da40 ?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z 0091CF40 f cl.o VERIFIED: matches IDA intentional empty function
 209	VERIFIED	0002:0012da50 ?CL_ParseCommandString@@YAXPAUmsg_t@@@Z 0091CF50 f cl.o
-210	PORTED	0002:0012dab0 ?SCR_DrawNamedPic@@YAXMMMMPBDH@Z 0091CFB0 f cl.o PORTED: IDA match; intentionally empty in the reference
+210	VERIFIED	0002:0012dab0 ?SCR_DrawNamedPic@@YAXMMMMPBDH@Z 0091CFB0 f cl.o VERIFIED: matches IDA intentional empty function
 211	VERIFIED	0002:0012dac0 ?SCR_AdjustFrom640@@YAXPAM000@Z 0091CFC0 f cl.o
 212	VERIFIED	0002:0012db40 ?SCR_FillRect@@YAXMMMMPBM@Z 0091D040 f cl.o
-213	PORTED	0002:0012dbd0 ?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z 0091D0D0 f cl.o PORTED: IDA match; preserves 640-space scaling and full UVs
+213	FIXED	0002:0012dbd0 ?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z 0091D0D0 f cl.o FIXED: corrected parameter to IDA nglTexture* type; body matches 640-space scaling and full UVs
 214	VERIFIED	0002:0012dc50 ?SCR_AdjustTo640@@YAXPAM000@Z 0091D150 f cl.o
 215	VERIFIED	0002:0012dce0 ?SCR_DrawSmallChar@@YAXHHH@Z 0091D1E0 f cl.o
 216	VERIFIED	0002:0012ddb0 ?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z 0091D2B0 f cl.o
 217	VERIFIED	0002:0012de40 ?SCR_DrawConsoleString@@YAXHHPBFHQBM@Z 0091D340 f cl.o
-218	PORTED	0002:0012ded0 ?SCR_DebugGraph@@YAXMH@Z 0091D3D0 f cl.o PORTED: IDA match; intentionally empty in the reference
+218	VERIFIED	0002:0012ded0 ?SCR_DebugGraph@@YAXMH@Z 0091D3D0 f cl.o VERIFIED: matches IDA intentional empty function
 219	VERIFIED	0002:0012dee0 ?SCR_DrawDebugGraph@@YAXXZ 0091D3E0 f cl.o
 220	VERIFIED	0002:0012def0 ?SCR_Init@@YAXXZ 0091D3F0 f cl.o
 221	VERIFIED	0002:0012df00 ?CL_IsCGameRendering@@YAHXZ 0091D400 f cl.o
@@ -242,14 +242,14 @@ index	status	map_line
 241	VERIFIED	0002:0012ef90 ?SetFirstLocalClientIndex@LocalClient@@YAXH@Z 0091E490 f cl.o
 242	VERIFIED	0002:0012efa0 ?NumLocalClients@LocalClient@@YAHXZ 0091E4A0 f cl.o
 243	VERIFIED	0002:0012efb0 ?SetNumLocalClients@LocalClient@@YAXH@Z 0091E4B0 f cl.o
-244	PORTED	0002:0012efc0 ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z 0091E4C0 f cl.o PORTED: IDA match; compares the state of the first local client
+244	VERIFIED	0002:0012efc0 ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z 0091E4C0 f cl.o VERIFIED: matches IDA comparison of dword_F6A290[0] to state
 245	VERIFIED	0002:0012efe0 ?ClientToPort@LocalClient@@YAHH@Z 0091E4E0 f cl.o
 246	VERIFIED	0002:0012f010 ?PortToClient@LocalClient@@YAHH@Z 0091E510 f cl.o
-247	PORTED	0002:0012f020 ?PortIsState@LocalClient@@YA_NHH@Z 0091E520 f cl.o PORTED: IDA match; port argument is intentionally unused
+247	VERIFIED	0002:0012f020 ?PortIsState@LocalClient@@YA_NHH@Z 0091E520 f cl.o VERIFIED: matches IDA state comparison with unused port
 248	VERIFIED	0002:0012f040 ?PortToValidClient@LocalClient@@YAHH@Z 0091E540 f cl.o
-249	PORTED	0002:0012f080 ?SetClientPort@LocalClient@@YAXHH@Z 0091E580 f cl.o PORTED: IDA match; updates only client zero's port
+249	VERIFIED	0002:0012f080 ?SetClientPort@LocalClient@@YAXHH@Z 0091E580 f cl.o VERIFIED: matches IDA client-zero port store
 250	VERIFIED	0002:0012f0a0 ?UpdatePlayerPorts@LocalClient@@YAXH@Z 0091E5A0 f cl.o
-251	PORTED	0002:0012f0f0 ?ConfigureLocalClients@LocalClient@@YAXXZ 0091E5F0 f cl.o PORTED: IDA match; resets local-client input and stance state
+251	VERIFIED	0002:0012f0f0 ?ConfigureLocalClients@LocalClient@@YAXXZ 0091E5F0 f cl.o VERIFIED: matches IDA local-client count, input reset, and stance reset
 252	VERIFIED	0002:0012f140 ?QuitClientOutOfGame@LocalClient@@YA_NH@Z 0091E640 f cl.o
 253	FIXED	0002:0012f210 ?CL_Restart@@YAXXZ 0091E710 f cl.o FIXED: uses Broc::string assignment for IDA-matched config-string cleanup
 254	FIXED	0002:0012f290 ?CL_GetConfigString@@YAPBDH@Z 0091E790 f cl.o FIXED: uses the IDA-derived Broc::string config-string type
