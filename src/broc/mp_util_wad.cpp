@@ -4462,6 +4462,12 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
 }
 }
 
+const Broc::bint* Broc::entity::__unnamed::key_struct::Get(
+    Broc::bint* result) const {
+    new (result) Broc::bint(Broc::gBrocAPI.m_entity_get_key(mHandle));
+    return result;
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);

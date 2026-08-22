@@ -280,6 +280,7 @@ public:
         };
         struct key_struct {
             unsigned int mHandle;  // +0x00
+            const Broc::bint* Get(Broc::bint* result) const;
             const int& operator=(const int& rhs);
         };
     };
