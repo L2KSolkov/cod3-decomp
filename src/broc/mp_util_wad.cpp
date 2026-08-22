@@ -11559,9 +11559,13 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
         if ((bool)hasGoal) {
             Broc::vector flagOrigin;
             Broc::vector goalOrigin;
-            mp_util_wad::entity_get_origin(&flagOrigin, flag);
+            Broc::entity::__unnamed::origin_struct flagOriginField = {
+                flag.GetHandle()};
+            flagOriginField.Get(&flagOrigin);
             Broc::entity goal = *mp_util_wad::GetEE_goal(flag);
-            mp_util_wad::entity_get_origin(&goalOrigin, goal);
+            Broc::entity::__unnamed::origin_struct goalOriginField = {
+                goal.GetHandle()};
+            goalOriginField.Get(&goalOrigin);
             distance = static_cast<int>(
                 Broc::Distance(&goalOrigin, &flagOrigin));
         }
@@ -11571,16 +11575,23 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
         } else {
             text += "is dropped at position (";
             Broc::vector origin;
-            mp_util_wad::entity_get_origin(&origin, flag);
-            Broc::string value(origin.x);
-            text += value;
+            Broc::entity::__unnamed::origin_struct originField = {
+                flag.GetHandle()};
+            originField.Get(&origin);
+            {
+                Broc::string value(origin[0]);
+                text += value;
+            }
             text += ",";
-            value = origin.y;
-            text += value;
+            {
+                Broc::string value(origin[1]);
+                text += value;
+            }
             text += ",";
-            value = origin.z;
-            text += value;
-            value.~string();
+            {
+                Broc::string value(origin[2]);
+                text += value;
+            }
             text += ")";
         }
     }
