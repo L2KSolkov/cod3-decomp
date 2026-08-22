@@ -17,10 +17,10 @@ index	status	map_line
 16	PORTED	0002:0058cb10 ?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C010 f mp_anim_wad.o	PORTED: added IDA 0x0098CB10 defined-check with typed string temporary and key 0xDAE997F9; source commit 2363da3d
 17	PORTED	0002:0058cc10 ?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C110 f mp_anim_wad.o	PORTED: added IDA 0x0098CC10 ExtendedEntity string reference for key 0xE217DD4D; source commit 2363da3d
 18	PORTED	0002:0058cc60 ?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C160 f mp_anim_wad.o	PORTED: added IDA 0x0098CC60 defined-check with typed string temporary and key 0xE217DD4D; source commit 2363da3d
-19	PORTED	0002:0058cd60 ?GetEE_script_prespawn_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C260 f mp_anim_wad.o
-20	PORTED	0002:0058cdb0 ?IsEEDefined_script_prespawn_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C2B0 f mp_anim_wad.o
-21	PORTED	0002:0058ce60 ?GetEE_script_burst_max@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C360 f mp_anim_wad.o
-22	PORTED	0002:0058ceb0 ?IsEEDefined_script_burst_max@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C3B0 f mp_anim_wad.o
+19	PORTED	0002:0058cd60 ?GetEE_script_prespawn_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C260 f mp_anim_wad.o	PORTED: added IDA 0x0098CD60 ExtendedEntity float reference for key 0x531ABA72; source commit 121ccf9b
+20	PORTED	0002:0058cdb0 ?IsEEDefined_script_prespawn_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C2B0 f mp_anim_wad.o	PORTED: added IDA 0x0098CDB0 defined-check for key 0x531ABA72; source commit 121ccf9b
+21	PORTED	0002:0058ce60 ?GetEE_script_burst_max@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C360 f mp_anim_wad.o	PORTED: added IDA 0x0098CE60 ExtendedEntity float reference for key 0xD74DC709; source commit 121ccf9b
+22	PORTED	0002:0058ceb0 ?IsEEDefined_script_burst_max@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C3B0 f mp_anim_wad.o	PORTED: added IDA 0x0098CEB0 defined-check for key 0xD74DC709; source commit 121ccf9b
 23	PORTED	0002:0058cf60 ?GetEE_script_offradius@@YAAAUbint@@Ventity@Broc@@@Z 00D7C460 f mp_anim_wad.o
 24	PORTED	0002:0058cfb0 ?IsEEDefined_script_offradius@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C4B0 f mp_anim_wad.o
 25	PORTED	0002:0058d060 ?GetEE_script_location@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C560 f mp_anim_wad.o
