@@ -6728,11 +6728,15 @@ void audio_spawner(Broc::entity self, Broc::string sound) {
         Broc::vector v23;
         Broc::vector v22;
         Broc::vector v24;
-        Broc::vector* origin = Broc::entity_origin(&players[0], &v21);
-        Broc::vector* scaled = Broc::vector_scale(&v20, &dir, (float)(v4 + min_range.mVal));
-        Broc::vector* sum = Broc::vector_add(&pos, origin, scaled);
-        (void)sum;
-        float z = Broc::vector_get(&v23, 2) + (float)RandomInt((int)height);
+        Broc::entity::__unnamed::origin_struct origin = {
+            players[0].GetHandle()
+        };
+        const Broc::vector* originValue = origin.Get(&v21);
+        v20 = dir * (float)(v4 + min_range.mVal);
+        pos = *originValue + v20;
+        origin.Get(&v23);
+        float z = v23[2] + (float)RandomInt((int)height);
+        pos = Broc::vector(pos[0], pos[1], z);
         Broc::vector facing(0.0f, 0.0f, 0.0f);
         Broc::EffectEventPlay(sound, pos, facing);
         players.~dyn_array();
