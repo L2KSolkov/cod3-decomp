@@ -141,14 +141,14 @@ index	status	map_line
 140	PORTED	0002:00590eb0 ?IsEEDefined_script_battle@@YA?AUbbool@@Ventity@Broc@@@Z 00D803B0 f mp_anim_wad.o	PORTED: added IDA 0x00990EB0 defined-check for key 0x22457F30; source commit 71642b9a
 141	PORTED	0002:00590f60 ?GetEE_script_followmin@@YAAAUbint@@Ventity@Broc@@@Z 00D80460 f mp_anim_wad.o	PORTED: added IDA 0x00990F60 ExtendedEntity bint reference for key 0x4135B46B; source commit 71642b9a
 142	PORTED	0002:00590fb0 ?IsEEDefined_script_followmin@@YA?AUbbool@@Ventity@Broc@@@Z 00D804B0 f mp_anim_wad.o	PORTED: added IDA 0x00990FB0 defined-check for key 0x4135B46B; source commit 71642b9a
-143	PORTED	0002:00591060 ?GetEE_script_grenadeawareness@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80560 f mp_anim_wad.o
-144	PORTED	0002:005910b0 ?IsEEDefined_script_grenadeawareness@@YA?AUbbool@@Ventity@Broc@@@Z 00D805B0 f mp_anim_wad.o
-145	PORTED	0002:00591160 ?GetEE_script_bravery@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80660 f mp_anim_wad.o
-146	PORTED	0002:005911b0 ?IsEEDefined_script_bravery@@YA?AUbbool@@Ventity@Broc@@@Z 00D806B0 f mp_anim_wad.o
-147	PORTED	0002:00591260 ?GetEE_destructible_id@@YAAAUbint@@Ventity@Broc@@@Z 00D80760 f mp_anim_wad.o
-148	PORTED	0002:005912b0 ?IsEEDefined_destructible_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D807B0 f mp_anim_wad.o
-149	PORTED	0002:00591360 ?GetEE_dontdropgrenade@@YAAAUbint@@Ventity@Broc@@@Z 00D80860 f mp_anim_wad.o
-150	PORTED	0002:005913b0 ?IsEEDefined_dontdropgrenade@@YA?AUbbool@@Ventity@Broc@@@Z 00D808B0 f mp_anim_wad.o
+143	PORTED	0002:00591060 ?GetEE_script_grenadeawareness@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80560 f mp_anim_wad.o	PORTED: added IDA 0x00991060 ExtendedEntity bfloat reference for key 0x65D5CED3; source commit 02828937
+144	PORTED	0002:005910b0 ?IsEEDefined_script_grenadeawareness@@YA?AUbbool@@Ventity@Broc@@@Z 00D805B0 f mp_anim_wad.o	PORTED: added IDA 0x009910B0 defined-check for key 0x65D5CED3; source commit 02828937
+145	PORTED	0002:00591160 ?GetEE_script_bravery@@YAAAUbfloat@@Ventity@Broc@@@Z 00D80660 f mp_anim_wad.o	PORTED: added IDA 0x00991160 ExtendedEntity bfloat reference for key 0x9146436F; source commit 02828937
+146	PORTED	0002:005911b0 ?IsEEDefined_script_bravery@@YA?AUbbool@@Ventity@Broc@@@Z 00D806B0 f mp_anim_wad.o	PORTED: added IDA 0x009911B0 defined-check for key 0x9146436F; source commit 02828937
+147	PORTED	0002:00591260 ?GetEE_destructible_id@@YAAAUbint@@Ventity@Broc@@@Z 00D80760 f mp_anim_wad.o	PORTED: added IDA 0x00991260 ExtendedEntity bint reference for key 0xD35E38B6; source commit 02828937
+148	PORTED	0002:005912b0 ?IsEEDefined_destructible_id@@YA?AUbbool@@Ventity@Broc@@@Z 00D807B0 f mp_anim_wad.o	PORTED: added IDA 0x009912B0 defined-check for key 0xD35E38B6; source commit 02828937
+149	PORTED	0002:00591360 ?GetEE_dontdropgrenade@@YAAAUbint@@Ventity@Broc@@@Z 00D80860 f mp_anim_wad.o	PORTED: added IDA 0x00991360 ExtendedEntity bint reference for key 0x8F860160; source commit 02828937
+150	PORTED	0002:005913b0 ?IsEEDefined_dontdropgrenade@@YA?AUbbool@@Ventity@Broc@@@Z 00D808B0 f mp_anim_wad.o	PORTED: added IDA 0x009913B0 defined-check for key 0x8F860160; source commit 02828937
 151	PORTED	0002:00591460 ?GetEE_script_fxstop@@YAAAUbint@@Ventity@Broc@@@Z 00D80960 f mp_anim_wad.o
 152	PORTED	0002:005914b0 ?IsEEDefined_script_fxstop@@YA?AUbbool@@Ventity@Broc@@@Z 00D809B0 f mp_anim_wad.o
 153	PORTED	0002:00591560 ?GetEE_script_accuracyvsplayer@@YAAAUbint@@Ventity@Broc@@@Z 00D80A60 f mp_anim_wad.o
