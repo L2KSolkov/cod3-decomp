@@ -677,23 +677,23 @@ index	status	map_line
 676	VERIFIED	0002:000dbdf0 ?ASinUpper@math@@YAMM@Z 008CB2F0 f i core.o	VERIFIED: existing ASinUpper polynomial and branch match IDA 0x004DBDF0
 677	VERIFIED	0002:000dbf00 ?ACosUpper@math@@YAMM@Z 008CB400 f i core.o	VERIFIED: existing ACosUpper polynomial and branch match IDA 0x004DBF00
 678	VERIFIED	0002:000dc020 ?ATan@math@@YAMMM@Z 008CB520 f i core.o
-679	PORTED	0002:000dc300 ??2AnimBankManager@@SAPAXIPAX@Z 008CB800 f i core.o
+679	VERIFIED	0002:000dc300 ??2AnimBankManager@@SAPAXIPAX@Z 008CB800 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DC300
 680	VERIFIED	0002:000dc310 ?CreateInst@AnimBankManager@@SAXXZ 008CB810 f i core.o
-681	PORTED	0002:000dc410 ??2PhysDataBankManager@@SAPAXIPAX@Z 008CB910 f i core.o
+681	VERIFIED	0002:000dc410 ??2PhysDataBankManager@@SAPAXIPAX@Z 008CB910 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DC410
 682	VERIFIED	0002:000dc420 ?DeleteInst@PhysDataBankManager@@SAXXZ 008CB920 f i core.o
-683	PORTED	0002:000dc4a0 ??2InstanceBankMgr@@SAPAXIPAX@Z 008CB9A0 f i core.o
+683	VERIFIED	0002:000dc4a0 ??2InstanceBankMgr@@SAPAXIPAX@Z 008CB9A0 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DC4A0
 684	VERIFIED	0002:000dc4b0 ?CreateInst@InstanceBankMgr@@SAXXZ 008CB9B0 f i core.o
 685	SKIPPED	0002:000dc5b0 ??_GInstanceBankMgr@@QAEPAXI@Z 008CBAB0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-686	PORTED	0002:000dc5e0 ??2SoundDevice@@SAPAXIPAX@Z 008CBAE0 f i core.o
+686	VERIFIED	0002:000dc5e0 ??2SoundDevice@@SAPAXIPAX@Z 008CBAE0 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DC5E0
 687	VERIFIED	0002:000dc5f0 ?CreateInst@SoundDevice@@SAXXZ 008CBAF0 f i core.o
-688	PORTED	0002:000dc6f0 ?Inst@SoundHandleDb@SoundDevice@@SAPAV12@XZ 008CBBF0 f i core.o
-689	PORTED	0002:000dc700 ?GetStartingPitch@Sound@SoundDevice@@QBEMXZ 008CBC00 f i core.o
-690	PORTED	0002:000dc720 ?GetStartingVolume@Sound@SoundDevice@@QBEMXZ 008CBC20 f i core.o
-691	PORTED	0002:000dc740 ?GetMaxDist@Sound@SoundDevice@@QBEMXZ 008CBC40 f i core.o
-692	PORTED	0002:000dc760 ?GetMinDist@Sound@SoundDevice@@QBEMXZ 008CBC60 f i core.o
-693	PORTED	0002:000dc780 ?IsSourceValid@Sound@SoundDevice@@QAE_NXZ 008CBC80 f i core.o
-694	PORTED	0002:000dc790 ?GetSourceId@Sound@SoundDevice@@QAE?AW4nslSourceID@@XZ 008CBC90 f i core.o
-695	PORTED	0002:000dc7a0 ?GetVolScale@SoundDevice@@QAEMXZ 008CBCA0 f i core.o
+688	VERIFIED	0002:000dc6f0 ?Inst@SoundHandleDb@SoundDevice@@SAPAV12@XZ 008CBBF0 f i core.o	VERIFIED: existing SoundHandleDb singleton accessor matches IDA 0x004DC6F0
+689	VERIFIED	0002:000dc700 ?GetStartingPitch@Sound@SoundDevice@@QBEMXZ 008CBC00 f i core.o	VERIFIED: existing NSL pitch lookup (param 1, default 1.0) matches IDA 0x004DC700
+690	VERIFIED	0002:000dc720 ?GetStartingVolume@Sound@SoundDevice@@QBEMXZ 008CBC20 f i core.o	VERIFIED: existing NSL volume lookup (param 0, default 1.0) matches IDA 0x004DC720
+691	VERIFIED	0002:000dc740 ?GetMaxDist@Sound@SoundDevice@@QBEMXZ 008CBC40 f i core.o	VERIFIED: existing NSL max-distance lookup (param 26, default 1.0) matches IDA 0x004DC740
+692	VERIFIED	0002:000dc760 ?GetMinDist@Sound@SoundDevice@@QBEMXZ 008CBC60 f i core.o	VERIFIED: existing NSL min-distance lookup (param 25, default 1.0) matches IDA 0x004DC760
+693	VERIFIED	0002:000dc780 ?IsSourceValid@Sound@SoundDevice@@QAE_NXZ 008CBC80 f i core.o	VERIFIED: existing source sentinel check matches IDA 0x004DC780
+694	VERIFIED	0002:000dc790 ?GetSourceId@Sound@SoundDevice@@QAE?AW4nslSourceID@@XZ 008CBC90 f i core.o	VERIFIED: existing source ID return matches IDA 0x004DC790
+695	VERIFIED	0002:000dc7a0 ?GetVolScale@SoundDevice@@QAEMXZ 008CBCA0 f i core.o	VERIFIED: existing volume-scale return matches IDA 0x004DC7A0
 696	SKIPPED	0002:000dc7b0 ??_GSoundDevice@@QAEPAXI@Z 008CBCB0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 697	PORTED	0002:000dc7e0 ??2STBManager@@SAPAXIPAX@Z 008CBCE0 f i core.o
 698	PORTED	0002:000dc7f0 ?Inst@STBManager@@SAPAV1@XZ 008CBCF0 f i core.o
