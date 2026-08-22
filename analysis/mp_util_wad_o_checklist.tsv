@@ -193,7 +193,7 @@ index	status	map_line
 192	FIXED	0002:005372e0 ?ambient_system@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D267E0 f mp_util_wad.o	FIXED: IDA 0x009372E0 constructs fMin from pLevel->_base.entity before audio_spawner
 193	VERIFIED	0002:005376c0 ??M@YA?AUbbool@@Ubfloat@@M@Z 00D26BC0 f i mp_util_wad.o	VERIFIED: IDA 0x009376C0 returns bbool(rhs greater than lhs bfloat value)
 194	VERIFIED	0002:00537710 ??O@YA?AUbbool@@Ubfloat@@M@Z 00D26C10 f i mp_util_wad.o	VERIFIED: IDA 0x00937710 returns bbool(lhs bfloat value greater than rhs)
-195	VERIFIED	0002:00537760 ?audio_spawner@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D26C60 f mp_util_wad.o
+195	FIXED	0002:00537760 ?audio_spawner@_mp_audio@@YAXVentity@Broc@@Vstring@3@@Z 00D26C60 f mp_util_wad.o	FIXED: IDA 0x00937760 uses origin_struct::Get, Broc vector operators, a second origin read, and randomized Z assignment; source 8102c6a4
 196	VERIFIED	0002:005379f0 ??H@YA?AUbint@@HU0@@Z 00D26EF0 f i mp_util_wad.o	VERIFIED: IDA 0x009379F0 adds int lhs to rhs.mVal and constructs the bint result
 197	VERIFIED	0002:00537a20 ??DBroc@@YA?AUvector@0@ABU10@M@Z 00D26F20 f i mp_util_wad.o	VERIFIED: IDA 0x00937A20 multiplies all three vector components by rhs
 198	VERIFIED	0002:00537a90 ?EffectEventPlay@Broc@@YAHABVstring@1@ABUvector@1@1@Z 00D26F90 f i mp_util_wad.o	VERIFIED: IDA 0x00937A90 forwards script, position, facing, false, and zero notify/flags to mEffectEventPlayNonEnt
