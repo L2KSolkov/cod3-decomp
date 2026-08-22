@@ -14253,9 +14253,10 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
 // WarnPlayerAboutInactiveFlag - ea: 0x97D110
 void WarnPlayerAboutInactiveFlag(Broc::entity self) {
     *mp_util_wad::GetEE_lastTouch(self) = 0;
+    Broc::bbool alreadyPlayedVO(false);
     for (;;) {
-        Broc::bint i(0);
         Broc::bbool still_touching(false);
+        Broc::bint i(0);
         while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
             Broc::bint state;
             mp_util_wad::entity_get_playerState(&state, self);
@@ -14264,14 +14265,49 @@ void WarnPlayerAboutInactiveFlag(Broc::entity self) {
                 Broc::entity area =
                     mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
                 Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-                if (Broc::IsTouching(&self, &trigger))
+                if (Broc::IsTouching(&self, &trigger) &&
+                    !Broc::Code_IsInVehicle(self))
                     still_touching = true;
             }
             i = (int)i + 1;
         }
+
         if (!(bool)still_touching)
-            break;
-        Broc::wait(0.1f);
+            alreadyPlayedVO = false;
+        if ((bool)still_touching) {
+            if ((int)*mp_util_wad::GetEE_lastTouch(self) == 0) {
+                Broc::bint now;
+                Broc::GetTime(&now);
+                *mp_util_wad::GetEE_lastTouch(self) = now;
+            }
+
+            Broc::bint now;
+            Broc::GetTime(&now);
+            if ((int)*mp_util_wad::GetEE_lastTouch(self) + 10000 <
+                (int)now) {
+                Broc::SetActionHint((int)0x6B01697Eu,
+                                    Broc::GetPlayerIndex(self));
+                if (!(bool)alreadyPlayedVO) {
+                    Broc::string team;
+                    mp_util_wad::entity_get_team(&team, self);
+                    if (team == "allies") {
+                        Broc::string name("MP_WAR_WrongPos_Indiv_Allies");
+                        Broc::SoundPlay(name, 1.0f);
+                        name.~string();
+                    } else {
+                        Broc::string name("MP_WAR_WrongPos_Indiv_Axis");
+                        Broc::SoundPlay(name, 1.0f);
+                        name.~string();
+                    }
+                    team.~string();
+                    alreadyPlayedVO = true;
+                }
+            }
+        } else if ((int)*mp_util_wad::GetEE_lastTouch(self) > 0) {
+            *mp_util_wad::GetEE_lastTouch(self) = 0;
+            Broc::SetActionHint(-1, Broc::GetPlayerIndex(self));
+        }
+        Broc::wait(1.0f);
     }
 }
 
