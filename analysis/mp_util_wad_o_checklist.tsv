@@ -486,7 +486,7 @@ index	status	map_line
 485	VERIFIED	0002:0054c380 ?GetTimeTillNextRound@_mp_common@@YA?AUbint@@XZ 00D3B880 f mp_util_wad.o	VERIFIED: IDA matches level round-over handling and next-round time arithmetic
 486	VERIFIED	0002:0054c4a0 ?GetWinningTeam@_mp_common@@YA?AVstring@Broc@@XZ 00D3B9A0 f mp_util_wad.o	VERIFIED: IDA matches team-score comparison and tie-break behavior
 487	FIXED	0002:0054c9f0 ?Code_GetPlayerStat@Broc@@YAFVentity@1@I@Z 00D3BEF0 f i mp_util_wad.o	FIXED: added the IDA-matching __int16 wrapper and BrocAPI mGetPlayerStat slot at +0x330
-488	PORTED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o	PORTED: replaced the empty body with IDA 0x0094CA20 cvar-gated allies/axis spawn-box rendering (source commit 3000a081)
+488	FIXED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o	FIXED: corrected IDA 0x0094CA20 HashStr construction, origin_struct::Get reads, and bint::operator++ sequencing for both allies and axis spawn-box passes (source commit dbb8cdc2)
 489	VERIFIED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	VERIFIED: IDA 0x0094CD50 matches the existing min/max/color/alpha forward to mDebugRenderBox
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
 491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
