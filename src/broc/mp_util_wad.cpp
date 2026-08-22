@@ -4828,7 +4828,7 @@ void WaitForNoTouchFlag(Broc::entity toucher);
 void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y);
 void CallbackDebugRender();
 void* main__functor(Broc::entity self);
-void* StartGame__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
 void* WaitThenPickFlagToLaunch__functor(Broc::entity self,
                                         Broc::bfloat wait_time,
@@ -11225,7 +11225,7 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
