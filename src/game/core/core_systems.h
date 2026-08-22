@@ -1195,10 +1195,14 @@ static_assert(sizeof(DbField) == 0x4, "DbField size mismatch");
 class DbRow {
 public:
     int16_t*  mValueRow;     // +0x00
-    void*     mTable;        // +0x04 (DbTable*)
+    DbTable*  mTable;        // +0x04
     int16_t   mRowIndex;     // +0x08
     int16_t   mColUsedNum;   // +0x0A
     int16_t GetColUsedNum() const;
+    template <typename T>
+    const T* GetFieldValuePtr(uint16_t id) const;
+    template <typename T>
+    T GetFieldValue(uint16_t id, T defalt) const;
 };
 static_assert(sizeof(DbRow) == 0xC, "DbRow size mismatch");
 
@@ -1268,6 +1272,87 @@ public:
     int16_t GetColumnIndex(uint16_t columnId) const;
 };
 static_assert(sizeof(DbTable) == 0x34, "DbTable size mismatch");
+
+template <>
+inline const InplaceString*
+DbRow::GetFieldValuePtr<InplaceString>(uint16_t id) const
+{
+    int column_index = mTable->GetColumnIndex(id);
+    uint16_t column_index16 = (uint16_t)column_index;
+    if (column_index == -1)
+        return nullptr;
+    int row_id = mValueRow[column_index];
+    if (row_id == -1)
+        return nullptr;
+    if ((column_index & 0xFFFF) != column_index)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 525;
+        AeAssert::gCurrentExpr = "((colIdx)&0xFFFF) == (colIdx)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    DbColumnType<InplaceString>* column =
+        reinterpret_cast<DbColumnType<InplaceString>*>(
+            mTable->mColumns[column_index16]);
+    if ((row_id & 0xFFFF) != row_id)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 528;
+        AeAssert::gCurrentExpr = "((row_id)&0xFFFF) == (row_id)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    return (*column)[(uint16_t)row_id];
+}
+
+template <>
+inline const float* DbRow::GetFieldValuePtr<float>(uint16_t id) const
+{
+    int column_index = mTable->GetColumnIndex(id);
+    uint16_t column_index16 = (uint16_t)column_index;
+    if (column_index == -1)
+        return nullptr;
+    int row_id = mValueRow[column_index];
+    if (row_id == -1)
+        return nullptr;
+    if ((column_index & 0xFFFF) != column_index)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 525;
+        AeAssert::gCurrentExpr = "((colIdx)&0xFFFF) == (colIdx)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    DbColumnType<float>* column =
+        reinterpret_cast<DbColumnType<float>*>(
+            mTable->mColumns[column_index16]);
+    if ((row_id & 0xFFFF) != row_id)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 528;
+        AeAssert::gCurrentExpr = "((row_id)&0xFFFF) == (row_id)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    return (*column)[(uint16_t)row_id];
+}
+
+template <>
+inline const char* DbRow::GetFieldValue<const char*>(
+    uint16_t id, const char* defalt) const
+{
+    const InplaceString* field_value = GetFieldValuePtr<InplaceString>(id);
+    return field_value != nullptr ? field_value->mStr : defalt;
+}
 
 class DbGraphNode {
 public:
