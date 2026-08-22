@@ -826,6 +826,7 @@ struct bint {
     bint(const bfloat& rhs);
     operator int() const;
     int operator++();
+    int operator--();
     void AssertDefined() const {}
     int operator*=(int rhs);
     int operator=(float rhs);  // ea: 0x9540F0
@@ -1233,7 +1234,11 @@ struct BrocAPI {
     void (*mSetNormalHealth)(unsigned int, float);        // +0x6F4
     void (*mDoDamage)(unsigned int, float, const Broc::vector*, hitLocation_t); // +0x6F8
     void (*mSetTakeDamage)(unsigned int, int);            // +0x6FC
-    char _pad700[0x738 - 0x700];                          // +0x700
+    void (*mInvulnerableForTime)(unsigned int, float);    // +0x700
+    bool (*mIsEntityInvulnerable)(unsigned int);          // +0x704
+    void (*mSetAlwaysRender)(unsigned int, int);          // +0x708
+    void (*mShow)(unsigned int);                          // +0x70C
+    char _pad710[0x738 - 0x710];                          // +0x710
     void (*mSetOwner)(unsigned int, unsigned int);        // +0x738
     char _pad73C[0x838 - 0x73C];                          // +0x73C
     void (*mLaunch)(unsigned int, const Broc::vector*);   // +0x838
@@ -1387,6 +1392,7 @@ Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
                     Broc::vector* maxs, int iSpawnFlags, TPakInfo pakInfo);
 void LinkTo(Broc::entity* e, Broc::entity* pe);
 void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
+void Show(Broc::entity* e);
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
             float accTime, float decTime);
 int EffectEventPlay(Broc::entity* e, const Broc::string* script);

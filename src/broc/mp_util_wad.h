@@ -45,6 +45,9 @@ struct LocalFields {
             const int& operator=(const int& rhs);
             ::bint& GetRef();
         };
+        struct capAllowedTeam_struct {
+            const int& operator=(const int& rhs);
+        };
         struct holder_struct {
             Broc::entity& GetRef();
         };
@@ -66,6 +69,7 @@ struct LocalFields {
         __unnamed::trigger_struct flagEnd;
         __unnamed::capStatus_struct capStatus;
         __unnamed::capTeam_struct capTeam;
+        __unnamed::capAllowedTeam_struct capAllowedTeam;
         __unnamed::holder_struct holder;
         __unnamed::home_position_struct home_position;
         __unnamed::home_angles_struct home_angles;

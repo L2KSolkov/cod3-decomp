@@ -2841,6 +2841,11 @@ void SetModel(Broc::entity* e, const Broc::string* modelName, int whichPak) {
     gBrocAPI.mSetModel(handle, modelName, (TPakInfo)whichPak);
 }
 
+// Broc::Show - gBrocAPI mShow forwarding wrapper.
+void Show(Broc::entity* e) {
+    gBrocAPI.mShow(e->GetHandle());
+}
+
 // Broc::Code_DropItem - ea: 0x950B10
 void Code_DropItem(int itemType, int netID, const Broc::vector* position,
                    const Broc::vector* angles,
@@ -3106,6 +3111,12 @@ bint::operator int() const {
 int bint::operator++() {
     AssertDefined();
     return mVal++;
+}
+
+// bint::operator--() - ea: 0x97D020
+int bint::operator--() {
+    AssertDefined();
+    return mVal--;
 }
 
 // bfloat::bfloat(long double) - ea: 0x9430C0
@@ -4698,6 +4709,17 @@ mp_util_wad::LocalFields::__unnamed::capTeam_struct::operator=(
     return ee->GetRef<::bint>(0xAF35F29Bu);
 }
 
+// capAllowedTeam_struct::operator= - ea: 0x97BB10
+const int&
+mp_util_wad::LocalFields::__unnamed::capAllowedTeam_struct::operator=(
+    const int& rhs) {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    ::bint value(rhs);
+    ee->SetVal<::bint>(0xF430CD43u, value);
+    return rhs;
+}
+
 // capStatus_struct::GetRef - ea: 0x978330
 ::bfloat& mp_util_wad::LocalFields::__unnamed::capStatus_struct::GetRef() {
     Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
@@ -5014,6 +5036,8 @@ namespace _mp_ctf { void* main__functor(Broc::entity self); }
 namespace _mp_scf { void* main__functor(Broc::entity self); }
 namespace _mp_war { void* main__functor(Broc::entity self); }
 namespace _mp_war {
+
+static ::bfloat lWARObjectiveHeight(125.0f);
 Broc::vector* vLerp(Broc::vector* result, Broc::vector a, Broc::vector b,
                     Broc::bfloat t);
 void main(Broc::entity self);
@@ -5055,8 +5079,8 @@ void WAR_Init(Broc::entity self);
 void WAR_FlagUpdate(Broc::entity self);
 void WAR_TouchFlag(Broc::entity self);
     ::bfloat* GetCapSpeed(::bfloat* result, ::bint guysCapping);
-void UpdateAllowedCap(Broc::entity flag);
-void AllowCap(Broc::entity flag, Broc::bint team);
+void UpdateAllowedCap();
+void AllowCap(::bint team, int flag_id);
 void WAR_InitFlag(Broc::entity self, Broc::bint flag_id);
 int SortMarkers();
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
@@ -13518,13 +13542,50 @@ void WAR_TouchFlag(Broc::entity self) {
 }
 
 // UpdateAllowedCap - ea: 0x97B640
-void UpdateAllowedCap(Broc::entity flag) {
-    (void)flag;
+void UpdateAllowedCap() {
+    ::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        if (i == (int)mp_util_wad::pLevel->warIndex) {
+            int flagId = (int)i;
+            ::bint height(0);
+            AllowCap(height, flagId);
+            Broc::string pszString("flag");
+            Broc::string state("i_objective_c");
+            Broc::entity area =
+                mp_util_wad::pLevel->warAreas[(unsigned int)flagId];
+            Broc::vector origin;
+            Broc::GetOrigin(&origin, &area);
+            ObjectiveAdd(flagId, state, pszString, origin,
+                         (float)lWARObjectiveHeight, -1);
+        } else {
+            int flagId = (int)i;
+            ::bint height(-999);
+            AllowCap(height, flagId);
+            ObjectiveDelete(flagId, -1);
+        }
+        ++i;
+    }
 }
 
 // AllowCap - ea: 0x97B850
-void AllowCap(Broc::entity flag, Broc::bint team) {
-    (void)flag; (void)team;
+void AllowCap(::bint team, int flag_id) {
+    int rhs = (int)team;
+    Broc::entity& area =
+        mp_util_wad::pLevel->warAreas[(unsigned int)flag_id];
+    Broc::entity& trigger = area->flagEnd.GetRef();
+    trigger->capAllowedTeam = rhs;
+    int rhs2 = (int)team;
+    area->capAllowedTeam = rhs2;
+    if (team == -999) {
+        ObjectiveDelete(flag_id, -1);
+    } else {
+        Broc::string modelName("p_mp_dom_flag_hanging_nt");
+        Broc::entity& flag = trigger->flag.GetRef();
+        Broc::SetModel(&flag, &modelName, INVALID_PAK_INFO);
+        Broc::Show(&flag);
+        trigger->capStatus = 0.0f;
+        trigger->capTeam = 0;
+    }
 }
 
 // WAR_InitFlag - ea: 0x97BB60
