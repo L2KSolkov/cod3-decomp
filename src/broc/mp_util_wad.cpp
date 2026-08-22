@@ -12848,7 +12848,95 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
 
 // CallbackDebugRender - ea: 0x96C140
 void CallbackDebugRender() {
-    (void)0;
+    _mp_common::CallbackDebugRender();
+    if (Broc::GetCvarInt("mp_debugrender") != 1)
+        return;
+
+    Broc::string temp((const char*)NULL);
+    Broc::bint x(40);
+    Broc::bint y(70);
+    Broc::bint y_inc(20);
+    Broc::bint i(0);
+    Broc::vector green(0.0f, 1.0f, 0.0f);
+
+    while ((int)i < Broc::size(mp_util_wad::pLevel->scfFlags)) {
+        Broc::entity flag = mp_util_wad::pLevel->scfFlags[(unsigned int)(int)i];
+        if (Broc::IsDefined(flag)) {
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(flag);
+            Broc::vector triggerOrigin;
+            mp_util_wad::entity_get_origin(&triggerOrigin, trigger);
+            Broc::Code_DebugRenderSphere(&triggerOrigin, 10.0f, &green, 1.0f);
+            Broc::Code_DebugRenderEntityBBox(trigger, &green, 0.4f);
+            RenderFlagInfo(flag, x, y);
+            y += (int)y_inc;
+        }
+        ++i;
+    }
+
+    if (Broc::IsDefined(mp_util_wad::pLevel->base_allies)) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin,
+                                       mp_util_wad::pLevel->base_allies);
+        Broc::Code_DebugRenderSphere(&origin, 10.0f, &green, 1.0f);
+        Broc::Code_DebugRenderEntityBBox(mp_util_wad::pLevel->base_allies,
+                                         &green, 0.4f);
+    }
+
+    Broc::vector red(1.0f, 0.0f, 0.0f);
+    if (Broc::IsDefined(mp_util_wad::pLevel->base_axis)) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin,
+                                       mp_util_wad::pLevel->base_axis);
+        Broc::Code_DebugRenderSphere(&origin, 10.0f, &red, 1.0f);
+        Broc::Code_DebugRenderEntityBBox(mp_util_wad::pLevel->base_axis,
+                                         &red, 0.4f);
+    }
+
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint playerIndex(0);
+    while ((int)playerIndex < Broc::size(players)) {
+        Broc::entity player = players[(unsigned int)(int)playerIndex];
+        temp = Broc::string(playerIndex);
+        temp += " Name: ";
+        temp += Broc::Code_GetPlayerName(player);
+        temp += " State: ";
+
+        Broc::bint playerState;
+        mp_util_wad::entity_get_playerState(&playerState, player);
+        switch ((int)playerState) {
+        case 0: temp += " JOINING "; break;
+        case 1: temp += " SPECTATING "; break;
+        case 2: temp += " INTERMISSION "; break;
+        case 3: temp += " PLAYING "; break;
+        case 4: temp += " CRITICAL "; break;
+        case 5: temp += " DEAD "; break;
+        default: break;
+        }
+
+        temp += " Flag: ";
+        Broc::bbool hasHolder;
+        mp_util_wad::IsEEDefined_holder(&hasHolder, player);
+        if ((bool)hasHolder) {
+            temp += "true";
+            Broc::entity holder = *mp_util_wad::GetEE_holder(player);
+            Broc::bbool holderDefined;
+            mp_util_wad::IsEEDefined_holder(&holderDefined, holder);
+            if (!(bool)holderDefined ||
+                *mp_util_wad::GetEE_holder(holder) != player)
+                temp += " Flag IS NOT CORRECTLY CONNECTED TO THE PLAYER";
+        } else {
+            temp += "false";
+        }
+
+        temp += " Icon: ";
+        temp += mp_util_wad::entity_get_ctf_has_flag(player) != 0
+                    ? "true"
+                    : "false";
+        Broc::Code_DebugRenderText(temp.c_str(), (int)x, (int)y);
+        y += (int)y_inc;
+        ++playerIndex;
+    }
 }
 
 // ObjectiveUpdater - ea: 0x965F90
