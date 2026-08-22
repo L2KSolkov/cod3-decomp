@@ -79,15 +79,17 @@ AeThreadFunctor* PlaySound__functor(Broc::entity self, Broc::string sound,
 AeThreadFunctor* PlaySoundAtLocation__functor(Broc::entity self,
                                                Broc::string sound,
                                                Broc::vector position);
-void* PlayTeamDialog__functor(Broc::entity self, Broc::string team,
-                              Broc::string sound, Broc::bfloat delay);
+AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>*
+PlayTeamDialog__functor(Broc::entity self, Broc::string team,
+                        Broc::string sound, Broc::bfloat delay);
 void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
                               Broc::string primaryteamsound,
                               Broc::string secondaryteamsound,
                               Broc::bfloat delay);
-void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
-                             Broc::string teamsound,
-                             Broc::string otherteamsound);
+AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>*
+PlayTeamSound__functor(Broc::entity self, Broc::string team,
+                       Broc::string teamsound,
+                       Broc::string otherteamsound);
 AeThreadFunctor* player_dying_sounds__functor(Broc::entity player);
 void* audio_crossfade_wait__functor(Broc::entity self);
 void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name);
@@ -193,7 +195,7 @@ AeThreadFunctor* AddArtilleryObjective__functor(Broc::entity self,
                                                 Broc::vector position);
 AeThreadFunctor* NewHost__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* LocalPlayerIntermission__functor(Broc::entity player);
-void* RunFrame__functor(Broc::entity selfLevel);
+AeThreadFunctor1<Broc::entity>* RunFrame__functor(Broc::entity selfLevel);
 }
 
 namespace mp_util_wad {
@@ -4852,8 +4854,8 @@ void CallbackDebugRender();
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                             const Broc::string* team);
 void* main__functor(Broc::entity self);
-void* StartGame__functor(Broc::entity self);
-void* FlagThreadLauncher__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self);
 void* SwitchToSecondarySpawns__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
 void* CompassUnderlay__functor(Broc::entity p);
@@ -8383,10 +8385,11 @@ AeThreadFunctor* PlaySoundAtLocation__functor(Broc::entity self,
     sound.~string();
     return result;
 }
-void* PlayTeamDialog__functor(Broc::entity self, Broc::string team,
-                              Broc::string sound, Broc::bfloat delay) {
+AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>*
+PlayTeamDialog__functor(Broc::entity self, Broc::string team,
+                        Broc::string sound, Broc::bfloat delay) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>));
-    void* result = NULL;
+    AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>* result = NULL;
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>(PlayTeamDialog, self, team, sound, delay);
     team.~string();
@@ -8406,11 +8409,12 @@ void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
     secondaryteamsound.~string();
     return result;
 }
-void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
-                             Broc::string teamsound,
-                             Broc::string otherteamsound) {
+AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>*
+PlayTeamSound__functor(Broc::entity self, Broc::string team,
+                       Broc::string teamsound,
+                       Broc::string otherteamsound) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>));
-    void* result = NULL;
+    AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>* result = NULL;
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>(PlayTeamSound, self, team, teamsound, otherteamsound);
     team.~string();
@@ -10453,13 +10457,13 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
 }
-void* FlagThreadLauncher__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* FlagThreadLauncher__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -14350,7 +14354,7 @@ AeThreadFunctor1<Broc::entity>* LocalPlayerIntermission__functor(Broc::entity pl
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(LocalPlayerIntermission, player);
 }
-void* RunFrame__functor(Broc::entity selfLevel) {
+AeThreadFunctor1<Broc::entity>* RunFrame__functor(Broc::entity selfLevel) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
