@@ -15460,7 +15460,7 @@ void WAR_FlagUpdate(Broc::entity self) {
             moveTo = vLerp(&moveTo, start, end, Broc::bfloat(capStatus))[0];
         }
         Broc::entity flagEntity = *mp_util_wad::GetEE_flag(self);
-        Broc::MoveTo(&flagEntity, &moveTo, 0.1f, 0.1f, 0.0f);
+        Broc::MoveTo(&flagEntity, &moveTo, 0.05f, 0.05f, 0.0f);
 
         if (movingOnItsOwn) {
             if (capStatus > 0.01f) {
