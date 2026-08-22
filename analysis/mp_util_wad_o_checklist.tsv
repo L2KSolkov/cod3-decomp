@@ -718,7 +718,7 @@ index	status	map_line
 717	FIXED	0002:00565a00 ?StartGame__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D54F00 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor1<Broc::entity>* and constructor path at 0x00965A00
 718	FIXED	0002:00565aa0 ?StartGame@_mp_scf@@YAXVentity@Broc@@@Z 00D54FA0 f mp_util_wad.o	FIXED: IDA 0x00965AA0 copies pLevel->_base.entity (or null) into RunFrame__functor
 719	FIXED	0002:00565b60 ?SetupRound@_mp_scf@@YAXXZ 00D55060 f mp_util_wad.o	FIXED: IDA 0x00965B60 copies pLevel->_base.entity (or null) into WaitThenPickFlagToLaunch__functor
-720	PORTED	0002:00565eb0 ?WaitThenPickFlagToLaunch__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubfloat@@PBD@Z 00D553B0 f i mp_util_wad.o
+720	FIXED	0002:00565eb0 ?WaitThenPickFlagToLaunch__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubfloat@@PBD@Z 00D553B0 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor3<Broc::entity,bfloat,const char*>* and 0x14-byte constructor path at 0x00965EB0
 721	VERIFIED	0002:00565f50 ?IsFlagAlive@_mp_scf@@YAHVentity@Broc@@@Z 00D55450 f mp_util_wad.o
 722	VERIFIED	0002:00565f90 ?ObjectiveUpdater@_mp_scf@@YAXVentity@Broc@@@Z 00D55490 f mp_util_wad.o
 723	VERIFIED	0002:005670f0 ?CallbackAreaCaptured@_mp_scf@@YAXHH@Z 00D565F0 f mp_util_wad.o
