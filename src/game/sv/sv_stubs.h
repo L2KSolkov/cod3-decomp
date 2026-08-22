@@ -738,6 +738,7 @@ struct SmokeGrenadeInfoList {
 class SmokeGrenadeMgr {
 public:
     static void* operator new(size_t size, void* p);
+    SmokeGrenadeMgr();  // ea: 0x004E8C50
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static SmokeGrenadeMgr* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
     static SmokeGrenadeMgr* CreateInst();  // ?CreateInst@SmokeGrenadeMgr@@SAPAV1@XZ

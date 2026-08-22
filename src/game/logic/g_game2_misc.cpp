@@ -2130,6 +2130,14 @@ void SplineMgr::UnloadBank(int pakId)
     mList[v4].file = nullptr;
 }
 
+// ea: 0x004E8C50
+SmokeGrenadeMgr::SmokeGrenadeMgr()
+{
+    mSmokeGrenadeInfoList.mElements = nullptr;
+    mSmokeGrenadeInfoList.mCapacity = 0;
+    mSmokeGrenadeInfoList.mSize = 0;
+}
+
 // ea: 0x004E9410
 SmokeGrenadeMgr* SmokeGrenadeMgr::CreateInst()
 {
