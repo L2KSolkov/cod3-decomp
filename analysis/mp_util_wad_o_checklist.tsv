@@ -723,7 +723,7 @@ index	status	map_line
 722	VERIFIED	0002:00565f90 ?ObjectiveUpdater@_mp_scf@@YAXVentity@Broc@@@Z 00D55490 f mp_util_wad.o
 723	VERIFIED	0002:005670f0 ?CallbackAreaCaptured@_mp_scf@@YAXHH@Z 00D565F0 f mp_util_wad.o
 724	FIXED	0002:00567930 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11Ubfloat@@@Z 00D56E30 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor5<entity,string,string,string,bfloat>* and 0x1C-byte construction/destruction path at 0x00967930
-725	PORTED	0002:00567a20 ?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z 00D56F20 f mp_util_wad.o
+725	VERIFIED	0002:00567a20 ?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z 00D56F20 f mp_util_wad.o	VERIFIED: matched IDA control flow, debug string, roundStarted reset, 4.0-second wait, and Code_NextRound(false) at 0x00967A20
 726	VERIFIED	0002:00567a80 ?CallbackPlayerSpawn@_mp_scf@@YAXVentity@Broc@@H@Z 00D56F80 f mp_util_wad.o
 727	PORTED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o	PORTED: added the IDA-backed reverse string comparison wrapper forwarding to operator==(string,const char*) at 0x00967D90
 728	VERIFIED	0002:00567dc0 ?CallbackHostMigrated@_mp_scf@@YAXXZ 00D572C0 f mp_util_wad.o
