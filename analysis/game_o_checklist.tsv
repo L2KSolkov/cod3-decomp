@@ -892,24 +892,24 @@ index	status	map_line
 891	PORTED	0002:0025e950 ?set_size@?$ae_sized_array@G$0BAA@@@QAEXH@Z 00A4DE50 f i game.o
 892	FIXED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o	IDA: existing helper zeroed the unused tail; fixed to zero exactly the first iSize elements as in the reference loop.
 893	PORTED	0002:0025e9d0 ?destroy_all@?$ae_vector@USCheckpointGameVar@@@@AAEXXZ 00A4DED0 f i game.o
-894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o
-895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o
-896	PORTED	0002:0025ea30 ?clear@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF30 f i game.o
-897	PORTED	0002:0025ea50 ?validate@?$reserved_dlist@VCurveEffectListElem@@@@QBEXXZ 00A4DF50 f i game.o
-898	PORTED	0002:0025ea60 ?pop@dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF60 f i game.o
-899	PORTED	0002:0025ea80 ?node_to_object@?$reserved_dlist@VCurve@@@@SAPAVCurve@@PAUdlist_node@1@@Z 00A4DF80 f i game.o
-900	PORTED	0002:0025ea90 ?clear@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DF90 f i game.o
-901	PORTED	0002:0025eab0 ?validate@?$reserved_dlist@VCurve@@@@QBEXXZ 00A4DFB0 f i game.o
-902	PORTED	0002:0025eac0 ?pop@dlist_node@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DFC0 f i game.o
-903	PORTED	0002:0025eae0 ?node_to_object@?$reserved_dlist@VCurveEvalFunc@@@@SAPAVCurveEvalFunc@@PAUdlist_node@1@@Z 00A4DFE0 f i game.o
-904	PORTED	0002:0025eaf0 ?clear@?$reserved_dlist@VCurveEvalFunc@@@@QAEXXZ 00A4DFF0 f i game.o
-905	PORTED	0002:0025eb10 ?validate@?$reserved_dlist@VCurveEvalFunc@@@@QBEXXZ 00A4E010 f i game.o
-906	PORTED	0002:0025eb20 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAUdlist_node@1@0@Z 00A4E020 f i game.o
-907	PORTED	0002:0025eb40 ?compare@iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV12@@Z 00A4E040 f i game.o
-908	PORTED	0002:0025eb60 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAUdlist_node@1@0@Z 00A4E060 f i game.o
-909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o
-910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o
-911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o
+894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o	IDA: stores the supplied ushort pointer in m_ptr; existing iterator ctor matches.
+895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
+896	PORTED	0002:0025ea30 ?clear@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF30 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
+897	PORTED	0002:0025ea50 ?validate@?$reserved_dlist@VCurveEffectListElem@@@@QBEXXZ 00A4DF50 f i game.o	IDA: empty body; generic validate matches.
+898	PORTED	0002:0025ea60 ?pop@dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF60 f i game.o	IDA: relinks next.prev and prev.next; generic node pop matches.
+899	PORTED	0002:0025ea80 ?node_to_object@?$reserved_dlist@VCurve@@@@SAPAVCurve@@PAUdlist_node@1@@Z 00A4DF80 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
+900	PORTED	0002:0025ea90 ?clear@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DF90 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
+901	PORTED	0002:0025eab0 ?validate@?$reserved_dlist@VCurve@@@@QBEXXZ 00A4DFB0 f i game.o	IDA: empty body; generic validate matches.
+902	PORTED	0002:0025eac0 ?pop@dlist_node@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DFC0 f i game.o	IDA: relinks next.prev and prev.next; generic node pop matches.
+903	PORTED	0002:0025eae0 ?node_to_object@?$reserved_dlist@VCurveEvalFunc@@@@SAPAVCurveEvalFunc@@PAUdlist_node@1@@Z 00A4DFE0 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
+904	PORTED	0002:0025eaf0 ?clear@?$reserved_dlist@VCurveEvalFunc@@@@QAEXXZ 00A4DFF0 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
+905	PORTED	0002:0025eb10 ?validate@?$reserved_dlist@VCurveEvalFunc@@@@QBEXXZ 00A4E010 f i game.o	IDA: empty body; generic validate matches.
+906	PORTED	0002:0025eb20 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAUdlist_node@1@0@Z 00A4E020 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
+907	PORTED	0002:0025eb40 ?compare@iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV12@@Z 00A4E040 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
+908	PORTED	0002:0025eb60 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAUdlist_node@1@0@Z 00A4E060 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
+909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
+910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
+911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
 912	SKIPPED	0002:0025ebe0 ?Deref@?$IVPointer@VGdbFileSet@@@@ABEPAVGdbFileSet@@XZ 00A4E0E0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	PORTED	0002:0025ec00 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@HH@Z 00A4E100 f i game.o
 914	PORTED	0002:0025ec30 ?set_size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXH@Z 00A4E130 f i game.o
