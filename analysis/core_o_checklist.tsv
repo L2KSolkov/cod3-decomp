@@ -751,7 +751,7 @@ index	status	map_line
 750	SKIPPED	0002:000dd8f0 ??_GnalHeap@@UAEPAXI@Z 008CCDF0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 751	VERIFIED	0002:000dd920 ??2GameSettings@@SAPAXIPAX@Z 008CCE20 f i core.o	VERIFIED: existing GameSettings placement operator new matches IDA 0x004DD920
 752	VERIFIED	0002:000dd930 ?CreateInst@GameSettings@@SAXXZ 008CCE30 f i core.o VERIFIED: existing CreateInst body matches IDA
-753	PORTED	0002:000dda30 ?DeleteInst@GameSettings@@SAXXZ 008CCF30 f i core.o	PORTED: added IDA 0x004DDA30 singleton assertion, delete, and nulling path; source commit 1e5ee518
+753	VERIFIED	0002:000dda30 ?DeleteInst@GameSettings@@SAXXZ 008CCF30 f i core.o	VERIFIED: IDA null assertion, deleting-destructor call, and final singleton reset match
 754	VERIFIED	0002:000ddab0 ?AddTriangleResponse@DialogMenu@@QAEXP6AXH@Z@Z 008CCFB0 f i core.o	VERIFIED: existing callback assignment matches IDA 0x004DDAB0
 755	VERIFIED	0002:000ddac0 ?GetActiveLayer@DialogMenuSystem@@QAEPAVDialogMenu@@XZ 008CCFC0 f i core.o	VERIFIED: existing GetActiveLayer mapping matches IDA 0x004DDAC0
 756	VERIFIED	0002:000ddae0 ?TriangleResponseNone@DialogMenuSystem@@SAXH@Z 008CCFE0 f i core.o	VERIFIED: existing empty helper matches IDA 0x004DDAE0
