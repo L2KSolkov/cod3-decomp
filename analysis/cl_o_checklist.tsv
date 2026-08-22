@@ -27,7 +27,7 @@ index	status	map_line
 26	VERIFIED	0002:001288a0 ?CL_AddCgameCommand@@YAXPBDP6AXXZ@Z 00917DA0 f cl.o
 27	PORTED	0002:001288b0 ?CL_CM_LoadMap@@YAXPBD@Z 00917DB0 f cl.o PORTED: IDA-verified intentional empty function
 28	VERIFIED	0002:001288c0 ?CL_ShutdownCGame@@YAXXZ 00917DC0 f cl.o
-29	PORTED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o PORTED: IDA-verified allocation assert, timestamp increment, and zero-wrap correction
+29	FIXED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o FIXED: restored IDA assertion metadata and defaultFileName message
 30	PORTED	0002:00128960 ?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z 00917E60 f cl.o PORTED: IDA-verified intentional empty function
 31	PORTED	0002:00128970 ?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z 00917E70 f cl.o PORTED: IDA-verified obj assert, skeleton-exists early return, 16-byte hunk allocation, and DObjCreateSkel call
 32	PORTED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o PORTED: IDA-verified allocation/object asserts, skeleton-exists early return, 16-byte hunk allocation, and DObjCreateSkel call
