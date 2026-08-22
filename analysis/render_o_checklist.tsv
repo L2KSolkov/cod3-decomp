@@ -286,7 +286,7 @@ index	status	map_line
 285	VERIFIED	0002:002c8fb0 ?AddPoint@WheelMark@@QAEXABVPosition3@math@@ABVDir3@3@MMIM@Z 00AB84B0 f render.o
 286	VERIFIED	0002:002c93f0 ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z 00AB88F0 f render.o
 287	VERIFIED	0002:002c9530 ?GetLightListForGrid@LightGridMgr@@AAEXABUTOC@LightGrid@@PAPBUGridPoint@3@PAMAAV?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@@Z 00AB8A30 f render.o
-288	VERIFIED	0002:002c9790 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z 00AB8C90 f render.o
+288	FIXED	0002:002c9790 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z 00AB8C90 f render.o  FIXED: aligned LightGridData class tag and 0x64-byte IDA layout; resolved the render symbol.
 289	VERIFIED	0002:002c9e20 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVMat44@5@2@Z 00AB9320 f render.o
 290	VERIFIED	0002:002ca2a0 ?setup_color@@YAXABVColor@@AAUnglShaderParamSet@@@Z 00AB97A0 f render.o
 291	VERIFIED	0002:002ca350 ?RenderTexturedQuad2D@DebugRender@@SAXMMMMMABVColor@@PAUnglTexture@@@Z 00AB9850 f render.o
