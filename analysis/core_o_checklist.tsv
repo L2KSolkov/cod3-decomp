@@ -803,26 +803,26 @@ index	status	map_line
 802	VERIFIED	0002:000de650 ?Q_rsqrt@@YAMM@Z 008CDB50 f i core.o VERIFIED: IDA 0x004DE650 matches the Quake inverse-square-root bit algorithm; existing source matches symbol type
 803	VERIFIED	0002:000de6a0 ?Clamp0To1@@YAMM@Z 008CDBA0 f i core.o VERIFIED: IDA 0x004DE6A0 clamps below zero, passes through [0,1], and clamps above one; existing source matches
 804	VERIFIED	0002:000de6f0 ?length@string@Broc@@QBEIXZ 008CDBF0 f i core.o VERIFIED: existing Broc::string length matches IDA
-805	PORTED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o PORTED: IDA placement allocator
+805	VERIFIED	0002:000de710 ??2InteractionController@@SAPAXIPAX@Z 008CDC10 f i core.o VERIFIED: IDA 0x004DE710 returns the placement pointer; existing source matches
 806	VERIFIED	0002:000de720 ?CreateInst@InteractionController@@SAXXZ 008CDC20 f i core.o VERIFIED: existing CreateInst matches IDA
 807	SKIPPED	0002:000de820 ??_GInteractionController@@QAEPAXI@Z 008CDD20 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-808	PORTED	0002:000de850 ??2PlayerAnimMgr@@SAPAXIPAX@Z 008CDD50 f i core.o PORTED: IDA placement allocator
+808	VERIFIED	0002:000de850 ??2PlayerAnimMgr@@SAPAXIPAX@Z 008CDD50 f i core.o VERIFIED: IDA 0x004DE850 returns the placement pointer; existing source matches
 809	VERIFIED	0002:000de860 ?CreateInst@PlayerAnimMgr@@SAXXZ 008CDD60 f i core.o VERIFIED: existing CreateInst matches IDA
 810	SKIPPED	0002:000de950 ??_GPlayerAnimMgr@@QAEPAXI@Z 008CDE50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 811	VERIFIED	0002:000de980 ?SetGamePaused@GamePause@@SAXH_N@Z 008CDE80 f i core.o
-812	PORTED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o
-813	VERIFIED	0002:000dea30 ?CreateInst@MultiplayerMgr@@SAXXZ 008CDF30 f i core.o
+812	PORTED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o PORTED: IDA 0x004DEA20 placement wrapper; source commit de0a6d0a
+813	VERIFIED	0002:000dea30 ?CreateInst@MultiplayerMgr@@SAXXZ 008CDF30 f i core.o VERIFIED: IDA CreateInst allocation, assert, constructor, and sInst path matches existing source
 814	SKIPPED	0002:000deb20 ??_GMultiplayerMgr@@QAEPAXI@Z 008CE020 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-815	PORTED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o
-816	PORTED	0002:000deb60 ??2BinFileManager@@SAPAXIPAX@Z 008CE060 f i core.o
-817	PORTED	0002:000deb70 ?CreateInst@BinFileManager@@SAXXZ 008CE070 f i core.o
+815	PORTED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o PORTED: IDA 0x004DEB50 allocator assignment; source commit ed089cfd
+816	PORTED	0002:000deb60 ??2BinFileManager@@SAPAXIPAX@Z 008CE060 f i core.o PORTED: IDA 0x004DEB60 placement wrapper; source commit 1ac715a5
+817	VERIFIED	0002:000deb70 ?CreateInst@BinFileManager@@SAXXZ 008CE070 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 818	SKIPPED	0002:000dec70 ??_GBinFileManager@@AAEPAXI@Z 008CE170 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-819	PORTED	0002:000deca0 ??2DynamicDecalMgr@@SAPAXIPAX@Z 008CE1A0 f i core.o
-820	PORTED	0002:000decb0 ?CreateInst@DynamicDecalMgr@@SAXXZ 008CE1B0 f i core.o
+819	PORTED	0002:000deca0 ??2DynamicDecalMgr@@SAPAXIPAX@Z 008CE1A0 f i core.o PORTED: IDA 0x004DECA0 placement wrapper; source commit ed6a5e48
+820	VERIFIED	0002:000decb0 ?CreateInst@DynamicDecalMgr@@SAXXZ 008CE1B0 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 821	SKIPPED	0002:000deda0 ??_GDynamicDecalMgr@@QAEPAXI@Z 008CE2A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-822	PORTED	0002:000dedd0 ??1PadAliasMgr@@QAE@XZ 008CE2D0 f i core.o
-823	PORTED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o
-824	PORTED	0002:000dedf0 ?CreateInst@PadAliasMgr@@SAXXZ 008CE2F0 f i core.o
+822	PORTED	0002:000dedd0 ??1PadAliasMgr@@QAE@XZ 008CE2D0 f i core.o PORTED: IDA 0x004DEDD0 empty destructor; source commit d862c803
+823	PORTED	0002:000dede0 ??2PadAliasMgr@@SAPAXIPAX@Z 008CE2E0 f i core.o PORTED: IDA 0x004DEDE0 placement wrapper; source commit 5b543ea2
+824	VERIFIED	0002:000dedf0 ?CreateInst@PadAliasMgr@@SAXXZ 008CE2F0 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 825	SKIPPED	0002:000deef0 ??_GPadAliasMgr@@QAEPAXI@Z 008CE3F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 826	PORTED	0002:000def20 ??0idVec3@@QAE@XZ 008CE420 f i core.o PORTED: IDA-matched default constructor
 827	PORTED	0002:000def30 ??0idVec3@@QAE@MMM@Z 008CE430 f i core.o PORTED: IDA-matched component constructor
