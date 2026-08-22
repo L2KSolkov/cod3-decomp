@@ -4513,6 +4513,13 @@ Broc::entity& mp_util_wad::LocalFields::__unnamed::holder_struct::GetRef() {
     return ee->GetRef<Broc::entity>(0xFAAE111Eu);
 }
 
+// home_position_struct::GetRef - ea: 0x969EB0
+Broc::vector& mp_util_wad::LocalFields::__unnamed::home_position_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<Broc::vector>(0xE42FE83Du);
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);

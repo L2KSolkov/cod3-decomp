@@ -33,16 +33,20 @@ struct LocalFields {
             const Broc::entity* operator=(const Broc::entity* rhs);
             Broc::entity* Get(Broc::entity* result);
         };
-        struct holder_struct {
-            Broc::entity& GetRef();
+            struct holder_struct {
+                Broc::entity& GetRef();
+            };
+            struct home_position_struct {
+                Broc::vector& GetRef();
+            };
         };
-    };
 
-    union {
-        __unnamed::trigger_struct flagEnd;
-        __unnamed::holder_struct holder;
-        unsigned char mProxyFields[4];
-    };
+        union {
+            __unnamed::trigger_struct flagEnd;
+            __unnamed::holder_struct holder;
+            __unnamed::home_position_struct home_position;
+            unsigned char mProxyFields[4];
+        };
 };
 static_assert(sizeof(LocalFields) == 0x14, "mp_util_wad::LocalFields size mismatch");
 
