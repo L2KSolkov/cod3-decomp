@@ -418,9 +418,9 @@ index	status	map_line
 417	VERIFIED	0002:00547450 ?MusicStop@@YAXXZ 00D36950 f i mp_util_wad.o	VERIFIED: IDA 0x00947450 matches the existing 0.0f forward to gBrocAPI.mMusicStop
 418	VERIFIED	0002:00547480 ?SoundStop@@YAXI@Z 00D36980 f i mp_util_wad.o	VERIFIED: IDA 0x00947480 matches the existing handle forward to gBrocAPI.mSoundStop
 419	VERIFIED	0002:005474b0 ?CheckTimeLimit@_mp_common@@YAXXZ 00D369B0 f mp_util_wad.o
-420	PORTED	0002:00547670 ??M@YA?AUbbool@@Ubfloat@@Ubint@@@Z 00D36B70 f i mp_util_wad.o	PORTED: IDA compares rhs.mVal > lhs.mVal
+420	VERIFIED	0002:00547670 ??M@YA?AUbbool@@Ubfloat@@Ubint@@@Z 00D36B70 f i mp_util_wad.o	VERIFIED: IDA 0x00947670 matches the existing bfloat/bint less-than comparison
 421	VERIFIED	0002:005476d0 ?CheckScoreLimit@_mp_common@@YAXXZ 00D36BD0 f mp_util_wad.o
-422	PORTED	0002:00547a30 ??M@YA?AUbbool@@HUbint@@@Z 00D36F30 f i mp_util_wad.o	PORTED: IDA compares lhs < rhs.mVal
+422	VERIFIED	0002:00547a30 ??M@YA?AUbbool@@HUbint@@@Z 00D36F30 f i mp_util_wad.o	VERIFIED: IDA 0x00947A30 matches the existing int/bint less-than comparison
 423	VERIFIED	0002:00547a70 ?Code_GetPlayerTotalScore@Broc@@YAHVentity@1@@Z 00D36F70 f i mp_util_wad.o
 424	VERIFIED	0002:00547aa0 ?CheckLastManStanding@_mp_common@@YAXVstring@Broc@@@Z 00D36FA0 f mp_util_wad.o
 425	FIXED	0002:00547f40 ?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z 00D37440 f mp_util_wad.o	FIXED: IDA 0x00947F40 independently reloads pLevel->_base.entity for notify and both endon paths
@@ -440,8 +440,8 @@ index	status	map_line
 439	VERIFIED	0002:005495c0 ?QuitGameThread@_mp_common@@YAXVentity@Broc@@@Z 00D38AC0 f mp_util_wad.o
 440	VERIFIED	0002:00549600 ?Code_QuitGame@Broc@@YAXXZ 00D38B00 f i mp_util_wad.o
 441	VERIFIED	0002:00549620 ?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D38B20 f mp_util_wad.o	VERIFIED: IDA control flow and arithmetic match the existing implementation
-442	PORTED	0002:00549ae0 ??D@YA?AUbint@@U0@0@Z 00D38FE0 f i mp_util_wad.o	PORTED: added global bint*bint multiplication
-443	PORTED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o	PORTED: added global int*bint multiplication
+442	VERIFIED	0002:00549ae0 ??D@YA?AUbint@@U0@0@Z 00D38FE0 f i mp_util_wad.o	VERIFIED: IDA 0x00949AE0 matches the existing global bint*bint multiplication
+443	VERIFIED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o	VERIFIED: IDA 0x00949B20 matches the existing global int*bint multiplication
 444	VERIFIED	0002:00549b60 ?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D39060 f mp_util_wad.o	VERIFIED: IDA implementation is GetTime plus 20000
 445	VERIFIED	0002:00549bb0 ?UpdateSpectateCritical@_mp_common@@YAXVentity@Broc@@@Z 00D390B0 f mp_util_wad.o
 446	VERIFIED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	VERIFIED: Existing implementation matches the IDA direct forward to gBrocAPI.mSetSpectateSeconds
