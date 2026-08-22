@@ -531,7 +531,7 @@ index	status	map_line
 530	VERIFIED	0002:00550c40 ?Launch@Broc@@YAXABVentity@1@ABUvector@1@@Z 00D40140 f i mp_util_wad.o	VERIFIED: IDA 0x00950C40 matches the existing entity-handle and velocity forward to mLaunch
 531	VERIFIED	0002:00550c70 ?EntityOff@_mp_ctf@@YAXVentity@Broc@@@Z 00D40170 f mp_util_wad.o
 532	VERIFIED	0002:00550cd0 ?CompassUnderlay@_mp_ctf@@YAXVentity@Broc@@@Z 00D401D0 f mp_util_wad.o
-533	PORTED	0002:00550f30 ?HandlePickupFlag@_mp_ctf@@YAXHVentity@Broc@@Ubbool@@1@Z 00D40430 f mp_util_wad.o
+533	PORTED	0002:00550f30 ?HandlePickupFlag@_mp_ctf@@YAXHVentity@Broc@@Ubbool@@1@Z 00D40430 f mp_util_wad.o	PORTED: replaced stub with IDA 0x00950F30/C3 flag selection, opposing-pickup, audio/dialog, weapon, objective, notification, stats, and return-state flow; source commit 166c6710
 534	VERIFIED	0002:005528e0 ?SetOwner@Broc@@YAXABVentity@1@0@Z 00D41DE0 f i mp_util_wad.o	VERIFIED: IDA 0x009528E0 matches the existing two-entity-handle forward to mSetOwner
 535	VERIFIED	0002:00552920 ?GiveWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D41E20 f i mp_util_wad.o	VERIFIED: IDA 0x00952920 matches the existing entity-handle and string forward to mGiveWeapon
 536	VERIFIED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o	VERIFIED: IDA 0x00952950 matches the existing entity-handle, string, and integer forward to mSetWeaponSlotClipAmmo
