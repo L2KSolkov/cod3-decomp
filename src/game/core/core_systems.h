@@ -259,6 +259,11 @@ struct reserved_dlist {
         dlist_node() : mNext(nullptr), mPrev(nullptr) {}
         dlist_node(dlist_node* prev, dlist_node* next)
             : mNext(next), mPrev(prev) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
+
+        void pop() {
+            mNext->mPrev = mPrev;
+            mPrev->mNext = mNext;
+        }
     };
 
     class iterator {
@@ -333,7 +338,26 @@ struct reserved_dlist {
     dlist_node* m_end;   // +0x08
     dlist_node* m_tail;  // +0x0C
 
-    bool empty() const { return m_head == &m_end; }
+    static T* node_to_object(dlist_node* node)
+    {
+        return reinterpret_cast<T*>(node);
+    }
+    static const T* node_to_object(const dlist_node* node)
+    {
+        return reinterpret_cast<const T*>(node);
+    }
+
+    bool empty() const
+    {
+        return m_head == reinterpret_cast<const dlist_node*>(&m_end);
+    }
+    void clear()
+    {
+        m_size = 0;
+        m_head = reinterpret_cast<dlist_node*>(&m_end);
+        m_end = nullptr;
+        m_tail = reinterpret_cast<dlist_node*>(&m_head);
+    }
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
 };
