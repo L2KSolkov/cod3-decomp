@@ -76,6 +76,49 @@ proxy_obj_t::proxy_obj_t(unsigned char _bi, unsigned short _oi,
 extern float sNaN;
 extern float nslGetWaveParam(nslWaveID waveID, int paramIndex,
                              float defaultValue);
+extern bool tlScratchpadLocked;
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
+
+// game.o 0x601FB0
+bool tlLockScratchpad()
+{
+    bool result = tlScratchpadLocked;
+    if (tlScratchpadLocked)
+    {
+        result = _tlAssert("c:/cod/code/tl/base/include\\tl_system.h",
+                           294, "!tlScratchpadLocked",
+                           "Scratchpad is already locked!");
+        tlScratchpadLocked = true;
+        if (result)
+            __debugbreak();
+    }
+    else
+    {
+        tlScratchpadLocked = true;
+    }
+    return result;
+}
+
+// game.o 0x602000
+bool tlUnlockScratchpad()
+{
+    bool result = tlScratchpadLocked;
+    if (tlScratchpadLocked)
+    {
+        tlScratchpadLocked = false;
+    }
+    else
+    {
+        result = _tlAssert("c:/cod/code/tl/base/include\\tl_system.h",
+                           300, "tlScratchpadLocked",
+                           "Scratchpad is already unlocked!");
+        tlScratchpadLocked = false;
+        if (result)
+            __debugbreak();
+    }
+    return result;
+}
 
 void* DestructibleBankManager::operator new(size_t, void* p)
 {
