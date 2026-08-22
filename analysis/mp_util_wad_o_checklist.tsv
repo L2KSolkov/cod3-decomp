@@ -749,7 +749,7 @@ index	status	map_line
 748	VERIFIED	0002:00569e10 ?WaitForFlagTimeOut__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59310 f i mp_util_wad.o	VERIFIED: IDA 0x00969E10 matches 12-byte allocation, null check, and WaitForFlagTimeOut functor construction
 749	VERIFIED	0002:00569eb0 ?GetRef@home_position_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D593B0 f i mp_util_wad.o	VERIFIED: IDA 0x00969EB0 matches ExtendedEntity::GetRef<vector> key 0xE42FE83D
 750	VERIFIED	0002:00569ee0 ?CallbackDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D593E0 f mp_util_wad.o
-751	VERIFIED	0002:00569f10 ?HandleDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D59410 f mp_util_wad.o
+751	PORTED	0002:00569f10 ?HandleDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D59410 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x00969F10 holder check, drop-time/velocity calculation, Code_DropItem, weapon removal, fallback weapon selection, and holder clear; source commit f11a131d
 752	VERIFIED	0002:0056a270 ?WaitForFlagTimeOut@_mp_scf@@YAXVentity@Broc@@@Z 00D59770 f mp_util_wad.o
 753	VERIFIED	0002:0056a390 ?PickupFlag@_mp_scf@@YAXVentity@Broc@@0@Z 00D59890 f mp_util_wad.o
 754	VERIFIED	0002:0056a640 ?WaitForNoTouchFlag__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59B40 f i mp_util_wad.o	VERIFIED: IDA 0x0096A640 matches 12-byte allocation, null check, and WaitForNoTouchFlag functor construction
