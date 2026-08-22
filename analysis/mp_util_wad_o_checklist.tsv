@@ -264,8 +264,8 @@ index	status	map_line
 263	VERIFIED	0002:0053ca80 ?Code_DisplayScoreBoard@Broc@@YAX_NH@Z 00D2BF80 f i mp_util_wad.o
 264	VERIFIED	0002:0053cab0 ?Code_SetShowScore@Broc@@YAX_N@Z 00D2BFB0 f i mp_util_wad.o
 265	VERIFIED	0002:0053cae0 ?Code_SetupLevelSpecificVariables@Broc@@YAXXZ 00D2BFE0 f i mp_util_wad.o
-266	PORTED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o	PORTED: IDA constructs temporary string, calls mCVarGetString, copy-constructs result, and destroys temporary
-267	PORTED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o	PORTED: IDA forwards cvar/value directly to mCVarSetString
+266	VERIFIED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o	VERIFIED: IDA 0x0093CB00 constructs a null-backed temporary, calls mCVarGetString, copy-constructs result, and destroys temporary
+267	VERIFIED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o	VERIFIED: IDA 0x0093CBA0 forwards cvar and value directly to mCVarSetString
 268	VERIFIED	0002:0053cbd0 ?main__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C0D0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_ctf::main
 269	PORTED	0002:0053cc70 ?main__functor@_mp_dm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C170 f i mp_util_wad.o	PORTED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_dm::main; previously missing
 270	VERIFIED	0002:0053cd10 ?main__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C210 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_hq::main
@@ -276,13 +276,13 @@ index	status	map_line
 275	FIXED	0002:0053d030 ?SetupGameVariables@_mp_common@@YAXXZ 00D2C530 f mp_util_wad.o	FIXED: IDA stores all cvars in Level and returns the respawnTime bint assignment result; port previously discarded that result and returned zero
 276	VERIFIED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o	VERIFIED: IDA callback registration order and team/non-team damage callback selection match the port
 277	VERIFIED	0002:0053d3b0 ?CallbackHostOptionsChanged@_mp_common@@YAXH@Z 00D2C8B0 f mp_util_wad.o
-278	PORTED	0002:0053d8e0 ??D@YA?AUbint@@U0@H@Z 00D2CDE0 f i mp_util_wad.o	PORTED: IDA uses global bint, reads lhs.mVal, multiplies by rhs, constructs and returns the result
-279	PORTED	0002:0053d920 ?Code_GetTeamScore@Broc@@YAHABVstring@1@@Z 00D2CE20 f i mp_util_wad.o	PORTED: IDA forwards the const string reference to gBrocAPI.mGetTeamScore at +0x340
-280	PORTED	0002:0053d950 ?Code_SendGameState@Broc@@YAXVentity@1@HHHH_N11HHH_NHH@Z 00D2CE50 f i mp_util_wad.o	PORTED: IDA gets the player handle and forwards all 13 state values to gBrocAPI.mSendGameState at +0x370
+278	VERIFIED	0002:0053d8e0 ??D@YA?AUbint@@U0@H@Z 00D2CDE0 f i mp_util_wad.o	VERIFIED: IDA 0x0093D8E0 converts lhs to int, multiplies by rhs, and constructs bint
+279	VERIFIED	0002:0053d920 ?Code_GetTeamScore@Broc@@YAHABVstring@1@@Z 00D2CE20 f i mp_util_wad.o	VERIFIED: IDA 0x0093D920 forwards the const string reference to mGetTeamScore
+280	VERIFIED	0002:0053d950 ?Code_SendGameState@Broc@@YAXVentity@1@HHHH_N11HHH_NHH@Z 00D2CE50 f i mp_util_wad.o	VERIFIED: IDA 0x0093D950 obtains the player handle and forwards all 13 state values in order
 281	FIXED	0002:0053d9c0 ?CallbackGameState@_mp_common@@YAXHHHHHHHHHHHHH@Z 00D2CEC0 f mp_util_wad.o	FIXED: IDA 0x0093D9C0 constructs both callback entities from pLevel->_base.entity before HandleJoinAfterRoundOver and notify
-282	PORTED	0002:0053de70 ?Code_IncTeamScore@Broc@@YAXABVstring@1@H@Z 00D2D370 f i mp_util_wad.o	PORTED: IDA forwards the const string reference and amount to gBrocAPI.mIncTeamScore at +0x33C
+282	VERIFIED	0002:0053de70 ?Code_IncTeamScore@Broc@@YAXABVstring@1@H@Z 00D2D370 f i mp_util_wad.o	VERIFIED: IDA 0x0093DE70 forwards team and amount to mIncTeamScore
 283	VERIFIED	0002:0053dea0 ?Code_DebugOut@Broc@@YAXPBD@Z 00D2D3A0 f i mp_util_wad.o
-284	PORTED	0002:0053ded0 ?SetCvar@@YAXPBDH@Z 00D2D3D0 f i mp_util_wad.o	PORTED: IDA forwards cvar and integer value to gBrocAPI.mCVarSetInt at +0x25C
+284	VERIFIED	0002:0053ded0 ?SetCvar@@YAXPBDH@Z 00D2D3D0 f i mp_util_wad.o	VERIFIED: IDA 0x0093DED0 forwards cvar and integer value to mCVarSetInt
 285	VERIFIED	0002:0053df00 ?HandleJoinAfterRoundOver__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2D400 f i mp_util_wad.o	VERIFIED: existing source matches IDA allocation of 0x10 bytes and AeThreadFunctor2<Broc::entity,bint> construction with HandleJoinAfterRoundOver
 286	VERIFIED	0002:0053dfa0 ?CallbackGameScore@_mp_common@@YAXHH@Z 00D2D4A0 f mp_util_wad.o
 287	VERIFIED	0002:0053e060 ?CallbackPlayerJoin@_mp_common@@YAXVentity@Broc@@IH@Z 00D2D560 f mp_util_wad.o	VERIFIED: existing source matches IDA local-player setup, initial game state, class/state resets, spectate/intermission branches, spawn, and max-health update
