@@ -839,34 +839,34 @@ index	status	map_line
 838	FIXED	0002:00574fa0 ?PlayCapturedSounds@_mp_war@@YAXVentity@Broc@@Ubint@@1@Z 00D644A0 f mp_util_wad.o	FIXED: replaced the stub with the IDA 0x00974FA0 capture branches, exact sound names, team dialog/team sound functors, fades, and thread creation
 839	VERIFIED	0002:00575950 ?SoundFadeOut@@YAXIM@Z 00D64E50 f i mp_util_wad.o	VERIFIED: IDA 0x00975950 forwards unsigned handle and fade duration to mSoundFadeOut
 840	FIXED	0002:00575980 ?WARScore@_mp_war@@YAXVentity@Broc@@@Z 00D64E80 f mp_util_wad.o	FIXED: corrected IDA 0x00975980 score update to read both team scores and call Code_SendGameScore with the winning-side points
-841	PORTED	0002:00575d70 ?Code_SendGameScore@Broc@@YAXHH@Z 00D65270 f i mp_util_wad.o	PORTED: added exact IDA 0x00975D70 wrapper forwarding both scores to mSendGameScore
+841	VERIFIED	0002:00575d70 ?Code_SendGameScore@Broc@@YAXHH@Z 00D65270 f i mp_util_wad.o	VERIFIED: IDA 0x00975D70 forwards both scores to mSendGameScore
 842	VERIFIED	0002:00575da0 ?GiveTeamMembersPoints@_mp_war@@YAXUvector@Broc@@Ubfloat@@Vstring@3@@Z 00D652A0 f mp_util_wad.o	VERIFIED: IDA 0x00975DA0 matches active-player filtering, distance/radius test, team comparison, stat 20 increment, and cleanup
-843	PORTED	0002:00575ff0 ??M@YA?AUbbool@@Ubfloat@@0@Z 00D654F0 f i mp_util_wad.o	PORTED: added exact IDA 0x00975FF0 comparison returning rhs.mVal > lhs.mVal
+843	VERIFIED	0002:00575ff0 ??M@YA?AUbbool@@Ubfloat@@0@Z 00D654F0 f i mp_util_wad.o	VERIFIED: IDA 0x00975FF0 returns bbool(rhs.mVal > lhs.mVal)
 844	VERIFIED	0002:00576050 ?CallbackHostMigrated@_mp_war@@YAXXZ 00D65550 f mp_util_wad.o
 845	VERIFIED	0002:00576150 ?CallbackAreaCaptured@_mp_war@@YAXHH@Z 00D65650 f mp_util_wad.o
-846	PORTED	0002:005769d0 ?ObjectiveState@@YAXHABVstring@Broc@@PBDH@Z 00D65ED0 f i mp_util_wad.o	PORTED: added exact IDA 0x009769D0 wrapper forwarding objective, state, display, and client index
+846	VERIFIED	0002:005769d0 ?ObjectiveState@@YAXHABVstring@Broc@@PBDH@Z 00D65ED0 f i mp_util_wad.o	VERIFIED: IDA 0x009769D0 forwards objective, state, display, and client index
 847	VERIFIED	0002:00576a10 ?PlayCapturedSounds__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@1@Z 00D65F10 f i mp_util_wad.o	VERIFIED: IDA 0x00976A10 matches 0x14-byte AeThreadFunctor3 allocation, null check, and constructor arguments
-848	PORTED	0002:00576ab0 ?GetRef@flag_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FB0 f i mp_util_wad.o	PORTED: added IDA 0x00976AB0 GetRef using the registered s_flagKey
-849	PORTED	0002:00576ae0 ?GetRef@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FE0 f i mp_util_wad.o	PORTED: added IDA 0x00976AE0 GetRef using key 0xF2F5EAB4; trigger Get and assignment remain separate functions
-850	PORTED	0002:00576b10 ??4capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEABMABM@Z 00D66010 f i mp_util_wad.o	PORTED: added IDA 0x00976B10 SetVal<bfloat> using key 0x53377998
-851	PORTED	0002:00576b60 ??4capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D66060 f i mp_util_wad.o	PORTED: added IDA 0x00976B60 SetVal<bint> using key 0xAF35F29B
+848	VERIFIED	0002:00576ab0 ?GetRef@flag_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FB0 f i mp_util_wad.o	VERIFIED: IDA 0x00976AB0 uses ExtendedEntity::GetRef with the registered flag key
+849	VERIFIED	0002:00576ae0 ?GetRef@trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D65FE0 f i mp_util_wad.o	VERIFIED: IDA 0x00976AE0 uses ExtendedEntity::GetRef key 0xF2F5EAB4
+850	VERIFIED	0002:00576b10 ??4capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEABMABM@Z 00D66010 f i mp_util_wad.o	VERIFIED: IDA 0x00976B10 constructs bfloat and SetVal key 0x53377998
+851	VERIFIED	0002:00576b60 ??4capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D66060 f i mp_util_wad.o	VERIFIED: IDA 0x00976B60 constructs bint and SetVal key 0xAF35F29B
 852	VERIFIED	0002:00576bb0 ?CallbackHostOptionsChanged@_mp_war@@YAXH@Z 00D660B0 f mp_util_wad.o
 853	VERIFIED	0002:00576bf0 ?CallbackGameState@_mp_war@@YAXHHHHHHHHHHHHH@Z 00D660F0 f mp_util_wad.o
 854	VERIFIED	0002:00576c50 ?CallbackPlayerKilled@_mp_war@@YAXVentity@Broc@@00HHH@Z 00D66150 f mp_util_wad.o
 855	FIXED	0002:00576cb0 ?CallbackGameStateDOM@_mp_war@@YAXHHHHH@Z 00D661B0 f mp_util_wad.o	FIXED: ported IDA 0x00976CB0 status normalization, owner/team derivation, warIndex selection, flag model updates, terminal snapping, and UpdateAllowedCap call
-856	PORTED	0002:00577460 ??Xbint@@QAEHH@Z 00D66960 f i mp_util_wad.o	PORTED: added exact IDA 0x00977460 AssertDefined, multiply, and return implementation
-857	PORTED	0002:005774a0 ??4bfloat@@QAEMN@Z 00D669A0 f i mp_util_wad.o	PORTED: added exact IDA 0x009774A0 long-double assignment and return implementation
-858	PORTED	0002:005774d0 ??M@YA?AUbbool@@Ubfloat@@H@Z 00D669D0 f i mp_util_wad.o	PORTED: added exact IDA 0x009774D0 comparison returning rhs > lhs
+856	VERIFIED	0002:00577460 ??Xbint@@QAEHH@Z 00D66960 f i mp_util_wad.o	VERIFIED: IDA 0x00977460 asserts defined, multiplies mVal, and returns it
+857	VERIFIED	0002:005774a0 ??4bfloat@@QAEMN@Z 00D669A0 f i mp_util_wad.o	VERIFIED: IDA 0x009774A0 assigns long-double input to mVal and returns it
+858	VERIFIED	0002:005774d0 ??M@YA?AUbbool@@Ubfloat@@H@Z 00D669D0 f i mp_util_wad.o	VERIFIED: IDA 0x009774D0 returns bbool(rhs > lhs.mVal)
 859	FIXED	0002:00577520 ?CallbackNextRound@_mp_war@@YAXXZ 00D66A20 f mp_util_wad.o	FIXED: corrected IDA 0x00977520 notify target from boolean pLevel test to pLevel->_base.entity or undefined entity
 860	FIXED	0002:00577590 ?SetupRound@_mp_war@@YAXXZ 00D66A90 f mp_util_wad.o	FIXED: ported IDA 0x00977590 WAR_Init thread, no-cap timer, model/objective state, flag origin, and UpdateAllowedCap sequence
 861	VERIFIED	0002:00577e70 ?WAR_Init__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67370 f i mp_util_wad.o	VERIFIED: IDA 0x00977E70 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WAR_Init constructor
 862	FIXED	0002:00577f10 ?CallbackGetFlagCount@_mp_war@@YAHXZ 00D67410 f mp_util_wad.o	FIXED: corrected IDA 0x00977F10 check from size>0 to dyn_array capacity!=0 before returning flag count
 863	VERIFIED	0002:00577f90 ?CallbackGetFlagBreatherTime@_mp_war@@YAHXZ 00D67490 f mp_util_wad.o
 864	FIXED	0002:00578020 ?CallbackGetTeamControllingFlag@_mp_war@@YAHI@Z 00D67520 f mp_util_wad.o	FIXED: matched IDA 0x00978020 flag-end capTeam lookup and -1/0/1 normalization
-865	PORTED	0002:00578110 ?GetRef@capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbint@@XZ 00D67610 f i mp_util_wad.o	PORTED: added IDA 0x00978110 GetRef using global bint and key 0xAF35F29B
+865	VERIFIED	0002:00578110 ?GetRef@capTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbint@@XZ 00D67610 f i mp_util_wad.o	VERIFIED: IDA 0x00978110 uses global bint GetRef key 0xAF35F29B
 866	FIXED	0002:00578140 ?CallbackGetFlagBeingCaptured@_mp_war@@YAHXZ 00D67640 f mp_util_wad.o	FIXED: replaced cap-status scan with IDA 0x00978140 warIndex validity check returning index or -1
 867	FIXED	0002:005781e0 ?CallbackGetTeamCapturingFlag@_mp_war@@YAHXZ 00D676E0 f mp_util_wad.o	FIXED: replaced area scan with IDA 0x009781E0 warIndex bounds check and active cap-status sign mapping
-868	PORTED	0002:00578330 ?GetRef@capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D67830 f i mp_util_wad.o	PORTED: added IDA 0x00978330 GetRef using global bfloat and key 0x53377998
+868	VERIFIED	0002:00578330 ?GetRef@capStatus_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D67830 f i mp_util_wad.o	VERIFIED: IDA 0x00978330 uses global bfloat GetRef key 0x53377998
 869	FIXED	0002:00578360 ?CallbackGetCapturingFlagPercent@_mp_war@@YAHXZ 00D67860 f mp_util_wad.o	FIXED: replaced area scan/magnitude scaling with IDA 0x00978360 active warIndex capStatus*100 result
 870	FIXED	0002:00578470 ?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z 00D67970 f mp_util_wad.o	FIXED: matched IDA 0x00978470 WAR array/index, playerState, flagEnd trigger touch, vehicle rejection, and contest-count path
 871	VERIFIED	0002:005785f0 ?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z 00D67AF0 f mp_util_wad.o	VERIFIED: IDA 0x009785F0 returns pLevel->capCount
