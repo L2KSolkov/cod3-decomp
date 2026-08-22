@@ -809,7 +809,10 @@ struct bfloat {
     bfloat(long double v);
     double operator=(long double rhs);
     operator float() const { return mVal; }
+    bool operator!=(const bfloat& rhs) const;
+    bfloat operator-() const;
     bool operator!=(float rhs) const;
+    double operator+=(float rhs);
     double operator*=(float rhs);
     void AssertDefined() const;
     bool IsDefined() const;
@@ -821,6 +824,8 @@ struct bint {
     int mVal;
     explicit bint(int v) : mVal(v) {}
     bint(const bfloat& rhs);
+    operator int() const;
+    int operator++();
     void AssertDefined() const {}
     int operator*=(int rhs);
     int operator=(float rhs);  // ea: 0x9540F0
@@ -835,6 +840,7 @@ bint operator*(bint lhs, int rhs);
 bfloat operator*(int lhs, bfloat rhs);
 bfloat operator*(bint lhs, bfloat rhs);
 bfloat operator+(bint lhs, bfloat rhs);
+bfloat operator+(bfloat lhs, bfloat rhs);
 struct bbool {
     bool mVal;
     explicit bbool(bool v) : mVal(v) {}

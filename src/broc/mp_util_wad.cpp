@@ -3096,6 +3096,18 @@ Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
 // bint::bint(const bfloat&) - ea: 0x940290
 bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
 
+// bint::operator int() - ea: 0x97D020 inline body
+bint::operator int() const {
+    AssertDefined();
+    return mVal;
+}
+
+// bint::operator++() - ea: 0x97D020 inline body
+int bint::operator++() {
+    AssertDefined();
+    return mVal++;
+}
+
 // bfloat::bfloat(long double) - ea: 0x9430C0
 bfloat::bfloat(long double rhs) : mVal((float)rhs) {}
 
@@ -3103,6 +3115,23 @@ bfloat::bfloat(long double rhs) : mVal((float)rhs) {}
 double bfloat::operator=(long double rhs) {
     mVal = (float)rhs;
     return mVal;
+}
+
+// bfloat::operator!=(bfloat) - ea: 0x97AF10
+bool bfloat::operator!=(const bfloat& rhs) const {
+    return mVal != rhs.mVal;
+}
+
+// bfloat::operator+=(float) - ea: 0x97B580 inline body
+double bfloat::operator+=(float rhs) {
+    AssertDefined();
+    mVal += rhs;
+    return mVal;
+}
+
+// bfloat::operator-() - ea: 0x97AF60
+bfloat bfloat::operator-() const {
+    return bfloat(0.0f - mVal);
 }
 
 // operator*(int, bfloat) - ea: 0x940210
@@ -3134,6 +3163,11 @@ bfloat operator+(bint lhs, bfloat rhs) {
     float lhs_value = lhs.mVal;
     float value = rhs.mVal + lhs_value;
     return bfloat(value);
+}
+
+// operator+(bfloat, bfloat) - ea: 0x97AFB0
+bfloat operator+(bfloat lhs, bfloat rhs) {
+    return bfloat(lhs.mVal + rhs.mVal);
 }
 
 // operator<(bfloat, bfloat) - ea: 0x975FF0
@@ -5020,7 +5054,7 @@ void SendFlagStates(Broc::entity player);
 void WAR_Init(Broc::entity self);
 void WAR_FlagUpdate(Broc::entity self);
 void WAR_TouchFlag(Broc::entity self);
-Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
+    ::bfloat* GetCapSpeed(::bfloat* result, ::bint guysCapping);
 void UpdateAllowedCap(Broc::entity flag);
 void AllowCap(Broc::entity flag, Broc::bint team);
 void WAR_InitFlag(Broc::entity self, Broc::bint flag_id);
@@ -13470,10 +13504,10 @@ void WAR_TouchFlag(Broc::entity self) {
 }
 
 // GetCapSpeed - ea: 0x97B580
-Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping) {
-    Broc::bfloat value(1.0f);
-    Broc::bfloat total(0.0f);
-    Broc::bint i(0);
+::bfloat* GetCapSpeed(::bfloat* result, ::bint guysCapping) {
+    ::bfloat value(1.0f);
+    ::bfloat total(0.0f);
+    ::bint i(0);
     while ((int)i < (int)guysCapping) {
         total += (float)value;
         value = (float)value * 0.75f;
