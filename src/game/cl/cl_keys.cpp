@@ -326,7 +326,7 @@ void CL_AddReliableCommand(const char* cmd)
 }
 
 // ea: 0x52CC70
-int CL_ChangeReliableCommand()
+void CL_ChangeReliableCommand()
 {
     int v0 = ((dword_F0D1F4[4882 * currCl] & 0x3F) << 7) + 19528 * currCl;
     int result = (int)strlen(&byte_F0D1FC[v0]);
@@ -334,7 +334,6 @@ int CL_ChangeReliableCommand()
         result = 254;
     byte_F0D1FC[v0 + result] = 10;
     byte_F0D1FC[v0 + result + 1] = 0;
-    return result;
 }
 
 // ea: 0x52CCC0
