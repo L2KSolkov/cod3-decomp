@@ -29,9 +29,19 @@ struct LocalFields {
     unsigned char mAnimFields[4];
 
     struct __unnamed {
+        struct flag_struct {
+            Broc::entity& GetRef();
+        };
         struct trigger_struct {
             const Broc::entity* operator=(const Broc::entity* rhs);
             Broc::entity* Get(Broc::entity* result);
+            Broc::entity& GetRef();
+        };
+        struct capStatus_struct {
+            const float& operator=(const float& rhs);
+        };
+        struct capTeam_struct {
+            const int& operator=(const int& rhs);
         };
         struct holder_struct {
             Broc::entity& GetRef();
@@ -50,7 +60,10 @@ struct LocalFields {
     };
 
     union {
+        __unnamed::flag_struct flag;
         __unnamed::trigger_struct flagEnd;
+        __unnamed::capStatus_struct capStatus;
+        __unnamed::capTeam_struct capTeam;
         __unnamed::holder_struct holder;
         __unnamed::home_position_struct home_position;
         __unnamed::home_angles_struct home_angles;

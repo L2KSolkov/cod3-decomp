@@ -4584,6 +4584,14 @@ mp_util_wad::LocalFields* Broc::entity::operator->() {
 }
 
 // trigger_struct::operator= - ea: 0x9587F0
+// flag_struct::GetRef - ea: 0x976AB0
+Broc::entity& mp_util_wad::LocalFields::__unnamed::flag_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<Broc::entity>(reinterpret_cast<unsigned int>(&s_flagKey));
+}
+
+// trigger_struct::operator= - ea: 0x9587F0
 const Broc::entity* mp_util_wad::LocalFields::__unnamed::trigger_struct::operator=(
     const Broc::entity* rhs) {
     Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
@@ -4600,6 +4608,35 @@ Broc::entity* mp_util_wad::LocalFields::__unnamed::trigger_struct::Get(
             reinterpret_cast<const unsigned char*>(this) - 0x10);
     ee->GetVal<Broc::entity>(result, 0xF2F5EAB4u);
     return result;
+}
+
+// trigger_struct::GetRef - ea: 0x976AE0
+Broc::entity& mp_util_wad::LocalFields::__unnamed::trigger_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<Broc::entity>(0xF2F5EAB4u);
+}
+
+// capStatus_struct::operator= - ea: 0x976B10
+const float&
+mp_util_wad::LocalFields::__unnamed::capStatus_struct::operator=(
+    const float& rhs) {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    Broc::bfloat value(rhs);
+    ee->SetVal<Broc::bfloat>(0x53377998u, value);
+    return rhs;
+}
+
+// capTeam_struct::operator= - ea: 0x976B60
+const int&
+mp_util_wad::LocalFields::__unnamed::capTeam_struct::operator=(
+    const int& rhs) {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    Broc::bint value(rhs);
+    ee->SetVal<Broc::bint>(0xAF35F29Bu, value);
+    return rhs;
 }
 
 // holder_struct::GetRef - ea: 0x968040
