@@ -13333,7 +13333,7 @@ void CallbackRoundOver(int condition, Broc::string team) {
 int CallbackGetFlagCount() {
     if (!(bool)mp_util_wad::pLevel->roundStarted)
         return 0;
-    if (Broc::size(mp_util_wad::pLevel->warAreas) > 0)
+    if (mp_util_wad::pLevel->warAreas.mCapacity != 0)
         return Broc::size(mp_util_wad::pLevel->warAreas);
     return 0;
 }
