@@ -107,6 +107,7 @@ extern void nglRenderDebug(void);
 extern void nglListSendBatch(jqBatch* pBatch);
 extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
 extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);
+extern int nglGetStripIndices(int NVerts, int NStrips);  // game.o 0x0065B6B0
 
 // Guarded registration for shader init (render_xboxr cd*Shader.o). The
 // microcode tables are not extracted until Phase 6; skip when the ported
@@ -187,7 +188,7 @@ struct nglShaderParamSet : public nglParamSet {
 public:
     static unsigned int NumParams;  // ngl_params.o (0x14D2AA4)
     nglShaderParamSet();            // inline COMDAT (game.o)
-    unsigned int GetSize();         // inline COMDAT (game.o)
+    static unsigned int GetSize();   // inline COMDAT (game.o)
     void Copy(const nglShaderParamSet& other);  // inline COMDAT (render.o)
 };
 static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");

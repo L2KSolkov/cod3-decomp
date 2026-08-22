@@ -113,6 +113,24 @@ unsigned int nglShaderParamSet::NumParams = 0;   // ?NumParams@nglShaderParamSet
 unsigned int nglSceneParamSet::NumParams = 0;    // ?NumParams@nglSceneParamSet@@2IA
 unsigned int gpuHashIndexBuffer = 0;             // ?gpuHashIndexBuffer@@3IA
 void* nglEmptyParamSet = nullptr;                // ?nglEmptyParamSet@@3PAXA (ngl_params.o @ 0x1241D70)
+
+// game.o inline helpers shared by the NGL parameter wrappers.
+// ea: 0x0065B680
+nglParamSet::nglParamSet()
+{
+}
+
+// ea: 0x0065B690
+unsigned __int64* nglParamSet::ValidFlag()
+{
+    return reinterpret_cast<unsigned __int64*>(Array);
+}
+
+// ea: 0x0065B6A0
+unsigned int nglShaderParamSet::GetSize()
+{
+    return 4 * nglShaderParamSet::NumParams + 8;
+}
 const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[3] = {
     {0, 0, 50, 0, 0},
     {0, 12, 64, 0, 0},

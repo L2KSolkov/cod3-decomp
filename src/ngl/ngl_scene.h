@@ -89,6 +89,8 @@ static_assert(sizeof(nglLockedTextureNode) == 0x0C, "nglLockedTextureNode size m
 // ============================================================================
 class nglParamSet {
 public:
+    nglParamSet();
+    unsigned __int64* ValidFlag();
     unsigned int* Array;  // +0x00
 };
 static_assert(sizeof(nglParamSet) == 4, "nglParamSet size mismatch");

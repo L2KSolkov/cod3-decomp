@@ -1264,6 +1264,7 @@ public:
 
     static BinFileManager* CreateInst();  // ?CreateInst@BinFileManager@@SAPAV1@XZ
     static void DeleteInst();             // ?DeleteInst@BinFileManager@@SAXXZ
+    static BinFileManager* Inst();        // ?Inst@BinFileManager@@SAPAV1@XZ
     void Clear();            // ?Clear@BinFileManager@@QAEXXZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);  // ?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z
@@ -1274,6 +1275,12 @@ static_assert(sizeof(BinFileManager::DataElem) == 0x0C,
 static_assert(sizeof(BinFileManager) == 0x25C,
               "BinFileManager size mismatch");
 BinFileManager* BinFileManager::sInst = nullptr;
+
+// ea: 0x0065BCE0
+BinFileManager* BinFileManager::Inst()
+{
+    return BinFileManager::sInst;
+}
 
 // ea: 0x004DEB60
 void* BinFileManager::operator new(size_t size, void* p)

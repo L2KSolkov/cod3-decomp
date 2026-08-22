@@ -1027,6 +1027,10 @@ struct SCheckpointGameVar {
 
     SCheckpointGameVar()
         : mHashVarName(0), mVal(0), mDataSize(0) {}
+
+    SCheckpointGameVar(unsigned int hashVarName, unsigned int val,
+                       unsigned int datasize)
+        : mHashVarName(hashVarName), mVal(val), mDataSize(datasize) {}
 };
 
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA

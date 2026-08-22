@@ -18,7 +18,13 @@ struct cdl_proftimer {
 };
 struct cdl_profcounter {
     uint64_t value;
+    void inc();
 };
+// ea: 0x0065B6F0
+void cdl_profcounter::inc()
+{
+    ++value;
+}
 // ?cdl_proftimer_update_rb@@3Ucdl_proftimer@@A (game.o data @ 0x01334968)
 cdl_proftimer cdl_proftimer_update_rb;
 cdl_proftimer cdl_proftimer_vmcalls;              // ?cdl_proftimer_vmcalls@@3Ucdl_proftimer@@A

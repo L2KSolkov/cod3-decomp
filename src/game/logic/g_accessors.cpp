@@ -9,6 +9,7 @@
 #include "core/tlFixedString.h"
 #include "game/AeThreadFunctor.h"
 #include "game/logic/g_local.h"
+#include "game/sv/sv_stubs.h"
 
 #include <intrin.h>
 #include <float.h>
@@ -20,6 +21,25 @@
 namespace PlayerStats {
 int TotalScoreForStats(short* const stats);
 }
+
+// game.o 0x0065B6B0
+int nglGetStripIndices(int NVerts, int NStrips)
+{
+    return NVerts + 2 * NStrips - 2;
+}
+
+// IDA type: 48-byte stack entry used by the sphere clipper.
+struct WorldSector;
+struct sphere_clip_stack_entry {
+    math::Position3 p1;
+    math::Position3 p2;
+    float p1f;
+    float p2f;
+    WorldSector* node;
+
+    // game.o 0x0065BD10
+    sphere_clip_stack_entry() {}
+};
 
 // game.o 0x601CC0
 const math::Dir3& cdlPlane::get_normal() const
