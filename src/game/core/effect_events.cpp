@@ -40,6 +40,66 @@ bool Warning(const char* fmt, ...);
 bool Error(const char* fmt, ...);
 }
 
+template <typename T>
+struct DelFunctor {
+    void operator()(T* ptr) const
+    {
+        if (ptr != nullptr)
+            delete ptr;
+    }
+};
+
+template <typename Iterator, typename Functor>
+void safe_for_each(Iterator first, Iterator last);
+
+template <>
+void safe_for_each<reserved_dlist<EntityNotify>::iterator,
+                   DelFunctor<EntityNotify>>(
+    reserved_dlist<EntityNotify>::iterator first,
+    reserved_dlist<EntityNotify>::iterator last)
+{
+    reserved_dlist<EntityNotify>::dlist_node* node = first.m_node;
+    reserved_dlist<EntityNotify>::dlist_node* next = first.m_next;
+    while (next != last.m_next)
+    {
+        reserved_dlist<EntityNotify>::dlist_node* current = node;
+        if (next != nullptr)
+        {
+            node = next;
+            next = next->mNext;
+        }
+        if (current != nullptr)
+            DelFunctor<EntityNotify>()(
+                reinterpret_cast<EntityNotify*>(current));
+    }
+}
+
+template <>
+void safe_for_each<reserved_dlist<RumbleEffectInstance>::iterator,
+                   DelFunctor<RumbleEffectInstance>>(
+    reserved_dlist<RumbleEffectInstance>::iterator first,
+    reserved_dlist<RumbleEffectInstance>::iterator last)
+{
+    reserved_dlist<RumbleEffectInstance>::dlist_node* node = first.m_node;
+    reserved_dlist<RumbleEffectInstance>::dlist_node* next = first.m_next;
+    while (next != last.m_next)
+    {
+        reserved_dlist<RumbleEffectInstance>::dlist_node* current = node;
+        if (next != nullptr)
+        {
+            node = next;
+            next = next->mNext;
+        }
+        if (current != nullptr)
+            DelFunctor<RumbleEffectInstance>()(
+                reinterpret_cast<RumbleEffectInstance*>(current));
+    }
+}
+
+template void DelFunctor<EntityNotify>::operator()(EntityNotify*) const;
+template void DelFunctor<RumbleEffectInstance>::operator()(
+    RumbleEffectInstance*) const;
+
 // ea: 0x004E3E50
 ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const
 {
