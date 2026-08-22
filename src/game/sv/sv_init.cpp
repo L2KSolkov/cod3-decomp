@@ -15,7 +15,7 @@
 // ============================================================================
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Com_Memset(void* dest, int val, unsigned int count);
-extern void  CL_Disconnect();
+extern void  CL_Disconnect(int showMainMenu);
 extern "C" void* _Z_MallocInternal(int size);
 extern "C" void  _Z_FreeInternal(void* ptr);
 extern void* mem_heap_malloc(int alignment, unsigned int size);
@@ -385,7 +385,7 @@ void SV_Shutdown() {
         Cvar_Set("sv_running", "0");
         svs.initialized = 0;
         Com_Printf("---------------------------\n");
-        CL_Disconnect();
+        CL_Disconnect(0);
     }
 }
 

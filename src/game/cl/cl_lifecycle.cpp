@@ -213,8 +213,9 @@ int CL_ClearState()
 }
 
 // ea: 0x532880
-void CL_Disconnect()
+void CL_Disconnect(int showMainMenu)
 {
+    (void)showMainMenu;
     if (com_cl_running != nullptr && com_cl_running->integer != 0)
     {
         Cvar_Set("r_uiFullScreen", "1");

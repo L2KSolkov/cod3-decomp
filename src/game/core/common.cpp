@@ -129,7 +129,7 @@ extern void Cbuf_Init();
 extern void Cmd_Init();
 extern void CL_Shutdown();
 extern void CL_Init();
-extern void CL_Disconnect();
+extern void CL_Disconnect(int showMainMenu);
 extern void CL_ShutdownAll();
 extern void CL_StartHunkUsers();
 extern void CL_KeyEvent(int key, int down, unsigned int time);
@@ -2567,7 +2567,7 @@ void Com_Shutdown()
         gActorHeap = nullptr;
     }
     PhysShutdown();
-    CL_Disconnect();
+    CL_Disconnect(1);
     CL_ShutdownAll();
     SV_Shutdown();
     CL_StartHunkUsers();
