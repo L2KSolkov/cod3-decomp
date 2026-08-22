@@ -14,6 +14,7 @@
 extern float sNaN;
 
 class AeThreadFunctor;
+class WaitTilOutput;
 enum TPakInfo : int;
 struct bint;
 
@@ -34,9 +35,14 @@ struct HashStr {
     static unsigned int sUndefined;
     HashStr() : mVal(sUndefined) {}
     HashStr(unsigned int v) : mVal(v) {}
+    operator unsigned int() const { return mVal; } // ea: 0x00925270
     bool IsDefined() const { return mVal != sUndefined; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
+
+namespace stdext {
+unsigned int hash_value(HashStr* key); // ea: 0x00987990
+}
 
 namespace Broc {
 class string;
@@ -776,6 +782,8 @@ void wait(float seconds);
 void wait_frame(int frames);
 void waittill(entity ent, HashStr signal);
 void waittill(entity ent, HashStr signal, entity* output);
+bool AssignParameterForNotify(const entity& ent, HashStr signal,
+                              WaitTilOutput* output);
 void waittill_timeout(entity ent, HashStr signal, float timeout);
 void waittillmatch(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
 void waittillor(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
@@ -1148,7 +1156,11 @@ struct BrocAPI {
     unsigned int (*mThreadGetId)();                       // +0x06C
     char _pad70[0x74 - 0x70];                             // +0x070
     void (*mEntNotify)(unsigned int, unsigned int);       // +0x074
-    char _pad78[0x8C - 0x78];                             // +0x078
+    void (*mEntNotifyFromEnt)(unsigned int, const int, unsigned int); // +0x078
+    void (*mEntNotifyFromString)(unsigned int, const int, const Broc::string*); // +0x07C
+    void (*mEntNotifyFromFloatEntPair)(unsigned int, const int, const float, const unsigned int); // +0x080
+    void (*mEntNotifyFromInt)(unsigned int, const int, const int); // +0x084
+    bool (*mAssignParameterForNotify)(unsigned int, unsigned int, WaitTilOutput*); // +0x088
     void (*mAddEventHandler)(unsigned int, unsigned int, unsigned int); // +0x08C
     bool (*mRemoveEventHandler)(unsigned int, const unsigned int,
                                 const unsigned int);      // +0x090

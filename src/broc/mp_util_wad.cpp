@@ -2137,6 +2137,16 @@ void plane_roll(Broc::entity self);
 // ============================================================================
 // Broc free helpers + gBrocAPI-backed wrappers (mp_util_wad.o COMDATs).
 // ============================================================================
+namespace stdext {
+
+// ea: 0x00987990. IDA hashes a HashStr by XORing its value with the map seed.
+unsigned int hash_value(HashStr* key)
+{
+    return static_cast<unsigned int>(*key) ^ 0xDEADBEEFu;
+}
+
+} // namespace stdext
+
 namespace Broc {
 
 // HUD property proxy operators - ea: 0x94ABD0 / 0x94AC10 / 0x94AC50 / 0x94AC90.
@@ -2973,6 +2983,15 @@ void RotateTo(Broc::entity* e, const Broc::vector* angles, float totalTime,
               float accTime, float decTime) {
     if (e != NULL && angles != NULL)
         RotateTo(*e, *angles, totalTime, accTime, decTime);
+}
+
+// ea: 0x009871C0. IDA forwards entity/notify values to the Broc API slot.
+bool AssignParameterForNotify(const Broc::entity& ent, HashStr signal,
+                              WaitTilOutput* output)
+{
+    return gBrocAPI.mAssignParameterForNotify(ent.GetHandle(),
+                                              static_cast<unsigned int>(signal),
+                                              output);
 }
 
 const char* GetText(const Broc::string& str, char* /*buff*/) {
