@@ -117,22 +117,22 @@ index	status	map_line
 116	FIXED	0002:0012af60 ?IN_Wbutton6Up@@YAXHH@Z 0091A460 f cl.o FIXED: corrected shared IDA-derived kb indices
 117	FIXED	0002:0012afb0 ?IN_Wbutton7Down@@YAXHH@Z 0091A4B0 f cl.o FIXED: corrected shared IDA-derived kb indices
 118	FIXED	0002:0012afd0 ?IN_Wbutton7Up@@YAXHH@Z 0091A4D0 f cl.o FIXED: corrected shared IDA-derived kb indices
-119	PORTED	0002:0012aff0 ?IN_ToggleADS@@YAXHH@Z 0091A4F0 f cl.o
+119	PORTED	0002:0012aff0 ?IN_ToggleADS@@YAXHH@Z 0091A4F0 f cl.o PORTED: IDA match; toggles the current client's ADS flag
 120	FIXED	0002:0012b010 ?IN_SprintDown@@YAXHH@Z 0091A510 f cl.o FIXED: corrected shared IDA-derived kb indices
 121	FIXED	0002:0012b030 ?IN_SprintUp@@YAXHH@Z 0091A530 f cl.o FIXED: corrected shared IDA-derived kb indices
 122	FIXED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o FIXED: corrected shared IDA-derived kb indices
 123	FIXED	0002:0012b070 ?IN_ButtonUp@@YAXHH@Z 0091A570 f cl.o FIXED: corrected shared IDA-derived kb indices
-124	PORTED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o
-125	PORTED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o
-126	PORTED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o
-127	PORTED	0002:0012b170 ?IN_ToggleCrouch@@YAXXZ 0091A670 f cl.o
-128	PORTED	0002:0012b1d0 ?IN_ToggleProne@@YAXXZ 0091A6D0 f cl.o
-129	PORTED	0002:0012b230 ?IN_GoProne@@YAXXZ 0091A730 f cl.o
-130	PORTED	0002:0012b280 ?IN_GoCrouch@@YAXXZ 0091A780 f cl.o
+124	PORTED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o PORTED: IDA match; applies the current client's delta pitch
+125	PORTED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o PORTED: IDA match; honors vehicle/eFlag and stance-button guards
+126	PORTED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o PORTED: IDA match; raises the shared stance state under the same guards
+127	PORTED	0002:0012b170 ?IN_ToggleCrouch@@YAXXZ 0091A670 f cl.o PORTED: IDA match; toggles stance state with the IDA button guards
+128	PORTED	0002:0012b1d0 ?IN_ToggleProne@@YAXXZ 0091A6D0 f cl.o PORTED: IDA match; toggles prone state with the IDA button guards
+129	PORTED	0002:0012b230 ?IN_GoProne@@YAXXZ 0091A730 f cl.o PORTED: IDA match; selects prone under the IDA guards
+130	PORTED	0002:0012b280 ?IN_GoCrouch@@YAXXZ 0091A780 f cl.o PORTED: IDA match; selects crouch under the IDA guards
 131	FIXED	0002:0012b2d0 ?IN_GoStandDown@@YAXHH@Z 0091A7D0 f cl.o FIXED: corrected shared IDA-derived kb indices
 132	FIXED	0002:0012b360 ?IN_GoStandUp@@YAXHH@Z 0091A860 f cl.o FIXED: corrected shared IDA-derived kb indices
-133	PORTED	0002:0012b390 ?IN_Stance_Down@@YAXXZ 0091A890 f cl.o
-134	PORTED	0002:0012b410 ?IN_Stance_Up@@YAXXZ 0091A910 f cl.o
+133	PORTED	0002:0012b390 ?IN_Stance_Down@@YAXXZ 0091A890 f cl.o PORTED: IDA match; records held stance and frame time
+134	PORTED	0002:0012b410 ?IN_Stance_Up@@YAXXZ 0091A910 f cl.o PORTED: IDA match; clears the held-stance field under button guards
 135	FIXED	0002:0012b450 ?IN_LeanRightSwitchNextDown@@YAXHH@Z 0091A950 f cl.o FIXED: corrected shared IDA-derived kb indices
 136	FIXED	0002:0012b490 ?IN_LeanRightSwitchNextUp@@YAXHH@Z 0091A990 f cl.o FIXED: corrected shared IDA-derived kb indices
 137	FIXED	0002:0012b4b0 ?IN_LeanLeftSwitchNextDown@@YAXHH@Z 0091A9B0 f cl.o FIXED: corrected shared IDA-derived kb indices
@@ -154,10 +154,10 @@ index	status	map_line
 153	FIXED	0002:0012bae0 ?CL_IsADS@@YA_NH@Z 0091AFE0 f cl.o FIXED: corrected shared IDA-derived kb indices
 154	FIXED	0002:0012bb50 ?CL_StanceButtonUpdate@@YAXXZ 0091B050 f cl.o FIXED: corrected shared IDA-derived kb indices
 155	FIXED	0002:0012bc10 ?CL_KeyMove@@YAXPAUusercmd_s@@@Z 0091B110 f cl.o FIXED: corrected shared IDA-derived kb indices
-156	PORTED	0002:0012be60 ?CL_MouseEvent@@YAXHHH@Z 0091B360 f cl.o
-157	PORTED	0002:0012beb0 ?CL_JoystickEvent@@YAXHHH@Z 0091B3B0 f cl.o
+156	PORTED	0002:0012be60 ?CL_MouseEvent@@YAXHHH@Z 0091B360 f cl.o PORTED: IDA match; accumulates mouse deltas at the active sample index
+157	PORTED	0002:0012beb0 ?CL_JoystickEvent@@YAXHHH@Z 0091B3B0 f cl.o PORTED: IDA match; validates six axes and stores the value
 158	VERIFIED	0002:0012bef0 ?CL_JoystickMove@@YAXPAUusercmd_s@@@Z 0091B3F0 f cl.o
-159	PORTED	0002:0012bff0 ?GetAverageDelta@@YAXAAMAAHH@Z 0091B4F0 f cl.o
+159	FIXED	0002:0012bff0 ?GetAverageDelta@@YAXAAMAAHH@Z 0091B4F0 f cl.o FIXED: corrected adjacent float history storage and two-stick dimensions
 160	FIXED	0002:0012c080 ?CL_CmdButtons@@YAXPAUusercmd_s@@@Z 0091B580 f cl.o FIXED: corrected shared IDA-derived kb indices
 161	FIXED	0002:0012c100 ?CL_SetUsercmdButtonsWeapons@@YAXHH@Z 0091B600 f cl.o FIXED: corrected shared IDA-derived kb indices
 162	FIXED	0002:0012c140 ?CL_FinishMove@@YAXPAUusercmd_s@@@Z 0091B640 f cl.o FIXED: corrected shared IDA-derived kb indices
@@ -191,7 +191,7 @@ index	status	map_line
 190	VERIFIED	0002:0012cf00 ?CL_ShutdownRef@@YAXXZ 0091C400 f cl.o
 191	VERIFIED	0002:0012cf30 ?CL_InitRenderer@@YAXXZ 0091C430 f cl.o
 192	VERIFIED	0002:0012cfc0 ?CL_ScaledMilliseconds@@YAHXZ 0091C4C0 f cl.o
-193	PORTED	0002:0012cfe0 ?CG_GetGameModel@@YAFF@Z 0091C4E0 f cl.o
+193	PORTED	0002:0012cfe0 ?CG_GetGameModel@@YAFF@Z 0091C4E0 f cl.o PORTED: IDA match; forwards model lookup through VM call 8
 194	VERIFIED	0002:0012d000 ?CL_GetFontInfo@@YAPAVnglFont@@HM@Z 0091C500 f cl.o
 195	VERIFIED	0002:0012d020 ?CL_ShellExecute_URL_f@@YAXXZ 0091C520 f cl.o
 196	VERIFIED	0002:0012d080 ?CL_IncAnimWeight_f@@YAXXZ 0091C580 f cl.o
@@ -216,7 +216,7 @@ index	status	map_line
 215	VERIFIED	0002:0012dce0 ?SCR_DrawSmallChar@@YAXHHH@Z 0091D1E0 f cl.o
 216	VERIFIED	0002:0012ddb0 ?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z 0091D2B0 f cl.o
 217	VERIFIED	0002:0012de40 ?SCR_DrawConsoleString@@YAXHHPBFHQBM@Z 0091D340 f cl.o
-218	PORTED	0002:0012ded0 ?SCR_DebugGraph@@YAXMH@Z 0091D3D0 f cl.o
+218	PORTED	0002:0012ded0 ?SCR_DebugGraph@@YAXMH@Z 0091D3D0 f cl.o PORTED: IDA match; intentionally empty in the reference
 219	VERIFIED	0002:0012dee0 ?SCR_DrawDebugGraph@@YAXXZ 0091D3E0 f cl.o
 220	VERIFIED	0002:0012def0 ?SCR_Init@@YAXXZ 0091D3F0 f cl.o
 221	VERIFIED	0002:0012df00 ?CL_IsCGameRendering@@YAHXZ 0091D400 f cl.o
@@ -313,7 +313,7 @@ index	status	map_line
 312	VERIFIED	0002:00133d60 ?SCR_DrawScreenField@@YAXXZ 00923260 f cl.o
 313	VERIFIED	0002:00133f20 ?SCR_UpdateScreen@@YAXM@Z 00923420 f cl.o
 314	VERIFIED	0002:00134100 ?IN_Button0Down@@YAXHH@Z 00923600 f cl.o
-315	PORTED	0002:00134140 ?CL_InitInput@@YAXXZ 00923640 f cl.o
+315	PORTED	0002:00134140 ?CL_InitInput@@YAXXZ 00923640 f cl.o PORTED: IDA match; registers the complete command set and resets input state
 316	VERIFIED	0002:00134670 ?CL_PacketEvent@@YAXUnetadr_t@@PAUmsg_t@@H@Z 00923B70 f cl.o
 317	VERIFIED	0002:001347e0 ?CL_Frame@@YAXHM@Z 00923CE0 f cl.o
 318	VERIFIED	0002:00134c20 ?SCR_UpdateScreen@@YAXXZ 00924120 f cl.o
