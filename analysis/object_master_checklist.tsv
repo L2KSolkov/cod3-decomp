@@ -534,7 +534,7 @@ msvqpred.obj	analysis/msvqpred_obj_checklist.tsv	analysis/msvqpred_obj_inventory
 mu.obj	analysis/mu_obj_checklist.tsv	analysis/mu_obj_inventory.tsv	analysis/mu_obj_plan.tsv	10	0	0	10	0	0	0
 muldiv.obj	analysis/muldiv_obj_checklist.tsv	analysis/muldiv_obj_inventory.tsv	analysis/muldiv_obj_plan.tsv	1	0	0	1	0	0	0
 nal_anim.o	analysis/nal_anim_o_checklist.tsv	analysis/nal_anim_o_inventory.tsv	analysis/nal_anim_o_plan.tsv	29	12	17	0	0	0	0
-nal_cache.o	analysis/nal_cache_o_checklist.tsv	analysis/nal_cache_o_inventory.tsv	analysis/nal_cache_o_plan.tsv	7	3	4	0	0	0	0
+nal_cache.o	analysis/nal_cache_o_checklist.tsv	analysis/nal_cache_o_inventory.tsv	analysis/nal_cache_o_plan.tsv	7	7	0	0	0	0	0
 nal_generic.o	analysis/nal_generic_o_checklist.tsv	analysis/nal_generic_o_inventory.tsv	analysis/nal_generic_o_plan.tsv	68	24	44	0	0	0	0
 nal_generic_component.o	analysis/nal_generic_component_o_checklist.tsv	analysis/nal_generic_component_o_inventory.tsv	analysis/nal_generic_component_o_plan.tsv	36	9	27	0	0	0	0
 nal_ik.o	analysis/nal_ik_o_checklist.tsv	analysis/nal_ik_o_inventory.tsv	analysis/nal_ik_o_plan.tsv	2	2	0	0	0	0	0
