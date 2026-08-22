@@ -192,6 +192,10 @@ public:
         mSize = newSize;
     }
 
+    void resize(unsigned int newSize) {
+        resize(newSize, newSize);
+    }
+
     void clear() { resize(0, 0); }
 
     T* construct_array(unsigned int iNumber) {

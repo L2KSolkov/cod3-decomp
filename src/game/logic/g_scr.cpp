@@ -1920,6 +1920,9 @@ struct ae_heap_wrapper {
     mem_heap* mHeap;   // +0x04
     bool CheckFree(void* ptr);  // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z
 };
+namespace BrocSys {
+void* MemAlloc(unsigned int size, unsigned int align);
+}
 
 // ea: 0x005EDF40
 template <>
@@ -1937,6 +1940,141 @@ void Broc::dyn_array<Broc::entity>::destroy_all()
             mem_heap_free(mElements);
         }
     }
+}
+
+template <>
+Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
+    unsigned int cap, unsigned int iSize)
+{
+    (void)iSize;
+    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
+        4 * cap, 4));
+    for (Broc::entity* i = result; i != &result[cap]; ++i)
+    {
+        if (i != nullptr)
+            i->___u0 = 0;
+    }
+    return result;
+}
+
+template <>
+Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
+    unsigned int iNumber)
+{
+    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
+        4 * iNumber, 4));
+    for (Broc::entity* i = result; i != &result[iNumber]; ++i)
+    {
+        if (i != nullptr)
+            i->___u0 = 0;
+    }
+    return result;
+}
+
+template <>
+Broc::string* Broc::dyn_array<Broc::string>::construct_array(
+    unsigned int cap, unsigned int iSize)
+{
+    (void)iSize;
+    Broc::string* result = static_cast<Broc::string*>(BrocSys::MemAlloc(
+        4 * cap, 4));
+    for (Broc::string* i = result; i != &result[cap]; ++i)
+    {
+        if (i != nullptr)
+            new (i) Broc::string();
+    }
+    return result;
+}
+
+template <>
+void Broc::dyn_array<Broc::entity>::reserve(unsigned int cap)
+{
+    if (cap <= this->mCapacity)
+        return;
+
+    Broc::entity* newElements =
+        Broc::dyn_array<Broc::entity>::construct_array(cap, this->mSize);
+    for (unsigned int i = 0; i < this->mSize; ++i)
+        newElements[i] = this->mElements[i];
+
+    Broc::entity* oldElements = this->mElements;
+    if (oldElements != nullptr)
+    {
+        if (gBrocPool->InPool(oldElements))
+            gBrocPool->Release(oldElements);
+        else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+            mem_heap_free(oldElements);
+    }
+    this->mElements = newElements;
+    this->mCapacity = cap;
+}
+
+template <>
+void Broc::dyn_array<Broc::entity>::resize(
+    unsigned int newSize, unsigned int newCapacity)
+{
+    if (newSize > this->mCapacity)
+    {
+        Broc::entity* newElements =
+            Broc::dyn_array<Broc::entity>::construct_array(newCapacity);
+        unsigned int copyCount = this->mSize;
+        if (copyCount > newSize)
+            copyCount = newSize;
+        for (unsigned int i = 0; i < copyCount; ++i)
+            newElements[i] = this->mElements[i];
+
+        Broc::entity* oldElements = this->mElements;
+        if (oldElements != nullptr)
+        {
+            if (gBrocPool->InPool(oldElements))
+                gBrocPool->Release(oldElements);
+            else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+                mem_heap_free(oldElements);
+        }
+        this->mElements = newElements;
+        this->mCapacity = newCapacity;
+        this->mSize = newSize;
+        return;
+    }
+
+    if (newSize > this->mSize)
+    {
+        for (unsigned int i = this->mSize; i < newSize; ++i)
+            this->mElements[i].___u0 = 0;
+    }
+    this->mSize = newSize;
+}
+
+template <>
+void Broc::dyn_array<Broc::entity>::resize(unsigned int newSize)
+{
+    Broc::dyn_array<Broc::entity>::resize(newSize, newSize);
+}
+
+template <>
+void Broc::dyn_array<Broc::entity>::push_back(const Broc::entity& iElement)
+{
+    if (this->mSize >= this->mCapacity)
+    {
+        unsigned int newCapacity = this->mSize + 4;
+        Broc::entity* newElements =
+            Broc::dyn_array<Broc::entity>::construct_array(
+                newCapacity, this->mSize + 1);
+        for (unsigned int i = 0; i < this->mSize; ++i)
+            newElements[i] = this->mElements[i];
+
+        Broc::entity* oldElements = this->mElements;
+        if (oldElements != nullptr)
+        {
+            if (gBrocPool->InPool(oldElements))
+                gBrocPool->Release(oldElements);
+            else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+                mem_heap_free(oldElements);
+        }
+        this->mElements = newElements;
+        this->mCapacity = newCapacity;
+    }
+    this->mElements[this->mSize++].___u0 = iElement.___u0;
 }
 
 namespace MemCount {
@@ -25041,50 +25179,6 @@ inline Broc::pathnode sentient_get_callback_value<Broc::pathnode, 31>()
 static BrocFieldFn player_field_callback()
 {
     return reinterpret_cast<BrocFieldFn>(sScrFcnPtrs[0]);
-}
-
-template <>
-Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
-    unsigned int cap, unsigned int iSize)
-{
-    (void)iSize;
-    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
-        4 * cap, 4));
-    for (Broc::entity* i = result; i != &result[cap]; ++i)
-    {
-        if (i != nullptr)
-            i->___u0 = 0;
-    }
-    return result;
-}
-
-template <>
-Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
-    unsigned int iNumber)
-{
-    Broc::entity* result = static_cast<Broc::entity*>(BrocSys::MemAlloc(
-        4 * iNumber, 4));
-    for (Broc::entity* i = result; i != &result[iNumber]; ++i)
-    {
-        if (i != nullptr)
-            i->___u0 = 0;
-    }
-    return result;
-}
-
-template <>
-Broc::string* Broc::dyn_array<Broc::string>::construct_array(
-    unsigned int cap, unsigned int iSize)
-{
-    (void)iSize;
-    Broc::string* result = static_cast<Broc::string*>(BrocSys::MemAlloc(
-        4 * cap, 4));
-    for (Broc::string* i = result; i != &result[cap]; ++i)
-    {
-        if (i != nullptr)
-            new (i) Broc::string();
-    }
-    return result;
 }
 
 void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
