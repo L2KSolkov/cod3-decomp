@@ -723,10 +723,9 @@ void IN_TogglePaused()
 }
 
 // ea: 0x52B090
-int IN_CenterView()
+void IN_CenterView()
 {
     cl[currCl].viewangles[0] = 0.0f - (cl[currCl].snap.ps.delta_angles[0] * 0.0054931641f);
-    return 6320 * currCl;
 }
 
 // ea: 0x52B2D0

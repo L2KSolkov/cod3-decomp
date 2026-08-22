@@ -273,7 +273,7 @@ void IN_AnalogStickLeanDown();
 void IN_AnalogStickLeanUp();
 void IN_EnableAsserts();
 void IN_TogglePaused();
-int IN_CenterView();
+void IN_CenterView();
 void IN_GoStandDown(int key, int time);
 void IN_GoStandUp(int key, int time);
 int IN_GoCrouch();
