@@ -1048,7 +1048,7 @@ index	status	map_line
 1047	VERIFIED	0002:001939e0 ?DialogResponseFormat@ProfileManager@@CA_NH@Z 00982EE0 f shell.o
 1048	VERIFIED	0002:00193a00 ?Load@PanelFile@@QAE_NPBDPAEH@Z 00982F00 f shell.o
 1049	VERIFIED	0002:00193af0 ?load_and_play_movie@movie_manager@@SAXPBD0@Z 00982FF0 f shell.o
-1050	VERIFIED	0002:00193c90 ??0FEManager@@QAE@XZ 00983190 f shell.o
+1050	FIXED	0002:00193c90 ??0FEManager@@QAE@XZ 00983190 f shell.o	FIXED: aligned FEManager declarations with IDA class tag VFEManager and 0x3F4 layout
 1051	VERIFIED	0002:00193d90 ?GetDefaultPQ@FEManager@@QAEPAVPanelQuad@@XZ 00983290 f shell.o
 1052	VERIFIED	0002:00193f00 ?DecodePanel@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00983400 f shell.o
 1053	VERIFIED	0002:00193f60 ?UnloadBank@FEManager@@QAEXW4TPakId@@@Z 00983460 f shell.o

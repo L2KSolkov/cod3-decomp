@@ -295,7 +295,7 @@ index	status	map_line
 294	VERIFIED	0002:00132930 ?CL_InitRef@@YAXXZ 00921E30 f cl.o
 295	VERIFIED	0002:00132a70 ?CL_Shutdown@@YAXXZ 00921F70 f cl.o
 296	VERIFIED	0002:00132c30 ?CL_SystemInfoChanged@@YAXXZ 00922130 f cl.o
-297	VERIFIED	0002:00132d50 ?CL_ParseGamestate@@YAXPAVstring@Broc@@@Z 00922250 f cl.o
+297	FIXED	0002:00132d50 ?CL_ParseGamestate@@YAXPAVstring@Broc@@@Z 00922250 f cl.o	FIXED: corrected cls.configstrings storage to the IDA Broc::string[1024] symbol
 298	VERIFIED	0002:00132ec0 ?Key_GetBindingBuf@@YAXHPADH@Z 009223C0 f cl.o
 299	VERIFIED	0002:00132f10 ?CL_InitGamepadCommands@@YAXXZ 00922410 f cl.o
 300	FIXED	0002:00132f40 ?CL_ConfigstringModified@@YAXXZ 00922440 f cl.o FIXED: retained config-string aliasing with the IDA Broc::string block type
