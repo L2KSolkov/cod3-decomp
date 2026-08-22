@@ -13605,6 +13605,100 @@ void PlayCapturedSounds(Broc::entity self, Broc::bint team,
     if ((int)originalWarIndex == 0 && (int)team == 0) {
         Broc::SoundFadeOut((unsigned int)(int)mp_util_wad::pLevel->FlagMusic,
                            0.5f);
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                 ? mp_util_wad::pLevel->_base.entity
+                                 : Broc::entity();
+        Broc::string sound("MX_War_LastFlagVictory");
+        Broc::bfloat delay(0.0f);
+        AeThreadFunctor* soundFunctor =
+            _mp_audio::PlaySound__functor(level, sound, delay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlaySound", soundFunctor);
+        Broc::string primaryTeam(myteam);
+        Broc::string primarySound("MP_WAR_GreatTeamwork_Axis");
+        Broc::string secondarySound("MP_Confirm_Lose_Allies");
+        Broc::bfloat dialogDelay(2.5f);
+        AeThreadFunctor* dialogFunctor =
+            _mp_audio::PlayTeamDialog__functor(
+                level, primaryTeam, primarySound, secondarySound, dialogDelay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog",
+                            dialogFunctor);
+        dialogDelay.~bfloat();
+        secondarySound.~string();
+        primarySound.~string();
+        primaryTeam.~string();
+        delay.~bfloat();
+        sound.~string();
+    }
+    else if ((int)originalWarIndex == (int)mp_util_wad::pLevel->lastFlagIndex
+             && (int)team == 1) {
+        Broc::SoundFadeOut((unsigned int)(int)mp_util_wad::pLevel->FlagMusic,
+                           0.5f);
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                 ? mp_util_wad::pLevel->_base.entity
+                                 : Broc::entity();
+        Broc::string sound("MX_War_LastFlagVictory");
+        Broc::bfloat delay(0.0f);
+        AeThreadFunctor* soundFunctor =
+            _mp_audio::PlaySound__functor(level, sound, delay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlaySound", soundFunctor);
+        Broc::string primaryTeam(myteam);
+        Broc::string primarySound("MP_WAR_GreatTeamwork_Allies");
+        Broc::string secondarySound("MP_Confirm_Lose_Axis");
+        Broc::bfloat dialogDelay(2.5f);
+        AeThreadFunctor* dialogFunctor =
+            _mp_audio::PlayTeamDialog__functor(
+                level, primaryTeam, primarySound, secondarySound, dialogDelay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog",
+                            dialogFunctor);
+        dialogDelay.~bfloat();
+        secondarySound.~string();
+        primarySound.~string();
+        primaryTeam.~string();
+        delay.~bfloat();
+        sound.~string();
+    }
+    else {
+        Broc::SoundFadeOut((unsigned int)(int)mp_util_wad::pLevel->FlagMusic,
+                           0.5f);
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                 ? mp_util_wad::pLevel->_base.entity
+                                 : Broc::entity();
+        Broc::string teamSound((int)team == 1
+                                   ? "MX_War_Ally_Secured_Flag"
+                                   : "MX_War_Enemy_Secured_Flag");
+        Broc::string otherTeamSound((int)team == 1
+                                        ? "MX_War_Enemy_Secured_Flag"
+                                        : "MX_War_Ally_Secured_Flag");
+        AeThreadFunctor* soundFunctor =
+            _mp_audio::PlayTeamSound__functor(
+                level, myteam, teamSound, otherTeamSound);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlayTeamSound",
+                            soundFunctor);
+        Broc::string primaryTeam(myteam);
+        Broc::string primarySound((int)team == 1
+                                      ? "MP_WAR_PositionCapt_Allies"
+                                      : "MP_WAR_PositionCapt_Axis");
+        Broc::string secondarySound((int)team == 1
+                                        ? "MP_WAR_PositionLost_Axis"
+                                        : "MP_WAR_PositionLost_Allies");
+        Broc::bfloat dialogDelay(1.0f);
+        AeThreadFunctor* dialogFunctor =
+            _mp_audio::PlayTeamDialog__functor(
+                level, primaryTeam, primarySound, secondarySound, dialogDelay);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "_mp_audio::PlayTeamDialog",
+                            dialogFunctor);
+        dialogDelay.~bfloat();
+        secondarySound.~string();
+        primarySound.~string();
+        primaryTeam.~string();
+        otherTeamSound.~string();
+        teamSound.~string();
     }
     (void)self;
     myteam.~string();
