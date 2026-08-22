@@ -418,14 +418,14 @@ index	status	map_line
 417	PORTED	0002:00598330 ?IsEEDefined_angles@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87830 f mp_anim_wad.o	PORTED: added IDA 0x00998330 vehicle-node angles defined-check using mIsVehicleNodeDefined; source commit 002f5529
 418	SKIPPED	0002:005983a0 ?IsDefined@angles_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D878A0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_angles(vehiclenode)
 419	VERIFIED	0002:005983d0 ?main@_mp_setup@@YAXXZ 00D878D0 f mp_anim_wad.o
-420	VERIFIED	0002:005983f0 ?hack_function_to_allow_the_script_to_compile@_mp_setup@@YAXXZ 00D878F0 f mp_anim_wad.o
-421	PORTED	0002:00598460 ?SetAnimKnob@Broc@@YAXABVentity@1@IMMM@Z 00D87960 f i mp_anim_wad.o
-422	PORTED	0002:005984b0 ?ValidateAnimRef@Broc@@YA?AUBroAnim@@AAVAnimRef@1@PBDH@Z 00D879B0 f i mp_anim_wad.o
-423	PORTED	0002:00598610 ??$IsDefined2@Ubint@@@@YA_NABUbint@@@Z 00D87B10 f i mp_anim_wad.o
-424	PORTED	0002:00598630 ??$IsDefined2@Ubfloat@@@@YA_NABUbfloat@@@Z 00D87B30 f i mp_anim_wad.o
-425	PORTED	0002:00598650 ??$IsDefined2@Vstring@Broc@@@@YA_NABVstring@Broc@@@Z 00D87B50 f i mp_anim_wad.o
-426	PORTED	0002:00598670 ??$IsDefined2@Vvehiclenode@Broc@@@@YA_NABVvehiclenode@Broc@@@Z 00D87B70 f i mp_anim_wad.o
-427	PORTED	0002:00598690 ??$?8I@BroAnim@@QBE_NABI@Z 00D87B90 f i mp_anim_wad.o
-428	PORTED	0002:005986c0 ??$println@$$BY0DA@$$CBD@Broc@@YAXAAY0DA@$$CBD@Z 00D87BC0 f i mp_anim_wad.o
-429	PORTED	0002:00598750 ??$ConcatText@$$BY0DA@$$CBD@Broc@@YAXAAVstring@0@AAY0DA@$$CBD@Z 00D87C50 f i mp_anim_wad.o
+420	FIXED	0002:005983f0 ?hack_function_to_allow_the_script_to_compile@_mp_setup@@YAXXZ 00D878F0 f mp_anim_wad.o	FIXED: matched IDA 0x009983F0 typed BroAnim/AnimRef call sequence; source commit cf46a6bb
+421	PORTED	0002:00598460 ?SetAnimKnob@Broc@@YAXABVentity@1@IMMM@Z 00D87960 f i mp_anim_wad.o	PORTED: added IDA 0x00998460 mSetAnimKnob forwarding with false flag; source commit cf46a6bb
+422	PORTED	0002:005984b0 ?ValidateAnimRef@Broc@@YA?AUBroAnim@@AAVAnimRef@1@PBDH@Z 00D879B0 f i mp_anim_wad.o	PORTED: added IDA 0x009984B0 unresolved-animation warning and BroAnim return; source commit cf46a6bb
+423	SKIPPED	0002:00598610 ??$IsDefined2@Ubint@@@@YA_NABUbint@@@Z 00D87B10 f i mp_anim_wad.o	SKIPPED: compiler-generated IsDefined2<bint> wrapper; behavior is provided by Broc::IsDefined(bint)
+424	SKIPPED	0002:00598630 ??$IsDefined2@Ubfloat@@@@YA_NABUbfloat@@@Z 00D87B30 f i mp_anim_wad.o	SKIPPED: compiler-generated IsDefined2<bfloat> wrapper; behavior is provided by Broc::IsDefined(bfloat)
+425	SKIPPED	0002:00598650 ??$IsDefined2@Vstring@Broc@@@@YA_NABVstring@Broc@@@Z 00D87B50 f i mp_anim_wad.o	SKIPPED: compiler-generated IsDefined2<Broc::string> wrapper; behavior is provided by Broc::IsDefined(string)
+426	SKIPPED	0002:00598670 ??$IsDefined2@Vvehiclenode@Broc@@@@YA_NABVvehiclenode@Broc@@@Z 00D87B70 f i mp_anim_wad.o	SKIPPED: compiler-generated IsDefined2<Broc::vehiclenode> wrapper; behavior is provided by Broc::IsDefined(vehiclenode)
+427	SKIPPED	0002:00598690 ??$?8I@BroAnim@@QBE_NABI@Z 00D87B90 f i mp_anim_wad.o	SKIPPED: compiler-generated BroAnim comparison wrapper; behavior is provided by BroAnim::operator unsigned int
+428	VERIFIED	0002:005986c0 ??$println@$$BY0DA@$$CBD@Broc@@YAXAAY0DA@$$CBD@Z 00D87BC0 f i mp_anim_wad.o	VERIFIED: existing Broc::println template in broc_types.h matches IDA println<char const[48]>
+429	VERIFIED	0002:00598750 ??$ConcatText@$$BY0DA@$$CBD@Broc@@YAXAAVstring@0@AAY0DA@$$CBD@Z 00D87C50 f i mp_anim_wad.o	VERIFIED: existing Broc::ConcatText template in broc_types.h matches IDA ConcatText<char const[48]>
 430	VERIFIED	0002:00598790 ??0AnimRef@Broc@@QAE@HH@Z 00D87C90 f i mp_anim_wad.o
