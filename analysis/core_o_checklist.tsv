@@ -871,17 +871,17 @@ index	status	map_line
 870	FIXED	0002:000df760 ?empty@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NXZ 008CEC60 f i core.o FIXED: source implementation in f0d73e95; IDA 0x004DF760 compares m_head with &m_end
 871	FIXED	0002:000df780 ?empty@?$reserved_dlist@VEntityNotify@@@@QBE_NXZ 008CEC80 f i core.o FIXED: source implementation in f0d73e95; IDA 0x004DF780 compares m_head with &m_end
 872	VERIFIED	0002:000df7a0 ??0dlist_node@?$reserved_dlist@VEntityNotify@@@@QAE@PAU01@0@Z 008CECA0 f i core.o
-873	PORTED	0002:000df7c0 ??0dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAU01@0@Z 008CECC0 f i core.o
+873	VERIFIED	0002:000df7c0 ??0dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAU01@0@Z 008CECC0 f i core.o VERIFIED: IDA 0x004DF7C0 stores next then prev; existing dlist_node constructor matches
 874	SKIPPED	0002:000df7e0 ?size@?$InplaceVector@VInplaceString@@@@QBEIXZ 008CECE0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 875	SKIPPED	0002:000df7f0 ??A?$InplaceVector@VInplaceString@@@@QAEAAVInplaceString@@I@Z 008CECF0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 876	SKIPPED	0002:000df870 ?empty@?$InplaceVector@VInplaceString@@@@QBE_NXZ 008CED70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 877	VERIFIED	0002:000df880 ??0?$ae_sized_array@PAVDbRow@@$0EA@@@QAE@XZ 008CED80 f i core.o
-878	PORTED	0002:000df890 ??A?$ae_sized_array@PAVDbRow@@$0EA@@@QBEABQAVDbRow@@H@Z 008CED90 f i core.o
+878	VERIFIED	0002:000df890 ??A?$ae_sized_array@PAVDbRow@@$0EA@@@QBEABQAVDbRow@@H@Z 008CED90 f i core.o VERIFIED: IDA 0x004DF890 checks idx against 0x40 with ae_array.h line 148 assert and returns m_elements[idx]; existing template matches
 879	VERIFIED	0002:000df910 ??A?$ae_sized_array@PAVDbRow@@$0EA@@@QAEAAPAVDbRow@@H@Z 008CEE10 f i core.o
 880	VERIFIED	0002:000df990 ?size@?$ae_sized_array@PAVDbRow@@$0EA@@@QBEHXZ 008CEE90 f i core.o
-881	PORTED	0002:000df9a0 ?empty@?$ae_sized_array@PAVDbRow@@$0EA@@@QBE_NXZ 008CEEA0 f i core.o
+881	VERIFIED	0002:000df9a0 ?empty@?$ae_sized_array@PAVDbRow@@$0EA@@@QBE_NXZ 008CEEA0 f i core.o VERIFIED: IDA 0x004DF9A0 returns m_size == 0; existing template matches
 882	VERIFIED	0002:000df9c0 ?push_back@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXABQAVDbRow@@@Z 008CEEC0 f i core.o
-883	PORTED	0002:000dfa50 ?Set@?$Bitmask@I@@QAEXH_N@Z 008CEF50 f i core.o
+883	FIXED	0002:000dfa50 ?Set@?$Bitmask@I@@QAEXH_N@Z 008CEF50 f i core.o FIXED: shared Bitmask template corrected in 5de90780; IDA 0x004DFA50 dispatches to Add or Rmv
 884	SKIPPED	0002:000dfa80 ??0?$ae_fixed_string@$0CA@E@@QAE@XZ 008CEF80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 885	SKIPPED	0002:000dfa90 ??1?$InplaceAssetBankSet@VDestructibleBank@@@@UAE@XZ 008CEF90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 886	SKIPPED	0002:000dfaa0 ?OnBankUnloaded@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXAAVDestructibleBank@@@Z 008CEFA0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
