@@ -1120,7 +1120,7 @@ index	status	map_line
 1119	VERIFIED	0002:000e29c0 ?DeleteInst@CurveManager@@SAXXZ 008D1EC0 f i core.o
 1120	VERIFIED	0002:000e2a50 ?Reformat@DialogMenuSystem@@QAEX_N@Z 008D1F50 f i core.o
 1121	PORTED	0002:000e2a90 ?AddTriangleResponse@DialogMenuSystem@@QAEXP6AXH@Z@Z 008D1F90 f i core.o	PORTED: added the IDA GetActiveMenu -> GetLayer(activeMenu == 0) -> triangleResponse assignment
-1122	PORTED	0002:000e2ac0 ?GetStruct@GdbFile@@QAEPAXXZ 008D1FC0 f i core.o
+1122	PORTED	0002:000e2ac0 ?GetStruct@GdbFile@@QAEPAXXZ 008D1FC0 f i core.o	PORTED: added IDA-typed GdbFileSet::Value/InplaceVector view and the index-0 return
 1123	VERIFIED	0002:000e2ad0 ?DeleteInst@CheckpointMgr@@SAXXZ 008D1FD0 f i core.o
 1124	FIXED	0002:000e2b60 ?GetLooping@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008D2060 f i core.o FIXED: IDA rumble flag accessor added in 9b24ec4b; IDA 0x004E2B60
 1125	FIXED	0002:000e2b80 ?NullHandle@RumbleEffectInstanceHandle@@SA?AV1@XZ 008D2080 f i core.o FIXED: IDA zero-handle factory added in 9b24ec4b; IDA 0x004E2B80
