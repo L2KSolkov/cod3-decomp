@@ -3892,11 +3892,17 @@ Broc::string AbstractEffectSound::GetDebugString() const
 
 static Entity* AbstractEffectGetOwner(const AbstractEffect* effect)
 {
-    unsigned int v = effect->mEntity.mHandle.mVal & 0xFFF;
-    if (v < 0x540
-        && effect->mEntity.mHandle.mVal >> 12
-               == EntityHandleDb::sInst.mElements[v].mKey)
-        return EntityHandleDb::sInst.mElements[v].mObject;
+    return effect->GetOwner();
+}
+
+// ea: 0x004E8B30
+Entity* AbstractEffect::GetOwner() const
+{
+    unsigned int handle = mEntity.mHandle.mVal;
+    unsigned int index = handle & 0xFFF;
+    if (index < 0x540
+        && handle >> 12 == EntityHandleDb::sInst.mElements[index].mKey)
+        return EntityHandleDb::sInst.mElements[index].mObject;
     return nullptr;
 }
 

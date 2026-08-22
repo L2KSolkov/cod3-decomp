@@ -807,6 +807,7 @@ public:
     unsigned int GetEffectNameHashStr();
     int GetFlags() const;
     bool Test(int flag) const;
+    Entity* GetOwner() const;                 // ea: 0x004E8B30
     int GetLifeTime();
     math::Position3 GetPosition() const;        // ea: 0x004CC230
     Broc::string GetEntityDebugString() const;  // ea: 0x004CC330
