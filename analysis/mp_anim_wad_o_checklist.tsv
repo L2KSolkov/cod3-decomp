@@ -253,14 +253,14 @@ index	status	map_line
 252	VERIFIED	0002:00594a20 ?IsEEDefined_script_scale@@YA?AUbbool@@Ventity@Broc@@@Z 00D83F20 f mp_anim_wad.o	VERIFIED: IDA 0x00994A20 key 0x480FB8DC matches existing mp_anim_wad.cpp implementation
 253	VERIFIED	0002:00594ad0 ?GetEE_script_hdi_time2@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83FD0 f mp_anim_wad.o	VERIFIED: IDA 0x00994AD0 key 0xFE6B76C9 matches existing mp_anim_wad.cpp implementation
 254	VERIFIED	0002:00594b20 ?IsEEDefined_script_hdi_time2@@YA?AUbbool@@Ventity@Broc@@@Z 00D84020 f mp_anim_wad.o	VERIFIED: IDA 0x00994B20 key 0xFE6B76C9 matches existing mp_anim_wad.cpp implementation
-255	PORTED	0002:00594bd0 ?GetEE_script_fb_max_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D840D0 f mp_anim_wad.o
-256	PORTED	0002:00594c20 ?IsEEDefined_script_fb_max_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z 00D84120 f mp_anim_wad.o
-257	PORTED	0002:00594cd0 ?GetEE_script_door@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D841D0 f mp_anim_wad.o
-258	PORTED	0002:00594d20 ??Cpathnode@Broc@@QAEPAV01@XZ 00D84220 f i mp_anim_wad.o
-259	PORTED	0002:00594d40 ?Get@script_door_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84240 f i mp_anim_wad.o
-260	PORTED	0002:00594df0 ?IsEEDefined_script_door@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D842F0 f mp_anim_wad.o
-261	PORTED	0002:00594e60 ?IsDefined@script_door_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84360 f i mp_anim_wad.o
-262	PORTED	0002:00594ef0 ?IsDefined@Broc@@YA_NABVpathnode@1@@Z 00D843F0 f i mp_anim_wad.o
+255	VERIFIED	0002:00594bd0 ?GetEE_script_fb_max_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D840D0 f mp_anim_wad.o	VERIFIED: IDA 0x00994BD0 key 0x038572C2 matches existing mp_anim_wad.cpp implementation
+256	VERIFIED	0002:00594c20 ?IsEEDefined_script_fb_max_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z 00D84120 f mp_anim_wad.o	VERIFIED: IDA 0x00994C20 key 0x038572C2 matches existing mp_anim_wad.cpp implementation
+257	PORTED	0002:00594cd0 ?GetEE_script_door@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D841D0 f mp_anim_wad.o	PORTED: added IDA 0x00994CD0 pathnode string-field access using key 0x022700C8; source commit 803c83dd
+258	SKIPPED	0002:00594d20 ??Cpathnode@Broc@@QAEPAV01@XZ 00D84220 f i mp_anim_wad.o	SKIPPED: trivial compiler-generated pathnode operator->; direct handle access is equivalent in the port
+259	SKIPPED	0002:00594d40 ?Get@script_door_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D84240 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_door
+260	PORTED	0002:00594df0 ?IsEEDefined_script_door@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D842F0 f mp_anim_wad.o	PORTED: added IDA 0x00994DF0 pathnode string defined-check using key 0x022700C8; source commit 803c83dd
+261	SKIPPED	0002:00594e60 ?IsDefined@script_door_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84360 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_door
+262	PORTED	0002:00594ef0 ?IsDefined@Broc@@YA_NABVpathnode@1@@Z 00D843F0 f i mp_anim_wad.o	PORTED: added IDA 0x00994EF0 pathnode pointer defined-check; source commit 803c83dd
 263	PORTED	0002:00594f10 ?GetEE_script_delay@@YA?AUbfloat@@Vpathnode@Broc@@@Z 00D84410 f mp_anim_wad.o
 264	PORTED	0002:00594f40 ?Get@script_delay_struct@__unnamed@pathnode@Broc@@QBE?BUbfloat@@XZ 00D84440 f i mp_anim_wad.o
 265	PORTED	0002:00594f90 ?IsEEDefined_script_delay@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84490 f mp_anim_wad.o
