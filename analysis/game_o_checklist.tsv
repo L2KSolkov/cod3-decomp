@@ -1105,19 +1105,19 @@ index	status	map_line
 1104	VERIFIED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o  VERIFIED: IDA 0x00661D20 matches ae_sized_array::erase, including last-element assignment and guarded size decrement.
 1105	FIXED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o  FIXED: IDA 0x00661D80 now records HandleDb.h lines 170/175 and emits the invalid-handle warning/assert paths for invalid index or generation.
 1106	SKIPPED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1107	PORTED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o
-1108	PORTED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o
-1109	PORTED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o
-1110	PORTED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o
-1111	PORTED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o
-1112	PORTED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o
+1107	VERIFIED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o  VERIFIED: IDA 0x00661EC0 delegates to ae_vector<CheckpointGameVar>::resize(0), matching the generic clear helper.
+1108	VERIFIED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o  VERIFIED: IDA 0x00661ED0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
+1109	VERIFIED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o  VERIFIED: IDA 0x00661F20 matches the generic intrusive-list erase and assert path.
+1110	VERIFIED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o  VERIFIED: IDA 0x00661FC0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
+1111	VERIFIED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o  VERIFIED: IDA 0x00662010 matches the generic intrusive-list erase and assert path.
+1112	VERIFIED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o  VERIFIED: IDA 0x006620B0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
 1113	SKIPPED	0002:00262100 ??B?$IVPointer@VGdbFileSet@@@@QBE_NXZ 00A51600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1114	VERIFIED	0002:00262120 ??1?$ae_vector@Udebug_brush@@@@QAE@XZ 00A51620 f i game.o
-1115	PORTED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o
+1115	VERIFIED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o  VERIFIED: IDA 0x00662150 matches generic ae_vector growth, element assignment, free, append, and size increment.
 1116	VERIFIED	0002:00262230 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A51730 f i game.o
 1117	VERIFIED	0002:00262260 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A51760 f i game.o
-1118	PORTED	0002:00262280 ?Dump@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A51780 f i game.o
-1119	PORTED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o
+1118	PORTED	0002:00262280 ?Dump@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A51780 f i game.o  PORTED: IDA 0x00662280 restored callback enumeration, handle-db diagnostics, and exact HandleDb.h assert metadata in g_entity_misc.cpp.
+1119	VERIFIED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o  VERIFIED: IDA 0x00662360 matches generic ae_vector resize allocation, copy, free, and size handling.
 1120	SKIPPED	0002:00262420 ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51920 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00262440 ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51940 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1122	SKIPPED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1128,18 +1128,18 @@ index	status	map_line
 1127	SKIPPED	0002:002626c0 ??_GDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1128	SKIPPED	0002:002626c0 ??_EDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1129	VERIFIED	0002:002626f0 ??0Context@PadAliasMgr@@QAE@XZ 00A51BF0 f i game.o
-1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o
-1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o
-1132	PORTED	0002:00262890 ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A51D90 f i game.o
-1133	PORTED	0002:002628f0 ?clear@?$ae_vector@Udebug_brush@@@@QAEXXZ 00A51DF0 f i game.o
+1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o  PORTED: IDA 0x00662750 restored free-bit initialization, 512 element keys, null objects, and the debug callback field.
+1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o  PORTED: IDA 0x006627B0 restored lowest-free allocation, exact bounds assert metadata, exhaustion dump, and keyed handle construction.
+1132	PORTED	0002:00262890 ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A51D90 f i game.o  PORTED: IDA 0x00662890 restored intrusive curve-effect traversal, allocator release, sentinel reset, and size reset.
+1133	VERIFIED	0002:002628f0 ?clear@?$ae_vector@Udebug_brush@@@@QAEXXZ 00A51DF0 f i game.o  VERIFIED: IDA 0x006628F0 delegates to ae_vector<debug_brush>::resize(0), matching the generic clear helper.
 1134	SKIPPED	0002:00262900 ??A?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAU?$pair@HH@1@I@Z 00A51E00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1135	PORTED	0002:00262920 ??$PakDelete@Uproximity_data_t@@@@YAXW4TPakId@@PAUproximity_data_t@@_N@Z 00A51E20 f i game.o
+1135	FIXED	0002:00262920 ??$PakDelete@Uproximity_data_t@@@@YAXW4TPakId@@PAUproximity_data_t@@_N@Z 00A51E20 f i game.o  FIXED: IDA 0x00662920 calls proximity_data_t::~proximity_data_t before PakManager::MemFree; the destructor call was missing.
 1136	SKIPPED	0002:00262960 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51E60 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1137	SKIPPED	0002:00262970 ??$_Ucopy@PAU?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@1@PAU21@00@Z 00A51E70 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1138	SKIPPED	0002:002629a0 ??$_Uninitialized_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51EA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1139	VERIFIED	0002:002629d0 ?SingletonDebugRender@SoundDevice@@SAXXZ 00A51ED0 f i game.o
 1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o
-1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o
+1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o  PORTED: IDA 0x006629F0 now delegates to the restored SoundHandleDb/HandleDb constructor.
 1142	VERIFIED	0002:00262a00 ??1Curve@@QAE@XZ 00A51F00 f i game.o
 1143	SKIPPED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1144	SKIPPED	0002:00262a90 ?_Destroy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXPAU?$pair@HH@2@0@Z 00A51F90 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
