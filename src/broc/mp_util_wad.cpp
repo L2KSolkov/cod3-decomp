@@ -14444,17 +14444,40 @@ void DebugRenderSpawnPoints() {
             key.mVal = 0x15B1F8A7u;
             Broc::GetEntArray(&tn, key.mVal, &spawnpoints, 0);
             tn.~string();
-            Broc::bint i(0);
-            while ((int)i < Broc::size(spawnpoints)) {
-                Broc::vector origin;
-                mp_util_wad::entity_get_origin(
-                    &origin, spawnpoints[(unsigned int)(int)i]);
-                Broc::vector minBox = origin + mins;
-                Broc::vector maxBox = origin + maxs;
-                Broc::Code_DebugRenderBox(&minBox, &maxBox,
-                                          &mp_util_wad::pLevel->spawnColorAllies,
-                                          0.25f);
-                i = (int)i + 1;
+
+            Broc::vector origin;
+            for (int i = 0; i < Broc::size(spawnpoints); ++i) {
+                Broc::entity spawnpoint = spawnpoints[(unsigned int)i];
+                Broc::entity::__unnamed::classname_struct classnameField = {
+                    spawnpoint.GetHandle()};
+                Broc::string classname;
+                classnameField.Get(&classname);
+                if (classname == mp_util_wad::pLevel->spawnTypeAllies) {
+                    mp_util_wad::entity_get_origin(&origin, spawnpoint);
+                    Broc::vector maxBox = origin + maxs;
+                    Broc::vector minBox = origin + mins;
+                    Broc::Code_DebugRenderBox(
+                        &minBox, &maxBox,
+                        &mp_util_wad::pLevel->spawnColorAllies, 0.25f);
+                }
+                classname.~string();
+            }
+
+            for (int i = 0; i < Broc::size(spawnpoints); ++i) {
+                Broc::entity spawnpoint = spawnpoints[(unsigned int)i];
+                Broc::entity::__unnamed::classname_struct classnameField = {
+                    spawnpoint.GetHandle()};
+                Broc::string classname;
+                classnameField.Get(&classname);
+                if (classname == mp_util_wad::pLevel->spawnTypeAxis) {
+                    mp_util_wad::entity_get_origin(&origin, spawnpoint);
+                    Broc::vector maxBox = origin + maxs;
+                    Broc::vector minBox = origin + mins;
+                    Broc::Code_DebugRenderBox(
+                        &minBox, &maxBox,
+                        &mp_util_wad::pLevel->spawnColorAxis, 0.25f);
+                }
+                classname.~string();
             }
         }
         spawnpoints.~dyn_array();
