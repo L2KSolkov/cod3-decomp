@@ -779,7 +779,7 @@ index	status	map_line
 778	PORTED	0002:0056cf50 ?Code_PositionWouldTelefrag@Broc@@YA_NABUvector@1@@Z 00D5C450 f i mp_util_wad.o
 779	FIXED	0002:0056cf80 ?GetSpawnpointNearest@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@Uvector@3@Ubbool@@@Z 00D5C480 f mp_util_wad.o	FIXED: matched IDA 0x0096CF80 distance search and corrected initial sentinel from 100000 to literal 0x1869F (99999)
 780	VERIFIED	0002:0056d180 ?GetSpawnpointInOrder@_mp_spawnlogic@@YA?AVentity@Broc@@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5C680 f mp_util_wad.o	VERIFIED: IDA 0x0096D180 matches index rollover, assertions/messages, post-increment, and result selection
-781	PORTED	0002:0056d2c0 ?GetSpawnpointDM@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5C7C0 f mp_util_wad.o
+781	VERIFIED	0002:0056d2c0 ?GetSpawnpointDM@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5C7C0 f mp_util_wad.o	VERIFIED: IDA 0x0096D2C0 matches debug-order path, alive-player filtering, telefrag/last-spawn filtering, distance scoring, weighted selection, lastspawnpoint update, and cleanup
 782	PORTED	0002:0056dd50 ?GetSpawnpointNearTeamAntiCamp@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5D250 f mp_util_wad.o
 783	PORTED	0002:0056de80 ?GetSpawnpointNearTeam@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5D380 f mp_util_wad.o
 784	PORTED	0002:0056e570 ?GetSpawnpointSemiRandom@_mp_spawnlogic@@YA?AVentity@Broc@@AAV23@ABVstring@3@AAV?$dyn_array@Ventity@Broc@@@3@@Z 00D5DA70 f mp_util_wad.o
