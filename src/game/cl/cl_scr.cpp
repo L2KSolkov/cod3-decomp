@@ -6,6 +6,7 @@
 #include "cl_input.h"
 #include "cl_console.h"
 #include "game/game_types.h"
+#include "ngl/nglTexture.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -344,7 +345,7 @@ void SCR_FillRect(float x, float y, float width, float height,
 }
 
 // ea: 0x52DBD0
-void SCR_DrawPic(float x, float y, float width, float height, void* tex)
+void SCR_DrawPic(float x, float y, float width, float height, nglTexture* tex)
 {
     re.DrawStretchPic((float)dword_F1719C * 0.0015625f * x,
                       (float)dword_F171A0 * 0.0020833334f * y,
