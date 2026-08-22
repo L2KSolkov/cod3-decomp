@@ -744,8 +744,8 @@ index	status	map_line
 743	PORTED	0002:00568920 ?HandlePickupFlag@_mp_scf@@YAXVentity@Broc@@0HH@Z 00D57E20 f mp_util_wad.o	PORTED: replaced stub with IDA 0x00968920/C3 control flow; corrected flag entity parameter and SCF state/audio/weapon/return handling
 744	VERIFIED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o	VERIFIED: IDA 0x00969740 matches 12-byte allocation, null check, and CompassUnderlay functor construction
 745	VERIFIED	0002:005697e0 ??4pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D58CE0 f i mp_util_wad.o	VERIFIED: IDA 0x009697E0 matches bint construction from rhs, SetVal<bint> key 0x4743187E, and return-rhs wrapper
-746	VERIFIED	0002:00569830 ?CallbackPickupScriptItem@_mp_scf@@YAXHVentity@Broc@@H@Z 00D58D30 f mp_util_wad.o
-747	VERIFIED	0002:00569b30 ?CallbackDropItem@_mp_scf@@YAXHHUvector@Broc@@00@Z 00D59030 f mp_util_wad.o
+746	PORTED	0002:00569830 ?CallbackPickupScriptItem@_mp_scf@@YAXHVentity@Broc@@H@Z 00D58D30 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x00969830 debug/assert, base-distance, host/client request, holder, notification, and HandlePickupFlag flow; source commit 8f8fbe47
+747	PORTED	0002:00569b30 ?CallbackDropItem@_mp_scf@@YAXHHUvector@Broc@@00@Z 00D59030 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x00969B30 flag lookup, notification, drop sound/message, launch/objective, home-distance, and timeout flow; source commit 8f8fbe47
 748	VERIFIED	0002:00569e10 ?WaitForFlagTimeOut__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59310 f i mp_util_wad.o	VERIFIED: IDA 0x00969E10 matches 12-byte allocation, null check, and WaitForFlagTimeOut functor construction
 749	VERIFIED	0002:00569eb0 ?GetRef@home_position_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D593B0 f i mp_util_wad.o	VERIFIED: IDA 0x00969EB0 matches ExtendedEntity::GetRef<vector> key 0xE42FE83D
 750	VERIFIED	0002:00569ee0 ?CallbackDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D593E0 f mp_util_wad.o
