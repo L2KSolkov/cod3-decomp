@@ -4588,6 +4588,12 @@ static void CGBankManager_DebugRender_bridge()
     CGBankManager_DebugRender_impl(CGBankManager::sInst);
 }
 
+// ea: 0x006631C0
+void CGBankManager::SingletonDebugRender()
+{
+    static_cast<CGBankManager*>(sInst)->DebugRender();
+}
+
 // ea: 0x006492D0
 CGBankManager::CGBankManager()
 {

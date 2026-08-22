@@ -4317,6 +4317,7 @@ public:
     static void* operator new(size_t size, void* p);
     static void CreateInst();
     static void DeleteInst();
+    static void SingletonDebugRender(); // game.o 0x006631C0
     static CGBankManager* Inst();  // ?Inst@CGBankManager@@SAPAV1@XZ
     unsigned int mDebugRenderMode;  // +0x04 (bitmask; verified vs DebugRender)
     float        scale;             // +0x08 (perf graph zoom; verified vs ZoomIn)

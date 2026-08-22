@@ -429,6 +429,52 @@ void reserved_dlist_CurveEffectListElem_delete_all(void* self)
     list->m_size = 0;
 }
 
+// ea: 0x00662AD0
+static void DelFunctor_Curve(Curve* ptr)
+{
+    if (ptr != nullptr)
+    {
+        ptr->~Curve();
+        Curve::sAllocator->Release(ptr);
+    }
+}
+
+// ea: 0x00662BA0
+static void safe_for_each_Curve(CurveNode* node, CurveNode* next,
+                                CurveNode* last)
+{
+    while (next != last)
+    {
+        CurveNode* current = node;
+        if (next != nullptr)
+        {
+            node = next;
+            next = next->m_next;
+        }
+        if (current != nullptr)
+            DelFunctor_Curve(reinterpret_cast<Curve*>(current));
+    }
+}
+
+// ea: 0x00662C80
+void reserved_dlist_Curve_delete_all(void* self)
+{
+    CurveManager::CurveDList* list =
+        reinterpret_cast<CurveManager::CurveDList*>(self);
+    CurveNode* head = reinterpret_cast<CurveNode*>(list->m_head);
+    CurveNode* end = reinterpret_cast<CurveNode*>(&list->m_end);
+    CurveNode* next = head != nullptr ? head->m_next : nullptr;
+    if (head == end)
+    {
+        next = nullptr;
+        head = nullptr;
+    }
+    safe_for_each_Curve(head, next, end);
+    list->m_head = end;
+    list->m_tail = &list->m_head;
+    list->m_size = 0;
+}
+
 // game.o 0x00660210
 CurveEffectListElem::CurveEffectListElem()
 {
