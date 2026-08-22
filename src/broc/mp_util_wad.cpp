@@ -2979,9 +2979,44 @@ const char* GetText(const Broc::string& str, char* /*buff*/) {
     return gBrocAPI.mLocalize(str.c_str());
 }
 
+const char* GetText(const char* txt, char* /*buff*/) {
+    return gBrocAPI.mLocalize(txt);
+}
+
+char* GetText(const ::bint& val, char* buff) {
+    sprintf(buff, "%d", (int)val);
+    return buff;
+}
+
 char* GetText(const Broc::vector& v, char* buff) {
     sprintf(buff, "%f,%f,%f", v.x, v.y, v.z);
     return buff;
+}
+
+void PrintConcat(const Broc::string& txt, bool bold) {
+    const char* value = txt.c_str();
+    if (bold)
+        gBrocAPI.mIPrintLnBold(value);
+    else
+        gBrocAPI.mIPrintLn(value);
+}
+
+void iprintln(const char* msg) {
+    Broc::string txt(static_cast<Broc::string::Block*>(NULL));
+    ConcatText(txt, msg);
+    PrintConcat(txt, false);
+}
+
+void iprintln(const char* a, const char* sep, const char* b) {
+    Broc::string txt(static_cast<Broc::string::Block*>(NULL));
+    ConcatText(txt, a, sep, b);
+    PrintConcat(txt, false);
+}
+
+void iprintlnbold(const Broc::string& value) {
+    Broc::string txt(static_cast<Broc::string::Block*>(NULL));
+    ConcatText(txt, value);
+    PrintConcat(txt, true);
 }
 
 template <>

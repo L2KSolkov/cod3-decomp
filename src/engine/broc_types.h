@@ -15,6 +15,7 @@ extern float sNaN;
 
 class AeThreadFunctor;
 enum TPakInfo : int;
+struct bint;
 
 // Size assertions are 32-bit only (4-byte pointers)
 #if defined(_WIN32) && !defined(_WIN64)
@@ -531,9 +532,30 @@ string operator+(const string& lhs, float rhs);  // ea: 0x934830
 string operator+(const string& lhs, const vector& rhs);  // ea: 0x965960
 
 const char* GetText(const string& str, char* buff);
+const char* GetText(const char* txt, char* buff);
+char* GetText(const ::bint& val, char* buff);
 char* GetText(const vector& v, char* buff);
+template <typename T>
+void ConcatText(string& txt, const T& value) {
+    char tmpBuf[256];
+    txt = GetText(value, tmpBuf);
+}
 template <typename T, typename U>
-void ConcatText(string& txt, const T& lhs, const U& rhs);
+void ConcatText(string& txt, const T& lhs, const U& rhs) {
+    char tmpBuf[256];
+    txt = GetText(lhs, tmpBuf);
+    txt += GetText(rhs, tmpBuf);
+}
+template <typename T, typename U, typename V, typename... Rest>
+void ConcatText(string& txt, const T& first, const U& second,
+                const V& third, const Rest&... rest) {
+    char tmpBuf[256];
+    txt = GetText(first, tmpBuf);
+    txt += GetText(second, tmpBuf);
+    txt += GetText(third, tmpBuf);
+    int unused[] = {0, (txt += GetText(rest, tmpBuf), 0)...};
+    (void)unused;
+}
 template <>
 void ConcatText<string, vector>(string& txt, const string& lhs,
                                 const vector& rhs);
@@ -1102,7 +1124,9 @@ COD3_STATIC_ASSERT_32BIT(sizeof(BrocExports) == 0x1C8, "BrocExports size mismatc
 struct BrocAPI {
     void (*mPrint)(const char*);                          // +0x000
     void (*mPrintLn)(const char*);                        // +0x004
-    char _pad08[0x34 - 0x08];                             // +0x008
+    void (*mIPrintLn)(const char*);                       // +0x008
+    void (*mIPrintLnBold)(const char*);                   // +0x00C
+    char _pad10[0x34 - 0x10];                             // +0x010
     bool mKillThread;                                     // +0x034
     unsigned char _pad35[0x38 - 0x35];                    // +0x035
     char _pad38[0x44 - 0x38];                             // +0x038
@@ -1559,6 +1583,25 @@ void notify(const entity& ent, HashStr label);   // ea: 0x939BA0
 void notify(const entity& ent, const char* label); // ea: 0x94B8B0
 void iprintln(const char* msg);
 void iprintln(const char* a, const char* sep, const char* b);
+void PrintConcat(const string& txt, bool bold);
+template <typename T>
+void iprintln(const T& value) {
+    string txt(static_cast<string::Block*>(NULL));
+    ConcatText(txt, value);
+    PrintConcat(txt, false);
+}
+template <typename T, typename U, typename V>
+void iprintln(const T& first, const U& second, const V& third) {
+    string txt(static_cast<string::Block*>(NULL));
+    ConcatText(txt, first, second, third);
+    PrintConcat(txt, false);
+}
+template <typename T>
+void iprintlnbold(const T& value) {
+    string txt(static_cast<string::Block*>(NULL));
+    ConcatText(txt, value);
+    PrintConcat(txt, true);
+}
 void SetTutorialText(int hash, int viewport);
 void SetTutorialTextAllPlayers(int hash);
 void SetActionHint(int hash, int viewport);
@@ -1708,7 +1751,12 @@ void EffectEventStopEmitting(unsigned int effectId);
 void GetWeaponSlotWeapon(const Broc::entity& e, const Broc::string& slot, Broc::string& result);
 int GetWeaponSlotAmmo(const Broc::entity& e, const Broc::string& slot);
 int GetWeaponSlotClipAmmo(const Broc::entity& e, const Broc::string& slot);
-template <typename... Args> void println(const char* fmt, const Args&... args);
+template <typename T, typename... Args>
+void println(const T& fmt, const Args&... args) {
+    string txt(static_cast<string::Block*>(NULL));
+    ConcatText(txt, fmt, args...);
+    PrintConcat(txt, false);
+}
 template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
