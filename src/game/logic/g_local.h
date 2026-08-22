@@ -25,7 +25,8 @@
 #include <intrin.h>
 
 // IDA local types for the game.o light-grid cache.
-struct LightGridData {
+class LightGridData {
+public:
     math::Position3::Packed m_ambientColor;
     math::Vector4::Packed m_directionalColor[3];
     math::Dir3::Packed m_directionalDir[3];

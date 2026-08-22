@@ -8,6 +8,7 @@
 #include "ngl/ngl_scene.h"
 
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 // AeAssert (game.o)
@@ -24,6 +25,7 @@ bool Assert(const char* fmtstring, ...);
 class StaticModel;
 class PoolAllocator;
 class XModel;
+class SceneModel;
 struct XModelLod;
 class XModelParts;
 class LightGridMgr;
@@ -88,18 +90,43 @@ class LightGridData {
 public:
     math::Position3::Packed m_ambientColor;   // +0x00
     math::Vector4::Packed m_directionalColor[3];  // +0x0C
-    math::Dir3::Packed m_directionalDir[3];       // +0x24
-    int m_numDirectional;                         // +0x3C
+    math::Dir3::Packed m_directionalDir[3];       // +0x3C
+    int m_numDirectional;                         // +0x60
 };
+static_assert(sizeof(LightGridData) == 0x64,
+              "LightGridData size mismatch");
 class StaticModel {
 public:
     LightGridData lgridData;                 // +0x00
-    unsigned int lgridDataInitialized;       // +0x40
-    XModel* xmodel;                          // +0x44
-    float axis[3][3];                        // +0x48
-    float origin[3];                         // +0x60
-    float scale;                             // +0x6C
+    unsigned int lgridDataInitialized;       // +0x64
+    union {
+        XModel* xmodel;                      // +0x68
+        SceneModel* sceneModel;
+    };
+    float axis[3][3];                        // +0x6C
+    float origin[3];                         // +0x90
+    float scale;                             // +0x9C
+    math::Position3::Packed absmin;         // +0xA0
+    math::Position3::Packed absmax;         // +0xAC
+    float invAxis[3][3];                     // +0xB8
+    StaticModel* nextModel;                  // +0xDC
+    int pakId;                               // +0xE0
+    float viewCount;                         // +0xE4
+    int instance;                            // +0xE8
+    void* nano_dmesh_client;                 // +0xEC
 };
+static_assert(offsetof(StaticModel, lgridDataInitialized) == 0x64,
+              "StaticModel::lgridDataInitialized offset mismatch");
+static_assert(offsetof(StaticModel, xmodel) == 0x68,
+              "StaticModel::xmodel offset mismatch");
+static_assert(offsetof(StaticModel, axis) == 0x6C,
+              "StaticModel::axis offset mismatch");
+static_assert(offsetof(StaticModel, origin) == 0x90,
+              "StaticModel::origin offset mismatch");
+static_assert(offsetof(StaticModel, scale) == 0x9C,
+              "StaticModel::scale offset mismatch");
+static_assert(sizeof(StaticModel) == 0xF0,
+              "StaticModel size mismatch");
 class XModelParts {
 public:
     uint8_t _pad[0x10];
