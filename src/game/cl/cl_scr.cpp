@@ -84,7 +84,7 @@ public:
     void*   mRenderText[5];  // +0x1B8 (InteractionRenderText*)
 
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
-    int DoRenderText(unsigned int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o 0x5397F0)
+    int DoRenderText(int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o 0x5397F0)
 };
 
 
@@ -217,9 +217,9 @@ void PauseMenu::UnPause()
 }
 
 // ea: 0x5397F0
-int InteractionController::DoRenderText(unsigned int index)
+int InteractionController::DoRenderText(int index)
 {
-    if (index > 4)
+    if (index < 0 || index >= 5)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InteractionController.h";
@@ -244,7 +244,7 @@ int InteractionController::DoRenderText(unsigned int index)
 }
 int InteractionController_DoRenderText(void* self, int index)
 {
-    return ((InteractionController*)self)->DoRenderText((unsigned int)index);
+    return ((InteractionController*)self)->DoRenderText(index);
 }
 void InteractionController_RenderText(void* self)
 {

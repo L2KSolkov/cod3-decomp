@@ -4888,7 +4888,7 @@ public:
     void ResetAnimationPlayer();           // 0x53F0E0
     void ClearRenderText(int index);  // 0x53F1E0
     void ClearAllRenderText();             // 0x53F280
-    int DoRenderText(unsigned int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
+    int DoRenderText(int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
 
     // accessor cluster (anim.o; smallest-first batch)
     AnimationPlayer::nalAnimCallback* GetNextPlayerCallback();  // 0x53C220
