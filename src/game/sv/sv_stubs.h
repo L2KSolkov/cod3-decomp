@@ -869,22 +869,12 @@ public:
         };
         uint8_t   _pad[0x40];
         DbElement mElements[0x200];  // +0x40
+        void (*mDebugCallback)(int, Sound*);  // +0x1040
         static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
         static SoundHandleDb* Inst();       // ?Inst@SoundHandleDb@SoundDevice@@SAPAV12@XZ
-        // HandleDb<Sound,512,SizedHandle<12,20>> inline methods (COMDAT in
-        // binary; ported from ea 0x6627B0/0x660710/0x661D80).
-        Handle AllocateHandle() {
-            Handle result;
-            for (int i = 0; i < 0x200; ++i) {
-                if ((_pad[i >> 3] & (1u << (i & 7))) == 0)
-                    continue;
-                _pad[i >> 3] &= (uint8_t)~(1u << (i & 7));
-                result.mVal = (unsigned int)((mElements[i].mKey << 12) | i);
-                return result;
-            }
-            result.mVal = 0xFFFFFFFFu;
-            return result;
-        }
+        SoundHandleDb();                 // game.o 0x006629F0
+        void Dump();                      // game.o 0x00662280
+        Handle AllocateHandle();          // game.o 0x006627B0
         void BindObjectToHandle(Handle handle, Sound* obj) {
             unsigned int idx = handle.mVal & 0xFFF;
             if (idx < 0x200

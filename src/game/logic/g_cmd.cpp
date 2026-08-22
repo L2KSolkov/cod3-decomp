@@ -397,6 +397,38 @@ static_assert(sizeof(CurveEffectListElem) == 0x1C,
               "CurveEffectListElem size mismatch");
 PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
 
+// ea: 0x00662890
+void reserved_dlist_CurveEffectListElem_delete_all(void* self)
+{
+    Curve::EffectList* list = reinterpret_cast<Curve::EffectList*>(self);
+    CurveEffectListElem* head =
+        reinterpret_cast<CurveEffectListElem*>(list->m_head);
+    CurveEffectListElem* end =
+        reinterpret_cast<CurveEffectListElem*>(&list->m_tail);
+    CurveEffectListElem* next =
+        head != nullptr
+            ? reinterpret_cast<CurveEffectListElem*>(
+                  reinterpret_cast<CurveNode*>(head)->m_next)
+            : nullptr;
+    if (head == end)
+    {
+        next = nullptr;
+        head = nullptr;
+    }
+    while (next != nullptr)
+    {
+        CurveEffectListElem* current = head;
+        head = next;
+        next = reinterpret_cast<CurveEffectListElem*>(
+            reinterpret_cast<CurveNode*>(next)->m_next);
+        if (current != nullptr)
+            CurveEffectListElem::sAllocator->Release(current);
+    }
+    list->m_head = &list->m_end;
+    list->m_tail = &list->m_head;
+    list->m_size = 0;
+}
+
 // game.o 0x00660210
 CurveEffectListElem::CurveEffectListElem()
 {

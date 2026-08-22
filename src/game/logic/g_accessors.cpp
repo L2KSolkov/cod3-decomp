@@ -3124,7 +3124,10 @@ template <typename T>
 void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
 {
     if (obj != nullptr)
+    {
+        obj->~T();
         PakManager::sInst->MemFree(id, obj, bUseActorHeap);
+    }
 }
 template void PakDelete<vehicle_follow>(TPakId, vehicle_follow*, bool);
 

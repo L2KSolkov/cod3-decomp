@@ -29,6 +29,7 @@ bool Error(const char* fmt, ...);
 }
 
 extern void tlFinalPrint(const char* text);
+extern void tlPrintf(const char* fmt, ...);
 extern void nglDebugAddBox(const math::Mat43& mat,
                            const math::DiagMat33& size,
                            unsigned int color);
@@ -2884,7 +2885,6 @@ void RE_SetViewModelInfoIndex(int a) { (void)a; }
 void re_ShutdownFn(int a) { (void)a; }
 void RenderCDHeatHazeShader() {}
 void reserved_dlist_Curve_erase(void* a, void* b) { (void)a; (void)b; }
-void reserved_dlist_CurveEffectListElem_delete_all(void* a) { (void)a; }
 void reserved_dlist_CurveEffectListElem_erase(void* a, void* b)
 {
     (void)a; (void)b;
@@ -4366,6 +4366,80 @@ void SoundDevice::DebugRender()
 }
 
 // ============================================================================
+// SoundHandleDb COMDATs (game.o)
+// ============================================================================
+// ea: 0x006629F0
+SoundDevice::SoundHandleDb::SoundHandleDb()
+{
+    for (int i = 0; i < 16; ++i)
+        _pad[i] = 0;
+    for (int i = 0; i < 0x200; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+    }
+    mDebugCallback = nullptr;
+    for (int i = 0; i < 0x200; ++i)
+        _pad[i >> 3] |= (uint8_t)(1u << (i & 7));
+}
+
+// ea: 0x00662280
+void SoundDevice::SoundHandleDb::Dump()
+{
+    if (mDebugCallback != nullptr)
+    {
+        tlPrintf("handle db contents:\n");
+        for (int i = 0; i < 0x200; ++i)
+        {
+            if ((_pad[i >> 3] & (1u << (i & 7))) == 0)
+                mDebugCallback(i, mElements[i].mObject);
+        }
+    }
+    AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+    AeAssert::gCurrentLine = 193;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+        __debugbreak();
+}
+
+// ea: 0x006627B0
+Handle SoundDevice::SoundHandleDb::AllocateHandle()
+{
+    int nextIndex = -1;
+    for (int i = 0; i < 0x200; ++i)
+    {
+        if ((_pad[i >> 3] & (1u << (i & 7))) != 0)
+        {
+            nextIndex = i;
+            _pad[i >> 3] &= (uint8_t)~(1u << (i & 7));
+            break;
+        }
+    }
+    if ((unsigned int)nextIndex >= 0x200u)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 98;
+        AeAssert::gCurrentExpr =
+            "nextIndex >= 0 && nextIndex < _MaxEltements";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+    }
+    if (nextIndex < 0)
+    {
+        Dump();
+        Handle result;
+        result.mVal = 0xFFFFFFFFu;
+        return result;
+    }
+    Handle result;
+    result.mVal = (unsigned int)((mElements[nextIndex].mKey << 12)
+                                 | nextIndex);
+    return result;
+}
+
 SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
 SoundDevice* SoundDevice::sInst = nullptr;                     // @ 0xF4EBDC
 
