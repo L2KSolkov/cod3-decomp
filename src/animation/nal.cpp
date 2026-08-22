@@ -3744,6 +3744,38 @@ void nalReleaseAllSceneAnims()
 // ============================================================================
 // nal streaming
 // ============================================================================
+
+template <typename T>
+T nalMax(T a, T b)
+{
+    return a <= b ? b : a;
+}
+
+template <typename T>
+T nalAlign(T a, unsigned int b)
+{
+    return static_cast<T>(~(b - 1u)
+                          & (static_cast<unsigned int>(a) + b - 1u));
+}
+
+// ea: 0x008741A0
+template <>
+unsigned int nalMax<unsigned int>(unsigned int a, unsigned int b)
+{
+    unsigned int result = a;
+    if (a <= b)
+        return b;
+    return result;
+}
+
+// ea: 0x008741C0
+template <>
+int nalAlign<int>(int a, unsigned int b)
+{
+    return static_cast<int>(~(b - 1u)
+                            & (static_cast<unsigned int>(a) + b - 1u));
+}
+
 // ea: 0x00873470
 nalStreamInstance::nalStreamInstance(
     int bufferSize,
