@@ -996,23 +996,23 @@ index	status	map_line
 995	SKIPPED	0002:00580a10 ??_E?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 996	SKIPPED	0002:00580a10 ??_G?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAEPAXI@Z 00D6FF10 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 997	VERIFIED	0002:00580a60 ??1?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAE@XZ 00D6FF60 f i mp_util_wad.o
-998	PORTED	0002:00580ad0 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAE@XZ 00D6FFD0 f i mp_util_wad.o
-999	PORTED	0002:00580b00 ??1?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAE@XZ 00D70000 f i mp_util_wad.o
-1000	PORTED	0002:00580b70 ??1?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAE@XZ 00D70070 f i mp_util_wad.o
+998	VERIFIED	0002:00580ad0 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAE@XZ 00D6FFD0 f i mp_util_wad.o	VERIFIED: IDA 0x00980AD0 performs base functor teardown for entity/bint/bint
+999	VERIFIED	0002:00580b00 ??1?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAE@XZ 00D70000 f i mp_util_wad.o	VERIFIED: IDA 0x00980B00 destroys captured mp_plane then the base functor
+1000	VERIFIED	0002:00580b70 ??1?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAE@XZ 00D70070 f i mp_util_wad.o	VERIFIED: IDA 0x00980B70 destroys captured mp_plane then the base functor
 1001	VERIFIED	0002:00580be0 ??1?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAE@XZ 00D700E0 f i mp_util_wad.o
-1002	PORTED	0002:00580c10 ??1?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAE@XZ 00D70110 f i mp_util_wad.o
-1003	PORTED	0002:00580c80 ??1?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAE@XZ 00D70180 f i mp_util_wad.o
-1004	PORTED	0002:00580d00 ??1?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAE@XZ 00D70200 f i mp_util_wad.o
+1002	VERIFIED	0002:00580c10 ??1?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAE@XZ 00D70110 f i mp_util_wad.o	VERIFIED: IDA 0x00980C10 destroys captured string then the base functor
+1003	VERIFIED	0002:00580c80 ??1?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAE@XZ 00D70180 f i mp_util_wad.o	VERIFIED: IDA 0x00980C80 destroys both captured strings then the base functor
+1004	VERIFIED	0002:00580d00 ??1?$AeThreadFunctor5@Ventity@Broc@@Vstring@2@V32@V32@Ubfloat@@@@UAE@XZ 00D70200 f i mp_util_wad.o	VERIFIED: IDA 0x00980D00 destroys captured strings then the base functor
 1005	VERIFIED	0002:00580d90 ??1?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@V32@@@UAE@XZ 00D70290 f i mp_util_wad.o
 1006	VERIFIED	0002:00580e20 ??1?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Uvector@2@@@UAE@XZ 00D70320 f i mp_util_wad.o
-1007	PORTED	0002:00580e90 ??1?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAE@XZ 00D70390 f i mp_util_wad.o
+1007	VERIFIED	0002:00580e90 ??1?$AeThreadFunctor2@Ventity@Broc@@Ubint@@@@UAE@XZ 00D70390 f i mp_util_wad.o	VERIFIED: IDA 0x00980E90 performs base functor teardown for entity/bint
 1008	VERIFIED	0002:00580ec0 ??1?$AeThreadFunctor2@Ventity@Broc@@Uvector@2@@@UAE@XZ 00D703C0 f i mp_util_wad.o
-1009	PORTED	0002:00580ef0 ??1?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAE@XZ 00D703F0 f i mp_util_wad.o
+1009	VERIFIED	0002:00580ef0 ??1?$AeThreadFunctor2@Ventity@Broc@@Ubbool@@@@UAE@XZ 00D703F0 f i mp_util_wad.o	VERIFIED: IDA 0x00980EF0 performs base functor teardown for entity/bbool
 1010	VERIFIED	0002:00580f20 ??1?$AeThreadFunctor2@Ventity@Broc@@UHashStr@@@@UAE@XZ 00D70420 f i mp_util_wad.o
-1011	PORTED	0002:00580f50 ??1?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAE@XZ 00D70450 f i mp_util_wad.o
-1012	PORTED	0002:00580f80 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAE@XZ 00D70480 f i mp_util_wad.o
-1013	PORTED	0002:00580fb0 ??1?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAE@XZ 00D704B0 f i mp_util_wad.o
-1014	PORTED	0002:00581020 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAE@XZ 00D70520 f i mp_util_wad.o
+1011	VERIFIED	0002:00580f50 ??1?$AeThreadFunctor5@Ventity@Broc@@V12@Ubint@@Ubbool@@U4@@@UAE@XZ 00D70450 f i mp_util_wad.o	VERIFIED: IDA 0x00980F50 performs base functor teardown for entity/entity/bint/bbool/bbool
+1012	VERIFIED	0002:00580f80 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubint@@UHashStr@@@@UAE@XZ 00D70480 f i mp_util_wad.o	VERIFIED: IDA 0x00980F80 performs base functor teardown for entity/bint/HashStr
+1013	VERIFIED	0002:00580fb0 ??1?$AeThreadFunctor6@Ventity@Broc@@Vstring@2@Ubbool@@Ubint@@U5@U5@@@UAE@XZ 00D704B0 f i mp_util_wad.o	VERIFIED: IDA 0x00980FB0 destroys captured string then the base functor
+1014	VERIFIED	0002:00581020 ??1?$AeThreadFunctor3@Ventity@Broc@@Ubfloat@@PBD@@UAE@XZ 00D70520 f i mp_util_wad.o	VERIFIED: IDA 0x00981020 performs base functor teardown for entity/bfloat/const-char
 1015	SKIPPED	0002:00581050 ?insert@?$_Hash@V?$_Hmap_traits@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AU?$pair@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@_N@std@@ABU?$pair@$$CBUHashStr@@Ventity@Broc@@@4@@Z 00D70550 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1016	SKIPPED	0002:00581570 ?erase@?$_Hash@V?$_Hmap_traits@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@V345@0@Z 00D70A70 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1017	SKIPPED	0002:00581640 ?lower_bound@?$_Hash@V?$_Hmap_traits@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@ABUHashStr@@@Z 00D70B40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
