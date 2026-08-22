@@ -373,14 +373,14 @@ index	status	map_line
 372	SKIPPED	0002:00597590 ?Get@playerhasbeenhere_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86A90 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_playerhasbeenhere
 373	PORTED	0002:005975e0 ?IsEEDefined_playerhasbeenhere@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86AE0 f mp_anim_wad.o	PORTED: added IDA 0x009975E0 vehicle-node int defined-check using key 0x2F223067; source commit d8fed18b
 374	SKIPPED	0002:00597650 ?IsDefined@playerhasbeenhere_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86B50 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_playerhasbeenhere
-375	PORTED	0002:00597690 ?GetEE_lookahead@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D86B90 f mp_anim_wad.o
-376	PORTED	0002:005976c0 ?Get@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D86BC0 f i mp_anim_wad.o
-377	PORTED	0002:00597700 ?IsEEDefined_lookahead@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86C00 f mp_anim_wad.o
-378	PORTED	0002:00597770 ?IsDefined@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86C70 f i mp_anim_wad.o
-379	PORTED	0002:005977a0 ?GetEE_friendlywait@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86CA0 f mp_anim_wad.o
-380	PORTED	0002:005977d0 ?Get@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86CD0 f i mp_anim_wad.o
-381	PORTED	0002:00597820 ?IsEEDefined_friendlywait@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86D20 f mp_anim_wad.o
-382	PORTED	0002:00597890 ?IsDefined@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86D90 f i mp_anim_wad.o
+375	PORTED	0002:00597690 ?GetEE_lookahead@@YA?AUbfloat@@Vvehiclenode@Broc@@@Z 00D86B90 f mp_anim_wad.o	PORTED: added IDA 0x00997690 vehicle-node lookahead accessor via m_vnode_get_lookahead; source commit e64a411e
+376	SKIPPED	0002:005976c0 ?Get@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE?BUbfloat@@XZ 00D86BC0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_lookahead
+377	PORTED	0002:00597700 ?IsEEDefined_lookahead@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86C00 f mp_anim_wad.o	PORTED: added IDA 0x00997700 vehicle-node lookahead defined-check using mIsVehicleNodeDefined; source commit e64a411e
+378	SKIPPED	0002:00597770 ?IsDefined@lookahead_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86C70 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_lookahead
+379	PORTED	0002:005977a0 ?GetEE_friendlywait@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86CA0 f mp_anim_wad.o	PORTED: added IDA 0x009977A0 vehicle-node int-field accessor using key 0x1C74E032; source commit e64a411e
+380	SKIPPED	0002:005977d0 ?Get@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86CD0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_friendlywait
+381	PORTED	0002:00597820 ?IsEEDefined_friendlywait@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86D20 f mp_anim_wad.o	PORTED: added IDA 0x00997820 vehicle-node int defined-check using key 0x1C74E032; source commit e64a411e
+382	SKIPPED	0002:00597890 ?IsDefined@friendlywait_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D86D90 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_friendlywait
 383	PORTED	0002:005978d0 ?GetEE_offramp_used@@YA?AUbint@@Vvehiclenode@Broc@@@Z 00D86DD0 f mp_anim_wad.o
 384	PORTED	0002:00597900 ?Get@offramp_used_struct@__unnamed@vehiclenode@Broc@@QBE?BUbint@@XZ 00D86E00 f i mp_anim_wad.o
 385	PORTED	0002:00597950 ?IsEEDefined_offramp_used@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D86E50 f mp_anim_wad.o
