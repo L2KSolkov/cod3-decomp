@@ -758,7 +758,7 @@ index	status	map_line
 757	FIXED	0002:0056ac60 ?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z 00D5A160 f mp_util_wad.o	FIXED: IDA 0x0096AC60 uses pLevel->_base.entity (or null) for notify/endon
 758	VERIFIED	0002:0056ad50 ?PickFlagToLaunch@_mp_scf@@YAXXZ 00D5A250 f mp_util_wad.o
 759	PORTED	0002:0056ae40 ?Code_HostDropItem@Broc@@YAXHHABUvector@1@00@Z 00D5A340 f i mp_util_wad.o
-760	PORTED	0002:0056ae80 ?GetRef@home_angles_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D5A380 f i mp_util_wad.o
+760	PORTED	0002:0056ae80 ?GetRef@home_angles_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D5A380 f i mp_util_wad.o	PORTED: added IDA 0x0096AE80 GetRef<vector> key 0x385575E2
 761	PORTED	0002:0056aeb0 ?LaunchFlag@_mp_scf@@YAXUbint@@Uvector@Broc@@11@Z 00D5A3B0 f mp_util_wad.o
 762	VERIFIED	0002:0056b020 ?InitializeFlags@_mp_scf@@YAXXZ 00D5A520 f mp_util_wad.o
 763	PORTED	0002:0056b3c0 ?ResetFlags@_mp_scf@@YAXXZ 00D5A8C0 f mp_util_wad.o
