@@ -274,6 +274,15 @@ struct reserved_dlist {
         iterator(dlist_node* cur, dlist_node* next)
             : m_node(cur), m_next(next) {}
 
+        iterator(T* obj)
+            : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
+              m_next(m_node->mNext) {}
+
+        bool compare(const iterator& rhs) const
+        {
+            return rhs.m_next == m_next;
+        }
+
         // ea: 0x005EA260 (reserved_dlist<AeThreadState>)
         iterator operator++(int)
         {
@@ -312,6 +321,11 @@ struct reserved_dlist {
         // ea: 0x005EA3E0 (reserved_dlist<AeThread>)
         const_iterator(const const_iterator& it)
             : m_node(it.m_node), m_next(it.m_next) {}
+
+        bool compare(const const_iterator& rhs) const
+        {
+            return rhs.m_next == m_next;
+        }
 
         // ea: 0x005EA360 (reserved_dlist<AeThreadState>)
         const_iterator& operator++()
