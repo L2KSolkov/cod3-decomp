@@ -361,9 +361,9 @@ void CL_MouseEvent(int dx, int dy)
 }
 
 // ea: 0x52BEB0
-void CL_JoystickEvent(unsigned int axis, int value)
+void CL_JoystickEvent(int axis, int value)
 {
-    if (axis >= 6)
+    if (axis < 0 || axis >= 6)
         Com_Error((errorParm_t)1, "CL_JoystickEvent: bad axis %i", axis);
     cl[currCl].joystickAxis[axis] = value;
 }
