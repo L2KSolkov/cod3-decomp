@@ -1720,22 +1720,11 @@ nalGeneric::nalGenericAnim* anim = nullptr;
 int S45_1_guard = 0;
 
 // Cross-object nal stubs (correct manglings; bodies ported with nal library)
-inline nalGeneric::nalGenericPose::nalGenericPose(
-    const nalGenericSkeleton* skel, int flags)
-{
-    (void)skel; (void)flags;
-}
 inline nalGeneric::nalGenericPose::~nalGenericPose() {}
 inline void nalGeneric::nalGenericSkeleton::GetBoneMatrices(
     const nalGenericPose& pose, nalMatrix4x4* matrices, int lod)
 {
     (void)pose; (void)matrices; (void)lod;
-}
-inline void nalGeneric::nalGenericInstance::GetPose(
-    int index, nalGenericPose& pose, const nalGenericPose& defaultPose,
-    int lod)
-{
-    (void)index; (void)pose; (void)defaultPose; (void)lod;
 }
 nalGeneric::nalAnimClass<nalGeneric::nalAnyPose>*
 cdGetAnim(TPakId pakId, const tlFixedString& name)

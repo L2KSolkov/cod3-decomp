@@ -162,11 +162,6 @@ void nalGenericSkeleton::GetBoneHandle(nalGenericBoneHandle& handle,
 {
     (void)handle; (void)boneName;
 }
-void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
-           const nalGenericPose& b)
-{
-    (void)out; (void)blend; (void)a; (void)b;
-}
 void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
                 const nalGenericPose& b)
 {
