@@ -1351,7 +1351,7 @@ index	status	map_line
 1350	VERIFIED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o	VERIFIED: IDA allocation, assertion metadata, base construction/vtable path, singleton assignment, and failure reset match
 1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o	VERIFIED: IDA clears both BitSet words and first byte of all three DbQueryString fields; member default construction has the same final state
 1352	VERIFIED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o	VERIFIED: IDA specified/weak bit updates, integer field routing, and CachedQuery.h:64 assertion match
-1353	PORTED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o  PORTED: exact string field copies, weak bits, and bad-id assert
+1353	VERIFIED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o	VERIFIED: IDA specified/weak bit updates, DbQueryString copies for IDs 7/8/9, and CachedQuery.h:101 assertion match
 1354	FIXED	0002:000e8390 ?ConstructQuery@CachedQuery@EffectEventSys@@QBEXAAVDbQuery@@@Z 008D7890 f i core.o	FIXED: uses exact DbQuery::Where template instantiations and IDA DbQueryString field types
 1355	PORTED	0002:000e8620 ??0PendingQuery@EffectEventSys@@QAE@XZ 008D7B20 f i core.o	PORTED: exact IDA constructor; corrected enum values and constructed PendingQuery array elements instead of zeroing them
 1356	VERIFIED	0002:000e86f0 ?CreateInst@PhysDataBankManager@@SAXXZ 008D7BF0 f i core.o	VERIFIED: IDA allocation, assertion metadata, base construction/vtable path, singleton assignment, and failure reset match
