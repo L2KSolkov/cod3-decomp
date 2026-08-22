@@ -208,6 +208,9 @@ namespace mp_util_wad {
 
 using ::RegisterHashString;
 
+// IDA global ?pLevel@mp_util_wad@@3PAULevel@1@A at 0x010F1EA0.
+Level* pLevel = nullptr;
+
 // IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
 static __int16 s_flagKey;
 // IDA global byte_3A6023: pointer-backed key storage for the "goal" field.
@@ -6634,16 +6637,6 @@ extern void iprintlnbold(const Broc::string& s);
 extern void ReverbSetParams(const Broc::string& name, bool immediate);
 extern unsigned int SoundPlay(const Broc::string& name, float volume);
 
-// Level struct forward (full 560-byte definition deferred; only touched fields).
-struct LevelAudioFields {
-    Broc::string background_track;
-    Broc::string reverb_setting;
-    Broc::string ambient_setting;
-    Broc::bfloat audio_ambient_max;
-    Broc::bfloat audio_ambient_min;
-};
-extern LevelAudioFields* pLevelAudio;
-
 void AudioPrint(Broc::string s) {
     if (GetCvarInt("sound_debug") != 0)
         Broc::iprintlnbold(s);
@@ -6653,13 +6646,13 @@ void AudioPrint(Broc::string s) {
 void CallbackSetLevelAudio(const char* background_track, const char* reverb,
                            const char* ambient, int ambient_min, int ambient_max) {
     if (background_track != NULL && *background_track != 0)
-        pLevelAudio->background_track = background_track;
+        mp_util_wad::pLevel->background_track = background_track;
     if (reverb != NULL && *reverb != 0)
-        pLevelAudio->reverb_setting = reverb;
+        mp_util_wad::pLevel->reverb_setting = reverb;
     if (ambient != NULL && *ambient != 0)
-        pLevelAudio->ambient_setting = ambient;
-    pLevelAudio->audio_ambient_max = (float)ambient_max;
-    pLevelAudio->audio_ambient_min = (float)ambient_min;
+        mp_util_wad::pLevel->ambient_setting = ambient;
+    mp_util_wad::pLevel->audio_ambient_max = (float)ambient_max;
+    mp_util_wad::pLevel->audio_ambient_min = (float)ambient_min;
 }
 
 // audio_crossfade_wait - ea: 0x937020
