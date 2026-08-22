@@ -161,7 +161,7 @@ index	status	map_line
 160	VERIFIED	0002:00535560 ?SetModel@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D24A60 f i mp_util_wad.o	VERIFIED: IDA 0x00935560 forwards the entity handle, model name, and TPakInfo to mSetModel
 161	VERIFIED	0002:005355a0 ?MoveTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24AA0 f i mp_util_wad.o	VERIFIED: IDA 0x009355A0 forwards handle, position, total time, acceleration, and deceleration to mMoveTo
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
-163	VERIFIED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o
+163	FIXED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o	FIXED: replaced empty body with IDA 0x00935680 endon, random roll/time, RotateTo, and wait loop
 164	VERIFIED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o	VERIFIED: IDA 0x00935840 stores the integer rhs in bfloat::mVal and returns this
 165	VERIFIED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o
 166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
