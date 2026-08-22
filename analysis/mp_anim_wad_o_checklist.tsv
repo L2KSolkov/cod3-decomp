@@ -317,14 +317,14 @@ index	status	map_line
 316	SKIPPED	0002:00596320 ?IsDefined@animscript_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85820 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_animscript
 317	PORTED	0002:00596350 ?GetEE_script_ambush_trigger_distance@@YA?AUbint@@Vpathnode@Broc@@@Z 00D85850 f mp_anim_wad.o	PORTED: added IDA 0x00996350 pathnode int-field access using key 0xC609EC11; source commit 5eb6edd7
 318	SKIPPED	0002:00596380 ?Get@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE?BUbint@@XZ 00D85880 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_ambush_trigger_distance
-319	PORTED	0002:005963d0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D858D0 f mp_anim_wad.o
-320	PORTED	0002:00596440 ?IsDefined@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85940 f i mp_anim_wad.o
-321	PORTED	0002:00596480 ?GetEE_type@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85980 f mp_anim_wad.o
-322	PORTED	0002:005964d0 ?Get@type_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D859D0 f i mp_anim_wad.o
-323	PORTED	0002:00596580 ?IsEEDefined_type@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85A80 f mp_anim_wad.o
-324	PORTED	0002:005965f0 ?IsDefined@type_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85AF0 f i mp_anim_wad.o
-325	PORTED	0002:00596620 ?GetEE_angles@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D85B20 f mp_anim_wad.o
-326	PORTED	0002:00596650 ?Get@angles_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85B50 f i mp_anim_wad.o
+319	PORTED	0002:005963d0 ?IsEEDefined_script_ambush_trigger_distance@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D858D0 f mp_anim_wad.o	PORTED: added IDA 0x009963D0 pathnode int defined-check using key 0xC609EC11; source commit 102a0b63
+320	SKIPPED	0002:00596440 ?IsDefined@script_ambush_trigger_distance_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85940 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_ambush_trigger_distance
+321	PORTED	0002:00596480 ?GetEE_type@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85980 f mp_anim_wad.o	PORTED: added IDA 0x00996480 pathnode type API access; source commit 102a0b63
+322	SKIPPED	0002:005964d0 ?Get@type_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D859D0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_type
+323	PORTED	0002:00596580 ?IsEEDefined_type@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85A80 f mp_anim_wad.o	PORTED: added IDA 0x00996580 pathnode type defined-check using mIsPathNodeDefined; source commit 102a0b63
+324	SKIPPED	0002:005965f0 ?IsDefined@type_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85AF0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_type
+325	PORTED	0002:00596620 ?GetEE_angles@@YA?AUvector@Broc@@Vpathnode@2@@Z 00D85B20 f mp_anim_wad.o	PORTED: added IDA 0x00996620 pathnode angles API access; source commit 102a0b63
+326	SKIPPED	0002:00596650 ?Get@angles_struct@__unnamed@pathnode@Broc@@QBE?BUvector@4@XZ 00D85B50 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_angles
 327	PORTED	0002:005966a0 ?IsEEDefined_angles@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D85BA0 f mp_anim_wad.o
 328	PORTED	0002:00596710 ?IsDefined@angles_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D85C10 f i mp_anim_wad.o
 329	PORTED	0002:00596740 ?GetEE_reservename@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D85C40 f mp_anim_wad.o
