@@ -16,10 +16,10 @@ index	status	map_line
 15	PORTED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o
 16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o  PORTED: restored exact IDA lock/assert state transition
 17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o  PORTED: restored exact IDA unlock/assert state transition
-18	PORTED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o
-19	PORTED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o
-20	PORTED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o
-21	PORTED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o
+18	PORTED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o  PORTED: restored exact IDA component extraction into packed storage
+19	PORTED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o  PORTED: restored exact IDA packed assignment
+20	PORTED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o  PORTED: restored exact IDA constant W accessor
+21	PORTED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o  PORTED: restored exact IDA packed-position constructor
 22	PORTED	0002:00202210 ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ 009F1710 f i game.o
 23	VERIFIED	0002:00202220 ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z 009F1720 f i game.o
 24	PORTED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o
