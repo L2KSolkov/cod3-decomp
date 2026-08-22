@@ -714,7 +714,7 @@ index	status	map_line
 713	FIXED	0002:00564970 ?CreateNanoForce@Broc@@YAIABVstring@1@ABUvector@1@1@Z 00D53E70 f i mp_util_wad.o	FIXED: IDA 0x00964970 direct mCreateNanoForce forwarding added
 714	VERIFIED	0002:005649a0 ?main@_mp_scf@@YAXVentity@Broc@@@Z 00D53EA0 f mp_util_wad.o
 715	PORTED	0002:005658c0 ??HBroc@@YA?AVstring@0@ABV10@H@Z 00D54DC0 f i mp_util_wad.o	PORTED: added the IDA-backed string copy, integer append, and return at 0x009658C0
-716	PORTED	0002:00565960 ??HBroc@@YA?AVstring@0@ABV10@Uvector@0@@Z 00D54E60 f i mp_util_wad.o
+716	PORTED	0002:00565960 ??HBroc@@YA?AVstring@0@ABV10@Uvector@0@@Z 00D54E60 f i mp_util_wad.o	PORTED: matched IDA 0x00965960 temporary string, localized ConcatText<string,vector>, and return path
 717	FIXED	0002:00565a00 ?StartGame__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D54F00 f i mp_util_wad.o	FIXED: matched IDA return type AeThreadFunctor1<Broc::entity>* and constructor path at 0x00965A00
 718	FIXED	0002:00565aa0 ?StartGame@_mp_scf@@YAXVentity@Broc@@@Z 00D54FA0 f mp_util_wad.o	FIXED: IDA 0x00965AA0 copies pLevel->_base.entity (or null) into RunFrame__functor
 719	FIXED	0002:00565b60 ?SetupRound@_mp_scf@@YAXXZ 00D55060 f mp_util_wad.o	FIXED: IDA 0x00965B60 copies pLevel->_base.entity (or null) into WaitThenPickFlagToLaunch__functor
@@ -1120,9 +1120,9 @@ index	status	map_line
 1119	SKIPPED	0002:005847f0 ??0_Node@?$_List_nod@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@QAE@PAU012@0ABU?$pair@$$CBUHashStr@@Vstring@Broc@@@2@@Z 00D73CF0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1120	SKIPPED	0002:00584840 ??0?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@QAE@ABU01@@Z 00D73D40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00584890 ??0?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@QAE@ABU01@@Z 00D73D90 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1122	PORTED	0002:005848e0 ??$ConcatText@Vstring@Broc@@Uvector@2@@Broc@@YAXAAVstring@0@ABV10@ABUvector@0@@Z 00D73DE0 f i mp_util_wad.o
-1123	PORTED	0002:00584940 ?GetText@Broc@@YAPBDABVstring@1@PAD@Z 00D73E40 f i mp_util_wad.o
-1124	PORTED	0002:00584970 ?GetText@Broc@@YAPBDABUvector@1@PAD@Z 00D73E70 f i mp_util_wad.o
+1122	PORTED	0002:005848e0 ??$ConcatText@Vstring@Broc@@Uvector@2@@Broc@@YAXAAVstring@0@ABV10@ABUvector@0@@Z 00D73DE0 f i mp_util_wad.o	PORTED: matched IDA 0x009848E0 256-byte scratch buffer, localized string assignment, vector formatting, and append
+1123	PORTED	0002:00584940 ?GetText@Broc@@YAPBDABVstring@1@PAD@Z 00D73E40 f i mp_util_wad.o	PORTED: matched IDA 0x00984940 c_str-to-mLocalize forwarding; unused buffer parameter preserved
+1124	PORTED	0002:00584970 ?GetText@Broc@@YAPBDABUvector@1@PAD@Z 00D73E70 f i mp_util_wad.o	PORTED: matched IDA 0x00984970 sprintf("%f,%f,%f") formatting and buffer return
 1125	PORTED	0002:005849d0 ??$SetVal@Ubfloat@@@ExtendedEntity@Broc@@QAEPAIIABUbfloat@@@Z 00D73ED0 f i mp_util_wad.o
 1126	PORTED	0002:00584aa0 ??$GetVal@Ubfloat@@@ExtendedEntity@Broc@@QBE?AUbfloat@@I@Z 00D73FA0 f i mp_util_wad.o
 1127	PORTED	0002:00584b30 ??$GetRef@Ubfloat@@@ExtendedEntity@Broc@@QAEAAUbfloat@@I@Z 00D74030 f i mp_util_wad.o
