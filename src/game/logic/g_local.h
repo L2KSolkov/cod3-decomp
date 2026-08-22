@@ -4199,6 +4199,10 @@ public:
         m_slot_array = (T*)this;
         m_alloc_count = 0;
     }
+    T* add_fast();
+    void remove_all_ndc();
+    T& operator[](int i);
+    int get_available_slots() const;
     const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
     const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
     void remove_all() { m_alloc_count = 0; }  // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)

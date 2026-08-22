@@ -2684,6 +2684,35 @@ const T& phys_static_array<T, CAPACITY>::operator[](int i) const
     return m_slot_array[i];
 }
 template <typename T, int CAPACITY>
+T* phys_static_array<T, CAPACITY>::add_fast()
+{
+    if (m_alloc_count >= CAPACITY
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                     44, "m_alloc_count < m_slot_array_size",
+                     "phys_array overflow"))
+        __debugbreak();
+    return &m_slot_array[m_alloc_count++];
+}
+template <typename T, int CAPACITY>
+void phys_static_array<T, CAPACITY>::remove_all_ndc()
+{
+    m_alloc_count = 0;
+}
+template <typename T, int CAPACITY>
+T& phys_static_array<T, CAPACITY>::operator[](int i)
+{
+    if ((i < 0 || i >= m_alloc_count)
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                     108, "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    return m_slot_array[i];
+}
+template <typename T, int CAPACITY>
+int phys_static_array<T, CAPACITY>::get_available_slots() const
+{
+    return CAPACITY - m_alloc_count;
+}
+template <typename T, int CAPACITY>
 void phys_static_array<T, CAPACITY>::call_destructors()
 {
 }
@@ -2698,6 +2727,8 @@ phys_static_array<T, CAPACITY>::~phys_static_array()
 }
 template class phys_static_array<proxy_obj_t, 256>;
 template class phys_static_array<bounded_proxy_obj_t, 128>;
+template class phys_static_array<int, 256>;
+template class phys_static_array<int, 128>;
 
 // cFreeList real bodies (g.o 0x4AD540-0x4ADA70)
 template <typename T>
