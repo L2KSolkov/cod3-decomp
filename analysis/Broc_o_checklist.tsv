@@ -120,10 +120,10 @@ index	status	map_line
 119	VERIFIED	0002:0052beb0 ??0vehiclenode@Broc@@QAE@H@Z 00D1B3B0 f i Broc.o
 120	PORTED	0002:0052bee0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z 00D1B3E0 f Broc.o
 121	PORTED	0002:0052c0b0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z 00D1B5B0 f Broc.o
-122	PORTED	0002:0052c290 ?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z 00D1B790 f Broc.o
+122	FIXED	0002:0052c290 ?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z 00D1B790 f Broc.o	FIXED: IDA-backed mGetEnt wrapper, capacity assertion, and entity construction; source 80f25ec7
 123	PORTED	0002:0052c3b0 ?GetAllDronesWithinDistance@Broc@@YAXABUvector@1@MAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B8B0 f Broc.o
-124	PORTED	0002:0052c4d0 ?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B9D0 f Broc.o
-125	PORTED	0002:0052c5d0 ?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1BAD0 f Broc.o
+124	FIXED	0002:0052c4d0 ?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B9D0 f Broc.o	FIXED: IDA-backed mGetPlayerArray wrapper, capacity assertion, and entity construction; source 80f25ec7
+125	FIXED	0002:0052c5d0 ?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1BAD0 f Broc.o	FIXED: IDA-backed mGetLocalPlayerArray wrapper, capacity assertion, and entity construction; source 80f25ec7
 126	PORTED	0002:0052c6d0 ?size@?$dyn_array@Ventity@Broc@@@Broc@@QBEHXZ 00D1BBD0 f i Broc.o
 127	PORTED	0002:0052c6f0 ?Destroy@?$BrocDtor@Vstring@Broc@@@@UAEXPAX@Z 00D1BBF0 f i Broc.o
 128	PORTED	0002:0052c720 ??0?$ae_pair@PAXH@@QAE@ABQAXABH@Z 00D1BC20 f i Broc.o

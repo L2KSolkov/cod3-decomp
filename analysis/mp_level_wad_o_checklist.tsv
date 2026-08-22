@@ -16,7 +16,7 @@ index	status	map_line
 15	VERIFIED	0002:00525380 ??1AeThreadFunctor@@UAE@XZ 00D14880 f i mp_level_wad.o
 16	SKIPPED	0002:005253b0 ??_EAeThreadFunctor@@UAEPAXI@Z 00D148B0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	SKIPPED	0002:005253b0 ??_GAeThreadFunctor@@UAEPAXI@Z 00D148B0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-18	PORTED	0002:00525400 ?thread_create@Broc@@YAI_NPBDH1PAVAeThreadFunctor@@@Z 00D14900 f i mp_level_wad.o
+18	FIXED	0002:00525400 ?thread_create@Broc@@YAI_NPBDH1PAVAeThreadFunctor@@@Z 00D14900 f i mp_level_wad.o	FIXED: IDA-backed AeThreadFunctor signature and mThreadCreateInternal forwarding; source 80f25ec7
 19	VERIFIED	0002:00525450 ?Destroy@BrocDtorBase@@UAEXPAX@Z 00D14950 f i mp_level_wad.o
 20	PORTED	0002:00525470 ?GetEE@entity@Broc@@QBEPBVExtendedEntity@2@XZ 00D14970 f i mp_level_wad.o	PORTED: added IDA 0x00925470 ExtendedEntity lookup with nullEnt fallback
 21	SKIPPED	0002:005254c0 ??_GAnim@mp_anim_wad@@UAEPAXI@Z 00D149C0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
