@@ -17,7 +17,7 @@ index	status	map_line
 16	VERIFIED	0002:00128500 ?CL_CapTurnRate@@YAXMM@Z 00917A00 f cl.o
 17	VERIFIED	0002:00128530 ?CL_SetViewAngles@@YAXQAM@Z 00917A30 f cl.o
 18	VERIFIED	0002:001285b0 ?CL_SetViewAnglesAxis@@YAXHM@Z 00917AB0 f cl.o
-19	PORTED	0002:00128670 ?CL_SaveWrite@@YAXPBXH@Z 00917B70 f cl.o PORTED: IDA-verified assert metadata, 16-byte hunk allocation, and qmemcpy path
+19	FIXED	0002:00128670 ?CL_SaveWrite@@YAXPBXH@Z 00917B70 f cl.o FIXED: corrected IDA alignment-first mem_heap_malloc_ctx call order
 20	VERIFIED	0002:001286f0 ?CL_LoadRead@@YAXPBXH@Z 00917BF0 f cl.o
 21	VERIFIED	0002:00128710 ?CL_GetCurrentSnapshotNumber@@YAXPAH0@Z 00917C10 f cl.o
 22	VERIFIED	0002:00128750 ?CL_GetSnapshot@@YAHHPAUsnapshot_t@@@Z 00917C50 f cl.o
