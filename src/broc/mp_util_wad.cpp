@@ -2198,6 +2198,17 @@ const Broc::string* Broc::entity::__unnamed::targetname_struct::Get(
     return result;
 }
 
+// Broc::entity::__unnamed::classname_struct::Get - ea: 0x97D060
+const Broc::string* Broc::entity::__unnamed::classname_struct::Get(
+    Broc::string* result) const {
+    Broc::string temp;
+    Broc::string* rhs = Broc::gBrocAPI.m_entity_get_classname(
+        &temp, mHandle);
+    new (result) Broc::string(*rhs);
+    temp.~string();
+    return result;
+}
+
 // Broc::entity::__unnamed::targetname_struct::operator= - ea: 0x955090
 const Broc::string& Broc::entity::__unnamed::targetname_struct::operator=(
     const Broc::string& rhs) {
@@ -13759,17 +13770,108 @@ int SortMarkers() {
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                             const Broc::string* self_team) {
     Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::dyn_array<Broc::entity> temp_spawnpoints;
+    Broc::entity spawnpoint;
     Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
-    if (*self_team == "axis")
+    Broc::bint team(1);
+    Broc::string selfTeam;
+    mp_util_wad::entity_get_team(&selfTeam, *self);
+    if (selfTeam == "axis") {
         spawnType = mp_util_wad::pLevel->spawnTypeAxis;
-    HashStr key;
-    key.mVal = 0xF756C677;
-    Broc::GetEntArray(&spawnType, key.mVal, &spawnpoints, 0);
-    _mp_spawnlogic::GetSpawnpointNearTeam(result, self, self_team,
-                                         &spawnpoints);
-    spawnType.~string();
-    spawnpoints.~dyn_array();
-    return result;
+        team = -1;
+    }
+
+    if ((int)mp_util_wad::pLevel->warIndex < 0 ||
+        (int)mp_util_wad::pLevel->warIndex >
+            (int)mp_util_wad::pLevel->lastFlagIndex)
+        return _mp_common::GetSpawnPoint(result, self, self_team);
+
+    Broc::entity area = mp_util_wad::pLevel->warAreas[
+        (unsigned int)(int)mp_util_wad::pLevel->warIndex];
+    Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+    Broc::string targetname;
+    mp_util_wad::entity_get_targetname(&targetname, trigger);
+    Broc::GetEntArray(&targetname, 0x15B1F8A7u, &temp_spawnpoints, 0);
+
+    for (Broc::bint i(0); (int)i < Broc::size(temp_spawnpoints);
+         i = (int)i + 1) {
+        Broc::entity candidate =
+            temp_spawnpoints[(unsigned int)(int)i];
+        Broc::entity::__unnamed::classname_struct classnameField = {
+            candidate.GetHandle()};
+        Broc::string classname;
+        classnameField.Get(&classname);
+        if (classname == spawnType)
+            Broc::push(spawnpoints, candidate);
+    }
+
+    if (Broc::size(spawnpoints) == 0) {
+        if ((int)team == 1) {
+            for (Broc::bint scan((int)mp_util_wad::pLevel->warIndex);
+                 (int)scan >= 0 && Broc::size(spawnpoints) == 0;
+                 scan = (int)scan - 1) {
+                Broc::entity candidateArea = mp_util_wad::pLevel->warAreas[
+                    (unsigned int)(int)scan];
+                Broc::entity candidateTrigger =
+                    *mp_util_wad::GetEE_trigger(candidateArea);
+                if ((int)*mp_util_wad::GetEE_capTeam(candidateTrigger) !=
+                    (int)team)
+                    continue;
+                Broc::string candidateTarget;
+                mp_util_wad::entity_get_targetname(&candidateTarget,
+                                                   candidateTrigger);
+                Broc::GetEntArray(&candidateTarget, 0x15B1F8A7u,
+                                  &temp_spawnpoints, 0);
+                for (Broc::bint j(0); (int)j < Broc::size(temp_spawnpoints);
+                     j = (int)j + 1) {
+                    Broc::entity candidate =
+                        temp_spawnpoints[(unsigned int)(int)j];
+                    Broc::entity::__unnamed::classname_struct classnameField = {
+                        candidate.GetHandle()};
+                    Broc::string classname;
+                    classnameField.Get(&classname);
+                    if (classname == spawnType)
+                        Broc::push(spawnpoints, candidate);
+                }
+            }
+        } else {
+            for (Broc::bint scan((int)mp_util_wad::pLevel->warIndex);
+                 (int)scan < Broc::size(mp_util_wad::pLevel->warAreas) &&
+                 Broc::size(spawnpoints) == 0;
+                 scan = (int)scan + 1) {
+                Broc::entity candidateArea = mp_util_wad::pLevel->warAreas[
+                    (unsigned int)(int)scan];
+                Broc::entity candidateTrigger =
+                    *mp_util_wad::GetEE_trigger(candidateArea);
+                if ((int)*mp_util_wad::GetEE_capTeam(candidateTrigger) !=
+                    (int)team)
+                    continue;
+                Broc::string candidateTarget;
+                mp_util_wad::entity_get_targetname(&candidateTarget,
+                                                   candidateTrigger);
+                Broc::GetEntArray(&candidateTarget, 0x15B1F8A7u,
+                                  &temp_spawnpoints, 0);
+                for (Broc::bint j(0); (int)j < Broc::size(temp_spawnpoints);
+                     j = (int)j + 1) {
+                    Broc::entity candidate =
+                        temp_spawnpoints[(unsigned int)(int)j];
+                    Broc::entity::__unnamed::classname_struct classnameField = {
+                        candidate.GetHandle()};
+                    Broc::string classname;
+                    classnameField.Get(&classname);
+                    if (classname == spawnType)
+                        Broc::push(spawnpoints, candidate);
+                }
+            }
+        }
+    }
+
+    if (Broc::size(spawnpoints) != 0) {
+        _mp_spawnlogic::GetSpawnpointRandom(&spawnpoint, &spawnpoints);
+        *result = spawnpoint;
+        return result;
+    }
+    return _mp_common::GetSpawnPoint(result, self, self_team);
 }
 
 // WarnPlayerAboutInactiveFlag - ea: 0x97D110

@@ -232,6 +232,10 @@ public:
             const Broc::string* Get(Broc::string* result) const;
             const Broc::string& operator=(const Broc::string& rhs);
         };
+        struct classname_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::string* Get(Broc::string* result) const;
+        };
         struct model_struct {
             unsigned int mHandle;  // +0x00
             const Broc::string* Get(Broc::string* result) const;
@@ -307,6 +311,8 @@ public:
                             "target_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::targetname_struct) == 4,
                             "targetname_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::classname_struct) == 4,
+                            "classname_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::model_struct) == 4,
                             "model_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::takedamage_struct) == 4,
@@ -1316,7 +1322,9 @@ struct BrocAPI {
     void (*hud_set_sort)(int, float);                      // +0xE44
     char _padE48[0xE54 - 0xE48];                           // +0xE48
     void (*hud_set_alpha)(int, unsigned char);             // +0xE54
-    char _padE58[0xF1C - 0xE58];                           // +0xE58
+    char _padE58[0xF14 - 0xE58];                           // +0xE58
+    Broc::string* (*m_entity_get_classname)(Broc::string*, unsigned int); // +0xF14
+    void (*m_entity_set_classname)(unsigned int, Broc::string); // +0xF18
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
     Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24
