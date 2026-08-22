@@ -877,7 +877,7 @@ index	status	map_line
 876	FIXED	0002:00578960 ?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z 00D67E60 f mp_util_wad.o	FIXED: ported IDA 0x00978960 ownership-bit packing, cap-status scaling, five-area bounds handling, and Code_SendGameStateDOM call
 877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
 878	FIXED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o	FIXED: matched IDA 0x00978D10 blinker loop, per-area cap counts, and DOM all-flags-capped EndRound behavior
-879	FIXED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o	FIXED: replaced placeholder with IDA/C3 0x009790C0 capture, objective, audio, flag-motion, and waitframe state loop
+879	FIXED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o	FIXED: replaced placeholder with IDA/C3 0x009790C0 capture, objective, audio, flag-motion, and waitframe state loop; disassembly 0x0097A738 confirms MoveTo total/accel timing 0.05f/0.05f (source commit e4e3e4c8)
 880	VERIFIED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	VERIFIED: IDA 0x0097AF10 compares boxed float values
 881	VERIFIED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	VERIFIED: IDA 0x0097AF60 returns the negated boxed float
 882	VERIFIED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	VERIFIED: IDA 0x0097AFB0 constructs lhs plus rhs
