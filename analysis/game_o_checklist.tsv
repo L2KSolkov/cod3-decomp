@@ -11,7 +11,7 @@ index	status	map_line
 10	VERIFIED	0002:00201de0 ?set_buffer@phys_memory_heap@@QAEXQAXHH@Z 009F12E0 f i game.o
 11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o  PORTED: restored exact IDA field-ordering constructor
 12	SKIPPED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o  SKIPPED: MSVC CRT supplies the exact float abs runtime helper
-13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o
+13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o  PORTED: restored exact IDA contents == -1 query on the authoritative local type
 14	PORTED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o
 15	PORTED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o
 16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o  PORTED: restored exact IDA lock/assert state transition
