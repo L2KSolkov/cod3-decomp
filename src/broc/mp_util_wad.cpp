@@ -14405,17 +14405,69 @@ void CallbackAreaCaptured(int index, int team) {
 
 // SetupRound - ea: 0x977590
 void SetupRound() {
+    Broc::entity level = mp_util_wad::pLevel != nullptr
+                             ? mp_util_wad::pLevel->_base.entity
+                             : Broc::entity();
+    void* inited = WAR_Init__functor(level);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                        __LINE__, "WAR_Init", inited);
+
+    mp_util_wad::pLevel->capCount = 0;
+    mp_util_wad::pLevel->warIndex =
+        (int)mp_util_wad::pLevel->lastFlagIndex / 2;
+    Broc::bint now;
+    Broc::GetTime(&now);
+    mp_util_wad::pLevel->noCapTime =
+        (int)now + (Broc::GetCvarInt("mp_debug") != 0 ? 1000 : 30000);
+
     Broc::bint i(0);
     while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
         Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
         Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-        *mp_util_wad::GetEE_capStatus(trigger) = 0.0f;
-        *mp_util_wad::GetEE_capTeam(trigger) = 0;
+        Broc::bbool triggerDefined;
+        mp_util_wad::IsEEDefined_trigger(&triggerDefined, area);
+        if ((bool)triggerDefined) {
+            Broc::string modelName("p_mp_dom_flag_hanging_nt");
+            Broc::entity flag = *mp_util_wad::GetEE_flag(trigger);
+            Broc::SetModel(&flag, &modelName, 0);
+
+            if ((int)i == (int)mp_util_wad::pLevel->warIndex) {
+                Broc::string state("i_objective_c");
+                Broc::string pszString("flag");
+                Broc::vector origin;
+                mp_util_wad::entity_get_origin(&origin, area);
+                ObjectiveAdd((int)i, state, pszString, origin,
+                             (float)lWARObjectiveHeight, -1);
+                *mp_util_wad::GetEE_capTeam(trigger) = 0;
+                *mp_util_wad::GetEE_capStatus(trigger) = 0.0f;
+            } else if ((int)i < (int)mp_util_wad::pLevel->warIndex) {
+                ObjectiveDelete((int)i, -1);
+                Broc::entity claimedFlag =
+                    *mp_util_wad::GetEE_flag(trigger);
+                Broc::SetModel(&claimedFlag,
+                               &mp_util_wad::pLevel->AlliesFlagModel, 0);
+                *mp_util_wad::GetEE_capTeam(trigger) = 1;
+                *mp_util_wad::GetEE_capStatus(trigger) = 1.0f;
+            } else if ((int)i > (int)mp_util_wad::pLevel->warIndex) {
+                ObjectiveDelete((int)i, -1);
+                Broc::entity claimedFlag =
+                    *mp_util_wad::GetEE_flag(trigger);
+                Broc::SetModel(&claimedFlag,
+                               &mp_util_wad::pLevel->AxisFlagModel, 0);
+                *mp_util_wad::GetEE_capTeam(trigger) = -1;
+                *mp_util_wad::GetEE_capStatus(trigger) = -1.0f;
+            }
+
+            Broc::entity::__unnamed::origin_struct flagOrigin = {
+                flag.GetHandle()};
+            flagOrigin = mp_util_wad::GetEE_flagStart(trigger);
+        }
         i = (int)i + 1;
     }
-    mp_util_wad::pLevel->warIndex = (int)mp_util_wad::pLevel->lastFlagIndex / 2;
-    mp_util_wad::pLevel->blinker = 0;
-    mp_util_wad::pLevel->capCount = 0;
+
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    UpdateAllowedCap();
 }
 }
 namespace _mp_shellshock {
