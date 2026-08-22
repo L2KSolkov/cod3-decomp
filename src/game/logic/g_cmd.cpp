@@ -111,6 +111,8 @@ public:
     CurveDList mKeyEvaluators;       // +0x26C
     CurveDList mConditionEvaluators; // +0x27C
     static CurveManager* sInst;      // ?sInst@CurveManager@@2PAV1@A @ 0xF4F430
+    static PoolAllocator* sAllocator; // sAllocator_0 @ 0x00F00E44
+    static void SetAllocator(PoolAllocator* allocator);
     virtual void Initialize();  // ?Initialize@CurveManager@@UAEXXZ
     virtual void CleanUp();     // ?CleanUp@CurveManager@@UAEXXZ
     void DetachCurve(Curve* curve);  // ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z
@@ -142,6 +144,7 @@ public:
 };
 static_assert(sizeof(CurveManager) == 0x28C, "CurveManager size mismatch");
 CurveManager* CurveManager::sInst = nullptr;
+PoolAllocator* CurveManager::sAllocator = nullptr;
 extern void mem_heap_free(void* ptr);
 extern void* CurveManager_sInst;  // core.o artifact mirror
 
@@ -156,6 +159,12 @@ void* CurveManager::operator new(unsigned int size, void* p)
 CurveManager* CurveManager::Inst()
 {
     return CurveManager::sInst;
+}
+
+// ea: 0x004DD740
+void CurveManager::SetAllocator(PoolAllocator* allocator)
+{
+    CurveManager::sAllocator = allocator;
 }
 
 // ea: 0x004DD640
