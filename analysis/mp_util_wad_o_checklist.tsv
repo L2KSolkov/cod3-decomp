@@ -501,7 +501,7 @@ index	status	map_line
 500	FIXED	0002:0054e100 ?PlayTeamSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11@Z 00D3D600 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::string>* per IDA
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
 502	VERIFIED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x0094E2A0 value load, API forward, and reference return
-503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: IDA 0x0094E2E0 copies pLevel->_base.entity (or null) into SwitchToSecondarySpawns__functor
+503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: matched IDA 0x0094E2E0 SwitchToSecondarySpawns setup and corrected each player last_dropped_time reset to -1 (source commit 5a3900ba)
 504	VERIFIED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o	VERIFIED: IDA directly forwards teamid and visible to mSetCompassVisibilty
 505	FIXED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 506	FIXED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o	FIXED: corrected axis/allies game-state origins to use the flag entities, matching IDA 0x0094E8B0 (source commit 34da3886)
