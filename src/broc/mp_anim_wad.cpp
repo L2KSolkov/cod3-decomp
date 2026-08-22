@@ -2480,6 +2480,54 @@ Broc::bbool* IsEEDefined_script_killspawner(Broc::bbool* result, Broc::entity en
     return result;
 }
 
+// GetEE_script_aitargetname / IsEEDefined_script_aitargetname (key 0x0153A246)
+Broc::string* GetEE_script_aitargetname(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0x0153A246);
+}
+
+Broc::bbool* IsEEDefined_script_aitargetname(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x0153A246);
+            bool IsDefined = Broc::IsDefined(val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_script_landmark / IsEEDefined_script_landmark (key 0xF5146A9E)
+Broc::string* GetEE_script_landmark(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0xF5146A9E);
+}
+
+Broc::bbool* IsEEDefined_script_landmark(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0xF5146A9E);
+            bool IsDefined = Broc::IsDefined(val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 // GetEE_script_bloom_time / IsEEDefined_script_bloom_time (key 0x9FA818BB)
 Broc::bfloat* GetEE_script_bloom_time(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
