@@ -1207,14 +1207,14 @@ index	status	map_line
 1206	SKIPPED	0002:00587c10 ??$_Ucopy@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@?$vector@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@3@@std@@IAEPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@1@PAV231@00@Z 00D77110 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1207	SKIPPED	0002:00587c50 ??$fill@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@0@0ABV120@@Z 00D77150 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1208	SKIPPED	0002:00587c90 ??$copy_backward@PAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@PAV123@@std@@YAPAViterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@0@PAV120@00@Z 00D77190 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1209	PORTED	0002:00587ce0 ??0?$BrocDtor@V?$dyn_array@Uvector@Broc@@@Broc@@@@QAE@XZ 00D771E0 f i mp_util_wad.o
-1210	PORTED	0002:00587d10 ??0?$BrocDtor@V?$dyn_array@M@Broc@@@@QAE@XZ 00D77210 f i mp_util_wad.o
-1211	PORTED	0002:00587d40 ??0?$BrocDtor@V?$dyn_array@H@Broc@@@@QAE@XZ 00D77240 f i mp_util_wad.o
-1212	PORTED	0002:00587d70 ?size@?$dyn_array@Uvector@Broc@@@Broc@@QBEHXZ 00D77270 f i mp_util_wad.o	PORTED: added the IDA dyn_array size accessor
-1213	PORTED	0002:00587d90 ?capacity@?$dyn_array@Ventity@Broc@@@Broc@@QBEHXZ 00D77290 f i mp_util_wad.o	PORTED: added the IDA dyn_array capacity accessor
-1214	PORTED	0002:00587db0 ?Destroy@?$BrocDtor@V?$dyn_array@Uvector@Broc@@@Broc@@@@UAEXPAX@Z 00D772B0 f i mp_util_wad.o
-1215	PORTED	0002:00587de0 ?Destroy@?$BrocDtor@V?$dyn_array@M@Broc@@@@UAEXPAX@Z 00D772E0 f i mp_util_wad.o
-1216	PORTED	0002:00587e10 ?Destroy@?$BrocDtor@V?$dyn_array@H@Broc@@@@UAEXPAX@Z 00D77310 f i mp_util_wad.o
+1209	PORTED	0002:00587ce0 ??0?$BrocDtor@V?$dyn_array@Uvector@Broc@@@Broc@@@@QAE@XZ 00D771E0 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<vector>> constructor and vtable-backed base initialization
+1210	PORTED	0002:00587d10 ??0?$BrocDtor@V?$dyn_array@M@Broc@@@@QAE@XZ 00D77210 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<float>> constructor and vtable-backed base initialization
+1211	PORTED	0002:00587d40 ??0?$BrocDtor@V?$dyn_array@H@Broc@@@@QAE@XZ 00D77240 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<int>> constructor and vtable-backed base initialization
+1212	VERIFIED	0002:00587d70 ?size@?$dyn_array@Uvector@Broc@@@Broc@@QBEHXZ 00D77270 f i mp_util_wad.o	VERIFIED: IDA dyn_array size accessor matches the shared mSize accessor
+1213	VERIFIED	0002:00587d90 ?capacity@?$dyn_array@Ventity@Broc@@@Broc@@QBEHXZ 00D77290 f i mp_util_wad.o	VERIFIED: IDA dyn_array capacity accessor matches the shared mCapacity accessor
+1214	PORTED	0002:00587db0 ?Destroy@?$BrocDtor@V?$dyn_array@Uvector@Broc@@@Broc@@@@UAEXPAX@Z 00D772B0 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<vector>>::Destroy delete bridge
+1215	PORTED	0002:00587de0 ?Destroy@?$BrocDtor@V?$dyn_array@M@Broc@@@@UAEXPAX@Z 00D772E0 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<float>>::Destroy delete bridge
+1216	PORTED	0002:00587e10 ?Destroy@?$BrocDtor@V?$dyn_array@H@Broc@@@@UAEXPAX@Z 00D77310 f i mp_util_wad.o	PORTED: added the IDA BrocDtor<dyn_array<int>>::Destroy delete bridge
 1217	SKIPPED	0002:00587e40 ??_G?$dyn_array@Uvector@Broc@@@Broc@@QAEPAXI@Z 00D77340 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1218	SKIPPED	0002:00587e90 ??_G?$dyn_array@M@Broc@@QAEPAXI@Z 00D77390 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1219	SKIPPED	0002:00587ee0 ??_G?$dyn_array@H@Broc@@QAEPAXI@Z 00D773E0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
