@@ -901,24 +901,24 @@ index	status	map_line
 900	VERIFIED	0002:0057e7a0 ??0?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@QAE@P6AXVentity@Broc@@Vstring@2@@ZABV12@ABV32@@Z 00D6DCA0 f i mp_util_wad.o
 901	VERIFIED	0002:0057e840 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEIXZ 00D6DD40 f i mp_util_wad.o
 902	VERIFIED	0002:0057e870 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEXXZ 00D6DD70 f i mp_util_wad.o
-903	PORTED	0002:0057e910 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@QAE@P6AXVentity@Broc@@Ubint@@1@ZABV12@ABU3@4@Z 00D6DE10 f i mp_util_wad.o
-904	PORTED	0002:0057e9c0 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEIXZ 00D6DEC0 f i mp_util_wad.o
-905	PORTED	0002:0057e9f0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEXXZ 00D6DEF0 f i mp_util_wad.o
-906	PORTED	0002:0057ea40 ??0?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@QAE@P6AXVentity@Broc@@Ump_plane@_mp_airplanes@@@ZABV12@ABU34@@Z 00D6DF40 f i mp_util_wad.o
-907	PORTED	0002:0057eae0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEIXZ 00D6DFE0 f i mp_util_wad.o
-908	PORTED	0002:0057eb10 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEXXZ 00D6E010 f i mp_util_wad.o
-909	PORTED	0002:0057ebb0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@QAE@P6AXVentity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@ZABV12@ABU34@ABU5@@Z 00D6E0B0 f i mp_util_wad.o
-910	PORTED	0002:0057ec60 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEIXZ 00D6E160 f i mp_util_wad.o
-911	PORTED	0002:0057ec90 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEXXZ 00D6E190 f i mp_util_wad.o
+903	VERIFIED	0002:0057e910 ??0?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@QAE@P6AXVentity@Broc@@Ubint@@1@ZABV12@ABU3@4@Z 00D6DE10 f i mp_util_wad.o	VERIFIED: IDA 0x0097E910 matches AeThreadFunctor3 entity/bint/bint capture layout
+904	VERIFIED	0002:0057e9c0 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEIXZ 00D6DEC0 f i mp_util_wad.o	VERIFIED: IDA 0x0097E9C0 returns the captured entity handle
+905	VERIFIED	0002:0057e9f0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ubint@@U3@@@UAEXXZ 00D6DEF0 f i mp_util_wad.o	VERIFIED: IDA 0x0097E9F0 invokes the stored entity/bint/bint callback
+906	VERIFIED	0002:0057ea40 ??0?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@QAE@P6AXVentity@Broc@@Ump_plane@_mp_airplanes@@@ZABV12@ABU34@@Z 00D6DF40 f i mp_util_wad.o	VERIFIED: IDA 0x0097EA40 copies the entity and mp_plane captures
+907	VERIFIED	0002:0057eae0 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEIXZ 00D6DFE0 f i mp_util_wad.o	VERIFIED: IDA 0x0097EAE0 returns the captured entity handle
+908	VERIFIED	0002:0057eb10 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Ump_plane@_mp_airplanes@@@@UAEXXZ 00D6E010 f i mp_util_wad.o	VERIFIED: IDA 0x0097EB10 copies mp_plane and invokes the stored callback
+909	VERIFIED	0002:0057ebb0 ??0?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@QAE@P6AXVentity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@ZABV12@ABU34@ABU5@@Z 00D6E0B0 f i mp_util_wad.o	VERIFIED: IDA 0x0097EBB0 copies entity/mp_plane and captures bint
+910	VERIFIED	0002:0057ec60 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEIXZ 00D6E160 f i mp_util_wad.o	VERIFIED: IDA 0x0097EC60 returns the captured entity handle
+911	VERIFIED	0002:0057ec90 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Ump_plane@_mp_airplanes@@Ubint@@@@UAEXXZ 00D6E190 f i mp_util_wad.o	VERIFIED: IDA 0x0097EC90 copies mp_plane and invokes the stored callback with bint
 912	SKIPPED	0002:0057ed40 ??A?$hash_map@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@@std@@QAEAAVentity@Broc@@ABUHashStr@@@Z 00D6E240 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 913	SKIPPED	0002:0057edd0 ?begin@?$_Hash@V?$_Hmap_traits@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@XZ 00D6E2D0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 914	SKIPPED	0002:0057ee00 ?erase@?$_Hash@V?$_Hmap_traits@UHashStr@@Ventity@Broc@@V?$hash_compare@UHashStr@@U?$less@UHashStr@@@std@@@stdext@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@std@@$0A@@stdext@@@stdext@@QAEIABUHashStr@@@Z 00D6E300 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 915	VERIFIED	0002:0057ee70 ??0?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@QAE@P6AXVentity@Broc@@Uvector@2@1@ZABV12@ABU32@4@Z 00D6E370 f i mp_util_wad.o
 916	VERIFIED	0002:0057ef40 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEIXZ 00D6E440 f i mp_util_wad.o
 917	VERIFIED	0002:0057ef70 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Uvector@2@U32@@@UAEXXZ 00D6E470 f i mp_util_wad.o
-918	PORTED	0002:0057eff0 ??0?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@Ubfloat@@@ZABV12@ABV32@ABU4@@Z 00D6E4F0 f i mp_util_wad.o
-919	PORTED	0002:0057f0a0 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEIXZ 00D6E5A0 f i mp_util_wad.o
-920	PORTED	0002:0057f0d0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEXXZ 00D6E5D0 f i mp_util_wad.o
+918	VERIFIED	0002:0057eff0 ??0?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@Ubfloat@@@ZABV12@ABV32@ABU4@@Z 00D6E4F0 f i mp_util_wad.o	VERIFIED: IDA 0x0097EFF0 copies entity/string and captures bfloat
+919	VERIFIED	0002:0057f0a0 ?GetEnt@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEIXZ 00D6E5A0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F0A0 returns the captured entity handle
+920	VERIFIED	0002:0057f0d0 ?CallFunction@?$AeThreadFunctor3@Ventity@Broc@@Vstring@2@Ubfloat@@@@UAEXXZ 00D6E5D0 f i mp_util_wad.o	VERIFIED: IDA 0x0097F0D0 copies entity/string and invokes the stored callback with bfloat
 921	PORTED	0002:0057f170 ??0?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@QAE@P6AXVentity@Broc@@Vstring@2@1Ubfloat@@@ZABV12@ABV32@5ABU4@@Z 00D6E670 f i mp_util_wad.o
 922	PORTED	0002:0057f240 ?GetEnt@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEIXZ 00D6E740 f i mp_util_wad.o
 923	PORTED	0002:0057f270 ?CallFunction@?$AeThreadFunctor4@Ventity@Broc@@Vstring@2@V32@Ubfloat@@@@UAEXXZ 00D6E770 f i mp_util_wad.o
