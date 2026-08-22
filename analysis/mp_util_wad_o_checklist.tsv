@@ -742,17 +742,17 @@ index	status	map_line
 741	VERIFIED	0002:00568610 ?CompassUnderlay@_mp_scf@@YAXVentity@Broc@@@Z 00D57B10 f mp_util_wad.o
 742	VERIFIED	0002:00568870 ?IsFlagAtBase@_mp_scf@@YA?AUbbool@@Ventity@Broc@@@Z 00D57D70 f mp_util_wad.o	VERIFIED: IDA 0x00968870 matches home_position/origin subtraction, z suppression, and the 0.1 threshold
 743	PORTED	0002:00568920 ?HandlePickupFlag@_mp_scf@@YAXVentity@Broc@@0HH@Z 00D57E20 f mp_util_wad.o
-744	PORTED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o
+744	VERIFIED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o	VERIFIED: IDA 0x00969740 matches 12-byte allocation, null check, and CompassUnderlay functor construction
 745	PORTED	0002:005697e0 ??4pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D58CE0 f i mp_util_wad.o	PORTED: added IDA 0x009697E0 SetVal<bint> key 0x4743187E and return-rhs wrapper
 746	VERIFIED	0002:00569830 ?CallbackPickupScriptItem@_mp_scf@@YAXHVentity@Broc@@H@Z 00D58D30 f mp_util_wad.o
 747	VERIFIED	0002:00569b30 ?CallbackDropItem@_mp_scf@@YAXHHUvector@Broc@@00@Z 00D59030 f mp_util_wad.o
-748	PORTED	0002:00569e10 ?WaitForFlagTimeOut__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59310 f i mp_util_wad.o
+748	VERIFIED	0002:00569e10 ?WaitForFlagTimeOut__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59310 f i mp_util_wad.o	VERIFIED: IDA 0x00969E10 matches 12-byte allocation, null check, and WaitForFlagTimeOut functor construction
 749	PORTED	0002:00569eb0 ?GetRef@home_position_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D593B0 f i mp_util_wad.o	PORTED: added IDA 0x00969EB0 GetRef<vector> key 0xE42FE83D
 750	VERIFIED	0002:00569ee0 ?CallbackDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D593E0 f mp_util_wad.o
 751	VERIFIED	0002:00569f10 ?HandleDropFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D59410 f mp_util_wad.o
 752	VERIFIED	0002:0056a270 ?WaitForFlagTimeOut@_mp_scf@@YAXVentity@Broc@@@Z 00D59770 f mp_util_wad.o
 753	VERIFIED	0002:0056a390 ?PickupFlag@_mp_scf@@YAXVentity@Broc@@0@Z 00D59890 f mp_util_wad.o
-754	PORTED	0002:0056a640 ?WaitForNoTouchFlag__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59B40 f i mp_util_wad.o
+754	VERIFIED	0002:0056a640 ?WaitForNoTouchFlag__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59B40 f i mp_util_wad.o	VERIFIED: IDA 0x0096A640 matches 12-byte allocation, null check, and WaitForNoTouchFlag functor construction
 755	VERIFIED	0002:0056a6e0 ?Goal@_mp_scf@@YAXVentity@Broc@@0@Z 00D59BE0 f mp_util_wad.o
 756	PORTED	0002:0056ac20 ?Get@pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QBE?BUbint@@XZ 00D5A120 f i mp_util_wad.o	PORTED: added IDA 0x0096AC20 GetVal<bint> key 0x4743187E result copy
 757	FIXED	0002:0056ac60 ?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z 00D5A160 f mp_util_wad.o	FIXED: IDA 0x0096AC60 uses pLevel->_base.entity (or null) for notify/endon
