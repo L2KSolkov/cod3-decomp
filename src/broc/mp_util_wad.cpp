@@ -3238,6 +3238,9 @@ Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {
 // bint::bint(const bfloat&) - ea: 0x940290
 bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
 
+// bint::bint(float) - ea: 0x925170
+bint::bint(float rhs) : mVal((int)rhs) {}
+
 // bint::operator int() - ea: 0x97D020 inline body
 bint::operator int() const {
     AssertDefined();
@@ -13279,7 +13282,10 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
 
     Broc::string text((const char*)NULL);
     text = "Flag Key: ";
-    text += mp_util_wad::entity_get_key(flag);
+    Broc::bint key;
+    Broc::entity::__unnamed::key_struct keyField = {flag.GetHandle()};
+    keyField.Get(&key);
+    text += (int)key;
 
     Broc::bbool hasHolder;
     mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
@@ -13297,23 +13303,29 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
         name.~string();
     } else {
         Broc::vector flagOrigin;
-        mp_util_wad::entity_get_origin(&flagOrigin, flag);
+        Broc::entity::__unnamed::origin_struct originField = {
+            flag.GetHandle()};
+        originField.Get(&flagOrigin);
         Broc::vector* home = mp_util_wad::GetEE_home_position(flag);
-        Broc::bint distance(static_cast<int>(
-            Broc::Distance(home, &flagOrigin)));
+        ::bint distance(Broc::Distance(home, &flagOrigin));
         if ((int)distance < 60) {
             text += " is at the base.";
         } else {
             text += "is dropped at position (";
-            Broc::string value(flagOrigin.x);
-            text += value;
+            {
+                Broc::string value(flagOrigin[0]);
+                text += value;
+            }
             text += ",";
-            value = flagOrigin.y;
-            text += value;
+            {
+                Broc::string value(flagOrigin[1]);
+                text += value;
+            }
             text += ",";
-            value = flagOrigin.z;
-            text += value;
-            value.~string();
+            {
+                Broc::string value(flagOrigin[2]);
+                text += value;
+            }
             text += ")";
         }
     }

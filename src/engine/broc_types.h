@@ -952,6 +952,8 @@ struct bint {
     int mVal;
     bint() : mVal(sUndefined) {}
     explicit bint(int v) : mVal(v) {}
+    // ea: 0x925170
+    bint(float v);
     bint(const bfloat& rhs);
     operator int() const;
     int operator++();
