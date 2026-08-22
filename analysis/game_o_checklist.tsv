@@ -1047,18 +1047,18 @@ index	status	map_line
 1046	VERIFIED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o  VERIFIED: IDA 0x00660D90 compares iterator m_next values; generic operator!= matches.
 1047	SKIPPED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1048	VERIFIED	0002:00260de0 ??0?$ae_sized_array@VPosition3@math@@$0BAA@@@QAE@XZ 00A502E0 f i game.o
-1049	PORTED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o
-1050	PORTED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o
-1051	PORTED	0002:00260e30 ?resize@?$cdl_array@M@@QAEXI@Z 00A50330 f i game.o
-1052	PORTED	0002:00260ec0 ??A?$cdl_array@M@@QAEAAMI@Z 00A503C0 f i game.o
-1053	PORTED	0002:00260f10 ??1?$cdl_array@H@@QAE@XZ 00A50410 f i game.o
-1054	PORTED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o
-1055	PORTED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o
+1049	VERIFIED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o  VERIFIED: IDA 0x00660DF0 clears m_size; ae_sized_array::clear matches.
+1050	PORTED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o  PORTED: IDA 0x00660E00 frees m_elements when non-null, then nulls it and clears m_count; restored in the shared cdl_array<T> destructor.
+1051	PORTED	0002:00260e30 ?resize@?$cdl_array@M@@QAEXI@Z 00A50330 f i game.o  PORTED: IDA 0x00660E30 frees/reset state, allocates sizeof(T)*n with align 4, and asserts on pool overflow; restored in cdl_array<T>::resize.
+1052	VERIFIED	0002:00260ec0 ??A?$cdl_array@M@@QAEAAMI@Z 00A503C0 f i game.o  VERIFIED: IDA 0x00660EC0 checks index against m_count with the cdl_mem assertion and returns m_elements[index].
+1053	PORTED	0002:00260f10 ??1?$cdl_array@H@@QAE@XZ 00A50410 f i game.o  PORTED: IDA 0x00660F10 uses the same cleanup body as cdl_array<float>; shared destructor matches.
+1054	PORTED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o  PORTED: IDA 0x00660F40 uses the same resize body as cdl_array<float>; shared resize matches.
+1055	VERIFIED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o  VERIFIED: IDA 0x00660FD0 uses the same checked indexing body as cdl_array<float>; shared operator[] matches.
 1056	VERIFIED	0002:00261020 ??0?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A50520 f i game.o
 1057	SKIPPED	0002:00261040 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A50540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1058	PORTED	0002:00261070 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A50570 f i game.o
 1059	PORTED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
-1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o
+1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o  PORTED: IDA 0x006610B0 uses the shared cdl_array<T>::resize body; cdl_object_t storage now follows the verified allocation/assert path.
 1061	VERIFIED	0002:00261140 ?destroy_all@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEXXZ 00A50640 f i game.o
 1062	PORTED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o
 1063	PORTED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o
