@@ -23,6 +23,24 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <intrin.h>
+
+// IDA local types for the game.o light-grid cache.
+struct LightGridData {
+    math::Position3::Packed m_ambientColor;
+    math::Vector4::Packed m_directionalColor[3];
+    math::Dir3::Packed m_directionalDir[3];
+    int m_numDirectional;
+};
+static_assert(sizeof(LightGridData) == 0x64, "LightGridData size mismatch");
+
+struct CachedLightGrid {
+    LightGridData lightSample;
+    float lastPos[3];
+    bool moved;
+
+    void Initialize();  // game.o 0x00601F50
+};
+static_assert(sizeof(CachedLightGrid) == 0x74, "CachedLightGrid size mismatch");
 #include <string.h>
 
 #ifdef PlaySound

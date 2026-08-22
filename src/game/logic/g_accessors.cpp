@@ -134,6 +134,15 @@ int ae_stricmp(const char* s1, const char* s2)
     return -1;
 }
 
+// game.o 0x601F50
+void CachedLightGrid::Initialize()
+{
+    lastPos[0] = 3.4028235e38f;
+    lastPos[1] = 3.4028235e38f;
+    lastPos[2] = 3.4028235e38f;
+    moved = true;
+}
+
 void* DestructibleBankManager::operator new(size_t, void* p)
 {
     return p;
