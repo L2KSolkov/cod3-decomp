@@ -10877,7 +10877,10 @@ void CallbackGameStateCTF(Broc::vector allied_flag, Broc::vector allied_angles,
     if ((bool)defined) {
         Broc::entity pickerupper =
             *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->axis_flag_ent);
-        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        __int16 hasFlag = 1;
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlagField = {
+            pickerupper.GetHandle()};
+        ctfHasFlagField = hasFlag;
         *mp_util_wad::GetEE_holder(pickerupper) =
             mp_util_wad::pLevel->axis_flag_ent;
         HandlePickupFlag(1, pickerupper, Broc::bbool(false),
@@ -10903,7 +10906,10 @@ void CallbackGameStateCTF(Broc::vector allied_flag, Broc::vector allied_angles,
     if ((bool)defined2) {
         Broc::entity pickerupper =
             *mp_util_wad::GetEE_holder(mp_util_wad::pLevel->allies_flag_ent);
-        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        __int16 hasFlag = 1;
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlagField = {
+            pickerupper.GetHandle()};
+        ctfHasFlagField = hasFlag;
         *mp_util_wad::GetEE_holder(pickerupper) =
             mp_util_wad::pLevel->allies_flag_ent;
         HandlePickupFlag(2, pickerupper, Broc::bbool(false),
@@ -12897,7 +12903,9 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
 
     if (Broc::IsDefined(pickerupper)) {
         Broc::bint playerState;
-        mp_util_wad::entity_get_playerState(&playerState, pickerupper);
+        Broc::entity::__unnamed::playerState_struct playerStateField = {
+            pickerupper.GetHandle()};
+        playerStateField.Get(&playerState);
         if ((int)playerState != 3 || Broc::Code_IsInVehicle(pickerupper)) {
             myteam.~string();
             return;
@@ -12907,9 +12915,9 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
         Broc::string otherteam("allies");
         Broc::bint now;
         Broc::GetTime(&now);
-        Broc::entity levelEntity = mp_util_wad::pLevel->_base.entity;
-        *mp_util_wad::GetEE_pickupCaptureDelayTime(levelEntity) =
-            (int)now + 1000;
+        Broc::bint captureTime = Broc::operator+(now, 1000);
+        mp_util_wad::pLevel->_base.entity->pickupCaptureDelayTime =
+            (int)captureTime;
         ObjectiveRing(2, -1);
 
         Broc::bbool hasSound;
@@ -12927,7 +12935,9 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
         script.~string();
 
         Broc::string pickerTeam;
-        mp_util_wad::entity_get_team(&pickerTeam, pickerupper);
+        Broc::entity::__unnamed::team_struct pickerTeamField = {
+            pickerupper.GetHandle()};
+        pickerTeamField.Get(&pickerTeam);
         bool axisPicker = pickerTeam == "axis";
         pickerTeam.~string();
 
@@ -12941,11 +12951,10 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
                 while ((int)i < Broc::size(players)) {
                     Broc::string pickerTeamForPlayer;
                     Broc::string playerTeam;
-                    mp_util_wad::entity_get_team(&pickerTeamForPlayer,
-                                                 pickerupper);
-                    mp_util_wad::entity_get_team(
-                        &playerTeam,
-                        players[(unsigned int)(int)i]);
+                    pickerTeamField.Get(&pickerTeamForPlayer);
+                    Broc::entity::__unnamed::team_struct playerTeamField = {
+                        players[(unsigned int)(int)i].GetHandle()};
+                    playerTeamField.Get(&playerTeam);
                     bool sameTeam = playerTeam == pickerTeamForPlayer;
                     (void)sameTeam;
                     playerTeam.~string();
@@ -12980,11 +12989,10 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
                 while ((int)i < Broc::size(players)) {
                     Broc::string pickerTeamForPlayer;
                     Broc::string playerTeam;
-                    mp_util_wad::entity_get_team(&pickerTeamForPlayer,
-                                                 pickerupper);
-                    mp_util_wad::entity_get_team(
-                        &playerTeam,
-                        players[(unsigned int)(int)i]);
+                    pickerTeamField.Get(&pickerTeamForPlayer);
+                    Broc::entity::__unnamed::team_struct playerTeamField = {
+                        players[(unsigned int)(int)i].GetHandle()};
+                    playerTeamField.Get(&playerTeam);
                     bool sameTeam = playerTeam == pickerTeamForPlayer;
                     (void)sameTeam;
                     playerTeam.~string();
@@ -13011,7 +13019,7 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
         }
 
         Broc::string pickerTeamForWeapon;
-        mp_util_wad::entity_get_team(&pickerTeamForWeapon, pickerupper);
+        pickerTeamField.Get(&pickerTeamForWeapon);
         bool axisWeapon = pickerTeamForWeapon == "axis";
         pickerTeamForWeapon.~string();
         if (axisWeapon) {
@@ -13029,7 +13037,7 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
         slot.~string();
 
         Broc::string pickerTeamForSwitch;
-        mp_util_wad::entity_get_team(&pickerTeamForSwitch, pickerupper);
+        pickerTeamField.Get(&pickerTeamForSwitch);
         bool axisSwitch = pickerTeamForSwitch == "axis";
         pickerTeamForSwitch.~string();
         if (axisSwitch) {
@@ -13042,7 +13050,10 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
             weapon.~string();
         }
 
-        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        __int16 hasFlag = 1;
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlagField = {
+            pickerupper.GetHandle()};
+        ctfHasFlagField = hasFlag;
         EntityOff(flag);
         EntityOff(*mp_util_wad::GetEE_trigger(flag));
         *mp_util_wad::GetEE_holder(flag) = pickerupper;
