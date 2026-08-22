@@ -13218,8 +13218,8 @@ void Goal(Broc::entity self, Broc::entity triggerer) {
         return;
 
     Broc::bint captureDelay;
-    captureDelay = (int)*mp_util_wad::GetEE_pickupCaptureDelayTime(
-        mp_util_wad::pLevel->_base.entity);
+    mp_util_wad::pLevel->_base.entity->pickupCaptureDelayTime.Get(
+        &captureDelay);
     Broc::bint now;
     Broc::GetTime(&now);
     if ((int)captureDelay >= (int)now)
@@ -13227,35 +13227,46 @@ void Goal(Broc::entity self, Broc::entity triggerer) {
 
     HashStr goalHash;
     Broc::string_hash(&goalHash, "_mp_scf::Goal");
-    HashStr eventLabel;
-    eventLabel.mVal = 0xF2F5EAB4u;
+    HashStr eventLabel(0xF2F5EAB4u);
     Broc::RemoveEventHandler(&self, eventLabel, goalHash);
 
-    Broc::string triggererTeam;
-    Broc::string baseTargetname;
-    mp_util_wad::entity_get_team(&triggererTeam, triggerer);
-    mp_util_wad::entity_get_targetname(&baseTargetname, self);
-
-    if (triggererTeam == "axis" && baseTargetname == "scf_base_allies") {
-        Broc::Code_AreaCaptured(0, 1, 0);
-        Broc::wait(1.0f);
+    {
+        Broc::string triggererTeam;
+        Broc::entity::__unnamed::team_struct triggererTeamField = {
+            triggerer.GetHandle()};
+        triggererTeamField.Get(&triggererTeam);
+        bool captureAxis = false;
+        if (triggererTeam == "axis") {
+            Broc::entity::__unnamed::targetname_struct baseTargetnameField = {
+                self.GetHandle()};
+            Broc::string baseTargetname;
+            baseTargetnameField.Get(&baseTargetname);
+            captureAxis = baseTargetname == "scf_base_allies";
+        }
+        if (captureAxis) {
+            Broc::Code_AreaCaptured(0, 1, 0);
+            Broc::wait(1.0f);
+        }
     }
 
-    triggererTeam.~string();
-    baseTargetname.~string();
-
-    Broc::string triggererTeam2;
-    Broc::string baseTargetname2;
-    mp_util_wad::entity_get_team(&triggererTeam2, triggerer);
-    mp_util_wad::entity_get_targetname(&baseTargetname2, self);
-
-    if (triggererTeam2 == "allies" && baseTargetname2 == "scf_base_axis") {
-        Broc::Code_AreaCaptured(0, 0, 0);
-        Broc::wait(1.0f);
+    {
+        Broc::string triggererTeam;
+        Broc::entity::__unnamed::team_struct triggererTeamField = {
+            triggerer.GetHandle()};
+        triggererTeamField.Get(&triggererTeam);
+        bool captureAllies = false;
+        if (triggererTeam == "allies") {
+            Broc::entity::__unnamed::targetname_struct baseTargetnameField = {
+                self.GetHandle()};
+            Broc::string baseTargetname;
+            baseTargetnameField.Get(&baseTargetname);
+            captureAllies = baseTargetname == "scf_base_axis";
+        }
+        if (captureAllies) {
+            Broc::Code_AreaCaptured(0, 0, 0);
+            Broc::wait(1.0f);
+        }
     }
-
-    triggererTeam2.~string();
-    baseTargetname2.~string();
 
     Broc::string_hash(&goalHash, "_mp_scf::Goal");
     Broc::AddEventHandler(&self, eventLabel.mVal, goalHash.mVal);
