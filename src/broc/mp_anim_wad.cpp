@@ -2972,3 +2972,37 @@ Broc::string* GetEE_targetname(Broc::string* result, Broc::pathnode node) {
     value.~string();
     return result;
 }
+
+// IsEEDefined_targetname - ea: 0x996110.
+Broc::bbool* IsEEDefined_targetname(Broc::bbool* result,
+                                    Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_animscript - ea: 0x9961B0.
+Broc::string* GetEE_animscript(Broc::string* result, Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_animscript(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_animscript - ea: 0x9962B0.
+Broc::bbool* IsEEDefined_animscript(Broc::bbool* result,
+                                    Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_script_ambush_trigger_distance - ea: 0x996350.
+Broc::bint* GetEE_script_ambush_trigger_distance(
+    Broc::bint* result, Broc::pathnode node) {
+    const int value = Broc::gBrocAPI.mBrocExports.mGetPNodeField_int(
+        node.GetHandle(), 0xC609EC11u);
+    new (result) Broc::bint(value);
+    return result;
+}
