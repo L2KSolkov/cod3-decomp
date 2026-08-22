@@ -10,6 +10,7 @@
 
 #include <new>
 #include <stdint.h>
+#include <string.h>
 
 extern void tlPrintf(const char* fmt, ...);
 
@@ -687,23 +688,6 @@ void* GdbVector_At(void* vec, unsigned int index)
     return nullptr;
 }
 
-// Effect context / query type constants (placeholder values from disasm)
-enum {
-    EEffectContextInvalid = 0,
-    kEffectContextFootstep = 1,
-    kEffectContextGearRattle = 2,
-    kEffectContextLanding = 3,
-    kEffectContextScriptCall = 4,
-    kEffectContextWeapon = 5,
-    kEffectContextBulletHit = 6,
-    kEffectContextGrenadeBounce = 7,
-    kEffectContextProjExplode = 8,
-    kEffectContextVehicle = 9,
-    kEffectContextLight = 10,
-    kEffectContextEIMelee = 11,
-    EEffectContextCount = 12,
-};
-
 // ea: 0x004E5DA0
 void EffectEventSys::CachedQuery::Clear()
 {
@@ -729,6 +713,122 @@ void EffectEventSys::PendingQuery::Clear()
     mFlags.mVal = 0;
     mDialogNotify = 0;
     mMatrix = nullptr;
+}
+
+// ea: 0x004E8120
+void EffectEventSys::CachedQuery::Where(int id, const int* val, bool weak)
+{
+    mSpecifiedFields.Add(id);
+    if (weak)
+        mWeakFields.Add(id);
+    else
+        mWeakFields.Rmv(id);
+    switch (id)
+    {
+    case 0: mCONTEXT = *val; break;
+    case 1: mFOOTSTEP = *val; break;
+    case 2: mSTANCE = *val; break;
+    case 3: mMATERIAL = *val; break;
+    case 4: mMYMATERIAL = *val; break;
+    case 10: mACTION = *val; break;
+    case 11: mWEAPON_CLASS = *val; break;
+    case 12: mBARREL = *val; break;
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CachedQuery.h";
+        AeAssert::gCurrentLine = 64;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("bad col id/type"))
+            __debugbreak();
+        break;
+    }
+}
+
+// ea: 0x004E82B0
+void EffectEventSys::CachedQuery::Where(int id, const DbQueryString* val,
+                                        bool weak)
+{
+    mSpecifiedFields.Add(id);
+    if (weak)
+        mWeakFields.Add(id);
+    else
+        mWeakFields.Rmv(id);
+    switch (id)
+    {
+    case 7: memcpy(mSCRIPT_ID, val, sizeof(mSCRIPT_ID)); break;
+    case 8: memcpy(mWEAPON_ID, val, sizeof(mWEAPON_ID)); break;
+    case 9: memcpy(mVEHICLE_ID, val, sizeof(mVEHICLE_ID)); break;
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CachedQuery.h";
+        AeAssert::gCurrentLine = 101;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("bad col id/type"))
+            __debugbreak();
+        break;
+    }
+}
+
+template <typename T>
+static void EffectEventWhereInt(EffectEventSys* self, int id, const T& val,
+                                bool weak)
+{
+    int value = (int)val;
+    if (id == 0)
+        self->mCurrentQuery->mType = (EEffectContext)value;
+    self->mCurrentQuery->mCachedQuery.Where(id, &value, weak);
+}
+
+template <>
+void EffectEventSys::Where<ECollisionMaterial>(
+    int id, const ECollisionMaterial& val, bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<EEffectContext>(int id, const EEffectContext& val,
+                                           bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<EStanceType>(int id, const EStanceType& val,
+                                        bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<EAction>(int id, const EAction& val, bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<int>(int id, const int& val, bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<EWeaponClass>(int id,
+                                         const EWeaponClass& val, bool weak)
+{
+    EffectEventWhereInt(this, id, val, weak);
+}
+
+template <>
+void EffectEventSys::Where<const char*>(int id, const char* const& val,
+                                        bool weak)
+{
+    if (id == 0)
+        mCurrentQuery->mType = (EEffectContext)(uintptr_t)val;
+    DbQueryString destination;
+    strncpy(destination.buf, val, 0x7Fu);
+    destination.buf[127] = 0;
+    mCurrentQuery->mCachedQuery.Where(id, &destination, weak);
 }
 
 static unsigned int holdrand = 1;

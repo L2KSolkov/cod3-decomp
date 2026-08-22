@@ -28,10 +28,23 @@ enum TPakId : int;
 enum EAbstractSoundEffectFlags : int;
 
 // ============================================================================
-// Enum placeholders - values must be fetched from IDA when porting bodies.
-// Typedef'd as int to keep ABI size (4 bytes) without guessing values.
+// Enum values recovered from the IDA local type and effect-query call sites.
 // ============================================================================
-typedef int EEffectContext;      // TODO: enum values from IDA
+enum EEffectContext : int {
+    EEffectContextInvalid = 0,
+    kEffectContextFootstep = 1,
+    kEffectContextGearRattle = 2,
+    kEffectContextLanding = 3,
+    kEffectContextScriptCall = 4,
+    kEffectContextWeapon = 5,
+    kEffectContextBulletHit = 6,
+    kEffectContextGrenadeBounce = 7,
+    kEffectContextProjExplode = 8,
+    kEffectContextVehicle = 9,
+    kEffectContextLight = 10,
+    kEffectContextEIMelee = 11,
+    EEffectContextCount = 12,
+};
 // Enum tags match binary manglings (W4E*); values reconstructed.
 enum ECollisionMaterial : int {
     kCollisionMaterialMin = 0,
@@ -54,6 +67,7 @@ struct EndOnScriptNode;
 struct DbStringHashTable;
 class DbTable;
 struct DbQuery;
+struct DbQueryString;
 class EntityHandleDb;
 class DbRow;
 class DbGraphNode;
@@ -954,6 +968,8 @@ public:
     static EffectEventSys* CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
     bool IsStoppingAll() const;             // core.o 0x004DBB80
+    template <typename T>
+    void Where(int id, const T& val, bool weak);
     struct CachedQuery {
         BitSet<49>    mSpecifiedFields;  // +0x000
         BitSet<49>    mWeakFields;       // +0x008
@@ -972,6 +988,8 @@ public:
         int           mMATERIAL;         // +0x1B4
 
         void Clear();
+        void Where(int id, const int* val, bool weak);
+        void Where(int id, const DbQueryString* val, bool weak);
         void ConstructQuery(DbQuery* query);  // ea: 0x004E8390
     };
     static_assert(sizeof(CachedQuery) == 0x1B8, "CachedQuery size mismatch");
