@@ -1271,6 +1271,13 @@ void DialogMenuSystem::AddOption(const char* t, bool (*responseFunc)(int))
     ((DialogMenu*)menus[v4 != 0])->AddOption(t, responseFunc);
 }
 
+// ea: 0x004E2A90
+void DialogMenuSystem::AddTriangleResponse(void (*responseFunc)(int))
+{
+    int v3 = GetActiveMenu();
+    GetLayer(v3 == 0)->triangleResponse = responseFunc;
+}
+
 // ea: 0x005B56C0
 void DialogMenuSystem::CloseOnDelay(int delaySeconds,
                                     void (*responseFunc)(int))

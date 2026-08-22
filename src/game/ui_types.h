@@ -1917,6 +1917,7 @@ public:
     void HighlightOption(int index);         // 0x57F1A0
     void AddOption(const char* t,
                    bool (*responseFunc)(int));  // 0x5B5670
+    void AddTriangleResponse(void (*responseFunc)(int)); // 0x4E2A90
     void CloseOnDelay(int delaySeconds,
                       void (*responseFunc)(int)); // 0x5B56C0
     void Reformat(bool vertical);            // 0x4E2A50
