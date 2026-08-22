@@ -15667,8 +15667,9 @@ void StartGame(Broc::entity self) {
     (void)self;
     Broc::wait(0.5f);
     _mp_common::StartRound(Broc::bbool(true));
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::entity lvl = mp_util_wad::pLevel != nullptr
+                           ? mp_util_wad::pLevel->_base.entity
+                           : Broc::entity();
     void* ftor = _mp_common::RunFrame__functor(lvl);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tdm.bro",
                         __LINE__, "_mp_common::RunFrame", ftor);
