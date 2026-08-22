@@ -5241,7 +5241,7 @@ void WAR_TouchFlag(Broc::entity self);
 void UpdateAllowedCap();
 void AllowCap(::bint team, int flag_id);
 void WAR_InitFlag(Broc::entity self, int flag_id);
-int SortMarkers();
+void SortMarkers();
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                             const Broc::string* self_team);
 void WarnPlayerAboutInactiveFlag(Broc::entity self);
@@ -15699,7 +15699,7 @@ void WAR_InitFlag(Broc::entity self, int flag_id) {
 }
 
 // SortMarkers - ea: 0x97C410
-int SortMarkers() {
+void SortMarkers() {
     int result = Broc::size(mp_util_wad::pLevel->warAreas);
     if (result >= 2) {
         Broc::entity temp;
@@ -15729,7 +15729,6 @@ int SortMarkers() {
             i = (int)i + 1;
         }
     }
-    return result;
 }
 
 // GetSpawnPoint - ea: 0x97C650
