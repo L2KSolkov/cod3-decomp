@@ -401,7 +401,7 @@ index	status	map_line
 400	VERIFIED	0002:000c12c0 ??1AbstractEffectParticle@@UAE@XZ 008B07C0 f core.o
 401	VERIFIED	0002:000c1350 ?StartFadeOut@AbstractEffectParticle@@UAEXM@Z 008B0850 f core.o
 402	VERIFIED	0002:000c1380 ??0AnimHeap@@QAE@XZ 008B0880 f core.o
-403	VERIFIED	0002:000c13f0 ?LinkAnimHeap@AnimHeap@@SAXXZ 008B08F0 f core.o
+403	FIXED	0002:000c13f0 ?LinkAnimHeap@AnimHeap@@SAXXZ 008B08F0 f core.o FIXED: source corrected in 64b48117; IDA 0x004C13F0 constructs AnimCacheHeap in allocated storage and appends it
 404	VERIFIED	0002:000c1440 ??1ConfigStringManager@@EAE@XZ 008B0940 f core.o
 405	VERIFIED	0002:000c1450 ??0HashString@@QAE@AAVstring@Broc@@@Z 008B0950 f core.o
 406	SKIPPED	0002:000c1490 ?SetGameLanguage@@YAXABV?$ae_fixed_string@$0EAA@G@@@Z 008B0990 f core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -853,10 +853,10 @@ index	status	map_line
 852	PORTED	0002:000df360 ?StopEffect@AbstractEffectLight@@UAEXXZ 008CE860 f i core.o PORTED: source implementation in 5b5c93ee; IDA 0x004DF360 empty body
 853	SKIPPED	0002:000df370 ??_FRumbleEffectInstanceHandle@@QAEXXZ 008CE870 f i core.o SKIPPED: compiler-generated default constructor closure; supplied by the compiler
 854	VERIFIED	0002:000df380 ??0nalHeap@@QAE@XZ 008CE880 f i core.o
-855	PORTED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o
-856	PORTED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o
-857	PORTED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o
-858	PORTED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o
+855	PORTED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF390 installs the AnimCacheHeap vtable
+856	PORTED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3A0 forwards to nalAnimationCache::MemAlloc
+857	PORTED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3C0 forwards size-header value to nalAnimationCache::MemFree
+858	PORTED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o PORTED: source implementation in 64b48117; IDA 0x004DF3F0 bounds-checks AnimHeap block then frees
 859	PORTED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF430 stores mType, strlen(type), and callback
 860	PORTED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o PORTED: source implementation in 8040ae74; IDA 0x004DF460 performs prefix callback search and returns false
 861	PORTED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o PORTED: source implementation in 460bc8e9; IDA 0x004DF4B0 forwards to AeHash
@@ -1153,7 +1153,7 @@ index	status	map_line
 1152	SKIPPED	0002:000e3250 ??_EAnimHeap@@UAEPAXI@Z 008D2750 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1153	SKIPPED	0002:000e3280 ??_EAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1154	SKIPPED	0002:000e3280 ??_GAnimCacheHeap@@UAEPAXI@Z 008D2780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1155	PORTED	0002:000e32b0 ??1AnimCacheHeap@@UAE@XZ 008D27B0 f i core.o
+1155	PORTED	0002:000e32b0 ??1AnimCacheHeap@@UAE@XZ 008D27B0 f i core.o PORTED: source implementation in 50780385; IDA 0x004E32B0 is a thunk to the empty ae_heap_base destructor
 1156	PORTED	0002:000e32c0 ??0?$reserved_dlist@VEndOnScriptNode@@@@QAE@XZ 008D27C0 f i core.o
 1157	PORTED	0002:000e32e0 ?end@?$reserved_dlist@VEndOnScriptNode@@@@QAE?AViterator@1@XZ 008D27E0 f i core.o
 1158	PORTED	0002:000e3300 ??0?$reserved_dlist@VEntityNotify@@@@QAE@XZ 008D2800 f i core.o
