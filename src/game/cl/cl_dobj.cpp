@@ -242,7 +242,7 @@ int CL_CgameSystemCalls(int* args)
         re.Text_PaintWithCursor(*(float*)(args + 1), *(float*)(args + 2),
                                 args[3], *(float*)(args + 4),
                                 (const float*)args[5], (const char*)args[6],
-                                args[7], (char)*(float*)(args + 8),
+                                args[7], (char)(unsigned char)args[8],
                                 0.0f, args[9], args[10]);
         result = 0;
         break;
