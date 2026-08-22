@@ -290,7 +290,7 @@ index	status	map_line
 289	VERIFIED	0002:00132740 ?CL_CharEvent@@YAXH@Z 00921C40 f cl.o
 290	VERIFIED	0002:00132780 ?CL_ShutdownAll@@YAXXZ 00921C80 f cl.o
 291	FIXED	0002:001327e0 ?CL_ClearState@@YAXXZ 00921CE0 f cl.o FIXED: uses Broc::string null assignment and exact state clearing
-292	PORTED	0002:00132880 ?CL_Disconnect@@YAXH@Z 00921D80 f cl.o PORTED: IDA match; restores fullscreen, clears state, and disconnects
+292	FIXED	0002:00132880 ?CL_Disconnect@@YAXH@Z 00921D80 f cl.o FIXED: restored showMainMenu parameter and reference caller values (1/0)
 293	VERIFIED	0002:001328c0 ?CL_StartHunkUsers@@YAXXZ 00921DC0 f cl.o
 294	VERIFIED	0002:00132930 ?CL_InitRef@@YAXXZ 00921E30 f cl.o
 295	VERIFIED	0002:00132a70 ?CL_Shutdown@@YAXXZ 00921F70 f cl.o
