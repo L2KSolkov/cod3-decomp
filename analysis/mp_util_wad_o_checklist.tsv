@@ -1163,16 +1163,16 @@ index	status	map_line
 1162	PORTED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o	PORTED: added IDA HashStr::IsDefined sentinel comparison
 1163	VERIFIED	0002:00586760 ??$size@Ventity@Broc@@@Broc@@YAHABV?$dyn_array@Ventity@Broc@@@0@@Z 00D75C60 f i mp_util_wad.o
 1164	PORTED	0002:00586780 ??$println@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAY0BD@$$CBDABUbint@@@Z 00D75C80 f i mp_util_wad.o
-1165	PORTED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o
-1166	PORTED	0002:00586850 ??$push@M@Broc@@YAXAAV?$dyn_array@M@0@ABM@Z 00D75D50 f i mp_util_wad.o
+1165	PORTED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o	PORTED: added the IDA direct push_back(vector) wrapper
+1166	PORTED	0002:00586850 ??$push@M@Broc@@YAXAAV?$dyn_array@M@0@ABM@Z 00D75D50 f i mp_util_wad.o	PORTED: added the IDA direct push_back(float) wrapper
 1167	VERIFIED	0002:00586880 ??$size@Uvector@Broc@@@Broc@@YAHABV?$dyn_array@Uvector@Broc@@@0@@Z 00D75D80 f i mp_util_wad.o
 1168	PORTED	0002:005868a0 ??$iprintlnbold@Vstring@Broc@@@Broc@@YAXABVstring@0@@Z 00D75DA0 f i mp_util_wad.o
 1169	PORTED	0002:00586930 ??$iprintln@PBD$$BY01$$CBD$$BY0BD@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BD@$$CBD@Z 00D75E30 f i mp_util_wad.o
 1170	PORTED	0002:005869d0 ??$iprintln@PBD$$BY01$$CBD$$BY0BG@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0BG@$$CBD@Z 00D75ED0 f i mp_util_wad.o
 1171	PORTED	0002:00586a70 ??$iprintln@$$BY0BC@$$CBD@Broc@@YAXAAY0BC@$$CBD@Z 00D75F70 f i mp_util_wad.o
 1172	PORTED	0002:00586b00 ??$iprintln@PBD$$BY01$$CBD$$BY0CB@$$CBD@Broc@@YAXABQBDAAY01$$CBDAAY0CB@$$CBD@Z 00D76000 f i mp_util_wad.o
-1173	PORTED	0002:00586ba0 ??$IsDefined@Vhudelem@Broc@@@@YA_NABVhudelem@Broc@@@Z 00D760A0 f i mp_util_wad.o
-1174	PORTED	0002:00586bc0 ?IsDefined@hudelem@Broc@@QBE_NXZ 00D760C0 f i mp_util_wad.o
+1173	VERIFIED	0002:00586ba0 ??$IsDefined@Vhudelem@Broc@@@@YA_NABVhudelem@Broc@@@Z 00D760A0 f i mp_util_wad.o	VERIFIED: IDA 0x00986BA0 forwards to hudelem::IsDefined()
+1174	VERIFIED	0002:00586bc0 ?IsDefined@hudelem@Broc@@QBE_NXZ 00D760C0 f i mp_util_wad.o	VERIFIED: IDA 0x00986BC0 checks mHudIndex against -1
 1175	PORTED	0002:00586bf0 ??$iprintln@$$BY0BL@$$CBD@Broc@@YAXAAY0BL@$$CBD@Z 00D760F0 f i mp_util_wad.o
 1176	PORTED	0002:00586c80 ??$iprintln@$$BY0BJ@$$CBD@Broc@@YAXAAY0BJ@$$CBD@Z 00D76180 f i mp_util_wad.o
 1177	PORTED	0002:00586d10 ??$iprintln@$$BY0BG@$$CBD@Broc@@YAXAAY0BG@$$CBD@Z 00D76210 f i mp_util_wad.o
