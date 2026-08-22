@@ -539,7 +539,7 @@ index	status	map_line
 538	FIXED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 539	FIXED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o	FIXED: reverified IDA 0x00952A60 and aligned origin_struct/team_struct reads for distance, host-client rejection, and holder-team comparison (source commit 1ce34e38)
 540	VERIFIED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o
-541	PORTED	0002:00552f30 ?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z 00D42430 f mp_util_wad.o	PORTED: replaced no-op with C3/IDA 0x00952F30 flag lookup, launch/update, holder cleanup, timeout, sound, and team message flow; IDA reverified holder proxy writes and cleanup order; source commit cdf7f7f9
+541	FIXED	0002:00552f30 ?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z 00D42430 f mp_util_wad.o	FIXED: reverified IDA 0x00952F30 and aligned flag lookup/notify HashStr constructors plus typed ctf_has_flag holder clearing (source commit adadecb4)
 542	FIXED	0002:005533a0 ?WaitForFlagTimeOut__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D428A0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 543	VERIFIED	0002:00553440 ?WaitForFlagTimeOut@_mp_ctf@@YAXVentity@Broc@@@Z 00D42940 f mp_util_wad.o
 544	VERIFIED	0002:005536d0 ?DestroyIcon@_mp_ctf@@YAXVentity@Broc@@@Z 00D42BD0 f mp_util_wad.o
