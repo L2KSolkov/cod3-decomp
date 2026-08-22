@@ -10552,7 +10552,10 @@ void CallbackAreaCaptured(int index, int team) {
 void CallbackPlayerSpawn(Broc::entity guy, int team_changed) {
     _mp_common::CallbackPlayerSpawn(guy, team_changed);
     *mp_util_wad::GetEE_holder(guy) = Broc::gEntityUndef;
-    mp_util_wad::entity_set_ctf_has_flag(guy, 0);
+    Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlag = {
+        guy.GetHandle()};
+    const __int16 noFlag = 0;
+    ctfHasFlag = noFlag;
     *mp_util_wad::GetEE_returnedSinceLastDeath(guy) = 0;
     *mp_util_wad::GetEE_cappedSinceLastDeath(guy) = 0;
 }
@@ -11575,19 +11578,12 @@ void HandleDropFlag(Broc::entity guy) {
     static Broc::bfloat dropPitch(-30.0f);
 
     Broc::vector angles;
-    mp_util_wad::entity_get_angles(&angles, guy);
+    Broc::entity::__unnamed::angles_struct anglesField = {
+        guy.GetHandle()};
+    anglesField.Get(&angles);
     Broc::vector launchAngles((float)dropPitch, angles.y, 0.0f);
     Broc::vector velocity = ::AnglesToForward(launchAngles) *
                             (float)dropSpeed;
-
-    Broc::string holderTargetName;
-    mp_util_wad::entity_get_targetname(
-        &holderTargetName, *mp_util_wad::GetEE_holder(guy));
-    int netID = (holderTargetName == "axis" ||
-                 holderTargetName == "ctf_axis")
-                    ? 1
-                    : 2;
-    holderTargetName.~string();
 
     if (!Broc::Code_IsLocalPlayer(guy) &&
         Broc::gBrocAPI.mAssert(
@@ -11595,9 +11591,22 @@ void HandleDropFlag(Broc::entity guy) {
             "CallbackDropFlag:  Function was not called by the local guy"))
         __debugbreak();
 
+    Broc::entity holderForTeam = *mp_util_wad::GetEE_holder(guy);
+    Broc::entity::__unnamed::targetname_struct targetnameField = {
+        holderForTeam.GetHandle()};
+    Broc::string holderTargetName;
+    targetnameField.Get(&holderTargetName);
+    int netID = (holderTargetName == "axis" ||
+                 holderTargetName == "ctf_axis")
+                    ? 1
+                    : 2;
+    holderTargetName.~string();
+
     Broc::vector offset(0.0f, 0.0f, 20.0f);
     Broc::vector dropOrigin;
-    mp_util_wad::entity_get_origin(&dropOrigin, guy);
+    Broc::entity::__unnamed::origin_struct originField = {
+        guy.GetHandle()};
+    originField.Get(&dropOrigin);
     dropOrigin = dropOrigin + offset;
     Broc::Code_DropItem(4, netID, &dropOrigin, &angles, &velocity);
 
