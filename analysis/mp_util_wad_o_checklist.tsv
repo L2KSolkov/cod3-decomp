@@ -472,7 +472,7 @@ index	status	map_line
 471	VERIFIED	0002:0054b8b0 ?notify@Broc@@YAXABVentity@1@PBD@Z 00D3ADB0 f i mp_util_wad.o	VERIFIED: IDA 0x0094B8B0 matches the existing label hash and entity-notify forward
 472	VERIFIED	0002:0054b900 ?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D3AE00 f mp_util_wad.o
 473	VERIFIED	0002:0054ba60 ?ObjectiveDelete@@YAXHH@Z 00D3AF60 f i mp_util_wad.o	VERIFIED: IDA 0x0094BA60 matches the existing objective/client forward to mObjectiveDelete
-474	PORTED	0002:0054ba90 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@PBD@Z 00D3AF90 f i mp_util_wad.o	PORTED: IDA forwards both const string references, by-value vector, and default objective arguments to mObjectiveAdd5
+474	VERIFIED	0002:0054ba90 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@PBD@Z 00D3AF90 f i mp_util_wad.o	VERIFIED: IDA 0x0094BA90 matches the existing default objective arguments and mObjectiveAdd5 forward
 475	FIXED	0002:0054bae0 ?HandleJoinAfterRoundOver@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D3AFE0 f mp_util_wad.o	FIXED: IDA 0x0094BAE0 uses pLevel->_base.entity for both endon labels
 476	VERIFIED	0002:0054bbd0 ?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ 00D3B0D0 f mp_util_wad.o
 477	FIXED	0002:0054bd80 ?LocalPlayerIntermission__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3B280 f i mp_util_wad.o	FIXED: corrected the wrapper return type to AeThreadFunctor1<Broc::entity>* per IDA's constructor return type
@@ -490,7 +490,7 @@ index	status	map_line
 489	VERIFIED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	VERIFIED: IDA 0x0094CD50 matches the existing min/max/color/alpha forward to mDebugRenderBox
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
 491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
-492	PORTED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	PORTED: IDA forwards height/clientIndex and default display/child arguments to mObjectiveAdd5
+492	VERIFIED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	VERIFIED: IDA 0x0094D2D0 matches the existing height/clientIndex and default display arguments
 493	FIXED	0002:0054d320 ?StartGame__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C820 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 494	FIXED	0002:0054d3c0 ?FlagThreadLauncher__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C8C0 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 495	FIXED	0002:0054d460 ?StartGame@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C960 f mp_util_wad.o	FIXED: IDA 0x0094D460 copies pLevel->_base.entity (or null) into RunFrame__functor
