@@ -206,7 +206,7 @@ public:
 
     void push_back(const T& elt) {
         if (mSize >= mCapacity) {
-            unsigned int newCap = mCapacity ? mCapacity * 2 : 4;
+            unsigned int newCap = mSize + 4;
             T* ne = new T[newCap];
             for (unsigned int k = 0; k < mSize; k++)
                 ne[k] = mElements[k];
