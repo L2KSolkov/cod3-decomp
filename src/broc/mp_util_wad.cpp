@@ -10598,7 +10598,7 @@ void SetupRound() {
         Broc::entity p = players[(unsigned int)(int)i];
         *mp_util_wad::GetEE_holder(p) = Broc::gEntityUndef;
         mp_util_wad::entity_set_ctf_has_flag(p, 0);
-        *mp_util_wad::GetEE_last_dropped_time(p) = 0;
+        *mp_util_wad::GetEE_last_dropped_time(p) = -1;
         i = (int)i + 1;
     }
     players.~dyn_array();
