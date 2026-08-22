@@ -1408,7 +1408,7 @@ index	status	map_line
 1407	SKIPPED	0002:000e9ae0 ??_Glength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1408	SKIPPED	0002:000e9ae0 ??_Elength_error@std@@UAEPAXI@Z 008D8FE0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1409	SKIPPED	0002:000e9b10 ??1length_error@std@@UAE@XZ 008D9010 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1410	PORTED	0002:000e9b20 ?CreateInst@EffectEventSys@@SAXXZ 008D9020 f i core.o
+1410	FIXED	0002:000e9b20 ?CreateInst@EffectEventSys@@SAXXZ 008D9020 f i core.o	FIXED: matched IDA allocation/constructor path and removed the unmapped duplicate singleton; uses EffectEventSys::sInst at 0x00F00E80
 1411	SKIPPED	0002:000e9c20 ??_GEffectEventSys@@QAEPAXI@Z 008D9120 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1412	VERIFIED	0002:000e9c50 ?DeleteInst@RumbleManager@@SAXXZ 008D9150 f i core.o
 1413	SKIPPED	0002:000e9ce0 ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@PBD@Z 008D91E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
