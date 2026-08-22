@@ -12360,7 +12360,10 @@ void CallbackPlayerSpawn(Broc::entity player, int team_changed) {
     Broc::Code_DebugOut("*SCF* CallbackPlayerSpawn\n");
     _mp_common::CallbackPlayerSpawn(player, team_changed);
     *mp_util_wad::GetEE_holder(player) = Broc::gEntityUndef;
-    mp_util_wad::entity_set_ctf_has_flag(player, 0);
+    __int16 noFlag = 0;
+    Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlagField = {
+        player.GetHandle()};
+    ctfHasFlagField = noFlag;
     if (Broc::Code_IsLocalPlayer(player)) {
         Broc::entity flag =
             mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
@@ -12869,12 +12872,16 @@ void HandleDropFlag(Broc::entity player) {
     static Broc::bfloat speed(200.0f);
     static Broc::bfloat pitch_0(-30.0f);
     Broc::vector playerAngles;
-    mp_util_wad::entity_get_angles(&playerAngles, player);
+    Broc::entity::__unnamed::angles_struct anglesField = {
+        player.GetHandle()};
+    anglesField.Get(&playerAngles);
     Broc::vector launchAngles((float)pitch_0, playerAngles.y, 0.0f);
     Broc::vector velocity = ::AnglesToForward(launchAngles) * (float)speed;
 
     Broc::vector playerOrigin;
-    mp_util_wad::entity_get_origin(&playerOrigin, player);
+    Broc::entity::__unnamed::origin_struct originField = {
+        player.GetHandle()};
+    originField.Get(&playerOrigin);
     Broc::vector dropOffset(0.0f, 0.0f, 20.0f);
     Broc::vector dropOrigin = playerOrigin + dropOffset;
     Broc::Code_DropItem(
