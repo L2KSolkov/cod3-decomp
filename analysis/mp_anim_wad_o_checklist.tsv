@@ -45,14 +45,14 @@ index	status	map_line
 44	PORTED	0002:0058daf0 ?IsEEDefined_script_playerseek@@YA?AUbbool@@Ventity@Broc@@@Z 00D7CFF0 f mp_anim_wad.o	PORTED: added IDA 0x0098DAF0 defined-check for key 0xDD16B1E9; source commit 800f5f7b
 45	FIXED	0002:0058dba0 ?GetEE_vehicletype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D0A0 f mp_anim_wad.o	FIXED: corrected IDA key from 0x128D7CA2 to 0x128D01A2; source commit 800f5f7b
 46	FIXED	0002:0058dbf0 ?IsEEDefined_vehicletype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D0F0 f mp_anim_wad.o	FIXED: corrected IDA key from 0x128D7CA2 to 0x128D01A2; source commit 800f5f7b
-47	PORTED	0002:0058dcf0 ?GetEE_script_fixbasepose@@YAAAUbint@@Ventity@Broc@@@Z 00D7D1F0 f mp_anim_wad.o
-48	PORTED	0002:0058dd40 ?IsEEDefined_script_fixbasepose@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D240 f mp_anim_wad.o
-49	PORTED	0002:0058ddf0 ?GetEE_script_objective@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D2F0 f mp_anim_wad.o
-50	PORTED	0002:0058de40 ?IsEEDefined_script_objective@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D340 f mp_anim_wad.o
-51	PORTED	0002:0058df40 ?GetEE_script_moveoverride@@YAAAUbint@@Ventity@Broc@@@Z 00D7D440 f mp_anim_wad.o
-52	PORTED	0002:0058df90 ?IsEEDefined_script_moveoverride@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D490 f mp_anim_wad.o
-53	PORTED	0002:0058e040 ?GetEE_script_stalingradspawn@@YAAAUbint@@Ventity@Broc@@@Z 00D7D540 f mp_anim_wad.o
-54	PORTED	0002:0058e090 ?IsEEDefined_script_stalingradspawn@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D590 f mp_anim_wad.o
+47	PORTED	0002:0058dcf0 ?GetEE_script_fixbasepose@@YAAAUbint@@Ventity@Broc@@@Z 00D7D1F0 f mp_anim_wad.o	PORTED: added IDA 0x0098DCF0 ExtendedEntity bint reference for key 0x48E740AD; source commit 23cfabb7
+48	PORTED	0002:0058dd40 ?IsEEDefined_script_fixbasepose@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D240 f mp_anim_wad.o	PORTED: added IDA 0x0098DD40 defined-check for key 0x48E740AD; source commit 23cfabb7
+49	PORTED	0002:0058ddf0 ?GetEE_script_objective@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D2F0 f mp_anim_wad.o	PORTED: added IDA 0x0098DDF0 ExtendedEntity string reference for key 0xAF1A6D8F; source commit 23cfabb7
+50	PORTED	0002:0058de40 ?IsEEDefined_script_objective@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D340 f mp_anim_wad.o	PORTED: added IDA 0x0098DE40 defined-check for key 0xAF1A6D8F; source commit 23cfabb7
+51	PORTED	0002:0058df40 ?GetEE_script_moveoverride@@YAAAUbint@@Ventity@Broc@@@Z 00D7D440 f mp_anim_wad.o	PORTED: added IDA 0x0098DF40 ExtendedEntity bint reference for key 0x04B15AAB; source commit 23cfabb7
+52	PORTED	0002:0058df90 ?IsEEDefined_script_moveoverride@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D490 f mp_anim_wad.o	PORTED: added IDA 0x0098DF90 defined-check for key 0x04B15AAB; source commit 23cfabb7
+53	PORTED	0002:0058e040 ?GetEE_script_stalingradspawn@@YAAAUbint@@Ventity@Broc@@@Z 00D7D540 f mp_anim_wad.o	PORTED: added IDA 0x0098E040 ExtendedEntity bint reference for key 0x15D9C126; source commit 23cfabb7
+54	PORTED	0002:0058e090 ?IsEEDefined_script_stalingradspawn@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D590 f mp_anim_wad.o	PORTED: added IDA 0x0098E090 defined-check for key 0x15D9C126; source commit 23cfabb7
 55	PORTED	0002:0058e140 ?GetEE_script_new_exploder@@YAAAUbint@@Ventity@Broc@@@Z 00D7D640 f mp_anim_wad.o
 56	PORTED	0002:0058e190 ?IsEEDefined_script_new_exploder@@YA?AUbbool@@Ventity@Broc@@@Z 00D7D690 f mp_anim_wad.o
 57	PORTED	0002:0058e240 ?GetEE_script_squadname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7D740 f mp_anim_wad.o
