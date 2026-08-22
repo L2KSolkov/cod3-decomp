@@ -1388,7 +1388,7 @@ index	status	map_line
 1387	SKIPPED	0002:000e94c0 ??_GActiveEffectSet@@QAEPAXI@Z 008D89C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1388	SKIPPED	0002:000e94f0 ??_GAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1389	SKIPPED	0002:000e94f0 ??_EAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1390	PORTED	0002:000e9520 ?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008D8A20 f i core.o
+1390	PORTED	0002:000e9520 ?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008D8A20 f i core.o	PORTED: added the exact empty one-byte virtual override shown by IDA
 1391	VERIFIED	0002:000e9530 ??0?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D8A30 f i core.o
 1392	SKIPPED	0002:000e9570 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z 008D8A70 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1393	SKIPPED	0002:000e96b0 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z 008D8BB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
