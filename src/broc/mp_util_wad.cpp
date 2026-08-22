@@ -3403,7 +3403,27 @@ void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
 // _mp_airplanes::plane_roll - ea: 0x935680
 // ============================================================================
 void plane_roll(Broc::entity self) {
-    (void)self;
+    HashStr endLabel;
+    endLabel.mVal = 0x074AA0A6u;
+    Broc::endon(self, endLabel);
+
+    ::bfloat minRoll(-20.0L);
+    ::bfloat maxRoll(20.0L);
+    ::bfloat roll(0.0L);
+    ::bfloat minTime(0.75L);
+    ::bfloat maxTime(1.5L);
+    ::bfloat time(0.0L);
+    for (;;) {
+        roll = (long double)RandomFloatRange((float)minRoll,
+                                               (float)maxRoll);
+        time = (long double)RandomFloatRange((float)minTime,
+                                               (float)maxTime);
+        float accTime = (float)time * 0.25f;
+        float decTime = (float)time * 0.25f;
+        Broc::vector dest(0.0f, 0.0f, (float)roll);
+        Broc::RotateTo(&self, &dest, (float)time, accTime, decTime);
+        Broc::wait((float)time);
+    }
 }
 void* plane_roll__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
