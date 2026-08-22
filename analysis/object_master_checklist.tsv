@@ -543,7 +543,7 @@ nal_initlist.o	analysis/nal_initlist_o_checklist.tsv	analysis/nal_initlist_o_inv
 nal_math.o	analysis/nal_math_o_checklist.tsv	analysis/nal_math_o_inventory.tsv	analysis/nal_math_o_plan.tsv	1	1	0	0	0	0	0
 nal_sceneanim.o	analysis/nal_sceneanim_o_checklist.tsv	analysis/nal_sceneanim_o_inventory.tsv	analysis/nal_sceneanim_o_plan.tsv	10	0	8	0	0	0	0
 nal_skeleton.o	analysis/nal_skeleton_o_checklist.tsv	analysis/nal_skeleton_o_inventory.tsv	analysis/nal_skeleton_o_plan.tsv	10	10	0	0	0	0	0
-nal_stream.o	analysis/nal_stream_o_checklist.tsv	analysis/nal_stream_o_inventory.tsv	analysis/nal_stream_o_plan.tsv	18	0	18	0	0	0	0
+nal_stream.o	analysis/nal_stream_o_checklist.tsv	analysis/nal_stream_o_inventory.tsv	analysis/nal_stream_o_plan.tsv	18	0	14	0	0	0	0
 nciplssc.obj	analysis/nciplssc_obj_checklist.tsv	analysis/nciplssc_obj_inventory.tsv	analysis/nciplssc_obj_plan.tsv	10	0	0	10	0	0	0
 ncisase3200.obj	analysis/ncisase3200_obj_checklist.tsv	analysis/ncisase3200_obj_inventory.tsv	analysis/ncisase3200_obj_plan.tsv	18	0	0	18	0	0	0
 nciscmr3200.obj	analysis/nciscmr3200_obj_checklist.tsv	analysis/nciscmr3200_obj_inventory.tsv	analysis/nciscmr3200_obj_plan.tsv	12	0	0	12	0	0	0
