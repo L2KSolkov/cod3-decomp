@@ -1192,7 +1192,7 @@ index	status	map_line
 1191	VERIFIED	0002:005874b0 ??1?$dyn_array@H@Broc@@QAE@XZ 00D769B0 f i mp_util_wad.o
 1192	VERIFIED	0002:005874f0 ??A?$dyn_array@H@Broc@@QAEAAHI@Z 00D769F0 f i mp_util_wad.o
 1193	FIXED	0002:00587710 ?push_back@?$dyn_array@H@Broc@@QAEXABH@Z 00D76C10 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
-1194	PORTED	0002:00587910 ??$IsDefined@Ventity@Broc@@@Broc@@YA_NABV?$dyn_array@Ventity@Broc@@@0@@Z 00D76E10 f i mp_util_wad.o	PORTED: added the IDA capacity-nonzero dyn_array IsDefined wrapper
+1194	PORTED	0002:00587910 ??$IsDefined@Ventity@Broc@@@Broc@@YA_NABV?$dyn_array@Ventity@Broc@@@0@@Z 00D76E10 f i mp_util_wad.o	PORTED: implemented IDA 0x00987910 dyn_array<entity> overload returning capacity(ar) != 0; source commit 19eacd71
 1195	SKIPPED	0002:00587940 ??$_Distance@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@I@std@@YAXViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@0AAI@Z 00D76E40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1196	PORTED	0002:00587990 ??$hash_value@UHashStr@@@stdext@@YAIABUHashStr@@@Z 00D76E90 f i mp_util_wad.o	PORTED: added the IDA HashStr XOR 0xDEADBEEF hash helper
 1197	SKIPPED	0002:005879c0 ??$?8U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@U01@@std@@YA_NABV?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@0@0@Z 00D76EC0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
