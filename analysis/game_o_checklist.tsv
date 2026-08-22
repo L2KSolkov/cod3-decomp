@@ -748,18 +748,18 @@ index	status	map_line
 747	PORTED	0002:0025c5e0 ??0__unnamed@Entity@@QAE@XZ 00A4BAE0 f i game.o
 748	VERIFIED	0002:0025c600 ??1AttachModelInfo@@QAE@XZ 00A4BB00 f i game.o
 749	SKIPPED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o
-751	PORTED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o
-752	PORTED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o
-753	PORTED	0002:0025c6f0 ?load_inplace@?$cdl_array@UcdlPlane@@@@QAEXPADAAH@Z 00A4BBF0 f i game.o
-754	PORTED	0002:0025c730 ??A?$cdl_array@Ucdl_object_t@@@@QAEAAUcdl_object_t@@I@Z 00A4BC30 f i game.o
-755	PORTED	0002:0025c780 ?load_inplace@?$cdl_array@Ucdl_object_t@@@@QAEXPADAAH@Z 00A4BC80 f i game.o
-756	PORTED	0002:0025c7d0 ??0?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4BCD0 f i game.o
-757	PORTED	0002:0025c7f0 ?load_inplace@?$cdl_array@Ucdl_brush_t@@@@QAEXPADAAH@Z 00A4BCF0 f i game.o
-758	PORTED	0002:0025c830 ??0?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4BD30 f i game.o
-759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o
-760	PORTED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o
-761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o
+750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o	PORTED: restored exact 16-byte alignment and byte-count advance from IDA
+751	PORTED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o	PORTED: restored exact zero/null array constructor from IDA
+752	PORTED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
+753	PORTED	0002:0025c6f0 ?load_inplace@?$cdl_array@UcdlPlane@@@@QAEXPADAAH@Z 00A4BBF0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
+754	PORTED	0002:0025c730 ??A?$cdl_array@Ucdl_object_t@@@@QAEAAUcdl_object_t@@I@Z 00A4BC30 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
+755	PORTED	0002:0025c780 ?load_inplace@?$cdl_array@Ucdl_object_t@@@@QAEXPADAAH@Z 00A4BC80 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
+756	PORTED	0002:0025c7d0 ??0?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4BCD0 f i game.o	PORTED: restored exact zero/null array constructor from IDA
+757	PORTED	0002:0025c7f0 ?load_inplace@?$cdl_array@Ucdl_brush_t@@@@QAEXPADAAH@Z 00A4BCF0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
+758	PORTED	0002:0025c830 ??0?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4BD30 f i game.o	PORTED: restored exact zero/null array constructor from IDA
+759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
+760	PORTED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o	PORTED: restored exact zero/null array constructor from IDA
+761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
 762	PORTED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o
 763	PORTED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o
 764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o
