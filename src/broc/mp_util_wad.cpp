@@ -8237,8 +8237,7 @@ void DebugRenderSpawnPoints() {
     Broc::vector mins(-16.0f, -16.0f, 0.0f);
     Broc::vector maxs(16.0f, 16.0f, 72.0f);
 
-    HashStr alliesKey;
-    alliesKey.mVal = 0xF756C677u;
+    HashStr alliesKey(0xF756C677u);
     Broc::GetEntArray(&mp_util_wad::pLevel->spawnTypeAllies,
                      alliesKey.mVal, &spawnpoints, 0);
     Broc::vector origin;
@@ -8246,30 +8245,33 @@ void DebugRenderSpawnPoints() {
     while ((int)i < Broc::size(spawnpoints)) {
         Broc::entity spawnpoint =
             spawnpoints[(unsigned int)(int)i];
-        mp_util_wad::entity_get_origin(&origin, spawnpoint);
+        Broc::entity::__unnamed::origin_struct originField = {
+            spawnpoint.GetHandle()};
+        originField.Get(&origin);
         Broc::vector maxBox = origin + maxs;
         Broc::vector minBox = origin + mins;
         Broc::Code_DebugRenderBox(&minBox, &maxBox,
                                   &mp_util_wad::pLevel->spawnColorAllies,
                                   0.25f);
-        i = (int)i + 1;
+        i.operator++();
     }
 
-    HashStr axisKey;
-    axisKey.mVal = 0xF756C677u;
+    HashStr axisKey(0xF756C677u);
     Broc::GetEntArray(&mp_util_wad::pLevel->spawnTypeAxis,
                      axisKey.mVal, &spawnpoints, 0);
     Broc::bint axisIndex(0);
     while ((int)axisIndex < Broc::size(spawnpoints)) {
         Broc::entity spawnpoint =
             spawnpoints[(unsigned int)(int)axisIndex];
-        mp_util_wad::entity_get_origin(&origin, spawnpoint);
+        Broc::entity::__unnamed::origin_struct originField = {
+            spawnpoint.GetHandle()};
+        originField.Get(&origin);
         Broc::vector maxBox = origin + maxs;
         Broc::vector minBox = origin + mins;
         Broc::Code_DebugRenderBox(&minBox, &maxBox,
                                   &mp_util_wad::pLevel->spawnColorAxis,
                                   0.25f);
-        axisIndex = (int)axisIndex + 1;
+        axisIndex.operator++();
     }
 
     spawnpoints.~dyn_array();
