@@ -677,19 +677,18 @@ int axisSameStick[6];  // cl.o BSS
 enum { GPAD_PHYSAXIS_NONE = -1 };
 
 // ea: 0x52E660
-int* CL_InitGamepadAxisBindings()
+void CL_InitGamepadAxisBindings()
 {
-    GpadAxesGlob* v0 = gaGlobs;
+    int* axisValues = gaGlobs[0].axesValues;
     int* result = &dword_F1336C[0];
     for (int i = 6; i != 0; --i)
     {
         *(result - 1) = -1;
         *result = 1;
-        v0->axesValues[0] = 0;
+        *axisValues = 0;
         result += 2;
-        ++v0;
+        ++axisValues;
     }
-    return result;
 }
 
 // ea: 0x52EE00

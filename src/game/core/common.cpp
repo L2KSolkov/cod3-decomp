@@ -443,7 +443,7 @@ extern void PhysInit();
 extern void PhysShutdown();
 extern void CL_InitKeyCommands();
 extern void CL_InitGamepadCommands();
-extern int* CL_InitGamepadAxisBindings();
+extern void CL_InitGamepadAxisBindings();
 extern void InitPadAliasCommands();
 extern void SEH_Init_StringEd();
 extern void SEH_UpdateLanguageInfo();
