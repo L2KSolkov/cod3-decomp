@@ -2561,16 +2561,9 @@ class nalComponentIKSpinBase;
 class nalComponentTrajectoryPO;
 class nalComponentEntropyTrajectoryPO;
 
-// ============================================================================
-// nalStreamInstance Ã¢â‚¬â€ streaming animation instance
-// ============================================================================
-class nalStreamInstance {
-public:
-    virtual bool IsReady() const { return false; }
-    virtual void Play() {}
-    virtual void Advance(float dt) {}
-    void AdvanceStream() {}
-};
+// nalStreamInstance is declared after nalSceneAnimInstance so its base
+// subobject and local type layout are available.
+class nalStreamInstance;
 
 // ============================================================================
 // nalSceneAnim / nalSceneAnimInstance Ã¢â‚¬â€ scene animation
@@ -2661,8 +2654,18 @@ public:
     static_assert(sizeof(nalClientAnimNode) == 16,
                   "nalClientAnimNode layout mismatch");
 
+    static void* operator new(unsigned int sz)
+    {
+        return tlMemAlloc(sz, 8, 0);
+    }
+    static void* operator new(unsigned int, void* memory)
+    {
+        return memory;
+    }
+
+    nalSceneAnimInstance(nalSceneAnim* anim);
     virtual ~nalSceneAnimInstance();
-    virtual bool IsReady() { return false; }
+    virtual bool IsReady() const { return true; }
     virtual void Play() {}
     virtual void Advance(float delta) { (void)delta; }
 
@@ -2682,9 +2685,107 @@ public:
     float GetDuration() const;
     // ?IsDone@nalSceneAnimInstance@@QBE_NXZ (0x560070)
     bool IsDone() const;
+    bool IsLooping() const;
 };
 static_assert(sizeof(nalSceneAnimInstance) == 28,
               "nalSceneAnimInstance layout mismatch");
+
+enum nflRequestID : unsigned {
+    NFL_REQUEST_ID_INVALID = 0xFFFFFFFFu
+};
+enum nflRequestState : unsigned {
+    NFL_REQUEST_STATE_INVALID = 0xFFFFFFFFu,
+    NFL_REQUEST_STATE_COMPLETED = 0,
+    NFL_REQUEST_STATE_CANCELED = 1,
+    NFL_REQUEST_STATE_TIMEOUT = 2,
+    NFL_REQUEST_STATE_ERROR = 3,
+    NFL_REQUEST_STATE_ACTIVE = 4
+};
+enum nflMediaID : unsigned;
+struct nflRequestInfo {
+    unsigned bytesCompleted;
+    unsigned timeElapsed;
+    unsigned activeTimeElapsed;
+};
+struct nflMediaAlignments {
+    unsigned mediaAlignment;
+    unsigned memoryAlignment;
+    unsigned transferSizeAlignment;
+};
+extern nflMediaID nflGetFileMedia(nflFileID fileID);
+extern nflMediaAlignments* nflGetMediaAlignments(
+    nflMediaID media, nflMediaAlignments* alignments);
+extern nflRequestID nflReadFileAsync(nflFileID fileID, unsigned offset,
+                                     void* buffer, unsigned dataSize);
+extern nflRequestInfo* nflGetRequestInfo(nflRequestID requestID,
+                                          nflRequestInfo* info);
+extern nflRequestState nflGetRequestState(nflRequestID requestID);
+extern void nflCancelRequest(nflRequestID requestID);
+extern void nflUpdate();
+
+class nalStreamInstance : public nalSceneAnimInstance {
+public:
+    enum nalStreamState {
+        NAL_STREAM_STATE_START_READ_HEADER = 0,
+        NAL_STREAM_STATE_FINISH_READ_HEADER = 1,
+        NAL_STREAM_STATE_FINISH_EXTRA_READ_HEADER = 2,
+        NAL_STREAM_STATE_START_READ_CHUNK = 3,
+        NAL_STREAM_STATE_FINISH_READ_CHUNK = 4,
+        NAL_STREAM_STATE_PLAYING = 5,
+        NAL_STREAM_STATE_READY = 6
+    };
+
+    nalStreamInstance(
+        int bufferSize,
+        nalClientSceneAnim* (*callback)(const nalSceneAnim*,
+                                         const tlFixedString&, void*),
+        void* userParam, nflFileID fileID, int startOffset, int fileSize);
+    virtual ~nalStreamInstance();
+    bool IsReady() const override;
+    void Play() override;
+    void Advance(float delta) override;
+    void AdvanceStream();
+
+    nalStreamState State;
+    nalClientSceneAnim* (*Callback)(const nalSceneAnim*,
+                                    const tlFixedString&, void*);
+    void* UserParam;
+    nflFileID FileID;
+    nalSceneAnimHeader* Header;
+    int Size;
+    int Alignment;
+    nalBaseSkeleton** Skeletons;
+    int BlockSize;
+    int BlockCount;
+    int BufferSize;
+    unsigned char* Buffer[2];
+    int BufferOffset[2];
+    int StartOffset;
+    int FileOffset;
+    int CurrentOffset;
+    int ChunkSize;
+    int RequestSize;
+    nflRequestID RequestID;
+    int FileSize;
+    int FirstChunkSize;
+    unsigned char ActiveBuffer;
+    unsigned char ReadBuffer;
+};
+static_assert(sizeof(nalStreamInstance) == 124,
+              "nalStreamInstance layout mismatch");
+
+// ea: 0x008733F0
+nalSceneAnimInstance::nalSceneAnimInstance(nalSceneAnim* anim)
+    : SceneAnim(anim), ClientNodeHead(nullptr), ClientNodeTail(nullptr),
+      Time(0.0f), ChunkTime(0.0f), Chunk(nullptr)
+{
+}
+
+// ea: 0x008733E0
+bool nalSceneAnimInstance::IsLooping() const
+{
+    return SceneAnim != nullptr && (SceneAnim->Header.Flags & 2u) != 0;
+}
 
 // ea: 0x00877FC0
 nalSceneAnimInstance::~nalSceneAnimInstance()
@@ -2789,14 +2890,8 @@ nalStaticInstance::nalStaticInstance(
     nalClientSceneAnim* (*callback)(const nalSceneAnim*, const tlFixedString&,
                                     void*),
     void* userParam)
-    : FirstChunk(nullptr)
+    : nalSceneAnimInstance(sceneAnim), FirstChunk(sceneAnim->Header.FirstChunk)
 {
-    SceneAnim = sceneAnim;
-    ClientNodeHead = nullptr;
-    ClientNodeTail = nullptr;
-    Time = 0.0f;
-    ChunkTime = 0.0f;
-    FirstChunk = sceneAnim->Header.FirstChunk;
     Chunk = FirstChunk;
 
     nalAnimClass<nalAnyPose>* anim = FirstChunk->FirstAnim;
@@ -3649,8 +3744,601 @@ void nalReleaseAllSceneAnims()
 // ============================================================================
 // nal streaming
 // ============================================================================
-nalStreamInstance* nalStreamAnimQueueInstance(unsigned a1, int a2, int a3, int a4,
-    nalClientSceneAnim* (*factory)(const nalSceneAnim*, const tlFixedString&)) { return nullptr; }
+// ea: 0x00873470
+nalStreamInstance::nalStreamInstance(
+    int bufferSize,
+    nalClientSceneAnim* (*callback)(const nalSceneAnim*, const tlFixedString&,
+                                    void*),
+    void* userParam, nflFileID fileID, int startOffset, int fileSize)
+    : nalSceneAnimInstance(nullptr), State(NAL_STREAM_STATE_START_READ_HEADER),
+      Callback(callback), UserParam(userParam), FileID(fileID), Header(nullptr),
+      Size(0), Alignment(0), Skeletons(nullptr), BlockSize(0), BlockCount(0),
+      BufferSize(bufferSize), Buffer{nullptr, nullptr}, BufferOffset{0, 0},
+      StartOffset(startOffset), FileOffset(0), CurrentOffset(0), ChunkSize(0),
+      RequestSize(0), RequestID(NFL_REQUEST_ID_INVALID), FileSize(fileSize),
+      FirstChunkSize(0), ActiveBuffer(0), ReadBuffer(0)
+{
+}
+
+// ea: 0x00873500
+nalStreamInstance::~nalStreamInstance()
+{
+    while (ClientNodeHead != nullptr)
+    {
+        nalClientAnimNode* node = ClientNodeHead;
+        ClientNodeHead = node->Next;
+        if (node->AnimInst != nullptr)
+        {
+            nalAnimClass<nalAnyPose>* anim = node->AnimInst->Anim;
+            delete node->AnimInst;
+            if (anim != nullptr)
+                anim->Release();
+        }
+        if (node->ClientAnim != nullptr)
+            node->ClientAnim->Release();
+        tlMemFree(node);
+    }
+    tlMemFree(Skeletons);
+    tlMemFree(Buffer[0]);
+    tlMemFree(SceneAnim);
+    ClientNodeTail = nullptr;
+}
+
+// ea: 0x00873600
+bool nalStreamInstance::IsReady() const
+{
+    return State == NAL_STREAM_STATE_READY;
+}
+
+// ea: 0x00873610
+void nalStreamInstance::Play()
+{
+    if (State != NAL_STREAM_STATE_READY
+        && _tlAssert("source/common/nal_stream.cpp", 91,
+                     "State == NAL_STREAM_STATE_READY",
+                     "stream must be ready first"))
+    {
+        __debugbreak();
+    }
+
+    const uintptr_t nextChunkOffset =
+        reinterpret_cast<uintptr_t>(Chunk->NextChunk);
+    if (nextChunkOffset + static_cast<unsigned>(CurrentOffset)
+            > static_cast<unsigned>(BufferSize)
+        && _tlAssert("source/common/nal_stream.cpp", 93,
+                     "(CurrentOffset + (s32)Chunk->NextChunk) <= BufferSize",
+                     "chunk doesn't fit in our block size"))
+    {
+        __debugbreak();
+    }
+
+    const unsigned char* stringTable =
+        reinterpret_cast<const unsigned char*>(SceneAnim) + 0x50;
+    Skeletons = static_cast<nalBaseSkeleton**>(
+        tlMemAlloc(4u * static_cast<unsigned>(
+                           SceneAnim->Header.NumStringsInTable),
+                   8, 0));
+    for (int i = 0; i < SceneAnim->Header.NumStringsInTable;
+         ++i, stringTable += 0x20)
+    {
+        const tlFixedString* name =
+            reinterpret_cast<const tlFixedString*>(stringTable);
+        Skeletons[i] = nalSkeletonDirectory->Find(*name);
+        if (Skeletons[i] == nullptr)
+            tlFatal("Couldn't find skeleton %s while loading streamed scene anim %s.\n",
+                    name->str, SceneAnim->Header.Name.str);
+    }
+
+    FirstChunkSize = static_cast<int>(nextChunkOffset);
+    const uintptr_t firstAnimOffset =
+        reinterpret_cast<uintptr_t>(Chunk->FirstAnim);
+    if (firstAnimOffset != 0)
+    {
+        nalAnimClass<nalAnyPose>* anim =
+            reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                reinterpret_cast<uintptr_t>(Chunk) + firstAnimOffset);
+        Chunk->FirstAnim = anim;
+        for (; anim != nullptr; )
+        {
+            const uintptr_t nextAnimOffset =
+                reinterpret_cast<uintptr_t>(anim->NextAnim);
+            if (nextAnimOffset != 0)
+                anim->NextAnim =
+                    reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                        reinterpret_cast<uintptr_t>(anim) + nextAnimOffset);
+            anim->Skeleton = Skeletons[anim->SkeletonNameIndex];
+            if (anim->Skeleton == nullptr
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+                       70, "Skeleton",
+                       "Skeleton must be filled out before the animation type can be obtained"))
+            {
+                __debugbreak();
+            }
+            tlInstanceBank::Instance* instance =
+                nalTypeInstanceBank.Search(anim->Skeleton->AnimTypeName);
+            if (instance == nullptr
+                && _tlAssert("source/common/nal_stream.cpp", 118,
+                             "instance",
+                             "animation type instance could not be found"))
+            {
+                __debugbreak();
+            }
+            nalInitListAnimType* type =
+                static_cast<nalInitListAnimType*>(instance->Value);
+            *reinterpret_cast<void**>(anim) = type->animVtable;
+            if (!anim->CheckVersion())
+                tlFatal("Unsupported anim version %x.\n", anim->Version);
+            anim->Process();
+            nalClientSceneAnim* client = Callback(SceneAnim, anim->Name,
+                                                  UserParam);
+            AddClientAnim(client, anim);
+            anim = nextAnimOffset != 0 ? anim->NextAnim : nullptr;
+        }
+    }
+    State = NAL_STREAM_STATE_PLAYING;
+}
+
+// ea: 0x008737C0
+void nalStreamInstance::AdvanceStream()
+{
+    if (RequestID == NFL_REQUEST_ID_INVALID)
+    {
+        if (ReadBuffer == ActiveBuffer)
+            return;
+        if (FileOffset < FileSize)
+        {
+            BufferOffset[ReadBuffer] = FileOffset - BlockSize;
+            RequestSize = BufferSize - BlockSize;
+            RequestID = nflReadFileAsync(
+                FileID, static_cast<unsigned>(FileOffset + StartOffset),
+                &Buffer[ReadBuffer][BlockSize],
+                static_cast<unsigned>(RequestSize));
+            if (RequestID != NFL_REQUEST_ID_INVALID)
+                return;
+            if (_tlAssert("source/common/nal_stream.cpp", 153,
+                          "RequestID != NFL_REQUEST_ID_INVALID",
+                          "NFL returned NFL_REQUEST_ID_INVALID"))
+                __debugbreak();
+        }
+        if ((SceneAnim->Header.Flags & 2u) != 0)
+        {
+            FileOffset = 0;
+            BufferOffset[ReadBuffer] = 0;
+            RequestSize = BufferSize;
+            RequestID = nflReadFileAsync(
+                FileID, static_cast<unsigned>(StartOffset), Buffer[ReadBuffer],
+                static_cast<unsigned>(RequestSize));
+            if (RequestID == NFL_REQUEST_ID_INVALID
+                && _tlAssert("source/common/nal_stream.cpp", 168,
+                             "RequestID != NFL_REQUEST_ID_INVALID",
+                             "NFL returned NFL_REQUEST_ID_INVALID"))
+                __debugbreak();
+        }
+        return;
+    }
+
+    if (nflGetRequestState(RequestID) == NFL_REQUEST_STATE_ACTIVE)
+        return;
+
+    FileOffset += RequestSize;
+    const unsigned char oldActive = ActiveBuffer;
+    ReadBuffer ^= 1u;
+    RequestID = NFL_REQUEST_ID_INVALID;
+    if (ReadBuffer == oldActive)
+        return;
+
+    if (FileOffset < FileSize)
+    {
+        BufferOffset[ReadBuffer] = FileOffset - BlockSize;
+        RequestSize = BufferSize - BlockSize;
+        RequestID = nflReadFileAsync(
+            FileID, static_cast<unsigned>(FileOffset + StartOffset),
+            &Buffer[ReadBuffer][BlockSize],
+            static_cast<unsigned>(RequestSize));
+        if (RequestID != NFL_REQUEST_ID_INVALID)
+            return;
+        if (_tlAssert("source/common/nal_stream.cpp", 199,
+                      "RequestID != NFL_REQUEST_ID_INVALID",
+                      "NFL returned NFL_REQUEST_ID_INVALID"))
+            __debugbreak();
+    }
+    if ((SceneAnim->Header.Flags & 2u) != 0)
+    {
+        FileOffset = 0;
+        BufferOffset[ReadBuffer] = 0;
+        RequestSize = BufferSize;
+        RequestID = nflReadFileAsync(
+            FileID, static_cast<unsigned>(StartOffset), Buffer[ReadBuffer],
+            static_cast<unsigned>(RequestSize));
+        if (RequestID == NFL_REQUEST_ID_INVALID
+            && _tlAssert("source/common/nal_stream.cpp", 214,
+                         "RequestID != NFL_REQUEST_ID_INVALID",
+                         "NFL returned NFL_REQUEST_ID_INVALID"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x00873980
+void nalStreamInstance::Advance(float delta)
+{
+    switch (State)
+    {
+    case NAL_STREAM_STATE_START_READ_HEADER:
+    {
+        nflMediaAlignments alignments;
+        nflGetMediaAlignments(nflGetFileMedia(FileID), &alignments);
+        unsigned activeTimeElapsed = alignments.mediaAlignment;
+        if (alignments.memoryAlignment > activeTimeElapsed)
+            activeTimeElapsed = alignments.memoryAlignment;
+        if (alignments.transferSizeAlignment > activeTimeElapsed)
+            activeTimeElapsed = alignments.transferSizeAlignment;
+        Alignment = static_cast<int>(activeTimeElapsed);
+        Size = static_cast<int>((activeTimeElapsed + 79u)
+                                & ~(activeTimeElapsed - 1u));
+        Header = static_cast<nalSceneAnimHeader*>(
+            tlMemAlloc(static_cast<unsigned>(Size), activeTimeElapsed, 0));
+        RequestID = nflReadFileAsync(FileID, static_cast<unsigned>(StartOffset),
+                                     Header, static_cast<unsigned>(Size));
+        State = NAL_STREAM_STATE_FINISH_READ_HEADER;
+        return;
+    }
+    case NAL_STREAM_STATE_FINISH_READ_HEADER:
+    {
+        nflRequestInfo requestInfo;
+        nflGetRequestInfo(RequestID, &requestInfo);
+        if (nflGetRequestState(RequestID) == NFL_REQUEST_STATE_ACTIVE)
+            return;
+
+        if (Header->Version != 0x10101u)
+            tlFatal("Unsupported scene anim version %x, current version is %x (%s).\n",
+                    Header->Version, 0x10101u, Header->Name.str);
+        const unsigned firstChunkOffset = static_cast<unsigned>(
+            reinterpret_cast<uintptr_t>(Header->FirstChunk));
+        if (firstChunkOffset <= static_cast<unsigned>(Size))
+        {
+            State = NAL_STREAM_STATE_START_READ_CHUNK;
+            return;
+        }
+
+        const unsigned totalSize = (firstChunkOffset
+                                    + static_cast<unsigned>(Alignment) + 3u)
+                                   & ~(static_cast<unsigned>(Alignment) - 1u);
+        nalSceneAnimHeader* expanded = static_cast<nalSceneAnimHeader*>(
+            tlMemAlloc(totalSize, static_cast<unsigned>(Alignment), 0));
+        memcpy(expanded, Header, static_cast<unsigned>(Size));
+        tlMemFree(Header);
+        const unsigned extraSize = totalSize - static_cast<unsigned>(Size);
+        RequestID = nflReadFileAsync(
+            FileID, static_cast<unsigned>(StartOffset + Size),
+            reinterpret_cast<unsigned char*>(expanded) + Size, extraSize);
+        Header = expanded;
+        Size = static_cast<int>(totalSize);
+        State = NAL_STREAM_STATE_FINISH_EXTRA_READ_HEADER;
+        return;
+    }
+    case NAL_STREAM_STATE_FINISH_EXTRA_READ_HEADER:
+    {
+        nflRequestInfo requestInfo;
+        nflGetRequestInfo(RequestID, &requestInfo);
+        if (nflGetRequestState(RequestID) != NFL_REQUEST_STATE_ACTIVE)
+            State = NAL_STREAM_STATE_START_READ_CHUNK;
+        return;
+    }
+    case NAL_STREAM_STATE_START_READ_CHUNK:
+    {
+        const unsigned headerSize = static_cast<unsigned>(
+            reinterpret_cast<uintptr_t>(Header->FirstChunk));
+        SceneAnim = static_cast<nalSceneAnim*>(
+            tlMemAlloc(headerSize, 8, 0));
+        memcpy(SceneAnim, Header, headerSize);
+
+        const unsigned alignment = static_cast<unsigned>(Alignment);
+        BlockSize = static_cast<int>(
+            (static_cast<unsigned>(SceneAnim->Header.MaxChunkSize)
+             + alignment - 1u) & ~(alignment - 1u));
+        BlockCount = (static_cast<int>(
+            static_cast<unsigned>(BufferSize) / static_cast<unsigned>(BlockSize)))
+                    & ~1;
+        if (BlockCount < 4)
+            BlockCount = 4;
+        BufferSize = BlockSize * (BlockCount / 2);
+        Buffer[0] = static_cast<unsigned char*>(
+            tlMemAlloc(static_cast<unsigned>(2 * BufferSize), alignment, 0));
+        Buffer[1] = Buffer[0] + BufferSize;
+        BufferOffset[0] = 0;
+        if (Size > BufferSize
+            && _tlAssert("source/common/nal_stream.cpp", 299,
+                         "Size <= BufferSize",
+                         "buffer is unable to hold initially read data"))
+        {
+            __debugbreak();
+        }
+        memcpy(Buffer[ActiveBuffer], Header, static_cast<unsigned>(Size));
+        tlMemFree(Header);
+        FileOffset = Size;
+        RequestSize = BufferSize - Size;
+        RequestID = nflReadFileAsync(
+            FileID, static_cast<unsigned>(FileOffset + StartOffset),
+            &Buffer[ReadBuffer][Size], static_cast<unsigned>(RequestSize));
+        CurrentOffset = static_cast<int>(reinterpret_cast<uintptr_t>(
+            SceneAnim->Header.FirstChunk));
+        Chunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+            Buffer[ActiveBuffer] + CurrentOffset);
+        State = NAL_STREAM_STATE_FINISH_READ_CHUNK;
+        return;
+    }
+    case NAL_STREAM_STATE_FINISH_READ_CHUNK:
+    {
+        nflRequestInfo requestInfo;
+        nflGetRequestInfo(RequestID, &requestInfo);
+        const unsigned nextChunkOffset = static_cast<unsigned>(
+            reinterpret_cast<uintptr_t>(Chunk->NextChunk));
+        const unsigned completed = requestInfo.bytesCompleted
+                                  + static_cast<unsigned>(FileOffset);
+        const unsigned bufferBase = static_cast<unsigned>(
+            BufferOffset[ActiveBuffer] + CurrentOffset);
+        if ((completed >= bufferBase + 12u
+             && completed >= bufferBase + nextChunkOffset)
+            || nflGetRequestState(RequestID) != NFL_REQUEST_STATE_ACTIVE)
+            State = NAL_STREAM_STATE_READY;
+        return;
+    }
+    case NAL_STREAM_STATE_PLAYING:
+        if ((SceneAnim->Header.Flags & 2u) == 0
+            && Time >= SceneAnim->Header.Duration)
+            return;
+        break;
+    default:
+        return;
+    }
+
+    float prevChunkTime = 0.0f;
+    float duration = 0.0f;
+    while (true)
+    {
+        AdvanceStream();
+        nalAnimClass<nalAnyPose>* firstAnim = Chunk->FirstAnim;
+        const float prevTime = Time;
+        prevChunkTime = ChunkTime;
+        duration = firstAnim->Duration;
+        if (duration == 0.0f)
+        {
+            Time = SceneAnim->Header.Duration;
+            return;
+        }
+        if (delta + ChunkTime < duration)
+            break;
+
+        while (RequestID != NFL_REQUEST_ID_INVALID)
+        {
+            nflRequestInfo requestInfo;
+            nflGetRequestInfo(RequestID, &requestInfo);
+            const uintptr_t nextChunkOffset =
+                reinterpret_cast<uintptr_t>(Chunk->NextChunk);
+            const int requestEnd = nextChunkOffset != 0
+                ? static_cast<int>(nextChunkOffset + CurrentOffset
+                                   + BufferOffset[ActiveBuffer])
+                : FileSize;
+            if (requestInfo.bytesCompleted + FileOffset >= requestEnd
+                && nflGetRequestState(RequestID)
+                       == NFL_REQUEST_STATE_COMPLETED)
+                break;
+            AdvanceStream();
+            nflUpdate();
+        }
+
+        const float chunkDelta = duration - ChunkTime;
+        Time += chunkDelta;
+        delta -= chunkDelta;
+        ChunkTime = duration;
+        for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+             node = node->Next)
+        {
+            if (node->ClientAnim != nullptr)
+            {
+                if (node->AnimInst == nullptr)
+                    node->AnimInst = node->ClientAnim->CreateInstance(node->Anim);
+                node->ClientAnim->Advance(node->AnimInst, 1.0f,
+                                          prevChunkTime / duration, Time,
+                                          prevTime);
+            }
+        }
+
+        const uintptr_t nextChunkOffset =
+            reinterpret_cast<uintptr_t>(Chunk->NextChunk);
+        ChunkTime = 0.0f;
+        if (nextChunkOffset != 0)
+        {
+            CurrentOffset += static_cast<int>(nextChunkOffset);
+            if (CurrentOffset < BufferSize)
+            {
+                Chunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+                    Buffer[ActiveBuffer] + CurrentOffset);
+                const uintptr_t followingOffset =
+                    reinterpret_cast<uintptr_t>(Chunk->NextChunk);
+                const int endOffset = followingOffset != 0
+                    ? CurrentOffset + static_cast<int>(followingOffset)
+                    : FileSize - BufferOffset[ActiveBuffer];
+                if (endOffset > BufferSize)
+                {
+                    const int blockOffset = CurrentOffset % BlockSize;
+                    memcpy(&Buffer[ActiveBuffer ^ 1u][blockOffset],
+                           &Buffer[ActiveBuffer][CurrentOffset],
+                           static_cast<size_t>(BlockSize - blockOffset));
+                    ActiveBuffer ^= 1u;
+                    CurrentOffset = blockOffset;
+                    Chunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+                        Buffer[ActiveBuffer] + CurrentOffset);
+                }
+            }
+            else
+            {
+                if (CurrentOffset != BufferSize
+                    && _tlAssert("source/common/nal_stream.cpp", 433,
+                                 "CurrentOffset == BufferSize",
+                                 "current chunk wasn't entirely buffered"))
+                    __debugbreak();
+                ActiveBuffer ^= 1u;
+                CurrentOffset = BlockSize;
+                Chunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+                    Buffer[ActiveBuffer] + CurrentOffset);
+            }
+        }
+        else
+        {
+            if ((SceneAnim->Header.Flags & 2u) == 0)
+            {
+                Time += delta;
+                return;
+            }
+            if (FileOffset != 0 && RequestID != NFL_REQUEST_ID_INVALID)
+            {
+                nflCancelRequest(RequestID);
+                while (nflGetRequestState(RequestID)
+                       == NFL_REQUEST_STATE_ACTIVE)
+                    nflUpdate();
+                ReadBuffer = ActiveBuffer ^ 1u;
+                FileOffset = 0;
+                BufferOffset[ReadBuffer] = 0;
+                RequestSize = BufferSize;
+                RequestID = nflReadFileAsync(
+                    FileID, static_cast<unsigned>(StartOffset),
+                    Buffer[ReadBuffer], static_cast<unsigned>(RequestSize));
+                while (nflGetRequestState(RequestID)
+                       == NFL_REQUEST_STATE_ACTIVE)
+                    nflUpdate();
+            }
+            ActiveBuffer ^= 1u;
+            CurrentOffset = static_cast<int>(reinterpret_cast<uintptr_t>(
+                SceneAnim->Header.FirstChunk));
+            Chunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+                Buffer[ActiveBuffer] + CurrentOffset);
+        }
+
+        const uintptr_t firstAnimOffset =
+            reinterpret_cast<uintptr_t>(Chunk->FirstAnim);
+        if (firstAnimOffset != 0)
+        {
+            nalAnimClass<nalAnyPose>* anim =
+                reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                    reinterpret_cast<uintptr_t>(Chunk) + firstAnimOffset);
+            Chunk->FirstAnim = anim;
+            for (; anim != nullptr; )
+            {
+                const uintptr_t nextAnimOffset =
+                    reinterpret_cast<uintptr_t>(anim->NextAnim);
+                if (nextAnimOffset != 0)
+                    anim->NextAnim =
+                        reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                            reinterpret_cast<uintptr_t>(anim) + nextAnimOffset);
+                anim->Skeleton = Skeletons[anim->SkeletonNameIndex];
+                if (anim->Skeleton == nullptr
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+                           70, "Skeleton",
+                           "Skeleton must be filled out before the animation type can be obtained"))
+                    __debugbreak();
+                tlInstanceBank::Instance* instance =
+                    nalTypeInstanceBank.Search(anim->Skeleton->AnimTypeName);
+                if (instance == nullptr
+                    && _tlAssert("source/common/nal_stream.cpp", 532,
+                                 "instance",
+                                 "animation type instance couldn't be found"))
+                    __debugbreak();
+                nalInitListAnimType* type =
+                    static_cast<nalInitListAnimType*>(instance->Value);
+                *reinterpret_cast<void**>(anim) = type->animVtable;
+                if (!anim->CheckVersion())
+                    tlFatal("Unsupported anim version %x.\n", anim->Version);
+                anim->Process();
+                anim = nextAnimOffset != 0 ? anim->NextAnim : nullptr;
+            }
+        }
+
+        nalAnimClass<nalAnyPose>* anim = Chunk->FirstAnim;
+        for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+             node = node->Next)
+        {
+            if (node->AnimInst != nullptr)
+            {
+                nalAnimClass<nalAnyPose>* oldAnim = node->AnimInst->Anim;
+                delete node->AnimInst;
+                if (oldAnim != nullptr)
+                    oldAnim->Release();
+            }
+            node->Anim = anim;
+            node->AnimInst = nullptr;
+            anim = nalGetNextAnimInFile(anim);
+        }
+        if (delta <= 0.0f)
+            return;
+    }
+
+    const float prevTime = Time;
+    Time += delta;
+    ChunkTime += delta;
+    for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+         node = node->Next)
+    {
+        if (node->ClientAnim != nullptr)
+        {
+            if (node->AnimInst == nullptr)
+                node->AnimInst = node->ClientAnim->CreateInstance(node->Anim);
+            node->ClientAnim->Advance(node->AnimInst,
+                                      ChunkTime / duration,
+                                      prevChunkTime / duration, Time,
+                                      prevTime);
+        }
+    }
+}
+
+// ea: 0x00873580
+nalSceneAnimInstance* nalStreamAnimQueueInstance(
+    unsigned fileID, int startOffset, int fileSize, int bufferSize,
+    nalClientSceneAnim* (*callback)(const nalSceneAnim*, const tlFixedString&,
+                                    void*),
+    void* userParam)
+{
+    void* memory = tlMemAlloc(0x7Cu, 8, 0);
+    if (memory == nullptr)
+        return nullptr;
+    nalStreamInstance* stream = ::new (memory) nalStreamInstance(
+        bufferSize, callback, userParam, static_cast<nflFileID>(fileID),
+        startOffset, fileSize);
+    stream->SceneAnim = nullptr;
+    stream->ClientNodeHead = nullptr;
+    stream->ClientNodeTail = nullptr;
+    stream->Time = 0.0f;
+    stream->ChunkTime = 0.0f;
+    stream->Chunk = nullptr;
+    stream->State = nalStreamInstance::NAL_STREAM_STATE_START_READ_HEADER;
+    stream->Callback = callback;
+    stream->UserParam = userParam;
+    stream->FileID = static_cast<nflFileID>(fileID);
+    stream->Header = nullptr;
+    stream->Size = 0;
+    stream->Alignment = 0;
+    stream->Skeletons = nullptr;
+    stream->BlockSize = 0;
+    stream->BlockCount = 0;
+    stream->BufferSize = bufferSize;
+    stream->Buffer[0] = nullptr;
+    stream->Buffer[1] = nullptr;
+    stream->BufferOffset[0] = 0;
+    stream->BufferOffset[1] = 0;
+    stream->StartOffset = startOffset;
+    stream->FileOffset = 0;
+    stream->CurrentOffset = 0;
+    stream->ChunkSize = 0;
+    stream->RequestSize = 0;
+    stream->RequestID = NFL_REQUEST_ID_INVALID;
+    stream->FileSize = fileSize;
+    stream->FirstChunkSize = 0;
+    stream->ActiveBuffer = 0;
+    stream->ReadBuffer = 0;
+    return stream;
+}
 
 // ============================================================================
 // nalInitList
