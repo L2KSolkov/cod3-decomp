@@ -876,7 +876,7 @@ index	status	map_line
 875	VERIFIED	0002:005787b0 ?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z 00D67CB0 f mp_util_wad.o
 876	VERIFIED	0002:00578960 ?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z 00D67E60 f mp_util_wad.o
 877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
-878	VERIFIED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o
+878	FIXED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o	FIXED: matched IDA 0x00978D10 blinker loop, per-area cap counts, and DOM all-flags-capped EndRound behavior
 879	VERIFIED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o
 880	PORTED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF10 boxed bfloat inequality
 881	PORTED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF60 unary negative
