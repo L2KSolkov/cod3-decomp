@@ -3941,8 +3941,7 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
 Broc::entity* SpawnLineSound(Broc::entity* result, Broc::string startOfLineEntity,
                              Broc::string sound) {
     if (Broc::IsDefined(startOfLineEntity)) {
-        HashStr key;
-        key.mVal = 0x19F9F0E8u;
+        HashStr key(0x19F9F0E8u);
         Broc::entity startOfLine;
         Broc::GetEnt(&startOfLine, &startOfLineEntity, key, 0);
         if (Broc::IsDefined(startOfLine)) {
@@ -11973,8 +11972,7 @@ void CallbackDropItem(int netID, int entity, Broc::vector position,
     Broc::string flagState((const char*)NULL);
     if (netID == 1) {
         Broc::string name("ctf_axis");
-        HashStr key;
-        key.mVal = 0x19F9F0E8u;
+        HashStr key(0x19F9F0E8u);
         Broc::entity found;
         flag = *Broc::GetEnt(&found, &name, key, 0);
         flagObjective = 2;
@@ -11997,8 +11995,7 @@ void CallbackDropItem(int netID, int entity, Broc::vector position,
     else
         UpdateFlagAndTrigger(flag, position, angles);
 
-    HashStr dropNotify;
-    dropNotify.mVal = 0xFA57E7C7u;
+    HashStr dropNotify(0xFA57E7C7u);
     Broc::notify(flag, dropNotify);
 
     Broc::bbool hasHolder;
@@ -12008,7 +12005,10 @@ void CallbackDropItem(int netID, int entity, Broc::vector position,
         Broc::GetTime(&now);
         Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
         *mp_util_wad::GetEE_last_dropped_time(holder) = (int)now;
-        mp_util_wad::entity_set_ctf_has_flag(holder, 0);
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlag = {
+            holder.GetHandle()};
+        const __int16 noFlag = 0;
+        ctfHasFlag = noFlag;
         *mp_util_wad::GetEE_holder(holder) = Broc::gEntityUndef;
         *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
 
