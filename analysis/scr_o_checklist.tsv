@@ -935,19 +935,19 @@ index	status	map_line
 934	VERIFIED	0002:001ea1a0 ?size@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D96A0 f i scr.o	VERIFIED: matches IDA m_size return
 935	VERIFIED	0002:001ea1b0 ?push_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEXABV?$ae_pair@PAXI@@@Z 009D96B0 f i scr.o
 936	VERIFIED	0002:001ea240 ??0?$ae_pair@PAXI@@QAE@ABQAXABI@Z 009D9740 f i scr.o
-937	PORTED	0002:001ea260 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAE?AV01@H@Z 009D9760 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
-938	PORTED	0002:001ea290 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9790 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
+937	VERIFIED	0002:001ea260 ??Eiterator@?$reserved_dlist@VAeThreadState@@@@QAE?AV01@H@Z 009D9760 f i scr.o	VERIFIED: matches IDA decompile and disassembly; postfix increment preserves node/next pair and advances the iterator
+938	VERIFIED	0002:001ea290 ??Eiterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9790 f i scr.o	VERIFIED: matches IDA decompile and disassembly; prefix increment advances only when m_next is non-null
 939	SKIPPED	0002:001ea2b0 ??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z 009D97B0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 940	SKIPPED	0002:001ea340 ??0?$IVPointer@VDestructible@@@@QAE@XZ 009D9840 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-941	PORTED	0002:001ea360 ??Econst_iterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009D9860 f i scr.o	PORTED: implemented from IDA decompile and assert strings; VERIFIED: Debug build passed
-942	PORTED	0002:001ea3e0 ??0const_iterator@?$reserved_dlist@VAeThread@@@@QAE@ABViterator@1@@Z 009D98E0 f i scr.o	PORTED: implemented from IDA decompile; VERIFIED: Debug build passed
-943	PORTED	0002:001ea400 ??Econst_iterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9900 f i scr.o	PORTED: implemented from IDA decompile and assert strings; VERIFIED: Debug build passed
-944	PORTED	0002:001ea480 ??0?$ae_sized_array@PAVAeThread@@$0EA@@@QAE@XZ 009D9980 f i scr.o
-945	PORTED	0002:001ea490 ?empty@?$ae_sized_array@PAVAeThread@@$0EA@@@QBE_NXZ 009D9990 f i scr.o
-946	PORTED	0002:001ea4b0 ?push_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXABQAVAeThread@@@Z 009D99B0 f i scr.o
-947	PORTED	0002:001ea540 ?pop_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009D9A40 f i scr.o
-948	PORTED	0002:001ea570 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@H@Z 009D9A70 f i scr.o
-949	PORTED	0002:001ea590 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@VHandle@@@Z 009D9A90 f i scr.o
+941	FIXED	0002:001ea360 ??Econst_iterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ 009D9860 f i scr.o	FIXED: restored IDA const_iterator increment, including m_next != 0 assertion at reserved_dlist.h:501; source 0718f4d2
+942	VERIFIED	0002:001ea3e0 ??0const_iterator@?$reserved_dlist@VAeThread@@@@QAE@ABViterator@1@@Z 009D98E0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; copies both iterator pointers
+943	FIXED	0002:001ea400 ??Econst_iterator@?$reserved_dlist@VAeThread@@@@QAEAAV01@XZ 009D9900 f i scr.o	FIXED: restored IDA const_iterator increment, including m_next != 0 assertion at reserved_dlist.h:501; source 0718f4d2
+944	VERIFIED	0002:001ea480 ??0?$ae_sized_array@PAVAeThread@@$0EA@@@QAE@XZ 009D9980 f i scr.o	VERIFIED: matches IDA decompile and disassembly; initializes m_size at +0x100
+945	VERIFIED	0002:001ea490 ?empty@?$ae_sized_array@PAVAeThread@@$0EA@@@QBE_NXZ 009D9990 f i scr.o	VERIFIED: matches IDA decompile and disassembly; tests m_size for zero
+946	VERIFIED	0002:001ea4b0 ?push_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEXABQAVAeThread@@@Z 009D99B0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; preserves capacity assert and increments m_size after storing the element
+947	VERIFIED	0002:001ea540 ?pop_back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ 009D9A40 f i scr.o	VERIFIED: matches IDA decompile and disassembly; decrements non-empty m_size and returns the element address
+948	VERIFIED	0002:001ea570 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@H@Z 009D9A70 f i scr.o	VERIFIED: matches IDA decompile and disassembly; copies the integer handle value
+949	VERIFIED	0002:001ea590 ??0?$DbLinkedHandle@VAeThreadManager@@VAeThread@@@@QAE@VHandle@@@Z 009D9A90 f i scr.o	VERIFIED: matches IDA decompile and disassembly; copies Handle::mVal
 950	SKIPPED	0002:001ea5b0 ??0?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AB0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 951	SKIPPED	0002:001ea5d0 ??1?$ae_array_dynamic@PAVAnimBroRef@@@@QAE@XZ 009D9AD0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 952	SKIPPED	0002:001ea5e0 ?push_back@?$ae_array_dynamic@PAVAnimBroRef@@@@QAEXABQAVAnimBroRef@@@Z 009D9AE0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -961,13 +961,13 @@ index	status	map_line
 960	SKIPPED	0002:001ea7a0 ??A?$InplaceVector@V?$InplaceTreeElement@VInplaceString@@V1@@@@@QBEABV?$InplaceTreeElement@VInplaceString@@V1@@@I@Z 009D9CA0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
 961	VERIFIED	0002:001ea820 ??A?$ae_sized_array@G$0BAA@@@QAEAAGH@Z 009D9D20 f i scr.o	VERIFIED: matches IDA disassembly bounds check and element address
 962	VERIFIED	0002:001ea8a0 ?size@?$ae_sized_array@F$07@@QBEHXZ 009D9DA0 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::size
-963	PORTED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o	PORTED: implemented from IDA disassembly with AeThreadState node adjustment; VERIFIED: Debug build passed
-964	PORTED	0002:001ea8c0 ?clear@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DC0 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
-965	PORTED	0002:001ea8e0 ?pop@dlist_node@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DE0 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
-966	PORTED	0002:001ea900 ?pop@dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 009D9E00 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
-967	PORTED	0002:001ea920 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPBVAeThread@@PBUdlist_node@1@@Z 009D9E20 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
-968	PORTED	0002:001ea930 ?clear@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E30 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
-969	PORTED	0002:001ea950 ?pop@dlist_node@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E50 f i scr.o	PORTED: implemented from IDA disassembly; VERIFIED: Debug build passed
+963	VERIFIED	0002:001ea8b0 ?node_to_object@?$reserved_dlist@VAeThreadState@@@@SAPBVAeThreadState@@PBUdlist_node@1@@Z 009D9DB0 f i scr.o	VERIFIED: matches IDA disassembly; adjusts AeThreadState node pointer by -4
+964	VERIFIED	0002:001ea8c0 ?clear@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DC0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; resets size, sentinel, and tail pointer
+965	VERIFIED	0002:001ea8e0 ?pop@dlist_node@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009D9DE0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; relinks next/previous nodes
+966	VERIFIED	0002:001ea900 ?pop@dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 009D9E00 f i scr.o	VERIFIED: matches IDA decompile and disassembly; relinks next/previous nodes
+967	VERIFIED	0002:001ea920 ?node_to_object@?$reserved_dlist@VAeThread@@@@SAPBVAeThread@@PBUdlist_node@1@@Z 009D9E20 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns the node pointer unchanged
+968	VERIFIED	0002:001ea930 ?clear@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E30 f i scr.o	VERIFIED: matches IDA decompile and disassembly; resets size, sentinel, and tail pointer
+969	VERIFIED	0002:001ea950 ?pop@dlist_node@?$reserved_dlist@VAeThread@@@@QAEXXZ 009D9E50 f i scr.o	VERIFIED: matches IDA decompile and disassembly; relinks next/previous nodes
 970	VERIFIED	0002:001ea970 ?capacity@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QBEHXZ 009D9E70 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::capacity
 971	VERIFIED	0002:001ea980 ?pop_back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ 009D9E80 f i scr.o	VERIFIED: matches IDA decompile; existing ae_sized_array<T,N>::pop_back
 972	VERIFIED	0002:001ea9a0 ??0?$ae_pair@PAXI@@QAE@XZ 009D9EA0 f i scr.o
