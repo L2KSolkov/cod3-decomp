@@ -560,7 +560,7 @@ index	status	map_line
 559	VERIFIED	0002:00555400 ?UnlinkFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D44900 f mp_util_wad.o
 560	FIXED	0002:00555620 ?RenderFlagInfo@_mp_ctf@@YAXVentity@Broc@@Ubint@@1@Z 00D44B20 f mp_util_wad.o	FIXED: matched IDA 0x00955620 typed origin reads and per-coordinate temporary string construction; source commit bfd601b8
 561	VERIFIED	0002:00555af0 ?Code_DebugRenderText@Broc@@YAXPBDHH@Z 00D44FF0 f i mp_util_wad.o	VERIFIED: IDA 0x00955AF0 matches the existing text/x/y mDebugRenderText forward
-562	PORTED	0002:00555b20 ?CallbackDebugRender@_mp_ctf@@YAXXZ 00D45020 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x00955B20 team-flag trigger geometry and player state/flag/icon diagnostics; source commit 9aa05b8f
+562	FIXED	0002:00555b20 ?CallbackDebugRender@_mp_ctf@@YAXXZ 00D45020 f mp_util_wad.o	FIXED: matched IDA 0x00955B20 typed trigger origins, playerState, and ctf_has_flag accesses; source commit 856f5b54
 563	VERIFIED	0002:005562e0 ?Code_DebugRenderEntityBBox@Broc@@YAXVentity@1@ABUvector@1@M@Z 00D457E0 f i mp_util_wad.o	VERIFIED: IDA 0x009562E0 matches the existing entity-handle/color/alpha forward
 564	VERIFIED	0002:00556320 ?Code_DebugRenderSphere@Broc@@YAXABUvector@1@M0M@Z 00D45820 f i mp_util_wad.o	VERIFIED: IDA 0x00956320 matches the existing point/radius/color/alpha forward
 565	FIXED	0002:00556360 ?GetSpawnPoint@_mp_ctf@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D45860 f mp_util_wad.o	FIXED: matched IDA 0x00956360 spawn-type fallback/copy order and removed duplicate automatic dyn_array/string destruction
