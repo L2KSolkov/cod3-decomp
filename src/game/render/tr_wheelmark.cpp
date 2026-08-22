@@ -67,7 +67,7 @@ Color32 Color::to_color32() const
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Need assert message"))
             __debugbreak();
     }
-    Color32 result;
+    Color32 result(0, 0, 0, 0);
     result.c.b = (unsigned char)(b * 255.0f);
     result.c.g = (unsigned char)(g * 255.0f);
     result.c.a = (unsigned char)(a * 255.0f);
