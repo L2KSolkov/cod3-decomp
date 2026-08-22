@@ -226,6 +226,19 @@ public:
     virtual void Destroy(void* inst);  // ?Destroy@BrocDtorBase@@UAEXPAX@Z
 };
 
+// mp_util_wad.xboxd BrocDtor specializations.  IDA shows each constructor
+// selecting its typed vtable and each Destroy deleting the supplied object.
+template <typename T>
+class BrocDtor : public BrocDtorBase {
+public:
+    BrocDtor() = default;
+    void Destroy(void* inst) override { delete static_cast<T*>(inst); }
+};
+
+template class BrocDtor<Broc::dyn_array<Broc::vector>>;
+template class BrocDtor<Broc::dyn_array<float>>;
+template class BrocDtor<Broc::dyn_array<int>>;
+
 class AeThreadState;
 class AeThread {
 public:
