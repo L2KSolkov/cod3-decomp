@@ -1350,8 +1350,8 @@ index	status	map_line
 1349	SKIPPED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1350	PORTED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o
 1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o
-1352	PORTED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o
-1353	PORTED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o
+1352	PORTED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o  PORTED: exact specified/weak bit updates, field routing, and bad-id assert
+1353	PORTED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o  PORTED: exact string field copies, weak bits, and bad-id assert
 1354	PORTED	0002:000e8390 ?ConstructQuery@CachedQuery@EffectEventSys@@QBEXAAVDbQuery@@@Z 008D7890 f i core.o
 1355	VERIFIED	0002:000e8620 ??0PendingQuery@EffectEventSys@@QAE@XZ 008D7B20 f i core.o
 1356	PORTED	0002:000e86f0 ?CreateInst@PhysDataBankManager@@SAXXZ 008D7BF0 f i core.o
@@ -1369,13 +1369,13 @@ index	status	map_line
 1368	SKIPPED	0002:000e8e90 ??A?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@I@Z 008D8390 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1369	PORTED	0002:000e8eb0 ??0?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D83B0 f i core.o
 1370	SKIPPED	0002:000e8ee0 ?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z 008D83E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1371	PORTED	0002:000e8ff0 ??$Where@W4ECollisionMaterial@@@EffectEventSys@@QAEXHABW4ECollisionMaterial@@_N@Z 008D84F0 f i core.o
-1372	PORTED	0002:000e9040 ??$Where@W4EEffectContext@@@EffectEventSys@@QAEXHABW4EEffectContext@@_N@Z 008D8540 f i core.o
-1373	PORTED	0002:000e9090 ??$Where@PBD@EffectEventSys@@QAEXHABQBD_N@Z 008D8590 f i core.o
-1374	PORTED	0002:000e9100 ??$Where@W4EStanceType@@@EffectEventSys@@QAEXHABW4EStanceType@@_N@Z 008D8600 f i core.o
-1375	PORTED	0002:000e9150 ??$Where@W4EAction@@@EffectEventSys@@QAEXHABW4EAction@@_N@Z 008D8650 f i core.o
-1376	PORTED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o
-1377	PORTED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o
+1371	PORTED	0002:000e8ff0 ??$Where@W4ECollisionMaterial@@@EffectEventSys@@QAEXHABW4ECollisionMaterial@@_N@Z 008D84F0 f i core.o  PORTED: exact context update and CachedQuery delegation
+1372	PORTED	0002:000e9040 ??$Where@W4EEffectContext@@@EffectEventSys@@QAEXHABW4EEffectContext@@_N@Z 008D8540 f i core.o  PORTED: exact context update and CachedQuery delegation
+1373	PORTED	0002:000e9090 ??$Where@PBD@EffectEventSys@@QAEXHABQBD_N@Z 008D8590 f i core.o  PORTED: exact bounded string copy and CachedQuery delegation
+1374	PORTED	0002:000e9100 ??$Where@W4EStanceType@@@EffectEventSys@@QAEXHABW4EStanceType@@_N@Z 008D8600 f i core.o  PORTED: exact context update and CachedQuery delegation
+1375	PORTED	0002:000e9150 ??$Where@W4EAction@@@EffectEventSys@@QAEXHABW4EAction@@_N@Z 008D8650 f i core.o  PORTED: exact context update and CachedQuery delegation
+1376	PORTED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o  PORTED: exact context update and CachedQuery delegation
+1377	PORTED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o  PORTED: exact context update and CachedQuery delegation
 1378	PORTED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o
 1379	SKIPPED	0002:000e9280 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPAXI@Z 008D8780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1380	SKIPPED	0002:000e92d0 ??1logic_error@std@@UAE@XZ 008D87D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
