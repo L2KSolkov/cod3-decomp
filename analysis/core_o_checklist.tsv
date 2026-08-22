@@ -868,8 +868,8 @@ index	status	map_line
 867	FIXED	0002:000df690 ?Test@?$Bitmask@G@@QBE_NH@Z 008CEB90 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF690 validates the 16-bit bit index and tests the bit
 868	FIXED	0002:000df720 ?Set@?$Bitmask@G@@QAEXH_N@Z 008CEC20 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF720 dispatches to Add or Rmv
 869	FIXED	0002:000df750 ?Clear@?$Bitmask@G@@QAEXXZ 008CEC50 f i core.o FIXED: source implementation in 5de90780; IDA 0x004DF750 assigns zero to mMask
-870	PORTED	0002:000df760 ?empty@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NXZ 008CEC60 f i core.o
-871	PORTED	0002:000df780 ?empty@?$reserved_dlist@VEntityNotify@@@@QBE_NXZ 008CEC80 f i core.o
+870	FIXED	0002:000df760 ?empty@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NXZ 008CEC60 f i core.o FIXED: source implementation in f0d73e95; IDA 0x004DF760 compares m_head with &m_end
+871	FIXED	0002:000df780 ?empty@?$reserved_dlist@VEntityNotify@@@@QBE_NXZ 008CEC80 f i core.o FIXED: source implementation in f0d73e95; IDA 0x004DF780 compares m_head with &m_end
 872	VERIFIED	0002:000df7a0 ??0dlist_node@?$reserved_dlist@VEntityNotify@@@@QAE@PAU01@0@Z 008CECA0 f i core.o
 873	PORTED	0002:000df7c0 ??0dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAE@PAU01@0@Z 008CECC0 f i core.o
 874	SKIPPED	0002:000df7e0 ?size@?$InplaceVector@VInplaceString@@@@QBEIXZ 008CECE0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
