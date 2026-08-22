@@ -6632,13 +6632,12 @@ void* plane_roll__functor(Broc::entity self) {
 // _mp_audio - small audio helpers (AudioPrint, CallbackSetLevelAudio).
 // ============================================================================
 namespace _mp_audio {
-extern int GetCvarInt(const char* cvar);
 extern void iprintlnbold(const Broc::string& s);
 extern void ReverbSetParams(const Broc::string& name, bool immediate);
 extern unsigned int SoundPlay(const Broc::string& name, float volume);
 
 void AudioPrint(Broc::string s) {
-    if (GetCvarInt("sound_debug") != 0)
+    if (Broc::GetCvarInt("sound_debug") != 0)
         Broc::iprintlnbold(s);
     s.~string();
 }
