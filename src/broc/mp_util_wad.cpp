@@ -4548,13 +4548,13 @@ namespace _mp_common {
 void SetupCallbacks(Broc::bbool teamGameType);
 }
 extern void* StartGame__functor(Broc::entity self);
-extern void* main__functor(Broc::entity self);
+extern AeThreadFunctor1<Broc::entity>* main__functor(Broc::entity self);
 extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
                                    const Broc::string* spawnpoint);
 void main(Broc::entity self);
 
 // main__functor - ea: 0x93CC70
-void* main__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* main__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
@@ -5079,7 +5079,9 @@ void LaunchGametype() {
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
                         __LINE__, "_mp_minefield::main", minefield);
     if (gametype == "dm")
-        launch_gametype_thread(gametype, "_mp_dm::main", _mp_dm::main__functor);
+        launch_gametype_thread(
+            gametype, "_mp_dm::main",
+            reinterpret_cast<void* (*)(Broc::entity)>(_mp_dm::main__functor));
     else if (gametype == "tdm")
         launch_gametype_thread(gametype, "_mp_tdm::main", _mp_tdm::main__functor);
     else if (gametype == "ctf")
