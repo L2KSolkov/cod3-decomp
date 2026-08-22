@@ -102,6 +102,7 @@ public:
         m_size = size + 1;
         return m_elements[size];
     }
+    void set_size(int size) { m_size = size; }
     void erase(int idx) {
         int size = m_size;
         if (size > 1 && idx < size)
