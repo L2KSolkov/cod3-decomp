@@ -202,7 +202,7 @@ index	status	map_line
 201	VERIFIED	0002:0012d4a0 ?CL_AddDebugLine@@YAXQBM00HHHH@Z 0091C9A0 f cl.o
 202	VERIFIED	0002:0012d600 ?CL_FlushDebugData@@YAXH@Z 0091CB00 f cl.o
 203	VERIFIED	0002:0012d840 ?CL_UpdateDebugData@@YAXXZ 0091CD40 f cl.o
-204	PORTED	0002:0012d930 ?CL_ShutdownDebugData@@YAXXZ 0091CE30 f cl.o PORTED: IDA match; frees five buffers and clears the 0x2C-byte state block
+204	FIXED	0002:0012d930 ?CL_ShutdownDebugData@@YAXXZ 0091CE30 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 205	VERIFIED	0002:0012d9d0 ?CL_Netchan_Transmit@@YAXPAUnetchan_t@@PAUmsg_t@@@Z 0091CED0 f cl.o
 206	VERIFIED	0002:0012da00 ?CL_Netchan_Process@@YAHPAUnetchan_t@@PAUmsg_t@@@Z 0091CF00 f cl.o
 207	VERIFIED	0002:0012da10 ?SHOWNET@@YAXPAUmsg_t@@PAD@Z 0091CF10 f cl.o
