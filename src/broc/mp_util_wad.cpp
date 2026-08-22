@@ -6365,7 +6365,6 @@ void AddToPlayerStats(Broc::entity player, Broc::bint stat, __int16 amount) {
                                         __LINE__, "_mp_audio::PlaySound", ftor);
                 }
             }
-            team.~string();
         }
     }
 }
