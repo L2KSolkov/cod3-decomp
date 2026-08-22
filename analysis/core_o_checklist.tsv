@@ -1265,11 +1265,11 @@ index	status	map_line
 1264	PORTED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o
 1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1267	PORTED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o
+1267	PORTED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o  PORTED: exact IDA iterator walk and delete/pool-release cleanup
 1268	SKIPPED	0002:000e54e0 ??A?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDbTableSet@@I@Z 008D49E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1269	SKIPPED	0002:000e5560 ?Size@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 008D4A60 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1270	SKIPPED	0002:000e5570 ??A?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVConfigString@@I@Z 008D4A70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1271	PORTED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o
+1271	PORTED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o  PORTED: exact IDA null-checking delete functor
 1272	SKIPPED	0002:000e5620 ??$FindIndex@PBD@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 008D4B20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1273	PORTED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o  PORTED: exact IDA column/row lookup and truncation assertions
 1274	SKIPPED	0002:000e5780 ??$FindIndex@PAD@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 008D4C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1339,7 +1339,7 @@ index	status	map_line
 1338	PORTED	0002:000e7980 ??$GetFieldValue@M@DbRow@@QBEMGM@Z 008D6E80 f i core.o
 1339	SKIPPED	0002:000e79c0 ??$Find@PADV?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@PADV?$AeType@V?$IVPointer@VConfigString@@@@@@PAW42@@Z 008D6EC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1340	SKIPPED	0002:000e7b70 ??$PredicateSearch@VTypeCallbackSearch@@V?$IVPointer@VConfigString@@@@@?$InplaceAssetBankSet@VConfigStringBank@@@@QBE?AV?$IVPointer@VConfigString@@@@W4TPakId@@VTypeCallbackSearch@@V?$AeType@V?$IVPointer@VConfigString@@@@@@@Z 008D7070 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o
+1341	PORTED	0002:000e7de0 ??$safe_for_each@Viterator@?$reserved_dlist@VRumbleEffectInstance@@@@V?$DelFunctor@VRumbleEffectInstance@@@@@@YAXViterator@?$reserved_dlist@VRumbleEffectInstance@@@@0V?$DelFunctor@VRumbleEffectInstance@@@@@Z 008D72E0 f i core.o  PORTED: exact IDA iterator walk and destructor/pool-release cleanup
 1342	VERIFIED	0002:000e7e40 ??0DbFieldSet@@QAE@XZ 008D7340 f i core.o
 1343	VERIFIED	0002:000e7ee0 ??1DbFieldSet@@UAE@XZ 008D73E0 f i core.o
 1344	SKIPPED	0002:000e7ef0 ??_GDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
