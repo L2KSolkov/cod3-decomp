@@ -1098,7 +1098,7 @@ index	status	map_line
 1097	FIXED	0002:001edf00 ?begin@?$dyn_array@Ventity@Broc@@@Broc@@QAEPAVentity@2@XZ 009DD400 f i scr.o
 1098	FIXED	0002:001edf10 ?end@?$dyn_array@Ventity@Broc@@@Broc@@QAEPAVentity@2@XZ 009DD410 f i scr.o
 1099	VERIFIED	0002:001edf20 ??R?$DelFunctor@VAeThreadState@@@@QAEXPAVAeThreadState@@@Z 009DD420 f i scr.o
-1100	PORTED	0002:001edf40 ?destroy_all@?$dyn_array@Ventity@Broc@@@Broc@@AAEXXZ 009DD440 f i scr.o
+1100	FIXED	0002:001edf40 ?destroy_all@?$dyn_array@Ventity@Broc@@@Broc@@AAEXXZ 009DD440 f i scr.o FIXED: entity specialization now matches IDA pool/heap free path
 1101	FIXED	0002:001edf90 ??$min_val@I@Broc@@YAIABI0@Z 009DD490 f i scr.o
 1102	SKIPPED	0002:001edfb0 ??$_Iter_cat@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YA?AUbidirectional_iterator_tag@0@ABViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD4B0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1103	SKIPPED	0002:001edfc0 ??$_Ptr_cat@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@PAV123@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@0@Z 009DD4C0 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1108,18 +1108,18 @@ index	status	map_line
 1107	FIXED	0002:001ee060 ?begin@?$dyn_array@Vstring@Broc@@@Broc@@QAEPAVstring@2@XZ 009DD560 f i scr.o FIXED: generic dyn_array::begin now covers the Broc::string instantiation
 1108	SKIPPED	0002:001ee070 ??$_Construct@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V123@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@ABV120@@Z 009DD570 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1109	SKIPPED	0002:001ee090 ??$_Destroy@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@std@@YAXPAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@0@@Z 009DD590 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1110	PORTED	0002:001ee0a0 ??0AeThreadState@@QAE@W4EAction@0@@Z 009DD5A0 f i scr.o PORTED: constructor matches IDA decompilation
+1110	VERIFIED	0002:001ee0a0 ??0AeThreadState@@QAE@W4EAction@0@@Z 009DD5A0 f i scr.o VERIFIED: constructor body and compiler vtable setup match IDA
 1111	VERIFIED	0002:001ee0d0 ?length@Broc@@YAMABUvector@1@@Z 009DD5D0 f i scr.o
 1112	VERIFIED	0002:001ee110 ?normalize@Broc@@YAXAAUvector@1@@Z 009DD610 f i scr.o VERIFIED: matches IDA decompilation
 1113	VERIFIED	0002:001ee1a0 ?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z 009DD6A0 f i scr.o VERIFIED: matches IDA decompilation
-1114	PORTED	0002:001ee1e0 ?ActivateDebug@AeThread@@QAEXXZ 009DD6E0 f i scr.o PORTED: flag operation matches IDA decompilation
-1115	PORTED	0002:001ee1f0 ?IsFinished@AeThread@@QBE_NXZ 009DD6F0 f i scr.o PORTED: flag operation matches IDA decompilation
-1116	PORTED	0002:001ee200 ?IsDebug@AeThread@@QBE_NXZ 009DD700 f i scr.o PORTED: flag operation matches IDA decompilation
-1117	PORTED	0002:001ee210 ?HasExecuted@AeThread@@QBE_NXZ 009DD710 f i scr.o PORTED: flag operation matches IDA decompilation
-1118	PORTED	0002:001ee220 ?SetExecuted@AeThread@@QAEXXZ 009DD720 f i scr.o PORTED: flag operation matches IDA decompilation
-1119	PORTED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o PORTED: allocator path matches IDA decompilation
+1114	VERIFIED	0002:001ee1e0 ?ActivateDebug@AeThread@@QAEXXZ 009DD6E0 f i scr.o VERIFIED: flag operation matches IDA decompilation
+1115	VERIFIED	0002:001ee1f0 ?IsFinished@AeThread@@QBE_NXZ 009DD6F0 f i scr.o VERIFIED: flag operation matches IDA decompilation
+1116	VERIFIED	0002:001ee200 ?IsDebug@AeThread@@QBE_NXZ 009DD700 f i scr.o VERIFIED: flag operation matches IDA decompilation
+1117	VERIFIED	0002:001ee210 ?HasExecuted@AeThread@@QBE_NXZ 009DD710 f i scr.o VERIFIED: flag operation matches IDA decompilation
+1118	VERIFIED	0002:001ee220 ?SetExecuted@AeThread@@QAEXXZ 009DD720 f i scr.o VERIFIED: flag operation matches IDA decompilation
+1119	VERIFIED	0002:001ee230 ??3BrocObjCreated@AeThread@@SAXPAX@Z 009DD730 f i scr.o VERIFIED: allocator path matches IDA decompilation
 1120	VERIFIED	0002:001ee290 ?GetBoneNameHash@XModelParts@@QBEII@Z 009DD790 f i scr.o
-1121	PORTED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o PORTED: hash-and-forward path matches IDA decompilation
+1121	VERIFIED	0002:001ee310 ?Notify@Entity@@QAEXPBD@Z 009DD810 f i scr.o VERIFIED: hash-and-forward path matches IDA decompilation
 1122	SKIPPED	0002:001ee340 ??_GAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1123	SKIPPED	0002:001ee340 ??_EAeThreadEntityNotifyTimeoutState@@UAEPAXI@Z 009DD840 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1124	VERIFIED	0002:001ee370 ??1AeThreadEntityNotifyTimeoutState@@UAE@XZ 009DD870 f i scr.o
@@ -1133,11 +1133,11 @@ index	status	map_line
 1132	SKIPPED	0002:001ee400 ??_EAeThreadWaitFramesState@@UAEPAXI@Z 009DD900 f i scr.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1133	VERIFIED	0002:001ee430 ??1AeThreadWaitFramesState@@UAE@XZ 009DD930 f i scr.o
 1134	SKIPPED	0002:001ee440 ??0?$ae_array@VHashString@@$03@@QAE@XZ 009DD940 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1135	PORTED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o PORTED: assert and flag path matches IDA decompilation
-1136	PORTED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o PORTED: assert and string assignment match IDA decompilation
-1137	PORTED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o PORTED: field writes match IDA decompilation
+1135	VERIFIED	0002:001ee470 ?SetUsingNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z 009DD970 f i scr.o VERIFIED: assert and flag path matches IDA decompilation
+1136	VERIFIED	0002:001ee510 ?SetNotes@RumbleEffect@@QAEXW4ERumbleMotorID@@ABVstring@Broc@@@Z 009DDA10 f i scr.o VERIFIED: assert and string assignment match IDA decompilation
+1137	VERIFIED	0002:001ee600 ?Clear@_objectiveInfo_t@@QAEXXZ 009DDB00 f i scr.o VERIFIED: field writes match IDA decompilation
 1138	VERIFIED	0002:001ee650 ?AnglesToRight@@YAXQBMQAM@Z 009DDB50 f i scr.o
-1139	PORTED	0002:001ee750 ??0weaponInfo_s@@QAE@XZ 009DDC50 f i scr.o
+1139	VERIFIED	0002:001ee750 ??0weaponInfo_s@@QAE@XZ 009DDC50 f i scr.o VERIFIED: surface index initialization matches IDA decompilation
 1140	VERIFIED	0002:001ee790 ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z 009DDC90 f i scr.o
 1141	VERIFIED	0002:001ee7d0 ?back@?$ae_sized_array@F$07@@QBEABFXZ 009DDCD0 f i scr.o VERIFIED: generic ae_sized_array::back matches IDA decompilation
 1142	SKIPPED	0002:001ee7f0 ??Y?$ae_fixed_string@$0EA@E@@QAEAAV0@PBD@Z 009DDCF0 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
