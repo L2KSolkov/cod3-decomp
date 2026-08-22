@@ -536,11 +536,11 @@ index	status	map_line
 535	VERIFIED	0002:000ff800 ?InsertDroneSlave@@YAHPAVEntity@@I@Z 008EED00 f game2.o
 536	VERIFIED	0002:000ff880 ?InsertDroneMaster@@YAHPAVEntity@@I@Z 008EED80 f game2.o
 537	VERIFIED	0002:000ff910 ?RemoveDrone@@YAHPAVEntity@@I@Z 008EEE10 f game2.o
-538	VERIFIED	0002:000ff990 ?LookupHandler@TaskSys@@QBEPAVTaskHandler@@VFourCC@@@Z 008EEE90 f game2.o
-539	FIXED	0002:000ff9d0 ?DeliverTasks@TaskSys@@QAEXXZ 008EEED0 f game2.o
+538	FIXED	0002:000ff990 ?LookupHandler@TaskSys@@QBEPAVTaskHandler@@VFourCC@@@Z 008EEE90 f game2.o  FIXED: scans the initialized TaskSys handler array
+539	FIXED	0002:000ff9d0 ?DeliverTasks@TaskSys@@QAEXXZ 008EEED0 f game2.o  FIXED: uses the initialized post-queue sentinel and real handlers
 540	VERIFIED	0002:000ffa80 ?PostTask@TaskSys@@QAEXPAVTask@@@Z 008EEF80 f game2.o
 541	VERIFIED	0002:000ffae0 ?SendTask@TaskSys@@QAEXPAVTask@@@Z 008EEFE0 f game2.o
-542	FIXED	0002:000ffb20 ??0TaskHandler@@QAE@VFourCC@@V?$Bitmask@I@@@Z 008EF020 f game2.o
+542	FIXED	0002:000ffb20 ??0TaskHandler@@QAE@VFourCC@@V?$Bitmask@I@@@Z 008EF020 f game2.o  FIXED: restores IDA list sentinels and handler registration
 543	FIXED	0002:000ffb80 ?QuickDeactivation@TaskHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008EF080 f game2.o
 544	FIXED	0002:000ffbd0 ?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z 008EF0D0 f game2.o
 545	PORTED	0002:000ffc30 ?ApplyFire@AnimIK@@AAEXPAVEntity@@@Z 008EF130 f game2.o
@@ -566,7 +566,7 @@ index	status	map_line
 565	SKIPPED	0002:001046c0 ?ReverseEndianSplineGroupFile@SplineMgr@@AAEXAAVHashGroupFile@@@Z 008F3BC0 f game2.o  SKIPPED: inline template/container helper; supplied by its template definition
 566	VERIFIED	0002:001048c0 ?UpdateDroneAEMap@@YAHPAVEntity@@I@Z 008F3DC0 f game2.o
 567	FIXED	0002:00104970 ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z 008F3E70 f game2.o
-568	FIXED	0002:00104990 ?Update@TaskHandler@@QAEXMPAVTaskFunctor@@@Z 008F3E90 f game2.o
+568	FIXED	0002:00104990 ?Update@TaskHandler@@QAEXMPAVTaskFunctor@@@Z 008F3E90 f game2.o  FIXED: called through the real TaskHandler bridge; CDB passed the prior null-handler stop
 569	FIXED	0002:00104b80 ?DeactivateAll@TaskHandler@@QAEXXZ 008F4080 f game2.o
 570	FIXED	0002:00104bc0 ?GetTaskForEntity@TaskHandler@@QBEPAVTask@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008F40C0 f game2.o
 571	VERIFIED	0002:00104c50 ?ReInitialize@SmokeGrenadeMgr@@QAEXXZ 008F4150 f game2.o
@@ -583,7 +583,7 @@ index	status	map_line
 582	VERIFIED	0002:0010b690 ?FN_DebugThread_Select_Target@@YAXXZ 008FAB90 f game2.o
 583	VERIFIED	0002:0010b6f0 ?FN_DebugAnims_Select_Target@@YAXXZ 008FABF0 f game2.o
 584	VERIFIED	0002:0010b730 ?CheckAEMapValidation@@YAXXZ 008FAC30 f game2.o
-585	FIXED	0002:0010b8e0 ?Update@TaskSys@@QAEXM@Z 008FADE0 f game2.o
+585	FIXED	0002:0010b8e0 ?Update@TaskSys@@QAEXM@Z 008FADE0 f game2.o  FIXED: dispatches to HealthRegen, AnimNotify, and EntityDeath static handlers
 586	FIXED	0002:0010b920 ?ShutDown@TaskSys@@QAEXXZ 008FAE20 f game2.o
 587	FIXED	0002:0010b9c0 ?DeactivateTask@TaskSys@@QBEXVHandle@@@Z 008FAEC0 f game2.o
 588	FIXED	0002:0010ba00 ?CreateTaskHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z 008FAF00 f game2.o
@@ -1033,7 +1033,7 @@ index	status	map_line
 1032	PORTED	0002:0011dce0 ?erase@?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@QAEXViterator@1@@Z 0090D1E0 f i game2.o
 1033	PORTED	0002:0011dd30 ??0?$ae_sized_array_base@V?$ae_sized_array@VButtonEntry@@$0BA@@@$00@@QAE@XZ 0090D230 f i game2.o
 1034	PORTED	0002:0011dd60 ??$delete_container_elements@V?$reserved_dlist@VQuickTaskDeactivation@@@@@@YAXAAV?$reserved_dlist@VQuickTaskDeactivation@@@@@Z 0090D260 f i game2.o
-1035	PORTED	0002:0011ddb0 ??0TaskSys@@QAE@XZ 0090D2B0 f i game2.o
+1035	FIXED	0002:0011ddb0 ??0TaskSys@@QAE@XZ 0090D2B0 f i game2.o  FIXED: initializes the handle database and post-queue sentinel
 1036	PORTED	0002:0011de60 ?Advance@AnimNoteHandler@@QAEXM@Z 0090D360 f i game2.o
 1037	PORTED	0002:0011df80 ??0MetaAnimPlayMethod@@QAE@XZ 0090D480 f i game2.o
 1038	PORTED	0002:0011dff0 ?CreateInstance@MetaAnimPlayMethod@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalGenericAnim@nalGeneric@@PAVnalGenericSkeleton@5@@Z 0090D4F0 f i game2.o
