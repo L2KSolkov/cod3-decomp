@@ -810,7 +810,7 @@ index	status	map_line
 809	VERIFIED	0002:000de860 ?CreateInst@PlayerAnimMgr@@SAXXZ 008CDD60 f i core.o VERIFIED: existing CreateInst matches IDA
 810	SKIPPED	0002:000de950 ??_GPlayerAnimMgr@@QAEPAXI@Z 008CDE50 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 811	VERIFIED	0002:000de980 ?SetGamePaused@GamePause@@SAXH_N@Z 008CDE80 f i core.o
-812	PORTED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o PORTED: IDA 0x004DEA20 placement wrapper; source commit de0a6d0a
+812	VERIFIED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o	VERIFIED: returns the supplied placement pointer exactly as IDA 0x004DEA20
 813	VERIFIED	0002:000dea30 ?CreateInst@MultiplayerMgr@@SAXXZ 008CDF30 f i core.o VERIFIED: IDA CreateInst allocation, assert, constructor, and sInst path matches existing source
 814	SKIPPED	0002:000deb20 ??_GMultiplayerMgr@@QAEPAXI@Z 008CE020 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 815	PORTED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o PORTED: IDA 0x004DEB50 allocator assignment; source commit ed089cfd
