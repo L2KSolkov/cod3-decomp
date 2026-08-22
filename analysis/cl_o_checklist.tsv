@@ -25,23 +25,23 @@ index	status	map_line
 24	VERIFIED	0002:00128820 ?CL_SetUserCmdAimValues@@YAXMMMMM@Z 00917D20 f cl.o
 25	VERIFIED	0002:00128880 ?CL_SetUserCmdInShellshock@@YAXH@Z 00917D80 f cl.o
 26	VERIFIED	0002:001288a0 ?CL_AddCgameCommand@@YAXPBDP6AXXZ@Z 00917DA0 f cl.o
-27	PORTED	0002:001288b0 ?CL_CM_LoadMap@@YAXPBD@Z 00917DB0 f cl.o PORTED: IDA-verified intentional empty function
+27	VERIFIED	0002:001288b0 ?CL_CM_LoadMap@@YAXPBD@Z 00917DB0 f cl.o VERIFIED: matches IDA intentional empty function
 28	VERIFIED	0002:001288c0 ?CL_ShutdownCGame@@YAXXZ 00917DC0 f cl.o
 29	FIXED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o FIXED: restored IDA assertion metadata and defaultFileName message
-30	PORTED	0002:00128960 ?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z 00917E60 f cl.o PORTED: IDA-verified intentional empty function
+30	VERIFIED	0002:00128960 ?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z 00917E60 f cl.o VERIFIED: matches IDA intentional empty function
 31	FIXED	0002:00128970 ?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z 00917E70 f cl.o FIXED: matched IDA allocator parameter types and defaultFileName assert format
 32	FIXED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o FIXED: matched IDA allocator parameter types and defaultFileName assert format
 33	FIXED	0002:00128af0 ?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00917FF0 f cl.o FIXED: matched IDA defaultFileName assert format for both checks
 34	VERIFIED	0002:00128ba0 ?LoadWorld@@YAXPBD@Z 009180A0 f cl.o
 35	FIXED	0002:00128bd0 ?CL_CgameSystemCalls@@YAHPAH@Z 009180D0 f cl.o FIXED: matched IDA byte extraction for Text_PaintWithCursor cursor character
-36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o PORTED: IDA-verified cgvm null return and VM_Call call number 2
+36	VERIFIED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o VERIFIED: matches IDA cgvm null return and VM_Call call number 2
 37	VERIFIED	0002:00128e40 ?CL_CGameRendering@@YAXXZ 00918340 f cl.o
 38	FIXED	0002:00128e70 ?CL_FirstSnapshot@@YAXXZ 00918370 f cl.o FIXED: matched IDA cvar assert, pak cleanup, FEManager state transitions, and menu activation; removed no-op helper path
 39	FIXED	0002:00128f60 ?CL_SetCGameTime@@YAXXZ 00918460 f cl.o FIXED: restored IDA void signature and active-state writes; removed decompiler-only return
-40	PORTED	0002:00128f80 ?CL_SaveViewModelAnimTrees@@YAXXZ 00918480 f cl.o PORTED: IDA-verified VM_Call call number 13
-41	PORTED	0002:00128fa0 ?CL_LoadViewModelAnimTrees@@YAXXZ 009184A0 f cl.o PORTED: IDA-verified VM_Call call number 14
-42	PORTED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o PORTED: IDA-verified VM_Call call number 15
-43	PORTED	0002:00128fe0 ?CL_LoadWeaponInfo@@YAXXZ 009184E0 f cl.o PORTED: IDA-verified VM_Call call number 16
+40	VERIFIED	0002:00128f80 ?CL_SaveViewModelAnimTrees@@YAXXZ 00918480 f cl.o VERIFIED: matches IDA VM_Call call number 13
+41	VERIFIED	0002:00128fa0 ?CL_LoadViewModelAnimTrees@@YAXXZ 009184A0 f cl.o VERIFIED: matches IDA VM_Call call number 14
+42	VERIFIED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o VERIFIED: matches IDA VM_Call call number 15
+43	VERIFIED	0002:00128fe0 ?CL_LoadWeaponInfo@@YAXXZ 009184E0 f cl.o VERIFIED: matches IDA VM_Call call number 16
 44	VERIFIED	0002:00129000 ?CL_LookupColor@@YAXEQAM@Z 00918500 f cl.o
 45	FIXED	0002:00129070 ?Con_ToggleConsole_f@@YAXXZ 00918570 f cl.o FIXED: restored void signature and removed decompiler-only return; matches IDA YAXXZ/disassembly
 46	VERIFIED	0002:001290c0 ?Con_Dump_f@@YAXXZ 009185C0 f cl.o
