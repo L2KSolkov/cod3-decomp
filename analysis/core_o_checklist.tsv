@@ -648,22 +648,22 @@ index	status	map_line
 647	VERIFIED	0002:000d3930 ?FrameAdvance@EffectEventSys@@QAEXM@Z 008C2E30 f core.o
 648	SKIPPED	0002:000d3ad0 ?GetDebugFxList@ActiveEffectSet@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 008C2FD0 f core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 649	SKIPPED	0002:000d3c70 ?GetDebugFxList@EffectEventSys@@QBEXPAVEntity@@AAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 008C3170 f core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-650	PORTED	0002:000db7b0 ??0Vector4@math@@QAE@ABVPosition3@1@@Z 008CACB0 f i core.o
+650	VERIFIED	0002:000db7b0 ??0Vector4@math@@QAE@ABVPosition3@1@@Z 008CACB0 f i core.o	VERIFIED: existing Vector4(Position3) shuffle matches IDA 0x004DB7B0
 651	SKIPPED	0002:000db800 ??_GEntityNotify@@QAEPAXI@Z 008CAD00 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-652	PORTED	0002:000db840 ??0ServerTime@@QAE@XZ 008CAD40 f i core.o
-653	PORTED	0002:000db880 ??2EntityManager@@SAPAXIPAX@Z 008CAD80 f i core.o
+652	VERIFIED	0002:000db840 ??0ServerTime@@QAE@XZ 008CAD40 f i core.o	VERIFIED: existing ServerTime initializer matches IDA 0x004DB840 constants and field order
+653	VERIFIED	0002:000db880 ??2EntityManager@@SAPAXIPAX@Z 008CAD80 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DB880
 654	VERIFIED	0002:000db890 ?CreateInst@EntityManager@@SAXXZ 008CAD90 f i core.o
 655	VERIFIED	0002:000db980 ?DeleteInst@EntityManager@@SAXXZ 008CAE80 f i core.o
-656	PORTED	0002:000dba00 ?UnitDirX@math@@YA?AVDir3@1@XZ 008CAF00 f i core.o
-657	PORTED	0002:000dba40 ?UnitDirY@math@@YA?AVDir3@1@XZ 008CAF40 f i core.o
-658	PORTED	0002:000dba80 ??2ActiveEffectSet@@SAPAXI_NPBDH@Z 008CAF80 f i core.o
-659	PORTED	0002:000dbaa0 ?UnitDirZ@math@@YA?AVDir3@1@XZ 008CAFA0 f i core.o
-660	PORTED	0002:000dbae0 ??3ActiveEffectSet@@SAXPAX_NPBDH@Z 008CAFE0 f i core.o
-661	PORTED	0002:000dbb00 ??3ActiveEffectSet@@SAXPAX@Z 008CB000 f i core.o
-662	PORTED	0002:000dbb20 ?SetAllocator@ActiveEffectSet@@SAXPAVPoolAllocator@@@Z 008CB020 f i core.o
-663	PORTED	0002:000dbb30 ?GetHandle@ActiveEffectSet@@QBE?AVHandle@@XZ 008CB030 f i core.o
-664	PORTED	0002:000dbb50 ?SetHandle@ActiveEffectSet@@QAEXVHandle@@@Z 008CB050 f i core.o
-665	PORTED	0002:000dbb60 ?GetPakId@ActiveEffectSet@@QBE?AW4TPakId@@XZ 008CB060 f i core.o
+656	VERIFIED	0002:000dba00 ?UnitDirX@math@@YA?AVDir3@1@XZ 008CAF00 f i core.o	VERIFIED: existing UnitDirX constants match IDA 0x004DBA00
+657	VERIFIED	0002:000dba40 ?UnitDirY@math@@YA?AVDir3@1@XZ 008CAF40 f i core.o	VERIFIED: existing UnitDirY constants match IDA 0x004DBA40
+658	VERIFIED	0002:000dba80 ??2ActiveEffectSet@@SAPAXI_NPBDH@Z 008CAF80 f i core.o	VERIFIED: existing ActiveEffectSet allocator new matches IDA 0x004DBA80
+659	VERIFIED	0002:000dbaa0 ?UnitDirZ@math@@YA?AVDir3@1@XZ 008CAFA0 f i core.o	VERIFIED: existing UnitDirZ constants match IDA 0x004DBAA0
+660	VERIFIED	0002:000dbae0 ??3ActiveEffectSet@@SAXPAX_NPBDH@Z 008CAFE0 f i core.o	VERIFIED: existing allocator delete overload matches IDA 0x004DBAE0
+661	VERIFIED	0002:000dbb00 ??3ActiveEffectSet@@SAXPAX@Z 008CB000 f i core.o	VERIFIED: existing plain allocator delete matches IDA 0x004DBB00
+662	VERIFIED	0002:000dbb20 ?SetAllocator@ActiveEffectSet@@SAXPAVPoolAllocator@@@Z 008CB020 f i core.o	VERIFIED: existing SetAllocator matches IDA 0x004DBB20
+663	VERIFIED	0002:000dbb30 ?GetHandle@ActiveEffectSet@@QBE?AVHandle@@XZ 008CB030 f i core.o	VERIFIED: existing GetHandle return matches IDA 0x004DBB30
+664	VERIFIED	0002:000dbb50 ?SetHandle@ActiveEffectSet@@QAEXVHandle@@@Z 008CB050 f i core.o	VERIFIED: existing SetHandle assignment matches IDA 0x004DBB50
+665	VERIFIED	0002:000dbb60 ?GetPakId@ActiveEffectSet@@QBE?AW4TPakId@@XZ 008CB060 f i core.o	VERIFIED: existing GetPakId return matches IDA 0x004DBB60
 666	PORTED	0002:000dbb70 ??2EffectEventSys@@SAPAXIPAX@Z 008CB070 f i core.o
 667	PORTED	0002:000dbb80 ?IsStoppingAll@EffectEventSys@@QBE_NXZ 008CB080 f i core.o
 668	PORTED	0002:000dbb90 ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z 008CB090 f i core.o
