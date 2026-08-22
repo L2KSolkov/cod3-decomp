@@ -25,6 +25,16 @@ extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
 extern "C" void _Z_FreeInternal(void* ptr);
 extern struct cvar_t* cl_shownet;
 
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
 // Minimal view (mp.o); sInst symbol ?sInst@MultiplayerMgr@@2PAV1@A
 struct MultiplayerMgr {
     static MultiplayerMgr* sInst;
@@ -402,7 +412,13 @@ int GetConfigString(unsigned int index, char* buf, int size)
         return 0;
     if (cls.servername[4 * index + 128] == 0)
     {
-        // assert: cls.configstrings[index].IsDefined()
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_ui.cpp";
+        AeAssert::gCurrentLine = 95;
+        AeAssert::gCurrentExpr = "cls.configstrings[index].IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid index for config string (CD)"))
+            __debugbreak();
     }
     int v3 = cls.servername[4 * index + 128];
     if (v3 != 0)
@@ -410,7 +426,13 @@ int GetConfigString(unsigned int index, char* buf, int size)
         const char* v4 = (const char*)(v3 + 12);
         if (v3 == -12)
         {
-            // assert str
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_ui.cpp";
+            AeAssert::gCurrentLine = 97;
+            AeAssert::gCurrentExpr = "str";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
         }
         if (*v4 != 0)
         {

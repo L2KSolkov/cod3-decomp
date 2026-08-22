@@ -705,7 +705,13 @@ float CL_GamepadAxisValue(unsigned int virtualAxis)
 {
     if (virtualAxis >= 6)
     {
-        // assert virtualAxis < GPAD_VIRTAXIS_COUNT
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_gamepad.cpp";
+        AeAssert::gCurrentLine = 300;
+        AeAssert::gCurrentExpr =
+            "virtualAxis >= 0 && virtualAxis < GPAD_VIRTAXIS_COUNT";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", virtualAxis))
+            __debugbreak();
     }
     int v1 = 2 * (currCl + (int)virtualAxis + 8 * currCl);
     int v2 = dword_F13368[v1];
@@ -770,50 +776,46 @@ void CL_ShutdownUI()
 char CL_InitUI()
 {
     char result = 0;
-    if (g_femanager.fems == nullptr || !g_femanager.fems->IsSystemActive())
+    if (g_femanager.fems != nullptr
+        && g_femanager.fems->IsSystemActive())
+        return 1;
+    if (g_femanager.inGame)
+        return 1;
+
+    g_femanager.LoadFrontEnd();
+    if (g_femanager.fems != nullptr)
+        g_femanager.fems->is_active = true;
+    g_femanager.skipFE = false;
+    PakManager::sInst->mProgressCallback = nullptr;
+
+    sFrontEndInfo = PakManager::sInst->GetPakInfo("mp_FrontEnd");
+    const PakInfoNode* loadingInfo =
+        PakManager::sInst->GetPakInfo("mp_loadingscreen");
+    sLoadingScreenInfo = loadingInfo;
+    if (loadingInfo != nullptr
+        && !PakManager::sInst->IsLoaded(loadingInfo->pakId))
     {
-        if (g_femanager.inGame)
-            return 1;
-
-        g_femanager.LoadFrontEnd();
-        if (g_femanager.fems != nullptr)
-            g_femanager.fems->is_active = true;
-        g_femanager.skipFE = false;
-        PakManager::sInst->mProgressCallback = nullptr;
-
-        sFrontEndInfo = PakManager::sInst->GetPakInfo("mp_FrontEnd");
-        const PakInfoNode* loadingInfo =
-            PakManager::sInst->GetPakInfo("mp_loadingscreen");
-        sLoadingScreenInfo = loadingInfo;
-        if (loadingInfo != nullptr
-            && !PakManager::sInst->IsLoaded(loadingInfo->pakId))
-        {
-            PakManager::sInst->SetUserDistance(loadingInfo, 0.0f);
-            PakManager::sInst->SyncLoadPak(loadingInfo);
-        }
-
-        if (sFrontEndInfo == nullptr)
-        {
-            AeAssert::gCurrentAuthor = AeAssert::ARO;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_ui.cpp";
-            AeAssert::gCurrentLine = 245;
-            AeAssert::gCurrentExpr = "sFrontEndInfo!=0";
-            if (!AeAssert::IsIgnored()
-                && AeAssert::Assert("Can't find FrontEnd pak"))
-                __debugbreak();
-        }
-        if (sFrontEndInfo != nullptr
-            && !PakManager::sInst->IsLoaded(sFrontEndInfo->pakId)
-            && !gSkipFrontEnd)
-        {
-            PakManager::sInst->SetUserDistance(sFrontEndInfo, 0.0f);
-            PakManager::sInst->SyncLoadPak(sFrontEndInfo);
-        }
-        result = sFrontEndInfo != nullptr ? 1 : 0;
+        PakManager::sInst->SetUserDistance(loadingInfo, 0.0f);
+        PakManager::sInst->SyncLoadPak(loadingInfo);
     }
-    else
+
+    if (sFrontEndInfo == nullptr)
     {
-        result = 1;
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_ui.cpp";
+        AeAssert::gCurrentLine = 245;
+        AeAssert::gCurrentExpr = "sFrontEndInfo!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can't find FrontEnd pak"))
+            __debugbreak();
+        return result;
     }
+    if (PakManager::sInst->IsLoaded(sFrontEndInfo->pakId))
+        return 1;
+    if (gSkipFrontEnd)
+        return 1;
+
+    PakManager::sInst->SetUserDistance(sFrontEndInfo, 0.0f);
+    result = (char)PakManager::sInst->SyncLoadPak(sFrontEndInfo);
     return result;
 }
