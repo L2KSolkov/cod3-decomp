@@ -1090,12 +1090,12 @@ index	status	map_line
 1089	SKIPPED	0002:000e2050 ?size@?$InplaceVector@PBVConfigString@@@@QBEIXZ 008D1550 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1090	SKIPPED	0002:000e2060 ??A?$InplaceVector@PBVConfigString@@@@QAEAAPBVConfigString@@I@Z 008D1560 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1091	SKIPPED	0002:000e20e0 ??$_Ptr_cat@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAV12@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@0@Z 008D15E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1092	PORTED	0002:000e20f0 ??A?$DbColumnType@M@@QBEABMG@Z 008D15F0 f i core.o
+1092	FIXED	0002:000e20f0 ??A?$DbColumnType@M@@QBEABMG@Z 008D15F0 f i core.o FIXED: typed DbColumnType indexer with IDA DbDefs.h:202 assertion added in 4d9a4391; IDA 0x004E20F0
 1093	SKIPPED	0002:000e2170 ??$Find@PAD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQAD@Z 008D1670 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1094	SKIPPED	0002:000e2280 ??_GBankManager@@AAEPAXI@Z 008D1780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1095	SKIPPED	0002:000e22b0 ??_GPakManager@@QAEPAXI@Z 008D17B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1096	PORTED	0002:000e22e0 ?GetColumnById@DbTable@@QBEABVDbColumn@@G@Z 008D17E0 f i core.o
-1097	PORTED	0002:000e2310 ?GetValue@DbGraphNode@@QBEPBXPBVDbTable@@G@Z 008D1810 f i core.o
+1096	FIXED	0002:000e22e0 ?GetColumnById@DbTable@@QBEABVDbColumn@@G@Z 008D17E0 f i core.o FIXED: IDA GetColumnIndex delegation added in 4d9a4391; IDA 0x004E22E0
+1097	FIXED	0002:000e2310 ?GetValue@DbGraphNode@@QBEPBXPBVDbTable@@G@Z 008D1810 f i core.o FIXED: IDA leaf/value-index assertions and lookup added in 4d9a4391; IDA 0x004E2310
 1098	VERIFIED	0002:000e2430 ??0DbQueryResults@@QAE@XZ 008D1930 f i core.o
 1099	VERIFIED	0002:000e2450 ??0SimpleCollisionDesc@@QAE@XZ 008D1950 f i core.o
 1100	VERIFIED	0002:000e2470 ??0CollisionDesc@@QAE@XZ 008D1970 f i core.o
