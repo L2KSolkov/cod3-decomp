@@ -39,9 +39,11 @@ struct LocalFields {
         };
         struct capStatus_struct {
             const float& operator=(const float& rhs);
+            ::bfloat& GetRef();
         };
         struct capTeam_struct {
             const int& operator=(const int& rhs);
+            ::bint& GetRef();
         };
         struct holder_struct {
             Broc::entity& GetRef();

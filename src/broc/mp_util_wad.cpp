@@ -3099,6 +3099,12 @@ bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
 // bfloat::bfloat(long double) - ea: 0x9430C0
 bfloat::bfloat(long double rhs) : mVal((float)rhs) {}
 
+// bfloat::operator=(long double) - ea: 0x9774A0
+double bfloat::operator=(long double rhs) {
+    mVal = (float)rhs;
+    return mVal;
+}
+
 // operator*(int, bfloat) - ea: 0x940210
 bfloat operator*(int lhs, bfloat rhs) {
     return bfloat((float)lhs * rhs.mVal);
@@ -3107,6 +3113,13 @@ bfloat operator*(int lhs, bfloat rhs) {
 // operator*(bint, float) - ea: 0x971F80
 bfloat operator*(bint lhs, float rhs) {
     return bfloat(lhs.mVal * rhs);
+}
+
+// bint::operator*=(int) - ea: 0x977460
+int bint::operator*=(int rhs) {
+    AssertDefined();
+    mVal *= rhs;
+    return mVal;
 }
 
 // operator*(bint, bfloat) - ea: 0x95AD50
@@ -3126,6 +3139,11 @@ bfloat operator+(bint lhs, bfloat rhs) {
 // operator<(bfloat, bfloat) - ea: 0x975FF0
 bbool operator<(bfloat lhs, bfloat rhs) {
     return bbool(rhs.mVal > lhs.mVal);
+}
+
+// operator<(bfloat, int) - ea: 0x9774D0
+bbool operator<(bfloat lhs, int rhs) {
+    return bbool(rhs > lhs.mVal);
 }
 
 // bfloat::operator!= - ea: 0x95D300
@@ -4623,8 +4641,8 @@ mp_util_wad::LocalFields::__unnamed::capStatus_struct::operator=(
     const float& rhs) {
     Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
         reinterpret_cast<unsigned char*>(this) - 0x10);
-    Broc::bfloat value(rhs);
-    ee->SetVal<Broc::bfloat>(0x53377998u, value);
+    ::bfloat value(rhs);
+    ee->SetVal<::bfloat>(0x53377998u, value);
     return rhs;
 }
 
@@ -4634,9 +4652,23 @@ mp_util_wad::LocalFields::__unnamed::capTeam_struct::operator=(
     const int& rhs) {
     Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
         reinterpret_cast<unsigned char*>(this) - 0x10);
-    Broc::bint value(rhs);
-    ee->SetVal<Broc::bint>(0xAF35F29Bu, value);
+    ::bint value(rhs);
+    ee->SetVal<::bint>(0xAF35F29Bu, value);
     return rhs;
+}
+
+// capTeam_struct::GetRef - ea: 0x978110
+::bint& mp_util_wad::LocalFields::__unnamed::capTeam_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<::bint>(0xAF35F29Bu);
+}
+
+// capStatus_struct::GetRef - ea: 0x978330
+::bfloat& mp_util_wad::LocalFields::__unnamed::capStatus_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<::bfloat>(0x53377998u);
 }
 
 // holder_struct::GetRef - ea: 0x968040
