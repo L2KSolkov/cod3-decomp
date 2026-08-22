@@ -660,7 +660,7 @@ index	status	map_line
 659	PORTED	0002:00118350 ??0nalGenericBoneHandle@nalGeneric@@QAE@XZ 00907850 f i game2.o  PORTED: existing Skeleton-null constructor matches IDA
 660	PORTED	0002:00118360 ?IsValid@nalGenericBoneHandle@nalGeneric@@QBE_NXZ 00907860 f i game2.o  PORTED: existing non-null Skeleton test matches IDA
 661	PORTED	0002:00118370 ??0nalGenericBoneHandle@nalGeneric@@IAE@PBVnalGenericSkeleton@1@H@Z 00907870 f i game2.o
-662	PORTED	0002:00118390 ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z 00907890 f i game2.o
+662	FIXED	0002:00118390 ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z 00907890 f i game2.o	FIXED: IDA 0x00518390 exact 8-word bone-name scan, failure-state handle initialization, and namespaced adapter; class-tag mirrors corrected for NAL method linkage
 663	VERIFIED	0002:00118420 ?GetFrameCount@nalGenericAnim@nalGeneric@@QBEHXZ 00907920 f i game2.o
 664	VERIFIED	0002:00118430 ?CreateInstance@nalGenericAnim@nalGeneric@@QAEPAVnalGenericInstance@2@PAVnalGenericSkeleton@2@@Z 00907930 f i game2.o
 665	PORTED	0002:001184c0 ??0NoiseFloat@@QAE@XZ 009079C0 f i game2.o  PORTED: IDA-backed seeded defaults and octave/frequency/range initialization
