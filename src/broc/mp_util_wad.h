@@ -22,6 +22,30 @@ static_assert(sizeof(Level) == 0x0C, "mp_anim_wad::Level size mismatch");
 
 namespace mp_util_wad {
 
+// IDA LocalFields layout: ExtendedEntity storage at +0x00, animation-local
+// storage at +0x0C..+0x0F, and the multiplayer proxy union at +0x10.
+struct LocalFields {
+    Broc::ExtendedEntity mExtendedEntity;
+    unsigned char mAnimFields[4];
+
+    struct __unnamed {
+        struct trigger_struct {
+            const Broc::entity* operator=(const Broc::entity* rhs);
+            Broc::entity* Get(Broc::entity* result);
+        };
+        struct holder_struct {
+            Broc::entity& GetRef();
+        };
+    };
+
+    union {
+        __unnamed::trigger_struct flagEnd;
+        __unnamed::holder_struct holder;
+        unsigned char mProxyFields[4];
+    };
+};
+static_assert(sizeof(LocalFields) == 0x14, "mp_util_wad::LocalFields size mismatch");
+
 // ============================================================================
 // mp_util_wad::Level - shared multiplayer level state (560 bytes).
 // Verified against IDA ordinal 8663.

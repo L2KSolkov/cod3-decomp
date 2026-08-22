@@ -4468,6 +4468,51 @@ const Broc::bint* Broc::entity::__unnamed::key_struct::Get(
     return result;
 }
 
+// GetEE - ea: 0x925470
+const Broc::ExtendedEntity* Broc::entity::GetEE() const {
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(___u0);
+    return ee != nullptr ? ee : &Broc::ExtendedEntity::nullEnt;
+}
+
+// LocalEE - ea: 0x9587D0
+mp_util_wad::LocalFields* Broc::entity::LocalEE() const {
+    const Broc::ExtendedEntity* ee = GetEE();
+    return reinterpret_cast<mp_util_wad::LocalFields*>(
+        const_cast<Broc::ExtendedEntity*>(ee));
+}
+
+// operator-> - ea: 0x958790
+mp_util_wad::LocalFields* Broc::entity::operator->() {
+    return LocalEE();
+}
+
+// trigger_struct::operator= - ea: 0x9587F0
+const Broc::entity* mp_util_wad::LocalFields::__unnamed::trigger_struct::operator=(
+    const Broc::entity* rhs) {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    ee->SetVal<Broc::entity>(0xF2F5EAB4u, *rhs);
+    return rhs;
+}
+
+// trigger_struct::Get - ea: 0x958830
+Broc::entity* mp_util_wad::LocalFields::__unnamed::trigger_struct::Get(
+    Broc::entity* result) {
+    const Broc::ExtendedEntity* ee =
+        reinterpret_cast<const Broc::ExtendedEntity*>(
+            reinterpret_cast<const unsigned char*>(this) - 0x10);
+    ee->GetVal<Broc::entity>(result, 0xF2F5EAB4u);
+    return result;
+}
+
+// holder_struct::GetRef - ea: 0x968040
+Broc::entity& mp_util_wad::LocalFields::__unnamed::holder_struct::GetRef() {
+    Broc::ExtendedEntity* ee = reinterpret_cast<Broc::ExtendedEntity*>(
+        reinterpret_cast<unsigned char*>(this) - 0x10);
+    return ee->GetRef<Broc::entity>(0xFAAE111Eu);
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);

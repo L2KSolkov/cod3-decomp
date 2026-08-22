@@ -31,6 +31,11 @@ COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 namespace Broc {
 class string;
 struct bint;
+struct ExtendedEntity;
+}
+
+namespace mp_util_wad {
+struct LocalFields;
 }
 
 // ============================================================================
@@ -322,6 +327,9 @@ public:
     void UndefineEEField(unsigned int key);
     unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
     bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
+    const ExtendedEntity* GetEE() const;
+    mp_util_wad::LocalFields* LocalEE() const;
+    mp_util_wad::LocalFields* operator->();
     bool operator==(const entity& rhs) const;         // ea: 0x94FA60
     bool operator!=(const entity& rhs) const;         // ea: 0x93F640
 };
@@ -492,6 +500,11 @@ struct ExtendedEntity {
     bool          IsDefined(unsigned int key) const;
     void          SetUndefined(unsigned int key);
     unsigned int* SetVal(unsigned int key, const string& val);
+    template <typename T> unsigned int* SetVal(unsigned int key, const T& val) {
+        static_assert(sizeof(T) == sizeof(unsigned int),
+                      "ExtendedEntity typed values must occupy one raw slot");
+        return InternalSet(key, *reinterpret_cast<const unsigned int*>(&val));
+    }
     const unsigned int* InternalGet(unsigned int key) const;
     unsigned int* InternalSet(unsigned int key, unsigned int val);
 
