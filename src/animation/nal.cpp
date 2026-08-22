@@ -1854,6 +1854,9 @@ public:
     int GetPoseSize() const;
     int GetPoseAlignment() const;
     int GetBoneIndexForMatrixIndex(int boneIndex) const;
+    // ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z
+    void GetBoneHandle(nalGenericBoneHandle& handle,
+                       const tlFixedString& boneName) const;
     // ea: 0x00518340
     const nalGenericPose* GetDefaultPose() const;
 
@@ -2118,6 +2121,32 @@ nalPositionOrientation nalGenericPose::GetModelPositionOrientation(
             result *= GetModelPositionOrientation(parentBone);
     }
     return result;
+}
+
+// ea: 0x00518390
+void nalGenericSkeleton::GetBoneHandle(nalGenericBoneHandle& handle,
+                                       const tlFixedString& boneName) const
+{
+    handle.Skeleton = nullptr;
+    handle.BoneIndex = static_cast<int>(
+        reinterpret_cast<uintptr_t>(this));
+
+    for (int boneIndex = 0; boneIndex < BoneCount; ++boneIndex)
+    {
+        const nalBoneInfo& bone = BoneInfo[boneIndex];
+        const unsigned* requested = reinterpret_cast<const unsigned*>(&boneName);
+        const unsigned* candidate = reinterpret_cast<const unsigned*>(&bone.Name);
+        int word = 0;
+        for (; word < 8 && requested[word] == candidate[word]; ++word)
+        {
+        }
+        if (word == 8)
+        {
+            handle.Skeleton = this;
+            handle.BoneIndex = boneIndex;
+            return;
+        }
+    }
 }
 
 // ea: 0x00868FB0
@@ -3051,6 +3080,22 @@ public:
     float* BlendValues;                  // +0x08
 };
 }  // namespace nalGeneric
+
+// ea: 0x00518390 (inline adapter used by game2.o)
+void nalGenericSkeleton_GetBoneHandle(
+    void* skeleton, nalGeneric::nalGenericBoneHandle* handle,
+    const tlFixedString* boneName)
+{
+    static_cast<const nalGeneric::nalGenericSkeleton*>(skeleton)
+        ->GetBoneHandle(*handle, *boneName);
+}
+
+nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
+    void* pose, const nalGeneric::nalGenericBoneHandle* handle)
+{
+    return static_cast<const nalGeneric::nalGenericPose*>(pose)
+        ->GetModelPositionOrientation(*handle);
+}
 
 // Global aliases so existing nal.cpp code (and other TUs' opaque use sites)
 // keep compiling against the binary-accurate nalGeneric:: types.

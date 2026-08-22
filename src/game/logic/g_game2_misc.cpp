@@ -112,7 +112,8 @@ void* SmokeGrenadeMgr::operator new(size_t size, void* p)
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)
 // ============================================================================
-struct nalPositionOrientation {
+class nalPositionOrientation {
+public:
     math::Quaternion orient;  // +0x00
     math::Position3 pos;      // +0x10
 
@@ -436,7 +437,8 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
 // nalMatrix4x4_to_Axis4 - copy the first three components of each row
 // ea: 0x4F5ED0
 // ============================================================================
-struct nalMatrix4x4 {
+class nalMatrix4x4 {
+public:
     float x[4];  // rows
     float y[4];
     float z[4];

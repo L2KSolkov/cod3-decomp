@@ -1974,7 +1974,13 @@ void* XModelParts_GetAnimDef(void* self)
 
 // DObj / anim free artifacts (render.o/anim.o surface; stubs, port later)
 struct DObjSkelMat;
-struct nalMatrix4x4;
+class nalMatrix4x4 {
+public:
+    float x[4];
+    float y[4];
+    float z[4];
+    float w[4];
+};
 struct nalGenericBoneHandle {
     unsigned int index;   // +0x00
     void* skeleton;       // +0x04
@@ -2080,9 +2086,23 @@ void* XAnimCreateTree(void* ent, void* anims)
     (void)ent; (void)anims;
     return nullptr;
 }
+// ea: 0x004F6220
 void Axis4_to_nalMatrix4x4(const float (*axis)[3], nalMatrix4x4* mat)
 {
-    (void)axis; (void)mat;
+    float* dstW = &mat->x[3];
+    float* dstZ = &mat->x[2];
+    const float* src = &axis[0][2];
+    for (int i = 4; i != 0; --i)
+    {
+        dstZ[-2] = src[-2];
+        dstZ[-1] = src[-1];
+        *dstZ = *src;
+        *dstW = 0.0f;
+        src += 3;
+        dstZ += 4;
+        dstW += 4;
+    }
+    mat->w[3] = 1.0f;
 }
 void BrocString_ctor(void* self, const char* s)
 {
