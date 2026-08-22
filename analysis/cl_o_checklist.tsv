@@ -34,14 +34,14 @@ index	status	map_line
 33	PORTED	0002:00128af0 ?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00917FF0 f cl.o PORTED: IDA-verified object/skeleton asserts and j_nullsub_82 call
 34	VERIFIED	0002:00128ba0 ?LoadWorld@@YAXPBD@Z 009180A0 f cl.o
 35	VERIFIED	0002:00128bd0 ?CL_CgameSystemCalls@@YAHPAH@Z 009180D0 f cl.o
-36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o
+36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o PORTED: IDA-verified cgvm null return and VM_Call call number 2
 37	VERIFIED	0002:00128e40 ?CL_CGameRendering@@YAXXZ 00918340 f cl.o
-38	PORTED	0002:00128e70 ?CL_FirstSnapshot@@YAXXZ 00918370 f cl.o
-39	PORTED	0002:00128f60 ?CL_SetCGameTime@@YAXXZ 00918460 f cl.o
-40	PORTED	0002:00128f80 ?CL_SaveViewModelAnimTrees@@YAXXZ 00918480 f cl.o
-41	PORTED	0002:00128fa0 ?CL_LoadViewModelAnimTrees@@YAXXZ 009184A0 f cl.o
-42	PORTED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o
-43	PORTED	0002:00128fe0 ?CL_LoadWeaponInfo@@YAXXZ 009184E0 f cl.o
+38	FIXED	0002:00128e70 ?CL_FirstSnapshot@@YAXXZ 00918370 f cl.o FIXED: matched IDA cvar assert, pak cleanup, FEManager state transitions, and menu activation; removed no-op helper path
+39	PORTED	0002:00128f60 ?CL_SetCGameTime@@YAXXZ 00918460 f cl.o PORTED: IDA-verified active-state time assignments and inactive early return
+40	PORTED	0002:00128f80 ?CL_SaveViewModelAnimTrees@@YAXXZ 00918480 f cl.o PORTED: IDA-verified VM_Call call number 13
+41	PORTED	0002:00128fa0 ?CL_LoadViewModelAnimTrees@@YAXXZ 009184A0 f cl.o PORTED: IDA-verified VM_Call call number 14
+42	PORTED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o PORTED: IDA-verified VM_Call call number 15
+43	PORTED	0002:00128fe0 ?CL_LoadWeaponInfo@@YAXXZ 009184E0 f cl.o PORTED: IDA-verified VM_Call call number 16
 44	VERIFIED	0002:00129000 ?CL_LookupColor@@YAXEQAM@Z 00918500 f cl.o
 45	PORTED	0002:00129070 ?Con_ToggleConsole_f@@YAXXZ 00918570 f cl.o
 46	VERIFIED	0002:001290c0 ?Con_Dump_f@@YAXXZ 009185C0 f cl.o
