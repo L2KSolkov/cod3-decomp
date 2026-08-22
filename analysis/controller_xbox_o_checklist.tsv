@@ -1,7 +1,7 @@
 index	status	map_line
-1	PORTED	0002:003e1a80 ?GetUIXRender@LiveWrapper@@QAE_NXZ 00BD0F80 f i controller_xbox.o
+1	FIXED	0002:003e1a80 ?GetUIXRender@LiveWrapper@@QAE_NXZ 00BD0F80 f i controller_xbox.o  FIXED: restored exact IDA body returning LiveWrapper::renderingEnabled
 2	PORTED	0002:003e1a90 ??0motor_info@?A0x259e6277@@QAE@XZ 00BD0F90 f i controller_xbox.o
-3	PORTED	0002:003e1aa0 ?compute_motor_speed@?A0x259e6277@@YAGM@Z 00BD0FA0 f controller_xbox.o
+3	VERIFIED	0002:003e1aa0 ?compute_motor_speed@?A0x259e6277@@YAGM@Z 00BD0FA0 f controller_xbox.o  VERIFIED: source matches IDA assertion and intensity*65535 unsigned-short conversion
 4	PORTED	0002:003e1b10 ?refresh_device_list@?A0x259e6277@@YAXXZ 00BD1010 f controller_xbox.o
 5	VERIFIED	0002:003e1c60 ??0controller@@QAE@XZ 00BD1160 f controller_xbox.o
 6	VERIFIED	0002:003e1d90 ?inst@controller@@SAPAV1@XZ 00BD1290 f controller_xbox.o
