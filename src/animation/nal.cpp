@@ -2599,11 +2599,12 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
 
     __m128 normal = _mm_sub_ps(_mm_mul_ps(targetYZX, midZXY),
                                _mm_mul_ps(targetZXY, midYZX));
-    const float normalLength = sqrtf(normal.m128_f32[0] * normal.m128_f32[0] +
-                                     normal.m128_f32[1] * normal.m128_f32[1] +
-                                     normal.m128_f32[2] * normal.m128_f32[2]);
+    float normalLengthSquared = normal.m128_f32[0] * normal.m128_f32[0]
+                              + normal.m128_f32[1] * normal.m128_f32[1]
+                              + normal.m128_f32[2] * normal.m128_f32[2];
+    const float normalLength = sqrtf(normalLengthSquared);
     if (normalLength <= 0.01f)
-        normal = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        normal = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
     else
         normal = _mm_div_ps(normal, _mm_set1_ps(normalLength));
 
@@ -2612,14 +2613,14 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
         _mm_mul_ps(_mm_shuffle_ps(normal, normal, 0x12), targetYZX));
 
     nalMatrix4x4 base;
-    base.x.v = _mm_set_ps(0.0f, target.m128_f32[2], target.m128_f32[1],
-                          target.m128_f32[0]);
-    base.y.v = tangent;
-    base.y.v.m128_f32[3] = 0.0f;
-    base.z.v = normal;
-    base.z.v.m128_f32[3] = 0.0f;
-    base.w.v = _mm_set_ps(1.0f, d1.v.m128_f32[2], d1.v.m128_f32[1],
-                          d1.v.m128_f32[0]);
+    base.x.v = _mm_setr_ps(target.m128_f32[0], target.m128_f32[1],
+                           target.m128_f32[2], 0.0f);
+    base.y.v = _mm_setr_ps(tangent.m128_f32[0], tangent.m128_f32[1],
+                           tangent.m128_f32[2], 0.0f);
+    base.z.v = _mm_setr_ps(normal.m128_f32[0], normal.m128_f32[1],
+                           normal.m128_f32[2], 0.0f);
+    base.w.v = _mm_setr_ps(d1.v.m128_f32[0], d1.v.m128_f32[1],
+                           d1.v.m128_f32[2], 1.0f);
 
     const float sinTwist = a8;
     const float cosTwist = a9;
@@ -2630,45 +2631,19 @@ void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
     const float cosLower = a5;
 
     nalMatrix4x4 upper;
-    upper.x.v = _mm_set_ps(0.0f, cosUpper * sinTwist,
-                            cosUpper * cosTwist, -sinUpper);
-    upper.y.v = _mm_set_ps(0.0f, sinUpper * sinTwist,
-                            sinUpper * cosTwist, cosUpper);
-    upper.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
-    upper.w.v = _mm_set_ps(1.0f, upperLength * sinUpper * sinTwist,
-                            upperLength * sinUpper * cosTwist,
-                            upperLength * cosUpper);
-
-    const auto multiplyRows = [](const nalMatrix4x4& lhs,
-                                 const nalMatrix4x4& rhs,
-                                 nalMatrix4x4& out)
-    {
-        const __m128 rhsX = rhs.x.v;
-        const __m128 rhsY = rhs.y.v;
-        const __m128 rhsZ = rhs.z.v;
-        const __m128 rhsW = rhs.w.v;
-        const auto multiplyRow = [&](const __m128 row) {
-            return _mm_add_ps(
-                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(row, row, 0x00), rhsX),
-                           _mm_mul_ps(_mm_shuffle_ps(row, row, 0x55), rhsY)),
-                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(row, row, 0xAA), rhsZ),
-                           _mm_mul_ps(_mm_shuffle_ps(row, row, 0xFF), rhsW)));
-        };
-        out.x.v = multiplyRow(lhs.x.v);
-        out.y.v = multiplyRow(lhs.y.v);
-        out.z.v = multiplyRow(lhs.z.v);
-        out.w.v = multiplyRow(lhs.w.v);
-    };
-    multiplyRows(upper, base, m1);
+    upper.x.v = _mm_setr_ps(a3, a2 * a9, a2 * a8, 0.0f);
+    upper.y.v = _mm_setr_ps(-a2, a3 * a9, a3 * a8, 0.0f);
+    upper.z.v = _mm_setr_ps(0.0f, -a8, a9, 0.0f);
+    upper.w.v = _mm_setr_ps(a1 * a3, a1 * a2 * a9,
+                            a1 * a2 * a8, 1.0f);
+    MulMatrix(m1, upper, base);
 
     nalMatrix4x4 lower;
-    lower.x.v = _mm_set_ps(0.0f, cosLower * sinTwist,
-                           cosLower * cosTwist, sinLower);
-    lower.y.v = _mm_set_ps(0.0f, -sinLower * sinTwist,
-                           -sinLower * cosTwist, cosLower);
-    lower.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
+    lower.x.v = _mm_setr_ps(a5, -a4 * a9, -a4 * a8, 0.0f);
+    lower.y.v = _mm_setr_ps(a4, a5 * a9, a5 * a8, 0.0f);
+    lower.z.v = _mm_setr_ps(0.0f, -a8, a9, 0.0f);
     lower.w = upper.w;
-    multiplyRows(lower, base, m2);
+    MulMatrix(m2, lower, base);
 }
 void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1, const math::Dir3& d2,
                   float a1, float a2, float a3, float a4,
@@ -2681,8 +2656,7 @@ void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1, const math::Dir3
     const __m128 squared = _mm_mul_ps(delta, delta);
     const float length = sqrtf(squared.m128_f32[0]
                                + squared.m128_f32[1]
-                               + squared.m128_f32[2]
-                               + squared.m128_f32[3]);
+                               + squared.m128_f32[2]);
     const float inverseLength = 1.0f / length;
     out2.v = _mm_mul_ps(delta, _mm_set1_ps(inverseLength));
 
