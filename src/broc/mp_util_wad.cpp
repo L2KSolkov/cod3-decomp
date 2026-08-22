@@ -4830,9 +4830,10 @@ void CallbackDebugRender();
 void* main__functor(Broc::entity self);
 AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
-void* WaitThenPickFlagToLaunch__functor(Broc::entity self,
-                                        Broc::bfloat wait_time,
-                                        const char* message);
+AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>*
+WaitThenPickFlagToLaunch__functor(Broc::entity self,
+                                  Broc::bfloat wait_time,
+                                  const char* message);
 void* WaitForFlagTimeOut__functor(Broc::entity flag);
 void* WaitForNoTouchFlag__functor(Broc::entity toucher);
 void* PickupFlag__functor(Broc::entity self, Broc::entity triggerer);
@@ -11237,9 +11238,10 @@ void* ObjectiveUpdater__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(ObjectiveUpdater, guy);
 }
-void* WaitThenPickFlagToLaunch__functor(Broc::entity self,
-                                        Broc::bfloat wait_time,
-                                        const char* message) {
+AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>*
+WaitThenPickFlagToLaunch__functor(Broc::entity self,
+                                  Broc::bfloat wait_time,
+                                  const char* message) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>));
     if (storage == NULL)
         return NULL;
