@@ -13672,7 +13672,7 @@ Broc::entity* GetSpawnpointNearest(Broc::entity* result,
     Broc::bint i(0);
     Broc::entity spawnpoint;
     spawnpoint.___u0 = 0;
-    Broc::bint dist(100000);
+    Broc::bint dist(0x1869F);
     Broc::bint tempDist(0);
     i = 0;
     while ((int)i < Broc::size(*spawnpoints)) {
