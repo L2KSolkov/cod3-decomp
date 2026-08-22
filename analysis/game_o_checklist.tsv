@@ -851,7 +851,7 @@ index	status	map_line
 850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o
 851	PORTED	0002:0025ddd0 ??0?$cFreeList@VEntity@@@@QAE@XZ 00A4D2D0 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
 852	PORTED	0002:0025dde0 ??1?$cFreeList@VEntity@@@@QAE@XZ 00A4D2E0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-853	PORTED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o	IDA: checks mFree > 0, updates counts/head, and reports lines 49/61 on invalid state; restored in shared template Alloc.
+853	FIXED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o	IDA: existing simplified allocator lacked the mFree invariant and assert paths; fixed to match lines 49/61 and head/count updates.
 854	PORTED	0002:0025df20 ??0?$cFreeList@VDObj@@@@QAE@XZ 00A4D420 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
 855	PORTED	0002:0025df30 ??1?$cFreeList@VDObj@@@@QAE@XZ 00A4D430 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
 856	PORTED	0002:0025df90 ??0?$cFreeList@UDSkel@@@@QAE@XZ 00A4D490 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
@@ -862,7 +862,7 @@ index	status	map_line
 861	PORTED	0002:0025e080 ??1?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D580 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
 862	PORTED	0002:0025e0e0 ??0?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5E0 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
 863	PORTED	0002:0025e0f0 ??1?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5F0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-864	PORTED	0002:0025e150 ?Alloc@?$cFreeList@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00A4D650 f i game.o	IDA: checks mFree > 0, updates counts/head, and reports lines 49/61 on invalid state; restored in shared template Alloc.
+864	FIXED	0002:0025e150 ?Alloc@?$cFreeList@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00A4D650 f i game.o	IDA: existing simplified allocator lacked the mFree invariant and assert paths; fixed to match lines 49/61 and head/count updates.
 865	VERIFIED	0002:0025e230 ?Free@?$cFreeList@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z 00A4D730 f i game.o	IDA: links the freed node at its first-member next pointer and updates mUsed/mFree; existing shared Free matches.
 866	VERIFIED	0002:0025e250 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasButton@@$0BA@@@H@Z 00A4D750 f i game.o
 867	VERIFIED	0002:0025e2d0 ??A?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAEAAW4EPadAliasButton@@H@Z 00A4D7D0 f i game.o
