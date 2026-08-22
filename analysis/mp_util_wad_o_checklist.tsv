@@ -753,7 +753,7 @@ index	status	map_line
 752	VERIFIED	0002:0056a270 ?WaitForFlagTimeOut@_mp_scf@@YAXVentity@Broc@@@Z 00D59770 f mp_util_wad.o
 753	VERIFIED	0002:0056a390 ?PickupFlag@_mp_scf@@YAXVentity@Broc@@0@Z 00D59890 f mp_util_wad.o
 754	VERIFIED	0002:0056a640 ?WaitForNoTouchFlag__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D59B40 f i mp_util_wad.o	VERIFIED: IDA 0x0096A640 matches 12-byte allocation, null check, and WaitForNoTouchFlag functor construction
-755	PORTED	0002:0056a6e0 ?Goal@_mp_scf@@YAXVentity@Broc@@0@Z 00D59BE0 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x0096A6E0 round/player/vehicle gating, pickup-delay check, event handler, team/base capture, and re-registration flow; source commit 3efce0a7
+755	FIXED	0002:0056a6e0 ?Goal@_mp_scf@@YAXVentity@Broc@@0@Z 00D59BE0 f mp_util_wad.o	FIXED: matched IDA 0x0096A6E0 local pickup-delay proxy, HashStr event label, and short-circuit typed team/targetname checks; source commit 049f4cb1
 756	VERIFIED	0002:0056ac20 ?Get@pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QBE?BUbint@@XZ 00D5A120 f i mp_util_wad.o	VERIFIED: IDA 0x0096AC20 matches GetVal<bint> key 0x4743187E, result copy, and return
 757	FIXED	0002:0056ac60 ?WaitThenPickFlagToLaunch@_mp_scf@@YAXVentity@Broc@@Ubfloat@@PBD@Z 00D5A160 f mp_util_wad.o	FIXED: IDA 0x0096AC60 uses pLevel->_base.entity (or null) for notify/endon
 758	VERIFIED	0002:0056ad50 ?PickFlagToLaunch@_mp_scf@@YAXXZ 00D5A250 f mp_util_wad.o
