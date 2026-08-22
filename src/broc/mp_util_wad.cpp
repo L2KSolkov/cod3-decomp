@@ -2897,6 +2897,11 @@ void Code_BroadcastVehicleRespawn(Broc::entity vehicle) {
     gBrocAPI.mBroadcastVehicleRespawn(vehicle.GetHandle());
 }
 
+// Broc::Code_RespawnVehicle - ea: 0x971420
+void Code_RespawnVehicle(Broc::entity* e) {
+    gBrocAPI.mRespawnVehicle(e->GetHandle());
+}
+
 // Broc::TakeWeapon - ea: 0x950B50
 void Broc::TakeWeapon(Broc::entity* e,
                       const Broc::string* pszWeaponName) {
