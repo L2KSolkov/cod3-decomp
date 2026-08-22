@@ -2066,6 +2066,51 @@ int nalGenericPose::GetPoseAlignment() const
     return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->PoseAlignment;
 }
 
+// ea: 0x00868EB0
+nalPositionOrientation nalGenericPose::GetModelPositionOrientation(
+    int boneIdx) const
+{
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(Skeleton);
+    const nalBoneInfo& bone = skeleton->BoneInfo[boneIdx];
+    nalPositionOrientation result;
+
+    const unsigned char* positionData =
+        (bone.Flags & 1u) != 0
+            ? skeleton->FileBuf.Buf + bone.PositionOffset
+            : static_cast<const unsigned char*>(PoseData)
+                  + bone.PositionOffset;
+    memcpy(&result.pos, positionData, sizeof(result.pos));
+
+    const unsigned char* orientationData =
+        (bone.Flags & 2u) != 0
+            ? skeleton->FileBuf.Buf + bone.OrientationOffset
+            : static_cast<const unsigned char*>(PoseData)
+                  + bone.OrientationOffset;
+    memcpy(&result.orient, orientationData, sizeof(result.orient));
+
+    const short parentIndex = bone.ParentIndex;
+    if (parentIndex >= 0)
+    {
+        int parentBone = 0;
+        for (; parentBone < skeleton->BoneCount; ++parentBone)
+        {
+            if (skeleton->BoneInfo[parentBone].Index == parentIndex)
+                break;
+        }
+        if (parentBone < skeleton->BoneCount && parentBone > 0)
+            result *= GetModelPositionOrientation(parentBone);
+    }
+    return result;
+}
+
+// ea: 0x00868FB0
+nalPositionOrientation nalGenericPose::GetModelPositionOrientation(
+    const nalGenericBoneHandle& handle) const
+{
+    return GetModelPositionOrientation(handle.BoneIndex);
+}
+
 // ============================================================================
 // nalGenericAnim Ã¢â‚¬â€ runtime animation instance (per-skeleton)
 // ============================================================================
