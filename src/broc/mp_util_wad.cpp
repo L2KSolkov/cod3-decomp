@@ -11497,7 +11497,64 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
 // CallbackDropItem - ea: 0x952F30
 void CallbackDropItem(int netID, int entity, Broc::vector position,
                       Broc::vector angles, Broc::vector velocity) {
-    (void)netID; (void)entity; (void)position; (void)angles; (void)velocity;
+    (void)entity;
+    Broc::entity flag;
+    Broc::bint flagObjective;
+    Broc::string flagState((const char*)NULL);
+    if (netID == 1) {
+        Broc::string name("ctf_axis");
+        HashStr key;
+        key.mVal = 0x19F9F0E8u;
+        Broc::entity found;
+        flag = *Broc::GetEnt(&found, &name, key, 0);
+        flagObjective = 2;
+        flagState = "i_flag_axis_c";
+        name.~string();
+    }
+    if (netID == 2) {
+        Broc::string name("ctf_allies");
+        HashStr key;
+        key.mVal = 0x19F9F0E8u;
+        Broc::entity found;
+        flag = *Broc::GetEnt(&found, &name, key, 0);
+        flagObjective = 3;
+        flagState = "i_flag_allied_c";
+        name.~string();
+    }
+
+    if (Broc::Length(&velocity) >= 0.1f)
+        LaunchFlagAndTrigger(flag, position, angles, velocity);
+    else
+        UpdateFlagAndTrigger(flag, position, angles);
+
+    HashStr dropNotify;
+    dropNotify.mVal = 0xFA57E7C7u;
+    Broc::notify(flag, dropNotify);
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        *mp_util_wad::GetEE_last_dropped_time(holder) = (int)now;
+        mp_util_wad::entity_set_ctf_has_flag(holder, 0);
+        *mp_util_wad::GetEE_holder(holder) = Broc::gEntityUndef;
+        *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
+
+        void* ftor = WaitForFlagTimeOut__functor(flag);
+        Broc::thread_create(false,
+                            "c:\\cod\\code\\script\\_mp_ctf.bro",
+                            __LINE__, "WaitForFlagTimeOut", ftor);
+        Broc::string sound("MX_CTF_FlagDropped");
+        Broc::SoundPlay(&sound, 1.0f);
+        sound.~string();
+        if (netID == 1)
+            Broc::iprintln("MPCTF_AXIS_FLAG_DROPPED");
+        else
+            Broc::iprintln("MPCTF_ALLIES_FLAG_DROPPED");
+    }
+    flagState.~string();
 }
 }
 
