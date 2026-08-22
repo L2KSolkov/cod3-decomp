@@ -1,6 +1,6 @@
 index	status	map_line
-1	PORTED	0002:00468a60 ?tlIsStackPtr@@YA_NPAX@Z 00C57F60 f i nal_generic.o
-2	PORTED	0002:00468a80 ?Mul@math@@YA?AVVector4@1@ABV21@M@Z 00C57F80 f i nal_generic.o
+1	PORTED	0002:00468a60 ?tlIsStackPtr@@YA_NPAX@Z 00C57F60 f i nal_generic.o	PORTED: IDA 0x00868A60 checks tlStackBegin <= ptr < tlStackEnd
+2	PORTED	0002:00468a80 ?Mul@math@@YA?AVVector4@1@ABV21@M@Z 00C57F80 f i nal_generic.o	PORTED: IDA 0x00868A80 multiplies all Vector4 lanes by the scalar
 3	VERIFIED	0002:00468ac0 ?Scale@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00C57FC0 f i nal_generic.o
 4	VERIFIED	0002:00468b50 ??0nalIKSpin@@QAE@XZ 00C58050 f i nal_generic.o
 5	VERIFIED	0002:00468b60 ??0nalIKSpin@@QAE@ABVQuaternion@math@@0F@Z 00C58060 f i nal_generic.o
