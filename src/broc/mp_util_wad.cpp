@@ -11205,9 +11205,69 @@ void Goal(Broc::entity self) {
 
 // FlagThreadLauncher - ea: 0x954970
 void FlagThreadLauncher(Broc::entity self) {
-    (void)self;
-    // Launches PickupFlag / Goal threads; core capture loop lives in
-    // HandlePickupFlag.
+    Broc::vector mins(-20.0f, -20.0f, 0.0f);
+    Broc::vector maxs(20.0f, 20.0f, 50.0f);
+    Broc::vector origin;
+    Broc::vector angles;
+    mp_util_wad::entity_get_origin(&origin, self);
+    mp_util_wad::entity_get_angles(&angles, self);
+
+    Broc::string classname("trigger_multiple");
+    Broc::entity trigger;
+    Broc::Spawn(&trigger, &classname, &origin, &mins, &maxs, 2,
+                static_cast<TPakInfo>(INVALID_PAK_INFO));
+    classname.~string();
+    *mp_util_wad::GetEE_trigger(self) = trigger;
+
+    Broc::string classnameGoal("trigger_multiple");
+    Broc::entity goal;
+    Broc::Spawn(&goal, &classnameGoal, &origin, &mins, &maxs, 2,
+                static_cast<TPakInfo>(0));
+    classnameGoal.~string();
+    *mp_util_wad::GetEE_goal(self) = goal;
+
+    Broc::entity::__unnamed::angles_struct goalAngles = {
+        goal.GetHandle()};
+    goalAngles = &angles;
+
+    Broc::string script("FLAG_FLAPPING");
+    Broc::EffectEventPlay(&self, &script);
+    script.~string();
+    Broc::LinkTo(mp_util_wad::GetEE_trigger(self), &self);
+    *mp_util_wad::GetEE_waiting(self) = -1.0f;
+
+    Broc::string targetName;
+    mp_util_wad::entity_get_targetname(&targetName, self);
+    bool axisFlag = targetName == "axis" || targetName == "ctf_axis";
+    targetName.~string();
+
+    Broc::string team(axisFlag ? "axis" : "allies");
+    Broc::entity::__unnamed::targetname_struct triggerName = {
+        trigger.GetHandle()};
+    triggerName = team;
+    Broc::entity::__unnamed::targetname_struct goalName = {
+        goal.GetHandle()};
+    goalName = team;
+
+    HashStr returnedMessage;
+    returnedMessage.mVal = axisFlag ? 0x7483EACFu : 0xFC489514u;
+    mp_util_wad::GetEE_message_when_returned(self)->mVal =
+        returnedMessage.mVal;
+    *mp_util_wad::GetEE_weaponstr(self) =
+        axisFlag ? "mp_flag_axis" : "mp_flag_allies";
+    *mp_util_wad::GetEE_holder(self) = Broc::gEntityUndef;
+
+    HashStr pickupFunction;
+    Broc::string_hash(&pickupFunction, "_mp_ctf::PickupFlag");
+    HashStr eventLabel;
+    eventLabel.mVal = 0xF2F5EAB4u;
+    Broc::AddEventHandler(mp_util_wad::GetEE_trigger(self), eventLabel.mVal,
+                          pickupFunction.mVal);
+
+    HashStr goalFunction;
+    Broc::string_hash(&goalFunction, "_mp_ctf::Goal");
+    Broc::AddEventHandler(mp_util_wad::GetEE_goal(self), eventLabel.mVal,
+                          goalFunction.mVal);
 }
 
 // CallbackDebugRender - ea: 0x955B20
