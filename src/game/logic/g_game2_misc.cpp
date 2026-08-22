@@ -552,9 +552,10 @@ public:
     int initialized;                // +0x50
     void* pose;                     // +0x54
     void* skeleton;                 // +0x58
-    unsigned char _pad5C[0x60 - 0x5C];  // +0x5C
-    float mFrametime;               // +0x60
-    unsigned char _pad64[0x7C - 0x64];  // +0x64
+    float mFrametime;               // +0x5C
+    float mFootProne[2][3];         // +0x60
+    bool mAlignFoot[2];              // +0x78
+    bool mEnableTerrainMappingIK[2]; // +0x7A
 
     AnimIK();  // ea: 0x4F60A0
     ~AnimIK();  // ea: 0x4F60B0
