@@ -962,30 +962,30 @@ index	status	map_line
 961	SKIPPED	0002:0025f2e0 ??$_Copy_backward_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 962	SKIPPED	0002:0025f320 ??$_Construct@U?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@ABU10@@Z 00A4E820 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 963	SKIPPED	0002:0025f340 ??$_Destroy@U?$pair@HH@std@@@std@@YAXPAU?$pair@HH@0@@Z 00A4E840 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-964	PORTED	0002:0025f350 ?intersect_aabb_centered_aabb@@YA_NABVPosition3@math@@000@Z 00A4E850 f i game.o
-965	PORTED	0002:0025f3b0 ?inside_point_aabb@@YA_NABVPosition3@math@@00@Z 00A4E8B0 f i game.o
-966	PORTED	0002:0025f420 ?point_in_triangle@@YA_NABVPosition3@math@@000ABVDir3@2@@Z 00A4E920 f i game.o
-967	PORTED	0002:0025f5f0 ??0cdlPlane@@QAE@XZ 00A4EAF0 f i game.o
-968	PORTED	0002:0025f600 ??0cdlPlane@@QAE@ABVDir3@math@@M@Z 00A4EB00 f i game.o
-969	PORTED	0002:0025f630 ?get_offset@cdlPlane@@QBEMXZ 00A4EB30 f i game.o
-970	PORTED	0002:0025f680 ??0cdl_object_t@@QAE@XZ 00A4EB80 f i game.o
-971	PORTED	0002:0025f690 ?get_min@cdl_object_t@@QBE?AVPosition3@math@@XZ 00A4EB90 f i game.o
+964	PORTED	0002:0025f350 ?intersect_aabb_centered_aabb@@YA_NABVPosition3@math@@000@Z 00A4E850 f i game.o	IDA: compares the centered AABB separation against dims on xyz; SIMD body restored in g_accessors.cpp.
+965	PORTED	0002:0025f3b0 ?inside_point_aabb@@YA_NABVPosition3@math@@00@Z 00A4E8B0 f i game.o	IDA: tests max(bmin-p, p-bmax) < zero on xyz; SIMD body restored in g_accessors.cpp.
+966	PORTED	0002:0025f420 ?point_in_triangle@@YA_NABVPosition3@math@@000ABVDir3@2@@Z 00A4E920 f i game.o	IDA: computes the three oriented edge cross products against n and accepts all nonnegative signs; body restored in g_accessors.cpp.
+967	PORTED	0002:0025f5f0 ??0cdlPlane@@QAE@XZ 00A4EAF0 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
+968	PORTED	0002:0025f600 ??0cdlPlane@@QAE@ABVDir3@math@@M@Z 00A4EB00 f i game.o	IDA: copies n.xyz and offset into the four plane dwords; constructor restored.
+969	PORTED	0002:0025f630 ?get_offset@cdlPlane@@QBEMXZ 00A4EB30 f i game.o	IDA: returns plane data dword 3 as double; accessor restored.
+970	PORTED	0002:0025f680 ??0cdl_object_t@@QAE@XZ 00A4EB80 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
+971	PORTED	0002:0025f690 ?get_min@cdl_object_t@@QBE?AVPosition3@math@@XZ 00A4EB90 f i game.o	IDA: returns center minus box_radius using xyz packed floats; accessor restored.
 972	PORTED	0002:0025f730 ?load_inplace@DCGSet@@QAEXPADAAH@Z 00A4EC30 f i game.o
 973	PORTED	0002:0025f820 ?load_inplace@DCGBank@@QAEXPADAAH@Z 00A4ED20 f i game.o
 974	PORTED	0002:0025f8e0 ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z 00A4EDE0 f i game.o
 975	PORTED	0002:0025f990 ?load_inplace@CGBank@@QAEXPADAAH@Z 00A4EE90 f i game.o
 976	VERIFIED	0002:0025fb40 ?get_type@CGBank@@QBEHI@Z 00A4F040 f i game.o
-977	PORTED	0002:0025fbe0 ?PHYS_ALIGN@@YA?BIPADH@Z 00A4F0E0 f i game.o
-978	PORTED	0002:0025fc00 ??0phys_memory_heap@@QAE@XZ 00A4F100 f i game.o
-979	PORTED	0002:0025fc20 ?allocate_no_error@phys_memory_heap@@QAEPAXHH@Z 00A4F120 f i game.o
-980	PORTED	0002:0025fc90 ?allocate@phys_memory_heap@@QAEPAXHHPBD@Z 00A4F190 f i game.o
-981	PORTED	0002:0025fcf0 ??0bounded_proxy_obj_t@@QAE@ABVPosition3@math@@0HEGE@Z 00A4F1F0 f i game.o
-982	PORTED	0002:0025fe00 ?clear@proximity_data_t@@QAEXXZ 00A4F300 f i game.o
+977	PORTED	0002:0025fbe0 ?PHYS_ALIGN@@YA?BIPADH@Z 00A4F0E0 f i game.o	IDA: aligns p + a - 1 down with ~(a - 1); char* implementation restored in g_accessors.cpp.
+978	FIXED	0002:0025fc00 ??0phys_memory_heap@@QAE@XZ 00A4F100 f i game.o	IDA: constructor zeroes all four buffer pointers; corrected the prior implicit uninitialized construction.
+979	FIXED	0002:0025fc20 ?allocate_no_error@phys_memory_heap@@QAEPAXHH@Z 00A4F120 f i game.o	IDA: allocation and bounds logic matched; corrected the assertion description to defaultFileName.
+980	VERIFIED	0002:0025fc90 ?allocate@phys_memory_heap@@QAEPAXHHPBD@Z 00A4F190 f i game.o	IDA: delegates to allocate_no_error and asserts on null with the supplied error message.
+981	PORTED	0002:0025fcf0 ??0bounded_proxy_obj_t@@QAE@ABVPosition3@math@@0HEGE@Z 00A4F1F0 f i game.o	IDA: copies oi/bi/ti, min.xyz, max.xyz, and cflags in the recorded order; constructor restored.
+982	PORTED	0002:0025fe00 ?clear@proximity_data_t@@QAEXXZ 00A4F300 f i game.o	IDA: resets boxes, brushes, and polies allocation counts to zero; clear restored.
 983	VERIFIED	0002:0025fe20 ??0cmgr_mem_ctx_t@@QAE@XZ 00A4F320 f i game.o
 984	VERIFIED	0002:0025fef0 ??1cmgr_mem_ctx_t@@QAE@XZ 00A4F3F0 f i game.o
-985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o
-986	PORTED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o
-987	PORTED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o
+985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o	IDA: returns mPlane.w as double; accessor restored in g_cm_load.cpp.
+986	VERIFIED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o	IDA: existing body copies xyz/dist, sets type 3, and derives signbits exactly.
+987	PORTED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
 988	SKIPPED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 989	SKIPPED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 990	VERIFIED	0002:002600e0 ??1AnimNotifyTask@@UAE@XZ 00A4F5E0 f i game.o
