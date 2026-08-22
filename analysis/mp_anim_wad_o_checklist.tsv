@@ -261,14 +261,14 @@ index	status	map_line
 260	PORTED	0002:00594df0 ?IsEEDefined_script_door@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D842F0 f mp_anim_wad.o	PORTED: added IDA 0x00994DF0 pathnode string defined-check using key 0x022700C8; source commit 803c83dd
 261	SKIPPED	0002:00594e60 ?IsDefined@script_door_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84360 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_door
 262	PORTED	0002:00594ef0 ?IsDefined@Broc@@YA_NABVpathnode@1@@Z 00D843F0 f i mp_anim_wad.o	PORTED: added IDA 0x00994EF0 pathnode pointer defined-check; source commit 803c83dd
-263	PORTED	0002:00594f10 ?GetEE_script_delay@@YA?AUbfloat@@Vpathnode@Broc@@@Z 00D84410 f mp_anim_wad.o
-264	PORTED	0002:00594f40 ?Get@script_delay_struct@__unnamed@pathnode@Broc@@QBE?BUbfloat@@XZ 00D84440 f i mp_anim_wad.o
-265	PORTED	0002:00594f90 ?IsEEDefined_script_delay@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84490 f mp_anim_wad.o
-266	PORTED	0002:00595000 ?IsDefined@script_delay_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84500 f i mp_anim_wad.o
-267	PORTED	0002:00595040 ?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z 00D84540 f mp_anim_wad.o
-268	PORTED	0002:00595070 ?Get@spawnflags_struct@__unnamed@pathnode@Broc@@QBE?BFXZ 00D84570 f i mp_anim_wad.o
-269	PORTED	0002:005950a0 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D845A0 f mp_anim_wad.o
-270	PORTED	0002:005950f0 ?Get@script_noteworthy_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D845F0 f i mp_anim_wad.o
+263	PORTED	0002:00594f10 ?GetEE_script_delay@@YA?AUbfloat@@Vpathnode@Broc@@@Z 00D84410 f mp_anim_wad.o	PORTED: added IDA 0x00994F10 pathnode float-field access using key 0x47018F83; source commit af514f39
+264	SKIPPED	0002:00594f40 ?Get@script_delay_struct@__unnamed@pathnode@Broc@@QBE?BUbfloat@@XZ 00D84440 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_delay
+265	PORTED	0002:00594f90 ?IsEEDefined_script_delay@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D84490 f mp_anim_wad.o	PORTED: added IDA 0x00994F90 pathnode float defined-check using key 0x47018F83; source commit af514f39
+266	SKIPPED	0002:00595000 ?IsDefined@script_delay_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84500 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_script_delay
+267	PORTED	0002:00595040 ?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z 00D84540 f mp_anim_wad.o	PORTED: added IDA 0x00995040 pathnode spawnflags API access; source commit af514f39
+268	SKIPPED	0002:00595070 ?Get@spawnflags_struct@__unnamed@pathnode@Broc@@QBE?BFXZ 00D84570 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_spawnflags
+269	PORTED	0002:005950a0 ?GetEE_script_noteworthy@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D845A0 f mp_anim_wad.o	PORTED: added IDA 0x009950A0 pathnode script_noteworthy API access; source commit af514f39
+270	SKIPPED	0002:005950f0 ?Get@script_noteworthy_struct@__unnamed@pathnode@Broc@@QBE?BVstring@4@XZ 00D845F0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_script_noteworthy
 271	PORTED	0002:005951a0 ?IsEEDefined_script_noteworthy@@YA?AUbbool@@Vpathnode@Broc@@@Z 00D846A0 f mp_anim_wad.o
 272	PORTED	0002:00595210 ?IsDefined@script_noteworthy_struct@__unnamed@pathnode@Broc@@QBE_NXZ 00D84710 f i mp_anim_wad.o
 273	PORTED	0002:00595240 ?GetEE_script_fb_id@@YA?AUbint@@Vpathnode@Broc@@@Z 00D84740 f mp_anim_wad.o
