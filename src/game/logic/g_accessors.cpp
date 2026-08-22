@@ -2612,9 +2612,12 @@ class cdl_array {
 public:
     unsigned int m_count;    // +0x00
     T*           m_elements; // +0x04
+    cdl_array() : m_count(0), m_elements(nullptr) {}
 
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
+    T& operator[](unsigned int index);
+    void load_inplace(char* base, int* offs);
 };
 template <typename T>
 const T& cdl_array<T>::operator[](unsigned int index) const
@@ -2624,6 +2627,33 @@ const T& cdl_array<T>::operator[](unsigned int index) const
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
     return m_elements[index];
+}
+
+template <typename T>
+T& cdl_array<T>::operator[](unsigned int index)
+{
+    if (index >= m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    return m_elements[index];
+}
+
+template <typename T>
+void cdl_array<T>::load_inplace(char* base, int* offs)
+{
+    int aligned = *offs;
+    if ((aligned & 0xF) != 0)
+    {
+        do
+        {
+            ++aligned;
+        }
+        while ((aligned & 0xF) != 0);
+        *offs = aligned;
+    }
+    m_elements = reinterpret_cast<T*>(&base[*offs]);
+    *offs += static_cast<int>(sizeof(T) * m_count);
 }
 template class cdl_array<cdl_object_t>;
 template class cdl_array<unsigned char>;
