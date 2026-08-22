@@ -12105,7 +12105,52 @@ void Goal(Broc::entity self, Broc::entity triggerer) {
 
 // RenderFlagInfo - ea: 0x96BCD0
 void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
-    (void)flag; (void)x; (void)y;
+    if (!Broc::IsDefined(flag))
+        return;
+
+    Broc::string text((const char*)NULL);
+    text = "Flag Key: ";
+    text += mp_util_wad::entity_get_key(flag);
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder) {
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        Broc::string name(Broc::Code_GetPlayerName(holder));
+        text += " is held by ";
+        text += name;
+
+        Broc::bbool holderHasHolder;
+        mp_util_wad::IsEEDefined_holder(&holderHasHolder, holder);
+        if (!(bool)holderHasHolder ||
+            *mp_util_wad::GetEE_holder(holder) != flag)
+            text += ". Who DOES NOT THINK HE IS HOLDING THE FLAG.";
+        name.~string();
+    } else {
+        Broc::vector flagOrigin;
+        mp_util_wad::entity_get_origin(&flagOrigin, flag);
+        Broc::vector* home = mp_util_wad::GetEE_home_position(flag);
+        Broc::bint distance(static_cast<int>(
+            Broc::Distance(home, &flagOrigin)));
+        if ((int)distance < 60) {
+            text += " is at the base.";
+        } else {
+            text += "is dropped at position (";
+            Broc::string value(flagOrigin.x);
+            text += value;
+            text += ",";
+            value = flagOrigin.y;
+            text += value;
+            text += ",";
+            value = flagOrigin.z;
+            text += value;
+            value.~string();
+            text += ")";
+        }
+    }
+
+    Broc::Code_DebugRenderText(text.c_str(), (int)x, (int)y);
+    text.~string();
 }
 
 // CallbackDebugRender - ea: 0x96C140
