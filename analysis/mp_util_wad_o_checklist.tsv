@@ -725,7 +725,7 @@ index	status	map_line
 724	PORTED	0002:00567930 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11Ubfloat@@@Z 00D56E30 f i mp_util_wad.o
 725	PORTED	0002:00567a20 ?SubRoundEnd@_mp_scf@@YAXVentity@Broc@@@Z 00D56F20 f mp_util_wad.o
 726	VERIFIED	0002:00567a80 ?CallbackPlayerSpawn@_mp_scf@@YAXVentity@Broc@@H@Z 00D56F80 f mp_util_wad.o
-727	PORTED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o
+727	PORTED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o	PORTED: added the IDA-backed reverse string comparison wrapper forwarding to operator==(string,const char*) at 0x00967D90
 728	VERIFIED	0002:00567dc0 ?CallbackHostMigrated@_mp_scf@@YAXXZ 00D572C0 f mp_util_wad.o
 729	PORTED	0002:00567fc0 ?Code_SendGameStateSCF@Broc@@YAXVentity@1@HABUvector@1@10@Z 00D574C0 f i mp_util_wad.o
 730	PORTED	0002:00568040 ?GetRef@holder_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D57540 f i mp_util_wad.o
