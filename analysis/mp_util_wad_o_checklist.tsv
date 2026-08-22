@@ -581,7 +581,7 @@ index	status	map_line
 580	FIXED	0002:00557c70 ?ResetGame__functor@_mp_hq@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D47170 f i mp_util_wad.o	FIXED: corrected return type to AeThreadFunctor1<Broc::entity>* per IDA 0x00957C70
 581	FIXED	0002:00557d10 ?HQ_Defended@_mp_hq@@YAXXZ 00D47210 f mp_util_wad.o	FIXED: IDA 0x00957D10 clears player setup state, plays effect/dialogs, and launches ResetGame
 582	FIXED	0002:00558390 ?Host_PickInitialPoints@_mp_hq@@YAXXZ 00D47890 f mp_util_wad.o	FIXED: IDA 0x00958390 stores HQ target trigger on the level entity, reads that same trigger for triggerIndex, and returns trigger presence
-583	PORTED	0002:00558750 ?Get@key_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D47C50 f i mp_util_wad.o
+583	PORTED	0002:00558750 ?Get@key_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D47C50 f i mp_util_wad.o	PORTED: Added IDA 0x00958750 m_entity_get_key call and placement construction of the bint result
 584	PORTED	0002:00558790 ??Centity@Broc@@QAEPAULocalFields@mp_util_wad@@XZ 00D47C90 f i mp_util_wad.o
 585	PORTED	0002:005587c0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_util_wad@@XZ 00D47CC0 f i mp_util_wad.o
 586	PORTED	0002:005587f0 ??4trigger_struct@__unnamed@LocalFields@mp_util_wad@@QAEABVentity@Broc@@ABV45@@Z 00D47CF0 f i mp_util_wad.o
