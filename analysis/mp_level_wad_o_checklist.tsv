@@ -10,7 +10,7 @@ index	status	map_line
 9	PORTED	0002:00525270 ??BHashStr@@QBE?BIXZ 00D14770 f i mp_level_wad.o
 10	VERIFIED	0002:00525290 ??0vehiclenode@Broc@@QAE@XZ 00D14790 f i mp_level_wad.o
 11	PORTED	0002:005252c0 ?ee@entity@Broc@@QAEPBULocalFields@mp_level_wad@@XZ 00D147C0 f i mp_level_wad.o
-12	PORTED	0002:005252f0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_level_wad@@XZ 00D147F0 f i mp_level_wad.o
+12	PORTED	0002:005252f0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_level_wad@@XZ 00D147F0 f i mp_level_wad.o	PORTED: supplied by the IDA-matched GetEE-backed LocalFields implementation; IDA type is the 20-byte mp_util_wad alias
 13	VERIFIED	0002:00525320 ??2AeThreadFunctor@@SAPAXI@Z 00D14820 f i mp_level_wad.o
 14	VERIFIED	0002:00525350 ??3AeThreadFunctor@@SAXPAX@Z 00D14850 f i mp_level_wad.o
 15	VERIFIED	0002:00525380 ??1AeThreadFunctor@@UAE@XZ 00D14880 f i mp_level_wad.o
@@ -18,7 +18,7 @@ index	status	map_line
 17	SKIPPED	0002:005253b0 ??_GAeThreadFunctor@@UAEPAXI@Z 00D148B0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	PORTED	0002:00525400 ?thread_create@Broc@@YAI_NPBDH1PAVAeThreadFunctor@@@Z 00D14900 f i mp_level_wad.o
 19	VERIFIED	0002:00525450 ?Destroy@BrocDtorBase@@UAEXPAX@Z 00D14950 f i mp_level_wad.o
-20	PORTED	0002:00525470 ?GetEE@entity@Broc@@QBEPBVExtendedEntity@2@XZ 00D14970 f i mp_level_wad.o
+20	PORTED	0002:00525470 ?GetEE@entity@Broc@@QBEPBVExtendedEntity@2@XZ 00D14970 f i mp_level_wad.o	PORTED: added IDA 0x00925470 ExtendedEntity lookup with nullEnt fallback
 21	SKIPPED	0002:005254c0 ??_GAnim@mp_anim_wad@@UAEPAXI@Z 00D149C0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	SKIPPED	0002:005254c0 ??_EAnim@mp_anim_wad@@UAEPAXI@Z 00D149C0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 23	PORTED	0002:00525510 ??1Anim@mp_anim_wad@@UAE@XZ 00D14A10 f i mp_level_wad.o
