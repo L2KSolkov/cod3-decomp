@@ -18,6 +18,14 @@ extern const math::Position3 actorMaxs;  // 0xF99330
 extern const math::Position3 actorMins;  // 0xF99510
 extern const char* const pszTeamName[5];  // 0xE37BF8
 int g_iSentientFreeSequence = -1;     // ?g_iSentientFreeSequence@@3HA @ 0xF992D0
+PoolAllocator* sentient_info_t::sAllocator = nullptr;
+
+// ea: 0x004DEB50
+void sentient_info_t::SetAllocator(PoolAllocator* allocator)
+{
+    sAllocator = allocator;
+}
+
 extern void* SV_SaveWrite(const void* buffer, int len);  // sv.o
 extern const float AngleSubtract(float a1, float a2);     // core.o
 extern const float AngleNormalize360Accurate(float angle);  // core.o

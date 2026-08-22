@@ -357,6 +357,8 @@ static_assert(offsetof(vis_cache_t, bVisible) == 0x00, "vis_cache_t::bVisible of
 // sentient_info_t - per-sentient AI knowledge (80 bytes) - verified IDA
 // ============================================================================
 struct sentient_info_t {
+    static PoolAllocator* sAllocator;     // ?sAllocator@sentient_info_t@@0PAVPoolAllocator@@A
+    static void SetAllocator(PoolAllocator* allocator); // core.o 0x004DEB50
     math::Position3 vLastKnownPos;      // +0x00
     math::Position3 vKnownFromPos;      // +0x10
     vis_cache_t     VisCache;           // +0x20
