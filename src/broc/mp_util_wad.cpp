@@ -11367,8 +11367,12 @@ void FlagThreadLauncher(Broc::entity self) {
     Broc::vector maxs(20.0f, 20.0f, 50.0f);
     Broc::vector origin;
     Broc::vector angles;
-    mp_util_wad::entity_get_origin(&origin, self);
-    mp_util_wad::entity_get_angles(&angles, self);
+    Broc::entity::__unnamed::origin_struct originField = {
+        self.GetHandle()};
+    originField.Get(&origin);
+    Broc::entity::__unnamed::angles_struct anglesField = {
+        self.GetHandle()};
+    anglesField.Get(&angles);
 
     Broc::string classname("trigger_multiple");
     Broc::entity trigger;
@@ -11394,9 +11398,17 @@ void FlagThreadLauncher(Broc::entity self) {
     Broc::LinkTo(mp_util_wad::GetEE_trigger(self), &self);
     *mp_util_wad::GetEE_waiting(self) = -1.0f;
 
+    Broc::entity::__unnamed::targetname_struct targetNameField = {
+        self.GetHandle()};
     Broc::string targetName;
-    mp_util_wad::entity_get_targetname(&targetName, self);
-    bool axisFlag = targetName == "axis" || targetName == "ctf_axis";
+    targetNameField.Get(&targetName);
+    bool axisFlag = targetName == "axis";
+    if (!axisFlag) {
+        Broc::string ctfTargetName;
+        targetNameField.Get(&ctfTargetName);
+        axisFlag = ctfTargetName == "ctf_axis";
+        ctfTargetName.~string();
+    }
     targetName.~string();
 
     Broc::string team(axisFlag ? "axis" : "allies");
@@ -11407,8 +11419,7 @@ void FlagThreadLauncher(Broc::entity self) {
         goal.GetHandle()};
     goalName = team;
 
-    HashStr returnedMessage;
-    returnedMessage.mVal = axisFlag ? 0x7483EACFu : 0xFC489514u;
+    HashStr returnedMessage(axisFlag ? 0x7483EACFu : 0xFC489514u);
     mp_util_wad::GetEE_message_when_returned(self)->mVal =
         returnedMessage.mVal;
     *mp_util_wad::GetEE_weaponstr(self) =
@@ -11417,8 +11428,7 @@ void FlagThreadLauncher(Broc::entity self) {
 
     HashStr pickupFunction;
     Broc::string_hash(&pickupFunction, "_mp_ctf::PickupFlag");
-    HashStr eventLabel;
-    eventLabel.mVal = 0xF2F5EAB4u;
+    HashStr eventLabel(0xF2F5EAB4u);
     Broc::AddEventHandler(mp_util_wad::GetEE_trigger(self), eventLabel.mVal,
                           pickupFunction.mVal);
 
