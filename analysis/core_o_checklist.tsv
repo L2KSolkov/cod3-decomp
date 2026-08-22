@@ -1064,18 +1064,18 @@ index	status	map_line
 1063	SKIPPED	0002:000e1980 ??0const_iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 008D0E80 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1064	SKIPPED	0002:000e19a0 ??Gconst_iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEHABV012@@Z 008D0EA0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1065	SKIPPED	0002:000e19d0 ?max_size@?$allocator@D@std@@QBEIXZ 008D0ED0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1066	PORTED	0002:000e19e0 ??$FixupPointer@VPtrFixupTable@@@@YAXAAPAVPtrFixupTable@@PBX@Z 008D0EE0 f i core.o
-1067	PORTED	0002:000e1a00 ??$?4VEntityHandleDb@@VEntity@@@?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAEAAV0@ABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008D0F00 f i core.o
+1066	FIXED	0002:000e19e0 ??$FixupPointer@VPtrFixupTable@@@@YAXAAPAVPtrFixupTable@@PBX@Z 008D0EE0 f i core.o FIXED: PtrFixupTable explicit FixupPointer instantiation added in b8337a71; IDA 0x004E19E0
+1067	FIXED	0002:000e1a00 ??$?4VEntityHandleDb@@VEntity@@@?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAEAAV0@ABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008D0F00 f i core.o FIXED: cross-typed DbLinkedHandle assignment added in b8337a71; IDA 0x004E1A00 copies mVal
 1068	SKIPPED	0002:000e1a20 ??$_Allocate@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@YAPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@IPAV10@@Z 008D0F20 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1069	SKIPPED	0002:000e1a40 ??$_Allocate@D@std@@YAPADIPAD@Z 008D0F40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1070	SKIPPED	0002:000e1a60 ?IsUsed@?$InplaceTree@VInplaceString@@I@@ABE_NI@Z 008D0F60 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1071	PORTED	0002:000e1b00 ?IsUsed@?$InplaceTree@II@@ABE_NI@Z 008D1000 f i core.o
+1071	FIXED	0002:000e1b00 ?IsUsed@?$InplaceTree@II@@ABE_NI@Z 008D1000 f i core.o FIXED: IDA bounds assertion and GetNullBuffer/memcmp implementation added in b8337a71; IDA 0x004E1B00
 1072	SKIPPED	0002:000e1ba0 ??A?$InplaceVector@PBVDialogueInstance@@@@QBEABQBVDialogueInstance@@I@Z 008D10A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1073	SKIPPED	0002:000e1c20 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QBEABQAVDbTablesetBank@@H@Z 008D1120 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1074	SKIPPED	0002:000e1ca0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QBEABQAVConfigStringBank@@H@Z 008D11A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1075	PORTED	0002:000e1d20 ??0?$DbFieldType@H@@QAE@GABHW4EDbColumnType@@W4EDbMatchType@@@Z 008D1220 f i core.o
-1076	PORTED	0002:000e1d60 ??0?$DbFieldType@M@@QAE@GABMW4EDbColumnType@@W4EDbMatchType@@@Z 008D1260 f i core.o
-1077	PORTED	0002:000e1da0 ??0?$DbFieldType@VDbQueryString@@@@QAE@GABVDbQueryString@@W4EDbColumnType@@W4EDbMatchType@@@Z 008D12A0 f i core.o
+1075	FIXED	0002:000e1d20 ??0?$DbFieldType@H@@QAE@GABHW4EDbColumnType@@W4EDbMatchType@@@Z 008D1220 f i core.o FIXED: IDA DbField base/value constructor added in b8337a71; IDA 0x004E1D20
+1076	FIXED	0002:000e1d60 ??0?$DbFieldType@M@@QAE@GABMW4EDbColumnType@@W4EDbMatchType@@@Z 008D1260 f i core.o FIXED: IDA DbField base/value constructor added in b8337a71; IDA 0x004E1D60
+1077	FIXED	0002:000e1da0 ??0?$DbFieldType@VDbQueryString@@@@QAE@GABVDbQueryString@@W4EDbColumnType@@W4EDbMatchType@@@Z 008D12A0 f i core.o FIXED: IDA byte-copy DbQueryString constructor added in b8337a71; IDA 0x004E1DA0
 1078	SKIPPED	0002:000e1de0 ??0?$IVPointer@VDbTableSet@@@@QAE@W4TPakId@@PAVDbTableSet@@@Z 008D12E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1079	SKIPPED	0002:000e1e00 ??0?$IVPointer@VDbTableSet@@@@QAE@XZ 008D1300 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1080	SKIPPED	0002:000e1e20 ??0?$IVPointer@VConfigString@@@@QAE@W4TPakId@@PAVConfigString@@@Z 008D1320 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1084,7 +1084,7 @@ index	status	map_line
 1083	SKIPPED	0002:000e1ea0 ??A?$DbColumnType@VInplaceString@@@@QBEABVInplaceString@@G@Z 008D13A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1084	VERIFIED	0002:000e1f20 ??0?$ae_sized_array@W4TPakId@@$0CA@@@QAE@XZ 008D1420 f i core.o
 1085	VERIFIED	0002:000e1f30 ??A?$ae_sized_array@W4TPakId@@$0CA@@@QAEAAW4TPakId@@H@Z 008D1430 f i core.o
-1086	PORTED	0002:000e1fb0 ?size@?$ae_sized_array@W4TPakId@@$0CA@@@QBEHXZ 008D14B0 f i core.o
+1086	VERIFIED	0002:000e1fb0 ?size@?$ae_sized_array@W4TPakId@@$0CA@@@QBEHXZ 008D14B0 f i core.o VERIFIED: existing ae_sized_array size accessor returns m_size
 1087	SKIPPED	0002:000e1fc0 ?size@?$InplaceVector@PBVDbTableSet@@@@QBEIXZ 008D14C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1088	SKIPPED	0002:000e1fd0 ??A?$InplaceVector@PBVDbTableSet@@@@QAEAAPBVDbTableSet@@I@Z 008D14D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1089	SKIPPED	0002:000e2050 ?size@?$InplaceVector@PBVConfigString@@@@QBEIXZ 008D1550 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
