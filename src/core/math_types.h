@@ -52,6 +52,7 @@ static_assert(sizeof(DiagMat33) == 0x10, "DiagMat33 size mismatch");
 class Dir3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
+    struct Packed;
 
     Dir3();                       // ??0Dir3@math@@QAE@XZ (g.o 0x4A55C0)
     Dir3(__m128 _v) : v(_v) {}
@@ -60,6 +61,7 @@ public:
     Dir3(const Dir3& other) : v(other.v) {}  // implicit copy (aggregate support)
     Dir3(const Position3& _v);    // ??0Dir3@math@@QAE@ABVPosition3@1@@Z
     Dir3(const Vector4& _v);      // ??0Dir3@math@@QAE@ABVVector4@1@@Z
+    const Dir3& operator=(const Dir3::Packed& _p); // game.o 0x006022C0
     const Dir3& operator=(const Position3& _v);  // ??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z
     const Dir3& operator=(const Vector4& _v);    // game2.o 0x004EAF50
     float GetX() const;           // ?GetX@Dir3@math@@QBEMXZ
@@ -117,6 +119,7 @@ public:
     Position3(const Position3& other) : v(other.v) {}  // implicit copy
     Vector4 val34() const;          // ?val34@Position3@math@@QBE?AVVector4@2@XZ (scr.o 0x5E9BB0)
     Position3(const Dir3& _v);    // ??0Position3@math@@QAE@ABVDir3@1@@Z
+    const Position3& operator=(const Dir3& _v); // game.o 0x00602330
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
     const Position3& operator+=(const Dir3& _v);       // ??YPosition3@math@@QAEABV01@ABVDir3@1@@Z (g.o 0x4A6D30)
     const Position3& operator+=(const Position3& _v);  // ??YPosition3@math@@QAEABV01@ABV01@@Z (g.o 0x4A6D70)

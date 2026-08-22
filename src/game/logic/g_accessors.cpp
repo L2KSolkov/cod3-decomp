@@ -637,6 +637,11 @@ math::Dir3::Dir3(const math::Dir3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
 }
+const math::Dir3& math::Dir3::operator=(const math::Dir3::Packed& _p)
+{
+    v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
+    return *this;
+}
 void math::Dir3::Packed::Set(const math::Dir3& _v)
 {
     x = _v.v.m128_f32[0];
@@ -657,6 +662,11 @@ const math::Position3& math::Position3::operator=(const math::Position3::Packed&
 math::Position3::Position3(const math::Dir3& _v)
 {
     v = _v.v;
+}
+const math::Position3& math::Position3::operator=(const math::Dir3& _v)
+{
+    v = _v.v;
+    return *this;
 }
 math::Position3::Position3(const math::Position3::Packed& _p)
 {
