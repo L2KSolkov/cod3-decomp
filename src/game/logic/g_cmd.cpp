@@ -314,6 +314,14 @@ struct CurveEvalFunc {
                            float, float, unsigned int);  // +0x0C
     static PoolAllocator* sAllocator;  // ?sAllocator@CurveEvalFunc@@2PAVPoolAllocator@@A @ 0xF4EC28
     static void SetAllocator(PoolAllocator* allocator);
+    static void* operator new(unsigned int size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    CurveEvalFunc* get_dlist_node();
+    static int get_dlist_node_offset();
 };
 PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 
@@ -344,6 +352,14 @@ public:
     } mEffectList;                      // +0x5C
     static PoolAllocator* sAllocator;   // ?sAllocator@Curve@@2PAVPoolAllocator@@A @ 0xF4EC24
     static void SetAllocator(PoolAllocator* allocator);
+    static void* operator new(unsigned int size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    Curve* get_dlist_node();
+    static int get_dlist_node_offset();
 
     Curve();   // ??0Curve@@QAE@XZ (game.o 0x6298A0)
     ~Curve();  // ??1Curve@@QAE@XZ (game.o 0x662A00)
@@ -359,6 +375,12 @@ struct CurveEffectListElem {
     float        mEffectParams[2];  // +0x14
     static PoolAllocator* sAllocator;  // ?sAllocator@CurveEffectListElem@@2PAVPoolAllocator@@A @ 0xF4EC2C
     static void SetAllocator(PoolAllocator* allocator);
+    static void* operator new(unsigned int size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
     CurveEffectListElem* get_dlist_node();
     static int get_dlist_node_offset();
 };
@@ -372,6 +394,23 @@ void CurveEffectListElem::SetAllocator(PoolAllocator* allocator)
     CurveEffectListElem::sAllocator = allocator;
 }
 
+// ea: 0x0065C380 / 0x0065C3A0 / 0x0065C3C0
+void* CurveEffectListElem::operator new(unsigned int size, bool forceHeapAlloc,
+                                         const char*, int)
+{
+    return CurveEffectListElem::sAllocator->Allocate(size, forceHeapAlloc);
+}
+
+void CurveEffectListElem::operator delete(void* ptr, bool, const char*, int)
+{
+    CurveEffectListElem::sAllocator->Release(ptr);
+}
+
+void CurveEffectListElem::operator delete(void* ptr)
+{
+    CurveEffectListElem::sAllocator->Release(ptr);
+}
+
 // ea: 0x0065C360
 CurveEffectListElem* CurveEffectListElem::get_dlist_node()
 {
@@ -382,6 +421,60 @@ CurveEffectListElem* CurveEffectListElem::get_dlist_node()
 int CurveEffectListElem::get_dlist_node_offset()
 {
     return 0;
+}
+
+// ea: 0x0065C3E0 / 0x0065C400 / 0x0065C420 / 0x0065C440
+Curve* Curve::get_dlist_node()
+{
+    return this;
+}
+
+int Curve::get_dlist_node_offset()
+{
+    return 0;
+}
+
+void* Curve::operator new(unsigned int size, bool forceHeapAlloc,
+                           const char*, int)
+{
+    return Curve::sAllocator->Allocate(size, forceHeapAlloc);
+}
+
+void Curve::operator delete(void* ptr, bool, const char*, int)
+{
+    Curve::sAllocator->Release(ptr);
+}
+
+void Curve::operator delete(void* ptr)
+{
+    Curve::sAllocator->Release(ptr);
+}
+
+// ea: 0x0065C460 / 0x0065C480 / 0x0065C4A0 / 0x0065C4C0
+CurveEvalFunc* CurveEvalFunc::get_dlist_node()
+{
+    return this;
+}
+
+int CurveEvalFunc::get_dlist_node_offset()
+{
+    return 0;
+}
+
+void* CurveEvalFunc::operator new(unsigned int size, bool forceHeapAlloc,
+                                  const char*, int)
+{
+    return CurveEvalFunc::sAllocator->Allocate(size, forceHeapAlloc);
+}
+
+void CurveEvalFunc::operator delete(void* ptr, bool, const char*, int)
+{
+    CurveEvalFunc::sAllocator->Release(ptr);
+}
+
+void CurveEvalFunc::operator delete(void* ptr)
+{
+    CurveEvalFunc::sAllocator->Release(ptr);
 }
 
 // ea: 0x004DD600
