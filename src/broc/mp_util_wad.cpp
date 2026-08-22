@@ -2874,6 +2874,11 @@ void Code_HostDropItem(int itemType, int netID,
     gBrocAPI.mHostDropItem2(itemType, netID, position, angles, velocity);
 }
 
+// Broc::Code_PositionWouldTelefrag - ea: 0x96CF50
+bool Code_PositionWouldTelefrag(const Broc::vector* position) {
+    return gBrocAPI.mPositionWouldTelefrag(position);
+}
+
 // Broc::TakeWeapon - ea: 0x950B50
 void Broc::TakeWeapon(Broc::entity* e,
                       const Broc::string* pszWeaponName) {

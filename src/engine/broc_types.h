@@ -1196,7 +1196,9 @@ struct BrocAPI {
     unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
     void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
-    char _pad3D0[0x424 - 0x3D0];                          // +0x3D0
+    char _pad3D0[0x3E0 - 0x3D0];                          // +0x3D0
+    bool (*mPositionWouldTelefrag)(const Broc::vector*);  // +0x3E0
+    char _pad3E4[0x424 - 0x3E4];                          // +0x3E4
     void (*mRespawnVehicle)(const unsigned int);          // +0x424
     char _pad428[0x438 - 0x428];                          // +0x428
     const char* (*mLocalize)(const char*);                // +0x438
