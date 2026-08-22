@@ -504,7 +504,7 @@ index	status	map_line
 503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: IDA 0x0094E2E0 copies pLevel->_base.entity (or null) into SwitchToSecondarySpawns__functor
 504	VERIFIED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o	VERIFIED: IDA directly forwards teamid and visible to mSetCompassVisibilty
 505	FIXED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
-506	VERIFIED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o
+506	FIXED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o	FIXED: corrected axis/allies game-state origins to use the flag entities, matching IDA 0x0094E8B0 (source commit 34da3886)
 507	VERIFIED	0002:0054eaa0 ?Code_SendGameStateCTF@Broc@@YAXVentity@1@ABUvector@1@10110@Z 00D3DFA0 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x0094EAA0 copy order, handle extraction, and callback arguments
 508	FIXED	0002:0054eb60 ?CallbackNextRound@_mp_ctf@@YAXXZ 00D3E060 f mp_util_wad.o	FIXED: IDA 0x0094EB60 notifies pLevel->_base.entity (or null)
 509	VERIFIED	0002:0054ebf0 ?CallbackHostOptionsChanged@_mp_ctf@@YAXH@Z 00D3E0F0 f mp_util_wad.o
