@@ -37,7 +37,7 @@ index	status	map_line
 36	PORTED	0002:0046ceb0 ?GetPose@nalGenericSkeleton@nalGeneric@@IBEXAAVnalGenericPose@2@PBVnalMatrix4x4@@PAV4@ABV32@H@Z 00C5C3B0 f nal_generic.o
 37	VERIFIED	0002:0046d970 ?Process@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CE70 f nal_generic.o	VERIFIED: IDA vtable/base layout now represented by nalAnimClass<nalGenericPose>
 38	VERIFIED	0002:0046d9f0 ?Release@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CEF0 f nal_generic.o
-39	PORTED	0002:0046db50 ??1nalGenericInstance@nalGeneric@@UAE@XZ 00C5D050 f nal_generic.o	PORTED: IDA instance base/member layout is now represented; destructor body still needs direct audit
+39	PORTED	0002:0046db50 ??1nalGenericInstance@nalGeneric@@UAE@XZ 00C5D050 f nal_generic.o	PORTED: IDA instance base/member layout and nullable OffsetMapTable storage are now represented; destructor body still needs direct audit
 40	PORTED	0002:0046dc30 ?CacheBlock@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D130 f nal_generic.o
 41	PORTED	0002:0046de10 ?ConvertPoseData@nalGenericInstance@nalGeneric@@IAEXPAEPBVnalObject@nalAnimCache@@HPBEPBHH@Z 00C5D310 f nal_generic.o
 42	PORTED	0002:0046df80 ?TouchDecompCache@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D480 f nal_generic.o
@@ -50,7 +50,7 @@ index	status	map_line
 49	VERIFIED	0002:0046e740 ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z 00C5DC40 f nal_generic.o
 50	PORTED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o
 51	PORTED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o
-52	PORTED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o	PORTED: IDA 48-byte instance layout is now represented; constructor mapping body still needs direct port
+52	PORTED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o	PORTED: IDA 48-byte instance and component/track metadata layouts are now represented; constructor mapping body still needs direct port
 53	VERIFIED	0002:0046ef30 ?TouchDecompCache@nalGenericInstance@nalGeneric@@QAEXMMHI@Z 00C5E430 f nal_generic.o
 54	VERIFIED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o
 55	PORTED	0002:0046f920 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QAE@PBVnalGenericSkeleton@nalGeneric@@H@Z 00C5EE20 f i nal_generic.o
