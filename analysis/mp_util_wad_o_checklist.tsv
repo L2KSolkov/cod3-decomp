@@ -1155,7 +1155,7 @@ index	status	map_line
 1154	VERIFIED	0002:00586210 ??A?$dyn_array@Ventity@Broc@@@Broc@@QAEAAVentity@1@I@Z 00D75710 f i mp_util_wad.o
 1155	VERIFIED	0002:00586430 ??A?$dyn_array@Vstring@Broc@@@Broc@@QAEAAVstring@1@I@Z 00D75930 f i mp_util_wad.o
 1156	FIXED	0002:00586650 ??$IsDefined@Ubint@@@@YA_NABUbint@@@Z 00D75B50 f i mp_util_wad.o	FIXED: free IsDefined<bint> now resolves through the IDA sentinel-aware member
-1157	PORTED	0002:00586670 ?IsDefined@bint@@QBE_NXZ 00D75B70 f i mp_util_wad.o	PORTED: added IDA bint::IsDefined sentinel comparison
+1157	VERIFIED	0002:00586670 ?IsDefined@bint@@QBE_NXZ 00D75B70 f i mp_util_wad.o	VERIFIED: IDA 0x00986670 returns mVal != bint::sUndefined; inline implementation matches
 1158	FIXED	0002:005866a0 ??$IsDefined@Ubfloat@@@@YA_NABUbfloat@@@Z 00D75BA0 f i mp_util_wad.o	FIXED: free IsDefined<bfloat> now forwards to the IDA NaN-aware member
 1159	FIXED	0002:005866c0 ??$IsDefined@Ubbool@@@@YA_NABUbbool@@@Z 00D75BC0 f i mp_util_wad.o	FIXED: free IsDefined<bbool> now resolves through the IDA sentinel-aware member
 1160	VERIFIED	0002:005866e0 ?IsDefined@bbool@@QBE_NXZ 00D75BE0 f i mp_util_wad.o	VERIFIED: IDA bbool::IsDefined sentinel comparison matches the port
