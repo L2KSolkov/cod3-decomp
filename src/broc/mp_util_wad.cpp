@@ -11639,14 +11639,18 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
     Broc::string pickerTeam;
     bool opposingPicker = Broc::IsDefined(pickerupper);
     if (opposingPicker) {
-        mp_util_wad::entity_get_team(&pickerTeam, pickerupper);
+        Broc::entity::__unnamed::team_struct teamField = {
+            pickerupper.GetHandle()};
+        teamField.Get(&pickerTeam);
         opposingPicker = pickerTeam != flagTeam;
         pickerTeam.~string();
     }
 
     if (opposingPicker) {
         Broc::bint playerState;
-        mp_util_wad::entity_get_playerState(&playerState, pickerupper);
+        Broc::entity::__unnamed::playerState_struct playerStateField = {
+            pickerupper.GetHandle()};
+        playerStateField.Get(&playerState);
         if ((int)playerState != 3) {
             dialogMessage.~string();
             flagTeam.~string();
@@ -11749,7 +11753,10 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
             }
         }
 
-        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        Broc::entity::__unnamed::ctf_has_flag_struct ctfHasFlag = {
+            pickerupper.GetHandle()};
+        const __int16 hasFlag = 1;
+        ctfHasFlag = hasFlag;
         Broc::GiveWeapon(&pickerupper, mp_util_wad::GetEE_weaponstr(flag));
         Broc::string slot("flag");
         Broc::SetWeaponSlotClipAmmo(&pickerupper, &slot, 1);
@@ -11776,8 +11783,7 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
         flagteam.~string();
     }
 
-    HashStr pickupNotify;
-    pickupNotify.mVal = 0x87404C8Eu;
+    HashStr pickupNotify(0x87404C8Eu);
     Broc::notify(flag, pickupNotify);
     if (Broc::Code_IsLocalPlayer(pickerupper)) {
         void* ftor = CompassUnderlay__functor(pickerupper);
@@ -11791,7 +11797,9 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
     Broc::string pickerTeamForReturn;
     bool returnPath = !Broc::IsDefined(pickerupper);
     if (!returnPath) {
-        mp_util_wad::entity_get_team(&pickerTeamForReturn, pickerupper);
+        Broc::entity::__unnamed::team_struct teamField = {
+            pickerupper.GetHandle()};
+        teamField.Get(&pickerTeamForReturn);
         returnPath = pickerTeamForReturn == flagTeam;
         pickerTeamForReturn.~string();
     }
@@ -11860,10 +11868,12 @@ void HandlePickupFlag(int netID, Broc::entity pickerupper,
         *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
         Broc::vector angles;
         Broc::vector origin;
-        mp_util_wad::entity_get_angles(&angles,
-                                       *mp_util_wad::GetEE_goal(flag));
-        mp_util_wad::entity_get_origin(&origin,
-                                       *mp_util_wad::GetEE_goal(flag));
+        Broc::entity::__unnamed::angles_struct anglesField = {
+            mp_util_wad::GetEE_goal(flag)->GetHandle()};
+        anglesField.Get(&angles);
+        Broc::entity::__unnamed::origin_struct originField = {
+            mp_util_wad::GetEE_goal(flag)->GetHandle()};
+        originField.Get(&origin);
         UpdateFlagAndTrigger(flag, origin, angles);
         returnedState.~string();
     }
