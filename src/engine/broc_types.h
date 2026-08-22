@@ -1460,7 +1460,9 @@ struct BrocAPI {
     void (*mShow)(unsigned int);                          // +0x70C
     char _pad710[0x738 - 0x710];                          // +0x710
     void (*mSetOwner)(unsigned int, unsigned int);        // +0x738
-    char _pad73C[0x81C - 0x73C];                          // +0x73C
+    char _pad73C[0x800 - 0x73C];                          // +0x73C
+    bool (*mIsLocalHost)();                               // +0x800
+    char _pad804[0x81C - 0x804];                          // +0x804
     void (*mShellShock)(unsigned int, const Broc::string*, float); // +0x81C
     char _pad820[0x838 - 0x820];                          // +0x820
     void (*mLaunch)(unsigned int, const Broc::vector*);   // +0x838

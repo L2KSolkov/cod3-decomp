@@ -196,6 +196,24 @@ void Code_SetTeamGame(bool teamGame)
     gBrocAPI.mSetTeamGame(teamGame);
 }
 
+// ea: 0x00938650. IDA forwards the entity handle to mEntityIsAlive.
+int IsAlive(const Broc::entity* e)
+{
+    return gBrocAPI.mEntityIsAlive(e->GetHandle());
+}
+
+// ea: 0x00964260. IDA forwards the entity handle to mEntityIsSentient.
+int IsSentient(const Broc::entity* e)
+{
+    return gBrocAPI.mEntityIsSentient(e->GetHandle());
+}
+
+// ea: 0x00956E90. IDA forwards directly to the local-host callback.
+bool IsLocalHost()
+{
+    return gBrocAPI.mIsLocalHost();
+}
+
 // FireTurret - ea: 0x970AE0
 void FireTurret(Broc::entity* e)
 {
