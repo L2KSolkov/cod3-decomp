@@ -4758,8 +4758,8 @@ Broc::bint* compare(Broc::bint* result, Broc::vector* first,
 int SortPoints();
 Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
 void* main__functor(Broc::entity self);
-void* StartGame__functor(Broc::entity self);
-void* Host_FlowControl__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
+AeThreadFunctor1<Broc::entity>* Host_FlowControl__functor(Broc::entity self);
 AeThreadFunctor* Track_Ownership__functor(Broc::entity self);
 void* ResetGame__functor(Broc::entity self);
 void* TriggerRadio__functor(Broc::entity self);
@@ -12132,13 +12132,13 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
 }
-void* Host_FlowControl__functor(Broc::entity self) {
+AeThreadFunctor1<Broc::entity>* Host_FlowControl__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
         return NULL;
