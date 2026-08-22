@@ -1060,13 +1060,13 @@ index	status	map_line
 1059	PORTED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
 1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o  PORTED: IDA 0x006610B0 uses the shared cdl_array<T>::resize body; cdl_object_t storage now follows the verified allocation/assert path.
 1061	VERIFIED	0002:00261140 ?destroy_all@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEXXZ 00A50640 f i game.o
-1062	PORTED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o
-1063	PORTED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o
-1064	PORTED	0002:00261290 ?find@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@PAVCurveEffectListElem@@@Z 00A50790 f i game.o
-1065	PORTED	0002:002612e0 ?find@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@PAVCurve@@@Z 00A507E0 f i game.o
-1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o
-1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o
-1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o
+1062	VERIFIED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o  VERIFIED: IDA 0x00661170 selects max(m_size - 1, 0) and returns the corresponding 0x6C-byte WbkEntry; ae_sized_array::back matches.
+1063	FIXED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o  FIXED: IDA 0x00661190 zeroes the complete newly allocated checkpoint array before copying old entries; resize now calls the one-argument zeroing constructor.
+1064	VERIFIED	0002:00261290 ?find@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@PAVCurveEffectListElem@@@Z 00A50790 f i game.o  VERIFIED: IDA 0x00661290 matches the generic intrusive-list find traversal and sentinel return.
+1065	VERIFIED	0002:002612e0 ?find@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@PAVCurve@@@Z 00A507E0 f i game.o  VERIFIED: IDA 0x006612E0 matches the generic intrusive-list find traversal and sentinel return.
+1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o  PORTED: IDA 0x00661330 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
+1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o  PORTED: IDA 0x00661380 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
+1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o  PORTED: IDA 0x006613D0 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
 1069	SKIPPED	0002:00261420 ??C?$IVPointer@VGdbFileSet@@@@QBEPBVGdbFileSet@@XZ 00A50920 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1070	VERIFIED	0002:00261440 ?destroy_all@?$ae_vector@Udebug_brush@@@@AAEXXZ 00A50940 f i game.o
 1071	SKIPPED	0002:00261470 ??0?$_Vector_val@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE@V?$allocator@U?$pair@HH@std@@@1@@Z 00A50970 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
