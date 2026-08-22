@@ -813,9 +813,9 @@ index	status	map_line
 812	VERIFIED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o	VERIFIED: IDA 0x00971FC0 matches bfloat-to-float conversion and bbool(rhs float > lhs int)
 813	VERIFIED	0002:00572020 ?inactivity_blowup@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61520 f mp_util_wad.o
 814	FIXED	0002:005720a0 ?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z 00D615A0 f mp_util_wad.o	FIXED: matched IDA 0x009720A0 one-time damage-scaled earthquake and rumble timing initialization
-815	PORTED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o	PORTED: added IDA 0x009725C0 wrapper constructing the callback-returned entity handle
-816	PORTED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o	PORTED: added IDA 0x00972600 mRumbleNotes forwarder with by-value high-frequency string destruction
-817	PORTED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o	PORTED: added IDA 0x00972680 mEarthquake forwarder
+815	FIXED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o	FIXED: matched IDA 0x009725C0 unsigned seat parameter
+816	VERIFIED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o	VERIFIED: IDA 0x00972600 forwards both note strings/durations and destroys the by-value high-frequency string
+817	VERIFIED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o	VERIFIED: IDA 0x00972680 forwards scale, duration, source, radius, and player index
 818	VERIFIED	0002:005726c0 ?bigsplash@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61BC0 f mp_util_wad.o
 819	FIXED	0002:00572780 ?fireydeath@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D61C80 f mp_util_wad.o	FIXED: IDA 0x00972780 uses separate pLevel->_base.entity values for the extinguish and target-hash endon paths
 820	PORTED	0002:00572ab0 ?endon@Broc@@YAXVentity@1@ABVstring@1@@Z 00D61FB0 f i mp_util_wad.o	PORTED: added IDA 0x00972AB0 string adapter forwarding c_str() to the existing char-label endon path
