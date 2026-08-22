@@ -24904,6 +24904,20 @@ ActorConstUIntFieldFn off_DF4974 = &BrocSys::ActorScr_SetAnimPos;
 ActorEntityFieldFn off_DF4978 = &BrocSys::ActorScr_SetFavoriteEnemy;
 ActorEntityFieldFn off_DF497C = &BrocSys::ActorScr_GetFavoriteEnemy;
 
+using SentientFieldFn = void (__cdecl *)(sentient_s*, int, void*);
+using SentientStringFieldFn = void (__cdecl *)(sentient_s*, int, Broc::string*);
+using SentientFloatFieldFn = void (__cdecl *)(sentient_s*, int, float*);
+using SentientPathnodeFieldFn = void (__cdecl *)(sentient_s*, int, Broc::pathnode*);
+using SentientEntityFieldFn = void (__cdecl *)(sentient_s*, int, Broc::entity*);
+
+SentientFieldFn off_DF4980 = &BrocSys::SentientScr_ReadOnly;
+SentientStringFieldFn off_DF4984 = &BrocSys::SentientScr_SetTeam;
+SentientStringFieldFn off_DF4988 = &BrocSys::SentientScr_GetTeam;
+SentientFloatFieldFn off_DF498C = &BrocSys::SentientScr_SetGoalRadius;
+SentientFloatFieldFn off_DF4990 = &BrocSys::SentientScr_SetGoalAngleTolerance;
+SentientPathnodeFieldFn off_DF4994 = &BrocSys::SentientScr_ConvertNode;
+SentientEntityFieldFn off_DF499C = &BrocSys::SentientScr_ConvertSentientEnemy;
+
 template <int IDX>
 static BrocFieldFn entity_set_field_callback()
 {
@@ -24980,6 +24994,48 @@ static ActorFieldFn actor_get_field_callback()
     if (IDX == 25)
         return reinterpret_cast<ActorFieldFn>(off_DF497C);
     return nullptr;
+}
+
+template <int IDX>
+static SentientFieldFn sentient_set_field_callback()
+{
+    if (IDX == 0)
+        return reinterpret_cast<SentientFieldFn>(sScrFcnPtrs[0]);
+    if (IDX == 26)
+        return reinterpret_cast<SentientFieldFn>(off_DF4980);
+    if (IDX == 27)
+        return reinterpret_cast<SentientFieldFn>(off_DF4984);
+    if (IDX == 29)
+        return reinterpret_cast<SentientFieldFn>(off_DF498C);
+    if (IDX == 30)
+        return reinterpret_cast<SentientFieldFn>(off_DF4990);
+    return nullptr;
+}
+
+template <int IDX>
+static SentientFieldFn sentient_get_field_callback()
+{
+    if (IDX == 0)
+        return reinterpret_cast<SentientFieldFn>(sScrFcnPtrs[0]);
+    if (IDX == 28)
+        return reinterpret_cast<SentientFieldFn>(off_DF4988);
+    if (IDX == 31)
+        return reinterpret_cast<SentientFieldFn>(off_DF4994);
+    if (IDX == 33)
+        return reinterpret_cast<SentientFieldFn>(off_DF499C);
+    return nullptr;
+}
+
+template <typename T, int IDX>
+static T sentient_get_callback_value()
+{
+    return T();
+}
+
+template <>
+inline Broc::pathnode sentient_get_callback_value<Broc::pathnode, 31>()
+{
+    return Broc::pathnode(Broc::INVALID_PATHNODE_HANDLE);
 }
 
 void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
@@ -25332,17 +25388,32 @@ template <typename T, int OFF, int IDX>
 void entity_set_sentient_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->sentient != nullptr)
+    if (mObject != nullptr)
     {
-        *(T*)((char*)mObject->sentient + OFF) = val;
+        if (mObject->sentient != nullptr)
+        {
+            SentientFieldFn callback = sentient_set_field_callback<IDX>();
+            if (callback != nullptr)
+                callback(mObject->sentient, OFF, &val);
+            else
+                *(T*)((char*)mObject->sentient + OFF) = val;
+            return;
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5936;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set sentient field from non-sentient entity."))
+            __debugbreak();
         return;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5860;
+    AeAssert::gCurrentLine = 5941;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to set sentient field on NULL entity"))
+        && AeAssert::Warning("Trying to set field on NULL entity"))
         __debugbreak();
 }
 
@@ -25350,14 +25421,34 @@ template <typename T, int OFF, int IDX>
 T entity_get_sentient_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->sentient != nullptr)
-        return *(T*)((char*)mObject->sentient + OFF);
+    if (mObject != nullptr)
+    {
+        if (mObject->sentient != nullptr)
+        {
+            SentientFieldFn callback = sentient_get_field_callback<IDX>();
+            if (callback != nullptr)
+            {
+                T value = sentient_get_callback_value<T, IDX>();
+                callback(mObject->sentient, OFF, &value);
+                return value;
+            }
+            return *(T*)((char*)mObject->sentient + OFF);
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5977;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get sentient field from non-sentient entity."))
+            __debugbreak();
+        return T();
+    }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5870;
+    AeAssert::gCurrentLine = 5983;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to get sentient field off NULL entity"))
+        && AeAssert::Warning("Trying to get field off NULL entity"))
         __debugbreak();
     return T();
 }
