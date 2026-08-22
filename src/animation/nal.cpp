@@ -7997,21 +7997,127 @@ inline nalGenericPose::nalGenericPose()
     AllocedData = false;
 }
 
-// nalGenericInstance::GetPose(float,float,nalGenericPose&,const
-// nalGenericPose&,int,unsigned)
-inline void nalGenericInstance::GetPose(float t1, float t2,
-                                        nalGenericPose& out,
-                                        const nalGenericPose& base, int flags,
-                                        unsigned hint)
+// ea: 0x0086DFC0
+void nalGenericInstance::GetPose(int index, nalGenericPose& pose,
+                                  const nalGenericPose& defaultPose, int lod)
 {
-    (void)t1; (void)t2; (void)out; (void)base; (void)flags; (void)hint;
+    if (this->Skeleton != pose.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 1807,
+                     "GetSkeleton() == pose.GetSkeleton()",
+                     "instance and pose skeleton mismatch"))
+    {
+        __debugbreak();
+    }
+
+    nalGenericAnim* anim = GetAnim();
+    const int block = index / anim->BlockUnit;
+    const int frame = index % anim->BlockUnit;
+    nalAnimCache::nalObject* cacheObject = anim->CacheData[block];
+    if (cacheObject != nullptr && cacheObject->LOD <= lod)
+        nalAnimationCache.Touch(cacheObject);
+    else
+        CacheBlock(block, lod);
+
+    ConvertPoseData(static_cast<unsigned char*>(pose.PoseData),
+                    anim->CacheData[block], frame,
+                    static_cast<const unsigned char*>(defaultPose.PoseData),
+                    OffsetMap->Offsets, lod);
+    pose.LOD = lod;
 }
 
-// nalGenericInstance::TouchDecompCache(float,float,int,unsigned)
-inline void nalGenericInstance::TouchDecompCache(float t1, float t2,
-                                                 int flags, unsigned hint)
+static float nalWrapUnit(float value)
 {
-    (void)t1; (void)t2; (void)flags; (void)hint;
+    if (value >= 0.0f)
+    {
+        const int whole = static_cast<int>(value);
+        return value - static_cast<float>(whole);
+    }
+    const int whole = static_cast<int>(value);
+    return static_cast<float>(1 - whole) + value;
+}
+
+// ea: 0x0086EF30
+void nalGenericInstance::TouchDecompCache(float t, float t_prev,
+                                           int lod, unsigned hint)
+{
+    nalGenericAnim* anim = GetAnim();
+    const bool looping = (anim->Flags & 1u) != 0;
+    const int frameCount = anim->FrameCount;
+
+    float ta = looping ? nalWrapUnit(t) : (t < 0.0f ? 0.0f :
+                                           (t > 1.0f ? 1.0f : t));
+    float tPrev = looping ? nalWrapUnit(t_prev)
+                          : (t_prev < 0.0f ? 0.0f
+                                           : (t_prev > 1.0f ? 1.0f : t_prev));
+    if (ta < 0.0f || ta > 1.0f || tPrev < 0.0f || tPrev > 1.0f)
+    {
+        if (_tlAssert(
+               "source/common/nal_generic.cpp", 1243,
+               "t >= 0.0f && t <= 1.0f && t_prev >= 0.0f && t_prev <= 1.0f",
+               "t or t_prev out of range"))
+        {
+            __debugbreak();
+        }
+    }
+
+    if (tPrev != PrevT)
+    {
+        if ((hint & 1u) == 0)
+        {
+            int frameA = looping
+                             ? static_cast<int>(frameCount * tPrev)
+                             : static_cast<int>((frameCount - 1) * tPrev);
+            if (looping)
+            {
+                if (frameA >= frameCount)
+                {
+                    TouchDecompCache(0, lod);
+                    PrevT = tPrev;
+                    goto touch_current_frames;
+                }
+            }
+            else if (frameA >= frameCount)
+            {
+                frameA = frameCount - 1;
+            }
+            int frameB = frameA + 1;
+            if (frameB >= frameCount)
+                frameB = looping ? 0 : frameCount - 1;
+            TouchDecompCache(frameA, lod);
+            TouchDecompCache(frameB, lod);
+        }
+        else
+        {
+            int frame = looping
+                            ? static_cast<int>(frameCount * tPrev)
+                            : static_cast<int>((frameCount - 1) * tPrev);
+            if (frame >= frameCount)
+                frame = looping ? 0 : frameCount - 1;
+            TouchDecompCache(frame, lod);
+        }
+        PrevT = tPrev;
+    }
+
+touch_current_frames:
+    if ((hint & 1u) != 0)
+    {
+        int frame = looping ? static_cast<int>(frameCount * ta)
+                            : static_cast<int>((frameCount - 1) * ta);
+        if (frame >= frameCount)
+            frame = looping ? 0 : frameCount - 1;
+        TouchDecompCache(frame, lod);
+        return;
+    }
+
+    int frameA = looping ? static_cast<int>(frameCount * ta)
+                         : static_cast<int>((frameCount - 1) * ta);
+    if (frameA >= frameCount)
+        frameA = looping ? 0 : frameCount - 1;
+    int frameB = frameA + 1;
+    if (frameB >= frameCount)
+        frameB = looping ? 0 : frameCount - 1;
+    TouchDecompCache(frameA, lod);
+    TouchDecompCache(frameB, lod);
 }
 
 // nalGeneric::Blend (local view; real body in nal_xboxr port)
