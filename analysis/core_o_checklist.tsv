@@ -813,7 +813,7 @@ index	status	map_line
 812	VERIFIED	0002:000dea20 ??2MultiplayerMgr@@SAPAXIPAX@Z 008CDF20 f i core.o	VERIFIED: returns the supplied placement pointer exactly as IDA 0x004DEA20
 813	VERIFIED	0002:000dea30 ?CreateInst@MultiplayerMgr@@SAXXZ 008CDF30 f i core.o VERIFIED: IDA CreateInst allocation, assert, constructor, and sInst path matches existing source
 814	SKIPPED	0002:000deb20 ??_GMultiplayerMgr@@QAEPAXI@Z 008CE020 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-815	PORTED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o PORTED: IDA 0x004DEB50 allocator assignment; source commit ed089cfd
+815	VERIFIED	0002:000deb50 ?SetAllocator@sentient_info_t@@SAXPAVPoolAllocator@@@Z 008CE050 f i core.o	VERIFIED: assigns sentient_info_t::sAllocator exactly as IDA 0x004DEB50
 816	PORTED	0002:000deb60 ??2BinFileManager@@SAPAXIPAX@Z 008CE060 f i core.o PORTED: IDA 0x004DEB60 placement wrapper; source commit 1ac715a5
 817	VERIFIED	0002:000deb70 ?CreateInst@BinFileManager@@SAXXZ 008CE070 f i core.o VERIFIED: IDA allocation, assert, constructor, and sInst path matches existing source
 818	SKIPPED	0002:000dec70 ??_GBinFileManager@@AAEPAXI@Z 008CE170 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
