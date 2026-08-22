@@ -413,10 +413,10 @@ index	status	map_line
 412	SKIPPED	0002:00598160 ?Get@targetname_struct@__unnamed@vehiclenode@Broc@@QBE?BVstring@4@XZ 00D87660 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_targetname(vehiclenode)
 413	PORTED	0002:00598210 ?IsEEDefined_targetname@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87710 f mp_anim_wad.o	PORTED: added IDA 0x00998210 vehicle-node targetname defined-check using mIsVehicleNodeDefined; source commit 3975a817
 414	SKIPPED	0002:00598280 ?IsDefined@targetname_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D87780 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_targetname(vehiclenode)
-415	PORTED	0002:005982b0 ?GetEE_angles@@YA?AUvector@Broc@@Vvehiclenode@2@@Z 00D877B0 f mp_anim_wad.o
-416	PORTED	0002:005982e0 ?Get@angles_struct@__unnamed@vehiclenode@Broc@@QBE?BUvector@4@XZ 00D877E0 f i mp_anim_wad.o
-417	PORTED	0002:00598330 ?IsEEDefined_angles@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87830 f mp_anim_wad.o
-418	PORTED	0002:005983a0 ?IsDefined@angles_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D878A0 f i mp_anim_wad.o
+415	PORTED	0002:005982b0 ?GetEE_angles@@YA?AUvector@Broc@@Vvehiclenode@2@@Z 00D877B0 f mp_anim_wad.o	PORTED: added IDA 0x009982B0 vehicle-node angles accessor via m_vnode_get_angles; source commit 002f5529
+416	SKIPPED	0002:005982e0 ?Get@angles_struct@__unnamed@vehiclenode@Broc@@QBE?BUvector@4@XZ 00D877E0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by GetEE_angles(vehiclenode)
+417	PORTED	0002:00598330 ?IsEEDefined_angles@@YA?AUbbool@@Vvehiclenode@Broc@@@Z 00D87830 f mp_anim_wad.o	PORTED: added IDA 0x00998330 vehicle-node angles defined-check using mIsVehicleNodeDefined; source commit 002f5529
+418	SKIPPED	0002:005983a0 ?IsDefined@angles_struct@__unnamed@vehiclenode@Broc@@QBE_NXZ 00D878A0 f i mp_anim_wad.o	SKIPPED: anonymous compiler-generated field wrapper; behavior is implemented directly by IsEEDefined_angles(vehiclenode)
 419	VERIFIED	0002:005983d0 ?main@_mp_setup@@YAXXZ 00D878D0 f mp_anim_wad.o
 420	VERIFIED	0002:005983f0 ?hack_function_to_allow_the_script_to_compile@_mp_setup@@YAXXZ 00D878F0 f mp_anim_wad.o
 421	PORTED	0002:00598460 ?SetAnimKnob@Broc@@YAXABVentity@1@IMMM@Z 00D87960 f i mp_anim_wad.o
