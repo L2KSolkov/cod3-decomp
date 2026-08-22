@@ -1360,7 +1360,7 @@ index	status	map_line
 1359	VERIFIED	0002:000e8a20 ?CreateInst@ConfigStringManager@@SAXXZ 008D7F20 f i core.o
 1360	FIXED	0002:000e8b30 ?GetOwner@AbstractEffect@@QBEPAVEntity@@XZ 008D8030 f i core.o	FIXED: restored the exact IDA EntityHandleDb key/index lookup as AbstractEffect::GetOwner; existing helper now delegates to it
 1361	VERIFIED	0002:000e8b70 ?CreateInst@RumbleManager@@SAXXZ 008D8070 f i core.o	VERIFIED: IDA allocation, assert metadata, sentinel-list initialization, and singleton assignment match
-1362	PORTED	0002:000e8c50 ??0SmokeGrenadeMgr@@QAE@XZ 008D8150 f i core.o	PORTED: exact IDA three-field SmokeGrenadeInfoList reset constructor
+1362	VERIFIED	0002:000e8c50 ??0SmokeGrenadeMgr@@QAE@XZ 008D8150 f i core.o	VERIFIED: existing three-field SmokeGrenadeInfoList reset constructor matches IDA
 1363	SKIPPED	0002:000e8c60 ??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ 008D8160 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1364	VERIFIED	0002:000e8c90 ?delete_all@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D8190 f i core.o	VERIFIED: IDA sentinel handling, safe_for_each range, head/tail relink, and size reset match
 1365	FIXED	0002:000e8cf0 ??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ 008D81F0 f i core.o  FIXED: replaced aggregate initialization with exact mFreeIndices/key/callback constructor
@@ -1369,14 +1369,14 @@ index	status	map_line
 1368	SKIPPED	0002:000e8e90 ??A?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@I@Z 008D8390 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1369	VERIFIED	0002:000e8eb0 ??0?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D83B0 f i core.o	VERIFIED: IDA vector-constructs 64 PendingQuery elements; the template member array does the same after the exact PendingQuery constructor port
 1370	SKIPPED	0002:000e8ee0 ?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z 008D83E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1371	PORTED	0002:000e8ff0 ??$Where@W4ECollisionMaterial@@@EffectEventSys@@QAEXHABW4ECollisionMaterial@@_N@Z 008D84F0 f i core.o  PORTED: exact context update and CachedQuery delegation
-1372	PORTED	0002:000e9040 ??$Where@W4EEffectContext@@@EffectEventSys@@QAEXHABW4EEffectContext@@_N@Z 008D8540 f i core.o  PORTED: exact context update and CachedQuery delegation
-1373	PORTED	0002:000e9090 ??$Where@PBD@EffectEventSys@@QAEXHABQBD_N@Z 008D8590 f i core.o  PORTED: exact bounded string copy and CachedQuery delegation
-1374	PORTED	0002:000e9100 ??$Where@W4EStanceType@@@EffectEventSys@@QAEXHABW4EStanceType@@_N@Z 008D8600 f i core.o  PORTED: exact context update and CachedQuery delegation
-1375	PORTED	0002:000e9150 ??$Where@W4EAction@@@EffectEventSys@@QAEXHABW4EAction@@_N@Z 008D8650 f i core.o  PORTED: exact context update and CachedQuery delegation
-1376	PORTED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o  PORTED: exact context update and CachedQuery delegation
-1377	PORTED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o  PORTED: exact context update and CachedQuery delegation
-1378	PORTED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o  PORTED: exact sentinel-aware safe_for_each cleanup from IDA
+1371	VERIFIED	0002:000e8ff0 ??$Where@W4ECollisionMaterial@@@EffectEventSys@@QAEXHABW4ECollisionMaterial@@_N@Z 008D84F0 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1372	VERIFIED	0002:000e9040 ??$Where@W4EEffectContext@@@EffectEventSys@@QAEXHABW4EEffectContext@@_N@Z 008D8540 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1373	VERIFIED	0002:000e9090 ??$Where@PBD@EffectEventSys@@QAEXHABQBD_N@Z 008D8590 f i core.o  VERIFIED: existing bounded string copy and CachedQuery delegation match IDA
+1374	VERIFIED	0002:000e9100 ??$Where@W4EStanceType@@@EffectEventSys@@QAEXHABW4EStanceType@@_N@Z 008D8600 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1375	VERIFIED	0002:000e9150 ??$Where@W4EAction@@@EffectEventSys@@QAEXHABW4EAction@@_N@Z 008D8650 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1376	VERIFIED	0002:000e91a0 ??$Where@H@EffectEventSys@@QAEXHABH_N@Z 008D86A0 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1377	VERIFIED	0002:000e91e0 ??$Where@W4EWeaponClass@@@EffectEventSys@@QAEXHABW4EWeaponClass@@_N@Z 008D86E0 f i core.o  VERIFIED: existing integer context update and CachedQuery delegation match IDA
+1378	VERIFIED	0002:000e9230 ??$delete_container_elements@V?$reserved_dlist@VRumbleEffectInstance@@@@@@YAXAAV?$reserved_dlist@VRumbleEffectInstance@@@@@Z 008D8730 f i core.o  VERIFIED: existing sentinel-aware safe_for_each cleanup matches IDA
 1379	SKIPPED	0002:000e9280 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPAXI@Z 008D8780 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1380	SKIPPED	0002:000e92d0 ??1logic_error@std@@UAE@XZ 008D87D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1381	SKIPPED	0002:000e9360 ?what@logic_error@std@@UBEPBDXZ 008D8860 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1388,7 +1388,7 @@ index	status	map_line
 1387	SKIPPED	0002:000e94c0 ??_GActiveEffectSet@@QAEPAXI@Z 008D89C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1388	SKIPPED	0002:000e94f0 ??_GAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1389	SKIPPED	0002:000e94f0 ??_EAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1390	PORTED	0002:000e9520 ?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008D8A20 f i core.o	PORTED: added the exact empty one-byte virtual override shown by IDA
+1390	VERIFIED	0002:000e9520 ?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ 008D8A20 f i core.o	VERIFIED: existing empty virtual override matches IDA's one-byte return
 1391	VERIFIED	0002:000e9530 ??0?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D8A30 f i core.o
 1392	SKIPPED	0002:000e9570 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z 008D8A70 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1393	SKIPPED	0002:000e96b0 ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z 008D8BB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
