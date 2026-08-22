@@ -206,7 +206,7 @@ AeThreadFunctor1<Broc::entity>* RunFrame__functor(Broc::entity selfLevel);
 
 namespace mp_util_wad {
 
-extern void RegisterHashString(int h, const char* txt);
+using ::RegisterHashString;
 
 // IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
 static __int16 s_flagKey;

@@ -175,24 +175,6 @@ Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e)
     return result;
 }
 
-// IsVehicleFlipped - ea: 0x970E80
-bool IsVehicleFlipped(const Broc::entity* e)
-{
-    return gBrocAPI.mIsVehicleFlipped(e->GetHandle());
-}
-
-// Code_BroadcastVehicleRespawn - ea: 0x9713F0
-void Code_BroadcastVehicleRespawn(Broc::entity vehicle)
-{
-    gBrocAPI.mBroadcastVehicleRespawn(vehicle.GetHandle());
-}
-
-// Code_RespawnVehicle - ea: 0x971420
-void Code_RespawnVehicle(Broc::entity* e)
-{
-    gBrocAPI.mRespawnVehicle(e->GetHandle());
-}
-
 // RadiusDamageFromEnt - ea: 0x9717B0
 void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
                          float range, float max_damage, float min_damage,

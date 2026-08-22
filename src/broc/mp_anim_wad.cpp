@@ -114,7 +114,7 @@ BroAnim* ValidateAnimRef(BroAnim* result, Broc::AnimRef* ref,
 
 namespace mp_anim_wad {
 
-extern void RegisterHashString(int h, const char* txt);
+using ::RegisterHashString;
 
 void RegisterHashStrings() {
     RegisterHashString(959135275, "accuracy");
