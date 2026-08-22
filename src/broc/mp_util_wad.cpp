@@ -13576,8 +13576,243 @@ void WAR_Init(Broc::entity self) {
 
 // WAR_FlagUpdate - ea: 0x9790C0
 void WAR_FlagUpdate(Broc::entity self) {
-    (void)self;
-    // Per-frame flag model/status update driven by the capture hooks.
+    *mp_util_wad::GetEE_objective_status(self) = 0;
+
+    Broc::entity flag = *mp_util_wad::GetEE_flag(self);
+    Broc::entity::__unnamed::origin_struct flagOriginField = {
+        flag.GetHandle()};
+    Broc::vector flagOrigin;
+    flagOriginField.Get(&flagOrigin);
+
+    Broc::bint lastBlinker(0);
+    Broc::bfloat lastCapStatus(0.0f);
+    Broc::bint lastTime;
+    Broc::GetTime(&lastTime);
+    Broc::bfloat delta(0.0f);
+    for (;;) {
+        Broc::entity::__unnamed::angles_struct anglesField = {
+            self.GetHandle()};
+        Broc::vector angles;
+        anglesField.Get(&angles);
+        (void)::AnglesToForward(angles);
+        Broc::vector moveTo = flagOrigin;
+
+        float capStatus = (float)*mp_util_wad::GetEE_capStatus(self);
+        if (capStatus < 1.0f) {
+            if (capStatus <= -1.0f &&
+                (int)*mp_util_wad::GetEE_capTeam(self) != -1) {
+                Broc::Code_AreaCaptured(
+                    (int)*mp_util_wad::GetEE_index(self), 0, 1);
+            }
+        } else if ((int)*mp_util_wad::GetEE_capTeam(self) != 1) {
+            Broc::Code_AreaCaptured(
+                (int)*mp_util_wad::GetEE_index(self), 1, 1);
+        }
+
+        float speed = Broc::GetCvarInt("mp_debug") ? 0.2f : 0.05f;
+        Broc::bint now;
+        Broc::GetTime(&now);
+        delta = (float)((int)now - (int)lastTime) * 0.001f;
+        Broc::GetTime(&lastTime);
+
+        bool atBottom = capStatus >= -0.001f && capStatus <= 0.001f;
+        float capSpeed = (float)*mp_util_wad::GetEE_capSpeed(self);
+        capStatus += capSpeed * speed * (float)delta;
+        *mp_util_wad::GetEE_capStatus(self) = capStatus;
+        capStatus = (float)*mp_util_wad::GetEE_capStatus(self);
+
+        if (atBottom && (capStatus < -0.001f || capStatus > 0.001f)) {
+            Broc::string myTeam("axis");
+            Broc::string otherTeam("allies");
+            if (capStatus > 0.0f) {
+                myTeam = "allies";
+                otherTeam = "axis";
+            }
+
+            if ((int)mp_util_wad::pLevel->warIndex ==
+                    (int)mp_util_wad::pLevel->lastFlagIndex &&
+                capStatus > 0.0f) {
+                Broc::string battleSong("MX_War_LastBattlesong");
+                mp_util_wad::pLevel->FlagMusic =
+                    (int)Broc::SoundPlay(battleSong, 1.0f);
+                Broc::entity level = mp_util_wad::pLevel != nullptr
+                                          ? mp_util_wad::pLevel->_base.entity
+                                          : Broc::entity();
+                void* ftor = _mp_audio::PlayTeamDialog__functor(
+                    level, myTeam,
+                    Broc::string("MP_WAR_FinalPosAtk_Team_Allies"),
+                    Broc::string("MP_WAR_FinalPosDef_Team_Axis"),
+                    Broc::bfloat(1.0f));
+                Broc::thread_create(
+                    false, "c:\\cod\\code\\script\\_mp_war.bro", __LINE__,
+                    "_mp_audio::PlayTeamDialog", ftor);
+            } else if ((int)mp_util_wad::pLevel->warIndex == 0 &&
+                       capStatus < 0.0f) {
+                Broc::string battleSong("MX_War_LastBattlesong");
+                mp_util_wad::pLevel->FlagMusic =
+                    (int)Broc::SoundPlay(battleSong, 1.0f);
+                Broc::entity level = mp_util_wad::pLevel != nullptr
+                                          ? mp_util_wad::pLevel->_base.entity
+                                          : Broc::entity();
+                void* ftor = _mp_audio::PlayTeamDialog__functor(
+                    level, myTeam,
+                    Broc::string("MP_WAR_FinalPosAtk_Team_Axis"),
+                    Broc::string("MP_WAR_FinalPosDef_Team_Allies"),
+                    Broc::bfloat(1.0f));
+                Broc::thread_create(
+                    false, "c:\\cod\\code\\script\\_mp_war.bro", __LINE__,
+                    "_mp_audio::PlayTeamDialog", ftor);
+            } else {
+                Broc::SoundFadeOut(
+                    (unsigned int)(int)mp_util_wad::pLevel->FlagMusic, 0.5f);
+                Broc::entity level = mp_util_wad::pLevel != nullptr
+                                          ? mp_util_wad::pLevel->_base.entity
+                                          : Broc::entity();
+                void* ftor = _mp_audio::PlayTeamSound__functor(
+                    level, myTeam, Broc::string("MX_War_Enemy_Take_Flag"),
+                    Broc::string("MX_War_Ally_Take_Flag"));
+                Broc::thread_create(
+                    false, "c:\\cod\\code\\script\\_mp_war.bro", __LINE__,
+                    "_mp_audio::PlayTeamSound", ftor);
+            }
+        }
+
+        if ((int)*mp_util_wad::GetEE_capTeam(self) != 0) {
+            if (capStatus >= 0.0f &&
+                (int)*mp_util_wad::GetEE_capTeam(self) < 0) {
+                Broc::Code_AreaCaptured(
+                    (int)*mp_util_wad::GetEE_index(self), 2, 1);
+            } else if (capStatus <= 0.0f &&
+                       (int)*mp_util_wad::GetEE_capTeam(self) > 0) {
+                Broc::Code_AreaCaptured(
+                    (int)*mp_util_wad::GetEE_index(self), 2, 1);
+            }
+        } else if (capStatus > 0.001f) {
+            Broc::entity flagEntity = *mp_util_wad::GetEE_flag(self);
+            Broc::SetModel(&flagEntity, &mp_util_wad::pLevel->AlliesFlagModel,
+                           0);
+        } else if (capStatus < -0.001f) {
+            Broc::entity flagEntity = *mp_util_wad::GetEE_flag(self);
+            Broc::SetModel(&flagEntity, &mp_util_wad::pLevel->AxisFlagModel,
+                           0);
+        }
+
+        Broc::bint nowForTouch;
+        Broc::GetTime(&nowForTouch);
+        bool movingOnItsOwn =
+            (int)nowForTouch > (int)*mp_util_wad::GetEE_lastTouch(self) +
+                                   10000 &&
+            (int)*mp_util_wad::GetEE_capTeam(self) == 0;
+
+        Broc::bbool hasFlag;
+        mp_util_wad::IsEEDefined_flag(&hasFlag, self);
+        if ((bool)hasFlag &&
+            (int)*mp_util_wad::GetEE_index(self) ==
+                (int)mp_util_wad::pLevel->warIndex) {
+            if (movingOnItsOwn && capStatus > (float)lastCapStatus) {
+                if ((float)*mp_util_wad::GetEE_capStatus(self) !=
+                    (float)lastCapStatus) {
+                    ObjectiveDelete((int)mp_util_wad::pLevel->warIndex, -1);
+                    Broc::string pszString("flag");
+                    Broc::string state = mp_util_wad::pLevel->blinker == 1
+                                             ? Broc::string("i_flag_allied_c")
+                                             : Broc::string("i_objective_c");
+                    Broc::vector objectivePosition;
+                    mp_util_wad::entity_get_origin(
+                        &objectivePosition,
+                        mp_util_wad::pLevel->warAreas[
+                            (unsigned int)(int)mp_util_wad::pLevel->warIndex]);
+                    ObjectiveAdd((int)mp_util_wad::pLevel->warIndex, state,
+                                 pszString, objectivePosition,
+                                 (float)lWARObjectiveHeight, -1);
+                }
+            } else if (!movingOnItsOwn && capStatus < (float)lastCapStatus) {
+                if ((float)*mp_util_wad::GetEE_capStatus(self) !=
+                    (float)lastCapStatus) {
+                    ObjectiveDelete((int)mp_util_wad::pLevel->warIndex, -1);
+                    Broc::string pszString("flag");
+                    Broc::string state = mp_util_wad::pLevel->blinker == 1
+                                             ? Broc::string("i_flag_axis_c")
+                                             : Broc::string("i_objective_c");
+                    Broc::vector objectivePosition;
+                    mp_util_wad::entity_get_origin(
+                        &objectivePosition,
+                        mp_util_wad::pLevel->warAreas[
+                            (unsigned int)(int)mp_util_wad::pLevel->warIndex]);
+                    ObjectiveAdd((int)mp_util_wad::pLevel->warIndex, state,
+                                 pszString, objectivePosition,
+                                 (float)lWARObjectiveHeight, -1);
+                }
+            } else if ((int)mp_util_wad::pLevel->blinker !=
+                       (int)lastBlinker) {
+                ObjectiveDelete((int)mp_util_wad::pLevel->warIndex, -1);
+                Broc::string pszString("flag");
+                Broc::string state("i_objective_c");
+                Broc::vector objectivePosition;
+                mp_util_wad::entity_get_origin(
+                    &objectivePosition,
+                    mp_util_wad::pLevel->warAreas[
+                        (unsigned int)(int)mp_util_wad::pLevel->warIndex]);
+                ObjectiveAdd((int)mp_util_wad::pLevel->warIndex, state,
+                             pszString, objectivePosition,
+                             (float)lWARObjectiveHeight, -1);
+            }
+        }
+
+        lastBlinker = (int)mp_util_wad::pLevel->blinker;
+        lastCapStatus = (float)*mp_util_wad::GetEE_capStatus(self);
+
+        capSpeed = (float)*mp_util_wad::GetEE_capSpeed(self);
+        if (capSpeed < 0.0001f && capSpeed > -0.0001f) {
+            Broc::bbool hasSound;
+            mp_util_wad::IsEEDefined_sound(&hasSound, self);
+            if ((bool)hasSound) {
+                Broc::EffectEventStopEmitting(
+                    (unsigned int)(int)*mp_util_wad::GetEE_sound(self));
+                *mp_util_wad::GetEE_sound(self) = 0;
+            }
+        } else {
+            Broc::bbool hasSound;
+            mp_util_wad::IsEEDefined_sound(&hasSound, self);
+            if (!(bool)hasSound) {
+                Broc::string script("MP_FlagCap_loop");
+                HashStr notifyHash;
+                notifyHash.mVal = 0x01673D97u;
+                Broc::entity flagEntity = *mp_util_wad::GetEE_flag(self);
+                *mp_util_wad::GetEE_sound(self) = Broc::EffectEventPlay(
+                    &flagEntity, &script, notifyHash, true);
+            }
+        }
+        *mp_util_wad::GetEE_capSpeed(self) = 0.0f;
+
+        capStatus = (float)*mp_util_wad::GetEE_capStatus(self);
+        if (capStatus < 0.0f) {
+            Broc::vector start = *mp_util_wad::GetEE_flagStart(self);
+            Broc::vector end = *mp_util_wad::GetEE_flagEnd(self);
+            moveTo = vLerp(&moveTo, start, end, Broc::bfloat(-capStatus))[0];
+        } else {
+            Broc::vector start = *mp_util_wad::GetEE_flagStart(self);
+            Broc::vector end = *mp_util_wad::GetEE_flagEnd(self);
+            moveTo = vLerp(&moveTo, start, end, Broc::bfloat(capStatus))[0];
+        }
+        Broc::entity flagEntity = *mp_util_wad::GetEE_flag(self);
+        Broc::MoveTo(&flagEntity, &moveTo, 0.1f, 0.1f, 0.0f);
+
+        if (movingOnItsOwn) {
+            if (capStatus > 0.01f) {
+                *mp_util_wad::GetEE_capSpeed(self) = -1.3333334f;
+            } else if (capStatus < -0.01f) {
+                *mp_util_wad::GetEE_capSpeed(self) = -0.01f;
+            } else if (atBottom) {
+                Broc::SoundFadeOut(
+                    (unsigned int)(int)mp_util_wad::pLevel->FlagMusic, 0.5f);
+                _mp_audio::StopTeamSound();
+                *mp_util_wad::GetEE_capSpeed(self) = 0.0f;
+                *mp_util_wad::GetEE_capStatus(self) = 0.0f;
+            }
+        }
+        _mp_common::waitframe();
+    }
 }
 
 // WAR_TouchFlag - ea: 0x97B000
