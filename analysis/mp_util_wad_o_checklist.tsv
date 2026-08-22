@@ -883,15 +883,15 @@ index	status	map_line
 882	PORTED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AFB0 boxed bfloat addition
 883	VERIFIED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o
 884	FIXED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o	FIXED: corrected the 0x0097B580 signature/body to the global bfloat/bint types from IDA
-885	PORTED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o
-886	PORTED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o
-887	PORTED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o
-888	PORTED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o
+885	FIXED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o	FIXED: ported IDA 0x0097B640 loop; updates cap permissions and i_objective_c marker
+886	FIXED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o	FIXED: corrected global bint/int signature and ported IDA 0x0097B850 model/objective flow
+887	PORTED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o	PORTED: added mShow forwarding wrapper from c3 dump and IDA call site
+888	PORTED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o	PORTED: exact IDA setter stores global bint at key 0xF430CD43
 889	PORTED	0002:0057bb60 ?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z 00D6B060 f mp_util_wad.o
 890	PORTED	0002:0057c370 ?WAR_FlagUpdate__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D6B870 f i mp_util_wad.o
 891	PORTED	0002:0057c410 ?SortMarkers@_mp_war@@YAXXZ 00D6B910 f mp_util_wad.o
 892	PORTED	0002:0057c650 ?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D6BB50 f mp_util_wad.o
-893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	PORTED: added global bint conversion used by IDA 0x0097B580 and matching the inline conversion body
+893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	PORTED: exact IDA 0x0097D020 global bint postfix decrement with AssertDefined and mVal--
 894	PORTED	0002:0057d060 ?Get@classname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D6C560 f i mp_util_wad.o
 895	VERIFIED	0002:0057d110 ?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6C610 f mp_util_wad.o
 896	VERIFIED	0002:0057d620 ?CallbackDebugRender@_mp_war@@YAXXZ 00D6CB20 f mp_util_wad.o
