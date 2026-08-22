@@ -188,6 +188,13 @@ public:
 
     void clear() { resize(0, 0); }
 
+    T* construct_array(unsigned int iNumber) {
+        return new T[iNumber];
+    }
+    T* construct_array(unsigned int cap, unsigned int /*iSize*/) {
+        return new T[cap];
+    }
+    unsigned int size() const { return mSize; }
     unsigned int capacity() const { return mCapacity; }
     bool empty() const { return mSize == 0; }
 
