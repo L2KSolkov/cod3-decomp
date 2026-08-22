@@ -1387,9 +1387,23 @@ public:
 };
 static_assert(sizeof(nalAnimCache) == 28, "nalAnimCache layout mismatch");
 
+nalAnimCache nalAnimationCache;
+
+extern "C" void* nalAnimationCache_MemAlloc(unsigned int size,
+                                               unsigned int formal)
+{
+    return nalAnimationCache.MemAlloc(size, formal);
+}
+
+extern "C" void nalAnimationCache_MemFree(void* ptr, unsigned int size)
+{
+    nalAnimationCache.MemFree(ptr, size);
+}
+
 // ea: 0x00854390
 nalAnimCache::nalAnimCache()
-    : Hits(0), Misses(0), Access(0), Frame(static_cast<unsigned>(-1))
+    : Heap(nullptr), LRUObject(nullptr), MRUObject(nullptr), Hits(0),
+      Misses(0), Access(0), Frame(static_cast<unsigned>(-1))
 {
 }
 
