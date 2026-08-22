@@ -2879,6 +2879,24 @@ bool Code_PositionWouldTelefrag(const Broc::vector* position) {
     return gBrocAPI.mPositionWouldTelefrag(position);
 }
 
+// Broc::GetOrigin - ea: 0x970C60
+Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e) {
+    Broc::vector outVec;
+    gBrocAPI.mGetOrigin(e->GetHandle(), &outVec);
+    *result = outVec;
+    return result;
+}
+
+// Broc::IsVehicleFlipped - ea: 0x970E80
+bool IsVehicleFlipped(const Broc::entity* e) {
+    return gBrocAPI.mIsVehicleFlipped(e->GetHandle());
+}
+
+// Broc::Code_BroadcastVehicleRespawn - ea: 0x9713F0
+void Code_BroadcastVehicleRespawn(Broc::entity vehicle) {
+    gBrocAPI.mBroadcastVehicleRespawn(vehicle.GetHandle());
+}
+
 // Broc::TakeWeapon - ea: 0x950B50
 void Broc::TakeWeapon(Broc::entity* e,
                       const Broc::string* pszWeaponName) {
