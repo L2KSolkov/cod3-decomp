@@ -1145,8 +1145,8 @@ index	status	map_line
 1144	SKIPPED	0002:000e31a0 ??_GRumbleEffectInstance@@QAEPAXI@Z 008D26A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1145	SKIPPED	0002:000e31d0 ??_EAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1146	SKIPPED	0002:000e31d0 ??_GAbstractEffect@@UAEPAXI@Z 008D26D0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1147	PORTED	0002:000e3200 ?StopEffect@AbstractEffectParticle@@UAEXXZ 008D2700 f i core.o
-1148	PORTED	0002:000e3210 ?PlayQueuedEffect@AbstractEffectParticle@@UAEXXZ 008D2710 f i core.o
+1147	VERIFIED	0002:000e3200 ?StopEffect@AbstractEffectParticle@@UAEXXZ 008D2700 f i core.o VERIFIED: existing empty StopEffect matches IDA's single retn
+1148	VERIFIED	0002:000e3210 ?PlayQueuedEffect@AbstractEffectParticle@@UAEXXZ 008D2710 f i core.o VERIFIED: existing mParticle flag clear matches IDA; mVal is the same offset-0 Bitmask word as IDA's mMask
 1149	SKIPPED	0002:000e3220 ??_GAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1150	SKIPPED	0002:000e3220 ??_EAbstractEffectLight@@UAEPAXI@Z 008D2720 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1151	SKIPPED	0002:000e3250 ??_GAnimHeap@@UAEPAXI@Z 008D2750 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
