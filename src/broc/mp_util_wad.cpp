@@ -13511,15 +13511,71 @@ void GiveTeamMembersPoints(Broc::vector origin, Broc::bfloat radius,
 // CallbackGameStateDOM - ea: 0x976CB0
 void CallbackGameStateDOM(int flag0, int flag1, int flag2, int flag3,
                           int flag4) {
-    int flags[5] = {flag0, flag1, flag2, flag3, flag4};
+    Broc::entity area0 = mp_util_wad::pLevel->warAreas[0];
+    Broc::entity trigger0 = *mp_util_wad::GetEE_trigger(area0);
+    *mp_util_wad::GetEE_capStatus(trigger0) =
+        (float)flag0 / 32767.0f;
+    Broc::entity area1 = mp_util_wad::pLevel->warAreas[1];
+    Broc::entity trigger1 = *mp_util_wad::GetEE_trigger(area1);
+    *mp_util_wad::GetEE_capStatus(trigger1) =
+        (float)flag1 / 32767.0f;
+    Broc::entity area2 = mp_util_wad::pLevel->warAreas[2];
+    Broc::entity trigger2 = *mp_util_wad::GetEE_trigger(area2);
+    *mp_util_wad::GetEE_capStatus(trigger2) =
+        (float)flag2 / 32767.0f;
+    if (Broc::size(mp_util_wad::pLevel->warAreas) > 3) {
+        Broc::entity area3 = mp_util_wad::pLevel->warAreas[3];
+        Broc::entity trigger3 = *mp_util_wad::GetEE_trigger(area3);
+        *mp_util_wad::GetEE_capStatus(trigger3) =
+            (float)flag3 / 32767.0f;
+        Broc::entity area4 = mp_util_wad::pLevel->warAreas[4];
+        Broc::entity trigger4 = *mp_util_wad::GetEE_trigger(area4);
+        *mp_util_wad::GetEE_capStatus(trigger4) =
+            (float)flag4 / 32767.0f;
+    }
+
+    Broc::bbool currentHeightOwnsFlag[5] = {true, true, true, true, true};
+    currentHeightOwnsFlag[0] = (flag0 & 1) != 0;
+    currentHeightOwnsFlag[1] = (flag1 & 1) != 0;
+    currentHeightOwnsFlag[2] = (flag2 & 1) != 0;
+    currentHeightOwnsFlag[3] = (flag3 & 1) != 0;
+    currentHeightOwnsFlag[4] = (flag4 & 1) != 0;
+
+    mp_util_wad::pLevel->warIndex = -1;
     Broc::bint i(0);
-    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas) && (int)i < 5) {
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
         Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
         Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-        *mp_util_wad::GetEE_capStatus(trigger) =
-            (float)flags[(int)i] / 32767.0f;
+        int ownsFlag = (bool)currentHeightOwnsFlag[(unsigned int)(int)i] ? 1 : 0;
+        *mp_util_wad::GetEE_capTeam(trigger) = ownsFlag;
+
+        if ((int)*mp_util_wad::GetEE_capTeam(trigger) == 0)
+            mp_util_wad::pLevel->warIndex = i;
+        if ((float)*mp_util_wad::GetEE_capStatus(trigger) < 0.0f)
+            *mp_util_wad::GetEE_capTeam(trigger) =
+                -(int)*mp_util_wad::GetEE_capTeam(trigger);
+
+        int capTeam = (int)*mp_util_wad::GetEE_capTeam(trigger);
+        if (capTeam == 1) {
+            Broc::entity flag = *mp_util_wad::GetEE_flag(trigger);
+            Broc::SetModel(&flag, &mp_util_wad::pLevel->AlliesFlagModel,
+                           INVALID_PAK_INFO);
+        } else if (capTeam == -1) {
+            Broc::entity flag = *mp_util_wad::GetEE_flag(trigger);
+            Broc::SetModel(&flag, &mp_util_wad::pLevel->AxisFlagModel,
+                           INVALID_PAK_INFO);
+        }
+
+        float capStatus = (float)*mp_util_wad::GetEE_capStatus(trigger);
+        if (capStatus < 0.99989998f) {
+            if (capStatus <= -0.99989998f)
+                *mp_util_wad::GetEE_capStatus(trigger) = -1.0f;
+        } else {
+            *mp_util_wad::GetEE_capStatus(trigger) = 1.0f;
+        }
         i = (int)i + 1;
     }
+    UpdateAllowedCap();
 }
 
 // SendFlagStates - ea: 0x978960
