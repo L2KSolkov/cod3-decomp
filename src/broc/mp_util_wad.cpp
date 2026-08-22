@@ -15854,7 +15854,9 @@ void WarnPlayerAboutInactiveFlag(Broc::entity self) {
         Broc::bint i(0);
         while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
             Broc::bint state;
-            mp_util_wad::entity_get_playerState(&state, self);
+            Broc::entity::__unnamed::playerState_struct playerStateField = {
+                self.GetHandle()};
+            playerStateField.Get(&state);
             if ((int)state == 3 &&
                 (int)i != (int)mp_util_wad::pLevel->warIndex) {
                 Broc::entity area =
@@ -15884,7 +15886,9 @@ void WarnPlayerAboutInactiveFlag(Broc::entity self) {
                                     Broc::GetPlayerIndex(self));
                 if (!(bool)alreadyPlayedVO) {
                     Broc::string team;
-                    mp_util_wad::entity_get_team(&team, self);
+                    Broc::entity::__unnamed::team_struct teamField = {
+                        self.GetHandle()};
+                    teamField.Get(&team);
                     if (team == "allies") {
                         Broc::string name("MP_WAR_WrongPos_Indiv_Allies");
                         Broc::SoundPlay(name, 1.0f);
