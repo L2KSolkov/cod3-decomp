@@ -2884,22 +2884,18 @@ int nalReleaseSkeleton(nalBaseSkeleton* skeleton)
 }
 
 // ea: 0x00873370
-nalBaseSkeleton* nalReleaseSkeleton(const tlFixedString* name)
+int nalReleaseSkeleton(const tlFixedString* name)
 {
     nalBaseSkeleton* result = nalSkeletonDirectory->Find(*name);
-    if (result != nullptr)
-    {
-        return reinterpret_cast<nalBaseSkeleton*>(static_cast<uintptr_t>(
-            nalSkeletonDirectory->Release(result, 0, false)));
-    }
-    return result;
+    if (result == nullptr)
+        return 0;
+    return nalSkeletonDirectory->Release(result, 0, false);
 }
 
 // ea: 0x008733A0
-int nalReleaseAllSkeletons()
+void nalReleaseAllSkeletons()
 {
     nalSkeletonDirectory->ReleaseAll(false, false, 1);
-    return 0;
 }
 
 // ============================================================================
