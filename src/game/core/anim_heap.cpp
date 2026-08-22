@@ -82,7 +82,7 @@ void AnimCacheHeap::Free(void* ptr)
 bool AnimCacheHeap::CheckFree(void* ptr)
 {
     const uintptr_t block = reinterpret_cast<uintptr_t>(
-        AnimHeapStatics::sInst->mBlock);
+        AnimHeap::sInst->mBlock);
     const uintptr_t address = reinterpret_cast<uintptr_t>(ptr);
     if (address < block || address >= block + 0x100000u)
         return false;

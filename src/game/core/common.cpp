@@ -291,7 +291,7 @@ struct nglTexture;
 nglTexture** gLensFlareTextures = nullptr;  // ?gLensFlareTextures@@3PAPAUnglTexture@@A (core.o @ 0x12F03D0)
 Broc::string gFootSplashEffect;             // ?gFootSplashEffect@@3Vstring@Broc@@A (core.o @ 0x12F0450)
 RumbleManager::InstanceHolder RumbleManager::sInstHolder;  // ?sInstHolder@RumbleManager@@2UInstanceHolder@1@A (core.o @ 0x12F042C)
-AnimHeap* AnimHeapStatics::sInst = nullptr;           // ?sInst@AnimHeapStatics@@2PAVAnimHeap@@A (core.o @ 0x12F0398)
+AnimHeap* AnimHeap::sInst = nullptr;                  // ?sInst@AnimHeap@@0PAV1@A (core.o @ 0x00F00E98)
 DialogueManager* DialogueManagerStatics::sInst = nullptr;  // ?sInst@DialogueManagerStatics@@2PAVDialogueManager@@A (core.o @ 0x12F0374)
 fileHandleData_t fsh[3];                         // ?fsh@@3PAUfileHandleData_t@@A (core.o @ 0x12EFFB8)
 searchpath_s* fs_searchpaths = nullptr;          // ?fs_searchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F0334)

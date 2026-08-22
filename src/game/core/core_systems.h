@@ -2128,6 +2128,7 @@ struct nalHeap {
 static_assert(sizeof(nalHeap) == 0x4, "nalHeap size mismatch");
 
 struct AnimHeap : nalHeap {
+    static AnimHeap* sInst;  // ?sInst@AnimHeap@@0PAV1@A @ 0x00F00E98
     void*       mBlock;  // +0x04
     unsigned char mHeap[0x49C];  // +0x08 mem_heap
 

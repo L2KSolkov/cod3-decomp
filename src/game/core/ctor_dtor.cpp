@@ -849,7 +849,7 @@ AnimHeap::AnimHeap()
     mBlock = mem_heap_malloc(0x100000);
     mem_heap_create((mem_heap*)mHeap, mBlock, (char*)mBlock + 0x100000,
                     nullptr);
-    AnimHeapStatics::sInst = this;
+    AnimHeap::sInst = this;
 }
 
 // ea: 0x004BD610
