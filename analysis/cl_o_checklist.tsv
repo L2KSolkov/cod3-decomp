@@ -242,31 +242,31 @@ index	status	map_line
 241	VERIFIED	0002:0012ef90 ?SetFirstLocalClientIndex@LocalClient@@YAXH@Z 0091E490 f cl.o
 242	VERIFIED	0002:0012efa0 ?NumLocalClients@LocalClient@@YAHXZ 0091E4A0 f cl.o
 243	VERIFIED	0002:0012efb0 ?SetNumLocalClients@LocalClient@@YAXH@Z 0091E4B0 f cl.o
-244	PORTED	0002:0012efc0 ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z 0091E4C0 f cl.o
+244	PORTED	0002:0012efc0 ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z 0091E4C0 f cl.o PORTED: IDA match; compares the state of the first local client
 245	VERIFIED	0002:0012efe0 ?ClientToPort@LocalClient@@YAHH@Z 0091E4E0 f cl.o
 246	VERIFIED	0002:0012f010 ?PortToClient@LocalClient@@YAHH@Z 0091E510 f cl.o
-247	PORTED	0002:0012f020 ?PortIsState@LocalClient@@YA_NHH@Z 0091E520 f cl.o
+247	PORTED	0002:0012f020 ?PortIsState@LocalClient@@YA_NHH@Z 0091E520 f cl.o PORTED: IDA match; port argument is intentionally unused
 248	VERIFIED	0002:0012f040 ?PortToValidClient@LocalClient@@YAHH@Z 0091E540 f cl.o
-249	PORTED	0002:0012f080 ?SetClientPort@LocalClient@@YAXHH@Z 0091E580 f cl.o
+249	PORTED	0002:0012f080 ?SetClientPort@LocalClient@@YAXHH@Z 0091E580 f cl.o PORTED: IDA match; updates only client zero's port
 250	VERIFIED	0002:0012f0a0 ?UpdatePlayerPorts@LocalClient@@YAXH@Z 0091E5A0 f cl.o
-251	PORTED	0002:0012f0f0 ?ConfigureLocalClients@LocalClient@@YAXXZ 0091E5F0 f cl.o
+251	PORTED	0002:0012f0f0 ?ConfigureLocalClients@LocalClient@@YAXXZ 0091E5F0 f cl.o PORTED: IDA match; resets local-client input and stance state
 252	VERIFIED	0002:0012f140 ?QuitClientOutOfGame@LocalClient@@YA_NH@Z 0091E640 f cl.o
-253	PORTED	0002:0012f210 ?CL_Restart@@YAXXZ 0091E710 f cl.o
-254	VERIFIED	0002:0012f290 ?CL_GetConfigString@@YAPBDH@Z 0091E790 f cl.o
+253	FIXED	0002:0012f210 ?CL_Restart@@YAXXZ 0091E710 f cl.o FIXED: uses Broc::string assignment for IDA-matched config-string cleanup
+254	FIXED	0002:0012f290 ?CL_GetConfigString@@YAPBDH@Z 0091E790 f cl.o FIXED: uses the IDA-derived Broc::string config-string type
 255	VERIFIED	0002:0012f2b0 ?CL_InitCGame@@YAXXZ 0091E7B0 f cl.o
-256	PORTED	0002:0012f550 ?Con_Clear_f@@YAXXZ 0091EA50 f cl.o
+256	PORTED	0002:0012f550 ?Con_Clear_f@@YAXXZ 0091EA50 f cl.o PORTED: IDA match; fills console text with the color-coded space value
 257	VERIFIED	0002:0012f590 ?Con_Init@@YAXXZ 0091EA90 f cl.o
 258	VERIFIED	0002:0012f670 ?CL_RestoreMessages@@YAHPAEH@Z 0091EB70 f cl.o
 259	VERIFIED	0002:0012f750 ?Con_Close@@YAXXZ 0091EC50 f cl.o
 260	VERIFIED	0002:0012f790 ?CL_ConsolePrint@@YAXW4print_msg_type_t@@PBDHHH@Z 0091EC90 f cl.o
 261	VERIFIED	0002:0012fa70 ?CL_DeathMessagePrint@@YAXW4print_msg_type_t@@PBDQAM121MM2H@Z 0091EF70 f cl.o
 262	VERIFIED	0002:001304e0 ?Con_DrawBoldMessages@@YAXHHMW4msgwnd_mode_t@@@Z 0091F9E0 f cl.o
-263	PORTED	0002:00130510 ?IN_MLookUp@@YAXXZ 0091FA10 f cl.o
+263	FIXED	0002:00130510 ?IN_MLookUp@@YAXXZ 0091FA10 f cl.o FIXED: corrected void signature and uses cl_freelook->integer per IDA
 264	VERIFIED	0002:00130560 ?IN_SprintBreathDown@@YAXHH@Z 0091FA60 f cl.o
 265	VERIFIED	0002:00130610 ?IN_SprintBreathUp@@YAXHH@Z 0091FB10 f cl.o
 266	VERIFIED	0002:001306c0 ?IN_HoldBreathDown@@YAXHH@Z 0091FBC0 f cl.o
 267	VERIFIED	0002:00130720 ?IN_HoldBreathUp@@YAXHH@Z 0091FC20 f cl.o
-268	PORTED	0002:00130780 ?GetSwirlSpeedDirect@@YAXAAMAAHH@Z 0091FC80 f cl.o
+268	FIXED	0002:00130780 ?GetSwirlSpeedDirect@@YAXAAMAAHH@Z 0091FC80 f cl.o FIXED: corrected IDA float history storage and vector updates
 269	VERIFIED	0002:001308b0 ?SwirlControl@@YAXH@Z 0091FDB0 f cl.o
 270	VERIFIED	0002:00130ac0 ?CLSwirlControl@@YAXXZ 0091FFC0 f cl.o
 271	VERIFIED	0002:00130ae0 ?CL_GamepadMove@@YAXPAUusercmd_s@@@Z 0091FFE0 f cl.o
@@ -289,8 +289,8 @@ index	status	map_line
 288	VERIFIED	0002:00132700 ?CL_InitKeyCommands@@YAXXZ 00921C00 f cl.o
 289	VERIFIED	0002:00132740 ?CL_CharEvent@@YAXH@Z 00921C40 f cl.o
 290	VERIFIED	0002:00132780 ?CL_ShutdownAll@@YAXXZ 00921C80 f cl.o
-291	PORTED	0002:001327e0 ?CL_ClearState@@YAXXZ 00921CE0 f cl.o
-292	PORTED	0002:00132880 ?CL_Disconnect@@YAXH@Z 00921D80 f cl.o
+291	FIXED	0002:001327e0 ?CL_ClearState@@YAXXZ 00921CE0 f cl.o FIXED: uses Broc::string null assignment and exact state clearing
+292	PORTED	0002:00132880 ?CL_Disconnect@@YAXH@Z 00921D80 f cl.o PORTED: IDA match; restores fullscreen, clears state, and disconnects
 293	VERIFIED	0002:001328c0 ?CL_StartHunkUsers@@YAXXZ 00921DC0 f cl.o
 294	VERIFIED	0002:00132930 ?CL_InitRef@@YAXXZ 00921E30 f cl.o
 295	VERIFIED	0002:00132a70 ?CL_Shutdown@@YAXXZ 00921F70 f cl.o
@@ -298,7 +298,7 @@ index	status	map_line
 297	VERIFIED	0002:00132d50 ?CL_ParseGamestate@@YAXPAVstring@Broc@@@Z 00922250 f cl.o
 298	VERIFIED	0002:00132ec0 ?Key_GetBindingBuf@@YAXHPADH@Z 009223C0 f cl.o
 299	VERIFIED	0002:00132f10 ?CL_InitGamepadCommands@@YAXXZ 00922410 f cl.o
-300	VERIFIED	0002:00132f40 ?CL_ConfigstringModified@@YAXXZ 00922440 f cl.o
+300	FIXED	0002:00132f40 ?CL_ConfigstringModified@@YAXXZ 00922440 f cl.o FIXED: retained config-string aliasing with the IDA Broc::string block type
 301	VERIFIED	0002:00133080 ?CL_GetServerCommand@@YAHH@Z 00922580 f cl.o
 302	VERIFIED	0002:001331e0 ?CL_SubtitlePrint@@YAXPBDHH@Z 009226E0 f cl.o
 303	VERIFIED	0002:00133330 ?CL_ConsoleFixPosition@@YAXXZ 00922830 f cl.o
