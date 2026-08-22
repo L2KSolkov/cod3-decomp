@@ -915,15 +915,15 @@ index	status	map_line
 914	PORTED	0002:0025ec30 ?set_size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXH@Z 00A4E130 f i game.o
 915	SKIPPED	0002:0025ec50 ??0?$pair@HH@std@@QAE@XZ 00A4E150 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 916	SKIPPED	0002:0025ec70 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@XZ 00A4E170 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-917	PORTED	0002:0025ec80 ?done@?$cdl_array@M@@QAEXXZ 00A4E180 f i game.o
-918	PORTED	0002:0025ecb0 ?size@?$cdl_array@M@@QBEIXZ 00A4E1B0 f i game.o
-919	PORTED	0002:0025ecc0 ?done@?$cdl_array@H@@QAEXXZ 00A4E1C0 f i game.o
-920	PORTED	0002:0025ecf0 ?size@?$cdl_array@H@@QBEIXZ 00A4E1F0 f i game.o
-921	PORTED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o
+917	PORTED	0002:0025ec80 ?done@?$cdl_array@M@@QAEXXZ 00A4E180 f i game.o	IDA: frees non-null m_elements, then clears pointer and count; scalar cdl_array instantiation now emitted.
+918	PORTED	0002:0025ecb0 ?size@?$cdl_array@M@@QBEIXZ 00A4E1B0 f i game.o	IDA: returns m_count; scalar cdl_array instantiation now emitted.
+919	PORTED	0002:0025ecc0 ?done@?$cdl_array@H@@QAEXXZ 00A4E1C0 f i game.o	IDA: frees non-null m_elements, then clears pointer and count; scalar cdl_array instantiation now emitted.
+920	PORTED	0002:0025ecf0 ?size@?$cdl_array@H@@QBEIXZ 00A4E1F0 f i game.o	IDA: returns m_count; scalar cdl_array instantiation now emitted.
+921	FIXED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o	IDA type shows m_elements pointer at +0 and raw m_elementdata at +4; fixed the prior inline-array base and constructor to point into storage.
 922	VERIFIED	0002:0025ed10 ??0?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAE@XZ 00A4E210 f i game.o
 923	VERIFIED	0002:0025ed20 ??0?$ae_sized_array@W4EPadAliasStick@@$01@@QAE@XZ 00A4E220 f i game.o
 924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o
-925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o
+925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o	IDA: allocates 12*iNumber bytes and zeroes every element; exact one-argument overload restored.
 926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o
 927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o
 928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o
