@@ -11190,9 +11190,49 @@ void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
 
 // HandleDropFlag - ea: 0x9505F0
 void HandleDropFlag(Broc::entity guy) {
-    (void)guy;
-    // Flag drop state is reset by UnlinkFlag (called from CallbackPlayerKilled/
-    // Leave path in the runtime).
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, guy);
+    if (!(bool)hasHolder)
+        return;
+
+    mp_util_wad::entity_set_ctf_has_flag(guy, 0);
+    static Broc::bfloat dropSpeed(200.0f);
+    static Broc::bfloat dropPitch(-30.0f);
+
+    Broc::vector angles;
+    mp_util_wad::entity_get_angles(&angles, guy);
+    Broc::vector launchAngles((float)dropPitch, angles.y, 0.0f);
+    Broc::vector velocity = ::AnglesToForward(launchAngles) *
+                            (float)dropSpeed;
+
+    Broc::string holderTargetName;
+    mp_util_wad::entity_get_targetname(
+        &holderTargetName, *mp_util_wad::GetEE_holder(guy));
+    int netID = (holderTargetName == "axis" ||
+                 holderTargetName == "ctf_axis")
+                    ? 1
+                    : 2;
+    holderTargetName.~string();
+
+    if (!Broc::Code_IsLocalPlayer(guy) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_ctf.bro", __LINE__,
+            "CallbackDropFlag:  Function was not called by the local guy"))
+        __debugbreak();
+
+    Broc::vector offset(0.0f, 0.0f, 20.0f);
+    Broc::vector dropOrigin;
+    mp_util_wad::entity_get_origin(&dropOrigin, guy);
+    dropOrigin = dropOrigin + offset;
+    Broc::Code_DropItem(4, netID, &dropOrigin, &angles, &velocity);
+
+    Broc::entity holder = *mp_util_wad::GetEE_holder(guy);
+    Broc::string weapon = *mp_util_wad::GetEE_weaponstr(holder);
+    Broc::TakeWeapon(&guy, &weapon);
+    weapon.~string();
+    if (!Broc::SwitchToLastWeapon(&guy))
+        _mp_common::SelectFirstAvailableWeapon(guy);
+    *mp_util_wad::GetEE_holder(guy) = Broc::gEntityUndef;
 }
 
 // HandlePickupFlag - ea: 0x950F30
