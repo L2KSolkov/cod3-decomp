@@ -537,7 +537,7 @@ index	status	map_line
 536	VERIFIED	0002:00552950 ?SetWeaponSlotClipAmmo@Broc@@YAXABVentity@1@ABVstring@1@H@Z 00D41E50 f i mp_util_wad.o	VERIFIED: IDA 0x00952950 matches the existing entity-handle, string, and integer forward to mSetWeaponSlotClipAmmo
 537	VERIFIED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o	VERIFIED: IDA 0x00952990 matches the existing direct mObjectiveRing forward
 538	FIXED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
-539	VERIFIED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o
+539	PORTED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o	PORTED: replaced no-op with C3/IDA 0x00952A60 base-distance, host/client request, holder, team-audio, and HandlePickupFlag flow; source commit 7af7846c
 540	VERIFIED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o
 541	PORTED	0002:00552f30 ?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z 00D42430 f mp_util_wad.o	PORTED: replaced no-op with C3/IDA 0x00952F30 flag lookup, launch/update, holder cleanup, timeout, sound, and team message flow; source commit cdf7f7f9
 542	FIXED	0002:005533a0 ?WaitForFlagTimeOut__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D428A0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
