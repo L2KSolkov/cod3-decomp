@@ -579,21 +579,7 @@ tlSkipList<nalAnimFile, tlFixedString>::GetKeyOf(const nalAnimFile* file)
 // ??0?$tlInstanceBankResourceDirectory@VnalAnimFile@@@@QAE@XZ (0x867880)
 template class tlInstanceBankResourceDirectory<nalAnimFile>;
 
-class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
-public:
-    nalClientSceneAnim();  // ??0nalClientSceneAnim@@QAE@XZ (0x55EA20)
-    virtual ~nalClientSceneAnim();  // ??1nalClientSceneAnim@@UAE@XZ (0x55E6B0)
-};
-
-// ea: 0x0055EA20
-nalClientSceneAnim::nalClientSceneAnim()
-{
-}
-
-// ea: 0x0055E6B0
-nalClientSceneAnim::~nalClientSceneAnim()
-{
-}
+class nalClientSceneAnim;
 class nalHeap {
 public:
     virtual ~nalHeap();
@@ -991,6 +977,46 @@ const tlFixedString* tlSkipList<nalBaseSkeleton, tlFixedString>::GetKeyOf(
 
 template class tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>>;
 template class tlInstanceBankResourceDirectory<nalBaseSkeleton>;
+
+// nalClientSceneAnim interface (IDA type: nalClientSceneAnim_vtbl)
+class nalClientSceneAnim {
+public:
+    nalClientSceneAnim();
+    virtual nalAnimClass<nalAnyPose>::nalInstanceClass* CreateInstance(
+        nalAnimClass<nalAnyPose>* anim)
+    {
+        (void)anim;
+        return nullptr;
+    }
+    virtual void Advance(
+        nalAnimClass<nalAnyPose>::nalInstanceClass* animInst,
+        float t, float tPrev, float deltaT, float timeInSecondsToStart)
+    {
+        (void)animInst;
+        (void)t;
+        (void)tPrev;
+        (void)deltaT;
+        (void)timeInSecondsToStart;
+    }
+    virtual void Render(
+        nalAnimClass<nalAnyPose>::nalInstanceClass* animInst, float t)
+    {
+        (void)animInst;
+        (void)t;
+    }
+    virtual void Release() {}
+    virtual ~nalClientSceneAnim();
+};
+
+// ea: 0x0055EA20
+nalClientSceneAnim::nalClientSceneAnim()
+{
+}
+
+// ea: 0x0055E6B0
+nalClientSceneAnim::~nalClientSceneAnim()
+{
+}
 
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
@@ -2502,15 +2528,45 @@ public:
 // ============================================================================
 // nalSceneAnim / nalSceneAnimInstance Ã¢â‚¬â€ scene animation
 // ============================================================================
+struct nalSceneAnimChunkHeader {
+    nalSceneAnimChunkHeader* NextChunk;
+    int NumAnims;
+    nalAnimClass<nalAnyPose>* FirstAnim;
+};
+static_assert(sizeof(nalSceneAnimChunkHeader) == 12,
+              "nalSceneAnimChunkHeader layout mismatch");
+
+struct nalSceneAnimHeader {
+    unsigned Version;
+    unsigned Flags;
+    int SizeStringTable;
+    int NumStringsInTable;
+    tlFixedString Name;
+    int NumChunks;
+    nalSceneAnimChunkHeader* FirstChunk;
+    int MaxChunkSize;
+    float Duration;
+    tlFileBuf FileBuf;
+    int RefCount;
+};
+static_assert(sizeof(nalSceneAnimHeader) == 80,
+              "nalSceneAnimHeader layout mismatch");
+
 class nalSceneAnim {
 public:
-    nalSceneAnimInstance* CreateInstance(nalClientSceneAnim* (*factory)(const nalSceneAnim*, const tlFixedString&)) { return nullptr; }
+    nalSceneAnimInstance* CreateInstance(
+        nalClientSceneAnim* (*factory)(const nalSceneAnim*,
+                                       const tlFixedString&, void*),
+        void* userParam);
+
+    nalSceneAnimHeader Header;
 
     // ?GetDuration@nalSceneAnim@@QBEMXZ (0x55E6F0); Header.Duration +0x3C
     float GetDuration() const;
     // ?IsLooping@nalSceneAnim@@QBE_NXZ (0x55E700); Header.Flags & 2
     bool IsLooping() const;
 };
+static_assert(sizeof(nalSceneAnim) == 80, "nalSceneAnim layout mismatch");
 
 // ea: 0x0055E6F0
 float nalSceneAnim::GetDuration() const
@@ -2539,12 +2595,39 @@ template class tlInstanceBankResourceDirectory<nalSceneAnim>;
 // ============================================================================
 class nalSceneAnimInstance {
 public:
-    ~nalSceneAnimInstance() {}
-    void AddClientAnim(nalClientSceneAnim*, nalAnimClass<nalAnyPose>*) {}
-    void Render() const {}
+    struct nalClientAnimNode {
+        nalClientSceneAnim* ClientAnim;
+        nalAnimClass<nalAnyPose>* Anim;
+        nalAnimClass<nalAnyPose>::nalInstanceClass* AnimInst;
+        nalClientAnimNode* Next;
 
-    float Time;         // +0x00
-    void* SceneAnim;    // +0x04
+        static void* operator new(size_t sz)
+        {
+            return tlMemAlloc(static_cast<unsigned int>(sz), 8, 0);
+        }
+
+        static void operator delete(void* ptr)
+        {
+            tlMemFree(ptr);
+        }
+    };
+    static_assert(sizeof(nalClientAnimNode) == 16,
+                  "nalClientAnimNode layout mismatch");
+
+    virtual ~nalSceneAnimInstance();
+    virtual bool IsReady() { return false; }
+    virtual void Play() {}
+    virtual void Advance(float delta) { (void)delta; }
+
+    nalSceneAnim* SceneAnim;
+    nalClientAnimNode* ClientNodeHead;
+    nalClientAnimNode* ClientNodeTail;
+    float Time;
+    float ChunkTime;
+    nalSceneAnimChunkHeader* Chunk;
+
+    void AddClientAnim(nalClientSceneAnim*, nalAnimClass<nalAnyPose>*);
+    void Render() const;
 
     // ?GetTime@nalSceneAnimInstance@@QBEMXZ (0x55E710)
     float GetTime() const;
@@ -2553,6 +2636,53 @@ public:
     // ?IsDone@nalSceneAnimInstance@@QBE_NXZ (0x560070)
     bool IsDone() const;
 };
+static_assert(sizeof(nalSceneAnimInstance) == 28,
+              "nalSceneAnimInstance layout mismatch");
+
+// ea: 0x00877FC0
+nalSceneAnimInstance::~nalSceneAnimInstance()
+{
+    while (ClientNodeHead != nullptr)
+    {
+        nalClientAnimNode* node = ClientNodeHead;
+        ClientNodeHead = node->Next;
+        node->ClientAnim->Release();
+        if (node->AnimInst != nullptr)
+            delete node->AnimInst;
+        tlMemFree(node);
+    }
+    ClientNodeTail = nullptr;
+}
+
+// ea: 0x00878010
+void nalSceneAnimInstance::AddClientAnim(
+    nalClientSceneAnim* clientAnim, nalAnimClass<nalAnyPose>* anim)
+{
+    nalClientAnimNode* node = static_cast<nalClientAnimNode*>(
+        tlMemAlloc(sizeof(nalClientAnimNode), 8, 0));
+    node->ClientAnim = clientAnim;
+    node->Anim = anim;
+    node->AnimInst = nullptr;
+    node->Next = nullptr;
+    if (ClientNodeTail != nullptr)
+        ClientNodeTail->Next = node;
+    else
+        ClientNodeHead = node;
+    ClientNodeTail = node;
+}
+
+// ea: 0x00878060
+void nalSceneAnimInstance::Render() const
+{
+    const float t = ChunkTime / Chunk->FirstAnim->Duration;
+    for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+         node = node->Next)
+    {
+        if (node->AnimInst == nullptr)
+            node->AnimInst = node->ClientAnim->CreateInstance(node->Anim);
+        node->ClientAnim->Render(node->AnimInst, t);
+    }
+}
 
 // ea: 0x0055E710
 float nalSceneAnimInstance::GetTime() const
@@ -2577,10 +2707,144 @@ bool nalSceneAnimInstance::IsDone() const
 // ============================================================================
 // nalStaticInstance Ã¢â‚¬â€ static animation instance
 // ============================================================================
-class nalStaticInstance {
+class nalStaticInstance : public nalSceneAnimInstance {
 public:
-    void Advance(float dt) {}
+    nalStaticInstance(
+        nalSceneAnim* sceneAnim,
+        nalClientSceneAnim* (*callback)(const nalSceneAnim*,
+                                        const tlFixedString&, void*),
+        void* userParam);
+    void Advance(float delta) override;
+
+    nalSceneAnimChunkHeader* FirstChunk;
 };
+static_assert(sizeof(nalStaticInstance) == 32,
+              "nalStaticInstance layout mismatch");
+
+// ea: 0x008780C0
+nalSceneAnimInstance* nalSceneAnim::CreateInstance(
+    nalClientSceneAnim* (*factory)(const nalSceneAnim*, const tlFixedString&,
+                                   void*),
+    void* userParam)
+{
+    void* memory = tlMemAlloc(sizeof(nalStaticInstance), 8, 0);
+    if (memory == nullptr)
+        return nullptr;
+    return new (memory) nalStaticInstance(this, factory, userParam);
+}
+
+nalAnimClass<nalAnyPose>* nalGetNextAnimInFile(
+    nalAnimClass<nalAnyPose>* anim);
+
+// ea: 0x00878330
+nalStaticInstance::nalStaticInstance(
+    nalSceneAnim* sceneAnim,
+    nalClientSceneAnim* (*callback)(const nalSceneAnim*, const tlFixedString&,
+                                    void*),
+    void* userParam)
+    : FirstChunk(nullptr)
+{
+    SceneAnim = sceneAnim;
+    ClientNodeHead = nullptr;
+    ClientNodeTail = nullptr;
+    Time = 0.0f;
+    ChunkTime = 0.0f;
+    FirstChunk = sceneAnim->Header.FirstChunk;
+    Chunk = FirstChunk;
+
+    nalAnimClass<nalAnyPose>* anim = FirstChunk->FirstAnim;
+    while (anim != nullptr)
+    {
+        nalClientSceneAnim* clientAnim = callback(sceneAnim, anim->Name,
+                                                  userParam);
+        if (clientAnim != nullptr)
+            AddClientAnim(clientAnim, anim);
+        anim = nalGetNextAnimInFile(anim);
+    }
+}
+
+// ea: 0x00878100
+void nalStaticInstance::Advance(float delta)
+{
+    nalSceneAnim* sceneAnim = SceneAnim;
+    if ((sceneAnim->Header.Flags & 2u) == 0
+        && Time >= sceneAnim->Header.Duration)
+        return;
+
+    nalSceneAnimChunkHeader* chunk = Chunk;
+    float prevTime = Time;
+    float prevChunkTime = ChunkTime;
+    ChunkTime = prevChunkTime + delta;
+    float duration = chunk->FirstAnim->Duration;
+
+    if (ChunkTime >= duration)
+    {
+        do
+        {
+            delta -= duration - prevChunkTime;
+            Time += duration - prevChunkTime;
+
+            const float inverseDuration = 1.0f / duration;
+            float t = 1.0f;
+            if (inverseDuration * ChunkTime <= 1.0f)
+                t = inverseDuration * ChunkTime;
+
+            for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+                 node = node->Next)
+            {
+                if (node->AnimInst == nullptr)
+                    node->AnimInst = node->ClientAnim->CreateInstance(
+                        node->Anim);
+                node->ClientAnim->Advance(node->AnimInst, t,
+                                          inverseDuration * prevChunkTime,
+                                          Time, prevTime);
+            }
+
+            nalSceneAnimChunkHeader* currentChunk = Chunk;
+            nalSceneAnimChunkHeader* nextChunk = currentChunk->NextChunk;
+            if (nextChunk != nullptr)
+            {
+                ChunkTime -= duration;
+            }
+            else
+            {
+                if ((sceneAnim->Header.Flags & 2u) == 0)
+                    break;
+                nextChunk = FirstChunk;
+                ChunkTime -= duration;
+            }
+
+            Chunk = nextChunk;
+            nalAnimClass<nalAnyPose>* nextAnim = nextChunk->FirstAnim;
+            prevChunkTime = 0.0f;
+            for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+                 node = node->Next)
+            {
+                if (node->AnimInst != nullptr)
+                    delete node->AnimInst;
+                node->Anim = nextAnim;
+                node->AnimInst = nullptr;
+                nextAnim = nalGetNextAnimInFile(nextAnim);
+            }
+
+            prevTime = Time;
+            duration = Chunk->FirstAnim->Duration;
+        } while (ChunkTime >= duration);
+    }
+
+    Time += delta;
+    const float inverseDuration = 1.0f / duration;
+    for (nalClientAnimNode* node = ClientNodeHead; node != nullptr;
+         node = node->Next)
+    {
+        if (node->AnimInst == nullptr)
+            node->AnimInst = node->ClientAnim->CreateInstance(node->Anim);
+        node->ClientAnim->Advance(node->AnimInst,
+                                  inverseDuration * ChunkTime,
+                                  inverseDuration * prevChunkTime,
+                                  Time, prevTime);
+    }
+}
 
 // ============================================================================
 // nal IK solvers
@@ -21818,7 +22082,7 @@ public:
     virtual void Release();
     // ?CreateInstance@SceneAnimClient@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAV3@@Z (0x5619B0)
     virtual nalAnimClass<nalAnyPose>::nalInstanceClass* CreateInstance(
-        nalAnimClass<nalAnyPose>::nalInstanceClass* anim);
+        nalAnimClass<nalAnyPose>* anim);
     // ?Advance@SceneAnimClient@@UAEXPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@MMMM@Z (0x5623D0)
     virtual void Advance(nalAnimClass<nalAnyPose>::nalInstanceClass* animInst,
                          float t, float t_prev, float deltaT,
@@ -21999,7 +22263,7 @@ void* SceneAnimClient_Delete(SceneAnimClient* self, unsigned int flags)
 // ea: 0x005619B0
 nalAnimClass<nalAnyPose>::nalInstanceClass*
 SceneAnimClient::CreateInstance(
-    nalAnimClass<nalAnyPose>::nalInstanceClass* anim)
+    nalAnimClass<nalAnyPose>* anim)
 {
     nalGeneric::nalGenericAnim* baseAnim =
         (nalGeneric::nalGenericAnim*)(void*)anim;
