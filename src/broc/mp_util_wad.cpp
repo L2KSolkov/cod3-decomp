@@ -433,6 +433,66 @@ Broc::bbool* IsEEDefined_script_friendname(Broc::bbool* result,
     return result;
 }
 
+// GetEE_script_prespawn_delay / IsEEDefined_script_prespawn_delay - ea: 0x98CD60 / 0x98CDB0
+Broc::bfloat* GetEE_script_prespawn_delay(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bfloat>(0x531ABA72u);
+}
+
+Broc::bbool* IsEEDefined_script_prespawn_delay(Broc::bbool* result,
+                                                Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+
+    Broc::bfloat value;
+    const Broc::bfloat* stored =
+        ee->GetVal<Broc::bfloat>(&value, 0x531ABA72u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_burst_max / IsEEDefined_script_burst_max - ea: 0x98CE60 / 0x98CEB0
+Broc::bfloat* GetEE_script_burst_max(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bfloat>(0xD74DC709u);
+}
+
+Broc::bbool* IsEEDefined_script_burst_max(Broc::bbool* result,
+                                           Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+
+    Broc::bfloat value;
+    const Broc::bfloat* stored =
+        ee->GetVal<Broc::bfloat>(&value, 0xD74DC709u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
 // GetEE_flagEnd / IsEEDefined_flagEnd (key 0xAEB6D8F1)
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
