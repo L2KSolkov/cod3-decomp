@@ -3080,3 +3080,49 @@ Broc::bfloat* GetEE_script_delay(Broc::bfloat* result,
     new (result) Broc::bfloat(value);
     return result;
 }
+
+// IsEEDefined_script_delay(vehiclenode) - ea: 0x996980.
+Broc::bbool* IsEEDefined_script_delay(Broc::bbool* result,
+                                      Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        const float raw = Broc::gBrocAPI.mBrocExports.mGetVNodeField_float(
+            node.GetHandle(), 0x47018F83u);
+        const Broc::bfloat value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// Broc::IsDefined(vehiclenode*) - ea: 0x996A30.
+namespace Broc {
+bool IsDefined(const vehiclenode* node) {
+    return node != nullptr && node->IsDefined();
+}
+}
+
+// GetEE_endswitch - ea: 0x996A50. Field key from IDA: 0xA007FC29.
+Broc::vehiclenode* GetEE_endswitch(Broc::vehiclenode* result,
+                                   Broc::vehiclenode node) {
+    Broc::vehiclenode value;
+    Broc::vehiclenode* rhs =
+        Broc::gBrocAPI.mBrocExports.mGetVNodeField_vehiclenode(
+            &value, node.GetHandle(), 0xA007FC29u);
+    result->___u0 = rhs->___u0;
+    return result;
+}
+
+// IsEEDefined_endswitch - ea: 0x996AD0.
+Broc::bbool* IsEEDefined_endswitch(Broc::bbool* result,
+                                   Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        Broc::vehiclenode value;
+        Broc::gBrocAPI.mBrocExports.mGetVNodeField_vehiclenode(
+            &value, node.GetHandle(), 0xA007FC29u);
+        result->mVal = Broc::IsDefined(&value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
