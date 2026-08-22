@@ -259,11 +259,11 @@ index	status	map_line
 258	VERIFIED	0002:0053bee0 ?PlayKillerCredit@_mp_audio@@YAXVentity@Broc@@@Z 00D2B3E0 f mp_util_wad.o
 259	VERIFIED	0002:0053c240 ?player_dying_sounds@_mp_audio@@YAXVentity@Broc@@@Z 00D2B740 f mp_util_wad.o
 260	VERIFIED	0002:0053c2c0 ?LaunchGametype@_mp_common@@YAXXZ 00D2B7C0 f mp_util_wad.o
-261	VERIFIED	0002:0053ca40 ?Code_ClearPlayerStats@Broc@@YAXXZ 00D2BF40 f i mp_util_wad.o
-262	VERIFIED	0002:0053ca60 ?Code_ClearTeamScores@Broc@@YAXXZ 00D2BF60 f i mp_util_wad.o
-263	VERIFIED	0002:0053ca80 ?Code_DisplayScoreBoard@Broc@@YAX_NH@Z 00D2BF80 f i mp_util_wad.o
-264	VERIFIED	0002:0053cab0 ?Code_SetShowScore@Broc@@YAX_N@Z 00D2BFB0 f i mp_util_wad.o
-265	VERIFIED	0002:0053cae0 ?Code_SetupLevelSpecificVariables@Broc@@YAXXZ 00D2BFE0 f i mp_util_wad.o
+261	FIXED	0002:0053ca40 ?Code_ClearPlayerStats@Broc@@YAXXZ 00D2BF40 f i mp_util_wad.o	FIXED: IDA callback wrapper and mClearPlayerStats slot; source 4759ab07
+262	FIXED	0002:0053ca60 ?Code_ClearTeamScores@Broc@@YAXXZ 00D2BF60 f i mp_util_wad.o	FIXED: IDA callback wrapper and mClearTeamScores slot; source 4759ab07
+263	FIXED	0002:0053ca80 ?Code_DisplayScoreBoard@Broc@@YAX_NH@Z 00D2BF80 f i mp_util_wad.o	FIXED: IDA callback wrapper and mDisplayScoreBoard slot; source 4759ab07
+264	FIXED	0002:0053cab0 ?Code_SetShowScore@Broc@@YAX_N@Z 00D2BFB0 f i mp_util_wad.o	FIXED: IDA callback wrapper and mSetShowScore slot; source 4759ab07
+265	FIXED	0002:0053cae0 ?Code_SetupLevelSpecificVariables@Broc@@YAXXZ 00D2BFE0 f i mp_util_wad.o	FIXED: IDA callback wrapper and mSetupLevelSpecificVariables slot; source 4759ab07
 266	VERIFIED	0002:0053cb00 ?GetCvar@@YA?AVstring@Broc@@PBD@Z 00D2C000 f i mp_util_wad.o	VERIFIED: IDA 0x0093CB00 constructs a null-backed temporary, calls mCVarGetString, copy-constructs result, and destroys temporary
 267	VERIFIED	0002:0053cba0 ?SetCvar@@YAXPBD0@Z 00D2C0A0 f i mp_util_wad.o	VERIFIED: IDA 0x0093CBA0 forwards cvar and value directly to mCVarSetString
 268	VERIFIED	0002:0053cbd0 ?main__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C0D0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_ctf::main
@@ -489,7 +489,7 @@ index	status	map_line
 488	FIXED	0002:0054ca20 ?DebugRenderSpawnPoints@_mp_common@@YAXXZ 00D3BF20 f mp_util_wad.o	FIXED: corrected IDA 0x0094CA20 HashStr construction, origin_struct::Get reads, and bint::operator++ sequencing for both allies and axis spawn-box passes (source commit dbb8cdc2)
 489	VERIFIED	0002:0054cd50 ?Code_DebugRenderBox@Broc@@YAXABUvector@1@00M@Z 00D3C250 f i mp_util_wad.o	VERIFIED: IDA 0x0094CD50 matches the existing min/max/color/alpha forward to mDebugRenderBox
 490	VERIFIED	0002:0054cd90 ?main@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C290 f mp_util_wad.o
-491	VERIFIED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o
+491	FIXED	0002:0054d2a0 ?Code_SetTeamGame@Broc@@YAX_N@Z 00D3C7A0 f i mp_util_wad.o	FIXED: IDA callback wrapper and mSetTeamGame slot; source 4759ab07
 492	VERIFIED	0002:0054d2d0 ?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z 00D3C7D0 f i mp_util_wad.o	VERIFIED: IDA 0x0094D2D0 matches the existing height/clientIndex and default display arguments
 493	FIXED	0002:0054d320 ?StartGame__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C820 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 494	FIXED	0002:0054d3c0 ?FlagThreadLauncher__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C8C0 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
