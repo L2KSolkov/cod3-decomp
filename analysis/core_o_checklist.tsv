@@ -996,40 +996,40 @@ index	status	map_line
 995	FIXED	0002:000e1000 ?compare@iterator@?$reserved_dlist@VEntityNotify@@@@QBE_NABV12@@Z 008D0500 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E1000 compares rhs.m_next with this->m_next
 996	VERIFIED	0002:000e1020 ??0iterator@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAUdlist_node@1@0@Z 008D0520 f i core.o VERIFIED: IDA 0x004E1020 stores cur and next; existing iterator constructor matches
 997	FIXED	0002:000e1040 ?compare@iterator@?$reserved_dlist@VEndOnScriptNode@@@@QBE_NABV12@@Z 008D0540 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E1040 compares rhs.m_next with this->m_next
-998	PORTED	0002:000e1060 ??0?$SizedHandle@$08$0BH@@@QAE@HH@Z 008D0560 f i core.o
-999	PORTED	0002:000e1160 ??0?$SizedHandle@$08$0BH@@@QAE@VHandle@@@Z 008D0660 f i core.o
-1000	PORTED	0002:000e1180 ?GetIndex@?$SizedHandle@$08$0BH@@@QBEHXZ 008D0680 f i core.o
-1001	PORTED	0002:000e1190 ?GetKey@?$SizedHandle@$08$0BH@@@QBEHXZ 008D0690 f i core.o
-1002	PORTED	0002:000e11a0 ?GetNumWords@?$BitSet@$0DB@@@SAHXZ 008D06A0 f i core.o
-1003	PORTED	0002:000e11b0 ?capacity@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QBEHXZ 008D06B0 f i core.o
-1004	PORTED	0002:000e11c0 ?set_size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEXH@Z 008D06C0 f i core.o
-1005	PORTED	0002:000e11e0 ??0DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ 008D06E0 f i core.o
-1006	PORTED	0002:000e1200 ?GetObject@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@XZ 008D0700 f i core.o
-1007	PORTED	0002:000e1210 ?SetObject@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXPAVActiveEffectSet@@@Z 008D0710 f i core.o
-1008	PORTED	0002:000e1220 ?GetKey@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEHXZ 008D0720 f i core.o
-1009	PORTED	0002:000e1230 ?Release@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D0730 f i core.o
+998	FIXED	0002:000e1060 ??0?$SizedHandle@$08$0BH@@@QAE@HH@Z 008D0560 f i core.o FIXED: added IDA-matched Handle.h bounds assertions and packing in a953d431; IDA 0x004E1060
+999	VERIFIED	0002:000e1160 ??0?$SizedHandle@$08$0BH@@@QAE@VHandle@@@Z 008D0660 f i core.o VERIFIED: existing mVal copy matches IDA 0x004E1160
+1000	FIXED	0002:000e1180 ?GetIndex@?$SizedHandle@$08$0BH@@@QBEHXZ 008D0680 f i core.o FIXED: return type/mask corrected to IDA in a953d431; IDA 0x004E1180
+1001	FIXED	0002:000e1190 ?GetKey@?$SizedHandle@$08$0BH@@@QBEHXZ 008D0690 f i core.o FIXED: return type/shift corrected to IDA in a953d431; IDA 0x004E1190
+1002	VERIFIED	0002:000e11a0 ?GetNumWords@?$BitSet@$0DB@@@SAHXZ 008D06A0 f i core.o VERIFIED: generic BitSet<N>::GetNumWords returns 2 for N=49, matching IDA 0x004E11A0
+1003	VERIFIED	0002:000e11b0 ?capacity@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QBEHXZ 008D06B0 f i core.o VERIFIED: generic ae_sized_array capacity returns 512, matching IDA 0x004E11B0
+1004	FIXED	0002:000e11c0 ?set_size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEXH@Z 008D06C0 f i core.o FIXED: shared set_size assignment added in 1f7c5015; IDA 0x004E11C0
+1005	VERIFIED	0002:000e11e0 ??0DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ 008D06E0 f i core.o VERIFIED: shared HandleDb DbElement initializes mObject=null and mKey=1, matching IDA 0x004E11E0
+1006	VERIFIED	0002:000e1200 ?GetObject@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@XZ 008D0700 f i core.o VERIFIED: shared DbElement GetObject returns mObject, matching IDA 0x004E1200
+1007	VERIFIED	0002:000e1210 ?SetObject@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXPAVActiveEffectSet@@@Z 008D0710 f i core.o VERIFIED: shared DbElement SetObject stores mObject, matching IDA 0x004E1210
+1008	VERIFIED	0002:000e1220 ?GetKey@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEHXZ 008D0720 f i core.o VERIFIED: shared DbElement GetKey returns mKey, matching IDA 0x004E1220
+1009	VERIFIED	0002:000e1230 ?Release@DbElement@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D0730 f i core.o VERIFIED: shared DbElement Release increments mKey and nulls mObject, matching IDA 0x004E1230
 1010	SKIPPED	0002:000e1240 ??A?$ae_array@PAVPhysDataBank@@$0GD@@@QAEAAPAVPhysDataBank@@H@Z 008D0740 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1011	SKIPPED	0002:000e12c0 ?size@?$InplaceVector@PBVStringTableEntry@@@@QBEIXZ 008D07C0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1012	SKIPPED	0002:000e12d0 ??A?$InplaceVector@PBVStringTableEntry@@@@QAEAAPBVStringTableEntry@@I@Z 008D07D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1013	SKIPPED	0002:000e1350 ??A?$ae_array@PAVDbTablesetBank@@$0GD@@@QAEAAPAVDbTablesetBank@@H@Z 008D0850 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1014	SKIPPED	0002:000e13d0 ??A?$ae_array@PAVConfigStringBank@@$0GD@@@QAEAAPAVConfigStringBank@@H@Z 008D08D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1015	PORTED	0002:000e1450 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPAVRumbleEffectInstance@@PAUdlist_node@1@@Z 008D0950 f i core.o
-1016	PORTED	0002:000e1460 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPBVRumbleEffectInstance@@PBUdlist_node@1@@Z 008D0960 f i core.o
-1017	PORTED	0002:000e1470 ?clear@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D0970 f i core.o
-1018	PORTED	0002:000e1490 ?validate@?$reserved_dlist@VRumbleEffectInstance@@@@QBEXXZ 008D0990 f i core.o
-1019	PORTED	0002:000e14a0 ?pop@dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D09A0 f i core.o
-1020	PORTED	0002:000e14c0 ?size@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBEHXZ 008D09C0 f i core.o
+1015	FIXED	0002:000e1450 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPAVRumbleEffectInstance@@PAUdlist_node@1@@Z 008D0950 f i core.o FIXED: shared node_to_object cast added in bf32c889; IDA 0x004E1450
+1016	FIXED	0002:000e1460 ?node_to_object@?$reserved_dlist@VRumbleEffectInstance@@@@SAPBVRumbleEffectInstance@@PBUdlist_node@1@@Z 008D0960 f i core.o FIXED: shared const node_to_object cast added in bf32c889; IDA 0x004E1460
+1017	FIXED	0002:000e1470 ?clear@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D0970 f i core.o FIXED: shared sentinel reset added in bf32c889; IDA 0x004E1470
+1018	VERIFIED	0002:000e1490 ?validate@?$reserved_dlist@VRumbleEffectInstance@@@@QBEXXZ 008D0990 f i core.o VERIFIED: existing empty validate body matches IDA 0x004E1490
+1019	FIXED	0002:000e14a0 ?pop@dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D09A0 f i core.o FIXED: shared dlist_node unlink added in bf32c889; IDA 0x004E14A0
+1020	VERIFIED	0002:000e14c0 ?size@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBEHXZ 008D09C0 f i core.o VERIFIED: existing m_size accessor matches IDA 0x004E14C0
 1021	SKIPPED	0002:000e14d0 ?Deref@?$IVPointer@VDbTableSet@@@@ABEPAVDbTableSet@@XZ 008D09D0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1022	PORTED	0002:000e14f0 ??0iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@AAE@PAPBVDbTable@@@Z 008D09F0 f i core.o
+1022	VERIFIED	0002:000e14f0 ??0iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@AAE@PAPBVDbTable@@@Z 008D09F0 f i core.o VERIFIED: existing ae_sized_array iterator stores the supplied element pointer, matching IDA 0x004E14F0
 1023	SKIPPED	0002:000e1510 ?capacity@?$ae_fixed_string@$0IA@E@@SAHXZ 008D0A10 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1024	SKIPPED	0002:000e1520 ?capacity@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008D0A20 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1025	SKIPPED	0002:000e1550 ??0?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QAE@XZ 008D0A50 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1026	PORTED	0002:000e1560 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@XZ 008D0A60 f i core.o
-1027	PORTED	0002:000e1580 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAUdlist_node@1@0@Z 008D0A80 f i core.o
-1028	PORTED	0002:000e15a0 ?get_node@iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEPAUdlist_node@2@XZ 008D0AA0 f i core.o
-1029	PORTED	0002:000e15b0 ?compare@iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV12@@Z 008D0AB0 f i core.o
-1030	PORTED	0002:000e15d0 ??0const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PBUdlist_node@1@0@Z 008D0AD0 f i core.o
-1031	PORTED	0002:000e15f0 ?compare@const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV12@@Z 008D0AF0 f i core.o
+1026	FIXED	0002:000e1560 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@XZ 008D0A60 f i core.o FIXED: explicit null iterator constructor added in dd84f260; IDA 0x004E1560
+1027	VERIFIED	0002:000e1580 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAUdlist_node@1@0@Z 008D0A80 f i core.o VERIFIED: existing cur/next constructor matches IDA 0x004E1580
+1028	FIXED	0002:000e15a0 ?get_node@iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEPAUdlist_node@2@XZ 008D0AA0 f i core.o FIXED: iterator get_node accessor added in dd84f260; IDA 0x004E15A0
+1029	FIXED	0002:000e15b0 ?compare@iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV12@@Z 008D0AB0 f i core.o FIXED: shared iterator compare added in 1528f7a9; IDA 0x004E15B0
+1030	VERIFIED	0002:000e15d0 ??0const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PBUdlist_node@1@0@Z 008D0AD0 f i core.o VERIFIED: existing const cur/next constructor matches IDA 0x004E15D0
+1031	FIXED	0002:000e15f0 ?compare@const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV12@@Z 008D0AF0 f i core.o FIXED: shared const_iterator compare added in 1528f7a9; IDA 0x004E15F0
 1032	SKIPPED	0002:000e1610 ?capacity@?$ae_fixed_string@$0BAA@G@@SAHXZ 008D0B10 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1033	PORTED	0002:000e1620 ??Diterator@?$BitSet@$0CAA@@@QBEHXZ 008D0B20 f i core.o
 1034	SKIPPED	0002:000e1630 ?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPADXZ 008D0B30 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
