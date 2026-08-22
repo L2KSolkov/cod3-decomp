@@ -7994,11 +7994,65 @@ nalGenericPose*
         AnimQueue::MAX_NUM_TEMP_SOLDIER_POSES];
 
 // Stub callees used by AnimQueue (real bodies in the nal_xboxr port).
-// nalGenericPose::nalGenericPose(const nalGenericPose&, bool)
-inline nalGenericPose::nalGenericPose(const nalGenericPose& other,
-                                      bool copyData)
+// ea: 0x0086E740
+nalGenericPose::nalGenericPose(const nalGenericPose& other, bool copyData)
+    : nalBasePose(), PoseData(nullptr), AllocedData(false)
 {
-    (void)other; (void)copyData;
+    Skeleton = other.Skeleton;
+    LOD = other.LOD;
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(Skeleton);
+
+    if (tlIsStackPtr(this))
+    {
+        const unsigned aligned =
+            ~(static_cast<unsigned>(skeleton->PoseAlignment) - 1u)
+            & (PoseSP + static_cast<unsigned>(skeleton->PoseAlignment) - 1u);
+        PoseData = &PoseStack[aligned];
+        const unsigned next = (static_cast<unsigned>(skeleton->PoseSize)
+                                + aligned + 3u) & ~3u;
+        if (next + 4u <= sizeof(PoseStack))
+        {
+            PoseStack[next] = static_cast<unsigned char>(PoseSP);
+            PoseSP = next + 4u;
+        }
+        else
+        {
+            PoseData = nullptr;
+        }
+    }
+
+    if (PoseData == nullptr)
+    {
+        PoseData = tlMemAlloc(static_cast<unsigned>(skeleton->PoseSize),
+                              static_cast<unsigned>(skeleton->PoseAlignment),
+                              0u);
+        AllocedData = true;
+    }
+
+    void* data = PoseData;
+    for (int componentIndex = 0;
+         componentIndex < skeleton->PoseComponentCount; ++componentIndex)
+    {
+        const nalComponentInfo* component =
+            &skeleton->PoseComponentInfo[componentIndex];
+        nalComponentConstructRaw(component->Component, component, &data);
+    }
+
+    if (copyData)
+    {
+        if (Skeleton != other.Skeleton
+            && _tlAssert(
+                   "source/common/nal_generic.cpp", 251,
+                   "GetSkeleton() == pose.GetSkeleton()",
+                   "attempting to copy a pose type that doesn't match"))
+        {
+            __debugbreak();
+        }
+        LOD = other.LOD;
+        memcpy(PoseData, other.PoseData,
+               static_cast<size_t>(skeleton->PoseSize));
+    }
 }
 
 // ea: 0x008549D0
