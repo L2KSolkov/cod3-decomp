@@ -1344,7 +1344,7 @@ index	status	map_line
 1343	VERIFIED	0002:000e7ee0 ??1DbFieldSet@@UAE@XZ 008D73E0 f i core.o
 1344	SKIPPED	0002:000e7ef0 ??_GDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1345	SKIPPED	0002:000e7ef0 ??_EDbFieldSet@@UAEPAXI@Z 008D73F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1346	PORTED	0002:000e7f20 ??0DbQuery@@QAE@ABVDbTable@@@Z 008D7420 f i core.o
+1346	FIXED	0002:000e7f20 ??0DbQuery@@QAE@ABVDbTable@@@Z 008D7420 f i core.o	FIXED: exact IDA constructor and caller now construct DbQuery instead of memset-zeroing its vtable and DbFieldSet
 1347	VERIFIED	0002:000e7f60 ??1DbQuery@@UAE@XZ 008D7460 f i core.o
 1348	SKIPPED	0002:000e7fb0 ??_GDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1349	SKIPPED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
