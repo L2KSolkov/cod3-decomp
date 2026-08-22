@@ -943,15 +943,15 @@ index	status	map_line
 942	SKIPPED	0002:0025ef40 ?max_size@?$allocator@U?$pair@HH@std@@@std@@QBEIXZ 00A4E440 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 943	SKIPPED	0002:0025ef50 ??0const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A4E450 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 944	SKIPPED	0002:0025ef70 ??8const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A4E470 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-945	PORTED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o
-946	PORTED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o
+945	PORTED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o	IDA: returns ~(a - 1) & (p + a - 1); explicit specialization restored in g_accessors.cpp.
+946	PORTED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o	IDA: aligns p + a - 1 down with ~(a - 1); explicit char* specialization restored in g_accessors.cpp.
 947	SKIPPED	0002:0025efd0 ??$tl_max@IH@@YAIABIABH@Z 00A4E4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 948	SKIPPED	0002:0025eff0 ??$fill@PAU?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@0ABU10@@Z 00A4E4F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 949	SKIPPED	0002:0025f020 ??$_Allocate@U?$pair@HH@std@@@std@@YAPAU?$pair@HH@0@IPAU10@@Z 00A4E520 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 950	SKIPPED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 951	SKIPPED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 952	SKIPPED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-953	PORTED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o
+953	VERIFIED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o	IDA: saves m_node/m_next, advances only when m_next is non-null, and returns the saved iterator.
 954	SKIPPED	0002:0025f1a0 ??0?$IVPointer@VGdbFileSet@@@@QAE@W4TPakId@@PAVGdbFileSet@@@Z 00A4E6A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 955	SKIPPED	0002:0025f1c0 ??0?$IVPointer@VGdbFileSet@@@@QAE@XZ 00A4E6C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	PORTED	0002:0025f1e0 ??R?$DelFunctor@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A4E6E0 f i game.o
