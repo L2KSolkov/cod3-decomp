@@ -769,7 +769,7 @@ index	status	map_line
 768	VERIFIED	0002:0056bb30 ?DestroyIcon@_mp_scf@@YAXVentity@Broc@@@Z 00D5B030 f mp_util_wad.o
 769	VERIFIED	0002:0056bb80 ?WaitForNoTouchFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D5B080 f mp_util_wad.o
 770	PORTED	0002:0056bcd0 ?RenderFlagInfo@_mp_scf@@YAXVentity@Broc@@Ubint@@1@Z 00D5B1D0 f mp_util_wad.o	PORTED: implemented IDA 0x0096BCD0 flag-key/holder/home-position/drop text path; source commit 6d6c6ba2
-771	VERIFIED	0002:0056c140 ?CallbackDebugRender@_mp_scf@@YAXXZ 00D5B640 f mp_util_wad.o
+771	PORTED	0002:0056c140 ?CallbackDebugRender@_mp_scf@@YAXXZ 00D5B640 f mp_util_wad.o	PORTED: replaced no-op with IDA 0x0096C140 cvar-gated flag/base geometry and player state/flag/icon diagnostics; source commit 9379b482
 772	VERIFIED	0002:0056c9a0 ?main@_mp_shellshock@@YAXXZ 00D5BEA0 f mp_util_wad.o
 773	PORTED	0002:0056c9c0 ?ShellshockOnDamage@_mp_shellshock@@YAXVentity@Broc@@Ubint@@1@Z 00D5BEC0 f mp_util_wad.o	PORTED: IDA reverified cause set {27,3,4,5,6,17,18,9,10}, damage thresholds 25/50/90, blur durations, and default ShellShock call
 774	PORTED	0002:0056cc60 ?ShellShock@Broc@@YAXABVentity@1@ABVstring@1@M@Z 00D5C160 f i mp_util_wad.o	PORTED: IDA reverified direct entity-handle forwarding to mShellShock
