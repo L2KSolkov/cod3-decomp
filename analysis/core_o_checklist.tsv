@@ -948,18 +948,18 @@ index	status	map_line
 947	VERIFIED	0002:000e0960 ??Eiterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QAEAAV01@XZ 008CFE60 f i core.o VERIFIED: IDA 0x004E0960 increments m_ptr and returns this; existing template matches
 948	VERIFIED	0002:000e0970 ??9iterator@?$ae_sized_array@PBVDbTable@@$0BA@@@QBE_NV01@@Z 008CFE70 f i core.o VERIFIED: IDA 0x004E0970 compares iterator m_ptr values; existing template matches
 949	SKIPPED	0002:000e0990 ?size@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008CFE90 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-950	PORTED	0002:000e09c0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEAAV01@XZ 008CFEC0 f i core.o
-951	PORTED	0002:000e09e0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AV01@H@Z 008CFEE0 f i core.o
-952	PORTED	0002:000e0a10 ??Econst_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEAAV01@XZ 008CFF10 f i core.o
+950	VERIFIED	0002:000e09c0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEAAV01@XZ 008CFEC0 f i core.o VERIFIED: IDA 0x004E09C0 advances when m_next exists and returns this; existing iterator matches
+951	VERIFIED	0002:000e09e0 ??Eiterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE?AV01@H@Z 008CFEE0 f i core.o VERIFIED: IDA 0x004E09E0 copies old node/next into postfix result and advances when next exists; existing iterator matches
+952	VERIFIED	0002:000e0a10 ??Econst_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAEAAV01@XZ 008CFF10 f i core.o VERIFIED: IDA 0x004E0A10 asserts m_next != 0 at reserved_dlist.h line 501 then advances; existing const_iterator matches
 953	SKIPPED	0002:000e0a90 ?c_str@?$ae_fixed_string@$0EAA@G@@QBEPBDXZ 008CFF90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 954	SKIPPED	0002:000e0aa0 ?empty@?$ae_fixed_string@$0BAA@G@@QBE_NXZ 008CFFA0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 955	SKIPPED	0002:000e0ab0 ?length@?$ae_fixed_string@$0BAA@G@@QBEHXZ 008CFFB0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	SKIPPED	0002:000e0ac0 ?find@?$ae_fixed_string@$0BAA@G@@QBEHDH@Z 008CFFC0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-957	PORTED	0002:000e0af0 ??0?$ae_pair@PBDW4ELanguage@@@@QAE@ABQBDABW4ELanguage@@@Z 008CFFF0 f i core.o
+957	VERIFIED	0002:000e0af0 ??0?$ae_pair@PBDW4ELanguage@@@@QAE@ABQBDABW4ELanguage@@@Z 008CFFF0 f i core.o VERIFIED: IDA 0x004E0AF0 copies the pair arguments; existing ae_pair constructor matches
 958	SKIPPED	0002:000e0b10 ??_G?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 959	SKIPPED	0002:000e0b10 ??_E?$InplaceAssetBankSet@VDestructibleBank@@@@UAEPAXI@Z 008D0010 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 960	VERIFIED	0002:000e0b40 ??4PendingQuery@EffectEventSys@@QAEAAU01@ABU01@@Z 008D0040 f i core.o
-961	PORTED	0002:000e0c30 ??0?$ae_sized_array_base@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D0130 f i core.o
+961	VERIFIED	0002:000e0c30 ??0?$ae_sized_array_base@UEffectRef@EffectEventSys@@$0CA@@@QAE@XZ 008D0130 f i core.o VERIFIED: IDA 0x004E0C30 zero-initializes the EffectRef elements through their existing constructors
 962	SKIPPED	0002:000e0c60 ??_E?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 963	SKIPPED	0002:000e0c60 ??_G?$InplaceAssetBankSet@VPhysDataBank@@@@UAEPAXI@Z 008D0160 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 964	SKIPPED	0002:000e0c90 ??_G?$InplaceAssetBankSet@VStringTableBank@@@@UAEPAXI@Z 008D0190 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
@@ -968,21 +968,21 @@ index	status	map_line
 967	SKIPPED	0002:000e0cc0 ??_E?$InplaceAssetBankSet@VDbTablesetBank@@@@UAEPAXI@Z 008D01C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 968	SKIPPED	0002:000e0cf0 ??_G?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 969	SKIPPED	0002:000e0cf0 ??_E?$InplaceAssetBankSet@VConfigStringBank@@@@UAEPAXI@Z 008D01F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-970	PORTED	0002:000e0d20 ??_FPoolConfig@PoolAllocator@@QAEXXZ 008D0220 f i core.o
+970	FIXED	0002:000e0d20 ??_FPoolConfig@PoolAllocator@@QAEXXZ 008D0220 f i core.o FIXED: source implementation in 17df9638; IDA 0x004E0D20 initializes blockSize=0, blockAlign=4, numBlocks=0, and block=null
 971	SKIPPED	0002:000e0d40 ?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ 008D0240 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 972	SKIPPED	0002:000e0d60 ??0?$allocator@D@std@@QAE@XZ 008D0260 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 973	SKIPPED	0002:000e0d70 ??0?$allocator@D@std@@QAE@ABV01@@Z 008D0270 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-974	PORTED	0002:000e0d80 ?node_to_object@?$reserved_dlist@VEndOnScriptNode@@@@SAPAVEndOnScriptNode@@PAUdlist_node@1@@Z 008D0280 f i core.o
-975	PORTED	0002:000e0d90 ?clear@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 008D0290 f i core.o
-976	PORTED	0002:000e0db0 ?validate@?$reserved_dlist@VEndOnScriptNode@@@@QBEXXZ 008D02B0 f i core.o
-977	PORTED	0002:000e0dc0 ?node_to_object@?$reserved_dlist@VEntityNotify@@@@SAPAVEntityNotify@@PAUdlist_node@1@@Z 008D02C0 f i core.o
-978	PORTED	0002:000e0dd0 ?node_to_object@?$reserved_dlist@VEntityNotify@@@@SAPBVEntityNotify@@PBUdlist_node@1@@Z 008D02D0 f i core.o
-979	PORTED	0002:000e0de0 ?clear@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D02E0 f i core.o
-980	PORTED	0002:000e0e00 ?pop@dlist_node@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D0300 f i core.o
-981	PORTED	0002:000e0e20 ?node_to_object@?$reserved_dlist@VEntityNotifySet@@@@SAPAVEntityNotifySet@@PAUdlist_node@1@@Z 008D0320 f i core.o
-982	PORTED	0002:000e0e30 ?clear@?$reserved_dlist@VEntityNotifySet@@@@QAEXXZ 008D0330 f i core.o
-983	PORTED	0002:000e0e50 ?validate@?$reserved_dlist@VEntityNotifySet@@@@QBEXXZ 008D0350 f i core.o
-984	PORTED	0002:000e0e60 ?pop@dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAEXXZ 008D0360 f i core.o
+974	FIXED	0002:000e0d80 ?node_to_object@?$reserved_dlist@VEndOnScriptNode@@@@SAPAVEndOnScriptNode@@PAUdlist_node@1@@Z 008D0280 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0D80 returns the node as EndOnScriptNode
+975	FIXED	0002:000e0d90 ?clear@?$reserved_dlist@VEndOnScriptNode@@@@QAEXXZ 008D0290 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0D90 resets size and sentinel links
+976	VERIFIED	0002:000e0db0 ?validate@?$reserved_dlist@VEndOnScriptNode@@@@QBEXXZ 008D02B0 f i core.o VERIFIED: IDA 0x004E0DB0 is an empty body; existing validate matches
+977	FIXED	0002:000e0dc0 ?node_to_object@?$reserved_dlist@VEntityNotify@@@@SAPAVEntityNotify@@PAUdlist_node@1@@Z 008D02C0 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0DC0 returns the node as EntityNotify
+978	FIXED	0002:000e0dd0 ?node_to_object@?$reserved_dlist@VEntityNotify@@@@SAPBVEntityNotify@@PBUdlist_node@1@@Z 008D02D0 f i core.o FIXED: shared reserved_dlist const helper added in bf32c889; IDA 0x004E0DD0 returns the node as const EntityNotify
+979	FIXED	0002:000e0de0 ?clear@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D02E0 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0DE0 resets size and sentinel links
+980	FIXED	0002:000e0e00 ?pop@dlist_node@?$reserved_dlist@VEntityNotify@@@@QAEXXZ 008D0300 f i core.o FIXED: shared dlist_node helper added in bf32c889; IDA 0x004E0E00 unlinks next and prev neighbors
+981	FIXED	0002:000e0e20 ?node_to_object@?$reserved_dlist@VEntityNotifySet@@@@SAPAVEntityNotifySet@@PAUdlist_node@1@@Z 008D0320 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0E20 returns the node as EntityNotifySet
+982	FIXED	0002:000e0e30 ?clear@?$reserved_dlist@VEntityNotifySet@@@@QAEXXZ 008D0330 f i core.o FIXED: shared reserved_dlist helper added in bf32c889; IDA 0x004E0E30 resets size and sentinel links
+983	VERIFIED	0002:000e0e50 ?validate@?$reserved_dlist@VEntityNotifySet@@@@QBEXXZ 008D0350 f i core.o VERIFIED: IDA 0x004E0E50 is an empty body; existing validate matches
+984	FIXED	0002:000e0e60 ?pop@dlist_node@?$reserved_dlist@VEntityNotifySet@@@@QAEXXZ 008D0360 f i core.o FIXED: shared dlist_node helper added in bf32c889; IDA 0x004E0E60 unlinks next and prev neighbors
 985	PORTED	0002:000e0e80 ?GetNumWords@?$BitSet@$0EA@@@SAHXZ 008D0380 f i core.o
 986	PORTED	0002:000e0e90 ?GetNumWords@?$BitSet@$0PP@@@SAHXZ 008D0390 f i core.o
 987	PORTED	0002:000e0ea0 ?set_size@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXH@Z 008D03A0 f i core.o
