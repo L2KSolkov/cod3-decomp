@@ -628,7 +628,7 @@ index	status	map_line
 627	VERIFIED	0002:000d1d80 ?PostEffectEventFootstep@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z 008C1280 f core.o
 628	VERIFIED	0002:000d1ec0 ?PostEffectEventGearRattle@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z 008C13C0 f core.o
 629	VERIFIED	0002:000d1fd0 ?PostEffectEventLanding@@YA?AVHandle@@PBVEntity@@ABUCollisionDesc@@@Z 008C14D0 f core.o
-630	PORTED	0002:000d2080 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z 008C1580 f core.o
+630	FIXED	0002:000d2080 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z 008C1580 f core.o	FIXED: matched IDA 0x004D2080 sentinel predicate using per-vector OR checks; source commit ac8a0ac9
 631	VERIFIED	0002:000d2340 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBD_NW4TPakId@@_N@Z 008C1840 f core.o
 632	VERIFIED	0002:000d24c0 ?PostEffectEventQueueDialog@@YA?AVHandle@@PBVEntity@@PBDH@Z 008C19C0 f core.o
 633	VERIFIED	0002:000d2630 ?PostEffectEventScriptCall_Dir@@YA?AVHandle@@PBVEntity@@PBDQBM_N@Z 008C1B30 f core.o
