@@ -123,7 +123,7 @@ static_assert(sizeof(nalPositionOrientation) == 0x20,
               "nalPositionOrientation size mismatch");
 
 namespace nalGeneric {
-struct nalGenericSkeleton;
+class nalGenericSkeleton;
 struct nalGenericBoneHandle {
     const nalGenericSkeleton* Skeleton;  // +0x00
     int BoneIndex;                       // +0x04
