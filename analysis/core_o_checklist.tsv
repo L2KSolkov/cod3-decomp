@@ -1139,7 +1139,7 @@ index	status	map_line
 1138	PORTED	0002:000e30f0 ?DelRef@strdata@@QAE_NXZ 008D25F0 f i core.o
 1139	SKIPPED	0002:000e3130 ??_EDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1140	SKIPPED	0002:000e3130 ??_GDialogueManager@@UAEPAXI@Z 008D2630 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1141	PORTED	0002:000e3160 ??1?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D2660 f i core.o
+1141	SKIPPED	0002:000e3160 ??1?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D2660 f i core.o  SKIPPED: compiler-generated EH vector destructor; member destruction is supplied by the C++ compiler
 1142	VERIFIED	0002:000e3180 ??0Params@AbstractEffectShakeAndRumble@@QAE@XZ 008D2680 f i core.o
 1143	VERIFIED	0002:000e3190 ??0Params@AbstractEffectLight@@QAE@XZ 008D2690 f i core.o
 1144	SKIPPED	0002:000e31a0 ??_GRumbleEffectInstance@@QAEPAXI@Z 008D26A0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
