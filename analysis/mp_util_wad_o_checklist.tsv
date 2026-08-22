@@ -853,7 +853,7 @@ index	status	map_line
 852	VERIFIED	0002:00576bb0 ?CallbackHostOptionsChanged@_mp_war@@YAXH@Z 00D660B0 f mp_util_wad.o
 853	VERIFIED	0002:00576bf0 ?CallbackGameState@_mp_war@@YAXHHHHHHHHHHHHH@Z 00D660F0 f mp_util_wad.o
 854	VERIFIED	0002:00576c50 ?CallbackPlayerKilled@_mp_war@@YAXVentity@Broc@@00HHH@Z 00D66150 f mp_util_wad.o
-855	VERIFIED	0002:00576cb0 ?CallbackGameStateDOM@_mp_war@@YAXHHHHH@Z 00D661B0 f mp_util_wad.o
+855	FIXED	0002:00576cb0 ?CallbackGameStateDOM@_mp_war@@YAXHHHHH@Z 00D661B0 f mp_util_wad.o	FIXED: ported IDA 0x00976CB0 status normalization, owner/team derivation, warIndex selection, flag model updates, terminal snapping, and UpdateAllowedCap call
 856	PORTED	0002:00577460 ??Xbint@@QAEHH@Z 00D66960 f i mp_util_wad.o	PORTED: added exact IDA 0x00977460 AssertDefined, multiply, and return implementation
 857	PORTED	0002:005774a0 ??4bfloat@@QAEMN@Z 00D669A0 f i mp_util_wad.o	PORTED: added exact IDA 0x009774A0 long-double assignment and return implementation
 858	PORTED	0002:005774d0 ??M@YA?AUbbool@@Ubfloat@@H@Z 00D669D0 f i mp_util_wad.o	PORTED: added exact IDA 0x009774D0 comparison returning rhs > lhs
