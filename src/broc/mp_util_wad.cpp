@@ -11198,7 +11198,255 @@ void HandleDropFlag(Broc::entity guy) {
 // HandlePickupFlag - ea: 0x950F30
 void HandlePickupFlag(int netID, Broc::entity pickerupper,
                       Broc::bbool playSounds, Broc::bbool giveStats) {
-    (void)netID; (void)pickerupper; (void)playSounds; (void)giveStats;
+    Broc::string flagTeam("allies");
+    Broc::entity flag = mp_util_wad::pLevel->allies_flag_ent;
+    Broc::bint flagObjective(1);
+    Broc::string dialogMessage("MP_CTF_AlliesTaken");
+    if (netID == 1) {
+        flagTeam = "axis";
+        flag = mp_util_wad::pLevel->axis_flag_ent;
+        flagObjective = 0;
+        dialogMessage = "MP_CTF_AxisTaken";
+    }
+
+    Broc::bbool atBase;
+    IsFlagAtBase(&atBase, flag);
+
+    Broc::string pickerTeam;
+    bool opposingPicker = Broc::IsDefined(pickerupper);
+    if (opposingPicker) {
+        mp_util_wad::entity_get_team(&pickerTeam, pickerupper);
+        opposingPicker = pickerTeam != flagTeam;
+        pickerTeam.~string();
+    }
+
+    if (opposingPicker) {
+        Broc::bint playerState;
+        mp_util_wad::entity_get_playerState(&playerState, pickerupper);
+        if ((int)playerState != 3) {
+            dialogMessage.~string();
+            flagTeam.~string();
+            return;
+        }
+
+        Broc::string flagteam("axis");
+        Broc::string otherteam("allies");
+        Broc::bint objective(3);
+        if (netID == 1) {
+            dialogMessage = "MP_CTF_AxisTaken";
+            flagteam = "allies";
+            otherteam = "axis";
+            objective = 2;
+        }
+
+        Broc::bint now;
+        Broc::GetTime(&now);
+        *mp_util_wad::GetEE_pickupCaptureDelayTime(pickerupper) =
+            (int)now + 1000;
+
+        Broc::bbool hasSound;
+        mp_util_wad::IsEEDefined_sound_handle(&hasSound, pickerupper);
+        if ((bool)hasSound) {
+            Broc::EffectEventStopEmitting(
+                (unsigned int)(int)*mp_util_wad::GetEE_sound_handle(
+                    pickerupper));
+            *mp_util_wad::GetEE_sound_handle(pickerupper) = 0;
+        }
+
+        Broc::string script("FLAG_FLAPPING");
+        int soundHandle = Broc::EffectEventPlay(&pickerupper, &script);
+        *mp_util_wad::GetEE_sound_handle(pickerupper) = soundHandle;
+        script.~string();
+
+        if ((bool)playSounds) {
+            Broc::entity level = mp_util_wad::pLevel != nullptr
+                                      ? mp_util_wad::pLevel->_base.entity
+                                      : Broc::entity();
+            void* soundFtor = _mp_audio::PlayTeamSound__functor(
+                level, Broc::string(flagteam),
+                Broc::string("MX_CTF_FlagTaken"),
+                Broc::string("MX_CTF_FlagTakenEnemy"));
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                __LINE__, "_mp_audio::PlayTeamSound",
+                                soundFtor);
+            if ((bool)atBase) {
+                if (flagteam == "allies") {
+                    Broc::entity dialogLevel = mp_util_wad::pLevel != nullptr
+                                                   ? mp_util_wad::pLevel->_base.entity
+                                                   : Broc::entity();
+                    void* dialogFtor = _mp_audio::PlayTeamDialog__functor(
+                        dialogLevel, Broc::string("allies"),
+                        Broc::string("MP_CTF_AlliedGotFlag_Allies"),
+                        Broc::bfloat(0.5f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        dialogFtor);
+
+                    Broc::entity returnLevel = mp_util_wad::pLevel != nullptr
+                                                   ? mp_util_wad::pLevel->_base.entity
+                                                   : Broc::entity();
+                    void* returnFtor = _mp_audio::PlayTeamDialog__functor(
+                        returnLevel, Broc::string("axis"),
+                        Broc::string("MP_CTF_ReturnFlag_Axis"),
+                        Broc::bfloat(1.5f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        returnFtor);
+                    Broc::iprintln("MPCTF_AXIS_FLAG_TAKEN");
+                } else {
+                    Broc::entity dialogLevel = mp_util_wad::pLevel != nullptr
+                                                   ? mp_util_wad::pLevel->_base.entity
+                                                   : Broc::entity();
+                    void* dialogFtor = _mp_audio::PlayTeamDialog__functor(
+                        dialogLevel, Broc::string("axis"),
+                        Broc::string("MP_CTF_AxisGotFlag_Axis"),
+                        Broc::bfloat(0.5f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        dialogFtor);
+
+                    Broc::entity returnLevel = mp_util_wad::pLevel != nullptr
+                                                   ? mp_util_wad::pLevel->_base.entity
+                                                   : Broc::entity();
+                    void* returnFtor = _mp_audio::PlayTeamDialog__functor(
+                        returnLevel, Broc::string("allies"),
+                        Broc::string("MP_CTF_ReturnFlag_Allies"),
+                        Broc::bfloat(1.5f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        returnFtor);
+                    Broc::iprintln("MPCTF_ALLIES_FLAG_TAKEN");
+                }
+            }
+        }
+
+        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        Broc::GiveWeapon(&pickerupper, mp_util_wad::GetEE_weaponstr(flag));
+        Broc::string slot("flag");
+        Broc::SetWeaponSlotClipAmmo(&pickerupper, &slot, 1);
+        slot.~string();
+        Broc::SwitchToWeapon(pickerupper,
+                             *mp_util_wad::GetEE_weaponstr(flag));
+        Broc::SetOwner(&flag, &pickerupper);
+        EntityOff(flag);
+        *mp_util_wad::GetEE_holder(flag) = pickerupper;
+        *mp_util_wad::GetEE_holder(pickerupper) = flag;
+
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                  ? mp_util_wad::pLevel->_base.entity
+                                  : Broc::entity();
+        Broc::DialogPlay(level, &dialogMessage);
+        ObjectiveRing((int)objective, -1);
+        if ((bool)giveStats && (bool)atBase)
+            _mp_common::AddToPlayerStats(pickerupper, Broc::bint(16), 1);
+
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetLocalPlayerArray(&players);
+        players.~dyn_array();
+        otherteam.~string();
+        flagteam.~string();
+    }
+
+    HashStr pickupNotify;
+    pickupNotify.mVal = 0x87404C8Eu;
+    Broc::notify(flag, pickupNotify);
+    if (Broc::Code_IsLocalPlayer(pickerupper)) {
+        void* ftor = CompassUnderlay__functor(pickerupper);
+        Broc::thread_create(false,
+                            "c:\\cod\\code\\script\\_mp_ctf.bro",
+                            __LINE__, "CompassUnderlay", ftor);
+    }
+
+    Broc::string objectiveState((const char*)NULL);
+    objectiveState = netID == 1 ? "i_neutral_axis_c" : "i_neutral_allied_c";
+    Broc::string pickerTeamForReturn;
+    bool returnPath = !Broc::IsDefined(pickerupper);
+    if (!returnPath) {
+        mp_util_wad::entity_get_team(&pickerTeamForReturn, pickerupper);
+        returnPath = pickerTeamForReturn == flagTeam;
+        pickerTeamForReturn.~string();
+    }
+
+    if (returnPath) {
+        Broc::string returnedState((const char*)NULL);
+        if (Broc::IsDefined(pickerupper)) {
+            returnedState = netID == 1 ? "i_flag_axis_c" : "i_flag_allied_c";
+            if ((bool)playSounds) {
+                if (netID == 1) {
+                    Broc::entity level = mp_util_wad::pLevel != nullptr
+                                              ? mp_util_wad::pLevel->_base.entity
+                                              : Broc::entity();
+                    void* ftor = _mp_audio::PlayTeamDialog__functor(
+                        level, Broc::string("axis"),
+                        Broc::string("MP_CTF_AxisFlagReturned_Axis"),
+                        Broc::bfloat(0.1f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        ftor);
+                    Broc::entity level2 = mp_util_wad::pLevel != nullptr
+                                               ? mp_util_wad::pLevel->_base.entity
+                                               : Broc::entity();
+                    ftor = _mp_audio::PlayTeamDialog__functor(
+                        level2, Broc::string("allies"),
+                        Broc::string("MP_CTF_AxisFlagReturned_Allies"),
+                        Broc::bfloat(0.1f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        ftor);
+                    Broc::iprintln("MPCTF_AXIS_FLAG_RETURNED");
+                } else {
+                    Broc::entity level = mp_util_wad::pLevel != nullptr
+                                              ? mp_util_wad::pLevel->_base.entity
+                                              : Broc::entity();
+                    void* ftor = _mp_audio::PlayTeamDialog__functor(
+                        level, Broc::string("allies"),
+                        Broc::string("MP_CTF_AlliedFlagReturned_Allies"),
+                        Broc::bfloat(0.1f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        ftor);
+                    Broc::entity level2 = mp_util_wad::pLevel != nullptr
+                                               ? mp_util_wad::pLevel->_base.entity
+                                               : Broc::entity();
+                    ftor = _mp_audio::PlayTeamDialog__functor(
+                        level2, Broc::string("axis"),
+                        Broc::string("MP_CTF_AlliedFlagReturned_Axis"),
+                        Broc::bfloat(0.1f));
+                    Broc::thread_create(false,
+                                        "c:\\cod\\code\\script\\_mp_ctf.bro",
+                                        __LINE__, "_mp_audio::PlayTeamDialog",
+                                        ftor);
+                    Broc::iprintln("MPCTF_ALLIES_FLAG_RETURNED");
+                }
+            }
+        }
+
+        *mp_util_wad::GetEE_returnedSinceLastDeath(pickerupper) = 1;
+        if ((bool)giveStats)
+            _mp_common::AddToPlayerStats(pickerupper, Broc::bint(16), 1);
+
+        *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
+        Broc::vector angles;
+        Broc::vector origin;
+        mp_util_wad::entity_get_angles(&angles,
+                                       *mp_util_wad::GetEE_goal(flag));
+        mp_util_wad::entity_get_origin(&origin,
+                                       *mp_util_wad::GetEE_goal(flag));
+        UpdateFlagAndTrigger(flag, origin, angles);
+        returnedState.~string();
+    }
+
+    objectiveState.~string();
+    dialogMessage.~string();
+    flagTeam.~string();
 }
 
 // CallbackPickupScriptItem - ea: 0x952A60
