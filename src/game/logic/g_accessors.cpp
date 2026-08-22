@@ -2811,13 +2811,39 @@ class SizedHandle {
 public:
     unsigned int mVal;  // +0x00
     SizedHandle() : mVal(0) {}
-    SizedHandle(int index, int key)
+    SizedHandle(unsigned int index, int key)
     {
-        mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
+        mVal = 0;
+        if (index >= (1u << INDEX_BITS))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 49;
+            AeAssert::gCurrentExpr =
+                "index >= 0 && index <= ((1 << _IndexBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle index requires too many bits"))
+                __debugbreak();
+        }
+        if (key < 0 || key > ((1 << KEY_BITS) - 1))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 50;
+            AeAssert::gCurrentExpr =
+                "key >= 0 && key <= ((1 << _KeyBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle key requires too many bits"))
+                __debugbreak();
+        }
+        mVal = index | (key << INDEX_BITS);
     }
     SizedHandle(Handle h) { mVal = h.mVal; }
-    int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }
-    int GetKey() const { return (int)(mVal >> INDEX_BITS); }
+    unsigned int GetIndex() const
+    {
+        return mVal & ((1u << INDEX_BITS) - 1);
+    }
+    unsigned int GetKey() const { return mVal >> INDEX_BITS; }
 };
 
 template <typename T, int CAPACITY, typename H>
