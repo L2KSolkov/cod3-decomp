@@ -448,7 +448,7 @@ extern void InitPadAliasCommands();
 extern void SEH_Init_StringEd();
 extern void SEH_UpdateLanguageInfo();
 extern void MI_ResetMapList();
-extern int CL_PreAllocStrings();
+extern void CL_PreAllocStrings();
 extern void SetupPoolAllocator();
 extern ae_heap* SetupActorHeap();
 extern void init_dobj_trackers();

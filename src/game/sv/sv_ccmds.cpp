@@ -28,7 +28,7 @@ extern void Com_Memset(void* dest, int val, unsigned int count);
 extern void Con_Close(void);
 extern int CL_ClearState(void);
 extern int CL_Restart(void);
-extern int CL_ShutdownDebugData(void);
+extern void CL_ShutdownDebugData(void);
 extern void R_ShutdownDebug(void);
 extern void R_InitDebug(void);
 extern cvar_t* com_sv_running;

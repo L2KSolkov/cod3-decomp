@@ -526,6 +526,12 @@ void* mem_heap_malloc_ctx(unsigned size, int flags, const char* file, const char
     return mem_heap_malloc(flags, size);
 }
 
+// IDA canonical parameter order used by cl.o call sites.
+void* mem_heap_malloc_ctx(int alignment, unsigned size, const char* file,
+                          const char* func, int line) {
+    return mem_heap_malloc_ctx(size, alignment, file, func, line);
+}
+
 // mem_heap_free_check_reserve — check if freeing from reserve heap
 // ea: 0x7BBB00
 bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr) {

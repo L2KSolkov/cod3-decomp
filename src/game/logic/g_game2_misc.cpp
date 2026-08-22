@@ -1698,7 +1698,7 @@ extern int currCl;
 extern int Sys_Milliseconds();
 extern void CL_RecallKeys();     // cl.o
 extern void CL_BackUpKeys();     // cl.o
-extern int CL_ClearKeysForAll(); // cl.o
+extern void CL_ClearKeysForAll(); // cl.o
 extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
 
 void IN_Frame()

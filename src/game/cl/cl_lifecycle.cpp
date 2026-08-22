@@ -78,7 +78,7 @@ extern int Sys_Milliseconds();
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern void VM_Free(struct vm_s* vm);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
-extern int CL_ShutdownDebugData();
+extern void CL_ShutdownDebugData();
 extern void CL_ShutdownInput();
 extern void CL_ShutdownUI();
 extern void StatMon_Reset();
