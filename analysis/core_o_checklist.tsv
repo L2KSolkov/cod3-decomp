@@ -1080,7 +1080,7 @@ index	status	map_line
 1079	SKIPPED	0002:000e1e00 ??0?$IVPointer@VDbTableSet@@@@QAE@XZ 008D1300 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1080	SKIPPED	0002:000e1e20 ??0?$IVPointer@VConfigString@@@@QAE@W4TPakId@@PAVConfigString@@@Z 008D1320 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1081	SKIPPED	0002:000e1e40 ??0?$IVPointer@VConfigString@@@@QAE@XZ 008D1340 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1082	PORTED	0002:000e1e60 ??R?$DelFunctor@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D1360 f i core.o
+1082	VERIFIED	0002:000e1e60 ??R?$DelFunctor@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z 008D1360 f i core.o	VERIFIED: existing delete path is ABI-equivalent to IDA's WaitTilOutput deleting-destructor call, mParam clear, and EntityNotify pool release
 1083	SKIPPED	0002:000e1ea0 ??A?$DbColumnType@VInplaceString@@@@QBEABVInplaceString@@G@Z 008D13A0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1084	VERIFIED	0002:000e1f20 ??0?$ae_sized_array@W4TPakId@@$0CA@@@QAE@XZ 008D1420 f i core.o
 1085	VERIFIED	0002:000e1f30 ??A?$ae_sized_array@W4TPakId@@$0CA@@@QAEAAW4TPakId@@H@Z 008D1430 f i core.o
