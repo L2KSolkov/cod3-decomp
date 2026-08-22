@@ -1265,27 +1265,27 @@ index	status	map_line
 1264	VERIFIED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o VERIFIED: existing InplaceTreeFindUInt matches IDA traversal, assertions, and value pointer return
 1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1267	PORTED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o  PORTED: exact IDA iterator walk and delete/pool-release cleanup
+1267	VERIFIED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o  VERIFIED: existing iterator walk and DelFunctor cleanup are ABI-equivalent to IDA destructor/pool-release path
 1268	SKIPPED	0002:000e54e0 ??A?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVDbTableSet@@I@Z 008D49E0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1269	SKIPPED	0002:000e5560 ?Size@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBEIXZ 008D4A60 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1270	SKIPPED	0002:000e5570 ??A?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QAEPAVConfigString@@I@Z 008D4A70 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1271	PORTED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o  PORTED: exact IDA null-checking delete functor
+1271	VERIFIED	0002:000e55f0 ??R?$DelFunctor@VRumbleEffectInstance@@@@QAEXPAVRumbleEffectInstance@@@Z 008D4AF0 f i core.o  VERIFIED: existing null-checking delete path is ABI-equivalent to IDA destructor and pool release
 1272	SKIPPED	0002:000e5620 ??$FindIndex@PBD@?$InplaceAssetBank@VDbTableSet@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQBDPAI@Z 008D4B20 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1273	PORTED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o  PORTED: exact IDA column/row lookup and truncation assertions
+1273	VERIFIED	0002:000e5650 ??$GetFieldValuePtr@M@DbRow@@QBEPBMG@Z 008D4B50 f i core.o  VERIFIED: existing float field lookup and truncation assertions match IDA
 1274	SKIPPED	0002:000e5780 ??$FindIndex@PAD@?$InplaceAssetBank@VConfigString@@V?$InplaceTree@VInplaceString@@I@@@@QBE_NABQADPAI@Z 008D4C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1275	VERIFIED	0002:000e57b0 ?DeleteInst@BankManager@@SAXXZ 008D4CB0 f i core.o
 1276	VERIFIED	0002:000e5840 ?DeleteInst@PakManager@@SAXXZ 008D4D40 f i core.o
-1277	PORTED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o  PORTED: exact IDA string fallback through GetFieldValuePtr
-1278	PORTED	0002:000e5900 ?AddField@DbFieldSet@@QAEXPAVDbField@@_N@Z 008D4E00 f i core.o  PORTED: exact IDA bitmap updates, field insertion, and enum assertions
-1279	PORTED	0002:000e5aa0 ?IsFieldSpecified@DbFieldSet@@QBE_NI@Z 008D4FA0 f i core.o  PORTED: exact IDA specified-field bitmap test
+1277	VERIFIED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o  VERIFIED: existing string fallback through GetFieldValuePtr matches IDA
+1278	VERIFIED	0002:000e5900 ?AddField@DbFieldSet@@QAEXPAVDbField@@_N@Z 008D4E00 f i core.o  VERIFIED: existing bitmap updates, field insertion, and enum assertions match IDA
+1279	VERIFIED	0002:000e5aa0 ?IsFieldSpecified@DbFieldSet@@QBE_NI@Z 008D4FA0 f i core.o  VERIFIED: existing specified-field bitmap test matches IDA
 1280	VERIFIED	0002:000e5ac0 ?Clear@DbFieldSet@@QAEXXZ 008D4FC0 f i core.o
 1281	VERIFIED	0002:000e5b80 ?GetFieldById@DbFieldSet@@QBEPBVDbField@@I@Z 008D5080 f i core.o  VERIFIED: existing body matches IDA lookup and enum assertions
-1282	PORTED	0002:000e5cd0 ?IsFieldWeakById@DbFieldSet@@QBE_NI@Z 008D51D0 f i core.o  PORTED: exact IDA weak-field bitmap test
+1282	VERIFIED	0002:000e5cd0 ?IsFieldWeakById@DbFieldSet@@QBE_NI@Z 008D51D0 f i core.o  VERIFIED: existing weak-field bitmap test matches IDA
 1283	VERIFIED	0002:000e5cf0 ??0DestructibleBankManager@@QAE@XZ 008D51F0 f i core.o
 1284	SKIPPED	0002:000e5d10 ??_GDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1285	SKIPPED	0002:000e5d10 ??_EDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1286	VERIFIED	0002:000e5d40 ??1DestructibleBankManager@@UAE@XZ 008D5240 f i core.o
-1287	PORTED	0002:000e5d50 ?DereferenceHandle@EffectEventSys@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D5250 f i core.o  PORTED: exact IDA key validation and object return
+1287	VERIFIED	0002:000e5d50 ?DereferenceHandle@EffectEventSys@@QBEPAVActiveEffectSet@@VHandle@@@Z 008D5250 f i core.o  VERIFIED: existing handle mask, key validation, and object return match IDA
 1288	PORTED	0002:000e5da0 ?Clear@CachedQuery@EffectEventSys@@QAEXXZ 008D52A0 f i core.o  PORTED: exact IDA bitmap reset
 1289	PORTED	0002:000e5dc0 ?Clear@PendingQuery@EffectEventSys@@QAEXXZ 008D52C0 f i core.o  PORTED: exact IDA pending-query reset
 1290	VERIFIED	0002:000e5e20 ??0PhysDataBankManager@@QAE@XZ 008D5320 f i core.o
