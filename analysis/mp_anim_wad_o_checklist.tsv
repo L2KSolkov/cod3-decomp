@@ -25,10 +25,10 @@ index	status	map_line
 24	PORTED	0002:0058cfb0 ?IsEEDefined_script_offradius@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C4B0 f mp_anim_wad.o	PORTED: added IDA 0x0098CFB0 defined-check for key 0x4A5EE717; source commit 3d2faf8f
 25	PORTED	0002:0058d060 ?GetEE_script_location@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C560 f mp_anim_wad.o	PORTED: added IDA 0x0098D060 ExtendedEntity string reference for key 0x10E8AD0D; source commit 3d2faf8f
 26	PORTED	0002:0058d0b0 ?IsEEDefined_script_location@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C5B0 f mp_anim_wad.o	PORTED: added IDA 0x0098D0B0 defined-check for key 0x10E8AD0D; source commit 3d2faf8f
-27	PORTED	0002:0058d1b0 ?GetEE_script_area@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C6B0 f mp_anim_wad.o
-28	PORTED	0002:0058d200 ?IsEEDefined_script_area@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C700 f mp_anim_wad.o
-29	PORTED	0002:0058d300 ?GetEE_script_uniquename@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C800 f mp_anim_wad.o
-30	PORTED	0002:0058d350 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C850 f mp_anim_wad.o
+27	PORTED	0002:0058d1b0 ?GetEE_script_area@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C6B0 f mp_anim_wad.o	PORTED: added IDA 0x0098D1B0 ExtendedEntity string reference for key 0x0225670D; source commit 89bc788e
+28	PORTED	0002:0058d200 ?IsEEDefined_script_area@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C700 f mp_anim_wad.o	PORTED: added IDA 0x0098D200 defined-check for key 0x0225670D; source commit 89bc788e
+29	PORTED	0002:0058d300 ?GetEE_script_uniquename@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C800 f mp_anim_wad.o	PORTED: added IDA 0x0098D300 ExtendedEntity string reference for key 0xF8E5A82C; source commit 89bc788e
+30	PORTED	0002:0058d350 ?IsEEDefined_script_uniquename@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C850 f mp_anim_wad.o	PORTED: added IDA 0x0098D350 defined-check for key 0xF8E5A82C; source commit 89bc788e
 31	PORTED	0002:0058d450 ?GetEE_script_random@@YAAAUbint@@Ventity@Broc@@@Z 00D7C950 f mp_anim_wad.o
 32	PORTED	0002:0058d4a0 ?IsEEDefined_script_random@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C9A0 f mp_anim_wad.o
 33	PORTED	0002:0058d550 ?GetEE_script_health@@YAAAUbint@@Ventity@Broc@@@Z 00D7CA50 f mp_anim_wad.o
