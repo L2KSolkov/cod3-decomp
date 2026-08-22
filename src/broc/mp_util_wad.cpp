@@ -11898,19 +11898,26 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
     if (currentHolder == Broc::gEntityUndef) {
         Broc::vector goalOrigin;
         Broc::vector flagOrigin;
-        mp_util_wad::entity_get_origin(
-            &goalOrigin, *mp_util_wad::GetEE_goal(flag));
-        mp_util_wad::entity_get_origin(&flagOrigin, flag);
+        Broc::entity::__unnamed::origin_struct goalOriginField = {
+            mp_util_wad::GetEE_goal(flag)->GetHandle()};
+        goalOriginField.Get(&goalOrigin);
+        Broc::entity::__unnamed::origin_struct flagOriginField = {
+            flag.GetHandle()};
+        flagOriginField.Get(&flagOrigin);
         if (Broc::Distance(&goalOrigin, &flagOrigin) < 1.0f) {
             Broc::vector pickerOrigin;
-            mp_util_wad::entity_get_origin(&pickerOrigin, guy);
+            Broc::entity::__unnamed::origin_struct pickerOriginField = {
+                guy.GetHandle()};
+            pickerOriginField.Get(&pickerOrigin);
             if (Broc::Distance(&flagOrigin, &pickerOrigin) <= 256.0f) {
                 if (itemIndex != 0) {
                     if (!Broc::Code_IsHost()) {
                         Broc::string pickerTeam;
                         bool reject = !Broc::Code_IsLocalPlayer(guy);
                         if (!reject && Broc::IsDefined(guy)) {
-                            mp_util_wad::entity_get_team(&pickerTeam, guy);
+                            Broc::entity::__unnamed::team_struct teamField = {
+                                guy.GetHandle()};
+                            teamField.Get(&pickerTeam);
                             reject = pickerTeam == flagTeam;
                             pickerTeam.~string();
                         }
@@ -11938,9 +11945,13 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
         UnlinkFlag(flag);
         Broc::string pickerTeam;
         Broc::string holderTeam;
-        mp_util_wad::entity_get_team(&pickerTeam, guy);
-        mp_util_wad::entity_get_team(
-            &holderTeam, *mp_util_wad::GetEE_holder(flag));
+        Broc::entity::__unnamed::team_struct pickerTeamField = {
+            guy.GetHandle()};
+        pickerTeamField.Get(&pickerTeam);
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        Broc::entity::__unnamed::team_struct holderTeamField = {
+            holder.GetHandle()};
+        holderTeamField.Get(&holderTeam);
         if (holderTeam == pickerTeam)
             playSounds = false;
         holderTeam.~string();
