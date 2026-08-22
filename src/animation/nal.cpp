@@ -22,6 +22,15 @@ class Entity;
 class SceneAnimClient;
 enum TPakId : int;
 
+void* tlStackBegin = nullptr;
+void* tlStackEnd = nullptr;
+
+// ea: 0x00868A60
+bool tlIsStackPtr(void* ptr)
+{
+    return ptr >= tlStackBegin && ptr < tlStackEnd;
+}
+
 // tagInfo_t - entity tag-axis info (axis[4][3] @ +0x10, next @ +0x04)
 struct tagInfo_t {
     void* mPrev;              // +0x00
@@ -26505,6 +26514,14 @@ math::Dir3 math::Mul(const math::Dir3& _v, const math::Mat33& _m)
             _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
             _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
         _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v));
+    return result;
+}
+
+// ?Mul@math@@YA?AVVector4@1@ABV21@M@Z (0x00868A80)
+math::Vector4 math::Mul(const math::Vector4& _a, float _b)
+{
+    math::Vector4 result;
+    result.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
     return result;
 }
 

@@ -225,6 +225,7 @@ Dir3 UnitNegDirX();                                             // game.o 0x0065
 Dir3 UnitNegDirY();                                             // game.o 0x0065B4C0
 Dir3 UnitNegDirZ();                                             // game.o 0x0065B500
 Vector4 Mul(const Vector4& _a, const Vector4& _b);              // ?Mul@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A6BC0)
+Vector4 Mul(const Vector4& _a, float _b);                       // nal_generic.o 0x00868A80
 Vector4 Vector4_Half();                                         // ?Vector4_Half@math@@YA?AVVector4@1@XZ (ngl_debug.o 0x835570)
 Vector4 Sin(const Vector4& radians);                            // ?Sin@math@@YA?AVVector4@1@ABV21@@Z (ngl_debug.o 0x835720)
 Dir3 Cross(const Dir3& _a, const Dir3& _b);                     // ?Cross@math@@YA?AVDir3@1@ABV21@0@Z (g.o 0x4A6C00)
