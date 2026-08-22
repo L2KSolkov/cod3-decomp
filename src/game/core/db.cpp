@@ -357,6 +357,12 @@ ae_sized_array<DbRow*, 64>& DbQueryResults::GetCurrentMatchesSpecific()
 
 bool BitSet255_Test(const void* self, int v);
 
+// ea: 0x004E7F20
+DbQuery::DbQuery(const DbTable* db)
+    : mDb(db), mAutomaticFail(false), mConstraintPos(0)
+{
+}
+
 // ea: 0x004E5900
 void DbFieldSet::AddField(DbField* field, bool weak)
 {

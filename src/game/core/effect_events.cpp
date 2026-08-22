@@ -5180,11 +5180,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
     GetEffectTables(q.mEffectsPak, buf, nullptr, "EVENT.FX", event_tables);
     for (int ti = 0; ti < event_tables.m_size; ++ti)
     {
-        DbQuery query;
-        memset(&query, 0, sizeof(query));
-        query.mDb = event_tables[ti];
-        query.mAutomaticFail = false;
-        query.mConstraintPos = 0;
+        DbQuery query(event_tables[ti]);
         q.mCachedQuery.ConstructQuery(&query);
         DbQueryResults results;
         memset(&results, 0, sizeof(results));
