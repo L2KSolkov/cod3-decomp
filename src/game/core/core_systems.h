@@ -271,6 +271,8 @@ struct reserved_dlist {
         dlist_node* m_node;  // +0x00
         dlist_node* m_next;  // +0x04
 
+        iterator() : m_node(nullptr), m_next(nullptr) {}
+
         iterator(dlist_node* cur, dlist_node* next)
             : m_node(cur), m_next(next) {}
 
@@ -282,6 +284,8 @@ struct reserved_dlist {
         {
             return rhs.m_next == m_next;
         }
+
+        dlist_node* get_node() { return m_node; }
 
         // ea: 0x005EA260 (reserved_dlist<AeThreadState>)
         iterator operator++(int)
