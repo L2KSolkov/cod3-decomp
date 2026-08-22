@@ -3006,3 +3006,42 @@ Broc::bint* GetEE_script_ambush_trigger_distance(
     new (result) Broc::bint(value);
     return result;
 }
+
+// IsEEDefined_script_ambush_trigger_distance - ea: 0x9963D0.
+Broc::bbool* IsEEDefined_script_ambush_trigger_distance(
+    Broc::bbool* result, Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetPNodeField_int(
+            node.GetHandle(), 0xC609EC11u);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_type - ea: 0x996480.
+Broc::string* GetEE_type(Broc::string* result, Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_type(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_type - ea: 0x996580.
+Broc::bbool* IsEEDefined_type(Broc::bbool* result,
+                              Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_angles - ea: 0x996620.
+Broc::vector* GetEE_angles(Broc::vector* result, Broc::pathnode node) {
+    const Broc::vector value = gpBrocAPI->mBrocExports.m_pnode_get_angles(
+        static_cast<int>(node.GetHandle()));
+    *result = value;
+    return result;
+}
