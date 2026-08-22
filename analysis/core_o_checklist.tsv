@@ -665,7 +665,7 @@ index	status	map_line
 664	VERIFIED	0002:000dbb50 ?SetHandle@ActiveEffectSet@@QAEXVHandle@@@Z 008CB050 f i core.o	VERIFIED: existing SetHandle assignment matches IDA 0x004DBB50
 665	VERIFIED	0002:000dbb60 ?GetPakId@ActiveEffectSet@@QBE?AW4TPakId@@XZ 008CB060 f i core.o	VERIFIED: existing GetPakId return matches IDA 0x004DBB60
 666	VERIFIED	0002:000dbb70 ??2EffectEventSys@@SAPAXIPAX@Z 008CB070 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DBB70
-667	PORTED	0002:000dbb80 ?IsStoppingAll@EffectEventSys@@QBE_NXZ 008CB080 f i core.o	PORTED: added missing mStoppingAll accessor from IDA 0x004DBB80; source commit 6af35476
+667	VERIFIED	0002:000dbb80 ?IsStoppingAll@EffectEventSys@@QBE_NXZ 008CB080 f i core.o	VERIFIED: returns mStoppingAll exactly as IDA 0x004DBB80
 668	VERIFIED	0002:000dbb90 ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z 008CB090 f i core.o	VERIFIED: existing Mat43 constructor copies x/y/z/w fields as IDA 0x004DBB90
 669	VERIFIED	0002:000dbc30 ?SetX@Mat43@math@@QAEXABVDir3@2@@Z 008CB130 f i core.o	VERIFIED: existing SetX field assignment matches IDA 0x004DBC30
 670	VERIFIED	0002:000dbc60 ?SetY@Mat43@math@@QAEXABVDir3@2@@Z 008CB160 f i core.o	VERIFIED: existing SetY field assignment matches IDA 0x004DBC60
