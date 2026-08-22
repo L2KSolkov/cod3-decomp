@@ -728,23 +728,23 @@ index	status	map_line
 727	PORTED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o	PORTED: restored exact input-command initializer and IDA-confirmed BaseCmdFuncInfo offsets
 728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o	PORTED: restored exact self dlist accessor from IDA
 729	PORTED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o	PORTED: restored exact zero dlist offset from IDA
-730	PORTED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o
-731	PORTED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o
-732	PORTED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o
-733	PORTED	0002:0025c3e0 ?get_dlist_node@Curve@@QAEPAXXZ 00A4B8E0 f i game.o
-734	PORTED	0002:0025c3f0 ?get_dlist_node_offset@Curve@@SAHXZ 00A4B8F0 f i game.o
-735	PORTED	0002:0025c400 ??2Curve@@SAPAXI_NPBDH@Z 00A4B900 f i game.o
-736	PORTED	0002:0025c420 ??3Curve@@SAXPAX_NPBDH@Z 00A4B920 f i game.o
-737	PORTED	0002:0025c440 ??3Curve@@SAXPAX@Z 00A4B940 f i game.o
-738	PORTED	0002:0025c460 ?get_dlist_node@CurveEvalFunc@@QAEPAXXZ 00A4B960 f i game.o
-739	PORTED	0002:0025c470 ?get_dlist_node_offset@CurveEvalFunc@@SAHXZ 00A4B970 f i game.o
-740	PORTED	0002:0025c480 ??2CurveEvalFunc@@SAPAXI_NPBDH@Z 00A4B980 f i game.o
-741	PORTED	0002:0025c4a0 ??3CurveEvalFunc@@SAXPAX_NPBDH@Z 00A4B9A0 f i game.o
-742	PORTED	0002:0025c4c0 ?get_displaced_center_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00A4B9C0 f i game.o
-743	PORTED	0002:0025c4d0 ??0debug_brush@@QAE@XZ 00A4B9D0 f i game.o
+730	PORTED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
+731	PORTED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o	PORTED: restored exact allocator delete overload from IDA
+732	PORTED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o	PORTED: restored exact allocator delete overload from IDA
+733	PORTED	0002:0025c3e0 ?get_dlist_node@Curve@@QAEPAXXZ 00A4B8E0 f i game.o	PORTED: restored exact self dlist accessor from IDA
+734	PORTED	0002:0025c3f0 ?get_dlist_node_offset@Curve@@SAHXZ 00A4B8F0 f i game.o	PORTED: restored exact zero dlist offset from IDA
+735	PORTED	0002:0025c400 ??2Curve@@SAPAXI_NPBDH@Z 00A4B900 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
+736	PORTED	0002:0025c420 ??3Curve@@SAXPAX_NPBDH@Z 00A4B920 f i game.o	PORTED: restored exact allocator delete overload from IDA
+737	PORTED	0002:0025c440 ??3Curve@@SAXPAX@Z 00A4B940 f i game.o	PORTED: restored exact allocator delete overload from IDA
+738	PORTED	0002:0025c460 ?get_dlist_node@CurveEvalFunc@@QAEPAXXZ 00A4B960 f i game.o	PORTED: restored exact self dlist accessor from IDA
+739	PORTED	0002:0025c470 ?get_dlist_node_offset@CurveEvalFunc@@SAHXZ 00A4B970 f i game.o	PORTED: restored exact zero dlist offset from IDA
+740	PORTED	0002:0025c480 ??2CurveEvalFunc@@SAPAXI_NPBDH@Z 00A4B980 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
+741	PORTED	0002:0025c4a0 ??3CurveEvalFunc@@SAXPAX_NPBDH@Z 00A4B9A0 f i game.o	PORTED: restored exact allocator delete overload from IDA
+742	PORTED	0002:0025c4c0 ?get_displaced_center_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00A4B9C0 f i game.o	PORTED: restored exact wheel displacement getter from IDA
+743	PORTED	0002:0025c4d0 ??0debug_brush@@QAE@XZ 00A4B9D0 f i game.o	PORTED: restored exact no-op debug brush constructor from IDA
 744	VERIFIED	0002:0025c4e0 ??0debug_brush@@QAE@ABVcdlBrush@@ABVMat43@math@@ABVColor@@@Z 00A4B9E0 f i game.o
-745	PORTED	0002:0025c5b0 ?SetEntity@DObj@@QAEXPAVEntity@@@Z 00A4BAB0 f i game.o
-746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o
+745	PORTED	0002:0025c5b0 ?SetEntity@DObj@@QAEXPAVEntity@@@Z 00A4BAB0 f i game.o	PORTED: restored exact DObj entity pointer setter from IDA
+746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o	PORTED: restored exact biped system accessor from IDA
 747	PORTED	0002:0025c5e0 ??0__unnamed@Entity@@QAE@XZ 00A4BAE0 f i game.o
 748	VERIFIED	0002:0025c600 ??1AttachModelInfo@@QAE@XZ 00A4BB00 f i game.o
 749	SKIPPED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
