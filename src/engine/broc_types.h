@@ -1038,6 +1038,7 @@ bool IsDefined(const ::HashStr& v);                 // mp_util_wad.o 0x986710
 inline bool IsDefined(const Broc::hudelem& h) { return h.IsDefined(); }
 template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
 template <typename T> bool IsDefined(const T* t);
+template <typename T> bool IsDefined(const dyn_array<T>& ar); // dyn_array sentinel
 
 extern Broc::entity gEntityUndef;
 

@@ -2485,6 +2485,9 @@ template <typename T> bool IsDefined(const T& t) {
 template <typename T> bool IsDefined(const T* t) {
     return t != nullptr && t->IsDefined();
 }
+template <typename T> bool IsDefined(const Broc::dyn_array<T>& ar) {
+    return ar.capacity() != 0;
+}
 bool IsDefined(const ::bfloat& t) {
     return t.IsDefined();
 }
@@ -2498,6 +2501,8 @@ bool IsDefined(const ::HashStr& t) {
     return t.IsDefined();
 }
 template bool IsDefined<Broc::hudelem>(const Broc::hudelem* t);
+template bool IsDefined<Broc::entity>(
+    const Broc::dyn_array<Broc::entity>& ar);
 
 // Distance - ea: 0x934A50
 float Distance(const Broc::vector* v0, const Broc::vector* v1) {
