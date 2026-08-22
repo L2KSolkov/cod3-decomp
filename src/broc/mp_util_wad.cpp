@@ -4527,6 +4527,19 @@ Broc::vector& mp_util_wad::LocalFields::__unnamed::home_angles_struct::GetRef() 
     return ee->GetRef<Broc::vector>(0x385575E2u);
 }
 
+// pickupCaptureDelayTime_struct::Get - ea: 0x96AC20
+const Broc::bint*
+mp_util_wad::LocalFields::__unnamed::pickupCaptureDelayTime_struct::Get(
+    Broc::bint* result) const {
+    const Broc::ExtendedEntity* ee = reinterpret_cast<const Broc::ExtendedEntity*>(
+        reinterpret_cast<const unsigned char*>(this) - 0x10);
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x4743187Eu);
+    result->mVal = stored->mVal;
+    return result;
+}
+
 const int& Broc::entity::__unnamed::key_struct::operator=(
     const int& rhs) {
     Broc::gBrocAPI.m_entity_set_key(mHandle, rhs);

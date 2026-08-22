@@ -42,6 +42,9 @@ struct LocalFields {
         struct home_angles_struct {
             Broc::vector& GetRef();
         };
+        struct pickupCaptureDelayTime_struct {
+            const Broc::bint* Get(Broc::bint* result) const;
+        };
 
     };
 
@@ -50,6 +53,7 @@ struct LocalFields {
         __unnamed::holder_struct holder;
         __unnamed::home_position_struct home_position;
         __unnamed::home_angles_struct home_angles;
+        __unnamed::pickupCaptureDelayTime_struct pickupCaptureDelayTime;
         unsigned char mProxyFields[4];
     };
 };
