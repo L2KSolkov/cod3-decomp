@@ -6,6 +6,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string.h>
 
 // ============================================================================
 // kbutton_t - single input button (0x18, verified against IDA)
@@ -74,6 +75,13 @@ struct clPlayerState {
     unsigned char _pad5A4[0x5C8 - 0x5A4];
     unsigned int mFlags_mask;  // +0x5C8
     unsigned char _pad5CC[0x5D0 - 0x5CC];
+
+    clPlayerState()
+    {
+        memset(this, 0, sizeof(*this));
+        unsigned char* base = reinterpret_cast<unsigned char*>(this);
+        *reinterpret_cast<int*>(base + 0x0CC) = -1;
+    }
 };
 static_assert(sizeof(clPlayerState) == 0x5D0, "clPlayerState size mismatch");
 struct clSnapshot {
@@ -88,6 +96,8 @@ struct clSnapshot {
     int parseEntitiesNum;      // +0x5F4
     int serverCommandNum;      // +0x5F8
     unsigned char _tail5FC[4];
+
+    clSnapshot() : ps() {}
 };
 static_assert(sizeof(clSnapshot) == 0x600, "clSnapshot size mismatch");
 struct outPacket_t {
@@ -132,6 +142,25 @@ struct clientActive_t {
     outPacket_t outPackets[1]; // +0x1298
     unsigned char _pad12A4[0x12B0 - 0x12A4];
     clSnapshot snapshots[1];  // +0x12B0
+
+    clientActive_t() : snap()
+    {
+        unsigned char* base = reinterpret_cast<unsigned char*>(this);
+        *reinterpret_cast<int*>(base + 0x1330) = 0;
+        *reinterpret_cast<int*>(base + 0x135C) = 0;
+        *reinterpret_cast<int*>(base + 0x1360) = 0;
+        *reinterpret_cast<int*>(base + 0x1364) = 0;
+        *reinterpret_cast<int*>(base + 0x1370) = 0;
+        *reinterpret_cast<int*>(base + 0x1384) = 0;
+        *reinterpret_cast<int*>(base + 0x1398) = 0;
+        *reinterpret_cast<int*>(base + 0x139C) = -1;
+        *reinterpret_cast<int*>(base + 0x1770) = 0;
+        *reinterpret_cast<int*>(base + 0x17C0) = 0;
+        *reinterpret_cast<int*>(base + 0x17C4) = 0;
+        *reinterpret_cast<int*>(base + 0x1874) = 0;
+        *reinterpret_cast<int*>(base + 0x1888) = 0;
+        *reinterpret_cast<int*>(base + 0x1898) = 0;
+    }
 };
 static_assert(sizeof(clientActive_t) == 0x18B0, "clientActive_t size mismatch");
 extern clientActive_t cl[2];

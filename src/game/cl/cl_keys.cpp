@@ -76,6 +76,8 @@ struct KeyInfoEntry {
     int   mState;          // +0x00 (low 2 bits = down, high 30 = repeats)
     char* mBoundCmdName;   // +0x04
 
+    KeyInfoEntry();
+
     void Init();                       // ?Init@KeyInfoEntry@@QAEXXZ (cl.o 0x11C300)
     void SetBinding(const char* boundCmdName);  // ?SetBinding@KeyInfoEntry@@QAEXPBD@Z (cl.o 0x120810)
     void SetDown(int down);            // ?SetDown@KeyInfoEntry@@QAEXH@Z (cl.o 0x11C320)
@@ -93,6 +95,11 @@ static char tinystr[5];
 // ============================================================================
 // Key binding system
 // ============================================================================
+
+// ea: 0x5398D0
+KeyInfoEntry::KeyInfoEntry() : mState(0), mBoundCmdName(nullptr)
+{
+}
 
 // ea: 0x52C590
 void Field_Paste()
