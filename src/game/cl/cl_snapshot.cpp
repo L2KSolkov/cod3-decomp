@@ -7,6 +7,7 @@
 #include "cl_console.h"
 
 #include "game/game_types.h"
+#include "game/ui_types.h"
 
 #include <string.h>
 
@@ -43,7 +44,19 @@ struct PakInfoNode;
 struct PakInfoNode;
 const PakInfoNode* sLoadingScreenInfo = nullptr;  // ?sLoadingScreenInfo@@3PBUPakInfoNode@@B (cl.o @ 0x1304CAC)
 extern void GamePause_SetAllPaused(bool paused);
-extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
+
+// IDA FEManager layout: only the IGO and mIGMS fields are needed here.
+struct FEManagerFirstSnapshotView {
+    unsigned char _pad00[0x14];
+    IGOFrontEnd* IGO;                         // +0x14
+    unsigned char _pad18[0xB0];
+    InGameMenuSystem* mIGMS[1];               // +0xC8
+};
+static_assert(offsetof(FEManagerFirstSnapshotView, IGO) == 0x14,
+              "FEManager::IGO offset mismatch");
+static_assert(offsetof(FEManagerFirstSnapshotView, mIGMS) == 0xC8,
+              "FEManager::mIGMS offset mismatch");
+extern FEManagerFirstSnapshotView g_femanager;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -161,7 +174,7 @@ int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
 // ea: 0x528E70
 int CL_FirstSnapshot()
 {
-    if (com_cl_running == 0)
+    if (com_cl_running->integer == 0)
     {
         ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp", 1828);
     }
@@ -170,12 +183,13 @@ int CL_FirstSnapshot()
     if (PAK_ID_INVALID != *(int*)sLoadingScreenInfo)
         PakManager::sInst->SyncUnloadPak((TPakId)*(int*)sLoadingScreenInfo);
     GamePause_SetAllPaused(false);
-    extern void* g_femanager_IGMS_cur();
-    extern void g_femanager_IGO_Update(int);
-    if (g_femanager_IGMS_cur() != nullptr)
-        g_femanager_IGO_Update(0);
+    InGameMenuSystem* igms = g_femanager.mIGMS[currCl];
+    if (igms != nullptr)
+        igms->is_active = false;
+    g_femanager.IGO->Update(0.0f);
+    g_femanager.mIGMS[0]->ReturnToPreviousMenu(-1);
     if (dword_F6A290[0] == 2)
-        InGameMenuSystem_ActivateMenu((void*)0, 12);
+        g_femanager.mIGMS[0]->ActivateMenu(12);
     cls.state = 2;  // CA_ACTIVE
     cl[0].serverTime = com_time;
     cl[0].oldServerTime = com_time;
