@@ -1474,7 +1474,7 @@ struct NotifyNode {
     NotifyNode* m_prev;  // +0x04
 };
 
-// ea: 0x0062AD70
+// ea: 0x00661990
 void EntityNotifySet::AddNotify(EntityNotify* notify)
 {
     NotifyDList* strings = (NotifyDList*)((char*)this + 0x0C);
