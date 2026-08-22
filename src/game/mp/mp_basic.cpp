@@ -146,6 +146,13 @@ extern int gDelayRenderForNFrames;  // render.o @ 0xD638E8
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 
+// ea: 0x004DEA20
+void* MultiplayerMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
+
 // ea: 0x004DEA30
 void MultiplayerMgr::CreateInst()
 {

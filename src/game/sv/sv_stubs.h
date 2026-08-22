@@ -522,6 +522,7 @@ public:
     bool    mLinkStatus;            // +0x4D
     uint8_t _pad4E[0x50 - 0x4E];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
+    static void* operator new(size_t size, void* p); // ??2MultiplayerMgr@@SAPAXIPAX@Z (core.o 0x4DEA20)
     static MultiplayerMgr* Inst();  // ?Inst@MultiplayerMgr@@SAPAV1@XZ (g.o 0x4A9780)
     static void CreateInst();       // ?CreateInst@MultiplayerMgr@@SAXXZ
     static void DeleteInst();       // ?DeleteInst@MultiplayerMgr@@SAXXZ (core.o 0x4E2EC0)
