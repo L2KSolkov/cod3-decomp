@@ -2674,6 +2674,8 @@ template class cdl_array<cdl_vinfo_t>;
 template class cdl_array<vi4>;
 template class cdl_array<cdl_patch_t>;
 template class cdl_array<DCGSet>;
+template class cdl_array<float>;
+template class cdl_array<int>;
 template void cdl_array<cdlPlane>::done();
 template void cdl_array<cdl_object_t>::done();
 template void cdl_array<cdl_brush_t>::done();
