@@ -1,6 +1,6 @@
 index	status	map_line
 1	FIXED	0002:0052e320 ?RegisterHashStrings@mp_util_wad@@YAXXZ 00D1D820 f mp_util_wad.o	FIXED: added IDA pointer-backed word_39C6FA registration for "flag"; bound RegisterHashString calls to the IDA global symbol.
-2	VERIFIED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	VERIFIED: IDA 0x0092EEC0 matches direct mp_anim_wad::ResolveAnim forwarding and BOOL conversion
+2	FIXED	0002:0052eec0 ?ResolveAnim@mp_util_wad@@YAIIIPAII@Z 00D1E3C0 f mp_util_wad.o	FIXED: corrected the local mp_anim_wad::ResolveAnim declaration to the IDA unsigned-int signature; source commit 690fe2e8
 3	VERIFIED	0002:0052ef10 ?ResolveAnimName@mp_util_wad@@YAPBDI@Z 00D1E410 f mp_util_wad.o
 4	VERIFIED	0002:0052ef50 ?ValidateAnimationIndices@mp_util_wad@@YA_NXZ 00D1E450 f mp_util_wad.o
 5	VERIFIED	0002:0052efb0 ?GetBroAnim@mp_util_wad@@YAIII@Z 00D1E4B0 f mp_util_wad.o
@@ -163,7 +163,7 @@ index	status	map_line
 162	VERIFIED	0002:005355e0 ?plane_roll__functor@_mp_airplanes@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D24AE0 f i mp_util_wad.o  VERIFIED: matches IDA AeThreadFunctor1 allocation/capture
 163	FIXED	0002:00535680 ?plane_roll@_mp_airplanes@@YAXVentity@Broc@@@Z 00D24B80 f mp_util_wad.o	FIXED: replaced empty body with IDA 0x00935680 endon, random roll/time, RotateTo, and wait loop
 164	VERIFIED	0002:00535840 ??0bfloat@@QAE@H@Z 00D24D40 f i mp_util_wad.o	VERIFIED: IDA 0x00935840 stores the integer rhs in bfloat::mVal and returns this
-165	VERIFIED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o
+165	FIXED	0002:00535870 ?endon@Broc@@YAXVentity@1@UHashStr@@@Z 00D24D70 f i mp_util_wad.o	FIXED: added the IDA 0x00935870 HashStr overload forwarding to mThreadTerminateOnNotify; source commit 690fe2e8
 166	FIXED	0002:005358b0 ?RotateTo@Broc@@YAXABVentity@1@ABUvector@1@MMM@Z 00D24DB0 f i mp_util_wad.o	FIXED: IDA five-argument const-reference wrapper restored
 167	VERIFIED	0002:005358f0 ?AudioPrint@_mp_audio@@YAXVstring@Broc@@@Z 00D24DF0 f mp_util_wad.o
 168	VERIFIED	0002:00535970 ?GetCvarInt@@YAHPBD@Z 00D24E70 f i mp_util_wad.o	VERIFIED: IDA 0x00935970 directly forwards the cvar name to mCVarGetInt
