@@ -3275,8 +3275,10 @@ int bint::operator=(bfloat rhs) {
     return bint::sUndefined;
 }
 
+unsigned int HashStr::sUndefined = 0;
 float bfloat::sUndefined = 0.0f;
 int bint::sUndefined = 0;
+bool bbool::sUndefined = false;
 
 // operator*(bint, int) - ea: 0x93D8E0
 bint operator*(bint lhs, int rhs) {

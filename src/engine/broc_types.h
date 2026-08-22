@@ -7,6 +7,11 @@
 #pragma once
 
 #include <stdint.h>
+#include <string.h>
+
+// IDA type: ?sNaN@@3MA.  Broc::vector's default constructor uses this
+// undefined sentinel rather than a numeric zero.
+extern float sNaN;
 
 class AeThreadFunctor;
 enum TPakInfo : int;
@@ -25,6 +30,9 @@ enum TPakInfo : int;
 // ============================================================================
 struct HashStr {
     unsigned int mVal;  // +0x00
+    static unsigned int sUndefined;
+    HashStr() : mVal(sUndefined) {}
+    HashStr(unsigned int v) : mVal(v) {}
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
@@ -194,7 +202,7 @@ struct vector {
     float y;  // +0x04
     float z;  // +0x08
 
-    vector() : x(0.0f), y(0.0f), z(0.0f) {}
+    vector() : x(sNaN), y(sNaN), z(sNaN) {}
     vector(float ix, float iy) : x(ix), y(iy), z(0.0f) {}
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
     vector& operator+=(const vector& rhs);
@@ -529,9 +537,11 @@ struct ExtendedEntity {
     void          SetUndefined(unsigned int key);
     unsigned int* SetVal(unsigned int key, const string& val);
     template <typename T> unsigned int* SetVal(unsigned int key, const T& val) {
-        static_assert(sizeof(T) == sizeof(unsigned int),
+        static_assert(sizeof(T) <= sizeof(unsigned int),
                       "ExtendedEntity typed values must occupy one raw slot");
-        return InternalSet(key, *reinterpret_cast<const unsigned int*>(&val));
+        unsigned int raw = 0;
+        memcpy(&raw, &val, sizeof(T));
+        return InternalSet(key, raw);
     }
     const unsigned int* InternalGet(unsigned int key) const;
     unsigned int* InternalSet(unsigned int key, unsigned int val);
@@ -556,14 +566,21 @@ struct ExtendedEntity {
 
     // GetRef<T> / GetVal<T> - typed accessors (mp_util_wad.o COMDATs).
     template <typename T> T& GetRef(unsigned int key) {
-        return *(T*)InternalGet(key);
+        const unsigned int* p = InternalGet(key);
+        if (p == NULL) {
+            T value;
+            p = SetVal(key, value);
+        }
+        return *reinterpret_cast<T*>(const_cast<unsigned int*>(p));
     }
     template <typename T> const T* GetVal(void* result, unsigned int key) const {
         const unsigned int* p = InternalGet(key);
-        if (p == NULL)
-            return NULL;
-        *(T*)result = *(const T*)p;
-        return (const T*)result;
+        T* out = static_cast<T*>(result);
+        if (p != NULL)
+            *out = *reinterpret_cast<const T*>(p);
+        else
+            *out = T();
+        return out;
     }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity) == 12, "Broc::ExtendedEntity size mismatch");
@@ -815,6 +832,7 @@ bbool operator<(bint lhs, int rhs);
 // Global boxed operators emitted by mp_util_wad.o.
 struct bfloat {
     float mVal;
+    bfloat() : mVal(sUndefined) {}
     explicit bfloat(float v) : mVal(v) {}
     bfloat(long double v);
     double operator=(long double rhs);
@@ -832,6 +850,7 @@ COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "global bfloat size mismatch");
 
 struct bint {
     int mVal;
+    bint() : mVal(sUndefined) {}
     explicit bint(int v) : mVal(v) {}
     bint(const bfloat& rhs);
     operator int() const;
@@ -854,9 +873,43 @@ bfloat operator+(bint lhs, bfloat rhs);
 bfloat operator+(bfloat lhs, bfloat rhs);
 struct bbool {
     bool mVal;
+    static bool sUndefined;
+    bbool() : mVal(sUndefined) {}
     explicit bbool(bool v) : mVal(v) {}
     bool operator==(bool rhs) const;
 };
+COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "global bbool size mismatch");
+
+// Broc::vector values do not fit in ExtendedEntity's 32-bit value slot.  IDA
+// stores a heap copy and keeps its pointer in the slot; these specializations
+// preserve that representation for the COMDAT accessors.
+namespace Broc {
+template <> inline unsigned int* ExtendedEntity::SetVal<vector>(
+    unsigned int key, const vector& val) {
+    vector* copy = new vector(val);
+    return InternalSet(key, reinterpret_cast<unsigned int>(copy));
+}
+
+template <> inline vector& ExtendedEntity::GetRef<vector>(unsigned int key) {
+    const unsigned int* p = InternalGet(key);
+    if (p == NULL) {
+        vector value;
+        p = SetVal(key, value);
+    }
+    return **reinterpret_cast<vector* const*>(p);
+}
+
+template <> inline const vector* ExtendedEntity::GetVal<vector>(
+    void* result, unsigned int key) const {
+    const unsigned int* p = InternalGet(key);
+    vector* out = static_cast<vector*>(result);
+    if (p != NULL)
+        *out = **reinterpret_cast<vector* const*>(p);
+    else
+        *out = vector();
+    return out;
+}
+} // namespace Broc
 bbool operator<(bfloat lhs, bfloat rhs);
 bbool operator<(bfloat lhs, int rhs);
 bbool operator<(bfloat lhs, bint rhs);
