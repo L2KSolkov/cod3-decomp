@@ -357,6 +357,62 @@ ae_sized_array<DbRow*, 64>& DbQueryResults::GetCurrentMatchesSpecific()
 
 bool BitSet255_Test(const void* self, int v);
 
+// ea: 0x004E5900
+void DbFieldSet::AddField(DbField* field, bool weak)
+{
+    if (mNumParams >= 0x40)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 52;
+        AeAssert::gCurrentExpr = "mNumParams < 64";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Too many Query parameters"))
+            __debugbreak();
+    }
+    unsigned int param_index = mNumParams;
+    if (weak)
+        mWeakByIdx.Add((int)param_index);
+    else
+        mWeakByIdx.Rmv((int)param_index);
+    int field_id = field->mId;
+    if (weak)
+        mWeakById.Add(field_id);
+    else
+        mWeakById.Rmv(field_id);
+    mSpecifiedById.Add(field->mId);
+    mIdToIdxMap[field->mId] = (unsigned char)mNumParams;
+    mFields[mNumParams++] = field;
+    if (field->m_column_type > 0xCu)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 58;
+        AeAssert::gCurrentExpr =
+            "( field->GetColumnType() >= kDbColumnTypeMin && field->GetColumnType() <= kDbColumnTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if (field->m_match_type > 9u)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 59;
+        AeAssert::gCurrentExpr =
+            "( field->GetMatchType() >= kDbMatchTypeMin && field->GetMatchType() <= kDbMatchTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x004E5AA0
+bool DbFieldSet::IsFieldSpecified(unsigned int field_id) const
+{
+    return BitSet255_Test(mSpecifiedById.mBits, (int)field_id);
+}
+
 // ea: 0x004E5AC0
 void DbFieldSet::Clear()
 {
@@ -431,6 +487,12 @@ const DbField* DbFieldSet::GetFieldById(unsigned int field_id) const
             __debugbreak();
     }
     return field;
+}
+
+// ea: 0x004E5CD0
+bool DbFieldSet::IsFieldWeakById(unsigned int field_id) const
+{
+    return BitSet255_Test(mWeakById.mBits, (int)field_id);
 }
 
 // ea: 0x004C0A70
