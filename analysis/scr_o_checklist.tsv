@@ -1028,26 +1028,26 @@ index	status	map_line
 1027	SKIPPED	0002:001eb010 ??0const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QAE@PAViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@@Z 009DA510 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1028	SKIPPED	0002:001eb030 ??8const_iterator@?$vector@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@V?$allocator@Viterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@@3@@std@@QBE_NABV012@@Z 009DA530 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1029	SKIPPED	0002:001eb050 ??$?Y$0EA@E@?$ae_fixed_string@$0EA@E@@QAEAAV0@ABV0@@Z 009DA550 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
-1030	PORTED	0002:001eb090 ??$hud_set_field@H$03@BrocSys@@YAXHH@Z 009DA590 f i scr.o
-1031	PORTED	0002:001eb110 ??$hud_get_field@H$03@BrocSys@@YAHH@Z 009DA610 f i scr.o
-1032	PORTED	0002:001eb190 ??$hud_set_field@H$07@BrocSys@@YAXHH@Z 009DA690 f i scr.o
-1033	PORTED	0002:001eb210 ??$hud_get_field@H$07@BrocSys@@YAHH@Z 009DA710 f i scr.o
-1034	PORTED	0002:001eb290 ??$hud_set_field@H$0BE@@BrocSys@@YAXHH@Z 009DA790 f i scr.o
-1035	PORTED	0002:001eb310 ??$hud_get_field@H$0BE@@BrocSys@@YAHH@Z 009DA810 f i scr.o
-1036	PORTED	0002:001eb390 ??$hud_set_field@H$0BI@@BrocSys@@YAXHH@Z 009DA890 f i scr.o
-1037	PORTED	0002:001eb410 ??$hud_get_field@H$0BI@@BrocSys@@YAHH@Z 009DA910 f i scr.o
-1038	PORTED	0002:001eb490 ??$hud_set_field@M$0GM@@BrocSys@@YAXHM@Z 009DA990 f i scr.o
-1039	PORTED	0002:001eb510 ??$hud_get_field@M$0GM@@BrocSys@@YAMH@Z 009DAA10 f i scr.o
-1040	PORTED	0002:001eb590 ??$hud_set_field@M$0M@@BrocSys@@YAXHM@Z 009DAA90 f i scr.o
-1041	PORTED	0002:001eb610 ??$hud_get_field@M$0M@@BrocSys@@YAMH@Z 009DAB10 f i scr.o
-1042	PORTED	0002:001eb690 ??$hud_set_field@E$0BP@@BrocSys@@YAXHE@Z 009DAB90 f i scr.o
-1043	PORTED	0002:001eb710 ??$hud_get_field@E$0BP@@BrocSys@@YAEH@Z 009DAC10 f i scr.o
-1044	PORTED	0002:001eb790 ??$hud_set_field@E$0BM@@BrocSys@@YAXHE@Z 009DAC90 f i scr.o
-1045	PORTED	0002:001eb810 ??$hud_get_field@E$0BM@@BrocSys@@YAEH@Z 009DAD10 f i scr.o
-1046	PORTED	0002:001eb890 ??$hud_set_field@E$0BN@@BrocSys@@YAXHE@Z 009DAD90 f i scr.o
-1047	PORTED	0002:001eb910 ??$hud_get_field@E$0BN@@BrocSys@@YAEH@Z 009DAE10 f i scr.o
-1048	PORTED	0002:001eb990 ??$hud_set_field@E$0BO@@BrocSys@@YAXHE@Z 009DAE90 f i scr.o
-1049	PORTED	0002:001eba10 ??$hud_get_field@E$0BO@@BrocSys@@YAEH@Z 009DAF10 f i scr.o
+1030	FIXED	0002:001eb090 ??$hud_set_field@H$03@BrocSys@@YAXHH@Z 009DA590 f i scr.o
+1031	FIXED	0002:001eb110 ??$hud_get_field@H$03@BrocSys@@YAHH@Z 009DA610 f i scr.o
+1032	FIXED	0002:001eb190 ??$hud_set_field@H$07@BrocSys@@YAXHH@Z 009DA690 f i scr.o
+1033	FIXED	0002:001eb210 ??$hud_get_field@H$07@BrocSys@@YAHH@Z 009DA710 f i scr.o
+1034	FIXED	0002:001eb290 ??$hud_set_field@H$0BE@@BrocSys@@YAXHH@Z 009DA790 f i scr.o
+1035	FIXED	0002:001eb310 ??$hud_get_field@H$0BE@@BrocSys@@YAHH@Z 009DA810 f i scr.o
+1036	FIXED	0002:001eb390 ??$hud_set_field@H$0BI@@BrocSys@@YAXHH@Z 009DA890 f i scr.o
+1037	FIXED	0002:001eb410 ??$hud_get_field@H$0BI@@BrocSys@@YAHH@Z 009DA910 f i scr.o
+1038	FIXED	0002:001eb490 ??$hud_set_field@M$0GM@@BrocSys@@YAXHM@Z 009DA990 f i scr.o
+1039	FIXED	0002:001eb510 ??$hud_get_field@M$0GM@@BrocSys@@YAMH@Z 009DAA10 f i scr.o
+1040	FIXED	0002:001eb590 ??$hud_set_field@M$0M@@BrocSys@@YAXHM@Z 009DAA90 f i scr.o
+1041	FIXED	0002:001eb610 ??$hud_get_field@M$0M@@BrocSys@@YAMH@Z 009DAB10 f i scr.o
+1042	FIXED	0002:001eb690 ??$hud_set_field@E$0BP@@BrocSys@@YAXHE@Z 009DAB90 f i scr.o
+1043	FIXED	0002:001eb710 ??$hud_get_field@E$0BP@@BrocSys@@YAEH@Z 009DAC10 f i scr.o
+1044	FIXED	0002:001eb790 ??$hud_set_field@E$0BM@@BrocSys@@YAXHE@Z 009DAC90 f i scr.o
+1045	FIXED	0002:001eb810 ??$hud_get_field@E$0BM@@BrocSys@@YAEH@Z 009DAD10 f i scr.o
+1046	FIXED	0002:001eb890 ??$hud_set_field@E$0BN@@BrocSys@@YAXHE@Z 009DAD90 f i scr.o
+1047	FIXED	0002:001eb910 ??$hud_get_field@E$0BN@@BrocSys@@YAEH@Z 009DAE10 f i scr.o
+1048	FIXED	0002:001eb990 ??$hud_set_field@E$0BO@@BrocSys@@YAXHE@Z 009DAE90 f i scr.o
+1049	FIXED	0002:001eba10 ??$hud_get_field@E$0BO@@BrocSys@@YAEH@Z 009DAF10 f i scr.o
 1050	FIXED	0002:001eba90 ??$pnode_set_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DAF90 f i scr.o
 1051	FIXED	0002:001ebbd0 ??$pnode_get_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z 009DB0D0 f i scr.o
 1052	FIXED	0002:001ebd30 ??$pnode_set_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YAXHVstring@Broc@@@Z 009DB230 f i scr.o
