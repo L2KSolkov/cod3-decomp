@@ -131,6 +131,8 @@ class nalGenericPose {
 public:
     void SetPositionOrientation(const nalGenericBoneHandle& handle,
                                 const ::nalPositionOrientation& po);
+    void SetPoseBoneOrientation(const nalGenericBoneHandle& handle,
+                                const math::Quaternion& orientation);
 };
 }
 using nalGenericBoneHandle = nalGeneric::nalGenericBoneHandle;
@@ -443,6 +445,26 @@ struct nalMatrix4x4 {
     nalMatrix4x4 Inverse() const;
 };
 
+static void AnimIK_MatrixFromAngles(const math::Dir3& angles,
+                                    nalMatrix4x4* result)
+{
+    float axis[3][3];
+    AnglesToAxis(angles.v.m128_f32, axis);
+    for (int i = 0; i < 3; ++i)
+    {
+        result->x[i] = axis[0][i];
+        result->y[i] = axis[1][i];
+        result->z[i] = axis[2][i];
+    }
+    result->x[3] = 0.0f;
+    result->y[3] = 0.0f;
+    result->z[3] = 0.0f;
+    result->w[0] = 0.0f;
+    result->w[1] = 0.0f;
+    result->w[2] = 0.0f;
+    result->w[3] = 1.0f;
+}
+
 static __m128 AnimIK_MultiplyRow(const float* lhs,
                                  const nalMatrix4x4& rhs)
 {
@@ -522,6 +544,8 @@ void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 // ============================================================================
 class AnimIK {
 public:
+    static tlFixedString BoneNames[25];
+    static tlFixedString ParentNames[25];
     static float painDurationMin;    // ?painDurationMin@AnimIK@@2MA
     static float painDurationMax;    // ?painDurationMax@AnimIK@@2MA
     float ikJoints[0x50 / 4];       // +0x00 AnimIKJointVars_t[4]
@@ -569,6 +593,35 @@ static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
 
 float AnimIK::painDurationMin = 0.0f;
 float AnimIK::painDurationMax = 0.0f;
+
+// game2.o dynamic initializers at 0xA63040/0xA63260.
+tlFixedString AnimIK::BoneNames[25] = {
+    tlFixedString("bip01 pelvis"), tlFixedString("bip01 spine"),
+    tlFixedString("bip01 spine1"), tlFixedString("bip01 spine2"),
+    tlFixedString("bip01 neck"), tlFixedString("bip01 head"),
+    tlFixedString("bip01 l clavicle"), tlFixedString("bip01 l upperarm"),
+    tlFixedString("bip01 l forearm"), tlFixedString("bip01 l hand"),
+    tlFixedString("bip01 r clavicle"), tlFixedString("bip01 r upperarm"),
+    tlFixedString("bip01 r forearm"), tlFixedString("bip01 r hand"),
+    tlFixedString("bip01 l thigh"), tlFixedString("bip01 l calf"),
+    tlFixedString("bip01 l foot"), tlFixedString("bip01 r thigh"),
+    tlFixedString("bip01 r calf"), tlFixedString("bip01 r foot"),
+    tlFixedString("tag_weapon_right"), tlFixedString("Bip01 R Toe0"),
+    tlFixedString("Bip01 L Toe0")
+};
+tlFixedString AnimIK::ParentNames[25] = {
+    tlFixedString("** NONE **"), tlFixedString("bip01 pelvis"),
+    tlFixedString("bip01 spine"), tlFixedString("bip01 spine1"),
+    tlFixedString("bip01 neck"), tlFixedString("bip01 neck"),
+    tlFixedString("bip01 l clavicle"), tlFixedString("bip01 l upperarm"),
+    tlFixedString("bip01 l forearm"), tlFixedString("bip01 neck"),
+    tlFixedString("bip01 r clavicle"), tlFixedString("bip01 r upperarm"),
+    tlFixedString("bip01 r forearm"), tlFixedString("bip01 pelvis"),
+    tlFixedString("bip01 l thigh"), tlFixedString("bip01 l calf"),
+    tlFixedString("bip01 pelvis"), tlFixedString("bip01 r thigh"),
+    tlFixedString("bip01 r calf"), tlFixedString("bip01 pelvis"),
+    tlFixedString("bip01 r foot"), tlFixedString("bip01 l foot")
+};
 
 // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data @ 0xF05660)
 AnimIK AnimIKGlobal;
@@ -820,6 +873,46 @@ void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4* leftMat,
 }
 void AnimIK::RotateBone(int boneIndex, const math::Dir3* rotation)
 {
+    nalGenericBoneHandle boneHandle;
+    boneHandle.Skeleton = nullptr;
+    boneHandle.BoneIndex = 0;
+    nalGenericSkeleton_GetBoneHandle(skeleton, &boneHandle,
+                                     &AnimIK::BoneNames[boneIndex]);
+
+    nalMatrix4x4 boneMatrix;
+    nalPositionOrientation bonePositionOrientation =
+        nalGenericPose_GetModelPositionOrientation(pose, &boneHandle);
+    nalMatrix4x4_FromPositionOrientation(bonePositionOrientation,
+                                         &boneMatrix);
+
+    nalMatrix4x4 rotationMatrix;
+    AnimIK_MatrixFromAngles(*rotation, &rotationMatrix);
+    nalMatrix4x4 result;
+    AnimIK_Multiply(boneMatrix, rotationMatrix, &result);
+
+    if (AnimIK::ParentNames[boneIndex] != noneString)
+    {
+        nalGenericBoneHandle parentHandle;
+        parentHandle.Skeleton = nullptr;
+        parentHandle.BoneIndex = 0;
+        nalGenericSkeleton_GetBoneHandle(skeleton, &parentHandle,
+                                         &AnimIK::ParentNames[boneIndex]);
+        nalPositionOrientation parentPositionOrientation =
+            nalGenericPose_GetModelPositionOrientation(pose, &parentHandle);
+        nalMatrix4x4 parentMatrix;
+        nalMatrix4x4_FromPositionOrientation(parentPositionOrientation,
+                                              &parentMatrix);
+        nalMatrix4x4 inverseParent = parentMatrix.Inverse();
+        AnimIK_Multiply(result, inverseParent, &result);
+    }
+
+    math::Mat44 resultMatrix;
+    resultMatrix.x.v = _mm_loadu_ps(result.x);
+    resultMatrix.y.v = _mm_loadu_ps(result.y);
+    resultMatrix.z.v = _mm_loadu_ps(result.z);
+    resultMatrix.w.v = _mm_loadu_ps(result.w);
+    static_cast<nalGeneric::nalGenericPose*>(pose)->SetPoseBoneOrientation(
+        boneHandle, nalQuaternionFromMatrix(resultMatrix));
 }
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
