@@ -1115,7 +1115,7 @@ index	status	map_line
 1114	VERIFIED	0002:000e2750 ?DeleteInst@SoundMediaMgr@@SAXXZ 008D1C50 f i core.o
 1115	VERIFIED	0002:000e27e0 ?DeleteInst@MusicMgr@@SAXXZ 008D1CE0 f i core.o
 1116	VERIFIED	0002:000e2870 ?DeleteInst@TestFPS@@SAXXZ 008D1D70 f i core.o
-1117	PORTED	0002:000e2900 ?CreateInst@CtrlIcon@@SAXXZ 008D1E00 f i core.o
+1117	VERIFIED	0002:000e2900 ?CreateInst@CtrlIcon@@SAXXZ 008D1E00 f i core.o	VERIFIED: existing singleton assertion metadata, 0x800-byte ui allocation, sInst assignment, and return match IDA
 1118	SKIPPED	0002:000e2990 ??_GCtrlIcon@@QAEPAXI@Z 008D1E90 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1119	VERIFIED	0002:000e29c0 ?DeleteInst@CurveManager@@SAXXZ 008D1EC0 f i core.o
 1120	VERIFIED	0002:000e2a50 ?Reformat@DialogMenuSystem@@QAEX_N@Z 008D1F50 f i core.o
