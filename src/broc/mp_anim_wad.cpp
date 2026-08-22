@@ -6,6 +6,7 @@
 
 #include "mp_anim_wad.h"
 #include "engine/broc_types.h"
+#include "game/logic/g_local.h"
 #include <new>
 
 // IDA types: BroAnim is a 4-byte value wrapper and AnimRef is the 12-byte
@@ -2726,5 +2727,43 @@ Broc::bbool* IsEEDefined_script_door(Broc::bbool* result,
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// GetEE_script_delay - ea: 0x994F10. Field key from IDA: 0x47018F83.
+Broc::bfloat* GetEE_script_delay(Broc::bfloat* result, Broc::pathnode node) {
+    const float value = Broc::gBrocAPI.mBrocExports.mGetPNodeField_float(
+        node.GetHandle(), 0x47018F83u);
+    new (result) Broc::bfloat(value);
+    return result;
+}
+
+// IsEEDefined_script_delay - ea: 0x994F90.
+Broc::bbool* IsEEDefined_script_delay(Broc::bbool* result,
+                                      Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        const float raw = Broc::gBrocAPI.mBrocExports.mGetPNodeField_float(
+            node.GetHandle(), 0x47018F83u);
+        const Broc::bfloat value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_spawnflags - ea: 0x995040.
+__int16 GetEE_spawnflags(Broc::pathnode node) {
+    return gpBrocAPI->mBrocExports.m_pnode_get_spawnflags(
+        static_cast<int>(node.GetHandle()));
+}
+
+// GetEE_script_noteworthy - ea: 0x9950A0.
+Broc::string* GetEE_script_noteworthy(Broc::string* result,
+                                      Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_script_noteworthy(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
     return result;
 }
