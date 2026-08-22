@@ -885,31 +885,31 @@ index	status	map_line
 884	SKIPPED	0002:000dfa80 ??0?$ae_fixed_string@$0CA@E@@QAE@XZ 008CEF80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 885	SKIPPED	0002:000dfa90 ??1?$InplaceAssetBankSet@VDestructibleBank@@@@UAE@XZ 008CEF90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 886	SKIPPED	0002:000dfaa0 ?OnBankUnloaded@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXAAVDestructibleBank@@@Z 008CEFA0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-887	PORTED	0002:000dfab0 ??Eiterator@?$reserved_dlist@VEntityNotifySet@@@@QAE?AV01@H@Z 008CEFB0 f i core.o
-888	PORTED	0002:000dfae0 ??Econst_iterator@?$reserved_dlist@VEntityNotify@@@@QAEAAV01@XZ 008CEFE0 f i core.o
-889	PORTED	0002:000dfb60 ??Eiterator@?$reserved_dlist@VEntityNotify@@@@QAE?AV01@H@Z 008CF060 f i core.o
-890	PORTED	0002:000dfb90 ??Eiterator@?$reserved_dlist@VEndOnScriptNode@@@@QAEAAV01@XZ 008CF090 f i core.o
+887	VERIFIED	0002:000dfab0 ??Eiterator@?$reserved_dlist@VEntityNotifySet@@@@QAE?AV01@H@Z 008CEFB0 f i core.o VERIFIED: IDA 0x004DFAB0 copies old node/next into the postfix result and advances when next exists; existing iterator matches
+888	VERIFIED	0002:000dfae0 ??Econst_iterator@?$reserved_dlist@VEntityNotify@@@@QAEAAV01@XZ 008CEFE0 f i core.o VERIFIED: IDA 0x004DFAE0 asserts m_next != 0 at reserved_dlist.h line 501 then advances; existing const_iterator matches
+889	VERIFIED	0002:000dfb60 ??Eiterator@?$reserved_dlist@VEntityNotify@@@@QAE?AV01@H@Z 008CF060 f i core.o VERIFIED: IDA 0x004DFB60 copies old node/next into the postfix result and advances when next exists; existing iterator matches
+890	VERIFIED	0002:000dfb90 ??Eiterator@?$reserved_dlist@VEndOnScriptNode@@@@QAEAAV01@XZ 008CF090 f i core.o VERIFIED: IDA 0x004DFB90 advances when m_next exists and returns this; existing iterator matches
 891	VERIFIED	0002:000dfbb0 ??0?$ae_sized_array@PAVAbstractEffect@@$05@@QAE@XZ 008CF0B0 f i core.o
 892	VERIFIED	0002:000dfbc0 ??A?$ae_sized_array@PAVAbstractEffect@@$05@@QBEABQAVAbstractEffect@@H@Z 008CF0C0 f i core.o
 893	VERIFIED	0002:000dfc40 ??A?$ae_sized_array@PAVAbstractEffect@@$05@@QAEAAPAVAbstractEffect@@H@Z 008CF140 f i core.o
-894	PORTED	0002:000dfcc0 ?size@?$ae_sized_array@PAVAbstractEffect@@$05@@QBEHXZ 008CF1C0 f i core.o
+894	VERIFIED	0002:000dfcc0 ?size@?$ae_sized_array@PAVAbstractEffect@@$05@@QBEHXZ 008CF1C0 f i core.o VERIFIED: IDA 0x004DFCC0 returns m_size; existing template matches
 895	VERIFIED	0002:000dfcd0 ?push_back@?$ae_sized_array@PAVAbstractEffect@@$05@@QAEXABQAVAbstractEffect@@@Z 008CF1D0 f i core.o
-896	PORTED	0002:000dfd50 ?pop_back@?$ae_sized_array@PAVAbstractEffect@@$05@@QAEAAPAVAbstractEffect@@XZ 008CF250 f i core.o
+896	VERIFIED	0002:000dfd50 ?pop_back@?$ae_sized_array@PAVAbstractEffect@@$05@@QAEAAPAVAbstractEffect@@XZ 008CF250 f i core.o VERIFIED: IDA 0x004DFD50 decrements nonzero m_size and returns the indexed element; existing template matches
 897	VERIFIED	0002:000dfd70 ??0?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QAE@XZ 008CF270 f i core.o
 898	VERIFIED	0002:000dfd80 ??A?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QBEABQAVActiveEffectSet@@H@Z 008CF280 f i core.o
 899	VERIFIED	0002:000dfe00 ??A?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QAEAAPAVActiveEffectSet@@H@Z 008CF300 f i core.o
-900	PORTED	0002:000dfe80 ?size@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QBEHXZ 008CF380 f i core.o
+900	VERIFIED	0002:000dfe80 ?size@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QBEHXZ 008CF380 f i core.o VERIFIED: IDA 0x004DFE80 returns m_size; existing template matches
 901	VERIFIED	0002:000dfe90 ?push_back@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QAEXABQAVActiveEffectSet@@@Z 008CF390 f i core.o
-902	PORTED	0002:000dff30 ?pop_back@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QAEAAPAVActiveEffectSet@@XZ 008CF430 f i core.o
+902	VERIFIED	0002:000dff30 ?pop_back@?$ae_sized_array@PAVActiveEffectSet@@$0CAA@@@QAEAAPAVActiveEffectSet@@XZ 008CF430 f i core.o VERIFIED: IDA 0x004DFF30 decrements nonzero m_size and returns the indexed element; existing template matches
 903	VERIFIED	0002:000dff60 ??0?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QAE@XZ 008CF460 f i core.o
 904	VERIFIED	0002:000dff70 ??A?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QAEAAPAVAbstractEffect@@H@Z 008CF470 f i core.o
-905	PORTED	0002:000dfff0 ?size@?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QBEHXZ 008CF4F0 f i core.o
+905	VERIFIED	0002:000dfff0 ?size@?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QBEHXZ 008CF4F0 f i core.o VERIFIED: IDA 0x004DFFF0 returns m_size; existing template matches
 906	VERIFIED	0002:000e0000 ?push_back@?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QAEXABQAVAbstractEffect@@@Z 008CF500 f i core.o
-907	PORTED	0002:000e00a0 ?pop_back@?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QAEAAPAVAbstractEffect@@XZ 008CF5A0 f i core.o
+907	VERIFIED	0002:000e00a0 ?pop_back@?$ae_sized_array@PAVAbstractEffect@@$0IA@@@QAEAAPAVAbstractEffect@@XZ 008CF5A0 f i core.o VERIFIED: IDA 0x004E00A0 decrements nonzero m_size and returns the indexed element; existing template matches
 908	VERIFIED	0002:000e00d0 ??A?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@H@Z 008CF5D0 f i core.o
-909	PORTED	0002:000e0150 ?size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QBEHXZ 008CF650 f i core.o
-910	PORTED	0002:000e0160 ?pop_back@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF660 f i core.o
-911	PORTED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o
+909	VERIFIED	0002:000e0150 ?size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QBEHXZ 008CF650 f i core.o VERIFIED: IDA 0x004E0150 returns m_size; existing template matches
+910	VERIFIED	0002:000e0160 ?pop_back@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF660 f i core.o VERIFIED: IDA 0x004E0160 decrements nonzero m_size and returns the indexed element; existing template matches
+911	FIXED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o FIXED: source implementation in bbc76616; IDA 0x004E0190 asserts at ae_array.h line 192, increments m_size, and returns the prior slot
 912	SKIPPED	0002:000e0220 ??1?$InplaceAssetBankSet@VPhysDataBank@@@@UAE@XZ 008CF720 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	SKIPPED	0002:000e0230 ?OnBankUnloaded@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXAAVPhysDataBank@@@Z 008CF730 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 914	PORTED	0002:000e0240 ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@VHandle@@@Z 008CF740 f i core.o
