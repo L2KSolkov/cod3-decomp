@@ -2757,10 +2757,12 @@ public:
     unsigned int m_count;    // +0x00
     T*           m_elements; // +0x04
     cdl_array() : m_count(0), m_elements(nullptr) {}
+    ~cdl_array() { done(); }
 
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
     T& operator[](unsigned int index);
+    void resize(unsigned int n);
     void done();
     void load_inplace(char* base, int* offs);
 };
@@ -2782,6 +2784,29 @@ T& cdl_array<T>::operator[](unsigned int index)
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
     return m_elements[index];
+}
+
+template <typename T>
+void cdl_array<T>::resize(unsigned int n)
+{
+    if (m_elements != nullptr)
+        tlMemFree(m_elements);
+    m_elements = nullptr;
+    m_count = 0;
+    if (n != 0)
+    {
+        m_elements = reinterpret_cast<T*>(
+            tlMemAlloc(static_cast<unsigned int>(sizeof(T) * n), 4u, 0u));
+        if (m_elements != nullptr)
+        {
+            m_count = n;
+        }
+        else if (_tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                           61, "0", "cdl_mem_pool overflow."))
+        {
+            __debugbreak();
+        }
+    }
 }
 
 template <typename T>
