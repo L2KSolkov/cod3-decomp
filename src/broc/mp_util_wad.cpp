@@ -13349,6 +13349,8 @@ int CallbackGetFlagBreatherTime() {
 
 // CallbackGetTeamControllingFlag - ea: 0x978020
 int CallbackGetTeamControllingFlag(unsigned int flagIndex) {
+    if (!(bool)mp_util_wad::pLevel->roundStarted)
+        return 0;
     if ((int)flagIndex < 0 ||
         (int)flagIndex >= Broc::size(mp_util_wad::pLevel->warAreas))
         return 0;
