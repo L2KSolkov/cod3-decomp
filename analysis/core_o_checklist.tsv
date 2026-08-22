@@ -1251,18 +1251,18 @@ index	status	map_line
 1250	SKIPPED	0002:000e4ef0 ?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z 008D43F0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1251	SKIPPED	0002:000e4f20 ?Clear@?$BitSet@$0CAA@@@QAEXXZ 008D4420 f i core.o SKIPPED: BitSet<N> template instantiation; shared Clear() is already implemented
 1252	SKIPPED	0002:000e4f40 ??S?$BitSet@$0CAA@@@QBE?AV0@XZ 008D4440 f i core.o SKIPPED: BitSet<N> template instantiation; shared operator~() is already implemented
-1253	PORTED	0002:000e4f90 ?begin@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D4490 f i core.o
-1254	PORTED	0002:000e4fd0 ?end@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D44D0 f i core.o
+1253	SKIPPED	0002:000e4f90 ?begin@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D4490 f i core.o SKIPPED: BitSet<N> iterator template instantiation; shared begin() is already implemented
+1254	SKIPPED	0002:000e4fd0 ?end@?$BitSet@$0CAA@@@QBE?AViterator@1@XZ 008D44D0 f i core.o SKIPPED: BitSet<N> iterator template instantiation; shared end() is already implemented
 1255	SKIPPED	0002:000e4ff0 ?max_size@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEIXZ 008D44F0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1256	SKIPPED	0002:000e5000 ?allocate@?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QAEPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@I@Z 008D4500 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1257	PORTED	0002:000e5020 ??9iterator@?$BitSet@$0CAA@@@QAE_NABV01@@Z 008D4520 f i core.o
+1257	SKIPPED	0002:000e5020 ??9iterator@?$BitSet@$0CAA@@@QAE_NABV01@@Z 008D4520 f i core.o SKIPPED: BitSet<N> iterator template instantiation; shared operator!=() is already implemented
 1258	SKIPPED	0002:000e5070 ??0iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 008D4570 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1259	SKIPPED	0002:000e5090 ??Giterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEHABVconst_iterator@12@@Z 008D4590 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1260	SKIPPED	0002:000e50c0 ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008D45C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1261	SKIPPED	0002:000e50d0 ?allocate@?$allocator@D@std@@QAEPADI@Z 008D45D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1262	SKIPPED	0002:000e50f0 ??$Find@PBD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQBD@Z 008D45F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1263	PORTED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  PORTED: exact IDA column/row lookup and truncation assertions
-1264	PORTED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o
+1264	VERIFIED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o VERIFIED: existing InplaceTreeFindUInt matches IDA traversal, assertions, and value pointer return
 1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1267	PORTED	0002:000e5470 ??$safe_for_each@Viterator@?$reserved_dlist@VEntityNotify@@@@V?$DelFunctor@VEntityNotify@@@@@@YAXViterator@?$reserved_dlist@VEntityNotify@@@@0V?$DelFunctor@VEntityNotify@@@@@Z 008D4970 f i core.o  PORTED: exact IDA iterator walk and delete/pool-release cleanup
