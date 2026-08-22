@@ -1349,7 +1349,7 @@ index	status	map_line
 1348	SKIPPED	0002:000e7fb0 ??_GDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1349	SKIPPED	0002:000e7fb0 ??_EDbQuery@@UAEPAXI@Z 008D74B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1350	PORTED	0002:000e7fe0 ?CreateInst@DestructibleBankManager@@SAXXZ 008D74E0 f i core.o
-1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o
+1351	VERIFIED	0002:000e80f0 ??0CachedQuery@EffectEventSys@@QAE@XZ 008D75F0 f i core.o	VERIFIED: IDA clears both BitSet words and first byte of all three DbQueryString fields; member default construction has the same final state
 1352	PORTED	0002:000e8120 ?Where@CachedQuery@EffectEventSys@@QAEXHABH_N@Z 008D7620 f i core.o  PORTED: exact specified/weak bit updates, field routing, and bad-id assert
 1353	PORTED	0002:000e82b0 ?Where@CachedQuery@EffectEventSys@@QAEXHABVDbQueryString@@_N@Z 008D77B0 f i core.o  PORTED: exact string field copies, weak bits, and bad-id assert
 1354	FIXED	0002:000e8390 ?ConstructQuery@CachedQuery@EffectEventSys@@QBEXAAVDbQuery@@@Z 008D7890 f i core.o	FIXED: uses exact DbQuery::Where template instantiations and IDA DbQueryString field types
@@ -1367,7 +1367,7 @@ index	status	map_line
 1366	FIXED	0002:000e8d50 ?AllocateHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE?AV?$SizedHandle@$08$0BH@@@XZ 008D8250 f i core.o  FIXED: uses IDA BitSet iterator, Rmv, Dump-on-exhaustion, and key/index packing
 1367	PORTED	0002:000e8e30 ?delete_all@?$reserved_dlist@VRumbleEffectInstance@@@@QAEXXZ 008D8330 f i core.o  PORTED: exact sentinel reset and safe_for_each deletion body from IDA
 1368	SKIPPED	0002:000e8e90 ??A?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@I@Z 008D8390 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1369	PORTED	0002:000e8eb0 ??0?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D83B0 f i core.o
+1369	VERIFIED	0002:000e8eb0 ??0?$ae_sized_array_base@UPendingQuery@EffectEventSys@@$0EA@@@QAE@XZ 008D83B0 f i core.o	VERIFIED: IDA vector-constructs 64 PendingQuery elements; the template member array does the same after the exact PendingQuery constructor port
 1370	SKIPPED	0002:000e8ee0 ?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z 008D83E0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1371	PORTED	0002:000e8ff0 ??$Where@W4ECollisionMaterial@@@EffectEventSys@@QAEXHABW4ECollisionMaterial@@_N@Z 008D84F0 f i core.o  PORTED: exact context update and CachedQuery delegation
 1372	PORTED	0002:000e9040 ??$Where@W4EEffectContext@@@EffectEventSys@@QAEXHABW4EEffectContext@@_N@Z 008D8540 f i core.o  PORTED: exact context update and CachedQuery delegation
