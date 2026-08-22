@@ -38,9 +38,9 @@ index	status	map_line
 37	VERIFIED	0002:0046d970 ?Process@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CE70 f nal_generic.o	VERIFIED: IDA vtable/base layout now represented by nalAnimClass<nalGenericPose>
 38	VERIFIED	0002:0046d9f0 ?Release@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CEF0 f nal_generic.o
 39	FIXED	0002:0046db50 ??1nalGenericInstance@nalGeneric@@UAE@XZ 00C5D050 f nal_generic.o	FIXED: IDA 0x0086DB50 releases the offset-map reference and animation-component tracks; base/member destructors complete lifetime cleanup
-40	PORTED	0002:0046dc30 ?CacheBlock@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D130 f nal_generic.o
-41	PORTED	0002:0046de10 ?ConvertPoseData@nalGenericInstance@nalGeneric@@IAEXPAEPBVnalObject@nalAnimCache@@HPBEPBHH@Z 00C5D310 f nal_generic.o
-42	PORTED	0002:0046df80 ?TouchDecompCache@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D480 f nal_generic.o
+40	FIXED	0002:0046dc30 ?CacheBlock@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D130 f nal_generic.o	FIXED: IDA 0x0086DC30 allocates/increases cache LODs and decodes or skips each skeleton component
+41	FIXED	0002:0046de10 ?ConvertPoseData@nalGenericInstance@nalGeneric@@IAEXPAEPBVnalObject@nalAnimCache@@HPBEPBHH@Z 00C5D310 f nal_generic.o	FIXED: IDA 0x0086DE10 copies defaults when needed and converts each cached component through the reference vtable slots
+42	FIXED	0002:0046df80 ?TouchDecompCache@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D480 f nal_generic.o	FIXED: IDA 0x0086DF80 resolves the block cache entry, touches resident data, or calls CacheBlock
 43	VERIFIED	0002:0046dfc0 ?GetPose@nalGenericInstance@nalGeneric@@QAEXHAAVnalGenericPose@2@ABV32@H@Z 00C5D4C0 f nal_generic.o
 44	VERIFIED	0002:0046e070 ?Blend@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D570 f nal_generic.o
 45	PORTED	0002:0046e1b0 ?BlendIntra@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D6B0 f nal_generic.o
