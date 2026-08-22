@@ -178,7 +178,7 @@ index	status	map_line
 177	VERIFIED	0002:0012cbb0 ?CL_EndgameMenu@@YAXXZ 0091C0B0 f cl.o
 178	VERIFIED	0002:0012cbc0 ?CL_CDDialog@@YAXXZ 0091C0C0 f cl.o
 179	VERIFIED	0002:0012cbd0 ?CL_AddReliableCommand@@YAXPBD@Z 0091C0D0 f cl.o
-180	PORTED	0002:0012cc70 ?CL_ChangeReliableCommand@@YAXXZ 0091C170 f cl.o PORTED: IDA match; clamps length and appends newline/terminator
+180	FIXED	0002:0012cc70 ?CL_ChangeReliableCommand@@YAXXZ 0091C170 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 181	VERIFIED	0002:0012ccc0 ?CL_ForwardCommandToServer@@YAXPBD@Z 0091C1C0 f cl.o
 182	VERIFIED	0002:0012cd20 ?CL_ForwardToServer_f@@YAXXZ 0091C220 f cl.o
 183	VERIFIED	0002:0012cd60 ?CL_Setenv_f@@YAXXZ 0091C260 f cl.o
