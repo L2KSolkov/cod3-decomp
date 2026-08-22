@@ -90,6 +90,8 @@ public:
     // Packed layout (3 floats, 12 bytes — for network/disk)
     struct Packed {
         float x, y, z;
+        void Set(const Dir3& v);  // game.o 0x00602050
+        const Packed& operator=(const Dir3& v);  // game.o 0x006020E0
         float GetX() const;  // ?GetX@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EC0)
         float GetY() const;  // ?GetY@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5ED0)
         float GetZ() const;  // ?GetZ@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EE0)
@@ -124,6 +126,7 @@ public:
     float GetX() const;           // ?GetX@Position3@math@@QBEMXZ (g.o 0x4A58B0)
     float GetY() const;           // ?GetY@Position3@math@@QBEMXZ (g.o 0x4A58D0)
     float GetZ() const;           // ?GetZ@Position3@math@@QBEMXZ (g.o 0x4A5930)
+    float GetW() const;           // ?GetW@Position3@math@@QBEMXZ (game.o 0x00602170)
     void SetX(float _x);          // ?SetX@Position3@math@@QAEXM@Z (g.o 0x4A59B0)
     void SetY(float _y);          // ?SetY@Position3@math@@QAEXM@Z (g.o 0x4A59F0)
     void SetZ(float _z);          // ?SetZ@Position3@math@@QAEXM@Z (g.o 0x4A5A30)
@@ -142,6 +145,7 @@ public:
 
     struct Packed {
         float x, y, z;
+        Packed(const Position3& v);  // game.o 0x00602180
         void Set(const Position3& v);  // game2.o 0x004EACD0
         float GetX() const;            // game2.o 0x004EAD60
         float GetY() const;            // game2.o 0x004EAD70
