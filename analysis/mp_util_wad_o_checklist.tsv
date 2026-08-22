@@ -789,7 +789,7 @@ index	status	map_line
 788	VERIFIED	0002:00570160 ?init_all_tanks@_mp_tankdrive@@YAXXZ 00D5F660 f mp_util_wad.o
 789	FIXED	0002:005702c0 ?SetMaxVehicles@@YAXH@Z 00D5F7C0 f i mp_util_wad.o	FIXED: IDA 0x009702C0 calls BrocAPI::mSetMaxVehicles at offset 0x5C4; added the typed API member and matched the dispatch
 790	VERIFIED	0002:005702f0 ?init_tank@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5F7F0 f mp_util_wad.o
-791	PORTED	0002:00570800 ?Get@model_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D5FD00 f i mp_util_wad.o	PORTED: added IDA 0x00970800 model proxy type and temporary-string copy wrapper around BrocAPI::m_entity_get_model
+791	VERIFIED	0002:00570800 ?Get@model_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D5FD00 f i mp_util_wad.o	VERIFIED: IDA 0x00970800 matches m_entity_get_model, result string copy, temporary destruction, and return
 792	VERIFIED	0002:005708b0 ?BlowUpIfFlipped__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FDB0 f i mp_util_wad.o	VERIFIED: IDA 0x009708B0 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::BlowUpIfFlipped
 793	VERIFIED	0002:00570950 ?VehicleDamagedEffects__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FE50 f i mp_util_wad.o	VERIFIED: IDA 0x00970950 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::VehicleDamagedEffects
 794	VERIFIED	0002:005709f0 ?BlowUpIfUnderWorld__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FEF0 f i mp_util_wad.o	VERIFIED: IDA 0x009709F0 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::BlowUpIfUnderWorld
@@ -800,9 +800,9 @@ index	status	map_line
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
 800	PORTED	0002:00570e80 ?IsVehicleFlipped@Broc@@YA_NABVentity@1@@Z 00D60380 f i mp_util_wad.o	PORTED: added IDA 0x00970E80 wrapper forwarding mIsVehicleFlipped(GetHandle())
 801	PORTED	0002:00570eb0 ?VehicleRespawnClear@_mp_tankdrive@@YA?AUbint@@Ventity@Broc@@Uvector@4@@Z 00D603B0 f mp_util_wad.o
-802	PORTED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o	PORTED: added IDA 0x009712A0 entity proxy type and bint result wrapper over m_entity_get_takedamage
+802	VERIFIED	0002:005712a0 ?Get@takedamage_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D607A0 f i mp_util_wad.o	VERIFIED: IDA 0x009712A0 matches m_entity_get_takedamage, bint construction, and result return
 803	VERIFIED	0002:005712e0 ?HostSafeVehicleRespawn@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D607E0 f mp_util_wad.o
-804	PORTED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o	PORTED: added IDA 0x009713A0 entity proxy type and temporary-vector copy wrapper over m_entity_get_rotate
+804	VERIFIED	0002:005713a0 ?Get@rotate_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D608A0 f i mp_util_wad.o	VERIFIED: IDA 0x009713A0 matches m_entity_get_rotate temporary vector copy and result return
 805	PORTED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o	PORTED: added IDA 0x009713F0 wrapper forwarding mBroadcastVehicleRespawn(GetHandle())
 806	PORTED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o	PORTED: added IDA 0x00971420 wrapper forwarding mRespawnVehicle(GetHandle())
 807	VERIFIED	0002:00571450 ?death@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D60950 f mp_util_wad.o
