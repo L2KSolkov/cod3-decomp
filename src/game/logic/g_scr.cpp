@@ -1921,6 +1921,24 @@ struct ae_heap_wrapper {
     bool CheckFree(void* ptr);  // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z
 };
 
+// ea: 0x005EDF40
+template <>
+void Broc::dyn_array<Broc::entity>::destroy_all()
+{
+    Broc::entity* mElements = this->mElements;
+    if (this->mElements != nullptr)
+    {
+        if (gBrocPool->InPool(mElements))
+        {
+            gBrocPool->Release(mElements);
+        }
+        else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(mElements))
+        {
+            mem_heap_free(mElements);
+        }
+    }
+}
+
 namespace MemCount {
 // IDA types: enum MemCount::eGamePhase : int
 enum eGamePhase : int {
