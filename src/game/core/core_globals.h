@@ -150,10 +150,7 @@ extern int    sLastSpinnerFrame;       // 0x012F03CC
 struct nglTexture;
 extern nglTexture** gLensFlareTextures;  // 0x012F03D0 (nglTexture*[])
 
-// class statics declared here for the singleton holder pattern (verified VAs)
-namespace EffectEventSysStatics {
-extern EffectEventSys* sInst;          // 0x012F0380
-}
+// Class statics declared here for singleton-holder patterns (verified VAs).
 namespace DbTablesetMgrStatics {
 extern void* sInst;                    // 0x012F0370 (DbTablesetMgr*)
 }

@@ -226,7 +226,9 @@ extern nslWaveID nslGetWave(const char* name);
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 
 namespace EffectEventSysStatics {
-EffectEventSys* sInst = nullptr;  // 0x012F0380
+// Compatibility alias for callers reconstructed before the IDA singleton
+// declaration was restored. The storage is EffectEventSys::sInst at 0x00F00E80.
+EffectEventSys*& sInst = EffectEventSys::sInst;
 }
 
 PoolAllocator* ActiveEffectSet_sAllocator = nullptr;
@@ -337,11 +339,9 @@ EffectEventSys* EffectEventSys::CreateInst()
     {
         EffectEventSys* result = new (memory) EffectEventSys();
         EffectEventSys::sInst = result;
-        EffectEventSysStatics::sInst = result;
         return result;
     }
     EffectEventSys::sInst = nullptr;
-    EffectEventSysStatics::sInst = nullptr;
     return nullptr;
 }
 
@@ -366,7 +366,6 @@ void EffectEventSys::DeleteInst()
         mem_heap_free(instance);
     }
     EffectEventSys::sInst = nullptr;
-    EffectEventSysStatics::sInst = nullptr;
 }
 
 // ============================================================================
