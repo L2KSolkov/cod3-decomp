@@ -25038,6 +25038,11 @@ inline Broc::pathnode sentient_get_callback_value<Broc::pathnode, 31>()
     return Broc::pathnode(Broc::INVALID_PATHNODE_HANDLE);
 }
 
+static BrocFieldFn player_field_callback()
+{
+    return reinterpret_cast<BrocFieldFn>(sScrFcnPtrs[0]);
+}
+
 void (__cdecl *off_DF49A0)(PathNodes::PathNode*, int, Broc::vector*) =
     &BrocSys::PathNode_SetAngles;
 void (__cdecl *off_DF49A4)(PathNodes::PathNode*, int, Broc::vector*) =
@@ -25457,17 +25462,32 @@ template <typename T, int OFF, int IDX>
 void entity_set_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->client != nullptr)
+    if (mObject != nullptr)
     {
-        *(T*)((char*)mObject->client + OFF) = val;
+        if (mObject->client != nullptr)
+        {
+            BrocFieldFn callback = player_field_callback();
+            if (callback != nullptr)
+                callback(mObject->client, OFF, &val);
+            else
+                *(T*)((char*)&mObject->client->ps + OFF) = val;
+            return;
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6018;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set player field from non-player entity."))
+            __debugbreak();
         return;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5888;
+    AeAssert::gCurrentLine = 6023;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to set player field on NULL entity"))
+        && AeAssert::Warning("Trying to set field on NULL entity"))
         __debugbreak();
 }
 
@@ -25475,14 +25495,34 @@ template <typename T, int OFF, int IDX>
 T entity_get_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->client != nullptr)
-        return *(T*)((char*)mObject->client + OFF);
+    if (mObject != nullptr)
+    {
+        if (mObject->client != nullptr)
+        {
+            BrocFieldFn callback = player_field_callback();
+            if (callback != nullptr)
+            {
+                T value = T();
+                callback(mObject->client, OFF, &value);
+                return value;
+            }
+            return *(T*)((char*)&mObject->client->ps + OFF);
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6059;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get player field from non-player entity."))
+            __debugbreak();
+        return T();
+    }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5900;
+    AeAssert::gCurrentLine = 6065;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to get player field off NULL entity"))
+        && AeAssert::Warning("Trying to get field off NULL entity"))
         __debugbreak();
     return T();
 }
@@ -25491,17 +25531,32 @@ template <typename T, int OFF, int IDX>
 void entity_set_persistent_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->client != nullptr)
+    if (mObject != nullptr)
     {
-        *(T*)((char*)mObject->client + OFF) = val;
+        if (mObject->client != nullptr)
+        {
+            BrocFieldFn callback = player_field_callback();
+            if (callback != nullptr)
+                callback(&mObject->client->pers, OFF, &val);
+            else
+                *(T*)((char*)&mObject->client->pers + OFF) = val;
+            return;
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6100;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to set player field from non-player entity."))
+            __debugbreak();
         return;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5918;
+    AeAssert::gCurrentLine = 6105;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to set persistent player field on NULL entity"))
+        && AeAssert::Warning("Trying to set field on NULL entity"))
         __debugbreak();
 }
 
@@ -25509,14 +25564,34 @@ template <typename T, int OFF, int IDX>
 T entity_get_persistent_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
-    if (mObject != nullptr && mObject->client != nullptr)
-        return *(T*)((char*)mObject->client + OFF);
+    if (mObject != nullptr)
+    {
+        if (mObject->client != nullptr)
+        {
+            BrocFieldFn callback = player_field_callback();
+            if (callback != nullptr)
+            {
+                T value = T();
+                callback(&mObject->client->pers, OFF, &value);
+                return value;
+            }
+            return *(T*)((char*)&mObject->client->pers + OFF);
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6141;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Trying to get player field from non-player entity."))
+            __debugbreak();
+        return T();
+    }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 5930;
+    AeAssert::gCurrentLine = 6147;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
-        && AeAssert::Warning("Trying to get persistent player field off NULL entity"))
+        && AeAssert::Warning("Trying to get field off NULL entity"))
         __debugbreak();
     return T();
 }
