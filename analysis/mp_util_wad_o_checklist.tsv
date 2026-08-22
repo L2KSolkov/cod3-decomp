@@ -1120,17 +1120,17 @@ index	status	map_line
 1119	SKIPPED	0002:005847f0 ??0_Node@?$_List_nod@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@QAE@PAU012@0ABU?$pair@$$CBUHashStr@@Vstring@Broc@@@2@@Z 00D73CF0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1120	SKIPPED	0002:00584840 ??0?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@QAE@ABU01@@Z 00D73D40 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00584890 ??0?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@QAE@ABU01@@Z 00D73D90 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1122	PORTED	0002:005848e0 ??$ConcatText@Vstring@Broc@@Uvector@2@@Broc@@YAXAAVstring@0@ABV10@ABUvector@0@@Z 00D73DE0 f i mp_util_wad.o	PORTED: matched IDA 0x009848E0 256-byte scratch buffer, localized string assignment, vector formatting, and append
-1123	PORTED	0002:00584940 ?GetText@Broc@@YAPBDABVstring@1@PAD@Z 00D73E40 f i mp_util_wad.o	PORTED: matched IDA 0x00984940 c_str-to-mLocalize forwarding; unused buffer parameter preserved
-1124	PORTED	0002:00584970 ?GetText@Broc@@YAPBDABUvector@1@PAD@Z 00D73E70 f i mp_util_wad.o	PORTED: matched IDA 0x00984970 sprintf("%f,%f,%f") formatting and buffer return
-1125	PORTED	0002:005849d0 ??$SetVal@Ubfloat@@@ExtendedEntity@Broc@@QAEPAIIABUbfloat@@@Z 00D73ED0 f i mp_util_wad.o
-1126	PORTED	0002:00584aa0 ??$GetVal@Ubfloat@@@ExtendedEntity@Broc@@QBE?AUbfloat@@I@Z 00D73FA0 f i mp_util_wad.o
-1127	PORTED	0002:00584b30 ??$GetRef@Ubfloat@@@ExtendedEntity@Broc@@QAEAAUbfloat@@I@Z 00D74030 f i mp_util_wad.o
-1128	PORTED	0002:00584bb0 ??$SetVal@Ubint@@@ExtendedEntity@Broc@@QAEPAIIABUbint@@@Z 00D740B0 f i mp_util_wad.o
-1129	PORTED	0002:00584c80 ??$GetVal@Ubint@@@ExtendedEntity@Broc@@QBE?AUbint@@I@Z 00D74180 f i mp_util_wad.o
-1130	PORTED	0002:00584d10 ??$GetRef@Ubint@@@ExtendedEntity@Broc@@QAEAAUbint@@I@Z 00D74210 f i mp_util_wad.o
-1131	PORTED	0002:00584d90 ??$GetVal@Vstring@Broc@@@ExtendedEntity@Broc@@QBE?AVstring@1@I@Z 00D74290 f i mp_util_wad.o
-1132	VERIFIED	0002:00584e50 ??$GetRef@Vstring@Broc@@@ExtendedEntity@Broc@@QAEAAVstring@1@I@Z 00D74350 f i mp_util_wad.o
+1122	VERIFIED	0002:005848e0 ??$ConcatText@Vstring@Broc@@Uvector@2@@Broc@@YAXAAVstring@0@ABV10@ABUvector@0@@Z 00D73DE0 f i mp_util_wad.o	VERIFIED: IDA 0x009848E0 uses a 256-byte scratch buffer, localized string assignment, vector formatting, and append
+1123	VERIFIED	0002:00584940 ?GetText@Broc@@YAPBDABVstring@1@PAD@Z 00D73E40 f i mp_util_wad.o	VERIFIED: IDA 0x00984940 forwards c_str() to mLocalize and ignores the buffer parameter
+1124	VERIFIED	0002:00584970 ?GetText@Broc@@YAPBDABUvector@1@PAD@Z 00D73E70 f i mp_util_wad.o	VERIFIED: IDA 0x00984970 formats "%f,%f,%f" into the supplied buffer
+1125	FIXED	0002:005849d0 ??$SetVal@Ubfloat@@@ExtendedEntity@Broc@@QAEPAIIABUbfloat@@@Z 00D73ED0 f i mp_util_wad.o	FIXED: shared typed SetVal now preserves the IDA raw-slot copy semantics
+1126	FIXED	0002:00584aa0 ??$GetVal@Ubfloat@@@ExtendedEntity@Broc@@QBE?AUbfloat@@I@Z 00D73FA0 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined bfloat result
+1127	FIXED	0002:00584b30 ??$GetRef@Ubfloat@@@ExtendedEntity@Broc@@QAEAAUbfloat@@I@Z 00D74030 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined bfloat before returning the reference
+1128	FIXED	0002:00584bb0 ??$SetVal@Ubint@@@ExtendedEntity@Broc@@QAEPAIIABUbint@@@Z 00D740B0 f i mp_util_wad.o	FIXED: shared typed SetVal now preserves the IDA raw-slot copy semantics
+1129	FIXED	0002:00584c80 ??$GetVal@Ubint@@@ExtendedEntity@Broc@@QBE?AUbint@@I@Z 00D74180 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined bint result
+1130	FIXED	0002:00584d10 ??$GetRef@Ubint@@@ExtendedEntity@Broc@@QAEAAUbint@@I@Z 00D74210 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined bint before returning the reference
+1131	FIXED	0002:00584d90 ??$GetVal@Vstring@Broc@@@ExtendedEntity@Broc@@QBE?AVstring@1@I@Z 00D74290 f i mp_util_wad.o	FIXED: missing keys now construct the IDA null string result
+1132	FIXED	0002:00584e50 ??$GetRef@Vstring@Broc@@@ExtendedEntity@Broc@@QAEAAVstring@1@I@Z 00D74350 f i mp_util_wad.o	FIXED: shared GetRef now materializes the IDA null string when absent
 1133	PORTED	0002:00584f20 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@ABV01@@Z 00D74420 f i mp_util_wad.o
 1134	VERIFIED	0002:005850b0 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D745B0 f i mp_util_wad.o
 1135	VERIFIED	0002:00585120 ??1?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D74620 f i mp_util_wad.o
@@ -1140,17 +1140,17 @@ index	status	map_line
 1139	PORTED	0002:00585740 ??0?$dyn_array@M@Broc@@QAE@XZ 00D74C40 f i mp_util_wad.o
 1140	VERIFIED	0002:005857b0 ??1?$dyn_array@M@Broc@@QAE@XZ 00D74CB0 f i mp_util_wad.o
 1141	VERIFIED	0002:005857f0 ??A?$dyn_array@M@Broc@@QAEAAMI@Z 00D74CF0 f i mp_util_wad.o
-1142	PORTED	0002:00585a10 ??$GetVal@Uvector@Broc@@@ExtendedEntity@Broc@@QBE?AUvector@1@I@Z 00D74F10 f i mp_util_wad.o
-1143	VERIFIED	0002:00585ab0 ??$GetRef@Uvector@Broc@@@ExtendedEntity@Broc@@QAEAAUvector@1@I@Z 00D74FB0 f i mp_util_wad.o
-1144	PORTED	0002:00585b30 ??$SetVal@Uvector@Broc@@@ExtendedEntity@Broc@@QAEPAIIABUvector@1@@Z 00D75030 f i mp_util_wad.o
-1145	PORTED	0002:00585c20 ??$GetVal@Ubbool@@@ExtendedEntity@Broc@@QBE?AUbbool@@I@Z 00D75120 f i mp_util_wad.o
-1146	PORTED	0002:00585cb0 ??$GetRef@Ubbool@@@ExtendedEntity@Broc@@QAEAAUbbool@@I@Z 00D751B0 f i mp_util_wad.o
-1147	PORTED	0002:00585d30 ??$SetVal@Ubbool@@@ExtendedEntity@Broc@@QAEPAIIABUbbool@@@Z 00D75230 f i mp_util_wad.o
-1148	PORTED	0002:00585e00 ??$SetVal@Ventity@Broc@@@ExtendedEntity@Broc@@QAEPAIIABVentity@1@@Z 00D75300 f i mp_util_wad.o
-1149	PORTED	0002:00585f20 ??$GetVal@Ventity@Broc@@@ExtendedEntity@Broc@@QBE?AVentity@1@I@Z 00D75420 f i mp_util_wad.o
-1150	PORTED	0002:00585fb0 ??$GetRef@Ventity@Broc@@@ExtendedEntity@Broc@@QAEAAVentity@1@I@Z 00D754B0 f i mp_util_wad.o
-1151	PORTED	0002:00586030 ??$GetVal@UHashStr@@@ExtendedEntity@Broc@@QBE?AUHashStr@@I@Z 00D75530 f i mp_util_wad.o
-1152	VERIFIED	0002:005860c0 ??$GetRef@UHashStr@@@ExtendedEntity@Broc@@QAEAAUHashStr@@I@Z 00D755C0 f i mp_util_wad.o
+1142	FIXED	0002:00585a10 ??$GetVal@Uvector@Broc@@@ExtendedEntity@Broc@@QBE?AUvector@1@I@Z 00D74F10 f i mp_util_wad.o	FIXED: vector GetVal now dereferences the IDA heap-pointer representation and defaults through vector::vector()
+1143	FIXED	0002:00585ab0 ??$GetRef@Uvector@Broc@@@ExtendedEntity@Broc@@QAEAAUvector@1@I@Z 00D74FB0 f i mp_util_wad.o	FIXED: vector GetRef now returns the heap object represented by the stored pointer
+1144	FIXED	0002:00585b30 ??$SetVal@Uvector@Broc@@@ExtendedEntity@Broc@@QAEPAIIABUvector@1@@Z 00D75030 f i mp_util_wad.o	FIXED: vector SetVal now allocates and stores the IDA heap-copy pointer
+1145	FIXED	0002:00585c20 ??$GetVal@Ubbool@@@ExtendedEntity@Broc@@QBE?AUbbool@@I@Z 00D75120 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined bbool result
+1146	FIXED	0002:00585cb0 ??$GetRef@Ubbool@@@ExtendedEntity@Broc@@QAEAAUbbool@@I@Z 00D751B0 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined bbool before returning the reference
+1147	FIXED	0002:00585d30 ??$SetVal@Ubbool@@@ExtendedEntity@Broc@@QAEPAIIABUbbool@@@Z 00D75230 f i mp_util_wad.o	FIXED: typed SetVal now safely copies the IDA one-byte bbool value into the raw slot
+1148	FIXED	0002:00585e00 ??$SetVal@Ventity@Broc@@@ExtendedEntity@Broc@@QAEPAIIABVentity@1@@Z 00D75300 f i mp_util_wad.o	FIXED: shared typed SetVal now preserves the IDA entity raw-slot copy semantics
+1149	FIXED	0002:00585f20 ??$GetVal@Ventity@Broc@@@ExtendedEntity@Broc@@QBE?AVentity@1@I@Z 00D75420 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined entity result
+1150	FIXED	0002:00585fb0 ??$GetRef@Ventity@Broc@@@ExtendedEntity@Broc@@QAEAAVentity@1@I@Z 00D754B0 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined entity before returning the reference
+1151	FIXED	0002:00586030 ??$GetVal@UHashStr@@@ExtendedEntity@Broc@@QBE?AUHashStr@@I@Z 00D75530 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined HashStr result
+1152	FIXED	0002:005860c0 ??$GetRef@UHashStr@@@ExtendedEntity@Broc@@QAEAAUHashStr@@I@Z 00D755C0 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined HashStr before returning the reference
 1153	PORTED	0002:00586140 ??$SetVal@UHashStr@@@ExtendedEntity@Broc@@QAEPAIIABUHashStr@@@Z 00D75640 f i mp_util_wad.o
 1154	VERIFIED	0002:00586210 ??A?$dyn_array@Ventity@Broc@@@Broc@@QAEAAVentity@1@I@Z 00D75710 f i mp_util_wad.o
 1155	VERIFIED	0002:00586430 ??A?$dyn_array@Vstring@Broc@@@Broc@@QAEAAVstring@1@I@Z 00D75930 f i mp_util_wad.o
