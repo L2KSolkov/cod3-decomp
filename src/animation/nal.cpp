@@ -888,6 +888,12 @@ public:
 
     // ?GetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ (0x55E530)
     typename nalAnimSkeletonRet<T>::type GetSkeleton() const;
+    // ?GetAnimTypeName@?$nalAnimClass@VnalAnyPose@@@@QBEABVtlFixedString@@XZ
+    const tlFixedString& GetAnimTypeName() const;
+    // ?SetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QAEXPBVnalBaseSkeleton@@@Z
+    void SetSkeleton(const nalBaseSkeleton* skeleton);
+    // ?GetVersion@?$nalAnimClass@VnalAnyPose@@@@QBEIXZ
+    unsigned int GetVersion() const;
     // ?CreateInstance@?$nalAnimClass@VnalAnyPose@@@@QAEPAVnalInstanceClass@1@PAVnalBaseSkeleton@@@Z (0x55E610)
     nalInstanceClass* CreateInstance(nalBaseSkeleton* skeleton);
     // game2.o virtual (MetaNalBaseAnim overrides)
@@ -905,6 +911,32 @@ template <typename T>
 typename nalAnimSkeletonRet<T>::type nalAnimClass<T>::GetSkeleton() const
 {
     return reinterpret_cast<typename nalAnimSkeletonRet<T>::type>(Skeleton);
+}
+
+template <typename T>
+const tlFixedString& nalAnimClass<T>::GetAnimTypeName() const
+{
+    if (Skeleton == nullptr
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+               70, "Skeleton",
+               "Skeleton must be filled out before the animation type can be obtained"))
+    {
+        __debugbreak();
+    }
+    return Skeleton->AnimTypeName;
+}
+
+template <typename T>
+void nalAnimClass<T>::SetSkeleton(const nalBaseSkeleton* skeleton)
+{
+    Skeleton = skeleton;
+}
+
+template <typename T>
+unsigned int nalAnimClass<T>::GetVersion() const
+{
+    return Version;
 }
 
 // ea: 0x0055E5A0
@@ -977,6 +1009,21 @@ const tlFixedString* tlSkipList<nalBaseSkeleton, tlFixedString>::GetKeyOf(
 
 template class tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>>;
 template class tlInstanceBankResourceDirectory<nalBaseSkeleton>;
+
+template <>
+nalAnimClass<nalAnyPose>*
+tlResourceDirectory<nalAnimClass<nalAnyPose>>::StandardLoad(
+    const tlFixedString&)
+{
+    return nullptr;
+}
+
+template <>
+int tlResourceDirectory<nalAnimClass<nalAnyPose>>::StandardRelease(
+    nalAnimClass<nalAnyPose>*, int, bool)
+{
+    return 1;
+}
 
 // nalClientSceneAnim interface (IDA type: nalClientSceneAnim_vtbl)
 class nalClientSceneAnim {
@@ -3014,6 +3061,7 @@ int nalGetDecompCacheSize() { return 0x4000; }
 extern tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory;
 extern tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory;
 extern tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory;
+extern tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory;
 
 // ea: 0x008730D0
 nalBaseSkeleton* nalGetSkeleton(const tlFixedString* name)
@@ -3256,6 +3304,73 @@ static bool nalLoadAnimFileInternal(nalAnimFile* animFile)
     return true;
 }
 
+template <>
+nalAnimFile* tlResourceDirectory<nalAnimFile>::StandardLoad(
+    const tlFixedString& fileName)
+{
+    char filePath[256];
+    tlFileBuf fileBuf;
+    snprintf(filePath, sizeof(filePath), "%s%s.%s", nalAnimPath,
+             fileName.str, "xbanim");
+    if (!tlReadFile(filePath, &fileBuf, 0x10u, 0u))
+    {
+        tlWarning("Unable to open %s%s.\n", nalAnimPath, fileName.str);
+        return nullptr;
+    }
+
+    nalAnimFile* animFile = reinterpret_cast<nalAnimFile*>(fileBuf.Buf);
+    animFile->Header.FileBuf = fileBuf;
+    animFile->Header.RefCount = 1;
+    animFile->Header.Name = fileName;
+    animFile->Header.Flags &= ~4u;
+    if (!nalLoadAnimFileInternal(animFile))
+    {
+        tlReleaseFile(&fileBuf);
+        return nullptr;
+    }
+    if (this->Add(animFile) != nullptr)
+        tlWarning("Attempt to load already loaded AnimFile %s\n",
+                  fileName.str);
+    return animFile;
+}
+
+template <>
+int tlResourceDirectory<nalAnimFile>::StandardRelease(
+    nalAnimFile* animFile, int force, bool)
+{
+    if (animFile == nullptr)
+        return 0;
+
+    int result;
+    const bool last = animFile->Header.RefCount == 1;
+    if (force == 0)
+    {
+        result = animFile->Header.RefCount - 1;
+        animFile->Header.RefCount = result;
+        if (result >= 0 && !last)
+            return result;
+    }
+
+    if ((animFile->Header.Flags & 8u) == 0
+        && _tlAssert("source/common/nal_anim.cpp", 178,
+                     "animFile->Header.Flags & NAL_BAF_PROCESSED",
+                     "attempt to release unprocess animfile"))
+    {
+        __debugbreak();
+    }
+    this->Del(animFile);
+    for (nalAnimClass<nalAnyPose>* anim = animFile->Header.FirstAnim;
+         anim != nullptr; anim = anim->NextAnim)
+    {
+        anim->Release();
+        nalAnimDirectory->Del(anim);
+    }
+    if ((animFile->Header.Flags & 4u) == 0)
+        tlReleaseFile(&animFile->Header.FileBuf);
+    animFile->Header.Flags &= ~8u;
+    return 0;
+}
+
 // ea: 0x00870840
 nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& fileName, void* data)
 {
@@ -3316,12 +3431,220 @@ nalAnimClass<nalAnyPose>* nalGetNextAnimInFile(nalAnimClass<nalAnyPose>* anim)
 // ============================================================================
 // nal scene animation resource management
 // ============================================================================
-nalSceneAnim* nalGetSceneAnim(const tlFixedString&) { return nullptr; }
-nalSceneAnim* nalLoadSceneAnim(const tlFixedString&) { return nullptr; }
-nalSceneAnim* nalLoadSceneAnimInPlace(const tlFixedString&, void*) { return nullptr; }
-int nalReleaseSceneAnim(nalSceneAnim*) { return 0; }
-int nalReleaseSceneAnim(const tlFixedString&) { return 0; }
-void nalReleaseAllSceneAnims() {}
+nalSceneAnim* nalGetSceneAnim(const tlFixedString& name)
+{
+    return nalSceneAnimDirectory->Find(name);
+}
+
+static bool nalLoadSceneAnimInternal(nalSceneAnim* sceneAnim)
+{
+    if (sceneAnim->Header.Version != 0x10101u)
+        tlFatal("Unsupported scene anim version %x, current version is %x (%s).\n",
+                sceneAnim->Header.Version, 0x10101u,
+                sceneAnim->Header.Name.str);
+
+    nalBaseSkeleton** skeletons = static_cast<nalBaseSkeleton**>(
+        tlMemAlloc(static_cast<unsigned>(4 * sceneAnim->Header.NumStringsInTable),
+                   8u, 0u));
+    const unsigned char* stringTable =
+        reinterpret_cast<const unsigned char*>(sceneAnim) + 0x50;
+    for (int i = 0; i < sceneAnim->Header.NumStringsInTable;
+         ++i, stringTable += 0x20)
+    {
+        const tlFixedString* name = reinterpret_cast<const tlFixedString*>(
+            stringTable);
+        nalBaseSkeleton* skeleton = nalSkeletonDirectory->Find(*name);
+        skeletons[i] = skeleton;
+        if (skeleton == nullptr)
+            tlFatal("Couldn't find skeleton %s while loading scene anim %s.\n",
+                    name->str, sceneAnim->Header.Name.str);
+    }
+
+    const uintptr_t sceneBase = reinterpret_cast<uintptr_t>(sceneAnim);
+    const uintptr_t firstChunkOffset =
+        reinterpret_cast<uintptr_t>(sceneAnim->Header.FirstChunk);
+    if (firstChunkOffset != 0)
+    {
+        nalSceneAnimChunkHeader* chunk =
+            reinterpret_cast<nalSceneAnimChunkHeader*>(
+                sceneBase + firstChunkOffset);
+        sceneAnim->Header.FirstChunk = chunk;
+        while (chunk != nullptr)
+        {
+            const uintptr_t nextChunkOffset =
+                reinterpret_cast<uintptr_t>(chunk->NextChunk);
+            if (nextChunkOffset != 0)
+                chunk->NextChunk = reinterpret_cast<nalSceneAnimChunkHeader*>(
+                    sceneBase + nextChunkOffset);
+
+            const uintptr_t firstAnimOffset =
+                reinterpret_cast<uintptr_t>(chunk->FirstAnim);
+            if (firstAnimOffset != 0)
+            {
+                nalAnimClass<nalAnyPose>* anim =
+                    reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                        reinterpret_cast<uintptr_t>(chunk) + firstAnimOffset);
+                chunk->FirstAnim = anim;
+                while (anim != nullptr)
+                {
+                    const uintptr_t nextAnimOffset =
+                        reinterpret_cast<uintptr_t>(anim->NextAnim);
+                    if (nextAnimOffset != 0)
+                        anim->NextAnim =
+                            reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                                reinterpret_cast<uintptr_t>(anim)
+                                + nextAnimOffset);
+
+                    anim->Skeleton =
+                        skeletons[anim->SkeletonNameIndex];
+                    if (anim->Skeleton == nullptr
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+                               70, "Skeleton",
+                               "Skeleton must be filled out before the animation type can be obtained"))
+                    {
+                        __debugbreak();
+                    }
+
+                    tlInstanceBank::Instance* instance =
+                        nalTypeInstanceBank.Search(
+                            anim->Skeleton->AnimTypeName);
+                    if (instance == nullptr
+                        && _tlAssert(
+                               "source/common/nal_anim.cpp", 271,
+                               "instance",
+                               "could not find the animation type of an anim in the scene anim"))
+                    {
+                        __debugbreak();
+                    }
+                    nalInitListAnimType* type =
+                        static_cast<nalInitListAnimType*>(instance->Value);
+                    *reinterpret_cast<void**>(anim) = type->animVtable;
+                    if (!anim->CheckVersion())
+                        tlFatal("Unsupported anim version %x (%s).\n",
+                                anim->Version, anim->Name.str);
+                    anim->Process();
+                    anim = nextAnimOffset != 0 ? anim->NextAnim : nullptr;
+                }
+            }
+            chunk = chunk->NextChunk;
+        }
+    }
+
+    tlMemFree(skeletons);
+    return true;
+}
+
+static void nalReleaseSceneAnimInternal(nalSceneAnim* sceneAnim)
+{
+    for (nalSceneAnimChunkHeader* chunk = sceneAnim->Header.FirstChunk;
+         chunk != nullptr; chunk = chunk->NextChunk)
+    {
+        for (nalAnimClass<nalAnyPose>* anim = chunk->FirstAnim;
+             anim != nullptr; anim = anim->NextAnim)
+            anim->Release();
+    }
+}
+
+template <>
+nalSceneAnim* tlResourceDirectory<nalSceneAnim>::StandardLoad(
+    const tlFixedString& fileName)
+{
+    char filePath[256];
+    tlFileBuf fileBuf;
+    snprintf(filePath, sizeof(filePath), "%s%s.%s", nalAnimPath,
+             fileName.str, "xbsanim");
+    if (!tlReadFile(filePath, &fileBuf, 0x10u, 0u))
+    {
+        tlWarning("Unable to open %s%s.\n", nalAnimPath, fileName.str);
+        return nullptr;
+    }
+
+    nalSceneAnim* sceneAnim = reinterpret_cast<nalSceneAnim*>(fileBuf.Buf);
+    sceneAnim->Header.Name = fileName;
+    sceneAnim->Header.FileBuf = fileBuf;
+    sceneAnim->Header.Flags &= ~4u;
+    if (!nalLoadSceneAnimInternal(sceneAnim))
+    {
+        tlReleaseFile(&fileBuf);
+        return nullptr;
+    }
+    if (this->Add(sceneAnim) != nullptr)
+        tlWarning("Attempt to load already loaded SceneAnimFile %s\n",
+                  fileName.str);
+    return sceneAnim;
+}
+
+template <>
+int tlResourceDirectory<nalSceneAnim>::StandardRelease(
+    nalSceneAnim* sceneAnim, int force, bool)
+{
+    if (sceneAnim == nullptr)
+        return 0;
+
+    int result;
+    const bool last = sceneAnim->Header.RefCount == 1;
+    if (force == 0)
+    {
+        result = sceneAnim->Header.RefCount - 1;
+        sceneAnim->Header.RefCount = result;
+        if (result >= 0 && !last)
+            return result;
+    }
+
+    this->Del(sceneAnim);
+    nalReleaseSceneAnimInternal(sceneAnim);
+    if ((sceneAnim->Header.Flags & 4u) == 0)
+        tlReleaseFile(&sceneAnim->Header.FileBuf);
+    return 0;
+}
+
+nalSceneAnim* nalLoadSceneAnim(const tlFixedString& fileName)
+{
+    nalSceneAnim* result = nalSceneAnimDirectory->Find(fileName);
+    if (result == nullptr)
+        return nalSceneAnimDirectory->Load(fileName);
+    ++result->Header.RefCount;
+    return result;
+}
+
+nalSceneAnim* nalLoadSceneAnimInPlace(const tlFixedString& fileName,
+                                      void* data)
+{
+    nalSceneAnim* result = nalSceneAnimDirectory->Find(fileName);
+    if (result != nullptr)
+    {
+        ++result->Header.RefCount;
+        return result;
+    }
+
+    result = static_cast<nalSceneAnim*>(data);
+    result->Header.Name = fileName;
+    result->Header.Flags |= 4u;
+    result->Header.RefCount = 1;
+    if (!nalLoadSceneAnimInternal(result))
+        return nullptr;
+    nalSceneAnimDirectory->Add(result);
+    return result;
+}
+
+int nalReleaseSceneAnim(nalSceneAnim* sceneAnim)
+{
+    return nalSceneAnimDirectory->Release(sceneAnim, 0, false);
+}
+
+int nalReleaseSceneAnim(const tlFixedString& fileName)
+{
+    nalSceneAnim* result = nalSceneAnimDirectory->Find(fileName);
+    if (result != nullptr)
+        return nalSceneAnimDirectory->Release(result, 0, false);
+    return 0;
+}
+
+void nalReleaseAllSceneAnims()
+{
+    nalSceneAnimDirectory->ReleaseAll(false, false, 1);
+}
 
 // ============================================================================
 // nal streaming
@@ -5918,11 +6241,13 @@ void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
         PakManager::sInst->MemFree(id, obj, bUseActorHeap);
 }
 
+struct nalVirtual_vtbl;
 class nalVirtual {
 public:
     nalVirtual();
     virtual ~nalVirtual();
     virtual void Dummy();
+    void set_vtbl_ptr(nalVirtual_vtbl* vtbl_ptr);
     void* get_vtbl_ptr() const;
 };
 
@@ -5939,6 +6264,12 @@ nalVirtual::~nalVirtual()
 // ea: 0x005173F0
 void nalVirtual::Dummy()
 {
+}
+
+// ea: 0x00870460
+void nalVirtual::set_vtbl_ptr(nalVirtual_vtbl* vtbl_ptr)
+{
+    *reinterpret_cast<void**>(this) = vtbl_ptr;
 }
 
 // ea: 0x00517400
