@@ -222,10 +222,26 @@ void InplaceAssetBankSet_Find_ConfigString(void* self, ConfigStringPtr* result,
     result->mPakId = PAK_ID_INVALID;
 }
 
-struct ConfigStringTypeCallbackSearch {
+struct TypeCallbackSearch {
     const char* mType;
+    unsigned int mTypeLength;
     void (*mCallback)(const char*, const ConfigString*);
-    int mTypeLength;
+
+    // ea: 0x004DF430
+    TypeCallbackSearch(const char* type,
+                       void (*callback)(const char*, const ConfigString*))
+        : mType(type), mTypeLength((unsigned int)strlen(type)),
+          mCallback(callback)
+    {
+    }
+
+    // ea: 0x004DF460
+    bool operator()(const ConfigString* cfgstring)
+    {
+        if (strncmp(cfgstring->mName.mStr, mType, mTypeLength) == 0)
+            mCallback(cfgstring->mName.mStr + mTypeLength + 1, cfgstring);
+        return false;
+    }
 };
 
 // ?InplaceAssetBankSet_PredicateSearch_ConfigString@@YAXPAX...
@@ -234,8 +250,7 @@ void InplaceAssetBankSet_PredicateSearch_ConfigString(
 {
     ConfigStringManagerLayout* manager =
         reinterpret_cast<ConfigStringManagerLayout*>(self);
-    ConfigStringTypeCallbackSearch& search =
-        *reinterpret_cast<ConfigStringTypeCallbackSearch*>(op);
+    TypeCallbackSearch& search = *reinterpret_cast<TypeCallbackSearch*>(op);
     ae_sized_array<TPakId, 32> prereqs;
     prereqs.m_size = 0;
     GetPakPrerequisites(pakId, &prereqs);
@@ -290,14 +305,7 @@ void ConfigStringManager::CallbackSearch(TPakId pakId, const char* type,
                                          void (*callback)(const char*,
                                                           const ConfigString*))
 {
-    struct TypeCallbackSearch {
-        const char* mType;
-        void (*mCallback)(const char*, const ConfigString*);
-        int mTypeLength;
-    } v4;
-    v4.mType = type;
-    v4.mCallback = callback;
-    v4.mTypeLength = (int)strlen(type);
+    TypeCallbackSearch v4(type, callback);
     ConfigStringPtr result;
     InplaceAssetBankSet_PredicateSearch_ConfigString(this, &result, pakId,
                                                      &v4, 0);
