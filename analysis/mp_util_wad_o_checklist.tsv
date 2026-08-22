@@ -1131,13 +1131,13 @@ index	status	map_line
 1130	FIXED	0002:00584d10 ??$GetRef@Ubint@@@ExtendedEntity@Broc@@QAEAAUbint@@I@Z 00D74210 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined bint before returning the reference
 1131	FIXED	0002:00584d90 ??$GetVal@Vstring@Broc@@@ExtendedEntity@Broc@@QBE?AVstring@1@I@Z 00D74290 f i mp_util_wad.o	FIXED: missing keys now construct the IDA null string result
 1132	FIXED	0002:00584e50 ??$GetRef@Vstring@Broc@@@ExtendedEntity@Broc@@QAEAAVstring@1@I@Z 00D74350 f i mp_util_wad.o	FIXED: shared GetRef now materializes the IDA null string when absent
-1133	PORTED	0002:00584f20 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@ABV01@@Z 00D74420 f i mp_util_wad.o
+1133	FIXED	0002:00584f20 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@ABV01@@Z 00D74420 f i mp_util_wad.o	FIXED: copy construction now initializes empty storage and performs the IDA deep copy
 1134	VERIFIED	0002:005850b0 ??0?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D745B0 f i mp_util_wad.o
 1135	VERIFIED	0002:00585120 ??1?$dyn_array@Uvector@Broc@@@Broc@@QAE@XZ 00D74620 f i mp_util_wad.o
 1136	VERIFIED	0002:00585160 ??A?$dyn_array@Uvector@Broc@@@Broc@@QAEAAUvector@1@I@Z 00D74660 f i mp_util_wad.o
 1137	VERIFIED	0002:00585380 ?push_back@?$dyn_array@Uvector@Broc@@@Broc@@QAEXABUvector@2@@Z 00D74880 f i mp_util_wad.o
-1138	PORTED	0002:005855b0 ??0?$dyn_array@M@Broc@@QAE@ABV01@@Z 00D74AB0 f i mp_util_wad.o
-1139	PORTED	0002:00585740 ??0?$dyn_array@M@Broc@@QAE@XZ 00D74C40 f i mp_util_wad.o
+1138	FIXED	0002:005855b0 ??0?$dyn_array@M@Broc@@QAE@ABV01@@Z 00D74AB0 f i mp_util_wad.o	FIXED: float dyn_array copy construction now preserves source capacity and copies initialized elements
+1139	VERIFIED	0002:00585740 ??0?$dyn_array@M@Broc@@QAE@XZ 00D74C40 f i mp_util_wad.o	VERIFIED: IDA 0x00985740 zero-initializes mElements, mCapacity, and mSize and conditionally invokes BrocObjCtor
 1140	VERIFIED	0002:005857b0 ??1?$dyn_array@M@Broc@@QAE@XZ 00D74CB0 f i mp_util_wad.o
 1141	VERIFIED	0002:005857f0 ??A?$dyn_array@M@Broc@@QAEAAMI@Z 00D74CF0 f i mp_util_wad.o
 1142	FIXED	0002:00585a10 ??$GetVal@Uvector@Broc@@@ExtendedEntity@Broc@@QBE?AUvector@1@I@Z 00D74F10 f i mp_util_wad.o	FIXED: vector GetVal now dereferences the IDA heap-pointer representation and defaults through vector::vector()
@@ -1151,16 +1151,16 @@ index	status	map_line
 1150	FIXED	0002:00585fb0 ??$GetRef@Ventity@Broc@@@ExtendedEntity@Broc@@QAEAAVentity@1@I@Z 00D754B0 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined entity before returning the reference
 1151	FIXED	0002:00586030 ??$GetVal@UHashStr@@@ExtendedEntity@Broc@@QBE?AUHashStr@@I@Z 00D75530 f i mp_util_wad.o	FIXED: missing keys now construct the IDA undefined HashStr result
 1152	FIXED	0002:005860c0 ??$GetRef@UHashStr@@@ExtendedEntity@Broc@@QAEAAUHashStr@@I@Z 00D755C0 f i mp_util_wad.o	FIXED: missing keys now materialize the IDA undefined HashStr before returning the reference
-1153	PORTED	0002:00586140 ??$SetVal@UHashStr@@@ExtendedEntity@Broc@@QAEPAIIABUHashStr@@@Z 00D75640 f i mp_util_wad.o
+1153	FIXED	0002:00586140 ??$SetVal@UHashStr@@@ExtendedEntity@Broc@@QAEPAIIABUHashStr@@@Z 00D75640 f i mp_util_wad.o	FIXED: typed SetVal now preserves the IDA HashStr raw-slot copy semantics
 1154	VERIFIED	0002:00586210 ??A?$dyn_array@Ventity@Broc@@@Broc@@QAEAAVentity@1@I@Z 00D75710 f i mp_util_wad.o
 1155	VERIFIED	0002:00586430 ??A?$dyn_array@Vstring@Broc@@@Broc@@QAEAAVstring@1@I@Z 00D75930 f i mp_util_wad.o
-1156	PORTED	0002:00586650 ??$IsDefined@Ubint@@@@YA_NABUbint@@@Z 00D75B50 f i mp_util_wad.o
-1157	PORTED	0002:00586670 ?IsDefined@bint@@QBE_NXZ 00D75B70 f i mp_util_wad.o
-1158	PORTED	0002:005866a0 ??$IsDefined@Ubfloat@@@@YA_NABUbfloat@@@Z 00D75BA0 f i mp_util_wad.o
-1159	PORTED	0002:005866c0 ??$IsDefined@Ubbool@@@@YA_NABUbbool@@@Z 00D75BC0 f i mp_util_wad.o
-1160	PORTED	0002:005866e0 ?IsDefined@bbool@@QBE_NXZ 00D75BE0 f i mp_util_wad.o
-1161	PORTED	0002:00586710 ??$IsDefined@UHashStr@@@@YA_NABUHashStr@@@Z 00D75C10 f i mp_util_wad.o
-1162	PORTED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o
+1156	FIXED	0002:00586650 ??$IsDefined@Ubint@@@@YA_NABUbint@@@Z 00D75B50 f i mp_util_wad.o	FIXED: free IsDefined<bint> now resolves through the IDA sentinel-aware member
+1157	PORTED	0002:00586670 ?IsDefined@bint@@QBE_NXZ 00D75B70 f i mp_util_wad.o	PORTED: added IDA bint::IsDefined sentinel comparison
+1158	FIXED	0002:005866a0 ??$IsDefined@Ubfloat@@@@YA_NABUbfloat@@@Z 00D75BA0 f i mp_util_wad.o	FIXED: free IsDefined<bfloat> now forwards to the IDA NaN-aware member
+1159	FIXED	0002:005866c0 ??$IsDefined@Ubbool@@@@YA_NABUbbool@@@Z 00D75BC0 f i mp_util_wad.o	FIXED: free IsDefined<bbool> now resolves through the IDA sentinel-aware member
+1160	PORTED	0002:005866e0 ?IsDefined@bbool@@QBE_NXZ 00D75BE0 f i mp_util_wad.o	PORTED: added IDA bbool::IsDefined sentinel comparison
+1161	FIXED	0002:00586710 ??$IsDefined@UHashStr@@@@YA_NABUHashStr@@@Z 00D75C10 f i mp_util_wad.o	FIXED: free IsDefined<HashStr> now resolves through the IDA sentinel-aware member
+1162	PORTED	0002:00586730 ?IsDefined@HashStr@@QBE_NXZ 00D75C30 f i mp_util_wad.o	PORTED: added IDA HashStr::IsDefined sentinel comparison
 1163	VERIFIED	0002:00586760 ??$size@Ventity@Broc@@@Broc@@YAHABV?$dyn_array@Ventity@Broc@@@0@@Z 00D75C60 f i mp_util_wad.o
 1164	PORTED	0002:00586780 ??$println@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAY0BD@$$CBDABUbint@@@Z 00D75C80 f i mp_util_wad.o
 1165	PORTED	0002:00586820 ??$push@Uvector@Broc@@@Broc@@YAXAAV?$dyn_array@Uvector@Broc@@@0@ABUvector@0@@Z 00D75D20 f i mp_util_wad.o
