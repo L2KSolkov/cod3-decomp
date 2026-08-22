@@ -1493,7 +1493,7 @@ index	status	map_line
 1492	FIXED	0002:00200230 ??2BrocObjCreated@AeThread@@SAPAXI@Z 009EF730 f i scr.o  FIXED: restored pool/heap fallback allocation path from IDA
 1493	VERIFIED	0002:002002a0 ?ApplyPhysics@@YAXIABUvector@Broc@@0M_N@Z 009EF7A0 f i scr.o
 1494	VERIFIED	0002:00200600 ?StopPhysics@@YAXI@Z 009EFB00 f i scr.o
-1495	PORTED	0002:002006a0 ?delete_all@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009EFBA0 f i scr.o
+1495	FIXED	0002:002006a0 ?delete_all@?$reserved_dlist@VAeThreadState@@@@QAEXXZ 009EFBA0 f i scr.o  FIXED: restored safe state deletion walk and sentinel reset from IDA
 1496	VERIFIED	0002:00200700 ??0?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE@XZ 009EFC00 f i scr.o
 1497	VERIFIED	0002:00200770 ?AllocateHandle@?$HandleDb@VAeThread@@$0BAA@V?$SizedHandle@$07$0BI@@@@@QAE?AV?$SizedHandle@$07$0BI@@@XZ 009EFC70 f i scr.o
 1498	SKIPPED	0002:00200850 ?end@?$_Hash@V?$_Hmap_traits@HV?$ae_fixed_string@$0CA@E@@V?$hash_compare@HU?$less@H@std@@@stdext@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@std@@$0A@@stdext@@@stdext@@QAE?AViterator@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@XZ 009EFD50 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
