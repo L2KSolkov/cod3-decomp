@@ -49,15 +49,6 @@ struct TOC {
 };
 }  // namespace LightGrid
 
-// LightGridData (IDA type; class V-tag; size 0x64)
-class LightGridData {
-public:
-    math::Position3::Packed m_ambientColor;       // +0x00
-    math::Vector4::Packed   m_directionalColor[3]; // +0x0C
-    math::Dir3::Packed      m_directionalDir[3];   // +0x3C
-    int m_numDirectional;                          // +0x60
-};
-
 class LightGridMgr {
 private:
     bool GetGridInfo(const LightGrid::TOC& toc, int cellidx,
