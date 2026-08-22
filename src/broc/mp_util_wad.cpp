@@ -13534,16 +13534,43 @@ void SendFlagStates(Broc::entity player) {
 // WAR_Init - ea: 0x978D10
 void WAR_Init(Broc::entity self) {
     (void)self;
-    Broc::entity lvl;
-    lvl.___u0 = mp_util_wad::pLevel != NULL;
-    HashStr n;
-    n.mVal = 0x6FA23667u;
-    Broc::endon(lvl, n);
+    Broc::entity level = mp_util_wad::pLevel != nullptr
+                             ? mp_util_wad::pLevel->_base.entity
+                             : Broc::entity();
+    HashStr endLabel;
+    endLabel.mVal = 0x6FA23667u;
+    Broc::endon(level, endLabel);
     mp_util_wad::pLevel->blinker = 0;
     while (!(bool)mp_util_wad::pLevel->roundOver) {
         Broc::wait(1.0f);
         mp_util_wad::pLevel->blinker =
             (int)mp_util_wad::pLevel->blinker == 0 ? 1 : 0;
+
+        Broc::bint alliesCapped(0);
+        Broc::bint axisCapped(0);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+            Broc::entity area = mp_util_wad::pLevel->warAreas[
+                (unsigned int)(int)i];
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+            float capStatus = (float)*mp_util_wad::GetEE_capStatus(trigger);
+            if (capStatus >= 0.9999f)
+                alliesCapped = (int)alliesCapped + 1;
+            if (capStatus <= -0.9999f)
+                axisCapped = (int)axisCapped + 1;
+            i = (int)i + 1;
+        }
+
+        mp_util_wad::pLevel->axis_capped = axisCapped;
+        mp_util_wad::pLevel->allies_capped = alliesCapped;
+        int areaCount = Broc::size(mp_util_wad::pLevel->warAreas);
+        if ((int)mp_util_wad::pLevel->axis_capped == areaCount) {
+            _mp_common::EndRound(kEndRoundDomAllFlagsCapped,
+                                 Broc::string("axis"));
+        } else if ((int)mp_util_wad::pLevel->allies_capped == areaCount) {
+            _mp_common::EndRound(kEndRoundDomAllFlagsCapped,
+                                 Broc::string("allies"));
+        }
     }
 }
 

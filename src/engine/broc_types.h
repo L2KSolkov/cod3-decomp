@@ -66,9 +66,13 @@ bool operator!=(const HashString& lhs, unsigned int rhs);       // ??9@YA_NABVHa
 enum EEndRoundCondition {
     kEndRoundNone = 0,
     kEndRoundTimeLimit = 1,
-    kEndRoundScoreLimit = 2,
-    kEndRoundLastManStanding = 3,
-    kEndRoundNoPlayers = 4,
+    kEndRoundLastManStanding = 2,
+    kEndRoundNoPlayers = 3,
+    kEndRoundScoreLimit = 4,
+    kEndRoundDomAllFlagsCapped = 5,
+    kEndRoundSDDefused = 6,
+    kEndRoundSDExploded = 7,
+    kEndRoundFlagCaptured = 8,
 };
 
 // ============================================================================
