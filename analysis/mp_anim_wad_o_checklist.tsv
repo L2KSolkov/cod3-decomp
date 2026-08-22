@@ -245,14 +245,14 @@ index	status	map_line
 244	VERIFIED	0002:00594620 ?IsEEDefined_script_bloom_time@@YA?AUbbool@@Ventity@Broc@@@Z 00D83B20 f mp_anim_wad.o	VERIFIED: IDA 0x00994620 key 0x9FA818BB matches existing mp_anim_wad.cpp implementation
 245	VERIFIED	0002:005946d0 ?GetEE_dontdrawoncompass@@YAAAUbint@@Ventity@Broc@@@Z 00D83BD0 f mp_anim_wad.o	VERIFIED: IDA 0x009946D0 key 0xB6608436 matches existing mp_anim_wad.cpp implementation
 246	VERIFIED	0002:00594720 ?IsEEDefined_dontdrawoncompass@@YA?AUbbool@@Ventity@Broc@@@Z 00D83C20 f mp_anim_wad.o	VERIFIED: IDA 0x00994720 key 0xB6608436 matches existing mp_anim_wad.cpp implementation
-247	PORTED	0002:005947d0 ?GetEE_script_walkdist@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83CD0 f mp_anim_wad.o
-248	PORTED	0002:00594820 ?IsEEDefined_script_walkdist@@YA?AUbbool@@Ventity@Broc@@@Z 00D83D20 f mp_anim_wad.o
-249	PORTED	0002:005948d0 ?GetEE_script_suppression@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83DD0 f mp_anim_wad.o
-250	PORTED	0002:00594920 ?IsEEDefined_script_suppression@@YA?AUbbool@@Ventity@Broc@@@Z 00D83E20 f mp_anim_wad.o
-251	PORTED	0002:005949d0 ?GetEE_script_scale@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83ED0 f mp_anim_wad.o
-252	PORTED	0002:00594a20 ?IsEEDefined_script_scale@@YA?AUbbool@@Ventity@Broc@@@Z 00D83F20 f mp_anim_wad.o
-253	PORTED	0002:00594ad0 ?GetEE_script_hdi_time2@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83FD0 f mp_anim_wad.o
-254	PORTED	0002:00594b20 ?IsEEDefined_script_hdi_time2@@YA?AUbbool@@Ventity@Broc@@@Z 00D84020 f mp_anim_wad.o
+247	VERIFIED	0002:005947d0 ?GetEE_script_walkdist@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83CD0 f mp_anim_wad.o	VERIFIED: IDA 0x009947D0 key 0x17B81D57 matches existing mp_anim_wad.cpp implementation
+248	VERIFIED	0002:00594820 ?IsEEDefined_script_walkdist@@YA?AUbbool@@Ventity@Broc@@@Z 00D83D20 f mp_anim_wad.o	VERIFIED: IDA 0x00994820 key 0x17B81D57 matches existing mp_anim_wad.cpp implementation
+249	VERIFIED	0002:005948d0 ?GetEE_script_suppression@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83DD0 f mp_anim_wad.o	VERIFIED: IDA 0x009948D0 key 0x83C610FF matches existing mp_anim_wad.cpp implementation
+250	VERIFIED	0002:00594920 ?IsEEDefined_script_suppression@@YA?AUbbool@@Ventity@Broc@@@Z 00D83E20 f mp_anim_wad.o	VERIFIED: IDA 0x00994920 key 0x83C610FF matches existing mp_anim_wad.cpp implementation
+251	VERIFIED	0002:005949d0 ?GetEE_script_scale@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83ED0 f mp_anim_wad.o	VERIFIED: IDA 0x009949D0 key 0x480FB8DC matches existing mp_anim_wad.cpp implementation
+252	VERIFIED	0002:00594a20 ?IsEEDefined_script_scale@@YA?AUbbool@@Ventity@Broc@@@Z 00D83F20 f mp_anim_wad.o	VERIFIED: IDA 0x00994A20 key 0x480FB8DC matches existing mp_anim_wad.cpp implementation
+253	VERIFIED	0002:00594ad0 ?GetEE_script_hdi_time2@@YAAAUbfloat@@Ventity@Broc@@@Z 00D83FD0 f mp_anim_wad.o	VERIFIED: IDA 0x00994AD0 key 0xFE6B76C9 matches existing mp_anim_wad.cpp implementation
+254	VERIFIED	0002:00594b20 ?IsEEDefined_script_hdi_time2@@YA?AUbbool@@Ventity@Broc@@@Z 00D84020 f mp_anim_wad.o	VERIFIED: IDA 0x00994B20 key 0xFE6B76C9 matches existing mp_anim_wad.cpp implementation
 255	PORTED	0002:00594bd0 ?GetEE_script_fb_max_onscreen_enemies@@YAAAUbint@@Ventity@Broc@@@Z 00D840D0 f mp_anim_wad.o
 256	PORTED	0002:00594c20 ?IsEEDefined_script_fb_max_onscreen_enemies@@YA?AUbbool@@Ventity@Broc@@@Z 00D84120 f mp_anim_wad.o
 257	PORTED	0002:00594cd0 ?GetEE_script_door@@YA?AVstring@Broc@@Vpathnode@2@@Z 00D841D0 f mp_anim_wad.o
