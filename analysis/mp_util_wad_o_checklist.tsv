@@ -794,7 +794,7 @@ index	status	map_line
 793	VERIFIED	0002:00570950 ?VehicleDamagedEffects__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FE50 f i mp_util_wad.o	VERIFIED: IDA 0x00970950 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::VehicleDamagedEffects
 794	VERIFIED	0002:005709f0 ?BlowUpIfUnderWorld__functor@_mp_tankdrive@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5FEF0 f i mp_util_wad.o	VERIFIED: IDA 0x009709F0 allocates 0xC bytes and constructs AeThreadFunctor1<entity> with _mp_tankdrive::BlowUpIfUnderWorld
 795	VERIFIED	0002:00570a90 ?fire@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D5FF90 f mp_util_wad.o
-796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o	PORTED: added IDA 0x00970AE0 wrapper calling mFireTurret(GetHandle(), false)
+796	PORTED	0002:00570ae0 ?FireTurret@Broc@@YAXABVentity@1@@Z 00D5FFE0 f i mp_util_wad.o	PORTED: IDA reverified entity.GetHandle() plus false flag forwarding to mFireTurret
 797	FIXED	0002:00570b10 ?BlowUpIfUnderWorld@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60010 f mp_util_wad.o	FIXED: IDA 0x00970B10 passes pLevel->_base.entity (or null) to DoDamage
 798	VERIFIED	0002:00570c60 ?GetOrigin@Broc@@YA?AUvector@1@ABVentity@1@@Z 00D60160 f i mp_util_wad.o	VERIFIED: IDA 0x00970C60 constructs a temporary vector, calls mGetOrigin with the handle, and copies the result; implementation matches
 799	VERIFIED	0002:00570cc0 ?BlowUpIfFlipped@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D601C0 f mp_util_wad.o
