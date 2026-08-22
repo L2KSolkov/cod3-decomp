@@ -806,7 +806,7 @@ index	status	map_line
 805	VERIFIED	0002:005713f0 ?Code_BroadcastVehicleRespawn@Broc@@YAXVentity@1@@Z 00D608F0 f i mp_util_wad.o	VERIFIED: IDA 0x009713F0 forwards entity.GetHandle() to mBroadcastVehicleRespawn; implementation matches
 806	VERIFIED	0002:00571420 ?Code_RespawnVehicle@Broc@@YAXABVentity@1@@Z 00D60920 f i mp_util_wad.o	VERIFIED: IDA 0x00971420 forwards entity.GetHandle() to mRespawnVehicle; implementation matches
 807	VERIFIED	0002:00571450 ?death@_mp_tankdrive@@YAXVentity@Broc@@0@Z 00D60950 f mp_util_wad.o
-808	PORTED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o	PORTED: added IDA 0x009717B0 wrapper forwarding mRadiusDamageFromEnt(GetHandle(), origin, range, max, min, damageType)
+808	VERIFIED	0002:005717b0 ?RadiusDamageFromEnt@@YAXABVentity@Broc@@ABUvector@2@MMMH@Z 00D60CB0 f i mp_util_wad.o	VERIFIED: IDA 0x009717B0 forwards handle, origin, range, max damage, min damage, and type to mRadiusDamageFromEnt; implementation matches
 809	VERIFIED	0002:00571800 ?damage@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@01@Z 00D60D00 f mp_util_wad.o	VERIFIED: IDA 0x00971800 matches health+damage > 0 gate and local_player_hit_effects(self, damage, mod); attacker is unused
 810	VERIFIED	0002:00571890 ?VehicleDamagedEffects@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D60D90 f mp_util_wad.o	VERIFIED: IDA 0x00971890 matches health thresholds, damage-effect stop/play transitions, wait loop, and effect selection
 811	VERIFIED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o	VERIFIED: IDA 0x00971F80 matches bint-to-int conversion, float multiply, and bfloat construction
