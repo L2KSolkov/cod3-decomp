@@ -136,6 +136,17 @@ struct Bitmask {
     void Clear() { mVal = 0; }
 };
 
+template <typename T>
+struct VariableSaver {
+    T* stored;
+    T originalValue;
+
+    VariableSaver(T* v) : stored(v), originalValue(*v) {}
+    ~VariableSaver() { *stored = originalValue; }
+};
+static_assert(sizeof(VariableSaver<int>) == 8,
+              "VariableSaver<int> size mismatch");
+
 // ============================================================================
 // BitSet<N> - N-bit set packed into bytes
 // ============================================================================
