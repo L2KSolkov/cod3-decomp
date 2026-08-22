@@ -1163,6 +1163,120 @@ Broc::bbool* IsEEDefined_script_hidden(Broc::bbool* result,
     return result;
 }
 
+// GetEE_script_fb_id / IsEEDefined_script_fb_id - ea: 0x98EA80 / 0x98EAD0
+Broc::bint* GetEE_script_fb_id(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0x4723E508u);
+}
+
+Broc::bbool* IsEEDefined_script_fb_id(Broc::bbool* result,
+                                      Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x4723E508u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_effect_id / IsEEDefined_script_effect_id - ea: 0x98EB80 / 0x98EBD0
+Broc::string* GetEE_script_effect_id(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::string>(0x9F5C37CDu);
+}
+
+Broc::bbool* IsEEDefined_script_effect_id(Broc::bbool* result,
+                                           Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    {
+        Broc::string value;
+        const Broc::string* stored =
+            ee->GetVal<Broc::string>(&value, 0x9F5C37CDu);
+        result->mVal = Broc::IsDefined(stored);
+    }
+    return result;
+}
+
+// GetEE_script_speed / IsEEDefined_script_speed - ea: 0x98ECD0 / 0x98ED20
+Broc::bint* GetEE_script_speed(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0x4816E9E5u);
+}
+
+Broc::bbool* IsEEDefined_script_speed(Broc::bbool* result,
+                                       Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x4816E9E5u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
+// GetEE_script_panzer / IsEEDefined_script_panzer - ea: 0x98EDD0 / 0x98EE20
+Broc::bint* GetEE_script_panzer(Broc::entity ent) {
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    return &ee->GetRef<Broc::bint>(0x42EA8664u);
+}
+
+Broc::bbool* IsEEDefined_script_panzer(Broc::bbool* result,
+                                        Broc::entity ent) {
+    if (!Broc::IsDefined(ent)) {
+        result->mVal = false;
+        return result;
+    }
+    const unsigned int handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee =
+        Broc::ExtendedEntity::GetExtendedEntity(handle);
+    if (ee == nullptr) {
+        result->mVal = false;
+        return result;
+    }
+    Broc::bint value;
+    const Broc::bint* stored =
+        ee->GetVal<Broc::bint>(&value, 0x42EA8664u);
+    result->mVal = Broc::IsDefined(*stored);
+    return result;
+}
+
 // GetEE_flagEnd / IsEEDefined_flagEnd (key 0xAEB6D8F1)
 Broc::vector* GetEE_flagEnd(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
