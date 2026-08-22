@@ -13524,7 +13524,62 @@ void WAR_FlagUpdate(Broc::entity self) {
 
 // WAR_TouchFlag - ea: 0x97B000
 void WAR_TouchFlag(Broc::entity self) {
-    (void)self;
+    Broc::dyn_array<Broc::entity> players;
+    if (!(bool)mp_util_wad::pLevel->roundStarted)
+        return;
+
+    const Broc::bint* index = mp_util_wad::GetEE_index(self);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    if ((int)mp_util_wad::pLevel->warIndex != (int)*index ||
+        (int)mp_util_wad::pLevel->noCapTime > (int)now)
+        return;
+
+    Broc::GetPlayerArray(&players);
+    Broc::bint axis_capping(0);
+    Broc::bint allies_capping(0);
+    *mp_util_wad::GetEE_capSpeed(self) = 0;
+
+    for (Broc::bint i(0); (int)i < Broc::size(players); i = (int)i + 1) {
+        Broc::entity player = players[(unsigned int)(int)i];
+        Broc::bint playerState;
+        mp_util_wad::entity_get_playerState(&playerState, player);
+        if ((int)playerState != 3 || !Broc::IsTouching(&player, &self) ||
+            Broc::Code_IsInVehicle(player))
+            continue;
+
+        Broc::GetTime(&now);
+        *mp_util_wad::GetEE_lastTouch(self) = now;
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, player);
+        if (team == "axis")
+            axis_capping = (int)axis_capping + 1;
+        else
+            allies_capping = (int)allies_capping + 1;
+    }
+
+    if ((int)allies_capping != 0 && (int)axis_capping != 0) {
+        mp_util_wad::pLevel->capCount = 0;
+        return;
+    }
+
+    if ((int)allies_capping != 0) {
+        mp_util_wad::pLevel->capCount = allies_capping;
+        if ((float)*mp_util_wad::GetEE_capStatus(self) < 1.0f) {
+            ::bfloat capSpeed(0.0f);
+            ::bint count((int)allies_capping);
+            GetCapSpeed(&capSpeed, count);
+            *mp_util_wad::GetEE_capSpeed(self) = (float)capSpeed;
+        }
+    } else if ((int)axis_capping != 0) {
+        mp_util_wad::pLevel->capCount = axis_capping;
+        if ((float)*mp_util_wad::GetEE_capStatus(self) > -1.0f) {
+            ::bfloat capSpeed(0.0f);
+            ::bint count((int)axis_capping);
+            GetCapSpeed(&capSpeed, count);
+            *mp_util_wad::GetEE_capSpeed(self) = -(float)capSpeed;
+        }
+    }
 }
 
 // GetCapSpeed - ea: 0x97B580
