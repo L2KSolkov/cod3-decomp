@@ -122,7 +122,7 @@ index	status	map_line
 121	FIXED	0002:0012b030 ?IN_SprintUp@@YAXHH@Z 0091A530 f cl.o FIXED: corrected shared IDA-derived kb indices
 122	FIXED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o FIXED: corrected shared IDA-derived kb indices
 123	FIXED	0002:0012b070 ?IN_ButtonUp@@YAXHH@Z 0091A570 f cl.o FIXED: corrected shared IDA-derived kb indices
-124	PORTED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o PORTED: IDA match; applies the current client's delta pitch
+124	FIXED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 125	PORTED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o PORTED: IDA match; honors vehicle/eFlag and stance-button guards
 126	PORTED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o PORTED: IDA match; raises the shared stance state under the same guards
 127	PORTED	0002:0012b170 ?IN_ToggleCrouch@@YAXXZ 0091A670 f cl.o PORTED: IDA match; toggles stance state with the IDA button guards
