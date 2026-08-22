@@ -2475,6 +2475,18 @@ template <typename T> bool IsDefined(const T& t) {
 template <typename T> bool IsDefined(const T* t) {
     return t != nullptr && t->IsDefined();
 }
+bool IsDefined(const ::bfloat& t) {
+    return t.IsDefined();
+}
+bool IsDefined(const ::bint& t) {
+    return t.IsDefined();
+}
+bool IsDefined(const ::bbool& t) {
+    return t.IsDefined();
+}
+bool IsDefined(const ::HashStr& t) {
+    return t.IsDefined();
+}
 template bool IsDefined<Broc::hudelem>(const Broc::hudelem* t);
 
 // Distance - ea: 0x934A50

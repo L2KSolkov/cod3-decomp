@@ -33,6 +33,7 @@ struct HashStr {
     static unsigned int sUndefined;
     HashStr() : mVal(sUndefined) {}
     HashStr(unsigned int v) : mVal(v) {}
+    bool IsDefined() const { return mVal != sUndefined; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
@@ -138,9 +139,31 @@ public:
     unsigned int mSize;       // +0x08
 
     dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
-    ~dyn_array();  // ea: 0x933129
-    void destroy_all();  // scr.o 0x5EF400 (Broc::dyn_array<Broc::string>)
+    dyn_array(const dyn_array& rhs) : mElements(NULL), mCapacity(0), mSize(0) {
+        operator=(rhs);
+    }
+    void operator=(const dyn_array& rhs) {
+        destroy_all();
+        if (rhs.mSize == 0) {
+            mElements = NULL;
+            mCapacity = 0;
+            mSize = 0;
+            return;
+        }
+        mElements = new T[rhs.mCapacity];
+        for (unsigned int k = 0; k < rhs.mSize; ++k)
+            mElements[k] = rhs.mElements[k];
+        mCapacity = rhs.mCapacity;
+        mSize = rhs.mSize;
+    }
+    ~dyn_array() { destroy_all(); }  // ea: 0x933129
 
+    void destroy_all() {
+        delete[] mElements;
+        mElements = NULL;
+        mCapacity = 0;
+        mSize = 0;
+    }
     // ea: 0x005EDF00 / 0x005EDF10 (dyn_array<Broc::entity>)
     T* begin() { return mElements; }
     T* end() { return &mElements[mSize]; }
@@ -163,6 +186,9 @@ public:
     }
 
     void clear() { resize(0, 0); }
+
+    unsigned int capacity() const { return mCapacity; }
+    bool empty() const { return mSize == 0; }
 
     void push_back(const T& elt) {
         if (mSize >= mCapacity) {
@@ -860,6 +886,7 @@ struct bint {
     int operator*=(int rhs);
     int operator=(float rhs);  // ea: 0x9540F0
     int operator=(bfloat rhs);
+    bool IsDefined() const { return mVal != sUndefined; }
     static int sUndefined;
 };
 bint operator+(bint lhs, bint rhs);
@@ -877,6 +904,7 @@ struct bbool {
     bbool() : mVal(sUndefined) {}
     explicit bbool(bool v) : mVal(v) {}
     bool operator==(bool rhs) const;
+    bool IsDefined() const { return mVal != sUndefined; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "global bbool size mismatch");
 
@@ -929,6 +957,10 @@ namespace Broc {
 bool IsDefined(const Broc::entity& e);              // ea: 0x92F130
 bool IsDefined(const Broc::vector& v);              // ea: 0x92F150
 bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
+bool IsDefined(const ::bfloat& v);                  // mp_util_wad.o 0x9866A0
+bool IsDefined(const ::bint& v);                    // mp_util_wad.o 0x986650
+bool IsDefined(const ::bbool& v);                   // mp_util_wad.o 0x9866C0
+bool IsDefined(const ::HashStr& v);                 // mp_util_wad.o 0x986710
 inline bool IsDefined(const Broc::hudelem& h) { return h.IsDefined(); }
 template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
 template <typename T> bool IsDefined(const T* t);
