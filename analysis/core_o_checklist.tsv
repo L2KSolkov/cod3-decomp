@@ -1276,11 +1276,11 @@ index	status	map_line
 1275	VERIFIED	0002:000e57b0 ?DeleteInst@BankManager@@SAXXZ 008D4CB0 f i core.o
 1276	VERIFIED	0002:000e5840 ?DeleteInst@PakManager@@SAXXZ 008D4D40 f i core.o
 1277	PORTED	0002:000e58d0 ??$GetFieldValue@PBD@DbRow@@QBEPBDGPBD@Z 008D4DD0 f i core.o
-1278	PORTED	0002:000e5900 ?AddField@DbFieldSet@@QAEXPAVDbField@@_N@Z 008D4E00 f i core.o
-1279	PORTED	0002:000e5aa0 ?IsFieldSpecified@DbFieldSet@@QBE_NI@Z 008D4FA0 f i core.o
+1278	PORTED	0002:000e5900 ?AddField@DbFieldSet@@QAEXPAVDbField@@_N@Z 008D4E00 f i core.o  PORTED: exact IDA bitmap updates, field insertion, and enum assertions
+1279	PORTED	0002:000e5aa0 ?IsFieldSpecified@DbFieldSet@@QBE_NI@Z 008D4FA0 f i core.o  PORTED: exact IDA specified-field bitmap test
 1280	VERIFIED	0002:000e5ac0 ?Clear@DbFieldSet@@QAEXXZ 008D4FC0 f i core.o
-1281	PORTED	0002:000e5b80 ?GetFieldById@DbFieldSet@@QBEPBVDbField@@I@Z 008D5080 f i core.o
-1282	PORTED	0002:000e5cd0 ?IsFieldWeakById@DbFieldSet@@QBE_NI@Z 008D51D0 f i core.o
+1281	VERIFIED	0002:000e5b80 ?GetFieldById@DbFieldSet@@QBEPBVDbField@@I@Z 008D5080 f i core.o  VERIFIED: existing body matches IDA lookup and enum assertions
+1282	PORTED	0002:000e5cd0 ?IsFieldWeakById@DbFieldSet@@QBE_NI@Z 008D51D0 f i core.o  PORTED: exact IDA weak-field bitmap test
 1283	VERIFIED	0002:000e5cf0 ??0DestructibleBankManager@@QAE@XZ 008D51F0 f i core.o
 1284	SKIPPED	0002:000e5d10 ??_GDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1285	SKIPPED	0002:000e5d10 ??_EDestructibleBankManager@@UAEPAXI@Z 008D5210 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
