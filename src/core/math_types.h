@@ -82,6 +82,7 @@ public:
 
     // cg.o inline COMDAT (??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z)
     const math::Dir3& operator-=(const math::Position3& v);
+    const math::Dir3& operator-=(const math::Dir3& v);  // game.o 0x0065B400
     const math::Dir3& operator/=(float _v);  // ??_0Dir3@math@@QAEABV01@M@Z (g.o 0x4A6CF0)
 
     // Constant layout (for compile-time initialization)
@@ -122,6 +123,7 @@ public:
     const Position3& operator=(const Dir3& _v); // game.o 0x00602330
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
     const Position3& operator+=(const Dir3& _v);       // ??YPosition3@math@@QAEABV01@ABVDir3@1@@Z (g.o 0x4A6D30)
+    const Position3& operator-=(const Dir3& _v);       // game.o 0x0065B440
     const Position3& operator+=(const Position3& _v);  // ??YPosition3@math@@QAEABV01@ABV01@@Z (g.o 0x4A6D70)
     const Position3& operator*=(float _v);             // ??XPosition3@math@@QAEABV01@M@Z (g.o 0x4A6DB0)
     const Position3& operator/=(float _v);             // ??_0Position3@math@@QAEABV01@M@Z (g.o 0x4A6DF0)
@@ -181,6 +183,7 @@ Vector4 RepeatY(const Vector4& _v);  // ?RepeatY@math@@YA?AVVector4@1@ABV21@@Z (
 Vector4 RepeatZ(const Vector4& _v);  // ?RepeatZ@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EB030)
 Vector4 RepeatW(const Vector4& _v);  // ?RepeatW@math@@YA?AVVector4@1@ABV21@@Z (game2.o 0x004EB070)
 Dir3 operator+(const Dir3& _a, const Dir3& _b); // ??Hmath@@YA?AVDir3@0@ABV10@0@Z (game2.o 0x004EB0B0)
+Dir3 operator+(const Dir3& _a, float _b);        // game.o 0x0065B1C0
 Dir3 operator-(const Dir3& _a, const Dir3& _b); // ??Gmath@@YA?AVDir3@0@ABV10@0@Z (game2.o 0x004EB0F0)
 float Dot(const Dir3& _a, const Dir3& _b);       // ?Dot@math@@YAMABVDir3@1@0@Z (game2.o 0x004EB130)
 Position3 operator-(const Position3& _v);
@@ -191,18 +194,24 @@ float AbsSquared(const Position3& _v);
 float Abs(const Dir3& _v);
 float Abs(const Position3& _v);
 Vector4 AbsValue(const Vector4& _v);
+Dir3 AbsValue(const Dir3& _v);                                  // game.o 0x0065B030
 Vector4 Ceil(const Vector4& _v);
+bool operator==(const Dir3& _a, const Dir3& _b);                // game.o 0x0065B0E0
 bool operator==(const Position3& _a, const Position3& _b);
 bool operator!=(const Position3& _a, const Position3& _b);
 Dir3 operator+(const Dir3& _a, const Position3& _b);
 Position3 operator+(const Position3& _a, const Dir3& _b);
 Position3 operator+(const Position3& _a, const Position3& _b);  // ??Hmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6630)
 Vector4 operator+(const Vector4& _a, const Vector4& _b);        // ??Hmath@@YA?AVVector4@0@ABV10@0@Z (g.o 0x4A6670)
+Vector4 operator+(const Position3& _a, const Vector4& _b);     // game.o 0x0065B200
+Vector4 operator-(const Vector4& _a, const Vector4& _b);        // game.o 0x0065B250
+Vector4 operator-(const Position3& _a, const Vector4& _b);     // game.o 0x0065B2B0
 Dir3 Normalize(const Dir3& _v);                                  // ?Normalize@math@@YA?AVDir3@1@ABV21@@Z (game2.o 0x004EB2D0)
 Vector4 Vector4_Zero();                                          // ?Vector4_Zero@math@@YA?AVVector4@1@XZ (game2.o 0x004EB350)
 Dir3 operator-(const Dir3& _a, const Position3& _b);            // ??Gmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z (g.o 0x4A66B0)
 Position3 operator-(const Position3& _a, const Dir3& _b);       // ??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z (g.o 0x4A66F0)
 Position3 operator-(const Position3& _a, const Position3& _b);  // ??Gmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6730)
+Position3 operator/(const Position3& _a, float _b);             // game.o 0x0065B330
 Dir3 operator/(const Dir3& _a, float _b);                       // ??Kmath@@YA?AVDir3@0@ABV10@M@Z (g.o 0x4A6770)
 Dir3 operator*(const Dir3& _a, float _b);                       // ??Dmath@@YA?AVDir3@0@ABV10@M@Z (g.o 0x4A6830)
 Dir3 operator*(float _a, const Dir3& _b);                       // ??Dmath@@YA?AVDir3@0@MABV10@@Z (g.o 0x4A6870)
@@ -211,6 +220,10 @@ Position3 operator*(float _a, const Position3& _b);             // ??Dmath@@YA?A
 float operator*(const Dir3& _a, const Dir3& _b);                // ??Dmath@@YAMABVDir3@0@0@Z (g.o 0x4A69A0)
 float operator*(const Dir3& _a, const Position3& _b);           // ??Dmath@@YAMABVDir3@0@ABVPosition3@0@@Z (g.o 0x4A6A00)
 float operator*(const Position3& _a, const Dir3& _b);           // ??Dmath@@YAMABVPosition3@0@ABVDir3@0@@Z (g.o 0x4A6B10)
+float operator*(const Position3& _a, const Position3& _b);      // game.o 0x0065B3A0
+Dir3 UnitNegDirX();                                             // game.o 0x0065B480
+Dir3 UnitNegDirY();                                             // game.o 0x0065B4C0
+Dir3 UnitNegDirZ();                                             // game.o 0x0065B500
 Vector4 Mul(const Vector4& _a, const Vector4& _b);              // ?Mul@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A6BC0)
 Vector4 Vector4_Half();                                         // ?Vector4_Half@math@@YA?AVVector4@1@XZ (ngl_debug.o 0x835570)
 Vector4 Sin(const Vector4& radians);                            // ?Sin@math@@YA?AVVector4@1@ABV21@@Z (ngl_debug.o 0x835720)
@@ -394,6 +407,10 @@ Mat43 operator/(const Mat43& _a, const Mat43& _b);  // ??Kmath@@YA?AVMat43@0@ABV
 Mat43 Inv(const Mat43& _m);                     // ?Inv@math@@YA?AVMat43@1@ABV21@@Z (g.o 0x4A80A0)
 Vector4 Cos(const Vector4& radians, const Vector4& frequency);  // ?Cos@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A83C0)
 bool Compare_all_lt(const Position3& _a, const Position3& _b);  // ?Compare_all_lt@math@@YA_NABVPosition3@1@0@Z (g.o 0x4A84D0)
+bool Compare_all_ge(const Vector4& _a, const Vector4& _b);       // game.o 0x0065B540
+bool Compare_all_gt(const Vector4& _a, const Vector4& _b);       // game.o 0x0065B590
+bool Compare_any_le(const Position3& _a, const Position3& _b);  // game.o 0x0065B5E0
+bool Compare_any_ge(const Position3& _a, const Position3& _b);  // game.o 0x0065B630
 
 // ============================================================================
 // Mat44 — 4x4 matrix (64 bytes = 4 * Vector4)

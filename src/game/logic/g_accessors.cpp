@@ -777,6 +777,12 @@ math::Dir3 math::operator+(const math::Dir3& _a, const math::Dir3& _b)
     r.v = _mm_add_ps(_a.v, _b.v);
     return r;
 }
+math::Dir3 math::operator+(const math::Dir3& _a, float _b)
+{
+    math::Dir3 r;
+    r.v = _mm_add_ps(_a.v, _mm_set1_ps(_b));
+    return r;
+}
 math::Dir3 math::operator-(const math::Dir3& _a, const math::Dir3& _b)
 {
     math::Dir3 r;
@@ -843,6 +849,12 @@ math::Vector4 math::AbsValue(const math::Vector4& _v)
     r.v = _mm_andnot_ps(_mm_set1_ps(-0.0f), _v.v);
     return r;
 }
+math::Dir3 math::AbsValue(const math::Dir3& _v)
+{
+    math::Dir3 r;
+    r.v = _mm_andnot_ps(_mm_set1_ps(-0.0f), _v.v);
+    return r;
+}
 math::Vector4 math::Ceil(const math::Vector4& _v)
 {
     static const __m128 FloorMagic = _mm_set1_ps(8388608.0f);
@@ -861,6 +873,12 @@ bool math::operator!=(const math::Position3& _a, const math::Position3& _b)
     return _a.v.m128_f32[0] != _b.v.m128_f32[0]
         || _a.v.m128_f32[1] != _b.v.m128_f32[1]
         || _a.v.m128_f32[2] != _b.v.m128_f32[2];
+}
+bool math::operator==(const math::Dir3& _a, const math::Dir3& _b)
+{
+    return _a.v.m128_f32[0] == _b.v.m128_f32[0]
+        && _a.v.m128_f32[1] == _b.v.m128_f32[1]
+        && _a.v.m128_f32[2] == _b.v.m128_f32[2];
 }
 math::Dir3 math::operator+(const math::Dir3& _a, const math::Position3& _b)
 {
@@ -884,6 +902,27 @@ math::Vector4 math::operator+(const math::Vector4& _a, const math::Vector4& _b)
 {
     math::Vector4 r;
     r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Vector4 math::operator+(const math::Position3& _a,
+                              const math::Vector4& _b)
+{
+    math::Vector4 r;
+    r.v = _mm_add_ps(_a.val34().v, _b.v);
+    return r;
+}
+math::Vector4 math::operator-(const math::Vector4& _a,
+                              const math::Vector4& _b)
+{
+    math::Vector4 r;
+    r.v = _mm_sub_ps(_a.v, _b.v);
+    return r;
+}
+math::Vector4 math::operator-(const math::Position3& _a,
+                              const math::Vector4& _b)
+{
+    math::Vector4 r;
+    r.v = _mm_sub_ps(_a.val34().v, _b.v);
     return r;
 }
 math::Dir3 math::Normalize(const math::Dir3& _v)
@@ -920,10 +959,44 @@ math::Position3 math::operator-(const math::Position3& _a, const math::Position3
     r.v = _mm_sub_ps(_a.v, _b.v);
     return r;
 }
+math::Position3 math::operator/(const math::Position3& _a, float _b)
+{
+    math::Position3 r;
+    r.v = _mm_div_ps(_a.v, _mm_set1_ps(_b));
+    return r;
+}
 math::Dir3 math::operator/(const math::Dir3& _a, float _b)
 {
     math::Dir3 r;
     r.v = _mm_div_ps(_a.v, _mm_shuffle_ps(_mm_set_ss(_b), _mm_set_ss(_b), 0));
+    return r;
+}
+const math::Dir3& math::Dir3::operator-=(const math::Dir3& _v)
+{
+    v = _mm_sub_ps(v, _v.v);
+    return *this;
+}
+const math::Position3& math::Position3::operator-=(const math::Dir3& _v)
+{
+    v = _mm_sub_ps(v, _v.v);
+    return *this;
+}
+math::Dir3 math::UnitNegDirX()
+{
+    math::Dir3 r;
+    r.v = _mm_set_ps(0.0f, 0.0f, 0.0f, -1.0f);
+    return r;
+}
+math::Dir3 math::UnitNegDirY()
+{
+    math::Dir3 r;
+    r.v = _mm_set_ps(0.0f, 0.0f, -1.0f, 0.0f);
+    return r;
+}
+math::Dir3 math::UnitNegDirZ()
+{
+    math::Dir3 r;
+    r.v = _mm_set_ps(0.0f, -1.0f, 0.0f, 0.0f);
     return r;
 }
 
@@ -1024,6 +1097,14 @@ float math::operator*(const math::Position3& _a, const math::Dir3& _b)
     return v2.m128_f32[0]
            + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
               + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
+}
+float math::operator*(const math::Position3& _a,
+                      const math::Position3& _b)
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+         + (_mm_shuffle_ps(v2, v2, 85).m128_f32[0]
+            + _mm_shuffle_ps(v2, v2, 170).m128_f32[0]);
 }
 
 // Named vector ops (g.o 0x4A6BC0-0x4A6CB0)
@@ -1491,6 +1572,24 @@ math::Vector4 math::Cos(const math::Vector4& radians, const math::Vector4& frequ
 bool math::Compare_all_lt(const math::Position3& _a, const math::Position3& _b)
 {
     return (_mm_movemask_ps(_mm_cmplt_ps(_a.v, _b.v)) & 7) == 7;
+}
+bool math::Compare_all_ge(const math::Vector4& _a, const math::Vector4& _b)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(_a.v, _b.v)) & 7) == 0;
+}
+bool math::Compare_all_gt(const math::Vector4& _a, const math::Vector4& _b)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(_b.v, _a.v)) & 7) == 7;
+}
+bool math::Compare_any_le(const math::Position3& _a,
+                          const math::Position3& _b)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(_b.v, _a.v)) & 7) != 7;
+}
+bool math::Compare_any_ge(const math::Position3& _a,
+                          const math::Position3& _b)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(_a.v, _b.v)) & 7) != 7;
 }
 
 // Quaternion ctors / ops (g.o 0x4A8530-0x4A8620)
