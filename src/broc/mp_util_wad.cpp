@@ -3033,6 +3033,10 @@ void PrintConcat(const Broc::string& txt, bool bold) {
         gBrocAPI.mIPrintLn(value);
 }
 
+void PrintLine(const Broc::string& txt) {
+    gBrocAPI.mPrintLn(txt.c_str());
+}
+
 void iprintln(const char* msg) {
     Broc::string txt(static_cast<Broc::string::Block*>(NULL));
     ConcatText(txt, msg);

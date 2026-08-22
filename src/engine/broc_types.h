@@ -1635,6 +1635,7 @@ void notify(const entity& ent, const char* label); // ea: 0x94B8B0
 void iprintln(const char* msg);
 void iprintln(const char* a, const char* sep, const char* b);
 void PrintConcat(const string& txt, bool bold);
+void PrintLine(const string& txt);
 template <typename T>
 void iprintln(const T& value) {
     string txt(static_cast<string::Block*>(NULL));
@@ -1806,7 +1807,7 @@ template <typename T, typename... Args>
 void println(const T& fmt, const Args&... args) {
     string txt(static_cast<string::Block*>(NULL));
     ConcatText(txt, fmt, args...);
-    PrintConcat(txt, false);
+    PrintLine(txt);
 }
 template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
