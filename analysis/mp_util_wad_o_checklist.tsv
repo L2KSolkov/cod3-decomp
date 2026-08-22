@@ -893,7 +893,7 @@ index	status	map_line
 892	FIXED	0002:0057c650 ?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D6BB50 f mp_util_wad.o	FIXED: matched IDA 0x0097C650 team-aware active/adjacent WAR area search, classname filtering, random selection, and common fallback
 893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	PORTED: exact IDA 0x0097D020 global bint postfix decrement with AssertDefined and mVal--
 894	PORTED	0002:0057d060 ?Get@classname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D6C560 f i mp_util_wad.o	PORTED: added IDA 0x0097D060 callback-backed classname getter using BrocAPI m_entity_get_classname at +0xF14
-895	VERIFIED	0002:0057d110 ?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6C610 f mp_util_wad.o
+895	FIXED	0002:0057d110 ?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6C610 f mp_util_wad.o	FIXED: ported IDA/C3 0x0097D110 persistent inactive-flag tracking, 10-second action hint, team warning audio, and cleanup
 896	VERIFIED	0002:0057d620 ?CallbackDebugRender@_mp_war@@YAXXZ 00D6CB20 f mp_util_wad.o
 897	PORTED	0002:0057e220 ??0bbool@@QAE@ABUbint@@@Z 00D6D720 f i mp_util_wad.o
 898	PORTED	0002:0057e250 ?GetRef@capSpeed_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D6D750 f i mp_util_wad.o
