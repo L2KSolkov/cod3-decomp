@@ -4617,6 +4617,9 @@ struct TaskHandler {
     uint8_t mTaskList[16];            // +0x10 reserved_dlist<Task>
     uint8_t mQuickDeactivationList[16]; // +0x20 reserved_dlist<QuickTaskDeactivation>
 
+    // ??0TaskHandler@@QAE@VFourCC@@V?$Bitmask@I@@@Z (game2.o 0x4FFB20)
+    TaskHandler(FourCC task_id, uint32_t flags);
+
     FourCC GetId() const;             // game.o 0x4A5340
 };
 static_assert(sizeof(TaskHandler) == 0x30, "TaskHandler size mismatch");
@@ -5275,6 +5278,8 @@ public:
     TaskSysPostQueue mPostQueue;              // +0x108
     void* mTaskHandlers[32];                  // ae_sized_array data (+0x118)
     int mTaskHandlersSize;                    // ae_sized_array size (+0x198)
+    // ??0TaskSys@@QAE@XZ (game2.o 0x51DDB0)
+    TaskSys();
     static TaskSys sInst;   // ?sInst@TaskSys@@0V1@A @ 0x012F4120 (object, per binary mangle)
     static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o

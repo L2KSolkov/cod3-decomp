@@ -202,8 +202,8 @@ public:
     static TaskHandler sHandler;  // ?sHandler@AnimationUpdateTask@@0VTaskHandler@@A
     static TaskHandler* GetHandler();
 };
-TaskHandler XAnimUpdateTask::sHandler;
-TaskHandler AnimationUpdateTask::sHandler;
+TaskHandler XAnimUpdateTask::sHandler(FourCC(1480674893), 0u);
+TaskHandler AnimationUpdateTask::sHandler(FourCC(1095649613), 0u);
 TaskHandler* XAnimUpdateTask::GetHandler()
 {
     return &XAnimUpdateTask::sHandler;
@@ -212,7 +212,46 @@ TaskHandler* AnimationUpdateTask::GetHandler()
 {
     return &AnimationUpdateTask::sHandler;
 }
-TaskHandler EntityDeathTask::sHandler;
+TaskHandler EntityDeathTask::sHandler(FourCC(1145394248), 0u);
+
+// ea: 0x4FFB20
+TaskHandler::TaskHandler(FourCC task_id, uint32_t flags)
+    : mTaskId(task_id), mFlags(flags)
+{
+    struct DListNodeView {
+        DListNodeView* m_next;
+        DListNodeView* m_prev;
+    };
+    struct DListView {
+        int m_size;
+        DListNodeView* m_head;
+        DListNodeView* m_end;
+        DListNodeView* m_tail;
+    };
+
+    DListNodeView* node = reinterpret_cast<DListNodeView*>(m_dlist_node);
+    node->m_next = nullptr;
+    node->m_prev = nullptr;
+
+    DListView* taskList = reinterpret_cast<DListView*>(mTaskList);
+    taskList->m_size = 0;
+    taskList->m_end = nullptr;
+    taskList->m_head = reinterpret_cast<DListNodeView*>(&taskList->m_end);
+    taskList->m_tail = reinterpret_cast<DListNodeView*>(&taskList->m_head);
+
+    DListView* quickList =
+        reinterpret_cast<DListView*>(mQuickDeactivationList);
+    quickList->m_size = 0;
+    quickList->m_end = nullptr;
+    quickList->m_head = reinterpret_cast<DListNodeView*>(&quickList->m_end);
+    quickList->m_tail = reinterpret_cast<DListNodeView*>(&quickList->m_head);
+
+    if (TaskSys::sInst.mTaskHandlersSize < 32)
+    {
+        TaskSys::sInst.mTaskHandlers[
+            TaskSys::sInst.mTaskHandlersSize++] = this;
+    }
+}
 // ea: 0x005171D0
 TaskHandler* EntityDeathTask::GetHandler()
 {

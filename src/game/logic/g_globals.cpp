@@ -297,6 +297,39 @@ ConfigStringManager* ConfigStringManager::sInst;  // ?sInst@ConfigStringManager@
 TestFPS* TestFPS::sInst;                     // ?sInst@TestFPS@@2PAV1@A
 TimerRenderBars TimerRenderBars::sInst;      // ?sInst@TimerRenderBars@@0V1@A
 TaskSys TaskSys::sInst;                      // ?sInst@TaskSys@@0V1@A
+
+// ea: 0x51DDB0
+// IDA initializes the task handle database, post queue, and handler array
+// before any handler registration initializers run.
+TaskSys::TaskSys()
+{
+    struct TaskDbInit {
+        unsigned int mFreeBits;
+        struct Element {
+            void* mObject;
+            int mKey;
+        } mElements[32];
+        void* mDebugCallback;
+    };
+    static_assert(sizeof(TaskDbInit) == 0x108, "TaskDb layout mismatch");
+
+    TaskDbInit* db = reinterpret_cast<TaskDbInit*>(mHandleDb);
+    db->mFreeBits = 0;
+    for (int i = 0; i < 32; ++i)
+    {
+        db->mElements[i].mObject = nullptr;
+        db->mElements[i].mKey = 1;
+        db->mFreeBits |= 1u << i;
+    }
+    db->mDebugCallback = nullptr;
+
+    mPostQueue.m_size = 0;
+    mPostQueue.m_head = &mPostQueue.m_end;
+    mPostQueue.m_end = nullptr;
+    mPostQueue.m_tail = &mPostQueue.m_head;
+    memset(mTaskHandlers, 0, sizeof(mTaskHandlers));
+    mTaskHandlersSize = 0;
+}
 void* DynamicDecalMgr::sInst;                // ?sInst@DynamicDecalMgr@@2PAV1@A
 namespace StatusBar {
 cvar_t* sStatusBarActive = nullptr;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A

@@ -2337,7 +2337,13 @@ Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
 }
 TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id)
 {
-    (void)id;
+    for (int i = 0; i < TaskSys::sInst.mTaskHandlersSize; ++i)
+    {
+        TaskHandler* handler = reinterpret_cast<TaskHandler*>(
+            TaskSys::sInst.mTaskHandlers[i]);
+        if (handler != nullptr && handler->mTaskId.mVal == id)
+            return reinterpret_cast<TaskHandlerImpl*>(handler);
+    }
     return nullptr;
 }
 void HandleDb_AllocateTaskHandle(void* self, Task** t) { (void)self; (void)t; }
@@ -2914,13 +2920,15 @@ void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
 }
 void StubData_ApplyStubOptions(void* a) { (void)a; }
 void sWeaponAnimCallback() {}
+extern void TaskHandlerImpl_Update(TaskHandlerImpl* h, float deltaT,
+                                   void* ftor);
 void TaskHandler_Update(TaskHandler* h, float a, TaskFunctor* f)
 {
-    (void)h; (void)a; (void)f;
+    TaskHandlerImpl_Update(reinterpret_cast<TaskHandlerImpl*>(h), a, f);
 }
 void TaskHandler_Update(TaskHandlerImpl* h, float a, void* f)
 {
-    (void)h; (void)a; (void)f;
+    TaskHandlerImpl_Update(h, a, f);
 }
 void TimerRenderBars_Init(void* self)
 {
@@ -3012,7 +3020,12 @@ void SceneManager_ResetAllStaticModels() {}
 void ae_sized_array_push_back_handler(struct TaskSysImpl2* self,
                                       struct TaskHandlerImpl* const* elem)
 {
-    (void)self; (void)elem;
+    (void)self;
+    if (elem == nullptr || *elem == nullptr
+        || TaskSys::sInst.mTaskHandlersSize >= 32)
+        return;
+    TaskSys::sInst.mTaskHandlers[
+        TaskSys::sInst.mTaskHandlersSize++] = *elem;
 }
 void ae_sized_array_push_back_pair(
     DroneAEMap* self, DroneHandlePair* const* elt)
@@ -4703,7 +4716,7 @@ public:
     static ae_vector<AnimNotifyCallback> mPtrs;  // @ 0xF50CA0
 };
 static_assert(sizeof(AnimNotifyTask) == 0x24, "AnimNotifyTask size mismatch");
-TaskHandler AnimNotifyTask::sHandler;
+TaskHandler AnimNotifyTask::sHandler(FourCC(1095648857), 0u);
 ae_vector<unsigned int> AnimNotifyTask::mKeys;
 ae_vector<AnimNotifyCallback> AnimNotifyTask::mPtrs;
 
@@ -4711,6 +4724,11 @@ ae_vector<AnimNotifyCallback> AnimNotifyTask::mPtrs;
 TaskHandler* AnimNotifyTask::GetHandler()
 {
     return &AnimNotifyTask::sHandler;
+}
+
+TaskHandler* AnimNotifyTask_GetHandler()
+{
+    return AnimNotifyTask::GetHandler();
 }
 
 // ea: 0x005187E0

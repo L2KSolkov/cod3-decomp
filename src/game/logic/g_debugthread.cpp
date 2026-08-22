@@ -979,7 +979,7 @@ struct HealthRegenTask : Task {
 };
 static_assert(sizeof(HealthRegenTask) == 0x38, "HealthRegenTask size mismatch");
 
-TaskHandler HealthRegenTask::sHandler;
+TaskHandler HealthRegenTask::sHandler(FourCC(1213351758), 0u);
 
 // ea: 0x005187A0
 TaskHandler* HealthRegenTask::GetHandler()
@@ -1716,6 +1716,11 @@ void TaskHandlerImpl::Update(float deltaT, void* ftor)
     TaskSys_DeliverTasks();
 }
 
+void TaskHandlerImpl_Update(TaskHandlerImpl* h, float deltaT, void* ftor)
+{
+    h->Update(deltaT, ftor);
+}
+
 // ============================================================================
 // TaskSys::ReleaseTask - ea: 0x504970
 // ============================================================================
@@ -1729,16 +1734,13 @@ void TaskSys::ReleaseTask(Task* t)
 // ============================================================================
 // TaskSys::Update - ea: 0x50B8E0
 // ============================================================================
-TaskHandlerImpl* HealthRegenTask_sHandler = nullptr;  // ?HealthRegenTask_sHandler (game2.o)
-TaskHandlerImpl* AnimNotifyTask_sHandler = nullptr;   // ?AnimNotifyTask_sHandler (game2.o)
-TaskHandlerImpl* EntityDeathTask_sHandler = nullptr;  // ?EntityDeathTask_sHandler (game2.o)
-extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);
+extern TaskHandler* AnimNotifyTask_GetHandler();
 
 void TaskSys_Update(float deltaT)
 {
-    HealthRegenTask_sHandler->Update(deltaT, nullptr);
-    AnimNotifyTask_sHandler->Update(deltaT, nullptr);
-    EntityDeathTask_sHandler->Update(deltaT, nullptr);
+    TaskHandler_Update(HealthRegenTask::GetHandler(), deltaT, nullptr);
+    TaskHandler_Update(AnimNotifyTask_GetHandler(), deltaT, nullptr);
+    TaskHandler_Update(EntityDeathTask::GetHandler(), deltaT, nullptr);
 }
 
 // ============================================================================
@@ -1860,12 +1862,9 @@ void TaskSys_ShutDown()
             }
         }
     }
-    if (HealthRegenTask_sHandler != nullptr)
-        HealthRegenTask_sHandler->Update(0.01f, nullptr);
-    if (AnimNotifyTask_sHandler != nullptr)
-        AnimNotifyTask_sHandler->Update(0.01f, nullptr);
-    if (EntityDeathTask_sHandler != nullptr)
-        EntityDeathTask_sHandler->Update(0.01f, nullptr);
+    TaskHandler_Update(HealthRegenTask::GetHandler(), 0.01f, nullptr);
+    TaskHandler_Update(AnimNotifyTask_GetHandler(), 0.01f, nullptr);
+    TaskHandler_Update(EntityDeathTask::GetHandler(), 0.01f, nullptr);
 }
 
 // ============================================================================
@@ -1875,12 +1874,15 @@ extern void TaskSys_DeliverTasks();
 
 void TaskSys_DeliverTasks()
 {
-    TaskSysImpl2* sys = TaskSysImpl2_sInst;
+    TaskSys* sys = &TaskSys::sInst;
     // Move each posted task from mPostQueue to its handler's mTaskList.
-    int count = sys->mPostQueue.m_size;
-    while (count > 0)
+    DListNode* postEnd = reinterpret_cast<DListNode*>(&sys->mPostQueue.m_end);
+    while (sys->mPostQueue.m_head != postEnd)
     {
-        DListNode* head = sys->mPostQueue.m_head;
+        DListNode* head = reinterpret_cast<DListNode*>(
+            sys->mPostQueue.m_head);
+        if (head == nullptr)
+            break;
         Task* task = (Task*)((char*)head - 0x4);
         sys->mPostQueue.m_head = head->m_next;
         --sys->mPostQueue.m_size;
@@ -1896,7 +1898,6 @@ void TaskSys_DeliverTasks()
             handler->mTaskList.m_tail = node;
             ++handler->mTaskList.m_size;
         }
-        --count;
     }
 }
 
