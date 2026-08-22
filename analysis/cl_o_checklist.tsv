@@ -222,18 +222,18 @@ index	status	map_line
 221	VERIFIED	0002:0012df00 ?CL_IsCGameRendering@@YAHXZ 0091D400 f cl.o
 222	VERIFIED	0002:0012df80 ?CL_CubemapShot_f@@YAXXZ 0091D480 f cl.o
 223	VERIFIED	0002:0012e250 ?CL_GetGlconfigUI@@YAXPAUglconfig_t@@@Z 0091D750 f cl.o
-224	PORTED	0002:0012e270 ?GetClipboardDataUI@@YAXPADH@Z 0091D770 f cl.o
+224	PORTED	0002:0012e270 ?GetClipboardDataUI@@YAXPADH@Z 0091D770 f cl.o PORTED: IDA match; writes an empty UI clipboard buffer
 225	VERIFIED	0002:0012e280 ?Key_KeynumToStringBuf@@YAXHPADH@Z 0091D780 f cl.o
 226	VERIFIED	0002:0012e2b0 ?Key_GetCatcher@@YAHXZ 0091D7B0 f cl.o
 227	VERIFIED	0002:0012e2c0 ?Key_SetCatcher@@YAXH@Z 0091D7C0 f cl.o
-228	PORTED	0002:0012e2d0 ?GetConfigString@@YAHHPADH@Z 0091D7D0 f cl.o
+228	FIXED	0002:0012e2d0 ?GetConfigString@@YAHHPADH@Z 0091D7D0 f cl.o FIXED: restored both IDA assertion paths and exact config-string handling
 229	VERIFIED	0002:0012e3c0 ?CL_UISystemCalls@@YAHPAH@Z 0091D8C0 f cl.o
 230	VERIFIED	0002:0012e3e0 ?CL_ShutdownUI@@YAXXZ 0091D8E0 f cl.o
-231	PORTED	0002:0012e500 ?CL_InitUI@@YAXXZ 0091DA00 f cl.o
-232	PORTED	0002:0012e660 ?CL_InitGamepadAxisBindings@@YAXXZ 0091DB60 f cl.o
+231	FIXED	0002:0012e500 ?CL_InitUI@@YAXXZ 0091DA00 f cl.o FIXED: returns the IDA SyncLoadPak result and preserves branch returns
+232	PORTED	0002:0012e660 ?CL_InitGamepadAxisBindings@@YAXXZ 0091DB60 f cl.o PORTED: IDA match; initializes six axis bindings and values
 233	VERIFIED	0002:0012ebb0 ?Gamepad_WriteBindings@@YAXH@Z 0091E0B0 f cl.o
-234	PORTED	0002:0012ee00 ?CL_GamepadEvent@@YAXHHH@Z 0091E300 f cl.o
-235	PORTED	0002:0012ee40 ?CL_GamepadAxisValue@@YAMH@Z 0091E340 f cl.o
+234	PORTED	0002:0012ee00 ?CL_GamepadEvent@@YAXHHH@Z 0091E300 f cl.o PORTED: IDA match; validates and stores the physical axis value
+235	FIXED	0002:0012ee40 ?CL_GamepadAxisValue@@YAMH@Z 0091E340 f cl.o FIXED: restored the IDA virtual-axis assertion path
 236	VERIFIED	0002:0012ef30 ?CL_GamepadPhysicalAxisValue@@YAMH@Z 0091E430 f cl.o
 237	VERIFIED	0002:0012ef50 ?InitializeClientControllers@LocalClient@@YAXXZ 0091E450 f cl.o
 238	VERIFIED	0002:0012ef60 ?LastLocalClientIndex@LocalClient@@YAHXZ 0091E460 f cl.o
