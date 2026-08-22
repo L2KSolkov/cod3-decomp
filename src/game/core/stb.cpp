@@ -110,6 +110,13 @@ extern unsigned int codNflReadFile(nflFileID fileID, unsigned int fileOffset,
                                    void* buffer, unsigned int dataSize);
 
 extern "C" unsigned int AeHash(const char* str);
+
+// ea: 0x004DF4B0
+unsigned int STBManager_hash(const unsigned char* str)
+{
+    return AeHash(reinterpret_cast<const char*>(str));
+}
+
 extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
 extern void* InplaceAssetBank_Index(void* bank, int i);
 extern void InplaceAssetBank_Fixup_ConfigString(void* data);
