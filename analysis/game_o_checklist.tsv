@@ -833,22 +833,22 @@ index	status	map_line
 832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; existing generic ctor matches.
 833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o	IDA: returns mSize; existing vector accessor matches.
 834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o	IDA: mutable index checks line 167 and returns element address; existing accessor matches.
-835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o
-836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o
-837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o
-838	PORTED	0002:0025daf0 ??0?$nglMeshIterator@Ucddebug_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A4CFF0 f i game.o
-839	PORTED	0002:0025db30 ?BeginStrip@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXH@Z 00A4D030 f i game.o
-840	PORTED	0002:0025db70 ?WritePosition@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXMMM@Z 00A4D070 f i game.o
-841	PORTED	0002:0025dbb0 ??E?$nglMeshIterator@Ucddebug_vertex@@G@@QAEABV0@XZ 00A4D0B0 f i game.o
-842	PORTED	0002:0025dbe0 ?WriteFlush@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXXZ 00A4D0E0 f i game.o
+835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o	IDA: unsigned-index check uses line 154 and 0x10-byte Position3 stride; generic ae_sized_array operator[] matches.
+836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o	IDA: returns m_size; generic ae_sized_array size accessor matches.
+837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o	IDA: line 174 capacity check, copies Position3, increments m_size; generic push_back matches.
+838	PORTED	0002:0025daf0 ??0?$nglMeshIterator@Ucddebug_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A4CFF0 f i game.o	IDA: stores section, locks indices/vertices, sets both vertex pointers and cur_index=0; existing iterator ctor matches.
+839	PORTED	0002:0025db30 ?BeginStrip@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXH@Z 00A4D030 f i game.o	IDA: when cur_index>0 emits restart pair (cur_index-1, cur_index); existing BeginStrip matches.
+840	PORTED	0002:0025db70 ?WritePosition@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXMMM@Z 00A4D070 f i game.o	IDA: writes x/y/z to the current vertex position fields; existing WritePosition matches.
+841	PORTED	0002:0025dbb0 ??E?$nglMeshIterator@Ucddebug_vertex@@G@@QAEABV0@XZ 00A4D0B0 f i game.o	IDA: writes current index, advances index and vertex, increments cur_index; existing prefix ++ matches.
+842	PORTED	0002:0025dbe0 ?WriteFlush@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXXZ 00A4D0E0 f i game.o	IDA: calls section index and vertex unlock helpers; existing WriteFlush matches.
 843	SKIPPED	0002:0025dc00 ??0?$pair@HH@std@@QAE@ABH0@Z 00A4D100 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 844	SKIPPED	0002:0025dc20 ?size@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEIXZ 00A4D120 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-845	PORTED	0002:0025dc40 ??0?$cdl_array@M@@QAE@XZ 00A4D140 f i game.o
-846	PORTED	0002:0025dc60 ??0?$cdl_array@H@@QAE@XZ 00A4D160 f i game.o
-847	PORTED	0002:0025dc80 ??A?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00A4D180 f i game.o
-848	PORTED	0002:0025dd00 ?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QBEHXZ 00A4D200 f i game.o
-849	VERIFIED	0002:0025dd10 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00A4D210 f i game.o
-850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o
+845	PORTED	0002:0025dc40 ??0?$cdl_array@M@@QAE@XZ 00A4D140 f i game.o	IDA: zero-initializes count and element pointer; shared cdl_array ctor matches.
+846	PORTED	0002:0025dc60 ??0?$cdl_array@H@@QAE@XZ 00A4D160 f i game.o	IDA: zero-initializes count and element pointer; shared cdl_array ctor matches.
+847	PORTED	0002:0025dc80 ??A?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00A4D180 f i game.o	IDA: mutable index checks line 154 and returns the fixed-array element; generic accessor matches.
+848	PORTED	0002:0025dd00 ?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QBEHXZ 00A4D200 f i game.o	IDA: returns m_size; generic ae_sized_array size accessor matches.
+849	VERIFIED	0002:0025dd10 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00A4D210 f i game.o	IDA: line 174 capacity check, copies handle, increments m_size; generic push_back matches.
+850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o	IDA: decrements m_size and returns the last element; existing generic pop_back matches.
 851	PORTED	0002:0025ddd0 ??0?$cFreeList@VEntity@@@@QAE@XZ 00A4D2D0 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
 852	PORTED	0002:0025dde0 ??1?$cFreeList@VEntity@@@@QAE@XZ 00A4D2E0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
 853	FIXED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o	IDA: existing simplified allocator lacked the mFree invariant and assert paths; fixed to match lines 49/61 and head/count updates.
