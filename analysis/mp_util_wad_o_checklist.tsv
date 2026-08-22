@@ -812,7 +812,7 @@ index	status	map_line
 811	VERIFIED	0002:00571f80 ??D@YA?AUbfloat@@Ubint@@M@Z 00D61480 f i mp_util_wad.o	VERIFIED: IDA 0x00971F80 matches bint-to-int conversion, float multiply, and bfloat construction
 812	VERIFIED	0002:00571fc0 ??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z 00D614C0 f i mp_util_wad.o	VERIFIED: IDA 0x00971FC0 matches bfloat-to-float conversion and bbool(rhs float > lhs int)
 813	VERIFIED	0002:00572020 ?inactivity_blowup@_mp_tankdrive@@YAXVentity@Broc@@@Z 00D61520 f mp_util_wad.o
-814	PORTED	0002:005720a0 ?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z 00D615A0 f mp_util_wad.o
+814	FIXED	0002:005720a0 ?local_player_hit_effects@_mp_tankdrive@@YAXVentity@Broc@@Ubint@@1@Z 00D615A0 f mp_util_wad.o	FIXED: matched IDA 0x009720A0 one-time damage-scaled earthquake and rumble timing initialization
 815	PORTED	0002:005725c0 ?Code_GetPlayerInSeat@Broc@@YA?AVentity@1@V21@I@Z 00D61AC0 f i mp_util_wad.o	PORTED: added IDA 0x009725C0 wrapper constructing the callback-returned entity handle
 816	PORTED	0002:00572600 ?Rumble@@YAXABVstring@Broc@@MV12@MH@Z 00D61B00 f i mp_util_wad.o	PORTED: added IDA 0x00972600 mRumbleNotes forwarder with by-value high-frequency string destruction
 817	PORTED	0002:00572680 ?Earthquake@@YAXMMABUvector@Broc@@MH@Z 00D61B80 f i mp_util_wad.o	PORTED: added IDA 0x00972680 mEarthquake forwarder
