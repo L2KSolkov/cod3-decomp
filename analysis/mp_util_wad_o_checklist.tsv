@@ -825,7 +825,7 @@ index	status	map_line
 824	VERIFIED	0002:00573280 ?main@_mp_tdm@@YAXVentity@Broc@@@Z 00D62780 f mp_util_wad.o
 825	VERIFIED	0002:00573350 ?StartGame__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D62850 f i mp_util_wad.o	VERIFIED: IDA 0x00973350 matches 0xC-byte AeThreadFunctor1 allocation, null check, and _mp_tdm::StartGame constructor
 826	VERIFIED	0002:005733f0 ?CallbackPlayerKilled@_mp_tdm@@YAXVentity@Broc@@00HHH@Z 00D628F0 f mp_util_wad.o
-827	VERIFIED	0002:005735e0 ?StartGame@_mp_tdm@@YAXVentity@Broc@@@Z 00D62AE0 f mp_util_wad.o
+827	FIXED	0002:005735e0 ?StartGame@_mp_tdm@@YAXVentity@Broc@@@Z 00D62AE0 f mp_util_wad.o	FIXED: corrected IDA 0x009735E0 RunFrame thread target from boolean pLevel test to pLevel->_base.entity or undefined entity
 828	VERIFIED	0002:00573690 ?main@_mp_teambalance@@YAXVentity@Broc@@@Z 00D62B90 f mp_util_wad.o	VERIFIED: IDA 0x00973690 is an empty function body, matching the port
 829	VERIFIED	0002:005736b0 ?PickTeam@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@@Z 00D62BB0 f mp_util_wad.o	VERIFIED: IDA 0x009736B0 matches player enumeration, player-state filtering, team counts, score tie-break, random tie-break, and cleanup
 830	VERIFIED	0002:00573ba0 ?team_balance@_mp_teambalance@@YA?AVstring@Broc@@Ventity@3@V23@@Z 00D630A0 f mp_util_wad.o	VERIFIED: IDA 0x00973BA0 matches per-team counts, allowance-2 balancing decisions, result construction, and cleanup
