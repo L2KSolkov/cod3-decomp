@@ -37,7 +37,7 @@ index	status	map_line
 36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o PORTED: IDA-verified cgvm null return and VM_Call call number 2
 37	VERIFIED	0002:00128e40 ?CL_CGameRendering@@YAXXZ 00918340 f cl.o
 38	FIXED	0002:00128e70 ?CL_FirstSnapshot@@YAXXZ 00918370 f cl.o FIXED: matched IDA cvar assert, pak cleanup, FEManager state transitions, and menu activation; removed no-op helper path
-39	PORTED	0002:00128f60 ?CL_SetCGameTime@@YAXXZ 00918460 f cl.o PORTED: IDA-verified active-state time assignments and inactive early return
+39	FIXED	0002:00128f60 ?CL_SetCGameTime@@YAXXZ 00918460 f cl.o FIXED: restored IDA void signature and active-state writes; removed decompiler-only return
 40	PORTED	0002:00128f80 ?CL_SaveViewModelAnimTrees@@YAXXZ 00918480 f cl.o PORTED: IDA-verified VM_Call call number 13
 41	PORTED	0002:00128fa0 ?CL_LoadViewModelAnimTrees@@YAXXZ 009184A0 f cl.o PORTED: IDA-verified VM_Call call number 14
 42	PORTED	0002:00128fc0 ?CL_SaveWeaponInfo@@YAXXZ 009184C0 f cl.o PORTED: IDA-verified VM_Call call number 15
