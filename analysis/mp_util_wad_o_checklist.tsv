@@ -763,7 +763,7 @@ index	status	map_line
 762	VERIFIED	0002:0056b020 ?InitializeFlags@_mp_scf@@YAXXZ 00D5A520 f mp_util_wad.o
 763	PORTED	0002:0056b3c0 ?ResetFlags@_mp_scf@@YAXXZ 00D5A8C0 f mp_util_wad.o
 764	VERIFIED	0002:0056b5a0 ?CallbackPlayerJoin@_mp_scf@@YAXVentity@Broc@@IH@Z 00D5AAA0 f mp_util_wad.o
-765	PORTED	0002:0056b680 ?ObjectiveUpdater__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5AB80 f i mp_util_wad.o
+765	VERIFIED	0002:0056b680 ?ObjectiveUpdater__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D5AB80 f i mp_util_wad.o	VERIFIED: IDA 0x0096B680 matches 12-byte allocation, null check, and ObjectiveUpdater functor construction
 766	VERIFIED	0002:0056b720 ?CallbackPlayerEnter@_mp_scf@@YAXVentity@Broc@@H@Z 00D5AC20 f mp_util_wad.o
 767	VERIFIED	0002:0056b850 ?UnlinkFlag@_mp_scf@@YAXVentity@Broc@@@Z 00D5AD50 f mp_util_wad.o
 768	VERIFIED	0002:0056bb30 ?DestroyIcon@_mp_scf@@YAXVentity@Broc@@@Z 00D5B030 f mp_util_wad.o
