@@ -20,7 +20,7 @@ extern int bCL_AllowedAllocSkel;
 extern int animFrametime;
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
-extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  const char* ctx, const char* file, int line);
 extern char* va(const char* fmt, ...);
 extern const char defaultFileName[];
@@ -46,7 +46,7 @@ bool Assert(const char* fmt, ...);
         AeAssert::gCurrentLine = (line);                                  \
         AeAssert::gCurrentExpr = (expr);                                  \
         if (!AeAssert::IsIgnored()                                        \
-            && AeAssert::Assert("old cod assert"))                        \
+            && AeAssert::Assert(defaultFileName))                         \
             __debugbreak();                                               \
     } while (0)
 
