@@ -440,6 +440,7 @@ HashStr      string_hash(const string& str);
 // Broc string operators
 // ============================================================================
 bool   operator==(const string& lhs, const char* rhs);
+bool   operator==(const char* lhs, const string& rhs);
 bool   operator==(const string& lhs, const string& rhs);
 bool   operator==(HashStr lhs, const string& rhs);
 bool   operator==(const string& lhs, HashStr rhs);

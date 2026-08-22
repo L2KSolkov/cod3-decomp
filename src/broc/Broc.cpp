@@ -933,6 +933,11 @@ bool operator==(const string& lhs, const char* rhs) {
     return true;
 }
 
+// operator==(char*, string) - ea: 0x967D90
+bool operator==(const char* lhs, const string& rhs) {
+    return operator==(rhs, lhs);
+}
+
 bool operator!=(const string& lhs, const char* rhs) {
     return !operator==(lhs, rhs);
 }
