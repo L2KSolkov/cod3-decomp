@@ -23,6 +23,8 @@ using Broc::SetModel;
 using Broc::MoveTo;
 using Broc::EffectEventPlay;
 
+extern const char defaultFileName[];
+
 // mp_util_wad entry points - ea: 0x947450 / 0x947480 / 0x948450.
 void MusicStop()
 {
@@ -5227,8 +5229,9 @@ void LaunchFlagAndTrigger(Broc::entity self, Broc::vector origin,
                           Broc::vector angles, Broc::vector velocity);
 void EntityOff(Broc::entity self);
 void CompassUnderlay(Broc::entity p);
+AeThreadFunctor1<Broc::entity>* CompassUnderlay__functor(Broc::entity p);
 Broc::bbool* IsFlagAtBase(Broc::bbool* result, Broc::entity flag);
-void HandlePickupFlag(int flag, Broc::entity pickerupper, int request,
+void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
                       int playSounds);
 void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex);
 void CallbackDropItem(int netID, int entity, Broc::vector position,
@@ -11243,8 +11246,7 @@ void CallbackGameStateSCF(int currentFlagIndex, Broc::vector FlagOrigin,
         }
         Broc::entity flag =
             mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
-        HandlePickupFlag((int)mp_util_wad::pLevel->current_flag, FlagHolder, 1,
-                         0);
+        HandlePickupFlag(flag, FlagHolder, 1, 0);
         mp_util_wad::pLevel->current_flag = currentFlagIndex;
     } else {
         Broc::vector velocity(0.0f, 0.0f, 50.0f);
@@ -11709,9 +11711,193 @@ void HandleDropFlag(Broc::entity player) {
 }
 
 // HandlePickupFlag - ea: 0x968920
-void HandlePickupFlag(int flag, Broc::entity pickerupper, int request,
+// ea: 0x00968920
+void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
                       int playSounds) {
-    (void)flag; (void)pickerupper; (void)request; (void)playSounds;
+    Broc::string myteam(defaultFileName);
+    Broc::bbool atBase;
+    IsFlagAtBase(&atBase, flag);
+
+    if (Broc::IsDefined(pickerupper)) {
+        Broc::bint playerState;
+        mp_util_wad::entity_get_playerState(&playerState, pickerupper);
+        if ((int)playerState != 3 || Broc::Code_IsInVehicle(pickerupper)) {
+            myteam.~string();
+            return;
+        }
+
+        Broc::string flagteam("axis");
+        Broc::string otherteam("allies");
+        Broc::bint now;
+        Broc::GetTime(&now);
+        Broc::entity levelEntity = mp_util_wad::pLevel->_base.entity;
+        *mp_util_wad::GetEE_pickupCaptureDelayTime(levelEntity) =
+            (int)now + 1000;
+        ObjectiveRing(2, -1);
+
+        Broc::bbool hasSound;
+        mp_util_wad::IsEEDefined_sound_handle(&hasSound, pickerupper);
+        if ((bool)hasSound) {
+            Broc::EffectEventStopEmitting(
+                (unsigned int)(int)*mp_util_wad::GetEE_sound_handle(
+                    pickerupper));
+            *mp_util_wad::GetEE_sound_handle(pickerupper) = 0;
+        }
+
+        Broc::string script("FLAG_FLAPPING");
+        int soundHandle = Broc::EffectEventPlay(&pickerupper, &script);
+        *mp_util_wad::GetEE_sound_handle(pickerupper) = soundHandle;
+        script.~string();
+
+        Broc::string pickerTeam;
+        mp_util_wad::entity_get_team(&pickerTeam, pickerupper);
+        bool axisPicker = pickerTeam == "axis";
+        pickerTeam.~string();
+
+        if (axisPicker) {
+            myteam = "axis";
+            bool isLocalPlayer = Broc::Code_IsLocalPlayer(pickerupper);
+            if (!isLocalPlayer) {
+                Broc::dyn_array<Broc::entity> players;
+                Broc::GetLocalPlayerArray(&players);
+                Broc::bint i(0);
+                while ((int)i < Broc::size(players)) {
+                    Broc::string pickerTeamForPlayer;
+                    Broc::string playerTeam;
+                    mp_util_wad::entity_get_team(&pickerTeamForPlayer,
+                                                 pickerupper);
+                    mp_util_wad::entity_get_team(
+                        &playerTeam,
+                        players[(unsigned int)(int)i]);
+                    bool sameTeam = playerTeam == pickerTeamForPlayer;
+                    (void)sameTeam;
+                    playerTeam.~string();
+                    pickerTeamForPlayer.~string();
+                    i = (int)i + 1;
+                }
+                players.~dyn_array();
+            }
+            if (playSounds != 0) {
+                Broc::entity level = mp_util_wad::pLevel != nullptr
+                                          ? mp_util_wad::pLevel->_base.entity
+                                          : Broc::entity();
+                void* ftor = _mp_audio::PlayTeamSound__functor(
+                    level, myteam,
+                    Broc::string("MX_SFCTF_FlagTakenEnemy"),
+                    Broc::string("MX_SFCTF_FlagTaken"));
+                Broc::thread_create(false,
+                                    "c:\\cod\\code\\script\\_mp_scf.bro",
+                                    __LINE__, "_mp_audio::PlayTeamSound",
+                                    ftor);
+                if ((bool)atBase)
+                    Broc::iprintln("MPSCF_FLAG_TAKEN_AXIS");
+            }
+        } else {
+            myteam = "allies";
+            flagteam = "allies";
+            bool isLocalPlayer = Broc::Code_IsLocalPlayer(pickerupper);
+            if (!isLocalPlayer) {
+                Broc::dyn_array<Broc::entity> players;
+                Broc::GetLocalPlayerArray(&players);
+                Broc::bint i(0);
+                while ((int)i < Broc::size(players)) {
+                    Broc::string pickerTeamForPlayer;
+                    Broc::string playerTeam;
+                    mp_util_wad::entity_get_team(&pickerTeamForPlayer,
+                                                 pickerupper);
+                    mp_util_wad::entity_get_team(
+                        &playerTeam,
+                        players[(unsigned int)(int)i]);
+                    bool sameTeam = playerTeam == pickerTeamForPlayer;
+                    (void)sameTeam;
+                    playerTeam.~string();
+                    pickerTeamForPlayer.~string();
+                    i = (int)i + 1;
+                }
+                players.~dyn_array();
+            }
+            if (playSounds != 0) {
+                Broc::entity level = mp_util_wad::pLevel != nullptr
+                                          ? mp_util_wad::pLevel->_base.entity
+                                          : Broc::entity();
+                void* ftor = _mp_audio::PlayTeamSound__functor(
+                    level, myteam,
+                    Broc::string("MX_SFCTF_FlagTakenEnemy"),
+                    Broc::string("MX_SFCTF_FlagTaken"));
+                Broc::thread_create(false,
+                                    "c:\\cod\\code\\script\\_mp_scf.bro",
+                                    __LINE__, "_mp_audio::PlayTeamSound",
+                                    ftor);
+                if ((bool)atBase)
+                    Broc::iprintln("MPSCF_FLAG_TAKEN_ALLIES");
+            }
+        }
+
+        Broc::string pickerTeamForWeapon;
+        mp_util_wad::entity_get_team(&pickerTeamForWeapon, pickerupper);
+        bool axisWeapon = pickerTeamForWeapon == "axis";
+        pickerTeamForWeapon.~string();
+        if (axisWeapon) {
+            Broc::string weapon("mp_flag_axis");
+            Broc::GiveWeapon(&pickerupper, &weapon);
+            weapon.~string();
+        } else {
+            Broc::string weapon("mp_flag_allies");
+            Broc::GiveWeapon(&pickerupper, &weapon);
+            weapon.~string();
+        }
+
+        Broc::string slot("flag");
+        Broc::SetWeaponSlotClipAmmo(&pickerupper, &slot, 1);
+        slot.~string();
+
+        Broc::string pickerTeamForSwitch;
+        mp_util_wad::entity_get_team(&pickerTeamForSwitch, pickerupper);
+        bool axisSwitch = pickerTeamForSwitch == "axis";
+        pickerTeamForSwitch.~string();
+        if (axisSwitch) {
+            Broc::string weapon("mp_flag_axis");
+            Broc::SwitchToWeapon(pickerupper, weapon);
+            weapon.~string();
+        } else {
+            Broc::string weapon("mp_flag_allies");
+            Broc::SwitchToWeapon(pickerupper, weapon);
+            weapon.~string();
+        }
+
+        mp_util_wad::entity_set_ctf_has_flag(pickerupper, 1);
+        EntityOff(flag);
+        EntityOff(*mp_util_wad::GetEE_trigger(flag));
+        *mp_util_wad::GetEE_holder(flag) = pickerupper;
+        *mp_util_wad::GetEE_holder(pickerupper) = flag;
+        Broc::SetOwner(&flag, &pickerupper);
+
+        if ((bool)atBase && request == 0)
+            _mp_common::AddToPlayerStats(pickerupper, Broc::bint(18), 1);
+
+        if (Broc::Code_IsLocalPlayer(pickerupper)) {
+            void* ftor = CompassUnderlay__functor(pickerupper);
+            Broc::thread_create(false,
+                                "c:\\cod\\code\\script\\_mp_scf.bro",
+                                __LINE__, "CompassUnderlay", ftor);
+        }
+
+        otherteam.~string();
+        flagteam.~string();
+    } else {
+        EntityOff(flag);
+        EntityOff(*mp_util_wad::GetEE_trigger(flag));
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                  ? mp_util_wad::pLevel->_base.entity
+                                  : Broc::entity();
+        Broc::bfloat waitTime(0.1f);
+        void* ftor = WaitThenPickFlagToLaunch__functor(
+            level, waitTime, "MPSCF_FLAG_RETURNED");
+        Broc::thread_create(false,
+                            "c:\\cod\\code\\script\\_mp_scf.bro",
+                            __LINE__, "WaitThenPickFlagToLaunch", ftor);
+    }
+    myteam.~string();
 }
 
 // CallbackPickupScriptItem - ea: 0x969830
