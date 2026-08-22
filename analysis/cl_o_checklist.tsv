@@ -313,7 +313,7 @@ index	status	map_line
 312	VERIFIED	0002:00133d60 ?SCR_DrawScreenField@@YAXXZ 00923260 f cl.o
 313	VERIFIED	0002:00133f20 ?SCR_UpdateScreen@@YAXM@Z 00923420 f cl.o
 314	VERIFIED	0002:00134100 ?IN_Button0Down@@YAXHH@Z 00923600 f cl.o
-315	PORTED	0002:00134140 ?CL_InitInput@@YAXXZ 00923640 f cl.o PORTED: IDA match; registers the complete command set and resets input state
+315	FIXED	0002:00134140 ?CL_InitInput@@YAXXZ 00923640 f cl.o FIXED: restored void signature and removed decompiler-only return; command registration/reset sequence matches IDA
 316	VERIFIED	0002:00134670 ?CL_PacketEvent@@YAXUnetadr_t@@PAUmsg_t@@H@Z 00923B70 f cl.o
 317	VERIFIED	0002:001347e0 ?CL_Frame@@YAXHM@Z 00923CE0 f cl.o
 318	VERIFIED	0002:00134c20 ?SCR_UpdateScreen@@YAXXZ 00924120 f cl.o
