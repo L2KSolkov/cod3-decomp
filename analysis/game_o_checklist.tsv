@@ -989,35 +989,35 @@ index	status	map_line
 988	SKIPPED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 989	SKIPPED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 990	VERIFIED	0002:002600e0 ??1AnimNotifyTask@@UAE@XZ 00A4F5E0 f i game.o
-991	PORTED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o
+991	PORTED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o	IDA: returns mAvailableWbks.m_size > 0; explicit query restored in g_entity_misc.cpp.
 992	VERIFIED	0002:00260100 ??0CrossFadeInfo@SoundDevice@@QAE@XZ 00A4F600 f i game.o
-993	PORTED	0002:00260120 ?Clear@nglParamSet@@QAEXXZ 00A4F620 f i game.o
+993	PORTED	0002:00260120 ?Clear@nglParamSet@@QAEXXZ 00A4F620 f i game.o	IDA: clears Array[0] and Array[1]; explicit method restored in ngl_dx_core.cpp.
 994	VERIFIED	0002:00260140 ?nglListAlloc@@YAPAXII@Z 00A4F640 f i game.o
 995	VERIFIED	0002:002601d0 ??0pml_t@@QAE@XZ 00A4F6D0 f i game.o
 996	VERIFIED	0002:002601e0 ??0locTraceWork_t@@QAE@XZ 00A4F6E0 f i game.o
 997	VERIFIED	0002:002601f0 ??0traceWork_t@@QAE@XZ 00A4F6F0 f i game.o
-998	PORTED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o
-999	PORTED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o
+998	PORTED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o	IDA: zeros both list links, mOwner, and mSound while leaving mInUse untouched; constructor restored in g_cmd.cpp.
+999	PORTED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o	IDA: zeros both list links; constructor restored in g_cmd.cpp.
 1000	SKIPPED	0002:00260250 ??_ECGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1001	SKIPPED	0002:00260250 ??_GCGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1002	VERIFIED	0002:00260280 ??0AttachModelInfo@@QAE@XZ 00A4F780 f i game.o
 1003	SKIPPED	0002:002602b0 ??_GEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1004	SKIPPED	0002:002602b0 ??_EEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1005	PORTED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o
-1006	PORTED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o
+1005	PORTED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o	IDA: bounds-checks index with cdl_mem.h line 91 and returns m_elements[index]; generic body matches.
+1006	PORTED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o	IDA: frees m_elements when non-null, then nulls it and clears m_count; generic done body matches.
 1007	VERIFIED	0002:00260360 ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z 00A4F860 f i game.o
-1008	PORTED	0002:002603f0 ??1?$cdl_array@Ucdl_object_t@@@@QAE@XZ 00A4F8F0 f i game.o
-1009	PORTED	0002:00260420 ??1?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4F920 f i game.o
-1010	PORTED	0002:00260450 ??A?$cdl_array@Ucdl_brush_t@@@@QAEAAUcdl_brush_t@@I@Z 00A4F950 f i game.o
-1011	PORTED	0002:002604a0 ??1?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4F9A0 f i game.o
-1012	PORTED	0002:002604d0 ??1?$cdl_array@Uvi4@@@@QAE@XZ 00A4F9D0 f i game.o
-1013	PORTED	0002:00260500 ??A?$cdl_array@Ucdl_patch_t@@@@QAEAAUcdl_patch_t@@I@Z 00A4FA00 f i game.o
+1008	PORTED	0002:002603f0 ??1?$cdl_array@Ucdl_object_t@@@@QAE@XZ 00A4F8F0 f i game.o	IDA: same cdl_array teardown sequence as the plane specialization; generic done body matches.
+1009	PORTED	0002:00260420 ??1?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4F920 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
+1010	PORTED	0002:00260450 ??A?$cdl_array@Ucdl_brush_t@@@@QAEAAUcdl_brush_t@@I@Z 00A4F950 f i game.o	IDA: bounds-checks with cdl_mem.h line 91 and returns m_elements[index]; generic mutable operator[] matches.
+1011	PORTED	0002:002604a0 ??1?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4F9A0 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
+1012	PORTED	0002:002604d0 ??1?$cdl_array@Uvi4@@@@QAE@XZ 00A4F9D0 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
+1013	PORTED	0002:00260500 ??A?$cdl_array@Ucdl_patch_t@@@@QAEAAUcdl_patch_t@@I@Z 00A4FA00 f i game.o	IDA: bounds-checks with cdl_mem.h line 91 and returns m_elements[index]; generic mutable operator[] matches.
 1014	PORTED	0002:00260550 ??1?$phys_static_array@H$0BAA@@@QAE@XZ 00A4FA50 f i game.o
 1015	PORTED	0002:00260560 ??1?$phys_static_array@H$0IA@@@QAE@XZ 00A4FA60 f i game.o
 1016	VERIFIED	0002:00260570 ??1?$ae_vector@I@@QAE@XZ 00A4FA70 f i game.o
-1017	PORTED	0002:002605a0 ?push_back@?$ae_vector@I@@QAEXABI@Z 00A4FAA0 f i game.o
-1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o
-1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o
+1017	PORTED	0002:002605a0 ?push_back@?$ae_vector@I@@QAEXABI@Z 00A4FAA0 f i game.o	IDA: grows capacity by +1 up to size 3, then +4, allocates with align 8, copies, frees old storage, and appends the element; generic ae_vector body matches.
+1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o	IDA: invokes the WbkEntry base constructor and sets m_size to zero; specialization matches.
+1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o	IDA: asserts m_size < 16, increments size, and assigns the WbkEntry; generic push_back plus explicit assignment matches.
 1020	PORTED	0002:00260710 ?BindObjectToHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVSound@SoundDevice@@@Z 00A4FC10 f i game.o
 1021	SKIPPED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1022	SKIPPED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
