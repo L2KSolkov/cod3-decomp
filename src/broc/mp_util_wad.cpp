@@ -2573,6 +2573,18 @@ void Broc::Code_SendGameStateCTF(
         axis_flag_holder.GetHandle());
 }
 
+// Broc::Code_SendGameStateSCF - ea: 0x967FC0
+void Broc::Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
+                                const Broc::vector* flag,
+                                const Broc::vector* flagAngles,
+                                Broc::entity flag_holder) {
+    Broc::vector flagAnglesCopy = *flagAngles;
+    Broc::vector flagCopy = *flag;
+    gBrocAPI.mSendGameStateSCF(player.GetHandle(), defendingTeam,
+                               flagCopy, flagAnglesCopy,
+                               flag_holder.GetHandle());
+}
+
 // Code_IncTeamScore - ea: 0x93DE70
 void Broc::Code_IncTeamScore(const Broc::string& team, int amount) {
     gBrocAPI.mIncTeamScore(team, amount);
