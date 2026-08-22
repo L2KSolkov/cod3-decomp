@@ -22,4 +22,4 @@ index	status	map_line
 21	VERIFIED	0002:00434990 ?ApplyReferencesForEntry@apkFile@apk@@QAEXPAVapkFileEntry@2@@Z 00C23E90 f apk.o
 22	VERIFIED	0002:00434b40 ?apkLoadFileInPlace@apk@@YAPAVapkFile@1@PAX_N@Z 00C24040 f apk.o
 23	VERIFIED	0002:00434d70 ?apkLoadFile@apk@@YAPAVapkFile@1@PBD@Z 00C24270 f apk.o
-24	PORTED	0002:00434e20 ??$tl_align@PAE@@YAPAEPAEI@Z 00C24320 f i apk.o
+24	FIXED	0002:00434e20 ??$tl_align@PAE@@YAPAEPAEI@Z 00C24320 f i apk.o FIXED: restored IDA unsigned-char pointer alignment helper
