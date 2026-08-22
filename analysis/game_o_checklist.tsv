@@ -797,42 +797,42 @@ index	status	map_line
 796	SKIPPED	0002:0025d0f0 ?size@?$InplaceVector@VBspArea@@@@QBEIXZ 00A4C5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 797	SKIPPED	0002:0025d100 ??A?$InplaceVector@VBspArea@@@@QAEAAVBspArea@@I@Z 00A4C600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 798	SKIPPED	0002:0025d180 ??A?$InplaceVector@H@@QAEAAHI@Z 00A4C680 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o
-800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o
-801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o
-802	PORTED	0002:0025d240 ?end@?$ae_vector@I@@QAEPAIXZ 00A4C740 f i game.o
-803	VERIFIED	0002:0025d250 ??0?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A4C750 f i game.o
-804	PORTED	0002:0025d260 ??A?$ae_vector@P6AXVentity@Broc@@@Z@@QAEAAP6AXVentity@Broc@@@ZH@Z 00A4C760 f i game.o
-805	PORTED	0002:0025d2e0 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEABUWbkEntry@AudioBankMgr@@H@Z 00A4C7E0 f i game.o
-806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o
-807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o
+799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o	IDA: stores next at +0 and prev at +4; existing dlist_node ctor matches.
+800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; existing generic ctor matches.
+801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o	IDA: returns mElements directly; existing generic begin matches.
+802	PORTED	0002:0025d240 ?end@?$ae_vector@I@@QAEPAIXZ 00A4C740 f i game.o	IDA: returns &mElements[mSize]; existing generic end matches.
+803	VERIFIED	0002:0025d250 ??0?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A4C750 f i game.o	IDA: zeroes the three ae_vector fields; existing generic ctor matches.
+804	PORTED	0002:0025d260 ??A?$ae_vector@P6AXVentity@Broc@@@Z@@QAEAAP6AXVentity@Broc@@@ZH@Z 00A4C760 f i game.o	IDA: mutable index checks lines 167 and returns element address; existing generic operator[] matches.
+805	PORTED	0002:0025d2e0 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEABUWbkEntry@AudioBankMgr@@H@Z 00A4C7E0 f i game.o	IDA: const index checks line 148 and uses 0x6c stride; WbkEntry storage/access matches.
+806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o	IDA: mutable index checks line 154 and uses 0x6c stride; WbkEntry storage/access matches.
+807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o	IDA: returns m_size; AudioBankMgr implementation matches.
 808	VERIFIED	0002:0025d3f0 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@VHandle@@@Z 00A4C8F0 f i game.o
 809	SKIPPED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 810	SKIPPED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 811	SKIPPED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 812	SKIPPED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 813	SKIPPED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o
-815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o
-816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o
-817	PORTED	0002:0025d620 ?size@?$ae_vector@USCheckpointGameVar@@@@QBEHXZ 00A4CB20 f i game.o
-818	PORTED	0002:0025d630 ??A?$ae_vector@USCheckpointGameVar@@@@QAEAAUSCheckpointGameVar@@H@Z 00A4CB30 f i game.o
-819	PORTED	0002:0025d6b0 ?begin@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBB0 f i game.o
-820	PORTED	0002:0025d6c0 ?end@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBC0 f i game.o
-821	PORTED	0002:0025d6d0 ?erase@?$ae_vector@USCheckpointGameVar@@@@QAEXPAUSCheckpointGameVar@@0@Z 00A4CBD0 f i game.o
-822	PORTED	0002:0025d7d0 ??Diterator@?$ae_sized_array@G$0BAA@@@QBEAAGXZ 00A4CCD0 f i game.o
-823	PORTED	0002:0025d7e0 ??Eiterator@?$ae_sized_array@G$0BAA@@@QAEAAV01@XZ 00A4CCE0 f i game.o
-824	PORTED	0002:0025d7f0 ??9iterator@?$ae_sized_array@G$0BAA@@@QBE_NV01@@Z 00A4CCF0 f i game.o
-825	PORTED	0002:0025d810 ??0dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAU01@0@Z 00A4CD10 f i game.o
-826	PORTED	0002:0025d830 ??0dlist_node@?$reserved_dlist@VCurve@@@@QAE@PAU01@0@Z 00A4CD30 f i game.o
-827	PORTED	0002:0025d850 ??0dlist_node@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAU01@0@Z 00A4CD50 f i game.o
-828	PORTED	0002:0025d870 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAEAAV01@XZ 00A4CD70 f i game.o
-829	PORTED	0002:0025d890 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AV01@H@Z 00A4CD90 f i game.o
-830	PORTED	0002:0025d8c0 ??Eiterator@?$reserved_dlist@VCurve@@@@QAEAAV01@XZ 00A4CDC0 f i game.o
-831	PORTED	0002:0025d8e0 ??Eiterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AV01@H@Z 00A4CDE0 f i game.o
-832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o
-833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o
-834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o
+814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o	IDA: zeroes m_size; generic ae_sized_array ctor matches.
+815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o	IDA: line 174 capacity assert, copies one ushort, increments m_size; generic push_back matches.
+816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; CheckpointVector storage matches.
+817	PORTED	0002:0025d620 ?size@?$ae_vector@USCheckpointGameVar@@@@QBEHXZ 00A4CB20 f i game.o	IDA: returns mSize; existing vector accessor matches.
+818	PORTED	0002:0025d630 ??A?$ae_vector@USCheckpointGameVar@@@@QAEAAUSCheckpointGameVar@@H@Z 00A4CB30 f i game.o	IDA: mutable index checks line 167 and returns element address; existing accessor matches.
+819	PORTED	0002:0025d6b0 ?begin@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBB0 f i game.o	IDA: returns mElements directly; existing accessor matches.
+820	PORTED	0002:0025d6c0 ?end@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBC0 f i game.o	IDA: returns &mElements[mSize]; existing accessor matches.
+821	PORTED	0002:0025d6d0 ?erase@?$ae_vector@USCheckpointGameVar@@@@QAEXPAUSCheckpointGameVar@@0@Z 00A4CBD0 f i game.o	IDA: line 286 empty check, copies 3 fields per element, then subtracts erased span; current implementation is equivalent for the 12-byte type.
+822	PORTED	0002:0025d7d0 ??Diterator@?$ae_sized_array@G$0BAA@@@QBEAAGXZ 00A4CCD0 f i game.o	IDA: dereferences m_ptr; existing iterator matches.
+823	PORTED	0002:0025d7e0 ??Eiterator@?$ae_sized_array@G$0BAA@@@QAEAAV01@XZ 00A4CCE0 f i game.o	IDA: increments m_ptr and returns this; existing iterator matches.
+824	PORTED	0002:0025d7f0 ??9iterator@?$ae_sized_array@G$0BAA@@@QBE_NV01@@Z 00A4CCF0 f i game.o	IDA: compares m_ptr against rhs.m_ptr; existing iterator matches.
+825	PORTED	0002:0025d810 ??0dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAU01@0@Z 00A4CD10 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
+826	PORTED	0002:0025d830 ??0dlist_node@?$reserved_dlist@VCurve@@@@QAE@PAU01@0@Z 00A4CD30 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
+827	PORTED	0002:0025d850 ??0dlist_node@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAU01@0@Z 00A4CD50 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
+828	PORTED	0002:0025d870 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAEAAV01@XZ 00A4CD70 f i game.o	IDA: prefix ++ advances node/next only when next is non-null; current iterator matches.
+829	PORTED	0002:0025d890 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AV01@H@Z 00A4CD90 f i game.o	IDA: postfix ++ snapshots old node/next, advances when non-null, returns snapshot; current iterator matches.
+830	PORTED	0002:0025d8c0 ??Eiterator@?$reserved_dlist@VCurve@@@@QAEAAV01@XZ 00A4CDC0 f i game.o	IDA: prefix ++ advances node/next only when next is non-null; current iterator matches.
+831	PORTED	0002:0025d8e0 ??Eiterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AV01@H@Z 00A4CDE0 f i game.o	IDA: postfix ++ snapshots old node/next, advances when non-null, returns snapshot; current iterator matches.
+832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; existing generic ctor matches.
+833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o	IDA: returns mSize; existing vector accessor matches.
+834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o	IDA: mutable index checks line 167 and returns element address; existing accessor matches.
 835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o
 836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o
 837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o
