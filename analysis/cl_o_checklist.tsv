@@ -230,7 +230,7 @@ index	status	map_line
 229	VERIFIED	0002:0012e3c0 ?CL_UISystemCalls@@YAHPAH@Z 0091D8C0 f cl.o
 230	VERIFIED	0002:0012e3e0 ?CL_ShutdownUI@@YAXXZ 0091D8E0 f cl.o
 231	FIXED	0002:0012e500 ?CL_InitUI@@YAXXZ 0091DA00 f cl.o FIXED: returns the IDA SyncLoadPak result and preserves branch returns
-232	PORTED	0002:0012e660 ?CL_InitGamepadAxisBindings@@YAXXZ 0091DB60 f cl.o PORTED: IDA match; initializes six axis bindings and values
+232	FIXED	0002:0012e660 ?CL_InitGamepadAxisBindings@@YAXXZ 0091DB60 f cl.o FIXED: restored 4-byte axis-value stride and void signature; matches IDA disassembly
 233	VERIFIED	0002:0012ebb0 ?Gamepad_WriteBindings@@YAXH@Z 0091E0B0 f cl.o
 234	PORTED	0002:0012ee00 ?CL_GamepadEvent@@YAXHHH@Z 0091E300 f cl.o PORTED: IDA match; validates and stores the physical axis value
 235	FIXED	0002:0012ee40 ?CL_GamepadAxisValue@@YAMH@Z 0091E340 f cl.o FIXED: restored the IDA virtual-axis assertion path
