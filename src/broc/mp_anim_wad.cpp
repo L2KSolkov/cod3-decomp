@@ -7,6 +7,7 @@
 #include "mp_anim_wad.h"
 #include "engine/broc_types.h"
 #include "game/logic/g_local.h"
+#include <cstdio>
 #include <new>
 
 // IDA types: BroAnim is a 4-byte value wrapper and AnimRef is the 12-byte
@@ -81,6 +82,33 @@ namespace generic_human {
         return c_jeep_gunner_idle.IsUnresolved() != 0;
     }
 }
+
+// Broc::SetAnimKnob - ea: 0x998460.
+namespace Broc {
+void SetAnimKnob(Broc::entity* e, unsigned int anim_index,
+                float goalweight, float goaltime, float rate) {
+    const unsigned int handle = e->GetHandle();
+    gpBrocAPI->mBrocExports.mSetAnimKnob(
+        handle, anim_index, goalweight, goaltime, rate, false);
+}
+
+// Broc::ValidateAnimRef - ea: 0x9984B0.
+BroAnim* ValidateAnimRef(BroAnim* result, Broc::AnimRef* ref,
+                         const char* pAnimName, int lineNo) {
+    if (ref->IsUnresolved()) {
+        Broc::string file((const char*)NULL);
+        Broc::string func((const char*)NULL);
+        Broc::string thread((const char*)NULL);
+        char error[256];
+
+        gBrocAPI.mThreadGetDebugInfo(&file, &func, &thread);
+        std::sprintf(error, "Anim %s is not in memory.", pAnimName);
+        gBrocAPI.mWarning(file.c_str(), lineNo, error);
+    }
+    result->mVal = ref->mAnim.mVal;
+    return result;
+}
+} // namespace Broc
 
 // GetEE_* / IsEEDefined_* accessors (generated from RegisterHashStrings + manifest).
 
@@ -359,15 +387,11 @@ void main() {
 }
 
 void hack_function_to_allow_the_script_to_compile() {
-    extern int generic_human_c_jeep_gunner_idle;  // AnimRef global (data)
-    extern void Broc_ValidateAnimRef(void* result, void* ref, const char* name, int line);
-    extern void Broc_SetAnimKnob(Broc::entity* e, unsigned int anim, float gw, float gt, float rate);
-    Broc::entity e;
-    e.___u0 = 0;
-    unsigned int result = 0;
-    Broc_ValidateAnimRef(&result, &generic_human_c_jeep_gunner_idle,
-                         "c_jeep_gunner_idle", 10);
-    Broc_SetAnimKnob(&e, result, 1.0f, 0.1f, 1.0f);
+    BroAnim result;
+    Broc::entity e(0);
+    Broc::ValidateAnimRef(&result, &generic_human::c_jeep_gunner_idle,
+                          "c_jeep_gunner_idle", 10);
+    Broc::SetAnimKnob(&e, result, 1.0f, 0.1f, 1.0f);
 }
 }
 // GetEE_script_delay / IsEEDefined_script_delay (key 0x47018F83)
