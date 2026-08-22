@@ -8,6 +8,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <new>
 #include <string>
 #include <vector>
 
@@ -167,7 +168,13 @@ struct EndOnScriptNode;
 struct DbStringHashTable;
 class DbTable;
 struct DbQuery;
-struct DbQueryString;
+struct DbQueryString {
+    char buf[128];
+    DbQueryString();
+    DbQueryString(const char* data);
+    const char* c_str() const;
+};
+static_assert(sizeof(DbQueryString) == 0x80, "DbQueryString size mismatch");
 class EntityHandleDb;
 class DbRow;
 class DbGraphNode;
@@ -1073,17 +1080,17 @@ public:
     struct CachedQuery {
         BitSet<49>    mSpecifiedFields;  // +0x000
         BitSet<49>    mWeakFields;       // +0x008
-        char          mWEAPON_ID[128];   // +0x010 (DbQueryString)
+        DbQueryString mWEAPON_ID;        // +0x010
         int           mMYMATERIAL;       // +0x090
         float         mMIN_DIST;         // +0x094
         float         mMAX_DIST;         // +0x098
         int           mBARREL;           // +0x09C
         int           mSTANCE;           // +0x0A0
-        char          mVEHICLE_ID[128];  // +0x0A4 (DbQueryString)
+        DbQueryString mVEHICLE_ID;       // +0x0A4
         int           mACTION;           // +0x124
         int           mWEAPON_CLASS;     // +0x128
         int           mFOOTSTEP;         // +0x12C
-        char          mSCRIPT_ID[128];   // +0x130 (DbQueryString)
+        DbQueryString mSCRIPT_ID;        // +0x130
         int           mCONTEXT;          // +0x1B0
         int           mMATERIAL;         // +0x1B4
 
@@ -1583,6 +1590,8 @@ struct DbQuery {
     unsigned int   mConstraintPos; // +0x45C
     void Execute(DbQueryResults& results);
     void Reset();
+    template <typename T>
+    void Where(int colId, const T& value, bool weak);
 private:
     void ResetConstraints();
 protected:
@@ -1873,14 +1882,6 @@ public:
 };
 static_assert(sizeof(DbTableSet) == 0x28, "DbTableSet size mismatch");
 
-struct DbQueryString {
-    char buf[128];
-    DbQueryString();
-    DbQueryString(const char* data);
-    const char* c_str() const;
-};
-static_assert(sizeof(DbQueryString) == 0x80, "DbQueryString size mismatch");
-
 template <typename T>
 struct DbFieldType : DbField {
     T m_val;  // +0x04
@@ -1904,6 +1905,111 @@ struct DbFieldType<DbQueryString> : DbField {
 
     const DbQueryString& GetValue() const { return m_val; }
 };
+
+template <typename T>
+// ea: 0x004E6C40 (DbQueryString), 0x004E7010 (int), 0x004E73F0 (float)
+void DbQuery::Where(int colId, const T& value, bool weak)
+{
+    if (mConstraints.IsFieldSpecified((unsigned int)colId))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 277;
+        AeAssert::gCurrentExpr =
+            "mConstraints.IsFieldSpecified( colId ) == false";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Already specified this column"))
+            __debugbreak();
+    }
+    if (mAutomaticFail)
+        return;
+
+    DbSchema* schema = mDb->mSchema;
+    if ((colId & 0xFFFF) != colId)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 287;
+        AeAssert::gCurrentExpr = "((colId)&0xFFFF) == (colId)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    const uint16_t column_id = (uint16_t)colId;
+    const int index = mDb->GetColumnIndex(column_id);
+    if (index == -1)
+    {
+        if (!weak)
+            mAutomaticFail = true;
+        return;
+    }
+    if ((index & 0xFFFF) != index)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 298;
+        AeAssert::gCurrentExpr = "((Index)&0xFFFF) == (Index)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("object can't be truncated to 16 bits!"))
+            __debugbreak();
+    }
+    const EDbColumnType column_type = schema->GetColumnType(column_id);
+    if (column_type < kDbColumnTypeINT
+        || column_type > kDbColumnTypeSHORT)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 301;
+        AeAssert::gCurrentExpr =
+            "( schema.GetColumnType( uint16(colId) ) >= "
+            "kDbColumnTypeMin && schema.GetColumnType( uint16(colId) ) "
+            "<= kDbColumnTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    const EDbMatchType match_type = schema->GetMatchType(column_id);
+    if (match_type < kDbMatchTypeEXACT
+        || match_type > kDbMatchTypeEXACT_NOCASE)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 302;
+        AeAssert::gCurrentExpr =
+            "( schema.GetMatchType( uint16(colId) ) >= "
+            "kDbMatchTypeMin && schema.GetMatchType( uint16(colId) ) "
+            "<= kDbMatchTypeMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+
+    while ((reinterpret_cast<uintptr_t>(mConstraintBuffer)
+            + mConstraintPos) & 3u)
+        ++mConstraintPos;
+    if (mConstraintPos + sizeof(DbFieldType<T>) >= 0x200)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 309;
+        AeAssert::gCurrentExpr =
+            "mConstraintPos + sizeof( DbFieldType< T > ) < 512";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "should probably increase DB_QUERY_BUFFER_SIZE"))
+            __debugbreak();
+    }
+    DbField* field = reinterpret_cast<DbField*>(
+        &mConstraintBuffer[mConstraintPos]);
+    mConstraintPos += sizeof(DbFieldType<T>);
+    if (field != nullptr)
+    {
+        ::new (field) DbFieldType<T>(column_id, const_cast<T*>(&value),
+                                     column_type, match_type);
+    }
+    mConstraints.AddField(field, weak);
+}
+
 static_assert(sizeof(DbFieldType<int>) == 8,
               "DbFieldType<int> size mismatch");
 static_assert(sizeof(DbFieldType<float>) == 8,

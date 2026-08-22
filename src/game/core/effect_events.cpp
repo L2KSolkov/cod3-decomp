@@ -731,9 +731,9 @@ EffectEventSys::PendingQuery::PendingQuery()
     mCachedQuery.mSpecifiedFields.mBits[0] = 0;
     mCachedQuery.mWeakFields.mBits[1] = 0;
     mCachedQuery.mWeakFields.mBits[0] = 0;
-    mCachedQuery.mWEAPON_ID[0] = 0;
-    mCachedQuery.mVEHICLE_ID[0] = 0;
-    mCachedQuery.mSCRIPT_ID[0] = 0;
+    mCachedQuery.mWEAPON_ID.buf[0] = 0;
+    mCachedQuery.mVEHICLE_ID.buf[0] = 0;
+    mCachedQuery.mSCRIPT_ID.buf[0] = 0;
     mCollisionInfo.simple.coord.v = _mm_setzero_ps();
     mCollisionInfo.simple.normal.v = _mm_setzero_ps();
     mCollisionInfo.material = kCollisionMaterialInvalid;
@@ -813,9 +813,9 @@ void EffectEventSys::CachedQuery::Where(int id, const DbQueryString* val,
         mWeakFields.Rmv(id);
     switch (id)
     {
-    case 7: memcpy(mSCRIPT_ID, val, sizeof(mSCRIPT_ID)); break;
-    case 8: memcpy(mWEAPON_ID, val, sizeof(mWEAPON_ID)); break;
-    case 9: memcpy(mVEHICLE_ID, val, sizeof(mVEHICLE_ID)); break;
+    case 7: memcpy(&mSCRIPT_ID, val, sizeof(mSCRIPT_ID)); break;
+    case 8: memcpy(&mWEAPON_ID, val, sizeof(mWEAPON_ID)); break;
+    case 9: memcpy(&mVEHICLE_ID, val, sizeof(mVEHICLE_ID)); break;
     default:
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CachedQuery.h";
@@ -1029,8 +1029,8 @@ static void BitSetRmv(BitSet<49>& bs, int v)
 static void SetScriptIdField(EffectEventSys::CachedQuery& cq,
                              const char* scriptId)
 {
-    strncpy(cq.mSCRIPT_ID, scriptId, 127);
-    cq.mSCRIPT_ID[127] = 0;
+    strncpy(cq.mSCRIPT_ID.buf, scriptId, 127);
+    cq.mSCRIPT_ID.buf[127] = 0;
     BitSetAdd(cq.mSpecifiedFields, 7);
     BitSetRmv(cq.mWeakFields, 7);
 }
@@ -1038,8 +1038,8 @@ static void SetScriptIdField(EffectEventSys::CachedQuery& cq,
 static void SetWeaponIdField(EffectEventSys::CachedQuery& cq,
                              const char* weaponType)
 {
-    strncpy(cq.mWEAPON_ID, weaponType, 127);
-    cq.mWEAPON_ID[127] = 0;
+    strncpy(cq.mWEAPON_ID.buf, weaponType, 127);
+    cq.mWEAPON_ID.buf[127] = 0;
     BitSetAdd(cq.mSpecifiedFields, 8);
     BitSetRmv(cq.mWeakFields, 8);
 }
@@ -1047,8 +1047,8 @@ static void SetWeaponIdField(EffectEventSys::CachedQuery& cq,
 static void SetVehicleIdField(EffectEventSys::CachedQuery& cq,
                               const char* vehicleType)
 {
-    strncpy(cq.mVEHICLE_ID, vehicleType, 127);
-    cq.mVEHICLE_ID[127] = 0;
+    strncpy(cq.mVEHICLE_ID.buf, vehicleType, 127);
+    cq.mVEHICLE_ID.buf[127] = 0;
     BitSetAdd(cq.mSpecifiedFields, 9);
     BitSetRmv(cq.mWeakFields, 9);
 }
@@ -4723,95 +4723,73 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
     }
 }
 
-// DbQuery::Where — append a constraint (DbField + value) to the buffer
-static void DbQueryWhere(DbQuery* query, int colId, const void* value,
-                         size_t size, bool weak)
-{
-    const DbSchema* schema = query->mDb->mSchema;
-    DbFieldSet& cs = query->mConstraints;
-    unsigned int pos = query->mConstraintPos;
-    DbField* f = (DbField*)&query->mConstraintBuffer[pos];
-    f->m_column_type = schema->mColumnTypes[colId];
-    f->m_match_type = schema->mMatchTypes[colId];
-    f->mId = (uint16_t)colId;
-    memcpy(&query->mConstraintBuffer[pos + 4], value, size);
-    query->mConstraintPos = pos + 4 + (unsigned int)((size + 3) & ~3u);
-    cs.mIdToIdxMap[colId] = (unsigned char)cs.mNumParams;
-    cs.mFields[cs.mNumParams] = f;
-    ++cs.mNumParams;
-    cs.mSpecifiedById.mBits[colId >> 3] |=
-        (unsigned char)(1u << (colId & 7));
-    if (weak)
-        cs.mWeakById.mBits[colId >> 3] |= (unsigned char)(1u << (colId & 7));
-}
-
 // ea: 0x004E8390
 void EffectEventSys::CachedQuery::ConstructQuery(DbQuery* query)
 {
     if ((mSpecifiedFields.mBits[0] & 0x100) != 0)
     {
         bool weak = (mWeakFields.mBits[8 >> 3] >> (8 & 7)) & 1;
-        DbQueryWhere(query, 8, &mWEAPON_ID, sizeof(mWEAPON_ID), weak);
+        query->Where(8, mWEAPON_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x10) != 0)
     {
         bool weak = (mWeakFields.mBits[4 >> 3] >> (4 & 7)) & 1;
-        DbQueryWhere(query, 4, &mMYMATERIAL, sizeof(mMYMATERIAL), weak);
+        query->Where(4, mMYMATERIAL, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x20) != 0)
     {
         bool weak = (mWeakFields.mBits[5 >> 3] >> (5 & 7)) & 1;
-        DbQueryWhere(query, 5, &mMIN_DIST, sizeof(mMIN_DIST), weak);
+        query->Where(5, mMIN_DIST, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x40) != 0)
     {
         bool weak = (mWeakFields.mBits[6 >> 3] >> (6 & 7)) & 1;
-        DbQueryWhere(query, 6, &mMAX_DIST, sizeof(mMAX_DIST), weak);
+        query->Where(6, mMAX_DIST, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x1000) != 0)
     {
         bool weak = (mWeakFields.mBits[12 >> 3] >> (12 & 7)) & 1;
-        DbQueryWhere(query, 12, &mBARREL, sizeof(mBARREL), weak);
+        query->Where(12, mBARREL, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 4) != 0)
     {
         bool weak = (mWeakFields.mBits[2 >> 3] >> (2 & 7)) & 1;
-        DbQueryWhere(query, 2, &mSTANCE, sizeof(mSTANCE), weak);
+        query->Where(2, mSTANCE, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x200) != 0)
     {
         bool weak = (mWeakFields.mBits[9 >> 3] >> (9 & 7)) & 1;
-        DbQueryWhere(query, 9, &mVEHICLE_ID, sizeof(mVEHICLE_ID), weak);
+        query->Where(9, mVEHICLE_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x400) != 0)
     {
         bool weak = (mWeakFields.mBits[10 >> 3] >> (10 & 7)) & 1;
-        DbQueryWhere(query, 10, &mACTION, sizeof(mACTION), weak);
+        query->Where(10, mACTION, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x800) != 0)
     {
         bool weak = (mWeakFields.mBits[11 >> 3] >> (11 & 7)) & 1;
-        DbQueryWhere(query, 11, &mWEAPON_CLASS, sizeof(mWEAPON_CLASS), weak);
+        query->Where(11, mWEAPON_CLASS, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 2) != 0)
     {
         bool weak = (mWeakFields.mBits[1 >> 3] >> (1 & 7)) & 1;
-        DbQueryWhere(query, 1, &mFOOTSTEP, sizeof(mFOOTSTEP), weak);
+        query->Where(1, mFOOTSTEP, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x80) != 0)
     {
         bool weak = (mWeakFields.mBits[7 >> 3] >> (7 & 7)) & 1;
-        DbQueryWhere(query, 7, &mSCRIPT_ID, sizeof(mSCRIPT_ID), weak);
+        query->Where(7, mSCRIPT_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 1) != 0)
     {
         bool weak = (mWeakFields.mBits[0 >> 3] >> (0 & 7)) & 1;
-        DbQueryWhere(query, 0, &mCONTEXT, sizeof(mCONTEXT), weak);
+        query->Where(0, mCONTEXT, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 8) != 0)
     {
         bool weak = (mWeakFields.mBits[3 >> 3] >> (3 & 7)) & 1;
-        DbQueryWhere(query, 3, &mMATERIAL, sizeof(mMATERIAL), weak);
+        query->Where(3, mMATERIAL, weak);
     }
 }
 
