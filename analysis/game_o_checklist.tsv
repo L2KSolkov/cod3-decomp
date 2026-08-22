@@ -1024,27 +1024,27 @@ index	status	map_line
 1023	SKIPPED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1024	SKIPPED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1025	SKIPPED	0002:002609d0 ?UnloadBank@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXW4TPakId@@@Z 00A4FED0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1026	PORTED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o
-1027	PORTED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o
-1028	PORTED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o
-1029	PORTED	0002:00260a70 ??1?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4FF70 f i game.o
-1030	PORTED	0002:00260aa0 ?push_back@?$ae_vector@USCheckpointGameVar@@@@QAEXABUSCheckpointGameVar@@@Z 00A4FFA0 f i game.o
-1031	PORTED	0002:00260ba0 ??0?$reserved_dlist@VCurveEffectListElem@@@@QAE@XZ 00A500A0 f i game.o
-1032	PORTED	0002:00260bc0 ?push_front@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A500C0 f i game.o
-1033	PORTED	0002:00260bf0 ?end@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A500F0 f i game.o
-1034	PORTED	0002:00260c10 ??0?$reserved_dlist@VCurve@@@@QAE@XZ 00A50110 f i game.o
-1035	PORTED	0002:00260c30 ?push_front@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A50130 f i game.o
-1036	PORTED	0002:00260c60 ?end@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A50160 f i game.o
-1037	PORTED	0002:00260c80 ??0?$reserved_dlist@VCurveEvalFunc@@@@QAE@XZ 00A50180 f i game.o
-1038	PORTED	0002:00260ca0 ?push_front@?$reserved_dlist@VCurveEvalFunc@@@@QAEXPAVCurveEvalFunc@@@Z 00A501A0 f i game.o
-1039	PORTED	0002:00260cd0 ?end@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A501D0 f i game.o
-1040	PORTED	0002:00260cf0 ??Citerator@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAVCurveEvalFunc@@XZ 00A501F0 f i game.o
-1041	PORTED	0002:00260d00 ??9iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV01@@Z 00A50200 f i game.o
-1042	PORTED	0002:00260d30 ??Diterator@?$reserved_dlist@VCurve@@@@QAEPAVCurve@@XZ 00A50230 f i game.o
-1043	PORTED	0002:00260d40 ??9iterator@?$reserved_dlist@VCurve@@@@QBE_NABV01@@Z 00A50240 f i game.o
-1044	PORTED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o
-1045	PORTED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o
-1046	PORTED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o
+1026	VERIFIED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o  VERIFIED: IDA 0x00660A30 sets m_size to zero; ae_sized_array::clear matches.
+1027	VERIFIED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o  VERIFIED: IDA 0x00660A40 returns the element buffer; generic begin matches.
+1028	VERIFIED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o  VERIFIED: IDA 0x00660A50 returns m_elements + m_size; generic end matches.
+1029	VERIFIED	0002:00260a70 ??1?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4FF70 f i game.o  VERIFIED: IDA 0x00660A70 frees, nulls, and clears capacity; CheckpointVector cleanup matches.
+1030	VERIFIED	0002:00260aa0 ?push_back@?$ae_vector@USCheckpointGameVar@@@@QAEXABUSCheckpointGameVar@@@Z 00A4FFA0 f i game.o  VERIFIED: IDA 0x00660AA0 growth, zero-init, copy, free, append, and size increment match CheckpointVectorPushBack.
+1031	VERIFIED	0002:00260ba0 ??0?$reserved_dlist@VCurveEffectListElem@@@@QAE@XZ 00A500A0 f i game.o  VERIFIED: IDA 0x00660BA0 matches the generic reserved_dlist constructor.
+1032	PORTED	0002:00260bc0 ?push_front@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A500C0 f i game.o  PORTED: IDA 0x00660BC0 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
+1033	VERIFIED	0002:00260bf0 ?end@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A500F0 f i game.o  VERIFIED: IDA 0x00660BF0 matches the generic sentinel iterator end.
+1034	VERIFIED	0002:00260c10 ??0?$reserved_dlist@VCurve@@@@QAE@XZ 00A50110 f i game.o  VERIFIED: IDA 0x00660C10 matches the generic reserved_dlist constructor.
+1035	PORTED	0002:00260c30 ?push_front@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A50130 f i game.o  PORTED: IDA 0x00660C30 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
+1036	VERIFIED	0002:00260c60 ?end@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A50160 f i game.o  VERIFIED: IDA 0x00660C60 matches the generic sentinel iterator end.
+1037	VERIFIED	0002:00260c80 ??0?$reserved_dlist@VCurveEvalFunc@@@@QAE@XZ 00A50180 f i game.o  VERIFIED: IDA 0x00660C80 matches the generic reserved_dlist constructor.
+1038	PORTED	0002:00260ca0 ?push_front@?$reserved_dlist@VCurveEvalFunc@@@@QAEXPAVCurveEvalFunc@@@Z 00A501A0 f i game.o  PORTED: IDA 0x00660CA0 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
+1039	VERIFIED	0002:00260cd0 ?end@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A501D0 f i game.o  VERIFIED: IDA 0x00660CD0 matches the generic sentinel iterator end.
+1040	VERIFIED	0002:00260cf0 ??Citerator@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAVCurveEvalFunc@@XZ 00A501F0 f i game.o  VERIFIED: IDA 0x00660CF0 returns the iterator node; generic operator-> matches.
+1041	VERIFIED	0002:00260d00 ??9iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV01@@Z 00A50200 f i game.o  VERIFIED: IDA 0x00660D00 compares iterator m_next values; generic operator!= matches.
+1042	VERIFIED	0002:00260d30 ??Diterator@?$reserved_dlist@VCurve@@@@QAEPAVCurve@@XZ 00A50230 f i game.o  VERIFIED: IDA 0x00660D30 returns the iterator node; generic operator* matches.
+1043	VERIFIED	0002:00260d40 ??9iterator@?$reserved_dlist@VCurve@@@@QBE_NABV01@@Z 00A50240 f i game.o  VERIFIED: IDA 0x00660D40 compares iterator m_next values; generic operator!= matches.
+1044	VERIFIED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o  VERIFIED: IDA 0x00660D70 returns the iterator node; generic operator* matches.
+1045	VERIFIED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o  VERIFIED: IDA 0x00660D80 returns the iterator node; generic operator-> matches.
+1046	VERIFIED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o  VERIFIED: IDA 0x00660D90 compares iterator m_next values; generic operator!= matches.
 1047	SKIPPED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1048	VERIFIED	0002:00260de0 ??0?$ae_sized_array@VPosition3@math@@$0BAA@@@QAE@XZ 00A502E0 f i game.o
 1049	PORTED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o
