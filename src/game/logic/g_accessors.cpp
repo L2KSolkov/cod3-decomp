@@ -41,6 +41,82 @@ char* tl_align<char*>(char* p, unsigned int a)
     return reinterpret_cast<char*>(value & ~(uintptr_t)(a - 1u));
 }
 
+// game.o 0x0065F350
+bool intersect_aabb_centered_aabb(const math::Position3& min1,
+                                  const math::Position3& max1,
+                                  const math::Position3& center,
+                                  const math::Position3& dims)
+{
+    const __m128 separation = _mm_max_ps(
+        _mm_sub_ps(center.v, max1.v),
+        _mm_sub_ps(min1.v, center.v));
+    return (_mm_movemask_ps(_mm_cmplt_ps(separation, dims.v)) & 7) == 7;
+}
+
+// game.o 0x0065F3B0
+bool inside_point_aabb(const math::Position3& p,
+                       const math::Position3& bmin,
+                       const math::Position3& bmax)
+{
+    const __m128 separation = _mm_max_ps(
+        _mm_sub_ps(bmin.v, p.v),
+        _mm_sub_ps(p.v, bmax.v));
+    return (_mm_movemask_ps(
+                _mm_cmplt_ps(separation, _mm_setzero_ps())) & 7) == 7;
+}
+
+// game.o 0x0065F420
+bool point_in_triangle(const math::Position3& p,
+                       const math::Position3& v0,
+                       const math::Position3& v1,
+                       const math::Position3& v2,
+                       const math::Dir3& n)
+{
+    const __m128 e01 = _mm_sub_ps(v0.v, v1.v);
+    const __m128 p1 = _mm_sub_ps(p.v, v1.v);
+    const __m128 e12 = _mm_sub_ps(v1.v, v2.v);
+    const __m128 p2 = _mm_sub_ps(p.v, v2.v);
+    const __m128 p0 = _mm_sub_ps(p.v, v0.v);
+    const __m128 e20 = _mm_sub_ps(v2.v, v0.v);
+
+    const __m128 c01 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(e01, e01, 9),
+                   _mm_shuffle_ps(p1, p1, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(e01, e01, 18),
+                   _mm_shuffle_ps(p1, p1, 9)));
+    const __m128 c12 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(e12, e12, 9),
+                   _mm_shuffle_ps(p2, p2, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(e12, e12, 18),
+                   _mm_shuffle_ps(p2, p2, 9)));
+    const __m128 c20 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(e20, e20, 9),
+                   _mm_shuffle_ps(p0, p0, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(e20, e20, 18),
+                   _mm_shuffle_ps(p0, p0, 9)));
+
+    const __m128 d01 = _mm_mul_ps(c01, n.v);
+    const __m128 d12 = _mm_mul_ps(c12, n.v);
+    const __m128 d20 = _mm_mul_ps(c20, n.v);
+    const float s01 = d01.m128_f32[0]
+        + _mm_shuffle_ps(d01, d01, 85).m128_f32[0]
+        + _mm_shuffle_ps(d01, d01, 170).m128_f32[0];
+    const float s12 = d12.m128_f32[0]
+        + _mm_shuffle_ps(d12, d12, 85).m128_f32[0]
+        + _mm_shuffle_ps(d12, d12, 170).m128_f32[0];
+    const float s20 = d20.m128_f32[0]
+        + _mm_shuffle_ps(d20, d20, 85).m128_f32[0]
+        + _mm_shuffle_ps(d20, d20, 170).m128_f32[0];
+    const __m128 signs = _mm_setr_ps(s20, s12, s01, 0.0f);
+    return (_mm_movemask_ps(_mm_cmplt_ps(signs, _mm_setzero_ps())) & 7) == 0;
+}
+
+// game.o 0x0065FBE0
+unsigned int PHYS_ALIGN(char* p, int a)
+{
+    return (unsigned int)(~(a - 1) & (uintptr_t)&p[a - 1]);
+}
+
 // game.o 0x0065B6B0
 int nglGetStripIndices(int NVerts, int NStrips)
 {
@@ -60,6 +136,27 @@ struct sphere_clip_stack_entry {
     sphere_clip_stack_entry() {}
 };
 
+// game.o 0x0065F5F0
+cdlPlane::cdlPlane() {}
+
+// game.o 0x0065F600
+cdlPlane::cdlPlane(const math::Dir3& n, float offset)
+{
+    data.m128_f32[0] = n.v.m128_f32[0];
+    data.m128_f32[1] = n.v.m128_f32[1];
+    data.m128_f32[2] = n.v.m128_f32[2];
+    data.m128_f32[3] = offset;
+}
+
+// game.o 0x0065F630
+double cdlPlane::get_offset() const
+{
+    return data.m128_f32[3];
+}
+
+// game.o 0x0065F680
+cdl_object_t::cdl_object_t() {}
+
 // game.o 0x601CC0
 const math::Dir3& cdlPlane::get_normal() const
 {
@@ -72,10 +169,35 @@ float cdl_object_t::get_sphere_radius() const
     return sphere_radius;
 }
 
+// game.o 0x0065F690
+math::Position3 cdl_object_t::get_min() const
+{
+    math::Position3 result;
+    result.v = _mm_sub_ps(
+        _mm_setr_ps(center[0], center[1], center[2], 0.0f),
+        _mm_setr_ps(box_radius[0], box_radius[1], box_radius[2], 0.0f));
+    return result;
+}
+
 // game.o 0x601CE0
 int cdl_object_t::get_sflags() const
 {
     return sflags;
+}
+
+// game.o 0x0065FCF0
+bounded_proxy_obj_t::bounded_proxy_obj_t(const math::Position3& mn,
+                                         const math::Position3& mx,
+                                         int _cflags, unsigned char _bi,
+                                         unsigned short _oi, unsigned char _ti)
+    : oi(_oi), bi(_bi), ti(_ti), cflags(_cflags)
+{
+    min[0] = mn.v.m128_f32[0];
+    min[1] = mn.v.m128_f32[1];
+    min[2] = mn.v.m128_f32[2];
+    max[0] = mx.v.m128_f32[0];
+    max[1] = mx.v.m128_f32[1];
+    max[2] = mx.v.m128_f32[2];
 }
 
 // game.o 0x601D00
@@ -184,6 +306,9 @@ int ae_stricmp(const char* s1, const char* s2)
         return ae_stricmpn(s1, s2, 0x7FFFFFFF);
     return -1;
 }
+
+// game.o 0x006600A0
+LightGridData::LightGridData() {}
 
 // game.o 0x601F50
 void CachedLightGrid::Initialize()
@@ -3782,6 +3907,14 @@ Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator->() const
 // proximity_data_t dtor (g.o 0x4B2290)
 proximity_data_t::~proximity_data_t()
 {
+}
+
+// game.o 0x0065FE00
+void proximity_data_t::clear()
+{
+    boxes_count = 0;
+    brushes_count = 0;
+    polies_count = 0;
 }
 
 // ConfigString::operator[] (g.o 0x4B22A0)

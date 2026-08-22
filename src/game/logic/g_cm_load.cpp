@@ -41,6 +41,7 @@ struct phys_memory_heap {
 class BspPlane {
 public:
     __m128 mPlane;   // +0x00 (normal xyz + dist w)
+    double GetDist() const;
     void ToCPlane(cplane_s& cp)
     {
         cp.normal[0] = mPlane.m128_f32[0];
@@ -57,6 +58,12 @@ public:
             cp.signbits |= 4;
     }
 };
+
+// game.o 0x0065FF70
+double BspPlane::GetDist() const
+{
+    return mPlane.m128_f32[3];
+}
 
 struct BspNode {
     unsigned short contents;   // +0x00 (0xFFFF for nodes)

@@ -167,6 +167,10 @@ struct phys_memory_heap {
     char* m_buffer_cur;    // +0x08
     char* m_user_start;    // +0x0C
 
+    phys_memory_heap()  // game.o 0x0065FC00
+        : m_buffer_start(nullptr), m_buffer_end(nullptr),
+          m_buffer_cur(nullptr), m_user_start(nullptr) {}
+
     void nullify_buffer() {
         m_buffer_start = nullptr;
         m_buffer_end = nullptr;
@@ -184,7 +188,7 @@ struct phys_memory_heap {
     char* allocate_no_error(int size, int alignment) {
         if (size <= 0 &&
             _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 59,
-                      "size > 0", ""))
+                      "size > 0", defaultFileName))
             __debugbreak();
         char* result = (char*)((~(alignment - 1)) & (intptr_t)&m_buffer_cur[alignment - 1]);
         if (&result[size] > m_buffer_end)

@@ -30,6 +30,7 @@ struct LightGridData {
     math::Vector4::Packed m_directionalColor[3];
     math::Dir3::Packed m_directionalDir[3];
     int m_numDirectional;
+    LightGridData();  // game.o 0x006600A0
 };
 static_assert(sizeof(LightGridData) == 0x64, "LightGridData size mismatch");
 
@@ -4141,9 +4142,11 @@ struct cdl_object_t {
     float    center[3];     // +0x08 (Position3::Packed)
     float    box_radius[3]; // +0x14 (Dir3::Packed)
     float    sphere_radius; // +0x20
+    cdl_object_t();                                  // game.o 0x65F680
 
     float get_sphere_radius() const;                   // game.o 0x601CD0
     int get_sflags() const;                            // game.o 0x601CE0
+    math::Position3 get_min() const;                   // game.o 0x65F690
     const math::Position3 get_center_local() const;  // ?get_center_local@cdl_object_t@@QBE?BVPosition3@math@@XZ (g.o 0x4AECC0)
     math::Dir3 get_box_radius() const;               // ?get_box_radius@cdl_object_t@@QBE?AVDir3@math@@XZ (g.o 0x4AED30)
     math::Position3 get_max() const;                 // ?get_max@cdl_object_t@@QBE?AVPosition3@math@@XZ (g.o 0x4AEDA0)
@@ -4155,7 +4158,10 @@ struct cdl_brush_t {
 };
 struct cdlPlane {
     union { __m128 data; int packed[4]; };
+    cdlPlane();                                      // game.o 0x65F5F0
+    cdlPlane(const math::Dir3& n, float offset);     // game.o 0x65F600
     const math::Dir3& get_normal() const;              // game.o 0x601CC0
+    double get_offset() const;                         // game.o 0x65F630
 };  // IDA: math::Vector4 data (16 bytes)
 struct cdl_patch_t {
     uint16_t first_index;  // +0x00
@@ -4175,6 +4181,11 @@ struct bounded_proxy_obj_t {
     float    min[3];    // +0x04
     float    max[3];    // +0x10
     int      cflags;    // +0x1C
+    bounded_proxy_obj_t() = default;
+    bounded_proxy_obj_t(const math::Position3& mn,
+                        const math::Position3& mx,
+                        int _cflags, unsigned char _bi,
+                        unsigned short _oi, unsigned char _ti);
 };
 static_assert(sizeof(bounded_proxy_obj_t) == 0x20,
               "bounded_proxy_obj_t size mismatch");
@@ -4246,6 +4257,7 @@ struct proximity_data_t {
     static void operator delete(void* ptr, TPakId pakID);  // ??3proximity_data_t@@SAXPAXW4TPakId@@@Z (game.o 0x60C000)
     proximity_data_t();  // ??0proximity_data_t@@QAE@XZ (g.o 0x8A1590)
     ~proximity_data_t();  // ??1proximity_data_t@@QAE@XZ (g.o 0x4B2290)
+    void clear();          // ?clear@proximity_data_t@@QAEXXZ (game.o 0x65FE00)
 };
 static_assert(sizeof(proximity_data_t) == 0x1850,
               "proximity_data_t size mismatch");
