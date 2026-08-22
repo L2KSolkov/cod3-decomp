@@ -3213,3 +3213,46 @@ Broc::bbool* IsEEDefined_detoured(Broc::bbool* result,
     }
     return result;
 }
+
+// GetEE_script_uniquename - ea: 0x9970B0. Field key from IDA: 0xF8E5A82C.
+Broc::string* GetEE_script_uniquename(Broc::string* result,
+                                      Broc::vehiclenode node) {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetVNodeField_string(
+        &value, node.GetHandle(), 0xF8E5A82Cu);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_script_uniquename - ea: 0x9971B0.
+Broc::bbool* IsEEDefined_script_uniquename(Broc::bbool* result,
+                                           Broc::vehiclenode node) {
+    if (Broc::IsDefined(&node)) {
+        Broc::string value;
+        Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetVNodeField_string(
+            &value, node.GetHandle(), 0xF8E5A82Cu);
+        result->mVal = Broc::IsDefined(rhs);
+        value.~string();
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_target(vehiclenode) - ea: 0x9972B0.
+Broc::string* GetEE_target(Broc::string* result, Broc::vehiclenode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_vnode_get_target(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_target(vehiclenode) - ea: 0x9973B0.
+Broc::bbool* IsEEDefined_target(Broc::bbool* result,
+                                Broc::vehiclenode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsVehicleNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
