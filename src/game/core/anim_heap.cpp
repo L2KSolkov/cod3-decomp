@@ -19,6 +19,7 @@ void* gPakHeaps_elements[32];  // ?gPakHeaps_elements (core.o)
 class AnimCacheHeap : public ae_heap_base {
 public:
     AnimCacheHeap();
+    ~AnimCacheHeap();
     void* Malloc(unsigned int size, unsigned int alignment);
     void Free(void* ptr);
     bool CheckFree(void* ptr);
@@ -56,6 +57,11 @@ AnimCacheHeap::AnimCacheHeap()
 {
     __vftable = *reinterpret_cast<ae_heap_base_vtbl**>(
         &s_animCacheHeapVtableAdapter);
+}
+
+// ea: 0x004E32B0
+AnimCacheHeap::~AnimCacheHeap()
+{
 }
 
 // ea: 0x004DF3A0
