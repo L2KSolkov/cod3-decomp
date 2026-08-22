@@ -208,7 +208,12 @@ public:
 };
 
 template <typename T> int size(const dyn_array<T>& ar) { return (int)ar.mSize; }
-template <typename T> void push(dyn_array<T>& ar, const T& elt);
+template <typename T> void push(dyn_array<T>& ar, const T& elt) {
+    ar.push_back(elt);
+}
+template <typename T> void push(dyn_array<T>& ar, const T* elt) {
+    ar.push_back(*elt);
+}
 
 // ea: 0x005EDF90 (Broc::min_val<unsigned int>)
 template <typename T>
