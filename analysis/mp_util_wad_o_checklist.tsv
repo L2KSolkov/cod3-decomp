@@ -1219,14 +1219,14 @@ index	status	map_line
 1218	SKIPPED	0002:00587e90 ??_G?$dyn_array@M@Broc@@QAEPAXI@Z 00D77390 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1219	SKIPPED	0002:00587ee0 ??_G?$dyn_array@H@Broc@@QAEPAXI@Z 00D773E0 f i mp_util_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1220	PORTED	0002:00587f30 ??$ConcatText@Vstring@Broc@@@Broc@@YAXAAVstring@0@ABV10@@Z 00D77430 f i mp_util_wad.o	PORTED: added the IDA string ConcatText specialization through the shared formatter
-1221	PORTED	0002:00587f70 ?resize@?$dyn_array@Uvector@Broc@@@Broc@@QAEXII@Z 00D77470 f i mp_util_wad.o
-1222	PORTED	0002:00588270 ??4?$dyn_array@Uvector@Broc@@@Broc@@QAEXABV01@@Z 00D77770 f i mp_util_wad.o	PORTED: added the IDA dyn_array vector copy-assignment behavior
-1223	PORTED	0002:00588490 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@II@Z 00D77990 f i mp_util_wad.o	PORTED: added the IDA vector construct_array helper
-1224	PORTED	0002:00588680 ?destroy_all@?$dyn_array@Uvector@Broc@@@Broc@@AAEXXZ 00D77B80 f i mp_util_wad.o	PORTED: added the IDA vector destroy_all helper
-1225	PORTED	0002:00588800 ?resize@?$dyn_array@M@Broc@@QAEXII@Z 00D77D00 f i mp_util_wad.o
+1221	VERIFIED	0002:00587f70 ?resize@?$dyn_array@Uvector@Broc@@@Broc@@QAEXII@Z 00D77470 f i mp_util_wad.o	VERIFIED: IDA resize behavior matches the shared dyn_array Win32 storage implementation
+1222	VERIFIED	0002:00588270 ??4?$dyn_array@Uvector@Broc@@@Broc@@QAEXABV01@@Z 00D77770 f i mp_util_wad.o	VERIFIED: IDA vector copy-assignment behavior matches the shared dyn_array implementation
+1223	VERIFIED	0002:00588490 ?construct_array@?$dyn_array@Uvector@Broc@@@Broc@@AAEPAUvector@2@II@Z 00D77990 f i mp_util_wad.o	VERIFIED: IDA vector construct_array behavior matches the shared Win32 allocator equivalent
+1224	VERIFIED	0002:00588680 ?destroy_all@?$dyn_array@Uvector@Broc@@@Broc@@AAEXXZ 00D77B80 f i mp_util_wad.o	VERIFIED: IDA vector destroy_all behavior matches the shared Win32 storage equivalent
+1225	VERIFIED	0002:00588800 ?resize@?$dyn_array@M@Broc@@QAEXII@Z 00D77D00 f i mp_util_wad.o	VERIFIED: IDA float resize behavior matches the shared dyn_array implementation
 1226	FIXED	0002:00588a90 ?push_back@?$dyn_array@M@Broc@@QAEXABM@Z 00D77F90 f i mp_util_wad.o	FIXED: matched IDA push_back growth capacity of mSize + 4 in the shared dyn_array helper
-1227	PORTED	0002:00588c90 ??4?$dyn_array@M@Broc@@QAEXABV01@@Z 00D78190 f i mp_util_wad.o	PORTED: added the IDA dyn_array float copy-assignment behavior
-1228	PORTED	0002:00588e90 ?destroy_all@?$dyn_array@M@Broc@@AAEXXZ 00D78390 f i mp_util_wad.o	PORTED: added the IDA float destroy_all helper
+1227	VERIFIED	0002:00588c90 ??4?$dyn_array@M@Broc@@QAEXABV01@@Z 00D78190 f i mp_util_wad.o	VERIFIED: IDA float copy-assignment behavior matches the shared dyn_array implementation
+1228	VERIFIED	0002:00588e90 ?destroy_all@?$dyn_array@M@Broc@@AAEXXZ 00D78390 f i mp_util_wad.o	VERIFIED: IDA float destroy_all behavior matches the shared Win32 storage equivalent
 1229	PORTED	0002:00589010 ?resize@?$dyn_array@Vstring@Broc@@@Broc@@QAEXII@Z 00D78510 f i mp_util_wad.o
 1230	PORTED	0002:00589310 ??$ConcatText@$$BY0BD@$$CBDUbint@@@Broc@@YAXAAVstring@0@AAY0BD@$$CBDABUbint@@@Z 00D78810 f i mp_util_wad.o	PORTED: added the IDA string/bint ConcatText formatter
 1231	PORTED	0002:00589370 ?GetText@Broc@@YAPBDPBDPAD@Z 00D78870 f i mp_util_wad.o	PORTED: added the IDA localized const-char GetText overload
@@ -1248,9 +1248,9 @@ index	status	map_line
 1247	PORTED	0002:00589850 ??$ConcatText@PBD@Broc@@YAXAAVstring@0@ABQBD@Z 00D78D50 f i mp_util_wad.o	PORTED: added the IDA const-char* ConcatText formatter
 1248	PORTED	0002:00589890 ??$ConcatText@$$BY0CE@$$CBD@Broc@@YAXAAVstring@0@AAY0CE@$$CBD@Z 00D78D90 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
 1249	PORTED	0002:005898d0 ??$ConcatText@$$BY0BM@$$CBD@Broc@@YAXAAVstring@0@AAY0BM@$$CBD@Z 00D78DD0 f i mp_util_wad.o	PORTED: added the IDA single-part ConcatText formatter
-1250	PORTED	0002:00589910 ?resize@?$dyn_array@H@Broc@@QAEXII@Z 00D78E10 f i mp_util_wad.o
-1251	PORTED	0002:00589ba0 ?construct_array@?$dyn_array@H@Broc@@AAEPAHII@Z 00D790A0 f i mp_util_wad.o
-1252	PORTED	0002:00589d30 ?destroy_all@?$dyn_array@H@Broc@@AAEXXZ 00D79230 f i mp_util_wad.o
+1250	VERIFIED	0002:00589910 ?resize@?$dyn_array@H@Broc@@QAEXII@Z 00D78E10 f i mp_util_wad.o	VERIFIED: IDA int resize behavior matches the shared dyn_array implementation
+1251	VERIFIED	0002:00589ba0 ?construct_array@?$dyn_array@H@Broc@@AAEPAHII@Z 00D790A0 f i mp_util_wad.o	VERIFIED: IDA int construct_array behavior matches the shared Win32 allocator equivalent
+1252	VERIFIED	0002:00589d30 ?destroy_all@?$dyn_array@H@Broc@@AAEXXZ 00D79230 f i mp_util_wad.o	VERIFIED: IDA int destroy_all behavior matches the shared Win32 storage equivalent
 1253	SKIPPED	0002:00589eb0 ??$_Iter_cat@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@@std@@YA?AUbidirectional_iterator_tag@0@ABViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@@Z 00D793B0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1254	SKIPPED	0002:00589ed0 ??$_Distance2@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@I@std@@YAXViterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@0@0AAIUbidirectional_iterator_tag@0@@Z 00D793D0 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1255	SKIPPED	0002:00589f20 ??$_Insert@Viterator@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@@?$list@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Ventity@Broc@@@std@@@2@@std@@QAEXViterator@01@00Uforward_iterator_tag@1@@Z 00D79420 f i mp_util_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
