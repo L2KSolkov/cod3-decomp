@@ -415,34 +415,34 @@ index	status	map_line
 414	VERIFIED	0002:005473f0 ?Code_SettleMapVote@Broc@@YAXXZ 00D368F0 f i mp_util_wad.o
 415	VERIFIED	0002:00547410 ?Code_SettleGameModeVote@Broc@@YAXXZ 00D36910 f i mp_util_wad.o
 416	VERIFIED	0002:00547430 ?Code_NextRoundMapChanges@Broc@@YA_NXZ 00D36930 f i mp_util_wad.o
-417	PORTED	0002:00547450 ?MusicStop@@YAXXZ 00D36950 f i mp_util_wad.o
-418	PORTED	0002:00547480 ?SoundStop@@YAXI@Z 00D36980 f i mp_util_wad.o
+417	PORTED	0002:00547450 ?MusicStop@@YAXXZ 00D36950 f i mp_util_wad.o	PORTED: IDA forwards 0.0f to gBrocAPI.mMusicStop
+418	PORTED	0002:00547480 ?SoundStop@@YAXI@Z 00D36980 f i mp_util_wad.o	PORTED: IDA forwards the handle to gBrocAPI.mSoundStop
 419	VERIFIED	0002:005474b0 ?CheckTimeLimit@_mp_common@@YAXXZ 00D369B0 f mp_util_wad.o
-420	PORTED	0002:00547670 ??M@YA?AUbbool@@Ubfloat@@Ubint@@@Z 00D36B70 f i mp_util_wad.o
+420	PORTED	0002:00547670 ??M@YA?AUbbool@@Ubfloat@@Ubint@@@Z 00D36B70 f i mp_util_wad.o	PORTED: IDA compares rhs.mVal > lhs.mVal
 421	VERIFIED	0002:005476d0 ?CheckScoreLimit@_mp_common@@YAXXZ 00D36BD0 f mp_util_wad.o
-422	PORTED	0002:00547a30 ??M@YA?AUbbool@@HUbint@@@Z 00D36F30 f i mp_util_wad.o
+422	PORTED	0002:00547a30 ??M@YA?AUbbool@@HUbint@@@Z 00D36F30 f i mp_util_wad.o	PORTED: IDA compares lhs < rhs.mVal
 423	VERIFIED	0002:00547a70 ?Code_GetPlayerTotalScore@Broc@@YAHVentity@1@@Z 00D36F70 f i mp_util_wad.o
 424	VERIFIED	0002:00547aa0 ?CheckLastManStanding@_mp_common@@YAXVstring@Broc@@@Z 00D36FA0 f mp_util_wad.o
 425	FIXED	0002:00547f40 ?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z 00D37440 f mp_util_wad.o	FIXED: IDA 0x00947F40 independently reloads pLevel->_base.entity for notify and both endon paths
 426	VERIFIED	0002:005483a0 ?waitframe@_mp_common@@YAXXZ 00D378A0 f mp_util_wad.o
-427	PORTED	0002:005483d0 ?DestroyHudElem@_mp_common@@YAXAAVhudelem@Broc@@@Z 00D378D0 f mp_util_wad.o
-428	VERIFIED	0002:00548420 ?SetUndefined@hudelem@Broc@@QAEXXZ 00D37920 f i mp_util_wad.o
-429	PORTED	0002:00548450 ?Destroy@@YAXABVhudelem@Broc@@@Z 00D37950 f i mp_util_wad.o
+427	FIXED	0002:005483d0 ?DestroyHudElem@_mp_common@@YAXAAVhudelem@Broc@@@Z 00D378D0 f mp_util_wad.o	FIXED: IDA tests IsDefined<hudelem>(elem), calls global Destroy, then SetUndefined
+428	PORTED	0002:00548420 ?SetUndefined@hudelem@Broc@@QAEXXZ 00D37920 f i mp_util_wad.o	PORTED: added IDA-backed -1 assignment
+429	PORTED	0002:00548450 ?Destroy@@YAXABVhudelem@Broc@@@Z 00D37950 f i mp_util_wad.o	PORTED: IDA forwards the const HUD pointer to gBrocAPI.mDestroy
 430	PORTED	0002:00548480 ?AddToPlayerStats@_mp_common@@YAXVentity@Broc@@Ubint@@H@Z 00D37980 f mp_util_wad.o
-431	PORTED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o	PORTED: IDA forwards *rhs and this->mHandle to m_entity_set_persistent_player_rank, then returns rhs
+431	VERIFIED	0002:005489f0 ??4rank_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D37EF0 f i mp_util_wad.o	VERIFIED: IDA forwards *rhs and this->mHandle to m_entity_set_persistent_player_rank, then returns rhs
 432	VERIFIED	0002:00548a30 ?put_player_into_spectate_mode@_mp_common@@YAXVentity@Broc@@@Z 00D37F30 f mp_util_wad.o
 433	PORTED	0002:00548ad0 ?SpawnLocalSpectator__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D37FD0 f i mp_util_wad.o
 434	FIXED	0002:00548b70 ?SpawnLocalSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D38070 f mp_util_wad.o	FIXED: IDA 0x00948B70 constructs the fade waittill entity from pLevel->_base.entity; earlier endon calls use guy
 435	PORTED	0002:00548f20 ?UpdateSpectateSpawn__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D38420 f i mp_util_wad.o
 436	VERIFIED	0002:00548fc0 ?SpawnSpectator@_mp_common@@YAXVentity@Broc@@@Z 00D384C0 f mp_util_wad.o
-437	PORTED	0002:005491b0 ?Get@viewangles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D386B0 f i mp_util_wad.o
+437	PORTED	0002:005491b0 ?Get@viewangles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D386B0 f i mp_util_wad.o	PORTED: IDA copies m_entity_get_player_viewangles output through a temporary vector array
 438	FIXED	0002:00549200 ?SpawnIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D38700 f mp_util_wad.o	FIXED: IDA 0x00949200 constructs FadeUpWhenLoaded with pLevel->_base.entity and the player
 439	VERIFIED	0002:005495c0 ?QuitGameThread@_mp_common@@YAXVentity@Broc@@@Z 00D38AC0 f mp_util_wad.o
 440	VERIFIED	0002:00549600 ?Code_QuitGame@Broc@@YAXXZ 00D38B00 f i mp_util_wad.o
-441	PORTED	0002:00549620 ?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D38B20 f mp_util_wad.o
-442	PORTED	0002:00549ae0 ??D@YA?AUbint@@U0@0@Z 00D38FE0 f i mp_util_wad.o
-443	PORTED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o
-444	PORTED	0002:00549b60 ?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D39060 f mp_util_wad.o
+441	VERIFIED	0002:00549620 ?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D38B20 f mp_util_wad.o	VERIFIED: IDA control flow and arithmetic match the existing implementation
+442	PORTED	0002:00549ae0 ??D@YA?AUbint@@U0@0@Z 00D38FE0 f i mp_util_wad.o	PORTED: added global bint*bint multiplication
+443	PORTED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o	PORTED: added global int*bint multiplication
+444	VERIFIED	0002:00549b60 ?GetGoingToDieTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D39060 f mp_util_wad.o	VERIFIED: IDA implementation is GetTime plus 20000
 445	VERIFIED	0002:00549bb0 ?UpdateSpectateCritical@_mp_common@@YAXVentity@Broc@@@Z 00D390B0 f mp_util_wad.o
 446	PORTED	0002:00549eb0 ?SetSpectateSeconds@Broc@@YAXHH@Z 00D393B0 f i mp_util_wad.o	PORTED: Added the IDA-backed direct forward to gBrocAPI.mSetSpectateSeconds
 447	PORTED	0002:00549ee0 ?UpdateSpectateCriticalGoingToDie__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D393E0 f i mp_util_wad.o
