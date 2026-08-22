@@ -123,16 +123,16 @@ index	status	map_line
 122	FIXED	0002:0012b050 ?IN_ButtonDown@@YAXHH@Z 0091A550 f cl.o FIXED: corrected shared IDA-derived kb indices
 123	FIXED	0002:0012b070 ?IN_ButtonUp@@YAXHH@Z 0091A570 f cl.o FIXED: corrected shared IDA-derived kb indices
 124	FIXED	0002:0012b090 ?IN_CenterView@@YAXXZ 0091A590 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
-125	PORTED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o PORTED: IDA match; honors vehicle/eFlag and stance-button guards
-126	PORTED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o PORTED: IDA match; raises the shared stance state under the same guards
-127	PORTED	0002:0012b170 ?IN_ToggleCrouch@@YAXXZ 0091A670 f cl.o PORTED: IDA match; toggles stance state with the IDA button guards
-128	PORTED	0002:0012b1d0 ?IN_ToggleProne@@YAXXZ 0091A6D0 f cl.o PORTED: IDA match; toggles prone state with the IDA button guards
-129	PORTED	0002:0012b230 ?IN_GoProne@@YAXXZ 0091A730 f cl.o PORTED: IDA match; selects prone under the IDA guards
-130	PORTED	0002:0012b280 ?IN_GoCrouch@@YAXXZ 0091A780 f cl.o PORTED: IDA match; selects crouch under the IDA guards
+125	FIXED	0002:0012b0c0 ?IN_LowerStance@@YAXXZ 0091A5C0 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+126	FIXED	0002:0012b130 ?IN_RaiseStance@@YAXXZ 0091A630 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+127	FIXED	0002:0012b170 ?IN_ToggleCrouch@@YAXXZ 0091A670 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+128	FIXED	0002:0012b1d0 ?IN_ToggleProne@@YAXXZ 0091A6D0 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+129	FIXED	0002:0012b230 ?IN_GoProne@@YAXXZ 0091A730 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+130	FIXED	0002:0012b280 ?IN_GoCrouch@@YAXXZ 0091A780 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 131	FIXED	0002:0012b2d0 ?IN_GoStandDown@@YAXHH@Z 0091A7D0 f cl.o FIXED: corrected shared IDA-derived kb indices
 132	FIXED	0002:0012b360 ?IN_GoStandUp@@YAXHH@Z 0091A860 f cl.o FIXED: corrected shared IDA-derived kb indices
-133	PORTED	0002:0012b390 ?IN_Stance_Down@@YAXXZ 0091A890 f cl.o PORTED: IDA match; records held stance and frame time
-134	PORTED	0002:0012b410 ?IN_Stance_Up@@YAXXZ 0091A910 f cl.o PORTED: IDA match; clears the held-stance field under button guards
+133	FIXED	0002:0012b390 ?IN_Stance_Down@@YAXXZ 0091A890 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
+134	FIXED	0002:0012b410 ?IN_Stance_Up@@YAXXZ 0091A910 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 135	FIXED	0002:0012b450 ?IN_LeanRightSwitchNextDown@@YAXHH@Z 0091A950 f cl.o FIXED: corrected shared IDA-derived kb indices
 136	FIXED	0002:0012b490 ?IN_LeanRightSwitchNextUp@@YAXHH@Z 0091A990 f cl.o FIXED: corrected shared IDA-derived kb indices
 137	FIXED	0002:0012b4b0 ?IN_LeanLeftSwitchNextDown@@YAXHH@Z 0091A9B0 f cl.o FIXED: corrected shared IDA-derived kb indices
