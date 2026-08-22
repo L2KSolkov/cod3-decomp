@@ -82,10 +82,12 @@ AeThreadFunctor* PlaySoundAtLocation__functor(Broc::entity self,
 AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>*
 PlayTeamDialog__functor(Broc::entity self, Broc::string team,
                         Broc::string sound, Broc::bfloat delay);
-void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
-                              Broc::string primaryteamsound,
-                              Broc::string secondaryteamsound,
-                              Broc::bfloat delay);
+AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string,
+                 Broc::bfloat>*
+PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
+                        Broc::string primaryteamsound,
+                        Broc::string secondaryteamsound,
+                        Broc::bfloat delay);
 AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>*
 PlayTeamSound__functor(Broc::entity self, Broc::string team,
                        Broc::string teamsound,
@@ -8451,12 +8453,15 @@ PlayTeamDialog__functor(Broc::entity self, Broc::string team,
     sound.~string();
     return result;
 }
-void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
-                              Broc::string primaryteamsound,
-                              Broc::string secondaryteamsound,
-                              Broc::bfloat delay) {
+AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string,
+                 Broc::bfloat>*
+PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
+                        Broc::string primaryteamsound,
+                        Broc::string secondaryteamsound,
+                        Broc::bfloat delay) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string, Broc::bfloat>));
-    void* result = NULL;
+    AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string,
+                     Broc::bfloat>* result = NULL;
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string, Broc::bfloat>(PlayTeamDialog, self, primaryteam, primaryteamsound, secondaryteamsound, delay);
     primaryteam.~string();
