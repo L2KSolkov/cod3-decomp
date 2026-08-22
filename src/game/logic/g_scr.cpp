@@ -24877,18 +24877,15 @@ inline Broc::string pnode_get_type_value<Broc::string>(
 }
 
 // hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
-// elem byte offset OFF (fallback path; the binary's Scr_Set* hooks do the same)
+// elem byte offset OFF
 template <typename T, int OFF>
 void hud_set_field(int handle, T val)
 {
-    if (handle >= 0 && handle < 16)
+    game_hudelem_s* v2 = &g_hudelems[handle];
+    if (v2 != nullptr && v2->elem.type != HE_TYPE_FREE)
     {
-        game_hudelem_s* v2 = &g_hudelems[handle];
-        if (v2 != nullptr && v2->elem.type != HE_TYPE_FREE)
-        {
-            *(T*)((char*)&v2->elem + OFF) = val;
-            return;
-        }
+        *(T*)((char*)&v2->elem + OFF) = val;
+        return;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
@@ -24902,15 +24899,12 @@ void hud_set_field(int handle, T val)
 template <typename T, int OFF>
 T hud_get_field(int handle)
 {
-    if (handle >= 0 && handle < 16)
-    {
-        game_hudelem_s* v1 = &g_hudelems[handle];
-        if (v1 != nullptr && v1->elem.type != HE_TYPE_FREE)
-            return *(T*)((char*)&v1->elem + OFF);
-    }
+    game_hudelem_s* v1 = &g_hudelems[handle];
+    if (v1 != nullptr && v1->elem.type != HE_TYPE_FREE)
+        return *(T*)((char*)&v1->elem + OFF);
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-    AeAssert::gCurrentLine = 6205;
+    AeAssert::gCurrentLine = 6211;
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
         && AeAssert::Warning("TRYING TO GET FIELD OFF NULL HUD ELEMENT"))
