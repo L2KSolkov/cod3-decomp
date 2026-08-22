@@ -10363,12 +10363,8 @@ Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
             spawnpoints.push_back(ctf_spawnpoints[(unsigned int)(int)i]);
             i = (int)i + 1;
         }
-        ctf_spawnpoints.~dyn_array();
-        ctfType.~string();
     }
     _mp_spawnlogic::GetSpawnpointNearTeam(result, self, team, &spawnpoints);
-    spawnType.~string();
-    spawnpoints.~dyn_array();
     return result;
 }
 
