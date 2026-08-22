@@ -870,10 +870,10 @@ index	status	map_line
 869	FIXED	0002:00578360 ?CallbackGetCapturingFlagPercent@_mp_war@@YAHXZ 00D67860 f mp_util_wad.o	FIXED: replaced area scan/magnitude scaling with IDA 0x00978360 active warIndex capStatus*100 result
 870	FIXED	0002:00578470 ?CallbackGetFlagBeingContested@_mp_war@@YAHVentity@Broc@@@Z 00D67970 f mp_util_wad.o	FIXED: matched IDA 0x00978470 WAR array/index, playerState, flagEnd trigger touch, vehicle rejection, and contest-count path
 871	VERIFIED	0002:005785f0 ?GetNumPlayersContestingFlag@_mp_war@@YAHVentity@Broc@@@Z 00D67AF0 f mp_util_wad.o	VERIFIED: IDA 0x009785F0 returns pLevel->capCount
-872	VERIFIED	0002:00578620 ?CallbackPlayerJoin@_mp_war@@YAXVentity@Broc@@IH@Z 00D67B20 f mp_util_wad.o
-873	VERIFIED	0002:00578660 ?CallbackPlayerEnter@_mp_war@@YAXVentity@Broc@@H@Z 00D67B60 f mp_util_wad.o
+872	VERIFIED	0002:00578620 ?CallbackPlayerJoin@_mp_war@@YAXVentity@Broc@@IH@Z 00D67B20 f mp_util_wad.o	VERIFIED: IDA 0x00978620 matches the common callback forward with the 16-bit playerClass parameter
+873	VERIFIED	0002:00578660 ?CallbackPlayerEnter@_mp_war@@YAXVentity@Broc@@H@Z 00D67B60 f mp_util_wad.o	VERIFIED: IDA 0x00978660 matches common enter, SendFlagStates, and local WarnPlayerAboutInactiveFlag thread setup
 874	VERIFIED	0002:00578710 ?WarnPlayerAboutInactiveFlag__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67C10 f i mp_util_wad.o	VERIFIED: IDA 0x00978710 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WarnPlayerAboutInactiveFlag constructor
-875	VERIFIED	0002:005787b0 ?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z 00D67CB0 f mp_util_wad.o
+875	VERIFIED	0002:005787b0 ?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z 00D67CB0 f mp_util_wad.o	VERIFIED: IDA 0x009787B0 matches end-condition tutorial hash selection, opponent score increment, roundWinner, fade, and common callback order
 876	FIXED	0002:00578960 ?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z 00D67E60 f mp_util_wad.o	FIXED: ported IDA 0x00978960 ownership-bit packing, cap-status scaling, five-area bounds handling, and Code_SendGameStateDOM call
 877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
 878	FIXED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o	FIXED: matched IDA 0x00978D10 blinker loop, per-area cap counts, and DOM all-flags-capped EndRound behavior
