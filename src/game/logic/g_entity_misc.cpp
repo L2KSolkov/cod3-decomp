@@ -7647,6 +7647,12 @@ void SoundDevice::Sound::Stop()
     this->mGroupVolume = 1.0f;
 }
 
+// ea: 0x006629E0
+void SoundDevice::Sound::Release()
+{
+    Stop();
+}
+
 // ea: 0x0062C210
 void SoundDevice::Sound::SetVolume(float vol)
 {

@@ -843,6 +843,7 @@ public:
         void DampenGuard();                 // ?DampenGuard@Sound@SoundDevice@@QAEXXZ
         ~Sound();                           // ??1Sound@SoundDevice@@QAE@XZ (game.o 0x62C020)
         void Stop();                        // ?Stop@Sound@SoundDevice@@QAEXXZ (game.o 0x62C0D0)
+        void Release();                     // ?Release@Sound@SoundDevice@@QAEXXZ (game.o 0x6629E0)
         void SetVolume(float vol);          // ?SetVolume@Sound@SoundDevice@@QAEXM@Z (game.o 0x62C210)
         void SetPitch(float pitch);         // ?SetPitch@Sound@SoundDevice@@QAEXM@Z (game.o 0x62C2D0)
         void SetRange(float min, float max);// ?SetRange@Sound@SoundDevice@@QAEXMM@Z (game.o 0x62C380)
