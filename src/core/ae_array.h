@@ -19,10 +19,20 @@ bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
 
+// ae_sized_array_base<T,CAPACITY> stores the element backing region.  The
+// DbLinkedHandle specialization in game_types.h uses the pointer/raw-storage
+// layout emitted by the original engine for non-trivial handle elements.
 template <typename T, int CAPACITY>
-class ae_sized_array {
+class ae_sized_array_base {
 public:
-    T       m_elements[CAPACITY];  // +0x00
+    T m_elements[CAPACITY];  // +0x00
+
+    ae_sized_array_base() {}
+};
+
+template <typename T, int CAPACITY>
+class ae_sized_array : public ae_sized_array_base<T, CAPACITY> {
+public:
     int     m_size;                // +sizeof(T)*CAPACITY
 
     ae_sized_array() : m_size(0) {}
@@ -146,16 +156,6 @@ public:
     iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
     const_iterator begin() const { return const_iterator(m_elements); }  // ?begin@...@@QBE?AVconst_iterator@1@XZ
     const_iterator end() const { return const_iterator(&m_elements[m_size]); }  // ?end@...@@QBE?AVconst_iterator@1@XZ
-};
-
-// ae_sized_array_base<T,CAPACITY> - derived from by ae_sized_array when it
-// needs a separate m_elementdata storage (m_elements points into it).
-template <typename T, int CAPACITY>
-class ae_sized_array_base {
-public:
-    T m_elements[CAPACITY];  // +0x00
-
-    ae_sized_array_base() {}
 };
 
 // ============================================================================

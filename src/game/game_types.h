@@ -8,6 +8,7 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -136,6 +137,23 @@ public:
     bool IsValid() const { return mHandle.mVal != 0; }
 };
 static_assert(sizeof(DbLinkedHandle<void, void>) == 4, "DbLinkedHandle size mismatch");
+
+// IDA: ae_sized_array_base<DbLinkedHandle<...>,N> is a pointer followed by
+// raw element storage, rather than an inline typed array.  The constructor
+// points m_elements at that storage without constructing the raw bytes.
+template <typename HandleDb, typename T, int CAPACITY>
+class ae_sized_array_base<DbLinkedHandle<HandleDb, T>, CAPACITY> {
+public:
+    DbLinkedHandle<HandleDb, T>* m_elements;  // +0x00
+    unsigned char m_elementdata[
+        sizeof(DbLinkedHandle<HandleDb, T>) * CAPACITY];  // +0x04
+
+    ae_sized_array_base()
+        : m_elements(reinterpret_cast<DbLinkedHandle<HandleDb, T>*>(
+              m_elementdata))
+    {
+    }
+};
 
 // ============================================================================
 // tagInfo_t - entity tag attachment info (112 bytes) - verified against IDA
