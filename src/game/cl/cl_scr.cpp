@@ -42,7 +42,8 @@ public:
     virtual void MakeActive(int menu);
 };
 
-struct FEManager {
+class FEManager {
+public:
     uint8_t _pad00[0x14];
     IGOFrontEnd* IGO;                  // +0x14
     void* ControllerDisconnected;      // +0x18

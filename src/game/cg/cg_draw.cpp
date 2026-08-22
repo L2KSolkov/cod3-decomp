@@ -316,7 +316,8 @@ float move_back_distance;
 extern int curListener;
 struct SaveGameData;
 extern SaveGameData gSaveGameData[4];
-struct FEManager {
+class FEManager {
+public:
     unsigned char _pad00[0x3C];
     bool mDontDrawHud;  // +0x3C
     bool InGameMenusActive(int client);

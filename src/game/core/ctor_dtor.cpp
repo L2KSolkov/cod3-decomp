@@ -97,10 +97,6 @@ void ServerTime::Update(int tickMSec)
     mElapsedTime += tickDelta;
 }
 
-namespace EffectEventSysStatics {
-extern EffectEventSys* sInst;
-}
-
 // Sentinel-list layout used by the notify/rumble dlist containers
 struct RealDList {
     void* m_head;  // points at first node's m_next (or &m_end)
@@ -959,7 +955,7 @@ AbstractEffectParticle::~AbstractEffectParticle()
         apsEffect* mEffect = mParticle->mEffect;
         if (mEffect != nullptr)
         {
-            if (EffectEventSysStatics::sInst->mStoppingAll
+            if (EffectEventSys::sInst->mStoppingAll
                 || (mFlags & 8) == 0)
                 mParticle->mFlags.mVal |= 0x20u;
             else
@@ -1055,7 +1051,7 @@ ActiveEffectSet::~ActiveEffectSet()
     {
         ASSERT_IDX(i, 6, 154);
         AbstractEffect* effect = mEffects[i];
-        if (EffectEventSysStatics::sInst->mStoppingAll
+        if (EffectEventSys::sInst->mStoppingAll
             || (effect->mFlags & 8) == 0)
         {
             delete effect;
@@ -1063,7 +1059,7 @@ ActiveEffectSet::~ActiveEffectSet()
         else
         {
             effect->StartFadeOut(2.0f);
-            EffectEventSysStatics::sInst->mFadingEffects.push_back(effect);
+            EffectEventSys::sInst->mFadingEffects.push_back(effect);
         }
     }
     if ((mFlags.mVal & 4) != 0)
@@ -1072,7 +1068,7 @@ ActiveEffectSet::~ActiveEffectSet()
         mPoPtr = nullptr;
     }
     if (mId.mVal != 0)
-        EffectEventSysStatics::sInst->mHandleDb.ReleaseHandle(mId);
+        EffectEventSys::sInst->mHandleDb.ReleaseHandle(mId);
 }
 
 // ea: 0x004E8CF0

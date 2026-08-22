@@ -120,7 +120,8 @@ public:
     int mBackMenu;
     int mGameListingNum;
 };
-struct FEManager {
+class FEManager {
+public:
     FEMenuSystem* fems;
     struct AARMenuSystemView { FEMenu** menus; }* mAARS;
     InGameMenuSystem* GetIGMS(int client);

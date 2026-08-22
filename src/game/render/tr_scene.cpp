@@ -744,7 +744,8 @@ int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ
 }
 
 // FEManager (g_femanager object; U tag)
-struct FEManager {
+class FEManager {
+public:
     void Draw3DWorldSpace();   // ?Draw3DWorldSpace@FEManager@@QAEXXZ
     void Draw3DScreenSpace();  // ?Draw3DScreenSpace@FEManager@@QAEXXZ
 };

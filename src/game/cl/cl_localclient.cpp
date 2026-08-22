@@ -58,7 +58,7 @@ static_assert(offsetof(FEManagerView, inGame) == 0x36,
               "FEManager::inGame offset mismatch");
 static_assert(offsetof(FEManagerView, mIGMS) == 0xC8,
               "FEManager::mIGMS offset mismatch");
-struct FEManager;
+class FEManager;
 extern FEManager g_femanager;
 class PauseMenu {
 public:

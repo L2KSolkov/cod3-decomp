@@ -1040,7 +1040,7 @@ void ThroughputMeasurer::reset()
 }
 
 // FEManager (shell.o; DrawDiscError + UnloadBank stubs)
-struct FEManager {
+class FEManager {
 public:
     font_index FindFont(const char* font_filename, bool checkfileext);
     nglFont* GetFont(font_index f);

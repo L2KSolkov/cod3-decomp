@@ -47,7 +47,7 @@ bool Assert(const char* fmt, ...);
 
 // Minimal FEManager view (shell.o owns the real class; only DrawDiscError
 // is referenced here). shell.o:0x96CDA0 ?DrawDiscError@FEManager@@QAEXXZ.
-struct FEManager {
+class FEManager {
 public:
     void DrawDiscError();
 };

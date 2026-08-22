@@ -183,7 +183,7 @@ extern void* AudioBankMgr_sInst;
 enum nflState : unsigned;
 extern nflState codNflUpdate();
 extern void SyncFrameBuffers();
-struct FEManager; extern FEManager g_femanager;
+class FEManager; extern FEManager g_femanager;
 bool gUseNfl;                       // ?gUseNfl@@3_NA (core.o)
 bool g_enableControllerTest;        // ?g_enableControllerTest@@3_NA (game2.o)
 bool g_controllerConnected[4];      // ?g_controllerConnected@@3PA_NA (game2.o)

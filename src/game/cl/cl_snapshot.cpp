@@ -46,17 +46,18 @@ const PakInfoNode* sLoadingScreenInfo = nullptr;  // ?sLoadingScreenInfo@@3PBUPa
 extern void GamePause_SetAllPaused(bool paused);
 
 // IDA FEManager layout: only the IGO and mIGMS fields are needed here.
-struct FEManagerFirstSnapshotView {
+class FEManager {
+public:
     unsigned char _pad00[0x14];
     IGOFrontEnd* IGO;                         // +0x14
     unsigned char _pad18[0xB0];
     InGameMenuSystem* mIGMS[1];               // +0xC8
 };
-static_assert(offsetof(FEManagerFirstSnapshotView, IGO) == 0x14,
+static_assert(offsetof(FEManager, IGO) == 0x14,
               "FEManager::IGO offset mismatch");
-static_assert(offsetof(FEManagerFirstSnapshotView, mIGMS) == 0xC8,
+static_assert(offsetof(FEManager, mIGMS) == 0xC8,
               "FEManager::mIGMS offset mismatch");
-extern FEManagerFirstSnapshotView g_femanager;
+extern FEManager g_femanager;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

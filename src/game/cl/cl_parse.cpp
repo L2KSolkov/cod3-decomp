@@ -49,10 +49,6 @@ static_assert(offsetof(ClientFrameView, spectatorClient) == 0x550,
               "Client::ps.spectatorClient offset mismatch");
 static_assert(offsetof(ClientFrameView, playerState) == 0x774,
               "Client::pers.playerState offset mismatch");
-namespace Broc {
-class string;
-}
-
 // ============================================================================
 // Externs (core.o / cl.o)
 // ============================================================================
@@ -214,11 +210,8 @@ extern cdl_proftimer cdl_proftimer_rumble_mgr;
 extern cdl_proftimer cdl_proftimer_scn_effect;
 extern cdl_proftimer cdl_proftimer_entities;
 
-// cls.configstrings (Broc::string[1024], aliased via servername)
-struct Broc_string_view2 {
-    void* mBlock;
-};
-Broc_string_view2 cls_configstrings[1024];  // cl.o BSS (Broc::string[1024])
+// cls.configstrings (Broc::string[1024])
+Broc::string cls_configstrings[1024];  // cl.o BSS
 
 // snapshot ring (cl_snapshot.cpp view)
 struct clSnapshotEntry2 {

@@ -347,7 +347,7 @@ class PanelFile;
 class nglFont;
 struct ControllerDisconnectedMenu;
 
-struct FEManager {
+class FEManager {
 public:
     struct sPanelPakData {
         PanelFile* mPanelFile;

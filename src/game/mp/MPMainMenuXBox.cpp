@@ -159,7 +159,8 @@ struct AARMenuSystem {
     FEMenu** menus;
 };
 
-struct FEManager {
+class FEManager {
+public:
     unsigned char _pad0[0x1C];
     FEMenuSystem* fems;
     unsigned char _pad20[0xAC];

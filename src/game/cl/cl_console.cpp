@@ -185,7 +185,7 @@ void CL_AddDeathMessageText(const char* string, int forceColor)
 
 extern void CL_AddConsoleInfoColor(int iFirstInfo, const float* vColor);
 extern void* FEManager_GetFont(void* self, int f, float scale);
-struct FEManager; extern FEManager g_femanager;
+class FEManager; extern FEManager g_femanager;
 class nglFont;
 extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
                                    unsigned int* height, float scaleX,

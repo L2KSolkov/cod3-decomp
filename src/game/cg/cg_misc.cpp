@@ -121,7 +121,7 @@ extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern void* cgsGlobal_media_whiteShader;
-struct FEManager; extern FEManager g_femanager;
+class FEManager; extern FEManager g_femanager;
 
 extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
