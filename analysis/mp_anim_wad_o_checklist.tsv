@@ -13,10 +13,10 @@ index	status	map_line
 12	PORTED	0002:0058c910 ?IsEEDefined_script_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7BE10 f mp_anim_wad.o
 13	PORTED	0002:0058c9c0 ?GetEE_dontdropweapon@@YAAAUbint@@Ventity@Broc@@@Z 00D7BEC0 f mp_anim_wad.o
 14	PORTED	0002:0058ca10 ?IsEEDefined_dontdropweapon@@YA?AUbbool@@Ventity@Broc@@@Z 00D7BF10 f mp_anim_wad.o
-15	PORTED	0002:0058cac0 ?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7BFC0 f mp_anim_wad.o
-16	PORTED	0002:0058cb10 ?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C010 f mp_anim_wad.o
-17	PORTED	0002:0058cc10 ?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C110 f mp_anim_wad.o
-18	PORTED	0002:0058cc60 ?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C160 f mp_anim_wad.o
+15	PORTED	0002:0058cac0 ?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z 00D7BFC0 f mp_anim_wad.o	PORTED: added IDA 0x0098CAC0 ExtendedEntity string reference for key 0xDAE997F9; source commit 2363da3d
+16	PORTED	0002:0058cb10 ?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C010 f mp_anim_wad.o	PORTED: added IDA 0x0098CB10 defined-check with typed string temporary and key 0xDAE997F9; source commit 2363da3d
+17	PORTED	0002:0058cc10 ?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z 00D7C110 f mp_anim_wad.o	PORTED: added IDA 0x0098CC10 ExtendedEntity string reference for key 0xE217DD4D; source commit 2363da3d
+18	PORTED	0002:0058cc60 ?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C160 f mp_anim_wad.o	PORTED: added IDA 0x0098CC60 defined-check with typed string temporary and key 0xE217DD4D; source commit 2363da3d
 19	PORTED	0002:0058cd60 ?GetEE_script_prespawn_delay@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C260 f mp_anim_wad.o
 20	PORTED	0002:0058cdb0 ?IsEEDefined_script_prespawn_delay@@YA?AUbbool@@Ventity@Broc@@@Z 00D7C2B0 f mp_anim_wad.o
 21	PORTED	0002:0058ce60 ?GetEE_script_burst_max@@YAAAUbfloat@@Ventity@Broc@@@Z 00D7C360 f mp_anim_wad.o
