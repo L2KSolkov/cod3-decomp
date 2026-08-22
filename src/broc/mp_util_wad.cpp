@@ -2306,7 +2306,7 @@ const char* Broc::Code_GetPlayerName(Broc::entity player) {
 // Code_Obituary - ea: 0x93F680
 void Broc::Code_Obituary(Broc::entity target, Broc::entity attacker,
                          const Broc::string* weapon, int mod, bool teamGame) {
-    Broc::gBrocAPI.mObituary(target.GetHandle(), attacker.GetHandle(), *weapon,
+    Broc::gBrocAPI.mObituary(target.GetHandle(), attacker.GetHandle(), weapon,
                              mod, teamGame);
 }
 

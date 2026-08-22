@@ -1028,7 +1028,7 @@ struct BrocAPI {
     bool (*mIsInVehicle2)(unsigned int, unsigned int);     // +0x314
     unsigned int (*mGetPlayerInSeat)(unsigned int, unsigned int); // +0x318
     void (*mGetOutOfVehicle)(unsigned int);                // +0x31C
-    void (*mObituary)(unsigned int, unsigned int, const Broc::string&, int,
+    void (*mObituary)(unsigned int, unsigned int, const Broc::string*, int,
                       bool);                               // +0x320
     void (*mClearPlayerStats)();                            // +0x324
     void (*mIncPlayerStat)(unsigned int, unsigned int, short); // +0x328

@@ -4335,7 +4335,7 @@ void MPScript_GetOutOfVehicle(unsigned int entityHandleVal);  // 0x5D4370
 bool MPScript_SetPlayerTeam(unsigned int entityHandleVal,
                             const Broc::string& team);  // 0x5D4400
 void MPScript_Obituary(unsigned int target, unsigned int attacker,
-                       const Broc::string& pszWeaponName, int mod,
+                       const Broc::string* pszWeaponName, int mod,
                        bool teamGame);  // 0x5D4450
 void MPScript_IncPlayerStat(unsigned int playerHandle, unsigned int statIndex,
                             short value);  // 0x5D4590
@@ -18478,7 +18478,7 @@ bool BrocSys::MPScript_SetPlayerTeam(unsigned int entityHandleVal,
 
 // ea: 0x005D4450
 void BrocSys::MPScript_Obituary(unsigned int target, unsigned int attacker,
-                                const Broc::string& pszWeaponName, int mod,
+                                const Broc::string* pszWeaponName, int mod,
                                 bool teamGame)
 {
     Entity* v5 = nullptr;
@@ -18501,10 +18501,10 @@ void BrocSys::MPScript_Obituary(unsigned int target, unsigned int attacker,
         && attacker >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
         v5 = EntityHandleDb::sInst.mElements[v7].mObject;
     int v10;
-    if (pszWeaponName == "none"
+    if (*pszWeaponName == "none"
         || (BG_GetWeaponIndexForName(
-                pszWeaponName.mBlock != nullptr
-                    ? (const char*)(pszWeaponName.mBlock + 1)
+                pszWeaponName->mBlock != nullptr
+                    ? (const char*)(pszWeaponName->mBlock + 1)
                     : defaultFileName))
                == 0
         || mod == MOD_MORTAR
@@ -18525,8 +18525,8 @@ void BrocSys::MPScript_Obituary(unsigned int target, unsigned int attacker,
     else
     {
         v10 = BG_GetWeaponIndexForName(
-            pszWeaponName.mBlock != nullptr
-                ? (const char*)(pszWeaponName.mBlock + 1)
+            pszWeaponName->mBlock != nullptr
+                ? (const char*)(pszWeaponName->mBlock + 1)
                 : defaultFileName);
     }
     CG_Obituary(mObject, v5, v10, teamGame);
