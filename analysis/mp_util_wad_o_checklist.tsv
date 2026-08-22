@@ -878,25 +878,25 @@ index	status	map_line
 877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
 878	FIXED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o	FIXED: matched IDA 0x00978D10 blinker loop, per-area cap counts, and DOM all-flags-capped EndRound behavior
 879	FIXED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o	FIXED: replaced placeholder with IDA/C3 0x009790C0 capture, objective, audio, flag-motion, and waitframe state loop
-880	PORTED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF10 boxed bfloat inequality
-881	PORTED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AF60 unary negative
-882	PORTED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	PORTED: added exact IDA 0x0097AFB0 boxed bfloat addition
+880	VERIFIED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	VERIFIED: IDA 0x0097AF10 compares boxed float values
+881	VERIFIED	0002:0057af60 ??Gbfloat@@QBE?AU0@XZ 00D6A460 f i mp_util_wad.o	VERIFIED: IDA 0x0097AF60 returns the negated boxed float
+882	VERIFIED	0002:0057afb0 ??H@YA?AUbfloat@@U0@0@Z 00D6A4B0 f i mp_util_wad.o	VERIFIED: IDA 0x0097AFB0 constructs lhs plus rhs
 883	FIXED	0002:0057b000 ?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6A500 f mp_util_wad.o	FIXED: replaced stub with IDA 0x0097B000 active-round touch counting and signed capture-speed updates
 884	FIXED	0002:0057b580 ?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z 00D6AA80 f mp_util_wad.o	FIXED: corrected the 0x0097B580 signature/body to the global bfloat/bint types from IDA
 885	FIXED	0002:0057b640 ?UpdateAllowedCap@_mp_war@@YAXXZ 00D6AB40 f mp_util_wad.o	FIXED: ported IDA 0x0097B640 loop; updates cap permissions and i_objective_c marker
 886	FIXED	0002:0057b850 ?AllowCap@_mp_war@@YAXUbint@@H@Z 00D6AD50 f mp_util_wad.o	FIXED: corrected global bint/int signature and ported IDA 0x0097B850 model/objective flow
-887	PORTED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o	PORTED: added mShow forwarding wrapper from c3 dump and IDA call site
-888	PORTED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o	PORTED: exact IDA setter stores global bint at key 0xF430CD43
+887	VERIFIED	0002:0057bae0 ?Show@Broc@@YAXABVentity@1@@Z 00D6AFE0 f i mp_util_wad.o	VERIFIED: IDA 0x0097BAE0 forwards the entity handle to mShow
+888	VERIFIED	0002:0057bb10 ??4capAllowedTeam_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D6B010 f i mp_util_wad.o	VERIFIED: IDA 0x0097BB10 constructs bint and SetVal key 0xF430CD43
 889	FIXED	0002:0057bb60 ?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z 00D6B060 f mp_util_wad.o	FIXED: replaced stub with IDA/C3 trigger lookup, flag spawn, capture initialization, update thread, and touch handler
 890	VERIFIED	0002:0057c370 ?WAR_FlagUpdate__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D6B870 f i mp_util_wad.o	VERIFIED: IDA 0x0097C370 allocation and AeThreadFunctor1 constructor match
 891	VERIFIED	0002:0057c410 ?SortMarkers@_mp_war@@YAXXZ 00D6B910 f mp_util_wad.o	VERIFIED: IDA 0x0097C410 nested key-based warAreas sort matches
 892	FIXED	0002:0057c650 ?GetSpawnPoint@_mp_war@@YA?AVentity@Broc@@AAV23@ABVstring@3@@Z 00D6BB50 f mp_util_wad.o	FIXED: matched IDA 0x0097C650 team-aware active/adjacent WAR area search, classname filtering, random selection, and common fallback
-893	PORTED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	PORTED: exact IDA 0x0097D020 global bint postfix decrement with AssertDefined and mVal--
-894	PORTED	0002:0057d060 ?Get@classname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D6C560 f i mp_util_wad.o	PORTED: added IDA 0x0097D060 callback-backed classname getter using BrocAPI m_entity_get_classname at +0xF14
+893	VERIFIED	0002:0057d020 ??Fbint@@QAEHXZ 00D6C520 f i mp_util_wad.o	VERIFIED: IDA 0x0097D020 asserts defined and post-decrements mVal
+894	VERIFIED	0002:0057d060 ?Get@classname_struct@__unnamed@entity@Broc@@QBE?BVstring@4@XZ 00D6C560 f i mp_util_wad.o	VERIFIED: IDA 0x0097D060 copies m_entity_get_classname into the result and destroys the temporary
 895	FIXED	0002:0057d110 ?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z 00D6C610 f mp_util_wad.o	FIXED: ported IDA/C3 0x0097D110 persistent inactive-flag tracking, 10-second action hint, team warning audio, and cleanup
 896	FIXED	0002:0057d620 ?CallbackDebugRender@_mp_war@@YAXXZ 00D6CB20 f mp_util_wad.o	FIXED: ported IDA/C3 0x0097D620 debug text, cap timing, capping-player spheres, flag totals, bounds, and capCount reset
-897	PORTED	0002:0057e220 ??0bbool@@QAE@ABUbint@@@Z 00D6D720 f i mp_util_wad.o
-898	PORTED	0002:0057e250 ?GetRef@capSpeed_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D6D750 f i mp_util_wad.o
+897	VERIFIED	0002:0057e220 ??0bbool@@QAE@ABUbint@@@Z 00D6D720 f i mp_util_wad.o	VERIFIED: IDA 0x0097E220 sets bbool from bint nonzero
+898	VERIFIED	0002:0057e250 ?GetRef@capSpeed_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D6D750 f i mp_util_wad.o	VERIFIED: IDA 0x0097E250 uses ExtendedEntity::GetRef key 0x95E84605
 899	FIXED	0002:0057e280 ?DebugRenderSpawnPoints@_mp_war@@YAXXZ 00D6D780 f mp_util_wad.o	FIXED: matched IDA 0x0097E280 allies/axis classname filtering and team-colored spawn boxes
 900	VERIFIED	0002:0057e7a0 ??0?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@QAE@P6AXVentity@Broc@@Vstring@2@@ZABV12@ABV32@@Z 00D6DCA0 f i mp_util_wad.o
 901	VERIFIED	0002:0057e840 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEIXZ 00D6DD40 f i mp_util_wad.o
