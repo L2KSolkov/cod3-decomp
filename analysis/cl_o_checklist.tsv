@@ -154,7 +154,7 @@ index	status	map_line
 153	FIXED	0002:0012bae0 ?CL_IsADS@@YA_NH@Z 0091AFE0 f cl.o FIXED: corrected shared IDA-derived kb indices
 154	FIXED	0002:0012bb50 ?CL_StanceButtonUpdate@@YAXXZ 0091B050 f cl.o FIXED: corrected shared IDA-derived kb indices
 155	FIXED	0002:0012bc10 ?CL_KeyMove@@YAXPAUusercmd_s@@@Z 0091B110 f cl.o FIXED: corrected shared IDA-derived kb indices
-156	PORTED	0002:0012be60 ?CL_MouseEvent@@YAXHHH@Z 0091B360 f cl.o PORTED: IDA match; accumulates mouse deltas at the active sample index
+156	FIXED	0002:0012be60 ?CL_MouseEvent@@YAXHHH@Z 0091B360 f cl.o FIXED: restored unused time parameter and forwarded event timestamps from Com_EventLoop
 157	FIXED	0002:0012beb0 ?CL_JoystickEvent@@YAXHHH@Z 0091B3B0 f cl.o FIXED: restored signed axis type and IDA negative/upper-bound validation
 158	VERIFIED	0002:0012bef0 ?CL_JoystickMove@@YAXPAUusercmd_s@@@Z 0091B3F0 f cl.o
 159	FIXED	0002:0012bff0 ?GetAverageDelta@@YAXAAMAAHH@Z 0091B4F0 f cl.o FIXED: corrected adjacent float history storage and two-stick dimensions
