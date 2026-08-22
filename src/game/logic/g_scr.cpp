@@ -495,6 +495,7 @@ public:
         const T* operator*() const;
         bool operator!=(const const_iterator& rhs) const;
         bool compare(const const_iterator& rhs) const;
+        const_iterator& operator++();
     };
 
     class iterator {
@@ -647,6 +648,25 @@ bool reserved_dlist<T>::const_iterator::compare(
     const const_iterator& rhs) const
 {
     return rhs.m_next == m_next;
+}
+
+template <typename T>
+typename reserved_dlist<T>::const_iterator&
+reserved_dlist<T>::const_iterator::operator++()
+{
+    if (m_next == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+        AeAssert::gCurrentLine = 501;
+        AeAssert::gCurrentExpr = "m_next != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    m_node = m_next;
+    m_next = m_next->m_next;
+    return *this;
 }
 
 template <typename T>
