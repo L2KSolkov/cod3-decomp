@@ -2655,6 +2655,7 @@ void cdl_array<T>::load_inplace(char* base, int* offs)
     m_elements = reinterpret_cast<T*>(&base[*offs]);
     *offs += static_cast<int>(sizeof(T) * m_count);
 }
+
 template class cdl_array<cdl_object_t>;
 template class cdl_array<unsigned char>;
 template class cdl_array<cdlPlane>;
@@ -2662,6 +2663,7 @@ template class cdl_array<cdl_brush_t>;
 template class cdl_array<cdl_vinfo_t>;
 template class cdl_array<vi4>;
 template class cdl_array<cdl_patch_t>;
+template class cdl_array<DCGSet>;
 
 // ae_array<T,SIZE> (g.o 0x4AC7E0)
 template <typename T, int SIZE>
