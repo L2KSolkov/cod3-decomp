@@ -3287,6 +3287,11 @@ void AbstractEffectShakeAndRumble::FrameAdvance(float delta_t)
     }
 }
 
+// ea: 0x004E9520
+void AbstractEffectShakeAndRumble::PlayQueuedEffect()
+{
+}
+
 // ============================================================================
 // AbstractEffect fades + particle IsFinished
 // ============================================================================

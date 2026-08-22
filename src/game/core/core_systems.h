@@ -992,6 +992,7 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
                             float scale);         // ea: 0x004CE780
     void StopEffect();                            // ea: 0x004CE7B0
     void FrameAdvance(float delta_t);             // ea: 0x004CE230
+    void PlayQueuedEffect();                      // ea: 0x004E9520
 private:
     math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
     float GetDistanceScale(int client);           // ea: 0x004CE110
