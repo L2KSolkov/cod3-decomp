@@ -479,6 +479,9 @@ public:
     struct DbElement {
         Sound*       mObject;  // +0x00
         unsigned int mKey;     // +0x04
+
+        Sound* GetObject() const { return mObject; }
+        int GetKey() const { return (int)mKey; }
     };
     DbElement mElements[512];
     static SoundHandleDb sInst;  // ?sInst@SoundHandleDb@SoundDevice@@0V12@A

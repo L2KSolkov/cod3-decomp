@@ -369,6 +369,8 @@ struct reserved_dlist {
     {
         return m_head == reinterpret_cast<const dlist_node*>(&m_end);
     }
+    dlist_node* get_head() { return m_head; }
+    const dlist_node* get_head() const { return m_head; }
     void clear()
     {
         m_size = 0;
