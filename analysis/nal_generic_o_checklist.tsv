@@ -20,13 +20,13 @@ index	status	map_line
 19	PORTED	0002:00468d50 ?GetHash@nalGenericInstance@nalGeneric@@KAIPBVnalGenericSkeleton@2@0@Z 00C58250 f nal_generic.o	PORTED: IDA 0x00868D50 hashes the two skeleton pointers modulo 0x43
 20	VERIFIED	0002:00468d70 ?nalGetDecompCacheSize@@YAHXZ 00C58270 f nal_generic.o
 21	VERIFIED	0002:00468d80 ??1nalGenericPose@nalGeneric@@QAE@XZ 00C58280 f nal_generic.o
-22	PORTED	0002:00468dd0 ?GetPoseSize@nalGenericPose@nalGeneric@@IBEHXZ 00C582D0 f nal_generic.o
-23	PORTED	0002:00468de0 ?GetPoseAlignment@nalGenericPose@nalGeneric@@IBEHXZ 00C582E0 f nal_generic.o
+22	PORTED	0002:00468dd0 ?GetPoseSize@nalGenericPose@nalGeneric@@IBEHXZ 00C582D0 f nal_generic.o	PORTED: IDA 0x00868DD0 returns the generic skeleton PoseSize
+23	PORTED	0002:00468de0 ?GetPoseAlignment@nalGenericPose@nalGeneric@@IBEHXZ 00C582E0 f nal_generic.o	PORTED: IDA 0x00868DE0 returns the generic skeleton PoseAlignment
 24	VERIFIED	0002:00468df0 ??4nalGenericPose@nalGeneric@@QAEXABV01@@Z 00C582F0 f nal_generic.o
 25	VERIFIED	0002:00468e50 ?Copy@nalGenericPose@nalGeneric@@QAEXABV12@H@Z 00C58350 f nal_generic.o
-26	PORTED	0002:00468eb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@IBE?BVnalPositionOrientation@@H@Z 00C583B0 f nal_generic.o
-27	PORTED	0002:00468fb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z 00C584B0 f nal_generic.o
-28	PORTED	0002:00468fd0 ?SetPositionOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVnalPositionOrientation@@@Z 00C584D0 f nal_generic.o
+26	PORTED	0002:00468eb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@IBE?BVnalPositionOrientation@@H@Z 00C583B0 f nal_generic.o	PORTED: IDA 0x00868EB0 reads flagged position/orientation data and composes parent transforms
+27	PORTED	0002:00468fb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z 00C584B0 f nal_generic.o	PORTED: IDA 0x00868FB0 delegates to the bone-index overload
+28	PORTED	0002:00468fd0 ?SetPositionOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVnalPositionOrientation@@@Z 00C584D0 f nal_generic.o	PORTED: IDA 0x00868FD0 honors position/orientation flags and validates the skeleton handle
 29	PORTED	0002:004690a0 ?SetPosition@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVDir3@math@@@Z 00C585A0 f nal_generic.o
 30	PORTED	0002:00469140 ?SetOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C58640 f nal_generic.o
 31	PORTED	0002:004691e0 ?SetPoseBoneOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C586E0 f nal_generic.o
