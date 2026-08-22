@@ -496,7 +496,7 @@ index	status	map_line
 495	FIXED	0002:0054d460 ?StartGame@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C960 f mp_util_wad.o	FIXED: IDA 0x0094D460 copies pLevel->_base.entity (or null) into RunFrame__functor
 496	VERIFIED	0002:0054d510 ?Code_EnterGame@Broc@@YAXXZ 00D3CA10 f i mp_util_wad.o
 497	FIXED	0002:0054d530 ?RunFrame__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3CA30 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
-498	PORTED	0002:0054d5d0 ?CallbackAreaCaptured@_mp_ctf@@YAXHH@Z 00D3CAD0 f mp_util_wad.o	PORTED: reconstructed from IDA 0x0094D5D0; added holder stat/team score, capture audio/dialog callbacks, return-message reset, flag reposition, and unlink (source commit 93a5c083)
+498	FIXED	0002:0054d5d0 ?CallbackAreaCaptured@_mp_ctf@@YAXHH@Z 00D3CAD0 f mp_util_wad.o	FIXED: reverified IDA 0x0094D5D0 flow and corrected typed HashStr sentinel construction plus goal angles_struct/origin_struct reads (source commit dd8a0c14)
 499	FIXED	0002:0054e030 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@1Ubfloat@@@Z 00D3D530 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::bfloat>* per IDA
 500	FIXED	0002:0054e100 ?PlayTeamSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@11@Z 00D3D600 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::string>* per IDA
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
