@@ -15487,9 +15487,10 @@ void WAR_TouchFlag(Broc::entity self) {
 
     const Broc::bint* index = mp_util_wad::GetEE_index(self);
     Broc::bint now;
+    if ((int)mp_util_wad::pLevel->warIndex != (int)*index)
+        return;
     Broc::GetTime(&now);
-    if ((int)mp_util_wad::pLevel->warIndex != (int)*index ||
-        (int)mp_util_wad::pLevel->noCapTime > (int)now)
+    if ((int)mp_util_wad::pLevel->noCapTime > (int)now)
         return;
 
     Broc::GetPlayerArray(&players);
