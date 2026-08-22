@@ -897,7 +897,7 @@ index	status	map_line
 896	FIXED	0002:0057d620 ?CallbackDebugRender@_mp_war@@YAXXZ 00D6CB20 f mp_util_wad.o	FIXED: ported IDA/C3 0x0097D620 debug text, cap timing, capping-player spheres, flag totals, bounds, and capCount reset
 897	PORTED	0002:0057e220 ??0bbool@@QAE@ABUbint@@@Z 00D6D720 f i mp_util_wad.o
 898	PORTED	0002:0057e250 ?GetRef@capSpeed_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUbfloat@@XZ 00D6D750 f i mp_util_wad.o
-899	VERIFIED	0002:0057e280 ?DebugRenderSpawnPoints@_mp_war@@YAXXZ 00D6D780 f mp_util_wad.o
+899	FIXED	0002:0057e280 ?DebugRenderSpawnPoints@_mp_war@@YAXXZ 00D6D780 f mp_util_wad.o	FIXED: matched IDA 0x0097E280 allies/axis classname filtering and team-colored spawn boxes
 900	VERIFIED	0002:0057e7a0 ??0?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@QAE@P6AXVentity@Broc@@Vstring@2@@ZABV12@ABV32@@Z 00D6DCA0 f i mp_util_wad.o
 901	VERIFIED	0002:0057e840 ?GetEnt@?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEIXZ 00D6DD40 f i mp_util_wad.o
 902	VERIFIED	0002:0057e870 ?CallFunction@?$AeThreadFunctor2@Ventity@Broc@@Vstring@2@@@UAEXXZ 00D6DD70 f i mp_util_wad.o
