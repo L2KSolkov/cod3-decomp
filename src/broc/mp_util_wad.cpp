@@ -12498,13 +12498,110 @@ void HandlePickupFlag(Broc::entity flag, Broc::entity pickerupper, int request,
 
 // CallbackPickupScriptItem - ea: 0x969830
 void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
-    (void)netID; (void)guy; (void)itemIndex;
+    Broc::Code_DebugOut("*SCF* CallbackPickupScriptItem\n");
+
+    if ((netID < 0 || netID >= Broc::size(mp_util_wad::pLevel->scfFlags)) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__ + 3,
+            "Invalid flag pickup index"))
+        __debugbreak();
+
+    Broc::entity flag =
+        mp_util_wad::pLevel->scfFlags[(unsigned int)netID];
+    if (!Broc::IsDefined(flag) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__ + 5,
+            "Could not get flag entity"))
+        __debugbreak();
+
+    Broc::bbool playSounds(true);
+    Broc::bbool atBase;
+    IsFlagAtBase(&atBase, flag);
+
+    Broc::vector pickerOrigin;
+    Broc::vector flagOrigin;
+    mp_util_wad::entity_get_origin(&pickerOrigin, guy);
+    mp_util_wad::entity_get_origin(&flagOrigin, flag);
+
+    if (*mp_util_wad::GetEE_holder(flag) != Broc::gEntityUndef ||
+        ((bool)atBase &&
+         Broc::Distance(&pickerOrigin, &flagOrigin) > 256.0f)) {
+        if (*mp_util_wad::GetEE_holder(flag) == guy) {
+            playSounds = false;
+        } else if (itemIndex == 0) {
+            UnlinkFlag(flag);
+            playSounds = false;
+        }
+
+        HashStr pickupNotify;
+        pickupNotify.mVal = 0x87404C8Eu;
+        Broc::notify(flag, pickupNotify);
+        HandlePickupFlag(flag, guy, itemIndex, (bool)playSounds);
+        return;
+    }
+
+    if (itemIndex == 0)
+        goto notify_pickup;
+
+    if (Broc::Code_IsHost()) {
+        Broc::Code_PickupItem(netID, guy);
+        goto notify_pickup;
+    }
+
+    if (Broc::Code_IsLocalPlayer(guy))
+        goto notify_pickup;
+    return;
+
+notify_pickup:
+    {
+        HashStr pickupNotify;
+        pickupNotify.mVal = 0x87404C8Eu;
+        Broc::notify(flag, pickupNotify);
+        HandlePickupFlag(flag, guy, itemIndex, (bool)playSounds);
+    }
 }
 
 // CallbackDropItem - ea: 0x969B30
-void CallbackDropItem(int netID, int entity, Broc::vector position,
+void CallbackDropItem(int itemType, int netID, Broc::vector locator,
                       Broc::vector angles, Broc::vector velocity) {
-    (void)netID; (void)entity; (void)position; (void)angles; (void)velocity;
+    Broc::Code_DebugOut("*SCF* CallbackDropItem\n");
+    (void)itemType;
+
+    Broc::entity flag;
+    if ((netID < 0 || netID > Broc::size(mp_util_wad::pLevel->scfFlags)) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__ + 5,
+            "Invalid drop item ID"))
+        __debugbreak();
+
+    flag = mp_util_wad::pLevel->scfFlags[(unsigned int)netID];
+
+    HashStr dropNotify;
+    dropNotify.mVal = 0xFA57E7C7u;
+    Broc::notify(flag, dropNotify);
+
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder && !(bool)mp_util_wad::pLevel->roundOver) {
+        Broc::string sound("MX_SFCTF_FlagDropped");
+        Broc::SoundPlay(&sound, 1.0f);
+        sound.~string();
+        Broc::iprintln("MPSCF_FLAG_DROPPED");
+    }
+
+    LaunchFlag(Broc::bint(netID), locator, angles, velocity);
+    ObjectiveRing(2, -1);
+
+    Broc::vector home =
+        *mp_util_wad::GetEE_home_position(
+            mp_util_wad::pLevel->scfFlags[(unsigned int)netID]);
+    if (Broc::Distance(&locator, &home) > 2.0f ||
+        Broc::Length(&velocity) > 1.0f) {
+        void* ftor = WaitForFlagTimeOut__functor(flag);
+        Broc::thread_create(false,
+                            "c:\\cod\\code\\script\\_mp_scf.bro",
+                            __LINE__ + 27, "WaitForFlagTimeOut", ftor);
+    }
 }
 
 // Goal - ea: 0x96A6E0
