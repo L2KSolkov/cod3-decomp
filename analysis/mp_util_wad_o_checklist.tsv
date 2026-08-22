@@ -728,7 +728,7 @@ index	status	map_line
 727	VERIFIED	0002:00567d90 ??8Broc@@YA_NPBDABVstring@0@@Z 00D57290 f i mp_util_wad.o	VERIFIED: Existing reverse string comparison forwards to operator==(string,const char*) exactly as IDA 0x00967D90
 728	VERIFIED	0002:00567dc0 ?CallbackHostMigrated@_mp_scf@@YAXXZ 00D572C0 f mp_util_wad.o
 729	VERIFIED	0002:00567fc0 ?Code_SendGameStateSCF@Broc@@YAXVentity@1@HABUvector@1@10@Z 00D574C0 f i mp_util_wad.o	VERIFIED: Existing vector copies, player/holder handles, and mSendGameStateSCF argument order match IDA 0x00967FC0
-730	PORTED	0002:00568040 ?GetRef@holder_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D57540 f i mp_util_wad.o	PORTED: added IDA 0x00968040 GetRef key 0xFAAE111E
+730	VERIFIED	0002:00568040 ?GetRef@holder_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAVentity@Broc@@XZ 00D57540 f i mp_util_wad.o	VERIFIED: IDA 0x00968040 returns ExtendedEntity::GetRef<entity>(0xFAAE111E); implementation matches
 731	FIXED	0002:00568070 ?CallbackNextRound@_mp_scf@@YAXXZ 00D57570 f mp_util_wad.o	FIXED: IDA 0x00968070 notifies pLevel->_base.entity (or null)
 732	VERIFIED	0002:00568110 ?CallbackHostOptionsChanged@_mp_scf@@YAXH@Z 00D57610 f mp_util_wad.o
 733	VERIFIED	0002:00568160 ?CallbackGameState@_mp_scf@@YAXHHHHHHHHHHHHH@Z 00D57660 f mp_util_wad.o
