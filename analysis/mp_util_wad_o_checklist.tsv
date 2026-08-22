@@ -186,7 +186,7 @@ index	status	map_line
 185	VERIFIED	0002:00536f50 ?SoundCrossFade@@YAXIIM@Z 00D26450 f i mp_util_wad.o	VERIFIED: IDA 0x00936F50 forwards both handles and time to mSoundCrossFade
 186	VERIFIED	0002:00536f80 ?audio_crossfade_wait__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D26480 f i mp_util_wad.o	VERIFIED: IDA 0x00936F80 allocates a 0x0C-byte AeThreadFunctor1 and null-checks before construction
 187	VERIFIED	0002:00537020 ?audio_crossfade_wait@_mp_audio@@YAXVentity@Broc@@@Z 00D26520 f mp_util_wad.o
-188	VERIFIED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o	VERIFIED: IDA 0x009370B0 converts lhs to int, adds rhs, and constructs the bint result
+188	FIXED	0002:005370b0 ??H@YA?AUbint@@U0@H@Z 00D265B0 f i mp_util_wad.o	FIXED: added the Broc::boxed overload using the IDA 0x009370B0 arithmetic for namespaced script types; source commit cc40f4cd
 189	VERIFIED	0002:005370e0 ?track_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D265E0 f mp_util_wad.o
 190	VERIFIED	0002:00537190 ?reverb_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26690 f mp_util_wad.o
 191	VERIFIED	0002:00537240 ?ambient_changer@_mp_audio@@YAXVstring@Broc@@@Z 00D26740 f mp_util_wad.o
@@ -239,7 +239,7 @@ index	status	map_line
 238	FIXED	0002:0053ac90 ??4bbool@@QAEM_N@Z 00D2A190 f i mp_util_wad.o	FIXED: IDA stores bool and returns double conversion
 239	VERIFIED	0002:0053acc0 ??D@YA?AUbfloat@@MU0@@Z 00D2A1C0 f i mp_util_wad.o	VERIFIED: IDA 0x0093ACC0 converts rhs to float, multiplies by lhs, and constructs bfloat
 240	VERIFIED	0002:0053ad00 ??O@YA?AUbbool@@Ubint@@H@Z 00D2A200 f i mp_util_wad.o	VERIFIED: IDA 0x0093AD00 compares lhs.mVal greater than int rhs and constructs bbool
-241	VERIFIED	0002:0053ad40 ??D@YA?AUbfloat@@U0@H@Z 00D2A240 f i mp_util_wad.o	VERIFIED: IDA 0x0093AD40 converts lhs to float, multiplies by int rhs, and constructs bfloat
+241	FIXED	0002:0053ad40 ??D@YA?AUbfloat@@U0@H@Z 00D2A240 f i mp_util_wad.o	FIXED: added the Broc::boxed overload using the IDA 0x0093AD40 arithmetic for namespaced script types; source commit cc40f4cd
 242	VERIFIED	0002:0053ad80 ??M@YA?AUbbool@@HUbfloat@@@Z 00D2A280 f i mp_util_wad.o	VERIFIED: IDA 0x0093AD80 compares rhs.mVal greater than int lhs and constructs bbool
 243	VERIFIED	0002:0053ade0 ?Get@maxhealth_struct@__unnamed@entity@Broc@@QBE?BUbint@@XZ 00D2A2E0 f i mp_util_wad.o	VERIFIED: IDA 0x0093ADE0 forwards mHandle to m_entity_get_maxhealth and constructs bint
 244	VERIFIED	0002:0053ae20 ?GetTime@@YA?AUbint@@XZ 00D2A320 f i mp_util_wad.o	VERIFIED: IDA 0x0093AE20 wraps mGetTime in a bint result
