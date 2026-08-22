@@ -452,12 +452,12 @@ index	status	map_line
 451	VERIFIED	0002:0054a8d0 ?UpdateSpectateSpawn@_mp_common@@YAXVentity@Broc@@@Z 00D39DD0 f mp_util_wad.o
 452	VERIFIED	0002:0054aa60 ?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D39F60 f mp_util_wad.o	VERIFIED: Existing no-op body matches the IDA function
 453	FIXED	0002:0054aa80 ?ProgressBarCreate@_mp_common@@YAXUbint@@@Z 00D39F80 f mp_util_wad.o	FIXED: corrected HUD proxy assignments and exact NewHudElem/SetShader calls
-454	PORTED	0002:0054abd0 ??4x_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A0D0 f i mp_util_wad.o	PORTED: added IDA-backed HUD x property proxy operator
-455	PORTED	0002:0054ac10 ??4y_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A110 f i mp_util_wad.o	PORTED: added IDA-backed HUD y property proxy operator
-456	PORTED	0002:0054ac50 ??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z 00D3A150 f i mp_util_wad.o	PORTED: added IDA-backed HUD sort property proxy operator
-457	PORTED	0002:0054ac90 ??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z 00D3A190 f i mp_util_wad.o	PORTED: added IDA-backed HUD alpha property proxy operator
-458	PORTED	0002:0054acd0 ?NewHudElem@@YA?AVhudelem@Broc@@H@Z 00D3A1D0 f i mp_util_wad.o	PORTED: added exact global HUD allocation wrapper
-459	PORTED	0002:0054ad10 ?SetShader@@YAXABVhudelem@Broc@@ABVstring@2@HH@Z 00D3A210 f i mp_util_wad.o	PORTED: added exact global shader wrapper
+454	VERIFIED	0002:0054abd0 ??4x_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A0D0 f i mp_util_wad.o	VERIFIED: IDA 0x0094ABD0 matches the existing HUD x proxy forward and rhs return
+455	VERIFIED	0002:0054ac10 ??4y_struct@__unnamed@hudelem@Broc@@QAEABHABH@Z 00D3A110 f i mp_util_wad.o	VERIFIED: IDA 0x0094AC10 matches the existing HUD y proxy forward and rhs return
+456	VERIFIED	0002:0054ac50 ??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z 00D3A150 f i mp_util_wad.o	VERIFIED: IDA 0x0094AC50 matches the existing HUD sort proxy forward and rhs return
+457	VERIFIED	0002:0054ac90 ??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z 00D3A190 f i mp_util_wad.o	VERIFIED: IDA 0x0094AC90 matches the existing HUD alpha proxy forward and rhs return
+458	VERIFIED	0002:0054acd0 ?NewHudElem@@YA?AVhudelem@Broc@@H@Z 00D3A1D0 f i mp_util_wad.o	VERIFIED: IDA 0x0094ACD0 matches the existing temporary HUD allocation and index copy
+459	VERIFIED	0002:0054ad10 ?SetShader@@YAXABVhudelem@Broc@@ABVstring@2@HH@Z 00D3A210 f i mp_util_wad.o	VERIFIED: IDA 0x0094AD10 matches the existing four-argument shader forward
 460	FIXED	0002:0054ad50 ?ProgressBarUpdate@_mp_common@@YAXUbfloat@@0@Z 00D3A250 f mp_util_wad.o	FIXED: corrected call to the exact global ScaleOverTime wrapper
 461	PORTED	0002:0054adc0 ?ScaleOverTime@@YAXABVhudelem@Broc@@MHH@Z 00D3A2C0 f i mp_util_wad.o	PORTED: added exact global scale wrapper
 462	VERIFIED	0002:0054ae00 ?ProgressBarDelete@_mp_common@@YAXXZ 00D3A300 f mp_util_wad.o
