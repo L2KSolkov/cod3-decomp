@@ -15605,15 +15605,17 @@ void AllowCap(::bint team, int flag_id) {
 
 // WAR_InitFlag - ea: 0x97BB60
 void WAR_InitFlag(Broc::entity self, int flag_id) {
+    Broc::entity::__unnamed::target_struct targetField = {
+        self.GetHandle()};
     Broc::string target;
-    mp_util_wad::entity_get_target(&target, self);
+    targetField.Get(&target);
     if (!Broc::IsDefined(target))
         return;
 
     Broc::dyn_array<Broc::entity> stuff;
     Broc::entity trigger;
     Broc::string targetValue;
-    mp_util_wad::entity_get_target(&targetValue, self);
+    targetField.Get(&targetValue);
     HashStr targetKey;
     targetKey.mVal = 0x19F9F0E8u;
     Broc::GetEnt(&trigger, &targetValue, targetKey, 0);
@@ -15631,8 +15633,10 @@ void WAR_InitFlag(Broc::entity self, int flag_id) {
     *mp_util_wad::GetEE_index(linked) = flag_id;
 
     Broc::string classname("script_model");
+    Broc::entity::__unnamed::origin_struct originField = {
+        self.GetHandle()};
     Broc::vector origin;
-    mp_util_wad::entity_get_origin(&origin, self);
+    originField.Get(&origin);
     Broc::entity flag;
     Broc::Spawn(&flag, &classname, &origin,
                 static_cast<TPakInfo>(INVALID_PAK_INFO));
@@ -15640,7 +15644,9 @@ void WAR_InitFlag(Broc::entity self, int flag_id) {
     classname.~string();
 
     Broc::vector angles;
-    mp_util_wad::entity_get_angles(&angles, self);
+    Broc::entity::__unnamed::angles_struct anglesField = {
+        self.GetHandle()};
+    anglesField.Get(&angles);
     Broc::entity::__unnamed::angles_struct flagAngles = {flag.GetHandle()};
     flagAngles = &angles;
 
@@ -15649,13 +15655,17 @@ void WAR_InitFlag(Broc::entity self, int flag_id) {
     modelName.~string();
 
     Broc::string targetname;
-    mp_util_wad::entity_get_targetname(&targetname, linked);
+    Broc::entity::__unnamed::targetname_struct targetnameField = {
+        linked.GetHandle()};
+    targetnameField.Get(&targetname);
     Broc::GetEntArray(&targetname, 0x15B1F8A7u, &stuff, 0);
     targetname.~string();
 
     Broc::vector offsetStart(0.0f, 0.0f, 40.0f);
+    originField.Get(&origin);
     *mp_util_wad::GetEE_flagStart(linked) = origin + offsetStart;
     Broc::vector offsetEnd(0.0f, 0.0f, 120.0f);
+    originField.Get(&origin);
     *mp_util_wad::GetEE_flagEnd(linked) = origin + offsetEnd;
 
     *mp_util_wad::GetEE_capSpeed(linked) = flag_id;
