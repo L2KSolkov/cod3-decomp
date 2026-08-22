@@ -6956,13 +6956,13 @@ Broc::bfloat closest_point_on_line_to_point(
 void StopLineSound(Broc::string startOfLineEntity) {
     if (Broc::IsDefined(startOfLineEntity)) {
         HashStr key;
-        Broc::string_hash(&key, &startOfLineEntity);
+        key = Broc::string_hash(startOfLineEntity);
         Broc::entity soundMover;
         mp_util_wad::line_sound_get(&soundMover, key);
         if (Broc::IsDefined(soundMover)) {
             Broc::Delete(&soundMover);
             HashStr key2;
-            Broc::string_hash(&key2, &startOfLineEntity);
+            key2 = Broc::string_hash(startOfLineEntity);
             mp_util_wad::line_sound_erase(key2);
         } else {
             if (Broc::gBrocAPI.mWarning(
@@ -7005,7 +7005,7 @@ Broc::entity* SpawnLineSound(Broc::entity* result, Broc::string startOfLineEntit
             soundMover.___u0 = 0;
             SpawnLineSound(&soundMover, startOfLine, sound);
             HashStr mapKey;
-            Broc::string_hash(&mapKey, &startOfLineEntity);
+        mapKey = Broc::string_hash(startOfLineEntity);
             mp_util_wad::line_sound_set(mapKey, soundMover);
             *result = soundMover;
         } else {
@@ -7222,11 +7222,11 @@ void PlayTeamSoundStoppable(Broc::entity self, Broc::string sound,
             mp_util_wad::entity_set_origin(mp_util_wad::pLevel->hack_sound_entity,
                                            origin);
             HashStr soundHash;
-            Broc::string_hash(&soundHash, &sound);
+        soundHash = Broc::string_hash(sound);
             int handle = Broc::EffectEventPlay(&temp, &sound, soundHash, true);
             *mp_util_wad::GetEE_teamSound(temp) = handle;
             HashStr waitHash;
-            Broc::string_hash(&waitHash, &sound);
+        waitHash = Broc::string_hash(sound);
             Broc::waittill(temp, waitHash);
             *mp_util_wad::GetEE_teamSound(temp) = 0;
             players.~dyn_array();
@@ -7298,11 +7298,11 @@ void PlayTeamSoundStoppable(Broc::entity self, Broc::string primaryteam,
     stopLabel.mVal = 0x5DA1DA2Du;
     Broc::endon(temp, stopLabel);
     HashStr soundHash;
-    Broc::string_hash(&soundHash, &sound);
+    soundHash = Broc::string_hash(sound);
     int handle = Broc::EffectEventPlay(&temp, &sound, soundHash, true);
     *mp_util_wad::GetEE_teamSound(temp) = handle;
     HashStr waitHash;
-    Broc::string_hash(&waitHash, &sound);
+    waitHash = Broc::string_hash(sound);
     Broc::waittill(temp, waitHash);
     *mp_util_wad::GetEE_teamSound(temp) = 0;
     players.~dyn_array();
@@ -7373,10 +7373,10 @@ void PlaySoundAtLocation(Broc::entity self, Broc::string sound,
                 static_cast<TPakInfo>(INVALID_PAK_INFO));
     inClassname.~string();
     HashStr notifyHash;
-    Broc::string_hash(&notifyHash, &sound);
+    notifyHash = Broc::string_hash(sound);
     Broc::EffectEventPlay(&temp_entity, &sound, notifyHash, true);
     HashStr waitHash;
-    Broc::string_hash(&waitHash, &sound);
+    waitHash = Broc::string_hash(sound);
     Broc::waittill(temp_entity, waitHash);
     Broc::Delete(&temp_entity);
     sound.~string();

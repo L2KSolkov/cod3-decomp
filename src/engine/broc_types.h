@@ -1600,7 +1600,6 @@ void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 bool RemoveEventHandler(Broc::entity* e, HashStr label, HashStr func);
 HashStr string_hash(const char* str);
 HashStr* string_hash(HashStr* result, const char* str);
-HashStr* string_hash(HashStr* result, const Broc::string* str);
 unsigned int SoundPlay(const Broc::string& name, float volume);
 unsigned int SoundPlay(const Broc::string* name, float volume);
 void ReverbSetParams(const Broc::string& name, bool immediate);
