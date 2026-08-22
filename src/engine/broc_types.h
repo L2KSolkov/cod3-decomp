@@ -1004,7 +1004,7 @@ struct BrocAPI {
     int (*mIsPathNodeDefined)(unsigned int);              // +0x138
     int (*mIsVehicleNodeDefined)(unsigned int);           // +0x13C
     int (*mMathsRandomInt)(int);                          // +0x140
-    char _pad144[0x148 - 0x144];                          // +0x144
+    float (*mMathsRandomFloat)(const float);              // +0x144
     int (*mMathsRandomIntRange)(int, int);                // +0x148
     float (*mMathsRandomFloatRange)(float, float);         // +0x14C
     char _pad150[0x184 - 0x150];                          // +0x150

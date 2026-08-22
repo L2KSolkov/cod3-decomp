@@ -136,6 +136,12 @@ float MathsRandomFloatRange(float fMin, float fMax)
     return fMin < fMax ? flrand(fMin, fMax) : flrand(fMax, fMin);
 }
 
+// ea: 0x0094B880. IDA forwards to the runtime's typed random callback.
+float RandomFloat(float fMax)
+{
+    return gBrocAPI.mMathsRandomFloat(fMax);
+}
+
 // ea: 0x00928B40. IDA forwards to the runtime's typed random-range callback.
 float RandomFloatRange(float fMin, float fMax)
 {
