@@ -2848,3 +2848,45 @@ Broc::bint* GetEE_script_mg42(Broc::bint* result, Broc::pathnode node) {
     new (result) Broc::bint(value);
     return result;
 }
+
+// IsEEDefined_script_mg42 - ea: 0x995790.
+Broc::bbool* IsEEDefined_script_mg42(Broc::bbool* result,
+                                     Broc::pathnode node) {
+    if (Broc::IsDefined(&node)) {
+        const int raw = Broc::gBrocAPI.mBrocExports.mGetPNodeField_int(
+            node.GetHandle(), 0x022BC64Eu);
+        const Broc::bint value(raw);
+        result->mVal = Broc::IsDefined(value);
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
+// GetEE_on_goal - ea: 0x995840.
+Broc::string* GetEE_on_goal(Broc::string* result, Broc::pathnode node) {
+    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_on_goal(
+        static_cast<int>(node.GetHandle()));
+    new (result) Broc::string(value);
+    value.~string();
+    return result;
+}
+
+// IsEEDefined_on_goal - ea: 0x995940.
+Broc::bbool* IsEEDefined_on_goal(Broc::bbool* result,
+                                 Broc::pathnode node) {
+    result->mVal = Broc::IsDefined(&node)
+        && Broc::gBrocAPI.mIsPathNodeDefined(node.GetHandle()) != 0;
+    return result;
+}
+
+// GetEE_script_ambush_type(pathnode) - ea: 0x9959E0.
+Broc::string* GetEE_script_ambush_type(Broc::string* result,
+                                       Broc::pathnode node) {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.mBrocExports.mGetPNodeField_string(
+        &value, node.GetHandle(), 0x93F860D5u);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
