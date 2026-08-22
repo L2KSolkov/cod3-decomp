@@ -389,11 +389,13 @@ struct reserved_dlist {
     {
         return iterator(reinterpret_cast<dlist_node*>(&m_end), nullptr);
     }
+    iterator begin();
     const_iterator end() const
     {
         return const_iterator(
             reinterpret_cast<const dlist_node*>(&m_end), nullptr);
     }
+    const_iterator begin() const;
 
     iterator find(T* object)
     {
@@ -438,6 +440,7 @@ struct reserved_dlist {
     }
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
+    void erase(T* obj);
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");
@@ -456,6 +459,53 @@ void reserved_dlist<T>::push_back(T* obj)
     m_tail->mNext = node;
     m_tail = node;
     ++m_size;
+}
+
+template <typename T>
+typename reserved_dlist<T>::iterator reserved_dlist<T>::begin()
+{
+    dlist_node* head = m_head;
+    dlist_node* next = head != nullptr ? head->mNext : nullptr;
+    iterator result(head, next);
+    if (m_head == reinterpret_cast<dlist_node*>(&m_end))
+    {
+        result.m_next = nullptr;
+        result.m_node = nullptr;
+    }
+    return result;
+}
+
+template <typename T>
+typename reserved_dlist<T>::const_iterator reserved_dlist<T>::begin() const
+{
+    const dlist_node* head = m_head;
+    const dlist_node* next = head != nullptr ? head->mNext : nullptr;
+    const_iterator result(head, next);
+    if (m_head == reinterpret_cast<const dlist_node*>(&m_end))
+    {
+        result.m_next = nullptr;
+        result.m_node = nullptr;
+    }
+    return result;
+}
+
+template <typename T>
+void reserved_dlist<T>::erase(T* obj)
+{
+    iterator found = find(obj);
+    if (found.m_next == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+        AeAssert::gCurrentLine = 418;
+        AeAssert::gCurrentExpr = "find( obj ) != end()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    obj->m_dlist_node.mNext->mPrev = obj->m_dlist_node.mPrev;
+    obj->m_dlist_node.mPrev->mNext = obj->m_dlist_node.mNext;
+    --m_size;
 }
 
 template <int N>
@@ -871,6 +921,7 @@ public:
         int           mCONTEXT;          // +0x1B0
         int           mMATERIAL;         // +0x1B4
 
+        void Clear();
         void ConstructQuery(DbQuery* query);  // ea: 0x004E8390
     };
     static_assert(sizeof(CachedQuery) == 0x1B8, "CachedQuery size mismatch");
@@ -890,6 +941,8 @@ public:
         Bitmask<uint16_t> mFlags;      // +0x210
         int16_t        mCacheSoundType;// +0x212
         unsigned char  _tail[0x220 - 0x214];  // TODO verify
+
+        void Clear();
     };
     static_assert(sizeof(PendingQuery) == 0x220, "PendingQuery size mismatch");
 
@@ -929,6 +982,7 @@ public:
                                  HashString soundName);  // ea: 0x004BCD90
     void SendSoundNotify(Entity* pEnt);          // ea: 0x004BCDE0
     ActiveEffectSet* GetActiveEffectSet(Handle handle);  // ea: 0x004C56B0
+    ActiveEffectSet* DereferenceHandle(Handle handle);    // ea: 0x004E5D50
     int IsSoundAlreadyPlaying(unsigned int mSoundNameHashStr, Entity* pEnt,
                               int maxEffects);   // ea: 0x004CA820
     bool IsEffectActive(Handle handle);          // ea: 0x004CACD0

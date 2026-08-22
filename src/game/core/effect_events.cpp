@@ -588,6 +588,33 @@ enum {
     EEffectContextCount = 12,
 };
 
+// ea: 0x004E5DA0
+void EffectEventSys::CachedQuery::Clear()
+{
+    mSpecifiedFields.mBits[1] = 0;
+    mSpecifiedFields.mBits[0] = 0;
+    mWeakFields.mBits[1] = 0;
+    mWeakFields.mBits[0] = 0;
+}
+
+// ea: 0x004E5DC0
+void EffectEventSys::PendingQuery::Clear()
+{
+    mType = EEffectContextInvalid;
+    mCachedQuery.mSpecifiedFields.mBits[1] = 0;
+    mCachedQuery.mSpecifiedFields.mBits[0] = 0;
+    mCachedQuery.mWeakFields.mBits[1] = 0;
+    mCachedQuery.mWeakFields.mBits[0] = 0;
+    mQueryEnt.mHandle.mVal = 0;
+    mEffect.mVal = 0;
+    mBoneIndex = -1;
+    mCacheSoundType = -1;
+    mQueryType = -1;
+    mFlags.mVal = 0;
+    mDialogNotify = 0;
+    mMatrix = nullptr;
+}
+
 static unsigned int holdrand = 1;
 static unsigned int RandNext()
 {
@@ -2085,6 +2112,16 @@ ActiveEffectSet* EffectEventSys::GetActiveEffectSet(Handle handle)
         && handle.mVal >> 9 == mHandleDb.mElements[v2].mKey)
         return mHandleDb.mElements[v2].mObject;
     return nullptr;
+}
+
+// ea: 0x004E5D50
+ActiveEffectSet* EffectEventSys::DereferenceHandle(Handle h)
+{
+    int index = h.mVal & 0x1FF;
+    ActiveEffectSet* result = nullptr;
+    if (h.mVal >> 9 == mHandleDb.mElements[index].mKey)
+        return mHandleDb.mElements[index].mObject;
+    return result;
 }
 
 // ea: 0x004CABD0
