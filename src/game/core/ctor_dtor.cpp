@@ -1074,6 +1074,20 @@ ActiveEffectSet::~ActiveEffectSet()
         EffectEventSysStatics::sInst->mHandleDb.ReleaseHandle(mId);
 }
 
+// ea: 0x004E8CF0
+HandleDb::HandleDb()
+{
+    mFreeIndices.Clear();
+    for (int i = 0; i < 512; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+    }
+    mDebugCallback = nullptr;
+    for (int i = 0; i < 512; ++i)
+        mFreeIndices.Add(i);
+}
+
 // ea: 0x004D0130
 EffectEventSys::EffectEventSys()
 {
@@ -1088,12 +1102,6 @@ EffectEventSys::EffectEventSys()
         mEffectRefs.m_elements[i].second = 0;
     }
     mEffectRefs.m_size = 0;
-    memset(&mHandleDb.mFreeBits, 0xFF, sizeof(mHandleDb.mFreeBits));
-    for (int i = 0; i < 512; ++i)
-    {
-        mHandleDb.mElements[i].mObject = nullptr;
-        mHandleDb.mElements[i].mKey = 0;
-    }
     mDebuggingLevel = 0;
 }
 

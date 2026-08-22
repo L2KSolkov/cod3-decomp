@@ -11,6 +11,8 @@
 #include <new>
 #include <stdint.h>
 
+extern void tlPrintf(const char* fmt, ...);
+
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);
@@ -2097,19 +2099,45 @@ void EffectEventSys::StopEffect(Handle handle, bool kill)
 // HandleDb
 // ============================================================================
 
+// ea: 0x004E68B0
+void HandleDb::Dump()
+{
+    if (mDebugCallback != nullptr)
+    {
+        tlPrintf("handle db contents:\n");
+        BitSet<512> allocatedIndices = ~mFreeIndices;
+        BitSet<512>::iterator it;
+        it.m_src = &allocatedIndices;
+        it.m_cur_word = ((const unsigned int*)allocatedIndices.mBits)[0];
+        it.m_word_idx = 0;
+        it.m_cur_val = -1;
+        for (;;)
+        {
+            ++it;
+            if (it.m_cur_val == -1 && it.m_word_idx == -1)
+                break;
+            mDebugCallback(it.m_cur_val, mElements[it.m_cur_val].mObject);
+        }
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+    AeAssert::gCurrentLine = 193;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+        __debugbreak();
+}
+
 // ea: 0x004E8D50
 Handle HandleDb::AllocateHandle()
 {
-    int m_cur_val = -1;
-    for (int i = 0; i < 512; ++i)
-    {
-        if ((mFreeBits[i >> 3] >> (i & 7)) & 1)
-        {
-            m_cur_val = i;
-            break;
-        }
-    }
-    if (m_cur_val >= 0x200)
+    BitSet<512>::iterator itNextFree;
+    itNextFree.m_src = &mFreeIndices;
+    itNextFree.m_cur_word = ((const unsigned int*)mFreeIndices.mBits)[0];
+    itNextFree.m_word_idx = 0;
+    itNextFree.m_cur_val = -1;
+    ++itNextFree;
+    int m_cur_val = itNextFree.m_cur_val;
+    if (m_cur_val >= 0x200u)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
@@ -2120,7 +2148,9 @@ Handle HandleDb::AllocateHandle()
                 "index out of bounds!!! ILLEGAL array access!"))
             __debugbreak();
     }
-    mFreeBits[m_cur_val >> 3] &= (unsigned char)~(1u << (m_cur_val & 7));
+    mFreeIndices.Rmv(m_cur_val);
+    if (m_cur_val == -1)
+        Dump();
     Handle result;
     result.mVal = (mElements[m_cur_val].mKey << 9) | m_cur_val;
     return result;
@@ -2151,7 +2181,7 @@ void HandleDb::ReleaseHandle(Handle h)
         int v3 = h.mVal & 0x1FF;
         if (mElements[v3].mKey == (unsigned int)(h.mVal >> 9))
         {
-            mFreeBits[v3 >> 3] |= (unsigned char)(1u << (v3 & 7));
+            mFreeIndices.Add(v3);
             mElements[v3].mObject = nullptr;
             mElements[v3].mKey = mElements[v3].mKey + 1;
         }

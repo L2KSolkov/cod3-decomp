@@ -505,8 +505,9 @@ void reserved_dlist<T>::erase(T* obj)
             && AeAssert::Assert("Please add a descriptive string"))
             __debugbreak();
     }
-    obj->m_dlist_node.mNext->mPrev = obj->m_dlist_node.mPrev;
-    obj->m_dlist_node.mPrev->mNext = obj->m_dlist_node.mNext;
+    dlist_node* node = found.m_node;
+    node->mNext->mPrev = node->mPrev;
+    node->mPrev->mNext = node->mNext;
     --m_size;
 }
 
@@ -927,15 +928,17 @@ struct HandleDb {
         ActiveEffectSet* mObject;  // +0x00
         unsigned int     mKey;     // +0x04
     };
-    unsigned char mFreeBits[0x40]; // +0x00 BitSet<512> free-index bitmap
+    BitSet<512>    mFreeIndices;    // +0x00
     Element       mElements[512];  // +0x40
-    unsigned int  _tail;           // +0x1040
+    void (*mDebugCallback)(int, ActiveEffectSet*); // +0x1040
 
+    HandleDb();                                   // ea: 0x004E8CF0
     Handle AllocateHandle();                       // ea: 0x004E8D50
     void BindObjectToHandle(Handle handle,
                             ActiveEffectSet* obj); // ea: 0x004E3DB0
     ActiveEffectSet* DereferenceHandle(Handle handle) const;
     void ReleaseHandle(Handle h);                  // ea: 0x004E6430
+    void Dump();                                   // ea: 0x004E68B0
 };
 static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 
@@ -1390,6 +1393,13 @@ inline const float* DbRow::GetFieldValuePtr<float>(uint16_t id) const
             __debugbreak();
     }
     return (*column)[(uint16_t)row_id];
+}
+
+template <>
+inline float DbRow::GetFieldValue<float>(uint16_t id, float defalt) const
+{
+    const float* field_value = GetFieldValuePtr<float>(id);
+    return field_value != nullptr ? *field_value : defalt;
 }
 
 template <>
