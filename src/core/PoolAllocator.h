@@ -37,7 +37,10 @@ public:
         unsigned int    numBlocks;    // +0x08, number of blocks
         void*           block;        // +0x0C, preallocated block (or nullptr)
 
-        PoolConfig() = default;
+        PoolConfig()
+            : blockSize(0), blockAlign(4), numBlocks(0), block(nullptr)
+        {
+        }
         PoolConfig(unsigned int sizeBlock, unsigned int blockCount,
                    unsigned int alignBlock, void* blok)
             : blockSize(sizeBlock), blockAlign(alignBlock),
