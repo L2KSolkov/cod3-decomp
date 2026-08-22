@@ -346,7 +346,7 @@ void Key_SetCatcher(int catcher)
 // ============================================================================
 
 // ea: 0x52D930
-int CL_ShutdownDebugData()
+void CL_ShutdownDebugData()
 {
     if (ptr != 0)
     {
@@ -376,7 +376,6 @@ int CL_ShutdownDebugData()
     if (dword_F171CC != 0)
         _Z_FreeInternal((void*)dword_F171CC);
     memset(&dword_F171C0, 0, 0x2C);
-    return 0;
 }
 
 // ea: 0x52D9D0
