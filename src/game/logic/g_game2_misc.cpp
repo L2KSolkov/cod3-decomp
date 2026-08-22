@@ -112,10 +112,6 @@ void* SmokeGrenadeMgr::operator new(size_t size, void* p)
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)
 // ============================================================================
-struct nalGenericBoneHandle {
-    unsigned int index;  // +0x00
-    void* skeleton;      // +0x04
-};
 struct nalPositionOrientation {
     math::Quaternion orient;  // +0x00
     math::Position3 pos;      // +0x10
@@ -124,6 +120,22 @@ struct nalPositionOrientation {
 };
 static_assert(sizeof(nalPositionOrientation) == 0x20,
               "nalPositionOrientation size mismatch");
+
+namespace nalGeneric {
+struct nalGenericSkeleton;
+struct nalGenericBoneHandle {
+    const nalGenericSkeleton* Skeleton;  // +0x00
+    int BoneIndex;                       // +0x04
+};
+class nalGenericPose {
+public:
+    void SetPositionOrientation(const nalGenericBoneHandle& handle,
+                                const ::nalPositionOrientation& po);
+};
+}
+using nalGenericBoneHandle = nalGeneric::nalGenericBoneHandle;
+static_assert(sizeof(nalGenericBoneHandle) == 0x8,
+              "nalGenericBoneHandle size mismatch");
 
 struct mpAnimJointPosOrientations_t {
     nalPositionOrientation child;  // +0x00
@@ -182,9 +194,9 @@ mpAnimJointPosOrientations_t::mpAnimJointPosOrientations_t()
 // ea: 0x00518CD0
 mpAnimJointBoneHandles_t::mpAnimJointBoneHandles_t()
 {
-    child.skeleton = nullptr;
-    joint.skeleton = nullptr;
-    parent.skeleton = nullptr;
+    child.Skeleton = nullptr;
+    joint.Skeleton = nullptr;
+    parent.Skeleton = nullptr;
 }
 namespace nalGeneric {
 class nalGenericSkeleton;
@@ -428,7 +440,37 @@ struct nalMatrix4x4 {
     float z[4];
     float w[4];
 
+    nalMatrix4x4 Inverse() const;
 };
+
+static __m128 AnimIK_MultiplyRow(const float* lhs,
+                                 const nalMatrix4x4& rhs)
+{
+    const __m128 row = _mm_loadu_ps(lhs);
+    const __m128 x = _mm_loadu_ps(rhs.x);
+    const __m128 y = _mm_loadu_ps(rhs.y);
+    const __m128 z = _mm_loadu_ps(rhs.z);
+    const __m128 w = _mm_loadu_ps(rhs.w);
+    return _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(row, row, 0), x),
+            _mm_mul_ps(_mm_shuffle_ps(row, row, 85), y)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(row, row, 170), z),
+            _mm_mul_ps(_mm_shuffle_ps(row, row, 255), w)));
+}
+
+static void AnimIK_Multiply(const nalMatrix4x4& lhs,
+                            const nalMatrix4x4& rhs,
+                            nalMatrix4x4* result)
+{
+    nalMatrix4x4 temp;
+    _mm_storeu_ps(temp.x, AnimIK_MultiplyRow(lhs.x, rhs));
+    _mm_storeu_ps(temp.y, AnimIK_MultiplyRow(lhs.y, rhs));
+    _mm_storeu_ps(temp.z, AnimIK_MultiplyRow(lhs.z, rhs));
+    _mm_storeu_ps(temp.w, AnimIK_MultiplyRow(lhs.w, rhs));
+    *result = temp;
+}
 
 static void nalMatrix4x4_FromPositionOrientation(
     const nalPositionOrientation& po, nalMatrix4x4* mat)
@@ -553,6 +595,8 @@ extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
 extern void Axis4_to_nalMatrix4x4(const float (*axis)[3],
                                   nalMatrix4x4* mat);  // ea: 0x4F6220
 tlFixedString boneName[8];               // ?boneName (game2.o @ 0xF052B8)
+tlFixedString noneString("** NONE **"); // game2.o @ 0xF05550
+tlFixedString stru_F05040("bip01 pelvis"); // game2.o @ 0xF05040
 tlFixedString stru_F05318;               // ?stru_F05318 (game2.o bone name)
 tlFixedString stru_F05378;               // ?stru_F05378 (game2.o bone name)
 tlFixedString stru_F05398;               // ?stru_F05398 (game2.o bone name)
@@ -583,10 +627,10 @@ void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
 {
     nalGenericBoneHandle leftFootHandle;
     nalGenericBoneHandle rightFootHandle;
-    leftFootHandle.index = 0;
-    leftFootHandle.skeleton = nullptr;
-    rightFootHandle.index = 0;
-    rightFootHandle.skeleton = nullptr;
+    leftFootHandle.BoneIndex = 0;
+    leftFootHandle.Skeleton = nullptr;
+    rightFootHandle.BoneIndex = 0;
+    rightFootHandle.Skeleton = nullptr;
     nalGenericSkeleton_GetBoneHandle(skeleton, &leftFootHandle,
                                      &stru_F05318);
     nalGenericSkeleton_GetBoneHandle(skeleton, &rightFootHandle,
@@ -653,8 +697,8 @@ void AnimIK::Initialize()
     nalGenericBoneHandle handles[12];
     for (int i = 0; i < 12; ++i)
     {
-        handles[i].index = 0;
-        handles[i].skeleton = nullptr;
+        handles[i].BoneIndex = 0;
+        handles[i].Skeleton = nullptr;
     }
     ik_ADS = Cvar_Get("ik_ADS", "0", 512);
     // Joints 0..3: for each, resolve parent/joint/child bone handles from
@@ -720,12 +764,52 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
     }
 }
 
-// Heavy IK apply passes (SEH-heavy, need nal matrix/pose machinery) - stubs
+// ea: 0x004FB150
 void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
                              nalGenericBoneHandle handHandle,
                              nalMatrix4x4* gunMat, nalMatrix4x4* handMat)
 {
+    (void)handMat;
+
+    nalPositionOrientation handPositionOrientation =
+        nalGenericPose_GetModelPositionOrientation(pose, &handHandle);
+    nalMatrix4x4 newHandMat;
+    nalMatrix4x4_FromPositionOrientation(handPositionOrientation, &newHandMat);
+
+    nalMatrix4x4 composed;
+    AnimIK_Multiply(*gunMat, newHandMat, &composed);
+    *gunMat = composed;
+
+    if (stru_F05040 != noneString)
+    {
+        nalGenericBoneHandle pelvisHandle;
+        pelvisHandle.Skeleton = nullptr;
+        pelvisHandle.BoneIndex = 0;
+        nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                         &stru_F05040);
+        nalPositionOrientation pelvisPositionOrientation =
+            nalGenericPose_GetModelPositionOrientation(pose, &pelvisHandle);
+        nalMatrix4x4 pelvisMat;
+        nalMatrix4x4_FromPositionOrientation(pelvisPositionOrientation,
+                                              &pelvisMat);
+        nalMatrix4x4 inversePelvis = pelvisMat.Inverse();
+        AnimIK_Multiply(*gunMat, inversePelvis, &composed);
+        *gunMat = composed;
+    }
+
+    math::Mat44 finalMatrix;
+    finalMatrix.x.v = _mm_loadu_ps(gunMat->x);
+    finalMatrix.y.v = _mm_loadu_ps(gunMat->y);
+    finalMatrix.z.v = _mm_loadu_ps(gunMat->z);
+    finalMatrix.w.v = _mm_loadu_ps(gunMat->w);
+    nalPositionOrientation newHandPositionOrientation;
+    newHandPositionOrientation.orient = nalQuaternionFromMatrix(finalMatrix);
+    newHandPositionOrientation.pos.v = finalMatrix.w.v;
+    static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
+        gunHandle, newHandPositionOrientation);
 }
+
+// Heavy IK apply passes (SEH-heavy, need nal matrix/pose machinery) - stubs
 void AnimIK::ApplyFootIK(Entity* ent, nalMatrix4x4* leftFootMat,
                          nalMatrix4x4* rightFootMat)
 {
