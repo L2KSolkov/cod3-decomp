@@ -232,6 +232,18 @@ public:
             const Broc::string* Get(Broc::string* result) const;
             const Broc::string& operator=(const Broc::string& rhs);
         };
+        struct model_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::string* Get(Broc::string* result) const;
+        };
+        struct takedamage_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::bint* Get(Broc::bint* result) const;
+        };
+        struct rotate_struct {
+            unsigned int mHandle;  // +0x00
+            const Broc::vector* Get(Broc::vector* result) const;
+        };
         struct maxhealth_struct {
             unsigned int mHandle;  // +0x00
             const Broc::bint* Get(Broc::bint* result) const;
@@ -295,6 +307,12 @@ public:
                             "target_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::targetname_struct) == 4,
                             "targetname_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::model_struct) == 4,
+                            "model_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::takedamage_struct) == 4,
+                            "takedamage_struct size mismatch");
+    COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::rotate_struct) == 4,
+                            "rotate_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::maxhealth_struct) == 4,
                             "maxhealth_struct size mismatch");
     COD3_STATIC_ASSERT_32BIT(sizeof(__unnamed::health_struct) == 4,
@@ -678,6 +696,7 @@ void waittill(entity ent, const char* signal);
 void waittill_loaded(TPakInfo pakInfo);
 void waittill_unloaded(TPakInfo pakInfo);
 void endon(entity ent, const char* event);
+void endon(entity ent, const string& event);
 void endon(entity ent, HashStr label);
 void thread_sleep_time(void);
 void thread_sleep_frames(void);
@@ -806,6 +825,7 @@ struct bint {
     static int sUndefined;
 };
 bint operator+(bint lhs, bint rhs);
+bfloat operator*(bint lhs, float rhs);
 bint operator*(bint lhs, bint rhs);
 bint operator*(int lhs, bint rhs);
 bint operator*(bint lhs, int rhs);
@@ -817,7 +837,9 @@ struct bbool {
     explicit bbool(bool v) : mVal(v) {}
     bool operator==(bool rhs) const;
 };
+bbool operator<(bfloat lhs, bfloat rhs);
 bbool operator<(bfloat lhs, bint rhs);
+bbool operator<(bint lhs, bfloat rhs);
 bbool operator<(int lhs, bint rhs);
 Broc::bbool operator>(Broc::bfloat lhs, int rhs);
 Broc::bbool operator<(float lhs, Broc::bfloat rhs);
@@ -1048,7 +1070,9 @@ struct BrocAPI {
                            const char*, int, int, int);   // +0x1DC
     char _pad1E0[0x1E8 - 0x1E0];                          // +0x1E0
     void (*mObjectiveDelete)(int, int);                   // +0x1E8
-    char _pad1EC[0x208 - 0x1EC];                          // +0x1EC
+    void (*mObjectiveState)(const int, const Broc::string*,
+                            const char*, const int);       // +0x1EC
+    char _pad1F0[0x208 - 0x1F0];                          // +0x1F0
     void (*mObjectiveRing)(int, int);                     // +0x208
     char _pad20C[0x24C - 0x20C];                          // +0x20C
     void (*mCVarGetString)(Broc::string*, const char*);   // +0x24C
@@ -1087,7 +1111,7 @@ struct BrocAPI {
     void (*mSetWeaponPlayerUpOffset)(unsigned int, float);// +0x2DC
     int (*mGetPlayerArray)(unsigned int*);                // +0x2E0
     int (*mGetLocalPlayerArray)(unsigned int*);           // +0x2E4
-    char _pad2E8[0x2EC - 0x2E8];                          // +0x2E8
+    int (*mGetPlayerIndex)(const unsigned int);            // +0x2E8
     void (*mPlayerRespawn)(unsigned int, const Broc::vector*,
                            const Broc::vector*, const Broc::string*); // +0x2EC
     void (*mPlayerSpawn)(unsigned int, const Broc::vector*,
@@ -1115,7 +1139,10 @@ struct BrocAPI {
     char _pad338[0x33C - 0x338];                           // +0x338
     void (*mIncTeamScore)(const Broc::string&, int);      // +0x33C
     int (*mGetTeamScore)(const Broc::string&);            // +0x340
-    char _pad344[0x370 - 0x344];                          // +0x344
+    void (*mChangePlayerTeam)(const unsigned int,
+                              const Broc::string*, const bool); // +0x344
+    char _pad348[0x36C - 0x348];                          // +0x348
+    void (*mBroadcastVehicleRespawn)(const unsigned int); // +0x36C
     void (*mSendGameState)(unsigned int, int, int, int, int,
                            bool, bool, bool, int, int, int, bool, int, int); // +0x370
     void (*mSendGameStateHQ)(const unsigned int, const unsigned int,
@@ -1148,7 +1175,9 @@ struct BrocAPI {
     unsigned int (*mGetSpotterEntity)(unsigned int);         // +0x3C4
     void (*mClearSpottingFromOccupants)(unsigned int);       // +0x3C8
     void (*mGetWeaponName)(unsigned int, Broc::string*);  // +0x3CC
-    char _pad3D0[0x438 - 0x3D0];                          // +0x3D0
+    char _pad3D0[0x424 - 0x3D0];                          // +0x3D0
+    void (*mRespawnVehicle)(const unsigned int);          // +0x424
+    char _pad428[0x438 - 0x428];                          // +0x428
     const char* (*mLocalize)(const char*);                // +0x438
     void (*mDebugRenderText)(const char*, const int, const int); // +0x43C
     void (*mDebugRenderEntityBBox)(const unsigned int, const Broc::vector*, float); // +0x440
@@ -1161,18 +1190,29 @@ struct BrocAPI {
                                      const Broc::vector*,
                                      const Broc::vector*); // +0x4B0
     void (*mEnableNanoForces)(bool);                      // +0x4B4
-    char _pad4B8[0x528 - 0x4B8];                          // +0x4B8
+    char _pad4B8[0x51C - 0x4B8];                          // +0x4B8
+    void (*mRumbleNotes)(const Broc::string*, float,
+                         const Broc::string*, float, int); // +0x51C
+    char _pad520[0x528 - 0x520];                          // +0x520
     unsigned int (*mGetTime)();                           // +0x528
     char _pad52C[0x594 - 0x52C];                          // +0x52C
     void (*mRadiusDamage)(const Broc::vector*, float, float, float,
                           int);                           // +0x594
     void (*mRadiusDamageFromEnt)(unsigned int, const Broc::vector*, float,
                                  float, float, int);       // +0x598
-    char _pad59C[0x60C - 0x59C];                          // +0x59C
+    char _pad59C[0x5B0 - 0x59C];                          // +0x59C
+    void (*mEarthquake)(const float, const float,
+                        const Broc::vector*, const float,
+                        const int);                       // +0x5B0
+    char _pad5B4[0x5C4 - 0x5B4];                          // +0x5B4
+    void (*mSetMaxVehicles)(const int);                   // +0x5C4
+    char _pad5C8[0x60C - 0x5C8];                          // +0x5C8
     Broc::hudelem* (*mNewHudElem)(Broc::hudelem*, int);  // +0x60C
     char _pad610[0x68C - 0x610];                          // +0x610
     void (*mLinkTo3)(const unsigned int, const unsigned int); // +0x68C
-    char _pad690[0x6C8 - 0x690];                          // +0x690
+    char _pad690[0x6B4 - 0x690];                          // +0x690
+    void (*mGetOrigin)(const unsigned int, Broc::vector*); // +0x6B4
+    char _pad6B8[0x6C8 - 0x6B8];                          // +0x6B8
     bool (*mIsTouching)(const unsigned int, const unsigned int); // +0x6C8
     char _pad6CC[0x6D8 - 0x6CC];                          // +0x6CC
     void (*mDelete)(unsigned int);                        // +0x6D8
@@ -1226,7 +1266,11 @@ struct BrocAPI {
     void (*mSetWeaponSlotClipAmmo)(unsigned int, const Broc::string*, int); // +0xAE8
     int (*mGetFullClipAmmoCount)(unsigned int, const Broc::string*); // +0xAEC
     int (*mGetMaxAmmo)(unsigned int, const Broc::string*); // +0xAF0
-    char _padAF4[0xB94 - 0xAF4];                          // +0xAF4
+    char _padAF4[0xB34 - 0xAF4];                          // +0xAF4
+    bool (*mIsVehicleFlipped)(const unsigned int);        // +0xB34
+    char _padB38[0xB70 - 0xB38];                          // +0xB38
+    void (*mFireTurret)(const unsigned int, const bool);  // +0xB70
+    char _padB74[0xB94 - 0xB74];                          // +0xB74
     void (*mSetShader)(const Broc::hudelem*, const Broc::string*, int,
                        int);                              // +0xB94
     char _padB98[0xBB8 - 0xB98];                          // +0xB98
@@ -1435,7 +1479,7 @@ Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e);
 void Earthquake(float scale, float duration, const Broc::vector* source,
                 float radius, int player_index);
 void Rumble(const Broc::string* lowFreqNotes, float lowFreqDuraton,
-            const Broc::string& highFreqNotes, float highFreqDuration,
+            Broc::string highFreqNotes, float highFreqDuration,
             int player_index);
 bool SwitchToWeapon(const Broc::entity& e, const Broc::string& weapon);
 bool SwitchToLastWeapon(Broc::entity* e);
@@ -1459,6 +1503,9 @@ void Code_IncTeamScore(const Broc::string& team, int ammount);
 bool Code_PositionWouldTelefrag(const Broc::vector* position);
 void Code_ChangePlayerTeam(Broc::entity player, const Broc::string* team,
                            bool autoBalance);
+void Code_SendGameScore(int alliesScore, int axisScore);
+void ObjectiveState(int iObjective, const Broc::string* inState,
+                    const char* pDisplay, int clientIndex);
 bool Code_IsLocalPlayer(Broc::entity player);
 const char* Code_GetPlayerName(Broc::entity player);
 void Code_DebugOut(const char* strOut);

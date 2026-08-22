@@ -2629,6 +2629,62 @@ unsigned int SoundPlay(const Broc::string* name, float volume) {
     return gBrocAPI.mSoundPlay(name, volume);
 }
 
+// Code_IsLocalPlayer - ea: 0x936740
+bool Broc::Code_IsLocalPlayer(Broc::entity player) {
+    return gBrocAPI.mIsLocalPlayer(player.GetHandle());
+}
+
+// GetPlayerIndex - ea: 0x93E590
+int Broc::GetPlayerIndex(Broc::entity player) {
+    return gBrocAPI.mGetPlayerIndex(player.GetHandle());
+}
+
+// Code_GetPlayerInSeat - ea: 0x9725C0
+void Broc::Code_GetPlayerInSeat(Broc::entity* result,
+                                Broc::entity vehicle, int seat) {
+    new (result) Broc::entity(
+        gBrocAPI.mGetPlayerInSeat(vehicle.GetHandle(), (unsigned int)seat));
+}
+
+// Rumble - ea: 0x972600
+void Broc::Rumble(const Broc::string* lowFreqNotes, float lowFreqDuraton,
+                  Broc::string highFreqNotes, float highFreqDuration,
+                  int player_index) {
+    gBrocAPI.mRumbleNotes(lowFreqNotes, lowFreqDuraton, &highFreqNotes,
+                          highFreqDuration, player_index);
+    highFreqNotes.~string();
+}
+
+// Earthquake - ea: 0x972680
+void Broc::Earthquake(float scale, float duration,
+                      const Broc::vector* source, float radius,
+                      int player_index) {
+    gBrocAPI.mEarthquake(scale, duration, source, radius, player_index);
+}
+
+// Code_ChangePlayerTeam - ea: 0x974680
+void Broc::Code_ChangePlayerTeam(Broc::entity player,
+                                 const Broc::string* team,
+                                 bool autoBalance) {
+    gBrocAPI.mChangePlayerTeam(player.GetHandle(), team, autoBalance);
+}
+
+// Code_SendGameScore - ea: 0x975D70
+void Broc::Code_SendGameScore(int alliesScore, int axisScore) {
+    gBrocAPI.mSendGameScore(alliesScore, axisScore);
+}
+
+// ObjectiveState - ea: 0x9769D0
+void Broc::ObjectiveState(int iObjective, const Broc::string* inState,
+                         const char* pDisplay, int clientIndex) {
+    gBrocAPI.mObjectiveState(iObjective, inState, pDisplay, clientIndex);
+}
+
+// SoundFadeOut - ea: 0x975950
+void Broc::SoundFadeOut(unsigned int handle, float time) {
+    gBrocAPI.mSoundFadeOut(handle, time);
+}
+
 // ReverbSetParams - ea: 0x9360A0
 void ReverbSetParams(const Broc::string& name, bool immediate) {
     gBrocAPI.mReverbSetParams(&name, immediate);
@@ -3048,6 +3104,11 @@ bfloat operator*(int lhs, bfloat rhs) {
     return bfloat((float)lhs * rhs.mVal);
 }
 
+// operator*(bint, float) - ea: 0x971F80
+bfloat operator*(bint lhs, float rhs) {
+    return bfloat(lhs.mVal * rhs);
+}
+
 // operator*(bint, bfloat) - ea: 0x95AD50
 bfloat operator*(bint lhs, bfloat rhs) {
     float lhs_value = lhs.mVal;
@@ -3060,6 +3121,11 @@ bfloat operator+(bint lhs, bfloat rhs) {
     float lhs_value = lhs.mVal;
     float value = rhs.mVal + lhs_value;
     return bfloat(value);
+}
+
+// operator<(bfloat, bfloat) - ea: 0x975FF0
+bbool operator<(bfloat lhs, bfloat rhs) {
+    return bbool(rhs.mVal > lhs.mVal);
 }
 
 // bfloat::operator!= - ea: 0x95D300
@@ -3122,6 +3188,11 @@ bint operator+(bint lhs, bint rhs) {
 
 // operator<(bfloat, bint) - ea: 0x949670
 bbool operator<(bfloat lhs, bint rhs) {
+    return bbool(rhs.mVal > lhs.mVal);
+}
+
+// operator<(bint, bfloat) - ea: 0x971FC0
+bbool operator<(bint lhs, bfloat rhs) {
     return bbool(rhs.mVal > lhs.mVal);
 }
 
@@ -4465,6 +4536,31 @@ void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
 const Broc::bint* Broc::entity::__unnamed::key_struct::Get(
     Broc::bint* result) const {
     new (result) Broc::bint(Broc::gBrocAPI.m_entity_get_key(mHandle));
+    return result;
+}
+
+// model_struct::Get - ea: 0x970800
+const Broc::string* Broc::entity::__unnamed::model_struct::Get(
+    Broc::string* result) const {
+    Broc::string value;
+    Broc::string* rhs = Broc::gBrocAPI.m_entity_get_model(&value, mHandle);
+    new (result) Broc::string(*rhs);
+    value.~string();
+    return result;
+}
+
+// takedamage_struct::Get - ea: 0x9712A0
+const Broc::bint* Broc::entity::__unnamed::takedamage_struct::Get(
+    Broc::bint* result) const {
+    new (result) Broc::bint(Broc::gBrocAPI.m_entity_get_takedamage(mHandle));
+    return result;
+}
+
+// rotate_struct::Get - ea: 0x9713A0
+const Broc::vector* Broc::entity::__unnamed::rotate_struct::Get(
+    Broc::vector* result) const {
+    Broc::vector value;
+    *result = *Broc::gBrocAPI.m_entity_get_rotate(&value, mHandle);
     return result;
 }
 
