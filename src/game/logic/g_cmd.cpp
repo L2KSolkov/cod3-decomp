@@ -46,12 +46,44 @@ enum ECmdFuncType { CMD = 0, INPUT_CMD = 1 };
 
 class BaseCmdFuncInfo {
 public:
-    int mFuncType;          // +0x00
+    BaseCmdFuncInfo* mNext; // +0x00
     const char* mName;      // +0x04
-    BaseCmdFuncInfo* mNext; // +0x08
-    void* mFuncPtr;         // +0x0C
+    int mFuncType;          // +0x08
     static int DoesFunctionExist(BaseCmdFuncInfo* cmd);  // ?DoesFunctionExist@BaseCmdFuncInfo@@SAHPAU1@@Z
 };
+
+struct CmdFuncInfo : BaseCmdFuncInfo {
+    void (*mFunc)();        // +0x0C
+    void Init(BaseCmdFuncInfo* next, char* name, void (*func)());
+};
+
+struct InputCmdFuncInfo : BaseCmdFuncInfo {
+    void (*mInputFunc)(int, int);  // +0x0C
+    void Init(BaseCmdFuncInfo* next, char* name, void (*func)(int, int));
+};
+
+static_assert(sizeof(BaseCmdFuncInfo) == 0x0C, "BaseCmdFuncInfo size mismatch");
+static_assert(sizeof(CmdFuncInfo) == 0x10, "CmdFuncInfo size mismatch");
+static_assert(sizeof(InputCmdFuncInfo) == 0x10, "InputCmdFuncInfo size mismatch");
+
+// ea: 0x0065C300
+void CmdFuncInfo::Init(BaseCmdFuncInfo* next, char* name, void (*func)())
+{
+    mNext = next;
+    mFuncType = CMD;
+    mName = name;
+    mFunc = func;
+}
+
+// ea: 0x0065C330
+void InputCmdFuncInfo::Init(BaseCmdFuncInfo* next, char* name,
+                            void (*func)(int, int))
+{
+    mNext = next;
+    mFuncType = INPUT_CMD;
+    mName = name;
+    mInputFunc = func;
+}
 
 // ea: 0x0060E450
 void Cbuf_Init()
@@ -327,6 +359,8 @@ struct CurveEffectListElem {
     float        mEffectParams[2];  // +0x14
     static PoolAllocator* sAllocator;  // ?sAllocator@CurveEffectListElem@@2PAVPoolAllocator@@A @ 0xF4EC2C
     static void SetAllocator(PoolAllocator* allocator);
+    CurveEffectListElem* get_dlist_node();
+    static int get_dlist_node_offset();
 };
 static_assert(sizeof(CurveEffectListElem) == 0x1C,
               "CurveEffectListElem size mismatch");
@@ -336,6 +370,18 @@ PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
 void CurveEffectListElem::SetAllocator(PoolAllocator* allocator)
 {
     CurveEffectListElem::sAllocator = allocator;
+}
+
+// ea: 0x0065C360
+CurveEffectListElem* CurveEffectListElem::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x0065C370
+int CurveEffectListElem::get_dlist_node_offset()
+{
+    return 0;
 }
 
 // ea: 0x004DD600
@@ -3149,7 +3195,7 @@ void Cmd_AddServerCommand(const char* cmd_name,
         v3->mName = v4;
         v3->mFuncType = CMD;
         v3->mNext = v5;
-        v3->mFuncPtr = (void*)function;
+        v3[1].mNext = (BaseCmdFuncInfo*)function;
         sv_cmd_functions = v3;
     }
 }
@@ -3195,8 +3241,8 @@ void Cmd_ExecuteString(const char* text)
     v3->mNext = cmd_functions;
     cmd_functions = v3;
     int mFuncType = v3->mFuncType;
-    if (mFuncType == CMD && v3[1].mFuncPtr != nullptr
-        || mFuncType == INPUT_CMD && v3[1].mFuncPtr != nullptr)
+    if (mFuncType == CMD && v3[1].mNext != nullptr
+        || mFuncType == INPUT_CMD && v3[1].mNext != nullptr)
     {
         Cmd_CallCmdFunctionWithInputArgs(v3);
         return;
