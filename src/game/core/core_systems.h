@@ -281,6 +281,7 @@ struct reserved_dlist {
               m_next(m_node->mNext) {}
 
         T* operator*() { return reinterpret_cast<T*>(m_node); }
+        T* operator->() { return reinterpret_cast<T*>(m_node); }
         bool operator==(const iterator& rhs) const
         {
             return m_next == rhs.m_next;
