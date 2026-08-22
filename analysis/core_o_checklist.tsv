@@ -1119,8 +1119,8 @@ index	status	map_line
 1118	SKIPPED	0002:000e2990 ??_GCtrlIcon@@QAEPAXI@Z 008D1E90 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1119	VERIFIED	0002:000e29c0 ?DeleteInst@CurveManager@@SAXXZ 008D1EC0 f i core.o
 1120	VERIFIED	0002:000e2a50 ?Reformat@DialogMenuSystem@@QAEX_N@Z 008D1F50 f i core.o
-1121	PORTED	0002:000e2a90 ?AddTriangleResponse@DialogMenuSystem@@QAEXP6AXH@Z@Z 008D1F90 f i core.o	PORTED: added and IDA-verified GetActiveMenu -> GetLayer(activeMenu == 0) -> triangleResponse assignment
-1122	PORTED	0002:000e2ac0 ?GetStruct@GdbFile@@QAEPAXXZ 008D1FC0 f i core.o	PORTED: added and IDA-verified IDA-typed GdbFileSet::Value/InplaceVector view and index-0 return
+1121	VERIFIED	0002:000e2a90 ?AddTriangleResponse@DialogMenuSystem@@QAEXP6AXH@Z@Z 008D1F90 f i core.o	VERIFIED: matches IDA active-menu layer selection and triangleResponse assignment
+1122	VERIFIED	0002:000e2ac0 ?GetStruct@GdbFile@@QAEPAXXZ 008D1FC0 f i core.o	VERIFIED: matches IDA InplaceVector record index-0 return
 1123	VERIFIED	0002:000e2ad0 ?DeleteInst@CheckpointMgr@@SAXXZ 008D1FD0 f i core.o
 1124	FIXED	0002:000e2b60 ?GetLooping@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008D2060 f i core.o FIXED: IDA rumble flag accessor added in 9b24ec4b; IDA 0x004E2B60
 1125	FIXED	0002:000e2b80 ?NullHandle@RumbleEffectInstanceHandle@@SA?AV1@XZ 008D2080 f i core.o FIXED: IDA zero-handle factory added in 9b24ec4b; IDA 0x004E2B80
@@ -1261,7 +1261,7 @@ index	status	map_line
 1260	SKIPPED	0002:000e50c0 ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ 008D45C0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1261	SKIPPED	0002:000e50d0 ?allocate@?$allocator@D@std@@QAEPADI@Z 008D45D0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1262	SKIPPED	0002:000e50f0 ??$Find@PBD@?$InplaceTree@VInplaceString@@I@@QBEPAIABQBD@Z 008D45F0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1263	PORTED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  PORTED: added and IDA-verified column/row lookup, truncation assertions, and typed column return
+1263	VERIFIED	0002:000e5200 ??$GetFieldValuePtr@VInplaceString@@@DbRow@@QBEPBVInplaceString@@G@Z 008D4700 f i core.o  VERIFIED: matches IDA column/row lookup, truncation assertions, and typed column return
 1264	VERIFIED	0002:000e5330 ??$Find@I@?$InplaceTree@II@@QBEPAIABI@Z 008D4830 f i core.o VERIFIED: existing InplaceTreeFindUInt matches IDA traversal, assertions, and value pointer return
 1265	SKIPPED	0002:000e5400 ??$Find@I@?$InplaceAssetBank@VDialogueInstance@@V?$InplaceTree@II@@@@QBEPBVDialogueInstance@@ABI@Z 008D4900 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1266	SKIPPED	0002:000e5440 ??$FindIndex@I@?$InplaceAssetBank@VStringTableEntry@@V?$InplaceTree@II@@@@QBE_NABIPAI@Z 008D4940 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1327,7 +1327,7 @@ index	status	map_line
 1326	SKIPPED	0002:000e67d0 ?get_file_name@?$ae_fixed_string@$0IA@E@@QBE?AV1@_N@Z 008D5CD0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1327	SKIPPED	0002:000e6840 ?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z 008D5D40 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1328	VERIFIED	0002:000e68b0 ?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ 008D5DB0 f i core.o  VERIFIED: existing callback enumeration and out-of-handles error path match IDA
-1329	PORTED	0002:000e6990 ??0?$BitSet@$0CAA@@@QAE@XZ 008D5E90 f i core.o PORTED: added shared BitSet constructor; IDA verifies all 16 words are zeroed
+1329	VERIFIED	0002:000e6990 ??0?$BitSet@$0CAA@@@QAE@XZ 008D5E90 f i core.o VERIFIED: matches IDA zero-initialization of all 16 words
 1330	SKIPPED	0002:000e69c0 ?begin@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EC0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1331	SKIPPED	0002:000e69e0 ?end@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE?AViterator@12@XZ 008D5EE0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1332	SKIPPED	0002:000e6a00 ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@II@Z 008D5F00 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
