@@ -1085,6 +1085,27 @@ struct DbColumn {
 };
 static_assert(sizeof(DbColumn) == 0x10, "DbColumn size mismatch");
 
+template <typename T>
+struct DbColumnType : DbColumn {
+    const T* operator[](uint16_t idx) const
+    {
+        if (idx >= mNumElements)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\DbDefs.h";
+            AeAssert::gCurrentLine = 202;
+            AeAssert::gCurrentExpr = "idx < mNumElements";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid column Index"))
+                __debugbreak();
+        }
+        return reinterpret_cast<const T*>(mElements) + idx;
+    }
+};
+static_assert(sizeof(DbColumnType<float>) == sizeof(DbColumn),
+              "DbColumnType<float> size mismatch");
+
 struct DbSchema {
     uint16_t        mNumColumnTypes;  // +0x00
     unsigned char   _pad[0x4 - 0x2];
@@ -1114,6 +1135,7 @@ public:
     const DbGraphNode* GetIndexRoot() const;
     const DbColumn& GetColumnByIndex(uint16_t idx) const;
     DbColumn& GetColumnByIndex(uint16_t idx);
+    const DbColumn* GetColumnById(uint16_t columnId) const;
     int16_t GetColumnIndex(uint16_t columnId) const;
 };
 static_assert(sizeof(DbTable) == 0x34, "DbTable size mismatch");
@@ -1140,6 +1162,7 @@ public:
     DbRow** GetHits() const;
     uint16_t GetNumChildren() const;
     DbGraphNode* GetChild(uint16_t idx) const;
+    const void* GetValue(const DbTable* table, uint16_t idx) const;
 };
 static_assert(sizeof(DbGraphNode) == 0x10, "DbGraphNode size mismatch");
 

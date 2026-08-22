@@ -234,6 +234,52 @@ int16_t DbTable::GetColumnIndex(uint16_t columnId) const
     return (int16_t)v2;
 }
 
+// ea: 0x004E22E0
+const DbColumn* DbTable::GetColumnById(uint16_t columnId) const
+{
+    return mColumns[GetColumnIndex(columnId)];
+}
+
+// ea: 0x004E2310
+const void* DbGraphNode::GetValue(const DbTable* table, uint16_t idx) const
+{
+    if ((mFieldId & 0x8000) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 506;
+        AeAssert::gCurrentExpr = "!IsLeaf()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("only non-leaf nodes have values"))
+            __debugbreak();
+    }
+    if (idx >= mAttachments.nonLeaf.numChildren)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DbDefs.h";
+        AeAssert::gCurrentLine = 507;
+        AeAssert::gCurrentExpr =
+            "idx < mAttachments.nonLeaf.numChildren";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid Index"))
+            __debugbreak();
+    }
+    if (mAttachments.nonLeaf.valueIndices[idx] != -1)
+    {
+        const DbColumn* column =
+            table->mColumns[table->GetColumnIndex(mFieldId)];
+        return static_cast<const char*>(column->mElements)
+            + column->mElementSize * mAttachments.nonLeaf.valueIndices[idx];
+    }
+    return nullptr;
+}
+
+template const float* DbColumnType<float>::operator[](uint16_t) const;
+template const InplaceString*
+DbColumnType<InplaceString>::operator[](uint16_t) const;
+
 // ea: 0x004B4BB0
 uint16_t DbSchema::GetNumColumnTypes() const
 {
