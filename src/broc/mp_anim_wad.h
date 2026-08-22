@@ -11,8 +11,8 @@
 namespace mp_anim_wad {
 
 void RegisterHashStrings();
-int ResolveAnim(unsigned int treename, unsigned int animname,
-                unsigned int* getVal, unsigned int setVal);
+unsigned int ResolveAnim(unsigned int treename, unsigned int animname,
+                         unsigned int* getVal, unsigned int setVal);
 const char* ResolveAnimName(unsigned int anim);
 bool ValidateAnimationIndices();
 unsigned int GetBroAnim(unsigned int treename, unsigned int animname);

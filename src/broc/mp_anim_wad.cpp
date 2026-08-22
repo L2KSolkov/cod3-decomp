@@ -327,8 +327,8 @@ void RegisterHashStrings() {
     RegisterHashString(324854774, "weaponinfo");
 }
 
-int ResolveAnim(unsigned int treename, unsigned int animname,
-               unsigned int* getVal, unsigned int setVal) {
+unsigned int ResolveAnim(unsigned int treename, unsigned int animname,
+                         unsigned int* getVal, unsigned int setVal) {
     if (treename == 0x957A3A95)  // -1784152939
         return generic_human::ResolveAnim(animname, getVal, setVal);
     return 0;
