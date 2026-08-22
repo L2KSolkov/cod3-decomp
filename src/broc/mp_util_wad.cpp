@@ -8618,7 +8618,7 @@ void fireydeath(Broc::entity self, Broc::entity tank) {
         mp_util_wad::pLevel != nullptr
             ? mp_util_wad::pLevel->_base.entity
             : Broc::entity();
-    Broc::endon(lvl2, Broc::string_hash(combined.c_str()));
+    Broc::endon(lvl2, combined);
     combined.~string();
     target.~string();
     fireextinguish.~string();
@@ -8633,7 +8633,7 @@ void fireydeath(Broc::entity self, Broc::entity tank) {
     inClassname.~string();
     void* ftor = deleteonextinguish__functor(flameemitter);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
-                        __LINE__, "deleteonextinguish", ftor);
+                        428, "deleteonextinguish", ftor);
     for (;;)
         Broc::wait(Broc::RandomFloat(0.15f) + 0.1f);
     (void)self;
