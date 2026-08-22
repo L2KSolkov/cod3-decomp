@@ -1384,7 +1384,7 @@ index	status	map_line
 1383	SKIPPED	0002:000e9380 ??_Elogic_error@std@@UAEPAXI@Z 008D8880 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1384	SKIPPED	0002:000e93b0 ??_GEntityNotifySet@@QAEPAXI@Z 008D88B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1385	VERIFIED	0002:000e93e0 ?GetDebugString@AbstractEffect@@UBE?AVstring@Broc@@XZ 008D88E0 f i core.o
-1386	PORTED	0002:000e9410 ?CreateInst@SmokeGrenadeMgr@@SAXXZ 008D8910 f i core.o
+1386	VERIFIED	0002:000e9410 ?CreateInst@SmokeGrenadeMgr@@SAXXZ 008D8910 f i core.o	VERIFIED: IDA allocation, assert metadata, three-field list initialization, and singleton assignment match
 1387	SKIPPED	0002:000e94c0 ??_GActiveEffectSet@@QAEPAXI@Z 008D89C0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1388	SKIPPED	0002:000e94f0 ??_GAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1389	SKIPPED	0002:000e94f0 ??_EAbstractEffectSound@@UAEPAXI@Z 008D89F0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
