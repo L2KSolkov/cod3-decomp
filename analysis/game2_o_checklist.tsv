@@ -544,7 +544,7 @@ index	status	map_line
 543	FIXED	0002:000ffb80 ?QuickDeactivation@TaskHandler@@QAEXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 008EF080 f game2.o
 544	FIXED	0002:000ffbd0 ?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z 008EF0D0 f game2.o
 545	PORTED	0002:000ffc30 ?ApplyFire@AnimIK@@AAEXPAVEntity@@@Z 008EF130 f game2.o
-546	VERIFIED	0002:00101000 ?IN_Frame@@YAXXZ 008F0500 f game2.o
+546	FIXED	0002:00101000 ?IN_Frame@@YAXXZ 008F0500 f game2.o FIXED: restored Sys_Milliseconds timestamps on all CL_GamepadEvent calls
 547	VERIFIED	0002:00101590 ?InitKeyBindings@ButtonMgr@@SAXH@Z 008F0A90 f game2.o
 548	VERIFIED	0002:001016f0 ?ClearBinding@ButtonMgr@@SAXPBVBaseCmdFuncInfo@@H@Z 008F0BF0 f game2.o
 549	FIXED	0002:001017c0 ?ClearAllBindings@ButtonMgr@@SAXXZ 008F0CC0 f game2.o
