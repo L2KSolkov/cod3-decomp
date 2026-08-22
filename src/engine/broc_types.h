@@ -1505,7 +1505,7 @@ void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
                          int damageType);
 void SetMaxVehicles(int vehicles);
 void FireTurret(Broc::entity* e);
-Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e);
+Broc::vector* GetOrigin(Broc::vector* result, const Broc::entity* e);
 void Earthquake(float scale, float duration, const Broc::vector* source,
                 float radius, int player_index);
 void Rumble(const Broc::string* lowFreqNotes, float lowFreqDuraton,

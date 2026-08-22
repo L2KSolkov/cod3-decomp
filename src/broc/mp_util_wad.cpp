@@ -2880,7 +2880,7 @@ bool Code_PositionWouldTelefrag(const Broc::vector* position) {
 }
 
 // Broc::GetOrigin - ea: 0x970C60
-Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e) {
+Broc::vector* GetOrigin(Broc::vector* result, const Broc::entity* e) {
     Broc::vector outVec;
     gBrocAPI.mGetOrigin(e->GetHandle(), &outVec);
     *result = outVec;
