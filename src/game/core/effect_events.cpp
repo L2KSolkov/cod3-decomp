@@ -2690,6 +2690,23 @@ bool AbstractEffectLight::IsFinished()
     return false;
 }
 
+// ea: 0x004DF340
+void AbstractEffectLight::AdjustEffect_Scale(const char* param, float scale)
+{
+    (void)param;
+    (void)scale;
+}
+
+// ea: 0x004DF350
+void AbstractEffectLight::PlayQueuedEffect()
+{
+}
+
+// ea: 0x004DF360
+void AbstractEffectLight::StopEffect()
+{
+}
+
 // ============================================================================
 // AbstractEffectShakeAndRumble virtuals
 // ============================================================================

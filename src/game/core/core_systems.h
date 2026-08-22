@@ -534,6 +534,9 @@ struct AbstractEffectLight : AbstractEffect {
     Broc::string GetDebugString() const;  // ea: 0x004BD300
     void FrameAdvance(float delta_t);     // ea: 0x004CDF50
     bool IsFinished();                    // ea: 0x004CE060
+    void AdjustEffect_Scale(const char* param, float scale); // ea: 0x004DF340
+    void PlayQueuedEffect();              // ea: 0x004DF350
+    void StopEffect();                    // ea: 0x004DF360
 private:
     math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
 };
