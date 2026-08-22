@@ -22,6 +22,25 @@ namespace PlayerStats {
 int TotalScoreForStats(short* const stats);
 }
 
+// game.o 0x0065EF90 / 0x0065EFB0
+// IDA's tl_align instantiations use the same power-of-two mask for integer
+// values and pointers; keep the two emitted template specializations explicit.
+template <typename T>
+T tl_align(T p, unsigned int a);
+
+template <>
+unsigned int tl_align<unsigned int>(unsigned int p, unsigned int a)
+{
+    return ~(a - 1u) & (p + a - 1u);
+}
+
+template <>
+char* tl_align<char*>(char* p, unsigned int a)
+{
+    const uintptr_t value = reinterpret_cast<uintptr_t>(p + a - 1u);
+    return reinterpret_cast<char*>(value & ~(uintptr_t)(a - 1u));
+}
+
 // game.o 0x0065B6B0
 int nglGetStripIndices(int NVerts, int NStrips)
 {
