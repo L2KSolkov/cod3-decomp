@@ -14,6 +14,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 namespace AeAssert {
 enum ECoderId : int;
@@ -4943,6 +4944,15 @@ public:
         int          state[6];       // +0x24
         nflFileID    fileID[6];      // +0x3C
         nslBankID    bankId[6];      // +0x54
+
+        WbkEntry& operator=(const WbkEntry& other)
+        {
+            unsigned int* dst = reinterpret_cast<unsigned int*>(this);
+            const unsigned int* src = reinterpret_cast<const unsigned int*>(&other);
+            for (int i = 0; i < 27; ++i)
+                dst[i] = src[i];
+            return *this;
+        }
     };
     static_assert(sizeof(WbkEntry) == 0x6C, "WbkEntry view size mismatch");
     uint8_t  _pad0[4];                 // +0x00 (vftable)
@@ -4976,6 +4986,25 @@ public:
     void RegisterWbk(const tlFixedString& name, const char* path,
                      ELanguage lang, TPakId pak);  // game.o 0x621470
 };
+
+template <>
+ae_sized_array_base<AudioBankMgr::WbkEntry, 16>::ae_sized_array_base()
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        unsigned int* words =
+            reinterpret_cast<unsigned int*>(&m_elements[i]);
+        for (int j = 0; j < 8; ++j)
+            words[j] = 0;
+        words[8] = NFL_FILE_ID_INVALID;
+        for (int j = 9; j < 15; ++j)
+            words[j] = 0;
+        for (int j = 15; j < 21; ++j)
+            words[j] = NFL_FILE_ID_INVALID;
+        for (int j = 21; j < 27; ++j)
+            words[j] = NFL_FILE_ID_INVALID;
+    }
+}
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
 extern void* AudioBankMgr_sInst;
 
