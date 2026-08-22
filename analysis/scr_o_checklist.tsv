@@ -923,9 +923,9 @@ index	status	map_line
 922	VERIFIED	0002:001e9f80 ?Inst@AITypeManager@@SAPAV1@XZ 009D9480 f i scr.o	VERIFIED: matches IDA decompile and disassembly; returns AITypeManager::sInst
 923	VERIFIED	0002:001e9f90 ?SetState@SpectateMenu@@QAEXW4ESpectatorState@@@Z 009D9490 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores state at +0x4C then calls UpdateState
 924	VERIFIED	0002:001e9fb0 ?SetSeconds@SpectateMenu@@QAEXH@Z 009D94B0 f i scr.o	VERIFIED: matches IDA decompile and disassembly; stores seconds at +0x50 then calls UpdateSeconds
-925	PORTED	0002:001e9fd0 ?get_owner@rb_vehicle@@QAEPAVEntity@@XZ 009D94D0 f i scr.o	PORTED: restored exact IDA wrapper returning m_owner at +0x270; source change b71b0d7a
-926	PORTED	0002:001e9fe0 ?set_script_brake@rb_vehicle@@QAEXM@Z 009D94E0 f i scr.o	PORTED: restored exact IDA wrapper storing m_script_brake at +0x260; source change b71b0d7a
-927	PORTED	0002:001ea000 ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z 009D9500 f i scr.o	PORTED: restored exact IDA wrapper forwarding through mVehicleController at +0x2D0; source change b71b0d7a
+925	VERIFIED	0002:001e9fd0 ?get_owner@rb_vehicle@@QAEPAVEntity@@XZ 009D94D0 f i scr.o	VERIFIED: matches IDA return of m_owner at +0x270
+926	VERIFIED	0002:001e9fe0 ?set_script_brake@rb_vehicle@@QAEXM@Z 009D94E0 f i scr.o	VERIFIED: matches IDA store to m_script_brake at +0x260
+927	VERIFIED	0002:001ea000 ?set_script_target@rb_vehicle@@QAEXABVPosition3@math@@MM@Z 009D9500 f i scr.o	VERIFIED: matches IDA forwarding through mVehicleController at +0x2D0
 928	VERIFIED	0002:001ea030 ??0dlist_node@?$reserved_dlist@VAeThreadState@@@@QAE@PAU01@0@Z 009D9530 f i scr.o	VERIFIED: matches IDA next/prev assignments
 929	VERIFIED	0002:001ea050 ??0dlist_node@?$reserved_dlist@VEndOnScriptNode@@@@QAE@PAU01@0@Z 009D9550 f i scr.o	VERIFIED: matches IDA next/prev assignments
 930	SKIPPED	0002:001ea070 ?capacity@?$ae_array@VHashString@@$03@@QBEHXZ 009D9570 f i scr.o  SKIPPED: inline template/container helper; supplied by its template definition
