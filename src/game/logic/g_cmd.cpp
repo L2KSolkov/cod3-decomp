@@ -320,10 +320,18 @@ struct CurveEvalFunc {
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);
     static void operator delete(void* ptr);
+    CurveEvalFunc();  // game.o 0x00660230
     CurveEvalFunc* get_dlist_node();
     static int get_dlist_node_offset();
 };
 PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
+
+// game.o 0x00660230
+CurveEvalFunc::CurveEvalFunc()
+{
+    m_next = nullptr;
+    m_prev = nullptr;
+}
 
 class Curve {
 public:
@@ -381,12 +389,23 @@ struct CurveEffectListElem {
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);
     static void operator delete(void* ptr);
+    CurveEffectListElem();  // game.o 0x00660210
     CurveEffectListElem* get_dlist_node();
     static int get_dlist_node_offset();
 };
 static_assert(sizeof(CurveEffectListElem) == 0x1C,
               "CurveEffectListElem size mismatch");
 PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
+
+// game.o 0x00660210
+CurveEffectListElem::CurveEffectListElem()
+{
+    m_dlist_node.m_next = nullptr;
+    m_dlist_node.m_prev = nullptr;
+    mOwner = 0;
+    mSound.mVal = 0;
+    mSound.mVal = 0;
+}
 
 // ea: 0x004DD5F0
 void CurveEffectListElem::SetAllocator(PoolAllocator* allocator)

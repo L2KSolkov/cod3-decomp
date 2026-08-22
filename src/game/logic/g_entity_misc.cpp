@@ -4969,6 +4969,7 @@ public:
     AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
+    bool AnyBanksLoaded() const;       // ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ
 private:
     const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
     void NotifyLoaded();               // ?NotifyLoaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9C0)
@@ -5007,6 +5008,12 @@ ae_sized_array_base<AudioBankMgr::WbkEntry, 16>::ae_sized_array_base()
 }
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
 extern void* AudioBankMgr_sInst;
+
+// game.o 0x006600F0
+bool AudioBankMgr::AnyBanksLoaded() const
+{
+    return m_size > 0;
+}
 
 // ea: 0x004DC880
 void* AudioBankMgr::operator new(size_t size, void* p)

@@ -120,6 +120,14 @@ nglParamSet::nglParamSet()
 {
 }
 
+// game.o 0x00660120
+void nglParamSet::Clear()
+{
+    unsigned int* array = Array;
+    array[0] = 0;
+    array[1] = 0;
+}
+
 // ea: 0x0065B690
 unsigned __int64* nglParamSet::ValidFlag()
 {
