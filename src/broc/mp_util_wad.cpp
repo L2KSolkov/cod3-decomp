@@ -15708,15 +15708,22 @@ int SortMarkers() {
             for (Broc::bint j((int)i); (int)j <
                                       Broc::size(mp_util_wad::pLevel->warAreas);
                  j = (int)j + 1) {
-                Broc::entity a =
+                Broc::entity& a =
                     mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
-                Broc::entity b =
+                Broc::entity& b =
                     mp_util_wad::pLevel->warAreas[(unsigned int)(int)j];
-                if (mp_util_wad::entity_get_key(a) >
-                    mp_util_wad::entity_get_key(b)) {
+                Broc::entity::__unnamed::key_struct aKey = {
+                    a.GetHandle()};
+                Broc::bint aValue;
+                aKey.Get(&aValue);
+                Broc::entity::__unnamed::key_struct bKey = {
+                    b.GetHandle()};
+                Broc::bint bValue;
+                bKey.Get(&bValue);
+                if ((int)aValue > (int)bValue) {
                     temp = a;
-                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)i] = b;
-                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)j] = temp;
+                    a = b;
+                    b = temp;
                 }
             }
             i = (int)i + 1;
