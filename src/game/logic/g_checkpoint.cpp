@@ -779,7 +779,7 @@ template <typename T>
 static T* CheckpointVectorConstruct(int iCapacity, int iSize)
 {
     T* p = (T*)tlMemAlloc(iCapacity * sizeof(T), 8, 0);
-    for (T* q = p + iSize; q != p + iCapacity; ++q)
+    for (T* q = p; q != p + iSize; ++q)
         memset(q, 0, sizeof(T));
     return p;
 }
