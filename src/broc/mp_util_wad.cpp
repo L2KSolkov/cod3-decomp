@@ -13112,8 +13112,12 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
 
     Broc::vector pickerOrigin;
     Broc::vector flagOrigin;
-    mp_util_wad::entity_get_origin(&pickerOrigin, guy);
-    mp_util_wad::entity_get_origin(&flagOrigin, flag);
+    Broc::entity::__unnamed::origin_struct pickerOriginField = {
+        guy.GetHandle()};
+    pickerOriginField.Get(&pickerOrigin);
+    Broc::entity::__unnamed::origin_struct flagOriginField = {
+        flag.GetHandle()};
+    flagOriginField.Get(&flagOrigin);
 
     if (*mp_util_wad::GetEE_holder(flag) != Broc::gEntityUndef ||
         ((bool)atBase &&
@@ -13125,8 +13129,7 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
             playSounds = false;
         }
 
-        HashStr pickupNotify;
-        pickupNotify.mVal = 0x87404C8Eu;
+        HashStr pickupNotify(0x87404C8Eu);
         Broc::notify(flag, pickupNotify);
         HandlePickupFlag(flag, guy, itemIndex, (bool)playSounds);
         return;
@@ -13146,8 +13149,7 @@ void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
 
 notify_pickup:
     {
-        HashStr pickupNotify;
-        pickupNotify.mVal = 0x87404C8Eu;
+        HashStr pickupNotify(0x87404C8Eu);
         Broc::notify(flag, pickupNotify);
         HandlePickupFlag(flag, guy, itemIndex, (bool)playSounds);
     }
