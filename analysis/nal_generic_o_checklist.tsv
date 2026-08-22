@@ -14,10 +14,10 @@ index	status	map_line
 13	VERIFIED	0002:00468c70 ?GetBlockPtr@nalGenericAnim@nalGeneric@@QAEPAXH@Z 00C58170 f i nal_generic.o
 14	VERIFIED	0002:00468c80 ?GetBlockUnit@nalGenericAnim@nalGeneric@@QBEHXZ 00C58180 f i nal_generic.o
 15	VERIFIED	0002:00468c90 ??1nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAE@XZ 00C58190 f i nal_generic.o
-16	PORTED	0002:00468ca0 ??0nalComponentEnum@@QAE@PBUnalComponentInfo@nalGeneric@@PAPBXPBVnalGenericAnim@2@1@Z 00C581A0 f i nal_generic.o
-17	PORTED	0002:00468cc0 ?Release@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C581C0 f nal_generic.o
-18	PORTED	0002:00468d10 ?GetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@IBEXABVnalGenericPose@2@AAVnalPositionOrientation@@@Z 00C58210 f nal_generic.o
-19	PORTED	0002:00468d50 ?GetHash@nalGenericInstance@nalGeneric@@KAIPBVnalGenericSkeleton@2@0@Z 00C58250 f nal_generic.o
+16	PORTED	0002:00468ca0 ??0nalComponentEnum@@QAE@PBUnalComponentInfo@nalGeneric@@PAPBXPBVnalGenericAnim@2@1@Z 00C581A0 f i nal_generic.o	PORTED: IDA 0x00868CA0 assigns Anim, ComponentInfo, CustomSkeletonData, and CustomAnimData
+17	PORTED	0002:00468cc0 ?Release@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C581C0 f nal_generic.o	PORTED: IDA 0x00868CC0 is an intentional no-op virtual release
+18	PORTED	0002:00468d10 ?GetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@IBEXABVnalGenericPose@2@AAVnalPositionOrientation@@@Z 00C58210 f nal_generic.o	PORTED: IDA 0x00868D10 returns Identity for a negative offset or reads PoseData at TrajectoryOffset
+19	PORTED	0002:00468d50 ?GetHash@nalGenericInstance@nalGeneric@@KAIPBVnalGenericSkeleton@2@0@Z 00C58250 f nal_generic.o	PORTED: IDA 0x00868D50 hashes the two skeleton pointers modulo 0x43
 20	VERIFIED	0002:00468d70 ?nalGetDecompCacheSize@@YAHXZ 00C58270 f nal_generic.o
 21	VERIFIED	0002:00468d80 ??1nalGenericPose@nalGeneric@@QAE@XZ 00C58280 f nal_generic.o
 22	PORTED	0002:00468dd0 ?GetPoseSize@nalGenericPose@nalGeneric@@IBEHXZ 00C582D0 f nal_generic.o
