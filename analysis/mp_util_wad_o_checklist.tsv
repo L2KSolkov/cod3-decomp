@@ -179,7 +179,7 @@ index	status	map_line
 178	FIXED	0002:00536390 ?ambient_chatter_system@_mp_audio@@YAXVentity@Broc@@@Z 00D25890 f mp_util_wad.o	FIXED: IDA 0x00936390 passes the copied pLevel base entity into audio_spawner
 179	VERIFIED	0002:005364b0 ?audio_spawner__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D259B0 f i mp_util_wad.o	VERIFIED: IDA 0x009364B0 allocates a 0x10-byte AeThreadFunctor2, captures entity/string, and destroys the string copy
 180	VERIFIED	0002:00536570 ?interior_triggering_device@_mp_audio@@YAXVentity@Broc@@0@Z 00D25A70 f mp_util_wad.o
-181	PORTED	0002:00536740 ?Code_IsLocalPlayer@Broc@@YA_NVentity@1@@Z 00D25C40 f i mp_util_wad.o	PORTED: added IDA 0x00936740 wrapper forwarding mIsLocalPlayer(GetHandle())
+181	VERIFIED	0002:00536740 ?Code_IsLocalPlayer@Broc@@YA_NVentity@1@@Z 00D25C40 f i mp_util_wad.o	VERIFIED: IDA 0x00936740 forwards entity.GetHandle() to mIsLocalPlayer; implementation matches
 182	FIXED	0002:00536770 ?PlayerLocation@_mp_audio@@YAXVentity@Broc@@@Z 00D25C70 f mp_util_wad.o	FIXED: IDA 0x00936770 passes the copied pLevel base entity into audio_crossfade_wait
 183	VERIFIED	0002:00536ef0 ??0bint@@QAE@I@Z 00D263F0 f i mp_util_wad.o	VERIFIED: IDA 0x00936EF0 stores the unsigned rhs in bint::mVal and returns this
 184	VERIFIED	0002:00536f20 ??8bint@@QBE_NH@Z 00D26420 f i mp_util_wad.o	VERIFIED: IDA 0x00936F20 compares rhs with bint::mVal
@@ -296,7 +296,7 @@ index	status	map_line
 295	VERIFIED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o
 296	VERIFIED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o
 297	VERIFIED	0002:0053e560 ?SetActionHint@Broc@@YAXHH@Z 00D2DA60 f i mp_util_wad.o
-298	PORTED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o	PORTED: added IDA 0x0093E590 wrapper forwarding mGetPlayerIndex(GetHandle())
+298	VERIFIED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o	VERIFIED: IDA 0x0093E590 forwards entity.GetHandle() to mGetPlayerIndex; implementation matches
 299	VERIFIED	0002:0053e5c0 ?CallbackPlayerEnter@_mp_common@@YAXVentity@Broc@@H@Z 00D2DAC0 f mp_util_wad.o
 300	VERIFIED	0002:0053e910 ?Code_GetPlayerName@Broc@@YAPBDVentity@1@@Z 00D2DE10 f i mp_util_wad.o	VERIFIED: IDA 0x0093E910 gets the copied player's handle and returns mGetPlayerName
 301	VERIFIED	0002:0053e940 ?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z 00D2DE40 f i mp_util_wad.o
