@@ -165,7 +165,7 @@ index	status	map_line
 164	VERIFIED	0002:0012c2b0 ?IN_EnableAsserts@@YAXXZ 0091B7B0 f cl.o
 165	VERIFIED	0002:0012c2c0 ?CL_ShutdownInput@@YAXXZ 0091B7C0 f cl.o
 166	FIXED	0002:0012c540 ?CL_ClearKeys@@YAXXZ 0091BA40 f cl.o FIXED: corrected shared IDA-derived kb indices
-167	PORTED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o PORTED: IDA match; clears kb and the current client kbss entry
+167	FIXED	0002:0012c560 ?CL_ClearKeysForAll@@YAXXZ 0091BA60 f cl.o FIXED: restored IDA void signature and removed decompiler-only return
 168	PORTED	0002:0012c590 ?Field_Paste@@YAXPAUfield_t@@@Z 0091BA90 f cl.o PORTED: IDA match; intentionally empty in the reference
 169	VERIFIED	0002:0012c7f0 ?Key_GetOverstrikeMode@@YAHXZ 0091BCF0 f cl.o
 170	VERIFIED	0002:0012c800 ?Key_SetOverstrikeMode@@YAXH@Z 0091BD00 f cl.o
