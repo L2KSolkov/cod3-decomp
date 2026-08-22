@@ -853,6 +853,7 @@ void DynamicDecalSet::Render()
 class DynamicDecalMgr {
 public:
     static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A
+    static void* operator new(size_t size, void* p); // ??2DynamicDecalMgr@@SAPAXIPAX@Z (core.o 0x004DECA0)
     struct DecalSet {
         nglTexture* mTexture;    // +0x00
         DynamicDecalSet* mDecalSet;  // +0x04
@@ -900,6 +901,13 @@ static_assert(sizeof(DynamicDecalMgr::DecalSet) == 0x8,
               "DynamicDecalMgr::DecalSet size mismatch");
 static_assert(sizeof(DynamicDecalMgr) == 0x10,
               "DynamicDecalMgr size mismatch");
+
+// ea: 0x004DECA0
+void* DynamicDecalMgr::operator new(size_t size, void* p)
+{
+    (void)size;
+    return p;
+}
 
 // ea: 0x004DECB0
 DynamicDecalMgr* DynamicDecalMgr::CreateInst()
