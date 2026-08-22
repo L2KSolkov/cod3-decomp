@@ -13459,16 +13459,19 @@ void WARScore(Broc::entity self) {
             if ((int)winningTeam == -1) {
                 Broc::string team("axis");
                 Broc::string team2("allies");
-                int mVal = (int)points;
-                Broc::Code_IncTeamScore(team, mVal);
-                Broc::Code_IncTeamScore(team2, 0);
+                Broc::bint axisScore(
+                    Broc::Code_GetTeamScore(team) + (int)points);
+                int alliesScore = Broc::Code_GetTeamScore(team2);
+                Broc::Code_SendGameScore(alliesScore, (int)axisScore);
                 team.~string();
                 team2.~string();
             } else {
                 Broc::string team("allies");
                 Broc::string team2("axis");
-                Broc::Code_IncTeamScore(team, (int)points);
-                Broc::Code_IncTeamScore(team2, 0);
+                int axisScore = Broc::Code_GetTeamScore(team2);
+                Broc::bint alliesScore(
+                    Broc::Code_GetTeamScore(team) + (int)points);
+                Broc::Code_SendGameScore((int)alliesScore, axisScore);
                 team.~string();
                 team2.~string();
             }
