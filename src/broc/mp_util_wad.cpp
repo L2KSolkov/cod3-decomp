@@ -11262,17 +11262,21 @@ void Goal(Broc::entity self) {
         return;
 
     Broc::bint dist;
-    axis_holder = *mp_util_wad::GetEE_holder(
-        mp_util_wad::pLevel->allies_flag_ent);
     allies_holder = *mp_util_wad::GetEE_holder(
         mp_util_wad::pLevel->axis_flag_ent);
+    axis_holder = *mp_util_wad::GetEE_holder(
+        mp_util_wad::pLevel->allies_flag_ent);
 
     Broc::vector selfOrigin;
-    mp_util_wad::entity_get_origin(&selfOrigin, self);
+    Broc::entity::__unnamed::origin_struct selfOriginField = {
+        self.GetHandle()};
+    selfOriginField.Get(&selfOrigin);
     Broc::bint axis_dist;
     if (Broc::IsDefined(axis_holder)) {
         Broc::vector holderOrigin;
-        mp_util_wad::entity_get_origin(&holderOrigin, axis_holder);
+        Broc::entity::__unnamed::origin_struct holderOriginField = {
+            axis_holder.GetHandle()};
+        holderOriginField.Get(&holderOrigin);
         axis_dist = (int)Broc::Distance(&holderOrigin, &selfOrigin);
     } else {
         axis_dist = 0;
@@ -11281,14 +11285,18 @@ void Goal(Broc::entity self) {
     Broc::bint allies_dist;
     if (Broc::IsDefined(allies_holder)) {
         Broc::vector holderOrigin;
-        mp_util_wad::entity_get_origin(&holderOrigin, allies_holder);
+        Broc::entity::__unnamed::origin_struct holderOriginField = {
+            allies_holder.GetHandle()};
+        holderOriginField.Get(&holderOrigin);
         allies_dist = (int)Broc::Distance(&holderOrigin, &selfOrigin);
     } else {
         allies_dist = 0;
     }
 
     Broc::string targetName;
-    mp_util_wad::entity_get_targetname(&targetName, self);
+    Broc::entity::__unnamed::targetname_struct targetNameField = {
+        self.GetHandle()};
+    targetNameField.Get(&targetName);
     bool isAxisBase = targetName == "axis";
     targetName.~string();
     if (isAxisBase && Broc::Code_IsLocalPlayer(axis_holder)) {
@@ -11303,12 +11311,15 @@ void Goal(Broc::entity self) {
         slot.~string();
         if (flag_weapon == "mp_flag_allies" && (int)axis_dist < 64) {
             Broc::vector flagOrigin;
-            mp_util_wad::entity_get_origin(
-                &flagOrigin, mp_util_wad::pLevel->axis_flag_ent);
+            Broc::entity::__unnamed::origin_struct flagOriginField = {
+                mp_util_wad::pLevel->axis_flag_ent.GetHandle()};
+            flagOriginField.Get(&flagOrigin);
             Broc::entity goal = *mp_util_wad::GetEE_goal(
                 mp_util_wad::pLevel->axis_flag_ent);
             Broc::vector goalOrigin;
-            mp_util_wad::entity_get_origin(&goalOrigin, goal);
+            Broc::entity::__unnamed::origin_struct goalOriginField = {
+                goal.GetHandle()};
+            goalOriginField.Get(&goalOrigin);
             dist = (int)Broc::Distance(&goalOrigin, &flagOrigin);
             if ((int)dist < 64) {
                 Broc::Code_AreaCaptured(0, 1, 0);
@@ -11318,7 +11329,7 @@ void Goal(Broc::entity self) {
     }
 
     targetName = Broc::string((const char*)NULL);
-    mp_util_wad::entity_get_targetname(&targetName, self);
+    targetNameField.Get(&targetName);
     bool isAlliesBase = targetName == "allies";
     targetName.~string();
     if (isAlliesBase && Broc::Code_IsLocalPlayer(allies_holder)) {
@@ -11331,12 +11342,15 @@ void Goal(Broc::entity self) {
             slot.~string();
             if (flag_weapon == "mp_flag_axis" && (int)allies_dist < 64) {
                 Broc::vector flagOrigin;
-                mp_util_wad::entity_get_origin(
-                    &flagOrigin, mp_util_wad::pLevel->allies_flag_ent);
+                Broc::entity::__unnamed::origin_struct flagOriginField = {
+                    mp_util_wad::pLevel->allies_flag_ent.GetHandle()};
+                flagOriginField.Get(&flagOrigin);
                 Broc::entity goal = *mp_util_wad::GetEE_goal(
                     mp_util_wad::pLevel->allies_flag_ent);
                 Broc::vector goalOrigin;
-                mp_util_wad::entity_get_origin(&goalOrigin, goal);
+                Broc::entity::__unnamed::origin_struct goalOriginField = {
+                    goal.GetHandle()};
+                goalOriginField.Get(&goalOrigin);
                 dist = (int)Broc::Distance(&goalOrigin, &flagOrigin);
                 if ((int)dist < 64) {
                     Broc::Code_AreaCaptured(0, 0, 0);
