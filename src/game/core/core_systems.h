@@ -13,6 +13,7 @@
 
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
+#include "core/fourcc.h"
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
@@ -1414,6 +1415,21 @@ struct DbQueryString {
     const char* c_str() const;
 };
 static_assert(sizeof(DbQueryString) == 0x80, "DbQueryString size mismatch");
+
+template <typename T>
+struct DbFieldType : DbField {
+    T m_val;  // +0x04
+
+    const T& GetValue() const { return m_val; }
+};
+static_assert(sizeof(DbFieldType<int>) == 8,
+              "DbFieldType<int> size mismatch");
+static_assert(sizeof(DbFieldType<float>) == 8,
+              "DbFieldType<float> size mismatch");
+static_assert(sizeof(DbFieldType<FourCC>) == 8,
+              "DbFieldType<FourCC> size mismatch");
+static_assert(sizeof(DbFieldType<DbQueryString>) == 0x84,
+              "DbFieldType<DbQueryString> size mismatch");
 
 // ============================================================================
 // Pak/dialogue/file-support types (verified against IDA)
