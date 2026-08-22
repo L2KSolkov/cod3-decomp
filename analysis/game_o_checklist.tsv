@@ -767,27 +767,27 @@ index	status	map_line
 766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o	PORTED: restored exact aligned cdl_patch_t loader with sizeof stride
 767	SKIPPED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 768	SKIPPED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o
-770	PORTED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o
-771	PORTED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o
-772	PORTED	0002:0025cbf0 ?get_available_slots@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ 00A4C0F0 f i game.o
-773	PORTED	0002:0025cc10 ?add_fast@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEPAUbounded_proxy_obj_t@@XZ 00A4C110 f i game.o
-774	PORTED	0002:0025cc70 ?remove_all_ndc@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEXXZ 00A4C170 f i game.o
-775	PORTED	0002:0025cc80 ??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEAAUbounded_proxy_obj_t@@H@Z 00A4C180 f i game.o
-776	PORTED	0002:0025cce0 ?get_available_slots@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ 00A4C1E0 f i game.o
-777	PORTED	0002:0025cd00 ??0?$phys_static_array@H$0BAA@@@QAE@XZ 00A4C200 f i game.o
-778	PORTED	0002:0025cd20 ?add_fast@?$phys_static_array@H$0BAA@@@QAEPAHXZ 00A4C220 f i game.o
-779	PORTED	0002:0025cd80 ?remove_all_ndc@?$phys_static_array@H$0BAA@@@QAEXXZ 00A4C280 f i game.o
-780	PORTED	0002:0025cd90 ??A?$phys_static_array@H$0BAA@@@QAEAAHH@Z 00A4C290 f i game.o
-781	PORTED	0002:0025cdf0 ?get_available_slots@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C2F0 f i game.o
-782	PORTED	0002:0025ce10 ?get_count@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C310 f i game.o
-783	PORTED	0002:0025ce20 ??0?$phys_static_array@H$0IA@@@QAE@XZ 00A4C320 f i game.o
-784	PORTED	0002:0025ce40 ?add_fast@?$phys_static_array@H$0IA@@@QAEPAHXZ 00A4C340 f i game.o
-785	PORTED	0002:0025cea0 ?remove_all_ndc@?$phys_static_array@H$0IA@@@QAEXXZ 00A4C3A0 f i game.o
-786	PORTED	0002:0025ceb0 ??A?$phys_static_array@H$0IA@@@QAEAAHH@Z 00A4C3B0 f i game.o
-787	PORTED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o
-788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o
-789	PORTED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o
+769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o	PORTED: restored exact capacity assertion and slot append from IDA
+770	PORTED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o	PORTED: restored exact allocation-count reset from IDA
+771	PORTED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
+772	PORTED	0002:0025cbf0 ?get_available_slots@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ 00A4C0F0 f i game.o	PORTED: restored exact capacity-minus-count accessor from IDA
+773	PORTED	0002:0025cc10 ?add_fast@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEPAUbounded_proxy_obj_t@@XZ 00A4C110 f i game.o	PORTED: restored exact capacity assertion and slot append from IDA
+774	PORTED	0002:0025cc70 ?remove_all_ndc@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEXXZ 00A4C170 f i game.o	PORTED: restored exact allocation-count reset from IDA
+775	PORTED	0002:0025cc80 ??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEAAUbounded_proxy_obj_t@@H@Z 00A4C180 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
+776	PORTED	0002:0025cce0 ?get_available_slots@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ 00A4C1E0 f i game.o	PORTED: restored exact capacity-minus-count accessor from IDA
+777	PORTED	0002:0025cd00 ??0?$phys_static_array@H$0BAA@@@QAE@XZ 00A4C200 f i game.o	PORTED: instantiated exact integer-array constructor
+778	PORTED	0002:0025cd20 ?add_fast@?$phys_static_array@H$0BAA@@@QAEPAHXZ 00A4C220 f i game.o	PORTED: instantiated exact integer-array append helper
+779	PORTED	0002:0025cd80 ?remove_all_ndc@?$phys_static_array@H$0BAA@@@QAEXXZ 00A4C280 f i game.o	PORTED: instantiated exact integer-array reset helper
+780	PORTED	0002:0025cd90 ??A?$phys_static_array@H$0BAA@@@QAEAAHH@Z 00A4C290 f i game.o	PORTED: instantiated exact integer-array mutable indexer
+781	PORTED	0002:0025cdf0 ?get_available_slots@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C2F0 f i game.o	PORTED: instantiated exact integer-array capacity accessor
+782	PORTED	0002:0025ce10 ?get_count@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C310 f i game.o	PORTED: existing exact count accessor verified against IDA
+783	PORTED	0002:0025ce20 ??0?$phys_static_array@H$0IA@@@QAE@XZ 00A4C320 f i game.o	PORTED: instantiated exact integer-array constructor
+784	PORTED	0002:0025ce40 ?add_fast@?$phys_static_array@H$0IA@@@QAEPAHXZ 00A4C340 f i game.o	PORTED: instantiated exact integer-array append helper
+785	PORTED	0002:0025cea0 ?remove_all_ndc@?$phys_static_array@H$0IA@@@QAEXXZ 00A4C3A0 f i game.o	PORTED: instantiated exact integer-array reset helper
+786	PORTED	0002:0025ceb0 ??A?$phys_static_array@H$0IA@@@QAEAAHH@Z 00A4C3B0 f i game.o	PORTED: instantiated exact integer-array mutable indexer
+787	PORTED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o	PORTED: existing exact const integer-array indexer verified against IDA
+788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o	PORTED: instantiated exact integer-array capacity accessor
+789	PORTED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o	PORTED: existing exact count accessor verified against IDA
 790	SKIPPED	0002:0025cfa0 ?size@?$InplaceVector@E@@QBEIXZ 00A4C4A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 791	SKIPPED	0002:0025cfb0 ??0?$IVPointer@VXModel@@@@QAE@W4TPakId@@PAVXModel@@@Z 00A4C4B0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 792	SKIPPED	0002:0025cfd0 ?size@?$InplaceVector@VBspNode@@@@QBEIXZ 00A4C4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
