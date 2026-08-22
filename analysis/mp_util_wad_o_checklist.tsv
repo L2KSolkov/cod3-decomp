@@ -759,7 +759,7 @@ index	status	map_line
 758	VERIFIED	0002:0056ad50 ?PickFlagToLaunch@_mp_scf@@YAXXZ 00D5A250 f mp_util_wad.o
 759	PORTED	0002:0056ae40 ?Code_HostDropItem@Broc@@YAXHHABUvector@1@00@Z 00D5A340 f i mp_util_wad.o	PORTED: added IDA 0x0096AE40 direct mHostDropItem2 forwarding wrapper
 760	VERIFIED	0002:0056ae80 ?GetRef@home_angles_struct@__unnamed@LocalFields@mp_util_wad@@QAEAAUvector@Broc@@XZ 00D5A380 f i mp_util_wad.o	VERIFIED: IDA 0x0096AE80 matches ExtendedEntity::GetRef<vector> key 0x385575E2
-761	PORTED	0002:0056aeb0 ?LaunchFlag@_mp_scf@@YAXUbint@@Uvector@Broc@@11@Z 00D5A3B0 f mp_util_wad.o
+761	VERIFIED	0002:0056aeb0 ?LaunchFlag@_mp_scf@@YAXUbint@@Uvector@Broc@@11@Z 00D5A3B0 f mp_util_wad.o	VERIFIED: IDA 0x0096AEB0 matches ResetFlags, current_flag assignment, ObjectiveRing(2,-1), velocity length branch, and indexed flag dispatch
 762	VERIFIED	0002:0056b020 ?InitializeFlags@_mp_scf@@YAXXZ 00D5A520 f mp_util_wad.o
 763	PORTED	0002:0056b3c0 ?ResetFlags@_mp_scf@@YAXXZ 00D5A8C0 f mp_util_wad.o
 764	VERIFIED	0002:0056b5a0 ?CallbackPlayerJoin@_mp_scf@@YAXVentity@Broc@@IH@Z 00D5AAA0 f mp_util_wad.o
