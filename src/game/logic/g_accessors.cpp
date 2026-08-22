@@ -2617,6 +2617,7 @@ public:
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
     T& operator[](unsigned int index);
+    void done();
     void load_inplace(char* base, int* offs);
 };
 template <typename T>
@@ -2637,6 +2638,15 @@ T& cdl_array<T>::operator[](unsigned int index)
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
     return m_elements[index];
+}
+
+template <typename T>
+void cdl_array<T>::done()
+{
+    if (m_elements != nullptr)
+        tlMemFree(m_elements);
+    m_elements = nullptr;
+    m_count = 0;
 }
 
 template <typename T>
@@ -2664,6 +2674,11 @@ template class cdl_array<cdl_vinfo_t>;
 template class cdl_array<vi4>;
 template class cdl_array<cdl_patch_t>;
 template class cdl_array<DCGSet>;
+template void cdl_array<cdlPlane>::done();
+template void cdl_array<cdl_object_t>::done();
+template void cdl_array<cdl_brush_t>::done();
+template void cdl_array<cdl_vinfo_t>::done();
+template void cdl_array<vi4>::done();
 
 // ae_array<T,SIZE> (g.o 0x4AC7E0)
 template <typename T, int SIZE>
