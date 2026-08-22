@@ -13361,17 +13361,12 @@ int CallbackGetTeamControllingFlag(unsigned int flagIndex) {
 
 // CallbackGetFlagBeingCaptured - ea: 0x978140
 int CallbackGetFlagBeingCaptured() {
-    Broc::bint i(0);
-    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
-        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
-        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
-        if ((float)*mp_util_wad::GetEE_capStatus(trigger) != 0.0f &&
-            (float)*mp_util_wad::GetEE_capStatus(trigger) != 1.0f &&
-            (float)*mp_util_wad::GetEE_capStatus(trigger) != -1.0f)
-            return (int)*mp_util_wad::GetEE_capTeam(trigger);
-        i = (int)i + 1;
-    }
-    return 0;
+    if ((int)mp_util_wad::pLevel->warIndex < 0)
+        return -1;
+    int index = (int)mp_util_wad::pLevel->warIndex;
+    if (index >= Broc::size(mp_util_wad::pLevel->warAreas))
+        return -1;
+    return index;
 }
 
 // CallbackGetTeamCapturingFlag - ea: 0x9781E0
