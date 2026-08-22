@@ -5,11 +5,11 @@ index	status	map_line
 4	VERIFIED	0002:00468b50 ??0nalIKSpin@@QAE@XZ 00C58050 f i nal_generic.o
 5	VERIFIED	0002:00468b60 ??0nalIKSpin@@QAE@ABVQuaternion@math@@0F@Z 00C58060 f i nal_generic.o
 6	VERIFIED	0002:00468bc0 ?SetLOD@nalBasePose@@QAEXH@Z 00C580C0 f i nal_generic.o
-7	PORTED	0002:00468bd0 ??0nalBasePose@@IAE@PBVnalBaseSkeleton@@H@Z 00C580D0 f i nal_generic.o
-8	PORTED	0002:00468bf0 ?Construct@nalGenericPose@nalGeneric@@IAEXPBVnalBaseSkeleton@@PAX@Z 00C580F0 f i nal_generic.o
-9	PORTED	0002:00468c10 ?GetPoseData@nalGenericPose@nalGeneric@@IBEPAXXZ 00C58110 f i nal_generic.o
-10	PORTED	0002:00468c20 ?GetPoseSize@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58120 f i nal_generic.o
-11	PORTED	0002:00468c30 ?GetPoseAlignment@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58130 f i nal_generic.o
+7	PORTED	0002:00468bd0 ??0nalBasePose@@IAE@PBVnalBaseSkeleton@@H@Z 00C580D0 f i nal_generic.o	PORTED: IDA 0x00868BD0 assigns Skeleton and LOD
+8	PORTED	0002:00468bf0 ?Construct@nalGenericPose@nalGeneric@@IAEXPBVnalBaseSkeleton@@PAX@Z 00C580F0 f i nal_generic.o	PORTED: IDA 0x00868BF0 assigns Skeleton and PoseData
+9	PORTED	0002:00468c10 ?GetPoseData@nalGenericPose@nalGeneric@@IBEPAXXZ 00C58110 f i nal_generic.o	PORTED: IDA 0x00868C10 returns PoseData
+10	PORTED	0002:00468c20 ?GetPoseSize@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58120 f i nal_generic.o	PORTED: IDA 0x00868C20 returns PoseSize
+11	PORTED	0002:00468c30 ?GetPoseAlignment@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58130 f i nal_generic.o	PORTED: IDA 0x00868C30 returns PoseAlignment
 12	VERIFIED	0002:00468c40 ?GetBoneIndexForMatrixIndex@nalGenericSkeleton@nalGeneric@@QBEHH@Z 00C58140 f i nal_generic.o
 13	VERIFIED	0002:00468c70 ?GetBlockPtr@nalGenericAnim@nalGeneric@@QAEPAXH@Z 00C58170 f i nal_generic.o
 14	VERIFIED	0002:00468c80 ?GetBlockUnit@nalGenericAnim@nalGeneric@@QBEHXZ 00C58180 f i nal_generic.o
