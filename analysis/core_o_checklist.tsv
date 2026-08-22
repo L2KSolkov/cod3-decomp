@@ -664,18 +664,18 @@ index	status	map_line
 663	VERIFIED	0002:000dbb30 ?GetHandle@ActiveEffectSet@@QBE?AVHandle@@XZ 008CB030 f i core.o	VERIFIED: existing GetHandle return matches IDA 0x004DBB30
 664	VERIFIED	0002:000dbb50 ?SetHandle@ActiveEffectSet@@QAEXVHandle@@@Z 008CB050 f i core.o	VERIFIED: existing SetHandle assignment matches IDA 0x004DBB50
 665	VERIFIED	0002:000dbb60 ?GetPakId@ActiveEffectSet@@QBE?AW4TPakId@@XZ 008CB060 f i core.o	VERIFIED: existing GetPakId return matches IDA 0x004DBB60
-666	PORTED	0002:000dbb70 ??2EffectEventSys@@SAPAXIPAX@Z 008CB070 f i core.o
-667	PORTED	0002:000dbb80 ?IsStoppingAll@EffectEventSys@@QBE_NXZ 008CB080 f i core.o
-668	PORTED	0002:000dbb90 ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z 008CB090 f i core.o
-669	PORTED	0002:000dbc30 ?SetX@Mat43@math@@QAEXABVDir3@2@@Z 008CB130 f i core.o
-670	PORTED	0002:000dbc60 ?SetY@Mat43@math@@QAEXABVDir3@2@@Z 008CB160 f i core.o
-671	PORTED	0002:000dbc90 ?SetZ@Mat43@math@@QAEXABVDir3@2@@Z 008CB190 f i core.o
-672	PORTED	0002:000dbcc0 ?SetW@Mat43@math@@QAEXABVPosition3@2@@Z 008CB1C0 f i core.o
-673	PORTED	0002:000dbcf0 ??0EffectRef@EffectEventSys@@QAE@XZ 008CB1F0 f i core.o
-674	PORTED	0002:000dbd10 ??0SoundOptions@@QAE@XZ 008CB210 f i core.o
-675	PORTED	0002:000dbd50 ??4Mat44@math@@QAEABV01@ABV01@@Z 008CB250 f i core.o
-676	PORTED	0002:000dbdf0 ?ASinUpper@math@@YAMM@Z 008CB2F0 f i core.o
-677	PORTED	0002:000dbf00 ?ACosUpper@math@@YAMM@Z 008CB400 f i core.o
+666	VERIFIED	0002:000dbb70 ??2EffectEventSys@@SAPAXIPAX@Z 008CB070 f i core.o	VERIFIED: existing placement operator new returns the supplied pointer as IDA 0x004DBB70
+667	PORTED	0002:000dbb80 ?IsStoppingAll@EffectEventSys@@QBE_NXZ 008CB080 f i core.o	PORTED: added missing mStoppingAll accessor from IDA 0x004DBB80; source commit 6af35476
+668	VERIFIED	0002:000dbb90 ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z 008CB090 f i core.o	VERIFIED: existing Mat43 constructor copies x/y/z/w fields as IDA 0x004DBB90
+669	VERIFIED	0002:000dbc30 ?SetX@Mat43@math@@QAEXABVDir3@2@@Z 008CB130 f i core.o	VERIFIED: existing SetX field assignment matches IDA 0x004DBC30
+670	VERIFIED	0002:000dbc60 ?SetY@Mat43@math@@QAEXABVDir3@2@@Z 008CB160 f i core.o	VERIFIED: existing SetY field assignment matches IDA 0x004DBC60
+671	VERIFIED	0002:000dbc90 ?SetZ@Mat43@math@@QAEXABVDir3@2@@Z 008CB190 f i core.o	VERIFIED: existing SetZ field assignment matches IDA 0x004DBC90
+672	VERIFIED	0002:000dbcc0 ?SetW@Mat43@math@@QAEXABVPosition3@2@@Z 008CB1C0 f i core.o	VERIFIED: existing SetW field assignment matches IDA 0x004DBCC0
+673	VERIFIED	0002:000dbcf0 ??0EffectRef@EffectEventSys@@QAE@XZ 008CB1F0 f i core.o	VERIFIED: existing EffectRef zero initializer matches IDA 0x004DBCF0
+674	VERIFIED	0002:000dbd10 ??0SoundOptions@@QAE@XZ 008CB210 f i core.o	VERIFIED: existing SoundOptions zero initializer matches IDA 0x004DBD10
+675	VERIFIED	0002:000dbd50 ??4Mat44@math@@QAEABV01@ABV01@@Z 008CB250 f i core.o	VERIFIED: existing Mat44 copy assignment matches IDA 0x004DBD50
+676	VERIFIED	0002:000dbdf0 ?ASinUpper@math@@YAMM@Z 008CB2F0 f i core.o	VERIFIED: existing ASinUpper polynomial and branch match IDA 0x004DBDF0
+677	VERIFIED	0002:000dbf00 ?ACosUpper@math@@YAMM@Z 008CB400 f i core.o	VERIFIED: existing ACosUpper polynomial and branch match IDA 0x004DBF00
 678	VERIFIED	0002:000dc020 ?ATan@math@@YAMMM@Z 008CB520 f i core.o
 679	PORTED	0002:000dc300 ??2AnimBankManager@@SAPAXIPAX@Z 008CB800 f i core.o
 680	VERIFIED	0002:000dc310 ?CreateInst@AnimBankManager@@SAXXZ 008CB810 f i core.o
