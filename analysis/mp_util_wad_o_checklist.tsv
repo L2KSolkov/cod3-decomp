@@ -524,7 +524,7 @@ index	status	map_line
 523	VERIFIED	0002:0054ffa0 ?CallbackGameStateCTF@_mp_ctf@@YAXUvector@Broc@@0Ventity@3@001@Z 00D3F4A0 f mp_util_wad.o
 524	VERIFIED	0002:005505f0 ?HandleDropFlag@_mp_ctf@@YAXVentity@Broc@@@Z 00D3FAF0 f mp_util_wad.o
 525	VERIFIED	0002:00550b10 ?Code_DropItem@Broc@@YAXHHABUvector@1@00@Z 00D40010 f i mp_util_wad.o	VERIFIED: IDA directly forwards item, netID, position, angles, and velocity to mDropItem2
-526	PORTED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o	PORTED: added the IDA-backed entity-handle and mTakeWeapon forward
+526	VERIFIED	0002:00550b50 ?TakeWeapon@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D40050 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x00950B50 handle extraction and mTakeWeapon forwarding
 527	VERIFIED	0002:00550b80 ?SwitchToLastWeapon@Broc@@YA_NABVentity@1@@Z 00D40080 f i mp_util_wad.o	VERIFIED: IDA 0x00950B80 matches the existing entity-handle forward to mSwitchToLastWeapon
 528	VERIFIED	0002:00550bb0 ?UpdateFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@1@Z 00D400B0 f mp_util_wad.o
 529	VERIFIED	0002:00550bf0 ?LaunchFlagAndTrigger@_mp_ctf@@YAXVentity@Broc@@Uvector@3@11@Z 00D400F0 f mp_util_wad.o
