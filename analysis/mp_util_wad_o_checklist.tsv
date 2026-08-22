@@ -304,18 +304,18 @@ index	status	map_line
 303	VERIFIED	0002:0053ea80 ?CallbackPlayerRespawnRequest@_mp_common@@YAXVentity@Broc@@H@Z 00D2DF80 f mp_util_wad.o
 304	VERIFIED	0002:0053eb50 ?RespawnPlayer__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D2E050 f i mp_util_wad.o	VERIFIED: IDA 0x0093EB50 allocates 0x10 bytes, constructs AeThreadFunctor2<entity,string>, destroys team, and returns it
 305	VERIFIED	0002:0053ec10 ?CallbackPlayerKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z 00D2E110 f mp_util_wad.o
-306	PORTED	0002:0053f610 ??8bbool@@QBE_N_N@Z 00D2EB10 f i mp_util_wad.o	PORTED: IDA compares rhs bool with global bbool.mVal
-307	PORTED	0002:0053f640 ??9entity@Broc@@QBE_NABV01@@Z 00D2EB40 f i mp_util_wad.o	PORTED: IDA compares this and rhs entity handles through GetHandle
-308	PORTED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o	PORTED: IDA forwards target/attacker handles, weapon reference, mod, and bool teamGame to mObituary at +0x320
+306	VERIFIED	0002:0053f610 ??8bbool@@QBE_N_N@Z 00D2EB10 f i mp_util_wad.o	VERIFIED: IDA compares rhs bool with global bbool.mVal
+307	VERIFIED	0002:0053f640 ??9entity@Broc@@QBE_NABV01@@Z 00D2EB40 f i mp_util_wad.o	VERIFIED: IDA compares this and rhs entity handles through GetHandle
+308	FIXED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o	FIXED: IDA/XBE use a const Broc::string* for mObituary; corrected the ABI and forwarded the pointer
 309	VERIFIED	0002:0053f6d0 ?Code_SetRespawnMaxTime@Broc@@YAXVentity@1@H@Z 00D2EBD0 f i mp_util_wad.o
-310	PORTED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o	PORTED: IDA returns a Broc::entity constructed from mGetSpotterEntity(ent.GetHandle()) at +0x3C4
+310	VERIFIED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o	VERIFIED: IDA returns a Broc::entity constructed from mGetSpotterEntity(ent.GetHandle()) at +0x3C4
 311	FIXED	0002:0053f740 ?DeathState__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0Ubint@@Ubbool@@2@Z 00D2EC40 f i mp_util_wad.o	FIXED: IDA allocates 0x18 bytes, constructs AeThreadFunctor5<entity,entity,bint,bbool,bbool>, and returns AeThreadFunctor*
 312	VERIFIED	0002:0053f7f0 ?CallbackPlayerAssist@_mp_common@@YAXVentity@Broc@@@Z 00D2ECF0 f mp_util_wad.o
 313	VERIFIED	0002:0053f860 ?CallbackPainFlinch@_mp_common@@YAXVentity@Broc@@H@Z 00D2ED60 f mp_util_wad.o
-314	PORTED	0002:0053f8d0 ?PlayPainSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2EDD0 f i mp_util_wad.o
-315	PORTED	0002:0053f970 ?CallbackPlayerDamage@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EE70 f mp_util_wad.o
-316	PORTED	0002:0053fa30 ?Code_FinishDamage@Broc@@YAXVentity@1@00ABUvector@1@1HHHH@Z 00D2EF30 f i mp_util_wad.o
-317	PORTED	0002:0053fa90 ?CallbackPlayerDamageTeam@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EF90 f mp_util_wad.o
+314	VERIFIED	0002:0053f8d0 ?PlayPainSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2EDD0 f i mp_util_wad.o	VERIFIED: IDA allocates 0x10 bytes and constructs AeThreadFunctor2<entity,bint> with PlayPainSound
+315	FIXED	0002:0053f970 ?CallbackPlayerDamage@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EE70 f mp_util_wad.o	FIXED: IDA prototype has nine parameters; removed the stale dflags declaration and matched hitLoc handling
+316	VERIFIED	0002:0053fa30 ?Code_FinishDamage@Broc@@YAXVentity@1@00ABUvector@1@1HHHH@Z 00D2EF30 f i mp_util_wad.o	VERIFIED: IDA forwards three handles, two vector pointers, and five scalar arguments to mFinishDamage
+317	FIXED	0002:0053fa90 ?CallbackPlayerDamageTeam@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EF90 f mp_util_wad.o	FIXED: IDA prototype has nine parameters; removed the stale dflags declaration and matched team-kill forwarding
 318	VERIFIED	0002:0053fcc0 ?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z 00D2F1C0 f i mp_util_wad.o
 319	FIXED	0002:0053fcf0 ?CallbackPlayerSpawn@_mp_common@@YAXVentity@Broc@@H@Z 00D2F1F0 f mp_util_wad.o	FIXED: IDA 0x0093FCF0 constructs FadeUpWhenLoaded with pLevel->_base.entity and the copied player
 320	PORTED	0002:00540210 ??D@YA?AUbfloat@@HU0@@Z 00D2F710 f i mp_util_wad.o	PORTED: IDA multiplies the integer lhs by rhs.mVal and constructs the global bfloat result
