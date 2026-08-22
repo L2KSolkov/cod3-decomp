@@ -757,34 +757,34 @@ index	status	map_line
 756	VERIFIED	0002:000ddae0 ?TriangleResponseNone@DialogMenuSystem@@SAXH@Z 008CCFE0 f i core.o	VERIFIED: existing empty helper matches IDA 0x004DDAE0
 757	VERIFIED	0002:000ddaf0 ?GetDMS@FEManager@@QAEPAVDialogMenuSystem@@H@Z 008CCFF0 f i core.o
 758	VERIFIED	0002:000ddb70 ?GetIGMS@FEManager@@QAEPAVInGameMenuSystem@@H@Z 008CD070 f i core.o
-759	PORTED	0002:000ddbf0 ?IsValid@GdbFile@@QBE_NXZ 008CD0F0 f i core.o PORTED: IDA tests mRecord for non-null
-760	PORTED	0002:000ddc00 ??2GdbFileManager@@SAPAXIPAX@Z 008CD100 f i core.o PORTED: IDA placement operator returns the supplied storage
-761	PORTED	0002:000ddc10 ?Inst@GdbFileManager@@SAPAV1@XZ 008CD110 f i core.o PORTED: IDA returns GdbFileManager::sInst
+759	VERIFIED	0002:000ddbf0 ?IsValid@GdbFile@@QBE_NXZ 008CD0F0 f i core.o	VERIFIED: existing mRecord validity check matches IDA 0x004DDBF0
+760	VERIFIED	0002:000ddc00 ??2GdbFileManager@@SAPAXIPAX@Z 008CD100 f i core.o	VERIFIED: existing GdbFileManager placement operator new matches IDA 0x004DDC00
+761	VERIFIED	0002:000ddc10 ?Inst@GdbFileManager@@SAPAV1@XZ 008CD110 f i core.o	VERIFIED: existing GdbFileManager singleton accessor matches IDA 0x004DDC10
 762	VERIFIED	0002:000ddc20 ?CreateInst@GdbFileManager@@SAXXZ 008CD120 f i core.o
 763	VERIFIED	0002:000ddd20 ?DeleteInst@GdbFileManager@@SAXXZ 008CD220 f i core.o
-764	PORTED	0002:000ddda0 ??2CheckpointMgr@@SAPAXIPAX@Z 008CD2A0 f i core.o PORTED: IDA placement operator returns the supplied storage
+764	VERIFIED	0002:000ddda0 ??2CheckpointMgr@@SAPAXIPAX@Z 008CD2A0 f i core.o	VERIFIED: existing CheckpointMgr placement operator new matches IDA 0x004DDDA0
 765	VERIFIED	0002:000dddb0 ?CreateInst@CheckpointMgr@@SAXXZ 008CD2B0 f i core.o VERIFIED: existing CreateInst body matches IDA
 766	SKIPPED	0002:000ddeb0 ??_GCheckpointMgr@@QAEPAXI@Z 008CD3B0 f i core.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-767	PORTED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o PORTED: IDA placement operator returns the supplied storage
+767	VERIFIED	0002:000ddee0 ??2SplineMgr@@SAPAXIPAX@Z 008CD3E0 f i core.o	VERIFIED: existing SplineMgr placement operator new matches IDA 0x004DDEE0
 768	VERIFIED	0002:000ddef0 ?CreateInst@SplineMgr@@SAXXZ 008CD3F0 f i core.o VERIFIED: existing CreateInst body matches IDA
 769	VERIFIED	0002:000ddff0 ?DeleteInst@SplineMgr@@SAXXZ 008CD4F0 f i core.o
-770	PORTED	0002:000de070 ?SetAllocator@LightEffect@@SAXPAVPoolAllocator@@@Z 008CD570 f i core.o PORTED: IDA assigns LightEffect::sAllocator
-771	PORTED	0002:000de080 ?SetFinished@LightEffect@@QAEXXZ 008CD580 f i core.o PORTED: IDA clears mActive
+770	VERIFIED	0002:000de070 ?SetAllocator@LightEffect@@SAXPAVPoolAllocator@@@Z 008CD570 f i core.o	VERIFIED: existing LightEffect allocator assignment matches IDA 0x004DE070
+771	VERIFIED	0002:000de080 ?SetFinished@LightEffect@@QAEXXZ 008CD580 f i core.o	VERIFIED: existing mActive clear matches IDA 0x004DE080
 772	VERIFIED	0002:000de090 ?GetDelay@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD590 f i core.o
 773	VERIFIED	0002:000de110 ?GetEnabled@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z 008CD610 f i core.o
 774	VERIFIED	0002:000de190 ?GetIntensity@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD690 f i core.o
 775	VERIFIED	0002:000de210 ?GetRampDownDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD710 f i core.o
 776	VERIFIED	0002:000de290 ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD790 f i core.o
 777	VERIFIED	0002:000de310 ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z 008CD810 f i core.o
-778	PORTED	0002:000de390 ?GetNotes@RumbleEffect@@QBE?AVstring@Broc@@W4ERumbleMotorID@@@Z 008CD890 f i core.o PORTED: IDA validates the motor enum and copies rumble_notes
-779	PORTED	0002:000de420 ??0RumbleEffectInstanceHandle@@QAE@H@Z 008CD920 f i core.o PORTED: IDA stores the supplied handle value
-780	PORTED	0002:000de440 ?GetVal@RumbleEffectInstanceHandle@@QBEHXZ 008CD940 f i core.o PORTED: IDA returns mVal
-781	PORTED	0002:000de450 ?IsNull@RumbleEffectInstanceHandle@@QBE_NXZ 008CD950 f i core.o PORTED: IDA compares mVal with zero
-782	PORTED	0002:000de460 ?get_dlist_node@RumbleEffectInstance@@QAEPAXXZ 008CD960 f i core.o PORTED: IDA returns this
-783	PORTED	0002:000de470 ?get_dlist_node_offset@RumbleEffectInstance@@SAHXZ 008CD970 f i core.o PORTED: IDA returns zero
-784	PORTED	0002:000de480 ??2RumbleEffectInstance@@SAPAXI_NPBDH@Z 008CD980 f i core.o PORTED: IDA allocates through sAllocator
-785	PORTED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o PORTED: IDA releases through sAllocator
-786	PORTED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o PORTED: IDA releases through sAllocator
+778	VERIFIED	0002:000de390 ?GetNotes@RumbleEffect@@QBE?AVstring@Broc@@W4ERumbleMotorID@@@Z 008CD890 f i core.o	VERIFIED: existing enum guard and rumble_notes copy match IDA 0x004DE390
+779	VERIFIED	0002:000de420 ??0RumbleEffectInstanceHandle@@QAE@H@Z 008CD920 f i core.o	VERIFIED: existing handle constructor matches IDA 0x004DE420
+780	VERIFIED	0002:000de440 ?GetVal@RumbleEffectInstanceHandle@@QBEHXZ 008CD940 f i core.o	VERIFIED: existing handle value return matches IDA 0x004DE440
+781	VERIFIED	0002:000de450 ?IsNull@RumbleEffectInstanceHandle@@QBE_NXZ 008CD950 f i core.o	VERIFIED: existing zero comparison matches IDA 0x004DE450
+782	VERIFIED	0002:000de460 ?get_dlist_node@RumbleEffectInstance@@QAEPAXXZ 008CD960 f i core.o	VERIFIED: existing self return matches IDA 0x004DE460
+783	VERIFIED	0002:000de470 ?get_dlist_node_offset@RumbleEffectInstance@@SAHXZ 008CD970 f i core.o	VERIFIED: existing zero offset return matches IDA 0x004DE470
+784	VERIFIED	0002:000de480 ??2RumbleEffectInstance@@SAPAXI_NPBDH@Z 008CD980 f i core.o	VERIFIED: existing allocator new matches IDA 0x004DE480
+785	VERIFIED	0002:000de4a0 ??3RumbleEffectInstance@@SAXPAX_NPBDH@Z 008CD9A0 f i core.o	VERIFIED: existing allocator delete overload matches IDA 0x004DE4A0
+786	VERIFIED	0002:000de4c0 ??3RumbleEffectInstance@@SAXPAX@Z 008CD9C0 f i core.o	VERIFIED: existing plain allocator delete matches IDA 0x004DE4C0
 787	PORTED	0002:000de4e0 ?SetAllocator@RumbleEffectInstance@@SAPAVPoolAllocator@@PAV2@@Z 008CD9E0 f i core.o PORTED: IDA assigns and returns the allocator
 788	PORTED	0002:000de4f0 ??2AbstractEffect@@SAPAXI_NPBDH@Z 008CD9F0 f i core.o PORTED: IDA PoolAllocator::Allocate wrapper
 789	PORTED	0002:000de510 ??3AbstractEffect@@SAXPAX_NPBDH@Z 008CDA10 f i core.o PORTED: IDA PoolAllocator::Release wrapper
