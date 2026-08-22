@@ -29,9 +29,9 @@ index	status	map_line
 28	VERIFIED	0002:001288c0 ?CL_ShutdownCGame@@YAXXZ 00917DC0 f cl.o
 29	FIXED	0002:00128900 ?CL_DObjInvalidateSkels@@YAXXZ 00917E00 f cl.o FIXED: restored IDA assertion metadata and defaultFileName message
 30	PORTED	0002:00128960 ?CL_DObjCalcAnim@@YAXPAVDObj@@QAH@Z 00917E60 f cl.o PORTED: IDA-verified intentional empty function
-31	PORTED	0002:00128970 ?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z 00917E70 f cl.o PORTED: IDA-verified obj assert, skeleton-exists early return, 16-byte hunk allocation, and DObjCreateSkel call
-32	PORTED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o PORTED: IDA-verified allocation/object asserts, skeleton-exists early return, 16-byte hunk allocation, and DObjCreateSkel call
-33	PORTED	0002:00128af0 ?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00917FF0 f cl.o PORTED: IDA-verified object/skeleton asserts and j_nullsub_82 call
+31	FIXED	0002:00128970 ?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z 00917E70 f cl.o FIXED: matched IDA allocator parameter types and defaultFileName assert format
+32	FIXED	0002:00128a10 ?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z 00917F10 f cl.o FIXED: matched IDA allocator parameter types and defaultFileName assert format
+33	FIXED	0002:00128af0 ?CL_DObjCalcSkel@@YAXPAVDObj@@QAH@Z 00917FF0 f cl.o FIXED: matched IDA defaultFileName assert format for both checks
 34	VERIFIED	0002:00128ba0 ?LoadWorld@@YAXPBD@Z 009180A0 f cl.o
 35	VERIFIED	0002:00128bd0 ?CL_CgameSystemCalls@@YAHPAH@Z 009180D0 f cl.o
 36	PORTED	0002:00128e20 ?CL_GameCommand@@YAHXZ 00918320 f cl.o PORTED: IDA-verified cgvm null return and VM_Call call number 2
