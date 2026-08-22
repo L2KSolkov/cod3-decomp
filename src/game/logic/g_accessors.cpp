@@ -1972,6 +1972,17 @@ const unsigned int rb_vehicle::get_flag(rb_vehicle_model_flags_e f) const
 {
     return f & m_state_flags;
 }
+bool rb_vehicle::is_player_vehicle() const
+{
+    return (m_flags & 0x80u) != 0;
+}
+
+DbLinkedHandle<EntityHandleDb, Entity> DObj::GetHandle() const
+{
+    DbLinkedHandle<EntityHandleDb, Entity> result;
+    result.mHandle.mVal = mHandle;
+    return result;
+}
 
 // Scalar helpers (g.o 0x4A9A00-0x4A9A70)
 bool IS_NAN(const float& x)

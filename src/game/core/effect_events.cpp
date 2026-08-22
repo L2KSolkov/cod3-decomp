@@ -117,6 +117,29 @@ TPakId ActiveEffectSet::GetPakId() const
     return mPakId;
 }
 
+void ActiveEffectSet::SetPending(bool state)
+{
+    if (state)
+        mFlags.mVal |= 2u;
+    else
+        mFlags.mVal &= ~2u;
+}
+
+void ActiveEffectSet::SetOwnsMatrix()
+{
+    mFlags.mVal |= 4u;
+}
+
+int ActiveEffectSet::GetEffectCount() const
+{
+    return mEffects.m_size;
+}
+
+AbstractEffect* ActiveEffectSet::GetEffect(int i)
+{
+    return mEffects[i];
+}
+
 void* EffectEventSys::operator new(size_t, void* p)
 {
     return p;
@@ -3010,6 +3033,16 @@ float Clamp0To1(float f)
 bool AbstractEffect::IsFinishedFading()
 {
     return (mCodeFlags.mVal & 1) != 0 && mFadeTime < 0.001f;
+}
+
+bool AbstractEffect::IsFading()
+{
+    return (mCodeFlags.mVal & 1) != 0;
+}
+
+bool AbstractEffect::IsSound()
+{
+    return (mCodeFlags.mVal & 4) != 0;
 }
 
 // AbstractEffect virtuals (aeps.o; stubs until effect runtime is ported)

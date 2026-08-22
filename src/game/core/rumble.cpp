@@ -328,9 +328,9 @@ void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
                                float ramp_down_duration,
                                Broc::string rumble_notes, int looping)
 {
-    (void)self; (void)handle; (void)delay; (void)intensity;
-    (void)base_intensity; (void)ramp_up_duration; (void)steady_duration;
-    (void)ramp_down_duration; (void)rumble_notes; (void)looping;
+    ::new (self) RumbleEffectInstance(
+        handle, delay, intensity, base_intensity, ramp_up_duration,
+        steady_duration, ramp_down_duration, rumble_notes, looping != 0);
 }
 void RumbleEffectInstance_Dtor(void* self)
 {
@@ -353,6 +353,52 @@ int RumbleEffectInstanceHandle::GetVal() const
 bool RumbleEffectInstanceHandle::IsNull() const
 {
     return mVal == 0;
+}
+
+RumbleEffectInstanceHandle RumbleEffectInstanceHandle::NullHandle()
+{
+    RumbleEffectInstanceHandle result;
+    result.mVal = 0;
+    return result;
+}
+
+RumbleEffectInstance::RumbleEffectInstance(
+    RumbleEffectInstanceHandle handle, float delay, float intensity,
+    float base_intensity, float ramp_up_duration, float steady_duration,
+    float ramp_down_duration, Broc::string rumble_notes, bool looping)
+    : m_dlist_node(), m_handle(handle), m_cur_time(-delay),
+      m_intensity(intensity), m_base_intensity(base_intensity),
+      m_ramp_up_end(ramp_up_duration),
+      m_steady_end(ramp_up_duration + steady_duration),
+      m_ramp_down_end(ramp_up_duration + steady_duration + ramp_down_duration),
+      m_duration(steady_duration), m_rumble_notes(rumble_notes), m_flags(0)
+{
+    if (looping)
+        m_flags.mVal |= 2u;
+    Broc::string::Block* block = m_rumble_notes.mBlock;
+    bool hasNotes = block != nullptr
+        && reinterpret_cast<intptr_t>(block) != -12
+        && reinterpret_cast<const unsigned char*>(block + 1)[0] != 0;
+    if (hasNotes)
+        m_flags.mVal |= 1u;
+    else
+        m_flags.mVal &= ~1u;
+    if (handle.IsNull())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 257;
+        AeAssert::gCurrentExpr = "!handle.IsNull()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+}
+
+bool RumbleEffectInstance::IsLooping() const
+{
+    return (m_flags.mVal & 2u) != 0;
 }
 
 // ea: 0x004DE460
@@ -398,6 +444,12 @@ PoolAllocator* RumbleEffectInstance::SetAllocator(PoolAllocator* p)
 {
     sAllocator = p;
     return p;
+}
+
+// ea: 0x004E2B60
+bool RumbleEffect::GetLooping(ERumbleMotorID rumbleID) const
+{
+    return (mRumbleDataArray[(int)rumbleID].m_flags.mVal & 2u) != 0;
 }
 
 // ea: 0x004DE390

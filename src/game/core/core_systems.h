@@ -277,7 +277,7 @@ struct reserved_dlist {
             : m_node(cur), m_next(next) {}
 
         iterator(T* obj)
-            : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
+            : m_node(reinterpret_cast<dlist_node*>(obj)),
               m_next(m_node->mNext) {}
 
         bool compare(const iterator& rhs) const
@@ -525,6 +525,8 @@ public:
     virtual bool IsFinished();
     virtual void StopEffect();
     virtual Broc::string GetDebugString() const;
+    bool IsFading();                         // core.o 0x004E2D70
+    bool IsSound();                          // core.o 0x004E2D80
     unsigned int GetEffectNameHashStr();
     int GetFlags() const;
     bool Test(int flag) const;
@@ -668,6 +670,7 @@ public:
     int mVal;  // +0x00
     RumbleEffectInstanceHandle() = default;
     RumbleEffectInstanceHandle(int val);
+    static RumbleEffectInstanceHandle NullHandle();
     int GetVal() const;
     bool IsNull() const;
 };
@@ -748,6 +751,10 @@ public:
     Handle GetHandle() const;                            // core.o 0x004DBB30
     void SetHandle(Handle h);                            // core.o 0x004DBB50
     TPakId GetPakId() const;                             // core.o 0x004DBB60
+    void SetPending(bool state);                         // core.o 0x004E25A0
+    void SetOwnsMatrix();                                // core.o 0x004E25D0
+    int GetEffectCount() const;                          // core.o 0x004E25E0
+    AbstractEffect* GetEffect(int i);                    // core.o 0x004E25F0
     void StopLoopingEffects();                          // ea: 0x004C0EC0
     void GetDebugFxList(Entity* ent,
                         std::vector<std::string>& fx) const;  // ea: 0x004D3AD0
@@ -923,6 +930,12 @@ struct RumbleEffectInstance {
     float m_duration;          // +0x24
     Broc::string m_rumble_notes;  // +0x28
     Bitmask<unsigned int> m_flags;  // +0x2C
+    RumbleEffectInstance(RumbleEffectInstanceHandle handle, float delay,
+                         float intensity, float base_intensity,
+                         float ramp_up_duration, float steady_duration,
+                         float ramp_down_duration, Broc::string rumble_notes,
+                         bool looping);
+    bool IsLooping() const;
     void* get_dlist_node();
     static int get_dlist_node_offset();
     static void* operator new(unsigned int size, bool forceHeapAlloc,
@@ -957,6 +970,7 @@ public:
     RumbleData mRumbleDataArray[2];  // +0x00
 
     RumbleEffect() {}
+    bool GetLooping(ERumbleMotorID rumbleID) const;
     bool GetEnabled(ERumbleMotorID rumbleID) const;  // ?GetEnabled@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z (core.o 0x4DE110)
     float GetDelay(ERumbleMotorID rumbleID) const;              // ?GetDelay@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE090)
     float GetIntensity(ERumbleMotorID rumbleID) const;          // ?GetIntensity@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE190)
@@ -1659,6 +1673,14 @@ struct DialogueBank {
 };
 static_assert(sizeof(DialogueBank) == 0x1C, "DialogueBank size mismatch");
 
+struct DialogueInstance {
+    InplaceVector<InplaceString> mSounds;
+    unsigned int mLastSound;
+    const char* Choose();
+};
+static_assert(sizeof(DialogueInstance) == 0x0C,
+              "DialogueInstance size mismatch");
+
 struct DialogueManager : AssetBankSet {
     static void CreateInst();  // ?CreateInst@DialogueManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DialogueManager@@SAXXZ (core.o)
@@ -1841,6 +1863,7 @@ struct ServerTime {
     float        mTickDeltaInv;     // +0x0C
     float        mElapsedTime;      // +0x10
     ServerTime();                    // ??0ServerTime@@QAE@XZ (core.o 0x4DB840)
+    void Update(int tickMSec);       // core.o 0x004E24C0
 
     float GetElapsedTime() const { return mElapsedTime; }  // ?GetElapsedTime@ServerTime@@QBEMXZ (sv.o 0x51E1D0; inline COMDAT)
 };

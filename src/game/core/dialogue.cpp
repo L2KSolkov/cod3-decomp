@@ -32,6 +32,17 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
+const char* DialogueInstance::Choose()
+{
+    unsigned int size = mSounds.mSize;
+    if (size == 0)
+        return nullptr;
+    if (size == 1)
+        return mSounds[0].mStr;
+    mLastSound = (mLastSound + 1) % size;
+    return mSounds[mLastSound].mStr;
+}
+
 // InplaceAssetBank/InplaceTree helpers (streamer.o; stubs until ported)
 void InplaceAssetBank_Fixup_Dialogue(DialogueBank* data)
 {

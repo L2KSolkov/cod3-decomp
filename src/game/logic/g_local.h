@@ -5206,6 +5206,7 @@ public:
     bool is_physics_paused() const;  // ?is_physics_paused@rb_vehicle@@QBE_NXZ (g.o 0x4B0540)
     bool is_attached_path() const;   // ?is_attached_path@rb_vehicle@@QBE_NXZ (g.o 0x4B0550)
     bool is_driving_path() const;    // ?is_driving_path@rb_vehicle@@QBE_NXZ (g.o 0x4B0560)
+    bool is_player_vehicle() const; // core.o 0x004E2D90
 
     enum rb_vehicle_model_flags_e : int {
         FLAG_IS_POWER_BRAKING = 0x1,
@@ -5400,6 +5401,7 @@ public:
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(TPakId pakId);            // ??0DObj@@QAE@W4TPakId@@@Z (render.o 0x6D9920)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
+    DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;
     // ?GetBoneParent@DObj@@QAEHH@Z (render.o 0x6CE560)
     int GetBoneParent(int boneIndex);
     void SetLOD(int startLod);  // ?SetLOD@DObj@@QAEXH@Z (render.o 0x6EE150)

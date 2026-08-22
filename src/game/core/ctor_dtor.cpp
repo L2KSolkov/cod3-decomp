@@ -84,6 +84,19 @@ ServerTime::ServerTime()
 {
 }
 
+void ServerTime::Update(int tickMSec)
+{
+    ++mNumTicksElapsed;
+    int clampedTickMSec = tickMSec;
+    if (clampedTickMSec <= 1)
+        clampedTickMSec = 1;
+    float tickDelta = tickMSec / 1000.0f;
+    mTickDeltaInv = 1000.0f / tickMSec;
+    mTickMSec = clampedTickMSec;
+    mTickDelta = tickDelta;
+    mElapsedTime += tickDelta;
+}
+
 namespace EffectEventSysStatics {
 extern EffectEventSys* sInst;
 }
