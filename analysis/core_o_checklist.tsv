@@ -1031,36 +1031,36 @@ index	status	map_line
 1030	VERIFIED	0002:000e15d0 ??0const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PBUdlist_node@1@0@Z 008D0AD0 f i core.o VERIFIED: existing const cur/next constructor matches IDA 0x004E15D0
 1031	FIXED	0002:000e15f0 ?compare@const_iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NABV12@@Z 008D0AF0 f i core.o FIXED: shared const_iterator compare added in 1528f7a9; IDA 0x004E15F0
 1032	SKIPPED	0002:000e1610 ?capacity@?$ae_fixed_string@$0BAA@G@@SAHXZ 008D0B10 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
-1033	PORTED	0002:000e1620 ??Diterator@?$BitSet@$0CAA@@@QBEHXZ 008D0B20 f i core.o
+1033	VERIFIED	0002:000e1620 ??Diterator@?$BitSet@$0CAA@@@QBEHXZ 008D0B20 f i core.o VERIFIED: existing BitSet iterator dereference returns m_cur_val, matching IDA 0x004E1620
 1034	SKIPPED	0002:000e1630 ?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEPADXZ 008D0B30 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1035	SKIPPED	0002:000e1650 ?deallocate@?$allocator@D@std@@QAEXPADI@Z 008D0B50 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1036	PORTED	0002:000e1670 ?get_head@?$reserved_dlist@VEndOnScriptNode@@@@QAEPAUdlist_node@1@XZ 008D0B70 f i core.o
-1037	PORTED	0002:000e1680 ?get_head@?$reserved_dlist@VEntityNotify@@@@QAEPAUdlist_node@1@XZ 008D0B80 f i core.o
-1038	PORTED	0002:000e1690 ?get_head@?$reserved_dlist@VEntityNotify@@@@QBEPBUdlist_node@1@XZ 008D0B90 f i core.o
-1039	PORTED	0002:000e16a0 ?get_head@?$reserved_dlist@VEntityNotifySet@@@@QAEPAUdlist_node@1@XZ 008D0BA0 f i core.o
-1040	PORTED	0002:000e16b0 ?empty@?$reserved_dlist@VEntityNotifySet@@@@QBE_NXZ 008D0BB0 f i core.o
-1041	PORTED	0002:000e16d0 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PAVEntityNotify@@@Z 008D0BD0 f i core.o
-1042	PORTED	0002:000e16f0 ?GetWord@?$BitSet@$0CAA@@@QBEIH@Z 008D0BF0 f i core.o
-1043	PORTED	0002:000e1700 ?GetNumWords@?$BitSet@$0CAA@@@SAHXZ 008D0C00 f i core.o
-1044	PORTED	0002:000e1710 ?GetObject@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVSound@SoundDevice@@XZ 008D0C10 f i core.o
-1045	PORTED	0002:000e1720 ?GetKey@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEHXZ 008D0C20 f i core.o
-1046	PORTED	0002:000e1730 ?get_head@?$reserved_dlist@VRumbleEffectInstance@@@@QAEPAUdlist_node@1@XZ 008D0C30 f i core.o
-1047	PORTED	0002:000e1740 ?get_head@?$reserved_dlist@VRumbleEffectInstance@@@@QBEPBUdlist_node@1@XZ 008D0C40 f i core.o
-1048	PORTED	0002:000e1750 ?empty@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NXZ 008D0C50 f i core.o
-1049	PORTED	0002:000e1770 ?begin@?$ae_vector@USmokeGrenadeInfo@@@@QAEPAUSmokeGrenadeInfo@@XZ 008D0C70 f i core.o
+1036	FIXED	0002:000e1670 ?get_head@?$reserved_dlist@VEndOnScriptNode@@@@QAEPAUdlist_node@1@XZ 008D0B70 f i core.o FIXED: mutable get_head overload added in 034274c3; IDA 0x004E1670
+1037	FIXED	0002:000e1680 ?get_head@?$reserved_dlist@VEntityNotify@@@@QAEPAUdlist_node@1@XZ 008D0B80 f i core.o FIXED: mutable get_head overload added in 034274c3; IDA 0x004E1680
+1038	FIXED	0002:000e1690 ?get_head@?$reserved_dlist@VEntityNotify@@@@QBEPBUdlist_node@1@XZ 008D0B90 f i core.o FIXED: const get_head overload added in 034274c3; IDA 0x004E1690
+1039	FIXED	0002:000e16a0 ?get_head@?$reserved_dlist@VEntityNotifySet@@@@QAEPAUdlist_node@1@XZ 008D0BA0 f i core.o FIXED: mutable get_head overload added in 034274c3; IDA 0x004E16A0
+1040	FIXED	0002:000e16b0 ?empty@?$reserved_dlist@VEntityNotifySet@@@@QBE_NXZ 008D0BB0 f i core.o FIXED: sentinel comparison added in bf32c889; IDA 0x004E16B0
+1041	VERIFIED	0002:000e16d0 ??0iterator@?$reserved_dlist@VEntityNotify@@@@QAE@PAVEntityNotify@@@Z 008D0BD0 f i core.o VERIFIED: existing object iterator stores node and next, matching IDA 0x004E16D0
+1042	VERIFIED	0002:000e16f0 ?GetWord@?$BitSet@$0CAA@@@QBEIH@Z 008D0BF0 f i core.o VERIFIED: existing BitSet GetWord returns mBits[idx], matching IDA 0x004E16F0
+1043	VERIFIED	0002:000e1700 ?GetNumWords@?$BitSet@$0CAA@@@SAHXZ 008D0C00 f i core.o VERIFIED: generic BitSet<N>::GetNumWords returns 16 for N=512, matching IDA 0x004E1700
+1044	FIXED	0002:000e1710 ?GetObject@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVSound@SoundDevice@@XZ 008D0C10 f i core.o FIXED: Sound DbElement GetObject added in 034274c3; IDA 0x004E1710
+1045	FIXED	0002:000e1720 ?GetKey@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QBEHXZ 008D0C20 f i core.o FIXED: Sound DbElement GetKey added in 034274c3; IDA 0x004E1720
+1046	FIXED	0002:000e1730 ?get_head@?$reserved_dlist@VRumbleEffectInstance@@@@QAEPAUdlist_node@1@XZ 008D0C30 f i core.o FIXED: mutable get_head overload added in 034274c3; IDA 0x004E1730
+1047	FIXED	0002:000e1740 ?get_head@?$reserved_dlist@VRumbleEffectInstance@@@@QBEPBUdlist_node@1@XZ 008D0C40 f i core.o FIXED: const get_head overload added in 034274c3; IDA 0x004E1740
+1048	FIXED	0002:000e1750 ?empty@?$reserved_dlist@VRumbleEffectInstance@@@@QBE_NXZ 008D0C50 f i core.o FIXED: sentinel comparison added in bf32c889; IDA 0x004E1750
+1049	VERIFIED	0002:000e1770 ?begin@?$ae_vector@USmokeGrenadeInfo@@@@QAEPAUSmokeGrenadeInfo@@XZ 008D0C70 f i core.o VERIFIED: existing ae_vector begin returns mElements, matching the template behavior
 1050	SKIPPED	0002:000e1780 ?c_str@?$ae_fixed_string@$0IA@E@@QBEPBDXZ 008D0C80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1051	SKIPPED	0002:000e1790 ?length@?$ae_fixed_string@$0IA@E@@QBEHXZ 008D0C90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 1052	SKIPPED	0002:000e17a0 ??0?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QAE@ABV01@@Z 008D0CA0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1053	SKIPPED	0002:000e17b0 ?deallocate@?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QAEXPAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@I@Z 008D0CB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1054	PORTED	0002:000e17d0 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAVRumbleEffectInstance@@@Z 008D0CD0 f i core.o
-1055	PORTED	0002:000e17f0 ??Eiterator@?$BitSet@$0CAA@@@QAEXXZ 008D0CF0 f i core.o
+1054	VERIFIED	0002:000e17d0 ??0iterator@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAVRumbleEffectInstance@@@Z 008D0CD0 f i core.o VERIFIED: existing object iterator stores node and next, matching IDA 0x004E17D0
+1055	VERIFIED	0002:000e17f0 ??Eiterator@?$BitSet@$0CAA@@@QAEXXZ 008D0CF0 f i core.o VERIFIED: existing BitSet iterator increment matches IDA 0x004E17F0
 1056	SKIPPED	0002:000e1890 ??Yiterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAEAAV012@H@Z 008D0D90 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1057	SKIPPED	0002:000e18b0 ??Dconst_iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@XZ 008D0DB0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1058	SKIPPED	0002:000e18c0 ?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z 008D0DC0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1059	PORTED	0002:000e1910 ??0?$BitSet@$0CAA@@@QAE@W4EInitializer@0@@Z 008D0E10 f i core.o
+1059	VERIFIED	0002:000e1910 ??0?$BitSet@$0CAA@@@QAE@W4EInitializer@0@@Z 008D0E10 f i core.o VERIFIED: existing initializer constructor leaves storage untouched, matching IDA 0x004E1910
 1060	SKIPPED	0002:000e1920 ?max_size@?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QBEIXZ 008D0E20 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1061	PORTED	0002:000e1930 ??0iterator@?$BitSet@$0CAA@@@QAE@XZ 008D0E30 f i core.o
-1062	PORTED	0002:000e1950 ?compare@iterator@?$BitSet@$0CAA@@@QAE_NABV12@@Z 008D0E50 f i core.o
+1061	VERIFIED	0002:000e1930 ??0iterator@?$BitSet@$0CAA@@@QAE@XZ 008D0E30 f i core.o VERIFIED: existing iterator null constructor matches IDA 0x004E1930
+1062	VERIFIED	0002:000e1950 ?compare@iterator@?$BitSet@$0CAA@@@QAE_NABV12@@Z 008D0E50 f i core.o VERIFIED: existing iterator compare matches IDA 0x004E1950
 1063	SKIPPED	0002:000e1980 ??0const_iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QAE@PAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z 008D0E80 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1064	SKIPPED	0002:000e19a0 ??Gconst_iterator@?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@QBEHABV012@@Z 008D0EA0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1065	SKIPPED	0002:000e19d0 ?max_size@?$allocator@D@std@@QBEIXZ 008D0ED0 f i core.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
