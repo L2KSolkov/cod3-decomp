@@ -1438,18 +1438,18 @@ void GetLeaves(leafList_s* ll, int nodeIndex, float& mindist)
         const float* v7 = v6->u.node.plane->mPlane.m128_f32;
         // Point-plane distance box (ll->bounds[0..1] around origin).
         float dmax = 0.0f, dmin = 0.0f;
-        float v27 = v7[0] * (v7[0] < 0.0f ? ll->bounds[1].v.m128_f32[0]
+        float v27 = v7[0] * (v7[0] >= 0.0f ? ll->bounds[1].v.m128_f32[0]
                                            : ll->bounds[0].v.m128_f32[0])
-            + v7[1] * (v7[1] < 0.0f ? ll->bounds[1].v.m128_f32[1]
+            + v7[1] * (v7[1] >= 0.0f ? ll->bounds[1].v.m128_f32[1]
                                      : ll->bounds[0].v.m128_f32[1])
-            + v7[2] * (v7[2] < 0.0f ? ll->bounds[1].v.m128_f32[2]
+            + v7[2] * (v7[2] >= 0.0f ? ll->bounds[1].v.m128_f32[2]
                                      : ll->bounds[0].v.m128_f32[2]);
-        float v26 = v7[0] * (v7[0] > 0.0f ? ll->bounds[1].v.m128_f32[0]
-                                           : ll->bounds[0].v.m128_f32[0])
-            + v7[1] * (v7[1] > 0.0f ? ll->bounds[1].v.m128_f32[1]
-                                     : ll->bounds[0].v.m128_f32[1])
-            + v7[2] * (v7[2] > 0.0f ? ll->bounds[1].v.m128_f32[2]
-                                     : ll->bounds[0].v.m128_f32[2]);
+        float v26 = v7[0] * (v7[0] > 0.0f ? ll->bounds[0].v.m128_f32[0]
+                                           : ll->bounds[1].v.m128_f32[0])
+            + v7[1] * (v7[1] > 0.0f ? ll->bounds[0].v.m128_f32[1]
+                                     : ll->bounds[1].v.m128_f32[1])
+            + v7[2] * (v7[2] > 0.0f ? ll->bounds[0].v.m128_f32[2]
+                                     : ll->bounds[1].v.m128_f32[2]);
         float v20 = v7[3];
         int v21 = 0;
         float v22 = 0.0f;
