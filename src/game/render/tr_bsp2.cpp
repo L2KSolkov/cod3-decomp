@@ -23,8 +23,8 @@ struct BspNode {
     short cellNum;             // +0x02
     union {
         struct {
-            BspNode* children[2]; // +0x04
-            BspPlane* plane;   // +0x0C
+            BspPlane* plane;   // +0x04
+            BspNode* children[2]; // +0x08
         } node;
     } u;                       // +0x04
 };
