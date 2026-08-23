@@ -546,6 +546,14 @@ enum TPakId { kPakTypeNone = -1 };
 #define PAK_ID_MAX ((TPakId)99)
 class PakFile;
 
+// Minimal view of the IDA-typed client static state.  PostProcess only reads
+// the state field at +0x04; the complete object is owned by cl.o.
+struct cls_t {
+    int keyCatchers;
+    int state;
+};
+extern cls_t cls;
+
 // Minimal cross-object view of the IDA-typed core.o manager.  The concrete
 // layout and DecodeBank body live in game/core/configstring.cpp.
 class ConfigStringManager {
@@ -4951,8 +4959,7 @@ void SceneManager::PostProcess(TPakId pakId)
         ProcessStaticModel(pakId,
                            ((StaticModel*)Bank->mStaticModels.mList)[v7]);
     }
-    extern int cls_state;  // ?cls_state@@3HA (cl_debug.cpp)
-    if (cls_state == 0 /* CA_ACTIVE */ || cls_state == 5 /* CA_MAP_RESTART */)
+    if (cls.state == 2 /* CA_ACTIVE */ || cls.state == 5 /* CA_MAP_RESTART */)
     {
         for (unsigned int j = 0; j < Bank->mSceneEntities.mSize; ++j)
             ProcessEntity(pakId, (int)j);
