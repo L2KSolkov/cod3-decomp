@@ -10600,83 +10600,6 @@ public:
     }
 };
 
-class CODNoteTrack : public nalComponentBase {
-public:
-    CODNoteTrack(nalRegisterKey key);  // ea: 0x005614F0
-    virtual ~CODNoteTrack();           // ea: 0x00560220
-
-    virtual unsigned int GetType() const;  // 0x561590
-    virtual int GetPoseSize() const;       // 0x5615A0
-    virtual int GetPoseAlignment() const;  // 0x5615B0
-    virtual void Blend(int count, void* dst, const void* srcA,
-                       const void* srcB, float blend) const;  // 0x5615C0
-    virtual void BlendArray(int count, void* dst, const void* srcA,
-                            const void* srcB,
-                            const float*& blendArray) const;  // 0x5615D0
-    virtual void VirtualAdvanceAnimComponentData(
-        const void*& animComponentData) const;  // ea: 0x005615E0
-
-    static unsigned char TypeID;  // ?TypeID@CODNoteTrack@@2EA @ 0xF258EC
-};
-
-unsigned char CODNoteTrack::TypeID = 0;
-
-// ea: 0x005614F0
-CODNoteTrack::CODNoteTrack(nalRegisterKey key)
-{
-    if (key == NAL_REGISTER_KEY)
-        return;
-    if (_tlAssert("c:\\cod\\code\\game\\codgeneric.h", 52,
-                  "key == NAL_REGISTER_KEY",
-                  "this function is for internal use only"))
-        __debugbreak();
-}
-
-// ea: 0x00560220
-CODNoteTrack::~CODNoteTrack() {}
-
-// ea: 0x00561590
-unsigned int CODNoteTrack::GetType() const
-{
-    return (unsigned int)(intptr_t)&TypeID;
-}
-
-// ea: 0x005615A0
-int CODNoteTrack::GetPoseSize() const
-{
-    return 0;
-}
-
-// ea: 0x005615B0
-int CODNoteTrack::GetPoseAlignment() const
-{
-    return 1;
-}
-
-// ea: 0x005615C0
-void CODNoteTrack::Blend(int count, void* dst, const void* srcA,
-                         const void* srcB, float blend) const
-{
-    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blend;
-}
-
-// ea: 0x005615D0
-void CODNoteTrack::BlendArray(int count, void* dst, const void* srcA,
-                              const void* srcB,
-                              const float*& blendArray) const
-{
-    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blendArray;
-}
-
-// ea: 0x005615E0
-void CODNoteTrack::VirtualAdvanceAnimComponentData(
-    const void*& animComponentData) const
-{
-    const void* cur = animComponentData;
-    *(const void**)&animComponentData =
-        (const char*)cur + *(const unsigned int*)cur;
-}
-
 // nalComponent<BASE,DATA,TRACK> - anim.o COD note-track component (all
 // virtuals from the binary vftable; eases per function)
 
@@ -10874,6 +10797,86 @@ void nalComponent<BASE, DATA, TRACK>::TrackLoop(
         }
         ComponentInfo = componentEnum.ComponentInfo;
     }
+}
+
+// IDA: CODNoteTrack is nalComponent<nalComponentBase, CODNoteData,
+// CODNoteTrack>, not a direct nalComponentBase child.
+class CODNoteTrack
+    : public nalComponent<nalComponentBase, CODNoteData, CODNoteTrack> {
+public:
+    CODNoteTrack(nalRegisterKey key);  // ea: 0x005614F0
+    virtual ~CODNoteTrack();           // ea: 0x00560220
+
+    virtual unsigned int GetType() const;  // 0x561590
+    virtual int GetPoseSize() const;       // 0x5615A0
+    virtual int GetPoseAlignment() const;  // 0x5615B0
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;  // 0x5615C0
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;  // 0x5615D0
+    virtual void VirtualAdvanceAnimComponentData(
+        const void*& animComponentData) const;  // ea: 0x5615E0
+
+    static unsigned char TypeID;  // ?TypeID@CODNoteTrack@@2EA @ 0xF258EC
+};
+
+unsigned char CODNoteTrack::TypeID = 0;
+
+// ea: 0x005614F0
+CODNoteTrack::CODNoteTrack(nalRegisterKey key)
+{
+    if (key == NAL_REGISTER_KEY)
+        return;
+    if (_tlAssert("c:\\cod\\code\\game\\codgeneric.h", 52,
+                  "key == NAL_REGISTER_KEY",
+                  "this function is for internal use only"))
+        __debugbreak();
+}
+
+// ea: 0x00560220
+CODNoteTrack::~CODNoteTrack() {}
+
+// ea: 0x00561590
+unsigned int CODNoteTrack::GetType() const
+{
+    return (unsigned int)(intptr_t)&TypeID;
+}
+
+// ea: 0x005615A0
+int CODNoteTrack::GetPoseSize() const
+{
+    return 0;
+}
+
+// ea: 0x005615B0
+int CODNoteTrack::GetPoseAlignment() const
+{
+    return 1;
+}
+
+// ea: 0x005615C0
+void CODNoteTrack::Blend(int count, void* dst, const void* srcA,
+                         const void* srcB, float blend) const
+{
+    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blend;
+}
+
+// ea: 0x005615D0
+void CODNoteTrack::BlendArray(int count, void* dst, const void* srcA,
+                              const void* srcB,
+                              const float*& blendArray) const
+{
+    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blendArray;
+}
+
+// ea: 0x005615E0
+void CODNoteTrack::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    const void* cur = animComponentData;
+    *(const void**)&animComponentData =
+        (const char*)cur + *(const unsigned int*)cur;
 }
 
 // Force emission of the anim.o instantiation.
@@ -12447,6 +12450,9 @@ static nalComponentEntropyTrajectoryPO Component_nalComponentEntropyTrajectoryPO
 static nalComponentInitList InitListComponent_nalComponentEntropyTrajectoryPO(
     "NAL_EntropyTrajectoryPositionOrientation",
     Component_nalComponentEntropyTrajectoryPO);
+static CODNoteTrack Component_CODNoteTrack(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_CODNoteTrack(
+    "COD_Note", Component_CODNoteTrack);
 
 static void nalRegisterComponentInstances()
 {
@@ -12470,6 +12476,7 @@ static void nalRegisterComponentInstances()
     InitListComponent_nalComponentEntropyPO.Register();
     InitListComponent_nalComponentTrajectoryPO.Register();
     InitListComponent_nalComponentEntropyTrajectoryPO.Register();
+    InitListComponent_CODNoteTrack.Register();
 }
 
 static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
