@@ -20,20 +20,20 @@ index	status	map_line
 19	VERIFIED	0002:000b4030 ??2DCGBankManager@@SAPAXIPAX@Z 008A3530 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA DISASM re-port audit: returns placement pointer
 20	VERIFIED	0002:000b4040 ?CreateInst@DCGBankManager@@SAXXZ 008A3540 f i core.o DISASM re-port audit: singleton assert, 0x200-byte aligned allocation, constructor, and null path match
 21	VERIFIED	0002:000b4140 ?DeleteInst@DCGBankManager@@SAXXZ 008A3640 f i core.o DISASM re-port audit: singleton assert, virtual delete, and nulling match
-22	VERIFIED	0002:000b41c0 ??2CGBankManager@@SAPAXIPAX@Z 008A36C0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA
-23	VERIFIED	0002:000b41d0 ?CreateInst@CGBankManager@@SAXXZ 008A36D0 f i core.o
-24	VERIFIED	0002:000b42d0 ?DeleteInst@CGBankManager@@SAXXZ 008A37D0 f i core.o
-25	VERIFIED	0002:000b4350 ??0NumBanks@@QAE@MM@Z 008A3850 f i core.o VERIFIED: FUNCTION existing field-order constructor matches IDA
-26	VERIFIED	0002:000b43a0 ??2BankManager@@SAPAXIPAX@Z 008A38A0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA
-27	VERIFIED	0002:000b43b0 ?Inst@BankManager@@SAPAV1@XZ 008A38B0 f i core.o VERIFIED: FUNCTION existing singleton accessor matches IDA
-28	VERIFIED	0002:000b43c0 ?CreateInst@BankManager@@SAXXZ 008A38C0 f i core.o
-29	VERIFIED	0002:000b44b0 ?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ 008A39B0 f i core.o VERIFIED: FUNCTION existing file-id accessor matches IDA
-30	VERIFIED	0002:000b44c0 ?GetHeader@PakFile@@QBEPBUPakHeader@@XZ 008A39C0 f i core.o VERIFIED: FUNCTION existing header accessor matches IDA
-31	VERIFIED	0002:000b44d0 ??2PakManager@@SAPAXIPAX@Z 008A39D0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA
-32	VERIFIED	0002:000b44e0 ?CreateInst@PakManager@@SAXXZ 008A39E0 f i core.o
-33	VERIFIED	0002:000b45e0 ?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ 008A3AE0 f i core.o
-34	VERIFIED	0002:000b45f0 ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z 008A3AF0 f i core.o
-35	VERIFIED	0002:000b4620 ?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ 008A3B20 f i core.o VERIFIED: FUNCTION existing current-pak accessor matches IDA
+22	VERIFIED	0002:000b41c0 ??2CGBankManager@@SAPAXIPAX@Z 008A36C0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA DISASM re-port audit: returns placement pointer
+23	VERIFIED	0002:000b41d0 ?CreateInst@CGBankManager@@SAXXZ 008A36D0 f i core.o DISASM re-port audit: 0x328-byte core allocation, constructor, singleton assert/null path match
+24	VERIFIED	0002:000b42d0 ?DeleteInst@CGBankManager@@SAXXZ 008A37D0 f i core.o DISASM re-port audit: assert, virtual destructor dispatch, and singleton nulling match
+25	VERIFIED	0002:000b4350 ??0NumBanks@@QAE@MM@Z 008A3850 f i core.o VERIFIED: FUNCTION existing field-order constructor matches IDA DISASM re-port audit: all platform bank fields receive count/aram in IDA order
+26	VERIFIED	0002:000b43a0 ??2BankManager@@SAPAXIPAX@Z 008A38A0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA DISASM re-port audit: returns placement pointer
+27	VERIFIED	0002:000b43b0 ?Inst@BankManager@@SAPAV1@XZ 008A38B0 f i core.o VERIFIED: FUNCTION existing singleton accessor matches IDA DISASM re-port audit: returns sInst
+28	VERIFIED	0002:000b43c0 ?CreateInst@BankManager@@SAXXZ 008A38C0 f i core.o DISASM re-port audit: singleton assert, 0x30-byte bank allocation, constructor, and null path match
+29	VERIFIED	0002:000b44b0 ?GetFileId@PakFile@@QBE?AW4nflFileID@@XZ 008A39B0 f i core.o VERIFIED: FUNCTION existing file-id accessor matches IDA DISASM re-port audit: returns mFileId
+30	VERIFIED	0002:000b44c0 ?GetHeader@PakFile@@QBEPBUPakHeader@@XZ 008A39C0 f i core.o VERIFIED: FUNCTION existing header accessor matches IDA DISASM re-port audit: returns mHeader
+31	VERIFIED	0002:000b44d0 ??2PakManager@@SAPAXIPAX@Z 008A39D0 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA DISASM re-port audit: returns placement pointer
+32	VERIFIED	0002:000b44e0 ?CreateInst@PakManager@@SAXXZ 008A39E0 f i core.o DISASM re-port audit: singleton assert, 0x45A4-byte pak allocation, constructor, and null path match
+33	VERIFIED	0002:000b45e0 ?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ 008A3AE0 f i core.o DISASM re-port audit: returns mGlobalPakId
+34	FIXED	0002:000b45f0 ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z 008A3AF0 f i core.o FIXED in 1e819843: added IDA disassembly's id < 0 rejection; upper bound remains 0x62
+35	VERIFIED	0002:000b4620 ?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ 008A3B20 f i core.o VERIFIED: FUNCTION existing current-pak accessor matches IDA DISASM re-port audit: returns mCurrentPakId
 36	VERIFIED	0002:000b4630 _acosf 008A3B30 f i core.o
 37	VERIFIED	0002:000b4640 _floorf 008A3B40 f i core.o
 38	VERIFIED	0002:000b4660 _fmodf 008A3B60 f i core.o
