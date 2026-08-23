@@ -75,8 +75,8 @@ static void FixupPointerChain(uint32_t nextBits, uint32_t* node) {
         offset = 0;
         next = 0;
         ExtractNode(*node, nextBits, &offset, &next);
-        *node = (uint32_t)(uintptr_t)(node + offset);
-        node += next;
+        *node = (uint32_t)(uintptr_t)((uint8_t*)node + offset);
+        node = (uint32_t*)((uint8_t*)node + next);
     } while (next != 0);
 }
 
