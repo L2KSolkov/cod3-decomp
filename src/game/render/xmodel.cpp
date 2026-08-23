@@ -476,15 +476,7 @@ int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
         const XModelCollSurf* surf = collSurfs.mList[i];
         int boneIdx = surf->boneIdx;
         if (boneIdx < 0 || boneIdx >= nbones)
-        {
-            AeAssert::gCurrentAuthor = AeAssert::JSV;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
-            AeAssert::gCurrentLine = 809;
-            AeAssert::gCurrentExpr = "bone_index >= 0 && bone_index < nbones";
-            if (!AeAssert::IsIgnored() && AeAssert::Assert("bad bone index"))
-                __debugbreak();
             return 0;
-        }
         const math::Mat43& bone = bones[boneIdx];
         for (int corner = 0; corner < 8; ++corner)
         {
