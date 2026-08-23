@@ -2756,12 +2756,12 @@ void G_TouchTriggersAndVehicles(Entity* e, const math::Position3* a,
 {
     (void)e; (void)a; (void)b;
 }
-void gDObjFreeList_Init(int a) { (void)a; }
-void gDSkel4FreeList_Init(int a) { (void)a; }
-void gDSkelFreeList_Init(int a) { (void)a; }
-void gDSkelMaxFreeList_Init(int a) { (void)a; }
-void gEntFreeList_Init(int a) { (void)a; }
-void gRefEntFreeList_Init(int a) { (void)a; }
+void gDObjFreeList_Init(int a) { gDObjFreeList.Init(a); }
+void gDSkel4FreeList_Init(int a) { gDSkel4FreeList.Init(a); }
+void gDSkelFreeList_Init(int a) { gDSkelFreeList.Init(a); }
+void gDSkelMaxFreeList_Init(int a) { gDSkelMaxFreeList.Init(a); }
+void gEntFreeList_Init(int a) { gEntFreeList.Init(a); }
+void gRefEntFreeList_Init(int a) { gRefEntFreeList.Init(a); }
 struct weaponFileInfo_t;
 void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* wi)
 {
