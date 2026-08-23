@@ -19,6 +19,7 @@
 
 // External dependencies (stubbed until mem_heap ported)
 extern void* mem_heap_malloc(unsigned int size);
+extern void* mem_heap_malloc(int alignment, unsigned int size);
 extern void  mem_heap_free(void* ptr);
 
 // AE assertion system (extern — defined in ae_assert.cpp)
@@ -77,7 +78,7 @@ PoolAllocator::BlockPool::BlockPool(
         mBlockPtr = (char*)preallocatedBlock;
         mPreallocatedBlock = 1;
     } else {
-        mBlockPtr = (char*)mem_heap_malloc(capacity * entrySize);
+        mBlockPtr = (char*)mem_heap_malloc((int)mAlignment, capacity * entrySize);
         mPreallocatedBlock = 0;
     }
 
