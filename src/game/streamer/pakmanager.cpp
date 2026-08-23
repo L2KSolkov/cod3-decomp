@@ -13154,6 +13154,7 @@ static void InternalAllocate(float numAvailableBanks, BitSet<64>* freeBanks1,
                 alloc2->Add(v9);
             }
             *numBanks -= 0.5f;
+            half = false;
         }
         else
         {
@@ -13182,6 +13183,7 @@ scan_free1:
                 freeBanks1->Rmv(v11);
                 alloc1->Add(v11);
                 *numBanks -= 0.5f;
+                half = false;
             }
         }
     }
