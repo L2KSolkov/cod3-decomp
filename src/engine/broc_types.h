@@ -1042,6 +1042,15 @@ namespace Broc {
 bool IsDefined(const Broc::entity& e);              // ea: 0x92F130
 bool IsDefined(const Broc::vector& v);              // ea: 0x92F150
 bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
+bool IsDefined(Broc::string* s);                    // ea: 0x92F6F0
+bool IsDefined(const Broc::pathnode* n);            // ea: 0x994EF0
+bool IsDefined(const Broc::vehiclenode* n);          // ea: 0x996A30
+inline bool IsDefined(Broc::pathnode* n) {
+    return IsDefined(static_cast<const Broc::pathnode*>(n));
+}
+inline bool IsDefined(Broc::vehiclenode* n) {
+    return IsDefined(static_cast<const Broc::vehiclenode*>(n));
+}
 bool IsDefined(const ::bfloat& v);                  // mp_util_wad.o 0x9866A0
 bool IsDefined(const ::bint& v);                    // mp_util_wad.o 0x986650
 bool IsDefined(const ::bbool& v);                   // mp_util_wad.o 0x9866C0
@@ -1408,7 +1417,8 @@ struct BrocAPI {
     void (*mEnableWeapon)(const unsigned int);             // +0x41C
     void (*mDisableWeapon)(const unsigned int);            // +0x420
     void (*mRespawnVehicle)(const unsigned int);          // +0x424
-    char _pad428[0x438 - 0x428];                          // +0x428
+    void (*mSetCompassVisibilty)(unsigned int, const bool); // +0x428
+    char _pad42C[0x438 - 0x42C];                          // +0x42C
     const char* (*mLocalize)(const char*);                // +0x438
     void (*mDebugRenderText)(const char*, const int, const int); // +0x43C
     void (*mDebugRenderEntityBBox)(const unsigned int, const Broc::vector*, float); // +0x440
@@ -1421,7 +1431,11 @@ struct BrocAPI {
                                      const Broc::vector*,
                                      const Broc::vector*); // +0x4B0
     void (*mEnableNanoForces)(bool);                      // +0x4B4
-    char _pad4B8[0x51C - 0x4B8];                          // +0x4B8
+    char _pad4B8[0x4DC - 0x4B8];                          // +0x4B8
+    void (*mSetTutorialText)(const int, const int);       // +0x4DC
+    void (*mSetTutorialTextAllPlayers)(const int);        // +0x4E0
+    void (*mSetActionHint)(const int, const int);         // +0x4E4
+    char _pad4E8[0x51C - 0x4E8];                          // +0x4E8
     void (*mRumbleNotes)(const Broc::string*, float,
                          const Broc::string*, float, int); // +0x51C
     char _pad520[0x528 - 0x520];                          // +0x520
@@ -1447,7 +1461,8 @@ struct BrocAPI {
     bool (*mIsTouching)(const unsigned int, const unsigned int); // +0x6C8
     char _pad6CC[0x6D8 - 0x6CC];                          // +0x6CC
     void (*mDelete)(unsigned int);                        // +0x6D8
-    char _pad6DC[0x6E8 - 0x6DC];                          // +0x6DC
+    char _pad6DC[0x6E4 - 0x6DC];                          // +0x6DC
+    void (*mSetAiType)(const unsigned int, const Broc::string*, TPakInfo); // +0x6E4
     void (*mSetModel)(unsigned int, const Broc::string*, TPakInfo); // +0x6E8
     void (*mSetModelIndex)(unsigned int, int);            // +0x6EC
     float (*mGetNormalHealth)(unsigned int);              // +0x6F0
@@ -1483,7 +1498,9 @@ struct BrocAPI {
     bool (*mSwitchToLastWeapon)(unsigned int);             // +0xA38
     char _padA3C[0xA5C - 0xA3C];                          // +0xA3C
     int (*mUseButtonPressed)(const unsigned int);          // +0xA5C
-    char _padA60[0xA8C - 0xA60];                          // +0xA60
+    char _padA60[0xA70 - 0xA60];                          // +0xA60
+    void (*mSetViewModel)(const unsigned int, const Broc::string*); // +0xA70
+    char _padA74[0xA8C - 0xA74];                          // +0xA74
     int (*mOpenMenu)(const Broc::string*, int);            // +0xA8C
     int (*mIsMenuOpen)(const Broc::string*, int);          // +0xA90
     int (*mOpenMenuNoMouse)(unsigned int, const Broc::string*); // +0xA94
@@ -1728,7 +1745,7 @@ void SetWeaponSlotClipAmmo(Broc::entity* e, const Broc::string* sSlot,
 int GetWeaponIndex(const Broc::string* team);
 int GetFullClipAmmoCount(Broc::entity* e, const Broc::string* slot);
 int GetMaxAmmo(Broc::entity* e, const Broc::string* slot);
-void SetAiType(Broc::entity* e, const Broc::string* modelName, int whichPak);
+void SetAiType(Broc::entity* e, const Broc::string* modelName, TPakInfo whichPak);
 void SetViewModel(Broc::entity* e, const Broc::string* modelName);
 void Code_SetSpecialRecharge(int start, int length, int playerClass,
                              int playerIndex);

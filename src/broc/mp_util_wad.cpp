@@ -152,7 +152,7 @@ Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
                                             Broc::dyn_array<Broc::entity>* points);
 Broc::entity* GetSpawnpointNearest(Broc::entity* result,
                                    Broc::dyn_array<Broc::entity>* points,
-                                   Broc::vector position, bool ignoreTeleFrag);
+                                   Broc::vector position, Broc::bbool ignoreTeleFrag);
 Broc::entity* GetSpawnpointSemiRandom(Broc::entity* result,
                                       Broc::entity* self,
                                       const Broc::string* team,
@@ -171,6 +171,7 @@ Broc::string* team_balance(Broc::string* result, Broc::entity guy,
 void team_balance(Broc::bbool always);
 }
 namespace _mp_common {
+void SetupCallbacks(Broc::bbool teamGameType);
 void StartRound(Broc::bbool firstTime);
 AeThreadFunctor* StopFollowing__functor(Broc::entity self, Broc::bbool blackNow);
 AeThreadFunctor* QuitGameThread__functor(Broc::entity selfLevel);
@@ -5517,6 +5518,10 @@ bool IsDefined(const Broc::string& s) {
     return s.c_str() != NULL;
 }
 
+bool IsDefined(Broc::string* s) {
+    return s->IsDefined();
+}
+
 template <typename T> bool IsDefined(const T& t) {
     return t.mVal != 0;
 }
@@ -5666,6 +5671,146 @@ void Broc::Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
     gBrocAPI.mSendGameStateSCF(player.GetHandle(), defendingTeam,
                                flagCopy, flagAnglesCopy,
                                flag_holder.GetHandle());
+}
+
+// Broc API forwarding wrappers verified against IDA 0x0093E4D0-0x00978CC0.
+void Broc::SetTutorialText(int hash, int viewport) {
+    gBrocAPI.mSetTutorialText(hash, viewport);
+}
+
+void Broc::SetTutorialTextAllPlayers(int hash) {
+    gBrocAPI.mSetTutorialTextAllPlayers(hash);
+}
+
+void Broc::SetActionHint(int hash, int viewport) {
+    gBrocAPI.mSetActionHint(hash, viewport);
+}
+
+void Broc::Code_DebugOut(const char* strOut) {
+    gBrocAPI.mDebugOut(strOut);
+}
+
+void Broc::Code_SetSpecialRecharge(int start, int length, int playerClass,
+                                   int playerIndex) {
+    gBrocAPI.mSetSpecialRecharge(start, length, playerClass, playerIndex);
+}
+
+void Broc::SetMaxVehicles(int vehicles) {
+    gBrocAPI.mSetMaxVehicles(vehicles);
+}
+
+void Broc::Code_FinishDamage(
+    Broc::entity player, Broc::entity inflictor, Broc::entity attacker,
+    const Broc::vector* dir, const Broc::vector* position, int damage, int mod,
+    int weapon, int hitLoc) {
+    gBrocAPI.mFinishDamage(player.GetHandle(), inflictor.GetHandle(),
+                           attacker.GetHandle(), *dir, *position, damage, mod,
+                           weapon, hitLoc);
+}
+
+void Broc::Code_NextRound(bool allowChange) {
+    gBrocAPI.mNextRound(allowChange);
+}
+
+bool Broc::Code_GetTeamGame() {
+    return gBrocAPI.mGetTeamGame();
+}
+
+bool Broc::Code_IsHost() {
+    return gBrocAPI.mIsHost();
+}
+
+bool Broc::Code_IsRankedGame() {
+    return gBrocAPI.mIsRankedGame();
+}
+
+void Broc::Code_ScreenFadeToBlack(unsigned int time, int viewport) {
+    gBrocAPI.mScreenFadeToBlack(time, viewport);
+}
+
+void Broc::Code_ScreenFadeUp(unsigned int time, int viewport) {
+    gBrocAPI.mScreenFadeUp(time, viewport);
+}
+
+void Broc::Code_QuitGame() {
+    gBrocAPI.mQuitGame();
+}
+
+void Broc::Code_EnterGame() {
+    gBrocAPI.mEnterGame();
+}
+
+void Broc::Code_SetCompassVisibilty(int teamid, bool visible) {
+    gBrocAPI.mSetCompassVisibilty(static_cast<unsigned int>(teamid), visible);
+}
+
+void Broc::Code_PickupItem(int netID, Broc::entity player) {
+    gBrocAPI.mPickupItem(netID, player.GetHandle());
+}
+
+void Broc::Code_SendGameStateDOM(Broc::entity player, int flag0, int flag1,
+                                 int flag2, int flag3, int flag4) {
+    gBrocAPI.mSendGameStateDOM(player.GetHandle(), flag0, flag1, flag2, flag3,
+                               flag4);
+}
+
+void Broc::Code_SetPlayerAlive(Broc::entity player, int health) {
+    gBrocAPI.mSetPlayerAlive(player.GetHandle(), health);
+}
+
+void Broc::Code_SetRespawnMaxTime(Broc::entity player, int time) {
+    gBrocAPI.mSetRespawnMaxTime(player.GetHandle(), time);
+}
+
+void Broc::Code_GetOutOfVehicle(Broc::entity player) {
+    gBrocAPI.mGetOutOfVehicle(player.GetHandle());
+}
+
+bool Broc::Code_IsInVehicle(Broc::entity player) {
+    return gBrocAPI.mIsInVehicle1(player.GetHandle());
+}
+
+void Broc::Code_SendInitialGameState(Broc::entity player) {
+    gBrocAPI.mSendInitialGameState(player.GetHandle());
+}
+
+void Broc::Code_SendVehicleStates(Broc::entity player) {
+    gBrocAPI.mSendVehicleStates(player.GetHandle());
+}
+
+bool Broc::Code_NextRoundMapChanges() {
+    return gBrocAPI.mNextRoundMapChanges();
+}
+
+void Broc::Code_SettleMapVote() {
+    gBrocAPI.mSettleMapVote();
+}
+
+void Broc::Code_SettleGameModeVote() {
+    gBrocAPI.mSettleGameModeVote();
+}
+
+void Broc::Code_SetShowTime(float gameTime) {
+    gBrocAPI.mSetShowTime(gameTime);
+}
+
+void Broc::Code_ClearSpottingFromOccupants(Broc::entity ent) {
+    gBrocAPI.mClearSpottingFromOccupants(ent.GetHandle());
+}
+
+void Broc::Code_ForceControllerErrorMessageDown() {
+    gBrocAPI.mForceControllerErrorMessageDown();
+}
+
+// Broc::SetAiType - ea: 0x95E080
+void Broc::SetAiType(Broc::entity* e, const Broc::string* modelName,
+                     TPakInfo whichPak) {
+    gBrocAPI.mSetAiType(e->GetHandle(), modelName, whichPak);
+}
+
+// Broc::SetViewModel - ea: 0x95E1E0
+void Broc::SetViewModel(Broc::entity* e, const Broc::string* modelName) {
+    gBrocAPI.mSetViewModel(e->GetHandle(), modelName);
 }
 
 // Code_IncTeamScore - ea: 0x93DE70
@@ -8132,9 +8277,6 @@ Broc::string* level_effect_get(Broc::string* result, HashStr key) {
 // _mp_dm - deathmatch script.
 // ============================================================================
 namespace _mp_dm {
-namespace _mp_common {
-void SetupCallbacks(Broc::bbool teamGameType);
-}
 AeThreadFunctor1<Broc::entity>* StartGame__functor(Broc::entity self);
 extern AeThreadFunctor1<Broc::entity>* main__functor(Broc::entity self);
 extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
@@ -8157,7 +8299,7 @@ void main(Broc::entity self) {
     mp_util_wad::pLevel->spawnTypeAxis = "spawn_deathmatch";
     mp_util_wad::pLevel->PickSpawnPoint = (void*)GetSpawnPoint;
     Broc::Code_SetShowScore(false);
-    _mp_common::SetupCallbacks(team_game);
+    ::_mp_common::SetupCallbacks(team_game);
     void* started = StartGame__functor(self);
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_dm.bro",
                         __LINE__, "StartGame", started);
@@ -11139,7 +11281,7 @@ Broc::entity* GetBestSpectateSpawn(Broc::entity* result, Broc::entity* self) {
         Broc::vector origin;
         mp_util_wad::entity_get_origin(&origin, whereYouWouldSpawn);
         _mp_spawnlogic::GetSpawnpointNearest(result, &spawnpoints, origin,
-                                             true);
+                                             Broc::bbool(true));
     } else {
         _mp_spawnlogic::GetSpawnpointRandom(result, &spawnpoints, true);
     }
@@ -12307,7 +12449,8 @@ void UpdatePlayerModelForRank(Broc::entity player) {
     else
         idx = (unsigned int)((int)playerClass + 7);
     team.~string();
-    Broc::SetAiType(&player, &mp_util_wad::pLevel->models[idx], 0);
+    Broc::SetAiType(&player, &mp_util_wad::pLevel->models[idx],
+                   static_cast<TPakInfo>(0));
     (void)rank;
 }
 
@@ -15535,6 +15678,14 @@ void CompassUnderlay(Broc::entity p) {
     }
     Broc::Code_SetCompassVisibilty((int)flagid, false);
     mp_util_wad::entity_set_ctf_has_flag(p, 0);
+}
+
+// _mp_scf::CompassUnderlay__functor - ea: 0x969740
+AeThreadFunctor1<Broc::entity>* CompassUnderlay__functor(Broc::entity p) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(CompassUnderlay, p);
 }
 
 // WaitThenPickFlagToLaunch - ea: 0x96AC60
