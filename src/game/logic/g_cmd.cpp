@@ -3289,7 +3289,35 @@ void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int))
 // ea: 0x61F730 / 0x61F320 / 0x61F4A0
 // ============================================================================
 char* g_text;  // ?g_text@@3PBDB (game.o @ 0xF3C458)
-extern void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd);  // game.o 0x60E5B0
+// ea: 0x0061F2B0
+// IDA shows the dispatcher decoding up to two integer arguments before
+// invoking the registered command or input-command callback.
+void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd)
+{
+    int arg1 = -1;
+    if (cmd_argc > 1 && cmd_argv[1] != nullptr)
+        arg1 = atoi(cmd_argv[1]);
+
+    int arg2 = 0;
+    if (cmd_argc > 2 && cmd_argv[2] != nullptr)
+        arg2 = atoi(cmd_argv[2]);
+
+    if (cmd == nullptr)
+        return;
+
+    if (cmd->mFuncType == INPUT_CMD)
+    {
+        InputCmdFuncInfo* input = reinterpret_cast<InputCmdFuncInfo*>(cmd);
+        if (input->mInputFunc != nullptr)
+            input->mInputFunc(arg1, arg2);
+    }
+    else if (cmd->mFuncType == CMD)
+    {
+        CmdFuncInfo* command = reinterpret_cast<CmdFuncInfo*>(cmd);
+        if (command->mFunc != nullptr)
+            command->mFunc();
+    }
+}
 extern void Cbuf_AddServerText_f();  // game.o 0x60E5F0
 void Cbuf_AddServerText_f()
 {

@@ -2569,8 +2569,6 @@ void CGBankManager_UnloadAll(void* self) { (void)self; }
 void CGBankManager_UnloadAll() {}
 void Client_ClaimNode(Entity* e) { (void)e; }
 void ClientImpacts(Entity* e, struct pmove_t* pm) { (void)e; (void)pm; }
-class BaseCmdFuncInfo;
-void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* c) { (void)c; }
 void Com_CleanupSkeletons() {}
 void Com_Crash_f() {}
 void Com_Error_f() {}
