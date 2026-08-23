@@ -72,7 +72,7 @@ SoundHandleDbLocal SoundHandleDb_sInst;  // ?SoundHandleDb_sInst (core.o)
 extern void controller_stop_all_rumble(void* self);
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
-extern void* AssetBankSet_ctor(void* self);
+extern void AssetBankSet_ctor(void* self);
 extern void AssetBankSet_dtor(void* self);
 extern void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self);
 extern void* InplaceAssetBankSet_StringTableBank_ctor(void* self);

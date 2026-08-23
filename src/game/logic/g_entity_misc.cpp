@@ -2493,11 +2493,6 @@ void* FX_PlaySimpleEffectID(TPakId pakId, int id, math::Position3* org)
     (void)pakId; (void)id; (void)org;
     return nullptr;
 }
-void* AssetBankSet_ctor(void* self)
-{
-    (void)self;
-    return nullptr;
-}
 void AssetBankSet_Dtor(void* self) { (void)self; }
 void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self)
 {
@@ -2510,8 +2505,14 @@ void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self)
 }
 void* InplaceAssetBankSet_GdbFileBank_ctor(void* self)
 {
-    (void)self;
-    return nullptr;
+    // IDA 0x660870: construct the AssetBankSet base, then clear 99 slots.
+    extern void AssetBankSet_ctor(void*);
+    AssetBankSet_ctor(self);
+    void** elements = reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 4);
+    for (unsigned int i = 0; i < 99; ++i)
+        elements[i] = nullptr;
+    return self;
 }
 void* InplaceAssetBankSet_StringTableBank_ctor(void* self)
 {
@@ -4606,7 +4607,7 @@ extern void* ZoomOut();               // game.o 0x611A70
 extern void Teleport();               // game.o 0x611A90
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
-extern void* AssetBankSet_ctor(void* self);  // streamer.o
+extern void AssetBankSet_ctor(void* self);  // streamer.o
 extern void CGBankManager_DebugRender_impl(void* self);  // 0x646700
 void* CGBankManager::sInst = nullptr;         // ?sInst@CGBankManager@@2PAV1@A @ 0xF4F438
 
@@ -5171,7 +5172,7 @@ AudioBankMgr* AudioBankMgr::Inst()
 enum nflMediaID : unsigned;
 extern nflFileID nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YA?AW4nflFileID@@W4nflMediaID@@PBD@Z
 extern nflMediaID gNflMediaId;                              // nfl_xboxr
-extern void* AssetBankSet_ctor(void* self);                 // streamer.o
+extern void AssetBankSet_ctor(void* self);                 // streamer.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                   const char* ctx, const char* file,
                                   int line);
