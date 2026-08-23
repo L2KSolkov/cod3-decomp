@@ -2701,10 +2701,12 @@ void DCGBank_load_inplace(void* bank, char* data, int* size)
     unsigned char* raw = static_cast<unsigned char*>(bank);
     DCGAlignInplace(size, 16);
     *reinterpret_cast<char**>(raw + 4) = data + *size;
+    unsigned char* elements =
+        *reinterpret_cast<unsigned char**>(raw + 4);
     unsigned int count = *reinterpret_cast<unsigned int*>(raw);
     *size += 112 * count;
     for (unsigned int i = 0; i < count; ++i)
-        DCGSet_load_inplace(raw + 4 + i * 112, data, size);
+        DCGSet_load_inplace(elements + i * 112, data, size);
     DCGAlignInplace(size, 4);
 }
 void CGBankManager_UnloadAll(void* self) { (void)self; }
