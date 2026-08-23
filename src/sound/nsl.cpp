@@ -2611,8 +2611,22 @@ nflFileID      nslWaveBankGetFile(const nslWaveBank* waveBank, unsigned* waveBan
     return waveBank->storage.backing.waveBankFile;
 }
 int           nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram) {
-    if (waveBank == nullptr || (waveBank->waveBankFlags & 0x40u) == 0)
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 0xC0u) != 0x40u)
         return 0;
+    if (waveBank->storage.backing.waveBankAram != waveBankAram) {
+        unsigned char* waves = reinterpret_cast<unsigned char*>(waveBank->waves);
+        const uintptr_t oldAram = reinterpret_cast<uintptr_t>(
+            waveBank->storage.backing.waveBankAram);
+        const uintptr_t newAram = reinterpret_cast<uintptr_t>(waveBankAram);
+        const unsigned delta = static_cast<unsigned>(newAram - oldAram);
+        for (unsigned index = 0; index < waveBank->waveCount; ++index) {
+            unsigned char* wave = waves + 16u * index;
+            unsigned char* metadata =
+                *reinterpret_cast<unsigned char**>(wave);
+            if ((metadata[5] & 1u) == 0)
+                *reinterpret_cast<unsigned*>(wave + 4u) += delta;
+        }
+    }
     waveBank->storage.backing.waveBankAram = waveBankAram;
     return 1;
 }
@@ -4694,19 +4708,8 @@ static void voiceInit(nslDriverVoice* dv, nslVoice* lv, const nslWave* w) {
     const unsigned playLength = pFormat->Format.nBlockAlign * (w->sampleCount >> 6);
     const unsigned storageAddress = *reinterpret_cast<const unsigned*>(
         reinterpret_cast<const unsigned char*>(w) + 4u);
-    // Wave records address their bank-local ARAM section.  DirectSound's
-    // host buffer is backed by the global ARAM allocation, which also holds
-    // the streaming voice scratch buffers allocated before the bank loads.
-    const nslWaveID waveID = *reinterpret_cast<const nslWaveID*>(lvRaw + 0x110u);
     const uintptr_t aramBase = reinterpret_cast<uintptr_t>(nslAramGetBase());
-    const uintptr_t bankAram = reinterpret_cast<uintptr_t>(
-        nslWaveBankGetAram(nslWaveGetBank(waveID)));
-    unsigned storageOffset = storageAddress;
-    if (bankAram >= aramBase && bankAram < aramBase + nslAramGetSize()) {
-        const uintptr_t bankOffset = bankAram - aramBase;
-        if (bankOffset <= UINT_MAX - storageAddress)
-            storageOffset = static_cast<unsigned>(bankOffset) + storageAddress;
-    }
+    const unsigned storageOffset = storageAddress - static_cast<unsigned>(aramBase);
     code = j_IDirectSoundBuffer_SetPlayRegion(
         buffer, storageOffset, playLength);
     nslDriverCheck(code, "NSL",
