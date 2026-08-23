@@ -330,8 +330,13 @@ ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> dobjects;             // 0x12C
 ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> del_pending_dobjects; // 0x12D4DC0
 ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> add_pending_dobjects; // 0x12C1FA4
 const char* hintStrings[17];        // ?hintStrings (g.o .rdata)
-const char* s_vehicleTypeNames[6];  // ?s_vehicleTypeNames (g.o)
-const char* s_vehicleSubTypeNames[9];  // ?s_vehicleSubTypeNames (g.o)
+const char* s_vehicleTypeNames[6] = {
+    "** unknown **", "4 wheel", "tank", "plane", "boat", "artillery",
+};  // ?s_vehicleTypeNames (g.o)
+const char* s_vehicleSubTypeNames[9] = {
+    "** unknown **", "Jeep", "Motorcycle", "Truck", "Wagon",
+    "Halftrack", "Horch", "Sherman", "Kangaroo",
+};  // ?s_vehicleSubTypeNames (g.o)
 const char* sEntryPointHintText[6];    // ?sEntryPointHintText (g.o)
 char* g_scratchpadMem;              // ?g_scratchpadMem@@3PADA (game.o @ 0xEA81C0)
 // --- sInst / singleton data sweep ---
