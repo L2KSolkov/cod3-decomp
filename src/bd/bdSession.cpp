@@ -29,7 +29,8 @@ void bdArrayAppend(bdArray<T>& arr, const T& value) {
         arr.m_data = newData;
         arr.m_capacity = newCap;
     }
-    arr.m_data[arr.m_size++] = value;
+    new (arr.m_data + arr.m_size) T(value);
+    ++arr.m_size;
 }
 // Cross-object externs (bdNet/bdConnection; unresolved until ported).
 class bdNetImpl;
