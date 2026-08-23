@@ -1,8 +1,8 @@
 index	status	map_line
 1	VERIFIED	0002:004267b0 ?nslGetSpeakerMode@@YA?AW4nslSpeakerMode@@XZ 00C15CB0 f nslInit.o
 2	VERIFIED	0002:004267c0 ?nslSetSpeakerMode@@YAXW4nslSpeakerMode@@@Z 00C15CC0 f nslInit.o
-3	VERIFIED	0002:004267e0 ?nslGetInitParams@@YAXPAUnslInitParams@@@Z 00C15CE0 f nslInit.o
-4	VERIFIED	0002:00426850 ?nslInit@@YAHPBUnslInitParams@@@Z 00C15D50 f nslInit.o
+3	FIXED	0002:004267e0 ?nslGetInitParams@@YAXPAUnslInitParams@@@Z 00C15CE0 f nslInit.o  FIXED: preserved the IDA 0x44-byte release image without overflowing the 0x10-byte typed object
+4	FIXED	0002:00426850 ?nslInit@@YAHPBUnslInitParams@@@Z 00C15D50 f nslInit.o  FIXED: synchronized the typed init fields and known adjacent release state before allocation
 5	VERIFIED	0002:00426a00 ?nslStart@@YAXPAX@Z 00C15F00 f nslInit.o
 6	VERIFIED	0002:00426c20 ?nslExit@@YAXXZ 00C16120 f nslInit.o
 7	VERIFIED	0002:00426c50 ?nslGetVersion@@YAIXZ 00C16150 f nslInit.o
