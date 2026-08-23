@@ -2227,17 +2227,17 @@ template <> struct CdResourceTraits<nalAnimClass<nalAnyPose>> {
     static const char* const kDirectoryName;  // "cdAnimDirectory"
 };
 template <> struct CdResourceTraits<nalSceneAnim> {
-    static const int kBankType = 6;  // IDA: cdResourceDirectory::Add pushes 6
+    static const int kBankType = 5;  // IDA: cdResourceDirectory::Add pushes 5
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
     static const char* const kDirectoryName;  // "cdSceneAnimDirectory"
 };
 template <> struct CdResourceTraits<nalAnimFile> {
-    static const int kBankType = 4;  // IDA: cdResourceDirectory::Add pushes 4
+    static const int kBankType = 3;  // IDA: cdResourceDirectory::Add pushes 3
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
     static const char* const kDirectoryName;  // "cdAnimFileDirectory"
 };
 template <> struct CdResourceTraits<nalBaseSkeleton> {
-    static const int kBankType = 8;  // IDA: cdResourceDirectory::Add pushes 8
+    static const int kBankType = 7;  // IDA: cdResourceDirectory::Add pushes 7
     static const int kNameOffset = 0x08;  // DataPtr->Name
     static const char* const kDirectoryName;  // "cdSkeletonDirectory"
 };
