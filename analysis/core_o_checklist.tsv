@@ -881,7 +881,7 @@ index	status	map_line
 880	VERIFIED	0002:000df990 ?size@?$ae_sized_array@PAVDbRow@@$0EA@@@QBEHXZ 008CEE90 f i core.o
 881	VERIFIED	0002:000df9a0 ?empty@?$ae_sized_array@PAVDbRow@@$0EA@@@QBE_NXZ 008CEEA0 f i core.o VERIFIED: IDA 0x004DF9A0 returns m_size == 0; existing template matches
 882	VERIFIED	0002:000df9c0 ?push_back@?$ae_sized_array@PAVDbRow@@$0EA@@@QAEXABQAVDbRow@@@Z 008CEEC0 f i core.o
-883	FIXED	0002:000dfa50 ?Set@?$Bitmask@I@@QAEXH_N@Z 008CEF50 f i core.o FIXED: shared Bitmask template corrected in 5de90780; IDA 0x004DFA50 dispatches to Add or Rmv
+883	FIXED	0002:000dfa50 ?Set@?$Bitmask@I@@QAEXH_N@Z 008CEF50 f i core.o FIXED: shared Bitmask template corrected in 5de90780; IDA 0x004DFA50 dispatches to Add or Rmv; VERIFIED against release decompile; transitively uses the corrected lower-bound checks
 884	SKIPPED	0002:000dfa80 ??0?$ae_fixed_string@$0CA@E@@QAE@XZ 008CEF80 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 885	SKIPPED	0002:000dfa90 ??1?$InplaceAssetBankSet@VDestructibleBank@@@@UAE@XZ 008CEF90 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 886	SKIPPED	0002:000dfaa0 ?OnBankUnloaded@?$InplaceAssetBankSet@VDestructibleBank@@@@MAEXAAVDestructibleBank@@@Z 008CEFA0 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -909,7 +909,7 @@ index	status	map_line
 908	VERIFIED	0002:000e00d0 ??A?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@H@Z 008CF5D0 f i core.o
 909	VERIFIED	0002:000e0150 ?size@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QBEHXZ 008CF650 f i core.o VERIFIED: IDA 0x004E0150 returns m_size; existing template matches
 910	VERIFIED	0002:000e0160 ?pop_back@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF660 f i core.o VERIFIED: IDA 0x004E0160 decrements nonzero m_size and returns the indexed element; existing template matches
-911	FIXED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o FIXED: source implementation in bbc76616; IDA 0x004E0190 asserts at ae_array.h line 192, increments m_size, and returns the prior slot
+911	FIXED	0002:000e0190 ?expand@?$ae_sized_array@UPendingQuery@EffectEventSys@@$0EA@@@QAEAAUPendingQuery@EffectEventSys@@XZ 008CF690 f i core.o FIXED: source implementation in bbc76616; IDA 0x004E0190 asserts at ae_array.h line 192, increments m_size, and returns the prior slot; VERIFIED against release decompile
 912	SKIPPED	0002:000e0220 ??1?$InplaceAssetBankSet@VPhysDataBank@@@@UAE@XZ 008CF720 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	SKIPPED	0002:000e0230 ?OnBankUnloaded@?$InplaceAssetBankSet@VPhysDataBank@@@@MAEXAAVPhysDataBank@@@Z 008CF730 f i core.o  SKIPPED: inline template/container helper; supplied by its template definition
 914	VERIFIED	0002:000e0240 ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@VHandle@@@Z 008CF740 f i core.o VERIFIED: IDA 0x004E0240 copies h.mVal into the handle storage; existing DbLinkedHandle constructor matches
