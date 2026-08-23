@@ -4691,7 +4691,7 @@ void SP_script_vehicle(Entity* pSelf)
         AeAssert::gCurrentExpr = "s_numVehicleInfos > 0";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert(
-                   "No vehicle type files are loaded.\\nDo all the vehicles in your level\\nhave the \\\"vehicletype\\\" key?"))
+                   "No vehicle type files are loaded.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
             __debugbreak();
     }
     if (typeName == nullptr)
@@ -4702,7 +4702,7 @@ void SP_script_vehicle(Entity* pSelf)
         AeAssert::gCurrentExpr = "typeName";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert(
-                   "Invalid vehicletype found in level.\\nDo all the vehicles in your level\\nhave the \\\"vehicletype\\\" key?"))
+                   "Invalid vehicletype found in level.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
             __debugbreak();
     }
     if (G_SpawnVehicle(pSelf, typeName, 1) != 0)
