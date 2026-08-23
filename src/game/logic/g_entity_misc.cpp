@@ -1762,15 +1762,15 @@ team_t Sentient_EnemyTeam(team_t eTeam)
     (void)eTeam;
     return (team_t)0;
 }
+extern int R_CellForPoint(const math::Position3& pos);
+
 int R_CellForPoint(const math::Position3* pos)
 {
-    (void)pos;
-    return 0;
+    return R_CellForPoint(*pos);
 }
 int R_CellForPoint(const float* pos)
 {
-    (void)pos;
-    return 0;
+    return R_CellForPoint(reinterpret_cast<const math::Position3*>(pos));
 }
 float random()
 {
