@@ -2179,7 +2179,8 @@ void RotateAxisByAxis(float (*const axis)[4], int axis_of_rotation,
 void AngleVectors(const float* const angles, float* const forward,
                   float* const right, float* const up)
 {
-    ASSERT("forward && right && up", "c:\\cod\\code\\game\\com_math.cpp", 1064);
+    if (forward == nullptr || right == nullptr || up == nullptr)
+        ASSERT("forward && right && up", "c:\\cod\\code\\game\\com_math.cpp", 1064);
     float sy, cy, sp, cp;
     FastSinCos(angles[1] * 0.017453292f, &sy, &cy);
     FastSinCos(*angles * 0.017453292f, &sp, &cp);
