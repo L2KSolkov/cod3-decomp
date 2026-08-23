@@ -15003,6 +15003,7 @@ void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
                 ->GetContextStack();
         if (ContextStack.m_size != 0)
             ContextStack.m_size = ContextStack.m_size - 1;
+        heap_ctx.mPakId = PAK_ID_INVALID;
     }
 }
 // ea: 0x66F4C0
@@ -15029,6 +15030,7 @@ void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
                 ->GetContextStack();
         if (ContextStack.m_size != 0)
             ContextStack.m_size = ContextStack.m_size - 1;
+        heap_ctx.mPakId = PAK_ID_INVALID;
     }
 }
 void DecodeConfigStrings(const char* name, unsigned char* data, unsigned int size,
