@@ -8294,7 +8294,7 @@ void collision_memory_prolog()
         __debugbreak();
     tlScratchpadLocked = true;
     g_collision_memory_allocater.m_list_memory_buffer[0].set_buffer(
-        g_physics_memory_buffer, 0, 1);  // dword_12AC0 (.textbss = 0)
+        g_physics_memory_buffer, 0x12AC0, 1);
     g_collision_memory_allocater.m_num_buffers = 1;
     g_collision_memory_allocater.m_high_buffer_count = 1;
     g_gjk_info = (phys_gjk_info*)
