@@ -2708,7 +2708,10 @@ void EntityHandleDb_Find<unsigned short>(
             results.push_back(e);
     }
 }
-void EntityManager_CreateWorld() {}
+void EntityManager_CreateWorld()
+{
+    EntityManager::sInst->CreateWorld();
+}
 void EntityNotifySet_dtor(void* self) { (void)self; }
 void EntityNotifySet_UpdateList() {}
 void* EntityNotifySet_GetNotify(void* self, unsigned int a)
