@@ -4695,8 +4695,15 @@ static void voiceInit(nslDriverVoice* dv, nslVoice* lv, const nslWave* w) {
     const uintptr_t aramBase = reinterpret_cast<uintptr_t>(nslAramGetBase());
     const unsigned storageAddress = *reinterpret_cast<const unsigned*>(
         reinterpret_cast<const unsigned char*>(w) + 4u);
+    // Xbox stores non-streaming wave locations as ARAM offsets.  The Win32
+    // buffer points at the host ARAM allocation, so preserve offsets instead
+    // of subtracting the host pointer from an offset-sized value.
+    const unsigned storageOffset =
+        storageAddress < nslAramGetSize()
+            ? storageAddress
+            : storageAddress - static_cast<unsigned>(aramBase);
     code = j_IDirectSoundBuffer_SetPlayRegion(
-        buffer, storageAddress - static_cast<unsigned>(aramBase), playLength);
+        buffer, storageOffset, playLength);
     nslDriverCheck(code, "NSL",
                    "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 491);
     code = j_IDirectSoundBuffer_SetLoopRegion(

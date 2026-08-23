@@ -85,7 +85,10 @@ static bool decodeXboxAdpcm(const unsigned char* input, unsigned size,
             samples[channel][0] = static_cast<short>(
                 static_cast<unsigned short>(bytes[cursor]) |
                 (static_cast<unsigned short>(bytes[cursor + 1]) << 8));
-            indices[channel] = std::min<unsigned>(bytes[cursor + 2], 88u);
+            const unsigned headerIndex =
+                static_cast<unsigned>(bytes[cursor + 2]) |
+                (static_cast<unsigned>(bytes[cursor + 3]) << 8);
+            indices[channel] = std::min<unsigned>(headerIndex, 88u);
             cursor += 4;
         }
         for (unsigned chunk = 0; chunk < kChunksPerBlock; ++chunk) {
