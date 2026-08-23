@@ -458,6 +458,8 @@ public:
     static XModelManager* sInst;  // ?sInst@XModelManager@@2PAV1@A (sv_globals.cpp)
     static void CreateInst();      // ?CreateInst@XModelManager@@SAXXZ
     static void DeleteInst();      // ?DeleteInst@XModelManager@@SAXXZ
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);  // ?DecodeBank@XModelManager@@QAEXPBDPAEHW4TPakId@@@Z
     IVPointer<XModel> GetXModel(TPakId pak_id,
                                 const char* name);  // ?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z
 };
@@ -625,6 +627,28 @@ IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
     result.mPakId = (unsigned int)mPakId;
     result.mValue = mValue;
     return result;
+}
+
+extern TPakId PakManager_GetDebugPakId();
+IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
+
+// ea: 0x006DBBB0
+void XModelManager::DecodeBank(const char* name, unsigned char* data,
+                               int size, TPakId pak_id)
+{
+    (void)name;
+    (void)size;
+    XModelBank* xmodelBank = reinterpret_cast<XModelBank*>(data);
+    xmodelBank->Fixup();
+    PostProcess(xmodelBank, pak_id);
+    AddBank(pak_id, xmodelBank);
+    if (pak_id == PakManager_GetDebugPakId())
+    {
+        IVPointer<XModel> result;
+        result = Find<const char*, IVPointer<XModel>>(
+            pak_id, "noxmp", AeType<IVPointer<XModel>>(), nullptr);
+        gDefaultXmodel = result;
+    }
 }
 
 // ea: 0x006D60F0

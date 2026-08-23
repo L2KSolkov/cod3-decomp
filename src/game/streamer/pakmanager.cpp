@@ -59,7 +59,7 @@ extern void Cvar_Set(const char* var_name, const char* value);  // core.o
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);  // core.o
 // IVPointer<T> (game_types.h; intrusive counted pointer, 8 bytes)
-struct XModel;
+class XModel;
 struct ScriptEventHandler;
 class Destructible;
 class trRefEntity;
@@ -2330,14 +2330,8 @@ public:
     static void* operator new(unsigned int size, void* p);
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
-    IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);  // render.o 0xAC54D0; stub
+    IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);
 };
-IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
-{
-    (void)pak_id; (void)name;
-    IVPointer<XModel> result = { nullptr, PAK_ID_INVALID };
-    return result;  // stub: render.o
-}
 class XModelPartsManager {
 public:
     static XModelPartsManager* sInst;
@@ -2530,6 +2524,12 @@ void* XModelManager::operator new(unsigned int /*size*/, void* p)
     return p;
 }
 
+TPakId PakManager_GetDebugPakId()
+{
+    return PakManager::sInst != nullptr ? PakManager::sInst->mDebugPakId
+                                         : PAK_ID_INVALID;
+}
+
 // ea: 0x004B4FC0
 void* XModelPartsManager::operator new(unsigned int /*size*/, void* p)
 {
@@ -2542,9 +2542,6 @@ void* LightGridMgr::operator new(unsigned int /*size*/, void* p)
     return p;
 }
 
-void XModelManager::DecodeBank(const char* name, unsigned char* data,
-                               int size, TPakId pak_id)
-{ (void)name; (void)data; (void)size; (void)pak_id; }
 void XModelPartsManager::DecodeBank(const char* name, unsigned char* data,
                                     int size, TPakId pak_id)
 { (void)name; (void)data; (void)size; (void)pak_id; }
@@ -2690,7 +2687,7 @@ static_assert(sizeof(ZoneBoundaryBank) == 0x54,
               "ZoneBoundaryBank layout mismatch");
 
 // XModel / StaticModel / BSP views (render.o + game.o; offsets verified IDA)
-struct XModelParts;
+class XModelParts;
 struct XModelLod {
     uint8_t _pad[0x08];
     XModelParts* xmodelParts;  // +0x08
@@ -2707,7 +2704,8 @@ struct XModelParts {
         nglMesh** mList; // +0x2C
     } mMeshes;
 };
-struct XModel {
+class XModel {
+public:
     const char* name;     // +0x00
     XModel*     resolved; // +0x04 (cached GetXModel result)
     uint8_t     _pad8[0x24 - 0x08];
@@ -2779,24 +2777,12 @@ void R_FilterModelIntoCells_r(world_t* world, BspNode* node,
 }
 extern void XModelGetBasePose(IVPointer<XModel> model,
                               math::Mat43* mat);  // render.o 0xABA270
-void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
-{
-    (void)model; (void)mat;
-}
-extern int XModelGetStaticBounds(IVPointer<XModel> model, float (*axis)[3],
+extern int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
                                  math::Position3& mins,
                                  math::Position3& maxs,
                                  const math::Mat43* bones,
                                  int nbones);  // render.o 0xABB0A0
-int XModelGetStaticBounds(IVPointer<XModel> model, float (*axis)[3],
-                          math::Position3& mins, math::Position3& maxs,
-                          const math::Mat43* bones, int nbones)
-{
-    (void)model; (void)axis; (void)mins; (void)maxs; (void)bones; (void)nbones;
-    return 0;
-}
 extern IVPointer<XModel> gDefaultXmodel;  // render.o @ 0x11EA6C8
-IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
 extern void CM_LinkStaticModel(StaticModel* staticModel);  // game.o (g_cm_load.cpp)
 extern const math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
 extern BspTree* g_bspTree;  // game.o @ 0xF743DC
