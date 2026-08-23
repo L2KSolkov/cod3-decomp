@@ -9038,7 +9038,7 @@ void cdLoadParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
     TPakId v6 = PAK_ID_INVALID;
     if (ContextStack.m_size != 0)
         v6 = ContextStack.m_elements[ContextStack.m_size - 1];
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_EFFECT, v6,
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_SKELETON, v6,
                                 *(tlFixedString*)Entry->Name,
                                 (unsigned int)EffectInplace);
 }
