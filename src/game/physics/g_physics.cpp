@@ -400,10 +400,14 @@ void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc);
 void path_constraint_update(rigid_body_constraint_custom_path* vpc,
                             Entity* veh);  // 0x6F5B60
 
-// Handle (game_types.h view; local copy)
+// Handle (game_types.h view; local copy).  The game type is non-trivial; that
+// matters on 32-bit MSVC because Handle returns use a hidden result pointer.
 class Handle {
 public:
     unsigned int mVal;  // +0x00
+
+    Handle() : mVal(0) {}
+    Handle(int v) : mVal((unsigned int)v) {}
 };
 
 // Broc::vector (broc_types.h view; local copy - 12 bytes)
