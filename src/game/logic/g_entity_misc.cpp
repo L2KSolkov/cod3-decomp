@@ -2220,6 +2220,8 @@ void (*gSpawnFuncs[53])(Entity* ent) = {
     SP_func_rotating,
     SP_func_bobbing,
     SP_func_pendulum,
+    // The reference table uses the no-op info handler for func_group.
+    SP_info_null,
     SP_func_door_rotating,
     trigger_use,
     SP_trigger_multiple,
