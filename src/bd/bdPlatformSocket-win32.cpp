@@ -26,8 +26,10 @@
 // bdPlatformSocket::create - ea: 0x9ED1A0
 // ============================================================================
 int bdPlatformSocket::create(bool blocking) {
+    // Xbox uses protocol 254 (VDP) for the nonblocking socket. WinSock does
+    // not expose VDP, so the Win32 transport uses the equivalent UDP socket.
     if (!blocking)
-        return (int)socket(AF_INET, SOCK_DGRAM, 254);   // VDP in the binary
+        return (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     int handle = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     int broadcast = 1;
     if (setsockopt(handle, SOL_SOCKET, SO_BROADCAST, (const char*)&broadcast,
