@@ -10785,7 +10785,10 @@ void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
         PakManager::sInst->mActivePaks.m_head;
     reserved_dlist<PakFile>::dlist_node* m_next =
         m_node != nullptr ? m_node->m_next : nullptr;
-    if (m_node == PakManager::sInst->mActivePaks.m_end || m_next == nullptr)
+    if (m_node
+            == (reserved_dlist<PakFile>::dlist_node*)&PakManager::sInst
+                   ->mActivePaks.m_end
+        || m_next == nullptr)
         return;
     while (1)
     {
