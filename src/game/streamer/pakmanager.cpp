@@ -7655,7 +7655,7 @@ TPakId PakManager::FindPakId(const char* pak_name) const
 // ea: 0x004B45F0
 PakFile* PakManager::GetPakFile(TPakId id)
 {
-    if (id > 0x62)
+    if (id < 0 || id > 0x62)
         return nullptr;
     return mSlots[id];
 }
