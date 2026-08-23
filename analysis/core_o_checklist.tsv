@@ -927,12 +927,12 @@ index	status	map_line
 926	VERIFIED	0002:000e04e0 ??0dlist_node@?$reserved_dlist@VRumbleEffectInstance@@@@QAE@PAU01@0@Z 008CF9E0 f i core.o VERIFIED: IDA 0x004E04E0 stores next then prev; existing dlist_node constructor matches
 927	VERIFIED	0002:000e0500 ??0?$ae_vector@USmokeGrenadeInfo@@@@QAE@XZ 008CFA00 f i core.o VERIFIED: IDA 0x004E0500 zeros mElements, mCapacity, and mSize; existing ae_vector constructor matches
 928	VERIFIED	0002:000e0510 ?push_back@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@QAEXABUPoolConfig@PoolAllocator@@@Z 008CFA10 f i core.o
-929	FIXED	0002:000e05c0 ??0?$VariableSaver@H@@QAE@AAH@Z 008CFAC0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05C0 snapshots stored and originalValue
-930	FIXED	0002:000e05e0 ??1?$VariableSaver@H@@QAE@XZ 008CFAE0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05E0 restores originalValue through stored
-931	FIXED	0002:000e05f0 ?GetValue@?$DbFieldType@H@@QBEABHXZ 008CFAF0 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E05F0 returns the address of m_val
-932	FIXED	0002:000e0600 ?GetValue@?$DbFieldType@M@@QBEABMXZ 008CFB00 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0600 returns the address of m_val
-933	FIXED	0002:000e0610 ?GetValue@?$DbFieldType@VFourCC@@@@QBEABVFourCC@@XZ 008CFB10 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0610 returns the address of m_val
-934	FIXED	0002:000e0620 ?GetValue@?$DbFieldType@VDbQueryString@@@@QBEABVDbQueryString@@XZ 008CFB20 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0620 returns the address of m_val
+929	FIXED	0002:000e05c0 ??0?$VariableSaver@H@@QAE@AAH@Z 008CFAC0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05C0 snapshots stored and originalValue; VERIFIED against release decompile
+930	FIXED	0002:000e05e0 ??1?$VariableSaver@H@@QAE@XZ 008CFAE0 f i core.o FIXED: source implementation in 4b495445; IDA 0x004E05E0 restores originalValue through stored; VERIFIED against release decompile
+931	FIXED	0002:000e05f0 ?GetValue@?$DbFieldType@H@@QBEABHXZ 008CFAF0 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E05F0 returns the address of m_val; VERIFIED against release decompile
+932	FIXED	0002:000e0600 ?GetValue@?$DbFieldType@M@@QBEABMXZ 008CFB00 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0600 returns the address of m_val; VERIFIED against release decompile
+933	FIXED	0002:000e0610 ?GetValue@?$DbFieldType@VFourCC@@@@QBEABVFourCC@@XZ 008CFB10 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0610 returns the address of m_val; VERIFIED against release decompile
+934	FIXED	0002:000e0620 ?GetValue@?$DbFieldType@VDbQueryString@@@@QBEABVDbQueryString@@XZ 008CFB20 f i core.o FIXED: source implementation in 648cbd03; IDA 0x004E0620 returns the address of m_val; VERIFIED against release decompile
 935	VERIFIED	0002:000e0630 ??0?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAE@XZ 008CFB30 f i core.o VERIFIED: IDA 0x004E0630 initializes m_size to zero; existing template matches
 936	VERIFIED	0002:000e0640 ?empty@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QBE_NXZ 008CFB40 f i core.o VERIFIED: IDA 0x004E0640 returns m_size == 0; existing template matches
 937	VERIFIED	0002:000e0660 ?push_back@?$ae_sized_array@PBVDbGraphNode@@$0IA@@@QAEXABQBVDbGraphNode@@@Z 008CFB60 f i core.o VERIFIED: IDA 0x004E0660 asserts at line 174, conditionally stores the element, and increments m_size; existing template matches
