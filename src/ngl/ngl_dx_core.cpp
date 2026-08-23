@@ -602,6 +602,8 @@ void nglRenderPerfInfo() {
 // nglRenderDebug - ea: 0x8408B0
 // ============================================================================
 void nglRenderDebug() {
+    nglSyncDebug.ShowPerfInfo =1;
+    nglSyncDebug.ShowPerfBar = 1;
     if (nglSyncDebug.ShowPerfInfo != 0)
         nglRenderPerfInfo();
     if (nglSyncDebug.ShowPerfBar != 0)

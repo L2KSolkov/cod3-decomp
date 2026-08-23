@@ -42,7 +42,7 @@ extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;      // cdGlowShader.
 // Globals (data)
 // ============================================================================
 nglDxTexCacheClass nglDxTexCache;
-static tlFixedString nglWhiteTex_FileName;
+static tlFixedString nglWhiteTex_FileName("nglwhite");
 
 // ============================================================================
 // ngliUnloadTexture - ea: 0x841860

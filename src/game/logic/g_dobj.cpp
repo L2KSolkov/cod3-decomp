@@ -792,7 +792,7 @@ void G_FreeEntityRefs(Entity* ed)
     }
     for (int i = 0; i < 16; ++i)
     {
-        Client* v8 = &level.clients[i];
+        Client* v8 = level.clients != nullptr ? &level.clients[i] : nullptr;
         if (v8 != nullptr && v8->pLookatEnt == ed)
             v8->pLookatEnt = nullptr;
     }

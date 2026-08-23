@@ -32,6 +32,7 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern PoolAllocator* gCommonPoolAllocator;
 extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
+extern void EntityNotify_SetupAllocators(PoolAllocator* allocator);
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 
 // PakFile bank flags (PakFile.cpp; header flags + runtime state)
@@ -3201,7 +3202,8 @@ struct SceneEffectGroup {
 };
 
 // CheckpointMgr minimal view (full type in sv_stubs.h)
-struct CheckpointMgr {
+class CheckpointMgr {
+public:
     bool mUsingCheckpoints;  // +0x00
     uint8_t _pad01[3];
     uint8_t _pad04[0x574 - 0x04];
@@ -3213,7 +3215,8 @@ struct CheckpointMgr {
     bool PrecludeExploderPiece(const char* exploderType,
                                int exploderId);  // g_checkpoint.cpp 0x622370
 };
-CheckpointMgr* CheckpointMgr::sInst = nullptr;
+// The singleton storage is defined by sv.o in sv_main.cpp.  This reduced
+// streamer view only references that canonical symbol.
 
 // DebugRender (render.o; RenderText/RenderSphere defined in g_entity_misc.cpp)
 class DebugRender {
@@ -11319,6 +11322,8 @@ StreamZoneManager::StreamZoneManager()
     mLastListSize = 0;
     mListSize = 0;
     AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
+    for (unsigned int i = 0; i < 99; ++i)
+        mBankArray.m_elements[i] = nullptr;
     DebugRender_AddRenderer(DebugRender_sInst,
                             (void*)&StreamZoneManager::SingletonDebugRender);
     mDebugRenderMode = 0;
@@ -13640,6 +13645,7 @@ void SetupPoolAllocator()
         common = new (block) PoolAllocator(cfgList, 2u);
 
     gCommonPoolAllocator = common;
+    EntityNotify_SetupAllocators(common);
     CurveManager_SetupAllocator(common);
     PakFile::SetupAllocator();
 }

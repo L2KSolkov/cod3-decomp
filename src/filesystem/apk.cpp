@@ -479,7 +479,9 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
         tlFixedString* target = reinterpret_cast<tlFixedString*>(
             reinterpret_cast<uint8_t*>(Sections[sectionIndex].Data) + 4u * sectionOffset);
         uint32_t type = *cursor++;
-        tlFixedString* name = stringTable + *cursor++;
+        // APK reference names store a byte offset from the string table.
+        tlFixedString* name = reinterpret_cast<tlFixedString*>(
+            reinterpret_cast<uint8_t*>(stringTable) + *cursor++);
         uint32_t nextReference = *cursor++;
 
         uint32_t owningSection = 0xFFFFFFFFu;

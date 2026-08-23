@@ -130,6 +130,25 @@ public:
 PoolAllocator* EntityNotify::sAllocator = nullptr;
 PoolAllocator* EntityNotifySet::sAllocator = nullptr;
 
+// These compatibility globals are consumed by the reconstructed scr.o paths.
+extern PoolAllocator* WaitTilOutput_sAllocator;
+extern PoolAllocator* EntityNotify_sAllocator;
+extern void* ScriptEventHandler_sAllocator;
+extern void* EntityNotifySet_sAllocator;
+
+// SetupPoolAllocator in the reference binds all notify allocators to the
+// common pool before script/pak notifications can be emitted.
+void EntityNotify_SetupAllocators(PoolAllocator* allocator)
+{
+    EntityNotify::SetAllocator(allocator);
+    EntityNotifySet::SetAllocator(allocator);
+    WaitTilOutput::SetAllocator(allocator);
+    EntityNotify_sAllocator = allocator;
+    WaitTilOutput_sAllocator = allocator;
+    ScriptEventHandler_sAllocator = allocator;
+    EntityNotifySet_sAllocator = allocator;
+}
+
 // ea: 0x004BDAA0
 EntityNotify::EntityNotify(unsigned int hashStr,
                            DbLinkedHandle<EntityHandleDb, Entity> ent,
@@ -438,8 +457,9 @@ void force_waitinst2e_delete(WaitTilOutputInst2<int, Broc::entity>* p) { delete 
 // ============================================================================
 // Entity::Notify<...> (g.o 0x4B3560-0x4B3B40)
 // ============================================================================
-namespace {
-// AeThreadManager opaque view (mPendingNotifys at +0x20)
+// AeThreadManager opaque view (mPendingNotifys at +0x24).  The concrete
+// singleton is constructed by scr.o; this view only exposes the fields used
+// by the core notify path.
 struct NotifyDListNode {
     NotifyDListNode* m_next;  // +0x00
     NotifyDListNode* m_prev;  // +0x04
@@ -450,14 +470,12 @@ struct PendingList {
     NotifyDListNode* m_end;
     NotifyDListNode* m_tail;
 };
-class AeThreadManagerLocal {
+class AeThreadManager {
 public:
-    uint8_t _pad[0x20];
-    PendingList mPendingNotifys;   // +0x20
-    static AeThreadManagerLocal sInst;  // ?sInst@AeThreadManager@@0V1@A
+    uint8_t _pad[0x24];
+    PendingList mPendingNotifys;   // +0x24
+    static AeThreadManager sInst;  // ?sInst@AeThreadManager@@0V1@A
 };
-AeThreadManagerLocal AeThreadManagerLocal::sInst;
-}
 
 // ScriptEventParams (completed from game_types.h forward decl)
 class ScriptEventParams {
@@ -470,7 +488,7 @@ public:
 
 static void EntityNotify_Push(EntityNotify* notify)
 {
-    PendingList* list = &AeThreadManagerLocal::sInst.mPendingNotifys;
+    PendingList* list = &AeThreadManager::sInst.mPendingNotifys;
     notify->m_dlist_node.mNext = (reserved_dlist<EntityNotify>::dlist_node*)list->m_end;
     NotifyDListNode* tail = list->m_tail;
     notify->m_dlist_node.mPrev = (reserved_dlist<EntityNotify>::dlist_node*)tail;

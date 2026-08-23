@@ -5553,8 +5553,7 @@ AeThreadManager::AeThreadManager()
     p_head->mNext = p_end;
     L->mPendingNotifys.m_tail = (AeDListNode*)p_head;
     L->mPendingNotifys.m_size = 0;
-    p_end->mNext = nullptr;
-    p_end->mPrev = nullptr;
+    L->mPendingNotifys.m_end = nullptr;
     HandleDb<AeThread, 256, SizedHandle<8, 24>> db;
     memcpy(L->mHandleDb, &db, sizeof(db));
     L->mThreadExecuting = nullptr;
