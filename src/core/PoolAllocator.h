@@ -63,16 +63,16 @@ public:
             reserved_slist<Block>::slist_node mLink;  // +0x04 — free list node (intrusive)
         };
 
-        unsigned int    mAlignment;      // +0x00
-        unsigned int    mId;             // +0x04
-        unsigned int    mEntrySize;      // +0x08
-        unsigned int    mCapacity;       // +0x0C
-        unsigned int    mNumRemaining;   // +0x10
+        unsigned int    mEntrySize;      // +0x00
+        unsigned int    mCapacity;       // +0x04
+        unsigned int    mNumRemaining;   // +0x08
+        unsigned int    mId;             // +0x0C
+        unsigned int    mAlignment;      // +0x10
         unsigned int    mMaxUsed;        // +0x14
-        unsigned int    mDebug;          // +0x18 (unused in release)
-        char*           mBlockPtr;       // +0x1C
-        char*           mBlockEnd;       // +0x20
-        unsigned int    mPreallocatedBlock; // +0x24
+        char*           mBlockPtr;       // +0x18
+        char*           mBlockEnd;       // +0x1C
+        bool            mPreallocatedBlock; // +0x20
+        unsigned int    mDebug;          // +0x24 (unused in release)
         reserved_slist<Block> mBlockList;   // +0x28
 
         unsigned int    GetCapacity() const { return mCapacity; }
