@@ -2526,7 +2526,7 @@ public:
     InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
     InplaceVector<XBoneInfo> mBoneInfos;             // +0x08
     InplaceVector<XBoneHierarchy> mHierarchy;        // +0x10 InplaceVector<XBoneHierarchy>
-    void*            mPartClassifications;           // +0x18
+    InplaceVector<unsigned char> mPartClassifications; // +0x18
     InplaceVector<InplaceString> mMeshNames;         // +0x20
     InplaceVector<nglMesh*> mMeshPtrs;               // +0x28
     int              mNumRootBones;                  // +0x30
