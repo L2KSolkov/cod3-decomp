@@ -2771,12 +2771,66 @@ void DObjCalcAnim(void* obj, int a) { (void)obj; (void)a; }
 void DObjCreate(DObjModel* models, int numModels, void* tree, void* out,
                 int gameId)
 {
-    (void)models; (void)numModels; (void)tree; (void)out; (void)gameId;
+    DObjCreate(models, (unsigned short)numModels, (XAnimTree*)tree,
+               (DObj*)out, (unsigned short)gameId);
 }
 void DObjCreate(DObjModel* models, unsigned short numModels, XAnimTree* tree,
                 DObj* out, unsigned short gameId)
 {
-    (void)models; (void)numModels; (void)tree; (void)out; (void)gameId;
+    if (models == nullptr || out == nullptr || numModels == 0)
+        return;
+
+    out->gameId = gameId;
+    out->tree[0] = tree;
+    out->skel = nullptr;
+    out->duplicateParts = 0;
+    out->ignoreCollision = 0;
+
+    unsigned int newNumModels = 0;
+    unsigned int boneIndex = 0;
+    for (unsigned int i = 0; i < numModels && i < 8; ++i)
+    {
+        DObjModel& src = models[i];
+        XModel* model = (XModel*)src.model.mValue;
+        if (model == nullptr)
+            break;
+
+        const TPakId pakId = (TPakId)src.model.mPakId;
+        ValidatePakId(pakId);
+        out->models[newNumModels].mValue = model;
+        out->models[newNumModels].mPakId = pakId;
+        out->modelParents[newNumModels] = 0xFF;
+        out->matOffset[newNumModels] = (unsigned char)boneIndex;
+        if (src.ignoreCollision != 0)
+            out->ignoreCollision |= 1 << newNumModels;
+        if (src.animTree != nullptr)
+            out->tree[newNumModels] = src.animTree;
+
+        XModelLod* lod = nullptr;
+        for (int lodIndex = 0; lodIndex < 5; ++lodIndex)
+        {
+            if (model->lod[lodIndex] != nullptr)
+            {
+                lod = model->lod[lodIndex];
+                break;
+            }
+        }
+        const unsigned int modelBoneCount =
+            lod != nullptr && lod->xmodelParts != nullptr
+                ? (unsigned int)lod->xmodelParts->mHierarchy.mSize
+                : 0;
+        boneIndex += modelBoneCount;
+        ++newNumModels;
+    }
+
+    out->numModels = (unsigned char)newNumModels;
+    out->numBones = (unsigned char)boneIndex;
+    if (newNumModels == 0)
+        return;
+    extern void DObjCreateSkel(DObj* obj, char* buf);
+    DObjCreateSkel(out, nullptr);
+    DObjCalcAnim(out, -1);
+    out->SetLOD(0);
 }
 void DObjCreateSkel(DObj* obj, char* a) { (void)obj; (void)a; }
 void DObjDisplayAnim(DObj* obj) { (void)obj; }
