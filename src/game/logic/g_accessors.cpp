@@ -706,8 +706,8 @@ math::Dir3::Dir3(float _x)
     v.m128_f32[2] = _x;
     v.m128_f32[3] = 0.0f;
 }
-float math::Dir3::GetX() const { return v.m128_f32[0]; }
-float math::Dir3::GetY() const
+double math::Dir3::GetX() const { return v.m128_f32[0]; }
+double math::Dir3::GetY() const
 {
     return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
 }

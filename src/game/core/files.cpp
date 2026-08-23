@@ -120,12 +120,15 @@ int FS_Initialized()
 }
 
 // ea: 0x004B5680
-void FS_CheckFileSystemStarted()
+char FS_CheckFileSystemStarted()
 {
+    char result = static_cast<char>(
+        reinterpret_cast<uintptr_t>(fs_searchpaths));
     if (fs_searchpaths == nullptr)
     {
         ASSERT("fs_searchpaths", "c:\\cod\\code\\game\\com_files.cpp", 319);
     }
+    return result;
 }
 
 // ea: 0x004B56D0
@@ -167,7 +170,7 @@ long FS_HashFileName(const char* fname, int hashSize)
     {
         do
         {
-            int v4 = tolower((unsigned char)*v2);
+            int v4 = tolower(*v2);
             if (v4 == 46)
                 break;
             if (v4 == 92)
@@ -257,7 +260,7 @@ int FS_FilenameCompare(const char* s1, const char* s2)
 }
 
 // ea: 0x004B5A70
-char* FS_ShiftedStrStr(const char* string, const char* substring, int shift)
+char* FS_ShiftedStrStr(const char* string, const char* substring, char shift)
 {
     char buf[256];
     const char* v3 = substring;
@@ -484,7 +487,7 @@ void FS_ClearDataForFiles(void* start, void* end)
 int FS_FTell(int f)
 {
     if (fsh[f].zipFile != 0)
-        return (int)ftell((FILE*)fsh[f].handleFiles.file.file);
+        return fsh[f].zipFilePos;
     return (int)ftell((FILE*)fsh[f].handleFiles.file.file);
 }
 

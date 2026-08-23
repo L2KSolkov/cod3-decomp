@@ -64,8 +64,8 @@ public:
     const Dir3& operator=(const Dir3::Packed& _p); // game.o 0x006022C0
     const Dir3& operator=(const Position3& _v);  // ??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z
     const Dir3& operator=(const Vector4& _v);    // game2.o 0x004EAF50
-    float GetX() const;           // ?GetX@Dir3@math@@QBEMXZ
-    float GetY() const;           // ?GetY@Dir3@math@@QBEMXZ
+    double GetX() const;          // ?GetX@Dir3@math@@QBEMXZ
+    double GetY() const;          // ?GetY@Dir3@math@@QBEMXZ
     float GetZ() const;           // ?GetZ@Dir3@math@@QBEMXZ (g.o 0x4A56A0)
     void SetX(float _x);          // ?SetX@Dir3@math@@QAEXM@Z
     void SetY(float _y);          // ?SetY@Dir3@math@@QAEXM@Z
