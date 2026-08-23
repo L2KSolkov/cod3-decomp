@@ -481,17 +481,16 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
         if (v6 == 4)
         {
             FEMultiLineText* v49 = (FEMultiLineText*)mem_heap_malloc(0xA8);
-            if (v49 != nullptr)
-            {
-                FEText* v50 = m_pText[4];
-                unsigned int v35 = v50->GetColor().i;
-                float layer = v50->GetScaleX();
-                float x1 = v50->GetY();
-                float v29 = v50->GetX();
-                font_index v10 = v50->GetFont();
-                color32 col;
-                v49 = new (v49) FEMultiLineText(v10, x1, 0.0f, 1, (panel_layer)layer,
-                                                0.0f, 0, (int)v35, col);
+        if (v49 != nullptr)
+        {
+            FEText* v50 = m_pText[4];
+            color32 col = v50->GetColor();
+            float scale = v50->GetScaleX();
+            float x = v50->GetX();
+            float y = v50->GetY();
+            font_index v10 = v50->GetFont();
+            v49 = new (v49) FEMultiLineText(v10, x, y, 0, (panel_layer)1,
+                                            scale, 0, 0, col);
             }
             mHelpbar = v49;
             mHelpbar->SetNumLines(1);
@@ -515,20 +514,13 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     if (v50 != nullptr)
     {
         FEText* v49 = m_pText[3];
-        unsigned int v36 = v49->GetColor().i;
-        float layera = v49->GetScaleX();
-        float x1a = v49->GetY();
-        float v30 = v49->GetX();
+        color32 col = v49->GetColor();
+        float scale = v49->GetScaleX();
+        float x = v49->GetX();
+        float y = v49->GetY();
         font_index v15 = v49->GetFont();
-        color32 col;
-        union {
-            unsigned int bits;
-            float value;
-        } instructionsScale;
-        instructionsScale.bits = 32u;
-        v50 = new (v50) FEMultiLineText(v15, x1a, 0.0f, 1, (panel_layer)layera,
-                                        instructionsScale.value, 64,
-                                        (int)v36, col);
+        v50 = new (v50) FEMultiLineText(v15, x, y, 0, (panel_layer)1,
+                                        scale, 32, 64, col);
     }
     mInstructionsText = v50;
     mInstructionsText->SetNumLines(5);
