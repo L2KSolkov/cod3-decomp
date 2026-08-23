@@ -611,16 +611,10 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
             if (v35 != nullptr)
             {
                 FEText* v36 = m_pText[3];
-                color32 v37;
-                v37 = v36->GetColor();
-                float layer = v36->GetScaleX();
-                float x1 = v36->GetY();
-                float v20 = v36->GetX();
-                font_index v11 = v36->GetFont();
-                color32 col;
-                v35 = new (v35) FEMultiLineText(v11, x1, 0.0f, 0,
-                                                (panel_layer)layer,
-                                                0.0f, 0, 0, col);
+                v35 = new (v35) FEMultiLineText(
+                    v36->GetFont(), v36->GetX(), v36->GetY(), 0,
+                    PANEL_LAYER_BACKGROUND, v36->GetScaleX(), 0, 0,
+                    v36->GetColor());
             }
             helpbar1 = v35;
             helpbar1->SetNumLines(1);
@@ -641,23 +635,9 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     if (v36 != nullptr)
     {
         FEText* v35 = m_pText[2];
-        color32 v37;
-        v37 = v35->GetColor();
-        float layera = v35->GetScaleX();
-        float x1a = v35->GetY();
-        float v21 = v35->GetX();
-        font_index v16 = v35->GetFont();
-        // IDA's COERCE_FLOAT(16) is the raw DWORD 0x10 pushed by the release
-        // call site, not the numeric float value 16.0f.
-        union {
-            unsigned int bits;
-            float value;
-        } optionDescriptionScale;
-        optionDescriptionScale.bits = 16u;
-        v36 = new (v36) FEMultiLineText(v16, x1a, 0.0f, 1,
-                                        (panel_layer)layera,
-                                        optionDescriptionScale.value, 64,
-                                        0, v37);
+        v36 = new (v36) FEMultiLineText(
+            v35->GetFont(), v35->GetX(), v35->GetY(), 0, PANEL_LAYER_1,
+            v35->GetScaleX(), 16, 64, v35->GetColor());
     }
     mOptionDescription = v36;
     mOptionDescription->SetNumLines(5);
