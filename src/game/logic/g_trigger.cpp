@@ -279,7 +279,7 @@ void SP_trigger_friendlychain(Entity* ent)
 {
     ent->touch = 5;
     if (ent->mTarget.mBlock == nullptr || (char*)ent->mTarget.mBlock + 4 == nullptr || *(char*)((char*)ent->mTarget.mBlock + 4) == 0)
-        G_Error("trigger_friendlychain must target a friendly chain node");
+        return;
     InitTrigger(ent);
     InitSentientTrigger(ent);
     g_LinkEntity(ent);
