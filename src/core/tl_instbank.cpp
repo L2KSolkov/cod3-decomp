@@ -105,18 +105,10 @@ tlInstanceBank::Instance* tlInstanceBank::Insert(const tlFixedString& key, void*
         while (true) {
             Instance* q = *(Instance**)((char*)p + 4 * i + 40);
 
-            // Compare Key strings
-            const unsigned char* k1 = (const unsigned char*)&q->Key.hash;
-            const unsigned char* k2 = (const unsigned char*)&key.hash;
-            int cmp = 0;
-            for (int j = 0; j < 32; ++j) {
-                if (k1[j] != k2[j]) {
-                    cmp = k1[j] < k2[j] ? -1 : 1;
-                    break;
-                }
-            }
-
-            if (cmp >= 0) break;
+            // The release skip list compares the eight tlFixedString dwords,
+            // not their byte representation.
+            if (key.Order(q->Key) <= 0)
+                break;
             p = q;
         }
         update[i] = p;
@@ -124,7 +116,7 @@ tlInstanceBank::Instance* tlInstanceBank::Insert(const tlFixedString& key, void*
 
     // Check if key already exists
     Instance* q = *(Instance**)((char*)p + 40); // Forward[0]
-    if (memcmp(&q->Key, &key, sizeof(tlFixedString)) == 0) {
+    if (q->Key.Order(key) == 0) {
         ++q->RefCount;
         return q;
     }
@@ -165,20 +157,15 @@ int tlInstanceBank::Delete(const tlFixedString& key) {
     for (int i = (int)Level; i >= 0; --i) {
         while (true) {
             Instance* q = *(Instance**)((char*)p + 4 * i + 40);
-            const unsigned char* k1 = (const unsigned char*)&q->Key.hash;
-            const unsigned char* k2 = (const unsigned char*)&key.hash;
-            int cmp = 0;
-            for (int j = 0; j < 32; ++j) {
-                if (k1[j] != k2[j]) { cmp = k1[j] < k2[j] ? -1 : 1; break; }
-            }
-            if (cmp >= 0) break;
+            if (key.Order(q->Key) <= 0)
+                break;
             p = q;
         }
         update[i] = p;
     }
 
     Instance* q = *(Instance**)((char*)p + 40); // Forward[0]
-    if (memcmp(&q->Key, &key, sizeof(tlFixedString)) != 0) return -1;
+    if (q->Key.Order(key) != 0) return -1;
 
     if (--q->RefCount > 0) return q->RefCount;
 
@@ -210,21 +197,17 @@ tlInstanceBank::Instance* tlInstanceBank::Search(const tlFixedString& key) {
         while (true) {
             Instance* q = *(Instance**)((char*)p + 4 * i + 40);
 
-            const unsigned char* k1 = (const unsigned char*)&q->Key.hash;
-            const unsigned char* k2 = (const unsigned char*)&key.hash;
-            int cmp = 0;
-            for (int j = 0; j < 32; ++j) {
-                if (k1[j] != k2[j]) { cmp = k1[j] < k2[j] ? -1 : 1; break; }
-            }
-
-            if (cmp == 0) return q; // found
-            if (cmp > 0) break;     // past insertion point
+            const int compare = key.Order(q->Key);
+            if (compare == 0)
+                return q;
+            if (compare < 0)
+                break;
             p = q;
         }
     }
 
     // Final check at base level
     Instance* q = *(Instance**)((char*)p + 40);
-    if (memcmp(&q->Key, &key, sizeof(tlFixedString)) == 0) return q;
+    if (q->Key.Order(key) == 0) return q;
     return nullptr;
 }
