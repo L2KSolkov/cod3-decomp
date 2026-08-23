@@ -161,6 +161,41 @@ static DWORD nullD3DCompareFunc(unsigned int Value) {
     }
 }
 
+static DWORD nullD3DBlendFactor(unsigned int Value) {
+    // Xbox D3DBLEND uses the NV2A GL-style values while D3D9 uses a compact
+    // sequential enum. NGL's packed blend modes feed these values directly
+    // through the XDK render-state calls.
+    switch (Value) {
+    case 0x0000u: return D3DBLEND_ZERO;
+    case 0x0001u: return D3DBLEND_ONE;
+    case 0x0300u: return D3DBLEND_SRCCOLOR;
+    case 0x0301u: return D3DBLEND_INVSRCCOLOR;
+    case 0x0302u: return D3DBLEND_SRCALPHA;
+    case 0x0303u: return D3DBLEND_INVSRCALPHA;
+    case 0x0304u: return D3DBLEND_DESTALPHA;
+    case 0x0305u: return D3DBLEND_INVDESTALPHA;
+    case 0x0306u: return D3DBLEND_DESTCOLOR;
+    case 0x0307u: return D3DBLEND_INVDESTCOLOR;
+    case 0x0308u: return D3DBLEND_SRCALPHASAT;
+    case 0x8001u: return D3DBLEND_BLENDFACTOR;
+    case 0x8002u: return D3DBLEND_INVBLENDFACTOR;
+    case 0x8003u: return D3DBLEND_BLENDFACTOR;
+    case 0x8004u: return D3DBLEND_INVBLENDFACTOR;
+    default: return Value;
+    }
+}
+
+static DWORD nullD3DBlendOp(unsigned int Value) {
+    switch (Value) {
+    case 0x8006u: return D3DBLENDOP_ADD;
+    case 0x800Au: return D3DBLENDOP_SUBTRACT;
+    case 0x800Bu: return D3DBLENDOP_REVSUBTRACT;
+    case 0x8007u: return D3DBLENDOP_MIN;
+    case 0x8008u: return D3DBLENDOP_MAX;
+    default: return Value;
+    }
+}
+
 static DWORD nullD3DColorWriteMask(unsigned int Value) {
     // Xbox stores one byte per channel; D3D9 uses a four-bit mask.
     return ((Value & 0x00010000u) != 0 ? 0x1u : 0u) |
@@ -1024,12 +1059,15 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
         NativeState = COD3_D3D9_RS_ALPHAREF;
     } else if (Method == dword_40344) {
         NativeState = COD3_D3D9_RS_SRCBLEND;
+        NativeValue = nullD3DBlendFactor(Value);
     } else if (Method == dword_40348) {
         NativeState = COD3_D3D9_RS_DESTBLEND;
+        NativeValue = nullD3DBlendFactor(Value);
     } else if (Method == dword_4034C) {
         NativeState = D3DRS_BLENDFACTOR;
     } else if (Method == dword_40350) {
         NativeState = COD3_D3D9_RS_BLENDOP;
+        NativeValue = nullD3DBlendOp(Value);
     } else if (Method == dword_40354) {
         NativeState = (COD3_D3D9_RENDERSTATETYPE)23;
         NativeValue = nullD3DCompareFunc(Value);
@@ -1985,9 +2023,18 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     case D3DRS_ALPHABLENDENABLE: NativeState = COD3_D3D9_RS_ALPHABLENDENABLE; break;
     case D3DRS_ALPHATESTENABLE: NativeState = COD3_D3D9_RS_ALPHATESTENABLE; break;
     case D3DRS_ALPHAREF: NativeState = COD3_D3D9_RS_ALPHAREF; break;
-    case D3DRS_SRCBLEND: NativeState = COD3_D3D9_RS_SRCBLEND; break;
-    case D3DRS_DESTBLEND: NativeState = COD3_D3D9_RS_DESTBLEND; break;
-    case D3DRS_BLENDOP: NativeState = COD3_D3D9_RS_BLENDOP; break;
+    case D3DRS_SRCBLEND:
+        NativeState = COD3_D3D9_RS_SRCBLEND;
+        NativeValue = nullD3DBlendFactor(Value);
+        break;
+    case D3DRS_DESTBLEND:
+        NativeState = COD3_D3D9_RS_DESTBLEND;
+        NativeValue = nullD3DBlendFactor(Value);
+        break;
+    case D3DRS_BLENDOP:
+        NativeState = COD3_D3D9_RS_BLENDOP;
+        NativeValue = nullD3DBlendOp(Value);
+        break;
     case D3DRS_BLENDCOLOR: NativeState = D3DRS_BLENDFACTOR; break;
     case D3DRS_FOGCOLOR: NativeState = COD3_D3D9_RS_FOGCOLOR; break;
     case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
