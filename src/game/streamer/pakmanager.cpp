@@ -12304,15 +12304,21 @@ void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
 class nalBaseSkeleton {
 public:
     void* __vftable;       // +0x00
+    unsigned Version;      // +0x04
     tlFixedString Name;    // +0x08
 };
+static_assert(offsetof(nalBaseSkeleton, Name) == 0x08,
+              "nalBaseSkeleton::Name offset mismatch");
 
 template <typename T>
 class nalAnimClass {
 public:
     void* __vftable;       // +0x00
+    nalAnimClass<T>* NextAnim;  // +0x04
     tlFixedString Name;    // +0x08
 };
+static_assert(offsetof(nalAnimClass<nalAnyPose>, Name) == 0x08,
+              "nalAnimClass::Name offset mismatch");
 
 struct nalAnimFile {
 public:
