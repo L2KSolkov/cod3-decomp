@@ -2446,7 +2446,7 @@ DbTable* DbTableSet_GetTable(void* self, const char* name)
 struct InplaceString;
 InplaceString* InplaceTree_FindStr(const void* tree, const char* const* key)
 {
-    if (tree == nullptr || key == nullptr)
+    if (tree == nullptr || key == nullptr || *key == nullptr)
         return nullptr;
 
     struct StringTreeElement {
