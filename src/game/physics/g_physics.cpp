@@ -390,12 +390,15 @@ void G_EntUnlink(Entity* ent);  // g.o
 struct tagInfoLocal {  // tagInfo_t subset (parent +0x00)
     void* parent;
 };
+struct DObjSkelMat;
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
     PROP_PRIORITY_HIGH = 2,
 };
 void DObjGetBasePose(DObj* obj);  // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o)
+const DObjSkelMat* G_DObjGetLocalTagMatrix(Entity* ent,
+                                           unsigned int tag_name_hash);
 void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc);
 void path_constraint_update(rigid_body_constraint_custom_path* vpc,
                             Entity* veh);  // 0x6F5B60
@@ -725,6 +728,12 @@ public:
         }
         mMask &= (T)~(1 << b);
     }
+};
+
+enum traction_type_e {
+    TRACTION_TYPE_FRONT = 0,
+    TRACTION_TYPE_BACK = 1,
+    TRACTION_TYPE_ALL_WD = 2,
 };
 
 // vehicle_rb_parameter (physics.o; minimal view for rb_vehicle methods)
@@ -3253,9 +3262,9 @@ void rb_vehicle::_update_orientation_constraint()
     }
 }
 
-// ?gWheelAxisLoc@@3VDir3@math@@A (physics.o data @ 0xF8D380; runtime-filled,
-// binary bytes are 0xFFFFFFFF = NaN)
-math::Dir3 gWheelAxisLoc = { _mm_castsi128_ps(_mm_set1_epi32(-1)) };
+// ?gWheelAxisLoc@@3VDir3@math@@A (physics.o data @ 0xF8D380)
+// The reference dynamic initializer at 0xA6A620 sets this to (0, 1, 0, 0).
+math::Dir3 gWheelAxisLoc = { _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f) };
 
 // ea: 0x6F50A0
 void rb_vehicle::update_steering(float delta_t)
@@ -3974,6 +3983,169 @@ void rb_vehicle::update_parms(vehicle_rb_parameter* params, bool initialization)
     }
     rb->set_gravity_dir(PHYSICS_GRAVITY_DIRECTION_3);
     rb->m_gravity_multiplier = PHYSICS_GRAVITY_SCALE_1;
+
+    __m128 wheel_spacing_delta =
+        _mm_sub_ps(m_wheel_orig_relpo[0].w.v, m_wheel_orig_relpo[2].w.v);
+    float wheel_spacing_sq =
+        wheel_spacing_delta.m128_f32[0] * wheel_spacing_delta.m128_f32[0]
+        + wheel_spacing_delta.m128_f32[1] * wheel_spacing_delta.m128_f32[1]
+        + wheel_spacing_delta.m128_f32[2] * wheel_spacing_delta.m128_f32[2];
+    float wheel_spacing = sqrtf(wheel_spacing_sq);
+
+    for (int i = 0; i < 8; ++i)
+    {
+        if (m_wheel_bone_indices[i] < 0)
+        {
+            m_wheels[i] = nullptr;
+            continue;
+        }
+
+        rigid_body_constraint_wheel* wheel;
+        if (initialization)
+        {
+            wheel = phys_sys::create_rbc_wheel(rb, nullptr, false);
+            if (wheel == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\RBVehicle.cpp";
+                AeAssert::gCurrentLine = 499;
+                AeAssert::gCurrentExpr = "rbc_wheel";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Ran out of wheel constraints."))
+                    __debugbreak();
+            }
+            m_wheels[i] = wheel;
+        }
+        else
+        {
+            wheel = (rigid_body_constraint_wheel*)m_wheels[i];
+        }
+
+        const math::Mat43& chassis = m_chassis_rbinf->m_transform;
+        const math::Position3& wheel_origin = m_wheel_orig_relpo[i].w;
+        __m128 transformed = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(wheel_origin.v, wheel_origin.v, 0),
+                           chassis.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(wheel_origin.v, wheel_origin.v, 85),
+                           chassis.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(wheel_origin.v, wheel_origin.v, 170),
+                           chassis.z.v),
+                chassis.w.v));
+        float suspension_z = transformed.m128_f32[2] - p->m_susp_adj;
+        math::Dir3 wheel_center;
+        wheel_center.v = _mm_setr_ps(transformed.m128_f32[0],
+                                     transformed.m128_f32[1], suspension_z,
+                                     transformed.m128_f32[3]);
+
+        float normalized_height = fabsf(suspension_z) / wheel_spacing;
+        if (normalized_height < 0.0f)
+            normalized_height = 0.0f;
+        else if (normalized_height > 1.0f)
+            normalized_height = 1.0f;
+        float suspension_scale = (1.0f - normalized_height) * 2.0f;
+        float suspension_stiffness =
+            p->m_susp_spring_k * suspension_scale
+            * g_vehicle_gravity_multiplier;
+        float suspension_damp =
+            p->m_susp_damp_k * suspension_scale
+            * g_vehicle_gravity_multiplier;
+        math::Dir3 suspension_dir;
+        suspension_dir.v = _mm_setr_ps(0.0f, 0.0f, -1.0f, 0.0f);
+        float wheel_radius = p->m_wheel_radius;
+        if (i == 0
+            && VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx)
+                       ->subtype
+                   == 2)
+        {
+            const DObjSkelMat* steering_wheel =
+                G_DObjGetLocalTagMatrix(m_owner, g_tag_steeringwheel_hash);
+            suspension_dir.v = _mm_setr_ps(-steering_wheel->axis[2][0], 0.0f,
+                                            -steering_wheel->axis[2][2], 0.0f);
+            wheel_radius += 1.0f;
+        }
+
+        wheel->set(&wheel_center, &suspension_dir, &gWheelAxisLoc,
+                   wheel_radius,
+                   p->m_tire_fric_fwd / g_vehicle_gravity_multiplier,
+                   p->m_tire_fric_side / g_vehicle_gravity_multiplier,
+                   suspension_stiffness, suspension_damp,
+                   p->m_susp_hard_limit, p->m_roll_stability);
+
+        unsigned int wheel_flags = wheel->m_wheel_flags;
+        if ((m_flags.mMask & 0x20u) != 0 || i < 2 || i == 4 || i == 5)
+            wheel_flags |= 8u;
+        else
+            wheel_flags &= ~8u;
+        if (i == 2 || i == 3 || i == 6 || i == 7)
+            wheel_flags |= 0x20u;
+        else
+            wheel_flags &= ~0x20u;
+        wheel_flags |= 0x40u;
+        wheel->m_wheel_flags = wheel_flags;
+
+        switch (p->m_traction_type)
+        {
+        case TRACTION_TYPE_FRONT:
+            if (i <= 1)
+                wheel->m_wheel_flags |= 0x10u;
+            else
+                wheel->m_wheel_flags &= ~0x10u;
+            break;
+        case TRACTION_TYPE_BACK:
+            if (i == 2 || i == 3)
+                wheel->m_wheel_flags |= 0x10u;
+            else
+                wheel->m_wheel_flags &= ~0x10u;
+            break;
+        case TRACTION_TYPE_ALL_WD:
+            wheel->m_wheel_flags |= 0x10u;
+            break;
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\RBVehicle.cpp";
+            AeAssert::gCurrentLine = 571;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("Invalid traction type"))
+                __debugbreak();
+            break;
+        }
+    }
+
+    math::Dir3 front_center;
+    front_center.v = _mm_mul_ps(
+        _mm_add_ps(((rigid_body_constraint_wheel*)m_wheels[0])
+                       ->m_b1_wheel_center_loc.v,
+                   ((rigid_body_constraint_wheel*)m_wheels[1])
+                       ->m_b1_wheel_center_loc.v),
+        _mm_set1_ps(0.5f));
+    math::Dir3 rear_center;
+    rear_center.v = _mm_mul_ps(
+        _mm_add_ps(((rigid_body_constraint_wheel*)m_wheels[2])
+                       ->m_b1_wheel_center_loc.v,
+                   ((rigid_body_constraint_wheel*)m_wheels[3])
+                       ->m_b1_wheel_center_loc.v),
+        _mm_set1_ps(0.5f));
+    m_steer_front_pt_loc.v = front_center.v;
+    m_steer_front_back_length =
+        front_center.v.m128_f32[0] - rear_center.v.m128_f32[0];
+    m_steer_factor = 0.0f;
+    m_steer_current_angle = 0.0f;
+    m_state_flags = 0;
+    m_forward_vel = 0.0f;
+    m_coasting_factor = p->m_tire_damp_coast;
+    if (m_orientation_constraint != nullptr)
+    {
+        m_orientation_constraint->m_torque_resistance =
+            p->m_roll_resistance * p->m_body_mass;
+        m_orientation_constraint->m_upright_strength =
+            p->m_upright_strength * p->m_body_mass;
+        _update_orientation_constraint();
+    }
 }
 
 // ea: 0x704F00
