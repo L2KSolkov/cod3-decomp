@@ -18,7 +18,7 @@ unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna)
     pxna->ina[0] = 127;
     pxna->ina[3] = 1;
     memcpy(pxna->inaOnline, pxna->ina, sizeof(pxna->ina));
-    return 0;
+    return 2;
 }
 
 int __stdcall XNetTsAddrToInAddr(const XNADDR* ptsa, unsigned int,
