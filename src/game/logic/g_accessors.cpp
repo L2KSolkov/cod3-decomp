@@ -517,6 +517,14 @@ TaskHandler* AnimationUpdateTask::GetHandler()
 {
     return &AnimationUpdateTask::sHandler;
 }
+TaskHandler* XAnimUpdateTask_sHandler()
+{
+    return XAnimUpdateTask::GetHandler();
+}
+TaskHandler* AnimationUpdateTask_sHandler()
+{
+    return AnimationUpdateTask::GetHandler();
+}
 TaskHandler EntityDeathTask::sHandler(FourCC(1145394248), 0u);
 
 // ea: 0x4FFB20

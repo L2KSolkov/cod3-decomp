@@ -2119,14 +2119,6 @@ void SmokeGrenadeMgr_Update(void* self, float deltaT)
     (void)self; (void)deltaT;
 }
 struct TaskHandler;
-TaskHandler* AnimationUpdateTask_sHandler()
-{
-    return nullptr;
-}
-TaskHandler* XAnimUpdateTask_sHandler()
-{
-    return nullptr;
-}
 
 // ============================================================================
 // Free-function stubs (various libs; port later)
