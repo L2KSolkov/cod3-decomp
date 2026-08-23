@@ -34,11 +34,11 @@ index	status	map_line
 33	VERIFIED	0002:000b45e0 ?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ 008A3AE0 f i core.o DISASM re-port audit: returns mGlobalPakId
 34	FIXED	0002:000b45f0 ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z 008A3AF0 f i core.o FIXED in 1e819843: added IDA disassembly's id < 0 rejection; upper bound remains 0x62
 35	VERIFIED	0002:000b4620 ?GetCurrentPakId@PakManager@@QAE?AW4TPakId@@XZ 008A3B20 f i core.o VERIFIED: FUNCTION existing current-pak accessor matches IDA DISASM re-port audit: returns mCurrentPakId
-36	VERIFIED	0002:000b4630 _acosf 008A3B30 f i core.o
-37	VERIFIED	0002:000b4640 _floorf 008A3B40 f i core.o
-38	VERIFIED	0002:000b4660 _fmodf 008A3B60 f i core.o
-39	VERIFIED	0002:000b4680 _modff 008A3B80 f i core.o
-40	VERIFIED	0002:000b46b0 ?sqrt@@YAMM@Z 008A3BB0 f i core.o
+36	SKIPPED	0002:000b4630 _acosf 008A3B30 f i core.o SKIPPED: CRT math wrapper; IDA disassembly is a thunk to __CIacos
+37	SKIPPED	0002:000b4640 _floorf 008A3B40 f i core.o SKIPPED: CRT math wrapper; IDA disassembly widens to double floor
+38	SKIPPED	0002:000b4660 _fmodf 008A3B60 f i core.o SKIPPED: CRT math wrapper; IDA disassembly calls __CIfmod
+39	SKIPPED	0002:000b4680 _modff 008A3B80 f i core.o SKIPPED: CRT math wrapper; IDA disassembly calls CRT modf and stores the remainder
+40	SKIPPED	0002:000b46b0 ?sqrt@@YAMM@Z 008A3BB0 f i core.o SKIPPED: compiler/CRT math wrapper; IDA disassembly is fsqrt
 41	VERIFIED	0002:000b46c0 ??0DbField@@QAE@GW4EDbColumnType@@W4EDbMatchType@@@Z 008A3BC0 f i core.o VERIFIED: FUNCTION existing DbField constructor and range asserts match IDA
 42	VERIFIED	0002:000b47b0 ??1DbField@@QAE@XZ 008A3CB0 f i core.o VERIFIED: FUNCTION implicit compiler-generated DbField destructor matches IDA trivial body
 43	VERIFIED	0002:000b47c0 ?GetColumnType@DbField@@QBE?AW4EDbColumnType@@XZ 008A3CC0 f i core.o VERIFIED: FUNCTION existing DbField column-type accessor matches IDA
