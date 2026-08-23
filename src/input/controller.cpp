@@ -125,6 +125,34 @@ static DWORD host_set_state(unsigned int, XINPUT_VIBRATION*) { return 1167; }
 
 static unsigned char digital_level(bool down) { return down ? 0xFF : 0; }
 
+#ifdef _WIN32
+// Temporary host keyboard mapping for front-end navigation.
+static void merge_host_keyboard(XBGAMEPAD& pad)
+{
+    auto down = [](int key) {
+        return (GetAsyncKeyState(key) & 0x8000) != 0;
+    };
+
+    WORD buttons = *reinterpret_cast<const WORD*>(pad.raw);
+    if (down(VK_UP) || down('W'))
+        buttons |= 0x0001;
+    if (down(VK_DOWN) || down('S'))
+        buttons |= 0x0002;
+    if (down(VK_LEFT) || down('A'))
+        buttons |= 0x0004;
+    if (down(VK_RIGHT) || down('D'))
+        buttons |= 0x0008;
+    if (down(VK_TAB))
+        buttons |= 0x0020;
+    *reinterpret_cast<WORD*>(pad.raw) = buttons;
+
+    if (down(VK_RETURN) || down(VK_SPACE))
+        pad.raw[2] = 0xFF;
+    if (down(VK_ESCAPE) || down(VK_BACK))
+        pad.raw[3] = 0xFF;
+}
+#endif
+
 // Convert modern XInput into the Xbox byte view consumed by controller.o.
 static void copy_host_state(XBGAMEPAD& pad, const XINPUT_STATE& state)
 {
@@ -243,7 +271,12 @@ void controller::poll()
         const bool connected = host_get_state(i, &state) == ERROR_SUCCESS;
         pad.inserted = connected && !was_connected;
         pad.removed = !connected && was_connected;
-        if (!connected) {
+#ifdef _WIN32
+        const bool use_host_keyboard = i == 0;
+#else
+        const bool use_host_keyboard = false;
+#endif
+        if (!connected && !use_host_keyboard) {
             pad.hDevice = nullptr;
             std::memset(pad.raw, 0, sizeof(pad.raw));
             pad.last_buttons = 0;
@@ -255,10 +288,18 @@ void controller::poll()
             continue;
         }
 
-        pad.hDevice = reinterpret_cast<void*>(static_cast<uintptr_t>(i + 1));
-        copy_host_state(pad, state);
+        if (connected) {
+            pad.hDevice = reinterpret_cast<void*>(static_cast<uintptr_t>(i + 1));
+            copy_host_state(pad, state);
+        } else {
+            std::memset(pad.raw, 0, sizeof(pad.raw));
+        }
+#ifdef _WIN32
+        if (use_host_keyboard)
+            merge_host_keyboard(pad);
+#endif
         const WORD buttons = *reinterpret_cast<const WORD*>(pad.raw);
-        if (!g_controllerConnectedErrorShown[i]
+        if (connected && !g_controllerConnectedErrorShown[i]
             && Controller_HandleUIXInput(i, &state)) {
             sUixHandled = true;
         } else {

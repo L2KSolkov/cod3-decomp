@@ -430,6 +430,9 @@ void FrontEndMenuSystem::Draw()
 // ea: 0x0057EB60
 void FrontEndMenuSystem::Update(float time_inc)
 {
+#ifdef _WIN32
+    controller::inst()->poll();
+#endif
     int integer = cg_widescreen.integer;
     if (mPreviousWidescreen != cg_widescreen.integer)
     {
