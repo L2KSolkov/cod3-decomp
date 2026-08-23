@@ -2688,7 +2688,8 @@ static_assert(sizeof(ZoneBoundaryBank) == 0x54,
 // XModel / StaticModel / BSP views (render.o + game.o; offsets verified IDA)
 class XModelParts;
 struct XModelLod {
-    uint8_t _pad[0x08];
+    float dist;                  // +0x00
+    InplaceString filename;      // +0x04
     XModelParts* xmodelParts;  // +0x08
 };
 struct XModelParts {
@@ -2705,13 +2706,19 @@ struct XModelParts {
 };
 class XModel {
 public:
-    const char* name;     // +0x00
-    XModel*     resolved; // +0x04 (cached GetXModel result)
-    uint8_t     _pad8[0x24 - 0x08];
-    XModelLod** lod;      // +0x24 (null-terminated array)
-    uint8_t     _pad28[0x40 - 0x28];
-    int         contents; // +0x40
+    math::Position3 mins;                // +0x00
+    math::Position3 maxs;                // +0x10
+    XModelParts* parts;                   // +0x20
+    XModelLod* lod[5];                    // +0x24
+    InplaceVector<const void*> collSurfs; // +0x38
+    int contents;                        // +0x40
+    short numLods;                       // +0x44
+    short collLod;                       // +0x46
+    InplaceString name;                  // +0x48
+    uint32_t iflFrames;                  // +0x4C
 };
+static_assert(sizeof(XModelLod) == 0x0C, "XModelLod layout mismatch");
+static_assert(sizeof(XModel) == 0x50, "XModel layout mismatch");
 struct BspNode {
     uint8_t _pad[0x10];
 };
@@ -4918,7 +4925,7 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
         AeAssert::gCurrentExpr = "xmBase->GetNumBones() <= 32";
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("static XModel %s has too many bones.",
-                                xmBase->name))
+                                xmBase->name.mStr))
             __debugbreak();
     }
 
@@ -5167,10 +5174,14 @@ void SceneManager::ProcessStaticModel(TPakId pakId, StaticModel& model)
         return;
     }
 
-    if (xmodel->resolved == nullptr)
+    XModel* resolved = reinterpret_cast<XModel*>(
+        static_cast<uintptr_t>(xmodel->mins.v.m128_i32[1]));
+    if (resolved == nullptr)
     {
+        const char* unresolvedName = reinterpret_cast<const char*>(
+            static_cast<uintptr_t>(xmodel->mins.v.m128_i32[0]));
         IVPointer<XModel> xmodptr =
-            XModelManager::sInst->GetXModel(pakId, xmodel->name);
+            XModelManager::sInst->GetXModel(pakId, unresolvedName);
         ValidatePakId((TPakId)xmodptr.mPakId);
         if (xmodptr.mValue == nullptr)
             xmodptr = gDefaultXmodel;
@@ -5178,7 +5189,8 @@ void SceneManager::ProcessStaticModel(TPakId pakId, StaticModel& model)
         if (xmodptr.mValue != nullptr)
         {
             ValidatePakId((TPakId)xmodptr.mPakId);
-            xmodel->resolved = xmodptr.mValue;
+            xmodel->mins.v.m128_i32[1] =
+                static_cast<int>(reinterpret_cast<uintptr_t>(xmodptr.mValue));
         }
         else
         {
@@ -5189,13 +5201,14 @@ void SceneManager::ProcessStaticModel(TPakId pakId, StaticModel& model)
             if (!AeAssert::IsIgnored()
                 && AeAssert::Warning(
                        "scene contains %s but mesh is not\nin pakfile",
-                       xmodel->name))
+                       unresolvedName))
                 __debugbreak();
             return;
         }
     }
 
-    model.xmodel = xmodel->resolved;
+    model.xmodel = reinterpret_cast<XModel*>(
+        static_cast<uintptr_t>(xmodel->mins.v.m128_i32[1]));
     if (model.xmodel == nullptr)
         return;
 
