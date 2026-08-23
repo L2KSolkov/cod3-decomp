@@ -1291,7 +1291,7 @@ static void nullD3DNormalizeScreenDepth(unsigned int* Vertices,
     }
 }
 
-static void nullD3DSetFixedFunctionFVF(DWORD FVF) {
+static void nullD3DSetFixedFunctionFVF(DWORD FVF, bool FontPacket = false) {
     // Push-buffer packets use the native D3D9 fixed-function declaration.
     // Clear both programmable stages before selecting the FVF so DrawPrimitiveUP
     // cannot retain an Xbox shader handle from the preceding NGL node.
@@ -1319,7 +1319,8 @@ static void nullD3DSetFixedFunctionFVF(DWORD FVF) {
         ? (HasTexture && !AlphaMask ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
         : D3DTOP_SELECTARG1;
     const DWORD AlphaOp = TexturedPCUV
-        ? (HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
+        ? (HasTexture ? (FontPacket ? D3DTOP_SELECTARG1 : D3DTOP_MODULATE)
+                      : D3DTOP_SELECTARG2)
         : D3DTOP_SELECTARG1;
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLOROP, ColorOp);
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAOP, AlphaOp);
@@ -1382,7 +1383,7 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
     // sequence of PCUV glyph quads.  The count encoded by each command is
     // the number of DWORDs in its following vertex array.
     Cursor += 2;
-    nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, true);
     while (Cursor + 1 < End) {
         unsigned int Command = *Cursor++;
         if (Command == 0 && *Cursor == 0)
