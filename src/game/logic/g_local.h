@@ -1675,6 +1675,7 @@ void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 // ============================================================================
 enum TPakInfo : int;  // scr.o (full: { kTPakInfoInvalid = 0 })
 struct BrocExports {
+    void (*mValidateApiSize)(int, int);  // +0x000
     void* (*mCreateExtendedEntity)(const char**, int);  // +0x000
     void (*mDeleteExtendedEntity)(void*);  // +0x004
     bool (*mMatchExtendedEntityKey)(void*, int, const char*);  // +0x00C

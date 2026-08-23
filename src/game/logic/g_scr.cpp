@@ -1559,6 +1559,28 @@ public:
 };
 AnimBankManager* AnimBankManager::sInst;  // ?sInst@AnimBankManager@@2PAV1@A (anim.o @ 0x1314F34)
 
+// ea: 0x005C76C0 (scr.o) — control flow and field accesses match IDA.
+AnimTree* Scr_GetAnimTreeByName(const char* treename)
+{
+    if (treename == nullptr)
+        return nullptr;
+
+    AnimBank* bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    unsigned int index = 1;
+    if (bank->anims.mSize <= 1)
+        return nullptr;
+
+    while (true)
+    {
+        AnimTree* tree = &bank->anims[index];
+        if (_stricmp(tree->name.mStr, treename) == 0)
+            return tree;
+        ++index;
+        if (index >= bank->anims.mSize)
+            return nullptr;
+    }
+}
+
 // ea: 0x005C7610
 int Scr_GetAnimsIndex(AnimTree* anims)
 {
@@ -26531,7 +26553,8 @@ void BrocSys::InitAPI()
         (void*)static_cast<void (*)(unsigned int, int)>(
             &BrocSys::ThreadEntityNotify);
     gpBrocAPI->mBrocExports.mMathsAtan2 = math::ATan;
-    memcpy(&gpBrocAPI->mBrocExports, &gBrocExports, 0x1C8);
+    memcpy(reinterpret_cast<unsigned char*>(gpBrocAPI) + 0xBE8,
+           &gBrocExports, 0x1C8);
     gpBrocAPI->mBrocExports.mRegisterHashString =
         BrocSys::RegisterHashString;
     gpBrocAPI->mBrocExports.mStrncmp = strncmp;

@@ -1740,11 +1740,6 @@ AnimTree* Scr_GetAnims(int index)
     (void)index;
     return nullptr;
 }
-AnimTree* Scr_GetAnimTreeByName(const char* treename)
-{
-    (void)treename;
-    return nullptr;
-}
 int Scr_IsSystemActive(unsigned char sys)
 {
     (void)sys;
