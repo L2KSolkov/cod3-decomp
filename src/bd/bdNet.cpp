@@ -171,12 +171,14 @@ void bdNetImpl::stop() {
             bdPlatformTiming::sleep(20);
         }
         m_connectionStore->closeAll();
-        delete m_connectionStore;
+        m_connectionStore->~bdConnectionStore();
+        bdMemory::deallocate(m_connectionStore);
         m_connectionStore = NULL;
     }
     if (m_params.m_socket != NULL) {
         m_params.m_socket->close();
-        delete m_params.m_socket;
+        m_params.m_socket->~bdSocket();
+        bdMemory::deallocate(m_params.m_socket);
         m_params.m_socket = NULL;
     }
     if (m_localCommonAddr.m_ptr != NULL && m_localCommonAddr.m_ptr->releaseRef() == 0)
