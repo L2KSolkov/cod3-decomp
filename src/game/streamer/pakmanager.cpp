@@ -2039,22 +2039,23 @@ ae_vector<GlowBeam> GlowBeamsList;       // ?GlowBeamsList@@3V?$ae_vector@UGlowB
 nglTexture* gGlowTexture = nullptr;      // ?gGlowTexture@@3PAUnglTexture@@A @ 0x13487C8
 
 enum eInstanceBankType {
-    INSTBANK_TYPE_TEXTURE = 0,
-    INSTBANK_TYPE_FONT = 1,
-    INSTBANK_TYPE_MESHFILE = 2,
-    INSTBANK_TYPE_MESH = 3,
-    INSTBANK_TYPE_ANIMFILE = 4,
-    INSTBANK_TYPE_ANIM = 5,
-    INSTBANK_TYPE_SCNANIM = 6,
-    INSTBANK_TYPE_ANIMOFFSET = 7,
-    INSTBANK_TYPE_SKELETON = 8,
-    INSTBANK_TYPE_EFFECT = 9,
-    INSTBANK_TYPE_FX = 10,
-    INSTBANK_TYPE_DISCTEX = 11,
-    INSTBANK_TYPE_DISCTEXSIZE = 12,
+    INSTBANK_TYPE_APK = 0,
+    INSTBANK_TYPE_ADF = 1,
+    INSTBANK_TYPE_TEXTURE = 2,
+    INSTBANK_TYPE_MESHFILE = 3,
+    INSTBANK_TYPE_MESH = 4,
+    INSTBANK_TYPE_ANIMFILE = 5,
+    INSTBANK_TYPE_ANIM = 6,
+    INSTBANK_TYPE_SCNANIM = 7,
+    INSTBANK_TYPE_ANIMOFFSET = 8,
+    INSTBANK_TYPE_SKELETON = 9,
+    INSTBANK_TYPE_EFFECT = 10,
+    INSTBANK_TYPE_FX = 11,
+    INSTBANK_TYPE_DISCTEX = INSTBANK_TYPE_FX,
+    INSTBANK_TYPE_DISCTEXSIZE = INSTBANK_TYPE_FX + 1,
 };
-// Numeric values match the release disassembly: cdGetTexture/cdGetFont pass
-// 0/1, cdGetMeshFile/cdGetMesh pass 2/3, and DecodeInstbank validates 0..12.
+// Values match the IDA local enum. The two DTEX slots are the consecutive
+// serialized bank indices validated by DecodeInstbank (11 and 12).
 
 class InstanceBankSet;
 
@@ -7140,7 +7141,8 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
         "SCNANIM", "ANIMOFFSET", "SKELETON", "EFFECT", "FX", "DISCTEX",
         "DISCTEXSIZE",
     };
-    for (int i = INSTBANK_TYPE_TEXTURE; i <= INSTBANK_TYPE_DISCTEXSIZE; ++i)
+    for (int i = INSTBANK_TYPE_APK;
+         i < (INSTBANK_TYPE_SKELETON | INSTBANK_TYPE_MESH); ++i)
     {
         InstanceBank* Bank = &bank->GetBank((eInstanceBankType)i);
         if (_stricmp(Bank->mTypeStr, types[i]) != 0)
@@ -8884,7 +8886,7 @@ void cdLoadTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
         TPakId v8 = PAK_ID_INVALID;
         if (ContextStack.m_size != 0)
             v8 = ContextStack.m_elements[ContextStack.m_size - 1];
-        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, v8,
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_APK, v8,
                                     *Data->FileName, (unsigned int)Data);
     }
 }
@@ -8909,7 +8911,7 @@ void cdLoadMeshCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
         TPakId v6 = PAK_ID_INVALID;
         if (ContextStack.m_size != 0)
             v6 = ContextStack.m_elements[ContextStack.m_size - 1];
-        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESH, v6, *Data->Name,
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESHFILE, v6, *Data->Name,
                                     (unsigned int)Data);
     }
 }
@@ -8991,7 +8993,7 @@ void cdLoadFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
         TPakId v13 = PAK_ID_INVALID;
         if (ContextStack.m_size != 0)
             v13 = ContextStack.m_elements[ContextStack.m_size - 1];
-        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_FONT, v13,
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_ADF, v13,
                                     *Data->FileName, (unsigned int)Data);
     }
 }
@@ -9185,7 +9187,7 @@ unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
 nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name)
 {
     nglTexture* result = (nglTexture*)InstanceBankMgr::sInst->Get(
-        INSTBANK_TYPE_TEXTURE, pakId, &name);
+        INSTBANK_TYPE_APK, pakId, &name);
     if (result == nullptr)
         return nglTextureDirectory.Find(name);
     return result;
@@ -9206,7 +9208,7 @@ apsEffectTemplate* cdGetEffectTemplate(TPakId pakId,
                                        const tlFixedString& name)
 {
     apsEffectTemplate* result = (apsEffectTemplate*)
-        InstanceBankMgr::sInst->Get(INSTBANK_TYPE_EFFECT, pakId, &name);
+        InstanceBankMgr::sInst->Get(INSTBANK_TYPE_SKELETON, pakId, &name);
     if (result == nullptr)
     {
         apsEffectTemplate* v3 = sMissingParticleEffect;
@@ -9231,7 +9233,7 @@ apsEffectTemplate* cdGetEffectTemplate(TPakId pakId,
 nglFont* cdGetFont(TPakId pakId, const tlFixedString& name)
 {
     nglFont* result = (nglFont*)InstanceBankMgr::sInst->Get(
-        INSTBANK_TYPE_FONT, pakId, &name);
+        INSTBANK_TYPE_ADF, pakId, &name);
     if (result == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -9250,7 +9252,7 @@ nglFont* cdGetFont(TPakId pakId, const tlFixedString& name)
 MultiApk* cdGetMeshFile(TPakId pakId, const tlFixedString& name)
 {
     return (MultiApk*)InstanceBankMgr::sInst->Get(
-        INSTBANK_TYPE_MESHFILE, pakId, &name);
+        INSTBANK_TYPE_TEXTURE, pakId, &name);
 }
 
 // ea: 0x677BE0
@@ -9272,7 +9274,7 @@ nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash)
 nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name)
 {
     unsigned int v2 = InstanceBankMgr::sInst->Get(
-        INSTBANK_TYPE_SKELETON, pakId, &name);
+        INSTBANK_TYPE_ANIMOFFSET, pakId, &name);
     if (v2 == 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -15573,7 +15575,7 @@ struct MultiApk {
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
 {
     tlFixedString result = GetName(name);
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESHFILE, pakId, result,
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, pakId, result,
                                  (unsigned int)file);
 }
 
