@@ -665,8 +665,11 @@ void CompleteAndExecCommand(char* command)
 // ea: 0x534C30
 void CL_StartLoading()
 {
-    ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp",
-           1713);
+    if (com_cl_running->integer == 0)
+    {
+        ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp",
+               1713);
+    }
     CL_StartHunkUsers();
     Cvar_Set("r_uiFullScreen", "0");
     float screen_time_inc = Com_GetScreenTimeDelta();
@@ -677,7 +680,10 @@ void CL_StartLoading()
 // ea: 0x5358C0
 void CL_MapLoading()
 {
-    ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_main.cpp", 265);
+    if (com_cl_running->integer == 0)
+    {
+        ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_main.cpp", 265);
+    }
     if (com_cl_running->integer != 0)
     {
         Field_Clear(&g_consoleField);

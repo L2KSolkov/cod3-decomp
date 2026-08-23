@@ -13130,7 +13130,9 @@ static void InternalAllocate(float numAvailableBanks, BitSet<64>* freeBanks1,
     {
         half = true;
         int v9 = 0;
-        if (numAvailableBanks + 0.5f > 0.0f)
+        const float availableHalfBanks =
+            (float)(int)(numAvailableBanks + 0.5f);
+        if (availableHalfBanks > 0.0f)
         {
             bool v10;
             for (;;)
@@ -13138,7 +13140,7 @@ static void InternalAllocate(float numAvailableBanks, BitSet<64>* freeBanks1,
                 v10 = freeBanks1->Test(v9);
                 if (v10 != freeBanks2->Test(v9))
                     break;
-                if (numAvailableBanks + 0.5f <= (float)++v9)
+                if (availableHalfBanks <= (float)++v9)
                     goto scan_free1;
             }
             if (v10)
