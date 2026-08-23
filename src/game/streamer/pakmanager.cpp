@@ -15310,7 +15310,7 @@ bool InstanceBankMgr::GetAnimOffset(const char* name, TPakId pakId,
     InstanceBankSet* v5 = mEntries[pakId];
     if (v5 == nullptr)
         return false;
-    unsigned int* Entry = v5->FindEntry(INSTBANK_TYPE_SCNANIM, name, 0);
+    unsigned int* Entry = v5->FindEntry(INSTBANK_TYPE_ANIMOFFSET, name, 0);
     if (Entry == nullptr)
         return false;
     if (*Entry == 0)
@@ -15461,7 +15461,7 @@ void InstanceBankMgr::RegisterAnimOffset(const char* name,
     v7[0] = offset;
     v7[1] = size;
     unsigned int* Entry =
-        mEntries[pakId]->FindEntry(INSTBANK_TYPE_SCNANIM, cpy, 0);
+        mEntries[pakId]->FindEntry(INSTBANK_TYPE_ANIMOFFSET, cpy, 0);
     if (Entry == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
