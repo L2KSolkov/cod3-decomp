@@ -47,6 +47,7 @@ class FEManager;
 extern FEManager g_femanager;
 extern void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr,
                           int qport);
+extern netchan_t* CL_GetNetchan(int client);
 extern void CL_AddReliableCommand(const char* cmd);
 
 namespace AeAssert {
@@ -207,7 +208,7 @@ void CL_ConnectResponse(netadr_t from)
         ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_main.cpp", 609);
     }
     Netchan_Setup((netsrc_t)currCl,
-                  (netchan_t*)((char*)0xF11208 + 19528 * currCl), from,
+                  CL_GetNetchan(currCl), from,
                   currCl);
     cls.state = 4 * (cgvm != nullptr) + 1;
 }

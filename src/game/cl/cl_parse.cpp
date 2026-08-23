@@ -86,6 +86,7 @@ extern void MSG_WriteByte(struct msg_t* msg, int c);
 extern void MSG_WriteString(struct msg_t* msg, const char* s);
 extern void Netchan_Transmit(netchan_t* chan, int length,
                              const unsigned char* data);
+extern netchan_t* CL_GetNetchan(int client);
 extern void CL_AdjustAngles();
 extern void CL_CmdButtons(usercmd_s* cmd);
 extern void CL_KeyMove(usercmd_s* cmd);
@@ -440,7 +441,7 @@ void CL_WritePacket()
         if (cl_showSend->integer != 0)
             Com_Printf("%i ", buf.cursize);
         MSG_WriteByte(&buf, 3);
-        Netchan_Transmit((netchan_t*)((char*)0xF11208 + 19528 * currCl),
+        Netchan_Transmit(CL_GetNetchan(currCl),
                          buf.cursize, buf.data);
     }
 }
@@ -957,10 +958,9 @@ int clc_lastPacketTime[2 * 4882];  // cl.o BSS
     if (cls.state != 0)  // CA_DISCONNECTED
     {
         if (NET_CompareAdr(from,
-                           *(netadr_t*)(0xF11210 + 19528 * currCl)) != 0)
+                           *(netadr_t*)((char*)CL_GetNetchan(currCl) + 8)) != 0)
         {
-            if (Netchan_Process((netchan_t*)(0xF11208 + 19528 * currCl),
-                                msg) != 0)
+            if (Netchan_Process(CL_GetNetchan(currCl), msg) != 0)
             {
                 int v4 = 4882 * currCl;
                 int v5 = dword_F170F8;

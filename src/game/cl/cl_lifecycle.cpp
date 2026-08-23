@@ -164,6 +164,12 @@ struct clientConnection_t {
 };
 clientConnection_t clc[2];  // ?clc@@3PAUclientConnection_t@@A (cl.o @ 0x12FC6F0)
 
+struct netchan_t;
+netchan_t* CL_GetNetchan(int client)
+{
+    return reinterpret_cast<netchan_t*>(clc[client].data + 0x4018);
+}
+
 enum netsrc_t {
     NS_CLIENT = 0,
     NS_SERVER = 1,
