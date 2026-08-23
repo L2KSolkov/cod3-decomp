@@ -2058,10 +2058,16 @@ void FEMultiLineText::Draw(int start_line, int end_line)
         tmp_color.i = color1.i;
         if ((FEText::flags & 8) != 0)
             tmp_color.i = flash_info->GetColor(color1).i;
-        int v6 = (int)((unsigned char)(tmp_color.c.a * visibility)
-                       | ((tmp_color.c.r | ((tmp_color.c.g
-                                            | (tmp_color.c.b << 8))
-                                           << 8))
+        // The reference packs ARGB as b | (g<<8) | (r<<16) | (a<<24).  The
+        // shift nesting here had the channels reversed, producing
+        // 0xBBGGRRAA: alpha landed in the low byte and blue in the high
+        // byte, so the vertex colour reached NGL fully transposed.
+        int v6 = (int)(tmp_color.c.b
+                       | ((tmp_color.c.g
+                           | ((tmp_color.c.r
+                               | ((unsigned char)(tmp_color.c.a * visibility)
+                                  << 8))
+                              << 8))
                           << 8));
         int v7 = HIWORD(button_color.i) << 8;
         int v8 = (int)((unsigned char)button_color.c.b
