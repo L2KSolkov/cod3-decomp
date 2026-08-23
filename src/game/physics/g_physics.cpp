@@ -5868,28 +5868,7 @@ public:
     phys_gjk_geom_list() {}  // ??0phys_gjk_geom_list@@QAE@XZ (no-op)
     // ea: 0x6F1EC0 - walk the geometry list, call each geom's virtual
     // comp_aabb (vtable+0x10), union the per-geom AABBs.
-    void comp_aabb(const math::Mat43& cg_to_world_xform)
-    {
-        for (void* g = m_first_geom; g != nullptr;
-             g = *(void**)((char*)g + 0x34))
-        {
-            void** vtable = *(void***)g;
-            ((void (*)(void*, const math::Mat43&))vtable[4])(
-                g, cg_to_world_xform);
-            if (g == m_first_geom)
-            {
-                m_aabb_mn.v = ((math::Dir3*)((char*)g + 0x10))->v;
-                m_aabb_mx.v = ((math::Dir3*)((char*)g + 0x20))->v;
-            }
-            else
-            {
-                m_aabb_mn.v = _mm_min_ps(
-                    m_aabb_mn.v, ((math::Dir3*)((char*)g + 0x10))->v);
-                m_aabb_mx.v = _mm_max_ps(
-                    m_aabb_mx.v, ((math::Dir3*)((char*)g + 0x20))->v);
-            }
-        }
-    }
+    void comp_aabb(const math::Mat43& cg_to_world_xform);
 };
 
 class DCGSet;
@@ -6216,6 +6195,27 @@ public:
     DCGSet*       m_dcg;       // +0x38
     int           m_dcg_index; // +0x3C
 };
+
+void phys_gjk_geom_list::comp_aabb(const math::Mat43& cg_to_world_xform)
+{
+    for (void* g = m_first_geom; g != nullptr;
+         g = *(void**)((char*)g + 0x34))
+    {
+        ((phys_gjk_geom_cod_base*)g)->comp_aabb(cg_to_world_xform);
+        if (g == m_first_geom)
+        {
+            m_aabb_mn.v = ((math::Dir3*)((char*)g + 0x10))->v;
+            m_aabb_mx.v = ((math::Dir3*)((char*)g + 0x20))->v;
+        }
+        else
+        {
+            m_aabb_mn.v = _mm_min_ps(
+                m_aabb_mn.v, ((math::Dir3*)((char*)g + 0x10))->v);
+            m_aabb_mx.v = _mm_max_ps(
+                m_aabb_mx.v, ((math::Dir3*)((char*)g + 0x20))->v);
+        }
+    }
+}
 
 // phys_gjk_geom_aabb / phys_gjk_geom_vert_list factory stubs
 // (?create@phys_gjk_geom_aabb@@SAPAV1@ABVDir3@math@@0@Z /
