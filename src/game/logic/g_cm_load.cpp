@@ -1282,6 +1282,7 @@ static_assert(sizeof(BinFileManager::DataElem) == 0x0C,
 static_assert(sizeof(BinFileManager) == 0x25C,
               "BinFileManager size mismatch");
 BinFileManager* BinFileManager::sInst = nullptr;
+extern void* BinFileManager_sInst;
 
 // ea: 0x0065BCE0
 BinFileManager* BinFileManager::Inst()
@@ -1316,9 +1317,11 @@ BinFileManager* BinFileManager::CreateInst()
     {
         BinFileManager* result = new (memory) BinFileManager();
         BinFileManager::sInst = result;
+        BinFileManager_sInst = result;
         return result;
     }
     BinFileManager::sInst = nullptr;
+    BinFileManager_sInst = nullptr;
     return nullptr;
 }
 
@@ -1343,6 +1346,7 @@ void BinFileManager::DeleteInst()
         mem_heap_free(instance);
     }
     BinFileManager::sInst = nullptr;
+    BinFileManager_sInst = nullptr;
 }
 
 // C-style bridge for cross-TU callers (g_cmd / g_scr_vehicle)
