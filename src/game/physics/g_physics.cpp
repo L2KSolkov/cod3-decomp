@@ -8209,7 +8209,7 @@ phys_gjk_geom_cod_base* gjk_geom_database::get_gjk_geom(
 class CGBankManager {
 public:
     static void* sInst;  // ?sInst@CGBankManager@@2PAXA (port-local)
-    uint8_t _pad4[0x0C - 0x04];
+    uint8_t _pad0[0x0C];  // AssetBankSet + debug fields at +0x00..+0x0B
     int    mCount;       // +0x0C
     CGBank* mBankArray[99];  // +0x10
 };
