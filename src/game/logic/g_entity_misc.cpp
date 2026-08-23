@@ -2669,9 +2669,43 @@ void CGBank_load_inplace(CGBank* bank, char* data, int* size)
 {
     (void)bank; (void)data; (void)size;
 }
+static void DCGAlignInplace(int* offs, int alignment)
+{
+    while ((*offs & (alignment - 1)) != 0)
+        ++*offs;
+}
+static void DCGSet_load_inplace(unsigned char* set, char* base, int* offs)
+{
+    DCGAlignInplace(offs, 16);
+    *reinterpret_cast<char**>(set + 8) = base + *offs;
+    *offs += 36 * *reinterpret_cast<unsigned int*>(set + 4);
+
+    DCGAlignInplace(offs, 16);
+    *reinterpret_cast<char**>(set + 16) = base + *offs;
+    *offs += 4 * *reinterpret_cast<unsigned int*>(set + 12);
+
+    DCGAlignInplace(offs, 16);
+    *reinterpret_cast<char**>(set + 24) = base + *offs;
+    *offs += 10 * *reinterpret_cast<unsigned int*>(set + 20);
+
+    DCGAlignInplace(offs, 16);
+    *reinterpret_cast<char**>(set + 32) = base + *offs;
+    *offs += 16 * *reinterpret_cast<unsigned int*>(set + 28);
+
+    DCGAlignInplace(offs, 16);
+    *reinterpret_cast<char**>(set + 40) = base + *offs;
+    *offs += 4 * *reinterpret_cast<unsigned int*>(set + 36);
+}
 void DCGBank_load_inplace(void* bank, char* data, int* size)
 {
-    (void)bank; (void)data; (void)size;
+    unsigned char* raw = static_cast<unsigned char*>(bank);
+    DCGAlignInplace(size, 16);
+    *reinterpret_cast<char**>(raw + 4) = data + *size;
+    unsigned int count = *reinterpret_cast<unsigned int*>(raw);
+    *size += 112 * count;
+    for (unsigned int i = 0; i < count; ++i)
+        DCGSet_load_inplace(raw + 4 + i * 112, data, size);
+    DCGAlignInplace(size, 4);
 }
 void CGBankManager_UnloadAll(void* self) { (void)self; }
 void CGBankManager_UnloadAll() {}
