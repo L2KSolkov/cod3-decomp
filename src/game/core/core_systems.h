@@ -195,7 +195,7 @@ struct Bitmask {
     // ?Add@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF570)
     void Add(int b)
     {
-        if (b >= static_cast<int>(sizeof(T) * 8))
+        if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
@@ -212,7 +212,7 @@ struct Bitmask {
     // ?Rmv@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF600)
     void Rmv(int b)
     {
-        if (b >= static_cast<int>(sizeof(T) * 8))
+        if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
@@ -229,7 +229,7 @@ struct Bitmask {
     // ?Test@?$Bitmask@G@@QBE_NH@Z (core.o 0x004DF690)
     bool Test(int b) const
     {
-        if (b >= static_cast<int>(sizeof(T) * 8))
+        if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
