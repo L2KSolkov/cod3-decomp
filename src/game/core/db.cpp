@@ -35,7 +35,7 @@ DbField::DbField(uint16_t columnId, EDbColumnType col_type,
       m_match_type((unsigned char)match_type),
       mId(columnId)
 {
-    if (col_type > kDbColumnTypeSHORT) {
+    if (col_type < kDbColumnTypeMin || col_type > kDbColumnTypeMax) {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
         AeAssert::gCurrentLine = 71;
@@ -46,7 +46,7 @@ DbField::DbField(uint16_t columnId, EDbColumnType col_type,
             && AeAssert::Assert("value not in enum range"))
             __debugbreak();
     }
-    if (match_type >= kDbMatchTypeCount) {
+    if (match_type < kDbMatchTypeMin || match_type > kDbMatchTypeMax) {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbDefs.h";
         AeAssert::gCurrentLine = 72;
