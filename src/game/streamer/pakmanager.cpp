@@ -2040,22 +2040,21 @@ nglTexture* gGlowTexture = nullptr;      // ?gGlowTexture@@3PAUnglTexture@@A @ 0
 
 enum eInstanceBankType {
     INSTBANK_TYPE_TEXTURE = 0,
-    INSTBANK_TYPE_FONT,
-    INSTBANK_TYPE_MESHFILE,
-    INSTBANK_TYPE_MESH,
-    INSTBANK_TYPE_ANIMFILE,
-    INSTBANK_TYPE_ANIM,
-    INSTBANK_TYPE_SCNANIM,
-    INSTBANK_TYPE_ANIMOFFSET,
-    INSTBANK_TYPE_SKELETON,
-    INSTBANK_TYPE_EFFECT,
-    INSTBANK_TYPE_FX,
-    INSTBANK_TYPE_DISCTEX,
-    INSTBANK_TYPE_DISCTEXSIZE,
+    INSTBANK_TYPE_FONT = 1,
+    INSTBANK_TYPE_MESHFILE = 2,
+    INSTBANK_TYPE_MESH = 3,
+    INSTBANK_TYPE_ANIMFILE = 4,
+    INSTBANK_TYPE_ANIM = 5,
+    INSTBANK_TYPE_SCNANIM = 6,
+    INSTBANK_TYPE_ANIMOFFSET = 7,
+    INSTBANK_TYPE_SKELETON = 8,
+    INSTBANK_TYPE_EFFECT = 9,
+    INSTBANK_TYPE_FX = 10,
+    INSTBANK_TYPE_DISCTEX = 11,
+    INSTBANK_TYPE_DISCTEXSIZE = 12,
 };
-// Values verified against DecodeInstbank's type-string table (TEXTURE=0 ..
-// DISCTEXSIZE=12) and the raw pushes at the cdGet*/cdLoad* call sites. The
-// earlier "APK=0, TEXTURE=1, ..." layout was shifted by one.
+// Numeric values match the release disassembly: cdGetTexture/cdGetFont pass
+// 0/1, cdGetMeshFile/cdGetMesh pass 2/3, and DecodeInstbank validates 0..12.
 
 class InstanceBankSet;
 
