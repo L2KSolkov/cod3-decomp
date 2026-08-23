@@ -2146,8 +2146,115 @@ struct PakInfoNode;
 extern struct PakInfoNode const* sLoadingScreenInfo;
 void (__cdecl* gpBrocAPI_mCallbackQuitGame)() = nullptr;
 void (__cdecl* rd_flush)(char*) = nullptr;
-// Entity function tables (g.o; declared extern in g_local.h)
-void (*gSpawnFuncs[53])(Entity* ent);
+// Entity function tables (g.o; declared extern in g_local.h).  The reference
+// image provides the spawn dispatch table as initialized data at 0xDD7338;
+// leaving this table zeroed makes G_CallEntitySpawnFunction call address 0.
+extern void SP_sound_blend(Entity*);
+extern void SP_script_brushmodel(Entity*);
+extern void SP_script_model(Entity*);
+extern void SP_script_origin(Entity*);
+extern void SP_script_prop_collmap(Entity*);
+extern void SP_script_vehicle(Entity*);
+extern void SP_script_vehicle_collmap(Entity*);
+extern void SP_misc_model(Entity*);
+extern void SP_info_player_start(Entity*);
+extern void SP_info_null(Entity*);
+extern void SP_info_notnull(Entity*);
+extern void SP_info_notnull_big(Entity*);
+extern void SP_info_grenade_hint(Entity*);
+extern void SP_func_door(Entity*);
+extern void SP_func_static(Entity*);
+extern void SP_func_rotating(Entity*);
+extern void SP_func_bobbing(Entity*);
+extern void SP_func_pendulum(Entity*);
+extern void SP_func_door_rotating(Entity*);
+extern void trigger_use(Entity*);
+extern void SP_trigger_multiple(Entity*);
+extern void SP_trigger_friendlychain(Entity*);
+extern void SP_trigger_hurt(Entity*);
+extern void SP_trigger_once(Entity*);
+extern void SP_trigger_damage(Entity*);
+extern void SP_trigger_lookat(Entity*);
+extern void SP_trigger_mount(Entity*);
+extern void SP_light(Entity*);
+extern void SP_turret(Entity*);
+extern void SP_skyportal(Entity*);
+extern void SP_corona(Entity*);
+extern void SP_intermission(Entity*);
+extern void SP_deathmatch(Entity*);
+extern void SP_teamdeathmatch(Entity*);
+extern void SP_ctf_allies_primary(Entity*);
+extern void SP_ctf_allies_secondary(Entity*);
+extern void SP_ctf_axis_primary(Entity*);
+extern void SP_ctf_axis_secondary(Entity*);
+extern void SP_single_ctf_allies(Entity*);
+extern void SP_single_ctf_axis(Entity*);
+extern void SP_hq_allies_primary(Entity*);
+extern void SP_hq_allies_secondary(Entity*);
+extern void SP_hq_axis_primary(Entity*);
+extern void SP_hq_axis_secondary(Entity*);
+extern void HQ_Point(Entity*);
+extern void SP_dom_allies(Entity*);
+extern void SP_dom_axis(Entity*);
+extern void SP_war_allies(Entity*);
+extern void SP_war_axis(Entity*);
+extern void SP_sd_allies(Entity*);
+extern void SP_sd_axis(Entity*);
+
+void (*gSpawnFuncs[53])(Entity* ent) = {
+    SP_sound_blend,
+    SP_script_brushmodel,
+    SP_script_model,
+    SP_script_origin,
+    SP_script_prop_collmap,
+    SP_script_vehicle,
+    SP_script_vehicle_collmap,
+    SP_misc_model,
+    SP_info_player_start,
+    SP_info_null,
+    SP_info_notnull,
+    SP_info_notnull_big,
+    SP_info_grenade_hint,
+    SP_func_door,
+    SP_func_static,
+    SP_func_rotating,
+    SP_func_bobbing,
+    SP_func_pendulum,
+    SP_func_door_rotating,
+    trigger_use,
+    SP_trigger_multiple,
+    SP_trigger_friendlychain,
+    SP_trigger_hurt,
+    SP_trigger_once,
+    SP_trigger_damage,
+    SP_trigger_lookat,
+    SP_trigger_mount,
+    SP_light,
+    SP_turret,
+    SP_turret,
+    SP_skyportal,
+    SP_corona,
+    SP_intermission,
+    SP_deathmatch,
+    SP_teamdeathmatch,
+    SP_ctf_allies_primary,
+    SP_ctf_allies_secondary,
+    SP_ctf_axis_primary,
+    SP_ctf_axis_secondary,
+    SP_single_ctf_allies,
+    SP_single_ctf_axis,
+    SP_hq_allies_primary,
+    SP_hq_allies_secondary,
+    SP_hq_axis_primary,
+    SP_hq_axis_secondary,
+    HQ_Point,
+    SP_dom_allies,
+    SP_dom_axis,
+    SP_war_allies,
+    SP_war_axis,
+    SP_sd_allies,
+    SP_sd_axis,
+};
 void (*thinktable[64])(Entity* ent, int msec);
 void (*entinfotable[3])(Entity* ent);
 void (*touchtable[0xD])(Entity* ent, Entity* other, int bTouched);
