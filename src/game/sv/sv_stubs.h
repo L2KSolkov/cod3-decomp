@@ -1622,19 +1622,46 @@ public:
 #ifndef COD3_FULL_FE_TYPES
 class FEMenuSystem {
 public:
-    virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
+    // Keep the server-only view's virtual slots aligned with the real
+    // PanelFileUser/FEMenuSystem hierarchy.  In particular, SetActiveMenu is
+    // slot 25 (+0x64), as confirmed by SV_Map_f's reference disassembly.
+    virtual void SetPanelFile(PanelFile*) {}
+    virtual void PanelFileUnloaded(PanelFile*) {}
+    virtual void UpdateWidescreen(bool) {}
+    virtual void VtableDestructorSlot() {}
+    virtual void InitAll() {}
+    virtual void Add(FEMenu*) {}
+    virtual void ReturnToPreviousMenu(int) {}
+    virtual void MakeActive(int) {}
+    virtual void MakeActive(int, int) {}
+    virtual void MakeActiveAndReturn(int, int) {}
+    virtual void MakeActiveAndReturn(int) {}
+    virtual bool IsMenuActive(int) { return false; }
+    virtual void ClearReturnMenu(int) {}
+    virtual void UpdateSplitScreen() {}
+    virtual void AddOverlay(int) {}
+    virtual void RemoveOverlay() {}
     virtual void Update(float time_inc);  // ?Update@FEMenuSystem@@UAEXM@Z (shell.o 0x570DD0)
+    virtual void UpdateButtonPresses() {}
+    virtual void UpdateButtonDown() {}
+    virtual void Draw() {}
+    virtual void Draw3D() {}
+    virtual void SetDefaultColorScheme(char) {}
+    virtual char GetDefaultColorScheme() { return 0; }
+    virtual bool VtableIsSystemActive() { return false; }
+    virtual int GetActiveMenu() { return 0; }
+    virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
+    virtual int GetCurrentClient() { return 0; }
+    virtual int GetCurrentClientController() { return 0; }
     void**  menus;                       // +0x04 (FEMenu** array)
     uint8_t _pad08[0x1C - 0x08];
     void (*gap1C)(void* self, float a2); // +0x1C (shell.o update slot)
     uint8_t _pad20[0x2A - 0x20];
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
-    bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
+    bool IsSystemActive();               // ?IsSystemActive@FEMenuSystem@@QAE_NXZ
     int CurrentOverlay();               // ?CurrentOverlay@FEMenuSystem@@QAEHXZ (shell.o)
     FEMenuSystem(int s, font_index f);  // ??0FEMenuSystem@@QAE@HW4font_index@@@Z (shell.o 0x57DD70)
-    virtual void InitAll();             // ?InitAll@FEMenuSystem@@UAEXXZ (shell.o 0x570AA0)
-    virtual void Add(FEMenu* m);        // ?Add@FEMenuSystem@@UAEXPAVFEMenu@@@Z (shell.o 0x570A30)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
 
