@@ -1590,8 +1590,12 @@ void apsBounds::ClampHalfSize(float maxHalfX, float maxHalfY, float maxHalfZ)  /
 template <class T>
 class AeType {
 };
+// Keep this translation-unit helper distinct from the canonical
+// AssetBankSet-derived template in tr_aeps2.cpp.  Both definitions used to
+// emit the same explicit XModel instantiations despite having different
+// layouts, allowing the linker to select the wrong constructor/Find body.
 template <class Bank>
-class InplaceAssetBankSet {
+class TinyInplaceAssetBankSet {
 public:
     ae_array<Bank*, 99> mBankArray;  // +0x00
     template <class K, class V>
@@ -1601,8 +1605,8 @@ extern void GetPakPrerequisites(TPakId pakId,
                                 ae_sized_array<TPakId, 32>* prereqs);
 template <class Bank>
 template <class K, class V>
-V InplaceAssetBankSet<Bank>::Find(TPakId pakId, K key, AeType<V>,
-                                  TPakId* foundPakId) const
+V TinyInplaceAssetBankSet<Bank>::Find(TPakId pakId, K key, AeType<V>,
+                                      TPakId* foundPakId) const
 {
     if (pakId == (TPakId)0xFFFFFFFF)
     {
@@ -1661,13 +1665,13 @@ V InplaceAssetBankSet<Bank>::Find(TPakId pakId, K key, AeType<V>,
 class XModelBank : public InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>> {};
 class XModelPartsBank : public InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>> {};
 template IVPointer<XModel>
-InplaceAssetBankSet<XModelBank>::Find<char*, IVPointer<XModel>>(
+TinyInplaceAssetBankSet<XModelBank>::Find<char*, IVPointer<XModel>>(
     TPakId, char*, AeType<IVPointer<XModel>>, TPakId*) const;
 template IVPointer<XModel>
-InplaceAssetBankSet<XModelBank>::Find<char const*, IVPointer<XModel>>(
+TinyInplaceAssetBankSet<XModelBank>::Find<char const*, IVPointer<XModel>>(
     TPakId, char const*, AeType<IVPointer<XModel>>, TPakId*) const;
 template IVPointer<XModelParts>
-InplaceAssetBankSet<XModelPartsBank>::Find<char const*, IVPointer<XModelParts>>(
+TinyInplaceAssetBankSet<XModelPartsBank>::Find<char const*, IVPointer<XModelParts>>(
     TPakId, char const*, AeType<IVPointer<XModelParts>>, TPakId*) const;
 
 // AnimationPlayer ctor/dtor (real IDA layout)
