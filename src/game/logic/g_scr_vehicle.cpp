@@ -4684,25 +4684,9 @@ void SP_script_vehicle(Entity* pSelf)
     const char* typeName = nullptr;
     G_SpawnString(vehicletype_hash, nullptr, &typeName);
     if (s_numVehicleInfos <= 0)
-    {
-        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
-        AeAssert::gCurrentLine = 10231;
-        AeAssert::gCurrentExpr = "s_numVehicleInfos > 0";
-        if (!AeAssert::IsIgnored()
-            && AeAssert::Assert("No vehicle type files are loaded.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
-            __debugbreak();
-    }
+        return;
     if (typeName == nullptr)
-    {
-        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
-        AeAssert::gCurrentLine = 10232;
-        AeAssert::gCurrentExpr = "typeName";
-        if (!AeAssert::IsIgnored()
-            && AeAssert::Assert("Invalid vehicletype found in level.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
-            __debugbreak();
-    }
+        return;
     if (G_SpawnVehicle(pSelf, typeName, 0) != 0)
     {
         scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
