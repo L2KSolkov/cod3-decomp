@@ -12224,7 +12224,8 @@ static const cspField_t weaponInfoFields[334] = {
 };
 
 // GdbFile result holder (mirrors g_cm_load.cpp TU-local struct)
-struct GdbFile {
+class GdbFile {
+public:
     void* mLayout;    // +0x00 (InplaceTree<uint,uint>*)
     void* mRecord;    // +0x04 (InplaceVector<GdbFileSet::Value>*)
 };
