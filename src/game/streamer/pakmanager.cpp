@@ -32,6 +32,7 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern PoolAllocator* gCommonPoolAllocator;
 extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
+extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 
 // PakFile bank flags (PakFile.cpp; header flags + runtime state)
 #define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
@@ -2607,7 +2608,7 @@ public:
     void*   mPtrFixupTable;                  // +0x18
     InplaceVector<const ZoneCellDesc*> mCells;  // +0x1C
     int     mInitialCell;                    // +0x24
-    math::Position3 mInitialPosition;        // +0x28
+    math::Position3::Packed mInitialPosition; // +0x28
     InplaceVector<ZoneOverrideBrushSet*> mOverrideBoxes;  // +0x34
     InplaceVector<const ZoneOverrideBrushSet*> mToggleableOverrideBoxes;  // +0x3C
     int     mNextBank;             // +0x44
@@ -2684,6 +2685,8 @@ struct BoundingBox {
     bool intersect(const math::Position3& p) const;
     void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
 };
+static_assert(sizeof(ZoneBoundaryBank) == 0x54,
+              "ZoneBoundaryBank layout mismatch");
 
 // XModel / StaticModel / BSP views (render.o + game.o; offsets verified IDA)
 struct XModelParts;
@@ -11734,7 +11737,7 @@ void StreamZoneManager::DecodeBank(const char* name, unsigned char* data,
     }
     ++mListSize;
     mInitialCell = bank->mInitialCell;
-    mInitialPosition.v = bank->mInitialPosition.v;
+    mInitialPosition = bank->mInitialPosition;
     Update(mInitialCell, &mInitialPosition, false);
 
     tlFixedString sky("sky");
@@ -11791,8 +11794,7 @@ void ZoneBoundaryBank::Fixup()
             __debugbreak();
     }
     mPtrFixupTable = (char*)this + (uintptr_t)mPtrFixupTable;
-    // PtrFixupTable::Fixup(this, basePtr) - fixup table walk not ported;
-    // the tree/vector pointers are already relative and fixed by Find/At.
+    PtrFixupTable_Fixup(mPtrFixupTable, this);
 }
 
 // ea: 0x66CCD0
