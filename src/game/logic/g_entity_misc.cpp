@@ -2269,21 +2269,6 @@ void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
                     const float* dir, hitLocation_t hitLoc);
 void (*controllertable[4])(Entity* ent, int* partBits);
 
-struct GdbFile {
-    int dummy;
-};
-struct GdbFileManager {
-    static void CreateInst();
-    static void DeleteInst();
-    GdbFile GetGdbFile(TPakId pak_id, const char* name, const char* type);
-};
-GdbFile GdbFileManager::GetGdbFile(TPakId pak_id, const char* name,
-                                   const char* type)
-{
-    (void)pak_id; (void)name; (void)type;
-    GdbFile r = {};
-    return r;
-}
 void Client::Clear(bool clearPersistentAlso, bool clearWeapons)
 {
     this->ps.Clear(clearWeapons);
@@ -2466,8 +2451,40 @@ DbTable* DbTableSet_GetTable(void* self, const char* name)
 struct InplaceString;
 InplaceString* InplaceTree_FindStr(const void* tree, const char* const* key)
 {
-    (void)tree; (void)key;
-    return nullptr;
+    if (tree == nullptr || key == nullptr)
+        return nullptr;
+
+    struct StringTreeElement {
+        const char* mKey;
+        const char* mValue;
+    };
+    struct StringTree {
+        unsigned int mSize;
+        StringTreeElement* mArray;
+    };
+
+    const StringTree* stringTree = reinterpret_cast<const StringTree*>(tree);
+    if (stringTree->mSize == 0 || stringTree->mArray == nullptr)
+        return nullptr;
+
+    unsigned int index = 0;
+    for (;;) {
+        if (index >= stringTree->mSize)
+            return nullptr;
+
+        const StringTreeElement& element = stringTree->mArray[index];
+        if (element.mKey == nullptr && element.mValue == nullptr)
+            return nullptr;
+
+        if (_stricmp(element.mKey, *key) == 0)
+            return reinterpret_cast<InplaceString*>(
+                &stringTree->mArray[index].mValue);
+
+        const int comparison = _stricmp(element.mKey, *key);
+        index = comparison >= 0 ? (2 * index + 1) : (2 * index + 2);
+        if (index >= stringTree->mSize)
+            return nullptr;
+    }
 }
 class DbRow;
 const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row, int col)
