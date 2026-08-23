@@ -9037,9 +9037,9 @@ void cdLoadParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
     TPakId v6 = PAK_ID_INVALID;
     if (ContextStack.m_size != 0)
         v6 = ContextStack.m_elements[ContextStack.m_size - 1];
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_SKELETON, v6,
-                                *(tlFixedString*)Entry->Name,
-                                (unsigned int)EffectInplace);
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_EFFECT, v6,
+                                 *(tlFixedString*)Entry->Name,
+                                 (unsigned int)EffectInplace);
 }
 
 // ea: 0x665D20 (empty no-op)
