@@ -148,6 +148,7 @@ struct leafList_s {
     int*             list;       // +0x0C
     math::Position3  bounds[2];  // +0x10
     int              lastLeaf;   // +0x30
+    void (*storeLeafs)(leafList_s*, int); // +0x34
 };
 
 inline BspNode& BspNodeAt(unsigned int index)
@@ -294,7 +295,7 @@ LABEL_2:
         }
         nodeIndex = (unsigned int)(v6->u.node.children[v10 - 1] - v26);
     }
-    CM_StoreLeafs(ll, (int)nodeIndex);
+    ll->storeLeafs(ll, (int)nodeIndex);
 }
 
 // ============================================================================
@@ -1506,6 +1507,7 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
     ll.list = list;
     ll.overflowed = 0;
     ll.lastLeaf = 0;
+    ll.storeLeafs = CM_StoreLeafs;
     float v15 = cached_pos.v.m128_f32[3] - 5.0f;
     if (v15 <= 0.0f)
         goto LABEL_4;
