@@ -4868,9 +4868,12 @@ void SceneManager::PostProcess(TPakId pakId)
 void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
 {
     InstanceGroup* group = (InstanceGroup*)groupPtr;
+    const char* modelName = group->modelName.mStr;
+    if (reinterpret_cast<uintptr_t>(modelName) < 0x10000u)
+        return;
     PakHeapContext heapContext(pakId, false);
     IVPointer<XModel> model =
-        XModelManager::sInst->GetXModel(pakId, group->modelName.mStr);
+        XModelManager::sInst->GetXModel(pakId, modelName);
     ValidatePakId((TPakId)model.mPakId);
     if (model.mValue == nullptr)
         model = gDefaultXmodel;
