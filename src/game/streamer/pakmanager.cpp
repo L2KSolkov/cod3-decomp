@@ -580,6 +580,7 @@ public:
 // GetDebugString)
 class AbstractEffect {
 public:
+    static void SetAllocator(PoolAllocator* allocator);
     virtual ~AbstractEffect();
     virtual void SetPoPtr(math::Mat43* po);
     virtual bool IsQueued() const;
@@ -596,6 +597,7 @@ public:
 
 class ActiveEffectSet {
 public:
+    static void SetAllocator(PoolAllocator* allocator);
     struct EffectsArray {
         AbstractEffect* m_elements[6];
         int m_size;
@@ -13763,6 +13765,8 @@ void SetupPoolAllocator()
 
     gCommonPoolAllocator = common;
     EntityNotify_SetupAllocators(common);
+    AbstractEffect::SetAllocator(common);
+    ActiveEffectSet::SetAllocator(common);
     CurveManager_SetupAllocator(common);
     PakFile::SetupAllocator();
 }
