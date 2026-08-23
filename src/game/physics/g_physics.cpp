@@ -1436,6 +1436,7 @@ class DObj {
 public:
     uint8_t _pad0[0x60];
     unsigned char modelParents[8];  // +0x60
+    unsigned char matOffset[8];     // +0x68
     void*   skel;                   // +0x70 (DSkel*)
     uint8_t _pad74[0x80 - 0x74];
     void*   models[8];              // +0x80 (IVPointer<XModel>[8]: value/pakId pairs)
