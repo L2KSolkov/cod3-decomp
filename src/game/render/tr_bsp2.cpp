@@ -23,7 +23,7 @@ struct BspNode {
     short cellNum;             // +0x02
     union {
         struct {
-            int children[2];   // +0x04
+            BspNode* children[2]; // +0x04
             BspPlane* plane;   // +0x0C
         } node;
     } u;                       // +0x04
@@ -54,7 +54,7 @@ int R_CellForPoint(const math::Position3& pos)
                    + (_mm_shuffle_ps(v3, v3, 85).m128_f32[0]
                       + _mm_shuffle_ps(v3, v3, 170).m128_f32[0]))
                 - _mm_shuffle_ps(pos.v, pos.v, 255).m128_f32[0];
-        node = &g_bspTree->mNodesList[node->u.node.children[d <= 0.0f]];
+        node = node->u.node.children[d <= 0.0f];
     }
     return node->cellNum;
 }
@@ -94,7 +94,7 @@ int calc_cell_index(const math::Position3& cur_pos, float (&cached_pos)[4],
                    + (_mm_shuffle_ps(v10, v10, 85).m128_f32[0]
                       + _mm_shuffle_ps(v10, v10, 170).m128_f32[0]))
                 - _mm_shuffle_ps(planeV, planeV, 255).m128_f32[0];
-        node = &g_bspTree->mNodesList[node->u.node.children[d <= 0.0f]];
+        node = node->u.node.children[d <= 0.0f];
         float ad = fabsf(d);
         if (ad <= minDist)
             minDist = ad;
