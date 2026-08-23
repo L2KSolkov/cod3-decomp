@@ -545,6 +545,11 @@ static_assert(sizeof(CDefaultResult) == 162, "CDefaultResult size mismatch");
 // ============================================================================
 class MPUIInterface {
 public:
+    enum EGameConnectionType : int {
+        kGameConnectionTypeLan = 0,
+        kGameConnectionTypeOnline = 1,
+        kGameConnectionTypeLocal = 2,
+    };
     enum eSetting : int {
         SETTING_TIME_LIMIT = 0,
         SETTING_SCORE_LIMIT = 1,
@@ -618,7 +623,7 @@ public:
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
     static struct sServerCreateParams mServerParams;     // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A
     static struct sServerCreateParams mNextServerParams; // ?mNextServerParams@MPUIInterface@@1UsServerCreateParams@@A
-    static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+    static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@1@A
     static bool mLanDiscoveryActive;  // ?mLanDiscoveryActive@MPUIInterface@@1_NA
     static bool mLiveQueryActive;     // ?mLiveQueryActive@MPUIInterface@@1_NA
     static bool mInSession;           // ?mInSession@MPUIInterface@@1_NA (defined in MPLiveEngine.cpp)

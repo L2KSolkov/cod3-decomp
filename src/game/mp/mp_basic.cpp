@@ -34,8 +34,8 @@ static float mpCoerceFloat(unsigned int bits)
 
 MultiplayerMgr::MPLogSubscriber::~MPLogSubscriber() = default;  // 0x00774FF0
 
-EGameConnectionType MPUIInterface::mGameConnectionType =
-    kGameConnectionTypeOnline;
+MPUIInterface::EGameConnectionType MPUIInterface::mGameConnectionType =
+    MPUIInterface::kGameConnectionTypeOnline;
 
 // EDroppedItemTypes definition (avoid g_local.h anonymous-enum collisions)
 enum EDroppedItemTypes : int {
@@ -8910,7 +8910,8 @@ void MultiplayerMgr::StartDevServer()
         Q_strlwr(mapName);
         MPUIInterface::mServerParams.mMapID =
             MI_GetMapIDbyShortname(mapName);
-        MPUIInterface::mGameConnectionType = kGameConnectionTypeLan;
+        MPUIInterface::mGameConnectionType =
+            MPUIInterface::kGameConnectionTypeLan;
         dword_F6A290[0] = 2;
         LocalClient_ConfigureLocalClients();
         if (!MPUIInterface::StartServer(true, true))
@@ -10712,8 +10713,9 @@ const bool MPUIInterface::StartClient(sGameListing& game, bool bStartGame,
             __debugbreak();
     }
     bdReference<MPGameInfo>& p_mGameInfo = game.mGameInfo;
-    bool result = mPeer->ConnectToPeers(p_mGameInfo, nGameIndex,
-                                        mGameConnectionType);
+    bool result = mPeer->ConnectToPeers(
+        p_mGameInfo, nGameIndex,
+        static_cast<::EGameConnectionType>(mGameConnectionType));
     if (result)
     {
         mServerParams.mFriendlyFire = p_mGameInfo.m_ptr->mFriendlyFire;
@@ -16475,7 +16477,9 @@ const bool MPUIInterface::StartServer(bool forceRestart,
             delete gameInfo.m_ptr;
         return false;
     }
-    if (MultiplayerMgr::sInst->CreateGame(gameInfo, mGameConnectionType))
+    if (MultiplayerMgr::sInst->CreateGame(
+            gameInfo,
+            static_cast<::EGameConnectionType>(mGameConnectionType)))
     {
         NextRoundServerParams();
         mInSession = true;

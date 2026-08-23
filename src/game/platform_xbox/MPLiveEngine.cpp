@@ -13,13 +13,10 @@
 #include <wchar.h>
 #include <new>
 
-// MPUIInterface class statics (mp.o owns the originals; these satisfy the
-// class-static manglings for the local build).
+// MPUIInterface class statics not owned by mp.o.
 bool MPUIInterface::mLiveQueryActive = false;   // ?mLiveQueryActive@MPUIInterface@@1_NA
 bool MPUIInterface::mQueryFromID = false;       // ?mQueryFromID@MPUIInterface@@1_NA
 bool MPUIInterface::mIsViewableOnline = false;  // ?mIsViewableOnline@MPUIInterface@@1_NA
-MPUIInterface::EGameConnectionType MPUIInterface::mGameConnectionType =
-    MPUIInterface::kGameConnectionTypeOnline;  // binary data init @ 0xE36E40 = 1 (Online)
 bool MPUIInterface::mInSession = false;    // ?mInSession@MPUIInterface@@1_NA
 
 // ea: 0x005AF040
