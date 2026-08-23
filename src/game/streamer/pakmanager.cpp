@@ -681,6 +681,8 @@ void DecodeMipSettings(const char* name, unsigned char* data,
                        unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeLevelPath(const char* name, unsigned char* data,
                      unsigned int size, TPakId pakId, PakFile* pak);
+void DecodeAnimBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId, PakFile* pak);
 void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
 void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
@@ -15095,10 +15097,13 @@ void DecodeZoneBoundaryBank(const char* name, unsigned char* data, unsigned int 
     (void)pak;
     DecodeZoneBoundaryBank(name, data, (int)size, pakId);
 }
+
+// The decoder table uses an unsigned size, while the reference animation
+// decoder ABI is the int-sized overload emitted by anim.o.
 void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    DecodeAnimBank(name, data, (int)size, pakId, pak);
 }
 void DecodeAnimMatrix(const char* name, unsigned char* data, unsigned int size,
                       TPakId pakId, PakFile* pak)
