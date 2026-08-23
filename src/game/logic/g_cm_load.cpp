@@ -9937,8 +9937,8 @@ void GdbFileManager::DecodeBank(const char* name, unsigned char* data, int size,
 // GdbFileManager::GetGdbFile - ea: 0x638750 + C bridge for cross-TU callers
 // ============================================================================
 extern void InplaceAssetBankSet_Find_GdbFileBank(
-    void* self, void* result, const char* pakId, const char* key,
-    int type, void* foundPakId);
+    void* self, void* result, TPakId pakId, const char* key,
+    void* type, void* foundPakId);
     // InplaceAssetBankSet<GdbFileBank>::Find<char const *,IVPointer<GdbFileSet>> @ 0x429A88
 extern void** InplaceTree_Find_GdbFileRecords(
     void* self, const char* const* key);
@@ -9950,7 +9950,8 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pakId, const char* name,
 {
     GdbFile result;
     IVPointer<GdbFileSet> xm;
-    InplaceAssetBankSet_Find_GdbFileBank(this, &xm, name, type, 0, nullptr);
+    InplaceAssetBankSet_Find_GdbFileBank(this, &xm, pakId, type, nullptr,
+                                         nullptr);
     ValidatePakId((TPakId)xm.mPakId);
     GdbFileSet* mValue = xm.mValue;
     if (mValue != nullptr)

@@ -2823,10 +2823,75 @@ void* EntityNotifySet_GetNotify(void* self, unsigned int a)
     (void)self; (void)a;
     return nullptr;
 }
+// IDA types: GdbFileSet is {InplaceString, InplaceTree<uint,uint>,
+// InplaceTree<InplaceString, InplaceVector<Value> const *>}; GdbFileBank's
+// mTree is at +0x08 and its mPtrs vector is at +0x10.
+struct GdbTreeElementLookup {
+    const char* mKey;
+    unsigned int mValue;
+};
+struct GdbTreeLookup {
+    unsigned int mSize;
+    GdbTreeElementLookup* mArray;
+};
+struct GdbFileSetLookup {
+    const char* mName;
+    unsigned char mLayout[8];
+    GdbTreeLookup mRecords;
+};
+struct GdbFileBankLookup {
+    unsigned int mFileId;
+    float mVersion;
+    GdbTreeLookup mTree;
+    unsigned int mPtrsSize;
+    GdbFileSetLookup** mPtrsList;
+    void* mPtrFixupTable;
+};
+struct GdbFileLookupResult {
+    GdbFileSetLookup* mValue;
+    TPakId mPakId;
+};
+static_assert(sizeof(GdbTreeElementLookup) == 8,
+              "GDB tree element layout mismatch");
+static_assert(sizeof(GdbFileSetLookup) == 20,
+              "GDB file set layout mismatch");
+static_assert(sizeof(GdbFileBankLookup) == 28,
+              "GDB bank layout mismatch");
+
+extern void PtrFixupTable_Fixup(void* self, void* basePtr);
+extern void GetPakPrerequisites(TPakId pakId,
+                                ae_sized_array<TPakId, 32>* ret);
+
+static unsigned int* GdbTreeFindIndex(GdbTreeLookup* tree,
+                                      const char* key)
+{
+    if (tree == nullptr || tree->mSize == 0 || tree->mArray == nullptr)
+        return nullptr;
+    unsigned int index = 0;
+    for (;;) {
+        if (index >= tree->mSize)
+            return nullptr;
+        GdbTreeElementLookup& element = tree->mArray[index];
+        if (element.mKey == nullptr && element.mValue == 0)
+            return nullptr;
+        int comparison = _stricmp(element.mKey, key);
+        if (comparison == 0)
+            return &element.mValue;
+        index = comparison >= 0 ? (2 * index + 1) : (2 * index + 2);
+    }
+}
+
+static void** GdbTreeFindRecord(GdbTreeLookup* tree, const char* key)
+{
+    unsigned int* value = GdbTreeFindIndex(tree, key);
+    return reinterpret_cast<void**>(value);
+}
+
 void** InplaceTree_Find_GdbFileRecords(void* tree, const char* const* key)
 {
-    (void)tree; (void)key;
-    return nullptr;
+    if (key == nullptr)
+        return nullptr;
+    return GdbTreeFindRecord(reinterpret_cast<GdbTreeLookup*>(tree), *key);
 }
 
 void* FEManager_GetDMS(void* self, int client)
@@ -2889,16 +2954,76 @@ void InGameMenuSystem_ActivatePauseMenu(void* self) { (void)self; }
 void InitCDAepsShader() {}
 void InitLights() {}
 void InplaceAssetBank_Fixup(void* self) { (void)self; }
-void InplaceAssetBank_GdbFileSet_Fixup(void* self) { (void)self; }
-void InplaceAssetBankSet_Find_GdbFileBank(void* self, void* out,
-                                          const char* a, const char* b, int c,
-                                          void* d)
+void InplaceAssetBank_GdbFileSet_Fixup(void* self)
 {
-    (void)self; (void)out; (void)a; (void)b; (void)c; (void)d;
+    unsigned char* bank = reinterpret_cast<unsigned char*>(self);
+    unsigned int fixupOffset = *(unsigned int*)(bank + 0x18);
+    if (fixupOffset >= 0x10000000u) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 0x7A;
+        AeAssert::gCurrentExpr =
+            "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    void* fixup = bank + fixupOffset;
+    *(void**)(bank + 0x18) = fixup;
+    PtrFixupTable_Fixup(fixup, bank);
+}
+void InplaceAssetBankSet_Find_GdbFileBank(void* self, void* out,
+                                          TPakId pakId, const char* key,
+                                          void* formal, void* foundPakId)
+{
+    (void)formal;
+    GdbFileLookupResult* result =
+        reinterpret_cast<GdbFileLookupResult*>(out);
+    result->mValue = nullptr;
+    result->mPakId = PAK_ID_INVALID;
+    if (pakId == PAK_ID_INVALID)
+        return;
+
+    ae_sized_array<TPakId, 32> prereqs;
+    prereqs.m_size = 0;
+    GetPakPrerequisites(pakId, &prereqs);
+    void** bankArray = reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 4);
+    for (unsigned int i = 0; i < (unsigned int)prereqs.m_size; ++i) {
+        TPakId candidate = prereqs.m_elements[i];
+        if (candidate == PAK_ID_INVALID)
+            continue;
+        GdbFileBankLookup* bank =
+            reinterpret_cast<GdbFileBankLookup*>(bankArray[(int)candidate]);
+        if (bank == nullptr)
+            continue;
+        unsigned int* index = GdbTreeFindIndex(&bank->mTree, key);
+        if (index == nullptr || *index >= bank->mPtrsSize)
+            continue;
+        if (foundPakId != nullptr)
+            *reinterpret_cast<TPakId*>(foundPakId) = candidate;
+        result->mPakId = candidate;
+        result->mValue = bank->mPtrsList[*index];
+        return;
+    }
 }
 void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pak, void* b)
 {
-    (void)self; (void)pak; (void)b;
+    if ((int)pak < 0 || pak > PAK_ID_MAX)
+        return;
+    void** slot = reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 4) + (int)pak;
+    if (*slot != nullptr) {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 0x6D;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    *slot = b;
 }
 class InspectorManager;
 void InspectorManager_Initialise(InspectorManager* self) { (void)self; }
