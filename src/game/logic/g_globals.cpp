@@ -185,7 +185,7 @@ scr_vehicle_t* s_vehicles = nullptr;  // ?s_vehicles@@3PAUscr_vehicle_t@@A (g.o 
 hitLoc g_hitLocs[64];               // ?g_hitLocs@@3PAUhitLoc@@A (g.o @ 0xDD76E0)
 cspField_t s_vehicleFields[73];     // ?s_vehicleFields@@3PAUcspField_t@@A (g.o @ 0xDD6EF0)
 turretInfo_t turretInfo[1];         // ?turretInfo@@3PAUturretInfo_t@@A (g.o @ 0xED9E08)
-gitem_s bg_itemlist[137];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x13413C0)
+gitem_s bg_itemlist[138];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x13413C0)
 sentient_s g_sentients[48];         // ?g_sentients@@3PAUsentient_s@@A (g.o)
 Client g_clients[16];               // ?g_clients@@3PAUClient@@A (g.o)
 CVarTable gameCvarTable[32];        // ?gameCvarTable@@3PAUCVarTable@@A (g.o @ 0x11C4CF8)

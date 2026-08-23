@@ -12712,10 +12712,120 @@ int BG_SetupUseHintStrings()
 // ============================================================================
 static int s_bgswi_init;  // init_0 (game.o BSS 0xF591DC)
 
+// IDA's _E17 initializer populates the shared item table before weapon setup.
+// Keep the sentinel entry at 137: BG_FindItemForClassname walks through it.
+static void InitBgItemList()
+{
+    static const char* const emptyItemNames[128] = {
+        "emptyitem_\"w01\"", "emptyitem_\"w02\"", "emptyitem_\"w03\"", "emptyitem_\"w04\"",
+        "emptyitem_\"w05\"", "emptyitem_\"w06\"", "emptyitem_\"w07\"", "emptyitem_\"w08\"",
+        "emptyitem_\"w09\"", "emptyitem_\"w10\"", "emptyitem_\"w11\"", "emptyitem_\"w12\"",
+        "emptyitem_\"w13\"", "emptyitem_\"w14\"", "emptyitem_\"w15\"", "emptyitem_\"w16\"",
+        "emptyitem_\"w17\"", "emptyitem_\"w18\"", "emptyitem_\"w19\"", "emptyitem_\"w20\"",
+        "emptyitem_\"w21\"", "emptyitem_\"w22\"", "emptyitem_\"w23\"", "emptyitem_\"w24\"",
+        "emptyitem_\"w25\"", "emptyitem_\"w26\"", "emptyitem_\"w27\"", "emptyitem_\"w28\"",
+        "emptyitem_\"w29\"", "emptyitem_\"w30\"", "emptyitem_\"w31\"", "emptyitem_\"w32\"",
+        "emptyitem_\"w33\"", "emptyitem_\"w34\"", "emptyitem_\"w35\"", "emptyitem_\"w36\"",
+        "emptyitem_\"w37\"", "emptyitem_\"w38\"", "emptyitem_\"w39\"", "emptyitem_\"w40\"",
+        "emptyitem_\"w41\"", "emptyitem_\"w42\"", "emptyitem_\"w43\"", "emptyitem_\"w44\"",
+        "emptyitem_\"w45\"", "emptyitem_\"w46\"", "emptyitem_\"w47\"", "emptyitem_\"w48\"",
+        "emptyitem_\"w49\"", "emptyitem_\"w50\"", "emptyitem_\"w51\"", "emptyitem_\"w52\"",
+        "emptyitem_\"w53\"", "emptyitem_\"w54\"", "emptyitem_\"w55\"", "emptyitem_\"w56\"",
+        "emptyitem_\"w57\"", "emptyitem_\"w58\"", "emptyitem_\"w59\"", "emptyitem_\"w60\"",
+        "emptyitem_\"w61\"", "emptyitem_\"w62\"", "emptyitem_\"w63\"", "emptyitem_\"w64\"",
+        "emptyitem_\"w65\"", "emptyitem_\"w66\"", "emptyitem_\"w67\"", "emptyitem_\"w68\"",
+        "emptyitem_\"w69\"", "emptyitem_\"w70\"", "emptyitem_\"w71\"", "emptyitem_\"w72\"",
+        "emptyitem_\"w73\"", "emptyitem_\"w74\"", "emptyitem_\"w75\"", "emptyitem_\"w76\"",
+        "emptyitem_\"w77\"", "emptyitem_\"w78\"", "emptyitem_\"w79\"", "emptyitem_\"w80\"",
+        "emptyitem_\"w81\"", "emptyitem_\"w82\"", "emptyitem_\"w83\"", "emptyitem_\"w84\"",
+        "emptyitem_\"w85\"", "emptyitem_\"w86\"", "emptyitem_\"w87\"", "emptyitem_\"w88\"",
+        "emptyitem_\"w89\"", "emptyitem_\"w90\"", "emptyitem_\"w91\"", "emptyitem_\"w92\"",
+        "emptyitem_\"w93\"", "emptyitem_\"w94\"", "emptyitem_\"w95\"", "emptyitem_\"w96\"",
+        "emptyitem_\"w97\"", "emptyitem_\"w98\"", "emptyitem_\"w99\"", "emptyitem_\"w100\"",
+        "emptyitem_\"w101\"", "emptyitem_\"w102\"", "emptyitem_\"w103\"", "emptyitem_\"w104\"",
+        "emptyitem_\"w105\"", "emptyitem_\"w106\"", "emptyitem_\"w107\"", "emptyitem_\"w108\"",
+        "emptyitem_\"w109\"", "emptyitem_\"w110\"", "emptyitem_\"w111\"", "emptyitem_\"w112\"",
+        "emptyitem_\"w113\"", "emptyitem_\"w114\"", "emptyitem_\"w115\"", "emptyitem_\"w116\"",
+        "emptyitem_\"w117\"", "emptyitem_\"w118\"", "emptyitem_\"w119\"", "emptyitem_\"w120\"",
+        "emptyitem_\"w121\"", "emptyitem_\"w122\"", "emptyitem_\"w123\"", "emptyitem_\"w124\"",
+        "emptyitem_\"w125\"", "emptyitem_\"w126\"", "emptyitem_\"w127\"", "emptyitem_\"w128\"",
+    };
+    for (int i = 1; i <= 128; ++i)
+    {
+        gitem_s& item = bg_itemlist[i];
+        item.classname_hash = HashString::CalcHash(emptyItemNames[i - 1]);
+        item.classname = const_cast<char*>(emptyItemNames[i - 1]);
+        item.pickup_sound = const_cast<char*>(defaultFileName);
+        item.world_model[0] = const_cast<char*>(defaultFileName);
+        item.world_model[1] = const_cast<char*>(defaultFileName);
+        item.icon = const_cast<char*>(defaultFileName);
+        item.ammoicon = const_cast<char*>(defaultFileName);
+        item.pickup_name = const_cast<char*>(defaultFileName);
+        item.quantity = 0;
+        item.giType = IT_BAD;
+        item.giTag = 0;
+        item.giAmmoIndex = 0;
+        item.giClipIndex = 0;
+    }
+
+    bg_itemlist[129] = {HashString::CalcHash("item_ammo_stielhandgranate_open"),
+                        const_cast<char*>("item_ammo_stielhandgranate_open"),
+                        const_cast<char*>("grenade_pickup"),
+                        {const_cast<char*>("xmodel/ammo_stielhandgranate1"), nullptr},
+                        const_cast<char*>("gfx/icons/hud@steilhandgrenate"),
+                        const_cast<char*>("gfx/icons/hud@steilhandgrenate"),
+                        const_cast<char*>("Stielhandgranate Ammo Open"), 10, IT_AMMO, -1, -1, -1};
+    bg_itemlist[130] = {HashString::CalcHash("item_ammo_stielhandgranate_closed"),
+                        const_cast<char*>("item_ammo_stielhandgranate_closed"),
+                        const_cast<char*>("grenade_pickup"),
+                        {const_cast<char*>("xmodel/ammo_stielhandgranate2"), nullptr},
+                        const_cast<char*>("gfx/icons/hud@steilhandgrenate"),
+                        const_cast<char*>("gfx/icons/hud@steilhandgrenate"),
+                        const_cast<char*>("Stielhandgranate Ammo Closed"), 10, IT_AMMO, -1, -1, -1};
+    bg_itemlist[131] = {HashString::CalcHash("item_health_small"),
+                        const_cast<char*>("item_health_small"),
+                        const_cast<char*>("health_pickup_small"),
+                        {const_cast<char*>("c:/cod/assets/props/pickups/health_small.xmp"), nullptr},
+                        const_cast<char*>("icons/iconh_small"), nullptr,
+                        const_cast<char*>("Small Health"), 10, IT_HEALTH, 0, 0, 0};
+    bg_itemlist[132] = {HashString::CalcHash("item_health_medium"),
+                        const_cast<char*>("item_health_medium"),
+                        const_cast<char*>("health_pickup_medium"),
+                        {const_cast<char*>("c:/cod/assets/props/pickups/health_medium.xmp"), nullptr},
+                        const_cast<char*>("icons/iconh_med"), nullptr,
+                        const_cast<char*>("Med Health"), 25, IT_HEALTH, 0, 0, 0};
+    bg_itemlist[133] = {HashString::CalcHash("item_health_large"),
+                        const_cast<char*>("item_health_large"),
+                        const_cast<char*>("health_pickup_large"),
+                        {const_cast<char*>("c:/cod/assets/props/pickups/health_large.xmp"), nullptr},
+                        const_cast<char*>("icons/iconh_large"), nullptr,
+                        const_cast<char*>("Large Health"), 50, IT_HEALTH, 0, 0, 0};
+    bg_itemlist[134] = {HashString::CalcHash("item_health_weapon"),
+                        const_cast<char*>("item_health_weapon"),
+                        const_cast<char*>("health_pickup_weapon"),
+                        {const_cast<char*>("C:/cod/assets/weapons/grenades/satchel_charge/satchel_HEALTH_WM.XMP"), nullptr},
+                        const_cast<char*>("icons/iconh_large"), nullptr,
+                        const_cast<char*>("Weapon Health"), 999, IT_WEAPON_HEALTH, 0, 0, 0};
+    bg_itemlist[135] = {HashString::CalcHash("item_weapon_ammo"),
+                        const_cast<char*>("item_weapon_ammo"),
+                        const_cast<char*>("ammo_pickup_weapon"),
+                        {const_cast<char*>("C:/cod/assets/props_cod3/MP/p_mp_ammocan_us.xmp"), nullptr},
+                        const_cast<char*>("icons/iconh_large"), nullptr,
+                        const_cast<char*>("Weapon Ammo"), 999, IT_WEAPON_AMMO, -1, -1, -1};
+    bg_itemlist[136] = {HashString::CalcHash("item_kit"), const_cast<char*>("item_kit"),
+                        const_cast<char*>("kit_pickup"),
+                        {const_cast<char*>("c:/cod/assets/props_cod3/mp/p_mp_kitpickup_generic_w_patch.xmp"), nullptr},
+                        const_cast<char*>("icons/iconh_large"), nullptr,
+                        const_cast<char*>("Dropped Kit"), 999,
+                        static_cast<itemType_t>(IT_FLAG | IT_WEAPON), -1, -1, -1};
+    memset(&bg_itemlist[137].classname, 0, 0x30u);
+}
+
 // ea: 0x00640020
 void BG_SetupWeaponInfo()
 {
     s_bgswi_init = 1;
+    InitBgItemList();
     Com_DPrintf("----------------------\n");
     Com_DPrintf("Game: BG_SetupWeaponInfo\n");
     int iArraySource = 0;
