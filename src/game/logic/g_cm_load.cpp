@@ -1467,9 +1467,9 @@ void GetLeaves(leafList_s* ll, int nodeIndex, float& mindist)
         {
             if (v21 != 3)
                 goto LABEL_40;
-            GetLeaves(ll, (int)((v6->u.node.children[0] - v30) >> 4),
+            GetLeaves(ll, (int)(v6->u.node.children[0] - v30),
                       mindist);
-            nodeIndex = (unsigned int)(v6->u.node.children[1] - v30) >> 4;
+            nodeIndex = (unsigned int)(v6->u.node.children[1] - v30);
         }
         else
         {
@@ -1481,7 +1481,7 @@ void GetLeaves(leafList_s* ll, int nodeIndex, float& mindist)
                 && AeAssert::Assert("illegal value for s, 0"))
                 __debugbreak();
         LABEL_40:
-            nodeIndex = (unsigned int)(v6->u.node.children[v21 - 1] - v30) >> 4;
+            nodeIndex = (unsigned int)(v6->u.node.children[v21 - 1] - v30);
         }
     }
     CM_StoreLeafs(ll, (int)nodeIndex);
