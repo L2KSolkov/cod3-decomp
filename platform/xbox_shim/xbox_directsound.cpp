@@ -632,7 +632,7 @@ extern "C" HRESULT __stdcall j_IDirectSoundStream_Pause(
     if (pause == 1u) {
         stream->paused = true;
         stream->output.pause();
-    } else if (pause == 2u) {
+    } else if (pause == 0u || pause == 2u) {
         stream->paused = false;
         stream->output.resume();
     }
@@ -645,7 +645,7 @@ extern "C" HRESULT __stdcall j_IDirectSoundBuffer_Pause(
     if (pause == 1u) {
         buffer->paused = true;
         buffer->output.pause();
-    } else if (pause == 2u) {
+    } else if (pause == 0u || pause == 2u) {
         buffer->paused = false;
         buffer->output.resume();
     }
