@@ -441,11 +441,18 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
 // ============================================================================
 // XModelGetStaticBounds - ea: 0x006CBBA0
 // ============================================================================
+struct XModelCollTri;
+
 struct XModelCollSurf {
     math::Position3 mins;   // +0x00
     math::Position3 maxs;   // +0x10
-    int boneIdx;            // +0x20
+    InplaceVector<XModelCollTri const*> collTris; // +0x20
+    int boneIdx;            // +0x28
+    int contents;           // +0x2C
+    int surfFlags;          // +0x30
+    uint8_t _padding[12];   // +0x34
 };
+static_assert(sizeof(XModelCollSurf) == 0x40, "XModel collision surface layout mismatch");
 
 struct XModelCollisionView {
     uint8_t pad[0x38];
@@ -476,7 +483,14 @@ int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
         const XModelCollSurf* surf = collSurfs.mList[i];
         int boneIdx = surf->boneIdx;
         if (boneIdx < 0 || boneIdx >= nbones)
-            return 0;
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
+            AeAssert::gCurrentLine = 809;
+            AeAssert::gCurrentExpr = "bone_index >= 0 && bone_index < nbones";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("bad bone index"))
+                __debugbreak();
+        }
         const math::Mat43& bone = bones[boneIdx];
         for (int corner = 0; corner < 8; ++corner)
         {
