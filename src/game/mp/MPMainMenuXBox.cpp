@@ -391,6 +391,11 @@ void MPMainMenuXBox::Draw()
 {
     if (panel != nullptr)
         panel->Draw();
+    // The option description is an MPMainMenuXBox member, not an FEMenu one,
+    // so FEMenu::Draw never reaches it.  The release draws it here through
+    // the Draw(bool) vtable slot with selected = false.
+    if (mOptionDescription != nullptr)
+        mOptionDescription->Draw(false);
     FEMenu::Draw();
 }
 

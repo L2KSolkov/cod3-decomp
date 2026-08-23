@@ -503,7 +503,7 @@ void FrontEndMenuSystem::SetPanelFile(PanelFile* pf)
         if (loginText != nullptr)
         {
             loginText->SetText("MPFRONTEND_NOT_SIGNED_IN");
-            loginText->SetNoFlash(color32(0xFFD6C8EAu));
+            loginText->SetNoFlash(color32(0xFFD6C4AAu));
         }
     }
 }
