@@ -207,6 +207,14 @@ public:
 struct _LAUNCH_DATA {
     unsigned char raw[0x100];
 };
+
+// MSVC CRT startup globals. __argc/__argv are already tokenized (quoting
+// resolved), unlike GetCommandLineA()'s raw string. Used by Xbox_LaunchInfo
+// below to bridge the real process command line into the game on Win32,
+// where there is no dashboard/debugger launch-data equivalent.
+extern "C" int __argc;
+extern "C" char** __argv;
+
 // XGetLaunchInfo (XAPI; stub)
 int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
                    _LAUNCH_DATA* pLaunchData)
@@ -1154,6 +1162,30 @@ char* Xbox_LaunchInfo(char* pDestCommandLine)
                      gSaveGameData[controller::inst()->locked_port].liveState);
             gSkipMovies = true;
         }
+    }
+    else
+    {
+        // Win32 has no dashboard/debugger launch-data mechanism, so
+        // XGetLaunchInfo above is unconditionally stubbed to report failure.
+        // That left pDestCommandLine untouched (uninitialized stack memory
+        // in main()), so +devmap/+set/+stub on the actual process command
+        // line never reached Com_Init. Rebuild the equivalent of the
+        // debugger-launch string (arguments only, no exe path) from the
+        // CRT's already-tokenized argv.
+        pDestCommandLine[0] = 0;
+        size_t used = 0;
+        for (int i = 1; i < __argc; ++i)
+        {
+            size_t len = strlen(__argv[i]);
+            size_t sep = (used != 0) ? 1 : 0;
+            if (used + sep + len >= sizeof(Data.raw))
+                break;
+            if (sep)
+                pDestCommandLine[used++] = ' ';
+            memcpy(pDestCommandLine + used, __argv[i], len);
+            used += len;
+        }
+        pDestCommandLine[used] = 0;
     }
     return nullptr;
 }
