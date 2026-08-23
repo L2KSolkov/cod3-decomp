@@ -432,6 +432,16 @@ static_assert(sizeof(MPLanDiscovery) == 120, "MPLanDiscovery size mismatch");
 // ============================================================================
 class MPGameInfo : public bdGameInfo {
 public:
+    static void* operator new(size_t size) {
+        return bdMemory::allocate((unsigned int)size);
+    }
+    static void* operator new(size_t, void* ptr) noexcept {
+        return ptr;
+    }
+    static void operator delete(void* ptr) {
+        bdMemory::deallocate(ptr);
+    }
+
     unsigned char m_publicOpen;    // +0x28
     unsigned char m_privateOpen;   // +0x29
     unsigned char m_publicFilled;  // +0x2A

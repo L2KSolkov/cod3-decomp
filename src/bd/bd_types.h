@@ -602,6 +602,16 @@ typedef uint32_t bdNATType;
 // ============================================================================
 class bdCommonAddr : public bdReferencable {
 public:
+    static void* operator new(size_t size) {
+        return bdMemory::allocate((unsigned int)size);
+    }
+    static void* operator new(size_t, void* ptr) noexcept {
+        return ptr;
+    }
+    static void operator delete(void* ptr) {
+        bdMemory::deallocate(ptr);
+    }
+
     XNADDR     m_addr;      // +0x08 (36 bytes)
     uint16_t   m_port;      // +0x2C
     uint32_t   m_titleId;   // +0x30
