@@ -43,7 +43,7 @@ index	status	map_line
 42	PORTED	0002:00379170 ?OnLive@MPMainMenuXBox@@IAEXH@Z 00B68670 f mp_xbox.o
 43	PORTED	0002:00379180 ?OnSystemLink@MPMainMenuXBox@@IAEXXZ 00B68680 f mp_xbox.o
 44	VERIFIED	0002:003791a0 ?OnCross@MPMainMenuXBox@@UAEXH@Z 00B686A0 f mp_xbox.o
-45	VERIFIED	0002:00379230 ?SetPanelFile@MPMainMenuXBox@@UAEXPAVPanelFile@@@Z 00B68730 f mp_xbox.o
+45	FIXED	0002:00379230 ?SetPanelFile@MPMainMenuXBox@@UAEXPAVPanelFile@@@Z 00B68730 f mp_xbox.o	FIXED: IDA disassembly restores GetX/GetY, panel layers, GetScaleX, justification, and GetColor arguments for both reconstructed FEMultiLineText objects
 46	PORTED	0002:00379bb0 ?SetOptionText@MPMainMenuXBox@@IAEXXZ 00B690B0 f mp_xbox.o
 47	PORTED	0002:00379c60 ?SetImage@MPMainMenuXBox@@IAEXXZ 00B69160 f mp_xbox.o
 48	VERIFIED	0002:00379d30 ?SetPanelFile@XBoxLiveIngameOptionsCOD3@@UAEXPAVPanelFile@@@Z 00B69230 f mp_xbox.o
