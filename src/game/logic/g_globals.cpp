@@ -182,7 +182,27 @@ int g_doShellShock[16];             // ?g_doShellShock@@3PAHA (g.o)
 int dword_186A0;                    // ?dword_186A0@@3HA (game.o)
 vehicle_node_t* s_nodes[64];        // ?s_nodes@@3PAPAUvehicle_node_t@@A (g.o @ 0x129E2F8)
 scr_vehicle_t* s_vehicles = nullptr;  // ?s_vehicles@@3PAUscr_vehicle_t@@A (g.o @ 0x12A0604)
-hitLoc g_hitLocs[64];               // ?g_hitLocs@@3PAUhitLoc@@A (g.o @ 0xDD76E0)
+const hitLoc g_hitLocs[19] = {       // ?g_hitLocs@@3PAUhitLoc@@A (g.o @ 0xDD76E0)
+    { "none", 0.0f, 0.0f, 0.0f },
+    { "helmet", 8.0f, 8.0f, 8.0f },
+    { "head", 8.0f, 8.0f, 10.0f },
+    { "neck", 4.0f, 4.0f, 4.0f },
+    { "torso_upper", 10.0f, 15.0f, 14.0f },
+    { "torso_lower", 11.0f, 15.0f, 11.0f },
+    { "right_arm_upper", 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+    { nullptr, 0.0f, 0.0f, 0.0f },
+};
 cspField_t s_vehicleFields[73] = {  // ?s_vehicleFields@@3PAUcspField_t@@A (g.o @ 0xDD6EF0)
     { "type", 32, 8 },
     { "subtype", 34, 9 },
