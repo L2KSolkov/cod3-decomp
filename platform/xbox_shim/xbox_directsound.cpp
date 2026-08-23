@@ -200,6 +200,14 @@ public:
         std::lock_guard<std::mutex> lock(m_mutex);
         return !m_blocks.empty();
     }
+    void pause() {
+        if (m_device != nullptr)
+            waveOutPause(m_device);
+    }
+    void resume() {
+        if (m_device != nullptr)
+            waveOutRestart(m_device);
+    }
     void reset() {
         if (m_device != nullptr) {
             waveOutReset(m_device);
@@ -620,15 +628,27 @@ extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetRolloffCurve(
 extern "C" HRESULT __stdcall j_IDirectSoundStream_Pause(
     IDirectSoundStream* value, unsigned int pause) {
     if (value == nullptr) return E_INVALIDARG;
-    asStream(value)->paused = pause != 0;
-    if (pause != 0) asStream(value)->output.reset();
+    auto* stream = asStream(value);
+    if (pause == 1u) {
+        stream->paused = true;
+        stream->output.pause();
+    } else if (pause == 2u) {
+        stream->paused = false;
+        stream->output.resume();
+    }
     return S_OK;
 }
 extern "C" HRESULT __stdcall j_IDirectSoundBuffer_Pause(
     IDirectSoundBuffer* value, unsigned int pause) {
     if (value == nullptr) return E_INVALIDARG;
-    asBuffer(value)->paused = pause != 0;
-    if (pause != 0) asBuffer(value)->output.reset();
+    auto* buffer = asBuffer(value);
+    if (pause == 1u) {
+        buffer->paused = true;
+        buffer->output.pause();
+    } else if (pause == 2u) {
+        buffer->paused = false;
+        buffer->output.resume();
+    }
     return S_OK;
 }
 extern "C" HRESULT __stdcall j_IDirectSoundStream_SetAllParameters(
