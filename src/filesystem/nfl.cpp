@@ -414,8 +414,10 @@ static void* OpenHandle(const char* name, nfdFileFlags flags)
     if (flags & NFD_FILE_FLAGS_WRITE) access |= GENERIC_WRITE;
     DWORD share = flags & (NFD_FILE_FLAGS_READ | NFD_FILE_FLAGS_WRITE);
     DWORD creation = (flags & NFD_FILE_FLAGS_CREATE) ? CREATE_ALWAYS : OPEN_EXISTING;
-    const DWORD attributes = (~(static_cast<DWORD>(flags) << 28) & 0x20000000u)
-                           | 0x40000000u;
+    // Xbox media handles use hardware-specific buffering flags.  Win32
+    // audio packets come from NSL ARAM allocations aligned to 0x480, not a
+    // Windows sector, so keep overlapped I/O but use normal buffered reads.
+    const DWORD attributes = FILE_FLAG_OVERLAPPED | FILE_FLAG_SEQUENTIAL_SCAN;
     HANDLE handle = CreateFileA(name, access, share, nullptr, creation,
                                  attributes, nullptr);
     return handle == INVALID_HANDLE_VALUE ? nullptr : handle;
