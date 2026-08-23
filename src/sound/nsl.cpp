@@ -448,6 +448,11 @@ static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
 static void* base = nullptr;
 static unsigned dword_E4B69C = 0;
+// IDA names nsl_initParams as a nslInitParams (0x10 bytes), but the release
+// global occupies 0x44 bytes and the public copy routines move all 17 dwords.
+// Keep the adjacent release image explicit instead of overflowing the typed
+// object into unrelated host globals.
+static unsigned char nsl_initParamsImage[0x44] = {};
 _DSEFFECTIMAGELOC nsl_fxImage = {4u, 5u};
 IDirectSound* nsl_driverDevice = nullptr;
 _DSI3DL2LISTENER nsl_driverI3DL2Setting = {
@@ -663,6 +668,23 @@ static void* nslInit_Allocate(unsigned size, unsigned align) {
     return reinterpret_cast<void*>(static_cast<uintptr_t>(1));
 }
 
+static void nslInitParamsImageFromGlobals() {
+    std::memset(nsl_initParamsImage, 0, sizeof(nsl_initParamsImage));
+    std::memcpy(nsl_initParamsImage, &nsl_initParams, sizeof(nsl_initParams));
+    std::memcpy(nsl_initParamsImage + 0x10, &dword_E4B690,
+                sizeof(dword_E4B690));
+    std::memcpy(nsl_initParamsImage + 0x18, &base, sizeof(base));
+    std::memcpy(nsl_initParamsImage + 0x1C, &dword_E4B69C,
+                sizeof(dword_E4B69C));
+}
+
+static void nslInitParamsGlobalsFromImage(const unsigned char* image) {
+    std::memcpy(&nsl_initParams, image, sizeof(nsl_initParams));
+    std::memcpy(&dword_E4B690, image + 0x10, sizeof(dword_E4B690));
+    std::memcpy(&base, image + 0x18, sizeof(base));
+    std::memcpy(&dword_E4B69C, image + 0x1C, sizeof(dword_E4B69C));
+}
+
 // ============================================================================
 // nslInit — init/shutdown
 // ============================================================================
@@ -677,10 +699,15 @@ int          nslInit(const nslInitParams* ip) {
         txPrintf("NSL", 0, "Already called\n");
         return -1;
     }
-    if (ip != nullptr)
-        std::memcpy(&nsl_initParams, ip, 0x44u);
-    if (ip != nullptr && (byte_E4B6A4 & 1u) == 0u)
+    if (ip != nullptr) {
+        unsigned char image[sizeof(nsl_initParamsImage)];
+        std::memcpy(image, ip, sizeof(image));
+        nslInitParamsGlobalsFromImage(image);
+    }
+    if (ip != nullptr && (byte_E4B6A4 & 1u) == 0u) {
         nslDriverInit(&nsl_initParams);
+        nslInitParamsImageFromGlobals();
+    }
 
     nsl_sourceEntries = static_cast<txSlotEntry*>(
         nslInit_Allocate(12u * nsl_initParams.maxSources, 0x100u));
@@ -732,7 +759,10 @@ void         nslSetSpeakerMode(nslSpeakerMode speakerMode) {
 }
 // ea: 0x008267E0
 void         nslGetInitParams(nslInitParams* ip) {
-    std::memcpy(ip, &nsl_initParams, 0x44u);
+    if (ip == nullptr)
+        return;
+    nslInitParamsImageFromGlobals();
+    std::memcpy(ip, nsl_initParamsImage, sizeof(nsl_initParamsImage));
 }
 void         nslInitDefaults() {}
 void         nslFinalInit() {}
