@@ -653,8 +653,10 @@ void DecodeGrassInfo(const char* name, unsigned char* data,
                      unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeDestructible(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
-void DecodeDCGBank(const char* name, unsigned char* data, unsigned int size,
-                   TPakId pakId, PakFile* pak);
+void DecodeDCGBankPak(const char* name, unsigned char* data, unsigned int size,
+                      TPakId pakId, PakFile* pak);
+extern void DecodeDCGBank(const char* name, unsigned char* data, int size,
+                          TPakId pakId, PakFile* pak);
 void DecodeDialogueBank(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeFLI(const char* name, unsigned char* data, unsigned int size,
@@ -10156,7 +10158,7 @@ PakDecoder GetDecoder(const char* ext)
     case 0xD46:     return DecodeDB;                 // "db"
     case 0x1AE92:   return DecodeGrassInfo;          // no-op decoder
     case 0x1B8CA:   return DecodeDestructible;
-    case 0x1B68E:   return DecodeDCGBank;            // "dcg"
+    case 0x1B68E:   return DecodeDCGBankPak;         // "dcg"
     case 0x1B7B7:   return DecodeDialogueBank;       // "dlg"
     case 0x1C03B:   return DecodeFLI;                // "fli"
     case 0x1F817:   return DecodeSPT;                // "spt"
@@ -15054,11 +15056,6 @@ void DecodeDestructible(const char* name, unsigned char* data, unsigned int size
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
-void DecodeDCGBank(const char* name, unsigned char* data, unsigned int size,
-                   TPakId pakId, PakFile* pak)
-{
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
-}
 void DecodeDialogueBank(const char* name, unsigned char* data, unsigned int size,
                         TPakId pakId, PakFile* pak)
 {
@@ -15886,4 +15883,9 @@ float PakManager::GetDistance(PakInfoNode* node) const
     node->visited = sComputeDistanceKey;
     node->computedDistance = userDistance;
     return distance;
+}
+void DecodeDCGBankPak(const char* name, unsigned char* data, unsigned int size,
+                      TPakId pakId, PakFile* pak)
+{
+    DecodeDCGBank(name, data, (int)size, pakId, pak);
 }
