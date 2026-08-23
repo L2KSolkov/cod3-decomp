@@ -2832,7 +2832,63 @@ void DObjCreate(DObjModel* models, unsigned short numModels, XAnimTree* tree,
     DObjCalcAnim(out, -1);
     out->SetLOD(0);
 }
-void DObjCreateSkel(DObj* obj, char* a) { (void)obj; (void)a; }
+void DObjCreateSkel(DObj* obj, char* a)
+{
+    (void)a;
+
+    DSkel* skel = nullptr;
+    if (obj->numBones == 1)
+        skel = gDSkelFreeList.Alloc();
+    else if (obj->numBones > 4)
+        skel = reinterpret_cast<DSkel*>(gDSkelMaxFreeList.Alloc());
+    else
+        skel = reinterpret_cast<DSkel*>(gDSkel4FreeList.Alloc());
+
+    if (skel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 1130;
+        AeAssert::gCurrentExpr = "skel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    obj->skel = skel;
+    if ((reinterpret_cast<uintptr_t>(skel) & 0xF) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 1134;
+        AeAssert::gCurrentExpr = "!(((int) obj->skel) & 15)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((reinterpret_cast<uintptr_t>(skel->mat) & 0xF) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 1135;
+        AeAssert::gCurrentExpr = "!(((int) obj->skel->mat) & 15)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    memset(skel->animPartBits, 0, sizeof(skel->animPartBits));
+    memset(skel->controlPartBits, 0, sizeof(skel->controlPartBits));
+    memset(skel->skelPartBits, 0, sizeof(skel->skelPartBits));
+
+    for (unsigned int modelIndex = 0; modelIndex < obj->numModels;
+         ++modelIndex)
+    {
+        DObjSkelMat* parentMat = nullptr;
+        const unsigned char parentIndex = obj->modelParents[modelIndex];
+        if (parentIndex != 0xFF)
+            parentMat = &skel->mat[parentIndex];
+        XModelGetBasePose(obj->models[modelIndex],
+                          &skel->mat[obj->matOffset[modelIndex]], parentMat);
+    }
+}
 void DObjDisplayAnim(DObj* obj) { (void)obj; }
 void DObjDisplayAnim3D(int a, DObj* obj, float* const b, int c)
 {
@@ -3363,10 +3419,94 @@ void XFONT_OpenTrueTypeFont(const unsigned short* a, unsigned int b, void* c)
     (void)a; (void)b; (void)c;
 }
 void XModelEnforceExist(int a) { (void)a; }
-void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* a,
-                       DObjSkelMat* b)
+void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
+                       DObjSkelMat* modelParentMat)
 {
-    (void)model; (void)a; (void)b;
+    ValidatePakId((TPakId)model.mPakId);
+
+    int lodIndex = 0;
+    while (model.mValue->lod[lodIndex] == nullptr)
+        ++lodIndex;
+    XModelParts* parts = model.mValue->lod[lodIndex]->xmodelParts;
+    const unsigned int boneCount = parts->mHierarchy.mSize;
+
+    for (unsigned int bone = 0; bone < boneCount; ++bone)
+    {
+        const int parentIndex = parts->mHierarchy.mList[bone].mParentIndex;
+        const math::Mat43::Packed& local = parts->mTransforms.mList[bone];
+        DObjSkelMat* out = &mat[bone];
+
+        if (parentIndex < 0)
+        {
+            if (modelParentMat == nullptr)
+            {
+                out->axis[0][0] = local.x.x;
+                out->axis[0][1] = local.x.y;
+                out->axis[0][2] = local.x.z;
+                out->axis[0][3] = 0.0f;
+                out->axis[1][0] = local.y.x;
+                out->axis[1][1] = local.y.y;
+                out->axis[1][2] = local.y.z;
+                out->axis[1][3] = 0.0f;
+                out->axis[2][0] = local.z.x;
+                out->axis[2][1] = local.z.y;
+                out->axis[2][2] = local.z.z;
+                out->axis[2][3] = 0.0f;
+                out->origin[0] = local.w.x;
+                out->origin[1] = local.w.y;
+                out->origin[2] = local.w.z;
+                out->origin[3] = 1.0f;
+                continue;
+            }
+        }
+
+        const DObjSkelMat* parent =
+            parentIndex < 0 ? modelParentMat : &mat[parentIndex];
+
+        out->axis[0][0] = local.x.x * parent->axis[0][0]
+                         + local.x.y * parent->axis[1][0]
+                         + local.x.z * parent->axis[2][0];
+        out->axis[0][1] = local.x.x * parent->axis[0][1]
+                         + local.x.y * parent->axis[1][1]
+                         + local.x.z * parent->axis[2][1];
+        out->axis[0][2] = local.x.x * parent->axis[0][2]
+                         + local.x.y * parent->axis[1][2]
+                         + local.x.z * parent->axis[2][2];
+        out->axis[0][3] = 0.0f;
+        out->axis[1][0] = local.y.x * parent->axis[0][0]
+                         + local.y.y * parent->axis[1][0]
+                         + local.y.z * parent->axis[2][0];
+        out->axis[1][1] = local.y.x * parent->axis[0][1]
+                         + local.y.y * parent->axis[1][1]
+                         + local.y.z * parent->axis[2][1];
+        out->axis[1][2] = local.y.x * parent->axis[0][2]
+                         + local.y.y * parent->axis[1][2]
+                         + local.y.z * parent->axis[2][2];
+        out->axis[1][3] = 0.0f;
+        out->axis[2][0] = local.z.x * parent->axis[0][0]
+                         + local.z.y * parent->axis[1][0]
+                         + local.z.z * parent->axis[2][0];
+        out->axis[2][1] = local.z.x * parent->axis[0][1]
+                         + local.z.y * parent->axis[1][1]
+                         + local.z.z * parent->axis[2][1];
+        out->axis[2][2] = local.z.x * parent->axis[0][2]
+                         + local.z.y * parent->axis[1][2]
+                         + local.z.z * parent->axis[2][2];
+        out->axis[2][3] = 0.0f;
+        out->origin[0] = local.w.x * parent->axis[0][0]
+                       + local.w.y * parent->axis[1][0]
+                       + local.w.z * parent->axis[2][0]
+                       + parent->origin[0];
+        out->origin[1] = local.w.x * parent->axis[0][1]
+                       + local.w.y * parent->axis[1][1]
+                       + local.w.z * parent->axis[2][1]
+                       + parent->origin[1];
+        out->origin[2] = local.w.x * parent->axis[0][2]
+                       + local.w.y * parent->axis[1][2]
+                       + local.w.z * parent->axis[2][2]
+                       + parent->origin[2];
+        out->origin[3] = 1.0f;
+    }
 }
 void XModelTransform(IVPointer<XModel> model, DObjSkelMat* a,
                      DObjSkelMat* b)
