@@ -4982,12 +4982,15 @@ void ParseVehiclePhysicsConfigString(const char* name, const ConfigString* cfgst
     InplaceString* entry = stringMap.Find<const char*>("tractiontype");
     if (entry != nullptr)
         str = entry->mStr;
-    if (_stricmp(str, "all_wd") == 0)
-        param->m_traction_type = TRACTION_TYPE_ALL_WD;
-    else if (_stricmp(str, "front") == 0)
-        param->m_traction_type = TRACTION_TYPE_FRONT;
-    else if (_stricmp(str, "back") == 0)
-        param->m_traction_type = TRACTION_TYPE_BACK;
+    if (str != nullptr)
+    {
+        if (_stricmp(str, "all_wd") == 0)
+            param->m_traction_type = TRACTION_TYPE_ALL_WD;
+        else if (_stricmp(str, "front") == 0)
+            param->m_traction_type = TRACTION_TYPE_FRONT;
+        else if (_stricmp(str, "back") == 0)
+            param->m_traction_type = TRACTION_TYPE_BACK;
+    }
     for (int i = 0; i < 27; ++i)
     {
         InplaceString* item =
