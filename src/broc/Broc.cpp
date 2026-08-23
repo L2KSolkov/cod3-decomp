@@ -1079,14 +1079,41 @@ bool operator==(const string& lhs, const string& rhs) {
 }
 
 string operator+(const string& lhs, const string& rhs) {
-    string result(lhs);
-    result += rhs;
+    string result;
+    int rhsLen = rhs.length();
+    if (rhsLen != 0) {
+        if (lhs.length() != 0) {
+            unsigned int lhsLen = lhs.length();
+            result.mBlock = string::AllocBlock(lhs.c_str(), lhsLen,
+                                               (unsigned int)(rhsLen + lhsLen));
+            result.mBlock->Append(rhs.c_str(), (unsigned short)rhsLen);
+        } else {
+            result.mBlock = rhs.mBlock;
+            if (result.mBlock)
+                result.mBlock->IncrementCount();
+        }
+    } else {
+        result.mBlock = lhs.mBlock;
+        if (result.mBlock)
+            result.mBlock->IncrementCount();
+    }
     return result;
 }
 
 string operator+(const string& lhs, const char* rhs) {
+    if (rhs != nullptr) {
+        if (lhs.length() != 0) {
+            unsigned int rhsLen = Broc::length(rhs);
+            unsigned int lhsLen = lhs.length();
+            string::Block* block = string::AllocBlock(lhs.c_str(), lhsLen,
+                                                      lhsLen + rhsLen + 1);
+            block->Append(rhs, (unsigned short)rhsLen);
+            string result(block);
+            return result;
+        }
+        return string(rhs);
+    }
     string result(lhs);
-    result += rhs;
     return result;
 }
 

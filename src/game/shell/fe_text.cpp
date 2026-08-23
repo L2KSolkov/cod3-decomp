@@ -1175,7 +1175,7 @@ void MultiLineString::ParseForButtons(float scale, float button_scale)
                 (unsigned int)(v8 + v15),
                 (unsigned int)(data.length() - v15 - v8));
             Broc::string v34 = data.substr(0, (unsigned int)v8);
-            Broc::string v35 = v34 + Broc::string(buttonCode);
+            Broc::string v35 = v34 + buttonCode;
             Broc::string v36 = v35 + v33;
             data = v36;
             v5 = (unsigned int)(strlen(buttonCode) + v8);
