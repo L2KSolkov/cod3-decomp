@@ -131,7 +131,7 @@ index	status	map_line
 130	VERIFIED	0002:0038e6a0 ?Me@InstantActionMenu@@SAPAV1@XZ 00B7DBA0 f mp_shell.o
 131	VERIFIED	0002:0038e6b0 ?OnDeactivate@PlayLanMenu@@UAEXPAVFEMenu@@@Z 00B7DBB0 f mp_shell.o
 132	VERIFIED	0002:0038e6c0 ?Draw@PlayLanMenu@@UAEXXZ 00B7DBC0 f mp_shell.o
-133	VERIFIED	0002:0038e6e0 ?OnCross@PlayLanMenu@@UAEXH@Z 00B7DBE0 f mp_shell.o
+133	FIXED	0002:0038e6e0 ?OnCross@PlayLanMenu@@UAEXH@Z 00B7DBE0 f mp_shell.o	FIXED: corrected Create match transition to menu 1 per IDA disassembly (0x78E70D)
 134	VERIFIED	0002:0038e770 ?OnTriangle@PlayLanMenu@@UAEXH@Z 00B7DC70 f mp_shell.o
 135	VERIFIED	0002:0038e780 ?Me@PlayLanMenu@@SAPAV1@XZ 00B7DC80 f mp_shell.o
 136	VERIFIED	0002:0038e790 ??0PlayOnlineMenu@@QAE@PAVFEMenuSystem@@@Z 00B7DC90 f mp_shell.o
