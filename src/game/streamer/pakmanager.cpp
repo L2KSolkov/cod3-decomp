@@ -86,7 +86,7 @@ public:
         math::Position3 currentAngles;  // +0x80
     };
     Shared r;           // +0xE0 (EntityShared)
-    uint8_t _pad160[0x230 - 0x160];
+    uint8_t _pad160[0x230 - 0x170];
     int32_t mPakId;     // +0x230
     uint8_t _pad234[0x244 - 0x234];
     ScriptEventHandler* mScriptEventHandler;  // +0x244
