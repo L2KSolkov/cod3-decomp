@@ -215,7 +215,8 @@ unsigned int PanelQuadSection::GetCol(int index)
 // ea: 0x00569AB0
 void PanelQuadSection::SetColorVert(int i, color32 c)
 {
-    quad.Verts[i].Color = c.c.b | ((c.c.g | (c.c.r << 8)) << 8);
+    quad.Verts[i].Color =
+        c.c.b | ((c.c.g | ((c.c.r | (c.c.a << 8)) << 8)) << 8);
 }
 
 // ea: 0x00579800

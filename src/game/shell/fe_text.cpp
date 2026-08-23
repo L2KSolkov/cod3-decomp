@@ -167,7 +167,7 @@ FEText* FEText::Clone()
 // ea: 0x005ADE90
 int FEText::ConvertColor(color32 c)
 {
-    return c.c.b | ((c.c.g | (c.c.r << 8)) << 8);
+    return c.c.b | ((c.c.g | ((c.c.r | (c.c.a << 8)) << 8)) << 8);
 }
 
 // ea: 0x0056BDC0
@@ -755,7 +755,10 @@ void FEText::Draw(bool selected)
                         __debugbreak();
                 }
                 substr[v18] = 0;
-                unsigned int v33 = tmp_color.c.b | ((tmp_color.c.g | (tmp_color.c.r << 8)) << 8);
+                unsigned int v33 = tmp_color.c.b
+                                   | ((tmp_color.c.g
+                                       | ((tmp_color.c.r | (tmp_color.c.a << 8)) << 8))
+                                      << 8);
                 float z = GetZvalue();
                 nglListAddString(g_femanager.GetFont(font), substr, x, y, z,
                                  v33, tmp_scale, ScaleY);
@@ -778,7 +781,10 @@ void FEText::Draw(bool selected)
             if (cg_widescreen_integer == 0)
                 v27 = 1.0f;
             float button_scale_x = v27 * ScaleY;
-            unsigned int v34 = tmp_color.c.b | ((tmp_color.c.g | (tmp_color.c.r << 8)) << 8);
+            unsigned int v34 = tmp_color.c.b
+                               | ((tmp_color.c.g
+                                   | ((tmp_color.c.r | (tmp_color.c.a << 8)) << 8))
+                                  << 8);
             float za = GetZvalue();
             char buttonChar[2] = {v26, 0};
             nglListAddString(g_femanager.fonts[1], buttonChar, x, y, za, v34,

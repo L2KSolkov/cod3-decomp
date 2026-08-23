@@ -1057,6 +1057,11 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
         NativeValue = nullD3DCompareFunc(Value);
     } else if (Method == dword_40340) {
         NativeState = COD3_D3D9_RS_ALPHAREF;
+        // NV097_SET_ALPHA_REF has an 8-bit value field, so the Xbox hardware
+        // only ever sees the low byte.  SetBlendMode passes the whole packed
+        // blend mode here, which is far outside D3D9's documented 0..255 and
+        // leaves the driver comparing against garbage bits.
+        NativeValue = Value & 0xFFu;
     } else if (Method == dword_40344) {
         NativeState = COD3_D3D9_RS_SRCBLEND;
         NativeValue = nullD3DBlendFactor(Value);
@@ -1318,9 +1323,14 @@ static void nullD3DSetFixedFunctionFVF(DWORD FVF, bool FontPacket = false) {
     const DWORD ColorOp = TexturedPCUV
         ? (HasTexture && !AlphaMask ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
         : D3DTOP_SELECTARG1;
+    // Alpha is always coverage * vertex alpha.  The Xbox TexCol shader
+    // modulates both channels, and FEText/FEMultiLineText encode the
+    // selection highlight purely in the vertex alpha (0xFF selected,
+    // 0x80 dimmed), so selecting only the sampled texture alpha here
+    // would collapse every string to full opacity.
+    (void)FontPacket;
     const DWORD AlphaOp = TexturedPCUV
-        ? (HasTexture ? (FontPacket ? D3DTOP_SELECTARG1 : D3DTOP_MODULATE)
-                      : D3DTOP_SELECTARG2)
+        ? (HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2)
         : D3DTOP_SELECTARG1;
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLOROP, ColorOp);
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAOP, AlphaOp);
@@ -2023,7 +2033,10 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
         break;
     case D3DRS_ALPHABLENDENABLE: NativeState = COD3_D3D9_RS_ALPHABLENDENABLE; break;
     case D3DRS_ALPHATESTENABLE: NativeState = COD3_D3D9_RS_ALPHATESTENABLE; break;
-    case D3DRS_ALPHAREF: NativeState = COD3_D3D9_RS_ALPHAREF; break;
+    case D3DRS_ALPHAREF:
+        NativeState = COD3_D3D9_RS_ALPHAREF;
+        NativeValue = Value & 0xFFu;  // 8-bit field on NV2A; see SetRenderState_Simple
+        break;
     case D3DRS_SRCBLEND:
         NativeState = COD3_D3D9_RS_SRCBLEND;
         NativeValue = nullD3DBlendFactor(Value);
