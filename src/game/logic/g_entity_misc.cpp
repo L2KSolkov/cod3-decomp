@@ -2200,6 +2200,27 @@ extern void SP_war_allies(Entity*);
 extern void SP_war_axis(Entity*);
 extern void SP_sd_allies(Entity*);
 extern void SP_sd_axis(Entity*);
+extern void Actor_CorpseThink(Entity*, int);
+extern void Actor_Think(Entity*, int);
+extern void BodySink(Entity*, int);
+extern void G_FinishSetupSpawnPoint(Entity*, int);
+extern void FinishSpawningItem(Entity*, int);
+extern void finishSpawningKeyedMover(Entity*, int);
+extern void G_DelayMissile(Entity*, int);
+extern void G_LaunchMissile(Entity*, int);
+extern void G_IncomingMissile(Entity*, int);
+extern void GotoPos3(Entity*, int);
+extern void hurt_think(Entity*, int);
+extern void misc_spawner_think(Entity*, int);
+extern void multi_wait(Entity*, int);
+extern void ReturnToPos1(Entity*, int);
+extern void ReturnToPos1Rotate(Entity*, int);
+extern void ReturnToPos2(Entity*, int);
+extern void Think_MatchTeam(Entity*, int);
+extern void Think_SpawnNewDoorTrigger(Entity*, int);
+extern void Think_SpawnNewAutoDoorTrigger(Entity*, int);
+extern void Think_GeneralLink(Entity*, int);
+extern void Think_EnableMine(Entity*, int);
 
 void (*gSpawnFuncs[53])(Entity* ent) = {
     SP_sound_blend,
@@ -2257,7 +2278,38 @@ void (*gSpawnFuncs[53])(Entity* ent) = {
     SP_sd_allies,
     SP_sd_axis,
 };
-void (*thinktable[64])(Entity* ent, int msec);
+void (*thinktable[64])(Entity* ent, int msec) = {
+    nullptr,
+    Actor_CorpseThink,
+    Actor_Think,
+    BodySink,
+    Concussive_think,
+    G_FinishSetupSpawnPoint,
+    FinishSpawningItem,
+    finishSpawningKeyedMover,
+    G_ExplodeMissile,
+    G_DelayMissile,
+    G_LaunchMissile,
+    G_IncomingMissile,
+    G_FreeEntity,
+    GotoPos3,
+    hurt_think,
+    turret_think,
+    turret_think_init,
+    misc_spawner_think,
+    multi_wait,
+    RespawnItem,
+    ReturnToPos1,
+    ReturnToPos1Rotate,
+    ReturnToPos2,
+    Scr_Vehicle_Init,
+    Scr_Vehicle_Think,
+    Think_MatchTeam,
+    Think_SpawnNewDoorTrigger,
+    Think_SpawnNewAutoDoorTrigger,
+    Think_GeneralLink,
+    Think_EnableMine,
+};
 void (*entinfotable[3])(Entity* ent);
 void (*touchtable[0xD])(Entity* ent, Entity* other, int bTouched);
 void (*usetable[0xE])(Entity* ent, Entity* other, Entity* activator);
