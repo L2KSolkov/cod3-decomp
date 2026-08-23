@@ -9678,8 +9678,7 @@ void UpdateRigidBody(float delta_t)
     cdl_proftimer_update_rb.start();
     if (delta_t >= 0.1f)
         delta_t = 0.1f;
-    phys_sys::solver_memory_buffer_set(solver_memory_buffer,
-                                       0);  // dword_12AC0 (.textbss = 0)
+    phys_sys::solver_memory_buffer_set(solver_memory_buffer, 0x12AC0);
     g_physics_memory_buffer = solver_memory_buffer;
     RBAdvanceDebug(delta_t);
     biped_phys_info::prolog_frame_advance_all(delta_t);
