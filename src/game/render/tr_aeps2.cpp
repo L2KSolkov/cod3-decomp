@@ -468,10 +468,13 @@ class XModelPartsManager : public InplaceAssetBankSet<XModelPartsBank> {
 private:
     XModelPartsManager();        // ??0XModelPartsManager@@AAE@XZ
     virtual ~XModelPartsManager();  // ??1XModelPartsManager@@EAE@XZ
+    void PostProcess(XModelPartsBank* xmpBank, TPakId pak_id);  // ?PostProcess@XModelPartsManager@@AAEXPAVXModelPartsBank@@W4TPakId@@@Z
 public:
     static XModelPartsManager* sInst;  // ?sInst@XModelPartsManager@@2PAV1@A (sv_globals.cpp)
     static void CreateInst();           // ?CreateInst@XModelPartsManager@@SAXXZ
     static void DeleteInst();           // ?DeleteInst@XModelPartsManager@@SAXXZ
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);  // ?DecodeBank@XModelPartsManager@@QAEXPBDPAEHW4TPakId@@@Z
     IVPointer<XModelParts> GetXModelParts(TPakId pak_id,
                                           const char* name);  // ?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z
     void AssignHashName(XModelParts* xmp);  // ?AssignHashName@XModelPartsManager@@QAEXPAVXModelParts@@@Z
@@ -649,6 +652,18 @@ void XModelManager::DecodeBank(const char* name, unsigned char* data,
             pak_id, "noxmp", AeType<IVPointer<XModel>>(), nullptr);
         gDefaultXmodel = result;
     }
+}
+
+// ea: 0x006D6120
+void XModelPartsManager::DecodeBank(const char* name, unsigned char* data,
+                                    int size, TPakId pak_id)
+{
+    (void)name;
+    (void)size;
+    XModelPartsBank* xmpBank = reinterpret_cast<XModelPartsBank*>(data);
+    xmpBank->Fixup();
+    PostProcess(xmpBank, pak_id);
+    AddBank(pak_id, xmpBank);
 }
 
 // ea: 0x006D60F0

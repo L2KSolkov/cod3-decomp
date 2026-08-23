@@ -2542,9 +2542,6 @@ void* LightGridMgr::operator new(unsigned int /*size*/, void* p)
     return p;
 }
 
-void XModelPartsManager::DecodeBank(const char* name, unsigned char* data,
-                                    int size, TPakId pak_id)
-{ (void)name; (void)data; (void)size; (void)pak_id; }
 void AITypeManager::DecodeBank(const char* name, unsigned char* data,
                                int size, TPakId pak_id)
 { (void)name; (void)data; (void)size; (void)pak_id; }
