@@ -2467,9 +2467,11 @@ PanelQuad* PanelFile::GetPointer(const char* search_name)
     int v4 = 0;
     while (1)
     {
-        Broc::string& nm = pquads.mElements[v4]->name;
-        const char* v6 = nm.mBlock != nullptr
-                             ? (const char*)&nm.mBlock[1]
+        PanelQuad* quad = pquads.mElements[v4];
+        Broc::string::Block* block =
+            *(Broc::string::Block**)((unsigned char*)quad + 0x44);
+        const char* v6 = block != nullptr
+                             ? (const char*)&block[1]
                              : defaultFileName;
         if (strcmp(v6, search_name) == 0)
             break;
