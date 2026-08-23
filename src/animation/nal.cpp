@@ -1718,6 +1718,8 @@ enum nalRegisterKey : int {
     NAL_REGISTER_KEY = 0x11235813,
 };
 
+class nalComponentBase;
+
 namespace nalGeneric {
 class nalGenericPose : public nalBasePose {
 public:
@@ -1805,10 +1807,9 @@ struct nalTrackInfo {
 };
 static_assert(sizeof(nalTrackInfo) == 40, "nalTrackInfo layout mismatch");
 
-class nalComponentBase;
 struct nalComponentInfo {
     tlFixedString EncodingType; // +0x00
-    nalComponentBase* Component; // +0x20
+    ::nalComponentBase* Component; // +0x20
     int StartIndex;              // +0x24
     int Count;                   // +0x28
     int Offset;                  // +0x2C
@@ -1822,7 +1823,7 @@ public:
     nalGenericSkeleton(nalRegisterKey key);
 
     virtual ~nalGenericSkeleton() {}
-    virtual void Process() {}
+    virtual void Process();
     virtual void Release();
     virtual bool CheckVersion() const;
     virtual unsigned int VirtualGetLODCount() const;
@@ -7133,6 +7134,8 @@ template class nalPoseClass<nalGeneric::nalGenericSkeleton,
                             nalGeneric::nalGenericPose>;
 
 // nalComponentBase - anim.o COMDATs (0x55E820/0x55EDC0)
+class nalComponentEnum;
+
 class nalComponentBase {
 public:
     nalComponentBase() {}
@@ -7149,7 +7152,51 @@ public:
     virtual void BlendArray(int count, void* dst, const void* srcA,
                             const void* srcB,
                             const float*& blendArray) const = 0;
-    virtual int GetPoseAlignment() const = 0;
+    virtual void Process(const nalGeneric::nalComponentInfo* componentInfo,
+                         void*& pose, void*& extra) const = 0;
+    virtual void SetupPartialDecode(nalComponentEnum& componentEnum,
+                                    void*& state, const void*& src,
+                                    int quantity) const = 0;
+    virtual void PartialDecode(nalComponentEnum& componentEnum, void*& dst,
+                               void*& state, void* work, int offset,
+                               int quantity, int stride) const = 0;
+    virtual void Decode(nalComponentEnum& componentEnum, void*& dst,
+                        const void*& src, int quantity, int stride) const = 0;
+    virtual void Skip(nalComponentEnum& componentEnum, void*& dst,
+                      const void*& src, int quantity) const = 0;
+    virtual void Convert(nalComponentEnum& componentEnum, void* dst,
+                         const void*& src, const void* def,
+                         const int* offsetTable) const = 0;
+    virtual void ConvertPerfect(nalComponentEnum& componentEnum, void* dst,
+                                const void*& src, const void* def,
+                                const int* offsetTable) const = 0;
+    virtual void GetTrajectory(nalComponentEnum& componentEnum, void* dst,
+                               bool trajabs, const int* offsetTable) const = 0;
+    virtual void CycleTrajectory(nalComponentEnum& componentEnum, void* ptr,
+                                 void* prev, int cycle, bool trajabs,
+                                 const int* offsetTable) const = 0;
+    virtual void Construct(const nalGeneric::nalComponentInfo* componentInfo,
+                           void*& ptr) const = 0;
+    virtual void Delete(const nalGeneric::nalComponentInfo* componentInfo,
+                        void*& ptr) const = 0;
+    virtual void Copy(const nalGeneric::nalComponentInfo* componentInfo,
+                      void*& dstPtr, const void*& srcPtr) const = 0;
+    virtual void ReleaseCache(nalComponentEnum& componentEnum,
+                              void*& ptr) const = 0;
+    virtual void VirtualAlignSkeletonData(
+        const void*& skeletonData) const = 0;
+    virtual void VirtualAdvanceSkeletonData(
+        const void*& skeletonData) const = 0;
+    virtual void VirtualAlignSkeletonComponentData(
+        const void*& skeletonComponentData) const = 0;
+    virtual void VirtualAdvanceSkeletonComponentData(
+        const void*& skeletonComponentData) const = 0;
+    virtual void VirtualAlignAnimData(const void*& animData) const = 0;
+    virtual void VirtualAdvanceAnimData(const void*& animData) const = 0;
+    virtual void VirtualAlignAnimComponentData(
+        const void*& animComponentData) const = 0;
+    virtual void VirtualAdvanceAnimComponentData(
+        const void*& animComponentData) const = 0;
 };
 
 // ea: 0x0055E830
@@ -7160,6 +7207,86 @@ void nalComponentBase::BlendIntra(int count, void* dst, const void* srcA,
                                        const void*, float);
     ((BlendFn)((void**)*(void**)this)[3])((void*)this, count, dst, srcA,
                                           srcB, blend);
+}
+
+// ea: 0x00869280
+void nalGeneric::nalGenericSkeleton::Process()
+{
+    const auto align4 = [](uintptr_t value) {
+        return (value + 3u) & ~uintptr_t(3u);
+    };
+
+    uintptr_t cursor = align4(reinterpret_cast<uintptr_t>(this)
+                              + sizeof(nalGenericSkeleton));
+    LODInfo = reinterpret_cast<nalLODInfo*>(cursor);
+    cursor += LODCount * sizeof(nalLODInfo);
+    MatrixByteCode = reinterpret_cast<unsigned char*>(cursor);
+    cursor += LODInfo->MatrixByteCodeSize;
+    PoseByteCode = reinterpret_cast<unsigned char*>(cursor);
+    cursor = align4(cursor + LODInfo->PoseByteCodeSize);
+    BoneInfo = reinterpret_cast<nalBoneInfo*>(cursor);
+    cursor = align4(cursor + BoneCount * sizeof(nalBoneInfo));
+    TrackInfo = reinterpret_cast<nalTrackInfo*>(cursor);
+    cursor = align4(cursor + TrackCount * sizeof(nalTrackInfo));
+    PoseComponentInfo = reinterpret_cast<nalComponentInfo*>(cursor);
+    cursor = align4(cursor + PoseComponentCount * sizeof(nalComponentInfo));
+    PoseData = reinterpret_cast<void*>(
+        (cursor + PoseAlignment - 1) & ~uintptr_t(PoseAlignment - 1));
+    cursor = align4(reinterpret_cast<uintptr_t>(PoseData) + PoseSize);
+    PoseExtraData = reinterpret_cast<void*>(cursor);
+    cursor = align4(cursor + PoseExtraSize);
+    ConstComponentInfo = reinterpret_cast<nalComponentInfo*>(cursor);
+    cursor = align4(cursor + ConstComponentCount * sizeof(nalComponentInfo));
+    ConstData = reinterpret_cast<void*>(
+        (cursor + ConstAlignment - 1) & ~uintptr_t(ConstAlignment - 1));
+    cursor = align4(reinterpret_cast<uintptr_t>(ConstData) + ConstSize);
+    ConstExtraData = reinterpret_cast<void*>(cursor);
+    PrivateData = reinterpret_cast<void*>(
+        (cursor + ConstExtraSize + PrivateAlignment - 1)
+        & ~uintptr_t(PrivateAlignment - 1));
+
+    DefaultPose.Skeleton = reinterpret_cast<nalBaseSkeleton*>(this);
+    DefaultPose.PoseData = PoseData;
+
+    for (int i = 0; i < PoseComponentCount; ++i)
+    {
+        tlInstanceBank::Instance* instance = nalComponentInstanceBank.Search(
+            PoseComponentInfo[i].EncodingType);
+        if (instance == nullptr
+            && _tlAssert("source/common/nal_generic.cpp", 559, "inst",
+                         "could not find an instance of the encoding type of a pose component"))
+        {
+            __debugbreak();
+        }
+        PoseComponentInfo[i].Component =
+            static_cast<nalComponentBase*>(instance->Value);
+    }
+
+    for (int i = 0; i < ConstComponentCount; ++i)
+    {
+        tlInstanceBank::Instance* instance = nalComponentInstanceBank.Search(
+            ConstComponentInfo[i].EncodingType);
+        if (instance == nullptr
+            && _tlAssert("source/common/nal_generic.cpp", 565, "inst",
+                         "could not find an instance of the encoding type of a const component"))
+        {
+            __debugbreak();
+        }
+        ConstComponentInfo[i].Component =
+            static_cast<nalComponentBase*>(instance->Value);
+    }
+
+    void* dataPtr = PoseData;
+    void* extraPtr = PoseExtraData;
+    for (int i = 0; i < PoseComponentCount; ++i)
+        PoseComponentInfo[i].Component->Process(PoseComponentInfo + i, dataPtr,
+                                                 extraPtr);
+
+    dataPtr = ConstData;
+    extraPtr = ConstExtraData;
+    for (int i = 0; i < ConstComponentCount; ++i)
+        ConstComponentInfo[i].Component->Process(ConstComponentInfo + i, dataPtr,
+                                                  extraPtr);
 }
 
 // nal_init.o component base classes.  IDA shows each as a direct
@@ -7174,7 +7301,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 1; }
-    virtual int GetPoseAlignment() const { return 1; }
+    int GetPoseAlignment() const { return 1; }
     static unsigned char TypeID;
 };
 
@@ -7186,7 +7313,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 4; }
-    virtual int GetPoseAlignment() const { return 4; }
+    int GetPoseAlignment() const { return 4; }
     static unsigned char TypeID;
 };
 
@@ -7198,7 +7325,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
-    virtual int GetPoseAlignment() const { return 16; }
+    int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
 
@@ -7210,7 +7337,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
-    virtual int GetPoseAlignment() const { return 16; }
+    int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
 
@@ -7222,7 +7349,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
-    virtual int GetPoseAlignment() const { return 16; }
+    int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
 
@@ -7234,7 +7361,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 32; }
-    virtual int GetPoseAlignment() const { return 16; }
+    int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
 
@@ -7246,7 +7373,7 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 96; }
-    virtual int GetPoseAlignment() const { return 16; }
+    int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
 
