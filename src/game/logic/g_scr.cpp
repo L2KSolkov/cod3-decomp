@@ -1615,7 +1615,45 @@ saveField_t sentientFields[128];  // ?sentientFields@@3PAUsaveField_t@@A (mp_act
 saveField_t actorFields[128];     // ?actorFields@@3PAUsaveField_t@@A (mp_actors.o)
 extern int g_xanim_num;                 // 0xF3A778
 unsigned char sConstsLoaded;     // 0xEF357B
-const char* gHashStringTblTxt[173];  // ?gHashStringTblTxt (scr.o @ 0xDD6488)
+const char* gHashStringTblTxt[173] = {
+    "active", "activate", "angle deltas", "animdone", "bodyque",
+    "cam_vehicle_first", "cam_vehicle_third", "claimed", "combat", "count",
+    "crouch", "crowbar", "current", "damage", "deactivate", "death",
+    "deathplant", "disconnected", "dlight", "done", "empty", "enemy",
+    "enemyhidden", "enemyvisible", "entity", "failed", "face angle",
+    "face current", "face default", "face direction", "face enemy",
+    "face enemy or motion", "face enemy with offset", "face goal", "face motion",
+    "face point", "flipped", "fraction", "func_door", "func_door_rotating",
+    "func_rotating", "func_tramcar", "goal", "gravity", "grenade",
+    "grenade danger", "info_notnull", "info_player_deathmatch", "interaction_done",
+    "invisible", "key1", "key2", "killanimscript", "left", "max time",
+    "menuresponse", "min energy", "min time", "mortar", "movedone",
+    "movesuppressed", "noclass", "noclip", "noenemy", "nogravity", "noncombat",
+    "normal", "occupied", "pain", "physicsdone", "physicsstart", "pickup",
+    "player", "position", "prone", "reached_end_node", "reached_wait_node",
+    "reached_wait_speed", "right", "rocket", "roll", "rotatedone", "sound_blend",
+    "script_brushmodel", "script_model", "script_origin", "script_prop_collmap",
+    "script_vehicle", "script_vehicle_corpse", "script_vehicle_collmap",
+    "spawn_intermission", "spawn_deathmatch", "spawn_teamdeathmatch",
+    "spawn_ctf_allies_primary", "spawn_ctf_allies_secondary", "spawn_ctf_axis_primary",
+    "spawn_ctf_axis_secondary", "spawn_single_ctf_allies", "spawn_single_ctf_axis",
+    "spawn_hq_allies_primary", "spawn_hq_allies_secondary", "spawn_hq_axis_primary",
+    "spawn_hq_axis_secondary", "spawn_dom_allies", "spawn_dom_axis", "spawn_war_allies",
+    "spawn_war_axis", "spawn_sd_allies", "spawn_sd_axis", "hq_point", "front_left",
+    "front_right", "back_left", "back_right", "middle_left", "middle_right",
+    "scriptcamera", "spawned", "stand", "back", "wounded", "suppressed",
+    "surfacetype", "tag_engine1", "tag_engine2", "target_location",
+    "target_script_trigger", "tempEntity", "muzzleEntity", "touch", "trigger",
+    "trigger_use", "trigger_damage", "trigger_lookat", "trigger_mount", "truck_cam",
+    "turret_fire", "turret_on_target", "player_on_vehicle", "player_off_vehicle",
+    "turret_on_vistarget", "xmodel/airborne", "xmodel/wehrmacht", "worldspawn",
+    "auto_ai", "auto_nonai", "manual", "manual_ai", "turretstatechange",
+    "turretownerchange", "moveawayaccepted", "nophysics", "none", "obstacle", "world",
+    "zonesloaded", "groundEntChanged", "<custom>", "bigRotation", "smallRotation",
+    "nearNode", "overheated", "axis", "allies", "neutral", "dead", "smoke_grenade",
+    "mine", "fire_special", "input_started", "[USE_LEFT_STICK]", "[USE_RIGHT_STICK]",
+    "[BATTLE_ACTION_BUTTON]"
+};
 extern void Scr_FreePrecachedAnimTrees();
 extern void GScr_LoadScriptsAndAnimsForEntities();
 extern void Scr_PrecacheAnimTrees(void* (*Alloc)(int), bool restart);
