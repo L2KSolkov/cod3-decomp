@@ -701,9 +701,15 @@ Entity::~Entity()
         for (actor_s* i = Actor_FirstActor(-1); i != nullptr;
              i = Actor_NextActor(i, -1))
             j_nullsub_15(i, this);
-        for (sentient_s* j = Sentient_FirstSentient(-1); j != nullptr;
-             j = Sentient_NextSentient(j, -1))
-            Sentient_DissociateEntity(j, this);
+        // Scene entities can be filtered before the game VM has run G_InitGame.
+        // The reference traversal is unchanged once level.sentients is live;
+        // before that point there are no sentients to dissociate.
+        if (level.sentients != nullptr)
+        {
+            for (sentient_s* j = Sentient_FirstSentient(-1); j != nullptr;
+                 j = Sentient_NextSentient(j, -1))
+                Sentient_DissociateEntity(j, this);
+        }
     }
     if (this->s.eType == 13)
         j_nullsub_77(this);
