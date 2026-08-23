@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 
 #include <stdarg.h>
@@ -96,9 +97,6 @@ struct cg_t {
 };
 cg_t* cg = nullptr;  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)
 
-struct vmCvar_t {
-    int integer;  // +0x00
-};
 vmCvar_t cg_thirdPerson;               // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o @ 0x134B400)
 vmCvar_t cg_thirdPersonLock;           // ?cg_thirdPersonLock@@3UvmCvar_t@@A (cg.o @ 0x134A8D0)
 vmCvar_t cg_thirdPersonRange;          // ?cg_thirdPersonRange@@3UvmCvar_t@@A (cg.o @ 0x134E6E8)
