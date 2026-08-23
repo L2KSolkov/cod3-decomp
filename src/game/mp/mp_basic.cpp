@@ -15619,6 +15619,7 @@ MPPlayer::MPPlayer()
     mId = 16;
     mConnection.m_ptr = nullptr;
     mClientIndex = -1;
+    new ((char*)this + 0x0C) MPPlayerItems();
     mInVehicle = false;
     *(bool*)((char*)this + 0x45) = false;  // mPlaying
     *(bool*)((char*)this + 0x46) = false;  // mMasterClient
