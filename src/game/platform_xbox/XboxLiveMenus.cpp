@@ -85,7 +85,10 @@ void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 OverlayMenu* OverlayMenu::Me(int version)
 {
     (void)version;
-    return nullptr;
+    FEMenuSystem* fems = g_femanager.fems;
+    if (fems != nullptr)
+        return reinterpret_cast<OverlayMenu*>(fems->menus[16]);
+    return reinterpret_cast<OverlayMenu*>(fems);
 }
 void OverlayMenu::SetState(int state)
 {

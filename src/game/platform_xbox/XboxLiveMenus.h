@@ -122,6 +122,7 @@ public:
 };
 class FEManager {
 public:
+    unsigned char _pad0[0x1C];
     FEMenuSystem* fems;
     struct AARMenuSystemView { FEMenu** menus; }* mAARS;
     InGameMenuSystem* GetIGMS(int client);
