@@ -3189,7 +3189,7 @@ nalInitListAnimType::~nalInitListAnimType()
 
 class nalComponentInitList : public nalInitList {
 public:
-    virtual void Register() {}
+    virtual void Register();
     virtual ~nalComponentInitList() {}  // ??_E...UAEPAXI@Z
     static void DeleteArrayShim(void* p)
     {
@@ -3203,6 +3203,9 @@ public:
     const nalComponentBase* Component;  // +0x0C
 };
 
+static_assert(sizeof(nalComponentInitList) == 0x10,
+              "nalComponentInitList layout mismatch");
+
 // ea: 0x0055E7D0
 nalComponentInitList::nalComponentInitList(const char* name,
                                            const nalComponentBase& component)
@@ -3210,6 +3213,14 @@ nalComponentInitList::nalComponentInitList(const char* name,
 {
     Name = name;
     Component = &component;
+}
+
+// ea: 0x008712E0
+void nalComponentInitList::Register()
+{
+    tlFixedString key(Name);
+    nalComponentInstanceBank.Insert(key,
+                                    const_cast<nalComponentBase*>(Component));
 }
 class nalComponentU8Base;
 class nalComponentSignalCounter;
@@ -7313,6 +7324,11 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 4; }
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
     int GetPoseAlignment() const { return 4; }
     static unsigned char TypeID;
 };
@@ -7325,6 +7341,11 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
     int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
@@ -7337,6 +7358,11 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
     int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
@@ -7349,6 +7375,13 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 16; }
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendIntra(int count, void* dst, const void* srcA,
+                            const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
     int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
@@ -7361,6 +7394,11 @@ public:
         return (unsigned int)(uintptr_t)&TypeID;
     }
     virtual int GetPoseSize() const { return 32; }
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;
     int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
@@ -7384,6 +7422,143 @@ unsigned char nalComponentFloat4Base::TypeID = 0;
 unsigned char nalComponentQuatBase::TypeID = 0;
 unsigned char nalComponentPOBase::TypeID = 0;
 unsigned char nalComponentIKSpinBase::TypeID = 0;
+
+// ea: 0x00871650 / 0x00871770
+void nalComponentFloat1Base::Blend(int count, void* dst, const void* srcA,
+                                   const void* srcB, float blend) const
+{
+    float* out = static_cast<float*>(dst);
+    const float* a = static_cast<const float*>(srcA);
+    const float* b = static_cast<const float*>(srcB);
+    const float inverseBlend = 1.0f - blend;
+    for (int i = 0; i < count; ++i)
+        out[i] = a[i] * inverseBlend + b[i] * blend;
+}
+
+void nalComponentFloat1Base::BlendArray(int count, void* dst,
+                                        const void* srcA, const void* srcB,
+                                        const float*& blendArray) const
+{
+    float* out = static_cast<float*>(dst);
+    const float* a = static_cast<const float*>(srcA);
+    const float* b = static_cast<const float*>(srcB);
+    for (int i = 0; i < count; ++i)
+    {
+        const float blend = *blendArray++;
+        out[i] = a[i] * (1.0f - blend) + b[i] * blend;
+    }
+}
+
+// ea: 0x008718D0 / 0x00871950 / 0x008719D0 / 0x00871A50
+static void nalBlendVector4Array(int count, void* dst, const void* srcA,
+                                 const void* srcB, const float* blends)
+{
+    __m128* out = static_cast<__m128*>(dst);
+    const __m128* a = static_cast<const __m128*>(srcA);
+    const __m128* b = static_cast<const __m128*>(srcB);
+    for (int i = 0; i < count; ++i)
+    {
+        const float blend = blends[i];
+        out[i] = _mm_add_ps(_mm_mul_ps(a[i], _mm_set1_ps(1.0f - blend)),
+                            _mm_mul_ps(b[i], _mm_set1_ps(blend)));
+    }
+}
+
+void nalComponentFloat3Base::Blend(int count, void* dst, const void* srcA,
+                                   const void* srcB, float blend) const
+{
+    __m128* out = static_cast<__m128*>(dst);
+    const __m128* a = static_cast<const __m128*>(srcA);
+    const __m128* b = static_cast<const __m128*>(srcB);
+    const __m128 inverseBlend = _mm_set1_ps(1.0f - blend);
+    const __m128 directBlend = _mm_set1_ps(blend);
+    for (int i = 0; i < count; ++i)
+        out[i] = _mm_add_ps(_mm_mul_ps(a[i], inverseBlend),
+                            _mm_mul_ps(b[i], directBlend));
+}
+
+void nalComponentFloat3Base::BlendArray(int count, void* dst,
+                                        const void* srcA, const void* srcB,
+                                        const float*& blendArray) const
+{
+    nalBlendVector4Array(count, dst, srcA, srcB, blendArray);
+    blendArray += count;
+}
+
+void nalComponentFloat4Base::Blend(int count, void* dst, const void* srcA,
+                                   const void* srcB, float blend) const
+{
+    __m128* out = static_cast<__m128*>(dst);
+    const __m128* a = static_cast<const __m128*>(srcA);
+    const __m128* b = static_cast<const __m128*>(srcB);
+    const __m128 inverseBlend = _mm_set1_ps(1.0f - blend);
+    const __m128 directBlend = _mm_set1_ps(blend);
+    for (int i = 0; i < count; ++i)
+        out[i] = _mm_add_ps(_mm_mul_ps(a[i], inverseBlend),
+                            _mm_mul_ps(b[i], directBlend));
+}
+
+void nalComponentFloat4Base::BlendArray(int count, void* dst,
+                                        const void* srcA, const void* srcB,
+                                        const float*& blendArray) const
+{
+    nalBlendVector4Array(count, dst, srcA, srcB, blendArray);
+    blendArray += count;
+}
+
+// ea: 0x00871AD0 / 0x00871D40 / 0x00872150
+void nalComponentQuatBase::Blend(int count, void* dst, const void* srcA,
+                                 const void* srcB, float blend) const
+{
+    math::Quaternion* out = static_cast<math::Quaternion*>(dst);
+    const math::Quaternion* a = static_cast<const math::Quaternion*>(srcA);
+    const math::Quaternion* b = static_cast<const math::Quaternion*>(srcB);
+    for (int i = 0; i < count; ++i)
+        out[i] = slerp(a[i], b[i], blend);
+}
+
+void nalComponentQuatBase::BlendIntra(int count, void* dst,
+                                      const void* srcA, const void* srcB,
+                                      float blend) const
+{
+    Blend(count, dst, srcA, srcB, blend);
+}
+
+void nalComponentQuatBase::BlendArray(int count, void* dst,
+                                      const void* srcA, const void* srcB,
+                                      const float*& blendArray) const
+{
+    math::Quaternion* out = static_cast<math::Quaternion*>(dst);
+    const math::Quaternion* a = static_cast<const math::Quaternion*>(srcA);
+    const math::Quaternion* b = static_cast<const math::Quaternion*>(srcB);
+    for (int i = 0; i < count; ++i)
+        out[i] = slerp(a[i], b[i], *blendArray++);
+}
+
+// ea: 0x008723C0 / 0x00872430
+void nalComponentPOBase::Blend(int count, void* dst, const void* srcA,
+                               const void* srcB, float blend) const
+{
+    nalPositionOrientation* out = static_cast<nalPositionOrientation*>(dst);
+    const nalPositionOrientation* a = static_cast<const nalPositionOrientation*>(srcA);
+    const nalPositionOrientation* b = static_cast<const nalPositionOrientation*>(srcB);
+    for (int i = 0; i < count; ++i)
+        nalBlend(out[i], a[i], b[i], blend, 1.0f - blend);
+}
+
+void nalComponentPOBase::BlendArray(int count, void* dst, const void* srcA,
+                                    const void* srcB,
+                                    const float*& blendArray) const
+{
+    nalPositionOrientation* out = static_cast<nalPositionOrientation*>(dst);
+    const nalPositionOrientation* a = static_cast<const nalPositionOrientation*>(srcA);
+    const nalPositionOrientation* b = static_cast<const nalPositionOrientation*>(srcB);
+    for (int i = 0; i < count; ++i)
+    {
+        const float blend = *blendArray++;
+        nalBlend(out[i], a[i], b[i], blend, 1.0f - blend);
+    }
+}
 
 // nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
 namespace nalGeneric {
@@ -12205,6 +12380,71 @@ nalComponentEntropyPO::~nalComponentEntropyPO() {}
 nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
+
+// The release image creates these component instances and intrusive init-list
+// nodes during CRT initialization. nalInitListInit() registers the nodes after
+// nalComponentInstanceBank has been initialized.
+static nalComponentRLE8Int1 Component_nalComponentRLE8Int1(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentRLE8Int1(
+    "NAL_RLE8Int1", Component_nalComponentRLE8Int1);
+static nalComponentEntropyFloat1 Component_nalComponentEntropyFloat1(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyFloat1(
+    "NAL_EntropyFloat1", Component_nalComponentEntropyFloat1);
+static nalComponentSignalCounter Component_nalComponentSignalCounter(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentSignalCounter(
+    "NAL_SignalCounter", Component_nalComponentSignalCounter);
+static nalComponentPacked8Float1 Component_nalComponentPacked8Float1(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked8Float1(
+    "NAL_Packed8Float1", Component_nalComponentPacked8Float1);
+static nalComponentFloat3 Component_nalComponentFloat3(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentFloat3(
+    "NAL_Float3", Component_nalComponentFloat3);
+static nalComponentEntropyFloat3 Component_nalComponentEntropyFloat3(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyFloat3(
+    "NAL_EntropyFloat3", Component_nalComponentEntropyFloat3);
+static nalComponentPacked8EntropyFloat3 Component_nalComponentPacked8EntropyFloat3(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked8EntropyFloat3(
+    "NAL_Packed8EntropyFloat3", Component_nalComponentPacked8EntropyFloat3);
+static nalComponentPacked16EntropyFloat3 Component_nalComponentPacked16EntropyFloat3(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked16EntropyFloat3(
+    "NAL_Packed16EntropyFloat3", Component_nalComponentPacked16EntropyFloat3);
+static nalComponentFloat4 Component_nalComponentFloat4(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentFloat4(
+    "NAL_Float4", Component_nalComponentFloat4);
+static nalComponentEntropyFloat4 Component_nalComponentEntropyFloat4(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyFloat4(
+    "NAL_EntropyFloat4", Component_nalComponentEntropyFloat4);
+static nalComponentPacked8EntropyFloat4 Component_nalComponentPacked8EntropyFloat4(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked8EntropyFloat4(
+    "NAL_Packed8EntropyFloat4", Component_nalComponentPacked8EntropyFloat4);
+static nalComponentPacked16EntropyFloat4 Component_nalComponentPacked16EntropyFloat4(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked16EntropyFloat4(
+    "NAL_Packed16EntropyFloat4", Component_nalComponentPacked16EntropyFloat4);
+static nalComponentQuat Component_nalComponentQuat(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentQuat(
+    "NAL_Quaternion", Component_nalComponentQuat);
+static nalComponentEntropyQuat Component_nalComponentEntropyQuat(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyQuat(
+    "NAL_EntropyQuaternion", Component_nalComponentEntropyQuat);
+static nalComponentPacked8EntropyQuat Component_nalComponentPacked8EntropyQuat(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked8EntropyQuat(
+    "NAL_Packed8EntropyQuaternion", Component_nalComponentPacked8EntropyQuat);
+static nalComponentPacked16EntropyQuat Component_nalComponentPacked16EntropyQuat(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPacked16EntropyQuat(
+    "NAL_Packed16EntropyQuaternion", Component_nalComponentPacked16EntropyQuat);
+static nalComponentPO Component_nalComponentPO(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentPO(
+    "NAL_PositionOrientation", Component_nalComponentPO);
+static nalComponentEntropyPO Component_nalComponentEntropyPO(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyPO(
+    "NAL_EntropyPositionOrientation", Component_nalComponentEntropyPO);
+static nalComponentTrajectoryPO Component_nalComponentTrajectoryPO(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentTrajectoryPO(
+    "NAL_TrajectoryPositionOrientation", Component_nalComponentTrajectoryPO);
+static nalComponentEntropyTrajectoryPO Component_nalComponentEntropyTrajectoryPO(NAL_REGISTER_KEY);
+static nalComponentInitList InitListComponent_nalComponentEntropyTrajectoryPO(
+    "NAL_EntropyTrajectoryPositionOrientation",
+    Component_nalComponentEntropyTrajectoryPO);
 
 static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
                                      int track);
