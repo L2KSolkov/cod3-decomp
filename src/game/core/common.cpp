@@ -1260,10 +1260,13 @@ void Com_XAnimFreeSmallTree(XAnimTree* animtree)
 // ea: 0x004BBF90
 void* Com_GetWeaponInfoMemory(int iSize, int* piParsed, int iSource)
 {
-    ASSERT("(iSource == 1) || (iSource == 2)",
-           "c:\\cod\\code\\game\\common.cpp", 4174);
-    ASSERT("iSize > 0", "c:\\cod\\code\\game\\common.cpp", 4175);
-    ASSERT("piParsed", "c:\\cod\\code\\game\\common.cpp", 4176);
+    if (iSource != 1 && iSource != 2)
+        ASSERT("(iSource == 1) || (iSource == 2)",
+               "c:\\cod\\code\\game\\common.cpp", 4174);
+    if (iSize <= 0)
+        ASSERT("iSize > 0", "c:\\cod\\code\\game\\common.cpp", 4175);
+    if (piParsed == nullptr)
+        ASSERT("piParsed", "c:\\cod\\code\\game\\common.cpp", 4176);
     if (iSize <= 0)
         return nullptr;
     if (pWeaponInfoMemory != nullptr)
