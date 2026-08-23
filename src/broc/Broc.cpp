@@ -685,15 +685,37 @@ string& string::operator=(const string& rhs) {
 }
 
 string& string::operator=(const char* txt) {
-    Block* oldBlock = mBlock;
-    if (txt) {
-        unsigned int len = Broc::length(txt);
-        mBlock = AllocBlock(txt, len, 0);
-    } else {
-        mBlock = NULL;
+    if (!txt) {
+        if (gBrocAPI.mAssert(
+                "c:\\cod\\code\\script\\include\\strings.inl",
+                0,
+                "NULL string passed to string::operator ="))
+            __debugbreak();
     }
-    if (oldBlock)
-        oldBlock->DecrementCount();
+
+    if (!mBlock) {
+        mBlock = AllocBlock(txt, Broc::length(txt), 0);
+        return *this;
+    }
+
+    if (mBlock->mRefCount != 1) {
+        mBlock->DecrementCount();
+        mBlock = AllocBlock(txt, Broc::length(txt), 0);
+        return *this;
+    }
+
+    unsigned int len = Broc::length(txt);
+    if (len + 1 < mBlock->mBlockSize) {
+        char* dst = string::Block::GetBuff(mBlock);
+        const char* src = txt;
+        mBlock->mLength = 0;
+        while ((*dst++ = *src++) != '\0')
+            ++mBlock->mLength;
+    } else {
+        Block* newBlock = AllocBlock(txt, len, len);
+        mBlock->DecrementCount();
+        mBlock = newBlock;
+    }
     return *this;
 }
 
