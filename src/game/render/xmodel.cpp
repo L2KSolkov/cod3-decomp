@@ -447,18 +447,29 @@ struct XModelCollSurf {
     int boneIdx;            // +0x20
 };
 
+struct XModelCollisionView {
+    uint8_t pad[0x38];
+    InplaceVector<XModelCollSurf const*> collSurfs;
+};
+static_assert(offsetof(XModelCollisionView, collSurfs) == 0x38,
+              "XModel collision layout mismatch");
+
 int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
                           math::Position3& mins, math::Position3& maxs,
                           const math::Mat43* bones, int nbones)
 {
     ValidatePakId((TPakId)model.mPakId);
-    unsigned int mSize = model.mValue->collSurfs.mSize;
+    const XModelCollisionView* view =
+        reinterpret_cast<const XModelCollisionView*>(model.mValue);
+    unsigned int mSize = view->collSurfs.mSize;
     if (mSize == 0)
         return 0;
     mins.v = _mm_set1_ps(3.4028235e38f);
     maxs.v = _mm_set1_ps(-3.4028235e38f);
 
-    InplaceVector<XModelCollSurf const*>& collSurfs = model.mValue->collSurfs;
+    const InplaceVector<XModelCollSurf const*>& collSurfs = view->collSurfs;
+    if (collSurfs.mList == nullptr)
+        return 0;
     for (unsigned int i = 0; i < collSurfs.mSize; ++i)
     {
         ValidatePakId((TPakId)model.mPakId);

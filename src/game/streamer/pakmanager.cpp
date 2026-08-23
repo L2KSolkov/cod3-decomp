@@ -2743,16 +2743,18 @@ public:
     uint8_t _pad0[0x68];
     XModel* xmodel;        // +0x68
     float   axis[3][3];    // +0x6C
-    uint8_t _pad78[0x90 - 0x78];
     float   origin[3];     // +0x90
     float   scale;         // +0x9C
     float   absmin[3];     // +0xA0
     float   absmax[3];     // +0xAC
-    uint8_t _padB8[0xE0 - 0xB8];
+    float   invAxis[3][3]; // +0xB8
+    StaticModel* nextModel; // +0xDC
     TPakId  pakId;         // +0xE0
-    uint8_t _padE4[0xE8 - 0xE4];
+    float   viewCount;     // +0xE4
     int     instance;      // +0xE8
+    void*   nano_dmesh_client; // +0xEC
 };
+static_assert(sizeof(StaticModel) == 0xF0, "StaticModel layout mismatch");
 
 void ValidatePakId(TPakId pakId);  // defined below (0x6653A0)
 
