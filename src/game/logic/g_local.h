@@ -1637,8 +1637,8 @@ PathNodes::PathNode* __fastcall Sentient_NearestNode(
     int ignoreNegotiationBegin);  // ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z (mp_actors.o)
 void __fastcall Sentient_NodeClaimRevoked(
     sentient_s* pSelf, PathNodes::NodeHandle node);  // ?Sentient_NodeClaimRevoked@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z (mp_actors.o)
-const float VectorDistanceSquared(const float* const p1,
-                                    const float* const p2);
+double VectorDistanceSquared(const float* const p1,
+                             const float* const p2);
 
 namespace cdOceanGlobals {
 // ea: 0x007C0B70 (render_xboxr:cdOceanGlobals.o)
@@ -3339,8 +3339,8 @@ float __fastcall Actor_CanSeePointEx(
     actor_s* pSelf, const float* vPoint, float fFovDot, float fMaxDistSqrd,
     DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
 bool G_IsPlayerDrivingVehicle(Entity* player);
-const float VectorDistanceSquared2D(const math::Position3& p1,
-                                    const math::Position3& p2);
+double VectorDistanceSquared2D(const math::Position3& p1,
+                               const math::Position3& p2);
 const math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
@@ -3383,11 +3383,11 @@ void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
 void AxisToAngles(const float (*const axis)[3], float* const angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);
-const float VectorNormalize(float* const v);
-const float VectorNormalize2D(float* const v);
-const float VectorNormalize(math::Dir3& v);                    // core.o
-float VectorNormalize2(const math::Dir3& in, math::Dir3& out);  // core.o
-const float Q_acos(float c);
+double VectorNormalize(float* const v);
+double VectorNormalize2D(float* const v);
+double VectorNormalize(math::Dir3& v);                    // core.o
+double VectorNormalize2(const math::Dir3& in, math::Dir3& out);  // core.o
+double Q_acos(float c);
 void  YawVectors(float yaw, float* const forward, float* const right);
 const float vectosignedpitch(const float* const vec);
 void  vectosignedangles(const float* const vec, float* const angles);
@@ -3475,7 +3475,7 @@ void j_nullsub_64(Entity* pGrenade, Entity* pHitEnt);
 // g_combat.cpp core (G_Damage family)
 // ============================================================================
 bool  IsLocalPlayer(Entity* ent);   // ?IsLocalPlayer@@YA_NPAVEntity@@@Z
-const float VectorNormalize2(const float* const v, float* const out);
+double VectorNormalize2(const float* const v, float* const out);
 extern vmCvar_t mp_friendlyfire;      // 0xEABBC8
 extern vmCvar_t g_knockback;
 extern vmCvar_t g_debugDamage;
@@ -3699,7 +3699,7 @@ void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
                    const float* vStart, const float* vEnd, float fRadiusSqrd);
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                               const math::Position3& vEnd, int iDamage, int iMOD);
-const float VectorDistance(const float* const v1, const float* const v2);
+double VectorDistance(const float* const v1, const float* const v2);
 void  AnglesToAxis(const float* const angles, float (*const axis)[3]);
 void  MatrixInverse(const float (*const in)[3], float (*const out)[3]);
 void  MatrixTransformVector(const float* const in1,
@@ -4701,7 +4701,7 @@ void  G_VehInitPathPos(vehicle_pathpos_t* vpp);   // g.o 0x4526D0
 void  G_DebugCircleEx(const float* center, float radius, const float* dir,
                       const float* color, int depthTest, int duration);  // g.o 0x457170
 void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* const touchents);  // g.o 0x474710
-const float VectorNormalize2(const float* const v, float* const out);  // core.o
+double VectorNormalize2(const float* const v, float* const out);  // core.o
 void  PerpendicularVector(float* const dst, const float* const src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
 const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
@@ -4921,7 +4921,7 @@ extern unsigned int s_entryPointTagHashes[6];    // g.o @ 0xEE62F4
 extern unsigned int s_flashTagHashes[4];         // g.o @ 0xEE630C
 extern unsigned int s_seatTagHashes[11];         // g.o @ 0xEE631C
 bool  Entity_has_zone_collision(const void* self);  // game.o
-const float VectorDistance(const float* const v1, const float* const v2);  // core.o
+double VectorDistance(const float* const v1, const float* const v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                       DbLinkedHandle<EntityHandleDb, Entity>* entityList,

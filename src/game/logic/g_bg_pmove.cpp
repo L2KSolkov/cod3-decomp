@@ -5893,7 +5893,7 @@ bool push_in_world(pmove_t& pm, float radius,
 // ============================================================================
 // PM_SlideMove - ea: 0x63E850 (bg_pmove.cpp)
 // ============================================================================
-extern const float VectorNormalize2(const float* const v,
+extern double VectorNormalize2(const float* const v,
                                     float* const out);
 extern void Com_Printf(const char* fmt, ...);  // core.o
 

@@ -145,7 +145,7 @@ extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_mi
 extern void G_SetOrigin(Entity* ent, const math::Position3& origin);  // g.o (g_active.cpp)
 extern void G_SetAngle(Entity* ent, const math::Position3& angle);    // g.o (g_active.cpp)
 extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
-extern const float VectorNormalize(math::Dir3& v);  // core.o (q_math.cpp)
+extern double VectorNormalize(math::Dir3& v);  // core.o (q_math.cpp)
 extern unsigned char bulletPriorityMap[];     // g.o (g_game2_misc.cpp)
 namespace View {
 bool IsSplitScreen();  // cg_misc.cpp ?IsSplitScreen@View@@YA_NXZ
@@ -2799,7 +2799,7 @@ extern BspTree* g_bspTree;  // game.o @ 0xF743DC
 
 extern void AngleVectors(const float* const angles, float* const forward,
                          float* const right, float* const up);  // core.o (q_math.cpp)
-extern const float VectorNormalize(float* const v);  // core.o (q_math.cpp)
+extern double VectorNormalize(float* const v);  // core.o (q_math.cpp)
 
 // ProcessEntity cross-object externs (game.o / scr.o / physics.o)
 class Destructible {

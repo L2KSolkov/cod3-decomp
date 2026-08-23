@@ -38,8 +38,8 @@ extern void Scr_FreeSentientFields(sentient_s* pSentient);  // scr.o
 int sLatency = 100;                                 // @ 0xE37C98
 extern int irand(int min, int max);                // core.o
 extern void Com_Printf(const char* fmt, ...);      // core.o
-extern const float VectorDistanceSquared(const float* const p1,
-                                         const float* const p2);  // core.o
+extern double VectorDistanceSquared(const float* const p1,
+                                    const float* const p2);  // core.o
 extern int g_doDontLinkCheck;              // ?g_doDontLinkCheck@@3HA @ 0xE37A1C (pathnodemgr.cpp)
 
 // ea: 0x8990B0 (g.o inline) - returns the null hash (0)

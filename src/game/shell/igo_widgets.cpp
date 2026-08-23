@@ -116,7 +116,7 @@ int mpviewport = 0;          // @ 0xF3A574
 extern const char* CG_ConfigString(unsigned int index);  // cg.o
 extern int BG_GetNumWeapons();  // game.o
 extern bool IsVehicleSpotted(Entity* vehicle);  // g.o
-extern const float VectorDistance(const float* const v1,
+extern double VectorDistance(const float* const v1,
                                   const float* const v2);  // core.o
 struct nglScene;
 extern math::Position3* nglProjectPoint(math::Position3* result,
@@ -351,7 +351,7 @@ extern int   dword_F62964[];  // @ 0xF62964
 extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
 extern const float AngleSubtract(float a1, float a2);   // core.o
 extern const float AngleNormalize180(float angle);       // core.o
-extern const float VectorNormalize2D(float* const v);    // core.o
+extern double VectorNormalize2D(float* const v);    // core.o
 extern bool  IsVehicleTank(Entity* ent);           // g.o
 extern Client g_clients[16];                       // g.o
 extern team_t Sentient_EnemyTeam(team_t eTeam);    // mp_actors.o

@@ -35,7 +35,7 @@ extern int nglGetScreenHeight();
 extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void* FEManager_GetFont(void* mgr, int f);
 extern "C" unsigned int AeHash(const char* str);
-extern const float VectorNormalize(float* const v);
+extern double VectorNormalize(float* const v);
 struct nglScene;
 extern math::Position3* nglProjectPoint(math::Position3* result,
                                         const math::Position3* in,

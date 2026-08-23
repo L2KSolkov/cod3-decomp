@@ -574,7 +574,7 @@ void CG_ScreenFade()
     }
 }
 
-extern const float VectorNormalize(float* const v);
+extern double VectorNormalize(float* const v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void MatrixMultiply(const float (*const in1)[3],
                              const float (*const in2)[3],

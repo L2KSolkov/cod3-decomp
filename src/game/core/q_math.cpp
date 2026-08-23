@@ -182,21 +182,21 @@ const int Q_rand(int* seed)
 }
 
 // ea: 0x004B6000
-const float Q_random(int* seed)
+double Q_random(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
     float seeda = (float)(v1 & 0xFFFF);
-    return seeda / 65536.0f;
+    return seeda / 65536.0;
 }
 
 // ea: 0x004B6030
-const float Q_crandom(int* seed)
+double Q_crandom(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
     float seeda = (float)(v1 & 0xFFFF);
-    return 2.0f * (seeda / 65536.0f - 0.5f);
+    return seeda / 65536.0 - 0.5 + seeda / 65536.0 - 0.5;
 }
 
 // ea: 0x004B6070
@@ -210,9 +210,9 @@ const int Q_log2(int val)
 }
 
 // ea: 0x004B6090
-const float Q_acos(float c)
+double Q_acos(float c)
 {
-    float angle = acosf(c);
+    float angle = (float)acos((double)c);
     if (angle <= 3.1415927f && angle >= -3.1415927f)
         return angle;
     return 3.1415927f;
@@ -266,7 +266,7 @@ const unsigned char DirToByte(const float* const dir)
 }
 
 // ea: 0x004B6170
-void ByteToDir(int b, float* const dir)
+void ByteToDir(unsigned int b, float* const dir)
 {
     if (b > 0xA1)
     {
@@ -287,7 +287,7 @@ void ByteToDir(int b, float* const dir)
 // ============================================================================
 
 // ea: 0x004B61C0
-const float _DotProduct(const float* const const v1, const float* const const v2)
+double _DotProduct(const float* const const v1, const float* const const v2)
 {
     return v1[2] * v2[2] + v1[1] * v2[1] + *v1 * *v2;
 }
@@ -352,13 +352,13 @@ const int VectorCompareEpsilon(const float* const v1,
 }
 
 // ea: 0x004B6360
-const float _VectorLength(const float* const const v)
+double _VectorLength(const float* const const v)
 {
     return sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
 }
 
 // ea: 0x004B63B0
-const float VectorDistance(const float* const const v1, const float* const const v2)
+double VectorDistance(const float* const const v1, const float* const const v2)
 {
     float dir = *v2 - *v1;
     float v4 = v2[1] - v1[1];
@@ -367,8 +367,8 @@ const float VectorDistance(const float* const const v1, const float* const const
 }
 
 // ea: 0x004B6400
-const float VectorDistanceSquared(const float* const p1,
-                                  const float* const p2)
+double VectorDistanceSquared(const float* const p1,
+                             const float* const p2)
 {
     float v = *p2 - *p1;
     float v4 = p2[1] - p1[1];
@@ -377,7 +377,7 @@ const float VectorDistanceSquared(const float* const p1,
 }
 
 // ea: 0x004B6440
-const float VectorDistance2D(const float* const const v1, const float* const const v2)
+double VectorDistance2D(const float* const const v1, const float* const const v2)
 {
     float dir = *v2 - *v1;
     float dir_4 = v2[1] - v1[1];
@@ -385,8 +385,8 @@ const float VectorDistance2D(const float* const const v1, const float* const con
 }
 
 // ea: 0x004B6480
-const float VectorDistanceSquared2D(const float* const const p1,
-                                    const float* const p2)
+double VectorDistanceSquared2D(const float* const const p1,
+                               const float* const p2)
 {
     float v = *p2 - *p1;
     float v4 = p2[1] - p1[1];
@@ -394,8 +394,8 @@ const float VectorDistanceSquared2D(const float* const const p1,
 }
 
 // ea: 0x004B64B0
-const float VectorDistanceSquared2D(const math::Position3& p1,
-                                    const math::Position3& p2)
+double VectorDistanceSquared2D(const math::Position3& p1,
+                               const math::Position3& p2)
 {
     float v = p2.v.m128_f32[0] - p1.v.m128_f32[0];
     float v4 = p2.v.m128_f32[1] - p1.v.m128_f32[1];
@@ -419,7 +419,7 @@ void CrossProductUp(const float* const v1, float* const cross)
 }
 
 // ea: 0x004B6570
-float VectorNormalize2(const math::Dir3& in, math::Dir3& out)
+double VectorNormalize2(const math::Dir3& in, math::Dir3& out)
 {
     float v6 = in.v.m128_f32[0] * in.v.m128_f32[0]
              + in.v.m128_f32[1] * in.v.m128_f32[1]
@@ -440,7 +440,7 @@ float VectorNormalize2(const math::Dir3& in, math::Dir3& out)
 }
 
 // ea: 0x004B6620
-const float VectorNormalize(math::Dir3& v)
+double VectorNormalize(math::Dir3& v)
 {
     float v4 = sqrtf(v.v.m128_f32[0] * v.v.m128_f32[0]
                    + v.v.m128_f32[1] * v.v.m128_f32[1]
@@ -455,7 +455,7 @@ const float VectorNormalize(math::Dir3& v)
 }
 
 // ea: 0x004B66B0
-const float VectorNormalize(float* const v)
+double VectorNormalize(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
     if (length != 0.0f)
@@ -469,7 +469,7 @@ const float VectorNormalize(float* const v)
 }
 
 // ea: 0x004B6740
-const float VectorNormalize2D(float* const v)
+double VectorNormalize2D(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1]);
     if (length != 0.0f)
@@ -482,7 +482,7 @@ const float VectorNormalize2D(float* const v)
 }
 
 // ea: 0x004B67C0
-const float VectorNormalize4D(float* const v)
+double VectorNormalize4D(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]);
     if (length != 0.0f)
@@ -497,13 +497,12 @@ const float VectorNormalize4D(float* const v)
 }
 
 // ea: 0x004B6870
-const float VectorNormalize2(const float* const v, float* const out)
+double VectorNormalize2(const float* const v, float* const out)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
     if (length == 0.0f)
     {
         *out = 0.0f;
-        out[1] = 0.0f;
         out[2] = 0.0f;
     }
     else
