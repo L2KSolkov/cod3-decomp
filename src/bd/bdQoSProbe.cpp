@@ -307,7 +307,7 @@ void bdQoSProbe::pump() {
                 result.m_latency = (float)info.wRttMedInMsecs * 0.001f;
                 result.m_dataSize = info.cbData;
                 result.m_data = info.pbData;
-                entry->m_listener->onQoSProbeSuccess(result);
+                entry->m_listener->onQoSProbeSuccess(&result);
 
                 if (entry->m_addrs[j].m_ptr != NULL &&
                     entry->m_addrs[j].m_ptr->releaseRef() == 0)

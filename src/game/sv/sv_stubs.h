@@ -15,6 +15,8 @@
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
 #include "bd/bdSession.h"
+#include "bd/bdSessionListener.h"
+#include "bd/bdQoSProbeListener.h"
 #include "bd/bdStopwatch.h"
 
 // bd headers pull windows.h via bdReferencable.h; undo its GetObjectA macro
@@ -2253,7 +2255,7 @@ struct MPVehicleEvent {
 };
 static_assert(sizeof(MPVehicleEvent) == 0x20, "MPVehicleEvent size mismatch");
 
-class MPPeer {
+class MPPeer : public bdSessionListener, public bdQoSProbeListener {
 public:
     MPPlayerManager* GetPlayerManager();
     bool IsPlayerTalking(MPPlayer* player,
@@ -2433,7 +2435,7 @@ public:
     static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
     static int mRenderEntityBufferInfo;  // ?mRenderEntityBufferInfo@MPPeer@@2HA (mp.o)
 private:
-    virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
+    virtual void onQoSProbeSuccess(const bdQoSProbeInfo* info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr);  // ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x735C40)
     virtual void onSessionConnectFail();  // ?onSessionConnectFail@MPPeer@@EAEXXZ (mp.o 0x72C940)
     virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)

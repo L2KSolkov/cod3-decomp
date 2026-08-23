@@ -7774,15 +7774,15 @@ bool MPPeer::IsPlayerTalking(Entity* player, int local_controller)
 }
 
 // ea: 0x00735BF0
-void MPPeer::onQoSProbeSuccess(const bdQoSProbeInfo& info)
+void MPPeer::onQoSProbeSuccess(const bdQoSProbeInfo* info)
 {
     printf("****** onQoSProbeSuccess ****** (%s) %5.4f seconds\n",
-           info.m_data, info.m_latency);
-    float m_latency = info.m_latency;
-    bdCommonAddr* m_ptr = info.m_addr.m_ptr;
+           info->m_data, info->m_latency);
+    float m_latency = info->m_latency;
+    bdCommonAddr* m_ptr = info->m_addr.m_ptr;
     if (m_ptr != nullptr)
         ++m_ptr->m_refCount;
-    UpdateQosProbe(info.m_addr, true, m_latency);
+    UpdateQosProbe(info->m_addr, true, m_latency);
 }
 
 // ea: 0x007616C0 (mCurrentGameInfo at +0x73B0)
