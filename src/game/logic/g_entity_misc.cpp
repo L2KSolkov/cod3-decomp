@@ -3285,7 +3285,17 @@ void XModelTransform(IVPointer<XModel> model, DObjSkelMat* a,
 }
 const void* DCGBank_get_set(void* self, int a)
 {
-    (void)self; (void)a;
+    struct DCGBankView {
+        unsigned int count;
+        unsigned char* elements;
+    };
+    DCGBankView* bank = (DCGBankView*)self;
+    for (unsigned int i = 0; i < bank->count; ++i)
+    {
+        unsigned char* set = bank->elements + i * 0x70;
+        if (*(int*)(set + 0x68) == a)
+            return set;
+    }
     return nullptr;
 }
 const void* StreamZoneManager_GetCellZone(void* self, int a)
