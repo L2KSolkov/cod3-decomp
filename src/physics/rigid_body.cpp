@@ -147,29 +147,31 @@ void rigid_body::set(float mass, const math::Dir3& inertia, const math::Mat43& m
                      const math::Dir3& t_vel, const math::Dir3& a_vel, float fric_coef,
                      int stable_min_contact_count) {
     __m128 v = inertia.v;
-    if (_mm_shuffle_ps(v, v, 85).m128_f32[0] == v.m128_f32[0]
-        && _mm_shuffle_ps(v, v, 170).m128_f32[0] == v.m128_f32[0]) {
-        // all components self-equal => no NaN
-    } else if (_tlAssert("source/rigid_body.cpp", 26,
+    if (v.m128_f32[0] != v.m128_f32[0]
+        || v.m128_f32[1] != v.m128_f32[1]
+        || v.m128_f32[2] != v.m128_f32[2]) {
+        if (_tlAssert("source/rigid_body.cpp", 26,
                          "(inertia.GetX() == inertia.GetX() && inertia.GetY() == inertia.GetY() && inertia.GetZ() == inertia.GetZ())",
-                         "invalid vector")) {
-        __debugbreak();
+                         "invalid vector"))
+            __debugbreak();
     }
     __m128 v11 = t_vel.v;
-    if (_mm_shuffle_ps(v11, v11, 85).m128_f32[0] == v11.m128_f32[0]
-        && _mm_shuffle_ps(v11, v11, 170).m128_f32[0] == v11.m128_f32[0]) {
-    } else if (_tlAssert("source/rigid_body.cpp", 27,
+    if (v11.m128_f32[0] != v11.m128_f32[0]
+        || v11.m128_f32[1] != v11.m128_f32[1]
+        || v11.m128_f32[2] != v11.m128_f32[2]) {
+        if (_tlAssert("source/rigid_body.cpp", 27,
                          "(t_vel.GetX() == t_vel.GetX() && t_vel.GetY() == t_vel.GetY() && t_vel.GetZ() == t_vel.GetZ())",
-                         "invalid vector")) {
-        __debugbreak();
+                         "invalid vector"))
+            __debugbreak();
     }
     __m128 v12 = a_vel.v;
-    if (_mm_shuffle_ps(v12, v12, 85).m128_f32[0] == v12.m128_f32[0]
-        && _mm_shuffle_ps(v12, v12, 170).m128_f32[0] == v12.m128_f32[0]) {
-    } else if (_tlAssert("source/rigid_body.cpp", 28,
+    if (v12.m128_f32[0] != v12.m128_f32[0]
+        || v12.m128_f32[1] != v12.m128_f32[1]
+        || v12.m128_f32[2] != v12.m128_f32[2]) {
+        if (_tlAssert("source/rigid_body.cpp", 28,
                          "(a_vel.GetX() == a_vel.GetX() && a_vel.GetY() == a_vel.GetY() && a_vel.GetZ() == a_vel.GetZ())",
-                         "invalid vector")) {
-        __debugbreak();
+                         "invalid vector"))
+            __debugbreak();
     }
 
     this->set_mass(mass);
