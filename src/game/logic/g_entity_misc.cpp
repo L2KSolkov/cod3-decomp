@@ -2511,12 +2511,6 @@ void HandleDb_BindTaskObject(void* self, Handle h, Task* t)
 }
 void HandleDb_ReleaseTaskHandle(void* self, Handle h) { (void)self; (void)h; }
 
-struct vm_s;
-vm_s* VM_Create(const char* name, int (*entry)(int*))
-{
-    (void)name; (void)entry;
-    return nullptr;
-}
 unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
 {
     (void)self; (void)a;

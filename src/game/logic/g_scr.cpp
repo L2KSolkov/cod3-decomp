@@ -6313,25 +6313,56 @@ void ObjectiveUpdatedNotify()
 // scr.o batch 18 - VM glue (vm.cpp) + scr_vm error helpers
 // ============================================================================
 
-// vm_s local view (vm.cpp; 0x8C bytes stride, name[128] at +0)
-struct vm_s_local {
-    char name[128];                                  // +0x00
-    int (*systemCall)(int*);                         // +0x80
-    int (__cdecl* entryPoint)(int, ...);             // +0x84
-    void* dllHandle;                                 // +0x88
-};
-static_assert(sizeof(vm_s_local) == 0x8C, "vm_s_local size mismatch");
-
 // ?vmTable@@3PAUvm_s@@A @ 0x1329AD0 (3 entries, 140-byte stride)
-vm_s_local vmTable[3];
+vm_s vmTable[3];
 
 extern void game_dllEntry(int (*syscallptr)(int, ...));  // ?game_dllEntry@@YAXP6AHHZZ@Z
+int VM_DllSyscall(int arg, ...);
 extern int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
-                     int arg4, int arg5, int arg6, int arg7, int arg8,
-                     int arg9, int arg10, int arg11, int arg12,
-                     int arg13);  // ?cg_vmMain@@YAHHHHHHHHHHHHHH@Z
+                     int arg4);
 extern void cg_dllEntry(int (*syscallptr)(int, ...));  // ?cg_dllEntry@@YAXP6AHHZZ@Z
 extern void Q_strncpyz(char* dest, const char* src, int destsize);  // ?Q_strncpyz@@YAXPADPBDH@Z
+
+// ea: 0x005C1BE0
+vm_s* VM_Create(const char* module, int (__cdecl* systemCalls)(int*))
+{
+    if (module == nullptr || *module == 0 || systemCalls == nullptr)
+        Com_Error((errorParm_t)1, "\x15VM_Create: bad parms");
+
+    int slot = 0;
+    for (; slot < 3; ++slot)
+    {
+        if (Q_stricmp(vmTable[slot].name, module) == 0)
+            return &vmTable[slot];
+    }
+
+    slot = 0;
+    for (; slot < 3 && vmTable[slot].name[0] != 0; ++slot)
+        ;
+    if (slot == 3)
+        Com_Error((errorParm_t)1, "\x15VM_Create: no free vm_t");
+
+    vm_s* vm = &vmTable[slot];
+    Q_strncpyz(vm->name, module, 128);
+    vm->systemCall = systemCalls;
+    if (strcmp(module, "ui") == 0)
+        return nullptr;
+    if (strcmp(module, "game") == 0)
+    {
+        vm->dllHandle = reinterpret_cast<void*>(-1);
+        vm->entryPoint = reinterpret_cast<int (*)(int, ...)>(game_vmMain);
+        game_dllEntry(VM_DllSyscall);
+        return vm;
+    }
+    if (strcmp(module, "cgame") != 0)
+        return nullptr;
+    vm->dllHandle = reinterpret_cast<void*>(-1);
+    vm->entryPoint = reinterpret_cast<int (*)(int, ...)>(cg_vmMain);
+    vm->systemCall = systemCalls;
+    cg_dllEntry(VM_DllSyscall);
+    return vm;
+}
+
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);  // ?GetTextureData@@YAPAUnglTexture@@PBDH0@Z (render.o)
 extern const char* SV_GetConfigstringConst(int index);  // ?SV_GetConfigstringConst@@YAPBDH@Z (sv.o)
@@ -6351,7 +6382,7 @@ int VM_DllSyscall(int arg, ...)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    return ((vm_s_local*)currentVM)->systemCall(&arg);
+    return ((vm_s*)currentVM)->systemCall(&arg);
 }
 
 // ea: 0x005C1A60
