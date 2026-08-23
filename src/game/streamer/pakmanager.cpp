@@ -621,6 +621,10 @@ void DecodeGDB(const char* name, unsigned char* data, unsigned int size,
                TPakId pakId, PakFile* pak);
 void DecodeBSP(const char* name, unsigned char* data, unsigned int size,
                TPakId pakId, PakFile* pak);
+void DecodeBSP(const char* name, unsigned char* data, int size,
+               TPakId pakId, PakFile* pak);
+void DecodeBSPAdapter(const char* name, unsigned char* data,
+                      unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeInstanceBank(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeCGBank(const char* name, unsigned char* data, unsigned int size,
@@ -10025,7 +10029,7 @@ PakDecoder GetDecoder(const char* ext)
     {
     case 0x36FEC0:  return DecodeAITypeBank;         // "aitb"
     case 0x1C36D:   return DecodeGDB;                // "gdb"
-    case 0x1B048:   return DecodeBSP;
+    case 0x1B048:   return DecodeBSPAdapter;
     case 0xDEB:     return DecodeInstanceBank;       // "ib"
     case 0xD2A:     return DecodeCGBank;             // "cg"
     case 0xD46:     return DecodeDB;                 // "db"
@@ -14913,6 +14917,11 @@ void DecodeBSP(const char* name, unsigned char* data, unsigned int size, TPakId 
                PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+}
+void DecodeBSPAdapter(const char* name, unsigned char* data, unsigned int size,
+                      TPakId pakId, PakFile* pak)
+{
+    DecodeBSP(name, data, (int)size, pakId, pak);
 }
 void DecodeCGBank(const char* name, unsigned char* data, unsigned int size,
                   TPakId pakId, PakFile* pak)

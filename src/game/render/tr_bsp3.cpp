@@ -18,17 +18,17 @@ bool IsIgnored();
 bool Assert(const char* fmtstring, ...);
 }
 
-class BspTree;
 class PakFile;
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 
-extern BspTree* g_bspTree;      // ?g_bspTree@@3PAVBspTree@@A @ 0xF743DC
-
-class BspTreeMethods {
+// The BSP methods are emitted by tr_tiny.cpp with the global BspTree tag.
+// Keep this view as a struct so the shared game.o g_bspTree symbol matches.
+struct BspTree {
 public:
     void Fixup();       // ?Fixup@BspTree@@QAEXXZ (render.o inline COMDAT)
     void post_fixup();  // ?post_fixup@BspTree@@QAEXXZ (render.o inline COMDAT)
 };
+extern BspTree* g_bspTree;      // ?g_bspTree@@3PAUBspTree@@A @ 0xF743DC
 
 // refimport_t view (Error +0x04)
 struct refimport_t {
@@ -96,8 +96,8 @@ void DecodeBSP(const char* name, unsigned char* data, int size,
             __debugbreak();
     }
     g_bspTree = (BspTree*)data;
-    ((BspTreeMethods*)g_bspTree)->Fixup();
-    ((BspTreeMethods*)g_bspTree)->post_fixup();
+    g_bspTree->Fixup();
+    g_bspTree->post_fixup();
     if (tr.worldMapLoaded != 0)
         ri.Error(1, "ERROR: attempted to redundantly load world map\n");
     tr.worldMapLoaded = 1;
