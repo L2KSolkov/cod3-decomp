@@ -435,7 +435,7 @@ class XModel {
 public:
     uint8_t _pad0[0x20];
     XModelParts* parts;   // +0x20
-    XModelLod** lod;      // +0x24
+    XModelLod* lod[5];    // +0x24
     uint8_t _pad28[0x48 - 0x28];
     InplaceString name;   // +0x48
 };
