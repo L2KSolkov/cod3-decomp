@@ -790,16 +790,6 @@ Entity::~Entity()
         gRefEntFreeList.mpFree = v11;
     }
     this->mRenderEntity = nullptr;
-    for (int i = 0; i < 7; ++i)
-        this->mAttachModels[i].~AttachModelInfo();
-    this->mSpawnItem.~string();
-    this->team.~string();
-    this->mAnimName.~string();
-    this->mScriptNoteworthy.~string();
-    this->mGroupName.~string();
-    this->mTarget.~string();
-    this->targetname.~string();
-    this->mClassName.~string();
 }
 
 // ea: 0x00639250
