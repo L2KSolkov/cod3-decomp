@@ -3382,16 +3382,19 @@ void rb_vehicle::_update_wheel_effects(float delta_t)
         VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx);
     rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
     rigid_body* m_rb = m_chassis_rbinf->m_rb;
+    proximity_data_t* owner_proximity =
+        *reinterpret_cast<proximity_data_t**>(
+            reinterpret_cast<unsigned char*>(m_owner) + 0x45C);
 
     // Water-filter pass (contents 32): ML (4) / MR (5) wheels.
     proximity_data_t water_objects;
-    if (m_owner->proximity_data != nullptr
-        && m_owner->proximity_data->lo.v.m128_f32[0]
-               <= m_owner->proximity_data->hi.v.m128_f32[0])
+    if (owner_proximity != nullptr
+        && owner_proximity->lo.v.m128_f32[0]
+               <= owner_proximity->hi.v.m128_f32[0])
     {
         filter_proximity_data(
-            m_owner->proximity_data->lo, m_owner->proximity_data->hi, 32,
-            *m_owner->proximity_data, water_objects);
+            owner_proximity->lo, owner_proximity->hi, 32,
+            *owner_proximity, water_objects);
         if ((m_flags.mMask & 0x20) != 0)
         {
             rigid_body_constraint_wheel* v9 =
