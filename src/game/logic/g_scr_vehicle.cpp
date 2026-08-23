@@ -23,12 +23,6 @@ extern math::Position3 kVehSaftyMaxs;
 extern math::Position3 kVehSaftyMins;
 extern vmCvar_t g_vehicleTexScrollScale;
 
-// rb_vehicle statics + free helpers (physics.o; ported in g_physics.cpp)
-void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
-{
-    (void)p; (void)from_network;
-}
-
 // ea: 0x705010 (physics.o)
 rb_vehicle* GetPlayerRBVehicle()
 {

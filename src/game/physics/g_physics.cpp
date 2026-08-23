@@ -2255,7 +2255,9 @@ struct vehicle_info_t {
     char    name[32];  // +0x00
     short   type;  // +0x20
     short   subtype;  // +0x22
-    uint8_t _pad24[0x21C - 0x24];
+    uint8_t _pad24[0x58 - 0x24];
+    float   rotRate;  // +0x58
+    uint8_t _pad5C[0x21C - 0x5C];
     char    vehiclePhysicsParms[32];  // +0x21C
     char    vehiclePhysicsParmsThird[32];  // +0x23C
 };
@@ -3869,6 +3871,108 @@ void rb_vehicle::set(float power_braking_factor, float braking_factor,
     m_steer_current_angle = 0.0f;
     m_state_flags = 0;
     m_forward_vel = 0.0f;
+}
+
+// ea: 0x700F60. The rigid-body setup is part of update_parms in the
+// reference; leaving this as a no-op returns a raw pool slot to the vehicle
+// code with its collision flag still uninitialized.
+void rb_vehicle::update_parms(vehicle_rb_parameter* params, bool initialization)
+{
+    if (params != nullptr)
+        m_parameter = params;
+    if ((m_flags.mMask & 1u) != 0)
+    {
+        unpause_physics();
+        return;
+    }
+
+    vehicle_rb_parameter* p = m_parameter;
+    math::Position3 mins;
+    math::Position3 maxs;
+    if (p->m_bbox_min.v.m128_f32[0] == 0.0f)
+    {
+        struct collmap_bounds_view
+        {
+            uint8_t pad[0x30];
+            math::Position3 min;
+            math::Position3 max;
+        };
+        const collmap_bounds_view* bounds =
+            reinterpret_cast<const collmap_bounds_view*>(m_owner->r.bmodel);
+        mins.v = bounds->min.v;
+        maxs.v = bounds->max.v;
+    }
+    else
+    {
+        mins.v = p->m_bbox_min.v;
+        maxs.v = p->m_bbox_max.v;
+    }
+
+    math::Dir3 dimensions;
+    dimensions.v = _mm_mul_ps(_mm_sub_ps(maxs.v, mins.v),
+                              _mm_set1_ps(0.9f));
+    dimensions.v.m128_f32[1] += 10.0f;
+
+    math::Dir3 unit_inertia;
+    float volume = 0.0f;
+    nuge::calc_box_inertia(&dimensions, &unit_inertia, &volume);
+
+    math::Position3 center;
+    center.v = _mm_mul_ps(_mm_add_ps(maxs.v, mins.v), _mm_set1_ps(0.5f));
+    math::Dir3 com_delta;
+    com_delta.v = _mm_setr_ps(p->m_mass_center_delta_x,
+                              p->m_mass_center_delta_y,
+                              p->m_mass_center_delta_z, 0.0f);
+    center.v = _mm_add_ps(_mm_mul_ps(center.v, _mm_set1_ps(0.5f)),
+                          com_delta.v);
+
+    math::Mat43 initial_mat;
+    SetIdentity(initial_mat);
+    initial_mat.w.v = _mm_xor_ps(_mm_set1_ps(-0.0f), center.v);
+    m_chassis_rbinf->m_transform = initial_mat;
+
+    rigid_body* rb = m_chassis_rbinf->m_rb;
+    float mass = p->m_body_mass;
+    if (initialization)
+    {
+        initial_mat = m_owner->r.currentMat;
+        initial_mat.w.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 0), initial_mat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 85), initial_mat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 170), initial_mat.z.v),
+                initial_mat.w.v));
+        if ((m_flags.mMask & 4u) != 0)
+            initial_mat = m_prev_rb_mat;
+
+        mass /= volume;
+        math::Dir3 inertia;
+        inertia.v = _mm_mul_ps(unit_inertia.v, _mm_set1_ps(mass));
+        math::Dir3 zero;
+        zero.v = _mm_setzero_ps();
+        rb->set(p->m_body_mass, inertia, initial_mat, zero, zero, 0.5f, 3);
+        if ((m_flags.mMask & 0x20u) != 0)
+        {
+            vehicle_info_t* info =
+                VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx);
+            rb->m_max_avel = info->rotRate * 3.1415927f * 0.0055555557f;
+        }
+        else
+        {
+            rb->m_max_avel = 20.0f;
+        }
+    }
+    else
+    {
+        rb->set_mass(mass);
+        math::Dir3 inertia;
+        inertia.v = _mm_mul_ps(unit_inertia.v, _mm_set1_ps(mass / volume));
+        rb->set_inertia(inertia);
+        rb->m_fric_coef = 0.5f;
+    }
+    rb->set_gravity_dir(PHYSICS_GRAVITY_DIRECTION_3);
+    rb->m_gravity_multiplier = PHYSICS_GRAVITY_SCALE_1;
 }
 
 // ea: 0x704F00
