@@ -9271,7 +9271,7 @@ nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash)
 nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name)
 {
     unsigned int v2 = InstanceBankMgr::sInst->Get(
-        INSTBANK_TYPE_SKELETON, pakId, &name);
+        INSTBANK_TYPE_ANIMOFFSET, pakId, &name);
     if (v2 == 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
