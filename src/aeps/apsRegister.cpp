@@ -804,7 +804,7 @@ static const unsigned int ID_UVA                  = 0x55564152;
 static const unsigned int ID_COLORUVA             = 0x43555641;
 static const unsigned int ID_UVARECTANGLE         = 0x55565265;
 static const unsigned int ID_COLORUVARECTANGLE    = 0x63555672;
-static const unsigned int ID_SIMPLEMESH           = 0x53486568;
+static const unsigned int ID_SIMPLEMESH           = 0x534D7368;
 static const unsigned int ID_SHRIMP               = 0x53687070;
 static const unsigned int ID_NULLRENDERER         = 0x4E56304C;
 
