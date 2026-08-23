@@ -4609,32 +4609,73 @@ void SceneManager::DebugRenderFX()
                             Color(1.0f, 1.0f, 1.0f, 1.0f), 0.0f, 1.0f);
 }
 
-// SceneEntity (scenemanager.cpp; mType +0x00, m_origin +0x08, m_angles +0x50)
+// SceneEntity (scenemanager.cpp; IDA type size 0xE4)
+// The scene stream stores three-component vectors as 12-byte float arrays.
+// Keep this serialized layout exact; using Position3 here would add a fourth
+// float and shift every field after the first vector.
+#pragma pack(push, 4)
 struct SceneEntity {
     enum {
         kSceneObject_spawn_intermission = 0,
     };
 
-    int              mType;      // +0x00
-    const char*      m_classname;  // +0x04
-    math::Position3  m_origin;   // +0x08
-    int              m_spawnflags;  // +0x18
-    uint8_t          _pad1C[0x28 - 0x1C];
-    InplaceString    m_target;    // +0x28
-    InplaceString    m_targetname;  // +0x2C
-    uint8_t          _pad30[0x50 - 0x30];
-    math::Position3  m_angles;   // +0x50
-    uint8_t          _pad60[0xB0 - 0x60];
-    InplaceString    m_groupName;  // +0xB0
-    InplaceString    m_scriptNoteworthy;  // +0xB8
-    InplaceString    m_animName;  // +0xC4
-    int16_t          m_persistent_index;  // +0xCC
-    uint8_t          _padCE[0xD0 - 0xCE];
-    BitSet<29>       mSpecifiedFields;  // +0xD0
-    InplaceVector<InplaceTreeElementKV> mKeyValuePairs;  // +0xD4
-    InplaceVector<InplaceTreeElement<unsigned int, InplaceString> >
-        mHashPairs;  // +0xDC
+    int           mType;                 // +0x00
+    InplaceString m_classname;           // +0x04
+    float         m_origin[3];           // +0x08
+    InplaceString m_model;               // +0x14
+    int           m_spawnflags;          // +0x18
+    float         m_speed;               // +0x1C
+    float         m_closespeed;           // +0x20
+    InplaceString m_target;              // +0x24
+    InplaceString m_targetname;          // +0x28
+    InplaceString m_message;             // +0x2C
+    InplaceString m_popup;               // +0x30
+    InplaceString m_book;                // +0x34
+    InplaceString m_teamname;            // +0x38
+    float         m_wait;                // +0x3C
+    float         m_random;              // +0x40
+    int           m_count;               // +0x44
+    int           m_health;              // +0x48
+    int           m_dmg;                 // +0x4C
+    float         m_angles[3];           // +0x50
+    float         m_duration;            // +0x5C
+    float         m_rotate[3];           // +0x60
+    float         m_degrees;             // +0x6C
+    float         m_time;                // +0x70
+    float         m_modelscale;          // +0x74
+    float         m__color[3];           // +0x78
+    float         m_color[3];            // +0x84
+    int           m_key;                 // +0x90
+    float         m_delay;               // +0x94
+    int           m_radius;              // +0x98
+    int           m_start_size;          // +0x9C
+    int           m_end_size;            // +0xA0
+    int           m_shard;               // +0xA4
+    InplaceString m_spawnitem;            // +0xA8
+    InplaceString m_track;               // +0xAC
+    InplaceString m_groupName;           // +0xB0
+    InplaceString m_export;              // +0xB4
+    InplaceString m_scriptNoteworthy;    // +0xB8
+    InplaceString m_maxhealth;           // +0xBC
+    float         m_anglelerprate;       // +0xC0
+    InplaceString m_animName;            // +0xC4
+    int           m_takedamage;          // +0xC8
+    int16_t       m_persistent_index;    // +0xCC
+    uint8_t       _padCE[0xD0 - 0xCE];
+    BitSet<29>    mSpecifiedFields;      // +0xD0
+    InplaceVector<InplaceTreeElementKV> mKeyValuePairs; // +0xD4
+    InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>
+        mHashPairs;                     // +0xDC
 };
+#pragma pack(pop)
+
+static_assert(sizeof(SceneEntity) == 0xE4, "SceneEntity size mismatch");
+static_assert(offsetof(SceneEntity, m_target) == 0x24,
+              "SceneEntity target offset mismatch");
+static_assert(offsetof(SceneEntity, m_targetname) == 0x28,
+              "SceneEntity targetname offset mismatch");
+static_assert(offsetof(SceneEntity, mSpecifiedFields) == 0xD0,
+              "SceneEntity specified fields offset mismatch");
 
 // ea: 0x6788F0
 void SceneManager::InstanceEntities()
@@ -4692,8 +4733,12 @@ void SceneManager::InstanceEntities()
         }
         SceneEntity* ent = (SceneEntity*)
             bank->mSceneEntities.mList[intermissionIndices[pick]];
-        math::Position3 pos = ent->m_origin;
-        math::Position3 angles = ent->m_angles;
+        math::Position3 pos;
+        pos.v = _mm_setr_ps(ent->m_origin[0], ent->m_origin[1],
+                            ent->m_origin[2], 0.0f);
+        math::Position3 angles;
+        angles.v = _mm_setr_ps(ent->m_angles[0], ent->m_angles[1],
+                               ent->m_angles[2], 0.0f);
         int cell = R_CellForPoint(&pos);
         StreamZoneManager::sInst->InitialPosition() = pos;
         StreamZoneManager::sInst->mInitialCell = cell;
