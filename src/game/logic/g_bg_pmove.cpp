@@ -8593,6 +8593,7 @@ void BG_FillInWeaponItems()
                 }
             }
             p_giTag += 13;
+            --v10;
         } while (v10 != 0);
     }
 }
