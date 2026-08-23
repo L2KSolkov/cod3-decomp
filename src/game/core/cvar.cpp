@@ -507,7 +507,8 @@ void Cvar_Reset(const char* var_name)
 // ea: 0x004C3EA0
 void Cvar_Update(vmCvar_t* vmCvar)
 {
-    ASSERT("vmCvar", "c:\\cod\\code\\game\\cvar.cpp", 473);
+    if (vmCvar == nullptr)
+        ASSERT("vmCvar", "c:\\cod\\code\\game\\cvar.cpp", 473);
     if (vmCvar->handle >= cvar_numIndexes)
         Com_Error((errorParm_t)1, "cvar index out of range");
     cvar_t* v1 = &cvar_indexes[vmCvar->handle];
