@@ -11,8 +11,8 @@
 
 namespace math {
 
-void mathInit();
-float Abs(float a);
+unsigned int mathInit();
+long double Abs(float a);
 
 // Forward declarations
 class Dir3;

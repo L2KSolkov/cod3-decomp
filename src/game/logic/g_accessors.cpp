@@ -348,17 +348,19 @@ bool Broc::vector::IsDefined() const
 }
 
 // core.o 0x4B5490
-void math::mathInit()
+unsigned int math::mathInit()
 {
     _controlfp(0x300u, 0x300u);
     _controlfp(0x20000u, 0x30000u);
-    _mm_setcsr(_mm_getcsr() | 0x6000u);
+    const unsigned int result = _mm_getcsr() | 0x6000u;
+    _mm_setcsr(result);
+    return result;
 }
 
 // core.o 0x4B54E0
-float math::Abs(float a)
+long double math::Abs(float a)
 {
-    return fabsf(a);
+    return fabs(a);
 }
 
 // core.o 0x4B54F0
