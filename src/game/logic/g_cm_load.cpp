@@ -288,11 +288,11 @@ LABEL_2:
         if (v10 == 3)
         {
             CM_BoxLeafnums_r(ll,
-                             (unsigned int)(v6->u.node.children[0] - v26) >> 4);
-            nodeIndex = (unsigned int)(v6->u.node.children[1] - v26) >> 4;
+                             (unsigned int)(v6->u.node.children[0] - v26));
+            nodeIndex = (unsigned int)(v6->u.node.children[1] - v26);
             goto LABEL_2;
         }
-        nodeIndex = (unsigned int)(v6->u.node.children[v10 - 1] - v26) >> 4;
+        nodeIndex = (unsigned int)(v6->u.node.children[v10 - 1] - v26);
     }
     CM_StoreLeafs(ll, (int)nodeIndex);
 }
