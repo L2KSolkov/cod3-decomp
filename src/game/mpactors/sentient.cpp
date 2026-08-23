@@ -66,11 +66,29 @@ void __fastcall Sentient_UpdateGoalPos(sentient_s* pSelf);
 // sentient glob state (anonymous struct @ 0xF992D4, IDA-verified)
 // ============================================================================
 struct {
-    float lastTime[2];         // +0x00 (lastTime + lastSample storage)
+    int   lastTime;            // +0x00
     int   lastSample;          // +0x04
-    float playerTrail[16][3];  // +0x08 (192 bytes)
-    int   sampleTime[16];      // +0x20 (64 bytes)
+    float playerTrail[2][3];   // +0x08 (24 bytes)
+    int   sampleTime[2];       // +0x20 (8 bytes)
 } glob;  // ?glob@@3U__unnamed@@A @ 0xF992D4
+
+// ea: 0x0077E140
+void G_InitSentients()
+{
+    glob.lastTime = 0;
+    glob.lastSample = 0;
+    glob.playerTrail[0][0] = 0.0f;
+    glob.playerTrail[0][1] = 0.0f;
+    glob.playerTrail[0][2] = 0.0f;
+    glob.playerTrail[1][0] = 0.0f;
+    glob.playerTrail[1][1] = 0.0f;
+    glob.playerTrail[1][2] = 0.0f;
+    glob.sampleTime[0] = 0;
+    glob.sampleTime[1] = 0;
+    g_iSentientFreeSequence = -1;
+    for (int i = 0; i < 48; ++i)
+        level.sentients[i].iSpawnTime = -1;
+}
 
 const char* const pszTeamName[5] = {
     "invalid", "dead", "neutral", "allies", "axis",

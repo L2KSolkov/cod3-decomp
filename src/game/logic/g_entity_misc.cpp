@@ -2752,7 +2752,6 @@ void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
 void FEManager_UpdateSplitScreen(void* self) { (void)self; }
 void g_femanager_IGO_Update(int a) { (void)a; }
 void G_FreeInteractionInfo() {}
-void G_InitSentients() {}
 void G_RunFrameForEntity(Entity* e, int a) { (void)e; (void)a; }
 void G_TouchTriggersAndVehicles(Entity* e, const math::Position3* a,
                                 const void* b)

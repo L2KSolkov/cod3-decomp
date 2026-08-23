@@ -4034,7 +4034,7 @@ extern void IGOCompassWidget_SetHideCompassStar(int viewport, int active,
 extern void Client_Clear(void* self, bool clearPersistentAlso,
                           bool clearWeapons);  // g.o
 extern Client g_clients[16];                   // g.o
-extern sentient_s g_sentients[16];             // g.o
+extern sentient_s g_sentients[48];             // g.o
 
 // ============================================================================
 // gdDecal / DynamicDecalMgr (render.o) - used by Bullet_Fire_Fake_Extended
