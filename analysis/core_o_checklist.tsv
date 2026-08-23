@@ -401,7 +401,7 @@ index	status	map_line
 400	VERIFIED	0002:000c12c0 ??1AbstractEffectParticle@@UAE@XZ 008B07C0 f core.o
 401	VERIFIED	0002:000c1350 ?StartFadeOut@AbstractEffectParticle@@UAEXM@Z 008B0850 f core.o
 402	VERIFIED	0002:000c1380 ??0AnimHeap@@QAE@XZ 008B0880 f core.o
-403	FIXED	0002:000c13f0 ?LinkAnimHeap@AnimHeap@@SAXXZ 008B08F0 f core.o FIXED: source corrected in 64b48117; IDA 0x004C13F0 constructs AnimCacheHeap in allocated storage and appends it
+403	FIXED	0002:000c13f0 ?LinkAnimHeap@AnimHeap@@SAXXZ 008B08F0 f core.o FIXED: source corrected in 64b48117; IDA 0x004C13F0 constructs AnimCacheHeap in allocated storage and appends it; VERIFIED against release decompile
 404	VERIFIED	0002:000c1440 ??1ConfigStringManager@@EAE@XZ 008B0940 f core.o
 405	VERIFIED	0002:000c1450 ??0HashString@@QAE@AAVstring@Broc@@@Z 008B0950 f core.o
 406	SKIPPED	0002:000c1490 ?SetGameLanguage@@YAXABV?$ae_fixed_string@$0EAA@G@@@Z 008B0990 f core.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -533,7 +533,7 @@ index	status	map_line
 532	VERIFIED	0002:000c9fa0 ?Com_WriteDefaults_f@@YAXXZ 008B94A0 f core.o
 533	VERIFIED	0002:000ca010 ?Com_ControllerWarningDialog@@YAX_NH@Z 008B9510 f core.o
 534	VERIFIED	0002:000ca120 ?Com_CheckControllerUnplugged@@YAX_NH@Z 008B9620 f core.o
-535	FIXED	0002:000ca240 ?Com_SaveCvarsToBuffer@@YAHQAPBDHPADH@Z 008B9740 f core.o FIXED: FUNCTION uses shared defaultFileName object per IDA
+535	FIXED	0002:000ca240 ?Com_SaveCvarsToBuffer@@YAHQAPBDHPADH@Z 008B9740 f core.o FIXED: FUNCTION uses shared defaultFileName object per IDA; VERIFIED against release decompile
 536	VERIFIED	0002:000ca2e0 ?Com_LoadCvarsFromBuffer@@YAHQAPBDHPBD1@Z 008B97E0 f core.o VERIFIED: FUNCTION existing cvar parser and completion reporting match IDA
 537	VERIFIED	0002:000ca470 ?FS_Dir_f@@YAXXZ 008B9970 f core.o
 538	VERIFIED	0002:000ca530 ?FS_TouchFile_f@@YAXXZ 008B9A30 f core.o
@@ -593,7 +593,7 @@ index	status	map_line
 592	VERIFIED	0002:000ce990 ?LensFlareInit@@YAXXZ 008BDE90 f core.o
 593	VERIFIED	0002:000ceae0 ??1EntityNotifySet@@QAE@XZ 008BDFE0 f core.o
 594	VERIFIED	0002:000ceb90 ?FS_InitFilesystem@@YAXXZ 008BE090 f core.o
-595	FIXED	0002:000cec60 ??1ActiveEffectSet@@QAE@XZ 008BE160 f core.o	FIXED: singleton access now uses the IDA EffectEventSys::sInst global at 0x00F00E80
+595	FIXED	0002:000cec60 ??1ActiveEffectSet@@QAE@XZ 008BE160 f core.o	FIXED: singleton access now uses the IDA EffectEventSys::sInst global at 0x00F00E80; VERIFIED against release decompile
 596	VERIFIED	0002:000cedc0 ?StopAll@EffectEventSys@@QAEXXZ 008BE2C0 f core.o
 597	VERIFIED	0002:000cef20 ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z 008BE420 f core.o
 598	VERIFIED	0002:000cf020 ?KillEffectsWithPakId@EffectEventSys@@QAEXW4TPakId@@@Z 008BE520 f core.o
@@ -628,7 +628,7 @@ index	status	map_line
 627	VERIFIED	0002:000d1d80 ?PostEffectEventFootstep@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z 008C1280 f core.o
 628	VERIFIED	0002:000d1ec0 ?PostEffectEventGearRattle@@YA?AVHandle@@PBVEntity@@W4EStanceType@@ABUCollisionDesc@@@Z 008C13C0 f core.o
 629	VERIFIED	0002:000d1fd0 ?PostEffectEventLanding@@YA?AVHandle@@PBVEntity@@ABUCollisionDesc@@@Z 008C14D0 f core.o
-630	FIXED	0002:000d2080 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z 008C1580 f core.o	FIXED: matched IDA 0x004D2080 sentinel predicate using per-vector OR checks; source commit ac8a0ac9
+630	FIXED	0002:000d2080 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z 008C1580 f core.o	FIXED: matched IDA 0x004D2080 sentinel predicate using per-vector OR checks; source commit ac8a0ac9; VERIFIED against release decompile
 631	VERIFIED	0002:000d2340 ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBD_NW4TPakId@@_N@Z 008C1840 f core.o
 632	VERIFIED	0002:000d24c0 ?PostEffectEventQueueDialog@@YA?AVHandle@@PBVEntity@@PBDH@Z 008C19C0 f core.o
 633	VERIFIED	0002:000d2630 ?PostEffectEventScriptCall_Dir@@YA?AVHandle@@PBVEntity@@PBDQBM_N@Z 008C1B30 f core.o
@@ -856,7 +856,7 @@ index	status	map_line
 855	VERIFIED	0002:000df390 ??0AnimCacheHeap@@QAE@XZ 008CE890 f i core.o	VERIFIED: adapter-backed vtable installation preserves the IDA five-slot ae_heap_base vtable
 856	VERIFIED	0002:000df3a0 ?Malloc@AnimCacheHeap@@UAEPAXII@Z 008CE8A0 f i core.o	VERIFIED: forwards size/alignment to nalAnimationCache::MemAlloc as IDA does
 857	VERIFIED	0002:000df3c0 ?Free@AnimCacheHeap@@UAEXPAX@Z 008CE8C0 f i core.o	VERIFIED: extracts the aligned size header and forwards to nalAnimationCache::MemFree
-858	FIXED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o	FIXED: uses the IDA-backed AnimHeap::sInst singleton for the 1 MiB range check
+858	FIXED	0002:000df3f0 ?CheckFree@AnimCacheHeap@@UAE_NPAX@Z 008CE8F0 f i core.o	FIXED: uses the IDA-backed AnimHeap::sInst singleton for the 1 MiB range check; VERIFIED against release decompile
 859	VERIFIED	0002:000df430 ??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z 008CE930 f i core.o	VERIFIED: stores mType/callback and strlen(type) exactly as IDA
 860	VERIFIED	0002:000df460 ??RTypeCallbackSearch@@QAE_NPBVConfigString@@@Z 008CE960 f i core.o	VERIFIED: IDA strncmp prefix, callback offset, and false return match
 861	VERIFIED	0002:000df4b0 ?STBManager_hash@@YAIPBE@Z 008CE9B0 f i core.o	VERIFIED: forwards the byte-string pointer to AeHash exactly as IDA 0x004DF4B0
