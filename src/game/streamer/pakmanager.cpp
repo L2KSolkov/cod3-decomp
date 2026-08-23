@@ -545,6 +545,16 @@ enum TPakId { kPakTypeNone = -1 };
 #define PAK_ID_MIN ((TPakId)0)
 #define PAK_ID_MAX ((TPakId)99)
 class PakFile;
+
+// Minimal cross-object view of the IDA-typed core.o manager.  The concrete
+// layout and DecodeBank body live in game/core/configstring.cpp.
+class ConfigStringManager {
+public:
+    static ConfigStringManager* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);
+};
+
 void G_ParseInteractionInfo(TPakId pakId)
 {
     (void)pakId;  // stub: game.o
@@ -15153,7 +15163,8 @@ void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
 void DecodeConfigStrings(const char* name, unsigned char* data, unsigned int size,
                          TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)pak;
+    ConfigStringManager::sInst->DecodeBank(name, data, (int)size, pakId);
 }
 void DecodeTexture(const char* name, unsigned char* data, unsigned int size,
                    TPakId pakId, PakFile* pak)
