@@ -99,36 +99,36 @@ index	status	map_line
 98	FIXED	0002:000b5490 ?mathInit@math@@YAXXZ 008A4990 f i core.o FIXED: IDA DISASM/c-dump return MXCSR value; changed declaration/implementation to unsigned int and return result after _controlfp/_mm_setcsr
 99	FIXED	0002:000b54e0 ?Abs@math@@YAMM@Z 008A49E0 f i core.o FIXED: IDA DISASM/c-dump use fabs(float) with long-double return; changed declaration/implementation from float/fabsf
 100	VERIFIED	0002:000b54f0 ?GetTimeStartExec@AeThreadManager@@SA_KXZ 008A49F0 f i core.o VERIFIED: FUNCTION existing start-time accessor returns static sTimeStart dwords exactly as IDA DISASM
-101	VERIFIED	0002:000b5500 ?GetX@Dir3@math@@QBEMXZ 008A4A00 f i core.o
-102	VERIFIED	0002:000b5520 ?GetY@Dir3@math@@QBEMXZ 008A4A20 f i core.o
-103	VERIFIED	0002:000b5570 ?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z 008A4A70 f i core.o VERIFIED: FUNCTION existing ScriptEventHandler allocator setter matches IDA
-104	VERIFIED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o VERIFIED: FUNCTION existing DestructibleBankManager placement-new passthrough matches IDA
-105	VERIFIED	0002:000b5590 ?DeleteInst@DestructibleBankManager@@SAXXZ 008A4A90 f i core.o
-106	VERIFIED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o VERIFIED: FUNCTION existing Entity notify-set setter matches IDA
-107	VERIFIED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o VERIFIED: FUNCTION existing Entity current-origin accessor matches IDA
-108	VERIFIED	0002:000b5640 ?GetDObj@Entity@@QBEPBVDObj@@XZ 008A4B40 f i core.o VERIFIED: FUNCTION existing DObj member accessor matches IDA
-109	VERIFIED	0002:000b5650 ??1EntityNotify@@QAE@XZ 008A4B50 f core.o
-110	VERIFIED	0002:000b5670 ?FS_Initialized@@YAHXZ 008A4B70 f core.o
-111	VERIFIED	0002:000b5680 ?FS_CheckFileSystemStarted@@YAXXZ 008A4B80 f core.o
-112	VERIFIED	0002:000b56d0 ?FS_LoadStack@@YAHXZ 008A4BD0 f core.o
-113	VERIFIED	0002:000b56e0 ?FS_UseSearchPath@@YAHPBUsearchpath_s@@@Z 008A4BE0 f core.o
-114	VERIFIED	0002:000b5720 ?FS_LanguageHasAssets@@YAHH@Z 008A4C20 f core.o
-115	VERIFIED	0002:000b5750 ?FS_HashFileName@@YAJPBDH@Z 008A4C50 f core.o
-116	VERIFIED	0002:000b57c0 ?FS_FileForHandle@@YAPAU_iobuf@@H@Z 008A4CC0 f core.o
-117	VERIFIED	0002:000b58c0 ?FS_ForceFlush@@YAXH@Z 008A4DC0 f core.o
-118	VERIFIED	0002:000b58e0 ?FS_filelength@@YAHH@Z 008A4DE0 f core.o
-119	VERIFIED	0002:000b59b0 ?FS_Remove@@YAXPBD@Z 008A4EB0 f core.o
-120	VERIFIED	0002:000b59f0 ?FS_FilenameCompare@@YAHPBD0@Z 008A4EF0 f core.o
-121	VERIFIED	0002:000b5a70 ?FS_ShiftedStrStr@@YAPADPBD0H@Z 008A4F70 f core.o
-122	VERIFIED	0002:000b5ac0 ?FS_GetExtensionSubString@@YAPBDPBD@Z 008A4FC0 f core.o
-123	VERIFIED	0002:000b5b00 ?FS_PureIgnoresExtension@@YAHPBD@Z 008A5000 f core.o
-124	VERIFIED	0002:000b5b50 ?FS_ResetFiles@@YAXXZ 008A5050 f core.o
-125	VERIFIED	0002:000b5c00 ?FS_AddNonPackFileDirectory@@YAXPBD0@Z 008A5100 f core.o
-126	VERIFIED	0002:000b5c70 ?FS_GetDataForFile@@YAPAUfileData_s@@PBD00@Z 008A5170 f core.o
-127	VERIFIED	0002:000b5e80 ?FS_ClearDataForFiles@@YAXPAX0@Z 008A5380 f core.o
-128	VERIFIED	0002:000b5f80 ?FS_FTell@@YAHH@Z 008A5480 f core.o
-129	VERIFIED	0002:000b5fc0 ?FS_Flush@@YAXH@Z 008A54C0 f core.o
-130	VERIFIED	0002:000b5fe0 ?Q_rand@@YA?BHPAH@Z 008A54E0 f core.o
+101	FIXED	0002:000b5500 ?GetX@Dir3@math@@QBEMXZ 008A4A00 f i core.o FIXED: IDA DISASM/c-dump return x87 double; changed math::Dir3 declaration and implementation from float
+102	FIXED	0002:000b5520 ?GetY@Dir3@math@@QBEMXZ 008A4A20 f i core.o FIXED: IDA DISASM/c-dump return x87 double; changed math::Dir3 declaration and implementation from float
+103	VERIFIED	0002:000b5570 ?SetAllocator@ScriptEventHandler@@SAXPAVPoolAllocator@@@Z 008A4A70 f i core.o VERIFIED: FUNCTION existing ScriptEventHandler allocator setter matches IDA DISASM
+104	VERIFIED	0002:000b5580 ??2DestructibleBankManager@@SAPAXIPAX@Z 008A4A80 f i core.o VERIFIED: FUNCTION existing placement-new passthrough matches IDA DISASM
+105	VERIFIED	0002:000b5590 ?DeleteInst@DestructibleBankManager@@SAXXZ 008A4A90 f i core.o VERIFIED: FUNCTION existing singleton assertion, destructor/free path, and nulling match the IDA deleting-destructor behavior
+106	VERIFIED	0002:000b5610 ?SetNotifySet@Entity@@QAEXPAVEntityNotifySet@@@Z 008A4B10 f i core.o VERIFIED: FUNCTION existing Entity notify-set setter matches IDA DISASM
+107	VERIFIED	0002:000b5630 ?GetPosition@Entity@@QAEABVPosition3@math@@XZ 008A4B30 f i core.o VERIFIED: FUNCTION existing current-origin accessor matches IDA DISASM
+108	VERIFIED	0002:000b5640 ?GetDObj@Entity@@QBEPBVDObj@@XZ 008A4B40 f i core.o VERIFIED: FUNCTION existing DObj member accessor matches IDA DISASM
+109	VERIFIED	0002:000b5650 ??1EntityNotify@@QAE@XZ 008A4B50 f core.o VERIFIED: FUNCTION existing parameter cleanup and nulling match IDA DECOMP/DISASM
+110	VERIFIED	0002:000b5670 ?FS_Initialized@@YAHXZ 008A4B70 f core.o VERIFIED: FUNCTION existing searchpath-null predicate matches IDA DECOMP/DISASM
+111	FIXED	0002:000b5680 ?FS_CheckFileSystemStarted@@YAXXZ 008A4B80 f core.o FIXED: IDA DISASM/c-dump return a char status after the filesystem assertion; changed source from void and preserved pointer-to-byte result
+112	VERIFIED	0002:000b56d0 ?FS_LoadStack@@YAHXZ 008A4BD0 f core.o VERIFIED: FUNCTION existing fs_loadStack accessor matches IDA DECOMP/DISASM
+113	VERIFIED	0002:000b56e0 ?FS_UseSearchPath@@YAHPBUsearchpath_s@@@Z 008A4BE0 f core.o VERIFIED: FUNCTION existing localized-language filter matches IDA DECOMP/DISASM
+114	VERIFIED	0002:000b5720 ?FS_LanguageHasAssets@@YAHH@Z 008A4C20 f core.o VERIFIED: FUNCTION existing localized searchpath walk matches IDA DECOMP/DISASM
+115	FIXED	0002:000b5750 ?FS_HashFileName@@YAJPBDH@Z 008A4C50 f core.o FIXED: IDA DISASM passes signed input bytes to _tolower; removed the unsigned-byte cast
+116	VERIFIED	0002:000b57c0 ?FS_FileForHandle@@YAPAU_iobuf@@H@Z 008A4CC0 f core.o VERIFIED: FUNCTION existing handle bounds/asserts and FILE accessor match IDA DECOMP/DISASM
+117	VERIFIED	0002:000b58c0 ?FS_ForceFlush@@YAXH@Z 008A4DC0 f core.o VERIFIED: FUNCTION existing setvbuf flush path matches IDA DECOMP/DISASM
+118	VERIFIED	0002:000b58e0 ?FS_filelength@@YAHH@Z 008A4DE0 f core.o VERIFIED: FUNCTION existing zip/FILE length and position restore path matches IDA DECOMP/DISASM
+119	VERIFIED	0002:000b59b0 ?FS_Remove@@YAXPBD@Z 008A4EB0 f core.o VERIFIED: FUNCTION existing not-cross-platform warning path matches IDA DECOMP/DISASM
+120	VERIFIED	0002:000b59f0 ?FS_FilenameCompare@@YAHPBD0@Z 008A4EF0 f core.o VERIFIED: FUNCTION existing case/path-normalized comparison matches IDA DECOMP/DISASM
+121	FIXED	0002:000b5a70 ?FS_ShiftedStrStr@@YAPADPBD0H@Z 008A4F70 f core.o FIXED: IDA type data declares the shift parameter as char; corrected the port signature
+122	VERIFIED	0002:000b5ac0 ?FS_GetExtensionSubString@@YAPBDPBD@Z 008A4FC0 f core.o VERIFIED: FUNCTION existing basename-aware extension scan matches IDA DECOMP/DISASM
+123	VERIFIED	0002:000b5b00 ?FS_PureIgnoresExtension@@YAHPBD@Z 008A5000 f core.o VERIFIED: FUNCTION existing cfg/menu/dat extension predicate matches IDA DECOMP/DISASM
+124	VERIFIED	0002:000b5b50 ?FS_ResetFiles@@YAXXZ 008A5050 f core.o VERIFIED: FUNCTION existing fs_loadStack reset matches IDA DISASM
+125	VERIFIED	0002:000b5c00 ?FS_AddNonPackFileDirectory@@YAXPBD0@Z 008A5100 f core.o VERIFIED: FUNCTION existing dead-code assert walk matches IDA DECOMP/DISASM
+126	VERIFIED	0002:000b5c70 ?FS_GetDataForFile@@YAPAUfileData_s@@PBD00@Z 008A5170 f core.o VERIFIED: FUNCTION existing pack/non-pack lookup and localized filtering match IDA DECOMP/DISASM
+127	VERIFIED	0002:000b5e80 ?FS_ClearDataForFiles@@YAXPAX0@Z 008A5380 f core.o VERIFIED: FUNCTION existing packed/non-packed range cleanup matches IDA DECOMP/DISASM
+128	FIXED	0002:000b5f80 ?FS_FTell@@YAHH@Z 008A5480 f core.o FIXED: IDA DISASM selects unztell for compressed handles; Win32 port now returns tracked zipFilePos for that branch
+129	VERIFIED	0002:000b5fc0 ?FS_Flush@@YAXH@Z 008A54C0 f core.o VERIFIED: FUNCTION existing fflush path matches IDA DECOMP/DISASM
+130	VERIFIED	0002:000b5fe0 ?Q_rand@@YA?BHPAH@Z 008A54E0 f core.o VERIFIED: FUNCTION existing 69069*seed+1 recurrence matches IDA DECOMP/DISASM
 131	VERIFIED	0002:000b6000 ?Q_random@@YA?BMPAH@Z 008A5500 f core.o
 132	VERIFIED	0002:000b6030 ?Q_crandom@@YA?BMPAH@Z 008A5530 f core.o
 133	VERIFIED	0002:000b6070 ?Q_log2@@YA?BHH@Z 008A5570 f core.o
