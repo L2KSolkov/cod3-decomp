@@ -2632,9 +2632,22 @@ int           nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram) {
 }
 int           nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile,
                                  unsigned waveBankFileOffset) {
-    if (waveBank == nullptr || (waveBank->waveBankFlags & 0x40u) == 0)
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 0x80u) != 0u ||
+        (waveBank->waveBankFlags & 0x40u) == 0u)
         return 0;
     waveBank->storage.backing.waveBankFile = waveBankFile;
+    if (waveBank->storage.backing.waveBankFileOffset != waveBankFileOffset) {
+        unsigned char* waves = reinterpret_cast<unsigned char*>(waveBank->waves);
+        const unsigned delta = waveBankFileOffset -
+            waveBank->storage.backing.waveBankFileOffset;
+        for (unsigned index = 0; index < waveBank->waveCount; ++index) {
+            unsigned char* wave = waves + 16u * index;
+            unsigned char* metadata =
+                *reinterpret_cast<unsigned char**>(wave);
+            if ((metadata[5] & 1u) != 0u)
+                *reinterpret_cast<unsigned*>(wave + 4u) += delta;
+        }
+    }
     waveBank->storage.backing.waveBankFileOffset = waveBankFileOffset;
     return 1;
 }
