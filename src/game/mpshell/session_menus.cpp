@@ -8420,7 +8420,7 @@ void PlayLanMenu::OnCross(int c)
     }
     else
     {
-        system->MakeActiveAndReturn(10, 9);
+        system->MakeActiveAndReturn(1, 9);
     }
 }
 
