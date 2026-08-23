@@ -2901,22 +2901,43 @@ public:
 // region with bank elements at +0x04, mDebugRenderMode +0x190,
 // mInitialPosition +0x1A0, mLastPosition +0x1B0, mFirstBank +0x1CC,
 // mListSize +0x1D0, total size 0x1E0)
+#pragma pack(push, 4)
+struct ZoneBankArray {
+    ZoneBoundaryBank* m_elements[99];
+};
+static_assert(sizeof(ZoneBankArray) == 0x18C,
+              "ZoneBoundaryBank array layout mismatch");
+
 class StreamZoneManager {
 public:
     uint8_t _pad0[0x04];  // anonymous head region (bank array starts at +0x04)
-    ae_array<ZoneBoundaryBank*, 99> mBankArray;  // +0x04 (elements at +0x04)
+    ZoneBankArray mBankArray;  // +0x04 (elements at +0x04)
     unsigned int mDebugRenderMode;  // +0x190 (bit0 ZoneGraph, bit1 active
                                     // node sphere, bit2 zone names)
     float zoneGraphScale;           // +0x194
-    math::Position3 mInitialPosition;  // +0x1A0
-    uint8_t _pad1AC[0x1B0 - 0x1AC];
-    math::Position3 mLastPosition;  // +0x1B0
-    uint8_t _pad1BC[0x1C0 - 0x1BC];
+    uint8_t _pad198[0x1A0 - 0x198];
+    uint8_t mInitialPositionStorage[0x10];  // +0x1A0 (math::Position3)
+    uint8_t mLastPositionStorage[0x10];     // +0x1B0 (math::Position3)
     int     mInitialCell;           // +0x1C0
     int     mLastCellNum;           // +0x1C4
     int     mLastListSize;          // +0x1C8
     int     mFirstBank;             // +0x1CC
     int     mListSize;              // +0x1D0
+    uint8_t _tail[0x1E0 - 0x1D4];
+
+    math::Position3& InitialPosition()
+    {
+        return *reinterpret_cast<math::Position3*>(mInitialPositionStorage);
+    }
+    const math::Position3& InitialPosition() const
+    {
+        return *reinterpret_cast<const math::Position3*>(
+            mInitialPositionStorage);
+    }
+    math::Position3& LastPosition()
+    {
+        return *reinterpret_cast<math::Position3*>(mLastPositionStorage);
+    }
 
     static void CreateInst();
     static void DeleteInst();
@@ -2955,6 +2976,24 @@ private:
     void SetDistances(ZoneBoundaryBank* bank,
                       ZoneOverrideBrushSet* zob);  // ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
 };
+#pragma pack(pop)
+
+static_assert(offsetof(StreamZoneManager, mInitialPositionStorage) == 0x1A0,
+              "StreamZoneManager initial position layout mismatch");
+static_assert(offsetof(StreamZoneManager, mLastPositionStorage) == 0x1B0,
+              "StreamZoneManager last position layout mismatch");
+static_assert(offsetof(StreamZoneManager, mInitialCell) == 0x1C0,
+              "StreamZoneManager initial cell layout mismatch");
+static_assert(offsetof(StreamZoneManager, mLastCellNum) == 0x1C4,
+              "StreamZoneManager last cell layout mismatch");
+static_assert(offsetof(StreamZoneManager, mLastListSize) == 0x1C8,
+              "StreamZoneManager last list layout mismatch");
+static_assert(offsetof(StreamZoneManager, mFirstBank) == 0x1CC,
+              "StreamZoneManager first bank layout mismatch");
+static_assert(offsetof(StreamZoneManager, mListSize) == 0x1D0,
+              "StreamZoneManager list size layout mismatch");
+static_assert(sizeof(StreamZoneManager) == 0x1E0,
+              "StreamZoneManager size mismatch");
 
 // SceneBank (scenemanager.cpp; verified IDA: mSceneHeapSize +0x08,
 // mSceneHeap +0x50, size 0x58)
@@ -3583,7 +3622,7 @@ void NflWarning(const char* msg)
 // ea: 0x6659D0
 void StreamZoneManager::SetInitialPosition(const math::Position3& pos)
 {
-    mInitialPosition.v = pos.v;
+    InitialPosition().v = pos.v;
 }
 
 // ea: 0x665A00 (empty no-op)
@@ -4656,7 +4695,7 @@ void SceneManager::InstanceEntities()
         math::Position3 pos = ent->m_origin;
         math::Position3 angles = ent->m_angles;
         int cell = R_CellForPoint(&pos);
-        StreamZoneManager::sInst->mInitialPosition = pos;
+        StreamZoneManager::sInst->InitialPosition() = pos;
         StreamZoneManager::sInst->mInitialCell = cell;
         StreamZoneManager::sInst->Update(cell, &pos, true);
         Entity* player = EntityManager::sInst->mPlayers[0];
@@ -11451,7 +11490,7 @@ void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
         h *= zoneGraphScale;
     int ScreenWidth = nglGetScreenWidth();
     int ScreenHeight = nglGetScreenHeight();
-    math::Position3 cam = mLastPosition;
+    math::Position3 cam = LastPosition();
 
     auto project = [&](const math::Position3& p) -> math::Position3 {
         math::Position3 r;
@@ -11748,8 +11787,8 @@ void StreamZoneManager::DecodeBank(const char* name, unsigned char* data,
     }
     ++mListSize;
     mInitialCell = bank->mInitialCell;
-    mInitialPosition = bank->mInitialPosition;
-    Update(mInitialCell, &mInitialPosition, false);
+    InitialPosition() = bank->mInitialPosition;
+    Update(mInitialCell, &InitialPosition(), false);
 
     tlFixedString sky("sky");
     TPakId levelPakId = PAK_ID_INVALID;
@@ -12062,7 +12101,7 @@ void StreamZoneManager::Update(int cellNum, const math::Position3* pos,
 {
     if (cellNum == -1)
         return;
-    mLastPosition.v = pos->v;
+    LastPosition().v = pos->v;
     int mLastListSize = this->mLastListSize;
     int mListSize = this->mListSize;
     bool resetPriorities = mLastListSize != mListSize;
