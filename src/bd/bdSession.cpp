@@ -20,8 +20,13 @@
 template <typename T>
 void bdArrayAppend(bdArray<T>& arr, const T& value) {
     if (arr.m_size == arr.m_capacity) {
-        unsigned int newCap = arr.m_capacity ? arr.m_capacity * 2 : 4;
-        arr.m_data = (T*)bdMemory::reallocate(arr.m_data, sizeof(T) * newCap);
+        unsigned int extra = (1u <= arr.m_capacity) ? arr.m_capacity : 1u;
+        unsigned int newCap = extra + arr.m_capacity;
+        T* newData = (T*)bdMemory::allocate(sizeof(T) * newCap);
+        if (arr.m_size != 0)
+            memcpy(newData, arr.m_data, sizeof(T) * arr.m_size);
+        bdMemory::deallocate(arr.m_data);
+        arr.m_data = newData;
         arr.m_capacity = newCap;
     }
     arr.m_data[arr.m_size++] = value;
