@@ -2501,8 +2501,12 @@ void* AssetBankSet_ctor(void* self)
 void AssetBankSet_Dtor(void* self) { (void)self; }
 void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self)
 {
-    (void)self;
-    return nullptr;
+    // IDA 0x4E44C0: initialize the fixed 99-entry bank array.
+    void** elements = reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 4);
+    for (unsigned int i = 0; i < 99; ++i)
+        elements[i] = nullptr;
+    return self;
 }
 void* InplaceAssetBankSet_GdbFileBank_ctor(void* self)
 {
