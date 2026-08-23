@@ -350,6 +350,12 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
                     v6 = 0;
             }
             XModelParts* v7 = bank->mPtrs.mList[v6];
+            // The supplied weapon pak has no skeleton resource for this model.
+            // Keep the asset from entering the skeletal-model path until its
+            // matching .xbskel resource is available.
+            if (v7->mName.mStr != nullptr
+                && strcmp(v7->mName.mStr, "w_spotter_world_MP") == 0)
+                v7->mAnimDefName.mStr = nullptr;
             if (v7->mNumRootBones != 1)
             {
                 AeAssert::gCurrentAuthor = AeAssert::JRS;
