@@ -1822,24 +1822,24 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
 }
 void __stdcall Direct3D_SetPushBufferSize(unsigned int, unsigned int) {}
 Direct3D* __stdcall Direct3DCreate8(unsigned int) { return (Direct3D*)1; }
-void __stdcall LiveEngine_DoWork(unsigned int a0, unsigned int a1) {}
-void __stdcall LiveEngine_EnableFeature(unsigned int a0, unsigned int a1) {}
-void __stdcall LiveEngine_EndFeature(unsigned int a0) {}
-void __stdcall LiveEngine_GetExitInfo(unsigned int a0, unsigned int a1) {}
+HRESULT __stdcall LiveEngine_DoWork(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall LiveEngine_EnableFeature(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall LiveEngine_EndFeature(unsigned int a0) { return 0; }
+HRESULT __stdcall LiveEngine_GetExitInfo(unsigned int a0, unsigned int a1) { return 0; }
 void* __stdcall LiveEngine_GetFeatureInterface(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) { return nullptr; }
-void __stdcall LiveEngine_GetNotifications(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) {}
-void __stdcall LiveEngine_LogOff(unsigned int a0) {}
+HRESULT __stdcall LiveEngine_GetNotifications(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) { return 0; }
+HRESULT __stdcall LiveEngine_LogOff(unsigned int a0) { return 0; }
 void __stdcall LiveEngine_NotificationSetState(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5, unsigned int a6) {}
-void __stdcall LiveEngine_Reboot(unsigned int a0, unsigned int a1) {}
+HRESULT __stdcall LiveEngine_Reboot(unsigned int a0, unsigned int a1) { return 0; }
 void __stdcall LiveEngine_Release(unsigned int a0) {}
-void __stdcall LiveEngine_Render(unsigned int a0, unsigned int a1) {}
-void __stdcall LiveEngine_SetInput(unsigned int a0, unsigned int a1, unsigned int a2) {}
-void __stdcall LiveEngine_SetProperty(unsigned int a0, unsigned int a1, unsigned int a2) {}
-void __stdcall LiveEngine_SetUIPlugin(unsigned int a0, unsigned int a1) {}
-void __stdcall LiveEngine_StartFeature(unsigned int a0, unsigned int a1, unsigned int a2) {}
-void __stdcall LiveEngine_UseVoiceMail(unsigned int a0, unsigned int a1) {}
-void* __stdcall UIXCreateLiveEngine(unsigned int a0, unsigned int a1, unsigned int a2) { return nullptr; }
-void* __stdcall UIXCreateUIPlugin(unsigned int a0, unsigned int a1) { return nullptr; }
+HRESULT __stdcall LiveEngine_Render(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall LiveEngine_SetInput(unsigned int a0, unsigned int a1, unsigned int a2) { return 0; }
+HRESULT __stdcall LiveEngine_SetProperty(unsigned int a0, unsigned int a1, unsigned int a2) { return 0; }
+HRESULT __stdcall LiveEngine_SetUIPlugin(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall LiveEngine_StartFeature(unsigned int a0, unsigned int a1, unsigned int a2) { return 0; }
+HRESULT __stdcall LiveEngine_UseVoiceMail(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall UIXCreateLiveEngine(unsigned int a0, unsigned int a1, unsigned int a2) { return 0; }
+HRESULT __stdcall UIXCreateUIPlugin(unsigned int a0, unsigned int a1) { return 0; }
 void __cdecl uncompress(void) {}
 unsigned int __stdcall XGetLanguage(void) { return 1; }
 unsigned int __cdecl XGetVideoFlags(void) { return 0; }
@@ -1911,11 +1911,11 @@ void __stdcall XGSwizzleRect(const void* Source, unsigned int Pitch, const void*
                (const unsigned char*)Source + y * Pitch, RowBytes);
 }
 void __stdcall XGWriteSurfaceToFile(D3DSurface*, const char*) {}
-void __stdcall XHVEngine_DoWork(unsigned int a0) {}
+HRESULT __stdcall XHVEngine_DoWork(unsigned int a0) { return 0; }
 void __stdcall XHVEngine_EnableProcessingMode(unsigned int a0, unsigned int a1) {}
-void __stdcall XHVEngine_IsTalking(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) {}
-void __stdcall XHVEngine_RegisterLocalTalker(unsigned int a0, unsigned int a1) {}
-void __stdcall XHVEngine_RegisterRemoteTalker(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) {}
+int __stdcall XHVEngine_IsTalking(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) { return 0; }
+HRESULT __stdcall XHVEngine_RegisterLocalTalker(unsigned int a0, unsigned int a1) { return 0; }
+HRESULT __stdcall XHVEngine_RegisterRemoteTalker(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) { return 0; }
 void __stdcall XHVEngine_Release(unsigned int a0) {}
 void __stdcall XHVEngine_SetCallbackInterface(unsigned int a0, unsigned int a1) {}
 void __stdcall XHVEngine_SetMixBinMapping(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5) {}
@@ -1923,22 +1923,22 @@ void __stdcall XHVEngine_SetPlaybackPriority(unsigned int a0, unsigned int a1, u
 void __stdcall XHVEngine_SetProcessingMode(unsigned int a0, unsigned int a1, unsigned int a2) {}
 void __stdcall XHVEngine_SubmitIncomingVoicePacket(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5) {}
 void __stdcall XHVEngine_UnregisterRemoteTalker(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) {}
-void* __stdcall XHVEngineCreate(unsigned int a0, unsigned int a1) { return nullptr; }
+HRESULT __stdcall XHVEngineCreate(unsigned int a0, unsigned int a1) { return 0; }
 void __stdcall XInputGetState(unsigned int a0, unsigned int a1) {}
 void __stdcall XInputSetState(unsigned int a0, unsigned int a1) {}
 int __stdcall XNetQosListen(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4) { return 0; }
-void __stdcall XNetRegisterKey(unsigned int a0, unsigned int a1) {}
-void __stdcall XNetUnregisterKey(unsigned int a0) {}
+int __stdcall XNetRegisterKey(unsigned int a0, unsigned int a1) { return 0; }
+int __stdcall XNetUnregisterKey(unsigned int a0) { return 0; }
 unsigned int __stdcall XOnlineGetLogonUsers(void) { return 0; }
-void __stdcall XOnlineMatchSessionCreate(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5, unsigned int a6, unsigned int a7) {}
-void __stdcall XOnlineMatchSessionDelete(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) {}
-void __stdcall XOnlineMatchSessionGetInfo(unsigned int a0, unsigned int a1, unsigned int a2) {}
-void __stdcall XOnlineMatchSessionUpdate(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5, unsigned int a6, unsigned int a7, unsigned int a8, unsigned int a9) {}
-void __stdcall XOnlineMutelistGet(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5) {}
-void __stdcall XOnlineSaveLogonState(unsigned int a0) {}
-void __stdcall XOnlineStartup(unsigned int a0) {}
-void __stdcall XOnlineTaskClose(unsigned int a0) {}
-void __stdcall XOnlineTaskContinue(unsigned int a0) {}
+HRESULT __stdcall XOnlineMatchSessionCreate(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5, unsigned int a6, unsigned int a7) { return 0; }
+HRESULT __stdcall XOnlineMatchSessionDelete(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3) { return 0; }
+HRESULT __stdcall XOnlineMatchSessionGetInfo(unsigned int a0, unsigned int a1, unsigned int a2) { return 0; }
+HRESULT __stdcall XOnlineMatchSessionUpdate(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5, unsigned int a6, unsigned int a7, unsigned int a8, unsigned int a9) { return 0; }
+HRESULT __stdcall XOnlineMutelistGet(unsigned int a0, unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4, unsigned int a5) { return 0; }
+HRESULT __stdcall XOnlineSaveLogonState(unsigned int a0) { return 0; }
+HRESULT __stdcall XOnlineStartup(unsigned int a0) { return 0; }
+HRESULT __stdcall XOnlineTaskClose(unsigned int a0) { return 0; }
+DWORD __stdcall XOnlineTaskContinue(unsigned int a0) { return 0; }
 
 }  // extern "C"
 
