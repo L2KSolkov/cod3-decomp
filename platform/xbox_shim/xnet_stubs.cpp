@@ -1,12 +1,15 @@
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
-#include <ws2tcpip.h>
+#include <iphlpapi.h>
 
 #include "bd/bdGameInfo.h"
 #include "xlive.h"
 
 #include <stdio.h>
 #include <string.h>
+#include <vector>
+
+#pragma comment(lib, "iphlpapi.lib")
 
 extern "C" {
 
@@ -19,29 +22,45 @@ unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna)
     pxna->ina[0] = 127;
     pxna->ina[3] = 1;
 
-    char hostName[256];
-    if (gethostname(hostName, sizeof(hostName)) == 0)
+    ULONG addressBufferSize = 0;
+    if (GetAdaptersAddresses(AF_INET, 0, NULL, NULL, &addressBufferSize)
+        == ERROR_BUFFER_OVERFLOW)
     {
-        addrinfo hints = {};
-        hints.ai_family = AF_INET;
-        addrinfo* addresses = NULL;
-        if (getaddrinfo(hostName, NULL, &hints, &addresses) == 0)
+        std::vector<unsigned char> addressBuffer(addressBufferSize);
+        IP_ADAPTER_ADDRESSES* adapters =
+            reinterpret_cast<IP_ADAPTER_ADDRESSES*>(addressBuffer.data());
+        if (GetAdaptersAddresses(AF_INET, 0, NULL, adapters,
+                                 &addressBufferSize)
+            == NO_ERROR)
         {
-            for (addrinfo* address = addresses; address != NULL;
-                 address = address->ai_next)
+            for (IP_ADAPTER_ADDRESSES* adapter = adapters; adapter != NULL;
+                 adapter = adapter->Next)
             {
-                const sockaddr_in* socketAddress =
-                    reinterpret_cast<const sockaddr_in*>(address->ai_addr);
-                const unsigned char* bytes =
-                    reinterpret_cast<const unsigned char*>(
-                        &socketAddress->sin_addr.s_addr);
-                if (bytes[0] != 127)
+                if (adapter->OperStatus != IfOperStatusUp)
+                    continue;
+                for (IP_ADAPTER_UNICAST_ADDRESS* address =
+                         adapter->FirstUnicastAddress;
+                     address != NULL; address = address->Next)
                 {
-                    memcpy(pxna->ina, bytes, sizeof(pxna->ina));
-                    break;
+                    if (address->Address.lpSockaddr == NULL
+                        || address->Address.lpSockaddr->sa_family != AF_INET)
+                        continue;
+                    const sockaddr_in* socketAddress =
+                        reinterpret_cast<const sockaddr_in*>(
+                            address->Address.lpSockaddr);
+                    const unsigned char* bytes =
+                        reinterpret_cast<const unsigned char*>(
+                            &socketAddress->sin_addr.s_addr);
+                    if (bytes[0] != 127 && bytes[0] != 0
+                        && !(bytes[0] == 169 && bytes[1] == 254))
+                    {
+                        memcpy(pxna->ina, bytes, sizeof(pxna->ina));
+                        break;
+                    }
                 }
+                if (pxna->ina[0] != 127)
+                    break;
             }
-            freeaddrinfo(addresses);
         }
     }
     memcpy(pxna->inaOnline, pxna->ina, sizeof(pxna->ina));
