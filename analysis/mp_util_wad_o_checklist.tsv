@@ -255,7 +255,7 @@ index	status	map_line
 254	VERIFIED	0002:0053be30 ?IsPlayer@Broc@@YAHABVentity@1@@Z 00D2B330 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE30 gets the entity handle and forwards it to mEntityIsPlayer
 255	VERIFIED	0002:0053be60 ?IsVehicle@Broc@@YAHABVentity@1@@Z 00D2B360 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE60 gets the entity handle and forwards it to mEntityIsVehicle
 256	VERIFIED	0002:0053be90 ?Code_GetWeaponName@Broc@@YAXHAAVstring@1@@Z 00D2B390 f i mp_util_wad.o	VERIFIED: IDA 0x0093BE90 forwards weaponIndex and the output string to mGetWeaponName
-257	VERIFIED	0002:0053bec0 ?Code_GetTeamGame@Broc@@YA_NXZ 00D2B3C0 f i mp_util_wad.o
+257	FIXED	0002:0053bec0 ?Code_GetTeamGame@Broc@@YA_NXZ 00D2B3C0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 258	VERIFIED	0002:0053bee0 ?PlayKillerCredit@_mp_audio@@YAXVentity@Broc@@@Z 00D2B3E0 f mp_util_wad.o
 259	VERIFIED	0002:0053c240 ?player_dying_sounds@_mp_audio@@YAXVentity@Broc@@@Z 00D2B740 f mp_util_wad.o
 260	VERIFIED	0002:0053c2c0 ?LaunchGametype@_mp_common@@YAXXZ 00D2B7C0 f mp_util_wad.o
@@ -274,14 +274,14 @@ index	status	map_line
 273	VERIFIED	0002:0053cef0 ?main__functor@_mp_tdm@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C3F0 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_tdm::main
 274	VERIFIED	0002:0053cf90 ?main__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D2C490 f i mp_util_wad.o	VERIFIED: IDA allocates 0xC bytes and placement-constructs AeThreadFunctor1 with _mp_war::main
 275	FIXED	0002:0053d030 ?SetupGameVariables@_mp_common@@YAXXZ 00D2C530 f mp_util_wad.o	FIXED: IDA stores all cvars in Level and returns the respawnTime bint assignment result; port previously discarded that result and returned zero
-276	VERIFIED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o	VERIFIED: IDA callback registration order and team/non-team damage callback selection match the port
+276	FIXED	0002:0053d1a0 ?SetupCallbacks@_mp_common@@YAXUbbool@@@Z 00D2C6A0 f mp_util_wad.o	VERIFIED: IDA callback registration order and team/non-team damage callback selection match the port	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 277	VERIFIED	0002:0053d3b0 ?CallbackHostOptionsChanged@_mp_common@@YAXH@Z 00D2C8B0 f mp_util_wad.o
 278	VERIFIED	0002:0053d8e0 ??D@YA?AUbint@@U0@H@Z 00D2CDE0 f i mp_util_wad.o	VERIFIED: IDA 0x0093D8E0 converts lhs to int, multiplies by rhs, and constructs bint
 279	VERIFIED	0002:0053d920 ?Code_GetTeamScore@Broc@@YAHABVstring@1@@Z 00D2CE20 f i mp_util_wad.o	VERIFIED: IDA 0x0093D920 forwards the const string reference to mGetTeamScore
 280	VERIFIED	0002:0053d950 ?Code_SendGameState@Broc@@YAXVentity@1@HHHH_N11HHH_NHH@Z 00D2CE50 f i mp_util_wad.o	VERIFIED: IDA 0x0093D950 obtains the player handle and forwards all 13 state values in order
 281	FIXED	0002:0053d9c0 ?CallbackGameState@_mp_common@@YAXHHHHHHHHHHHHH@Z 00D2CEC0 f mp_util_wad.o	FIXED: IDA 0x0093D9C0 constructs both callback entities from pLevel->_base.entity before HandleJoinAfterRoundOver and notify
 282	VERIFIED	0002:0053de70 ?Code_IncTeamScore@Broc@@YAXABVstring@1@H@Z 00D2D370 f i mp_util_wad.o	VERIFIED: IDA 0x0093DE70 forwards team and amount to mIncTeamScore
-283	VERIFIED	0002:0053dea0 ?Code_DebugOut@Broc@@YAXPBD@Z 00D2D3A0 f i mp_util_wad.o
+283	FIXED	0002:0053dea0 ?Code_DebugOut@Broc@@YAXPBD@Z 00D2D3A0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 284	VERIFIED	0002:0053ded0 ?SetCvar@@YAXPBDH@Z 00D2D3D0 f i mp_util_wad.o	VERIFIED: IDA 0x0093DED0 forwards cvar and integer value to mCVarSetInt
 285	VERIFIED	0002:0053df00 ?HandleJoinAfterRoundOver__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2D400 f i mp_util_wad.o	VERIFIED: existing source matches IDA allocation of 0x10 bytes and AeThreadFunctor2<Broc::entity,bint> construction with HandleJoinAfterRoundOver
 286	VERIFIED	0002:0053dfa0 ?CallbackGameScore@_mp_common@@YAXHH@Z 00D2D4A0 f mp_util_wad.o
@@ -292,14 +292,14 @@ index	status	map_line
 291	VERIFIED	0002:0053e410 ??4nextPlayerClass_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D2D910 f i mp_util_wad.o	VERIFIED: IDA 0x0093E410 forwards mHandle and *rhs to persistent nextPlayerClass setter, then returns rhs
 292	VERIFIED	0002:0053e450 ??4playerState_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2D950 f i mp_util_wad.o	VERIFIED: IDA 0x0093E450 forwards mHandle and *rhs to persistent playerState setter, then returns rhs
 293	FIXED	0002:0053e490 ?Code_PlayerSpawn@Broc@@YAXVentity@1@ABUvector@1@1_N@Z 00D2D990 f i mp_util_wad.o	FIXED: corrected origin/angles to const-reference ABI and passed their addresses to the BrocAPI forward
-294	VERIFIED	0002:0053e4d0 ?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z 00D2D9D0 f i mp_util_wad.o
-295	VERIFIED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o
-296	VERIFIED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o
-297	VERIFIED	0002:0053e560 ?SetActionHint@Broc@@YAXHH@Z 00D2DA60 f i mp_util_wad.o
+294	FIXED	0002:0053e4d0 ?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z 00D2D9D0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+295	FIXED	0002:0053e500 ?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z 00D2DA00 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+296	FIXED	0002:0053e530 ?SetTutorialText@Broc@@YAXHH@Z 00D2DA30 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+297	FIXED	0002:0053e560 ?SetActionHint@Broc@@YAXHH@Z 00D2DA60 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 298	VERIFIED	0002:0053e590 ?GetPlayerIndex@Broc@@YAHVentity@1@@Z 00D2DA90 f i mp_util_wad.o	VERIFIED: IDA 0x0093E590 forwards entity.GetHandle() to mGetPlayerIndex; implementation matches
 299	VERIFIED	0002:0053e5c0 ?CallbackPlayerEnter@_mp_common@@YAXVentity@Broc@@H@Z 00D2DAC0 f mp_util_wad.o
 300	VERIFIED	0002:0053e910 ?Code_GetPlayerName@Broc@@YAPBDVentity@1@@Z 00D2DE10 f i mp_util_wad.o	VERIFIED: IDA 0x0093E910 gets the copied player's handle and returns mGetPlayerName
-301	VERIFIED	0002:0053e940 ?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z 00D2DE40 f i mp_util_wad.o
+301	FIXED	0002:0053e940 ?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z 00D2DE40 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 302	VERIFIED	0002:0053e970 ?CallbackPlayerLeave@_mp_common@@YAXVentity@Broc@@@Z 00D2DE70 f mp_util_wad.o
 303	VERIFIED	0002:0053ea80 ?CallbackPlayerRespawnRequest@_mp_common@@YAXVentity@Broc@@H@Z 00D2DF80 f mp_util_wad.o
 304	VERIFIED	0002:0053eb50 ?RespawnPlayer__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@@Z 00D2E050 f i mp_util_wad.o	VERIFIED: IDA 0x0093EB50 allocates 0x10 bytes, constructs AeThreadFunctor2<entity,string>, destroys team, and returns it
@@ -307,16 +307,16 @@ index	status	map_line
 306	VERIFIED	0002:0053f610 ??8bbool@@QBE_N_N@Z 00D2EB10 f i mp_util_wad.o	VERIFIED: IDA compares rhs bool with global bbool.mVal
 307	VERIFIED	0002:0053f640 ??9entity@Broc@@QBE_NABV01@@Z 00D2EB40 f i mp_util_wad.o	VERIFIED: IDA compares this and rhs entity handles through GetHandle
 308	FIXED	0002:0053f680 ?Code_Obituary@Broc@@YAXVentity@1@0ABVstring@1@H_N@Z 00D2EB80 f i mp_util_wad.o	FIXED: IDA/XBE use a const Broc::string* for mObituary; corrected the ABI and forwarded the pointer
-309	VERIFIED	0002:0053f6d0 ?Code_SetRespawnMaxTime@Broc@@YAXVentity@1@H@Z 00D2EBD0 f i mp_util_wad.o
+309	FIXED	0002:0053f6d0 ?Code_SetRespawnMaxTime@Broc@@YAXVentity@1@H@Z 00D2EBD0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 310	VERIFIED	0002:0053f700 ?Code_GetSpotterEntity@Broc@@YA?AVentity@1@V21@@Z 00D2EC00 f i mp_util_wad.o	VERIFIED: IDA returns a Broc::entity constructed from mGetSpotterEntity(ent.GetHandle()) at +0x3C4
 311	FIXED	0002:0053f740 ?DeathState__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@0Ubint@@Ubbool@@2@Z 00D2EC40 f i mp_util_wad.o	FIXED: IDA allocates 0x18 bytes, constructs AeThreadFunctor5<entity,entity,bint,bbool,bbool>, and returns AeThreadFunctor*
 312	VERIFIED	0002:0053f7f0 ?CallbackPlayerAssist@_mp_common@@YAXVentity@Broc@@@Z 00D2ECF0 f mp_util_wad.o
 313	VERIFIED	0002:0053f860 ?CallbackPainFlinch@_mp_common@@YAXVentity@Broc@@H@Z 00D2ED60 f mp_util_wad.o
 314	VERIFIED	0002:0053f8d0 ?PlayPainSound__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D2EDD0 f i mp_util_wad.o	VERIFIED: IDA allocates 0x10 bytes and constructs AeThreadFunctor2<entity,bint> with PlayPainSound
 315	FIXED	0002:0053f970 ?CallbackPlayerDamage@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EE70 f mp_util_wad.o	FIXED: IDA prototype has nine parameters; removed the stale dflags declaration and matched hitLoc handling
-316	VERIFIED	0002:0053fa30 ?Code_FinishDamage@Broc@@YAXVentity@1@00ABUvector@1@1HHHH@Z 00D2EF30 f i mp_util_wad.o	VERIFIED: IDA forwards three handles, two vector pointers, and five scalar arguments to mFinishDamage
+316	FIXED	0002:0053fa30 ?Code_FinishDamage@Broc@@YAXVentity@1@00ABUvector@1@1HHHH@Z 00D2EF30 f i mp_util_wad.o	VERIFIED: IDA forwards three handles, two vector pointers, and five scalar arguments to mFinishDamage	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 317	FIXED	0002:0053fa90 ?CallbackPlayerDamageTeam@_mp_common@@YAXVentity@Broc@@00ABUvector@3@1HHHH@Z 00D2EF90 f mp_util_wad.o	FIXED: IDA prototype has nine parameters; removed the stale dflags declaration and matched team-kill forwarding
-318	VERIFIED	0002:0053fcc0 ?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z 00D2F1C0 f i mp_util_wad.o
+318	FIXED	0002:0053fcc0 ?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z 00D2F1C0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 319	FIXED	0002:0053fcf0 ?CallbackPlayerSpawn@_mp_common@@YAXVentity@Broc@@H@Z 00D2F1F0 f mp_util_wad.o	FIXED: IDA 0x0093FCF0 constructs FadeUpWhenLoaded with pLevel->_base.entity and the copied player
 320	VERIFIED	0002:00540210 ??D@YA?AUbfloat@@HU0@@Z 00D2F710 f i mp_util_wad.o	VERIFIED: IDA converts lhs to float, multiplies by rhs.mVal, and constructs the result bfloat
 321	VERIFIED	0002:00540250 ??4health_struct@__unnamed@entity@Broc@@QAEABHABH@Z 00D2F750 f i mp_util_wad.o	VERIFIED: IDA forwards *rhs and this->mHandle to m_entity_set_health, then returns rhs
@@ -333,7 +333,7 @@ index	status	map_line
 332	VERIFIED	0002:00540e50 ?DoDamage@Broc@@YAXABVentity@1@MABUvector@1@W4hitLocation_t@@@Z 00D30350 f i mp_util_wad.o	VERIFIED: IDA forwards entity handle, damage, vector pointer, and hit location to mDoDamage at +0x6F8
 333	VERIFIED	0002:00540e90 ?SetTakeDamage@Broc@@YAXABVentity@1@H@Z 00D30390 f i mp_util_wad.o	VERIFIED: IDA forwards entity handle and damage to mSetTakeDamage at +0x6FC
 334	VERIFIED	0002:00540ec0 ?CallbackPlayerTeamChange@_mp_common@@YAXVentity@Broc@@HH@Z 00D303C0 f mp_util_wad.o
-335	VERIFIED	0002:00541100 ?Code_GetOutOfVehicle@Broc@@YAXVentity@1@@Z 00D30600 f i mp_util_wad.o
+335	FIXED	0002:00541100 ?Code_GetOutOfVehicle@Broc@@YAXVentity@1@@Z 00D30600 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 336	FIXED	0002:00541130 ?player_dying_sounds__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D30630 f i mp_util_wad.o	FIXED: IDA allocates 0x0C bytes, constructs AeThreadFunctor1<entity>, and returns AeThreadFunctor*
 337	FIXED	0002:005411d0 ?TeamChangeKillPlayer__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D306D0 f i mp_util_wad.o	FIXED: IDA allocates 0x0C bytes, constructs AeThreadFunctor1<entity>, and returns AeThreadFunctor*
 338	VERIFIED	0002:00541270 ?CallbackPlayerClassChange@_mp_common@@YAXVentity@Broc@@I@Z 00D30770 f mp_util_wad.o
@@ -346,7 +346,7 @@ index	status	map_line
 345	FIXED	0002:00541fb0 ?restart_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubint@@@Z 00D314B0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bint>*; corrected the wrapper return ABI
 346	VERIFIED	0002:00542050 ?CallbackNextRound@_mp_common@@YAXXZ 00D31550 f mp_util_wad.o
 347	VERIFIED	0002:005420e0 ?CallbackRestartMap@_mp_common@@YAXXZ 00D315E0 f mp_util_wad.o
-348	VERIFIED	0002:005421a0 ?Code_NextRound@Broc@@YAX_N@Z 00D316A0 f i mp_util_wad.o
+348	FIXED	0002:005421a0 ?Code_NextRound@Broc@@YAX_N@Z 00D316A0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 349	VERIFIED	0002:005421d0 ?CallbackDebugRender@_mp_common@@YAXXZ 00D316D0 f mp_util_wad.o	VERIFIED: Existing implementation returns pLevel->RenderSpawnPoints(), matching IDA
 350	FIXED	0002:00542200 ?CallbackFireArtillery@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z 00D31700 f mp_util_wad.o	FIXED: IDA 0x00942200 constructs the incoming-sound and artillery-objective callbacks with pLevel->_base.entity
 351	VERIFIED	0002:005430c0 ??0bfloat@@QAE@N@Z 00D325C0 f i mp_util_wad.o	VERIFIED: IDA stores the long-double constructor argument in bfloat::mVal
@@ -356,7 +356,7 @@ index	status	map_line
 355	VERIFIED	0002:00543310 ?CallbackFireArtilleryShell@_mp_common@@YAXVentity@Broc@@@Z 00D32810 f mp_util_wad.o
 356	VERIFIED	0002:00543390 ?CallbackDenyArtillery@_mp_common@@YAXVentity@Broc@@@Z 00D32890 f mp_util_wad.o
 357	VERIFIED	0002:005435c0 ?CallbackVehicleKilled@_mp_common@@YAXVentity@Broc@@00HHH@Z 00D32AC0 f mp_util_wad.o
-358	VERIFIED	0002:005436b0 ?Code_ClearSpottingFromOccupants@Broc@@YAXVentity@1@@Z 00D32BB0 f i mp_util_wad.o
+358	FIXED	0002:005436b0 ?Code_ClearSpottingFromOccupants@Broc@@YAXVentity@1@@Z 00D32BB0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 359	VERIFIED	0002:005436e0 ?CallbackVehicleMantled@_mp_common@@YAXVentity@Broc@@0@Z 00D32BE0 f mp_util_wad.o
 360	FIXED	0002:00543720 ?CallbackHealthRegenRecovering@_mp_common@@YAXVentity@Broc@@@Z 00D32C20 f mp_util_wad.o	FIXED: IDA 0x00943720 uses pLevel->_base.entity for EffectEventPlay
 361	VERIFIED	0002:005437f0 ?CallbackPickupItem@_mp_common@@YAXVentity@Broc@@0@Z 00D32CF0 f mp_util_wad.o
@@ -369,8 +369,8 @@ index	status	map_line
 368	VERIFIED	0002:00543d60 ?CallbackPunishedForTeamKill@_mp_common@@YAXVentity@Broc@@H@Z 00D33260 f mp_util_wad.o
 369	FIXED	0002:00543dd0 ?PunishedForTeamKill__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D332D0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,bbool>*; corrected the wrapper return ABI
 370	FIXED	0002:00543e70 ?PunishedForTeamKill@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D33370 f mp_util_wad.o	FIXED: IDA 0x00943E70 passes the original ent copy to QuitGameWithMessage__functor; the old port incorrectly used a level sentinel
-371	VERIFIED	0002:00544360 ?Code_IsHost@Broc@@YA_NXZ 00D33860 f i mp_util_wad.o
-372	VERIFIED	0002:00544380 ?Code_IsRankedGame@Broc@@YA_NXZ 00D33880 f i mp_util_wad.o
+371	FIXED	0002:00544360 ?Code_IsHost@Broc@@YA_NXZ 00D33860 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+372	FIXED	0002:00544380 ?Code_IsRankedGame@Broc@@YA_NXZ 00D33880 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 373	FIXED	0002:005443a0 ?QuitGameWithMessage__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@UHashStr@@@Z 00D338A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor2<entity,HashStr>*; corrected the wrapper return ABI
 374	VERIFIED	0002:00544440 ?CallbackSpawnButtonPressed@_mp_common@@YAXVentity@Broc@@@Z 00D33940 f mp_util_wad.o
 375	FIXED	0002:005444e0 ?LocalPlayerRespawn__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D339E0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
@@ -387,7 +387,7 @@ index	status	map_line
 386	FIXED	0002:00544ea0 ?NewHost__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D343A0 f i mp_util_wad.o	FIXED: IDA returns AeThreadFunctor1<entity>*; corrected the wrapper return ABI
 387	VERIFIED	0002:00544f40 ?NewHost@_mp_common@@YAXVentity@Broc@@@Z 00D34440 f mp_util_wad.o
 388	FIXED	0002:00544f90 ?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z 00D34490 f mp_util_wad.o	FIXED: IDA 0x00944F90 waits on pLevel->_base.entity for the fade-up label
-389	VERIFIED	0002:005450a0 ?Code_ScreenFadeUp@Broc@@YAXIH@Z 00D345A0 f i mp_util_wad.o
+389	FIXED	0002:005450a0 ?Code_ScreenFadeUp@Broc@@YAXIH@Z 00D345A0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 390	VERIFIED	0002:005450d0 ?RespawnPlayer@_mp_common@@YAXVentity@Broc@@Vstring@3@@Z 00D345D0 f mp_util_wad.o
 391	FIXED	0002:00545310 ?Code_PlayerRespawn@Broc@@YAXVentity@1@ABUvector@1@1ABVstring@1@@Z 00D34810 f i mp_util_wad.o	FIXED: corrected origin/angles/team to const-reference ABI and passed addresses to mPlayerRespawn
 392	VERIFIED	0002:00545350 ?Spectate@_mp_common@@YAXVentity@Broc@@Ubint@@Ubbool@@@Z 00D34850 f mp_util_wad.o	VERIFIED: IDA registers both endon labels, waits for the bint delay, and enters spectator mode when playerState != 2
@@ -398,7 +398,7 @@ index	status	map_line
 397	FIXED	0002:005458b0 ?UpdateSpectateCritical__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D34DB0 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 398	FIXED	0002:00545950 ?UpdateSpectateDead__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D34E50 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 399	FIXED	0002:005459f0 ?FollowClient@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D34EF0 f mp_util_wad.o	FIXED: IDA 0x009459F0 reloads pLevel->_base.entity before FadeUpWhenLoaded
-400	VERIFIED	0002:00545b90 ?Code_ScreenFadeToBlack@Broc@@YAXIH@Z 00D35090 f i mp_util_wad.o
+400	FIXED	0002:00545b90 ?Code_ScreenFadeToBlack@Broc@@YAXIH@Z 00D35090 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 401	FIXED	0002:00545bc0 ?LocalPlayerIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D350C0 f mp_util_wad.o	FIXED: IDA 0x00945BC0 constructs FadeUpWhenLoaded with pLevel->_base.entity and the original player
 402	VERIFIED	0002:00545d30 ?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z 00D35230 f mp_util_wad.o
 403	VERIFIED	0002:00545fb0 ?Get@nextPlayerClass_struct@__unnamed@entity@Broc@@QBE?BFXZ 00D354B0 f i mp_util_wad.o	VERIFIED: IDA returns m_entity_get_persistent_player_nextPlayerClass(this->mHandle)
@@ -406,15 +406,15 @@ index	status	map_line
 405	FIXED	0002:00546010 ?TakeAllWeapons@Broc@@YAXABVentity@1@@Z 00D35510 f i mp_util_wad.o	FIXED: corrected entity to const-reference ABI and forwarded its handle to mTakeAllWeapons
 406	VERIFIED	0002:00546040 ?RunFrame@_mp_common@@YAXVentity@Broc@@@Z 00D35540 f mp_util_wad.o
 407	VERIFIED	0002:00546080 ?CreateClock@_mp_common@@YAXUbint@@@Z 00D35580 f mp_util_wad.o	VERIFIED: Existing implementation matches IDA's timeLimit > 0 check and Code_SetShowTime forward
-408	VERIFIED	0002:005460e0 ?Code_SetShowTime@Broc@@YAXM@Z 00D355E0 f i mp_util_wad.o
+408	FIXED	0002:005460e0 ?Code_SetShowTime@Broc@@YAXM@Z 00D355E0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 409	FIXED	0002:00546110 ?StartRound@_mp_common@@YAXUbbool@@@Z 00D35610 f mp_util_wad.o	FIXED: IDA 0x00946110 constructs the notify and finish_starting_round callbacks from pLevel->_base.entity
-410	VERIFIED	0002:00546570 ?Code_ForceControllerErrorMessageDown@Broc@@YAXXZ 00D35A70 f i mp_util_wad.o
+410	FIXED	0002:00546570 ?Code_ForceControllerErrorMessageDown@Broc@@YAXXZ 00D35A70 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 411	FIXED	0002:00546590 ?finish_starting_round__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@Ubbool@@@Z 00D35A90 f i mp_util_wad.o	FIXED: Corrected the existing wrapper return type to AeThreadFunctor* per IDA
 412	FIXED	0002:00546630 ?finish_starting_round@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z 00D35B30 f mp_util_wad.o	FIXED: IDA 0x00946630 reloads pLevel->_base.entity independently for each endon/notify path
 413	FIXED	0002:00546c00 ?restart_round@_mp_common@@YAXVentity@Broc@@Ubint@@@Z 00D36100 f mp_util_wad.o	FIXED: IDA 0x00946C00 reloads pLevel->_base.entity for waittill and each victory effect/dialog callback
-414	VERIFIED	0002:005473f0 ?Code_SettleMapVote@Broc@@YAXXZ 00D368F0 f i mp_util_wad.o
-415	VERIFIED	0002:00547410 ?Code_SettleGameModeVote@Broc@@YAXXZ 00D36910 f i mp_util_wad.o
-416	VERIFIED	0002:00547430 ?Code_NextRoundMapChanges@Broc@@YA_NXZ 00D36930 f i mp_util_wad.o
+414	FIXED	0002:005473f0 ?Code_SettleMapVote@Broc@@YAXXZ 00D368F0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+415	FIXED	0002:00547410 ?Code_SettleGameModeVote@Broc@@YAXXZ 00D36910 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
+416	FIXED	0002:00547430 ?Code_NextRoundMapChanges@Broc@@YA_NXZ 00D36930 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 417	VERIFIED	0002:00547450 ?MusicStop@@YAXXZ 00D36950 f i mp_util_wad.o	VERIFIED: IDA 0x00947450 matches the existing 0.0f forward to gBrocAPI.mMusicStop
 418	VERIFIED	0002:00547480 ?SoundStop@@YAXI@Z 00D36980 f i mp_util_wad.o	VERIFIED: IDA 0x00947480 matches the existing handle forward to gBrocAPI.mSoundStop
 419	VERIFIED	0002:005474b0 ?CheckTimeLimit@_mp_common@@YAXXZ 00D369B0 f mp_util_wad.o
@@ -438,7 +438,7 @@ index	status	map_line
 437	VERIFIED	0002:005491b0 ?Get@viewangles_struct@__unnamed@entity@Broc@@QBE?BUvector@4@XZ 00D386B0 f i mp_util_wad.o	VERIFIED: IDA 0x009491B0 matches the existing temporary-vector copy from m_entity_get_player_viewangles
 438	FIXED	0002:00549200 ?SpawnIntermission@_mp_common@@YAXVentity@Broc@@@Z 00D38700 f mp_util_wad.o	FIXED: IDA 0x00949200 constructs FadeUpWhenLoaded with pLevel->_base.entity and the player
 439	VERIFIED	0002:005495c0 ?QuitGameThread@_mp_common@@YAXVentity@Broc@@@Z 00D38AC0 f mp_util_wad.o
-440	VERIFIED	0002:00549600 ?Code_QuitGame@Broc@@YAXXZ 00D38B00 f i mp_util_wad.o
+440	FIXED	0002:00549600 ?Code_QuitGame@Broc@@YAXXZ 00D38B00 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 441	VERIFIED	0002:00549620 ?GetRespawnTime@_mp_common@@YA?AUbint@@Ventity@Broc@@@Z 00D38B20 f mp_util_wad.o	VERIFIED: IDA control flow and arithmetic match the existing implementation
 442	VERIFIED	0002:00549ae0 ??D@YA?AUbint@@U0@0@Z 00D38FE0 f i mp_util_wad.o	VERIFIED: IDA 0x00949AE0 matches the existing global bint*bint multiplication
 443	VERIFIED	0002:00549b20 ??D@YA?AUbint@@HU0@@Z 00D39020 f i mp_util_wad.o	VERIFIED: IDA 0x00949B20 matches the existing global int*bint multiplication
@@ -494,7 +494,7 @@ index	status	map_line
 493	FIXED	0002:0054d320 ?StartGame__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C820 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 494	FIXED	0002:0054d3c0 ?FlagThreadLauncher__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3C8C0 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 495	FIXED	0002:0054d460 ?StartGame@_mp_ctf@@YAXVentity@Broc@@@Z 00D3C960 f mp_util_wad.o	FIXED: IDA 0x0094D460 copies pLevel->_base.entity (or null) into RunFrame__functor
-496	VERIFIED	0002:0054d510 ?Code_EnterGame@Broc@@YAXXZ 00D3CA10 f i mp_util_wad.o
+496	FIXED	0002:0054d510 ?Code_EnterGame@Broc@@YAXXZ 00D3CA10 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 497	FIXED	0002:0054d530 ?RunFrame__functor@_mp_common@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3CA30 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 498	FIXED	0002:0054d5d0 ?CallbackAreaCaptured@_mp_ctf@@YAXHH@Z 00D3CAD0 f mp_util_wad.o	FIXED: reverified IDA 0x0094D5D0 flow and corrected typed HashStr sentinel construction plus goal angles_struct/origin_struct reads (source commit dd8a0c14)
 499	FIXED	0002:0054e030 ?PlayTeamDialog__functor@_mp_audio@@YAPAVAeThreadFunctor@@Ventity@Broc@@Vstring@4@1Ubfloat@@@Z 00D3D530 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor4<Broc::entity,Broc::string,Broc::string,Broc::bfloat>* per IDA
@@ -502,7 +502,7 @@ index	status	map_line
 501	VERIFIED	0002:0054e1e0 ?CallbackPlayerSpawn@_mp_ctf@@YAXVentity@Broc@@H@Z 00D3D6E0 f mp_util_wad.o
 502	VERIFIED	0002:0054e2a0 ??4ctf_has_flag_struct@__unnamed@entity@Broc@@QAEABFABF@Z 00D3D7A0 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x0094E2A0 value load, API forward, and reference return
 503	FIXED	0002:0054e2e0 ?SetupRound@_mp_ctf@@YAXXZ 00D3D7E0 f mp_util_wad.o	FIXED: matched IDA 0x0094E2E0 SwitchToSecondarySpawns setup and corrected each player last_dropped_time reset to -1 (source commit 5a3900ba)
-504	VERIFIED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o	VERIFIED: IDA directly forwards teamid and visible to mSetCompassVisibilty
+504	FIXED	0002:0054e7e0 ?Code_SetCompassVisibilty@Broc@@YAXI_N@Z 00D3DCE0 f i mp_util_wad.o	VERIFIED: IDA directly forwards teamid and visible to mSetCompassVisibilty	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 505	FIXED	0002:0054e810 ?SwitchToSecondarySpawns__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D3DD10 f i mp_util_wad.o	FIXED: corrected the return type to AeThreadFunctor1<Broc::entity>* per IDA
 506	FIXED	0002:0054e8b0 ?CallbackHostMigrated@_mp_ctf@@YAXXZ 00D3DDB0 f mp_util_wad.o	FIXED: corrected axis/allies game-state origins to use the flag entities, matching IDA 0x0094E8B0 (source commit 34da3886)
 507	VERIFIED	0002:0054eaa0 ?Code_SendGameStateCTF@Broc@@YAXVentity@1@ABUvector@1@10110@Z 00D3DFA0 f i mp_util_wad.o	VERIFIED: current source matches IDA 0x0094EAA0 copy order, handle extraction, and callback arguments
@@ -538,7 +538,7 @@ index	status	map_line
 537	VERIFIED	0002:00552990 ?ObjectiveRing@@YAXHH@Z 00D41E90 f i mp_util_wad.o	VERIFIED: IDA 0x00952990 matches the existing direct mObjectiveRing forward
 538	FIXED	0002:005529c0 ?CompassUnderlay__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D41EC0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 539	FIXED	0002:00552a60 ?CallbackPickupScriptItem@_mp_ctf@@YAXHVentity@Broc@@H@Z 00D41F60 f mp_util_wad.o	FIXED: reverified IDA 0x00952A60 and aligned origin_struct/team_struct reads for distance, host-client rejection, and holder-team comparison (source commit 1ce34e38)
-540	VERIFIED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o
+540	FIXED	0002:00552f00 ?Code_PickupItem@Broc@@YAXHVentity@1@@Z 00D42400 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 541	FIXED	0002:00552f30 ?CallbackDropItem@_mp_ctf@@YAXHHUvector@Broc@@00@Z 00D42430 f mp_util_wad.o	FIXED: reverified IDA 0x00952F30 and aligned flag lookup/notify HashStr constructors plus typed ctf_has_flag holder clearing (source commit adadecb4)
 542	FIXED	0002:005533a0 ?WaitForFlagTimeOut__functor@_mp_ctf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D428A0 f i mp_util_wad.o	FIXED: matched IDA return type as AeThreadFunctor1<Broc::entity>*
 543	VERIFIED	0002:00553440 ?WaitForFlagTimeOut@_mp_ctf@@YAXVentity@Broc@@@Z 00D42940 f mp_util_wad.o
@@ -643,12 +643,12 @@ index	status	map_line
 642	VERIFIED	0002:0055ddf0 ?SetAxisModels@_mp_loadout@@YAXUbint@@Vstring@Broc@@@Z 00D4D2F0 f mp_util_wad.o	VERIFIED: Existing axis model offset/index and assignment match IDA 0x0095DDF0
 643	VERIFIED	0002:0055de90 ?GiveLoadout@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D390 f mp_util_wad.o
 644	VERIFIED	0002:0055df10 ?UpdatePlayerModelForRank@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D410 f mp_util_wad.o
-645	VERIFIED	0002:0055e080 ?SetAiType@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D4D580 f i mp_util_wad.o	VERIFIED: Existing mSetAiType callback forwarding matches IDA 0x0095E080
+645	FIXED	0002:0055e080 ?SetAiType@Broc@@YAXABVentity@1@ABVstring@1@W4TPakInfo@@@Z 00D4D580 f i mp_util_wad.o	VERIFIED: Existing mSetAiType callback forwarding matches IDA 0x0095E080	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 646	VERIFIED	0002:0055e0c0 ?SetPlayerModel@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D5C0 f mp_util_wad.o
-647	VERIFIED	0002:0055e1e0 ?SetViewModel@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D4D6E0 f i mp_util_wad.o	VERIFIED: Existing mSetViewModel callback forwarding matches IDA 0x0095E1E0
+647	FIXED	0002:0055e1e0 ?SetViewModel@Broc@@YAXABVentity@1@ABVstring@1@@Z 00D4D6E0 f i mp_util_wad.o	VERIFIED: Existing mSetViewModel callback forwarding matches IDA 0x0095E1E0	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 648	VERIFIED	0002:0055e210 ?DisplayYouWillSpawnWithMessage@_mp_loadout@@YAXVentity@Broc@@@Z 00D4D710 f mp_util_wad.o
 649	VERIFIED	0002:0055e270 ?GiveWeapons@_mp_loadout@@YAXVentity@Broc@@Ubint@@1@Z 00D4D770 f mp_util_wad.o	VERIFIED: Existing weapon/pistol, special, ammo, and switch flow matches IDA 0x0095E270
-650	VERIFIED	0002:0055e600 ?Code_SetSpecialRecharge@Broc@@YAXHHHH@Z 00D4DB00 f i mp_util_wad.o
+650	FIXED	0002:0055e600 ?Code_SetSpecialRecharge@Broc@@YAXHHHH@Z 00D4DB00 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 651	VERIFIED	0002:0055e640 ?GiveAmmo@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DB40 f mp_util_wad.o	VERIFIED: Existing primary/secondary/grenade ammo flow matches IDA 0x0095E640
 652	VERIFIED	0002:0055e840 ?GiveAmmoPack@_mp_loadout@@YAXVentity@Broc@@Ubint@@1Ubbool@@@Z 00D4DD40 f mp_util_wad.o	VERIFIED: Existing rank/class/smoke ammo-pack branches match IDA 0x0095E840
 653	VERIFIED	0002:0055ec60 ?CallbackGetTeamWeapon@_mp_loadout@@YAHPBDI@Z 00D4E160 f mp_util_wad.o
@@ -742,7 +742,7 @@ index	status	map_line
 741	VERIFIED	0002:00568610 ?CompassUnderlay@_mp_scf@@YAXVentity@Broc@@@Z 00D57B10 f mp_util_wad.o
 742	VERIFIED	0002:00568870 ?IsFlagAtBase@_mp_scf@@YA?AUbbool@@Ventity@Broc@@@Z 00D57D70 f mp_util_wad.o	VERIFIED: IDA 0x00968870 matches home_position/origin subtraction, z suppression, and the 0.1 threshold
 743	FIXED	0002:00568920 ?HandlePickupFlag@_mp_scf@@YAXVentity@Broc@@0HH@Z 00D57E20 f mp_util_wad.o	FIXED: matched IDA 0x00968920 typed playerState/team/ctf_has_flag accesses, level pickup-delay proxy, and bint timing arithmetic; source commit edc968bc
-744	VERIFIED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o	VERIFIED: IDA 0x00969740 matches 12-byte allocation, null check, and CompassUnderlay functor construction
+744	FIXED	0002:00569740 ?CompassUnderlay__functor@_mp_scf@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D58C40 f i mp_util_wad.o	VERIFIED: IDA 0x00969740 matches 12-byte allocation, null check, and CompassUnderlay functor construction	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 745	VERIFIED	0002:005697e0 ??4pickupCaptureDelayTime_struct@__unnamed@LocalFields@mp_util_wad@@QAEABHABH@Z 00D58CE0 f i mp_util_wad.o	VERIFIED: IDA 0x009697E0 matches bint construction from rhs, SetVal<bint> key 0x4743187E, and return-rhs wrapper
 746	FIXED	0002:00569830 ?CallbackPickupScriptItem@_mp_scf@@YAXHVentity@Broc@@H@Z 00D58D30 f mp_util_wad.o	FIXED: matched IDA 0x00969830 typed picker/flag origins and HashStr pickup notification construction; source commit 06d21a79
 747	FIXED	0002:00569b30 ?CallbackDropItem@_mp_scf@@YAXHHUvector@Broc@@00@Z 00D59030 f mp_util_wad.o	FIXED: matched IDA 0x00969B30 typed home_position GetRef access and HashStr drop notification construction; source commit 8a1cc8ca
@@ -875,7 +875,7 @@ index	status	map_line
 874	VERIFIED	0002:00578710 ?WarnPlayerAboutInactiveFlag__functor@_mp_war@@YAPAVAeThreadFunctor@@Ventity@Broc@@@Z 00D67C10 f i mp_util_wad.o	VERIFIED: IDA 0x00978710 matches 0xC-byte AeThreadFunctor1 allocation, null check, and WarnPlayerAboutInactiveFlag constructor
 875	VERIFIED	0002:005787b0 ?CallbackRoundOver@_mp_war@@YAXHVstring@Broc@@@Z 00D67CB0 f mp_util_wad.o	VERIFIED: IDA 0x009787B0 matches end-condition tutorial hash selection, opponent score increment, roundWinner, fade, and common callback order
 876	FIXED	0002:00578960 ?SendFlagStates@_mp_war@@YAXVentity@Broc@@@Z 00D67E60 f mp_util_wad.o	FIXED: ported IDA 0x00978960 ownership-bit packing, cap-status scaling, five-area bounds handling, and Code_SendGameStateDOM call
-877	VERIFIED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o
+877	FIXED	0002:00578cc0 ?Code_SendGameStateDOM@Broc@@YAXVentity@1@HHHHH@Z 00D681C0 f i mp_util_wad.o	FIXED: IDA-backed wrapper/signature reconciliation; source commit f8acbf5a
 878	FIXED	0002:00578d10 ?WAR_Init@_mp_war@@YAXVentity@Broc@@@Z 00D68210 f mp_util_wad.o	FIXED: matched IDA 0x00978D10 blinker loop, per-area cap counts, and DOM all-flags-capped EndRound behavior
 879	FIXED	0002:005790c0 ?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z 00D685C0 f mp_util_wad.o	FIXED: replaced placeholder with IDA/C3 0x009790C0 capture, objective, audio, flag-motion, and waitframe state loop; disassembly 0x0097A738 confirms MoveTo total/accel timing 0.05f/0.05f (source commit e4e3e4c8)
 880	VERIFIED	0002:0057af10 ??9bfloat@@QBE_NU0@@Z 00D6A410 f i mp_util_wad.o	VERIFIED: IDA 0x0097AF10 compares boxed float values
