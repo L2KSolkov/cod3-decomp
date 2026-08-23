@@ -17,6 +17,7 @@
 #include "bd/bdSession.h"
 #include "bd/bdSessionListener.h"
 #include "bd/bdQoSProbeListener.h"
+#include "bd/bdSessionHandler.h"
 #include "bd/bdStopwatch.h"
 
 // bd headers pull windows.h via bdReferencable.h; undo its GetObjectA macro
@@ -2046,7 +2047,9 @@ enum MPVehicleEventType : int {
     VEHICLE_EVENT_SEAT_CHANGE = 2,
 };
 
-class MPPlayerManager {
+class MPPlayerManager : public bdSessionInterceptor,
+                        public bdSessionListener,
+                        public bdSessionHandler {
 public:
     MPPlayer* GetPlayer(unsigned char id);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z (mp.o)
     MPPlayer* GetPlayer(bdReference<bdConnection> connection);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z (mp.o 0x737770)

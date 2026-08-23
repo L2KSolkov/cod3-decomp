@@ -24,7 +24,7 @@ public:
 // ============================================================================
 // bdSessionHandler — default handler; accepts every connect request.
 // ============================================================================
-class bdSessionHandler : public bdSessionInterceptor {
+class bdSessionHandler {
 public:
     bdSessionHandler();                                        // @0x8B5CA0
     virtual ~bdSessionHandler();                               // @0x8B5CB0
