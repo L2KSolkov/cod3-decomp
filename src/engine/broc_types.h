@@ -1605,7 +1605,9 @@ struct BrocAPI {
     void (*m_entity_set_persistent_player_nextPlayerClass)(unsigned int, __int16);  // +0x12F8
     int (*m_entity_get_persistent_player_playerState)(unsigned int);  // +0x12FC
     void (*m_entity_set_persistent_player_playerState)(unsigned int, int);  // +0x1300
-    char _pad1304[0x1338 - 0x1304];                       // +0x1304
+    char _pad1304[0x1330 - 0x1304];                       // +0x1304
+    void (*mBrocObjCtor)(void*, void*);                   // +0x1330
+    void (*mBrocObjDtor)(void*);                          // +0x1334
     void (*mKillThreadExec)();                            // +0x1338
 };
 static_assert(sizeof(BrocAPI) == 0x133C, "BrocAPI size mismatch");

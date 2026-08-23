@@ -101,6 +101,22 @@ const char* ToStr(int hash)
 // ============================================================================
 namespace Broc {
 
+// The release runtime registers stack-resident Broc objects so a script
+// thread can destroy them when it unwinds.  The callback stores only this
+// object's virtual destructor interface, matching BrocDtor<string>.
+struct StringDtor {
+    virtual void Destroy(void* instance) {
+        static_cast<string*>(instance)->~string();
+    }
+};
+
+static void RegisterStringObject(string* instance) {
+    if (gBrocAPI.mBrocObjCtor != nullptr) {
+        StringDtor dtor;
+        gBrocAPI.mBrocObjCtor(instance, &dtor);
+    }
+}
+
 // IDA global (codmp_xboxr.xbe.c:956493; ea: 0x010F0568).
 BrocAPI gBrocAPI = {};
 ExtendedEntity ExtendedEntity::nullEnt;
@@ -568,11 +584,13 @@ string::string(EUndefined) {
 
 string::string(Block* b) {
     mBlock = b;
+    RegisterStringObject(this);
 }
 
 string::string(const char* txt) {
     unsigned int len = Broc::length(txt);
     mBlock = AllocBlock(txt, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(const char* txt, int) {
@@ -586,6 +604,7 @@ string::string(const string& rhs) {
         mBlock = rhs.mBlock;
         mBlock->IncrementCount();
     }
+    RegisterStringObject(this);
 }
 
 string::string(const string& rhs, int) {
@@ -600,6 +619,7 @@ string::string(unsigned int val) {
     sprintf(buf, "%u", val);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(int val) {
@@ -607,6 +627,7 @@ string::string(int val) {
     sprintf(buf, "%d", val);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(float val) {
@@ -614,6 +635,7 @@ string::string(float val) {
     sprintf(buf, "%g", val);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(const bint& val) {
@@ -621,6 +643,7 @@ string::string(const bint& val) {
     sprintf(buf, "%d", val.mVal);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(const bfloat& val) {
@@ -628,6 +651,7 @@ string::string(const bfloat& val) {
     sprintf(buf, "%g", val.mVal);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(const bunsigned& val) {
@@ -635,12 +659,14 @@ string::string(const bunsigned& val) {
     sprintf(buf, "%u", val.mVal);
     unsigned int len = Broc::length(buf);
     mBlock = AllocBlock(buf, len, 0);
+    RegisterStringObject(this);
 }
 
 string::string(const bbool& val) {
     const char* s = val.mVal ? "true" : "false";
     unsigned int len = Broc::length(s);
     mBlock = AllocBlock(s, len, 0);
+    RegisterStringObject(this);
 }
 
 string::~string() {
