@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #include "bd/bdGameInfo.h"
 #include "xlive.h"
@@ -11,9 +12,40 @@ extern "C" {
 
 unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna)
 {
-    if (pxna != NULL)
-        memset(pxna, 0, sizeof(*pxna));
-    return 1;
+    if (pxna == NULL)
+        return 0x8000;
+
+    memset(pxna, 0, sizeof(*pxna));
+    pxna->ina[0] = 127;
+    pxna->ina[3] = 1;
+
+    char hostName[256];
+    if (gethostname(hostName, sizeof(hostName)) == 0)
+    {
+        addrinfo hints = {};
+        hints.ai_family = AF_INET;
+        addrinfo* addresses = NULL;
+        if (getaddrinfo(hostName, NULL, &hints, &addresses) == 0)
+        {
+            for (addrinfo* address = addresses; address != NULL;
+                 address = address->ai_next)
+            {
+                const sockaddr_in* socketAddress =
+                    reinterpret_cast<const sockaddr_in*>(address->ai_addr);
+                const unsigned char* bytes =
+                    reinterpret_cast<const unsigned char*>(
+                        &socketAddress->sin_addr.s_addr);
+                if (bytes[0] != 127)
+                {
+                    memcpy(pxna->ina, bytes, sizeof(pxna->ina));
+                    break;
+                }
+            }
+            freeaddrinfo(addresses);
+        }
+    }
+    memcpy(pxna->inaOnline, pxna->ina, sizeof(pxna->ina));
+    return 0;
 }
 
 int __stdcall XNetTsAddrToInAddr(const XNADDR* ptsa, unsigned int,
@@ -94,7 +126,7 @@ int __stdcall XNetQosRelease(XNQOS*)
 
 int __stdcall XNetGetEthernetLinkStatus()
 {
-    return 0;
+    return 1;
 }
 
 void __stdcall DmGetXboxName(char* name, unsigned int* size)
