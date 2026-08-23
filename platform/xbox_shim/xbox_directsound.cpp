@@ -384,11 +384,17 @@ struct HostMediaObject : XFileMediaObject {
             ? self->length - self->position : 0u;
         const unsigned requested = minUnsigned(destination->dwMaxSize, available);
         DWORD bytesRead = 0;
-        LARGE_INTEGER offset{};
-        offset.QuadPart = self->position;
-        if (!SetFilePointerEx(self->file, offset, nullptr, FILE_BEGIN) ||
-            (requested != 0 && !ReadFile(self->file, destination->pvBuffer,
-                                         requested, &bytesRead, nullptr)))
+        OVERLAPPED overlapped{};
+        overlapped.Offset = self->position;
+        BOOL readOk = TRUE;
+        if (requested != 0) {
+            readOk = ReadFile(self->file, destination->pvBuffer, requested,
+                              &bytesRead, &overlapped);
+            if (!readOk && GetLastError() == ERROR_IO_PENDING)
+                readOk = GetOverlappedResult(self->file, &overlapped,
+                                             &bytesRead, TRUE);
+        }
+        if (!readOk)
             return HRESULT_FROM_WIN32(GetLastError());
         self->position += bytesRead;
         if (destination->pdwCompletedSize != nullptr)
