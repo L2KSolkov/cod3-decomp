@@ -9,10 +9,23 @@
 
 #include <cstring>
 
-// mp_level's public entry-point ABI uses the global opaque BrocAPI/BrocExports
-// tags from the original object; the full runtime views live in engine/broc_types.h.
+// mp_level's public entry-point ABI uses the global game-side BrocAPI and
+// BrocExports declarations.  The complete IDA-derived layouts live in the
+// Broc namespace, so InitScript uses those views when installing callbacks.
 struct BrocAPI;
 struct BrocExports;
+
+extern BrocAPI* gpBrocAPI;
+extern BrocExports gBrocExports;
+
+namespace BrocHelper {
+void Init();
+void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));
+}
+
+namespace BrocSys {
+void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
+}
 
 namespace Broc {
 
@@ -141,7 +154,17 @@ bool ScriptThreadExists(unsigned int fcn)
 void mp_level_main() {}           // ea: 0xC94D50
 void mp_level_InternalMain() {}   // ea: 0xC95160
 void mp_level_Shutdown() {}       // ea: 0xC94FA0
+
+namespace mp_level {
+void InternalMain() {}            // ea: 0xC95160
+void Shutdown() {}                // ea: 0xC94FA0
 void hack_ps2_InitScript(Broc::BrocExports&) {} // ea: 0xC94D70
+}
+
+void hack_ps2_InitScript(Broc::BrocExports& exports)
+{
+    mp_level::hack_ps2_InitScript(exports);
+}
 void AnimNamespaceVariableResolver(int, int, int, int) {} // ea: 0xC94E50
 
 void BrocAnimInitialize() {}      // ea: 0xC94E90
@@ -189,8 +212,33 @@ typedef void (*InitFunc)();
 
 namespace mp_level {
 
-InitFunc InitScript(BrocAPI**, BrocExports&) { // ea: 0xC95CC0
-    return mp_level_main;
+InitFunc InitScript(::BrocAPI** gamesAPIptr, ::BrocExports& exports) { // ea: 0xC95CC0
+    Broc::BrocExports& exportsView =
+        *reinterpret_cast<Broc::BrocExports*>(&exports);
+
+    exportsView.mInit();
+    *gamesAPIptr = reinterpret_cast<::BrocAPI*>(&Broc::gBrocAPI);
+    Broc::gBrocAPI.mKillThread = false;
+    exportsView.mValidateApiSize(4924, 456);
+    Broc::ExtendedEntity::InitScript(exportsView);
+    hack_ps2_InitScript(exportsView);
+    exportsView.mRegisterDebugStrings = mp_level_wad::RegisterHashStrings;
+    exportsView.mAnimIndexResolver = AnimNamespaceVariableResolver;
+    exportsView.mAnimIndexValidate = mp_level_wad::ValidateAnimationIndices;
+    exportsView.mGetNextAnimtree = mp_level_wad::GetNextAnimTree;
+    exportsView.mAnimGetBroValue = mp_level_wad::GetBroAnim;
+    exportsView.mAnimInitialize = BrocAnimInitialize;
+    exportsView.mAnimCleanup = BrocAnimCleanup;
+    exportsView.mAnimResolver = BrocAnimResolver;
+    exportsView.mAnimNameResolver = mp_level_wad::ResolveAnimName;
+    exportsView.mAnimDebug = BrocAnimDebug;
+    exportsView.mShutdown = Shutdown;
+    exportsView.mSpawnScriptThread =
+        reinterpret_cast<decltype(exportsView.mSpawnScriptThread)>(
+            mp_level_wad::SpawnScriptThread);
+    exportsView.mScriptThreadExists = mp_level_wad::ScriptThreadExists;
+    exportsView.mThreadExecute = Broc::ThreadExecute;
+    return InternalMain;
 }
 
 } // namespace mp_level
