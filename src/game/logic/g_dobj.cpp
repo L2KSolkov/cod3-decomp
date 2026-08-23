@@ -691,10 +691,9 @@ void unregister_dobj(DbLinkedHandle<EntityHandleDb, Entity> handle)
 // ea: 0x00468FB0
 void init_dobj_trackers(void)
 {
-    // reserve(192) / reserve(192) / reserve(128) - capacity preallocation
-    dobjects.mCapacity = 192;
-    del_pending_dobjects.mCapacity = 192;
-    add_pending_dobjects.mCapacity = 128;
+    dobjects.reserve(192);
+    del_pending_dobjects.reserve(192);
+    add_pending_dobjects.reserve(128);
 }
 
 // ea: 0x00468FE0
