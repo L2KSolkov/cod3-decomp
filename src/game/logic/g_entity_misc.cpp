@@ -1982,8 +1982,21 @@ struct nalPositionOrientation {
 class AnimTree;
 DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex)
 {
-    (void)obj; (void)modelIndex;
-    return nullptr;
+    if (obj->skel == nullptr)
+        return nullptr;
+
+    if (obj->matOffset[0] != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 811;
+        AeAssert::gCurrentExpr = "obj->matOffset[0] == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    DSkel* skel = static_cast<DSkel*>(obj->skel);
+    return &skel->mat[obj->matOffset[modelIndex]];
 }
 math::Quaternion nalQuaternionFromMatrix(const math::Mat44& m)
 {
