@@ -125,6 +125,9 @@ static bool decodeXboxAdpcm(const unsigned char* input, unsigned size,
 struct HostWaveBlock {
     WAVEHDR header{};
     std::vector<unsigned char> bytes;
+    unsigned* status = nullptr;
+    unsigned* completedSize = nullptr;
+    unsigned submittedSize = 0;
     std::atomic<bool> done{false};
 };
 
@@ -160,7 +163,8 @@ public:
                 frequency * static_cast<unsigned>(m_outputFormat.nBlockAlign);
         }
     }
-    bool submit(const void* data, unsigned size) {
+    bool submit(const void* data, unsigned size, unsigned* status = nullptr,
+                unsigned* completedSize = nullptr) {
         reap();
         std::vector<unsigned char> decoded;
         const unsigned char* source = static_cast<const unsigned char*>(data);
@@ -176,18 +180,27 @@ public:
         auto* block = new HostWaveBlock();
         block->bytes.resize(size);
         std::memcpy(block->bytes.data(), source, size);
+        block->status = status;
+        block->completedSize = completedSize;
+        block->submittedSize = size;
         applyVolume(block->bytes.data(), size);
         block->header.lpData = reinterpret_cast<LPSTR>(block->bytes.data());
         block->header.dwBufferLength = size;
         block->header.dwUser = reinterpret_cast<DWORD_PTR>(block);
+        if (block->status != nullptr)
+            *block->status = 0x8000000Au;
         if (waveOutPrepareHeader(m_device, &block->header, sizeof(WAVEHDR)) !=
             MMSYSERR_NOERROR) {
+            if (block->status != nullptr)
+                *block->status = 0;
             delete block;
             return false;
         }
         if (waveOutWrite(m_device, &block->header, sizeof(WAVEHDR)) !=
             MMSYSERR_NOERROR) {
             waveOutUnprepareHeader(m_device, &block->header, sizeof(WAVEHDR));
+            if (block->status != nullptr)
+                *block->status = 0;
             delete block;
             return false;
         }
@@ -214,6 +227,10 @@ public:
             std::lock_guard<std::mutex> lock(m_mutex);
             for (HostWaveBlock* block : m_blocks) {
                 waveOutUnprepareHeader(m_device, &block->header, sizeof(WAVEHDR));
+                if (block->status != nullptr)
+                    *block->status = 0;
+                if (block->completedSize != nullptr)
+                    *block->completedSize = block->submittedSize;
                 delete block;
             }
             m_blocks.clear();
@@ -221,8 +238,13 @@ public:
             m_device = nullptr;
         } else {
             std::lock_guard<std::mutex> lock(m_mutex);
-            for (HostWaveBlock* block : m_blocks)
+            for (HostWaveBlock* block : m_blocks) {
+                if (block->status != nullptr)
+                    *block->status = 0;
+                if (block->completedSize != nullptr)
+                    *block->completedSize = block->submittedSize;
                 delete block;
+            }
             m_blocks.clear();
         }
     }
@@ -261,6 +283,10 @@ private:
                 continue;
             }
             waveOutUnprepareHeader(m_device, &block->header, sizeof(WAVEHDR));
+            if (block->status != nullptr)
+                *block->status = 0;
+            if (block->completedSize != nullptr)
+                *block->completedSize = block->submittedSize;
             delete block;
             it = m_blocks.erase(it);
         }
@@ -330,7 +356,10 @@ struct HostStream : IDirectSoundStream {
         auto* self = reinterpret_cast<HostStream*>(value);
         if (source == nullptr || source->pvBuffer == nullptr || self->paused)
             return S_OK;
-        self->output.submit(source->pvBuffer, source->dwMaxSize);
+        if (!self->output.submit(source->pvBuffer, source->dwMaxSize,
+                                 source->pdwStatus,
+                                 source->pdwCompletedSize))
+            return E_FAIL;
         if (source->pdwCompletedSize != nullptr)
             *source->pdwCompletedSize = source->dwMaxSize;
         if (source->pdwStatus != nullptr)
