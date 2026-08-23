@@ -39,36 +39,36 @@ index	status	map_line
 38	SKIPPED	0002:000b4660 _fmodf 008A3B60 f i core.o SKIPPED: CRT math wrapper; IDA disassembly calls __CIfmod
 39	SKIPPED	0002:000b4680 _modff 008A3B80 f i core.o SKIPPED: CRT math wrapper; IDA disassembly calls CRT modf and stores the remainder
 40	SKIPPED	0002:000b46b0 ?sqrt@@YAMM@Z 008A3BB0 f i core.o SKIPPED: compiler/CRT math wrapper; IDA disassembly is fsqrt
-41	VERIFIED	0002:000b46c0 ??0DbField@@QAE@GW4EDbColumnType@@W4EDbMatchType@@@Z 008A3BC0 f i core.o VERIFIED: FUNCTION existing DbField constructor and range asserts match IDA
-42	VERIFIED	0002:000b47b0 ??1DbField@@QAE@XZ 008A3CB0 f i core.o VERIFIED: FUNCTION implicit compiler-generated DbField destructor matches IDA trivial body
-43	VERIFIED	0002:000b47c0 ?GetColumnType@DbField@@QBE?AW4EDbColumnType@@XZ 008A3CC0 f i core.o VERIFIED: FUNCTION existing DbField column-type accessor matches IDA
-44	VERIFIED	0002:000b47d0 ?GetMatchType@DbField@@QBE?AW4EDbMatchType@@XZ 008A3CD0 f i core.o VERIFIED: FUNCTION existing DbField match-type accessor matches IDA
-45	VERIFIED	0002:000b47e0 ?GetId@DbField@@QBEGXZ 008A3CE0 f i core.o VERIFIED: FUNCTION existing DbField id accessor matches IDA
-46	VERIFIED	0002:000b47f0 ?GetId@DbColumn@@QBEGXZ 008A3CF0 f i core.o VERIFIED: FUNCTION existing DbColumn id accessor matches IDA
-47	VERIFIED	0002:000b4800 ?GetSize@DbColumn@@QBEGXZ 008A3D00 f i core.o VERIFIED: FUNCTION existing DbColumn size accessor matches IDA
-48	VERIFIED	0002:000b4810 ?get_element_ptr@DbColumn@@QBEPBXG@Z 008A3D10 f i core.o VERIFIED: FUNCTION existing DbColumn element-pointer accessor matches IDA
-49	VERIFIED	0002:000b4830 ?GetColUsedNum@DbRow@@QBEFXZ 008A3D30 f i core.o VERIFIED: FUNCTION existing DbRow column-count accessor matches IDA
-50	VERIFIED	0002:000b4840 ?GetFieldId@DbGraphNode@@QBEGXZ 008A3D40 f i core.o VERIFIED: FUNCTION existing DbGraphNode field-id accessor matches IDA
-51	VERIFIED	0002:000b4850 ?IsLeaf@DbGraphNode@@QBE_NXZ 008A3D50 f i core.o VERIFIED: FUNCTION existing DbGraphNode leaf test matches IDA
-52	VERIFIED	0002:000b4860 ?GetNumHits@DbGraphNode@@QBEGXZ 008A3D60 f i core.o VERIFIED: FUNCTION existing DbGraphNode hit-count accessor matches IDA
-53	VERIFIED	0002:000b48d0 ?GetHits@DbGraphNode@@QBEPAPAVDbRow@@XZ 008A3DD0 f i core.o VERIFIED: FUNCTION existing DbGraphNode hit-array accessor matches IDA
-54	VERIFIED	0002:000b4940 ?GetNumChildren@DbGraphNode@@QBEGXZ 008A3E40 f i core.o VERIFIED: FUNCTION existing DbGraphNode child-count accessor matches IDA
-55	VERIFIED	0002:000b49b0 ?GetChild@DbGraphNode@@QBEPAV1@G@Z 008A3EB0 f i core.o VERIFIED: FUNCTION existing DbGraphNode child accessor and bounds asserts match IDA
-56	VERIFIED	0002:000b4a90 ?GetName@DbTable@@QBEPBDXZ 008A3F90 f i core.o VERIFIED: FUNCTION existing DbTable name accessor matches IDA (name field at offset zero)
-57	VERIFIED	0002:000b4aa0 ?GetSchema@DbTable@@QBEABVDbSchema@@XZ 008A3FA0 f i core.o VERIFIED: FUNCTION existing DbTable schema accessor matches IDA
-58	VERIFIED	0002:000b4ab0 ?GetIndexRoot@DbTable@@QBEPBVDbGraphNode@@XZ 008A3FB0 f i core.o VERIFIED: FUNCTION existing DbTable index-root accessor matches IDA
-59	VERIFIED	0002:000b4ac0 ?GetColumnByIndex@DbTable@@QBEABVDbColumn@@G@Z 008A3FC0 f i core.o VERIFIED: FUNCTION existing const DbTable column accessor matches IDA
-60	VERIFIED	0002:000b4ae0 ?GetColumnByIndex@DbTable@@QAEAAVDbColumn@@G@Z 008A3FE0 f i core.o VERIFIED: FUNCTION existing mutable DbTable column accessor matches IDA
-61	VERIFIED	0002:000b4b00 ?GetColumnIndex@DbTable@@QBEFG@Z 008A4000 f i core.o VERIFIED: FUNCTION existing DbTable column-index lookup and assert match IDA
-62	VERIFIED	0002:000b4bb0 ?GetNumColumnTypes@DbSchema@@QBEGXZ 008A40B0 f i core.o VERIFIED: FUNCTION existing DbSchema column-count accessor matches IDA
-63	VERIFIED	0002:000b4bc0 ?GetColumnType@DbSchema@@QBE?AW4EDbColumnType@@G@Z 008A40C0 f i core.o VERIFIED: FUNCTION existing DbSchema column-type lookup and assert match IDA
-64	VERIFIED	0002:000b4c40 ?GetMatchType@DbSchema@@QBE?AW4EDbMatchType@@G@Z 008A4140 f i core.o VERIFIED: FUNCTION existing DbSchema match-type lookup and assert match IDA
-65	VERIFIED	0002:000b4cc0 ?GetTable@DbTableSet@@QBEPAVDbTable@@PBD@Z 008A41C0 f i core.o VERIFIED: FUNCTION existing DbTableSet name lookup matches IDA
-66	VERIFIED	0002:000b4d30 ??0DbQueryString@@QAE@XZ 008A4230 f i core.o VERIFIED: FUNCTION existing DbQueryString default constructor matches IDA
-67	VERIFIED	0002:000b4d40 ??0DbQueryString@@QAE@PBD@Z 008A4240 f i core.o VERIFIED: FUNCTION existing DbQueryString bounded constructor matches IDA
-68	VERIFIED	0002:000b4d70 ?c_str@DbQueryString@@QBEPBDXZ 008A4270 f i core.o VERIFIED: FUNCTION existing DbQueryString c_str accessor matches IDA
-69	VERIFIED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path
-70	VERIFIED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o VERIFIED: FUNCTION existing DbQueryResults specific-match accessor matches IDA
+41	FIXED	0002:000b46c0 ??0DbField@@QAE@GW4EDbColumnType@@W4EDbMatchType@@@Z 008A3BC0 f i core.o FIXED in 9fd7886b: restored IDA signed lower/upper enum bounds
+42	VERIFIED	0002:000b47b0 ??1DbField@@QAE@XZ 008A3CB0 f i core.o VERIFIED: FUNCTION implicit compiler-generated DbField destructor matches IDA trivial body DISASM re-port audit: empty destructor
+43	VERIFIED	0002:000b47c0 ?GetColumnType@DbField@@QBE?AW4EDbColumnType@@XZ 008A3CC0 f i core.o VERIFIED: FUNCTION existing DbField column-type accessor matches IDA DISASM re-port audit: byte load/zero-extend matches
+44	VERIFIED	0002:000b47d0 ?GetMatchType@DbField@@QBE?AW4EDbMatchType@@XZ 008A3CD0 f i core.o VERIFIED: FUNCTION existing DbField match-type accessor matches IDA DISASM re-port audit: byte load/zero-extend matches
+45	VERIFIED	0002:000b47e0 ?GetId@DbField@@QBEGXZ 008A3CE0 f i core.o VERIFIED: FUNCTION existing DbField id accessor matches IDA DISASM re-port audit: 16-bit id load matches
+46	VERIFIED	0002:000b47f0 ?GetId@DbColumn@@QBEGXZ 008A3CF0 f i core.o VERIFIED: FUNCTION existing DbColumn id accessor matches IDA DISASM re-port audit: 16-bit id load matches
+47	VERIFIED	0002:000b4800 ?GetSize@DbColumn@@QBEGXZ 008A3D00 f i core.o VERIFIED: FUNCTION existing DbColumn size accessor matches IDA DISASM re-port audit: 16-bit element-count load matches
+48	VERIFIED	0002:000b4810 ?get_element_ptr@DbColumn@@QBEPBXG@Z 008A3D10 f i core.o VERIFIED: FUNCTION existing DbColumn element-pointer accessor matches IDA DISASM re-port audit: zero-extended idx multiplied by element size
+49	VERIFIED	0002:000b4830 ?GetColUsedNum@DbRow@@QBEFXZ 008A3D30 f i core.o VERIFIED: FUNCTION existing DbRow column-count accessor matches IDA DISASM re-port audit: 16-bit field load matches
+50	VERIFIED	0002:000b4840 ?GetFieldId@DbGraphNode@@QBEGXZ 008A3D40 f i core.o VERIFIED: FUNCTION existing DbGraphNode field-id accessor matches IDA DISASM re-port audit: masks leaf bit
+51	VERIFIED	0002:000b4850 ?IsLeaf@DbGraphNode@@QBE_NXZ 008A3D50 f i core.o VERIFIED: FUNCTION existing DbGraphNode leaf test matches IDA DISASM re-port audit: tests bit 15
+52	VERIFIED	0002:000b4860 ?GetNumHits@DbGraphNode@@QBEGXZ 008A3D60 f i core.o VERIFIED: FUNCTION existing DbGraphNode hit-count accessor matches IDA DISASM re-port audit: leaf assertion and +0x04 hit count match
+53	VERIFIED	0002:000b48d0 ?GetHits@DbGraphNode@@QBEPAPAVDbRow@@XZ 008A3DD0 f i core.o VERIFIED: FUNCTION existing DbGraphNode hit-array accessor matches IDA DISASM re-port audit: leaf assertion and +0x00 hits pointer match
+54	VERIFIED	0002:000b4940 ?GetNumChildren@DbGraphNode@@QBEGXZ 008A3E40 f i core.o VERIFIED: FUNCTION existing DbGraphNode child-count accessor matches IDA DISASM re-port audit: non-leaf assertion and +0x04 child count match
+55	VERIFIED	0002:000b49b0 ?GetChild@DbGraphNode@@QBEPAV1@G@Z 008A3EB0 f i core.o VERIFIED: FUNCTION existing DbGraphNode child accessor and bounds asserts match IDA DISASM re-port audit: non-leaf/index assertions and indexed child load match
+56	VERIFIED	0002:000b4a90 ?GetName@DbTable@@QBEPBDXZ 008A3F90 f i core.o VERIFIED: FUNCTION existing DbTable name accessor matches IDA (name field at offset zero) DISASM re-port audit: returns object base because mName is offset zero
+57	VERIFIED	0002:000b4aa0 ?GetSchema@DbTable@@QBEABVDbSchema@@XZ 008A3FA0 f i core.o VERIFIED: FUNCTION existing DbTable schema accessor matches IDA DISASM re-port audit: returns mSchema pointer
+58	VERIFIED	0002:000b4ab0 ?GetIndexRoot@DbTable@@QBEPBVDbGraphNode@@XZ 008A3FB0 f i core.o VERIFIED: FUNCTION existing DbTable index-root accessor matches IDA DISASM re-port audit: returns mIndexRoot
+59	VERIFIED	0002:000b4ac0 ?GetColumnByIndex@DbTable@@QBEABVDbColumn@@G@Z 008A3FC0 f i core.o VERIFIED: FUNCTION existing const DbTable column accessor matches IDA DISASM re-port audit: zero-extended index and pointer load match
+60	VERIFIED	0002:000b4ae0 ?GetColumnByIndex@DbTable@@QAEAAVDbColumn@@G@Z 008A3FE0 f i core.o VERIFIED: FUNCTION existing mutable DbTable column accessor matches IDA DISASM re-port audit: zero-extended index and pointer load match
+61	VERIFIED	0002:000b4b00 ?GetColumnIndex@DbTable@@QBEFG@Z 008A4000 f i core.o VERIFIED: FUNCTION existing DbTable column-index lookup and assert match IDA DISASM re-port audit: loop, 16-bit truncation check, and -1 path match
+62	VERIFIED	0002:000b4bb0 ?GetNumColumnTypes@DbSchema@@QBEGXZ 008A40B0 f i core.o VERIFIED: FUNCTION existing DbSchema column-count accessor matches IDA DISASM re-port audit: 16-bit count load matches
+63	VERIFIED	0002:000b4bc0 ?GetColumnType@DbSchema@@QBE?AW4EDbColumnType@@G@Z 008A40C0 f i core.o VERIFIED: FUNCTION existing DbSchema column-type lookup and assert match IDA DISASM re-port audit: bound assertion and byte table lookup match
+64	VERIFIED	0002:000b4c40 ?GetMatchType@DbSchema@@QBE?AW4EDbMatchType@@G@Z 008A4140 f i core.o VERIFIED: FUNCTION existing DbSchema match-type lookup and assert match IDA DISASM re-port audit: bound assertion and byte table lookup match
+65	VERIFIED	0002:000b4cc0 ?GetTable@DbTableSet@@QBEPAVDbTable@@PBD@Z 008A41C0 f i core.o VERIFIED: FUNCTION existing DbTableSet name lookup matches IDA DISASM re-port audit: zero-count, case-insensitive loop, and null path match
+66	VERIFIED	0002:000b4d30 ??0DbQueryString@@QAE@XZ 008A4230 f i core.o VERIFIED: FUNCTION existing DbQueryString default constructor matches IDA DISASM re-port audit: clears first byte
+67	VERIFIED	0002:000b4d40 ??0DbQueryString@@QAE@PBD@Z 008A4240 f i core.o VERIFIED: FUNCTION existing DbQueryString bounded constructor matches IDA DISASM re-port audit: strncpy(0x7f) and terminator match
+68	VERIFIED	0002:000b4d70 ?c_str@DbQueryString@@QBEPBDXZ 008A4270 f i core.o VERIFIED: FUNCTION existing DbQueryString c_str accessor matches IDA DISASM re-port audit: returns base/buffer
+69	VERIFIED	0002:000b4d80 ?GetFieldByIdx@DbFieldSet@@QBEPBVDbField@@I@Z 008A4280 f i core.o VERIFIED: FUNCTION existing DbFieldSet index lookup matches IDA assert path DISASM re-port audit: unsigned bound assertion and indexed field load match
+70	VERIFIED	0002:000b4e00 ?GetCurrentMatchesSpecific@DbQueryResults@@QAEAAV?$ae_sized_array@PAVDbRow@@$0EA@@@XZ 008A4300 f i core.o VERIFIED: FUNCTION existing DbQueryResults specific-match accessor matches IDA DISASM re-port audit: returns mMatchesSpec at +0x104
 71	VERIFIED	0002:000b4e10 ??0ae_heap_base@@QAE@XZ 008A4310 f i core.o VERIFIED: FUNCTION existing ae_heap_base constructor matches IDA
 72	VERIFIED	0002:000b4e20 ?GetHeapPointer@ae_heap_base@@UAEPAUmem_heap@@XZ 008A4320 f i core.o VERIFIED: FUNCTION existing null ae_heap_base heap accessor matches IDA
 73	VERIFIED	0002:000b4e30 ??2XModelManager@@SAPAXIPAX@Z 008A4330 f i core.o VERIFIED: FUNCTION existing XModelManager placement-new passthrough matches IDA
