@@ -4692,16 +4692,21 @@ static void voiceInit(nslDriverVoice* dv, nslVoice* lv, const nslWave* w) {
     }
 
     const unsigned playLength = pFormat->Format.nBlockAlign * (w->sampleCount >> 6);
-    const uintptr_t aramBase = reinterpret_cast<uintptr_t>(nslAramGetBase());
     const unsigned storageAddress = *reinterpret_cast<const unsigned*>(
         reinterpret_cast<const unsigned char*>(w) + 4u);
-    // Xbox stores non-streaming wave locations as ARAM offsets.  The Win32
-    // buffer points at the host ARAM allocation, so preserve offsets instead
-    // of subtracting the host pointer from an offset-sized value.
-    const unsigned storageOffset =
-        storageAddress < nslAramGetSize()
-            ? storageAddress
-            : storageAddress - static_cast<unsigned>(aramBase);
+    // Wave records address their bank-local ARAM section.  DirectSound's
+    // host buffer is backed by the global ARAM allocation, which also holds
+    // the streaming voice scratch buffers allocated before the bank loads.
+    const nslWaveID waveID = *reinterpret_cast<const nslWaveID*>(lvRaw + 0x110u);
+    const uintptr_t aramBase = reinterpret_cast<uintptr_t>(nslAramGetBase());
+    const uintptr_t bankAram = reinterpret_cast<uintptr_t>(
+        nslWaveBankGetAram(nslWaveGetBank(waveID)));
+    unsigned storageOffset = storageAddress;
+    if (bankAram >= aramBase && bankAram < aramBase + nslAramGetSize()) {
+        const uintptr_t bankOffset = bankAram - aramBase;
+        if (bankOffset <= UINT_MAX - storageAddress)
+            storageOffset = static_cast<unsigned>(bankOffset) + storageAddress;
+    }
     code = j_IDirectSoundBuffer_SetPlayRegion(
         buffer, storageOffset, playLength);
     nslDriverCheck(code, "NSL",
