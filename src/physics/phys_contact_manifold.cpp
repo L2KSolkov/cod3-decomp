@@ -22,6 +22,62 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 const char* const g_contact_manifold_error_msg =
     "contact_manifold memory overflow: INCREASE phys_contact_manifold_process::ALLOCATER_MEMORY_SIZE";
 
+// phys_memory_heap::fast_allocate - ea: 0x7195C0
+char* phys_memory_heap::fast_allocate(int size, const char* error_msg)
+{
+    char* buffer_cur = m_buffer_cur;
+    m_buffer_cur = &buffer_cur[size];
+    if (m_buffer_cur <= m_buffer_end)
+        return buffer_cur;
+    if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 104,
+                  "m_buffer_cur <= m_buffer_end", error_msg))
+        __debugbreak();
+    return buffer_cur;
+}
+
+// phys_contact_manifold::is_feature_point - ea: 0x719430
+bool phys_contact_manifold::is_feature_point(const math::Dir3& p) const
+{
+    const __m128 delta = _mm_sub_ps(p.v, m_feature_hitp.v);
+    const __m128 dotv = _mm_mul_ps(delta, m_feature_hitn.v);
+    const float dot = dotv.m128_f32[0]
+                    + _mm_shuffle_ps(dotv, dotv, 85).m128_f32[0]
+                    + _mm_shuffle_ps(dotv, dotv, 170).m128_f32[0];
+    if (m_feature_distance_eps < dot)
+    {
+        const __m128 sqv = _mm_mul_ps(delta, delta);
+        const float sq = sqv.m128_f32[0]
+                       + _mm_shuffle_ps(sqv, sqv, 85).m128_f32[0]
+                       + _mm_shuffle_ps(sqv, sqv, 170).m128_f32[0];
+        if (m_sin_feautre_angular_eps_sq * sq < dot * dot)
+            return false;
+    }
+    return true;
+}
+
+// phys_contact_manifold::add_mesh_point - ea: 0x719500
+void phys_contact_manifold::add_mesh_point(const math::Dir3& p)
+{
+    contact_manifold_mesh_point* mp =
+        (contact_manifold_mesh_point*)m_allocater->fast_allocate(
+            32, g_contact_manifold_error_msg);
+    if (((uintptr_t)mp & 0xF) != 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\collision\\phys_contact_manifold.h",
+               187,
+               "(unsigned int)(mp) % PHYS_ALIGNOF(contact_manifold_mesh_point) == 0",
+               defaultFileName))
+        __debugbreak();
+    if (mp != &m_list_mesh_point[m_list_mesh_point_count]
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\collision\\phys_contact_manifold.h",
+               188, "mp == m_list_mesh_point + m_list_mesh_point_count",
+               defaultFileName))
+        __debugbreak();
+    ++m_list_mesh_point_count;
+    mp->m_p.v = p.v;
+}
+
 // phys_contact_manifold::rht - ea: 0x8889F0
 bool phys_contact_manifold::rht(const math::Dir3* e1, const math::Dir3* e2,
                                 float min_length2, float min_sin_sq) {

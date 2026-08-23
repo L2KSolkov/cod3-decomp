@@ -6199,7 +6199,16 @@ class CGBank;
 // m_next_geom +0x34, m_dcg +0x38, m_dcg_index +0x3C.
 class phys_gjk_geom_cod_base {
 public:
-    void*         __vftable;   // +0x00
+    virtual const math::Dir3* support(math::Dir3* result,
+                                      const math::Dir3& v) = 0;
+    virtual const math::Dir3* get_center(math::Dir3* result) = 0;
+    virtual void get_feature(phys_contact_manifold* cman) = 0;
+    virtual float get_geom_radius() const { return 0.0f; }
+    virtual void comp_aabb(const math::Mat43& cg_to_world_xform)
+    {
+        (void)cg_to_world_xform;
+    }
+
     uint8_t       _pad4[0x10 - 0x04];
     math::Dir3    m_aabb_mn;   // +0x10
     math::Dir3    m_aabb_mx;   // +0x20
@@ -6219,6 +6228,11 @@ public:
     math::Dir3 m_dims;          // +0x50
     phys_gjk_geom_aabb(const math::Dir3& center,
                        const math::Dir3& dims);  // ??0phys_gjk_geom_aabb@@QAE@ABVDir3@math@@0@Z
+    const math::Dir3* support(math::Dir3* result,
+                              const math::Dir3& v) override;
+    const math::Dir3* get_center(math::Dir3* result) override;
+    void get_feature(phys_contact_manifold* cman) override;
+    void comp_aabb(const math::Mat43& cg_to_world_xform) override;
     static phys_gjk_geom_aabb* create(const math::Dir3& center,
                                       const math::Dir3& dims);
 };
@@ -6226,9 +6240,39 @@ class phys_gjk_geom_vert_list : public phys_gjk_geom_cod_base {
 public:
     math::Dir3* m_vert_list;  // +0x40
     int         m_vert_list_count;  // +0x44
+    const math::Dir3* support(math::Dir3* result,
+                              const math::Dir3& v) override;
+    const math::Dir3* get_center(math::Dir3* result) override;
+    void get_feature(phys_contact_manifold* cman) override;
+    void comp_aabb(const math::Mat43& cg_to_world_xform) override;
     static phys_gjk_geom_vert_list* create(int num_verts, DCGSet* dcg,
                                            int dcg_index);
 };
+
+// IDA @ 0xF8C0C0: the eight signed corners used by the AABB routines.
+static const math::Dir3 g_phys_vec3_box_sgn[8] = {
+    { _mm_setr_ps( 1.0f,  1.0f,  1.0f, 0.0f) },
+    { _mm_setr_ps( 1.0f,  1.0f, -1.0f, 0.0f) },
+    { _mm_setr_ps(-1.0f,  1.0f,  1.0f, 0.0f) },
+    { _mm_setr_ps(-1.0f,  1.0f, -1.0f, 0.0f) },
+    { _mm_setr_ps( 1.0f, -1.0f,  1.0f, 0.0f) },
+    { _mm_setr_ps( 1.0f, -1.0f, -1.0f, 0.0f) },
+    { _mm_setr_ps(-1.0f, -1.0f,  1.0f, 0.0f) },
+    { _mm_setr_ps(-1.0f, -1.0f, -1.0f, 0.0f) },
+};
+
+static __forceinline math::Dir3 transform_gjk_point(const math::Dir3& p,
+                                                     const math::Mat43& m)
+{
+    math::Dir3 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(p.v, p.v, 0), m.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(p.v, p.v, 85), m.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(p.v, p.v, 170), m.z.v), m.w.v));
+    return result;
+}
 // ea: 0x71BD70
 phys_gjk_geom_aabb::phys_gjk_geom_aabb(const math::Dir3& center,
                                       const math::Dir3& dims)
@@ -6238,6 +6282,64 @@ phys_gjk_geom_aabb::phys_gjk_geom_aabb(const math::Dir3& center,
     m_dcg = nullptr;
     m_dcg_index = -1;
 }
+
+const math::Dir3* phys_gjk_geom_aabb::support(math::Dir3* result,
+                                              const math::Dir3& v)
+{
+    const float sx = v.v.m128_f32[0] >= 0.0f
+                         ? m_dims.v.m128_f32[0]
+                         : -m_dims.v.m128_f32[0];
+    const float sy = v.v.m128_f32[1] >= 0.0f
+                         ? m_dims.v.m128_f32[1]
+                         : -m_dims.v.m128_f32[1];
+    const float sz = v.v.m128_f32[2] >= 0.0f
+                         ? m_dims.v.m128_f32[2]
+                         : -m_dims.v.m128_f32[2];
+    result->v = _mm_add_ps(m_center_local.v,
+                           _mm_setr_ps(sx, sy, sz, 1.0f));
+    return result;
+}
+
+const math::Dir3* phys_gjk_geom_aabb::get_center(math::Dir3* result)
+{
+    result->v = m_center_local.v;
+    return result;
+}
+
+void phys_gjk_geom_aabb::get_feature(phys_contact_manifold* cman)
+{
+    for (const math::Dir3& sign : g_phys_vec3_box_sgn)
+    {
+        math::Dir3 point;
+        point.v = _mm_add_ps(_mm_mul_ps(m_dims.v, sign.v),
+                            m_center_local.v);
+        if (cman->is_feature_point(point))
+            cman->add_mesh_point(point);
+    }
+}
+
+void phys_gjk_geom_aabb::comp_aabb(const math::Mat43& cg_to_world_xform)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        math::Dir3 local;
+        local.v = _mm_add_ps(_mm_mul_ps(m_dims.v, g_phys_vec3_box_sgn[i].v),
+                            m_center_local.v);
+        const math::Dir3 world =
+            transform_gjk_point(local, cg_to_world_xform);
+        if (i == 0)
+        {
+            m_aabb_mn.v = world.v;
+            m_aabb_mx.v = world.v;
+        }
+        else
+        {
+            m_aabb_mn.v = _mm_min_ps(m_aabb_mn.v, world.v);
+            m_aabb_mx.v = _mm_max_ps(m_aabb_mx.v, world.v);
+        }
+    }
+}
+
 // ea: 0x719260
 phys_gjk_geom_aabb* phys_gjk_geom_aabb::create(const math::Dir3& center,
                                                const math::Dir3& dims)
@@ -6278,6 +6380,64 @@ phys_gjk_geom_vert_list* phys_gjk_geom_vert_list::create(int num_verts,
     result->m_dcg_index = dcg_index;
     return result;
 }
+
+const math::Dir3* phys_gjk_geom_vert_list::support(
+    math::Dir3* result, const math::Dir3& v)
+{
+    math::Dir3* best = m_vert_list;
+    __m128 dot = _mm_mul_ps(best->v, v.v);
+    float best_dot = dot.m128_f32[0] + dot.m128_f32[1] +
+                     dot.m128_f32[2];
+    for (int i = 1; i < m_vert_list_count; ++i)
+    {
+        dot = _mm_mul_ps(m_vert_list[i].v, v.v);
+        const float candidate = dot.m128_f32[0] + dot.m128_f32[1] +
+                                dot.m128_f32[2];
+        if (candidate > best_dot)
+        {
+            best = &m_vert_list[i];
+            best_dot = candidate;
+        }
+    }
+    result->v = best->v;
+    return result;
+}
+
+const math::Dir3* phys_gjk_geom_vert_list::get_center(math::Dir3* result)
+{
+    result->v = _mm_setzero_ps();
+    return result;
+}
+
+void phys_gjk_geom_vert_list::get_feature(phys_contact_manifold* cman)
+{
+    for (int i = 0; i < m_vert_list_count; ++i)
+    {
+        if (cman->is_feature_point(m_vert_list[i]))
+            cman->add_mesh_point(m_vert_list[i]);
+    }
+}
+
+void phys_gjk_geom_vert_list::comp_aabb(
+    const math::Mat43& cg_to_world_xform)
+{
+    for (int i = 0; i < m_vert_list_count; ++i)
+    {
+        const math::Dir3 world =
+            transform_gjk_point(m_vert_list[i], cg_to_world_xform);
+        if (i == 0)
+        {
+            m_aabb_mn.v = world.v;
+            m_aabb_mx.v = world.v;
+        }
+        else
+        {
+            m_aabb_mn.v = _mm_min_ps(m_aabb_mn.v, world.v);
+            m_aabb_mx.v = _mm_max_ps(m_aabb_mx.v, world.v);
+        }
+    }
+}
+
 // ea: 0x719260 (phys_gjk_geom_list::create; ctor is a no-op)
 void* phys_gjk_geom_list_create()
 {

@@ -183,6 +183,7 @@ struct phys_memory_heap {
                    const char* error_msg);
 
     char* fast_align_start(int alignment, const char* error_msg);
+    char* fast_allocate(int size, const char* error_msg);
 
     // allocate_no_error - ea: 0x65FC20 (inline COMDAT, game.o)
     char* allocate_no_error(int size, int alignment) {
@@ -912,6 +913,8 @@ struct phys_contact_manifold {
     const float& compute_convex_poly_area();
     const float& compute_convex_poly_perimeter();
     void reset_list_mesh_point();
+    bool is_feature_point(const math::Dir3& p) const;
+    void add_mesh_point(const math::Dir3& p);
     void alloc_sorted_list_mesh_point();
     void xform_mesh_points(const math::Mat43* xform);
     void qsort(contact_manifold_mesh_point** i0_mp, contact_manifold_mesh_point** i1_mp);
