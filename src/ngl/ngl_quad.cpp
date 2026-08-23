@@ -210,7 +210,12 @@ void nglListAddQuad(nglQuad* Quad) {
             nglValidateMatrices(nglBuildScene);
             memcpy(&v1->Quad, Quad, 0x60u);
             if ((Quad->BlendMode & 0x20000) != 0) {
-                v1->SortHash = (unsigned int)Quad->Z;
+                // LODWORD in the reference: the sort key is the raw float
+                // bit pattern, not an arithmetic conversion.  Positive
+                // IEEE-754 floats order correctly when compared as
+                // unsigned ints, which is how nglListAddString stores z
+                // via the SortDist arm of the same union.
+                v1->SortHash = *(const unsigned int*)&Quad->Z;
                 v1->Next = nglBuildScene->TransRenderList;
                 nglBuildScene->TransRenderList = v1;
                 ++nglBuildScene->TransListCount;
