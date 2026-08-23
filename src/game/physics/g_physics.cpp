@@ -6209,7 +6209,6 @@ public:
         (void)cg_to_world_xform;
     }
 
-    uint8_t       _pad4[0x10 - 0x04];
     math::Dir3    m_aabb_mn;   // +0x10
     math::Dir3    m_aabb_mx;   // +0x20
     void*         m_geom_id;   // +0x30
