@@ -362,8 +362,6 @@ struct HostStream : IDirectSoundStream {
             return E_FAIL;
         if (source->pdwCompletedSize != nullptr)
             *source->pdwCompletedSize = source->dwMaxSize;
-        if (source->pdwStatus != nullptr)
-            *source->pdwStatus = 0;
         return S_OK;
     }
     static HRESULT __stdcall Discontinuity(IDirectSoundStream*) { return S_OK; }
