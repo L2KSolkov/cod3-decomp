@@ -14100,9 +14100,15 @@ MPPlayerSet MPPlayerManager::allPlayersButLocal()
 // ea: 0x0073D9A0
 MPGameInfo::MPGameInfo()
 {
-    bdCommonAddr* v3 = new bdCommonAddr();
+    void* memory = bdMemory::allocate(sizeof(bdCommonAddr));
+    bdCommonAddr* v3 = memory != nullptr
+                           ? new (memory) bdCommonAddr()
+                           : nullptr;
     if (m_hostAddr.m_ptr != nullptr && m_hostAddr.m_ptr->m_refCount-- == 1)
-        delete m_hostAddr.m_ptr;
+    {
+        m_hostAddr.m_ptr->~bdCommonAddr();
+        bdMemory::deallocate(m_hostAddr.m_ptr);
+    }
     m_hostAddr.m_ptr = v3;
     if (v3 != nullptr)
         ++v3->m_refCount;
@@ -16451,18 +16457,27 @@ const bool MPUIInterface::StartServer(bool forceRestart,
 {
     mHostDisconnected = false;
     mHostMigrated = false;
-    MPGameInfo* v3 = new MPGameInfo();
+    void* memory = bdMemory::allocate(sizeof(MPGameInfo));
+    MPGameInfo* v3 = memory != nullptr ? new (memory) MPGameInfo() : nullptr;
     bdReference<MPGameInfo> gameInfo;
     gameInfo.m_ptr = v3;
     if (v3 != nullptr)
         ++v3->m_refCount;
+
+    auto releaseGameInfo = [](MPGameInfo* info) {
+        if (info != nullptr && info->m_refCount-- == 1)
+        {
+            info->~MPGameInfo();
+            bdMemory::deallocate(info);
+        }
+    };
+
     if (mGameConnectionType == kGameConnectionTypeOnline)
     {
         MPLiveEngine* Handle = MPLiveEngine::GetHandle();
         if (Handle->sessionState != kNotInSession)
         {
-            if (gameInfo.m_ptr != nullptr && gameInfo.m_ptr->m_refCount-- == 1)
-                delete gameInfo.m_ptr;
+            releaseGameInfo(gameInfo.m_ptr);
             return false;
         }
         Handle->StartLiveSession(&mServerParams, 1u, 0);
@@ -16474,8 +16489,7 @@ const bool MPUIInterface::StartServer(bool forceRestart,
     SetupCvars(true);
     if (!StartGame(forceRestart, blockUntilNetReady))
     {
-        if (gameInfo.m_ptr != nullptr && gameInfo.m_ptr->m_refCount-- == 1)
-            delete gameInfo.m_ptr;
+        releaseGameInfo(gameInfo.m_ptr);
         return false;
     }
     if (MultiplayerMgr::sInst->CreateGame(
@@ -16484,14 +16498,12 @@ const bool MPUIInterface::StartServer(bool forceRestart,
     {
         NextRoundServerParams();
         mInSession = true;
-        if (gameInfo.m_ptr != nullptr && gameInfo.m_ptr->m_refCount-- == 1)
-            delete gameInfo.m_ptr;
+        releaseGameInfo(gameInfo.m_ptr);
         return true;
     }
     else
     {
-        if (gameInfo.m_ptr != nullptr && gameInfo.m_ptr->m_refCount-- == 1)
-            delete gameInfo.m_ptr;
+        releaseGameInfo(gameInfo.m_ptr);
         return false;
     }
 }
