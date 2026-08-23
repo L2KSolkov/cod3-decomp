@@ -659,13 +659,11 @@ void physics_system::time_step(float outside_delta_t, bool last_step) {
         g_phys_proftimer_callbacks.proftimer_start(phys_proftimer_phys_col_detect);
 
     rigid_body** m_alloc_list = m_list_rigid_body.m_alloc_list;
-    for (rigid_body** i = &m_alloc_list[m_list_rigid_body.m_alloc_count];
-         m_alloc_list != i; (*m_alloc_list++)->m_flags = (*(m_alloc_list - 1))->m_flags | 0x40)
-        ;
+    for (int i = 0; i < m_list_rigid_body.m_alloc_count; ++i)
+        m_alloc_list[i]->m_flags |= 0x40u;
     user_rigid_body** v8 = m_list_user_rigid_body.m_alloc_list;
-    for (user_rigid_body** j = &v8[m_list_user_rigid_body.m_alloc_count];
-         v8 != j; (*v8++)->m_flags = (*(v8 - 1))->m_flags | 0x40)
-        ;
+    for (int j = 0; j < m_list_user_rigid_body.m_alloc_count; ++j)
+        v8[j]->m_flags |= 0x40u;
 
     rigid_body** v12 = m_list_rigid_body.m_alloc_list;
     m_flags |= 1u;
@@ -692,12 +690,11 @@ void physics_system::time_step(float outside_delta_t, bool last_step) {
 
     rigid_body** v17 = m_list_rigid_body.m_alloc_list;
     m_flags &= ~1u;
-    for (rigid_body** k = &v17[m_list_rigid_body.m_alloc_count]; v17 != k; ++v17)
-        (*v17)->m_flags &= ~0x40u;
+    for (int k = 0; k < m_list_rigid_body.m_alloc_count; ++k)
+        v17[k]->m_flags &= ~0x40u;
     user_rigid_body** v19 = m_list_user_rigid_body.m_alloc_list;
-    for (user_rigid_body** m = &v19[m_list_user_rigid_body.m_alloc_count];
-         v19 != m; ++v19)
-        (*v19)->m_flags &= ~0x40u;
+    for (int m = 0; m < m_list_user_rigid_body.m_alloc_count; ++m)
+        v19[m]->m_flags &= ~0x40u;
 
     if (g_phys_proftimer_callbacks.proftimer_stop != NULL)
         g_phys_proftimer_callbacks.proftimer_stop(phys_proftimer_phys_col_detect);
