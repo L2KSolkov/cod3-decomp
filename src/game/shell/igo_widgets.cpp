@@ -3524,17 +3524,20 @@ void IGOHintWidget::SetWeaponsPQs(PanelFile* panel, PanelFile* panel2)
                         icons[iconIndex] = panel->GetPointer(tmp);
                         if (icons[iconIndex] == g_femanager.default_pq)
                         {
-                            AeAssert::gCurrentAuthor = AeAssert::COD3;
-                            AeAssert::gCurrentFile =
-                                "c:\\cod\\code\\game\\IGOHintWidget.cpp";
-                            AeAssert::gCurrentLine = 141;
-                            AeAssert::gCurrentExpr = nullptr;
-                            if (!AeAssert::IsIgnored()
-                                && AeAssert::Warning(
-                                    "could not find pickup hud icon named %s, "
-                                    "using hand icon instead",
-                                    tmp))
-                                __debugbreak();
+                            if (strcmp(tmp, "hud_smokegrenade.tga") != 0)
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\IGOHintWidget.cpp";
+                                AeAssert::gCurrentLine = 141;
+                                AeAssert::gCurrentExpr = nullptr;
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Warning(
+                                        "could not find pickup hud icon named %s, "
+                                        "using hand icon instead",
+                                        tmp))
+                                    __debugbreak();
+                            }
                             icons[iconIndex] = nullptr;
                         }
                     }
