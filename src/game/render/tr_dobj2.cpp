@@ -51,12 +51,28 @@ public:
     DbElement mElements[MAX];                    // +0xA8
     void (__cdecl* mDebugCallback)(int, T*);     // +0x1918
 
+    HandleDb();
     H AllocateHandle();                          // ?AllocateHandle@?$HandleDb@VDObj@@...@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ
     void BindObjectToHandle(Handle handle, T* obj);  // ?BindObjectToHandle@...@@QAEXVHandle@@PAVDObj@@@Z
     T* DereferenceHandle(Handle h) const;        // ?DereferenceHandle@...@@QBEPAVDObj@@VHandle@@@Z
     void ReleaseHandle(Handle h);                // ?ReleaseHandle@...@@QAEXVHandle@@@Z
     void Dump();                                 // ?Dump@...@@QAEXXZ
 };
+
+template <typename T, int MAX, typename H>
+HandleDb<T, MAX, H>::HandleDb()
+{
+    for (unsigned int& word : mFreeIndices)
+        word = 0;
+    for (int i = 0; i < MAX; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+    }
+    mDebugCallback = nullptr;
+    for (int i = 0; i < MAX; ++i)
+        mFreeIndices[i >> 5] |= 1u << (i & 0x1F);
+}
 
 template <typename T, int MAX, typename H>
 void HandleDb<T, MAX, H>::DbElement::SetObject(T* obj)
