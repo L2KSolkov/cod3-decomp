@@ -9095,7 +9095,7 @@ unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
 {
     ae_sized_array<TPakId, 32> prereqs;
     prereqs.m_size = 0;
-    if (type == INSTBANK_TYPE_ANIM || type == INSTBANK_TYPE_SKELETON)
+    if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
     {
         GetAllPaks(&prereqs);
     }
@@ -9141,7 +9141,7 @@ unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
 {
     ae_sized_array<TPakId, 32> prereqs;
     prereqs.m_size = 0;
-    if (type == INSTBANK_TYPE_ANIM || type == INSTBANK_TYPE_SKELETON)
+    if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
     {
         GetAllPaks(&prereqs);
     }
