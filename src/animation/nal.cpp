@@ -3794,6 +3794,7 @@ void nalExit() {}
 extern void tlStackRangeInit();
 extern void* tlScratchPadInit();
 extern void nalInitListInit();
+static void nalRegisterComponentInstances();
 
 // ea: 0x008545E0
 void nalInit(class nalHeap*)
@@ -3818,6 +3819,7 @@ void nalInit(class nalHeap*)
     nalTypeInstanceBank.Init();
     nalComponentInstanceBank.Init();
     nalInitListInit();
+    nalRegisterComponentInstances();
 }
 int nalGetDecompCacheSize() { return 0x4000; }
 
@@ -12445,6 +12447,30 @@ static nalComponentEntropyTrajectoryPO Component_nalComponentEntropyTrajectoryPO
 static nalComponentInitList InitListComponent_nalComponentEntropyTrajectoryPO(
     "NAL_EntropyTrajectoryPositionOrientation",
     Component_nalComponentEntropyTrajectoryPO);
+
+static void nalRegisterComponentInstances()
+{
+    InitListComponent_nalComponentRLE8Int1.Register();
+    InitListComponent_nalComponentEntropyFloat1.Register();
+    InitListComponent_nalComponentSignalCounter.Register();
+    InitListComponent_nalComponentPacked8Float1.Register();
+    InitListComponent_nalComponentFloat3.Register();
+    InitListComponent_nalComponentEntropyFloat3.Register();
+    InitListComponent_nalComponentPacked8EntropyFloat3.Register();
+    InitListComponent_nalComponentPacked16EntropyFloat3.Register();
+    InitListComponent_nalComponentFloat4.Register();
+    InitListComponent_nalComponentEntropyFloat4.Register();
+    InitListComponent_nalComponentPacked8EntropyFloat4.Register();
+    InitListComponent_nalComponentPacked16EntropyFloat4.Register();
+    InitListComponent_nalComponentQuat.Register();
+    InitListComponent_nalComponentEntropyQuat.Register();
+    InitListComponent_nalComponentPacked8EntropyQuat.Register();
+    InitListComponent_nalComponentPacked16EntropyQuat.Register();
+    InitListComponent_nalComponentPO.Register();
+    InitListComponent_nalComponentEntropyPO.Register();
+    InitListComponent_nalComponentTrajectoryPO.Register();
+    InitListComponent_nalComponentEntropyTrajectoryPO.Register();
+}
 
 static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
                                      int track);
