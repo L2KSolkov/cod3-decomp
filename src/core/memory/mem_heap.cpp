@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstdint>
+#include <vector>
 
 #ifdef _WIN32
   #include <malloc.h>
@@ -88,6 +89,24 @@ static mem_heap* s_current_heap = &s_heap_default;
 static bool      s_no_mem_break = false;
 static const char* s_mem_context = "root";
 static int       s_checkpoint_alloc_count = 0;
+
+// The Win32 backend uses the CRT allocator in place of Xbox dlmalloc. Keep
+// the owner and requested size so pak heaps retain the reference allocator's
+// cross-heap free and used-byte accounting semantics.
+struct mem_allocation {
+    void* ptr;
+    mem_heap* heap;
+    unsigned int size;
+};
+static std::vector<mem_allocation> s_allocations;
+
+static std::vector<mem_allocation>::iterator find_allocation(void* ptr) {
+    for (auto it = s_allocations.begin(); it != s_allocations.end(); ++it) {
+        if (it->ptr == ptr)
+            return it;
+    }
+    return s_allocations.end();
+}
 
 // ============================================================================
 // dlmalloc stubs — use system malloc/free
@@ -187,13 +206,14 @@ mem_heap* mem_heap_get_current() {
 // ============================================================================
 
 void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
+    if (!heap) heap = s_current_heap;
 #ifdef _WIN32
     void* ptr = _aligned_malloc(size, 16);
 #else
     void* ptr = malloc(size);
 #endif
     if (ptr) {
-        if (!heap) heap = s_current_heap;
+        s_allocations.push_back({ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
         if (heap->used_byte > heap->high_used_byte)
@@ -203,6 +223,7 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
 }
 
 void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
+    if (!heap) heap = s_current_heap;
 #ifdef _WIN32
     void* ptr = _aligned_malloc(size, alignment < 16 ? 16 : alignment);
 #else
@@ -210,7 +231,7 @@ void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
     void* ptr = malloc(size);
 #endif
     if (ptr) {
-        if (!heap) heap = s_current_heap;
+        s_allocations.push_back({ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
         if (heap->used_byte > heap->high_used_byte)
@@ -238,22 +259,37 @@ void* mem_heap_malloc(int alignment, unsigned size) {
 
 void mem_heap_free(void* ptr) {
     if (!ptr) return;
+    auto it = find_allocation(ptr);
+    mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
 #ifdef _WIN32
     _aligned_free(ptr);
 #else
     free(ptr);
 #endif
-    s_current_heap->total_frees++;
+    owner->total_frees++;
+    if (it != s_allocations.end()) {
+        if (owner->used_byte >= it->size)
+            owner->used_byte -= it->size;
+        s_allocations.erase(it);
+    }
 }
 
 void mem_heap_free(mem_heap* heap, void* ptr) {
     if (!ptr) return;
+    auto it = find_allocation(ptr);
+    mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
 #ifdef _WIN32
     _aligned_free(ptr);
 #else
     free(ptr);
 #endif
-    if (heap) heap->total_frees++;
+    if (owner) {
+        owner->total_frees++;
+        if (it != s_allocations.end() && owner->used_byte >= it->size)
+            owner->used_byte -= it->size;
+    }
+    if (it != s_allocations.end())
+        s_allocations.erase(it);
 }
 
 // ============================================================================
@@ -262,23 +298,44 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
 // ============================================================================
 
 void* mem_heap_realloc(void* ptr, unsigned newSize) {
+    auto it = find_allocation(ptr);
+    mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
+    unsigned oldSize = it != s_allocations.end() ? it->size : 0;
 #ifdef _WIN32
     void* newPtr = _aligned_realloc(ptr, newSize, 16);
 #else
     void* newPtr = realloc(ptr, newSize);
 #endif
     if (newPtr) {
-        s_current_heap->used_byte += newSize; // approximate
+        if (it != s_allocations.end()) {
+            it->ptr = newPtr;
+            it->size = newSize;
+            if (owner->used_byte >= oldSize)
+                owner->used_byte -= oldSize;
+            owner->used_byte += newSize;
+        } else {
+            owner->used_byte += newSize;
+        }
     }
     return newPtr;
 }
 
 void* mem_heap_realloc(mem_heap* heap, void* ptr, unsigned newSize) {
+    auto it = find_allocation(ptr);
+    mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
+    unsigned oldSize = it != s_allocations.end() ? it->size : 0;
 #ifdef _WIN32
     void* newPtr = _aligned_realloc(ptr, newSize, 16);
 #else
     void* newPtr = realloc(ptr, newSize);
 #endif
+    if (newPtr && it != s_allocations.end()) {
+        it->ptr = newPtr;
+        it->size = newSize;
+        if (owner->used_byte >= oldSize)
+            owner->used_byte -= oldSize;
+        owner->used_byte += newSize;
+    }
     return newPtr;
 }
 
