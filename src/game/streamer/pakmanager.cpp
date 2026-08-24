@@ -1819,10 +1819,9 @@ template class reserved_dlist<PakFile>;
 class PakManager {
 public:
     enum state_e {
-        STATE_UNLOADED = 0,
-        STATE_LOADING = 1,
-        STATE_LOADED = 2,
-        STATE_UNLOADING = 3,
+        STATE_LOADING = 0,
+        STATE_UNLOADING = 1,
+        STATE_NORMAL = 2,
     };
     static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
@@ -11601,7 +11600,7 @@ void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
                     if (pakId == PAK_ID_INVALID
                         || PakManager::sInst->mSlots[pakId] == nullptr
                         || PakManager::sInst->mSlots[pakId]->mState
-                               != PakManager::STATE_LOADED)
+                               != PakFile::LOADED)
                     {
                         if (PakManager::sInst->mCurrentPakId == pakId
                             && PakManager::sInst->mState
