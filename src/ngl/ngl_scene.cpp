@@ -1227,6 +1227,43 @@ void nglCalculateMatrices(nglScene* Scene) {
         else Scene->WorldToScreen.w.v = out;
     }
     ViewportToWorldImpl(&Scene->ViewportToWorld, Scene);
+
+    // The frustum planes are constructed in view space above, but all scene
+    // bounds passed to nglIsSphereVisible are world-space positions.  The
+    // reference transforms each plane by ViewToWorld before storing it in the
+    // scene; keep the SIMD layout and homogeneous offset intact here.
+    const __m128 zero = _mm_setzero_ps();
+    for (int i = 0; i < 6; ++i) {
+        const __m128 plane = Scene->ClipPlanes[i].v;
+        const __m128 xAxis = _mm_shuffle_ps(
+            Scene->ViewToWorld.x.v,
+            _mm_shuffle_ps(zero, Scene->ViewToWorld.x.v, 0xA0), 0x34);
+        const __m128 yAxis = _mm_shuffle_ps(
+            Scene->ViewToWorld.y.v,
+            _mm_shuffle_ps(zero, Scene->ViewToWorld.y.v, 0xA0), 0x34);
+        const __m128 zAxis = _mm_shuffle_ps(
+            Scene->ViewToWorld.z.v,
+            _mm_shuffle_ps(zero, Scene->ViewToWorld.z.v, 0xA0), 0x34);
+        const __m128 transformed = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(plane, plane, 0), xAxis),
+                       _mm_mul_ps(_mm_shuffle_ps(plane, plane, 85), yAxis)),
+            _mm_mul_ps(_mm_shuffle_ps(plane, plane, 170), zAxis));
+        const __m128 homogeneous = _mm_shuffle_ps(
+            transformed,
+            _mm_shuffle_ps(zero, transformed, 0xA0), 0x34);
+        const __m128 wAxis = _mm_shuffle_ps(
+            Scene->ViewToWorld.w.v,
+            _mm_shuffle_ps(zero, Scene->ViewToWorld.w.v, 0xA0), 0x34);
+        const __m128 offsetProducts = _mm_mul_ps(homogeneous, wAxis);
+        const float offset = offsetProducts.m128_f32[0]
+            + offsetProducts.m128_f32[1]
+            + offsetProducts.m128_f32[2]
+            + offsetProducts.m128_f32[3]
+            + plane.m128_f32[3];
+        Scene->ClipPlanes[i].v = _mm_shuffle_ps(
+            transformed,
+            _mm_shuffle_ps(_mm_set1_ps(offset), transformed, 0xA0), 0x34);
+    }
     Scene->ViewPos.v = Scene->ViewToWorld.w.v;
     Scene->ViewDir.v = Scene->ViewToWorld.z.v;
     math::Mat44 ui;
