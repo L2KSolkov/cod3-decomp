@@ -65,10 +65,19 @@ extern void HelmetController(Entity* owner);
 char cgsGlobal_mapname[128];  // cg.o BSS
 
 struct localEntity_t {
-    localEntity_t* next;  // +0x00
-    localEntity_t* prev;  // +0x04
+    localEntity_t* prev;  // +0x00
+    localEntity_t* next;  // +0x04
+    int16_t leType;       // +0x08
+    int16_t leFlags;      // +0x0A
+    int endTime;          // +0x0C
+    trajectory_t pos;      // +0x10
+    float radius;          // +0x38
+    float lifeRate;        // +0x3C
+    refEntity_t refEntity; // +0x40
+    float color[4];         // +0xA0
 };
-localEntity_t* cg_localEntities[128];  // ?cg_localEntities@@3PAPAUlocalEntity_t@@A (cg.o)
+static_assert(sizeof(localEntity_t) == 0xB0, "localEntity_t size mismatch");
+localEntity_t cg_localEntities[128];  // ?cg_localEntities@@3PAUlocalEntity_t@@A (cg.o)
 localEntity_t cg_activeLocalEntities;  // ?cg_activeLocalEntities@@3UlocalEntity_t@@A (cg.o)
 localEntity_t* cg_freeLocalEntities = nullptr;  // ?cg_freeLocalEntities@@3PAUlocalEntity_t@@A (cg.o)
 
@@ -85,11 +94,10 @@ void CG_InitLocalEntities()
     memset(cg_localEntities, 0, sizeof(cg_localEntities));
     cg_activeLocalEntities.next = &cg_activeLocalEntities;
     cg_activeLocalEntities.prev = &cg_activeLocalEntities;
-    cg_freeLocalEntities = cg_localEntities[0];
+    cg_freeLocalEntities = cg_localEntities;
     for (int i = 0; i < 127; ++i)
-        ((localEntity_t*)cg_localEntities[i])->next =
-            (localEntity_t*)cg_localEntities[i + 1];
-    ((localEntity_t*)cg_localEntities[127])->next = nullptr;
+        cg_localEntities[i].next = &cg_localEntities[i + 1];
+    cg_localEntities[127].next = nullptr;
 }
 
 // ea: 0x0068B5A0
