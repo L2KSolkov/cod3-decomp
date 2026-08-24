@@ -214,17 +214,6 @@ extern cdl_proftimer cdl_proftimer_entities;
 // cls.configstrings (Broc::string[1024])
 Broc::string cls_configstrings[1024];  // cl.o BSS
 
-// snapshot ring (cl_snapshot.cpp view)
-struct clSnapshotEntry2 {
-    int valid;
-    int snapFlags;
-    int serverCommandNum;
-    int serverTime;
-    int parseEntitiesNum;
-    unsigned char ps[1024];
-};
-clSnapshotEntry2 cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry2@@A (cl.o)
-
 // Renderer export/import interfaces (cl.o cl_main.cpp)
 struct refimport_t {
     void (*Printf)(int, const char*, ...);
@@ -868,27 +857,20 @@ void CL_InitCGame()
 // ea: 0x533A90
 void CL_ParseSnapshot(msg_t* msg)
 {
-    unsigned char v5[1536];
-    memset(v5, 0, sizeof(v5));
-    *(int*)&v5[1528] = dword_F0F200[4882 * currCl];  // serverCommandNum
-    *(int*)&v5[8] = MSG_ReadLong(msg);               // serverTime
-    *(int*)&v5[12] = dword_F0F1FC[4882 * currCl];    // messageNum
-    *(int*)&v5[4] = MSG_ReadByte(msg);               // snapFlags
-    *(int*)&v5[0] = 1;                               // valid
+    clSnapshot v5{};
+    v5.serverCommandNum = dword_F0F200[4882 * currCl];
+    v5.serverTime = MSG_ReadLong(msg);
+    v5.messageNum = dword_F0F1FC[4882 * currCl];
+    v5.snapFlags = MSG_ReadByte(msg);
+    v5.valid = 1;
     Entity* player = EntityManager::sInst->GetPlayer(currCl);
     if (player != nullptr && player->client != nullptr)
-        memcpy(&v5[32], player->client, 0x5D0);
+        memcpy(&v5.ps, player->client, sizeof(v5.ps));
     int v4 = cl[currCl].snap.messageNum + 1;
-    if (*(int*)&v5[12] - v4 < 1 && v4 < *(int*)&v5[12])
-        cl_snapshots[currCl][0].valid = 0;
-    cl[currCl].snap.messageNum = *(int*)&v5[12];
-    cl[currCl].snap.serverTime = *(int*)&v5[8];
-    cl_snapshots[currCl][0].valid = *(int*)&v5[0];
-    cl_snapshots[currCl][0].snapFlags = *(int*)&v5[4];
-    cl_snapshots[currCl][0].serverCommandNum = *(int*)&v5[1528];
-    cl_snapshots[currCl][0].serverTime = *(int*)&v5[8];
-    memcpy(&cl_snapshots[currCl][0].ps, &v5[32],
-           sizeof(cl_snapshots[currCl][0].ps));
+    if (v5.messageNum - v4 < 1 && v4 < v5.messageNum)
+        cl[currCl].snapshots[0].valid = 0;
+    cl[currCl].snap = v5;
+    cl[currCl].snapshots[0] = v5;
     if (cl_shownet->integer == 3)
         Com_Printf("   snapshot:%i\n", cl[currCl].snap.messageNum);
 }

@@ -138,6 +138,7 @@ float unk_F6A288[4 * 802];
 int dword_F62944[4 * 1580];
 int dword_F62948[4 * 1580];
 int dword_F6294C[4 * 1580];
+int dword_F62950[4 * 1580];
 int dword_F62954[4 * 1580];
 int dword_F62958[4 * 1580];
 int dword_F63554[4 * 1580];

@@ -4,6 +4,7 @@
 
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
+#include "game/snapshot_types.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -564,10 +565,6 @@ struct trace_t {
 struct collision_context_t {
     int contentmask;  // +0x00
 };
-struct snapshot_t {
-    int serverTime;  // +0x00
-    unsigned char ps[0x5D0];
-};
 extern int dword_F6295C[4 * 1580];
 extern int dword_F62944[4 * 1580];
 int cg_numSolidEntities;
@@ -714,7 +711,7 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     int v1 = 1580 * currCl;
     dword_F6295C[v1] = 1;
     dword_F62960[v1] = (int)snap;
-    dword_F62944[v1] = *(int*)((char*)snap + 0xA0);
+    dword_F62944[v1] = *(int*)((char*)snap + 0xB0);
     int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
     for (int i = 0; i < count; ++i)
     {
@@ -1695,11 +1692,16 @@ void CG_CheckPlayerstateEvents(unsigned int* ps, unsigned int* ops,
     }
 }
 
+extern int dword_F62950[4 * 1580];
 extern int dword_F62954[4 * 1580];
 extern int dword_F62958[4 * 1580];
-extern void* CG_ReadNextSnapshot();
+extern int cg_aWeaponSelect[4];
+extern int cg_aWeaponSelectTime[4];
+extern struct cgGlobal_t { int time; int oldTime; int teamGame; } cgGlobal;
+extern snapshot_t* CG_ReadNextSnapshot();
 extern void CG_SetNextSnap(void* snap);
 extern void CG_TransitionSnapshot();
+extern int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot);
 extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,
                                         int* serverTime);
 struct vmCvar_t;
@@ -1708,6 +1710,50 @@ extern int G_GetServerSnapTime();
 extern int CG_SetFrameInterpolation();
 
 extern vmCvar_t fs_debug_vm;
+
+static snapshot_t sCgActiveSnapshots[4][2];
+
+// ea: 0x0068C770
+snapshot_t* CG_ReadNextSnapshot()
+{
+    const int clientOffset = 1580 * currCl;
+    const int latestSnapshot = dword_F62954[clientOffset];
+    if (latestSnapshot > dword_F62950[clientOffset] + 1000)
+    {
+        CG_Printf("WARNING: CG_ReadNextSnapshot: way out of range, %i > %i\n",
+                  latestSnapshot, dword_F62950[clientOffset]);
+    }
+    if (dword_F62950[clientOffset] >= latestSnapshot)
+        return nullptr;
+
+    snapshot_t* snapshot =
+        dword_F62960[clientOffset]
+                != reinterpret_cast<int>(&sCgActiveSnapshots[currCl][0])
+            ? &sCgActiveSnapshots[currCl][0]
+            : &sCgActiveSnapshots[currCl][1];
+    while (true)
+    {
+        const int snapshotNumber = ++dword_F62950[clientOffset];
+        if (CL_GetSnapshot(snapshotNumber, snapshot) != 0)
+            break;
+        if (dword_F62950[clientOffset] >= dword_F62954[clientOffset])
+            return nullptr;
+    }
+
+    const int currentSnapshot = dword_F62960[clientOffset];
+    if (currentSnapshot != 0 && cg_aWeaponSelect[currCl] == 0)
+    {
+        const int weaponSelect =
+            *reinterpret_cast<int*>(reinterpret_cast<char*>(
+                reinterpret_cast<void*>(currentSnapshot)) + 0xB4);
+        if (weaponSelect != 0)
+        {
+            cg_aWeaponSelect[currCl] = weaponSelect;
+            cg_aWeaponSelectTime[currCl] = cgGlobal.time;
+        }
+    }
+    return snapshot;
+}
 
 struct CollisionDesc {
     math::Position3 coord;    // +0x00

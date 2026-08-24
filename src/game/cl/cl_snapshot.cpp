@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/snapshot_types.h"
 
 #include "game/game_types.h"
 #include "game/ui_types.h"
@@ -87,34 +88,7 @@ bool Assert(const char* fmt, ...);
 struct glconfig_t {
     int data[64];
 };
-struct playerStateSnapshot_t {
-    unsigned char data[1024];
-};
-struct snapshot_t {
-    int snapFlags;
-    int serverCommandSequence;
-    int serverTime;
-    playerStateSnapshot_t ps;
-};
 glconfig_t unk_F17118;  // ?unk_F17118@@3Uglconfig_t@@A (cl.o)
-
-// cl[] snapshot fields
-struct clSnapshotFields {
-    int messageNum;
-    int serverTime;
-    int parseEntitiesNum;
-};
-struct clSnapshotEntry {
-    int valid;
-    int snapFlags;
-    int serverCommandNum;
-    int serverTime;
-    int parseEntitiesNum;
-    playerStateSnapshot_t ps;
-};
-// Extend the cl[] view: snap.messageNum/serverTime + snapshots[] ring
-int cl_parseEntitiesNum[2];  // cl.o BSS
-clSnapshotEntry cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry@@A (cl.o)
 
 // ============================================================================
 // Snapshot getters
@@ -165,17 +139,17 @@ int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
 {
     if (snapshotNumber > cl[currCl].snap.messageNum)
         Com_Error((errorParm_t)1, "CL_GetSnapshot: bad snapshot number");
+    const clSnapshot& ringSnapshot = cl[currCl].snapshots[0];
     if (cl[currCl].snap.messageNum - snapshotNumber >= 1
-        || cl_snapshots[currCl][0].valid == 0
-        || cl_parseEntitiesNum[currCl]
-               - cl_snapshots[currCl][0].parseEntitiesNum >= 2048)
+        || ringSnapshot.valid == 0
+        || cl[currCl].parseEntitiesNum - ringSnapshot.parseEntitiesNum >= 2048)
     {
         return 0;
     }
-    snapshot->snapFlags = cl_snapshots[currCl][0].snapFlags;
-    snapshot->serverCommandSequence = cl_snapshots[currCl][0].serverCommandNum;
-    snapshot->serverTime = cl_snapshots[currCl][0].serverTime;
-    memcpy(&snapshot->ps, &cl_snapshots[currCl][0].ps, sizeof(snapshot->ps));
+    snapshot->snapFlags = ringSnapshot.snapFlags;
+    snapshot->serverCommandSequence = ringSnapshot.serverCommandNum;
+    snapshot->serverTime = ringSnapshot.serverTime;
+    memcpy(&snapshot->ps, &ringSnapshot.ps, sizeof(snapshot->ps));
     return 1;
 }
 
