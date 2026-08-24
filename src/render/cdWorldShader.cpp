@@ -46,7 +46,7 @@ static void SetIdentity(math::Mat44* matrix) {
 }
 
 static unsigned int FogColor(const math::Vector4& color) {
-    const __m128 scaled = _mm_mul_ps(color.v, _mm_set1_ps(127.0f));
+    const __m128 scaled = _mm_mul_ps(color.v, _mm_set1_ps(255.0f));
     const unsigned int r = (unsigned int)(int)scaled.m128_f32[0];
     const unsigned int g = (unsigned int)(int)scaled.m128_f32[1];
     const unsigned int b = (unsigned int)(int)scaled.m128_f32[2];
