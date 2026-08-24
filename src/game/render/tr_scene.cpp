@@ -56,7 +56,7 @@ int r_firstSceneCorona;   // ?r_firstSceneCorona@@3HA @ 0xF742D0
 int r_numcoronas;         // ?r_numcoronas@@3HA @ 0xF741BC
 int r_firstScenePoly;     // ?r_firstScenePoly@@3HA @ 0xF742B0
 int r_numpolys;           // ?r_numpolys@@3HA @ 0xF742FC
-unsigned int gProjShadowTexSize;  // ?gProjShadowTexSize@@3IA @ 0xDFB148
+unsigned int gProjShadowTexSize = 0x200u;  // ?gProjShadowTexSize@@3IA @ 0xDFB148
 extern nglTexture* gProjShadowTex;  // ?gProjShadowTex@@3PAUnglTexture@@A (cdGlassShader.cpp)
 
 // refEntity_t view (origin +0x3C, scale +0x38)
