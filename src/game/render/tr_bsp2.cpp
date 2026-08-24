@@ -53,7 +53,7 @@ int R_CellForPoint(const math::Position3& pos)
         float d = (v3.m128_f32[0]
                    + (_mm_shuffle_ps(v3, v3, 85).m128_f32[0]
                       + _mm_shuffle_ps(v3, v3, 170).m128_f32[0]))
-                - _mm_shuffle_ps(pos.v, pos.v, 255).m128_f32[0];
+                - _mm_shuffle_ps(planeV, planeV, 255).m128_f32[0];
         node = node->u.node.children[d <= 0.0f];
     }
     return node->cellNum;
