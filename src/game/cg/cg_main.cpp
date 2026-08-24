@@ -94,7 +94,7 @@ extern void* cvarTable;        // cvarTable_t[170]
 struct cg_t {
     unsigned char data[0x18B0];
 };
-cg_t* cg = nullptr;  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)
+cg_t cg[2] = {};  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)
 
 vmCvar_t cg_thirdPerson;               // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o @ 0x134B400)
 vmCvar_t cg_thirdPersonLock;           // ?cg_thirdPersonLock@@3UvmCvar_t@@A (cg.o @ 0x134A8D0)
