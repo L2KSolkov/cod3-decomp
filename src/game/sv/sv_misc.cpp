@@ -166,10 +166,13 @@ long __stdcall D3DDevice::PersistDisplay()
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-// AeThreadManager::Execute remains the separate scr.o port target.
+// The reference executes pending script notifications at the start of every
+// nonzero-delta server frame. Keep that release/dispatch step active while the
+// remainder of the scr.o thread scheduler is ported.
 void AeThreadManager::Execute(float deltaT)
 {
-    (void)deltaT;
+    if (deltaT != 0.0f)
+        ProcessScriptNotifys();
 }
 
 enum errorParm_t;
