@@ -4868,9 +4868,14 @@ bool collide_velocity_sphere(traceWork_t* tw)
     if (len2 < 0.001f || len2 > 1680999900.0f)
         return false;
 
-    // 1/sqrt(len2) via Newton iteration (rsqrt approximation)
-    float inv_len =
-        1597463007 - ((int)(len2 * 0.0000015625f) >> 1);
+    // 1/sqrt(len2) via the reference's bit-level Newton iteration.
+    // The release disassembly subtracts the shifted float bit pattern;
+    // treating that pattern as an ordinary float makes the sweep diverge.
+    unsigned int inv_bits;
+    std::memcpy(&inv_bits, &len2, sizeof(inv_bits));
+    inv_bits = 0x5F3759DFu - (inv_bits >> 1);
+    float inv_len;
+    std::memcpy(&inv_len, &inv_bits, sizeof(inv_len));
     inv_len = (1.5f - ((inv_len * inv_len)
                        * ((len2 * 0.0000015625f) * 0.5f)))
         * inv_len;
