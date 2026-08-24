@@ -1053,9 +1053,9 @@ static bool nullD3DDecodeImage(const void* Source, unsigned int Size,
     return Success;
 }
 
-static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Height,
-                                            unsigned int Usage, unsigned int Format,
-                                            unsigned int Persistent) {
+static nullD3DSurface* nullD3DAllocateSurface(unsigned int Width, unsigned int Height,
+                                              unsigned int Usage, unsigned int Format,
+                                              unsigned int Persistent) {
     nullD3DSurface* Surface = (nullD3DSurface*)calloc(1, sizeof(nullD3DSurface));
     if (Surface == NULL)
         return NULL;
@@ -1083,6 +1083,16 @@ static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Hei
     Surface->Info.NativeResource = NULL;
     Surface->Info.NativeTexture = NULL;
     Surface->Info.NativeSurface = NULL;
+    return Surface;
+}
+
+static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Height,
+                                            unsigned int Usage, unsigned int Format,
+                                            unsigned int Persistent) {
+    nullD3DSurface* Surface = nullD3DAllocateSurface(Width, Height, Usage, Format,
+                                                     Persistent);
+    if (Surface == NULL)
+        return NULL;
     if (gD3D9Device != NULL) {
         COD3_D3D9_FORMAT NativeFormat = nullD3DNativeFormat(Format);
         HRESULT Result;
@@ -1964,8 +1974,8 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsig
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
     if (Info == NULL)
         return NULL;
-    nullD3DSurface* Surface = nullD3DCreateSurface(Info->Width, Info->Height,
-                                                    Info->Usage, Info->Format, 0);
+    nullD3DSurface* Surface = nullD3DAllocateSurface(Info->Width, Info->Height,
+                                                     Info->Usage, Info->Format, 0);
     if (Surface != NULL && Info->NativeTexture != NULL) {
         if (Surface->Info.NativeSurface != NULL) {
             Surface->Info.NativeSurface->Release();
