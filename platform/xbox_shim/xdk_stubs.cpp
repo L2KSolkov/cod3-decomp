@@ -2134,10 +2134,25 @@ void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* For
 }
 void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {
     // Xbox pixel-shader microcode is not present in the Win32 reconstruction.
-    // Explicitly clear any native shader so fixed-function texture stages are
-    // used consistently for the translated draw paths.
-    if (gD3D9Device != NULL)
-        gD3D9Device->SetPixelShader(NULL);
+    // Keep the native D3D9 path deterministic: the world/sky vertex programs
+    // still provide position and interpolants, while the fixed-function stage
+    // supplies the equivalent texture-times-diffuse base pass.
+    if (gD3D9Device == NULL)
+        return;
+    gD3D9Device->SetPixelShader(NULL);
+    gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+    const bool HasTexture = gNullBoundTextures[0] != NULL;
+    const DWORD ColorOp = HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2;
+    const DWORD AlphaOp = HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2;
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLOROP, ColorOp);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLORARG1,
+                                       HasTexture ? D3DTA_TEXTURE : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLORARG2, D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAOP, AlphaOp);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG1,
+                                       HasTexture ? D3DTA_TEXTURE : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG2, D3DTA_DIFFUSE);
 }
 void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
     if (gD3D9Device != NULL)
