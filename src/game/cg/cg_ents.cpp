@@ -1696,7 +1696,7 @@ void CG_CheckPlayerstateEvents(unsigned int* ps, unsigned int* ops,
 }
 
 extern int dword_F62954[4 * 1580];
-extern int* dword_F62958;
+extern int dword_F62958[4 * 1580];
 extern void* CG_ReadNextSnapshot();
 extern void CG_SetNextSnap(void* snap);
 extern void CG_TransitionSnapshot();
