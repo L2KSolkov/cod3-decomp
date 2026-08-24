@@ -66,7 +66,7 @@ void cdSimpleColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSecti
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdSimpleShaderNode
+            ::new (node) cdSimpleShaderNode;
             node->mMaterial = (cdSimpleShaderMat*)iMat;
             node->hasColorVerts = true;
         } else {

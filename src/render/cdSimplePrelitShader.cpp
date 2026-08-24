@@ -163,7 +163,7 @@ void cdSimplePrelitShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdSimplePrelitShaderNode
+            ::new (node) cdSimplePrelitShaderNode;
             node->mMaterial = (cdSimplePrelitShaderMat*)iMat;
         } else {
             node = NULL;

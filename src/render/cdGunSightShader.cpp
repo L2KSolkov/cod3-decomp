@@ -139,7 +139,7 @@ void cdGunSightShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdGunSightShaderNode
+            ::new (node) cdGunSightShaderNode;
             node->mMaterial = (cdGunSightShaderMat*)iMat;
         } else {
             node = NULL;

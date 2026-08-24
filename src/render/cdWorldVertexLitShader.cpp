@@ -273,7 +273,7 @@ void cdWorldVertexLitShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdWorldVertexLitShaderNode
+            ::new (node) cdWorldVertexLitShaderNode;
             node->mMaterial = (cdWorldVertexLitShaderMat*)iMat;
         } else {
             node = NULL;

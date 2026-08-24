@@ -187,7 +187,7 @@ void cdSimpleSpecularShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdSimpleSpecularShaderNode
+            ::new (node) cdSimpleSpecularShaderNode;
             node->mMaterial = (cdSimpleSpecularShaderMat*)iMat;
         } else {
             node = NULL;

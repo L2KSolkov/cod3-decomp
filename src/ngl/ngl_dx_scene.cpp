@@ -449,7 +449,11 @@ int nglRenderScene_impl() {
         }
         nglBeginRenderNode(v0->OpaqueRenderList);
         while (nglCurRenderNode != nglRenderListEndNode) {
-            nglCurRenderNode->Render();
+            const unsigned int vft = (nglCurRenderNode != nullptr)
+                                   ? (unsigned int)(size_t)(*(void**)nglCurRenderNode)
+                                   : 0;
+            if (vft != 0xCDCDCDCDu)
+                nglCurRenderNode->Render();
             nglAdvanceRenderNode();
         }
         if (v0->Mid.Fn != NULL)
@@ -461,7 +465,11 @@ int nglRenderScene_impl() {
             }
             nglBeginRenderNode(v0->TransRenderList);
             while (nglCurRenderNode != nglRenderListEndNode) {
-                nglCurRenderNode->Render();
+                const unsigned int vft = (nglCurRenderNode != nullptr)
+                                       ? (unsigned int)(size_t)(*(void**)nglCurRenderNode)
+                                       : 0;
+                if (vft != 0xCDCDCDCDu)
+                    nglCurRenderNode->Render();
                 nglAdvanceRenderNode();
             }
         }

@@ -153,7 +153,7 @@ void cdSimpleUVAnimShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdSimpleUVAnimShaderNode
+            ::new (node) cdSimpleUVAnimShaderNode;
             node->mMaterial = (cdSimpleUVAnimShaderMat*)iMat;
         } else {
             node = NULL;

@@ -128,7 +128,7 @@ void cdDebugShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdDebugShaderNode
+            ::new (node) cdDebugShaderNode;
             node->mMaterial = (cdDebugShaderMat*)iMat;
             nglListAddNode(node);
         } else {

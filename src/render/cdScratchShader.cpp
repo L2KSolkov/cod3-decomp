@@ -104,7 +104,7 @@ void cdScratchShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdScratchShaderNode
+            ::new (node) cdScratchShaderNode;
             node->Material = (cdScratchMaterial*)iMat;
         } else {
             node = NULL;

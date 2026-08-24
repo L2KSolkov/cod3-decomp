@@ -233,7 +233,7 @@ void cdWheelMarkShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection
     if (node != NULL) {
         node->MeshNode = iMeshNode;
         node->Section = iSection;
-        // vftable = cdWheelMarkShaderNode
+        ::new (node) cdWheelMarkShaderNode;
         node->mMaterial = (cdWheelMarkShaderMat*)iMat;
     } else {
         node = NULL;

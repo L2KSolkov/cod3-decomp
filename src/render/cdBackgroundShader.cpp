@@ -279,7 +279,7 @@ void cdBackgroundShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdBackgroundShaderNode
+            ::new (node) cdBackgroundShaderNode;
             node->mMaterial = (cdBackgroundShaderMat*)iMat;
         } else {
             node = NULL;
