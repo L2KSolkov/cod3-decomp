@@ -89,10 +89,32 @@ extern float color[4];
 struct vmCvar_t {
     int integer;  // +0x00
 };
+struct View_Window {
+    float XPos;    // +0x00
+    float YPos;    // +0x04
+    float Width;   // +0x08
+    float Height;  // +0x0C
+    float FovX;    // +0x10
+    float FovY;    // +0x14
+    unsigned int Safety; // +0x18
+};
+struct cgs_t {
+    unsigned char _pad[0x84];
+    int vidWidth;  // +0x84
+    int vidHeight; // +0x88
+};
+extern cgs_t cgs[2];
+extern vmCvar_t cg_viewsize;
+extern vmCvar_t cg_letterbox;
+extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 extern struct vmCvar_t cg_fov;
 extern vmCvar_t cg_altTankCam;
 extern vmCvar_t cg_hudCompassSpringyPointers;
 extern struct vmCvar_t cg_drawGun;
+extern float dword_F63C50[4 * 1580];
+extern float dword_F63C54[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
 
 extern const float AngleNormalize360(float angle);
 extern const const float AngleNormalize180(float angle);
@@ -2718,7 +2740,7 @@ extern int G_DObjSetLocalTag(Entity* ent, int* const partBits,
                              bool relative);
 extern float flrand(float min, float max);
 extern void CG_CalcCubemapViewValues();
-extern void CG_CalcVrect(const void* window);
+extern void CG_CalcVrect(const View_Window* window);
 extern void Camera_Update(void* self);
 extern vmCvar_t bg_viewheight_prone;
 extern vmCvar_t bg_viewheight_crouched;
@@ -3122,8 +3144,50 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
     return result;
 }
 
+// ea: 0x0068CCF0
+void CG_CalcVrect(const View_Window* window)
+{
+    float viewScale;
+    const int index = 1580 * currCl;
+    if (*(int*)((char*)dword_F62964[index] + 0x34) == 5)
+    {
+        viewScale = 1.0f;
+    }
+    else if (cg_viewsize.integer >= 30)
+    {
+        if (cg_viewsize.integer <= 100)
+            viewScale = (float)cg_viewsize.integer * 0.01f;
+        else
+        {
+            Cvar_VMSet(&cg_viewsize, "100");
+            viewScale = 1.0f;
+        }
+    }
+    else
+    {
+        Cvar_VMSet(&cg_viewsize, "30");
+        viewScale = 0.3f;
+    }
+
+    const float heightScale = cg_letterbox.integer != 0
+                                  ? viewScale * 0.85f
+                                  : viewScale;
+    const float vidHeight = (float)cgs[currCl].vidHeight;
+    const float vidWidth = (float)cgs[currCl].vidWidth;
+    const float height = (window->Height * vidHeight) * heightScale;
+    const float centerX = (window->XPos * vidWidth) * 0.5f + vidWidth * 0.5f;
+    const float centerY = (window->YPos * vidHeight) * 0.5f + vidHeight * 0.5f;
+    const int width = (int)(((window->Width * vidWidth) * viewScale) * 0.5f
+                            + 0.5f) & ~1;
+    const int heightPixels = (int)(height * 0.5f + 0.5f) & ~1;
+    dword_F63C58[index] = (float)width;
+    dword_F63C5C[index] = (float)heightPixels;
+    dword_F63C50[index] = centerX;
+    dword_F63C54[index] = centerY;
+}
+
 // ea: 0x006B05C0
-void CG_CalcViewValues(const void* window)
+void CG_CalcViewValues(const View_Window* window)
 {
     if (cgGlobal_cubemapShot != 0 /* CUBEMAPSHOT_NONE */)
     {

@@ -51,6 +51,10 @@ extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float z);
 struct refdef_s;
 extern void trap_R_RenderScene(const refdef_s* fd);
+struct View_Window;
+namespace View {
+const View_Window* GetCurrentWindow(int clientIndex);
+}
 struct parseInfo_t {
     char token[128];         // +0x00
     int lines;               // +0x80
@@ -330,7 +334,7 @@ struct shellshock_parms_t;
 extern void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
                                 int duration);
 extern void CG_CalcCubemapViewValues();
-extern void CG_CalcVrect(const void* window);
+extern void CG_CalcVrect(const View_Window* window);
 extern int CG_CalcFov();
 extern void CG_ShakeCamera(int client);
 extern void CG_PerturbCamera();
@@ -1863,7 +1867,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
             nglSetScissor(-1.0f, -1.0f, v18 - 1.0f, y2);
         }
         trap_R_ClearScene();
-        const void* v19 = nullptr;
+        const View_Window* v19 = View::GetCurrentWindow(currCl);
         if (cgGlobal.cubemapShot != 0)
         {
             CG_CalcCubemapViewValues();

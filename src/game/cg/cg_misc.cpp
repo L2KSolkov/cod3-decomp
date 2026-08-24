@@ -4654,6 +4654,10 @@ static void CG_InitCvarTable()
         s_cgCvarTable[i].cvarFlags = flags[i];
     }
     s_cgCvarTable[152].vmCvar = &fs_debug_vm;
+    extern vmCvar_t cg_viewsize;
+    extern vmCvar_t cg_letterbox;
+    s_cgCvarTable[4].vmCvar = &cg_viewsize;
+    s_cgCvarTable[5].vmCvar = &cg_letterbox;
     s_cgCvarTableInitialized = true;
 }
 

@@ -140,6 +140,8 @@ vmCvar_t cg_draw2D;                    // ?cg_draw2D@@3UvmCvar_t@@A (cg.o @ 0x13
 vmCvar_t cg_drawStatus;                // ?cg_drawStatus@@3UvmCvar_t@@A (cg.o @ 0x134BD98)
 vmCvar_t cg_forceCrosshair;            // ?cg_forceCrosshair@@3UvmCvar_t@@A (cg.o @ 0x134DD58)
 vmCvar_t cg_fov;                       // ?cg_fov@@3UvmCvar_t@@A (cg.o @ 0x13504B8)
+vmCvar_t cg_viewsize;                  // ?cg_viewsize@@3UvmCvar_t@@A (cg.o)
+vmCvar_t cg_letterbox;                 // ?cg_letterbox@@3UvmCvar_t@@A (cg.o)
 vmCvar_t cg_gameBoldMessageWidth;      // ?cg_gameBoldMessageWidth@@3UvmCvar_t@@A (cg.o @ 0x134F908)
 vmCvar_t cg_gameMessageWidth;          // ?cg_gameMessageWidth@@3UvmCvar_t@@A (cg.o @ 0x134E658)
 vmCvar_t cg_hudAlpha;                  // ?cg_hudAlpha@@3UvmCvar_t@@A (cg.o @ 0x134F180)

@@ -20,7 +20,6 @@ void CG_CalcCrosshairColor(float a, int* b) { (void)a; (void)b; }
 void CG_CalcCrosshairPosition(float* a, float* b) { (void)a; (void)b; }
 void CG_CalcCubemapViewValues() {}
 void CG_CalcTurretViewValues() {}
-void CG_CalcVrect(const void* a) { (void)a; }
 void CG_CheckOpenWaitingScriptMenu() {}
 void CG_ClipMoveToEntities(const math::Position3* start,
                            const math::Position3* mins,
