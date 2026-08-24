@@ -4993,19 +4993,19 @@ void Camera::UpdateTankCam()
         float v18 = v17 * info->turretPitchFactor
                     - info->turretPitchBias * info->turretPitchFactor;
         float v19 = info->turretPitchScale;
-        float turretPos[3] = {tagMtx[9] + v18 * axis[0][0],
+        float turretPos[4] = {tagMtx[9] + v18 * axis[0][0],
                               tagMtx[10] + v18 * axis[0][1],
-                              tagMtx[11] + v18 * axis[0][2]};
+                              tagMtx[11] + v18 * axis[0][2], 0.0f};
         float v23 = v17 / v19;
         if (v19 <= v17)
             v23 = 1.0f;
         float v24 = 0.0f - info->cameraChaseRadiusOuter * v23;
-        float finalPos[3] = {turretPos[0] + info->turretCamOffset * axis[1][0]
+        float finalPos[4] = {turretPos[0] + info->turretCamOffset * axis[1][0]
                                  + v24 * axis[0][0],
                              turretPos[1] + info->turretCamOffset * axis[1][1]
                                  + v24 * axis[0][1],
                              turretPos[2] + info->turretCamOffset * axis[1][2]
-                                 + v24 * axis[0][2]};
+                                 + v24 * axis[0][2], 0.0f};
         Entity* v31 = EntityManager::sInst->GetPlayer( mClient);
         float delta[4];
         if (IsPlayerFullySeatedInVehicle(v31))
@@ -5038,8 +5038,8 @@ void Camera::UpdateTankCam()
                                             + 0x434)
                                   - delta[1]);
         }
-        float mins[3] = {-1.0f, -1.0f, -1.0f};
-        float maxs[3] = {1.0f, 1.0f, 1.0f};
+        math::Position3 mins(-1.0f, -1.0f, -1.0f);
+        math::Position3 maxs(1.0f, 1.0f, 1.0f);
         trace_t tr;
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
@@ -5048,7 +5048,7 @@ void Camera::UpdateTankCam()
                 .mHandle.mVal;
         ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
         CG_Trace(&tr, (const math::Position3*)turretPos,
-                 (const math::Position3*)mins, (const math::Position3*)maxs,
+                 &mins, &maxs,
                  (const math::Position3*)finalPos, &ctx);
         if (tr.normal.v.m128_f32[1] < 1.0f)
         {
@@ -5146,12 +5146,12 @@ void Camera::UpdateTankCommanderCam()
             info->cameraFPHeightOffset * tagMtx[9];
         dword_F63C78[1580 * mClient] +=
             info->cameraFPHeightOffset * tagMtx[13];
-        float mins[3] = {-1.0f, -1.0f, -1.0f};
-        float maxs[3] = {1.0f, 1.0f, 1.0f};
-        float start[3] = {
+        math::Position3 mins(-1.0f, -1.0f, -1.0f);
+        math::Position3 maxs(1.0f, 1.0f, 1.0f);
+        float start[4] = {
             tagMtx[8] + info->cameraFPHeightOffset * tagMtx[5],
             tagMtx[9] + info->cameraFPHeightOffset * tagMtx[9],
-            tagMtx[10] + info->cameraFPHeightOffset * tagMtx[13]};
+            tagMtx[10] + info->cameraFPHeightOffset * tagMtx[13], 0.0f};
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
         ctx.pass_entity1.mHandle.mVal =
@@ -5160,7 +5160,7 @@ void Camera::UpdateTankCommanderCam()
         ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
         trace_t tr;
         CG_Trace(&tr, (const math::Position3*)start,
-                 (const math::Position3*)mins, (const math::Position3*)maxs,
+                 &mins, &maxs,
                  (const math::Position3*)&dword_F63C70[1580 * mClient], &ctx);
         if (tr.normal.v.m128_f32[1] < 1.0f)
         {
@@ -5602,9 +5602,9 @@ void Camera::UpdateVehicleDriverCamThird()
     FastSinCos(angle[1580 * mClient + 1] * 0.017453292f, &sinY, &cosY);
     FastSinCos(angle[1580 * mClient] * 0.017453292f, &sinX, &cosX);
     float dir[3] = {cosX * cosY, cosX * sinY, -sinX};
-    float finalPos[3] = {start[0] - dir[0] * dist,
+    float finalPos[4] = {start[0] - dir[0] * dist,
                          start[1] - dir[1] * dist,
-                         start[2] - dir[2] * dist};
+                         start[2] - dir[2] * dist, 0.0f};
     if (dist > v7->cameraChaseRadiusOuter)
     {
         float adjust = dist - v7->cameraChaseRadiusOuter;
@@ -5619,15 +5619,15 @@ void Camera::UpdateVehicleDriverCamThird()
         finalPos[1] += dir[1] * adjust;
         finalPos[2] += dir[2] * adjust;
     }
-    float mins[3] = {-1.0f, -1.0f, -1.0f};
-    float maxs[3] = {1.0f, 1.0f, 1.0f};
+    math::Position3 mins(-1.0f, -1.0f, -1.0f);
+    math::Position3 maxs(1.0f, 1.0f, 1.0f);
     collision_context_t ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
     ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
     trace_t tr;
-    CG_Trace(&tr, (const math::Position3*)start, (const math::Position3*)mins,
-             (const math::Position3*)maxs, (const math::Position3*)finalPos,
+    CG_Trace(&tr, (const math::Position3*)start, &mins,
+             &maxs, (const math::Position3*)finalPos,
              &ctx);
     if (tr.normal.v.m128_f32[1] < 1.0f)
     {
@@ -5680,15 +5680,15 @@ void Camera::UpdateMPDeathCameraNoKiller()
     angle[1580 * mClient + 1] = yaw;
     angle[1580 * mClient + 2] = roll;
     angle[1580 * mClient + 3] = 0.0f;
-    float mins[3] = {-1.0f, -1.0f, -1.0f};
-    float maxs[3] = {1.0f, 1.0f, 1.0f};
+    math::Position3 mins(-1.0f, -1.0f, -1.0f);
+    math::Position3 maxs(1.0f, 1.0f, 1.0f);
     collision_context_t ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.pass_entity1.mHandle.mVal = 0;
     ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
     trace_t tr;
-    CG_Trace(&tr, (const math::Position3*)eye, (const math::Position3*)mins,
-             (const math::Position3*)maxs, (const math::Position3*)target,
+    CG_Trace(&tr, (const math::Position3*)eye, &mins,
+             &maxs, (const math::Position3*)target,
              &ctx);
     float result[4];
     if (tr.normal.v.m128_f32[1] >= 1.0f)
@@ -5758,15 +5758,15 @@ void Camera::UpdateMPDeathCamera()
         angle[1580 * mClient + 1] = yaw;
         angle[1580 * mClient + 2] = roll;
         angle[1580 * mClient + 3] = 0.0f;
-        float mins[3] = {-1.0f, -1.0f, -1.0f};
-        float maxs[3] = {1.0f, 1.0f, 1.0f};
+        math::Position3 mins(-1.0f, -1.0f, -1.0f);
+        math::Position3 maxs(1.0f, 1.0f, 1.0f);
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
         ctx.pass_entity1.mHandle.mVal = 0;
         ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
         trace_t tr;
-        CG_Trace(&tr, (const math::Position3*)eye, (const math::Position3*)mins,
-                 (const math::Position3*)maxs, (const math::Position3*)target,
+        CG_Trace(&tr, (const math::Position3*)eye, &mins,
+                 &maxs, (const math::Position3*)target,
                  &ctx);
         float result[4];
         if (tr.normal.v.m128_f32[1] >= 1.0f)
@@ -5838,15 +5838,15 @@ void Camera::UpdateDeathCamera()
             angle[1580 * mClient + 1] = newAngles[1];
             angle[1580 * mClient + 2] = newAngles[2];
             angle[1580 * mClient + 3] = 0.0f;
-            float mins[3] = {-1.0f, -1.0f, -1.0f};
-            float maxs[3] = {1.0f, 1.0f, 1.0f};
+            math::Position3 mins(-1.0f, -1.0f, -1.0f);
+            math::Position3 maxs(1.0f, 1.0f, 1.0f);
             collision_context_t ctx;
             memset(&ctx, 0, sizeof(ctx));
             ctx.pass_entity1.mHandle.mVal = 0;
             ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
             trace_t tr;
             CG_Trace(&tr, (const math::Position3*)eye,
-                     (const math::Position3*)mins, (const math::Position3*)maxs,
+                     &mins, &maxs,
                      (const math::Position3*)target, &ctx);
             float finalPos[4];
             if (tr.normal.v.m128_f32[1] >= 1.0f)
@@ -6009,10 +6009,11 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                     AnglesToForward(
                         *(const math::Position3*)&angle[1580 * mClient],
                         *(math::Dir3*)fwd);
-                    float start[3] = {
+                    float start[4] = {
                         dword_F63C70[1580 * mClient] + fwd[0] * 250.0f,
                         dword_F63C74[1580 * mClient] + fwd[1] * 250.0f,
-                        dword_F63C78[1580 * mClient] + fwd[2] * 250.0f};
+                        dword_F63C78[1580 * mClient] + fwd[2] * 250.0f,
+                        0.0f};
                     InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32,
                                               start, frac);
                     InterpolateAnglesSmooth(&angle[1580 * mClient],
@@ -6027,8 +6028,8 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                     if (mCamMode != CAM_VEHICLE_GUNNER_CROUCHED
                         && mCamMode != CAM_VEHICLE_GUNNER)
                     {
-                        float mins[3] = {-4.0f, -4.0f, -4.0f};
-                        float maxs[3] = {4.0f, 4.0f, 4.0f};
+                        math::Position3 mins(-4.0f, -4.0f, -4.0f);
+                        math::Position3 maxs(4.0f, 4.0f, 4.0f);
                         collision_context_t ctx;
                         memset(&ctx, 0, sizeof(ctx));
                         ctx.pass_entity1.mHandle.mVal =
@@ -6038,12 +6039,11 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                         ctx.pass_entity2.mHandle.mVal = mVal;
                         ctx.contentmask = 17;
                         trace_t tr;
-                        float end[3] = {dword_F63C70[1580 * mClient],
+                        float end[4] = {dword_F63C70[1580 * mClient],
                                         dword_F63C74[1580 * mClient],
-                                        dword_F63C78[1580 * mClient]};
+                                        dword_F63C78[1580 * mClient], 0.0f};
                         CG_Trace(&tr, (const math::Position3*)start,
-                                 (const math::Position3*)mins,
-                                 (const math::Position3*)maxs,
+                                 &mins, &maxs,
                                  (const math::Position3*)end, &ctx);
                         if (tr.normal.v.m128_f32[1] < 1.0f)
                         {
@@ -6059,22 +6059,21 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                 else
                 {
                     // tank: collision-smoothed position
-                    float mins[3] = {-15.0f, -15.0f, -15.0f};
-                    float maxs[3] = {15.0f, 15.0f, 15.0f};
+                    math::Position3 mins(-15.0f, -15.0f, -15.0f);
+                    math::Position3 maxs(15.0f, 15.0f, 15.0f);
                     collision_context_t ctx;
                     memset(&ctx, 0, sizeof(ctx));
                     ctx.contentmask = 0x802033;
-                    float cur[3] = {dword_F63C70[1580 * mClient],
+                    float cur[4] = {dword_F63C70[1580 * mClient],
                                     dword_F63C74[1580 * mClient],
-                                    dword_F63C78[1580 * mClient]};
-                    float start[3];
+                                    dword_F63C78[1580 * mClient], 0.0f};
+                    float start[4];
                     InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32,
                                               cur, frac);
-                    float end[3] = {start[0], start[1], start[2] + 1.0f};
+                    float end[4] = {start[0], start[1], start[2] + 1.0f, 0.0f};
                     trace_t tr;
                     CG_Trace(&tr, (const math::Position3*)start,
-                             (const math::Position3*)mins,
-                             (const math::Position3*)maxs,
+                             &mins, &maxs,
                              (const math::Position3*)end, &ctx);
                     if (tr.normal.v.m128_f32[1] == 0.0f)
                     {
@@ -6089,8 +6088,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                                               + 0x234))
                         {
                             CG_Trace(&tr, (const math::Position3*)cur,
-                                     (const math::Position3*)mins,
-                                     (const math::Position3*)maxs,
+                                     &mins, &maxs,
                                      (const math::Position3*)start, &ctx);
                         }
                         else
@@ -6101,8 +6099,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                             {
                                 pos[2] = pos[3] + 32.0f;
                                 CG_Trace(&tr, (const math::Position3*)pos,
-                                         (const math::Position3*)mins,
-                                         (const math::Position3*)maxs,
+                                         &mins, &maxs,
                                          (const math::Position3*)start, &ctx);
                                 if (*(unsigned char*)((char*)&tr.mEntity
                                                       + 1)
@@ -6113,8 +6110,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                                 {
                                     CG_Trace(
                                         &tr, (const math::Position3*)cur,
-                                        (const math::Position3*)mins,
-                                        (const math::Position3*)maxs,
+                                        &mins, &maxs,
                                         (const math::Position3*)&tweenStartPos,
                                         &ctx);
                                     break;
@@ -6151,9 +6147,10 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
             AnglesToForward(
                 *(const math::Position3*)&angle[1580 * mClient],
                 *(math::Dir3*)fwd);
-            float start[3] = {dword_F63C70[1580 * mClient] + fwd[0] * 250.0f,
+            float start[4] = {dword_F63C70[1580 * mClient] + fwd[0] * 250.0f,
                               dword_F63C74[1580 * mClient] + fwd[1] * 250.0f,
-                              dword_F63C78[1580 * mClient] + fwd[2] * 250.0f};
+                              dword_F63C78[1580 * mClient] + fwd[2] * 250.0f,
+                              0.0f};
             InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32, start,
                                       frac);
             InterpolateAnglesSmooth(&angle[1580 * mClient],
@@ -6168,8 +6165,8 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
             if (mCamMode != CAM_VEHICLE_GUNNER_CROUCHED
                 && mCamMode != CAM_VEHICLE_GUNNER)
             {
-                float mins[3] = {-4.0f, -4.0f, -4.0f};
-                float maxs[3] = {4.0f, 4.0f, 4.0f};
+                math::Position3 mins(-4.0f, -4.0f, -4.0f);
+                math::Position3 maxs(4.0f, 4.0f, 4.0f);
                 collision_context_t ctx;
                 memset(&ctx, 0, sizeof(ctx));
                 ctx.pass_entity1.mHandle.mVal =
@@ -6178,12 +6175,11 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                 ctx.pass_entity2.mHandle.mVal = mVal;
                 ctx.contentmask = 17;
                 trace_t tr;
-                float end[3] = {dword_F63C70[1580 * mClient],
+                float end[4] = {dword_F63C70[1580 * mClient],
                                 dword_F63C74[1580 * mClient],
-                                dword_F63C78[1580 * mClient]};
+                                dword_F63C78[1580 * mClient], 0.0f};
                 CG_Trace(&tr, (const math::Position3*)start,
-                         (const math::Position3*)mins,
-                         (const math::Position3*)maxs,
+                         &mins, &maxs,
                          (const math::Position3*)end, &ctx);
                 if (tr.normal.v.m128_f32[1] < 1.0f)
                 {
@@ -6701,9 +6697,9 @@ void Camera::UpdateVehicleAnimCam()
             float len = sqrtf(delta[0] * delta[0] + delta[1] * delta[1]
                               + delta[2] * delta[2]);
             float dir[3] = {delta[0] / len, delta[1] / len, delta[2] / len};
-            float chasePos[3] = {tagMtx[12] + dir[0] * radius,
+            float chasePos[4] = {tagMtx[12] + dir[0] * radius,
                                  tagMtx[13] + dir[1] * radius,
-                                 tagMtx[14] + dir[2] * radius};
+                                 tagMtx[14] + dir[2] * radius, 0.0f};
             float d2[3] = {tagMtx[12] - chasePos[0],
                            tagMtx[13] - chasePos[1],
                            tagMtx[14] - chasePos[2]};
@@ -6719,7 +6715,7 @@ void Camera::UpdateVehicleAnimCam()
             angle[1580 * mClient + 1] = signedAngles[1];
             angle[1580 * mClient + 2] = signedAngles[2];
             angle[1580 * mClient + 3] = 0.0f;
-            float rotScale[3] = {chasePos[0], chasePos[1], chasePos[2]};
+            float rotScale[4] = {chasePos[0], chasePos[1], chasePos[2], 0.0f};
             if (radius <= Info->cameraChaseRadiusOuter)
             {
                 if (Info->cameraChaseRadiusInner <= radius)
@@ -6735,16 +6731,15 @@ void Camera::UpdateVehicleAnimCam()
             rotScale[2] = chasePos[2] + dir2[2] * radius;
         do_trace:
             {
-                float mins[3] = {-1.0f, -1.0f, -1.0f};
-                float maxs[3] = {1.0f, 1.0f, 1.0f};
+                math::Position3 mins(-1.0f, -1.0f, -1.0f);
+                math::Position3 maxs(1.0f, 1.0f, 1.0f);
                 collision_context_t ctx;
                 memset(&ctx, 0, sizeof(ctx));
                 ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
                 ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
                 trace_t tr;
                 CG_Trace(&tr, (const math::Position3*)chasePos,
-                         (const math::Position3*)mins,
-                         (const math::Position3*)maxs,
+                         &mins, &maxs,
                          (const math::Position3*)rotScale, &ctx);
                 if (tr.normal.v.m128_f32[1] < 1.0f)
                 {
