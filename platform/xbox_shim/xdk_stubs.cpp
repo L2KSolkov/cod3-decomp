@@ -231,24 +231,27 @@ static unsigned int nullD3DBytesPerPixel(unsigned int Format) {
 
 static COD3_D3D9_PRIMITIVETYPE nullD3DPrimitiveType(_D3DPRIMITIVETYPE Type) {
     switch (Type) {
-    case D3DPT_POINTLIST: return COD3_D3D9_PT_POINTLIST;
-    case D3DPT_LINELIST: return COD3_D3D9_PT_LINELIST;
-    case D3DPT_LINESTRIP: return COD3_D3D9_PT_LINESTRIP;
-    case D3DPT_TRIANGLELIST: return COD3_D3D9_PT_TRIANGLELIST;
-    case D3DPT_TRIANGLESTRIP: return COD3_D3D9_PT_TRIANGLESTRIP;
-    case D3DPT_TRIANGLEFAN: return COD3_D3D9_PT_TRIANGLEFAN;
+    // These values are the Xbox D3D8 enum from d3d8.h.  The D3D9
+    // compatibility header renames D3DPT_* macros to the host enum values,
+    // so using those macros here would map Xbox 6 (triangle strip) as a fan.
+    case 1u: return COD3_D3D9_PT_POINTLIST;
+    case 2u: return COD3_D3D9_PT_LINELIST;
+    case 4u: return COD3_D3D9_PT_LINESTRIP;
+    case 5u: return COD3_D3D9_PT_TRIANGLELIST;
+    case 6u: return COD3_D3D9_PT_TRIANGLESTRIP;
+    case 7u: return COD3_D3D9_PT_TRIANGLEFAN;
     default: return COD3_D3D9_PT_FORCE_DWORD;
     }
 }
 
 static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int VertexCount) {
     switch (Type) {
-    case D3DPT_POINTLIST: return VertexCount;
-    case D3DPT_LINELIST: return VertexCount / 2;
-    case D3DPT_LINESTRIP: return VertexCount > 1 ? VertexCount - 1 : 0;
-    case D3DPT_TRIANGLELIST: return VertexCount / 3;
-    case D3DPT_TRIANGLESTRIP:
-    case D3DPT_TRIANGLEFAN: return VertexCount > 2 ? VertexCount - 2 : 0;
+    case 1u: return VertexCount;
+    case 2u: return VertexCount / 2;
+    case 4u: return VertexCount > 1 ? VertexCount - 1 : 0;
+    case 5u: return VertexCount / 3;
+    case 6u:
+    case 7u: return VertexCount > 2 ? VertexCount - 2 : 0;
     default: return 0;
     }
 }
