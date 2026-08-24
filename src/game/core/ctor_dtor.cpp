@@ -99,14 +99,22 @@ void ServerTime::Update(int tickMSec)
 
 // Sentinel-list layout used by the notify/rumble dlist containers
 struct RealDList {
-    void* m_head;  // points at first node's m_next (or &m_end)
-    void* m_end;   // null sentinel
-    void* m_tail;  // points at last node's m_next (or &m_head)
     int   m_size;
+    void* m_head;
+    void* m_end;
+    void* m_tail;
+
+    RealDList()
+        : m_size(0),
+          m_head(&m_end),
+          m_end(nullptr),
+          m_tail(&m_head)
+    {
+    }
 };
 struct DNode {
-    DNode* m_prev;
     DNode* m_next;
+    DNode* m_prev;
 };
 
 static RealDList sEntityNotifySet;
