@@ -43,8 +43,135 @@ unsigned int* nglGlowShaderPixelFX::Shader = nullptr;     // ?Shader@nglGlowShad
 unsigned int* nglGlowShaderPixelPreFX::Shader = nullptr;  // ?Shader@nglGlowShaderPixelPreFX@@3PAKA
 unsigned int* nglGlowShaderPixelPostFX::Shader = nullptr; // ?Shader@nglGlowShaderPixelPostFX@@3PAKA
 // IDA declares one-element VS/PS storage arrays and one-element shader-table
-// arrays for each internal shader. The original microcode payloads are not
-// present in the Win32 port, so the table entries remain null.
+// arrays for each internal shader. The payloads below are the exact Xbox
+// microcode bytes recovered from the corresponding IDA data objects. The
+// Win32 D3D9 shim does not submit Xbox microcode to the host, but retaining
+// the real payloads preserves registration, shader handles, and cache keys.
+static const unsigned int nglGpuDebugVertexShaderMicrocode[25] = {
+    0x00062078, 0x00000000, 0x00e1201b, 0x08373800, 0x20b01800,
+    0x00000000, 0x00e0c01b, 0x0836d800, 0x20b08800, 0x00000000,
+    0x06e0e01b, 0x0836fbff, 0x10b84800, 0x00000000, 0x00e1001b,
+    0x08371800, 0x20b02800, 0x00000000, 0x02000200, 0x0800106c,
+    0x60b0f81c, 0x00000000, 0x0040001a, 0xc4002800, 0x20b0e801,
+};
+static const unsigned int nglGpuQuadPCVertexShaderMicrocode[13] = {
+    0x00032078, 0x00000000, 0x02000000, 0x080012ac, 0x20b03804,
+    0x00000000, 0x02000200, 0x0800106c, 0x60b0f81c, 0x00000000,
+    0x00400015, 0x097e1800, 0x20b0c801,
+};
+static const unsigned int nglGpuQuadPUVVertexShaderMicrocode[13] = {
+    0x00032078, 0x00000000, 0x02000000, 0x080012ac, 0x20b03804,
+    0x00000000, 0x02000200, 0x0800106c, 0x60b0f84c, 0x00000000,
+    0x00400015, 0x097e1800, 0x20b0c801,
+};
+static const unsigned int nglGpuQuadPCUVVertexShaderMicrocode[17] = {
+    0x00042078, 0x00000000, 0x02000000, 0x080012ac, 0x20b03804,
+    0x00000000, 0x02000200, 0x0800106c, 0x60b0f81c, 0x00000000,
+    0x02000400, 0x0800106c, 0xa0b0f84c, 0x00000000, 0x00400015,
+    0x097e1800, 0x20b0c801,
+};
+static const unsigned int nglGpuQuadPUV4VertexShaderMicrocode[25] = {
+    0x00062078, 0x00000000, 0x02000000, 0x080012ac, 0x20b03804,
+    0x00000000, 0x02000200, 0x0800106c, 0x60b0f84c, 0x00000000,
+    0x02000400, 0x0800106c, 0xa0b0f854, 0x00000000, 0x02000600,
+    0x0800106c, 0xe0b0f85c, 0x00000000, 0x02000800, 0x0800106d,
+    0x20b0f864, 0x00000000, 0x00400015, 0x097e1800, 0x20b0c801,
+};
+static const unsigned int nglGpuQuadPUVMatColVertexShaderMicrocode[17] = {
+    0x00042078, 0x00000000, 0x0200c000, 0x0800106d, 0xb0b0f81c,
+    0x00000000, 0x02000200, 0x0800106c, 0x60b0f84c, 0x00000000,
+    0x02000000, 0x080012ac, 0x20b03804, 0x00000000, 0x00400015,
+    0x097e1800, 0x20b0c801,
+};
+static const unsigned int nglGpuDebugPixelShaderMicrocode[60] = {
+    0xd4301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x200c2000, 0x00001c80,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc4200000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011101,
+    0x00000000, 0x00000000, 0x00000000, 0xffffffff, 0xffffffff,
+    0x000001ff,
+};
+static const unsigned int nglGpuTexColPixelShaderMicrocode[60] = {
+    0xd8d41010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x200c2000, 0x00001c80,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8c40000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011101,
+    0x00000001, 0x00000000, 0x00000000, 0xffffffff, 0xffffffff,
+    0x000001ff,
+};
+static const unsigned int nglGpuTexPixelShaderMicrocode[60] = {
+    0xd8301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x200c2000, 0x00001c80,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8200000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011101,
+    0x00000001, 0x00000000, 0x00000000, 0xffffffff, 0xffffffff,
+    0x000001ff,
+};
+static const unsigned int nglGpuColPixelShaderMicrocode[60] = {
+    0xd4301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x200c2000, 0x00001c80,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc4200000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011101,
+    0x00000000, 0x00000000, 0x00000000, 0xffffffff, 0xffffffff,
+    0x000001ff,
+};
+static const unsigned int nglGpuFilterPixelShaderMicrocode[60] = {
+    0xd1d8d2d9, 0xd1dad2db, 0xdc30dd30, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x200c2000, 0x00001c80,
+    0x40404040, 0x40404040, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x40404040, 0x40404040,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00010c00, 0x00010d00, 0x00030c00, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc1c8c2c9,
+    0xc1cac2cb, 0xcc20cd20, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00010c00, 0x00010d00, 0x00030c00, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011103, 0x00008421,
+    0x00000000, 0x00000000, 0xffffff20, 0xffffff31, 0x000001ff,
+};
+static const unsigned int nglGpuZFogPixelShaderMicrocode[60] = {
+    0xd4301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x0c290000, 0x00002980,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc4200000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00000000, 0x00011101,
+    0x000001e1, 0x00000000, 0x00000000, 0xffffffff, 0xffffffff,
+    0x000001ff,
+};
 static unsigned int nglGpuQuadPCVertexShaderVS[1] = {};
 static unsigned int nglGpuQuadPCUVVertexShaderVS[1] = {};
 static unsigned int nglGpuQuadPUVVertexShaderVS[1] = {};
@@ -61,18 +188,18 @@ static unsigned int* nglDOFPixelShaderPS[1] = {};
 static unsigned int* nglGlowShaderPixelFXPS[1] = {};
 static unsigned int* nglGlowShaderPixelPreFXPS[1] = {};
 static unsigned int* nglGlowShaderPixelPostFXPS[1] = {};
-static const unsigned int* nglGpuQuadPCVertexShaderTable[1] = {};
-static const unsigned int* nglGpuQuadPCUVVertexShaderTable[1] = {};
-static const unsigned int* nglGpuPUVVertexShaderTable[1] = {};
-static const unsigned int* nglGpuPUV4VertexShaderTable[1] = {};
-static const unsigned int* nglGpuPUVMatColVertexShaderTable[1] = {};
-static const unsigned int* nglGpuDebugVertexShaderTable[1] = {};
-static const unsigned int* nglGpuColPixelShaderTable[1] = {};
-static const unsigned int* nglGpuTexPixelShaderTable[1] = {};
-static const unsigned int* nglGpuTexColPixelShaderTable[1] = {};
-static const unsigned int* nglGpuFilterPixelShaderTable[1] = {};
-static const unsigned int* nglGpuZFogPixelShaderTable[1] = {};
-static const unsigned int* nglGpuDebugPixelShaderTable[1] = {};
+static const unsigned int* nglGpuQuadPCVertexShaderTable[1] = { nglGpuQuadPCVertexShaderMicrocode };
+static const unsigned int* nglGpuQuadPCUVVertexShaderTable[1] = { nglGpuQuadPCUVVertexShaderMicrocode };
+static const unsigned int* nglGpuPUVVertexShaderTable[1] = { nglGpuQuadPUVVertexShaderMicrocode };
+static const unsigned int* nglGpuPUV4VertexShaderTable[1] = { nglGpuQuadPUV4VertexShaderMicrocode };
+static const unsigned int* nglGpuPUVMatColVertexShaderTable[1] = { nglGpuQuadPUVMatColVertexShaderMicrocode };
+static const unsigned int* nglGpuDebugVertexShaderTable[1] = { nglGpuDebugVertexShaderMicrocode };
+static const unsigned int* nglGpuColPixelShaderTable[1] = { nglGpuColPixelShaderMicrocode };
+static const unsigned int* nglGpuTexPixelShaderTable[1] = { nglGpuTexPixelShaderMicrocode };
+static const unsigned int* nglGpuTexColPixelShaderTable[1] = { nglGpuTexColPixelShaderMicrocode };
+static const unsigned int* nglGpuFilterPixelShaderTable[1] = { nglGpuFilterPixelShaderMicrocode };
+static const unsigned int* nglGpuZFogPixelShaderTable[1] = { nglGpuZFogPixelShaderMicrocode };
+static const unsigned int* nglGpuDebugPixelShaderTable[1] = { nglGpuDebugPixelShaderMicrocode };
 static const unsigned int* nglDOFPixelShaderTable[1] = {};
 static const unsigned int* nglGlowShaderPixelFXTable[1] = {};
 static const unsigned int* nglGlowShaderPixelPreFXTable[1] = {};
