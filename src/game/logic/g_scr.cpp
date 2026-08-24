@@ -5513,7 +5513,7 @@ void AeThreadManager::ProcessScriptNotifys()
     if (head == nullptr)
         return;
     EntityNotifyLocal* next = (EntityNotifyLocal*)((AeDListNode*)head)->mNext;
-    if (head == (EntityNotifyLocal*)pending->m_end || next == nullptr)
+    if (head == (EntityNotifyLocal*)&pending->m_end || next == nullptr)
         return;
     while (next != nullptr)
     {

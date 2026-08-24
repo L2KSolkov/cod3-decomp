@@ -497,7 +497,8 @@ public:
 static void EntityNotify_Push(EntityNotify* notify)
 {
     PendingList* list = &AeThreadManager::sInst.mPendingNotifys;
-    notify->m_dlist_node.mNext = (reserved_dlist<EntityNotify>::dlist_node*)list->m_end;
+    notify->m_dlist_node.mNext =
+        (reserved_dlist<EntityNotify>::dlist_node*)&list->m_end;
     NotifyDListNode* tail = list->m_tail;
     notify->m_dlist_node.mPrev = (reserved_dlist<EntityNotify>::dlist_node*)tail;
     tail->m_next = (NotifyDListNode*)&notify->m_dlist_node;
