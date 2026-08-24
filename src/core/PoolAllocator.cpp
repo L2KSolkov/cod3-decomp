@@ -310,9 +310,9 @@ void* PoolAllocator::Allocate(unsigned int size, bool forceHeapAlloc) {
             goto fallback_alloc;
         }
 
-        // Pools had matching sizes but all exhausted.  The release allocator
-        // uses flag 0x2 to permit a heap fallback in this branch.
-        if ((mFlags & 2) == 0) {
+        // The release allocator uses flag 0x1 for heap fallback when a
+        // matching pool exists but has no blocks left.
+        if ((mFlags & 1) == 0) {
             extern void tlFatal(const char* fmt, ...);
             tlFatal("all pool exhausted");
         }
