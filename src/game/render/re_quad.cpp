@@ -23,10 +23,16 @@ struct dpvs_t {
 };
 extern "C" dpvs_t g_dpvs;  // plain C symbol @ 0xF75600
 
-// refimport_t ri (cl.o) - UI_GetFontInfo only used here
+// refimport_t ri (cl.o).  The renderer and client share the full table;
+// UI_GetFontInfo is the only member used directly in this translation unit.
 struct refimport_t {
-    void* (*UI_GetFontInfo)(int font, float scale);
+    void (*Printf)(int, const char*, ...);              // +0x00
+    void (*Error)(int, const char*, ...);               // +0x04
+    int (*Milliseconds)();                              // +0x08
+    unsigned char _pad[0x84 - 0x0C];                    // +0x0C..+0x83
+    void* (*UI_GetFontInfo)(int font, float scale);     // +0x84
 };
+static_assert(sizeof(refimport_t) == 0x88, "refimport_t size mismatch");
 refimport_t ri = {};
 extern refimport_t ri;            // ?ri@@3Urefimport_t@@A @ 0xF741E8
 
