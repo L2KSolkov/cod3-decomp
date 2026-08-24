@@ -2304,6 +2304,7 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {
     gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
     const bool HasTexture = gNullBoundTextures[0] != NULL;
+    const bool HasLightmap = gNullBoundTextures[1] != NULL;
     const DWORD ColorOp = HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2;
     const DWORD AlphaOp = HasTexture ? D3DTOP_MODULATE : D3DTOP_SELECTARG2;
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_COLOROP, ColorOp);
@@ -2314,6 +2315,22 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG1,
                                        HasTexture ? D3DTA_TEXTURE : D3DTA_DIFFUSE);
     gD3D9Device->SetTextureStageState(0, COD3_D3D9_TSS_ALPHAARG2, D3DTA_DIFFUSE);
+    // cdWorldPixel's lightmapped variants combine the diffuse stage with the
+    // stage-1 lightmap.  Keep the fixed-function fallback equivalent when the
+    // world material supplied both resources; other shaders must not inherit
+    // a stale stage-1 operation.
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_COLOROP,
+                                       HasLightmap ? D3DTOP_MODULATE : D3DTOP_DISABLE);
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_COLORARG1,
+                                       HasLightmap ? D3DTA_CURRENT : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_COLORARG2,
+                                       D3DTA_TEXTURE);
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_ALPHAOP,
+                                       HasLightmap ? D3DTOP_MODULATE : D3DTOP_DISABLE);
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_ALPHAARG1,
+                                       HasLightmap ? D3DTA_CURRENT : D3DTA_DIFFUSE);
+    gD3D9Device->SetTextureStageState(1, COD3_D3D9_TSS_ALPHAARG2,
+                                       D3DTA_TEXTURE);
 }
 void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
     if (gD3D9Device != NULL)
