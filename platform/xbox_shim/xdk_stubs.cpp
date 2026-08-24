@@ -330,9 +330,11 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         if (i == 0) {
             Element.Usage = D3DDECLUSAGE_POSITION;
             HasPosition = true;
-        } else if (Input.Format == 0x40) {
-            Element.Usage = D3DDECLUSAGE_COLOR;
         } else {
+            // The NV2A translator exposes vertex registers v1..v7 as
+            // TEXCOORD0..6.  D3D9 matches declaration elements to those
+            // semantics, so preserve the ordinal even when the source slot
+            // is packed color/normal data.
             Element.Usage = D3DDECLUSAGE_TEXCOORD;
             Element.UsageIndex = (BYTE)TexCoordIndex++;
         }
