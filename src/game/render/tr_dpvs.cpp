@@ -567,6 +567,7 @@ struct trGlobals_t {
     int frameCount;
     int viewCount;
     viewParmsDPVSView viewParms;
+    uint8_t _pad0[0x26C - 0x10 - 0x1E0];
     trRefdefFilterView refdef;   // +0x26C
     void* world;                 // +0x290
 };
