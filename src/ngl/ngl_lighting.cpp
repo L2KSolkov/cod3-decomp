@@ -43,6 +43,15 @@ struct nglLightContextParamType {
 nglLightContextParamType nglLightContextParam;
 unsigned int nglLightContextParamID = 0;
 
+static nglLightContext* nglGetMeshLightContext(nglMeshNode* MeshNode)
+{
+    const unsigned int id = nglLightContextParamID;
+    const unsigned int* params = MeshNode->ShaderParams.Array;
+    if ((params[id >> 5] & (1u << (id & 0x1F))) != 0)
+        return reinterpret_cast<nglLightContext*>(params[id + 2]);
+    return nglBuildScene->LightContext;
+}
+
 // ============================================================================
 // nglSetLightContext - ea: 0x845930
 // ============================================================================
@@ -435,12 +444,7 @@ void nglListAddPointLightGun(unsigned int LightCat, const math::Position3& Pos,
 // nglDetermineProjLights - ea: 0x8464D0
 // ============================================================================
 void nglDetermineProjLights(nglMeshNode* MeshNode) {
-    nglLightContext* LightContext;
-    if ((MeshNode->ShaderParams.Array[nglLightContextParamID >> 5]
-         & (1u << (nglLightContextParamID & 0x1F))) != 0)
-        LightContext = nglLightContextParam.Value;
-    else
-        LightContext = nglBuildScene->LightContext;
+    nglLightContext* LightContext = nglGetMeshLightContext(MeshNode);
     nglSendLightContext = LightContext;
     LightContext->ProjHead.LocalNext = &LightContext->ProjHead;
     nglMesh* Mesh = MeshNode->Mesh;
@@ -493,12 +497,7 @@ void nglDetermineProjLights(nglMeshNode* MeshNode) {
 // nglCheckAvailableLights - ea: 0x8467A0
 // ============================================================================
 unsigned int nglCheckAvailableLights(nglMeshNode* MeshNode) {
-    nglLightContext* LightContext;
-    if ((MeshNode->ShaderParams.Array[nglLightContextParamID >> 5]
-         & (1u << (nglLightContextParamID & 0x1F))) != 0)
-        LightContext = nglLightContextParam.Value;
-    else
-        LightContext = nglBuildScene->LightContext;
+    nglLightContext* LightContext = nglGetMeshLightContext(MeshNode);
     nglSendLightContext = LightContext;
     nglMesh* Mesh = MeshNode->Mesh;
     int v4 = (Mesh->Flags >> 24) - 1;
@@ -517,12 +516,7 @@ unsigned int nglCheckAvailableLights(nglMeshNode* MeshNode) {
 // nglDetermineLights - ea: 0x846830
 // ============================================================================
 void nglDetermineLights(nglMeshNode* MeshNode) {
-    nglLightContext* LightContext;
-    if ((MeshNode->ShaderParams.Array[nglLightContextParamID >> 5]
-         & (1u << (nglLightContextParamID & 0x1F))) != 0)
-        LightContext = nglLightContextParam.Value;
-    else
-        LightContext = nglBuildScene->LightContext;
+    nglLightContext* LightContext = nglGetMeshLightContext(MeshNode);
     nglSendLightContext = LightContext;
     LightContext->Head.LocalNext = &LightContext->Head;
     nglMesh* Mesh = MeshNode->Mesh;
