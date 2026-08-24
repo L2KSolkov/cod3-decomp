@@ -646,7 +646,7 @@ index	status	map_line
 645	VERIFIED	0002:00079d90 ?G_SpawnTurret@@YAXPAVEntity@@PBD@Z 00869290 f g.o
 646	VERIFIED	0002:0007a660 ?SP_turret@@YAXPAVEntity@@@Z 00869B60 f g.o
 647	VERIFIED	0002:0007a700 ?misc_spawner_think@@YAXPAVEntity@@H@Z 00869C00 f g.o
-648	VERIFIED	0002:0007a760 ?fire_grenade@@YAPAVEntity@@PAV1@QAM1HH@Z 00869C60 f g.o
+648	FIXED	0002:0007a760 ?fire_grenade@@YAPAVEntity@@PAV1@QAM1HH@Z 00869C60 f g.o FIXED: smoke grenade origin NaN assert exception requested; source 0becf3da
 649	VERIFIED	0002:0007abc0 ?fire_rifle_grenade@@YAPAVEntity@@PAV1@QAMH_N@Z 0086A0C0 f g.o
 650	VERIFIED	0002:0007b0e0 ?fire_mine@@YAPAVEntity@@PAV1@QAM1H@Z 0086A5E0 f g.o
 651	VERIFIED	0002:0007b500 ?fire_rocket@@YAPAVEntity@@PAV1@QAM1M@Z 0086AA00 f g.o
