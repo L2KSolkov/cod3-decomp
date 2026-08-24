@@ -293,7 +293,7 @@ void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
     ent->use = 3;
     ent->controller = 2;
     ent->entinfo = 2;
-    ent->think = THINK__ReturnToPos2;
+    ent->think = THINK__Scr_Vehicle_Init;
     ent->r.svFlags = 16;
     ent->r.contents = byte_A00000;
     ent->s.eType = 14;
@@ -4830,7 +4830,7 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         context.pass_owner2.mHandle.mVal = 0;
         context.contentmask = -1;
         G_DoTouchTriggers(pSelf, pSelf->r.currentOrigin, nullptr, context);
-        pSelf->think = THINK__Scr_Vehicle_Init;
+        pSelf->think = THINK__Scr_Vehicle_Think;
         pSelf->nextthink = level.time + 1;
     }
     else
