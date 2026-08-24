@@ -568,7 +568,6 @@ struct trGlobals_t {
     int viewCount;
     viewParmsDPVSView viewParms;
     trRefdefFilterView refdef;   // +0x26C
-    uint8_t _pad2[0x290 - 0x270];
     void* world;                 // +0x290
 };
 extern trGlobals_t tr;          // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
