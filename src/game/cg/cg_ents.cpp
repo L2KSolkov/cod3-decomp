@@ -2648,10 +2648,12 @@ int CG_ProcessSnapshots()
         CG_TransitionSnapshot();
         if (fs_debug_vm.integer == 0)
             Cvar_VMSet(&fs_debug_vm, "2");
-        CG_ASSERT("cg[currCl].snap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 397);
-        CG_ASSERT("cg[currCl].nextSnap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 398);
+        if (dword_F62960[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].snap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 397);
+        if (dword_F62964[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].nextSnap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 398);
         int v6 = dword_F62964[1580 * currCl];
         if (v6 != dword_F62960[1580 * currCl]
             && *(int*)(v6 + 4) - cgGlobal_time <= 0)
