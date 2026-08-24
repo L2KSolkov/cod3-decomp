@@ -5123,7 +5123,6 @@ const SoundDevice::Sound* SoundDevice::GetSoundForHandle(
 extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
 extern void Cmd_AddCommand(const char* cmd_name,
                            void (*function)());  // game.o g_cmd.cpp
-void* CGBankManager_vftable = nullptr;   // ??_7CGBankManager@@6B@ @ 0xD0543C
 extern void* ToggleRenderGeom();      // game.o 0x6119F0
 extern void* ToggleGraph();           // game.o 0x611A30
 extern void* ToggleRenderPerf();      // game.o 0x611A10
@@ -5154,7 +5153,6 @@ void CGBankManager::SingletonDebugRender()
 CGBankManager::CGBankManager()
 {
     AssetBankSet_ctor(this);
-    *(void**)this = (void*)&CGBankManager_vftable;
     DebugRender_AddRenderer(DebugRender_sInst,
                             CGBankManager_DebugRender_bridge);
     this->mCount = 0;
