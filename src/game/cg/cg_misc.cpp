@@ -4682,7 +4682,7 @@ struct cgs_t {
     int vidWidth;   // +0x84
     int vidHeight;  // +0x88
 };
-extern struct cgs_t* cgs;  // ?cgs@@3PAUcgs_t@@A
+extern struct cgs_t cgs[2];  // ?cgs@@3PAUcgs_t@@A
 
 struct cgsGlobal_t {
     char mapname[128];  // +0x00
