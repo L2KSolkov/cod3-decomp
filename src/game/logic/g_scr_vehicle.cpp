@@ -4455,7 +4455,7 @@ int G_SpawnVehicle(Entity* ent, const char* typeName, int /*unused*/)
                 int v5 = v4;
                 unsigned int mVal = s_vehicles[v5].mEntity.mHandle.mVal;
                 v3 = &s_vehicles[v5];
-                if (mVal & 0xFFF >= 0x540
+                if ((mVal & 0xFFF) >= 0x540
                     || mVal >> 12 != EntityHandleDb::sInst.mElements[mVal & 0xFFF].mKey
                     || EntityHandleDb::sInst.mElements[mVal & 0xFFF].mObject == nullptr)
                 {
