@@ -327,7 +327,7 @@ extern FEManager g_femanager;
 int unk_F6A2AC[4 * 3208];  // cg.o BSS
 void* nglBuildScene_RenderTarget = nullptr;  // ngl.o
 void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
-extern Camera* gCamera;
+extern Camera gCamera[];
 extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
 namespace LocalClient { extern int FirstLocalClientIndex(void); }

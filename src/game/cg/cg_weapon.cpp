@@ -1560,7 +1560,7 @@ int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
 class Camera;
-extern Camera* gCamera;
+extern Camera gCamera[];
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern struct cgs_t* cgs;

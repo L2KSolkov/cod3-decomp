@@ -5906,7 +5906,7 @@ public:
     int mCamMode;        // +0x190
     int mVehicleCamMode; // +0x194
 };
-extern Camera* gCamera;  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0)
+extern Camera gCamera[];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0)
 
 // ea: 0x0053A840
 Camera& GetCamera(int index)

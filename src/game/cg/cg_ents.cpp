@@ -1092,7 +1092,7 @@ extern int level_time;
 extern int dword_F62964[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern float dword_F63C70[4 * 1580];
-extern Camera* gCamera;
+extern Camera gCamera[];
 extern int dword_180000;
 unsigned int head_hash_0;
 extern double VectorDistance(const float* const v1, const float* const v2);
