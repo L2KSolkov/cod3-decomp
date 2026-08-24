@@ -10,6 +10,7 @@
 #include "ngl/ngl_scene.h"
 #include "filesystem/apk.h"
 
+#include <new>
 #include <string.h>
 
 // ============================================================================
@@ -67,7 +68,7 @@ struct ngl_aux_static_init {
         delegate_directory<nglFont>* dFont =
             (delegate_directory<nglFont>*)tlMemAlloc(sizeof(delegate_directory<nglFont>), 8u, 0);
         if (dFont != NULL) {
-            dFont->skiplist = &nglFontDirectory;
+            ::new (dFont) delegate_directory<nglFont>(&nglFontDirectory);
             auxFontDirectory = dFont;
         } else {
             auxFontDirectory = NULL;
@@ -76,7 +77,7 @@ struct ngl_aux_static_init {
         delegate_directory<nglMesh>* dMesh =
             (delegate_directory<nglMesh>*)tlMemAlloc(sizeof(delegate_directory<nglMesh>), 8u, 0);
         if (dMesh != NULL) {
-            dMesh->skiplist = &nglMeshDirectory;
+            ::new (dMesh) delegate_directory<nglMesh>(&nglMeshDirectory);
             auxMeshDirectory = dMesh;
         } else {
             auxMeshDirectory = NULL;
@@ -85,7 +86,7 @@ struct ngl_aux_static_init {
         delegate_directory<nglMaterial>* dMaterial =
             (delegate_directory<nglMaterial>*)tlMemAlloc(sizeof(delegate_directory<nglMaterial>), 8u, 0);
         if (dMaterial != NULL) {
-            dMaterial->skiplist = &nglMaterialDirectory;
+            ::new (dMaterial) delegate_directory<nglMaterial>(&nglMaterialDirectory);
             auxMaterialDirectory = dMaterial;
         } else {
             auxMaterialDirectory = NULL;
@@ -94,7 +95,7 @@ struct ngl_aux_static_init {
         delegate_directory<nglTexture>* dTexture =
             (delegate_directory<nglTexture>*)tlMemAlloc(sizeof(delegate_directory<nglTexture>), 8u, 0);
         if (dTexture != NULL) {
-            dTexture->skiplist = &nglTextureDirectory;
+            ::new (dTexture) delegate_directory<nglTexture>(&nglTextureDirectory);
             auxTextureDirectory = dTexture;
         } else {
             auxTextureDirectory = NULL;
