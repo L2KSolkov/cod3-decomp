@@ -503,7 +503,7 @@ void SCR_UpdateScreen(float screen_time_inc)
         {
             if (lLastLocalClientIndex == currCl)
                 g_femanager.UpdateFrontEnd(screen_time_inc);
-            return;
+            goto scr_update_screen_finish;
         }
         if (g_femanager.mAARS != nullptr
             && g_femanager.mAARS->IsSystemActive())
@@ -525,6 +525,7 @@ void SCR_UpdateScreen(float screen_time_inc)
                 }
             }
         }
+scr_update_screen_finish:
         if (cls.state == 2)  // CA_ACTIVE
             bCL_AllowedAllocSkel = 0;
     }
