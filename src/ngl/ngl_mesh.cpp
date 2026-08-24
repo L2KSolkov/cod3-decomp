@@ -361,12 +361,12 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld
 // ============================================================================
 nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode) {
     nglMesh* v2 = MeshNode->Mesh;
-    nglMeshSectionTableEntry* Sections = v2->Sections;
+    nglMeshSection** Sections = &v2->Sections->Section;
     unsigned int i = v2->NSections;
     unsigned int TotalVerts = nglPerfInfo.TotalVerts;
     do {
-        nglMeshSection* v5 = Sections->Section;
-        nglMeshSection* v6 = Sections[1].Section;
+        nglMeshSection* v5 = *Sections;
+        _mm_prefetch(reinterpret_cast<const char*>(Sections[2]), _MM_HINT_T0);
         Sections += 2;
         if (v5 != NULL) {
             if (nglProfileEvalShader(v5->Material->Shader) && !v5->Material->Shader->Disabled)
