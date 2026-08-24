@@ -217,14 +217,6 @@ vmCvar_t cg_gun_rot_rate;                // ?cg_gun_rot_rate@@3UvmCvar_t@@A (cg.
 vmCvar_t cg_viewKickDeflectTime;         // ?cg_viewKickDeflectTime@@3UvmCvar_t@@A (cg.o @ 0x134AA80)
 vmCvar_t cg_viewKickReturnTime;          // ?cg_viewKickReturnTime@@3UvmCvar_t@@A (cg.o @ 0x134BEB8)
 
-struct cgGlobal_t {
-    int time;
-    int oldTime;
-    int teamGame;
-};
-extern cgGlobal_t cgGlobal;  // 0x00F5FE30
-
-
 struct consoleCommand_t {
     const char* cmd;
     void (*function)();

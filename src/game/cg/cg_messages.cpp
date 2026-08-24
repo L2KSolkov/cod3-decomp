@@ -53,12 +53,6 @@ struct sentient_s {
     int eTeam;  // +0x00
 };
 
-struct cgGlobal_t {
-    int  time;       // +0x00
-    int  teamGame;   // +0x04
-};
-extern cgGlobal_t cgGlobal;  // 0x00F5FE30
-
 struct vmCvar_t {
     int integer;  // +0x00 (only field used here)
 };

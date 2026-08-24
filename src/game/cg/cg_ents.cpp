@@ -30,7 +30,6 @@ public:
 class Camera;
 
 extern int currCl;
-extern int cgGlobal_time;
 extern int dword_F62960[4 * 1580];
 int dword_F610E4;
 int dword_F610E8;
@@ -602,7 +601,6 @@ static Entity* EntityHandleDb_Get(unsigned int handleVal)
         return EntityHandleDb::sInst.mElements[v].mObject;
     return nullptr;
 }
-extern int cgGlobal_oldTime;
 
 // ea: 0x006A23D0
 void CG_Trace(trace_t* result, const math::Position3* start,
@@ -1693,7 +1691,6 @@ extern int dword_F62954[4 * 1580];
 extern int dword_F62958[4 * 1580];
 extern int cg_aWeaponSelect[4];
 extern int cg_aWeaponSelectTime[4];
-extern struct cgGlobal_t { int time; int oldTime; int teamGame; } cgGlobal;
 extern snapshot_t* CG_ReadNextSnapshot();
 extern int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot);
 extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,

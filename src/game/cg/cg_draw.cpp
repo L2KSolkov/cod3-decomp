@@ -37,7 +37,6 @@ public:
 class Camera;
 
 extern int currCl;
-int cgGlobal_time = 0;  // ?cgGlobal_time@@3HA (cg.o)
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern void* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
@@ -241,15 +240,6 @@ struct vmCvar_t {
     float value;    // +0x04
 };
 extern vmCvar_t cg_skybox;
-
-struct cgGlobal_t {
-    int frametime;    // +0x00
-    int time;         // +0x04
-    int oldTime;      // +0x08
-    int cubemapShot;  // +0x0C
-    int cubemapSize;  // +0x10
-};
-extern cgGlobal_t cgGlobal;
 
 float gTracerDistScale;   // 0x00DF9DA8
 float tr_viewParms_zFar;  // 0x00F74F60

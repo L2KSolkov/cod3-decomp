@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/mpshell/session_menus.h"
+#include "game/cg/cg_global.h"
 #include "game/actor_types.h"
 #include "game/client_types.h"
 #include "bd/bdNet.h"
@@ -961,20 +962,6 @@ namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 void UpdateNumViewports();  // ?UpdateNumViewports@View@@YAXXZ (cg.o)
 }
-struct cgGlobal_t {
-    int   frametime;  // +0x00
-    int   time;       // +0x04
-    int   oldTime;    // +0x08
-    int   cubemapShot; // +0x0C
-    int   cubemapSize; // +0x10
-    bool  teamGame;   // +0x14
-    bool  showScore;  // +0x15
-    uint8_t _pad16[0x18 - 0x16];
-    float gameTime;   // +0x18
-    float gameTimeStartTime;  // +0x1C
-    int   teamScores[5];      // +0x20
-};
-extern cgGlobal_t cgGlobal;   // 0xF5FE30 (cg.o)
 struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)

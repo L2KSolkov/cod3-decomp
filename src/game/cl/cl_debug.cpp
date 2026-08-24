@@ -91,7 +91,6 @@ int com_timescale_value = 0;  // ?com_timescale_value@@3HA (cl.o)
 // --- plain int data sweep (cl.o family) ---
 int animFrametime;        // ?animFrametime@@3HA (cl.o)
 int anykeydown;           // ?anykeydown@@3HA (cl.o)
-int cgGlobal_frametime;   // ?cgGlobal_frametime@@3HA (cl.o)
 int key_overstrikeMode;   // ?key_overstrikeMode@@3HA (cl.o)
 int lFirstLocalClientIndex;  // ?lFirstLocalClientIndex@@3HA (cl.o)
 int lLastLocalClientIndex;   // ?lLastLocalClientIndex@@3HA (cl.o)

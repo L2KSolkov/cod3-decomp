@@ -148,12 +148,6 @@ extern int controller_button_pressed(void* self, int i_controller_num,
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 
-struct cgGlobal_t {
-    int  time;       // +0x00
-    int  teamGame;   // +0x04
-};
-extern cgGlobal_t cgGlobal;  // 0x00F5FE30
-
 extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;  // 0x00F60258
 extern vmCvar_t cg_hudAlpha;                          // 0x00F5FC80
 

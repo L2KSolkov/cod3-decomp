@@ -10,6 +10,7 @@
 #include "ngl/ngl_scene.h"
 #include "ngl/ngl_lighting.h"
 #include "game/nextgen/nextgen.h"
+#include "game/cg/cg_global.h"
 
 #include <math.h>
 #include <new>
@@ -665,13 +666,7 @@ struct vmCvar_t {
 };
 extern vmCvar_t cg_widescreen;  // ?cg_widescreen@@3UvmCvar_t@@A @ 0xF5CC88
 
-// cgGlobal_t (cubemapShot +0x0C)
-struct cgGlobal_t {
-    uint8_t _pad[0x0C];
-    int cubemapShot;  // +0x0C
-};
 enum { CUBEMAPSHOT_NONE = -1 };
-extern cgGlobal_t cgGlobal;  // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
 
 // world_t (bspTree +0x100, mSky +0x108)
 struct world_t {

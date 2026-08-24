@@ -9,11 +9,17 @@
 #include "core/math_types.h"
 #include "engine/broc_types.h"
 #include "game/game_types.h"
+#include "game/cg/cg_global.h"
 
 struct Entity;
 class DObj;
 namespace nalGeneric { class nalGenericAnim; }
 struct nglTexture;
+
+#define cgGlobal_time (cgGlobal.time)
+#define cgGlobal_oldTime (cgGlobal.oldTime)
+#define cgGlobal_frametime (cgGlobal.frametime)
+#define cgGlobal_cubemapShot (cgGlobal.cubemapShot)
 
 // IDA itemInfo_t layout: registered at +0x0, icon at +0x4.
 struct itemInfo_t {

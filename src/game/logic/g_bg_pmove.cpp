@@ -7261,7 +7261,6 @@ bool gInfinteAmmo;           // ?gInfinteAmmo@@3_NA (game.o)
 extern int cg_aWeaponSelect[4];     // ?cg_aWeaponSelect@@3PAHA (cg.o)
 extern int cg_aWeaponSelectTime[4]; // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
 extern int cl_aADS[4];              // ?cl_aADS@@3PAHA (cl.o)
-extern int cgGlobal_time;           // cgGlobal.time (cg.o)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
 
@@ -7872,7 +7871,7 @@ int BG_SelectWeaponIndex(int iWeaponIndex, int client)
     }
     if (client != 0)
         return 0;
-    cg_aWeaponSelectTime[0] = cgGlobal_time;
+    cg_aWeaponSelectTime[0] = cgGlobal.time;
     if (cg_aWeaponSelect[0] == iWeaponIndex)
         return 0;
     bool v3 = iWeaponIndex != 0

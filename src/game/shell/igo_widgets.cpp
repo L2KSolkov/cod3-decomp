@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/shell/shell_types.h"
+#include "game/cg/cg_global.h"
 #include "game/client_types.h"
 #include "game/player_types.h"
 #include "game/actor_types.h"
@@ -16,21 +17,6 @@ extern int cg_aWeaponSelectTime[4];               // ?cg_aWeaponSelectTime@@3PAH
 extern DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank();
 extern FEManager g_femanager;
 extern int dword_F62960[];                        // @ 0xF62960 (cg client base)
-
-// Binary cgGlobal_t starts with frametime at +0x00 (cg.o @ 0xF5FE30).
-struct cgGlobal_t {
-    int  frametime;      // +0x00
-    int  time;           // +0x04
-    int  oldTime;        // +0x08
-    int  cubemapShot;    // +0x0C
-    int  cubemapSize;    // +0x10
-    bool teamGame;       // +0x14
-    bool showScore;      // +0x15
-    float gameTime;      // +0x18
-    float gameTimeStartTime;  // +0x1C
-    int  teamScores[5];  // +0x20
-};
-extern cgGlobal_t cgGlobal;
 
 extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlayerState@@H@Z
 vmCvar_t g_stanceFadeTime = {};

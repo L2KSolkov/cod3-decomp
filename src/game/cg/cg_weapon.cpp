@@ -56,7 +56,6 @@ struct vmCvar_t {
     int integer;  // +0x00
 };
 extern vmCvar_t cg_weaponCycleDelay;
-extern int cgGlobal_frametime;
 extern struct level_locals_t { int time; } level;
 struct sentient_s {
     int lastShotTime;  // +0x00
@@ -323,7 +322,6 @@ extern Handle PostEffectEventScriptCall(const Entity* ent,
 extern float player_breath_hold_time;
 float player_breath_snd_delay;
 float player_breath_snd_lerp;
-extern int cgGlobal_time;
 extern int dword_F641E8[4 * 1580];
 extern int dword_F641E0[4 * 1580];
 extern int dword_F641E4[4 * 1580];

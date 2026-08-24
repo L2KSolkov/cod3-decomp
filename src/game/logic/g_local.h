@@ -12,6 +12,7 @@
 #include "game/actor_types.h"
 #include "game/trace_types.h"
 #include "game/cvar_types.h"
+#include "game/cg/cg_global.h"
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
 #include "game/core/core_types.h"
@@ -3486,19 +3487,6 @@ extern vmCvar_t g_debugDamage;
 extern int damageForceReductionThreshold;  // 0xDD7F40?
 extern int damageForceMax;
 extern int dword_F63D1C[1580 * 802];
-struct cgGlobal_t {
-    int  frametime;  // +0x00
-    int  time;       // +0x04
-    int  oldTime;    // +0x08
-    int  cubemapShot; // +0x0C
-    int  cubemapSize; // +0x10
-    bool teamGame;   // +0x14 (verified vs disasm)
-    bool showScore;  // +0x15
-    uint8_t _pad16[0x18 - 0x16];
-    float gameTime;  // +0x18
-    float gameTimeStartTime;  // +0x1C
-    int   teamScores[5];      // +0x20
-};
 extern cgGlobal_t cgGlobal;   // 0xF5FE30
 
 // kuju::knet::sTime (4 bytes; mTime in milliseconds)
