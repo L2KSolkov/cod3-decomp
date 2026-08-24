@@ -3017,10 +3017,10 @@ static_assert(sizeof(StreamZoneManager) == 0x1E0,
 
 // InstanceData (scenemanager.cpp; stride 0x28, verified IDA)
 struct InstanceData {
-    float cullA[3];     // +0x00
-    float cullB[3];     // +0x0C
-    float worldPos[3];  // +0x18
-    float pad;          // +0x24
+    float xaxis[3];     // +0x00
+    float yaxis[3];     // +0x0C
+    float origin[3];    // +0x18
+    float scale;        // +0x24
 };
 
 struct InstanceListNode;
@@ -5100,8 +5100,8 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
                     {
                         InstanceData* inst = &insts->mList[instIdx];
                         math::Position3 origin;
-                        origin.v = _mm_setr_ps(inst->cullA[0], inst->cullA[1],
-                                               inst->cullA[2], 0.0f);
+                        origin.v = _mm_setr_ps(inst->origin[0], inst->origin[1],
+                                               inst->origin[2], 0.0f);
                         int cellNum = 0;
                         const LightGridMgr::TOC* LightGrid =
                             LightGridMgr::sInst->GetLightGrid(origin,
@@ -5138,12 +5138,12 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
                             }
                         }
 
-                        __m128 xaxis = _mm_setr_ps(inst->cullB[0],
-                                                   inst->cullB[1],
-                                                   inst->cullB[2], 0.0f);
-                        __m128 yaxis = _mm_setr_ps(inst->worldPos[0],
-                                                   inst->worldPos[1],
-                                                   inst->worldPos[2], 0.0f);
+                        __m128 xaxis = _mm_setr_ps(inst->xaxis[0],
+                                                   inst->xaxis[1],
+                                                   inst->xaxis[2], 0.0f);
+                        __m128 yaxis = _mm_setr_ps(inst->yaxis[0],
+                                                   inst->yaxis[1],
+                                                   inst->yaxis[2], 0.0f);
                         __m128 Mx = bones[0].x.v;
                         __m128 My = bones[0].y.v;
                         __m128 Mz = bones[0].z.v;
@@ -5200,7 +5200,7 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
                         math::Position3 cellPos3;
                         cellPos3.v = cellPos;
                         int cell = R_CellForPoint(&cellPos3);
-                        node->instance.Add(instMat, inst->pad,
+                        node->instance.Add(instMat, inst->scale,
                                            *(const math::Mat44*)lightDir,
                                            *(const math::Mat44*)lightColor,
                                            flags, cell);
@@ -6775,9 +6775,9 @@ void SceneManager::RenderInstanceGroups()
                     for (int group = 0; group < count; ++group)
                     {
                         __m128 worldPos =
-                            _mm_setr_ps(inst[group].worldPos[0],
-                                        inst[group].worldPos[1],
-                                        inst[group].worldPos[2], 0.0f);
+                            _mm_setr_ps(inst[group].origin[0],
+                                        inst[group].origin[1],
+                                        inst[group].origin[2], 0.0f);
                         __m128 d = _mm_sub_ps(worldPos, cameraPos.v);
                         __m128 d2 = _mm_mul_ps(d, d);
                         float dist2 =
@@ -6798,14 +6798,14 @@ void SceneManager::RenderInstanceGroups()
                                 if (portals.m_alloc_count > 0)
                                 {
                                     __m128 cullA =
-                                        _mm_setr_ps(inst[group].cullA[0],
-                                                    inst[group].cullA[1],
-                                                    inst[group].cullA[2],
+                                        _mm_setr_ps(inst[group].xaxis[0],
+                                                    inst[group].xaxis[1],
+                                                    inst[group].xaxis[2],
                                                     0.0f);
                                     __m128 cullB =
-                                        _mm_setr_ps(inst[group].cullB[0],
-                                                    inst[group].cullB[1],
-                                                    inst[group].cullB[2],
+                                        _mm_setr_ps(inst[group].yaxis[0],
+                                                    inst[group].yaxis[1],
+                                                    inst[group].yaxis[2],
                                                     0.0f);
                                     // cross term per binary shuffle pattern:
                                     // (cullA.y*cullB.z - cullA.z*cullB.y,
