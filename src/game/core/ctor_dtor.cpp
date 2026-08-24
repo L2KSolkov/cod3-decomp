@@ -4,6 +4,7 @@
 
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
+#include "game/logic/g_camerashake.h"
 #include "core/PoolAllocator.h"
 #include "aeps/apsEffect.h"
 
@@ -58,8 +59,7 @@ extern void mem_heap_create(mem_heap* heap, void* start, void* end,
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 extern int dword_F6A290[4 * 0x322];
 extern void CameraShake_StopCameraShake(void* self, void* pShake);
-struct CameraShake;
-extern CameraShake* g_cameraShake;
+extern CameraShake g_cameraShake[4];
 extern void SoundDevice_ReleaseSound(void* sInst, void* s);
 struct SoundHandleDbLocal {
     struct El {

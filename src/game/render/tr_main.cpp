@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "core/math_types.h"
+#include "game/logic/g_camerashake.h"
 
 #include <math.h>
 #include <float.h>
@@ -372,12 +373,6 @@ void R_RotateForEntity(trRefEntity* ent, const viewParms_t* viewParms,
 // ============================================================================
 // R_RotateForViewer - ea: 0x006C12B0
 // ============================================================================
-// CameraShake (cg.o; g_cameraShake[4] @ 0xF056E8)
-class CameraShake {
-public:
-    math::Mat43* CreateCameraShakeMatrix(math::Mat43* pCamLocal);  // ?CreateCameraShakeMatrix@CameraShake@@QAEPAVMat43@math@@PAV23@@Z
-};
-extern CameraShake* g_cameraShake;  // ?g_cameraShake@@3PAVCameraShake@@A @ 0xF056E8
 extern int currCl;  // ?currCl@@3HA @ 0xF1579C
 
 // s_flipMatrix (render.o @ 0xDFB0F8; IDA bytes)

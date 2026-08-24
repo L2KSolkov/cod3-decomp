@@ -6,6 +6,7 @@
 #include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
+#include "game/logic/g_camerashake.h"
 #include "ngl/nglRenderNode.h"
 #include "input/controller.h"
 
@@ -1294,13 +1295,6 @@ void Camera::StartCircleTween(float tweenTime)
     }
 }
 
-struct CameraShakeInstance {
-    unsigned char _pad[0x3C];
-    int m_active;  // +0x3C
-};
-struct CameraShake {
-    unsigned char _data[0x14C];
-};
 extern CameraShake g_cameraShake[4];
 extern CameraShakeInstance* CameraShake_StartCameraShake(
     CameraShake* self, int type, math::Position3* worldPos, float size,

@@ -8,6 +8,7 @@
 #endif
 
 #include "game/logic/g_local.h"
+#include "game/logic/g_camerashake.h"
 #include "core/mem_heap.h"
 #include "core/tlFixedString.h"
 #include "input/controller.h"
@@ -2474,8 +2475,6 @@ void verify_is_in_physics_system(rigid_body_constraint_contact* a,
     (void)a; (void)b; (void)c;
 }
 
-struct CameraShake;
-struct CameraShakeInstance;
 CameraShakeInstance* CameraShake_StartCameraShake(CameraShake* self, int a,
                                                   math::Position3* b, float c,
                                                   float d, float e)

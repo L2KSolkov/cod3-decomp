@@ -5,6 +5,7 @@
 
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
+#include "game/logic/g_camerashake.h"
 #include "core/PoolAllocator.h"
 #include "aeps/apsEffect.h"
 
@@ -393,31 +394,6 @@ EntityManager* EntityManager::sInst = nullptr;
 
 static const char defaultFileName[] = "";
 
-// ============================================================================
-// Camera shake support types (layout from IDA)
-// ============================================================================
-struct CameraShakeInstance {
-    int   m_type;          // +0x00
-    float m_magnitude;     // +0x04
-    float m_magnitudeInc;  // +0x08
-    float m_noiseFloats[8];// +0x0C
-    float m_invDistance;   // +0x2C
-    float m_time;          // +0x30
-    float m_frequency;     // +0x34
-    float m_movement;      // +0x38
-    int   m_active;        // +0x3C
-};
-static_assert(sizeof(CameraShakeInstance) == 0x40,
-              "CameraShakeInstance size mismatch");
-
-struct CameraShake {
-    float m_scale3D;          // +0x00
-    float m_scaleCOD;         // +0x04
-    int   m_scaleCOD_onlyADS; // +0x08
-    CameraShakeInstance m_instanceData[5];  // +0x0C
-};
-static_assert(sizeof(CameraShake) == 0x14C, "CameraShake size mismatch");
-
 extern CameraShakeInstance* CameraShake_StartCameraShake(
     CameraShake* self, int type, math::Position3* worldPos, float size,
     float timeOverride, float nextDelay);
@@ -439,7 +415,7 @@ math::Position3 GetTagFlashPos(Entity* cent)
     // which have pre-existing cross-TU DObj tag issues; return fallback origin.
     return cent->r.currentOrigin;
 }
-extern CameraShake* g_cameraShake;  // 0x00F056E8
+extern CameraShake g_cameraShake[4];  // 0x00F056E8
 extern int dword_F6A290[4 * 0x322];  // per-client table, 0xC88-byte stride
 extern void FX_ClearFX();
 extern void Scr_Notify(Entity* ent, HashString hashValue,
@@ -588,7 +564,6 @@ struct SoundDeviceInst {
 // ?sInst@SoundDevice@@2PAV1@A (typed view; defined in g_entity_misc.cpp)
 SoundDeviceInst* SoundDevice_sInst = nullptr;  // ?SoundDevice_sInst (core.o)
 
-CameraShake* g_cameraShake = nullptr;
 // ea: 0x006C3500 (render.o)
 bool LightEffect::IsLightFinished()
 {
