@@ -74,6 +74,7 @@ static nullD3DTexture* gNullBackBuffer = NULL;
 static nullD3DSurface* gNullDepthBuffer = NULL;
 static IDirect3D9* gD3D9 = NULL;
 static IDirect3DDevice9* gD3D9Device = NULL;
+static HMODULE gD3D9SoftwareRasterizer = NULL;
 static bool gD3D9SceneActive = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
@@ -1045,6 +1046,28 @@ static HWND nullD3DCreateWindow(void) {
     return gD3D9Window;
 }
 
+static bool nullD3DRegisterSoftwareRasterizer(void) {
+    if (gD3D9 == NULL)
+        return false;
+
+    HMODULE Rasterizer = LoadLibraryA("rgb9rast.dll");
+    if (Rasterizer == NULL)
+        Rasterizer = LoadLibraryA("d3dref9.dll");
+    if (Rasterizer == NULL)
+        return false;
+
+    FARPROC Initialize = GetProcAddress(Rasterizer, "D3D9GetSWInfo");
+    if (Initialize == NULL || FAILED(gD3D9->RegisterSoftwareDevice((void*)Initialize))) {
+        FreeLibrary(Rasterizer);
+        return false;
+    }
+
+    // The registered callback belongs to the loaded module and must remain
+    // resident for the lifetime of the IDirect3D9 object.
+    gD3D9SoftwareRasterizer = Rasterizer;
+    return true;
+}
+
 static void nullD3DInitDeviceResources(void) {
     if (gNullFrontBuffer != NULL)
         return;
@@ -1905,6 +1928,12 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
                                                   &NativeParams, &gD3D9Device);
             if (FAILED(Result)) {
                 Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_HAL,
+                                             NativeParams.hDeviceWindow,
+                                             D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                             &NativeParams, &gD3D9Device);
+            }
+            if (FAILED(Result) && nullD3DRegisterSoftwareRasterizer()) {
+                Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_SW,
                                              NativeParams.hDeviceWindow,
                                              D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                                              &NativeParams, &gD3D9Device);
