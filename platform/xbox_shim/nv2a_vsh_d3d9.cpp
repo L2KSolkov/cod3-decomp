@@ -156,13 +156,21 @@ static std::string MacExpression(unsigned int opcode, const std::string& a,
     case 3: return "(" + a + " + " + c + ")";
     case 4: return "(" + a + " * " + b + " + " + c + ")";
     case 5: return BroadcastScalar("dot(" + a + ".xyz, " + b + ".xyz)");
-    case 6: return BroadcastScalar("dot(" + a + ".xyz, " + b + ".xyz) + " + c + ".w");
+    case 6: return BroadcastScalar("dot(float4(" + a + ".xyz, 1.0), " + b + ")");
     case 7: return BroadcastScalar("dot(" + a + ", " + b + ")");
     case 8: return "float4(1.0, " + a + ".y * " + b + ".y, " + a + ".z, " + b + ".w)";
     case 9: return "min(" + a + ", " + b + ")";
     case 10: return "max(" + a + ", " + b + ")";
-    case 11: return "(" + a + " < " + b + " ? 1.0 : 0.0)";
-    case 12: return "(" + a + " >= " + b + " ? 1.0 : 0.0)";
+    case 11:
+        return "float4(" + a + ".x < " + b + ".x ? 1.0 : 0.0, "
+             + a + ".y < " + b + ".y ? 1.0 : 0.0, "
+             + a + ".z < " + b + ".z ? 1.0 : 0.0, "
+             + a + ".w < " + b + ".w ? 1.0 : 0.0)";
+    case 12:
+        return "float4(" + a + ".x >= " + b + ".x ? 1.0 : 0.0, "
+             + a + ".y >= " + b + ".y ? 1.0 : 0.0, "
+             + a + ".z >= " + b + ".z ? 1.0 : 0.0, "
+             + a + ".w >= " + b + ".w ? 1.0 : 0.0)";
     case 13: return a;
     default: return std::string();
     }
@@ -211,13 +219,16 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     const std::string cIlu = InputCExact(token, IsIluScalar(ilu));
     const unsigned int outAddress = FieldValue(token, F_OUT_ADDRESS);
     const unsigned int outRegister = FieldValue(token, F_OUT_R);
-    const bool paired = mac != 0 && ilu != 0;
     const std::string macExpr = mac == 0 ? std::string() : MacExpression(mac, a, b, cMac);
     const std::string iluExpr = ilu == 0 ? std::string() : IluExpression(ilu, cIlu);
 
-    if (mac != 0 && FieldValue(token, F_OUT_MUX) == 0)
+    // Bit 11 selects the output register bank.  The alternate bank is the
+    // writable constant space; it is intentionally ignored here because D3D9
+    // shader constants are uploaded by the game and are not shader outputs.
+    const bool writesOutput = FieldValue(token, F_OUT_ORB) != 0;
+    if (writesOutput && mac != 0 && FieldValue(token, F_OUT_MUX) == 0)
         AppendWrite(source, macExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)));
-    if (ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
+    if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
         AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)));
 
     // The MAC and ILU destination masks are independent of the output mux.
@@ -254,8 +265,12 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << "  float4 v4=input.v4,v5=input.v5,v6=input.v6,v7=input.v7;\n"
            << "  float4 r0=0,r1=0,r2=0,r3=0,r4=0,r5=0,r6=0,r7=0;\n"
            << "  float4 r8=0,r9=0,r10=0,r11=0;\n"
-           << "  float4 r12=0; float4 oD0=0,oD1=0,oT0=0,oT1=0,oT2=0,oT3=0;\n"
-           << "  float4 oB0=0,oB1=0,oFog=0,oPts=1;\n";
+           << "  float4 r12=float4(0,0,0,1);\n"
+           << "  float4 oD0=float4(0,0,0,1),oD1=float4(0,0,0,1);\n"
+           << "  float4 oT0=float4(0,0,0,1),oT1=float4(0,0,0,1);\n"
+           << "  float4 oT2=float4(0,0,0,1),oT3=float4(0,0,0,1);\n"
+           << "  float4 oB0=float4(0,0,0,1),oB1=float4(0,0,0,1);\n"
+           << "  float4 oFog=float4(0,0,0,1),oPts=float4(0,0,0,1);\n";
     for (unsigned int i = 0; i < instructionCount; ++i)
         AppendInstruction(source, microcode + 1 + i * 4);
     source << "  output.oPos=r12; output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
