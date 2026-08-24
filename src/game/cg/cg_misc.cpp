@@ -6554,7 +6554,7 @@ void Camera::UpdateAnimation()
 
 float gSceneAnimCameraFOV;  // 0x00F258F0
 void* gSceneAnimCameraPO = nullptr;  // ?gSceneAnimCameraPO (anim.o @ 0x1314FB0)
-extern float dword_F63C60[4 * 1580];
+extern int dword_F63C60[4 * 1580];
 extern float dword_F63C8C[4 * 1580];
 extern float dword_F63C90[4 * 1580];
 extern float dword_F63C94[4 * 1580];
@@ -6587,7 +6587,7 @@ void Camera::UpdateSceneAnimCam()
     dword_F63C78[1580 * mClient] = out[14];
     AxisToAngles((const float(*)[3])&dword_F63C80[1580 * mClient],
                  &angle[1580 * mClient]);
-    dword_F63C60[1580 * mClient] = gSceneAnimCameraFOV;
+    dword_F63C60[1580 * mClient] = *(int*)&gSceneAnimCameraFOV;
     float origin[3] = {out[12], out[13], out[14]};
     Entity* Player =
         EntityManager::sInst->GetPlayer( mClient);

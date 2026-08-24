@@ -1432,8 +1432,8 @@ extern int dword_F64020[4 * 1580];
 extern float dword_F63BB0[4 * 1580];
 extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
-extern float dword_F63C60[4 * 1580];
-extern float dword_F63C64[4 * 1580];
+extern int dword_F63C60[4 * 1580];
+extern int dword_F63C64[4 * 1580];
 extern float dword_F63CF0[4 * 1580];
 extern int dword_F63CA8[4 * 1580];
 extern bool Entity_IsLocalPlayer(const Entity* ent);
@@ -2711,13 +2711,14 @@ int CG_CalcFov()
     dword_F63CA8[1580 * currCl] = v30;
     dword_F63C60[1580 * currCl] = *(int*)&y;
     dword_F63C64[1580 * currCl] = *(int*)&fov_y;
-    if (dword_F63C60[1580 * currCl] <= 0 || cg_fov.value <= 0.0f)
+    const float fovX = *(float*)&dword_F63C60[1580 * currCl];
+    if (fovX <= 0.0f || cg_fov.value <= 0.0f)
     {
         gZoomRatio = 1.0f;
     }
     else
     {
-        float v32 = dword_F63C60[1580 * currCl] / cg_fov.value;
+        float v32 = fovX / cg_fov.value;
         if (v32 < 1.0f)
             gZoomRatio = v32 * 0.75f;
         else

@@ -90,7 +90,7 @@ int CG_DrawSingleHudElem(void* elem)
 extern int compare_hudelems(const void* pe0, const void* pe1);
 int dword_F63CA4[4 * 1580];  // cg.o BSS
 int dword_F63CA8[4 * 1580];  // cg.o BSS
-float dword_F63C60[4 * 1580];  // cg.o BSS
+int dword_F63C60[4 * 1580];    // cg.o BSS
 float dword_F63C58[4 * 1580];  // cg.o BSS
 float dword_F63C5C[4 * 1580];  // cg.o BSS
 float dword_F63C8C[4 * 1580];  // cg.o BSS
@@ -100,7 +100,7 @@ float dword_F63CB4[4 * 1580];  // cg.o BSS
 int dword_F63BAC[4 * 1580];    // cg.o BSS
 int dword_F63BB4[4 * 1580];    // cg.o BSS
 int dword_F64018[4 * 1580];    // cg.o BSS
-float dword_F63C64[4 * 1580];  // cg.o BSS
+int dword_F63C64[4 * 1580];    // cg.o BSS
 float dword_F63C70[4 * 1580];  // cg.o BSS
 float dword_F63C74[4 * 1580];
 float dword_F63C78[4 * 1580];
@@ -301,8 +301,8 @@ extern int dword_F63554[4 * 1580];
 extern float dword_F63CF0[4 * 1580];
 extern int dword_F63CA4[4 * 1580];
 extern int dword_F63CA8[4 * 1580];
-extern float dword_F63C60[4 * 1580];
-extern float dword_F63C64[4 * 1580];
+extern int dword_F63C60[4 * 1580];
+extern int dword_F63C64[4 * 1580];
 extern float* dword_F63B8C[4 * 1580];
 int dword_F6403C[4 * 1580];  // cg.o BSS
 int dword_F64040[4 * 1580];  // cg.o BSS
@@ -433,8 +433,8 @@ extern float dword_F63C50[4 * 1580];
 extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
-extern float dword_F63C60[4 * 1580];
-extern float dword_F63C64[4 * 1580];
+extern int dword_F63C60[4 * 1580];
+extern int dword_F63C64[4 * 1580];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
@@ -462,8 +462,8 @@ static refdef_s* CG_BuildRenderRefdef(int client)
     fd->y = (int)dword_F63C54[index];
     fd->width = (int)dword_F63C58[index];
     fd->height = (int)dword_F63C5C[index];
-    fd->fov_x = dword_F63C60[index];
-    fd->fov_y = dword_F63C64[index];
+    fd->fov_x = *(float*)&dword_F63C60[index];
+    fd->fov_y = *(float*)&dword_F63C64[index];
     fd->vieworg.v = _mm_setr_ps(dword_F63C70[index],
                                 dword_F63C74[index],
                                 dword_F63C78[index], 0.0f);
@@ -1395,7 +1395,8 @@ void CG_DrawSkyBoxPortal()
                             v26 = 0.0f - v26;
                     }
                     dword_F63C60[1580 * currCl] = *(int*)&fogColor3;
-                    *(float*)&dword_F63C64[v2] = v26 * 114.59155f;
+                    float fovY = v26 * 114.59155f;
+                    dword_F63C64[v2] = *(int*)&fovY;
                     int v30 = dword_F63CA8[v2] | 0x18;
                     goto done;
                 }
