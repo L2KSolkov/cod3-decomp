@@ -1829,33 +1829,53 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
         return 0;
     DWORD Sampler = 0;
     DWORD NativeValue = Value;
+    COD3_D3D9_TEXTURESTAGESTATETYPE NativeStageState = COD3_D3D9_TSS_COLOROP;
     bool SamplerState = true;
-    switch (Type) {
-    case D3DTSS_ADDRESSU: Sampler = D3DSAMP_ADDRESSU; break;
-    case D3DTSS_ADDRESSV: Sampler = D3DSAMP_ADDRESSV; break;
-    case D3DTSS_ADDRESSW: Sampler = D3DSAMP_ADDRESSW; break;
-    case D3DTSS_MAGFILTER: Sampler = D3DSAMP_MAGFILTER; break;
-    case D3DTSS_MINFILTER: Sampler = D3DSAMP_MINFILTER; break;
-    case D3DTSS_MIPFILTER: Sampler = D3DSAMP_MIPFILTER; break;
-    case D3DTSS_MIPMAPLODBIAS: Sampler = D3DSAMP_MIPMAPLODBIAS; break;
-    case D3DTSS_MAXMIPLEVEL: Sampler = D3DSAMP_MAXMIPLEVEL; break;
-    case D3DTSS_MAXANISOTROPY: Sampler = D3DSAMP_MAXANISOTROPY; break;
-    case D3DTSS_COLOROP:
-    case D3DTSS_COLORARG1:
-    case D3DTSS_COLORARG2:
-    case D3DTSS_ALPHAOP:
-    case D3DTSS_ALPHAARG1:
-    case D3DTSS_ALPHAARG2:
+    // The callers use the Xbox enum in d3d8.h (ADDRESSU=0 through
+    // MAXANISOTROPY=8).  d3d9_compat.h remaps the names above to D3D9's
+    // texture-stage values while this file is compiled, so switching on the
+    // names silently dispatches Xbox 3/4/5 to unrelated D3D9 states.
+    switch ((unsigned int)Type) {
+    case 0u: Sampler = D3DSAMP_ADDRESSU; break;
+    case 1u: Sampler = D3DSAMP_ADDRESSV; break;
+    case 2u: Sampler = D3DSAMP_ADDRESSW; break;
+    case 3u: Sampler = D3DSAMP_MAGFILTER; break;
+    case 4u: Sampler = D3DSAMP_MINFILTER; break;
+    case 5u: Sampler = D3DSAMP_MIPFILTER; break;
+    case 6u: Sampler = D3DSAMP_MIPMAPLODBIAS; break;
+    case 7u: Sampler = D3DSAMP_MAXMIPLEVEL; break;
+    case 8u: Sampler = D3DSAMP_MAXANISOTROPY; break;
+    case 12u: // D3DTSS_DEFERRED_TEXTURE_STATE_MAX; no host state to emit.
+    case 9u:  // COLORKEYOP
+    case 10u: // COLORSIGN
+    case 11u: // ALPHAKILL
+        return 0;
+    case 16u: // ALPHAOP
         SamplerState = false;
+        NativeStageState = COD3_D3D9_TSS_ALPHAOP;
+        NativeValue = Value;
         break;
+    case 14u: // COLORARG1
+    case 15u: // COLORARG2
+    case 18u: // ALPHAARG1
+    case 19u: // ALPHAARG2
+        SamplerState = false;
+        NativeStageState = (Type == (_D3DTEXTURESTAGESTATETYPE)14u) ?
+            COD3_D3D9_TSS_COLORARG1 :
+            (Type == (_D3DTEXTURESTAGESTATETYPE)15u) ? COD3_D3D9_TSS_COLORARG2 :
+            (Type == (_D3DTEXTURESTAGESTATETYPE)18u) ? COD3_D3D9_TSS_ALPHAARG1 :
+            COD3_D3D9_TSS_ALPHAARG2;
+        NativeValue = Value;
+        break;
+    case 21u: // TEXTURETRANSFORMFLAGS; D3D9 has no sampler equivalent here.
+        return 0;
     default:
         return 0;
     }
     if (SamplerState)
         gD3D9Device->SetSamplerState(Stage, (D3DSAMPLERSTATETYPE)Sampler, NativeValue);
     else
-        gD3D9Device->SetTextureStageState(Stage, (COD3_D3D9_TEXTURESTAGESTATETYPE)Type,
-                                          NativeValue);
+        gD3D9Device->SetTextureStageState(Stage, NativeStageState, NativeValue);
     return 0;
 }
 void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
