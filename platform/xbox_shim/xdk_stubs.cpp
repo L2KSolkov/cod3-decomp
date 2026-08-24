@@ -279,8 +279,8 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x25: // SHORT2
         *Type = D3DDECLTYPE_SHORT2;
         return true;
-    case 0x31: // SHORT3N (Xbox packed 3-component normal)
-        *Type = D3DDECLTYPE_DEC3N;
+    case 0x31: // SHORT3N (three signed 16-bit normalized components)
+        *Type = D3DDECLTYPE_SHORT4N;
         return true;
     case 0x32: // FLOAT3
         *Type = D3DDECLTYPE_FLOAT3;
