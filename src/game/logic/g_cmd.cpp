@@ -2472,7 +2472,10 @@ PadAliasMgr* PadAliasMgr::CreateInst()
     void* memory = mem_heap_malloc_ctx(
         0x3D8u, 4, "core", "c:\\cod\\code\\game\\PadAliasMgr.h", 46);
     if (memory != nullptr)
+    {
+        memset(memory, 0, 0x3D8u);
         sInst = new (memory) PadAliasMgr();
+    }
     else
         sInst = nullptr;
     PadAliasMgr_sInst = sInst;
