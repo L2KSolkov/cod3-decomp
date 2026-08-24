@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
 
@@ -86,9 +87,6 @@ extern int iLastCompassTime_1;
 extern float lastChange[4];
 extern int lastVehPos[4];
 extern float color[4];
-struct vmCvar_t {
-    int integer;  // +0x00
-};
 struct View_Window {
     float XPos;    // +0x00
     float YPos;    // +0x04
@@ -350,11 +348,13 @@ float CG_GetViewFov()
     float fPosLerp = client->ps.fWeaponPosFrac;
     if (dword_F6355C[1580 * currCl] != 0 || client->ps.pm_type >= 6)
         fPosLerp = 0.0f;
-    float fViewFov = *(float*)&cg_fov;
-    if (*(float*)&cg_fov < 1.0f || *(float*)&cg_fov > 160.0f)
-        fViewFov = *(float*)&cg_fov;
+    float fViewFov = cg_fov.value;
+    if (cg_fov.value < 1.0f)
+        fViewFov = 1.0f;
+    else if (cg_fov.value > 160.0f)
+        fViewFov = 160.0f;
     if (client->ps.pm_type >= 6)
-        return *(float*)&cg_fov;
+        return cg_fov.value;
     bool vehicleBlocked = (client->ps.eFlags & 0x106000) != 0
                           && !BG_AllowPlayerWeaponAtVehiclePos(
                                  client->ps.vehType, client->ps.vehPos);
@@ -2651,7 +2651,7 @@ int CG_CalcFov()
              + *(float*)((char*)cam + 0x110);
         y = v4;
     }
-    float v5 = (v4 - 20.0f) / (*(float*)&cg_fov - 20.0f);
+    float v5 = (v4 - 20.0f) / (cg_fov.value - 20.0f);
     dword_F63CF0[1580 * currCl] = v5;
     if (v5 < 0.16f)
         dword_F63CF0[1580 * currCl] = 0.16f;
@@ -2711,13 +2711,13 @@ int CG_CalcFov()
     dword_F63CA8[1580 * currCl] = v30;
     dword_F63C60[1580 * currCl] = *(int*)&y;
     dword_F63C64[1580 * currCl] = *(int*)&fov_y;
-    if (dword_F63C60[1580 * currCl] <= 0 || *(float*)&cg_fov <= 0.0f)
+    if (dword_F63C60[1580 * currCl] <= 0 || cg_fov.value <= 0.0f)
     {
         gZoomRatio = 1.0f;
     }
     else
     {
-        float v32 = dword_F63C60[1580 * currCl] / *(float*)&cg_fov;
+        float v32 = dword_F63C60[1580 * currCl] / cg_fov.value;
         if (v32 < 1.0f)
             gZoomRatio = v32 * 0.75f;
         else

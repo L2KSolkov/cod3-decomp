@@ -4115,6 +4115,7 @@ int trap_R_RegisterShaderNoMip(const char* name, int imagetype)
 }
 // IDA's off_DF9208 points at the default field of this 170-row table.
 extern vmCvar_t fs_debug_vm;
+extern vmCvar_t cg_fov;
 static vmCvar_t s_cgCvarStorage[170];
 struct cgCvarTableEntry
 {
@@ -4654,6 +4655,7 @@ static void CG_InitCvarTable()
         s_cgCvarTable[i].cvarFlags = flags[i];
     }
     s_cgCvarTable[152].vmCvar = &fs_debug_vm;
+    s_cgCvarTable[3].vmCvar = &cg_fov;
     extern vmCvar_t cg_viewsize;
     extern vmCvar_t cg_letterbox;
     s_cgCvarTable[4].vmCvar = &cg_viewsize;
