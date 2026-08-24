@@ -1067,9 +1067,9 @@ LABEL_27:
 // traceWork_t + TestBoxInBrush - ea: 0x61CD30 (CollisionMgr.cpp)
 // ============================================================================
 struct traceWork_t {
-    math::Position3 bounds[2];     // +0x00
-    math::Position3 end;           // +0x20
-    math::Position3 start;         // +0x30
+    math::Position3 start;         // +0x00
+    math::Position3 end;           // +0x10
+    math::Position3 bounds[2];     // +0x20
     math::Position3 size[2];       // +0x40 (mins/maxs for TempBoxModel)
     math::Position3 offsets[8];    // +0x60
     math::Dir3 delta;              // +0xE0
