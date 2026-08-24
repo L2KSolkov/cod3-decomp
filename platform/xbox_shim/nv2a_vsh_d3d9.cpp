@@ -302,7 +302,14 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << "  float4 oFog=float4(0,0,0,1),oPts=float4(0,0,0,1);\n";
     for (unsigned int i = 0; i < instructionCount; ++i)
         AppendInstruction(source, microcode + 1 + i * 4);
-    source << "  output.oPos=r12; output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
+    // NV2A vertex programs perform the homogeneous divide themselves: the
+    // position is built in clip space with four DP4s, RCC produces 1/w, and a
+    // final MUL scales oPos.xyz by it.  The hardware then applies only the
+    // viewport scale/offset - it never divides again.  D3D9 instead expects
+    // POSITION in clip space and divides by w itself, so the already-divided
+    // xyz must be scaled back up by w or every vertex collapses toward the
+    // origin.  Keeping w intact preserves perspective-correct interpolation.
+    source << "  output.oPos=float4(r12.xyz*r12.w, r12.w); output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
            << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
            << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
     return source.str();
