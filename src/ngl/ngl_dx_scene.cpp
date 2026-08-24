@@ -396,9 +396,9 @@ void nglDxSetupScene(nglScene* Scene) {
         unsigned int ClearStencil = Scene->ClearStencil;
         unsigned int clearColor = 0;
         __m128 cc = _mm_mul_ps(Scene->ClearColor.v, _mm_set1_ps(255.0f));
-        clearColor = ((unsigned int)cc.m128_f32[0] & 0xFF)
+        clearColor = ((unsigned int)cc.m128_f32[2] & 0xFF)
                    | (((unsigned int)cc.m128_f32[1] & 0xFF) << 8)
-                   | (((unsigned int)cc.m128_f32[2] & 0xFF) << 16)
+                   | (((unsigned int)cc.m128_f32[0] & 0xFF) << 16)
                    | (((unsigned int)cc.m128_f32[3] & 0xFF) << 24);
         D3DDevice_Clear(0, 0, Scene->ClearFlags, clearColor, v10, ClearStencil);
     }
