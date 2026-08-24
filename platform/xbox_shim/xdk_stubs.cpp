@@ -1210,8 +1210,17 @@ void __stdcall D3DDevice_BlockUntilIdle(void) {}
 void __stdcall D3DDevice_Clear(unsigned int Count, const _D3DRECT* pRects,
                                unsigned int ClearFlags, unsigned int Color,
                                float Z, unsigned int Stencil) {
-    if (gD3D9Device == NULL)
+    if (gD3D9Device == NULL) {
+        nullD3DInitDeviceResources();
+        if ((ClearFlags & 0xF0u) != 0 && gNullBackBuffer != NULL &&
+            gNullBackBuffer->Info.Bits != NULL) {
+            unsigned int* Pixels = (unsigned int*)gNullBackBuffer->Info.Bits;
+            unsigned int CountPixels = gNullBackBuffer->Info.SizeBytes / sizeof(unsigned int);
+            for (unsigned int i = 0; i < CountPixels; ++i)
+                Pixels[i] = Color;
+        }
         return;
+    }
     DWORD Flags = 0;
     // Xbox D3DCLEAR_TARGET is 0xF0; ZBUFFER and STENCIL retain bits 0 and 1.
     if ((ClearFlags & 0xF0u) != 0 && gD3D9RenderTarget != NULL)
@@ -1428,16 +1437,157 @@ static void nullD3DSetFixedFunctionFVF(DWORD FVF, bool FontPacket = false) {
     }
 }
 
-static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
-    if (gD3D9Device == NULL || Begin == NULL || End == NULL || End <= Begin + 2)
+static unsigned int nullD3DReadTexturePixel(const nullD3DInfo* Texture,
+                                            unsigned int X, unsigned int Y) {
+    if (Texture == NULL || Texture->Bits == NULL || Texture->Width == 0 ||
+        Texture->Height == 0)
+        return 0xFFFFFFFFu;
+    if (X >= Texture->Width) X = Texture->Width - 1;
+    if (Y >= Texture->Height) Y = Texture->Height - 1;
+    const unsigned int Offset = Y * Texture->Width + X;
+    switch (Texture->Format) {
+    case D3DFMT_A8:
+        return 0x00FFFFFFu | ((unsigned int)Texture->Bits[Offset] << 24);
+    case D3DFMT_LIN_A8R8G8B8:
+    case D3DFMT_LIN_X8R8G8B8:
+    case D3DFMT_A8R8G8B8:
+    case D3DFMT_X8R8G8B8:
+        return ((const unsigned int*)Texture->Bits)[Offset];
+    default:
+        return 0xFFFFFFFFu;
+    }
+}
+
+static unsigned int nullD3DModulateColor(unsigned int Color,
+                                          unsigned int TextureColor) {
+    const unsigned int Ar = (Color >> 24) & 0xFFu;
+    const unsigned int Ag = (Color >> 16) & 0xFFu;
+    const unsigned int Ab = (Color >> 8) & 0xFFu;
+    const unsigned int Aa = Color & 0xFFu;
+    const unsigned int Tr = (TextureColor >> 16) & 0xFFu;
+    const unsigned int Tg = (TextureColor >> 8) & 0xFFu;
+    const unsigned int Tb = TextureColor & 0xFFu;
+    const unsigned int Ta = (TextureColor >> 24) & 0xFFu;
+    return ((Ar * Tr / 255u) << 16) | ((Ag * Tg / 255u) << 8) |
+           (Ab * Tb / 255u) | ((Aa * Ta / 255u) << 24);
+}
+
+static unsigned int nullD3DCompositePixel(unsigned int Destination,
+                                           unsigned int Source) {
+    const unsigned int SourceAlpha = (Source >> 24) & 0xFFu;
+    if (SourceAlpha == 0)
+        return Destination;
+    if (SourceAlpha == 255)
+        return Source;
+    const unsigned int DestinationAlpha = (Destination >> 24) & 0xFFu;
+    const unsigned int InverseAlpha = 255u - SourceAlpha;
+    const unsigned int Sr = (Source >> 16) & 0xFFu;
+    const unsigned int Sg = (Source >> 8) & 0xFFu;
+    const unsigned int Sb = Source & 0xFFu;
+    const unsigned int Dr = (Destination >> 16) & 0xFFu;
+    const unsigned int Dg = (Destination >> 8) & 0xFFu;
+    const unsigned int Db = Destination & 0xFFu;
+    const unsigned int Da = SourceAlpha + DestinationAlpha * InverseAlpha / 255u;
+    return ((Da & 0xFFu) << 24) |
+           (((Sr * SourceAlpha + Dr * InverseAlpha) / 255u) << 16) |
+           (((Sg * SourceAlpha + Dg * InverseAlpha) / 255u) << 8) |
+           ((Sb * SourceAlpha + Db * InverseAlpha) / 255u);
+}
+
+static void nullD3DDrawCpuQuad(const unsigned int* Vertices,
+                               unsigned int StrideDwords,
+                               unsigned int UIndex, bool HasColor) {
+    if (gNullBackBuffer == NULL || Vertices == NULL)
         return;
+    float MinX = *(const float*)&Vertices[0];
+    float MaxX = MinX;
+    float MinY = *(const float*)&Vertices[1];
+    float MaxY = MinY;
+    float MinU = *(const float*)&Vertices[UIndex];
+    float MaxU = MinU;
+    float MinV = *(const float*)&Vertices[UIndex + 1];
+    float MaxV = MinV;
+    for (unsigned int i = 1; i < 4; ++i) {
+        const unsigned int* Vertex = Vertices + i * StrideDwords;
+        const float X = *(const float*)&Vertex[0];
+        const float Y = *(const float*)&Vertex[1];
+        const float U = *(const float*)&Vertex[UIndex];
+        const float V = *(const float*)&Vertex[UIndex + 1];
+        if (X < MinX) MinX = X;
+        if (X > MaxX) MaxX = X;
+        if (Y < MinY) MinY = Y;
+        if (Y > MaxY) MaxY = Y;
+        if (U < MinU) MinU = U;
+        if (U > MaxU) MaxU = U;
+        if (V < MinV) MinV = V;
+        if (V > MaxV) MaxV = V;
+    }
+    int X0 = (int)MinX;
+    int X1 = (int)MaxX;
+    int Y0 = (int)MinY;
+    int Y1 = (int)MaxY;
+    if (X0 < 0) X0 = 0;
+    if (Y0 < 0) Y0 = 0;
+    if (X1 > (int)gNullWidth) X1 = (int)gNullWidth;
+    if (Y1 > (int)gNullHeight) Y1 = (int)gNullHeight;
+    if (X0 >= X1 || Y0 >= Y1)
+        return;
+    const unsigned int Color = HasColor ? Vertices[3] : 0xFFFFFFFFu;
+    nullD3DInfo* Texture = nullD3DTextureInfo(gNullBoundTextures[0]);
+    const float Width = MaxX - MinX;
+    const float Height = MaxY - MinY;
+    for (int Y = Y0; Y < Y1; ++Y) {
+        for (int X = X0; X < X1; ++X) {
+            const float S = Width != 0.0f ? ((float)X + 0.5f - MinX) / Width : 0.0f;
+            const float T = Height != 0.0f ? ((float)Y + 0.5f - MinY) / Height : 0.0f;
+            unsigned int U = (unsigned int)((MinU + (MaxU - MinU) * S) *
+                                             (Texture != NULL ? Texture->Width : 1));
+            unsigned int V = (unsigned int)((MinV + (MaxV - MinV) * T) *
+                                             (Texture != NULL ? Texture->Height : 1));
+            unsigned int Source = nullD3DReadTexturePixel(Texture, U, V);
+            if (HasColor)
+                Source = nullD3DModulateColor(Color, Source);
+            unsigned int* Destination = (unsigned int*)gNullBackBuffer->Info.Bits +
+                                         Y * gNullWidth + X;
+            *Destination = nullD3DCompositePixel(*Destination, Source);
+        }
+    }
+}
+
+static void nullD3DPresentCpu(void) {
+    if (gD3D9Window == NULL || gNullBackBuffer == NULL ||
+        gNullBackBuffer->Info.Bits == NULL)
+        return;
+    BITMAPINFO BitmapInfo = {};
+    BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
+    BitmapInfo.bmiHeader.biWidth = (LONG)gNullWidth;
+    BitmapInfo.bmiHeader.biHeight = -(LONG)gNullHeight;
+    BitmapInfo.bmiHeader.biPlanes = 1;
+    BitmapInfo.bmiHeader.biBitCount = 32;
+    BitmapInfo.bmiHeader.biCompression = BI_RGB;
+    HDC Context = GetDC(gD3D9Window);
+    if (Context != NULL) {
+        StretchDIBits(Context, 0, 0, (int)gNullWidth, (int)gNullHeight,
+                      0, 0, (int)gNullWidth, (int)gNullHeight,
+                      gNullBackBuffer->Info.Bits, &BitmapInfo,
+                      DIB_RGB_COLORS, SRCCOPY);
+        ReleaseDC(gD3D9Window, Context);
+    }
+}
+
+static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
+    if (Begin == NULL || End == NULL || End <= Begin + 2)
+        return;
+    if (gD3D9Device == NULL)
+        nullD3DInitDeviceResources();
 
     // nglRenderQuad emits one 4-vertex PCUV packet.  The packet layout is
     // the same layout used by nglStringNode::Render for each font glyph.
     const unsigned int* Cursor = Begin;
     if (Cursor[1] != 8)
         return;
-    nullD3DSetScreenSpaceTransform();
+    if (gD3D9Device != NULL)
+        nullD3DSetScreenSpaceTransform();
 
     if (Cursor + 3 < End && Cursor[2] == 0x40601818u) {
         const unsigned int* Vertices = Cursor + 3;
@@ -1446,9 +1596,13 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
             nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 6);
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
-            nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
-                                         NormalizedVertices, 24);
+            if (gD3D9Device != NULL) {
+                nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+                gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                             NormalizedVertices, 24);
+            } else {
+                nullD3DDrawCpuQuad(NormalizedVertices, 6, 4, true);
+            }
         }
         return;
     }
@@ -1462,9 +1616,13 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
             nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 5);
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 5, 3);
-            nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
-                                         NormalizedVertices, 20);
+            if (gD3D9Device != NULL) {
+                nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+                gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                             NormalizedVertices, 20);
+            } else {
+                nullD3DDrawCpuQuad(NormalizedVertices, 5, 3, false);
+            }
         }
         return;
     }
@@ -1473,7 +1631,8 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
     // sequence of PCUV glyph quads.  The count encoded by each command is
     // the number of DWORDs in its following vertex array.
     Cursor += 2;
-    nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, true);
+    if (gD3D9Device != NULL)
+        nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, true);
     while (Cursor + 1 < End) {
         unsigned int Command = *Cursor++;
         if (Command == 0 && *Cursor == 0)
@@ -1491,8 +1650,12 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
             memcpy(NormalizedVertices, Cursor + Offset, sizeof(NormalizedVertices));
             nullD3DNormalizeScreenDepth(NormalizedVertices, 4, 6);
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
-            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
-                                         NormalizedVertices, 24);
+            if (gD3D9Device != NULL) {
+                gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                             NormalizedVertices, 24);
+            } else {
+                nullD3DDrawCpuQuad(NormalizedVertices, 6, 4, true);
+            }
         }
         Cursor += DwordCount;
     }
@@ -1596,18 +1759,18 @@ void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture)
     if (Stage >= 4)
         return;
     gNullBoundTextures[Stage] = Texture;
+    nullD3DInfo* Info = nullD3DTextureInfo(Texture);
+    gNullTextureWidths[Stage] = Info != NULL ? Info->Width : 0;
+    gNullTextureHeights[Stage] = Info != NULL ? Info->Height : 0;
     if (gD3D9Device == NULL)
         return;
     IDirect3DBaseTexture9* NativeTexture = NULL;
-    nullD3DInfo* Info = nullD3DTextureInfo(Texture);
     nullD3DExternalTexture* External = nullD3DFindExternalTexture(Texture);
     if (External != NULL)
         nullD3DCreateExternalNative(&External->Info, External->PackedSize,
                                     External->PackedFormat);
     if (Info != NULL)
         NativeTexture = Info->NativeTexture;
-    gNullTextureWidths[Stage] = Info != NULL ? Info->Width : 0;
-    gNullTextureHeights[Stage] = Info != NULL ? Info->Height : 0;
     gD3D9Device->SetTexture(Stage, NativeTexture);
     nullD3DReuploadPaletteTexture(Stage);
 }
@@ -1695,6 +1858,8 @@ void __stdcall D3DDevice_Swap(unsigned int) {
             SwapchainBackBuffer->Release();
         }
         gD3D9Device->Present(NULL, NULL, NULL, NULL);
+    } else {
+        nullD3DPresentCpu();
     }
     // The Xbox title receives its input/window servicing from the platform
     // shell.  The Win32 presentation boundary must drain the host queue so
