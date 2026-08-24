@@ -2362,7 +2362,11 @@ void FEMultiLineText::SetTextNoLocalize(const char* s)
             strncpy(token, &v4[v3], v10);
             token[v10] = 0;
             v3 += (int)v10 + 1;
-            lines[v20].Set(token, font, scale.x, button_scale);
+            // v20 is a byte offset, not an element index: the release does
+            // `add ecx, edi` against lines with edi stepping by 0x20, and
+            // MultiLineString is 32 bytes.  Indexing a MultiLineString* by
+            // it directly scales a second time and walks off the array.
+            lines[v20 / 0x20].Set(token, font, scale.x, button_scale);
             ++j;
             v20 += 32;
             if (j >= line_num)
