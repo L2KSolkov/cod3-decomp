@@ -85,7 +85,23 @@ extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);
-extern struct gitem_s bg_itemlist[];  // gitem_s[138], IDA global size 0x1C08
+// IDA gitem_s layout: 0x34-byte records at bg_itemlist (0xF51EC0).
+struct gitem_s
+{
+    unsigned int classname_hash;
+    char* classname;
+    char* pickup_sound;
+    char* world_model[2];
+    char* icon;
+    char* ammoicon;
+    char* pickup_name;
+    int quantity;
+    int giType;
+    int giTag;
+    int giAmmoIndex;
+    int giClipIndex;
+};
+extern struct gitem_s bg_itemlist[];
 itemInfo_t cg_items[256];             // ?cg_items@@3PAUitemInfo_t@@A (cg.o)
 weaponInfo_s cg_weapons[92];          // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern void* cgCvarTable;      // cvarTable_t[170]
@@ -391,13 +407,13 @@ void CG_RegisterItemVisuals(int itemNum)
     unsigned char* item = &((unsigned char*)cg_items)[8 * itemNum];
     if (item[0] == 0)
     {
-        unsigned int* gitem = &((unsigned int*)bg_itemlist)[13 * itemNum];
-        const char* icon = *(const char**)gitem;
+        gitem_s* gitem = &bg_itemlist[itemNum];
+        const char* icon = gitem->icon;
         item[0] = 0;
         if (icon != nullptr)
             *(void**)(item + 4) = GetTextureData(icon, 5, "mp_frontEnd");
-        if (gitem[4] == 1 /* IT_WEAPON */)
-            CG_RegisterWeapon(gitem[5]);
+        if (gitem->giType == 1 /* IT_WEAPON */)
+            CG_RegisterWeapon(gitem->giTag);
         item[0] = 1;
     }
 }
@@ -408,23 +424,23 @@ int CG_RegisterItems()
     char items[260];
     strcpy(items, CL_GetConfigString(8));
     unsigned char* v1 = &((unsigned char*)cg_items)[8];
-    unsigned int* p_icon = &((unsigned int*)bg_itemlist)[13];
+    gitem_s* p_item = &bg_itemlist[1];
     for (int v0 = 1; v0 < 137; ++v0)
     {
         int v3 = items[v0 / 4];
         int v4 = v3 > 57 ? v3 - 87 : v3 - 48;
         if (((1 << (v0 & 3)) & v4) != 0 && v1[0] == 0)
         {
-            const char* v5 = *(const char**)p_icon;
+            const char* v5 = p_item->icon;
             v1[0] = 0;
             if (v5 != nullptr)
                 *(void**)(v1 + 4) = GetTextureData(v5, 5, "mp_frontEnd");
-            if (p_icon[4] == 1)
-                CG_RegisterWeapon(p_icon[5]);
+            if (p_item->giType == 1 /* IT_WEAPON */)
+                CG_RegisterWeapon(p_item->giTag);
             v1[0] = 1;
         }
         v1 += 8;
-        p_icon += 13;
+        ++p_item;
     }
     return 137;
 }
