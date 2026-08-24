@@ -33,9 +33,10 @@ int dword_DF91F4;
 struct cgs_t {
     int state;       // +0x00 (kLocalPlayerStateUnused = 0)
     int controller;  // +0x04
+    unsigned char _data[0xC80];
 };
 enum { kLocalPlayerStateUnused = 0 };
-cgs_t* cgs = nullptr;  // ?cgs@@3PAUcgs_t@@A (cg.o @ 0x13596D8)
+cgs_t cgs[2] = {};  // ?cgs@@3PAUcgs_t@@A (cg.o @ 0x13596D8)
 
 // ea: 0x00693BC0
 bool View_compare_controller_sort(const cgs_t* elem1, const cgs_t* elem2)
