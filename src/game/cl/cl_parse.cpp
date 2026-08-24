@@ -732,7 +732,10 @@ void CL_ParseCommandString(msg_t* msg)
 // ea: 0x532D50
 void CL_ParseGamestate(Broc::string* configstrings)
 {
-    ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_parse.cpp", 257);
+    if (com_cl_running->integer == 0)
+    {
+        ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_parse.cpp", 257);
+    }
     if (cgvm != nullptr)
         VM_Call(cgvm, 21, com_time);
     int* p_rendererStarted = (int*)&cls_configstrings[0].mBlock;
