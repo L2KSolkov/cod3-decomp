@@ -273,9 +273,32 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
         AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)), iluScalar);
 }
 
+static const unsigned int* ResolveProgram(const unsigned int* microcode) {
+    if (microcode == nullptr)
+        return nullptr;
+    if ((microcode[0] & 0xffffu) == 0x2078u)
+        return microcode;
+    const unsigned int* indirect = reinterpret_cast<const unsigned int*>(
+        (uintptr_t)(*(const unsigned long*)microcode));
+    return indirect != nullptr && (indirect[0] & 0xffffu) == 0x2078u
+        ? indirect : nullptr;
+}
+
+static bool ProgramUsesHomogeneousDivide(const unsigned int* microcode) {
+    if (microcode == nullptr)
+        return false;
+    const unsigned int instructionCount = microcode[0] >> 16;
+    for (unsigned int i = 0; i < instructionCount; ++i) {
+        if (FieldValue(microcode + 1 + i * 4, F_ILU) == 3)
+            return true;
+    }
+    return false;
+}
+
 static std::string BuildHlsl(const unsigned int* microcode) {
     const unsigned int header = microcode[0];
     const unsigned int instructionCount = header >> 16;
+    const bool usesHomogeneousDivide = ProgramUsesHomogeneousDivide(microcode);
     if ((header & 0xffffu) != 0x2078u || instructionCount == 0 || instructionCount > 136)
         return std::string();
 
@@ -302,16 +325,15 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << "  float4 oFog=float4(0,0,0,1),oPts=float4(0,0,0,1);\n";
     for (unsigned int i = 0; i < instructionCount; ++i)
         AppendInstruction(source, microcode + 1 + i * 4);
-    // NV2A vertex programs perform the homogeneous divide themselves: the
-    // position is built in clip space with four DP4s, RCC produces 1/w, and a
-    // final MUL scales oPos.xyz by it.  The hardware then applies only the
-    // viewport scale/offset - it never divides again.  D3D9 instead expects
-    // POSITION in clip space and divides by w itself, so the already-divided
-    // xyz must be scaled back up by w or every vertex collapses toward the
-    // origin.  Keeping w intact preserves perspective-correct interpolation.
-    source << "  output.oPos=float4(r12.xyz*r12.w, r12.w); output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
-           << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
-           << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
+    if (usesHomogeneousDivide)
+        source << "  float3 ndc=float3((r12.x-c[191].x)*c[191].z,(r12.y-c[191].y)*c[191].w,r12.z*1.00195694);"
+               << " output.oPos=float4(ndc*r12.w,r12.w); output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
+               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
+               << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
+    else
+        source << "  output.oPos=r12; output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
+               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
+               << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
     return source.str();
 }
 
@@ -341,17 +363,9 @@ IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
     IDirect3DDevice9* device, const unsigned int* microcode) {
     if (device == nullptr || microcode == nullptr)
         return nullptr;
-    const unsigned int* program = microcode;
-    const unsigned int header = program[0];
-    if ((header & 0xffffu) != 0x2078u) {
-        // A few existing Xbox call sites pass &Shader, where Shader is the
-        // registered token pointer. Resolve that ABI form before decoding.
-        const unsigned int* indirect = reinterpret_cast<const unsigned int*>(
-            (uintptr_t)(*(const unsigned long*)microcode));
-        if (indirect == nullptr || (indirect[0] & 0xffffu) != 0x2078u)
-            return nullptr;
-        program = indirect;
-    }
+    const unsigned int* program = ResolveProgram(microcode);
+    if (program == nullptr)
+        return nullptr;
     static std::map<const unsigned int*, IDirect3DVertexShader9*> cache;
     const auto found = cache.find(program);
     if (found != cache.end())
@@ -384,4 +398,9 @@ IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
     if (shader != nullptr)
         cache[program] = shader;
     return shader;
+}
+
+bool nullD3DProgramUsesHomogeneousDivide(const unsigned int* microcode) {
+    const unsigned int* program = ResolveProgram(microcode);
+    return program != nullptr && ProgramUsesHomogeneousDivide(program);
 }

@@ -8,3 +8,5 @@ struct IDirect3DVertexShader9;
 // device is alive.  A null result means the token stream is unsupported.
 IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
     IDirect3DDevice9* device, const unsigned int* microcode);
+
+bool nullD3DProgramUsesHomogeneousDivide(const unsigned int* microcode);

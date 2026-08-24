@@ -77,6 +77,7 @@ static IDirect3D9* gD3D9 = NULL;
 static IDirect3DDevice9* gD3D9Device = NULL;
 static HMODULE gD3D9SoftwareRasterizer = NULL;
 static bool gD3D9SceneActive = false;
+static bool gD3D9ShaderNeedsViewportInverse = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
 static IDirect3DVertexDeclaration9* gD3D9VertexDeclaration = NULL;
@@ -398,6 +399,29 @@ static void nullD3DSetShaderMatrixTransform() {
     gD3D9Device->SetTransform(D3DTS_VIEW, &Identity);
     gD3D9Device->SetTransform(D3DTS_PROJECTION, &Projection);
     gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+}
+
+static void nullD3DSetNV2AViewportConstants() {
+    if (!gD3D9ShaderNeedsViewportInverse || gD3D9Device == NULL)
+        return;
+    D3DVIEWPORT9 viewport = {};
+    if (FAILED(gD3D9Device->GetViewport(&viewport))) {
+        viewport.Width = gNullWidth;
+        viewport.Height = gNullHeight;
+    }
+    const float width = viewport.Width != 0 ? (float)viewport.Width
+                                            : (float)gNullWidth;
+    const float height = viewport.Height != 0 ? (float)viewport.Height
+                                              : (float)gNullHeight;
+    // DeviceXBox uses FSAA scale 1,1 for the active screen target and the
+    // verified Xbox half-pixel offset 0.53125 on the X/Y translation rows.
+    const float inverseViewport[4] = {
+        0.53125f + width * 0.5f,
+        0.53125f + height * 0.5f,
+        2.0f / width,
+        2.0f / height,
+    };
+    D3DDevice_SetVertexShaderConstant1Fast(191, inverseViewport);
 }
 
 static void nullD3DSyncVertexBuffer(IDirect3DVertexBuffer9* Native, nullD3DInfo* Info) {
@@ -1375,6 +1399,7 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
                 MaxIndex = IndexData[i];
         }
         nullD3DSetShaderMatrixTransform();
+        nullD3DSetNV2AViewportConstants();
         gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
         const void* VertexData = gD3D9VertexData[0] + gD3D9VertexOffsets[0];
         gD3D9Device->DrawIndexedPrimitiveUP(
@@ -1415,6 +1440,7 @@ void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
     nullD3DSetShaderMatrixTransform();
+    nullD3DSetNV2AViewportConstants();
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     if (gD3D9VertexBuffers[0] == NULL || gD3D9VertexInfos[0] == NULL) {
         if (gD3D9VertexData[0] == NULL || gD3D9VertexStrides[0] == 0)
@@ -1673,6 +1699,7 @@ unsigned int __stdcall D3DDevice_InsertFence(void) { return ++gNullFence; }
 void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int* Microcode, unsigned int) {
     if (gD3D9Device == NULL)
         return;
+    gD3D9ShaderNeedsViewportInverse = nullD3DProgramUsesHomogeneousDivide(Microcode);
     IDirect3DVertexShader9* shader = nullD3DCompileNV2AVertexShader(gD3D9Device, Microcode);
     gD3D9Device->SetVertexShader(shader);
 }
@@ -1814,6 +1841,8 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
 void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
     if (gD3D9Device == NULL)
         return;
+    if (Handle == 0)
+        gD3D9ShaderNeedsViewportInverse = false;
     gD3D9Device->SetVertexShader(reinterpret_cast<IDirect3DVertexShader9*>(Handle));
 }
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
