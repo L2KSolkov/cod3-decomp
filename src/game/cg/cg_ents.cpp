@@ -890,7 +890,7 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
 
 extern weaponInfo_s cg_weapons[];
 extern itemInfo_t cg_items[];
-extern struct gitem_s* bg_itemlist;
+extern struct gitem_s bg_itemlist[];
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const float* const angles,
                          float (*const axis)[3]);

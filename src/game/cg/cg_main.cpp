@@ -85,7 +85,7 @@ extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);
-extern struct gitem_s* bg_itemlist;  // gitem_s[]
+extern struct gitem_s bg_itemlist[];  // gitem_s[138], IDA global size 0x1C08
 itemInfo_t cg_items[256];             // ?cg_items@@3PAUitemInfo_t@@A (cg.o)
 weaponInfo_s cg_weapons[92];          // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern void* cgCvarTable;      // cvarTable_t[170]

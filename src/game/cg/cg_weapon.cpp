@@ -128,7 +128,7 @@ extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);
 extern char* va(const char* fmt, ...);
 extern const char* SEH_StringEd_GetString(const char* pszReference);
-extern struct gitem_s* bg_itemlist;
+extern struct gitem_s bg_itemlist[];
 extern void CG_RegisterItemVisuals(int itemNum);
 extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
