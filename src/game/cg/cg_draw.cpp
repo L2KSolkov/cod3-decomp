@@ -49,7 +49,20 @@ extern void trap_R_Text_Paint(float x, float y, int font, float scale,
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, nglTexture* tex,
                                   float z);
-struct refdef_s;
+struct refdef_s {
+    int x;
+    int y;
+    int width;
+    int height;
+    float fov_x;
+    float fov_y;
+    unsigned char _pad[0x20 - 0x18];
+    math::Position3 vieworg;
+    float viewaxis[3][3];
+    unsigned char _pad2[0x54 - 0x3C];
+    int time;
+    int rdflags;
+};
 extern void trap_R_RenderScene(const refdef_s* fd);
 struct View_Window;
 namespace View {
@@ -416,6 +429,18 @@ extern void InspectorManager_Render(void* self);
 class InspectorManager;
 extern InspectorManager g_inspectorManager;
 int dword_F62964[4 * 1580];  // cg.o BSS
+extern float dword_F63C50[4 * 1580];
+extern float dword_F63C54[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
+extern float dword_F63C60[4 * 1580];
+extern float dword_F63C64[4 * 1580];
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern float dword_F63C80[4 * 1580];
+extern int dword_F63CA4[4 * 1580];
+extern int dword_F63CA8[4 * 1580];
 extern void CheckAndRunOverHeatBlur();
 extern void trap_R_ClearScene();
 extern float angle[4 * 395];
@@ -425,6 +450,28 @@ extern float dword_F63C88[4 * 1580];
 float dword_F63C98[4 * 1580];  // cg.o BSS
 float dword_F63C9C[4 * 1580];  // cg.o BSS
 float dword_F63CA0[4 * 1580];  // cg.o BSS
+
+static refdef_s s_renderRefdef[4];
+
+static refdef_s* CG_BuildRenderRefdef(int client)
+{
+    const int index = 1580 * client;
+    refdef_s* fd = &s_renderRefdef[client];
+    memset(fd, 0, sizeof(*fd));
+    fd->x = (int)dword_F63C50[index];
+    fd->y = (int)dword_F63C54[index];
+    fd->width = (int)dword_F63C58[index];
+    fd->height = (int)dword_F63C5C[index];
+    fd->fov_x = dword_F63C60[index];
+    fd->fov_y = dword_F63C64[index];
+    fd->vieworg.v = _mm_setr_ps(dword_F63C70[index],
+                                dword_F63C74[index],
+                                dword_F63C78[index], 0.0f);
+    memcpy(fd->viewaxis, &dword_F63C80[index], sizeof(fd->viewaxis));
+    fd->time = dword_F63CA4[index];
+    fd->rdflags = dword_F63CA8[index];
+    return fd;
+}
 
 
 // ea: 0x00687CB0
@@ -1203,7 +1250,7 @@ void CG_DrawSkyBoxPortal()
                 int time = cgGlobal_time;
                 dword_F63CA8[v2] = v30;
                 dword_F63CA4[v2] = time;
-                trap_R_RenderScene(reinterpret_cast<const refdef_s*>(&dword_F63C50[v2]));
+                trap_R_RenderScene(CG_BuildRenderRefdef(currCl));
                 memcpy(&dword_F63C50[1580 * currCl], v32, 96);
                 return;
             }
@@ -1752,7 +1799,7 @@ void CG_DrawActive(float a1)
         dword_F63CA8[1580 * currCl] = v2;
         if (v3)
             dword_F63CA8[v1] = v2 & 0xFFFFFFEF;
-        trap_R_RenderScene(reinterpret_cast<const refdef_s*>(&dword_F63C50[v1]));
+        trap_R_RenderScene(CG_BuildRenderRefdef(currCl));
         CG_DrawShellShockSavedScreenBlend(
             (void*)dword_F64164[1580 * currCl],
             dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);
