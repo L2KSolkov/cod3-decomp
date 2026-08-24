@@ -11,6 +11,15 @@
 #include "core/mem_heap.h"
 #include "core/tlFixedString.h"
 #include "input/controller.h"
+#define D3DDevice_SetIndices cod3_d3d8_SetIndices_decl
+#define D3DDevice_SetPixelShaderProgram cod3_d3d8_SetPixelShaderProgram_decl
+#define D3DDevice_SetVertexShader cod3_d3d8_SetVertexShader_decl
+#define D3DDevice_SetVertexShaderInputDirect cod3_d3d8_SetVertexShaderInputDirect_decl
+#include "d3d8.h"
+#undef D3DDevice_SetIndices
+#undef D3DDevice_SetPixelShaderProgram
+#undef D3DDevice_SetVertexShader
+#undef D3DDevice_SetVertexShaderInputDirect
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -3153,7 +3162,17 @@ void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* wi)
 }
 void GetPakPrerequisites(TPakId a, void* b) { (void)a; (void)b; }
 void GlowCallback(void* a) { (void)a; }
-void gpuSetVertexShader(const unsigned int* a) { (void)a; }
+extern unsigned int gpuHashVertexShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+void gpuSetVertexShader(const unsigned int* shader)
+{
+    if ((unsigned int)shader != gpuHashVertexShader)
+    {
+        gpuHashVertexShader = (unsigned int)shader;
+        D3DDevice_LoadVertexShaderProgram(shader, 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+}
 void GScr_LoadScriptsAndAnimsForEntities() {}
 struct game_hudelem_s;
 void HudElem_SetDefaults(game_hudelem_s* h) { (void)h; }
