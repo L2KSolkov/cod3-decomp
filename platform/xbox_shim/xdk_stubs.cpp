@@ -118,10 +118,9 @@ static unsigned int* gNullPushBuffer = NULL;
 static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture);
 int __stdcall XGIsSwizzledFormat(unsigned int Format);
 
-// NGL's Xbox render-state method cells are owned by the Win32 shim.  The
-// source-side state code already identifies the slots that are used by the
-// D3D9 path; bind those slots to their native render-state selectors once the
-// device is created.
+// NGL's render-state method cells retain the Xbox push-buffer IDs. The
+// release data stores these values as 0x403xx method IDs; translate them only
+// when forwarding the state to D3D9.
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;
@@ -133,19 +132,25 @@ extern unsigned int dword_40350;
 extern unsigned int dword_40354;
 extern unsigned int dword_40358;
 extern unsigned int dword_4035C;
+extern unsigned int dword_40364;
+extern unsigned int dword_4036C;
+extern unsigned int dword_40378;
 
 static void nullD3DInitStateAliases() {
-    dword_40300 = COD3_D3D9_RS_ALPHATESTENABLE;
-    dword_40304 = COD3_D3D9_RS_ALPHABLENDENABLE;
-    dword_4033C = COD3_D3D9_RS_ALPHAFUNC;
-    dword_40340 = COD3_D3D9_RS_ALPHAREF;
-    dword_40344 = COD3_D3D9_RS_SRCBLEND;
-    dword_40348 = COD3_D3D9_RS_DESTBLEND;
-    dword_4034C = D3DRS_BLENDFACTOR;
-    dword_40350 = COD3_D3D9_RS_BLENDOP;
-    dword_40354 = 23u; // D3DRS_ZFUNC in the native D3D9 enum.
-    dword_40358 = COD3_D3D9_RS_COLORWRITEENABLE;
-    dword_4035C = COD3_D3D9_RS_ZWRITEENABLE;
+    dword_40300 = 0x40300u;
+    dword_40304 = 0x40304u;
+    dword_4033C = 0x4033Cu;
+    dword_40340 = 0x40340u;
+    dword_40344 = 0x40344u;
+    dword_40348 = 0x40348u;
+    dword_4034C = 0x4034Cu;
+    dword_40350 = 0x40350u;
+    dword_40354 = 0x40354u;
+    dword_40358 = 0x40358u;
+    dword_4035C = 0x4035Cu;
+    dword_40364 = 0x40364u;
+    dword_4036C = 0x4036Cu;
+    dword_40378 = 0x40378u;
     // D3DDevice_SwitchTexture validates these Xbox texture-stage method
     // cells as (8300 + stage) << 6 before emitting its three DWORD packet.
     for (unsigned int Stage = 0; Stage < 4; ++Stage)
@@ -1287,6 +1292,13 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
         NativeValue = nullD3DColorWriteMask(Value);
     } else if (Method == dword_4035C) {
         NativeState = COD3_D3D9_RS_ZWRITEENABLE;
+    } else if (Method == dword_40364) {
+        NativeState = COD3_D3D9_RS_STENCILFUNC;
+        NativeValue = nullD3DCompareFunc(Value);
+    } else if (Method == dword_4036C) {
+        NativeState = COD3_D3D9_RS_STENCILMASK;
+    } else if (Method == dword_40378) {
+        NativeState = COD3_D3D9_RS_STENCILPASS;
     } else {
         return;
     }
