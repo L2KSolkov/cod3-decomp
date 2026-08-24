@@ -371,28 +371,34 @@ void cdProjShadow_Begin()
     m.z.v = vw->z.v;
     m.w.v = vw->w.v;
 
-    // forward = normalize(z row); up = normalize(-(x - fwd*dot)); right = cross(up, fwd)
-    __m128 fwd = m.z.v;
-    float fwdLen = sqrtf(fwd.m128_f32[0] * fwd.m128_f32[0]
-                       + fwd.m128_f32[1] * fwd.m128_f32[1]
-                       + fwd.m128_f32[2] * fwd.m128_f32[2]);
-    fwd = _mm_div_ps(fwd, _mm_set1_ps(fwdLen));
+    // IDA 0x6C24F9-0x6C26D1: normalize view-to-world Z and X, then form
+    // the shadow basis from -X + Z and the fixed negative-Z axis.
+    __m128 zAxis = m.z.v;
+    float zLen = sqrtf(zAxis.m128_f32[0] * zAxis.m128_f32[0]
+                      + zAxis.m128_f32[1] * zAxis.m128_f32[1]
+                      + zAxis.m128_f32[2] * zAxis.m128_f32[2]);
+    zAxis = _mm_div_ps(zAxis, _mm_set1_ps(zLen));
 
-    __m128 up = _mm_sub_ps(m.y.v, _mm_mul_ps(fwd, _mm_set1_ps(
-        fwd.m128_f32[0] * m.y.v.m128_f32[0]
-        + fwd.m128_f32[1] * m.y.v.m128_f32[1]
-        + fwd.m128_f32[2] * m.y.v.m128_f32[2])));
-    float upLen = sqrtf(up.m128_f32[0] * up.m128_f32[0]
-                      + up.m128_f32[1] * up.m128_f32[1]
-                      + up.m128_f32[2] * up.m128_f32[2]);
-    up = _mm_div_ps(up, _mm_set1_ps(upLen));
+    __m128 xAxis = m.x.v;
+    float xLen = sqrtf(xAxis.m128_f32[0] * xAxis.m128_f32[0]
+                      + xAxis.m128_f32[1] * xAxis.m128_f32[1]
+                      + xAxis.m128_f32[2] * xAxis.m128_f32[2]);
+    xAxis = _mm_div_ps(xAxis, _mm_set1_ps(xLen));
+
+    __m128 shadowY = _mm_add_ps(_mm_xor_ps(xAxis, _mm_set1_ps(-0.0f)), zAxis);
+    float shadowYLen = sqrtf(shadowY.m128_f32[0] * shadowY.m128_f32[0]
+                           + shadowY.m128_f32[1] * shadowY.m128_f32[1]
+                           + shadowY.m128_f32[2] * shadowY.m128_f32[2]);
+    shadowY = _mm_div_ps(shadowY, _mm_set1_ps(shadowYLen));
 
     math::Mat43 shadowMat;
     shadowMat.z.v = _mm_setr_ps(0.0f, 0.0f, -1.0f, 0.0f);
-    shadowMat.y.v = up;
+    shadowMat.y.v = shadowY;
     __m128 right = _mm_sub_ps(
-        _mm_mul_ps(_mm_shuffle_ps(up, up, 9), _mm_shuffle_ps(fwd, fwd, 18)),
-        _mm_mul_ps(_mm_shuffle_ps(up, up, 18), _mm_shuffle_ps(fwd, fwd, 9)));
+        _mm_mul_ps(_mm_shuffle_ps(shadowY, shadowY, 9),
+                   _mm_shuffle_ps(shadowMat.z.v, shadowMat.z.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(shadowY, shadowY, 18),
+                   _mm_shuffle_ps(shadowMat.z.v, shadowMat.z.v, 9)));
     shadowMat.x.v = right;
 
     float half = gProjShadowSize * 0.45f;
@@ -400,7 +406,7 @@ void cdProjShadow_Begin()
         _mm_add_ps(
             _mm_sub_ps(m.w.v, _mm_mul_ps(shadowMat.x.v, _mm_set1_ps(half))),
             _mm_mul_ps(shadowMat.y.v, _mm_set1_ps(half))),
-        _mm_mul_ps(shadowMat.z.v, _mm_set1_ps(gProjShadowZTop)));
+        _mm_setr_ps(0.0f, 0.0f, gProjShadowZTop, 0.0f));
     gProjShadowMat = shadowMat;
 
     nglListBeginScene(NGLSCENE_DEFAULTS);
