@@ -233,8 +233,10 @@ int InteractionController::DoRenderText(int index)
     // mRenderText elements expose GetText at vtable slot 0xBC/4 (shell.o)
     void* textObj = mRenderText[index];
     void** vt = *(void***)textObj;
-    typedef Broc::string(__thiscall* GetTextFn)(void* self);
-    Broc::string text = ((GetTextFn)vt[0xBC / 4])(textObj);
+    typedef Broc::string* (__thiscall* GetTextFn)(void* self,
+                                                   Broc::string* result);
+    Broc::string text;
+    ((GetTextFn)vt[0xBC / 4])(textObj, &text);
     bool empty = true;
     if (text.mBlock != nullptr)
     {
