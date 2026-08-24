@@ -786,7 +786,6 @@ void nglRenderPerfInfo() {
 // ============================================================================
 void nglRenderDebug() {
     nglSyncDebug.ShowPerfInfo =1;
-    nglSyncDebug.ShowPerfBar = 1;
     if (nglSyncDebug.ShowPerfInfo != 0)
         nglRenderPerfInfo();
     if (nglSyncDebug.ShowPerfBar != 0)
