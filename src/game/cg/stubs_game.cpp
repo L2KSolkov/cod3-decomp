@@ -72,8 +72,6 @@ void CG_PerturbationPoint(const float* a, float* b, float c)
 void CG_RegisterGraphics() {}
 void CG_RegisterServerShader(int a) { (void)a; }
 void CG_ServerCommand() {}
-void CG_SetNextSnap(void* a) { (void)a; }
-void CG_TransitionSnapshot() {}
 void CG_TransitionToAds(void* a, float b, float* c, float* d)
 {
     (void)a; (void)b; (void)c; (void)d;

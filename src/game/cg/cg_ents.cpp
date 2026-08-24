@@ -1699,8 +1699,6 @@ extern int cg_aWeaponSelect[4];
 extern int cg_aWeaponSelectTime[4];
 extern struct cgGlobal_t { int time; int oldTime; int teamGame; } cgGlobal;
 extern snapshot_t* CG_ReadNextSnapshot();
-extern void CG_SetNextSnap(void* snap);
-extern void CG_TransitionSnapshot();
 extern int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot);
 extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,
                                         int* serverTime);
@@ -1753,6 +1751,17 @@ snapshot_t* CG_ReadNextSnapshot()
         }
     }
     return snapshot;
+}
+
+// ea: 0x006ADE20
+void CG_SetNextSnap(void* snap)
+{
+    dword_F62964[1580 * currCl] = (int)snap;
+}
+
+void CG_TransitionSnapshot()
+{
+    dword_F62960[1580 * currCl] = dword_F62964[1580 * currCl];
 }
 
 struct CollisionDesc {
@@ -2565,17 +2574,20 @@ int CG_ProcessSnapshots()
         CG_SetFrameInterpolation();
         while (1)
         {
-            CG_ASSERT("cg[currCl].snap",
-                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 412);
-            CG_ASSERT("cg[currCl].nextSnap",
-                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 413);
+            if (dword_F62960[1580 * currCl] == 0)
+                CG_ASSERT("cg[currCl].snap",
+                          "c:\\cod\\code\\game\\cg_snapshot.cpp", 412);
+            if (dword_F62964[1580 * currCl] == 0)
+                CG_ASSERT("cg[currCl].nextSnap",
+                          "c:\\cod\\code\\game\\cg_snapshot.cpp", 413);
             if (dword_F62964[1580 * currCl] == dword_F62960[1580 * currCl])
             {
                 void* NextSnapshot = CG_ReadNextSnapshot();
                 if (NextSnapshot == nullptr)
                     break;
-                CG_ASSERT("cg[currCl].snap",
-                          "c:\\cod\\code\\game\\cg_snapshot.cpp", 422);
+                if (dword_F62960[1580 * currCl] == 0)
+                    CG_ASSERT("cg[currCl].snap",
+                              "c:\\cod\\code\\game\\cg_snapshot.cpp", 422);
                 if (*(int*)((char*)NextSnapshot + 4)
                         - *(int*)(dword_F62960[1580 * currCl] + 4)
                     < 0)
@@ -2591,10 +2603,12 @@ int CG_ProcessSnapshots()
                 break;
             CG_TransitionSnapshot();
         }
-        CG_ASSERT("cg[currCl].snap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 438);
-        CG_ASSERT("cg[currCl].nextSnap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 439);
+        if (dword_F62960[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].snap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 438);
+        if (dword_F62964[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].nextSnap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 439);
         int v10 = dword_F62964[1580 * currCl];
         if (v10 != dword_F62960[1580 * currCl]
             && *(int*)(v10 + 4) - cgGlobal_time <= 0)
@@ -2619,13 +2633,16 @@ int CG_ProcessSnapshots()
     else
     {
         void* v4 = CG_ReadNextSnapshot();
-        CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_snapshot.cpp", 378);
+        if (v4 == nullptr)
+            CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_snapshot.cpp", 378);
         CG_SetInitialSnapshot((snapshot_t*)v4);
         CG_SetNextSnap(v4);
-        CG_ASSERT("cg[currCl].snap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 385);
-        CG_ASSERT("cg[currCl].nextSnap",
-                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 386);
+        if (dword_F62960[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].snap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 385);
+        if (dword_F62964[1580 * currCl] == 0)
+            CG_ASSERT("cg[currCl].nextSnap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 386);
         if (*(int*)(dword_F62964[1580 * currCl] + 4) != G_GetServerSnapTime())
         {
             CG_ASSERT("cg[currCl].nextSnap->serverTime == "
