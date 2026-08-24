@@ -2016,7 +2016,8 @@ struct View_Window {
 };
 
 struct View_Setup {
-    int Windows[5];  // +0x00
+    int NumWindows;   // +0x00
+    int Windows[4];   // +0x04
 };
 
 namespace View {
@@ -2036,11 +2037,32 @@ View_Window::View_Window(float x, float y, float w, float h, float fovx,
     Safety = flag;
 }
 
-View_Setup Setups[8];               // ?Setups@@3PAUView_Setup@@A (cg.o @ 0xDF9DB8)
-View_Window Windows[8];             // ?Windows@@3PAUView_Window@@A (cg.o @ 0xDF9E58)
-int ViewSetupConfigurations[4];  // ?ViewSetupConfigurations (cg.o @ 0xD0D200)
-float scalar2View;           // 0x00DF9E44
-float scalar4View;           // 0x00DF9E48
+View_Setup Setups[7] = {
+    { 1, { 0, -1, -1, -1 } },
+    { 2, { 3, 4, -1, -1 } },
+    { 2, { 1, 2, -1, -1 } },
+    { 3, { 3, 7, 8, -1 } },
+    { 3, { 1, 6, 8, -1 } },
+    { 3, { 9, 10, 11, -1 } },
+    { 4, { 5, 6, 7, 8 } },
+};               // ?Setups@@3PAUView_Setup@@A (cg.o @ 0xDF9DB8)
+View_Window Windows[12] = {
+    { -1.0f, -1.0f, 2.0f, 2.0f, 1.0f, 1.0f, 15u },
+    { -1.0f, -1.0f, 1.0f, 2.0f, 0.5f, 1.0f, 13u },
+    { 0.0f, -1.0f, 1.0f, 2.0f, 0.5f, 1.0f, 14u },
+    { -1.0f, -1.0f, 2.0f, 1.0f, 1.0f, 0.5f, 7u },
+    { -1.0f, 0.0f, 2.0f, 1.0f, 1.0f, 0.5f, 11u },
+    { -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 5u },
+    { 0.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 6u },
+    { -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 9u },
+    { 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 10u },
+    { -1.0f, -1.0f, 0.667f, 2.0f, 1.0f, 1.0f, 13u },
+    { -0.333f, -1.0f, 0.666f, 2.0f, 1.0f, 1.0f, 12u },
+    { 0.333f, -1.0f, 0.667f, 2.0f, 1.0f, 1.0f, 14u },
+};             // ?Windows@@3PAUView_Window@@A (cg.o @ 0xDF9E58)
+const int ViewSetupConfigurations[5] = { 0, 0, 1, 3, 6 };
+float scalar2View = 0.75f;           // 0x00DF9E44
+float scalar4View = 0.65f;           // 0x00DF9E48
 extern float unk_F6A284[4 * 802];
 extern float unk_F6A288[4 * 802];
 extern int dword_F6A290[4 * 802];
