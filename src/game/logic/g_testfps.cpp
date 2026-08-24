@@ -45,11 +45,15 @@ struct world_tLocal {
     char _pad0[0x100];
     BspTreeLocal* bspTree;  // +0x100
 };
+// IDA-verified trGlobals_t storage layout. TestFPS only consumes world, but
+// render.o owns the full instance and accesses the camera fields before it.
 struct trGlobals_t {
     char _pad0[0x290];
     world_tLocal* world;  // +0x290
+    char _pad1[0x3A0 - 0x294];
 };
-trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A (render.o @ 0x13642D0)
+static_assert(sizeof(trGlobals_t) == 0x3A0, "trGlobals_t size mismatch");
+extern trGlobals_t tr;  // defined by render.o
 
 // ============================================================================
 // GetCellBBox - ea: 0x4F6DB0

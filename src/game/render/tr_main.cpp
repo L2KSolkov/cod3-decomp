@@ -145,7 +145,7 @@ struct trGlobals_t {
     uint8_t debug[0x8C];       // +0x314 (trDebug_t)
 };
 static_assert(sizeof(trGlobals_t) == 0x3A0, "trGlobals_t size mismatch");
-extern trGlobals_t tr;         // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+trGlobals_t tr{};              // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 // cvar_t view (integer +0x20)
 struct cvar_t {

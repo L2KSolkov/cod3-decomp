@@ -5063,6 +5063,18 @@ void Camera::UpdateTankCam()
     }
 }
 
+// Cgame call sites use the recovered free-function bridge names; forward
+// them to the IDA-verified Camera members instead of the old no-op shims.
+void Camera_Update(void* self)
+{
+    reinterpret_cast<Camera*>(self)->Update();
+}
+
+void Camera_UpdatePostViewModels(void* self)
+{
+    reinterpret_cast<Camera*>(self)->UpdatePostViewModels();
+}
+
 // ea: 0x006A8000
 void Camera::UpdateTankCommanderCam()
 {

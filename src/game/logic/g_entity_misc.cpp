@@ -2734,8 +2734,6 @@ void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData)
 }
 void Camera_StartAnimating(void* self, float a) { (void)self; (void)a; }
 void Camera_StopAnimating(void* self, float a) { (void)self; (void)a; }
-void Camera_Update(void* self) { (void)self; }
-void Camera_UpdatePostViewModels(void* self) { (void)self; }
 struct CGBank;
 void CGBank_load_inplace(CGBank* bank, char* data, int* size)
 {
