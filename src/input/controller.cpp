@@ -268,7 +268,11 @@ void controller::poll()
         XINPUT_STATE state = {};
         XBGAMEPAD& pad = s_gamepads[i];
         const bool was_connected = pad.hDevice != nullptr;
-        const bool connected = host_get_state(i, &state) == ERROR_SUCCESS;
+        // The Xbox poll path only queries an open device handle.  Probing every
+        // empty port through the host XInput DLL can block while the OS checks
+        // for hardware, so keep the same handle-gated behavior here.
+        const bool connected = was_connected
+            && host_get_state(i, &state) == ERROR_SUCCESS;
         pad.inserted = connected && !was_connected;
         pad.removed = !connected && was_connected;
 #ifdef _WIN32
