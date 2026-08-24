@@ -4017,7 +4017,7 @@ void AeThreadManager::AddNotify(EntityNotify* notify)
     struct RawNode { void* next; void* prev; };
     RawNode* node = (RawNode*)notify;
     EntityNotifyDListNode* m_tail = list->m_tail;
-    node->next = list->m_end;
+    node->next = (void*)&list->m_end;
     node->prev = m_tail;
     m_tail->m_next = (EntityNotifyDListNode*)node;
     list->m_tail = (EntityNotifyDListNode*)node;

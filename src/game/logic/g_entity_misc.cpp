@@ -1554,7 +1554,7 @@ void Entity::Notify(HashString h)
     NotifyDList* pending =
         (NotifyDList*)((char*)&AeThreadManager::sInst + 0x24);
     NotifyNode* node = (NotifyNode*)&v4->m_dlist_node;
-    node->m_next = (NotifyNode*)pending->m_end;
+    node->m_next = (NotifyNode*)&pending->m_end;
     node->m_prev = (NotifyNode*)pending->m_tail;
     ((NotifyNode*)pending->m_tail)->m_next = node;
     pending->m_tail = node;
