@@ -15,57 +15,75 @@
 // Shader global pointer definitions
 cdGunShader* gCDGunShader = nullptr;  // ?gCDGunShader@@3PAVcdGunShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
+// Shader static data definitions (render_xboxr cd*Shader.o).
 namespace cdGunRender {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
+    static const unsigned int VShaderMicrocode[81] = {
+        0x00142078, 0x00000000, 0x0062601a, 0x08001468, 0xfeb00000,
+        0x00000000, 0x00a1421a, 0x18355800, 0x28000000, 0x00000000,
+        0x02a0041a, 0xb4356854, 0xa8b0c84c, 0x00000000, 0x00a1621a,
+        0x18357800, 0x24000000, 0x00000000, 0x08a1821a, 0x18359802,
+        0xd2080000, 0x00000000, 0x00a1a21a, 0x1835b800, 0x21000000,
+        0x00000000, 0x00824000, 0x14016d54, 0xb8b00000, 0x00000000,
+        0x0140201b, 0x04003800, 0x2f000000, 0x00000000, 0x00e1201b,
+        0x08373800, 0x20a01800, 0x00000000, 0x00424000, 0xb5545800,
+        0x28b00000, 0x00000000, 0x06e0c01b, 0x0836dbff, 0x10b88800,
+        0x00000000, 0x00e0e01b, 0x0836f800, 0x20a04800, 0x00000000,
+        0x00e1001b, 0x08371800, 0x20a02800, 0x00000000, 0x00824000,
+        0xb5fe5800, 0xb8b00000, 0x00000000, 0x00e1c01b, 0x0437d800,
+        0x28200000, 0x00000000, 0x00e1e01b, 0x0437f800, 0x24200000,
+        0x00000000, 0x00e2001b, 0x04361800, 0x22200000, 0x00000000,
+        0x006020aa, 0x1c001402, 0xd0b0f828, 0x00000000, 0x0062201a,
+        0x24001068, 0x70b0e818, 0x00000000, 0x0040001a, 0xc4002800,
+        0x20b0e801,
+    };
+    static const unsigned int* VShaderTableStorage[1] = { VShaderMicrocode };
+    static unsigned long VShaderHandle = 0;
+    unsigned long* VS = &VShaderHandle;
+    unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
 }
 namespace cdGunPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
+    static const unsigned int PShaderMicrocode[60] = {
+        0xd8d41010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8c40000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00011101, 0x00000001,
+        0x00000000, 0x00000000, 0xffffffff, 0xffffffff, 0x000001ff,
+    };
+    static const unsigned int* PShaderTableStorage[1] = { PShaderMicrocode };
+    static unsigned long* PShaderHandle = nullptr;
+    unsigned long** PS = &PShaderHandle;
+    unsigned int const** PShaderTable = PShaderTableStorage;
     unsigned long* Shader = nullptr;
 }
 namespace cdGunFullbrightPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
+    static const unsigned int PShaderMicrocode[60] = {
+        0xd8301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8200000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        0x00000000, 0x00000000, 0x00000000, 0x00011101, 0x00000001,
+        0x00000000, 0x00000000, 0xffffffff, 0xffffffff, 0x000001ff,
+    };
+    static const unsigned int* PShaderTableStorage[1] = { PShaderMicrocode };
+    static unsigned long* PShaderHandle = nullptr;
+    unsigned long** PS = &PShaderHandle;
+    unsigned int const** PShaderTable = PShaderTableStorage;
     unsigned long* Shader = nullptr;
 }
-
-namespace AeAssert {
-    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
-    extern ECoderId gCurrentAuthor;
-    extern const char* gCurrentFile;
-    extern int   gCurrentLine;
-    extern const char* gCurrentExpr;
-    bool IsIgnored();
-    bool Assert(const char* msg, ...);
-}
-
-// ============================================================================
-// cdGunShaderMat::cdGunShaderMat — bind the texture + shader.
-// ea: 0x7CEA70
-// ============================================================================
-cdGunShaderMat::cdGunShaderMat(nglTexture* iTexture) {
-    this->mTexture = iTexture;
-    cdGunShader* v3 = gCDGunShader;
-    if (gCDGunShader != NULL) {
-        this->Shader = v3;
-        return;
-    }
-    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-    AeAssert::gCurrentFile = "cdGunShader.cpp";
-    AeAssert::gCurrentLine = 14;
-    AeAssert::gCurrentExpr = "gCDGunShader";
-    if (AeAssert::IsIgnored()) {
-        this->Shader = gCDGunShader;
-        return;
-    }
-    if (AeAssert::Assert("Material is being created before the shader; the pointers won't be set up properly"))
-        __debugbreak();
-    this->Shader = gCDGunShader;
-}
-
 // ============================================================================
 // InitCDGunShader — allocate the shader and link into the init list.
 // ea: 0x7CEB00
