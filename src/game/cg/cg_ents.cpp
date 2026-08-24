@@ -5,6 +5,7 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 #include "game/snapshot_types.h"
+#include "game/trace_types.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -557,13 +558,6 @@ void CG_EventSpawnTracer(const math::Position3* pstart,
     }
 }
 
-struct trace_t {
-    float fraction;      // +0x20
-    unsigned int mEntity; // +0x30
-};
-struct collision_context_t {
-    int contentmask;  // +0x00
-};
 extern int dword_F6295C[4 * 1580];
 extern int dword_F62944[4 * 1580];
 int cg_numSolidEntities;
@@ -612,7 +606,7 @@ void CG_Trace(trace_t* result, const math::Position3* start,
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
     Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
-    v9.mEntity =
+    v9.mEntity.mHandle.mVal =
         v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 0, &v9);
     *result = v9;
@@ -629,7 +623,7 @@ void CG_TraceCapsule(trace_t* result, const math::Position3* start,
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
     Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
-    v9.mEntity =
+    v9.mEntity.mHandle.mVal =
         v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 1, &v9);
     *result = v9;
