@@ -80,7 +80,13 @@ unsigned int dword_BC2E0C = 0;
 unsigned int dword_BC2E50 = 0;
 unsigned int dword_40304 = 0;           // D3D render-state slot alias
 unsigned int dword_BC2CFC = 0;          // D3D state alias
-_D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;  // cdGlowShader.o (BSS)
+// cdGlowShader.o: gpuSetVertexShader::Inputs is an all-END declaration.
+// The mesh path supplies its real declaration through SetVertexShaderInputDirect.
+_D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs = {
+    {{0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0},
+     {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0},
+     {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0},
+     {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}}};
 
 // XGetVideoStandard - XDK xapilibd:xgetvideostandard.obj (shim).
 // Returns a display standard tag; the game only tests == 3 (PAL).
