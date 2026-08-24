@@ -220,21 +220,17 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     if (ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
         AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)));
 
-    if (paired) {
-        if (mac != 0 && FieldValue(token, F_OUT_MAC_MASK) != 0 && outRegister != 1) {
-            source << "  r" << outRegister << "." << Mask(FieldValue(token, F_OUT_MAC_MASK))
-                   << " = (" << macExpr << ")." << Mask(FieldValue(token, F_OUT_MAC_MASK)) << ";\n";
-        }
-        if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0) {
-            source << "  r1." << Mask(FieldValue(token, F_OUT_ILU_MASK))
-                   << " = (" << iluExpr << ")." << Mask(FieldValue(token, F_OUT_ILU_MASK)) << ";\n";
-        }
-    } else if (mac != 0 && FieldValue(token, F_OUT_MUX) == 1) {
+    // The MAC and ILU destination masks are independent of the output mux.
+    // The mux selects which unit feeds an external output; it does not disable
+    // the corresponding temporary-register write.  This matters for the
+    // world shader, whose first instruction writes r11 through MAC_MASK while
+    // later instructions write r0/r1 before the final position output.
+    if (mac != 0 && FieldValue(token, F_OUT_MAC_MASK) != 0 && outRegister != 1) {
         AppendWrite(source, macExpr, (std::string("r") + std::to_string(outRegister)).c_str(),
                     Mask(FieldValue(token, F_OUT_MAC_MASK)));
-    } else if (ilu != 0 && FieldValue(token, F_OUT_MUX) != 1) {
-        AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)));
     }
+    if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0)
+        AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)));
 }
 
 static std::string BuildHlsl(const unsigned int* microcode) {
