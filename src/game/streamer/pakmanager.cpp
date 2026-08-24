@@ -371,7 +371,6 @@ static_assert(sizeof(mem_heap) == 0x49C, "mem_heap size mismatch");
 template <typename T, int N>
 struct ae_array {
     T   m_elements[N];  // +0x00
-    int m_size;         // +N*sizeof(T)
 };
 
 template <typename T, int N>
@@ -2391,11 +2390,11 @@ class DbTablesetBank;
 template <typename BankT>
 class InplaceAssetBankSet : public AssetBankSet {
 public:
-    BankT* mBankArray[99];
+    ae_array<BankT*, 99> mBankArray;
 
     InplaceAssetBankSet() : AssetBankSet()
     {
-        memset(mBankArray, 0, sizeof(mBankArray));
+        memset(mBankArray.m_elements, 0, sizeof(mBankArray.m_elements));
     }
 
     virtual ~InplaceAssetBankSet() {}
@@ -2403,10 +2402,10 @@ public:
     virtual void UnloadBank(TPakId pakId)
     {
         int index = (int)pakId;
-        if (index >= 0 && index < 99 && mBankArray[index] != nullptr)
+        if (index >= 0 && index < 99 && mBankArray.m_elements[index] != nullptr)
         {
-            OnBankUnloaded(mBankArray[index]);
-            mBankArray[index] = nullptr;
+            OnBankUnloaded(mBankArray.m_elements[index]);
+            mBankArray.m_elements[index] = nullptr;
         }
     }
 
@@ -2932,10 +2931,8 @@ struct ZoneBankArray {
 static_assert(sizeof(ZoneBankArray) == 0x18C,
               "ZoneBoundaryBank array layout mismatch");
 
-class StreamZoneManager {
+class StreamZoneManager : public InplaceAssetBankSet<ZoneBoundaryBank> {
 public:
-    uint8_t _pad0[0x04];  // anonymous head region (bank array starts at +0x04)
-    ZoneBankArray mBankArray;  // +0x04 (elements at +0x04)
     unsigned int mDebugRenderMode;  // +0x190 (bit0 ZoneGraph, bit1 active
                                     // node sphere, bit2 zone names)
     float zoneGraphScale;           // +0x194
@@ -2967,7 +2964,7 @@ public:
     static void DeleteInst();
     static void* operator new(size_t size, void* p);
     StreamZoneManager();       // ??0StreamZoneManager@@QAE@XZ @ 0x678250
-    ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
+    virtual ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
     static void SingletonDebugRender();  // ?SingletonDebugRender@StreamZoneManager@@SAXXZ @ 0x687640
     void DebugRender();        // ?DebugRender@StreamZoneManager@@QAEXXZ @ 0x66CD60 (stub)
     void RenderZoneGraph(const ZoneBoundaryBank* zbs);  // ?RenderZoneGraph@StreamZoneManager@@QBEXPBVZoneBoundaryBank@@@Z @ 0x6678F0
@@ -3295,9 +3292,8 @@ public:
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
 // mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
 struct SceneEntity;
-class SceneManager {
+class SceneManager : public AssetBankSet {
 public:
-    uint8_t _pad[0x04];                      // vftable (AssetBankSet base)
     void*   mPlayerFootstepMaterial;         // +0x04
     int     mPlayerFootstepNumMatches;       // +0x08
     ae_array<SceneBank*, 99> mBankArray;       // +0x0C
@@ -3338,7 +3334,7 @@ public:
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
     void ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx);  // ?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z @ 0x66DCA0
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
-    ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
+    virtual ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
     static void CreateInst();  // ?CreateInst@SceneManager@@SAXXZ
     static void DeleteInst();  // ?DeleteInst@SceneManager@@SAXXZ
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
@@ -5782,8 +5778,8 @@ void SceneManager::ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx)
 
 // ea: 0x6786A0
 SceneManager::SceneManager()
+    : AssetBankSet()
 {
-    AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
     mSceneEffectGroups = nullptr;
     mPersistantStorage = nullptr;
     mWorldSpawn = nullptr;
@@ -11429,14 +11425,12 @@ void StreamZoneManager::OnLoaded(TPakId pakId)
 
 // ea: 0x678250
 StreamZoneManager::StreamZoneManager()
+    : InplaceAssetBankSet<ZoneBoundaryBank>()
 {
     mLastCellNum = -1;
     mFirstBank = -1;
     mLastListSize = 0;
     mListSize = 0;
-    AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
-    for (unsigned int i = 0; i < 99; ++i)
-        mBankArray.m_elements[i] = nullptr;
     DebugRender_AddRenderer(DebugRender_sInst,
                             (void*)&StreamZoneManager::SingletonDebugRender);
     mDebugRenderMode = 0;
