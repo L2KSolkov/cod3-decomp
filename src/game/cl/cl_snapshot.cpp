@@ -11,7 +11,10 @@
 
 #include <string.h>
 
-struct PakInfoNode;
+struct PakInfoNode {
+    uint8_t _pad00[0xB4];
+    TPakId pakId;
+};
 
 // Minimal views (full classes in game/sv/sv_stubs.h / g_local.h).
 class PakManager {
@@ -40,8 +43,6 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
 extern void nglWaitForRendering();
 extern void PakManager_ClearUserDistance(void* self, const void* cpak);
 extern void PakManager_SyncUnloadPak(void* self, int id);
-struct PakInfoNode;
-struct PakInfoNode;
 const PakInfoNode* sLoadingScreenInfo = nullptr;  // ?sLoadingScreenInfo@@3PBUPakInfoNode@@B (cl.o @ 0x1304CAC)
 extern void GamePause_SetAllPaused(bool paused);
 
@@ -187,8 +188,8 @@ int CL_FirstSnapshot()
     }
     nglWaitForRendering();
     PakManager::sInst->ClearUserDistance((const PakInfoNode*)sLoadingScreenInfo);
-    if (PAK_ID_INVALID != *(int*)sLoadingScreenInfo)
-        PakManager::sInst->SyncUnloadPak((TPakId)*(int*)sLoadingScreenInfo);
+    if (PAK_ID_INVALID != sLoadingScreenInfo->pakId)
+        PakManager::sInst->SyncUnloadPak(sLoadingScreenInfo->pakId);
     GamePause_SetAllPaused(false);
     InGameMenuSystem* igms = g_femanager.mIGMS[currCl];
     if (igms != nullptr)
