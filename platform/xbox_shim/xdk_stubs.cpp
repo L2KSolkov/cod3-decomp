@@ -59,8 +59,8 @@ struct nullD3DBuffer {
 
 // APK textures retain their Xbox D3D object in the serialized image section.
 // Keep host state beside those objects instead of changing the 20-byte XDK
-// resource layout.  The table is deliberately bounded like the fixed-size
-// resource tables used by the original frontend path.
+// resource layout.  The registry must cover all serialized textures retained
+// by a loaded level, not only the small frontend resource set.
 struct nullD3DExternalTexture {
     D3DBaseTexture* Object;
     unsigned int PackedFormat;
@@ -68,7 +68,7 @@ struct nullD3DExternalTexture {
     nullD3DInfo Info;
 };
 
-static nullD3DExternalTexture gNullExternalTextures[256] = {};
+static nullD3DExternalTexture gNullExternalTextures[4096] = {};
 
 static nullD3DTexture* gNullFrontBuffer = NULL;
 static nullD3DTexture* gNullBackBuffer = NULL;
