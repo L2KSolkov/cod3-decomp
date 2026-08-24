@@ -9786,7 +9786,6 @@ void PakFile::UpdateUnloading()
         break;
     case (ELoadingState)(UNLOADING_DONE | LOADING_TOC):
         tlPrintf("Finished unloading of '%s'\n", mPath.mBuff);
-        FinishUnload();
         if (mPakType == kPakTypeCount)
         {
             BrocSys::NotifyPakUnloaded(nullptr);
@@ -9798,6 +9797,7 @@ void PakFile::UpdateUnloading()
             BrocSys::NotifyPakUnloaded(
                 mPakInfo->longName.mStr);
         }
+        FinishUnload();
         break;
     default:
         break;
