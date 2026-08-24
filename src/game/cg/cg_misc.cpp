@@ -4150,8 +4150,8 @@ struct cgsGlobal_t {
     } media;
 };
 cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8)
-extern void* cg_items;
-extern weaponInfo_s cg_weapons[1];
+extern itemInfo_t cg_items[256];
+extern weaponInfo_s cg_weapons[92];
 extern vmCvar_t fs_debug_vm;
 // ea: 0x006BB6C0
 const float (&InteractionController::GetHandsAngles() const)[3]
@@ -4230,8 +4230,8 @@ static float s_prevCamHeight;
 void CG_Init()
 {
     memset(&cgsGlobal, 0, sizeof(cgsGlobal));
-    memset(cg_items, 0, sizeof(int));
-    memset(cg_weapons, 0, sizeof(weaponInfo_s));
+    memset(cg_items, 0, sizeof(cg_items));
+    memset(cg_weapons, 0, sizeof(cg_weapons));
     cgsGlobal.media.whiteShader =
         GetTextureData("white", 0, "mp_frontEnd");
     cgsGlobal.media.softLineShader =

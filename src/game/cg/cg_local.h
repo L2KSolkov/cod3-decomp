@@ -13,6 +13,14 @@
 struct Entity;
 class DObj;
 namespace nalGeneric { class nalGenericAnim; }
+struct nglTexture;
+
+// IDA itemInfo_t layout: registered at +0x0, icon at +0x4.
+struct itemInfo_t {
+    unsigned char registered;
+    unsigned char _pad[3];
+    nglTexture* icon;
+};
 
 // Minimal view of AnimationPlayer (full class in anim.o; cg.o members below)
 class AnimationPlayer {

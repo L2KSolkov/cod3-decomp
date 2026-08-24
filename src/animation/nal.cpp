@@ -29726,7 +29726,7 @@ struct weaponInfo_s {
     unsigned char _pad[0x7C];
     unsigned char registered;  // +0x7C
 };
-extern weaponInfo_s* cg_weapons;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
+extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern int cg_aWeaponSelect[4];   // ?cg_aWeaponSelect@@3PAHA (cg.o)
 extern void CG_RegisterWeapon(int weaponNum);  // ?CG_RegisterWeapon@@YAXH@Z (cg.o)
 class PlayerState;

@@ -1462,7 +1462,7 @@ struct CgWeaponSurf {
     IVPointerRaw iWorldSurfIndex;  // +0x90
 };
 struct weaponInfo_s;
-extern weaponInfo_s* cg_weapons;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
+extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern IVPointer<XModel> SV_XModelGet(const char* name);
 

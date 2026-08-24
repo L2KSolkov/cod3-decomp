@@ -9422,7 +9422,7 @@ struct weaponInfo_s {
     unsigned char _pad[0xC0];
     void* hADSOverlay;  // +0xC0
 };
-extern weaponInfo_s* cg_weapons;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
+extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 
 // ea: 0x005C49B0
 Broc::hudelem BrocSys::NewHudElem(int panelType)

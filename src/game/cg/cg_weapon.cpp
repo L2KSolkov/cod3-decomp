@@ -90,7 +90,7 @@ void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
     (void)startTimeSec;
 }
 extern void sWeaponAnimCallback();
-extern weaponInfo_s* cg_weapons;  // weaponInfo_s[]
+extern weaponInfo_s cg_weapons[];  // weaponInfo_s[]
 extern int dword_F6A2A0[4 * 802];
 extern int dword_F6A2A4[4 * 802];
 extern int dword_F6A2A8[4 * 802];
