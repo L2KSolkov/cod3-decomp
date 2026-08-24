@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
 #include "ngl/nglRenderNode.h"
@@ -153,10 +154,6 @@ struct cgGlobal_t {
 };
 extern cgGlobal_t cgGlobal;  // 0x00F5FE30
 
-struct vmCvar_t {
-    int   integer;  // +0x00
-    float value;    // +0x04
-};
 extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;  // 0x00F60258
 extern vmCvar_t cg_hudAlpha;                          // 0x00F5FC80
 
