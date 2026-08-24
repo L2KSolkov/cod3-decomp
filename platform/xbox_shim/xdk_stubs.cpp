@@ -1494,6 +1494,13 @@ static unsigned int nullD3DCompositePixel(unsigned int Destination,
            ((Sb * SourceAlpha + Db * InverseAlpha) / 255u);
 }
 
+static nullD3DInfo* nullD3DGetCpuTextureInfo(D3DBaseTexture* Texture) {
+    nullD3DExternalTexture* External = nullD3DFindExternalTexture(Texture);
+    if (External != NULL)
+        return &External->Info;
+    return nullD3DFindInfo(Texture);
+}
+
 static void nullD3DDrawCpuQuad(const unsigned int* Vertices,
                                unsigned int StrideDwords,
                                unsigned int UIndex, bool HasColor) {
@@ -1533,7 +1540,7 @@ static void nullD3DDrawCpuQuad(const unsigned int* Vertices,
     if (X0 >= X1 || Y0 >= Y1)
         return;
     const unsigned int Color = HasColor ? Vertices[3] : 0xFFFFFFFFu;
-    nullD3DInfo* Texture = nullD3DTextureInfo(gNullBoundTextures[0]);
+    nullD3DInfo* Texture = nullD3DGetCpuTextureInfo(gNullBoundTextures[0]);
     const float Width = MaxX - MinX;
     const float Height = MaxY - MinY;
     for (int Y = Y0; Y < Y1; ++Y) {
