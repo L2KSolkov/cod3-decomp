@@ -38,7 +38,7 @@ static_assert(sizeof(cdWorldShader) == 0x10, "cdWorldShader size mismatch");
 // ============================================================================
 namespace cdWorldRender {
     extern unsigned long VS[4][2];                       // ?VS@cdWorldRender@@3PAY01KA
-    extern unsigned int const* VShaderTable[4][2];        // ?VShaderTable@cdWorldRender@@3PAY01PBIA
+    extern unsigned int const* VShaderTable[4];           // ?VShaderTable@cdWorldRender@@3PAY01PBIA
 }
 namespace cdWorldProjectedRender {
     extern unsigned long VS[2];                           // ?VS@cdWorldProjectedRender@@3PAKA

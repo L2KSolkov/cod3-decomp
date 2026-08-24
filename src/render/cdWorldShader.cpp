@@ -116,12 +116,7 @@ namespace cdWorldRender {
         0xc4aa2800, 0x20b0e801,
     };
     unsigned long VS[4][2] = {};
-    unsigned int const* VShaderTable[4][2] = {
-        { VShader0, VShader1 },
-        { VShader2, VShader3 },
-        { nullptr, nullptr },
-        { nullptr, nullptr },
-    };
+    unsigned int const* VShaderTable[4] = { VShader0, VShader1, VShader2, VShader3 };
 }
 namespace cdWorldProjectedRender {
     static const unsigned int VShader0[90] = {
@@ -356,8 +351,10 @@ namespace cdWorldSolidColorPixel {
 // ea: 0x7DFFE0 (inline COMDAT)
 // ============================================================================
 inline void cdWorldRender_RegisterShader() {
-    for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldRender::VS[0][v0], cdWorldRender::VShaderTable[0], v0);
+    for (int v0 = 0; v0 < 4; ++v0) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(
+                                 &cdWorldRender::VS[v0 / 2][v0 & 1]),
+                             cdWorldRender::VShaderTable[v0]);
     }
 }
 
