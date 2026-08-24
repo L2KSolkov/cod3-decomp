@@ -97,7 +97,7 @@ vmCvar_t g_listEntity;              // ?g_listEntity@@3UvmCvar_t@@A (g.o @ 0x129
 int gStartTime;                  // ?gStartTime@@3HA (g.o)
 int gScreenshotInProgress;       // ?gScreenshotInProgress@@3HA (g.o)
 int gRenderMemGraph;             // ?gRenderMemGraph@@3HA (g.o)
-int gRenderViewWeapon;           // ?gRenderViewWeapon@@3HA (g.o)
+int gRenderViewWeapon = 1;       // ?gRenderViewWeapon@@3HA (g.o)
 int g_blendType;                 // ?g_blendType@@3HA (g.o)
 int g_freeze_movement;           // ?g_freeze_movement@@3HA (g.o)
 bool gNANO_Animate;              // ?gNANO_Animate@@3_NA (g.o @ 0x11C4CF4)
