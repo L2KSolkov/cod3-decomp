@@ -308,6 +308,14 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     }
 }
 
+static void nullD3DInvalidateVertexDeclaration() {
+    if (gD3D9VertexDeclaration != NULL) {
+        gD3D9VertexDeclaration->Release();
+        gD3D9VertexDeclaration = NULL;
+    }
+    gD3D9BuiltVertexFormatValid = false;
+}
+
 static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     if (gD3D9Device == NULL || Format == NULL)
         return false;
@@ -325,8 +333,10 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         Element.Offset = (WORD)Input.Offset;
         Element.Method = D3DDECLMETHOD_DEFAULT;
         Element.UsageIndex = 0;
-        if (!nullD3DVertexElementType(Input.Format, &Element.Type))
+        if (!nullD3DVertexElementType(Input.Format, &Element.Type)) {
+            nullD3DInvalidateVertexDeclaration();
             return false;
+        }
         if (i == 0) {
             Element.Usage = D3DDECLUSAGE_POSITION;
             HasPosition = true;
@@ -338,17 +348,23 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
             Element.Usage = D3DDECLUSAGE_TEXCOORD;
             Element.UsageIndex = (BYTE)TexCoordIndex++;
         }
-        if (Count >= 16)
+        if (Count >= 16) {
+            nullD3DInvalidateVertexDeclaration();
             return false;
+        }
         Elements[Count] = Element;
         ++Count;
     }
-    if (!HasPosition)
+    if (!HasPosition) {
+        nullD3DInvalidateVertexDeclaration();
         return false;
+    }
     Elements[Count] = D3DDECL_END();
     IDirect3DVertexDeclaration9* Declaration = NULL;
-    if (FAILED(gD3D9Device->CreateVertexDeclaration(Elements, &Declaration)))
+    if (FAILED(gD3D9Device->CreateVertexDeclaration(Elements, &Declaration))) {
+        nullD3DInvalidateVertexDeclaration();
         return false;
+    }
     if (gD3D9VertexDeclaration != NULL)
         gD3D9VertexDeclaration->Release();
     gD3D9VertexDeclaration = Declaration;
