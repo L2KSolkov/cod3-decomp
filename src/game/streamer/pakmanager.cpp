@@ -3015,13 +3015,23 @@ static_assert(offsetof(StreamZoneManager, mListSize) == 0x1D0,
 static_assert(sizeof(StreamZoneManager) == 0x1E0,
               "StreamZoneManager size mismatch");
 
-// SceneBank (scenemanager.cpp; verified IDA: mSceneHeapSize +0x08,
-// mSceneHeap +0x50, size 0x58)
-struct InstanceGroup {
-    InplaceString modelName;            // +0x00
-    void*         instanceList;         // +0x04 (InstanceListNode*)
-    void*         insts;                // +0x08
+// InstanceData (scenemanager.cpp; stride 0x28, verified IDA)
+struct InstanceData {
+    float cullA[3];     // +0x00
+    float cullB[3];     // +0x0C
+    float worldPos[3];  // +0x18
+    float pad;          // +0x24
 };
+
+struct InstanceListNode;
+
+// InstanceGroup (scenemanager.cpp; verified IDA: size 0x10)
+struct InstanceGroup {
+    InplaceString modelName;                 // +0x00
+    InstanceListNode* instanceList;          // +0x04
+    InplaceVector<InstanceData> insts;       // +0x08
+};
+static_assert(sizeof(InstanceGroup) == 0x10, "InstanceGroup size mismatch");
 // VehicleNode (scenemanager.cpp; verified IDA: size 0x38)
 struct InplaceTreeElementKV {
     InplaceString mKey;  // +0x00
@@ -3114,21 +3124,15 @@ struct cdSimpleInstance {
 };
 struct InstanceListNode {
     cdSimpleInstance instance;          // +0x00 (0x20 bytes)
-    uint8_t _pad20[0x24 - 0x20];
+    unsigned int nanoData;              // +0x20
     float  mMinDist;                    // +0x24
     float  mMaxDist;                    // +0x28
-    int*   mInstanceData;               // +0x2C ({count @ +8, data @ +0xC})
+    InstanceGroup* group;               // +0x2C
     unsigned int** mRadii;              // +0x30 (per-instance flag words)
     InstanceListNode* next;             // +0x34
 };
-
-// InstanceData (scenemanager.cpp; stride 0x28, verified IDA)
-struct InstanceData {
-    float cullA[3];     // +0x00
-    float cullB[3];     // +0x0C
-    float worldPos[3];  // +0x18
-    float pad;          // +0x24
-};
+static_assert(sizeof(InstanceListNode) == 0x38,
+              "InstanceListNode size mismatch");
 
 struct SceneEffectGroup;
 
@@ -6738,8 +6742,7 @@ void SceneManager::RenderInstanceGroups()
         InplaceVector<InstanceGroup>* groups = &bank->mInstanceGroups;
         for (unsigned int gi = 0; gi < groups->mSize; ++gi)
         {
-            InstanceListNode* node =
-                (InstanceListNode*)groups->mList[gi].instanceList;
+            InstanceListNode* node = groups->mList[gi].instanceList;
             if (node == nullptr)
                 continue;
             for (; node != nullptr; node = node->next)
@@ -6754,8 +6757,8 @@ void SceneManager::RenderInstanceGroups()
                     float min2 = node->mMinDist * node->mMinDist;
                     float maxDist2 =
                         node->mMaxDist * node->mMaxDist * 1.05f;
-                    int* array = node->mInstanceData;
-                    if (array[2] == 0)
+                    InstanceGroup* group = node->group;
+                    if (group->insts.mSize == 0)
                     {
                         AeAssert::gCurrentAuthor = AeAssert::COD3;
                         AeAssert::gCurrentFile =
@@ -6766,9 +6769,9 @@ void SceneManager::RenderInstanceGroups()
                             && AeAssert::Assert("Bounds check"))
                             __debugbreak();
                     }
-                    InstanceData* inst = (InstanceData*)array[3];
+                    InstanceData* inst = group->insts.mList;
                     unsigned int** radii = node->mRadii;
-                    int count = array[2];
+                    unsigned int count = group->insts.mSize;
                     for (int group = 0; group < count; ++group)
                     {
                         __m128 worldPos =
