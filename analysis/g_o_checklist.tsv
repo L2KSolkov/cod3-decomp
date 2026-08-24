@@ -700,7 +700,7 @@ index	status	map_line
 699	VERIFIED	0002:000875f0 ?G_RunMover@@YAXPAVEntity@@H@Z 00876AF0 f g.o
 700	VERIFIED	0002:000877a0 ?Blocked_Door@@YAXPAVEntity@@0@Z 00876CA0 f g.o
 701	VERIFIED	0002:00087890 ?Blocked_DoorRotate@@YAXPAVEntity@@0@Z 00876D90 f g.o
-702	VERIFIED	0002:00088280 ?G_SpawnVehicle@@YAHPAVEntity@@PBDH@Z 00877780 f g.o
+702	FIXED	0002:00088280 ?G_SpawnVehicle@@YAHPAVEntity@@PBDH@Z 00877780 f g.o FIXED: corrected parenthesized vehicle-slot bounds test; source f1c42598
 703	VERIFIED	0002:00088420 ?ChiefMammalInChargeOfVehicleDamageAndPushOut@@YAXPAVEntity@@@Z 00877920 f g.o
 704	VERIFIED	0002:000888d0 ?Scr_Vehicle_Touch@@YAXPAVEntity@@0H@Z 00877DD0 f g.o
 705	VERIFIED	0002:00088be0 ?Scr_Vehicle_Die@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z 008780E0 f g.o
