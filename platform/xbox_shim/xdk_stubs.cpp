@@ -1627,19 +1627,30 @@ void __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value) {
 void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* ZBuffer) {
     IDirect3DSurface9* NativeRenderTarget = NULL;
     IDirect3DSurface9* NativeZBuffer = NULL;
+    bool ReleaseDefaultTarget = false;
     nullD3DInfo* RenderInfo = nullD3DFindInfo(RenderTarget);
     nullD3DInfo* ZInfo = nullD3DFindInfo(ZBuffer);
-    if (RenderInfo != NULL)
+    if (RenderTarget == (D3DSurface*)gNullBackBuffer && gD3D9Device != NULL &&
+        SUCCEEDED(gD3D9Device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO,
+                                              &NativeRenderTarget)))
+        ReleaseDefaultTarget = true;
+    else if (RenderInfo != NULL)
         NativeRenderTarget = RenderInfo->NativeSurface;
+    else if (RenderTarget == NULL && gD3D9Device != NULL &&
+             SUCCEEDED(gD3D9Device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO,
+                                                   &NativeRenderTarget)))
+        ReleaseDefaultTarget = true;
     if (ZInfo != NULL)
         NativeZBuffer = ZInfo->NativeSurface;
-    if (gD3D9Device != NULL &&
+    if (gD3D9Device != NULL && NativeRenderTarget != NULL &&
         (NativeRenderTarget != gD3D9RenderTarget || NativeZBuffer != gD3D9DepthStencil)) {
         gD3D9Device->SetRenderTarget(0, NativeRenderTarget);
         gD3D9Device->SetDepthStencilSurface(NativeZBuffer);
         gD3D9RenderTarget = NativeRenderTarget;
         gD3D9DepthStencil = NativeZBuffer;
     }
+    if (ReleaseDefaultTarget)
+        NativeRenderTarget->Release();
 }
 void __stdcall D3DDevice_SetShaderConstantMode(unsigned int) {}
 void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture) {
