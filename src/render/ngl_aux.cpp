@@ -24,9 +24,8 @@ void* DebugRender_sInst = g_debugRenderStorage;  // ?DebugRender_sInst@@3PAXA
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-struct nglFrustum;
-extern bool nglIsSphereVisible(const nglFrustum* Frustum,
-                               const math::Vector4* Center, float Radius);
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip);
 extern nglMesh* nglCreateScratchMesh(unsigned int Flags, unsigned int NSections);
 extern void tlWarning(const char* Format, ...);
 extern tlSkipList<nglFont, tlFixedString>     nglFontDirectory;
@@ -175,8 +174,7 @@ int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode,
                    _mm_mul_ps(_mm_shuffle_ps(v4.v, v4.v, 0x55), MeshNode->LocalToWorld.y.v)),
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v4.v, v4.v, 0xAA), v5.v),
                    MeshNode->LocalToWorld.w.v));
-    return nglIsSphereVisible((const nglFrustum*)Scene->ClipPlanes,
-                              (const math::Vector4*)&v7, v8)
+    return nglIsSphereVisible(v7, v8, Scene->ClipPlanes)
            - 1;
 }
 

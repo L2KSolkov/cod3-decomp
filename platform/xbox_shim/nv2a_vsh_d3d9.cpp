@@ -127,6 +127,20 @@ static std::string Mask(unsigned int mask) {
     return result;
 }
 
+static bool IsScalarSource(const std::string& value) {
+    if (value == "0.0")
+        return true;
+    if (!value.empty() && value[0] == '-')
+        return IsScalarSource(value.substr(1));
+    if (value.size() >= 2 && value[value.size() - 2] == '.')
+    {
+        const char component = value[value.size() - 1];
+        return component == 'x' || component == 'y'
+            || component == 'z' || component == 'w';
+    }
+    return false;
+}
+
 static const char* MacName(unsigned int opcode) {
     static const char* names[] = {
         "", "MOV", "MUL", "ADD", "MAD", "DP3", "DPH", "DP4", "DST",
@@ -199,10 +213,20 @@ static const char* OutputName(unsigned int address) {
 }
 
 static void AppendWrite(std::ostringstream& source, const std::string& expression,
-                        const char* destination, const std::string& mask) {
+                        const char* destination, const std::string& mask,
+                        bool scalar) {
     if (mask.empty())
         return;
-    if (mask == "xyzw")
+    if (scalar)
+    {
+        if (mask.size() == 1)
+            source << "  " << destination << "." << mask << " = " << expression << ";\n";
+        else
+            source << "  " << destination << "." << mask << " = float4((" << expression
+                   << "), (" << expression << "), (" << expression << "), (" << expression
+                   << "))." << mask << ";\n";
+    }
+    else if (mask == "xyzw")
         source << "  " << destination << " = " << expression << ";\n";
     else
         source << "  " << destination << "." << mask << " = (" << expression << ")." << mask << ";\n";
@@ -226,10 +250,15 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     // writable constant space; it is intentionally ignored here because D3D9
     // shader constants are uploaded by the game and are not shader outputs.
     const bool writesOutput = FieldValue(token, F_OUT_ORB) != 0;
+    const bool macScalar = mac == 1 ? IsScalarSource(a)
+        : (mac == 2 || mac == 3 || mac == 4 || mac == 9 || mac == 10)
+            ? IsScalarSource(a) && IsScalarSource(b)
+            : false;
+    const bool iluScalar = ilu == 1 ? IsScalarSource(cIlu) : false;
     if (writesOutput && mac != 0 && FieldValue(token, F_OUT_MUX) == 0)
-        AppendWrite(source, macExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)));
+        AppendWrite(source, macExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), macScalar);
     if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
-        AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)));
+        AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), iluScalar);
 
     // The MAC and ILU destination masks are independent of the output mux.
     // The mux selects which unit feeds an external output; it does not disable
@@ -238,10 +267,10 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     // later instructions write r0/r1 before the final position output.
     if (mac != 0 && FieldValue(token, F_OUT_MAC_MASK) != 0 && outRegister != 1) {
         AppendWrite(source, macExpr, (std::string("r") + std::to_string(outRegister)).c_str(),
-                    Mask(FieldValue(token, F_OUT_MAC_MASK)));
+                    Mask(FieldValue(token, F_OUT_MAC_MASK)), macScalar);
     }
     if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0)
-        AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)));
+        AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)), iluScalar);
 }
 
 static std::string BuildHlsl(const unsigned int* microcode) {

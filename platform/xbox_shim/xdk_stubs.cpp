@@ -90,6 +90,7 @@ static float gD3D9VertexConstants[256][4] = {};
 static bool gD3D9VertexConstantsValid[256] = {};
 static IDirect3DIndexBuffer9* gD3D9IndexBuffer = NULL;
 static nullD3DInfo* gD3D9IndexInfo = NULL;
+static nullD3DBuffer* gNullBuffers[1024] = {};
 static IDirect3DVertexBuffer9* gD3D9VertexBuffers[4] = {};
 static nullD3DInfo* gD3D9VertexInfos[4] = {};
 static unsigned int gD3D9VertexOffsets[4] = {};
@@ -267,8 +268,10 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x15: // SHORT1
         *Type = D3DDECLTYPE_SHORT2;
         return true;
-    case 0x16: // packed signed 10:10:10
-        *Type = D3DDECLTYPE_DEC3N;
+    case 0x16: // Xbox DEC3N; D3D9's declaration path rejects DEC3N on this runtime.
+        // Preserve the four-byte attribute slot so the native shader stream stays
+        // aligned without expanding or rewriting the mesh vertex buffer.
+        *Type = D3DDECLTYPE_D3DCOLOR;
         return true;
     case 0x21: // SHORT2N
         *Type = D3DDECLTYPE_SHORT2N;
@@ -440,6 +443,22 @@ static nullD3DInfo* nullD3DFindInfo(void* Resource) {
     Candidate = (nullD3DInfo*)((unsigned char*)Resource + sizeof(D3DSurface));
     if (Candidate->Magic == NULL_D3D_MAGIC)
         return Candidate;
+    return NULL;
+}
+
+static nullD3DInfo* nullD3DFindBufferByData(const void* Data) {
+    if (Data == NULL)
+        return NULL;
+    uintptr_t Address = (uintptr_t)Data;
+    for (unsigned int i = 0; i < sizeof(gNullBuffers) / sizeof(gNullBuffers[0]); ++i) {
+        nullD3DBuffer* Buffer = gNullBuffers[i];
+        if (Buffer == NULL || Buffer->Info.Bits == NULL)
+            continue;
+        uintptr_t Begin = (uintptr_t)Buffer->Info.Bits;
+        uintptr_t End = Begin + Buffer->Info.SizeBytes;
+        if (Address >= Begin && Address < End)
+            return &Buffer->Info;
+    }
     return NULL;
 }
 
@@ -1155,6 +1174,12 @@ static nullD3DBuffer* nullD3DCreateBuffer(unsigned int Bytes, bool IndexBuffer) 
                                              NULL);
         }
     }
+    for (unsigned int i = 0; i < sizeof(gNullBuffers) / sizeof(gNullBuffers[0]); ++i) {
+        if (gNullBuffers[i] == NULL) {
+            gNullBuffers[i] = Buffer;
+            break;
+        }
+    }
     return Buffer;
 }
 
@@ -1295,8 +1320,7 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
                                               const unsigned short* IndexData) {
     if (gD3D9SelectedVertexFormatValid)
         nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
-    if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL ||
-        gD3D9IndexBuffer == NULL || IndexData == NULL)
+    if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL || IndexData == NULL)
         return;
     COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
     unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
@@ -1305,6 +1329,13 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
     nullD3DInfo* Info = gD3D9IndexInfo;
     uintptr_t IndexAddress = (uintptr_t)IndexData;
     IDirect3DIndexBuffer9* NativeIndex = gD3D9IndexBuffer;
+    if (Info == NULL || NativeIndex == NULL) {
+        Info = nullD3DFindBufferByData(IndexData);
+        NativeIndex = Info == NULL ? NULL :
+            (IDirect3DIndexBuffer9*)Info->NativeResource;
+    }
+    if (Info == NULL || NativeIndex == NULL)
+        return;
     unsigned int StartIndex = 0;
     if (Info != NULL && Info->Bits != NULL &&
         IndexAddress >= (uintptr_t)Info->Bits &&
@@ -2307,6 +2338,14 @@ unsigned int __stdcall D3DResource_Release(D3DResource* Resource) {
             Info->NativeTexture = NULL;
         }
         Info->NativeResource = NULL;
+        if (Info->Kind == NULL_D3D_BUFFER) {
+            for (unsigned int i = 0; i < sizeof(gNullBuffers) / sizeof(gNullBuffers[0]); ++i) {
+                if (gNullBuffers[i] == (nullD3DBuffer*)Resource) {
+                    gNullBuffers[i] = NULL;
+                    break;
+                }
+            }
+        }
         free(Info->Bits);
         free(Resource);
     }
