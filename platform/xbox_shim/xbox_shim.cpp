@@ -77,6 +77,7 @@ unsigned int dword_BC2D3C = 0;
 unsigned int dword_BC2D80 = 0;
 unsigned int dword_BC2DAC = 0;
 unsigned int dword_BC2E0C = 0;
+unsigned int dword_BC2E4C = 1;
 unsigned int dword_BC2E50 = 0;
 unsigned int dword_40304 = 0;           // D3D render-state slot alias
 unsigned int dword_BC2CFC = 0;          // D3D state alias

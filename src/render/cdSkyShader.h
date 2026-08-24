@@ -30,8 +30,20 @@ static_assert(sizeof(cdSkyShaderMat) == 0x28, "cdSkyShaderMat size mismatch");
 // ============================================================================
 struct cdSkyShaderNode : nglShaderNode {
     cdSkyShaderMat* mMaterial;  // +0x14
+
+    void Render() override;     // @0x7E0F50
 };
 static_assert(sizeof(cdSkyShaderNode) == 0x18, "cdSkyShaderNode size mismatch");
+
+// Exact IDA local type used by cdSkyShaderNode::Render (80 bytes).
+struct SkyContext {
+    math::Mat44 mLToW;       // +0x00
+    float mUTranslate;       // +0x40
+    float mVTranslate;       // +0x44
+    float mPad0;             // +0x48
+    float m_pad1;            // +0x4C
+};
+static_assert(sizeof(SkyContext) == 0x50, "SkyContext size mismatch");
 
 // ============================================================================
 // cdSkyShader — sky shader (16 bytes)
