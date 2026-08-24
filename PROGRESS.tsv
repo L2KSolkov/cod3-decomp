@@ -386,7 +386,7 @@ render_xboxr:cdWorldPointLitShader.o	render_xboxr	cdWorldPointLitShader.o	engine
 
 render_xboxr:cdWorldBlendShader.o	render_xboxr	cdWorldBlendShader.o	engine	5	PORTED	cdWorldBlendShader.h/.cpp (world blend: Init/Toggle/Register/AddNode; Render deferred)
 
-render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode; Render deferred)
+render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode/Render; native D3D9 path)
 
 zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
@@ -432,7 +432,7 @@ render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	P
 
 render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	PORTED	cdWorldColorShader.h/.cpp (world color shader + node + clip)
 
-render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	PORTED	cdSkyShader.h/.cpp (sky shader: Init/Toggle/Register; Render deferred)
+render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	PORTED	cdSkyShader.h/.cpp (sky shader: Init/Toggle/Register/Render; native D3D9 path)
 
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs); removed invented GetChanceToRemove override so it inherits apsRenderer::GetChanceToRemove per codmp_xboxr.xbe.c/map; retained only emitted apsSimpleMeshRenderer::GetMeshRadius; canonical Debug build passed
 
