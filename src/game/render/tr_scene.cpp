@@ -990,7 +990,7 @@ void R_RenderView(viewParms_t* parms)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
-    float worldToView[16];
+    alignas(16) float worldToView[16];
     memcpy(worldToView, tr.viewParms.world.modelMatrix, 64);
     nglSetWorldToViewMatrix(*(const math::Mat43*)worldToView);
     if (((world_t*)tr.world)->mSky != nullptr && gRenderSky != 0)
