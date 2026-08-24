@@ -124,7 +124,6 @@ struct trGlobals_t {
     viewParms_t viewParms;       // +0x10
     uint8_t  _pad0[0x26C - 0x10 - 0x184];
     trRefdef_t refdef;           // +0x26C
-    uint8_t  _pad1[0x290 - 0x270];
     void*    world;              // +0x290
     uint8_t  _pad2[0x2A0 - 0x294];
     viewModelInfo_t viewModelInfo[1];  // +0x2A0
