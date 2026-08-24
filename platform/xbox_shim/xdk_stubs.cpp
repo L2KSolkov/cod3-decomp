@@ -217,11 +217,12 @@ static DWORD nullD3DColorWriteMask(unsigned int Value) {
 }
 
 static DWORD nullD3DCullMode(unsigned int Value) {
-    // The NGL paths use 0 for no culling and 0x900 for the Xbox back-face
-    // selector.  Accept the native D3D8 numeric selectors as well.
+    // IDA's Xbox D3D type declares CW=0x900 and CCW=0x901.  D3D9 uses
+    // compact enum values, so translate the Xbox selectors explicitly.
     switch (Value) {
     case 0u: return D3DCULL_NONE;
-    case 0x900u: return D3DCULL_CCW;
+    case 0x900u: return D3DCULL_CW;
+    case 0x901u: return D3DCULL_CCW;
     case 1u: return D3DCULL_CW;
     case 2u:
     case 3u: return D3DCULL_CCW;
