@@ -127,8 +127,38 @@ struct nglRenderCallbackNode : nglRenderNode {
     void (*Fn)(void*);       // +0x10
     void*         Data;      // +0x14
     nglSortInfo   SortInfo;  // +0x18
+
+    void Render() override;
+    void GetDesc(char* Desc) override;
+    void GetSortInfo(nglSortInfo& Info) override;
 };
 static_assert(sizeof(nglRenderCallbackNode) == 0x20, "nglRenderCallbackNode size mismatch");
+
+void nglRenderCallbackNode::Render()
+{
+    if (Fn == NULL
+        && _tlAssert("c:\\cod\\code\\tl\\ngl\\include\\ngl_scene.h",
+                     496, "Fn",
+                     "Render callback node has null function pointer."))
+        __debugbreak();
+    Fn(Data);
+}
+
+void nglRenderCallbackNode::GetDesc(char* Desc)
+{
+    sprintf(Desc, "CustomNode\t");
+}
+
+void nglRenderCallbackNode::GetSortInfo(nglSortInfo& Info)
+{
+    Info = SortInfo;
+}
+
+static void* nglRenderCallbackNodeVtable()
+{
+    static nglRenderCallbackNode Probe{};
+    return *reinterpret_cast<void**>(&Probe);
+}
 
 extern void nglListAddNode(nglRenderNode* Node);  // ngl_scene.o
 
@@ -884,6 +914,7 @@ void nglListAddCustomNode(void (*CustomNodeFn)(void*), void* Data, const nglSort
     }
     nglRenderCallbackNode* v3 = (nglRenderCallbackNode*)nglListAlloc(0x20, 0x10);
     if (v3 != NULL) {
+        *reinterpret_cast<void**>(v3) = nglRenderCallbackNodeVtable();
         v3->SortInfo = *SortInfo;
         v3->Type = 1;
         v3->Fn = CustomNodeFn;
@@ -902,6 +933,7 @@ nglScene* nglListBeginSceneNode(nglSceneParamType ParamSource, nglSortInfo* Sort
     v3[1] = 0;
     nglRenderCallbackNode* v4 = (nglRenderCallbackNode*)nglListAlloc(0x20, 0x10);
     if (v4 != NULL) {
+        *reinterpret_cast<void**>(v4) = nglRenderCallbackNodeVtable();
         v4->SortInfo = *SortInfo;
         v4->Type = 0;
         v4->Fn = ngliRenderSceneNode;
