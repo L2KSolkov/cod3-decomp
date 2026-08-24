@@ -1205,6 +1205,12 @@ static void nullD3DInitDeviceResources(void) {
             gD3D9Device->ColorFill(gNullFrontBuffer->Info.NativeSurface, NULL, 0);
         if (gNullBackBuffer != NULL && gNullBackBuffer->Info.NativeSurface != NULL)
             gD3D9Device->ColorFill(gNullBackBuffer->Info.NativeSurface, NULL, 0);
+        IDirect3DSurface9* SwapchainBackBuffer = NULL;
+        if (SUCCEEDED(gD3D9Device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO,
+                                                  &SwapchainBackBuffer))) {
+            gD3D9Device->ColorFill(SwapchainBackBuffer, NULL, 0);
+            SwapchainBackBuffer->Release();
+        }
     }
 }
 
