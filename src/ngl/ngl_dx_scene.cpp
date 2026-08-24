@@ -34,6 +34,8 @@ extern void nglDxSetRenderTarget(const nglTexture* RenderTarget,
                                  const nglTexture* DepthTarget,
                                  unsigned int MipLevel, int CubeMapFace);  // ngl_dx_draw.o
 extern void nglValidateMatrices(nglScene* Scene);       // ngl_scene.o
+extern void ngliLockSceneTextures();                   // ngl_dx_texture.o
+extern void ngliUnlockSceneTextures();                 // ngl_dx_texture.o
 extern void ngliGenMipmaps(nglTexture* Tex);            // ngl_dx_texture.o
 extern void nglDepthOfFieldCallBack(void* Data);        // ngl_dx_filters.o
 extern void nglFogCallBack(void* Data);                 // ngl_dx_filters.o
@@ -419,6 +421,7 @@ int nglRenderScene_impl() {
     ++nglSceneRecursion;
     if (nglBuildScene->StartScene.Fn != NULL)
         nglBuildScene->StartScene.Fn(nglBuildScene->StartScene.Data);
+    ngliLockSceneTextures();
     for (nglScene* i = v0->FirstChild; i != NULL; i = i->NextSibling) {
         nglBuildScene = i;
         if (v0->RenderTarget != NULL || v0->ZTarget != NULL)
@@ -464,10 +467,12 @@ int nglRenderScene_impl() {
         }
         if (v0->Post.Fn != NULL)
             v0->Post.Fn(v0->Post.Data);
+        ngliUnlockSceneTextures();
         if (v0->RenderTarget != NULL)
             ngliGenMipmaps(v0->RenderTarget);
         return --nglSceneRecursion;
     }
+    ngliUnlockSceneTextures();
     return --nglSceneRecursion;
 }
 
