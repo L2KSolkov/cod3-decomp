@@ -84,6 +84,8 @@ static _D3DVERTEXATTRIBUTEFORMAT gD3D9SelectedVertexFormat = {};
 static bool gD3D9SelectedVertexFormatValid = false;
 static _D3DVERTEXATTRIBUTEFORMAT gD3D9BuiltVertexFormat = {};
 static bool gD3D9BuiltVertexFormatValid = false;
+static float gD3D9VertexConstants[256][4] = {};
+static bool gD3D9VertexConstantsValid[256] = {};
 static IDirect3DIndexBuffer9* gD3D9IndexBuffer = NULL;
 static nullD3DInfo* gD3D9IndexInfo = NULL;
 static IDirect3DVertexBuffer9* gD3D9VertexBuffers[4] = {};
@@ -254,28 +256,44 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         return true;
     D3DVERTEXELEMENT9 Elements[17] = {};
     unsigned int Count = 0;
+    unsigned int TexCoordIndex = 0;
+    bool HasPosition = false;
     for (unsigned int i = 0; i < 16 && Format->Input[i].Format != 2; ++i) {
         const _D3DVERTEXSHADERINPUT& Input = Format->Input[i];
-        D3DVERTEXELEMENT9& Element = Elements[Count];
-        Element.Stream = 0;
+        D3DVERTEXELEMENT9 Element = {};
+        Element.Stream = (WORD)Input.StreamIndex;
         Element.Offset = (WORD)Input.Offset;
         Element.Method = D3DDECLMETHOD_DEFAULT;
-        Element.UsageIndex = (BYTE)(Input.StreamIndex);
-        if (Input.Format == 50) {
+        Element.UsageIndex = 0;
+        if (i == 0 && Input.Format == 50) {
             Element.Type = D3DDECLTYPE_FLOAT3;
             Element.Usage = D3DDECLUSAGE_POSITION;
+            HasPosition = true;
         } else if (Input.Format == 64) {
             Element.Type = D3DDECLTYPE_D3DCOLOR;
             Element.Usage = D3DDECLUSAGE_COLOR;
-            Element.UsageIndex = 0;
         } else if (Input.Format == 34) {
             Element.Type = D3DDECLTYPE_FLOAT2;
             Element.Usage = D3DDECLUSAGE_TEXCOORD;
+            Element.UsageIndex = (BYTE)TexCoordIndex++;
+        } else if (Input.Format == 66) {
+            Element.Type = D3DDECLTYPE_FLOAT4;
+            Element.Usage = D3DDECLUSAGE_TEXCOORD;
+            Element.UsageIndex = (BYTE)TexCoordIndex++;
         } else {
-            return false;
+            // Normals, tangents, bone data, and packed Xbox-only attributes
+            // are consumed by the original vertex shader.  They have no
+            // fixed-function D3D9 equivalent, so leave them out of the host
+            // declaration instead of rejecting the whole mesh draw.
+            continue;
         }
+        if (Count >= 16)
+            return false;
+        Elements[Count] = Element;
         ++Count;
     }
+    if (!HasPosition)
+        return false;
     Elements[Count] = D3DDECL_END();
     IDirect3DVertexDeclaration9* Declaration = NULL;
     if (FAILED(gD3D9Device->CreateVertexDeclaration(Elements, &Declaration)))
@@ -286,6 +304,32 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     memcpy(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat));
     gD3D9BuiltVertexFormatValid = true;
     return true;
+}
+
+static void nullD3DSetShaderMatrixTransform() {
+    if (gD3D9Device == NULL || !gD3D9VertexConstantsValid[6] ||
+        !gD3D9VertexConstantsValid[7] || !gD3D9VertexConstantsValid[8] ||
+        !gD3D9VertexConstantsValid[9])
+        return;
+
+    D3DMATRIX Identity = {};
+    Identity._11 = 1.0f;
+    Identity._22 = 1.0f;
+    Identity._33 = 1.0f;
+    Identity._44 = 1.0f;
+
+    // NGL uploads transpose(LocalToScreen) to Xbox vertex constants.  D3D9
+    // fixed-function transforms use the row-major LocalToScreen matrix.
+    D3DMATRIX Projection = {};
+    float* Native = &Projection._11;
+    for (unsigned int Row = 0; Row < 4; ++Row) {
+        for (unsigned int Column = 0; Column < 4; ++Column)
+            Native[Row * 4 + Column] = gD3D9VertexConstants[6 + Column][Row];
+    }
+    gD3D9Device->SetTransform(D3DTS_WORLD, &Identity);
+    gD3D9Device->SetTransform(D3DTS_VIEW, &Identity);
+    gD3D9Device->SetTransform(D3DTS_PROJECTION, &Projection);
+    gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 static void nullD3DSyncVertexBuffer(IDirect3DVertexBuffer9* Native, nullD3DInfo* Info) {
@@ -1088,7 +1132,11 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
 }
 void __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int Register,
                                                        const void* Data) {
-    if (gD3D9Device != NULL && Data != NULL && Register < 256)
+    if (Data == NULL || Register >= 256)
+        return;
+    memcpy(gD3D9VertexConstants[Register], Data, sizeof(gD3D9VertexConstants[Register]));
+    gD3D9VertexConstantsValid[Register] = true;
+    if (gD3D9Device != NULL)
         gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, 1);
 }
 void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
@@ -1096,13 +1144,19 @@ void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
                                                                unsigned int DwordCount) {
     // The XDK entry point receives a DWORD count.  The IDA call sites pass
     // four DWORDs per float4 constant, so convert to D3D9's vector count.
-    if (gD3D9Device == NULL || Data == NULL || Register < 0 || Register >= 256 ||
-        DwordCount == 0 || (DwordCount & 3u) != 0)
+    if (Data == NULL || Register < 0 || Register >= 256 || DwordCount == 0 ||
+        (DwordCount & 3u) != 0)
         return;
     unsigned int VectorCount = DwordCount / 4u;
     if (VectorCount > 256u - (unsigned int)Register)
         VectorCount = 256u - (unsigned int)Register;
-    if (VectorCount != 0)
+    if (VectorCount != 0) {
+        memcpy(gD3D9VertexConstants[Register], Data,
+               (size_t)VectorCount * sizeof(gD3D9VertexConstants[0]));
+        for (unsigned int i = 0; i < VectorCount; ++i)
+            gD3D9VertexConstantsValid[Register + i] = true;
+    }
+    if (gD3D9Device != NULL && VectorCount != 0)
         gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, VectorCount);
 }
 void __cdecl compress2(void) {}
@@ -1185,6 +1239,7 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
     nullD3DSyncIndexBuffer(NativeIndex, Info);
     for (unsigned int i = 0; i < 4; ++i)
         nullD3DSyncVertexBuffer(gD3D9VertexBuffers[i], gD3D9VertexInfos[i]);
+    nullD3DSetShaderMatrixTransform();
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     gD3D9Device->SetIndices(NativeIndex);
     unsigned int NumVertices = 0;
@@ -1210,6 +1265,7 @@ void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
     nullD3DSyncVertexBuffer(gD3D9VertexBuffers[0], gD3D9VertexInfos[0]);
+    nullD3DSetShaderMatrixTransform();
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     gD3D9Device->SetStreamSource(0, gD3D9VertexBuffers[0],
                                  gD3D9VertexOffsets[0], gD3D9VertexStrides[0]);
@@ -1227,6 +1283,7 @@ void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
     unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
+    nullD3DSetShaderMatrixTransform();
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
 }
