@@ -1233,6 +1233,7 @@ void nglCalculateMatrices(nglScene* Scene) {
     // reference transforms each plane by ViewToWorld before storing it in the
     // scene; keep the SIMD layout and homogeneous offset intact here.
     const __m128 zero = _mm_setzero_ps();
+    const __m128 one = _mm_set1_ps(1.0f);
     for (int i = 0; i < 6; ++i) {
         const __m128 plane = Scene->ClipPlanes[i].v;
         const __m128 xAxis = _mm_shuffle_ps(
@@ -1253,7 +1254,7 @@ void nglCalculateMatrices(nglScene* Scene) {
             _mm_shuffle_ps(zero, transformed, 0xA0), 0x34);
         const __m128 wAxis = _mm_shuffle_ps(
             Scene->ViewToWorld.w.v,
-            _mm_shuffle_ps(zero, Scene->ViewToWorld.w.v, 0xA0), 0x34);
+            _mm_shuffle_ps(one, Scene->ViewToWorld.w.v, 0xA0), 0x34);
         const __m128 offsetProducts = _mm_mul_ps(homogeneous, wAxis);
         const float offset = offsetProducts.m128_f32[0]
             + offsetProducts.m128_f32[1]
