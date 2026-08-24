@@ -305,31 +305,46 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld
                                   nglBuildScene->WorldToScreen.z.v,
                                   nglBuildScene->WorldToScreen.w.v, rows);
                 } else {
-                    // LocalToScreen = transpose(WorldToScreen * M), M = scaled axes + unit w.
-                    __m128 ax = _mm_shuffle_ps(ScaledMatrix->x.v, _mm_setzero_ps(), 0xE4);
-                    __m128 ay = _mm_shuffle_ps(ScaledMatrix->y.v, _mm_setzero_ps(), 0xE4);
-                    __m128 az = _mm_shuffle_ps(ScaledMatrix->z.v, _mm_setzero_ps(), 0xE4);
-                    __m128 aw = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
-                    __m128 w2s[4] = {
-                        nglBuildScene->WorldToScreen.x.v,
-                        nglBuildScene->WorldToScreen.y.v,
-                        nglBuildScene->WorldToScreen.z.v,
-                        nglBuildScene->WorldToScreen.w.v,
+                    // LocalToScreen = transpose(WorldToScreen * LocalToWorld).
+                    // The shuffle sequence mirrors the reference SSE construction:
+                    // the first three columns have a zero w lane, while the
+                    // translation column keeps xyz and supplies a homogeneous 1.
+                    const __m128 zero = _mm_setzero_ps();
+                    const __m128 axisX = _mm_shuffle_ps(
+                        ScaledMatrix->x.v,
+                        _mm_shuffle_ps(zero, ScaledMatrix->x.v, 0xA0), 0x34);
+                    const __m128 axisY = _mm_shuffle_ps(
+                        ScaledMatrix->y.v,
+                        _mm_shuffle_ps(zero, ScaledMatrix->y.v, 0xA0), 0x34);
+                    const __m128 axisZ = _mm_shuffle_ps(
+                        ScaledMatrix->z.v,
+                        _mm_shuffle_ps(zero, ScaledMatrix->z.v, 0xA0), 0x34);
+                    const __m128 translation = _mm_shuffle_ps(
+                        ScaledMatrix->w.v,
+                        _mm_shuffle_ps(_mm_set_ss(1.0f), ScaledMatrix->w.v, 0xA0), 0x34);
+                    const math::Mat44& worldToScreen = nglBuildScene->WorldToScreen;
+                    const auto transform = [&worldToScreen](__m128 column) {
+                        __m128 result = _mm_mul_ps(
+                            worldToScreen.x.v, _mm_shuffle_ps(column, column, 0));
+                        result = _mm_add_ps(result, _mm_mul_ps(
+                            worldToScreen.y.v, _mm_shuffle_ps(column, column, 0x55)));
+                        result = _mm_add_ps(result, _mm_mul_ps(
+                            worldToScreen.z.v, _mm_shuffle_ps(column, column, 0xAA)));
+                        return _mm_add_ps(result, _mm_mul_ps(
+                            worldToScreen.w.v, _mm_shuffle_ps(column, column, 0xFF)));
                     };
-                    __m128 cols[4];
-                    for (int c = 0; c < 4; ++c) {
-                        __m128 col = _mm_setzero_ps();
-                        float mx = ax.m128_f32[c];
-                        float my = ay.m128_f32[c];
-                        float mz = az.m128_f32[c];
-                        float mw = aw.m128_f32[c];
-                        for (int r = 0; r < 4; ++r) {
-                            float m = r == 0 ? mx : r == 1 ? my : r == 2 ? mz : mw;
-                            col = _mm_add_ps(col, _mm_mul_ps(w2s[r], _mm_set1_ps(m)));
-                        }
-                        cols[c] = col;
-                    }
-                    TransposeFour(cols[0], cols[1], cols[2], cols[3], rows);
+                    const __m128 transformedX = transform(axisX);
+                    const __m128 transformedY = transform(axisY);
+                    const __m128 transformedZ = transform(axisZ);
+                    const __m128 transformedW = transform(translation);
+                    const __m128 zWLo = _mm_shuffle_ps(transformedZ, transformedW, 0x44);
+                    const __m128 zWHi = _mm_shuffle_ps(transformedZ, transformedW, 0xEE);
+                    const __m128 xyLo = _mm_shuffle_ps(transformedX, transformedY, 0x44);
+                    const __m128 xyHi = _mm_shuffle_ps(transformedX, transformedY, 0xEE);
+                    rows[0] = _mm_shuffle_ps(xyLo, zWLo, 0x88);
+                    rows[1] = _mm_shuffle_ps(xyLo, zWLo, 0xDD);
+                    rows[2] = _mm_shuffle_ps(xyHi, zWHi, 0x88);
+                    rows[3] = _mm_shuffle_ps(xyHi, zWHi, 0xDD);
                 }
                 node->LocalToScreen.x.v = rows[0];
                 node->LocalToScreen.y.v = rows[1];
