@@ -249,6 +249,61 @@ static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int V
     }
 }
 
+// Xbox vertex format values are the D3DVSDT encodings used by the NGL
+// declarations.  Keep the conversion here in lockstep with the unpacker in
+// src/ngl/ngl_gpu.cpp; the world shaders consume the packed normal/weight
+// attributes instead of accepting a reduced fixed-function declaration.
+static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
+    if (Type == NULL)
+        return false;
+    switch (Format) {
+    case 0x11: // SHORT1N
+        *Type = D3DDECLTYPE_SHORT2N;
+        return true;
+    case 0x12: // FLOAT1
+        *Type = D3DDECLTYPE_FLOAT1;
+        return true;
+    case 0x15: // SHORT1
+        *Type = D3DDECLTYPE_SHORT2;
+        return true;
+    case 0x16: // packed signed 10:10:10
+        *Type = D3DDECLTYPE_DEC3N;
+        return true;
+    case 0x21: // SHORT2N
+        *Type = D3DDECLTYPE_SHORT2N;
+        return true;
+    case 0x22: // FLOAT2
+        *Type = D3DDECLTYPE_FLOAT2;
+        return true;
+    case 0x25: // SHORT2
+        *Type = D3DDECLTYPE_SHORT2;
+        return true;
+    case 0x31: // SHORT3N (Xbox packed 3-component normal)
+        *Type = D3DDECLTYPE_DEC3N;
+        return true;
+    case 0x32: // FLOAT3
+        *Type = D3DDECLTYPE_FLOAT3;
+        return true;
+    case 0x35: // SHORT3; D3D9 has no 3-short declaration, use the padded form.
+        *Type = D3DDECLTYPE_SHORT4;
+        return true;
+    case 0x40: // D3DCOLOR
+        *Type = D3DDECLTYPE_D3DCOLOR;
+        return true;
+    case 0x41: // SHORT4N
+        *Type = D3DDECLTYPE_SHORT4N;
+        return true;
+    case 0x42: // FLOAT4
+        *Type = D3DDECLTYPE_FLOAT4;
+        return true;
+    case 0x45: // SHORT4
+        *Type = D3DDECLTYPE_SHORT4;
+        return true;
+    default:
+        return false;
+    }
+}
+
 static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     if (gD3D9Device == NULL || Format == NULL)
         return false;
@@ -266,27 +321,16 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         Element.Offset = (WORD)Input.Offset;
         Element.Method = D3DDECLMETHOD_DEFAULT;
         Element.UsageIndex = 0;
-        if (i == 0 && Input.Format == 50) {
-            Element.Type = D3DDECLTYPE_FLOAT3;
+        if (!nullD3DVertexElementType(Input.Format, &Element.Type))
+            return false;
+        if (i == 0) {
             Element.Usage = D3DDECLUSAGE_POSITION;
             HasPosition = true;
-        } else if (Input.Format == 64) {
-            Element.Type = D3DDECLTYPE_D3DCOLOR;
+        } else if (Input.Format == 0x40) {
             Element.Usage = D3DDECLUSAGE_COLOR;
-        } else if (Input.Format == 34) {
-            Element.Type = D3DDECLTYPE_FLOAT2;
-            Element.Usage = D3DDECLUSAGE_TEXCOORD;
-            Element.UsageIndex = (BYTE)TexCoordIndex++;
-        } else if (Input.Format == 66) {
-            Element.Type = D3DDECLTYPE_FLOAT4;
-            Element.Usage = D3DDECLUSAGE_TEXCOORD;
-            Element.UsageIndex = (BYTE)TexCoordIndex++;
         } else {
-            // Normals, tangents, bone data, and packed Xbox-only attributes
-            // are consumed by the original vertex shader.  They have no
-            // fixed-function D3D9 equivalent, so leave them out of the host
-            // declaration instead of rejecting the whole mesh draw.
-            continue;
+            Element.Usage = D3DDECLUSAGE_TEXCOORD;
+            Element.UsageIndex = (BYTE)TexCoordIndex++;
         }
         if (Count >= 16)
             return false;
