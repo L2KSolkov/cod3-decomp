@@ -807,8 +807,11 @@ void CL_SystemInfoChanged()
 void CL_InitCGame()
 {
     int t1 = Sys_Milliseconds();
-    ASSERT("com_sv_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp",
-           1745);
+    if (com_sv_running->integer == 0)
+    {
+        ASSERT("com_sv_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp",
+               1745);
+    }
     int rendererStarted = (int)cls_configstrings[0].mBlock;
     if (rendererStarted == 0)
     {
