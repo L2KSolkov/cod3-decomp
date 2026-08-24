@@ -1221,9 +1221,10 @@ Entity* fire_grenade(Entity* self, float* start, float* dir, int grenadeWPID,
         float a1 = flrand(-45.0f, 45.0f);
         v9->s.apos.trDelta[2] = a1 + 360.0f;
     }
-    if (IS_NAN(v9->r.currentOrigin.v.m128_f32[0])
+    if (InfoForWeapon->slot != 5 /* WEAPSLOT_SMOKE_GRENADE */
+        && (IS_NAN(v9->r.currentOrigin.v.m128_f32[0])
         || IS_NAN(v9->r.currentOrigin.v.m128_f32[1])
-        || IS_NAN(v9->r.currentOrigin.v.m128_f32[2]))
+        || IS_NAN(v9->r.currentOrigin.v.m128_f32[2])))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
