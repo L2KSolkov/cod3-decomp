@@ -2136,8 +2136,6 @@ struct TaskHandler;
 // ============================================================================
 // Free-function stubs (various libs; port later)
 // ============================================================================
-struct _objectiveInfo_t;
-_objectiveInfo_t (*objectives)[17] = nullptr;  // ?objectives@@3PAY0BB@U_objectiveInfo_t@@A
 struct KeyInfoEntry;
 KeyInfoEntry (*gKeyInfoMKeys)[256] = nullptr;  // ?gKeyInfoMKeys@@3PAY0BAA@UKeyInfoEntry@@A
 struct KeyInfoEntry3;

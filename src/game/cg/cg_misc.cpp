@@ -466,13 +466,13 @@ struct game_hudelem_s {
 extern game_hudelem_s g_hudelems[16];  // 0x00EA5580
 
 struct _objectiveInfo_t {
-    int state;                    // +0x00
+    int worldState;               // +0x00
     float height;                 // +0x04
-    int entity;                   // +0x08
-    int state2;                   // +0x0C
+    unsigned int entity;          // +0x08 (DbLinkedHandle value)
+    int state;                    // +0x0C
     float vOrigin[3];             // +0x10
     int ringTime;                 // +0x1C
-    int ring;                     // +0x20
+    int ringToggle;               // +0x20
     int displayOrder;             // +0x24
     _objectiveInfo_t* pChild;     // +0x28
     _objectiveInfo_t* pParent;    // +0x2C
@@ -480,6 +480,8 @@ struct _objectiveInfo_t {
 
     void Clear();                 // ?Clear@_objectiveInfo_t@@QAEXXZ (scr.o 0x5EE600)
 };
+static_assert(sizeof(_objectiveInfo_t) == 0xB0,
+              "_objectiveInfo_t layout mismatch");
 
 // ea: 0x005EE600
 void _objectiveInfo_t::Clear()
@@ -488,12 +490,12 @@ void _objectiveInfo_t::Clear()
     vOrigin[0] = 0.0f;
     szString[0] = 0;
     ringTime = -1;
-    ring = 0;
+    ringToggle = 0;
     displayOrder = -1;
     pChild = nullptr;
     pParent = nullptr;
     *(int*)&height = 0;
-    state = 0;
+    worldState = 0;
 }
 
 struct localEntity_t {
@@ -2947,7 +2949,13 @@ int fireBlendType;     // 0x00DFA300
 float YOfs;            // 0x00DFA2FC
 float XOfs;            // 0x00DFA2F8
 char buffer_0[256];    // ?buffer_0@@3PADA (cg.o @ 0x00F73890)
-extern _objectiveInfo_t objectives[4][17];  // 0x00F6A2B0
+extern float unk_F6A2B0[];                  // 4 * 802 dwords, 0x00F6A2B0
+static _objectiveInfo_t* CG_Objective(int client, int index)
+{
+    return reinterpret_cast<_objectiveInfo_t*>(
+        reinterpret_cast<unsigned char*>(unk_F6A2B0)
+        + 0xC88 * client + 0xB0 * index);
+}
 extern const float vec3_origin[3];
 struct nglQuad;
 extern void nglInitQuad(nglQuad* quad);
@@ -3065,7 +3073,7 @@ void CG_ClearObjective(_objectiveInfo_t* pObjective)
         pObjective->vOrigin[1] = 0.0f;
         pObjective->vOrigin[2] = 0.0f;
         pObjective->szString[0] = 0;
-        pObjective->ring = 0;
+        pObjective->ringToggle = 0;
         pObjective->entity = 0;
         pObjective->pParent->pChild = pObjective->pChild;
         _objectiveInfo_t* pChild = pObjective->pChild;
@@ -3085,7 +3093,7 @@ void CG_ClearObjective(_objectiveInfo_t* pObjective)
             v1->vOrigin[2] = 0.0f;
             v1->szString[0] = 0;
             v1->ringTime = -1;
-            v1->ring = 0;
+            v1->ringToggle = 0;
             v1->displayOrder = -1;
             v1->entity = 0;
             v1->pParent = nullptr;
@@ -3168,36 +3176,36 @@ void CG_ParseObjectiveChange(int iNum)
     const char* v4 = Info_ValueForKey(v2, "clid");
     _objectiveInfo_t* v6;
     if (*v4 != 0 && (client = atoi(v4), client >= 0))
-        v6 = &objectives[client][v1];
+        v6 = CG_Objective(client, v1);
     else
-        v6 = &objectives[0][v1];
+        v6 = CG_Objective(0, v1);
     const char* v7 = Info_ValueForKey(v2, "delete");
     if (*v2 == 0 || *v7 != 0)
     {
-        v6->state2 = 0;
+        v6->state = 0;
     }
     else
     {
-        int v8 = v6->state2;
+        int v8 = v6->state;
         const char* v9 = Info_ValueForKey(v2, "state");
         if (*v9 != 0)
-            v6->state2 = atoi(v9);
+            v6->state = atoi(v9);
         else
-            v6->state2 = 0;
-        if (v6->state2 > 0x1A)
+            v6->state = 0;
+        if (v6->state > 0x1A)
         {
             CG_ASSERT("(pObjective->state >= IGOCompassWidget::i_guy_bad_c) "
                       "&& (pObjective->state < "
                       "IGOCompassWidget::MAX_OBJECTIVE_ICONS)",
                       "c:\\cod\\code\\game\\cg_scoreboard.cpp", 695);
-            va("pObjective->state = %i\n", v6->state2);
+            va("pObjective->state = %i\n", v6->state);
         }
-        int v11 = v6->state2;
+        int v11 = v6->state;
         v6->state = v11;
         if (v8 != 4 && v11 == 4)
             v6->ringTime = cgGlobal.time;
     }
-    if (v6->state2 != 0)
+    if (v6->state != 0)
     {
         const char* v12 = Info_ValueForKey(v2, "str");
         if (*v12 != 0)
@@ -3216,7 +3224,7 @@ void CG_ParseObjectiveChange(int iNum)
         int v14 = v6->displayOrder;
         const char* v15 = Info_ValueForKey(v2, "ring");
         int v16 = *v15 != 0 ? atoi(v15) : 0;
-        v6->ring = v16;
+        v6->ringToggle = v16;
         if (v14 != v16)
             v6->ringTime = cgGlobal.time;
         const char* v17 = Info_ValueForKey(v2, "wstate");
@@ -3248,7 +3256,7 @@ void CG_ParseObjectiveChange(int iNum)
         {
             int v25 = atoi(v24);
             _objectiveInfo_t* v26 =
-                client < 0 ? &objectives[0][v25] : &objectives[client][v25];
+                CG_Objective(client < 0 ? 0 : client, v25);
             const char* v27 = Info_ValueForKey(v2, "order");
             v6->displayOrder = atoi(v27);
             if (v26->pChild != nullptr)
