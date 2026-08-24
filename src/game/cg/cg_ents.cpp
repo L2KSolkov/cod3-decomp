@@ -678,11 +678,10 @@ void CG_BuildSolidList()
     cg_numSolidEntities = 0;
     if (v0 == 0)
         CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_predict.cpp", 47);
-    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
+    int count = EntityHandleDb::sInst.mActiveList.m_size;
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
-                                  + 4 * i);
+        Entity* ent = EntityHandleDb::sInst.mActiveList.m_elements[i];
         if (ent != nullptr)
         {
             if ((ent->s.solid != 0xFFFFFF || (ent->s.eFlags & 2) == 0)
@@ -712,11 +711,10 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     dword_F6295C[v1] = 1;
     dword_F62960[v1] = (int)snap;
     dword_F62944[v1] = *(int*)((char*)snap + 0xB0);
-    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
+    int count = EntityHandleDb::sInst.mActiveList.m_size;
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
-                                  + 4 * i);
+        Entity* ent = EntityHandleDb::sInst.mActiveList.m_elements[i];
         if (ent != nullptr)
             ent->currentValid = 0;
     }
@@ -1470,11 +1468,10 @@ void CG_AddLocalEntities()
 void CG_AddPacketEntities()
 {
     CL_DObjInvalidateSkels();
-    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
+    int count = EntityHandleDb::sInst.mActiveList.m_size;
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
-                                  + 4 * i);
+        Entity* ent = EntityHandleDb::sInst.mActiveList.m_elements[i];
         if (ent != nullptr && ent->mDObj != nullptr)
             j_nullsub_89(ent->mDObj, dword_F63554[1580 * currCl] * 0.001f);
     }
@@ -1512,8 +1509,7 @@ void CG_AddPacketEntities()
                  (float (*)[3])(unk_F63C24 + 6320 * currCl));
     for (int i = 0; i < count; ++i)
     {
-        Entity* v9 = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
-                                 + 4 * i);
+        Entity* v9 = EntityHandleDb::sInst.mActiveList.m_elements[i];
         if (v9 != nullptr && v9->IsInSnapshot()
             && TestFPS_sInst == nullptr && cg_addentities.integer != 0
             && v9->s.eType < 0x12u)
