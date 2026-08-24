@@ -61,7 +61,7 @@ static void SV_BuildClientSnapshot(client_s* client) {
         Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
         if (mObject != NULL) {
             PlayerState* frames = client->frames;
-            memcpy(client->frames, (void*)((unsigned int)mObject + 596), sizeof(client->frames));
+            memcpy(client->frames, mObject->client, sizeof(client->frames));
             unsigned int mVal = client->frames[0].mClient.mHandle.mVal;
             if (mVal == 0) {
                 Com_Error((errorParm_t)2, "\x15" "SV_BuildClientSnapshot: bad gEnt->client");
