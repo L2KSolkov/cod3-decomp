@@ -1494,6 +1494,13 @@ static void nullD3DSetFixedFunctionFVF(DWORD FVF, bool FontPacket = false) {
     const bool HasTexture = gNullBoundTextures[0] != NULL;
     nullD3DInfo* TextureInfo = HasTexture
         ? nullD3DTextureInfo(gNullBoundTextures[0]) : NULL;
+    for (unsigned int Stage = 1; Stage < 4; ++Stage) {
+        gNullBoundTextures[Stage] = NULL;
+        gNullTextureWidths[Stage] = 0;
+        gNullTextureHeights[Stage] = 0;
+        gNullPalettes[Stage] = NULL;
+        gD3D9Device->SetTexture(Stage, NULL);
+    }
     // NGL fonts use an A8 glyph mask.  The Xbox font pixel shader preserves
     // the vertex RGB and uses the sampled alpha for coverage; multiplying the
     // vertex RGB by an A8 texture's undefined/zero RGB channels makes text
@@ -1702,6 +1709,16 @@ void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* Z
         NativeRenderTarget->Release();
 }
 void __stdcall D3DDevice_SetShaderConstantMode(unsigned int) {}
+static void nullD3DClearBoundTextures(void) {
+    for (unsigned int Stage = 0; Stage < 4; ++Stage) {
+        gNullBoundTextures[Stage] = NULL;
+        gNullTextureWidths[Stage] = 0;
+        gNullTextureHeights[Stage] = 0;
+        gNullPalettes[Stage] = NULL;
+        if (gD3D9Device != NULL)
+            gD3D9Device->SetTexture(Stage, NULL);
+    }
+}
 void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture) {
     if (Stage >= 4)
         return;
@@ -1764,7 +1781,10 @@ void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
 }
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
 void __stdcall D3DDevice_BeginScene(void) {
-    if (gD3D9Device == NULL || gD3D9SceneActive)
+    if (gD3D9Device == NULL)
+        return;
+    nullD3DClearBoundTextures();
+    if (gD3D9SceneActive)
         return;
     if (SUCCEEDED(gD3D9Device->BeginScene()))
         gD3D9SceneActive = true;
@@ -2336,6 +2356,19 @@ unsigned int __stdcall D3DResource_Release(D3DResource* Resource) {
         Resource == (D3DResource*)gNullBackBuffer ||
         Resource == (D3DResource*)gNullDepthBuffer)
         return 0;
+    // D3D9 retains a reference to the bound native texture independently of
+    // the Xbox wrapper.  Drop every matching stage before releasing the
+    // wrapper/native resource so a later push-buffer draw cannot reuse it.
+    for (unsigned int Stage = 0; Stage < 4; ++Stage) {
+        if (gNullBoundTextures[Stage] == (D3DBaseTexture*)Resource) {
+            gNullBoundTextures[Stage] = NULL;
+            gNullTextureWidths[Stage] = 0;
+            gNullTextureHeights[Stage] = 0;
+            gNullPalettes[Stage] = NULL;
+            if (gD3D9Device != NULL)
+                gD3D9Device->SetTexture(Stage, NULL);
+        }
+    }
     nullD3DInfo* Info = NULL;
     nullD3DInfo* Candidate = (nullD3DInfo*)((unsigned char*)Resource + sizeof(D3DBaseTexture));
     if (Candidate->Magic == NULL_D3D_MAGIC)
