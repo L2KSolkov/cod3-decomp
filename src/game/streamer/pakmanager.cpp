@@ -9784,21 +9784,27 @@ void PakFile::UpdateUnloading()
         UnloadInplace();
         mLoadingState = (ELoadingState)(UNLOADING_DONE | LOADING_TOC);
         break;
-    case (ELoadingState)(UNLOADING_DONE | LOADING_TOC):
+    case (ELoadingState)(UNLOADING_DONE | LOADING_TOC): {
         tlPrintf("Finished unloading of '%s'\n", mPath.mBuff);
+        char longName[254];
+        int longNameLen = 0;
+        longName[0] = 0;
         if (mPakType == kPakTypeCount)
         {
+            FinishUnload();
             BrocSys::NotifyPakUnloaded(nullptr);
         }
         else
         {
             if (mPakInfo == nullptr)
                 mPakInfo = PakManager::sInst->GetPakInfo(mPakId);
-            BrocSys::NotifyPakUnloaded(
-                mPakInfo->longName.mStr);
+            AeStringSupport::CStrToAeStr(longName, &longNameLen, 253,
+                                         mPakInfo->longName.mStr);
+            FinishUnload();
+            BrocSys::NotifyPakUnloaded(longName);
         }
-        FinishUnload();
         break;
+    }
     default:
         break;
     }
