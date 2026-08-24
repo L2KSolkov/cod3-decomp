@@ -2112,7 +2112,7 @@ public:
     SplineEntry mList[32];             // +0x04
 
     SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
-    void UnloadBank(int pakId);        // ea: 0x4F97C0
+    virtual void UnloadBank(int pakId); // ea: 0x4F97C0
     static bool EndOfSpline(const float* p);  // ea: 0x4F59A0
     void AddSplineGroupFile(unsigned char* data, int pakId);  // ea: 0x4FF5B0
     SplinePathData* GetSplinePathData(unsigned int name, int* pakId);  // ea: 0x4FF5D0
