@@ -121,12 +121,12 @@ public:
 extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
-extern void* cgsGlobal_media_whiteShader;
+extern nglTexture* cgsGlobal_media_whiteShader;
 class FEManager; extern FEManager g_femanager;
 
 extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
-                                  float t1, float s2, float t2, void* tex,
+                                  float t1, float s2, float t2, nglTexture* tex,
                                   float z);
 extern void CL_AddDebugLine(const float* start, const float* end,
                             const float* color, int depthTest, int duration,

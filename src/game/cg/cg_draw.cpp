@@ -39,7 +39,7 @@ class Camera;
 extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
-extern void* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
+extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
 extern char* va(const char* fmt, ...);
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);
@@ -47,9 +47,10 @@ extern void trap_R_Text_Paint(float x, float y, int font, float scale,
                               const float* color, const char* text,
                               float charWidth, int limit, int style);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
-                                  float t1, float s2, float t2, void* tex,
+                                  float t1, float s2, float t2, nglTexture* tex,
                                   float z);
-extern void trap_R_RenderScene(const void* fd);
+struct refdef_s;
+extern void trap_R_RenderScene(const refdef_s* fd);
 struct parseInfo_t {
     char token[128];         // +0x00
     int lines;               // +0x80
@@ -485,7 +486,7 @@ void CG_DrawTopBottom(float x, float y, float w, float h, float size)
 }
 
 // ea: 0x00688FA0
-void CG_DrawPic(float x, float y, float width, float height, void* tex)
+void CG_DrawPic(float x, float y, float width, float height, nglTexture* tex)
 {
     trap_R_DrawStretchPic(unk_F6A278[802 * currCl] * x,
                           unk_F6A27C[802 * currCl] * y,
@@ -496,7 +497,7 @@ void CG_DrawPic(float x, float y, float width, float height, void* tex)
 
 // ea: 0x00689020
 void CG_DrawCroppedPic(float x, float y, float width, float height, float s1,
-                       float t1, float s2, float t2, void* tex)
+                       float t1, float s2, float t2, nglTexture* tex)
 {
     trap_R_DrawStretchPic(unk_F6A278[802 * currCl] * x,
                           unk_F6A27C[802 * currCl] * y,
@@ -938,7 +939,8 @@ int CG_DrawPerformanceWarnings()
                                   unk_F6A27C[802 * currCl] * y,
                                   unk_F6A278[802 * currCl] * 32.0f,
                                   unk_F6A27C[802 * currCl] * 32.0f, 0.0f, 0.0f,
-                                  1.0f, 1.0f, (void*)p[1], 0.0f);
+                                  1.0f, 1.0f,
+                                  reinterpret_cast<nglTexture*>(p[1]), 0.0f);
         }
         x += 34.0f;
         if ((x + 32.0f) > 68.0f)
@@ -1159,7 +1161,8 @@ void CG_DrawTurretCrossHair()
                                  + dword_F63C54[1580 * currCl])
                                     + y,
                                 w, h, 0.0f, 0.0f, 1.0f, 1.0f,
-                                v5->hReticleCenter, 0.0f);
+                                 reinterpret_cast<nglTexture*>(v5->hReticleCenter),
+                                 0.0f);
                         }
                     }
                 }
@@ -1196,7 +1199,7 @@ void CG_DrawSkyBoxPortal()
                 int time = cgGlobal_time;
                 dword_F63CA8[v2] = v30;
                 dword_F63CA4[v2] = time;
-                trap_R_RenderScene(&dword_F63C50[v2]);
+                trap_R_RenderScene(reinterpret_cast<const refdef_s*>(&dword_F63C50[v2]));
                 memcpy(&dword_F63C50[1580 * currCl], v32, 96);
                 return;
             }
@@ -1745,7 +1748,7 @@ void CG_DrawActive(float a1)
         dword_F63CA8[1580 * currCl] = v2;
         if (v3)
             dword_F63CA8[v1] = v2 & 0xFFFFFFEF;
-        trap_R_RenderScene(&dword_F63C50[v1]);
+        trap_R_RenderScene(reinterpret_cast<const refdef_s*>(&dword_F63C50[v1]));
         CG_DrawShellShockSavedScreenBlend(
             (void*)dword_F64164[1580 * currCl],
             dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);

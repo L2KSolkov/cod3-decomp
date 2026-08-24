@@ -3450,15 +3450,6 @@ void TimerRenderBars_Init(void* self)
     (void)self;
     TimerRenderBars::sInst.Init();
 }
-void trap_R_ClearScene() {}
-void trap_R_DrawStretchPic(float a, float b, float c, float d, float e,
-                           float f, float g, float h, void* i, float j)
-{
-    (void)a; (void)b; (void)c; (void)d; (void)e;
-    (void)f; (void)g; (void)h; (void)i; (void)j;
-}
-void trap_R_RenderScene(const void* a) { (void)a; }
-void trap_R_SetColor(const float* a) { (void)a; }
 void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
                       const math::Dir3& d)
 {

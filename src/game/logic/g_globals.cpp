@@ -4,6 +4,8 @@
 
 #include "game/logic/g_local.h"
 
+struct nglTexture;
+
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 SaveGameData gSaveGameData[4] = {};   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
 cvar_t* g_gameskill;           // ?g_gameskill@@3PAUcvar_t@@A (g.o)
@@ -385,7 +387,7 @@ void* RumbleEffectInstance_sAllocator;
 void* CTitleFontRenderer_vftable;
 void* cgCvarTable;
 void* cvarTable;
-void* cgsGlobal_media_whiteShader;
+nglTexture* cgsGlobal_media_whiteShader;
 void* cgsGlobal_media_tracerShader;
 void* cdscratch_vertex_format;
 void* gShotProf;                 // ?gShotProf (g.o)

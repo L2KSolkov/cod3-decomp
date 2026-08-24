@@ -103,12 +103,13 @@ extern int BG_IsAimDownSightWeapon(int iWeapon);
 extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern void CG_DrawGameScreenFade();
 extern void trap_R_SetColor(const float* rgba);
+struct nglTexture;
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
-                                  float t1, float s2, float t2, void* tex,
+                                  float t1, float s2, float t2, nglTexture* tex,
                                   float z);
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);
-extern void* cgsGlobal_media_whiteShader;
+extern nglTexture* cgsGlobal_media_whiteShader;
 
 // ea: 0x00688620
 void CG_Fade(int r, int g, int b, int a, int time, int duration, int viewport)

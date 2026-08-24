@@ -213,6 +213,18 @@ void trap_R_AddLightToScene(const float* const origin, float r, float g,
     (void)origin; (void)r; (void)g; (void)b; (void)intensity;
 }
 
+// trap_R_ClearScene - ea: 0x006C2D90
+void trap_R_ClearScene()
+{
+    re.ClearScene();
+}
+
+// trap_R_SetColor - ea: 0x006C2DD0
+void trap_R_SetColor(const float* rgba)
+{
+    re.SetColor(rgba);
+}
+
 // ============================================================================
 // trap_R_RenderScene - ea: 0x006C2DC0
 // ============================================================================
