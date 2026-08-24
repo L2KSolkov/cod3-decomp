@@ -7,6 +7,7 @@
 
 #include "d3d8.h"
 #include "d3d9_compat.h"
+#include "nv2a_vsh_d3d9.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -1570,12 +1571,11 @@ int __stdcall D3DDevice_GetDeviceCaps(_D3DCAPS8* Caps) {
 }
 void __stdcall D3DDevice_InsertCallback(_D3DCALLBACKTYPE, void (*)(unsigned int), unsigned int) {}
 unsigned int __stdcall D3DDevice_InsertFence(void) { return ++gNullFence; }
-void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int*, unsigned int) {
-    // The Win32 port does not have the Xbox microcode payloads. Keep the
-    // D3D9 device in the fixed-function path instead of leaving a stale
-    // programmable shader bound across draws.
-    if (gD3D9Device != NULL)
-        gD3D9Device->SetVertexShader(NULL);
+void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int* Microcode, unsigned int) {
+    if (gD3D9Device == NULL)
+        return;
+    IDirect3DVertexShader9* shader = nullD3DCompileNV2AVertexShader(gD3D9Device, Microcode);
+    gD3D9Device->SetVertexShader(shader);
 }
 void __stdcall D3DDevice_PersistDisplay(void) {}
 int __stdcall D3DDevice_Reset(_D3DPRESENT_PARAMETERS_* Params) {
@@ -1694,11 +1694,7 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
 void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
     if (gD3D9Device == NULL)
         return;
-    // Handle zero is the Xbox API's fixed-function selection. Non-zero
-    // handles are Xbox microcode addresses unavailable to the Win32 backend;
-    // keep the same fixed-function fallback used by push-buffer draws.
-    (void)Handle;
-    gD3D9Device->SetVertexShader(NULL);
+    gD3D9Device->SetVertexShader(reinterpret_cast<IDirect3DVertexShader9*>(Handle));
 }
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
 void __stdcall D3DDevice_BeginScene(void) {

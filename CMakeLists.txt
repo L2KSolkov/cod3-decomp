@@ -527,6 +527,7 @@ add_library(cod3_game_nextgen STATIC
 add_library(cod3_xbox_shim STATIC
     platform/xbox_shim/xbox_shim.cpp
     platform/xbox_shim/xbox_directsound.cpp
+    platform/xbox_shim/nv2a_vsh_d3d9.cpp
     platform/xbox_shim/xdk_stubs.cpp
     platform/xbox_shim/xnet_stubs.cpp
     platform/xbox_shim/xonline_stubs.cpp
