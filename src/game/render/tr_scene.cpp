@@ -373,13 +373,13 @@ void cdProjShadow_Begin()
 
     // IDA 0x6C24F9-0x6C26D1: normalize view-to-world Z and X, then form
     // the shadow basis from -X + Z and the fixed negative-Z axis.
-    __m128 zAxis = m.z.v;
+    __m128 zAxis = _mm_setr_ps(m.z.v.m128_f32[0], m.z.v.m128_f32[1], 0.0f, 0.0f);
     float zLen = sqrtf(zAxis.m128_f32[0] * zAxis.m128_f32[0]
                       + zAxis.m128_f32[1] * zAxis.m128_f32[1]
                       + zAxis.m128_f32[2] * zAxis.m128_f32[2]);
     zAxis = _mm_div_ps(zAxis, _mm_set1_ps(zLen));
 
-    __m128 xAxis = m.x.v;
+    __m128 xAxis = _mm_setr_ps(m.x.v.m128_f32[0], m.x.v.m128_f32[1], 0.0f, 0.0f);
     float xLen = sqrtf(xAxis.m128_f32[0] * xAxis.m128_f32[0]
                       + xAxis.m128_f32[1] * xAxis.m128_f32[1]
                       + xAxis.m128_f32[2] * xAxis.m128_f32[2]);
