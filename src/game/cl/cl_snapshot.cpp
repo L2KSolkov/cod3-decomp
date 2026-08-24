@@ -86,8 +86,48 @@ bool Assert(const char* fmt, ...);
 // glconfig_t / snapshot types (cl.o data)
 // ============================================================================
 struct glconfig_t {
-    int data[64];
+    const char* renderer_string;
+    const char* vendor_string;
+    const char* version_string;
+    const char* extensions_string;
+    const char* wgl_extensions_string;
+    int maxTextureSize;
+    int maxActiveTextures;
+    int maxHardwareLights;
+    int colorBits;
+    int depthBits;
+    int stencilBits;
+    int deviceSupportsGamma;
+    int anisotropicAvailable;
+    float maxAnisotropy;
+    int ARB_texture_env_add;
+    int ARB_texture_cube_map;
+    int ARB_texture_env_combine;
+    int ARB_texture_env_dot3;
+    int ARB_vertex_buffer_object;
+    int ARB_vertex_program;
+    int EXT_rescale_normal;
+    int NVFogAvailable;
+    int NVFogMode;
+    int NV_vertex_array_range;
+    int NV_fence;
+    int NV_register_combiners;
+    int NV_texture_shader;
+    int ATIMaxTruformTess;
+    int ATINormalMode;
+    int ATIPointMode;
+    int ATI_vertex_array_object;
+    int ATI_element_array;
+    int ATI_fragment_shader;
+    int vidWidth;
+    int vidHeight;
+    float windowAspect;
+    int displayFrequency;
+    int isFullscreen;
+    int stereoEnabled;
+    int textureFilterAnisotropicAvailable;
 };
+static_assert(sizeof(glconfig_t) == 0xA0, "glconfig_t size mismatch");
 glconfig_t unk_F17118;  // ?unk_F17118@@3Uglconfig_t@@A (cl.o)
 
 // ============================================================================

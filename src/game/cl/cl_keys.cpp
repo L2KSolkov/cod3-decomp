@@ -48,7 +48,8 @@ void* dword_F171DC = nullptr;  // cl.o BSS (line source)
 void* dword_F171E0 = nullptr;  // cl.o BSS (line depth)
 extern int dword_F171E4;
 extern int dword_F171D4;
-int dword_F17118;  // ?dword_F17118@@3HA (cl.o)
+struct glconfig_t;
+extern glconfig_t unk_F17118;  // ?unk_F17118@@3Uglconfig_t@@A (cl.o)
 extern int dword_F171B8;
 extern int dword_F171BC;
 extern int dword_F170F0;
@@ -447,7 +448,7 @@ void CL_InitRenderer()
     extern void re_BeginRegistration(int*);
     extern nglTexture* GetTextureData(const char* name, int image_type,
                                       const char* fromPak);
-    re_BeginRegistration(&dword_F17118);
+    re_BeginRegistration(reinterpret_cast<int*>(&unk_F17118));
     dword_F171B8 = (int)GetTextureData("nglWhite", 0, "mp_frontEnd");
     dword_F171BC = (int)GetTextureData("console", 0, "mp_frontEnd");
     g_consoleField.charWidth = (float)g_console_char_width;
