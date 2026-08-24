@@ -10,10 +10,49 @@
 // ============================================================================
 #include "cdWorldShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "render/ShaderCommon.h"
+
 #include <intrin.h>
+#include <new>
 
 // Shader global pointer definitions
 cdWorldShader* gCDWorldShader = nullptr;  // ?gCDWorldShader@@3PAVcdWorldShader@@A
+
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2D04;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int D3D__TextureState[4][32];
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+extern float gProjShadowAlpha;
+
+static void SetIdentity(math::Mat44* matrix) {
+    matrix->x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    matrix->y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    matrix->z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    matrix->w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+static unsigned int FogColor(const math::Vector4& color) {
+    const __m128 scaled = _mm_mul_ps(color.v, _mm_set1_ps(127.0f));
+    const unsigned int r = (unsigned int)(int)scaled.m128_f32[0];
+    const unsigned int g = (unsigned int)(int)scaled.m128_f32[1];
+    const unsigned int b = (unsigned int)(int)scaled.m128_f32[2];
+    const unsigned int a = (unsigned int)(int)scaled.m128_f32[3];
+    return b | (g << 8) | (r << 16) | (a << 24);
+}
 
 // Shader static data definitions (render_xboxr cd*Shader.o).
 namespace cdWorldRender {
@@ -411,6 +450,7 @@ void cdWorldShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (ClipResult != -1) {
             cdWorldShaderNode* node = (cdWorldShaderNode*)nglListAlloc(0x20, 0x10);
             if (node != NULL) {
+                ::new (node) cdWorldShaderNode;
                 node->MeshNode = iMeshNode;
                 node->Section = iSection;
                 // vftable = cdWorldShaderNode
@@ -426,4 +466,106 @@ void cdWorldShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
             ++nglBuildScene->OpaqueListCount;
         }
     }
+}
+
+// ============================================================================
+// cdWorldShaderNode::Render — ea: 0x7DF220
+// The constant layout and state order follow the IDA disassembly.  The
+// projected/dynamic-light passes are selected only when their native shader
+// tables are available; the base world pass is always emitted.
+// ============================================================================
+void cdWorldShaderNode::Render() {
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40300, 0);
+        dword_BC2D00 = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40340, 0);
+        dword_BC2D04 = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x206u) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_4033C, 0x206u);
+        dword_BC2CF8 = 0x206u;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40304, 0);
+        dword_BC2CFC = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, 0) == 0)
+        D3DDevice_SetRenderState_CullMode(0);
+
+    cdWorldShaderMat* material = this->mMaterial;
+    nglDxSetTexture(0, material != nullptr ? material->mDiffuse : nullptr, 1u, 3u);
+    if (nglDxTexCache.Prev[0].WrapU != 1) {
+        nglDxTexCache.Prev[0].WrapU = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSU] = 1;
+        }
+    }
+    if (nglDxTexCache.Prev[0].WrapV != 1) {
+        nglDxTexCache.Prev[0].WrapV = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSV] = 1;
+        }
+    }
+    if (material != nullptr && material->mLightmap != nullptr) {
+        nglDxSetTexture(1, material->mLightmap, 1u, 3u);
+        if (nglDxTexCache.Prev[1].WrapU != 3) {
+            nglDxTexCache.Prev[1].WrapU = 3;
+            if (D3DDevice_SetTextureState_ParameterCheck(1, D3DTSS_ADDRESSU, 3) == 0) {
+                D3D__DirtyFlags |= 2u;
+                D3D__TextureState[1][D3DTSS_ADDRESSU] = 3;
+            }
+        }
+        if (nglDxTexCache.Prev[1].WrapV != 3) {
+            nglDxTexCache.Prev[1].WrapV = 3;
+            if (D3DDevice_SetTextureState_ParameterCheck(1, D3DTSS_ADDRESSV, 3) == 0) {
+                D3D__DirtyFlags |= 2u;
+                D3D__TextureState[1][D3DTSS_ADDRESSV] = 3;
+            }
+        }
+    }
+
+    nglDxInitShaders(false);
+    const unsigned int lightmap = material != nullptr && material->mLightmap != nullptr;
+    const unsigned int vertexShader = (unsigned int)cdWorldRender::VS[lightmap][this->hasColorVerts];
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>((uintptr_t)vertexShader), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+    const unsigned int pixelShader = (unsigned int)(uintptr_t)
+        cdWorldPixel::PS[0][lightmap][this->hasColorVerts];
+    if (pixelShader != gpuHashPixelShader) {
+        gpuHashPixelShader = pixelShader;
+        D3DDevice_SetPixelShaderProgram(reinterpret_cast<const _D3DPixelShaderDef*>(
+            (uintptr_t)pixelShader));
+    }
+
+    cdWorldRender::cdWorldParams params = {};
+    params.mConsts.v = _mm_setr_ps(0.5f, 2.0f, 0.0f, 0.0f);
+    params.mLocalToScreen = this->MeshNode->LocalToScreen;
+    SetIdentity(&params.mWorldToShadow);
+    params.cShadowTint = gProjShadowAlpha;
+    params.cFogColor = nglBuildScene->FogColor;
+    params.cFog.v = _mm_setr_ps(
+        nglBuildScene->FogMin,
+        nglBuildScene->FogNear,
+        1.0f / (nglBuildScene->FogFar - nglBuildScene->FogNear),
+        nglBuildScene->FogMax - nglBuildScene->FogMin);
+    params.cEyePos = nglBuildScene->ViewToWorld.w;
+    params.cEyePos.v.m128_f32[3] = 1.0f;
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR,
+                                                  FogColor(nglBuildScene->FogColor)) == 0)
+        D3DDevice_SetRenderState_FogColor(FogColor(nglBuildScene->FogColor));
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1u) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &params, 0x44u);
+    nglGpuDrawSection(this->Section);
+    nglDxState.PrevBM = (unsigned int)-1;
 }

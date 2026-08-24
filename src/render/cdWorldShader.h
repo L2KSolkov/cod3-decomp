@@ -13,6 +13,15 @@
 
 #include "cdWorldColorShader.h"  // cdWorldShaderNode (Clip + hasColorVerts)
 
+// IDA type cdWorldShaderMat (render_xboxr:cdWorldShader.o, size 0x1C).
+struct cdWorldShaderMat : nglMaterial {
+    nglTexture* mDiffuse;   // +0x10
+    nglTexture* mLightmap;  // +0x14
+    bool        Translucent;// +0x18
+    unsigned char _pad19[3];
+};
+static_assert(sizeof(cdWorldShaderMat) == 0x1C, "cdWorldShaderMat size mismatch");
+
 // ============================================================================
 // cdWorldShader — world shader (16 bytes)
 // ============================================================================
@@ -47,6 +56,22 @@ namespace cdWorldSolidColorPixel {
     extern unsigned long* PS[2];                          // ?PS@cdWorldSolidColorPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];            // ?PShaderTable@cdWorldSolidColorPixel@@3PAPBIA
     extern unsigned long* Shader;                         // ?Shader@cdWorldSolidColorPixel@@3PAKA
+}
+
+// IDA local type 7957 (cdWorldShaderNode::Render stack context).
+namespace cdWorldRender {
+    struct cdWorldParams {
+        math::Vector4 mConsts;        // c6
+        math::Mat44   mLocalToScreen; // c7-c10
+        math::Mat44   mWorldToShadow; // c11-c14
+        float         cShadowTint;    // c15.x
+        float         _pad94[3];
+        math::Vector4 cFogColor;      // c16
+        math::Vector4 cFog;           // c17
+        math::Vector4 cEyePos;        // c18
+        math::Vector4 mLightInfo[4];  // c19-c22
+    };
+    static_assert(sizeof(cdWorldParams) == 0x110, "cdWorldParams size mismatch");
 }
 
 // ============================================================================

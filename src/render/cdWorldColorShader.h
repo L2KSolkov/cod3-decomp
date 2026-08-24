@@ -24,6 +24,8 @@ struct cdWorldShaderNode : nglShaderNode {
     cdWorldShaderMat* mMaterial;     // +0x14
     int               Clip;          // +0x18
     bool              hasColorVerts; // +0x1C
+
+    void Render() override;           // @0x7DF220
 };
 static_assert(sizeof(cdWorldShaderNode) == 0x20, "cdWorldShaderNode size mismatch");
 

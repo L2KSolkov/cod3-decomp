@@ -11,6 +11,7 @@
 #include "cdWorldColorShader.h"
 
 #include <intrin.h>
+#include <new>
 
 // Shader global pointer definitions
 cdWorldColorShader* gCDWorldColorShader = nullptr;  // ?gCDWorldColorShader@@3PAVcdWorldColorShader@@A
@@ -66,6 +67,7 @@ void cdWorldColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
         if (ClipResult != -1) {
             cdWorldShaderNode* node = (cdWorldShaderNode*)nglListAlloc(0x20, 0x10);
             if (node != NULL) {
+                ::new (node) cdWorldShaderNode;
                 node->MeshNode = iMeshNode;
                 node->Section = iSection;
                 // vftable = cdWorldShaderNode
