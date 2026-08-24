@@ -838,7 +838,9 @@ struct BspCellView {
     int viewCount;             // +0x30
     uint8_t _pad2[0x38 - 0x34];
     trModelCellRef_t* modelRefs;  // +0x38
+    uint8_t _tail[0x50 - 0x3C];   // BspCell stride is 0x50 (IDA operator[])
 };
+static_assert(sizeof(BspCellView) == 0x50, "BspCell size mismatch");
 struct BspTreeView {
     uint8_t _pad[0x18];
     unsigned int mCellsSize;   // +0x18 (InplaceVector<BspCell>::mSize)
