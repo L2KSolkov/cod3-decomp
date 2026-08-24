@@ -4852,7 +4852,7 @@ int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int field
         }
         if (v6 == 6)
             Com_Error(ERR_DROP, "unknown vehicle type '%s'", pValue);
-        *(pStruct + 16) = (unsigned char)v6;
+        *(int16_t*)(pStruct + 0x20) = (int16_t)v6;
         return 1;
     }
     if (fieldType == 9)
@@ -4868,7 +4868,7 @@ int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int field
             Com_Error(ERR_DROP, "unknown vehicle subtype '%s'", pValue);
             return 1;
         }
-        *(pStruct + 17) = (unsigned char)v5;
+        *(int16_t*)(pStruct + 0x22) = (int16_t)v5;
         return 1;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
