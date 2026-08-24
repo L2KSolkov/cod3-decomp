@@ -2129,6 +2129,20 @@ void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* For
                                                    unsigned int) {
     if (gD3D9Device == NULL || Format == NULL)
         return;
+
+    // Shader selection and stream selection are separate on the Xbox API.
+    // The common gpuSetVertexShader::Inputs declaration is intentionally
+    // all-END; the real mesh declaration arrives through
+    // D3DDevice_SetVertexShaderInputDirect.  Do not replace that declaration
+    // with an empty one, or the next mesh draw loses all of its inputs.
+    bool hasInput = false;
+    for (unsigned int i = 0; i < 16; ++i) {
+        if (Format->Input[i].Format == 2)
+            break;
+        hasInput = true;
+    }
+    if (!hasInput)
+        return;
     memcpy(&gD3D9SelectedVertexFormat, Format, sizeof(gD3D9SelectedVertexFormat));
     gD3D9SelectedVertexFormatValid = true;
 }
