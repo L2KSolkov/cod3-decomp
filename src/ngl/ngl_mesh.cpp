@@ -290,8 +290,9 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld
                            _mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 85), ScaledMatrix->y.v)),
                 _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 170), ScaledMatrix->z.v),
                            ScaledMatrix->w.v));
-            if (ngliListAddMesh_GetClipResult(Center, v52,
-                                              (int)ParamFlags) != -1) {
+            const int clipResult = ngliListAddMesh_GetClipResult(Center, v52,
+                                                                  (int)ParamFlags);
+            if (clipResult != -1) {
                 if (Mesh->NLODs != 0)
                     Mesh = nglListAddMesh_GetLOD(Mesh, (char)ParamFlags, MeshParams, &Center);
                 nglMeshNode* node = (nglMeshNode*)nglListAlloc(0x90, 0x40);
@@ -369,7 +370,11 @@ nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode) {
         _mm_prefetch(reinterpret_cast<const char*>(Sections[2]), _MM_HINT_T0);
         Sections += 2;
         if (v5 != NULL) {
-            if (nglProfileEvalShader(v5->Material->Shader) && !v5->Material->Shader->Disabled)
+            const bool shaderEnabled = v5->Material != nullptr
+                && v5->Material->Shader != nullptr
+                && nglProfileEvalShader(v5->Material->Shader)
+                && !v5->Material->Shader->Disabled;
+            if (shaderEnabled)
                 v5->Material->Shader->AddNode(MeshNode, v5, v5->Material);
             TotalVerts += v5->NVertices;
         }

@@ -894,10 +894,6 @@ T& ae_array_get(ae_sized_array<T, N>& a, int idx)
 
 // Cross-object bridge stubs (render.o / fx.o / anim.o / shell.o)
 extern void R_RefreshCell(int cellIndex, bool clear);  // render.o
-void R_RefreshCell(int cellIndex, bool clear)
-{
-    (void)cellIndex; (void)clear;
-}
 extern void FX_KillEffects(TPakId pakId);  // fx.o
 void FX_KillEffects(TPakId pakId)
 {
@@ -2426,6 +2422,9 @@ public:
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
 };
+namespace LightGrid {
+struct TOC;
+}
 class LightGridMgr {
 public:
     static LightGridMgr* sInst;
@@ -2433,7 +2432,8 @@ public:
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
 
-    struct TOC;  // LightGrid::TOC (render.o; opaque)
+    struct TOC;  // local opaque view for the position overloads
+    LightGrid::TOC* GetLightGrid(TPakId pakId); // render.o 0x6C3BE0
     const TOC* GetLightGrid(const math::Position3& posArg,
                             int* pCellNum);  // render.o 0x6C93F0; stub
     void SampleLightGrid(const TOC& toc, int cellidx,
@@ -2750,14 +2750,41 @@ struct BspTree {
         int      mSize;  // +0x08
         BspNode* mList;  // +0x0C
     } mNodes;
+    uint8_t _pad10[0x18 - 0x10];
+    struct BspCell {
+        uint8_t _pad0[0x20];
+        void* firstCellPortal; // +0x20
+        int numCellPortals;    // +0x24
+        uint8_t _pad28[0x08];
+        int viewCount;         // +0x30
+        void* staticModels;    // +0x34
+        void* modelRefs;       // +0x38
+        void* mMeshFile;       // +0x3C
+        struct {
+            unsigned int mSize; // +0x40
+            nglMesh** mList;    // +0x44
+        } mMeshes;
+        void* mLgridToc;        // +0x48
+        void* mCapturedScene;   // +0x4C
+    };
+    struct {
+        unsigned int mSize;    // +0x18
+        BspCell* mList;        // +0x1C
+    } mCells;
 };
+static_assert(offsetof(BspTree, mCells) == 0x18,
+              "BspTree cell vector offset mismatch");
+static_assert(sizeof(BspTree::BspCell) == 0x50,
+              "BspCell layout mismatch");
 // world_t (render.o; bspTree +0x100, mSky +0x108, size 0x10C)
 struct world_t {
-    uint8_t _pad[0x100];
+    char name[128];       // +0x00
+    char baseName[128];   // +0x80
     BspTree* bspTree;  // +0x100
-    uint8_t _pad104[0x108 - 0x104];
+    char* entityString; // +0x104
     void*   mSky;      // +0x108
 };
+static_assert(sizeof(world_t) == 0x10C, "world_t layout mismatch");
 
 // class tag matches ?CM_LinkStaticModel@@YAXPAVStaticModel@@@Z
 class StaticModel {
@@ -15715,6 +15742,113 @@ struct MultiApk {
     unsigned int       NReferences;  // +0x00
     MultiApkReference* References;   // +0x04
 };
+
+// ea: 0x006C49B0
+void R_RefreshCell(int cellIndex, bool clear)
+{
+    if (g_bspTree == nullptr)
+        return;
+
+    BspTree::BspCell* cell = &g_bspTree->mCells.mList[cellIndex];
+    if (clear)
+    {
+        cell->mLgridToc = nullptr;
+        cell->mMeshFile = nullptr;
+        for (unsigned int i = 0; i < cell->mMeshes.mSize; ++i)
+            cell->mMeshes.mList[i] = nullptr;
+        return;
+    }
+
+    const PakInfoNode* cellPakInfo =
+        StreamZoneManager::sInst->GetCellPakInfo(cellIndex);
+    cell->mLgridToc =
+        LightGridMgr::sInst->GetLightGrid(cellPakInfo->pakId);
+
+    ae_sized_array<MultiApk*, 32> meshFiles;
+    char meshFilename[256];
+    sprintf(meshFilename, "%s_%03d", s_worldData.baseName, cellIndex);
+    tlFixedString name(meshFilename);
+    MultiApk* meshFile = cdGetMeshFile(cellPakInfo->pakId, name);
+    cell->mMeshFile = meshFile;
+    if (meshFile != nullptr)
+    {
+        meshFiles.push_back(meshFile);
+    }
+    else
+    {
+        for (int i = 0; i < 32; ++i)
+        {
+            sprintf(meshFilename, "%s_%03d_SPLIT%d", s_worldData.baseName,
+                    cellIndex, i);
+            tlFixedString splitName(meshFilename);
+            meshFile = cdGetMeshFile(cellPakInfo->pakId, splitName);
+            cell->mMeshFile = meshFile;
+            if (meshFile == nullptr)
+                break;
+            meshFiles.push_back(meshFile);
+            if (i >= 31)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_bsp.cpp";
+                AeAssert::gCurrentLine = 117;
+                AeAssert::gCurrentExpr = "i<MAX_EXPECTED_MESHFILES-1";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "Cell was broken up into an absurdly large number of meshes!"))
+                    __debugbreak();
+            }
+        }
+        cell->mMeshFile = (void*)1;
+    }
+
+    if (meshFiles.m_size == 0)
+        return;
+
+    if (cell->mMeshes.mSize == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_bsp.cpp";
+        AeAssert::gCurrentLine = 127;
+        AeAssert::gCurrentExpr = "cell.mMeshes.size() > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("no meshes in cell?"))
+            __debugbreak();
+    }
+
+    unsigned int count = 0;
+    for (int fileIndex = 0; fileIndex < meshFiles.m_size; ++fileIndex)
+    {
+        MultiApk* mf = meshFiles.m_elements[fileIndex];
+        for (unsigned int refIndex = 0; refIndex < mf->NReferences;
+             ++refIndex)
+        {
+            MultiApkReference* ref = &mf->References[refIndex];
+            if (ref->Type != 1213416781 || ref->NObjects == 0)
+                continue;
+            for (unsigned int objectIndex = 0; objectIndex < ref->NObjects;
+                 ++objectIndex)
+            {
+                if (count >= cell->mMeshes.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\tr_bsp.cpp";
+                    AeAssert::gCurrentLine = 145;
+                    AeAssert::gCurrentExpr = "count < cell.mMeshes.size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                            "More meshes in cell than there should be!"))
+                        __debugbreak();
+                }
+                unsigned int dst = count;
+                if (count >= cell->mMeshes.mSize)
+                    dst = 0;
+                ++count;
+                cell->mMeshes.mList[dst] =
+                    static_cast<nglMesh*>(ref->Objects[objectIndex].ptr);
+            }
+        }
+    }
+}
 
 // ea: 0x66F480
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)

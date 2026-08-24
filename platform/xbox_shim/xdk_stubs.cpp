@@ -1124,6 +1124,12 @@ static void nullD3DInitDeviceResources(void) {
                                            NULL_D3DRTYPE_TEXTURE, 1);
     gNullDepthBuffer = nullD3DCreateSurface(gNullWidth, gNullHeight, 2,
                                              D3DFMT_D24S8, 1);
+    if (gD3D9Device != NULL) {
+        if (gNullFrontBuffer != NULL && gNullFrontBuffer->Info.NativeSurface != NULL)
+            gD3D9Device->ColorFill(gNullFrontBuffer->Info.NativeSurface, NULL, 0);
+        if (gNullBackBuffer != NULL && gNullBackBuffer->Info.NativeSurface != NULL)
+            gD3D9Device->ColorFill(gNullBackBuffer->Info.NativeSurface, NULL, 0);
+    }
 }
 
 static nullD3DBuffer* nullD3DCreateBuffer(unsigned int Bytes, bool IndexBuffer) {

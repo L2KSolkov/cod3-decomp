@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <cstdio>
 #include <map>
 #include <sstream>
 #include <string>
@@ -80,7 +79,7 @@ static std::string Source(const unsigned int* token, Field muxField, Field negFi
         result << 'v' << FieldValue(token, F_V);
         break;
     case 3:
-        result << 'c' << ConstantRegister(FieldValue(token, F_CONST));
+        result << "c[" << ConstantRegister(FieldValue(token, F_CONST)) << "]";
         break;
     default:
         return "0.0";
@@ -110,7 +109,7 @@ static std::string InputCExact(const unsigned int* token, bool forceScalar) {
         result << 'v' << FieldValue(token, F_V);
         break;
     case 3:
-        result << 'c' << ConstantRegister(FieldValue(token, F_CONST));
+        result << "c[" << ConstantRegister(FieldValue(token, F_CONST)) << "]";
         break;
     default:
         return "0.0";
@@ -145,6 +144,10 @@ static bool IsIluScalar(unsigned int opcode) {
     return opcode >= 2 && opcode <= 6;
 }
 
+static std::string BroadcastScalar(const std::string& value) {
+    return "float4((" + value + "), (" + value + "), (" + value + "), (" + value + "))";
+}
+
 static std::string MacExpression(unsigned int opcode, const std::string& a,
                                  const std::string& b, const std::string& c) {
     switch (opcode) {
@@ -152,9 +155,9 @@ static std::string MacExpression(unsigned int opcode, const std::string& a,
     case 2: return "(" + a + " * " + b + ")";
     case 3: return "(" + a + " + " + c + ")";
     case 4: return "(" + a + " * " + b + " + " + c + ")";
-    case 5: return "dot(" + a + ".xyz, " + b + ".xyz)";
-    case 6: return "(dot(" + a + ".xyz, " + b + ".xyz) + " + c + ".w)";
-    case 7: return "dot(" + a + ", " + b + ")";
+    case 5: return BroadcastScalar("dot(" + a + ".xyz, " + b + ".xyz)");
+    case 6: return BroadcastScalar("dot(" + a + ".xyz, " + b + ".xyz) + " + c + ".w");
+    case 7: return BroadcastScalar("dot(" + a + ", " + b + ")");
     case 8: return "float4(1.0, " + a + ".y * " + b + ".y, " + a + ".z, " + b + ".w)";
     case 9: return "min(" + a + ", " + b + ")";
     case 10: return "max(" + a + ", " + b + ")";
@@ -168,11 +171,11 @@ static std::string MacExpression(unsigned int opcode, const std::string& a,
 static std::string IluExpression(unsigned int opcode, const std::string& c) {
     switch (opcode) {
     case 1: return c;
-    case 2: return "(1.0 / " + c + ".x)";
-    case 3: return "(1.0 / max(abs(" + c + ".x), 1.17549435e-38))";
-    case 4: return "rsqrt(abs(" + c + ".x))";
-    case 5: return "exp2(" + c + ".x)";
-    case 6: return "log2(abs(" + c + ".x))";
+    case 2: return BroadcastScalar("1.0 / " + c);
+    case 3: return BroadcastScalar("1.0 / max(abs(" + c + "), 1.17549435e-38)");
+    case 4: return BroadcastScalar("rsqrt(abs(" + c + "))");
+    case 5: return BroadcastScalar("exp2(" + c + ")");
+    case 6: return BroadcastScalar("log2(abs(" + c + "))");
     case 7: return "float4(1.0, max(" + c + ".x, 0.0), " + c + ".x > 0.0 ? pow(max(" + c + ".y, 0.0), " + c + ".w) : 0.0, 1.0)";
     default: return std::string();
     }
@@ -251,6 +254,8 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << " float oFog : FOG; float oPts : PSIZE; };\n"
            << "float4 c[192] : register(c0);\n"
            << "VSOut main(VSIn input) { VSOut output;\n"
+           << "  float4 v0=input.v0,v1=input.v1,v2=input.v2,v3=input.v3;\n"
+           << "  float4 v4=input.v4,v5=input.v5,v6=input.v6,v7=input.v7;\n"
            << "  float4 r0=0,r1=0,r2=0,r3=0,r4=0,r5=0,r6=0,r7=0;\n"
            << "  float4 r8=0,r9=0,r10=0,r11=0;\n"
            << "  float4 r12=0; float4 oD0=0,oD1=0,oT0=0,oT1=0,oT2=0,oT3=0;\n"
@@ -306,8 +311,12 @@ IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
         return found->second;
     const std::string hlsl = BuildHlsl(program);
     D3DCompileProc compiler = GetCompiler();
-    if (hlsl.empty() || compiler == nullptr)
+    if (hlsl.empty()) {
         return nullptr;
+    }
+    if (compiler == nullptr) {
+        return nullptr;
+    }
     ID3DBlob* bytecode = nullptr;
     ID3DBlob* errors = nullptr;
     const HRESULT result = compiler(hlsl.data(), hlsl.size(), "nv2a", nullptr, nullptr,
