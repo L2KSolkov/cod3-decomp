@@ -2069,6 +2069,7 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
         gNullHeight = Params->BackBufferHeight;
     }
     if (gD3D9Device == NULL) {
+        nullD3DCreateWindow();
         gD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
         if (gD3D9 != NULL) {
         COD3_D3D9_PRESENT_PARAMETERS NativeParams = {};
@@ -2082,7 +2083,7 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
             NativeParams.BackBufferFormat = COD3_D3D9_FMT_UNKNOWN;
             NativeParams.BackBufferCount = 1;
             NativeParams.SwapEffect = COD3_D3D9_SWP_DISCARD;
-            NativeParams.hDeviceWindow = nullD3DCreateWindow();
+            NativeParams.hDeviceWindow = gD3D9Window;
             NativeParams.Windowed = TRUE;
             NativeParams.EnableAutoDepthStencil = FALSE;
             NativeParams.AutoDepthStencilFormat = COD3_D3D9_FMT_UNKNOWN;
