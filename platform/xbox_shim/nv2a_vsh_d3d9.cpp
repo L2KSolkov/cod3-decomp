@@ -536,6 +536,30 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBOutputs[2] == 0x000000c0u &&
         layout->PSAlphaOutputs[0] == 0x000000d0u &&
         layout->PSAlphaOutputs[2] == 0x000000c0u;
+    const bool isPointLitAdditive =
+        layout->PSCombinerCount == 0x00011102u &&
+        layout->PSTextureModes == 0x00000021u &&
+        layout->PSAlphaInputs[0] == 0x00000000u &&
+        layout->PSAlphaInputs[1] == 0xd8301010u &&
+        layout->PSRGBInputs[0] == 0xc8c40000u &&
+        layout->PSRGBInputs[1] == 0xc8c920ccu &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSRGBOutputs[1] == 0x00000c00u &&
+        layout->PSAlphaOutputs[0] == 0x000000c0u &&
+        layout->PSAlphaOutputs[1] == 0x000000c0u;
+    const bool isPointLitAdditiveLightmap =
+        layout->PSCombinerCount == 0x00011104u &&
+        layout->PSTextureModes == 0x00000421u &&
+        layout->PSAlphaInputs[2] == 0xdad41010u &&
+        layout->PSAlphaInputs[3] == 0xd8301010u &&
+        layout->PSRGBInputs[0] == 0xc8c40000u &&
+        layout->PSRGBInputs[1] == 0xc8c920ccu &&
+        layout->PSRGBInputs[3] == 0xcc3d0000u &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSRGBOutputs[1] == 0x00000c00u &&
+        layout->PSRGBOutputs[3] == 0x000000c0u &&
+        layout->PSAlphaOutputs[2] == 0x000000d0u &&
+        layout->PSAlphaOutputs[3] == 0x000000c0u;
     const bool isWorldTexturedVertexLit =
         layout->PSCombinerCount == 0x00011102u &&
         layout->PSTextureModes == 0x00000001u &&
@@ -627,6 +651,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSAlphaOutputs[4] == 0x000000c0u;
     if (!isWorldLightmap && !isWorldTextured && !isSky && !isTexturedVertexColored &&
         !isPointLitLightmap &&
+        !isPointLitAdditive && !isPointLitAdditiveLightmap &&
         !isWorldTexturedVertexLit &&
         !isWorldTwoTexture && !isWorldTwoTextureVertexLit &&
         !isWorldLightmapVertexLit && !isWorldBlend && !isWorldBlendLightmap &&
@@ -687,6 +712,31 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
         "  float3 rgb = diffuse.rgb * (1.0 - lightmap.a * input.d0.a);\n"
         "  rgb *= input.d0.rgb;\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    static const char PointLitAdditiveSource[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
+        "float4 t1 : TEXCOORD1; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0); sampler2D s1 : register(s1);\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float4 pointLight = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float3 rgb = diffuse.rgb * (input.d0.rgb + pointLight.rgb);\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    static const char PointLitAdditiveLightmapSource[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
+        "float4 t1 : TEXCOORD1; float4 t2 : TEXCOORD2; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0); sampler2D s1 : register(s1); "
+        "sampler2D s2 : register(s2);\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float4 pointLight = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float4 lightmap = tex2D(s2, input.t2.xy / max(abs(input.t2.w), 1e-20));\n"
+        "  float3 rgb = diffuse.rgb * (input.d0.rgb + pointLight.rgb);\n"
+        "  rgb *= 1.0 - lightmap.a * input.d0.a;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
     static const char WorldTwoTextureSource[] =
@@ -773,13 +823,15 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     const char* Source = isWorldBlendLightmap ? WorldBlendLightmapSource
         : (isWorldBlendRgbAndAlphaLightmap ? WorldBlendRgbAndAlphaLightmapSource
         : (isWorldBlendAlphaLightmap ? WorldBlendAlphaLightmapSource
+        : (isPointLitAdditiveLightmap ? PointLitAdditiveLightmapSource
+        : (isPointLitAdditive ? PointLitAdditiveSource
         : (isWorldLightmapVertexLit || isPointLitLightmap ? WorldLightmapVertexLitSource
         : (isWorldTwoTextureVertexLit ? WorldTwoTextureVertexLitSource
         : (isWorldTwoTexture ? WorldTwoTextureSource
         : (isWorldBlend ? WorldBlendSource
         : (isWorldTexturedVertexLit || isTexturedVertexColored ? WorldTextureVertexLitSource
         : (isWorldTextured ? WorldTextureSource
-        : (isSky ? SkySource : WorldSource)))))))));
+        : (isSky ? SkySource : WorldSource)))))))))));
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
