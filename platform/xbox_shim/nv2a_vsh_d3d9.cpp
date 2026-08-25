@@ -238,7 +238,8 @@ static void AppendWrite(std::ostringstream& source, const std::string& expressio
         source << "  " << destination << "." << mask << " = (" << expression << ")." << mask << ";\n";
 }
 
-static void AppendInstruction(std::ostringstream& source, const unsigned int* token) {
+static void AppendInstruction(std::ostringstream& source, const unsigned int* token,
+                              unsigned int instructionIndex) {
     const unsigned int mac = FieldValue(token, F_MAC);
     const unsigned int ilu = FieldValue(token, F_ILU);
     if (mac == 0 && ilu == 0)
@@ -249,6 +250,7 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     const std::string cIlu = InputCExact(token, IsIluScalar(ilu));
     const unsigned int outAddress = FieldValue(token, F_OUT_ADDRESS);
     const unsigned int outRegister = FieldValue(token, F_OUT_R);
+    const bool paired = mac != 0 && ilu != 0;
     const std::string macExpr = mac == 0 ? std::string() : MacExpression(mac, a, b, cMac);
     const std::string iluExpr = ilu == 0 ? std::string() : IluExpression(ilu, cIlu);
 
@@ -266,17 +268,33 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
         AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), iluScalar);
 
-    // The MAC and ILU destination masks are independent of the output mux.
-    // The mux selects which unit feeds an external output; it does not disable
-    // the corresponding temporary-register write.  This matters for the
-    // world shader, whose first instruction writes r11 through MAC_MASK while
-    // later instructions write r0/r1 before the final position output.
-    if (mac != 0 && FieldValue(token, F_OUT_MAC_MASK) != 0 && outRegister != 1) {
-        AppendWrite(source, macExpr, (std::string("r") + std::to_string(outRegister)).c_str(),
-                    Mask(FieldValue(token, F_OUT_MAC_MASK)), macScalar);
+    // xemu delays the temporary MAC result for paired instructions so the
+    // ILU reads the pre-instruction C source, even when the MAC destination
+    // aliases that source.  A paired MAC targeting R1 is discarded by NV2A.
+    const unsigned int macMaskValue = FieldValue(token, F_OUT_MAC_MASK);
+    const bool discardPairedMac = paired && outRegister == 1;
+    const bool delayMac = paired && !discardPairedMac && macMaskValue != 0;
+    const std::string macMask = Mask(macMaskValue);
+    const std::string macTemp = "nv2aMacTemp" + std::to_string(instructionIndex);
+    if (delayMac) {
+        source << "  float4 " << macTemp << "=float4(0,0,0,0);\n";
+        AppendWrite(source, macExpr, macTemp.c_str(), macMask, macScalar);
+    } else if (mac != 0 && macMaskValue != 0 && !discardPairedMac) {
+        const std::string destination = "r" + std::to_string(outRegister);
+        AppendWrite(source, macExpr, destination.c_str(), macMask, macScalar);
     }
-    if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0)
-        AppendWrite(source, iluExpr, "r1", Mask(FieldValue(token, F_OUT_ILU_MASK)), iluScalar);
+    if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0) {
+        const unsigned int iluRegister = paired ? 1 : outRegister;
+        const std::string destination = "r" + std::to_string(iluRegister);
+        AppendWrite(source, iluExpr, destination.c_str(), Mask(FieldValue(token, F_OUT_ILU_MASK)), iluScalar);
+    }
+    if (delayMac) {
+        const std::string destination = "r" + std::to_string(outRegister);
+        if (macMask == "xyzw")
+            source << "  " << destination << "=" << macTemp << ";\n";
+        else
+            source << "  " << destination << "." << macMask << "=" << macTemp << "." << macMask << ";\n";
+    }
 }
 
 static const unsigned int* ResolveProgram(const unsigned int* microcode) {
@@ -351,7 +369,7 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << "  float4 oB0=float4(0,0,0,1),oB1=float4(0,0,0,1);\n"
            << "  float4 oFog=float4(0,0,0,1),oPts=float4(0,0,0,1);\n";
     for (unsigned int i = 0; i < instructionCount; ++i)
-        AppendInstruction(source, microcode + 1 + i * 4);
+        AppendInstruction(source, microcode + 1 + i * 4, i);
     if (usesHomogeneousDivide)
         source << "  float4 screenPos=r12;"
                << " screenPos.xy=trunc(screenPos.xy*16.0)/16.0;"
