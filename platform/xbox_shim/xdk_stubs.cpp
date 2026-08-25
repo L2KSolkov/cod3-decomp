@@ -2406,54 +2406,79 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
 
     COD3_D3D9_RENDERSTATETYPE NativeState;
     DWORD NativeValue = Value;
+    // State is the Xbox D3D8 selector.  d3d9_compat.h remaps the D3DRS_*
+    // names in this translation unit to D3D9 values, so use the verified
+    // Xbox numbers explicitly at this ABI boundary.
     switch (State) {
-    case D3DRS_ALPHAFUNC:
+    case 0x3Au: // D3DRS_ALPHAFUNC
         NativeState = COD3_D3D9_RS_ALPHAFUNC;
         NativeValue = nullD3DCompareFunc(Value);
         break;
-    case D3DRS_ALPHABLENDENABLE: NativeState = COD3_D3D9_RS_ALPHABLENDENABLE; break;
-    case D3DRS_ALPHATESTENABLE: NativeState = COD3_D3D9_RS_ALPHATESTENABLE; break;
-    case D3DRS_ALPHAREF:
+    case 0x3Bu: // D3DRS_ALPHABLENDENABLE
+        NativeState = COD3_D3D9_RS_ALPHABLENDENABLE;
+        break;
+    case 0x3Cu: // D3DRS_ALPHATESTENABLE
+        NativeState = COD3_D3D9_RS_ALPHATESTENABLE;
+        break;
+    case 0x3Du: // D3DRS_ALPHAREF
         NativeState = COD3_D3D9_RS_ALPHAREF;
         NativeValue = Value & 0xFFu;  // 8-bit field on NV2A; see SetRenderState_Simple
         break;
-    case D3DRS_SRCBLEND:
+    case 0x3Eu: // D3DRS_SRCBLEND
         NativeState = COD3_D3D9_RS_SRCBLEND;
         NativeValue = nullD3DBlendFactor(Value);
         break;
-    case D3DRS_DESTBLEND:
+    case 0x3Fu: // D3DRS_DESTBLEND
         NativeState = COD3_D3D9_RS_DESTBLEND;
         NativeValue = nullD3DBlendFactor(Value);
         break;
-    case D3DRS_BLENDOP:
+    case 0x4Au: // D3DRS_BLENDOP
         NativeState = COD3_D3D9_RS_BLENDOP;
         NativeValue = nullD3DBlendOp(Value);
         break;
-    case D3DRS_BLENDCOLOR: NativeState = D3DRS_BLENDFACTOR; break;
-    case D3DRS_FOGCOLOR: NativeState = COD3_D3D9_RS_FOGCOLOR; break;
-    case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
-    case D3DRS_COLORWRITEENABLE:
+    case 0x4Bu: // D3DRS_BLENDCOLOR
+        NativeState = D3DRS_BLENDFACTOR;
+        break;
+    case 0x8Au: // D3DRS_FOGCOLOR
+        NativeState = COD3_D3D9_RS_FOGCOLOR;
+        break;
+    case 0x40u: // D3DRS_ZWRITEENABLE
+        NativeState = COD3_D3D9_RS_ZWRITEENABLE;
+        break;
+    case 0x43u: // D3DRS_COLORWRITEENABLE
         NativeState = COD3_D3D9_RS_COLORWRITEENABLE;
         NativeValue = nullD3DColorWriteMask(Value);
         break;
-    case D3DRS_SPECULARENABLE: NativeState = COD3_D3D9_RS_SPECULARENABLE; break;
-    case D3DRS_CULLMODE:
+    case 0x67u: // D3DRS_SPECULARENABLE
+        NativeState = COD3_D3D9_RS_SPECULARENABLE;
+        break;
+    case 0x93u: // D3DRS_CULLMODE
         NativeState = COD3_D3D9_RS_CULLMODE;
         NativeValue = nullD3DCullMode(Value);
         break;
-    case D3DRS_ZENABLE: NativeState = COD3_D3D9_RS_ZENABLE; break;
-    case D3DRS_ZBIAS: NativeState = D3DRS_DEPTHBIAS; break;
-    case D3DRS_STENCILENABLE: NativeState = COD3_D3D9_RS_STENCILENABLE; break;
-    case D3DRS_STENCILFUNC:
+    case 0x8Fu: // D3DRS_ZENABLE
+        NativeState = COD3_D3D9_RS_ZENABLE;
+        break;
+    case 0x95u: // D3DRS_ZBIAS
+        NativeState = D3DRS_DEPTHBIAS;
+        break;
+    case 0x90u: // D3DRS_STENCILENABLE
+        NativeState = COD3_D3D9_RS_STENCILENABLE;
+        break;
+    case 0x46u: // D3DRS_STENCILFUNC
         NativeState = COD3_D3D9_RS_STENCILFUNC;
         NativeValue = nullD3DCompareFunc(Value);
         break;
-    case D3DRS_STENCILMASK: NativeState = COD3_D3D9_RS_STENCILMASK; break;
-    case D3DRS_STENCILPASS:
+    case 0x48u: // D3DRS_STENCILMASK
+        NativeState = COD3_D3D9_RS_STENCILMASK;
+        break;
+    case 0x45u: // D3DRS_STENCILPASS
         NativeState = COD3_D3D9_RS_STENCILPASS;
         NativeValue = nullD3DStencilOp(Value);
         break;
-    case D3DRS_MULTISAMPLEANTIALIAS: NativeState = COD3_D3D9_RS_MULTISAMPLEANTIALIAS; break;
+    case 0x98u: // D3DRS_MULTISAMPLEANTIALIAS
+        NativeState = COD3_D3D9_RS_MULTISAMPLEANTIALIAS;
+        break;
     default:
         return 0;
     }
