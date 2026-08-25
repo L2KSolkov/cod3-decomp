@@ -45,6 +45,48 @@ static void SetIdentity(math::Mat44* matrix) {
     matrix->w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
+// nglMeshNode::GetWToLNoScale, shared by the Xbox shader constant builders.
+// This is the same inverse-rotation/translation reconstruction used by the
+// NGL backend when it prepares per-node lighting constants.
+static math::Mat43* MeshNode_GetWToLNoScale(const nglMeshNode* This,
+                                            math::Mat43* result) {
+    math::Mat43 localToWorldNoScale;
+    if ((This->MeshParams->Flags & 2) != 0) {
+        const __m128 scale = This->MeshParams->Scale.v;
+        const __m128 reciprocal = _mm_rcp_ps(scale);
+        const __m128 inverse = _mm_mul_ps(
+            _mm_sub_ps(_mm_set1_ps(2.0f), _mm_mul_ps(reciprocal, scale)), reciprocal);
+        localToWorldNoScale.x.v = _mm_mul_ps(
+            This->LocalToWorld.x.v, _mm_shuffle_ps(inverse, inverse, 0));
+        localToWorldNoScale.y.v = _mm_mul_ps(
+            This->LocalToWorld.y.v, _mm_shuffle_ps(inverse, inverse, 85));
+        localToWorldNoScale.z.v = _mm_mul_ps(
+            This->LocalToWorld.z.v, _mm_shuffle_ps(inverse, inverse, 170));
+        localToWorldNoScale.w.v = This->LocalToWorld.w.v;
+    } else {
+        localToWorldNoScale = This->LocalToWorld;
+    }
+
+    const __m128 y = localToWorldNoScale.y.v;
+    const __m128 z = localToWorldNoScale.z.v;
+    const __m128 w = localToWorldNoScale.w.v;
+    const __m128 xy = _mm_shuffle_ps(localToWorldNoScale.x.v, y, 0x44);
+    const __m128 xz = _mm_shuffle_ps(xy, z, 0xDD);
+    const __m128 yz = _mm_shuffle_ps(
+        _mm_shuffle_ps(localToWorldNoScale.x.v, y, 0xEE), z, 0xA8);
+    const __m128 xx = _mm_shuffle_ps(xy, z, 0x88);
+    result->x.v = _mm_shuffle_ps(xx, _mm_setzero_ps(), 0xE4);
+    result->y.v = xz;
+    result->z.v = yz;
+    result->w.v = _mm_xor_ps(
+        _mm_castsi128_ps(_mm_set1_epi32(0x80000000)),
+        _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(w, w, 0), xx),
+                       _mm_mul_ps(_mm_shuffle_ps(w, w, 85), xz)),
+            _mm_mul_ps(_mm_shuffle_ps(w, w, 170), yz)));
+    return result;
+}
+
 static unsigned int FogColor(const math::Vector4& color) {
     const __m128 scaled = _mm_mul_ps(color.v, _mm_set1_ps(255.0f));
     const unsigned int r = (unsigned int)(int)scaled.m128_f32[0];
@@ -556,8 +598,23 @@ void cdWorldShaderNode::Render() {
         nglBuildScene->FogNear,
         1.0f / (nglBuildScene->FogFar - nglBuildScene->FogNear),
         nglBuildScene->FogMax - nglBuildScene->FogMin);
-    params.cEyePos = nglBuildScene->ViewToWorld.w;
-    params.cEyePos.v.m128_f32[3] = 1.0f;
+    math::Mat43 worldToLocalNoScale;
+    MeshNode_GetWToLNoScale(this->MeshNode, &worldToLocalNoScale);
+    const __m128 eyeLocal = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(nglBuildScene->ViewToWorld.w.v,
+                                      nglBuildScene->ViewToWorld.w.v, 0),
+                       worldToLocalNoScale.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(nglBuildScene->ViewToWorld.w.v,
+                                      nglBuildScene->ViewToWorld.w.v, 85),
+                       worldToLocalNoScale.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(nglBuildScene->ViewToWorld.w.v,
+                                      nglBuildScene->ViewToWorld.w.v, 170),
+                       worldToLocalNoScale.z.v),
+            worldToLocalNoScale.w.v));
+    params.cEyePos.v = _mm_shuffle_ps(
+        eyeLocal, _mm_shuffle_ps(_mm_set1_ps(1.0f), eyeLocal, 160), 52);
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR,
                                                   FogColor(nglBuildScene->FogColor)) == 0)
         D3DDevice_SetRenderState_FogColor(FogColor(nglBuildScene->FogColor));
