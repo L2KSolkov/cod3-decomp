@@ -804,10 +804,10 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 fogColor : register(c0);\n"
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
-        "  float4 pointLight = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
-        "  float4 lightmap = tex2D(s2, input.t2.xy / max(abs(input.t2.w), 1e-20));\n"
-        "  float3 rgb = diffuse.rgb * (input.d0.rgb + pointLight.rgb);\n"
-        "  rgb *= 1.0 - lightmap.a * input.d0.a;\n"
+        "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float4 projected = tex2D(s2, input.t2.xy / max(abs(input.t2.w), 1e-20));\n"
+        "  float3 rgb = diffuse.rgb * (input.d0.rgb + lightmap.rgb);\n"
+        "  rgb *= 1.0 - projected.a * input.d0.a;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
     static const char WorldTwoTextureSource[] =
