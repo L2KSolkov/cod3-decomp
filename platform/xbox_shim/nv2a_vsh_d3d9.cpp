@@ -425,6 +425,16 @@ static std::string BuildHlsl(const unsigned int* microcode) {
 
 struct BlobRelease { void operator()(ID3DBlob* blob) const { if (blob) blob->Release(); } };
 
+static std::string RemapFogSemantic(const char* source) {
+    std::string remapped(source != nullptr ? source : "");
+    size_t offset = 0;
+    while ((offset = remapped.find(": FOG", offset)) != std::string::npos) {
+        remapped.replace(offset, 5, ": TEXCOORD6");
+        offset += 11;
+    }
+    return remapped;
+}
+
 typedef HRESULT (WINAPI *D3DCompileProc)(LPCVOID, SIZE_T, LPCSTR, const D3D_SHADER_MACRO*,
                                          ID3DInclude*, LPCSTR, LPCSTR, UINT, UINT,
                                          ID3DBlob**, ID3DBlob**);
@@ -456,7 +466,8 @@ IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
     const auto found = cache.find(program);
     if (found != cache.end())
         return found->second;
-    const std::string hlsl = BuildHlsl(program);
+    std::string hlsl = BuildHlsl(program);
+    hlsl = RemapFogSemantic(hlsl.c_str());
     D3DCompileProc compiler = GetCompiler();
     if (hlsl.empty()) {
         return nullptr;
@@ -995,7 +1006,8 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         return nullptr;
     ID3DBlob* bytecode = nullptr;
     ID3DBlob* errors = nullptr;
-    const HRESULT result = compiler(Source, strlen(Source), "nv2a_psh", nullptr,
+    const std::string remappedSource = RemapFogSemantic(Source);
+    const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
                                     nullptr, "main", "ps_2_0", 0, 0,
                                     &bytecode, &errors);
     if (FAILED(result)) {
