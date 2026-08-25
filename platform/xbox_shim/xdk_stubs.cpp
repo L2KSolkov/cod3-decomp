@@ -65,6 +65,8 @@ struct nullD3DExternalTexture {
     D3DBaseTexture* Object;
     unsigned int PackedFormat;
     unsigned int PackedSize;
+    unsigned int DataOffset;
+    void* RegisteredBase;
     nullD3DInfo Info;
 };
 
@@ -506,6 +508,48 @@ static COD3_D3D9_FORMAT nullD3DNativeFormat(unsigned int Format) {
     }
 }
 
+// Serialized Xbox textures retain the numeric D3DFMT value from d3d8.h.
+// Those values are not the D3D9 fourcc values used by the host API.
+static COD3_D3D9_FORMAT nullD3DExternalNativeFormat(unsigned int Format) {
+    switch (Format) {
+    case 0x00: return COD3_D3D9_FMT_L8;
+    case 0x01: return COD3_D3D9_FMT_A8L8;
+    case 0x02: return COD3_D3D9_FMT_A1R5G5B5;
+    case 0x03: return COD3_D3D9_FMT_X1R5G5B5;
+    case 0x04: return COD3_D3D9_FMT_A4R4G4B4;
+    case 0x05: return COD3_D3D9_FMT_R5G6B5;
+    case 0x06: return COD3_D3D9_FMT_A8R8G8B8;
+    case 0x07: return COD3_D3D9_FMT_X8R8G8B8;
+    case 0x0B: return COD3_D3D9_FMT_P8;
+    case 0x0C: return COD3_D3D9_FMT_DXT1;
+    case 0x0E: return COD3_D3D9_FMT_DXT3;
+    case 0x0F: return COD3_D3D9_FMT_DXT5;
+    case 0x10: return COD3_D3D9_FMT_A1R5G5B5;
+    case 0x11: return COD3_D3D9_FMT_R5G6B5;
+    case 0x12: return COD3_D3D9_FMT_A8R8G8B8;
+    case 0x13: return COD3_D3D9_FMT_L8;
+    case 0x16: return COD3_D3D9_FMT_A8L8;
+    case 0x17: return COD3_D3D9_FMT_A8L8;
+    case 0x19: return COD3_D3D9_FMT_A8;
+    case 0x1A: return COD3_D3D9_FMT_A8L8;
+    case 0x1B: return COD3_D3D9_FMT_A8L8;
+    case 0x1C: return COD3_D3D9_FMT_X1R5G5B5;
+    case 0x1D: return COD3_D3D9_FMT_A4R4G4B4;
+    case 0x1E: return COD3_D3D9_FMT_X8R8G8B8;
+    case 0x1F: return COD3_D3D9_FMT_A8;
+    case 0x20: return COD3_D3D9_FMT_A8L8;
+    case 0x24: return COD3_D3D9_FMT_YUY2;
+    case 0x25: return COD3_D3D9_FMT_UYVY;
+    case 0x3A: return COD3_D3D9_FMT_A8B8G8R8;
+    case 0x3B: return COD3_D3D9_FMT_A8R8G8B8;
+    case 0x3C: return COD3_D3D9_FMT_A8B8G8R8;
+    case 0x3F: return COD3_D3D9_FMT_A8B8G8R8;
+    case 0x40: return COD3_D3D9_FMT_A8R8G8B8;
+    case 0x41: return COD3_D3D9_FMT_A8B8G8R8;
+    default: return COD3_D3D9_FMT_A8R8G8B8;
+    }
+}
+
 static nullD3DInfo* nullD3DFindInfo(void* Resource) {
     if (Resource == NULL)
         return NULL;
@@ -649,12 +693,63 @@ static unsigned int nullD3DFormatBytesPerPixel(unsigned int Format) {
     }
 }
 
+static unsigned int nullD3DExternalFormatBytesPerPixel(unsigned int Format) {
+    switch (Format) {
+    case 0x00:
+    case 0x0B:
+    case 0x13:
+    case 0x19:
+    case 0x1F:
+        return 1;
+    case 0x01:
+    case 0x02:
+    case 0x03:
+    case 0x04:
+    case 0x05:
+    case 0x10:
+    case 0x11:
+    case 0x16:
+    case 0x17:
+    case 0x1A:
+    case 0x1B:
+    case 0x1C:
+    case 0x1D:
+    case 0x20:
+        return 2;
+    case 0x06:
+    case 0x07:
+    case 0x12:
+    case 0x1E:
+    case 0x3A:
+    case 0x3B:
+    case 0x3C:
+    case 0x3F:
+    case 0x40:
+    case 0x41:
+        return 4;
+    default:
+        return 0;
+    }
+}
+
 static unsigned int nullD3DFormatBlockBytes(unsigned int Format) {
     switch (Format) {
     case D3DFMT_DXT1:
         return 8;
     case D3DFMT_DXT3:
     case D3DFMT_DXT5:
+        return 16;
+    default:
+        return 0;
+    }
+}
+
+static unsigned int nullD3DExternalFormatBlockBytes(unsigned int Format) {
+    switch (Format) {
+    case 0x0C:
+        return 8;
+    case 0x0E:
+    case 0x0F:
         return 16;
     default:
         return 0;
@@ -689,7 +784,7 @@ static size_t nullD3DTextureLevelBytes(unsigned int Format,
                                        unsigned int Height,
                                        unsigned int Size,
                                        unsigned int Level) {
-    const unsigned int BlockBytes = nullD3DFormatBlockBytes(Format);
+    const unsigned int BlockBytes = nullD3DExternalFormatBlockBytes(Format);
     if (BlockBytes != 0) {
         // D3D::PixelJar::FindSurfaceWithinTexture clamps compressed mip
         // dimensions to the format's 4x4 minimum before advancing pbData.
@@ -698,7 +793,7 @@ static size_t nullD3DTextureLevelBytes(unsigned int Format,
         const unsigned int BitsPerPixel = BlockBytes == 8 ? 4 : 8;
         return ((size_t)StorageWidth * StorageHeight * BitsPerPixel) >> 3;
     }
-    const unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Format);
+    const unsigned int BytesPerPixel = nullD3DExternalFormatBytesPerPixel(Format);
     if (BytesPerPixel == 0)
         return 0;
     if (XGIsSwizzledFormat(Format))
@@ -859,7 +954,7 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
                                          D3DPalette* Palette) {
     if (Info == NULL || Info->NativeTexture == NULL || Info->Bits == NULL)
         return;
-    unsigned int BlockBytes = nullD3DFormatBlockBytes(Info->Format);
+    unsigned int BlockBytes = nullD3DExternalFormatBlockBytes(Info->Format);
     if (BlockBytes != 0) {
         const unsigned char* Source = Info->Bits;
         for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
@@ -885,10 +980,10 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
         }
         return;
     }
-    unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Info->Format);
+    unsigned int BytesPerPixel = nullD3DExternalFormatBytesPerPixel(Info->Format);
     if (BytesPerPixel == 0)
         return;
-    if (Info->Format == D3DFMT_P8) {
+    if (Info->Format == 0x0Bu) {
         if (Palette == NULL || Palette->Data == 0)
             return;
         unsigned int Entries = nullD3DPaletteEntryCount(Palette);
@@ -980,11 +1075,11 @@ static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
         return;
     if ((PackedFormat & 0x40u) != 0)
         return;
-    if (nullD3DFormatBytesPerPixel(Info->Format) == 0 &&
-        nullD3DFormatBlockBytes(Info->Format) == 0)
+    if (nullD3DExternalFormatBytesPerPixel(Info->Format) == 0 &&
+        nullD3DExternalFormatBlockBytes(Info->Format) == 0)
         return;
     if (FAILED(gD3D9Device->CreateTexture(Info->Width, Info->Height, Info->Levels, 0,
-                                          nullD3DNativeFormat(Info->Format), D3DPOOL_MANAGED,
+                                          nullD3DExternalNativeFormat(Info->Format), D3DPOOL_MANAGED,
                                           &Info->NativeTexture, NULL)))
         return;
     Info->NativeResource = Info->NativeTexture;
@@ -996,7 +1091,7 @@ static void nullD3DReuploadPaletteTexture(unsigned int Stage) {
         return;
     nullD3DInfo* Info = nullD3DTextureInfo(gNullBoundTextures[Stage]);
     nullD3DExternalTexture* External = nullD3DFindExternalTexture(gNullBoundTextures[Stage]);
-    if (Info == NULL || Info->Format != D3DFMT_P8)
+    if (Info == NULL || Info->Format != 0x0Bu)
         return;
     nullD3DUploadExternalTexture(Info, External != NULL ? External->PackedSize : 0,
                                  gNullPalettes[Stage]);
@@ -1021,6 +1116,8 @@ static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture) {
     Slot->Object = Texture;
     Slot->PackedFormat = Texture->Format;
     Slot->PackedSize = Texture->Size;
+    Slot->DataOffset = Texture->Data;
+    Slot->RegisteredBase = NULL;
     nullD3DInfo* Info = &Slot->Info;
     if (Info->Magic != NULL_D3D_MAGIC) {
         memset(Info, 0, sizeof(*Info));
@@ -2063,8 +2160,18 @@ void __stdcall D3DResource_Register(D3DResource* Resource, void* Base) {
     nullD3DExternalTexture* Existing =
         nullD3DFindExternalTexture((D3DBaseTexture*)Resource);
     if (Existing != NULL && Existing->Info.Magic == NULL_D3D_MAGIC) {
-        nullD3DCreateExternalNative(&Existing->Info, Existing->PackedSize,
-                                    Existing->PackedFormat);
+        if (Existing->RegisteredBase != Base) {
+            Resource->Data = (unsigned int)(uintptr_t)((unsigned char*)Base +
+                                                       Existing->DataOffset);
+            Existing->Info.Bits = (unsigned char*)(uintptr_t)Resource->Data;
+            Existing->RegisteredBase = Base;
+        }
+        if (Existing->Info.NativeTexture == NULL)
+            nullD3DCreateExternalNative(&Existing->Info, Existing->PackedSize,
+                                         Existing->PackedFormat);
+        else
+            nullD3DUploadExternalTexture(&Existing->Info, Existing->PackedSize,
+                                          NULL);
         return;
     }
 
@@ -2093,6 +2200,8 @@ void __stdcall D3DResource_Register(D3DResource* Resource, void* Base) {
     Slot->Object = Texture;
     Slot->PackedFormat = Texture->Format;
     Slot->PackedSize = Texture->Size;
+    Slot->DataOffset = DataOffset;
+    Slot->RegisteredBase = Base;
     nullD3DInfo* Info = &Slot->Info;
     if (Info->Magic != NULL_D3D_MAGIC) {
         memset(Info, 0, sizeof(*Info));
