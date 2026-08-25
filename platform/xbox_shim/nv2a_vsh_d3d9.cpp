@@ -518,6 +518,13 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBInputs[0] == 0xc8c40000u &&
         layout->PSRGBOutputs[0] == 0x000000c0u &&
         layout->PSAlphaOutputs[0] == 0x000000c0u;
+    const bool isTexturedVertexColored =
+        layout->PSCombinerCount == 0x00011101u &&
+        layout->PSTextureModes == 0x00000001u &&
+        layout->PSAlphaInputs[0] == 0xd8301010u &&
+        layout->PSRGBInputs[0] == 0xc8c40000u &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSAlphaOutputs[0] == 0x000000c0u;
     const bool isWorldTexturedVertexLit =
         layout->PSCombinerCount == 0x00011102u &&
         layout->PSTextureModes == 0x00000001u &&
@@ -607,7 +614,8 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBOutputs[4] == 0x000000c0u &&
         layout->PSAlphaOutputs[3] == 0x000000d0u &&
         layout->PSAlphaOutputs[4] == 0x000000c0u;
-    if (!isWorldLightmap && !isWorldTextured && !isSky && !isWorldTexturedVertexLit &&
+    if (!isWorldLightmap && !isWorldTextured && !isSky && !isTexturedVertexColored &&
+        !isWorldTexturedVertexLit &&
         !isWorldTwoTexture && !isWorldTwoTextureVertexLit &&
         !isWorldLightmapVertexLit && !isWorldBlend && !isWorldBlendLightmap &&
         !isWorldBlendAlphaLightmap && !isWorldBlendRgbAndAlphaLightmap)
@@ -757,7 +765,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         : (isWorldTwoTextureVertexLit ? WorldTwoTextureVertexLitSource
         : (isWorldTwoTexture ? WorldTwoTextureSource
         : (isWorldBlend ? WorldBlendSource
-        : (isWorldTexturedVertexLit ? WorldTextureVertexLitSource
+        : (isWorldTexturedVertexLit || isTexturedVertexColored ? WorldTextureVertexLitSource
         : (isWorldTextured ? WorldTextureSource
         : (isSky ? SkySource : WorldSource)))))))));
     D3DCompileProc compiler = GetCompiler();
