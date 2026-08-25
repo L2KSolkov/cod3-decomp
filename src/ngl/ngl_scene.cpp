@@ -11,6 +11,7 @@
 #include "ngl/nglTexture.h"
 #include "ngl/nglDebug.h"
 #include "core/tlFixedString.h"
+#include "../../platform/xbox_shim/nv2a_vsh_d3d9.h"
 
 #include <intrin.h>
 #include <algorithm>
@@ -191,6 +192,7 @@ void nglSetZCopy(bool Upload, bool Download) {
 void nglSetRenderTiling(int Tiles) { nglBuildScene->Tiles = Tiles; }
 void nglEnableFog(bool Enable) {
     nglBuildScene->FogEnabled = Enable;
+    nullD3DSetNV2AFogEnabled(Enable);
     ngliEnableFog(Enable);
 }
 void nglSetFogColor(float r, float g, float b) {

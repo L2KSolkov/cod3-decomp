@@ -239,11 +239,12 @@ static std::string IluExpression(unsigned int opcode, const std::string& c) {
 
 static const char* OutputName(unsigned int address) {
     static const char* names[] = {
-        "r12", "oD1", "oD1", "oD0", "oD1", "oFog", "oPts",
-        "oB0", "oB1", "oT0", "oT1", "oT2", "oT3"
+        "r12", nullptr, nullptr, "oD0", "oD1", "oFog", "oPts",
+        "oB0", "oB1", "oT0", "oT1", "oT2", "oT3",
+        nullptr, nullptr, "A0.x"
     };
     const unsigned int index = address & 15u;
-    return index < sizeof(names) / sizeof(names[0]) ? names[index] : "oD1";
+    return index < sizeof(names) / sizeof(names[0]) ? names[index] : nullptr;
 }
 
 static void AppendWrite(std::ostringstream& source, const std::string& expression,
@@ -266,6 +267,16 @@ static void AppendWrite(std::ostringstream& source, const std::string& expressio
         source << "  " << destination << "." << mask << " = (" << expression << ")." << mask << ";\n";
 }
 
+static void AppendAddressWrite(std::ostringstream& source, const std::string& expression,
+                               bool scalar) {
+    source << "  A0=(int)floor(";
+    if (!scalar)
+        source << "(" << expression << ").x";
+    else
+        source << expression;
+    source << "+0.001);\n";
+}
+
 static void AppendInstruction(std::ostringstream& source, const unsigned int* token,
                               unsigned int instructionIndex) {
     const unsigned int mac = FieldValue(token, F_MAC);
@@ -284,6 +295,8 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     const std::string arlTemp = "nv2aArlTemp" + std::to_string(instructionIndex);
     const std::string macExpr = mac == 0 ? std::string() : MacExpression(mac, a, b, cMac);
     const std::string iluExpr = ilu == 0 ? std::string() : IluExpression(ilu, cIlu);
+    const char* outputName = OutputName(outAddress);
+    const bool outputIsAddress = (outAddress & 15u) == 15u;
 
     // Bit 11 selects the output register bank.  The alternate bank is the
     // writable constant space; it is intentionally ignored here because D3D9
@@ -311,10 +324,18 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     }
     if (isArl)
         return;
-    if (writesOutput && mac != 0 && FieldValue(token, F_OUT_MUX) == 0)
-        AppendWrite(source, macExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), macScalar);
-    if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
-        AppendWrite(source, iluExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), iluScalar);
+    if (writesOutput && mac != 0 && FieldValue(token, F_OUT_MUX) == 0) {
+        if (outputIsAddress)
+            AppendAddressWrite(source, macExpr, macScalar);
+        else if (outputName != nullptr)
+            AppendWrite(source, macExpr, outputName, Mask(FieldValue(token, F_OUT_O_MASK)), macScalar);
+    }
+    if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0) {
+        if (outputIsAddress)
+            AppendAddressWrite(source, iluExpr, iluScalar);
+        else if (outputName != nullptr)
+            AppendWrite(source, iluExpr, outputName, Mask(FieldValue(token, F_OUT_O_MASK)), iluScalar);
+    }
 
     // xemu delays the temporary MAC result for paired instructions so the
     // ILU reads the pre-instruction C source, even when the MAC destination
@@ -814,7 +835,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 fogColor : register(c0);\n"
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
-        "  return diffuse;\n"
+        "  return float4(lerp(fogColor.rgb, diffuse.rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
     static const char SkySource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; float fog : FOG; };\n"
@@ -1060,7 +1081,21 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     // NV2A sampler stage i uses the matching interpolated pTi coordinate.
     // PSInputTexture only selects combiner T operands; it does not remap the
     // texture-coordinate interpolants used by the sampler.
-    const std::string remappedSource = RemapFogSemantic(Source);
+    std::string remappedSource = RemapFogSemantic(Source);
+    const char FogDeclaration[] =
+        "float4 fogState : register(c1);\n"
+        "float nv2aFogFactor(float value) { return fogState.x < 0.5 ? 1.0 : saturate(value); }\n";
+    const std::string FogColorDeclaration = "float4 fogColor : register(c0);\n";
+    const size_t FogColorOffset = remappedSource.find(FogColorDeclaration);
+    if (FogColorOffset != std::string::npos)
+        remappedSource.insert(FogColorOffset + FogColorDeclaration.size(), FogDeclaration);
+    size_t FogUseOffset = 0;
+    while ((FogUseOffset = remappedSource.find("saturate(input.fog)", FogUseOffset)) !=
+           std::string::npos) {
+        remappedSource.replace(FogUseOffset, sizeof("saturate(input.fog)") - 1,
+                               "nv2aFogFactor(input.fog)");
+        FogUseOffset += sizeof("nv2aFogFactor(input.fog)") - 1;
+    }
     const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
                                     nullptr, "main", "ps_3_0", 0, 0,
                                     &bytecode, &errors);

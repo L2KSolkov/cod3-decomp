@@ -21,3 +21,5 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
 
 IDirect3DPixelShader9* nullD3DCompileNV2AFallbackPixelShader(
     IDirect3DDevice9* device, unsigned int textureMask);
+
+void nullD3DSetNV2AFogEnabled(bool enabled);

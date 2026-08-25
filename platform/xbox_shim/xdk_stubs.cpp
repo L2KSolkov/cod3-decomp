@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <objbase.h>
 #include <wincodec.h>
 #include <windows.h>
@@ -81,6 +82,7 @@ static HMODULE gD3D9SoftwareRasterizer = NULL;
 static bool gD3D9SceneActive = false;
 static bool gD3D9NV2APixelShaderActive = false;
 static bool gD3D9NV2AVertexShaderActive = false;
+static bool gD3D9NV2AFogEnabled = false;
 static bool gD3D9ShaderNeedsViewportInverse = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
@@ -301,6 +303,12 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x16: // Xbox packed signed 10:10:10 normal (DEC3N).
         *Type = D3DDECLTYPE_DEC3N;
         return true;
+    case 0x14: // PBYTE1 (UB_OGL, normalized)
+    case 0x24: // PBYTE2 (UB_OGL, normalized)
+    case 0x34: // PBYTE3 (UB_OGL, normalized)
+    case 0x44: // PBYTE4 (UB_OGL, normalized)
+        *Type = D3DDECLTYPE_UBYTE4N;
+        return true;
     case 0x21: // SHORT2N
         *Type = D3DDECLTYPE_SHORT2N;
         return true;
@@ -362,6 +370,10 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         Element.Method = D3DDECLMETHOD_DEFAULT;
         Element.UsageIndex = 0;
         if (!nullD3DVertexElementType(Input.Format, &Element.Type)) {
+            char Message[128];
+            _snprintf_s(Message, sizeof(Message), _TRUNCATE,
+                        "NV2A vertex format 0x%02X is unsupported\n", Input.Format);
+            OutputDebugStringA(Message);
             nullD3DInvalidateVertexDeclaration();
             return false;
         }
@@ -402,6 +414,14 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
 }
 
 static void nullD3DSetNV2AViewportConstants();
+
+void nullD3DSetNV2AFogEnabled(bool Enabled) {
+    gD3D9NV2AFogEnabled = Enabled;
+    if (gD3D9Device != NULL && gD3D9NV2APixelShaderActive) {
+        const float FogState[4] = { Enabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
+        gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
+    }
+}
 
 static void nullD3DBindFallbackPixelShader() {
     if (gD3D9Device == NULL || !gD3D9NV2AVertexShaderActive ||
@@ -2633,6 +2653,8 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
             ((FogColor >> 24) & 0xffu) / 255.0f,
         };
         gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
+        const float FogState[4] = { gD3D9NV2AFogEnabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
+        gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
         return;
     }
     gD3D9Device->SetPixelShader(NULL);
@@ -2684,6 +2706,8 @@ void __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value) {
             ((Value >> 24) & 0xffu) / 255.0f,
         };
         gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
+        const float FogState[4] = { gD3D9NV2AFogEnabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
+        gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
     }
 }
 void __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value) {
