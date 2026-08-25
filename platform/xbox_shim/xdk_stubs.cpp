@@ -300,8 +300,10 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x15: // SHORT1
         *Type = D3DDECLTYPE_SHORT2;
         return true;
-    case 0x16: // Xbox packed signed 10:10:10 normal (DEC3N).
-        *Type = D3DDECLTYPE_DEC3N;
+    case 0x16: // Xbox packed signed 10:10:10 normal; decode sign in the VS.
+        // The D3D9 device accepts UDEC3 for this four-byte slot, while its
+        // native DEC3N declaration is rejected by the active runtime.
+        *Type = D3DDECLTYPE_UDEC3;
         return true;
     case 0x14: // PBYTE1 (UB_OGL, normalized)
     case 0x24: // PBYTE2 (UB_OGL, normalized)
@@ -567,13 +569,15 @@ static COD3_D3D9_FORMAT nullD3DExternalNativeFormat(unsigned int Format) {
     case 0x12: return COD3_D3D9_FMT_A8R8G8B8;
     case 0x13: return COD3_D3D9_FMT_L8;
     case 0x17: return COD3_D3D9_FMT_G8R8_G8B8;
-    case 0x19: return COD3_D3D9_FMT_A8;
+    // NV2A A8 expands RGB to one and keeps the source byte as alpha.  D3D9
+    // A8 samples RGB as zero, so upload this format through an RGBA texture.
+    case 0x19: return COD3_D3D9_FMT_A8R8G8B8;
     case 0x1A: return COD3_D3D9_FMT_A8L8;
     case 0x1B: return COD3_D3D9_FMT_A8L8;
     case 0x1C: return COD3_D3D9_FMT_X1R5G5B5;
     case 0x1D: return COD3_D3D9_FMT_A4R4G4B4;
     case 0x1E: return COD3_D3D9_FMT_X8R8G8B8;
-    case 0x1F: return COD3_D3D9_FMT_A8;
+    case 0x1F: return COD3_D3D9_FMT_A8R8G8B8;
     case 0x20: return COD3_D3D9_FMT_A8L8;
     case 0x27: return COD3_D3D9_FMT_L6V5U5;
     case 0x28: return COD3_D3D9_FMT_G8R8_G8B8;
@@ -1064,6 +1068,43 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
             }
             free(Linear);
             Source += (size_t)SourcePitch * Height;
+        }
+        return;
+    }
+    if (Info->Format == 0x19u || Info->Format == 0x1Fu) {
+        const bool Swizzled = Info->Format == 0x1Fu;
+        const unsigned char* Source = Info->Bits;
+        for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+            const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+            const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+            const size_t SourceLevelBytes = nullD3DTextureLevelBytes(
+                Info->Format, Width, Height, Size, Level);
+            const size_t LinearBytes = (size_t)Width * Height;
+            unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
+            if (Linear == NULL)
+                return;
+            if (Swizzled)
+                nullD3DUnswizzleBytes(Source, Linear, Width, Height, 1);
+            else {
+                const unsigned int SourcePitch = nullD3DTextureLevelPitch(
+                    Info->Format, Size, Level, Width);
+                for (unsigned int y = 0; y < Height; ++y)
+                    memcpy(Linear + (size_t)y * Width,
+                           Source + (size_t)y * SourcePitch, Width);
+            }
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+                for (unsigned int y = 0; y < Height; ++y) {
+                    unsigned int* Destination = (unsigned int*)((unsigned char*)Locked.pBits +
+                                                                 y * Locked.Pitch);
+                    const unsigned char* Row = Linear + (size_t)y * Width;
+                    for (unsigned int x = 0; x < Width; ++x)
+                        Destination[x] = 0x00FFFFFFu | ((unsigned int)Row[x] << 24);
+                }
+                Info->NativeTexture->UnlockRect(Level);
+            }
+            free(Linear);
+            Source += SourceLevelBytes;
         }
         return;
     }
