@@ -462,7 +462,7 @@ enum _D3DTEXTURESTAGESTATETYPE {
     D3DTSS_BORDERCOLOR = 0x1D,
     D3DTSS_COLORKEYCOLOR = 0x1E,
     D3DTSS_MAX = 0x20,
-    D3DTSS_DEFERRED_TEXTURE_STATE_MAX = 0xB,
+    D3DTSS_DEFERRED_TEXTURE_STATE_MAX = 0xC,
 };
 
 // ---- D3D8 entry points (stdcall, @N-decorated like the XDK exports) ------
