@@ -295,7 +295,8 @@ const unsigned int** nglGlowShaderPixelPostFX::PShaderTable = nglGlowShaderPixel
 unsigned int nglShaderParamSet::NumParams = 0;   // ?NumParams@nglShaderParamSet@@2IA
 unsigned int nglSceneParamSet::NumParams = 0;    // ?NumParams@nglSceneParamSet@@2IA
 unsigned int gpuHashIndexBuffer = 0;             // ?gpuHashIndexBuffer@@3IA
-void* nglEmptyParamSet = nullptr;                // ?nglEmptyParamSet@@3PAXA (ngl_params.o @ 0x1241D70)
+static unsigned int nglEmptyParamSetData[2] = { 0, 0 };
+void* nglEmptyParamSet = nglEmptyParamSetData;   // ?nglEmptyParamSet@@3PAXA (ngl_params.o @ 0x1241D70)
 
 // game.o inline helpers shared by the NGL parameter wrappers.
 // ea: 0x0065B680
