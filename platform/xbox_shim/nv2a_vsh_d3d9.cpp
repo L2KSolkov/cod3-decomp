@@ -495,12 +495,29 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     IDirect3DDevice9* device, const _D3DPixelShaderDef* definition) {
     const PixelShaderDefLayout* layout =
         reinterpret_cast<const PixelShaderDefLayout*>(definition);
-    if (device == nullptr || layout == nullptr ||
-        layout->PSCombinerCount != 0x00011102u ||
-        layout->PSTextureModes != 0x00000021u ||
-        layout->PSAlphaInputs[0] != 0xd9d41010u ||
-        layout->PSAlphaInputs[1] != 0xd8301010u ||
-        layout->PSRGBInputs[1] != 0xc83d0000u)
+    if (device == nullptr || layout == nullptr)
+        return nullptr;
+
+    const bool isWorldLightmap =
+        layout->PSCombinerCount == 0x00011102u &&
+        layout->PSTextureModes == 0x00000021u &&
+        layout->PSAlphaInputs[0] == 0xd9d41010u &&
+        layout->PSAlphaInputs[1] == 0xd8301010u &&
+        layout->PSRGBInputs[1] == 0xc83d0000u;
+    const bool isWorldBlendLightmap =
+        layout->PSCombinerCount == 0x00011103u &&
+        layout->PSTextureModes == 0x00000421u &&
+        layout->PSAlphaInputs[0] == 0x00000000u &&
+        layout->PSAlphaInputs[1] == 0x00000000u &&
+        layout->PSAlphaInputs[2] == 0xd8301010u &&
+        layout->PSRGBInputs[0] == 0x14c9c834u &&
+        layout->PSRGBInputs[1] == 0xccc40000u &&
+        layout->PSRGBInputs[2] == 0xccca0000u &&
+        layout->PSRGBOutputs[0] == 0x00000c00u &&
+        layout->PSRGBOutputs[1] == 0x000000c0u &&
+        layout->PSRGBOutputs[2] == 0x000000c0u &&
+        layout->PSAlphaOutputs[2] == 0x000000c0u;
+    if (!isWorldLightmap && !isWorldBlendLightmap)
         return nullptr;
 
     static std::map<const PixelShaderDefLayout*, IDirect3DPixelShader9*> cache;
@@ -508,22 +525,39 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     if (found != cache.end())
         return found->second;
 
-    static const char Source[] =
+    static const char WorldSource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
         "float4 t1 : TEXCOORD1; float fog : FOG; };\n"
         "sampler2D s0 : register(s0); sampler2D s1 : register(s1);\n"
+        "float4 fogColor : register(c0);\n"
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
         "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
         "  float light = lightmap.a * input.d0.a;\n"
-        "  return float4(diffuse.rgb * (1.0 - light), diffuse.a);\n"
+        "  float3 rgb = diffuse.rgb * (1.0 - light);\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
+    static const char WorldBlendSource[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
+        "float4 t1 : TEXCOORD1; float4 t2 : TEXCOORD2; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0); sampler2D s1 : register(s1); "
+        "sampler2D s2 : register(s2);\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float4 blend = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float4 lightmap = tex2D(s2, input.t2.xy / max(abs(input.t2.w), 1e-20));\n"
+        "  float3 rgb = lerp(diffuse.rgb, blend.rgb, saturate(input.d0.a));\n"
+        "  rgb *= input.d0.rgb * lightmap.rgb;\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    const char* Source = isWorldBlendLightmap ? WorldBlendSource : WorldSource;
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
     ID3DBlob* bytecode = nullptr;
     ID3DBlob* errors = nullptr;
-    const HRESULT result = compiler(Source, sizeof(Source) - 1, "nv2a_psh", nullptr,
+    const HRESULT result = compiler(Source, strlen(Source), "nv2a_psh", nullptr,
                                     nullptr, "main", "ps_2_0", 0, 0,
                                     &bytecode, &errors);
     if (FAILED(result)) {

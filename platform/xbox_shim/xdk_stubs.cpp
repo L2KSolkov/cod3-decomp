@@ -2446,6 +2446,15 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
         nullD3DCompileNV2AWorldPixelShader(gD3D9Device, Definition);
     if (WorldShader != NULL) {
         gD3D9Device->SetPixelShader(WorldShader);
+        DWORD FogColor = 0;
+        gD3D9Device->GetRenderState(COD3_D3D9_RS_FOGCOLOR, &FogColor);
+        const float FogColorF[4] = {
+            ((FogColor >> 16) & 0xffu) / 255.0f,
+            ((FogColor >> 8) & 0xffu) / 255.0f,
+            (FogColor & 0xffu) / 255.0f,
+            ((FogColor >> 24) & 0xffu) / 255.0f,
+        };
+        gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
         return;
     }
     gD3D9Device->SetPixelShader(NULL);
