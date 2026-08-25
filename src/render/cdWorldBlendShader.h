@@ -13,6 +13,8 @@
 
 #include "cdSimpleColorShader.h"
 
+#include "core/math_types.h"
+
 // ============================================================================
 // cdWorldBlendShaderMat — world blend shader material (32 bytes)
 // ============================================================================
@@ -29,6 +31,7 @@ static_assert(sizeof(cdWorldBlendShaderMat) == 0x20, "cdWorldBlendShaderMat size
 // ============================================================================
 struct cdWorldBlendShaderNode : nglShaderNode {
     cdWorldBlendShaderMat* mMaterial;  // +0x14
+    void Render() override;             // @0x7DD3E0
 };
 static_assert(sizeof(cdWorldBlendShaderNode) == 0x18, "cdWorldBlendShaderNode size mismatch");
 
@@ -66,6 +69,22 @@ namespace cdWorldBlendSolidColorPixel {
     extern unsigned long* PS[2];                    // ?PS@cdWorldBlendSolidColorPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];      // ?PShaderTable@cdWorldBlendSolidColorPixel@@3PAPBIA
     extern unsigned long* Shader;                   // ?Shader@cdWorldBlendSolidColorPixel@@3PAKA
+}
+
+namespace cdWorldBlendRender {
+    // IDA local type 7957, size 0x100.  SetConstants writes all 0x40
+    // dwords beginning at register c6.
+    struct cdWorldBlendParams {
+        math::Vector4 mConsts;        // c6
+        math::Mat44   mLocalToScreen; // c7-c10
+        math::Mat44   mWorldToShadow; // c11-c14
+        float         cShadowTint;    // c15.x
+        float         _pad94[3];
+        math::Vector4 cFog;           // c16
+        math::Vector4 cEyePos;        // c17
+        math::Vector4 mLightInfo[4];  // c18-c21
+    };
+    static_assert(sizeof(cdWorldBlendParams) == 0x100, "cdWorldBlendParams size mismatch");
 }
 
 // ============================================================================
