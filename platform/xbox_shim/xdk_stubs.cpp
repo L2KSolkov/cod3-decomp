@@ -657,6 +657,29 @@ static unsigned int nullD3DFormatBlockBytes(unsigned int Format) {
     }
 }
 
+static unsigned int nullD3DAlignTexturePitch(unsigned int Bytes) {
+    return (Bytes + 63u) & ~63u;
+}
+
+static unsigned int nullD3DMipDimension(unsigned int Base, unsigned int Level) {
+    const unsigned int Dimension = Base >> Level;
+    return Dimension == 0 ? 1 : Dimension;
+}
+
+static unsigned int nullD3DTextureLevelPitch(unsigned int Format,
+                                             unsigned int Size,
+                                             unsigned int Level,
+                                             unsigned int RowBytes) {
+    if (XGIsSwizzledFormat(Format))
+        return RowBytes;
+    if (Level == 0 && Size != 0) {
+        const unsigned int EncodedPitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
+        if (EncodedPitch >= RowBytes)
+            return EncodedPitch;
+    }
+    return nullD3DAlignTexturePitch(RowBytes);
+}
+
 static unsigned int nullD3DLog2(unsigned int Value) {
     unsigned int Result = 0;
     while (Value > 1) {
@@ -797,23 +820,24 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
         return;
     unsigned int BlockBytes = nullD3DFormatBlockBytes(Info->Format);
     if (BlockBytes != 0) {
-        COD3_D3D9_LOCKED_RECT Locked = {};
-        if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
-            return;
-        unsigned int BlocksWide = (Info->Width + 3u) / 4u;
-        unsigned int BlocksHigh = (Info->Height + 3u) / 4u;
-        unsigned int RowBytes = BlocksWide * BlockBytes;
-        unsigned int SourcePitch = RowBytes;
-        if (Size != 0) {
-            unsigned int EncodedPitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
-            if (EncodedPitch >= RowBytes)
-                SourcePitch = EncodedPitch;
-        }
         const unsigned char* Source = Info->Bits;
-        unsigned char* Destination = (unsigned char*)Locked.pBits;
-        for (unsigned int y = 0; y < BlocksHigh; ++y)
-            memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
-        Info->NativeTexture->UnlockRect(0);
+        for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+            const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+            const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+            const unsigned int BlocksWide = (Width + 3u) / 4u;
+            const unsigned int BlocksHigh = (Height + 3u) / 4u;
+            const unsigned int RowBytes = BlocksWide * BlockBytes;
+            const unsigned int SourcePitch = nullD3DTextureLevelPitch(
+                Info->Format, Size, Level, RowBytes);
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+                unsigned char* Destination = (unsigned char*)Locked.pBits;
+                for (unsigned int y = 0; y < BlocksHigh; ++y)
+                    memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
+                Info->NativeTexture->UnlockRect(Level);
+            }
+            Source += (size_t)SourcePitch * BlocksHigh;
+        }
         return;
     }
     unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Info->Format);
@@ -825,72 +849,84 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
         unsigned int Entries = nullD3DPaletteEntryCount(Palette);
         if (Entries == 0)
             return;
-        size_t LinearBytes = (size_t)Info->Width * Info->Height;
-        unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
-        if (Linear == NULL)
-            return;
-        if (XGIsSwizzledFormat(Info->Format))
-            nullD3DUnswizzleBytes(Info->Bits, Linear, Info->Width, Info->Height, 1);
-        else {
-            unsigned int SourcePitch = Info->Width;
-            if (Size != 0)
-                SourcePitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
-            for (unsigned int y = 0; y < Info->Height; ++y)
-                memcpy(Linear + (size_t)y * Info->Width,
-                       Info->Bits + (size_t)y * SourcePitch, Info->Width);
-        }
-        COD3_D3D9_LOCKED_RECT Locked = {};
-        if (SUCCEEDED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0))) {
-            const unsigned int* Colors = (const unsigned int*)(uintptr_t)Palette->Data;
-            for (unsigned int y = 0; y < Info->Height; ++y) {
-                unsigned int* Destination = (unsigned int*)((unsigned char*)Locked.pBits +
-                                                             y * Locked.Pitch);
-                const unsigned char* Source = Linear + (size_t)y * Info->Width;
-                for (unsigned int x = 0; x < Info->Width; ++x)
-                    Destination[x] = Colors[Source[x] < Entries ? Source[x] : 0];
+        const unsigned char* Source = Info->Bits;
+        const unsigned int* Colors = (const unsigned int*)(uintptr_t)Palette->Data;
+        for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+            const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+            const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+            const unsigned int SourcePitch = nullD3DTextureLevelPitch(
+                Info->Format, Size, Level, Width);
+            const size_t LinearBytes = (size_t)Width * Height;
+            unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
+            if (Linear == NULL)
+                return;
+            if (XGIsSwizzledFormat(Info->Format))
+                nullD3DUnswizzleBytes(Source, Linear, Width, Height, 1);
+            else {
+                for (unsigned int y = 0; y < Height; ++y)
+                    memcpy(Linear + (size_t)y * Width,
+                           Source + (size_t)y * SourcePitch, Width);
             }
-            Info->NativeTexture->UnlockRect(0);
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+                for (unsigned int y = 0; y < Height; ++y) {
+                    unsigned int* Destination = (unsigned int*)((unsigned char*)Locked.pBits +
+                                                                 y * Locked.Pitch);
+                    const unsigned char* Indices = Linear + (size_t)y * Width;
+                    for (unsigned int x = 0; x < Width; ++x)
+                        Destination[x] = Colors[Indices[x] < Entries ? Indices[x] : 0];
+                }
+                Info->NativeTexture->UnlockRect(Level);
+            }
+            free(Linear);
+            Source += (size_t)SourcePitch * Height;
         }
-        free(Linear);
         return;
     }
     if (XGIsSwizzledFormat(Info->Format)) {
         if (BytesPerPixel != 1 && BytesPerPixel != 2 && BytesPerPixel != 4)
             return;
-        COD3_D3D9_LOCKED_RECT Locked = {};
-        if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
-            return;
-        size_t LinearBytes = (size_t)Info->Width * Info->Height * BytesPerPixel;
-        unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
-        if (Linear != NULL) {
-            if (BytesPerPixel == 4 && Info->Width >= 8 && Info->Height >= 8)
-                nullD3DUnswizzle32(Info->Bits, (unsigned int*)Linear,
-                                   Info->Width, Info->Height);
+        const unsigned char* Source = Info->Bits;
+        for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+            const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+            const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+            const size_t LinearBytes = (size_t)Width * Height * BytesPerPixel;
+            unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
+            if (Linear == NULL)
+                return;
+            if (BytesPerPixel == 4 && Width >= 8 && Height >= 8)
+                nullD3DUnswizzle32(Source, (unsigned int*)Linear, Width, Height);
             else
-                nullD3DUnswizzleBytes(Info->Bits, Linear, Info->Width, Info->Height,
-                                      BytesPerPixel);
-            for (unsigned int y = 0; y < Info->Height; ++y)
-                memcpy((unsigned char*)Locked.pBits + y * Locked.Pitch,
-                       Linear + (size_t)y * Info->Width * BytesPerPixel,
-                       Info->Width * BytesPerPixel);
+                nullD3DUnswizzleBytes(Source, Linear, Width, Height, BytesPerPixel);
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+                for (unsigned int y = 0; y < Height; ++y)
+                    memcpy((unsigned char*)Locked.pBits + y * Locked.Pitch,
+                           Linear + (size_t)y * Width * BytesPerPixel,
+                           Width * BytesPerPixel);
+                Info->NativeTexture->UnlockRect(Level);
+            }
             free(Linear);
+            Source += LinearBytes;
         }
-        Info->NativeTexture->UnlockRect(0);
         return;
     }
-    unsigned int SourcePitch = Info->Width * BytesPerPixel;
-    if (Size != 0)
-        SourcePitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
-    COD3_D3D9_LOCKED_RECT Locked = {};
-    if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
-        return;
-    unsigned int RowBytes = Info->Width * BytesPerPixel;
-    unsigned int Rows = Info->Height;
     const unsigned char* Source = Info->Bits;
-    unsigned char* Destination = (unsigned char*)Locked.pBits;
-    for (unsigned int y = 0; y < Rows; ++y)
-        memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
-    Info->NativeTexture->UnlockRect(0);
+    for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+        const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+        const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+        const unsigned int RowBytes = Width * BytesPerPixel;
+        const unsigned int SourcePitch = nullD3DTextureLevelPitch(
+            Info->Format, Size, Level, RowBytes);
+        COD3_D3D9_LOCKED_RECT Locked = {};
+        if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+            unsigned char* Destination = (unsigned char*)Locked.pBits;
+            for (unsigned int y = 0; y < Height; ++y)
+                memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
+            Info->NativeTexture->UnlockRect(Level);
+        }
+        Source += (size_t)SourcePitch * Height;
+    }
 }
 
 static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
