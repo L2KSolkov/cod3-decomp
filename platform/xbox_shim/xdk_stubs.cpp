@@ -294,11 +294,8 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x15: // SHORT1
         *Type = D3DDECLTYPE_SHORT2;
         return true;
-    case 0x16: // Xbox packed signed 10:10:10 normal; decode sign in the VS.
-        // This D3D9 device exposes UDEC3 but not DEC3N.  UDEC3 preserves the
-        // packed 10-bit fields as integers; nv2a_vsh_d3d9 restores the Xbox
-        // two's-complement normalization before executing the microcode.
-        *Type = D3DDECLTYPE_UDEC3;
+    case 0x16: // Xbox packed signed 10:10:10 normal (DEC3N).
+        *Type = D3DDECLTYPE_DEC3N;
         return true;
     case 0x21: // SHORT2N
         *Type = D3DDECLTYPE_SHORT2N;
