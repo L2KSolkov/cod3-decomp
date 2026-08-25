@@ -11153,9 +11153,10 @@ void CM_LinkEntity(EntityShared* ent, const float* const absmin,
 
     float mins[2];
     float maxs[2];
-    WorldSector* node = &pcm.worldSectorHead;
+    WorldSector* node;
     for (;;)
     {
+        node = &pcm.worldSectorHead;
         mins[0] = g_bspTree->mins[0];
         mins[1] = g_bspTree->mins[1];
         maxs[0] = g_bspTree->maxs[0];
