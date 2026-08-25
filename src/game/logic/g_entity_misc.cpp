@@ -43,6 +43,10 @@ extern void tlPrintf(const char* fmt, ...);
 extern void nglDebugAddBox(const math::Mat43& mat,
                            const math::DiagMat33& size,
                            unsigned int color);
+extern void IGOFrontEnd_UpdateBridge(void* self, float time_inc);
+extern void IGOCompassWidget_SetHideCompassStarBridge(int viewport,
+                                                       int active,
+                                                       int index);
 
 // IDA global: g_bAnimCheck (scr.o)
 int g_bAnimCheck = 0;
@@ -3119,33 +3123,47 @@ void** InplaceTree_Find_GdbFileRecords(void* tree, const char* const* key)
 
 void* FEManager_GetDMS(void* self, int client)
 {
-    (void)self; (void)client;
-    return nullptr;
+    return static_cast<FEManager*>(self)->GetDMS(client);
 }
 void* FEManager_GetFont(void* self, int a)
 {
-    (void)self; (void)a;
-    return nullptr;
+    return static_cast<FEManager*>(self)->GetFont(
+        static_cast<font_index>(a));
 }
 void* FEManager_GetFont(void* self, int a, float b)
 {
-    (void)self; (void)a; (void)b;
-    return nullptr;
+    return static_cast<FEManager*>(self)->GetFont(
+        static_cast<font_index>(a), b);
 }
 void* FEManager_GetIGMS(void* self, int client)
 {
-    (void)self; (void)client;
-    return nullptr;
+    return static_cast<FEManager*>(self)->GetIGMS(client);
 }
-void FEManager_DrawControllerError(void* self) { (void)self; }
+void FEManager_DrawControllerError(void* self)
+{
+    static_cast<FEManager*>(self)->DrawControllerError();
+}
 void FEManager_DrawIGO(void* self, int client)
 {
     static_cast<FEManager*>(self)->DrawIGO(client);
 }
-void FEManager_PlayFadeInOranScreen() {}
-void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
-void FEManager_UpdateSplitScreen(void* self) { (void)self; }
-void g_femanager_IGO_Update(int a) { (void)a; }
+void FEManager_PlayFadeInOranScreen()
+{
+    g_femanager.PlayFadeInOranScreen();
+}
+void FEManager_UpdateLoadingMenu(void* self, float a)
+{
+    (void)self;
+    g_femanager.UpdateLoadingMenu(a);
+}
+void FEManager_UpdateSplitScreen(void* self)
+{
+    static_cast<FEManager*>(self)->UpdateSplitScreen();
+}
+void g_femanager_IGO_Update(int a)
+{
+    g_femanager.UpdateIGO(static_cast<float>(a));
+}
 void G_FreeInteractionInfo() {}
 void G_RunFrameForEntity(Entity* e, int a) { (void)e; (void)a; }
 void G_TouchTriggersAndVehicles(Entity* e, const math::Position3* a,
@@ -3180,13 +3198,25 @@ void gpuSetVertexShader(const unsigned int* shader)
 void GScr_LoadScriptsAndAnimsForEntities() {}
 struct game_hudelem_s;
 void HudElem_SetDefaults(game_hudelem_s* h) { (void)h; }
-void IGO_Update(void* self, float a) { (void)self; (void)a; }
+void IGO_Update(void* self, float a)
+{
+    IGOFrontEnd_UpdateBridge(self, a);
+}
 void IGOCompassWidget_SetHideCompassStar(int a, int b, int c)
 {
-    (void)a; (void)b; (void)c;
+    IGOCompassWidget_SetHideCompassStarBridge(a, b, c);
 }
-void InGameMenuSystem_ActivateMenu(void* self, int a) { (void)self; (void)a; }
-void InGameMenuSystem_ActivatePauseMenu(void* self) { (void)self; }
+void InGameMenuSystem_ActivateMenu(void* self, int a)
+{
+    InGameMenuSystem* menu = static_cast<InGameMenuSystem*>(self);
+    if (menu == nullptr)
+        menu = g_femanager.GetIGMS(currCl);
+    menu->ActivateMenu(a);
+}
+void InGameMenuSystem_ActivatePauseMenu(void* self)
+{
+    static_cast<InGameMenuSystem*>(self)->ActivatePauseMenu();
+}
 void InitCDAepsShader() {}
 void InitLights() {}
 void InplaceAssetBank_Fixup(void* self) { (void)self; }

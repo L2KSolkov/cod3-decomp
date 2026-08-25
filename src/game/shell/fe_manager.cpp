@@ -33,6 +33,19 @@ extern void Concat(char* dst, int* const dstLen, int dstCapacity,
                    const char* src);  // core.o
 }
 
+void IGOFrontEnd_UpdateBridge(void* self, float time_inc)
+{
+    static_cast<IGOFrontEnd*>(self)->Update(time_inc);
+}
+
+void IGOCompassWidget_SetHideCompassStarBridge(int viewport,
+                                               int active,
+                                               int index)
+{
+    g_femanager.IGO->compassWidget[viewport]->SetHideCompassStar(active,
+                                                                   index);
+}
+
 // STBManager minimal view
 class STBManager {
 public:

@@ -341,7 +341,7 @@ class PanelFileUser;
 struct IGOFrontEnd;
 class FEMenuSystem;
 class FEMenu;
-struct DialogMenuSystem;
+class DialogMenuSystem;
 struct InGameMenuSystem;
 class AARMenuSystem;
 struct ProfileManager;
@@ -1678,6 +1678,7 @@ public:
             reinterpret_cast<const unsigned char*>(this) + 0x1C);
     }
     void ActivateMenu(int menu);  // ?ActivateMenu@InGameMenuSystem@@QAEXH@Z (shell.o 0x572FD0)
+    void ActivatePauseMenu();     // ?ActivatePauseMenu@InGameMenuSystem@@QAEXXZ (shell.o 0x573070)
     virtual bool IsMenuActive(int menu);     // ?IsMenuActive@FEMenuSystem@@UAE_NH@Z (0x570BC0)
     virtual void MakeActive(int index);      // ?MakeActive@FEMenuSystem@@UAEXH@Z (0x570B20)
     virtual void ClearReturnMenu(int menu);  // ?ClearReturnMenu@FEMenuSystem@@UAEXH@Z (0x570BE0)
