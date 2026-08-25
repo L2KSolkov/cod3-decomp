@@ -194,7 +194,13 @@ static std::string IluExpression(unsigned int opcode, const std::string& c) {
     switch (opcode) {
     case 1: return c;
     case 2: return BroadcastScalar("1.0 / " + c);
-    case 3: return BroadcastScalar("1.0 / max(abs(" + c + "), 1.17549435e-38)");
+    // NV2A RCC preserves the reciprocal sign and clamps away zero/inf.  The
+    // absolute-value form loses the sign of homogeneous w and mirrors the
+    // position for vertices behind the camera.
+    case 3: return BroadcastScalar(
+        "(" + c + " >= 0.0 ? clamp(1.0 / " + c
+        + ", 5.42101086e-20, 1.84467441e19) : clamp(1.0 / " + c
+        + ", -1.84467441e19, -5.42101086e-20))");
     case 4: return BroadcastScalar("rsqrt(abs(" + c + "))");
     case 5: return BroadcastScalar("exp2(" + c + ")");
     case 6: return BroadcastScalar("log2(abs(" + c + "))");
