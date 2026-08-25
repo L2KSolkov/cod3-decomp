@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 
 #include <math.h>
@@ -253,10 +254,6 @@ struct sentient_s {
     int eTeam;  // +0x00
 };
 
-struct vmCvar_t {
-    int   integer;  // +0x00
-    float value;    // +0x04
-};
 extern vmCvar_t cg_skybox;
 
 float gTracerDistScale;   // 0x00DF9DA8
