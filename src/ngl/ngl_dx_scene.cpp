@@ -238,7 +238,8 @@ math::Mat44 DeviceXBox(nglTexture* Target, const math::Vector4& FSAAParams) {
     float v5 = (FSAAParams.v.m128_f32[1] * ScreenHeight) * 0.5f;
     result.x.v = _mm_setr_ps((FSAAParams.v.m128_f32[0] * ScreenWidth) * 0.5f, 0.0f, 0.0f, 0.0f);
     result.y.v = _mm_setr_ps(0.0f, v5, 0.0f, 0.0f);
-    result.z.v = _mm_setr_ps(0.0f, 0.0f, 0.998046875f, 0.0f);
+    // IDA DeviceXBox writes the Xbox 24-bit depth scale (0x4B7FFFFF).
+    result.z.v = _mm_setr_ps(0.0f, 0.0f, 16777215.0f, 0.0f);
     result.w.v = _mm_setr_ps(FSAAParams.v.m128_f32[2] + (FSAAParams.v.m128_f32[0] * ScreenWidth) * 0.5f,
                              FSAAParams.v.m128_f32[2] + v5, 0.0f, 1.0f);
     return result;
