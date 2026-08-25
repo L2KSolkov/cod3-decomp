@@ -511,6 +511,13 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBInputs[0] == 0xc8200000u &&
         layout->PSRGBOutputs[0] == 0x000000c0u &&
         layout->PSAlphaOutputs[0] == 0x000000c0u;
+    const bool isSky =
+        layout->PSCombinerCount == 0x00011101u &&
+        layout->PSTextureModes == 0x00000001u &&
+        layout->PSAlphaInputs[0] == 0xd8d41010u &&
+        layout->PSRGBInputs[0] == 0xc8c40000u &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSAlphaOutputs[0] == 0x000000c0u;
     const bool isWorldTexturedVertexLit =
         layout->PSCombinerCount == 0x00011102u &&
         layout->PSTextureModes == 0x00000001u &&
@@ -555,7 +562,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBOutputs[1] == 0x000000c0u &&
         layout->PSRGBOutputs[2] == 0x000000c0u &&
         layout->PSAlphaOutputs[2] == 0x000000c0u;
-    if (!isWorldLightmap && !isWorldTextured && !isWorldTexturedVertexLit &&
+    if (!isWorldLightmap && !isWorldTextured && !isSky && !isWorldTexturedVertexLit &&
         !isWorldLightmapVertexLit && !isWorldBlend && !isWorldBlendLightmap)
         return nullptr;
 
@@ -583,6 +590,16 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
         "  return float4(lerp(fogColor.rgb, diffuse.rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    static const char SkySource[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0);\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float3 rgb = diffuse.rgb * input.d0.rgb;\n"
+        "  float alpha = diffuse.a * input.d0.a;\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), alpha);\n"
         "}\n";
     static const char WorldTextureVertexLitSource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; float fog : FOG; };\n"
@@ -635,7 +652,8 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         : (isWorldLightmapVertexLit ? WorldLightmapVertexLitSource
         : (isWorldBlend ? WorldBlendSource
         : (isWorldTexturedVertexLit ? WorldTextureVertexLitSource
-        : (isWorldTextured ? WorldTextureSource : WorldSource))));
+        : (isWorldTextured ? WorldTextureSource
+        : (isSky ? SkySource : WorldSource)))));
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
