@@ -680,6 +680,43 @@ static unsigned int nullD3DTextureLevelPitch(unsigned int Format,
     return nullD3DAlignTexturePitch(RowBytes);
 }
 
+static size_t nullD3DTextureLevelBytes(unsigned int Format,
+                                       unsigned int Width,
+                                       unsigned int Height,
+                                       unsigned int Size,
+                                       unsigned int Level) {
+    const unsigned int BlockBytes = nullD3DFormatBlockBytes(Format);
+    if (BlockBytes != 0) {
+        // D3D::PixelJar::FindSurfaceWithinTexture clamps compressed mip
+        // dimensions to the format's 4x4 minimum before advancing pbData.
+        const unsigned int StorageWidth = Width < 4 ? 4 : Width;
+        const unsigned int StorageHeight = Height < 4 ? 4 : Height;
+        const unsigned int BitsPerPixel = BlockBytes == 8 ? 4 : 8;
+        return ((size_t)StorageWidth * StorageHeight * BitsPerPixel) >> 3;
+    }
+    const unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Format);
+    if (BytesPerPixel == 0)
+        return 0;
+    if (XGIsSwizzledFormat(Format))
+        return (size_t)Width * Height * BytesPerPixel;
+    const unsigned int RowBytes = Width * BytesPerPixel;
+    return (size_t)nullD3DTextureLevelPitch(Format, Size, Level, RowBytes) * Height;
+}
+
+static size_t nullD3DExternalTextureBytes(const nullD3DInfo* Info,
+                                          unsigned int Size) {
+    if (Info == NULL)
+        return 0;
+    size_t Total = 0;
+    for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+        const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+        const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+        Total += nullD3DTextureLevelBytes(Info->Format, Width, Height,
+                                          Size, Level);
+    }
+    return Total;
+}
+
 static unsigned int nullD3DLog2(unsigned int Value) {
     unsigned int Result = 0;
     while (Value > 1) {
@@ -827,8 +864,12 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
             const unsigned int BlocksWide = (Width + 3u) / 4u;
             const unsigned int BlocksHigh = (Height + 3u) / 4u;
             const unsigned int RowBytes = BlocksWide * BlockBytes;
-            const unsigned int SourcePitch = nullD3DTextureLevelPitch(
-                Info->Format, Size, Level, RowBytes);
+            const size_t SourceLevelBytes = nullD3DTextureLevelBytes(
+                Info->Format, Width, Height, Size, Level);
+            const unsigned int StorageHeight = Height < 4 ? 4 : Height;
+            const unsigned int SourceBlocksHigh = (StorageHeight + 3u) / 4u;
+            const unsigned int SourcePitch = (unsigned int)(SourceLevelBytes /
+                                                              SourceBlocksHigh);
             COD3_D3D9_LOCKED_RECT Locked = {};
             if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
                 unsigned char* Destination = (unsigned char*)Locked.pBits;
@@ -836,7 +877,7 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
                     memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
                 Info->NativeTexture->UnlockRect(Level);
             }
-            Source += (size_t)SourcePitch * BlocksHigh;
+            Source += SourceLevelBytes;
         }
         return;
     }
@@ -2061,6 +2102,9 @@ void __stdcall D3DResource_Register(D3DResource* Resource, void* Base) {
     Info->Format = (Texture->Format >> 8) & 0xFFu;
     Info->SizeBytes = 0;
     Info->Bits = (unsigned char*)(uintptr_t)Resource->Data;
+    const size_t SourceBytes = nullD3DExternalTextureBytes(Info, Texture->Size);
+    Info->SizeBytes = SourceBytes > 0xFFFFFFFFu ? 0xFFFFFFFFu :
+                      (unsigned int)SourceBytes;
     nullD3DCreateExternalNative(Info, Texture->Size, Slot->PackedFormat);
 }
 int __stdcall D3DSurface_GetDesc(D3DSurface* Surface, _D3DSURFACE_DESC* Desc) {
