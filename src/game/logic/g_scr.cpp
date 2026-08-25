@@ -5068,7 +5068,7 @@ void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
 // BrocInitEntity (0x5C5790) - global
 void BrocInitEntity(
     Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
         keyValuePairs);
 // VM_Restart (0x5C7940) - global
 vm_s* VM_Restart(vm_s* vm);
@@ -12547,7 +12547,7 @@ void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
 // ea: 0x005C5790
 void BrocInitEntity(
     Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
         keyValuePairs)
 {
     void* v3 = nullptr;
@@ -12555,10 +12555,10 @@ void BrocInitEntity(
         && gpBrocAPI->mBrocExports.mCreateExtendedEntity != nullptr)
     {
         const char** pKey = nullptr;
-        if (keyValuePairs.mSize != 0)
-            pKey = (const char**)&keyValuePairs.mList[0].mKey.mStr;
+        if (keyValuePairs->mSize != 0)
+            pKey = (const char**)&keyValuePairs->mList[0].mKey.mStr;
         v3 = gpBrocAPI->mBrocExports.mCreateExtendedEntity(
-            pKey, keyValuePairs.mSize);
+            pKey, keyValuePairs->mSize);
     }
     ent->mBrocExtendedEntity = v3;
     UpdateEntityHash(ent);

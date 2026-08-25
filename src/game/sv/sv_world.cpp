@@ -368,7 +368,7 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                 math::Position3 absmin;
                 DObjTrace_s objTrace;
                 memset(&objTrace, 0, sizeof(objTrace));
-                float v29[3];
+                float v29[3][3];
                 float localEnd[3];
                 if ((p_currentOrigin->r.svFlags & 0x10) != 0) {
                     if (DObjHasContents(mDObj, clip->contentmask) == 0)

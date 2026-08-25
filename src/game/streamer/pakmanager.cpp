@@ -30,6 +30,7 @@
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
+extern "C" void CollisionContext_Init(void* storage);
 extern PoolAllocator* gCommonPoolAllocator;
 extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
 extern void EntityNotify_SetupAllocators(PoolAllocator* allocator);
@@ -3078,13 +3079,6 @@ extern void BrocInitEntity(
     Entity* ent,
     const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
         keyValuePairs);  // scr.o
-void BrocInitEntity(
-    Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
-        keyValuePairs)
-{
-    (void)ent; (void)keyValuePairs;  // stub: scr.o
-}
 struct VehicleNode {
     InplaceString name;               // +0x00
     InplaceString target;             // +0x04
@@ -3187,7 +3181,7 @@ struct SceneLight {
     float mGlowRadius;           // +0x1C
     float mGlowIntensity;        // +0x20
     float mGlowFade;             // +0x24
-    void* m_target;              // +0x28
+    InplaceString m_target;      // +0x28
     unsigned int mReserved1;     // +0x2C
 };
 class SceneBank {
@@ -6508,7 +6502,7 @@ void SceneManager::RenderLightGlows()
         for (unsigned int li = 0; li < bank->mSceneLights.mSize; ++li)
         {
             SceneLight* light = &bank->mSceneLights.mList[li];
-            const char* target = (const char*)light->m_target;
+            const char* target = light->m_target.mStr;
             if (target != nullptr)
             {
                 Broc::string name(target);
@@ -6518,12 +6512,16 @@ void SceneManager::RenderLightGlows()
                                        nullptr, 0, 1);
                 unsigned int v21 = v20 & 0xFFF;
                 Entity* targetEnt = nullptr;
-                if (v21 < 0x540
-                    && v20 >> 12 == EntityHandleDb::sInst.mElements[v21].mKey
-                    && (targetEnt =
+                if (v21 >= 0x540
+                    || v20 >> 12 != EntityHandleDb::sInst.mElements[v21].mKey
+                    || (targetEnt =
                             EntityHandleDb::sInst.mElements[v21].mObject)
-                           != nullptr)
+                           == nullptr)
                 {
+                    // A light can reference an entity from a streamed scene
+                    // bank that has not been instanced in this frame.
+                    continue;
+                }
                     const math::Mat43* mtx =
                         &nglGetMatrix_ViewToWorld(nglBuildScene);
                     __m128 xrow = mtx->x.v;
@@ -6611,18 +6609,6 @@ void SceneManager::RenderLightGlows()
 
                     RenderGlowSprite(lightPos, light->mGlowRadius,
                                      0x80909090);
-                }
-                else
-                {
-                    AeAssert::gCurrentAuthor = AeAssert::COD3;
-                    AeAssert::gCurrentFile =
-                        "c:\\cod\\code\\game\\scenemanager.cpp";
-                    AeAssert::gCurrentLine = 1211;
-                    AeAssert::gCurrentExpr = "target";
-                    if (!AeAssert::IsIgnored()
-                        && AeAssert::Assert("Bad entity handle"))
-                        __debugbreak();
-                }
             }
             else
             {
@@ -6673,8 +6659,7 @@ void SceneManager::RenderLightGlows()
                             __debugbreak();
                     }
                     collision_context_t context;
-                    context.__vftable =
-                        (collision_context_t_vtbl*)0x00CD8F6C;
+                    CollisionContext_Init(&context);
                     context.pass_entity1 =
                         *(unsigned int*)((char*)EntityManager::sInst
                                          ->mPlayers[currCl]
@@ -14733,10 +14718,10 @@ void InstanceBankMgr::ReleaseAnims(TPakId pakId)
     InstanceBankSet* entry = mEntries[pakId];
     if (entry != nullptr)
     {
-        InstanceBank& meshBank = entry->GetBank(INSTBANK_TYPE_MESH);
-        for (unsigned int i = 0; i < meshBank.mEntries.mSize; ++i)
+        InstanceBank& animfileBank = entry->GetBank(INSTBANK_TYPE_ANIMFILE);
+        for (unsigned int i = 0; i < animfileBank.mEntries.mSize; ++i)
         {
-            InstanceBank::IbEntry& ibe = meshBank.mEntries.mList[i];
+            InstanceBank::IbEntry& ibe = animfileBank.mEntries.mList[i];
             nalAnimFile* ptr = (nalAnimFile*)ibe.ptr;
             if (ptr != nullptr)
             {
@@ -14755,32 +14740,35 @@ void InstanceBankMgr::ReleaseAnims(TPakId pakId)
                      j = ((NalAnimClassView*)j)->NextAnim)
                 {
                     void* old_dir = m_anim_directory.m_old_directory;
-                    void** odvt = *(void***)old_dir;
-                    ((void (__thiscall*)(void*, void*))odvt[4])(old_dir, j);
+                    if (old_dir != nullptr)
+                    {
+                        void** odvt = *(void***)old_dir;
+                        ((void (__thiscall*)(void*, void*))odvt[4])(old_dir, j);
+                    }
                     XAnimRelease((nalAnimClass<nalAnyPose>*)j);
                 }
                 nalReleaseAnimFile(ptr);
                 ibe.ptr = 0;
             }
         }
-        InstanceBank& animfileBank = entry->GetBank(INSTBANK_TYPE_ANIMFILE);
-        for (unsigned int k = 0; k < animfileBank.mEntries.mSize; ++k)
-            animfileBank.mEntries.mList[k].ptr = 0;
+        InstanceBank& animBank = entry->GetBank(INSTBANK_TYPE_ANIM);
+        for (unsigned int k = 0; k < animBank.mEntries.mSize; ++k)
+            animBank.mEntries.mList[k].ptr = 0;
 
-        InstanceBank& animBank = entry->mInstanceBanks.mList[6];
-        for (unsigned int v17 = 0; v17 < animBank.mEntries.mSize; ++v17)
+        InstanceBank& scnBank = entry->mInstanceBanks.mList[6];
+        for (unsigned int v17 = 0; v17 < scnBank.mEntries.mSize; ++v17)
         {
-            InstanceBank::IbEntry& ibe = animBank.mEntries.mList[v17];
+            InstanceBank::IbEntry& ibe = scnBank.mEntries.mList[v17];
             if (ibe.ptr != 0)
             {
                 nalReleaseSceneAnim((nalSceneAnim*)ibe.ptr);
                 ibe.ptr = 0;
             }
         }
-        InstanceBank& scnBank = entry->mInstanceBanks.mList[7];
-        for (unsigned int v26 = 0; v26 < scnBank.mEntries.mSize; ++v26)
+        InstanceBank& animOffsetBank = entry->mInstanceBanks.mList[7];
+        for (unsigned int v26 = 0; v26 < animOffsetBank.mEntries.mSize; ++v26)
         {
-            InstanceBank::IbEntry& ibe = scnBank.mEntries.mList[v26];
+            InstanceBank::IbEntry& ibe = animOffsetBank.mEntries.mList[v26];
             if (ibe.ptr != 0)
             {
                 PakManager::sInst->MemFree(pakId, (void*)ibe.ptr, false);

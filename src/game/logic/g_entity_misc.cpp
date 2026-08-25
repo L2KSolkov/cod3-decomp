@@ -2981,7 +2981,11 @@ void Entity_Notify(Entity* e, unsigned int a) { (void)e; (void)a; }
 void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
 void EntityHandleDb_Compact(void* self) { (void)self; }
 void EntityHandleDb_Init(void* self) { (void)self; }
-void EntityHandleDb_Release(void* self, Entity* e) { (void)self; (void)e; }
+void EntityHandleDb_Release(void* self, Entity* e)
+{
+    if (self != nullptr && e != nullptr)
+        static_cast<EntityHandleDb*>(self)->Release(*e);
+}
 // EntityHandleDb_Find templates (g.o 0x4B1A40 / 0x4B1B00 / 0x4B1B60)
 template <typename T>
 void EntityHandleDb_Find(int fieldOfs, T match,

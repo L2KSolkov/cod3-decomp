@@ -2542,11 +2542,8 @@ public:
     uint8_t      _pad0[0x20];  // +0x00
     XModelParts* parts;        // +0x20
     XModelLod*   lod[5];       // +0x24
-    uint8_t      _pad28[0x38 - 0x28];
     InplaceVector<struct XModelCollSurf const*> collSurfs;  // +0x38
-    uint8_t      _pad3C[0x40 - 0x3C];
     int          contents;     // +0x40
-    uint8_t      _pad41[0x44 - 0x41];
     uint16_t     numLods;      // +0x44
     uint16_t     collLod;      // +0x46
     InplaceString name;        // +0x48

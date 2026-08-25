@@ -5,6 +5,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <new>
 #include <stdlib.h>
 #include <string.h>
 
@@ -70,6 +71,13 @@ collision_context_t::collision_context_t(
     this->pass_entity1 = handle1;
     this->pass_entity2 = handle2;
     this->contentmask = mask;
+}
+
+// Initialize a collision context supplied by a translation unit that only has
+// the verified 24-byte layout view.  This preserves the real host vtable.
+extern "C" void CollisionContext_Init(void* storage)
+{
+    new (storage) collision_context_t();
 }
 
 // ea: 0x0044AF10
