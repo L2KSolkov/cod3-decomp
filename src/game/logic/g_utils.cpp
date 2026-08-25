@@ -95,11 +95,28 @@ ae_sized_array<Entity*, 4096>::const_iterator EntityHandleDb::Find(
 // ea: 0x00466460
 void EntityHandleDb::Release(Entity& e)
 {
-    if (e.mHandle.mHandle.mVal != 0)
+    const unsigned int handle = e.mHandle.mHandle.mVal;
+    if (handle != 0)
     {
-        unsigned int idx = e.mHandle.mHandle.mVal & 0xFFF;
-        if (idx < 0x540)
-            EntityHandleDb::sInst.mElements[idx].mKey = 0;  // ReleaseHandle
+        const unsigned int idx = handle & 0xFFF;
+        if (idx >= 0x540)
+        {
+            if (!AeAssert::IsIgnored() && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+        else if (EntityHandleDb::sInst.mElements[idx].mKey == (int)(handle >> 12))
+        {
+            // HandleDb::ReleaseHandle: return the slot to the free set and
+            // advance its generation before clearing the object pointer.
+            unsigned int* freeBits = reinterpret_cast<unsigned int*>(EntityHandleDb::sInst._pad);
+            freeBits[idx >> 5] |= 1u << (idx & 0x1F);
+            EntityHandleDb::sInst.mElements[idx].mObject = nullptr;
+            ++EntityHandleDb::sInst.mElements[idx].mKey;
+        }
+        else if (!AeAssert::IsIgnored() && AeAssert::Warning("freeing invalid handle"))
+        {
+            __debugbreak();
+        }
         mActiveList.m_elements[e.mEntityArrayIndex] = nullptr;
     }
 }
