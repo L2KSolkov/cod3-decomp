@@ -3275,7 +3275,7 @@ void MPUIInterface::LoadMap(int map, bool restart, bool mapRot)
     }
     else
     {
-        strcpy(command, "spmap p");
+        strcpy(command, "spmap");
     }
     switch (mServerParams.mGameType)
     {
