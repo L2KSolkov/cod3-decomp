@@ -464,7 +464,7 @@ static void nullD3DSetNV2AViewportConstants() {
         0.53125f + width * 0.5f,
         0.53125f + height * 0.5f,
         2.0f / width,
-        2.0f / height,
+        -2.0f / height,
     };
     D3DDevice_SetVertexShaderConstant1Fast(191, inverseViewport);
 }
