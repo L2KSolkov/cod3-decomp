@@ -540,6 +540,9 @@ static COD3_D3D9_FORMAT nullD3DExternalNativeFormat(unsigned int Format) {
     case 0x20: return COD3_D3D9_FMT_A8L8;
     case 0x24: return COD3_D3D9_FMT_YUY2;
     case 0x25: return COD3_D3D9_FMT_UYVY;
+    // NV2A R8B8 is expanded during upload because D3D9 has no matching
+    // unsigned RG8 texture format with the Xbox channel swizzle.
+    case 0x29: return COD3_D3D9_FMT_A8R8G8B8;
     case 0x3A: return COD3_D3D9_FMT_A8B8G8R8;
     case 0x3B: return COD3_D3D9_FMT_A8R8G8B8;
     case 0x3C: return COD3_D3D9_FMT_A8B8G8R8;
@@ -715,6 +718,7 @@ static unsigned int nullD3DExternalFormatBytesPerPixel(unsigned int Format) {
     case 0x1C:
     case 0x1D:
     case 0x20:
+    case 0x29:
         return 2;
     case 0x06:
     case 0x07:
@@ -983,6 +987,49 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
     unsigned int BytesPerPixel = nullD3DExternalFormatBytesPerPixel(Info->Format);
     if (BytesPerPixel == 0)
         return;
+    if (Info->Format == 0x29u) {
+        // xemu's NV097 R8B8 definition reads the swizzled RG8 source as
+        // (G, R, R, G).  Expand each mip to A8R8G8B8 for D3D9 sampling.
+        const unsigned char* Source = Info->Bits;
+        for (unsigned int Level = 0; Level < Info->Levels; ++Level) {
+            const unsigned int Width = nullD3DMipDimension(Info->Width, Level);
+            const unsigned int Height = nullD3DMipDimension(Info->Height, Level);
+            const size_t LinearBytes = (size_t)Width * Height * 2u;
+            unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
+            if (Linear == NULL)
+                return;
+            if (XGIsSwizzledFormat(Info->Format))
+                nullD3DUnswizzleBytes(Source, Linear, Width, Height, 2);
+            else {
+                const unsigned int SourcePitch = nullD3DTextureLevelPitch(
+                    Info->Format, Size, Level, Width * 2u);
+                for (unsigned int y = 0; y < Height; ++y)
+                    memcpy(Linear + (size_t)y * Width * 2u,
+                           Source + (size_t)y * SourcePitch, Width * 2u);
+            }
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &Locked, NULL, 0))) {
+                for (unsigned int y = 0; y < Height; ++y) {
+                    unsigned int* Destination = (unsigned int*)((unsigned char*)Locked.pBits +
+                                                                 y * Locked.Pitch);
+                    const unsigned char* Pixels = Linear + (size_t)y * Width * 2u;
+                    for (unsigned int x = 0; x < Width; ++x) {
+                        const unsigned char R = Pixels[x * 2u + 1];
+                        const unsigned char G = Pixels[x * 2u];
+                        const unsigned char B = G;
+                        const unsigned char A = R;
+                        Destination[x] = ((unsigned int)A << 24) |
+                                         ((unsigned int)R << 16) |
+                                         ((unsigned int)G << 8) | B;
+                    }
+                }
+                Info->NativeTexture->UnlockRect(Level);
+            }
+            free(Linear);
+            Source += LinearBytes;
+        }
+        return;
+    }
     if (Info->Format == 0x0Bu) {
         if (Palette == NULL || Palette->Data == 0)
             return;
