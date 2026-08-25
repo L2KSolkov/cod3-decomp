@@ -345,7 +345,7 @@ static std::string BuildHlsl(const unsigned int* microcode) {
     if (usesHomogeneousDivide)
         source << "  float4 screenPos=r12;"
                << " screenPos.xy=trunc(screenPos.xy*16.0)/16.0;"
-               << " screenPos.w=(screenPos.w>=0.0?clamp(1.0/screenPos.w,5.42101086e-20,1.84467441e19):clamp(1.0/screenPos.w,-1.84467441e19,-5.42101086e-20));"
+               << " screenPos.w=(screenPos.w>=0.0?clamp(screenPos.w,5.42101086e-20,1.84467441e19):clamp(screenPos.w,-1.84467441e19,-5.42101086e-20));"
                << " float3 ndc=float3((screenPos.x-c[191].x)*c[191].z,(screenPos.y-c[191].y)*c[191].w,screenPos.z*1.00195694);"
                << " output.oPos=float4(ndc*screenPos.w,screenPos.w); output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
                << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
