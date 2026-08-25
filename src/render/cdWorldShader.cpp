@@ -527,7 +527,10 @@ void cdWorldShaderNode::Render() {
 
     nglDxInitShaders(false);
     const unsigned int lightmap = material != nullptr && material->mLightmap != nullptr;
-    const unsigned int vertexShader = (unsigned int)cdWorldRender::VS[lightmap][this->hasColorVerts];
+    // IDA flattens the base-pass indices as VS[dynamicLights][colorVerts] and
+    // PS[lightmap][dynamicLights][colorVerts].  This port emits no dynamic-light
+    // pass here, so that selector is zero even when a lightmap is bound.
+    const unsigned int vertexShader = (unsigned int)cdWorldRender::VS[0][this->hasColorVerts];
     if (vertexShader != gpuHashVertexShader) {
         gpuHashVertexShader = vertexShader;
         D3DDevice_LoadVertexShaderProgram(
@@ -535,7 +538,7 @@ void cdWorldShaderNode::Render() {
         D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
     }
     const unsigned int pixelShader = (unsigned int)(uintptr_t)
-        cdWorldPixel::PS[0][lightmap][this->hasColorVerts];
+        cdWorldPixel::PS[lightmap][0][this->hasColorVerts];
     if (pixelShader != gpuHashPixelShader) {
         gpuHashPixelShader = pixelShader;
         D3DDevice_SetPixelShaderProgram(reinterpret_cast<const _D3DPixelShaderDef*>(
