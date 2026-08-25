@@ -202,9 +202,9 @@ static std::string IluExpression(unsigned int opcode, const std::string& c) {
         + ", 5.42101086e-20, 1.84467441e19) : clamp(1.0 / " + c
         + ", -1.84467441e19, -5.42101086e-20))");
     case 4: return BroadcastScalar("rsqrt(abs(" + c + "))");
-    case 5: return BroadcastScalar("exp2(" + c + ")");
-    case 6: return BroadcastScalar("log2(abs(" + c + "))");
-    case 7: return "float4(1.0, max(" + c + ".x, 0.0), " + c + ".x > 0.0 ? pow(max(" + c + ".y, 0.0), " + c + ".w) : 0.0, 1.0)";
+    case 5: return "nv2aExp(" + c + ")";
+    case 6: return "nv2aLog(" + c + ")";
+    case 7: return "nv2aLit(" + c + ")";
     default: return std::string();
     }
 }
@@ -318,6 +318,16 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << " float4 oT3 : TEXCOORD3; float4 oB0 : TEXCOORD4; float4 oB1 : TEXCOORD5;"
            << " float oFog : FOG; float oPts : PSIZE; };\n"
            << "float4 c[192] : register(c0);\n"
+           << "float4 nv2aExp(float src) { float whole=floor(src);"
+           << " return float4(exp2(whole),src-whole,exp2(src),1.0); }\n"
+           << "float4 nv2aLog(float src) { float tmp=abs(src);"
+           << " if (tmp==0.0) return float4(-1.0/0.0,1.0,-1.0/0.0,1.0);"
+           << " float whole=floor(log2(tmp));"
+           << " return float4(whole,tmp/exp2(whole),log2(tmp),1.0); }\n"
+           << "float4 nv2aLit(float4 src) { float epsilon=1.0/256.0;"
+           << " float x=max(src.x,0.0); float y=max(src.y,0.0);"
+           << " float w=clamp(src.w,-(128.0-epsilon),128.0-epsilon);"
+           << " return float4(1.0,x,x>0.0?exp2(w*log2(y)):0.0,1.0); }\n"
            << "VSOut main(VSIn input) { VSOut output;\n"
            << "  float4 v0=input.v0,v1=input.v1,v2=input.v2;\n"
            << "  float4 v3=input.v3,v4=input.v4,v5=input.v5,v6=input.v6,v7=input.v7;\n";
