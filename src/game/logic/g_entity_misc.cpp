@@ -3138,7 +3138,10 @@ void* FEManager_GetIGMS(void* self, int client)
     return nullptr;
 }
 void FEManager_DrawControllerError(void* self) { (void)self; }
-void FEManager_DrawIGO(void* self, int a) { (void)self; (void)a; }
+void FEManager_DrawIGO(void* self, int client)
+{
+    static_cast<FEManager*>(self)->DrawIGO(client);
+}
 void FEManager_PlayFadeInOranScreen() {}
 void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
 void FEManager_UpdateSplitScreen(void* self) { (void)self; }
