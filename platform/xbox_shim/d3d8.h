@@ -382,10 +382,28 @@ struct _D3DGAMMARAMP {
 };
 static_assert(sizeof(_D3DGAMMARAMP) == 0x300, "_D3DGAMMARAMP size mismatch");
 
-// ---- Pixel shader definition (opaque, 240 bytes) -------------------------
+// ---- Pixel shader definition (IDA local type, 240 bytes) -----------------
 struct _D3DPixelShaderDef {
-    uint8_t data[240];
+    unsigned int PSAlphaInputs[8];                 // +0x00
+    unsigned int PSFinalCombinerInputsABCD;       // +0x20
+    unsigned int PSFinalCombinerInputsEFG;        // +0x24
+    unsigned int PSConstant0[8];                  // +0x28
+    unsigned int PSConstant1[8];                  // +0x48
+    unsigned int PSAlphaOutputs[8];                // +0x68
+    unsigned int PSRGBInputs[8];                   // +0x88
+    unsigned int PSCompareMode;                   // +0xA8
+    unsigned int PSFinalCombinerConstant0;         // +0xAC
+    unsigned int PSFinalCombinerConstant1;         // +0xB0
+    unsigned int PSRGBOutputs[8];                  // +0xB4
+    unsigned int PSCombinerCount;                 // +0xD4
+    unsigned int PSTextureModes;                  // +0xD8
+    unsigned int PSDotMapping;                    // +0xDC
+    unsigned int PSInputTexture;                  // +0xE0
+    unsigned int PSC0Mapping;                     // +0xE4
+    unsigned int PSC1Mapping;                     // +0xE8
+    unsigned int PSFinalCombinerConstants;        // +0xEC
 };
+static_assert(sizeof(_D3DPixelShaderDef) == 0xF0, "_D3DPixelShaderDef size mismatch");
 
 // ---- Direct3D object (opaque; created by Direct3DCreate8) ---------------
 struct Direct3D;

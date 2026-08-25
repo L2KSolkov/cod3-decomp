@@ -2435,13 +2435,19 @@ void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* For
     memcpy(&gD3D9SelectedVertexFormat, Format, sizeof(gD3D9SelectedVertexFormat));
     gD3D9SelectedVertexFormatValid = true;
 }
-void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {
+void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definition) {
     // Xbox pixel-shader microcode is not present in the Win32 reconstruction.
     // Keep the native D3D9 path deterministic: the world/sky vertex programs
     // still provide position and interpolants, while the fixed-function stage
     // supplies the equivalent texture-times-diffuse base pass.
     if (gD3D9Device == NULL)
         return;
+    IDirect3DPixelShader9* WorldShader =
+        nullD3DCompileNV2AWorldPixelShader(gD3D9Device, Definition);
+    if (WorldShader != NULL) {
+        gD3D9Device->SetPixelShader(WorldShader);
+        return;
+    }
     gD3D9Device->SetPixelShader(NULL);
     gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 

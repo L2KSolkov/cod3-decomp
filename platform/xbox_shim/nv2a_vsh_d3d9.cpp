@@ -12,6 +12,31 @@
 
 namespace {
 
+// Layout copied from the IDA local _D3DPixelShaderDef type.  d3d8.h cannot
+// be included here because this translation unit also consumes the native
+// D3D9 declarations, whose enum tags intentionally differ.
+struct PixelShaderDefLayout {
+    unsigned int PSAlphaInputs[8];
+    unsigned int PSFinalCombinerInputsABCD;
+    unsigned int PSFinalCombinerInputsEFG;
+    unsigned int PSConstant0[8];
+    unsigned int PSConstant1[8];
+    unsigned int PSAlphaOutputs[8];
+    unsigned int PSRGBInputs[8];
+    unsigned int PSCompareMode;
+    unsigned int PSFinalCombinerConstant0;
+    unsigned int PSFinalCombinerConstant1;
+    unsigned int PSRGBOutputs[8];
+    unsigned int PSCombinerCount;
+    unsigned int PSTextureModes;
+    unsigned int PSDotMapping;
+    unsigned int PSInputTexture;
+    unsigned int PSC0Mapping;
+    unsigned int PSC1Mapping;
+    unsigned int PSFinalCombinerConstants;
+};
+static_assert(sizeof(PixelShaderDefLayout) == 0xF0, "pixel shader layout mismatch");
+
 enum Field {
     F_ILU, F_MAC, F_CONST, F_V,
     F_A_NEG, F_A_X, F_A_Y, F_A_Z, F_A_W, F_A_R, F_A_MUX,
@@ -464,4 +489,57 @@ IDirect3DVertexShader9* nullD3DCompileNV2AVertexShader(
 bool nullD3DProgramUsesHomogeneousDivide(const unsigned int* microcode) {
     const unsigned int* program = ResolveProgram(microcode);
     return program != nullptr && ProgramUsesHomogeneousDivide(program);
+}
+
+IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
+    IDirect3DDevice9* device, const _D3DPixelShaderDef* definition) {
+    const PixelShaderDefLayout* layout =
+        reinterpret_cast<const PixelShaderDefLayout*>(definition);
+    if (device == nullptr || layout == nullptr ||
+        layout->PSCombinerCount != 0x00011102u ||
+        layout->PSTextureModes != 0x00000021u ||
+        layout->PSAlphaInputs[0] != 0xd9d41010u ||
+        layout->PSAlphaInputs[1] != 0xd8301010u ||
+        layout->PSRGBInputs[1] != 0xc83d0000u)
+        return nullptr;
+
+    static std::map<const PixelShaderDefLayout*, IDirect3DPixelShader9*> cache;
+    const auto found = cache.find(layout);
+    if (found != cache.end())
+        return found->second;
+
+    static const char Source[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
+        "float4 t1 : TEXCOORD1; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0); sampler2D s1 : register(s1);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float light = lightmap.a * input.d0.a;\n"
+        "  return float4(diffuse.rgb * (1.0 - light), diffuse.a);\n"
+        "}\n";
+    D3DCompileProc compiler = GetCompiler();
+    if (compiler == nullptr)
+        return nullptr;
+    ID3DBlob* bytecode = nullptr;
+    ID3DBlob* errors = nullptr;
+    const HRESULT result = compiler(Source, sizeof(Source) - 1, "nv2a_psh", nullptr,
+                                    nullptr, "main", "ps_2_0", 0, 0,
+                                    &bytecode, &errors);
+    if (FAILED(result)) {
+        if (errors != nullptr)
+            OutputDebugStringA((const char*)errors->GetBufferPointer());
+        if (errors != nullptr)
+            errors->Release();
+        return nullptr;
+    }
+    if (errors != nullptr)
+        errors->Release();
+    IDirect3DPixelShader9* shader = nullptr;
+    if (FAILED(device->CreatePixelShader((const DWORD*)bytecode->GetBufferPointer(), &shader)))
+        shader = nullptr;
+    bytecode->Release();
+    if (shader != nullptr)
+        cache[layout] = shader;
+    return shader;
 }
