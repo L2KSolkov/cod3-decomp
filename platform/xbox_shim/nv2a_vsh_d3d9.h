@@ -18,3 +18,6 @@ bool nullD3DProgramUsesHomogeneousDivide(const unsigned int* microcode);
 // fixed-function fallback until their IDA definitions are mapped.
 IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     IDirect3DDevice9* device, const _D3DPixelShaderDef* definition);
+
+IDirect3DPixelShader9* nullD3DCompileNV2AFallbackPixelShader(
+    IDirect3DDevice9* device, unsigned int textureMask);

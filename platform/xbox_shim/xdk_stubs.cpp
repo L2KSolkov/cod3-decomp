@@ -80,6 +80,7 @@ static IDirect3DDevice9* gD3D9Device = NULL;
 static HMODULE gD3D9SoftwareRasterizer = NULL;
 static bool gD3D9SceneActive = false;
 static bool gD3D9NV2APixelShaderActive = false;
+static bool gD3D9NV2AVertexShaderActive = false;
 static bool gD3D9ShaderNeedsViewportInverse = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
@@ -402,7 +403,23 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
 
 static void nullD3DSetNV2AViewportConstants();
 
+static void nullD3DBindFallbackPixelShader() {
+    if (gD3D9Device == NULL || !gD3D9NV2AVertexShaderActive ||
+        gD3D9NV2APixelShaderActive)
+        return;
+    const unsigned int TextureMask =
+        (gNullBoundTextures[0] != NULL ? 1u : 0u) |
+        (gNullBoundTextures[1] != NULL ? 2u : 0u);
+    IDirect3DPixelShader9* Shader =
+        nullD3DCompileNV2AFallbackPixelShader(gD3D9Device, TextureMask);
+    if (Shader != NULL) {
+        gD3D9Device->SetPixelShader(Shader);
+        gD3D9NV2APixelShaderActive = true;
+    }
+}
+
 static void nullD3DSetShaderMatrixTransform() {
+    nullD3DBindFallbackPixelShader();
     nullD3DSetNV2AViewportConstants();
     if (gD3D9Device == NULL || !gD3D9VertexConstantsValid[6] ||
         !gD3D9VertexConstantsValid[7] || !gD3D9VertexConstantsValid[8] ||
@@ -1763,6 +1780,8 @@ static void nullD3DSetFixedFunctionFVF(DWORD FVF, bool FontPacket = false) {
     // cannot retain an Xbox shader handle from the preceding NGL node.
     gD3D9Device->SetVertexShader(NULL);
     gD3D9Device->SetPixelShader(NULL);
+    gD3D9NV2AVertexShaderActive = false;
+    gD3D9NV2APixelShaderActive = false;
     gD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);
     gD3D9BuiltVertexFormatValid = false;
     gD3D9Device->SetVertexDeclaration(NULL);
@@ -1919,6 +1938,7 @@ void __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int* Microcode, 
         return;
     gD3D9ShaderNeedsViewportInverse = nullD3DProgramUsesHomogeneousDivide(Microcode);
     IDirect3DVertexShader9* shader = nullD3DCompileNV2AVertexShader(gD3D9Device, Microcode);
+    gD3D9NV2AVertexShaderActive = shader != NULL;
     gD3D9Device->SetVertexShader(shader);
 }
 void __stdcall D3DDevice_PersistDisplay(void) {}
@@ -2081,6 +2101,8 @@ void __stdcall D3DDevice_SetVertexShader(unsigned int Handle) {
         return;
     if (Handle == 0)
         gD3D9ShaderNeedsViewportInverse = false;
+    if (Handle == 0)
+        gD3D9NV2AVertexShaderActive = false;
     gD3D9Device->SetVertexShader(reinterpret_cast<IDirect3DVertexShader9*>(Handle));
 }
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }

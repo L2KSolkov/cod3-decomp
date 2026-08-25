@@ -502,6 +502,57 @@ bool nullD3DProgramUsesHomogeneousDivide(const unsigned int* microcode) {
     return program != nullptr && ProgramUsesHomogeneousDivide(program);
 }
 
+IDirect3DPixelShader9* nullD3DCompileNV2AFallbackPixelShader(
+    IDirect3DDevice9* device, unsigned int textureMask) {
+    if (device == nullptr)
+        return nullptr;
+    static std::map<unsigned int, IDirect3DPixelShader9*> cache;
+    const auto found = cache.find(textureMask & 3u);
+    if (found != cache.end())
+        return found->second;
+
+    std::ostringstream source;
+    source << "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0;"
+           << " float4 t1 : TEXCOORD1; };\n";
+    if ((textureMask & 1u) != 0)
+        source << "sampler2D s0 : register(s0);\n";
+    if ((textureMask & 2u) != 0)
+        source << "sampler2D s1 : register(s1);\n";
+    source << "float4 main(PSIn input) : COLOR0 {\n"
+           << "  float4 color = input.d0;\n";
+    if ((textureMask & 1u) != 0)
+        source << "  color *= tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n";
+    if ((textureMask & 2u) != 0)
+        source << "  color *= tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n";
+    source << "  return color;\n}\n";
+
+    D3DCompileProc compiler = GetCompiler();
+    if (compiler == nullptr)
+        return nullptr;
+    ID3DBlob* bytecode = nullptr;
+    ID3DBlob* errors = nullptr;
+    const std::string hlsl = source.str();
+    const HRESULT result = compiler(hlsl.data(), hlsl.size(), "nv2a_fallback", nullptr,
+                                    nullptr, "main", "ps_3_0", 0, 0,
+                                    &bytecode, &errors);
+    if (FAILED(result)) {
+        if (errors != nullptr)
+            OutputDebugStringA((const char*)errors->GetBufferPointer());
+        if (errors != nullptr)
+            errors->Release();
+        return nullptr;
+    }
+    if (errors != nullptr)
+        errors->Release();
+    IDirect3DPixelShader9* shader = nullptr;
+    if (FAILED(device->CreatePixelShader((const DWORD*)bytecode->GetBufferPointer(), &shader)))
+        shader = nullptr;
+    bytecode->Release();
+    if (shader != nullptr)
+        cache[textureMask & 3u] = shader;
+    return shader;
+}
+
 IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     IDirect3DDevice9* device, const _D3DPixelShaderDef* definition) {
     const PixelShaderDefLayout* layout =
@@ -1011,7 +1062,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
     // texture-coordinate interpolants used by the sampler.
     const std::string remappedSource = RemapFogSemantic(Source);
     const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
-                                    nullptr, "main", "ps_2_0", 0, 0,
+                                    nullptr, "main", "ps_3_0", 0, 0,
                                     &bytecode, &errors);
     if (FAILED(result)) {
         if (errors != nullptr)
