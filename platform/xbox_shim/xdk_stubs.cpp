@@ -474,6 +474,12 @@ static void nullD3DSyncIndexBuffer(IDirect3DIndexBuffer9* Native, nullD3DInfo* I
 
 static COD3_D3D9_FORMAT nullD3DNativeFormat(unsigned int Format) {
     switch (Format) {
+    case D3DFMT_A8R8G8B8:
+    case D3DFMT_LIN_A8R8G8B8: return COD3_D3D9_FMT_A8R8G8B8;
+    case D3DFMT_X8R8G8B8:
+    case D3DFMT_LIN_X8R8G8B8: return COD3_D3D9_FMT_X8R8G8B8;
+    case D3DFMT_A8B8G8R8:
+    case D3DFMT_LIN_A8B8G8R8: return COD3_D3D9_FMT_A8B8G8R8;
     case D3DFMT_DXT1: return COD3_D3D9_FMT_DXT1;
     case D3DFMT_DXT3: return COD3_D3D9_FMT_DXT3;
     case D3DFMT_DXT5: return COD3_D3D9_FMT_DXT5;
