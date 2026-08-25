@@ -415,6 +415,10 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << " float x=max(src.x,0.0); float y=max(src.y,0.0);"
            << " float w=clamp(src.w,-(128.0-epsilon),128.0-epsilon);"
            << " return float4(1.0,x,x>0.0?exp2(w*log2(y)):0.0,1.0); }\n"
+           << "float nv2aNaNToOne(float value) { return value != value ? 1.0 : value; }\n"
+           << "float4 nv2aColorClamp(float4 value) { return saturate(float4("
+           << "nv2aNaNToOne(value.x),nv2aNaNToOne(value.y),"
+           << "nv2aNaNToOne(value.z),nv2aNaNToOne(value.w))); }\n"
            << "VSOut main(VSIn input) { VSOut output;\n"
            << "  int A0=0;\n"
            << "  float4 v0=input.v0,v1=input.v1,v2=input.v2;\n"
@@ -434,12 +438,12 @@ static std::string BuildHlsl(const unsigned int* microcode) {
                << " screenPos.xy=trunc(screenPos.xy*16.0)/16.0;"
                << " screenPos.w=(screenPos.w>=0.0?clamp(screenPos.w,5.42101086e-20,1.84467441e19):clamp(screenPos.w,-1.84467441e19,-5.42101086e-20));"
                << " float3 ndc=float3((screenPos.x-c[191].x)*c[191].z,(screenPos.y-c[191].y)*c[191].w,screenPos.z*5.96046448e-8);"
-               << " output.oPos=float4(ndc*screenPos.w,screenPos.w); output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
-               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
+               << " output.oPos=float4(ndc*screenPos.w,screenPos.w); output.oD0=nv2aColorClamp(oD0); output.oD1=oD1; output.oT0=oT0;"
+               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=nv2aColorClamp(oB0);"
                << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
     else
-        source << "  output.oPos=r12; output.oD0=oD0; output.oD1=oD1; output.oT0=oT0;"
-               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=oB0;"
+        source << "  output.oPos=r12; output.oD0=nv2aColorClamp(oD0); output.oD1=oD1; output.oT0=oT0;"
+               << " output.oT1=oT1; output.oT2=oT2; output.oT3=oT3; output.oB0=nv2aColorClamp(oB0);"
                << " output.oB1=oB1; output.oFog=oFog.x; output.oPts=oPts.x; return output; }\n";
     return source.str();
 }
@@ -472,6 +476,246 @@ static D3DCompileProc GetCompiler() {
             compiler = reinterpret_cast<D3DCompileProc>(GetProcAddress(module, "D3DCompile"));
     }
     return compiler;
+}
+
+static std::string PsInputMapping(const std::string& value, unsigned int mapping) {
+    switch (mapping & 0xe0u) {
+    case 0x00u: return "max(" + value + ", 0.0)";
+    case 0x20u: return "(1.0 - clamp(" + value + ", 0.0, 1.0))";
+    case 0x40u: return "(2.0 * max(" + value + ", 0.0) - 1.0)";
+    case 0x60u: return "(1.0 - 2.0 * max(" + value + ", 0.0))";
+    case 0x80u: return "(max(" + value + ", 0.0) - 0.5)";
+    case 0xa0u: return "(0.5 - max(" + value + ", 0.0))";
+    case 0xc0u: return value;
+    case 0xe0u: return "(-(" + value + "))";
+    default: return value;
+    }
+}
+
+static std::string PsOutputMapping(const std::string& value, unsigned int mapping) {
+    switch (mapping & 0x38u) {
+    case 0x00u: return value;
+    case 0x08u: return "(" + value + " - 0.5)";
+    case 0x10u: return "(" + value + " * 2.0)";
+    case 0x18u: return "((" + value + " - 0.5) * 2.0)";
+    case 0x20u: return "(" + value + " * 4.0)";
+    case 0x30u: return "(" + value + " / 2.0)";
+    default: return value;
+    }
+}
+
+static std::string PsRegisterSource(unsigned int registerId, bool rgb,
+                                    unsigned int finalSettings,
+                                    const std::string& finalE,
+                                    const std::string& finalF) {
+    switch (registerId & 0x0fu) {
+    case 0: return "float4(0.0,0.0,0.0,0.0)";
+    case 1: return "c0";
+    case 2: return "c1";
+    case 3: return rgb ? "float4(fogColor.rgb, fogFactor)" : "float4(fogColor.rgb, fogFactor)";
+    case 4: return "v0";
+    case 5: return "v1";
+    case 8: return "t0";
+    case 9: return "t1";
+    case 10: return "t2";
+    case 11: return "t3";
+    case 12: return "r0";
+    case 13: return "r1";
+    case 14: {
+        const std::string v1 = (finalSettings & 0x40u) != 0 ? "(1.0 - v1)" : "v1";
+        const std::string r0 = (finalSettings & 0x20u) != 0 ? "(1.0 - r0)" : "r0";
+        const std::string sum = "(" + v1 + " + " + r0 + ")";
+        return (finalSettings & 0x80u) != 0 ? "clamp(" + sum + ", 0.0, 1.0)" : sum;
+    }
+    case 15:
+        return rgb ? "float4((" + finalE + ") * (" + finalF + "),0.0)"
+                   : "float4(0.0,0.0,0.0,0.0)";
+    default: return "float4(0.0,0.0,0.0,0.0)";
+    }
+}
+
+static std::string PsInputExpression(unsigned int encoded, bool rgb,
+                                     unsigned int finalSettings,
+                                     const std::string& finalE,
+                                     const std::string& finalF) {
+    const unsigned int registerId = encoded & 0x0fu;
+    const bool alphaChannel = (encoded & 0x10u) != 0;
+    const std::string source = PsRegisterSource(registerId, rgb, finalSettings, finalE, finalF);
+    std::string channel;
+    if (rgb)
+        channel = alphaChannel ? source + ".aaa" : source + ".rgb";
+    else
+        channel = alphaChannel ? source + ".a" : source + ".b";
+    return PsInputMapping(channel, encoded & 0xe0u);
+}
+
+static bool PsUsesExplicitConstants(const PixelShaderDefLayout* layout) {
+    const unsigned int count = layout->PSCombinerCount & 0xffu;
+    for (unsigned int i = 0; i < count && i < 8; ++i) {
+        const unsigned int values[2] = { layout->PSRGBInputs[i], layout->PSAlphaInputs[i] };
+        for (unsigned int value : values) {
+            const unsigned int bytes[4] = {
+                (value >> 24) & 0xffu, (value >> 16) & 0xffu,
+                (value >> 8) & 0xffu, value & 0xffu
+            };
+            for (unsigned int byte : bytes)
+                if ((byte & 0x0fu) == 1u || (byte & 0x0fu) == 2u)
+                    return true;
+        }
+    }
+    const unsigned int finals[2] = {
+        layout->PSFinalCombinerInputsABCD, layout->PSFinalCombinerInputsEFG
+    };
+    for (unsigned int value : finals) {
+        const unsigned int bytes[4] = {
+            (value >> 24) & 0xffu, (value >> 16) & 0xffu,
+            (value >> 8) & 0xffu, value & 0xffu
+        };
+        for (unsigned int byte : bytes)
+            if ((byte & 0x0fu) == 1u || (byte & 0x0fu) == 2u)
+                return true;
+    }
+    return false;
+}
+
+static bool PsCombinerTextureModesSupported(const PixelShaderDefLayout* layout) {
+    const unsigned int count = layout->PSCombinerCount & 0xffu;
+    if (count == 0 || count > 8 || PsUsesExplicitConstants(layout))
+        return false;
+    for (unsigned int i = 0; i < 4; ++i) {
+        const unsigned int mode = (layout->PSTextureModes >> (i * 5)) & 0x1fu;
+        // These are the modes whose sampler and coordinate semantics are
+        // completely described by _D3DPixelShaderDef: none, projective 2D,
+        // and passthrough.  Cube/3D/bump modes need texture-object metadata
+        // that this Xbox API call does not carry.
+        if (mode != 0u && mode != 1u && mode != 4u)
+            return false;
+    }
+    return true;
+}
+
+static unsigned int PsOutputDestination(unsigned int value, unsigned int shift) {
+    return (value >> shift) & 0x0fu;
+}
+
+static void PsAppendDestination(std::ostringstream& source, unsigned int destination,
+                                const std::string& value, bool rgb, bool blueToAlpha,
+                                const std::string& name) {
+    if (destination != 12u && destination != 13u)
+        return;
+    source << "  " << name << (rgb ? ".rgb = " : ".a = ") << value << ";\n";
+    if (rgb && blueToAlpha)
+        source << "  " << name << ".a = " << value << ".b;\n";
+}
+
+static void PsAppendStage(std::ostringstream& source, unsigned int index,
+                          unsigned int inputValue, unsigned int outputValue,
+                          bool rgb, unsigned int combinerFlags,
+                          const std::string& finalE,
+                          const std::string& finalF) {
+    const unsigned int aValue = (inputValue >> 24) & 0xffu;
+    const unsigned int bValue = (inputValue >> 16) & 0xffu;
+    const unsigned int cValue = (inputValue >> 8) & 0xffu;
+    const unsigned int dValue = inputValue & 0xffu;
+    const std::string a = PsInputExpression(aValue, rgb, 0, finalE, finalF);
+    const std::string b = PsInputExpression(bValue, rgb, 0, finalE, finalF);
+    const std::string c = PsInputExpression(cValue, rgb, 0, finalE, finalF);
+    const std::string d = PsInputExpression(dValue, rgb, 0, finalE, finalF);
+    const unsigned int flags = outputValue >> 12;
+    const unsigned int mapping = flags & 0x38u;
+    const std::string ab = (flags & 2u) != 0
+        ? (rgb ? "float3(dot(" + a + "," + b + "))" : "(" + a + " * " + b + ")")
+        : "(" + a + " * " + b + ")";
+    const std::string cd = (flags & 1u) != 0
+        ? (rgb ? "float3(dot(" + c + "," + d + "))" : "(" + c + " * " + d + ")")
+        : "(" + c + " * " + d + ")";
+    const std::string muxCondition = (combinerFlags & 1u) != 0
+        ? "(r0.a >= 0.5)"
+        : "(fmod(floor(r0.a * 255.0), 2.0) >= 1.0)";
+    const std::string mux = (flags & 4u) != 0
+        ? "((" + muxCondition + ") ? (" + cd + ") : (" + ab + "))"
+        : "(" + ab + " + " + cd + ")";
+    const std::string abName = "nv2aAb" + std::to_string(index) + (rgb ? "Rgb" : "Alpha");
+    const std::string cdName = "nv2aCd" + std::to_string(index) + (rgb ? "Rgb" : "Alpha");
+    const std::string muxName = "nv2aMux" + std::to_string(index) + (rgb ? "Rgb" : "Alpha");
+    source << "  " << (rgb ? "float3 " : "float ") << abName << " = clamp("
+           << PsOutputMapping(ab, mapping) << ", -1.0, 1.0);\n"
+           << "  " << (rgb ? "float3 " : "float ") << cdName << " = clamp("
+           << PsOutputMapping(cd, mapping) << ", -1.0, 1.0);\n"
+           << "  " << (rgb ? "float3 " : "float ") << muxName << " = clamp("
+           << PsOutputMapping(mux, mapping) << ", -1.0, 1.0);\n";
+    const unsigned int abDestination = PsOutputDestination(outputValue, 4);
+    const unsigned int cdDestination = PsOutputDestination(outputValue, 0);
+    const unsigned int muxDestination = PsOutputDestination(outputValue, 8);
+    PsAppendDestination(source, abDestination, abName, rgb,
+                        rgb && (flags & 0x80u) != 0,
+                        abDestination == 13u ? "r1" : "r0");
+    PsAppendDestination(source, cdDestination, cdName, rgb,
+                        rgb && (flags & 0x40u) != 0,
+                        cdDestination == 13u ? "r1" : "r0");
+    PsAppendDestination(source, muxDestination, muxName, rgb, false,
+                        muxDestination == 13u ? "r1" : "r0");
+}
+
+static std::string BuildNV2ACombinerHlsl(const PixelShaderDefLayout* layout) {
+    if (!PsCombinerTextureModesSupported(layout))
+        return std::string();
+    const unsigned int count = layout->PSCombinerCount & 0xffu;
+    const unsigned int combinerFlags = layout->PSCombinerCount >> 8;
+    std::ostringstream source;
+    source << "struct PSIn { float4 d0 : COLOR0; float4 d1 : COLOR1;"
+           << " float4 t0 : TEXCOORD0; float4 t1 : TEXCOORD1;"
+           << " float4 t2 : TEXCOORD2; float4 t3 : TEXCOORD3; float fog : FOG; };\n"
+           << "sampler2D s0 : register(s0); sampler2D s1 : register(s1);"
+           << " sampler2D s2 : register(s2); sampler2D s3 : register(s3);\n"
+           << "float4 fogColor : register(c0); float4 fogState : register(c31);\n"
+           << "float nv2aFogFactor(float value) { return fogState.x < 0.5 ? 1.0 : saturate(value); }\n"
+           << "float4 main(PSIn input) : COLOR0 {\n"
+           << "  float4 v0=input.d0, v1=input.d1;\n"
+           << "  float fogFactor=nv2aFogFactor(input.fog);\n"
+           << "  float4 r0=0, r1=0;\n";
+    for (unsigned int i = 0; i < 4; ++i) {
+        const unsigned int mode = (layout->PSTextureModes >> (i * 5)) & 0x1fu;
+        if (mode == 0u)
+            source << "  float4 t" << i << "=float4(0,0,0,1);\n";
+        else if (mode == 1u)
+            source << "  float4 t" << i << "=tex2D(s" << i
+                   << ", input.t" << i << ".xy / max(abs(input.t" << i
+                   << ".w), 1e-20));\n";
+        else
+            source << "  float4 t" << i << "=input.t" << i << ";\n";
+    }
+    const bool hasFinal = layout->PSFinalCombinerInputsABCD != 0u ||
+                          layout->PSFinalCombinerInputsEFG != 0u;
+    std::string finalE;
+    std::string finalF;
+    if (hasFinal) {
+        const unsigned int e = (layout->PSFinalCombinerInputsEFG >> 24) & 0xffu;
+        const unsigned int f = (layout->PSFinalCombinerInputsEFG >> 16) & 0xffu;
+        finalE = PsInputExpression(e, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "");
+        finalF = PsInputExpression(f, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "");
+    }
+    for (unsigned int i = 0; i < count; ++i) {
+        PsAppendStage(source, i, layout->PSRGBInputs[i], layout->PSRGBOutputs[i], true,
+                      combinerFlags, finalE, finalF);
+        PsAppendStage(source, i, layout->PSAlphaInputs[i], layout->PSAlphaOutputs[i], false,
+                      combinerFlags, finalE, finalF);
+    }
+    if (hasFinal) {
+        const unsigned int abcd = layout->PSFinalCombinerInputsABCD;
+        const unsigned int efg = layout->PSFinalCombinerInputsEFG;
+        const unsigned int settings = efg & 0xffu;
+        const std::string a = PsInputExpression((abcd >> 24) & 0xffu, true, settings, finalE, finalF);
+        const std::string b = PsInputExpression((abcd >> 16) & 0xffu, true, settings, finalE, finalF);
+        const std::string c = PsInputExpression((abcd >> 8) & 0xffu, true, settings, finalE, finalF);
+        const std::string d = PsInputExpression(abcd & 0xffu, true, settings, finalE, finalF);
+        const std::string g = PsInputExpression((efg >> 8) & 0xffu, false, settings, finalE, finalF);
+        source << "  return float4(" << d << " + lerp(" << c << "," << b << "," << a << "), " << g << ");\n";
+    } else {
+        source << "  return r0;\n";
+    }
+    source << "}\n";
+    return source.str();
 }
 
 } // namespace
@@ -1097,6 +1341,46 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         FogUseOffset += sizeof("nv2aFogFactor(input.fog)") - 1;
     }
     const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
+                                    nullptr, "main", "ps_3_0", 0, 0,
+                                    &bytecode, &errors);
+    if (FAILED(result)) {
+        if (errors != nullptr)
+            OutputDebugStringA((const char*)errors->GetBufferPointer());
+        if (errors != nullptr)
+            errors->Release();
+        return nullptr;
+    }
+    if (errors != nullptr)
+        errors->Release();
+    IDirect3DPixelShader9* shader = nullptr;
+    if (FAILED(device->CreatePixelShader((const DWORD*)bytecode->GetBufferPointer(), &shader)))
+        shader = nullptr;
+    bytecode->Release();
+    if (shader != nullptr)
+        cache[layout] = shader;
+    return shader;
+}
+
+IDirect3DPixelShader9* nullD3DCompileNV2ACombinerPixelShader(
+    IDirect3DDevice9* device, const _D3DPixelShaderDef* definition) {
+    const PixelShaderDefLayout* layout =
+        reinterpret_cast<const PixelShaderDefLayout*>(definition);
+    if (device == nullptr || layout == nullptr)
+        return nullptr;
+    static std::map<const PixelShaderDefLayout*, IDirect3DPixelShader9*> cache;
+    const auto found = cache.find(layout);
+    if (found != cache.end())
+        return found->second;
+    std::string source = BuildNV2ACombinerHlsl(layout);
+    if (source.empty())
+        return nullptr;
+    source = RemapFogSemantic(source.c_str());
+    D3DCompileProc compiler = GetCompiler();
+    if (compiler == nullptr)
+        return nullptr;
+    ID3DBlob* bytecode = nullptr;
+    ID3DBlob* errors = nullptr;
+    const HRESULT result = compiler(source.data(), source.size(), "nv2a_combiner", nullptr,
                                     nullptr, "main", "ps_3_0", 0, 0,
                                     &bytecode, &errors);
     if (FAILED(result)) {

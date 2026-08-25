@@ -420,6 +420,7 @@ void nullD3DSetNV2AFogEnabled(bool Enabled) {
     if (gD3D9Device != NULL && gD3D9NV2APixelShaderActive) {
         const float FogState[4] = { Enabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
         gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
+        gD3D9Device->SetPixelShaderConstantF(31, FogState, 1);
     }
 }
 
@@ -2655,6 +2656,25 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
         gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
         const float FogState[4] = { gD3D9NV2AFogEnabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
         gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
+        gD3D9Device->SetPixelShaderConstantF(31, FogState, 1);
+        return;
+    }
+    IDirect3DPixelShader9* CombinerShader =
+        nullD3DCompileNV2ACombinerPixelShader(gD3D9Device, Definition);
+    gD3D9NV2APixelShaderActive = CombinerShader != NULL;
+    if (CombinerShader != NULL) {
+        gD3D9Device->SetPixelShader(CombinerShader);
+        DWORD FogColor = 0;
+        gD3D9Device->GetRenderState(COD3_D3D9_RS_FOGCOLOR, &FogColor);
+        const float FogColorF[4] = {
+            ((FogColor >> 16) & 0xffu) / 255.0f,
+            ((FogColor >> 8) & 0xffu) / 255.0f,
+            (FogColor & 0xffu) / 255.0f,
+            ((FogColor >> 24) & 0xffu) / 255.0f,
+        };
+        gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
+        const float FogState[4] = { gD3D9NV2AFogEnabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
+        gD3D9Device->SetPixelShaderConstantF(31, FogState, 1);
         return;
     }
     gD3D9Device->SetPixelShader(NULL);
@@ -2708,6 +2728,7 @@ void __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value) {
         gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
         const float FogState[4] = { gD3D9NV2AFogEnabled ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f };
         gD3D9Device->SetPixelShaderConstantF(1, FogState, 1);
+        gD3D9Device->SetPixelShaderConstantF(31, FogState, 1);
     }
 }
 void __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value) {
