@@ -109,7 +109,10 @@ static std::string InputCExact(const unsigned int* token, bool forceScalar) {
         result << 'v' << FieldValue(token, F_V);
         break;
     case 3:
-        result << "c[" << ConstantRegister(FieldValue(token, F_CONST)) << "]";
+        result << "c[";
+        if (FieldValue(token, F_A0X) != 0)
+            result << "A0+";
+        result << ConstantRegister(FieldValue(token, F_CONST)) << "]";
         break;
     default:
         return "0.0";
@@ -251,6 +254,9 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
     const unsigned int outAddress = FieldValue(token, F_OUT_ADDRESS);
     const unsigned int outRegister = FieldValue(token, F_OUT_R);
     const bool paired = mac != 0 && ilu != 0;
+    const bool isArl = mac == 13;
+    const bool delayArl = isArl && paired;
+    const std::string arlTemp = "nv2aArlTemp" + std::to_string(instructionIndex);
     const std::string macExpr = mac == 0 ? std::string() : MacExpression(mac, a, b, cMac);
     const std::string iluExpr = ilu == 0 ? std::string() : IluExpression(ilu, cIlu);
 
@@ -263,6 +269,23 @@ static void AppendInstruction(std::ostringstream& source, const unsigned int* to
             ? IsScalarSource(a) && IsScalarSource(b)
             : false;
     const bool iluScalar = ilu == 1 ? IsScalarSource(cIlu) : false;
+    if (isArl) {
+        if (delayArl)
+            source << "  int " << arlTemp << "=(int)floor(" << a << ".x+0.001);\n";
+        else
+            source << "  A0=(int)floor(" << a << ".x+0.001);\n";
+    }
+    if (isArl && delayArl) {
+        if (ilu != 0 && FieldValue(token, F_OUT_ILU_MASK) != 0) {
+            const std::string destination = "r1";
+            AppendWrite(source, iluExpr, destination.c_str(),
+                        Mask(FieldValue(token, F_OUT_ILU_MASK)), iluScalar);
+        }
+        source << "  A0=" << arlTemp << ";\n";
+        return;
+    }
+    if (isArl)
+        return;
     if (writesOutput && mac != 0 && FieldValue(token, F_OUT_MUX) == 0)
         AppendWrite(source, macExpr, OutputName(outAddress), Mask(FieldValue(token, F_OUT_O_MASK)), macScalar);
     if (writesOutput && ilu != 0 && FieldValue(token, F_OUT_MUX) != 0)
@@ -347,6 +370,7 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << " float w=clamp(src.w,-(128.0-epsilon),128.0-epsilon);"
            << " return float4(1.0,x,x>0.0?exp2(w*log2(y)):0.0,1.0); }\n"
            << "VSOut main(VSIn input) { VSOut output;\n"
+           << "  int A0=0;\n"
            << "  float4 v0=input.v0,v1=input.v1,v2=input.v2;\n"
            << "  float4 v3=input.v3,v4=input.v4,v5=input.v5,v6=input.v6,v7=input.v7;\n";
     if (usesHomogeneousDivide) {
