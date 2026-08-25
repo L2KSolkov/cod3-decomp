@@ -435,34 +435,6 @@ static std::string RemapFogSemantic(const char* source) {
     return remapped;
 }
 
-static std::string RemapTextureInputs(const char* source,
-                                      const PixelShaderDefLayout* layout) {
-    std::string remapped(source != nullptr ? source : "");
-    if (layout == nullptr)
-        return remapped;
-
-    // NV2A always feeds stage 1 from pT0.  Stages 2 and 3 select their
-    // pT register through PSInputTexture (the two four-bit fields at bits
-    // 16 and 20).  The D3D9 translation exposes those registers as t0..t3.
-    unsigned int textureInput[4] = { 0, 0,
-        (layout->PSInputTexture >> 16) & 0xFu,
-        (layout->PSInputTexture >> 20) & 0xFu };
-    for (unsigned int stage = 1; stage < 4; ++stage) {
-        if (textureInput[stage] > 3)
-            continue;
-        const std::string needle = "tex2D(s" + std::to_string(stage) +
-            ", input.t" + std::to_string(stage);
-        const std::string replacement = "tex2D(s" + std::to_string(stage) +
-            ", input.t" + std::to_string(textureInput[stage]);
-        size_t offset = 0;
-        while ((offset = remapped.find(needle, offset)) != std::string::npos) {
-            remapped.replace(offset, needle.size(), replacement);
-            offset += replacement.size();
-        }
-    }
-    return remapped;
-}
-
 typedef HRESULT (WINAPI *D3DCompileProc)(LPCVOID, SIZE_T, LPCSTR, const D3D_SHADER_MACRO*,
                                          ID3DInclude*, LPCSTR, LPCSTR, UINT, UINT,
                                          ID3DBlob**, ID3DBlob**);
@@ -1034,8 +1006,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         return nullptr;
     ID3DBlob* bytecode = nullptr;
     ID3DBlob* errors = nullptr;
-    const std::string textureSource = RemapTextureInputs(Source, layout);
-    const std::string remappedSource = RemapFogSemantic(textureSource.c_str());
+    const std::string remappedSource = RemapFogSemantic(Source);
     const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
                                     nullptr, "main", "ps_2_0", 0, 0,
                                     &bytecode, &errors);
