@@ -250,6 +250,21 @@ static COD3_D3D9_PRIMITIVETYPE nullD3DPrimitiveType(_D3DPRIMITIVETYPE Type) {
     }
 }
 
+static DWORD nullD3DStencilOp(unsigned int Value) {
+    // Xbox D3DSTENCILOP uses NV2A method tokens; D3D9 uses 1..8.
+    switch (Value) {
+    case 0x1E00u: return D3DSTENCILOP_KEEP;
+    case 0x0000u: return D3DSTENCILOP_ZERO;
+    case 0x1E01u: return D3DSTENCILOP_REPLACE;
+    case 0x1E02u: return D3DSTENCILOP_INCRSAT;
+    case 0x1E03u: return D3DSTENCILOP_DECRSAT;
+    case 0x150Au: return D3DSTENCILOP_INVERT;
+    case 0x8507u: return D3DSTENCILOP_INCR;
+    case 0x8508u: return D3DSTENCILOP_DECR;
+    default: return Value;
+    }
+}
+
 static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int VertexCount) {
     switch (Type) {
     case 1u: return VertexCount;
@@ -1300,6 +1315,7 @@ void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned in
         NativeState = COD3_D3D9_RS_STENCILMASK;
     } else if (Method == dword_40378) {
         NativeState = COD3_D3D9_RS_STENCILPASS;
+        NativeValue = nullD3DStencilOp(Value);
     } else {
         return;
     }
@@ -2428,9 +2444,15 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     case D3DRS_ZENABLE: NativeState = COD3_D3D9_RS_ZENABLE; break;
     case D3DRS_ZBIAS: NativeState = D3DRS_DEPTHBIAS; break;
     case D3DRS_STENCILENABLE: NativeState = COD3_D3D9_RS_STENCILENABLE; break;
-    case D3DRS_STENCILFUNC: NativeState = COD3_D3D9_RS_STENCILFUNC; break;
+    case D3DRS_STENCILFUNC:
+        NativeState = COD3_D3D9_RS_STENCILFUNC;
+        NativeValue = nullD3DCompareFunc(Value);
+        break;
     case D3DRS_STENCILMASK: NativeState = COD3_D3D9_RS_STENCILMASK; break;
-    case D3DRS_STENCILPASS: NativeState = COD3_D3D9_RS_STENCILPASS; break;
+    case D3DRS_STENCILPASS:
+        NativeState = COD3_D3D9_RS_STENCILPASS;
+        NativeValue = nullD3DStencilOp(Value);
+        break;
     case D3DRS_MULTISAMPLEANTIALIAS: NativeState = COD3_D3D9_RS_MULTISAMPLEANTIALIAS; break;
     default:
         return 0;
