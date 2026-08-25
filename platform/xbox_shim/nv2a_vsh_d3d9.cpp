@@ -525,6 +525,16 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBInputs[0] == 0xc8c40000u &&
         layout->PSRGBOutputs[0] == 0x000000c0u &&
         layout->PSAlphaOutputs[0] == 0x000000c0u;
+    const bool isPrelitLightmap =
+        layout->PSCombinerCount == 0x00011102u &&
+        layout->PSTextureModes == 0x00000021u &&
+        layout->PSAlphaInputs[0] == 0x00000000u &&
+        layout->PSAlphaInputs[1] == 0xd8301010u &&
+        layout->PSRGBInputs[0] == 0xc8c40000u &&
+        layout->PSRGBInputs[1] == 0xccd90000u &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSRGBOutputs[1] == 0x000000c0u &&
+        layout->PSAlphaOutputs[1] == 0x000000c0u;
     const bool isPointLitLightmap =
         layout->PSCombinerCount == 0x00011103u &&
         layout->PSTextureModes == 0x00000021u &&
@@ -697,6 +707,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBOutputs[4] == 0x000000c0u &&
         layout->PSAlphaOutputs[3] == 0x000000d0u;
     if (!isWorldLightmap && !isWorldTextured && !isSky && !isTexturedVertexColored &&
+        !isPrelitLightmap &&
         !isPointLitLightmap &&
         !isPointLitAdditive && !isPointLitAdditiveLightmap &&
         !isWorldTexturedVertexLit &&
@@ -749,6 +760,17 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
         "  float3 rgb = diffuse.rgb * input.d0.rgb;\n"
+        "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    static const char PrelitLightmapSource[] =
+        "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
+        "float4 t1 : TEXCOORD1; float fog : FOG; };\n"
+        "sampler2D s0 : register(s0); sampler2D s1 : register(s1);\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
+        "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
+        "  float3 rgb = diffuse.rgb * input.d0.rgb * lightmap.a;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
     static const char WorldLightmapVertexLitSource[] =
@@ -934,6 +956,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         : (isWorldBlendLightmap ? WorldBlendLightmapSource
         : (isWorldBlendRgbAndAlphaLightmap ? WorldBlendRgbAndAlphaLightmapSource
         : (isWorldBlendAlphaLightmap ? WorldBlendAlphaLightmapSource
+        : (isPrelitLightmap ? PrelitLightmapSource
         : (isPointLitAdditiveLightmap ? PointLitAdditiveLightmapSource
         : (isPointLitAdditive ? PointLitAdditiveSource
         : (isWorldLightmapVertexLit || isPointLitLightmap ? WorldLightmapVertexLitSource
@@ -942,7 +965,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         : (isWorldBlend ? WorldBlendSource
         : (isWorldTexturedVertexLit || isTexturedVertexColored ? WorldTextureVertexLitSource
         : (isWorldTextured ? WorldTextureSource
-        : (isSky ? SkySource : WorldSource)))))))))))))));
+        : (isSky ? SkySource : WorldSource))))))))))))))));
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
