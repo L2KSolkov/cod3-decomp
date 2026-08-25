@@ -814,7 +814,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 fogColor : register(c0);\n"
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
-        "  return float4(lerp(fogColor.rgb, diffuse.rgb, saturate(input.fog)), diffuse.a);\n"
+        "  return diffuse;\n"
         "}\n";
     static const char SkySource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; float fog : FOG; };\n"
