@@ -77,6 +77,7 @@ static IDirect3D9* gD3D9 = NULL;
 static IDirect3DDevice9* gD3D9Device = NULL;
 static HMODULE gD3D9SoftwareRasterizer = NULL;
 static bool gD3D9SceneActive = false;
+static bool gD3D9NV2APixelShaderActive = false;
 static bool gD3D9ShaderNeedsViewportInverse = false;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
@@ -2444,6 +2445,7 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
         return;
     IDirect3DPixelShader9* WorldShader =
         nullD3DCompileNV2AWorldPixelShader(gD3D9Device, Definition);
+    gD3D9NV2APixelShaderActive = WorldShader != NULL;
     if (WorldShader != NULL) {
         gD3D9Device->SetPixelShader(WorldShader);
         DWORD FogColor = 0;
@@ -2495,8 +2497,18 @@ void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
                                      nullD3DCullMode(Value));
 }
 void __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value) {
-    if (gD3D9Device != NULL)
-        gD3D9Device->SetRenderState(COD3_D3D9_RS_FOGCOLOR, Value);
+    if (gD3D9Device == NULL)
+        return;
+    gD3D9Device->SetRenderState(COD3_D3D9_RS_FOGCOLOR, Value);
+    if (gD3D9NV2APixelShaderActive) {
+        const float FogColorF[4] = {
+            ((Value >> 16) & 0xffu) / 255.0f,
+            ((Value >> 8) & 0xffu) / 255.0f,
+            (Value & 0xffu) / 255.0f,
+            ((Value >> 24) & 0xffu) / 255.0f,
+        };
+        gD3D9Device->SetPixelShaderConstantF(0, FogColorF, 1);
+    }
 }
 void __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value) {
     if (gD3D9Device != NULL)
