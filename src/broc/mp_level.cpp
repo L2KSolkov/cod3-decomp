@@ -9,6 +9,8 @@
 
 #include <cstring>
 
+#include "mp_level_ee_resolver.inc"
+
 // mp_level's public entry-point ABI uses the global game-side BrocAPI and
 // BrocExports declarations.  The complete IDA-derived layouts live in the
 // Broc namespace, so InitScript uses those views when installing callbacks.
@@ -220,6 +222,8 @@ InitFunc InitScript(::BrocAPI** gamesAPIptr, ::BrocExports& exports) { // ea: 0x
     *gamesAPIptr = reinterpret_cast<::BrocAPI*>(&Broc::gBrocAPI);
     Broc::gBrocAPI.mKillThread = false;
     exportsView.mValidateApiSize(4924, 456);
+    Broc::ExtendedEntity::sGetFunctions =
+        Broc::EEHelper::mp_level_wad_EEGetFunctions;
     Broc::ExtendedEntity::InitScript(exportsView);
     hack_ps2_InitScript(exportsView);
     exportsView.mRegisterDebugStrings = mp_level_wad::RegisterHashStrings;

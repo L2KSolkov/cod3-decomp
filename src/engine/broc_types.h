@@ -646,7 +646,7 @@ struct ExtendedEntity {
     typedef unsigned int (InitFunc)(const char* key);
     typedef unsigned int (CopyFunc)(unsigned int val);
     typedef bool (EqualsFunc)(unsigned int val, const char* str);
-    typedef void (DestructFunc)(unsigned int& val);
+    typedef void (DestructFunc)(unsigned int* val);
 
     // IDA local type: mp_level_wad supplies these callback implementations.
     typedef void (__cdecl *GetFunctionsFunc)(unsigned int key,
@@ -779,6 +779,13 @@ COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::sort_struct) == 4,
 // EEHelper / EEDefault — template helpers for ExtendedEntity field types
 // ============================================================================
 namespace EEHelper {
+    void mp_level_wad_EEGetFunctions(
+        unsigned int key,
+        unsigned int (__cdecl **init)(const char*),
+        unsigned int (__cdecl **copy)(unsigned int),
+        bool (__cdecl **equals)(unsigned int, const char*),
+        void (__cdecl **dtor)(unsigned int*));
+
     template <typename T> struct EqualsArg {
         typedef unsigned int type;
     };
@@ -789,13 +796,17 @@ namespace EEHelper {
     template <typename T> unsigned int Initialize(const char* key);
     template <typename T>
     bool Equals(typename EqualsArg<T>::type val, const char* str);
-    template <typename T> unsigned int Copy(unsigned int val);
+    template <typename T> unsigned int Copy(unsigned int val) { return val; }
+    template <> unsigned int Copy<string>(unsigned int val);
+    template <typename T> void Destruct(unsigned int*) {}
+    template <> void Destruct<string>(unsigned int*);
+    template <> void Destruct<vector>(unsigned int*);
 }
 
 namespace EEDefault {
     unsigned int Initialize(const char*);
     unsigned int Copy(unsigned int val);
-    void         Destruct(unsigned int& val);
+    void         Destruct(unsigned int* val);
     bool         Equals(unsigned int val, const char* str);
 }
 

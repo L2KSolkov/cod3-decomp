@@ -3783,7 +3783,7 @@ void CopyExtendedEntity(const Entity* source, Entity* dest)
                 __debugbreak();
         }
         dest->mBrocExtendedEntity =
-            gpBrocAPI->mBrocExports.mCopyExtendedEntity(
+            Broc::gBrocAPI.mBrocExports.mCopyExtendedEntity(
                 source->mBrocExtendedEntity);
     }
 }

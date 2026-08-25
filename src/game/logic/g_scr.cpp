@@ -11000,7 +11000,7 @@ void* BrocSys::CreateExtendedEntity(const char** keys, int count)
     (void)keys;
     (void)count;
     if (gpBrocAPI != nullptr)
-        return gpBrocAPI->mBrocExports.mCreateExtendedEntity(nullptr, 0);
+        return Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity(nullptr, 0);
     else
         return nullptr;
 }
@@ -12552,12 +12552,12 @@ void BrocInitEntity(
 {
     void* v3 = nullptr;
     if (gpBrocAPI != nullptr
-        && gpBrocAPI->mBrocExports.mCreateExtendedEntity != nullptr)
+        && Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity != nullptr)
     {
         const char** pKey = nullptr;
         if (keyValuePairs->mSize != 0)
             pKey = (const char**)&keyValuePairs->mList[0].mKey.mStr;
-        v3 = gpBrocAPI->mBrocExports.mCreateExtendedEntity(
+        v3 = Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity(
             pKey, keyValuePairs->mSize);
     }
     ent->mBrocExtendedEntity = v3;
@@ -12950,7 +12950,7 @@ void* BrocSys::GetExtendedEntity(unsigned int handle)
     if (mObject->mBrocExtendedEntity == nullptr)
     {
         void* (*mCreateExtendedEntity)(const char**, int) =
-            gpBrocAPI->mBrocExports.mCreateExtendedEntity;
+            Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity;
         if (mCreateExtendedEntity != nullptr)
             mObject->mBrocExtendedEntity = mCreateExtendedEntity(nullptr, 0);
     }

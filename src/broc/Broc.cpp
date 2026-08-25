@@ -1196,7 +1196,7 @@ ExtendedEntity::~ExtendedEntity()
 {
     for (unsigned int i = 0; i < mCount; ++i)
     {
-        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        GetDestructor(mKVPairs[i].key)(&mKVPairs[i].val);
         mKVPairs[i].key = 0;
         mKVPairs[i].val = 0;
     }
@@ -1294,7 +1294,7 @@ void ExtendedEntity::SetUndefined(unsigned int key)
         if (mKVPairs[i].key != key)
             continue;
 
-        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        GetDestructor(mKVPairs[i].key)(&mKVPairs[i].val);
         if (i < --mCount)
         {
             mKVPairs[i].key = mKVPairs[mCount].key;
@@ -1334,7 +1334,7 @@ unsigned int* ExtendedEntity::InternalSet(unsigned int key, unsigned int val)
     {
         if (mKVPairs[i].key != key)
             continue;
-        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        GetDestructor(mKVPairs[i].key)(&mKVPairs[i].val);
         mKVPairs[i].val = val;
         return &mKVPairs[i].val;
     }
@@ -1824,7 +1824,6 @@ namespace EEHelper {
     template <typename T> unsigned int Initialize(const char*) { return 0; }
     template <typename T>
     bool Equals(typename EqualsArg<T>::type, const char*) { return false; }
-    template <typename T> unsigned int Copy(unsigned int val) { return val; }
 
     // ea: 0x009295A0; IDA calls BrocAPI::mAtoF and returns the raw float bits.
     template <> unsigned int Initialize<float>(const char* text)
@@ -1875,6 +1874,16 @@ namespace EEHelper {
         new (&raw) string(*reinterpret_cast<const string*>(&data), 0);
         return raw;
     }
+
+    template <> void Destruct<string>(unsigned int* data)
+    {
+        reinterpret_cast<string*>(data)->~string();
+    }
+
+    template <> void Destruct<vector>(unsigned int* data)
+    {
+        ::operator delete(reinterpret_cast<void*>(*data));
+    }
 }
 
 namespace EEDefault {
@@ -1899,7 +1908,7 @@ namespace EEDefault {
     }
 
     // ea: 0x009298E0; IDA source line global is 115 (+1 in the call).
-    void Destruct(unsigned int&)
+    void Destruct(unsigned int*)
     {
         if (gBrocAPI.mWarning(
                 "c:\\cod\\code\\script\\include\\extendedentity.cpp",
