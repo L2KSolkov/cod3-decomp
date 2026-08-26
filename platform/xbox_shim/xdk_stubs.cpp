@@ -305,10 +305,11 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
     case 0x15: // SHORT1
         *Type = D3DDECLTYPE_SHORT2;
         return true;
-    case 0x16: // Xbox packed signed 10:10:10 normal; decode sign in the VS.
-        // The D3D9 device accepts UDEC3 for this four-byte slot, while its
-        // native DEC3N declaration is rejected by the active runtime.
-        *Type = D3DDECLTYPE_UDEC3;
+    case 0x16: // CMP: signed normalized 11:11:10 packed in four bytes.
+        // Preserve all 32 bits so the NV2A shader translator can unpack the
+        // asymmetric 11/11/10 fields. UDEC3 would discard the high bit of
+        // the first two fields and cannot represent the Xbox format.
+        *Type = D3DDECLTYPE_UBYTE4;
         return true;
     case 0x14: // PBYTE1 (UB_OGL, normalized)
     case 0x24: // PBYTE2 (UB_OGL, normalized)
