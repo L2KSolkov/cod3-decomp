@@ -20,7 +20,16 @@ struct GamePause { static bool IsGamePaused(int client); };
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+    unsigned int mFlags;  // +0x00
 };
+
+class Camera {
+public:
+    unsigned char _pad0[0x30];
+    math::Position3 mPrevViewPos;  // +0x30
+    math::Position3 mPrevAngles;   // +0x40
+};
+extern Camera gCamera[];
 
 
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
@@ -249,6 +258,7 @@ extern vmCvar_t cg_drawGun;
 float cg_gun_x;
 float cg_gun_y;
 float cg_gun_z;
+float lmg_offset = -19.0f;  // lmg_offset (cg.o 0xDFA33C)
 extern float angle[4 * 395];
 extern float dword_F63CB4[4 * 1580];
 extern float dword_F63C80[4 * 1580];
@@ -260,6 +270,7 @@ extern float dword_F63C94[4 * 1580];
 extern float dword_F63C98[4 * 1580];
 extern float dword_F63C9C[4 * 1580];
 extern float dword_F63CA0[4 * 1580];
+extern void AnglesToAxis(const float* const angles, float (*const axis)[3]);
 extern float dword_F64074[4 * 1580];
 extern float dword_F64078[4 * 1580];
 extern float dword_F6407C[4 * 1580];
@@ -533,6 +544,85 @@ void CG_OffsetLMG(float i_XOffset)
     if (v19 < 0.0f)
         v13 = 0.0f - v13;
     angle[v1 * 4] = v13 * -57.295776f;
+}
+
+extern const float* InteractionController_GetHandsAngles(void* self);
+extern const float* InteractionController_GetHandsOrigin(void* self);
+extern int InteractionController_GetCameraMode(void* self);
+extern void SetClientViewAngle(Entity* ent, const float* angle);
+extern void SetClientOrigin(Entity* ent, const float* origin);
+extern void g_LinkEntity(Entity* ent);
+extern void CG_CalculateWeaponPosition_BobOffset();
+extern int CG_CalculateWeaponPosition_Sway();
+extern void CG_CalculateWeaponPosition(float* origin);
+extern void CG_CalculateWeaponAngles(float* angles);
+
+// ea: 0x00699F90
+void CG_UpdateViewModelPosAndOrientation(void* handArg)
+{
+    refEntity_t* hand = static_cast<refEntity_t*>(handArg);
+    float camAngles[3] = {0.0f, 0.0f, 0.0f};
+    void* interaction = (void*)InteractionController::Inst(currCl);
+    if ((*(unsigned int*)interaction & 1u) != 0)
+    {
+        const float* handsAngles = InteractionController_GetHandsAngles(interaction);
+        const float* handsOrigin = InteractionController_GetHandsOrigin(interaction);
+        camAngles[0] = handsAngles[0];
+        camAngles[1] = handsAngles[1];
+        camAngles[2] = handsAngles[2];
+        hand->origin[0] = handsOrigin[0];
+        hand->origin[1] = handsOrigin[1];
+        hand->origin[2] = handsOrigin[2];
+
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        const int cameraMode = InteractionController_GetCameraMode(interaction);
+        if (cameraMode != -1 && cameraMode != 18)
+        {
+            float previousAngles[3] = {
+                gCamera[currCl].mPrevAngles.v.m128_f32[0],
+                gCamera[currCl].mPrevAngles.v.m128_f32[1],
+                gCamera[currCl].mPrevAngles.v.m128_f32[2]};
+            SetClientViewAngle(player, previousAngles);
+            float origin[3] = {
+                gCamera[currCl].mPrevViewPos.v.m128_f32[0],
+                gCamera[currCl].mPrevViewPos.v.m128_f32[1],
+                gCamera[currCl].mPrevViewPos.v.m128_f32[2]};
+            if (!GamePause::IsGamePaused(currCl))
+                origin[2] -= player->client->ps.viewHeightCurrent;
+            SetClientOrigin(player, origin);
+            g_LinkEntity(player);
+        }
+    }
+    else
+    {
+        CG_CalculateWeaponPosition_BobOffset();
+        CG_CalculateWeaponPosition_Sway();
+        CG_CalculateWeaponPosition(hand->origin);
+        CG_CalculateWeaponAngles(camAngles);
+    }
+
+    AnglesToAxis(camAngles, hand->axis);
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if ((player->client->ps.pm_flags & 0x20) != 0)
+    {
+        weaponFileInfoFull* info = (weaponFileInfoFull*)BG_GetInfoForWeapon(player->client->ps.weapon);
+        if (info != nullptr && info->weapClass == 10 /* WEAPCLASS_LMG */)
+            CG_OffsetLMG(lmg_offset);
+    }
+
+    const int base = 1580 * currCl;
+    const float gunX = cg_gun_x;
+    const float gunY = cg_gun_y;
+    const float gunZ = cg_gun_z;
+    hand->origin[0] += dword_F63C80[base] * gunX;
+    hand->origin[1] += dword_F63C84[base] * gunX;
+    hand->origin[2] += dword_F63C88[base] * gunX;
+    hand->origin[0] += dword_F63C8C[base] * gunY;
+    hand->origin[1] += dword_F63C90[base] * gunY;
+    hand->origin[2] += dword_F63C94[base] * gunY;
+    hand->origin[0] += dword_F63C98[base] * gunZ;
+    hand->origin[1] += dword_F63C9C[base] * gunZ;
+    hand->origin[2] += dword_F63CA0[base] * gunZ;
 }
 
 // ea: 0x006925C0
@@ -1555,8 +1645,6 @@ int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
 }
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
-class Camera;
-extern Camera gCamera[];
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern struct cgs_t* cgs;
@@ -1842,27 +1930,6 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             RefEntity->origin[1] = parent->origin[1];
             RefEntity->origin[2] = parent->origin[2];
             AxisCopy(parent->axis, RefEntity->axis);
-            float v13 = ((0 + cg_gun_x) * dword_F63C80[1580 * currCl])
-                        + RefEntity->origin[0];
-            RefEntity->origin[0] = v13;
-            float v14 = (dword_F63C8C[1580 * currCl] * cg_gun_y) + v13;
-            RefEntity->origin[0] = v14;
-            RefEntity->origin[0] =
-                (dword_F63C98[1580 * currCl] * cg_gun_z) + v14;
-            float v15 = ((0 + cg_gun_x) * dword_F63C84[1580 * currCl])
-                        + RefEntity->origin[1];
-            RefEntity->origin[1] = v15;
-            float v16 = (dword_F63C90[1580 * currCl] * cg_gun_y) + v15;
-            RefEntity->origin[1] = v16;
-            RefEntity->origin[1] =
-                (dword_F63C9C[1580 * currCl] * cg_gun_z) + v16;
-            float v17 = ((0 + cg_gun_x) * dword_F63C88[1580 * currCl])
-                        + RefEntity->origin[2];
-            RefEntity->origin[2] = v17;
-            float v18 = (dword_F63C94[1580 * currCl] * cg_gun_y) + v17;
-            RefEntity->origin[2] = v18;
-            RefEntity->origin[2] =
-                (dword_F63CA0[1580 * currCl] * cg_gun_z) + v18;
             if (bDrawGun != 0)
             {
                 if (tr_viewModelInfo_mWeaponScale[currCl] != 1.0f)
