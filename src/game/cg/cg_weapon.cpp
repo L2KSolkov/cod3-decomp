@@ -21,6 +21,7 @@ class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
     unsigned int mFlags;  // +0x00
+    void* mCurState;      // +0x04 (InteractState*)
 };
 
 class Camera {
@@ -139,11 +140,16 @@ extern void CG_RegisterItemVisuals(int itemNum);
 extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
-// InteractionController_CanRunWeaponAnims artifact (game/o; stub)
+// ea: 0x0053C200
 int InteractionController_CanRunWeaponAnims(void* self)
 {
-    (void)self;
-    return 1;
+    void* curState = *reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 0x04);
+    return curState == nullptr
+           || ((*reinterpret_cast<unsigned int*>(
+                    reinterpret_cast<unsigned char*>(curState) + 0x18)
+                & 0x100u)
+               != 0);
 }
 void* PlayerAnimMgr_sInst = nullptr;  // cg.o artifact (PlayerAnimMgr*)
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
