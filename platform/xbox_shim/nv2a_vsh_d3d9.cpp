@@ -707,6 +707,10 @@ static std::string BuildNV2ACombinerHlsl(const PixelShaderDefLayout* layout) {
         else
             source << "  float4 t" << i << "=input.t" << i << ";\n";
     }
+    // xemu's pixel preflight initializes the mux source before any combiner
+    // stage: active stage 0 uses t0.a, while an unused stage starts at one.
+    const unsigned int stage0Mode = layout->PSTextureModes & 0x1fu;
+    source << (stage0Mode != 0u ? "  r0.a=t0.a;\n" : "  r0.a=1.0;\n");
     const bool hasFinal = layout->PSFinalCombinerInputsABCD != 0u ||
                           layout->PSFinalCombinerInputsEFG != 0u;
     std::string finalE;
