@@ -52,6 +52,7 @@ extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
 extern float dword_F63C80[4 * 1580];
 extern float dword_F63C84[4 * 1580];
 extern float dword_F63C88[4 * 1580];
+extern int dword_F63C64[4 * 1580];
 extern float dword_F63C98[4 * 1580];
 extern float dword_F63C9C[4 * 1580];
 extern float dword_F63CA0[4 * 1580];
@@ -491,6 +492,33 @@ extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float transScale);
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);
+
+struct adsWeaponViewFields
+{
+    unsigned char pad[0x7C8];
+    float fAdsAimPitch;
+    float fAdsCrosshairInFrac;
+    float fAdsCrosshairOutFrac;
+};
+
+void CG_TransitionToAds(void* weapDef, float posLerp, float* transScale,
+                        float* transShift)
+{
+    const adsWeaponViewFields* weapon =
+        static_cast<const adsWeaponViewFields*>(weapDef);
+    const int index = 1580 * currCl;
+    const float frac = dword_F63B34[index] != 0
+                     ? (posLerp - (1.0f - weapon->fAdsCrosshairInFrac))
+                       / weapon->fAdsCrosshairInFrac
+                     : (posLerp - (1.0f - weapon->fAdsCrosshairOutFrac))
+                       / weapon->fAdsCrosshairOutFrac;
+    if (frac > 0.0f)
+    {
+        *transScale = 1.0f - frac * 0.5f;
+        *transShift = (480.0f / *(float*)&dword_F63C64[index])
+                    * weapon->fAdsAimPitch * frac;
+    }
+}
 
 void CG_CalcCrosshairColor(float alpha, int* color)
 {
