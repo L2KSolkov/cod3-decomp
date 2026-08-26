@@ -1,5 +1,5 @@
 // AUTO-GENERATED STUBS — Client game (cg.o)
-// 0 non-inline functions to port
+// Remaining unported non-inline functions (9 overloads/entries below)
 // When ported, functions move from here to their real .cpp files.
 
 #include <stdio.h>
