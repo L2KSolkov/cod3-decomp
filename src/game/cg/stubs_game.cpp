@@ -27,10 +27,6 @@ void CG_ClipMoveToEntities(const math::Position3* start,
 }
 void CG_DObjCalcPose(Entity* a, void* b, int* c) { (void)a; (void)b; (void)c; }
 void CG_DObjCalcPose(void* a, void* b, int* c) { (void)a; (void)b; (void)c; }
-void CG_DrawAdsAimIndicator(void* a, int b, int* c, float d, float e, float f)
-{
-    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
-}
 void CG_DrawReticleHitIndicator(void* a, int b, int* c, float d, float e,
                                 float f)
 {

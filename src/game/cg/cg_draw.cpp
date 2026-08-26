@@ -64,6 +64,7 @@ extern float CG_CalcPlayerHealth();
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern vmCvar_t s_cgCvarStorage[170];
 extern weaponInfo_s cg_weapons[];
+extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
 extern float dword_F63C50[4 * 1580];
 extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
@@ -1224,6 +1225,45 @@ void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
         width, width, 0.0f, 0.0f, 1.0f, 1.0f,
         reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleCenter),
         0.0f);
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x00694C20 (release cg.o)
+void CG_DrawAdsAimIndicator(void* weapDefArg, int weapIndex, int* color,
+                            float centerX, float centerY, float transScale)
+{
+    if (weapDefArg == nullptr || color == nullptr || weapIndex < 0)
+        return;
+    if (s_cgCvarStorage[0].integer != 0 || transScale >= 1.0f)
+        return;
+
+    nglTexture* texture = reinterpret_cast<nglTexture*>(
+        cg_weapons[weapIndex].hReticleCenter);
+    if (texture == nullptr)
+    {
+        const char* fallback = s_cgCvarStorage[35].string;
+        texture = GetTextureData(fallback, 0, "mp_frontEnd");
+    }
+    if (texture == nullptr)
+        return;
+
+    float x = centerX;
+    float y = centerY;
+    float width = 0.0f;
+    float height = 0.0f;
+    CG_AdjustFrom640(&x, &y, &width, &height);
+    width = (float)*reinterpret_cast<int*>(
+                reinterpret_cast<char*>(weapDefArg) + 0x4E0)
+            * (1.5f - transScale);
+    trap_R_SetColor(reinterpret_cast<const float*>(color));
+    trap_R_DrawStretchPic(
+        ((dword_F63C58[1580 * currCl] - width) * 0.5f
+         + dword_F63C50[1580 * currCl])
+            + x,
+        ((dword_F63C5C[1580 * currCl] - width) * 0.5f
+         + dword_F63C54[1580 * currCl])
+            + y,
+        width, width, 0.0f, 0.0f, 1.0f, 1.0f, texture, 0.0f);
     trap_R_SetColor(nullptr);
 }
 
