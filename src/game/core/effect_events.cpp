@@ -486,7 +486,7 @@ const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash)
     (void)mgr; (void)hash;
     return nullptr;
 }
-extern void* GdbFileManager_sInst;  // 0x00F4F434
+extern "C" void* GdbFileManager_GetInstance();
 extern void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId,
                                        const char* name, const char* type);
 extern void* GdbVector_At(void* vec, unsigned int index);
@@ -5189,7 +5189,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
 int EffectEventSys::QueryGDEvents(const char* event, PendingQuery& q,
                                   ActiveEffectSet* fx, float delay)
 {
-    void* v5 = GdbFileManager_sInst;
+    void* v5 = GdbFileManager_GetInstance();
     int totalCount = 0;
     TPakId v8 = CurPakId();
     void* gfile = GdbFileManager_GetGdbFile(v5, v8, event, event);
@@ -5333,7 +5333,7 @@ LABEL_22:
         char oBuff[128];
         strcpy(oBuff, dstBuff);
         void* lfile = GdbFileManager_GetGdbFile(
-            GdbFileManager_sInst, CurPakId(), oBuff, oBuff);
+            GdbFileManager_GetInstance(), CurPakId(), oBuff, oBuff);
         if (lfile != nullptr)
         {
             gdEvent* v36 = (gdEvent*)GdbVector_At(lfile, 0);
@@ -5373,7 +5373,7 @@ LABEL_22:
     }
     if (gdevent->light.mStr != nullptr)
     {
-        void* pakId = GdbFileManager_GetGdbFile(GdbFileManager_sInst,
+    void* pakId = GdbFileManager_GetGdbFile(GdbFileManager_GetInstance(),
                                                 CurPakId(),
                                                 gdevent->light.mStr,
                                                 gdevent->light.mStr);

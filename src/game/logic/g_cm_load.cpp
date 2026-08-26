@@ -9991,11 +9991,17 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pakId, const char* name,
 
 // C-style bridge (effect_events.cpp / common.cpp)
 extern void* GdbFileManager_sInst;  // ?sInst@GdbFileManager@@2PAV1@A
+extern "C" void* GdbFileManager_GetInstance()
+{
+    return GdbFileManager::sInst;
+}
 void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId, const char* name,
                                 const char* type)
 {
     static GdbFile s_result;
     s_result = ((GdbFileManager*)mgr)->GetGdbFile(pakId, name, type);
+    if (s_result.mLayout == nullptr || s_result.mRecord == nullptr)
+        return nullptr;
     return &s_result;
 }
 
