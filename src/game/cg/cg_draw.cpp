@@ -69,6 +69,8 @@ extern vmCvar_t hud_healthOverlay_regenPauseTime;
 extern vmCvar_t cg_hudAlpha;
 extern float CG_CalcPlayerHealth();
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
+extern void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
+                                  float* minSpread, float* maxSpread);
 extern vmCvar_t s_cgCvarStorage[170];
 extern weaponInfo_s cg_weapons[];
 extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
@@ -97,6 +99,10 @@ extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, nglTexture* tex,
                                   float z);
+extern void trap_R_DrawStretchPicRotate(float x, float y, float w, float h,
+                                         float s1, float t1, float s2,
+                                         float t2, float rotation,
+                                         void* tex);
 extern void AnglesToForward(const float* const angles, float* const forward);
 struct refdef_s {
     int x;
@@ -1234,6 +1240,148 @@ void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
         width, width, 0.0f, 0.0f, 1.0f, 1.0f,
         reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleCenter),
         0.0f);
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x006881E0 (release cg.o)
+void CG_CalcReticleColor(const float* baseColor, float* reticleColor,
+                         float alpha)
+{
+    if (baseColor == nullptr || reticleColor == nullptr)
+        return;
+    if (alpha < 0.0f || alpha > 1.0f)
+        CG_ASSERT("alpha >= 0 && alpha <= 1.0f",
+                  "c:\\cod\\code\\game\\cg_draw.cpp", 1171);
+
+    reticleColor[0] = baseColor[0];
+    reticleColor[1] = baseColor[1];
+    reticleColor[2] = baseColor[2];
+    Entity* player = EntityManager::sInst != nullptr
+                         ? EntityManager::sInst->GetPlayer(currCl)
+                         : nullptr;
+    const float aimSpreadScale =
+        (player != nullptr && player->client != nullptr)
+            ? *(const float*)((const char*)&player->client->ps + 0x534)
+            : 0.0f;
+    const float crosshairAlpha =
+        *reinterpret_cast<const float*>(&s_cgCvarStorage[32].value);
+    const float crosshairAlphaMin =
+        *reinterpret_cast<const float*>(&s_cgCvarStorage[33].value);
+    reticleColor[3] =
+        ((1.0f - aimSpreadScale * 0.0039215689f) * crosshairAlpha)
+        * alpha;
+    if (crosshairAlphaMin > reticleColor[3])
+        reticleColor[3] = crosshairAlphaMin;
+}
+
+// ea: 0x006882C0 (release cg.o)
+void CG_CalcReticleSpread(const void* weapDefArg, int weapIndex,
+                          const float* drawSize, float transScale,
+                          float* spread)
+{
+    if (weapDefArg == nullptr || drawSize == nullptr || spread == nullptr
+        || weapIndex < 0)
+        return;
+    Entity* player = EntityManager::sInst != nullptr
+                         ? EntityManager::sInst->GetPlayer(currCl)
+                         : nullptr;
+    if (player == nullptr || player->client == nullptr)
+    {
+        spread[0] = 0.0f;
+        spread[1] = 0.0f;
+        return;
+    }
+
+    float minSpread;
+    float maxSpread;
+    BG_GetSpreadForWeapon(&player->client->ps, weapIndex, &minSpread,
+                          &maxSpread);
+    const float aimSpreadScale =
+        *(const float*)((const char*)&player->client->ps + 0x534);
+    const float spreadAngle =
+        ((aimSpreadScale * 0.0039215689f) * (maxSpread - minSpread)
+         + minSpread)
+        * transScale;
+    const int windowMode = (int)unk_F6A284[802 * currCl];
+    const float aspectScale = (windowMode == 3 || windowMode == 4)
+                                  ? 2.0f
+                                  : 1.0f;
+    const float fovY = *(const float*)&dword_F63C64[1580 * currCl];
+    const float spreadPixels =
+        tanf(spreadAngle * 3.1415927f * 0.0055555557f)
+        / tanf(fovY * 3.1415927f * 0.0055555557f * aspectScale * 0.5f)
+        * 240.0f;
+    const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
+    const float minOfs = (float)*(const int*)(weapDef + 0x4E8);
+    const float hipSidePos = *(const float*)(weapDef + 0x690);
+    const float ofs = spreadPixels > minOfs ? spreadPixels : minOfs;
+    spread[0] = ofs - hipSidePos * drawSize[0];
+    spread[1] = ofs - hipSidePos * drawSize[1];
+}
+
+// ea: 0x0069BE50 (release cg.o)
+void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
+                         float centerX, float centerY, float transScale)
+{
+    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
+        return;
+    const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
+    const char* reticleSide = *(const char**)(weapDef + 0x4DC);
+    if (reticleSide == nullptr || reticleSide[0] == 0)
+        return;
+
+    float zoomFraction = 1.0f;
+    float zoom;
+    if (CG_GetWeapReticleZoom(&zoom))
+        zoomFraction = zoom;
+    float reticleColor[4];
+    CG_CalcReticleColor(reinterpret_cast<const float*>(baseColor),
+                        reticleColor, zoomFraction);
+    const float drawSize = *(const int*)(weapDef + 0x4E4) * transScale;
+    const float drawSizePair[2] = {drawSize, drawSize};
+    float spread[2];
+    CG_CalcReticleSpread(weapDefArg, weapIndex, drawSizePair, transScale,
+                         spread);
+    trap_R_SetColor(reticleColor);
+
+    nglTexture* texture =
+        reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleSide);
+    if (texture != nullptr)
+    {
+        const float scaleX = unk_F6A278[802 * currCl];
+        const float scaleY = unk_F6A27C[802 * currCl];
+        const float screenX = dword_F63C50[1580 * currCl];
+        const float screenY = dword_F63C54[1580 * currCl];
+        const float screenW = dword_F63C58[1580 * currCl];
+        const float screenH = dword_F63C5C[1580 * currCl];
+        const float hipSidePos = *(const float*)(weapDef + 0x690);
+        static const float spreadSignX[4] = {0.0f, 1.0f, 0.0f, -1.0f};
+        static const float spreadSignY[4] = {-1.0f, 0.0f, 1.0f, 0.0f};
+        static const float edgeOffsetX[4] = {-8.0f, 0.0f, -8.0f, -1.0f};
+        static const float edgeOffsetY[4] = {-1.0f, -8.0f, 0.0f, -8.0f};
+        static const float baseOffsetX[4] = {0.0f, 0.0f, 0.0f, -1.0f};
+        static const float baseOffsetY[4] = {-1.0f, 0.0f, 0.0f, 0.0f};
+        for (int i = 0; i < 4; ++i)
+        {
+            const float x =
+                screenX + screenW * 0.5f
+                + (((spreadSignX[i] * spread[0] + centerX)
+                    + edgeOffsetX[i] * drawSize + baseOffsetX[i])
+                   - (hipSidePos * drawSize * spreadSignX[i]))
+                      * scaleX;
+            const float y =
+                screenY + screenH * 0.5f
+                + (((spreadSignY[i] * spread[1] + centerY)
+                    + edgeOffsetY[i] * drawSize + baseOffsetY[i])
+                   - (hipSidePos * drawSize * spreadSignY[i]))
+                      * scaleY;
+            trap_R_DrawStretchPicRotate(
+                x, y, scaleX * drawSize, scaleY * drawSize,
+                (float)((i >> 1) & 1), 1.0f,
+                (float)(((i - 2) >> 1) & 1), 1.0f,
+                (float)((i & 1) * 90), texture);
+        }
+    }
     trap_R_SetColor(nullptr);
 }
 
