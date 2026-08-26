@@ -4178,7 +4178,11 @@ int nalReleaseAnimFile(const tlFixedString& fileName)
         return nalAnimFileDirectory->Release(result, 0, false);
     return 0;
 }
-void nalReleaseAllAnimFiles() {}
+void nalReleaseAllAnimFiles()
+{
+    if (nalAnimFileDirectory != nullptr)
+        nalAnimFileDirectory->ReleaseAll(false, false, 1);
+}
 // ea: 0x008704F0
 nalAnimClass<nalAnyPose>* nalGetAnim(const tlFixedString& name)
 {
@@ -6067,8 +6071,8 @@ public:
                  nalGeneric::nalGenericSkeleton* Skeleton,
                  float (*animIKGunOffset)[3]);
 
-    // ?Reset@AnimationPlayer@@QAEXXZ (anim.o; stub)
-    void Reset() {}
+    // ?Reset@AnimationPlayer@@QAEXXZ (anim.o 0x55F410)
+    void Reset();
 
     // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
     void Play(nalGenericAnim* anim, bool ForceRestart, float fade_in,
@@ -6076,6 +6080,53 @@ public:
               nalAnimCallback* callback, float speed,
               float time_in_seconds_to_start);  // ea: 0x0055F510
 };
+// ea: 0x0055F410
+void AnimationPlayer::Reset()
+{
+    if (Skeleton != nullptr)
+        BackgroundPose = static_cast<nalGenericSkeleton*>(Skeleton)->DefaultPose;
+    for (int i = 0; i < QueueSize; ++i)
+    {
+        nalAnimState* state = AnimStates[i];
+        if (state->callback != nullptr)
+            state->callback->Release();
+        if (state->play_method != nullptr)
+        {
+            void* method = state->play_method;
+            ((void (__thiscall*)(void*))((void**)*(void**)method)[3])(method);
+        }
+        if (state->instance != nullptr)
+        {
+            void* instance = state->instance;
+            ((void (__thiscall*)(void*, int))((void**)*(void**)instance)[1])(
+                instance, 1);
+        }
+    }
+    nalPartialAnimState* partial = PartialAnimStates;
+    QueueSize = 0;
+    while (partial != nullptr)
+    {
+        nalPartialAnimState* next = partial->next;
+        if (partial->base.callback != nullptr)
+            partial->base.callback->Release();
+        if (partial->base.play_method != nullptr)
+        {
+            void* method = partial->base.play_method;
+            ((void (__thiscall*)(void*))((void**)*(void**)method)[3])(method);
+        }
+        if (partial->base.instance != nullptr)
+        {
+            void* instance = partial->base.instance;
+            ((void (__thiscall*)(void*, int))((void**)*(void**)instance)[1])(
+                instance, 1);
+        }
+        partial->next = PartialAnimStatePool;
+        PartialAnimStatePool = partial;
+        partial = next;
+    }
+    PartialAnimStates = nullptr;
+}
+
 // ea: 0x00539EB0
 AnimationPlayer::nalAnimCallback::nalAnimCallback()
 {
