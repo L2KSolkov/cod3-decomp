@@ -1658,7 +1658,7 @@ const char* gHashStringTblTxt[173] = {
     "[BATTLE_ACTION_BUTTON]"
 };
 extern void Scr_FreePrecachedAnimTrees();
-extern void GScr_LoadScriptsAndAnimsForEntities();
+extern int GScr_LoadScriptsAndAnimsForEntities();
 extern void Scr_PrecacheAnimTrees(void* (*Alloc)(int), bool restart);
 extern void* Hunk_AllocXAnimCreate(int size);
 extern AnimTree* Scr_GetAnimTreeByName(const char* treename);

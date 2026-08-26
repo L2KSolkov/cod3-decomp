@@ -3198,7 +3198,46 @@ void gpuSetVertexShader(const unsigned int* shader)
         D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
     }
 }
-void GScr_LoadScriptsAndAnimsForEntities() {}
+extern int bg_iNumWeapons;
+
+// ea: 0x0044CC50. The release code only wires animation scripts for turret
+// weapons; all other weapon slots retain their existing script data.
+int GScr_LoadScriptsAndAnimsForEntities()
+{
+    int result = bg_iNumWeapons;
+    int iWeapon = 0;
+    scr_animscript_t* weapons =
+        reinterpret_cast<scr_animscript_t*>(
+            reinterpret_cast<unsigned char*>(&g_scr_data) + 0x160);
+
+    if (bg_iNumWeapons >= 0)
+    {
+        do
+        {
+            weaponFileInfo_t* info = BG_GetInfoForWeapon(iWeapon);
+            if (info->weapClass == WEAPCLASS_TURRET)
+            {
+                weapons->bro_func = nullptr;
+                weapons->bro_cleanup_func = nullptr;
+                weapons->debug.mBlock = nullptr;
+
+                const char* script = info->szScript;
+                if (*script != 0)
+                {
+                    weapons->bro_func =
+                        BrocHelper::GetBroFuncByName(script, false);
+                    weapons->debug = info->szScript;
+                }
+            }
+
+            result = bg_iNumWeapons;
+            ++iWeapon;
+            ++weapons;
+        } while (iWeapon <= bg_iNumWeapons);
+    }
+
+    return result;
+}
 struct game_hudelem_s;
 void HudElem_SetDefaults(game_hudelem_s* h) { (void)h; }
 void IGO_Update(void* self, float a)

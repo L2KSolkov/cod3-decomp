@@ -3779,7 +3779,7 @@ void    G_InitScrVehicles(void);                    // g.o 0x45E1D0
 // anim.o ?G_InitialParseInteractionInfo@@YAXXZ (stub; port later)
 void G_InitialParseInteractionInfo(void);
 void    G_InitSentients(void);                       // g.o
-void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
+int     GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
 void    GScr_LoadConsts(void);                       // g.o
 void    Scr_PrecacheAnimTrees(void* (*alloc)(void*, unsigned int), int restart);  // g.o
 AnimTree* Scr_GetAnimTreeByName(const char* treename);  // g.o

@@ -2553,12 +2553,13 @@ void __stdcall vector_ctor_iterator_helper(char* t, unsigned int s, int n,
 
 // scr_animscript_t (g.o 0x4ABF00 / 0x4ABF20)
 scr_animscript_t::scr_animscript_t()
+    : bro_func(nullptr), bro_cleanup_func(nullptr),
+      debug((Broc::string::Block*)nullptr)
 {
-    new (data) Broc::string((Broc::string::Block*)nullptr);
 }
 scr_animscript_t::~scr_animscript_t()
 {
-    ((Broc::string*)data)->~string();
+    debug.~string();
 }
 
 // vehSqr (g.o 0x4ABF60)

@@ -175,7 +175,11 @@ static_assert(sizeof(scr_anim_s) == 4, "scr_anim_s size mismatch");
 // scr_animscript_t — animation script data (12 bytes)
 // ============================================================================
 struct scr_animscript_t {
-    uint8_t data[12];  // placeholder — exact layout TBD
+    using BroFunc = unsigned int (*)(void*);
+
+    BroFunc bro_func;          // +0x00
+    BroFunc bro_cleanup_func;  // +0x04
+    Broc::string debug;        // +0x08
 
     scr_animscript_t();   // ??0scr_animscript_t@@QAE@XZ (g.o 0x4ABF00)
     ~scr_animscript_t();  // ??1scr_animscript_t@@QAE@XZ (g.o 0x4ABF20)
