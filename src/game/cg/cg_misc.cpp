@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/core/core_types.h"
 #include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
@@ -6511,13 +6512,18 @@ float Camera::SetNewMode(ECameraModes newMode)
     return mpTweenTime;
 }
 
-// ea: 0x006BE320 (render.o) - DObj::GetMat; skel at +0x70, mat stride 0x40
-const float* DObjGetMat(void* dobj, int boneIndex)  // ?DObjGetMat@@YAPBMPAXH@Z artifact
+// ea: 0x006BE320 (render.o) - DObj::GetMat; the skeleton header stores its
+// first matrix at +0x30 (three 4-byte part-bit masks), not at the DObj base.
+const float* DObjGetMat(void* dobj, int boneIndex)  // ?DObjGetMat@@YAPBMPAXH@Z
 {
-    if (dobj == nullptr)
-        return nullptr;
-    void* skel = *(void**)((char*)dobj + 0x70);
-    return (const float*)((char*)skel + 0x40 * boneIndex);
+    DObj* obj = static_cast<DObj*>(dobj);
+    if (boneIndex < 0 || boneIndex >= obj->numBones)
+    {
+        CG_ASSERT("boneIndex >= 0 && boneIndex < numBones",
+                  "c:\\cod\\code\\game\\DObj.cpp", 2017);
+    }
+    DSkel* skel = reinterpret_cast<DSkel*>(obj->skel);
+    return reinterpret_cast<const float*>(&skel->mat[boneIndex]);
 }
 
 static void MatrixMultiply4x4(const float* a, const float* b, float* out)
