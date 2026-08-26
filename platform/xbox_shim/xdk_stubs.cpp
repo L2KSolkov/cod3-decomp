@@ -1418,7 +1418,8 @@ static bool nullD3DDecodeImage(const void* Source, unsigned int Size,
 
 static nullD3DSurface* nullD3DAllocateSurface(unsigned int Width, unsigned int Height,
                                               unsigned int Usage, unsigned int Format,
-                                              unsigned int Persistent) {
+                                              unsigned int Persistent,
+                                              bool AllocateBacking = true) {
     nullD3DSurface* Surface = (nullD3DSurface*)calloc(1, sizeof(nullD3DSurface));
     if (Surface == NULL)
         return NULL;
@@ -1435,8 +1436,8 @@ static nullD3DSurface* nullD3DAllocateSurface(unsigned int Width, unsigned int H
     Surface->Info.Format = Format;
     Surface->Info.Usage = Usage;
     Surface->Info.Persistent = Persistent;
-    Surface->Info.SizeBytes = (unsigned int)Bytes;
-    Surface->Info.Bits = (unsigned char*)calloc(1, Bytes);
+    Surface->Info.SizeBytes = AllocateBacking ? (unsigned int)Bytes : 0;
+    Surface->Info.Bits = AllocateBacking ? (unsigned char*)calloc(1, Bytes) : NULL;
     Surface->Object.Common = 0;
     Surface->Object.Data = (unsigned int)(uintptr_t)Surface->Info.Bits;
     Surface->Object.Lock = 0;
@@ -2475,7 +2476,7 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsig
     nullD3DSurface* Surface = nullD3DAllocateSurface(
         nullD3DMipDimension(Info->Width, Level),
         nullD3DMipDimension(Info->Height, Level),
-                                                     Info->Usage, Info->Format, 0);
+        Info->Usage, Info->Format, 0, Info->NativeTexture == NULL);
     if (Surface != NULL && Info->NativeTexture != NULL) {
         if (Surface->Info.NativeSurface != NULL) {
             Surface->Info.NativeSurface->Release();
@@ -2483,14 +2484,15 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsig
         }
         if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(Level, &Surface->Info.NativeSurface))) {
             Surface->Info.NativeResource = Surface->Info.NativeSurface;
-            // This temporary wrapper is used for render-target binding.  Its
-            // native surface is authoritative; retaining a second zeroed
-            // CPU image here makes every target switch pay for a full copy.
-            free(Surface->Info.Bits);
-            Surface->Info.Bits = NULL;
-            Surface->Info.SizeBytes = 0;
-            Surface->Object.Data = 0;
-            Surface->Object.Size = 0;
+        } else {
+            // Preserve the CPU-backed fallback if the native level lookup
+            // fails, matching the non-native surface path.
+            const size_t Bytes = (size_t)Surface->Info.Width * Surface->Info.Height *
+                                 nullD3DBytesPerPixel(Surface->Info.Format);
+            Surface->Info.SizeBytes = (unsigned int)Bytes;
+            Surface->Info.Bits = (unsigned char*)calloc(1, Bytes);
+            Surface->Object.Data = (unsigned int)(uintptr_t)Surface->Info.Bits;
+            Surface->Object.Size = (unsigned int)Bytes;
         }
     }
     return (D3DSurface*)Surface;
