@@ -2495,7 +2495,10 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
             NativeParams.Windowed = TRUE;
             NativeParams.EnableAutoDepthStencil = FALSE;
             NativeParams.AutoDepthStencilFormat = COD3_D3D9_FMT_UNKNOWN;
-            NativeParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+            // The Xbox frame loop owns its own vblank pacing.  Let the
+            // Win32 bridge return from Present immediately so D3D9/DWM cannot
+            // stall the game thread while the emulated frame is being built.
+            NativeParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             HRESULT Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_HAL,
                                                   NativeParams.hDeviceWindow,
                                                   D3DCREATE_HARDWARE_VERTEXPROCESSING,
