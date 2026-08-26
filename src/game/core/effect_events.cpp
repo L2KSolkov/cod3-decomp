@@ -872,27 +872,44 @@ static unsigned int RandNext()
     return (holdrand >> 16) & 0x7FFF;
 }
 
-// EffectEventSys free artifacts (core.o surface; stubs)
+// EffectEventSys C-style exports used by cl.o/game.o.  These are ABI bridges
+// to the fully reconstructed singleton methods below; leaving FrameAdvance as
+// a no-op lets pending queries accumulate until BeginEffectQuery hits the
+// release 64-entry saturation assert.
+static EffectEventSys* ResolveEffectEventSys(void* self)
+{
+    return self != nullptr ? static_cast<EffectEventSys*>(self)
+                           : EffectEventSys::sInst;
+}
+
 void EffectEventSys_StopAll(void* self)
 {
-    (void)self;
+    EffectEventSys* sys = ResolveEffectEventSys(self);
+    if (sys != nullptr)
+        sys->StopAll();
 }
 void EffectEventSys_StopEffect(void* self, unsigned int handle, bool kill)
 {
-    (void)self; (void)handle; (void)kill;
+    EffectEventSys* sys = ResolveEffectEventSys(self);
+    if (sys != nullptr)
+        sys->StopEffect(Handle(handle), kill);
 }
 void* EffectEventSys_GetActiveEffectSet(void* self, unsigned int handle)
 {
-    (void)self; (void)handle;
-    return nullptr;
+    EffectEventSys* sys = ResolveEffectEventSys(self);
+    return sys != nullptr ? sys->GetActiveEffectSet(Handle(handle)) : nullptr;
 }
 void EffectEventSys_FrameAdvance(void* self, float delta)
 {
-    (void)self; (void)delta;
+    EffectEventSys* sys = ResolveEffectEventSys(self);
+    if (sys != nullptr)
+        sys->FrameAdvance(delta);
 }
 void EffectEventSys_PlayQueuedEffect(void* self, unsigned int handle)
 {
-    (void)self; (void)handle;
+    EffectEventSys* sys = ResolveEffectEventSys(self);
+    if (sys != nullptr)
+        sys->PlayQueuedEffect(Handle(handle));
 }
 
 // ea: 0x004E7EE0
