@@ -607,7 +607,9 @@ struct refexport_t {
 };
 refexport_t re;  // ?re@@3Urefexport_t@@A (cl.o @ 0x12FC150)
 
-// ServerTime singleton
+// ServerTime singleton. The reference Com_Frame writes the game.o
+// ServerTime::sInst object directly; keep the legacy mirror declaration below
+// for older translation units that still consume that port-local symbol.
 extern struct ServerTime_s {
     unsigned int mNumTicksElapsed;
     int mTickMSec;
@@ -615,6 +617,8 @@ extern struct ServerTime_s {
     float mTickDeltaInv;
     float mElapsedTime;
 } ServerTime_sInst;
+
+extern "C" ServerTime* ServerTime_GetInstance();
 
 // NumBanks (pak loading; IDA local type, size 0x20)
 class NumBanks {
@@ -2254,17 +2258,21 @@ void Com_Frame()
     if (gScreenshotInProgress)
         v7 = 0;
     float screen_time_inc = v7 / 1000.0f;
-    ServerTime_sInst.mNumTicksElapsed++;
-    ServerTime_sInst.mTickMSec = v7;
+    ServerTime* serverTime = ServerTime_GetInstance();
+    serverTime->mNumTicksElapsed++;
+    serverTime->mTickMSec = v7;
     if (v7 <= 1)
-        ServerTime_sInst.mTickMSec = 1;
-    ServerTime_sInst.mTickDeltaInv = 1000.0f / v7;
-    ServerTime_sInst.mTickDelta = v7 / 1000.0f;
-    ServerTime_sInst.mElapsedTime += v7 / 1000.0f;
-    TaskSys_Update(ServerTime_sInst.mTickDelta);
+        serverTime->mTickMSec = 1;
+    serverTime->mTickDeltaInv = 1000.0f / v7;
+    serverTime->mTickDelta = v7 / 1000.0f;
+    serverTime->mElapsedTime += v7 / 1000.0f;
+    // Keep the legacy mirror synchronized for translation units that still
+    // reference the port-local symbol.
+    ServerTime_sInst = *reinterpret_cast<ServerTime_s*>(serverTime);
+    TaskSys_Update(serverTime->mTickDelta);
     CurveManager_Update(CurveManager_sInst, screen_time_inc);
     DynamicDecalMgr_Update(DynamicDecalMgr_sInst, screen_time_inc);
-    SmokeGrenadeMgr_Update(SmokeGrenadeMgr_sInst, ServerTime_sInst.mTickDelta);
+    SmokeGrenadeMgr_Update(SmokeGrenadeMgr_sInst, serverTime->mTickDelta);
     EntityNotifySet_UpdateList();
     update_trigger_notifies();
     subtitle_manager::frame_advance(v7);

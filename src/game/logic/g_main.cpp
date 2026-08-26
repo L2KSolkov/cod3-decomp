@@ -32,6 +32,11 @@ ServerTime* ServerTime::Inst()
 {
     return &sInst;
 }
+
+extern "C" ServerTime* ServerTime_GetInstance()
+{
+    return ServerTime::Inst();
+}
 int ServerTime::GetTickMSec() const
 {
     return mTickMSec;

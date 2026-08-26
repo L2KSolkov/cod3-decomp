@@ -6796,7 +6796,6 @@ extern unsigned int SoundPlay(const Broc::string& name, float volume);
 void AudioPrint(Broc::string s) {
     if (Broc::GetCvarInt("sound_debug") != 0)
         Broc::iprintlnbold(s);
-    s.~string();
 }
 
 void CallbackSetLevelAudio(const char* background_track, const char* reverb,
@@ -6885,9 +6884,6 @@ void audio_spawner(Broc::entity self, Broc::string sound) {
         Broc::vector facing(0.0f, 0.0f, 0.0f);
         Broc::EffectEventPlay(sound, pos, facing);
         players.~dyn_array();
-        sound.~string();
-    } else {
-        sound.~string();
     }
 }
 
@@ -6929,7 +6925,6 @@ void ambient_system(Broc::entity lvl, Broc::string spawn_package) {
             __debugbreak();
         mp_util_wad::pLevel->audio_current_ambient_wait = 5.0f;
     }
-    spawn_package.~string();
 }
 
 // ambient_chatter_system - ea: 0x936390
@@ -7045,7 +7040,6 @@ void PlayerLocation(Broc::entity self) {
                 } else {
                     Broc::string name("Preset_Noreverb");
                     Broc::ReverbSetParams(name, false);
-                    name.~string();
                     if (Broc::gBrocAPI.mWarning(
                             "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
                             "_mp_audio.bro Missing reverb in trigger. setting to Preset_Noreverb."))
