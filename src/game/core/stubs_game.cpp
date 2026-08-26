@@ -1,17 +1,7 @@
-// AUTO-GENERATED STUBS — Game core systems (core.o + CallFunctor.o)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
-
-#include <stdio.h>
+// Game-core compatibility translation unit. Implementations live in the
+// owning core sources.
 
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
-
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_game_core(void) {
-    COD3_UNIMPLEMENTED("game_core");
-}
 
 // Singleton CreateInst/DeleteInst stubs (real symbols are static members in
 // core.o: ?CreateInst@<Class>@@SAXXZ / ?DeleteInst@<Class>@@SAXXZ). Ported

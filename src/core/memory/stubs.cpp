@@ -1,12 +1,2 @@
-// AUTO-GENERATED STUBS — Memory allocators (mem_mp_xboxr)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
-
-#include <stdio.h>
-
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_core_memory(void) {
-    COD3_UNIMPLEMENTED("core_memory");
-}
+// Memory compatibility translation unit. Implementations live in the owning
+// allocator sources.

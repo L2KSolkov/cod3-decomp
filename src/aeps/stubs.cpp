@@ -1,25 +1,17 @@
-// AUTO-GENERATED STUBS — Particle/effects system (aeps_xboxr)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
+// Particle/effects compatibility translation unit. Implementations live in
+// the owning APS sources.
 
 #include <stdio.h>
 
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_aeps(void) {
-    COD3_UNIMPLEMENTED("aeps");
-}
-
-// apsShrimpRenderer virtuals (apsShrimpRenderer.o; stubs, port later)
+// apsShrimpRenderer virtuals.
 #include "apsShrimpRenderer.h"
-// apsRenderNode / apsSimpleMeshRenderer / apsBounds / apsClient (stubs)
+// apsRenderNode / apsSimpleMeshRenderer / apsBounds / apsClient.
 #include "apsRenderNode.h"
 #include "apsGroup.h"
 #include "apsSimpleMeshRenderer.h"
 #include "apsInternal.h"
 apsClient::~apsClient() {}
 
-// apsEffect / apsCommon free artifacts (render.o; stubs, port later)
+// apsEffect / apsCommon free artifacts.
 #include "apsEffect.h"
 #include "apsCommon.h"

@@ -443,6 +443,12 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
 // ============================================================================
 struct XModelCollTri;
 
+struct XModelCollTri {
+    math::Vector4 plane;  // xyz normal, w plane distance
+    math::Vector4 svec;   // barycentric s coordinate
+    math::Vector4 tvec;   // barycentric t coordinate
+};
+
 struct XModelCollSurf {
     math::Position3 mins;   // +0x00
     math::Position3 maxs;   // +0x10
@@ -460,6 +466,163 @@ struct XModelCollisionView {
 };
 static_assert(offsetof(XModelCollisionView, collSurfs) == 0x38,
               "XModel collision layout mismatch");
+
+// ea: 0x006CB470
+int XModelTraceLine(IVPointer<XModel> model, trace_t* results,
+                    DObjSkelMat* boneMtxList, const float* localStart,
+                    const float* localEnd, int contentmask)
+{
+    ValidatePakId((TPakId)model.mPakId);
+
+    int lodIndex = 0;
+    while (model.mValue->lod[lodIndex] == nullptr)
+        ++lodIndex;
+
+    int numBones = 0;
+    if (model.mValue->lod[lodIndex]->xmodelParts != nullptr)
+        numBones = model.mValue->lod[lodIndex]->xmodelParts->mHierarchy.mSize;
+
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue->collSurfs.mSize == 0)
+        return -1;
+
+    int hitBone = -1;
+    int cachedBone = -1;
+    float startLocal[3] = {};
+    float endLocal[3] = {};
+    float delta[3] = {};
+    float endDelta[3] = {};
+
+    const auto transformToBone = [&](const float* point, float* out) {
+        const DObjSkelMat& bone = boneMtxList[cachedBone];
+        const float dx = point[0] - bone.origin[0];
+        const float dy = point[1] - bone.origin[1];
+        const float dz = point[2] - bone.origin[2];
+        out[0] = bone.axis[0][0] * dx + bone.axis[0][1] * dy
+               + bone.axis[0][2] * dz;
+        out[1] = bone.axis[1][0] * dx + bone.axis[1][1] * dy
+               + bone.axis[1][2] * dz;
+        out[2] = bone.axis[2][0] * dx + bone.axis[2][1] * dy
+               + bone.axis[2][2] * dz;
+    };
+
+    const InplaceVector<XModelCollSurf const*>& surfaces =
+        model.mValue->collSurfs;
+    for (unsigned int surfaceIndex = 0;
+         surfaceIndex < surfaces.mSize; ++surfaceIndex)
+    {
+        ValidatePakId((TPakId)model.mPakId);
+        const XModelCollSurf* surface = surfaces.mList[surfaceIndex];
+        if ((contentmask & surface->contents) == 0)
+            continue;
+
+        const int boneIndex = surface->boneIdx;
+        if (boneIndex < 0 || boneIndex >= numBones)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
+            AeAssert::gCurrentLine = 715;
+            AeAssert::gCurrentExpr =
+                "csurf->boneIdx >= 0 && csurf->boneIdx < numBones";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+
+        if (cachedBone != boneIndex)
+        {
+            cachedBone = boneIndex;
+            transformToBone(localStart, startLocal);
+            transformToBone(localEnd, endLocal);
+            delta[0] = endLocal[0] - startLocal[0];
+            delta[1] = endLocal[1] - startLocal[1];
+            delta[2] = endLocal[2] - startLocal[2];
+        }
+
+        math::Position3 traceStart;
+        math::Position3 traceEnd;
+        traceStart.v = _mm_setr_ps(startLocal[0], startLocal[1], startLocal[2],
+                                   0.0f);
+        traceEnd.v = _mm_setr_ps(endLocal[0], endLocal[1], endLocal[2], 0.0f);
+        if (CM_TraceBox(traceStart, traceEnd, surface->mins, surface->maxs,
+                        results->fraction) != 0)
+            continue;
+
+        for (unsigned int triIndex = 0; triIndex < surface->collTris.mSize;
+             ++triIndex)
+        {
+            const XModelCollTri* tri = surface->collTris.mList[triIndex];
+            const float* plane = tri->plane.v.m128_f32;
+            const float startDistance = plane[0] * startLocal[0]
+                                      + plane[1] * startLocal[1]
+                                      + plane[2] * startLocal[2] - plane[3];
+            const float endDistance = plane[0] * endLocal[0]
+                                    + plane[1] * endLocal[1]
+                                    + plane[2] * endLocal[2] - plane[3];
+            if (endDistance >= 0.0f || startDistance <= 0.0f)
+                continue;
+
+            const float hitFraction =
+                (startDistance - 0.125f) / (startDistance - endDistance);
+            if (hitFraction >= results->fraction)
+                continue;
+
+            const float lineFraction =
+                startDistance / (startDistance - endDistance);
+            const float hit[3] = {
+                startLocal[0] + lineFraction * delta[0],
+                startLocal[1] + lineFraction * delta[1],
+                startLocal[2] + lineFraction * delta[2]};
+            const float* svec = tri->svec.v.m128_f32;
+            const float* tvec = tri->tvec.v.m128_f32;
+            const float s = svec[0] * hit[0] + svec[1] * hit[1]
+                          + svec[2] * hit[2] - svec[3];
+            if (s < -0.005f || s > 1.005f)
+                continue;
+            const float t = tvec[0] * hit[0] + tvec[1] * hit[1]
+                          + tvec[2] * hit[2] - tvec[3];
+            if (t < -0.005f || s + t > 1.005f)
+                continue;
+
+            hitBone = boneIndex;
+            results->startsolid = 0;
+            results->allsolid = 0;
+            results->fraction = hitFraction;
+            results->surfaceFlags = surface->surfFlags;
+            results->contents = surface->contents;
+            results->normal.v.m128_f32[0] = plane[0];
+            results->normal.v.m128_f32[1] = plane[1];
+            results->normal.v.m128_f32[2] = plane[2];
+        }
+    }
+
+    if (hitBone < 0)
+        return -1;
+
+    const DObjSkelMat& bone = boneMtxList[hitBone];
+    const float nx = results->normal.v.m128_f32[0];
+    const float ny = results->normal.v.m128_f32[1];
+    const float nz = results->normal.v.m128_f32[2];
+    const float worldNormal[3] = {
+        bone.axis[0][0] * nx + bone.axis[1][0] * ny + bone.axis[2][0] * nz,
+        bone.axis[0][1] * nx + bone.axis[1][1] * ny + bone.axis[2][1] * nz,
+        bone.axis[0][2] * nx + bone.axis[1][2] * ny + bone.axis[2][2] * nz};
+    if (fabsf(sqrtf(worldNormal[0] * worldNormal[0]
+                    + worldNormal[1] * worldNormal[1]
+                    + worldNormal[2] * worldNormal[2]) - 1.0f) >= 0.01f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
+        AeAssert::gCurrentLine = 787;
+        AeAssert::gCurrentExpr =
+            "fabsf( ((vec_t)sqrtf(((normal)[0]*(normal)[0] + (normal)[1]*(normal)[1] + (normal)[2]*(normal)[2]))) - 1.0f ) < 0.01";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    results->normal.v.m128_f32[0] = worldNormal[0];
+    results->normal.v.m128_f32[1] = worldNormal[1];
+    results->normal.v.m128_f32[2] = worldNormal[2];
+    return hitBone;
+}
 
 int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
                           math::Position3& mins, math::Position3& maxs,

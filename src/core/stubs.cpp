@@ -1,12 +1,2 @@
-// AUTO-GENERATED STUBS — Core utility library (core_xboxr + tl_xboxr + cdl_xboxr)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
-
-#include <stdio.h>
-
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_core_util(void) {
-    COD3_UNIMPLEMENTED("core_util");
-}
+// Core compatibility translation unit. Implementations live in the owning
+// TL/CDL/core sources.

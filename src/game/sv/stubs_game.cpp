@@ -1,12 +1,2 @@
-// AUTO-GENERATED STUBS — Server engine (sv.o)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
-
-#include <stdio.h>
-
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_game_sv(void) {
-    COD3_UNIMPLEMENTED("game_sv");
-}
+// Server-engine compatibility translation unit. Implementations live in the
+// owning server sources.

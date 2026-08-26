@@ -1,12 +1,2 @@
-// AUTO-GENERATED STUBS — Video decoding library (nvl_xboxr)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
-
-#include <stdio.h>
-
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_nvl(void) {
-    COD3_UNIMPLEMENTED("nvl");
-}
+// Video compatibility translation unit. Implementations live in the owning
+// NVL sources and Win32 video shim.

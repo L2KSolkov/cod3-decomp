@@ -1,19 +1,11 @@
-// AUTO-GENERATED STUBS — Physics engine (phys_xboxr)
-// 0 non-inline functions to port
-// When ported, functions move from here to their real .cpp files.
+// Physics compatibility translation unit. Implementations live in the owning
+// physics sources.
 
 #include <stdio.h>
 #include <math.h>
 #include <intrin.h>
 
-#define COD3_UNIMPLEMENTED(lib) \
-    fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
-
-void __cod3_stub_physics(void) {
-    COD3_UNIMPLEMENTED("physics");
-}
-
-// pulse_sum solver stubs (phys_constraint_solver_multithreaded.o; port later)
+// pulse_sum solver implementations (phys_constraint_solver_multithreaded.o).
 #include "physics/pulse_sum.h"
 
 void pulse_sum_angular::setup_vel_uni_standard(
