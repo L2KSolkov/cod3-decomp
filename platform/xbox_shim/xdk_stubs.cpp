@@ -256,6 +256,10 @@ static COD3_D3D9_PRIMITIVETYPE nullD3DPrimitiveType(_D3DPRIMITIVETYPE Type) {
     }
 }
 
+static bool nullD3DIsQuadList(_D3DPRIMITIVETYPE Type) {
+    return static_cast<unsigned int>(Type) == 8u;
+}
+
 static DWORD nullD3DStencilOp(unsigned int Value) {
     // Xbox D3DSTENCILOP uses NV2A method tokens; D3D9 uses 1..8.
     switch (Value) {
@@ -279,6 +283,7 @@ static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int V
     case 5u: return VertexCount / 3;
     case 6u:
     case 7u: return VertexCount > 2 ? VertexCount - 2 : 0;
+    case 8u: return VertexCount / 4;
     default: return 0;
     }
 }
@@ -1722,7 +1727,9 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
         nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL || IndexData == NULL)
         return;
-    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    const bool QuadList = nullD3DIsQuadList(PrimitiveType);
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive =
+        QuadList ? COD3_D3D9_PT_TRIANGLEFAN : nullD3DPrimitiveType(PrimitiveType);
     unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
@@ -1737,17 +1744,32 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
     if (Info == NULL || NativeIndex == NULL) {
         if (gD3D9VertexData[0] == NULL || gD3D9VertexStrides[0] == 0)
             return;
-        unsigned int MaxIndex = 0;
-        for (unsigned int i = 0; i < VertexCount; ++i) {
-            if (IndexData[i] > MaxIndex)
-                MaxIndex = IndexData[i];
-        }
         nullD3DSetShaderMatrixTransform();
         gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
         const void* VertexData = gD3D9VertexData[0] + gD3D9VertexOffsets[0];
-        gD3D9Device->DrawIndexedPrimitiveUP(
-            NativePrimitive, 0, MaxIndex + 1, PrimitiveCount, IndexData,
-            COD3_D3D9_FMT_INDEX16, VertexData, gD3D9VertexStrides[0]);
+        if (!QuadList) {
+            unsigned int MaxIndex = 0;
+            for (unsigned int i = 0; i < VertexCount; ++i) {
+                if (IndexData[i] > MaxIndex)
+                    MaxIndex = IndexData[i];
+            }
+            gD3D9Device->DrawIndexedPrimitiveUP(
+                NativePrimitive, 0, MaxIndex + 1, PrimitiveCount, IndexData,
+                COD3_D3D9_FMT_INDEX16, VertexData, gD3D9VertexStrides[0]);
+        } else {
+            for (unsigned int quad = 0; quad < PrimitiveCount; ++quad) {
+                const unsigned short* QuadIndices = IndexData + quad * 4;
+                unsigned int MaxIndex = 0;
+                for (unsigned int i = 0; i < 4; ++i) {
+                    if (QuadIndices[i] > MaxIndex)
+                        MaxIndex = QuadIndices[i];
+                }
+                gD3D9Device->DrawIndexedPrimitiveUP(
+                    COD3_D3D9_PT_TRIANGLEFAN, 0, MaxIndex + 1, 2,
+                    QuadIndices, COD3_D3D9_FMT_INDEX16, VertexData,
+                    gD3D9VertexStrides[0]);
+            }
+        }
         return;
     }
     unsigned int StartIndex = 0;
@@ -1767,9 +1789,18 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
         NumVertices = (gD3D9VertexInfos[0]->SizeBytes - gD3D9VertexOffsets[0]) /
                       gD3D9VertexStrides[0];
     }
-    if (NumVertices != 0)
-        gD3D9Device->DrawIndexedPrimitive(NativePrimitive, 0, 0, NumVertices,
-                                          StartIndex, PrimitiveCount);
+    if (NumVertices != 0) {
+        if (!QuadList) {
+            gD3D9Device->DrawIndexedPrimitive(NativePrimitive, 0, 0, NumVertices,
+                                              StartIndex, PrimitiveCount);
+        } else {
+            for (unsigned int quad = 0; quad < PrimitiveCount; ++quad) {
+                gD3D9Device->DrawIndexedPrimitive(
+                    COD3_D3D9_PT_TRIANGLEFAN, 0, 0, NumVertices,
+                    StartIndex + quad * 4, 2);
+            }
+        }
+    }
 }
 void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
                                        unsigned int StartVertex,
@@ -1778,7 +1809,9 @@ void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
         nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL)
         return;
-    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    const bool QuadList = nullD3DIsQuadList(PrimitiveType);
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive =
+        QuadList ? COD3_D3D9_PT_TRIANGLEFAN : nullD3DPrimitiveType(PrimitiveType);
     unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
@@ -1790,14 +1823,30 @@ void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
         const unsigned char* VertexData =
             gD3D9VertexData[0] + gD3D9VertexOffsets[0] +
             StartVertex * gD3D9VertexStrides[0];
-        gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount,
-                                      VertexData, gD3D9VertexStrides[0]);
+        if (!QuadList) {
+            gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount,
+                                          VertexData, gD3D9VertexStrides[0]);
+        } else {
+            for (unsigned int quad = 0; quad < PrimitiveCount; ++quad) {
+                const unsigned char* QuadData =
+                    VertexData + quad * 4 * gD3D9VertexStrides[0];
+                gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                              QuadData, gD3D9VertexStrides[0]);
+            }
+        }
         return;
     }
     nullD3DSyncVertexBuffer(gD3D9VertexBuffers[0], gD3D9VertexInfos[0]);
     gD3D9Device->SetStreamSource(0, gD3D9VertexBuffers[0],
                                  gD3D9VertexOffsets[0], gD3D9VertexStrides[0]);
-    gD3D9Device->DrawPrimitive(NativePrimitive, StartVertex, PrimitiveCount);
+    if (!QuadList) {
+        gD3D9Device->DrawPrimitive(NativePrimitive, StartVertex, PrimitiveCount);
+    } else {
+        for (unsigned int quad = 0; quad < PrimitiveCount; ++quad) {
+            gD3D9Device->DrawPrimitive(COD3_D3D9_PT_TRIANGLEFAN,
+                                       StartVertex + quad * 4, 2);
+        }
+    }
 }
 void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
                                          unsigned int VertexCount,
@@ -1807,13 +1856,24 @@ void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
         nullD3DBuildVertexDeclaration(&gD3D9SelectedVertexFormat);
     if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL || VertexData == NULL)
         return;
-    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    const bool QuadList = nullD3DIsQuadList(PrimitiveType);
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive =
+        QuadList ? COD3_D3D9_PT_TRIANGLEFAN : nullD3DPrimitiveType(PrimitiveType);
     unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
     if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
         return;
     nullD3DSetShaderMatrixTransform();
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
-    gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
+    if (!QuadList) {
+        gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
+    } else {
+        for (unsigned int quad = 0; quad < PrimitiveCount; ++quad) {
+            const unsigned char* QuadData =
+                static_cast<const unsigned char*>(VertexData) + quad * 4 * VertexStride;
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLEFAN, 2,
+                                         QuadData, VertexStride);
+        }
+    }
 }
 static void nullD3DSetScreenSpaceTransform() {
     if (gD3D9Device == NULL || gNullWidth == 0 || gNullHeight == 0)
