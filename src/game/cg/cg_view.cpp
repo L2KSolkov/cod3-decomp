@@ -2658,6 +2658,108 @@ static float Atan2Approx(float y, float x)
     return result;
 }
 
+// ea: 0x0068D680 (release cg.o)
+int CG_CalcCubemapViewValues()
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    Client* client = player->client;
+    const int base = 1580 * currCl;
+    const float cubemapSize = (float)cgGlobal.cubemapSize;
+    const float cubemapSizePlusTwo = cubemapSize + 2.0f;
+
+    dword_F63C50[base] = 0.0f;
+    dword_F63C54[base] = 0.0f;
+    dword_F63C58[base] = cubemapSizePlusTwo;
+    dword_F63C5C[base] = cubemapSizePlusTwo;
+
+    const float fovRadians =
+        Atan2Approx(cubemapSizePlusTwo, cubemapSize);
+    dword_F63C60[base] =
+        (int)(fovRadians * 114.5915590261646f);
+    dword_F63C64[base] = dword_F63C60[base];
+
+    const char* ps = reinterpret_cast<const char*>(&client->ps);
+    dword_F63C70[base] = *reinterpret_cast<const float*>(ps + 0x00);
+    dword_F63C74[base] = *reinterpret_cast<const float*>(ps + 0x04);
+    dword_F63C78[base] =
+        *reinterpret_cast<const float*>(ps + 0x08)
+        + *reinterpret_cast<const float*>(ps + 0xE0);
+
+    const int face = cgGlobal.cubemapShot - 1;
+    switch (face)
+    {
+    case 0:
+        dword_F63C80[base] = 0.0f;
+        dword_F63C84[base] = 0.0f;
+        dword_F63C88[base] = 1.0f;
+        dword_F63C8C[base] = 0.0f;
+        dword_F63C90[base] = 1.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = -1.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 0.0f;
+        break;
+    case 1:
+        dword_F63C80[base] = 0.0f;
+        dword_F63C84[base] = 0.0f;
+        dword_F63C88[base] = -1.0f;
+        dword_F63C8C[base] = 0.0f;
+        dword_F63C90[base] = 1.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = 1.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 0.0f;
+        break;
+    case 2:
+        dword_F63C80[base] = -1.0f;
+        dword_F63C84[base] = 0.0f;
+        dword_F63C88[base] = 0.0f;
+        dword_F63C8C[base] = 0.0f;
+        dword_F63C90[base] = -1.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = 0.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 1.0f;
+        break;
+    case 3:
+        dword_F63C80[base] = 1.0f;
+        dword_F63C84[base] = 0.0f;
+        dword_F63C88[base] = 0.0f;
+        dword_F63C8C[base] = 0.0f;
+        dword_F63C90[base] = 1.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = 0.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 1.0f;
+        break;
+    case 4:
+        dword_F63C80[base] = 0.0f;
+        dword_F63C84[base] = -1.0f;
+        dword_F63C88[base] = 0.0f;
+        dword_F63C8C[base] = 1.0f;
+        dword_F63C90[base] = 0.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = 0.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 1.0f;
+        break;
+    case 5:
+        dword_F63C80[base] = 0.0f;
+        dword_F63C84[base] = 1.0f;
+        dword_F63C88[base] = 0.0f;
+        dword_F63C8C[base] = -1.0f;
+        dword_F63C90[base] = 0.0f;
+        dword_F63C94[base] = 0.0f;
+        dword_F63C98[base] = 0.0f;
+        dword_F63C9C[base] = 0.0f;
+        dword_F63CA0[base] = 1.0f;
+        break;
+    default:
+        break;
+    }
+    return face;
+}
+
 // ea: 0x006A44D0
 int CG_CalcFov()
 {
@@ -2763,7 +2865,7 @@ extern int G_DObjSetLocalTag(Entity* ent, int* const partBits,
                              const float* const trans, const float* const angles,
                              bool relative);
 extern float flrand(float min, float max);
-extern void CG_CalcCubemapViewValues();
+extern int CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const View_Window* window);
 extern void Camera_Update(void* self);
 extern vmCvar_t bg_viewheight_prone;

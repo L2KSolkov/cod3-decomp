@@ -454,7 +454,7 @@ extern int CG_PredictPlayerState_Internal();  // defined in cg_view.cpp
 struct shellshock_parms_t;
 extern void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
                                 int duration);
-extern void CG_CalcCubemapViewValues();
+extern int CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const View_Window* window);
 extern int CG_CalcFov();
 extern void CG_ShakeCamera(int client);
