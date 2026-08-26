@@ -3130,7 +3130,7 @@ void DrawCompassFriendlies(bool inBool)
 // ea: 0x005BCEC0
 void SetMaxVehicles(int vehicles)
 {
-    Broc::gBrocAPI.mSetMaxVehicles(vehicles);
+    vehicle_InitDynamicBuffers(vehicles);
 }
 
 // ea: 0x005BCED0 (empty stub)
@@ -9769,11 +9769,11 @@ void SetVal(float s, float e);         // ?SetVal@FogConfig@@YAXMM@Z
 // PakInfoNode layout subset for level audio/fog (verified vs disasm 5C20D0)
 struct PakInfoNodeLocal {
     unsigned char _pad0[0x38];
-    char*  audioBackgroundTrack;   // +0x38 (InplaceString.mStr)
-    char*  audioReverbSetting;     // +0x3C
-    char*  audioAmbientSetting;    // +0x40
-    int    audioAmbientMin;        // +0x44
-    int    audioAmbientMax;        // +0x48
+    char*  audioAmbientSetting;    // +0x38 (InplaceString.mStr)
+    unsigned int audioAmbientMax;  // +0x3C
+    unsigned int audioAmbientMin;  // +0x40
+    char*  audioBackgroundTrack;   // +0x44 (InplaceString.mStr)
+    char*  audioReverbSetting;     // +0x48 (InplaceString.mStr)
     float  cullFog[6];             // +0x4C
     float  fog[2];                 // +0x64
     float  zfar;                   // +0x6C
