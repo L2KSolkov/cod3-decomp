@@ -1329,7 +1329,9 @@ void ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity)
     origin[52] = v4->r.currentAngles.v.m128_f32[0];
     origin[53] = v4->r.currentAngles.v.m128_f32[1];
     origin[54] = v4->r.currentAngles.v.m128_f32[2];
-    origin[9] = 5;
+    // pm_type is the integer immediately following the origin/velocity vectors;
+    // writing it through the float origin alias stores 5.0f (0x40A00000).
+    mObject->client->ps.pm_type = 5;
 }
 
 // ea: 0x00449F60

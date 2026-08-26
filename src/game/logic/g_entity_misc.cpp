@@ -3237,7 +3237,55 @@ int GScr_LoadScriptsAndAnimsForEntities()
     return result;
 }
 struct game_hudelem_s;
-void HudElem_SetDefaults(game_hudelem_s* h) { (void)h; }
+void HudElem_SetDefaults(game_hudelem_s* hud)
+{
+    if (hud == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_hudelem.cpp";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "hud";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return;
+    }
+    if (hud < g_hudelems || hud >= g_hudelems + 16)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_hudelem.cpp";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr =
+            "hud - g_hudelems >= 0 && hud - g_hudelems < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return;
+    }
+
+    hud->elem.fontScale = 1.0f;
+    hud->elem.x = 0;
+    hud->elem.y = 0;
+    hud->elem.font = 0;
+    hud->elem.alignX = 0;
+    hud->elem.alignY = 0;
+    memset(hud->elem.fromColor, 0, sizeof(hud->elem.fromColor));
+    hud->elem.fadeStartTime = 0;
+    hud->elem.fadeTime = 0;
+    hud->elem.label = 0;
+    hud->elem.width = 0;
+    hud->elem.height = 0;
+    hud->elem.mTexture = nullptr;
+    hud->elem.fromWidth = 0;
+    hud->elem.fromHeight = 0;
+    hud->elem.scaleStartTime = 0;
+    hud->elem.scaleTime = 0;
+    hud->elem.time = 0;
+    hud->elem.duration = 0;
+    hud->elem.value = 0.0f;
+    hud->elem.text = 0;
+    hud->elem.type = HE_TYPE_TEXT;
+    memset(hud->elem.color, 0xFF, sizeof(hud->elem.color));
+    hud->elem.sort = 0.0f;
+}
 void IGO_Update(void* self, float a)
 {
     IGOFrontEnd_UpdateBridge(self, a);
