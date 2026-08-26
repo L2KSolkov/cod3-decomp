@@ -604,6 +604,7 @@ extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void MatrixMultiply(const float (*const in1)[3],
                              const float (*const in2)[3],
                            float (*const out)[3]);
+extern int dword_F64174[4 * 1580];
 extern int dword_F64178[4 * 1580];
 extern int dword_F6417C[4 * 1580];
 extern float dword_F63550[4 * 1580];
@@ -655,10 +656,10 @@ int CG_UpdateCameraShake(void* shake, int client)
 }
 extern void CG_EndShellShock(const void* parms, int time);
 extern void CG_UpdateShellShockSound(const void* parms);
-extern void CG_UpdateShellShockMouse(const void* parms, int time, int duration);
 extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
+extern void CL_CapTurnRate(float maxPitchSpeed, float maxYawSpeed);
 extern const float LerpAngle(float from, float to, float frac);
 
 // ea: 0x006970B0
@@ -752,6 +753,56 @@ struct shellshock_parms_t {
         float sensitivity;
     } mouse;  // +0x68
 };
+
+// ea: 0x0068C3E0 (release cg.o)
+void CG_UpdateShellShockMouse(const shellshock_parms_t* parms, int time,
+                              int duration)
+{
+    if (parms == nullptr)
+        CG_ASSERT("parms", "c:\\cod\\code\\game\\cg_shellshock.cpp", 694);
+    if (time < 0)
+        CG_ASSERT("time >= 0", "c:\\cod\\code\\game\\cg_shellshock.cpp", 695);
+    if (duration < 0)
+        CG_ASSERT("duration >= 0", "c:\\cod\\code\\game\\cg_shellshock.cpp", 696);
+
+    if (parms->mouse.use == 0)
+    {
+        *(float*)&dword_F64174[1580 * currCl] = 1.0f;
+        CL_CapTurnRate(0.0f, 0.0f);
+        return;
+    }
+
+    const int fadeTime = parms->mouse.fadeTime;
+    const int remaining = duration - time;
+    if (remaining >= fadeTime)
+    {
+        *(float*)&dword_F64174[1580 * currCl] = parms->mouse.sensitivity;
+        CL_CapTurnRate(parms->mouse.maxPitchSpeed,
+                       parms->mouse.maxYawSpeed);
+        return;
+    }
+
+    if (remaining > 0)
+    {
+        const float fraction = (float)remaining / (float)fadeTime;
+        if (fraction == 1.0f)
+        {
+            *(float*)&dword_F64174[1580 * currCl] =
+                parms->mouse.sensitivity;
+            CL_CapTurnRate(parms->mouse.maxPitchSpeed,
+                           parms->mouse.maxYawSpeed);
+            return;
+        }
+        *(float*)&dword_F64174[1580 * currCl] =
+            ((parms->mouse.sensitivity - 1.0f) * fraction) + 1.0f;
+        CL_CapTurnRate(parms->mouse.maxPitchSpeed / fraction,
+                       parms->mouse.maxYawSpeed / fraction);
+        return;
+    }
+
+    *(float*)&dword_F64174[1580 * currCl] = 1.0f;
+    CL_CapTurnRate(0.0f, 0.0f);
+}
 
 // ea: 0x0068BE90
 void CG_PerturbCamera()

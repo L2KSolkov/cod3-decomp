@@ -46,9 +46,5 @@ void CG_UpdateShellShockCamera(const void* a, int b, int c)
 {
     (void)a; (void)b; (void)c;
 }
-void CG_UpdateShellShockMouse(const void* a, int b, int c)
-{
-    (void)a; (void)b; (void)c;
-}
 void CG_UpdateShellShockSound(const void* a) { (void)a; }
 void CG_UpdateViewModelPosAndOrientation(void* a) { (void)a; }
