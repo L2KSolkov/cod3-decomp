@@ -7,6 +7,7 @@
 #include "game/game_types.h"
 #include "core/tlFixedString.h"
 #include "ngl/nglTexture.h"
+#include "game/nextgen/nextgen.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -15,6 +16,12 @@
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
+
+// Script/inspector-facing wrapper for the release CG_MotionBlur::Begin path.
+void CG_MotionBlur_Begin(float level, float plateauTime, float fadeTime)
+{
+    CG_MotionBlur::Begin(level, plateauTime, fadeTime);
+}
 
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
