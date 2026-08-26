@@ -66,6 +66,8 @@ extern void CG_ParseFog();
 extern void CG_ParseObjectiveChange(int iNum);
 extern void CG_CloseScriptMenu();
 extern void CG_RegisterServerShader(int num);
+extern const char* CG_ConfigString(unsigned int index);
+extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
 extern void CG_RegisterWeapon(int weaponNum);
 extern void CG_FreeWeapons();
 extern void CG_ConfigStringModifiedInternal(int num);
@@ -387,6 +389,16 @@ void CG_RegisterServerShaders()
 {
     for (int i = 725; i < 980; ++i)
         CG_RegisterServerShader(i);
+}
+
+// ea: 0x0068A3A0
+void CG_RegisterServerShader(int num)
+{
+    if (num < 724 || num >= 980)
+        return;
+    const char* shader = CG_ConfigString(static_cast<unsigned int>(num));
+    if (shader != nullptr && shader[0] != '\0')
+        trap_R_RegisterShaderNoMip(shader, 5);
 }
 
 // ea: 0x0068BBD0

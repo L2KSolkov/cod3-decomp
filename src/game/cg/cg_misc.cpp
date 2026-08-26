@@ -4129,11 +4129,10 @@ extern nglTexture* GetTextureData(const char* name, int image_type,
 extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Set(const char* var_name, const char* value);
-// trap_R_RegisterShaderNoMip artifact (cg.o; shader registry stub)
+// ea: 0x006C2F80
 int trap_R_RegisterShaderNoMip(const char* name, int imagetype)
 {
-    (void)name; (void)imagetype;
-    return 0;
+    return re.RegisterShaderNoMip(name, imagetype);
 }
 // IDA's off_DF9208 points at the default field of this 170-row table.
 extern vmCvar_t fs_debug_vm;
