@@ -605,7 +605,7 @@ static bool PsCombinerTextureModesSupported(const PixelShaderDefLayout* layout) 
         // completely described by _D3DPixelShaderDef: none, projective 2D,
         // and passthrough.  Cube/3D/bump modes need texture-object metadata
         // that this Xbox API call does not carry.
-        if (mode != 0u && mode != 1u && mode != 4u)
+        if (mode != 0u && mode != 1u && mode != 4u && mode != 5u)
             return false;
     }
     return true;
@@ -704,8 +704,20 @@ static std::string BuildNV2ACombinerHlsl(const PixelShaderDefLayout* layout) {
             source << "  float4 t" << i << "=tex2D(s" << i
                    << ", input.t" << i << ".xy / max(abs(input.t" << i
                    << ".w), 1e-20));\n";
-        else
+        else if (mode == 4u)
             source << "  float4 t" << i << "=input.t" << i << ";\n";
+        else {
+            // NV2A CLIPPLANE discards when each component crosses the
+            // compare-mode-selected half-space, then exposes a zero tN.
+            for (unsigned int component = 0; component < 4; ++component) {
+                const bool CompareGreaterEqual =
+                    ((layout->PSCompareMode >> (i * 4u + component)) & 1u) != 0;
+                source << "  if (input.t" << i << "." << "xyzw"[component]
+                       << (CompareGreaterEqual ? " >= 0.0" : " < 0.0")
+                       << ") discard;\n";
+            }
+            source << "  float4 t" << i << "=float4(0,0,0,0);\n";
+        }
     }
     // xemu's pixel preflight initializes the mux source before any combiner
     // stage: active stage 0 uses t0.a, while an unused stage starts at one.
