@@ -2984,7 +2984,22 @@ struct nglTexture;
 extern nglTexture* nglGetFrontBufferTex();
 extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
 extern void nglListAddQuad(nglQuad* quad);
-extern void CG_PerturbationPoint(const float* prev, float* out, float mindist);
+// ea: 0x00698250 (release cg.o)
+void CG_PerturbationPoint(const float* prev, float* out, float mindist)
+{
+    const float mindistSquared = mindist * mindist;
+    float distanceSquared;
+    do
+    {
+        const float radians =
+            ((float)rand() * 0.000061035156f - 1.0f) * 3.1415927f;
+        const float scale = (float)rand() * 0.000030517578f;
+        out[0] = cosf(radians) * scale;
+        out[1] = sinf(radians) * scale;
+        distanceSquared = (prev[0] - out[0]) * (prev[0] - out[0])
+                          + (prev[1] - out[1]) * (prev[1] - out[1]);
+    } while (mindistSquared > distanceSquared);
+}
 extern double VectorNormalize2(const float* const v,
                                     float* const out);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);

@@ -52,10 +52,6 @@ void CG_mg42(Entity* e) { (void)e; }
 void CG_MotionBlur_Begin(float a, float b, float c) { (void)a; (void)b; (void)c; }
 void CG_OffsetFirstPersonView() {}
 void CG_OffsetThirdPersonView() {}
-void CG_PerturbationPoint(const float* a, float* b, float c)
-{
-    (void)a; (void)b; (void)c;
-}
 void CG_UpdateShellShockCamera(const void* a, int b, int c)
 {
     (void)a; (void)b; (void)c;
