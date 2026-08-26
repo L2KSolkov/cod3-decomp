@@ -2012,6 +2012,20 @@ struct ae_heap_wrapper {
     mem_heap* mHeap;   // +0x04
     bool CheckFree(void* ptr);  // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z
 };
+// gBrocHeap is the embedded-heap object created by BrocSys::Init.  The
+// reference calls its virtual CheckFree slot (vtable + 0x0C); treating +0x04
+// as a mem_heap* uses the separate ae_heap_wrapper layout and dereferences
+// the embedded heap bytes as a pointer.
+static bool BrocHeapCheckFree(void* ptr)
+{
+    if (gBrocHeap == nullptr)
+        return false;
+    void** vtable = *reinterpret_cast<void***>(gBrocHeap);
+    if (vtable == nullptr || vtable[3] == nullptr)
+        return false;
+    using CheckFreeFn = bool(__thiscall*)(void*, void*);
+    return reinterpret_cast<CheckFreeFn>(vtable[3])(gBrocHeap, ptr);
+}
 namespace BrocSys {
 void* MemAlloc(unsigned int size, unsigned int align);
 }
@@ -2027,7 +2041,7 @@ void Broc::dyn_array<Broc::entity>::destroy_all()
         {
             gBrocPool->Release(mElements);
         }
-        else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(mElements))
+        else if (!BrocHeapCheckFree(mElements))
         {
             mem_heap_free(mElements);
         }
@@ -2094,7 +2108,7 @@ void Broc::dyn_array<Broc::entity>::reserve(unsigned int cap)
     {
         if (gBrocPool->InPool(oldElements))
             gBrocPool->Release(oldElements);
-        else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+        else if (!BrocHeapCheckFree(oldElements))
             mem_heap_free(oldElements);
     }
     this->mElements = newElements;
@@ -2120,7 +2134,7 @@ void Broc::dyn_array<Broc::entity>::resize(
         {
             if (gBrocPool->InPool(oldElements))
                 gBrocPool->Release(oldElements);
-            else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+            else if (!BrocHeapCheckFree(oldElements))
                 mem_heap_free(oldElements);
         }
         this->mElements = newElements;
@@ -2160,7 +2174,7 @@ void Broc::dyn_array<Broc::entity>::push_back(const Broc::entity& iElement)
         {
             if (gBrocPool->InPool(oldElements))
                 gBrocPool->Release(oldElements);
-            else if (!static_cast<ae_heap_wrapper*>(gBrocHeap)->CheckFree(oldElements))
+            else if (!BrocHeapCheckFree(oldElements))
                 mem_heap_free(oldElements);
         }
         this->mElements = newElements;
@@ -3294,7 +3308,7 @@ void MemFree(void* p)
     {
         gBrocPool->Release(p);
     }
-    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+    else if (!BrocHeapCheckFree(p))
     {
         mem_heap_free(p);
     }
@@ -3630,7 +3644,7 @@ void Broc::dyn_array<Broc::string>::destroy_all()
     void* allocation = mElements;
     if (gBrocPool->InPool(allocation))
         gBrocPool->Release(allocation);
-    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(allocation))
+    else if (!BrocHeapCheckFree(allocation))
         mem_heap_free(allocation);
 }
 
@@ -5083,7 +5097,7 @@ static void BrocFree(void* p)
 {
     if (gBrocPool->InPool(p))
         gBrocPool->Release(p);
-    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+    else if (!BrocHeapCheckFree(p))
         mem_heap_free(p);
 }
 
@@ -5115,7 +5129,7 @@ void AeThread::BrocObjCreated::operator delete(void* ptr)
 {
     if (gBrocPool->InPool(ptr))
         gBrocPool->Release(ptr);
-    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(ptr))
+    else if (!BrocHeapCheckFree(ptr))
         mem_heap_free(ptr);
 }
 
@@ -12653,7 +12667,7 @@ void mem_free(void* p)
     {
         gBrocPool->Release(p);
     }
-    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+    else if (!BrocHeapCheckFree(p))
     {
         mem_heap_free(p);
     }
