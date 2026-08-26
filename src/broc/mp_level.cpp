@@ -10,6 +10,7 @@
 
 #include <cstring>
 #include <new>
+#include <unordered_map>
 
 #include "mp_level_ee_resolver.inc"
 
@@ -283,6 +284,79 @@ void mp_level_Shutdown() {}       // ea: 0xC94FA0
 namespace mp_level {
 mp_level_wad::Level* level = nullptr;
 mp_level_wad::Anim* anim = nullptr;
+static int sNumInsts = 0;
+
+// The release keeps one NodeFieldManager singleton for each node-handle/value
+// pair.  The manager is simply a packed (node,key) -> value map; the generated
+// script callbacks below expose the same behavior to BrocExports.
+template <typename T> class NodeFieldManager {
+public:
+    void SetField(int node, unsigned int key, const T& value)
+    {
+        if (node == -1) {
+            if (Broc::gBrocAPI.mWarning(
+                    "c:\\cod\\code\\script\\include\\nodefieldmanager.h",
+                    43, "Setting node field on invalid node!")) {
+                __debugbreak();
+            }
+            return;
+        }
+        mNodeFields[Pack(node, key)] = value;
+    }
+
+    T* GetField(T* result, int node, unsigned int key) const
+    {
+        if (node == -1) {
+            *result = T();
+            return result;
+        }
+        const auto it = mNodeFields.find(Pack(node, key));
+        *result = it == mNodeFields.end() ? T() : it->second;
+        return result;
+    }
+
+private:
+    static unsigned long long Pack(int node, unsigned int key)
+    {
+        return (static_cast<unsigned long long>(key) << 32) |
+               static_cast<unsigned int>(node);
+    }
+
+    std::unordered_map<unsigned long long, T> mNodeFields;
+};
+
+template <>
+Broc::string* NodeFieldManager<Broc::string>::GetField(
+    Broc::string* result, int node, unsigned int key) const
+{
+    if (node == -1) {
+        ::new (result) Broc::string();
+        return result;
+    }
+    const auto it = mNodeFields.find(Pack(node, key));
+    if (it == mNodeFields.end())
+        ::new (result) Broc::string();
+    else
+        ::new (result) Broc::string(it->second);
+    return result;
+}
+
+template <typename Handle, typename T>
+NodeFieldManager<T>* GetNfmInst(bool shutdown)
+{
+    static NodeFieldManager<T>* instance = nullptr;
+    if (instance == nullptr && !shutdown) {
+        instance = new (std::nothrow) NodeFieldManager<T>();
+        if (instance != nullptr)
+            ++sNumInsts;
+    }
+    if (shutdown && instance != nullptr) {
+        delete instance;
+        instance = nullptr;
+        --sNumInsts;
+    }
+    return instance;
+}
 
 // ea: 0xC94D50
 void main()
@@ -342,8 +416,139 @@ void InternalMain()
     Broc::gBrocAPI.mBrocExports.mMainThreadHandle = handle;
 }
 
+void SetPNodeFieldString(unsigned int node, unsigned int key,
+                         Broc::string value)
+{
+    GetNfmInst<Broc::TPathnodeHandle, Broc::string>(false)->SetField(
+        static_cast<int>(node), key, value);
+}
+
+void SetPNodeFieldInt(unsigned int node, unsigned int key, int value)
+{
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bint>(false)->SetField(
+        static_cast<int>(node), key, Broc::bint(value));
+}
+
+void SetPNodeFieldFloat(unsigned int node, unsigned int key, float value)
+{
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bfloat>(false)->SetField(
+        static_cast<int>(node), key, Broc::bfloat(value));
+}
+
+void SetPNodeFieldPathnode(unsigned int node, unsigned int key,
+                           Broc::pathnode value)
+{
+    GetNfmInst<Broc::TPathnodeHandle, Broc::pathnode>(false)->SetField(
+        static_cast<int>(node), key, value);
+}
+
+Broc::string* GetPNodeFieldString(Broc::string* result, unsigned int node,
+                                  unsigned int key)
+{
+    return GetNfmInst<Broc::TPathnodeHandle, Broc::string>(false)->GetField(
+        result, static_cast<int>(node), key);
+}
+
+int GetPNodeFieldInt(unsigned int node, unsigned int key)
+{
+    Broc::bint result;
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bint>(false)->GetField(
+        &result, static_cast<int>(node), key);
+    return result.mVal;
+}
+
+float GetPNodeFieldFloat(unsigned int node, unsigned int key)
+{
+    Broc::bfloat result;
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bfloat>(false)->GetField(
+        &result, static_cast<int>(node), key);
+    return result.mVal;
+}
+
+Broc::pathnode* GetPNodeFieldPathnode(Broc::pathnode* result,
+                                      unsigned int node, unsigned int key)
+{
+    return GetNfmInst<Broc::TPathnodeHandle, Broc::pathnode>(false)->GetField(
+        result, static_cast<int>(node), key);
+}
+
+void SetVNodeFieldString(unsigned int node, unsigned int key,
+                         Broc::string value)
+{
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::string>(false)->SetField(
+        static_cast<int>(node), key, value);
+}
+
+void SetVNodeFieldInt(unsigned int node, unsigned int key, int value)
+{
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bint>(false)->SetField(
+        static_cast<int>(node), key, Broc::bint(value));
+}
+
+void SetVNodeFieldFloat(unsigned int node, unsigned int key, float value)
+{
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bfloat>(false)->SetField(
+        static_cast<int>(node), key, Broc::bfloat(value));
+}
+
+void SetVNodeFieldVehiclenode(unsigned int node, unsigned int key,
+                              Broc::vehiclenode value)
+{
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::vehiclenode>(false)->SetField(
+        static_cast<int>(node), key, value);
+}
+
+Broc::string* GetVNodeFieldString(Broc::string* result, unsigned int node,
+                                  unsigned int key)
+{
+    return GetNfmInst<Broc::TVehiclenodeHandle, Broc::string>(false)->GetField(
+        result, static_cast<int>(node), key);
+}
+
+int GetVNodeFieldInt(unsigned int node, unsigned int key)
+{
+    Broc::bint result;
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bint>(false)->GetField(
+        &result, static_cast<int>(node), key);
+    return result.mVal;
+}
+
+float GetVNodeFieldFloat(unsigned int node, unsigned int key)
+{
+    Broc::bfloat result;
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bfloat>(false)->GetField(
+        &result, static_cast<int>(node), key);
+    return result.mVal;
+}
+
+Broc::vehiclenode* GetVNodeFieldVehiclenode(Broc::vehiclenode* result,
+                                            unsigned int node,
+                                            unsigned int key)
+{
+    return GetNfmInst<Broc::TVehiclenodeHandle, Broc::vehiclenode>(false)
+        ->GetField(result, static_cast<int>(node), key);
+}
+
 void Shutdown() {}                // ea: 0xC94FA0
-void hack_ps2_InitScript(Broc::BrocExports&) {} // ea: 0xC94D70
+void hack_ps2_InitScript(Broc::BrocExports& exports) // ea: 0xC94D70
+{
+    exports.mSetPNodeField_string = SetPNodeFieldString;
+    exports.mGetPNodeField_string = GetPNodeFieldString;
+    exports.mSetPNodeField_int = SetPNodeFieldInt;
+    exports.mGetPNodeField_int = GetPNodeFieldInt;
+    exports.mSetPNodeField_float = SetPNodeFieldFloat;
+    exports.mGetPNodeField_float = GetPNodeFieldFloat;
+    exports.mSetPNodeField_pathnode = SetPNodeFieldPathnode;
+    exports.mGetPNodeField_pathnode = GetPNodeFieldPathnode;
+    exports.mSetVNodeField_string = SetVNodeFieldString;
+    exports.mGetVNodeField_string = GetVNodeFieldString;
+    exports.mSetVNodeField_int = SetVNodeFieldInt;
+    exports.mGetVNodeField_int = GetVNodeFieldInt;
+    exports.mSetVNodeField_float = SetVNodeFieldFloat;
+    exports.mGetVNodeField_float = GetVNodeFieldFloat;
+    exports.mSetVNodeField_vehiclenode = SetVNodeFieldVehiclenode;
+    exports.mGetVNodeField_vehiclenode = GetVNodeFieldVehiclenode;
+}
 }
 
 void hack_ps2_InitScript(Broc::BrocExports& exports)
