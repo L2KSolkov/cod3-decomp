@@ -529,7 +529,41 @@ Broc::vehiclenode* GetVNodeFieldVehiclenode(Broc::vehiclenode* result,
         ->GetField(result, static_cast<int>(node), key);
 }
 
-void Shutdown() {}                // ea: 0xC94FA0
+void Shutdown() // ea: 0xC94FA0
+{
+    if (level != nullptr)
+        delete level;
+    level = nullptr;
+    mp_level_wad::pLevel = nullptr;
+    mp_anim_wad::pLevel = nullptr;
+    mp_util_wad::pLevel = nullptr;
+
+    if (anim != nullptr)
+        delete anim;
+    anim = nullptr;
+    mp_level_wad::pAnim = nullptr;
+    mp_anim_wad::pAnim = nullptr;
+    mp_util_wad::pAnim = nullptr;
+
+    GetNfmInst<Broc::TPathnodeHandle, Broc::string>(true);
+    GetNfmInst<Broc::TPathnodeHandle, int>(true);
+    GetNfmInst<Broc::TPathnodeHandle, float>(true);
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bint>(true);
+    GetNfmInst<Broc::TPathnodeHandle, Broc::bfloat>(true);
+    GetNfmInst<Broc::TPathnodeHandle, Broc::pathnode>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::string>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, int>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bint>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, float>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::bfloat>(true);
+    GetNfmInst<Broc::TVehiclenodeHandle, Broc::vehiclenode>(true);
+
+    if (sNumInsts != 0 && Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\include\\entrypoint.inl", 35,
+            "A singleton wasn't destroyed!")) {
+        __debugbreak();
+    }
+}
 void hack_ps2_InitScript(Broc::BrocExports& exports) // ea: 0xC94D70
 {
     exports.mSetPNodeField_string = SetPNodeFieldString;
