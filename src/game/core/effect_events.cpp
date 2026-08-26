@@ -206,15 +206,17 @@ ActiveEffectSet* HandleDb::DereferenceHandle(Handle handle) const
         }                                                                  \
     } while (0)
 
-// nsl voice enumeration (stub env; game reads srcId at +0x114)
+// NSL source states are shared with nsl.cpp and SoundDevice::Sound.  These
+// values are part of the ABI; keep them identical to the source-state bytes
+// produced by nslGetSourceState.
 enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
-    NSL_SOURCE_STATE_PLAYING = 1,
     NSL_SOURCE_STATE_QUEUING = 2,
     NSL_SOURCE_STATE_QUEUED = 3,
-    NSL_SOURCE_STATE_PAUSED = 4,
+    NSL_SOURCE_STATE_PLAYING = 4,
+    NSL_SOURCE_STATE_PAUSED = 5,
 };
 struct nslVoice;
 extern unsigned int nslGetNumVoices();
