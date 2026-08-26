@@ -14,6 +14,12 @@
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
+class MusicMgr {
+public:
+    void Play(const char* name);
+    void Stop(float fadeOutTime);
+};
+
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 class RumbleManager {
@@ -90,7 +96,9 @@ extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const float* const angles,
                          float (*const axis)[3]);
 extern void SoundDevice_DampenAllSounds(void* sInst, float level);
+extern void SoundDevice_UndampenAllSounds(void* sInst);
 extern void SoundDevice_StopAllSounds(void* sInst);
+extern void* MusicMgr_sInst;
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern nglTexture* GetTextureData(const char* name, int image_type,
@@ -98,6 +106,45 @@ extern nglTexture* GetTextureData(const char* name, int image_type,
 extern nglTexture* cgsGlobal_media_whiteShader;
 extern void* cgsGlobal_media_tracerShader;
 extern int CG_RegisterItems();
+extern int Cmd_Argc();
+extern void Cbuf_AddText(const char* text);
+extern void Cbuf_ExecuteText(int exec_when, const char* text);
+extern char* va(const char* fmt, ...);
+extern const char* SEH_LocalizeTextMessage(const char* message,
+                                           const char* messageType);
+enum print_msg_type_t;
+extern void CL_ConsolePrint(print_msg_type_t type, const char* text,
+                            int duration, int linewidth, int flags);
+extern void CG_PriorityCenterPrint(const char* str, float y, int charWidth,
+                                   int priority);
+extern void CG_GameMessage(const char* msg, int flags);
+extern void CG_ObjMessage(const char* msg);
+extern void CG_OpenScriptMenu();
+extern void CG_LocalSound();
+extern int dword_F610E8;
+extern int dword_F610EC;
+extern int dword_F610F0;
+extern int dword_F610F4;
+extern int dword_F610F8;
+extern int dword_F610FC;
+extern int dword_F61100;
+extern int dword_F61104;
+extern int dword_F61108;
+extern int dword_F6110C;
+extern int dword_F61110;
+extern int dword_F61114;
+extern int dword_F61118;
+extern int dword_F6111C;
+extern int dword_F61120;
+extern int dword_F61124;
+extern int dword_F61128;
+extern int dword_F6112C;
+extern int dword_F61130;
+extern int dword_F62948[4 * 1580];
+extern int dword_F64154[4 * 1580];
+extern int dword_F64158[4 * 1580];
+extern int dword_F6415C[4 * 1580];
+extern int dword_F64160[4 * 1580];
 // IDA gitem_s layout: 0x34-byte records at bg_itemlist (0xF51EC0).
 struct gitem_s
 {
@@ -246,7 +293,7 @@ static const consoleCommand_t sCommandsList[] = {
     {nullptr, nullptr},
 };
 
-static char buffer_0[256];
+extern char buffer_0[256];
 static int (*syscall_)(int, ...) = nullptr;
 int (*syscall)(int, ...) = nullptr;  // ?syscall@@3P6AHHZZA (cg.o @ 0xDF9D70)
 
@@ -257,7 +304,7 @@ void cg_dllEntry(int (*syscallptr)(int, ...))
 }
 
 // ea: 0x0068C8F0
-int CG_UI_Popup()
+int CG_UI_Popup(const char*)
 {
     return 1;
 }
@@ -344,6 +391,170 @@ char* CG_Argv(int arg)
 {
     Cmd_ArgvBuffer(arg, buffer_0, 256);
     return buffer_0;
+}
+
+// ea: 0x0068BC40
+void CG_LocalSound()
+{
+    const int argc = Cmd_Argc();
+    if (argc == 2)
+    {
+        Cmd_ArgvBuffer(1, buffer_0, 256);
+        const int index = atoi(buffer_0);
+        if (index <= 0 || index > 64)
+        {
+            CG_Printf("ERROR: CG_LocalSound called with index %i (should be in range[1,%i])\n",
+                      index, 64);
+        }
+        else
+        {
+            // The release routine intentionally only resolves the config
+            // string here; playback is handled by the client sound system.
+            (void)CG_ConfigString(static_cast<unsigned int>(index + 161));
+        }
+    }
+    else
+    {
+        CG_Printf("ERROR: CG_LocalSound called with %i args (should be 2)\n",
+                  argc);
+    }
+}
+
+// ea: 0x00698090
+void CG_OpenScriptMenu()
+{
+    Cmd_ArgvBuffer(1, buffer_0, 256);
+    const int index = atoi(buffer_0);
+    if (index != 0)
+    {
+        Com_Printf("Server tried to open a bad script menu index: %i\n",
+                   index);
+        Cbuf_AddText(va("cmd mr %i bad\n", index));
+        return;
+    }
+
+    const char* menu = CG_ConfigString(627);
+    if (*menu != '\0')
+    {
+        if (Cmd_Argc() > 2 && CG_Argv(2) != nullptr)
+            (void)CG_Argv(2);
+        Cvar_Set("ui_newScriptMenu", menu);
+        Cvar_Set("ui_newScriptMenuIndex", va("%i", 0));
+    }
+    else
+    {
+        Com_Printf("Server tried to open a non-loaded script menu index: %i\n",
+                   0);
+        Cbuf_AddText(va("cmd mr %i bad\n", 0));
+    }
+}
+
+// ea: 0x006A3860
+void CG_ServerCommand()
+{
+    Cmd_ArgvBuffer(0, buffer_0, 256);
+    if (buffer_0[0] == '\0')
+        return;
+
+    const unsigned int hash = HashString::CalcHash(buffer_0);
+    if (hash == static_cast<unsigned int>(dword_F610EC))
+    {
+        Cmd_ArgvBuffer(1, buffer_0, 256);
+        CG_ConfigStringModifiedInternal(atoi(buffer_0));
+    }
+    else if (hash == static_cast<unsigned int>(dword_F610F8))
+    {
+        Cmd_ArgvBuffer(1, buffer_0, 256);
+        const char* message =
+            SEH_LocalizeTextMessage(buffer_0, "bold game message");
+        CL_ConsolePrint(static_cast<print_msg_type_t>(4), message, 0,
+                        cg_gameBoldMessageWidth.integer, 0);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F610F0))
+    {
+        const char* message =
+            SEH_LocalizeTextMessage(CG_Argv(1), "server print");
+        CG_Printf("%s\n", message);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F6111C))
+    {
+        SoundDevice_DampenAllSounds(
+            SoundDevice::sInst, static_cast<float>(atof(CG_Argv(1))));
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61120))
+    {
+        const int duration = atoi(CG_Argv(3));
+        const int start = atoi(CG_Argv(2));
+        const int alphaByte = static_cast<int>(atof(CG_Argv(1)) * 255.0);
+        const int base = 1580 * currCl;
+        reinterpret_cast<float*>(&dword_F64154[base])[0] =
+            static_cast<float>(alphaByte) * 0.0039215689f;
+        dword_F6415C[base] = start;
+        dword_F64160[base] = duration;
+        if (start + duration <= cgGlobal.time)
+            dword_F64158[base] = dword_F64154[base];
+    }
+    else if (hash == static_cast<unsigned int>(dword_F610E8))
+    {
+        CG_PriorityCenterPrint(CG_Argv(1), 360.0f, 8, 0);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F610F4))
+    {
+        const char* message =
+            SEH_LocalizeTextMessage(CG_Argv(1), "game message");
+        CG_GameMessage(message, 0);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F610FC))
+    {
+        // object_update is deliberately a no-op in the release client.
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61100))
+    {
+        const char* message =
+            SEH_LocalizeTextMessage(CG_Argv(1), "game message");
+        CG_ObjMessage(message);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61104)
+             || hash == static_cast<unsigned int>(dword_F61108))
+    {
+        SoundDevice_UndampenAllSounds(SoundDevice::sInst);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F6110C))
+    {
+        dword_F62948[1580 * currCl] = 1;
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61110))
+    {
+        Cbuf_ExecuteText(0, va("screenshotHigh savegame %s", CG_Argv(1)));
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61114))
+    {
+        reinterpret_cast<MusicMgr*>(MusicMgr_sInst)->Play(CG_Argv(1));
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61118))
+    {
+        reinterpret_cast<MusicMgr*>(MusicMgr_sInst)->Stop(0.0f);
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61124))
+    {
+        CG_ParseFog();
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61128))
+    {
+        CG_LocalSound();
+    }
+    else if (hash == static_cast<unsigned int>(dword_F6112C))
+    {
+        CG_OpenScriptMenu();
+    }
+    else if (hash == static_cast<unsigned int>(dword_F61130))
+    {
+        CG_CloseScriptMenu();
+    }
+    else
+    {
+        CG_Printf("Unknown client game command: %s\n", buffer_0);
+    }
 }
 
 // ea: 0x0068B600

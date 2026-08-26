@@ -58,7 +58,6 @@ void CG_PerturbationPoint(const float* a, float* b, float c)
 {
     (void)a; (void)b; (void)c;
 }
-void CG_ServerCommand() {}
 void CG_UpdateShellShockCamera(const void* a, int b, int c)
 {
     (void)a; (void)b; (void)c;
