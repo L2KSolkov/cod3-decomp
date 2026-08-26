@@ -1652,8 +1652,8 @@ public:
     virtual void Draw3D() {}
     virtual void SetDefaultColorScheme(char) {}
     virtual char GetDefaultColorScheme() { return 0; }
-    virtual bool VtableIsSystemActive() { return false; }
-    virtual int GetActiveMenu() { return 0; }
+    virtual bool IsSystemActive();
+    virtual int GetActiveMenu();
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
     virtual int GetCurrentClient() { return 0; }
     virtual int GetCurrentClientController() { return 0; }
@@ -1663,7 +1663,6 @@ public:
     uint8_t _pad20[0x2A - 0x20];
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
-    bool IsSystemActive();               // ?IsSystemActive@FEMenuSystem@@QAE_NXZ
     int CurrentOverlay();               // ?CurrentOverlay@FEMenuSystem@@QAEHXZ (shell.o)
     FEMenuSystem(int s, font_index f);  // ??0FEMenuSystem@@QAE@HW4font_index@@@Z (shell.o 0x57DD70)
 };
@@ -1672,36 +1671,18 @@ static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)
 #ifndef COD3_FULL_FE_TYPES
 class InGameMenuSystem : public FEMenuSystem {
 public:
-    void SetActiveMenu(int a2);   // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
-    bool IsSystemActive();        // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
-    // IDA exports FEMenuSystem::GetActiveMenu; this derived view reads the
-    // inherited m_active field at +0x1C without inventing a new symbol.
-    int GetActiveMenu() const
-    {
-        return *reinterpret_cast<const int*>(
-            reinterpret_cast<const unsigned char*>(this) + 0x1C);
-    }
     void ActivateMenu(int menu);  // ?ActivateMenu@InGameMenuSystem@@QAEXH@Z (shell.o 0x572FD0)
     void ActivatePauseMenu();     // ?ActivatePauseMenu@InGameMenuSystem@@QAEXXZ (shell.o 0x573070)
     virtual bool IsMenuActive(int menu);     // ?IsMenuActive@FEMenuSystem@@UAE_NH@Z (0x570BC0)
     virtual void MakeActive(int index);      // ?MakeActive@FEMenuSystem@@UAEXH@Z (0x570B20)
     virtual void ClearReturnMenu(int menu);  // ?ClearReturnMenu@FEMenuSystem@@UAEXH@Z (0x570BE0)
 };
-inline bool InGameMenuSystem::IsSystemActive()
-{
-    return is_active;
-}
-inline void InGameMenuSystem::SetActiveMenu(int a2)
-{
-    (void)a2;
-}
 #endif
 #endif
 
 class AARMenuSystem : public FEMenuSystem {
 public:
     AARMenuSystem();          // ??0AARMenuSystem@@QAE@XZ (mp_shell.o 0x7B02E0)
-    virtual bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@UAE_NXZ (shell.o; stub)
     virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
     virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
     void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
