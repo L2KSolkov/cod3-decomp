@@ -123,6 +123,19 @@ void CG_DObjCalcPose(Entity* entity, DObj* obj, int* partBits)
     }
 }
 
+// ABI adapters used by the client-function tables.  Release exposes only the
+// strongly typed Entity*/DObj* entry at 0x68A640.
+void CG_DObjCalcPose(Entity* entity, void* obj, int* partBits)
+{
+    CG_DObjCalcPose(entity, static_cast<DObj*>(obj), partBits);
+}
+
+void CG_DObjCalcPose(void* entity, void* obj, int* partBits)
+{
+    CG_DObjCalcPose(static_cast<Entity*>(entity), static_cast<DObj*>(obj),
+                    partBits);
+}
+
 // ea: 0x0068A700
 void CG_DObjCalcBone(Entity* entity, DObj* obj, int boneIndex)
 {
