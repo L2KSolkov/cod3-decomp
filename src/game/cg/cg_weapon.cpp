@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/core/core_types.h"
 
@@ -52,9 +53,6 @@ float dword_F63C80[4 * 1580];  // cg.o BSS
 float dword_F63C84[4 * 1580];  // cg.o BSS
 float dword_F63C88[4 * 1580];  // cg.o BSS
 int cg_aWeaponSelectTime[4];   // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
-struct vmCvar_t {
-    int integer;  // +0x00
-};
 extern vmCvar_t cg_weaponCycleDelay;
 extern struct level_locals_t { int time; } level;
 struct sentient_s {

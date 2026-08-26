@@ -7,6 +7,7 @@
 #include "physics/rb_ragdoll_model.h"
 #include "core/ae_array.h"
 #include "core/tlFixedString.h"
+#include "game/cvar_types.h"
 #include <float.h>
 #include <intrin.h>
 #include <math.h>
@@ -350,9 +351,6 @@ float low_end_speed = 300.0f;    // 0x43960000
 float percent_to_give = 1.5f;    // 0x3FC00000
 // ?min_speed2@@3MA (physics.o data @ 0xE36B20; 5000.0)
 float min_speed2 = 5000.0f;      // 0x45992000
-struct vmCvar_t {
-    int integer;  // +0x00 (minimal)
-};
 extern vmCvar_t g_speed;  // ?g_speed@@3UvmCvar_t@@A (g.o)
 // MultiplayerMgr (core.o view; ApplyLocalPhysicsToVehicle only)
 class MultiplayerMgr {

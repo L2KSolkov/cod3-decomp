@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 
 #include <string.h>
@@ -53,9 +54,6 @@ struct sentient_s {
     int eTeam;  // +0x00
 };
 
-struct vmCvar_t {
-    int integer;  // +0x00 (only field used here)
-};
 extern vmCvar_t cg_gameMessageWidth;    // 0x00F5F158
 extern vmCvar_t cg_gameBoldMessageWidth; // 0x00F60408
 

@@ -1707,9 +1707,9 @@ void CG_Draw2D(float a2)
         }
         else
         {
-            void* v6 = Cvar_Get("introScreen", "0", 0);
+            cvar_t* v6 = Cvar_Get("introScreen", "0", 0);
             int v7 = *(int*)(dword_F62960[1580 * currCl] + 52);
-            if (*(int*)v6 != 0)
+            if (v6->integer != 0)
             {
                 if (v7 < 6)
                 {

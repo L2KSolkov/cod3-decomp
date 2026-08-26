@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/snapshot_types.h"
 #include "game/trace_types.h"
@@ -354,10 +355,6 @@ struct localEntityFull {
     float color[4];
     refEntity_t2 refEntity;
     trajectory_t2 pos;
-};
-struct vmCvar_t {
-    int   integer;  // +0x00
-    float value;    // +0x04
 };
 extern vmCvar_t cg_railTrailTime;
 extern vmCvar_t cg_tracerChance;
