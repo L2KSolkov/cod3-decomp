@@ -15,7 +15,6 @@ void __cod3_stub_game_cg(void) {
 #include "game/game_types.h"
 #include "game/trace_types.h"
 
-void CG_AddScaleFade(void* a) { (void)a; }
 void CG_CalcCrosshairColor(float a, int* b) { (void)a; (void)b; }
 void CG_CalcCubemapViewValues() {}
 void CG_CalcTurretViewValues() {}

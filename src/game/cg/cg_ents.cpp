@@ -32,6 +32,10 @@ public:
 class Camera;
 
 extern int currCl;
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern int dword_F62960[4 * 1580];
 int dword_F610E4;
 int dword_F610E8;
@@ -320,6 +324,28 @@ localEntity_t* CG_AllocLocalEntity()
     cg_activeLocalEntities.next->prev = v0;
     cg_activeLocalEntities.next = v0;
     return v0;
+}
+
+// Release path for scale/fade local entities: keep a ref entity only while it
+// remains within its radius of the current view origin.
+void CG_AddScaleFade(localEntity_t* le)
+{
+    const int index = 1580 * currCl;
+    const float dx = le->refEntity.origin[0] - dword_F63C70[index];
+    const float dy = le->refEntity.origin[1] - dword_F63C74[index];
+    const float dz = le->refEntity.origin[2] - dword_F63C78[index];
+    if (le->radius <= sqrtf(dx * dx + dy * dy + dz * dz))
+    {
+        RE_AddRefEntityToScene(&le->refEntity, -1);
+        return;
+    }
+
+    if (le->prev == nullptr)
+        CG_Error("CG_FreeLocalEntity: not active");
+    le->prev->next = le->next;
+    le->next->prev = le->prev;
+    le->next = cg_freeLocalEntities;
+    cg_freeLocalEntities = le;
 }
 
 // ea: 0x00697B40
@@ -1351,7 +1377,7 @@ void CG_Player(Entity* entity)
     }
 }
 
-extern void CG_AddScaleFade(void* le);
+extern void CG_AddScaleFade(localEntity_t* le);
 extern void CG_DrawTracer(const math::Position3& _start,
                           const math::Position3& _finish, float width);
 struct trajectory_t;
