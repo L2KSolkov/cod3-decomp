@@ -15,12 +15,9 @@
 cdSimpleColorShader* gCDSimpleColorShader = nullptr;  // ?gCDSimpleColorShader@@3PAVcdSimpleColorShader@@A
 
 // ============================================================================
-// cdSimpleColorShader::Register — ea: 0x7D5F80 (empty)
+// cdSimpleColorShader::GetName — ea: 0x7D5EF0
 // ============================================================================
 tlFixedString cdSimpleColorShader::GetName() { return tlFixedString("cdSimpleColor"); }
-
-void cdSimpleColorShader::Register() {
-}
 
 // ============================================================================
 // InitCDSimpleColorShader — allocate the shader and link into the init list.

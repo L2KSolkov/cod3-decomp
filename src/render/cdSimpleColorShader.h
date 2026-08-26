@@ -84,7 +84,6 @@ static_assert(sizeof(SimpleContext) == 0x40, "SimpleContext size mismatch");
 class cdSimpleColorShader : public nglShader {
 public:
     virtual tlFixedString GetName(); // @0x7D5EF0
-    virtual void Register();  // @0x7D5F80
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D5F90
 };
 static_assert(sizeof(cdSimpleColorShader) == 0x10, "cdSimpleColorShader size mismatch");
