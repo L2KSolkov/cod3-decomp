@@ -1883,15 +1883,45 @@ void Destructible::Initialize(Destructible* self, Entity* ent, bool reInit)
         handler->AddEvent(hash_const.damage, self->mScriptFunction.mStr);
 }
 
-// PakFile statics (streamer.o; stubs, port later)
+struct PakFileLayout {
+    unsigned char _pad4C[0x4C];
+    int mPakType; // +0x4C
+    unsigned char _pad50[0x28];
+    TPakId mPakId; // +0x78
+    const PakInfoNode* mPakInfo; // +0x7C
+    unsigned char _pad80[0x20];
+    void* mHeapList[12]; // +0xA0
+    int mHeapListSize; // +0xD0
+};
+struct MemHeapUsageLayout {
+    unsigned char _pad[0x484];
+    unsigned int size; // +0x484
+    unsigned int used; // +0x488
+};
+// ea: 0x00665EC0
 void PakFile::GetHeapUsage(PakFile* self, int* used, int* size)
 {
-    (void)self; (void)used; (void)size;
+    *used = 0;
+    *size = 0;
+    PakFileLayout* pak = reinterpret_cast<PakFileLayout*>(self);
+    for (int i = 0; i < pak->mHeapListSize; ++i)
+    {
+        const MemHeapUsageLayout* heap =
+            reinterpret_cast<const MemHeapUsageLayout*>(pak->mHeapList[i]);
+        *used += heap->used;
+        *size += heap->size;
+    }
 }
+
+// ea: 0x00664E50
 const PakInfoNode* PakFile::GetInfo(PakFile* self)
 {
-    (void)self;
-    return nullptr;
+    PakFileLayout* pak = reinterpret_cast<PakFileLayout*>(self);
+    if (pak->mPakType == kPakTypeCount)
+        return nullptr;
+    if (pak->mPakInfo == nullptr)
+        pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+    return pak->mPakInfo;
 }
 
 
