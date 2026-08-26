@@ -45,6 +45,7 @@ extern vmCvar_t cg_forceCrosshair;
 extern vmCvar_t cg_redFlashTime;
 extern vmCvar_t cg_centertime;
 extern int dword_F62960[4 * 1580];
+extern float color[4];
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
@@ -466,6 +467,7 @@ extern void CG_DrawDamageDirectionIndicators();
 extern void CG_DrawPlayerLowHealthOverlay();
 extern void CG_ScreenFade();
 extern Entity* GetPlayer(int idx);
+extern Entity* GetPlayerTarget();
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern int BG_GetWeaponForInfo(weaponFileInfo_t* pWeapInfo);
@@ -489,6 +491,52 @@ extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float transScale);
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);
+
+void CG_CalcCrosshairColor(float alpha, int* color)
+{
+    float* out = reinterpret_cast<float*>(color);
+    alpha = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
+
+    Entity* target = GetPlayerTarget();
+    Entity* player = EntityManager::sInst != nullptr
+                   ? EntityManager::sInst->GetPlayer(currCl) : nullptr;
+    if (player != nullptr && player->client != nullptr
+        && player->client->ps.mTargetTime != 0)
+    {
+        const int elapsed = cgGlobal.time - player->client->ps.mTargetTime;
+        if (elapsed < 150)
+        {
+            float* targetColor = ::color;
+            targetColor[0] = 1.0f;
+            targetColor[1] = 1.0f;
+            targetColor[2] = 1.0f;
+            targetColor[3] = (150 - elapsed >= 100)
+                           ? 1.0f : (150 - elapsed) * 0.01f;
+            if (target != nullptr && target->client == nullptr
+                && target->scr_vehicle != nullptr)
+                target = target->r.mOwner.operator->();
+            if (target != nullptr && target->sentient != nullptr
+                && player->sentient != nullptr)
+            {
+                targetColor[3] = 1.0f - targetColor[3];
+                if (target->sentient->eTeam == player->sentient->eTeam
+                    && cgGlobal.teamGame)
+                {
+                    out[0] = targetColor[3] * out[0] + 0.25f;
+                    out[1] = targetColor[3] * out[1] + 1.0f;
+                    out[2] = targetColor[3] * out[2] + 0.25f;
+                }
+                else
+                {
+                    out[0] = targetColor[3] * out[0] + 1.0f;
+                    out[1] = targetColor[3] * out[1] + 0.25f;
+                    out[2] = targetColor[3] * out[2] + 0.25f;
+                }
+            }
+        }
+    }
+    out[3] = cg_crosshairAlpha.value * alpha;
+}
 
 void CG_DrawCenterString()
 {
