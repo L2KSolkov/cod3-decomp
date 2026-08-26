@@ -894,9 +894,11 @@ void G_RemoveHeadHitEnt(Entity* pSelf)
 }
 
 // ea: 0x00456330
-// G_HitLocStrcpy - ea: 0x0044AF00 (g.o; empty stub, retn only)
+// G_HitLocStrcpy - ea: 0x0044AF00 (release no-op export)
 void G_HitLocStrcpy(unsigned char* out, const char* in)
 {
+    (void)out;
+    (void)in;
 }
 
 void ParseHitLocDmgTableEntry(const char* name, const ConfigString* cfgstr)

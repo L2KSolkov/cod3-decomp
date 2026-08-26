@@ -60,7 +60,10 @@ struct AeThread {
     void* mFunctor;      // +0x0C
     unsigned int mFlags; // +0x10 (Bitmask mVal)
     unsigned int mHandle;// +0x14
-    unsigned char _pad18[0x44 - 0x18];
+    unsigned char _pad18[4]; // reserved_dlist<AeThreadState>::m_head
+    unsigned char* mStateHead; // +0x1C (first embedded dlist node)
+    unsigned char* mStateEnd;  // +0x20 (embedded sentinel node)
+    unsigned char _pad24[0x44 - 0x24];
     const char* mFuncName;  // +0x44
     const char* mFile;      // +0x48
     int mLine;              // +0x4C
@@ -69,10 +72,28 @@ struct AeThread {
     static int get_dlist_node_offset();  // game2.o 0x004EABC0
 };
 
-// AeThread::GetCondText (game2.o; stub)
+// ea: 0x0051D4D0
 void AeThread::GetCondText(ae_fixed_string<64, unsigned char>& str)
 {
-    (void)str;
+    unsigned char* node = mStateHead;
+    unsigned char* next = node != nullptr
+        ? *reinterpret_cast<unsigned char**>(node) : nullptr;
+    unsigned char* end = reinterpret_cast<unsigned char*>(this) + 0x20;
+    if (node == end || next == nullptr)
+        return;
+    do
+    {
+        // The dlist node is the second member of AeThreadState (+4); the
+        // virtual GetCondText slot is vtable[2] (+8), exactly as in IDA.
+        unsigned char* state = node - 4;
+        void** vtable = *reinterpret_cast<void***>(state);
+        using GetCondTextFn = void (__thiscall*)(void*,
+                                                  ae_fixed_string<64, unsigned char>*);
+        reinterpret_cast<GetCondTextFn>(vtable[2])(state, &str);
+        node = next;
+        next = *reinterpret_cast<unsigned char**>(next);
+    }
+    while (next != nullptr);
 }
 
 // ea: 0x004EABC0

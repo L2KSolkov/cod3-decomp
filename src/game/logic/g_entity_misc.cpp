@@ -278,9 +278,10 @@ debug_brush::debug_brush()
 
 ae_vector<debug_brush> debug_brushes;  // ?debug_brushes@@3V?$ae_vector@Udebug_brush@@@@A (game.o)
 
-// ea: 0x00611C10 (empty stub)
+// ea: 0x00611C10 (release no-op export)
 void render_brush(const debug_brush& dbrush)
 {
+    (void)dbrush;
 }
 
 // ============================================================================
