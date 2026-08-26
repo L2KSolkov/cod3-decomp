@@ -2596,13 +2596,134 @@ void SP_func_door(Entity* ent)
     v1->think = THINK__finishSpawningKeyedMover;
 }
 
+// ea: 0x0044CF20
+int ScriptMover_Updatemove(const float* start, const float* target,
+                           int* savedRegs, trajectory_t* tr, float wait,
+                           float speed, float duration, const float* base)
+{
+    (void)savedRegs;
+    const trType_t previousType = tr->trType;
+
+    if (previousType == TR_ACCELERATE && wait > 0.0f)
+    {
+        tr->trTime = level.time;
+        tr->trDuration = static_cast<int>(wait * 1000.0f);
+        tr->trBase[0] = base[0];
+        tr->trBase[1] = base[1];
+        tr->trBase[2] = base[2];
+
+        const float delta[3] = { start[0] - base[0], start[1] - base[1],
+                                 start[2] - base[2] };
+        if (tr->trDuration == 0)
+        {
+            AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_mover.cpp";
+            AeAssert::gCurrentLine = 36;
+            AeAssert::gCurrentExpr = "pTr->trDuration";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        const float scale = 1000.0f / tr->trDuration;
+        tr->trDelta[0] = scale * delta[0];
+        tr->trDelta[1] = scale * delta[1];
+        tr->trDelta[2] = scale * delta[2];
+        if (!(tr->trDelta[0] == tr->trDelta[0])
+            || !(tr->trDelta[1] == tr->trDelta[1])
+            || !(tr->trDelta[2] == tr->trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_mover.cpp";
+            AeAssert::gCurrentLine = 39;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        tr->trType = TR_LINEAR_STOP;
+        return 0;
+    }
+
+    if (previousType != TR_ACCELERATE && previousType != TR_LINEAR_STOP)
+    {
+        if (previousType == TR_GRAVITY)
+        {
+            math::Position3 evaluated{};
+            BG_EvaluateTrajectory(tr, level.time, evaluated);
+            tr->trBase[0] = evaluated.v.m128_f32[0];
+            tr->trBase[1] = evaluated.v.m128_f32[1];
+            tr->trBase[2] = evaluated.v.m128_f32[2];
+        }
+        else
+        {
+            tr->trBase[0] = target[0];
+            tr->trBase[1] = target[1];
+            tr->trBase[2] = target[2];
+        }
+        tr->trTime = level.time;
+        tr->trType = TR_STATIONARY;
+        return 1;
+    }
+
+    if (duration <= 0.0f)
+    {
+        if (previousType == TR_GRAVITY)
+        {
+            math::Position3 evaluated{};
+            BG_EvaluateTrajectory(tr, level.time, evaluated);
+            tr->trBase[0] = evaluated.v.m128_f32[0];
+            tr->trBase[1] = evaluated.v.m128_f32[1];
+            tr->trBase[2] = evaluated.v.m128_f32[2];
+        }
+        else
+        {
+            tr->trBase[0] = target[0];
+            tr->trBase[1] = target[1];
+            tr->trBase[2] = target[2];
+        }
+        tr->trTime = level.time;
+        tr->trType = TR_STATIONARY;
+        return 1;
+    }
+
+    tr->trTime = level.time;
+    tr->trDuration = static_cast<int>(duration * 1000.0f);
+    tr->trBase[0] = start[0];
+    tr->trBase[1] = start[1];
+    tr->trBase[2] = start[2];
+
+    float direction[3] = { target[0] - start[0], target[1] - start[1],
+                           target[2] - start[2] };
+    VectorNormalize(direction);
+    tr->trDelta[0] = direction[0] * speed;
+    tr->trDelta[1] = direction[1] * speed;
+    tr->trDelta[2] = direction[2] * speed;
+    if (!(tr->trDelta[0] == tr->trDelta[0])
+        || !(tr->trDelta[1] == tr->trDelta[1])
+        || !(tr->trDelta[2] == tr->trDelta[2]))
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_mover.cpp";
+        AeAssert::gCurrentLine = 54;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    tr->trType = TR_DECCELERATE;
+    return 0;
+}
+
 // ea: 0x0047BC20
 void Reached_ScriptMover(Entity* pEnt)
 {
     trajectory_t* p_pos = &pEnt->s.pos;
+    int savedRegs = 0;
     if (pEnt->s.pos.trType != TR_STATIONARY && pEnt->s.pos.trTime + pEnt->s.pos.trDuration <= level.time)
     {
-        int bMoveFinished = ScriptMover_Updatemove(pEnt->speed, pEnt->delay, &pEnt->pos1);
+        int bMoveFinished = ScriptMover_Updatemove(
+            pEnt->pos2.v.m128_f32, pEnt->pos3.v.m128_f32, &savedRegs,
+            &pEnt->s.pos, pEnt->wait, pEnt->speed, pEnt->delay,
+            pEnt->pos1.v.m128_f32);
         BG_EvaluateTrajectory(p_pos, level.time, pEnt->r.currentOrigin);
         g_LinkEntity(pEnt);
         if (bMoveFinished != 0)
@@ -2610,7 +2731,10 @@ void Reached_ScriptMover(Entity* pEnt)
     }
     if (pEnt->s.apos.trType != TR_STATIONARY && pEnt->s.apos.trTime + pEnt->s.apos.trDuration <= level.time)
     {
-        int bMoveFinisheda = ScriptMover_Updatemove(pEnt->closespeed, pEnt->random, &pEnt->movedir);
+        int bMoveFinisheda = ScriptMover_Updatemove(
+            pEnt->rotate.v.m128_f32, pEnt->TargetAngles.v.m128_f32,
+            &savedRegs, &pEnt->s.apos, pEnt->angle, pEnt->closespeed,
+            pEnt->random, pEnt->movedir.v.m128_f32);
         BG_EvaluateTrajectory(&pEnt->s.apos, level.time, pEnt->r.currentAngles);
         g_LinkEntity(pEnt);
         if (bMoveFinisheda != 0)

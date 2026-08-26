@@ -32,6 +32,16 @@ namespace BrocSys {
 void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
 }
 
+namespace mp_level {
+void main();
+void InternalMain();
+void Shutdown();
+void AnimNamespaceVariableResolver(int treename, int tree_index,
+                                   int animname, int index);
+unsigned int BrocAnimResolver(const char* treename, const char* animname);
+void MainThreadHook(Broc::entity ent);
+}
+
 namespace Broc {
 
 // ea: 0x00925400. IDA forwards the functor entity and creation request to the
@@ -277,9 +287,9 @@ bool ScriptThreadExists(unsigned int fcn)
 // Level lifecycle
 // ============================================================================
 
-void mp_level_main() {}           // ea: 0xC94D50
-void mp_level_InternalMain() {}   // ea: 0xC95160
-void mp_level_Shutdown() {}       // ea: 0xC94FA0
+void mp_level_main() { mp_level::main(); }           // ea: 0xC94D50
+void mp_level_InternalMain() { mp_level::InternalMain(); }   // ea: 0xC95160
+void mp_level_Shutdown() { mp_level::Shutdown(); }       // ea: 0xC94FA0
 
 namespace mp_level {
 mp_level_wad::Level* level = nullptr;
@@ -589,13 +599,24 @@ void hack_ps2_InitScript(Broc::BrocExports& exports)
 {
     mp_level::hack_ps2_InitScript(exports);
 }
-void AnimNamespaceVariableResolver(int, int, int, int) {} // ea: 0xC94E50
+void AnimNamespaceVariableResolver(int treename, int tree_index,
+                                   int animname, int index) // ea: 0xC94E50
+{
+    mp_level::AnimNamespaceVariableResolver(treename, tree_index, animname,
+                                            index);
+}
 
 void BrocAnimInitialize() {}      // ea: 0xC94E90
 void BrocAnimCleanup() {}         // ea: 0xC94EB0
-unsigned BrocAnimResolver(const char*, const char*) { return 0; } // ea: 0xC94ED0
-void BrocAnimDebug(Broc::entity) {} // ea: 0xC94F60
-void MainThreadHook(Broc::entity) {} // ea: 0xC94F80
+unsigned BrocAnimResolver(const char* treename, const char* animname) // ea: 0xC94ED0
+{
+    return mp_level::BrocAnimResolver(treename, animname);
+}
+void BrocAnimDebug(Broc::entity) {} // ea: 0xC94F60 (release nullsub)
+void MainThreadHook(Broc::entity ent) // ea: 0xC94F80
+{
+    mp_level::MainThreadHook(ent);
+}
 
 namespace mp_level {
 

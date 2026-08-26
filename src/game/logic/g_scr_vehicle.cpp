@@ -1,5 +1,5 @@
 // ============================================================================
-// g_scr_vehicle.cpp - scripted vehicle stubs (g.o: g_scr_vehicle.cpp family)
+// g_scr_vehicle.cpp - scripted vehicle implementation (g.o family)
 // ============================================================================
 
 #include "game/logic/g_local.h"
@@ -39,17 +39,23 @@ rb_vehicle* GetPlayerRBVehicle()
     }
     return nullptr;
 }
-void rb_vehicle_debug_render_all() {}
+void rb_vehicle_debug_render_all()
+{
+    rb_vehicle::debug_render_all();
+}
 void rb_vehicle_unpause_physics(rb_vehicle* self)
 {
-    (void)self;
+    if (self != nullptr)
+        self->unpause_physics();
 }
 void rb_vehicle_update_from_network(rb_vehicle* self,
                                     math::Position3* position,
                                     math::Position3* angles, math::Dir3* vel,
                                     math::Dir3* aVel)
 {
-    (void)self; (void)position; (void)angles; (void)vel; (void)aVel;
+    if (self != nullptr && position != nullptr && angles != nullptr
+        && vel != nullptr && aVel != nullptr)
+        self->update_from_network(*position, *angles, *vel, *aVel);
 }
 
 static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
@@ -4436,6 +4442,20 @@ void VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst)
     dst->nextIdx = src->nextIdx;
 }
 
+void VP_CopyNode(const vehicle_path_node_t* src, vehicle_node_t* dst)
+{
+    dst->mName = src->mName;
+    dst->mTarget = src->mTarget;
+    dst->speed = src->speed;
+    dst->lookAhead = src->lookAhead;
+    dst->script_noteworthy = src->script_noteworthy;
+    memcpy(dst->origin, src->origin, sizeof(dst->origin));
+    memcpy(dst->dir, src->dir, sizeof(dst->dir));
+    memcpy(dst->angles, src->angles, sizeof(dst->angles));
+    dst->length = src->length;
+    dst->nextIdx = src->nextIdx;
+}
+
 // ea: 0x00488280
 int G_SpawnVehicle(Entity* ent, const char* typeName, int /*unused*/)
 {
@@ -4502,6 +4522,7 @@ int G_SpawnVehicle(Entity* ent, const char* typeName, int /*unused*/)
 int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
                        int msec, int waitNode)
 {
+    int hitWaitNode = 0;
     if (vpp->endOfPath != 0)
     {
         if (vpp->switchNode[0].mName.mBlock == nullptr
@@ -4516,7 +4537,7 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
         int NodeIndex = VP_GetNodeIndex(switchNode->mName, nullptr);
         if (NodeIndex >= 0)
         {
-            VP_CopyNode(s_nodes[NodeIndex], &vpp->switchNode[0]);
+            VP_CopyNode(&vpp->switchNode[0], s_nodes[NodeIndex]);
         }
     }
     VP_GetLookAheadXYZ(vpp, vpp->lookPos);
@@ -4545,7 +4566,8 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
         vpp->origin[0] += v14 * lookDir[0];
         vpp->origin[1] += v14 * lookDir[1];
         vpp->origin[2] += v14 * lookDir[2];
-        VP_UpdatePathPos(pEnt, vpp, lookDir, overrideSpeed, waitNode);
+        hitWaitNode = VP_UpdatePathPos(pEnt, vpp, lookDir, overrideSpeed,
+                                       waitNode);
         VP_GetAngles(vpp, vpp->angles);
     }
     if (switchNode->mName.mBlock != nullptr
@@ -4554,9 +4576,9 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
     {
         int v18 = VP_GetNodeIndex(switchNode->mName, nullptr);
         if (v18 >= 0)
-            VP_CopyNode(s_nodes[v18], &vpp->switchNode[1]);
+            VP_CopyNode(&vpp->switchNode[1], s_nodes[v18]);
     }
-    return 0;
+    return hitWaitNode;
 }
 
 // ea: 0x00491980

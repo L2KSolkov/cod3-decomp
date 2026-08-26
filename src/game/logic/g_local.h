@@ -3450,7 +3450,9 @@ int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                      int maxcount, int contentmask);
 void G_Animscripted_Think(Entity* ent);
 void G_SetEntityOceanHeight(Entity* pEnt);
-int  ScriptMover_Updatemove(float speed, float time, math::Position3* dest);
+int  ScriptMover_Updatemove(const float* start, const float* target,
+                            int* savedRegs, trajectory_t* tr, float wait,
+                            float speed, float duration, const float* base);
 const float AngleNormalize180(float angle);
 const float AngleNormalize360(float angle);
 void DoorRotateStartOpen(Entity* ent);
@@ -4748,6 +4750,7 @@ void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  G_EntUnlink(Entity* ent);                  // g.o 0x460190
 void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, short dstNodeIdx);  // g.o 0x452A10
 void  VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst);  // g.o
+void  VP_CopyNode(const vehicle_path_node_t* src, vehicle_node_t* dst); // g.o
 void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                                   const math::Position3& vEnd, int iDamage,
                                   int iMOD);      // g.o 0x470D70
@@ -5262,6 +5265,7 @@ public:
                              const math::Position3& angles,
                              const math::Dir3& vel,
                              const math::Dir3& aVel);  // physics.o ?update_from_network@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@1@Z
+    static void debug_render_all();
     void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr

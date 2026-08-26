@@ -11,6 +11,107 @@ static int VehiclePathNextNode(const vehicle_node_t* node)
     return (node->nextIdx << 18) >> 18;
 }
 
+// ea: 0x00452010
+static float VP_GetSlide(const vehicle_pathpos_t* vpp)
+{
+    const vehicle_node_t* node = s_nodes[vpp->nodeIdx];
+    const int packed = node->nextIdx;
+    const int nextIndex = VehiclePathNextNode(node);
+    if (nextIndex < 0)
+        return (packed & 0x30000000) != 0 ? 1.0f : 0.0f;
+
+    const bool packedDirection = ((4 * packed) >> 30) != 0;
+    const bool nextHasAngles = (s_nodes[nextIndex]->nextIdx & 0x30000000) != 0;
+    if (packedDirection)
+        return nextHasAngles ? 1.0f : 1.0f - vpp->frac;
+    return nextHasAngles ? vpp->frac : 0.0f;
+}
+
+// ea: 0x0045EDB0
+int VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
+                     bool overrideSpeed, int waitNode)
+{
+    const float originalFrac = vpp->frac;
+    int currentIndex = vpp->nodeIdx;
+    vehicle_node_t* current = s_nodes[currentIndex];
+    int hitWaitNode = 0;
+    int count = 0;
+
+    if (s_numNodes > 0)
+    {
+        while (true)
+        {
+            ++count;
+            current = s_nodes[currentIndex];
+            const int nextIndex = VehiclePathNextNode(current);
+            if (nextIndex < 0 || current->length == 0.0f || hitWaitNode != 0)
+            {
+                vpp->frac = 0.0f;
+                break;
+            }
+
+            const vehicle_node_t* next = s_nodes[nextIndex];
+            const vehicle_info_t* info = nullptr;
+            if (pEnt != nullptr && pEnt->scr_vehicle != nullptr)
+                info = s_vehicleInfos[pEnt->scr_vehicle->infoIdx];
+
+            float fromDistance = dir[0] * (vpp->origin[0] - current->origin[0])
+                               + dir[1] * (vpp->origin[1] - current->origin[1])
+                               + dir[2] * (vpp->origin[2] - current->origin[2]);
+            if (info != nullptr && info->type == 3 && fromDistance < 0.0f)
+                fromDistance = 0.0f;
+            const float toDistance = dir[0] * (next->origin[0] - vpp->origin[0])
+                                   + dir[1] * (next->origin[1] - vpp->origin[1])
+                                   + dir[2] * (next->origin[2] - vpp->origin[2]);
+
+            if (fromDistance == 0.0f && toDistance == 0.0f)
+            {
+                vpp->frac = 0.0f;
+                break;
+            }
+            if (fromDistance >= 0.0f && toDistance >= 0.0f)
+            {
+                vpp->frac = fromDistance / (toDistance + fromDistance);
+                break;
+            }
+
+            if (fabsf(toDistance) <= 256.0f
+                || (info != nullptr && info->type == 3))
+            {
+                currentIndex = nextIndex;
+                if (currentIndex == waitNode)
+                    hitWaitNode = 1;
+            }
+            if (count >= s_numNodes)
+                break;
+        }
+    }
+
+    vpp->nodeIdx = static_cast<int16_t>(currentIndex);
+    vpp->endOfPath = (current->nextIdx & 0x2000) != 0;
+    if (s_numNodes <= 0)
+        vpp->frac = originalFrac;
+
+    if (!overrideSpeed)
+    {
+        const vehicle_node_t* node = s_nodes[currentIndex];
+        const int nextIndex = VehiclePathNextNode(node);
+        vpp->speed = nextIndex >= 0
+            ? (s_nodes[nextIndex]->speed - node->speed) * vpp->frac
+                + node->speed
+            : node->speed;
+    }
+
+    const vehicle_node_t* node = s_nodes[currentIndex];
+    const int nextIndex = VehiclePathNextNode(node);
+    vpp->lookAhead = nextIndex >= 0
+        ? (s_nodes[nextIndex]->lookAhead - node->lookAhead) * vpp->frac
+            + node->lookAhead
+        : node->lookAhead;
+    vpp->slide = VP_GetSlide(vpp);
+    return hitWaitNode;
+}
+
 // ea: 0x004521F0
 void VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ)
 {

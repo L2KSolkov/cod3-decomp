@@ -816,7 +816,9 @@ void reserved_dlist<AeThreadState>::delete_all()
         m_head = m_next;
         m_next = m_next->m_next;
         if (current != nullptr)
-            delete reserved_dlist<AeThreadState>::node_to_object(current);
+            delete reserved_dlist<AeThreadState>::node_to_object(
+                reinterpret_cast<reserved_dlist<AeThreadState>::dlist_node*>(
+                    current));
     }
     p_m_head->m_next = reinterpret_cast<dlist_node*>(p_m_end);
     this->m_tail = p_m_head;
@@ -5292,7 +5294,9 @@ AeThread::~AeThread()
         node = next;
         next = next->mNext;
         if (current != nullptr)
-            delete (AeThreadState*)current;
+            delete reserved_dlist<AeThreadState>::node_to_object(
+                reinterpret_cast<reserved_dlist<AeThreadState>::dlist_node*>(
+                    current));
     }
     headField->mNext = reinterpret_cast<AeDListNode*>(endField);
     mStateControllers.m_tail = headField;
