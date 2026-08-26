@@ -2424,13 +2424,13 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsig
     }
     return (D3DSurface*)Surface;
 }
-void* __stdcall D3DTexture_LockRect(D3DTexture* Texture, unsigned int, D3DLOCKED_RECT* LockedRect,
+void* __stdcall D3DTexture_LockRect(D3DTexture* Texture, unsigned int Level, D3DLOCKED_RECT* LockedRect,
                                     const void*, unsigned int) {
     nullD3DInfo* Info = nullD3DTextureInfo((D3DBaseTexture*)Texture);
     if (Info == NULL || LockedRect == NULL) return NULL;
     if (Info->NativeTexture != NULL) {
         COD3_D3D9_LOCKED_RECT NativeRect = {};
-        if (SUCCEEDED(Info->NativeTexture->LockRect(0, &NativeRect, NULL, 0))) {
+        if (SUCCEEDED(Info->NativeTexture->LockRect(Level, &NativeRect, NULL, 0))) {
             LockedRect->Pitch = NativeRect.Pitch;
             LockedRect->pBits = NativeRect.pBits;
             return NativeRect.pBits;
