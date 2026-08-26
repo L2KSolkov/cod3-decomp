@@ -2686,15 +2686,14 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
     // supplies the equivalent texture-times-diffuse base pass.
     if (gD3D9Device == NULL)
         return;
-    // The pixel-shader definition is the complete NV2A combiner program.
-    // Prefer the exact translator now that C0/C1 and final-combiner inputs are
-    // modeled.  The hand-written world variants remain a compatibility
-    // fallback for definitions the generic translator cannot represent yet.
-    IDirect3DPixelShader9* CombinerShader =
-        nullD3DCompileNV2ACombinerPixelShader(gD3D9Device, Definition);
-    gD3D9NV2APixelShaderActive = CombinerShader != NULL;
-    if (CombinerShader != NULL) {
-        gD3D9Device->SetPixelShader(CombinerShader);
+    // Keep the verified world definitions on their direct D3D9 path.  The
+    // generic NV2A translator remains the fallback for definitions that are
+    // not covered by the built-in world variants.
+    IDirect3DPixelShader9* WorldShader =
+        nullD3DCompileNV2AWorldPixelShader(gD3D9Device, Definition);
+    gD3D9NV2APixelShaderActive = WorldShader != NULL;
+    if (WorldShader != NULL) {
+        gD3D9Device->SetPixelShader(WorldShader);
         DWORD FogColor = 0;
         gD3D9Device->GetRenderState(COD3_D3D9_RS_FOGCOLOR, &FogColor);
         const float FogColorF[4] = {
@@ -2708,11 +2707,11 @@ void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* Definit
         gD3D9Device->SetPixelShaderConstantF(31, FogState, 1);
         return;
     }
-    IDirect3DPixelShader9* WorldShader =
-        nullD3DCompileNV2AWorldPixelShader(gD3D9Device, Definition);
-    gD3D9NV2APixelShaderActive = WorldShader != NULL;
-    if (WorldShader != NULL) {
-        gD3D9Device->SetPixelShader(WorldShader);
+    IDirect3DPixelShader9* CombinerShader =
+        nullD3DCompileNV2ACombinerPixelShader(gD3D9Device, Definition);
+    gD3D9NV2APixelShaderActive = CombinerShader != NULL;
+    if (CombinerShader != NULL) {
+        gD3D9Device->SetPixelShader(CombinerShader);
         DWORD FogColor = 0;
         gD3D9Device->GetRenderState(COD3_D3D9_RS_FOGCOLOR, &FogColor);
         const float FogColorF[4] = {
