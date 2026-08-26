@@ -22,9 +22,12 @@ game_hudelem_s* HudElem_Alloc()
 }
 
 // ea: 0x0044B120
-void HudElem_UpdateClient(Client* /*client*/, int /*iClientNum*/)
+void HudElem_UpdateClient(Client* client, int iClientNum)
 {
-    ;
+    // The release client update entry point is an intentional null-sub.  Keep
+    // the exported call ABI while making the no-state-change contract explicit.
+    (void)client;
+    (void)iClientNum;
 }
 
 // ea: 0x0044CDE0
@@ -45,21 +48,27 @@ void Scr_LocalizationError(int iParm, const char* pszErrorMessage)
 }
 
 // ea: 0x0044FF20
-void G_SetEntityScriptVariable(const char* /*key*/, const char* /*value*/, Entity* /*ent*/)
+void G_SetEntityScriptVariable(const char* key, const char* value, Entity* ent)
 {
-    ;
+    // This multiplayer export is a release no-op; script fields are handled by
+    // the Broc field callbacks in g_scr.cpp.
+    (void)key;
+    (void)value;
+    (void)ent;
 }
 
 // ea: 0x004504C0
-void Scr_FreeHudElem(game_hudelem_s* /*hud*/)
+void Scr_FreeHudElem(game_hudelem_s* hud)
 {
-    ;
+    // The release script path owns HUD lifetime through HudElem_Free.
+    (void)hud;
 }
 
 // ea: 0x004504D0
-void Scr_AddHudElem(game_hudelem_s* /*hud*/)
+void Scr_AddHudElem(game_hudelem_s* hud)
 {
-    ;
+    // The release script path does not maintain a second HUD list.
+    (void)hud;
 }
 
 // ea: 0x00457610

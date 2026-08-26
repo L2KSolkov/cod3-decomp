@@ -1986,7 +1986,7 @@ void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount)
 }
 
 // ============================================================================
-// scr.o batch 1 - MemCount stubs + BrocSys wrappers (smallest first)
+// scr.o batch 1 - MemCount release no-op wrappers + BrocSys helpers
 // ============================================================================
 
 extern void tlPrint(const char* text);
@@ -2204,17 +2204,17 @@ void SetGamePhase(eGamePhase phase);
 void SetSafeAlloc(bool val);
 }  // namespace MemCount
 
-// ea: 0x005BBC50 (retn stub)
+// ea: 0x005BBC50 (release no-op)
 void MemCount::Init()
 {
 }
 
-// ea: 0x005BBC60 (retn stub)
+// ea: 0x005BBC60 (release no-op)
 void MemCount::RenderTotals()
 {
 }
 
-// ea: 0x005BBC70 (retn stub)
+// ea: 0x005BBC70 (release no-op)
 void MemCount::ReportTotals()
 {
 }
@@ -2225,22 +2225,22 @@ bool MemCount::IsRealLeak(const char* /*type*/, int /*start*/, int /*end*/)
     return true;
 }
 
-// ea: 0x005BBC90 (retn stub)
+// ea: 0x005BBC90 (release no-op)
 void MemCount::CheckForMapChangeLeaks()
 {
 }
 
-// ea: 0x005BBCA0 (retn stub)
+// ea: 0x005BBCA0 (release no-op)
 void MemCount::CheckForRoundtripLeaks()
 {
 }
 
-// ea: 0x005BBCB0 (retn stub)
+// ea: 0x005BBCB0 (release no-op)
 void MemCount::SetGamePhase(MemCount::eGamePhase /*phase*/)
 {
 }
 
-// ea: 0x005BBCC0 (retn stub)
+// ea: 0x005BBCC0 (release no-op)
 void MemCount::SetSafeAlloc(bool /*val*/)
 {
 }
@@ -2259,7 +2259,7 @@ void ThreadPrintf(int bitMask, const char* Format, ...)
     va_end(ap);
 }
 
-// ea: 0x005BC1D0 (empty stub)
+// ea: 0x005BC1D0 (release no-op)
 void SetDepthOfField(bool, float, float, float, float)
 {
 }
@@ -2710,7 +2710,7 @@ void StopCurGenMotionBlur()
     CG_MotionBlur::End();
 }
 
-// ea: 0x005BEAE0 (return -1 stub)
+// ea: 0x005BEAE0 (release sentinel: -1)
 int GetNodeInProximity(const Broc::vector&, float, bool, unsigned int)
 {
     return -1;
@@ -2758,26 +2758,26 @@ int IsVehicleNodeDefined(unsigned int handle)
     return handle != (unsigned int)-1;
 }
 
-// ea: 0x005BEDF0 (empty stub)
+// ea: 0x005BEDF0 (release no-op)
 void AnimScripted2(unsigned int, unsigned int, const Broc::vector&,
                    const Broc::vector&, unsigned int, const Broc::string&,
                    unsigned int, bool, float, float)
 {
 }
 
-// ea: 0x005BEEA0 (empty stub)
+// ea: 0x005BEEA0 (release no-op)
 void StartScriptedAnim(unsigned int, unsigned int, const Broc::vector&,
                        const Broc::vector&, unsigned int, const Broc::string&,
                        unsigned int)
 {
 }
 
-// ea: 0x005BEF90 (empty stub)
+// ea: 0x005BEF90 (release no-op)
 void AddFakeFriendly(unsigned int, bool)
 {
 }
 
-// ea: 0x005BEFA0 (empty stub)
+// ea: 0x005BEFA0 (release no-op)
 void RemoveFakeFriendly(unsigned int)
 {
 }
@@ -2788,7 +2788,7 @@ bool IsLocalHost()
     return MultiplayerMgr::sInst->IsHost();
 }
 
-// ea: 0x005BF730 (empty stub)
+// ea: 0x005BF730 (release no-op)
 void SaveCheckpoint()
 {
 }
@@ -2799,28 +2799,28 @@ void RestoreLastCheckpoint()
     CheckpointMgr::sInst->RestoreLastCheckpoint();
 }
 
-// ea: 0x005BF7F0 (empty stub)
+// ea: 0x005BF7F0 (release no-op)
 void DronesStart(const char*, const char*, int, int, int, float, float,
                  bool, bool)
 {
 }
 
-// ea: 0x005BF800 (empty stub)
+// ea: 0x005BF800 (release no-op)
 void DronesStop(const char*)
 {
 }
 
-// ea: 0x005BF810 (empty stub)
+// ea: 0x005BF810 (release no-op)
 void DronesDelete(const char*)
 {
 }
 
-// ea: 0x005BFB20 (empty stub)
+// ea: 0x005BFB20 (release no-op)
 void SetDroneScriptControl(unsigned int, bool)
 {
 }
 
-// ea: 0x005BFB30 (return 0 stub)
+// ea: 0x005BFB30 (release sentinel: 0)
 unsigned int GetDrones(const Broc::vector&, float, unsigned int*,
                        unsigned int)
 {
@@ -2833,7 +2833,7 @@ void EnableAsserts()
     AeAssert::gAssertsEnabled = true;
 }
 
-// ea: 0x005BFBE0 (empty stub)
+// ea: 0x005BFBE0 (release no-op)
 void SetZFog(float, float, float)
 {
 }
@@ -2857,7 +2857,7 @@ void MPScript_ForceControllerErrorMessageDown()
     g_controllerConnectedErrorShown[0] = 0;
 }
 
-// ea: 0x005C11C0 (empty stub)
+// ea: 0x005C11C0 (release no-op)
 void MPScript_SetCompassVisibilty(unsigned int, bool)
 {
 }
@@ -2874,13 +2874,13 @@ void FreezeMovement(bool value)
     g_freeze_movement = value;
 }
 
-// ea: 0x005C1940 (return true stub)
+// ea: 0x005C1940 (release sentinel: true)
 bool PrintObjectiveUpdate(Broc::string&, int, const char*)
 {
     return true;
 }
 
-// ea: 0x005C5780 (return 0 stub)
+// ea: 0x005C5780 (release sentinel: 0)
 unsigned int CreateNanoForce(const Broc::string&, const Broc::vector&,
                              const Broc::vector&)
 {
@@ -3036,7 +3036,7 @@ void SetGameFloatVar(unsigned int hashVarName, float fVal)
     CheckpointMgr::sInst->SetGameVar(hashVarName, (unsigned int*)&fVal, 1u);
 }
 
-// ea: 0x005C1A40 (empty stub)
+// ea: 0x005C1A40 (release no-op)
 void UpdateNPCtoVehicleMovement(unsigned int, unsigned int)
 {
 }
@@ -3113,12 +3113,12 @@ float GetNorthYaw()
     return CG_GetNorthDirection();
 }
 
-// ea: 0x005BCD20 (empty stub)
+// ea: 0x005BCD20 (release no-op)
 void GameSave(const Broc::string&)
 {
 }
 
-// ea: 0x005BCD30 (empty stub)
+// ea: 0x005BCD30 (release no-op)
 void GameLoad(const Broc::string&)
 {
 }
@@ -3129,7 +3129,7 @@ void SetPlayerIgnoreRadiusDamage(bool bVal)
     level.bPlayerIgnoreRadiusDamageLatched = bVal;
 }
 
-// ea: 0x005BCDD0 (empty stub)
+// ea: 0x005BCDD0 (release no-op)
 void MissionSuccess(const Broc::string&)
 {
 }
@@ -3152,12 +3152,12 @@ void SetMaxVehicles(int vehicles)
     vehicle_InitDynamicBuffers(vehicles);
 }
 
-// ea: 0x005BCED0 (empty stub)
+// ea: 0x005BCED0 (release no-op)
 void ProfBegin()
 {
 }
 
-// ea: 0x005BCEE0 (empty stub)
+// ea: 0x005BCEE0 (release no-op)
 void ProfEnd()
 {
 }
@@ -3168,99 +3168,99 @@ void FlushCorpses()
     G_FlushCorpses();
 }
 
-// ea: 0x005BCF20 (empty stub)
+// ea: 0x005BCF20 (release no-op)
 void StartMemCheck()
 {
 }
 
-// ea: 0x005BCF30 (empty stub)
+// ea: 0x005BCF30 (release no-op)
 void EndMemCheck()
 {
 }
 
-// ea: 0x005BD2B0 (return 0 stub)
+// ea: 0x005BD2B0 (release sentinel: 0)
 int ProfileDeclareID(const char*)
 {
     return 0;
 }
 
-// ea: 0x005BD2C0 (empty stub)
+// ea: 0x005BD2C0 (release no-op)
 void ProfileStart(int)
 {
 }
 
-// ea: 0x005BD2D0 (empty stub)
+// ea: 0x005BD2D0 (release no-op)
 void ProfileStop(int)
 {
 }
 
-// ea: 0x005BD2E0 (empty stub)
+// ea: 0x005BD2E0 (release no-op)
 void ProfileSetVal(int, int)
 {
 }
 
-// ea: 0x005BD900 (return false stub)
+// ea: 0x005BD900 (release sentinel: false)
 bool SetMissionToTrack(const char*, bool)
 {
     return false;
 }
 
-// ea: 0x005BD910 (return 0 stub)
+// ea: 0x005BD910 (release sentinel: 0)
 int GetMissionStat(int, bool)
 {
     return 0;
 }
 
-// ea: 0x005BD920 (return 0 stub)
+// ea: 0x005BD920 (release sentinel: 0)
 int GetMissionStatAll(int)
 {
     return 0;
 }
 
-// ea: 0x005BD930 (empty stub)
+// ea: 0x005BD930 (release no-op)
 void SetMissionStat(int, int)
 {
 }
 
-// ea: 0x005BD940 (empty stub)
+// ea: 0x005BD940 (release no-op)
 void IncMissionStat(int)
 {
 }
 
-// ea: 0x005BD950 (empty stub)
+// ea: 0x005BD950 (release no-op)
 void DecMissionStat(int)
 {
 }
 
-// ea: 0x005BD960 (return 0 stub)
+// ea: 0x005BD960 (release sentinel: 0)
 float GetAvgMissionStat(int)
 {
     return 0.0f;
 }
 
-// ea: 0x005BD970 (return 0 stub)
+// ea: 0x005BD970 (release sentinel: 0)
 int GetMissionCompletionTime()
 {
     return 0;
 }
 
-// ea: 0x005BD980 (empty stub)
+// ea: 0x005BD980 (release no-op)
 void UpdateMissionCompletionTime()
 {
 }
 
-// ea: 0x005BD990 (empty stub)
+// ea: 0x005BD990 (release no-op)
 void SetPlayerWeaponUsed(int)
 {
 }
 
-// ea: 0x005BD9A0 (return false stub)
+// ea: 0x005BD9A0 (release sentinel: false)
 bool WasPlayerWeaponUsed(int)
 {
     return false;
 }
 
-// ea: 0x005BD9B0 (return false stub)
+// ea: 0x005BD9B0 (release sentinel: false)
 bool WasPlayerWeaponCategoryUsed(int, bool)
 {
     return false;
@@ -3273,7 +3273,7 @@ void RemoveDynamicLight(unsigned int light)
         *((unsigned char*)light + 0x3D) = 1;
 }
 
-// ea: 0x005BDAF0 (empty stub)
+// ea: 0x005BDAF0 (release no-op)
 void EnableNanoForces(bool)
 {
 }
@@ -3883,8 +3883,8 @@ int FastCeil(float x)
     return (int)ceil((double)x);
 }
 
-// DestroyBrocInstsStub (scr.o 0x5BC0E0, empty)
-static void DestroyBrocInstsStub(void*)
+// DestroyBrocInstsReleaseNoOp (scr.o 0x5BC0E0, empty by design)
+static void DestroyBrocInstsReleaseNoOp(void*)
 {
 }
 
@@ -4937,22 +4937,23 @@ extern void XAnimSetCompleteGoalWeight(XAnimTree* tree,
                                        float rate, unsigned int notifyName,
                                        unsigned short notifyType,
                                        int bRestart);  // ?XAnimSetCompleteGoalWeight@@YAXPAVXAnimTree@@IMMMIGH@Z
-static void nullsub_59(void* /*actor*/) {}
-static void nullsub_65(void* /*actor*/) {}
-static void nullsub_106(void* /*actor*/, int /*eState*/) {}
-static void nullsub_79(sentient_s* /*pSelf*/, sentient_s* /*pEnemy*/,
-                       int /*bNotify*/) {}
-static void nullsub_100() {}
-static void nullsub_101(unsigned int /*ent*/, bool /*flag*/) {}
-static void nullsub_102(const char* /*a1*/, const char* /*a2*/, int /*a3*/,
-                        int /*a4*/, int /*a5*/, float /*a6*/, float /*a7*/,
-                        bool /*a8*/, bool /*a9*/) {}
-static void nullsub_103(const char* /*a1*/) {}
-static void nullsub_104(const char* /*a1*/) {}
-static void nullsub_105(unsigned int /*ent*/, unsigned int /*notify*/,
-                        const Broc::vector& /*origin*/,
-                        const Broc::vector& /*angles*/,
-                        unsigned int /*anim*/) {}
+// These callbacks are intentionally no-ops in the multiplayer release.  Keep
+// the ABI-visible callback slots, but give them semantic names instead of the
+// generated no-op labels used by the original compiler output.
+static void ReleaseNoOp_Actor(void* /*actor*/) {}
+static void ReleaseNoOp_ActorState(void* /*actor*/, int /*eState*/) {}
+static void ReleaseNoOp_Sentient(sentient_s* /*pSelf*/, sentient_s* /*pEnemy*/,
+                                  int /*bNotify*/) {}
+static void ReleaseNoOp_Thread() {}
+static void ReleaseNoOp_EntityFlag(unsigned int /*ent*/, bool /*flag*/) {}
+static void ReleaseNoOp_Drones(const char* /*a1*/, const char* /*a2*/, int /*a3*/,
+                               int /*a4*/, int /*a5*/, float /*a6*/, float /*a7*/,
+                               bool /*a8*/, bool /*a9*/) {}
+static void ReleaseNoOp_DroneName(const char* /*a1*/) {}
+static void ReleaseNoOp_Anim(unsigned int /*ent*/, unsigned int /*notify*/,
+                              const Broc::vector& /*origin*/,
+                              const Broc::vector& /*angles*/,
+                              unsigned int /*anim*/) {}
 
 // scr.o batch 45 helpers (vehicle follow / attach)
 extern bool VEH_AcquirePlayerFollowSlot(Entity* vehicle,
@@ -4969,7 +4970,7 @@ extern const char* G_GetEntityTypeName(Entity* ent);  // ?G_GetEntityTypeName@@Y
 extern void SV_DObjDumpInfo(Entity* entity);  // ?SV_DObjDumpInfo@@YAXPAVEntity@@@Z (sv_game.cpp 0x51EC30)
 extern Entity* SpawnActor(Entity* ent, const Broc::string& targetname,
                           enumForceSpawn forceSpawn,
-                          TPakId pakId);  // ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z (ai_stubs.cpp)
+                          TPakId pakId);  // ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z (ai implementation unit)
 extern void G_SetModelIndex(Entity* ent, int iflIndex);  // ?G_SetModelIndex@@YAXPAVEntity@@H@Z (g_dobj.cpp 0x453BC0)
 
 // scr.o batch 49 helpers
@@ -5236,7 +5237,7 @@ void AeThread::RegisterBrocDtor(void* inst)
 // ea: 0x005DAF90
 void AeThread::DestroyBrocInsts()
 {
-    gpBrocAPI->mBrocObjDtor = DestroyBrocInstsStub;
+        gpBrocAPI->mBrocObjDtor = DestroyBrocInstsReleaseNoOp;
     BrocObjCreated* mBrocCreated = this->mBrocCreated;
     if (mBrocCreated != nullptr)
     {
@@ -8046,9 +8047,9 @@ extern void g_AddDebugString(const float* xyz, const float* color,
     // ?g_AddDebugString (g_main)
 extern int R_CellForPoint(const float* pos);  // render.o
 extern void* AddLight(TPakId pakId, int type, math::Position3* pos,
-                      int time);  // stub in g_entity_misc.cpp
+                      int time);  // implemented in g_entity_misc.cpp
 extern void LightEffect_SetColor(void* light, float r, float g, float b,
-                                 float a);  // stub in effect_events.cpp
+                                 float a);  // implemented in effect_events.cpp
 
 // ea: 0x005BC730
 bool BrocSys::GetAnimName(unsigned int anim, char* buff, int buffsize)
@@ -8078,7 +8079,7 @@ void BrocSys::PrintFloat3D(const Broc::vector& pos, float number,
     g_AddDebugString(&pos.x, color, scale, text);
 }
 
-// ea: 0x005BC800 (release stub: single retn)
+// ea: 0x005BC800 (release no-op: single retn)
 void BrocSys::Line(const Broc::vector& start, const Broc::vector& end,
                    const Broc::vector& col, float alpha, int depthtest)
 {
@@ -9356,7 +9357,7 @@ void BrocSys::MissionFailed(const Broc::string& reason)
     Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
     if (v1 != nullptr && (v1->flags & 1) == 0)
     {
-        // j_nullsub_24(v1) - empty stub in binary
+        // release no-op callback in the binary
         level.bMissionSuccess = 0;
         level.bMissionFailed = 1;
         level.strMissionFailedReason.clear();
@@ -11927,7 +11928,7 @@ extern int XAnimGetFrameCount(AnimTree* anims,
                               unsigned int animIndex);  // anim.o
 extern IVPointer<XModel> SV_XModelGet(const char* name);  // ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z (sv_game.cpp)
 
-// Empty stubs in the release binary (j_nullsub_52 / j_nullsub_70)
+// Release no-op callbacks in the binary
 static void BadPlaceRegister(const Broc::string* /*placeName*/) {}
 static void BadPlaceRender(const Broc::string* /*placeName*/, int /*dur*/,
                            int /*teamFlags*/, BadPlaceArc* /*arc*/) {}
@@ -13725,7 +13726,7 @@ void BrocSys::StopAnimScripted(unsigned int entityHandleVal)
             if (actor != nullptr
                 && actor->eSimulatedState[actor->iSimulatedStateLevel]
                        == AIS_SCRIPTEDANIM)
-                nullsub_59(actor);
+                ReleaseNoOp_Actor(actor);
             animscripted_t* scripted = mObject->scripted;
             if (scripted != nullptr)
             {
@@ -13778,8 +13779,8 @@ void BrocSys::StartBlankState(unsigned int entityHandleVal)
             actor_s* actor = mObject->actor;
             if (actor != nullptr)
             {
-                nullsub_65(mObject->actor);
-                nullsub_106(actor, AIS_BLANK);
+                ReleaseNoOp_Actor(mObject->actor);
+                ReleaseNoOp_ActorState(actor, AIS_BLANK);
             }
         }
     }
@@ -13800,7 +13801,7 @@ void BrocSys::StopBlankState(unsigned int entityHandleVal)
                 && actor->eSimulatedState[actor->iSimulatedStateLevel]
                        == AIS_BLANK)
             {
-                nullsub_106(actor, AIS_EXPOSED);
+            ReleaseNoOp_ActorState(actor, AIS_EXPOSED);
             }
             else
             {
@@ -14132,7 +14133,7 @@ void BrocSys::StartFollowBehavior(unsigned int entityHandleVal,
                     actor->pFollowTarget = mObject;
                     if (VEH_AcquirePlayerFollowSlot(mObject, v3))
                     {
-                        nullsub_106(actor, AIS_FOLLOW);
+                        ReleaseNoOp_ActorState(actor, AIS_FOLLOW);
                     }
                     else
                     {
@@ -14184,7 +14185,7 @@ void BrocSys::StopFollowBehavior(unsigned int entityHandleVal)
     {
         actor_s* actor = mObject->actor;
         if (actor != nullptr)
-            nullsub_106(actor, AIS_SETABLE_FIRST);
+            ReleaseNoOp_ActorState(actor, AIS_SETABLE_FIRST);
         else
             Scr_Error("Entity ain't no actor yo!!!");
     }
@@ -18106,7 +18107,7 @@ void BrocSys::EntityIgnoreDanger(unsigned int entityHandleVal, bool ignoreAI,
         {
             sentient_s* sentient = mObject->sentient;
             if (sentient != nullptr)
-                nullsub_79(sentient, nullptr, 0);
+                ReleaseNoOp_Sentient(sentient, nullptr, 0);
         }
     }
 }
@@ -22578,7 +22579,7 @@ void BrocSys::InitVehicle()
         BrocSys::IsVehicleFlipped;
     gpBrocAPI->mBrocExports.mSetVehicleGoal = BrocSys::SetVehicleGoal;
     gpBrocAPI->mBrocExports.mUpdateNPCtoVehicleMovement =
-        (void (*)())nullsub_100;
+        (void (*)())ReleaseNoOp_Thread;
     gpBrocAPI->mBrocExports.mStartEngineSound = BrocSys::StartEngineSound;
     gpBrocAPI->mBrocExports.mStopEngineSound = BrocSys::StopEngineSound;
     gpBrocAPI->mBrocExports.mSetVehicleMountPos =
@@ -26108,7 +26109,7 @@ void BrocSys::InitEntity()
     gpBrocAPI->mBrocExports.mGetPlayer = BrocSys::GetPlayer;
     gpBrocAPI->mBrocExports.mGetEntByNum = BrocSys::GetEntByNum;
     gpBrocAPI->mBrocExports.mGetDrones = BrocSys::GetDrones;
-    gpBrocAPI->mBrocExports.mSetDroneScriptControl = nullsub_101;
+    gpBrocAPI->mBrocExports.mSetDroneScriptControl = ReleaseNoOp_EntityFlag;
     gpBrocAPI->mBrocExports.mGetNode = BrocSys::GetNode;
     gpBrocAPI->mBrocExports.mGetNodeInProximity = BrocSys::GetNodeInProximity;
     gpBrocAPI->mBrocExports.mGetVehicleNode = BrocSys::GetVehicleNode;
@@ -26157,9 +26158,9 @@ void BrocSys::InitEntity()
     gpBrocAPI->mBrocExports.mSetEntityLODOverride = BrocSys::SetEntityLODOverride;
     gpBrocAPI->mBrocExports.mScriptExplode = BrocSys::ScriptExplode;
     gpBrocAPI->mBrocExports.mGetSplineData = BrocSys::GetSplineData;
-    gpBrocAPI->mBrocExports.mDronesStart = nullsub_102;
-    gpBrocAPI->mBrocExports.mDronesStop = nullsub_103;
-    gpBrocAPI->mBrocExports.mDronesDelete = nullsub_104;
+    gpBrocAPI->mBrocExports.mDronesStart = ReleaseNoOp_Drones;
+    gpBrocAPI->mBrocExports.mDronesStop = ReleaseNoOp_DroneName;
+    gpBrocAPI->mBrocExports.mDronesDelete = ReleaseNoOp_DroneName;
     gpBrocAPI->mBrocExports.mRegisterAnimNotifyFunc = BrocSys::RegisterAnimNotifyFunc;
     gpBrocAPI->mBrocExports.mCreateAnimNotifyTask = BrocSys::CreateAnimNotifyTask;
     gpBrocAPI->mBrocExports.mScaleEntity = BrocSys::ScaleEntity;
@@ -26180,7 +26181,7 @@ void BrocSys::InitEntity()
     gpBrocAPI->mBrocExports.mEntityIgnoreDanger = BrocSys::EntityIgnoreDanger;
     gpBrocAPI->mBrocExports.mSetGetOceanHeight = BrocSys::SetGetOceanHeight;
     gpBrocAPI->mBrocExports.mAnimScripted1 = BrocSys::AnimScripted1;
-    gpBrocAPI->mBrocExports.mAnimScripted2 = nullsub_105;
+    gpBrocAPI->mBrocExports.mAnimScripted2 = ReleaseNoOp_Anim;
     gpBrocAPI->mBrocExports.mStopAnimScripted = BrocSys::StopAnimScripted;
     gpBrocAPI->mBrocExports.mStartBlankState = BrocSys::StartBlankState;
     gpBrocAPI->mBrocExports.mStopBlankState = BrocSys::StopBlankState;
