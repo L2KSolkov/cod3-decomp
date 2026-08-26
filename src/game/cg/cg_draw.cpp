@@ -271,6 +271,10 @@ float dword_F63550[4 * 1580];
 float dword_F63560[4 * 1580];
 float dword_F63564[4 * 1580];
 float dword_F63568[4 * 1580];
+int dword_F63580[4 * 1580];
+int dword_F635B8[4 * 1580];
+unsigned int dword_F635C0[4 * 1580];
+unsigned char unk_F63658[4 * 6320];
 float unk_F63634[4 * 1580];
 float dword_F63640[4 * 1580];
 float dword_F64068[4 * 1580];
@@ -300,6 +304,11 @@ int dword_F62958[4 * 1580];
 int dword_F63554[4 * 1580];
 int dword_F63558[4 * 1580];
 int dword_F63584[4 * 1580];
+int dword_F63B90[4 * 1580];
+int dword_F63B94[4 * 1580];
+float dword_F63B98[4 * 1580];
+float dword_F63B9C[4 * 1580];
+float dword_F63BA0[4 * 1580];
 int dword_F63B34[4 * 1580];
 int dword_F63BA4[4 * 1580];
 int dword_F63BA8[4 * 1580];
@@ -491,7 +500,7 @@ namespace LocalClient { extern int FirstLocalClientIndex(void); }
 extern int G_GetServerSnapTime();
 extern int CG_UpdateCvars();
 extern int CG_ProcessSnapshots();
-extern int CG_PredictPlayerState_Internal();  // defined in cg_view.cpp
+extern void CG_PredictPlayerState_Internal();  // defined in cg_view.cpp
 struct shellshock_parms_t;
 extern void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
                                 int duration);

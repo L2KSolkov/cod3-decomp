@@ -14,12 +14,54 @@
 #include <stdlib.h>
 #include <string.h>
 
-// cg_local.h carries the cg-side PlayerState mirror, while the client
-// command type is shared by cl.o/bg_pmove.o through this ABI-compatible
-// 0x30-byte declaration.
+// cg_local.h carries the cg-side PlayerState mirror.  Keep the command's
+// release 0x30-byte field layout here without importing player_types.h (which
+// declares a separate full PlayerState type used by game.o).
 struct usercmd_s {
-    unsigned char bytes[0x30];
+    int serverTime;
+    int buttons;
+    int weapon;
+    int angles[3];
+    char forwardmove;
+    char rightmove;
+    char upmove;
+    unsigned char _pad1B;
+    float gunPitch;
+    float gunYaw;
+    float gunXOfs;
+    float gunYOfs;
+    float gunZOfs;
 };
+static_assert(sizeof(usercmd_s) == 0x30, "cg usercmd_s size mismatch");
+
+struct cg_pmove_abi {
+    PlayerState* ps;
+    usercmd_s cmd;
+    usercmd_s oldcmd;
+    int tracemask;
+    unsigned char _pad68[0xD0];
+    int pmove_fixed;
+    int pmove_msec;
+    void (__cdecl* trace)(trace_t*, const math::Position3&,
+                          const math::Position3&, const math::Position3&,
+                          const math::Position3&,
+                          const collision_context_t&);
+    void (__cdecl* boxtrace)(trace_t*, const math::Position3&,
+                             const math::Position3&, const math::Position3&,
+                             const math::Position3&,
+                             const collision_context_t&);
+    void (__cdecl* capsuletrace)(trace_t*, const math::Position3&,
+                                 const math::Position3&,
+                                 const math::Position3&,
+                                 const math::Position3&,
+                                 const collision_context_t&);
+    int (__cdecl* pointcontents)(const math::Position3&,
+                                 const collision_context_t&);
+};
+static_assert(offsetof(cg_pmove_abi, pmove_fixed) == 0x138,
+              "cg pmove fixed offset mismatch");
+static_assert(offsetof(cg_pmove_abi, trace) == 0x140,
+              "cg pmove trace offset mismatch");
 
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
@@ -2996,8 +3038,32 @@ void CG_CalculateWeaponPosition(float* origin)
 extern void CG_InterpolateEntityOrigin(Entity* cent);
 extern void CG_InterpolateEntityAngles(Entity* cent);
 
+extern int dword_F63580[4 * 1580];
+extern float dword_F63564[4 * 1580];
+extern float dword_F63568[4 * 1580];
+extern int dword_F63558[4 * 1580];
+extern int dword_F63584[4 * 1580];
+extern int dword_F635B8[4 * 1580];
+extern unsigned int dword_F635C0[4 * 1580];
+extern unsigned char unk_F63658[4 * 6320];
+extern int dword_F63B90[4 * 1580];
+extern int dword_F63B94[4 * 1580];
+extern float dword_F63B98[4 * 1580];
+extern float dword_F63B9C[4 * 1580];
+extern float dword_F63BA0[4 * 1580];
+extern int gDelayRenderForNFrames;
+extern vmCvar_t cg_nopredict;
+extern vmCvar_t pmove_fixed;
+extern vmCvar_t pmove_msec;
+extern vmCvar_t cg_norender;
+extern vmCvar_t cg_showmiss;
+extern vmCvar_t cg_errorDecay;
+static cg_pmove_abi cg_pmove;
+
 extern int CL_GetCurrentCmdNumber();
 extern int CL_GetUserCmd(int cmdNumber, usercmd_s* ucmd);
+extern int CG_PointContents(const math::Position3* point,
+                            collision_context_t* context);
 extern void CG_TraceCapsule(trace_t* result, const math::Position3* start,
                             const math::Position3* mins,
                             const math::Position3* maxs,
@@ -3097,10 +3163,215 @@ void CG_InterpolatePlayerState(int grabAngles)
     }
 }
 
-// CG_PredictPlayerState_Internal remains the next larger cg_predict.cpp unit.
-int CG_PredictPlayerState_Internal()
+// ea: 0x006A2850
+void CG_PredictPlayerState_Internal()
 {
-    return 0;
+    const int base = 1580 * currCl;
+    snapshot_t* current =
+        reinterpret_cast<snapshot_t*>(dword_F62960[base]);
+    snapshot_t* next =
+        reinterpret_cast<snapshot_t*>(dword_F62964[base]);
+
+    if (dword_F63B90[base] == 0)
+    {
+        dword_F63B90[base] = 1;
+        memcpy(&dword_F63560[base],
+               reinterpret_cast<const unsigned char*>(current) + 0x10,
+               0x5D0);
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        dword_F63B8C[base] = reinterpret_cast<float*>(
+            BG_GetInfoForWeapon(player->client->ps.weapon));
+        Entity* playerEntity = EntityManager::sInst->GetPlayer(currCl);
+        if (playerEntity != nullptr && next != nullptr)
+        {
+            memcpy(reinterpret_cast<unsigned char*>(next) + 0x10,
+                   &playerEntity->r.currentOrigin, 0x10);
+            memcpy(reinterpret_cast<unsigned char*>(next) + 0xE0,
+                   &playerEntity->r.currentAngles, 0x0C);
+        }
+        dword_F64154[base] = 0x3F7D70A4;
+        dword_F6415C[base] = cgGlobal.time - 1;
+        gDelayRenderForNFrames = 0;
+        dword_F64160[base] = 0;
+        if (dword_F6415C[base] <= cgGlobal.time)
+            dword_F64158[base] = dword_F64154[base];
+        dword_F64154[base] = 0;
+        dword_F6415C[base] = cgGlobal.time;
+        dword_F64160[base] = 500;
+        if (dword_F6415C[base] + 500 <= cgGlobal.time)
+            dword_F64158[base] = dword_F64154[base];
+    }
+
+    if ((0x100000 & *reinterpret_cast<int*>(
+                        reinterpret_cast<unsigned char*>(current) + 60)) != 0)
+    {
+        CG_InterpolatePlayerState(0);
+        return;
+    }
+    if (cg_nopredict.integer != 0)
+    {
+        CG_InterpolatePlayerState(1);
+        return;
+    }
+
+    cg_pmove.trace = reinterpret_cast<decltype(cg_pmove.trace)>(CG_TraceCapsule);
+    cg_pmove.boxtrace = reinterpret_cast<decltype(cg_pmove.boxtrace)>(CG_TraceCapsule);
+    cg_pmove.capsuletrace = reinterpret_cast<decltype(cg_pmove.capsuletrace)>(CG_TraceCapsule);
+    cg_pmove.ps = reinterpret_cast<PlayerState*>(&dword_F63560[base]);
+    cg_pmove.pointcontents = reinterpret_cast<decltype(cg_pmove.pointcontents)>(CG_PointContents);
+    cg_pmove.tracemask = dword_F63560[base + 9] < 6 ? 0x02810011 : 0x00810011;
+    using PMTrace = void (__cdecl*)(
+        trace_t*, const math::Position3&, const math::Position3&,
+        const math::Position3&, const math::Position3&,
+        const collision_context_t&);
+    const PMTrace cgTraceRef = reinterpret_cast<PMTrace>(CG_TraceCapsule);
+
+    const int currentCmdNumber = CL_GetCurrentCmdNumber();
+    usercmd_s latestCmd = {};
+    if (CL_GetUserCmd(currentCmdNumber, &latestCmd) == 0)
+        return;
+
+    const int oldCommandTime = dword_F63560[base];
+    const int currentOriginY = (int)dword_F63564[base];
+    const int currentOriginZ = (int)dword_F63568[base];
+    const int latestServerTime = latestCmd.serverTime;
+    unsigned char oldEvents[0x3C];
+    memcpy(oldEvents, unk_F63658 + 6320 * currCl, sizeof(oldEvents));
+    if (next == nullptr)
+        CG_ASSERT("cg[currCl].nextSnap", "c:\\cod\\code\\game\\cg_predict.cpp", 453);
+    memcpy(&dword_F63560[base],
+           reinterpret_cast<const unsigned char*>(next) + 0x10,
+           0x5D0);
+    dword_F63558[base] = *reinterpret_cast<int*>(
+        reinterpret_cast<unsigned char*>(next) + 4);
+    if (dword_F63584[base] == 1 || dword_F63584[base] == 7)
+        CG_InterpolatePlayerState(0);
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    dword_F63B8C[base] = reinterpret_cast<float*>(
+        BG_GetInfoForWeapon(player->client->ps.weapon));
+
+    if (pmove_msec.integer < 8)
+        Cvar_VMSet(&pmove_msec, "8");
+    else if (pmove_msec.integer > 33)
+        Cvar_VMSet(&pmove_msec, "33");
+    cg_pmove.pmove_msec = pmove_msec.integer;
+    cg_pmove.pmove_fixed = pmove_fixed.integer;
+
+    bool ranPrediction = false;
+    for (int cmdNumber = currentCmdNumber - 63;
+         cmdNumber <= currentCmdNumber; ++cmdNumber)
+    {
+        if (CL_GetUserCmd(cmdNumber, &cg_pmove.cmd) == 0)
+            break;
+        if (cg_pmove.pmove_fixed != 0)
+        {
+            PM_UpdateViewAngles(cg_pmove.ps, &cg_pmove.cmd,
+                                &cg_pmove.oldcmd, pmove_msec.integer,
+                                cgTraceRef);
+        }
+        if (cg_pmove.cmd.serverTime <= dword_F63580[base]
+            || cg_pmove.cmd.serverTime > latestServerTime
+            || CL_GetUserCmd(cmdNumber - 1, &cg_pmove.oldcmd) == 0)
+            break;
+
+        if (dword_F63580[base] == oldCommandTime)
+        {
+            math::Position3 adjusted;
+            float deltaAngles[3] = {};
+            CG_AdjustPositionForMover(
+                reinterpret_cast<const math::Position3*>(&dword_F63560[base]),
+                dword_F635C0[base], dword_F63558[base], cgGlobal.oldTime,
+                &adjusted, deltaAngles);
+            dword_F635B8[base] += (int)(latestCmd.gunYOfs * 182.04445f);
+            if (cg_showmiss.integer != 0
+                && (oldCommandTime != (int)adjusted.v.m128_f32[0]
+                    || currentOriginY != (int)adjusted.v.m128_f32[1]
+                    || currentOriginZ != (int)adjusted.v.m128_f32[2]))
+                CG_Printf("prediction error\n");
+            const float dx = (float)oldCommandTime - adjusted.v.m128_f32[0];
+            const float dy = (float)currentOriginY - adjusted.v.m128_f32[1];
+            const float dz = (float)currentOriginZ - adjusted.v.m128_f32[2];
+            const float error = sqrtf(dx * dx + dy * dy + dz * dz);
+            if (error > 0.1f)
+            {
+                if (cg_showmiss.integer != 0)
+                    CG_Printf("Prediction miss: %f\n", error);
+                if (cg_errorDecay.integer == 0)
+                {
+                    dword_F63B98[base] = 0.0f;
+                    dword_F63B9C[base] = 0.0f;
+                    dword_F63BA0[base] = 0.0f;
+                }
+                else
+                {
+                    float decay = (cg_errorDecay.value
+                                    - (cgGlobal.time - dword_F63B94[base]))
+                                   / cg_errorDecay.value;
+                    if (decay < 0.0f)
+                        decay = 0.0f;
+                    if (decay > 0.0f && cg_showmiss.integer != 0)
+                        CG_Printf("Double prediction decay: %f\n", decay);
+                    dword_F63B98[base] *= decay;
+                    dword_F63B9C[base] *= decay;
+                    dword_F63BA0[base] *= decay;
+                }
+                dword_F63B98[base] += dx;
+                dword_F63B9C[base] += dy;
+                dword_F63BA0[base] += dz;
+                dword_F63B94[base] = cgGlobal.oldTime;
+            }
+        }
+
+        if (cg_pmove.pmove_fixed != 0)
+        {
+            cg_pmove.cmd.serverTime = pmove_msec.integer
+                * ((cg_pmove.cmd.serverTime + pmove_msec.integer - 1)
+                   / pmove_msec.integer);
+        }
+        if (cg_norender.integer != 0)
+        {
+            cg_pmove.cmd.angles[0] = cg_pmove.oldcmd.angles[0];
+            cg_pmove.cmd.angles[1] = cg_pmove.oldcmd.angles[1];
+            cg_pmove.cmd.angles[2] = cg_pmove.oldcmd.angles[2];
+            cg_pmove.cmd.forwardmove = 0;
+            cg_pmove.cmd.rightmove = 0;
+            cg_pmove.cmd.upmove = 0;
+            cg_pmove.cmd.buttons = 0;
+            if (cg_pmove.cmd.serverTime - dword_F63580[base] > 1)
+                cg_pmove.cmd.serverTime = dword_F63580[base] + 1;
+        }
+        PM_UpdateViewAngles(cg_pmove.ps, &cg_pmove.cmd,
+                            &cg_pmove.oldcmd, cg_pmove.pmove_msec,
+                            cgTraceRef);
+        ranPrediction = true;
+    }
+
+    if (cg_showmiss.integer > 1)
+        CG_Printf("[%i : %i] ", cg_pmove.cmd.serverTime, cgGlobal.time);
+    if (ranPrediction)
+    {
+        math::Position3 adjusted;
+        float deltaAngles[3] = {};
+        CG_AdjustPositionForMover(
+            reinterpret_cast<const math::Position3*>(&dword_F63560[base]),
+            dword_F635C0[base], dword_F63558[base], cgGlobal.time,
+            &adjusted, deltaAngles);
+        const unsigned char* eventBase = unk_F63658 + 6320 * currCl;
+        if (*reinterpret_cast<const int*>(eventBase + 0x28)
+            != *reinterpret_cast<const int*>(oldEvents + 0x28))
+        {
+            const int damage = *reinterpret_cast<const int*>(eventBase + 0x34);
+            if (damage != 0)
+                CG_DamageFeedback(*(reinterpret_cast<const int*>(eventBase + 0x2C)),
+                                  *(reinterpret_cast<const int*>(eventBase + 0x30)),
+                                  damage);
+        }
+        player = EntityManager::sInst->GetPlayer(currCl);
+        dword_F63B8C[base] = reinterpret_cast<float*>(
+            BG_GetInfoForWeapon(player->client->ps.weapon));
+    }
+    else if (cg_showmiss.integer != 0)
+        CG_Printf("no prediction run\n");
 }
 extern int CG_PointContents(const math::Position3* point,
                             collision_context_t* context);
@@ -3171,9 +3442,9 @@ void CG_CalcEntityLerpPositions(Entity* cent)
 }
 
 // ea: 0x006A30B0
-int CG_PredictPlayerState()
+void CG_PredictPlayerState()
 {
-    return CG_PredictPlayerState_Internal();
+    CG_PredictPlayerState_Internal();
 }
 
 static float AtanApprox(float x)

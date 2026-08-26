@@ -210,6 +210,8 @@ vmCvar_t cg_gameBoldMessageWidth;      // ?cg_gameBoldMessageWidth@@3UvmCvar_t@@
 vmCvar_t cg_gameMessageWidth;          // ?cg_gameMessageWidth@@3UvmCvar_t@@A (cg.o @ 0x134E658)
 vmCvar_t cg_hudAlpha;                  // ?cg_hudAlpha@@3UvmCvar_t@@A (cg.o @ 0x134F180)
 vmCvar_t cg_nopredict;                 // ?cg_nopredict@@3UvmCvar_t@@A (cg.o @ 0x134F2A0)
+vmCvar_t cg_showmiss;                  // ?cg_showmiss@@3UvmCvar_t@@A
+vmCvar_t cg_errorDecay;                // ?cg_errorDecay@@3UvmCvar_t@@A
 vmCvar_t cg_shellshockblur;            // ?cg_shellshockblur@@3UvmCvar_t@@A (cg.o @ 0x134C8E0)
 vmCvar_t cg_skybox;                    // ?cg_skybox@@3UvmCvar_t@@A (cg.o @ 0x134C970)
 vmCvar_t cg_stanceTemp;                // ?cg_stanceTemp@@3UvmCvar_t@@A (cg.o @ 0x134FC68)
