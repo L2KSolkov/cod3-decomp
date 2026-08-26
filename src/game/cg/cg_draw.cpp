@@ -26,6 +26,13 @@ public:
     int GetNumberOfListeners();  // ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10)
 };
 
+class MultiplayerMgr {
+public:
+    static MultiplayerMgr* sInst;
+    void* mPeer;
+    const char* GetPlayerName(const Entity* player) const;
+};
+
 
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
@@ -65,6 +72,8 @@ extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern vmCvar_t s_cgCvarStorage[170];
 extern weaponInfo_s cg_weapons[];
 extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
+extern float* CG_FadeColor(int startMsec, int totalMsec, int fadeMsec);
+extern void CG_GetCenterOfScreen(float* x, float* y);
 extern float dword_F63C50[4 * 1580];
 extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
@@ -1265,6 +1274,60 @@ void CG_DrawAdsAimIndicator(void* weapDefArg, int weapIndex, int* color,
             + y,
         width, width, 0.0f, 0.0f, 1.0f, 1.0f, texture, 0.0f);
     trap_R_SetColor(nullptr);
+}
+
+// ea: 0x006A03F0 (release cg.o)
+void CG_DrawReticleName(int* color)
+{
+    if (color == nullptr || EntityManager::sInst == nullptr
+        || MultiplayerMgr::sInst == nullptr
+        || MultiplayerMgr::sInst->mPeer == nullptr)
+        return;
+
+    Entity* target = GetPlayerTarget();
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    const int targetTime = *reinterpret_cast<const int*>(
+        reinterpret_cast<const char*>(&client->ps) + 0x98);
+    if (target == nullptr || targetTime + 1000 <= cgGlobal_time)
+        return;
+
+    if (target->client == nullptr)
+    {
+        if (target->scr_vehicle == nullptr)
+            return;
+        target = target->r.mOwner.operator->();
+    }
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (target == nullptr || !cgGlobal.teamGame || target->sentient == nullptr
+        || player == nullptr || player->sentient == nullptr
+        || target->sentient->eTeam != player->sentient->eTeam)
+        return;
+
+    const float dx = target->r.currentOrigin.v.m128_f32[0]
+                     - player->r.currentOrigin.v.m128_f32[0];
+    const float dy = target->r.currentOrigin.v.m128_f32[1]
+                     - player->r.currentOrigin.v.m128_f32[1];
+    if (dx * dx + dy * dy >= 1000000.0f)
+        return;
+
+    const char* playerName = MultiplayerMgr::sInst->GetPlayerName(target);
+    if (playerName == nullptr)
+        return;
+
+    float fontScale = dword_F63C58[1580 * currCl] == 640.0f
+                          ? 0.5f
+                          : 0.375f;
+    float* fadeColor = CG_FadeColor(targetTime, 150, 100);
+    if (fadeColor == nullptr)
+        return;
+    reinterpret_cast<float*>(color)[3] = fadeColor[3];
+    const float textWidth = RE_Text_Width(playerName, 0, fontScale, 0.0f, 0);
+    float x;
+    float y;
+    CG_GetCenterOfScreen(&x, &y);
+    trap_R_Text_Paint(x - textWidth * 0.5f, y + 64.0f, 0, fontScale,
+                      reinterpret_cast<const float*>(color), playerName, 0.0f,
+                      0, 3);
 }
 
 static void CG_HudElemInvalidCase(int line)

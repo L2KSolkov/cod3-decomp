@@ -32,7 +32,6 @@ void CG_DrawReticleHitIndicator(void* a, int b, int* c, float d, float e,
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
 }
-void CG_DrawReticleName(int* a) { (void)a; }
 void CG_DrawReticleSides(void* a, int b, int* c, float d, float e, float f)
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
