@@ -303,6 +303,10 @@ int dword_F63C1C[4 * 1580];
 int dword_F63C20[4 * 1580];
 int dword_F63CF4[4 * 1580];
 int dword_F63D1C[4 * 1580];
+// Release cg.o keeps the hit-marker spread constant at 0xDFA2F0
+// (IDA value 0x41000000, i.e. 8.0f); the release function has no writes
+// to this global, so preserve it as an immutable port constant.
+static const float extraSpread = 8.0f;
 int dword_F63D20[4 * 1580];
 int dword_F63D24[4 * 1580];
 int dword_F63D28[4 * 1580];
@@ -1240,6 +1244,79 @@ void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
         width, width, 0.0f, 0.0f, 1.0f, 1.0f,
         reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleCenter),
         0.0f);
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x00694FC0 (release cg.o)
+void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
+                                float centerX, float centerY,
+                                float transScale)
+{
+    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
+        return;
+
+    const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
+    const char* reticleSide = *reinterpret_cast<const char* const*>(
+        weapDef + 0x4DC);
+    if (reticleSide == nullptr || reticleSide[0] == '\0')
+        return;
+
+    const int base = 1580 * currCl;
+    const int hitStart = dword_F63D1C[base];
+    if (cgGlobal.time - hitStart >= 400)
+        return;
+
+    const float* fade = CG_FadeColor(hitStart, 400, 100);
+    if (fade == nullptr)
+        return;
+
+    const float* inputColor = reinterpret_cast<const float*>(baseColor);
+    float reticleColor[4] = {inputColor[0], inputColor[1], inputColor[2],
+                             fade[3]};
+    trap_R_SetColor(reticleColor);
+
+    void* texture = cg_weapons[weapIndex].hReticleSide;
+    // These tables are the release stack layout expressed as four logical
+    // sides.  The release indexes the 7-element arrays at -1 for X, which
+    // yields the same values shown here without relying on negative indexes.
+    static const float xSideOfs[4] = {0.5f, 0.5f, -8.0f, -8.0f};
+    static const float ySideOfs[4] = {-8.0f, 0.5f, 0.5f, -8.0f};
+    static const float xSideInfo[4] = {0.0f, 0.0f, -1.0f, -1.0f};
+    static const float ySideInfo[4] = {-1.0f, 0.0f, 0.0f, -1.0f};
+    static const float xSideAdj[4] = {0.0f, 0.0f, 0.0f, -1.0f};
+    static const float ySideAdj[4] = {-1.0f, 0.0f, 0.0f, 0.0f};
+
+    const float scaleX = unk_F6A278[802 * currCl];
+    const float scaleY = unk_F6A27C[802 * currCl];
+    const float screenX = dword_F63C50[base];
+    const float screenY = dword_F63C54[base];
+    const float screenW = dword_F63C58[base];
+    const float screenH = dword_F63C5C[base];
+    const float hipSidePos = *reinterpret_cast<const float*>(weapDef + 0x690);
+    const float sideSize =
+        (float)*reinterpret_cast<const int*>(weapDef + 0x4E4) * transScale;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        const float y =
+            ((((ySideOfs[i] * extraSpread + centerY) * scaleY)
+              + (ySideInfo[i] * sideSize))
+             + ySideAdj[i])
+            - (ySideOfs[i] * hipSidePos * sideSize)
+            + screenH * 0.5f + screenY;
+        const float x =
+            ((((xSideOfs[i] * extraSpread + centerX) * scaleX)
+              + (xSideInfo[i] * sideSize))
+             + xSideAdj[i])
+            - (xSideOfs[i] * hipSidePos * sideSize)
+            + screenW * 0.5f + screenX;
+
+        trap_R_DrawStretchPicRotate(
+            x, y, sideSize, sideSize, 0.0f,
+            (float)((i >> 1) & 1), 1.0f,
+            (float)(((i - 2) >> 1) & 1),
+            (float)((i & 1) * 90 + 45), texture);
+    }
     trap_R_SetColor(nullptr);
 }
 

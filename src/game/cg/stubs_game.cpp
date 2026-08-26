@@ -27,11 +27,6 @@ void CG_ClipMoveToEntities(const math::Position3* start,
 }
 void CG_DObjCalcPose(Entity* a, void* b, int* c) { (void)a; (void)b; (void)c; }
 void CG_DObjCalcPose(void* a, void* b, int* c) { (void)a; (void)b; (void)c; }
-void CG_DrawReticleHitIndicator(void* a, int b, int* c, float d, float e,
-                                float f)
-{
-    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
-}
 void CG_DrawWeapReticle() {}
 void CG_EndShellShock(const void* a, int b) { (void)a; (void)b; }
 void CG_mg42(Entity* e) { (void)e; }
