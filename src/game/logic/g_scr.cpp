@@ -22661,15 +22661,9 @@ __declspec(naked) static void AeThreadRestoreContext(unsigned int targetEsp)
         mov esp, eax
         pop eax
         mov fs:[0], eax
-        movzx ecx, word ptr [esp + 20h]
-        pushfd
-        pop edx
-        and edx, 0FFFF0000h
-        or edx, ecx
-        push edx
-        popfd
         popad
-        add esp, 2
+        _emit 066h
+        _emit 09Dh
         retn
     }
 }
@@ -22849,8 +22843,11 @@ void AeThread::Execute(float /*deltaT*/)
     {
         self->mFlags.mMask &= ~2u;
         self->mFlags.mMask &= 0xFFFFFFF9;
+        unsigned int newESP = 0;
+        __asm mov newESP, esp
+        self->mStackStart = newESP - 0x2000u;
         const unsigned int stackBegin =
-            self->mStackStart - self->mBackupStack.mSize;
+            newESP - self->mBackupStack.mSize - 0x2000u;
         if (stackBegin != self->mBackupStack.mBegin)
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
