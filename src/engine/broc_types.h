@@ -221,7 +221,13 @@ public:
         mElements[mSize++] = elt;
     }
 
-    T& operator[](unsigned int idx) { return mElements[idx]; }
+    // The game-side array accessor grows the array before returning an
+    // out-of-range element (arrays.inl operator[]).
+    T& operator[](unsigned int idx) {
+        if (idx >= mSize)
+            resize(idx + 1, idx + 4);
+        return mElements[idx];
+    }
     const T& operator[](unsigned int idx) const { return mElements[idx]; }
 };
 
