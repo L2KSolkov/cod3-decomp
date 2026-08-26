@@ -42,7 +42,12 @@ extern math::Position3* nglProjectPoint(math::Position3* result,
                                         nglScene* scene);
 extern const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* scene);
 extern nglScene* nglBuildScene;
-void* gpBrocAPI;  // ?gpBrocAPI (scr.o artifact PAXA)
+// The release binary has a single typed BrocAPI global owned by the script
+// system.  Keep this translation unit on that same symbol; defining an
+// untyped `void* gpBrocAPI` here creates a second mangled global that remains
+// null after BrocSys::LoadScript initializes the real API pointer.
+struct BrocAPI;
+extern BrocAPI* gpBrocAPI;
 extern unsigned int BrocAPI_GetEnt(void* api, void* nameStr, unsigned int hash,
                                    void* a3, int a4, int a5);
 extern void* dword_F00ED4;

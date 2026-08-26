@@ -2496,7 +2496,8 @@ extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);
 extern void PM_KillQueuedReloadSound(PlayerState& ps);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern void* gpBrocAPI;  // 0x00F3ABDC
+struct BrocAPI;
+extern BrocAPI* gpBrocAPI;  // 0x00F3ABDC
 struct weaponParms;
 extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
 extern bool Weapon_Revive_Test(Entity* ent, weaponParms* wp,
