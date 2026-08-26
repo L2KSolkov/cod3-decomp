@@ -97,6 +97,8 @@ struct brocFunctionLookup {  // IDA type 5907
 };
 extern brocFunctionLookup broFuncLookupTable[70];  // ?broFuncLookupTable@BrocHelper@@3PAUbrocFunctionLookup@1@A @ 0x1329E80
 void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));  // ?RegisterBroFunc@BrocHelper@@YAXPADP6AIPAX@Z (0x5BE1A0)
+unsigned int (__cdecl* GetBroFuncByName(const char* name,
+                                        bool enforceExists))(void*);
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
 void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
@@ -23422,6 +23424,34 @@ void BrocHelper::Init()
     memset(BrocHelper::broFuncLookupTable, 0,
            sizeof(BrocHelper::broFuncLookupTable));
     BrocHelper::m_treeCount = 0;
+}
+
+// ea: 0x005BE210
+unsigned int (__cdecl* BrocHelper::GetBroFuncByName(
+    const char* name, bool enforceExists))(void*)
+{
+    unsigned int hashedName = HashString::CalcHash(name);
+    BrocHelper::brocFunctionLookup* entry =
+        BrocHelper::broFuncLookupTable;
+    for (int i = 0; i < 70; ++i)
+    {
+        if (hashedName == entry->mHashedName)
+            return entry->mFunction;
+        ++entry;
+    }
+
+    if (enforceExists)
+    {
+        char tmpstr[128];
+        sprintf(tmpstr, "BroFunc: %s, NOT FOUND", name);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)11;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 5444;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(tmpstr))
+            __debugbreak();
+    }
+    return nullptr;
 }
 
 // ============================================================================

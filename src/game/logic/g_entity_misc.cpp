@@ -26,6 +26,11 @@
 #include <stdio.h>
 #include <string.h>
 
+namespace BrocHelper {
+unsigned int (__cdecl* GetBroFuncByName(const char* name,
+                                        bool enforceExists))(void*);
+}
+
 namespace AeAssert {
 enum ECoderId : int;
 extern ECoderId gCurrentAuthor;
@@ -2610,13 +2615,6 @@ unsigned int bdRandom_nextUInt(void* self)
 }
 void bdRandom_setSeed(void* self, unsigned int seed) { (void)self; (void)seed; }
 
-namespace BrocHelper {
-unsigned int (*GetBroFuncByName(const char* name, bool a))(void*)
-{
-    (void)name; (void)a;
-    return nullptr;
-}
-}
 unsigned int BrocAPI_GetEnt(void* a, void* b, unsigned int c, void* d, int e,
                             int f)
 {
