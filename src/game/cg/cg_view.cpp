@@ -602,6 +602,7 @@ extern void MatrixMultiply(const float (*const in1)[3],
                            float (*const out)[3]);
 extern int dword_F64178[4 * 1580];
 extern int dword_F6417C[4 * 1580];
+extern float dword_F63550[4 * 1580];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
@@ -654,6 +655,24 @@ extern void CG_UpdateShellShockMouse(const void* parms, int time, int duration);
 extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
+extern const float LerpAngle(float from, float to, float frac);
+
+// ea: 0x006970B0
+void CG_InterpolateEntityOrigin(Entity* cent)
+{
+    cent->s.SetLerpOrigin(cent->r.currentOrigin);
+}
+
+// ea: 0x006971E0
+void CG_InterpolateEntityAngles(Entity* cent)
+{
+    const float frac = dword_F63550[1580 * currCl];
+    const math::Position3 angles(
+        LerpAngle(cent->s.apos.trBase[0], cent->s.apos.trDelta[0], frac),
+        LerpAngle(cent->s.apos.trBase[1], cent->s.apos.trDelta[1], frac),
+        LerpAngle(cent->s.apos.trBase[2], cent->s.apos.trDelta[2], frac));
+    cent->s.SetLerpAngles(angles);
+}
 extern char* va(const char* fmt, ...);
 enum fsMode_t;
 extern int FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode);

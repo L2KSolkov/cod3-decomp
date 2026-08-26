@@ -53,6 +53,9 @@ extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void Cvar_Set(const char* var_name, const char* value);
+extern void Cvar_VariableStringBuffer(const char* var_name, char* buffer,
+                                      int bufsize);
+extern const char defaultFileName[];
 extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
@@ -102,6 +105,8 @@ struct gitem_s
     int giClipIndex;
 };
 extern struct gitem_s bg_itemlist[];
+extern int cg_aWeaponSelect[4];
+extern int cg_aWeaponSelectTime[4];
 itemInfo_t cg_items[256];             // ?cg_items@@3PAUitemInfo_t@@A (cg.o)
 weaponInfo_s cg_weapons[92];          // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern void* cgCvarTable;      // cvarTable_t[170]
@@ -119,6 +124,7 @@ vmCvar_t cg_thirdPersonAngle;          // ?cg_thirdPersonAngle@@3UvmCvar_t@@A (c
 vmCvar_t cg_widescreen;                // ?cg_widescreen@@3UvmCvar_t@@A (cg.o @ 0x134C188)
 vmCvar_t cg_norender;                  // ?cg_norender@@3UvmCvar_t@@A (cg.o @ 0x134E148)
 vmCvar_t cg_redFlashTime;              // ?cg_redFlashTime@@3UvmCvar_t@@A (cg.o @ 0x134B9A8)
+vmCvar_t cg_centertime;                 // ?cg_centertime@@3UvmCvar_t@@A
 vmCvar_t cg_camerashake;               // ?cg_camerashake@@3UvmCvar_t@@A (cg.o @ 0x134CC40)
 vmCvar_t cg_drawGun;                   // ?cg_drawGun@@3UvmCvar_t@@A (cg.o @ 0x134CE80)
 vmCvar_t cg_mpDebugAnimEntity;         // ?cg_mpDebugAnimEntity@@3UvmCvar_t@@A (cg.o @ 0x134C850)
@@ -395,6 +401,28 @@ void CG_CloseScriptMenu()
     Cvar_Set("ui_waitingScriptMenuNoMouse", "0");
 }
 
+// ea: 0x00698190
+void CG_CheckOpenWaitingScriptMenu()
+{
+    char value[256];
+    Cvar_VariableStringBuffer("ui_waitingScriptMenu", value,
+                              static_cast<int>(sizeof(value)));
+    if (value[0] == '\0')
+        return;
+
+    Cvar_Set("ui_newScriptMenu", value);
+    Cvar_VariableStringBuffer("ui_waitingScriptMenuIndex", value,
+                              static_cast<int>(sizeof(value)));
+    Cvar_Set("ui_newScriptMenuIndex", value);
+    Cvar_VariableStringBuffer("ui_waitingScriptMenuNoMouse", value,
+                              static_cast<int>(sizeof(value)));
+    (void)atoi(value);
+
+    Cvar_Set("ui_waitingScriptMenu", defaultFileName);
+    Cvar_Set("ui_waitingScriptMenuIndex", "-1");
+    Cvar_Set("ui_waitingScriptMenuNoMouse", "0");
+}
+
 // ea: 0x0068F5E0
 void CG_RegisterItemVisuals(int itemNum)
 {
@@ -437,6 +465,17 @@ int CG_RegisterItems()
         ++p_item;
     }
     return 137;
+}
+
+// ea: 0x0068A910
+void CG_ItemPickup(int itemNum)
+{
+    if (bg_itemlist[itemNum].giType == 1 /* IT_WEAPON */
+        && cg_aWeaponSelect[currCl] == 0)
+    {
+        cg_aWeaponSelectTime[currCl] = cgGlobal.time;
+        cg_aWeaponSelect[currCl] = bg_itemlist[itemNum].giTag;
+    }
 }
 
 // ea: 0x00694850

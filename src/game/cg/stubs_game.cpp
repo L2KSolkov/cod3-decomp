@@ -18,7 +18,6 @@ void __cod3_stub_game_cg(void) {
 void CG_CalcCrosshairColor(float a, int* b) { (void)a; (void)b; }
 void CG_CalcCubemapViewValues() {}
 void CG_CalcTurretViewValues() {}
-void CG_CheckOpenWaitingScriptMenu() {}
 void CG_ClipMoveToEntities(const math::Position3* start,
                            const math::Position3* mins,
                            const math::Position3* maxs,
@@ -35,9 +34,7 @@ void CG_DrawAdsAimIndicator(void* a, int b, int* c, float d, float e, float f)
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
 }
-void CG_DrawCenterString() {}
 void CG_DrawDamageDirectionIndicators() {}
-void CG_DrawFlashDamage() {}
 void CG_DrawPlayerLowHealthOverlay() {}
 void CG_DrawReticleCenter(void* a, int b, int* c, float d, float e, float f)
 {
@@ -55,9 +52,6 @@ void CG_DrawReticleSides(void* a, int b, int* c, float d, float e, float f)
 }
 void CG_DrawWeapReticle() {}
 void CG_EndShellShock(const void* a, int b) { (void)a; (void)b; }
-void CG_InterpolateEntityAngles(Entity* e) { (void)e; }
-void CG_InterpolateEntityOrigin(Entity* e) { (void)e; }
-void CG_ItemPickup(int a) { (void)a; }
 void CG_mg42(Entity* e) { (void)e; }
 void CG_MotionBlur_Begin(float a, float b, float c) { (void)a; (void)b; (void)c; }
 void CG_OffsetFirstPersonView() {}

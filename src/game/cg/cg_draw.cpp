@@ -42,6 +42,9 @@ class Camera;
 
 extern int currCl;
 extern vmCvar_t cg_forceCrosshair;
+extern vmCvar_t cg_redFlashTime;
+extern vmCvar_t cg_centertime;
+extern int dword_F62960[4 * 1580];
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
@@ -54,6 +57,7 @@ extern float dword_F63CA0[4 * 1580];
 extern char* va(const char* fmt, ...);
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);
+extern int trap_R_Text_Height(int font, float scale);
 extern void trap_R_Text_Paint(float x, float y, int font, float scale,
                               const float* color, const char* text,
                               float charWidth, int limit, int style);
@@ -261,6 +265,12 @@ int dword_F63C1C[4 * 1580];
 int dword_F63C20[4 * 1580];
 int dword_F63CF4[4 * 1580];
 int dword_F63D1C[4 * 1580];
+int dword_F63D20[4 * 1580];
+int dword_F63D24[4 * 1580];
+int dword_F63D28[4 * 1580];
+char byte_F63D2C[6320 * 4];
+int dword_F63F2C[4 * 1580];
+int dword_F63F30[4 * 1580];
 int dword_F63F9C[4 * 1580 * 3];
 int dword_F63FA0[4 * 1580 * 3];
 int dword_F63FA8[4 * 1580 * 3];
@@ -452,10 +462,8 @@ bool FEManager_InGameMenusActive(void* self, int client)
 extern void FEManager_DrawIGO(void* self, int client);
 struct cvar_t;
 extern cvar_t* Cvar_Get(const char* name, const char* value, int flags);
-extern void CG_DrawFlashDamage();
 extern void CG_DrawDamageDirectionIndicators();
 extern void CG_DrawPlayerLowHealthOverlay();
-extern void CG_DrawCenterString();
 extern void CG_ScreenFade();
 extern Entity* GetPlayer(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
@@ -479,6 +487,97 @@ extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
 extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale);
+extern void CG_FillRect(float x, float y, float width, float height,
+                        const float* color, float z);
+
+void CG_DrawCenterString()
+{
+    const int index = 1580 * currCl;
+    const int startTime = dword_F63D20[index];
+    if (startTime == 0)
+        return;
+
+    const int elapsed = cgGlobal.time - startTime;
+    const float duration = cg_centertime.value * 1000.0f;
+    if (elapsed >= duration)
+    {
+        dword_F63D20[index] = 0;
+        dword_F63F30[index] = 0;
+        return;
+    }
+
+    float centerColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    if (duration - elapsed < 100.0f)
+        centerColor[3] = (duration - elapsed) * 0.01f;
+
+    trap_R_SetColor(centerColor);
+    const char* cursor = &byte_F63D2C[6320 * currCl];
+    const float fontScale = dword_F63D24[index] * 0.03125f;
+    const int textHeight = trap_R_Text_Height(0, fontScale);
+    float y = dword_F63D28[index]
+            - dword_F63F2C[index] * (textHeight * 0.5f) - textHeight;
+    const float lineHeight = textHeight * 1.2f;
+
+    while (*cursor != '\0')
+    {
+        char line[41];
+        int length = 0;
+        while (*cursor != '\0' && *cursor != '\n'
+               && length < 40 && strncmp(cursor, "\\n", 2) != 0)
+        {
+            line[length++] = *cursor++;
+        }
+        line[length] = '\0';
+        const float x = (640.0f - RE_Text_Width(line, 0, fontScale,
+                                                 0.0f, 0)) * 0.5f;
+        trap_R_Text_Paint(x, y, 0, fontScale, centerColor, line, 0.0f, 0,
+                          3);
+        y += lineHeight;
+        while (*cursor != '\0' && *cursor != '\n'
+               && strncmp(cursor, "\\n", 2) != 0)
+            ++cursor;
+        if (*cursor == '\0')
+            break;
+        if (*cursor == '\n')
+            ++cursor;
+        else if (strncmp(cursor, "\\n", 2) == 0)
+            cursor += 2;
+    }
+    trap_R_SetColor(nullptr);
+}
+
+// Draw the release client's red damage flash.  The release stores the active
+// player's flash end time and pitch/yaw kick in the per-client view state.
+void CG_DrawFlashDamage()
+{
+    const int index = 1580 * currCl;
+    if (dword_F62960[index] == 0)
+        return;
+
+    float flashTime = cg_redFlashTime.value;
+    if (flashTime <= 0.0f)
+        flashTime = 1.0f;
+
+    const int endTime = dword_F64018[index];
+    if (endTime <= cgGlobal.time)
+        return;
+
+    const float pitchKick = *(float*)&dword_F6401C[index];
+    const float yawKick = *(float*)&dword_F64020[index];
+    float kick = fabsf(pitchKick);
+    if (kick <= fabsf(yawKick))
+        kick = yawKick;
+    kick = fabsf((float)(endTime - cgGlobal.time) / flashTime * kick);
+
+    const float maxKick = 20.0f; // sFlashMax @ 0x00DFA2F4 in the release.
+    if (kick > maxKick)
+        kick = maxKick;
+
+    const float flashColor[4] = {0.5f, 0.0f, 0.0f,
+                                 (kick / maxKick) * 0.7f};
+    CG_FillRect(-10.0f, -10.0f, 650.0f, 490.0f, flashColor, 0.0f);
+}
+
 // Calculate the release client's crosshair offset from the gun/view basis.
 void CG_CalcCrosshairPosition(float* pfX, float* pfY)
 {
