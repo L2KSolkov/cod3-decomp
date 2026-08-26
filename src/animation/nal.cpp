@@ -5922,6 +5922,7 @@ extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
 
 class AnimationPlayer {
 public:
+    ~AnimationPlayer();
     enum AnimationPlayerModifierType {
         nalAdditiveModifier = 0,
         nalPartialModifier = 1,
@@ -29741,10 +29742,20 @@ extern int BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // ?BG_Give
 struct weaponFileInfo_t;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);  // ?BG_GetInfoForWeapon@@YAPAUweaponFileInfo_t@@H@Z (cg_weapons.cpp)
 
-// ?DObjDeleteAnimationPlayers@@YAXPAVDObj@@@Z (stub; real in g_dobj.cpp)
+// ?DObjDeleteAnimationPlayers@@YAXPAVDObj@@@Z (render.o 0x6C4970)
 void DObjDeleteAnimationPlayers(DObj* obj)
 {
-    (void)obj;
+    for (int i = 0; i < 8; ++i)
+    {
+        AnimationPlayer* player =
+            static_cast<AnimationPlayer*>(obj->animPlayers[i]);
+        if (player != nullptr)
+        {
+            player->~AnimationPlayer();
+            tlMemFree(player);
+            obj->animPlayers[i] = nullptr;
+        }
+    }
 }
 
 struct actor_s;
