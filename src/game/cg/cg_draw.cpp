@@ -298,6 +298,7 @@ int dword_F62950[4 * 1580];
 int dword_F62954[4 * 1580];
 int dword_F62958[4 * 1580];
 int dword_F63554[4 * 1580];
+int dword_F63558[4 * 1580];
 int dword_F63584[4 * 1580];
 int dword_F63B34[4 * 1580];
 int dword_F63BA4[4 * 1580];

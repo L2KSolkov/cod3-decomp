@@ -593,17 +593,104 @@ extern void Trace(trace_t* results, const math::Position3& start,
                   const math::Position3& maxs, DCGSet* model, int brushmask,
                   int capsule, sphere_t* sphere);
 class DCGSet;
+extern DCGSet* TempBoxModel(const math::Position3& mins,
+                            const math::Position3& maxs, int contents,
+                            int capsule);
+extern void TraceXFormed(trace_t* results, const math::Position3& start,
+                         const math::Position3& end,
+                         const math::Position3& mins,
+                         const math::Position3& maxs, DCGSet* model,
+                         int brushmask, const math::Position3& origin,
+                         const math::Position3& angles, int capsule);
 extern int CM_PointContents(const math::Position3& p, DCGSet* model);
 extern int CM_TransformedPointContents(const math::Position3& p,
                                        DCGSet* model,
                                        const math::Position3& origin,
                                        const math::Position3& angles);
-extern void CG_ClipMoveToEntities(const math::Position3* start,
-                                  const math::Position3* mins,
-                                  const math::Position3* maxs,
-                                  const math::Position3* end,
-                                  const collision_context_t* context,
-                                  int capsule, trace_t* tr);
+extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                                  math::Position3& result);
+extern int dword_F63558[4 * 1580];
+void CG_ClipMoveToEntities(const math::Position3* start,
+                           const math::Position3* mins,
+                           const math::Position3* maxs,
+                           const math::Position3* end,
+                           const collision_context_t* context,
+                           int capsule, trace_t* tr)
+{
+    for (int i = 0; i < cg_numSolidEntities; ++i)
+    {
+        const unsigned int handle = cg_solidEntities[i];
+        const unsigned int index = handle & 0xFFFu;
+        if (index >= 0x540u
+            || (handle >> 12) != EntityHandleDb::sInst.mElements[index].mKey)
+            continue;
+
+        Entity* entity = EntityHandleDb::sInst.mElements[index].mObject;
+        if (entity == nullptr
+            || entity->mHandle.mHandle.mVal
+                   == context->pass_entity1.mHandle.mVal
+            || context->filter(entity))
+            continue;
+
+        DCGSet* model = nullptr;
+        math::Position3 origin;
+        math::Position3 angles;
+        math::Position3 boxMins;
+        math::Position3 boxMaxs;
+
+        if (entity->s.solid == 0xFFFFFF)
+        {
+            model = entity->r.bmodel;
+            const int atTime = dword_F63558[1580 * currCl];
+            BG_EvaluateTrajectory(&entity->s.apos, atTime, angles);
+            BG_EvaluateTrajectory(&entity->s.pos, atTime, origin);
+        }
+        else
+        {
+            const unsigned int solid = static_cast<unsigned int>(entity->s.solid);
+            const float radius = static_cast<float>(solid & 0xFFu);
+            const float height = static_cast<float>((solid >> 8) & 0xFFu);
+            const float bottom = static_cast<float>((solid >> 16) & 0xFFu) - 32.0f;
+            boxMins = math::Position3(-radius, -radius, -(height - 1.0f));
+            boxMaxs = math::Position3(radius, radius, bottom);
+
+            int contents = 1;
+            switch (entity->s.eType)
+            {
+                case 1: contents = 0x02000000; break;
+                case 0xB: contents = 0x00004000; break;
+                case 0xD: contents = 0x04000000; break;
+                default: break;
+            }
+            if ((contents & context->contentmask) == 0)
+                continue;
+
+            model = TempBoxModel(boxMins, boxMaxs, contents,
+                                 (entity->s.eFlags & 0x10) != 0 ? 1 : 0);
+            origin = entity->s.lerpOrigin;
+            angles = math::Position3(0.0f, 0.0f, 0.0f);
+        }
+
+        trace_t localTrace = {};
+        localTrace.mEntity.mHandle.mVal = 0;
+        localTrace.partName.mHash = 0;
+        localTrace.fraction = 1.0f;
+        TraceXFormed(&localTrace, *start, *end, *mins, *maxs, model,
+                     context->contentmask, origin, angles, capsule);
+
+        if (localTrace.allsolid != 0 || tr->fraction > localTrace.fraction)
+        {
+            localTrace.mEntity.mHandle.mVal = entity->mHandle.mHandle.mVal;
+            *tr = localTrace;
+        }
+        else if (localTrace.startsolid != 0)
+        {
+            tr->startsolid = 1;
+        }
+        if (tr->allsolid != 0)
+            return;
+    }
+}
 extern void CG_DamageFeedback(int yawByte, int pitchByte, float damage);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void SoundDevice_UnpauseAllSounds(void* sInst);
