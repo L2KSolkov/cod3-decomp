@@ -16,6 +16,5 @@ void __cod3_stub_game_cg(void) {
 #include "game/game_types.h"
 #include "game/trace_types.h"
 
-void CG_OffsetFirstPersonView() {}
 void CG_OffsetThirdPersonView() {}
 void CG_UpdateShellShockSound(const void* a) { (void)a; }

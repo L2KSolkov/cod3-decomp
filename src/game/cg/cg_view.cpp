@@ -70,6 +70,7 @@ extern int dword_F6415C[4 * 1580];
 extern int dword_F64160[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
 extern int dword_F63BAC[4 * 1580];
+extern int dword_F63BA8[4 * 1580];
 extern int dword_F63CF4[4 * 1580];
 extern int dword_F641E0[4 * 1580];
 extern int dword_F641E4[4 * 1580];
@@ -3119,7 +3120,7 @@ int CG_CalcFov()
     return 1580 * currCl * 4;
 }
 
-extern void CG_OffsetFirstPersonView();
+extern int CG_OffsetFirstPersonView();
 extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
                                const float* minClamp,
                                const float* maxClamp);
@@ -3145,6 +3146,208 @@ extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
                                           DObjSkelMat* tagMtx);
 struct vehicle_info_t;
 extern vehicle_info_t* VEH_GetInfo(int idx);
+
+extern float angle[4 * 1580];
+extern int dword_F64024[4 * 1580];
+extern vmCvar_t cg_bobMax;
+
+// ea: 0x0068CEA0
+void CG_KickAngles()
+{
+    int frametime = cgGlobal_frametime;
+    while (frametime > 0)
+    {
+        int step = frametime;
+        if (step > 5)
+            step = 5;
+        else if (step == 0)
+            CG_ASSERT("frametime", "c:\\cod\\code\\game\\cg_view.cpp",
+                      472);
+        const float dt = step * 0.001f;
+        for (int axis = 0; axis < 3; ++axis)
+        {
+            const int index = axis + 1580 * currCl;
+            float& speed = *reinterpret_cast<float*>(&dword_F64024[index]);
+            float& kick = *reinterpret_cast<float*>(&dword_F64030[index]);
+            if (speed == 0.0f && kick == 0.0f)
+                continue;
+
+            if (kick != 0.0f)
+            {
+                const float sign = kick > 0.0f ? -1.0f : 1.0f;
+                float accel;
+                Entity* player = EntityManager::sInst->GetPlayer(currCl);
+                if (player->client->ps.weapon != 0)
+                {
+                    float* info = dword_F63B8C[1580 * currCl];
+                    accel = player->client->ps.fWeaponPosFrac <= 0.5f
+                                ? info[531]
+                                : info[513];
+                }
+                else
+                {
+                    accel = 2400.0f;
+                }
+                speed += (accel * sign) * dt;
+            }
+
+            float delta = speed * dt;
+            if (kick * delta < 0.0f)
+                delta *= 0.06f;
+            if ((kick + delta) * kick < 0.0f)
+            {
+                kick = 0.0f;
+            }
+            else
+            {
+                kick += delta;
+                if (kick != 0.0f && fabsf(*reinterpret_cast<float*>(
+                                      &dword_F64030[index])) > 10.0f)
+                    kick = kick <= 0.0f ? -10.0f : 10.0f;
+            }
+            speed = 0.0f;
+        }
+        frametime -= 5;
+        if (frametime <= 0)
+            break;
+    }
+}
+
+// ea: 0x0068D260
+void CG_CalculateView_BobAngles(float* angles)
+{
+    const int index = 1580 * currCl;
+    float* info = dword_F63B8C[index];
+    if (info != nullptr && info[405] != 0.0f)
+    {
+        const float frac = EntityManager::sInst->GetPlayer(currCl)
+                               ->client->ps.fWeaponPosFrac;
+        angles[0] += dword_F64068[index] * frac;
+        angles[1] += dword_F6406C[index] * frac;
+        angles[2] += dword_F64070[index] * frac;
+    }
+}
+
+// ea: 0x0068CE40
+int CG_StepOffset()
+{
+    const int index = 1580 * currCl;
+    int elapsed = cgGlobal_time - dword_F63BAC[index];
+    if (elapsed < 0)
+        dword_F63BAC[index] = cgGlobal_time;
+    if (elapsed < 100)
+        dword_F63C78[index] -=
+            ((100 - elapsed) * *reinterpret_cast<float*>(&dword_F63BA8[index]))
+            * 0.01f;
+    return index * 4;
+}
+
+// ea: 0x006986D0
+int CG_OffsetFirstPersonView()
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    Client* client = player->client;
+    const int index = 1580 * currCl;
+    float* origin = &dword_F63C70[index];
+    float* viewAngles = &angle[index];
+
+    if (dword_F62964[index] != 0
+        && *reinterpret_cast<int*>(dword_F62964[index] + 52) >= 6)
+    {
+        viewAngles[2] = 40.0f;
+        viewAngles[0] = -15.0f;
+        int* deadSnap = reinterpret_cast<int*>(dword_F62964[6320 * currCl]);
+        viewAngles[1] = *reinterpret_cast<float*>(deadSnap + 82);
+        origin[2] += client->ps.viewHeightCurrent;
+        return 6320 * currCl;
+    }
+
+    CG_KickAngles();
+    viewAngles[0] += *reinterpret_cast<float*>(&dword_F64030[index]);
+    viewAngles[1] += *reinterpret_cast<float*>(&dword_F64034[index]);
+    viewAngles[2] += *reinterpret_cast<float*>(&dword_F64038[index]);
+    CG_CalculateView_BobAngles(viewAngles);
+
+    if (dword_F63FFC[index] != 0)
+    {
+        const float frac = client->ps.fWeaponPosFrac;
+        float factor = 1.0f - frac * 0.5f;
+        float* info = dword_F63B8C[index];
+        if (frac != 0.0f && info != nullptr && info[405] != 0.0f)
+            factor = (frac * 0.5f + 1.0f) * (1.0f - frac * 0.5f);
+        const float elapsed = (float)(cgGlobal_time - dword_F63FFC[index]);
+        float kickFrac;
+        if (cg_viewKickDeflectTime.value <= elapsed)
+        {
+            const float ratio = 1.0f - ((elapsed - cg_viewKickDeflectTime.value)
+                                        / cg_viewKickReturnTime.value);
+            if (ratio <= 0.0f)
+                kickFrac = 0.0f;
+            else
+                kickFrac = 1.0f - GetLeanFraction(1.0f - ratio);
+        }
+        else
+        {
+            kickFrac = GetLeanFraction(elapsed / cg_viewKickDeflectTime.value);
+        }
+        const float value = kickFrac * factor;
+        viewAngles[0] += value * *reinterpret_cast<float*>(&dword_F6401C[index]);
+        viewAngles[2] += value * *reinterpret_cast<float*>(&dword_F64020[index]);
+    }
+
+    origin[2] += client->ps.viewHeightCurrent;
+    if ((client->ps.eFlags & 0x6000) == 0)
+    {
+        float* info = dword_F63B8C[index];
+        if (client->ps.fWeaponPosFrac != 0.0f && info != nullptr
+            && info[409] != 0.0f)
+        {
+            const float frac = client->ps.fWeaponPosFrac;
+            viewAngles[0] -= info[409] * frac
+                              * CG_GetVerticalBobFactor(
+                                    dword_F641D8[index], dword_F641DC[index],
+                                    45.0f);
+            viewAngles[1] -= info[409] * frac
+                              * CG_GetHorizontalBobFactor(
+                                    dword_F641D8[index], dword_F641DC[index],
+                                    45.0f);
+        }
+        origin[2] += CG_GetVerticalBobFactor(dword_F641D8[index],
+                                             dword_F641DC[index],
+                                             cg_bobMax.value);
+        const float lateral = CG_GetHorizontalBobFactor(
+            dword_F641D8[index], dword_F641DC[index], cg_bobMax.value);
+        float right[3];
+        AnglesToRight(viewAngles, right);
+        origin[0] += right[0] * lateral;
+        origin[1] += right[1] * lateral;
+        origin[2] += right[2] * lateral;
+
+        float elapsed = (float)(cgGlobal_time - dword_F63BB4[index]);
+        if (elapsed < 0.0f)
+        {
+            dword_F63BB4[index] = cgGlobal_time - 450;
+        }
+        if (elapsed < 150.0f)
+            origin[2] += elapsed * 0.0066666668f
+                         * *reinterpret_cast<float*>(&dword_F63BB0[index]);
+        else if (elapsed < 450.0f)
+            origin[2] += (1.0f - (elapsed - 150.0f) * 0.0033333334f)
+                         * *reinterpret_cast<float*>(&dword_F63BB0[index]);
+        CG_StepOffset();
+
+        float leaned[3] = {origin[0], origin[1], origin[2]};
+        AddLeanToPosition(leaned, dword_F63CB4[index], client->ps.leanf,
+                          16.0f, 20.0f);
+        origin[0] = leaned[0];
+        origin[1] = leaned[1];
+        origin[2] = leaned[2];
+        const float minZ = client->ps.origin.v.m128_f32[2] + 8.0f;
+        if (origin[2] < minZ)
+            origin[2] = minZ;
+    }
+    return 6320 * currCl;
+}
 
 static Entity* DbHandleToEntityLocal(unsigned int handle)
 {

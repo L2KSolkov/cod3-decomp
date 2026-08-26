@@ -199,6 +199,7 @@ vmCvar_t cg_altTankCam;                // ?cg_altTankCam@@3UvmCvar_t@@A (cg.o @ 
 vmCvar_t cg_bobAmplitudeDucked;        // ?cg_bobAmplitudeDucked@@3UvmCvar_t@@A (cg.o @ 0x134AD50)
 vmCvar_t cg_bobAmplitudeProne;         // ?cg_bobAmplitudeProne@@3UvmCvar_t@@A (cg.o @ 0x134E268)
 vmCvar_t cg_bobAmplitudeStanding;      // ?cg_bobAmplitudeStanding@@3UvmCvar_t@@A (cg.o @ 0x134DE78)
+vmCvar_t cg_bobMax;                     // ?cg_bobMax@@3UvmCvar_t@@A
 vmCvar_t cg_draw2D;                    // ?cg_draw2D@@3UvmCvar_t@@A (cg.o @ 0x134CA00)
 vmCvar_t cg_drawStatus;                // ?cg_drawStatus@@3UvmCvar_t@@A (cg.o @ 0x134BD98)
 vmCvar_t cg_forceCrosshair;            // ?cg_forceCrosshair@@3UvmCvar_t@@A (cg.o @ 0x134DD58)

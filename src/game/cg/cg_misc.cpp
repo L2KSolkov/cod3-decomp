@@ -1508,7 +1508,7 @@ extern void controller_stick_value(void* self, int index, int stick,
                                    int* outX, int* outY);
 extern int RecalibrateInput(int val);
 extern PlayerState& GetPlayerState(int idx);
-extern void CG_OffsetFirstPersonView();
+extern int CG_OffsetFirstPersonView();
 extern void CG_OffsetThirdPersonView();
 extern void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_hash);
 extern int CG_CalcPassengerViewPos();
