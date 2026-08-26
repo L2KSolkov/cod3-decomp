@@ -5826,6 +5826,7 @@ public:
     static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@2V1@A
     unsigned char _pad[0xA8];
     DbElement mElements[0x540];  // +0xA8
+    Entity* Find(int fieldofs, HashString match);
 };
 
 // Local gDroneAEMap view (full in g_game2_misc.cpp)
@@ -24798,14 +24799,6 @@ public:
     float mBlendOutTime;         // +0x60
 };
 
-// EntityHandleDb::Find single-result lookup (not yet ported; stub)
-extern void* EntityHandleDb_Find(void* self, int fieldofs, unsigned int match);
-void* EntityHandleDb_Find(void* self, int fieldofs, unsigned int match)
-{
-    (void)self; (void)fieldofs; (void)match;
-    return nullptr;
-}
-
 // ea: 0x00561630
 SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
                                  const tlFixedString& name, float blendIn,
@@ -24829,7 +24822,7 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
         return;
     }
     unsigned int v7 = HashString::CalcHash(mName.str);
-    void* v8 = EntityHandleDb_Find(&EntityHandleDb::sInst, 680, v7);
+    Entity* v8 = EntityHandleDb::sInst.Find(680, HashString((int)v7));
     if (v8 != nullptr)
     {
         Entity* e = (Entity*)v8;
