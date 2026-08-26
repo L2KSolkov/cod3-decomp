@@ -11,7 +11,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <mutex>
-#include <vector>
+#include <unordered_map>
 
 #ifdef _WIN32
   #include <malloc.h>
@@ -99,15 +99,11 @@ struct mem_allocation {
     mem_heap* heap;
     unsigned int size;
 };
-static std::vector<mem_allocation> s_allocations;
+static std::unordered_map<void*, mem_allocation> s_allocations;
 static std::mutex s_allocations_mutex;
 
-static std::vector<mem_allocation>::iterator find_allocation(void* ptr) {
-    for (auto it = s_allocations.begin(); it != s_allocations.end(); ++it) {
-        if (it->ptr == ptr)
-            return it;
-    }
-    return s_allocations.end();
+static std::unordered_map<void*, mem_allocation>::iterator find_allocation(void* ptr) {
+    return s_allocations.find(ptr);
 }
 
 // ============================================================================
@@ -216,7 +212,7 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
 #endif
     if (ptr) {
         std::lock_guard<std::mutex> lock(s_allocations_mutex);
-        s_allocations.push_back({ptr, heap, size});
+        s_allocations.emplace(ptr, mem_allocation{ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
         if (heap->used_byte > heap->high_used_byte)
@@ -235,7 +231,7 @@ void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
 #endif
     if (ptr) {
         std::lock_guard<std::mutex> lock(s_allocations_mutex);
-        s_allocations.push_back({ptr, heap, size});
+        s_allocations.emplace(ptr, mem_allocation{ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
         if (heap->used_byte > heap->high_used_byte)
@@ -265,7 +261,7 @@ void mem_heap_free(void* ptr) {
     if (!ptr) return;
     std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
-    mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
+    mem_heap* owner = it != s_allocations.end() ? it->second.heap : s_current_heap;
 #ifdef _WIN32
     _aligned_free(ptr);
 #else
@@ -273,8 +269,8 @@ void mem_heap_free(void* ptr) {
 #endif
     owner->total_frees++;
     if (it != s_allocations.end()) {
-        if (owner->used_byte >= it->size)
-            owner->used_byte -= it->size;
+        if (owner->used_byte >= it->second.size)
+            owner->used_byte -= it->second.size;
         s_allocations.erase(it);
     }
 }
@@ -283,7 +279,7 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
     if (!ptr) return;
     std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
-    mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
+    mem_heap* owner = it != s_allocations.end() ? it->second.heap : heap;
 #ifdef _WIN32
     _aligned_free(ptr);
 #else
@@ -291,8 +287,8 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
 #endif
     if (owner) {
         owner->total_frees++;
-        if (it != s_allocations.end() && owner->used_byte >= it->size)
-            owner->used_byte -= it->size;
+        if (it != s_allocations.end() && owner->used_byte >= it->second.size)
+            owner->used_byte -= it->second.size;
     }
     if (it != s_allocations.end())
         s_allocations.erase(it);
@@ -306,8 +302,8 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
 void* mem_heap_realloc(void* ptr, unsigned newSize) {
     std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
-    mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
-    unsigned oldSize = it != s_allocations.end() ? it->size : 0;
+    mem_heap* owner = it != s_allocations.end() ? it->second.heap : s_current_heap;
+    unsigned oldSize = it != s_allocations.end() ? it->second.size : 0;
 #ifdef _WIN32
     void* newPtr = _aligned_realloc(ptr, newSize, 16);
 #else
@@ -315,8 +311,11 @@ void* mem_heap_realloc(void* ptr, unsigned newSize) {
 #endif
     if (newPtr) {
         if (it != s_allocations.end()) {
-            it->ptr = newPtr;
-            it->size = newSize;
+            mem_allocation allocation = it->second;
+            s_allocations.erase(it);
+            allocation.ptr = newPtr;
+            allocation.size = newSize;
+            s_allocations.emplace(newPtr, allocation);
             if (owner->used_byte >= oldSize)
                 owner->used_byte -= oldSize;
             owner->used_byte += newSize;
@@ -330,16 +329,19 @@ void* mem_heap_realloc(void* ptr, unsigned newSize) {
 void* mem_heap_realloc(mem_heap* heap, void* ptr, unsigned newSize) {
     std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
-    mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
-    unsigned oldSize = it != s_allocations.end() ? it->size : 0;
+    mem_heap* owner = it != s_allocations.end() ? it->second.heap : heap;
+    unsigned oldSize = it != s_allocations.end() ? it->second.size : 0;
 #ifdef _WIN32
     void* newPtr = _aligned_realloc(ptr, newSize, 16);
 #else
     void* newPtr = realloc(ptr, newSize);
 #endif
     if (newPtr && it != s_allocations.end()) {
-        it->ptr = newPtr;
-        it->size = newSize;
+        mem_allocation allocation = it->second;
+        s_allocations.erase(it);
+        allocation.ptr = newPtr;
+        allocation.size = newSize;
+        s_allocations.emplace(newPtr, allocation);
         if (owner->used_byte >= oldSize)
             owner->used_byte -= oldSize;
         owner->used_byte += newSize;
