@@ -1071,11 +1071,6 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         !isWorldBlendPointLitLightmap && !isWorldBlendPointLitRgbAndAlphaLightmap)
         return nullptr;
 
-    static std::map<const PixelShaderDefLayout*, IDirect3DPixelShader9*> cache;
-    const auto found = cache.find(layout);
-    if (found != cache.end())
-        return found->second;
-
     static const char WorldSource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
         "float4 t1 : TEXCOORD1; float fog : FOG; };\n"
@@ -1355,6 +1350,10 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
                                "nv2aFogFactor(input.fog)");
         FogUseOffset += sizeof("nv2aFogFactor(input.fog)") - 1;
     }
+    static std::map<std::string, IDirect3DPixelShader9*> cache;
+    const auto found = cache.find(remappedSource);
+    if (found != cache.end())
+        return found->second;
     const HRESULT result = compiler(remappedSource.data(), remappedSource.size(), "nv2a_psh", nullptr,
                                     nullptr, "main", "ps_3_0", 0, 0,
                                     &bytecode, &errors);
@@ -1372,7 +1371,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         shader = nullptr;
     bytecode->Release();
     if (shader != nullptr)
-        cache[layout] = shader;
+        cache[remappedSource] = shader;
     return shader;
 }
 
@@ -1382,14 +1381,14 @@ IDirect3DPixelShader9* nullD3DCompileNV2ACombinerPixelShader(
         reinterpret_cast<const PixelShaderDefLayout*>(definition);
     if (device == nullptr || layout == nullptr)
         return nullptr;
-    static std::map<const PixelShaderDefLayout*, IDirect3DPixelShader9*> cache;
-    const auto found = cache.find(layout);
-    if (found != cache.end())
-        return found->second;
     std::string source = BuildNV2ACombinerHlsl(layout);
     if (source.empty())
         return nullptr;
     source = RemapFogSemantic(source.c_str());
+    static std::map<std::string, IDirect3DPixelShader9*> cache;
+    const auto found = cache.find(source);
+    if (found != cache.end())
+        return found->second;
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
@@ -1412,6 +1411,6 @@ IDirect3DPixelShader9* nullD3DCompileNV2ACombinerPixelShader(
         shader = nullptr;
     bytecode->Release();
     if (shader != nullptr)
-        cache[layout] = shader;
+        cache[source] = shader;
     return shader;
 }
