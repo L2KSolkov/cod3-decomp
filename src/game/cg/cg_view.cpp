@@ -6,12 +6,20 @@
 #include "game/core/core_types.h"
 #include "game/cvar_types.h"
 #include "game/game_types.h"
+#include "game/snapshot_types.h"
 #include "game/trace_types.h"
 #include "ngl/ngl_scene.h"
 
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+// cg_local.h carries the cg-side PlayerState mirror, while the client
+// command type is shared by cl.o/bg_pmove.o through this ABI-compatible
+// 0x30-byte declaration.
+struct usercmd_s {
+    unsigned char bytes[0x30];
+};
 
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
@@ -81,6 +89,7 @@ extern float* dword_F63B8C[4 * 1580];
 extern int dword_F63B34[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern int dword_F62964[4 * 1580];
+extern float dword_F63560[4 * 1580];
 extern float dword_F63F34[4 * 1580];
 extern float dword_F63F38[4 * 1580];
 extern float dword_F63F3C[4 * 1580];
@@ -2986,7 +2995,109 @@ void CG_CalculateWeaponPosition(float* origin)
 
 extern void CG_InterpolateEntityOrigin(Entity* cent);
 extern void CG_InterpolateEntityAngles(Entity* cent);
-// CG_PredictPlayerState_Internal artifact (cg.o; stub)
+
+extern int CL_GetCurrentCmdNumber();
+extern int CL_GetUserCmd(int cmdNumber, usercmd_s* ucmd);
+extern void CG_TraceCapsule(trace_t* result, const math::Position3* start,
+                            const math::Position3* mins,
+                            const math::Position3* maxs,
+                            const math::Position3* end,
+                            const collision_context_t* context);
+extern void PM_UpdateViewAngles(
+    PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd, int msec,
+    void (__cdecl* capsuleTrace)(trace_t*, const math::Position3&,
+                                 const math::Position3&,
+                                 const math::Position3&,
+                                 const math::Position3&,
+                                 const collision_context_t&));
+
+// ea: 0x006A2650
+void CG_InterpolatePlayerState(int grabAngles)
+{
+    const int base = 1580 * currCl;
+    snapshot_t* current =
+        reinterpret_cast<snapshot_t*>(dword_F62960[base]);
+    snapshot_t* next =
+        reinterpret_cast<snapshot_t*>(dword_F62964[base]);
+    PlayerState* out =
+        reinterpret_cast<PlayerState*>(&dword_F63560[base]);
+
+    if (next == nullptr)
+    {
+        CG_ASSERT("next", "c:\\cod\\code\\game\\cg_predict.cpp", 273);
+    }
+
+    const unsigned char* currentPs = current->ps;
+    const unsigned char* nextPs = next->ps;
+    memcpy(out, nextPs, 0x5D0);
+
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    dword_F63B8C[base] = reinterpret_cast<float*>(
+        BG_GetInfoForWeapon(player->client->ps.weapon));
+
+    if (grabAngles != 0)
+    {
+        usercmd_s cmd;
+        const int currentCmdNumber = CL_GetCurrentCmdNumber();
+        CL_GetUserCmd(currentCmdNumber, &cmd);
+        using PMTrace = void (__cdecl*)(
+            trace_t*, const math::Position3&, const math::Position3&,
+            const math::Position3&, const math::Position3&,
+            const collision_context_t&);
+        PM_UpdateViewAngles(
+            out, &cmd, &cmd, cgGlobal.frametime,
+            reinterpret_cast<PMTrace>(CG_TraceCapsule));
+    }
+
+    if (next->serverTime <= current->serverTime)
+        return;
+
+    const float f = static_cast<float>(cgGlobal.time - current->serverTime)
+                    / static_cast<float>(next->serverTime
+                                         - current->serverTime);
+    const int currentBobCycle =
+        *reinterpret_cast<const int*>(currentPs + 0x28);
+    int bobCycle = *reinterpret_cast<const int*>(nextPs + 0x28);
+    if (bobCycle < currentBobCycle)
+        bobCycle += 256;
+    *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(out) + 0x28) =
+        currentBobCycle
+        + static_cast<int>((bobCycle - currentBobCycle) * f);
+    const float currentAimSpread =
+        *reinterpret_cast<const float*>(currentPs + 0x534);
+    const float nextAimSpread =
+        *reinterpret_cast<const float*>(nextPs + 0x534);
+    *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(out) + 0x534) =
+        currentAimSpread + (nextAimSpread - currentAimSpread) * f;
+
+    for (int i = 0; i < 3; ++i)
+    {
+        const float currentOrigin =
+            *reinterpret_cast<const float*>(currentPs + 0x00 + i * 4);
+        const float nextOrigin =
+            *reinterpret_cast<const float*>(nextPs + 0x00 + i * 4);
+        *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(out)
+                                  + 0x00 + i * 4) =
+            currentOrigin + (nextOrigin - currentOrigin) * f;
+        if (grabAngles == 0)
+        {
+            const float currentAngle =
+                *reinterpret_cast<const float*>(currentPs + 0xD0 + i * 4);
+            const float nextAngle =
+                *reinterpret_cast<const float*>(nextPs + 0xD0 + i * 4);
+            out->viewangles[i] = LerpAngle(currentAngle, nextAngle, f);
+        }
+        const float currentVelocity =
+            *reinterpret_cast<const float*>(currentPs + 0x10 + i * 4);
+        const float nextVelocity =
+            *reinterpret_cast<const float*>(nextPs + 0x10 + i * 4);
+        *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(out)
+                                  + 0x10 + i * 4) =
+            currentVelocity + (nextVelocity - currentVelocity) * f;
+    }
+}
+
+// CG_PredictPlayerState_Internal remains the next larger cg_predict.cpp unit.
 int CG_PredictPlayerState_Internal()
 {
     return 0;
