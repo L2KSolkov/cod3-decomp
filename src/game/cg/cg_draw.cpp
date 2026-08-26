@@ -129,6 +129,9 @@ extern void trap_R_RenderScene(const refdef_s* fd);
 struct View_Window;
 namespace View {
 const View_Window* GetCurrentWindow(int clientIndex);
+float GetXScalingForWindow(int window, bool normal_aspect);
+float GetCurrentXPos(float pos, int window);
+float GetCurrentYPos(float pos, int window);
 }
 struct parseInfo_t {
     char token[128];         // +0x00
@@ -314,6 +317,7 @@ int dword_F63D1C[4 * 1580];
 // (IDA value 0x41000000, i.e. 8.0f); the release function has no writes
 // to this global, so preserve it as an immutable port constant.
 static const float extraSpread = 8.0f;
+static bool lastFrameRenderedOverlay = false;
 int dword_F63D20[4 * 1580];
 int dword_F63D24[4 * 1580];
 int dword_F63D28[4 * 1580];
@@ -1323,6 +1327,134 @@ void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
             (float)((i >> 1) & 1), 1.0f,
             (float)(((i - 2) >> 1) & 1),
             (float)((i & 1) * 90 + 45), texture);
+    }
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x0069B580 (release cg.o)
+void CG_DrawWeapReticle()
+{
+    float zoomFraction = 0.0f;
+    if (!CG_GetWeapReticleZoom(&zoomFraction))
+    {
+        if (lastFrameRenderedOverlay)
+        {
+            g_femanager.mDontDrawHud = false;
+            lastFrameRenderedOverlay = false;
+        }
+        return;
+    }
+
+    const int base = 1580 * currCl;
+    weaponFileInfo_t* weapDef = reinterpret_cast<weaponFileInfo_t*>(
+        dword_F63B8C[base]);
+    if (weapDef == nullptr)
+        return;
+    const int weapIndex = BG_GetWeaponForInfo(weapDef);
+
+    float centerX;
+    float centerY;
+    CG_CalcCrosshairPosition(&centerX, &centerY);
+    const int window = (int)unk_F6A284[802 * currCl];
+    const float screenCenterX =
+        dword_F63C58[base] * 0.5f + dword_F63C50[base] + centerX;
+    const float screenCenterY =
+        dword_F63C5C[base] * 0.5f + dword_F63C54[base] + centerY;
+    const float overlayScale = View::GetXScalingForWindow(window, true);
+    // Release receives this value through the x87 stack; the only caller
+    // supplies the normal transition scale, which is 1.0 for this path.
+    const float overlayWidth = overlayScale * *reinterpret_cast<const float*>(
+        reinterpret_cast<const char*>(weapDef) + 0x658);
+    const float overlayHeight = *reinterpret_cast<const float*>(
+        reinterpret_cast<const char*>(weapDef) + 0x65C)
+                                * (window >= 3 && window <= 8 ? 0.5f : 1.0f);
+
+    float white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    trap_R_SetColor(white);
+    const char* overlayShader = *reinterpret_cast<const char* const*>(
+        reinterpret_cast<const char*>(weapDef) + 0x650);
+    if (overlayShader != nullptr && overlayShader[0] != '\0')
+    {
+        const float x = screenCenterX - overlayWidth * 0.5f;
+        const float y = screenCenterY - overlayHeight * 0.5f;
+        lastFrameRenderedOverlay = true;
+        const float minX = View::GetCurrentXPos(0.0f, window);
+        const float minY = View::GetCurrentYPos(0.0f, window);
+        const float maxX = View::GetCurrentXPos(640.0f, window);
+        const float maxY = View::GetCurrentYPos(480.0f, window);
+        trap_R_DrawStretchPic(x, y, overlayWidth, overlayHeight, 0.0f, 0.0f,
+                              1.0f, 1.0f,
+                              reinterpret_cast<nglTexture*>(
+                                  cg_weapons[weapIndex].hADSOverlay),
+                              0.0f);
+
+        float black[4] = {0.0f, 0.0f, 0.0f, zoomFraction};
+        if (x > minX)
+            CG_FillRect(minX, minY, x - minX, dword_F63C5C[base], black, 0.0f);
+        if (maxX > x + overlayWidth)
+            CG_FillRect(x + overlayWidth, minY,
+                        maxX - (x + overlayWidth), dword_F63C5C[base], black,
+                        0.0f);
+        if (y > minY)
+            CG_FillRect(x, minY, overlayWidth, y - minY, black, 0.0f);
+        if (maxY > y + overlayHeight)
+            CG_FillRect(x, y + overlayHeight, overlayWidth,
+                        maxY - (y + overlayHeight), black, 0.0f);
+    }
+
+    const int overlayReticle = *reinterpret_cast<const int*>(
+        reinterpret_cast<const char*>(weapDef) + 0x654);
+    switch (overlayReticle)
+    {
+    case 0:
+        break;
+    case 1:
+    {
+        float width = (float)*reinterpret_cast<const int*>(
+            reinterpret_cast<const char*>(weapDef) + 0x4E0);
+        float height = width;
+        CG_AdjustFrom640(&centerX, &centerY, &width, &height);
+        trap_R_DrawStretchPic(
+            (dword_F63C58[base] - width) * 0.5f + dword_F63C50[base] + centerX,
+            (dword_F63C5C[base] - height) * 0.5f + dword_F63C54[base] + centerY,
+            width, height, 0.0f, 0.0f, 1.0f, 1.0f,
+            reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleCenter),
+            0.0f);
+        break;
+    }
+    case 2:
+    {
+        trap_R_SetColor(nullptr);
+        const float halfHeight = overlayHeight * 0.9f;
+        const float halfWidth = overlayWidth * 0.9f;
+        trap_R_DrawStretchPic(screenCenterX - 1.0f, screenCenterY, 3.0f,
+                              halfHeight, 0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal.media.softLineShader, 0.0f);
+        const float horizontal = overlayWidth * 0.75f;
+        trap_R_DrawStretchPic(screenCenterX - halfWidth, screenCenterY - 1.0f,
+                              horizontal, 3.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal.media.softLineHShader, 0.0f);
+        trap_R_DrawStretchPic(screenCenterX + overlayWidth * 0.15f,
+                              screenCenterY - 1.0f, horizontal, 3.0f, 0.0f,
+                              0.0f, 1.0f, 1.0f,
+                              cgsGlobal.media.softLineHShader, 0.0f);
+        break;
+    }
+    case 3:
+        trap_R_SetColor(nullptr);
+        trap_R_DrawStretchPic(screenCenterX - 1.0f,
+                              screenCenterY - overlayHeight * 0.9f, 3.0f,
+                              overlayHeight * 1.8f, 0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal.media.softLineShader, 0.0f);
+        trap_R_DrawStretchPic(screenCenterX - overlayWidth * 0.9f,
+                              screenCenterY - 1.0f, overlayWidth * 1.8f, 3.0f,
+                              0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal.media.softLineHShader, 0.0f);
+        break;
+    case 4:
+        break;
+    default:
+        break;
     }
     trap_R_SetColor(nullptr);
 }
