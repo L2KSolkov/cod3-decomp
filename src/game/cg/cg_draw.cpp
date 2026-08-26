@@ -61,6 +61,13 @@ extern vmCvar_t hud_healthOverlay_phaseEnd_pulseDuration;
 extern vmCvar_t hud_healthOverlay_regenPauseTime;
 extern vmCvar_t cg_hudAlpha;
 extern float CG_CalcPlayerHealth();
+extern bool CG_GetWeapReticleZoom(float* pfZoom);
+extern vmCvar_t s_cgCvarStorage[170];
+extern float dword_F63C50[4 * 1580];
+extern float dword_F63C54[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
+extern const float vectoyaw(const float* const vec);
 extern float dword_F63C80[4 * 1580];
 extern float dword_F63C84[4 * 1580];
 extern float dword_F63C88[4 * 1580];
@@ -1097,6 +1104,81 @@ void CG_DrawRotatedQuadPic(float x, float y, const float (*verts)[2],
     xy[6] = ((v8 * verts[3][0]) + v11) - (verts[3][1] * v9);
     xy[7] = ((verts[3][1] * v10) + (v7 * verts[3][0])) + v6;
     re_DrawQuadPic(xy, (const float*)texCoords, tex);
+}
+
+// ea: 0x006A0CA0 (release cg.o)
+void CG_DrawDamageDirectionIndicators()
+{
+    const int base = 1580 * currCl;
+    if (dword_F62960[base] == 0)
+        return;
+
+    float zoomFraction;
+    float centerX;
+    float centerY;
+    if (CG_GetWeapReticleZoom(&zoomFraction) != 0)
+    {
+        if (s_cgCvarStorage[29].integer == 0)
+            return;
+        CG_CalcCrosshairPosition(&centerX, &centerY);
+        centerX += 320.0f;
+        centerY += 240.0f;
+    }
+    else
+    {
+        centerX = 320.0f;
+        centerY = 240.0f;
+    }
+
+    const float width = s_cgCvarStorage[25].value;
+    const float height = s_cgCvarStorage[26].value;
+    const float offset = s_cgCvarStorage[27].value;
+    const float halfWidth = width * 0.5f;
+    const float bottom = height + offset;
+    float verts[4][2] = {{-halfWidth, offset},
+                         {halfWidth, bottom},
+                         {halfWidth, offset},
+                         {-halfWidth, bottom}};
+    const int windowMode = (int)unk_F6A284[802 * currCl];
+    if (windowMode == 3)
+        centerY = 120.0f;
+    else if (windowMode == 4)
+        centerY = 360.0f;
+    else if (windowMode >= 5 && windowMode <= 8)
+    {
+        centerX = (windowMode == 5 || windowMode == 7) ? 160.0f : 480.0f;
+        centerY = (windowMode == 5 || windowMode == 6) ? 120.0f : 360.0f;
+        for (int i = 0; i < 4; ++i)
+            verts[i][0] *= 0.5f;
+        
+    }
+    if (windowMode >= 3 && windowMode <= 8)
+    {
+        for (int i = 0; i < 4; ++i)
+            verts[i][1] *= 0.5f;
+    }
+
+    static const float texCoords[4][2] = {
+        {1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f}, {1.0f, 0.0f}};
+    float color[4] = {1.0f, 1.0f, 1.0f, 0.0f};
+    const float viewForward[3] = {dword_F63C80[base], dword_F63C84[base],
+                                  dword_F63C88[base]};
+    for (int i = 0; i < 24; i += 3)
+    {
+        const int duration = dword_F63FA0[base + i];
+        const int elapsed = cgGlobal_time - dword_F63F9C[base + i];
+        if (elapsed <= 0 || elapsed >= duration)
+            continue;
+        const float* angleSlot = reinterpret_cast<const float*>(
+            &dword_F63FA8[(base + i) * 4]);
+        const float iconAngle = vectoyaw(viewForward) - angleSlot[1];
+        color[3] = 2.0f - (elapsed * 2.0f) / duration;
+        if (color[3] > 1.0f)
+            color[3] = 1.0f;
+        trap_R_SetColor(color);
+        CG_DrawRotatedQuadPic(centerX, centerY, verts, texCoords, iconAngle,
+                              cgsGlobal.media.damageShader);
+    }
 }
 
 static void CG_HudElemInvalidCase(int line)

@@ -4162,7 +4162,7 @@ extern vmCvar_t fs_debug_vm;
 extern vmCvar_t cg_fov;
 extern vmCvar_t cg_draw2D;
 extern vmCvar_t cg_drawStatus;
-static vmCvar_t s_cgCvarStorage[170];
+vmCvar_t s_cgCvarStorage[170];
 struct cgCvarTableEntry
 {
     vmCvar_t* vmCvar;

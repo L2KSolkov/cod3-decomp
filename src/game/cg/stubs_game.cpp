@@ -31,7 +31,6 @@ void CG_DrawAdsAimIndicator(void* a, int b, int* c, float d, float e, float f)
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
 }
-void CG_DrawDamageDirectionIndicators() {}
 void CG_DrawReticleCenter(void* a, int b, int* c, float d, float e, float f)
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
