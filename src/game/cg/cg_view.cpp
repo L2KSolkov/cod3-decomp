@@ -7,6 +7,7 @@
 #include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
+#include "ngl/ngl_scene.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -17,6 +18,11 @@ extern void Com_Error(errorParm_t code, const char* fmt, ...);
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
+
+class SoundDevice {
+public:
+    static SoundDevice* sInst;
+};
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
@@ -660,7 +666,28 @@ extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
 extern void CL_CapTurnRate(float maxPitchSpeed, float maxYawSpeed);
+extern void SoundDevice_UndampenAllSounds(void* self);
+extern int g_doShellShock[16];
+extern void nglSetSceneCallBack(nglSceneCallbackType Type,
+                                void (*Fn)(void*), void* Data);
 extern const float LerpAngle(float from, float to, float frac);
+
+// ea: 0x00698650 (release cg.o)
+void CG_EndShellShock(const void*, int)
+{
+    // SoundDevice::UndampenAllSounds is the existing Win32 sound bridge for
+    // the release audio cleanup; the remaining state writes are direct IDA
+    // matches from CG_EndShellShock.
+    SoundDevice_UndampenAllSounds(SoundDevice::sInst);
+    const int base = 1580 * currCl;
+    *(float*)&dword_F64174[base] = 1.0f;
+    CL_CapTurnRate(0.0f, 0.0f);
+    nglSetSceneCallBack(NGLSCENE_POST, nullptr, nullptr);
+    dword_F64178[base] = 0;
+    dword_F6417C[base] = 0;
+    CL_SetUserCmdInShellshock(0);
+    g_doShellShock[currCl] = 0;
+}
 
 // ea: 0x006970B0
 void CG_InterpolateEntityOrigin(Entity* cent)
