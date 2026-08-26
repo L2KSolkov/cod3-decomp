@@ -26697,6 +26697,7 @@ void BrocSys::InitAPI()
            &gBrocExports, 0x1C8);
     gpBrocAPI->mBrocExports.mRegisterHashString =
         BrocSys::RegisterHashString;
+    Broc::gBrocAPI.mStringHash = BrocSys::CalcStringHash;
     gpBrocAPI->mBrocExports.mStrncmp = strncmp;
     gpBrocAPI->mBrocExports.mStricmp = _stricmp;
     gpBrocAPI->mBrocExports.mVecLength = Broc::length;
