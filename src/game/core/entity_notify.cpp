@@ -37,6 +37,7 @@ void EntityNotifySet::AddNotify(const HashString& h,
     mStrings.m_tail = &n->m_dlist_node;
     if (!mStrings.m_head)
         mStrings.m_head = &n->m_dlist_node;
+    ++mStrings.m_size;
 }
 
 // ea: 0x005EF500 (scr.o)
