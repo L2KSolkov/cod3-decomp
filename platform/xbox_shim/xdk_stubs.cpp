@@ -2481,8 +2481,17 @@ D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsig
             Surface->Info.NativeSurface->Release();
             Surface->Info.NativeSurface = NULL;
         }
-        if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(Level, &Surface->Info.NativeSurface)))
+        if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(Level, &Surface->Info.NativeSurface))) {
             Surface->Info.NativeResource = Surface->Info.NativeSurface;
+            // This temporary wrapper is used for render-target binding.  Its
+            // native surface is authoritative; retaining a second zeroed
+            // CPU image here makes every target switch pay for a full copy.
+            free(Surface->Info.Bits);
+            Surface->Info.Bits = NULL;
+            Surface->Info.SizeBytes = 0;
+            Surface->Object.Data = 0;
+            Surface->Object.Size = 0;
+        }
     }
     return (D3DSurface*)Surface;
 }
