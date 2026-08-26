@@ -12,6 +12,7 @@
 
 #include <math.h>
 #include <new>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -3427,11 +3428,32 @@ struct tlFixedString {
     char str[28];       // +0x04
 };
 
-// ?tlFixedString_ctor@@YA?AUtlFixedString@@PAXPBD@Z (stub; local struct tag)
+// ?tlFixedString_ctor@@YA?AUtlFixedString@@PAXPBD@Z
+// The cg translation unit keeps a local ABI view of tlFixedString.  This
+// adapter is called by ADSMetaAnimData::DelayCreate and must perform the
+// same lower-casing/hash/truncation as the release constructor at 0x4A53F0.
 tlFixedString tlFixedString_ctor(void* self, const char* s)
 {
-    (void)self; (void)s;
     tlFixedString r = {};
+    tlFixedString* out = (tlFixedString*)self;
+    if (out != nullptr)
+        *out = r;
+    if (s != nullptr)
+    {
+        int i = 0;
+        for (const char* p = s; *p != 0; ++p)
+        {
+            char c = *p;
+            if (isalpha((unsigned char)c) != 0)
+                c = (char)tolower((unsigned char)c);
+            r.hash = (unsigned int)(unsigned char)c + 33u * r.hash;
+            if (i < 27)
+                r.str[i++] = c;
+        }
+        r.str[27] = 0;
+    }
+    if (out != nullptr)
+        *out = r;
     return r;
 }
 
