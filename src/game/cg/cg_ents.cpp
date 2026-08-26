@@ -1149,6 +1149,48 @@ void CG_ProcessEntity(Entity* entity)
     }
 }
 
+// ea: 0x00689A90
+void CG_mg42(Entity* entity)
+{
+    // Release filters out entities with the low eFlags byte's high bit set
+    // and entities that have not yet received a client DObj.
+    if ((entity->s.eFlags & 0x80u) != 0 || entity->mDObj == nullptr)
+        return;
+
+    refEntity_t* refEntity = (refEntity_t*)&entity->GetRefEntity();
+    const float* origin = entity->s.lerpOrigin.v.m128_f32;
+    refEntity->origin[0] = origin[0];
+    refEntity->origin[1] = origin[1];
+    refEntity->origin[2] = origin[2];
+    refEntity->oldorigin[0] = origin[0];
+    refEntity->oldorigin[1] = origin[1];
+    refEntity->oldorigin[2] = origin[2];
+    refEntity->lightingOrigin[0] = origin[0];
+    refEntity->lightingOrigin[1] = origin[1];
+    refEntity->lightingOrigin[2] = origin[2] + 32.0f;
+    refEntity->renderfx = 128;
+    AnglesToAxis((const float*)&entity->s.lerpAngles, refEntity->axis);
+
+    // This is the release assertion at cg_ent.cpp:370.  Keep the check
+    // explicit so malformed snapshots are diagnosed before submission.
+    const float* currentAngles = entity->r.currentAngles.v.m128_f32;
+    const float* lerpAngles = entity->s.lerpAngles.v.m128_f32;
+    if (currentAngles[0] != lerpAngles[0]
+        || currentAngles[1] != lerpAngles[1]
+        || currentAngles[2] != lerpAngles[2])
+    {
+        CG_ASSERT("((entity->r.currentAngles)[0] == (entity->s.GetLerpAngles())[0] && "
+                  "(entity->r.currentAngles)[1] == (entity->s.GetLerpAngles())[1] && "
+                  "(entity->r.currentAngles)[2] == (entity->s.GetLerpAngles())[2])",
+                  "c:\\cod\\code\\game\\cg_ent.cpp", 370);
+    }
+
+    refEntity->obj = entity->mDObj;
+    refEntity->entity = entity;
+    refEntity->reType = 1;
+    RE_AddRefEntityToScene(refEntity, -1);
+}
+
 // ea: 0x0069B160
 void CG_Actor(Entity* entity)
 {

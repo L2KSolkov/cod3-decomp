@@ -1,5 +1,5 @@
 // AUTO-GENERATED STUBS — Client game (cg.o)
-// Remaining unported non-inline functions (7 entries below, including the
+// Remaining unported non-inline functions (6 entries below, including the
 // diagnostic entry point)
 // When ported, functions move from here to their real .cpp files.
 
@@ -26,7 +26,6 @@ void CG_ClipMoveToEntities(const math::Position3* start,
     (void)start; (void)mins; (void)maxs; (void)end;
     (void)context; (void)a6; (void)a7;
 }
-void CG_mg42(Entity* e) { (void)e; }
 void CG_OffsetFirstPersonView() {}
 void CG_OffsetThirdPersonView() {}
 void CG_UpdateShellShockSound(const void* a) { (void)a; }
