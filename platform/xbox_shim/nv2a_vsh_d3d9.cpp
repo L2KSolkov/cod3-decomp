@@ -515,14 +515,39 @@ static std::string PsOutputMapping(const std::string& value, unsigned int mappin
     }
 }
 
+static std::string PsPackedColorExpression(unsigned int argb) {
+    const unsigned int red = (argb >> 16) & 0xffu;
+    const unsigned int green = (argb >> 8) & 0xffu;
+    const unsigned int blue = argb & 0xffu;
+    const unsigned int alpha = (argb >> 24) & 0xffu;
+    return "float4(" + std::to_string(red) + ".0/255.0," +
+           std::to_string(green) + ".0/255.0," +
+           std::to_string(blue) + ".0/255.0," +
+           std::to_string(alpha) + ".0/255.0)";
+}
+
 static std::string PsRegisterSource(unsigned int registerId, bool rgb,
                                     unsigned int finalSettings,
                                     const std::string& finalE,
-                                    const std::string& finalF) {
+                                    const std::string& finalF,
+                                    const PixelShaderDefLayout* layout,
+                                    unsigned int stage, unsigned int combinerFlags) {
     switch (registerId & 0x0fu) {
     case 0: return "float4(0.0,0.0,0.0,0.0)";
-    case 1: return "c0";
-    case 2: return "c1";
+    case 1: {
+        const unsigned int constantStage = stage >= 8u ? 8u
+            : ((combinerFlags & 0x10u) != 0 ? stage : 0u);
+        const unsigned int value = constantStage >= 8u
+            ? layout->PSFinalCombinerConstant0 : layout->PSConstant0[constantStage];
+        return PsPackedColorExpression(value);
+    }
+    case 2: {
+        const unsigned int constantStage = stage >= 8u ? 8u
+            : ((combinerFlags & 0x100u) != 0 ? stage : 0u);
+        const unsigned int value = constantStage >= 8u
+            ? layout->PSFinalCombinerConstant1 : layout->PSConstant1[constantStage];
+        return PsPackedColorExpression(value);
+    }
     case 3: return rgb ? "float4(fogColor.rgb, fogFactor)" : "float4(fogColor.rgb, fogFactor)";
     case 4: return "v0";
     case 5: return "v1";
@@ -552,10 +577,13 @@ static std::string PsRegisterSource(unsigned int registerId, bool rgb,
 static std::string PsInputExpression(unsigned int encoded, bool rgb,
                                      unsigned int finalSettings,
                                      const std::string& finalE,
-                                     const std::string& finalF) {
+                                     const std::string& finalF,
+                                     const PixelShaderDefLayout* layout,
+                                     unsigned int stage, unsigned int combinerFlags) {
     const unsigned int registerId = encoded & 0x0fu;
     const bool alphaChannel = (encoded & 0x10u) != 0;
-    const std::string source = PsRegisterSource(registerId, rgb, finalSettings, finalE, finalF);
+    const std::string source = PsRegisterSource(registerId, rgb, finalSettings, finalE, finalF,
+                                                layout, stage, combinerFlags);
     std::string channel;
     if (rgb)
         channel = alphaChannel ? source + ".aaa" : source + ".rgb";
@@ -564,38 +592,9 @@ static std::string PsInputExpression(unsigned int encoded, bool rgb,
     return PsInputMapping(channel, encoded & 0xe0u);
 }
 
-static bool PsUsesExplicitConstants(const PixelShaderDefLayout* layout) {
-    const unsigned int count = layout->PSCombinerCount & 0xffu;
-    for (unsigned int i = 0; i < count && i < 8; ++i) {
-        const unsigned int values[2] = { layout->PSRGBInputs[i], layout->PSAlphaInputs[i] };
-        for (unsigned int value : values) {
-            const unsigned int bytes[4] = {
-                (value >> 24) & 0xffu, (value >> 16) & 0xffu,
-                (value >> 8) & 0xffu, value & 0xffu
-            };
-            for (unsigned int byte : bytes)
-                if ((byte & 0x0fu) == 1u || (byte & 0x0fu) == 2u)
-                    return true;
-        }
-    }
-    const unsigned int finals[2] = {
-        layout->PSFinalCombinerInputsABCD, layout->PSFinalCombinerInputsEFG
-    };
-    for (unsigned int value : finals) {
-        const unsigned int bytes[4] = {
-            (value >> 24) & 0xffu, (value >> 16) & 0xffu,
-            (value >> 8) & 0xffu, value & 0xffu
-        };
-        for (unsigned int byte : bytes)
-            if ((byte & 0x0fu) == 1u || (byte & 0x0fu) == 2u)
-                return true;
-    }
-    return false;
-}
-
 static bool PsCombinerTextureModesSupported(const PixelShaderDefLayout* layout) {
     const unsigned int count = layout->PSCombinerCount & 0xffu;
-    if (count == 0 || count > 8 || PsUsesExplicitConstants(layout))
+    if (count == 0 || count > 8)
         return false;
     for (unsigned int i = 0; i < 4; ++i) {
         const unsigned int mode = (layout->PSTextureModes >> (i * 5)) & 0x1fu;
@@ -627,15 +626,20 @@ static void PsAppendStage(std::ostringstream& source, unsigned int index,
                           unsigned int inputValue, unsigned int outputValue,
                           bool rgb, unsigned int combinerFlags,
                           const std::string& finalE,
-                          const std::string& finalF) {
+                          const std::string& finalF,
+                          const PixelShaderDefLayout* layout) {
     const unsigned int aValue = (inputValue >> 24) & 0xffu;
     const unsigned int bValue = (inputValue >> 16) & 0xffu;
     const unsigned int cValue = (inputValue >> 8) & 0xffu;
     const unsigned int dValue = inputValue & 0xffu;
-    const std::string a = PsInputExpression(aValue, rgb, 0, finalE, finalF);
-    const std::string b = PsInputExpression(bValue, rgb, 0, finalE, finalF);
-    const std::string c = PsInputExpression(cValue, rgb, 0, finalE, finalF);
-    const std::string d = PsInputExpression(dValue, rgb, 0, finalE, finalF);
+    const std::string a = PsInputExpression(aValue, rgb, 0, finalE, finalF,
+                                            layout, index, combinerFlags);
+    const std::string b = PsInputExpression(bValue, rgb, 0, finalE, finalF,
+                                            layout, index, combinerFlags);
+    const std::string c = PsInputExpression(cValue, rgb, 0, finalE, finalF,
+                                            layout, index, combinerFlags);
+    const std::string d = PsInputExpression(dValue, rgb, 0, finalE, finalF,
+                                            layout, index, combinerFlags);
     const unsigned int flags = outputValue >> 12;
     const unsigned int mapping = flags & 0x38u;
     const std::string ab = (flags & 2u) != 0
@@ -707,24 +711,31 @@ static std::string BuildNV2ACombinerHlsl(const PixelShaderDefLayout* layout) {
     if (hasFinal) {
         const unsigned int e = (layout->PSFinalCombinerInputsEFG >> 24) & 0xffu;
         const unsigned int f = (layout->PSFinalCombinerInputsEFG >> 16) & 0xffu;
-        finalE = PsInputExpression(e, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "");
-        finalF = PsInputExpression(f, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "");
+        finalE = PsInputExpression(e, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "",
+                                   layout, 8u, combinerFlags);
+        finalF = PsInputExpression(f, true, layout->PSFinalCombinerInputsEFG & 0xffu, "", "",
+                                   layout, 8u, combinerFlags);
     }
     for (unsigned int i = 0; i < count; ++i) {
         PsAppendStage(source, i, layout->PSRGBInputs[i], layout->PSRGBOutputs[i], true,
-                      combinerFlags, finalE, finalF);
+                      combinerFlags, finalE, finalF, layout);
         PsAppendStage(source, i, layout->PSAlphaInputs[i], layout->PSAlphaOutputs[i], false,
-                      combinerFlags, finalE, finalF);
+                      combinerFlags, finalE, finalF, layout);
     }
     if (hasFinal) {
         const unsigned int abcd = layout->PSFinalCombinerInputsABCD;
         const unsigned int efg = layout->PSFinalCombinerInputsEFG;
         const unsigned int settings = efg & 0xffu;
-        const std::string a = PsInputExpression((abcd >> 24) & 0xffu, true, settings, finalE, finalF);
-        const std::string b = PsInputExpression((abcd >> 16) & 0xffu, true, settings, finalE, finalF);
-        const std::string c = PsInputExpression((abcd >> 8) & 0xffu, true, settings, finalE, finalF);
-        const std::string d = PsInputExpression(abcd & 0xffu, true, settings, finalE, finalF);
-        const std::string g = PsInputExpression((efg >> 8) & 0xffu, false, settings, finalE, finalF);
+        const std::string a = PsInputExpression((abcd >> 24) & 0xffu, true, settings, finalE, finalF,
+                                                layout, 8u, combinerFlags);
+        const std::string b = PsInputExpression((abcd >> 16) & 0xffu, true, settings, finalE, finalF,
+                                                layout, 8u, combinerFlags);
+        const std::string c = PsInputExpression((abcd >> 8) & 0xffu, true, settings, finalE, finalF,
+                                                layout, 8u, combinerFlags);
+        const std::string d = PsInputExpression(abcd & 0xffu, true, settings, finalE, finalF,
+                                                layout, 8u, combinerFlags);
+        const std::string g = PsInputExpression((efg >> 8) & 0xffu, false, settings, finalE, finalF,
+                                                layout, 8u, combinerFlags);
         source << "  return float4(" << d << " + lerp(" << c << "," << b << "," << a << "), " << g << ");\n";
     } else {
         source << "  return r0;\n";
