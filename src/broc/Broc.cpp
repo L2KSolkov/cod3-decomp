@@ -1620,36 +1620,94 @@ void endon(entity ent, HashStr label)
                                       static_cast<unsigned int>(label));
 }
 
-void thread_sleep_time(void)
+static void ThreadBackupThunk(unsigned int stackBegin)
 {
-    char tmpBuf[64];
-    gBrocAPI.mThreadBackupStack(
-        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
+    gBrocAPI.mThreadBackupStack(stackBegin);
+}
+
+static void ThreadSleepTimeThunk()
+{
     gBrocAPI.mThreadSleepInternal(gThreadSleepTime);
 }
 
-void thread_sleep_frames(void)
+static void ThreadSleepFramesThunk()
 {
-    char tmpBuf[64];
-    gBrocAPI.mThreadBackupStack(
-        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
     gBrocAPI.mThreadSleepFrames(gThreadSleepFrames);
 }
 
-void thread_sleep_until_notify(void)
+static void ThreadSleepUntilNotifyThunk()
 {
-    char tmpBuf[64];
-    gBrocAPI.mThreadBackupStack(
-        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
     gBrocAPI.mThreadSleepUntilNotify(
-        gThreadSleepEntity,
-        gThreadSleepPakfile,
-        gThreadSleepNotify1,
-        gThreadSleepNotify2,
-        gThreadSleepNotify3,
-        gThreadSleepNotify4,
-        gThreadWaitForAll,
-        gTimeOut);
+        gThreadSleepEntity, gThreadSleepPakfile,
+        gThreadSleepNotify1, gThreadSleepNotify2,
+        gThreadSleepNotify3, gThreadSleepNotify4,
+        gThreadWaitForAll, gTimeOut);
+}
+
+// These entrypoints deliberately preserve the release build's hand-written
+// stack context.  The saved range starts at the SEH word below and is resumed
+// by AeThread::Execute after the scheduler long-jumps back to SetJmp.
+__declspec(naked) void thread_sleep_time(void)
+{
+    __asm {
+        pushfd
+        mov ax, word ptr [esp]
+        add esp, 4
+        push ax
+        pushad
+        mov eax, fs:[0]
+        push eax
+        mov eax, esp
+        sub esp, 80h
+        push eax
+        call ThreadBackupThunk
+        add esp, 4
+        add esp, 80h
+        call ThreadSleepTimeThunk
+        int 3
+    }
+}
+
+__declspec(naked) void thread_sleep_frames(void)
+{
+    __asm {
+        pushfd
+        mov ax, word ptr [esp]
+        add esp, 4
+        push ax
+        pushad
+        mov eax, fs:[0]
+        push eax
+        mov eax, esp
+        sub esp, 80h
+        push eax
+        call ThreadBackupThunk
+        add esp, 4
+        add esp, 80h
+        call ThreadSleepFramesThunk
+        int 3
+    }
+}
+
+__declspec(naked) void thread_sleep_until_notify(void)
+{
+    __asm {
+        pushfd
+        mov ax, word ptr [esp]
+        add esp, 4
+        push ax
+        pushad
+        mov eax, fs:[0]
+        push eax
+        mov eax, esp
+        sub esp, 80h
+        push eax
+        call ThreadBackupThunk
+        add esp, 4
+        add esp, 80h
+        call ThreadSleepUntilNotifyThunk
+        int 3
+    }
 }
 void thread_debug_wait_msg(int) {}
 // ea: 0x00929320. IDA formats the wait duration and emits a thread notice.

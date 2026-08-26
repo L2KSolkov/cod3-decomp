@@ -22649,6 +22649,30 @@ void BrocSys::InitVehicle()
 // ============================================================================
 
 extern void CallFunctor(AeThreadFunctor* f);  // ?CallFunctor@@YAXPAVAeThreadFunctor@@@Z
+
+// The release build resumes an AeThread by restoring the saved stack image,
+// then switching ESP/SEH/registers/flags back to the SetJmp frame before RET.
+// Keep that transfer in one x86 helper so the compiler cannot emit a normal
+// C++ epilogue on the restored stack.
+__declspec(naked) static void AeThreadRestoreContext(unsigned int targetEsp)
+{
+    __asm {
+        mov eax, [esp + 4]
+        mov esp, eax
+        pop eax
+        mov fs:[0], eax
+        movzx ecx, word ptr [esp + 20h]
+        pushfd
+        pop edx
+        and edx, 0FFFF0000h
+        or edx, ecx
+        push edx
+        popfd
+        popad
+        add esp, 2
+        retn
+    }
+}
 extern bool gPumpThreads;              // ?gPumpThreads@@3_NA
 extern bool gPumpThreadsForMapChange;  // ?gPumpThreadsForMapChange@@3_NA
 
@@ -22825,10 +22849,8 @@ void AeThread::Execute(float /*deltaT*/)
     {
         self->mFlags.mMask &= ~2u;
         self->mFlags.mMask &= 0xFFFFFFF9;
-        unsigned int newESP = 0;
-        __asm mov newESP, esp
         const unsigned int stackBegin =
-            newESP - self->mBackupStack.mSize - 0x2000u;
+            self->mStackStart - self->mBackupStack.mSize;
         if (stackBegin != self->mBackupStack.mBegin)
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -22839,8 +22861,8 @@ void AeThread::Execute(float /*deltaT*/)
                 && AeAssert::Assert("incorrect thread stack restore"))
                 __debugbreak();
         }
-        self->mStackStart = newESP - 0x2000u;
         self->mBackupStack.Restore(stackBegin);
+        AeThreadRestoreContext(stackBegin);
     }
     AeThreadManager::sInst.mThreadExecuting = nullptr;
 }
