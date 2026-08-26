@@ -3121,6 +3121,11 @@ int CG_CalcFov()
 }
 
 extern int CG_OffsetFirstPersonView();
+extern void CG_Trace(trace_t* result, const math::Position3* start,
+                     const math::Position3* mins, const math::Position3* maxs,
+                     const math::Position3* end,
+                     const collision_context_t* context);
+extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
                                const float* minClamp,
                                const float* maxClamp);
@@ -3150,6 +3155,9 @@ extern vehicle_info_t* VEH_GetInfo(int idx);
 extern float angle[4 * 1580];
 extern int dword_F64024[4 * 1580];
 extern vmCvar_t cg_bobMax;
+extern vmCvar_t cg_thirdPersonAngle;
+extern vmCvar_t cg_thirdPersonRange;
+extern vmCvar_t cg_thirdPersonLock;
 
 // ea: 0x0068CEA0
 void CG_KickAngles()
@@ -3347,6 +3355,103 @@ int CG_OffsetFirstPersonView()
             origin[2] = minZ;
     }
     return 6320 * currCl;
+}
+
+static unsigned int s_thirdPersonInit;
+static math::Position3 s_thirdPersonMins;
+static math::Position3 s_thirdPersonMaxs;
+static math::Position3 s_thirdPersonLockPos[4];
+static math::Position3 s_thirdPersonLockAng[4];
+
+// ea: 0x006A4020
+void CG_OffsetThirdPersonView()
+{
+    if ((s_thirdPersonInit & 1) == 0)
+    {
+        s_thirdPersonMins.v = _mm_setr_ps(-4.0f, -4.0f, -4.0f, 0.0f);
+        s_thirdPersonInit |= 1;
+    }
+    if ((s_thirdPersonInit & 2) == 0)
+    {
+        s_thirdPersonMaxs.v = _mm_setr_ps(4.0f, 4.0f, 4.0f, 0.0f);
+        s_thirdPersonInit |= 2;
+    }
+
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    Client* client = player->client;
+    const int index = 1580 * currCl;
+    if (cg_thirdPersonLock.integer != 0)
+    {
+        const math::Position3& lockedPos = s_thirdPersonLockPos[currCl];
+        const math::Position3& lockedAng = s_thirdPersonLockAng[currCl];
+        dword_F63C70[index] = lockedPos.v.m128_f32[0];
+        dword_F63C74[index] = lockedPos.v.m128_f32[1];
+        dword_F63C78[index] = lockedPos.v.m128_f32[2];
+        angle[index] = lockedAng.v.m128_f32[0];
+        dword_F63CB4[index] = lockedAng.v.m128_f32[1];
+        dword_F63CB8[index] = lockedAng.v.m128_f32[2];
+        return;
+    }
+
+    dword_F63C78[index] += client->ps.viewHeightCurrent;
+    angle[index] = 0.0f;
+    dword_F63CB4[index] = (float)cg_thirdPersonAngle.integer;
+    // The cg-local PlayerState mirror does not expose the release stats array;
+    // normal and spectator views both use the registered camera angle here.
+    if (angle[index] > 45.0f)
+        angle[index] = 45.0f;
+
+    float viewAngles[3] = {angle[index], dword_F63CB4[index],
+                           dword_F63CB8[index]};
+    float forward[3], right[3], up[3];
+    AnglesToForward(viewAngles, forward);
+
+    math::Position3 focus(
+        dword_F63C70[index], dword_F63C74[index], dword_F63C78[index] + 8.0f);
+    AngleVectors(viewAngles, forward, right, up);
+    float sinAngle, cosAngle;
+    FastSinCos(cg_thirdPersonAngle.value * 0.017453292f, &sinAngle,
+               &cosAngle);
+    focus.v.m128_f32[0] +=
+        (-cg_thirdPersonRange.value * cosAngle) * right[0]
+        + (-cg_thirdPersonRange.value * sinAngle) * forward[0];
+    focus.v.m128_f32[1] +=
+        (-cg_thirdPersonRange.value * cosAngle) * right[1]
+        + (-cg_thirdPersonRange.value * sinAngle) * forward[1];
+    focus.v.m128_f32[2] +=
+        (-cg_thirdPersonRange.value * cosAngle) * right[2]
+        + (-cg_thirdPersonRange.value * sinAngle) * forward[2];
+
+    collision_context_t context(player->mHandle, 17);
+    trace_t trace;
+    CG_Trace(&trace,
+             reinterpret_cast<const math::Position3*>(&dword_F63C70[index]),
+             &s_thirdPersonMins, &s_thirdPersonMaxs, &focus, &context);
+    if (trace.normal.v.m128_f32[1] != 1.0f)
+    {
+        focus = trace.endpos;
+        focus.v.m128_f32[2] +=
+            (1.0f - trace.normal.v.m128_f32[1]) * 32.0f;
+        CG_Trace(&trace,
+                 reinterpret_cast<const math::Position3*>(&dword_F63C70[index]),
+                 &s_thirdPersonMins, &s_thirdPersonMaxs, &focus, &context);
+        focus = trace.endpos;
+    }
+
+    dword_F63C70[index] = focus.v.m128_f32[0];
+    dword_F63C74[index] = focus.v.m128_f32[1];
+    dword_F63C78[index] = focus.v.m128_f32[2];
+    angle[index] = 14.0f;
+    dword_F63C78[index] = client->ps.origin.v.m128_f32[2]
+                          + (client->ps.pm_type < 6 ? 68.0f : 34.0f);
+    dword_F63CB4[index] -= cg_thirdPersonAngle.value;
+
+    s_thirdPersonLockPos[currCl].v =
+        _mm_setr_ps(dword_F63C70[index], dword_F63C74[index],
+                    dword_F63C78[index], 0.0f);
+    s_thirdPersonLockAng[currCl].v =
+        _mm_setr_ps(angle[index], dword_F63CB4[index], dword_F63CB8[index],
+                    0.0f);
 }
 
 static Entity* DbHandleToEntityLocal(unsigned int handle)
