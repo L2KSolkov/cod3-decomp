@@ -41,9 +41,16 @@ public:
 class Camera;
 
 extern int currCl;
+extern vmCvar_t cg_forceCrosshair;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
+extern float dword_F63C80[4 * 1580];
+extern float dword_F63C84[4 * 1580];
+extern float dword_F63C88[4 * 1580];
+extern float dword_F63C98[4 * 1580];
+extern float dword_F63C9C[4 * 1580];
+extern float dword_F63CA0[4 * 1580];
 extern char* va(const char* fmt, ...);
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);
@@ -54,6 +61,7 @@ extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, nglTexture* tex,
                                   float z);
+extern void AnglesToForward(const float* const angles, float* const forward);
 struct refdef_s {
     int x;
     int y;
@@ -471,9 +479,67 @@ extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
 extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale);
-// CG_ForceDebugCrosshair artifact (cg.o; stub)
+// Calculate the release client's crosshair offset from the gun/view basis.
+void CG_CalcCrosshairPosition(float* pfX, float* pfY)
+{
+    const int index = 1580 * currCl;
+    float gunAngles[3] = {*(float*)&dword_F6403C[index],
+                          *(float*)&dword_F64040[index],
+                          dword_F63CB8[index]};
+    float gunForward[3];
+    AnglesToForward(gunAngles, gunForward);
+
+    const float dot = dword_F63C80[index] * gunForward[0]
+                    + dword_F63C84[index] * gunForward[1]
+                    + dword_F63C88[index] * gunForward[2];
+    const float fovX = *(float*)&dword_F63C60[index];
+    const float fovY = *(float*)&dword_F63C64[index];
+    if (dot <= 0.0f || fovX <= 0.0f || fovY <= 0.0f)
+    {
+        *pfX = 0.0f;
+        *pfY = 0.0f;
+        return;
+    }
+
+    *pfX = -((gunForward[2] * dword_F63C94[index]
+             + gunForward[1] * dword_F63C90[index]
+             + gunForward[0] * dword_F63C8C[index])
+            / (tanf(fovX * 0.0087266462f) * dot)
+            * (dword_F63C58[index] * 0.5f));
+    *pfY = -((gunForward[2] * dword_F63CA0[index]
+             + gunForward[1] * dword_F63C9C[index]
+             + gunForward[0] * dword_F63C98[index])
+            / (tanf(fovY * 0.0087266462f) * dot)
+            * (dword_F63C5C[index] * 0.5f));
+}
+
+// Draw the release client's forced debug crosshair overlay.  This path is
+// useful both for renderer diagnostics and for validating the 2D scale state.
 int CG_ForceDebugCrosshair()
 {
+    if (cg_forceCrosshair.integer != 0)
+    {
+        float color[4] = {1.0f, 1.0f, 1.0f, 0.5f};
+        float x;
+        float y;
+        CG_CalcCrosshairPosition(&y, &x);
+
+        const float sx = unk_F6A278[802 * currCl];
+        const float sy = unk_F6A27C[802 * currCl];
+        x = sx * 0.0f;
+        y = sy * 240.0f;
+        const float w = sx * 640.0f;
+        const float h = sy;
+
+        trap_R_SetColor(color);
+        trap_R_DrawStretchPic(x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal_media_whiteShader, 0.0f);
+
+        x = sy * 240.0f;
+        trap_R_DrawStretchPic(sx * 320.0f, x, sx, x, 0.0f, 0.0f, 1.0f, 1.0f,
+                              cgsGlobal_media_whiteShader, 0.0f);
+        trap_R_SetColor(nullptr);
+    }
     return 0;
 }
 
@@ -772,11 +838,11 @@ struct statmonitor_s;
 extern void StatMon_GetStatsArray(const statmonitor_s** stats, int* count);
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
-// trap_R_Text_Height artifact (cg.o; text renderer stub)
+// Renderer syscall used by HUD text layout.  The release client forwards this
+// through the renderer export table rather than using a fixed fallback height.
 int trap_R_Text_Height(int font, float scale)
 {
-    (void)font; (void)scale;
-    return 16;
+    return re.Text_Height(font, scale);
 }
 extern void SCR_UpdateScreen();
 extern int lastDraw;

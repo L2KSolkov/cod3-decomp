@@ -17,7 +17,6 @@ void __cod3_stub_game_cg(void) {
 
 void CG_AddScaleFade(void* a) { (void)a; }
 void CG_CalcCrosshairColor(float a, int* b) { (void)a; (void)b; }
-void CG_CalcCrosshairPosition(float* a, float* b) { (void)a; (void)b; }
 void CG_CalcCubemapViewValues() {}
 void CG_CalcTurretViewValues() {}
 void CG_CheckOpenWaitingScriptMenu() {}
