@@ -1090,8 +1090,9 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
         "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
-        "  float light = lightmap.a * input.d0.a;\n"
-        "  float3 rgb = diffuse.rgb * (1.0 - light);\n"
+        // cdWorldPixel PShader2: stage 0 writes R1.a = T1.b * V0.b,
+        // then stage 1 computes R0.rgb = T0.rgb * R1.a.
+        "  float3 rgb = diffuse.rgb * lightmap.b * input.d0.b;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
     static const char WorldTextureSource[] =
@@ -1152,7 +1153,9 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "float4 main(PSIn input) : COLOR0 {\n"
         "  float4 diffuse = tex2D(s0, input.t0.xy / max(abs(input.t0.w), 1e-20));\n"
         "  float4 lightmap = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
-        "  float3 rgb = diffuse.rgb * (1.0 - lightmap.a * input.d0.a);\n"
+        // cdWorldPixel PShader3 adds the vertex RGB multiplication after the
+        // same lightmap-blue/vertex-blue factor used by PShader2.
+        "  float3 rgb = diffuse.rgb * lightmap.b * input.d0.b;\n"
         "  rgb *= input.d0.rgb;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
         "}\n";
