@@ -1925,14 +1925,13 @@ int DObj::GetBoneParent(int boneIndex)
     return xmodelParts->mHierarchy.mList[localBoneIndex].mParentIndex;
 }
 
-// XModel::GetNumBones (render.o; stub)
+// XModel::GetNumBones forwarding helper used by the server model scan.
 int XModel::GetNumBones(XModel* model, int lodIndex)
 {
-    (void)model; (void)lodIndex;
-    return 0;
+    return model != nullptr ? model->GetNumBones(lodIndex) : 0;
 }
 
-// Task::~Task (game2.o; stub)
+// Task::~Task (game2.o; release body only restores the base vtable)
 Task::~Task() {}
 
 // RumbleManager free artifacts (core.o surface; forwarding stubs)
