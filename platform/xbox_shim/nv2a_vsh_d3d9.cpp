@@ -536,7 +536,11 @@ static std::string PsRegisterSource(unsigned int registerId, bool rgb,
         const std::string v1 = (finalSettings & 0x40u) != 0 ? "(1.0 - v1)" : "v1";
         const std::string r0 = (finalSettings & 0x20u) != 0 ? "(1.0 - r0)" : "r0";
         const std::string sum = "(" + v1 + " + " + r0 + ")";
-        return (finalSettings & 0x80u) != 0 ? "clamp(" + sum + ", 0.0, 1.0)" : sum;
+        const std::string mapped = (finalSettings & 0x80u) != 0
+            ? "clamp(" + sum + ", 0.0, 1.0)" : sum;
+        // NV2A exposes V1+R0 as an RGB-only value; its blue/alpha lanes are
+        // zero in the reference final-combiner register.
+        return "float4((" + mapped + ").rgb, 0.0)";
     }
     case 15:
         return rgb ? "float4((" + finalE + ") * (" + finalF + "),0.0)"
