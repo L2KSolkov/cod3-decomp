@@ -81,10 +81,25 @@ void tlSetSystemCallbacks(const tlSystemCallbacks* cb) {
 }
 
 // ============================================================================
-// tlLinkFrame — stub (linker frame marker)
+// tlLinkFrame is a five-byte release tail thunk. Callers pass allocator
+// arguments through unchanged; it jumps to MemAlloc when installed.
 // ea: 0x8333C0
 // ============================================================================
+#if defined(_MSC_VER) && !defined(_WIN64)
+__declspec(naked) void tlLinkFrame()
+{
+    __asm {
+        mov eax, dword ptr [tlCurSystemCallbacks]
+        test eax, eax
+        jz short no_callback
+        jmp eax
+    no_callback:
+        ret
+    }
+}
+#else
 void tlLinkFrame() {}
+#endif
 
 // ============================================================================
 // tlLinkConnected — check if linker connected
