@@ -1642,12 +1642,20 @@ LABEL_25:
 class XAnimTree;
 class DObj;
 extern XAnimTree* DObjGetTree(DObj* obj);  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z (render.o 0x6BE190)
-// ADSMetaAnimPlayer_Update artifact (cg.o; stub)
+class ADSMetaAnimPlayer {
+public:
+    void* mMetaNalBaseAnimPtr;      // +0x00
+    void* mADSMetaAnimDataPtr;      // +0x04
+    int Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo);
+};
+
+// Bridge retained for the cg_weapon call site; the release body is the
+// ADSMetaAnimPlayer::Update method reconstructed in cg_misc.cpp.
 int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
                              weaponInfo_s* weaponInfo)
 {
-    (void)self; (void)pAnimTree; (void)weaponInfo;
-    return 0;
+    return static_cast<ADSMetaAnimPlayer*>(self)->Update(
+        static_cast<XAnimTree*>(pAnimTree), weaponInfo);
 }
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
