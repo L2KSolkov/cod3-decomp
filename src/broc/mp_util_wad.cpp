@@ -8870,7 +8870,6 @@ void LaunchGametype() {
         launch_gametype_thread(gametype, "_mp_hq::main", _mp_hq::main__functor);
     else if (Broc::gBrocAPI.mError)
         Broc::gBrocAPI.mError("c:\\cod\\code\\script\\_mp_common.bro", __LINE__, "Unknown gametype");
-    gametype.~string();
 }
 
 // ============================================================================
