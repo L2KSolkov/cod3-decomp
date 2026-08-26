@@ -864,6 +864,13 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBInputs[0] == 0xc8200000u &&
         layout->PSRGBOutputs[0] == 0x000000c0u &&
         layout->PSAlphaOutputs[0] == 0x000000c0u;
+    const bool isColor =
+        layout->PSCombinerCount == 0x00011101u &&
+        layout->PSTextureModes == 0x00000000u &&
+        layout->PSAlphaInputs[0] == 0xd4301010u &&
+        layout->PSRGBInputs[0] == 0xc4200000u &&
+        layout->PSRGBOutputs[0] == 0x000000c0u &&
+        layout->PSAlphaOutputs[0] == 0x000000c0u;
     const bool isSky =
         layout->PSCombinerCount == 0x00011101u &&
         layout->PSTextureModes == 0x00000001u &&
@@ -1070,7 +1077,7 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         layout->PSRGBOutputs[2] == 0x00000c00u &&
         layout->PSRGBOutputs[4] == 0x000000c0u &&
         layout->PSAlphaOutputs[3] == 0x000000d0u;
-    if (!isWorldLightmap && !isWorldTextured && !isSky && !isTexturedVertexColored &&
+    if (!isWorldLightmap && !isWorldTextured && !isColor && !isSky && !isTexturedVertexColored &&
         !isPrelitLightmap && !isPointLitProjected &&
         !isPointLitLightmap &&
         !isPointLitAdditive && !isPointLitAdditiveLightmap &&
@@ -1191,6 +1198,12 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         "  float4 secondary = tex2D(s1, input.t1.xy / max(abs(input.t1.w), 1e-20));\n"
         "  float3 rgb = diffuse.rgb * secondary.rgb;\n"
         "  return float4(lerp(fogColor.rgb, rgb, saturate(input.fog)), diffuse.a);\n"
+        "}\n";
+    static const char ColorSource[] =
+        "struct PSIn { float4 d0 : COLOR0; float fog : FOG; };\n"
+        "float4 fogColor : register(c0);\n"
+        "float4 main(PSIn input) : COLOR0 {\n"
+        "  return float4(lerp(fogColor.rgb, input.d0.rgb, saturate(input.fog)), input.d0.a);\n"
         "}\n";
     static const char WorldTwoTextureVertexLitSource[] =
         "struct PSIn { float4 d0 : COLOR0; float4 t0 : TEXCOORD0; "
@@ -1337,7 +1350,8 @@ IDirect3DPixelShader9* nullD3DCompileNV2AWorldPixelShader(
         : (isWorldBlend ? WorldBlendSource
         : (isWorldTexturedVertexLit || isTexturedVertexColored ? WorldTextureVertexLitSource
         : (isWorldTextured ? WorldTextureSource
-        : (isSky ? SkySource : WorldSource)))))))))))))))));
+        : (isColor ? ColorSource
+        : (isSky ? SkySource : WorldSource))))))))))))))))));
     D3DCompileProc compiler = GetCompiler();
     if (compiler == nullptr)
         return nullptr;
