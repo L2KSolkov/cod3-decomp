@@ -211,6 +211,7 @@ using ::RegisterHashString;
 
 // IDA global ?pLevel@mp_util_wad@@3PAULevel@1@A at 0x010F1EA0.
 Level* pLevel = nullptr;
+Anim* pAnim = nullptr;
 
 // IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
 static __int16 s_flagKey;
@@ -12369,7 +12370,6 @@ void main() {
     Broc::string gametype;
     Broc::GetCvar(&gametype, "mp_gametype");
     mp_util_wad::pLevel->gametype = gametype;
-    gametype.~string();
     Broc::string axis("german");
     Broc::string allies("american");
     SetTeams(allies, axis);
@@ -12412,20 +12412,16 @@ void SetTeams(Broc::string allies, Broc::string axis) {
     x.mCallbackGetSlotClipCount =
         (int (*)(const char*, const unsigned int, const unsigned int,
                  const int))CallbackGetSlotClipCount;
-    allies.~string();
-    axis.~string();
 }
 
 // SetAlliesModels - ea: 0x95DD60
 void SetAlliesModels(Broc::bint playerClass, Broc::string model) {
     mp_util_wad::pLevel->models[(unsigned int)(int)playerClass] = model;
-    model.~string();
 }
 
 // SetAxisModels - ea: 0x95DDF0
 void SetAxisModels(Broc::bint playerClass, Broc::string model) {
     mp_util_wad::pLevel->models[(unsigned int)((int)playerClass + 7)] = model;
-    model.~string();
 }
 
 // GiveLoadout - ea: 0x95DE90

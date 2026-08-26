@@ -9,6 +9,8 @@
 #include "apsShrimpRenderer.h"
 #include "apsInternal.h"
 
+#include <new>
+
 // APS shader static data definitions (aeps_xboxr)
 unsigned int* apsShrimpRender::VS = nullptr;
 const unsigned int** apsShrimpRender::VShaderTable = nullptr;
@@ -103,6 +105,7 @@ apsRenderer::eRenderResult apsShrimpRenderer::Render(const apsRendererRenderInfo
     if (node == NULL)
         return RENDERRESULT_NO_PARTICLES;
 
+    new (node) apsShrimpNode();
     node->mFlags = 0;
     node->mRenderer = this;
 

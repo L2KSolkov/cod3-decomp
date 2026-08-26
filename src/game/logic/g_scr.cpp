@@ -328,7 +328,9 @@ public:
         return sAllocator;
     }
     static void SetAllocator(PoolAllocator* allocator);
-    static unsigned int* sBackup;      // ?sBackup@AeThread@@2PAIA @ 0x1329C7C
+    // Reference symbol is a 40-byte register snapshot.  SetJmp/LongJmp are
+    // passed its address, not a pointer value stored in the global.
+    static unsigned int sBackup[10];   // ?sBackup@AeThread@@2PAIA @ 0x1329C7C
 };
 
 class AeThreadState {
@@ -3684,8 +3686,8 @@ AeThread* DbLinkedHandle<AeThreadManager, AeThread>::operator*() const
 __declspec(naked) void SetJmp(unsigned int* storageAddr)
 {
     __asm {
-        pusha
-        pushf
+        pushad
+        pushfd
         mov eax, [esp+28h]      ; storageAddr
         mov ecx, [esp]
         mov [eax], ecx          ; [0] = eflags
@@ -3707,8 +3709,8 @@ __declspec(naked) void SetJmp(unsigned int* storageAddr)
         mov [eax+20h], ecx      ; [8] = eax
         mov ecx, [esp+24h]
         mov [eax+24h], ecx      ; [9] = return address
-        popf
-        popa
+        popfd
+        popad
         retn
     }
 }
@@ -3729,14 +3731,14 @@ __declspec(naked) void LongJmp(unsigned int* r)
         push dword ptr [eax+0Ch]
         push dword ptr [eax+8]
         push dword ptr [eax+4]
-        popf
-        popa
+        popfd
+        popad
         retn
     }
 }
 
 PoolAllocator* AeThread::sAllocator;
-unsigned int* AeThread::sBackup = (unsigned int*)-1;
+unsigned int AeThread::sBackup[10] = {};
 
 // core.o 0x4B5480
 void AeThread::SetAllocator(PoolAllocator* allocator)
@@ -3866,6 +3868,7 @@ static void DestroyBrocInstsStub(void*)
 }
 
 namespace BrocSys {
+void SetupScriptAllocators(PoolAllocator* allocator);
 void BrocObjDtor(void* ptr);  // fwd for DestroyBrocInsts
 void BrocObjCtor(void* ptr, BrocDtorBase* dtor);  // fwd (defined at file end)
 void KillThreadExec();  // fwd (defined at file end)
@@ -5634,6 +5637,18 @@ PoolAllocator* EntityNotifySetLocal::sAllocator;
 void EndOnScriptNode::SetAllocator(PoolAllocator* allocator)
 {
     EndOnScriptNode::sAllocator = allocator;
+}
+
+// SetupPoolAllocator binds these script-owned allocators before any script
+// thread can be created. The assignments mirror the reference initializer;
+// the backup stack uses its own pool configured by SetupAllocator().
+void BrocSys::SetupScriptAllocators(PoolAllocator* allocator)
+{
+    AeThreadState::SetAllocator(allocator);
+    AeThread::SetAllocator(allocator);
+    AeThreadFunctor::SetAllocator(allocator);
+    EndOnScriptNode::SetAllocator(allocator);
+    AeThread::BackupStack::Block::SetupAllocator();
 }
 
 // ea: 0x004B3F60
@@ -22783,6 +22798,93 @@ void AeThread::Execute(float /*deltaT*/)
     }
     AeThreadManager::sInst.mThreadExecuting = nullptr;
 }
+
+namespace BrocSys {
+
+static void ReleaseExecutedThread(AeThreadManagerLayout* layout,
+                                  AeThread* thread)
+{
+    if (layout->mThreadExecuting == thread)
+        layout->mThreadExecuting = nullptr;
+
+    AeStateList* list = (thread->mFlags.mMask & 0x800) != 0
+                            ? &layout->mExecThreads
+                            : &layout->mThreads;
+    thread->m_dlist_node.mPrev->mNext = thread->m_dlist_node.mNext;
+    thread->m_dlist_node.mNext->mPrev = thread->m_dlist_node.mPrev;
+    --list->m_size;
+    thread->~AeThread();
+    AeThread::operator delete(thread);
+}
+
+static void MoveExecThreadsToMain(AeThreadManagerLayout* layout)
+{
+    AeStateList* exec = &layout->mExecThreads;
+    AeStateList* main = &layout->mThreads;
+    AeDListNode* end = (AeDListNode*)&exec->m_end;
+    while (exec->m_head != end)
+    {
+        AeDListNode* node = exec->m_head;
+        node->mPrev->mNext = node->mNext;
+        node->mNext->mPrev = node->mPrev;
+        --exec->m_size;
+
+        node->mNext = (AeDListNode*)&main->m_end;
+        node->mPrev = main->m_tail;
+        main->m_tail->mNext = node;
+        main->m_tail = node;
+        ++main->m_size;
+        ((AeThread*)node)->mFlags.mMask &= ~0x800u;
+    }
+}
+
+// ea: 0x005DC170. The server object owns the public wrapper; this bridge
+// contains the script-thread walk because the concrete AeThread layout lives
+// in this translation unit.
+void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
+{
+    if (deltaT == 0.0f)
+        return;
+
+    AeThreadManagerLayout* layout =
+        reinterpret_cast<AeThreadManagerLayout*>(manager);
+    layout->mNewThreadExec = nullptr;
+
+    AeDListNode* end = (AeDListNode*)&layout->mThreads.m_end;
+    AeDListNode* node = layout->mThreads.m_head;
+    while (node != nullptr && node != end)
+    {
+        AeThread* thread = reinterpret_cast<AeThread*>(node);
+        AeDListNode* next = node->mNext;
+        thread->Execute(deltaT);
+
+        if ((thread->mFlags.mMask & 8) != 0)
+        {
+            ReleaseExecutedThread(layout, thread);
+        }
+        else
+        {
+            while (layout->mNewThreadExec != nullptr)
+            {
+                AeThread* child =
+                    reinterpret_cast<AeThread*>(layout->mNewThreadExec);
+                layout->mNewThreadExec = nullptr;
+                child->Execute(deltaT);
+                if ((child->mFlags.mMask & 8) != 0)
+                    ReleaseExecutedThread(layout, child);
+                else
+                    child->mFlags.mMask |= 0x80u;
+            }
+            thread->mFlags.mMask |= 0x80u;
+        }
+
+        node = next;
+    }
+
+    MoveExecThreadsToMain(layout);
+}
+
+} // namespace BrocSys
 
 // ea: 0x005C1F40
 AeThreadEntityNotifyTimeoutState::AeThreadEntityNotifyTimeoutState(

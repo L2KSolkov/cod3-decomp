@@ -7,17 +7,13 @@
 #define COD3_BROC_MP_UTIL_WAD_H
 
 #include "engine/broc_types.h"
+#include "mp_anim_wad.h"
 
 // IDA type: mp_anim_wad::Level (12 bytes), inherited by mp_util_wad::Level.
 // The base entity is the second member at +0x04.
 namespace mp_anim_wad {
-struct Level {
-    void*        vftable;
-    Broc::entity entity;
-    unsigned char flags;
-    unsigned char _pad09[3];
-};
 static_assert(sizeof(Level) == 0x0C, "mp_anim_wad::Level size mismatch");
+static_assert(sizeof(Anim) == 0x08, "mp_anim_wad::Anim size mismatch");
 }
 
 namespace mp_util_wad {
@@ -189,7 +185,13 @@ struct Level {
 };
 static_assert(sizeof(Level) == 0x230, "mp_util_wad::Level size mismatch");
 
+struct Anim {
+    mp_anim_wad::Anim _base;
+};
+static_assert(sizeof(Anim) == 0x08, "mp_util_wad::Anim size mismatch");
+
 extern Level* pLevel;  // ?pLevel@mp_util_wad@@3PAULevel@1@A @0x10F1EA0
+extern Anim* pAnim;    // ?pAnim@mp_util_wad@@3PAUAnim@1@A @0x10F1EA4
 
 void RegisterHashStrings();
 

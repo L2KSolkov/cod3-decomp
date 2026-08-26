@@ -36,6 +36,10 @@ extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
 extern void EntityNotify_SetupAllocators(PoolAllocator* allocator);
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 
+namespace BrocSys {
+void SetupScriptAllocators(PoolAllocator* allocator);
+}
+
 // PakFile bank flags (PakFile.cpp; header flags + runtime state)
 #define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
 #define PAK_BANK_FLAG_READ_DONE  0x10000   // async read finished
@@ -13778,6 +13782,7 @@ void SetupPoolAllocator()
         common = new (block) PoolAllocator(cfgList, 2u);
 
     gCommonPoolAllocator = common;
+    BrocSys::SetupScriptAllocators(common);
     EntityNotify_SetupAllocators(common);
     AbstractEffect::SetAllocator(common);
     ActiveEffectSet::SetAllocator(common);

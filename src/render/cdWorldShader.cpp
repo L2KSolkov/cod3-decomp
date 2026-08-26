@@ -492,7 +492,6 @@ void cdWorldShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                 ::new (node) cdWorldShaderNode;
                 node->MeshNode = iMeshNode;
                 node->Section = iSection;
-                // vftable = cdWorldShaderNode
                 node->mMaterial = (cdWorldShaderMat*)iMat;
                 node->hasColorVerts = false;
             } else {

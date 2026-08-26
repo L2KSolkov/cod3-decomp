@@ -116,6 +116,9 @@ namespace mp_anim_wad {
 
 using ::RegisterHashString;
 
+Level* pLevel = nullptr;
+Anim* pAnim = nullptr;
+
 void RegisterHashStrings() {
     RegisterHashString(959135275, "accuracy");
     RegisterHashString(1004996222, "accuracyVsAI");

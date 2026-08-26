@@ -166,13 +166,21 @@ long __stdcall D3DDevice::PersistDisplay()
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-// The reference executes pending script notifications at the start of every
-// nonzero-delta server frame. Keep that release/dispatch step active while the
-// remainder of the scr.o thread scheduler is ported.
+namespace BrocSys {
+void ExecuteScriptThreads(AeThreadManager* manager, float deltaT);
+}
+
+// The reference executes pending notifications and then walks the script
+// thread lists every nonzero-delta server frame.
 void AeThreadManager::Execute(float deltaT)
 {
-    if (deltaT != 0.0f)
+    if (gPumpThreads || gPumpThreadsForMapChange)
+        KillAllThreads();
+
+    if (deltaT != 0.0f) {
         ProcessScriptNotifys();
+        BrocSys::ExecuteScriptThreads(this, deltaT);
+    }
 }
 
 enum errorParm_t;

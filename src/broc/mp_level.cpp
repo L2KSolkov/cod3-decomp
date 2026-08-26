@@ -6,8 +6,10 @@
 
 #include "engine/broc_types.h"
 #include "game/AeThreadFunctor.h"
+#include "mp_util_wad.h"
 
 #include <cstring>
+#include <new>
 
 #include "mp_level_ee_resolver.inc"
 
@@ -42,6 +44,37 @@ unsigned int thread_create(bool createHandle, const char* file, int line,
 }
 
 } // namespace Broc
+
+namespace _mp_loadout {
+void main();
+}
+
+namespace _mp_common {
+void LaunchGametype();
+}
+
+namespace BrocSys {
+unsigned int GetLevel();
+}
+
+namespace mp_level_wad {
+
+// IDA types: mp_level_wad::Level derives from mp_util_wad::Level and adds
+// one byte of level-local flags; mp_level_wad::Anim wraps mp_util_wad::Anim.
+struct Level : mp_util_wad::Level {
+    unsigned char flags;
+};
+
+struct Anim : mp_util_wad::Anim {
+};
+
+static_assert(sizeof(Level) == 0x234, "mp_level_wad::Level size mismatch");
+static_assert(sizeof(Anim) == 0x08, "mp_level_wad::Anim size mismatch");
+
+Level* pLevel = nullptr;
+Anim* pAnim = nullptr;
+
+} // namespace mp_level_wad
 
 // ============================================================================
 // Animation & hash string registry
@@ -158,7 +191,67 @@ void mp_level_InternalMain() {}   // ea: 0xC95160
 void mp_level_Shutdown() {}       // ea: 0xC94FA0
 
 namespace mp_level {
-void InternalMain() {}            // ea: 0xC95160
+mp_level_wad::Level* level = nullptr;
+mp_level_wad::Anim* anim = nullptr;
+
+// ea: 0xC94D50
+void main()
+{
+    _mp_loadout::main();
+    _mp_common::LaunchGametype();
+}
+
+// ea: 0xC94F80
+void MainThreadHook(Broc::entity)
+{
+    main();
+}
+
+// ea: 0xC95160
+void InternalMain()
+{
+    level = new (std::nothrow) mp_level_wad::Level();
+    if (level == nullptr) {
+        if (Broc::gBrocAPI.mAssert(
+                "c:\\cod\\code\\script\\include\\entrypoint.inl", 0,
+                "level's memory was not allocated")) {
+            __debugbreak();
+        }
+        return;
+    }
+
+    std::memset(&level->flags, 0, sizeof(level->flags));
+    mp_level_wad::pLevel = level;
+    mp_anim_wad::pLevel = &level->_base;
+    mp_util_wad::pLevel = static_cast<mp_util_wad::Level*>(level);
+
+    anim = new (std::nothrow) mp_level_wad::Anim();
+    if (anim == nullptr) {
+        if (Broc::gBrocAPI.mAssert(
+                "c:\\cod\\code\\script\\include\\entrypoint.inl", 0,
+                "anim's memory was not allocated")) {
+            __debugbreak();
+        }
+        return;
+    }
+
+    mp_level_wad::pAnim = anim;
+    mp_anim_wad::pAnim = &anim->_base;
+    mp_util_wad::pAnim = static_cast<mp_util_wad::Anim*>(anim);
+    level->_base.entity = Broc::entity(BrocSys::GetLevel());
+
+    void* storage = AeThreadFunctor::operator new(
+        sizeof(AeThreadFunctor1<Broc::entity>));
+    AeThreadFunctor* functor = storage != nullptr
+        ? ::new (storage) AeThreadFunctor1<Broc::entity>(
+              mp_level::MainThreadHook, level->_base.entity)
+        : nullptr;
+    const unsigned int handle = Broc::gBrocAPI.mThreadCreateInternal(
+        "c:\\cod\\code\\script\\include\\entrypoint.inl", 0,
+        "InternalMain", level->_base.entity.GetHandle(), functor, true);
+    Broc::gBrocAPI.mBrocExports.mMainThreadHandle = handle;
+}
+
 void Shutdown() {}                // ea: 0xC94FA0
 void hack_ps2_InitScript(Broc::BrocExports&) {} // ea: 0xC94D70
 }

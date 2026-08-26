@@ -20,6 +20,7 @@
 #include "apsShrimpRenderer.h"  // apsEBlendMode
 #include "ngl/nglScene.h"
 #include <intrin.h>
+#include <new>
 // ============================================================================
 // apsRenderSort::Buffer — sorted-render scratch buffer (8 bytes).
 // ============================================================================
@@ -149,6 +150,7 @@ public:
         NodeT* node = (NodeT*)nglListAlloc(0xC0, 0x10);
         if (node == NULL)
             return RENDERRESULT_NO_PARTICLES;
+        new (node) NodeT();
         node->mFlags = 0;
         node->mRenderSortBuffer = NULL;
         if (this->UseSortedRendering() != 0) {

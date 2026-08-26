@@ -325,8 +325,8 @@ void cdRiverShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            node->mMaterial = (cdRiverShaderMat*)iMat;
             // vftable = cdRiverShaderNode
+            node->mMaterial = (cdRiverShaderMat*)iMat;
         } else {
             node = NULL;
         }

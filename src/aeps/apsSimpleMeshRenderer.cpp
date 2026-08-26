@@ -112,6 +112,7 @@ apsRenderer::eRenderResult apsSimpleMeshRenderer::Render(const apsRendererRender
     if (node == NULL)
         return RENDERRESULT_NO_PARTICLES;
 
+    new (node) apsSimpleMeshNode();
     node->mFlags = 0;
     node->mRenderer = this;
     node->SetParticles(rinfo.numParticles, rinfo.particles, rinfo.pfd->mStride);
