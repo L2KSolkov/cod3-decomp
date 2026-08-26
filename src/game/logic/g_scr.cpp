@@ -3636,7 +3636,8 @@ void Broc::dyn_array<Broc::string>::destroy_all()
 // ea: 0x005EF590
 void AeThread::ApplyStateController(AeThreadState* stateController)
 {
-    stateController->m_dlist_node.mNext = mStateControllers.m_end;
+    stateController->m_dlist_node.mNext =
+        (AeDListNode*)&mStateControllers.m_end;
     stateController->m_dlist_node.mPrev = mStateControllers.m_tail;
     ((AeDListNode*)mStateControllers.m_tail)->mNext =
         &stateController->m_dlist_node;
@@ -3648,7 +3649,7 @@ void AeThread::ApplyStateController(AeThreadState* stateController)
 void AeThreadManager::ExecThread(AeThread* t)
 {
     AeThreadManagerLayout* layout = (AeThreadManagerLayout*)this;
-    t->m_dlist_node.mNext = layout->mExecThreads.m_end;
+    t->m_dlist_node.mNext = (AeDListNode*)&layout->mExecThreads.m_end;
     t->m_dlist_node.mPrev = layout->mExecThreads.m_tail;
     ((AeDListNode*)layout->mExecThreads.m_tail)->mNext = &t->m_dlist_node;
     layout->mExecThreads.m_tail = &t->m_dlist_node;
@@ -3731,6 +3732,7 @@ __declspec(naked) void LongJmp(unsigned int* r)
         push dword ptr [eax+0Ch]
         push dword ptr [eax+8]
         push dword ptr [eax+4]
+        push dword ptr [eax]
         popfd
         popad
         retn
@@ -5377,7 +5379,7 @@ void AeThreadManager::DebugThread(unsigned int threadId)
     if (threadId == 0 && L->mThreadExecuting != nullptr)
         ((AeThread*)L->mThreadExecuting)->mFlags.mMask |= 0x100;
     AeDListNode* node = L->mThreads.m_head;
-    if (node != nullptr && node != L->mThreads.m_end)
+    if (node != nullptr && node != (AeDListNode*)&L->mThreads.m_end)
     {
         for (AeDListNode* n = node; n != nullptr; n = n->mNext)
         {
@@ -5389,7 +5391,7 @@ void AeThreadManager::DebugThread(unsigned int threadId)
         }
     }
     node = L->mExecThreads.m_head;
-    if (node != nullptr && node != L->mExecThreads.m_end)
+    if (node != nullptr && node != (AeDListNode*)&L->mExecThreads.m_end)
     {
         for (AeDListNode* n = node; n != nullptr; n = n->mNext)
         {
@@ -5480,7 +5482,8 @@ void AeThread::Sleep(AeThreadState* stateController)
     mFlags.mMask |= 2;
     mFlags.mMask |= 0x10;
     mFlags.mMask |= 0x210;
-    stateController->m_dlist_node.mNext = mStateControllers.m_end;
+    stateController->m_dlist_node.mNext =
+        (AeDListNode*)&mStateControllers.m_end;
     stateController->m_dlist_node.mPrev = mStateControllers.m_tail;
     ((AeDListNode*)mStateControllers.m_tail)->mNext =
         &stateController->m_dlist_node;
@@ -5496,7 +5499,7 @@ void AeThreadManager::AddThread(AeThread* t)
         tlPrintf("===Doing threads dump===\n");
         AeDListNode* node = ((AeThreadManagerLayout*)this)->mThreads.m_head;
         if (node != nullptr
-            && node != ((AeThreadManagerLayout*)this)->mThreads.m_end)
+            && node != (AeDListNode*)&((AeThreadManagerLayout*)this)->mThreads.m_end)
         {
             int i = 0;
             for (AeDListNode* n = node; n != nullptr; n = n->mNext)
@@ -5510,7 +5513,7 @@ void AeThreadManager::AddThread(AeThread* t)
         return;
     }
     AeStateList* mThreads = &((AeThreadManagerLayout*)this)->mThreads;
-    t->m_dlist_node.mNext = mThreads->m_end;
+    t->m_dlist_node.mNext = (AeDListNode*)&mThreads->m_end;
     t->m_dlist_node.mPrev = mThreads->m_tail;
     ((AeDListNode*)mThreads->m_tail)->mNext = &t->m_dlist_node;
     mThreads->m_tail = &t->m_dlist_node;
@@ -6531,7 +6534,8 @@ static void NotifyPendingPush(EntityNotifyLocal* v5)
 {
     AeThreadManagerLayout* L =
         (AeThreadManagerLayout*)&AeThreadManager::sInst;
-    v5->m_dlist_node.mNext = L->mPendingNotifys.m_end;
+    v5->m_dlist_node.mNext =
+        (AeDListNode*)&L->mPendingNotifys.m_end;
     v5->m_dlist_node.mPrev = L->mPendingNotifys.m_tail;
     ((AeDListNode*)L->mPendingNotifys.m_tail)->mNext =
         &v5->m_dlist_node;
@@ -12631,7 +12635,8 @@ void BrocSys::ThreadSleepFrames(int numFrames)
     v5 |= 0x10u;
     mThreadExecuting->mFlags.mMask = v5;
     mThreadExecuting->mFlags.mMask = v5 | 0x200;
-    v2->m_dlist_node.mNext = mThreadExecuting->mStateControllers.m_end;
+    v2->m_dlist_node.mNext =
+        (AeDListNode*)&mThreadExecuting->mStateControllers.m_end;
     v2->m_dlist_node.mPrev = mThreadExecuting->mStateControllers.m_tail;
     ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
         &v2->m_dlist_node;
@@ -12664,7 +12669,8 @@ void BrocSys::ThreadSleepInternal(float sleepTime)
     mThreadExecuting->mFlags.mMask = v5;
     mThreadExecuting->mFlags.mMask = v5 | 0x10;
     mThreadExecuting->mFlags.mMask = v5 | 0x210;
-    v2->m_dlist_node.mNext = mThreadExecuting->mStateControllers.m_end;
+    v2->m_dlist_node.mNext =
+        (AeDListNode*)&mThreadExecuting->mStateControllers.m_end;
     v2->m_dlist_node.mPrev = mThreadExecuting->mStateControllers.m_tail;
     ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
         &v2->m_dlist_node;
@@ -22661,14 +22667,19 @@ void AeThread::ProcessState()
         AeDListNode* m_node = self->mStateControllers.m_head;
         AeDListNode* m_next =
             m_node != nullptr ? m_node->mNext : nullptr;
-        if (m_node != self->mStateControllers.m_end && m_next != nullptr)
+        if (m_node != (AeDListNode*)&self->mStateControllers.m_end
+            && m_next != nullptr)
         {
-            for (;;)
+            AeDListNode* end =
+                (AeDListNode*)&self->mStateControllers.m_end;
+            for (; m_node != nullptr && m_node != end; )
             {
-                AeDListNode* v6 = m_next;
-                m_node = m_next;
-                m_next = m_next->mNext;
-                AeThreadState* state = (AeThreadState*)m_node;
+                AeDListNode* current = m_node;
+                AeDListNode* next = current->mNext;
+                // AeThreadState::get_dlist_node_offset() is 4: the
+                // intrusive node follows the virtual object header.
+                AeThreadState* state = reinterpret_cast<AeThreadState*>(
+                    reinterpret_cast<unsigned char*>(current) - 4);
                 AeThreadState::EAction action = state->NewAction(*self);
                 if (action == AeThreadState::kActionWakeUp)
                     goto wake;
@@ -22703,8 +22714,10 @@ void AeThread::ProcessState()
                     --self->mStateControllers.m_size;
                     delete state;
                 }
-                if (m_next == nullptr)
+                if (next == nullptr || next == end)
                     return;
+                m_node = next;
+                m_next = next->mNext;
             }
             self->mFlags.mMask |= 8;
             self->mFlags.mMask |= 0x48;
@@ -22747,17 +22760,21 @@ bool AeThread::HasEndCond(int notify) const
     const AeThread* self = this;
     AeDListNode* m_head = self->mStateControllers.m_head;
     AeDListNode* m_next = m_head != nullptr ? m_head->mNext : nullptr;
-    if (m_head == self->mStateControllers.m_end || m_next == nullptr)
+    AeDListNode* end = (AeDListNode*)&self->mStateControllers.m_end;
+    if (m_head == end || m_next == nullptr || m_next == end)
         return false;
-    while (((AeThreadState*)m_head)->mResult != AeThreadState::kActionTerminate
-           || self->mHandle.mVal != (unsigned int)notify)
+    for (;;)
     {
+        AeThreadState* state = reinterpret_cast<AeThreadState*>(
+            reinterpret_cast<unsigned char*>(m_head) - 4);
+        if (state->mResult == AeThreadState::kActionTerminate
+            && self->mHandle.mVal == (unsigned int)notify)
+            return true;
         m_head = m_next;
-        m_next = m_next->mNext;
-        if (m_next == nullptr)
+        m_next = m_head->mNext;
+        if (m_next == nullptr || m_next == end)
             return false;
     }
-    return true;
 }
 
 // ea: 0x005C90A0
@@ -22784,8 +22801,12 @@ void AeThread::Execute(float /*deltaT*/)
             AeThreadManager::sInst.mThreadExecuting = nullptr;
             return;
         }
-        self->mStackStart = (unsigned int)self->mBackupStack.mEnd;  // approx: real code switches stacks
+        unsigned int newESP = 0;
+        __asm mov newESP, esp
+        self->mStackStart = newESP - 0x2000u;
+        __asm sub esp, 2000h
         CallFunctor(self->mFunctor);
+        __asm add esp, 2000h
         self->mFlags.mMask |= 8;
         if (((self->mFlags.mMask | 8) >> 8) & 1)
         {
@@ -22804,7 +22825,22 @@ void AeThread::Execute(float /*deltaT*/)
     {
         self->mFlags.mMask &= ~2u;
         self->mFlags.mMask &= 0xFFFFFFF9;
-        self->mBackupStack.Restore(self->mBackupStack.mBegin);
+        unsigned int newESP = 0;
+        __asm mov newESP, esp
+        const unsigned int stackBegin =
+            newESP - self->mBackupStack.mSize - 0x2000u;
+        if (stackBegin != self->mBackupStack.mBegin)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+            AeAssert::gCurrentLine = 610;
+            AeAssert::gCurrentExpr = "newESP == mBackupStack.mBegin";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("incorrect thread stack restore"))
+                __debugbreak();
+        }
+        self->mStackStart = newESP - 0x2000u;
+        self->mBackupStack.Restore(stackBegin);
     }
     AeThreadManager::sInst.mThreadExecuting = nullptr;
 }
@@ -22831,12 +22867,15 @@ static void MoveExecThreadsToMain(AeThreadManagerLayout* layout)
 {
     AeStateList* exec = &layout->mExecThreads;
     AeStateList* main = &layout->mThreads;
-    AeDListNode* end = (AeDListNode*)&exec->m_end;
-    while (exec->m_head != end)
+    // reserved_dlist stores the head and tail through the sentinel fields.
+    // The reference drains the exec list from its tail so removing the final
+    // node writes the end sentinel back through the embedded head pointer.
+    while (exec->m_head != (AeDListNode*)&exec->m_end)
     {
-        AeDListNode* node = exec->m_head;
-        node->mPrev->mNext = node->mNext;
-        node->mNext->mPrev = node->mPrev;
+        AeDListNode* node = exec->m_tail;
+        AeDListNode* previous = node->mPrev;
+        exec->m_tail = previous;
+        previous->mNext = node->mNext;
         --exec->m_size;
 
         node->mNext = (AeDListNode*)&main->m_end;
@@ -23386,7 +23425,7 @@ unsigned int BrocSys::ThreadExecInternal(const char* file, int line,
                        : nullptr;
     AeThreadManagerLayout* L =
         (AeThreadManagerLayout*)&AeThreadManager::sInst;
-    v7->m_dlist_node.mNext = L->mExecThreads.m_end;
+    v7->m_dlist_node.mNext = (AeDListNode*)&L->mExecThreads.m_end;
     v7->m_dlist_node.mPrev = L->mExecThreads.m_tail;
     ((AeDListNode*)L->mExecThreads.m_tail)->mNext = &v7->m_dlist_node;
     L->mExecThreads.m_tail = &v7->m_dlist_node;

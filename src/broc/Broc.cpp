@@ -1620,9 +1620,37 @@ void endon(entity ent, HashStr label)
                                       static_cast<unsigned int>(label));
 }
 
-void thread_sleep_time(void) {}
-void thread_sleep_frames(void) {}
-void thread_sleep_until_notify(void) {}
+void thread_sleep_time(void)
+{
+    char tmpBuf[64];
+    gBrocAPI.mThreadBackupStack(
+        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
+    gBrocAPI.mThreadSleepInternal(gThreadSleepTime);
+}
+
+void thread_sleep_frames(void)
+{
+    char tmpBuf[64];
+    gBrocAPI.mThreadBackupStack(
+        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
+    gBrocAPI.mThreadSleepFrames(gThreadSleepFrames);
+}
+
+void thread_sleep_until_notify(void)
+{
+    char tmpBuf[64];
+    gBrocAPI.mThreadBackupStack(
+        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(&tmpBuf[26])));
+    gBrocAPI.mThreadSleepUntilNotify(
+        gThreadSleepEntity,
+        gThreadSleepPakfile,
+        gThreadSleepNotify1,
+        gThreadSleepNotify2,
+        gThreadSleepNotify3,
+        gThreadSleepNotify4,
+        gThreadWaitForAll,
+        gTimeOut);
+}
 void thread_debug_wait_msg(int) {}
 // ea: 0x00929320. IDA formats the wait duration and emits a thread notice.
 void thread_debug_wait_msg(float time)
