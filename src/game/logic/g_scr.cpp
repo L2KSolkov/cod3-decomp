@@ -5254,19 +5254,29 @@ void AeThread::DestroyBrocInsts()
 // ea: 0x005DAE30
 AeThread::~AeThread()
 {
-    // safe_for_each(mStateControllers, DelFunctor) - delete each state
+    // Match reserved_dlist::delete_all: the list fields themselves are the
+    // empty-list sentinels, so an empty or partially initialized list has no
+    // node to dereference.
     AeDListNode* node = mStateControllers.m_head;
-    if (node != nullptr && node != mStateControllers.m_end)
+    AeDListNode* headField =
+        reinterpret_cast<AeDListNode*>(&mStateControllers.m_head);
+    AeDListNode** endField = &mStateControllers.m_end;
+    AeDListNode* next = node != nullptr ? node->mNext : nullptr;
+    if (node == reinterpret_cast<AeDListNode*>(endField))
     {
-        while (node != mStateControllers.m_end)
-        {
-            AeDListNode* next = node->mNext;
-            delete (AeThreadState*)node;
-            node = next;
-        }
+        node = nullptr;
+        next = nullptr;
     }
-    mStateControllers.m_head->mNext = mStateControllers.m_end;
-    mStateControllers.m_tail = mStateControllers.m_head;
+    while (next != nullptr)
+    {
+        AeDListNode* current = node;
+        node = next;
+        next = next->mNext;
+        if (current != nullptr)
+            delete (AeThreadState*)current;
+    }
+    headField->mNext = reinterpret_cast<AeDListNode*>(endField);
+    mStateControllers.m_tail = headField;
     mStateControllers.m_size = 0;
 
     if (mFunctor != nullptr)
