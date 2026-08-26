@@ -22871,11 +22871,18 @@ static void MoveExecThreadsToMain(AeThreadManagerLayout* layout)
 // in this translation unit.
 void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
 {
-    if (deltaT == 0.0f)
-        return;
-
     AeThreadManagerLayout* layout =
         reinterpret_cast<AeThreadManagerLayout*>(manager);
+    TimerRenderBars::sInst.TimeUserBegin();
+    AeThread* threadStack[64];
+    int stackSize = 0;
+
+    if (deltaT == 0.0f)
+    {
+        TimerRenderBars::sInst.TimeUserEnd();
+        return;
+    }
+
     layout->mNewThreadExec = nullptr;
 
     AeDListNode* end = (AeDListNode*)&layout->mThreads.m_end;
@@ -22890,26 +22897,85 @@ void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
         {
             ReleaseExecutedThread(layout, thread);
         }
-        else
+        else if (layout->mNewThreadExec != nullptr)
         {
+            stackSize = 0;
+            threadStack[stackSize++] = thread;
+
             while (layout->mNewThreadExec != nullptr)
             {
                 AeThread* child =
                     reinterpret_cast<AeThread*>(layout->mNewThreadExec);
                 layout->mNewThreadExec = nullptr;
                 child->Execute(deltaT);
+
                 if ((child->mFlags.mMask & 8) != 0)
+                {
                     ReleaseExecutedThread(layout, child);
+                }
+                else if (layout->mNewThreadExec != nullptr)
+                {
+                    if (stackSize < 64)
+                    {
+                        threadStack[stackSize++] = child;
+                    }
+                    else
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile = "../ae\\\\core/ae_array.h";
+                        AeAssert::gCurrentLine = 174;
+                        AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("no room left in array"))
+                            __debugbreak();
+                    }
+                }
                 else
+                {
                     child->mFlags.mMask |= 0x80u;
+                }
             }
-            thread->mFlags.mMask |= 0x80u;
+
+            while (stackSize != 0)
+            {
+                AeThread* resumed = threadStack[--stackSize];
+                resumed->Execute(deltaT);
+
+                if ((resumed->mFlags.mMask & 8) != 0)
+                {
+                    ReleaseExecutedThread(layout, resumed);
+                }
+                else if (layout->mNewThreadExec != nullptr)
+                {
+                    if (stackSize < 64)
+                    {
+                        threadStack[stackSize++] = resumed;
+                    }
+                    else
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile = "../ae\\\\core/ae_array.h";
+                        AeAssert::gCurrentLine = 174;
+                        AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("no room left in array"))
+                            __debugbreak();
+                    }
+                }
+                else
+                {
+                    resumed->mFlags.mMask |= 0x80u;
+                }
+            }
         }
+
+        thread->mFlags.mMask |= 0x80u;
 
         node = next;
     }
 
     MoveExecThreadsToMain(layout);
+    TimerRenderBars::sInst.TimeUserEnd();
 }
 
 } // namespace BrocSys
