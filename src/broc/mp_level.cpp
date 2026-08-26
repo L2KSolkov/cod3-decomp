@@ -47,6 +47,41 @@ unsigned int thread_create(bool createHandle, const char* file, int line,
 
 namespace _mp_loadout {
 void main();
+void* SpecialClassAudio__functor(Broc::entity player);
+}
+
+namespace _mp_audio {
+void* ThreadLineSound__functor(Broc::entity self);
+void* ThreadStaticSound__functor(Broc::entity self);
+void* sound_repeat__functor(Broc::entity self);
+void* interior_triggering_device__functor(Broc::entity trigger,
+                                           Broc::entity other);
+}
+
+namespace _mp_hq {
+void* TriggerRadio__functor(Broc::entity self);
+}
+
+namespace _mp_ctf {
+void* PickupFlag__functor(Broc::entity self);
+void* Goal__functor(Broc::entity self);
+}
+
+namespace _mp_scf {
+void* Goal__functor(Broc::entity self, Broc::entity triggerer);
+void* PickupFlag__functor(Broc::entity self, Broc::entity triggerer);
+}
+
+namespace _mp_tankdrive {
+void* death__functor(Broc::entity self, Broc::entity attacker);
+void* inactivity_blowup__functor(Broc::entity self);
+void* fire__functor(Broc::entity self);
+void* damage__functor(Broc::entity self, Broc::bint damage,
+                      Broc::entity attacker, Broc::bint mod);
+}
+
+namespace _mp_war {
+void* WAR_TouchFlag__functor(Broc::entity self);
 }
 
 namespace _mp_common {
@@ -85,40 +120,38 @@ namespace mp_level_wad {
 // ea: 0xC8F720
 void RegisterHashStrings()
 {
-    // The callee belongs to the mp_util_wad family; keep this object-local
-    // entry point until that family is linked into the port.
+    // The release entry point is a thin forwarder into mp_util_wad.  That
+    // routine registers both the multiplayer strings and animation hashes.
+    mp_util_wad::RegisterHashStrings();
 }
 
 // ea: 0xC8F740
 unsigned int ResolveAnim(unsigned int treename, unsigned int animname,
                          unsigned int* getVal, unsigned int setVal)
 {
-    (void)treename;
-    (void)animname;
-    (void)getVal;
-    (void)setVal;
-    return false;
+    return static_cast<unsigned int>(mp_util_wad::ResolveAnim(
+        treename, animname, getVal, setVal));
 }
 
 // ea: 0xC8F790
 const char* ResolveAnimName(unsigned int anim)
 {
-    (void)anim;
-    return nullptr;
+    return mp_util_wad::ResolveAnimName(anim);
 }
 
 // ea: 0xC8F7D0
 bool ValidateAnimationIndices()
 {
-    return true;
+    // The release wrapper performs this validation twice; the first call's
+    // return value is intentionally discarded before returning the second.
+    mp_util_wad::ValidateAnimationIndices();
+    return mp_util_wad::ValidateAnimationIndices();
 }
 
 // ea: 0xC8F830
 unsigned int GetBroAnim(unsigned int treename, unsigned int animname)
 {
-    (void)treename;
-    (void)animname;
-    return 0;
+    return mp_util_wad::GetBroAnim(treename, animname);
 }
 
 // ea: 0xC8F880
@@ -139,14 +172,71 @@ namespace mp_level_wad {
 unsigned int SpawnScriptThread(unsigned int fcn, bool createHandle,
                                Broc::entity self, Broc::entity ent1,
                                Broc::entity ent2, float f1, float f2) { // ea: 0xC8F8D0
-    (void)fcn;
-    (void)createHandle;
-    (void)self;
-    (void)ent1;
     (void)ent2;
-    (void)f1;
-    (void)f2;
-    return 0;
+
+    // The generated release dispatcher uses a fixed source path and the
+    // generated line number for each functor.  The line is diagnostic only,
+    // but retaining the release offsets keeps script error reports useful.
+    const char* const file =
+        "c:\\cod\\code\\script\\gen\\mp_level_wad.cpp";
+    const auto create = [&](void* raw, int line, const char* name) {
+        const unsigned int handle = Broc::thread_create(
+            createHandle, file, line, name,
+            reinterpret_cast<AeThreadFunctor*>(raw));
+        return createHandle ? handle : static_cast<unsigned int>(-1);
+    };
+
+    switch (fcn) {
+    case 0x886ABA4Au:
+        return create(_mp_audio::ThreadLineSound__functor(self), 5,
+                      "_mp_audio::ThreadLineSound");
+    case 0xD1D46C1Du:
+        return create(_mp_tankdrive::death__functor(self, ent1), 38,
+                      "_mp_tankdrive::death");
+    case 0xBFA4248Bu:
+        return create(_mp_hq::TriggerRadio__functor(self), 23,
+                      "_mp_hq::TriggerRadio");
+    case 0xCF389A90u:
+        return create(_mp_loadout::SpecialClassAudio__functor(self), 26,
+                      "_mp_loadout::SpecialClassAudio");
+    case 0xD19F242Du:
+        return create(_mp_audio::interior_triggering_device__functor(self, ent1),
+                      11, "_mp_audio::interior_triggering_device");
+    case 0xD84CF81Fu:
+        return create(_mp_war::WAR_TouchFlag__functor(self), 47,
+                      "_mp_war::WAR_TouchFlag");
+    case 0xE2069A52u:
+        return create(_mp_ctf::PickupFlag__functor(self), 20,
+                      "_mp_ctf::PickupFlag");
+    case 0xEFA1CD4Au:
+        return create(_mp_audio::ThreadStaticSound__functor(self), 8,
+                      "_mp_audio::ThreadStaticSound");
+    case 0x60037BCAu:
+        return create(_mp_audio::sound_repeat__functor(self), 14,
+                      "_mp_audio::sound_repeat");
+    case 0x75A5F0EFu:
+        return create(_mp_ctf::Goal__functor(self), 17, "_mp_ctf::Goal");
+    case 0x80A56673u:
+        return create(_mp_tankdrive::inactivity_blowup__functor(self), 44,
+                      "_mp_tankdrive::inactivity_blowup");
+    case 0x446C74FDu:
+        return create(_mp_tankdrive::fire__functor(self), 41,
+                      "_mp_tankdrive::fire");
+    case 0x0C1FD1B6u: {
+        const Broc::bint damage(static_cast<int>(f1));
+        const Broc::bint mod(static_cast<int>(f2));
+        return create(_mp_tankdrive::damage__functor(self, damage, ent1, mod),
+                      35, "_mp_tankdrive::damage");
+    }
+    case 0x0D0DDE0Eu:
+        return create(_mp_scf::Goal__functor(self, ent1), 29,
+                      "_mp_scf::Goal");
+    case 0x2739A2B1u:
+        return create(_mp_scf::PickupFlag__functor(self, ent1), 32,
+                      "_mp_scf::PickupFlag");
+    default:
+        return 0;
+    }
 }
 
 } // namespace mp_level_wad

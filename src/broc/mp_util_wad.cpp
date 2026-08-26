@@ -12079,6 +12079,17 @@ void* death__functor(Broc::entity self, Broc::entity attacker) {
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::entity>(death, self, attacker);
 }
+void* damage__functor(Broc::entity self, Broc::bint damageValue,
+                      Broc::entity attacker, Broc::bint mod) {
+    void* storage = AeThreadFunctor::operator new(
+        sizeof(AeThreadFunctor4<Broc::entity, Broc::bint, Broc::entity,
+                                Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage)
+        AeThreadFunctor4<Broc::entity, Broc::bint, Broc::entity, Broc::bint>(
+            damage, self, damageValue, attacker, mod);
+}
 void* inactivity_blowup__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
     if (storage == NULL)
