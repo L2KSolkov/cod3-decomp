@@ -22706,7 +22706,9 @@ void AeThread::ProcessState()
             debug:
                 if (action != AeThreadState::kActionNone)
                 {
-                    char debugTxt[64];
+                    // The reference frame reserves 0x44 bytes for this
+                    // ae_fixed_string<64> object (including its metadata).
+                    char debugTxt[68];
                     debugTxt[0] = 0;
                     state->GetDebugTxt(*(ae_fixed_string<64, unsigned char>*)
                                            debugTxt);
