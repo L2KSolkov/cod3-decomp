@@ -49,6 +49,18 @@ extern float color[4];
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern nglTexture* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
+extern void* cgsGlobal_media_tracerShader;
+extern vmCvar_t hud_healthOverlay_pulseStart;
+extern vmCvar_t hud_healthOverlay_phaseOne_pulseDuration;
+extern vmCvar_t hud_healthOverlay_phaseTwo_toAlphaMultiplier;
+extern vmCvar_t hud_healthOverlay_phaseTwo_pulseDuration;
+extern vmCvar_t hud_healthOverlay_phaseThree_toAlphaMultiplier;
+extern vmCvar_t hud_healthOverlay_phaseThree_pulseDuration;
+extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;
+extern vmCvar_t hud_healthOverlay_phaseEnd_pulseDuration;
+extern vmCvar_t hud_healthOverlay_regenPauseTime;
+extern vmCvar_t cg_hudAlpha;
+extern float CG_CalcPlayerHealth();
 extern float dword_F63C80[4 * 1580];
 extern float dword_F63C84[4 * 1580];
 extern float dword_F63C88[4 * 1580];
@@ -321,9 +333,12 @@ int dword_F64190[4 * 1580];
 int dword_F6419C[4 * 1580];
 int dword_F641A0[4 * 1580];
 int dword_F641A4[4 * 1580];
+int dword_F641AC[4 * 1580];
 int dword_F641B0[4 * 1580];
+int dword_F641B4[4 * 1580];
 int dword_F641B8[4 * 1580];
 int dword_F641BC[4 * 1580];
+int dword_F641C4[4 * 1580];
 int dword_F641C8[4 * 1580];
 int dword_F641CC[4 * 1580];
 int dword_F641D0[4 * 1580];
@@ -1847,6 +1862,168 @@ void CG_DrawGameScreenFade()
                         *(float*)&dword_F6400C[1580 * currCl]};
         CG_FillRect(0.0f, 0.0f, 640.0f, 480.0f, col, 0.0f);
     }
+}
+
+static float CG_HealthOverlayFloat(const int* value)
+{
+    float result;
+    memcpy(&result, value, sizeof(result));
+    return result;
+}
+
+static void CG_HealthOverlaySetFloat(int* value, float input)
+{
+    memcpy(value, &input, sizeof(input));
+}
+
+// ea: 0x006886B0
+float CG_FadeLowHealthOverlay()
+{
+    const int index = 1580 * currCl;
+    int elapsed = cgGlobal_time - dword_F641B4[index];
+    if (elapsed < 0)
+        elapsed = 0;
+
+    const int duration = dword_F641B8[index];
+    float alpha = CG_HealthOverlayFloat(&dword_F641B0[index]);
+    if (duration > 0 && elapsed < duration)
+    {
+        const float from = CG_HealthOverlayFloat(&dword_F641AC[index]);
+        alpha = from + (alpha - from) * (float)elapsed / (float)duration;
+    }
+    if (alpha < 0.0f)
+        alpha = 0.0f;
+    else if (alpha > 1.0f)
+        alpha = 1.0f;
+    return alpha;
+}
+
+// ea: 0x006962E0
+void CG_PulseLowHealthOverlay(float healthRatio)
+{
+    const int index = 1580 * currCl;
+    const int time = cgGlobal_time;
+    const float oldHealth = CG_HealthOverlayFloat(&dword_F641C8[index]);
+    if (oldHealth > healthRatio && hud_healthOverlay_pulseStart.value > healthRatio)
+    {
+        dword_F641C4[index] = time;
+        dword_F641CC[index] = 0;
+    }
+    CG_HealthOverlaySetFloat(&dword_F641C8[index], healthRatio);
+
+    if (dword_F641B8[index] + dword_F641B4[index] > time
+        && hud_healthOverlay_pulseStart.value <= healthRatio
+        && byte_F641C0[index * 4] == 0)
+        return;
+
+    if (byte_F641C0[index * 4] == 0)
+        byte_F641C0[index * 4] = 1;
+    dword_F641B4[index] = time;
+    dword_F641AC[index] = dword_F641B0[index];
+
+    const float pulseMags[4] = {1.0f, 0.8f, 0.6f, 0.3f};
+    const int pulse = dword_F641CC[index];
+    if (pulse >= 4)
+    {
+        byte_F641C0[index * 4] = 0;
+        CG_HealthOverlaySetFloat(&dword_F641B0[index],
+                                 hud_healthOverlay_phaseEnd_toAlpha.value);
+        dword_F641B8[index] = hud_healthOverlay_phaseEnd_pulseDuration.integer;
+        dword_F641BC[index] = 0;
+        return;
+    }
+
+    const int phase = dword_F641BC[index];
+    float target = pulseMags[pulse];
+    int phaseDuration = 0;
+    if (phase == 0)
+    {
+        phaseDuration = hud_healthOverlay_phaseOne_pulseDuration.integer;
+    }
+    else if (phase == 1)
+    {
+        target *= hud_healthOverlay_phaseTwo_toAlphaMultiplier.value;
+        phaseDuration = hud_healthOverlay_phaseTwo_pulseDuration.integer;
+    }
+    else if (phase == 2)
+    {
+        target *= hud_healthOverlay_phaseThree_toAlphaMultiplier.value;
+        phaseDuration = hud_healthOverlay_phaseThree_pulseDuration.integer;
+    }
+    else
+    {
+        // The release only reaches this state on corrupt cvar/state data.
+        dword_F641BC[index] = 0;
+        return;
+    }
+    if (target < 0.0f)
+        target = 0.0f;
+    else if (target > 1.0f)
+        target = 1.0f;
+    CG_HealthOverlaySetFloat(&dword_F641B0[index], target);
+    dword_F641B8[index] = phaseDuration;
+    dword_F641BC[index] = (phase + 1) % 3;
+    if (phase == 2)
+    {
+        const int cycle = hud_healthOverlay_phaseOne_pulseDuration.integer
+                          + hud_healthOverlay_phaseTwo_pulseDuration.integer
+                          + hud_healthOverlay_phaseThree_pulseDuration.integer;
+        if (time >= hud_healthOverlay_regenPauseTime.integer
+                       + dword_F641C4[index] - 3 * cycle)
+            ++dword_F641CC[index];
+    }
+}
+
+// ea: 0x006965A0
+void CG_DrawPlayerLowHealthOverlay()
+{
+    const float health = CG_CalcPlayerHealth();
+    if (health == 0.0f || cgsGlobal.media.lowHealthOverlay == nullptr)
+        return;
+
+    CG_PulseLowHealthOverlay(health);
+    float col[4] = {1.0f, 1.0f, 1.0f, CG_FadeLowHealthOverlay()};
+    col[3] *= cg_hudAlpha.value;
+
+    const float sx = unk_F6A278[802 * currCl];
+    const float sy = unk_F6A27C[802 * currCl];
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = sx * 640.0f;
+    float h = sy * 480.0f;
+    switch ((int)unk_F6A284[802 * currCl] - 3)
+    {
+    case 1:
+        y = sy * 240.0f;
+        h = sy * 240.0f;
+        break;
+    case 2:
+        w = sx * 320.0f;
+        h = sy * 240.0f;
+        break;
+    case 3:
+        x = sx * 320.0f;
+        w = sx * 320.0f;
+        h = sy * 240.0f;
+        break;
+    case 4:
+        y = sy * 240.0f;
+        w = sx * 320.0f;
+        h = sy * 240.0f;
+        break;
+    case 5:
+        x = sx * 320.0f;
+        y = sy * 240.0f;
+        w = sx * 320.0f;
+        h = sy * 240.0f;
+        break;
+    default:
+        break;
+    }
+    trap_R_SetColor(col);
+    trap_R_DrawStretchPic(x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f,
+                          cgsGlobal.media.lowHealthOverlay, 0.0f);
+    trap_R_SetColor(nullptr);
 }
 
 // ea: 0x00696000

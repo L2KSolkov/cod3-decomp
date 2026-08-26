@@ -28,6 +28,41 @@ struct itemInfo_t {
     nglTexture* icon;
 };
 
+// IDA cgMedia_t/cgsGlobal_t layouts used by CG_RegisterGraphics and the HUD
+// overlays.  The shellshock block is opaque here, but its release size is
+// known and keeps the media table at the verified offsets.
+struct cgMedia_t {
+    nglTexture* whiteShader;
+    nglTexture* softLineShader;
+    nglTexture* softLineHShader;
+    nglTexture* friendlyFireShader;
+    nglTexture* tracerShader;
+    nglTexture* backTileShader;
+    nglTexture* noWeapon;
+    nglTexture* damageShader;
+    nglTexture* lowHealthOverlay;
+    nglTexture* checkbox_clear;
+    nglTexture* checkbox_checked;
+    nglTexture* checkbox_fail;
+    nglTexture* mYourTeamIcons[5];
+    nglTexture* mOtherTeamIcons[5];
+    nglTexture* mStatusDead;
+    nglTexture* mMedicDeadWorld;
+};
+static_assert(sizeof(cgMedia_t) == 0x60, "cgMedia_t layout mismatch");
+
+struct cgsGlobal_t {
+    char mapname[128];
+    IVPointerRaw gameModels[128];
+    unsigned char shellshockParms[248];
+    cgMedia_t media;
+};
+static_assert(offsetof(cgsGlobal_t, media) == 0x578,
+              "cgsGlobal_t media offset mismatch");
+static_assert(sizeof(cgsGlobal_t) == 0x5D8, "cgsGlobal_t layout mismatch");
+
+extern cgsGlobal_t cgsGlobal;
+
 // Minimal view of AnimationPlayer (full class in anim.o; cg.o members below)
 class AnimationPlayer {
 public:

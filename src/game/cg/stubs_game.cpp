@@ -34,7 +34,6 @@ void CG_DrawAdsAimIndicator(void* a, int b, int* c, float d, float e, float f)
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
 }
 void CG_DrawDamageDirectionIndicators() {}
-void CG_DrawPlayerLowHealthOverlay() {}
 void CG_DrawReticleCenter(void* a, int b, int* c, float d, float e, float f)
 {
     (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
@@ -59,7 +58,6 @@ void CG_PerturbationPoint(const float* a, float* b, float c)
 {
     (void)a; (void)b; (void)c;
 }
-void CG_RegisterGraphics() {}
 void CG_ServerCommand() {}
 void CG_UpdateShellShockCamera(const void* a, int b, int c)
 {

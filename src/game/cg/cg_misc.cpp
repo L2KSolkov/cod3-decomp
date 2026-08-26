@@ -151,12 +151,17 @@ extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 
 extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;  // 0x00F60258
 extern vmCvar_t cg_hudAlpha;                          // 0x00F5FC80
+extern nglTexture* cgsGlobal_media_whiteShader;
+extern void* cgsGlobal_media_tracerShader;
 
 extern int     dword_F641D0[4 * 1580];
 extern int     dword_F641D4[4 * 1580];
 extern int     dword_F641B0[4 * 1580];
+extern int     dword_F641AC[4 * 1580];
+extern int     dword_F641B4[4 * 1580];
 extern int     dword_F641B8[4 * 1580];
 extern int     dword_F641BC[4 * 1580];
+extern int     dword_F641C4[4 * 1580];
 extern int     dword_F641C8[4 * 1580];
 extern int     dword_F641CC[4 * 1580];
 extern unsigned char byte_F64194[4 * 6320];
@@ -192,9 +197,11 @@ void CG_ResetLowHealthOverlay(int client)
 {
     int v1 = 1580 * client;
     dword_F641B0[v1] = *(int*)&hud_healthOverlay_phaseEnd_toAlpha.value;
+    dword_F641AC[v1] = dword_F641B0[v1];
     byte_F641C0[v1 * 4] = 0;
     dword_F641B8[v1] = 0;
     dword_F641BC[v1] = 0;
+    dword_F641C4[v1] = 0;
     dword_F641CC[v1] = 0;
     dword_F641C8[v1] = 1065353216;  // 1.0f
 }
@@ -4709,16 +4716,6 @@ struct cgs_t {
 };
 extern struct cgs_t cgs[2];  // ?cgs@@3PAUcgs_t@@A
 
-struct cgsGlobal_t {
-    char mapname[128];  // +0x00
-    unsigned char _pad[0x578 - 0x80];
-    struct {
-        void* whiteShader;        // +0x578
-        void* softLineShader;     // +0x57C
-        void* softLineHShader;    // +0x580
-        void* friendlyFireShader; // +0x584
-    } media;
-};
 cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8)
 extern itemInfo_t cg_items[256];
 extern weaponInfo_s cg_weapons[92];
@@ -4804,6 +4801,7 @@ void CG_Init()
     memset(cg_weapons, 0, sizeof(cg_weapons));
     cgsGlobal.media.whiteShader =
         GetTextureData("white", 0, "mp_frontEnd");
+    cgsGlobal_media_whiteShader = cgsGlobal.media.whiteShader;
     cgsGlobal.media.softLineShader =
         GetTextureData("softline", 0, "mp_frontEnd");
     cgsGlobal.media.softLineHShader =

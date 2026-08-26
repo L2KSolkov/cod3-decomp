@@ -70,6 +70,11 @@ extern const char* CG_ConfigString(unsigned int index);
 extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
 extern void CG_RegisterWeapon(int weaponNum);
 extern void CG_FreeWeapons();
+extern void FX_InitFX();
+extern void SCR_UpdateScreen();
+extern void* RE_RegisterModel(void* result, const char* name, int pakId,
+                              int imageType);
+extern TPakId CurPakId();
 extern void CG_ConfigStringModifiedInternal(int num);
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);
@@ -89,7 +94,10 @@ extern void SoundDevice_StopAllSounds(void* sInst);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern nglTexture* GetTextureData(const char* name, int image_type,
-                                  const char* fromPak);
+                                   const char* fromPak);
+extern nglTexture* cgsGlobal_media_whiteShader;
+extern void* cgsGlobal_media_tracerShader;
+extern int CG_RegisterItems();
 // IDA gitem_s layout: 0x34-byte records at bg_itemlist (0xF51EC0).
 struct gitem_s
 {
@@ -450,6 +458,72 @@ void CG_RegisterItemVisuals(int itemNum)
             CG_RegisterWeapon(gitem->giTag);
         item[0] = 1;
     }
+}
+
+// ea: 0x00697B50
+void CG_RegisterGraphics()
+{
+    FX_InitFX();
+    SCR_UpdateScreen();
+
+    cgsGlobal.media.tracerShader =
+        GetTextureData("gfx/misc/tracer", 0, "mp_frontEnd");
+    cgsGlobal_media_tracerShader = cgsGlobal.media.tracerShader;
+    cgsGlobal.media.damageShader =
+        GetTextureData("hit_direction", 0, "mp_frontEnd");
+    cgsGlobal.media.lowHealthOverlay =
+        GetTextureData("overlay_low_health", 0, "mp_frontEnd");
+    cgsGlobal.media.checkbox_clear =
+        GetTextureData("ui/assets/checkbox_clear", 0, "mp_frontEnd");
+    cgsGlobal.media.checkbox_checked =
+        GetTextureData("ui/assets/checkbox_checked", 0, "mp_frontEnd");
+    cgsGlobal.media.checkbox_fail =
+        GetTextureData("ui/assets/checkbox_fail", 0, "mp_frontEnd");
+    cgsGlobal.media.backTileShader =
+        GetTextureData("gfx/2d/backtile", 0, "mp_frontEnd");
+    cgsGlobal.media.noWeapon = GetTextureData("noweapon", 0, "mp_frontEnd");
+
+    cgsGlobal.media.mYourTeamIcons[0] =
+        GetTextureData("i_head_rank_1_w.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mYourTeamIcons[1] =
+        GetTextureData("i_head_rank_2_w.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mYourTeamIcons[2] =
+        GetTextureData("i_head_rank_3_w.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mYourTeamIcons[4] =
+        GetTextureData("goldflag.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mYourTeamIcons[3] =
+        GetTextureData("i_head_VOIP_w.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mOtherTeamIcons[0] =
+        GetTextureData("rank1_red.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mOtherTeamIcons[1] =
+        GetTextureData("rank2_red.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mOtherTeamIcons[2] =
+        GetTextureData("rank3_red.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mOtherTeamIcons[3] =
+        GetTextureData("redflag.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mStatusDead =
+        GetTextureData("status_dead.tga", 0, "mp_frontEnd");
+    cgsGlobal.media.mMedicDeadWorld =
+        GetTextureData("i_downed_friend_w", 0, "mp_frontEnd");
+
+    SCR_UpdateScreen();
+    memset(cg_items, 0, sizeof(cg_items));
+    memset(cg_weapons, 0, sizeof(cg_weapons));
+    SCR_UpdateScreen();
+    CG_RegisterItems();
+    SCR_UpdateScreen();
+
+    IVPointerRaw result = {};
+    for (unsigned int index = 34; index < 0x400; ++index) {
+        const char* configString = CL_GetConfigString(index);
+        if (configString == nullptr || *configString == '\0')
+            break;
+        IVPointerRaw* model = static_cast<IVPointerRaw*>(RE_RegisterModel(
+            &result, configString, static_cast<int>(CurPakId()), 7));
+        if (model != nullptr)
+            cgsGlobal.gameModels[index - 33] = *model;
+    }
+    SCR_UpdateScreen();
 }
 
 // ea: 0x0068F640
