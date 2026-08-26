@@ -16,7 +16,6 @@ void __cod3_stub_game_cg(void) {
 #include "game/trace_types.h"
 
 void CG_CalcCubemapViewValues() {}
-void CG_CalcTurretViewValues() {}
 void CG_ClipMoveToEntities(const math::Position3* start,
                            const math::Position3* mins,
                            const math::Position3* maxs,

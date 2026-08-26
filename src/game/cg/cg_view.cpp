@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/cg/cg_local.h"
+#include "game/core/core_types.h"
 #include "game/cvar_types.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
@@ -10,6 +11,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
@@ -2804,6 +2808,55 @@ static bool s_tagAimHashInit;
 static float s_horchOfs[3];
 static float s_dodgeOfs[3];
 static float s_shake;
+static unsigned int s_turretTagPlayerHash;
+static bool s_turretTagPlayerHashInit;
+
+// ea: 0x006A5870 (release cg.o)
+// Turret cameras follow the locked entity's tag_player bone while the
+// player-state viewlocked flag is active.  Keep the player-state accesses at
+// their release offsets: cg.o's local PlayerState view is intentionally only
+// a partial declaration and its member order is not a wire-layout guarantee.
+void CG_CalcTurretViewValues()
+{
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    char* ps = reinterpret_cast<char*>(&client->ps);
+    const int eFlags = *reinterpret_cast<const int*>(ps + 0xF4);
+    if ((eFlags & 0x6000) == 0)
+        return;
+
+    const unsigned int viewLockedHandle =
+        *reinterpret_cast<const unsigned int*>(ps + 0x4A0);
+    Entity* lockedEntity = DbHandleToEntityLocal(viewLockedHandle);
+    if (lockedEntity == nullptr
+        || *reinterpret_cast<const int*>(ps + 0x49C) == 0)
+        return;
+
+    math::Position3* viewAngles =
+        reinterpret_cast<math::Position3*>(&angle[1580 * currCl]);
+    BG_EvaluateTrajectory(&lockedEntity->s.apos, cgGlobal_time, *viewAngles);
+
+    if (!s_turretTagPlayerHashInit)
+    {
+        s_turretTagPlayerHashInit = true;
+        s_turretTagPlayerHash = HashString::CalcHash("tag_player");
+    }
+    DObjSkelMat tagMtx;
+    if (G_DObjGetWorldTagMatrix(lockedEntity, s_turretTagPlayerHash,
+                                &tagMtx) == 0)
+    {
+        Com_Error((errorParm_t)1,
+                  "\x15Turret has no bone: tag_player\n");
+        return;
+    }
+
+    const int base = 1580 * currCl;
+    angle[base] += lockedEntity->s.angles2.v.m128_f32[0];
+    dword_F63CB4[base] += lockedEntity->s.angles2.v.m128_f32[1];
+    dword_F63C70[base] = tagMtx.origin[0];
+    dword_F63C74[base] = tagMtx.origin[1];
+    dword_F63C78[base] =
+        tagMtx.origin[2] - *reinterpret_cast<const float*>(ps + 0xE0);
+}
 
 // ea: 0x006A4BF0
 void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
