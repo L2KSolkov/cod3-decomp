@@ -105,7 +105,8 @@ static_assert(sizeof(apsSphereSurfaceDomain) == 0x20, "apsSphereSurfaceDomain si
 // ============================================================================
 // apsLineDomain — uniform point on a line segment (mMin..mMax).
 // Layout (48 bytes): apsDomain@0x00 + mMin@0x10 + mDelta@0x20.
-// TestValue returns 0 (not implemented).
+// TestValue returns 0 in the release binary (the line domain has no
+// containment test).
 // ============================================================================
 class apsLineDomain : public apsDomain {
 public:
@@ -123,7 +124,8 @@ static_assert(sizeof(apsLineDomain) == 0x30, "apsLineDomain size mismatch");
 // ============================================================================
 // apsDiscDomain — uniform point on a disc in a plane (rejection sampled).
 // Layout (64 bytes): apsDomain@0x00 + mCenter@0x10 + mXOff@0x20 + mYOff@0x30.
-// TestValue returns 0 (not implemented).
+// TestValue returns 0 in the release binary (the disc domain has no
+// containment test).
 // ============================================================================
 class apsDiscDomain : public apsDomain {
 public:
@@ -141,7 +143,8 @@ static_assert(sizeof(apsDiscDomain) == 0x40, "apsDiscDomain size mismatch");
 
 // ============================================================================
 // apsCircleDomain — point on a circle in a plane (fixed radius).
-// TestValue returns 0 (not implemented).
+// TestValue returns 0 in the release binary (the circle domain has no
+// containment test).
 // ============================================================================
 class apsCircleDomain : public apsDomain {
 public:
