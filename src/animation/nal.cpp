@@ -23961,11 +23961,149 @@ int XAnimSetCompleteGoalWeightKnobAll(
 // ?g_dtime@@3MA @ 0xF258E8
 float g_dtime = 0.0f;
 
-// ?XAnimUpdateOldServerTime@@YAXPAVXAnimTree@@I@Z (0x541740; real body in
-// xanim.o sibling object - stub here so nal.o links)
+// ea: 0x00541480
+char XAnimUpdateOldServerTimeNoWeight(XAnimTree* tree, unsigned int animIndex)
+{
+    if (tree->anims == nullptr)
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp", 985,
+                     "old cod assert");
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 986,
+                     "old cod assert");
+
+    const unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex == 0)
+        return 0;
+    if (infoIndex >= 512)
+        XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                     992, "old cod assert");
+
+    XAnimInfo* info = &g_info[infoIndex];
+    // The release layout stores these values in the packed state area at
+    // offsets 0x10, 0x14, 0x18, 0x1A, 0x1C, and 0x24.
+    *reinterpret_cast<float*>(info->s + 0x24) = 0.0f;
+    *reinterpret_cast<float*>(info->s + 0x10) = 0.0f;
+    *reinterpret_cast<unsigned short*>(info->s + 0x18) = 0;
+    *reinterpret_cast<float*>(info->s + 0x14) = 0.0f;
+    *reinterpret_cast<unsigned short*>(info->s + 0x1A) = 0;
+    *reinterpret_cast<float*>(info->s + 0x1C) = 0.0f;
+
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    bool childInfoExists = false;
+    for (int i = 0; i < entry->numAnims; ++i)
+    {
+        if (XAnimUpdateOldServerTimeNoWeight(
+                tree, static_cast<unsigned int>(entry->u.s.children + i)))
+            childInfoExists = true;
+    }
+    if (!childInfoExists
+        && *reinterpret_cast<float*>(info->s + 0x24) == 0.0f
+        && *reinterpret_cast<float*>(info->s + 0x20) == 0.0f)
+    {
+        XAnimFreeInfo(tree, infoIndex);
+        if (animIndex >= tree->anims->entries.mSize)
+            XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 1033,
+                         "old cod assert");
+        tree->infoArray[animIndex] = 0;
+        return 0;
+    }
+    return 1;
+}
+
+// ea: 0x00541740
 void XAnimUpdateOldServerTime(XAnimTree* tree, unsigned int animIndex)
 {
-    (void)tree; (void)animIndex;
+    if (tree->anims == nullptr)
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp", 1054,
+                     "old cod assert");
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 1055,
+                     "old cod assert");
+    if (g_dtime < 0.0f)
+        XANIM_ASSERT("g_dtime >= 0", "c:\\cod\\code\\game\\xanim.cpp", 1056,
+                     "g_dtime: %f");
+
+    unsigned int animQueue[1024];
+    int topIndex = 1;
+    int activeIndex = 0;
+    animQueue[0] = animIndex;
+    while (activeIndex < topIndex)
+    {
+        const unsigned int currentAnim = animQueue[activeIndex];
+        const unsigned short infoIndex = tree->infoArray[currentAnim];
+        if (infoIndex != 0)
+        {
+            if (infoIndex >= 512)
+                XANIM_ASSERT("infoIndex < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 1068,
+                             "old cod assert");
+            XAnimInfo* info = &g_info[infoIndex];
+            float* state = reinterpret_cast<float*>(info->s);
+            const float dt = g_dtime;
+            const unsigned short notifyChild =
+                *reinterpret_cast<unsigned short*>(info->s + 0x08);
+            state[1] = state[0];
+            *reinterpret_cast<unsigned short*>(info->s + 0x0A) = notifyChild;
+            if (dt + 0.001f <= state[3])
+            {
+                state[5] = ((state[4] - state[5]) / state[3]) * dt + state[5];
+                if (state[5] < 0.000001f)
+                    state[5] = state[4] * 0.001f;
+                state[3] -= dt;
+            }
+            else
+            {
+                state[3] = 0.0f;
+                state[5] = state[4];
+            }
+
+            XAnimEntry* entry = AnimTreeEntryAt(tree->anims, currentAnim);
+            if (entry->numAnims != 0)
+            {
+                if (state[5] == 0.0f && state[4] == 0.0f)
+                {
+                    bool childInfoExists = false;
+                    for (int i = 0; i < entry->numAnims; ++i)
+                    {
+                        if (XAnimUpdateOldServerTimeNoWeight(
+                                tree, static_cast<unsigned int>(entry->u.s.children + i)))
+                            childInfoExists = true;
+                    }
+                    if (!childInfoExists)
+                    {
+                        XAnimFreeInfo(tree, infoIndex);
+                        const unsigned int queuedAnim = animQueue[activeIndex];
+                        if (queuedAnim >= tree->anims->entries.mSize)
+                            XANIM_ASSERT(
+                                "animqueue[active_index] < tree->anims->entries.size()",
+                                "c:\\cod\\code\\game\\xanim.cpp", 1115,
+                                "old cod assert");
+                        tree->infoArray[queuedAnim] = 0;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < entry->numAnims; ++i)
+                        animQueue[topIndex++] = entry->u.s.children + i;
+                }
+            }
+            else if (state[5] == 0.0f && state[4] == 0.0f)
+            {
+                XAnimFreeInfo(tree, infoIndex);
+                const unsigned int queuedAnim = animQueue[activeIndex];
+                if (queuedAnim >= tree->anims->entries.mSize)
+                    XANIM_ASSERT(
+                        "animqueue[active_index] < tree->anims->entries.size()",
+                        "c:\\cod\\code\\game\\xanim.cpp", 1096,
+                        "old cod assert");
+                tree->infoArray[queuedAnim] = 0;
+            }
+        }
+        ++activeIndex;
+    }
 }
 
 // ea: 0x00543890
