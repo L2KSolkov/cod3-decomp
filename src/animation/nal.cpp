@@ -5919,6 +5919,11 @@ Camera& GetCamera(int index)
 
 extern int currCl;
 extern int dword_F6A2A0[4 * 802];
+extern int unk_F6A2AC[4 * 3208];
+extern void R_SetViewModelScale(int clientIndex, float armsScale,
+                                float weaponScale, int inWorldScene,
+                                int scaleWeaponTrans,
+                                math::Mat43* armsOffsetMat);
 extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
 
 class AnimationPlayer {
@@ -26834,6 +26839,7 @@ struct InteractStateInfo {
     float notifyFloat[4];           // +0x43C
     int buttonIndex[4];             // +0x4CC
     char buttonHelpStr[64];         // +0x4DC
+    int leaveHelpStrUp;              // +0x51C
     unsigned int swirlClockwise;    // +0x520
     unsigned int leftStick;         // +0x524
     float initialScore;             // +0x528
@@ -30275,15 +30281,40 @@ extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);
 extern int bg_iNumWeapons;  // ?bg_iNumWeapons@@3HA (game.o)
 
-// ea: 0x0053F920 / 0x0054CC10 / 0x00546700 (stubs)
+// ea: 0x0053F920
 void InteractState::Deactivate()
 {
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (player != nullptr && player->client != nullptr)
+    {
+        unsigned char* client = static_cast<unsigned char*>(player->client);
+        *reinterpret_cast<int*>(client + 0x7F0) = mSaveFrozen;
+        *reinterpret_cast<int*>(client + 0x7E8) = mSaveNoClip;
+    }
+    const int clientIndex = mController->mClient;
+    unk_F6A2AC[3208 * clientIndex] = mSaveDrawCrosshair != 0;
+    InteractInputRcvr* input =
+        static_cast<InteractInputRcvr*>(mInputRcvr);
+    mPlayerCallback = nullptr;
+    mOtherCallback = nullptr;
+    if (input != nullptr)
+        input->Deactivate();
+    R_SetViewModelScale(clientIndex, 1.0f, 1.0f, 0, 0, nullptr);
+    if (input == nullptr)
+    {
+        const InteractStateInfo* info =
+            static_cast<const InteractStateInfo*>(mInfo);
+        if (info->buttonHelpStr[0] != 0 && info->leaveHelpStrUp == 0)
+            InteractionController::Inst(currCl)->ClearAllRenderText();
+    }
 }
 
+// ea: 0x0054CC10
 void InteractState::Activate()
 {
 }
 
+// ea: 0x00546700
 InteractState* InteractState::Update(float deltaT)
 {
     (void)deltaT;
