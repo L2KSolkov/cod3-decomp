@@ -21,6 +21,7 @@
 class Entity;
 class SceneAnimClient;
 enum TPakId : int;
+extern void tlPrintf(const char* fmt, ...);
 
 void* tlStackBegin = nullptr;
 void* tlStackEnd = nullptr;
@@ -5765,6 +5766,8 @@ extern void XAnimEnsureGoalWeightParent(XAnimTree* tree,
 extern void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
                                 int bRestart);
 extern void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex);
+struct XAnimNotifyInfo;
+extern short XAnimGetNextNotifyTime(XAnimEntry* entry, XAnimInfo* info);
 extern void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
                                              unsigned int animIndex,
                                              float goalWeight,
@@ -6950,22 +6953,209 @@ void InteractionController::DeleteInst()
     InteractionController::sInstHolder.sInst[0] = nullptr;
 }
 
-// Stub bodies for the xanim goal-weight internals (ported with the
-// remaining xanim cluster; correct mangled signatures).
+// XAnim goal-weight internals (xanim.cpp).
+XAnimInfo* XAnimAllocInfo(XAnimTree* tree, unsigned int animIndex);
+
+// ea: 0x005444A0
+unsigned int XAnimGetDescendantWithGreatestWeight(XAnimTree* tree,
+                                                   unsigned int animIndex)
+{
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    if (entry->numAnims != 0)
+    {
+        float bestWeight = 0.0f;
+        unsigned int bestDescendant = 0;
+        for (int i = 0; i < entry->numAnims; ++i)
+        {
+            const unsigned int child = entry->u.s.children + i;
+            if (child >= tree->anims->entries.mSize)
+                XANIM_ASSERT(
+                    "entry->u.s.children + i < tree->anims->entries.size()",
+                    "c:\\cod\\code\\game\\xanim.cpp", 4880,
+                    "old cod assert");
+            if (tree->infoArray[child] >= 512)
+                XANIM_ASSERT(
+                    "tree->infoArray[entry->u.s.children + i] < 512",
+                    "c:\\cod\\code\\game\\xanim.cpp", 4881,
+                    "old cod assert");
+            const float testWeight =
+                *reinterpret_cast<float*>(g_info[tree->infoArray[child]].s + 0x10);
+            if (bestWeight < testWeight)
+            {
+                const unsigned int descendant =
+                    XAnimGetDescendantWithGreatestWeight(tree, child);
+                if (descendant != 0)
+                {
+                    bestWeight = testWeight;
+                    bestDescendant = descendant;
+                }
+            }
+        }
+        return bestDescendant;
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4869,
+                     "old cod assert");
+    if (tree->infoArray[animIndex] >= 512)
+        XANIM_ASSERT("tree->infoArray[animIndex] < 512",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4870,
+                     "old cod assert");
+    if (*reinterpret_cast<float*>(g_info[tree->infoArray[animIndex]].s + 0x10)
+        == 0.0f)
+        XANIM_ASSERT("g_info[tree->infoArray[animIndex]].s.goalWeight",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4871,
+                     "old cod assert");
+    return animIndex;
+}
+
+// ea: 0x0054AF10
 int XAnimSetGoalWeightInternal(XAnimTree* tree, unsigned int animIndex,
                                float goalWeight, float goalTime, float rate,
                                bool bForce, unsigned int notifyName,
                                unsigned short notifyType, bool bRestart)
 {
-    (void)tree; (void)animIndex; (void)goalWeight; (void)goalTime;
-    (void)rate; (void)bForce; (void)notifyName; (void)notifyType;
-    (void)bRestart;
+    if (tree == nullptr)
+        XANIM_ASSERT("tree", "c:\\cod\\code\\game\\xanim.cpp", 4903,
+                     "old cod assert");
+    if (tree->anims == nullptr)
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp", 4904,
+                     "old cod assert");
+    unsigned int index = animIndex;
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4905,
+                     "old cod assert");
+    if (goalWeight != 0.0f && (goalWeight < 0.001f || goalWeight > 1.0f))
+        XANIM_ASSERT(
+            "!goalWeight || ( goalWeight >= 0.001f && goalWeight<= 1.0f)",
+            "c:\\cod\\code\\game\\xanim.cpp", 4906, "old cod assert");
+    if (goalTime < 0.0f)
+        XANIM_ASSERT("goalTime >= 0", "c:\\cod\\code\\game\\xanim.cpp", 4907,
+                     "old cod assert");
+    if (rate < 0.0f)
+        XANIM_ASSERT("rate >= 0", "c:\\cod\\code\\game\\xanim.cpp", 4908,
+                     "old cod assert");
+    if ((notifyName != 0 || notifyType != 0) && goalWeight == 0.0f)
+        XANIM_ASSERT("(!notifyName && !notifyType) || goalWeight",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4909,
+                     "old cod assert");
+    if (animIndex > tree->anims->entries.mSize)
+    {
+        tlPrintf("playing animation that doesn't exist in nextgen animtree\n");
+        index = 0;
+    }
+
+    const unsigned short infoIndex = tree->infoArray[index];
+    XAnimInfo* info;
+    if (infoIndex != 0)
+    {
+        if (infoIndex >= 512)
+            XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                         4933, "old cod assert");
+        info = &g_info[infoIndex];
+    }
+    else
+    {
+        if (goalWeight == 0.0f && !bForce)
+            return 0;
+        info = XAnimAllocInfo(tree, index);
+    }
+    if (index == 0)
+    {
+        goalWeight = 1.0f;
+        goalTime = 0.0f;
+        rate = 1.0f;
+    }
+    const float oldWeight = *reinterpret_cast<float*>(info->s + 0x14);
+    const float deltaWeight = fabsf(goalWeight - oldWeight);
+    *reinterpret_cast<float*>(info->s + 0x10) = goalWeight;
+    *reinterpret_cast<float*>(info->s + 0x0C) = deltaWeight * goalTime;
+    if (deltaWeight * goalTime < 0.001f)
+    {
+        *reinterpret_cast<float*>(info->s + 0x0C) = 0.0f;
+        *reinterpret_cast<float*>(info->s + 0x14) = goalWeight;
+    }
+    else
+    {
+        if (oldWeight == 0.0f)
+            *reinterpret_cast<float*>(info->s + 0x14) = goalWeight * 0.001f;
+    }
+    *reinterpret_cast<float*>(info->s + 0x18) = rate;
+    if (notifyName != 0)
+        info->notifyName = notifyName;
+    info->notifyIndex = -1;
+
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, index);
+    if (notifyName != 0 && entry->numAnims != 0
+        && (entry->u.s.flags & 3) != 0)
+    {
+        if (goalWeight == 0.0f)
+            XANIM_ASSERT("goalWeight", "c:\\cod\\code\\game\\xanim.cpp",
+                         4977, "old cod assert");
+        const unsigned int descendant =
+            XAnimGetDescendantWithGreatestWeight(tree, index);
+        info->notifyChild = static_cast<unsigned short>(descendant);
+        if (descendant == 0)
+            return 2;
+    }
+    else
+    {
+        info->notifyChild = 0;
+    }
+    entry->ucLastChosenChild = 0;
+    if (entry->numAnims != 0 && (entry->u.s.flags & 0x20) != 0)
+    {
+        info->notifyName = 0;
+        const unsigned int descendant =
+            XAnimGetDescendantWithGreatestWeight(tree, index);
+        if (bRestart || descendant == 0)
+        {
+            const int childCount = entry->numAnims;
+            const int chosenChild = rand() % childCount;
+            entry->ucLastChosenChild = static_cast<unsigned char>(chosenChild);
+            for (int i = 0; i < childCount; ++i)
+            {
+                const unsigned int child = entry->u.s.children + i;
+                if (i == chosenChild)
+                    XAnimSetGoalWeightInternal(tree, child, goalWeight, goalTime,
+                                               1.0f, bForce, notifyName,
+                                               notifyType, bRestart);
+                else
+                    XAnimSetGoalWeightInternal(tree, child, 0.0f, goalTime,
+                                               1.0f, bForce, 0, 0, bRestart);
+                XAnimEnsureGoalWeightParent(tree, child, 0.0f, bRestart);
+                XAnimUpdateSyncTime(tree, child, 1);
+                XAnimUpdateServerNotify(tree, child);
+            }
+        }
+    }
     return 0;
 }
 void XAnimEnsureGoalWeightParent(XAnimTree* tree, unsigned int animIndex,
                                  float goalTime, bool bRestart)
 {
-    (void)tree; (void)animIndex; (void)goalTime; (void)bRestart;
+    unsigned int i = animIndex;
+    while (i != 0)
+    {
+        if (i >= tree->anims->entries.mSize)
+        {
+            XANIM_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                         81, "Bounds check");
+            if (i >= tree->anims->entries.mSize)
+                i = 0;
+        }
+        const unsigned int parent = AnimTreeEntryAt(tree->anims, i)->parent;
+        if (parent >= tree->anims->entries.mSize)
+            XANIM_ASSERT("parentAnimIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 5325,
+                         "old cod assert");
+        if (tree->infoArray[parent] != 0)
+            break;
+        XAnimSetGoalWeightInternal(tree, i, 0.0f, goalTime, 1.0f, true, 0, 0,
+                                   bRestart);
+        i = parent;
+    }
 }
 void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
                          int bRestart)
@@ -6974,7 +7164,42 @@ void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
 }
 void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex)
 {
-    (void)tree; (void)animIndex;
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5213,
+                     "old cod assert");
+    if (animIndex >= tree->anims->entries.mSize)
+        return;
+    const unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex >= 512)
+        XANIM_ASSERT("tree->infoArray[animIndex] < 512",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5217,
+                     "old cod assert");
+    XAnimInfo* info = &g_info[infoIndex];
+    if (info->notifyName == 0)
+        return;
+    if (*reinterpret_cast<float*>(info->s) == 1.0f)
+    {
+        info->notifyIndex = -1;
+        return;
+    }
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    if (entry->numAnims != 0)
+    {
+        if (info->notifyChild == 0)
+            return;
+        entry = AnimTreeEntryAt(tree->anims, info->notifyChild);
+        if (entry->numAnims != 0)
+            XANIM_ASSERT("!entry->numAnims",
+                         "c:\\cod\\code\\game\\xanim.cpp", 5236,
+                         "old cod assert");
+    }
+    const short nextNotifyTime = XAnimGetNextNotifyTime(entry, info);
+    info->notifyIndex = nextNotifyTime;
+    if (nextNotifyTime >= 0 && entry->notify == nullptr)
+        XANIM_ASSERT("info->notifyIndex < 0 || entry->notify",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5239,
+                     "old cod assert");
 }
 
 // ea: 0x0053E2F0 (dead-code assert; signature from map)
@@ -6988,7 +7213,49 @@ void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
                                       unsigned int animIndex,
                                       float goalWeight, float goalTime)
 {
-    (void)tree; (void)animIndex; (void)goalWeight; (void)goalTime;
+    if (tree->anims == nullptr)
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp", 4682,
+                     "old cod assert");
+    if (animIndex >= tree->anims->entries.mSize)
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4683,
+                     "old cod assert");
+    if (animIndex == 0)
+        return;
+
+    XAnimEntry* parentAnim = AnimTreeEntryAt(
+        tree->anims, AnimTreeEntryAt(tree->anims, animIndex)->parent);
+    const int numChildren = parentAnim->numAnims;
+    float largestWeightDiff = 0.0f;
+    for (int i = 0; i < numChildren; ++i)
+    {
+        const unsigned int child = parentAnim->u.s.children + i;
+        if (child >= tree->anims->entries.mSize)
+            XANIM_ASSERT(
+                "parentAnim->u.s.children + i < tree->anims->entries.size()",
+                "c:\\cod\\code\\game\\xanim.cpp", 4697,
+                "old cod assert");
+        const unsigned short infoIndex = tree->infoArray[child];
+        if (infoIndex >= 512)
+            XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                         4699, "old cod assert");
+        float weight = infoIndex == 0
+                           ? 0.0f
+                           : *reinterpret_cast<float*>(g_info[infoIndex].s + 0x14);
+        if (child == animIndex)
+            weight = fabsf(goalWeight - weight);
+        if (weight > largestWeightDiff)
+            largestWeightDiff = weight;
+    }
+    float blendTime = largestWeightDiff * goalTime;
+    if (blendTime < 0.001f)
+        blendTime = 0.0f;
+    for (int i = 0; i < numChildren; ++i)
+    {
+        const unsigned int child = parentAnim->u.s.children + i;
+        if (child != animIndex)
+            XAnimClearGoalWeight(tree, child, blendTime);
+    }
 }
 void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex)
 {
@@ -7664,6 +7931,54 @@ XAnimNotifyInfo::XAnimNotifyInfo()
 XAnimNotifyInfo::~XAnimNotifyInfo()
 {
     name.~string();
+}
+
+// ea: 0x0053E3A0
+short XAnimGetNextNotifyTime(XAnimEntry* entry, XAnimInfo* info)
+{
+    if (entry->numAnims != 0)
+        XANIM_ASSERT("!entry->numAnims", "c:\\cod\\code\\game\\xanim.cpp",
+                     856, "old cod assert");
+    const float time = *reinterpret_cast<float*>(info->s);
+    if (time < 0.0f)
+        XANIM_ASSERT("time >= 0", "c:\\cod\\code\\game\\xanim.cpp", 858,
+                     "%f");
+    if (time > 1.0f)
+        XANIM_ASSERT("time <= 1.f", "c:\\cod\\code\\game\\xanim.cpp", 859,
+                     "%f");
+    if (time == 1.0f)
+        XANIM_ASSERT("time != 1.f", "c:\\cod\\code\\game\\xanim.cpp", 863,
+                     "old cod assert");
+
+    XAnimNotifyInfo* best = nullptr;
+    float bestTime = 2.0f;
+    XAnimNotifyInfo* notify = static_cast<XAnimNotifyInfo*>(entry->notify);
+    if (notify == nullptr)
+        return -1;
+    if (notify->hashed_name == 0)
+        XANIM_ASSERT("bestNotifyInfo", "c:\\cod\\code\\game\\xanim.cpp",
+                     882, "old cod assert");
+    for (; notify->hashed_name != 0; ++notify)
+    {
+        const float testTime = notify->time;
+        if (testTime < 0.0f)
+            XANIM_ASSERT("testTime >= 0", "c:\\cod\\code\\game\\xanim.cpp",
+                         872, "old cod assert");
+        if (time <= testTime && bestTime > testTime)
+        {
+            bestTime = testTime;
+            best = notify;
+        }
+    }
+    if (best == nullptr)
+        XANIM_ASSERT("bestNotifyInfo", "c:\\cod\\code\\game\\xanim.cpp",
+                     882, "old cod assert");
+    if (best != static_cast<XAnimNotifyInfo*>(entry->notify)
+        && best->time <= (best - 1)->time)
+        XANIM_ASSERT(
+            "bestNotifyInfo == entry->notify || bestNotifyInfo->time > (bestNotifyInfo-1)->time",
+            "c:\\cod\\code\\game\\xanim.cpp", 883, "old cod assert");
+    return static_cast<short>(best - static_cast<XAnimNotifyInfo*>(entry->notify));
 }
 
 // XAnimEntry lifecycle + note-track parse (after the type defs)
@@ -23981,13 +24296,13 @@ char XAnimUpdateOldServerTimeNoWeight(XAnimTree* tree, unsigned int animIndex)
 
     XAnimInfo* info = &g_info[infoIndex];
     // The release layout stores these values in the packed state area at
-    // offsets 0x10, 0x14, 0x18, 0x1A, 0x1C, and 0x24.
-    *reinterpret_cast<float*>(info->s + 0x24) = 0.0f;
-    *reinterpret_cast<float*>(info->s + 0x10) = 0.0f;
-    *reinterpret_cast<unsigned short*>(info->s + 0x18) = 0;
+    // offsets 0x00, 0x04, 0x08, 0x0A, 0x0C, and 0x14.
     *reinterpret_cast<float*>(info->s + 0x14) = 0.0f;
-    *reinterpret_cast<unsigned short*>(info->s + 0x1A) = 0;
-    *reinterpret_cast<float*>(info->s + 0x1C) = 0.0f;
+    *reinterpret_cast<float*>(info->s + 0x00) = 0.0f;
+    *reinterpret_cast<unsigned short*>(info->s + 0x08) = 0;
+    *reinterpret_cast<float*>(info->s + 0x04) = 0.0f;
+    *reinterpret_cast<unsigned short*>(info->s + 0x0A) = 0;
+    *reinterpret_cast<float*>(info->s + 0x0C) = 0.0f;
 
     XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
     bool childInfoExists = false;
@@ -23998,8 +24313,8 @@ char XAnimUpdateOldServerTimeNoWeight(XAnimTree* tree, unsigned int animIndex)
             childInfoExists = true;
     }
     if (!childInfoExists
-        && *reinterpret_cast<float*>(info->s + 0x24) == 0.0f
-        && *reinterpret_cast<float*>(info->s + 0x20) == 0.0f)
+        && *reinterpret_cast<float*>(info->s + 0x14) == 0.0f
+        && *reinterpret_cast<float*>(info->s + 0x10) == 0.0f)
     {
         XAnimFreeInfo(tree, infoIndex);
         if (animIndex >= tree->anims->entries.mSize)
