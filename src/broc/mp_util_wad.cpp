@@ -5610,7 +5610,6 @@ Broc::string* GetCvar(Broc::string* result, const char* cvar) {
     Broc::string output((Broc::string::Block*)nullptr);
     gBrocAPI.mCVarGetString(&output, cvar);
     new (result) Broc::string(output);
-    output.~string();
     return result;
 }
 
