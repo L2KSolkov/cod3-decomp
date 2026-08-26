@@ -1297,13 +1297,280 @@ label_88:
     }
 }
 
-// Destructible::DoDamage (physics.o; stub, port later)
+float vehForceModifier = 5.0f; // 0x00E36B30 (release data: 0x40A00000)
+extern Entity* SpawnBrokenPiece(Entity* owner, const char* classname,
+                                const char* modelName,
+                                const math::Position3* origin,
+                                bool makeDestructible);
+extern void SetModel(Entity* pEnt, const char* modelName);
+
+// ea: 0x0070D930
 bool Destructible::DoDamage(Entity* ent, float damage,
                             const math::Position3& hitp,
                             const math::Dir3& hitd, int meansOfDeath,
                             bool scriptExplode)
 {
-    (void)ent; (void)damage; (void)hitp; (void)hitd;
-    (void)meansOfDeath; (void)scriptExplode;
-    return false;
+    // The release function is shared by ordinary destructible damage and the
+    // script-explode path.  Keep its early guards and force construction
+    // exactly as emitted; the remaining loops operate on the in-place arrays
+    // in the IDA Destructible layout above.
+    if (scriptExplode)
+    {
+        if ((mFlags & 0x400) == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Destructible.cpp";
+            AeAssert::gCurrentLine = 368;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("scriptExplode called on a non exploder"))
+                __debugbreak();
+            return false;
+        }
+    }
+    else
+    {
+        Initialize(this, ent, false);
+    }
+    if (mThreshold > damage)
+        return false;
+
+    math::Position3 impact = hitp;
+    math::Dir3 direction = hitd;
+    float force = (damage > 200.0f ? 200.0f : damage) * 0.3f;
+
+    if (!scriptExplode)
+    {
+        switch (meansOfDeath)
+        {
+        case 1:
+        case 2:
+            if ((mFlags & 2) != 0)
+                return false;
+            break;
+        case 3: case 4: case 5: case 6: case 7: case 8:
+        case 9: case 10: case 17: case 18: case 27:
+        case 32:
+        {
+            unsigned int mask = mFlags;
+            if (meansOfDeath == 32)
+            {
+                if ((mask & 8) != 0)
+                    return false;
+            }
+            else if ((mask & 4) != 0)
+                return false;
+            float lengthSq = hitd.v.m128_f32[0] * hitd.v.m128_f32[0]
+                           + hitd.v.m128_f32[1] * hitd.v.m128_f32[1]
+                           + hitd.v.m128_f32[2] * hitd.v.m128_f32[2];
+            float length = sqrtf(lengthSq);
+            if (length > 0.0f)
+            {
+                direction.v = _mm_div_ps(hitd.v, _mm_set1_ps(length));
+                math::Position3 center;
+                if (ent->r.bmodel != nullptr)
+                {
+                    center.v = _mm_add_ps(ent->r.currentOrigin.v,
+                        _mm_mul_ps(_mm_add_ps(ent->r.bmodel->min.v,
+                                              ent->r.bmodel->max.v),
+                                   _mm_set1_ps(0.5f)));
+                }
+                else
+                {
+                    center.v = _mm_mul_ps(_mm_add_ps(ent->r.absmin.v,
+                                                      ent->r.absmax.v),
+                                         _mm_set1_ps(0.5f));
+                }
+                impact.v = _mm_mul_ps(_mm_add_ps(hitp.v, center.v),
+                                      _mm_set1_ps(0.5f));
+            }
+            if ((mask & 0x2000) != 0)
+                force *= vehForceModifier;
+            break;
+        }
+        case 11:
+            if ((mFlags & 0x20) != 0)
+                return false;
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        direction.v = _mm_set_ps(0.0f, 0.1f, 0.0f, 0.0f);
+    }
+
+    float healthFraction = 100.0f;
+    if (!scriptExplode)
+    {
+        healthFraction = ent->health / (float)mHealth;
+        if ((mFlags & 0x2000) == 0)
+            ent->health -= damage;
+    }
+
+    if ((mFlags & 0x400) != 0)
+    {
+        if ((mFlags & 0x200000) != 0 || (!scriptExplode && ent->health > 0))
+            return true;
+        mFlags |= 0x200000;
+        if (!scriptExplode)
+            InvalidateCoverNode(ent);
+
+        for (unsigned int i = 0; i < mVisiblePiece.mSize; ++i)
+        {
+            Entity* piece = HandleDbToEnt(DbLinkedHandle<EntityHandleDb, Entity>(mVisiblePiece[i]));
+            if (piece == nullptr)
+                continue;
+            if (i < mVisiblePieceEffects.mSize
+                && mVisiblePieceEffects[i].mStr != nullptr
+                && *mVisiblePieceEffects[i].mStr != '\0')
+                PostEffectEventScriptCall(piece, mEffect.mStr, false,
+                                          PAK_ID_INVALID, false);
+            math::Position3 trajectory;
+            trajectory.v = _mm_setzero_ps();
+            if (i < mVisiblePieceTrajs.mSize)
+            {
+                trajectory.v.m128_f32[0] = mVisiblePieceTrajs[i].x;
+                trajectory.v.m128_f32[1] = mVisiblePieceTrajs[i].y;
+                trajectory.v.m128_f32[2] = mVisiblePieceTrajs[i].z;
+            }
+            if (trajectory.v.m128_f32[0] == 0.0f
+                && trajectory.v.m128_f32[1] == 0.0f
+                && trajectory.v.m128_f32[2] == 0.0f)
+                trajectory = *reinterpret_cast<const math::Position3*>(&direction);
+            ThrowPiece(piece, force, impact, trajectory,
+                       i < mVisiblePiecePhysics.mSize
+                           && mVisiblePiecePhysics[i] != 0);
+            mVisiblePiece[i] = 0;
+        }
+        for (unsigned int i = 0; i < mVisibleSwapOut.mSize; ++i)
+        {
+            Entity* piece = HandleDbToEnt(DbLinkedHandle<EntityHandleDb, Entity>(mVisibleSwapOut[i]));
+            if (piece == nullptr)
+                continue;
+            if (i < mVisibleSwapOutEffects.mSize
+                && mVisibleSwapOutEffects[i].mStr != nullptr
+                && *mVisibleSwapOutEffects[i].mStr != '\0')
+                PostEffectEventScriptCall(piece, mVisibleSwapOutEffects[i].mStr,
+                                          false, PAK_ID_INVALID, false);
+            piece->Notify(hash_const.damage, damage,
+                          Broc::entity(EntityManager::sInst->mWorld->mHandle.mHandle.mVal),
+                          meansOfDeath, 0);
+            DeletePiece(piece);
+            mVisibleSwapOut[i] = 0;
+        }
+        for (unsigned int i = 0; i < mPieceModels.mSize; ++i)
+        {
+            math::Position3 origin = ent->r.currentOrigin;
+            if (i < mPiecePositions.mSize)
+            {
+                origin.v.m128_f32[0] = mPiecePositions[i].x;
+                origin.v.m128_f32[1] = mPiecePositions[i].y;
+                origin.v.m128_f32[2] = mPiecePositions[i].z;
+            }
+            Entity* piece = SpawnBrokenPiece(ent, "script_model",
+                                             mPieceModels[i].mStr, &origin, true);
+            if (piece == nullptr)
+                continue;
+            if (i < mPieceEffects.mSize && mPieceEffects[i].mStr != nullptr
+                && *mPieceEffects[i].mStr != '\0')
+                PostEffectEventScriptCall(piece, mPieceEffects[i].mStr, false,
+                                          PAK_ID_INVALID, false);
+            math::Position3 trajectory;
+            trajectory.v = direction.v;
+            if (i < mPieceTrajs.mSize)
+            {
+                trajectory.v.m128_f32[0] = mPieceTrajs[i].x;
+                trajectory.v.m128_f32[1] = mPieceTrajs[i].y;
+                trajectory.v.m128_f32[2] = mPieceTrajs[i].z;
+            }
+            ThrowPiece(piece, force, impact, trajectory,
+                       i < mPiecePhysics.mSize && mPiecePhysics[i] != 0);
+        }
+        for (unsigned int i = 0; i < mVisibleStatic.mSize; ++i)
+        {
+            Entity* piece = HandleDbToEnt(DbLinkedHandle<EntityHandleDb, Entity>(mVisibleStatic[i]));
+            if (piece != nullptr && i < mVisibleStaticEffects.mSize
+                && mVisibleStaticEffects[i].mStr != nullptr
+                && *mVisibleStaticEffects[i].mStr != '\0')
+                PostEffectEventScriptCall(piece, mVisibleStaticEffects[i].mStr,
+                                          false, PAK_ID_INVALID, false);
+            mVisibleStatic[i] = 0;
+        }
+        for (unsigned int i = 0; i < mSwapInModels.mSize; ++i)
+        {
+            math::Position3 origin = ent->r.currentOrigin;
+            if (i < mSwapInPositions.mSize)
+            {
+                origin.v.m128_f32[0] = mSwapInPositions[i].x;
+                origin.v.m128_f32[1] = mSwapInPositions[i].y;
+                origin.v.m128_f32[2] = mSwapInPositions[i].z;
+            }
+            Entity* piece = SpawnBrokenPiece(ent, "script_model",
+                                             mSwapInModels[i].mStr, &origin, false);
+            if (piece != nullptr && i < mSwapInEffects.mSize
+                && mSwapInEffects[i].mStr != nullptr
+                && *mSwapInEffects[i].mStr != '\0')
+                PostEffectEventScriptCall(piece, mSwapInEffects[i].mStr, false,
+                                          PAK_ID_INVALID, false);
+        }
+        return true;
+    }
+
+    if ((mFlags & 0x100) != 0)
+    {
+        if (ent->health > 0)
+            return true;
+        ApplyPhysics(ent, &impact, &direction, force, false, HITLOC_TORSO_UPR);
+        if ((mFlags & 0x200000) != 0)
+            return true;
+        if (mEffect.mStr != nullptr)
+            PostEffectEventScriptCall(ent, mEffect.mStr, false,
+                                      PAK_ID_INVALID, false);
+        mFlags |= 0x200000;
+        InvalidateCoverNode(ent);
+        return true;
+    }
+    if ((mFlags & 0x80) == 0)
+    {
+        ApplyPhysics(ent, &impact, &direction, force, false, HITLOC_TORSO_UPR);
+        return true;
+    }
+
+    float newHealthFraction = ent->health / (float)mHealth;
+    if (healthFraction < 0.0f || newHealthFraction > 0.0f)
+    {
+        if (healthFraction > 0.25f && (mFlags & 0x20000)
+            && newHealthFraction <= 0.25f)
+            SetModel(ent, mBrokenModel_75d.mStr);
+        else if (healthFraction > 0.5f && (mFlags & 0x10000)
+                 && newHealthFraction <= 0.5f)
+            SetModel(ent, mBrokenModel_50d.mStr);
+        else if (healthFraction > 0.75f && (mFlags & 0x8000)
+                 && newHealthFraction <= 0.75f)
+            SetModel(ent, mBrokenModel_100d.mStr);
+        if (ent->health > 0)
+        {
+            if ((mFlags & 0x800000) == 0)
+                ApplyPhysics(ent, &impact, &direction, force, false,
+                             HITLOC_TORSO_UPR);
+            return true;
+        }
+    }
+    if (ent->health <= 0)
+    {
+        IVPointer<Destructible> global =
+            DestructibleBankManager::sInst->GetDestructible(
+                ent->GetPakId(), "global");
+        ent->SetDestructible(global);
+        InvalidateCoverNode(ent);
+        if (mEffect.mStr != nullptr)
+            PostEffectEventScriptCall(ent, mEffect.mStr, false,
+                                      PAK_ID_INVALID, false);
+        if ((mFlags & 0x800000) == 0)
+            ApplyPhysics(ent, &impact, &direction, force, false,
+                         HITLOC_TORSO_UPR);
+    }
+    return true;
 }

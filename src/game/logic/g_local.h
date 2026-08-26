@@ -5347,12 +5347,54 @@ public:
     Destructible* mValue;   // +0x00
     int           mPakId;   // +0x04
 };
+// IDA local type: Destructible is a 0xC4-byte in-place asset.  The release
+// DoDamage body addresses these members directly; keeping the complete layout
+// here avoids the old one-byte placeholder view used by the game logic port.
 struct Destructible {
+    InplaceString mName; // +0x00
+    int mHealth; // +0x04
+    float mMass; // +0x08
+    float mBounce; // +0x0C
+    float mFric; // +0x10
+    float mThreshold; // +0x14
+    int mExploderNum; // +0x18
+    InplaceString mEffect; // +0x1C
+    InplaceString mPieceEffect; // +0x20
+    unsigned int mFlags; // +0x24 (Bitmask<unsigned int>::mMask)
+    InplaceString mScriptFunction; // +0x28
+    InplaceString mBrokenModel_25d; // +0x2C
+    InplaceString mBrokenModel_50d; // +0x30
+    InplaceString mBrokenModel_75d; // +0x34
+    InplaceString mBrokenModel_100d; // +0x38
+    InplaceVector<unsigned int> mVisibleStatic; // +0x3C
+    InplaceVector<InplaceString> mVisibleStaticEffects; // +0x44
+    InplaceVector<unsigned int> mVisibleSwapOut; // +0x4C
+    InplaceVector<InplaceString> mVisibleSwapOutEffects; // +0x54
+    InplaceVector<unsigned int> mVisiblePiece; // +0x5C
+    InplaceVector<math::Position3::Packed> mVisiblePieceTrajs; // +0x64
+    InplaceVector<InplaceString> mVisiblePieceEffects; // +0x6C
+    InplaceVector<int> mVisiblePiecePhysics; // +0x74
+    InplaceVector<InplaceString> mPieceModels; // +0x7C
+    InplaceVector<math::Position3::Packed> mPiecePositions; // +0x84
+    InplaceVector<math::Position3::Packed> mPieceTrajs; // +0x8C
+    InplaceVector<int> mPiecePhysics; // +0x94
+    InplaceVector<InplaceString> mPieceEffects; // +0x9C
+    InplaceVector<InplaceString> mSwapInModels; // +0xA4
+    InplaceVector<math::Position3::Packed> mSwapInPositions; // +0xAC
+    InplaceVector<InplaceString> mSwapInEffects; // +0xB4
+    InplaceVector<InplaceString> mSwapInPhysics; // +0xBC
+
     bool DoDamage(Entity* ent, float damage, const math::Position3& hitp,
                   const math::Dir3& hitd, int meansOfDeath,
                   bool scriptExplode);  // ?DoDamage@Destructible@@QAE_NPAVEntity@@MABVPosition3@math@@ABVDir3@4@H_N@Z
     static void Initialize(Destructible* self, Entity* ent, bool reInit);
+    void DeletePiece(Entity* ent);
+    void ThrowPiece(Entity* entPiece, float force,
+                    const math::Position3& hitp,
+                    const math::Position3& trajectory, bool useRealPhysics);
+    static void InvalidateCoverNode(Entity* ent);
 };
+static_assert(sizeof(Destructible) == 0xC4, "Destructible size mismatch");
 
 class PhysData {
 public:
