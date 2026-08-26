@@ -81,6 +81,11 @@ void trStaticModelList_t::SetAllocator(PoolAllocator* a)
 {
     trStaticModelList_t::sAllocator = a;
 }
+
+void trStaticModelList_SetAllocator(PoolAllocator* a)
+{
+    trStaticModelList_t::SetAllocator(a);
+}
 int g_staticCount;                            // ?g_staticCount@@3HA @ 0xEAECD0
 
 // ============================================================================

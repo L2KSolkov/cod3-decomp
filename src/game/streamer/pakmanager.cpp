@@ -34,6 +34,13 @@ extern "C" void CollisionContext_Init(void* storage);
 extern PoolAllocator* gCommonPoolAllocator;
 extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
 extern void EntityNotify_SetupAllocators(PoolAllocator* allocator);
+extern void trStaticModelList_SetAllocator(PoolAllocator* allocator);
+extern void tagInfo_SetAllocator(PoolAllocator* allocator);
+extern void Task_SetAllocator(PoolAllocator* allocator);
+extern void RumbleEffectInstance_SetAllocator(PoolAllocator* allocator);
+extern void SceneAnimInfo_SetAllocator(PoolAllocator* allocator);
+extern void LightEffect_SetAllocator(PoolAllocator* allocator);
+extern void sentient_info_SetAllocator(PoolAllocator* allocator);
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 
 namespace BrocSys {
@@ -13787,6 +13794,13 @@ void SetupPoolAllocator()
     AbstractEffect::SetAllocator(common);
     ActiveEffectSet::SetAllocator(common);
     CurveManager_SetupAllocator(common);
+    trStaticModelList_SetAllocator(common);
+    tagInfo_SetAllocator(common);
+    Task_SetAllocator(common);
+    RumbleEffectInstance_SetAllocator(common);
+    SceneAnimInfo_SetAllocator(common);
+    LightEffect_SetAllocator(common);
+    sentient_info_SetAllocator(common);
     PakFile::SetupAllocator();
 }
 

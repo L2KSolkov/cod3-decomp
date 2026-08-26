@@ -153,7 +153,9 @@ PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
 // ============================================================================
 void PoolAllocator::BlockPool::Push(Block* ptr) {
     // Validate pointer is within this pool's block range
-    if ((char*)ptr < mBlockPtr || (char*)ptr > (mBlockPtr + mCapacity * mEntrySize)) {
+    const unsigned int alignedHeader = (mAlignment + 3u) & ~(mAlignment - 1u);
+    if ((char*)ptr < mBlockPtr
+        || (char*)ptr > (mBlockPtr + mCapacity * (mEntrySize + alignedHeader))) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 157;
@@ -274,7 +276,6 @@ PoolAllocator::~PoolAllocator() {
         if (!pool->mPreallocatedBlock) {
             mem_heap_free(pool->mBlockPtr);
         }
-        pool->~BlockPool();
         mem_heap_free(pool);
     }
 }
@@ -315,18 +316,19 @@ void* PoolAllocator::Allocate(unsigned int size, bool forceHeapAlloc) {
         if ((mFlags & 1) == 0) {
             extern void tlFatal(const char* fmt, ...);
             tlFatal("all pool exhausted");
+            return nullptr;
         }
-        return mem_heap_malloc(size);
+        return mem_heap_malloc(16, size);
     }
 
 fallback_alloc:
     if (mFlags & 2) {
-        return mem_heap_malloc(size);
+        return mem_heap_malloc(16, size);
     }
     extern void tlFatal(const char* fmt, ...);
     tlFatal("%d byte block does not fit into any pool", size);
     if (heapAlloc) {
-        return mem_heap_malloc(size);
+        return mem_heap_malloc(16, size);
     }
     return nullptr;
 }

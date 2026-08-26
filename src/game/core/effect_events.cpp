@@ -931,6 +931,11 @@ void LightEffect::SetAllocator(PoolAllocator* allocator)
     sAllocator = allocator;
 }
 
+void LightEffect_SetAllocator(PoolAllocator* allocator)
+{
+    LightEffect::SetAllocator(allocator);
+}
+
 // ea: 0x004DE080
 void LightEffect::SetFinished()
 {

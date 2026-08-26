@@ -5829,7 +5829,7 @@ AeThreadEntityNotifyState::AeThreadEntityNotifyState(
     }
     EndOnScriptNode* v10 =
         (EndOnScriptNode*)EndOnScriptNode::sAllocator->Allocate(0x0C, false);
-    EndOnScriptNode* v11 = v10 != nullptr ? new (v10) EndOnScriptNode(
+    EndOnScriptNode* v11 = v10 != nullptr ? ::new (v10) EndOnScriptNode(
                                                 (AeThread*)AeThreadManager::
                                                     sInst.mThreadExecuting)
                                           : nullptr;
@@ -5912,15 +5912,15 @@ unsigned int BrocSys::ThreadNotifyInternal(const char* file, int line,
     AeThread* v7 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
         0x50, false);
     AeThread* v8 = v7 != nullptr
-                       ? new (v7) AeThread(file, line, func, ehandle, functor,
-                                           false)
+                       ? ::new (v7) AeThread(file, line, func, ehandle, functor,
+                                             false)
                        : nullptr;
     AeThreadEntityNotifyState* v9 =
         (AeThreadEntityNotifyState*)AeThreadStateAllocAccess::Get()->Allocate(
             0x20, false);
     AeThreadEntityNotifyState* v10 =
         v9 != nullptr
-            ? new (v9) AeThreadEntityNotifyState(
+            ? ::new (v9) AeThreadEntityNotifyState(
                   DbLinkedHandle<EntityHandleDb, Entity>(Handle(notifyEnt)),
                   notify, AeThreadState::kActionWakeUp)
             : nullptr;
@@ -12587,7 +12587,7 @@ void BrocSys::ThreadSleepFrames(int numFrames)
         (AeThread*)AeThreadManager::sInst.mThreadExecuting;
     void* mem = AeThreadStateAllocAccess::Get()->Allocate(0x18u, false);
     AeThreadState* v2 = mem != nullptr
-                            ? (AeThreadState*)new (mem) AeThreadWaitFramesState(
+                            ? (AeThreadState*)::new (mem) AeThreadWaitFramesState(
                                   numFrames)
                             : nullptr;
     unsigned int v5 = mThreadExecuting->mFlags.mMask | 2;
@@ -12622,7 +12622,7 @@ void BrocSys::ThreadSleepInternal(float sleepTime)
         (AeThread*)AeThreadManager::sInst.mThreadExecuting;
     void* mem = AeThreadStateAllocAccess::Get()->Allocate(0x18u, false);
     AeThreadState* v2 = mem != nullptr
-                            ? (AeThreadState*)new (mem) AeThreadWaitState(
+                            ? (AeThreadState*)::new (mem) AeThreadWaitState(
                                   sleepTime)
                             : nullptr;
     unsigned int v5 = mThreadExecuting->mFlags.mMask | 2;
@@ -22912,7 +22912,11 @@ void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
                 {
                     if (stackSize < 64)
                     {
-                        threadStack[stackSize++] = child;
+                        // The reference queues the newly spawned child here;
+                        // the thread that just yielded remains on the main
+                        // list and is resumed on a later scheduler pass.
+                        threadStack[stackSize++] =
+                            reinterpret_cast<AeThread*>(layout->mNewThreadExec);
                     }
                     else
                     {
@@ -23460,8 +23464,8 @@ unsigned int BrocSys::ThreadCreateInternal(const char* file, int line,
     AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
         0x50, false);
     AeThread* v7 = v6 != nullptr
-                       ? new (v6) AeThread(file, line, func, ehandle, functor,
-                                           false)
+                       ? ::new (v6) AeThread(file, line, func, ehandle, functor,
+                                             false)
                        : nullptr;
     AeThreadManager::sInst.AddThread(v7);
     if (create_handle)
@@ -23487,8 +23491,8 @@ unsigned int BrocSys::ThreadExecInternal(const char* file, int line,
     AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
         0x50, false);
     AeThread* v7 = v6 != nullptr
-                       ? new (v6) AeThread(file, line, func, ehandle, functor,
-                                           false)
+                       ? ::new (v6) AeThread(file, line, func, ehandle, functor,
+                                             false)
                        : nullptr;
     AeThreadManagerLayout* L =
         (AeThreadManagerLayout*)&AeThreadManager::sInst;
@@ -23531,7 +23535,7 @@ void BrocSys::ThreadSleepUntilNotify(unsigned int entityHandleVal,
     AeThreadState* matched;
     if (pakfile != kTPakInfoInvalid)
     {
-        matched = new (AeThreadStateAllocAccess::Get()->Allocate(0x1C, false))
+        matched = ::new (AeThreadStateAllocAccess::Get()->Allocate(0x1C, false))
             AeThreadPakNotifyState((const PakInfoNode*)(uintptr_t)pakfile,
                                    (AeThreadPakNotifyState::ePakState)
                                        labelHash1);
@@ -23560,7 +23564,7 @@ void BrocSys::ThreadSleepUntilNotify(unsigned int entityHandleVal,
                 (AeThreadEntityNotifyMatchState*)
                     AeThreadStateAllocAccess::Get()->Allocate(0x40, false);
             matched = v18 != nullptr
-                          ? new (v18) AeThreadEntityNotifyMatchState(
+                          ? ::new (v18) AeThreadEntityNotifyMatchState(
                                 DbLinkedHandle<EntityHandleDb, Entity>(
                                     entityHandleVal),
                                 labelHash1, labelHash2, labelHash3, labelHash4,
@@ -23584,7 +23588,7 @@ void BrocSys::ThreadSleepUntilNotify(unsigned int entityHandleVal,
                 (AeThreadEntityNotifyState*)
                     AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
             matched = v17 != nullptr
-                          ? new (v17) AeThreadEntityNotifyState(
+                          ? ::new (v17) AeThreadEntityNotifyState(
                                 DbLinkedHandle<EntityHandleDb, Entity>(
                                     entityHandleVal),
                                 labelHash1, AeThreadState::kActionWakeUp)
@@ -23596,7 +23600,7 @@ void BrocSys::ThreadSleepUntilNotify(unsigned int entityHandleVal,
                 (AeThreadEntityNotifyTimeoutState*)
                     AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
             matched = v16 != nullptr
-                          ? new (v16) AeThreadEntityNotifyTimeoutState(
+                    ? ::new (v16) AeThreadEntityNotifyTimeoutState(
                                 DbLinkedHandle<EntityHandleDb, Entity>(
                                     entityHandleVal),
                                 labelHash1, timeOut,
@@ -23710,7 +23714,7 @@ void BrocSys::ThreadTerminateOnNotify(unsigned int entityHandleVal,
                     AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
             AeThreadEntityNotifyState* v5 =
                 v4 != nullptr
-                    ? new (v4) AeThreadEntityNotifyState(
+                    ? ::new (v4) AeThreadEntityNotifyState(
                           DbLinkedHandle<EntityHandleDb, Entity>(
                               entityHandleVal),
                           labelHash, AeThreadState::kActionTerminate)

@@ -1650,6 +1650,11 @@ void tagInfo_t::SetAllocator(PoolAllocator* allocator)
     tagInfo_t::sAllocator = allocator;
 }
 
+void tagInfo_SetAllocator(PoolAllocator* allocator)
+{
+    tagInfo_t::SetAllocator(allocator);
+}
+
 // tagInfo_t memory ops (g.o 0x4A7760-0x4A77A0)
 void* tagInfo_t::operator new(size_t size, bool forceHeapAlloc,
                               const char* /*file*/, int /*line*/)

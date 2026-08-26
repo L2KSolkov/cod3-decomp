@@ -476,6 +476,11 @@ void Task::SetAllocator(PoolAllocator* allocator)
 {
     Task::sAllocator = allocator;
 }
+
+void Task_SetAllocator(PoolAllocator* allocator)
+{
+    Task::SetAllocator(allocator);
+}
 PhysDataBankManager* PhysDataBankManager::Inst()
 {
     return PhysDataBankManager::sInst;

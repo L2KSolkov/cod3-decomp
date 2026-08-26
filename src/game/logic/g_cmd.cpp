@@ -591,6 +591,7 @@ void CurveEvalFunc::SetAllocator(PoolAllocator* allocator)
 // before CurveManager::CreateInst registers its built-in evaluators.
 void CurveManager_SetupAllocator(PoolAllocator* allocator)
 {
+    CurveManager::sAllocator = allocator;
     CurveEvalFunc::sAllocator = allocator;
     Curve::sAllocator = allocator;
     CurveEffectListElem::sAllocator = allocator;

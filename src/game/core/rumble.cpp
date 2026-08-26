@@ -9,6 +9,8 @@
 #include "core/PoolAllocator.h"
 
 #include <string.h>
+
+extern void* RumbleEffectInstance_sAllocator;
 #include <new>
 
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
@@ -443,7 +445,13 @@ void RumbleEffectInstance::operator delete(void* ptr)
 PoolAllocator* RumbleEffectInstance::SetAllocator(PoolAllocator* p)
 {
     sAllocator = p;
+    RumbleEffectInstance_sAllocator = p;
     return p;
+}
+
+void RumbleEffectInstance_SetAllocator(PoolAllocator* allocator)
+{
+    RumbleEffectInstance::SetAllocator(allocator);
 }
 
 // ea: 0x004E2B60

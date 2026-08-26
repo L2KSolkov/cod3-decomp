@@ -26,6 +26,11 @@ void sentient_info_t::SetAllocator(PoolAllocator* allocator)
     sAllocator = allocator;
 }
 
+void sentient_info_SetAllocator(PoolAllocator* allocator)
+{
+    sentient_info_t::SetAllocator(allocator);
+}
+
 extern void* SV_SaveWrite(const void* buffer, int len);  // sv.o
 extern const float AngleSubtract(float a1, float a2);     // core.o
 extern const float AngleNormalize360Accurate(float angle);  // core.o

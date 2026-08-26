@@ -189,11 +189,13 @@ public:
 };
 
 PoolAllocator* SceneAnimInfo::sAllocator = nullptr;  // @ 0xF25A30
+extern void* SceneAnimInfo_sAllocator;
 
 // ea: 0x004B5160
 void SceneAnimInfo::SetAllocator(PoolAllocator* allocator)
 {
     SceneAnimInfo::sAllocator = allocator;
+    SceneAnimInfo_sAllocator = allocator;
 }
 
 // ea: 0x0055F1F0
@@ -23624,6 +23626,11 @@ int XAnimGetFrameCount(AnimTree* anims, unsigned int animIndex)
 
 // SceneAnimInfo::sAllocator (anim.o data)
 void* SceneAnimInfo_sAllocator = nullptr;
+
+void SceneAnimInfo_SetAllocator(PoolAllocator* allocator)
+{
+    SceneAnimInfo::SetAllocator(allocator);
+}
 
 // ea: 0x0053E6F0
 void KillSceneAnim(SceneAnimInfo* info)
