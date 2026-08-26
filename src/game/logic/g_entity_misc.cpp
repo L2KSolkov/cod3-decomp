@@ -1167,6 +1167,8 @@ struct ScriptEventHandler {
     unsigned char m_dlist_node[8];      // +0x00
     unsigned char mEvents[0x38];        // +0x08 (ScriptEvent mEvents[7])
     ScriptEventHandler* mNext;          // +0x40
+    ScriptEventHandler();                // game2.o 0x4F9860
+    bool AddEvent(HashString h, const char* callback); // game2.o 0x4F9A30
     bool ExecEvents(Entity* ent, HashString h, ScriptEventParams* params);  // game2.o 0x4F5A50
 };
 
@@ -1850,9 +1852,35 @@ bool IsLocalPlayer(Entity* entity)
 // XModelManager::GetXModel defined in tr_aeps2.cpp (render.o canonical).
 // Physics bank accessors are defined with their concrete bank layouts in
 // g_physics.cpp so their template symbols retain the release class tags.
+// ea: 0x006FE290
 void Destructible::Initialize(Destructible* self, Entity* ent, bool reInit)
 {
-    (void)self; (void)ent; (void)reInit;
+    if (((self->mFlags & 1) != 0) && !reInit)
+        return;
+    if ((self->mFlags & 0x80) != 0)
+    {
+        ent->health = self->mHealth;
+        ent->maxHealth = self->mHealth;
+    }
+    self->mFlags = (self->mFlags & 0xFFDFFFFE) | 1;
+    for (int bit = 1; bit < 6; ++bit)
+    {
+        if ((ent->spawnflags & (1 << bit)) != 0)
+            self->mFlags |= (1u << bit);
+    }
+    if (self->mScriptFunction.mStr == nullptr)
+        return;
+    ScriptEventHandler* handler = ent->mScriptEventHandler;
+    if (handler == nullptr)
+    {
+        handler = (ScriptEventHandler*)((PoolAllocator*)ScriptEventHandler_sAllocator)
+                      ->Allocate(0x44, false);
+        if (handler != nullptr)
+            handler = new (handler) ScriptEventHandler();
+        ent->SetScriptEventHandler(handler);
+    }
+    if (handler != nullptr)
+        handler->AddEvent(hash_const.damage, self->mScriptFunction.mStr);
 }
 
 // PakFile statics (streamer.o; stubs, port later)
