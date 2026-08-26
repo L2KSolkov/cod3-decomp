@@ -89,6 +89,12 @@ static IDirect3DSurface9* gD3D9DepthStencil = NULL;
 static IDirect3DVertexDeclaration9* gD3D9VertexDeclaration = NULL;
 static IDirect3DVertexDeclaration9* gD3D9PCUVDeclaration = NULL;
 static IDirect3DVertexDeclaration9* gD3D9PUVDeclaration = NULL;
+struct nullD3DVertexDeclarationCacheEntry {
+    nullD3DVertexDeclarationCacheEntry* Next;
+    _D3DVERTEXATTRIBUTEFORMAT Format;
+    IDirect3DVertexDeclaration9* Declaration;
+};
+static nullD3DVertexDeclarationCacheEntry* gD3D9VertexDeclarationCache = NULL;
 static _D3DVERTEXATTRIBUTEFORMAT gD3D9SelectedVertexFormat = {};
 static bool gD3D9SelectedVertexFormatValid = false;
 static _D3DVERTEXATTRIBUTEFORMAT gD3D9BuiltVertexFormat = {};
@@ -353,10 +359,9 @@ static bool nullD3DVertexElementType(unsigned int Format, BYTE* Type) {
 }
 
 static void nullD3DInvalidateVertexDeclaration() {
-    if (gD3D9VertexDeclaration != NULL) {
-        gD3D9VertexDeclaration->Release();
-        gD3D9VertexDeclaration = NULL;
-    }
+    // Cached declarations are owned by the format bank.  Invalidation only
+    // drops the active handle so an unsupported format cannot submit a draw.
+    gD3D9VertexDeclaration = NULL;
     gD3D9BuiltVertexFormatValid = false;
 }
 
@@ -366,6 +371,15 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
     if (gD3D9VertexDeclaration != NULL && gD3D9BuiltVertexFormatValid &&
         memcmp(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat)) == 0)
         return true;
+    for (nullD3DVertexDeclarationCacheEntry* Entry = gD3D9VertexDeclarationCache;
+         Entry != NULL; Entry = Entry->Next) {
+        if (memcmp(&Entry->Format, Format, sizeof(Entry->Format)) == 0) {
+            gD3D9VertexDeclaration = Entry->Declaration;
+            memcpy(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat));
+            gD3D9BuiltVertexFormatValid = true;
+            return true;
+        }
+    }
     D3DVERTEXELEMENT9 Elements[17] = {};
     unsigned int Count = 0;
     unsigned int TexCoordIndex = 0;
@@ -413,8 +427,17 @@ static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
         nullD3DInvalidateVertexDeclaration();
         return false;
     }
-    if (gD3D9VertexDeclaration != NULL)
-        gD3D9VertexDeclaration->Release();
+    nullD3DVertexDeclarationCacheEntry* Entry =
+        (nullD3DVertexDeclarationCacheEntry*)calloc(1, sizeof(*Entry));
+    if (Entry == NULL) {
+        Declaration->Release();
+        nullD3DInvalidateVertexDeclaration();
+        return false;
+    }
+    Entry->Next = gD3D9VertexDeclarationCache;
+    Entry->Format = *Format;
+    Entry->Declaration = Declaration;
+    gD3D9VertexDeclarationCache = Entry;
     gD3D9VertexDeclaration = Declaration;
     memcpy(&gD3D9BuiltVertexFormat, Format, sizeof(gD3D9BuiltVertexFormat));
     gD3D9BuiltVertexFormatValid = true;
