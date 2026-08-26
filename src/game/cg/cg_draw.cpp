@@ -362,6 +362,7 @@ int dword_F64160[4 * 1580];
 int dword_F64164[4 * 1580];
 int dword_F64168[4 * 1580];
 int dword_F6416C[4 * 1580];
+int dword_F64170[4 * 1580];
 int dword_F64174[4 * 1580];
 int dword_F64178[4 * 1580];
 int dword_F6417C[4 * 1580];

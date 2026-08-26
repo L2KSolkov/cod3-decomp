@@ -1,5 +1,5 @@
 // AUTO-GENERATED STUBS — Client game (cg.o)
-// Remaining unported non-inline functions (4 entries below, including the
+// Remaining unported non-inline functions (1 entry below, including the
 // diagnostic entry point)
 // When ported, functions move from here to their real .cpp files.
 
@@ -15,5 +15,3 @@ void __cod3_stub_game_cg(void) {
 // cg.o function stubs (ported later)
 #include "game/game_types.h"
 #include "game/trace_types.h"
-
-void CG_UpdateShellShockSound(const void* a) { (void)a; }

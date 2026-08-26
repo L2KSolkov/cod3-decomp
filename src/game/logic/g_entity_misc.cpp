@@ -5249,6 +5249,100 @@ const SoundDevice::Sound* SoundDevice::GetSoundForHandle(
     return nullptr;
 }
 
+// ea: 0x00687960
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+SoundDevice::QueueSound(const char* name,
+                        DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+                        bool mImportant)
+{
+    const math::Position3 pos(0.0f, 0.0f, 0.0f);
+    const math::Dir3 vel(0.0f, 0.0f, 0.0f);
+    return this->QueueSound(this->FindWave(name), entHandle, mImportant,
+                            false, pos, vel, -1.0f, -1.0f, -1.0f, -1.0f);
+}
+
+// C-callable bridges used by cg_shellshock.cpp.  The client TU deliberately
+// keeps only a minimal SoundDevice declaration; these wrappers preserve the
+// release handle validation and SoundDevice method dispatch in the full view.
+extern "C" unsigned int CG_ShellShockPlaySound(const char* name)
+{
+    if (SoundDevice::sInst == nullptr)
+        return 0;
+    const math::Position3 pos(0.0f, 0.0f, 0.0f);
+    const math::Dir3 vel(0.0f, 0.0f, 0.0f);
+    const DbLinkedHandle<EntityHandleDb, Entity> ent(0);
+    const DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> h =
+        SoundDevice::sInst->PlaySound(name, ent, true, false, pos, vel,
+                                      -1.0f, -1.0f, -1.0f, -1.0f);
+    return h.mHandle.mVal;
+}
+
+extern "C" unsigned int CG_ShellShockQueueSound(const char* name)
+{
+    if (SoundDevice::sInst == nullptr)
+        return 0;
+    const DbLinkedHandle<EntityHandleDb, Entity> ent(0);
+    return SoundDevice::sInst->QueueSound(name, ent, true).mHandle.mVal;
+}
+
+extern "C" void CG_ShellShockSetVolume(unsigned int handle, float volume)
+{
+    if (SoundDevice::sInst == nullptr || handle == 0)
+        return;
+    SoundDevice::Sound* sound =
+        SoundDevice::sInst->GetSoundForHandle(
+            DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>(
+                static_cast<int>(handle)));
+    if (sound != nullptr)
+        sound->SetVolume(volume);
+}
+
+extern "C" bool CG_ShellShockSoundValid(unsigned int handle)
+{
+    if (SoundDevice::sInst == nullptr || handle == 0)
+        return false;
+    return SoundDevice::sInst->GetSoundForHandle(
+               DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>(
+                   static_cast<int>(handle)))
+        != nullptr;
+}
+
+extern "C" void CG_ShellShockPlayQueued(unsigned int handle)
+{
+    if (SoundDevice::sInst == nullptr || handle == 0)
+        return;
+    SoundDevice::Sound* sound =
+        SoundDevice::sInst->GetSoundForHandle(
+            DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>(
+                static_cast<int>(handle)));
+    if (sound != nullptr)
+        sound->PlayQueued();
+}
+
+extern "C" void CG_ShellShockReleaseSound(unsigned int handle)
+{
+    if (SoundDevice::sInst == nullptr || handle == 0)
+        return;
+    SoundDevice::Sound* sound =
+        SoundDevice::sInst->GetSoundForHandle(
+            DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>(
+                static_cast<int>(handle)));
+    if (sound != nullptr)
+        SoundDevice::sInst->ReleaseSound(sound);
+}
+
+extern "C" void CG_ShellShockBusPitchFade(float pitch, float time)
+{
+    if (SoundDevice::sInst != nullptr)
+        SoundDevice::sInst->BusPitchFade("SHELLSHOCK", pitch, time);
+}
+
+extern "C" void CG_ShellShockBusVolumeFade(float volume, float time)
+{
+    if (SoundDevice::sInst != nullptr)
+        SoundDevice::sInst->BusVolumeFade("SHELLSHOCK", volume, time);
+}
+
 // ============================================================================
 // CGBankManager::~CGBankManager - ea: 0x611B70
 // ============================================================================

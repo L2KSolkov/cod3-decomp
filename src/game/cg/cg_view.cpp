@@ -614,6 +614,9 @@ extern void MatrixMultiply(const float (*const in1)[3],
 extern int dword_F64174[4 * 1580];
 extern int dword_F64178[4 * 1580];
 extern int dword_F6417C[4 * 1580];
+extern int dword_F64170[4 * 1580];
+extern int dword_F64184[4 * 1580];
+extern int dword_F64188[4 * 1580];
 extern float dword_F63550[4 * 1580];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
@@ -662,7 +665,47 @@ int CG_UpdateCameraShake(void* shake, int client)
     return 0;
 }
 extern void CG_EndShellShock(const void* parms, int time);
-extern void CG_UpdateShellShockSound(const void* parms);
+extern int CG_EndShellShockSound();
+extern void CG_UpdateShellShockSound(const void* parms, int time,
+                                     int duration);
+extern "C" unsigned int CG_ShellShockPlaySound(const char* name);
+extern "C" unsigned int CG_ShellShockQueueSound(const char* name);
+extern "C" void CG_ShellShockSetVolume(unsigned int handle, float volume);
+extern "C" bool CG_ShellShockSoundValid(unsigned int handle);
+extern "C" void CG_ShellShockPlayQueued(unsigned int handle);
+extern "C" void CG_ShellShockReleaseSound(unsigned int handle);
+extern "C" void CG_ShellShockBusPitchFade(float pitch, float time);
+extern "C" void CG_ShellShockBusVolumeFade(float volume, float time);
+
+struct shellshock_parms_t {
+    struct {
+        int fadeTime;
+        float kickRate;
+        float kickRadius;
+    } view;
+    struct {
+        int a;
+        int b;
+    } screenBlend;
+    struct {
+        int use;
+        int fadeInTime;
+        int fadeOutTime;
+        int loopFadeTime;
+        int loopEndDelay;
+        char roomtype[16];
+        float wetlevel;
+        int modEndDelay;
+        float channelvolume[10];
+    } sound;
+    struct {
+        int use;
+        int fadeTime;
+        float maxPitchSpeed;
+        float maxYawSpeed;
+        float sensitivity;
+    } mouse;
+};
 extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
@@ -688,6 +731,114 @@ void CG_EndShellShock(const void*, int)
     dword_F6417C[base] = 0;
     CL_SetUserCmdInShellshock(0);
     g_doShellShock[currCl] = 0;
+}
+
+// ea: 0x006984D0 (release cg.o)
+int CG_EndShellShockSound()
+{
+    SoundDevice_UndampenAllSounds(SoundDevice::sInst);
+    const int base = 1580 * currCl;
+    if (dword_F64170[base] != 0)
+    {
+        dword_F64170[base] = 0;
+        CG_ShellShockBusPitchFade(1.0f, 1.0f);
+        CG_ShellShockBusVolumeFade(1.0f, 1.0f);
+    }
+    if (dword_F64184[base] != 0)
+        CG_ShellShockReleaseSound(static_cast<unsigned int>(dword_F64184[base]));
+    dword_F64184[base] = 0;
+    if (dword_F64188[base] != 0)
+        CG_ShellShockReleaseSound(static_cast<unsigned int>(dword_F64188[base]));
+    dword_F64188[base] = 0;
+    return 6320 * currCl;
+}
+
+// ea: 0x006A3BC0 (release cg.o)
+void CG_UpdateShellShockSound(const shellshock_parms_t* parms, int time,
+                              int duration)
+{
+    if (parms == nullptr)
+        CG_ASSERT("parms", "c:\\cod\\code\\game\\cg_shellshock.cpp", 561);
+    if (time < 0)
+        CG_ASSERT("time >= 0", "c:\\cod\\code\\game\\cg_shellshock.cpp", 562);
+    if (duration < 0)
+        CG_ASSERT("duration >= 0", "c:\\cod\\code\\game\\cg_shellshock.cpp", 563);
+    if (parms->sound.use == 0)
+    {
+        CG_EndShellShockSound();
+        return;
+    }
+
+    const int base = 1580 * currCl;
+    const int fadeOutTime = parms->sound.fadeOutTime;
+    const int fadeRemaining = duration + fadeOutTime
+        + parms->sound.modEndDelay - time;
+    float volume;
+    if (fadeRemaining >= fadeOutTime)
+    {
+        if (time >= parms->sound.fadeInTime)
+            volume = 1.0f;
+        else
+            volume = (float)time / (float)parms->sound.fadeInTime;
+    }
+    else
+    {
+        volume = (float)fadeRemaining / (float)fadeOutTime;
+        if (volume < 0.0f)
+            volume = 0.0f;
+    }
+
+    const int loopFadeTime = parms->sound.loopFadeTime;
+    const int loopRemaining = parms->sound.loopEndDelay + duration
+        + loopFadeTime - time;
+    if (loopRemaining > 0)
+    {
+        if (loopFadeTime != 0)
+        {
+            volume = 1.0f - (float)loopRemaining / (float)loopFadeTime;
+            if (volume < 0.0f)
+                volume = 0.0f;
+        }
+        const float queuedVolume = 1.0f - volume;
+        const unsigned int loopHandle =
+            static_cast<unsigned int>(dword_F64184[base]);
+        if (loopHandle != 0 && CG_ShellShockSoundValid(loopHandle))
+        {
+            CG_ShellShockSetVolume(loopHandle, queuedVolume);
+        }
+        else if (queuedVolume != 0.0f)
+        {
+            const unsigned int newHandle = CG_ShellShockPlaySound("shock_loop");
+            dword_F64184[base] = static_cast<int>(newHandle);
+            if (newHandle != 0 && CG_ShellShockSoundValid(newHandle))
+                CG_ShellShockSetVolume(newHandle, queuedVolume);
+        }
+        if (dword_F64188[base] == 0)
+            dword_F64188[base] = static_cast<int>(
+                CG_ShellShockQueueSound("shock_end"));
+    }
+
+    const int triggerTime = parms->sound.loopEndDelay + duration
+        + cgGlobal.time - time;
+    if (cgGlobal.time >= triggerTime)
+    {
+        if (triggerTime != dword_F64170[base])
+        {
+            dword_F64170[base] = triggerTime;
+            const unsigned int queuedHandle =
+                static_cast<unsigned int>(dword_F64188[base]);
+            if (queuedHandle != 0 && CG_ShellShockSoundValid(queuedHandle))
+            {
+                CG_ShellShockPlayQueued(queuedHandle);
+                CG_ShellShockBusPitchFade(1.0f, 11.0f);
+                CG_ShellShockBusVolumeFade(1.0f, 10.0f);
+            }
+        }
+    }
+    else if (dword_F64170[base] != 0)
+    {
+        dword_F64170[base] = 0;
+    }
 }
 
 // ea: 0x006970B0
@@ -751,36 +902,6 @@ extern vmCvar_t cg_shock_mouse_fadeTime;
 extern vmCvar_t cg_shock_mouse_maxpitchspeed;
 extern vmCvar_t cg_shock_mouse_maxyawspeed;
 extern vmCvar_t cg_shock_mouse_sensitivityscale;
-
-struct shellshock_parms_t {
-    struct {
-        int fadeTime;
-        float kickRate;
-        float kickRadius;
-    } view;  // +0x00
-    struct {
-        int a;
-        int b;
-    } screenBlend;  // +0x0C
-    struct {
-        int use;
-        int fadeInTime;
-        int fadeOutTime;
-        int loopFadeTime;
-        int loopEndDelay;
-        char roomtype[16];
-        float wetlevel;
-        int modEndDelay;
-        float channelvolume[10];
-    } sound;  // +0x14
-    struct {
-        int use;
-        int fadeTime;
-        float maxPitchSpeed;
-        float maxYawSpeed;
-        float sensitivity;
-    } mouse;  // +0x68
-};
 
 // ea: 0x0068C3E0 (release cg.o)
 void CG_UpdateShellShockMouse(const shellshock_parms_t* parms, int time,
@@ -1188,7 +1309,7 @@ void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
         CG_EndShellShock(parms, time);
     else
     {
-        CG_UpdateShellShockSound(parms);
+        CG_UpdateShellShockSound(parms, v3, duration);
         CG_UpdateShellShockMouse(parms, v3, duration);
         CG_UpdateShellShockCamera(parms, v3, duration);
         CL_SetUserCmdInShellshock(v3 < duration);

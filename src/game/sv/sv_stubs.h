@@ -1023,6 +1023,9 @@ public:
         bool mImportant, bool autoRelease, const math::Position3& pos,
         const math::Dir3& vel, float vol, float pitch, float min,
         float max);  // ?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z (game.o 0x63A0D0)
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> QueueSound(
+        const char* name, DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+        bool mImportant);  // game.o 0x00687960
 };
 static_assert(sizeof(SoundDevice) == 31392, "SoundDevice size mismatch");
 
