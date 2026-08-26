@@ -22875,15 +22875,8 @@ void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
 {
     AeThreadManagerLayout* layout =
         reinterpret_cast<AeThreadManagerLayout*>(manager);
-    TimerRenderBars::sInst.TimeUserBegin();
     AeThread* threadStack[64];
     int stackSize = 0;
-
-    if (deltaT == 0.0f)
-    {
-        TimerRenderBars::sInst.TimeUserEnd();
-        return;
-    }
 
     layout->mNewThreadExec = nullptr;
 
@@ -22977,7 +22970,6 @@ void ExecuteScriptThreads(AeThreadManager* manager, float deltaT)
     }
 
     MoveExecThreadsToMain(layout);
-    TimerRenderBars::sInst.TimeUserEnd();
 }
 
 } // namespace BrocSys

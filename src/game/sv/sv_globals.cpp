@@ -21,6 +21,7 @@ PathNodeMgr*   PathNodeMgr::sInst = NULL;      // ?sInst@PathNodeMgr@@2PAU1@A
 StreamZoneManager* StreamZoneManager::sInst = NULL;  // ?sInst@StreamZoneManager@@2PAV1@A
 AeThreadManager AeThreadManager::sInst;        // ?sInst@AeThreadManager@@0V1@A (scr.o)
 unsigned __int64 AeThreadManager::sTimeStart;  // ?sTimeStart@AeThreadManager@@2_KA (core.o)
+unsigned __int64 AeThreadManager::sTimeFinished;  // ?sTimeFinished@AeThreadManager@@2_KA (scr.o)
 cvar_t*        sv_framerate_smoothing;  // ?sv_framerate_smoothing@@3PAUcvar_t@@A 0x12FA75C
 cvar_t*        sv_gameskill;     // ?sv_gameskill@@3PAUcvar_t@@A 0x12FA744
 int            sv_map_restart;   // ?sv_map_restart@@3HA        0x12FA748

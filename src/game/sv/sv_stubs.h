@@ -464,6 +464,7 @@ public:
     uint8_t _pad2[2148 - 0x85C];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
     static unsigned __int64 sTimeStart; // ?sTimeStart@AeThreadManager@@2_KA
+    static unsigned __int64 sTimeFinished; // ?sTimeFinished@AeThreadManager@@2_KA
     static unsigned __int64 GetTimeStartExec(); // ?GetTimeStartExec@AeThreadManager@@SA_KXZ
     static AeThreadManager* Inst(); // ?Inst@AeThreadManager@@SAPAV1@XZ (g.o 0x4A6340)
     void KillAllThreads();

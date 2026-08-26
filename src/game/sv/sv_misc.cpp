@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <intrin.h>
 
 // ============================================================================
@@ -32,8 +33,7 @@ PakManagerContext::~PakManagerContext()
 // cdl_object_t (g_local.h view; cflags +0x00)
 struct cdl_object_t {
     int cflags;  // +0x00
-
-    int get_cflags() const;  // ?get_cflags@cdl_object_t@@QBEHXZ (sv.o 0x51E0A0)
+    int get_cflags() const;  // ?get_cflags@cdl_object_t@@QBEHXZ
 };
 
 // ea: 0x51E0A0
@@ -166,21 +166,97 @@ long __stdcall D3DDevice::PersistDisplay()
 // ============================================================================
 // Cross-object externs
 // ============================================================================
+// These two timing types are defined in g_local.h in the game-logic object.
+// Keep the server TU's views layout-compatible without pulling that header in
+// (it supplies a different, game-side BrocAPI view).
+struct cdl_proftimer {
+    unsigned __int64 stamp;
+    unsigned __int64 value;
+    void start() { stamp = __rdtsc(); }
+    void stop() { value += __rdtsc() - stamp; }
+};
+
+class TimerRenderBars {
+public:
+    unsigned char _pad00[0x20];
+    struct UserInterval {
+        unsigned __int64 mBegin;
+        unsigned __int64 mEnd;
+    } mUser;
+    static TimerRenderBars sInst;
+    void TimeUserBegin() { mUser.mBegin = __rdtsc(); }
+    void TimeUserEnd() { mUser.mEnd = __rdtsc(); }
+};
+
+// gpBrocAPI is owned by the game-logic object's compact BrocAPI view.  The
+// server only needs the shutdown callback at BrocExports +0x94.
+struct BrocExports {
+    unsigned char _pad00[0x94];
+    void (*mShutdown)();
+};
+struct BrocAPI {
+    BrocExports mBrocExports;
+};
+
 namespace BrocSys {
 void ExecuteScriptThreads(AeThreadManager* manager, float deltaT);
+void InitMPCallbacks();
 }
+extern cdl_proftimer cdl_proftimer_aethread;
+extern BrocAPI* gpBrocAPI;
+extern void StopAllSceneAnims();
+extern void SV_MapRestart();
+extern void SV_ReallyExitGame_f();
 
-// The reference executes pending notifications and then walks the script
-// thread lists every nonzero-delta server frame.
+// ea: 0x005DC170
 void AeThreadManager::Execute(float deltaT)
 {
+    cdl_proftimer_aethread.start();
     if (gPumpThreads || gPumpThreadsForMapChange)
         KillAllThreads();
 
-    if (deltaT != 0.0f) {
-        ProcessScriptNotifys();
-        BrocSys::ExecuteScriptThreads(this, deltaT);
+    TimerRenderBars::sInst.TimeUserBegin();
+    if (deltaT == 0.0f)
+        return;
+
+    AeThreadManager::sTimeStart = __rdtsc();
+    ProcessScriptNotifys();
+    BrocSys::ExecuteScriptThreads(this, deltaT);
+
+    AeThreadManager::sTimeFinished = __rdtsc();
+    TimerRenderBars::sInst.TimeUserEnd();
+
+    if (gPumpThreads || gPumpThreadsForMapChange)
+    {
+        if (gpBrocAPI != nullptr)
+        {
+            BrocSys::InitMPCallbacks();
+            gpBrocAPI->mBrocExports.mShutdown();
+        }
+        StopAllSceneAnims();
+        if (gPumpThreads)
+        {
+            gPumpThreads = false;
+            SV_MapRestart();
+            cdl_proftimer_aethread.stop();
+            return;
+        }
+
+        gPumpThreadsForMapChange = false;
+        if (gExitGame)
+        {
+            gExitGame = false;
+            SV_ReallyExitGame_f();
+            cdl_proftimer_aethread.stop();
+            return;
+        }
+
+        char string[64];
+        sprintf(string, "spmap %s\n", gNextMapArgv);
+        Cmd_ExecuteServerString(string);
     }
+
+    cdl_proftimer_aethread.stop();
 }
 
 enum errorParm_t;
