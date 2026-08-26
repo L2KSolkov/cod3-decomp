@@ -2386,13 +2386,13 @@ void* __stdcall D3DSurface_LockRect(D3DSurface* Surface, D3DLOCKED_RECT* LockedR
     LockedRect->pBits = Info->Bits;
     return Info->Bits;
 }
-int __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* Texture, unsigned int,
+int __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* Texture, unsigned int Level,
                                       _D3DSURFACE_DESC* Desc) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
     if (Info == NULL || Desc == NULL) return 0x80004005;
     if (Info->NativeTexture != NULL) {
         COD3_D3D9_SURFACE_DESC NativeDesc = {};
-        if (SUCCEEDED(Info->NativeTexture->GetLevelDesc(0, &NativeDesc))) {
+        if (SUCCEEDED(Info->NativeTexture->GetLevelDesc(Level, &NativeDesc))) {
             memset(Desc, 0, sizeof(*Desc));
             Desc->Format = (_D3DFORMAT)Info->Format;
             Desc->Usage = Info->Usage;
@@ -2408,18 +2408,20 @@ int __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* Texture, unsigned int,
     Desc->Usage = Info->Usage;
     return 0;
 }
-D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsigned int) {
+D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsigned int Level) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
     if (Info == NULL)
         return NULL;
-    nullD3DSurface* Surface = nullD3DAllocateSurface(Info->Width, Info->Height,
+    nullD3DSurface* Surface = nullD3DAllocateSurface(
+        nullD3DMipDimension(Info->Width, Level),
+        nullD3DMipDimension(Info->Height, Level),
                                                      Info->Usage, Info->Format, 0);
     if (Surface != NULL && Info->NativeTexture != NULL) {
         if (Surface->Info.NativeSurface != NULL) {
             Surface->Info.NativeSurface->Release();
             Surface->Info.NativeSurface = NULL;
         }
-        if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(0, &Surface->Info.NativeSurface)))
+        if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(Level, &Surface->Info.NativeSurface)))
             Surface->Info.NativeResource = Surface->Info.NativeSurface;
     }
     return (D3DSurface*)Surface;
