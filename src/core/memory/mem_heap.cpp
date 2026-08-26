@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstdint>
+#include <mutex>
 #include <vector>
 
 #ifdef _WIN32
@@ -99,6 +100,7 @@ struct mem_allocation {
     unsigned int size;
 };
 static std::vector<mem_allocation> s_allocations;
+static std::mutex s_allocations_mutex;
 
 static std::vector<mem_allocation>::iterator find_allocation(void* ptr) {
     for (auto it = s_allocations.begin(); it != s_allocations.end(); ++it) {
@@ -213,6 +215,7 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
     void* ptr = malloc(size);
 #endif
     if (ptr) {
+        std::lock_guard<std::mutex> lock(s_allocations_mutex);
         s_allocations.push_back({ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
@@ -231,6 +234,7 @@ void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
     void* ptr = malloc(size);
 #endif
     if (ptr) {
+        std::lock_guard<std::mutex> lock(s_allocations_mutex);
         s_allocations.push_back({ptr, heap, size});
         heap->total_allocs++;
         heap->used_byte += size;
@@ -259,6 +263,7 @@ void* mem_heap_malloc(int alignment, unsigned size) {
 
 void mem_heap_free(void* ptr) {
     if (!ptr) return;
+    std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
     mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
 #ifdef _WIN32
@@ -276,6 +281,7 @@ void mem_heap_free(void* ptr) {
 
 void mem_heap_free(mem_heap* heap, void* ptr) {
     if (!ptr) return;
+    std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
     mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
 #ifdef _WIN32
@@ -298,6 +304,7 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
 // ============================================================================
 
 void* mem_heap_realloc(void* ptr, unsigned newSize) {
+    std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
     mem_heap* owner = it != s_allocations.end() ? it->heap : s_current_heap;
     unsigned oldSize = it != s_allocations.end() ? it->size : 0;
@@ -321,6 +328,7 @@ void* mem_heap_realloc(void* ptr, unsigned newSize) {
 }
 
 void* mem_heap_realloc(mem_heap* heap, void* ptr, unsigned newSize) {
+    std::lock_guard<std::mutex> lock(s_allocations_mutex);
     auto it = find_allocation(ptr);
     mem_heap* owner = it != s_allocations.end() ? it->heap : heap;
     unsigned oldSize = it != s_allocations.end() ? it->size : 0;
