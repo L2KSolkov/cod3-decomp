@@ -424,15 +424,21 @@ static std::string BuildHlsl(const unsigned int* microcode) {
            << "  float4 v0=input.v0,v1=input.v1,v2=input.v2;\n"
            << "  float4 v3=input.v3,v4=input.v4,v5=input.v5,v6=input.v6,v7=input.v7;\n";
     if (usesHomogeneousDivide) {
-        source << "  v3=float4((v3.x>=512.0?v3.x-1024.0:v3.x)/511.0,"
-                   "(v3.y>=512.0?v3.y-1024.0:v3.y)/511.0,"
-                   "(v3.z>=512.0?v3.z-1024.0:v3.z)/511.0,1.0);\n"
-                   "  v4=float4((v4.x>=512.0?v4.x-1024.0:v4.x)/511.0,"
-                   "(v4.y>=512.0?v4.y-1024.0:v4.y)/511.0,"
-                   "(v4.z>=512.0?v4.z-1024.0:v4.z)/511.0,1.0);\n"
-                   "  v5=float4((v5.x>=512.0?v5.x-1024.0:v5.x)/511.0,"
+        // The standard world declaration puts the three packed 0x16
+        // attributes after position, UV0..2, and color: v5, v6, and v7.
+        // D3D9's UDEC3 fetch exposes their unsigned 10-bit lanes, so decode
+        // the NV2A signed 10:10:10 representation here.  Do not normalize
+        // v3/v4: those registers carry the third UV and D3DCOLOR in the
+        // observed release declaration and are already in shader units.
+        source << "  v5=float4((v5.x>=512.0?v5.x-1024.0:v5.x)/511.0,"
                    "(v5.y>=512.0?v5.y-1024.0:v5.y)/511.0,"
-                   "(v5.z>=512.0?v5.z-1024.0:v5.z)/511.0,1.0);\n";
+                   "(v5.z>=512.0?v5.z-1024.0:v5.z)/511.0,1.0);\n"
+                   "  v6=float4((v6.x>=512.0?v6.x-1024.0:v6.x)/511.0,"
+                   "(v6.y>=512.0?v6.y-1024.0:v6.y)/511.0,"
+                   "(v6.z>=512.0?v6.z-1024.0:v6.z)/511.0,1.0);\n"
+                   "  v7=float4((v7.x>=512.0?v7.x-1024.0:v7.x)/511.0,"
+                   "(v7.y>=512.0?v7.y-1024.0:v7.y)/511.0,"
+                   "(v7.z>=512.0?v7.z-1024.0:v7.z)/511.0,1.0);\n";
     }
     source << "  float4 r0=0,r1=0,r2=0,r3=0,r4=0,r5=0,r6=0,r7=0;\n"
            << "  float4 r8=0,r9=0,r10=0,r11=0;\n"
