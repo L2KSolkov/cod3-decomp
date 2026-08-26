@@ -12142,7 +12142,6 @@ unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed) {
     Broc::vector param2((float)speed, 0.0f, 0.0f);
     Broc::string id("global_wind");
     unsigned int v4 = Broc::CreateNanoForce(&id, &direction, &param2);
-    id.~string();
     return v4;
 }
 }
