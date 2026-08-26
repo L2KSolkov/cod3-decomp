@@ -182,11 +182,14 @@ void apsAllocator::MemFree(void* iPtr) const {
 }
 
 // ============================================================================
-// apsAllocator::MemResize — not implemented by the default allocator.
+// apsAllocator::MemResize — release default allocator returns null.
 // ea: 0x7EB3C0
 // ============================================================================
 void* apsAllocator::MemResize(void* iPtr, unsigned int iNewSize, unsigned int iAlignment) const {
-    return 0;
+    (void)iPtr;
+    (void)iNewSize;
+    (void)iAlignment;
+    return nullptr;
 }
 
 // ============================================================================
