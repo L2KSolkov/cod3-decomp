@@ -7,10 +7,10 @@
 extern void* PoolAllocator_Allocate(void* allocator, unsigned int s,
                                     bool forceHeapAlloc);
 extern void PoolAllocator_Release(void* allocator, void* ptr);
-extern void* EntityNotify_sAllocator;
+extern PoolAllocator* EntityNotify_sAllocator;
 extern void* EntityNotifySet_sAllocator;
 extern void WaitTilOutput_AssignData(void* self, void* data);
-extern void WaitTilOutput_Dtor(void* self, int flags);
+extern "C" void WaitTilOutput_Dtor(void* self, int flags);
 
 // ============================================================================
 // EntityNotifySet internals
@@ -28,7 +28,9 @@ void EntityNotifySet::AddNotify(const HashString& h,
     n->mOwner.mHandle.mVal = owner.mHandle.mVal;
     n->mParam = nullptr;
     // link into mStrings list
-    n->m_dlist_node.mNext = mStrings.m_head;
+    n->m_dlist_node.mNext =
+        reinterpret_cast<reserved_dlist<EntityNotify>::dlist_node*>(
+            &mStrings.m_end);
     n->m_dlist_node.mPrev = mStrings.m_tail;
     if (mStrings.m_tail)
         mStrings.m_tail->mNext = &n->m_dlist_node;
@@ -59,13 +61,20 @@ void EntityNotifySet::RmvEndOn(EndOnScriptNode* node)
 // ea: 0x004C6450
 EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
 {
-    for (EntityNotify* n = (EntityNotify*)mStrings.m_head;
-         n != nullptr; n = (EntityNotify*)n->m_dlist_node.mNext)
+    EntityNotify* n = (EntityNotify*)mStrings.m_head;
+    EntityNotify* next = n != nullptr
+                             ? (EntityNotify*)n->m_dlist_node.mNext
+                             : nullptr;
+    if (n == (EntityNotify*)&mStrings.m_end || next == nullptr)
+        return nullptr;
+    while (n->mStr != chk.mHash)
     {
-        if (n->mStr == chk.mHash)
-            return n;
+        n = next;
+        next = (EntityNotify*)next->m_dlist_node.mNext;
+        if (next == nullptr)
+            return nullptr;
     }
-    return nullptr;
+    return n;
 }
 
 // ea: 0x005E95C0
@@ -92,21 +101,34 @@ bool EntityNotifySet::AssignScriptVariable(const HashString& chk,
 bool EntityNotifySet::IsFinished()
 {
     EntityNotify* n = (EntityNotify*)mStrings.m_head;
-    while (n != nullptr)
+    EntityNotify* next = n != nullptr
+                             ? (EntityNotify*)n->m_dlist_node.mNext
+                             : nullptr;
+    if (n != (EntityNotify*)&mStrings.m_end && next != nullptr)
     {
-        EntityNotify* next = (EntityNotify*)n->m_dlist_node.mNext;
-        WaitTilOutput* mParam = n->mParam;
-        if (mParam != nullptr)
+        do
         {
-            WaitTilOutput_Dtor(mParam, 1);
-            n->mParam = nullptr;
+            EntityNotify* current = n;
+            n = next;
+            next = (EntityNotify*)next->m_dlist_node.mNext;
+            mStrings.erase(current);
+            if (current != nullptr)
+            {
+                WaitTilOutput* mParam = current->mParam;
+                if (mParam != nullptr)
+                    WaitTilOutput_Dtor(mParam, 1);
+                current->mParam = nullptr;
+                PoolAllocator_Release(EntityNotify_sAllocator, current);
+            }
         }
-        PoolAllocator_Release(EntityNotify_sAllocator, n);
-        n = next;
+        while (next != nullptr);
     }
-    mStrings.m_head = nullptr;
-    mStrings.m_tail = nullptr;
-    return mStrings.m_head == nullptr && mEndOnList.m_head == nullptr;
+    return mStrings.m_head ==
+               reinterpret_cast<reserved_dlist<EntityNotify>::dlist_node*>(
+                   &mStrings.m_end)
+           && mEndOnList.m_head ==
+                  reinterpret_cast<reserved_dlist<EndOnScriptNode>::dlist_node*>(
+                      &mEndOnList.m_end);
 }
 
 // ea: 0x004C6590
@@ -116,20 +138,8 @@ void EntityNotifySet::KillEndOnThreads()
     mEndOnList.m_tail = nullptr;
 }
 
-// ea: 0x004CFBA0
-void EntityNotifySet::UpdateList()
+extern "C" void* EntityNotifySet_GetNotify_Impl(void* self,
+                                                  unsigned int hash)
 {
-    extern reserved_dlist<EntityNotifySet> sEntityNotifySet;
-    EntityNotifySet* n = (EntityNotifySet*)sEntityNotifySet.m_head;
-    while (n != nullptr)
-    {
-        EntityNotifySet* next = (EntityNotifySet*)n->m_dlist_node.mNext;
-        if (n->IsFinished() && n != nullptr)
-        {
-            PoolAllocator_Release(EntityNotifySet_sAllocator, n);
-        }
-        n = next;
-    }
-    sEntityNotifySet.m_head = nullptr;
-    sEntityNotifySet.m_tail = nullptr;
+    return static_cast<EntityNotifySet*>(self)->GetNotify(HashString((int)hash));
 }

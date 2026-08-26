@@ -747,6 +747,50 @@ EntityNotifySet::~EntityNotifySet()
     }
 }
 
+extern "C" void EntityNotifySet_Destroy(void* self)
+{
+    static_cast<EntityNotifySet*>(self)->~EntityNotifySet();
+}
+
+extern "C" void EntityNotifySet_Construct(void* self, Entity* entity)
+{
+    new (self) EntityNotifySet(entity);
+}
+
+void EntityNotifySet::UpdateList()
+{
+    DNode* head = (DNode*)sEntityNotifySet.m_head;
+    DNode* next = head != nullptr ? head->m_next : nullptr;
+    if (head == (DNode*)&sEntityNotifySet.m_end || next == nullptr)
+        return;
+    do
+    {
+        EntityNotifySet* set = (EntityNotifySet*)head;
+        head = next;
+        next = next->m_next;
+        if (set->IsFinished() && set != nullptr)
+        {
+            set->~EntityNotifySet();
+            EntityNotifySet::sAllocator->Release(set);
+        }
+    }
+    while (next != nullptr);
+}
+
+extern "C" void EntityNotifySet_UpdateList_Impl()
+{
+    EntityNotifySet::UpdateList();
+}
+
+extern "C" void WaitTilOutput_Dtor(void* self, int flags)
+{
+    if (self == nullptr)
+        return;
+    typedef void (__thiscall *WaitTilOutputDtor)(void*, int);
+    WaitTilOutputDtor dtor = *(WaitTilOutputDtor*)self;
+    dtor(self, flags);
+}
+
 // ============================================================================
 // DialogueManager / ConfigStringManager / STBManager
 // ============================================================================

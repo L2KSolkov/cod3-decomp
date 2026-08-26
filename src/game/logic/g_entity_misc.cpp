@@ -648,6 +648,10 @@ extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler@@
 extern void ScriptEventHandler_dtor(void* self);  // game2.o
 extern void mem_heap_free(void* ptr);           // mem_lib
 extern void EntityNotifySet_dtor(void* self);   // ?~EntityNotifySet (core.o)
+extern "C" void EntityNotifySet_Destroy(void* self);
+extern "C" void EntityNotifySet_UpdateList_Impl();
+extern "C" void* EntityNotifySet_GetNotify_Impl(void* self,
+                                                  unsigned int hash);
 extern void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
 extern void* EntityNotifySet_sAllocator;  // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
 
@@ -1490,7 +1494,7 @@ void EntityNotifySet::AddNotify(EntityNotify* notify)
 {
     NotifyDList* strings = (NotifyDList*)((char*)this + 0x0C);
     NotifyNode* node = (NotifyNode*)&notify->m_dlist_node;
-    node->m_next = (NotifyNode*)strings->m_end;
+    node->m_next = (NotifyNode*)&strings->m_end;
     node->m_prev = (NotifyNode*)strings->m_tail;
     ((NotifyNode*)strings->m_tail)->m_next = node;
     strings->m_tail = node;
@@ -1510,7 +1514,7 @@ void Entity::AddNotify(EntityNotify* notify)
     NotifyDList* strings =
         (NotifyDList*)((char*)this->mNotifySet + 0x0C);
     NotifyNode* node = (NotifyNode*)&notify->m_dlist_node;
-    node->m_next = (NotifyNode*)strings->m_end;
+    node->m_next = (NotifyNode*)&strings->m_end;
     node->m_prev = (NotifyNode*)strings->m_tail;
     ((NotifyNode*)strings->m_tail)->m_next = node;
     strings->m_tail = node;
@@ -3043,12 +3047,11 @@ void EntityManager_CreateWorld()
 {
     EntityManager::sInst->CreateWorld();
 }
-void EntityNotifySet_dtor(void* self) { (void)self; }
-void EntityNotifySet_UpdateList() {}
+void EntityNotifySet_dtor(void* self) { EntityNotifySet_Destroy(self); }
+void EntityNotifySet_UpdateList() { EntityNotifySet_UpdateList_Impl(); }
 void* EntityNotifySet_GetNotify(void* self, unsigned int a)
 {
-    (void)self; (void)a;
-    return nullptr;
+    return EntityNotifySet_GetNotify_Impl(self, a);
 }
 // IDA types: GdbFileSet is {InplaceString, InplaceTree<uint,uint>,
 // InplaceTree<InplaceString, InplaceVector<Value> const *>}; GdbFileBank's
