@@ -5,10 +5,13 @@
 #include "game/cg/cg_local.h"
 #include "game/cvar_types.h"
 #include "game/game_types.h"
+#include "core/tlFixedString.h"
+#include "ngl/nglTexture.h"
 
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <intrin.h>
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
@@ -47,6 +50,7 @@ extern int RE_Text_Width(const char* text, int font, float scale,
 extern void trap_R_Text_Paint(float x, float y, int font, float scale,
                               const float* color, const char* text,
                               float charWidth, int limit, int style);
+extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, nglTexture* tex,
                                   float z);
@@ -82,12 +86,86 @@ struct parseInfo_t {
 extern const char* Com_ParseOnLine(const char** data);
 extern float CG_GetViewFov();
 extern void CG_Error(const char* msg, ...);
-// CG_DrawSingleHudElem artifact (cg.o; stub)
-int CG_DrawSingleHudElem(void* elem)
-{
-    (void)elem;
-    return 0;
-}
+struct cg_hudelem_t {
+    float x;
+    float y;
+    float width;
+    float height;
+    const char* label;
+    float labelWidth;
+    const char* text;
+    float textWidth;
+    int font;
+    float fontScale;
+    float fontHeight;
+    float charWidth;
+    float color[4];
+};
+
+struct hudelem_s {
+    int type;
+    int x;
+    int y;
+    float fontScale;
+    int font;
+    int alignX;
+    int alignY;
+    unsigned char color[4];
+    unsigned char fromColor[4];
+    int fadeStartTime;
+    int fadeTime;
+    int label;
+    int width;
+    int height;
+    nglTexture* mTexture;
+    int fromWidth;
+    int fromHeight;
+    int scaleStartTime;
+    int scaleTime;
+    int fromX;
+    int fromY;
+    int moveStartTime;
+    int moveTime;
+    int time;
+    int duration;
+    float value;
+    int text;
+    float sort;
+    float SCOORD;
+    float TCOORD;
+    float angle;
+};
+static_assert(sizeof(hudelem_s) == 0x7C, "hudelem_s layout mismatch");
+
+extern const char* CG_ConfigString(unsigned int index);
+extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
+                                                   const char* pszSystem);
+extern const char* CG_SafeTranslateHudElemString(int index);
+extern int SEH_PrintStrlen(const char* string);
+extern const char defaultFileName[];
+extern char* va(const char* fmt, ...);
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);
+extern const float AngleNormalize360(float angle);
+extern void SpinnerDrawFrame(bool bEndFrame);
+
+int CG_GetHudElemTime(const hudelem_s* elem);
+char* CG_HudElemTimerString(const hudelem_s* elem);
+char* CG_HudElemTenthsTimerString(const hudelem_s* elem);
+float CG_HudElemWidth(const hudelem_s* elem, const cg_hudelem_t* cghe);
+float CG_HudElemHeight(const hudelem_s* elem, const cg_hudelem_t* cghe);
+float CG_HudElemX(const hudelem_s* elem, const cg_hudelem_t* cghe);
+float CG_HudElemY(const hudelem_s* elem, const cg_hudelem_t* cghe);
+float CG_HudElemAlignY(const hudelem_s* elem, const cg_hudelem_t* cghe,
+                       float height);
+void CG_ConsolidateHudElemText(cg_hudelem_t* cghe, int maxlen, char* buffer);
+void CG_GetHudElemInfo(const hudelem_s* elem, cg_hudelem_t* cghe,
+                       char* textBuf, int textBufLen);
+void CG_DrawHudElemString(const char* text, cg_hudelem_t* cghe,
+                          const hudelem_s* elem);
+void CG_DrawHudElemShader(const hudelem_s* elem, cg_hudelem_t* cghe);
+void CG_DrawHudElemClock(const hudelem_s* elem, cg_hudelem_t* cghe);
+void CG_DrawSingleHudElem(void* elem);
 extern int compare_hudelems(const void* pe0, const void* pe1);
 int dword_F63CA4[4 * 1580];  // cg.o BSS
 int dword_F63CA8[4 * 1580];  // cg.o BSS
@@ -244,11 +322,9 @@ float unk_F6A298[4 * 802];
 float unk_F6A29C[4 * 802];
 float unk_F6A2B0[4 * 802];
 struct game_hudelem_s {
-    struct {
-        int type;  // +0x00
-    } elem;        // +0x00
-    unsigned char _pad[0x7C - 0x04];
+    hudelem_s elem;
 };
+static_assert(sizeof(game_hudelem_s) == 0x7C, "game_hudelem_s layout mismatch");
 extern game_hudelem_s g_hudelems[16];
 struct sentient_s {
     int eTeam;  // +0x00
@@ -765,6 +841,526 @@ void CG_DrawRotatedQuadPic(float x, float y, const float (*verts)[2],
     xy[6] = ((v8 * verts[3][0]) + v11) - (verts[3][1] * v9);
     xy[7] = ((verts[3][1] * v10) + (v7 * verts[3][0])) + v6;
     re_DrawQuadPic(xy, (const float*)texCoords, tex);
+}
+
+static void CG_HudElemInvalidCase(int line)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_hudelem.cpp";
+    AeAssert::gCurrentLine = line;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored() && AeAssert::Warning("invalid case"))
+        __debugbreak();
+}
+
+// ea: 0x0068A990
+int CG_GetHudElemTime(const hudelem_s* elem)
+{
+    int result;
+    switch (elem->type)
+    {
+    case 4: // HE_TYPE_TIMER_DOWN
+        result = elem->time - cgGlobal.time + 999;
+        break;
+    case 5: // HE_TYPE_TIMER_UP
+    case 6: // HE_TYPE_TENTHS_TIMER_UP
+    case 9: // HE_TYPE_CLOCK_UP
+        result = cgGlobal.time - elem->time;
+        break;
+    case 7: // HE_TYPE_TENTHS_TIMER_DOWN
+        result = elem->time - cgGlobal.time + 99;
+        break;
+    case 8: // HE_TYPE_CLOCK_DOWN
+        result = elem->time - cgGlobal.time;
+        break;
+    default:
+        CG_HudElemInvalidCase(66);
+        return 0;
+    }
+    return result < 0 ? 0 : result;
+}
+
+// ea: 0x0068AA40
+char* CG_HudElemTimerString(const hudelem_s* elem)
+{
+    int time = CG_GetHudElemTime(elem);
+    int hours = time / 1000 / 3600;
+    int remainder = time / 1000 % 3600;
+    int seconds = remainder % 60;
+    int minutes = remainder / 60;
+    return hours != 0 ? va("%i:%02i:%02i", hours, minutes, seconds)
+                      : va("%i:%02i", minutes, seconds);
+}
+
+// ea: 0x0068AAC0
+char* CG_HudElemTenthsTimerString(const hudelem_s* elem)
+{
+    int time = CG_GetHudElemTime(elem);
+    int hours = time / 100 / 36000;
+    int remainder = time / 100 % 36000;
+    int minutes = remainder / 600;
+    remainder %= 600;
+    int tenths = remainder % 10;
+    int seconds = remainder / 10;
+    return hours != 0 ? va("%i:%02i:%02i.%i", hours, minutes, seconds,
+                           tenths)
+                      : va("%i:%02i.%i", minutes, seconds, tenths);
+}
+
+// ea: 0x0068AC30
+float CG_HudElemWidth(const hudelem_s* elem, const cg_hudelem_t* cghe)
+{
+    switch (elem->type)
+    {
+    case 1: // HE_TYPE_TEXT
+    case 2: // HE_TYPE_VALUE
+    case 4: // HE_TYPE_TIMER_DOWN
+    case 5: // HE_TYPE_TIMER_UP
+    case 6: // HE_TYPE_TENTHS_TIMER_DOWN
+    case 7: // HE_TYPE_TENTHS_TIMER_UP
+        return cghe->textWidth + cghe->labelWidth;
+    case 3: // HE_TYPE_SHADER
+    case 8: // HE_TYPE_CLOCK_DOWN
+    case 9: // HE_TYPE_CLOCK_UP
+    {
+        float width = elem->width != 0 ? (float)elem->width : cghe->fontHeight;
+        if (elem->scaleTime > 0)
+        {
+            int elapsed = cgGlobal.time - elem->scaleStartTime;
+            if (elapsed < elem->scaleTime)
+            {
+                float from = elem->fromWidth != 0
+                                 ? (float)elem->fromWidth
+                                 : cghe->fontHeight;
+                width = ((float)elapsed / elem->scaleTime)
+                            * (width - from)
+                        + from;
+            }
+        }
+        return cghe->labelWidth + width;
+    }
+    default:
+        CG_HudElemInvalidCase(201);
+        return 0.0f;
+    }
+}
+
+// ea: 0x0068AD20
+float CG_HudElemHeight(const hudelem_s* elem, const cg_hudelem_t* cghe)
+{
+    float result;
+    switch (elem->type)
+    {
+    case 1:
+    case 2:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+        result = cghe->fontHeight;
+        break;
+    case 3:
+    case 8:
+    case 9:
+    {
+        float height = elem->height != 0 ? (float)elem->height
+                                         : cghe->fontHeight;
+        if (elem->scaleTime > 0)
+        {
+            int elapsed = cgGlobal.time - elem->scaleStartTime;
+            if (elapsed < elem->scaleTime)
+            {
+                float from = elem->fromHeight != 0
+                                 ? (float)elem->fromHeight
+                                 : cghe->fontHeight;
+                height = ((float)elapsed / elem->scaleTime)
+                             * (height - from)
+                         + from;
+            }
+        }
+        result = height;
+        break;
+    }
+    default:
+        CG_HudElemInvalidCase(232);
+        return 0.0f;
+    }
+    if (cghe->label != nullptr && cghe->fontHeight > result)
+        result = cghe->fontHeight;
+    return result;
+}
+
+// ea: 0x0068AE10
+float CG_HudElemX(const hudelem_s* elem, const cg_hudelem_t* cghe)
+{
+    float x = (float)elem->x;
+    if (elem->moveTime > 0)
+    {
+        int elapsed = cgGlobal.time - elem->moveStartTime;
+        if (elapsed < elem->moveTime)
+            x = ((float)elapsed / elem->moveTime)
+                    * (elem->x - elem->fromX)
+                + elem->fromX;
+    }
+    switch (elem->alignX)
+    {
+    case 0: return x;
+    case 1: return x - cghe->width * 0.5f;
+    case 2: return x - cghe->width;
+    default:
+        CG_HudElemInvalidCase(265);
+        return x;
+    }
+}
+
+// ea: 0x0068AEF0
+float CG_HudElemY(const hudelem_s* elem, const cg_hudelem_t* cghe)
+{
+    float y = (float)elem->y;
+    if (elem->moveTime > 0)
+    {
+        int elapsed = cgGlobal.time - elem->moveStartTime;
+        if (elapsed < elem->moveTime)
+            y = ((float)elapsed / elem->moveTime)
+                    * (elem->y - elem->fromY)
+                + elem->fromY;
+    }
+    switch (elem->alignY)
+    {
+    case 0: return y;
+    case 1: return y - cghe->height * 0.5f;
+    case 2: return y - cghe->height;
+    default:
+        CG_HudElemInvalidCase(293);
+        return y;
+    }
+}
+
+// ea: 0x0068B080
+float CG_HudElemAlignY(const hudelem_s* elem, const cg_hudelem_t* cghe,
+                       float height)
+{
+    switch (elem->alignY)
+    {
+    case 0: return cghe->y;
+    case 1: return ((cghe->height - height) * 0.5f) + cghe->y;
+    case 2: return (cghe->height + cghe->y) - height;
+    default:
+        CG_HudElemInvalidCase(451);
+        return 0.0f;
+    }
+}
+
+// ea: 0x0068AFD0
+void CG_ConsolidateHudElemText(cg_hudelem_t* cghe, int maxlen, char* buffer)
+{
+    int length = 0;
+    int labelIndex = 0;
+    int limit = maxlen - 1;
+    for (; length < limit; ++labelIndex)
+    {
+        char c = cghe->label[labelIndex];
+        if (c == 0)
+            break;
+        if (c == '%' && cghe->label[labelIndex + 1] == 's')
+        {
+            labelIndex += 2;
+            break;
+        }
+        buffer[length++] = c;
+    }
+    int textIndex = 0;
+    if (length < limit)
+    {
+        do
+        {
+            char c = cghe->text[textIndex];
+            if (c == 0)
+                break;
+            buffer[length++] = c;
+            ++textIndex;
+        } while (length < limit);
+    }
+    for (; length < limit; ++labelIndex)
+    {
+        char c = cghe->label[labelIndex];
+        if (c == 0)
+            break;
+        buffer[length++] = c;
+    }
+    buffer[length] = 0;
+    cghe->textWidth += cghe->labelWidth;
+    cghe->text = buffer;
+    cghe->label = defaultFileName;
+    cghe->labelWidth = 0.0f;
+}
+
+// ea: 0x006975E0
+void CG_GetHudElemInfo(const hudelem_s* elem, cg_hudelem_t* cghe,
+                       char* textBuf, int textBufLen)
+{
+    switch (elem->font)
+    {
+    case 0:
+        cghe->font = 0;
+        cghe->fontScale = elem->fontScale * 0.25f;
+        cghe->fontHeight = (float)trap_R_Text_Height(0, cghe->fontScale);
+        cghe->charWidth = 0.0f;
+        break;
+    case 1:
+        cghe->font = 4;
+        cghe->fontScale = elem->fontScale * 0.66666669f;
+        cghe->fontHeight = 16.0f;
+        cghe->charWidth = 16.0f;
+        break;
+    case 2:
+        cghe->font = 5;
+        cghe->fontScale = elem->fontScale * 0.5f;
+        cghe->fontHeight = 12.0f;
+        cghe->charWidth = 8.0f;
+        break;
+    default:
+        CG_HudElemInvalidCase(367);
+        cghe->font = 0;
+        cghe->fontScale = elem->fontScale * 0.25f;
+        cghe->fontHeight = (float)trap_R_Text_Height(0, cghe->fontScale);
+        cghe->charWidth = 0.0f;
+        break;
+    }
+
+    if (elem->label != 0)
+        cghe->label = CG_SafeTranslateString_Internal(
+            CG_ConfigString(elem->label + 660), "hudelem");
+    else
+        cghe->label = defaultFileName;
+
+    switch (elem->type)
+    {
+    case 1:
+        cghe->text = elem->text != 0 ? CG_SafeTranslateHudElemString(elem->text)
+                                     : defaultFileName;
+        break;
+    case 2:
+        cghe->text = va("%g", elem->value);
+        break;
+    case 4:
+    case 5:
+        cghe->text = CG_HudElemTimerString(elem);
+        break;
+    case 6:
+    case 7:
+        cghe->text = CG_HudElemTenthsTimerString(elem);
+        break;
+    default:
+        cghe->text = defaultFileName;
+        break;
+    }
+    if (*cghe->label != 0 && *cghe->text != 0)
+        CG_ConsolidateHudElemText(cghe, textBufLen, textBuf);
+
+    cghe->labelWidth = *cghe->label == 0
+                           ? 0.0f
+                           : (cghe->charWidth == 0.0f
+                                  ? (float)RE_Text_Width(cghe->label,
+                                                         cghe->font,
+                                                         cghe->fontScale, 0.0f,
+                                                         0)
+                                  : (float)SEH_PrintStrlen(cghe->label)
+                                        * cghe->charWidth);
+    cghe->textWidth = *cghe->text == 0
+                          ? 0.0f
+                          : (cghe->charWidth == 0.0f
+                                 ? (float)RE_Text_Width(cghe->text, cghe->font,
+                                                        cghe->fontScale, 0.0f,
+                                                        0)
+                                 : (float)SEH_PrintStrlen(cghe->text)
+                                       * cghe->charWidth);
+    cghe->width = CG_HudElemWidth(elem, cghe);
+    cghe->height = CG_HudElemHeight(elem, cghe);
+    cghe->x = CG_HudElemX(elem, cghe);
+    cghe->y = CG_HudElemY(elem, cghe);
+    int fadeTime = elem->fadeTime;
+    int elapsed = cgGlobal.time - elem->fadeStartTime;
+    if (fadeTime <= 0 || elapsed >= fadeTime || elapsed < 0)
+    {
+        for (int i = 0; i < 4; ++i)
+            cghe->color[i] = elem->color[i] * 0.0039215689f;
+    }
+    else
+    {
+        float frac = (float)elapsed / fadeTime;
+        for (int i = 0; i < 4; ++i)
+            cghe->color[i] = ((elem->color[i] - elem->fromColor[i]) * frac
+                              + elem->fromColor[i])
+                             * 0.0039215689f;
+    }
+}
+
+// ea: 0x0068B110
+void CG_DrawHudElemString(const char* text, cg_hudelem_t* cghe,
+                          const hudelem_s* elem)
+{
+    if (text == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_hudelem.cpp";
+        AeAssert::gCurrentLine = 465;
+        AeAssert::gCurrentExpr = "text";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (*text == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_hudelem.cpp";
+        AeAssert::gCurrentLine = 466;
+        AeAssert::gCurrentExpr = "text[0]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (elem == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_hudelem.cpp";
+        AeAssert::gCurrentLine = 467;
+        AeAssert::gCurrentExpr = "elem";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (cghe == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_hudelem.cpp";
+        AeAssert::gCurrentLine = 468;
+        AeAssert::gCurrentExpr = "cghe";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float y = CG_HudElemAlignY(elem, cghe, cghe->fontHeight);
+    trap_R_Text_Paint(cghe->x, cghe->fontHeight + y, cghe->font,
+                      cghe->fontScale, cghe->color, text, cghe->charWidth,
+                      0, 3);
+}
+
+// ea: 0x0069CE70
+void CG_DrawHudElemShader(const hudelem_s* elem, cg_hudelem_t* cghe)
+{
+    static tlFixedString black("black");
+    if (GamePause::IsGamePaused(currCl) || elem->mTexture == nullptr)
+        return;
+    cvar_t* disableLetterbox = Cvar_Get("disable_letterbox", "0", 0);
+    if (*elem->mTexture->FileName != black || disableLetterbox->integer == 0)
+    {
+        float width = elem->width != 0 ? (float)elem->width : cghe->fontHeight;
+        float height = elem->height != 0 ? (float)elem->height : cghe->fontHeight;
+        if (elem->scaleTime > 0)
+        {
+            int elapsed = cgGlobal.time - elem->scaleStartTime;
+            if (elapsed < elem->scaleTime)
+            {
+                float frac = (float)elapsed / elem->scaleTime;
+                float fromWidth = elem->fromWidth != 0
+                                      ? (float)elem->fromWidth
+                                      : cghe->fontHeight;
+                float fromHeight = elem->fromHeight != 0
+                                       ? (float)elem->fromHeight
+                                       : cghe->fontHeight;
+                width = frac * (width - fromWidth) + fromWidth;
+                height = frac * (height - fromHeight) + fromHeight;
+            }
+        }
+        float y = CG_HudElemAlignY(elem, cghe, height);
+        trap_R_SetColor(cghe->color);
+        if (elem->angle == 0.0f)
+            CG_DrawPic(cghe->x, y, width, height, elem->mTexture);
+        else
+            CG_DrawRotatedPic(cghe->x, y, width, height, elem->angle,
+                              elem->mTexture);
+        trap_R_SetColor(nullptr);
+    }
+}
+
+// ea: 0x0069CC40
+void CG_DrawHudElemClock(const hudelem_s* elem, cg_hudelem_t* cghe)
+{
+    if (elem->mTexture == nullptr)
+        return;
+    nglTexture* tex = elem->mTexture;
+    char shaderName[128];
+    strcpy(shaderName, tex->FileName->str);
+    char* suffix = shaderName + strlen(shaderName);
+    strcpy(suffix, "needle");
+    nglTexture* handShader = GetTextureData(shaderName, 0, "mp_frontEnd");
+    int hudTime = CG_GetHudElemTime(elem);
+    float angle = elem->duration != 0
+                      ? ((float)hudTime * 360.0f) / elem->duration
+                      : (float)hudTime * 0.0060000001f;
+    angle = AngleNormalize360(angle);
+    float width = elem->width != 0 ? (float)elem->width : cghe->fontHeight;
+    float height = elem->height != 0 ? (float)elem->height : cghe->fontHeight;
+    if (elem->scaleTime > 0)
+    {
+        int elapsed = cgGlobal.time - elem->scaleStartTime;
+        if (elapsed < elem->scaleTime)
+        {
+            float frac = (float)elapsed / elem->scaleTime;
+            float fromWidth = elem->fromWidth != 0
+                                  ? (float)elem->fromWidth
+                                  : cghe->fontHeight;
+            float fromHeight = elem->fromHeight != 0
+                                   ? (float)elem->fromHeight
+                                   : cghe->fontHeight;
+            width = frac * (width - fromWidth) + fromWidth;
+            height = frac * (height - fromHeight) + fromHeight;
+        }
+    }
+    float y = CG_HudElemAlignY(elem, cghe, height);
+    trap_R_SetColor(cghe->color);
+    trap_R_DrawStretchPic(unk_F6A278[802 * currCl] * cghe->x,
+                          unk_F6A27C[802 * currCl] * y,
+                          unk_F6A278[802 * currCl] * width,
+                          unk_F6A27C[802 * currCl] * height, 0.0f, 0.0f,
+                          1.0f, 1.0f, tex, 0.0f);
+    CG_DrawRotatedPic(cghe->x, y, width, height, angle, handShader);
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x0069D030
+void CG_DrawSingleHudElem(void* rawElem)
+{
+    const hudelem_s* elem = static_cast<const hudelem_s*>(rawElem);
+    cg_hudelem_t cghe;
+    char textBuf[8192];
+    CG_GetHudElemInfo(elem, &cghe, textBuf, sizeof(textBuf));
+    if (*cghe.label != 0)
+    {
+        CG_DrawHudElemString(cghe.label, &cghe, elem);
+        cghe.x += cghe.labelWidth;
+    }
+    switch (elem->type)
+    {
+    case 1:
+    case 2:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+        if (*cghe.text != 0)
+            CG_DrawHudElemString(cghe.text, &cghe, elem);
+        break;
+    case 3:
+        CG_DrawHudElemShader(elem, &cghe);
+        break;
+    case 8:
+    case 9:
+        CG_DrawHudElemClock(elem, &cghe);
+        break;
+    default:
+        CG_HudElemInvalidCase(609);
+        break;
+    }
+    if (elem->sort == -777.0f && !GamePause::IsGamePaused(currCl))
+        SpinnerDrawFrame(false);
 }
 
 // ea: 0x006948B0
