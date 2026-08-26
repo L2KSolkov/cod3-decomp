@@ -658,11 +658,59 @@ float sRumTimeMin;
 float sRumTimeMax;
 float sRumTimeFactor;
 extern void AnglesToForward(const float* const angles, float* const forward);
-// CG_UpdateCameraShake artifact (cg.o; stub)
-int CG_UpdateCameraShake(void* shake, int client)
+extern const math::Position3 native_to_cdl_pos3(const float* v);
+extern "C" int __fpclass(float value);
+
+// cameraShake_t (cg.o, IDA type ordinal 6661; sizeof 0x24)
+// Release layout is time/scale/length/radius/src/size/rumbleScale.
+struct cameraShake_t {
+    int time;
+    float scale;
+    float length;
+    float radius;
+    float src[3];
+    float size;
+    float rumbleScale;
+};
+static_assert(sizeof(cameraShake_t) == 0x24,
+              "cameraShake_t layout mismatch");
+
+// ea: 0x006959E0 (release cg.o)
+int CG_UpdateCameraShake(cameraShake_t* shake, int client)
 {
-    (void)shake; (void)client;
-    return 0;
+    if (cg_camerashake.integer == 0)
+        return 0;
+
+    const int elapsed = cgGlobal.time - shake->time;
+    if (elapsed < 0 || elapsed >= shake->length)
+        return 0;
+
+    const math::Position3 source = native_to_cdl_pos3(shake->src);
+    const int base = 1580 * client;
+    const float dx = source.v.m128_f32[0] - dword_F63C70[base];
+    const float dy = source.v.m128_f32[1] - dword_F63C74[base];
+    const float dz = source.v.m128_f32[2] - dword_F63C78[base];
+    const float distanceSq = dx * dx + dy * dy + dz * dz;
+    const float falloff = 1.0f - sqrtf(distanceSq) / shake->radius;
+    if ((__fpclass(falloff) & 0x297) != 0)
+        CG_ASSERT("!IS_NAN(val)",
+                  "c:\\cod\\code\\game\\cg_draw.cpp", 2393);
+
+    const float scale = shake->scale;
+    float value = (1.0f - ((float)elapsed / shake->length)) * scale;
+    if (scale <= 0.0f)
+    {
+        CG_ASSERT("shake->scale > 0",
+                  "c:\\cod\\code\\game\\cg_draw.cpp", 2396);
+    }
+    if (value <= 0.0f)
+    {
+        CG_ASSERT("x > 0", "c:\\cod\\code\\game\\cg_draw.cpp", 2397);
+    }
+
+    shake->size = falloff < 0.0f ? falloff / value : value * falloff;
+    shake->rumbleScale = value;
+    return 1;
 }
 extern void CG_EndShellShock(const void* parms, int time);
 extern int CG_EndShellShockSound();
@@ -1346,31 +1394,29 @@ void CG_StartShakeCamera(float p, int duration, const float* src, float radius,
 {
     if (p > 0.0f && cg_camerashake.integer != 0)
     {
-        float shake[9];
-        shake[0] = p;                    // scale
-        shake[1] = (float)duration;      // length
-        shake[2] = (float)cgGlobal_time; // time
-        shake[3] = src[0];
-        shake[4] = src[1];
-        shake[5] = src[2];
-        shake[6] = radius;
-        shake[7] = 0.0f;  // size
-        shake[8] = 0.0f;  // nextDelay?
-        CG_UpdateCameraShake(shake, client);
+        cameraShake_t shake;
+        shake.time = cgGlobal_time;
+        shake.scale = p;
+        shake.length = (float)duration;
+        shake.radius = radius;
+        shake.src[0] = src[0];
+        shake.src[1] = src[1];
+        shake.src[2] = src[2];
+        CG_UpdateCameraShake(&shake, client);
         int v5 = 0;
         float* v6 = &unk_F640A8[6320 * client];
         while (v6[0] <= (float)cgGlobal_time
-               && cgGlobal_time < (int)(v6[0] + v6[2]))
+               && cgGlobal_time < (v6[0] + v6[2]))
         {
             ++v5;
             v6 += 9;
             if (v5 >= 4)
             {
-                int minsize = *(int*)&shake[7];
+                int minsize = *(int*)&shake.size;
                 if (v5 != 4)
                     CG_ASSERT("i == 4", "c:\\cod\\code\\game\\cg_draw.cpp",
                               2446);
-                if (shake[7] > *(float*)&dword_F640C4[1580 * client])
+                if (shake.size > *(float*)&dword_F640C4[1580 * client])
                 {
                     minsize = dword_F640C4[1580 * client];
                     v5 = 0;
@@ -1397,7 +1443,8 @@ void CG_StartShakeCamera(float p, int duration, const float* src, float radius,
                 break;
             }
         }
-        memcpy(&unk_F640A8[6320 * client + 36 * v5], shake, sizeof(shake));
+        *reinterpret_cast<cameraShake_t*>(
+            &unk_F640A8[6320 * client + 36 * v5]) = shake;
     }
 }
 
@@ -1408,13 +1455,15 @@ void CG_ShakeCamera(int client)
     {
         float scale = 0.0f;
         float sx = cgGlobal_time * 0.0016666667f;
-        float* v1 = &unk_F640A8[6320 * client] + 1;
+        cameraShake_t* shake = reinterpret_cast<cameraShake_t*>(
+            &unk_F640A8[6320 * client]);
         int intensity = 4;
         do
         {
-            if (CG_UpdateCameraShake(v1 - 1, client) != 0 && v1[0] > scale)
-                scale = v1[6];
-            v1 += 9;
+            if (CG_UpdateCameraShake(shake, client) != 0
+                && shake->scale > scale)
+                scale = shake->size;
+            ++shake;
             --intensity;
         } while (intensity != 0);
         float v2 = scale;
