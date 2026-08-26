@@ -7157,10 +7157,143 @@ void XAnimEnsureGoalWeightParent(XAnimTree* tree, unsigned int animIndex,
         i = parent;
     }
 }
+
+// ea: 0x0053E8E0
+static void XAnimCopyTimes(XAnimInfo* from, XAnimInfo* to)
+{
+    if ((_fpclass(*reinterpret_cast<float*>(from->s)) & 0x297) != 0)
+        XANIM_ASSERT("!IS_NAN(from->s.time)",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5196,
+                     "Invalid number!");
+    if ((_fpclass(*reinterpret_cast<float*>(from->s + 4)) & 0x297) != 0)
+        XANIM_ASSERT("!IS_NAN(from->s.oldTime)",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5197,
+                     "Invalid number!");
+    *reinterpret_cast<float*>(to->s) = *reinterpret_cast<float*>(from->s);
+    *reinterpret_cast<unsigned short*>(to->s + 8) =
+        *reinterpret_cast<unsigned short*>(from->s + 8);
+    *reinterpret_cast<float*>(to->s + 4) =
+        *reinterpret_cast<float*>(from->s + 4);
+    *reinterpret_cast<unsigned short*>(to->s + 10) =
+        *reinterpret_cast<unsigned short*>(from->s + 10);
+}
+
+// ea: 0x00544E40
+static void XAnimUpdateSyncTimeChildren(XAnimTree* tree,
+                                        unsigned int animIndex,
+                                        XAnimInfo* parentInfo)
+{
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    for (int i = 0; i < entry->numAnims; ++i)
+    {
+        const unsigned int child = entry->u.s.children + i;
+        if (child >= tree->anims->entries.mSize)
+            XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 5253,
+                         "old cod assert");
+        const unsigned short infoIndex = tree->infoArray[child];
+        if (infoIndex != 0)
+        {
+            if (infoIndex >= 512)
+                XANIM_ASSERT("infoIndex < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5257,
+                             "old cod assert");
+            XAnimCopyTimes(parentInfo, &g_info[infoIndex]);
+            XAnimUpdateServerNotify(tree, child);
+            XAnimUpdateSyncTimeChildren(tree, child, parentInfo);
+        }
+    }
+}
+
 void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
                          int bRestart)
 {
-    (void)tree; (void)animIndex; (void)bRestart;
+    unsigned int parent = animIndex;
+    unsigned int parentAnimIndex = animIndex;
+    if (animIndex == 0)
+    {
+    root_update:
+        XAnimEntry* entry = AnimTreeEntryAt(tree->anims, parent);
+        if (entry->numAnims == 0
+            && (bRestart != 0
+                || !XAnimHasEffectiveParentWeight(tree, parent)
+                || !XAnimHasEffectiveChildWeight(tree, parent)))
+        {
+            if (parent >= tree->anims->entries.mSize)
+                XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5308,
+                             "old cod assert");
+            const unsigned short infoIndex = tree->infoArray[parent];
+            if (infoIndex >= 512)
+                XANIM_ASSERT("tree->infoArray[animIndex] < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5309,
+                             "old cod assert");
+            XAnimInfo* info = &g_info[infoIndex];
+            *reinterpret_cast<float*>(info->s) = 0.0f;
+            *reinterpret_cast<float*>(info->s + 4) = 0.0f;
+            *reinterpret_cast<unsigned short*>(info->s + 8) = 0;
+            *reinterpret_cast<unsigned short*>(info->s + 10) = 0;
+        }
+        return;
+    }
+
+    XAnimInfo* parentInfo = nullptr;
+    for (;;)
+    {
+        if (parent >= tree->anims->entries.mSize)
+            XANIM_ASSERT("parentAnimIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 5276,
+                         "old cod assert");
+        const unsigned short parentInfoIndex = tree->infoArray[parent];
+        if (parentInfoIndex >= 512)
+            XANIM_ASSERT("tree->infoArray[parentAnimIndex] < 512",
+                         "c:\\cod\\code\\game\\xanim.cpp", 5277,
+                         "old cod assert");
+        parentInfo = &g_info[parentInfoIndex];
+        XAnimEntry* entry = AnimTreeEntryAt(tree->anims, parent);
+        if (entry->numAnims != 0 && (entry->u.s.flags & 4) != 0)
+            break;
+        parentAnimIndex = entry->parent;
+        if (parentAnimIndex == 0)
+        {
+            parent = animIndex;
+            goto root_update;
+        }
+        parent = parentAnimIndex;
+    }
+
+    if (bRestart != 0
+        || !XAnimHasEffectiveParentWeight(tree, parent)
+        || !XAnimHasEffectiveChildWeight(tree, parent))
+    {
+        *reinterpret_cast<float*>(parentInfo->s) = 0.0f;
+        *reinterpret_cast<float*>(parentInfo->s + 4) = 0.0f;
+        *reinterpret_cast<unsigned short*>(parentInfo->s + 8) = 0;
+        *reinterpret_cast<unsigned short*>(parentInfo->s + 10) = 0;
+    }
+    XAnimUpdateSyncTimeChildren(tree, animIndex, parentInfo);
+    if (animIndex != parent)
+    {
+        unsigned int current = animIndex;
+        for (;;)
+        {
+            if (current >= tree->anims->entries.mSize)
+                XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5294,
+                             "old cod assert");
+            const unsigned short infoIndex = tree->infoArray[current];
+            if (infoIndex >= 512)
+                XANIM_ASSERT("tree->infoArray[animIndex] < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5295,
+                             "old cod assert");
+            XAnimCopyTimes(parentInfo, &g_info[infoIndex]);
+            XAnimUpdateServerNotify(tree, animIndex);
+            const unsigned int next = AnimTreeEntryAt(tree->anims, current)->parent;
+            if (next == parentAnimIndex)
+                break;
+            current = next;
+        }
+    }
 }
 void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex)
 {
@@ -27261,35 +27394,56 @@ void InteractInputRcvr::MeasureInput(float& rate, float& progress,
 // InteractStateInfo minimal view - offsets verified vs IDA struct + disasm
 // (parse 0x53B0B0, ButtonMash/ButtonPress MI, UpdateModeRow, UpdateLerp)
 struct InteractStateInfo {
-    unsigned char _pad0[0x28];
+    char name[32];                  // +0x00
+    int interactType;               // +0x20
+    int inputType;                  // +0x24
     char successState[4][32];       // +0x28
     char failureState[32];          // +0xA8
     int numAnimRepsBeforeSuccess;   // +0xC8
     unsigned int successOnInput;    // +0xCC
-    char playerAnim[32];            // +0xD0
+    char playerAnim[40];            // +0xD0
     char playerModAnim[6][40];      // +0xF8
-    char weaponAnim[32];            // +0x1E8
-    unsigned char _pad208[0x210 - 0x208];
-    char interactableAnim[32];      // +0x210
+    char weaponAnim[40];            // +0x1E8
+    char interactableAnim[40];      // +0x210
     char interModAnim[6][40];       // +0x238
     char weaponDisplayName[32];     // +0x328
     unsigned int changeWeapon;      // +0x348
     unsigned int instantChangeWeapon;// +0x34C
+    char scriptOriginTargetName[32];// +0x350
     unsigned int holdUseExitEnabled;// +0x370
-    float maxDuration;              // +0x378
     float minDuration;              // +0x374
+    float maxDuration;              // +0x378
     float acceptInputMinTime;       // +0x37C
     float acceptInputMaxTime;       // +0x380
+    float inputRateFactor;          // +0x384
+    int lerpType;                   // +0x388
     float lerpDuration;             // +0x38C
+    char lerpTagName[20];           // +0x390
     unsigned int defaultCameraMode; // +0x3A4
+    unsigned int useCameraTag;      // +0x3A8
+    unsigned int scaleViewModels;   // +0x3AC
+    float armsScale;                // +0x3B0
+    float weaponScale;              // +0x3B4
+    float scaledArmsOffsetX;        // +0x3B8
+    float scaledArmsOffsetY;        // +0x3BC
+    float scaledArmsOffsetZ;        // +0x3C0
     float animFadeInTime;           // +0x3C4
+    unsigned int useDepthOfField;   // +0x3C8
     float fovMin;                   // +0x3CC
     float fovScoreThresholdMin;     // +0x3D0
     float fovScoreThresholdMax;     // +0x3D4
     float fovLerpDuration;          // +0x3D8
     char notifyName[4][20];         // +0x3DC
     unsigned int notifyHash[4];     // +0x42C
-    float notifyFloat[4];           // +0x43C
+    float notifyTime[4];            // +0x43C
+    unsigned int effectEventOnPlayer[4];  // +0x44C
+    unsigned int effectEventOnOther[4];   // +0x45C
+    float timeScaleValue[4];        // +0x46C
+    float timeScaleDuration[4];     // +0x47C
+    float timeScaleLerpTimeIn[4];   // +0x48C
+    float timeScaleLerpTimeOut[4];  // +0x49C
+    float motionBlurDuration[4];    // +0x4AC
+    float rumbleDuration[4];        // +0x4BC
     int buttonIndex[4];             // +0x4CC
     char buttonHelpStr[64];         // +0x4DC
     int leaveHelpStrUp;              // +0x51C
@@ -27297,6 +27451,8 @@ struct InteractStateInfo {
     unsigned int leftStick;         // +0x524
     float initialScore;             // +0x528
     float difficulty;               // +0x52C
+    float difficultyXB;             // +0x530
+    float initialDelay;             // +0x534
     float winningDelay;             // +0x538
     float losingDelay;              // +0x53C
     float modBlendMin;              // +0x540
@@ -27313,13 +27469,8 @@ struct InteractStateInfo {
     float steeringAngleKeepTurn;    // +0x58C
     float steeringWheelTurnRate;    // +0x590
     float steeringWheelAngleFactor; // +0x594
-    unsigned int effectEventOnPlayer[4];  // +0x44C
-    unsigned int effectEventOnOther[4];   // +0x45C
-    float timeScaleValue[4];        // +0x46C
-    float timeScaleDuration[4];     // +0x47C
-    float timeScaleLerpTimeIn[4];   // +0x48C
-    float timeScaleLerpTimeOut[4];  // +0x49C
 };
+static_assert(sizeof(InteractStateInfo) == 0x598, "InteractStateInfo layout");
 typedef InteractStateInfo InteractStateInfoLocal;
 
 extern const char* GetButtonTextName(int index);
@@ -27340,7 +27491,18 @@ struct cvar_t {
     unsigned char _pad[0x1C];
     float value;  // +0x1C (verified vs StickSwirl MI)
 };
+extern cvar_t* com_timescale;
 extern cvar_t* m_yaw;  // ?m_yaw@@3PAUcvar_t@@A (cl.o @ 0x12FC4E4)
+
+struct BrocAPI {
+    char _pad[0x94];
+    unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int,
+                            int);
+};
+extern BrocAPI* gpBrocAPI;
+extern float sArmsOffsetX;
+extern float sArmsOffsetY;
+extern float sArmsOffsetZ;
 
 // anim.o statics (verified vs IDA)
 float sMinStickVal = 70.0f;          // @ 0xDF305C
@@ -30765,13 +30927,250 @@ void InteractState::Deactivate()
 // ea: 0x0054CC10
 void InteractState::Activate()
 {
+    InteractInputRcvr* input = static_cast<InteractInputRcvr*>(mInputRcvr);
+    const InteractStateInfo* info =
+        static_cast<const InteractStateInfo*>(mInfo);
+    if (input != nullptr)
+        input->Activate(*info);
+
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (player != nullptr && player->client != nullptr)
+    {
+        unsigned char* client = static_cast<unsigned char*>(player->client);
+        mSaveFrozen = *reinterpret_cast<int*>(client + 0x7F0);
+        mSaveNoClip = *reinterpret_cast<int*>(client + 0x7E8);
+    }
+    else
+    {
+        mSaveFrozen = 0;
+        mSaveNoClip = 0;
+    }
+    const int clientIndex = mController->mClient;
+    if (unk_F6A2AC[3208 * clientIndex] != 0)
+    {
+        mSaveDrawCrosshair = unk_F6A2AC[3208 * clientIndex];
+        unk_F6A2AC[3208 * clientIndex] = 0;
+    }
+    mFlags = 0;
+    mStateTimer = 0.0f;
+    mFrameCount = -1;
+    for (void*& used : mNotifiesUsed)
+        used = nullptr;
+    mEffectEventPosted = 0;
+    mLerpType = info->lerpType;
+    mLerpTimer = 0.0f;
+    mPlayerLerp.Init();
+    mOtherLerp.Init();
+    mLerpInteractableTagIndex = -1;
+
+    if (clientIndex < 0 || clientIndex >= 1)
+        XANIM_ASSERT("instance >= 0 && instance < 1",
+                     "c:\\cod\\code\\game\\InteractionController.h", 26,
+                     "Invalid index in multiton");
+    unsigned int handle = mController->mInteractableH.mVal;
+    unsigned int slot = handle & 0xFFF;
+    if (slot < 0x540 && (handle >> 12) == EntityHandleDb::sInst.mElements[slot].mKey)
+    {
+        Entity* object = EntityHandleDb::sInst.mElements[slot].mObject;
+        if (object != nullptr && info->lerpTagName[0] != 0 && object->mDObj != nullptr)
+            mLerpInteractableTagIndex = DObjGetBoneIndex(
+                object->mDObj, HashString::CalcHash(info->lerpTagName));
+    }
+
+    mPlayerAnim = nullptr;
+    mOtherAnim = nullptr;
+    mPlayerCallback = nullptr;
+    mOtherCallback = nullptr;
+    mNumAnimRepetitions = info->numAnimRepsBeforeSuccess;
+    if (mNumAnimRepetitions <= 0)
+        mNumAnimRepetitions = 1;
+    if (info->scriptOriginTargetName[0] != 0 && gpBrocAPI != nullptr)
+    {
+        Broc::string targetName(info->scriptOriginTargetName);
+        unsigned int targetHandle = gpBrocAPI->mGetEnt(
+            &targetName, static_cast<int>(HashString::CalcHash("targetname")),
+            nullptr, 0, 0);
+        unsigned int targetSlot = targetHandle & 0xFFF;
+        if (targetSlot < 0x540
+            && (targetHandle >> 12) == EntityHandleDb::sInst.mElements[targetSlot].mKey)
+        {
+            Entity* target = EntityHandleDb::sInst.mElements[targetSlot].mObject;
+            if (target != nullptr)
+            {
+                math::Mat43 mat = target->CalcRotTranMat43();
+                mController->SetScriptOrigin(
+                    mat, target->r.currentAngles.v.m128_f32);
+            }
+        }
+    }
+    DoWeaponChange();
+    if ((*reinterpret_cast<unsigned short*>(
+             reinterpret_cast<unsigned char*>(&gCamera[currCl]) + 0x140) & 1) != 0
+        && info->useCameraTag == 0)
+        gCamera[currCl].StopAnimating(0.1f);
+
+    if (info->scaleViewModels != 0)
+    {
+        float offsetX = info->scaledArmsOffsetX;
+        float offsetY = info->scaledArmsOffsetY;
+        float offsetZ = info->scaledArmsOffsetZ;
+        if (sArmsOffsetX >= 0.0f) offsetX = sArmsOffsetX;
+        if (sArmsOffsetY >= 0.0f) offsetY = sArmsOffsetY;
+        if (sArmsOffsetZ >= 0.0f) offsetZ = sArmsOffsetZ;
+        mController->mTargetArmsOffsetX = offsetX;
+        mController->mTargetArmsOffsetY = offsetY;
+        mController->mTargetArmsOffsetZ = offsetZ;
+        mController->mArmsOffsetLerpTime = 0.0f;
+        if (offsetX < -15.0f && offsetX != mController->mCurArmsOffsetX)
+        {
+            mController->mCurArmsOffsetX = offsetX - 5.0f;
+            mController->mCurArmsOffsetZ = offsetZ - 5.0f;
+        }
+        const float armsScale = info->armsScale > 0.01f
+                                    ? info->armsScale : 1.9285715f;
+        const float weaponScale = info->weaponScale > 0.01f
+                                      ? info->weaponScale : 1.7357142f;
+        math::Mat43 offset;
+        offset.x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+        offset.y.v = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        offset.z.v = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        offset.w.v = _mm_set_ps(0.0f,
+                                *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(mController) + 0x60),
+                                *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(mController) + 0x5C),
+                                *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(mController) + 0x58));
+        R_SetViewModelScale(clientIndex, armsScale, weaponScale, 1, 1, &offset);
+    }
+    else
+    {
+        mController->mTargetArmsOffsetX = 0.0f;
+        mController->mTargetArmsOffsetY = 0.0f;
+        mController->mTargetArmsOffsetZ = 0.0f;
+        mController->mArmsOffsetLerpTime = 0.0f;
+    }
+    if (input == nullptr && info->buttonHelpStr[0] != 0)
+    {
+        char text[80];
+        sprintf(text, info->buttonHelpStr,
+                GetButtonTextName(info->buttonIndex[0]),
+                GetButtonTextName(info->buttonIndex[1]));
+        InteractionController::Inst(currCl)->SetRenderText(text, 320, 0.5f);
+    }
 }
 
 // ea: 0x00546700
 InteractState* InteractState::Update(float deltaT)
 {
-    (void)deltaT;
-    return this;
+    InteractState* result = this;
+    const unsigned int oldFlags = mFlags;
+    mStateTimer += deltaT;
+    ++mFrameCount;
+    if ((oldFlags & 0x40) != 0)
+    {
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        if (player != nullptr && player->client != nullptr
+            && *reinterpret_cast<int*>(static_cast<unsigned char*>(player->client)
+                                       + 0xA4)
+                   == mDesiredWeaponIndex)
+            mFlags &= ~0x40u;
+    }
+
+    InteractInputRcvr* input = static_cast<InteractInputRcvr*>(mInputRcvr);
+    if (input != nullptr)
+    {
+        input->Update(deltaT);
+        const InteractStateInfo* info =
+            static_cast<const InteractStateInfo*>(mInfo);
+        if (info->successOnInput != 0)
+        {
+            if (info->acceptInputMaxTime > 0.01f
+                && mStateTimer > info->acceptInputMaxTime
+                && mFailureState != nullptr)
+                result = mFailureState;
+            else if (input->mInputRate > 0.01f)
+                result = mSuccessState[0];
+        }
+    }
+
+    const InteractStateInfo* info =
+        static_cast<const InteractStateInfo*>(mInfo);
+    if (info->scaleViewModels != 0)
+    {
+        const float armsScale = info->armsScale > 0.01f
+                                    ? info->armsScale
+                                    : 1.9285715f;
+        const float weaponScale = info->weaponScale > 0.01f
+                                      ? info->weaponScale
+                                      : 1.7357142f;
+        math::Mat43 offset;
+        offset.x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+        offset.y.v = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        offset.z.v = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        offset.w.v = _mm_set_ps(0.0f,
+                                *reinterpret_cast<float*>(
+                                    reinterpret_cast<unsigned char*>(mController)
+                                    + 0x60),
+                                *reinterpret_cast<float*>(
+                                    reinterpret_cast<unsigned char*>(mController)
+                                    + 0x5C),
+                                *reinterpret_cast<float*>(
+                                    reinterpret_cast<unsigned char*>(mController)
+                                    + 0x58));
+        R_SetViewModelScale(mController->mClient, armsScale, weaponScale, 1,
+                            1, &offset);
+    }
+
+    if (sTimeScaleMgr.mDuration > 0.0f)
+    {
+        sTimeScaleMgr.mTimer += deltaT;
+        const float end = sTimeScaleMgr.mLerpTimeOut
+                          + sTimeScaleMgr.mLerpTimeIn
+                          + sTimeScaleMgr.mDuration;
+        if (sTimeScaleMgr.mTimer <= end)
+        {
+            float target;
+            if (sTimeScaleMgr.mTimer
+                <= sTimeScaleMgr.mLerpTimeIn + sTimeScaleMgr.mDuration)
+            {
+                if (sTimeScaleMgr.mLerpTimeIn <= sTimeScaleMgr.mTimer
+                    || sTimeScaleMgr.mLerpTimeIn <= 0.0f)
+                    target = sTimeScaleMgr.mTarget;
+                else
+                    target = (sTimeScaleMgr.mTimer / sTimeScaleMgr.mLerpTimeIn)
+                                 * (sTimeScaleMgr.mTarget
+                                    - sTimeScaleMgr.mInitialVal)
+                             + sTimeScaleMgr.mInitialVal;
+            }
+            else
+            {
+                target = (((sTimeScaleMgr.mTimer - sTimeScaleMgr.mLerpTimeOut
+                            - sTimeScaleMgr.mDuration)
+                           / sTimeScaleMgr.mLerpTimeOut)
+                          * (sTimeScaleMgr.mInitialVal
+                             - sTimeScaleMgr.mTarget))
+                         + sTimeScaleMgr.mTarget;
+            }
+            if (com_timescale != nullptr)
+                com_timescale->value = target;
+        }
+        else
+        {
+            if (com_timescale != nullptr)
+                com_timescale->value = sTimeScaleMgr.mInitialVal;
+            sTimeScaleMgr.mDuration = -1.0f;
+        }
+    }
+
+    if (info->useDepthOfField != 0)
+        mController->mFlags |= 0x100u;
+    else
+        mController->mFlags &= ~0x100u;
+    const unsigned int controllerFlags = mController->mFlags;
+    if ((controllerFlags & 0x10) != 0)
+        return mFailureState;
+    if ((info->maxDuration >= 0.0f && mStateTimer > info->maxDuration)
+        || (controllerFlags & 8) != 0)
+        return mSuccessState[0];
+    return result;
 }
 
 // ea: 0x0056EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z; empty)
@@ -30845,6 +31244,9 @@ void InteractState::FadeOutModifiers(float fadeOutTime, unsigned int mask)
             ->FadeOutModifiers(fadeOutTime, mask);
 }
 
+float sArmsOffsetX = -1.0f;            // 0xDF29CC
+float sArmsOffsetY = -1.0f;            // 0xDF29D0
+float sArmsOffsetZ = -1.0f;            // 0xDF29D4
 float sArmsOffsetLerpDuration = 0.1f;  // 0xDF37CC
 
 // ea: 0x00556A80
@@ -31634,15 +32036,6 @@ template class ae_vector<InteractState*>;
 // ============================================================================
 // RowboatMgr::AddBoatman + PickLiveGrenade::fireLiveGrenade (anim.o)
 // ============================================================================
-
-// Global-scope twin of BrocAPI (matches ?gpBrocAPI@@3PAUBrocAPI@@A in
-// g_scr.cpp; broc_types.h's BrocAPI lives in namespace Broc).
-struct BrocAPI {
-    char _pad[0x94];
-    unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int,
-                            int);  // +0x94
-};
-extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 
 // ea: 0x005408B0
 void RowboatMgr::AddBoatman(const char* targetName, bool isLeader)
