@@ -63,6 +63,7 @@ extern vmCvar_t cg_hudAlpha;
 extern float CG_CalcPlayerHealth();
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern vmCvar_t s_cgCvarStorage[170];
+extern weaponInfo_s cg_weapons[];
 extern float dword_F63C50[4 * 1580];
 extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
@@ -1179,6 +1180,51 @@ void CG_DrawDamageDirectionIndicators()
         CG_DrawRotatedQuadPic(centerX, centerY, verts, texCoords, iconAngle,
                               cgsGlobal.media.damageShader);
     }
+}
+
+// ea: 0x00694E00 (release cg.o)
+void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
+                          float centerX, float centerY, float)
+{
+    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
+        return;
+
+    char* weapDef = reinterpret_cast<char*>(weapDefArg);
+    const char* reticleName = *reinterpret_cast<const char**>(weapDef + 0x4D8);
+    if (reticleName == nullptr || reticleName[0] == '\0')
+        return;
+
+    float reticleColor[4] = {
+        reinterpret_cast<float*>(baseColor)[0],
+        reinterpret_cast<float*>(baseColor)[1],
+        reinterpret_cast<float*>(baseColor)[2],
+        0.0f};
+    float zoomFraction = 0.0f;
+    CG_GetWeapReticleZoom(&zoomFraction);
+    const char* ps = reinterpret_cast<const char*>(
+        &EntityManager::sInst->GetPlayer(currCl)->client->ps);
+    float alpha = (1.0f - *reinterpret_cast<const float*>(ps + 0x534)
+                             * 0.0039215689f)
+                  * s_cgCvarStorage[32].value * (1.0f - zoomFraction);
+    if (s_cgCvarStorage[33].value > alpha)
+        alpha = s_cgCvarStorage[33].value;
+    reticleColor[3] = alpha;
+
+    const float scaledX = unk_F6A278[802 * currCl] * centerX;
+    const float scaledY = unk_F6A27C[802 * currCl] * centerY;
+    const float width = (float)*reinterpret_cast<int*>(weapDef + 0x4E0);
+    trap_R_SetColor(reticleColor);
+    trap_R_DrawStretchPic(
+        ((dword_F63C58[1580 * currCl] - width) * 0.5f
+         + dword_F63C50[1580 * currCl])
+            + scaledX,
+        ((dword_F63C5C[1580 * currCl] - width) * 0.5f
+         + dword_F63C54[1580 * currCl])
+            + scaledY,
+        width, width, 0.0f, 0.0f, 1.0f, 1.0f,
+        reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleCenter),
+        0.0f);
+    trap_R_SetColor(nullptr);
 }
 
 static void CG_HudElemInvalidCase(int line)
