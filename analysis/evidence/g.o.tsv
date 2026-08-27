@@ -553,3 +553,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004ABF80	??0vehicle_node_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF80	Release constructs the same three strings in the same order, matching source.
 0x004ABFF0	??1vehicle_node_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:3520	Source's implicit destructor destroys the three Broc::string members in reverse order.
 0x004ABFF0	??1vehicle_node_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABFF0	Release destroys script_noteworthy, mTarget, and mName, matching the implicit destructor.
+0x004AC060	??0debug_sphere@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2851	Source initializes radius to zero.
+0x004AC060	??0debug_sphere@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC060	Release sets radius to zero and returns, matching source.
+0x004AC070	??0debug_sphere@@QAE@ABVPosition3@math@@MABVColor@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2856	Source copies center xyz, radius, and all Color channels.
+0x004AC070	??0debug_sphere@@QAE@ABVPosition3@math@@MABVColor@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC070	Release copies center xyz, radius, and Color as a four-component value, matching source.
+0x004AC130	??0debug_aabb@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:3150	Source debug_aabb is an aggregate with no non-trivial default initialization.
+0x004AC130	??0debug_aabb@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC130	Release default constructor returns immediately, matching the aggregate constructor.
+0x004AC140	??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2868	Source copies both Position3 bounds and the Color value.
+0x004AC140	??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC140	Release copies bmin, bmax, and Color, matching source.
+0x004AC1C0	??0vehicle_node_t@@QAE@ABU0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2799	Source copy-constructs all three strings, scalar/vector fields, and preserves packed nextIdx bits.
+0x004AC1C0	??0vehicle_node_t@@QAE@ABU0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC1C0	Release copies the same strings, fields, and packed nextIdx masks, matching source.
+0x004AC310	??4vehicle_node_t@@QAEAAU0@ABU0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2824	Source assignment copies strings, scalar/vector fields, and packed nextIdx bits.
+0x004AC310	??4vehicle_node_t@@QAEAAU0@ABU0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC310	Release assignment copies the same members and masks, matching source.
+0x004AC420	??_Gvehicle_node_t@@QAEPAXI@Z	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/game/logic/g_accessors.cpp:2792	Source supplies vehicle_node_t destruction through its compiler-generated destructor.
+0x004AC420	??_Gvehicle_node_t@@QAEPAXI@Z	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC420	Release calls the destructor and conditionally frees memory for delete flag, matching compiler output.
+0x004AC450	??1DObjModel@@QAE@XZ	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/game/logic/g_local.h:2370	Source DObjModel's implicit destructor destroys boneName.
+0x004AC450	??1DObjModel@@QAE@XZ	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC450	Release destroys boneName, matching the implicit destructor.
+0x004AC460	??0tagInfo_t@@QAE@XZ	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/game/logic/g_accessors.cpp:2880	Source initializes tagInfo_t name hash to zero.
+0x004AC460	??0tagInfo_t@@QAE@XZ	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC460	Release initializes name.mHash to zero, matching source.
+0x004AC4A0	??A?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@H	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/core/ae_array.h:154	Source fixed-array operator[] performs the capacity assertion and returns indexed storage.
+0x004AC4A0	??A?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEAAPAVae_heap_base@@H	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC4A0	Release checks idx >= 0x20, reports the same assertion, and returns element idx.
+0x004AC520	?size@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QBEHXZ	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/core/ae_array.h	Source returns m_size.
+0x004AC520	?size@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QBEHXZ	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC520	Release returns m_size, matching source.
+0x004AC530	?RegisterDebugCallback@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXP6AXHPAVEntity@@@Z@Z	V3	PASS	manual-equivalence-2026-08-27	2026-08-27	src/game/logic/g_accessors.cpp:3723	Source stores the debug callback pointer.
+0x004AC530	?RegisterDebugCallback@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXP6AXHPAVEntity@@@Z@Z	V4	PASS	manual-equivalence-2026-08-27	2026-08-27	IDA:0x004AC530	Release assigns cb to mDebugCallback, matching source.

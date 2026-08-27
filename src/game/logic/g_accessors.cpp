@@ -2795,6 +2795,7 @@ vehicle_node_t::vehicle_node_t()
     new (&mTarget) Broc::string((Broc::string::Block*)nullptr);
     new (&script_noteworthy) Broc::string((Broc::string::Block*)nullptr);
 }
+// ea: 0x004AC1C0
 vehicle_node_t::vehicle_node_t(const vehicle_node_t& that)
 {
     new (&mName) Broc::string(that.mName);
@@ -2819,6 +2820,7 @@ vehicle_node_t::vehicle_node_t(const vehicle_node_t& that)
     dst = ((unsigned int)that.nextIdx & 0x3FFFFFFF) | (dst & ~0x3FFFFFFF);
     nextIdx = (int)dst;
 }
+// ea: 0x004AC310
 vehicle_node_t& vehicle_node_t::operator=(const vehicle_node_t& rhs)
 {
     mName = rhs.mName;
@@ -2846,10 +2848,12 @@ vehicle_node_t& vehicle_node_t::operator=(const vehicle_node_t& rhs)
 }
 
 // debug render primitives (g.o 0x4AC060-0x4AC140)
+// ea: 0x004AC060
 debug_sphere::debug_sphere()
 {
     radius = 0.0f;
 }
+// ea: 0x004AC070
 debug_sphere::debug_sphere(const math::Position3& center, float _radius,
                            const Color& _color)
 {
@@ -2862,6 +2866,7 @@ debug_sphere::debug_sphere(const math::Position3& center, float _radius,
     color[2] = _color.b;
     color[3] = _color.a;
 }
+// ea: 0x004AC140
 debug_aabb::debug_aabb(const math::Position3& _bmin,
                        const math::Position3& _bmax, const Color& _color)
 {
@@ -2874,6 +2879,7 @@ debug_aabb::debug_aabb(const math::Position3& _bmin,
 }
 
 // tagInfo_t ctor (g.o 0x4AC460)
+// ea: 0x004AC460
 tagInfo_t::tagInfo_t()
 {
     name.mHash = 0;
