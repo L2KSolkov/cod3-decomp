@@ -1121,3 +1121,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004509F0	?g_LocationalTrace@@YAXPAUtrace_t@@ABVPosition3@math@@1ABUcollision_context_t@@PAEM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004509F0	release Float4_Zero initialization and SV_Trace flags (capsule 0, locational 1, staticmodels 1) match source.
 0x00450A50	?g_LinkEntity@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:912	Entity linking asserts on null input and delegates to SV_LinkEntity.
 0x00450A50	?g_LinkEntity@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00450A50	release null assertion context and SV_LinkEntity call match source.
+0x00450AB0	?g_UnlinkEntity@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:224	Entity unlink wrapper delegates directly to SV_UnlinkEntity.
+0x00450AB0	?g_UnlinkEntity@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00450AB0	release direct SV_UnlinkEntity call matches source.
+0x00450AC0	?g_EntityContact@@YAHABVPosition3@math@@0PBVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_trace.cpp:66	Entity contact wrapper forwards bounds/entity to SV_EntityContact in non-capsule mode.
+0x00450AC0	?g_EntityContact@@YAHABVPosition3@math@@0PBVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00450AC0	release direct SV_EntityContact call with capsule 0 matches source.
+0x00450AE0	?g_EntityContactCapsule@@YAHABVPosition3@math@@0PBVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_trace.cpp:73	Capsule contact validates entity bounds with release diagnostics, reports all three inverted-axis cases, and delegates to SV_EntityContact capsule mode.
+0x00450AE0	?g_EntityContactCapsule@@YAHABVPosition3@math@@0PBVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00450AE0	release null/bounds assertions, classname fallback diagnostics, repeated axis checks, and capsule 1 contact call match source.
