@@ -258,8 +258,10 @@ struct vector {
     float y;  // +0x04
     float z;  // +0x08
 
+    // ea: 0x004A5D30
     vector() : x(sNaN), y(sNaN), z(sNaN) {}
     vector(float ix, float iy) : x(ix), y(iy), z(0.0f) {}
+    // ea: 0x004A5E80
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
     vector& operator+=(const vector& rhs);
     vector& operator/=(float rhs)

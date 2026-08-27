@@ -876,10 +876,12 @@ math::Dir3::Dir3(const math::Position3& _v)
 {
     v = _v.v;
 }
+// ea: 0x004A5D10
 math::Dir3::Dir3(const math::Vector4& _v)
 {
     v = _v.v;
 }
+// ea: 0x004A5D70
 math::Dir3::Dir3(const math::Dir3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
@@ -901,11 +903,13 @@ math::Dir3::Packed::operator=(const math::Dir3& _v)
     Set(_v);
     return *this;
 }
+// ea: 0x004A5E10
 const math::Position3& math::Position3::operator=(const math::Position3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
     return *this;
 }
+// ea: 0x004A5EB0
 math::Position3::Position3(const math::Dir3& _v)
 {
     v = _v.v;
@@ -915,6 +919,7 @@ const math::Position3& math::Position3::operator=(const math::Dir3& _v)
     v = _v.v;
     return *this;
 }
+// ea: 0x004A5F00
 math::Position3::Position3(const math::Position3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
@@ -956,6 +961,7 @@ math::Position3::Packed::operator=(const math::Position3& _v)
 math::Position3::Packed::Packed()
 {
 }
+// ea: 0x004A5F60
 math::Vector4::Vector4(const math::Dir3& _v)
 {
     v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
@@ -971,6 +977,7 @@ math::Vector4::Vector4(const math::Position3& _v)
 }
 
 // Free-function vector math (g.o 0x4A5FB0-0x4A65E0)
+// ea: 0x004A5FB0
 math::Dir3 math::operator-(const math::Dir3& _v)
 {
     math::Dir3 r;
@@ -1273,6 +1280,7 @@ math::Vector4 math::operator*(const math::Vector4& _v, const math::Mat44& _m)
 }
 
 // Vector4(const Constant&) (g.o 0x4A5F80)
+// ea: 0x004A5F80
 math::Vector4::Vector4(const math::Vector4::Constant& _c)
 {
     v = _mm_loadu_ps(&_c.x);
@@ -1916,6 +1924,7 @@ math::Quaternion math::GetQuaternion(const math::Mat33& rot)
 }
 
 // Broc::vector::Set (g.o 0x4A5DE0)
+// ea: 0x004A5DE0
 void Broc::vector::Set(float X, float Y, float Z)
 {
     x = X;

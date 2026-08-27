@@ -123,3 +123,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5CD0	??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5CD0	Release copies the source Position3 vector into the destination Dir3 and returns it.
 0x004A5CF0	??0Dir3@math@@QAE@ABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:873	Source initializes Dir3 from the Position3 SIMD value.
 0x004A5CF0	??0Dir3@math@@QAE@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5CF0	Release copies the Position3 vector into the new Dir3, matching source.
+0x004A5D10	??0Dir3@math@@QAE@ABVVector4@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:880	Source initializes Dir3 by copying the Vector4 SIMD value.
+0x004A5D10	??0Dir3@math@@QAE@ABVVector4@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5D10	Release copies Vector4.v into the new Dir3 and returns this, matching source.
+0x004A5D30	??0vector@Broc@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/engine/broc_types.h:262	Source initializes all three Broc::vector coordinates to the sNaN sentinel.
+0x004A5D30	??0vector@Broc@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5D30	Release stores sNaN into x, y, and z, matching source.
+0x004A5D70	??0Dir3@math@@QAE@ABUPacked@01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:885	Source expands Packed x/y/z into Dir3 lanes and sets w to zero.
+0x004A5D70	??0Dir3@math@@QAE@ABUPacked@01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5D70	Release copies Packed x/y/z into the SIMD value and clears the fourth lane, matching source.
+0x004A5DE0	?Set@vector@Broc@@QAEXMMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1928	Source stores the three supplied scalars into Broc::vector x, y, and z.
+0x004A5DE0	?Set@vector@Broc@@QAEXMMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5DE0	Release performs the same three coordinate stores as source.
+0x004A5E10	??4Position3@math@@QAEABV01@ABUPacked@01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:907	Source expands Position3::Packed x/y/z into the destination SIMD value and returns it.
+0x004A5E10	??4Position3@math@@QAEABV01@ABUPacked@01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5E10	Release copies Packed x/y/z into Position3, clears w, and returns the destination.
+0x004A5E80	??0vector@Broc@@QAE@MMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/engine/broc_types.h:265	Source initializes Broc::vector x, y, and z from the three constructor arguments.
+0x004A5E80	??0vector@Broc@@QAE@MMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5E80	Release stores the three constructor arguments into x/y/z and returns this.
+0x004A5EB0	??0Position3@math@@QAE@ABVDir3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:913	Source initializes Position3 by copying the Dir3 SIMD value.
+0x004A5EB0	??0Position3@math@@QAE@ABVDir3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5EB0	Release copies Dir3.v into the new Position3 and returns this, matching source.
+0x004A5F80	??0Vector4@math@@QAE@ABUConstant@01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1284	Source loads the four floats of Vector4::Constant into Vector4.
+0x004A5F80	??0Vector4@math@@QAE@ABUConstant@01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5F80	Release copies the four Constant floats into the Vector4 SIMD value and returns this.
+0x004A5FB0	??Gmath@@YA?AVDir3@0@ABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:981	Source returns the sign-bit-negated Dir3 value.
+0x004A5FB0	??Gmath@@YA?AVDir3@0@ABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5FB0	Release XORs the Dir3 vector with Float4_SignMask and returns it, matching source.
