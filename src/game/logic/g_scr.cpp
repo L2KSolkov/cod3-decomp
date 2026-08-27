@@ -4281,7 +4281,7 @@ void SetSpectateSeconds(int seconds, int viewport);  // 0x5C1780
 void SetSpectateMedic(int medic, int viewport);  // 0x5C17B0
 void SettleMapVote();  // 0x5BC450
 void SettleGameModeVote();  // 0x5BC470
-int InitMPCallbacks();   // ?InitMPCallbacks@BrocSys@@YAHXZ (0x5BDBA0)
+void InitMPCallbacks();   // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
 unsigned int Spawn(const Broc::string& classname, const Broc::vector& origin,
                    TPakInfo pakInfo);  // 0x5C2340
 unsigned int SpawnWithFlag(const Broc::string& classname,
@@ -4803,7 +4803,7 @@ int GetFullClipAmmoCount(unsigned int entityHandleVal,
                          const Broc::string& sSlot);  // 0x5D6F40
 int GetMaxAmmo(unsigned int entityHandleVal,
                const Broc::string& sSlot);  // 0x5D6FF0
-BrocAPI* InitEntityClient();  // 0x5D70A0 (returns gpBrocAPI)
+void InitEntityClient();  // 0x5D70A0
 void ObjectiveAdd5(int iObjective, const Broc::string& inState,
                    const Broc::string& pszString, const Broc::vector& vPos,
                    unsigned int hEnt, float fHeight, const char* display,
@@ -4864,7 +4864,7 @@ void SetVehicleName(unsigned int entityHandleVal,
                     const Broc::string& name);  // 0x5DA9D0
 void GetTurretRelAngles(unsigned int entityHandleVal, Broc::vector& vec,
                         bool gunner);  // 0x5DAAC0
-BrocAPI* InitVehicle();  // 0x5DABF0 (returns gpBrocAPI)
+void InitVehicle();  // 0x5DABF0
 void AttachPath(unsigned int entityHandleVal,
                 const Broc::vehiclenode& node,
                 int attach_mode);  // 0x5D7930
@@ -4896,7 +4896,7 @@ void ObjectiveChildAdd5(int iObjective, int iChild,
                         const Broc::string& pszString,
                         const Broc::vector& vPos,
                         const char* display);  // 0x5DBE60
-BrocAPI* InitObjective();  // 0x5DBF20 (returns gpBrocAPI)
+void InitObjective();  // 0x5DBF20
 bool RemoveHashString(int hash);  // 0x5DC5E0
 bool RemoveHashString(const char* txt);  // 0x5DC620
 void ThreadTerminateOnNotify(unsigned int entityHandleVal,
@@ -4936,8 +4936,8 @@ void SetFlaggedAnimAligned(unsigned int entityHandleVal,
                            const Broc::vector& origin,
                            const Broc::vector& angles,
                            unsigned int broanim);  // 0x5CC890
-BrocAPI* InitEntity();  // 0x5DD690 (returns gpBrocAPI)
-BrocAPI* InitAPI(); // 0x5DFDB0 (returns gpBrocAPI)
+void InitEntity();  // 0x5DD690
+void InitAPI(); // 0x5DFDB0
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -11603,7 +11603,7 @@ void AeThreadManager::UnloadScript(void* p)
 }
 
 // ea: 0x005BDBA0
-int BrocSys::InitMPCallbacks()
+void BrocSys::InitMPCallbacks()
 {
     if (gpBrocAPI != nullptr)
     {
@@ -11671,7 +11671,6 @@ int BrocSys::InitMPCallbacks()
         e.mCallbackPlayerTotalScore = nullptr;
         e.mCallbackDebugRender = nullptr;
     }
-    return 0;
 }
 
 // ea: 0x005C2340
@@ -20662,7 +20661,7 @@ int BrocSys::GetMaxAmmo(unsigned int entityHandleVal,
 // ============================================================================
 
 // ea: 0x005D70A0
-BrocAPI* BrocSys::InitEntityClient()
+void BrocSys::InitEntityClient()
 {
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerRespawn = BrocSys::MPScript_PlayerRespawn;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerSpawn = BrocSys::MPScript_PlayerSpawn;
@@ -20841,7 +20840,6 @@ BrocAPI* BrocSys::InitEntityClient()
         BrocSys::GetFullClipAmmoCount;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetMaxAmmo = BrocSys::GetMaxAmmo;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mToggleCloth = BrocSys::ToggleNano;
-    return gpBrocAPI;
 }
 
 // ea: 0x005D7790
@@ -22632,7 +22630,7 @@ void BrocSys::GetTurretRelAngles(unsigned int entityHandleVal,
 }
 
 // ea: 0x005DABF0
-BrocAPI* BrocSys::InitVehicle()
+void BrocSys::InitVehicle()
 {
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttachPath = BrocSys::AttachPath;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartPath = BrocSys::StartPath;
@@ -22683,7 +22681,6 @@ BrocAPI* BrocSys::InitVehicle()
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTurretRelAngles =
         BrocSys::GetTurretRelAngles;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRespawnVehicle = BrocSys::RespawnVehicle;
-    return gpBrocAPI;
 }
 
 // ============================================================================
@@ -24111,7 +24108,7 @@ void BrocSys::ObjectiveChildAdd5(int iObjective, int iChild,
 }
 
 // ea: 0x005DBF20
-BrocAPI* BrocSys::InitObjective()
+void BrocSys::InitObjective()
 {
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd1 = BrocSys::ObjectiveAdd1;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd2 = BrocSys::ObjectiveAdd2;
@@ -24163,7 +24160,6 @@ BrocAPI* BrocSys::InitObjective()
         BrocSys::ObjectiveChildCurrent;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildRing =
         BrocSys::ObjectiveChildRing;
-    return gpBrocAPI;
 }
 
 // ea: 0x005DCB90
@@ -26408,7 +26404,7 @@ T entity_get_persistent_player_field(unsigned int handle)
 
 
 // ea: 0x005DD690
-BrocAPI* BrocSys::InitEntity()
+void BrocSys::InitEntity()
 {    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerArray = BrocSys::GetPlayerArray;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetLocalPlayerArray = BrocSys::GetLocalPlayerArray;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerIndex = BrocSys::GetPlayerIndex;
@@ -26920,7 +26916,6 @@ BrocAPI* BrocSys::InitEntity()
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_player_playerState = entity_set_persistent_player_field<int,420,0>;
 
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_player_playerState = entity_get_persistent_player_field<int,420,0>;
-    return gpBrocAPI;
 }
 
 
@@ -27107,7 +27102,7 @@ static const struct { unsigned int off1; void (*fn1)();
     { 0x132C, (void (*)())cdOceanGlobals::SetWaveTimescale, 0x5DC, (void (*)())BrocSys::ProfTick },
 };
 // ea: 0x005DFDB0
-BrocAPI* BrocSys::InitAPI()
+void BrocSys::InitAPI()
 {
     // gpBrocAPI->mPrint = 0xBFBFBFBF (release sentinel per disasm)
     *(void**)((char*)gpBrocAPI + 0x000) = (void*)0xBFBFBFBF;
@@ -27202,7 +27197,6 @@ BrocAPI* BrocSys::InitAPI()
         cdOceanGlobals::SetWavePhase;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveTimescale =
         cdOceanGlobals::SetWaveTimescale;
-    return gpBrocAPI;
 }
 
 // ea: 0x005CBA30
