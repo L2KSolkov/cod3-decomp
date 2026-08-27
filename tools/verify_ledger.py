@@ -34,6 +34,10 @@ EVIDENCE_FIELDS = [
 ]
 EVIDENCE_REQUIRED = {"ida_ea", "name", "gate", "result", "session", "date", "source_ref"}
 GATES = ("V1", "V2", "V3", "V4", "V5")
+# Independent audit records are evidence rows, but are not part of the
+# monotonic V0..V5 level walk.  Keep them in the schema so the 5% audit gate
+# can be recorded without contaminating function levels.
+EVIDENCE_GATES = GATES + ("AUDIT",)
 PASS = "PASS"
 
 # The map has two game/engine segments.  Segment 2 is the normal image text;
@@ -649,7 +653,7 @@ def read_evidence() -> tuple[dict[tuple[str, str, str], dict[str, str]], list[st
                     if any(not row.get(field, "").strip() for field in EVIDENCE_REQUIRED):
                         errors.append(f"{path}:{line}: required evidence fields are missing")
                         continue
-                    if row["gate"] not in GATES:
+                    if row["gate"] not in EVIDENCE_GATES:
                         errors.append(f"{path}:{line}: invalid gate {row['gate']}")
                         continue
                     if row["result"] not in {"PASS", "FAIL", "ADJUDICATE"}:

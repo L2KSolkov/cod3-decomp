@@ -24,6 +24,14 @@ def main() -> int:
             assert not errors, errors
             assert evidence[("0X0040C000", "fn", "V4")]["result"] == "FAIL"
 
+            # Independent audit rows are valid evidence but do not advance
+            # the monotonic V0..V5 function level.
+            with path.open("a", encoding="utf-8") as stream:
+                stream.write(row("PASS", gate="AUDIT") + "\n")
+            evidence, errors = ledger.read_evidence()
+            assert not errors, errors
+            assert evidence[("0X0040C000", "fn", "AUDIT")]["result"] == "PASS"
+
             # A later PASS supersedes the earlier FAIL for the same key; no
             # object/file aggregate can affect an unrelated function key.
             with path.open("a", encoding="utf-8") as stream:
