@@ -615,3 +615,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BCEE0	?ProfEnd@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCEE0;src/game/logic/g_scr.cpp:3187	Release body is an empty profiling hook and source has the same no-op body.
 0x005BC800	?Line@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC800;src/game/logic/g_scr.cpp:8109	Release body is a single-return debug line hook and source is intentionally no-op.
 0x005BD8B0	?PlayScriptedAnim@BrocSys@@YAXIPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD8B0;src/game/logic/g_scr.cpp:8407	Release body asserts the documented multiplayer-empty path and source reproduces the same assertion flow.
+0x005C1AB0	?Scr_IsSystemActive@@YAHE@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_entity_misc.cpp:1847	Script system-active query returns the release constant true.
+0x005C1AB0	?Scr_IsSystemActive@@YAHE@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1AB0;src/game/logic/g_entity_misc.cpp:1847	Release returns 1 for the byte-parameter ABI and source returns the same constant.
