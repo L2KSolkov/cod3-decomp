@@ -91,7 +91,7 @@ int dword_F0F204[2];
 extern char byte_F0F208[];
 extern int dword_F170F8;
 extern int scr_initialized;
-extern int dword_F6A28C;
+extern int dword_F6A28C[4 * 802];
 extern int gSaveGameData_mHorizontalSensitivity[4];
 extern int gSaveGameData_mVerticalSensitivity[4];
 extern int unk_F6A298[4];

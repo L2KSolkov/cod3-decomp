@@ -66,7 +66,7 @@ public:
     void UnPause();
 };
 extern int unk_F6A28C[];  // per-client controller ports
-extern int dword_F6A28C; // active port
+extern int dword_F6A28C[4 * 802]; // per-client controller ports
 
 // msg_t (message buffer, from server_types)
 struct msg_t {
@@ -266,8 +266,8 @@ void LocalClient::UpdatePlayerPorts(int fixedPort)
 {
     int availCont[1];
     availCont[0] = 1;
-    if (dword_F6A28C >= 0)
-        availCont[dword_F6A28C] = -1;
+    if (dword_F6A28C[0] >= 0)
+        availCont[dword_F6A28C[0]] = -1;
     if (fixedPort < 0 || (availCont[fixedPort] = -1, fixedPort != 0))
     {
         if (dword_F6A290[0] == 0)
@@ -278,7 +278,7 @@ void LocalClient::UpdatePlayerPorts(int fixedPort)
                 if (++v1 >= 1)
                     return;
             }
-            dword_F6A28C = v1;
+            dword_F6A28C[0] = v1;
             availCont[v1] = -1;
         }
     }

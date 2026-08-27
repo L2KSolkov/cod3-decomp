@@ -35,8 +35,6 @@ analysis/*.md
 !analysis/*_o_plan.tsv
 !analysis/*_o_checklist.tsv
 !analysis/VERIFY_SUMMARY.tsv
-!analysis/VERIFY_ANOMALIES.tsv
-!analysis/VERIFY_TYPES.tsv
 !analysis/evidence/
 !analysis/evidence/*.tsv
 !analysis/evidence/README.md

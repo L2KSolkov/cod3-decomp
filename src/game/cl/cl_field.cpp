@@ -621,7 +621,7 @@ void CLSwirlControl()
 extern float CL_GamepadAxisValue(unsigned int virtualAxis);
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
 extern unsigned int frame_msec;
-extern int dword_F6A28C;
+extern int dword_F6A28C[4 * 802];
 int gSaveGameData_mInvertAim[4];            // ?gSaveGameData_mInvertAim (game2.o)
 int gSaveGameData_mHorizontalSensitivity[4]; // ?gSaveGameData_mHorizontalSensitivity (game2.o)
 int gSaveGameData_mVerticalSensitivity[4];   // ?gSaveGameData_mVerticalSensitivity (game2.o)
@@ -654,7 +654,7 @@ void CL_GamepadMove(usercmd_s* cmd)
         return;
     }
     float pitch = CL_GamepadAxisValue(4) * -128.0f;
-    int v1 = currCl != 0 ? 0 : dword_F6A28C;
+    int v1 = currCl != 0 ? 0 : dword_F6A28C[0];
     pitch = (float)(2 * gSaveGameData_mInvertAim[v1] - 1) * pitch;
     float yaw = CL_GamepadAxisValue(3) * 128.0f;
     float accelSensitivityY = -CL_GamepadAxisValue(1);
@@ -747,9 +747,9 @@ LABEL_40:
     float v20 = accelSensitivityY * v17;
     yaw = accelSensitivityY * v17;
     pitch = accelSensitivityY * v18;
-    int v21 = currCl != 0 ? 0 : dword_F6A28C;
+    int v21 = currCl != 0 ? 0 : dword_F6A28C[0];
     float v22 = (float)gSaveGameData_mHorizontalSensitivity[v21] * 0.039999999f;
-    int v23 = currCl != 0 ? 0 : dword_F6A28C;
+    int v23 = currCl != 0 ? 0 : dword_F6A28C[0];
     float v24 = (float)gSaveGameData_mVerticalSensitivity[v23] * 0.039999999f;
     if (v22 == 0.0f)
         v22 = 0.1f;
