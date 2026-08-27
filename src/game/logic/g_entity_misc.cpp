@@ -4226,7 +4226,7 @@ InitScriptFn InitScript(BrocAPI** gamesAPIptr,
 
 namespace BrocSys {
 void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
-void InitAPI();
+BrocAPI* InitAPI();
 void BrocDebugRender();
 }
 
