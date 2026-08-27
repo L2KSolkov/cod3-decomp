@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:10	Real HUD allocator scans the 16-element pool, selects HE_TYPE_FREE, applies defaults, and returns null when full.
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B0F0;src/game/logic/g_hudelem.cpp:10	Release and source both scan g_hudelems[0..15], call HudElem_SetDefaults on the selected slot, and return nullptr after the bound check.
