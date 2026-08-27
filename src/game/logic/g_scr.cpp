@@ -1214,7 +1214,6 @@ void AeThread::BackupStack::Restore(unsigned int stackBegin) const
 void AeThread::BackupStack::Block::SetupAllocator()
 {
     ae_sized_array<PoolAllocator::PoolConfig, 16> poolCfg;
-    memset(&poolCfg, 0, sizeof(poolCfg));
     poolCfg.m_size = 0;
     PoolAllocator::PoolConfig elt;
     elt.blockSize = 0x100;
