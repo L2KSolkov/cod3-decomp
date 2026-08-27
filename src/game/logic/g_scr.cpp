@@ -3860,7 +3860,7 @@ void AeThreadManager::SetExecutingThread(AeThread* t)
 }
 
 // ea: 0x005E9D70
-void memcpyFromStack(unsigned char* dest, unsigned char* src, int count)
+void memcpyFromStack(void* dest, void* src, unsigned int count)
 {
     if (count > 0)
     {
@@ -3876,7 +3876,7 @@ void memcpyFromStack(unsigned char* dest, unsigned char* src, int count)
 }
 
 // ea: 0x005E9DA0
-void memcpyToStack(unsigned char* dest, unsigned char* src, int count)
+void memcpyToStack(void* dest, void* src, unsigned int count)
 {
     if (count > 0)
     {
