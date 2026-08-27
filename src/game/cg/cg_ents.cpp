@@ -2597,6 +2597,18 @@ void CG_AdjustPositionForMover(const math::Position3* in, unsigned int mover,
         out->v.m128_f32[2] = in->v.m128_f32[2];
         return;
     }
+    // The release performs a second handle/object validation before reading
+    // mover trajectories; preserve its assert/early-return race path.
+    unsigned int verifyIndex = mover & 0xFFF;
+    if (verifyIndex >= 0x540
+        || (mover >> 12)
+               != EntityHandleDb::sInst.mElements[verifyIndex].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[verifyIndex].mObject)
+               == nullptr)
+    {
+        CG_ASSERT("cent", "c:\\cod\\code\\game\\cg_ent.cpp", 694);
+        return;
+    }
     math::Position3 fromPos, fromAngles, toPos, toAngles;
     BG_EvaluateTrajectory(&mObject->s.pos, fromTime, fromPos);
     BG_EvaluateTrajectory(&mObject->s.apos, fromTime, fromAngles);
