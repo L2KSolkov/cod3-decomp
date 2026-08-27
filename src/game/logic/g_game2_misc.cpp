@@ -530,6 +530,162 @@ static void nalMatrix4x4_FromPositionOrientation(
     mat->w[3] = 1.0f;
 }
 
+static math::Quaternion AnimIK_QuaternionFromMatrix(const nalMatrix4x4& matrix)
+{
+    math::Mat44 view;
+    view.x.v = _mm_loadu_ps(matrix.x);
+    view.y.v = _mm_loadu_ps(matrix.y);
+    view.z.v = _mm_loadu_ps(matrix.z);
+    view.w.v = _mm_loadu_ps(matrix.w);
+    return nalQuaternionFromMatrix(view);
+}
+
+class AnimIK;
+struct AnimIKRawView {
+    float joints[4][5];
+    int initialized;
+    void* pose;
+    void* skeleton;
+};
+
+extern void nalGenericSkeleton_GetBoneHandle(
+    void* skeleton, nalGenericBoneHandle* handle,
+    const tlFixedString* boneName);
+extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
+    void* pose, const nalGenericBoneHandle* handle);
+extern void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
+                           const math::Dir3& d1, const math::Dir3& d2,
+                           const math::Dir3& d3, float a8, float a9,
+                           nalMatrix4x4& m1, nalMatrix4x4& m2);
+extern void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1,
+                         const math::Dir3& d2, float a1, float a2,
+                         float a3, float a4, math::Dir3& out1,
+                         math::Dir3& out2, float& outA, float& outB,
+                         float& outC, float& outD);
+
+static nalMatrix4x4 AnimIK_IdentityMatrix()
+{
+    nalMatrix4x4 identity;
+    identity.x[0] = 1.0f; identity.x[1] = 0.0f;
+    identity.x[2] = 0.0f; identity.x[3] = 0.0f;
+    identity.y[0] = 0.0f; identity.y[1] = 1.0f;
+    identity.y[2] = 0.0f; identity.y[3] = 0.0f;
+    identity.z[0] = 0.0f; identity.z[1] = 0.0f;
+    identity.z[2] = 1.0f; identity.z[3] = 0.0f;
+    identity.w[0] = 0.0f; identity.w[1] = 0.0f;
+    identity.w[2] = 0.0f; identity.w[3] = 1.0f;
+    return identity;
+}
+
+static bool AnimIK_ApplyTwoBoneIK(
+    AnimIK* ik, int jointIndex, const tlFixedString& childName,
+    const tlFixedString& jointName, const tlFixedString& baseName,
+    const nalMatrix4x4& target)
+{
+    AnimIKRawView* view = reinterpret_cast<AnimIKRawView*>(ik);
+    if (ik == nullptr || view->pose == nullptr || view->skeleton == nullptr)
+        return false;
+
+    nalGenericBoneHandle child{nullptr, 0};
+    nalGenericBoneHandle joint{nullptr, 0};
+    nalGenericBoneHandle base{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(view->skeleton, &child, &childName);
+    nalGenericSkeleton_GetBoneHandle(view->skeleton, &joint, &jointName);
+    nalGenericSkeleton_GetBoneHandle(view->skeleton, &base, &baseName);
+    if (child.Skeleton == nullptr || joint.Skeleton == nullptr
+        || base.Skeleton == nullptr)
+        return false;
+
+    const nalPositionOrientation childPO =
+        nalGenericPose_GetModelPositionOrientation(view->pose, &child);
+    const nalPositionOrientation jointPO =
+        nalGenericPose_GetModelPositionOrientation(view->pose, &joint);
+    const nalPositionOrientation basePO =
+        nalGenericPose_GetModelPositionOrientation(view->pose, &base);
+
+    const math::Dir3 basePos(basePO.pos);
+    const math::Dir3 jointPos(jointPO.pos);
+    const math::Dir3 targetPos(target.w[0], target.w[1], target.w[2]);
+    const math::Dir3 midDir(jointPos.v.m128_f32[0] - basePos.v.m128_f32[0],
+                            jointPos.v.m128_f32[1] - basePos.v.m128_f32[1],
+                            jointPos.v.m128_f32[2] - basePos.v.m128_f32[2]);
+    const math::Dir3 targetDelta(targetPos.v.m128_f32[0] - basePos.v.m128_f32[0],
+                                 targetPos.v.m128_f32[1] - basePos.v.m128_f32[1],
+                                 targetPos.v.m128_f32[2] - basePos.v.m128_f32[2]);
+    const float targetLength = sqrtf(targetDelta.v.m128_f32[0]
+                                   * targetDelta.v.m128_f32[0]
+                                   + targetDelta.v.m128_f32[1]
+                                   * targetDelta.v.m128_f32[1]
+                                   + targetDelta.v.m128_f32[2]
+                                   * targetDelta.v.m128_f32[2]);
+    if (targetLength <= 0.001f)
+        return false;
+
+    const float lowerLength = sqrtf(
+        (childPO.pos.v.m128_f32[0] - jointPO.pos.v.m128_f32[0])
+            * (childPO.pos.v.m128_f32[0] - jointPO.pos.v.m128_f32[0])
+        + (childPO.pos.v.m128_f32[1] - jointPO.pos.v.m128_f32[1])
+            * (childPO.pos.v.m128_f32[1] - jointPO.pos.v.m128_f32[1])
+        + (childPO.pos.v.m128_f32[2] - jointPO.pos.v.m128_f32[2])
+            * (childPO.pos.v.m128_f32[2] - jointPO.pos.v.m128_f32[2]));
+    if (view->joints[jointIndex][0] <= 0.001f
+        || lowerLength <= 0.001f)
+        return false;
+
+    const math::Dir3 targetDir(
+        targetDelta.v.m128_f32[0] / targetLength,
+        targetDelta.v.m128_f32[1] / targetLength,
+        targetDelta.v.m128_f32[2] / targetLength);
+    const math::Dir3 midDirection = math::Unitize(midDir);
+    float sinUpper = 0.0f;
+    float cosUpper = 1.0f;
+    float sinLower = 0.0f;
+    float cosLower = 1.0f;
+    math::Dir3 solverBase;
+    math::Dir3 solverTarget;
+    nalMatrix4x4 identity = AnimIK_IdentityMatrix();
+    nalIKSolve2D(identity, basePos, targetPos,
+                 view->joints[jointIndex][1],
+                 1.0f / (lowerLength * 2.0f),
+                 view->joints[jointIndex][2],
+                 (lowerLength * lowerLength
+                  - view->joints[jointIndex][0]
+                    * view->joints[jointIndex][0])
+                    / (lowerLength * 2.0f),
+                 solverBase, solverTarget, sinUpper, cosUpper,
+                 sinLower, cosLower);
+
+    nalMatrix4x4 upperModel;
+    nalMatrix4x4 lowerModel;
+    upperModel = identity;
+    lowerModel = identity;
+    nalIKMap2DTo3D(view->joints[jointIndex][0], sinUpper, cosUpper,
+                   sinLower, cosLower,
+                   basePos, targetDir, midDirection, 0.0f, 1.0f,
+                   upperModel, lowerModel);
+
+    nalMatrix4x4 parentModel;
+    nalMatrix4x4_FromPositionOrientation(basePO, &parentModel);
+    nalMatrix4x4 inverseParent = parentModel.Inverse();
+    nalMatrix4x4 baseLocal;
+    AnimIK_Multiply(upperModel, inverseParent, &baseLocal);
+    static_cast<nalGeneric::nalGenericPose*>(view->pose)->SetPoseBoneOrientation(
+        base, AnimIK_QuaternionFromMatrix(baseLocal));
+
+    nalMatrix4x4 inverseUpper = upperModel.Inverse();
+    nalMatrix4x4 jointLocal;
+    AnimIK_Multiply(lowerModel, inverseUpper, &jointLocal);
+    static_cast<nalGeneric::nalGenericPose*>(view->pose)->SetPoseBoneOrientation(
+        joint, AnimIK_QuaternionFromMatrix(jointLocal));
+
+    nalMatrix4x4 inverseLower = lowerModel.Inverse();
+    nalMatrix4x4 childLocal;
+    AnimIK_Multiply(target, inverseLower, &childLocal);
+    static_cast<nalGeneric::nalGenericPose*>(view->pose)->SetPoseBoneOrientation(
+        child, AnimIK_QuaternionFromMatrix(childLocal));
+    return true;
+}
+
 void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 {
     const float* rows = &mat->x[0];
@@ -939,11 +1095,23 @@ void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
 void AnimIK::ApplyFootIK(Entity* ent, nalMatrix4x4& leftFootMat,
                          nalMatrix4x4& rightFootMat)
 {
+    if (ent == nullptr || ent->sentient == nullptr)
+        return;
+    AnimIK_ApplyTwoBoneIK(this, 2, BoneNames[16], BoneNames[15],
+                          BoneNames[14], leftFootMat);
+    AnimIK_ApplyTwoBoneIK(this, 3, BoneNames[19], BoneNames[18],
+                          BoneNames[17], rightFootMat);
 }
 // ea: 0x004FBD10
 void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
                          nalMatrix4x4& rightMat)
 {
+    if (ent == nullptr || ent->sentient == nullptr)
+        return;
+    AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
+                          BoneNames[7], leftMat);
+    AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
+                          BoneNames[11], rightMat);
 }
 // ea: 0x004FC5B0
 void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
