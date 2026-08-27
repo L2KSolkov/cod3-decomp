@@ -13155,8 +13155,8 @@ void BrocSys::Mover_SetupMoveSpeed(
             tr.trType = TR_DECCELERATE;
             tr.trTime = level.time;
             tr.trDuration = (int)(*pfDecelTime * 1000.0f);
-            if (IS_NAN(tr.trDelta[0]) || IS_NAN(tr.trDelta[1])
-                || IS_NAN(tr.trDelta[2]))
+            if (IS_NAN(pTr->trDelta[0]) || IS_NAN(pTr->trDelta[1])
+                || IS_NAN(pTr->trDelta[2]))
             {
                 AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
@@ -13170,6 +13170,19 @@ void BrocSys::Mover_SetupMoveSpeed(
         }
         BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
     }
+}
+
+// ea: 0x005C0A90
+void BrocSys::Mover_RotateSpeed(Entity* pEnt,
+                                const math::Position3& vRotSpeed,
+                                float fTotalTime, float fAccelTime,
+                                float fDecelTime)
+{
+    BrocSys::Mover_SetupMoveSpeed(
+        &pEnt->s.apos, vRotSpeed, fTotalTime, fAccelTime, fDecelTime,
+        pEnt->r.currentAngles, &pEnt->closespeed, &pEnt->angle,
+        &pEnt->random, pEnt->movedir, pEnt->rotate, pEnt->TargetAngles);
+    g_LinkEntity(pEnt);
 }
 
 // ============================================================================

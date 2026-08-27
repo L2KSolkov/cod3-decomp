@@ -268,14 +268,6 @@ void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // ?Mover_RotateSpeed@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z
 }
-// stub until scr.o Mover_RotateSpeed is ported
-void BrocSys::Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
-                                float fTotalTime, float fAccelTime,
-                                float fDecelTime)
-{
-    (void)pEnt; (void)vRotSpeed; (void)fTotalTime; (void)fAccelTime;
-    (void)fDecelTime;
-}
 void phys_full_inv_multiply_mat(math::Mat43& dest_m,
                                 const math::Mat43& left_m,
                                 const math::Mat43& right_m);  // physics.o inline
