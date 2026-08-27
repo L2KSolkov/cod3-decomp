@@ -203,6 +203,47 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
     return None
 
 
+def marker_hint(line: str) -> str:
+    """Extract a function name carried by a descriptive EA annotation."""
+    code, _, comment = line.partition("//")
+    names = list(re.finditer(r"([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*)\s*\(", code))
+    if names:
+        candidate = names[-1].group(1)
+        if candidate not in {"if", "for", "while", "switch", "catch", "return", "new"}:
+            return candidate
+    match = re.search(
+        r"([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*)\s*-\s*ea:", comment)
+    if match:
+        return match.group(1)
+    match = re.match(
+        r"\s*([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*)\s*-\s*", comment)
+    return match.group(1) if match else ""
+
+
+def hinted_function_candidate(lines: list[str], start: int,
+                              hint: str) -> tuple[str, int] | None:
+    """Resolve a descriptive marker past intervening declarations/includes."""
+    if not hint:
+        return None
+    pattern = re.compile(r"\b" + re.escape(hint) + r"\s*\(")
+    for index in range(start, min(len(lines), start + 96)):
+        piece = lines[index].strip()
+        if not piece or piece.startswith("//"):
+            continue
+        if not pattern.search(piece):
+            continue
+        text = piece
+        for end in range(index + 1, min(len(lines), index + 8)):
+            if "{" in text:
+                break
+            text += " " + lines[end].strip()
+            if ";" in text and "{" not in text:
+                break
+        if "{" in text and ";" not in text.split("{", 1)[0]:
+            return hint, index
+    return None
+
+
 def matching_body(lines: list[str], brace_line: int) -> str:
     text = "\n".join(lines[brace_line:min(len(lines), brace_line + 250)])
     open_at = text.find("{")
@@ -248,6 +289,14 @@ def scan_markers() -> list[Marker]:
             if not match:
                 continue
             candidate_info = function_candidate(lines, number)
+            if candidate_info is None:
+                hint = marker_hint(line)
+                if not hint:
+                    for previous in reversed(lines[max(0, number - 3):number]):
+                        hint = marker_hint(previous)
+                        if hint:
+                            break
+                candidate_info = hinted_function_candidate(lines, number + 1, hint)
             if candidate_info is None:
                 markers.append(Marker(int(match.group(1), 16), str(path.relative_to(ROOT)),
                                       number + 1, "", ""))
