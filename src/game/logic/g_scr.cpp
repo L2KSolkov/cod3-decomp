@@ -5184,6 +5184,7 @@ void AeThread::RegisterBrocInst(void* inst, BrocDtorBase* dtor)
                             new BrocObjCreated(this->mBrocCreated);
                         if (v6 == nullptr)
                             goto alloc_fail;
+                        mBrocCreated = v6;
                         goto have;
                     }
                 }
