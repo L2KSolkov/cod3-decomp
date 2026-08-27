@@ -26,7 +26,7 @@ apsColorBillboardNode.o	16	1	1	1	0	13	0
 apsColorBillboardRenderer.o	11	4	1	2	0	4	0
 apsColorRectangleNode.o	16	1	1	1	0	13	0
 apsColorRectangleRenderer.o	21	12	2	2	0	5	0
-apsColorUVANode.o	16	2	2	1	0	11	0
+apsColorUVANode.o	16	1	1	1	0	13	0
 apsColorUVARectangleNode.o	16	2	2	1	0	11	0
 apsColorUVARectangleRenderer.o	19	11	1	2	0	5	0
 apsColorUVARenderer.o	11	4	1	2	0	4	0
