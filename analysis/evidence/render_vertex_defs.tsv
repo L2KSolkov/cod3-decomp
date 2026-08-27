@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007C4B80	?ProcessCDDebugVertexDef@@YAXPAX@Z	V3	PASS	ida-manual-20260827e	2026-08-27	src/render/cdDebugVertexDef.cpp:70	Source preserves the release assertion-only processor entry point.
+0x007C4B80	?ProcessCDDebugVertexDef@@YAXPAX@Z	V4	PASS	ida-manual-20260827e	2026-08-27	IDA:0x007C4B80;src/render/cdDebugVertexDef.cpp:70	Release and source both call _tlAssert with cdDebugVertexDef.cpp, line 88, expression false, description JIV STUB, then conditionally break.
+0x007C5350	?ProcessCDScratchVertexDef@@YAXPAX@Z	V3	PASS	ida-manual-20260827e	2026-08-27	src/render/cdScratchVertexDef.cpp:51	Source preserves the release assertion-only processor entry point.
+0x007C5350	?ProcessCDScratchVertexDef@@YAXPAX@Z	V4	PASS	ida-manual-20260827e	2026-08-27	IDA:0x007C5350;src/render/cdScratchVertexDef.cpp:51	Release and source both call _tlAssert with cdScratchVertexDef.cpp, line 117, expression false, description JIV STUB, then conditionally break.
+0x007CD440	?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z	V3	PASS	ida-manual-20260827e	2026-08-27	src/render/cdDynamicDecalVertexDef.cpp:39	Source preserves the release assertion-only processor entry point.
+0x007CD440	?ProcessCDDynamicDecalVertexDef@@YAXPAX@Z	V4	PASS	ida-manual-20260827e	2026-08-27	IDA:0x007CD440;src/render/cdDynamicDecalVertexDef.cpp:39	Release and source both call _tlAssert with cdDynamicDecalVertexDef.cpp, line 102, expression false, description JIV STUB, then conditionally break.
