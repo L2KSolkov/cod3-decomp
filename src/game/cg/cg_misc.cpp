@@ -3510,7 +3510,8 @@ struct ADSMetaAnimPlayer {
 };
 
 // nalInstanceClass-derived ADS instance (cg.o; layout verified vs disasm)
-struct nalBasePose {
+class nalBasePose {
+public:
     void* Skeleton;  // +0x00
 };
 
@@ -3519,9 +3520,11 @@ public:
     ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim, nalAnyPoseAnim* reverseAnim,
                         nalBaseSkeleton* theSkel, float* interpValue);  // ea: 0x006BB7C0
     virtual ~ADSMetaAnimInstance();                          // ea: 0x006BB940
+
+protected:
     virtual void VirtualGetPose(float t, float t_prev,
-                                nalBasePose* pose,
-                                const nalBasePose* defaultPose,
+                                nalBasePose& pose,
+                                const nalBasePose& defaultPose,
                                 int lod);                    // ea: 0x006BBF00
 
     float Duration;          // +0x04
@@ -3818,8 +3821,8 @@ ADSMetaAnimInstance::~ADSMetaAnimInstance()
 
 // ea: 0x006BBF00
 void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
-                                         nalBasePose* pose,
-                                         const nalBasePose* defaultPose,
+                                         nalBasePose& pose,
+                                         const nalBasePose& defaultPose,
                                          int lod)
 {
     if (*mInterpValue <= mPrevValue)
@@ -3828,7 +3831,7 @@ void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
         float v14 = 1.0f - *mInterpValue;
         float v16 = 1.0f - mPrevValue;
         void* skel = *(void**)((char*)reverseInst + 0x0C);
-        if ((skel != pose->Skeleton || skel != defaultPose->Skeleton)
+        if ((skel != pose.Skeleton || skel != defaultPose.Skeleton)
             && _tlAssert(
                    "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 117,
                    "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
@@ -3837,7 +3840,7 @@ void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
             __debugbreak();
         }
         ((InstanceVirtualGetPoseFn)((void**)*(void**)reverseInst)[1])(
-            reverseInst, v14, v16, pose, defaultPose, 0);
+            reverseInst, v14, v16, &pose, &defaultPose, 0);
     }
     else
     {
@@ -3845,7 +3848,7 @@ void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
         float prevValue = mPrevValue;
         float v11 = *mInterpValue;
         void* skel = *(void**)((char*)forwardInst + 0x0C);
-        if ((skel != pose->Skeleton || skel != defaultPose->Skeleton)
+        if ((skel != pose.Skeleton || skel != defaultPose.Skeleton)
             && _tlAssert(
                    "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 117,
                    "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
@@ -3854,7 +3857,7 @@ void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
             __debugbreak();
         }
         ((InstanceVirtualGetPoseFn)((void**)*(void**)forwardInst)[1])(
-            forwardInst, v11, prevValue, pose, defaultPose, 0);
+            forwardInst, v11, prevValue, &pose, &defaultPose, 0);
     }
     mPrevValue = *mInterpValue;
 }
