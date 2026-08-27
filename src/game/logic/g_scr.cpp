@@ -6592,14 +6592,15 @@ void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
         WaitTilOutputInst1Local<unsigned int>* v4 =
             (WaitTilOutputInst1Local<unsigned int>*)WaitTilOutput_sAllocator
                 ->Allocate(0x10, false);
-        v5 = v4 != nullptr
-                 ? new (v3) EntityNotifyLocal(
-                       notifyId,
-                       DbLinkedHandle<EntityHandleDb, Entity>(
-                           Handle(entityHandleVal)),
-                       (void*)(WaitTilOutputLocal*)new (v4)
-                           WaitTilOutputInst1Local<unsigned int>(entityOut))
-                 : nullptr;
+        WaitTilOutputLocal* output =
+            v4 != nullptr
+                ? (WaitTilOutputLocal*)new (v4)
+                      WaitTilOutputInst1Local<unsigned int>(entityOut)
+                : nullptr;
+        v5 = new (v3) EntityNotifyLocal(
+            notifyId,
+            DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
+            (void*)output);
     }
     else
     {
@@ -6620,14 +6621,15 @@ void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
         WaitTilOutputInst1Local<Broc::string>* v4 =
             (WaitTilOutputInst1Local<Broc::string>*)WaitTilOutput_sAllocator
                 ->Allocate(0x10, false);
-        v6 = v4 != nullptr
-                 ? new (v3) EntityNotifyLocal(
-                       notifyId,
-                       DbLinkedHandle<EntityHandleDb, Entity>(
-                           Handle(entityHandleVal)),
-                       (void*)(WaitTilOutputLocal*)new (v4)
-                           WaitTilOutputInst1Local<Broc::string>(strOut))
-                 : nullptr;
+        WaitTilOutputLocal* output =
+            v4 != nullptr
+                ? (WaitTilOutputLocal*)new (v4)
+                      WaitTilOutputInst1Local<Broc::string>(strOut)
+                : nullptr;
+        v6 = new (v3) EntityNotifyLocal(
+            notifyId,
+            DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
+            (void*)output);
     }
     else
     {
@@ -6648,14 +6650,15 @@ void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
         WaitTilOutputInst1Local<int>* v4 =
             (WaitTilOutputInst1Local<int>*)WaitTilOutput_sAllocator->Allocate(
                 0x10, false);
-        v5 = v4 != nullptr
-                 ? new (v3) EntityNotifyLocal(
-                       notifyId,
-                       DbLinkedHandle<EntityHandleDb, Entity>(
-                           Handle(entityHandleVal)),
-                       (void*)(WaitTilOutputLocal*)new (v4)
-                           WaitTilOutputInst1Local<int>(intOut))
-                 : nullptr;
+        WaitTilOutputLocal* output =
+            v4 != nullptr
+                ? (WaitTilOutputLocal*)new (v4)
+                      WaitTilOutputInst1Local<int>(intOut)
+                : nullptr;
+        v5 = new (v3) EntityNotifyLocal(
+            notifyId,
+            DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
+            (void*)output);
     }
     else
     {
@@ -6676,15 +6679,16 @@ void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
         WaitTilOutputInst2Local<float, unsigned int>* v5 =
             (WaitTilOutputInst2Local<float, unsigned int>*)
                 WaitTilOutput_sAllocator->Allocate(0x14, false);
-        v6 = v5 != nullptr
-                 ? new (v4) EntityNotifyLocal(
-                       (unsigned int)notifyId,
-                       DbLinkedHandle<EntityHandleDb, Entity>(
-                           Handle(entityHandleVal)),
-                       (void*)(WaitTilOutputLocal*)new (v5)
-                           WaitTilOutputInst2Local<float, unsigned int>(
-                               floatOut, outEnt))
-                 : nullptr;
+        WaitTilOutputLocal* output =
+            v5 != nullptr
+                ? (WaitTilOutputLocal*)new (v5)
+                      WaitTilOutputInst2Local<float, unsigned int>(
+                          floatOut, outEnt)
+                : nullptr;
+        v6 = new (v4) EntityNotifyLocal(
+            (unsigned int)notifyId,
+            DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
+            (void*)output);
     }
     else
     {
@@ -12996,7 +13000,7 @@ void* BrocSys::GetExtendedEntity(unsigned int handle)
     if (mObject->mBrocExtendedEntity == nullptr)
     {
         void* (*mCreateExtendedEntity)(const char**, int) =
-            Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity;
+            gpBrocAPI->mBrocExports.mCreateExtendedEntity;
         if (mCreateExtendedEntity != nullptr)
             mObject->mBrocExtendedEntity = mCreateExtendedEntity(nullptr, 0);
     }
