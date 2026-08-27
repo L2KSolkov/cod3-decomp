@@ -795,9 +795,9 @@ extern void nglSetZWriteEnable(bool enable);
 extern void nglListEndScene();
 extern void nglSetView(float x1, float y1, float x2, float y2);
 extern void nglSetScissor(float x1, float y1, float x2, float y2);
-extern void CG_DrawCrosshair(float transScale);
-extern void CG_Draw2D(float a2);
-extern void CG_DrawActive(float a1);
+extern void CG_DrawCrosshair();
+extern void CG_Draw2D();
+extern void CG_DrawActive();
 extern char cgsGlobal_shellshockParms[0x7C];
 extern void View_SetViewportClipping(int clientIndex);
 namespace View { extern int lNumViewports; }
@@ -3130,7 +3130,7 @@ void CG_DrawTracer(const math::Position3& _start,
 }
 
 // ea: 0x006A07D0
-void CG_DrawCrosshair(float transScaleArg)
+void CG_DrawCrosshair()
 {
     int color[4] = {1065353216, 1065353216, 1065353216, 0};
     float fWeaponPosFrac =
@@ -3288,7 +3288,7 @@ void CG_DrawCrosshair(float transScaleArg)
 }
 
 // ea: 0x006A0F50
-void CG_Draw2D(float a2)
+void CG_Draw2D()
 {
     if (dword_F62948[1580 * currCl] != 0
         || cgGlobal.cubemapShot != 0 /* CUBEMAPSHOT_NONE */)
@@ -3329,7 +3329,7 @@ void CG_Draw2D(float a2)
             {
                 if (v7 < 6)
                 {
-                    CG_DrawCrosshair(a2);
+                    CG_DrawCrosshair();
                     if (dword_F6A28C[802 * currCl] == 0
                         && *(unsigned char*)((char*)gSaveGameData + 0x3A)
                         && !*(bool*)((char*)&g_femanager + 0x3C)
@@ -3351,7 +3351,7 @@ void CG_Draw2D(float a2)
                 }
                 if (*(int*)(dword_F62960[1580 * currCl] + 52) < 6)
                 {
-                    CG_DrawCrosshair(a2);
+                    CG_DrawCrosshair();
                     if (dword_F6A28C[802 * currCl] == 0
                         && *(unsigned char*)((char*)gSaveGameData + 0x3A)
                         && !*(bool*)((char*)&g_femanager + 0x3C)
@@ -3403,7 +3403,7 @@ label_46:
 }
 
 // ea: 0x006A12F0
-void CG_DrawActive(float a1)
+void CG_DrawActive()
 {
     if (dword_F62960[1580 * currCl] != 0)
     {
@@ -3418,7 +3418,7 @@ void CG_DrawActive(float a1)
             (const shellshock_parms_t*)dword_F64164[1580 * currCl],
             dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);
         if (gRenderCG_2D != 0)
-            CG_Draw2D(a1);
+            CG_Draw2D();
         InspectorManager_Render(&g_inspectorManager);
     }
     else
@@ -3583,7 +3583,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
             CG_ASSERT("cg[currCl].nextSnap->serverTime == G_GetServerSnapTime()",
                       "c:\\cod\\code\\game\\cg_view.cpp", 1890);
         }
-        CG_DrawActive(v7);
+        CG_DrawActive();
         nglListEndScene();
         R_ToggleSmpFrame();
         gFirstCamera = false;
