@@ -42,8 +42,8 @@ int DObjNumBones(DObj* obj)  // ?DObjNumBones@@YAHPAVDObj@@@Z
 {
     return obj->numBones;
 }
-extern int CL_DObjCreateSkelForBone(DObj* obj);
-extern int CL_DObjCreateSkelForBones(DObj* obj);
+extern int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex);
+extern int CL_DObjCreateSkelForBones(DObj* obj, int* const partBits);
 extern void CL_DObjCalcSkel(DObj* obj, int* partBits);
 extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
@@ -81,7 +81,7 @@ int CG_DObjGetViewModelTagMatrix(DObj* obj, unsigned int tag_name_hash,
     int v4 = BoneIndex;
     if (BoneIndex < 0)
         return 0;
-    if (CL_DObjCreateSkelForBone(obj) == 0)
+    if (CL_DObjCreateSkelForBone(obj, v4) == 0)
     {
         int partBits[4];
         DObjGetHierarchyBits(obj, v4, partBits);
@@ -116,7 +116,7 @@ void CG_DObjCalcPose(Entity* entity, DObj* obj, int* partBits)
         CG_ASSERT("obj == entity->GetDObj()",
                   "c:\\cod\\code\\game\\cg_ent.cpp", 1282);
     }
-    if (CL_DObjCreateSkelForBones(obj) == 0)
+    if (CL_DObjCreateSkelForBones(obj, partBits) == 0)
     {
         j_nullsub_30(obj, partBits);
         CL_DObjCalcSkel(obj, partBits);
@@ -149,7 +149,7 @@ void CG_DObjCalcBone(Entity* entity, DObj* obj, int boneIndex)
         CG_ASSERT("obj == entity->GetDObj()",
                   "c:\\cod\\code\\game\\cg_ent.cpp", 1301);
     }
-    if (CL_DObjCreateSkelForBone(obj) == 0)
+    if (CL_DObjCreateSkelForBone(obj, boneIndex) == 0)
     {
         DObjGetHierarchyBits(obj, boneIndex, partBits);
         j_nullsub_30(obj, partBits);
@@ -165,7 +165,7 @@ void CG_DObjCalcBoneGeneric(DObj* obj, int boneIndex)
     {
         CG_ASSERT("obj", "c:\\cod\\code\\game\\cg_ent.cpp", 1319);
     }
-    if (CL_DObjCreateSkelForBone(obj) == 0)
+    if (CL_DObjCreateSkelForBone(obj, boneIndex) == 0)
     {
         DObjGetHierarchyBits(obj, boneIndex, partBits);
         j_nullsub_30(obj, partBits);

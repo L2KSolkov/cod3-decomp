@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00528970	?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cl/cl_dobj.cpp:130	Non-empty body validates the DObj, reuses an existing skeleton when present, or allocates and creates one.
+0x00528970	?CL_DObjCreateSkelForBone@@YAHPAVDObj@@H@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1087415;IDA:0x00528970	Source matches release null assertion, skeleton-exists fast path, hunk allocation parameters, DObjCreateSkel call, and the map-required unused int parameter.
+0x00528A10	?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cl/cl_dobj.cpp:147	Non-empty body validates allocation state and DObj, reuses an existing skeleton, or allocates and creates one.
+0x00528A10	?CL_DObjCreateSkelForBones@@YAHPAVDObj@@QAH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x00528A10	Source matches release allocation guard, null assertion, skeleton-exists fast path, hunk allocation parameters, DObjCreateSkel call, and the map-required const int-pointer parameter.

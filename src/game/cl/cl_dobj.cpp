@@ -127,7 +127,7 @@ void CL_DObjCalcAnim()
 }
 
 // ea: 0x528970
-int CL_DObjCreateSkelForBone(DObj* obj)
+int CL_DObjCreateSkelForBone(DObj* obj, int)
 {
     if (obj == nullptr)
     {
@@ -144,7 +144,7 @@ int CL_DObjCreateSkelForBone(DObj* obj)
 }
 
 // ea: 0x528A10
-int CL_DObjCreateSkelForBones(DObj* obj)
+int CL_DObjCreateSkelForBones(DObj* obj, int* const)
 {
     if (bCL_AllowedAllocSkel == 0)
     {
