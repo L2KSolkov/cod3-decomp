@@ -251,9 +251,8 @@ void CGBankManager::UnloadAll()
 }
 
 // ============================================================================
-// render_brush - ea: 0x611C10
+// render_brush helper (not a release-map export)
 // ============================================================================
-// ea: 0x00611C10
 void render_brush()
 {
 }
