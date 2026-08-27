@@ -840,7 +840,7 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
 
 extern int CG_RegisterItems();
 extern void CG_ParseCullDist();
-extern int CG_NorthDirectionChanged();
+extern void CG_NorthDirectionChanged();
 extern void CG_RegisterServerShader(int num);
 extern void CG_ParseObjectiveChange(int iNum);
 extern int CG_LoadShellShockCvars(const char* name);

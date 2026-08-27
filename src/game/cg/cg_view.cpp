@@ -513,13 +513,11 @@ LABEL_27:
 }
 
 // ea: 0x006968E0
-int CG_NorthDirectionChanged()
+void CG_NorthDirectionChanged()
 {
     const char* ConfigString = CL_GetConfigString(11);
     float v1 = (float)atof(ConfigString);
-    int result = 6320 * currCl;
     *(float*)&dword_F64140[1580 * currCl] = v1;
-    return result;
 }
 
 // ea: 0x00696910
