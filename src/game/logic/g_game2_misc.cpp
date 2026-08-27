@@ -542,15 +542,25 @@ void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 }
 
 // ============================================================================
-// AnimIK - IK state (0x7C, IDA verified; ctor/dtor only here)
+// AnimIK - IK state (0x7C, IDA verified)
 // ============================================================================
+struct AnimIKJointVars_t {
+    float UpperLength;
+    float UpperIKc;
+    float UpperIKInvc;
+    float LowerIKc;
+    float LowerIKInvc;
+};
+static_assert(sizeof(AnimIKJointVars_t) == 0x14,
+              "AnimIKJointVars_t size mismatch");
+
 class AnimIK {
 public:
     static tlFixedString BoneNames[25];
     static tlFixedString ParentNames[25];
     static float painDurationMin;    // ?painDurationMin@AnimIK@@2MA
     static float painDurationMax;    // ?painDurationMax@AnimIK@@2MA
-    float ikJoints[0x50 / 4];       // +0x00 AnimIKJointVars_t[4]
+    AnimIKJointVars_t ikJoints[4];  // +0x00
     int initialized;                // +0x50
     void* pose;                     // +0x54
     void* skeleton;                 // +0x58
@@ -776,7 +786,7 @@ void AnimIK::Initialize()
             nalGenericPose_GetModelPositionOrientation(pose, &h[1]);
         nalPositionOrientation c =
             nalGenericPose_GetModelPositionOrientation(pose, &h[2]);
-        float* ik = ikJoints + j * 5;
+        AnimIKJointVars_t& ik = ikJoints[j];
         float dx = b.pos.v.m128_f32[0] - a.pos.v.m128_f32[0];
         float dy = b.pos.v.m128_f32[1] - a.pos.v.m128_f32[1];
         float dz = b.pos.v.m128_f32[2] - a.pos.v.m128_f32[2];
@@ -785,11 +795,13 @@ void AnimIK::Initialize()
         float dy2 = c.pos.v.m128_f32[1] - b.pos.v.m128_f32[1];
         float dz2 = c.pos.v.m128_f32[2] - b.pos.v.m128_f32[2];
         float lower = sqrtf(dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
-        ik[0] = upper;
-        ik[1] = 1.0f / (upper * 2.0f);
-        ik[2] = (upper * upper - lower * lower) / (upper * 2.0f);
-        ik[3] = 1.0f / (upper * 2.0f);
-        ik[4] = (lower * lower - upper * upper) / (upper * 2.0f);
+        ik.UpperLength = upper;
+        ik.UpperIKc = 1.0f / (upper * 2.0f);
+        ik.UpperIKInvc = (upper * upper - lower * lower)
+            / (upper * 2.0f);
+        ik.LowerIKc = 1.0f / (upper * 2.0f);
+        ik.LowerIKInvc = (lower * lower - upper * upper)
+            / (upper * 2.0f);
     }
     initialized = 1;
 }
