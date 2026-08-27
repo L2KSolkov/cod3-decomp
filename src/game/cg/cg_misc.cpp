@@ -1385,7 +1385,7 @@ math::Position3 Camera::GetVehicleViewAngles(Entity* veh, PlayerState* ps)
 {
     math::Position3 result;
     result.v = _mm_setzero_ps();
-    if (ps->vehSubType == 2 && veh->scr_vehicle != nullptr
+    if (ps->vehSubType == 2
         && *(void**)((char*)veh->scr_vehicle + 0x518) != nullptr)
     {
         result.v.m128_f32[0] = 7.0f;
