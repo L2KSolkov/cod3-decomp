@@ -670,8 +670,17 @@ string::string(const bbool& val) {
 }
 
 string::~string() {
+    const Block* const poison =
+        reinterpret_cast<const Block*>(static_cast<uintptr_t>(0xDEADF1F1u));
+    if (mBlock == poison)
+        return;
     if (mBlock)
         mBlock->DecrementCount();
+    // Match the release lifetime protocol: poison the block after releasing
+    // it, then unregister this stack-backed object from the executing thread.
+    mBlock = const_cast<Block*>(poison);
+    if (gBrocAPI.mBrocObjDtor != nullptr)
+        gBrocAPI.mBrocObjDtor(this);
 }
 
 // ============================================================================

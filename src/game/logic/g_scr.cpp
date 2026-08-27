@@ -5205,7 +5205,11 @@ have:
     this->mBrocCreated = mBrocCreated;
     if (mBrocCreated == nullptr)
         return;
-    ae_pair<void*, unsigned int> elt(inst, (unsigned int)(void*)dtor);
+    // The release stores only the destructor object's vtable pointer.  The
+    // temporary BrocDtor instance itself may be stack-backed, so retaining
+    // its address makes teardown dispatch through stale memory.
+    ae_pair<void*, unsigned int> elt(
+        inst, *reinterpret_cast<const unsigned int*>(dtor));
     mBrocCreated->list.push_back(elt);
 }
 
@@ -5280,7 +5284,11 @@ void AeThread::DestroyBrocInsts()
                 }
                 ae_pair<void*, unsigned int>& elt =
                     mBrocCreated->list.m_elements[v2];
-                BrocDtorBase* dtor = (BrocDtorBase*)elt.second;
+                // Recreate the release ABI: elt.second is the saved vtable
+                // pointer, and the pair field is used as the stateless
+                // destructor object's `this` address for virtual dispatch.
+                BrocDtorBase* dtor =
+                    reinterpret_cast<BrocDtorBase*>(&elt.second);
                 dtor->Destroy(elt.first);
             }
             BrocObjCreated* v4 = mBrocCreated;
