@@ -897,3 +897,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044BF80	?turret_behind@@YAHPAVEntity@@0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BF80	release client assertion, arc span, AngleNormalize180/YawVectors, vector normalization, acos call, and threshold expression match source.
 0x0044C100	?G_IsTurretUsable@@YAHPAVEntity@@0@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_turret.cpp:263	usable test checks turret flags/activity/damage, behind geometry, grenade timer, and ground-entity assignment.
 0x0044C100	?G_IsTurretUsable@@YAHPAVEntity@@0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C100	release assertion and short-circuit condition order match source, including owner client and ground-handle checks.
+0x0044C6E0	?G_CreateRotationMatrix@@YAXQBMQAY02M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:500	rotation helper builds forward/right/up vectors from angles and inverts the right vector.
+0x0044C6E0	?G_CreateRotationMatrix@@YAXQBMQAY02M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C6E0	release AngleVectors destinations and VectorInverse right-vector call match source.
+0x0044C710	?G_TransposeMatrix@@YAXQAY02M0@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:507	transpose helper copies each 3x3 matrix column into the corresponding output row.
+0x0044C710	?G_TransposeMatrix@@YAXQAY02M0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C710	release three-iteration pointer-copy loop matches source transpose mapping.
+0x0044C750	?G_RotatePoint@@YAXAAVPosition3@math@@QAY02M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:518	rotate helper preserves the input coordinates and applies all three matrix rows to update the point.
+0x0044C750	?G_RotatePoint@@YAXAAVPosition3@math@@QAY02M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C750	release temporaries and row-major multiply/add expressions match source.
