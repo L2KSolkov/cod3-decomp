@@ -42,12 +42,25 @@ def main() -> int:
                 {("0X0040C000", "fn", "V3"): dict(
                     gate="V3", result="FAIL")})
             assert states["V3"] == "FAIL" and level == "V2"
+            assert ledger.body_class("{ ; }") == "EMPTY_BODY"
 
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.
             assert ledger.re.search(
                 r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)",
                 "// AnimIK::ApplyFootIK - ea: 0x004FB510")
+
+            long_signature = [
+                "// ea: 0x005D4CB0",
+                "void BrocSys::MPScript_SendGameState(",
+                "    unsigned int player, int currentTime, int timeLimit, int scoreLimit,",
+                "    int roundLimit, bool friendlyFire, bool lastManStanding, bool teamBalance,",
+                "    int respawnTime, int alliesScore, int axisScore, bool roundStarted,",
+                "    int roundOver, int roundCount)",
+                "{ return; }",
+            ]
+            candidate = ledger.function_candidate(long_signature, 0)
+            assert candidate and candidate[0] == "BrocSys::MPScript_SendGameState"
 
             # Release map symbols may carry private member access (AA) while
             # the port exposes the same signature publicly (QA).  Access is

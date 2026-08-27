@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	9	0	0	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
-anim.o	741	305	6	430	0	0	0
+anim.o	741	303	6	432	0	0	0
 apk.o	24	1	0	23	0	0	0
 apsAction.o	19	16	0	3	0	0	0
 apsActionList.o	26	20	1	5	0	0	0
@@ -175,7 +175,7 @@ cdl_base.o	2	1	0	1	0	0	0
 cdl_common.o	16	7	5	4	0	0	0
 cdl_gjk.o	10	5	5	0	0	0	0
 cg.o	405	38	91	165	0	111	0
-cl.o	341	17	38	284	0	2	0
+cl.o	341	16	38	285	0	2	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	1	0	0	0
@@ -183,10 +183,10 @@ core.o	1437	728	76	633	0	0	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	708	0	751	0	11	0
-game.o	1158	515	10	633	0	0	0
+g.o	1470	706	0	753	0	11	0
+game.o	1158	508	10	640	0	0	0
 game2.o	1040	454	88	488	8	2	0
-game_xbox.o	365	166	91	108	0	0	0
+game_xbox.o	365	165	91	109	0	0	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
 inftrees.o	1	1	0	0	0	0	0
@@ -194,8 +194,8 @@ jobqueue.o	26	9	0	17	0	0	0
 jobqueue_legacy.o	11	8	0	3	0	0	0
 mem_lib.o	47	33	2	12	0	0	0
 mem_lib_platform.o	11	11	0	0	0	0	0
-mp.o	1142	449	5	688	0	0	0
-mp_actors.o	436	71	0	365	0	0	0
+mp.o	1142	445	5	692	0	0	0
+mp_actors.o	436	70	0	366	0	0	0
 mp_anim_wad.o	430	239	189	2	0	0	0
 mp_level_wad.o	1062	1042	2	15	0	3	0
 mp_shell.o	835	238	0	597	0	0	0
@@ -206,7 +206,7 @@ nal_cache.o	7	0	4	3	0	0	0
 nal_generic.o	68	31	23	14	0	0	0
 nal_generic_component.o	36	31	0	5	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
-nal_init.o	899	681	208	10	0	0	0
+nal_init.o	899	664	223	12	0	0	0
 nal_initlist.o	1	1	0	0	0	0	0
 nal_math.o	1	1	0	0	0	0	0
 nal_sceneanim.o	10	6	1	3	0	0	0
@@ -279,7 +279,7 @@ phys_constraint_solver_multithreaded.o	184	150	29	5	0	0	0
 phys_contact_manifold.o	26	8	12	6	0	0	0
 phys_gjk.o	37	32	3	2	0	0	0
 phys_util.o	11	3	8	0	0	0	0
-physics.o	747	484	23	240	0	0	0
+physics.o	747	481	24	242	0	0	0
 physics_system.o	313	291	20	2	0	0	0
 physics_system_internal.o	154	118	27	9	0	0	0
 rb_ragdoll_model.o	92	63	14	15	0	0	0
@@ -287,10 +287,10 @@ rbc_def_contact.o	14	9	4	1	0	0	0
 rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	9	5	12	0	0	0
 rbc_def_ragdoll.o	38	19	5	14	0	0	0
-rbc_def_vehicle.o	46	33	6	7	0	0	0
-render.o	1038	707	2	329	0	0	0
+rbc_def_vehicle.o	46	32	7	7	0	0	0
+render.o	1038	706	2	330	0	0	0
 rigid_body.o	13	5	1	7	0	0	0
-scr.o	1540	660	34	769	0	77	0
+scr.o	1540	655	34	774	0	77	0
 shell.o	2214	989	25	1200	0	0	0
 streamer.o	730	399	83	248	0	0	0
 sv.o	148	15	7	126	0	0	0

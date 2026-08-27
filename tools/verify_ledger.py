@@ -198,7 +198,11 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             if valid:
                 return valid[0][0], index
             return None
-        if len(text) > 240:
+        # Long but valid release signatures (notably the MP game-state
+        # wrappers) can exceed 240 characters before their opening brace.
+        # Keep scanning until a declaration-sized limit instead of dropping
+        # the marker and falsely failing V1.
+        if len(text) > 600:
             text = ""
     return None
 
@@ -403,6 +407,8 @@ def body_class(body: str) -> str:
     inner = body[1:-1] if body.startswith("{") and body.endswith("}") else body
     inner = re.sub(r"//[^\n]*|/\*.*?\*/", "", inner, flags=re.S).strip()
     if not inner:
+        return "EMPTY_BODY"
+    if re.fullmatch(r";\s*", inner):
         return "EMPTY_BODY"
     if re.fullmatch(r"(?:\(void\)\s*[^;]+;?\s*)+", inner):
         return "CAST_ONLY"
