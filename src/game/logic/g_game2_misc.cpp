@@ -826,16 +826,68 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
 {
     pose = inPose;
     skeleton = inSkeleton;
-    if (IKenabled && ent != nullptr && ent->sentient != nullptr)
-    {
-        if (initialized == 0)
-            Initialize();
-        int mLastAnimIKUpdate = ent->sentient->mLastAnimIKUpdate;
-        mFrametime = mLastAnimIKUpdate != 0
-            ? (level.time - mLastAnimIKUpdate) * 0.001f
-            : 0.0f;
-        ent->sentient->mLastAnimIKUpdate = level.time;
-    }
+    if (!IKenabled || ent == nullptr || ent->sentient == nullptr)
+        return;
+
+    nalGenericBoneHandle checkHandle;
+    checkHandle.Skeleton = nullptr;
+    checkHandle.BoneIndex = 0;
+    nalGenericSkeleton_GetBoneHandle(inSkeleton, &checkHandle,
+                                     &stru_F05318);
+    if (checkHandle.Skeleton == nullptr)
+        return;
+
+    if (initialized == 0)
+        Initialize();
+
+    const int mLastAnimIKUpdate = ent->sentient->mLastAnimIKUpdate;
+    mFrametime = mLastAnimIKUpdate != 0
+        ? (level.time - mLastAnimIKUpdate) * 0.001f
+        : 0.0f;
+    ent->sentient->mLastAnimIKUpdate = level.time;
+
+    nalGenericBoneHandle animHandle;
+    animHandle.Skeleton = nullptr;
+    animHandle.BoneIndex = 0;
+    nalGenericSkeleton_GetBoneHandle(skeleton, &animHandle,
+                                     &stru_F05398);
+
+    nalGenericBoneHandle gunHandle;
+    gunHandle.Skeleton = nullptr;
+    gunHandle.BoneIndex = 0;
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName[0]);
+
+    nalMatrix4x4 handMat;
+    nalMatrix4x4 gunLocalMat;
+    nalMatrix4x4 leftHandMat;
+    nalMatrix4x4 rightHandMat;
+    nalMatrix4x4 leftFootMat;
+    nalMatrix4x4 rightFootMat;
+    Axis4_to_nalMatrix4x4(ent->sentient->mLastAnimIKGunOffset, &handMat);
+    GetFootMatrices(&rightHandMat, &leftFootMat);
+
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle,
+                                     &stru_F05238);
+    const nalPositionOrientation leftHandOrientation =
+        nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
+    nalMatrix4x4_FromPositionOrientation(leftHandOrientation, &leftHandMat);
+
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName[0]);
+    const nalPositionOrientation rightHandOrientation =
+        nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
+    nalMatrix4x4_FromPositionOrientation(rightHandOrientation, &rightHandMat);
+
+    if (ik_ADS != nullptr && ik_ADS->integer != 0)
+        ApplyADS(ent);
+    ApplyFire(ent);
+    ApplyTerrainMapping(ent, rightHandMat, leftFootMat);
+    ApplyTorsoRotations(ent);
+    ApplyPainFlinch(ent);
+    ApplyVehicleSteering(ent);
+    ApplyFootIK(ent, rightHandMat, leftFootMat);
+    if (ent->client != nullptr && (ent->client->ps.pm_flags & 0x10) != 0)
+        ApplyHandIK(ent, gunLocalMat, leftHandMat);
+    UpdateGunMatrix(animHandle, gunHandle, &handMat, &gunLocalMat);
 }
 
 // ea: 0x004FB150
