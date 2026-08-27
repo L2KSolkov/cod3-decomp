@@ -424,6 +424,10 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_Drone_DoControllers@@YAXPAVEntity@@@Z",
         "?CG_DoControllers@@YAXPAVEntity@@QAH@Z":
             "?CG_DoControllers@@YAXPAVEntity@@@Z",
+        "?CG_SpawnTracer@@YAXABVPosition3@math@@0H@Z":
+            "?CG_SpawnTracer@@YAXPBVPosition3@math@@0H@Z",
+        "?CG_EventSpawnTracer@@YAXABVPosition3@math@@0H@Z":
+            "?CG_EventSpawnTracer@@YAXPBVPosition3@math@@0H@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
