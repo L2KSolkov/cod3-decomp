@@ -350,6 +350,9 @@ def base_name(decorated: str) -> str:
             ("??A", "operator[]"),
             ("??G", "operator-"),
             ("??8", "operator=="),
+            ("??9", "operator!="),
+            ("??H", "operator+"),
+            ("??K", "operator/"),
             ("??D", "operator*"),
         ):
             if decorated.startswith(decoration):

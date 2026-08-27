@@ -175,3 +175,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A6430	??0ScriptEventParams@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6430	Release constructor writes the same zero entity fields and NaN float/vector sentinels.
 0x004A6590	?Inst@DestructibleBankManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1984	Source returns the DestructibleBankManager singleton pointer.
 0x004A6590	?Inst@DestructibleBankManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6590	Release loads and returns DestructibleBankManager::sInst, matching source.
+0x004A64B0	??9math@@YA_NABVPosition3@0@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1118	Source compares Position3 x/y/z lanes for inequality.
+0x004A64B0	??9math@@YA_NABVPosition3@0@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A64B0	Release compares the three Position3 lanes and returns their disjunction, matching source.
+0x004A65A0	??Hmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1131	Source adds Dir3 and Position3 SIMD values into a Dir3 result.
+0x004A65A0	??Hmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A65A0	Release performs the same _mm_add_ps on Dir3 and Position3 and returns the result.
+0x004A65E0	??Hmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1138	Source adds Position3 and Dir3 SIMD values into a Position3 result.
+0x004A65E0	??Hmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A65E0	Release performs the same _mm_add_ps on Position3 and Dir3 and returns the result.
+0x004A6620	?GetNotifySet@Entity@@QAEPAVEntityNotifySet@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1999	Source returns Entity::mNotifySet.
+0x004A6620	?GetNotifySet@Entity@@QAEPAVEntityNotifySet@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6620	Release loads and returns mNotifySet unchanged, matching source.
+0x004A6630	??Hmath@@YA?AVPosition3@0@ABV10@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1145	Source adds two Position3 SIMD values into a Position3 result.
+0x004A6630	??Hmath@@YA?AVPosition3@0@ABV10@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6630	Release performs the same _mm_add_ps on both Position3 values and returns the result.
+0x004A6670	??Hmath@@YA?AVVector4@0@ABV10@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1152	Source adds two Vector4 SIMD values into a Vector4 result.
+0x004A6670	??Hmath@@YA?AVVector4@0@ABV10@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6670	Release performs the same _mm_add_ps on both Vector4 values and returns the result.
+0x004A66B0	??Gmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1196	Source subtracts Position3 from Dir3 into a Dir3 result.
+0x004A66B0	??Gmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A66B0	Release performs the same _mm_sub_ps on Dir3 and Position3 and returns the result.
+0x004A66F0	??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1203	Source subtracts Dir3 from Position3 into a Position3 result.
+0x004A66F0	??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A66F0	Release performs the same _mm_sub_ps on Position3 and Dir3 and returns the result.
+0x004A6730	??Gmath@@YA?AVPosition3@0@ABV10@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1210	Source subtracts two Position3 SIMD values into a Position3 result.
+0x004A6730	??Gmath@@YA?AVPosition3@0@ABV10@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6730	Release performs the same _mm_sub_ps on both Position3 values and returns the result.
+0x004A6770	??Kmath@@YA?AVDir3@0@ABV10@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1223	Source divides each Dir3 lane by the scalar and returns a Dir3.
+0x004A6770	??Kmath@@YA?AVDir3@0@ABV10@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6770	Release broadcasts the divisor, applies _mm_div_ps, and returns the Dir3 result.
+0x004A67B0	?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2006	Source copies Entity::mHandle into the value-return ABI result.
+0x004A67B0	?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A67B0	Release writes mHandle into the result object and returns it, matching source.
+0x004A67D0	?SetEntityArrayIndex@Entity@@QAEXH@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2013	Source stores the supplied entity array index in the 16-bit member.
+0x004A67D0	?SetEntityArrayIndex@Entity@@QAEXH@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A67D0	Release stores the __int16 index into mEntityArrayIndex, matching source truncation.
+0x004A67F0	?GetEntityArrayIndex@Entity@@QBEHXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2018	Source returns Entity::mEntityArrayIndex.
+0x004A67F0	?GetEntityArrayIndex@Entity@@QBEHXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A67F0	Release loads and returns mEntityArrayIndex unchanged.
+0x004A6800	?GetPakId@Entity@@QBE?AW4TPakId@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2025	Source returns mPakId unless invalid, then falls back to CurPakId().
+0x004A6800	?GetPakId@Entity@@QBE?AW4TPakId@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6800	Release tests PAK_ID_INVALID, calls CurPakId on the invalid path, and otherwise returns mPakId.
+0x004A6820	?GetDObj@Entity@@QAEPAVDObj@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2032	Source returns Entity::mDObj.
+0x004A6820	?GetDObj@Entity@@QAEPAVDObj@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6820	Release loads and returns mDObj unchanged, matching source.

@@ -1115,6 +1115,7 @@ bool math::operator==(const math::Position3& _a, const math::Position3& _b)
         && _a.v.m128_f32[1] == _b.v.m128_f32[1]
         && _a.v.m128_f32[2] == _b.v.m128_f32[2];
 }
+// ea: 0x004A64B0
 bool math::operator!=(const math::Position3& _a, const math::Position3& _b)
 {
     return _a.v.m128_f32[0] != _b.v.m128_f32[0]
@@ -1127,24 +1128,28 @@ bool math::operator==(const math::Dir3& _a, const math::Dir3& _b)
         && _a.v.m128_f32[1] == _b.v.m128_f32[1]
         && _a.v.m128_f32[2] == _b.v.m128_f32[2];
 }
+// ea: 0x004A65A0
 math::Dir3 math::operator+(const math::Dir3& _a, const math::Position3& _b)
 {
     math::Dir3 r;
     r.v = _mm_add_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A65E0
 math::Position3 math::operator+(const math::Position3& _a, const math::Dir3& _b)
 {
     math::Position3 r;
     r.v = _mm_add_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A6630
 math::Position3 math::operator+(const math::Position3& _a, const math::Position3& _b)
 {
     math::Position3 r;
     r.v = _mm_add_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A6670
 math::Vector4 math::operator+(const math::Vector4& _a, const math::Vector4& _b)
 {
     math::Vector4 r;
@@ -1188,18 +1193,21 @@ math::Vector4 math::Vector4_Zero()
     r.v = _mm_setzero_ps();
     return r;
 }
+// ea: 0x004A66B0
 math::Dir3 math::operator-(const math::Dir3& _a, const math::Position3& _b)
 {
     math::Dir3 r;
     r.v = _mm_sub_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A66F0
 math::Position3 math::operator-(const math::Position3& _a, const math::Dir3& _b)
 {
     math::Position3 r;
     r.v = _mm_sub_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A6730
 math::Position3 math::operator-(const math::Position3& _a, const math::Position3& _b)
 {
     math::Position3 r;
@@ -1212,6 +1220,7 @@ math::Position3 math::operator/(const math::Position3& _a, float _b)
     r.v = _mm_div_ps(_a.v, _mm_set1_ps(_b));
     return r;
 }
+// ea: 0x004A6770
 math::Dir3 math::operator/(const math::Dir3& _a, float _b)
 {
     math::Dir3 r;
@@ -1987,34 +1996,40 @@ DestructibleBankManager* DestructibleBankManager::Inst()
 }
 
 // Entity::GetNotifySet (g.o 0x4A6620)
+// ea: 0x004A6620
 EntityNotifySet* Entity::GetNotifySet()
 {
     return mNotifySet;
 }
 
 // Entity handle / array-index accessors (g.o 0x4A67B0-0x4A67F0)
+// ea: 0x004A67B0
 DbLinkedHandle<EntityHandleDb, Entity> Entity::GetHandle() const
 {
     DbLinkedHandle<EntityHandleDb, Entity> result;
     result.mHandle = mHandle.mHandle;
     return result;
 }
+// ea: 0x004A67D0
 void Entity::SetEntityArrayIndex(int v)
 {
     mEntityArrayIndex = (int16_t)v;
 }
+// ea: 0x004A67F0
 int Entity::GetEntityArrayIndex() const
 {
     return mEntityArrayIndex;
 }
 
 // Entity pak/dobj/destructible accessors (g.o 0x4A6800-0x4A68E0)
+// ea: 0x004A6800
 TPakId Entity::GetPakId() const
 {
     if (mPakId == (int)PAK_ID_INVALID)
         return CurPakId();
     return (TPakId)mPakId;
 }
+// ea: 0x004A6820
 DObj* Entity::GetDObj()
 {
     return mDObj;
