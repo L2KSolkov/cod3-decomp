@@ -494,7 +494,11 @@ LABEL_26:
             const char* infoBytes = reinterpret_cast<const char*>(playerWeaponInfo);
             float adsZoomFov = 0.0f;
             if (fPosLerp == 1.0f)
+            {
                 adsZoomFov = *reinterpret_cast<const float*>(infoBytes + 0x640);
+                if (adsZoomFov <= 0.0f)
+                    adsZoomFov = *reinterpret_cast<const float*>(infoBytes + 0x8A0);
+            }
             else
                 adsZoomFov = *reinterpret_cast<const float*>(infoBytes + 0x8A0);
             if (adsZoomFov > 0.0f)
