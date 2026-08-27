@@ -6,6 +6,7 @@
 #include "game/core/core_types.h"
 #include "game/cvar_types.h"
 #include "game/game_types.h"
+#include "game/snapshot_types.h"
 #include "game/trace_types.h"
 #include "game/logic/g_camerashake.h"
 #include "ngl/nglRenderNode.h"
@@ -18,25 +19,74 @@
 #include <stdlib.h>
 #include <string.h>
 
+// cg.o helper thunks whose implementations live in the shared math/audio
+// objects. Keep the release-facing reference/class ABIs available here.
+extern void InterpolateAnglesSmooth(float* const curAngles,
+                                    float const* const initialAngles,
+                                    float const* const targetAngles, float t);
+extern void InterpolatePositionSmooth(float* const curPos,
+                                      float const* const initialPos,
+                                      float const* const targetPos, float t);
+
+// ea: 0x006BB690
+void InterpolateAnglesSmooth(math::Position3& curAngles,
+                             const math::Position3& initialAngles,
+                             const math::Position3& targetAngles, float t)
+{
+    InterpolateAnglesSmooth(curAngles.v.m128_f32,
+                            initialAngles.v.m128_f32,
+                            targetAngles.v.m128_f32, t);
+}
+
+// ea: 0x006BB6A0
+void InterpolatePositionSmooth(math::Position3& curPos,
+                               const math::Position3& initialPos,
+                               const math::Position3& targetPos, float t)
+{
+    InterpolatePositionSmooth(curPos.v.m128_f32,
+                              initialPos.v.m128_f32,
+                              targetPos.v.m128_f32, t);
+}
+
+class SoundMediaMgr {
+public:
+    static SoundMediaMgr* sInst;
+    static SoundMediaMgr* Inst();
+};
+
+// ea: 0x006BB670
+SoundMediaMgr* SoundMediaMgr::Inst()
+{
+    return sInst;
+}
+
 // ea: 0x006BB680
 int FastFloor(float x)
 {
     return (int)x;
 }
 
-// ??$tl_min@MM@@ (cg.o inline COMDAT)
+// nglRenderNode::~nglRenderNode - ea: 0x006BB650
+nglRenderNode::~nglRenderNode()
+{
+}
+
+// ea: 0x006BB9C0
 template <typename T, typename U>
 T tl_min(const T& a, const U& b)
 {
     return b <= a ? b : a;
 }
 
-// ??$tl_max@MM@@ (cg.o inline COMDAT)
+// ea: 0x006BBA00
 template <typename T, typename U>
 T tl_max(const T& a, const U& b)
 {
     return a <= b ? b : a;
 }
+
+template float tl_min<float, float>(const float&, const float&);
+template float tl_max<float, float>(const float&, const float&);
 
 // Minimal view of refdef_s (full type in cg_refdef.h); ctor is empty.
 struct refdef_s {
@@ -500,10 +550,39 @@ struct _objectiveInfo_t {
     _objectiveInfo_t* pParent;    // +0x2C
     char szString[128];           // +0x30
 
+    _objectiveInfo_t();
+    _objectiveInfo_t& operator=(const _objectiveInfo_t& other);
     void Clear();                 // ?Clear@_objectiveInfo_t@@QAEXXZ (scr.o 0x5EE600)
 };
 static_assert(sizeof(_objectiveInfo_t) == 0xB0,
               "_objectiveInfo_t layout mismatch");
+
+// ea: 0x006BC020
+_objectiveInfo_t::_objectiveInfo_t()
+    : worldState(0), height(0.0f), entity(0), state(0),
+      vOrigin{0.0f, 0.0f, 0.0f}, ringTime(-1), ringToggle(0),
+      displayOrder(-1), pChild(nullptr), pParent(nullptr), szString{}
+{
+}
+
+// _objectiveInfo_t::operator= - ea: 0x00687A00
+_objectiveInfo_t& _objectiveInfo_t::operator=(const _objectiveInfo_t& other)
+{
+    vOrigin[0] = other.vOrigin[0];
+    vOrigin[1] = other.vOrigin[1];
+    vOrigin[2] = other.vOrigin[2];
+    strncpy(szString, other.szString, sizeof(szString));
+    state = other.state;
+    ringTime = other.ringTime;
+    ringToggle = other.ringToggle;
+    displayOrder = other.displayOrder;
+    pChild = nullptr;
+    pParent = nullptr;
+    entity = other.entity;
+    height = other.height;
+    worldState = other.worldState;
+    return *this;
+}
 
 // ea: 0x005EE600
 void _objectiveInfo_t::Clear()
@@ -768,6 +847,7 @@ GlobalEffect::GlobalEffect(int client)
 }
 
 // ea: 0x006BBE00
+// GlobalEffect::~GlobalEffect - ea: 0x006BC1A0
 GlobalEffect::~GlobalEffect() {}
 
 // ea: 0x006BC190
@@ -950,6 +1030,7 @@ public:
     unsigned char _pad9[0x1F0 - 0x1E4];
 
     Camera();
+    ~Camera();
 
     math::Position3 GetPrevViewPos();  // ea: 0x00687B00
     float GetLastFOV();
@@ -1043,6 +1124,12 @@ Camera::Camera()
     mClient = v1;
     mDoingFadeOutIn = false;
     client = v1 + 1;
+}
+
+// ea: 0x006BBEA0
+Camera::~Camera()
+{
+    mGlobalEffectNode.vftable = (void*)0x00D0E334;
 }
 
 // ea: 0x0068E750
@@ -3517,10 +3604,17 @@ struct ADSMetaAnimPlayer {
     void* mMetaNalBaseAnimPtr;      // +0x00
     ADSMetaAnimData* mADSMetaAnimDataPtr;  // +0x04
 
+    ADSMetaAnimPlayer();
     void DeleteMetaAnim();
     void CreateMetaAnim(XAnimTree* pAnimTree);
     int Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo);
 };
+
+// ea: 0x006BB7A0
+ADSMetaAnimPlayer::ADSMetaAnimPlayer()
+    : mMetaNalBaseAnimPtr(nullptr), mADSMetaAnimDataPtr(nullptr)
+{
+}
 
 // nalInstanceClass-derived ADS instance (cg.o; layout verified vs disasm)
 class nalBasePose {
@@ -3822,6 +3916,7 @@ ADSMetaAnimInstance::ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim,
 }
 
 // ea: 0x006BB940
+// ADSMetaAnimInstance::~ADSMetaAnimInstance - ea: 0x006BB910
 ADSMetaAnimInstance::~ADSMetaAnimInstance()
 {
     if (mForwardInst != nullptr)
@@ -4815,7 +4910,24 @@ struct cgs_t {
 };
 extern struct cgs_t cgs[2];  // ?cgs@@3PAUcgs_t@@A
 
+// ea: 0x006BBE70
+cgsGlobal_t::cgsGlobal_t()
+{
+    for (int i = 0; i < 128; ++i)
+    {
+        gameModels[i].mValue = nullptr;
+        gameModels[i].mPakId = PAK_ID_INVALID;
+    }
+}
+
 cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8)
+
+// ea: 0x006BC1D0
+snapshot_t::snapshot_t()
+{
+    memset(this, 0, sizeof(*this));
+}
+
 extern itemInfo_t cg_items[256];
 extern weaponInfo_s cg_weapons[92];
 extern vmCvar_t fs_debug_vm;

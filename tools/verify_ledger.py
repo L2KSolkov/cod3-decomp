@@ -177,7 +177,9 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             # implementation. Do not scan onward into the next method and
             # accidentally attach this address to an unrelated body.
             return None
-        matches = list(re.finditer(r"([~A-Za-z_][A-Za-z0-9_:<>~]*)\s*\(", text))
+        matches = list(re.finditer(
+            r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
+            r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*))\s*\(", text))
         if matches and "{" in text:
             valid = []
             pointer = []
@@ -220,6 +222,10 @@ def marker_hint(line: str) -> str:
         candidate = names[-1].group(1)
         if candidate not in {"if", "for", "while", "switch", "catch", "return", "new"}:
             return candidate
+    match = re.search(
+        r"([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*::operator[^\s(]*)\s*-\s*ea:", comment)
+    if match:
+        return match.group(1)
     match = re.search(
         r"([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*)\s*-\s*ea:", comment)
     if match:
@@ -388,6 +394,14 @@ def symbol_variants(name: str) -> set[str]:
             "?GetCurrentWindow@View@@YAPBUView_Window@@H@Z",
         "?CG_UpdateCompPointerOrientation@@YAXXZ":
             "?CG_UpdateCompPointerOrientation@@YAXM@Z",
+        "??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z":
+            "??ZDir3@math@@QAEABV01@ABV01@@Z",
+        "??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z":
+            "??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z",
+        "?InterpolateAnglesSmooth@@YAXAAVPosition3@math@@00M@Z":
+            "?InterpolateAnglesSmooth@@YAXAAVPosition3@math@@ABV12@1M@Z",
+        "?InterpolatePositionSmooth@@YAXAAVPosition3@math@@00M@Z":
+            "?InterpolatePositionSmooth@@YAXAAVPosition3@math@@ABV12@1M@Z",
         "?CG_TransitionPlayerState@@YAXPAVPlayerStateEvents@@0HH@Z":
             "?CG_TransitionPlayerState@@YAXPAX0@Z",
         "?CG_DrawCrosshair@@YAXXZ":

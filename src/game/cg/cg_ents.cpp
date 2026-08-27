@@ -71,6 +71,7 @@ extern void HelmetController(Entity* owner);
 char cgsGlobal_mapname[128];  // cg.o BSS
 
 struct localEntity_t {
+    localEntity_t();
     localEntity_t* prev;  // +0x00
     localEntity_t* next;  // +0x04
     int16_t leType;       // +0x08
@@ -83,6 +84,14 @@ struct localEntity_t {
     float color[4];         // +0xA0
 };
 static_assert(sizeof(localEntity_t) == 0xB0, "localEntity_t size mismatch");
+
+// ea: 0x006BBBD0
+localEntity_t::localEntity_t()
+    : prev(nullptr), next(nullptr), leType(0), leFlags(0), endTime(0),
+      pos{}, radius(0.0f), lifeRate(0.0f), refEntity{}, color{}
+{
+    pos.trType = TR_STATIONARY;
+}
 localEntity_t cg_localEntities[128];  // ?cg_localEntities@@3PAUlocalEntity_t@@A (cg.o)
 localEntity_t cg_activeLocalEntities;  // ?cg_activeLocalEntities@@3UlocalEntity_t@@A (cg.o)
 localEntity_t* cg_freeLocalEntities = nullptr;  // ?cg_freeLocalEntities@@3PAUlocalEntity_t@@A (cg.o)

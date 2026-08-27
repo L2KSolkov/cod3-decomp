@@ -52,6 +52,7 @@ struct cgMedia_t {
 static_assert(sizeof(cgMedia_t) == 0x60, "cgMedia_t layout mismatch");
 
 struct cgsGlobal_t {
+    cgsGlobal_t();
     char mapname[128];
     IVPointerRaw gameModels[128];
     unsigned char shellshockParms[248];

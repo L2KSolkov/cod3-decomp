@@ -3,6 +3,7 @@
 #pragma once
 
 struct snapshot_t {
+    snapshot_t();
     int snapFlags;                 // +0x00
     int serverTime;                // +0x04
     unsigned char _pad08[0x08];    // +0x08

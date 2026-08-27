@@ -35,8 +35,12 @@ extern void tlFatal(const char* fmt, ...);
 // ============================================================================
 class nglRenderNode_Vtbl {
 public:
+    // ea: 0x006BB600
     virtual ~nglRenderNode_Vtbl() {}
+    // ea: 0x006BB610
     virtual void Dummy() {}
+    // ea: 0x006BB660
+    nglRenderNode_Vtbl() {}
 };
 
 // ============================================================================
@@ -50,10 +54,14 @@ public:
         float        SortDist;                 // +0x08
     };
 
+    // ea: 0x006BBE10
     nglRenderNode() {}
+    virtual ~nglRenderNode();
 
     virtual void Render() = 0;
+    // ea: 0x006BBE20
     virtual void GetDesc(char* Desc) { if (Desc) *Desc = 0; }
+    // ea: 0x006BBE30
     virtual void GetSortInfo(nglSortInfo& Info) { (void)Info; }
 };
 static_assert(sizeof(nglRenderNode) == 0xC, "nglRenderNode size mismatch");

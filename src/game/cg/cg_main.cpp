@@ -170,8 +170,16 @@ extern void* cgCvarTable;      // cvarTable_t[170]
 extern void* cvarTable;        // cvarTable_t[170]
 
 struct cg_t {
+    cg_t();
     unsigned char data[0x18B0];
 };
+
+// ea: 0x006BC1F0
+cg_t::cg_t()
+    : data{}
+{
+}
+
 cg_t cg[2] = {};  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)
 
 vmCvar_t cg_thirdPerson;               // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o @ 0x134B400)

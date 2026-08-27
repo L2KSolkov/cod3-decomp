@@ -31,11 +31,18 @@ int dword_DF91F4;
 
 
 struct cgs_t {
+    cgs_t();
     int state;       // +0x00 (kLocalPlayerStateUnused = 0)
     int controller;  // +0x04
     unsigned char _data[0xC80];
 };
 enum { kLocalPlayerStateUnused = 0 };
+
+// ea: 0x006BC070
+cgs_t::cgs_t() : state(0), controller(0), _data{}
+{
+}
+
 cgs_t cgs[2] = {};  // ?cgs@@3PAUcgs_t@@A (cg.o @ 0x13596D8)
 
 namespace View {

@@ -165,7 +165,7 @@ static_assert(sizeof(Position3) == 0x10, "Position3 size mismatch");
 static_assert(sizeof(Position3::Constant) == 0x10, "Position3::Constant size mismatch");
 static_assert(sizeof(Position3::Packed) == 0x0C, "Position3::Packed size mismatch");
 
-// ea: 0x00687920
+// Dir3::operator-= - ea: 0x00687920
 inline const math::Dir3& Dir3::operator-=(const math::Position3& v)
 {
     this->v = _mm_sub_ps(this->v, v.v);
