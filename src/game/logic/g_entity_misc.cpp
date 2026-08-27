@@ -45,13 +45,20 @@ bool Error(const char* fmt, ...);
 
 extern void tlFinalPrint(const char* text);
 extern void tlPrintf(const char* fmt, ...);
+struct nglScene;
+extern nglScene* nglBuildScene;
 extern void nglDebugAddBox(const math::Mat43& mat,
                            const math::DiagMat33& size,
                            unsigned int color);
+extern void nglListAddString(nglFont* font, const char* text, float x,
+                             float y, float z, unsigned int color,
+                             float scaleX, float scaleY);
+extern unsigned int extract_color(const Color& color);
 extern void IGOFrontEnd_UpdateBridge(void* self, float time_inc);
 extern void IGOCompassWidget_SetHideCompassStarBridge(int viewport,
                                                        int active,
                                                        int index);
+extern const char* SEH_StringEd_GetString(const char* pszReference);
 
 // IDA global: g_bAnimCheck (scr.o)
 int g_bAnimCheck = 0;
@@ -350,7 +357,7 @@ extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
 extern void* nglLockSectionIndices(nglMeshSection* Section);
 extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);  // ?auxCloseScratchMesh (ngl_aux.o)
-struct nglMeshParams;
+class nglMeshParams;
 struct nglShaderParamSet;
 class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
@@ -1580,30 +1587,69 @@ void Entity::Notify(HashString h)
         mScriptEventHandler->ExecEvents(this, h, nullptr);
 }
 
-// Entity::Notify overloads (game.o; stubs, port later)
+// Entity::Notify overloads.
 void Entity::Notify(HashString h, unsigned int* e)
 {
-    (void)h; (void)e;
+    if (h.mHash == 0)
+        return;
+    void* storage = EntityNotify::sAllocator->Allocate(0x14, false);
+    EntityNotify* notify = storage != nullptr
+        ? new (storage) EntityNotify(h.mHash, this->mHandle,
+                                      reinterpret_cast<WaitTilOutput*>(e))
+        : nullptr;
+    if (notify == nullptr)
+        return;
+    NotifyDList* pending =
+        reinterpret_cast<NotifyDList*>(reinterpret_cast<char*>(&AeThreadManager::sInst) + 0x24);
+    NotifyNode* node = reinterpret_cast<NotifyNode*>(&notify->m_dlist_node);
+    node->m_next = reinterpret_cast<NotifyNode*>(&pending->m_end);
+    node->m_prev = reinterpret_cast<NotifyNode*>(pending->m_tail);
+    reinterpret_cast<NotifyNode*>(pending->m_tail)->m_next = node;
+    pending->m_tail = node;
+    ++pending->m_size;
+    if (this->mScriptEventHandler != nullptr)
+        this->mScriptEventHandler->ExecEvents(
+            this, h, reinterpret_cast<ScriptEventParams*>(e));
 }
 void Entity::SetLerpOrigin(EntityState* s, const math::Position3* origin)
 {
-    (void)s; (void)origin;
+    if (s != nullptr && origin != nullptr)
+        s->SetLerpOrigin(*origin);
 }
 void cFreeList_Shutdown(void* freelist)
 {
-    (void)freelist;
+    if (freelist == nullptr)
+        return;
+    struct FreeListView {
+        void* mpFree;
+        int mUsed;
+        int mFree;
+    };
+    FreeListView* list = static_cast<FreeListView*>(freelist);
+    void* node = list->mpFree;
+    while (node != nullptr)
+    {
+        void* next = *static_cast<void**>(node);
+        mem_heap_free(node);
+        node = next;
+    }
+    list->mpFree = nullptr;
+    list->mUsed = 0;
+    list->mFree = 0;
 }
 
 void ae_vector_push_back_uint(ae_vector<unsigned int>* self,
                               const unsigned int* elem)
 {
-    (void)self; (void)elem;
+    if (self != nullptr && elem != nullptr)
+        self->push_back(*elem);
 }
 void ae_vector_push_back_funcptr(
     ae_vector<void (__cdecl*)(Broc::entity)>* self,
     void (__cdecl* const* elem)(Broc::entity))
 {
-    (void)self; (void)elem;
+    if (self != nullptr && elem != nullptr)
+        self->push_back(*elem);
 }
 // ea: 0x006CE610
 const math::Mat43::Packed& DObj::GetBaseRelMat(int boneIndex)
@@ -1657,31 +1703,63 @@ const math::Mat43::Packed& DObj::GetBaseRelMat(int boneIndex)
 }
 void CGBankManager_DebugRender_impl(void* self)
 {
-    (void)self;
+    if (self != nullptr)
+        static_cast<CGBankManager*>(self)->DebugRender();
 }
 
-// DebugRender helpers (render.o; stubs, port later)
+// DebugRender helpers (render.o)
 void DebugRender::RenderBox(const math::Position3& mins,
                             const math::Position3& maxs, const Color& color)
 {
-    (void)mins; (void)maxs; (void)color;
-}
-void DebugRender::RenderLine(const math::Position3& pt1,
-                             const math::Position3& pt2, const Color& color,
-                             float thickness)
-{
-    (void)pt1; (void)pt2; (void)color; (void)thickness;
-}
-void DebugRender::RenderCone(const math::Position3& pos,
-                             const math::Dir3& dir, float angle,
-                             float length, const Color& color)
-{
-    (void)pos; (void)dir; (void)angle; (void)length; (void)color;
-}
-void DebugRender::RenderQuad2D(float x, float y, float w, float h, float z,
-                               const Color& color)
-{
-    (void)x; (void)y; (void)w; (void)h; (void)z; (void)color;
+    const float minX = mins.v.m128_f32[0];
+    const float minY = mins.v.m128_f32[1];
+    const float minZ = mins.v.m128_f32[2];
+    const float maxX = maxs.v.m128_f32[0];
+    const float maxY = maxs.v.m128_f32[1];
+    const float maxZ = maxs.v.m128_f32[2];
+
+    // The release emits six double-sided quads, one for each AABB face.
+    auto point = [](float x, float y, float z) {
+        math::Position3 result;
+        result.v = _mm_setr_ps(x, y, z, 0.0f);
+        return result;
+    };
+
+    math::Position3 p0 = point(minX, minY, minZ);
+    math::Position3 p1 = point(maxX, minY, minZ);
+    math::Position3 p2 = point(maxX, maxY, minZ);
+    math::Position3 p3 = point(minX, maxY, minZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
+
+    p0 = point(minX, minY, maxZ);
+    p1 = point(maxX, minY, maxZ);
+    p2 = point(maxX, maxY, maxZ);
+    p3 = point(minX, maxY, maxZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
+
+    p0 = point(minX, minY, minZ);
+    p1 = point(minX, maxY, minZ);
+    p2 = point(minX, maxY, maxZ);
+    p3 = point(minX, minY, maxZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
+
+    p0 = point(maxX, minY, minZ);
+    p1 = point(maxX, maxY, minZ);
+    p2 = point(maxX, maxY, maxZ);
+    p3 = point(maxX, minY, maxZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
+
+    p0 = point(maxX, minY, minZ);
+    p1 = point(minX, minY, minZ);
+    p2 = point(minX, minY, maxZ);
+    p3 = point(maxX, minY, maxZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
+
+    p0 = point(minX, maxY, minZ);
+    p1 = point(minX, maxY, maxZ);
+    p2 = point(maxX, maxY, maxZ);
+    p3 = point(maxX, maxY, minZ);
+    DebugRender::RenderQuad(p0, p1, p2, p3, color, true);
 }
 void DebugRender::RenderLineBox(const math::Mat43& LToW,
                                 const math::DiagMat33& size,
@@ -1691,32 +1769,40 @@ void DebugRender::RenderLineBox(const math::Mat43& LToW,
     nglDebugAddBox(LToW, size, color32.i);
 }
 void DebugRender::RenderText(const char* text, int x, int y,
-                             const Color& color, float scaleX, float scaleY)
+                             const Color& color, float depth, float size)
 {
-    (void)text; (void)x; (void)y; (void)color; (void)scaleX; (void)scaleY;
-}
-void DebugRender::RenderText3D(const math::Position3& pos,
-                               const Color& color, float scale,
-                               const char* text, ...)
-{
-    (void)pos; (void)color; (void)scale; (void)text;
-}
-void DebugRender::RenderAxis(const math::Mat43& mat, float length,
-                             float width)
-{
-    (void)mat; (void)length; (void)width;
+    if (nglBuildScene == nullptr)
+        return;
+
+    font_index font = g_femanager.FindFont("i_helvetica_bold", false);
+    nglFont* fontObj = g_femanager.GetFont(font);
+    unsigned int bright = extract_color(color);
+    Color dark;
+    memset(&dark, 0, 12);
+    dark.a = color.a;
+    unsigned int shadow = extract_color(dark);
+
+    // The release draws a dark pass first, then the requested color pass.
+    nglListAddString(fontObj, text, static_cast<float>(x),
+                     static_cast<float>(y), depth, shadow, size, size);
+    nglListAddString(fontObj, text, static_cast<float>(x),
+                     static_cast<float>(y), depth, bright, size, size);
 }
 void DebugRender_AddRenderer(void* self, void (*fp)())
 {
-    (void)self; (void)fp;
+    if (self != nullptr)
+        static_cast<DebugRender*>(self)->AddRenderer(fp);
 }
 void DebugRender_AddRenderer(void* self, void* fp)
 {
-    (void)self; (void)fp;
+    if (self != nullptr)
+        static_cast<DebugRender*>(self)->AddRenderer(
+            reinterpret_cast<void (*)()>(fp));
 }
 void DebugRender_Init(void* self)
 {
-    (void)self;
+    if (self != nullptr)
+        static_cast<DebugRender*>(self)->Init();
 }
 
 // PathNodes helpers (mp_actors.o; stubs, port later)
@@ -1728,14 +1814,14 @@ const PathNode* NodeHandle::operator*() const
 }
 PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h)
 {
-    (void)h.mValue;
-    return nullptr;
+    return PathNodeMgr::sInst != nullptr
+        ? PathNodeMgr::sInst->GetNode(h) : nullptr;
 }
 const PathNodes::PathNode* PathNodes_NodeHandle_deref(
     const PathNodes::NodeHandle* h)
 {
-    (void)h;
-    return nullptr;
+    return h != nullptr && PathNodeMgr::sInst != nullptr
+        ? PathNodeMgr::sInst->GetNode(*h) : nullptr;
 }
 void AnimationPlayer_DebugDump(Entity* ent)
 {
@@ -1745,26 +1831,18 @@ int curFrame_0 = 0;  // ?curFrame_0@@3HA (game.o @ 0xDF8DE0)
 unsigned int curFrame_1 = 0;  // ?curFrame_1@@3IA (game.o @ 0xDF8DE4)
 
 // g.o / shell.o / render.o / scr.o stubs (port later)
-PlayerState& GetPlayerState(int idx)
-{
-    (void)idx;
-    static PlayerState dummy = {};
-    return dummy;
-}
 bool Entity_IsInRagdoll(Entity* ent)
 {
-    (void)ent;
-    return false;
+    return ent != nullptr && ent->IsInRagdoll();
 }
 bool Entity_IsLocalPlayer(const Entity* ent)
 {
-    (void)ent;
-    return false;
+    return ent != nullptr && ent->IsLocalPlayer();
 }
-AnimTree* Scr_GetAnims(int index)
+PlayerState& GetPlayerState(int idx)
 {
-    (void)index;
-    return nullptr;
+    Entity* player = EntityManager::sInst->GetPlayer(idx);
+    return *reinterpret_cast<PlayerState*>(player->client);
 }
 int Scr_IsSystemActive(unsigned char sys)
 {
@@ -1772,21 +1850,36 @@ int Scr_IsSystemActive(unsigned char sys)
     // ea: 0x005C1AB0
     return 1;
 }
-int RE_Text_Width(const char* text, int font, float scaleX, float scaleY,
-                  int style)
-{
-    (void)text; (void)font; (void)scaleX; (void)scaleY; (void)style;
-    return 0;
-}
 int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash)
 {
-    (void)obj; (void)boneNameHash;
-    return -1;
+    int boneIndex = boneNameHash != 0 && obj != nullptr
+        ? obj->GetBoneIndexInternal(boneNameHash)
+        : -1;
+    static unsigned int tagOriginHash = 0;
+    static bool tagOriginHashInitialized = false;
+    if (!tagOriginHashInitialized)
+    {
+        tagOriginHash = HashString::CalcHash("tag_origin");
+        tagOriginHashInitialized = true;
+    }
+    return boneIndex < 0 && boneNameHash == tagOriginHash ? 0 : boneIndex;
 }
 team_t Sentient_EnemyTeam(team_t eTeam)
 {
-    (void)eTeam;
-    return (team_t)0;
+    static const team_t enemyTeam[TEAM_NUM_TEAMS] = {
+        TEAM_FREE, TEAM_ALLIES, TEAM_AXIS, TEAM_FREE, TEAM_FREE
+    };
+    if (eTeam < TEAM_FREE || eTeam >= TEAM_NUM_TEAMS)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.h";
+        AeAssert::gCurrentLine = 214;
+        AeAssert::gCurrentExpr = "eTeam >= 0 && eTeam < TEAM_NUM_TEAMS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid team"))
+            __debugbreak();
+        return TEAM_FREE;
+    }
+    return enemyTeam[eTeam];
 }
 extern int R_CellForPoint(const math::Position3& pos);
 
@@ -1800,7 +1893,7 @@ int R_CellForPoint(const float* pos)
 }
 float random()
 {
-    return 0.0f;
+    return static_cast<float>(rand()) * 0.000030517578125f;
 }
 int controller_button_pressed(void* self, int i_controller_num, int i_button)
 {
@@ -1812,8 +1905,9 @@ int controller_button_pressed(void* self, int i_controller_num, int i_button)
 int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
                                        Entity* targEnt, float visThreshold)
 {
-    (void)self; (void)ent; (void)targEnt; (void)visThreshold;
-    return 0;
+    return self != nullptr && ent != nullptr && targEnt != nullptr
+        && static_cast<SmokeGrenadeMgr*>(self)->EntityCanSeeEntity(
+            ent, targEnt, visThreshold);
 }
 
 // LocalClient namespace (canonical implementations live in cl_localclient.cpp).
@@ -1993,33 +2087,59 @@ int XModel::GetNumBones(XModel* model, int lodIndex)
 // Task::~Task (game2.o; release body only restores the base vtable)
 Task::~Task() {}
 
-// RumbleManager free artifacts (core.o surface; forwarding stubs)
+// RumbleManager free artifacts (core.o surface; ABI forwarding wrappers)
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
 };
-void RumbleManager_StopMotors(void* self) { (void)self; }
-void RumbleManager_Reset(void* self) { (void)self; }
+class RumbleManager {
+public:
+    static RumbleManager* Inst(int instance);
+    void StopMotors();
+    void Reset();
+    void Remove(RumbleEffectInstanceHandle handle);
+    void SetIntensity(RumbleEffectInstanceHandle handle, float intensity);
+    void FrameAdvance(float delta);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect, float intensity);
+};
+void RumbleManager_StopMotors(void* self)
+{
+    if (self != nullptr)
+        static_cast<RumbleManager*>(self)->StopMotors();
+}
+void RumbleManager_Reset(void* self)
+{
+    if (self != nullptr)
+        static_cast<RumbleManager*>(self)->Reset();
+}
 void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle)
 {
-    (void)self; (void)handle;
+    if (self != nullptr)
+        static_cast<RumbleManager*>(self)->Remove(handle);
 }
 void RumbleManager_SetIntensity(void* self, int handle, float intensity)
 {
-    (void)self; (void)handle; (void)intensity;
+    if (self != nullptr)
+    {
+        RumbleEffectInstanceHandle h;
+        h.mVal = handle;
+        static_cast<RumbleManager*>(self)->SetIntensity(h, intensity);
+    }
 }
 void RumbleManager_FrameAdvance(void* self, float delta)
 {
-    (void)self; (void)delta;
+    if (self != nullptr)
+        static_cast<RumbleManager*>(self)->FrameAdvance(delta);
 }
 void RumbleManager_Play(void* self, void* effect, float intensity)
 {
-    (void)self; (void)effect; (void)intensity;
+    if (self != nullptr && effect != nullptr)
+        static_cast<RumbleManager*>(self)->Play(
+            *static_cast<RumbleEffect*>(effect), intensity);
 }
 void* RumbleManager_Inst(int instance)
 {
-    (void)instance;
-    return nullptr;
+    return RumbleManager::Inst(instance);
 }
 
 // GamePause free artifacts (forward to the statics)
@@ -2035,14 +2155,32 @@ void GamePause_SetAllPaused(bool paused)
 const char* CG_SafeTranslateString_Internal(const char* string,
                                             const char* defaultString)
 {
-    (void)string; (void)defaultString;
-    return "";
+    if (string == nullptr)
+        return defaultString != nullptr ? defaultString : "";
+
+    const char* translated = SEH_StringEd_GetString(string);
+    return translated != nullptr ? translated :
+        (defaultString != nullptr ? defaultString : string);
 }
 void* XModelParts_GetAnimDef(void* self)
 {
-    (void)self;
-    return nullptr;
+    // XModelParts::mAnimDef is the pointer immediately following the mesh
+    // array at +0x38 in the shipped object layout.
+    return self != nullptr ? *reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 0x38) : nullptr;
 }
+
+struct XAnimTreeRaw {
+    void* next;
+    void* prev;
+    AnimTree* anims;
+    unsigned int owner;
+    int pakId;
+    int activeAnims;
+    unsigned short infoArray[1];
+};
+extern void XAnimEntry_Create(XAnimEntry* self);
+extern void XAnimTreePush(void* tree);
 
 // DObj / anim free artifacts (render.o/anim.o surface; stubs, port later)
 struct DObjSkelMat;
@@ -2081,9 +2219,8 @@ DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex)
 }
 math::Quaternion nalQuaternionFromMatrix(const math::Mat44& m)
 {
-    (void)m;
-    math::Quaternion q = {};
-    return q;
+    return math::GetQuaternion(
+        math::Mat33(math::Dir3(m.x), math::Dir3(m.y), math::Dir3(m.z)));
 }
 nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
     void* pose, const nalGenericBoneHandle* handle)
@@ -2098,36 +2235,26 @@ void nalGenericSkeleton_GetBoneHandle(void* skeleton,
 {
     (void)skeleton; (void)handle; (void)boneName;
 }
-void* nalGenericAnim_CreateInstance(void* anim, void* skeleton)
-{
-    (void)anim; (void)skeleton;
-    return nullptr;
-}
 void* DObj_GetTree(void* obj)
 {
-    (void)obj;
-    return nullptr;
+    return obj != nullptr ? static_cast<DObj*>(obj)->tree[0] : nullptr;
 }
 void* DObj_New(unsigned int size)
 {
     return mem_heap_malloc(size);
 }
-void DObj_Ctor(void* obj, int pakId)
-{
-    (void)obj; (void)pakId;
-}
 void DObj_Dtor(void* obj)
 {
-    (void)obj;
+    if (obj != nullptr)
+        static_cast<DObj*>(obj)->~DObj();
 }
 void DObj_OpDelete(void* obj)
 {
-    (void)obj;
+    DObj::operator delete(obj);
 }
 void* Entity_GetViewModelDObj(Entity* ent)
 {
-    (void)ent;
-    return nullptr;
+    return ent != nullptr ? ent->GetViewModelDObj() : nullptr;
 }
 void* g_femanager_IGMS_cur()
 {
@@ -2135,41 +2262,147 @@ void* g_femanager_IGMS_cur()
 }
 void* Hunk_AllocXAnimCreate(int size)
 {
-    (void)size;
-    return nullptr;
+    return mem_heap_malloc_ctx(static_cast<unsigned int>(size), 16,
+                               "hunk", "c:\\cod\\code\\game\\g_scr_main.cpp",
+                               401);
 }
 void* Hunk_AllocXAnimCreate(void* a, unsigned int b)
 {
-    (void)a; (void)b;
-    return nullptr;
+    (void)a;
+    return mem_heap_malloc_ctx(b, 16, "hunk",
+                               "c:\\cod\\code\\game\\g_scr_main.cpp", 401);
 }
 void* MetaNalBaseAnim_Ctor(void* self)
 {
-    (void)self;
-    return nullptr;
+    if (self == nullptr)
+        return nullptr;
+    extern void* MetaNalBaseAnim_vftable;
+    struct MetaNalBaseAnimView {
+        void** vftable;
+        void* nextAnim;
+        tlFixedString name;
+        int skeletonNameIndex;
+        unsigned int version;
+        void* skeleton;
+        unsigned int flags;
+        float duration;
+        int instanceCount;
+        void* data;
+    };
+    MetaNalBaseAnimView* anim = static_cast<MetaNalBaseAnimView*>(self);
+    anim->vftable = &MetaNalBaseAnim_vftable;
+    memset(&anim->nextAnim, 0,
+           sizeof(*anim) - offsetof(MetaNalBaseAnimView, nextAnim));
+    anim->data = nullptr;
+    return self;
 }
 void MetaNalBaseAnim_Create(void* self, void* anim)
 {
-    (void)self; (void)anim;
+    if (self == nullptr || anim == nullptr)
+        return;
+    struct MetaNalBaseAnimView {
+        void** vftable;
+        void* nextAnim;
+        tlFixedString name;
+        int skeletonNameIndex;
+        unsigned int version;
+        void* skeleton;
+        unsigned int flags;
+        float duration;
+        int instanceCount;
+        void* data;
+    };
+    using IsLoopingFn = int (__cdecl*)(void*);
+    using IsTrajRelativeFn = int (__cdecl*)(void*);
+    using GetDurationFn = float (__cdecl*)(void*);
+    using GetSkeletonFn = void* (__cdecl*)(void*);
+    using GetNameFn = const unsigned int* (__cdecl*)(void*);
+    MetaNalBaseAnimView* base = static_cast<MetaNalBaseAnimView*>(self);
+    base->data = anim;
+    void** vt = *static_cast<void***>(anim);
+    unsigned int flags = 0;
+    if (vt != nullptr && vt[1] != nullptr
+        && static_cast<IsLoopingFn>(vt[1])(anim) != 0)
+        flags |= 1u;
+    if (vt != nullptr && vt[2] != nullptr
+        && static_cast<IsTrajRelativeFn>(vt[2])(anim) != 0)
+        flags |= 2u;
+    base->flags = flags;
+    if (vt != nullptr && vt[3] != nullptr)
+        base->duration = static_cast<GetDurationFn>(vt[3])(anim);
+    if (vt != nullptr && vt[4] != nullptr)
+        base->skeleton = static_cast<GetSkeletonFn>(vt[4])(anim);
+    if (vt != nullptr && vt[0] != nullptr)
+    {
+        const unsigned int* name = static_cast<GetNameFn>(vt[0])(anim);
+        if (name != nullptr)
+        {
+            base->name.hash = name[0];
+            memcpy(base->name.str, name + 1, 28);
+        }
+    }
 }
 void MetaNalBaseAnim_DelayCreate(void* self, void** anims, int count)
 {
-    (void)self; (void)anims; (void)count;
+    if (self == nullptr || anims == nullptr || count <= 0)
+        return;
+    struct MetaNalBaseAnimView {
+        void** vftable;
+        void* nextAnim;
+        tlFixedString name;
+        int skeletonNameIndex;
+        unsigned int version;
+        void* skeleton;
+        unsigned int flags;
+        float duration;
+        int instanceCount;
+        void* data;
+    };
+    MetaNalBaseAnimView* base = static_cast<MetaNalBaseAnimView*>(self);
+    if (base->data == nullptr)
+        return;
+    void** vt = *static_cast<void***>(base->data);
+    using DelayCreateFn = void (__cdecl*)(void*, void**, int);
+    if (vt != nullptr && vt[7] != nullptr)
+        static_cast<DelayCreateFn>(vt[7])(base->data, anims, count);
+    MetaNalBaseAnim_Create(self, base->data);
 }
 void* RE_RegisterModel(void* result, const char* name, int pakId, int imagetype)
 {
-    (void)result; (void)name; (void)pakId; (void)imagetype;
-    return nullptr;
+    if (result == nullptr)
+        return nullptr;
+    extern IVPointer<XModel> RE_RegisterModel(const char*, TPakId, int);
+    *reinterpret_cast<IVPointer<XModel>*>(result) =
+        RE_RegisterModel(name, static_cast<TPakId>(pakId), imagetype);
+    return result;
 }
 XAnimTree* XAnimCreateTree(Entity* ent, AnimTree* anims)
 {
-    (void)ent; (void)anims;
-    return nullptr;
+    if (anims == nullptr || anims->entries.mSize == 0
+        || PakManager::sInst == nullptr)
+        return nullptr;
+
+    const TPakId pakId = ent != nullptr && ent->mPakId != PAK_ID_INVALID
+        ? static_cast<TPakId>(ent->mPakId) : CurPakId();
+    const unsigned int size = 0x18u + 2u * anims->entries.mSize;
+    XAnimTreeRaw* tree = static_cast<XAnimTreeRaw*>(
+        PakManager::sInst->MemAlloc(pakId, size, false));
+    if (tree == nullptr)
+        return nullptr;
+    memset(tree, 0, size);
+    tree->anims = anims;
+    tree->pakId = static_cast<int>(pakId);
+    tree->owner = ent != nullptr ? ent->mHandle.mHandle.mVal : 0;
+    for (unsigned int i = 0; i < anims->entries.mSize; ++i)
+        XAnimEntry_Create(&anims->entries.mList[i]);
+
+    XAnimTreePush(tree);
+    return reinterpret_cast<XAnimTree*>(tree);
 }
 void* XAnimCreateTree(void* ent, void* anims)
 {
-    (void)ent; (void)anims;
-    return nullptr;
+    return XAnimCreateTree(static_cast<Entity*>(ent),
+                           static_cast<AnimTree*>(anims));
 }
 // ea: 0x004F6220
 void Axis4_to_nalMatrix4x4(const float (*axis)[3], nalMatrix4x4* mat)
@@ -2198,19 +2431,22 @@ void BrocString_dtor(void* self)
     (void)self;
 }
 void CL_CubemapShotUsage() {}
-void* cdGetAnim(unsigned int a)
-{
-    (void)a;
-    return nullptr;
-}
+extern void* cdGetAnim(unsigned int hash);
 void SmokeGrenadeMgr_AddSmokeGrenade(void* mgr, void* info)
 {
-    (void)mgr; (void)info;
+    if (mgr != nullptr && info != nullptr)
+        static_cast<SmokeGrenadeMgr*>(mgr)->AddSmokeGrenade(
+            static_cast<const SmokeGrenadeInfo*>(info));
 }
-void SmokeGrenadeMgr_ReInitialize() {}
+void SmokeGrenadeMgr_ReInitialize()
+{
+    if (SmokeGrenadeMgr::sInst != nullptr)
+        SmokeGrenadeMgr::sInst->ReInitialize();
+}
 void SmokeGrenadeMgr_Update(void* self, float deltaT)
 {
-    (void)self; (void)deltaT;
+    if (self != nullptr)
+        static_cast<SmokeGrenadeMgr*>(self)->Update(deltaT);
 }
 struct TaskHandler;
 
@@ -2219,8 +2455,6 @@ struct TaskHandler;
 // ============================================================================
 struct KeyInfoEntry;
 KeyInfoEntry (*gKeyInfoMKeys)[256] = nullptr;  // ?gKeyInfoMKeys@@3PAY0BAA@UKeyInfoEntry@@A
-struct KeyInfoEntry3;
-KeyInfoEntry3 (*KeyInfo_mKeys)[256] = nullptr;  // ?KeyInfo_mKeys@@3PAY0BAA@UKeyInfoEntry3@@A
 struct PakInfoNode;
 extern struct PakInfoNode const* sLoadingScreenInfo;
 void (__cdecl* gpBrocAPI_mCallbackQuitGame)() = nullptr;
@@ -2550,25 +2784,29 @@ CameraShakeInstance* CameraShake_StartCameraShake(CameraShake* self, int a,
                                                   math::Position3* b, float c,
                                                   float d, float e)
 {
-    (void)self; (void)a; (void)b; (void)c; (void)d; (void)e;
-    return nullptr;
+    return self != nullptr
+        ? self->StartCameraShake(a, b, c, d, e) : nullptr;
 }
 void CameraShake_StopCameraShake(CameraShake* self, CameraShakeInstance* inst)
 {
-    (void)self; (void)inst;
+    if (self != nullptr)
+        self->StopCameraShake(inst);
 }
 void CameraShake_StopCameraShake(void* self, void* inst)
 {
-    (void)self; (void)inst;
+    CameraShake_StopCameraShake(static_cast<CameraShake*>(self),
+                                static_cast<CameraShakeInstance*>(inst));
 }
 void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self, float a,
                                           float b)
 {
-    (void)self; (void)a; (void)b;
+    if (self != nullptr)
+        self->OverrideSettings(a, b);
 }
 void CameraShakeInstance_SetTime(CameraShakeInstance* self, float a)
 {
-    (void)self; (void)a;
+    if (self != nullptr)
+        self->SetTime(a);
 }
 
 class DbTable;
@@ -2673,17 +2911,28 @@ unsigned int bdRandom_nextUInt(void* self)
 }
 void bdRandom_setSeed(void* self, unsigned int seed) { (void)self; (void)seed; }
 
+namespace BrocSys {
+unsigned int GetEnt(const Broc::string& value, int fieldnameHash,
+                    unsigned int* array, int capacity, int flags);
+void ShellShock(unsigned int entityHandleVal, const Broc::string& shock,
+                float fVal);
+}
+extern void BrocAddEntityThread(Entity*, unsigned int, ScriptEventParams*);
+
 unsigned int BrocAPI_GetEnt(void* a, void* b, unsigned int c, void* d, int e,
                             int f)
 {
-    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
-    return 0;
+    BrocAPI* api = a != nullptr ? reinterpret_cast<BrocAPI*>(a) : gpBrocAPI;
+    if (api == nullptr || b == nullptr || api->mBrocExports.mGetEnt == nullptr)
+        return 0;
+    return api->mBrocExports.mGetEnt(
+        *reinterpret_cast<const Broc::string*>(b), static_cast<int>(c),
+        reinterpret_cast<unsigned int*>(d), e, f);
 }
 unsigned int BrocSys_GetEnt(const Broc::string& a, int b, unsigned int* c,
                             int d, int e)
 {
-    (void)a; (void)b; (void)c; (void)d; (void)e;
-    return 0;
+    return BrocSys::GetEnt(a, b, c, d, e);
 }
 unsigned int InplaceTree_Find(void* tree, const unsigned int* key)
 {
@@ -2783,12 +3032,25 @@ void Axis_Bind_f() {}
 void Axis_Unbindall_f() {}
 void BrocAddEntityThread(Entity* e, unsigned int a, void* b)
 {
-    (void)e; (void)a; (void)b;
+    using BrocThreadFn = void (*)(Entity*, unsigned int, ScriptEventParams*);
+    const BrocThreadFn fn =
+        static_cast<BrocThreadFn>(&BrocAddEntityThread);
+    fn(e, a, reinterpret_cast<ScriptEventParams*>(b));
 }
-void BrocDestroyEntity(Entity* e) { (void)e; }
+void BrocDestroyEntity(Entity* e)
+{
+    if (e->mBrocExtendedEntity != nullptr)
+    {
+        void (*deleteExtendedEntity)(void*) =
+            gpBrocAPI->mBrocExports.mDeleteExtendedEntity;
+        if (deleteExtendedEntity != nullptr)
+            deleteExtendedEntity(e->mBrocExtendedEntity);
+    }
+    e->mBrocExtendedEntity = nullptr;
+}
 void BrocSys_ShellShock(unsigned int a, const Broc::string& b, float c)
 {
-    (void)a; (void)b; (void)c;
+    BrocSys::ShellShock(a, b, c);
 }
 void ButtonMgr_UpdateBinding(int a, int b) { (void)a; (void)b; }
 void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData)
@@ -3519,7 +3781,55 @@ void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
 void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
 void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
 void physics_debug_render() {}
-void Player_ActivateHoldCmd(Entity* e) { (void)e; }
+extern int Scr_IsSystemActive(unsigned char sys);
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
+void Player_ActivateHoldCmd(Entity* ent)
+{
+    if (ent == nullptr || ent->client == nullptr)
+        return;
+    if (Scr_IsSystemActive(1u) == 0)
+        return;
+
+    if (ent->IsLocalPlayer())
+    {
+        InteractionController* controller =
+            InteractionController::Inst(ent->GetPlayerIndex());
+        if (controller != nullptr && controller->mCurState != nullptr)
+        {
+            controller->mFlags |= 0x10u;
+            return;
+        }
+    }
+
+    const unsigned int value = ent->client->mUseHoldEntity.mHandle.mVal;
+    const unsigned int index = value & 0xFFFu;
+    if (index >= 0x540u
+        || (value >> 12) != EntityHandleDb::sInst.mElements[index].mKey)
+        return;
+    Entity* useEnt = EntityHandleDb::sInst.mElements[index].mObject;
+    if (useEnt == nullptr || useEnt->use == 0 || useEnt->use >= 0xE)
+        return;
+    IsPlayerFullySeatedInVehicle(ent);
+    cvar_t* useHold = Cvar_Get("g_useholdtime", "250", 0);
+    if (useHold != nullptr
+        && level.time - ent->client->mUseHoldTime >= useHold->integer)
+    {
+        Scr_NotifyFromEnt(useEnt, hash_const.trigger, ent);
+        if (useEnt->s.eType == 2)
+        {
+            Scr_NotifyFromEnt(useEnt, hash_const.touch, useEnt);
+            useEnt->active = 1;
+            if (touchtable[useEnt->touch] != nullptr)
+                touchtable[useEnt->touch](useEnt, ent, 0);
+        }
+        else if (usetable[useEnt->use] != nullptr)
+        {
+            usetable[useEnt->use](useEnt, ent, ent);
+        }
+        ent->client->mUseHoldEntity.mHandle.mVal = 0;
+    }
+}
 void PlayerAnimMgr_Update(float a) { (void)a; }
 void PrintPakNames() {}
 void R_InitDebug() {}
@@ -3570,7 +3880,13 @@ void Scr_Error(const char* error)
     if (!AeAssert::IsIgnored() && AeAssert::Warning(off_CFBB58, error))
         __debugbreak();
 }
-void Scr_FreePrecachedAnimTrees() {}
+extern int g_xanim_num;
+extern void Scr_FreeAnimTreeAtIndex(int treeindex);
+void Scr_FreePrecachedAnimTrees()
+{
+    for (int i = 1; i < g_xanim_num; ++i)
+        Scr_FreeAnimTreeAtIndex(i);
+}
 // ea: 0x005C1B10
 void Scr_ParamError(unsigned int index, const char* error)
 {
@@ -3582,10 +3898,19 @@ void Scr_ParamError(unsigned int index, const char* error)
     if (!AeAssert::IsIgnored() && AeAssert::Warning(off_CFBB58, error))
         __debugbreak();
 }
-void Scr_PrecacheAnimTrees(void* (*cb)(int), bool a) { (void)cb; (void)a; }
+extern void Scr_LoadAnimTreeAtIndex(int treeindex, void* (__cdecl* Alloc)(int),
+                                    bool restart);
+namespace BrocHelper { void AnimationValidator(int numTrees); }
+void Scr_PrecacheAnimTrees(void* (*cb)(int), bool restart)
+{
+    for (int i = 1; i < g_xanim_num; ++i)
+        Scr_LoadAnimTreeAtIndex(i, cb, restart);
+    BrocHelper::AnimationValidator(g_xanim_num);
+}
 void Scr_PrecacheAnimTrees(void* (*cb)(void*, unsigned int), int a)
 {
-    (void)cb; (void)a;
+    (void)cb;
+    Scr_PrecacheAnimTrees(nullptr, a != 0);
 }
 void ScriptEventHandler_dtor(void* self) { (void)self; }
 // ea: 0x005C1A50
@@ -3608,10 +3933,16 @@ void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
 {
     (void)self; (void)e; (void)a; (void)b;
 }
-void StatusBar_Init(void* self) { (void)self; }
+void StatusBar_Init(void* self)
+{
+    (void)self;
+    StatusBar::Init();
+}
 void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
 {
-    (void)self; (void)a; (void)b; (void)c;
+    if (self != nullptr)
+        static_cast<StreamZoneManager*>(self)->Update(
+            a, reinterpret_cast<const math::Position3*>(b), c);
 }
 void StubData_ApplyStubOptions(void* a) { (void)a; }
 void sWeaponAnimCallback() {}
@@ -3636,42 +3967,40 @@ void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
     (void)e; (void)a; (void)b; (void)c; (void)d;
 }
 void j_nullsub_50(void* self) { (void)self; }
-void ValidatePakId(int a) { (void)a; }
 void View_SetViewportClipping(int a) { (void)a; }
 void WaitTilOutput_AssignData(void* a, void* b) { (void)a; (void)b; }
-void Weapon_MeleeHitShock(Entity* e) { (void)e; }
-void WheelMarkMgr_Exit() {}
-void WheelMarkMgr_Init() {}
-void WheelMarkMgr_Reset() {}
-struct XAnimTree;
-struct XAnimEntry;
-void XAnimCalcAbsDelta(XAnimTree* t, unsigned int a, float* const b,
-                       float* const c)
+void Weapon_MeleeHitShock(Entity* ent)
 {
-    (void)t; (void)a; (void)b; (void)c;
-}
-void XAnimFreeTree(XAnimTree* t) { (void)t; }
-void XAnimGetAbsDelta(AnimTree* t, unsigned int a, float* const b,
-                      float* const c, float d)
-{
-    (void)t; (void)a; (void)b; (void)c; (void)d;
-}
-void XAnimGetRelDelta(AnimTree* t, unsigned int a, float* const b,
-                      float* const c, float d, float e)
-{
-    (void)t; (void)a; (void)b; (void)c; (void)d; (void)e;
-}
-void XAnimSetCompleteGoalWeight(XAnimTree* t, unsigned int a, float b, float c,
-                                float d, unsigned int e, unsigned short f,
-                                int g)
-{
-    (void)t; (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g;
+    if (ent == nullptr || !ent->IsLocalPlayer())
+        return;
+    Broc::string shock("default");
+    if (gpBrocAPI != nullptr && gpBrocAPI->mBrocExports.mShellShock != nullptr)
+        gpBrocAPI->mBrocExports.mShellShock(ent->mHandle.mHandle.mVal, shock, 0.7f);
+
+    void* manager = RumbleManager_Inst(ent->GetPlayerIndex());
+    if (manager == nullptr)
+        return;
+    RumbleEffect effect;
+    for (int i = 0; i < 2; ++i)
+    {
+        effect.mRumbleDataArray[i].enabled = true;
+        effect.mRumbleDataArray[i].delay = 0.0f;
+        effect.mRumbleDataArray[i].ramp_up_duration = 0.0f;
+        effect.mRumbleDataArray[i].ramp_down_duration = 0.0f;
+    }
+    effect.mRumbleDataArray[0].intensity = 0.5f;
+    effect.mRumbleDataArray[0].steady_duration = 0.1f;
+    effect.mRumbleDataArray[1].intensity = 0.7f;
+    effect.mRumbleDataArray[1].steady_duration = 0.1f;
+    RumbleManager_Play(manager, &effect, 1.0f);
 }
 void XFONT_OpenTrueTypeFont(const unsigned short* a, unsigned int b, void* c)
 {
     (void)a; (void)b; (void)c;
 }
-void XModelEnforceExist(int a) { (void)a; }
+int g_EnforceExist = 0;
+void XModelEnforceExist(int enforce) { g_EnforceExist = enforce; }
+void ValidatePakId(int a) { ValidatePakId((TPakId)a); }
 void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
                        DObjSkelMat* modelParentMat)
 {
@@ -3764,7 +4093,19 @@ void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
 void XModelTransform(IVPointer<XModel> model, DObjSkelMat* a,
                      DObjSkelMat* b)
 {
-    (void)model; (void)a; (void)b;
+    ValidatePakId((TPakId)model.mPakId);
+    unsigned int lodIndex = 0;
+    while (lodIndex < 4 && model.mValue->lod[lodIndex] == nullptr)
+        ++lodIndex;
+    if (lodIndex >= 4 || a == nullptr || b == nullptr)
+        return;
+    const unsigned int count =
+        model.mValue->lod[lodIndex]->xmodelParts->mHierarchy.mSize;
+    for (unsigned int i = 0; i < count; ++i)
+    {
+        const DObjSkelMat result = DObjSkelMatrixMultiply(&a[i], b);
+        a[i] = result;
+    }
 }
 const void* DCGBank_get_set(void* self, int a)
 {
@@ -3788,12 +4129,28 @@ const void* StreamZoneManager_GetCellZone(void* self, int a)
 }
 
 struct searchpath_s;
-void FS_ShutdownSearchPaths(searchpath_s* sp) { (void)sp; }
+void FS_ShutdownSearchPaths(searchpath_s* sp)
+{
+    while (sp != nullptr)
+    {
+        searchpath_s* next = sp->next;
+        if (sp->pack != nullptr)
+        {
+            mem_heap_free(sp->pack->buildBuffer);
+            mem_heap_free(sp->pack);
+        }
+        if (sp->dir != nullptr)
+            mem_heap_free(sp->dir);
+        mem_heap_free(sp);
+        sp = next;
+    }
+}
 struct weaponParms;
 void G_BulletFireSpread(Entity* a, Entity* b, weaponParms* wp, int c, float d,
                         Entity* e, float f, int g)
 {
-    (void)a; (void)b; (void)wp; (void)c; (void)d; (void)e; (void)f; (void)g;
+    G_BulletFireSpread(static_cast<const Entity*>(a), b,
+                       static_cast<const weaponParms*>(wp), c, d, e, f, g);
 }
 void AssetBankSet_dtor(void* self) { (void)self; }
 void SceneManager_ResetAllStaticModels() {}
@@ -3823,17 +4180,6 @@ void* DbTablesetMgr_Find(void* self, TPakId pak, const char* name,
                          TPakId* foundPak)
 {
     (void)self; (void)pak; (void)name; (void)foundPak;
-    return nullptr;
-}
-struct nglMesh;
-struct nglMeshParams;
-struct nglShaderParamSet;
-class nglMeshNode;
-nglMeshNode* nglListAddMesh(nglMesh* mesh, const math::Mat43& m,
-                            nglMeshParams* mp, nglShaderParamSet* sp,
-                            void (*fn)(nglMeshNode*))
-{
-    (void)mesh; (void)m; (void)mp; (void)sp; (void)fn;
     return nullptr;
 }
 
@@ -3876,7 +4222,7 @@ InitScriptFn InitScript(BrocAPI** gamesAPIptr,
 
 namespace BrocSys {
 void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
-void InitAPI();
+BrocAPI* InitAPI();
 void BrocDebugRender();
 }
 

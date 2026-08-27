@@ -384,6 +384,10 @@ void MainThreadHook(Broc::entity)
 // ea: 0xC95160
 void InternalMain()
 {
+    // The release constructs fresh inline Level hash_maps for every script
+    // lifetime.  The port keeps their ABI-sized bytes opaque and mirrors the
+    // containers out-of-line, so discard any previous lifetime first.
+    mp_util_wad::ResetLevelMapStorage();
     level = new (std::nothrow) mp_level_wad::Level();
     if (level == nullptr) {
         if (Broc::gBrocAPI.mAssert(
@@ -543,6 +547,7 @@ void Shutdown() // ea: 0xC94FA0
 {
     if (level != nullptr)
         delete level;
+    mp_util_wad::ResetLevelMapStorage();
     level = nullptr;
     mp_level_wad::pLevel = nullptr;
     mp_anim_wad::pLevel = nullptr;

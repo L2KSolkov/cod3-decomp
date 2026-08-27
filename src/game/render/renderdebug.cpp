@@ -226,6 +226,221 @@ ae_vector<DebugSphere> gDebugSpheres;  // ?gDebugSpheres@@3V?$ae_vector@VDebugSp
 ae_vector<DebugLine> gDebugLines;      // ?gDebugLines@@3V?$ae_vector@VDebugLine@@@@A @ 0x1366C84
 ae_vector<DebugTri> gDebugTris;        // ?gDebugTris@@3V?$ae_vector@VDebugTri@@@@A @ 0x13642C4
 
+extern unsigned int extract_color(const Color& col);
+extern void PerpendicularVector(float* dst, const float* src);  // q_math.cpp
+extern void CrossProduct(const float* v1, const float* v2, float* cross);
+
+// trGlobals_t view (viewParms.world.modelMatrix +0x8C)
+struct orientationr_t {
+    float origin[3];
+    float axis[3][3];
+    float viewOrigin[3];
+    float modelMatrix[16];
+};
+struct viewParms_t {
+    uint8_t _pad[0x7C];
+    orientationr_t world;
+};
+struct trGlobals_t {
+    uint8_t _pad0[0x10];
+    viewParms_t viewParms;
+};
+extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+
+// ea: 0x006BD230
+void DebugRender::RenderQuad2D(float l, float t, float r, float b, float z,
+                               const Color& col)
+{
+    nglQuad q;
+    nglInitQuad(&q);
+    nglSetQuadZ(&q, z);
+    nglSetQuadRect(&q, l, t, r, b);
+    nglSetQuadColor(&q, extract_color(col));
+    nglListAddQuad(&q);
+}
+
+// ea: 0x006C41C0
+void DebugRender::RenderText3D(const math::Position3& wpos,
+                               const Color& col, float scale,
+                               const char* format, ...)
+{
+    (void)scale;
+    va_list vaArgs;
+    va_start(vaArgs, format);
+    math::Position3 projected = nglProjectPoint(wpos, nglBuildScene);
+    if (_mm_shuffle_ps(projected.v, projected.v, 170).m128_f32[0] > 0.0f)
+    {
+        char text[2048];
+        vsprintf(text, format, vaArgs);
+        const char* line = text;
+        for (char* nl = strchr(text, '\n'); nl != nullptr;
+             nl = strchr(nl + 1, '\n'))
+        {
+            *nl = '\0';
+            DebugRender::RenderText(
+                line, (int)projected.v.m128_f32[0],
+                (int)_mm_shuffle_ps(projected.v, projected.v, 85).m128_f32[0],
+                col, 0.0f, 1.0f);
+            line = nl + 1;
+            projected.v.m128_f32[1] += 14.0f;
+        }
+        DebugRender::RenderText(
+            line, (int)projected.v.m128_f32[0],
+            (int)_mm_shuffle_ps(projected.v, projected.v, 85).m128_f32[0],
+            col, 0.0f, 1.0f);
+    }
+    va_end(vaArgs);
+}
+
+// ea: 0x006D85B0
+void DebugRender::RenderLine(const math::Position3& pt1,
+                             const math::Position3& pt2, const Color& col,
+                             float thickness)
+{
+    if (nglBuildScene != nullptr && nglBuildScene->Parent != nullptr)
+    {
+        __m128 delta = _mm_sub_ps(pt2.v, pt1.v);
+        __m128 lenSq = _mm_mul_ps(delta, delta);
+        float len = sqrtf(lenSq.m128_f32[0]
+                          + _mm_shuffle_ps(lenSq, lenSq, 85).m128_f32[0]
+                          + _mm_shuffle_ps(lenSq, lenSq, 170).m128_f32[0]);
+        __m128 direction = _mm_div_ps(delta, _mm_set1_ps(len));
+        math::Position3 camera;
+        camera.v = _mm_setr_ps(tr.viewParms.world.origin[0],
+                               tr.viewParms.world.origin[1],
+                               tr.viewParms.world.origin[2], 0.0f);
+        __m128 midpoint = _mm_sub_ps(
+            _mm_mul_ps(_mm_add_ps(pt1.v, pt2.v), _mm_set1_ps(0.5f)),
+            camera.v);
+        __m128 side = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(midpoint, midpoint, 9),
+                       _mm_shuffle_ps(direction, direction, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(midpoint, midpoint, 18),
+                       _mm_shuffle_ps(direction, direction, 9)));
+        __m128 sideSq = _mm_mul_ps(side, side);
+        float sideLenSq = sideSq.m128_f32[0]
+                          + _mm_shuffle_ps(sideSq, sideSq, 85).m128_f32[0]
+                          + _mm_shuffle_ps(sideSq, sideSq, 170).m128_f32[0];
+        if (sideLenSq >= 1.0e-9f)
+        {
+            __m128 offset = _mm_mul_ps(
+                side, _mm_set1_ps(thickness * 0.5f / sqrtf(sideLenSq)));
+            math::Position3 p1, p2, p3, p4;
+            p1.v = _mm_sub_ps(pt1.v, offset);
+            p2.v = _mm_add_ps(pt1.v, offset);
+            p3.v = _mm_add_ps(pt2.v, offset);
+            p4.v = _mm_sub_ps(pt2.v, offset);
+            DebugRender::RenderQuad(p1, p2, p3, p4, col, false);
+        }
+    }
+    else
+    {
+        gDebugLines.push_back(DebugLine(pt1, pt2, col, thickness));
+    }
+}
+
+// ea: 0x006D9370
+void DebugRender::RenderAxis(const math::Mat43& mat, float length,
+                             float width)
+{
+    math::Position3 origin;
+    origin.v = mat.w.v;
+    math::Position3 end;
+    end.v = _mm_add_ps(origin.v, _mm_mul_ps(mat.x.v, _mm_set1_ps(length)));
+    DebugRender::RenderLine(origin, end, Color(1.0f, 0.0f, 0.0f, 1.0f), width);
+    end.v = _mm_add_ps(origin.v, _mm_mul_ps(mat.y.v, _mm_set1_ps(length)));
+    DebugRender::RenderLine(origin, end, Color(0.0f, 1.0f, 0.0f, 1.0f), width);
+    end.v = _mm_add_ps(origin.v, _mm_mul_ps(mat.z.v, _mm_set1_ps(length)));
+    DebugRender::RenderLine(origin, end, Color(0.0f, 0.0f, 1.0f, 1.0f), width);
+}
+
+// ea: 0x006D5CC0
+void DebugRender::RenderCone(const math::Position3& pt,
+                             const math::Dir3& dir, float angle,
+                             float length, const Color& col)
+{
+    const float d[3] = { dir.v.m128_f32[0], dir.v.m128_f32[1],
+                         dir.v.m128_f32[2] };
+    const float radius = sinf(angle) * length;
+    float depth = sqrtf(fabsf(length * length - radius * radius));
+    if (angle > 6.2831855f)
+        depth = -depth;
+
+    math::Position3 center;
+    center.v = _mm_add_ps(pt.v, _mm_mul_ps(dir.v, _mm_set1_ps(depth)));
+    float perpendicular[3];
+    PerpendicularVector(perpendicular, d);
+    float cross[3];
+    CrossProduct(perpendicular, d, cross);
+
+    float right[3] = { perpendicular[0] + cross[0],
+                       perpendicular[1] + cross[1],
+                       perpendicular[2] + cross[2] };
+    float uprightLen = sqrtf(right[0] * right[0] + right[1] * right[1]
+                             + right[2] * right[2]);
+    float down[3] = { perpendicular[0] - cross[0],
+                      perpendicular[1] - cross[1],
+                      perpendicular[2] - cross[2] };
+    float downLen = sqrtf(down[0] * down[0] + down[1] * down[1]
+                          + down[2] * down[2]);
+    float perpRadius[3], crossRadius[3], rightRadius[3], downRadius[3];
+    for (int i = 0; i < 3; ++i)
+    {
+        perpRadius[i] = perpendicular[i] * radius;
+        crossRadius[i] = cross[i] * radius;
+        rightRadius[i] = right[i] * radius / uprightLen;
+        downRadius[i] = down[i] * radius / downLen;
+    }
+    auto add = [](const math::Position3& origin, const float* offset) {
+        math::Position3 out;
+        out.v = _mm_add_ps(origin.v,
+                           _mm_setr_ps(offset[0], offset[1], offset[2], 0.0f));
+        return out;
+    };
+    auto sub = [](const math::Position3& origin, const float* offset) {
+        math::Position3 out;
+        out.v = _mm_sub_ps(origin.v,
+                           _mm_setr_ps(offset[0], offset[1], offset[2], 0.0f));
+        return out;
+    };
+    auto add_vec = [](const math::Position3& origin, const math::Position3& v) {
+        math::Position3 out;
+        out.v = _mm_add_ps(origin.v, v.v);
+        return out;
+    };
+    auto sub_vec = [](const math::Position3& origin, const math::Position3& v) {
+        math::Position3 out;
+        out.v = _mm_sub_ps(origin.v, v.v);
+        return out;
+    };
+    math::Position3 perp = add(center, perpRadius);
+    math::Position3 base = add(center, downRadius);
+    math::Position3 rightOff;
+    rightOff.v = _mm_setr_ps(rightRadius[0], rightRadius[1], rightRadius[2], 0.0f);
+    math::Position3 downOff;
+    downOff.v = _mm_setr_ps(downRadius[0], downRadius[1], downRadius[2], 0.0f);
+    math::Position3 perpOff;
+    perpOff.v = _mm_setr_ps(perpRadius[0], perpRadius[1], perpRadius[2], 0.0f);
+    math::Position3 crossOff;
+    crossOff.v = _mm_setr_ps(crossRadius[0], crossRadius[1], crossRadius[2], 0.0f);
+
+    DebugRender::RenderTriangle(pt, base, perp, col, true);
+    math::Position3 c = add_vec(base, rightOff);
+    math::Position3 dpt = add_vec(c, perpOff);
+    DebugRender::RenderTriangle(pt, dpt, c, col, true);
+    math::Position3 e = add_vec(c, crossOff);
+    DebugRender::RenderTriangle(pt, c, e, col, true);
+    math::Position3 f = sub_vec(e, downOff);
+    DebugRender::RenderTriangle(pt, e, f, col, true);
+    math::Position3 g = sub_vec(f, perpOff);
+    DebugRender::RenderTriangle(pt, f, g, col, true);
+    math::Position3 h = sub_vec(f, rightOff);
+    DebugRender::RenderTriangle(pt, g, h, col, true);
+    math::Position3 i = sub_vec(f, crossOff);
+    DebugRender::RenderTriangle(pt, h, i, col, true);
+    DebugRender::RenderTriangle(pt, i, base, col, true);
+}
+
 // ngl/render-layer helpers (render_xboxr / ngl_aux.o)
 extern void auxSetScale(nglMeshParams* dest, float src0, float src1,
                         float src2);  // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
@@ -1185,27 +1400,6 @@ void DebugRender::RenderQuad(const math::Position3& p1,
     (void)c2; (void)c3; (void)c4;
     RenderQuad(p1, p2, p3, p4, c1, false);
 }
-
-// q_math helpers
-void PerpendicularVector(float* dst, const float* src);  // q_math.cpp
-void CrossProduct(const float* v1, const float* v2, float* cross);  // q_math.cpp
-
-// trGlobals_t view (viewParms.world.modelMatrix +0x8C)
-struct orientationr_t {
-    float origin[3];       // +0x00
-    float axis[3][3];      // +0x0C
-    float viewOrigin[3];   // +0x30
-    float modelMatrix[16]; // +0x3C
-};
-struct viewParms_t {
-    uint8_t _pad[0x7C];
-    orientationr_t world;  // +0x7C
-};
-struct trGlobals_t {
-    uint8_t _pad0[0x10];
-    viewParms_t viewParms;  // +0x10
-};
-extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 // ea: 0x006D8790
 void DebugRender::RenderPoint(const math::Position3& pt, const Color& col,

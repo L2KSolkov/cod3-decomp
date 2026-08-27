@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <new>
+#include <unordered_map>
 
 using Broc::RandomFloatRange;
 using Broc::RandomInt;
@@ -212,6 +213,15 @@ using ::RegisterHashString;
 // IDA global ?pLevel@mp_util_wad@@3PAULevel@1@A at 0x010F1EA0.
 Level* pLevel = nullptr;
 Anim* pAnim = nullptr;
+
+// The release stores these maps inline in Level.  Level deliberately retains
+// the release's 0x230-byte layout in this port, so the inline Xbox hash_map
+// objects cannot be replaced with host STL containers.  Keep behaviorally
+// equivalent storage out-of-line and clear it with the Level lifetime.
+namespace {
+std::unordered_map<unsigned int, Broc::entity> sLineSoundEmitters;
+std::unordered_map<unsigned int, Broc::string> sLevelEffects;
+}
 
 // IDA global word_39C6FA: pointer-backed key storage for the "flag" field.
 static __int16 s_flagKey;
@@ -7135,8 +7145,8 @@ void StopLineSound(Broc::string startOfLineEntity) {
 }
 
 // StopAllLineSounds - ea: 0x938030
-void StopAllLineSounds() {
-    mp_util_wad::line_sound_delete_all();
+bool StopAllLineSounds() {
+    return mp_util_wad::line_sound_delete_all();
 }
 
 Broc::entity* SpawnLineSound(Broc::entity* result, Broc::entity startOfLine,
@@ -8239,31 +8249,42 @@ void entity_set_key(Broc::entity ent, int key) {
     Broc::gBrocAPI.m_entity_set_key(ent.___u0, key);
 }
 
-// line_sound_emitters hash_map helpers (opaque until the runtime is ported).
+// line_sound_emitters hash_map helpers.  These mirror the release map's
+// operator[], erase, and iteration semantics while preserving Level's ABI.
 void line_sound_set(HashStr key, Broc::entity e) {
-    (void)key;
-    (void)e;
+    sLineSoundEmitters[key.mVal] = e;
 }
 Broc::entity* line_sound_get(Broc::entity* result, HashStr key) {
-    (void)key;
-    result->___u0 = 0;
+    // std::hash_map::operator[] inserts an undefined entity for a missing key.
+    *result = sLineSoundEmitters[key.mVal];
     return result;
 }
 void line_sound_erase(HashStr key) {
-    (void)key;
+    sLineSoundEmitters.erase(key.mVal);
 }
-void line_sound_delete_all() {
+bool line_sound_delete_all() {
+    // The release walks the map, deleting defined entities, but intentionally
+    // leaves the entries in place until Level's hash_map destructor runs.
+    for (auto& entry : sLineSoundEmitters) {
+        if (Broc::IsDefined(entry.second))
+            Broc::Delete(&entry.second);
+    }
+    // The release iterator reaches end and returns the false comparison.
+    return false;
 }
 
-// _effect hash_map helpers (opaque until the runtime is ported).
+// _effect hash_map helpers.  These mirror std::hash_map::operator[].
 void level_effect_set(HashStr key, const Broc::string& val) {
-    (void)key;
-    (void)val;
+    sLevelEffects[key.mVal] = val;
 }
 Broc::string* level_effect_get(Broc::string* result, HashStr key) {
-    (void)key;
-    result->mBlock = NULL;
+    *result = sLevelEffects[key.mVal];
     return result;
+}
+
+void ResetLevelMapStorage() {
+    sLineSoundEmitters.clear();
+    sLevelEffects.clear();
 }
 }
 

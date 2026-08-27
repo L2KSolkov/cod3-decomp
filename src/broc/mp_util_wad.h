@@ -310,7 +310,12 @@ void entity_set_key(Broc::entity ent, int key);
 void line_sound_set(HashStr key, Broc::entity e);
 Broc::entity* line_sound_get(Broc::entity* result, HashStr key);
 void line_sound_erase(HashStr key);
-void line_sound_delete_all();
+bool line_sound_delete_all();
+
+// The Xbox Level layout contains two 40-byte MSVC hash_map objects.  The
+// desktop port keeps those bytes opaque to preserve the ABI, so this resets
+// the equivalent port-side storage when a Level is destroyed/recreated.
+void ResetLevelMapStorage();
 
 // mp_util_wad::Level._effect hash_map helpers.
 void level_effect_set(HashStr key, const Broc::string& val);

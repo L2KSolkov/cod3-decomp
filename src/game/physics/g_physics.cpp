@@ -141,9 +141,17 @@ public:
     Color(float _r, float _g, float _b, float _a)
         : r(_r), g(_g), b(_b), a(_a) {}
 };
+struct nglMesh;
+struct cdDebugShaderMat;
 class DebugRender {
 public:
     static DebugRender sInst;
+    nglMesh* mDebugSphereMesh;
+    nglMesh* mDebugCylinderMesh;
+    nglMesh* mDebugHemisphereMesh;
+    cdDebugShaderMat* mDebugShaderMaterial;
+    ae_sized_array<void (__cdecl*)(void), 32> mRenderFpList;
+    DebugRender();
     static void RenderAxis(const math::Mat43& mat, float length, float width);
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& col);  // render.o 0xAC63A0
@@ -164,7 +172,7 @@ public:
 DebugRender DebugRender::sInst;
 void DebugRender::AddRenderer(void (*fp)())
 {
-    (void)fp;
+    mRenderFpList.push_back(fp);
 }
 static void DebugRender_RenderLine(const math::Position3& pt1,
                                    const math::Position3& pt2,
