@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008028C0	?RegisterVShader@apsSimpleMeshRender@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/aeps/apsSimpleMeshRenderer.cpp:22	Emitted source definition is a real shader-registration body, not an inline-only or empty stub.
+0x008028C0	?RegisterVShader@apsSimpleMeshRender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008028C0;src/aeps/apsSimpleMeshRenderer.cpp:22	Release calls nglDxRegisterVShader(VS,VShaderTable[0]); source preserves the same call and argument conversions.
+0x008028E0	?RegisterPShader@apsSimpleMeshRenderPixel@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/aeps/apsSimpleMeshRenderer.cpp:29	Emitted source definition is a real pixel-shader registration body, not an inline-only or empty stub.
+0x008028E0	?RegisterPShader@apsSimpleMeshRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008028E0;src/aeps/apsSimpleMeshRenderer.cpp:29	Release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and argument conversions.
+0x00802900	?InitPShader@apsSimpleMeshRenderPixel@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/aeps/apsSimpleMeshRenderer.cpp:36	Emitted source definition is a real pixel-shader initialization body, not an inline-only or empty stub.
+0x00802900	?InitPShader@apsSimpleMeshRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00802900;src/aeps/apsSimpleMeshRenderer.cpp:36	Release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and argument conversions.

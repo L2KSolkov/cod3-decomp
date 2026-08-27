@@ -18,6 +18,27 @@ const unsigned long** apsSimpleMeshRender::VShaderTable = nullptr;
 unsigned long** apsSimpleMeshRenderPixel::PS = nullptr;
 const unsigned long** apsSimpleMeshRenderPixel::PShaderTable = nullptr;
 
+// ea: 0x008028C0
+void apsSimpleMeshRender::RegisterVShader()
+{
+    nglDxRegisterVShader(
+        VS, reinterpret_cast<const unsigned int*>(VShaderTable[0]));
+}
+
+// ea: 0x008028E0
+void apsSimpleMeshRenderPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(
+        PS, reinterpret_cast<const unsigned int*>(PShaderTable[0]));
+}
+
+// ea: 0x00802900
+void apsSimpleMeshRenderPixel::InitPShader()
+{
+    nglDxRegisterPShader(
+        PS, reinterpret_cast<const unsigned int*>(PShaderTable[0]));
+}
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
