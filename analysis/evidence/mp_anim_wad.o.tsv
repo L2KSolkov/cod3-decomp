@@ -1,3 +1,5 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x009983D0	?main@_mp_setup@@YAXXZ	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_anim_wad.cpp:389	Source body is an intentional no-op script entry point.
 0x009983D0	?main@_mp_setup@@YAXXZ	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1856661	Release body is a nullsub and matches the source entry point.
+0x009983D0	?main@_mp_setup@@YAXXZ	V3	PASS	release-stub-audit-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c	Release C dump body is empty; source main body is an intentional release no-op.
+0x009983D0	?main@_mp_setup@@YAXXZ	V4	PASS	release-stub-audit-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c	Release C dump body is empty; source main body is an intentional release no-op.
