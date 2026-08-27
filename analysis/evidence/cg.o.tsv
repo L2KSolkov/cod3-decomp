@@ -1,3 +1,19 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x00687CB0	?CG_DrawTimer@@YAMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:851	Body is non-empty and contains the timer formatting and render calls.
 0x00687CB0	?CG_DrawTimer@@YAMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296171	Control flow, constants, string literal, callee sequence, and local roles match the release body; the release dump's decompiler return type is double while the map ABI is float.
+0x00688E20	?CG_DrawSides@@YAXMMMMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:891	Non-empty body matches the release-indexed scaled side-bar draw path.
+0x00688E20	?CG_DrawSides@@YAXMMMMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296817	Release and source use the same scale arrays, coordinate calculations, shader, and two draw calls.
+0x00688EE0	?CG_DrawTopBottom@@YAXMMMMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:905	Non-empty body matches the release-indexed scaled top/bottom draw path.
+0x00688EE0	?CG_DrawTopBottom@@YAXMMMMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296840	Release and source use the same scale arrays, coordinate calculations, shader, and two draw calls.
+0x00688FA0	?CG_DrawPic@@YAXMMMMPAUnglTexture@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:919	Non-empty body matches the release-indexed scaled full-texture draw path.
+0x00688FA0	?CG_DrawPic@@YAXMMMMPAUnglTexture@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296861	Release and source use identical scaled coordinates, full UVs, texture, and draw syscall arguments.
+0x00689020	?CG_DrawCroppedPic@@YAXMMMMMMMMPAUnglTexture@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:929	Non-empty body matches the release-indexed cropped-texture draw path.
+0x00689020	?CG_DrawCroppedPic@@YAXMMMMMMMMPAUnglTexture@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296880	Release and source use identical scaled coordinates, supplied UVs, texture, and draw syscall arguments.
+0x006890A0	?CG_DrawStringExt@@YAXMMPBDPBMHHMMHH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:940	Non-empty body matches the release-indexed extended string draw path.
+0x006890A0	?CG_DrawStringExt@@YAXMMPBDPBMHHMMHH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296896	Release and source match on default color, scaling branch, font parameters, color selection, and text syscall.
+0x00689180	?CG_DrawBigString@@YAXMMPBDM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:965	Non-empty body matches the release-indexed big-string draw path.
+0x00689180	?CG_DrawBigString@@YAXMMPBDM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296930	Release and source match on color construction, offsets, scale, alignment, and text syscall.
+0x00689240	?CG_DrawSmallString@@YAXMMPBDM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:980	Non-empty body matches the release-indexed small-string draw path.
+0x00689240	?CG_DrawSmallString@@YAXMMPBDM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296960	Release and source match on color construction, offsets, scale, alignment, and text syscall.
+0x00689300	?CG_DrawStrlen@@YAHPBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:994	Non-empty body matches the release-indexed color-code-aware string length path.
+0x00689300	?CG_DrawStrlen@@YAHPBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296990	Release and source match on the loop, caret-color escape handling, and character counting behavior.
