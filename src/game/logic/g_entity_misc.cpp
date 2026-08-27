@@ -2752,6 +2752,10 @@ void TaskSys::PostTask(Task* t)
     ++this->mPostQueue.m_size;
 }
 void TaskSys_PostTask_glue(Task* t) { (void)t; }
+extern "C" void TaskSys_PostTask_bridge(void* t)
+{
+    TaskSys::sInst.PostTask(static_cast<Task*>(t));
+}
 void TaskSys_DeliverTasks_glue() {}
 
 void rigid_body::add_force(const math::Dir3& f) { (void)f; }

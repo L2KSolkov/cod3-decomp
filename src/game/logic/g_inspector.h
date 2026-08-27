@@ -105,7 +105,7 @@ public:
     void AddPlayerMenus();                // ea: 0x4F7880
     void AddDesignerMenus();              // ea: 0x4F78F0
     void AddFXMenus();                    // ea: 0x4F79F0
-    void AddVehicleMenus(_INSPECTOR_MENU* parent);   // ea: 0x4F7D60
+    void AddVehicleMenus(_INSPECTOR_MENU* parent);
     void AddMultiplayerMenus();           // ea: 0x4F8570
     void AddDebuggingMenus();             // ea: 0x50C420
     void AddWeaponMenus(_INSPECTOR_MENU* parent);    // ea: 0x50C790

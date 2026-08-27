@@ -1376,7 +1376,7 @@ void InspectorManager::AddFXMenus()
 }
 
 // ============================================================================
-// InspectorManager::AddVehicleMenus - ea: 0x4F7D60
+// ea: 0x4F7D60
 // ============================================================================
 void InspectorManager::AddVehicleMenus(_INSPECTOR_MENU* parent)
 {

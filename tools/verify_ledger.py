@@ -177,9 +177,27 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             # implementation. Do not scan onward into the next method and
             # accidentally attach this address to an unrelated body.
             return None
-        match = re.search(r"([~A-Za-z_][A-Za-z0-9_:<>~]*)\s*\([^;{}]*\)\s*(?:const\s*)?(?:\{|$)", text)
-        if match and "{" in text:
-            return match.group(1), index
+        matches = list(re.finditer(r"([~A-Za-z_][A-Za-z0-9_:<>~]*)\s*\(", text))
+        if matches and "{" in text:
+            valid = []
+            pointer = []
+            for match in matches:
+                candidate = match.group(1)
+                prefix = text[:match.start()].strip()
+                # Calls, control statements, placement-new, and expressions
+                # can occur between a marker and the next definition. A
+                # definition has a return/type prefix (or qualified method).
+                if (candidate in {"if", "for", "while", "switch", "catch", "return", "new"}
+                        or not prefix or prefix.endswith((".", "->", "="))):
+                    continue
+                valid.append((candidate, match))
+                if text[:match.start()].rstrip().endswith("*"):
+                    pointer.append((candidate, match))
+            if pointer:
+                return pointer[0][0], index
+            if valid:
+                return valid[0][0], index
+            return None
         if len(text) > 240:
             text = ""
     return None
@@ -323,7 +341,7 @@ def body_class(body: str) -> str:
     inner = re.sub(r"//[^\n]*|/\*.*?\*/", "", inner, flags=re.S).strip()
     if not inner:
         return "EMPTY_BODY"
-    if re.fullmatch(r"(?:\([^;]*\);?\s*)+", inner):
+    if re.fullmatch(r"(?:\(void\)\s*[^;]+;?\s*)+", inner):
         return "CAST_ONLY"
     return "REAL_BODY"
 
@@ -469,6 +487,12 @@ def main() -> int:
             anomalies.append({"kind": "DUPLICATE_MARKER", "ida_ea": f"0x{function.ida_ea:08X}",
                               "name": function.name, "source": hits[0].path,
                               "detail": f"{len(hits)} source markers"})
+        if len(hits) == 1 and hits[0].candidate:
+            base = base_name(function.name)
+            if base not in hits[0].candidate and not hits[0].candidate.endswith(base):
+                anomalies.append({"kind": "MARKER_NAME_MISMATCH", "ida_ea": f"0x{function.ida_ea:08X}",
+                                  "name": function.name, "source": hits[0].path,
+                                  "detail": f"source candidate {hits[0].candidate}"})
         if hits and body_class(hits[0].body) in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
             anomalies.append({"kind": "EMPTY_OR_CAST_BODY", "ida_ea": f"0x{function.ida_ea:08X}",
                               "name": function.name, "source": hits[0].path,

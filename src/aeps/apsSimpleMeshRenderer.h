@@ -41,8 +41,8 @@ public:
     apsSimpleMeshRenderer* mRenderer;      // +0xB0
     nglLightContext*       mLightContext;  // +0xB4
     int                    mZBuffer;       // +0xB8
-    void SetRenderer(apsSimpleMeshRenderer* r) { mRenderer = r; }       // ea: 0x8028C0
-    void SetLightContext(nglLightContext* lc) { mLightContext = lc; }   // ea: 0x8028D0
+    void SetRenderer(apsSimpleMeshRenderer* r) { mRenderer = r; }       // ea: 0x802830
+    void SetLightContext(nglLightContext* lc) { mLightContext = lc; }   // ea: 0x802840
     apsSimpleMeshRenderer& Renderer();                                  // ea: 0x812CE0
     virtual void GetDesc(char* buf);                                    // ea: 0x8028E0
     virtual void Render() override;                                     // ea: 0x812530 (apsSimpleMeshNode.o)
@@ -94,14 +94,14 @@ namespace apsSimpleMeshRender {
     extern unsigned long* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
     extern const unsigned long** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
     unsigned long GetVShader();                // ea: 0x812D40
-    inline void RegisterVShader() { nglDxRegisterVShader(VS, reinterpret_cast<const unsigned int*>(VShaderTable[0])); }   // ea: 0x8028F0
+    inline void RegisterVShader() { nglDxRegisterVShader(VS, reinterpret_cast<const unsigned int*>(VShaderTable[0])); }   // ea: 0x8028C0
 }
 namespace apsSimpleMeshRenderPixel {
     extern unsigned long** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
     extern const unsigned long** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
     unsigned long* GetPShader();               // ea: 0x812D50
-    inline void RegisterPShader() { nglDxRegisterPShader(PS, reinterpret_cast<const unsigned int*>(PShaderTable[0])); }   // ea: 0x802910
-    inline void InitPShader() { nglDxInitPShader(reinterpret_cast<const unsigned int*>(PShaderTable[0])); }                // ea: 0x8029A0
+    inline void RegisterPShader() { nglDxRegisterPShader(PS, reinterpret_cast<const unsigned int*>(PShaderTable[0])); }   // ea: 0x8028E0
+    inline void InitPShader() { nglDxRegisterPShader(PS, reinterpret_cast<const unsigned int*>(PShaderTable[0])); }      // ea: 0x802900
 }
 
 #endif // COD3_AEPS_APSSIMPLEMESHRENDERER_H

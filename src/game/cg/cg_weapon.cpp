@@ -22,6 +22,7 @@ public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
     unsigned int mFlags;  // +0x00
     void* mCurState;      // +0x04 (InteractState*)
+    void PostPhysicsUpdate(float deltaT);
 };
 
 class Camera {
@@ -81,21 +82,11 @@ float time_in_seconds_to_start);
 void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
                           float fade_in, float callback_time,
                           void* callback, float speed,
-                          float time_in_seconds_to_start)
-{
-    (void)player; (void)anim; (void)forceRestart; (void)fade_in;
-    (void)callback_time; (void)callback; (void)speed;
-    (void)time_in_seconds_to_start;
-}
-void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
-                          float fadeIn, void* playMethod,
-                          float callbackTime, void* callback, float speed,
-                          float startTimeSec)
-{
-    (void)self; (void)anim; (void)forceRestart; (void)fadeIn;
-    (void)playMethod; (void)callbackTime; (void)callback; (void)speed;
-    (void)startTimeSec;
-}
+                          float time_in_seconds_to_start);
+extern void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
+                                  float fadeIn, void* playMethod,
+                                  float callbackTime, void* callback,
+                                  float speed, float startTimeSec);
 extern void sWeaponAnimCallback();
 extern weaponInfo_s cg_weapons[];  // weaponInfo_s[]
 extern int dword_F6A2A0[4 * 802];
@@ -111,9 +102,30 @@ extern void DObj_OpDelete(void* obj);
 extern void DObjCreate(DObjModel* models, int numModels, void* tree,
                        void* dobj, int gameId);
 extern void DObjCreateAnimationPlayer(DObj* obj, int modelIndex);
+namespace nalGeneric { class nalGenericSkeleton; }
+extern nalGeneric::nalGenericSkeleton*
+DObjGetValidSubModelSkeleton_Bridge(DObj* obj, int index);
+extern void* AnimationPlayer_Create(nalGeneric::nalGenericSkeleton* skeleton);
+extern void DObjPostAnimationUpdateTask(DObj* obj);
 void DObjCreateAnimationPlayer(DObj* obj, int modelIndex)
 {
-    (void)obj; (void)modelIndex;
+    if (modelIndex < 0 || modelIndex >= 8)
+    {
+        CG_ASSERT("modelIndex >= 0 && modelIndex < DOBJ_MAX_SUBMODELS",
+                  "c:\\cod\\code\\game\\DObj.cpp", 1930);
+        return;
+    }
+    if (obj == nullptr || obj->models[modelIndex].mValue == nullptr)
+        return;
+    if (obj->animPlayers[modelIndex] != nullptr)
+        return;
+    nalGeneric::nalGenericSkeleton* skeleton =
+        DObjGetValidSubModelSkeleton_Bridge(obj, modelIndex);
+    if (skeleton != nullptr)
+    {
+        obj->animPlayers[modelIndex] = AnimationPlayer_Create(skeleton);
+        DObjPostAnimationUpdateTask(obj);
+    }
 }
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
@@ -123,7 +135,7 @@ extern TPakId CurPakId();
 extern void* AnimBankManager_GetBank(void* mgr, int pakId);
 extern void* AnimBankManager_sInst;
 extern void* AnimBank_GetAnimTree(void* bank, const char* name);
-extern void* cdGetAnim(unsigned int hash);
+extern void* cdGetAnimCompat(unsigned int hash);
 extern void* XAnimCreateTree(void* ent, void* anims);
 extern int XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
 extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
@@ -158,10 +170,6 @@ extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
 extern void DObjAdvanceAnimationPlayer(DObj* d, float deltaT);
-void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
-{
-    (void)d; (void)deltaT;
-}
 extern void DObjInitServerTime(DObj* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
 int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
@@ -299,7 +307,8 @@ void* tr_viewModelInfo_mWeaponOrigin = nullptr;  // cg.o artifact
 unsigned int tagHashInit;
 void InteractionController_PostPhysicsUpdate(void* self, float deltaT)
 {
-    (void)self; (void)deltaT;
+    if (self != nullptr)
+        ((InteractionController*)self)->PostPhysicsUpdate(deltaT);
 }
 
 extern int Com_BitCheck(const int* const array, int bitNum);
@@ -1197,7 +1206,7 @@ void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
                 XAnimEntry* entries = (XAnimEntry*)(*(int*)(v7 + 8) + 4);
                 XAnimEntry* v8 = &entries[animIndex];
                 if (v8->anim == nullptr)
-                    v8->anim = cdGetAnim(v8->hash);
+                    v8->anim = cdGetAnimCompat(v8->hash);
                 void* anim = v8->anim;
                 if (anim != nullptr)
                 {
@@ -1533,7 +1542,7 @@ void CG_RegisterWeapon(int weaponNum)
                 XAnimEntry* v7 = &entries[ai];
                 unsigned int hash = v7->hash;
                 v7->lastAttempt = 0;
-                void* Anim = cdGetAnim(hash);
+                void* Anim = cdGetAnimCompat(hash);
                 v7->anim = Anim;
             }
             for (int i = 0; i < 25; ++i)
@@ -2100,7 +2109,7 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
         v28->lastAttempt = 0;
         if (v28->hash == entries[1].hash && (i == 17 || i == 18 || i == 19))
             v28->hash = entries[3].hash;
-        v28->anim = cdGetAnim(v28->hash);
+        v28->anim = cdGetAnimCompat(v28->hash);
     }
     void* Tree = nullptr;
     if (v57)
@@ -2121,7 +2130,7 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
             XAnimEntry* v37 = &entriesW[i];
             unsigned int hash = v37->hash;
             v37->lastAttempt = 0;
-            v37->anim = cdGetAnim(hash);
+            v37->anim = cdGetAnimCompat(hash);
         }
         Tree = XAnimCreateTree(nullptr, v35);
         if (Tree == nullptr)

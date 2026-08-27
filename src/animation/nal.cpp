@@ -3050,8 +3050,8 @@ nalGenericInstance* nalGenericAnim::CreateInstance(
     if (memory == nullptr)
         return nullptr;
 
-    // The full 0x86E9D0 constructor is intentionally still an explicit
-    // cross-TU stub; preserve the IDA-verified allocation/call boundary.
+    // Keep the constructor call in this ABI wrapper so the complete instance
+    // initialization (offset maps, component tracks, and previous pose) runs.
     return static_cast<nalGenericInstance*>(
         nalGenericInstance_Ctor(memory, this, actualSkeleton));
 }
@@ -3064,9 +3064,7 @@ public:
     // ??0nalGenericPoseBlender@nalGeneric@@QAE@PBVnalGenericSkeleton@1@@Z (0x5600B0)
     nalGenericPoseBlender(const nalGenericSkeleton* skeleton);
 
-    void Blend(nalGenericPose& out, const nalGenericPose& a, const nalGenericPose& b, float t);
     // ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z
-    // (3-arg variant used by SceneAnimClient::Advance; stub)
     void Blend(nalGenericPose& out, const nalGenericPose& a,
                const nalGenericPose& b);
 
@@ -3092,6 +3090,14 @@ void nalGenericSkeleton_GetBoneHandle(
 {
     static_cast<const nalGeneric::nalGenericSkeleton*>(skeleton)
         ->GetBoneHandle(*handle, *boneName);
+}
+
+void* nalGenericAnim_CreateInstance(void* anim, void* skeleton)
+{
+    if (anim == nullptr)
+        return nullptr;
+    return static_cast<nalGeneric::nalGenericAnim*>(anim)->CreateInstance(
+        static_cast<nalGeneric::nalGenericSkeleton*>(skeleton));
 }
 
 nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
@@ -3792,7 +3798,44 @@ void nalEnableScratchPadUse() { nalUseScratchPad = true; }
 void nalDisableScratchPadUse() { nalUseScratchPad = false; }
 void nalEnablePerformanceWarnings() { nalPerformanceWarnings = true; }
 void nalDisablePerformanceWarnings() { nalPerformanceWarnings = false; }
-void nalExit() {}
+extern void tlScratchPadReset();
+extern tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory;
+extern tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory;
+extern tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory;
+extern tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory;
+void nalReleaseAllSceneAnims();
+void nalReleaseAllAnimFiles();
+void nalReleaseAllSkeletons();
+void nalExit()
+{
+    nalReleaseAllSceneAnims();
+    nalReleaseAllAnimFiles();
+    nalReleaseAllSkeletons();
+    nalAnimationCache.Release();
+    nalTypeInstanceBank.Destroy();
+    nalComponentInstanceBank.Destroy();
+    if (nalSkeletonDirectory != nullptr)
+    {
+        delete nalSkeletonDirectory;
+        nalSkeletonDirectory = nullptr;
+    }
+    if (nalSceneAnimDirectory != nullptr)
+    {
+        delete nalSceneAnimDirectory;
+        nalSceneAnimDirectory = nullptr;
+    }
+    if (nalAnimDirectory != nullptr)
+    {
+        delete nalAnimDirectory;
+        nalAnimDirectory = nullptr;
+    }
+    if (nalAnimFileDirectory != nullptr)
+    {
+        delete nalAnimFileDirectory;
+        nalAnimFileDirectory = nullptr;
+    }
+    tlScratchPadReset();
+}
 
 extern void tlStackRangeInit();
 extern void* tlScratchPadInit();
@@ -5787,7 +5830,8 @@ extern void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex);
 // g_entity_misc.cpp defines the PAU variant).
 void XAnimEntry_Create(XAnimEntry* self)
 {
-    (void)self;
+    if (self != nullptr)
+        self->Create();
 }
 void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton)
 {
@@ -5935,6 +5979,7 @@ extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
 
 class AnimationPlayer {
 public:
+    AnimationPlayer(nalGeneric::nalGenericSkeleton* skeleton);
     ~AnimationPlayer();
     enum AnimationPlayerModifierType {
         nalAdditiveModifier = 0,
@@ -6080,6 +6125,50 @@ public:
               nalAnimCallback* callback, float speed,
               float time_in_seconds_to_start);  // ea: 0x0055F510
 };
+
+// Bridges used by the client-game translation units. Keeping these calls in
+// the animation TU gives them the real AnimationPlayer implementation rather
+// than a linker-only compatibility stub.
+void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
+                          float fadeIn, float callbackTime, void* callback,
+                          float speed, float startTimeSec)
+{
+    if (self != nullptr)
+        ((AnimationPlayer*)self)->Play(
+            (nalGenericAnim*)anim, forceRestart, fadeIn, nullptr,
+            callbackTime, (AnimationPlayer::nalAnimCallback*)callback,
+            speed, startTimeSec);
+}
+
+void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
+                          float fadeIn, void* playMethod, float callbackTime,
+                          void* callback, float speed, float startTimeSec)
+{
+    if (self != nullptr)
+        ((AnimationPlayer*)self)->Play(
+            (nalGenericAnim*)anim, forceRestart, fadeIn,
+            (AnimationPlayer::nalPlayMethod*)playMethod, callbackTime,
+            (AnimationPlayer::nalAnimCallback*)callback, speed,
+            startTimeSec);
+}
+
+void* AnimationPlayer_Create(nalGeneric::nalGenericSkeleton* skeleton)
+{
+    if (skeleton == nullptr)
+        return nullptr;
+    return new AnimationPlayer(skeleton);
+}
+
+void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
+{
+    if (d == nullptr)
+        return;
+    for (int i = 0; i < d->numModels; ++i)
+    {
+        if (d->animPlayers[i] != nullptr)
+            ((AnimationPlayer*)d->animPlayers[i])->Advance(deltaT);
+    }
+}
 // ea: 0x0055F410
 void AnimationPlayer::Reset()
 {
@@ -8938,7 +9027,7 @@ nalGenericPose*
     AnimQueue::TempPoseStackPusher::pTempPoses[
         AnimQueue::MAX_NUM_TEMP_SOLDIER_POSES];
 
-// Stub callees used by AnimQueue (real bodies in the nal_xboxr port).
+// Animation queue support types and their complete pose/cache implementations.
 // ea: 0x0086E740
 nalGenericPose::nalGenericPose(const nalGenericPose& other, bool copyData)
     : nalBasePose(), PoseData(nullptr), AllocedData(false)
@@ -10532,7 +10621,7 @@ void nalGenericPoseBlender::VirtualBlend(nalBasePose& dst,
                                          const nalBasePose& src1)
 {
     Blend((nalGenericPose&)dst, (const nalGenericPose&)src0,
-          (const nalGenericPose&)src1, 1.0f);
+          (const nalGenericPose&)src1);
 }
 
 // ea: 0x005600B0
@@ -10543,15 +10632,6 @@ nalGenericPoseBlender::nalGenericPoseBlender(
     int poseTrackCount = *(int*)((char*)skeleton + 0x7C);
     BlendValues = (float*)tlMemAlloc(4 * poseTrackCount, 8, 0);
     memset(BlendValues, 0, 4 * poseTrackCount);
-}
-
-// ?Blend@nalGenericPoseBlender@@QAEXAAVnalGenericPose@@ABV2@1M@Z (stub;
-// direct IDA body remains separate from the 3-argument blend-array path)
-void nalGenericPoseBlender::Blend(nalGenericPose& out,
-                                  const nalGenericPose& a,
-                                  const nalGenericPose& b, float t)
-{
-    (void)out; (void)a; (void)b; (void)t;
 }
 
 // ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z
@@ -10675,6 +10755,26 @@ void VectorCopyUnalignedInc(char*& pos, float (&v)[3])
 
 // ?g_tree_list@@3V?$reserved_dlist@VXAnimTree@@@@A @ 0xDF2ABC
 reserved_dlist<XAnimTree> g_tree_list;
+
+// Cross-TU bridge for the game-side XAnimCreateTree adapter.  Keeping the
+// intrusive-list operation here preserves the exact reserved_dlist layout and
+// avoids duplicating its sentinel bookkeeping in another translation unit.
+void XAnimTreePush(void* tree)
+{
+    if (tree != nullptr)
+        g_tree_list.push_back(reinterpret_cast<XAnimTree*>(tree));
+}
+
+// ea: 0x00551900
+void XAnimFreeTree(XAnimTree* tree)
+{
+    if (tree == nullptr)
+        return;
+    if (tree->anims != nullptr)
+        XAnimClearTree(tree);
+    if (PakManager::sInst != nullptr)
+        PakManager::sInst->MemFree((TPakId)tree->mPakId, tree, false);
+}
 
 // ea: 0x0053E290
 void CheckAllAnims()
@@ -24200,6 +24300,53 @@ int XAnimSetGoalWeight(XAnimTree* tree, unsigned int animIndex,
     return error;
 }
 
+// ea: 0x0054B560
+void XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
+                                float goalWeight, float goalTime, float rate,
+                                unsigned int notifyName,
+                                unsigned short notifyType, int bRestart)
+{
+    if (goalWeight < 0.001f)
+        goalWeight = 0.0f;
+    XAnimSetGoalWeightInternal(tree, animIndex, goalWeight, goalTime, rate,
+                               false, notifyName, notifyType,
+                               bRestart != 0);
+    if (animIndex != 0)
+    {
+        unsigned int current = animIndex;
+        do
+        {
+            if (current >= tree->anims->entries.mSize)
+            {
+                XANIM_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                             81, "Bounds check");
+                if (current >= tree->anims->entries.mSize)
+                    current = 0;
+            }
+            current = AnimTreeEntryAt(tree->anims, current)->parent;
+            if (current >= tree->anims->entries.mSize)
+                XANIM_ASSERT("parentAnimIndex < tree->anims->entries.size()",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5422,
+                             "old cod assert");
+            const unsigned short infoIndex = tree->infoArray[current];
+            if (infoIndex >= 512)
+                XANIM_ASSERT("infoIndex < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5424,
+                             "old cod assert");
+            if (infoIndex == 0
+                || *reinterpret_cast<float*>(g_info[infoIndex].s + 0x10)
+                       == 0.0f)
+            {
+                XAnimSetGoalWeightInternal(tree, current, 1.0f, goalTime,
+                                           1.0f, false, 0, 0,
+                                           bRestart != 0);
+            }
+        } while (current != 0);
+    }
+    XAnimUpdateSyncTime(tree, animIndex, bRestart);
+    XAnimUpdateServerNotify(tree, animIndex);
+}
+
 // ea: 0x00554B70
 void XAnimSetGoalWeightKnob(XAnimTree* tree, unsigned int animIndex,
                             float goalWeight, float goalTime, float rate,
@@ -25347,7 +25494,7 @@ extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern void MatrixMultiply43(const float (*const in1)[3],
                          const float (*const in2)[3],
                              float (*const out)[3]);
-// Real symbols: XModelGetBasePose (g_entity_misc.cpp stub),
+// Real symbols: XModelGetBasePose (g_entity_misc.cpp),
 // AnimIK::Update (g_game2_misc.cpp), AnimationPlayer::GetPose
 // (g_debugthread.cpp).
 struct DObjSkelMat;   // U-tag (core_types.h)
@@ -26300,6 +26447,11 @@ __declspec(noinline) nalGenericSkeleton* DObjGetValidSubModelSkeleton(
     }
     return (nalGenericSkeleton*)result;
 }
+}
+
+nalGenericSkeleton* DObjGetValidSubModelSkeleton_Bridge(DObj* obj, int index)
+{
+    return DObjGetValidSubModelSkeleton(obj, index);
 }
 
 // ============================================================================
@@ -30423,25 +30575,82 @@ void DObjDeleteAnimationPlayers(DObj* obj)
     }
 }
 
-struct actor_s;
-enum ai_state_e { AIS_INTERACTION = 0x11 };
-// ?Actor_IsCurState@@YIHPAUactor_s@@W4ai_state_e@@@Z (stub; real in g_actor.cpp)
-int Actor_IsCurState(actor_s* pSelf, ai_state_e eState)
+static nalPositionOrientation XAnimCalcDeltaTree(AnimTree* anims,
+                                                 unsigned int animIndex,
+                                                 float time0, float time1,
+                                                 bool relative)
 {
-    (void)pSelf; (void)eState;
-    return 0;
+    nalPositionOrientation result = nalPositionOrientation::Identity;
+    if (anims == nullptr || animIndex >= anims->entries.mSize)
+        return result;
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (entry->numAnims == 0)
+    {
+        if (relative)
+            XAnimCalcRelDeltaParts(entry, result, time0, time1);
+        else
+            XAnimCalcAbsDeltaParts(entry, result, time1);
+        return result;
+    }
+    for (unsigned int i = 0; i < entry->numAnims; ++i)
+        result = result * XAnimCalcDeltaTree(
+            anims, entry->u.s.children + i, time0, time1, relative);
+    return result;
 }
-// ?Actor_PushState@@YIHPAUactor_s@@W4ai_state_e@@@Z (stub; real in g_actor.cpp)
-int Actor_PushState(actor_s* pSelf, ai_state_e eState)
+
+static void XAnimWriteDelta(const nalPositionOrientation& delta,
+                            float* rot, float* trans)
 {
-    (void)pSelf; (void)eState;
-    return 1;
+    nalPositionOrientation pose = delta;
+    nalMatrix4x4 matrix(pose);
+    if (rot != nullptr)
+    {
+        rot[0] = matrix.x.v.m128_f32[0];
+        rot[1] = matrix.x.v.m128_f32[1];
+    }
+    if (trans != nullptr)
+    {
+        trans[0] = delta.pos.v.m128_f32[0];
+        trans[1] = delta.pos.v.m128_f32[1];
+        trans[2] = delta.pos.v.m128_f32[2];
+    }
+}
+
+// ea: 0x0054A5A0
+void XAnimCalcAbsDelta(XAnimTree* tree, unsigned int animIndex,
+                       float* const rot, float* const trans)
+{
+    if (tree == nullptr || tree->anims == nullptr)
+        return;
+    XAnimWriteDelta(XAnimCalcDeltaTree(tree->anims, animIndex, 0.0f, 1.0f,
+                                       false), rot, trans);
+}
+
+// ea: 0x0054A910
+void XAnimGetAbsDelta(AnimTree* anims, unsigned int animIndex,
+                      float* const rot, float* const trans, float time)
+{
+    XAnimWriteDelta(XAnimCalcDeltaTree(anims, animIndex, 0.0f, time, false),
+                    rot, trans);
+}
+
+// ea: 0x0054A7C0
+void XAnimGetRelDelta(AnimTree* anims, unsigned int animIndex,
+                      float* const rot, float* const trans, float time0,
+                      float time1)
+{
+    XAnimWriteDelta(XAnimCalcDeltaTree(anims, animIndex, time0, time1, true),
+                    rot, trans);
 }
 
 class Handle {
 public:
     int mVal;  // +0x00
 };
+struct actor_s;
+enum ai_state_e : int { AIS_INTERACTION = 0x11 };
+extern int __fastcall Actor_IsCurState(actor_s*, ai_state_e);
+extern int __fastcall Actor_PushState(actor_s*, ai_state_e);
 // ?EffectEventStopEmitting@@YAXVHandle@@@Z (real in effect_events.cpp)
 extern void EffectEventStopEmitting(Handle effect);
 
@@ -37146,11 +37355,14 @@ struct Task {
     DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
     unsigned int mTaskHandle;                // +0x14
     unsigned int mFlags;                     // +0x18 Bitmask<unsigned int>
+    static PoolAllocator* sAllocator;        // ?sAllocator@Task@@2PAVPoolAllocator@@A
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o
     virtual ~Task();                          // game2.o
     virtual void Update(Entity* e, float deltaT);  // game2.o (UAEXPAVEntity@@M@Z)
 };
+
+extern "C" void TaskSys_PostTask_bridge(void* t);
 
 class XAnimUpdateTask : public Task {
 public:
@@ -37169,6 +37381,25 @@ public:
     virtual void Update(Entity* e, float deltaT);  // 0x54BD80
     void ApplyPose(Entity* e, float deltaT);  // 0x5552E0
 };
+
+// Release DObjCreateAnimationPlayer posts one animation update task for the
+// owning entity (unless an update task is already pending).
+void DObjPostAnimationUpdateTask(DObj* obj)
+{
+    if (obj == nullptr || obj->mEntity == nullptr
+        || (obj->mEntity->mFlags & 0x40u) != 0
+        || Task::sAllocator == nullptr)
+        return;
+    void* memory = Task::sAllocator->Allocate(0x1C, false);
+    Task* task = nullptr;
+    if (memory != nullptr)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> handle;
+        handle.mVal = obj->mEntity->mHandle.mVal;
+        task = new (memory) AnimationUpdateTask(handle);
+    }
+    TaskSys_PostTask_bridge(task);
+}
 
 // ea: 0x00554C70
 XAnimUpdateTask::XAnimUpdateTask(
