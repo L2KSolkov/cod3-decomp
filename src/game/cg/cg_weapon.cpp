@@ -641,7 +641,7 @@ void CG_UpdateViewModelPosAndOrientation(void* handArg)
 }
 
 // ea: 0x006925C0
-bool CG_WeaponSelectable(int i)
+int CG_WeaponSelectable(int i)
 {
     Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     return Com_BitCheck(Player->client->ps.weapons, i) != 0;
@@ -650,27 +650,27 @@ bool CG_WeaponSelectable(int i)
 // ea: 0x00692710
 int CG_Weapon_f()
 {
-    Entity* result = EntityManager::sInst->GetPlayer( currCl);
+    int result = (int)EntityManager::sInst->GetPlayer( currCl);
     if (result != 0 && *(int*)((char*)result + 596) != 0)
     {
-        Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
-        if ((client->ps.pm_flags & 0x4000) == 0)
+        result = (int)EntityManager::sInst->GetPlayer( currCl)->client;
+        if ((*(int*)((char*)result + 44) & 0x4000) == 0)
         {
-            client = EntityManager::sInst->GetPlayer( currCl)->client;
-            if ((client->ps.eFlags & 0x100000) == 0)
+            result = (int)EntityManager::sInst->GetPlayer( currCl)->client;
+            if ((*(int*)((char*)result + 244) & 0x100000) == 0)
             {
                 Cmd_ArgvBuffer(1, buffer_0, 256);
-                int result2 = BG_GetWeaponIndexForName(buffer_0);
-                if (result2 != 0)
-                    return BG_SelectWeaponIndex(result2, currCl);
+                result = BG_GetWeaponIndexForName(buffer_0);
+                if (result != 0)
+                    return BG_SelectWeaponIndex(result, currCl);
                 const char* v1 = CG_Argv(1);
-                result2 = atoi(v1);
-                if (result2 != 0)
-                    return BG_SelectWeaponIndex(result2, currCl);
+                result = atoi(v1);
+                if (result != 0)
+                    return BG_SelectWeaponIndex(result, currCl);
             }
         }
     }
-    return 0;
+    return result;
 }
 
 // ea: 0x00693730

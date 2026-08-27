@@ -2510,7 +2510,7 @@ extern int cg_aWeaponSelect[4];       // 0x00F5D078
 extern int cg_aWeaponSelectTime[4];   // 0x00F610D8
 extern vmCvar_t cg_weaponCycleDelay;  // 0x00F5EF18
 extern bool Entity_IsLocalPlayer(const Entity* ent);
-extern bool CG_WeaponSelectable(int i);
+extern int CG_WeaponSelectable(int i);
 extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
 extern void CG_GameMessage(const char* msg, int flags);
 extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
