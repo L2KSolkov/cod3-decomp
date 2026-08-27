@@ -12,6 +12,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+struct _objectiveInfo_t;
 #include <intrin.h>
 
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
@@ -2834,7 +2836,7 @@ void CG_DrawTurretCrossHair()
     }
 }
 // ea: 0x0068BA80
-float CG_DrawObjective(const void* pObjective, float a2, float* a3, float& a4,
+float CG_DrawObjective(const _objectiveInfo_t* pObjective, float a2, float* a3, float& a4,
                        float& a5, float& a6, float& a7, float& a8, float& a9,
                        bool a10)
 {
