@@ -36653,74 +36653,227 @@ int InteractStateParseSpecificField(unsigned char* pStruct,
     case 11: case 12: case 13: case 14:  // notify names
     {
         int v7 = fieldType - 11;
+        if (v7 < 0 || v7 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         464, "Invalid index");
+        }
+        if (strlen(pValue) > 20)
+        {
+            XANIM_ASSERT("strlen(pValue) <= gInteractionNotifyNameMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         465, "Too long an effect name");
+        }
         InteractionStrcpy(&pStruct[20 * v7 + 988], pValue);
         *(unsigned int*)&pStruct[4 * v7 + 1068] =
             HashString::CalcHash(pValue);
         return 1;
     }
     case 15: case 16: case 17: case 18:  // notify float
-        *(float*)&pStruct[4 * (fieldType - 15) + 1084] =
+    {
+        int v8 = fieldType - 15;
+        if (v8 < 0 || v8 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         477, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v8 + 1084] =
             (float)atof(pValue);
         return 1;
+    }
     case 19: case 20: case 21: case 22:  // notify int
-        *(int*)&pStruct[4 * (fieldType - 19) + 1100] = atoi(pValue);
+    {
+        int v9 = fieldType - 19;
+        if (v9 < 0 || v9 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         499, "Invalid index");
+        }
+        *(int*)&pStruct[4 * v9 + 1100] = atoi(pValue);
         return 1;
+    }
     case 23: case 24: case 25: case 26:  // notify int
-        *(int*)&pStruct[4 * (fieldType - 23) + 1116] = atoi(pValue);
+    {
+        int v10 = fieldType - 23;
+        if (v10 < 0 || v10 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         488, "Invalid index");
+        }
+        *(int*)&pStruct[4 * v10 + 1116] = atoi(pValue);
         return 1;
+    }
     case 27: case 28: case 29: case 30:  // notify float
-        *(float*)&pStruct[4 * (fieldType - 27) + 1132] =
+    {
+        int v11 = fieldType - 27;
+        if (v11 < 0 || v11 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         510, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v11 + 1132] =
             (float)atof(pValue);
         return 1;
+    }
     case 31: case 32: case 33: case 34:
-        *(float*)&pStruct[4 * (fieldType - 31) + 1148] =
+    {
+        int v12 = fieldType - 31;
+        if (v12 < 0 || v12 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         521, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v12 + 1148] =
             (float)atof(pValue);
         return 1;
+    }
     case 35: case 36: case 37: case 38:
-        *(float*)&pStruct[4 * (fieldType - 35) + 1164] =
+    {
+        int v13 = fieldType - 35;
+        if (v13 < 0 || v13 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         532, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v13 + 1164] =
             (float)atof(pValue);
         return 1;
+    }
     case 39: case 40: case 41: case 42:
-        *(float*)&pStruct[4 * (fieldType - 39) + 1180] =
+    {
+        int v14 = fieldType - 39;
+        if (v14 < 0 || v14 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         543, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v14 + 1180] =
             (float)atof(pValue);
         return 1;
+    }
     case 43: case 44: case 45: case 46:
-        *(float*)&pStruct[4 * (fieldType - 43) + 1196] =
+    {
+        int v15 = fieldType - 43;
+        if (v15 < 0 || v15 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         555, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v15 + 1196] =
             (float)atof(pValue);
         return 1;
+    }
     case 47: case 48: case 49: case 50:
-        *(float*)&pStruct[4 * (fieldType - 47) + 1212] =
+    {
+        int v16 = fieldType - 47;
+        if (v16 < 0 || v16 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionNotifyMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         566, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v16 + 1212] =
             (float)atof(pValue);
         return 1;
+    }
     case 51: case 52: case 53: case 54:  // success state names
     {
         int v17 = fieldType - 51;
+        if (v17 < 0 || v17 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < kNumInteractSuccessStates",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         577, "Invalid index");
+        }
+        if (strlen(pValue) >= 32)
+        {
+            XANIM_ASSERT("strlen(pValue) < gInteractionInfoNameMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         578, "Name too long");
+        }
         InteractionStrcpy(&pStruct[32 * v17 + 40], pValue);
         return 1;
     }
     case 55: case 56: case 57: case 58: case 59: case 60:  // player mod anims
     {
         int v18 = fieldType - 55;
+        if (v18 < 0 || v18 >= 6)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionModAnimMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         591, "Invalid index");
+        }
+        if (strlen(pValue) >= 40)
+        {
+            XANIM_ASSERT("strlen(pValue) < gInteractionAnimNameMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         592, "Name too long");
+        }
         InteractionStrcpy(&pStruct[40 * v18 + 248], pValue);
         return 1;
     }
     case 61: case 62: case 63: case 64: case 65: case 66:  // other mod anims
     {
         int v19 = fieldType - 61;
+        if (v19 < 0 || v19 >= 6)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionModAnimMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         605, "Invalid index");
+        }
+        if (strlen(pValue) >= 40)
+        {
+            XANIM_ASSERT("strlen(pValue) < gInteractionAnimNameMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         606, "Name too long");
+        }
         InteractionStrcpy(&pStruct[40 * v19 + 568], pValue);
         return 1;
     }
     case 67: case 68: case 69: case 70: case 71:  // threshold min
-        *(float*)&pStruct[4 * (fieldType - 67) + 1360] =
+    {
+        int v20 = fieldType - 67;
+        if (v20 < 0 || v20 >= 5)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionModAnimMax - 1",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         618, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v20 + 1360] =
             (float)atof(pValue);
         return 1;
+    }
     case 72: case 73: case 74: case 75: case 76:  // threshold max
-        *(float*)&pStruct[4 * (fieldType - 72) + 1380] =
+    {
+        int v21 = fieldType - 72;
+        if (v21 < 0 || v21 >= 5)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionModAnimMax - 1",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         630, "Invalid index");
+        }
+        *(float*)&pStruct[4 * v21 + 1380] =
             (float)atof(pValue);
         return 1;
+    }
     case 77: case 78: case 79: case 80:  // button index
     {
         int v22 = fieldType - 77;
+        if (v22 < 0 || v22 >= 4)
+        {
+            XANIM_ASSERT("index >= 0 && index < gInteractionButtonIndexMax",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         641, "Invalid index");
+        }
         *(int*)&pStruct[4 * v22 + 1228] = -1;
         int v23 = 0;
         while (_stricmp(sButtonTypeNames[v23], pValue) != 0)
@@ -36809,6 +36962,15 @@ void ParseInteractionConfigString(const char* name,
                          "c:\\cod\\code\\game\\InteractionController.cpp", 695,
                          "Too many interaction files");
         }
+        char tmpstr[128];
+        if (strlen(name) > 32)
+        {
+            sprintf(tmpstr, "Interaction name too long (max = %i): %s", 32,
+                    name);
+            XANIM_ASSERT("0",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         700, tmpstr);
+        }
         void* v2 = mem_heap_malloc(0x48);
         sInteractionInfos[sNumInteractionInfos] = v2;
         memset(v2, 0, 0x48);
@@ -36830,6 +36992,15 @@ void ParseInteractStateConfigString(const char* name,
             XANIM_ASSERT("sNumInteractStateInfos < gMaxInteractStateFiles",
                          "c:\\cod\\code\\game\\InteractionController.cpp", 726,
                          "Too many interact state files");
+        }
+        char tmpstr[128];
+        if (strlen(name) > 32)
+        {
+            sprintf(tmpstr,
+                    "Interact state name too long (max = %i): %s", 32, name);
+            XANIM_ASSERT("0",
+                         "c:\\cod\\code\\game\\InteractionController.cpp",
+                         731, tmpstr);
         }
         void* v2 = mem_heap_malloc(0x598);
         sInteractStateInfos[sNumInteractStateInfos] = v2;
