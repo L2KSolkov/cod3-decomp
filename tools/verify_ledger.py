@@ -431,7 +431,7 @@ def symbol_variants(name: str) -> set[str]:
         "?CG_CalcMuzzlePoint@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAMPAD@Z":
             "?CG_CalcMuzzlePoint@@YAHIPAMPAD@Z",
         "?CG_WeaponFlash@@YAXPAVEntity@@HABVPosition3@math@@HPAD@Z":
-            "?CG_WeaponFlash@@YAXPAVEntity@@HABVPosition3@math@@H@Z",
+            "?CG_WeaponFlash@@YAXPAVEntity@@HPBVPosition3@math@@H@Z",
         "?CG_WhizbySound@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBM1@Z":
             "?CG_WhizbySound@@YAXIPBM0@Z",
         "?CG_FilledBar@@YAXMMMMPBMPAM0MH@Z":
