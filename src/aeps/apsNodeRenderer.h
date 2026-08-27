@@ -12,7 +12,9 @@
 #include "core/math_types.h"
 
 struct BillboardParticle;
+struct ColorBillboardParticle;
 class apsBillboardNode;
+class apsColorBillboardNode;
 
 namespace apsRenderSort {
 template <typename Particle>
@@ -52,5 +54,16 @@ template <>
 void cNodeRenderer<BillboardParticle, apsBillboardNode>::SetupShaders();
 template <>
 void cNodeRenderer<BillboardParticle, apsBillboardNode>::Render();
+
+template <>
+cNodeRenderer<ColorBillboardParticle, apsColorBillboardNode>::cNodeRenderer(
+    apsColorBillboardNode* node);
+template <>
+void cNodeRenderer<ColorBillboardParticle, apsColorBillboardNode>::SetupDefaultShaders(
+    const math::Mat43& localMatrix);
+template <>
+void cNodeRenderer<ColorBillboardParticle, apsColorBillboardNode>::SetupShaders();
+template <>
+void cNodeRenderer<ColorBillboardParticle, apsColorBillboardNode>::Render();
 
 #endif // COD3_AEPS_APSNODERENDERER_H

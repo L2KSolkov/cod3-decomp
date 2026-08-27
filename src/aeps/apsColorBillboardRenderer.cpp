@@ -58,9 +58,10 @@ apsRenderer::eRenderResult apsColorBillboardRenderer::Render(const apsRendererRe
 }
 
 // ============================================================================
-// apsColorBillboardNode::GetDesc — ea: 0x805670 (inline COMDAT)
+// apsColorBillboardNode::GetDesc — ea: 0x8057E0 (inline COMDAT)
 // ============================================================================
 void apsColorBillboardNode::GetDesc(char* buf) {
+    strcpy(buf, "apsColorBillboardNode");
 }
 
 // ============================================================================
