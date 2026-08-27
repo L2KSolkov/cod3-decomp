@@ -34,9 +34,15 @@ public:
     float b;  // +0x08
     float a;  // +0x0C
 
-    Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
+    // Release constructor is an intentional no-op; callers provide the
+    // components explicitly or overwrite the object before use.
+    // ea: 0x00448920
+    Color() {}
+    // ea: 0x00448930
     Color(float _r, float _g, float _b, float _a) : r(_r), g(_g), b(_b), a(_a) {}
+    // ea: 0x00448970
     Color(const Color& other) : r(other.r), g(other.g), b(other.b), a(other.a) {}
+    // ea: 0x004489A0
     Color& operator=(const Color& other) {
         r = other.r; g = other.g; b = other.b; a = other.a;
         return *this;

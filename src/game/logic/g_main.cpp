@@ -27,7 +27,7 @@ class controller { public:
 // ============================================================================
 // g.o accessor cluster (Inst / InplaceString / ServerTime / StreamZoneManager)
 // ============================================================================
-// ea: 0x00448B20 / 0x00448B30 / 0x00448B40
+// ea: 0x00448B20
 ServerTime* ServerTime::Inst()
 {
     return &sInst;
@@ -37,56 +37,65 @@ extern "C" ServerTime* ServerTime_GetInstance()
 {
     return ServerTime::Inst();
 }
+// ea: 0x00448B30
 int ServerTime::GetTickMSec() const
 {
     return mTickMSec;
 }
+// ea: 0x00448B40
 float ServerTime::GetTickDelta() const
 {
     return mTickDelta;
 }
 
-// ea: 0x0044AAB0
+// ea: 0x004489D0
 DebugRender* DebugRender::Inst()
 {
     return &DebugRender::sInst;
 }
 
-// ea: 0x00448AB0 / 0x00448AC0 / 0x00448AD0 / 0x00448AE0
+// ea: 0x00448AB0
 StreamZoneManager* StreamZoneManager::Inst()
 {
     return StreamZoneManager::sInst;
 }
+// ea: 0x00448AC0
 int StreamZoneManager::GetLastCellNum() const
 {
     return mLastCellNum;
 }
+// ea: 0x00448AD0
 int StreamZoneManager::GetInitialCell() const
 {
     return mInitialCell;
 }
+// ea: 0x00448AE0
 math::Position3 StreamZoneManager::GetInitialPosition() const
 {
     return mInitialPosition;
 }
 
-// ea: 0x00448A00 / 0x00448A10 / 0x00448A20 / 0x00448A50 / 0x00448A80
+// ea: 0x00448A00
 const char* InplaceString::c_str() const
 {
     return mStr;
 }
+// ea: 0x00448A10
 InplaceString::operator const char*() const
 {
     return mStr;
 }
+// ea: 0x00448A20
 bool InplaceString::operator<(const char* rhs) const
 {
     return _stricmp(mStr, rhs) < 0;
 }
+// ea: 0x00448A50
 bool InplaceString::operator==(const char* rhs) const
 {
     return _stricmp(mStr, rhs) == 0;
 }
+// ea: 0x00448A80
 bool InplaceString::operator!=(const char* rhs) const
 {
     return _stricmp(mStr, rhs) != 0;

@@ -653,3 +653,37 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E97C0	??0hudelem@Broc@@QAE@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005E97C0	Release stores v in mHudIndex, matching source.
 0x0047E030	?VEH_UpdateGunnerAim@@YAXPAVEntity@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5171	Source now uses the shared Camera object and its real IsTweening method instead of a local always-false placeholder.
 0x0047E030	?VEH_UpdateGunnerAim@@YAXPAVEntity@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0047E030;IDA:0x00424506	Release calls Camera::IsTweening on gCamera[playerIndex]; source now follows the same Camera::IsTweening path.
+0x00448920	??0Color@@QAE@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/core/color.h:39	Default Color constructor is an intentional no-op, matching the release body.
+0x00448920	??0Color@@QAE@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448920	Release constructor returns this without initializing components; source uses the defaulted no-op constructor.
+0x00448930	??0Color@@QAE@MMMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/core/color.h:40	Four-component Color constructor stores each supplied component.
+0x00448930	??0Color@@QAE@MMMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448930	Release stores r, g, b, and a from the four arguments exactly.
+0x00448970	??0Color@@QAE@ABV0@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/core/color.h:41	Color copy constructor copies all four float components.
+0x00448970	??0Color@@QAE@ABV0@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448970	Release performs a full Color copy and returns this, matching source.
+0x004489A0	??4Color@@QAEAAV0@ABV0@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/core/color.h:42	Color assignment copies all four components and returns the destination reference.
+0x004489A0	??4Color@@QAEAAV0@ABV0@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004489A0	Release performs a full Color assignment and returns this, matching source.
+0x004489D0	?Inst@DebugRender@@SAPAV1@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:50	DebugRender singleton accessor returns its static instance address.
+0x004489D0	?Inst@DebugRender@@SAPAV1@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004489D0	Release returns &DebugRender::sInst; corrected source marker now identifies this EA.
+0x00448A00	?c_str@InplaceString@@QBEPBDXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:74	InplaceString c_str accessor returns the stored string pointer.
+0x00448A00	?c_str@InplaceString@@QBEPBDXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448A00	Release returns this->mStr, matching source.
+0x00448A10	??BInplaceString@@QBEPBDXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:78	InplaceString conversion operator returns the stored string pointer.
+0x00448A10	??BInplaceString@@QBEPBDXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448A10	Release returns this->mStr, matching source.
+0x00448A20	??MInplaceString@@QBE_NPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:82	InplaceString less-than comparison delegates to case-insensitive string comparison.
+0x00448A20	??MInplaceString@@QBE_NPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448A20	Release returns _stricmp(mStr,rhs) < 0, matching source.
+0x00448A50	??8InplaceString@@QBE_NPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:86	InplaceString equality comparison delegates to case-insensitive string comparison.
+0x00448A50	??8InplaceString@@QBE_NPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448A50	Release returns _stricmp(mStr,rhs) == 0, matching source.
+0x00448A80	??9InplaceString@@QBE_NPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:90	InplaceString inequality comparison delegates to case-insensitive string comparison.
+0x00448A80	??9InplaceString@@QBE_NPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448A80	Release returns _stricmp(mStr,rhs) != 0, matching source.
+0x00448AB0	?Inst@StreamZoneManager@@SAPAV1@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:56	StreamZoneManager singleton accessor returns the static instance pointer.
+0x00448AB0	?Inst@StreamZoneManager@@SAPAV1@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448AB0	Release returns StreamZoneManager::sInst, matching source.
+0x00448AC0	?GetLastCellNum@StreamZoneManager@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:60	StreamZoneManager getter returns mLastCellNum.
+0x00448AC0	?GetLastCellNum@StreamZoneManager@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448AC0	Release returns this->mLastCellNum, matching source.
+0x00448AD0	?GetInitialCell@StreamZoneManager@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:64	StreamZoneManager getter returns mInitialCell.
+0x00448AD0	?GetInitialCell@StreamZoneManager@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448AD0	Release returns this->mInitialCell, matching source.
+0x00448AE0	?GetInitialPosition@StreamZoneManager@@QBE?AVPosition3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:68	StreamZoneManager getter copies mInitialPosition into the value result.
+0x00448AE0	?GetInitialPosition@StreamZoneManager@@QBE?AVPosition3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448AE0	Release copies this->mInitialPosition into the hidden result and returns it, matching source.
+0x00448B20	?Inst@ServerTime@@SAPAV1@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:31	ServerTime singleton accessor returns the static instance address.
+0x00448B20	?Inst@ServerTime@@SAPAV1@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B20	Release returns &ServerTime::sInst, matching source.
+0x00448B30	?GetTickMSec@ServerTime@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:40	ServerTime getter returns mTickMSec.
+0x00448B30	?GetTickMSec@ServerTime@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B30	Release returns this->mTickMSec, matching source.
+0x00448B40	?GetTickDelta@ServerTime@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:44	ServerTime getter returns mTickDelta.
+0x00448B40	?GetTickDelta@ServerTime@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B40	Release returns this->mTickDelta; IDA's double display is a decompiler presentation artifact for the float ABI.

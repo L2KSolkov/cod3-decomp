@@ -183,6 +183,7 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             return None
         matches = list(re.finditer(
             r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*))|"
+            r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+[^(){}]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
             r"(?:operator[^\s(]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*))\s*\(", text))
@@ -359,6 +360,7 @@ def base_name(decorated: str) -> str:
             ("??X", "operator*="),
             ("??Z", "operator-="),
             ("??D", "operator*"),
+            ("??M", "operator<"),
             ("??E", "operator++"),
             ("??F", "operator--"),
         ):
@@ -372,6 +374,16 @@ def base_name(decorated: str) -> str:
         match = re.match(r"\?([^@]+)", decorated)
         return match.group(1) if match else decorated
     return decorated.rsplit("::", 1)[-1].split("(", 1)[0]
+
+
+def candidate_name_matches(decorated: str, candidate: str) -> bool:
+    """Match a release decoration to the readable source definition name."""
+    base = base_name(decorated)
+    # MSVC uses ??B for all conversion operators.  The release map does not
+    # retain the conversion target, so accept the source's explicit
+    # const-char-pointer conversion spelling alongside the bool normalization.
+    return (base in candidate or candidate.endswith(base) or
+            (base == "operator bool" and "::operator const char*" in candidate))
 
 
 def dumpbin_path() -> str | None:
@@ -702,8 +714,7 @@ def canonical_hit(function: Function, hits: list[Marker]) -> Marker | None:
         return None
     base = base_name(function.name)
     matching = [hit for hit in hits
-                if hit.candidate and (base in hit.candidate or
-                                      hit.candidate.endswith(base))]
+                if hit.candidate and candidate_name_matches(function.name, hit.candidate)]
     definitions = [hit for hit in matching
                    if body_class(hit.body) == "REAL_BODY"]
     if len(definitions) == 1:
@@ -720,8 +731,7 @@ def compute_level(function: Function, hits: list[Marker], symbols: set[str],
     located = hit is not None and bool(hit.candidate)
     if located:
         candidate = hit.candidate
-        located = (base_name(function.name) in candidate or
-                   candidate.endswith(base_name(function.name)))
+        located = candidate_name_matches(function.name, candidate)
     signature = bool(symbols) and bool(symbol_variants(function.name) & symbols)
     gate_state = {gate: "UNVERIFIED" for gate in GATES}
     gate_state["V1"] = PASS if located else "FAIL"
@@ -863,7 +873,7 @@ def main() -> int:
                               "detail": f"{len(hits)} source markers"})
         if hit is not None and hit.candidate:
             base = base_name(function.name)
-            if base not in hit.candidate and not hit.candidate.endswith(base):
+            if not candidate_name_matches(function.name, hit.candidate):
                 anomalies.append({"kind": "MARKER_NAME_MISMATCH", "ida_ea": f"0x{function.ida_ea:08X}",
                                   "name": function.name, "source": hit.path,
                                   "detail": f"source candidate {hit.candidate}"})
