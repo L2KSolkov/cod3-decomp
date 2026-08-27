@@ -11420,7 +11420,7 @@ int BrocSys::OpenMenu(const Broc::string& str, int viewport)
     if (_stricmp(v8, "weapon") == 0)
     {
         int v9 = viewport;
-        *(int*)((char*)g_femanager.GetIGMS(viewport)->menus[1] + 272) = 0;
+        *(unsigned char*)((char*)g_femanager.GetIGMS(viewport)->menus[1] + 272) = 0;
         InGameMenuSystem* IGMS = g_femanager.GetIGMS(v9);
         IGMS->ActivateMenu(1);
         return 0;
@@ -11495,7 +11495,7 @@ void BrocSys::CloseMenu2(const Broc::string& str, int viewport)
         if (v7->IsMenuActive(12))
         {
             InGameMenuSystem* v8 = g_femanager.GetIGMS(viewport);
-            v8->MakeActive(-1);
+            static_cast<FEMenuSystem*>(v8)->MakeActive(-1, -1);
             InGameMenuSystem* v5 = g_femanager.GetIGMS(viewport);
             ((PauseMenu*)v5->menus[0])->UnPause();
             return;
