@@ -40,15 +40,15 @@ static_assert(sizeof(apsColorBillboardRenderer) == 0x80, "apsColorBillboardRende
 // ============================================================================
 // Shader microcode registration structs (data in apsColorBillboardRendererVertex.o)
 // ============================================================================
-struct apsColorBillboardRender {
-    static unsigned int* VS;                  // ?VS@apsColorBillboardRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsColorBillboardRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x8056C0
-};
-struct apsColorBillboardRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsColorBillboardRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsColorBillboardRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x8056A0
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x805680
-};
+namespace apsColorBillboardRender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsColorBillboardRenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 #endif // COD3_AEPS_APSCOLORBILLBOARDRENDERER_H

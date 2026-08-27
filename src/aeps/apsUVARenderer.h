@@ -48,15 +48,15 @@ static_assert(sizeof(apsUVARenderer) == 0x90, "apsUVARenderer size mismatch");
 // ============================================================================
 // Shader microcode registration structs (data in apsUVARendererVertex.o)
 // ============================================================================
-struct apsUVARender {
-    static unsigned int* VS;                  // ?VS@apsUVARender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsUVARender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x805930
-};
-struct apsUVARenderPixel {
-    static unsigned int** PS;                 // ?PS@apsUVARenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsUVARenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x805950
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x805970
-};
+namespace apsUVARender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsUVARenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 #endif // COD3_AEPS_APSUVARENDERER_H

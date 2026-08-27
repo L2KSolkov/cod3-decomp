@@ -14,6 +14,19 @@ const unsigned int** apsColorUVARectangleRender::VShaderTable = nullptr;
 unsigned int** apsColorUVARectangleRenderPixel::PS = nullptr;
 const unsigned int** apsColorUVARectangleRenderPixel::PShaderTable = nullptr;
 
+// apsColorUVARectangleRender::RegisterVShader - ea: 0x00804D20
+void apsColorUVARectangleRender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsColorUVARectangleRenderPixel::RegisterPShader - ea: 0x00804D40
+void apsColorUVARectangleRenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsColorUVARectangleRenderPixel::InitPShader - ea: 0x00804D60
+void apsColorUVARectangleRenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // ============================================================================
 // apsColorUVARectangleRenderer::apsColorUVARectangleRenderer — construct: run
 // base UVA ctor, then override mFields (color supported).

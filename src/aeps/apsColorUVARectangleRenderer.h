@@ -38,15 +38,15 @@ static_assert(sizeof(apsColorUVARectangleRenderer) == 0x90, "apsColorUVARectangl
 // ============================================================================
 // Shader microcode registration structs (data in apsColorUVARectangleRendererVertex.o)
 // ============================================================================
-struct apsColorUVARectangleRender {
-    static unsigned int* VS;                  // ?VS@apsColorUVARectangleRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsColorUVARectangleRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x804CA0
-};
-struct apsColorUVARectangleRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsColorUVARectangleRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsColorUVARectangleRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x804C80
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x804C10
-};
+namespace apsColorUVARectangleRender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsColorUVARectangleRenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 #endif // COD3_AEPS_APSCOLORUVARECTANGLERENDERER_H

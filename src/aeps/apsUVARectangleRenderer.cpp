@@ -14,6 +14,19 @@ const unsigned int** apsUVARectangleRender::VShaderTable = nullptr;
 unsigned int** apsUVARectangleRenderPixel::PS = nullptr;
 const unsigned int** apsUVARectangleRenderPixel::PShaderTable = nullptr;
 
+// apsUVARectangleRender::RegisterVShader - ea: 0x00805010
+void apsUVARectangleRender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsUVARectangleRenderPixel::RegisterPShader - ea: 0x00805030
+void apsUVARectangleRenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsUVARectangleRenderPixel::InitPShader - ea: 0x00805050
+void apsUVARectangleRenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

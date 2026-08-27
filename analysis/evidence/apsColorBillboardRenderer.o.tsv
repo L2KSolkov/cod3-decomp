@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00805770	?RegisterVShader@apsColorBillboardRender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorBillboardRenderer.cpp:17	Emitted namespace shader-registration body is non-empty.
+0x00805770	?RegisterVShader@apsColorBillboardRender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805770;src/aeps/apsColorBillboardRenderer.cpp:17	Release and source both call nglDxRegisterVShader(VS,VShaderTable[0]).
+0x00805790	?RegisterPShader@apsColorBillboardRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorBillboardRenderer.cpp:21	Emitted namespace shader-registration body is non-empty.
+0x00805790	?RegisterPShader@apsColorBillboardRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805790;src/aeps/apsColorBillboardRenderer.cpp:21	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
+0x008057B0	?InitPShader@apsColorBillboardRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorBillboardRenderer.cpp:25	Emitted namespace shader-registration body is non-empty.
+0x008057B0	?InitPShader@apsColorBillboardRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008057B0;src/aeps/apsColorBillboardRenderer.cpp:25	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).

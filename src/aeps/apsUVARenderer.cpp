@@ -14,6 +14,19 @@ const unsigned int** apsUVARender::VShaderTable = nullptr;
 unsigned int** apsUVARenderPixel::PS = nullptr;
 const unsigned int** apsUVARenderPixel::PShaderTable = nullptr;
 
+// apsUVARender::RegisterVShader - ea: 0x00805AC0
+void apsUVARender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsUVARenderPixel::RegisterPShader - ea: 0x00805AE0
+void apsUVARenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsUVARenderPixel::InitPShader - ea: 0x00805B00
+void apsUVARenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00804D20	?RegisterVShader@apsColorUVARectangleRender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARectangleRenderer.cpp:17	Emitted namespace shader-registration body is non-empty.
+0x00804D20	?RegisterVShader@apsColorUVARectangleRender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804D20;src/aeps/apsColorUVARectangleRenderer.cpp:17	Release and source both call nglDxRegisterVShader(VS,VShaderTable[0]).
+0x00804D40	?RegisterPShader@apsColorUVARectangleRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARectangleRenderer.cpp:21	Emitted namespace shader-registration body is non-empty.
+0x00804D40	?RegisterPShader@apsColorUVARectangleRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804D40;src/aeps/apsColorUVARectangleRenderer.cpp:21	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
+0x00804D60	?InitPShader@apsColorUVARectangleRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARectangleRenderer.cpp:25	Emitted namespace shader-registration body is non-empty.
+0x00804D60	?InitPShader@apsColorUVARectangleRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804D60;src/aeps/apsColorUVARectangleRenderer.cpp:25	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).

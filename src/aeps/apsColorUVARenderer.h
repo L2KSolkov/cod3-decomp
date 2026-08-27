@@ -38,15 +38,15 @@ static_assert(sizeof(apsColorUVARenderer) == 0x90, "apsColorUVARenderer size mis
 // ============================================================================
 // Shader microcode registration structs (data in apsColorUVARendererVertex.o)
 // ============================================================================
-struct apsColorUVARender {
-    static unsigned int* VS;                  // ?VS@apsColorUVARender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsColorUVARender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x805420
-};
-struct apsColorUVARenderPixel {
-    static unsigned int** PS;                 // ?PS@apsColorUVARenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsColorUVARenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x805400
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8053D0
-};
+namespace apsColorUVARender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsColorUVARenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 #endif // COD3_AEPS_APSCOLORUVARENDERER_H

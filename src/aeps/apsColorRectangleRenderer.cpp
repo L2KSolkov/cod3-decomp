@@ -14,6 +14,19 @@ const unsigned int** apsColorRectangleRender::VShaderTable = nullptr;
 unsigned int** apsColorRectangleRenderPixel::PS = nullptr;
 const unsigned int** apsColorRectangleRenderPixel::PShaderTable = nullptr;
 
+// apsColorRectangleRender::RegisterVShader - ea: 0x008049B0
+void apsColorRectangleRender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsColorRectangleRenderPixel::RegisterPShader - ea: 0x008049D0
+void apsColorRectangleRenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsColorRectangleRenderPixel::InitPShader - ea: 0x008049F0
+void apsColorRectangleRenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // ============================================================================
 // apsColorRectangleRenderer::apsColorRectangleRenderer — construct: run base
 // billboard ctor, then override mFields (color supported).

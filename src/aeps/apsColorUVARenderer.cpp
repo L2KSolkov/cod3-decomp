@@ -14,6 +14,19 @@ const unsigned int** apsColorUVARender::VShaderTable = nullptr;
 unsigned int** apsColorUVARenderPixel::PS = nullptr;
 const unsigned int** apsColorUVARenderPixel::PShaderTable = nullptr;
 
+// apsColorUVARender::RegisterVShader - ea: 0x00805510
+void apsColorUVARender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsColorUVARenderPixel::RegisterPShader - ea: 0x00805530
+void apsColorUVARenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsColorUVARenderPixel::InitPShader - ea: 0x00805550
+void apsColorUVARenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // ============================================================================
 // apsColorUVARenderer::apsColorUVARenderer — construct: run base UVA ctor,
 // then override mFields (color supported).

@@ -180,17 +180,17 @@ static_assert(sizeof(apsBillboardRenderer) == 0x80, "apsBillboardRenderer size m
 // ============================================================================
 // Shader microcode registration structs (data in apsBillboardRendererVertex.o)
 // ============================================================================
-struct apsBillboardRender {
-    static unsigned int* VS;                  // ?VS@apsBillboardRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsBillboardRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x805CF0
-};
-struct apsBillboardRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsBillboardRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsBillboardRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x805D10
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x805D30
-};
+namespace apsBillboardRender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsBillboardRenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 // ============================================================================
 // externs
 // ============================================================================

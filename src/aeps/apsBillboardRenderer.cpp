@@ -18,6 +18,19 @@ const unsigned int** apsBillboardRender::VShaderTable = nullptr;
 unsigned int** apsBillboardRenderPixel::PS = nullptr;
 const unsigned int** apsBillboardRenderPixel::PShaderTable = nullptr;
 
+// apsBillboardRender::RegisterVShader - ea: 0x00806140
+void apsBillboardRender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
+}
+// apsBillboardRenderPixel::RegisterPShader - ea: 0x00806160
+void apsBillboardRenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+// apsBillboardRenderPixel::InitPShader - ea: 0x00806180
+void apsBillboardRenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
+}
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

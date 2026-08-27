@@ -38,15 +38,15 @@ static_assert(sizeof(apsColorRectangleRenderer) == 0x80, "apsColorRectangleRende
 // ============================================================================
 // Shader microcode registration structs (data in apsColorRectangleRendererVertex.o)
 // ============================================================================
-struct apsColorRectangleRender {
-    static unsigned int* VS;                  // ?VS@apsColorRectangleRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsColorRectangleRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x804930
-};
-struct apsColorRectangleRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsColorRectangleRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsColorRectangleRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x804910
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x804860
-};
+namespace apsColorRectangleRender {
+    extern unsigned int* VS;
+    extern const unsigned int** VShaderTable;
+    void RegisterVShader();
+}
+namespace apsColorRectangleRenderPixel {
+    extern unsigned int** PS;
+    extern const unsigned int** PShaderTable;
+    void RegisterPShader();
+    void InitPShader();
+}
 #endif // COD3_AEPS_APSCOLORRECTANGLERENDERER_H

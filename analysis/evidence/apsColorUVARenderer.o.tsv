@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00805510	?RegisterVShader@apsColorUVARender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:17	Emitted namespace shader-registration body is non-empty.
+0x00805510	?RegisterVShader@apsColorUVARender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805510;src/aeps/apsColorUVARenderer.cpp:17	Release and source both call nglDxRegisterVShader(VS,VShaderTable[0]).
+0x00805530	?RegisterPShader@apsColorUVARenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:21	Emitted namespace shader-registration body is non-empty.
+0x00805530	?RegisterPShader@apsColorUVARenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805530;src/aeps/apsColorUVARenderer.cpp:21	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
+0x00805550	?InitPShader@apsColorUVARenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:25	Emitted namespace shader-registration body is non-empty.
+0x00805550	?InitPShader@apsColorUVARenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805550;src/aeps/apsColorUVARenderer.cpp:25	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
