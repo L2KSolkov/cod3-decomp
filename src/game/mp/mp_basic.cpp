@@ -20749,7 +20749,7 @@ void MPPlayerManager::HandleGameStateSD(
                     Broc::vector ang(bombAngles[0], bombAngles[1],
                                      bombAngles[2]);
                     gpBrocAPI->mBrocExports.mCallbackGameStateSD(
-                        defuser, planter, bombPlanted, &ang, pos, timeLeft);
+                        defuser, planter, bombPlanted, &ang, &pos, timeLeft);
                 }
             }
             else

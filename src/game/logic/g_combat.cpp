@@ -365,7 +365,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 || v10->client->ps.vehPos == 0)
             {
                 Broc::string shock("default");
-                gpBrocAPI->mBrocExports.mShellShock(
+                reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock(
                     v10->mHandle.mHandle.mVal, shock, 3.0f);
                 CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
                                     mServerClientIndex);
@@ -398,7 +398,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 || v10->client->ps.vehPos == 0)
             {
                 Broc::string shock("default");
-                gpBrocAPI->mBrocExports.mShellShock(
+                reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock(
                     v10->mHandle.mHandle.mVal, shock, 2.0f);
                 CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
                                     mServerClientIndex);
@@ -425,7 +425,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
     }
     g_LinkEntity(v10);
     Broc::string msg("INGAME_PLAYER_DIED");
-    gpBrocAPI->mBrocExports.mMissionFailed(&msg);
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMissionFailed(&msg);
 }
 
 // ea: 0x004598D0

@@ -514,7 +514,10 @@ label_121:
                         float hitPos[3] = { pos.v.m128_f32[0], pos.v.m128_f32[1], pos.v.m128_f32[2] };
                         gpBrocAPI->mBrocExports.mCallbackPlayerDamage(
                             targ->mHandle.mHandle.mVal, inflictor->mHandle.mHandle.mVal,
-                            mVal, brocDir, hitPos, v55, mod, v56, hitLoc);
+                            mVal,
+                            reinterpret_cast<const Broc::vector*>(brocDir),
+                            reinterpret_cast<const Broc::vector*>(hitPos),
+                            v55, mod, v56, hitLoc);
                     }
                     else
                     {

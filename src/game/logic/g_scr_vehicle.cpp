@@ -6537,7 +6537,6 @@ no_target:
 static int lastGunnerCrouchMsgLocal;  // @ 0xEF59D4
 int byte_A00000 = 0xA00000;           // @ .data 0xDD6B40
 
-// ea: 0x00490ED0
 // ea: 0x0048D200
 void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
 {
@@ -6711,7 +6710,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
     wp.pWeapInfo = info;
     if (veh->boneIndex.gunner_flash < 0)
     {
-        gpBrocAPI->mBrocExports.mFireTurret(ent->mHandle.mHandle.mVal, true);
+        reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFireTurret(ent->mHandle.mHandle.mVal, true);
         if (wp.pWeapInfo->type != WEAPTYPE_BULLET)
             return;
         veh->seats[1].heat += (msec * info->fFireHeat) * 0.001f;
@@ -8307,6 +8306,7 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
     }
 }
 
+// ea: 0x00490ED0
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

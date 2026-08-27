@@ -3629,7 +3629,7 @@ void PM_CrashLand()
         }
         Broc::string vel("default");
         Entity* player = GetPlayer(currCl);
-        gpBrocAPI->mBrocExports.mShellShock(
+        reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock(
             player->mHandle.mHandle.mVal, vel, shockTime * 0.001f);
         move->ps->pm_time = stunTime;
         move->ps->pm_flags |= 0x100u;

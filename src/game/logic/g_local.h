@@ -1675,7 +1675,10 @@ void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 // BrocAPI (g_scr.cpp) - artillery callback used by G_LaunchMissile
 // ============================================================================
 enum TPakInfo : int;  // scr.o (full: { kTPakInfoInvalid = 0 })
-struct BrocExports {
+// Legacy offset view for the large script API table.  The runtime pointer
+// itself is the release Broc::BrocAPI; this view is used only when accessing
+// API slots that are not named in the canonical header.
+struct BrocAPICompat {
     void (*mValidateApiSize)(int, int);  // +0x000
     void* (*mCreateExtendedEntity)(const char**, int);  // +0x000
     void (*mDeleteExtendedEntity)(void*);  // +0x004
@@ -2617,12 +2620,13 @@ struct BrocExports {
     void (*mOceanSetWavePhase)(int, int, float);  // +0x1328
     void (*mOceanSetWaveTimescale)(int, int, float);  // +0x132C
 };
-struct BrocAPI {
-    BrocExports mBrocExports;
-    void (*mBrocObjCtor)(void* ptr, void* dtor);  // +0x1330
-    void (*mBrocObjDtor)(void* ptr);              // +0x1334
-    void (*mKillThread)();                        // +0x1338
-};
+// Keep global tag names for the release linker symbols while inheriting the
+// canonical IDA-derived layouts.  The inheritance is layout-neutral here
+// (both bases are standard-layout, non-virtual aggregates).
+struct BrocExports : Broc::BrocExports {};
+struct BrocAPI : Broc::BrocAPI {};
+static_assert(sizeof(BrocExports) == sizeof(Broc::BrocExports), "global BrocExports layout mismatch");
+static_assert(sizeof(BrocAPI) == sizeof(Broc::BrocAPI), "global BrocAPI layout mismatch");
 extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
 
 // ============================================================================

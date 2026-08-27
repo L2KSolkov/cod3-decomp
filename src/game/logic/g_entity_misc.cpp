@@ -2927,9 +2927,9 @@ unsigned int BrocAPI_GetEnt(void* a, void* b, unsigned int c, void* d, int e,
                             int f)
 {
     BrocAPI* api = a != nullptr ? reinterpret_cast<BrocAPI*>(a) : gpBrocAPI;
-    if (api == nullptr || b == nullptr || api->mBrocExports.mGetEnt == nullptr)
+    if (api == nullptr || b == nullptr || reinterpret_cast<BrocAPICompat*>(api)->mGetEnt == nullptr)
         return 0;
-    return api->mBrocExports.mGetEnt(
+    return reinterpret_cast<BrocAPICompat*>(api)->mGetEnt(
         *reinterpret_cast<const Broc::string*>(b), static_cast<int>(c),
         reinterpret_cast<unsigned int*>(d), e, f);
 }
@@ -3978,8 +3978,8 @@ void Weapon_MeleeHitShock(Entity* ent)
     if (ent == nullptr || !ent->IsLocalPlayer())
         return;
     Broc::string shock("default");
-    if (gpBrocAPI != nullptr && gpBrocAPI->mBrocExports.mShellShock != nullptr)
-        gpBrocAPI->mBrocExports.mShellShock(ent->mHandle.mHandle.mVal, shock, 0.7f);
+    if (gpBrocAPI != nullptr && reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock != nullptr)
+        reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock(ent->mHandle.mHandle.mVal, shock, 0.7f);
 
     void* manager = RumbleManager_Inst(ent->GetPlayerIndex());
     if (manager == nullptr)

@@ -437,7 +437,7 @@ void TakeCubeMapShot()
 // ============================================================================
 int PlayRumble()
 {
-    gpBrocAPI->mBrocExports.mRumble(
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRumble(
         gLowFreqDelay, gLowFreqRumbleIntensity, gLowFreqSteadyDuration,
         gLowFreqRampUpTime, gLowFreqRampDownTime, gHighFreqDelay,
         gHighFreqDuration, 0);

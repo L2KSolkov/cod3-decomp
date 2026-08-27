@@ -11571,7 +11571,7 @@ void BrocSys::InitMPCallbacks()
 {
     if (gpBrocAPI != nullptr)
     {
-        BrocExports& e = gpBrocAPI->mBrocExports;
+        Broc::BrocExports& e = gpBrocAPI->mBrocExports;
         e.mCallbackPlayerJoin = nullptr;
         e.mCallbackPlayerEnter = nullptr;
         e.mCallbackPlayerLeave = nullptr;
@@ -18531,18 +18531,18 @@ void BrocSys::NotSolid(unsigned int entityHandleVal)
 // ea: 0x005D3C90
 void BrocSys::InitEntityMove()
 {
-    gpBrocAPI->mBrocExports.mMoveTo = BrocSys::MoveTo;
-    gpBrocAPI->mBrocExports.mMoveX = BrocSys::MoveX;
-    gpBrocAPI->mBrocExports.mMoveY = BrocSys::MoveY;
-    gpBrocAPI->mBrocExports.mMoveZ = BrocSys::MoveZ;
-    gpBrocAPI->mBrocExports.mMoveGravity = BrocSys::MoveGravity;
-    gpBrocAPI->mBrocExports.mRotateTo = BrocSys::RotateTo;
-    gpBrocAPI->mBrocExports.mRotatePitch = BrocSys::RotatePitch;
-    gpBrocAPI->mBrocExports.mRotateYaw = BrocSys::RotateYaw;
-    gpBrocAPI->mBrocExports.mRotateRoll = BrocSys::RotateRoll;
-    gpBrocAPI->mBrocExports.mRotateVelocity = BrocSys::RotateVelocity;
-    gpBrocAPI->mBrocExports.mSolid = BrocSys::Solid;
-    gpBrocAPI->mBrocExports.mNotSolid = BrocSys::NotSolid;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMoveTo = BrocSys::MoveTo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMoveX = BrocSys::MoveX;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMoveY = BrocSys::MoveY;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMoveZ = BrocSys::MoveZ;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMoveGravity = BrocSys::MoveGravity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRotateTo = BrocSys::RotateTo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRotatePitch = BrocSys::RotatePitch;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRotateYaw = BrocSys::RotateYaw;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRotateRoll = BrocSys::RotateRoll;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRotateVelocity = BrocSys::RotateVelocity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSolid = BrocSys::Solid;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mNotSolid = BrocSys::NotSolid;
 }
 
 // ea: 0x005D3D50
@@ -20616,183 +20616,183 @@ int BrocSys::GetMaxAmmo(unsigned int entityHandleVal,
 // ea: 0x005D70A0
 void BrocSys::InitEntityClient()
 {
-    gpBrocAPI->mBrocExports.mPlayerRespawn = BrocSys::MPScript_PlayerRespawn;
-    gpBrocAPI->mBrocExports.mPlayerSpawn = BrocSys::MPScript_PlayerSpawn;
-    gpBrocAPI->mBrocExports.mSetPlayerAlive =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerRespawn = BrocSys::MPScript_PlayerRespawn;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerSpawn = BrocSys::MPScript_PlayerSpawn;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetPlayerAlive =
         BrocSys::MPScript_SetPlayerAlive;
-    gpBrocAPI->mBrocExports.mSetRespawnMaxTime =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetRespawnMaxTime =
         BrocSys::SetRespawnMaxTime;
-    gpBrocAPI->mBrocExports.mRequestRespawn =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRequestRespawn =
         BrocSys::MPScript_RequestRespawn;
-    gpBrocAPI->mBrocExports.mGetPlayerName =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerName =
         BrocSys::MPScript_GetPlayerName;
-    gpBrocAPI->mBrocExports.mFinishDamage = BrocSys::MPScript_FinishDamage;
-    gpBrocAPI->mBrocExports.mIsLocalPlayer =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFinishDamage = BrocSys::MPScript_FinishDamage;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsLocalPlayer =
         BrocSys::MPScript_IsLocalPlayer;
-    gpBrocAPI->mBrocExports.mIsInVehicle1 = BrocSys::MPScript_IsInVehicle1;
-    gpBrocAPI->mBrocExports.mIsInVehicle2 = BrocSys::MPScript_IsInVehicle2;
-    gpBrocAPI->mBrocExports.mGetPlayerInSeat =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsInVehicle1 = BrocSys::MPScript_IsInVehicle1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsInVehicle2 = BrocSys::MPScript_IsInVehicle2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerInSeat =
         BrocSys::MPScript_GetPlayerInSeat;
-    gpBrocAPI->mBrocExports.mGetOutOfVehicle =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetOutOfVehicle =
         BrocSys::MPScript_GetOutOfVehicle;
-    gpBrocAPI->mBrocExports.mObituary = BrocSys::MPScript_Obituary;
-    gpBrocAPI->mBrocExports.mChangePlayerTeam =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObituary = BrocSys::MPScript_Obituary;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mChangePlayerTeam =
         BrocSys::MPScript_ChangePlayerTeam;
-    gpBrocAPI->mBrocExports.mIncPlayerStat =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIncPlayerStat =
         BrocSys::MPScript_IncPlayerStat;
-    gpBrocAPI->mBrocExports.mSetPlayerStat =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetPlayerStat =
         BrocSys::MPScript_SetPlayerStat;
-    gpBrocAPI->mBrocExports.mGetPlayerStat =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerStat =
         BrocSys::MPScript_GetPlayerStat;
-    gpBrocAPI->mBrocExports.mGetPlayerTotalScore =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerTotalScore =
         BrocSys::MPScript_GetPlayerTotalScore;
-    gpBrocAPI->mBrocExports.mClearPlayerStats =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearPlayerStats =
         BrocSys::MPScript_ClearPlayerStats;
-    gpBrocAPI->mBrocExports.mClearTeamScores =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearTeamScores =
         BrocSys::MPScript_ClearTeamScores;
-    gpBrocAPI->mBrocExports.mIncTeamScore = BrocSys::MPScript_IncTeamScore;
-    gpBrocAPI->mBrocExports.mGetTeamScore = BrocSys::MPScript_GetTeamScore;
-    gpBrocAPI->mBrocExports.mSendInitialGameState =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIncTeamScore = BrocSys::MPScript_IncTeamScore;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTeamScore = BrocSys::MPScript_GetTeamScore;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendInitialGameState =
         BrocSys::MPScript_SendInitialGameState;
-    gpBrocAPI->mBrocExports.mSendVehicleStates =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendVehicleStates =
         BrocSys::MPScript_SendVehicleStates;
-    gpBrocAPI->mBrocExports.mBroadcastVehicleRespawn =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mBroadcastVehicleRespawn =
         BrocSys::MPScript_BroadcastVehicleRespawn;
-    gpBrocAPI->mBrocExports.mSendGameState =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameState =
         BrocSys::MPScript_SendGameState;
-    gpBrocAPI->mBrocExports.mSendGameStateCTF =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameStateCTF =
         BrocSys::MPScript_SendGameStateCTF;
-    gpBrocAPI->mBrocExports.mSendGameStateHQ =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameStateHQ =
         BrocSys::MPScript_SendGameStateHQ;
-    gpBrocAPI->mBrocExports.mSendGameStateSCF =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameStateSCF =
         BrocSys::MPScript_SendGameStateSCF;
-    gpBrocAPI->mBrocExports.mSendGameStateDOM =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameStateDOM =
         BrocSys::MPScript_SendGameStateDOM;
-    gpBrocAPI->mBrocExports.mSendGameStateSD =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameStateSD =
         BrocSys::MPScript_SendGameStateSD;
-    gpBrocAPI->mBrocExports.mSendGameScore =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendGameScore =
         BrocSys::MPScript_SendGameScore;
-    gpBrocAPI->mBrocExports.mEnterGame = BrocSys::MPScript_EnterGame;
-    gpBrocAPI->mBrocExports.mControllerErrorMessageUp =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnterGame = BrocSys::MPScript_EnterGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mControllerErrorMessageUp =
         BrocSys::MPScript_ControllerErrorMessageUp;
-    gpBrocAPI->mBrocExports.mForceControllerErrorMessageDown =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mForceControllerErrorMessageDown =
         BrocSys::MPScript_ForceControllerErrorMessageDown;
-    gpBrocAPI->mBrocExports.mDebugOut = BrocSys::DebugOut;
-    gpBrocAPI->mBrocExports.mGetSpotterEntity =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDebugOut = BrocSys::DebugOut;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetSpotterEntity =
         BrocSys::MPScript_GetSpotterEntity;
-    gpBrocAPI->mBrocExports.mClearSpottingFromOccupants =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearSpottingFromOccupants =
         BrocSys::MPScript_ClearSpottingFromOccupants;
-    gpBrocAPI->mBrocExports.mGetWeaponName =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetWeaponName =
         BrocSys::MPScript_GetWeaponName;
-    gpBrocAPI->mBrocExports.mDropItem1 = BrocSys::MPScript_DropItem1;
-    gpBrocAPI->mBrocExports.mDropItem2 = BrocSys::MPScript_DropItem2;
-    gpBrocAPI->mBrocExports.mHostDropItem1 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDropItem1 = BrocSys::MPScript_DropItem1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDropItem2 = BrocSys::MPScript_DropItem2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHostDropItem1 =
         BrocSys::MPScript_HostDropItem1;
-    gpBrocAPI->mBrocExports.mHostDropItem2 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHostDropItem2 =
         BrocSys::MPScript_HostDropItem2;
-    gpBrocAPI->mBrocExports.mPickupItem = BrocSys::MPScript_PickupItem;
-    gpBrocAPI->mBrocExports.mAreaCaptured = BrocSys::MPScript_AreaCaptured;
-    gpBrocAPI->mBrocExports.mPositionWouldTelefrag =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPickupItem = BrocSys::MPScript_PickupItem;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAreaCaptured = BrocSys::MPScript_AreaCaptured;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPositionWouldTelefrag =
         BrocSys::MPScript_PositionWouldTelefrag;
-    gpBrocAPI->mBrocExports.mSendHostBombRequest =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendHostBombRequest =
         BrocSys::MPScript_SendHostBombRequest;
-    gpBrocAPI->mBrocExports.mSendBombExplosion =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendBombExplosion =
         BrocSys::MPScript_SendBombExplosion;
-    gpBrocAPI->mBrocExports.mSendBombOperation =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendBombOperation =
         BrocSys::MPScript_SendBombOperation;
-    gpBrocAPI->mBrocExports.mSendBombOperationEvent =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSendBombOperationEvent =
         BrocSys::MPScript_SendBombOperationEvent;
-    gpBrocAPI->mBrocExports.mSetCompassVisibilty =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetCompassVisibilty =
         BrocSys::MPScript_SetCompassVisibilty;
-    gpBrocAPI->mBrocExports.mSpawnButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSpawnButtonPressed =
         BrocSys::MPScript_SpawnButtonPressed;
-    gpBrocAPI->mBrocExports.mNextButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mNextButtonPressed =
         BrocSys::MPScript_NextButtonPressed;
-    gpBrocAPI->mBrocExports.mPrevButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPrevButtonPressed =
         BrocSys::MPScript_PrevButtonPressed;
-    gpBrocAPI->mBrocExports.mDebugRenderText =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDebugRenderText =
         BrocSys::MPScript_DebugRenderText;
-    gpBrocAPI->mBrocExports.mDebugRenderEntityBBox =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDebugRenderEntityBBox =
         BrocSys::MPScript_DebugRenderEntityBBox;
-    gpBrocAPI->mBrocExports.mDebugRenderBox =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDebugRenderBox =
         BrocSys::MPScript_DebugRenderBox;
-    gpBrocAPI->mBrocExports.mDebugRenderSphere =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDebugRenderSphere =
         BrocSys::MPScript_DebugRenderSphere;
-    gpBrocAPI->mBrocExports.mGiveWeapon = BrocSys::GiveWeapon;
-    gpBrocAPI->mBrocExports.mGiveWeaponAndAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGiveWeapon = BrocSys::GiveWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGiveWeaponAndAmmo =
         BrocSys::GiveWeaponAndAmmo;
-    gpBrocAPI->mBrocExports.mTakeWeapon = BrocSys::TakeWeapon;
-    gpBrocAPI->mBrocExports.mTakeAllWeapons = BrocSys::TakeAllWeapons;
-    gpBrocAPI->mBrocExports.mGetCurrentWeapon =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mTakeWeapon = BrocSys::TakeWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mTakeAllWeapons = BrocSys::TakeAllWeapons;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetCurrentWeapon =
         BrocSys::GetCurrentWeapon;
-    gpBrocAPI->mBrocExports.mHasWeapon = BrocSys::HasWeapon;
-    gpBrocAPI->mBrocExports.mHasWeaponAndAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHasWeapon = BrocSys::HasWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHasWeaponAndAmmo =
         BrocSys::HasWeaponAndAmmo;
-    gpBrocAPI->mBrocExports.mSwitchToWeapon = BrocSys::SwitchToWeapon;
-    gpBrocAPI->mBrocExports.mSwitchToLastWeapon =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSwitchToWeapon = BrocSys::SwitchToWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSwitchToLastWeapon =
         BrocSys::SwitchToLastWeapon;
-    gpBrocAPI->mBrocExports.mGiveStartAmmo = BrocSys::GiveStartAmmo;
-    gpBrocAPI->mBrocExports.mGiveMaxAmmo = BrocSys::GiveMaxAmmo;
-    gpBrocAPI->mBrocExports.mGetFractionStartAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGiveStartAmmo = BrocSys::GiveStartAmmo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGiveMaxAmmo = BrocSys::GiveMaxAmmo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetFractionStartAmmo =
         BrocSys::GetFractionStartAmmo;
-    gpBrocAPI->mBrocExports.mGetFractionMaxAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetFractionMaxAmmo =
         BrocSys::GetFractionMaxAmmo;
-    gpBrocAPI->mBrocExports.mSetOrigin = BrocSys::SetOrigin;
-    gpBrocAPI->mBrocExports.mSetVelocity = BrocSys::SetVelocity;
-    gpBrocAPI->mBrocExports.mSetPlayerAngles = BrocSys::SetPlayerAngles;
-    gpBrocAPI->mBrocExports.mGetPlayerAngles = BrocSys::GetPlayerAngles;
-    gpBrocAPI->mBrocExports.mUseButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetOrigin = BrocSys::SetOrigin;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetVelocity = BrocSys::SetVelocity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetPlayerAngles = BrocSys::SetPlayerAngles;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerAngles = BrocSys::GetPlayerAngles;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUseButtonPressed =
         BrocSys::UseButtonPressed;
-    gpBrocAPI->mBrocExports.mAttackButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttackButtonPressed =
         BrocSys::AttackButtonPressed;
-    gpBrocAPI->mBrocExports.mMeleeButtonPressed =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMeleeButtonPressed =
         BrocSys::MeleeButtonPressed;
-    gpBrocAPI->mBrocExports.mIsAds = BrocSys::IsAds;
-    gpBrocAPI->mBrocExports.mIsOnGround = BrocSys::IsOnGround;
-    gpBrocAPI->mBrocExports.mSetViewModel = BrocSys::SetViewModel;
-    gpBrocAPI->mBrocExports.mAllowUse = BrocSys::AllowUse;
-    gpBrocAPI->mBrocExports.mAllowStand = BrocSys::AllowStand;
-    gpBrocAPI->mBrocExports.mAllowCrouch = BrocSys::AllowCrouch;
-    gpBrocAPI->mBrocExports.mAllowProne = BrocSys::AllowProne;
-    gpBrocAPI->mBrocExports.mAllowLeanLeft = BrocSys::AllowLeanLeft;
-    gpBrocAPI->mBrocExports.mAllowLeanRight = BrocSys::AllowLeanRight;
-    gpBrocAPI->mBrocExports.mIsMenuOpen = BrocSys::IsMenuOpen;
-    gpBrocAPI->mBrocExports.mOpenMenu = BrocSys::OpenMenu;
-    gpBrocAPI->mBrocExports.mOpenMenuNoMouse = BrocSys::OpenMenuNoMouse;
-    gpBrocAPI->mBrocExports.mCloseMenu1 = BrocSys::CloseMenu1;
-    gpBrocAPI->mBrocExports.mCloseMenu2 = BrocSys::CloseMenu2;
-    gpBrocAPI->mBrocExports.mCloseAllMenus = BrocSys::CloseAllMenus;
-    gpBrocAPI->mBrocExports.mSetSpectateState =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsAds = BrocSys::IsAds;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsOnGround = BrocSys::IsOnGround;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetViewModel = BrocSys::SetViewModel;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowUse = BrocSys::AllowUse;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowStand = BrocSys::AllowStand;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowCrouch = BrocSys::AllowCrouch;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowProne = BrocSys::AllowProne;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowLeanLeft = BrocSys::AllowLeanLeft;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAllowLeanRight = BrocSys::AllowLeanRight;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsMenuOpen = BrocSys::IsMenuOpen;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOpenMenu = BrocSys::OpenMenu;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOpenMenuNoMouse = BrocSys::OpenMenuNoMouse;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mCloseMenu1 = BrocSys::CloseMenu1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mCloseMenu2 = BrocSys::CloseMenu2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mCloseAllMenus = BrocSys::CloseAllMenus;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpectateState =
         BrocSys::SetSpectateState;
-    gpBrocAPI->mBrocExports.mSetSpectateSeconds =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpectateSeconds =
         BrocSys::SetSpectateSeconds;
-    gpBrocAPI->mBrocExports.mSetSpectateMedic =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpectateMedic =
         BrocSys::SetSpectateMedic;
-    gpBrocAPI->mBrocExports.mSetSpectateTeamKill =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpectateTeamKill =
         BrocSys::SetSpectateTeamKill;
-    gpBrocAPI->mBrocExports.mFreezeControls = BrocSys::FreezeControls;
-    gpBrocAPI->mBrocExports.mFreezeMovement = BrocSys::FreezeMovement;
-    gpBrocAPI->mBrocExports.mToggleClip = BrocSys::ToggleClip;
-    gpBrocAPI->mBrocExports.mSetReverb = BrocSys::SetReverb;
-    gpBrocAPI->mBrocExports.mIsLookingAt = BrocSys::IsLookingAt;
-    gpBrocAPI->mBrocExports.mPlayLocalSound = BrocSys::PlayLocalSound;
-    gpBrocAPI->mBrocExports.mSetAutoPickup = BrocSys::SetAutoPickup;
-    gpBrocAPI->mBrocExports.mGetWeaponSlotWeapon =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFreezeControls = BrocSys::FreezeControls;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFreezeMovement = BrocSys::FreezeMovement;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mToggleClip = BrocSys::ToggleClip;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetReverb = BrocSys::SetReverb;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsLookingAt = BrocSys::IsLookingAt;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayLocalSound = BrocSys::PlayLocalSound;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAutoPickup = BrocSys::SetAutoPickup;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetWeaponSlotWeapon =
         BrocSys::GetWeaponSlotWeapon;
-    gpBrocAPI->mBrocExports.mSetWeaponSlotWeapon =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWeaponSlotWeapon =
         BrocSys::SetWeaponSlotWeapon;
-    gpBrocAPI->mBrocExports.mGetWeaponSlotAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetWeaponSlotAmmo =
         BrocSys::GetWeaponSlotAmmo;
-    gpBrocAPI->mBrocExports.mSetWeaponSlotAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWeaponSlotAmmo =
         BrocSys::SetWeaponSlotAmmo;
-    gpBrocAPI->mBrocExports.mGetWeaponSlotClipAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetWeaponSlotClipAmmo =
         BrocSys::GetWeaponSlotClipAmmo;
-    gpBrocAPI->mBrocExports.mSetWeaponSlotClipAmmo =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWeaponSlotClipAmmo =
         BrocSys::SetWeaponSlotClipAmmo;
-    gpBrocAPI->mBrocExports.mGetFullClipAmmoCount =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetFullClipAmmoCount =
         BrocSys::GetFullClipAmmoCount;
-    gpBrocAPI->mBrocExports.mGetMaxAmmo = BrocSys::GetMaxAmmo;
-    gpBrocAPI->mBrocExports.mToggleCloth = BrocSys::ToggleNano;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetMaxAmmo = BrocSys::GetMaxAmmo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mToggleCloth = BrocSys::ToggleNano;
 }
 
 // ea: 0x005D7790
@@ -22585,55 +22585,55 @@ void BrocSys::GetTurretRelAngles(unsigned int entityHandleVal,
 // ea: 0x005DABF0
 void BrocSys::InitVehicle()
 {
-    gpBrocAPI->mBrocExports.mAttachPath = BrocSys::AttachPath;
-    gpBrocAPI->mBrocExports.mStartPath = BrocSys::StartPath;
-    gpBrocAPI->mBrocExports.mEndPath = BrocSys::EndPath;
-    gpBrocAPI->mBrocExports.mSetSwitchNode = BrocSys::SetSwitchNode;
-    gpBrocAPI->mBrocExports.mSetWaitNode = BrocSys::SetWaitNode;
-    gpBrocAPI->mBrocExports.mSetWaitSpeed = BrocSys::SetWaitSpeed;
-    gpBrocAPI->mBrocExports.mSetSpeed = BrocSys::SetSpeed;
-    gpBrocAPI->mBrocExports.mResumeSpeed = BrocSys::ResumeSpeed;
-    gpBrocAPI->mBrocExports.mJoltBody = BrocSys::JoltBody;
-    gpBrocAPI->mBrocExports.mFreeVehicle = BrocSys::FreeVehicle;
-    gpBrocAPI->mBrocExports.mGetWheelSurface = BrocSys::GetWheelSurface;
-    gpBrocAPI->mBrocExports.mGetSpeedMph = BrocSys::GetSpeedMph;
-    gpBrocAPI->mBrocExports.mGetVehicleOwner = BrocSys::GetVehicleOwner;
-    gpBrocAPI->mBrocExports.mSetMaxSpeed = BrocSys::SetMaxSpeed;
-    gpBrocAPI->mBrocExports.mSetBrake = BrocSys::SetBrake;
-    gpBrocAPI->mBrocExports.mSetStabilityEnabled =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttachPath = BrocSys::AttachPath;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartPath = BrocSys::StartPath;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEndPath = BrocSys::EndPath;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSwitchNode = BrocSys::SetSwitchNode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWaitNode = BrocSys::SetWaitNode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWaitSpeed = BrocSys::SetWaitSpeed;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpeed = BrocSys::SetSpeed;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mResumeSpeed = BrocSys::ResumeSpeed;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mJoltBody = BrocSys::JoltBody;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFreeVehicle = BrocSys::FreeVehicle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetWheelSurface = BrocSys::GetWheelSurface;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetSpeedMph = BrocSys::GetSpeedMph;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetVehicleOwner = BrocSys::GetVehicleOwner;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetMaxSpeed = BrocSys::SetMaxSpeed;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetBrake = BrocSys::SetBrake;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetStabilityEnabled =
         BrocSys::SetStabilityEnabled;
-    gpBrocAPI->mBrocExports.mIsVehicleFlipped =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsVehicleFlipped =
         BrocSys::IsVehicleFlipped;
-    gpBrocAPI->mBrocExports.mSetVehicleGoal = BrocSys::SetVehicleGoal;
-    gpBrocAPI->mBrocExports.mUpdateNPCtoVehicleMovement =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetVehicleGoal = BrocSys::SetVehicleGoal;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUpdateNPCtoVehicleMovement =
         (void (*)())ReleaseNoOp_Thread;
-    gpBrocAPI->mBrocExports.mStartEngineSound = BrocSys::StartEngineSound;
-    gpBrocAPI->mBrocExports.mStopEngineSound = BrocSys::StopEngineSound;
-    gpBrocAPI->mBrocExports.mSetVehicleMountPos =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartEngineSound = BrocSys::StartEngineSound;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopEngineSound = BrocSys::StopEngineSound;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetVehicleMountPos =
         BrocSys::SetVehicleMountPos;
-    gpBrocAPI->mBrocExports.mMakeVehicleUsable =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMakeVehicleUsable =
         BrocSys::MakeVehicleUsable;
-    gpBrocAPI->mBrocExports.mMakeVehicleUnusable =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMakeVehicleUnusable =
         BrocSys::MakeVehicleUnusable;
-    gpBrocAPI->mBrocExports.mEjectDriver = BrocSys::EjectDriver;
-    gpBrocAPI->mBrocExports.mAddVehicleToCompass =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEjectDriver = BrocSys::EjectDriver;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAddVehicleToCompass =
         BrocSys::AddVehicleToCompass;
-    gpBrocAPI->mBrocExports.mRemoveVehicleFromCompass =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRemoveVehicleFromCompass =
         BrocSys::RemoveVehicleFromCompass;
-    gpBrocAPI->mBrocExports.mSetTurretRotRate =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretRotRate =
         BrocSys::SetTurretRotRate;
-    gpBrocAPI->mBrocExports.mSetTurretTargetVec =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretTargetVec =
         BrocSys::SetTurretTargetVec;
-    gpBrocAPI->mBrocExports.mSetTurretTargetEnt =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretTargetEnt =
         BrocSys::SetTurretTargetEnt;
-    gpBrocAPI->mBrocExports.mClearTurretTarget =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearTurretTarget =
         BrocSys::ClearTurretTarget;
-    gpBrocAPI->mBrocExports.mFireTurret = BrocSys::FireTurret;
-    gpBrocAPI->mBrocExports.mIsTurretReady = BrocSys::IsTurretReady;
-    gpBrocAPI->mBrocExports.mSetVehicleName = BrocSys::SetVehicleName;
-    gpBrocAPI->mBrocExports.mGetTurretRelAngles =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFireTurret = BrocSys::FireTurret;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsTurretReady = BrocSys::IsTurretReady;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetVehicleName = BrocSys::SetVehicleName;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTurretRelAngles =
         BrocSys::GetTurretRelAngles;
-    gpBrocAPI->mBrocExports.mRespawnVehicle = BrocSys::RespawnVehicle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRespawnVehicle = BrocSys::RespawnVehicle;
 }
 
 // ============================================================================
@@ -22797,7 +22797,7 @@ void AeThread::Execute(float /*deltaT*/)
     AeThreadManager::sInst.mThreadExecuting = self;
     AeThread_ProcessState(self);
     bool v3 = (self->mFlags.mMask & 0x40) != 0;
-    gpBrocAPI->mKillThread = v3 ? (void (*)())1 : (void (*)())0;
+    gpBrocAPI->mKillThread = v3;
     SetJmp(AeThread::sBackup);
     if ((self->mFlags.mMask & 1) != 0 && (self->mFlags.mMask & 0x10) == 0)
     {
@@ -24059,55 +24059,55 @@ void BrocSys::ObjectiveChildAdd5(int iObjective, int iChild,
 // ea: 0x005DBF20
 void BrocSys::InitObjective()
 {
-    gpBrocAPI->mBrocExports.mObjectiveAdd1 = BrocSys::ObjectiveAdd1;
-    gpBrocAPI->mBrocExports.mObjectiveAdd2 = BrocSys::ObjectiveAdd2;
-    gpBrocAPI->mBrocExports.mObjectiveAdd3 = BrocSys::ObjectiveAdd3;
-    gpBrocAPI->mBrocExports.mObjectiveAdd4 = BrocSys::ObjectiveAdd4;
-    gpBrocAPI->mBrocExports.mObjectiveAdd5 = BrocSys::ObjectiveAdd5;
-    gpBrocAPI->mBrocExports.mObjectiveAdd6 = BrocSys::ObjectiveAdd6;
-    gpBrocAPI->mBrocExports.mObjectiveAdd7 = BrocSys::ObjectiveAdd7;
-    gpBrocAPI->mBrocExports.mObjectiveDelete = BrocSys::ObjectiveDelete;
-    gpBrocAPI->mBrocExports.mObjectiveDeleteChildren =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd1 = BrocSys::ObjectiveAdd1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd2 = BrocSys::ObjectiveAdd2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd3 = BrocSys::ObjectiveAdd3;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd4 = BrocSys::ObjectiveAdd4;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd5 = BrocSys::ObjectiveAdd5;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd6 = BrocSys::ObjectiveAdd6;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveAdd7 = BrocSys::ObjectiveAdd7;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveDelete = BrocSys::ObjectiveDelete;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveDeleteChildren =
         BrocSys::ObjectiveDeleteChildren;
-    gpBrocAPI->mBrocExports.mObjectiveState = BrocSys::ObjectiveState;
-    gpBrocAPI->mBrocExports.mObjectiveWorldState =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveState = BrocSys::ObjectiveState;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveWorldState =
         BrocSys::ObjectiveWorldState;
-    gpBrocAPI->mBrocExports.mObjectiveString = BrocSys::ObjectiveString;
-    gpBrocAPI->mBrocExports.mObjectiveString2 = BrocSys::ObjectiveString2;
-    gpBrocAPI->mBrocExports.mObjectiveString_NoMessage =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveString = BrocSys::ObjectiveString;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveString2 = BrocSys::ObjectiveString2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveString_NoMessage =
         BrocSys::ObjectiveString_NoMessage;
-    gpBrocAPI->mBrocExports.mObjectivePosition = BrocSys::ObjectivePosition;
-    gpBrocAPI->mBrocExports.mObjectiveCurrent = BrocSys::ObjectiveCurrent;
-    gpBrocAPI->mBrocExports.mObjectiveRing = BrocSys::ObjectiveRing;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd1 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectivePosition = BrocSys::ObjectivePosition;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveCurrent = BrocSys::ObjectiveCurrent;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveRing = BrocSys::ObjectiveRing;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd1 =
         BrocSys::ObjectiveChildAdd1;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd2 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd2 =
         BrocSys::ObjectiveChildAdd2;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd3 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd3 =
         BrocSys::ObjectiveChildAdd3;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd4 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd4 =
         BrocSys::ObjectiveChildAdd4;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd5 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd5 =
         BrocSys::ObjectiveChildAdd5;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd6 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd6 =
         BrocSys::ObjectiveChildAdd6;
-    gpBrocAPI->mBrocExports.mObjectiveChildAdd7 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildAdd7 =
         BrocSys::ObjectiveChildAdd7;
-    gpBrocAPI->mBrocExports.mObjectiveChildDelete =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildDelete =
         BrocSys::ObjectiveChildDelete;
-    gpBrocAPI->mBrocExports.mObjectiveChildState =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildState =
         BrocSys::ObjectiveChildState;
-    gpBrocAPI->mBrocExports.mObjectiveChildString =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildString =
         BrocSys::ObjectiveChildString;
-    gpBrocAPI->mBrocExports.mObjectiveChildString2 =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildString2 =
         BrocSys::ObjectiveChildString2;
-    gpBrocAPI->mBrocExports.mObjectiveChildString_NoMessage =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildString_NoMessage =
         BrocSys::ObjectiveChildString_NoMessage;
-    gpBrocAPI->mBrocExports.mObjectiveChildPosition =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildPosition =
         BrocSys::ObjectiveChildPosition;
-    gpBrocAPI->mBrocExports.mObjectiveChildCurrent =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildCurrent =
         BrocSys::ObjectiveChildCurrent;
-    gpBrocAPI->mBrocExports.mObjectiveChildRing =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveChildRing =
         BrocSys::ObjectiveChildRing;
 }
 
@@ -26126,517 +26126,517 @@ T entity_get_persistent_player_field(unsigned int handle)
 
 // ea: 0x005DD690
 void BrocSys::InitEntity()
-{    gpBrocAPI->mBrocExports.mGetPlayerArray = BrocSys::GetPlayerArray;
-    gpBrocAPI->mBrocExports.mGetLocalPlayerArray = BrocSys::GetLocalPlayerArray;
-    gpBrocAPI->mBrocExports.mGetPlayerIndex = BrocSys::GetPlayerIndex;
-    gpBrocAPI->mBrocExports.mGetEnt = BrocSys::GetEnt;
-    gpBrocAPI->mBrocExports.mGetExtendedEntity = BrocSys::GetExtendedEntity;
-    gpBrocAPI->mBrocExports.mGetLevel = BrocSys::GetLevel;
-    gpBrocAPI->mBrocExports.mGetPlayer = BrocSys::GetPlayer;
-    gpBrocAPI->mBrocExports.mGetEntByNum = BrocSys::GetEntByNum;
-    gpBrocAPI->mBrocExports.mGetDrones = BrocSys::GetDrones;
-    gpBrocAPI->mBrocExports.mSetDroneScriptControl = ReleaseNoOp_EntityFlag;
-    gpBrocAPI->mBrocExports.mGetNode = BrocSys::GetNode;
-    gpBrocAPI->mBrocExports.mGetNodeInProximity = BrocSys::GetNodeInProximity;
-    gpBrocAPI->mBrocExports.mGetVehicleNode = BrocSys::GetVehicleNode;
-    gpBrocAPI->mBrocExports.mGetNumVehicles = BrocSys::GetNumVehicles;
-    gpBrocAPI->mBrocExports.mDrawTracer = BrocSys::DrawTracer;
-    gpBrocAPI->mBrocExports.mEffectEventPlay = BrocSys::EffectEventPlay;
-    gpBrocAPI->mBrocExports.mEffectEventPlayNonEnt = BrocSys::EffectEventPlayNonEnt;
-    gpBrocAPI->mBrocExports.mEffectEventPlayDir = BrocSys::EffectEventPlayDir;
-    gpBrocAPI->mBrocExports.mEffectEventQueue = BrocSys::EffectEventQueue;
-    gpBrocAPI->mBrocExports.mEffectEventQueueDialog = BrocSys::EffectEventQueueDialog;
-    gpBrocAPI->mBrocExports.mEffectEventPlayQueued = BrocSys::EffectEventPlayQueued;
-    gpBrocAPI->mBrocExports.mEffectEventIsStillPlaying = BrocSys::EffectEventIsStillPlaying;
-    gpBrocAPI->mBrocExports.mEffectEventStop = BrocSys::EffectEventStop;
-    gpBrocAPI->mBrocExports.mEffectEventFastForward = BrocSys::EffectEventFastForward;
-    gpBrocAPI->mBrocExports.mEffectEventWeaponPlay = BrocSys::EffectEventWeaponPlay;
-    gpBrocAPI->mBrocExports.mAttachCurve = BrocSys::BROC_AttachCurveEntity;
-    gpBrocAPI->mBrocExports.mAddCurveKeyEvaluator = BrocSys::BROC_AddCurveKeyEvaluator;
-    gpBrocAPI->mBrocExports.mAddCurveConditionEvaluator = BrocSys::BROC_AddCurveConditionEvaluator;
-    gpBrocAPI->mBrocExports.mSceneEffectEnable = BrocSys::SceneEffectEnable;
-    gpBrocAPI->mBrocExports.mSceneEffectDisable = BrocSys::SceneEffectDisable;
-    gpBrocAPI->mBrocExports.mDialogPlayAllowOverlapping = BrocSys::DialogPlayAllowOverlapping;
-    gpBrocAPI->mBrocExports.mDialogPlay = BrocSys::DialogPlay;
-    gpBrocAPI->mBrocExports.mCheckWave = BrocSys::CheckWave;
-    gpBrocAPI->mBrocExports.mEntityIsAlive = BrocSys::EntityIsAlive;
-    gpBrocAPI->mBrocExports.mEntityExists = BrocSys::EntityExists;
-    gpBrocAPI->mBrocExports.mEntityIsPlayer = BrocSys::EntityIsPlayer;
-    gpBrocAPI->mBrocExports.mEntityIsAI = BrocSys::EntityIsAI;
-    gpBrocAPI->mBrocExports.mEntityIsSentient = BrocSys::EntityIsSentient;
-    gpBrocAPI->mBrocExports.mEntityIsVehicle = BrocSys::EntityIsVehicle;
-    gpBrocAPI->mBrocExports.mEntityIsVehicleTank = BrocSys::EntityIsVehicleTank;
-    gpBrocAPI->mBrocExports.mEntityIsWounded = BrocSys::EntityIsWounded;
-    gpBrocAPI->mBrocExports.mIsPathNodeDefined = BrocSys::IsPathNodeDefined;
-    gpBrocAPI->mBrocExports.mIsVehicleNodeDefined = BrocSys::IsVehicleNodeDefined;
-    gpBrocAPI->mBrocExports.mBulletTrace = BrocSys::BulletTrace;
-    gpBrocAPI->mBrocExports.mTrace = BrocSys::Trace;
-    gpBrocAPI->mBrocExports.mSaveCheckpoint = BrocSys::SaveCheckpoint;
-    gpBrocAPI->mBrocExports.mGetGameVectorVar = BrocSys::GetGameVectorVar;
-    gpBrocAPI->mBrocExports.mGetGameUnsignedVar = BrocSys::GetGameUnsignedVar;
-    gpBrocAPI->mBrocExports.mGetGameFloatVar = BrocSys::GetGameFloatVar;
-    gpBrocAPI->mBrocExports.mSetGameVectorVar = BrocSys::SetGameVectorVar;
-    gpBrocAPI->mBrocExports.mSetGameUnsignedVar = BrocSys::SetGameUnsignedVar;
-    gpBrocAPI->mBrocExports.mSetGameFloatVar = BrocSys::SetGameFloatVar;
-    gpBrocAPI->mBrocExports.mRestoreLastCheckpoint = BrocSys::RestoreLastCheckpoint;
-    gpBrocAPI->mBrocExports.mSetShadowIntensity = BrocSys::SetShadowIntensity;
-    gpBrocAPI->mBrocExports.mSetShadowRadius = BrocSys::SetShadowRadius;
-    gpBrocAPI->mBrocExports.mSetEntityLODOverride = BrocSys::SetEntityLODOverride;
-    gpBrocAPI->mBrocExports.mScriptExplode = BrocSys::ScriptExplode;
-    gpBrocAPI->mBrocExports.mGetSplineData = BrocSys::GetSplineData;
-    gpBrocAPI->mBrocExports.mDronesStart = ReleaseNoOp_Drones;
-    gpBrocAPI->mBrocExports.mDronesStop = ReleaseNoOp_DroneName;
-    gpBrocAPI->mBrocExports.mDronesDelete = ReleaseNoOp_DroneName;
-    gpBrocAPI->mBrocExports.mRegisterAnimNotifyFunc = BrocSys::RegisterAnimNotifyFunc;
-    gpBrocAPI->mBrocExports.mCreateAnimNotifyTask = BrocSys::CreateAnimNotifyTask;
-    gpBrocAPI->mBrocExports.mScaleEntity = BrocSys::ScaleEntity;
-    gpBrocAPI->mBrocExports.mSwapColMaps = BrocSys::SwapColMaps;
-    gpBrocAPI->mBrocExports.mRumble = BrocSys::Rumble;
-    gpBrocAPI->mBrocExports.mRumbleNotes = BrocSys::RumbleNotes;
-    gpBrocAPI->mBrocExports.mSetExploderState = BrocSys::SetExploderState;
-    gpBrocAPI->mBrocExports.mIsExploded = BrocSys::IsExploded;
-    gpBrocAPI->mBrocExports.mSetEntityFlagDrone = BrocSys::SetEntityFlagDrone;
-    gpBrocAPI->mBrocExports.mObjectiveHideStar = BrocSys::ObjectiveHideStar;
-    gpBrocAPI->mBrocExports.mObjectiveHideUpdatedText = BrocSys::ObjectiveHideUpdatedText;
-    gpBrocAPI->mBrocExports.mIsEntityVisible = BrocSys::IsEntityVisible;
-    gpBrocAPI->mBrocExports.mSetWeaponCameraShakeScale = BrocSys::SetWeaponCameraShakeScale;
-    gpBrocAPI->mBrocExports.mSetHUDType = BrocSys::SetHUDType;
-    gpBrocAPI->mBrocExports.mSetTutorialText = BrocSys::SetTutorialText;
-    gpBrocAPI->mBrocExports.mSetTutorialTextAllPlayers = BrocSys::SetTutorialTextAllPlayers;
-    gpBrocAPI->mBrocExports.mSetActionHint = BrocSys::SetActionHint;
-    gpBrocAPI->mBrocExports.mEntityIgnoreDanger = BrocSys::EntityIgnoreDanger;
-    gpBrocAPI->mBrocExports.mSetGetOceanHeight = BrocSys::SetGetOceanHeight;
-    gpBrocAPI->mBrocExports.mAnimScripted1 = BrocSys::AnimScripted1;
-    gpBrocAPI->mBrocExports.mAnimScripted2 = ReleaseNoOp_Anim;
-    gpBrocAPI->mBrocExports.mStopAnimScripted = BrocSys::StopAnimScripted;
-    gpBrocAPI->mBrocExports.mStartBlankState = BrocSys::StartBlankState;
-    gpBrocAPI->mBrocExports.mStopBlankState = BrocSys::StopBlankState;
-    gpBrocAPI->mBrocExports.mAttach1 = BrocSys::Attach1;
-    gpBrocAPI->mBrocExports.mAttach2 = BrocSys::Attach2;
-    gpBrocAPI->mBrocExports.mAttach3 = BrocSys::Attach3;
-    gpBrocAPI->mBrocExports.mDetach1 = BrocSys::Detach1;
-    gpBrocAPI->mBrocExports.mDetach2 = BrocSys::Detach2;
-    gpBrocAPI->mBrocExports.mDetachAll = BrocSys::DetachAll;
-    gpBrocAPI->mBrocExports.mGetAttachSize = BrocSys::GetAttachSize;
-    gpBrocAPI->mBrocExports.mGetAttachModelName = BrocSys::GetAttachModelName;
-    gpBrocAPI->mBrocExports.mGetAttachTagName = BrocSys::GetAttachTagName;
-    gpBrocAPI->mBrocExports.mGetAttachIgnoreCollision = BrocSys::GetAttachIgnoreCollision;
-    gpBrocAPI->mBrocExports.mGetAnimFromScriptCVars = BrocSys::GetAnimFromScriptCVars;
-    gpBrocAPI->mBrocExports.mLinkTo1 = BrocSys::LinkTo1;
-    gpBrocAPI->mBrocExports.mLinkTo2 = BrocSys::LinkTo2;
-    gpBrocAPI->mBrocExports.mLinkTo3 = BrocSys::LinkTo3;
-    gpBrocAPI->mBrocExports.mPlayerLinkTo1 = BrocSys::PlayerLinkTo1;
-    gpBrocAPI->mBrocExports.mPlayerLinkTo2 = BrocSys::PlayerLinkTo2;
-    gpBrocAPI->mBrocExports.mPlayerLinkTo3 = BrocSys::PlayerLinkTo3;
-    gpBrocAPI->mBrocExports.mUnLink = BrocSys::UnLink;
-    gpBrocAPI->mBrocExports.mEnableLinkTo = BrocSys::EnableLinkTo;
-    gpBrocAPI->mBrocExports.mDoSpawn1 = BrocSys::DoSpawn1;
-    gpBrocAPI->mBrocExports.mDoSpawn2 = BrocSys::DoSpawn2;
-    gpBrocAPI->mBrocExports.mStalinGradSpawn1 = BrocSys::StalinGradSpawn1;
-    gpBrocAPI->mBrocExports.mStalinGradSpawn2 = BrocSys::StalinGradSpawn2;
-    gpBrocAPI->mBrocExports.mGetOrigin = BrocSys::GetOrigin;
-    gpBrocAPI->mBrocExports.mGetEye = BrocSys::GetEye;
-    gpBrocAPI->mBrocExports.mAddFakeFriendly = BrocSys::AddFakeFriendly;
-    gpBrocAPI->mBrocExports.mRemoveFakeFriendly = BrocSys::RemoveFakeFriendly;
-    gpBrocAPI->mBrocExports.mPlayScriptedAnim = BrocSys::PlayScriptedAnim;
-    gpBrocAPI->mBrocExports.mGetLocalizedString = BrocSys::GetLocalizedString;
-    gpBrocAPI->mBrocExports.mUseBy = BrocSys::UseBy;
-    gpBrocAPI->mBrocExports.mIsTouching = BrocSys::IsTouching;
-    gpBrocAPI->mBrocExports.mLockDoor = BrocSys::LockDoor;
-    gpBrocAPI->mBrocExports.mUnLockDoor = BrocSys::UnLockDoor;
-    gpBrocAPI->mBrocExports.mIsDoorLocked = BrocSys::IsDoorLocked;
-    gpBrocAPI->mBrocExports.mDelete = BrocSys::Delete;
-    gpBrocAPI->mBrocExports.mSetTransparent = BrocSys::SetTransparent;
-    gpBrocAPI->mBrocExports.mSetAiType = BrocSys::SetAiType;
-    gpBrocAPI->mBrocExports.mSetModel = BrocSys::SetModel;
-    gpBrocAPI->mBrocExports.mSetModelIndex = BrocSys::SetModelIndex;
-    gpBrocAPI->mBrocExports.mIsModelLoaded = BrocSys::IsModelLoaded;
-    gpBrocAPI->mBrocExports.mGetNormalHealth = BrocSys::GetNormalHealth;
-    gpBrocAPI->mBrocExports.mSetNormalHealth = BrocSys::SetNormalHealth;
-    gpBrocAPI->mBrocExports.mDoDamage = BrocSys::DoDamage;
-    gpBrocAPI->mBrocExports.mSetTakeDamage = BrocSys::SetTakeDamage;
-    gpBrocAPI->mBrocExports.mInvulnerableForTime = BrocSys::InvulnerableForTime;
-    gpBrocAPI->mBrocExports.mIsEntityInvulnerable = BrocSys::IsEntityInvulnerable;
-    gpBrocAPI->mBrocExports.mSetAlwaysRender = BrocSys::SetAlwaysRender;
-    gpBrocAPI->mBrocExports.mShow = BrocSys::Show;
-    gpBrocAPI->mBrocExports.mHide = BrocSys::Hide;
-    gpBrocAPI->mBrocExports.mSetContents = BrocSys::SetContents;
-    gpBrocAPI->mBrocExports.mDisConnectPaths = BrocSys::DisConnectPaths;
-    gpBrocAPI->mBrocExports.mConnectPaths = BrocSys::ConnectPaths;
-    gpBrocAPI->mBrocExports.mStartFiring = BrocSys::StartFiring;
-    gpBrocAPI->mBrocExports.mStopFiring = BrocSys::StopFiring;
-    gpBrocAPI->mBrocExports.mShootTurret = BrocSys::ShootTurret;
-    gpBrocAPI->mBrocExports.mSetMode = BrocSys::SetMode;
-    gpBrocAPI->mBrocExports.mGetTurretOwner = BrocSys::GetTurretOwner;
-    gpBrocAPI->mBrocExports.mGetOwner = BrocSys::GetOwner;
-    gpBrocAPI->mBrocExports.mSetOwner = BrocSys::SetOwner;
-    gpBrocAPI->mBrocExports.mSetTargetEntity = BrocSys::SetTargetEntity;
-    gpBrocAPI->mBrocExports.mHasTargetEntity = BrocSys::HasTargetEntity;
-    gpBrocAPI->mBrocExports.mClearTargetEntity = BrocSys::ClearTargetEntity;
-    gpBrocAPI->mBrocExports.mSetTurretTeam = BrocSys::SetTurretTeam;
-    gpBrocAPI->mBrocExports.mMakeTurretUsable = BrocSys::MakeTurretUsable;
-    gpBrocAPI->mBrocExports.mMakeTurretUnusable = BrocSys::MakeTurretUnusable;
-    gpBrocAPI->mBrocExports.mSetTurretAccuracy = BrocSys::SetTurretAccuracy;
-    gpBrocAPI->mBrocExports.mSetTurretRange = BrocSys::SetTurretRange;
-    gpBrocAPI->mBrocExports.mGetTurretRange = BrocSys::GetTurretRange;
-    gpBrocAPI->mBrocExports.mGetTurretTarget = BrocSys::GetTurretTarget;
-    gpBrocAPI->mBrocExports.mSetCursorHint = BrocSys::SetCursorHint;
-    gpBrocAPI->mBrocExports.mSetHintString1 = BrocSys::SetHintString1;
-    gpBrocAPI->mBrocExports.mSetHintString2 = BrocSys::SetHintString2;
-    gpBrocAPI->mBrocExports.mSetHintString3 = BrocSys::SetHintString3;
-    gpBrocAPI->mBrocExports.mGetAnimLength = BrocSys::GetAnimLength;
-    gpBrocAPI->mBrocExports.mGetAnimFrameCount = BrocSys::GetAnimFrameCount;
-    gpBrocAPI->mBrocExports.mAnimHasNotetrack = BrocSys::AnimHasNotetrack;
-    gpBrocAPI->mBrocExports.mClearAnim = BrocSys::ClearAnim;
-    gpBrocAPI->mBrocExports.mSetAnimKnob = BrocSys::SetAnimKnob;
-    gpBrocAPI->mBrocExports.mSetAnimKnobAll = BrocSys::SetAnimKnobAll;
-    gpBrocAPI->mBrocExports.mSetAnim = BrocSys::SetAnim;
-    gpBrocAPI->mBrocExports.mGetAnimTime = BrocSys::GetAnimTime;
-    gpBrocAPI->mBrocExports.mSetFlaggedAnimKnob = BrocSys::SetFlaggedAnimKnob;
-    gpBrocAPI->mBrocExports.mSetFlaggedAnimKnobAll = BrocSys::SetFlaggedAnimKnobAll;
-    gpBrocAPI->mBrocExports.mSetFlaggedAnim = BrocSys::SetFlaggedAnim;
-    gpBrocAPI->mBrocExports.mUseAnimTree = BrocSys::UseAnimTree;
-    gpBrocAPI->mBrocExports.mStopUseAnimTree = BrocSys::StopUseAnimTree;
-    gpBrocAPI->mBrocExports.mResetAnimVariationChunkState = BrocSys::ResetAnimVariationChunkState;
-    gpBrocAPI->mBrocExports.mSetFlaggedAnimAligned = BrocSys::SetFlaggedAnimAligned;
-    gpBrocAPI->mBrocExports.mGetInVehicle1 = BrocSys::GetInVehicle1;
-    gpBrocAPI->mBrocExports.mGetInVehicle2 = BrocSys::GetInVehicle2;
-    gpBrocAPI->mBrocExports.mGetOutVehicle = BrocSys::GetOutVehicle;
-    gpBrocAPI->mBrocExports.mSceneGetOutVehicle = BrocSys::SceneGetOutVehicle;
-    gpBrocAPI->mBrocExports.mStartInVehicle1 = BrocSys::StartInVehicle1;
-    gpBrocAPI->mBrocExports.mStartInVehicle2 = BrocSys::StartInVehicle2;
-    gpBrocAPI->mBrocExports.mStartFollowBehavior = BrocSys::StartFollowBehavior;
-    gpBrocAPI->mBrocExports.mStopFollowBehavior = BrocSys::StopFollowBehavior;
-    gpBrocAPI->mBrocExports.mSetFollowFormationData = BrocSys::SetFollowFormationData;
-    gpBrocAPI->mBrocExports.mResetVehicleFollowPositionHistoryData = BrocSys::ResetVehicleFollowPositionHistoryData;
-    gpBrocAPI->mBrocExports.mSetWalkRunLoopAnimNode = BrocSys::SetWalkRunLoopAnimNode;
-    gpBrocAPI->mBrocExports.mGetNodeClaimer = BrocSys::GetNodeClaimer;
-    gpBrocAPI->mBrocExports.mPlaySubtitle = BrocSys::PlaySubtitle;
-    gpBrocAPI->mBrocExports.mDumpAnims = BrocSys::DumpAnims;
-    gpBrocAPI->mBrocExports.mGetStance = BrocSys::GetStance;
-    gpBrocAPI->mBrocExports.mMagicGrenade1 = BrocSys::MagicGrenade1;
-    gpBrocAPI->mBrocExports.mMagicGrenade2 = BrocSys::MagicGrenade2;
-    gpBrocAPI->mBrocExports.mMagicGrenadeManual1 = BrocSys::MagicGrenadeManual1;
-    gpBrocAPI->mBrocExports.mMagicGrenadeManual2 = BrocSys::MagicGrenadeManual2;
-    gpBrocAPI->mBrocExports.mRifleGrenadeManual1 = BrocSys::RifleGrenadeManual1;
-    gpBrocAPI->mBrocExports.mIsLocalHost = BrocSys::IsLocalHost;
-    gpBrocAPI->mBrocExports.mIsFiringTurret = BrocSys::IsFiringTurret;
-    gpBrocAPI->mBrocExports.mSetFriendlyChain = BrocSys::SetFriendlyChain;
-    gpBrocAPI->mBrocExports.mGetTagOrigin1 = BrocSys::GetTagOrigin1;
-    gpBrocAPI->mBrocExports.mGetTagOrigin2 = BrocSys::GetTagOrigin2;
-    gpBrocAPI->mBrocExports.mGetTagAngles1 = BrocSys::GetTagAngles1;
-    gpBrocAPI->mBrocExports.mGetTagAngles2 = BrocSys::GetTagAngles2;
-    gpBrocAPI->mBrocExports.mShellShock = BrocSys::ShellShock;
-    gpBrocAPI->mBrocExports.mStopShellShock = BrocSys::StopShellShock;
-    gpBrocAPI->mBrocExports.mViewKick = BrocSys::ViewKick;
-    gpBrocAPI->mBrocExports.mLockLightVis = BrocSys::LockLightVis;
-    gpBrocAPI->mBrocExports.mUnLockLightVis = BrocSys::UnLockLightVis;
-    gpBrocAPI->mBrocExports.mLaunch = BrocSys::Launch;
-    gpBrocAPI->mBrocExports.mLocalToWorldCoords = BrocSys::LocalToWorldCoords;
-    gpBrocAPI->mBrocExports.mGetEntityNumber = BrocSys::GetEntityNumber;
-    gpBrocAPI->mBrocExports.mEnableGrenadeTouchDamage = BrocSys::EnableGrenadeTouchDamage;
-    gpBrocAPI->mBrocExports.mDisableGrenadeTouchDamage = BrocSys::DisableGrenadeTouchDamage;
-    gpBrocAPI->mBrocExports.mEnableGrenadeBounce = BrocSys::EnableGrenadeBounce;
-    gpBrocAPI->mBrocExports.mDisableGrenadeBounce = BrocSys::DisableGrenadeBounce;
-    gpBrocAPI->mBrocExports.mMakeFakeAi = BrocSys::MakeFakeAi;
-    gpBrocAPI->mBrocExports.mSetSpawnerTeam = BrocSys::SetSpawnerTeam;
-    gpBrocAPI->mBrocExports.mSetRightArc = BrocSys::SetRightArc;
-    gpBrocAPI->mBrocExports.mSetLeftArc = BrocSys::SetLeftArc;
-    gpBrocAPI->mBrocExports.mSetTopArc = BrocSys::SetTopArc;
-    gpBrocAPI->mBrocExports.mSetBottomArc = BrocSys::SetBottomArc;
-    gpBrocAPI->mBrocExports.mSetTurretPitch = BrocSys::SetTurretPitch;
-    gpBrocAPI->mBrocExports.mSetTurretYaw = BrocSys::SetTurretYaw;
-    gpBrocAPI->mBrocExports.mSetCharacter = BrocSys::SetCharacter;
-    gpBrocAPI->mBrocExports.mGetJoyPos = BrocSys::GetJoyPos;
-    gpBrocAPI->mBrocExports.mOverrideTriggerLookAtRadius = BrocSys::OverrideTriggerLookAtRadius;
-    gpBrocAPI->mBrocExports.mNoClip = BrocSys::NoClip;
-    gpBrocAPI->mBrocExports.mEnableAsserts = BrocSys::EnableAsserts;
+{    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerArray = BrocSys::GetPlayerArray;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetLocalPlayerArray = BrocSys::GetLocalPlayerArray;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerIndex = BrocSys::GetPlayerIndex;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetEnt = BrocSys::GetEnt;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetExtendedEntity = BrocSys::GetExtendedEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetLevel = BrocSys::GetLevel;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayer = BrocSys::GetPlayer;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetEntByNum = BrocSys::GetEntByNum;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetDrones = BrocSys::GetDrones;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetDroneScriptControl = ReleaseNoOp_EntityFlag;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetNode = BrocSys::GetNode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetNodeInProximity = BrocSys::GetNodeInProximity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetVehicleNode = BrocSys::GetVehicleNode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetNumVehicles = BrocSys::GetNumVehicles;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDrawTracer = BrocSys::DrawTracer;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventPlay = BrocSys::EffectEventPlay;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventPlayNonEnt = BrocSys::EffectEventPlayNonEnt;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventPlayDir = BrocSys::EffectEventPlayDir;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventQueue = BrocSys::EffectEventQueue;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventQueueDialog = BrocSys::EffectEventQueueDialog;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventPlayQueued = BrocSys::EffectEventPlayQueued;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventIsStillPlaying = BrocSys::EffectEventIsStillPlaying;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventStop = BrocSys::EffectEventStop;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventFastForward = BrocSys::EffectEventFastForward;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEffectEventWeaponPlay = BrocSys::EffectEventWeaponPlay;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttachCurve = BrocSys::BROC_AttachCurveEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAddCurveKeyEvaluator = BrocSys::BROC_AddCurveKeyEvaluator;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAddCurveConditionEvaluator = BrocSys::BROC_AddCurveConditionEvaluator;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSceneEffectEnable = BrocSys::SceneEffectEnable;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSceneEffectDisable = BrocSys::SceneEffectDisable;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDialogPlayAllowOverlapping = BrocSys::DialogPlayAllowOverlapping;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDialogPlay = BrocSys::DialogPlay;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mCheckWave = BrocSys::CheckWave;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsAlive = BrocSys::EntityIsAlive;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityExists = BrocSys::EntityExists;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsPlayer = BrocSys::EntityIsPlayer;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsAI = BrocSys::EntityIsAI;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsSentient = BrocSys::EntityIsSentient;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsVehicle = BrocSys::EntityIsVehicle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsVehicleTank = BrocSys::EntityIsVehicleTank;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIsWounded = BrocSys::EntityIsWounded;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsPathNodeDefined = BrocSys::IsPathNodeDefined;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsVehicleNodeDefined = BrocSys::IsVehicleNodeDefined;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mBulletTrace = BrocSys::BulletTrace;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mTrace = BrocSys::Trace;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSaveCheckpoint = BrocSys::SaveCheckpoint;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetGameVectorVar = BrocSys::GetGameVectorVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetGameUnsignedVar = BrocSys::GetGameUnsignedVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetGameFloatVar = BrocSys::GetGameFloatVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetGameVectorVar = BrocSys::SetGameVectorVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetGameUnsignedVar = BrocSys::SetGameUnsignedVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetGameFloatVar = BrocSys::SetGameFloatVar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRestoreLastCheckpoint = BrocSys::RestoreLastCheckpoint;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetShadowIntensity = BrocSys::SetShadowIntensity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetShadowRadius = BrocSys::SetShadowRadius;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetEntityLODOverride = BrocSys::SetEntityLODOverride;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mScriptExplode = BrocSys::ScriptExplode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetSplineData = BrocSys::GetSplineData;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDronesStart = ReleaseNoOp_Drones;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDronesStop = ReleaseNoOp_DroneName;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDronesDelete = ReleaseNoOp_DroneName;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRegisterAnimNotifyFunc = BrocSys::RegisterAnimNotifyFunc;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mCreateAnimNotifyTask = BrocSys::CreateAnimNotifyTask;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mScaleEntity = BrocSys::ScaleEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSwapColMaps = BrocSys::SwapColMaps;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRumble = BrocSys::Rumble;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRumbleNotes = BrocSys::RumbleNotes;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetExploderState = BrocSys::SetExploderState;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsExploded = BrocSys::IsExploded;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetEntityFlagDrone = BrocSys::SetEntityFlagDrone;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveHideStar = BrocSys::ObjectiveHideStar;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mObjectiveHideUpdatedText = BrocSys::ObjectiveHideUpdatedText;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsEntityVisible = BrocSys::IsEntityVisible;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWeaponCameraShakeScale = BrocSys::SetWeaponCameraShakeScale;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetHUDType = BrocSys::SetHUDType;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTutorialText = BrocSys::SetTutorialText;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTutorialTextAllPlayers = BrocSys::SetTutorialTextAllPlayers;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetActionHint = BrocSys::SetActionHint;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntityIgnoreDanger = BrocSys::EntityIgnoreDanger;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetGetOceanHeight = BrocSys::SetGetOceanHeight;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAnimScripted1 = BrocSys::AnimScripted1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAnimScripted2 = ReleaseNoOp_Anim;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopAnimScripted = BrocSys::StopAnimScripted;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartBlankState = BrocSys::StartBlankState;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopBlankState = BrocSys::StopBlankState;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttach1 = BrocSys::Attach1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttach2 = BrocSys::Attach2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAttach3 = BrocSys::Attach3;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDetach1 = BrocSys::Detach1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDetach2 = BrocSys::Detach2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDetachAll = BrocSys::DetachAll;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAttachSize = BrocSys::GetAttachSize;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAttachModelName = BrocSys::GetAttachModelName;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAttachTagName = BrocSys::GetAttachTagName;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAttachIgnoreCollision = BrocSys::GetAttachIgnoreCollision;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAnimFromScriptCVars = BrocSys::GetAnimFromScriptCVars;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLinkTo1 = BrocSys::LinkTo1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLinkTo2 = BrocSys::LinkTo2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLinkTo3 = BrocSys::LinkTo3;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerLinkTo1 = BrocSys::PlayerLinkTo1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerLinkTo2 = BrocSys::PlayerLinkTo2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayerLinkTo3 = BrocSys::PlayerLinkTo3;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUnLink = BrocSys::UnLink;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnableLinkTo = BrocSys::EnableLinkTo;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDoSpawn1 = BrocSys::DoSpawn1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDoSpawn2 = BrocSys::DoSpawn2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStalinGradSpawn1 = BrocSys::StalinGradSpawn1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStalinGradSpawn2 = BrocSys::StalinGradSpawn2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetOrigin = BrocSys::GetOrigin;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetEye = BrocSys::GetEye;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAddFakeFriendly = BrocSys::AddFakeFriendly;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRemoveFakeFriendly = BrocSys::RemoveFakeFriendly;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlayScriptedAnim = BrocSys::PlayScriptedAnim;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetLocalizedString = BrocSys::GetLocalizedString;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUseBy = BrocSys::UseBy;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsTouching = BrocSys::IsTouching;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLockDoor = BrocSys::LockDoor;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUnLockDoor = BrocSys::UnLockDoor;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsDoorLocked = BrocSys::IsDoorLocked;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDelete = BrocSys::Delete;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTransparent = BrocSys::SetTransparent;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAiType = BrocSys::SetAiType;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetModel = BrocSys::SetModel;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetModelIndex = BrocSys::SetModelIndex;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsModelLoaded = BrocSys::IsModelLoaded;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetNormalHealth = BrocSys::GetNormalHealth;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetNormalHealth = BrocSys::SetNormalHealth;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDoDamage = BrocSys::DoDamage;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTakeDamage = BrocSys::SetTakeDamage;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mInvulnerableForTime = BrocSys::InvulnerableForTime;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsEntityInvulnerable = BrocSys::IsEntityInvulnerable;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAlwaysRender = BrocSys::SetAlwaysRender;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShow = BrocSys::Show;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHide = BrocSys::Hide;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetContents = BrocSys::SetContents;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDisConnectPaths = BrocSys::DisConnectPaths;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mConnectPaths = BrocSys::ConnectPaths;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartFiring = BrocSys::StartFiring;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopFiring = BrocSys::StopFiring;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShootTurret = BrocSys::ShootTurret;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetMode = BrocSys::SetMode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTurretOwner = BrocSys::GetTurretOwner;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetOwner = BrocSys::GetOwner;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetOwner = BrocSys::SetOwner;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTargetEntity = BrocSys::SetTargetEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mHasTargetEntity = BrocSys::HasTargetEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearTargetEntity = BrocSys::ClearTargetEntity;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretTeam = BrocSys::SetTurretTeam;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMakeTurretUsable = BrocSys::MakeTurretUsable;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMakeTurretUnusable = BrocSys::MakeTurretUnusable;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretAccuracy = BrocSys::SetTurretAccuracy;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretRange = BrocSys::SetTurretRange;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTurretRange = BrocSys::GetTurretRange;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTurretTarget = BrocSys::GetTurretTarget;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetCursorHint = BrocSys::SetCursorHint;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetHintString1 = BrocSys::SetHintString1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetHintString2 = BrocSys::SetHintString2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetHintString3 = BrocSys::SetHintString3;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAnimLength = BrocSys::GetAnimLength;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAnimFrameCount = BrocSys::GetAnimFrameCount;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAnimHasNotetrack = BrocSys::AnimHasNotetrack;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mClearAnim = BrocSys::ClearAnim;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAnimKnob = BrocSys::SetAnimKnob;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAnimKnobAll = BrocSys::SetAnimKnobAll;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAnim = BrocSys::SetAnim;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetAnimTime = BrocSys::GetAnimTime;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFlaggedAnimKnob = BrocSys::SetFlaggedAnimKnob;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFlaggedAnimKnobAll = BrocSys::SetFlaggedAnimKnobAll;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFlaggedAnim = BrocSys::SetFlaggedAnim;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUseAnimTree = BrocSys::UseAnimTree;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopUseAnimTree = BrocSys::StopUseAnimTree;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mResetAnimVariationChunkState = BrocSys::ResetAnimVariationChunkState;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFlaggedAnimAligned = BrocSys::SetFlaggedAnimAligned;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetInVehicle1 = BrocSys::GetInVehicle1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetInVehicle2 = BrocSys::GetInVehicle2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetOutVehicle = BrocSys::GetOutVehicle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSceneGetOutVehicle = BrocSys::SceneGetOutVehicle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartInVehicle1 = BrocSys::StartInVehicle1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartInVehicle2 = BrocSys::StartInVehicle2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStartFollowBehavior = BrocSys::StartFollowBehavior;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopFollowBehavior = BrocSys::StopFollowBehavior;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFollowFormationData = BrocSys::SetFollowFormationData;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mResetVehicleFollowPositionHistoryData = BrocSys::ResetVehicleFollowPositionHistoryData;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetWalkRunLoopAnimNode = BrocSys::SetWalkRunLoopAnimNode;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetNodeClaimer = BrocSys::GetNodeClaimer;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mPlaySubtitle = BrocSys::PlaySubtitle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDumpAnims = BrocSys::DumpAnims;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetStance = BrocSys::GetStance;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMagicGrenade1 = BrocSys::MagicGrenade1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMagicGrenade2 = BrocSys::MagicGrenade2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMagicGrenadeManual1 = BrocSys::MagicGrenadeManual1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMagicGrenadeManual2 = BrocSys::MagicGrenadeManual2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRifleGrenadeManual1 = BrocSys::RifleGrenadeManual1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsLocalHost = BrocSys::IsLocalHost;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsFiringTurret = BrocSys::IsFiringTurret;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetFriendlyChain = BrocSys::SetFriendlyChain;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTagOrigin1 = BrocSys::GetTagOrigin1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTagOrigin2 = BrocSys::GetTagOrigin2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTagAngles1 = BrocSys::GetTagAngles1;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTagAngles2 = BrocSys::GetTagAngles2;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mShellShock = BrocSys::ShellShock;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopShellShock = BrocSys::StopShellShock;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mViewKick = BrocSys::ViewKick;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLockLightVis = BrocSys::LockLightVis;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mUnLockLightVis = BrocSys::UnLockLightVis;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLaunch = BrocSys::Launch;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLocalToWorldCoords = BrocSys::LocalToWorldCoords;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetEntityNumber = BrocSys::GetEntityNumber;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnableGrenadeTouchDamage = BrocSys::EnableGrenadeTouchDamage;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDisableGrenadeTouchDamage = BrocSys::DisableGrenadeTouchDamage;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnableGrenadeBounce = BrocSys::EnableGrenadeBounce;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDisableGrenadeBounce = BrocSys::DisableGrenadeBounce;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMakeFakeAi = BrocSys::MakeFakeAi;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpawnerTeam = BrocSys::SetSpawnerTeam;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetRightArc = BrocSys::SetRightArc;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetLeftArc = BrocSys::SetLeftArc;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTopArc = BrocSys::SetTopArc;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetBottomArc = BrocSys::SetBottomArc;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretPitch = BrocSys::SetTurretPitch;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTurretYaw = BrocSys::SetTurretYaw;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetCharacter = BrocSys::SetCharacter;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetJoyPos = BrocSys::GetJoyPos;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOverrideTriggerLookAtRadius = BrocSys::OverrideTriggerLookAtRadius;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mNoClip = BrocSys::NoClip;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnableAsserts = BrocSys::EnableAsserts;
     BrocSys::InitEntityMove(); /*0x5de457*/;
 
     BrocSys::InitEntityClient(); /*0x5de45c*/;
 
-    gpBrocAPI->mBrocExports.hud_set_x = hud_set_field<int,4>;
-    gpBrocAPI->mBrocExports.hud_get_x = hud_get_field<int,4>;
-    gpBrocAPI->mBrocExports.hud_set_y = hud_set_field<int,8>;
-    gpBrocAPI->mBrocExports.hud_get_y = hud_get_field<int,8>;
-    gpBrocAPI->mBrocExports.hud_set_alignX = hud_set_field<int,20>;
-    gpBrocAPI->mBrocExports.hud_get_alignX = hud_get_field<int,20>;
-    gpBrocAPI->mBrocExports.hud_set_alignY = hud_set_field<int,24>;
-    gpBrocAPI->mBrocExports.hud_get_alignY = hud_get_field<int,24>;
-    gpBrocAPI->mBrocExports.hud_set_sort = hud_set_field<float,108>;
-    gpBrocAPI->mBrocExports.hud_get_sort = hud_get_field<float,108>;
-    gpBrocAPI->mBrocExports.hud_set_fontScale = hud_set_field<float,12>;
-    gpBrocAPI->mBrocExports.hud_get_fontScale = hud_get_field<float,12>;
-    gpBrocAPI->mBrocExports.hud_set_alpha = hud_set_field<unsigned char,31>;
-    gpBrocAPI->mBrocExports.hud_get_alpha = hud_get_field<unsigned char,31>;
-    gpBrocAPI->mBrocExports.hud_set_red = hud_set_field<unsigned char,28>;
-    gpBrocAPI->mBrocExports.hud_get_red = hud_get_field<unsigned char,28>;
-    gpBrocAPI->mBrocExports.hud_set_green = hud_set_field<unsigned char,29>;
-    gpBrocAPI->mBrocExports.hud_get_green = hud_get_field<unsigned char,29>;
-    gpBrocAPI->mBrocExports.hud_set_blue = hud_set_field<unsigned char,30>;
-    gpBrocAPI->mBrocExports.hud_get_blue = hud_get_field<unsigned char,30>;
-    gpBrocAPI->mBrocExports.m_pnode_set_targetname = pnode_set_field<Broc::string,48,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_targetname = pnode_get_field<Broc::string,48,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_target = pnode_set_field<Broc::string,56,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_target = pnode_get_field<Broc::string,56,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_on_goal = pnode_set_field<Broc::string,60,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_on_goal = pnode_get_field<Broc::string,60,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_reservename = pnode_set_field<Broc::string,64,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_reservename = pnode_get_field<Broc::string,64,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_animscript = pnode_set_field<Broc::string,68,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_animscript = pnode_get_field<Broc::string,68,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_script_noteworthy = pnode_set_field<Broc::string,52,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_script_noteworthy = pnode_get_field<Broc::string,52,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_origin = pnode_set_field<Broc::vector,76,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_origin = pnode_get_field<Broc::vector,76,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_angles = pnode_set_field<Broc::vector,88,34>;
-    gpBrocAPI->mBrocExports.m_pnode_get_angles = pnode_get_field<Broc::vector,88,35>;
-    gpBrocAPI->mBrocExports.m_pnode_set_radius = pnode_set_field<float,92,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_radius = pnode_get_field<float,92,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_spawnflags = pnode_set_field<short,44,0>;
-    gpBrocAPI->mBrocExports.m_pnode_get_spawnflags = pnode_get_field<short,44,0>;
-    gpBrocAPI->mBrocExports.m_pnode_set_type = pnode_set_field<Broc::string,40,36>;
-    gpBrocAPI->mBrocExports.m_pnode_get_type = pnode_get_field<Broc::string,40,37>;
-    gpBrocAPI->mBrocExports.m_vnode_set_targetname = vnode_set_field<Broc::string,0>;
-    gpBrocAPI->mBrocExports.m_vnode_get_targetname = vnode_get_field<Broc::string,0>;
-    gpBrocAPI->mBrocExports.m_vnode_set_target = vnode_set_field<Broc::string,4>;
-    gpBrocAPI->mBrocExports.m_vnode_get_target = vnode_get_field<Broc::string,4>;
-    gpBrocAPI->mBrocExports.m_vnode_set_origin = vnode_set_field<Broc::vector,20>;
-    gpBrocAPI->mBrocExports.m_vnode_get_origin = vnode_get_field<Broc::vector,20>;
-    gpBrocAPI->mBrocExports.m_vnode_set_angles = vnode_set_field<Broc::vector,44>;
-    gpBrocAPI->mBrocExports.m_vnode_get_angles = vnode_get_field<Broc::vector,44>;
-    gpBrocAPI->mBrocExports.m_vnode_set_speed = vnode_set_field<float,8>;
-    gpBrocAPI->mBrocExports.m_vnode_get_speed = vnode_get_field<float,8>;
-    gpBrocAPI->mBrocExports.m_vnode_set_lookahead = vnode_set_field<float,12>;
-    gpBrocAPI->mBrocExports.m_vnode_get_lookahead = vnode_get_field<float,12>;
-    gpBrocAPI->mBrocExports.m_vnode_set_script_noteworthy = vnode_set_field<Broc::string,16>;
-    gpBrocAPI->mBrocExports.m_vnode_get_script_noteworthy = vnode_get_field<Broc::string,16>;
-    gpBrocAPI->mBrocExports.m_entity_set_classname = entity_set_field<Broc::string,636,1>;
-    gpBrocAPI->mBrocExports.m_entity_get_classname = entity_get_field<Broc::string,636,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_origin = entity_set_field<Broc::vector,336,2>;
-    gpBrocAPI->mBrocExports.m_entity_get_origin = entity_get_field<Broc::vector,336,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_model = entity_set_field<Broc::string,624,1>;
-    gpBrocAPI->mBrocExports.m_entity_get_model = entity_get_field<Broc::string,624,6>;
-    gpBrocAPI->mBrocExports.m_entity_set_spawnflags = entity_set_field<int,704,1>;
-    gpBrocAPI->mBrocExports.m_entity_get_spawnflags = entity_get_field<int,704,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_speed = entity_set_field<float,796,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_speed = entity_get_field<float,796,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_closespeed = entity_set_field<float,800,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_closespeed = entity_get_field<float,800,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_target = entity_set_field<Broc::string,652,11>;
-    gpBrocAPI->mBrocExports.m_entity_get_target = entity_get_field<Broc::string,652,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_targetname = entity_set_field<Broc::string,644,12>;
-    gpBrocAPI->mBrocExports.m_entity_get_targetname = entity_get_field<Broc::string,644,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_teamname = entity_set_field<Broc::string,792,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_teamname = entity_get_field<Broc::string,792,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_wait = entity_set_field<float,896,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_wait = entity_get_field<float,896,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_random = entity_set_field<float,900,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_random = entity_get_field<float,900,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_count = entity_set_field<int,876,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_count = entity_get_field<int,876,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_health = entity_set_field<int,856,3>;
-    gpBrocAPI->mBrocExports.m_entity_get_health = entity_get_field<int,856,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_dmg = entity_set_field<int,864,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_dmg = entity_get_field<int,864,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_angles = entity_set_field<Broc::vector,352,4>;
-    gpBrocAPI->mBrocExports.m_entity_get_angles = entity_get_field<Broc::vector,352,5>;
-    gpBrocAPI->mBrocExports.m_entity_set_rotate = entity_set_field<Broc::vector,912,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_rotate = entity_get_field<Broc::vector,912,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_degrees = entity_set_field<float,788,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_degrees = entity_get_field<float,788,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_time = entity_set_field<float,796,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_time = entity_get_field<float,796,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_modelscale = entity_set_field<float,632,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_modelscale = entity_get_field<float,632,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_key = entity_set_field<int,948,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_key = entity_get_field<int,948,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_delay = entity_set_field<float,904,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_delay = entity_get_field<float,904,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_shard = entity_set_field<int,876,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_shard = entity_get_field<int,876,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_spawnitem = entity_set_field<Broc::string,952,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_spawnitem = entity_get_field<Broc::string,952,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_groupname = entity_set_field<Broc::string,660,13>;
-    gpBrocAPI->mBrocExports.m_entity_get_groupname = entity_get_field<Broc::string,660,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_script_noteworthy = entity_set_field<Broc::string,668,14>;
-    gpBrocAPI->mBrocExports.m_entity_get_script_noteworthy = entity_get_field<Broc::string,668,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_maxhealth = entity_set_field<int,860,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_maxhealth = entity_get_field<int,860,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_animname = entity_set_field<Broc::string,676,15>;
-    gpBrocAPI->mBrocExports.m_entity_get_animname = entity_get_field<Broc::string,676,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_persistent_index = entity_set_field<short,958,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_persistent_index = entity_get_field<short,958,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_takedamage = entity_set_field<int,696,9>;
-    gpBrocAPI->mBrocExports.m_entity_get_takedamage = entity_get_field<int,696,10>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracy = entity_set_actor_field<float,240,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracy = entity_get_actor_field<float,240,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracystationarymod = entity_set_actor_field<float,244,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracystationarymod = entity_get_actor_field<float,244,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsPlayer = entity_set_actor_field<float,248,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsPlayer = entity_get_actor_field<float,248,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsAI = entity_set_actor_field<float,252,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsAI = entity_get_actor_field<float,252,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsHero = entity_set_actor_field<float,256,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsHero = entity_get_actor_field<float,256,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_lookforward = entity_set_actor_field<Broc::vector,320,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_lookforward = entity_get_actor_field<Broc::vector,320,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_lookright = entity_set_actor_field<Broc::vector,332,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_lookright = entity_get_actor_field<Broc::vector,332,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_lookup = entity_set_actor_field<Broc::vector,344,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_lookup = entity_get_actor_field<Broc::vector,344,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_fovcosine = entity_set_actor_field<float,2220,17>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_fovcosine = entity_get_actor_field<float,2220,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_maxsightdistsqrd = entity_set_actor_field<float,2224,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_maxsightdistsqrd = entity_get_actor_field<float,2224,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_visibilitythreshold = entity_set_actor_field<float,2216,17>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_visibilitythreshold = entity_get_actor_field<float,2216,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_defaultsightlatency = entity_set_actor_field<int,2228,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_defaultsightlatency = entity_get_actor_field<int,2228,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_maxthreatdistsqrd = entity_set_actor_field<float,2452,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_maxthreatdistsqrd = entity_get_actor_field<float,2452,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_followmin = entity_set_actor_field<int,2084,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_followmin = entity_get_actor_field<int,2084,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_followmax = entity_set_actor_field<int,2088,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_followmax = entity_get_actor_field<int,2088,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_chainfallback = entity_set_actor_field<short,2128,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_chainfallback = entity_get_actor_field<short,2128,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_interval = entity_set_actor_field<float,2092,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_interval = entity_get_actor_field<float,2092,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_personalspace = entity_set_actor_field<float,2096,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_personalspace = entity_get_actor_field<float,2096,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_damagetype = entity_set_actor_field<int,616,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_damagetype = entity_get_actor_field<int,616,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_damagetaken = entity_set_actor_field<int,620,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_damagetaken = entity_get_actor_field<int,620,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_damagedir = entity_set_actor_field<Broc::vector,628,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_damagedir = entity_get_actor_field<Broc::vector,628,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_damageyaw = entity_set_actor_field<int,624,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_damageyaw = entity_get_actor_field<int,624,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_damagelocation = entity_set_actor_field<unsigned int,640,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_damagelocation = entity_get_actor_field<unsigned int,640,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_proneok = entity_set_actor_field<int,472,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_proneok = entity_get_actor_field<int,472,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_walkdist = entity_set_actor_field<float,2072,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_walkdist = entity_get_actor_field<float,2072,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_desiredangle = entity_set_actor_field<float,396,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_desiredangle = entity_get_actor_field<float,396,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_bravery = entity_set_actor_field<float,2144,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_bravery = entity_get_actor_field<float,2144,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_pacifist = entity_set_actor_field<int,2148,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_pacifist = entity_get_actor_field<int,2148,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_pacifistwait = entity_set_actor_field<int,2152,18>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_pacifistwait = entity_get_actor_field<int,2152,19>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_suppressionwait = entity_set_actor_field<int,2552,18>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_suppressionwait = entity_get_actor_field<int,2552,19>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_name = entity_set_actor_field<Broc::string,288,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_name = entity_get_actor_field<Broc::string,288,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_weapon = entity_set_actor_field<unsigned int,292,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_weapon = entity_get_actor_field<unsigned int,292,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_secondaryweapon = entity_set_actor_field<unsigned int,296,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_secondaryweapon = entity_get_actor_field<unsigned int,296,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_voice = entity_set_actor_field<Broc::string,300,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_voice = entity_get_actor_field<Broc::string,300,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_dontavoidplayer = entity_set_actor_field<int,2124,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_dontavoidplayer = entity_get_actor_field<int,2124,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeawareness = entity_set_actor_field<float,2556,17>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeawareness = entity_get_actor_field<float,2556,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_grenade = entity_set_actor_field<Broc::entity,2560,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_grenade = entity_get_actor_field<Broc::entity,2560,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeweapon = entity_set_actor_field<Broc::string,2620,20>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeweapon = entity_get_actor_field<Broc::string,2620,21>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeammo = entity_set_actor_field<int,2632,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeammo = entity_get_actor_field<int,2632,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_favoriteenemy = entity_set_actor_field<Broc::entity,2444,24>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_favoriteenemy = entity_get_actor_field<Broc::entity,2444,25>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_allowdeath = entity_set_actor_field<int,228,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_allowdeath = entity_get_actor_field<int,228,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_mg42stayput = entity_set_actor_field<unsigned char,2712,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_mg42stayput = entity_get_actor_field<unsigned char,2712,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_useable = entity_set_actor_field<unsigned char,2713,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_useable = entity_get_actor_field<unsigned char,2713,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_goalradiusonly = entity_set_actor_field<unsigned char,2130,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_goalradiusonly = entity_get_actor_field<unsigned char,2130,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_dropweapon = entity_set_actor_field<int,2716,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_dropweapon = entity_get_actor_field<int,2716,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_drawoncompass = entity_set_actor_field<int,2720,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_drawoncompass = entity_get_actor_field<int,2720,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_interactstage = entity_set_actor_field<int,2848,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_interactstage = entity_get_actor_field<int,2848,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_scriptstate = entity_set_actor_field<Broc::string,2728,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_scriptstate = entity_get_actor_field<Broc::string,2728,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_lastscriptstate = entity_set_actor_field<Broc::string,2732,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_lastscriptstate = entity_get_actor_field<Broc::string,2732,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_statechangereason = entity_set_actor_field<Broc::string,2736,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_statechangereason = entity_get_actor_field<Broc::string,2736,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_groundtype = entity_set_actor_field<Broc::string,768,16>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_groundtype = entity_get_actor_field<Broc::string,768,22>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_anim_pose = entity_set_actor_field<unsigned int,452,23>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_anim_pose = entity_get_actor_field<unsigned int,452,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_forced_pose = entity_set_actor_field<unsigned int,456,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_forced_pose = entity_get_actor_field<unsigned int,456,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle = entity_set_actor_field<Broc::entity,2572,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle = entity_get_actor_field<Broc::entity,2572,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_sub_type = entity_set_actor_field<unsigned int,2576,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_sub_type = entity_get_actor_field<unsigned int,2576,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_seat = entity_set_actor_field<unsigned int,2580,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_seat = entity_get_actor_field<unsigned int,2580,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_seat_enter = entity_set_actor_field<unsigned int,2584,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_seat_enter = entity_get_actor_field<unsigned int,2584,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_team = entity_set_sentient_field<Broc::string,4,27>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_team = entity_get_sentient_field<Broc::string,4,28>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_threatbias = entity_set_sentient_field<int,48,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_threatbias = entity_get_sentient_field<int,48,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_scariness = entity_set_sentient_field<float,52,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_scariness = entity_get_sentient_field<float,52,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_node = entity_set_sentient_field<Broc::pathnode,116,26>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_node = entity_get_sentient_field<Broc::pathnode,116,31>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_chainnode = entity_set_sentient_field<Broc::pathnode,132,26>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_chainnode = entity_get_sentient_field<Broc::pathnode,132,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_goalradius = entity_set_sentient_field<float,24,29>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_goalradius = entity_get_sentient_field<float,24,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_goalangletolerance = entity_set_sentient_field<float,36,30>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_goalangletolerance = entity_get_sentient_field<float,36,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_enemy = entity_set_sentient_field<Broc::entity,104,26>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_enemy = entity_get_sentient_field<Broc::entity,104,33>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_ignoreme = entity_set_sentient_field<int,56,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_ignoreme = entity_get_sentient_field<int,56,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_ignorepain = entity_set_sentient_field<int,64,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_ignorepain = entity_get_sentient_field<int,64,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_grenadereturnchance = entity_set_sentient_field<float,76,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_grenadereturnchance = entity_get_sentient_field<float,76,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_bulletsInClip = entity_set_sentient_field<int,80,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_bulletsInClip = entity_get_sentient_field<int,80,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_animscriptedallowpain = entity_set_sentient_field<int,84,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_animscriptedallowpain = entity_get_sentient_field<int,84,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_state_change_blocked = entity_set_sentient_field<int,68,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_state_change_blocked = entity_get_sentient_field<int,68,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_updateDesireChaineNodeMin = entity_set_sentient_field<int,140,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_updateDesireChaineNodeMin = entity_get_sentient_field<int,140,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_updateDesireChaineNodeMax = entity_set_sentient_field<int,144,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_updateDesireChaineNodeMax = entity_get_sentient_field<int,144,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_keepOldDesiredChainNodeOdds = entity_set_sentient_field<float,148,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_keepOldDesiredChainNodeOdds = entity_get_sentient_field<float,148,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_moveAwayAvoidPoint = entity_set_sentient_field<Broc::vector,88,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_moveAwayAvoidPoint = entity_get_sentient_field<Broc::vector,88,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_sentient_moveAwayDist = entity_set_sentient_field<float,100,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_sentient_moveAwayDist = entity_get_sentient_field<float,100,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_player_spectatorClient = entity_set_player_field<int,1360,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_player_spectatorClient = entity_get_player_field<int,1360,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_player_ctf_has_flag = entity_set_player_field<short,1356,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_player_ctf_has_flag = entity_get_player_field<short,1356,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_player_viewangles = entity_set_player_field<Broc::vector,208,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_player_viewangles = entity_get_player_field<Broc::vector,208,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_rank = entity_set_persistent_player_field<short,424,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_rank = entity_get_persistent_player_field<short,424,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_playerClass = entity_set_persistent_player_field<short,416,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_playerClass = entity_get_persistent_player_field<short,416,0>;
-    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_nextPlayerClass = entity_set_persistent_player_field<short,418,0>;
-    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_nextPlayerClass = entity_get_persistent_player_field<short,418,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_x = hud_set_field<int,4>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_x = hud_get_field<int,4>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_y = hud_set_field<int,8>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_y = hud_get_field<int,8>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_alignX = hud_set_field<int,20>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_alignX = hud_get_field<int,20>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_alignY = hud_set_field<int,24>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_alignY = hud_get_field<int,24>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_sort = hud_set_field<float,108>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_sort = hud_get_field<float,108>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_fontScale = hud_set_field<float,12>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_fontScale = hud_get_field<float,12>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_alpha = hud_set_field<unsigned char,31>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_alpha = hud_get_field<unsigned char,31>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_red = hud_set_field<unsigned char,28>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_red = hud_get_field<unsigned char,28>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_green = hud_set_field<unsigned char,29>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_green = hud_get_field<unsigned char,29>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_set_blue = hud_set_field<unsigned char,30>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->hud_get_blue = hud_get_field<unsigned char,30>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_targetname = pnode_set_field<Broc::string,48,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_targetname = pnode_get_field<Broc::string,48,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_target = pnode_set_field<Broc::string,56,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_target = pnode_get_field<Broc::string,56,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_on_goal = pnode_set_field<Broc::string,60,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_on_goal = pnode_get_field<Broc::string,60,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_reservename = pnode_set_field<Broc::string,64,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_reservename = pnode_get_field<Broc::string,64,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_animscript = pnode_set_field<Broc::string,68,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_animscript = pnode_get_field<Broc::string,68,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_script_noteworthy = pnode_set_field<Broc::string,52,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_script_noteworthy = pnode_get_field<Broc::string,52,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_origin = pnode_set_field<Broc::vector,76,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_origin = pnode_get_field<Broc::vector,76,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_angles = pnode_set_field<Broc::vector,88,34>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_angles = pnode_get_field<Broc::vector,88,35>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_radius = pnode_set_field<float,92,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_radius = pnode_get_field<float,92,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_spawnflags = pnode_set_field<short,44,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_spawnflags = pnode_get_field<short,44,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_set_type = pnode_set_field<Broc::string,40,36>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_type = pnode_get_field<Broc::string,40,37>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_targetname = vnode_set_field<Broc::string,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_targetname = vnode_get_field<Broc::string,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_target = vnode_set_field<Broc::string,4>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_target = vnode_get_field<Broc::string,4>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_origin = vnode_set_field<Broc::vector,20>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_origin = vnode_get_field<Broc::vector,20>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_angles = vnode_set_field<Broc::vector,44>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_angles = vnode_get_field<Broc::vector,44>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_speed = vnode_set_field<float,8>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_speed = vnode_get_field<float,8>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_lookahead = vnode_set_field<float,12>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_lookahead = vnode_get_field<float,12>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_set_script_noteworthy = vnode_set_field<Broc::string,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_script_noteworthy = vnode_get_field<Broc::string,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_classname = entity_set_field<Broc::string,636,1>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_classname = entity_get_field<Broc::string,636,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_origin = entity_set_field<Broc::vector,336,2>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_origin = entity_get_field<Broc::vector,336,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_model = entity_set_field<Broc::string,624,1>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_model = entity_get_field<Broc::string,624,6>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_spawnflags = entity_set_field<int,704,1>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_spawnflags = entity_get_field<int,704,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_speed = entity_set_field<float,796,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_speed = entity_get_field<float,796,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_closespeed = entity_set_field<float,800,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_closespeed = entity_get_field<float,800,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_target = entity_set_field<Broc::string,652,11>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_target = entity_get_field<Broc::string,652,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_targetname = entity_set_field<Broc::string,644,12>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_targetname = entity_get_field<Broc::string,644,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_teamname = entity_set_field<Broc::string,792,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_teamname = entity_get_field<Broc::string,792,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_wait = entity_set_field<float,896,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_wait = entity_get_field<float,896,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_random = entity_set_field<float,900,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_random = entity_get_field<float,900,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_count = entity_set_field<int,876,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_count = entity_get_field<int,876,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_health = entity_set_field<int,856,3>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_health = entity_get_field<int,856,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_dmg = entity_set_field<int,864,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_dmg = entity_get_field<int,864,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_angles = entity_set_field<Broc::vector,352,4>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_angles = entity_get_field<Broc::vector,352,5>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_rotate = entity_set_field<Broc::vector,912,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_rotate = entity_get_field<Broc::vector,912,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_degrees = entity_set_field<float,788,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_degrees = entity_get_field<float,788,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_time = entity_set_field<float,796,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_time = entity_get_field<float,796,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_modelscale = entity_set_field<float,632,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_modelscale = entity_get_field<float,632,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_key = entity_set_field<int,948,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_key = entity_get_field<int,948,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_delay = entity_set_field<float,904,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_delay = entity_get_field<float,904,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_shard = entity_set_field<int,876,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_shard = entity_get_field<int,876,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_spawnitem = entity_set_field<Broc::string,952,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_spawnitem = entity_get_field<Broc::string,952,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_groupname = entity_set_field<Broc::string,660,13>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_groupname = entity_get_field<Broc::string,660,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_script_noteworthy = entity_set_field<Broc::string,668,14>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_script_noteworthy = entity_get_field<Broc::string,668,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_maxhealth = entity_set_field<int,860,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_maxhealth = entity_get_field<int,860,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_animname = entity_set_field<Broc::string,676,15>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_animname = entity_get_field<Broc::string,676,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_index = entity_set_field<short,958,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_index = entity_get_field<short,958,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_takedamage = entity_set_field<int,696,9>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_takedamage = entity_get_field<int,696,10>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_accuracy = entity_set_actor_field<float,240,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_accuracy = entity_get_actor_field<float,240,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_accuracystationarymod = entity_set_actor_field<float,244,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_accuracystationarymod = entity_get_actor_field<float,244,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_accuracyVsPlayer = entity_set_actor_field<float,248,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_accuracyVsPlayer = entity_get_actor_field<float,248,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_accuracyVsAI = entity_set_actor_field<float,252,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_accuracyVsAI = entity_get_actor_field<float,252,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_accuracyVsHero = entity_set_actor_field<float,256,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_accuracyVsHero = entity_get_actor_field<float,256,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_lookforward = entity_set_actor_field<Broc::vector,320,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_lookforward = entity_get_actor_field<Broc::vector,320,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_lookright = entity_set_actor_field<Broc::vector,332,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_lookright = entity_get_actor_field<Broc::vector,332,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_lookup = entity_set_actor_field<Broc::vector,344,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_lookup = entity_get_actor_field<Broc::vector,344,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_fovcosine = entity_set_actor_field<float,2220,17>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_fovcosine = entity_get_actor_field<float,2220,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_maxsightdistsqrd = entity_set_actor_field<float,2224,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_maxsightdistsqrd = entity_get_actor_field<float,2224,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_visibilitythreshold = entity_set_actor_field<float,2216,17>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_visibilitythreshold = entity_get_actor_field<float,2216,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_defaultsightlatency = entity_set_actor_field<int,2228,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_defaultsightlatency = entity_get_actor_field<int,2228,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_maxthreatdistsqrd = entity_set_actor_field<float,2452,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_maxthreatdistsqrd = entity_get_actor_field<float,2452,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_followmin = entity_set_actor_field<int,2084,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_followmin = entity_get_actor_field<int,2084,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_followmax = entity_set_actor_field<int,2088,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_followmax = entity_get_actor_field<int,2088,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_chainfallback = entity_set_actor_field<short,2128,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_chainfallback = entity_get_actor_field<short,2128,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_interval = entity_set_actor_field<float,2092,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_interval = entity_get_actor_field<float,2092,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_personalspace = entity_set_actor_field<float,2096,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_personalspace = entity_get_actor_field<float,2096,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_damagetype = entity_set_actor_field<int,616,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_damagetype = entity_get_actor_field<int,616,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_damagetaken = entity_set_actor_field<int,620,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_damagetaken = entity_get_actor_field<int,620,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_damagedir = entity_set_actor_field<Broc::vector,628,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_damagedir = entity_get_actor_field<Broc::vector,628,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_damageyaw = entity_set_actor_field<int,624,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_damageyaw = entity_get_actor_field<int,624,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_damagelocation = entity_set_actor_field<unsigned int,640,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_damagelocation = entity_get_actor_field<unsigned int,640,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_proneok = entity_set_actor_field<int,472,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_proneok = entity_get_actor_field<int,472,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_walkdist = entity_set_actor_field<float,2072,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_walkdist = entity_get_actor_field<float,2072,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_desiredangle = entity_set_actor_field<float,396,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_desiredangle = entity_get_actor_field<float,396,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_bravery = entity_set_actor_field<float,2144,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_bravery = entity_get_actor_field<float,2144,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_pacifist = entity_set_actor_field<int,2148,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_pacifist = entity_get_actor_field<int,2148,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_pacifistwait = entity_set_actor_field<int,2152,18>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_pacifistwait = entity_get_actor_field<int,2152,19>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_suppressionwait = entity_set_actor_field<int,2552,18>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_suppressionwait = entity_get_actor_field<int,2552,19>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_name = entity_set_actor_field<Broc::string,288,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_name = entity_get_actor_field<Broc::string,288,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_weapon = entity_set_actor_field<unsigned int,292,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_weapon = entity_get_actor_field<unsigned int,292,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_secondaryweapon = entity_set_actor_field<unsigned int,296,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_secondaryweapon = entity_get_actor_field<unsigned int,296,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_voice = entity_set_actor_field<Broc::string,300,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_voice = entity_get_actor_field<Broc::string,300,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_dontavoidplayer = entity_set_actor_field<int,2124,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_dontavoidplayer = entity_get_actor_field<int,2124,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_grenadeawareness = entity_set_actor_field<float,2556,17>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_grenadeawareness = entity_get_actor_field<float,2556,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_grenade = entity_set_actor_field<Broc::entity,2560,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_grenade = entity_get_actor_field<Broc::entity,2560,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_grenadeweapon = entity_set_actor_field<Broc::string,2620,20>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_grenadeweapon = entity_get_actor_field<Broc::string,2620,21>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_grenadeammo = entity_set_actor_field<int,2632,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_grenadeammo = entity_get_actor_field<int,2632,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_favoriteenemy = entity_set_actor_field<Broc::entity,2444,24>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_favoriteenemy = entity_get_actor_field<Broc::entity,2444,25>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_allowdeath = entity_set_actor_field<int,228,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_allowdeath = entity_get_actor_field<int,228,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_mg42stayput = entity_set_actor_field<unsigned char,2712,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_mg42stayput = entity_get_actor_field<unsigned char,2712,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_useable = entity_set_actor_field<unsigned char,2713,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_useable = entity_get_actor_field<unsigned char,2713,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_goalradiusonly = entity_set_actor_field<unsigned char,2130,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_goalradiusonly = entity_get_actor_field<unsigned char,2130,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_dropweapon = entity_set_actor_field<int,2716,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_dropweapon = entity_get_actor_field<int,2716,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_drawoncompass = entity_set_actor_field<int,2720,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_drawoncompass = entity_get_actor_field<int,2720,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_interactstage = entity_set_actor_field<int,2848,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_interactstage = entity_get_actor_field<int,2848,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_scriptstate = entity_set_actor_field<Broc::string,2728,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_scriptstate = entity_get_actor_field<Broc::string,2728,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_lastscriptstate = entity_set_actor_field<Broc::string,2732,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_lastscriptstate = entity_get_actor_field<Broc::string,2732,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_statechangereason = entity_set_actor_field<Broc::string,2736,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_statechangereason = entity_get_actor_field<Broc::string,2736,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_groundtype = entity_set_actor_field<Broc::string,768,16>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_groundtype = entity_get_actor_field<Broc::string,768,22>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_anim_pose = entity_set_actor_field<unsigned int,452,23>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_anim_pose = entity_get_actor_field<unsigned int,452,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_forced_pose = entity_set_actor_field<unsigned int,456,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_forced_pose = entity_get_actor_field<unsigned int,456,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_vehicle = entity_set_actor_field<Broc::entity,2572,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_vehicle = entity_get_actor_field<Broc::entity,2572,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_vehicle_sub_type = entity_set_actor_field<unsigned int,2576,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_vehicle_sub_type = entity_get_actor_field<unsigned int,2576,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_vehicle_seat = entity_set_actor_field<unsigned int,2580,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_vehicle_seat = entity_get_actor_field<unsigned int,2580,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_actor_vehicle_seat_enter = entity_set_actor_field<unsigned int,2584,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_actor_vehicle_seat_enter = entity_get_actor_field<unsigned int,2584,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_team = entity_set_sentient_field<Broc::string,4,27>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_team = entity_get_sentient_field<Broc::string,4,28>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_threatbias = entity_set_sentient_field<int,48,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_threatbias = entity_get_sentient_field<int,48,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_scariness = entity_set_sentient_field<float,52,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_scariness = entity_get_sentient_field<float,52,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_node = entity_set_sentient_field<Broc::pathnode,116,26>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_node = entity_get_sentient_field<Broc::pathnode,116,31>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_chainnode = entity_set_sentient_field<Broc::pathnode,132,26>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_chainnode = entity_get_sentient_field<Broc::pathnode,132,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_goalradius = entity_set_sentient_field<float,24,29>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_goalradius = entity_get_sentient_field<float,24,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_goalangletolerance = entity_set_sentient_field<float,36,30>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_goalangletolerance = entity_get_sentient_field<float,36,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_enemy = entity_set_sentient_field<Broc::entity,104,26>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_enemy = entity_get_sentient_field<Broc::entity,104,33>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_ignoreme = entity_set_sentient_field<int,56,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_ignoreme = entity_get_sentient_field<int,56,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_ignorepain = entity_set_sentient_field<int,64,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_ignorepain = entity_get_sentient_field<int,64,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_grenadereturnchance = entity_set_sentient_field<float,76,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_grenadereturnchance = entity_get_sentient_field<float,76,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_bulletsInClip = entity_set_sentient_field<int,80,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_bulletsInClip = entity_get_sentient_field<int,80,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_animscriptedallowpain = entity_set_sentient_field<int,84,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_animscriptedallowpain = entity_get_sentient_field<int,84,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_state_change_blocked = entity_set_sentient_field<int,68,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_state_change_blocked = entity_get_sentient_field<int,68,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_updateDesireChaineNodeMin = entity_set_sentient_field<int,140,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_updateDesireChaineNodeMin = entity_get_sentient_field<int,140,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_updateDesireChaineNodeMax = entity_set_sentient_field<int,144,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_updateDesireChaineNodeMax = entity_get_sentient_field<int,144,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_keepOldDesiredChainNodeOdds = entity_set_sentient_field<float,148,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_keepOldDesiredChainNodeOdds = entity_get_sentient_field<float,148,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_moveAwayAvoidPoint = entity_set_sentient_field<Broc::vector,88,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_moveAwayAvoidPoint = entity_get_sentient_field<Broc::vector,88,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_sentient_moveAwayDist = entity_set_sentient_field<float,100,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_sentient_moveAwayDist = entity_get_sentient_field<float,100,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_player_spectatorClient = entity_set_player_field<int,1360,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_player_spectatorClient = entity_get_player_field<int,1360,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_player_ctf_has_flag = entity_set_player_field<short,1356,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_player_ctf_has_flag = entity_get_player_field<short,1356,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_player_viewangles = entity_set_player_field<Broc::vector,208,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_player_viewangles = entity_get_player_field<Broc::vector,208,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_player_rank = entity_set_persistent_player_field<short,424,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_player_rank = entity_get_persistent_player_field<short,424,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_player_playerClass = entity_set_persistent_player_field<short,416,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_player_playerClass = entity_get_persistent_player_field<short,416,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_player_nextPlayerClass = entity_set_persistent_player_field<short,418,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_player_nextPlayerClass = entity_get_persistent_player_field<short,418,0>;
 
-    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_playerState = entity_set_persistent_player_field<int,420,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_set_persistent_player_playerState = entity_set_persistent_player_field<int,420,0>;
 
-    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_playerState = entity_get_persistent_player_field<int,420,0>;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_entity_get_persistent_player_playerState = entity_get_persistent_player_field<int,420,0>;
 }
 
 
@@ -26826,97 +26826,97 @@ static const struct { unsigned int off1; void (*fn1)();
 void BrocSys::InitAPI()
 {
     // gpBrocAPI->mPrint = 0xBFBFBFBF (release sentinel per disasm)
-    *(void**)((char*)&gpBrocAPI->mBrocExports + 0x000) = (void*)0xBFBFBFBF;
+    *(void**)((char*)gpBrocAPI + 0x000) = (void*)0xBFBFBFBF;
     for (int i = 0; i < (int)(sizeof(sBrocApiTable) / sizeof(sBrocApiTable[0]));
          ++i)
     {
-        *(void**)((char*)&gpBrocAPI->mBrocExports + sBrocApiTable[i].off1) =
+        *(void**)((char*)gpBrocAPI + sBrocApiTable[i].off1) =
             (void*)sBrocApiTable[i].fn1;
-        *(void**)((char*)&gpBrocAPI->mBrocExports + sBrocApiTable[i].off2) =
+        *(void**)((char*)gpBrocAPI + sBrocApiTable[i].off2) =
             (void*)sBrocApiTable[i].fn2;
     }
-    gpBrocAPI->mBrocExports.mEntNotify = BrocSys::ThreadEntityNotify;
-    gpBrocAPI->mBrocExports.mEntNotifyFromEnt = BrocSys::ThreadEntityNotify;
-    gpBrocAPI->mBrocExports.mEntNotifyFromInt = BrocSys::ThreadEntityNotify;
-    gpBrocAPI->mBrocExports.mEntNotifyFromString = BrocSys::ThreadEntityNotify;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntNotify = BrocSys::ThreadEntityNotify;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntNotifyFromEnt = BrocSys::ThreadEntityNotify;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntNotifyFromInt = BrocSys::ThreadEntityNotify;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEntNotifyFromString = BrocSys::ThreadEntityNotify;
     // +0x80 (collides with the merged BrocExports mSpawnScriptThread slot)
-    *(void**)((char*)&gpBrocAPI->mBrocExports + 0x80) =
+    *(void**)((char*)gpBrocAPI + 0x80) =
         (void*)static_cast<void (*)(unsigned int, int)>(
             &BrocSys::ThreadEntityNotify);
-    gpBrocAPI->mBrocExports.mMathsAtan2 = math::ATan;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mMathsAtan2 = math::ATan;
     memcpy(reinterpret_cast<unsigned char*>(gpBrocAPI) + 0xBE8,
            &gBrocExports, 0x1C8);
-    gpBrocAPI->mBrocExports.mRegisterHashString =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRegisterHashString =
         BrocSys::RegisterHashString;
     Broc::gBrocAPI.mStringHash = BrocSys::CalcStringHash;
-    gpBrocAPI->mBrocExports.mStrncmp = strncmp;
-    gpBrocAPI->mBrocExports.mStricmp = _stricmp;
-    gpBrocAPI->mBrocExports.mVecLength = Broc::length;
-    gpBrocAPI->mBrocExports.mApplyPhysics = ApplyPhysics;
-    gpBrocAPI->mBrocExports.mStopPhysics = StopPhysics;
-    gpBrocAPI->mBrocExports.mStopAllSceneAnims = StopAllSceneAnims;
-    gpBrocAPI->mBrocExports.mStrstr = BrocStrstr;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStrncmp = strncmp;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStricmp = _stricmp;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mVecLength = Broc::length;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mApplyPhysics = ApplyPhysics;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopPhysics = StopPhysics;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStopAllSceneAnims = StopAllSceneAnims;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mStrstr = BrocStrstr;
     BrocSys::InitMPCallbacks();
-    gpBrocAPI->mBrocExports.mRoundOver = BrocSys::RoundOver;
-    gpBrocAPI->mBrocExports.mDisplayScoreBoard = BrocSys::DisplayScoreBoard;
-    gpBrocAPI->mBrocExports.mSettleMapVote = BrocSys::SettleMapVote;
-    gpBrocAPI->mBrocExports.mSettleGameModeVote =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRoundOver = BrocSys::RoundOver;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDisplayScoreBoard = BrocSys::DisplayScoreBoard;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSettleMapVote = BrocSys::SettleMapVote;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSettleGameModeVote =
         BrocSys::SettleGameModeVote;
-    gpBrocAPI->mBrocExports.mSetSpecialRecharge =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetSpecialRecharge =
         BrocSys::SetSpecialRecharge;
-    gpBrocAPI->mBrocExports.mAdvanceSpecialRecharge =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mAdvanceSpecialRecharge =
         BrocSys::AdvanceSpecialRecharge;
-    gpBrocAPI->mBrocExports.mGetSpecialRechargePlayerClass =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetSpecialRechargePlayerClass =
         BrocSys::GetSpecialRechargePlayerClass;
-    gpBrocAPI->mBrocExports.mSpecialEditionSkin =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSpecialEditionSkin =
         BrocSys::SpecialEditionSkin;
-    gpBrocAPI->mBrocExports.mSetTeamGame = BrocSys::SetTeamGame;
-    gpBrocAPI->mBrocExports.mSetShowScore = BrocSys::SetShowScore;
-    gpBrocAPI->mBrocExports.mSetShowTime = BrocSys::SetShowTime;
-    gpBrocAPI->mBrocExports.mGetTeamGame = BrocSys::GetTeamGame;
-    gpBrocAPI->mBrocExports.mIsHost = BrocSys::IsHost;
-    gpBrocAPI->mBrocExports.mIsRankedGame = BrocSys::IsRankedGame;
-    gpBrocAPI->mBrocExports.mIsSplitScreen = BrocSys::IsSplitScreen;
-    gpBrocAPI->mBrocExports.mIsLanGame = BrocSys::IsLanGame;
-    gpBrocAPI->mBrocExports.mIsOnlineGame = BrocSys::IsOnlineGame;
-    gpBrocAPI->mBrocExports.mIsLocalGame = BrocSys::IsLocalGame;
-    gpBrocAPI->mBrocExports.mScreenFadeToBlack = BrocSys::ScreenFadeToBlack;
-    gpBrocAPI->mBrocExports.mScreenFadeUp = BrocSys::ScreenFadeUp;
-    gpBrocAPI->mBrocExports.mFollowCycle = BrocSys::FollowCycle;
-    gpBrocAPI->mBrocExports.mActiveMenu = BrocSys::ActiveMenu;
-    gpBrocAPI->mBrocExports.mNextRound = BrocSys::NextRound;
-    gpBrocAPI->mBrocExports.mNextRoundMapChanges =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetTeamGame = BrocSys::SetTeamGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetShowScore = BrocSys::SetShowScore;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetShowTime = BrocSys::SetShowTime;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetTeamGame = BrocSys::GetTeamGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsHost = BrocSys::IsHost;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsRankedGame = BrocSys::IsRankedGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsSplitScreen = BrocSys::IsSplitScreen;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsLanGame = BrocSys::IsLanGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsOnlineGame = BrocSys::IsOnlineGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mIsLocalGame = BrocSys::IsLocalGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mScreenFadeToBlack = BrocSys::ScreenFadeToBlack;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mScreenFadeUp = BrocSys::ScreenFadeUp;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mFollowCycle = BrocSys::FollowCycle;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mActiveMenu = BrocSys::ActiveMenu;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mNextRound = BrocSys::NextRound;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mNextRoundMapChanges =
         BrocSys::NextRoundMapChanges;
-    gpBrocAPI->mBrocExports.mQuitGame = BrocSys::QuitGame;
-    gpBrocAPI->mBrocExports.mEnableWeapon = BrocSys::EnableWeapon;
-    gpBrocAPI->mBrocExports.mDisableWeapon = BrocSys::DisableWeapon;
-    gpBrocAPI->mBrocExports.mLocalize = BrocSys::Localize;
-    gpBrocAPI->mBrocExports.mSetupLevelSpecificVariables =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mQuitGame = BrocSys::QuitGame;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mEnableWeapon = BrocSys::EnableWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mDisableWeapon = BrocSys::DisableWeapon;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mLocalize = BrocSys::Localize;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetupLevelSpecificVariables =
         BrocSys::SetupLevelSpecificVariables;
     BrocSys::InitEntity();
     BrocSys::InitObjective();
     BrocSys::InitVehicle();
-    gpBrocAPI->mBrocExports.mOceanSetSeaLevel =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetSeaLevel =
         cdOceanGlobals::SetSeaLevel;
-    gpBrocAPI->mBrocExports.mOceanSetLayerAlpha =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetLayerAlpha =
         cdOceanGlobals::SetLayerAlpha;
-    gpBrocAPI->mBrocExports.mOceanSetLayerScale =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetLayerScale =
         cdOceanGlobals::SetLayerScale;
-    gpBrocAPI->mBrocExports.mOceanSetLayerScroll =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetLayerScroll =
         cdOceanGlobals::SetLayerScroll;
-    gpBrocAPI->mBrocExports.mOceanSetWaveOrigin =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveOrigin =
         cdOceanGlobals::SetWaveOrigin;
-    gpBrocAPI->mBrocExports.mOceanSetWaveHeading =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveHeading =
         cdOceanGlobals::SetWaveHeading;
-    gpBrocAPI->mBrocExports.mOceanSetWaveDistance =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveDistance =
         cdOceanGlobals::SetWaveDistance;
-    gpBrocAPI->mBrocExports.mOceanSetWaveWavelength =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveWavelength =
         cdOceanGlobals::SetWaveWavelength;
-    gpBrocAPI->mBrocExports.mOceanSetWaveAmplitude =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveAmplitude =
         cdOceanGlobals::SetWaveAmplitude;
-    gpBrocAPI->mBrocExports.mOceanSetWavePhase =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWavePhase =
         cdOceanGlobals::SetWavePhase;
-    gpBrocAPI->mBrocExports.mOceanSetWaveTimescale =
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mOceanSetWaveTimescale =
         cdOceanGlobals::SetWaveTimescale;
 }
 

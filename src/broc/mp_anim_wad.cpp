@@ -88,7 +88,7 @@ namespace Broc {
 void SetAnimKnob(Broc::entity* e, unsigned int anim_index,
                 float goalweight, float goaltime, float rate) {
     const unsigned int handle = e->GetHandle();
-    gpBrocAPI->mBrocExports.mSetAnimKnob(
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mSetAnimKnob(
         handle, anim_index, goalweight, goaltime, rate, false);
 }
 
@@ -2781,14 +2781,14 @@ Broc::bbool* IsEEDefined_script_delay(Broc::bbool* result,
 
 // GetEE_spawnflags - ea: 0x995040.
 __int16 GetEE_spawnflags(Broc::pathnode node) {
-    return gpBrocAPI->mBrocExports.m_pnode_get_spawnflags(
+    return reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_spawnflags(
         static_cast<int>(node.GetHandle()));
 }
 
 // GetEE_script_noteworthy - ea: 0x9950A0.
 Broc::string* GetEE_script_noteworthy(Broc::string* result,
                                       Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_script_noteworthy(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_script_noteworthy(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -2853,7 +2853,7 @@ Broc::bbool* IsEEDefined_script_waittill(Broc::bbool* result,
 
 // GetEE_target - ea: 0x995570.
 Broc::string* GetEE_target(Broc::string* result, Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_target(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_target(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -2892,7 +2892,7 @@ Broc::bbool* IsEEDefined_script_mg42(Broc::bbool* result,
 
 // GetEE_on_goal - ea: 0x995840.
 Broc::string* GetEE_on_goal(Broc::string* result, Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_on_goal(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_on_goal(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -2935,7 +2935,7 @@ Broc::bbool* IsEEDefined_script_ambush_type(Broc::bbool* result,
 
 // GetEE_radius(pathnode) - ea: 0x995BE0.
 Broc::bfloat* GetEE_radius(Broc::bfloat* result, Broc::pathnode node) {
-    const float value = gpBrocAPI->mBrocExports.m_pnode_get_radius(
+    const float value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_radius(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::bfloat(value);
     return result;
@@ -2951,7 +2951,7 @@ Broc::bbool* IsEEDefined_radius(Broc::bbool* result,
 
 // GetEE_origin - ea: 0x995CF0.
 Broc::vector* GetEE_origin(Broc::vector* result, Broc::pathnode node) {
-    const Broc::vector value = gpBrocAPI->mBrocExports.m_pnode_get_origin(
+    const Broc::vector value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_origin(
         static_cast<int>(node.GetHandle()));
     *result = value;
     return result;
@@ -2993,7 +2993,7 @@ Broc::bbool* IsEEDefined_script_chain(Broc::bbool* result,
 
 // GetEE_targetname - ea: 0x996010.
 Broc::string* GetEE_targetname(Broc::string* result, Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_targetname(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_targetname(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3010,7 +3010,7 @@ Broc::bbool* IsEEDefined_targetname(Broc::bbool* result,
 
 // GetEE_animscript - ea: 0x9961B0.
 Broc::string* GetEE_animscript(Broc::string* result, Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_animscript(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_animscript(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3050,7 +3050,7 @@ Broc::bbool* IsEEDefined_script_ambush_trigger_distance(
 
 // GetEE_type - ea: 0x996480.
 Broc::string* GetEE_type(Broc::string* result, Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_type(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_type(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3067,7 +3067,7 @@ Broc::bbool* IsEEDefined_type(Broc::bbool* result,
 
 // GetEE_angles - ea: 0x996620.
 Broc::vector* GetEE_angles(Broc::vector* result, Broc::pathnode node) {
-    const Broc::vector value = gpBrocAPI->mBrocExports.m_pnode_get_angles(
+    const Broc::vector value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_angles(
         static_cast<int>(node.GetHandle()));
     *result = value;
     return result;
@@ -3084,7 +3084,7 @@ Broc::bbool* IsEEDefined_angles(Broc::bbool* result,
 // GetEE_reservename - ea: 0x996740.
 Broc::string* GetEE_reservename(Broc::string* result,
                                 Broc::pathnode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_pnode_get_reservename(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_pnode_get_reservename(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3157,7 +3157,7 @@ Broc::bbool* IsEEDefined_endswitch(Broc::bbool* result,
 // GetEE_script_noteworthy(vehiclenode) - ea: 0x996B80.
 Broc::string* GetEE_script_noteworthy(Broc::string* result,
                                       Broc::vehiclenode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_vnode_get_script_noteworthy(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_script_noteworthy(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3269,7 +3269,7 @@ Broc::bbool* IsEEDefined_script_uniquename(Broc::bbool* result,
 
 // GetEE_target(vehiclenode) - ea: 0x9972B0.
 Broc::string* GetEE_target(Broc::string* result, Broc::vehiclenode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_vnode_get_target(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_target(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3287,7 +3287,7 @@ Broc::bbool* IsEEDefined_target(Broc::bbool* result,
 // GetEE_speed - ea: 0x997450.
 Broc::bfloat* GetEE_speed(Broc::bfloat* result,
                           Broc::vehiclenode node) {
-    const float value = gpBrocAPI->mBrocExports.m_vnode_get_speed(
+    const float value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_speed(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::bfloat(value);
     return result;
@@ -3327,7 +3327,7 @@ Broc::bbool* IsEEDefined_playerhasbeenhere(Broc::bbool* result,
 // GetEE_lookahead(vehiclenode) - ea: 0x997690.
 Broc::bfloat* GetEE_lookahead(Broc::bfloat* result,
                               Broc::vehiclenode node) {
-    const float value = gpBrocAPI->mBrocExports.m_vnode_get_lookahead(
+    const float value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_lookahead(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::bfloat(value);
     return result;
@@ -3390,7 +3390,7 @@ Broc::bbool* IsEEDefined_offramp_used(Broc::bbool* result,
 // GetEE_origin(vehiclenode) - ea: 0x997A00.
 Broc::vector* GetEE_origin(Broc::vector* result,
                            Broc::vehiclenode node) {
-    const Broc::vector value = gpBrocAPI->mBrocExports.m_vnode_get_origin(
+    const Broc::vector value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_origin(
         static_cast<int>(node.GetHandle()));
     *result = value;
     return result;
@@ -3526,7 +3526,7 @@ Broc::bbool* IsEEDefined_derailed(Broc::bbool* result,
 // GetEE_targetname(vehiclenode) - ea: 0x998110.
 Broc::string* GetEE_targetname(Broc::string* result,
                                Broc::vehiclenode node) {
-    Broc::string value = gpBrocAPI->mBrocExports.m_vnode_get_targetname(
+    Broc::string value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_targetname(
         static_cast<int>(node.GetHandle()));
     new (result) Broc::string(value);
     value.~string();
@@ -3544,7 +3544,7 @@ Broc::bbool* IsEEDefined_targetname(Broc::bbool* result,
 // GetEE_angles(vehiclenode) - ea: 0x9982B0.
 Broc::vector* GetEE_angles(Broc::vector* result,
                            Broc::vehiclenode node) {
-    const Broc::vector value = gpBrocAPI->mBrocExports.m_vnode_get_angles(
+    const Broc::vector value = reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->m_vnode_get_angles(
         static_cast<int>(node.GetHandle()));
     *result = value;
     return result;
