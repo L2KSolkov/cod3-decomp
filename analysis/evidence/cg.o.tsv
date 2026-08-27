@@ -55,3 +55,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0068B380	?CG_AddFadeRGB@@YAXPAUlocalEntity_t@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298647	Release and source perform the same single RE_AddRefEntityToScene call with the ref entity and -1.
 0x0068B270	?compare_hudelems@@YAHPBX0@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:512	Non-empty body normalizes the sentinel order values and returns the same comparator results.
 0x0068B270	?compare_hudelems@@YAHPBX0@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298579	Release and source match on both field offsets, -777 sentinel normalization, subtraction, and comparator return branches.
+0x0068B300	?CG_ClearHudElems@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:527	Non-empty body clears all sixteen HUD element types to HE_TYPE_FREE.
+0x0068B300	?CG_ClearHudElems@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298618	Release and source match on the sixteen-element clear loop; the release decompiler's loop-counter return is not part of the map's void ABI.
