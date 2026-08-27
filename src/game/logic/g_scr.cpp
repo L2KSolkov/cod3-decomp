@@ -160,6 +160,8 @@ namespace AeAssert {
 extern bool gAssertsEnabled;  // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr)
 }
 
+extern float sNaN;  // ?sNaN@@3MA (core.o)
+
 // Binary BrocSys.cpp forward-declared hudelem as class (mangle ABVhudelem@Broc)
 namespace Broc {
 class hudelem;
@@ -2613,7 +2615,7 @@ float GetGameFloatVar(unsigned int hashVarName)
     if (CheckpointMgr::sInst->GetGameVar(hashVarName,
                                          (unsigned int*)&val, 1u))
         return val;
-    return (float)NAN;
+    return sNaN;
 }
 
 // ea: 0x005C1950
