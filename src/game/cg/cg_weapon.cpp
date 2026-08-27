@@ -568,7 +568,7 @@ extern void SetClientViewAngle(Entity* ent, const float* angle);
 extern void SetClientOrigin(Entity* ent, const float* origin);
 extern void g_LinkEntity(Entity* ent);
 extern void CG_CalculateWeaponPosition_BobOffset();
-extern int CG_CalculateWeaponPosition_Sway();
+extern void CG_CalculateWeaponPosition_Sway();
 extern void CG_CalculateWeaponPosition(float* origin);
 extern void CG_CalculateWeaponAngles(float* angles);
 

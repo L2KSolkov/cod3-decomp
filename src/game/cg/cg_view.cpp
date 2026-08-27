@@ -521,7 +521,7 @@ void CG_NorthDirectionChanged()
 }
 
 // ea: 0x00696910
-void CG_UpdateCompPointerOrientation(float a1)
+void CG_UpdateCompPointerOrientation()
 {
     if (cg_hudCompassSpringyPointers.integer == 0)
     {
@@ -543,11 +543,10 @@ void CG_UpdateCompPointerOrientation(float a1)
         int v3 = cgGlobal_time - iLastCompassTime_1;
         float v14 = *(float*)&dword_F6414C[1580 * currCl];
         iLastCompassTime_1 = cgGlobal_time;
-        AngleSubtract(v14, fTargetYaw);
-        float fYawOffset = a1;
+        float fYawOffset = AngleSubtract(v14, fTargetYaw);
         float v4;
-        if (fabs((double)a1) <= 10.0f)
-            v4 = a1;
+        if (fabs((double)fYawOffset) <= 10.0f)
+            v4 = fYawOffset;
         else if (fYawOffset >= 0.0f)
         {
             v4 = 10.0f;
@@ -1878,7 +1877,7 @@ void CG_CalculateWeaponPosition_SwayMovement(float* origin)
 }
 
 // ea: 0x00690140
-void CG_CalculateWeaponPosition_SwayAngles(float a1, float* angles)
+void CG_CalculateWeaponPosition_SwayAngles(float* angles)
 {
     float v2 = angles[1];
     angles[0] = AngleSubtract2(angles[0], dword_F63CD0[1580 * currCl]);
@@ -2025,7 +2024,7 @@ static playerEntity_t* GetPlayerEntity(int client)
 }
 
 // ea: 0x0068FB20
-int CG_CalculateWeaponPosition_Sway()
+void CG_CalculateWeaponPosition_Sway()
 {
     Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     void* InfoForWeapon = (void*)BG_GetInfoForWeapon(Player->client->ps.weapon);
@@ -2064,7 +2063,7 @@ int CG_CalculateWeaponPosition_Sway()
         float v12 = swayPitchScale;
         if (swayPitchScale > 0.0f
             && *(int*)((char*)InfoForWeapon + 0x654) != 0)
-            return 0;
+            return;
         v18 = ((*(float*)((char*)InfoForWeapon + 0x6D0)
                 - *(float*)((char*)InfoForWeapon + 0x6B4))
                    * v12)
@@ -2201,7 +2200,6 @@ int CG_CalculateWeaponPosition_Sway()
     dword_F63CC0[1580 * currCl] = angle[1580 * currCl];
     dword_F63CC4[1580 * currCl] = dword_F63CB4[1580 * currCl];
     dword_F63CC8[1580 * currCl] = dword_F63CB8[1580 * currCl];
-    return 0;
 }
 
 // ea: 0x00690340
